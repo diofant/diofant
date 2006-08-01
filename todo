@@ -14,4 +14,5 @@
     image long lists like a+b+a+b+a+b+a+b, it is faster to evaluate at once
     also we want to be able to read the expression as fast as possible and
     return something. we can play with it later.
--write test suite using py.test
+-move tests from unittest (test.py) to py.test (test_*) framework
+-check orig.py - everything should be moved by know. delete it.

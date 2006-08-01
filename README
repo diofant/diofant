@@ -1,0 +1,4 @@
+tests:
+
+py.test
+tests/test.py
