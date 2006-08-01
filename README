@@ -1,4 +1,6 @@
-tests:
+see comments in sym/__init__.py for introduction. TODO for future work.
+
+to execute tests:
 
 py.test
 tests/test.py
