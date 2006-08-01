@@ -1,1 +1,17 @@
-hej
+-series
+    need to create a special class for series (probably a child of mul, which
+    wouuld only accept polynoms of one variable), which would implement
+    multiplication, adding etc. copy from ginac. can neglect higher terms, so
+    it should be pretty fast. otherwise it's going to be slow. 
+    but try first without it, if it works.
+    seems to work - implement mrv
+    need to implement bottom up series expansion. the topdown approach in basic
+    is a backup. it seems to work for mul and pow. anything else needed?
+-limits - at least mrv
+-test numbers, especially reals
+-printing: 2+-x
+-Evaluate after every op (in doadd, domul etc.) - no, because it would be slow
+    image long lists like a+b+a+b+a+b+a+b, it is faster to evaluate at once
+    also we want to be able to read the expression as fast as possible and
+    return something. we can play with it later.
+-write test suite using py.test
