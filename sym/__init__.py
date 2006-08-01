@@ -1,7 +1,10 @@
 """Computer Algebra System"""
 from basic import basic
 from symbol import symbol
-from functions import exp,cos
+from functions import sin,cos,tan,exp,ln
+from numbers import rational,real
+from power import pole_error
+from add import mul,ncmul
 
 """2006 Ondrej Certik
 

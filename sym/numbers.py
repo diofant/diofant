@@ -28,7 +28,7 @@ class real(number):
     def hash(self):
         if self.mhash: 
             return self.mhash.value
-        self.mhash=mhash()
+        self.mhash=hashing.mhash()
         self.mhash.addstr(str(type(self)))
         self.mhash.addfloat(self.num)
         return self.mhash.value

@@ -244,3 +244,45 @@ class add(pair):
         for x in self.args:
             d+=x.subs(old,new)
         return d.eval()
+
+class ncmul(mul):
+    def printnormal(self):
+        f=""
+        a=self.args
+        for x in a:
+            if isinstance(x,pair):
+                f+="(%s)*"
+            else:
+                f+="%s*"
+        f=f[:-1]
+        return f%tuple([str(x) for x in a])
+    def __str__(self):
+        return self.printnormal()
+    def eval(self):
+        "Flatten, put all rationals in the front, sort arguments"
+        def mul2(exp,x):
+            a,aexp=self.getbaseandexp(x)
+            e=[]
+            ok=False
+            for y in exp:
+                b,bexp=self.getbaseandexp(y)
+                if (not ok) and a.isequal(b):
+                    e.append(pow(a,add(aexp,bexp)).eval())
+                    ok=True
+                else:
+                    e.append(y)
+            if not ok: e.append(x)
+            return e
+        if self.evaluated: return self
+        a=self.evalargs(self.args)
+        a=self.flatten(a)
+        a=self.coerce(a,mul2)
+        n,a=self.coercenumbers(a,number.mulnumber,rational(1))
+        if n.iszero(): return rational(0)
+        if not n.isone(): a=[n]+a
+        if len(a)>1:
+            return mul(a).hold()
+        elif len(a)==1:
+            return a[0].hold()
+        else:
+            return rational(1)
