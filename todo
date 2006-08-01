@@ -16,3 +16,4 @@
     return something. we can play with it later.
 -move tests from unittest (test.py) to py.test (test_*) framework
 -check orig.py - everything should be moved by know. delete it.
+-are s.symbol("x") and another s.symbol("x") equal? should be?
