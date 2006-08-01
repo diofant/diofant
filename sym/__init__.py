@@ -60,4 +60,10 @@ the symbolic object is characterized (defined) by the things which it can do.
 so implementing more methods like diff, subs etc., you are creating a "shape" of
 the symbolic object.
 
+the issue of comparisons - you basically compare evaluated forms. 
+so, if expansion operation is not performed upon evaluation (which is
+reasonable), then (a+b)^2 != (a^2+2ab+b^2). on the other hand
+((a+b)^2).expand == (a^2+2ab+b^2). so, we should define, what we mean by eval,
+and take this into account during comparisons.
+
 """
