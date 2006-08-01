@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 from sym import hashing
 
 def test_basics():
