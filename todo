@@ -16,7 +16,8 @@
     return something, we can play with it later.
     on the other hand - from the user point of view - he shouldn't be forced to
     call eval() at all. it should be called automatically in methods like
-    isequal() etc.
+    isequal() etc. check how ginac is doing it - at which moment exactly it is
+    calling the eval()
 -move tests from unittest (test.py) to py.test (test_*) framework
 -check orig.py - everything should be moved by know. delete it.
 -should s.symbol("x") and another s.symbol("x") be equal or not?
