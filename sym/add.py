@@ -39,7 +39,7 @@ class pair(basic):
         returns a copy of "a", where the the classes of the same type as this
         (e.g. if we are mul, then all the muls, if we are add, then all the
         adds) are substituted for their arguments. all other classes are
-        left intact.     [add(x,4),a,5,add(x,b),x] if self is mul
+        left intact.
         """
         b=[]
         for x in a:
