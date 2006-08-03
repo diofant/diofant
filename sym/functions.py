@@ -77,4 +77,6 @@ class ln(function):
         self.arg=self.arg.eval()
         if isinstance(self.arg,rational) and self.arg.isone():
             return rational(0)
+        if isinstance(self.arg,exp):
+            return self.arg.arg
         return self.hold()

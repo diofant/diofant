@@ -2,9 +2,9 @@
 from basic import basic
 from symbol import symbol
 from functions import sin,cos,tan,exp,ln
-from numbers import rational,real
-from power import pole_error
-from add import mul,ncmul
+from numbers import rational,real,number
+from power import pow,pole_error
+from add import add,mul,ncmul
 
 """2006 Ondrej Certik
 

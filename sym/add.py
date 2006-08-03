@@ -134,6 +134,12 @@ class mul(pair):
         else:
             return rational(1)
     def getab(self):
+        """Pretend that self=a*b and return a,b
+        
+        in general, self=a*b*c*d*..., but in many algorithms, we 
+        want to have just 2 arguments to mul. Use this function to 
+        simulate this interface. (the returned b = b*c*d.... )
+        """
         a=self.args[0]
         if len(self.args)==2:
             b=self.args[1]
@@ -192,6 +198,20 @@ class add(pair):
     def __str__(self):
         return self.printnormal()
         return self.printprog()
+    def getab(self):
+        """Pretend that self=a+b and return a,b
+        
+        in general, self=a+b+c+d+..., but in many algorithms, we 
+        want to have just 2 arguments to add. Use this function to 
+        simulate this interface. (the returned b = b+c+d.... )
+        """
+        a=self.args[0]
+        if len(self.args)==2:
+            b=self.args[1]
+        else:
+            assert len(self.args) > 2
+            b=add(self.args[1:])
+        return (a,b)
     def extractnumericandnonnumeric(self,a):
         "extract numeric and non numeric part of 'a'"
         if isinstance(a,mul):

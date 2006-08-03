@@ -13,7 +13,18 @@
 -Evaluate after every op (in doadd, domul etc.) - no, because it would be slow
     image long lists like a+b+a+b+a+b+a+b, it is faster to evaluate at once
     also we want to be able to read the expression as fast as possible and
-    return something. we can play with it later.
+    return something, we can play with it later.
+    on the other hand - from the user point of view - he shouldn't be forced to
+    call eval() at all. it should be called automatically in methods like
+    isequal() etc.
 -move tests from unittest (test.py) to py.test (test_*) framework
 -check orig.py - everything should be moved by know. delete it.
--are s.symbol("x") and another s.symbol("x") equal? should be?
+-should s.symbol("x") and another s.symbol("x") be equal or not?
+    need to fix hashes for that. ginac: no, maple/mathematica: yes? 
+    I think it should be equal, because s.exp(x) and s.exp(x) for the same x,
+    but different exp is equal. so even the symbols should do the same.
+    it is confusing anyway. we should add an option to create unnamed symbol,
+    which some serial number, so that it is unique, but the user is unable to
+    create a symbol with the same name. this is useful in computations.
+
+- cmp() write comparisons, overload  ==

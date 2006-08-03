@@ -1,6 +1,6 @@
 import hashing
 from basic import basic
-from utils import sign
+import utils 
 
 class number(basic):
     def addnumber(self,a):
@@ -67,12 +67,14 @@ class rational(number):
         assert (isinstance(p,int) or isinstance(p,long)) and \
                 (isinstance(q,int) or isinstance(q,long))
         assert q!=0
-        s=sign(p)*sign(q)
+        s=utils.sign(p)*utils.sign(q)
         p=abs(p)
         q=abs(q)
         c=self.gcd(p,q)
         self.p=p/c*s
         self.q=q/c
+    def sign(self):
+        return utils.sign(self.p)*utils.sign(self.q)
     def hash(self):
         if self.mhash: 
             return self.mhash.value

@@ -2,6 +2,18 @@
 #page 131 (appendix A)
 import sym as s
 
+def limitinf(e,x):
+    "computes a limit x->inf of e(x), returns 1..inf,-1..-inf,0...in between"
+    return mapping(e,[
+        (s.exp(x),1),
+        (-s.exp(x),-1),
+        (x,1),
+        (x+1/x,1),
+        (x+s.exp(-x),1),
+        (x+s.exp(-s.exp(x)),1),
+        (-x,-1),
+        ])
+
 def limit(e,z,z0):
     print "e:",e
     print "z:",z
@@ -17,7 +29,8 @@ def limit(e,z,z0):
     return r
 
 def signum(a,b,c):
-    return mapping(b,[(s.rational(3),1)])
+    assert isinstance(b,s.number)
+    return b.sign()
 
 def mapping(b,m):
     for x in m:
@@ -29,13 +42,83 @@ def has(e,x):
 def Simplify(e):
     return e.expand().eval()
 def MrvLeadTerm(e,x):
+    e=e.eval()
+    print "MrvLeadTerm:",e
+    return mapping(e,(
+        ((x+s.exp(-x))/(-x),(e,s.rational(1),s.rational(-1))),
+        ((x+s.exp(-s.exp(x)))/x,(e,s.rational(1),s.rational(1))),
+        ((-s.exp(x))/x,(e,s.rational(1),s.rational(1))),
+        ))
     if not has(e,x): return (e,s.rational(1),s.rational(0))
     return Mrv(e,x)
 def Mrv(e,x):
+    "Returns the most rapidly varying (mrv) subexpressions of 'e'"
     if not has(e,x): return []
-    elif isinstance(e,s.add):
-    return mapping(e,[(x),(1,2,s.rational(3)))])
+    elif e.isequal(x): return [x]
+    elif isinstance(e,s.mul): 
+        a,b=e.getab()
+        return Max(Mrv(a,x),Mrv(b,x),x)
+    elif isinstance(e,s.add): 
+        a,b=e.getab()
+        return Max(Mrv(a,x),Mrv(b,x),x)
+    elif isinstance(e,s.pow) and isinstance(e.b,s.number):
+        return Mrv(e.a,x)
+    elif isinstance(e,s.exp): 
+        if limitinf(e.arg,x) in [-1,1]:
+            return Max([e],Mrv(e.arg,x),x)
+        else:
+            return Mrv([e.arg])
+    raise "unimplemented in Mrv: %s"%e
+def Max(f,g,x):
+    """Computes the maximum of two sets of expressions f and g, which 
+    are in the same comparability class, i.e. max() compares (two elements of)
+    f and g and returns the set, which is in the higher comparability class
+    of the union of both, if they have the same order of variation.
 
-y=s.symbol("y")
-e=(s.exp(y)-1)/y
-print limit(e,y,s.rational(0))
+    page 40.
+    """
+    print "max:",f,g
+    if f==[]: return g
+    elif g==[]: return f
+    elif intersect(f,g): return union(f,g)
+    elif member(x,f): return g
+    elif member(x,g): return f
+    else:
+        c=Compare(f[0],g[0],x)
+        if c==">": return f
+        elif c=="<": return g
+        else: return union(f,g)
+    raise "max error",f,g
+
+def Compare(a,b,x):
+    print "compare:",a,b
+    c=MrvLeadTerm(s.ln(a)/s.ln(b),x)
+    d=signum(0,c[2],0)
+    if d==-1: return ">"
+    elif d==1: return "<"
+    elif d==0: return "="
+    raise "compare error"
+
+def intersect(a,b):
+    for x in a:
+        if member(x,b): return True
+    return False
+
+def member(x,a):
+    for y in a:
+        if x.isequal(y): return True
+    return False
+
+def union(a,b):
+    z=a[:]
+    for x in b:
+        if not member(x,a):
+            z.append(x)
+    return z
+
+x=s.symbol("y")
+#e=(s.exp(y)-1)/y
+#print limit(e,y,s.rational(0))
+print Mrv(s.exp(x+1/x),x)
+print Mrv(s.exp(x+s.exp(-x)),x)
+print Mrv(s.exp(x+s.exp(-s.exp(x))),x)

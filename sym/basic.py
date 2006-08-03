@@ -4,6 +4,8 @@ class basic(object):
     def __init__(self):
         self.evaluated=False;
         self.mhash=0
+    def __repr__(self):
+        return str(self)
     def __neg__(self):
         from numbers import rational
         return domul(rational(-1),self)
