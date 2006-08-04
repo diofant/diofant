@@ -117,7 +117,8 @@ to change the current instance, like "self.arg=self.arg.eval()" (wrong!). Use
 sense of the symbolic expression they represent. They can modify itself to keep
 track of for example the evaluated variable. Or hash. Or they can precalculate
 anything regarding the expression they contain. But the expression cannot be
-changed.
+changed. So you can pass any instance to other objects, because you don't have
+to worry that it will change, or that this would break anything.
 
 a=symbol("x") and another b=symbol("x") is the same thing, i.e a==b is True.
 Note that this is different from Ginac. We chose a==b, because it seems more
