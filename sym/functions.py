@@ -17,7 +17,8 @@ class function(basic):
         return (self.derivative()*self.arg.diff(sym)).eval()
     def subs(self,old,new):
         e=basic.subs(self,old,new)
-        if e==self:
+        #if e==self:
+        if e.isequal(self):
             return (type(self)(self.arg.subs(old,new))).eval()
         else:
             return e

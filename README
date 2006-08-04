@@ -1,6 +1,10 @@
 see comments in sym/__init__.py for introduction. TODO for future work.
 
-to execute tests:
+to execute tests, run
 
 py.test
-tests/test.py
+
+in the current directory. 
+
+How to install py.test:
+

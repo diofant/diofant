@@ -33,6 +33,8 @@ class basic(object):
         return dopow(self,a)
     def __rpow__(self,a):
         return dopow(a,self)
+    def __cmp__(self,a):
+        return self.eval().isequal(a.eval())
 
     def eval(self):
         """Returns canonical form of myself. 

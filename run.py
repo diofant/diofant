@@ -21,18 +21,19 @@ def lim():
     print s.series(x,3)
 
 print "first:"
-lim()
+#lim()
 
 a=g.symbol("a")
 b=g.symbol("b")
-e=(a+b)**5
-print e
-print e.eval()
+#e=(a+b)**5
+#print e
+#print e.eval()
 
-e=1/g.cos(a)
+#e=1/g.cos(a)
 #print e.series(a,8)
-e=b*a + -4 + b + a*b + 4 + (a+b)**2
+#e=b*a + -4 + b + a*b + 4 + (a+b)**2
 #" becomes "2ab + b + (a+b)^2"
-print e
-print e.eval()
-print (b*a*b).eval()
+#print e
+#print e.eval()
+#print (b*a*b).eval()
+print g.sin(a).series(a,10)

@@ -1,12 +1,21 @@
-#! /usr/bin/python
-
 import sys
 sys.path.append(".")
 
-import unittest
 import sym as g
 
-class test_sym(unittest.TestCase):
+import py
+
+class Testm:
+    def failUnless(self,x):
+        assert x
+    def failIf(self,x):
+        assert not x
+    def assertEqual(self,x,y):
+        assert x==y
+    def assertNotEqual(self,x,y):
+        assert x!=y
+    def assertRaises(self,Exception, func, *args, **kwargs):
+        py.test.raises(Exception, func, *args, **kwargs)
     def e(self,a,b):
         self.failUnless(a.eval().isequal(b.eval()))
     def ne(self,a,b):
@@ -432,80 +441,3 @@ class test_sym(unittest.TestCase):
         e=g.ncmul(c,x)+g.ncmul(x,c)
         self.assertEqual(str(e),"c*x+x*c")
         self.e(e,g.ncmul(c,x)+g.ncmul(x,c))
-        
-class test_arithmetic(unittest.TestCase):
-
-    def dotest(self,s):
-        def t(a,b):
-            s(a,b)
-            s(b,a)
-        a=g.rational(2)
-        b=g.real("1.3") 
-        c=g.symbol("x")
-        d=g.symbol("y")
-        e=pow(c,d)*d
-        f=5
-        h=5.5
-
-        t(a,a)
-        t(a,b)
-        t(a,c)
-        t(a,d)
-        t(a,e)
-        t(a,f)
-        t(a,h)
-
-        t(b,b)
-        t(b,c)
-        t(b,d)
-        t(b,e)
-        t(b,f)
-        t(b,h)
-
-        t(c,c)
-        t(c,d)
-        t(c,e)
-        t(c,f)
-        t(c,h)
-
-        t(d,d)
-        t(d,e)
-        t(d,f)
-        t(d,h)
-
-        t(e,e)
-        t(e,f)
-        t(e,h)
-
-        #t(f,f)
-        #t(f,h)
-
-        #t(h,h)
-
-    def testbasic(self):
-        def s(a,b):
-            x= a
-            x= +a
-            x= -a
-            x= a+b;x.eval()
-            x= a-b;x.eval()
-            x= a*b;x.eval()
-            x= a/b;x.eval()
-            x= a**b;x.eval()
-        self.dotest(s)
-
-    def testibasic(self):
-        def s(a,b):
-            x= a
-            x+=b;x.eval()
-            x= a
-            x-=b;x.eval()
-            x= a
-            x*=b;x.eval()
-            x= a
-            x/=b;x.eval()
-        self.dotest(s)
-
-if __name__ == "__main__":
-    #unittest.main(testRunner=unittest.TextTestRunner(verbosity=2))
-    unittest.main()

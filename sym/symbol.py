@@ -20,7 +20,7 @@ class symbol(basic):
         return self.mhash.value
 
     def diff(self,sym):
-        if self==sym:
+        if self.isequal(sym):
             return rational(1)
         else:
             return rational(0)
