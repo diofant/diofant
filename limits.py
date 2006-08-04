@@ -1,5 +1,7 @@
 #copy of the maple code, http://www.cybertester.com/data/gruntz.pdf,
 #page 131 (appendix A)
+
+#need to fix the failing assert at the bottom, in the mrv
 import sym as s
 
 def limitinf(e,x):
@@ -117,18 +119,16 @@ def union(a,b):
     return z
 
 def eq(a,b):
+    print a,b
+    assert len(a)==len(b)
     for x,y in zip(a,b):
         if not x==y:
-            print x.arg==y.arg
-            print x,y,x==y,x.hash(),y.hash()
-            print x.arg.hash(),y.arg.hash()
-            print type(x),type(y)
-            print x.isequal(y)
+            print "not equal:",x,y
             assert False
 
 x=s.symbol("y")
 #e=(s.exp(y)-1)/y
 #print limit(e,y,s.rational(0))
 eq(Mrv(s.exp(x+1/x),x),[s.exp(x+1/x)])
-#print Mrv(s.exp(x+s.exp(-x)),x)
-#print Mrv(s.exp(x+s.exp(-s.exp(x))),x)
+eq(Mrv(s.exp(x+s.exp(-s.exp(x))),x),[s.exp(-s.exp(x))] )
+eq(Mrv(s.exp(x+s.exp(-x)),x),[s.exp(x+s.exp(-x)),s.exp(x)])
