@@ -43,7 +43,7 @@ def Simplify(e):
     return e.expand().eval()
 def MrvLeadTerm(e,x):
     e=e.eval()
-    print "MrvLeadTerm:",e
+    #print "MrvLeadTerm:",e
     return mapping(e,(
         ((x+s.exp(-x))/(-x),(e,s.rational(1),s.rational(-1))),
         ((x+s.exp(-s.exp(x)))/x,(e,s.rational(1),s.rational(1))),
@@ -75,9 +75,9 @@ def Max(f,g,x):
     f and g and returns the set, which is in the higher comparability class
     of the union of both, if they have the same order of variation.
 
-    page 40.
+    page 40 (47).
     """
-    print "max:",f,g
+    #print "max:",f,g
     if f==[]: return g
     elif g==[]: return f
     elif intersect(f,g): return union(f,g)
@@ -91,7 +91,7 @@ def Max(f,g,x):
     raise "max error",f,g
 
 def Compare(a,b,x):
-    print "compare:",a,b
+    #print "compare:",a,b
     c=MrvLeadTerm(s.ln(a)/s.ln(b),x)
     d=signum(0,c[2],0)
     if d==-1: return ">"
@@ -116,9 +116,17 @@ def union(a,b):
             z.append(x)
     return z
 
+def eq(a,b):
+    for x,y in zip(a,b):
+        if not x==y:
+            print x.arg==y.arg
+            print x,y,x==y
+            print x.isequal(y)
+            assert False
+
 x=s.symbol("y")
 #e=(s.exp(y)-1)/y
 #print limit(e,y,s.rational(0))
-print Mrv(s.exp(x+1/x),x)
-print Mrv(s.exp(x+s.exp(-x)),x)
-print Mrv(s.exp(x+s.exp(-s.exp(x))),x)
+eq(Mrv(s.exp(x+1/x),x),[s.exp(x+1/x)])
+#print Mrv(s.exp(x+s.exp(-x)),x)
+#print Mrv(s.exp(x+s.exp(-s.exp(x))),x)

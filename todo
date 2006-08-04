@@ -18,6 +18,26 @@
     call eval() at all. it should be called automatically in methods like
     isequal() etc. check how ginac is doing it - at which moment exactly it is
     calling the eval()
+
+    policy: do not eval() in construtors add(), mul(), pow() ...., 
+      do however eval in other functions like ==, !=, diff, so that the user
+      don't have to know about eval() at all
+      user should call: *,/,==,!= - those use eval()
+      in the library we can use both == (does eval) and isequal (doesn't do
+      eval)
+
+    why: sometimes, we don't want to automatically run eval, when we know it
+    would only slow down things. the user however should never know about such
+    things. 
+
+    we should decide, which functions should return evaluated expressions, and
+    which not - and say that in clear.
+
+    decision: 
+    don't run eval():   add(), mul(), pow(), isequal()  
+    run eval() on all input parameters plus return evaluated result:
+       all the other methods
+
 -move tests from unittest (test.py) to py.test (test_*) framework
 -check orig.py - everything should be moved by know. delete it.
 -should s.symbol("x") and another s.symbol("x") be equal or not?
