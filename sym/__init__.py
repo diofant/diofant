@@ -74,6 +74,10 @@ All objects in the sympy should be immutable - in the sense, that any
 operation (like eval() for example) should just return a new instance (it can
 return the same instance only if we didn't change). This is a common mistake
 to change the current instance, like "self.arg=self.arg.eval()" (wrong!). Use 
-"arg=self.arg.eval();return exp(arg)" instead.
+"arg=self.arg.eval();return exp(arg)" instead. The object in immutable in the
+sense of the symbolic expression they represent. They can modify itself to keep
+track of for example the evaluated variable. Or hash. Or they can precalculate
+anything regarding the expression they contain. But the expression cannot be
+changed.
 
 """
