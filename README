@@ -5,6 +5,14 @@ Computer algebra system (CAS) in python
 
 http://code.google.com/p/sympy/
 
+
+Ondrej Certik <ondrej@certik.cz>
+
+License: GNU General Public License 2.0
+covers all the files in the sympy repository.
+
+
+
 0. Download
 -----------
 
