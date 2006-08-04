@@ -80,4 +80,6 @@ track of for example the evaluated variable. Or hash. Or they can precalculate
 anything regarding the expression they contain. But the expression cannot be
 changed.
 
+http://www.ginac.de/FAQ.html#whynotmaple
+
 """

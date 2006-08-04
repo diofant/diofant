@@ -7,10 +7,13 @@ http://code.google.com/p/sympy/
 
 
 
-1. Introduction
+1. Documentation
 ---------------
 
-see comments in sym/__init__.py for introduction and TODO for future work.
+All the documentation is in sym/__init__.py and in a form of comments in the
+source code.
+
+See also TODO for things which are still missing.
 
 2. Usage
 --------
@@ -38,7 +41,8 @@ Execute in your home directory:
 
 svn co http://codespeak.net/svn/py/dist py-dist
 
-and add this line to .bashrc:
+This will create a "py-dist" directory in you home dir. Add this line to
+.bashrc:
 
 eval `python ~/py-dist/py/env.py`
 
