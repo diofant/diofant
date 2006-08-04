@@ -38,8 +38,6 @@
     run eval() on all input parameters plus return evaluated result:
        all the other methods
 
--move tests from unittest (test.py) to py.test (test_*) framework
--check orig.py - everything should be moved by know. delete it.
 -should s.symbol("x") and another s.symbol("x") be equal or not?
     need to fix hashes for that. ginac: no, maple/mathematica: yes? 
     I think it should be equal, because s.exp(x) and s.exp(x) for the same x,
@@ -48,4 +46,9 @@
     which some serial number, so that it is unique, but the user is unable to
     create a symbol with the same name. this is useful in computations.
 
-- cmp() write comparisons, overload  ==
+- rewrite tests, so that they are written from the users point of view. i.e.,
+  write them, as we would like to use the library. Particularly, tests should
+  be independent on the way we print results using str(), because this can be
+  changed (check this only in 1 test regarding str()). They should also be
+  independent on when we call eval(). The user just wants sympy to work, he's
+  not interested in such a low level stuff.
