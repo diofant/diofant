@@ -16,6 +16,45 @@ Basic usage:
 1+1/2*x^2+5/24*x^4+61/720*x^6+277/8064*x^8+50521/3628800*x^10
 
 
+Sympy
+=====
+
+Computer algebra system (CAS) in python.
+
+Sympy is a symbolic manipulation package, written in python.
+Currently, Sympy capabilities include:
+    - basic aritmetics *,/,+,- 
+    - basic symplification (like a*b*b+2*b*a*b  -> 3*a*b^2)
+    - expansion (like (a+b)^2 -> a^2 + 2*a*b+ b^2)
+    - functions (exp, ln, sin, cos, tan, ...)
+    - differentiation
+    - taylor series
+    - basic substitution (like x-> ln(x))
+    - arbitrary precision integers and rationals
+    - standard (python) floats
+
+Working on:
+    - limits, according to: http://www.cybertester.com/data/gruntz.pdf
+
+More distant plans:
+    - reach capabilities of Ginac. 
+
+Why another CAS:
+----------------
+
+Why not to use CAS which has its own language (like Maple/Mathematica/Maxima)
+is best described by: http://www.ginac.de/FAQ.html#whynotmaple
+
+We want to use CAS from a "normal" language, like C, C++, python (maybe
+also Java, Ruby, C#). There are currently only 2 libraries, Ginac and Giac
+(both for C++), which satisfy this need. Even them are unfortunately too
+complicated and difficult to extend. Sympy tries to be as simple as possible,
+the primary aim is: easy to learn, easy to extend. Yet Simpy wants to be a full
+feature CAS.
+
+Implementation details:
+-----------------------
+
 All symbolic things are implemented using subclasses of the "basic" class.
 First, you need to create symbols using symbol("x") or numbers using
 rational(5) or real(34.3). Then you construct the expression using any class
@@ -80,6 +119,9 @@ track of for example the evaluated variable. Or hash. Or they can precalculate
 anything regarding the expression they contain. But the expression cannot be
 changed.
 
-http://www.ginac.de/FAQ.html#whynotmaple
+a=symbol("x") and another b=symbol("x") is the same thing, i.e a==b is True.
+Note that this is different from Ginac. We chose a==b, because it seems more
+natural. In the future, we should implement a=symbol(), to get a unique symbol,
+to use for internal computations. 
 
 """
