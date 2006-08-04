@@ -28,3 +28,13 @@ def testequal():
     e2=g.exp(y+1/y)
     assert not e1==e2
     assert e1!=e2
+
+def test_expevalbug():
+    x=g.symbol("x")
+    e1=g.exp(1*x)
+    h1=e1.hash()
+    e2=e1.eval()
+    e3=g.exp(x)
+    assert e1==e2
+    assert e1==e3
+    assert e2==e3

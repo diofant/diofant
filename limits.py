@@ -120,7 +120,9 @@ def eq(a,b):
     for x,y in zip(a,b):
         if not x==y:
             print x.arg==y.arg
-            print x,y,x==y
+            print x,y,x==y,x.hash(),y.hash()
+            print x.arg.hash(),y.arg.hash()
+            print type(x),type(y)
             print x.isequal(y)
             assert False
 

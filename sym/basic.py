@@ -42,7 +42,12 @@ class basic(object):
         """Returns canonical form of myself. 
         
         If we are evaluated (i.e. in the canonical form), the hold 
-        function should be called."""
+        method should be called.
+
+        the eval() method should alway return a new object (following the
+        general rule of not changing)
+        
+        """
         return self
     def hold(self):
         """Sets "evaluated" flag. This means, we are in the canonical form,

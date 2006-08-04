@@ -33,10 +33,10 @@ class exp(function):
         return exp(self.arg)
     def eval(self):
         if self.evaluated: return self
-        self.arg=self.arg.eval()
-        if isinstance(self.arg,rational) and self.arg.iszero():
+        arg=self.arg.eval()
+        if isinstance(arg,rational) and arg.iszero():
             return rational(1)
-        return self.hold()
+        return exp(arg).hold()
 
 class sin(function):
     def getname(self):

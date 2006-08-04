@@ -69,4 +69,11 @@ reasonable), then (a+b)^2 != (a^2+2ab+b^2). on the other hand
 ((a+b)^2).expand == (a^2+2ab+b^2). so, we should define, what we mean by eval,
 and take this into account during comparisons.
 
+
+All objects in the sympy should be immutable - in the sense, that any
+operation (like eval() for example) should just return a new instance (it can
+return the same instance only if we didn't change). This is a common mistake
+to change the current instance, like "self.arg=self.arg.eval()" (wrong!). Use 
+"arg=self.arg.eval();return exp(arg)" instead.
+
 """
