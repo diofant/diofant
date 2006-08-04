@@ -5,6 +5,10 @@ Computer algebra system (CAS) in python
 
 http://code.google.com/p/sympy/
 
+0. Download
+-----------
+
+svn checkout http://sympy.googlecode.com/svn/trunk/ sympy
 
 
 1. Documentation
