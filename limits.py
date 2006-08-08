@@ -14,6 +14,7 @@ def limitinf(e,x):
         (x+s.exp(-x),1),
         (x+s.exp(-s.exp(x)),1),
         (-x,-1),
+        (1/x,0),
         ])
 
 def limit(e,z,z0):
@@ -24,35 +25,41 @@ def limit(e,z,z0):
     e0=e.subs(z,z0+1/x)
     e1=MrvLeadTerm(Simplify(e0),x)
     if e1[2].isequal(s.rational(0)): r=e1[0]#r=e1[0].expand()
-    elif signum(0,e1[2],0)==0: r=e1[0].expand()
-    elif signum(0,e1[2],0)==1: r=0
-    elif signum(0,e1[2],0)==-1: r=Sign(e1[0])*infinity
+    elif signum(e1[2])==0: r=e1[0].expand()
+    elif signum(e1[2])==1: r=0
+    elif signum(e1[2])==-1: r=Sign(e1[0])*infinity
     else: raise "cannot determine the sign of %s"%(e1[2])
     return r
 
-def signum(a,b,c):
-    assert isinstance(b,s.number)
-    return b.sign()
+def signum(a):
+    """Returns a sign of an expression at x->infinity"""
+    assert isinstance(a,s.number)
+    return a.sign()
 
 def mapping(b,m):
     for x in m:
-        if b.eval().isequal(x[0].eval()): return x[1]
-    raise "%s not found in the mapping"%b
+        if b==x[0]: return x[1]
+    raise "%s not found in the mapping"%b.eval()
 
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 def Simplify(e):
     return e.expand().eval()
 def MrvLeadTerm(e,x):
+    """Returns (coeff,mrv_var,exponent) for e
+    
+    
+    coeff*mrv_var^exponent ~ "e" for x->infinity
+    """
     e=e.eval()
-    #print "MrvLeadTerm:",e
     return mapping(e,(
         ((x+s.exp(-x))/(-x),(e,s.rational(1),s.rational(-1))),
         ((x+s.exp(-s.exp(x)))/x,(e,s.rational(1),s.rational(1))),
-        ((-s.exp(x))/x,(e,s.rational(1),s.rational(1))),
+        ((-s.exp(x))/x,(e,s.rational(1),s.rational(-1))),
         ))
     if not has(e,x): return (e,s.rational(1),s.rational(0))
     return Mrv(e,x)
+
 def Mrv(e,x):
     "Returns the most rapidly varying (mrv) subexpressions of 'e'"
     if not has(e,x): return []
@@ -62,15 +69,18 @@ def Mrv(e,x):
         return Max(Mrv(a,x),Mrv(b,x),x)
     elif isinstance(e,s.add): 
         a,b=e.getab()
+        print "add:",a,b, Max(Mrv(a,x),Mrv(b,x),x)
         return Max(Mrv(a,x),Mrv(b,x),x)
     elif isinstance(e,s.pow) and isinstance(e.b,s.number):
         return Mrv(e.a,x)
     elif isinstance(e,s.exp): 
         if limitinf(e.arg,x) in [-1,1]:
+#            print "OK",e,Mrv(e.arg,x), Max([e],Mrv(e.arg,x),x)
             return Max([e],Mrv(e.arg,x),x)
         else:
-            return Mrv([e.arg])
+            return Mrv(e.arg,x)
     raise "unimplemented in Mrv: %s"%e
+
 def Max(f,g,x):
     """Computes the maximum of two sets of expressions f and g, which 
     are in the same comparability class, i.e. max() compares (two elements of)
@@ -79,7 +89,7 @@ def Max(f,g,x):
 
     page 40 (47).
     """
-    #print "max:",f,g
+#    print "max:",f,g
     if f==[]: return g
     elif g==[]: return f
     elif intersect(f,g): return union(f,g)
@@ -93,9 +103,16 @@ def Max(f,g,x):
     raise "max error",f,g
 
 def Compare(a,b,x):
-    #print "compare:",a,b
+    """Returns "<" if a<b (at x=infinity), "=" for a==b, ">" for a>b"""
+    print "compare:",a,b
+    return mapping(b-a,[
+        (s.exp(x)-s.exp(-s.exp(x)),"<"),
+        (s.exp(-s.exp(x))-s.exp(x+s.exp(-s.exp(x))),">"),
+        (-s.exp(x+s.exp(-x))+s.exp(-x),">"),
+        (-s.exp(s.exp(-s.exp(x))+x)+s.exp(x),"=")
+        ])
     c=MrvLeadTerm(s.ln(a)/s.ln(b),x)
-    d=signum(0,c[2],0)
+    d=signum(c[2])
     if d==-1: return ">"
     elif d==1: return "<"
     elif d==0: return "="
@@ -119,8 +136,9 @@ def union(a,b):
     return z
 
 def eq(a,b):
-    print a,b
-    assert len(a)==len(b)
+    if len(a)!=len(b):
+            print "not equal:",a,b
+            assert False
     for x,y in zip(a,b):
         if not x==y:
             print "not equal:",x,y
@@ -129,6 +147,8 @@ def eq(a,b):
 x=s.symbol("y")
 #e=(s.exp(y)-1)/y
 #print limit(e,y,s.rational(0))
-eq(Mrv(s.exp(x+1/x),x),[s.exp(x+1/x)])
-eq(Mrv(s.exp(x+s.exp(-s.exp(x))),x),[s.exp(-s.exp(x))] )
+#eq(Mrv(s.exp(x+1/x),x),[s.exp(x+1/x)])
+#eq(Mrv(-s.exp(1/x),x),[x])
+
+#eq(Mrv(s.exp(x+s.exp(-s.exp(x))),x),[s.exp(-s.exp(x))] )
 eq(Mrv(s.exp(x+s.exp(-x)),x),[s.exp(x+s.exp(-x)),s.exp(x)])

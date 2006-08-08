@@ -52,3 +52,7 @@
   changed (check this only in 1 test regarding str()). They should also be
   independent on when we call eval(). The user just wants sympy to work, he's
   not interested in such a low level stuff.
+
+- objects could remember a pointer to evaluated self. so that next time they
+  just return the pointer. maybe also there could be a huge database (dict) of
+  hashes and evaluated objs. (memory intensive probably)
