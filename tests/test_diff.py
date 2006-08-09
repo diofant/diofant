@@ -32,7 +32,7 @@ def testdiff2():
     c=g.symbol("c")
     e=n3*(-n2+x**n2)*g.cos(x)+x*(-n6+x**n2)*g.sin(x)
     assert e == 3*((-2)+x**2)*g.cos(x)+x*((-6)+x**2)*g.sin(x)
-    assert e.diff(x).expandterms() == x**3*g.cos(x)
+    assert e.diff(x).expand() == x**3*g.cos(x)
 
     e=(x+1)**3
     assert e.diff(x) == 3*(x+1)**2

@@ -256,7 +256,8 @@ class add(pair):
         for x in self.args:
             d+=x.diff(sym)
         return d.eval()
-    def expandterms(self):
+    def expand(self):
+        """Tries to expands all the terms in the sum."""
         d=rational(0)
         for x in self.args:
             d+=self.tryexpand(x)
