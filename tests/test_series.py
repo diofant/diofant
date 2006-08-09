@@ -19,7 +19,7 @@ def testseries():
     assert e.series(x,3) == x+(-g.rational(1)/6)*x**3
     assert e.series(x,4) == x+(-g.rational(1)/6)*x**3
 
-    e=((g.exp(x)-1)/x).eval()
+    e=((g.exp(x)-1)/x)
     assert e.series(x,1) == g.rational(1)
     py.test.raises(g.pole_error, g.basic.series, e,x,0)
 

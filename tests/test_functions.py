@@ -25,6 +25,6 @@ def testfunc():
     assert e.diff(c) != g.sin(c)**(-2)*g.cos(c)
     assert e.diff(c) != g.sin(c)**(-3)*g.cos(c)
     t=g.rational(2)
-    e=(t**a/g.ln(t)).eval()
+    e=(t**a/g.ln(t))
     assert e == 2**a*g.ln(g.rational(2))**(-1)
     assert e.diff(a) == 2**a

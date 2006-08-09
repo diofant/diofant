@@ -24,21 +24,21 @@ def testbasic():
         x= a
         x= +a
         x= -a
-        x= a+b;#x.eval()
-        x= a-b;#x.eval()
-        x= a*b;#x.eval()
-        x= a/b;#x.eval()
-        x= a**b;#x.eval()
+        x= a+b
+        x= a-b
+        x= a*b
+        x= a/b
+        x= a**b
     dotest(s)
 
 def testibasic():
     def s(a,b):
         x= a
-        x+=b;#x.eval()
+        x+=b
         x= a
-        x-=b;#x.eval()
+        x-=b
         x= a
-        x*=b;#x.eval()
+        x*=b
         x= a
-        x/=b;#x.eval()
+        x/=b
     dotest(s)

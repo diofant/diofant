@@ -21,7 +21,7 @@ def testdiff():
     assert e.diffn(c,5) == g.rational(120)
     e=c**g.rational(2)
     assert e.diff(c) == 2*c
-    e=(a*b*c).eval()
+    e=(a*b*c)
     assert e.diff(c) == a*b
 
 def testdiff2():
@@ -38,9 +38,5 @@ def testdiff2():
     assert e.diff(x) == 3*(x+1)**2
     e=x*(x+1)**3
     assert e.diff(x) == (x+1)**3+3*x*(x+1)**2
-    e=(2*g.exp(x*x)*x).eval()
+    e=(2*g.exp(x*x)*x)
     assert e.diff(x) == 2*g.exp(x*x)+4*x**2*g.exp(x*x)
-
-    #e=g.ln(x)/(c**3)-g.ln(-c**3+x**3)/(3*c**3)
-    #self.assertEqual(str(e.eval()),"tan(x*2^(-1))")
-    #self.assertEqual(str(e.diff(x)),"tan(x*2^(-1))")

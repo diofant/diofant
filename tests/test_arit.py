@@ -118,7 +118,7 @@ def testpow():
     assert e == g.rational(0)
     e=n*a*b+n*b*a
     assert e == 2*a*b*5**(g.rational(1)/2)
-    assert e.eval().diff(a) == 2*b*5**(g.rational(1)/2)
+    assert e.diff(a) == 2*b*5**(g.rational(1)/2)
     assert e.diff(a) == 2*b*5**(g.rational(1)/2)
     e=a/b**2
     assert e == a*b**(-2)
@@ -132,28 +132,27 @@ def testexpand():
     c=g.symbol("c")
     p=g.rational(5)
     e=(a+b)*c
-    assert e.eval() == c*(a+b)
-    assert (e.eval().expand()-a*c-b*c).eval() == g.rational(0)
+    assert e == c*(a+b)
+    assert (e.expand()-a*c-b*c) == g.rational(0)
     e=(a+b)*(a+b)
-    assert e.eval() == (a+b)**2
-    assert e.eval().expand() == 2*a*b+a**2+b**2
+    assert e == (a+b)**2
+    assert e.expand() == 2*a*b+a**2+b**2
     e=(a+b)*(a+b)**g.rational(2)
-    assert e.eval() == (a+b)**3
+    assert e == (a+b)**3
     assert e.expand() == 3*b*a**2+3*a*b**2+a**3+b**3
-    assert e.eval().expand() == 3*b*a**2+3*a*b**2+a**3+b**3
+    assert e.expand() == 3*b*a**2+3*a*b**2+a**3+b**3
     e=(a+b)*(a+c)*(b+c)
-    assert e.eval() == (a+c)*(a+b)*(b+c)
+    assert e == (a+c)*(a+b)*(b+c)
     assert e.expand() == 2*a*b*c+b*a**2+c*a**2+b*c**2+a*c**2+c*b**2+a*b**2
     e=(a+g.rational(1))**p
-    assert e.eval() == (1+a)**5
+    assert e == (1+a)**5
     assert e.expand() == 1+5*a+10*a**2+10*a**3+5*a**4+a**5
     e=(a+b+c)*(a+c+p)
-    assert e.eval() == (5+a+c)*(a+b+c)
+    assert e == (5+a+c)*(a+b+c)
     assert e.expand() == 5*a+5*b+5*c+2*a*c+b*c+a*b+a**2+c**2
     x=g.symbol("x")
     s=g.exp(x*x)-1
     e=s.series(x,4)/x**2
-    e=e.eval()
     assert e == (x**2+g.rational(1)/2*x**4)*x**(-2)
     assert e.expand() ==  1+g.rational(1)/2*x**2
 
