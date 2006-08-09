@@ -50,10 +50,12 @@ class pair(basic):
         return b
     def coerce(self,a,action):
         """coerce([x,y,z],action) -> action(action(action([],x),y),z)"""
-        exp=[]
-        for x in a:
-            exp=action(exp,x)
-        return exp
+        #equivalent code:
+        #exp=[]
+        #for x in a:
+        #    exp=action(exp,x)
+        #return exp
+        return reduce(action,a,[])
     def coercenumbers(self,a,action,default):
         """coercenumbers([x,4,a,10],action,rational(1)) ->
                 (action(action(rational(1),4),10),[x,a])
