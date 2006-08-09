@@ -50,7 +50,7 @@ also Java, Ruby, C#). There are currently only 2 libraries, Ginac and Giac
 (both for C++), which satisfy this need. Even them are unfortunately too
 complicated and difficult to extend. Sympy tries to be as simple as possible,
 the primary aim is: easy to learn, easy to extend. Yet Simpy wants to be a full
-feature CAS.
+featured CAS.
 
 Implementation details:
 -----------------------
