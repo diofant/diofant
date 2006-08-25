@@ -15,11 +15,6 @@ def testsets():
     assert limits.union(x,[1,3])==[1,2,3]
     assert limits.union(x,[4,5])==[1,2,3,4,5]
 
-def eq(a,b):
-    assert len(a)==len(b)
-    for x,y in zip(a,b):
-        assert x==y
-
 def testcompare():
     x=s.symbol("y")
     assert limits.compare(s.exp(x),x**5,x) == ">"
@@ -34,6 +29,11 @@ def testcompare():
     assert limits.compare(s.exp(s.exp(x)),s.exp(x+s.exp(-s.exp(x))),x) == ">"
     assert limits.compare(s.exp(-s.exp(x)),s.exp(x),x) == ">"
     assert limits.compare(s.exp(s.exp(-s.exp(x))+x),s.exp(-s.exp(x)),x) == "<"
+
+def eq(a,b):
+    assert len(a)==len(b)
+    for x,y in zip(a,b):
+        assert x==y
 
 def testmax():
     x=s.symbol("y")
@@ -91,3 +91,4 @@ def testlimit():
 def testlimits():
     x=s.symbol("y")
     assert limits.limit((s.exp(x)-1)/x,x,0) == s.rational(1)
+    assert limits.limit(s.exp(x),x,0) == s.rational(1)

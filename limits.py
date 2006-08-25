@@ -58,6 +58,10 @@ def leadterm(series,x):
     def extract(t,x):
         if not has(t,x):
             return t,s.rational(0)
+        if isinstance(t,s.pow):
+            return  s.rational(1),  t.b
+        elif isinstance(t,s.symbol):
+            return  s.rational(1),  s.rational(1)
         assert isinstance(t,s.mul)
         for i,a in enumerate(t.args):
             if has(a,x):
