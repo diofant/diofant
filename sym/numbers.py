@@ -73,6 +73,9 @@ class rational(number):
         c=self.gcd(p,q)
         self.p=p/c*s
         self.q=q/c
+    def __lt__(self,a):
+        assert isinstance(a,rational)
+        return self.p * a.q < self.q * a.p
     def sign(self):
         return utils.sign(self.p)*utils.sign(self.q)
     def hash(self):

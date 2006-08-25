@@ -28,3 +28,25 @@ def testrational():
     assert str(n2.pow(n7)) == "1/27"
     assert str(n2.pow(n8)) == "27"
     assert str(n7.pow(n8)) == "1/27"
+
+def testrational_comparisons():
+    n1=g.rational(1,4)
+    n2=g.rational(1,3)
+    n3=g.rational(2,4)
+    n4=g.rational(2,-4)
+    n5=g.rational(0)
+    n6=g.rational(1)
+    n7=g.rational(3)
+    n8=g.rational(-3)
+
+    assert n8<n5
+    assert n5<n6
+    assert n6<n7
+    assert n8<n7
+    assert n7>n8
+
+    assert n4<n3
+    assert n2<n3
+    assert n1<n2
+    assert n3>n1
+    assert not n3<n1
