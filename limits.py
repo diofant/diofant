@@ -150,11 +150,6 @@ def signum(a):
     assert isinstance(a,s.number)
     return a.sign()
 
-def mapping(b,m):
-    for x in m:
-        if b==x[0]: return x[1]
-    raise "%s not found in the mapping"%b.eval()
-
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 
@@ -204,10 +199,7 @@ def max(f,g,x):
     are in the same comparability class, i.e. max() compares (two elements of)
     f and g and returns the set, which is in the higher comparability class
     of the union of both, if they have the same order of variation.
-
-    page 40 (47).
     """
-#    print "max:",f,g,member(x,g)
     if f==[]: return g
     elif g==[]: return f
     elif intersect(f,g): return union(f,g)
