@@ -61,3 +61,6 @@
 - objects could remember a pointer to evaluated self. so that next time they
   just return the pointer. maybe also there could be a huge database (dict) of
   hashes and evaluated objs. (memory intensive probably)
+
+- fix the symbols clutter in limits.py, using something like symbol(), or
+  dummy()....

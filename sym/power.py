@@ -71,9 +71,17 @@ class pow(basic):
         g=self.b
         return (self*(g*ln(f)).diff(sym)).eval()
     def series(self,sym,n):
-        if isinstance(self.a,symbol) and isinstance(self.b,rational):
-            if self.b.isinteger():
-                return self
+        from add import add
+        if isinstance(self.b,rational) and self.b.isinteger():
+            if isinstance(self.a,symbol): return self
+            try:
+                return basic.series(self,sym,n)
+            except pole_error:
+                #self.a is kind of:  1/x^2 + 1/x + 1 + x + ...
+                e=self.a.series(sym,n)
+                ldeg=-1
+                s= ((e*sym**(-ldeg)).expand()**self.b).series(sym,n+ldeg)
+                return (s*sym**(ldeg*self.b)).expand()
         return basic.series(self,sym,n)
     def expand(self):
         if isinstance(self.b,number):

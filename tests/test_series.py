@@ -36,6 +36,21 @@ def testseriesbug1():
     assert (1/x).series(x,3)==1/x
     assert (x+1/x).series(x,3)==x+1/x
 
+def testseries2():
+    x=g.symbol("x")
+    assert ((x+1)**(-2)).series(x,3)==1-2*x+3*x**2-4*x**3
+    assert ((x+1)**(-1)).series(x,3)==1-x+x**2-x**3
+    assert ((x+1)**0).series(x,3)==1
+    assert ((x+1)**1).series(x,3)==1+x
+    assert ((x+1)**2).series(x,3)==1+2*x+x**2
+    assert ((x+1)**3).series(x,3)==1+3*x+3*x**2+x**3
+
+    assert (1/(1+x)).series(x,3)==1-x+x**2-x**3
+    assert (x+3/(1+2*x)).series(x,3)==3-5*x+12*x**2-24*x**3
+
+    assert ((1/x+1)**3).series(x,3)== x**(-3)+3*x**(-2)+3*x**(-1)
+    assert (1/(1+1/x)).series(x,3)==x-x**2+x**3
+
 def xtestfind(self):
     a=g.symbol("a")
     b=g.symbol("b")
