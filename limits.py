@@ -63,16 +63,17 @@ Important functions from the implementation:
 
 compare(a,b,x) compares "a" and "b" by computing the limit L.
 mrv(e,x) returns the list of most rapidly varying (mrv) subexpressions of "e"
-mrvleadterm(e,x) returns the lead term (c0,w,e0) for e
+rewrite(e,Omega,x,wsym) rewrites "e" in terms of w
+leadterm(f,x) returns the lowest power term in the series of f
+mrvleadterm(e,x) returns the lead term (c0,e0) for e
 limitinf(e,x) computes lim e  (for x->infty)
 limit(e,z,z0) computes any limit by converting it to the case x->infty
 
-all the functions are really simple and straightforward except mrvleadterm(),
+all the functions are really simple and straightforward except rewrite(),
 which is the most difficult part of the algorithm.
 
 """
 
-#need to fix the failing assert at the bottom, in the mrv
 import sym as s
 
 def intersect(a,b):
@@ -183,14 +184,14 @@ def rewrite(e,Omega,x,wsym):
     #    print "-"*60
     #    print "Omega       :",Omega
     Omega.sort(cmp=cmpfunc)
-    g=Omega[-1]
-    if sign(g.arg,x)==1: wsym=1/wsym
+    g=Omega[-1] #g is going to be the "w" - the simplest one in the mrv set
+    if sign(g.arg,x)==1: wsym=1/wsym #if g goes to infty, substitute 1/w
     O2=[]
-    for f in Omega:
+    for f in Omega: #rewrite Omega using "w"
         c=mrvleadterm(f.arg/g.arg,x)
         assert c[1]==0
         O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
-    f=e
+    f=e #rewrite "e" using "w"
     for a,b in zip(Omega,O2):
         f=f.subs(a,b)
 
