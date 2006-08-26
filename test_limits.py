@@ -144,3 +144,25 @@ def xtestlonglimit2():
     print "limit=",l
     #assert l== 1
     #assert l!= 0
+
+def testln():
+    x=s.symbol("x")
+    e=s.ln(x)
+    assert limits.limit(e,x,0)==s.infty
+
+def testsubexp():
+    x=s.symbol("x")
+    e=s.ln(x)
+    assert limits.subexp(e,x)
+    assert not limits.subexp(e,s.exp(x))
+    assert limits.subexp(s.exp(s.exp(x)+s.ln(x)),x)
+    assert limits.subexp(s.exp(s.exp(x)+s.ln(x)),s.ln(x))
+    assert limits.subexp(s.exp(s.exp(x)+s.ln(x)),s.exp(x))
+    assert not limits.subexp(s.exp(s.exp(x)+s.ln(x)),2*x)
+
+def xtestseries():
+    x=s.symbol("x")
+    e=1+x
+    assert limits.series(e.eval(),x,5)==1+x
+    e=1+x+x**2
+    assert limits.series(e.eval(),x,5)==1+x+x**2

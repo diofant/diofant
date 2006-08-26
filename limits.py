@@ -136,7 +136,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    #print "limitinf:",e
+    print "limitinf:",e
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
@@ -210,13 +210,17 @@ def moveup(l,x):
 def movedown(l,x):
     return [e.subs(x,s.ln(x)).eval() for e in l]
 
-def mrvleadterm(e,x,Omega=None):
+def subexp(e,sub):
+    n=s.symbol("dummy")
+    return e.subs(sub,n)!=e
+
+def mrvleadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
     e=e.eval()
     if not has(e,x): return (e,s.rational(0))
-    if Omega==None:
+    Omega=[t for t in Omega if subexp(e,t)]
+    if Omega==[]:
         Omega=mrv(e,x)
-    #else: take into account only terms from Omega, which are in e.
     if member(x,Omega):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
@@ -268,3 +272,33 @@ def compare(a,b,x):
     if c==s.rational(0): return "<"
     elif c==s.infty: return ">"
     else: return "="
+
+def series(e,x,n):
+    """Expands 'e' into a series around 0 in the variable 'x'.
+    
+    At least 'n' terms are guaranteed to be valid. They can be all 0 however
+    due to cancelations in 'add'.
+    """
+    print "series:",e
+    if not has(e,x):
+        return e
+    elif e==x:
+        return e
+    elif isinstance(e,s.add): 
+        a,b=e.getab()
+        return (series(a,x,n)+series(b,x,n)).eval()
+    elif isinstance(e,s.mul): 
+        a,b=e.getab()
+        return (series(a,x,n)*series(b,x,n)).eval()
+    elif isinstance(e,s.pow): 
+        return series(s.exp(e.b*s.ln(e.a)),x,n)
+    elif isinstance(e,s.function): 
+        x0=limit(e.arg,x,0)
+        se=series(e.arg,x,n)
+        if essential_singularity(e,x,x0):
+            return handle_essential_singularity(e,x,x0,se,n)
+        elif pole(e,x,x0):
+            return handle_pole(e,x,x0,se,n)
+        else:
+            return taylor(e,x,x0,se,n)
+    raise "unimplemented in series: %s"%e
