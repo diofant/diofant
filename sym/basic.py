@@ -80,6 +80,8 @@ class basic(object):
             return self
 
 def c(a):
+    """for "a" int, returns rational(a), for "a" float returns real, 
+    otherwise "a"."""
     from numbers import rational,real
     if isinstance(a,int):
         return rational(a)

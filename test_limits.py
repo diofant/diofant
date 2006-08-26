@@ -65,7 +65,7 @@ def test_simple_limit_manual():
     ser=f2.series(w,3)
     lterm=limits.leadterm(ser,w)
     assert lterm[0]==-s.exp(1/x)
-    assert lterm[1]==s.rational(0)
+    assert lterm[1]==0
     Omega=limits.mrv(lterm[0],x)
     assert Omega==[x]
 
@@ -75,24 +75,36 @@ def test_simple_limit_lessmanual():
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
     lterm=limits.mrvleadterm(f,x)
     assert lterm[0]==-s.exp(1/x)
-    assert lterm[2]==s.rational(0)
+    assert lterm[2]==0
 
 def test_simple_limit_automatic():
     "example 3.15"
     x=s.symbol("y")
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
-    assert limits.limitinf(f,x) == s.rational(-1)
+    assert limits.limitinf(f,x) == -1
 
 def testlimitinf():
     x=s.symbol("y")
-    assert limits.limitinf(1/x,x) == s.rational(0)
     assert limits.limitinf(1/x,x) == 0
-    assert limits.limitinf(-s.exp(1/x),x) == s.rational(-1)
+    assert limits.limitinf(1/x,x) != 1
+#    assert limits.limitinf(s.exp(x),x) == s.inf
+    assert limits.limitinf(-s.exp(1/x),x) == -1
     assert limits.limitinf(s.exp(x)/x,x) == s.symbol("inf")
+        #(s.exp(x),1),
+        #(-s.exp(x),-1),
+        #(x,1),
+        #(-x**2,-1),
+        #(x+1/x,1),
+        #(x+s.exp(-x),1),
+        #(x+s.exp(-s.exp(x)),1),
+        #(-x,-1),
+        #(s.exp(-x**2)+x,1),
+        #(-s.exp(-x)+x**(-1),0),
+        #(1+1/x,0),
 
 def testlimit():
     x=s.symbol("y")
     e=s.exp(s.rational(1))
-    assert limits.limit((s.exp(x)-1)/x,x,0) == s.rational(1)
-    assert limits.limit(s.exp(x),x,0) == s.rational(1)
+    assert limits.limit((s.exp(x)-1)/x,x,0) == 1
+    assert limits.limit(s.exp(x),x,0) == 1
     assert limits.limit(s.exp(x),x,1) == e

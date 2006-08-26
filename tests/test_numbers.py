@@ -50,3 +50,9 @@ def testrational_comparisons():
     assert n1<n2
     assert n3>n1
     assert not n3<n1
+
+def test_inf():
+    assert g.inf==g.inf
+    assert g.inf!=1
+    assert 1!=g.inf
+    assert g.inf!=g.symbol("x")**3

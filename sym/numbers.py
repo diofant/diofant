@@ -18,6 +18,24 @@ class number(basic):
     def diff(self,sym):
         return rational(0)
 
+class infinity(number):
+    """Infinity. Cannot be used in expressions like 1+inf.  
+    Only as a symbol, for example results of limits, integration limits etc.
+    Can however be used in comparisons, like inf!=1, or inf!=x**3
+    
+    this class represents all kinds of infinity, i.e. both +-infty.
+    """
+    def __str__(self):
+        return "inf"
+    def hash(self):
+        if self.mhash: 
+            return self.mhash.value
+        self.mhash=hashing.mhash()
+        self.mhash.addstr(str(type(self)))
+        return self.mhash.value
+
+inf=infinity()
+
 class real(number):
     def __init__(self,num):
         basic.__init__(self)
