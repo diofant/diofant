@@ -114,7 +114,6 @@ def leadterm(series,x):
                     return  domul(t.args[:i]+t.args[i+1:]),  a.b
                 elif isinstance(a,s.symbol):
                     return  domul(t.args[:i]+t.args[i+1:]),  s.rational(1)
-                print t,a
                 assert False
         return t,s.rational(0)
     if not isinstance(series,s.add):
@@ -136,13 +135,13 @@ def limitinf(e,x):
     """Limit e(x) for x-> infty"""
     if not has(e,x): return e #e is a constant
 
-    leadterm=mrvleadterm(e,x) #leadterm= (c0, w, e0)
+    leadterm=mrvleadterm(e,x) #leadterm= (c0, e0)
     #for e0>0, lim f = 0
     #for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
     #for e0=0, lim f = lim c0
-    if leadterm[2] == s.rational(0): return limitinf(leadterm[0],x)
-    elif signum(leadterm[2])==1: return s.rational(0)
-    elif signum(leadterm[2])==-1: return s.infty
+    if leadterm[1] == s.rational(0): return limitinf(leadterm[0],x)
+    elif signum(leadterm[1])==1: return s.rational(0)
+    elif signum(leadterm[1])==-1: return s.infty
     else: raise "Error"
 
 def signum(a):
@@ -153,22 +152,41 @@ def signum(a):
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 
+def sign(e,x):
+    "returns: 1 ... e>0, 0 .... e==0, -1 ... e<0, for x->infty"
+    if not has(e,x): 
+        return signum(e)
+    elif e == x: 
+        return 1
+    elif isinstance(e,s.mul): 
+        a,b=e.getab()
+        return sign(a,x)*sign(b,x)
+    elif isinstance(e,s.exp): 
+        return 1 
+    elif isinstance(e,s.pow):
+        if sign(e.a,x) == 1: 
+            return 1
+    raise "cannot determine the sign of %s"%e
+
 def rewrite(e,Omega,x,wsym):
     """e(x) ... the function
     Omega ... the mrv set
     wsym ... the symbol which is going to be used for w
 
-    returns (f2,w), where f2 is the rewritten e in terms of w.
+    returns the rewritten e in terms of w.
     """
     assert len(Omega)==1
     w=Omega[0]
-    if w==x:
-        f2=e.subs(w,1/wsym)
-    elif w==s.exp(x):
-        f2=e.subs(w,1/wsym)
-    else:
-        f2=e.subs(w,wsym)
-    return f2,w
+    assert w!=x
+    assert isinstance(w,s.exp)
+    if sign(w.arg,x)==1: wsym=1/wsym
+    f2=e.subs(w,wsym)
+#    print "rewrite: %s, %s:   %s  ->  %s"%(w,wsym,e,f2)
+
+#    A=limitinf((Omega[0].arg/w.arg).eval(),x)
+    #finds the shortest element in Omega and rewrites everything else using it
+    #for len(Omega)==1 not necessary
+    return f2
 
 def moveup(l,x):
     return [e.subs(x,s.exp(x)).eval() for e in l]
@@ -177,7 +195,7 @@ def movedown(l,x):
     return [e.subs(x,s.ln(x)).eval() for e in l]
 
 def mrvleadterm(e,x,Omega=None):
-    """Returns (c0, w, e0) for e."""
+    """Returns (c0, e0) for e."""
     e=e.eval()
     #if not has(e,x): return (e,s.rational(1),s.rational(0))
     if Omega==None:
@@ -186,11 +204,10 @@ def mrvleadterm(e,x,Omega=None):
     if member(x,Omega):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
-    f2,w=rewrite(e,Omega,x,wsym)
+    f2=rewrite(e,Omega,x,wsym)
     ser=f2.series(wsym,3)
-    lterm=leadterm(ser.eval(),wsym)
+    return leadterm(ser.eval(),wsym)
 #    print e,Omega,wexpr,f2,ser,lterm
-    return lterm[0],w,lterm[1]
 
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
@@ -205,9 +222,7 @@ def mrv(e,x):
     elif isinstance(e,s.pow) and isinstance(e.b,s.number):
         return mrv(e.a,x)
     elif isinstance(e,s.exp): 
-        print "d",e
         if limitinf(e.arg,x)==s.infty:
-#        if signum(mrvleadterm(e.arg,x)[2])==-1:
             return max([e],mrv(e.arg,x),x)
         else:
             return mrv(e.arg,x)

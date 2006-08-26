@@ -74,7 +74,7 @@ def test_simple_limit_lessmanual():
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
     lterm=limits.mrvleadterm(f,x)
     assert lterm[0]==-s.exp(1/x)
-    assert lterm[2]==0
+    assert lterm[1]==0
 
 def test_simple_limit_automatic():
     "example 3.15"
@@ -114,5 +114,5 @@ def testlimit():
 def testmoveup():
     x=s.symbol("y")
     e=x
-    print limits.mrvleadterm(e,x)
-    print limits.mrvleadterm(limits.moveup([e],x)[0],x)
+    limits.mrvleadterm(e,x)
+    limits.mrvleadterm(limits.moveup([e],x)[0],x)
