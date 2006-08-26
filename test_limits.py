@@ -55,7 +55,6 @@ def test_simple_limit_manual():
     "example 3.15"
     x=s.symbol("y")
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
-    f=f.eval()
     Omega=limits.mrv(f,x)
     assert Omega==[s.exp(-x)]
     assert Omega!=[s.exp(x)]
@@ -83,24 +82,27 @@ def test_simple_limit_automatic():
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
     assert limits.limitinf(f,x) == -1
 
-def testlimitinf():
+def testlimitinf_lenmrveq1():
     x=s.symbol("y")
+    assert limits.limitinf(x,x) == s.infty
+    assert limits.limitinf(-x,x) == s.infty
+    assert limits.limitinf(-x**2,x) == s.infty
     assert limits.limitinf(1/x,x) == 0
     assert limits.limitinf(1/x,x) != 1
-#    assert limits.limitinf(s.exp(x),x) == s.inf
+    assert limits.limitinf(1+1/x,x) == 1
+    assert limits.limitinf(1+1/x,x) != 0
+    assert limits.limitinf(s.exp(x),x) == s.infty
+    assert limits.limitinf(-s.exp(x),x) == s.infty
     assert limits.limitinf(-s.exp(1/x),x) == -1
-#    assert limits.limitinf(s.exp(x)/x,x) == s.inf
-        #(s.exp(x),1),
-        #(-s.exp(x),-1),
-        #(x,1),
-        #(-x**2,-1),
-        #(x+1/x,1),
-        #(x+s.exp(-x),1),
-        #(x+s.exp(-s.exp(x)),1),
-        #(-x,-1),
-        #(s.exp(-x**2)+x,1),
-        #(-s.exp(-x)+x**(-1),0),
-        #(1+1/x,0),
+    assert limits.limitinf(s.exp(x)/x,x) == s.infty
+    assert limits.limitinf(s.exp(x)/x,x) != 1
+    assert limits.limitinf(x+s.exp(-x),x) == s.infty
+    assert limits.limitinf(x+s.exp(-x**2),x) == s.infty
+    assert limits.limitinf(x+s.exp(-s.exp(x)),x) == s.infty
+    assert limits.limitinf(1/x-s.exp(-x),x) == 0
+    assert limits.limitinf(13+1/x-s.exp(-x),x) == 13
+
+    #assert limits.limitinf(x+1/x,x) == s.infty
 
 def testlimit():
     x=s.symbol("y")

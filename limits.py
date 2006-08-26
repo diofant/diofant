@@ -110,6 +110,9 @@ def limitinf_manual(e,x):
         ])
 
 def leadterm(series,x):
+    """Returns the term c0*x^e0 of the power series in x with the lowest power
+    or x in a form (c0,e0)
+    """
     def domul(x):
         if len(x)>1:
             return s.mul(x)
@@ -186,6 +189,7 @@ def mrvleadterm(e,x):
         f2=e.subs(wexpr,1/w)
     else:
         f2=e.subs(wexpr,w)
+    print e,Omega,wexpr,f2
     ser=f2.series(w,3)
     lterm=leadterm(ser.eval(),w)
 #    print e,Omega,wexpr,f2,ser,lterm
