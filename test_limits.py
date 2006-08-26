@@ -102,7 +102,7 @@ def testlimitinf_lenmrveq1():
     assert limits.limitinf(1/x-s.exp(-x),x) == 0
     assert limits.limitinf(13+1/x-s.exp(-x),x) == 13
 
-    #assert limits.limitinf(x+1/x,x) == s.infty
+    assert limits.limitinf(x+1/x,x) == s.infty
 
 def testlimit():
     x=s.symbol("y")

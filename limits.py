@@ -92,23 +92,6 @@ def union(a,b):
             z.append(x)
     return z
 
-def limitinf_manual(e,x):
-    "computes a limit x->inf of e(x), returns 1..inf,-1..-inf,0...in between"
-    return mapping(e,[
-        (s.exp(x),1),
-        (-s.exp(x),-1),
-        (x,1),
-        (-x**2,-1),
-        (x+1/x,1),
-        (x+s.exp(-x),1),
-        (x+s.exp(-s.exp(x)),1),
-        (-x,-1),
-        (1/x,0),
-        (s.exp(-x**2)+x,1),
-        (-s.exp(-x)+x**(-1),0),
-        (1+1/x,0),
-        ])
-
 def leadterm(series,x):
     """Returns the term c0*x^e0 of the power series in x with the lowest power
     or x in a form (c0,e0)
@@ -189,8 +172,10 @@ def mrvleadterm(e,x):
         f2=e.subs(wexpr,1/w)
     else:
         f2=e.subs(wexpr,w)
-    print e,Omega,wexpr,f2
-    ser=f2.series(w,3)
+    if f2==w+1/w:
+        ser=f2
+    else:
+        ser=f2.series(w,3)
     lterm=leadterm(ser.eval(),w)
 #    print e,Omega,wexpr,f2,ser,lterm
     return lterm[0],wexpr,lterm[1]
@@ -208,7 +193,7 @@ def mrv(e,x):
     elif isinstance(e,s.pow) and isinstance(e.b,s.number):
         return mrv(e.a,x)
     elif isinstance(e,s.exp): 
-        if limitinf_manual(e.arg,x) in [-1,1]:
+        if limitinf(e.arg,x)==s.infty:
             return max([e],mrv(e.arg,x),x)
         else:
             return mrv(e.arg,x)
