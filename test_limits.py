@@ -114,5 +114,5 @@ def testlimit():
 def testmoveup():
     x=s.symbol("y")
     e=x
-    #print limits.mrvleadterm(e,x)
-    print limits.mrvleadterm(limits.moveup(e,x),x)
+    print limits.mrvleadterm(e,x)
+    print limits.mrvleadterm(limits.moveup([e],x)[0],x)

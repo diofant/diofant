@@ -153,21 +153,25 @@ def signum(a):
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 
-def findw(l,x):
-    """Returns an element from the same comparability class as in l, which goes
-    to 0"""
-    e=l[0]
-#    if limitinf(e,x)==s.infty:
-#        return 1/e
-#    assert limitinf(e,x)==0
-    return e
+def rewrite(e,Omega,x,wsym):
+    """e(x) ... the function
+    Omega ... the mrv set
+    wsym ... the symbol which is going to be used for w
 
-def rewrite(l,w,wsym):
-    print l,w,w
-    return 0
+    returns (f2,w), where f2 is the rewritten e in terms of w.
+    """
+    assert len(Omega)==1
+    w=Omega[0]
+    if w==x:
+        f2=e.subs(w,1/wsym)
+    elif w==s.exp(x):
+        f2=e.subs(w,1/wsym)
+    else:
+        f2=e.subs(w,wsym)
+    return f2,w
 
-def moveup(e,x):
-    return e.subs(x,s.exp(x)).eval()
+def moveup(l,x):
+    return [e.subs(x,s.exp(x)).eval() for e in l]
 
 def movedown(l,x):
     return [e.subs(x,s.ln(x)).eval() for e in l]
@@ -178,29 +182,11 @@ def mrvleadterm(e,x,Omega=None):
     #if not has(e,x): return (e,s.rational(1),s.rational(0))
     if Omega==None:
         Omega=mrv(e,x)
+    #else: take into account only terms from Omega, which are in e.
     if member(x,Omega):
-        print "HEJ"
-        print e
-        print moveup(e,x)
-        print movedown(mrvleadterm(moveup(e,x),x,
-            [moveup(t,x) for t in Omega]),x)
-#        stop
-#        mrvleadterm(1/s.exp(x),x)
-#        stop
-#        return movedown(mrvleadterm(moveup(e,x),x),x)
-#    stop2
-    assert len(Omega)==1
-    print "mrv",e,Omega
-#    w=findw(Omega,x)
+        return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
-#    w_rewritten=rewrite(Omega,w,wsym)
-    w=Omega[0]
-    if w==x:
-        f2=e.subs(w,1/wsym)
-    elif w==s.exp(x):
-        f2=e.subs(w,1/wsym)
-    else:
-        f2=e.subs(w,wsym)
+    f2,w=rewrite(e,Omega,x,wsym)
     ser=f2.series(wsym,3)
     lterm=leadterm(ser.eval(),wsym)
 #    print e,Omega,wexpr,f2,ser,lterm
