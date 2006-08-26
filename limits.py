@@ -184,31 +184,27 @@ def rewrite(e,Omega,x,wsym):
 #    print "rewrite: %s, %s:   %s  ->  %s"%(w,wsym,e,f2)
     else:
         assert len(Omega)>1
-        print Omega
-        g=s.exp(-x)
         def cmpfunc(a,b):
             return -cmp(len(mrv(a,x)), len(mrv(b,x)))
+        print
+        print "Omega:",Omega
         Omega.sort(cmp=cmpfunc)
-        print Omega
+        print "Omega sorted:",Omega
+        g=Omega[-1]
+        if sign(g.arg,x)==1: wsym=1/wsym
+        print "w=%s, wsym=%s"%(g,wsym)
         O2=[]
         for f in Omega:
             c=mrvleadterm(f.arg/g.arg,x)
             assert c[1]==0
             O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
-        print O2
+        print "O2    sorted:",O2
         f=e
-        print "S:",f
+        print "function :",f
         for a,b in zip(Omega,O2):
             f=f.subs(a,b)
-            print "C:",f
-        print "F:",f
+            print "iteration:",f
         return f
-        assert False
-
-#    A=limitinf((Omega[0].arg/w.arg).eval(),x)
-    #finds the shortest element in Omega and rewrites everything else using it
-    #for len(Omega)==1 not necessary
-    return f2
 
 def moveup(l,x):
     return [e.subs(x,s.exp(x)).eval() for e in l]
