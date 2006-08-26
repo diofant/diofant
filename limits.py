@@ -1,17 +1,72 @@
-#copy of the maple code, http://www.cybertester.com/data/gruntz.pdf,
-#page 131 (appendix A)
-
 """
-f > g : f is greater than any power of g
+Limits
+======
 
-f < g : f is lower than any power of g
+Implemented according to the PhD thesis
+http://www.cybertester.com/data/gruntz.pdf, which contains very thorough
+descriptions of the algorithm including many examples.  We summarize here the
+gist of it.
 
-f ~ g : f and g are both bounded above and below by suitable integral powers of
-the other
 
-1 ... the lowest comparability class
+All functions are sorted according to how rapidly varying they are at infinity
+using the following rules. Any two functions f and g can be compared:
 
-f > g .... f is more rapidly varying than g = f goes to infinity faster than g
+L=lim  ln|f(x)| / ln|g(x)|           (for x -> infty)
+
+f > g .... L=+-infty 
+    * f is greater than any power of g
+    * f is more rapidly varying than g
+    * f goes to infinity/zero faster than g
+
+
+f < g .... L=0 
+    * f is lower than any power of g
+
+f ~ g .... L!=0,+-infty 
+    * both f and g are bounded from above and below by suitable integral powers
+    of the other
+
+
+Examples: 
+
+    1 < x < exp(x) < exp(x^2) < exp(exp(x))
+    1 ~ 3 ~ -5
+    x ~ x^2 ~ x^3 ~ 1/x ~ x^m ~ -x
+    exp(x) ~ exp(-x) ~ exp(2x) ~ exp(x)^2 ~ exp(x+exp(-x))
+    f ~ 1/f
+
+So we can divide all the functions into comparability classes (x and x^2 is the
+same class, as is exp(x) and exp(-x)). In principle, we could compare any two
+functions, but in our algorithm, we don't compare anything below f=1 (for
+example ln(x) is below 1), so we set f=1 as the lowest comparability class. 
+
+Given the function f, we find the list of most rapidly varying (mrv set)
+subexpressions of it. This list belongs to the same comparability class. Let's
+say it is {exp(x), exp(2x)}. Using the rule f ~ 1/f we find an element "w"
+(either from the list or a new one) from the same comparability class which
+goes to zero at infinity. In our example we set w=exp(-x) (but we could also
+set w=exp(-2x) or w=exp(3x) ...). We rewrite the mrv set using w, in our case
+{1/w,1/w^2}, and substitute it into f. Then we expand f into a series in w:
+
+    f=c0*w^e0 + c1*w^e1 + ... + O(w^en),        where e0<e1<...<en, c0!=0
+
+but for x->infty, lim f = lim c0*w^e0, because all the other terms go to zero.
+So, 
+    for e0>0, lim f = 0
+    for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
+    for e0=0, lim f = lim c0
+
+We need to recursively compute limits at several places of the algorithm, but
+as is shown in the PhD thesis, it always finishes.
+
+Important functions from the implementation:
+
+compare(a,b,x) compares "a" and "b" by computing the limit L.
+mrv(e,x) returns the list of most rapidly varying (mrv) subexpressions of "e"
+mrvleadterm(e,x) returns the lead term (c0,w,e0) for e
+limitinf(e,x) computes lim e  (for x->infty)
+limit(e,z,z0) computes any limit by converting it to the case x->infty
+
 """
 
 #need to fix the failing assert at the bottom, in the mrv
@@ -116,11 +171,7 @@ def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 
 def mrvleadterm(e,x):
-    """Returns (coeff,mrv_var,exponent) for e
-    
-    
-    coeff*mrv_var^exponent ~ "e" for x->infinity
-    """
+    """Returns (c0, w, e0) for e."""
     e=e.eval()
     if not has(e,x): return (e,s.rational(1),s.rational(0))
     Omega=mrv(e,x)
@@ -139,7 +190,7 @@ def mrvleadterm(e,x):
     return lterm[0],wexpr,lterm[1]
 
 def mrv(e,x):
-    "Returns the most rapidly varying (mrv) subexpressions of 'e'"
+    "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
     if not has(e,x): return []
     elif e.isequal(x): return [x]
     elif isinstance(e,s.mul): 
@@ -179,7 +230,7 @@ def max(f,g,x):
     raise "max error",f,g
 
 def compare(a,b,x):
-    """Returns "<" if a<b (at x=infinity), "=" for a==b, ">" for a>b"""
+    """Returns "<" if a<b, "=" for a==b, ">" for a>b"""
     if a==s.exp(-x) and b==x: return ">"
     elif b==s.exp(-x) and a==x: return "<"
     elif a==s.exp(x+1/x) and b==x: return ">"
