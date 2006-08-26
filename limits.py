@@ -251,8 +251,6 @@ def max(f,g,x):
 def compare(a,b,x):
     """Returns "<" if a<b, "=" for a==b, ">" for a>b"""
     if a==s.exp(x+1/x) and b==x: return ">"
-    elif a==s.exp(x) and b==x**5: return ">"
-    elif a==s.exp(x**2) and b==s.exp(x)**2: return ">"
     elif b==s.exp(-x) and a==s.exp(x+s.exp(-x)): return "="
     elif a==s.exp(s.exp(-s.exp(x))+x) and b==s.exp(-s.exp(x)): return "<"
     elif a==s.exp(s.exp(-x**2)+x) and b==s.exp(-x**2): return "<"
