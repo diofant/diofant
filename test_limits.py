@@ -69,7 +69,7 @@ def test_simple_limit_manual():
     Omega=limits.mrv(lterm[0],x)
     assert Omega==[x]
 
-def test_simple_limit_automatic():
+def test_simple_limit_lessmanual():
     "example 3.15"
     x=s.symbol("y")
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
@@ -77,22 +77,22 @@ def test_simple_limit_automatic():
     assert lterm[0]==-s.exp(1/x)
     assert lterm[2]==s.rational(0)
 
-def testlimit():
-    x=s.symbol("y")
-    f=-s.exp(1/x)
-    assert limits.limitinf(f,x) == s.rational(-1)
-
-def testlimit():
+def test_simple_limit_automatic():
     "example 3.15"
     x=s.symbol("y")
     f=(s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
     assert limits.limitinf(f,x) == s.rational(-1)
 
-def testlimits():
+def testlimitinf():
+    x=s.symbol("y")
+    assert limits.limitinf(1/x,x) == s.rational(0)
+    assert limits.limitinf(1/x,x) == 0
+    assert limits.limitinf(-s.exp(1/x),x) == s.rational(-1)
+    assert limits.limitinf(s.exp(x)/x,x) == s.symbol("inf")
+
+def testlimit():
     x=s.symbol("y")
     e=s.exp(s.rational(1))
     assert limits.limit((s.exp(x)-1)/x,x,0) == s.rational(1)
     assert limits.limit(s.exp(x),x,0) == s.rational(1)
     assert limits.limit(s.exp(x),x,1) == e
-
-    assert limits.limitinf(s.exp(x)/x,x) == s.symbol("inf")

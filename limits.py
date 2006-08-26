@@ -67,6 +67,9 @@ mrvleadterm(e,x) returns the lead term (c0,w,e0) for e
 limitinf(e,x) computes lim e  (for x->infty)
 limit(e,z,z0) computes any limit by converting it to the case x->infty
 
+all the functions are really simple and straightforward except mrvleadterm(),
+which is the most difficult part of the algorithm.
+
 """
 
 #need to fix the failing assert at the bottom, in the mrv
@@ -145,7 +148,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    if not has(e,x): return e
+    if not has(e,x): return e #e is a constant
 
     leadterm=mrvleadterm(e,x) #leadterm= (c0, w, e0)
     #for e0>0, lim f = 0
@@ -239,7 +242,7 @@ def compare(a,b,x):
     elif a==s.exp(s.exp(-s.exp(x))+x) and b==s.exp(-s.exp(x)): return "<"
     elif a==s.exp(s.exp(-x**2)+x) and b==s.exp(-x**2): return "<"
 
-    print a,b,(s.ln(a)/s.ln(b)).eval()
+    #print a,b,(s.ln(a)/s.ln(b)).eval()
     c=limitinf(s.ln(a)/s.ln(b),x)
     if c==s.rational(0): return "<"
     elif c==s.symbol("inf"): return ">"

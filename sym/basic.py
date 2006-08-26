@@ -34,9 +34,9 @@ class basic(object):
     def __rpow__(self,a):
         return dopow(a,self)
     def __eq__(self,a):
-        return self.eval().isequal(a.eval())
+        return self.eval().isequal(c(a).eval())
     def __ne__(self,a):
-        return not self.eval().isequal(a.eval())
+        return not self.__eq__(a)
 
     def eval(self):
         """Returns canonical form of myself. 

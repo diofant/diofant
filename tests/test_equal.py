@@ -29,6 +29,11 @@ def testequal():
     assert not e1==e2
     assert e1!=e2
 
+    e5=g.rational(3)+2*x-x-x
+    assert e5==3
+    assert e5!=4
+    assert e5!=3+x
+
 def test_expevalbug():
     x=g.symbol("x")
     e1=g.exp(1*x)
