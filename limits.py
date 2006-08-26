@@ -133,7 +133,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-#    print "limitinf:",e
+    print "limitinf:",e
     if not has(e,x): return e #e is a constant
 
     leadterm=mrvleadterm(e,x) #leadterm= (c0, e0)
@@ -186,24 +186,24 @@ def rewrite(e,Omega,x,wsym):
         assert len(Omega)>1
         def cmpfunc(a,b):
             return -cmp(len(mrv(a,x)), len(mrv(b,x)))
-        print
-        print "Omega:",Omega
+        #print
+        #print "Omega:",Omega
         Omega.sort(cmp=cmpfunc)
-        print "Omega sorted:",Omega
+        #print "Omega sorted:",Omega
         g=Omega[-1]
         if sign(g.arg,x)==1: wsym=1/wsym
-        print "w=%s, wsym=%s"%(g,wsym)
+        #print "w=%s, wsym=%s"%(g,wsym)
         O2=[]
         for f in Omega:
             c=mrvleadterm(f.arg/g.arg,x)
             assert c[1]==0
             O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
-        print "O2    sorted:",O2
+        #print "O2    sorted:",O2
         f=e
-        print "function :",f
+        #print "function :",f
         for a,b in zip(Omega,O2):
             f=f.subs(a,b)
-            print "iteration:",f
+        #    print "iteration:",f
         return f
 
 def moveup(l,x):
