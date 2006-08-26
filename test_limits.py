@@ -132,7 +132,10 @@ def xtestlonglimit2():
     "example 8.19"
     x=s.symbol("y")
     e=(s.ln(s.ln(x)+s.ln(s.ln(x)))-s.ln(s.ln(x)))/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x)))) *s.ln(x)
-    l=limits.limitinf(e,x)
-    print "limit=",l
-    assert l== 1
-    assert l!= 0
+    print
+    print e.eval()
+    print limits.moveup([e.eval()],x)
+    #l=limits.limitinf(e,x)
+    #print "limit=",l
+    #assert l== 1
+    #assert l!= 0

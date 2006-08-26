@@ -36,6 +36,7 @@ class exp(function):
         arg=self.arg.eval()
         if isinstance(arg,rational) and arg.iszero():
             return rational(1)
+        #change!! write test first plus search for other self.hold()
         if isinstance(self.arg,ln):
             return self.arg.arg
         return exp(arg).hold()
@@ -49,17 +50,17 @@ class ln(function):
         from add import mul
         from power import pow
         if self.evaluated: return self
-        self.arg=self.arg.eval()
-        if isinstance(self.arg,rational) and self.arg.isone():
+        arg=self.arg.eval()
+        if isinstance(arg,rational) and arg.isone():
             return rational(0)
-        elif isinstance(self.arg,exp):
-            return self.arg.arg
-        elif isinstance(self.arg,mul):
-            a,b=self.arg.getab()
+        elif isinstance(arg,exp):
+            return arg.arg.hold()
+        elif isinstance(arg,mul):
+            a,b=arg.getab()
             return (ln(a)+ln(b)).eval()
-        elif isinstance(self.arg,pow):
-            return (self.arg.b*ln(self.arg.a)).eval()
-        return self.hold()
+        elif isinstance(arg,pow):
+            return (arg.b*ln(arg.a)).eval()
+        return ln(arg).hold()
 
 class sin(function):
     def getname(self):

@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sym as g
+import sym as s
 
 def testfunc():
     a=g.symbol("a")
@@ -39,3 +40,15 @@ def testlnexpansion():
     y=g.symbol("y")
     assert g.ln(x*y)==g.ln(x)+g.ln(y)
     assert g.ln(x**2)==2*g.ln(x)
+
+def testlnhashingbug():
+    x=s.symbol("y")
+    assert x!=s.ln(s.ln(x))
+    assert s.ln(x)!=s.ln(s.ln(s.ln(x)))
+
+    e=1/s.ln(s.ln(x)+s.ln(s.ln(x)))
+    e=e.eval()
+    assert isinstance(e.a,s.ln)
+    e=1/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x))))
+    e=e.eval()
+    assert isinstance(e.a,s.ln)

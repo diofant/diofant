@@ -9,15 +9,14 @@ class mhash(object):
 
         print h.value
 
-    mhash.value contains 4 byte hash value. The number is platform
-    dependent due to the usage of the python build in (platform dependent)
-    hash() function.
-
-    hash value depends on the order of objects added.
+    mhash.value contains 4 byte hash value, which depends on the order of
+    objects added. The value can be platform independent or dependent as set by
+    the "platform_independent" variable.
     """
 
     i2p31=2**31
     i2p32=2**32
+    platform_independent=False
 
     def __init__(self):
         self.value=0x3456
@@ -31,12 +30,14 @@ class mhash(object):
         self.value=self.trimlong(1000003*self.value)^item
 
     def addstr(self,x):
-        self.add(hash(x))
+        if self.platform_independent:
+            for l in x:
+                self.addint(ord(l))
+        else: #faster
+            self.add(hash(x))
 
     def addint(self,x):
-        if x==-1: self.add(-1)
-        else: self.add(hash(x))
+        self.add(x+3)
 
     def addfloat(self,x):
-        if x==-1: self.add(-1)
-        else: self.add(hash(x))
+        self.add(x+3)

@@ -34,3 +34,29 @@ def test_basic_class():
     assert not x.hash()==z.hash()
     assert not y.hash()==z.hash()
     assert z.hash()==z2.hash()
+
+def test_bug():
+    from sym.hashing import mhash
+    m1=mhash()
+    m1.addstr("<class 'sym.symbol.symbol'>")
+    m1.addstr("y")
+
+    m2a=mhash()
+    m2a.addstr("<class 'sym.functions.ln'>")
+    m2a.addint(m1.value)
+
+    m2=mhash()
+    m2.addstr("<class 'sym.functions.ln'>")
+    m2.addint(m2a.value)
+    assert m1.value!=m2.value
+
+def test_bug2():
+    from sym.hashing import mhash
+    num=123456
+
+    m2a=mhash()
+    m2a.addint(num)
+
+    m2=mhash()
+    m2.addint(m2a.value)
+    assert num!=m2.value
