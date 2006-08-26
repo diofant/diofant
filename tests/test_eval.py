@@ -36,3 +36,11 @@ def testeval():
     assert e == 3*a
     e=b+a-b
     assert e == a
+
+def test_evalpow_bug():
+    x=g.symbol("x")
+    e=1/(1/x)
+    assert e==x
+    e=1/(-1/x)
+    print e.eval()
+    assert e==-x

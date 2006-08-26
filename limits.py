@@ -205,9 +205,9 @@ def mrvleadterm(e,x,Omega=None):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
     f2=rewrite(e,Omega,x,wsym)
+    print "mrvleadterm",e,Omega,f2,f2.eval()
     ser=f2.series(wsym,3)
     return leadterm(ser.eval(),wsym)
-#    print e,Omega,wexpr,f2,ser,lterm
 
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
@@ -221,6 +221,8 @@ def mrv(e,x):
         return max(mrv(a,x),mrv(b,x),x)
     elif isinstance(e,s.pow) and isinstance(e.b,s.number):
         return mrv(e.a,x)
+    elif isinstance(e,s.ln): 
+        return mrv(e.arg,x)
     elif isinstance(e,s.exp): 
         if limitinf(e.arg,x)==s.infty:
             return max([e],mrv(e.arg,x),x)

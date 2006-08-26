@@ -111,8 +111,6 @@ def testlimit():
     assert limits.limit(s.exp(x),x,0) == 1
     assert limits.limit(s.exp(x),x,1) == e
 
-def testmoveup():
+def testlimitinf_lenmrveq2():
     x=s.symbol("y")
-    e=x
-    limits.mrvleadterm(e,x)
-    limits.mrvleadterm(limits.moveup([e],x)[0],x)
+    assert limits.limitinf(x*x,x) == s.infty

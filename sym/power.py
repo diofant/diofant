@@ -38,6 +38,7 @@ class pow(basic):
     def getbaseandexp(self):
         return (self.a,self.b)
     def eval(self):
+        from add import mul
         if self.evaluated: return self
         self.a=self.a.eval()
         self.b=self.b.eval()
@@ -61,6 +62,9 @@ class pow(basic):
             return self.a.pownumber(self.b)
         if isinstance(self.a,pow): 
             return pow(self.a.a,self.a.b*self.b).eval()
+        if isinstance(self.a,mul): 
+            a,b=self.a.getab()
+            return (pow(a,self.b)*pow(b,self.b)).eval()
         return pow(self.a,self.b).hold()
     def diff(self,sym):
         f=self.a
