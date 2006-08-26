@@ -36,7 +36,23 @@ class exp(function):
         arg=self.arg.eval()
         if isinstance(arg,rational) and arg.iszero():
             return rational(1)
+        if isinstance(self.arg,ln):
+            return self.arg.arg
         return exp(arg).hold()
+
+class ln(function):
+    def getname(self):
+        return "ln"
+    def derivative(self):
+        return rational(1)/self.arg
+    def eval(self):
+        if self.evaluated: return self
+        self.arg=self.arg.eval()
+        if isinstance(self.arg,rational) and self.arg.isone():
+            return rational(0)
+        if isinstance(self.arg,exp):
+            return self.arg.arg
+        return self.hold()
 
 class sin(function):
     def getname(self):
@@ -67,17 +83,3 @@ class tan(function):
         return rational(1)/cos(self.arg)**rational(2)
     def eval(self):
         return (sin(self.arg)/cos(self.arg)).eval()
-
-class ln(function):
-    def getname(self):
-        return "ln"
-    def derivative(self):
-        return rational(1)/self.arg
-    def eval(self):
-        if self.evaluated: return self
-        self.arg=self.arg.eval()
-        if isinstance(self.arg,rational) and self.arg.isone():
-            return rational(0)
-        if isinstance(self.arg,exp):
-            return self.arg.arg
-        return self.hold()

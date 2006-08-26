@@ -28,3 +28,8 @@ def testfunc():
     e=(t**a/g.ln(t))
     assert e == 2**a*g.ln(g.rational(2))**(-1)
     assert e.diff(a) == 2**a
+
+def testexpln():
+    x=g.symbol("x")
+    assert g.ln(g.exp(x))==x
+    assert g.exp(g.ln(x))==x

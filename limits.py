@@ -153,29 +153,63 @@ def signum(a):
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 
-def mrvleadterm(e,x):
+def findw(l,x):
+    """Returns an element from the same comparability class as in l, which goes
+    to 0"""
+    e=l[0]
+#    if limitinf(e,x)==s.infty:
+#        return 1/e
+#    assert limitinf(e,x)==0
+    return e
+
+def rewrite(l,w,wsym):
+    print l,w,w
+    return 0
+
+def moveup(e,x):
+    return e.subs(x,s.exp(x)).eval()
+
+def movedown(l,x):
+    return [e.subs(x,s.ln(x)).eval() for e in l]
+
+def mrvleadterm(e,x,Omega=None):
     """Returns (c0, w, e0) for e."""
     e=e.eval()
     #if not has(e,x): return (e,s.rational(1),s.rational(0))
-    Omega=mrv(e,x)
+    if Omega==None:
+        Omega=mrv(e,x)
+    if member(x,Omega):
+        print "HEJ"
+        print e
+        print moveup(e,x)
+        print movedown(mrvleadterm(moveup(e,x),x,
+            [moveup(t,x) for t in Omega]),x)
+#        stop
+#        mrvleadterm(1/s.exp(x),x)
+#        stop
+#        return movedown(mrvleadterm(moveup(e,x),x),x)
+#    stop2
     assert len(Omega)==1
-    wexpr=Omega[0]
-    w=s.symbol("w")
-    if wexpr==x:
-        f2=e.subs(wexpr,1/w)
-    elif wexpr==s.exp(x):
-        f2=e.subs(wexpr,1/w)
+    print "mrv",e,Omega
+#    w=findw(Omega,x)
+    wsym=s.symbol("w")
+#    w_rewritten=rewrite(Omega,w,wsym)
+    w=Omega[0]
+    if w==x:
+        f2=e.subs(w,1/wsym)
+    elif w==s.exp(x):
+        f2=e.subs(w,1/wsym)
     else:
-        f2=e.subs(wexpr,w)
-    ser=f2.series(w,3)
-    lterm=leadterm(ser.eval(),w)
+        f2=e.subs(w,wsym)
+    ser=f2.series(wsym,3)
+    lterm=leadterm(ser.eval(),wsym)
 #    print e,Omega,wexpr,f2,ser,lterm
-    return lterm[0],wexpr,lterm[1]
+    return lterm[0],w,lterm[1]
 
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
     if not has(e,x): return []
-    elif e.isequal(x): return [x]
+    elif e==x: return [x]
     elif isinstance(e,s.mul): 
         a,b=e.getab()
         return max(mrv(a,x),mrv(b,x),x)
@@ -185,7 +219,9 @@ def mrv(e,x):
     elif isinstance(e,s.pow) and isinstance(e.b,s.number):
         return mrv(e.a,x)
     elif isinstance(e,s.exp): 
+        print "d",e
         if limitinf(e.arg,x)==s.infty:
+#        if signum(mrvleadterm(e.arg,x)[2])==-1:
             return max([e],mrv(e.arg,x),x)
         else:
             return mrv(e.arg,x)

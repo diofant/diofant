@@ -110,3 +110,9 @@ def testlimit():
     assert limits.limit((s.exp(x)-1)/x,x,0) == 1
     assert limits.limit(s.exp(x),x,0) == 1
     assert limits.limit(s.exp(x),x,1) == e
+
+def testmoveup():
+    x=s.symbol("y")
+    e=x
+    #print limits.mrvleadterm(e,x)
+    print limits.mrvleadterm(limits.moveup(e,x),x)
