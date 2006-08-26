@@ -110,7 +110,9 @@ def testlimit():
     assert limits.limit((s.exp(x)-1)/x,x,0) == 1
     assert limits.limit(s.exp(x),x,0) == 1
     assert limits.limit(s.exp(x),x,1) == e
+    assert limits.limit(s.exp(x),x,-1) == s.exp(s.rational(-1))
+    assert limits.limit(s.ln(x)*x,x,0) == 0
 
 def testlimitinf_lenmrveq2():
     x=s.symbol("y")
-    assert limits.limitinf(x*x,x) == s.infty
+    assert limits.limitinf(s.exp(x+s.exp(-x))-s.exp(x),x) == 1

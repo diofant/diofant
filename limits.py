@@ -133,6 +133,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
+#    print "limitinf:",e
     if not has(e,x): return e #e is a constant
 
     leadterm=mrvleadterm(e,x) #leadterm= (c0, e0)
@@ -175,13 +176,34 @@ def rewrite(e,Omega,x,wsym):
 
     returns the rewritten e in terms of w.
     """
-    assert len(Omega)==1
-    w=Omega[0]
-    assert w!=x
-    assert isinstance(w,s.exp)
-    if sign(w.arg,x)==1: wsym=1/wsym
-    f2=e.subs(w,wsym)
+    for t in Omega: assert isinstance(t,s.exp)
+    if len(Omega)==1:
+        w=Omega[0]
+        if sign(w.arg,x)==1: wsym=1/wsym
+        return e.subs(w,wsym)
 #    print "rewrite: %s, %s:   %s  ->  %s"%(w,wsym,e,f2)
+    else:
+        assert len(Omega)>1
+        print Omega
+        g=s.exp(-x)
+        def cmpfunc(a,b):
+            return -cmp(len(mrv(a,x)), len(mrv(b,x)))
+        Omega.sort(cmp=cmpfunc)
+        print Omega
+        O2=[]
+        for f in Omega:
+            c=mrvleadterm(f.arg/g.arg,x)
+            assert c[1]==0
+            O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
+        print O2
+        f=e
+        print "S:",f
+        for a,b in zip(Omega,O2):
+            f=f.subs(a,b)
+            print "C:",f
+        print "F:",f
+        return f
+        assert False
 
 #    A=limitinf((Omega[0].arg/w.arg).eval(),x)
     #finds the shortest element in Omega and rewrites everything else using it
@@ -197,7 +219,7 @@ def movedown(l,x):
 def mrvleadterm(e,x,Omega=None):
     """Returns (c0, e0) for e."""
     e=e.eval()
-    #if not has(e,x): return (e,s.rational(1),s.rational(0))
+    if not has(e,x): return (e,s.rational(0))
     if Omega==None:
         Omega=mrv(e,x)
     #else: take into account only terms from Omega, which are in e.
