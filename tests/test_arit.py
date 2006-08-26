@@ -122,9 +122,6 @@ def testpow():
     assert e.diff(a) == 2*b*5**(g.rational(1)/2)
     e=a/b**2
     assert e == a*b**(-2)
-    e=g.ln(1/a).eval()
-    assert str(e) != "ln(1*a^(-1))"
-    assert str(e) == "ln(a^(-1))"
 
 def testexpand():
     a=g.symbol("a")
