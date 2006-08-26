@@ -52,3 +52,7 @@ def testlnhashingbug():
     e=1/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x))))
     e=e.eval()
     assert isinstance(e.a,s.ln)
+
+def testexpbug():
+    x=s.symbol("x")
+    assert s.exp(1*s.ln(x))==x

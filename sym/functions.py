@@ -36,9 +36,8 @@ class exp(function):
         arg=self.arg.eval()
         if isinstance(arg,rational) and arg.iszero():
             return rational(1)
-        #change!! write test first plus search for other self.hold()
-        if isinstance(self.arg,ln):
-            return self.arg.arg
+        if isinstance(arg,ln):
+            return arg.arg
         return exp(arg).hold()
 
 class ln(function):
