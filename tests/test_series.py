@@ -31,6 +31,11 @@ def testseries():
     #e=1/g.cos(x)
     #print e.series(x,8)
 
+def testseriesbug1():
+    x=g.symbol("x")
+    assert (1/x).series(x,3)==1/x
+    assert (x+1/x).series(x,3)==x+1/x
+
 def xtestfind(self):
     a=g.symbol("a")
     b=g.symbol("b")

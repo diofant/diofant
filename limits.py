@@ -156,7 +156,7 @@ def has(e,x):
 def mrvleadterm(e,x):
     """Returns (c0, w, e0) for e."""
     e=e.eval()
-    if not has(e,x): return (e,s.rational(1),s.rational(0))
+    #if not has(e,x): return (e,s.rational(1),s.rational(0))
     Omega=mrv(e,x)
     assert len(Omega)==1
     wexpr=Omega[0]

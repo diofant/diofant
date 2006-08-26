@@ -1,7 +1,7 @@
 import hashing
 from basic import basic
 from numbers import number,rational
-from power import pow
+from power import pow,pole_error
 
 class pair(basic):
     def __init__(self,*args):
@@ -267,6 +267,19 @@ class add(pair):
         for x in self.args:
             d+=x.subs(old,new)
         return d.eval()
+    def series(self,sym,n):
+        """expansion for add
+        need to handle this correctly:
+        x+1/x
+        tries to use basic.series (which substitutes x->0), if it fails,
+        expands term by term
+        """
+        try:
+            return basic.series(self,sym,n)
+        except pole_error:
+            a,b=self.getab()
+            #there is a cancelation problem here:
+            return (a.series(sym,n)+b.series(sym,n)).eval()
 
 class ncmul(mul):
     def printnormal(self):
