@@ -167,10 +167,7 @@ def mrvleadterm(e,x):
         f2=e.subs(wexpr,1/w)
     else:
         f2=e.subs(wexpr,w)
-    if f2==w+1/w:
-        ser=f2
-    else:
-        ser=f2.series(w,3)
+    ser=f2.series(w,3)
     lterm=leadterm(ser.eval(),w)
 #    print e,Omega,wexpr,f2,ser,lterm
     return lterm[0],wexpr,lterm[1]
