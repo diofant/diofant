@@ -92,10 +92,12 @@ def union(a,b):
             z.append(x)
     return z
 
-def leadterm(series,x):
-    """Returns the term c0*x^e0 of the power series in x with the lowest power
-    or x in a form (c0,e0)
+def leadterm(f,x):
+    """Returns the leading term c0*x^e0 of the power series of f in x with the
+    lowest power or x in a form (c0,e0)
     """
+    series=f.series(x,1).eval()
+    assert series!=0
     def domul(x):
         if len(x)>1:
             return s.mul(x)
@@ -133,17 +135,13 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    print "limitinf:",e
+    #print "limitinf:",e
     if not has(e,x): return e #e is a constant
-
-    leadterm=mrvleadterm(e,x) #leadterm= (c0, e0)
-    #for e0>0, lim f = 0
-    #for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
-    #for e0=0, lim f = lim c0
-    if leadterm[1] == s.rational(0): return limitinf(leadterm[0],x)
-    elif sign(leadterm[1],x)==1: return s.rational(0)
-    elif sign(leadterm[1],x)==-1: return s.infty
-    else: raise "Error"
+    c0,e0=mrvleadterm(e,x) 
+    sig=sign(e0,x)
+    if sig==1: return s.rational(0) # e0>0: lim f = 0
+    elif sig==-1: return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
+    elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
@@ -177,34 +175,33 @@ def rewrite(e,Omega,x,wsym):
     returns the rewritten e in terms of w.
     """
     for t in Omega: assert isinstance(t,s.exp)
-    if len(Omega)==1:
-        w=Omega[0]
-        if sign(w.arg,x)==1: wsym=1/wsym
-        return e.subs(w,wsym)
-#    print "rewrite: %s, %s:   %s  ->  %s"%(w,wsym,e,f2)
-    else:
-        assert len(Omega)>1
-        def cmpfunc(a,b):
-            return -cmp(len(mrv(a,x)), len(mrv(b,x)))
-        #print
-        #print "Omega:",Omega
-        Omega.sort(cmp=cmpfunc)
-        #print "Omega sorted:",Omega
-        g=Omega[-1]
-        if sign(g.arg,x)==1: wsym=1/wsym
-        #print "w=%s, wsym=%s"%(g,wsym)
-        O2=[]
-        for f in Omega:
-            c=mrvleadterm(f.arg/g.arg,x)
-            assert c[1]==0
-            O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
-        #print "O2    sorted:",O2
-        f=e
-        #print "function :",f
-        for a,b in zip(Omega,O2):
-            f=f.subs(a,b)
-        #    print "iteration:",f
-        return f
+    assert len(Omega)!=0
+    def cmpfunc(a,b):
+        return -cmp(len(mrv(a,x)), len(mrv(b,x)))
+    #if len(Omega)>1:
+    #    print
+    #    print "-"*60
+    #    print "Omega       :",Omega
+    Omega.sort(cmp=cmpfunc)
+    g=Omega[-1]
+    if sign(g.arg,x)==1: wsym=1/wsym
+    O2=[]
+    for f in Omega:
+        c=mrvleadterm(f.arg/g.arg,x)
+        assert c[1]==0
+        O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
+    f=e
+    for a,b in zip(Omega,O2):
+        f=f.subs(a,b)
+
+    #if len(Omega)>1:
+    #    print "Omega sorted:",Omega
+    #    print "w=%s, wsym=%s"%(g,wsym)
+    #    print "O2    sorted:",O2
+    #    print "initial :",e
+    #    print "final   :",f
+
+    return f
 
 def moveup(l,x):
     return [e.subs(x,s.exp(x)).eval() for e in l]
@@ -222,10 +219,8 @@ def mrvleadterm(e,x,Omega=None):
     if member(x,Omega):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
-    f2=rewrite(e,Omega,x,wsym)
-#    print "mrvleadterm",e,Omega,f2,f2.eval()
-    ser=f2.series(wsym,3)
-    return leadterm(ser.eval(),wsym)
+    f=rewrite(e,Omega,x,wsym)
+    return leadterm(f,wsym)
 
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
