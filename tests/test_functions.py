@@ -33,3 +33,9 @@ def testexpln():
     x=g.symbol("x")
     assert g.ln(g.exp(x))==x
     assert g.exp(g.ln(x))==x
+
+def testlnexpansion():
+    x=g.symbol("x")
+    y=g.symbol("y")
+    assert g.ln(x*y)==g.ln(x)+g.ln(y)
+    assert g.ln(x**2)==2*g.ln(x)

@@ -42,5 +42,4 @@ def test_evalpow_bug():
     e=1/(1/x)
     assert e==x
     e=1/(-1/x)
-    print e.eval()
     assert e==-x

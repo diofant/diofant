@@ -46,12 +46,19 @@ class ln(function):
     def derivative(self):
         return rational(1)/self.arg
     def eval(self):
+        from add import mul
+        from power import pow
         if self.evaluated: return self
         self.arg=self.arg.eval()
         if isinstance(self.arg,rational) and self.arg.isone():
             return rational(0)
-        if isinstance(self.arg,exp):
+        elif isinstance(self.arg,exp):
             return self.arg.arg
+        elif isinstance(self.arg,mul):
+            a,b=self.arg.getab()
+            return (ln(a)+ln(b)).eval()
+        elif isinstance(self.arg,pow):
+            return (self.arg.b*ln(self.arg.a)).eval()
         return self.hold()
 
 class sin(function):
