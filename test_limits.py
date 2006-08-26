@@ -90,5 +90,9 @@ def testlimit():
 
 def testlimits():
     x=s.symbol("y")
+    e=s.exp(s.rational(1))
     assert limits.limit((s.exp(x)-1)/x,x,0) == s.rational(1)
     assert limits.limit(s.exp(x),x,0) == s.rational(1)
+    assert limits.limit(s.exp(x),x,1) == e
+
+    assert limits.limitinf(s.exp(x)/x,x) == s.symbol("inf")

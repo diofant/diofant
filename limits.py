@@ -48,6 +48,7 @@ def limitinf_manual(e,x):
         (1/x,0),
         (s.exp(-x**2)+x,1),
         (-s.exp(-x)+x**(-1),0),
+        (1+1/x,0),
         ])
 
 def leadterm(series,x):
@@ -69,9 +70,11 @@ def leadterm(series,x):
                     return  domul(t.args[:i]+t.args[i+1:]),  a.b
                 elif isinstance(a,s.symbol):
                     return  domul(t.args[:i]+t.args[i+1:]),  s.rational(1)
+                print t,a
                 assert False
         return t,s.rational(0)
-    assert isinstance(series,s.add)
+    if not isinstance(series,s.add):
+        return extract(series,x)
     lowest=(0,(s.rational(10)**10).eval())
     for t in series.args:
         t2=extract(t,x)
@@ -87,11 +90,11 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    e1=mrvleadterm(e.eval(),x)
-    if e1[2].isequal(s.rational(0)): r=e1[0]
+    e1=mrvleadterm(e,x)
+    if e1[2] == s.rational(0): r=e1[0]
     elif signum(e1[2])==0: r=e1[0]
-    elif signum(e1[2])==1: r=0
-    elif signum(e1[2])==-1: r=Sign(e1[0])*infinity
+    elif signum(e1[2])==1: r=s.rational(0)
+    elif signum(e1[2])==-1: r=s.symbol("inf") #plus sign from e1[0]
     else: raise "cannot determine the sign of %s"%(e1[2])
 
     if has(r,x):
@@ -126,10 +129,13 @@ def mrvleadterm(e,x):
     w=s.symbol("w")
     if wexpr==x:
         f2=e.subs(wexpr,1/w)
+    elif wexpr==s.exp(x):
+        f2=e.subs(wexpr,1/w)
     else:
         f2=e.subs(wexpr,w)
     ser=f2.series(w,3)
-    lterm=leadterm(ser,w)
+    lterm=leadterm(ser.eval(),w)
+#    print e,Omega,wexpr,f2,ser,lterm
     return lterm[0],wexpr,lterm[1]
 
 def mrv(e,x):
@@ -174,23 +180,17 @@ def max(f,g,x):
 
 def compare(a,b,x):
     """Returns "<" if a<b (at x=infinity), "=" for a==b, ">" for a>b"""
-#    print "compare:",a,b
     if a==s.exp(-x) and b==x: return ">"
     elif b==s.exp(-x) and a==x: return "<"
     elif a==s.exp(x+1/x) and b==x: return ">"
     elif a==s.exp(x) and b==x**5: return ">"
     elif a==s.exp(x**2) and b==s.exp(x)**2: return ">"
-    elif a==s.exp(x) and b==s.exp(x+s.exp(-x)): return "="
-    elif b==s.exp(x) and a==s.exp(x+s.exp(-x)): return "="
-    elif a==s.exp(s.exp(x)) and b==s.exp(x+s.exp(-s.exp(x))): return ">"
     elif b==s.exp(-x) and a==s.exp(x+s.exp(-x)): return "="
-    elif a==s.exp(-s.exp(x)) and b==s.exp(x): return ">"
     elif a==s.exp(s.exp(-s.exp(x))+x) and b==s.exp(-s.exp(x)): return "<"
     elif a==s.exp(s.exp(-x**2)+x) and b==s.exp(-x**2): return "<"
-    return mapping(a-b,[])
-    c=mrvleadterm(s.ln(a)/s.ln(b),x)
-    d=signum(c[2])
-    if d==-1: return ">"
-    elif d==1: return "<"
-    elif d==0: return "="
-    raise "compare error"
+
+    print a,b,(s.ln(a)/s.ln(b)).eval()
+    c=limitinf(s.ln(a)/s.ln(b),x)
+    if c==s.rational(0): return "<"
+    elif c==s.symbol("inf"): return ">"
+    else: return "="
