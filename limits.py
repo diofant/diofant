@@ -205,7 +205,7 @@ def mrvleadterm(e,x,Omega=None):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
     f2=rewrite(e,Omega,x,wsym)
-    print "mrvleadterm",e,Omega,f2,f2.eval()
+#    print "mrvleadterm",e,Omega,f2,f2.eval()
     ser=f2.series(wsym,3)
     return leadterm(ser.eval(),wsym)
 
@@ -250,12 +250,6 @@ def max(f,g,x):
 
 def compare(a,b,x):
     """Returns "<" if a<b, "=" for a==b, ">" for a>b"""
-    if a==s.exp(x+1/x) and b==x: return ">"
-    elif b==s.exp(-x) and a==s.exp(x+s.exp(-x)): return "="
-    elif a==s.exp(s.exp(-s.exp(x))+x) and b==s.exp(-s.exp(x)): return "<"
-    elif a==s.exp(s.exp(-x**2)+x) and b==s.exp(-x**2): return "<"
-
-    #print a,b,(s.ln(a)/s.ln(b)).eval()
     c=limitinf(s.ln(a)/s.ln(b),x)
     if c==s.rational(0): return "<"
     elif c==s.infty: return ">"
