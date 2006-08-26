@@ -140,22 +140,22 @@ def limitinf(e,x):
     #for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
     #for e0=0, lim f = lim c0
     if leadterm[1] == s.rational(0): return limitinf(leadterm[0],x)
-    elif signum(leadterm[1])==1: return s.rational(0)
-    elif signum(leadterm[1])==-1: return s.infty
+    elif sign(leadterm[1],x)==1: return s.rational(0)
+    elif sign(leadterm[1],x)==-1: return s.infty
     else: raise "Error"
-
-def signum(a):
-    """Returns a sign of an expression at x->infinity"""
-    assert isinstance(a,s.number)
-    return a.sign()
 
 def has(e,x):
     return not e.diff(x).isequal(s.rational(0))
 
 def sign(e,x):
-    "returns: 1 ... e>0, 0 .... e==0, -1 ... e<0, for x->infty"
-    if not has(e,x): 
-        return signum(e)
+    """Returns a sign of an expression at x->infty.
+    
+        e>0 ... 1
+        e==0 .. 0
+        e<0 ... -1
+    """
+    if isinstance(e,s.number):
+        return e.sign()
     elif e == x: 
         return 1
     elif isinstance(e,s.mul): 
