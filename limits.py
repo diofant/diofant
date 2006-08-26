@@ -145,17 +145,16 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    e1=mrvleadterm(e,x)
-    if e1[2] == s.rational(0): r=e1[0]
-    elif signum(e1[2])==0: r=e1[0]
-    elif signum(e1[2])==1: r=s.rational(0)
-    elif signum(e1[2])==-1: r=s.symbol("inf") #plus sign from e1[0]
-    else: raise "cannot determine the sign of %s"%(e1[2])
+    if not has(e,x): return e
 
-    if has(r,x):
-        return limitinf(r,x)
-    else:
-        return r
+    leadterm=mrvleadterm(e,x) #leadterm= (c0, w, e0)
+    #for e0>0, lim f = 0
+    #for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
+    #for e0=0, lim f = lim c0
+    if leadterm[2] == s.rational(0): return limitinf(leadterm[0],x)
+    elif signum(leadterm[2])==1: return s.rational(0)
+    elif signum(leadterm[2])==-1: return s.symbol("inf") 
+    else: raise "Error"
 
 def signum(a):
     """Returns a sign of an expression at x->infinity"""
