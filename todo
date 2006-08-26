@@ -64,3 +64,5 @@
 
 - fix the symbols clutter in limits.py, using something like symbol(), or
   dummy()....
+
+- limits: ln(w)=-x ..., see page 111. write a test case and implement

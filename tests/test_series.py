@@ -85,3 +85,12 @@ def testsubs():
     assert e == 2*g.sin(x)*g.cos(x)
     e=e.subs(g.sin(x),g.cos(x))
     assert e == 2*g.cos(x)**2
+
+def xtest_ln():
+    "too difficult"
+    x=g.symbol("x")
+    ec=g.exp(g.rational(1))
+    e=(g.ln(1/x+ec)-ec)/(x*g.ln(1/x+1))
+    print
+    print e.eval()
+    d= e.diff(x)

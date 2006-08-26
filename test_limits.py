@@ -130,12 +130,17 @@ def xtestlonglimit1():
 
 def xtestlonglimit2():
     "example 8.19"
+    "needs better series expansion"
     x=s.symbol("y")
     e=(s.ln(s.ln(x)+s.ln(s.ln(x)))-s.ln(s.ln(x)))/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x)))) *s.ln(x)
+    e= e.eval()
     print
-    print e.eval()
-    print limits.moveup([e.eval()],x)
-    #l=limits.limitinf(e,x)
-    #print "limit=",l
+    print e
+    e =limits.moveup([e],x)[0]
+    print e
+    e =limits.moveup([e],x)[0]
+    print e
+    l=limits.limitinf(e,x)
+    print "limit=",l
     #assert l== 1
     #assert l!= 0
