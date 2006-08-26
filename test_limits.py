@@ -118,7 +118,7 @@ def testlimitinf_lenmrveq2():
     assert limits.limitinf(s.exp(x+s.exp(-x))-s.exp(x),x) == 1
     assert limits.limitinf(1/s.exp(-x+s.exp(-x))-s.exp(x),x) == -1
 
-def testlonglimit():
+def testlonglimit1():
     "example 8.18"
     x=s.symbol("y")
     h=s.exp(-x/(1+s.exp(-x)))
@@ -127,3 +127,12 @@ def testlonglimit():
     print "limit=",l
     assert l== 2
     assert l!= 1
+
+def xtestlonglimit2():
+    "example 8.19"
+    x=s.symbol("y")
+    e=(s.ln(s.ln(x)+s.ln(s.ln(x)))-s.ln(s.ln(x)))/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x)))) *s.ln(x)
+    l=limits.limitinf(e,x)
+    print "limit=",l
+    assert l== 1
+    assert l!= 0
