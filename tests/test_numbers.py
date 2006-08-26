@@ -52,7 +52,7 @@ def testrational_comparisons():
     assert not n3<n1
 
 def test_inf():
-    assert g.inf==g.inf
-    assert g.inf!=1
-    assert 1!=g.inf
-    assert g.inf!=g.symbol("x")**3
+    assert g.infty==g.infty
+    assert g.infty!=1
+    assert 1!=g.infty
+    assert g.infty!=g.symbol("x")**3

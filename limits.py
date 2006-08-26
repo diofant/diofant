@@ -156,7 +156,7 @@ def limitinf(e,x):
     #for e0=0, lim f = lim c0
     if leadterm[2] == s.rational(0): return limitinf(leadterm[0],x)
     elif signum(leadterm[2])==1: return s.rational(0)
-    elif signum(leadterm[2])==-1: return s.symbol("inf") 
+    elif signum(leadterm[2])==-1: return s.infty
     else: raise "Error"
 
 def signum(a):
@@ -245,5 +245,5 @@ def compare(a,b,x):
     #print a,b,(s.ln(a)/s.ln(b)).eval()
     c=limitinf(s.ln(a)/s.ln(b),x)
     if c==s.rational(0): return "<"
-    elif c==s.symbol("inf"): return ">"
+    elif c==s.infty: return ">"
     else: return "="

@@ -19,9 +19,9 @@ class number(basic):
         return rational(0)
 
 class infinity(number):
-    """Infinity. Cannot be used in expressions like 1+inf.  
+    """Infinity. Cannot be used in expressions like 1+infty.  
     Only as a symbol, for example results of limits, integration limits etc.
-    Can however be used in comparisons, like inf!=1, or inf!=x**3
+    Can however be used in comparisons, like infty!=1, or infty!=x**3
     
     this class represents all kinds of infinity, i.e. both +-infty.
     """
@@ -34,7 +34,7 @@ class infinity(number):
         self.mhash.addstr(str(type(self)))
         return self.mhash.value
 
-inf=infinity()
+infty=infinity()
 
 class real(number):
     def __init__(self,num):
