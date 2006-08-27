@@ -136,7 +136,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    print "limitinf:",e
+    #print "limitinf:",e
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
@@ -273,6 +273,38 @@ def compare(a,b,x):
     elif c==s.infty: return ">"
     else: return "="
 
+def essential_singularity(func,x0):
+    x=s.symbol("dummy")
+    try:
+        func(x).subs(x,x0)
+    except s.pole_error:
+        c=limit(func(x),x,x0)
+        if c!=s.infty:
+            return True
+    return False
+
+def pole(func,x0):
+    x=s.symbol("dummy")
+    try:
+        func(x).subs(x,x0)
+    except s.pole_error:
+        return True
+    return False
+
+def taylor(func,x0,se,n):
+    """lim se=x0  (for x->0)"""
+    x=s.symbol("dummy")
+    f=func(x)
+    e=f.subs(x,x0)
+    fact=s.rational(1)
+    for i in range(1,n+1):
+        fact*=s.rational(i)
+        f=f.diff(x)
+        e+=f.subs(x,x0)*(se-x0)**i/fact
+    e=e.eval()
+    print "taylor around x=0: ",func(se),"=",e
+    return e
+
 def series(e,x,n):
     """Expands 'e' into a series around 0 in the variable 'x'.
     
@@ -289,16 +321,18 @@ def series(e,x,n):
         return (series(a,x,n)+series(b,x,n)).eval()
     elif isinstance(e,s.mul): 
         a,b=e.getab()
-        return (series(a,x,n)*series(b,x,n)).eval()
+        return (series(a,x,n)*series(b,x,n)).expand()
     elif isinstance(e,s.pow): 
+        if e.a==x and not has(e.b,x):
+            return e
         return series(s.exp(e.b*s.ln(e.a)),x,n)
     elif isinstance(e,s.function): 
         x0=limit(e.arg,x,0)
         se=series(e.arg,x,n)
-        if essential_singularity(e,x,x0):
+        if essential_singularity(type(e),x0):
             return handle_essential_singularity(e,x,x0,se,n)
-        elif pole(e,x,x0):
+        elif pole(type(e),x0):
             return handle_pole(e,x,x0,se,n)
         else:
-            return taylor(e,x,x0,se,n)
+            return taylor(type(e),x0,se,n)
     raise "unimplemented in series: %s"%e
