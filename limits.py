@@ -204,6 +204,11 @@ def rewrite(e,Omega,x,wsym):
     #    print "initial :",e
     #    print "final   :",f
 
+    #need to also return ln(w) - computed as ln(g), and optionally with a
+    #minus sign, if sign(g.arg,x)==1. use leadterm from basic, move the rest of
+    #the code to mrvleadterm, fix series in sym/functions.py:ln to expand ln g
+    #as ln c0 + e0 lnw + ln (1+Phi), and substitute for ln(w). this should
+    #work. test on demidovich.py, example 267b.
     return f
 
 def moveup(l,x):
