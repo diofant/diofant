@@ -206,8 +206,10 @@ def mrvleadterm(e,x,Omega=[]):
     global whattosubs
     whattosubs=lnw
     series=f.series(wsym,1).eval()
-    if series==0:
-        series=f.series(wsym,2).eval()
+    n=2
+    while series==0 and n<10:
+        series=f.series(wsym,n).eval()
+        n+=1
     assert series!=0
     #series=series.subs(s.ln(wsym),lnw)
     return series.leadterm(wsym)
