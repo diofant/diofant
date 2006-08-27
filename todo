@@ -70,3 +70,5 @@
 
 - go through the series expansion and make sure the correct amount of terms are
   being generated.
+
+- add plus and minus infty

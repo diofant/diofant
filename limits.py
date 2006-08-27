@@ -201,6 +201,8 @@ def mrvleadterm(e,x,Omega=[]):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
     f,lnw=rewrite(e,Omega,x,wsym)
+    #I still believe, this can be than later, as is commented out.
+    #the expansion in pow however needs to be fixed.
     global whattosubs
     whattosubs=lnw
     series=f.series(wsym,1).eval()
