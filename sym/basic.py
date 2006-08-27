@@ -78,6 +78,51 @@ class basic(object):
             return new
         else:
             return self
+    def has(self,sub):
+        from symbol import symbol
+        n=symbol("dummy")
+        return self.subs(sub,n)!=self
+    def leadterm(self,x):
+        """Returns the leading term c0*x^e0 of the power series 'self' in x
+        with the lowest power of x in a form (c0,e0)
+        """
+        if not self.evaluated:
+            return self.eval().leadterm(x)
+        from numbers import rational
+        from power import pow
+        from add import add,mul
+        from symbol import symbol
+        def domul(x):
+            if len(x)>1:
+                return mul(x)
+            return x[0]
+        def extract(t,x):
+            if not t.has(x):
+                return t,rational(0)
+            if isinstance(t,pow):
+                return  rational(1),  t.b
+            elif isinstance(t,symbol):
+                return  rational(1),  rational(1)
+            assert isinstance(t,mul)
+            for i,a in enumerate(t.args):
+                if a.has(x):
+                    if isinstance(a,pow):
+                        return  domul(t.args[:i]+t.args[i+1:]),  a.b
+                    elif isinstance(a,symbol):
+                        return  domul(t.args[:i]+t.args[i+1:]),  rational(1)
+                    assert False
+            return t,s.rational(0)
+        if not isinstance(self,add):
+            return extract(self,x)
+        lowest=(0,(rational(10)**10).eval())
+        for t in self.args:
+            t2=extract(t,x)
+            if t2[1]<lowest[1]:
+                lowest=t2
+        return lowest
+    def ldegree(self,sym):
+        n =self.leadterm(sym)[1]
+        return n.getinteger()
 
 def c(a):
     """for "a" int, returns rational(a), for "a" float returns real, 

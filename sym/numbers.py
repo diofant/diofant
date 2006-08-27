@@ -3,6 +3,9 @@ from basic import basic
 import utils 
 
 class number(basic):
+    def __init__(self):
+        basic.__init__(self)
+        self.evaluated=True
     def addnumber(self,a):
         if isinstance(a,real):
             self=self.evalf()
@@ -38,7 +41,7 @@ infty=infinity()
 
 class real(number):
     def __init__(self,num):
-        basic.__init__(self)
+        number.__init__(self)
         if isinstance(num,str):
             num=float(num)
         assert isinstance(num,float)
@@ -73,7 +76,7 @@ class real(number):
 
 class rational(number):
     def __init__(self,*args):
-        basic.__init__(self)
+        number.__init__(self)
         if len(args)==1:
             p=args[0]
             q=1

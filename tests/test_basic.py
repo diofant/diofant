@@ -42,3 +42,13 @@ def testibasic():
         x= a
         x/=b
     dotest(s)
+
+def test_ldegree():
+    x=g.symbol("x")
+    assert (1/x**2+1+x+x**2).ldegree(x)==-2
+    assert (1/x+1+x+x**2).ldegree(x)==-1
+    assert (x**2+1/x).ldegree(x)==-1
+    assert (1+x**2).ldegree(x)==0
+    assert (x+1).ldegree(x)==0
+    assert (x+x**2).ldegree(x)==1
+    assert (x**2).ldegree(x)==2

@@ -67,3 +67,6 @@
   dummy()....
 
 - limits: ln(w)=-x ..., see page 111. write a test case and implement
+
+- go through the series expansion and make sure the correct amount of terms are
+  being generated.

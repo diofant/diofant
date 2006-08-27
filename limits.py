@@ -98,6 +98,8 @@ def leadterm(f,x):
     lowest power or x in a form (c0,e0)
     """
     series=f.series(x,1).eval()
+    if series==0:
+        series=f.series(x,2).eval()
     assert series!=0
     def domul(x):
         if len(x)>1:
@@ -136,7 +138,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    #print "limitinf:",e
+    print "limitinf:",e
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
@@ -216,6 +218,7 @@ def subexp(e,sub):
 
 def mrvleadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
+#    print "mrvleadterm",e,Omega
     e=e.eval()
     if not has(e,x): return (e,s.rational(0))
     Omega=[t for t in Omega if subexp(e,t)]

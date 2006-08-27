@@ -50,6 +50,7 @@ def testseries2():
 
     assert ((1/x+1)**3).series(x,3)== x**(-3)+3*x**(-2)+3*x**(-1)
     assert (1/(1+1/x)).series(x,3)==x-x**2+x**3
+    assert (1/(1+1/x**2)).series(x,6)==x**2-x**4+x**6
 
 def xtestfind(self):
     a=g.symbol("a")
