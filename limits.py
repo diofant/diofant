@@ -138,7 +138,7 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    print "limitinf:",e
+    #print "limitinf:",e
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)

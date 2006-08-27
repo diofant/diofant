@@ -80,7 +80,7 @@ class pow(basic):
                 #self.a is kind of:  1/x^2 + 1/x + 1 + x + ...
                 e=self.a.series(sym,n).eval()
                 ldeg=e.ldegree(sym)
-                print "power:",e,self.b,ldeg,e.eval()
+                #print "power:",e,self.b,ldeg,e.eval()
                 s= ((e*sym**(-ldeg)).expand()**self.b).series(sym,n+ldeg)
                 return (s*sym**(ldeg*self.b)).expand()
         return basic.series(self,sym,n)
