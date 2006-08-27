@@ -62,7 +62,7 @@ def test_simple_limit_manual():
     w=s.symbol("w")
     f2=f.subs(wexpr,w)
     ser=f2.series(w,3)
-    lterm=limits.leadterm(ser,w)
+    lterm=ser.leadterm(w)
     assert lterm[0]==-s.exp(1/x)
     assert lterm[1]==0
     Omega=limits.mrv(lterm[0],x)
@@ -117,6 +117,9 @@ def testlimitinf_lenmrveq2():
     x=s.symbol("y")
     assert limits.limitinf(s.exp(x+s.exp(-x))-s.exp(x),x) == 1
     assert limits.limitinf(1/s.exp(-x+s.exp(-x))-s.exp(x),x) == -1
+    #example 8.19
+    e=(s.ln(s.ln(x)+s.ln(s.ln(x)))-s.ln(s.ln(x)))/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x)))) *s.ln(x)
+    assert limits.limitinf(e,x)==1
 
 def xtestlonglimit1():
     "example 8.18"
@@ -127,23 +130,6 @@ def xtestlonglimit1():
     print "limit=",l
     assert l== 2
     assert l!= 1
-
-def xtestlonglimit2():
-    "example 8.19"
-    "needs better series expansion"
-    x=s.symbol("y")
-    e=(s.ln(s.ln(x)+s.ln(s.ln(x)))-s.ln(s.ln(x)))/s.ln(s.ln(x)+s.ln(s.ln(s.ln(x)))) *s.ln(x)
-    e= e.eval()
-    print
-    print e
-    e =limits.moveup([e],x)[0]
-    print e
-    e =limits.moveup([e],x)[0]
-    print e
-    l=limits.limitinf(e,x)
-    print "limit=",l
-    #assert l== 1
-    #assert l!= 0
 
 def testln():
     x=s.symbol("x")
@@ -160,7 +146,7 @@ def testsubexp():
     assert limits.subexp(s.exp(s.exp(x)+s.ln(x)),s.exp(x))
     assert not limits.subexp(s.exp(s.exp(x)+s.ln(x)),2*x)
 
-def testtaylor():
+def xtesttaylor():
     x=s.symbol("x")
     assert limits.taylor(s.exp,s.rational(0),x,3)==1+x+x**2/2+x**3/6
     assert limits.taylor(s.ln,s.rational(1),x+1,3)==x-x**2/2+x**3/3

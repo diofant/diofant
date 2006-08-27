@@ -76,6 +76,8 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
+whattosubs=None
+
 def intersect(a,b):
     for x in a:
         if member(x,b): return True
@@ -92,43 +94,6 @@ def union(a,b):
         if not member(x,a):
             z.append(x)
     return z
-
-def leadterm(f,x):
-    """Returns the leading term c0*x^e0 of the power series of f in x with the
-    lowest power or x in a form (c0,e0)
-    """
-    series=f.series(x,1).eval()
-    if series==0:
-        series=f.series(x,2).eval()
-    assert series!=0
-    def domul(x):
-        if len(x)>1:
-            return s.mul(x)
-        return x[0]
-    def extract(t,x):
-        if not has(t,x):
-            return t,s.rational(0)
-        if isinstance(t,s.pow):
-            return  s.rational(1),  t.b
-        elif isinstance(t,s.symbol):
-            return  s.rational(1),  s.rational(1)
-        assert isinstance(t,s.mul)
-        for i,a in enumerate(t.args):
-            if has(a,x):
-                if isinstance(a,s.pow):
-                    return  domul(t.args[:i]+t.args[i+1:]),  a.b
-                elif isinstance(a,s.symbol):
-                    return  domul(t.args[:i]+t.args[i+1:]),  s.rational(1)
-                assert False
-        return t,s.rational(0)
-    if not isinstance(series,s.add):
-        return extract(series,x)
-    lowest=(0,(s.rational(10)**10).eval())
-    for t in series.args:
-        t2=extract(t,x)
-        if t2[1]<lowest[1]:
-            lowest=t2
-    return lowest
 
 def limit(e,z,z0):
     """Currently only limit z->z0+"""
@@ -175,7 +140,7 @@ def rewrite(e,Omega,x,wsym):
     Omega ... the mrv set
     wsym ... the symbol which is going to be used for w
 
-    returns the rewritten e in terms of w.
+    returns the rewritten e in terms of w. and ln(w)
     """
     for t in Omega: assert isinstance(t,s.exp)
     assert len(Omega)!=0
@@ -187,7 +152,8 @@ def rewrite(e,Omega,x,wsym):
     #    print "Omega       :",Omega
     Omega.sort(cmp=cmpfunc)
     g=Omega[-1] #g is going to be the "w" - the simplest one in the mrv set
-    if sign(g.arg,x)==1: wsym=1/wsym #if g goes to infty, substitute 1/w
+    sig= (sign(g.arg,x)==1)
+    if sig: wsym=1/wsym #if g goes to infty, substitute 1/w
     O2=[]
     for f in Omega: #rewrite Omega using "w"
         c=mrvleadterm(f.arg/g.arg,x)
@@ -209,7 +175,9 @@ def rewrite(e,Omega,x,wsym):
     #the code to mrvleadterm, fix series in sym/functions.py:ln to expand ln g
     #as ln c0 + e0 lnw + ln (1+Phi), and substitute for ln(w). this should
     #work. test on demidovich.py, example 267b.
-    return f
+    lnw=g.arg
+    if sig: lnw=-lnw
+    return f,lnw
 
 def moveup(l,x):
     return [e.subs(x,s.exp(x)).eval() for e in l]
@@ -232,8 +200,15 @@ def mrvleadterm(e,x,Omega=[]):
     if member(x,Omega):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym=s.symbol("w")
-    f=rewrite(e,Omega,x,wsym)
-    return leadterm(f,wsym)
+    f,lnw=rewrite(e,Omega,x,wsym)
+    global whattosubs
+    whattosubs=lnw
+    series=f.series(wsym,1).eval()
+    if series==0:
+        series=f.series(wsym,2).eval()
+    assert series!=0
+    #series=series.subs(s.ln(wsym),lnw)
+    return series.leadterm(wsym)
 
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"

@@ -60,6 +60,26 @@ class ln(function):
         elif isinstance(arg,pow):
             return (arg.b*ln(arg.a)).eval()
         return ln(arg).hold()
+    def series(self,sym,n):
+        from numbers import rational
+        from power import pole_error
+        try:
+            return basic.series(self,sym,n)
+        except pole_error:
+            pass
+        arg=self.arg.series(sym,n)
+        #write arg as=c0*w^e0*(1+Phi)
+        #ln(arg)=ln(c0)+e0*ln(w)+ln(1+Phi)
+        #plus we expand ln(1+Phi)=Phi-Phi**2/2+Phi**3/3...
+        w=sym
+        c0,e0=arg.leadterm(w)
+        Phi=(arg/(c0*w**e0)-1).expand()
+        e=ln(c0)+e0*ln(w)
+        import limits
+        e=e.subs(ln(w),limits.whattosubs)
+        for i in range(1,n+1):
+            e+=(-1)**(i+1) * Phi**i /i
+        return e.eval()
 
 class sin(function):
     def getname(self):
