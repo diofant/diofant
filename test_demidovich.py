@@ -43,8 +43,8 @@ def testsimpleproblems():
     assert limit((sqrt(x)-sqrt(a))/(x-a),x,a)==1/(2*sqrt(a))  #Primer 5
     assert limit((sqrt(x)-1)/(sqrt3(x)-1),x,1)==rational(3)/2  #205
     assert limit((sqrt(1+x)-sqrt(1-x))/x,x,0)==1  #207
-    #assert limitminf(sqrt(x**2-5*x+6)-x,x)==-rational(5)/2  #213
-    #assert limitminf(x*(sqrt(x**2+1)-x),x)==rational(1)/2  #214
-    assert limitminf(x+sqrt3(1-x**3),x)==0  #215
+    assert limitinf(sqrt(x**2-5*x+6)-x,x)==-rational(5)/2  #213
+    assert limitinf(x*(sqrt(x**2+1)-x),x)==rational(1)/2  #214
+    assert limitinf(x-sqrt3(x**3-1),x)==0  #215
     assert limitminf(ln(1+exp(x))/x,x)==0  #267a
     assert limitinf(ln(1+exp(x))/x,x)==1  #267b
