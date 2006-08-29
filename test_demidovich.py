@@ -51,6 +51,7 @@ def testsimpleproblems():
 
 def xtestbug1():
     assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
+    #the rewritten expression is:
     #(w^(-1)+w^(-ln(3)*ln(2)^(-1)))^(-1)*(3*w^(-ln(3)*ln(2)^(-1))+2*w^(-1))
-    #is the leading term 3? it returns 2...
-
+    #which seems to be correct, and the leading term is 3.
+    #but the series() returns 2...
