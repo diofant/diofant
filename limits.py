@@ -76,6 +76,8 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
+debug=True
+
 whattosubs=None
 
 def intersect(a,b):
@@ -103,7 +105,6 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    #print "limitinf:",e
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
@@ -221,6 +222,12 @@ def mrvleadterm(e,x,Omega=[]):
         n+=1
     assert series!=0
     #series=series.subs(s.ln(wsym),lnw)
+    if debug:
+        print "-"*60
+        print "e:",e
+        print "Omega:",Omega
+        print "f:",f
+        print "series:",series
     return series.leadterm(wsym)
 
 def mrv(e,x):
