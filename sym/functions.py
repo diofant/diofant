@@ -31,6 +31,8 @@ class exp(function):
         return "exp"
     def derivative(self):
         return exp(self.arg)
+    def expand(self):
+        return exp(self.arg.expand()).eval()
     def eval(self):
         if self.evaluated: return self
         arg=self.arg.eval()

@@ -137,6 +137,12 @@ def sign(e,x):
         return sign((e.arg-1).eval(),x)
     raise "cannot determine the sign of %s"%e
 
+def tryexpand(a):
+    if isinstance(a,s.mul) or isinstance(a,s.pow) or isinstance(a,s.add):
+        return a.expand()
+    else:
+        return a
+
 def rewrite(e,Omega,x,wsym):
     """e(x) ... the function
     Omega ... the mrv set
@@ -147,6 +153,7 @@ def rewrite(e,Omega,x,wsym):
     for t in Omega: assert isinstance(t,s.exp)
     assert len(Omega)!=0
     def cmpfunc(a,b):
+        #this is really, really slow...
         return -cmp(len(mrv(a,x)), len(mrv(b,x)))
     #if len(Omega)>1:
     #    print
@@ -160,7 +167,7 @@ def rewrite(e,Omega,x,wsym):
     for f in Omega: #rewrite Omega using "w"
         c=mrvleadterm(f.arg/g.arg,x)
         assert c[1]==0
-        O2.append((s.exp(f.arg-c[0]*g.arg)*wsym**c[0]).eval())
+        O2.append((s.exp(tryexpand((f.arg-c[0]*g.arg).eval()))*wsym**c[0]).eval())
     f=e #rewrite "e" using "w"
     for a,b in zip(Omega,O2):
         f=f.subs(a,b)

@@ -56,3 +56,8 @@ def testlnhashingbug():
 def testexpbug():
     x=s.symbol("x")
     assert s.exp(1*s.ln(x))==x
+
+def testexpexpand():
+    x=s.symbol("x")
+    e=s.exp(s.ln(s.rational(2))*(1+x)-s.ln(s.rational(2))*x)
+    assert e.expand()==2

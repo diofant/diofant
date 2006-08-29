@@ -32,7 +32,7 @@ def testsimpleproblems():
     assert limitinf(x**2/(10+x*sqrt(x)),x)==infty  #188
     assert limitinf(sqrt3(x**2+1)/(x+1),x)==0  #189
     assert limitinf(sqrt(x)/sqrt(x+sqrt(x+sqrt(x))),x)==1  #190
-#    assert limit((x**2-(a+1)*x+a)/(x**3-a**3),x,a)==(a-1)/(3*a**2)  #196
+    #assert limit((x**2-(a+1)*x+a)/(x**3-a**3),x,a)==(a-1)/(3*a**2)  #196
     #assert limit(((x+h)**3-x**3)/h,h,0)==3*x**2  #197
     assert limit((1/(1-x)-3/(1-x**3)),x,1)==-1  #198
     assert limit((sqrt(1+x)-1)/(sqrt3(1+x)-1),x,0)==rational(3)/2  #Primer 4
@@ -51,3 +51,6 @@ def testsimpleproblems():
 
 def xtestbug1():
     assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
+    #(w^(-1)+w^(-ln(3)*ln(2)^(-1)))^(-1)*(3*w^(-ln(3)*ln(2)^(-1))+2*w^(-1))
+    #is the leading term 3? it returns 2...
+

@@ -43,6 +43,8 @@
     exp(a+b) - e.g. in limits.py. maybe move to expand()? look at mathematica,
     maple, what they are doing. the same in series expansion. needs to be
     specified. I am rather skeptical, I don't want eval() to do any magic.
+    my conclusion now i that ln(a*b) and exp(a+b) should be rewritten on
+    expand(), but not to eval().
 
 -should s.symbol("x") and another s.symbol("x") be equal or not?
     need to fix hashes for that. ginac: no, maple/mathematica: yes? 
