@@ -2,7 +2,7 @@ import hashing
 from basic import basic
 from symbol import symbol
 from numbers import rational,real,number
-from functions import ln
+from functions import ln,exp
 
 class pole_error(Exception):
     pass
@@ -103,4 +103,9 @@ class pow(basic):
                     return a.expand()
         return self
     def subs(self,old,new):
-        return (self.a.subs(old,new)**self.b.subs(old,new)).eval()
+        if self==old:
+            return new
+        elif exp(self.b*ln(self.a))==old:
+            return new
+        else:
+            return (self.a.subs(old,new)**self.b.subs(old,new)).eval()

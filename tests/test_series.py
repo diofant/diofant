@@ -61,32 +61,6 @@ def xtestfind(self):
     assert e.find(b)
     assert not e.find(c)
 
-def testsubs():
-    n3=g.rational(3)
-    n2=g.rational(2)
-    n6=g.rational(6)
-    x=g.symbol("x")
-    c=g.symbol("c")
-    e=x
-    assert str(e) == "x"
-    e=e.subs(x,n3)
-    assert str(e) == "3"
-
-    e=2*x
-    assert e == 2*x
-    e=e.subs(x,n3)
-    assert str(e) == "6"
-
-    e=(g.sin(x)**2).diff(x)
-    assert e == 2*g.sin(x)*g.cos(x)
-    e=e.subs(x,n3)
-    assert e == 2*g.cos(n3)*g.sin(n3)
-
-    e=(g.sin(x)**2).diff(x)
-    assert e == 2*g.sin(x)*g.cos(x)
-    e=e.subs(g.sin(x),g.cos(x))
-    assert e == 2*g.cos(x)**2
-
 def xtest_ln():
     "too difficult"
     x=g.symbol("x")

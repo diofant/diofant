@@ -50,4 +50,4 @@ def testsimpleproblems():
     assert limitinf(ln(1+exp(x))/x,x)==1  #267b
 
 def xtestbug1():
-    assert limit((sqrt(x)-8)/(sqrt3(x)-4),x,64)==3  #200
+    assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175

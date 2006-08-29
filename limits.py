@@ -112,7 +112,7 @@ def limitinf(e,x):
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
 def has(e,x):
-    return not e.diff(x).isequal(s.rational(0))
+    return not e.eval().diff(x).isequal(s.rational(0))
 
 def sign(e,x):
     """Returns a sign of an expression at x->infty.
@@ -133,6 +133,8 @@ def sign(e,x):
     elif isinstance(e,s.pow):
         if sign(e.a,x) == 1: 
             return 1
+    elif isinstance(e,s.ln): 
+        return sign((e.arg-1).eval(),x)
     raise "cannot determine the sign of %s"%e
 
 def rewrite(e,Omega,x,wsym):
@@ -224,8 +226,12 @@ def mrv(e,x):
     elif isinstance(e,s.add): 
         a,b=e.getab()
         return max(mrv(a,x),mrv(b,x),x)
-    elif isinstance(e,s.pow) and isinstance(e.b,s.number):
-        return mrv(e.a,x)
+    elif isinstance(e,s.pow):
+        if has(e.b,x):
+            return mrv(s.exp(e.b*s.ln(e.a)),x)
+        else:
+            assert isinstance(e.b,s.number)
+            return mrv(e.a,x)
     elif isinstance(e,s.ln): 
         return mrv(e.arg,x)
     elif isinstance(e,s.exp): 
