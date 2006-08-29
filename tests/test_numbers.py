@@ -56,3 +56,8 @@ def test_inf():
     assert g.infty!=1
     assert 1!=g.infty
     assert g.infty!=g.symbol("x")**3
+
+def test_powers():
+    assert 64**(g.rational(1)/3)==4
+    assert 64**(g.rational(2)/3)==16
+    assert 24*64**(-g.rational(1)/2)==3

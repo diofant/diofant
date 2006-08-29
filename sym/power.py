@@ -57,9 +57,16 @@ class pow(basic):
             return rational(1)
         if isinstance(self.a,real) and isinstance(self.b,real):
             return self.a.pownumber(self.b)
-        if isinstance(self.a,rational) and isinstance(self.b,rational) and \
-                self.b.isinteger():
-            return self.a.pownumber(self.b)
+        if isinstance(self.a,rational) and isinstance(self.b,rational):
+            if self.b.isinteger(): 
+                return self.a.pownumber(self.b)
+            if self.a.isinteger():
+                a=self.a.getinteger()
+                bq=self.b.q
+                x=int(a**(1./bq)+0.5)
+                if x**bq==a:
+                    assert isinstance(x,int)
+                    return (rational(x)**self.b.p).eval()
         if isinstance(self.a,pow): 
             return pow(self.a.a,self.a.b*self.b).eval()
         if isinstance(self.a,mul): 
