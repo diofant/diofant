@@ -99,12 +99,13 @@ def union(a,b):
 
 def limit(e,z,z0):
     """Currently only limit z->z0+"""
-    x=s.symbol("x")
+    x=s.symbol("xdummy")
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
+    print "limitinf",e,x
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
@@ -201,15 +202,15 @@ def subexp(e,sub):
 
 def mrvleadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
-#    print "mrvleadterm",e,Omega
     e=e.eval()
+    print "mrvleadterm",e,Omega
     if not has(e,x): return (e,s.rational(0))
     Omega=[t for t in Omega if subexp(e,t)]
     if Omega==[]:
         Omega=mrv(e,x)
     if member(x,Omega):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
-    wsym=s.symbol("w")
+    wsym=s.symbol("wdummy")
     f,lnw=rewrite(e,Omega,x,wsym)
     #I still believe, this can be than later, as is commented out.
     #the expansion in pow however needs to be fixed.
@@ -227,7 +228,7 @@ def mrvleadterm(e,x,Omega=[]):
         print "e:",e
         print "Omega:",Omega
         print "f:",f
-        print "series:",series
+        print "series:",series,series.leadterm(wsym)
     return series.leadterm(wsym)
 
 def mrv(e,x):
@@ -253,6 +254,8 @@ def mrv(e,x):
             return max([e],mrv(e.arg,x),x)
         else:
             return mrv(e.arg,x)
+    elif isinstance(e,s.function): 
+        return mrv(e.arg,x)
     raise "unimplemented in mrv: %s"%e
 
 def max(f,g,x):

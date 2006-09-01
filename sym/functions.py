@@ -1,11 +1,11 @@
 import hashing
-from basic import basic
+from basic import basic,c
 from numbers import rational
 
 class function(basic):
     def __init__(self,arg):
         basic.__init__(self)
-        self.arg=arg
+        self.arg=c(arg)
     def hash(self):
         if self.mhash: 
             return self.mhash.value

@@ -114,11 +114,13 @@ class basic(object):
             return t,s.rational(0)
         if not isinstance(self,add):
             return extract(self,x)
-        lowest=(0,(rational(10)**10).eval())
+        lowest=[0,(rational(10)**10).eval()]
         for t in self.args:
             t2=extract(t,x)
             if t2[1]<lowest[1]:
                 lowest=t2
+            elif t2[1]==lowest[1]:
+                lowest=((lowest[0]+t2[0]).eval(),lowest[1])
         return lowest
     def ldegree(self,sym):
         n =self.leadterm(sym)[1]

@@ -69,3 +69,10 @@ def xtest_ln():
     print
     print e.eval()
     d= e.diff(x)
+
+def test_bug2():
+    w=g.symbol("w")
+    ln=g.ln
+    e=(w**(-1)+w**(-ln(3)*ln(2)**(-1)))**(-1)*(3*w**(-ln(3)*ln(2)**(-1))+2*w**(-1))
+    e=e.eval().expand()
+    print e.series(w,4)
