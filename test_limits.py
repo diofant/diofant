@@ -166,3 +166,15 @@ def xtestseries():
     assert limits.series(e.eval(),x,3)==1-x/2+x**2/3
     e=1/(1/x+1)
     print limits.series(e.eval(),x,3)
+
+def sqrt(x):
+    return x**s.rational(1,2)
+
+def test_functions():
+    from sym import sin,cos,infty,rational,exp
+    from limits import limit,limitinf
+    x=s.symbol("x")
+    assert limit(sin(x)/x,x,0) == 1
+    assert limit(cos(x)/sin(x),x,0) == infty
+    assert limitinf(cos(1/x),x) == 1
+    assert limitinf(exp(x)*(sin(1/x+exp(-x))-sin(1/x)),x) == 1

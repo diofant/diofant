@@ -76,7 +76,7 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
-debug=True
+debug=False
 
 whattosubs=None
 
@@ -105,7 +105,8 @@ def limit(e,z,z0):
 
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    print "limitinf",e,x
+    if debug:
+        print "limitinf",e,x
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
@@ -203,7 +204,8 @@ def subexp(e,sub):
 def mrvleadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
     e=e.eval()
-    print "mrvleadterm",e,Omega
+    if debug:
+        print "mrvleadterm",e,Omega
     if not has(e,x): return (e,s.rational(0))
     Omega=[t for t in Omega if subexp(e,t)]
     if Omega==[]:

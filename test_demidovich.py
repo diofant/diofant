@@ -1,4 +1,4 @@
-from sym import exp,ln,symbol,infty,rational
+from sym import exp,ln,symbol,infty,rational,sin,cos
 from limits import limit,limitinf
 
 x=symbol("x")
@@ -13,6 +13,9 @@ def sqrt3(x):
 
 def sqrt4(x):
     return x**rational(1,4)
+
+def tan(x):
+    return sin(x)/cos(x)
 
 def limitminf(f,x):
     return limitinf(f.subs(x,-x),x)
@@ -55,3 +58,29 @@ def xtestbug1():
     #(w^(-1)+w^(-ln(3)*ln(2)^(-1)))^(-1)*(3*w^(-ln(3)*ln(2)^(-1))+2*w^(-1))
     #which seems to be correct, and the leading term is 3.
     #but the series() returns 2...
+
+def test_functions():
+    pi=symbol("pi")
+    m=symbol("m")
+    n=symbol("n")
+    assert limit(sin(x)/x,x,2) == sin(2)/2 #216a
+    #assert limitinf(sin(x)/x,x) == 0 #216b
+    assert limit(sin(3*x)/x,x,0) == 3 #217
+    assert limit(sin(5*x)/sin(2*x),x,0) == rational(5)/2 #218
+    #assert limit(sin(pi*x)/sin(3*pi*x),x,1) == rational(1)/3 #219
+    assert limitinf(x*sin(pi/x),x) == pi #220
+    assert limit((1-cos(x))/x**2,x,0) == rational(1,2) #221
+    assert limit((sin(x)-sin(a))/(x-a),x,a) == cos(a) #222
+    assert limit((cos(x)-cos(a))/(x-a),x,a) == -sin(a) #223
+    assert limit((sin(x+h)-sin(x))/h,h,0) == cos(x) #225
+    #assert limit(x*sin(1/x),x,0) == 0 #227a
+    assert limitinf(x*sin(1/x),x) == 1 #227b
+    assert limit((cos(m*x)-cos(n*x))/x**2,x,0) == ((n**2-m**2)/2).expand() #232
+    assert limit((tan(x)-sin(x))/x**3,x,0) == rational(1,2) #233
+    assert limit((x-sin(2*x))/(x+sin(3*x)),x,0) == -rational(1,4) #237
+    assert limit((1-sqrt(cos(x)))/x**2,x,0) == rational(1,4) #239
+    assert limit((sqrt(1+sin(x))-sqrt(1-sin(x)))/x,x,0) == 1 #240
+
+    #assert limit((sin(2*x)/x)**(1+x),x,0) == 2 #Primer 7
+    #assert limitinf(((x+1)/(2*x+1))**(x**2),x) == 0 #Primer 8
+    #assert limitinf(((x-1)/(x+1))**x,x) == e**(-2) #Primer 9
