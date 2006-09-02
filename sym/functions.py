@@ -38,7 +38,11 @@ class function(basic):
 #        assert limit(arg,sym,0)!=infty
         w=symbol("dummy")
         e=type(self)(w)
-        #e=e.series(w,n+2)
+        c0,e0=arg.leadterm(sym)
+        if e0==0:
+            pass
+        else:
+            e=e.series(w,n)
         e=e.subs(w,arg)
         return e.eval().expand()
         #return e.eval().series(sym,n)
@@ -81,7 +85,7 @@ class ln(function):
         return ln(arg).hold()
     def evalf(self):
         import math
-        print type(self.arg)
+        #print type(self.arg)
         return math.log(self.arg.evalf())
     def series(self,sym,n):
         from numbers import rational
