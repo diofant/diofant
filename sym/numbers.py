@@ -36,6 +36,8 @@ class infinity(number):
         self.mhash=hashing.mhash()
         self.mhash.addstr(str(type(self)))
         return self.mhash.value
+    def sign(self):
+        return 1
 
 infty=infinity()
 

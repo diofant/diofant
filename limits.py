@@ -124,6 +124,7 @@ def sign(e,x):
         e==0 .. 0
         e<0 ... -1
     """
+    print "sign:",e
     if isinstance(e,s.number):
         return e.sign()
     elif e == x: 
@@ -131,9 +132,9 @@ def sign(e,x):
     elif isinstance(e,s.mul): 
         a,b=e.getab()
         return sign(a,x)*sign(b,x)
-    elif isinstance(e,s.add): 
-        a,b=e.getab()
-        return sign(a,x)*sign(b,x)
+#    elif isinstance(e,s.add): 
+#        a,b=e.getab()
+#        return sign(a,x)*sign(b,x)
     elif isinstance(e,s.exp): 
         return 1 
     elif isinstance(e,s.pow):
@@ -141,10 +142,10 @@ def sign(e,x):
             return 1
     elif isinstance(e,s.ln): 
         return sign((e.arg-1).eval(),x)
-#    elif isinstance(e,s.add):
+    elif isinstance(e,s.add):
 #        print limitinf(e,x) #FIXME this is wrong for -infty
 #        print sign(limitinf(e,x),x) #FIXME this is wrong for -infty
-#        return sign(limitinf(e,x),x) #FIXME this is wrong for -infty
+        return sign(limitinf(e,x),x) #FIXME this is wrong for -infty
     raise "cannot determine the sign of %s"%e
 
 def tryexpand(a):

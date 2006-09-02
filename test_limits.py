@@ -178,3 +178,7 @@ def test_functions():
     assert limit(cos(x)/sin(x),x,0) == infty
     assert limitinf(cos(1/x),x) == 1
     assert limitinf(exp(x)*(sin(1/x+exp(-x))-sin(1/x)),x) == 1
+
+def test_sign():
+    x=s.symbol("x")
+    assert limits.sign((1/(s.ln(2)+s.ln(x))).eval(),x)==1
