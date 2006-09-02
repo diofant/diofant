@@ -110,6 +110,8 @@ def limitinf(e,x):
     if not has(e,x): return e #e is a constant
     c0,e0=mrvleadterm(e,x) 
     sig=sign(e0,x)
+    if debug:
+        print "limitinf",e,c0,e0,sig
     if sig==1: return s.rational(0) # e0>0: lim f = 0
     elif sig==-1: return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
@@ -124,7 +126,7 @@ def sign(e,x):
         e==0 .. 0
         e<0 ... -1
     """
-    print "sign:",e
+    #print "sign:",e
     if isinstance(e,s.number):
         return e.sign()
     elif e == x: 

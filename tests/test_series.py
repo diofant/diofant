@@ -89,3 +89,20 @@ def test_exp2():
     ln=g.ln
     e=w**(1-ln(x)/(ln(2)+ln(x)))
     assert e.eval().series(w,1)!=0
+
+def test_generalexponent():
+    x=g.symbol("x")
+    ln=g.ln
+    p=2
+    e=(2/x+3/x**p)/(1/x+1/x**p)
+    assert e.eval().series(x,1).leadterm(x)==(3,0)
+    p=g.rational(1,2)
+    e=(2/x+3/x**p)/(1/x+1/x**p)
+    assert e.eval().series(x,1).leadterm(x)==(2,0)
+#    p=g.rational(3,2)
+#    e=(2/x+3/x**p)/(1/x+1/x**p)
+    #assert e.eval().series(x,1).leadterm(x)==(3,0)
+
+#    h=g.symbol("h")
+#    e=1/(1+(x+h)**g.rational(1,2))
+#    print e.eval().series(x,2)

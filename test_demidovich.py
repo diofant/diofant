@@ -22,6 +22,7 @@ def limitminf(f,x):
 
 def testsimpleproblems():
     assert limitinf((x+1)*(x+2)*(x+3)/x**3,x)==1  #172
+    #need expansion of sqrt(x)... don't know how to implement:
     #assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
@@ -64,6 +65,7 @@ def test_functions():
     m=symbol("m")
     n=symbol("n")
     assert limit(sin(x)/x,x,2) == sin(2)/2 #216a
+    #doesn't have a taylor series around 0.... cannot compute
     #assert limitinf(sin(x)/x,x) == 0 #216b
     assert limit(sin(3*x)/x,x,0) == 3 #217
     assert limit(sin(5*x)/sin(2*x),x,0) == rational(5)/2 #218
@@ -82,6 +84,7 @@ def test_functions():
     assert limit((1-sqrt(cos(x)))/x**2,x,0) == rational(1,4) #239
     assert limit((sqrt(1+sin(x))-sqrt(1-sin(x)))/x,x,0) == 1 #240
 
+    #need expansion of sqrt(x)... don't know how to implement:
     #assert limit((sin(2*x)/x)**(1+x),x,0) == 2 #Primer 7
     #assert limitinf(((x+1)/(2*x+1))**(x**2),x) == 0 #Primer 8
     assert limitinf(((x-1)/(x+1))**x,x) == exp(-2) #Primer 9
