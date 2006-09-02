@@ -47,10 +47,10 @@ class pow(basic):
         if isinstance(self.b,rational) and self.b.isone():
             return self.a
         if isinstance(self.a,rational) and self.a.iszero():
-            if isinstance(self.b,rational) and self.b.isinteger():
+            if isinstance(self.b,rational):# and self.b.isinteger():
                 if self.b.iszero():
                     raise pole_error("pow::eval(): 0^0.")
-                elif self.b.getinteger()<0:
+                elif self.b<0:
                     raise pole_error("pow::eval(): Division by 0.")
             return rational(0)
         if isinstance(self.a,rational) and self.a.isone():
@@ -85,6 +85,19 @@ class pow(basic):
             try:
                 return basic.series(self,sym,n)
             except pole_error:
+                if isinstance(self.b,rational) and self.b.isminusone():
+                    g=self.a.series(sym,n)
+                    #write g as g=c0*w^e0*(1+Phi)
+                    #1/g is then 1/g=c0*w^(-e0)/(1+Phi)
+                    #plus we expand 1/(1+Phi)=1-Phi+Phi**2-Phi**3...
+                    c0,e0=g.leadterm(sym)
+                    Phi=(g/(c0*sym**e0)-1).expand()
+                    e=0
+                    for i in range(n):
+                        e+=(-1)**i * Phi**i
+                    e*=sym**(-e0)/c0
+                    #print n,Phi,c0,e0,g,self.a
+                    return e.eval()
                 #self.a is kind of:  1/x^2 + 1/x + 1 + x + ...
                 e=self.a.series(sym,n).eval()
                 ldeg=e.ldegree(sym)

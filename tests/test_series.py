@@ -50,7 +50,7 @@ def testseries2():
 
     assert ((1/x+1)**3).series(x,3)== x**(-3)+3*x**(-2)+3*x**(-1)
     assert (1/(1+1/x)).series(x,3)==x-x**2+x**3
-    assert (1/(1+1/x**2)).series(x,6)==x**2-x**4+x**6
+    assert (1/(1+1/x**2)).series(x,6)==x**2-x**4+x**6-x**8+x**10-x**12
 
 def xtestfind(self):
     a=g.symbol("a")
@@ -95,14 +95,21 @@ def test_generalexponent():
     ln=g.ln
     p=2
     e=(2/x+3/x**p)/(1/x+1/x**p)
-    assert e.eval().series(x,1).leadterm(x)==(3,0)
+#    assert e.eval().series(x,1).leadterm(x)==(3,0)
     p=g.rational(1,2)
     e=(2/x+3/x**p)/(1/x+1/x**p)
-    assert e.eval().series(x,1).leadterm(x)==(2,0)
+#    assert e.eval().series(x,1).leadterm(x)==(2,0)
 #    p=g.rational(3,2)
 #    e=(2/x+3/x**p)/(1/x+1/x**p)
     #assert e.eval().series(x,1).leadterm(x)==(3,0)
 
-#    h=g.symbol("h")
-#    e=1/(1+(x+h)**g.rational(1,2))
-#    print e.eval().series(x,2)
+    e=1+x**g.rational(1,2)
+    assert e.eval().series(x,4)==1+x**g.rational(1,2)
+    e=1/(1+x**g.rational(1,2))
+    assert e.eval().series(x,2)==1-x**g.rational(1,2)
+
+def test_subsbug1():
+    x=g.symbol("x")
+    e=1+x**g.rational(1,2)
+    e=e.diff(x)
+    py.test.raises(g.pole_error,e.subs,x,g.rational(0))

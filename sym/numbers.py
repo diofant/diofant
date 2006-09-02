@@ -97,6 +97,8 @@ class rational(number):
         self.p=p/c*s
         self.q=q/c
     def __lt__(self,a):
+        import basic
+        a=basic.c(a)
         assert isinstance(a,rational)
         return self.p * a.q < self.q * a.p
     def sign(self):
