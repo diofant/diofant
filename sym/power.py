@@ -79,7 +79,7 @@ class pow(basic):
         return (self*(g*ln(f)).diff(sym)).eval()
     def series(self,sym,n):
         from add import add
-        if isinstance(self.b,rational):# and self.b.isinteger():
+        if isinstance(self.b,rational):
             if isinstance(self.a,symbol): return self
             try:
                 return basic.series(self,sym,n)
@@ -90,7 +90,11 @@ class pow(basic):
                 #print "power:",e,self.b,ldeg,e.eval()
                 s= ((e*sym**(-ldeg)).expand()**self.b).series(sym,n+ldeg)
                 return (s*sym**(ldeg*self.b)).expand()
-        return basic.series(self,sym,n)
+        try:
+            return basic.series(self,sym,n)
+        except pole_error:
+            e=exp(self.b*ln(self.a)).eval()
+            return e.series(sym,n)
     def expand(self):
         if isinstance(self.b,number):
             if self.b.isinteger():

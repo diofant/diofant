@@ -75,4 +75,10 @@ def test_bug2():
     ln=g.ln
     e=(w**(-1)+w**(-ln(3)*ln(2)**(-1)))**(-1)*(3*w**(-ln(3)*ln(2)**(-1))+2*w**(-1))
     e=e.eval().expand()
-    print e.series(w,4)
+    #should be 3, but is 2
+#    print e.series(w,4)
+
+def test_exp():
+    x=g.symbol("x")
+    e=(1+x)**(1/x)
+    assert e.eval().series(x,1)==g.exp(1)

@@ -25,6 +25,19 @@ class function(basic):
     def __str__(self):
         f="%s(%s)"
         return f%(self.getname(),str(self.arg))
+    def series(self,sym,n):
+        from numbers import rational
+        from power import pole_error
+        from symbol import symbol
+        try:
+            return basic.series(self,sym,n)
+        except pole_error:
+            pass
+        arg=self.arg.series(sym,n)
+        w=symbol("dummy")
+        e=type(self)(w)
+        e=e.subs(w,arg)
+        return e.eval().series(sym,n)
 
 class exp(function):
     def getname(self):
