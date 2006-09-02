@@ -28,6 +28,9 @@ class infinity(number):
     
     this class represents all kinds of infinity, i.e. both +-infty.
     """
+    def __init__(self):
+        number.__init__(self)
+        self.sig=1
     def __str__(self):
         return "inf"
     def hash(self):
@@ -37,7 +40,7 @@ class infinity(number):
         self.mhash.addstr(str(type(self)))
         return self.mhash.value
     def sign(self):
-        return 1
+        return self.sig
 
 infty=infinity()
 

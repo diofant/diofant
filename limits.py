@@ -113,7 +113,9 @@ def limitinf(e,x):
     if debug:
         print "limitinf",e,c0,e0,sig
     if sig==1: return s.rational(0) # e0>0: lim f = 0
-    elif sig==-1: return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
+    elif sig==-1: 
+        s.infty.sig=sign(c0,x)
+        return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
 def has(e,x):
@@ -130,11 +132,7 @@ def sign(e,x):
     if isinstance(e,s.number):
         return e.sign()
     elif not e.has(x):
-        if e==s.ln(2):
-            return 1
-        if e==s.ln(3)/s.ln(2)-1:
-            return 1
-        stop
+        return e.evalf() > 0
     elif e == x: 
         return 1
     elif isinstance(e,s.mul): 
