@@ -76,7 +76,7 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
-debug=False
+debug=True
 
 whattosubs=None
 
@@ -129,6 +129,12 @@ def sign(e,x):
     #print "sign:",e
     if isinstance(e,s.number):
         return e.sign()
+    elif not e.has(x):
+        if e==s.ln(2):
+            return 1
+        if e==s.ln(3)/s.ln(2)-1:
+            return 1
+        stop
     elif e == x: 
         return 1
     elif isinstance(e,s.mul): 

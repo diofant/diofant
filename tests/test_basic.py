@@ -52,3 +52,8 @@ def test_ldegree():
     assert (x+1).ldegree(x)==0
     assert (x+x**2).ldegree(x)==1
     assert (x**2).ldegree(x)==2
+
+def test_leadterm():
+    x=g.symbol("x")
+    ln=g.ln
+    assert (3+2*x**(ln(3)/ln(2)-1)).eval().leadterm(x)==(3,0)

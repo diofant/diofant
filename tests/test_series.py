@@ -95,13 +95,13 @@ def test_generalexponent():
     ln=g.ln
     p=2
     e=(2/x+3/x**p)/(1/x+1/x**p)
-#    assert e.eval().series(x,1).leadterm(x)==(3,0)
+    assert e.eval().series(x,1).leadterm(x)==(3,0)
     p=g.rational(1,2)
     e=(2/x+3/x**p)/(1/x+1/x**p)
-#    assert e.eval().series(x,1).leadterm(x)==(2,0)
-#    p=g.rational(3,2)
-#    e=(2/x+3/x**p)/(1/x+1/x**p)
-    #assert e.eval().series(x,1).leadterm(x)==(3,0)
+    assert e.eval().series(x,1).leadterm(x)==(2,0)
+    p=g.rational(3,2)
+    e=(2/x+3/x**p)/(1/x+1/x**p)
+    assert e.eval().series(x,1).leadterm(x)==(3,0)
 
     e=1+x**g.rational(1,2)
     assert e.eval().series(x,4)==1+x**g.rational(1,2)

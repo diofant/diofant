@@ -135,6 +135,9 @@ class mul(pair):
             return a[0].hold()
         else:
             return rational(1)
+    def evalf(self):
+        a,b=self.getab()
+        return a.evalf()*b.evalf()
     def getab(self):
         """Pretend that self=a*b and return a,b
         
@@ -250,7 +253,9 @@ class add(pair):
             return a[0].hold()
         else:
             return rational(0)
-
+    def evalf(self):
+        a,b=self.getab()
+        return a.evalf()+b.evalf()
     def diff(self,sym):
         d=rational(0)
         for x in self.args:

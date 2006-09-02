@@ -73,6 +73,8 @@ class pow(basic):
             a,b=self.a.getab()
             return (pow(a,self.b)*pow(b,self.b)).eval()
         return pow(self.a,self.b).hold()
+    def evalf(self):
+        return self.a.evalf()**self.b.evalf()
     def diff(self,sym):
         f=self.a
         g=self.b

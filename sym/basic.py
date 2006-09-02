@@ -37,6 +37,8 @@ class basic(object):
         return self.eval().isequal(c(a).eval())
     def __ne__(self,a):
         return not self.__eq__(a)
+    def __lt__(self,a):
+        raise "'<' not supported."
 
     def eval(self):
         """Returns canonical form of myself. 
@@ -117,7 +119,8 @@ class basic(object):
         lowest=[0,(rational(10)**10).eval()]
         for t in self.args:
             t2=extract(t,x)
-            if t2[1]<lowest[1]:
+            #if t2[1]<lowest[1]:
+            if (lowest[1]-t2[1]).evalf()>0:
                 lowest=t2
             elif t2[1]==lowest[1]:
                 lowest=((lowest[0]+t2[0]).eval(),lowest[1])

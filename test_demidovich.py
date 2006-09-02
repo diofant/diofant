@@ -22,8 +22,7 @@ def limitminf(f,x):
 
 def testsimpleproblems():
     assert limitinf((x+1)*(x+2)*(x+3)/x**3,x)==1  #172
-    #need expansion of sqrt(x)... don't know how to implement:
-    #assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
+    assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
     assert limitinf(x/sqrt3(x**3+10),x)==1  #Primjer 2
@@ -52,13 +51,6 @@ def testsimpleproblems():
     assert limitinf(x-sqrt3(x**3-1),x)==0  #215
     assert limitminf(ln(1+exp(x))/x,x)==0  #267a
     assert limitinf(ln(1+exp(x))/x,x)==1  #267b
-
-def xtestbug1():
-    assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
-    #the rewritten expression is:
-    #(w^(-1)+w^(-ln(3)*ln(2)^(-1)))^(-1)*(3*w^(-ln(3)*ln(2)^(-1))+2*w^(-1))
-    #which seems to be correct, and the leading term is 3.
-    #but the series() returns 2...
 
 def test_functions():
     pi=symbol("pi")

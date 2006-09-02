@@ -79,6 +79,10 @@ class ln(function):
         elif isinstance(arg,pow):
             return (arg.b*ln(arg.a)).eval()
         return ln(arg).hold()
+    def evalf(self):
+        import math
+        print type(self.arg)
+        return math.log(self.arg.evalf())
     def series(self,sym,n):
         from numbers import rational
         from power import pole_error

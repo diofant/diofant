@@ -78,3 +78,6 @@
 - problems with expressions like (sqrt(2)+1)/3, it is a number in fact, but
   not a class "number". look through all the assertions isinstance(rational),
   and consider changing it to "not has(e,x)", or rather "not e.has(x)".
+
+- implement evalf() and implement <>, i.e. 0< ln(3)/ln(2)-1, at the beginning,
+  use evalf() for the comparison.

@@ -152,6 +152,7 @@ class rational(number):
         assert self.isinteger()
         return self.p
     def evalf(self):
+        return float(self.p)/self.q
         return real(float(self.p)/self.q)
     def diff(self,sym):
         return rational(0)
