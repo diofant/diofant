@@ -237,7 +237,8 @@ def mrvleadterm(e,x,Omega=[]):
         print "e:",e
         print "Omega:",Omega
         print "f:",f
-        print "series:",series,series.leadterm(wsym)
+        print "f.series:",series
+        print "f.series.leadterm:",series.leadterm(wsym)
     return series.leadterm(wsym)
 
 def mrv(e,x):

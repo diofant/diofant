@@ -82,3 +82,10 @@ def test_exp():
     x=g.symbol("x")
     e=(1+x)**(1/x)
     assert e.eval().series(x,1)==g.exp(1)
+
+def test_exp2():
+    x=g.symbol("x")
+    w=g.symbol("w")
+    ln=g.ln
+    e=w**(1-ln(x)/(ln(2)+ln(x)))
+    assert e.eval().series(w,1)!=0

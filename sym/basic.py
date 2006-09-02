@@ -125,6 +125,8 @@ class basic(object):
     def ldegree(self,sym):
         n =self.leadterm(sym)[1]
         return n.getinteger()
+    def expand(self):
+        return self
 
 def c(a):
     """for "a" int, returns rational(a), for "a" float returns real, 

@@ -79,7 +79,8 @@ class pow(basic):
         return (self*(g*ln(f)).diff(sym)).eval()
     def series(self,sym,n):
         from add import add
-        if isinstance(self.b,rational):
+        #if isinstance(self.b,rational):
+        if not self.b.has(sym):
             if isinstance(self.a,symbol): return self
             try:
                 return basic.series(self,sym,n)
