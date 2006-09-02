@@ -182,3 +182,13 @@ def test_functions():
 def test_sign():
     x=s.symbol("x")
     assert limits.sign((1/(s.ln(2)+s.ln(x))).eval(),x)==1
+
+def test_otherlimits():
+    x=s.symbol("x")
+    a=s.symbol("a")
+    m=s.symbol("m")
+    n=s.symbol("n")
+    ln=s.ln
+    assert limits.limitinf(sqrt(ln(x+1))-sqrt(ln(x)),x)==0
+    assert limits.limit(((1+x)**a-1)/x,x,0)==a
+    assert limits.limit((x**(1/n)-1)/(x**(1/m)-1),x,1)==m/n

@@ -258,7 +258,6 @@ def mrv(e,x):
         if has(e.b,x):
             return mrv(s.exp(e.b*s.ln(e.a)),x)
         else:
-            assert isinstance(e.b,s.number)
             return mrv(e.a,x)
     elif isinstance(e,s.ln): 
         return mrv(e.arg,x)
