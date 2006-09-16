@@ -76,7 +76,8 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
-debug=False
+#debug=False
+debug=True
 
 whattosubs=None
 
@@ -240,12 +241,12 @@ def mrvleadterm(e,x,Omega=[]):
     assert series!=0
     #series=series.subs(s.ln(wsym),lnw)
     if debug:
-        print "-"*60
-        print "e:",e
-        print "Omega:",Omega
-        print "f:",f
-        print "f.series:",series
-        print "f.series.leadterm:",series.leadterm(wsym)
+        print "mrvleadterm:"
+        print "  e:",e
+        print "  Omega:",Omega
+        print "  f:",f
+        print "  f.series:",series
+        print "  f.series.leadterm:",series.leadterm(wsym)
     return series.leadterm(wsym)
 
 def mrv(e,x):
