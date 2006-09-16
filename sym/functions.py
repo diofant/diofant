@@ -34,18 +34,12 @@ class function(basic):
         except pole_error:
             pass
         arg=self.arg.series(sym,n)
-#        print arg
-#        assert limit(arg,sym,0)!=infty
-        w=symbol("dummy")
+        w=symbol("w",True)
         e=type(self)(w)
-        c0,e0=arg.leadterm(sym)
-        if e0==0:
-            pass
-        else:
+        if arg.has(sym):
             e=e.series(w,n)
         e=e.subs(w,arg)
         return e.eval().expand()
-        #return e.eval().series(sym,n)
 
 class exp(function):
     def getname(self):
