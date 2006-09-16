@@ -146,27 +146,6 @@ def testsubexp():
     assert limits.subexp(s.exp(s.exp(x)+s.ln(x)),s.exp(x))
     assert not limits.subexp(s.exp(s.exp(x)+s.ln(x)),2*x)
 
-def xtesttaylor():
-    x=s.symbol("x")
-    assert limits.taylor(s.exp,s.rational(0),x,3)==1+x+x**2/2+x**3/6
-    assert limits.taylor(s.ln,s.rational(1),x+1,3)==x-x**2/2+x**3/3
-
-def xtest_singularities():
-    x=s.symbol("x")
-    e=1/(1/x+1)
-    assert essential_singularity(e.eval(),limits.series(e.eval(),x,5))==1+x
-
-def xtestseries():
-    x=s.symbol("x")
-    e=1+x
-    assert limits.series(e.eval(),x,5)==1+x
-    e=1+x+x**2
-    assert limits.series(e.eval(),x,5)==1+x+x**2
-    e=s.ln(1+x)/x
-    assert limits.series(e.eval(),x,3)==1-x/2+x**2/3
-    e=1/(1/x+1)
-    print limits.series(e.eval(),x,3)
-
 def sqrt(x):
     return x**s.rational(1,2)
 
