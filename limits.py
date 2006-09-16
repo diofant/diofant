@@ -100,7 +100,7 @@ def union(a,b):
 
 def limit(e,z,z0):
     """Currently only limit z->z0+"""
-    x=s.symbol("xdummy")
+    x=s.symbol("x",True)
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)
 
@@ -213,7 +213,7 @@ def movedown(l,x):
     return [e.subs(x,s.ln(x)).eval() for e in l]
 
 def subexp(e,sub):
-    n=s.symbol("dummy")
+    n=s.symbol("x",True)
     return e.subs(sub,n)!=e
 
 def mrvleadterm(e,x,Omega=[]):
@@ -227,7 +227,7 @@ def mrvleadterm(e,x,Omega=[]):
         Omega=mrv(e,x)
     if member(x,Omega):
         return movedown(mrvleadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
-    wsym=s.symbol("wdummy")
+    wsym=s.symbol("w",True)
     f,lnw=rewrite(e,Omega,x,wsym)
     #I still believe, this can be than later, as is commented out.
     #the expansion in pow however needs to be fixed.
