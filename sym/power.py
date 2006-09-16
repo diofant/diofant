@@ -104,7 +104,8 @@ class pow(basic):
                 e=self.a.series(sym,n).eval()
                 ldeg=e.ldegree(sym)
                 #print "power:",e,self.b,ldeg,e.eval()
-                s= ((e*sym**(-ldeg)).expand()**self.b).series(sym,n+ldeg)
+                s= ((e*sym**(-ldeg)).expand()**self.b).series(sym,n+
+                        int(ldeg.evalf()))
                 return (s*sym**(ldeg*self.b)).expand()
         try:
             return basic.series(self,sym,n)

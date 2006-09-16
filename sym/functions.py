@@ -101,9 +101,11 @@ class ln(function):
         w=sym
         c0,e0=arg.leadterm(w)
         Phi=(arg/(c0*w**e0)-1).expand()
+        print "  LN:",self,c0,w,e0,Phi
         e=ln(c0)+e0*ln(w)
         import limits
         e=e.subs(ln(w),limits.whattosubs)
+        print "    LN2:",e
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
         return e.eval()

@@ -126,8 +126,8 @@ class basic(object):
                 lowest=((lowest[0]+t2[0]).eval(),lowest[1])
         return lowest
     def ldegree(self,sym):
-        n =self.leadterm(sym)[1]
-        return n.getinteger()
+        "Returns the lowest power of the sym"
+        return self.leadterm(sym)[1]
     def expand(self):
         return self
 
