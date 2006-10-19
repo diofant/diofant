@@ -100,8 +100,9 @@ class pow(basic):
                     e*=sym**(-e0)/c0
                     #print n,Phi,c0,e0,g,self.a
                     return e.eval()
-                #e=exp(self.b*ln(self.a)).eval()
-                #return e.series(sym,n)
+                if not isinstance(self.b,rational):
+                    e=exp(self.b*ln(self.a)).eval()
+                    return e.series(sym,n)
                 #self.a is kind of:  1/x^2 + 1/x + 1 + x + ...
                 e=self.a.series(sym,n).eval()
                 ldeg=e.ldegree(sym)

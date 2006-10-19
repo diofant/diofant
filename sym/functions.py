@@ -102,6 +102,7 @@ class ln(function):
         print "    LN2:",e
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
+        print "    LN3:",e.eval()
         return e.eval()
 
 class sin(function):
