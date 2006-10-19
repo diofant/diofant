@@ -61,3 +61,7 @@ def test_powers():
     assert 64**(g.rational(1)/3)==4
     assert 64**(g.rational(2)/3)==16
     assert 24*64**(-g.rational(1)/2)==3
+
+def test_realbug():
+    x=g.symbol("x")
+    e=str(2.0*x*x)

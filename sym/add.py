@@ -76,7 +76,7 @@ class mul(pair):
     def printnormal(self):
         f=""
         a=self.args
-        if isinstance(a[0],number):
+        if isinstance(a[0],rational):
             if a[0].isminusone():
                 f="-"
                 a=self.args[1:]
