@@ -60,9 +60,9 @@ class real(number):
         return self.mhash.value
     def __str__(self):
         if self.num < 0:
-            f="(%d)"
+            f="(%r)"
         else:
-            f="%d"
+            f="%r"
         return f%(self.num)
     def add(self,a):
         return real(self.num+a.evalf().num)

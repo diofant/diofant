@@ -64,4 +64,6 @@ def test_powers():
 
 def test_realbug():
     x=g.symbol("x")
-    e=str(2.0*x*x)
+    assert str(2.0*x*x)=="(2.0*x)*x"
+    assert str(2.1*x*x)!="(2.0*x)*x"
+
