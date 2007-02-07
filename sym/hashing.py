@@ -40,4 +40,7 @@ class mhash(object):
         self.add(x+3)
 
     def addfloat(self,x):
-        self.add(x+3)
+        if self.platform_independent:
+            raise "I don't know how to hash floats in platform independent way"
+        else:
+            self.add(hash(x)+3)

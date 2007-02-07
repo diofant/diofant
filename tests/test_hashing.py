@@ -60,3 +60,9 @@ def test_bug2():
     m2=mhash()
     m2.addint(m2a.value)
     assert num!=m2.value
+
+def test_bug3():
+    x=g.symbol('x')
+    y=x*x
+    assert y.subs(x,g.rational(3))==9
+    assert y.subs(x,g.real(3.2))!=9
