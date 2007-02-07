@@ -9,3 +9,8 @@ def eq(a,b):
 def testeval():
     e=s.ln(3)/s.ln(2)-1
     assert eq(e.evalf(),0.58496)
+
+def test_bug1():
+    x=s.symbol('x')
+    y=x*x
+    assert eq(y.subs(x,s.real(3.0)).evalf(),9)

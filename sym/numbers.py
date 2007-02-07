@@ -77,7 +77,7 @@ class real(number):
     def isinteger(self):
         return False
     def evalf(self):
-        return self
+        return self.num
 
 class rational(number):
     def __init__(self,*args):
