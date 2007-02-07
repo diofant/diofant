@@ -1,6 +1,6 @@
 -series
     need to create a special class for series (probably a child of mul, which
-    wouuld only accept polynoms of one variable), which would implement
+    would only accept polynoms of one variable), which would implement
     multiplication, adding etc. copy from ginac. can neglect higher terms, so
     it should be pretty fast. otherwise it's going to be slow. 
     but try first without it, if it works.
