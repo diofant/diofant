@@ -67,3 +67,5 @@ def test_realbug():
     assert str(2.0*x*x)=="(2.0*x)*x"
     assert str(2.1*x*x)!="(2.0*x)*x"
 
+def test_acceptint():
+    g.real(4)

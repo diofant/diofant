@@ -14,3 +14,9 @@ def test_bug1():
     x=s.symbol('x')
     y=x*x
     assert eq(y.subs(x,s.real(3.0)).evalf(),9)
+
+def test_bug2():
+    a = s.real(4.)
+    x = a + a
+    x.eval()
+

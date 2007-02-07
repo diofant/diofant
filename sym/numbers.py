@@ -49,7 +49,7 @@ class real(number):
         number.__init__(self)
         if isinstance(num,str):
             num=float(num)
-        assert isinstance(num,float)
+        assert isinstance(num,float) or isinstance(num,int)
         self.num=num
     def hash(self):
         if self.mhash: 
@@ -65,11 +65,11 @@ class real(number):
             f="%r"
         return f%(self.num)
     def add(self,a):
-        return real(self.num+a.evalf().num)
+        return real(self.num+a.evalf())
     def mul(self,a):
-        return real(self.num*a.evalf().num)
+        return real(self.num*a.evalf())
     def pow(self,a):
-        return real(self.num**a.evalf().num)
+        return real(self.num**a.evalf())
     def iszero(self):
         return False
     def isone(self):
