@@ -8,15 +8,15 @@ class number(basic):
         self.evaluated=True
     def addnumber(self,a):
         if isinstance(a,real):
-            self=self.evalf()
+            return real(self.evalf()+a.evalf())
         return self.add(a)
     def mulnumber(self,a):
         if isinstance(a,real):
-            self=self.evalf()
+            return real(self.evalf()*a.evalf())
         return self.mul(a)
     def pownumber(self,a):
         if isinstance(a,real):
-            self=self.evalf()
+            return real(self.evalf()**a.evalf())
         return self.pow(a)
     def diff(self,sym):
         return rational(0)
@@ -77,6 +77,7 @@ class real(number):
     def isinteger(self):
         return False
     def evalf(self):
+        #evalf() should return either a float or an exception
         return self.num
 
 class rational(number):
@@ -156,6 +157,5 @@ class rational(number):
         return self.p
     def evalf(self):
         return float(self.p)/self.q
-        return real(float(self.p)/self.q)
     def diff(self,sym):
         return rational(0)

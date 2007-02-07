@@ -38,3 +38,9 @@ def test_lnexppow():
     e=e.eval()
     assert e.subs(2**x,w)!=e
     assert e.subs(g.exp(x*g.ln(g.rational(2))),w)!=e
+
+def test_bug():
+    x1=g.symbol("x1")
+    x2=g.symbol("x2")
+    y=x1*x2
+    y.subs(x1,g.real(3.0))
