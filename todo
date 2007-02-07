@@ -65,6 +65,8 @@
   just return the pointer. maybe also there could be a huge database (dict) of
   hashes and evaluated objs. (memory intensive probably)
 
+- some routines in limits.py should cache results.
+
 - fix the symbols clutter in limits.py, using something like symbol(), or
   dummy()....
 
