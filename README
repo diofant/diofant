@@ -59,3 +59,12 @@ This will create a "py-dist" directory in you home dir. Add this line to
 eval `python ~/py-dist/py/env.py`
 
 Now you can call "py.test" from anywhere.
+
+
+5. Documentation
+----------------
+
+Currently none. There is some information at the front page at
+http://code.google.com/p/sympy/ and in the todo file. Some documentation is in
+source files. You can browse through the test suite, this should show you how
+to use all the features of sympy.
