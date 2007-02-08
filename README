@@ -22,10 +22,15 @@ svn checkout http://sympy.googlecode.com/svn/trunk/ sympy
 1. Documentation
 ---------------
 
-All the documentation is in sym/__init__.py and in a form of comments in the
-source code.
+Examples are at:
 
-See also TODO for things which are still missing.
+http://code.google.com/p/sympy/wiki/Examples
+
+Other documentation is in sym/__init__.py and in a form of comments in the
+source code, plus some information is at
+http://code.google.com/p/sympy/.
+
+See also the "todo" file for things which are still missing.
 
 2. Usage
 --------
@@ -59,12 +64,3 @@ This will create a "py-dist" directory in you home dir. Add this line to
 eval `python ~/py-dist/py/env.py`
 
 Now you can call "py.test" from anywhere.
-
-
-5. Documentation
-----------------
-
-Currently none. There is some information at the front page at
-http://code.google.com/p/sympy/ and in the todo file. Some documentation is in
-source files. You can browse through the test suite, this should show you how
-to use all the features of sympy.
