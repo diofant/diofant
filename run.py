@@ -1,5 +1,7 @@
 #! /usr/bin/python
 
+#This is a testing file, which I use for development. Just ignore it.
+
 import sym as g
 
 def doit():

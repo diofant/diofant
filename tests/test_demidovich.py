@@ -1,3 +1,5 @@
+import sys
+sys.path.append(".")
 from sym import exp,ln,symbol,infty,rational,sin,cos,limitinf,limit
 
 x=symbol("x")
