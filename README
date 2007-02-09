@@ -22,6 +22,8 @@ svn checkout http://sympy.googlecode.com/svn/trunk/ sympy
 1. Documentation
 ---------------
 
+http://code.google.com/p/sympy/wiki/Documentation
+
 Examples are at:
 
 http://code.google.com/p/sympy/wiki/Examples
