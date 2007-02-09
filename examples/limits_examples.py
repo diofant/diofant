@@ -1,8 +1,7 @@
 import sys
 sys.path.append("..")
 
-from sym import exp,ln,symbol,rational,sin
-from limits import limit,limitinf
+from sym import exp,ln,symbol,rational,sin,limit,limitinf
 
 x=symbol("x")
 a=symbol("a")
