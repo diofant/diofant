@@ -97,7 +97,8 @@ class ln(function):
         Phi=(arg/(c0*w**e0)-1).expand()
         #print "  LN:",self,c0,w,e0,Phi
         e=ln(c0)+e0*ln(w)
-        import limits
+        #FIXME a huge hack. needs fixing.....
+        from sym import limits
         e=e.subs(ln(w),limits.whattosubs)
         #print "    LN2:",e
         for i in range(1,n+1):

@@ -1,5 +1,4 @@
-from sym import exp,ln,symbol,infty,rational,sin,cos
-from limits import limit,limitinf
+from sym import exp,ln,symbol,infty,rational,sin,cos,limitinf,limit
 
 x=symbol("x")
 a=symbol("a")

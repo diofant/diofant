@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sym as s
-import limits
+from sym.modules import limits
 
 def testsets():
     x=[1,2,3]
@@ -150,8 +150,7 @@ def sqrt(x):
     return x**s.rational(1,2)
 
 def test_functions():
-    from sym import sin,cos,infty,rational,exp
-    from limits import limit,limitinf
+    from sym import sin,cos,infty,rational,exp,limit,limitinf
     x=s.symbol("x")
     assert limit(sin(x)/x,x,0) == 1
     assert limit(cos(x)/sin(x),x,0) == infty
