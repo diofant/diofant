@@ -1,7 +1,6 @@
 - printing: 2+-x
 
-- fix the symbols clutter in limits.py, using something like symbol(), or
-  dummy()....
+- fix the symbols clutter in limits.py, using symbol("w",dummy=True)
 
 - limits: ln(w)=-x ..., see page 111. write a test case and implement
 
@@ -18,9 +17,3 @@
   use evalf() for the comparison.
 
 - amd64 evaluates exp(-ln(3))^(-1) == 3 as False. fix it.
-
-- implement integration according to issac98.pdf
-
-- integrate the limits into the sym core. Design some core (*,+,/,-,
-  differentiation, series expansion, ln, exp) and a higher level (sin, cos,
-  tan, limits, matrices) etc.
