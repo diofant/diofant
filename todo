@@ -1,8 +1,8 @@
-- printing: 2+-x
-
-- fix the symbols clutter in limits.py, using symbol("w",dummy=True)
-
 - limits: ln(w)=-x ..., see page 111. write a test case and implement
+  make the series expansion more robust - and fix the horrible thing in
+  ln.series().
+
+- printing: 2+-x
 
 - go through the series expansion and make sure the correct amount of terms are
   being generated.
