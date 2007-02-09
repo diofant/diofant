@@ -4,16 +4,16 @@ sys.path.append(".")
 import sym as g
 
 def test_hashing_class():
-    h1=g.hashing.mhash()
+    h1=g.core.hashing.mhash()
     h1.addint(-1)
     h1.addint(-2)
 
-    h2=g.hashing.mhash()
+    h2=g.core.hashing.mhash()
     h2.addint(-1)
     h2.addint(-2)
     assert h1.value == h2.value
 
-    h3=g.hashing.mhash()
+    h3=g.core.hashing.mhash()
     h3.addint(-2)
     h3.addint(-1)
     assert h1.value != h3.value
@@ -36,7 +36,7 @@ def test_basic_class():
     assert z.hash()==z2.hash()
 
 def test_bug():
-    from sym.hashing import mhash
+    from sym.core.hashing import mhash
     m1=mhash()
     m1.addstr("<class 'sym.symbol.symbol'>")
     m1.addstr("y")
@@ -51,7 +51,7 @@ def test_bug():
     assert m1.value!=m2.value
 
 def test_bug2():
-    from sym.hashing import mhash
+    from sym.core.hashing import mhash
     num=123456
 
     m2a=mhash()
