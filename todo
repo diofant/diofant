@@ -17,3 +17,4 @@
   use evalf() for the comparison.
 
 - amd64 evaluates exp(-ln(3))^(-1) == 3 as False. fix it.
+  exp(ln( ... )) helps. maybe we can use it in the fix
