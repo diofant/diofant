@@ -71,6 +71,26 @@ class pair(basic):
             else:
                 b.append(x)
         return (n,b)
+    def printtree(self):
+        def indent(s,type=1):
+            x=s.split("\n")
+            r="+--%s\n"%x[0]
+            for a in x[1:]:
+                if a=="": continue
+                if type==1:
+                    r+="|  %s\n"%a
+                else:
+                    r+="   %s\n"%a
+            return r
+        if isinstance(self,mul):
+            f="mul\n"
+        else:
+            assert(isinstance(self,add))
+            f="add\n"
+        for a in self.args[:-1]:
+            f+=indent(a.printtree())
+        f+=indent(self.args[-1].printtree(),2)
+        return f
 
 class mul(pair):
     def printnormal(self):

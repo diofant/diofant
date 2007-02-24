@@ -130,6 +130,9 @@ class basic(object):
         return self.leadterm(sym)[1]
     def expand(self):
         return self
+    def printtree(self):
+        """The canonical tree representation"""
+        return str(self)
 
 def c(a):
     """for "a" int, returns rational(a), for "a" float returns real, 
