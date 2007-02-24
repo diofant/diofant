@@ -60,7 +60,7 @@ class pair(basic):
         """coercenumbers([x,4,a,10],action,rational(1)) ->
                 (action(action(rational(1),4),10),[x,a])
 
-        picks out the numbers of the list "a" and appliec the action on them
+        picks out the numbers of the list "a" and applies the action on them
         (add or mul).
         """
         n=default
@@ -79,6 +79,9 @@ class mul(pair):
         if isinstance(a[0],rational):
             if a[0].isminusone():
                 f="-"
+                a=self.args[1:]
+            elif a[0].isone():
+                f = ""
                 a=self.args[1:]
         for x in a:
             if isinstance(x,pair):
@@ -198,8 +201,24 @@ class add(pair):
         f="add(%s"+",%s"*(len(self.args)-1)+")"
         return f%tuple([str(x) for x in self.args])
     def printnormal(self):
-        f="%s"+"+%s"*(len(self.args)-1)
-        return f%tuple([str(x) for x in self.args])
+        """Returns a string representation of the expression in self."""
+        if (len(self.args) == 2 and isinstance(self.args[1], mul) 
+                and isinstance(self.args[1].args[0],number) 
+                and self.args[1].args[0] < 0):
+            # if the second member is -something
+            f = "%s-%s"*(len(self.args)-1)
+            tmp_args = self.args
+            tmp_args[1].args[0] = (rational(-1)*tmp_args[1].args[0]).eval()
+        elif (len(self.args) == 2 and isinstance(self.args[1], number) and self.args[1] < 0):
+            # if the second member is a negative number
+            f = "%s-%s"*(len(self.args)-1)
+            tmp_args = self.args
+            tmp_args[1] = (rational(-1)*tmp_args[1]).eval()
+        else:
+            f = "%s+%s"*(len(self.args)-1)
+            tmp_args = self.args
+        return f%tuple([str(x) for x in tmp_args])
+
     def __str__(self):
         return self.printnormal()
         return self.printprog()
