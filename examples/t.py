@@ -7,6 +7,6 @@ x=symbol("x")
 y=symbol("y") 
 
 #print limit((sin(2*x)/x)**(1+x),x,0)
-e=x-1*y*x*y
+e=x-y
 print e
-print e.eval()
+print e

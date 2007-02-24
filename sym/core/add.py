@@ -202,20 +202,24 @@ class add(pair):
         return f%tuple([str(x) for x in self.args])
     def printnormal(self):
         """Returns a string representation of the expression in self."""
+        f="%s"+"+%s"*(len(self.args)-1)
+        return f%tuple([str(x) for x in self.args])
         if (len(self.args) == 2 and isinstance(self.args[1], mul) 
                 and isinstance(self.args[1].args[0],number) 
                 and self.args[1].args[0] < 0):
             # if the second member is -something
             f = "%s-%s"*(len(self.args)-1)
-            tmp_args = self.args
+            tmp_args = self.args[:]
             tmp_args[1].args[0] = (rational(-1)*tmp_args[1].args[0]).eval()
-        elif (len(self.args) == 2 and isinstance(self.args[1], number) and self.args[1] < 0):
+#        elif (len(self.args) == 2 and isinstance(self.args[1], number) and self.args[1] < 0):
             # if the second member is a negative number
-            f = "%s-%s"*(len(self.args)-1)
-            tmp_args = self.args
-            tmp_args[1] = (rational(-1)*tmp_args[1]).eval()
+#            f = "%s-%s"*(len(self.args)-1)
+#            print "s1:",self.args
+#            tmp_args = self.args[:]
+#            tmp_args[1] = (rational(-1)*tmp_args[1]).eval()
         else:
-            f = "%s+%s"*(len(self.args)-1)
+            f="%s"+"+%s"*(len(self.args)-1)
+            print "s2:",self.args
             tmp_args = self.args
         return f%tuple([str(x) for x in tmp_args])
 
