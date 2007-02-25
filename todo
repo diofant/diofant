@@ -2,8 +2,6 @@
   make the series expansion more robust - and fix the horrible thing in
   ln.series().
 
-- printing: 2+-x
-
 - go through the series expansion and make sure the correct amount of terms are
   being generated.
 
@@ -18,3 +16,6 @@
 
 - amd64 evaluates exp(-ln(3))^(-1) == 3 as False. fix it.
   exp(ln( ... )) helps. maybe we can use it in the fix
+
+
+for more ideas, see: http://code.google.com/p/sympy/wiki/Discussion
