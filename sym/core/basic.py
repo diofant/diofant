@@ -38,7 +38,7 @@ class basic(object):
     def __ne__(self,a):
         return not self.__eq__(a)
     def __lt__(self,a):
-        raise "'<' not supported."
+        raise NotImplementedError("'<' not supported.")
 
     def eval(self):
         """Returns canonical form of myself. 

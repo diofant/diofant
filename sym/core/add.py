@@ -222,27 +222,31 @@ class add(pair):
         return f%tuple([str(x) for x in self.args])
     def printnormal(self):
         """Returns a string representation of the expression in self."""
-        f="%s"+"+%s"*(len(self.args)-1)
-        return f%tuple([str(x) for x in self.args])
-        if (len(self.args) == 2 and isinstance(self.args[1], mul) 
-                and isinstance(self.args[1].args[0],number) 
-                and self.args[1].args[0] < 0):
-            # if the second member is -something
-            f = "%s-%s"*(len(self.args)-1)
-            tmp_args = self.args[:]
-            tmp_args[1].args[0] = (rational(-1)*tmp_args[1].args[0]).eval()
-#        elif (len(self.args) == 2 and isinstance(self.args[1], number) and self.args[1] < 0):
-            # if the second member is a negative number
-#            f = "%s-%s"*(len(self.args)-1)
-#            print "s1:",self.args
-#            tmp_args = self.args[:]
-#            tmp_args[1] = (rational(-1)*tmp_args[1]).eval()
-        else:
-            f="%s"+"+%s"*(len(self.args)-1)
-            print "s2:",self.args
-            tmp_args = self.args
-        return f%tuple([str(x) for x in tmp_args])
+        #old primitive way of printing:
+        #f="%s"+"+%s"*(len(self.args)-1)
+        #return f%tuple([str(x) for x in self.args])
 
+        #sophisticated way of printing (correctly handles 2+(-x)):
+        _n = len(self.args)
+        from copy import deepcopy
+        _temp_args = deepcopy(self.args)
+        f = "%s"
+        for i in range(1,_n):
+            try:
+                if _temp_args[i].args[0] < 0:
+                    f += "-%s"
+                    _temp_args[i].args[0] = (rational(-1)*_temp_args[i].args[0]).eval()
+                else:
+                    f += "+%s"
+            except (AttributeError, NotImplementedError):
+                if isinstance(_temp_args[1], number) and _temp_args[i] < 0:
+                        # case the second member is a negative rational
+                        f += "-%s"
+                        _temp_args[i] = (rational(-1)*_temp_args[i]).eval()
+                else:
+                    f += "+%s"
+        return f % tuple([str(x) for x in _temp_args])
+                
     def __str__(self):
         return self.printnormal()
         return self.printprog()
