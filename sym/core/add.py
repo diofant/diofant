@@ -4,6 +4,7 @@ from numbers import Number,Rational
 from power import Pow,pole_error
 
 class Pair(Basic):
+    """Contains common code to add and mul classes."""
     
     def __init__(self,*args):
         Basic.__init__(self)
@@ -99,6 +100,7 @@ class Pair(Basic):
             f += indent(a.printtree())
         f += indent(self.args[-1].printtree(),2)
         return f
+
 
 class Mul(Pair):
     
