@@ -84,7 +84,7 @@ class log(Function):
         return Rational(1)/self.arg
         
     def eval(self):
-        from add import Mul
+        from addmul import Mul
         from power import Pow
         if self.evaluated: return self
         arg=self.arg.eval()

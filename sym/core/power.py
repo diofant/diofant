@@ -24,7 +24,7 @@ class Pow(Basic):
         return self.mhash.value
         
     def print_normal(self):
-        from add import Pair
+        from addmul import Pair
         f = ""
         if isinstance(self.base,Pair) or isinstance(self.base,Pow):
             f += "(%s)"
@@ -44,7 +44,7 @@ class Pow(Basic):
         return (self.base,self.exp)
         
     def eval(self):
-        from add import Mul
+        from addmul import Mul
         if self.evaluated: return self
         self.base = self.base.eval()
         self.exp = self.exp.eval()
@@ -89,7 +89,7 @@ class Pow(Basic):
         return (self*(g*log(f)).diff(sym)).eval()
         
     def series(self,sym,n):
-        from add import Add
+        from addmul import Add
         #if isinstance(self.exp,Rational):
         if not self.exp.has(sym):
             if isinstance(self.base,Symbol): return self

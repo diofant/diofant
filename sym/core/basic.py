@@ -117,7 +117,7 @@ class Basic(object):
             return self.eval().leadterm(x)
         from numbers import Rational
         from power import Pow
-        from add import Add,Mul
+        from addmul import Add,Mul
         from symbol import Symbol
         def domul(x):
             if len(x) > 1:
@@ -165,11 +165,11 @@ class Basic(object):
         return str(self)
         
 def _doadd(a,b):
-    from add import Add
+    from addmul import Add
     return Add(c(a),c(b))
 
 def _domul(a,b):
-    from add import Mul
+    from addmul import Mul
     return Mul(c(a),c(b))
 
 def _dopow(a,b):

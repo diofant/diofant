@@ -3,4 +3,4 @@ from symbol import Symbol
 from functions import Function,exp,log,ln
 from numbers import Rational,Real,Number,infty
 from power import Pow,pole_error
-from add import Add,Mul,NCMul
+from addmul import Add,Mul,NCMul
