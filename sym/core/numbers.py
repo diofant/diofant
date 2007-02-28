@@ -157,12 +157,18 @@ class Rational(Number):
             return f % (self.p,self.q)
             
     def mul(self,a):
+        """Multiply two Rational numbers"""
         return Rational(self.p*a.p,self.q*a.q)
         
     def add(self,a):
+        """Adds two Rational numbers"""
         return Rational(self.p*a.q+self.q*a.p,self.q*a.q)
         
     def pow(self,a):
+        """Returns the self to the power of "a"
+
+        "a" must be and integer (a.q==1).
+        """
         assert a.q==1
         if a.p > 0:
             return Rational(self.p**a.p,self.q**a.p)
