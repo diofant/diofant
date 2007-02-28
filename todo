@@ -1,21 +1,6 @@
-- limits: ln(w)=-x ..., see page 111. write a test case and implement
-  make the series expansion more robust - and fix the horrible thing in
-  ln.series().
+Current problems are tracked at:
 
-- go through the series expansion and make sure the correct amount of terms are
-  being generated.
+http://code.google.com/p/sympy/issues/list
 
-- add plus and minus infty, sign(x) doesn't work for -infty...
-
-- problems with expressions like (sqrt(2)+1)/3, it is a number in fact, but
-  not a class "number". look through all the assertions isinstance(rational),
-  and consider changing it to "not has(e,x)", or rather "not e.has(x)".
-
-- implement evalf() and implement <>, i.e. 0< ln(3)/ln(2)-1, at the beginning,
-  use evalf() for the comparison.
-
-- amd64 evaluates exp(-ln(3))^(-1) == 3 as False. fix it.
-  exp(ln( ... )) helps. maybe we can use it in the fix
-
-
-for more ideas, see: http://code.google.com/p/sympy/wiki/Discussion
+for ideas what should be done in the more distant future, see: 
+http://code.google.com/p/sympy/wiki/Discussion
