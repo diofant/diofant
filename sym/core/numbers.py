@@ -117,6 +117,7 @@ class Rational(Number):
         self.q = q/c
         
     def __lt__(self,a):
+        """Compares two Rational numbers."""
         import basic
         a=basic.c(a)
         assert isinstance(a,Rational)
@@ -135,10 +136,10 @@ class Rational(Number):
         return self.mhash.value
         
     def gcd(self,a,b):
+        """Primitive algorithm for a greatest common divisor of "a" and "b"."""
         while b!=0:
             c = a % b
-            a = b
-            b = c
+            a,b=b,c
         return a
         
     def __str__(self):
