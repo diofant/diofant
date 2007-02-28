@@ -1,17 +1,30 @@
-"""
-I was missing a decent pretty printer, so I wrote one myself.
-Although it is a separate file, it is supposed to be sprinkled over
-the code, but maybe you want to do it another way.
-Anyway, the code is structured so that different operators all need a
-little code to support pretty printing.
-You may want to use this code however you like, or throw it away if
-you have something better.
+"""Prettyprinter idea by Jurjen Bos
+(I hate spammers: mail me at pietjepuk314 at the reverse of ku.oc.oohay).
 
-Jurjen N.E. Bos
-Deukelven 48
-1963 SR Heemskerk
-0251-252426
+This is how prettyprinting should be implemented.
+I would suggest to extend it to more general output.
+Make a variable, let's say outputType:
+
+    #set this to "LaTeX", "pretty", "Maple", or whatever
+    outputType = "pretty"
+
+You could put in the basic class:
+    def __str__(self):
+        return getattr(self, outputType)()
+    def LaTeX(self):
+        raise NotImplementedError, "LaTeX output not defined for "+self.__class__.__name__
+    def pretty(self):
+        raise NotImplementedError, "pretty output not defined for "+self.__class__.__name__
+    def Maple(self):
+        raise NotImplementedError, "Maple output not defined for "+self.__class__.__name__
+And then in the subclasses:
+    def pretty(self):
+        <the code as shown in one of the classes below>
+	def LateX(self):
+		"e.g. addition, ignoring special cases."
+		return '+'.join(map(LaTeX), self)
 """
+
 import sys, operator
 
 test = True
@@ -127,16 +140,22 @@ class stringPict:
 
 	def below(self, *args):
 		"""Put pictures under this picture.
+		Baseline is baseline of top picture
 		>>> stringPict("x+3").below(stringPict.LINE, '3')
 		x+3
 		---
 		 3
 		"""
-		return stringPict.stack(self, *args)
+		result = stringPict.stack(self, *args)
+		result.baseline = self.baseline
+		return result
 
 	def top(self, *args):
-		"""Put pictures (top to bottom) at top."""
-		return stringPict.stack(*(args+(self,)))
+		"""Put pictures (top to bottom) at top.
+		Baseline is baseline of bottom picture."""
+		result = stringPict.stack(*(args+(self,)))
+		result.baseline = result.height()-self.height()+self.baseline
+		return result
 
 	def parens(self):
 		"""Put parentheses around self.
@@ -167,7 +186,7 @@ class stringPict:
 		Produces ugly results for big n inserts.
 		"""
 		#put line over expression
-		result = self.top(stringPict.LINE)
+		result = self.top('_'*self.width())
 		#construct right half of root symbol
 		height = self.height()
 		slash = '\n'.join(
@@ -273,7 +292,7 @@ class inv(expression):
 		self.function = 'inv'
 		self.args = [value]
 	def pretty(self):
-		return self.args[0].pretty().top('1', stringPict.LINE)
+		return stringPict.next('1', stringPict.LINE, self.args[0].pretty())
 
 class mul(expression):
 	def pretty(self):
@@ -324,7 +343,7 @@ class power(expression):
 		"""
 		[a, b] = self.args
 		apretty = a.pretty()
-		if isinstance(a, (neg, add, sub, inv, mul, div, power)):
+		if not isinstance(a, (atom, root, xroot, function)):
 			apretty = apretty.parens()
 		bpretty = b.pretty()
 		exponent = bpretty.left(' '*apretty.width())
@@ -350,6 +369,37 @@ class xroot(expression):
 		[a, b] = self.args
 		return a.pretty().root(b.pretty())
 
+class function(expression):
+	def __init__(self, f, *args):
+		"""Apply function f to a"""
+		self.function = 'apply'
+		self.apply = f
+		self.args = args
+	def pretty(self):
+		"""Show the function application."""
+		result = []
+		for a in self.args:
+			if result: result.append(',')
+			result.append(a.pretty())
+		if len(result)>1:
+			result = stringPict.next(result)
+		else:
+			result = result[0]
+		if len(self.args)==1 and isinstance(self.args[0], atom):
+			return result.left(self.apply, ' ')
+		else:
+			return result.parens().left(self.apply)
+
+class lim(expression):
+	def __init__(self, e, x, t):
+		"""Limit of e where x goes to t."""
+		self.function = 'lim'
+		self.args = [e, x, t]
+	def pretty(self):
+		"""Pretty limit display."""
+		e, x, t = [a.pretty() for a in self.args]
+		return stringPict('lim').below(stringPict.next(x, '->', t)).right(' ', e)
+
 if test:
 	x = atom('x')
 	one = atom('1')
@@ -367,3 +417,5 @@ if test:
 	print root(add(power(x, two), two))
 	print xroot(one, power(x, two))
 	print root(div(one, two))
+	print add(function('sin', x), function('sin', mul(two, x)))
+	print lim(div(function('sin', x), x), x, atom('0'))
