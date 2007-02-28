@@ -3,15 +3,15 @@ sys.path.append(".")
 
 import sym as g
 
-def testrational():
-    n1=g.rational(1,4)
-    n2=g.rational(1,3)
-    n3=g.rational(2,4)
-    n4=g.rational(2,-4)
-    n5=g.rational(0)
-    n6=g.rational(1)
-    n7=g.rational(3)
-    n8=g.rational(-3)
+def testRational():
+    n1=g.Rational(1,4)
+    n2=g.Rational(1,3)
+    n3=g.Rational(2,4)
+    n4=g.Rational(2,-4)
+    n5=g.Rational(0)
+    n6=g.Rational(1)
+    n7=g.Rational(3)
+    n8=g.Rational(-3)
     assert str(n1.mul(n2)) == "1/12"
     assert str(n1.mul(n2)) == "1/12"
     assert str(n3) == "1/2"
@@ -29,15 +29,15 @@ def testrational():
     assert str(n2.pow(n8)) == "27"
     assert str(n7.pow(n8)) == "1/27"
 
-def testrational_comparisons():
-    n1=g.rational(1,4)
-    n2=g.rational(1,3)
-    n3=g.rational(2,4)
-    n4=g.rational(2,-4)
-    n5=g.rational(0)
-    n6=g.rational(1)
-    n7=g.rational(3)
-    n8=g.rational(-3)
+def testRational_comparisons():
+    n1=g.Rational(1,4)
+    n2=g.Rational(1,3)
+    n3=g.Rational(2,4)
+    n4=g.Rational(2,-4)
+    n5=g.Rational(0)
+    n6=g.Rational(1)
+    n7=g.Rational(3)
+    n8=g.Rational(-3)
 
     assert n8<n5
     assert n5<n6
@@ -55,17 +55,17 @@ def test_inf():
     assert g.infty==g.infty
     assert g.infty!=1
     assert 1!=g.infty
-    assert g.infty!=g.symbol("x")**3
+    assert g.infty!=g.Symbol("x")**3
 
 def test_powers():
-    assert 64**(g.rational(1)/3)==4
-    assert 64**(g.rational(2)/3)==16
-    assert 24*64**(-g.rational(1)/2)==3
+    assert 64**(g.Rational(1)/3)==4
+    assert 64**(g.Rational(2)/3)==16
+    assert 24*64**(-g.Rational(1)/2)==3
 
 def test_realbug():
-    x=g.symbol("x")
+    x=g.Symbol("x")
     assert str(2.0*x*x)=="(2.0*x)*x"
     assert str(2.1*x*x)!="(2.0*x)*x"
 
 def test_acceptint():
-    g.real(4)
+    g.Real(4)

@@ -4,32 +4,32 @@ sys.path.append(".")
 import sym as g
 
 def testdiff():
-    a=g.symbol("a")
-    b=g.symbol("b")
-    c=g.symbol("c")
-    p=g.rational(5)
+    a=g.Symbol("a")
+    b=g.Symbol("b")
+    c=g.Symbol("c")
+    p=g.Rational(5)
     e=a*b+b**p
     assert e.diff(a) == b
     assert e.diff(b) == a+5*b**4
-    assert e.diff(b).diff(a) == g.rational(1)
+    assert e.diff(b).diff(a) == g.Rational(1)
     e=a*(b+c)
     assert e.diff(a) == b+c
     assert e.diff(b) == a
-    assert e.diff(b).diff(a) == g.rational(1)
+    assert e.diff(b).diff(a) == g.Rational(1)
     e=c**p
-    assert e.diffn(c,6) == g.rational(0)
-    assert e.diffn(c,5) == g.rational(120)
-    e=c**g.rational(2)
+    assert e.diffn(c,6) == g.Rational(0)
+    assert e.diffn(c,5) == g.Rational(120)
+    e=c**g.Rational(2)
     assert e.diff(c) == 2*c
     e=(a*b*c)
     assert e.diff(c) == a*b
 
 def testdiff2():
-    n3=g.rational(3)
-    n2=g.rational(2)
-    n6=g.rational(6)
-    x=g.symbol("x")
-    c=g.symbol("c")
+    n3=g.Rational(3)
+    n2=g.Rational(2)
+    n6=g.Rational(6)
+    x=g.Symbol("x")
+    c=g.Symbol("c")
     e=n3*(-n2+x**n2)*g.cos(x)+x*(-n6+x**n2)*g.sin(x)
     assert e == 3*((-2)+x**2)*g.cos(x)+x*((-6)+x**2)*g.sin(x)
     assert e.diff(x).expand() == x**3*g.cos(x)

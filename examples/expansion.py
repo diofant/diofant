@@ -2,8 +2,8 @@ import sys
 sys.path.append("..")
 
 import sym
-a=sym.symbol('a')
-b=sym.symbol('b')
+a=sym.Symbol('a')
+b=sym.Symbol('b')
 e=(a+b)**5
 print e
 print e.eval()

@@ -1,43 +1,48 @@
 import hashing
-from basic import basic
-from numbers import number,rational
-from power import pow,pole_error
+from basic import Basic
+from numbers import Number,Rational
+from power import Pow,pole_error
 
-class pair(basic):
+class Pair(Basic):
+    
     def __init__(self,*args):
-        basic.__init__(self)
-        if len(args)==2:
-            self.args=[args[0],args[1]]
-        elif len(args)==1:
-            self.args=args[0]
-            assert len(self.args)>1
+        Basic.__init__(self)
+        if len(args) == 2:
+            self.args = [args[0],args[1]]
+        elif len(args) == 1:
+            self.args = args[0]
+            assert len(self.args) > 1
         else:
-            raise "accept only 1 or 2 arguments"
+            raise Exception("accept only 1 or 2 arguments")
+            
     def hash(self):
         if self.mhash: 
             return self.mhash.value
-        self.mhash=hashing.mhash()
+        self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
         for i in self.args:
             self.mhash.add(i.hash())
         return self.mhash.value
+        
     def tryexpand(self,a):
-        if isinstance(a,mul) or isinstance(a,pow):
+        if isinstance(a,Mul) or isinstance(a,Pow):
             return a.expand()
         else:
             return a
+            
     def evalargs(self,a):
         b=[]
         for t in a:
             b.append(t.eval())
         return b
+        
     def flatten(self,a):
-        """flatten([add(x,4),mul(a,5),add(x,b),x]) ->
-                [x,4,mul(a,5),x,b,x] if self is add
-                [add(x,4),a,5,add(x,b),x] if self is mul
+        """flatten([add(x,4),Mul(a,5),add(x,b),x]) ->
+                [x,4,Mul(a,5),x,b,x] if self is add
+                [add(x,4),a,5,add(x,b),x] if self is Mul
 
         returns a copy of "a", where the the classes of the same type as this
-        (e.g. if we are mul, then all the muls, if we are add, then all the
+        (e.g. if we are Mul, then all the Muls, if we are add, then all the
         adds) are substituted for their arguments. all other classes are
         left intact.
         """
@@ -48,6 +53,7 @@ class pair(basic):
             else:
                 b.append(x)
         return b
+        
     def coerce(self,a,action):
         """coerce([x,y,z],action) -> action(action(action([],x),y),z)"""
         #equivalent code:
@@ -56,116 +62,127 @@ class pair(basic):
         #    exp=action(exp,x)
         #return exp
         return reduce(action,a,[])
-    def coercenumbers(self,a,action,default):
-        """coercenumbers([x,4,a,10],action,rational(1)) ->
-                (action(action(rational(1),4),10),[x,a])
+        
+    def coerce_numbers(self,a,action,default):
+        """coercenumbers([x,4,a,10],action,Rational(1)) ->
+                (action(action(Rational(1),4),10),[x,a])
 
         picks out the numbers of the list "a" and applies the action on them
-        (add or mul).
+        (add or Mul).
         """
         n=default
         b=[]
         for x in a:
-            if isinstance(x,number):
+            if isinstance(x,Number):
                 n=action(n,x)
             else:
                 b.append(x)
         return (n,b)
-    def printtree(self):
+        
+    def print_tree(self):
         def indent(s,type=1):
-            x=s.split("\n")
-            r="+--%s\n"%x[0]
+            x = s.split("\n")
+            r = "+--%s\n"%x[0]
             for a in x[1:]:
                 if a=="": continue
                 if type==1:
-                    r+="|  %s\n"%a
+                    r += "|  %s\n"%a
                 else:
-                    r+="   %s\n"%a
+                    r += "   %s\n"%a
             return r
-        if isinstance(self,mul):
-            f="mul\n"
+        if isinstance(self,Mul):
+            f="Mul\n"
         else:
-            assert(isinstance(self,add))
-            f="add\n"
+            assert(isinstance(self,Add))
+            f="Add\n"
         for a in self.args[:-1]:
-            f+=indent(a.printtree())
-        f+=indent(self.args[-1].printtree(),2)
+            f += indent(a.printtree())
+        f += indent(self.args[-1].printtree(),2)
         return f
 
-class mul(pair):
-    def printnormal(self):
-        f=""
-        a=self.args
-        if isinstance(a[0],rational):
+class Mul(Pair):
+    
+    def print_normal(self):
+        f = ""
+        a = self.args
+        if isinstance(a[0],Rational):
             if a[0].isminusone():
-                f="-"
-                a=self.args[1:]
+                f = "-"
+                a = self.args[1:]
             elif a[0].isone():
                 f = ""
-                a=self.args[1:]
+                a = self.args[1:]
         for x in a:
-            if isinstance(x,pair):
-                f+="(%s)*"
+            if isinstance(x,Pair):
+                f += "(%s)*"
             else:
-                f+="%s*"
-        f=f[:-1]
-        return f%tuple([str(x) for x in a])
-    def printprog(self):
-        f="mul(%s"+",%s"*(len(self.args)-1)+")"
-        return f%tuple([str(x) for x in self.args])
+                f += "%s*"
+        f = f[:-1]
+        return f % tuple([str(x) for x in a])
+        
+    def print_prog(self):
+        f = "Mul(%s"+",%s"*(len(self.args)-1)+")"
+        return f % tuple([str(x) for x in self.args])
+        
     def __str__(self):
-        return self.printnormal()
+        return self.print_normal()
+        
     def extractnumericandnonnumeric(self):
         "extract numeric and non numeric part"
-        if isinstance(self.args[0],number):
+        if isinstance(self.args[0],Number):
             return self.getab()
         else:
-            return (rational(1),self)
-    def getbaseandexp(self,a):
-        if isinstance(a,pow):
-            return a.getbaseandexp()
+            return (Rational(1),self)
+            
+    def get_baseandexp(self,a):
+        if isinstance(a,Pow):
+            return a.get_baseandexp()
         else:
-            return (a,rational(1))
+            return (a,Rational(1))
+            
     def eval(self):
-        "Flatten, put all rationals in the front, sort arguments"
-        def mul2(exp,x):
-            a,aexp=self.getbaseandexp(x)
-            e=[]
-            ok=False
+        "Flatten, put all Rationals in the front, sort arguments"
+        def _mul(exp,x):
+            a,aexp = self.get_baseandexp(x)
+            e = []
+            ok = False
             for y in exp:
-                b,bexp=self.getbaseandexp(y)
+                b,bexp = self.get_baseandexp(y)
                 if (not ok) and a.isequal(b):
-                    e.append(pow(a,add(aexp,bexp)).eval())
-                    ok=True
+                    e.append(Pow(a,Add(aexp,bexp)).eval())
+                    ok = True
                 else:
                     e.append(y)
             if not ok: e.append(x)
             return e
+        
         if self.evaluated: return self
-        a=self.evalargs(self.args)
-        a=self.flatten(a)
-        #create powers: a*b*a -> a^2*b
-        a=self.coerce(a,mul2)
+        a = self.evalargs(self.args)
+        a = self.flatten(a)
+        #create Powers: a*b*a -> a^2*b
+        a = self.coerce(a,_mul)
         #coerce and multiply through the numbers
-        n,a=self.coercenumbers(a,number.mulnumber,rational(1))
-        if n.iszero(): return rational(0)
-        a.sort(basic.cmphash)
+        n,a = self.coerce_numbers(a,Number.mulnumber,Rational(1))
+        if n.iszero(): return Rational(0)
+        a.sort(Basic.cmphash)
         #put the number in front of all the other args
         if not n.isone(): a=[n]+a
         if len(a)>1:
-            return mul(a).hold()
+            return Mul(a).hold()
         elif len(a)==1:
             return a[0].hold()
         else:
-            return rational(1)
+            return Rational(1)
+            
     def evalf(self):
         a,b=self.getab()
         return a.evalf()*b.evalf()
+        
     def getab(self):
         """Pretend that self=a*b and return a,b
         
         in general, self=a*b*c*d*..., but in many algorithms, we 
-        want to have just 2 arguments to mul. Use this function to 
+        want to have just 2 arguments to Mul. Use this function to 
         simulate this interface. (the returned b = b*c*d.... )
         """
         a=self.args[0]
@@ -173,10 +190,11 @@ class mul(pair):
             b=self.args[1]
         else:
             assert len(self.args) > 2
-            b=mul(self.args[1:])
+            b=Mul(self.args[1:])
         return (a,b)
+        
     def diff(self,sym):
-        r=rational(0)
+        r=Rational(0)
         for i in range(len(self.args)):
             d=self.args[i].diff(sym)
             for j in range(len(self.args)):
@@ -184,8 +202,9 @@ class mul(pair):
                     d*=self.args[j]
             r+=d
         return r.eval()
+        
     def series(self,sym,n):
-        """expansion for mul
+        """expansion for Mul
         need to handle this correctly:
         (e^x-1)/x  -> 1+x/2+x^2/6
         the first term is (e^x-1)/x evaluated at x=0. normally, we would use
@@ -195,19 +214,20 @@ class mul(pair):
         """
         a,b=self.getab()
         return (a.series(sym,n)*b.series(sym,n)).expand()
+        
     def expand(self):
-        a,b=self.getab()
-        a=self.tryexpand(a)
-        b=self.tryexpand(b)
-        if isinstance(a,add):
-            d=rational(0)
+        a,b = self.getab()
+        a = self.tryexpand(a)
+        b = self.tryexpand(b)
+        if isinstance(a,Add):
+            d = Rational(0)
             for t in a.args:
-                d+=(t*b).expand()
+                d += (t*b).expand()
             return d.eval()
-        elif isinstance(b,add):
-            d=rational(0)
+        elif isinstance(b,Add):
+            d=Rational(0)
             for t in b.args:
-                d+=(a*t).expand()
+                d += (a*t).expand()
             return d.eval()
         else:
             return a*b
@@ -216,11 +236,13 @@ class mul(pair):
         e=a.subs(old,new)*b.subs(old,new)
         return e.eval()
 
-class add(pair):
-    def printprog(self):
-        f="add(%s"+",%s"*(len(self.args)-1)+")"
-        return f%tuple([str(x) for x in self.args])
-    def printnormal(self):
+class Add(Pair):
+    
+    def print_prog(self):
+        f = "Add(%s"+",%s"*(len(self.args)-1)+")"
+        return f % tuple([str(x) for x in self.args])
+    
+    def print_normal(self):
         """Returns a string representation of the expression in self."""
         #old primitive way of printing:
         #f="%s"+"+%s"*(len(self.args)-1)
@@ -235,23 +257,23 @@ class add(pair):
             try:
                 if _temp_args[i].args[0] < 0:
                     f += "-%s"
-                    _temp_args[i].args[0] = (rational(-1)*_temp_args[i].args[0]).eval()
+                    _temp_args[i].args[0] = (Rational(-1)*_temp_args[i].args[0]).eval()
                 else:
                     f += "+%s"
             except (AttributeError, NotImplementedError):
-                if isinstance(_temp_args[1], number) and _temp_args[i] < 0:
-                        # case the second member is a negative rational
+                if isinstance(_temp_args[1], Number) and _temp_args[i] < 0:
+                        # case the second member is a negative Rational
                         f += "-%s"
-                        _temp_args[i] = (rational(-1)*_temp_args[i]).eval()
+                        _temp_args[i] = (Rational(-1)*_temp_args[i]).eval()
                 else:
                     f += "+%s"
         return f % tuple([str(x) for x in _temp_args])
                 
     def __str__(self):
-        return self.printnormal()
-        return self.printprog()
+        return self.print_normal()
+    
     def getab(self):
-        """Pretend that self=a+b and return a,b
+        """Pretend that self = a+b and return a,b
         
         in general, self=a+b+c+d+..., but in many algorithms, we 
         want to have just 2 arguments to add. Use this function to 
@@ -262,115 +284,124 @@ class add(pair):
             b=self.args[1]
         else:
             assert len(self.args) > 2
-            b=add(self.args[1:])
+            b = Add(self.args[1:])
         return (a,b)
+    
     def extractnumericandnonnumeric(self,a):
         "extract numeric and non numeric part of 'a'"
-        if isinstance(a,mul):
+        if isinstance(a,Mul):
             return a.extractnumericandnonnumeric()
-        elif isinstance(a,number):
-            return (a,rational(1))
+        elif isinstance(a,Number):
+            return (a,Rational(1))
         else:
-            return (rational(1),a)
+            return (Rational(1),a)
+        
     def eval(self):
-        "Flatten, put all rationals in the back, coerce, sort"
-        def add2(exp,x):
+        "Flatten, put all Rationals in the back, coerce, sort"
+        def _add(exp,x):
             an,a=self.extractnumericandnonnumeric(x)
             e=[]
             ok=False
             for y in exp:
                 bn,b=self.extractnumericandnonnumeric(y)
                 if (not ok) and a.isequal(b):
-                    e.append(mul(an.addnumber(bn),a).eval())
+                    e.append(Mul(an.addnumber(bn),a).eval())
                     ok=True
                 else:
                     e.append(y)
             if not ok: e.append(x)
             return e
         if self.evaluated: return self
-        a=self.evalargs(self.args)
-        a=self.flatten(a)
-        a=self.coerce(a,add2)
-        n,a=self.coercenumbers(a,number.addnumber,rational(0))
-        a.sort(basic.cmphash)
+        a = self.evalargs(self.args)
+        a = self.flatten(a)
+        a = self.coerce(a,_add)
+        n,a = self.coerce_numbers(a,Number.addnumber,Rational(0))
+        a.sort(Basic.cmphash)
         if not n.iszero(): a=[n]+a
         if len(a)>1:
-            return add(a).hold()
+            return Add(a).hold()
         elif len(a)==1:
             return a[0].hold()
         else:
-            return rational(0)
+            return Rational(0)
+        
     def evalf(self):
-        a,b=self.getab()
-        return a.evalf()+b.evalf()
+        a,b = self.getab()
+        return a.evalf() + b.evalf()
     def diff(self,sym):
-        d=rational(0)
+        d = Rational(0)
         for x in self.args:
-            d+=x.diff(sym)
+            d += x.diff(sym)
         return d.eval()
+    
     def expand(self):
         """Tries to expands all the terms in the sum."""
-        d=rational(0)
+        d = Rational(0)
         for x in self.args:
-            d+=self.tryexpand(x)
+            d += self.tryexpand(x)
         return d.eval()
+    
     def subs(self,old,new):
-        d=rational(0)
+        d = Rational(0)
         for x in self.args:
-            d+=x.subs(old,new)
+            d += x.subs(old,new)
         return d.eval()
+    
     def series(self,sym,n):
         """expansion for add
         need to handle this correctly:
         x+1/x
-        tries to use basic.series (which substitutes x->0), if it fails,
+        tries to use Basic.series (which substitutes x->0), if it fails,
         expands term by term
         """
         try:
-            return basic.series(self,sym,n)
+            return Basic.series(self,sym,n)
         except pole_error:
-            a,b=self.getab()
+            a,b = self.getab()
             #there is a cancelation problem here:
             return (a.series(sym,n)+b.series(sym,n)).eval()
 
-class ncmul(mul):
-    def printnormal(self):
-        f=""
-        a=self.args
+class NCMul(Mul):
+    
+    def print_normal(self):
+        f = ""
+        a = self.args
         for x in a:
-            if isinstance(x,pair):
-                f+="(%s)*"
+            if isinstance(x,Pair):
+                f += "(%s)*"
             else:
-                f+="%s*"
-        f=f[:-1]
-        return f%tuple([str(x) for x in a])
+                f += "%s*"
+        f = f[:-1]
+        return f % tuple([str(x) for x in a])
+        
     def __str__(self):
-        return self.printnormal()
+        return self.print_normal()
+    
     def eval(self):
-        "Flatten, put all rationals in the front, sort arguments"
-        def mul2(exp,x):
-            a,aexp=self.getbaseandexp(x)
+        "Flatten, put all Rationals in the front, sort arguments"
+        def _mul(exp,x):
+            a,aexp=self.get_baseandexp(x)
             e=[]
             ok=False
             for y in exp:
-                b,bexp=self.getbaseandexp(y)
+                b,bexp=self.get_baseandexp(y)
                 if (not ok) and a.isequal(b):
-                    e.append(pow(a,add(aexp,bexp)).eval())
+                    e.append(Pow(a,Add(aexp,bexp)).eval())
                     ok=True
                 else:
                     e.append(y)
             if not ok: e.append(x)
             return e
         if self.evaluated: return self
-        a=self.evalargs(self.args)
-        a=self.flatten(a)
-        a=self.coerce(a,mul2)
-        n,a=self.coercenumbers(a,number.mulnumber,rational(1))
-        if n.iszero(): return rational(0)
+        a = self.evalargs(self.args)
+        a = self.flatten(a)
+        a = self.coerce(a,_mul)
+        n,a = self.coerce_numbers(a,Number.mulnumber,Rational(1))
+        if n.iszero(): return Rational(0)
         if not n.isone(): a=[n]+a
         if len(a)>1:
-            return mul(a).hold()
+            return Mul(a).hold()
         elif len(a)==1:
             return a[0].hold()
         else:
-            return rational(1)
+            return Rational(1)

@@ -5,7 +5,7 @@
 import sym as g
 
 def doit():
-    x=sym.symbol("x")
+    x=sym.Symbol("x")
     s=sym.exp(x*x)
     e=s.series(x,14)
     #for a in e.args:
@@ -13,10 +13,10 @@ def doit():
     return e
 
 def lim():
-    x=g.symbol("x")
-    o=g.symbol("o")
-    #s=(g.ln(1/o+x)-x)/g.ln(1/o+g.ln(x))*(1/o)
-    #s=(g.ln(1+x)-x-g.ln(o))/ (  o*(g.ln(1+g.ln(x))-g.ln(o)) )
+    x=g.Symbol("x")
+    o=g.Symbol("o")
+    #s=(g.log(1/o+x)-x)/g.log(1/o+g.log(x))*(1/o)
+    #s=(g.log(1+x)-x-g.log(o))/ (  o*(g.log(1+g.log(x))-g.log(o)) )
     s=(g.exp(x)-1)/x
     s=s.eval()
     print s
@@ -25,8 +25,8 @@ def lim():
 print "first:"
 #lim()
 
-a=g.symbol("a")
-b=g.symbol("b")
+a=g.Symbol("a")
+b=g.Symbol("b")
 #e=(a+b)**5
 #print e
 #print e.eval()

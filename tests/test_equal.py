@@ -4,9 +4,9 @@ sys.path.append(".")
 import sym as g
 
 def testequal():
-    b=g.symbol("b")
-    a=g.symbol("a")
-    c=g.symbol("c")
+    b=g.Symbol("b")
+    a=g.Symbol("a")
+    c=g.Symbol("c")
     e1=a+b
     e2=2*a*b
     e3=a**3*b**2
@@ -18,18 +18,18 @@ def testequal():
     assert e2!=e3
     assert not e2==e3
 
-    x=g.symbol("x")
+    x=g.Symbol("x")
     e1=g.exp(x+1/x)
-    y=g.symbol("x")
+    y=g.Symbol("x")
     e2=g.exp(y+1/y)
     assert e1==e2
     assert not e1!=e2
-    y=g.symbol("y")
+    y=g.Symbol("y")
     e2=g.exp(y+1/y)
     assert not e1==e2
     assert e1!=e2
 
-    e5=g.rational(3)+2*x-x-x
+    e5=g.Rational(3)+2*x-x-x
     assert e5==3
     assert 3==e5
     assert e5!=4
@@ -38,7 +38,7 @@ def testequal():
     assert 3+x!=e5
 
 def test_expevalbug():
-    x=g.symbol("x")
+    x=g.Symbol("x")
     e1=g.exp(1*x)
     h1=e1.hash()
     e2=e1.eval()

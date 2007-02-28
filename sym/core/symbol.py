@@ -1,19 +1,19 @@
 import hashing
-from basic import basic
-from numbers import rational
+from basic import Basic
+from numbers import Rational
 
 dummycount=0
 
-class symbol(basic):
+class Symbol(Basic):
 
     def __init__(self,name,dummy=False):
-        """if dummy==True, then this symbol is totally unique, i.e.:
-            symbol("x")==symbol("x")
+        """if dummy==True, then this Symbol is totally unique, i.e.:
+            Symbol("x")==Symbol("x")
         but:
-            symbol("x",True)!=symbol("x",True)
+            Symbol("x",True)!=Symbol("x",True)
 
         """
-        basic.__init__(self)
+        Basic.__init__(self)
         self.name=name
         self.dummy=dummy
         if dummy:
@@ -27,7 +27,7 @@ class symbol(basic):
     def hash(self):
         if self.mhash: 
             return self.mhash.value
-        self.mhash=hashing.mhash()
+        self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
         self.mhash.addstr(self.name)
         if self.dummy:
@@ -36,6 +36,6 @@ class symbol(basic):
 
     def diff(self,sym):
         if self.isequal(sym):
-            return rational(1)
+            return Rational(1)
         else:
-            return rational(0)
+            return Rational(0)

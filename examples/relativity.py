@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 
-from sym import basic,exp,symbol,sin,rational
+from sym import basic,exp,Symbol,sin,Rational
 
 class matrix(basic):
     def __init__(self,mat):
@@ -14,7 +14,7 @@ class matrix(basic):
             for i in range(self.cols):
                 x=mat[j][i]
                 if isinstance(x,int):
-                    x=rational(x)
+                    x=Rational(x)
                 assert isinstance(x,basic)
                 a.append(x)
             self.mat.append(a)
@@ -49,10 +49,10 @@ def grad(f,X):
 def d(m,x):
     return grad(m[0][0],x)
 
-t=symbol("t")
-r=symbol("r")
-theta=symbol("theta")
-phi=symbol("phi")
+t=Symbol("t")
+r=Symbol("r")
+theta=Symbol("theta")
+phi=Symbol("phi")
 gdd=matrix(( (-exp(2*r),0,0,0), 
         (0, exp(2*r), 0, 0),
         (0, 0, r**2, 0),

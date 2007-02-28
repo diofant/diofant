@@ -5,12 +5,12 @@ import py
 
 import sym as g
 
-def testsubs():
-    n3=g.rational(3)
-    n2=g.rational(2)
-    n6=g.rational(6)
-    x=g.symbol("x")
-    c=g.symbol("c")
+def test_subs():
+    n3=g.Rational(3)
+    n2=g.Rational(2)
+    n6=g.Rational(6)
+    x=g.Symbol("x")
+    c=g.Symbol("c")
     e=x
     assert str(e) == "x"
     e=e.subs(x,n3)
@@ -31,16 +31,16 @@ def testsubs():
     e=e.subs(g.sin(x),g.cos(x))
     assert e == 2*g.cos(x)**2
 
-def test_lnexppow():
-    x=g.symbol("x")
-    w=g.symbol("dummy :)")
+def test_logexppow():
+    x=g.Symbol("x")
+    w=g.Symbol("dummy :)")
     e=(3**(1+x)+2**(1+x))/(3**x+2**x)
     e=e.eval()
     assert e.subs(2**x,w)!=e
-    assert e.subs(g.exp(x*g.ln(g.rational(2))),w)!=e
+    assert e.subs(g.exp(x*g.log(g.Rational(2))),w)!=e
 
 def test_bug():
-    x1=g.symbol("x1")
-    x2=g.symbol("x2")
+    x1=g.Symbol("x1")
+    x2=g.Symbol("x2")
     y=x1*x2
-    y.subs(x1,g.real(3.0))
+    y.subs(x1,g.Real(3.0))
