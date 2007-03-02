@@ -38,7 +38,7 @@ def test_basic_class():
 def test_bug():
     from sym.core.hashing import mhash
     m1=mhash()
-    m1.addstr("<class 'sym.Symbol.Symbol'>")
+    m1.addstr("<class 'sym.symbol.Symbol'>")
     m1.addstr("y")
 
     m2a=mhash()
@@ -66,3 +66,29 @@ def test_bug3():
     y=x*x
     assert y.subs(x,g.Rational(3))==9
     assert y.subs(x,g.Real(3.2))!=9
+
+def test_bug4():
+    from sym.core.hashing import mhash
+    m1=mhash()
+    m1.addstr("<class 'sym.core.symbol.Symbol'>")
+    m1.addstr("x")
+
+    m2a=mhash()
+    m2a.addstr("<class 'sym.co.functions.log'>")
+    m2a.addint(m1.value)
+
+    m2=mhash()
+    m2.addstr("<class 'sym.co.functions.log'>")
+    m2.addint(m2a.value)
+    assert m1.value!=m2.value
+
+    h = mhash()
+    h.addstr("<class 'sym.core.symbol.Symbol'>")
+    h.addstr("x")
+    hp=mhash()
+    hp.addstr("<class 'sym.core.functions.log'>")
+    hp.addint(h.value)
+    h2 = mhash()
+    h2.addstr("<class 'sym.core.functions.log'>")
+    h2.addint(hp.value)
+    assert h.value!=h2.value

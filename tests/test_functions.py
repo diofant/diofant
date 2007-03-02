@@ -44,6 +44,7 @@ def testlogexpansion():
 def testloghashingbug():
     x=s.Symbol("y")
     assert x!=s.log(s.log(x))
+    assert x.hash()!=s.log(s.log(x)).hash()
     assert s.log(x)!=s.log(s.log(s.log(x)))
 
     e=1/s.log(s.log(x)+s.log(s.log(x)))
@@ -52,6 +53,14 @@ def testloghashingbug():
     e=1/s.log(s.log(x)+s.log(s.log(s.log(x))))
     e=e.eval()
     assert isinstance(e.base,s.log)
+
+    x=s.Symbol("x")
+    e=s.log(s.log(x))
+    assert isinstance(e,s.log)
+    assert not isinstance(x,s.log)
+    assert s.log(s.log(x)).hash() != x.hash()
+    assert e!=x
+
 
 def testexpbug():
     x=s.Symbol("x")

@@ -17,6 +17,7 @@ class mhash(object):
     i2p31=2**31
     i2p32=2**32
     platform_independent=False
+    #platform_independent=True
 
     def __init__(self):
         self.value=0x3456
@@ -34,7 +35,9 @@ class mhash(object):
             for l in x:
                 self.addint(ord(l))
         else: #faster
-            self.add(hash(x))
+            #hash only last 5 letters
+            self.add(hash(x[-5:]))
+            #self.add(hash(x))
 
     def addint(self,x):
         self.add(x+3)
