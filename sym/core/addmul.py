@@ -97,8 +97,8 @@ class Pair(Basic):
             assert(isinstance(self,Add))
             f="Add\n"
         for a in self.args[:-1]:
-            f += indent(a.printtree())
-        f += indent(self.args[-1].printtree(),2)
+            f += indent(a.print_tree())
+        f += indent(self.args[-1].print_tree(),2)
         return f
 
 
