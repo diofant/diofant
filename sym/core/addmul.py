@@ -243,33 +243,21 @@ class Add(Pair):
     def print_prog(self):
         f = "Add(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
-    
+
     def print_normal(self):
         """Returns a string representation of the expression in self."""
-        #old primitive way of printing:
-        #f="%s"+"+%s"*(len(self.args)-1)
-        #return f%tuple([str(x) for x in self.args])
-
-        #sophisticated way of printing (correctly handles 2+(-x)):
-        _n = len(self.args)
-        from copy import deepcopy
-        _temp_args = deepcopy(self.args)
-        f = "%s"
-        for i in range(1,_n):
-            try:
-                if _temp_args[i].args[0] < 0:
-                    f += "-%s"
-                    _temp_args[i].args[0] = (Rational(-1)*_temp_args[i].args[0]).eval()
-                else:
-                    f += "+%s"
-            except (AttributeError, NotImplementedError):
-                if isinstance(_temp_args[1], Number) and _temp_args[i] < 0:
-                        # case the second member is a negative Rational
-                        f += "-%s"
-                        _temp_args[i] = (Rational(-1)*_temp_args[i]).eval()
-                else:
-                    f += "+%s"
-        return f % tuple([str(x) for x in _temp_args])
+        
+        f = "%s" % self.args[0]
+        for i in range(1,len(self.args)):
+            if hasattr(self.args[i], 'extractnumericandnonnumeric') \
+                and self.args[i].extractnumericandnonnumeric()[0] < 0:
+                # if the numeric part of the expression is negative
+                # we put no sign because the underlaying expression already has the sign
+                # see for example the code of Mul.print_normal()
+              f += "%s" % self.args[i]
+            else:
+              f += "+%s" % self.args[i]
+        return f    
                 
     def __str__(self):
         return self.print_normal()
