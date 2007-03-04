@@ -4,7 +4,9 @@ from numbers import Number, Rational
 from power import Pow,pole_error
 
 class Pair(Basic):
-    """Contains common code to add and mul classes."""
+    """Contains common code to add and mul classes.
+    Should not be used directly
+    """
     
     def __init__(self,*args):
         Basic.__init__(self)
@@ -79,7 +81,7 @@ class Pair(Basic):
             else:
                 b.append(x)
         return (n,b)
-        
+    
     def print_tree(self):
         def indent(s,type=1):
             x = s.split("\n")
@@ -237,7 +239,7 @@ class Mul(Pair):
     def subs(self,old,new):
         a,b = self.getab()
         e = a.subs(old,new)*b.subs(old,new)
-        if hasattr(e, 'eval'):
+        if isinstance(e, Basic):
             return e.eval()
         else:
             return e
@@ -253,7 +255,7 @@ class Add(Pair):
         
         f = "%s" % self.args[0]
         for i in range(1,len(self.args)):
-            if hasattr(self.args[i], 'extractnumericandnonnumeric') \
+            if isinstance(self.args[i], Mul) \
                 and self.args[i].extractnumericandnonnumeric()[0] < 0:
                 # if the numeric part of the expression is negative
                 # we put no sign because the underlaying expression already has the sign
