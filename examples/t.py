@@ -16,3 +16,4 @@ print e.print_tree()
 #print limit( e ,x,0)
 
 #print e.expand().subs(x,0)
+print type(Rational(2)**Rational(2))

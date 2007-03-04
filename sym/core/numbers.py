@@ -3,6 +3,17 @@ from basic import Basic, c
 import utils 
 
 class Number(Basic):
+    """Represents any kind of number in sympy.
+
+
+    Floating point numbers are represented by the Real class.
+    Integer numbers (of any size), together with rational numbers (again, there
+    is no limit on their size) are represented by the Rational class. 
+
+    If you want to represent for example 1+sqrt(2), then you need to do:
+
+    Rational(1) + Rational(2)**( Rational(1)/2 )
+    """
     
     def __init__(self):
         Basic.__init__(self)
@@ -52,6 +63,16 @@ class Infinity(Number):
 infty=Infinity()
 
 class Real(Number):
+    """Represents a floating point number.
+
+    Currently, it supports python floats only.
+
+    Usage:
+
+    Real(3.5)   .... 3.5 (the 3.5 was converted from a python float)
+    Real("3.5") .... 3.5 (currently, the 3.5 is also a python float,
+            but in the future, we could use some other library)
+    """
     
     def __init__(self,num):
         Number.__init__(self)
@@ -139,6 +160,15 @@ class Real(Number):
         return self.num
 
 class Rational(Number):
+    """Represents integers and rational numbers (p/q) of any size.
+
+    Thanks to support of long ints in Python. 
+
+    Usage:
+
+    Rational(3)      ... 3
+    Rational(1,2)    ... 1/2
+    """
     
     def __init__(self,*args):
         Number.__init__(self)
