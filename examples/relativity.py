@@ -3,7 +3,7 @@ sys.path.append("..")
 
 from sym import basic,exp,Symbol,sin,Rational
 
-class matrix(basic):
+class Matrix(Basic):
     def __init__(self,mat):
         self.lines=len(mat)
         self.cols=len(mat[0])

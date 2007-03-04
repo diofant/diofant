@@ -1,6 +1,6 @@
 import hashing
 from basic import Basic
-from numbers import Number,Rational
+from numbers import Number, Rational
 from power import Pow,pole_error
 
 class Pair(Basic):
@@ -103,7 +103,7 @@ class Pair(Basic):
 
 
 class Mul(Pair):
-    
+     
     def print_normal(self):
         f = ""
         a = self.args
@@ -164,7 +164,7 @@ class Mul(Pair):
         #create Powers: a*b*a -> a^2*b
         a = self.coerce(a,_mul)
         #coerce and multiply through the numbers
-        n,a = self.coerce_numbers(a,Number.mulnumber,Rational(1))
+        n,a = self.coerce_numbers(a, Rational.__mul__, Rational(1))
         if n.iszero(): return Rational(0)
         a.sort(Basic.cmphash)
         #put the number in front of all the other args
@@ -196,12 +196,12 @@ class Mul(Pair):
         return (a,b)
         
     def diff(self,sym):
-        r=Rational(0)
+        r = Rational(0)
         for i in range(len(self.args)):
-            d=self.args[i].diff(sym)
+            d = self.args[i].diff(sym)
             for j in range(len(self.args)):
-                if i!=j:
-                    d*=self.args[j]
+                if i != j:
+                    d *= self.args[j]
             r+=d
         return r.eval()
         
@@ -227,17 +227,21 @@ class Mul(Pair):
                 d += (t*b).expand()
             return d.eval()
         elif isinstance(b,Add):
-            d=Rational(0)
+            d = Rational(0)
             for t in b.args:
                 d += (a*t).expand()
             return d.eval()
         else:
             return a*b
+        
     def subs(self,old,new):
-        a,b=self.getab()
-        e=a.subs(old,new)*b.subs(old,new)
-        return e.eval()
-
+        a,b = self.getab()
+        e = a.subs(old,new)*b.subs(old,new)
+        if hasattr(e, 'eval'):
+            return e.eval()
+        else:
+            return e
+    
 class Add(Pair):
     
     def print_prog(self):
@@ -288,15 +292,16 @@ class Add(Pair):
         
     def eval(self):
         "Flatten, put all Rationals in the back, coerce, sort"
+        from numbers import Number
         def _add(exp,x):
-            an,a=self.extractnumericandnonnumeric(x)
-            e=[]
-            ok=False
+            an,a = self.extractnumericandnonnumeric(x)
+            e = []
+            ok = False
             for y in exp:
-                bn,b=self.extractnumericandnonnumeric(y)
+                bn,b = self.extractnumericandnonnumeric(y)
                 if (not ok) and a.isequal(b):
-                    e.append(Mul(an.addnumber(bn),a).eval())
-                    ok=True
+                    e.append(Mul(an + bn,a).eval())
+                    ok = True
                 else:
                     e.append(y)
             if not ok: e.append(x)
@@ -305,9 +310,9 @@ class Add(Pair):
         a = self.evalargs(self.args)
         a = self.flatten(a)
         a = self.coerce(a,_add)
-        n,a = self.coerce_numbers(a,Number.addnumber,Rational(0))
+        n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
         a.sort(Basic.cmphash)
-        if not n.iszero(): a=[n]+a
+        if not n.iszero(): a = [n] + a
         if len(a)>1:
             return Add(a).hold()
         elif len(a)==1:
@@ -318,6 +323,7 @@ class Add(Pair):
     def evalf(self):
         a,b = self.getab()
         return a.evalf() + b.evalf()
+    
     def diff(self,sym):
         d = Rational(0)
         for x in self.args:
@@ -370,14 +376,14 @@ class NCMul(Mul):
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
         def _mul(exp,x):
-            a,aexp=self.get_baseandexp(x)
-            e=[]
-            ok=False
+            a,aexp = self.get_baseandexp(x)
+            e = []
+            ok = False
             for y in exp:
-                b,bexp=self.get_baseandexp(y)
+                b,bexp = self.get_baseandexp(y)
                 if (not ok) and a.isequal(b):
                     e.append(Pow(a,Add(aexp,bexp)).eval())
-                    ok=True
+                    ok = True
                 else:
                     e.append(y)
             if not ok: e.append(x)
@@ -386,12 +392,12 @@ class NCMul(Mul):
         a = self.evalargs(self.args)
         a = self.flatten(a)
         a = self.coerce(a,_mul)
-        n,a = self.coerce_numbers(a,Number.mulnumber,Rational(1))
+        n,a = self.coerce_numbers(a,Rational.__mul__, Rational(1))
         if n.iszero(): return Rational(0)
         if not n.isone(): a=[n]+a
-        if len(a)>1:
+        if len(a) > 1:
             return Mul(a).hold()
-        elif len(a)==1:
+        elif len(a) == 1:
             return a[0].hold()
         else:
             return Rational(1)

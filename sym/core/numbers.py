@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic
+from basic import Basic, c
 import utils 
 
 class Number(Basic):
@@ -8,24 +8,22 @@ class Number(Basic):
         Basic.__init__(self)
         self.evaluated = True
         
-    def addnumber(self,a):
-        if isinstance(a,Real):
-            return Real(self.evalf()+a.evalf())
-        return self.add(a)
+    def __int__(self):
+        raise NotImplementedError
+        
+    def __float__(self):
+        return self.evalf()
     
-    def mulnumber(self,a):
-        if isinstance(a,Real):
-            return Real(self.evalf()*a.evalf())
-        return self.mul(a)
-    
-    def pownumber(self,a):
-        if isinstance(a,Real):
-            return Real(self.evalf()**a.evalf())
-        return self.pow(a)
+    def __abs__(self):
+        from functions import abs_
+        return abs_(self)
     
     def diff(self,sym):
         return Rational(0)
-
+    
+    def evalf(self):
+        return self.eval()
+    
 class Infinity(Number):
     """Infinity. Cannot be used in expressions like 1+infty.  
     Only as a Symbol, for example results of limits, integration limits etc.
@@ -33,29 +31,34 @@ class Infinity(Number):
     
     this class represents all kinds of infinity, i.e. both +-infty.
     """
+    
     def __init__(self):
         Number.__init__(self)
         self._sign=1
+        
     def __str__(self):
-        return "inf"
+        return "Inf"
+    
     def hash(self):
         if self.mhash: 
             return self.mhash.value
-        self.mhash=hashing.mhash()
+        self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
         return self.mhash.value
+    
     def sign(self):
         return self._sign
 
 infty=Infinity()
 
 class Real(Number):
+    
     def __init__(self,num):
         Number.__init__(self)
         if isinstance(num,str):
-            num=float(num)
+            num = float(num)
         assert isinstance(num,float) or isinstance(num,int)
-        self.num=num
+        self.num = float(num)
         
     def hash(self):
         if self.mhash: 
@@ -67,25 +70,66 @@ class Real(Number):
         
     def __str__(self):
         if self.num < 0:
-            f="(%r)"
+            f = "(%r)"
         else:
-            f="%r"
-        return f%(self.num)
+            f = "%r"
+        return f % (self.num)
+    
+    def __float__(self):
+        return float(self.num)
         
-    def add(self,a):
-        return Real(self.num+a.evalf())
+    def __int__(self):
+        return int(self.evalf())
+    
+    def __add__(self,a):
+        if utils.isnumber(a):
+            return Real(self.num + float(a))
+        else:
+            assert isinstance(a, Basic)
+            from addmul import Add
+            return Add(self, a)
         
-    def mul(self,a):
-        return Real(self.num*a.evalf())
+    def __mul__(self,a):
+        if utils.isnumber(a):
+            return Real(self.num * float(a))
+        else:
+            assert isinstance(a, Basic)
+            from addmul import Mul
+            return Mul(self, a)
         
-    def pow(self,a):
-        return Real(self.num**a.evalf())
+    def __pow__(self,a):
+        if utils.isnumber(a):
+            return Real(self.num ** float(a))
+        else:
+            assert isinstance(a, Basic)
+            from power import Pow
+            return Pow(self, a)
+        
+    def __rpow__(self, a):
+        if utils.isnumber(a):
+            return float(a) ** self.num
+        else:
+            assert isinstance(a, Basic)
+            from power import Pow
+            return Pow(a, self)
+        
+    def __lt__(self, a):
+        return self.num < a
+    
+    def __gt__(self, a):
+        return self.num > a
         
     def iszero(self):
-        return False
+        if self.num == 0:
+            return True
+        else: 
+            return False
         
     def isone(self):
-        return False
+        if self.num == 1:
+            return True
+        else:
+            return False
         
     def isinteger(self):
         return False
@@ -106,9 +150,9 @@ class Rational(Number):
             q = args[1]
         else:
             raise "invalid number of arguments"
-        assert (isinstance(p,int) or isinstance(p,long)) and \
-                (isinstance(q,int) or isinstance(q,long))
-        assert q!=0
+        assert (isinstance(p, int) or isinstance(p, long)) and \
+               (isinstance(q, int) or isinstance(q, long))
+        assert q != 0
         s = utils.sign(p)*utils.sign(q)
         p = abs(p)
         q = abs(q)
@@ -118,10 +162,7 @@ class Rational(Number):
         
     def __lt__(self,a):
         """Compares two Rational numbers."""
-        import basic
-        a=basic.c(a)
-        assert isinstance(a,Rational)
-        return self.p * a.q < self.q * a.p
+        return self.evalf() < float(a)
         
     def sign(self):
         return utils.sign(self.p)*utils.sign(self.q)
@@ -156,36 +197,102 @@ class Rational(Number):
                 f = "%d/%d"
             return f % (self.p,self.q)
             
-    def mul(self,a):
-        """Multiply two Rational numbers"""
-        return Rational(self.p*a.p,self.q*a.q)
+    def __mul__(self,a):
+        if isinstance(a, Rational):
+            return Rational(self.p * a.p, self.q * a.q)
+        elif isinstance(a, int) or isinstance(a, long):
+            return Rational(self.p * a, self.q)
+        elif utils.isnumber(a):
+            return Real(self.evalf() * float(a))
+        elif isinstance(a, Basic):
+            from addmul import Mul
+            return Mul(self, a)
+    
+    def __div__(self, a):
+        if isinstance(a, int):
+            return Rational(self.p, self.q *a)
+        return self * (a**Rational(-1))
         
-    def add(self,a):
-        """Adds two Rational numbers"""
-        return Rational(self.p*a.q+self.q*a.p,self.q*a.q)
-        
-    def pow(self,a):
-        """Returns the self to the power of "a"
-
-        "a" must be and integer (a.q==1).
-        """
-        assert a.q==1
-        if a.p > 0:
-            return Rational(self.p**a.p,self.q**a.p)
+    def __rdiv__(self, a):
+        if isinstance(a, int):
+            return Rational(self.q * a, self.p )
+        return self * (a**Rational(-1))
+    
+    def __add__(self,a):
+        if isinstance(a, Rational):
+            return Rational(self.p*a.q+self.q*a.p,self.q*a.q)
+        elif isinstance(a, int) or isinstance(a, long):
+            return Rational(self.p + a*self.q, self.q)
+        elif utils.isnumber(a):
+            return Real(self.evalf() + float(a) )
+        elif isinstance(a, Basic):
+            from addmul import Add
+            return Add(self, a).eval()
         else:
-            return Rational(self.q**(-a.p),self.p**(-a.p))
+            raise ValueError
+        #return self.evalf() + float(a)
+        
+    def __pow__(self,a):
+        """Returns the self to the power of "a"
+        """
+        from power import Pow, pole_error
+    
+        if utils.isnumber(a):
+            if self.p == 0:
+                if a < 0:
+                    # 0 ** a = undefined, where a <= 0 
+                    raise pole_error("pow::eval(): Division by 0.")
+                elif a == 0:
+                    return Rational(1)
+                    #FIXME : mathematically wrong but needed for limits.py
+                else:
+                    # 0 ** a = 0, where a > 0
+                    return Rational(0)
+            elif isinstance(a, Rational):
+                if a.q == 1:
+                    if a.p > 0:
+                        return Rational(self.p ** a.p, self.q ** a.p)
+                    else:
+                        return Rational(self.q**(-a.p),self.p**(-a.p))
+        return Pow(self, c(a))
             
+    def __rpow__(self, a):  
+        """Returns "a" to the power of self
+        """
+        from power import Pow
+        if self.p == 0:
+            return Rational(1)
+        elif a == 0:
+            return Rational(0)
+        if self.q != 1:
+            #if self is an integer
+            if hasattr(a, 'evalf'):
+                return Pow(a.evalf(), self)
+            else:
+                return Pow(c(a), self)
+        elif isinstance(a, Rational):
+            if self.p > 0:
+                return Rational(a.p ** self.p, a.q ** self.p)
+            else:
+                return Rational(a.q ** (-self.p), a.p ** (-self.p))
+        elif isinstance(a, int):
+            if self.p > 0:
+                return Rational(a ** self.p)
+            else:
+                return Rational(1, a ** -(self.p))
+        return Pow(a, self )
+    
     def iszero(self):
-        return self.p==0 
+        return self.p == 0 
         
     def isone(self):
-        return self.p==1 and self.q==1
+        return self.p == 1 and self.q == 1
         
     def isminusone(self):
-        return self.p==-1 and self.q==1
+        return self.p == -1 and self.q == 1
         
     def isinteger(self):
-        return self.q==1
+        return self.q == 1
         
     def getinteger(self):
         assert self.isinteger()
@@ -196,3 +303,4 @@ class Rational(Number):
         
     def diff(self,sym):
         return Rational(0)
+    

@@ -164,7 +164,7 @@ class stringPict:
 		if height==1:
 			return stringPict('(').right(self, ')')
 		else:
-			verticalBar = '\n'+'|\n'*(self.height()-2)
+			verticalBar = '\n' + '|\n' * (self.height()-2)
 			lparen = stringPict('/'+verticalBar+'\\',self.baseline)
 			rparen = stringPict('\\'+verticalBar+'/',self.baseline)
 			return lparen.right(self, rparen)
@@ -174,7 +174,7 @@ class stringPict:
 		"""
 		height = max(
 			self.baseline,
-			self.height()-1-self.baseline)*2+1
+			self.height()-1-self.baseline)*2 + 1
 		slash = '\n'.join(
 			' '*(height-i-1)+'/'+' '*i
 			for i in range(height)
@@ -190,12 +190,12 @@ class stringPict:
 		#construct right half of root symbol
 		height = self.height()
 		slash = '\n'.join(
-			' '*(height-i-1)+'/'+' '*i
+			' ' * (height-i-1) + '/' + ' ' * i
 			for i in range(height)
 			)
 		slash = stringPict(slash, height-1)
 		#left half of root symbol
-		if height>2:
+		if height > 2:
 			downline = stringPict('\\ \n \\',1)
 		else:
 			downline = stringPict('\\')

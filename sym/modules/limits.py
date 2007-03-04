@@ -76,10 +76,10 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
-debug=False
+debug = False
 #debug=True
 
-whattosubs=None
+whattosubs = None
 
 def intersect(a,b):
     for x in a:

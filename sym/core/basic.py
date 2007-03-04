@@ -1,13 +1,14 @@
 from utils import sign
 
 class Basic(object):
+    
     def __init__(self):
         self.evaluated = False;
         self.mhash = 0
         
     def __repr__(self):
         return str(self)
-        
+    
     def __neg__(self):
         from numbers import Rational
         return _domul(Rational(-1),self)
@@ -16,22 +17,22 @@ class Basic(object):
         return self
         
     def __add__(self,a):
-        return _doadd(self,a)
+        return _doadd(self, a)
         
     def __radd__(self,a):
-        return _doadd(a,self)
+        return _doadd(a, self)
         
     def __sub__(self,a):
-        return _doadd(self,-a)
+        return _doadd(self, -a)
         
     def __rsub__(self,a):
-        return _doadd(a,-self)
+        return _doadd(a, -self)
         
     def __mul__(self,a):
-        return _domul(self,a)
+        return _domul(self, a)
         
     def __rmul__(self,a):
-        return _domul(a,self)
+        return _domul(a, self)
         
     def __div__(self,a):
         from numbers import Rational
@@ -39,13 +40,13 @@ class Basic(object):
         
     def __rdiv__(self,a):
         from numbers import Rational
-        return _domul(a,_dopow(self,Rational(-1)))
+        return _domul(c(self) ** Rational(-1), c(a))
         
     def __pow__(self,a):
-        return _dopow(self,a)
+        return _dopow(self, a)
         
     def __rpow__(self,a):
-        return _dopow(a,self)
+        return _dopow(a, self)
         
     def __eq__(self,a):
         return self.eval().isequal(c(a).eval())
@@ -94,7 +95,7 @@ class Basic(object):
         for i in range(1,n+1):
             fact *= Rational(i)
             f = f.diff(sym)
-            e += f.subs(sym,Rational(0))*sym**i/fact
+            e += f.subs(sym,Rational(0))*(sym**i)/fact
         return e.eval()
         
     def subs(self,old,new):
@@ -166,16 +167,16 @@ class Basic(object):
         
 def _doadd(a,b):
     from addmul import Add
-    return Add(c(a),c(b))
+    return Add(c(a), c(b))
 
-def _domul(a,b):
+def _domul(a, b):
     from addmul import Mul
-    return Mul(c(a),c(b))
+    return Mul(c(a), c(b))
 
-def _dopow(a,b):
-    from power import Pow
-    return Pow(c(a),c(b))
-    
+def _dopow(a, b):
+    from addmul import Pow
+    return Pow(c(a), c(b))
+
 def c(a):
     """for "a" int, returns Rational(a), for "a" float returns real, 
     otherwise "a"."""
@@ -187,3 +188,4 @@ def c(a):
     else:
         assert isinstance(a,Basic)
         return a
+
