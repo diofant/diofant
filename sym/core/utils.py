@@ -6,6 +6,6 @@ def sign(x):
 def isnumber(x):
     """Return true if x is a number. 
     """
-    # we suppose that if a class has the __float__ method, then it contains
-    # a numberic data type
-    return hasattr(x, '__float__')
+    from numbers import Number
+    return isinstance(x, Number) or isinstance(x, int) or \
+         isinstance(x, float) or isinstance(x, long)
