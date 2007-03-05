@@ -131,13 +131,6 @@ class Mul(Pair):
     def __str__(self):
         return self.print_normal()
         
-    def extractnumericandnonnumeric(self):
-        "extract numeric and non numeric part"
-        if isinstance(self.args[0],Number):
-            return self.getab()
-        else:
-            return (Rational(1),self)
-            
     def get_baseandexp(self,a):
         if isinstance(a,Pow):
             return a.get_baseandexp()
@@ -255,11 +248,8 @@ class Add(Pair):
         
         f = "%s" % self.args[0]
         for i in range(1,len(self.args)):
-            if isinstance(self.args[i], Mul) \
-                and self.args[i].extractnumericandnonnumeric()[0] < 0:
-                # if the numeric part of the expression is negative
-                # we put no sign because the underlaying expression already has the sign
-                # see for example the code of Mul.print_normal()
+            num_part = _extract_numeric(self.args[i])[0]
+            if num_part < 0:
               f += "%s" % self.args[i]
             else:
               f += "+%s" % self.args[i]
@@ -283,24 +273,17 @@ class Add(Pair):
             b = Add(self.args[1:])
         return (a,b)
     
-    def extractnumericandnonnumeric(self,a):
-        "extract numeric and non numeric part of 'a'"
-        if isinstance(a,Mul):
-            return a.extractnumericandnonnumeric()
-        elif isinstance(a,Number):
-            return (a,Rational(1))
-        else:
-            return (Rational(1),a)
+
         
     def eval(self):
         "Flatten, put all Rationals in the back, coerce, sort"
-        from numbers import Number
+ 
         def _add(exp,x):
-            an,a = self.extractnumericandnonnumeric(x)
+            an, a = _extract_numeric(x)
             e = []
             ok = False
             for y in exp:
-                bn,b = self.extractnumericandnonnumeric(y)
+                bn, b = _extract_numeric(y)
                 if (not ok) and a.isequal(b):
                     e.append(Mul(an + bn,a).eval())
                     ok = True
@@ -308,6 +291,7 @@ class Add(Pair):
                     e.append(y)
             if not ok: e.append(x)
             return e
+        
         if self.evaluated: return self
         a = self.evalargs(self.args)
         a = self.flatten(a)
@@ -377,6 +361,7 @@ class NCMul(Mul):
     
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
+        
         def _mul(exp,x):
             a,aexp = self.get_baseandexp(x)
             e = []
@@ -390,6 +375,7 @@ class NCMul(Mul):
                     e.append(y)
             if not ok: e.append(x)
             return e
+        
         if self.evaluated: return self
         a = self.evalargs(self.args)
         a = self.flatten(a)
@@ -403,3 +389,13 @@ class NCMul(Mul):
             return a[0].hold()
         else:
             return Rational(1)
+
+def _extract_numeric(x):
+    """Returns the numeric and symbolic part of x.
+    For example, 1*x -> (1,x)
+    Works only with simple expressions. 
+    """
+    if isinstance(x, Mul) and isinstance(x.args[0], Number):
+        return x.getab()
+    else:
+        return (Rational(1), x)
