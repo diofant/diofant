@@ -189,8 +189,20 @@ class Basic(object):
         return self
 
     def conjugate(self):
+        """Returns a  complex conjugate of self. 
+        
+        Note: this implementeation assumes that all Symbols are real,
+        so we just need to change the sign at "i".
+        """
         from numbers import I
         return self.subs(I,-I)
+
+    def sqrt(self):
+        from numbers import Rational
+        return (self**(Rational(1)/2)).eval()
+
+    def abs(self):
+        return (self*self.conjugate()).expand().sqrt()
         
     def print_tree(self):
         """The canonical tree representation

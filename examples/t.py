@@ -25,3 +25,4 @@ e=(x+I*y)*(x-I*y)
 e=x+I*y
 print e.eval()
 print e.eval().conjugate()
+print e.abs()
