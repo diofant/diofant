@@ -7,5 +7,4 @@ def isnumber(x):
     """Return true if x is a number. 
     """
     from numbers import Number
-    return isinstance(x, Number) or isinstance(x, int) or \
-         isinstance(x, float) or isinstance(x, long)
+    return isinstance(x, (Number, int, float, long))
