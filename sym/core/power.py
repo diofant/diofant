@@ -1,7 +1,7 @@
 import hashing
 from basic import Basic
 from symbol import Symbol
-from numbers import Rational,Real,Number
+from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
 
 class pole_error(Exception):
@@ -78,6 +78,10 @@ class Pow(Basic):
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
             return (pow(a,self.exp) * pow(b,self.exp)).eval()
+        if isinstance(self.base,ImaginaryUnit):
+            if isinstance(self.exp,Rational) and self.exp.isinteger():
+                if self.exp.getinteger()==2:
+                    return (-Rational(1)).eval()
         return pow(self.base,self.exp).hold()
         
     def evalf(self):

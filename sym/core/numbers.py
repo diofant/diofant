@@ -334,3 +334,18 @@ class Rational(Number):
     def diff(self,sym):
         return Rational(0)
     
+
+class ImaginaryUnit(Basic):
+    """Imaginary unit "i"."""
+
+    def __str__(self):
+        return "i"
+
+    def hash(self):
+        if self.mhash: 
+            return self.mhash.value
+        self.mhash = hashing.mhash()
+        self.mhash.addstr(str(type(self)))
+        return self.mhash.value
+
+I=ImaginaryUnit()

@@ -69,3 +69,10 @@ def test_realbug():
 
 def test_acceptint():
     g.Real(4)
+
+def test_complex():
+    a=g.Symbol("a")
+    b=g.Symbol("b")
+    e=(a+g.I*b)*(a-g.I*b)
+    assert e.expand()==a**2+b**2
+    assert e.expand()!=a**2-b**2
