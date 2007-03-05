@@ -100,7 +100,7 @@ class Basic(object):
         
     def subs(self,old,new):
         if self.isequal(old):
-            return new
+            return sympify(new)
         else:
             return self
             

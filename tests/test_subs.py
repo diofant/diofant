@@ -44,3 +44,8 @@ def test_bug():
     x2=g.Symbol("x2")
     y=x1*x2
     y.subs(x1,g.Real(3.0))
+
+def test_subbug1():
+    x=g.Symbol("x")
+    e=(x**x).subs(x,1)
+    e=(x**x).subs(x,1.0)
