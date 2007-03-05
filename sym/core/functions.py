@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic, c
+from basic import Basic, sympify
 from numbers import Rational, Real
 
 
@@ -10,7 +10,7 @@ class Function(Basic):
     
     def __init__(self,arg):
         Basic.__init__(self)
-        self.arg = c(arg)
+        self.arg = sympify(arg)
         
     def hash(self):
         if self.mhash: 

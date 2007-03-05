@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic, c
+from basic import Basic, sympify
 import utils 
 
 class Number(Basic):
@@ -284,7 +284,7 @@ class Rational(Number):
                         return Rational(self.p ** a.p, self.q ** a.p)
                     else:
                         return Rational(self.q**(-a.p),self.p**(-a.p))
-        return Pow(self, c(a))
+        return Pow(self, sympify(a))
             
     def __rpow__(self, a):  
         """Returns "a" to the power of self
@@ -299,7 +299,7 @@ class Rational(Number):
             if hasattr(a, 'evalf'):
                 return Pow(a.evalf(), self)
             else:
-                return Pow(c(a), self)
+                return Pow(sympify(a), self)
         elif isinstance(a, Rational):
             if self.p > 0:
                 return Rational(a.p ** self.p, a.q ** self.p)

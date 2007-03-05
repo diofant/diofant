@@ -40,7 +40,7 @@ class Basic(object):
         
     def __rdiv__(self,a):
         from numbers import Rational
-        return _domul(c(self) ** Rational(-1), c(a))
+        return _domul(sympify(self) ** Rational(-1), sympify(a))
         
     def __pow__(self,a):
         return _dopow(self, a)
@@ -49,7 +49,7 @@ class Basic(object):
         return _dopow(a, self)
         
     def __eq__(self,a):
-        return self.eval().isequal(c(a).eval())
+        return self.eval().isequal(sympify(a).eval())
         
     def __ne__(self,a):
         return not self.__eq__(a)
@@ -167,19 +167,19 @@ class Basic(object):
         
 def _doadd(a,b):
     from addmul import Add
-    return Add(c(a), c(b))
+    return Add(sympify(a), sympify(b))
 
 def _domul(a, b):
     from addmul import Mul
-    return Mul(c(a), c(b))
+    return Mul(sympify(a), sympify(b))
 
 def _dopow(a, b):
     from addmul import Pow
-    return Pow(c(a), c(b))
+    return Pow(sympify(a), sympify(b))
 
-def c(a):
+def sympify(a):
     """for "a" int, returns Rational(a), for "a" float returns real, 
-    otherwise "a"."""
+    otherwise "a" (=it's a Basic subclass)."""
     from numbers import Rational, Real
     if isinstance(a,int):
         return Rational(a)
