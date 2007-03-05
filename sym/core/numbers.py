@@ -232,11 +232,12 @@ class Rational(Number):
             return Rational(self.p * a.p, self.q * a.q)
         elif isinstance(a, int) or isinstance(a, long):
             return Rational(self.p * a, self.q)
-        elif utils.isnumber(a):
-            return Real(self.evalf() * float(a))
-        elif isinstance(a, Basic):
+        else:
             from addmul import Mul
             return Mul(self, a)
+    
+    def __rmul__(self, a):
+        return self.__mul__(a)
     
     def __div__(self, a):
         if isinstance(a, int):
@@ -253,14 +254,9 @@ class Rational(Number):
             return Rational(self.p*a.q+self.q*a.p,self.q*a.q)
         elif isinstance(a, int) or isinstance(a, long):
             return Rational(self.p + a*self.q, self.q)
-        elif utils.isnumber(a):
-            return Real(self.evalf() + float(a) )
-        elif isinstance(a, Basic):
-            from addmul import Add
-            return Add(self, a).eval()
         else:
-            raise ValueError
-        #return self.evalf() + float(a)
+            from addmul import Add
+            return Add(self, a)
         
     def __pow__(self,a):
         """Returns the self to the power of "a"

@@ -7,7 +7,21 @@ def sign(x):
     else: return 1
     
 def isnumber(x):
-    """Return True if x is a number. 
+    """Return True if x is a number. False otherwise. 
     """
+    
     from numbers import Number
-    return isinstance(x, (Number, int, float, long))
+    from addmul import Pair
+    
+    if isinstance(x, (Number, int, float, long)):
+        return True
+    elif isinstance(x, Pair):
+        try:
+            x.evalf()
+            # if x has symbols it will raise
+            # an exception, which we will catch
+            # and return False
+            return True
+        except ValueError:
+            return False
+    return False

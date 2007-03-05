@@ -17,6 +17,9 @@ class Pair(Basic):
             assert len(self.args) > 1
         else:
             raise Exception("accept only 1 or 2 arguments")
+        
+    def __lt__(self, a):
+        return self.evalf() < a
             
     def hash(self):
         if self.mhash: 
@@ -139,6 +142,7 @@ class Mul(Pair):
             
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
+        
         def _mul(exp,x):
             a,aexp = self.get_baseandexp(x)
             e = []
@@ -160,10 +164,12 @@ class Mul(Pair):
         a = self.coerce(a,_mul)
         #coerce and multiply through the numbers
         n,a = self.coerce_numbers(a, Rational.__mul__, Rational(1))
-        if n.iszero(): return Rational(0)
+        if hasattr(n, 'iszero') and n.iszero(): 
+                return Rational(0)
         a.sort(Basic.cmphash)
         #put the number in front of all the other args
-        if not n.isone(): a=[n]+a
+        if hasattr(n, 'isone') and (not n.isone()): 
+            a=[n]+a
         if len(a)>1:
             return Mul(a).hold()
         elif len(a)==1:
@@ -172,9 +178,12 @@ class Mul(Pair):
             return Rational(1)
             
     def evalf(self):
-        a,b=self.getab()
-        return a.evalf()*b.evalf()
-        
+        a, b = self.getab()
+        if hasattr(a, 'evalf') and hasattr(b, 'evalf'):
+            return a.evalf()*b.evalf()
+        else: 
+            raise ValueError("Can not evaluate a symbolic value")
+            
     def getab(self):
         """Pretend that self=a*b and return a,b
         
@@ -308,7 +317,10 @@ class Add(Pair):
         
     def evalf(self):
         a,b = self.getab()
-        return a.evalf() + b.evalf()
+        if hasattr(a, 'evalf') and hasattr(b, 'evalf'):
+            return a.evalf() + b.evalf()
+        else:
+            raise ValueError('Can not evaluate a symbolic value')
     
     def diff(self,sym):
         d = Rational(0)

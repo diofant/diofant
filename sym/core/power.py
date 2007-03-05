@@ -85,7 +85,10 @@ class Pow(Basic):
         return pow(self.base,self.exp).hold()
         
     def evalf(self):
-        return self.base.evalf()**self.exp.evalf()
+        if hasattr(self.base, 'evalf') and hasattr(self.exp, 'evalf'):
+            return self.base.evalf()**self.exp.evalf()
+        else: 
+            raise ValueError('Can not evaluate a symbolic value')
         
     def diff(self,sym):
         f = self.base
