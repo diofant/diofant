@@ -11,51 +11,66 @@ class Basic(object):
     
     def __neg__(self):
         from numbers import Rational
-        return _domul(Rational(-1),self)
+        return self._domul(Rational(-1),self)
         
     def __pos__(self):
         return self
         
     def __add__(self,a):
-        return _doadd(self, a)
+        return self._doadd(self, a)
         
     def __radd__(self,a):
-        return _doadd(a, self)
+        return self._doadd(a, self)
         
     def __sub__(self,a):
-        return _doadd(self, -a)
+        return self._doadd(self, -a)
         
     def __rsub__(self,a):
-        return _doadd(a, -self)
+        return self._doadd(a, -self)
         
     def __mul__(self,a):
-        return _domul(self, a)
+        return self._domul(self, a)
         
     def __rmul__(self,a):
-        return _domul(a, self)
+        return self._domul(a, self)
         
     def __div__(self,a):
         from numbers import Rational
-        return _domul(self,_dopow(a,Rational(-1)))
+        return self._domul(self,self._dopow(a,Rational(-1)))
         
     def __rdiv__(self,a):
         from numbers import Rational
-        return _domul(sympify(self) ** Rational(-1), sympify(a))
+        return self._domul(self.sympify(self) ** Rational(-1), self.sympify(a))
         
     def __pow__(self,a):
-        return _dopow(self, a)
+        return self._dopow(self, a)
         
     def __rpow__(self,a):
-        return _dopow(a, self)
+        return self._dopow(a, self)
         
     def __eq__(self,a):
-        return self.eval().isequal(sympify(a).eval())
+        return self.eval().isequal(self.sympify(a).eval())
         
     def __ne__(self,a):
         return not self.__eq__(a)
         
     def __lt__(self,a):
         raise NotImplementedError("'<' not supported.")
+
+    @staticmethod
+    def _doadd(a,b):
+        from addmul import Add
+        return Add(Basic.sympify(a), Basic.sympify(b))
+
+    @staticmethod
+    def _domul(a, b):
+        from addmul import Mul
+        return Mul(Basic.sympify(a), Basic.sympify(b))
+
+    @staticmethod
+    def _dopow(a, b):
+        from addmul import Pow
+        return Pow(Basic.sympify(a), Basic.sympify(b))
 
     def eval(self):
         """Returns canonical form of myself. 
@@ -74,6 +89,19 @@ class Basic(object):
         and eval don't have to do anything."""
         self.evaluated = True
         return self
+    
+    @staticmethod
+    def sympify(a):
+        """for "a" int, returns Rational(a), for "a" float returns real, 
+        otherwise "a" (=it's a Basic subclass)."""
+        from numbers import Rational, Real
+        if isinstance(a,int):
+            return Rational(a)
+        elif isinstance(a,float):
+            return Real(a)
+        else:
+            assert isinstance(a,Basic)
+            return a
         
     def isequal(self,a):
         return self.hash() == a.hash()
@@ -100,7 +128,7 @@ class Basic(object):
         
     def subs(self,old,new):
         if self.isequal(old):
-            return sympify(new)
+            return self.sympify(new)
         else:
             return self
             
@@ -164,28 +192,3 @@ class Basic(object):
         """The canonical tree representation
         """
         return str(self)
-        
-def _doadd(a,b):
-    from addmul import Add
-    return Add(sympify(a), sympify(b))
-
-def _domul(a, b):
-    from addmul import Mul
-    return Mul(sympify(a), sympify(b))
-
-def _dopow(a, b):
-    from addmul import Pow
-    return Pow(sympify(a), sympify(b))
-
-def sympify(a):
-    """for "a" int, returns Rational(a), for "a" float returns real, 
-    otherwise "a" (=it's a Basic subclass)."""
-    from numbers import Rational, Real
-    if isinstance(a,int):
-        return Rational(a)
-    elif isinstance(a,float):
-        return Real(a)
-    else:
-        assert isinstance(a,Basic)
-        return a
-

@@ -25,5 +25,5 @@ print e
 print e.eval()
 print e.expand()
 
-e=2*pi
-print cos(e).eval()
+e=x+I*y
+print e.eval().conjugate()
