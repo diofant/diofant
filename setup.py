@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-#from distutils.command.build_py import build_py
 from distutils.core import setup
 from distutils.core import Command
 from distutils.extension import Extension
