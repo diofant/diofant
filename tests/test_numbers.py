@@ -80,7 +80,7 @@ def test_complex():
     assert (a+g.I*b).conjugate() !=  a+g.I*b
     assert (a+g.I*b).conjugate() ==  a-g.I*b
 
-    assert (a).abs() == a
-    assert (-a).abs() == a
-    assert (-a).abs() != -a
-    assert (a+g.I*b).abs() == (a*a+b*b).sqrt()
+    assert abs(a) == a
+    assert abs(-a) == a
+    assert abs(-a) != -a
+    assert abs(a+g.I*b) == (a*a+b*b).sqrt()

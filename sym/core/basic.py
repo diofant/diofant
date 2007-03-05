@@ -18,6 +18,19 @@ class Basic(object):
         
     def __add__(self,a):
         return self._doadd(self, a)
+    
+    def __abs__(self):
+        """Returns the absolute value of self. 
+        
+        Example usage: 
+        >>> from sym import *
+        >>> abs(1+2*I)
+        5^1/2
+        >>> x = Symbol('x')
+        >>> abs(-x)
+        x
+        """
+        return (self*self.conjugate()).expand().sqrt()
         
     def __radd__(self,a):
         return self._doadd(a, self)
@@ -202,9 +215,6 @@ class Basic(object):
         from numbers import Rational
         return (self**(Rational(1)/2)).eval()
 
-    def abs(self):
-        """Returns an absolute value of self"""
-        return (self*self.conjugate()).expand().sqrt()
         
     def print_tree(self):
         """The canonical tree representation
