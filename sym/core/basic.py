@@ -198,10 +198,12 @@ class Basic(object):
         return self.subs(I,-I)
 
     def sqrt(self):
+        """Returns square root of self."""
         from numbers import Rational
         return (self**(Rational(1)/2)).eval()
 
     def abs(self):
+        """Returns an absolute value of self"""
         return (self*self.conjugate()).expand().sqrt()
         
     def print_tree(self):
