@@ -349,3 +349,20 @@ class ImaginaryUnit(Basic):
         return self.mhash.value
 
 I=ImaginaryUnit()
+
+class Constant(Basic):
+    """Mathematical constant abstract class."""
+
+    def hash(self):
+        if self.mhash: 
+            return self.mhash.value
+        self.mhash = hashing.mhash()
+        self.mhash.addstr(str(type(self)))
+        return self.mhash.value
+
+class ConstPi(Constant):
+
+    def __str__(self):
+        return "pi"
+
+pi=ConstPi()

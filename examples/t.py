@@ -1,9 +1,10 @@
 #a sandbox, for playing with new ideas and algorithms
 
+
 import sys
 sys.path.append("..")
 
-from sym import exp,log,Symbol,infty,Rational,sin,cos,limit,I
+from sym import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi
 
 x=Symbol("x") 
 y=Symbol("y") 
@@ -23,3 +24,6 @@ e=(x+I*y)*(x-I*y)
 print e
 print e.eval()
 print e.expand()
+
+e=2*pi
+print cos(e).eval()

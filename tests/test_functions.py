@@ -70,3 +70,9 @@ def testexpexpand():
     x=s.Symbol("x")
     e=s.exp(s.log(s.Rational(2))*(1+x)-s.log(s.Rational(2))*x)
     assert e.expand()==2
+
+def test_pi():
+    assert s.cos(s.pi)==-1
+    assert s.cos(2*s.pi)==1
+    assert s.sin(s.pi)==0
+    assert s.sin(2*s.pi)==0
