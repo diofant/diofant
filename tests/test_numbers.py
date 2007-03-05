@@ -74,5 +74,8 @@ def test_complex():
     a=g.Symbol("a")
     b=g.Symbol("b")
     e=(a+g.I*b)*(a-g.I*b)
-    assert e.expand()==a**2+b**2
-    assert e.expand()!=a**2-b**2
+    assert e.expand() == a**2+b**2
+    assert e.expand() != a**2-b**2
+
+    assert (a+g.I*b).conjugate() !=  a+g.I*b
+    assert (a+g.I*b).conjugate() ==  a-g.I*b

@@ -21,9 +21,7 @@ e=(2*x-(7*x**2 - 2) + 3*y)
 #print e.expand().subs(x,0)
 #print type(Rational(2)**Rational(2))
 e=(x+I*y)*(x-I*y)
-print e
-print e.eval()
-print e.expand()
 
 e=x+I*y
+print e.eval()
 print e.eval().conjugate()

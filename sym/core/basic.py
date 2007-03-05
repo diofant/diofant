@@ -187,6 +187,10 @@ class Basic(object):
         
     def expand(self):
         return self
+
+    def conjugate(self):
+        from numbers import I
+        return self.subs(I,-I)
         
     def print_tree(self):
         """The canonical tree representation
