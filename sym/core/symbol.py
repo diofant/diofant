@@ -1,10 +1,12 @@
 import hashing
-from basic import Basic
+from basic import Basic,AutomaticEvaluationType
 from numbers import Rational
 
 dummycount=0
 
 class Symbol(Basic):
+
+    #__metaclass__ = AutomaticEvaluationType
 
     def __init__(self,name,dummy=False):
         """if dummy==True, then this Symbol is totally unique, i.e.:

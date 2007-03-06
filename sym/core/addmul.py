@@ -8,7 +8,7 @@ class Pair(Basic):
     Should not be used directly
     """
 
-#    __metaclass__ = AutomaticEvaluationType
+    #__metaclass__ = AutomaticEvaluationType
     
     def __init__(self,*args):
         Basic.__init__(self)
