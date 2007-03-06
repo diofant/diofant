@@ -92,3 +92,7 @@ def test_bug4():
     h2.addstr("<class 'sym.core.functions.log'>")
     h2.addint(hp.value)
     assert h.value!=h2.value
+
+def test_bug5():
+    x=g.Symbol("x")
+    assert g.cos(x)/g.sin(x)!=g.sin(x)/g.cos(x)

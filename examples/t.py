@@ -33,8 +33,4 @@ y=Symbol("y")
 #if (1-x).subs(x,1) == 0.0:
 #    print "I found a root 0.0"
 
-d=Symbol("a",dummy=True)
-
-e=1/(1+1/x)
-print e
-print e.series(x,3)
+print cos(x)/sin(x)==sin(x)/cos(x)
