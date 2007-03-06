@@ -13,9 +13,9 @@ depends on the order of objects added.
 """
 
 def mhash():
-    return Mmd5()
+    #return Mmd5()
     #return Mbernstein()
-    #return Mpython()
+    return Mpython()
 
 class HashAlgorithm(object):
 
