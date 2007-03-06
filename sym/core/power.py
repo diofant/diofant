@@ -115,7 +115,7 @@ class Pow(Basic):
                         e += (-1)**i * Phi**i
                     e *= sym ** (-e0) / c0
                     #print n,Phi,c0,e0,g,self.base
-                    return e.eval()
+                    return e.expand()
                 if not isinstance(self.exp,Rational):
                     e = exp(self.exp * log(self.base)).eval()
                     return e.series(sym,n)

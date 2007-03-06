@@ -35,7 +35,6 @@ y=Symbol("y")
 
 d=Symbol("a",dummy=True)
 
-e=x+y
-f=e
+e=1/(1+1/x)
 print e
-print Mul(e,f,evaluated=True).expand()
+print e.series(x,3)
