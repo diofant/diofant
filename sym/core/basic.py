@@ -37,7 +37,8 @@ class Basic(object):
         >>> abs(-x)
         x
         """
-        return (self*self.conjugate()).expand().sqrt()
+        from functions import sqrt
+        return sqrt(self*self.conjugate())#.expand()
         
     def __radd__(self,a):
         return self._doadd(a, self)
@@ -75,7 +76,11 @@ class Basic(object):
         return not self.__eq__(a)
         
     def __lt__(self,a):
-        raise NotImplementedError("'<' not supported.")
+        from utils import isnumber
+        if isnumber(self):
+            return self.evalf() < a
+        else:
+            raise NotImplementedError("'<' not supported.")
 
     @staticmethod
     def _doadd(a,b):
