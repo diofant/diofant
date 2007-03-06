@@ -19,9 +19,10 @@ def test_poly_str():
     #assert str(x-2) == "x-2"
     assert str((x-y-z-w)) in ["x-y-z-w","-w-y-z+x","x-w-y-z"]
     assert str((x-y-z-w).eval()) in ["-w-y-z+x","x-w-y-z","-w+x-z-y",
-            "-y-w-z+x"]
+            "-y-w-z+x","-y+x-z-w","-y+x-w-z"]
     assert str((x-z*y**2*z*w).eval()) in ["-z^2*y^2*w+x", "x-w*y^2*z^2",
-            "-y^2*z^2*w+x","x-w*z^2*y^2","x-y^2*z^2*w","x-y^2*w*z^2"]
+            "-y^2*z^2*w+x","x-w*z^2*y^2","x-y^2*z^2*w","x-y^2*w*z^2",
+            "x-z^2*y^2*w"]
 
 def test_bug1():
     e=(x-1*y*x*y)

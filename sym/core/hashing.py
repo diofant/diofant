@@ -13,11 +13,19 @@ depends on the order of objects added.
 """
 
 def mhash():
-    #return mmd5()
-    #return mbernstein()
-    return mpython()
+    return Mmd5()
+    #return Mbernstein()
+    #return Mpython()
 
-class mpython(object):
+class HashAlgorithm(object):
+
+    def addint(self,x):
+        self.add(x)
+
+    def addfloat(self,x):
+        self.add(hash(x))
+
+class Mpython(HashAlgorithm):
     """
     An algorithm used in python, the result is a 4 byte hash value.
 
@@ -39,20 +47,16 @@ class mpython(object):
         """Adds any integer to the hash value."""
         self.value = self.trimlong(1000003*self.value)^item
 
+    def addint(self,x):
+        """The hash function needs this:"""
+        self.add(x+3)
+
     def addstr(self,x):
         #hash only last 5 letters, because the python algorithm is not
         #very strong
         self.add(hash(x[-5:]))
 
-    def addint(self,x):
-        """We are not using self.add directly for some reason I forget
-        about."""
-        self.add(x+3)
-
-    def addfloat(self,x):
-        self.add(hash(x)+3)
-
-class mbernstein(object):
+class Mbernstein(HashAlgorithm):
     """
     An algorithm produced by Professor Daniel J. Bernstein
 
@@ -72,15 +76,8 @@ class mbernstein(object):
     def addstr(self,x):
         self.add(hash(x))
 
-    def addint(self,x):
-        """We are not using self.add directly for some reason I forget
-        about."""
-        self.add(x+3)
 
-    def addfloat(self,x):
-        self.add(hash(x)+3)
-
-class mmd5(object):
+class Mmd5(HashAlgorithm):
     """
     MD5 algorithm, this works fine (so far :).
     """
@@ -98,10 +95,3 @@ class mmd5(object):
     def addstr(self,x):
         self.add(x)
 
-    def addint(self,x):
-        """We are not using self.add directly for some reason I forget
-        about."""
-        self.add(x+3)
-
-    def addfloat(self,x):
-        self.add(hash(x)+3)
