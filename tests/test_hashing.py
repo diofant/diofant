@@ -96,3 +96,50 @@ def test_bug4():
 def test_bug5():
     x=g.Symbol("x")
     assert g.cos(x)/g.sin(x)!=g.sin(x)/g.cos(x)
+
+def test_bug5h():
+    from sym.core import hashing
+    mhash=hashing.mhash()
+    mhash.addstr("<class 'sym.core.numbers.Rational'>")
+    mhash.addint(-1)
+    mhash.addint(1)
+    mhash=mhash.value
+
+    xhash=hashing.mhash()
+    xhash.addstr("<class 'sym.core.symbol.Symbol'>")
+    xhash.addstr("x")
+    xhash=xhash.value
+
+    a1hash=hashing.mhash()
+    a1hash.addstr("<class 'sym.modules.trigonometric.cos'>")
+    a1hash.addint(xhash)
+    a1hash=a1hash.value
+
+    b1hash=hashing.mhash()
+    b1hash.addstr("<class 'sym.modules.trigonometric.sin'>")
+    b1hash.addint(xhash)
+    b1hash=b1hash.value
+
+    b2hash=hashing.mhash()
+    b2hash.addstr("<class 'sym.core.power.Pow'>")
+    b2hash.add(a1hash)
+    b2hash.add(mhash)
+    b2hash=b2hash.value
+
+    a2hash=hashing.mhash()
+    a2hash.addstr("<class 'sym.core.power.Pow'>")
+    a2hash.add(b1hash)
+    a2hash.add(mhash)
+    a2hash=a2hash.value
+
+    m=hashing.mhash()
+    m.addstr("<class 'sym.core.addmul.Mul'>")
+    m.add(a1hash)
+    m.add(a2hash)
+
+    m2=hashing.mhash()
+    m2.addstr("<class 'sym.core.addmul.Mul'>")
+    m2.add(b1hash)
+    m2.add(b2hash)
+
+    assert m.value!=m2.value
