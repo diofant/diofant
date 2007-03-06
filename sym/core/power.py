@@ -135,13 +135,15 @@ class Pow(Basic):
             return e.series(sym,n)
             
     def expand(self):
+        from addmul import Mul
         if isinstance(self.exp,Number):
             if self.exp.isinteger():
                 n=self.exp.getinteger()
                 if n > 1:
                     a = self.base
                     while n > 1:
-                        a *= self.base
+                        a = Mul(a,self.base,evaluated=True)
+                        #a *= self.base
                         n -= 1
                     return a.expand()
         return self

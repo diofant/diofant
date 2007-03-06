@@ -8,10 +8,16 @@ class Pair(Basic):
     Should not be used directly
     """
 
-    #__metaclass__ = AutomaticEvaluationType
+#    __metaclass__ = AutomaticEvaluationType
     
-    def __init__(self,*args):
-        Basic.__init__(self)
+    def __init__(self,*args,**kwargs):
+        if len(kwargs) == 1:
+            evaluated = kwargs["evaluated"]
+        elif kwargs == {}:
+            evaluated = False
+        else:
+            assert False
+        Basic.__init__(self,evaluated)
         if len(args) == 2:
             self.args = [args[0],args[1]]
         elif len(args) == 1:
@@ -173,7 +179,7 @@ class Mul(Pair):
         if hasattr(n, 'isone') and (not n.isone()): 
             a=[n]+a
         if len(a)>1:
-            return Mul(a).hold()
+            return Mul(a,evaluated=True)
         elif len(a)==1:
             return a[0].hold()
         else:
@@ -311,7 +317,7 @@ class Add(Pair):
         a.sort(Basic.cmphash)
         if not n.iszero(): a = [n] + a
         if len(a)>1:
-            return Add(a).hold()
+            return Add(a,evaluated=True)
         elif len(a)==1:
             return a[0].hold()
         else:
@@ -398,7 +404,7 @@ class NCMul(Mul):
         if n.iszero(): return Rational(0)
         if not n.isone(): a=[n]+a
         if len(a) > 1:
-            return Mul(a).hold()
+            return Mul(a,evaluated=True)
         elif len(a) == 1:
             return a[0].hold()
         else:

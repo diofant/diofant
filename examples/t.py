@@ -4,13 +4,13 @@
 import sys
 sys.path.append("..")
 
-from sym import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi
+from sym import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
 
 x=Symbol("x") 
 y=Symbol("y") 
 
 #print limit((sin(2*x)/x)**(1+x),x,0)
-e=(2*x-(7*x**2 - 2) + 3*y)
+#e=(2*x-(7*x**2 - 2) + 3*y)
 #print e.print_tree()
 #print e.eval().printtree()
 
@@ -27,8 +27,15 @@ e=(2*x-(7*x**2 - 2) + 3*y)
 #print e.eval().conjugate()
 #print e.abs()
 
-p=1-x
-if (1-x).subs(x,1) == 0:
-    print "I found a root 0"
-if (1-x).subs(x,1) == 0.0:
-    print "I found a root 0.0"
+#p=1-x
+#if (1-x).subs(x,1) == 0:
+#    print "I found a root 0"
+#if (1-x).subs(x,1) == 0.0:
+#    print "I found a root 0.0"
+
+d=Symbol("a",dummy=True)
+
+e=x+y
+f=e
+print e
+print Mul(e,f,evaluated=True).expand()

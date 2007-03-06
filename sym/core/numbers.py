@@ -234,6 +234,8 @@ class Rational(Number):
             return Rational(self.p * a.p, self.q * a.q)
         elif isinstance(a, int) or isinstance(a, long):
             return Rational(self.p * a, self.q)
+        elif isinstance(a, Real):
+            return a.__mul__(self)
         else:
             from addmul import Mul
             return Mul(self, a)

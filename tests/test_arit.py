@@ -157,8 +157,8 @@ def testncmul():
     x=g.Symbol("x")
     c=g.Symbol("c")
     e=g.Mul(x,c)+g.Mul(c,x)
-    assert str(e) == "x*c+c*x"
+    assert str(e) in ["x*c+c*x","2*x*c"]
     assert e == 2*c*x
     e=g.NCMul(c,x)+g.NCMul(x,c)
-    assert str(e) == "c*x+x*c"
+    assert str(e) in ["c*x+x*c","x*c+c*x"]
     assert e == g.NCMul(c,x)+g.NCMul(x,c)
