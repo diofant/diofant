@@ -33,4 +33,7 @@ y=Symbol("y")
 #if (1-x).subs(x,1) == 0.0:
 #    print "I found a root 0.0"
 
-print cos(x)/sin(x)==sin(x)/cos(x)
+a= cos(x)/sin(x)
+b= sin(x)/cos(x)
+print a.hash(),b.hash()
+print sin(x).hash(),cos(x).hash()
