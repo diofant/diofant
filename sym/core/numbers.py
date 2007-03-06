@@ -230,6 +230,7 @@ class Rational(Number):
             return f % (self.p,self.q)
             
     def __mul__(self,a):
+        a=self.sympify(a)
         if isinstance(a, Rational):
             return Rational(self.p * a.p, self.q * a.q)
         elif isinstance(a, int) or isinstance(a, long):
@@ -254,10 +255,13 @@ class Rational(Number):
         return self * (a**Rational(-1))
     
     def __add__(self,a):
+        a=self.sympify(a)
         if isinstance(a, Rational):
             return Rational(self.p*a.q+self.q*a.p,self.q*a.q)
         elif isinstance(a, int) or isinstance(a, long):
             return Rational(self.p + a*self.q, self.q)
+        elif isinstance(a, Real):
+            return a.__add__(self)
         else:
             from addmul import Add
             return Add(self, a)

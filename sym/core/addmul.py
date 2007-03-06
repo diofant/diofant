@@ -1,6 +1,6 @@
 import hashing
 from basic import Basic,AutomaticEvaluationType
-from numbers import Number, Rational
+from numbers import Number, Rational, Real
 from power import Pow,pole_error
 
 class Pair(Basic):
@@ -8,7 +8,7 @@ class Pair(Basic):
     Should not be used directly
     """
 
-#    __metaclass__ = AutomaticEvaluationType
+    #__metaclass__ = AutomaticEvaluationType
     
     def __init__(self,*args,**kwargs):
         if len(kwargs) == 1:
@@ -164,6 +164,11 @@ class Mul(Pair):
                     e.append(y)
             if not ok: e.append(x)
             return e
+        def mymul(a,b):
+            if isinstance(a,Rational):
+                return Rational.__mul__(a,b)
+            else:
+                return Real.__mul__(a,b)
         
         if self.evaluated: return self
         a = self.evalargs(self.args)
@@ -171,7 +176,7 @@ class Mul(Pair):
         #create Powers: a*b*a -> a^2*b
         a = self.coerce(a,_mul)
         #coerce and multiply through the numbers
-        n,a = self.coerce_numbers(a, Rational.__mul__, Rational(1))
+        n,a = self.coerce_numbers(a, mymul, Rational(1))
         if hasattr(n, 'iszero') and n.iszero(): 
                 return Rational(0)
         a.sort(Basic.cmphash)
@@ -308,12 +313,19 @@ class Add(Pair):
                     e.append(y)
             if not ok: e.append(x)
             return e
+
+        def myadd(a,b):
+            if isinstance(a,Rational):
+                return Rational.__add__(a,b)
+            else:
+                return Real.__add__(a,b)
         
         if self.evaluated: return self
         a = self.evalargs(self.args)
         a = self.flatten(a)
         a = self.coerce(a,_add)
-        n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
+        #n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
+        n,a = self.coerce_numbers(a, myadd, Rational(0))
         a.sort(Basic.cmphash)
         if not n.iszero(): a = [n] + a
         if len(a)>1:
