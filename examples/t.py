@@ -42,7 +42,13 @@ b2=(1/cos(x)).eval()
 
 a= a1*a2
 b= b1*b2
-print a.hash(),b.hash()
+print a
+print b
+print a.eval()
+print b.eval()
+print a.hash(),b.hash(),a.eval().hash(),b.eval().hash()
+print a==b
+print a.eval().isequal(b.eval())
 print a1.hash(),a2.hash()
 print b1.hash(),b2.hash()
 

@@ -24,7 +24,7 @@ class mhash(object):
     i2p32=2**32
     platform_independent=False
     #platform_independent=True
-    algorithm=1
+    algorithm=0
 
     def __init__(self):
         if self.algorithm==0:
