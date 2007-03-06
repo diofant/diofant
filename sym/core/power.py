@@ -13,8 +13,8 @@ class Pow(Basic):
     
     def __init__(self,a,b,evaluated=False):
         Basic.__init__(self,evaluated)
-        self.base = a
-        self.exp = b
+        self.base = self.sympify(a)
+        self.exp = self.sympify(b)
         
     def hash(self):
         if self.mhash: 
