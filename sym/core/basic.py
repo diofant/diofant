@@ -1,9 +1,12 @@
 from utils import sign
 
+
 class Basic(object):
     
-    def __init__(self):
-        self.evaluated = False;
+#    __metaclass__ = AutomaticEvaluationType
+    
+    def __init__(self,evaluated=False):
+        self.evaluated = evaluated;
         self.mhash = 0
         
     def __repr__(self):

@@ -20,9 +20,15 @@ e=(2*x-(7*x**2 - 2) + 3*y)
 
 #print e.expand().subs(x,0)
 #print type(Rational(2)**Rational(2))
-e=(x+I*y)*(x-I*y)
+#e=(x+I*y)*(x-I*y)
 
-e=x+I*y
-print e.eval()
-print e.eval().conjugate()
-print e.abs()
+#e=x+I*y
+#print e.eval()
+#print e.eval().conjugate()
+#print e.abs()
+
+p=1-x
+if (1-x).subs(x,1) == 0:
+    print "I found a root 0"
+if (1-x).subs(x,1) == 0.0:
+    print "I found a root 0.0"

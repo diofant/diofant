@@ -2,14 +2,20 @@ import hashing
 from basic import Basic
 from numbers import Rational, Real
 
+class AutomaticEvaluationType(type):
+    def __call__(self,*args,**kwargs):
+        obj=type.__call__(self,*args,**kwargs)
+        return obj.eval()
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 
     It is the base class for common fuctions such as exp, log, sin, tan, etc.
     """
     
-    def __init__(self,arg):
-        Basic.__init__(self)
+#    __metaclass__ = AutomaticEvaluationType
+
+    def __init__(self,arg,evaluated=False):
+        Basic.__init__(self,evaluated)
         self.arg = self.sympify(arg)
         
     def hash(self):
@@ -71,7 +77,7 @@ class exp(Function):
             return Rational(1)
         if isinstance(arg,log):
             return arg.arg
-        return exp(arg).hold()
+        return exp(arg,evaluated=True)
 
 class log(Function):
     """Return the natural logarithm (base e) of x
@@ -97,7 +103,7 @@ class log(Function):
             return (log(a)+log(b)).eval()
         elif isinstance(arg,Pow):
             return (arg.exp * log(arg.base)).eval()
-        return log(arg).hold()
+        return log(arg,evaluated=True)
         
     def evalf(self):
         import math

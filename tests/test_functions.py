@@ -15,7 +15,7 @@ def testfunc():
     assert e.diff(b) == a+5*b**4*g.cos(b**5)
     e=g.tan(c)
     assert e == g.tan(c)
-    assert e.diff(c) == g.cos(c)**(-2)
+    assert e.diff(c) in [g.cos(c)**(-2),1+g.sin(c)**2/g.cos(c)**2]
     e=c*g.log(c)-c
     assert e == -c+c*g.log(c)
     assert e.diff(c) == g.log(c)
