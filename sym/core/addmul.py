@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic
+from basic import Basic,AutomaticEvaluationType
 from numbers import Number, Rational
 from power import Pow,pole_error
 
@@ -7,6 +7,8 @@ class Pair(Basic):
     """Contains common code to add and mul classes.
     Should not be used directly
     """
+
+#    __metaclass__ = AutomaticEvaluationType
     
     def __init__(self,*args):
         Basic.__init__(self)

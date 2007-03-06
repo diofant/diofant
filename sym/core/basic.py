@@ -1,5 +1,9 @@
 from utils import sign
 
+class AutomaticEvaluationType(type):
+    def __call__(self,*args,**kwargs):
+        obj=type.__call__(self,*args,**kwargs)
+        return obj.eval()
 
 class Basic(object):
     

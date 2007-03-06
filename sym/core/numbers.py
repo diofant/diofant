@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic
+from basic import Basic,AutomaticEvaluationType
 import utils 
 
 class Number(Basic):
@@ -14,6 +14,8 @@ class Number(Basic):
 
     Rational(1) + Rational(2)**( Rational(1)/2 )
     """
+
+#    __metaclass__ = AutomaticEvaluationType
     
     def __init__(self):
         Basic.__init__(self)

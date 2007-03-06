@@ -1,11 +1,6 @@
 import hashing
-from basic import Basic
+from basic import Basic,AutomaticEvaluationType
 from numbers import Rational, Real
-
-class AutomaticEvaluationType(type):
-    def __call__(self,*args,**kwargs):
-        obj=type.__call__(self,*args,**kwargs)
-        return obj.eval()
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 

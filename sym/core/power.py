@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic
+from basic import Basic,AutomaticEvaluationType
 from symbol import Symbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
@@ -8,9 +8,11 @@ class pole_error(Exception):
     pass
 
 class Pow(Basic):
+
+    #__metaclass__ = AutomaticEvaluationType
     
-    def __init__(self,a,b):
-        Basic.__init__(self)
+    def __init__(self,a,b,evaluated=False):
+        Basic.__init__(self,evaluated)
         self.base = a
         self.exp = b
         
@@ -74,15 +76,15 @@ class Pow(Basic):
                     assert isinstance(x,int)
                     return (Rational(x)**self.exp.p).eval()
         if isinstance(self.base,Pow): 
-            return pow(self.base.base,self.base.exp*self.exp).eval()
+            return Pow(self.base.base,self.base.exp*self.exp).eval()
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
-            return (pow(a,self.exp) * pow(b,self.exp)).eval()
+            return (Pow(a,self.exp) * Pow(b,self.exp)).eval()
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.isinteger():
                 if self.exp.getinteger()==2:
                     return (-Rational(1)).eval()
-        return pow(self.base,self.exp).hold()
+        return Pow(self.base,self.exp,evaluated=True)
         
     def evalf(self):
         if hasattr(self.base, 'evalf') and hasattr(self.exp, 'evalf'):
