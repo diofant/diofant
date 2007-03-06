@@ -18,6 +18,8 @@ class mhash(object):
               = 1 .... an algorithm produced by Professor Daniel J. Bernstein
                 see: http://www.partow.net/programming/hashfunctions/index.html
                         the result is generally a long int hash value
+
+    The algorithm 2 doesn't work in some cases, so we use 1.
     """
 
     i2p31=2**31
