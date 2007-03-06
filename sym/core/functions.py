@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic,AutomaticEvaluationType
+from basic import Basic
 from numbers import Rational, Real
 
 class Function(Basic):
@@ -7,8 +7,6 @@ class Function(Basic):
     It is the base class for common fuctions such as exp, log, sin, tan, etc.
     """
     
-#    __metaclass__ = AutomaticEvaluationType
-
     def __init__(self,arg,evaluated=False):
         Basic.__init__(self,evaluated)
         self.arg = self.sympify(arg)

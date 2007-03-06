@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic,AutomaticEvaluationType
+from basic import Basic
 from numbers import Number, Rational, Real
 from power import Pow,pole_error
 
@@ -8,8 +8,6 @@ class Pair(Basic):
     Should not be used directly
     """
 
-    #__metaclass__ = AutomaticEvaluationType
-    
     def __init__(self,*args,**kwargs):
         if len(kwargs) == 1:
             evaluated = kwargs["evaluated"]

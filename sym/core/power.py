@@ -1,5 +1,5 @@
 import hashing
-from basic import Basic,AutomaticEvaluationType
+from basic import Basic
 from symbol import Symbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
@@ -9,8 +9,6 @@ class pole_error(Exception):
 
 class Pow(Basic):
 
-    #__metaclass__ = AutomaticEvaluationType
-    
     def __init__(self,a,b,evaluated=False):
         Basic.__init__(self,evaluated)
         self.base = self.sympify(a)
