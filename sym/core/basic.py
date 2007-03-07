@@ -105,21 +105,12 @@ class Basic(object):
     def eval(self):
         """Returns canonical form of myself. 
         
-        If we are evaluated (i.e. in the canonical form), the hold 
-        method should be called.
-
-        the eval() method should alway return a new object (following the
+        The eval() method should alway return a new object (following the
         general rule of not changing)
         
         """
-        return self.hold()
-        
-    def hold(self):
-        """Sets "evaluated" flag. This means, we are in the canonical form,
-        and eval don't have to do anything."""
-        self.evaluated = True
         return self
-    
+        
     @staticmethod
     def sympify(a):
         """for "a" int, returns Rational(a), for "a" float returns real, 

@@ -16,7 +16,7 @@ class sin(Function):
             return Rational(0)
         if self.arg==pi or self.arg==2*pi:
             return Rational(0)
-        return self.hold()
+        return self
 
 class cos(Function):
     """Return the cosine of x (measured in radians)
@@ -35,7 +35,7 @@ class cos(Function):
             return -Rational(1)
         if self.arg==2*pi:
             return Rational(1)
-        return self.hold()
+        return self
 
 class tan(Function):
     """Return the tangent of x (measured in radians)

@@ -88,7 +88,7 @@ class log(Function):
         if isinstance(arg,Rational) and arg.isone():
             return Rational(0)
         elif isinstance(arg,exp):
-            return arg.arg.hold()
+            return arg.arg
         elif isinstance(arg,Mul):
             a,b = arg.getab()
             return log(a)+log(b)
