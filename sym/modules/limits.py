@@ -83,6 +83,7 @@ import sym as s
 
 debug = False
 #debug=True
+strdebug = ""
 
 def intersect(a,b):
     for x in a:
