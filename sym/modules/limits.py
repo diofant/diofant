@@ -83,8 +83,13 @@ import sym as s
 
 from decorator import decorator
 
+#Debugging:
+#import the limits.py in your code and set limits.debug=True. 
+#this will print a nice tree of recursive calls to all methods here, which
+#are decorated with @decorator(maketree)
+#you can apply this decorator to any method here and it will be included
+#in the tree.
 debug = False
-#debug=True
 
 def tree(subtrees):
     def indent(s,type=1):
@@ -122,7 +127,9 @@ def maketree(f,*args,**kw):
         if tmp!=[]: s += tree(tmp)
         tmp=oldtmp
         tmp.append(s)
-        if iter == 0: print tree(tmp)
+        if iter == 0: 
+            print tree(tmp)
+            tmp=[]
     return r
 
 def intersect(a,b):
