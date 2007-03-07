@@ -44,9 +44,6 @@ class Integral(Basic):
         assert isinstance(x, Symbol)
         self.x=x
 
-    def eval(self):
-        return Integral(self.a,self.b,self.arg,self.x,evaluated=True)
-
     def diff(self,sym):
         if sym==self.x:
             raise IntegralError("Cannot differentiate the integration variable")

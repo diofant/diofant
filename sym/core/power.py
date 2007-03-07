@@ -81,7 +81,7 @@ class Pow(Basic):
             if isinstance(self.exp,Rational) and self.exp.isinteger():
                 if self.exp.getinteger()==2:
                     return -Rational(1)
-        return Pow(self.base,self.exp,evaluated=True)
+        return self
         
     def evalf(self):
         if hasattr(self.base, 'evalf') and hasattr(self.exp, 'evalf'):

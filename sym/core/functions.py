@@ -69,7 +69,7 @@ class exp(Function):
             return Rational(1)
         if isinstance(arg,log):
             return arg.arg
-        return exp(arg,evaluated=True)
+        return self
 
 class log(Function):
     """Return the natural logarithm (base e) of x
@@ -94,7 +94,7 @@ class log(Function):
             return log(a)+log(b)
         elif isinstance(arg,Pow):
             return arg.exp * log(arg.base)
-        return log(arg,evaluated=True)
+        return self
         
     def evalf(self):
         import math
