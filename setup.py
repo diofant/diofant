@@ -15,7 +15,7 @@ how to customize the install procedure read the output of:
 In addition, there are some other useful commands
 
     python setup.py test  -> will run the complete test suite
-    python setup.py test_core -> will run only tests concerning features of the core
+    python setup.py test_core -> will run only tests concerning core features
     
 Or, if all else fails, feel free to write to the sympy list at
 sympy@googlegroups.com and ask for help.
@@ -89,8 +89,8 @@ class test_sympy_core(Command):
             If you are on debian systems, the package is named python-codespeak-lib
             """
             sys.exit(-1)
-        py.test.cmdline.main(args=[self.tests_to_run])
-        # change back to the current directory
+        #for x in tests_ro_run
+        py.test.cmdline.main(args=self.tests_to_run)
 
 
 setup(
