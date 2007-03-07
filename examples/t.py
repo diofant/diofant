@@ -36,5 +36,6 @@ y=Symbol("y")
 
 e=(x)**2
 a=Symbol("a")
+t=Symbol("t")
 
-print Integral(1,3,e,x).diff(a)
+print Integral(1,x,1/t,t)

@@ -4,6 +4,36 @@ class IntegralError(Exception):
     pass
 
 class Integral(Basic):
+    """
+    Definite integral.
+
+    Integral(a,b,f,x) represents \int_a^b f(x) dx
+
+    Usage:
+
+    print Integral(1,x, 1/t ,t)
+    
+        will print: int_{1}^{x} (t^(-1)) dt
+
+    print Integral(1,x, 1/t ,t).doit()
+    
+        will print: log(x)
+
+    print Integral(1,x, 1/t ,t).diff(x)
+    
+        will print: 1/x
+
+    
+    Currently can only integrate very simple functions, like polynoms.
+    You can however implement as many formulas as you want at the end
+    of the primitive_function() function.
+
+    The general algorithm for calculating integrals is described here:
+
+    http://sympy.googlecode.com/svn/trunk/doc/issac98.pdf
+
+    Someone just needs to implement it. :)
+    """
 
     def __init__(self, a, b, arg, x, evaluated=False):
         "int_a^b arg  dx"
@@ -49,4 +79,7 @@ class Integral(Basic):
             if f.base==x and isinstance(f.exp,Number):
                 if f.exp==-1: return log(x)
                 else: return x**(f.exp+1)/(f.exp+1)
+
+        #Implement any other formula here
+
         raise IntegralError("Don't know how to do this integral. :(")
