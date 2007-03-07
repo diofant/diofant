@@ -3,7 +3,8 @@ from utils import sign
 class AutomaticEvaluationType(type):
     def __call__(self,*args,**kwargs):
         obj=type.__call__(self,*args,**kwargs)
-        return obj.eval()
+        if obj.evaluated: return obj
+        else: return obj.eval()
 
 class Basic(object):
     
@@ -167,8 +168,6 @@ class Basic(object):
         with the lowest power of x in a form (c0,e0)
         """
         
-        if not self.evaluated:
-            return self.leadterm(x)
         from numbers import Rational
         from power import Pow
         from addmul import Add,Mul

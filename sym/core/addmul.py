@@ -162,7 +162,6 @@ class Mul(Pair):
             else:
                 return Real.__mul__(a,b)
         
-        if self.evaluated: return self
         a = self.flatten(self.args)
         #create Powers: a*b*a -> a^2*b
         a = self.coerce(a,_mul)
@@ -311,7 +310,6 @@ class Add(Pair):
             else:
                 return Real.__add__(a,b)
         
-        if self.evaluated: return self
         a = self.flatten(self.args)
         a = self.coerce(a,_add)
         #n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
@@ -398,7 +396,6 @@ class NCMul(Mul):
             if not ok: e.append(x)
             return e
         
-        if self.evaluated: return self
         a = self.flatten(self.args)
         a = self.coerce(a,_mul)
         n,a = self.coerce_numbers(a,Rational.__mul__, Rational(1))

@@ -45,7 +45,6 @@ class Pow(Basic):
         
     def eval(self):
         from addmul import Mul
-        if self.evaluated: return self
         self.base = self.base
         self.exp = self.exp
         if isinstance(self.exp,Rational) and self.exp.iszero():

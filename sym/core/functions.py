@@ -64,7 +64,6 @@ class exp(Function):
         return exp(self.arg.expand())
         
     def eval(self):
-        if self.evaluated: return self
         arg = self.arg
         if isinstance(arg,Rational) and arg.iszero():
             return Rational(1)
@@ -85,7 +84,6 @@ class log(Function):
     def eval(self):
         from addmul import Mul
         from power import Pow
-        if self.evaluated: return self
         arg=self.arg
         if isinstance(arg,Rational) and arg.isone():
             return Rational(0)
