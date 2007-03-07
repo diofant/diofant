@@ -68,10 +68,11 @@ class Pow(Basic):
             if self.base.isinteger():
                 a = self.base.getinteger()
                 bq = self.exp.q
-                x = int(a**(1./bq)+0.5)
-                if x**bq == a:
-                    assert isinstance(x,int)
-                    return Rational(x)**self.exp.p
+                if a>0:
+                    x = int(a**(1./bq)+0.5)
+                    if x**bq == a:
+                        assert isinstance(x,int)
+                        return Rational(x)**self.exp.p
         if isinstance(self.base,Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
         if isinstance(self.base,Mul): 

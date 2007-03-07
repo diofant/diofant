@@ -230,6 +230,7 @@ def mrv_leadterm(e,x,Omega=[]):
     global whattosubs
     whattosubs=logw
     series=f.series(wsym,1)
+    #series=series.subs(s.log(w),whattosubs)
     n = 2
     while series==0 and n<10:
         series=f.series(wsym,n)

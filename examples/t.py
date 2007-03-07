@@ -3,12 +3,17 @@
 
 import sys
 sys.path.append("..")
+sys.path.append(".")
 
 from sym import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
-from sym import hashing, Integral
+from sym import hashing, Integral, limitinf
 
 x=Symbol("x") 
 y=Symbol("y") 
+
+
+def sqrt(x):
+    return x.sqrt()
 
 #print limit((sin(2*x)/x)**(1+x),x,0)
 #e=(2*x-(7*x**2 - 2) + 3*y)
@@ -37,4 +42,6 @@ e=(x)**2
 a=Symbol("a")
 t=Symbol("t")
 
-print Integral(1,x,1/t,t)
+import pdb
+#pdb.run("limitinf(sqrt(log(x+1))-sqrt(log(x)),x)")
+print limitinf(sqrt(log(x+1))-sqrt(log(x)),x)

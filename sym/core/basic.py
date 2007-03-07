@@ -138,13 +138,18 @@ class Basic(object):
         
     def series(self,sym,n):
         from numbers import Rational
-        f = self
+        from symbol import Symbol
+        from functions import log
+        #w=Symbol("l",dummy=True)
+        f = self#.subs(log(sym),-w)
         e = f.subs(sym,Rational(0))
         fact = Rational(1)
         for i in range(1,n+1):
             fact *= Rational(i)
             f = f.diff(sym)
             e += f.subs(sym,Rational(0))*(sym**i)/fact
+        #e=e.subs(w,-log(sym))
+        #print e
         return e
         
     def subs(self,old,new):
@@ -172,6 +177,10 @@ class Basic(object):
                 return Mul(x)
             return x[0]
         def extract(t,x):
+            """Parses "t(x)", which is expected to be in the form c0*x^e0,
+            and returns (c0,e0). It raises an exception, if "t(x)" is not
+            in this form.
+            """
             if not t.has(x):
                 return t,Rational(0)
             if isinstance(t,Pow):
@@ -183,8 +192,13 @@ class Basic(object):
                 if a.has(x):
                     if isinstance(a,Pow):
                         return  domul(t.args[:i] + t.args[i+1:]),  a.exp
-                    elif isinstance(a,Symbol):
+                    if isinstance(a,Symbol):
                         return  domul(t.args[:i] + t.args[i+1:]),  Rational(1)
+                    from functions import log
+                    if isinstance(a,log):
+                        #hack
+                        print "hack executed:",
+                        return domul(t.args[:i] + t.args[i+1:]), Rational(0)
                     assert False
             return t,s.Rational(0)
         if not isinstance(self,Add):
@@ -192,11 +206,13 @@ class Basic(object):
         lowest = [0,(Rational(10)**10)]
         for t in self.args:
             t2 = extract(t,x)
+            #print t2
             #if t2[1]<lowest[1]:
             if (lowest[1] - t2[1]).evalf()>0:
                 lowest=t2
             elif t2[1] == lowest[1]:
                 lowest=((lowest[0] + t2[0]),lowest[1])
+        #print lowest,t,x
         return lowest
         
     def ldegree(self,sym):
