@@ -94,13 +94,13 @@ debug = False
 def tree(subtrees):
     def indent(s,type=1):
         x = s.split("\n")
-        r = "+--%s\n"%x[0]
+        r = "+-%s\n"%x[0]
         for a in x[1:]:
             if a=="": continue
             if type==1:
-                r += "|  %s\n"%a
+                r += "| %s\n"%a
             else:
-                r += "   %s\n"%a
+                r += "  %s\n"%a
         return r
     if len(subtrees)==0: return ""
     f="";
@@ -128,7 +128,7 @@ def maketree(f,*args,**kw):
         tmp=oldtmp
         tmp.append(s)
         if iter == 0: 
-            print tree(tmp)
+            print tmp[0]
             tmp=[]
     return r
 
@@ -155,7 +155,7 @@ def limit(e,z,z0):
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)
 
-@decorator(maketree)
+#@decorator(maketree)
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
     if not e.has(x): return e #e is a constant
@@ -206,6 +206,7 @@ def tryexpand(a):
     else:
         return a
 
+@decorator(maketree)
 def rewrite(e,Omega,x,wsym):
     """e(x) ... the function
     Omega ... the mrv set
@@ -218,32 +219,31 @@ def rewrite(e,Omega,x,wsym):
     def cmpfunc(a,b):
         #FIXME: this is really, really slow...
         return -cmp(len(mrv(a,x)), len(mrv(b,x)))
-    #if len(Omega)>1:
-    #    print
-    #    print "-"*60
-    #    print "Omega       :",Omega
+    #sort Omega (mrv set) from the most complicated to the simplest ones
+    #the complexity of "a" from Omega: the length of the mrv set of "a"
     Omega.sort(cmp=cmpfunc)
     g=Omega[-1] #g is going to be the "w" - the simplest one in the mrv set
-    sig= (sign(g.arg,x)==1)
+    assert isinstance(g,s.exp) #all items in Omega should be exponencials
+    sig= (sign(g.arg,x)==1) 
     if sig: wsym=1/wsym #if g goes to infty, substitute 1/w
+    #O2 is a list, which results by rewriting each item in Omega using "w"
     O2=[]
-    for f in Omega: #rewrite Omega using "w"
+    for f in Omega: 
+        assert isinstance(f,s.exp) #all items in Omega should be exponencials
         c=mrv_leadterm(f.arg/g.arg,x)
         assert c[1]==0
         O2.append(s.exp(tryexpand(f.arg-c[0]*g.arg))*wsym**c[0])
-    f=e #rewrite "e" using "w"
+    #Remember that Omega contains subexpressions of "e". So now we find
+    #them in "e" and substitute them for our rewriting, stored in O2
+    f=e 
     for a,b in zip(Omega,O2):
         f=f.subs(a,b)
 
-    #if len(Omega)>1:
-    #    print "Omega sorted:",Omega
-    #    print "w=%s, wsym=%s"%(g,wsym)
-    #    print "O2    sorted:",O2
-    #    print "initial :",e
-    #    print "final   :",f
+    #tmp.append("Omega=%s; O2=%s; w=%s; wsym=%s\n"%(Omega,O2,g,wsym))
 
+    #finally compute the logarithm of w (logw). 
     logw=g.arg
-    if sig: logw=-logw
+    if sig: logw=-logw     #log(w)->log(1/w)=-log(w)
     return f,logw
 
 def moveup(l,x):
@@ -263,9 +263,6 @@ def subexp(e,sub):
 @decorator(maketree)
 def mrv_leadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
-    #if debug:
-    #    global strdebug
-    #    strdebug+="mrvleadterm(%r,%r,%r)\n"%(e,x,Omega)
     if not e.has(x): return (e,s.Rational(0))
     Omega = [t for t in Omega if subexp(e,t)]
     if Omega == []:
@@ -281,15 +278,9 @@ def mrv_leadterm(e,x,Omega=[]):
         n += 1
     assert series!=0
     series=series.subs(s.log(wsym),logw)
-    #if debug:
-    #    print "mrvleadterm:"
-    #    print "  e:", e
-    #    print "  Omega:", Omega
-    #    print "  f:", f
-    #    print "  f.series:", series
-    #    print "  f.series.leadterm:", series.leadterm(wsym)
     return series.leadterm(wsym)
 
+#@decorator(maketree)
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
     if not e.has(x): return []
