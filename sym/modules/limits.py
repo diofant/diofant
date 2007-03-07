@@ -9,9 +9,12 @@ gist of it.
 
 
 All functions are sorted according to how rapidly varying they are at infinity
-using the following rules. Any two functions f and g can be compared:
+using the following rules. Any two functions f and g can be compared using the
+properties of L:
 
 L=lim  log|f(x)| / log|g(x)|           (for x -> infty)
+
+We define >, < ~ according to:
 
 f > g .... L=+-infty 
     * f is greater than any power of g
@@ -36,21 +39,23 @@ Examples:
     f ~ 1/f
 
 So we can divide all the functions into comparability classes (x and x^2 is the
-same class, as is exp(x) and exp(-x)). In principle, we could compare any two
-functions, but in our algorithm, we don't compare anything below f=1 (for
-example log(x) is below 1), so we set f=1 as the lowest comparability class. 
+same class, exp(x) and exp(-x) is some other class). In principle, we could
+compare any two functions, but in our algorithm, we don't compare anything
+below f=1 (for example log(x) is below 1), so we set f=1 as the lowest
+comparability class. 
 
 Given the function f, we find the list of most rapidly varying (mrv set)
 subexpressions of it. This list belongs to the same comparability class. Let's
 say it is {exp(x), exp(2x)}. Using the rule f ~ 1/f we find an element "w"
 (either from the list or a new one) from the same comparability class which
 goes to zero at infinity. In our example we set w=exp(-x) (but we could also
-set w=exp(-2x) or w=exp(3x) ...). We rewrite the mrv set using w, in our case
+set w=exp(-2x) or w=exp(-3x) ...). We rewrite the mrv set using w, in our case
 {1/w,1/w^2}, and substitute it into f. Then we expand f into a series in w:
 
     f=c0*w^e0 + c1*w^e1 + ... + O(w^en),        where e0<e1<...<en, c0!=0
 
-but for x->infty, lim f = lim c0*w^e0, because all the other terms go to zero.
+but for x->infty, lim f = lim c0*w^e0, because all the other terms go to zero,
+because w goes to zero faster than the ci and ei.
 So, 
     for e0>0, lim f = 0
     for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
@@ -208,7 +213,11 @@ def movedown(l,x):
     return [e.subs(x,s.log(x)) for e in l]
 
 def subexp(e,sub):
+    """Is "sub" a subexpression of "e"? """
     n=s.Symbol("x",True)
+    #we substitute some symbol for the "sub", and if the 
+    #expression changes, the substitution was successful, thus the answer
+    #is yes.
     return e.subs(sub,n)!=e
 
 def mrv_leadterm(e,x,Omega=[]):
