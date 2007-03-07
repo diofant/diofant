@@ -81,9 +81,49 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
+from decorator import decorator
+
 debug = False
 #debug=True
-strdebug = ""
+
+def tree(subtrees):
+    def indent(s,type=1):
+        x = s.split("\n")
+        r = "+--%s\n"%x[0]
+        for a in x[1:]:
+            if a=="": continue
+            if type==1:
+                r += "|  %s\n"%a
+            else:
+                r += "   %s\n"%a
+        return r
+    if len(subtrees)==0: return ""
+    f="";
+    for a in subtrees[:-1]:
+        f += indent(a)
+    f += indent(subtrees[-1],2)
+    return f
+
+tmp=[]
+iter=0
+def maketree(f,*args,**kw):
+    global tmp
+    global iter
+    if debug:
+        oldtmp=tmp
+        tmp=[]
+        iter+=1
+
+    r = f(*args,**kw)
+
+    if debug:
+        iter-=1
+        s = "%s%s = %s\n" % (f.func_name,args,r)
+        if tmp!=[]: s += tree(tmp)
+        tmp=oldtmp
+        tmp.append(s)
+        if iter == 0: print tree(tmp)
+    return r
 
 def intersect(a,b):
     for x in a:
@@ -108,15 +148,12 @@ def limit(e,z,z0):
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)
 
+@decorator(maketree)
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
-    if debug:
-        print "limitinf",e,x
     if not e.has(x): return e #e is a constant
     c0,e0 = mrv_leadterm(e,x) 
     sig=sign(e0,x)
-    if debug:
-        print "limitinf",e,c0,e0,sig
     if sig==1: return s.Rational(0) # e0>0: lim f = 0
     elif sig==-1: 
         s.infty.sig=sign(c0,x)
@@ -216,10 +253,12 @@ def subexp(e,sub):
     #is yes.
     return e.subs(sub,n)!=e
 
+@decorator(maketree)
 def mrv_leadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
-    if debug:
-        print "mrvleadterm",e,Omega
+    #if debug:
+    #    global strdebug
+    #    strdebug+="mrvleadterm(%r,%r,%r)\n"%(e,x,Omega)
     if not e.has(x): return (e,s.Rational(0))
     Omega = [t for t in Omega if subexp(e,t)]
     if Omega == []:
@@ -235,13 +274,13 @@ def mrv_leadterm(e,x,Omega=[]):
         n += 1
     assert series!=0
     series=series.subs(s.log(wsym),logw)
-    if debug:
-        print "mrvleadterm:"
-        print "  e:", e
-        print "  Omega:", Omega
-        print "  f:", f
-        print "  f.series:", series
-        print "  f.series.leadterm:", series.leadterm(wsym)
+    #if debug:
+    #    print "mrvleadterm:"
+    #    print "  e:", e
+    #    print "  Omega:", Omega
+    #    print "  f:", f
+    #    print "  f.series:", series
+    #    print "  f.series.leadterm:", series.leadterm(wsym)
     return series.leadterm(wsym)
 
 def mrv(e,x):
