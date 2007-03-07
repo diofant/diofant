@@ -42,12 +42,6 @@ class Pair(Basic):
         else:
             return a
             
-    def evalargs(self,a):
-        b=[]
-        for t in a:
-            b.append(t)
-        return b
-        
     def flatten(self,a):
         """flatten([add(x,4),Mul(a,5),add(x,b),x]) ->
                 [x,4,Mul(a,5),x,b,x] if self is add
@@ -169,8 +163,7 @@ class Mul(Pair):
                 return Real.__mul__(a,b)
         
         if self.evaluated: return self
-        a = self.evalargs(self.args)
-        a = self.flatten(a)
+        a = self.flatten(self.args)
         #create Powers: a*b*a -> a^2*b
         a = self.coerce(a,_mul)
         #coerce and multiply through the numbers
@@ -319,8 +312,7 @@ class Add(Pair):
                 return Real.__add__(a,b)
         
         if self.evaluated: return self
-        a = self.evalargs(self.args)
-        a = self.flatten(a)
+        a = self.flatten(self.args)
         a = self.coerce(a,_add)
         #n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
         n,a = self.coerce_numbers(a, myadd, Rational(0))
@@ -407,8 +399,7 @@ class NCMul(Mul):
             return e
         
         if self.evaluated: return self
-        a = self.evalargs(self.args)
-        a = self.flatten(a)
+        a = self.flatten(self.args)
         a = self.coerce(a,_mul)
         n,a = self.coerce_numbers(a,Rational.__mul__, Rational(1))
         if n.iszero(): return Rational(0)
