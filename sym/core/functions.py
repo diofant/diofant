@@ -7,8 +7,8 @@ class Function(Basic):
     It is the base class for common fuctions such as exp, log, sin, tan, etc.
     """
     
-    def __init__(self,arg,evaluated=False):
-        Basic.__init__(self,evaluated)
+    def __init__(self,arg):
+        Basic.__init__(self)
         self.arg = self.sympify(arg)
         
     def hash(self):

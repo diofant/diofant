@@ -9,8 +9,8 @@ class pole_error(Exception):
 
 class Pow(Basic):
 
-    def __init__(self,a,b,evaluated=False):
-        Basic.__init__(self,evaluated)
+    def __init__(self,a,b):
+        Basic.__init__(self)
         self.base = self.sympify(a)
         self.exp = self.sympify(b)
         

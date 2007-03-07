@@ -8,14 +8,8 @@ class Pair(Basic):
     Should not be used directly
     """
 
-    def __init__(self,*args,**kwargs):
-        if len(kwargs) == 1:
-            evaluated = kwargs["evaluated"]
-        elif kwargs == {}:
-            evaluated = False
-        else:
-            assert False
-        Basic.__init__(self,evaluated)
+    def __init__(self,*args):
+        Basic.__init__(self)
         if len(args) == 2:
             self.args = [args[0],args[1]]
         elif len(args) == 1:
