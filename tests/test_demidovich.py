@@ -23,8 +23,7 @@ def limitminf(f,x):
 
 def testsimpleproblems():
     assert limitinf((x+1)*(x+2)*(x+3)/x**3,x)==1  #172
-    assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3 or \
-        limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x) == exp(-log(3))**(-1)  #175
+    assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
     assert limitinf(x/sqrt3(x**3+10),x)==1  #Primjer 2
