@@ -17,7 +17,6 @@ class Number(Basic):
     
     def __init__(self):
         Basic.__init__(self)
-        self.evaluated = True
         
     def __int__(self):
         raise NotImplementedError
