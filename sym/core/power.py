@@ -77,7 +77,7 @@ class Pow(Basic):
             return Pow(self.base.base,self.base.exp*self.exp)
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
-            if self.exp==-1 or a!=-1:
+            if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
                 return (Pow(a,self.exp) * Pow(b,self.exp))
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.isinteger():

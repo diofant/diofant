@@ -84,3 +84,6 @@ def test_bug1():
     e=(-log(w)).sqrt()
     assert e.subs(log(w),-x)!=-x.sqrt()
     assert e.subs(log(w),-x)==x.sqrt()
+
+    e=(-5*log(w)).sqrt()
+    assert e.subs(log(w),-x)==(5*x).sqrt()
