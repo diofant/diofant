@@ -206,7 +206,7 @@ def tryexpand(a):
     else:
         return a
 
-@decorator(maketree)
+#@decorator(maketree)
 def rewrite(e,Omega,x,wsym):
     """e(x) ... the function
     Omega ... the mrv set
@@ -260,7 +260,7 @@ def subexp(e,sub):
     #is yes.
     return e.subs(sub,n)!=e
 
-@decorator(maketree)
+#@decorator(maketree)
 def mrv_leadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
     if not e.has(x): return (e,s.Rational(0))

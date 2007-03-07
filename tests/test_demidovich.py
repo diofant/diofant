@@ -76,7 +76,7 @@ def test_functions():
     assert limit((1-sqrt(cos(x)))/x**2,x,0) == Rational(1,4) #239
     assert limit((sqrt(1+sin(x))-sqrt(1-sin(x)))/x,x,0) == 1 #240
 
-    #assert limit((sin(2*x)/x)**(1+x),x,0) == 2 #Primer 7
+    assert limit((sin(2*x)/x)**(1+x),x,0) == 2 #Primer 7
     assert limitinf(((x+1)/(2*x+1))**(x**2),x) == 0 #Primer 8
     assert limitinf(((x-1)/(x+1))**x,x) == exp(-2) #Primer 9
 

@@ -4,6 +4,7 @@ sys.path.append(".")
 import py
 
 import sym as g
+from sym import sin,Symbol
 
 def testseries():
     n3=g.Rational(3)
@@ -113,3 +114,13 @@ def test_subsbug1():
     e=1+x**g.Rational(1,2)
     e=e.diff(x)
     py.test.raises(g.pole_error,e.subs,x,g.Rational(0))
+
+def test_seriesbug2():
+    w=Symbol("w")
+    #simple case:
+    e=((2*w)/w)**(1+w)
+    assert e.series(w,1).subs(w,0)==2
+
+    #some limits need this series expansion to work:
+    e=(sin(2*w)/w)**(1+w)
+    assert e.series(w,1).subs(w,0)==2

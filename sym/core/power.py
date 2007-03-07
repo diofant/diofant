@@ -101,8 +101,6 @@ class Pow(Basic):
         return (self*(g*log(f)).diff(sym))
         
     def series(self,sym,n):
-        from addmul import Add
-        #if isinstance(self.exp,Rational):
         if not self.exp.has(sym):
             if isinstance(self.base,Symbol): return self
             try:
@@ -134,8 +132,13 @@ class Pow(Basic):
         try:
             return Basic.series(self,sym,n)
         except pole_error:
-            e = exp(self.exp*log(self.base))
-            return e.series(sym,n)
+            try:
+                a=self.base.series(sym,n)
+                b=self.exp.series(sym,n)
+                return Basic.series((a**b),sym,n)
+            except pole_error:
+                e = exp((self.exp*log(self.base)))
+                return e.series(sym,n)
             
     def expand(self):
         from addmul import Mul
