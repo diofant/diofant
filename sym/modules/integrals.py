@@ -45,6 +45,8 @@ class Integral(Basic):
         self.x=x
 
     def eval(self):
+        return self
+        #this doesn't work yet:
         Integral(self.a,self.b,self.arg.eval(),self.x,evaluated=True)
 
     def diff(self,sym):

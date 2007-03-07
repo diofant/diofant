@@ -7,7 +7,7 @@ class AutomaticEvaluationType(type):
 
 class Basic(object):
     
-#    __metaclass__ = AutomaticEvaluationType
+    __metaclass__ = AutomaticEvaluationType
     
     def __init__(self,evaluated=False):
         self.evaluated = evaluated;
