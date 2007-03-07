@@ -2,7 +2,23 @@ from sym import Rational,Function
 from sym import pi
 
 class sin(Function):
-    """Return the sine of x (measured in radians)
+    """
+    Usage
+        sin(x) -> Returns the sine of x (measured in radians)
+        
+    Notes
+        sin(x) will evaluate automatically in the case x is a 
+        multiple of pi.
+    
+    Further examples
+        >>> sin(x**2).diff(x)
+        2*cos(x^2)*x
+        
+        >>> sin(1).diff(x)
+        0
+        >>> sin(pi)
+        0
+
     """
     
     def getname(self):
