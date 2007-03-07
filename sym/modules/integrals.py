@@ -35,7 +35,10 @@ class Integral(Basic):
     Someone just needs to implement it. :)
     """
 
-    def __init__(self, a, b, arg, x):
+    def __init__(self, f, (x, a, b)):
+        self.__init__old(a,b,f,x)
+
+    def __init__old(self, a, b, arg, x):
         "int_a^b arg  dx"
         Basic.__init__(self)
         self.arg=self.sympify(arg)

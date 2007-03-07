@@ -17,7 +17,7 @@ def limitminf(f,x):
     return limitinf(f.subs(x,-x),x)
 
 def show(computed, correct):
-    print "computed:",computed,"correct:",correct.eval()
+    print "computed:",computed,"correct:",correct
 
 show( limitinf(sqrt(x**2-5*x+6)-x,x) , -Rational(5)/2 )
 show( limitinf(x*(sqrt(x**2+1)-x),x) , Rational(1)/2 )

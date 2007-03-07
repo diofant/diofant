@@ -29,7 +29,7 @@ class Matrix(Basic):
                 else:
                     #test that the matrix is diagonal
                     assert x==0
-                a.append(x.eval())
+                a.append(x)
             m.append(a)
         return matrix(m)
     def __str__(self):

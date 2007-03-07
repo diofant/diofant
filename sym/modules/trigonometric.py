@@ -12,7 +12,7 @@ class sin(Function):
         return cos(self.arg)
         
     def eval(self):
-        if isinstance(self.arg,Rational) and self.arg.iszero():
+        if self.arg == 0:
             return Rational(0)
         if self.arg==pi or self.arg==2*pi:
             return Rational(0)
@@ -29,7 +29,7 @@ class cos(Function):
         return -sin(self.arg)
     
     def eval(self):
-        if isinstance(self.arg,Rational) and self.arg.iszero():
+        if self.arg == 0:
             return Rational(1)
         if self.arg==pi:
             return -Rational(1)
