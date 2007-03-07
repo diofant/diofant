@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sym as g
+from sym import log,exp
 
 def testeval():
     a=g.Symbol("a")
@@ -43,3 +44,7 @@ def test_evalpow_bug():
     assert e==x
     e=1/(-1/x)
     assert e==-x
+
+
+def test_expbug():
+    assert exp(-log(3))**(-1) == 3

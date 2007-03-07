@@ -3,6 +3,7 @@ from basic import Basic
 from symbol import Symbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
+from utils import isnumber
 
 class pole_error(Exception):
     pass
@@ -75,6 +76,9 @@ class Pow(Basic):
                         return Rational(x)**self.exp.p
         if isinstance(self.base,Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
+        if isinstance(self.base,exp): 
+            if isnumber(self.base.arg):
+                return exp(self.exp*self.base.arg)
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
             if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
