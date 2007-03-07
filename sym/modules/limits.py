@@ -108,7 +108,7 @@ def limitinf(e,x):
     """Limit e(x) for x-> infty"""
     if debug:
         print "limitinf",e,x
-    if not has(e,x): return e #e is a constant
+    if not e.has(x): return e #e is a constant
     c0,e0 = mrv_leadterm(e,x) 
     sig=sign(e0,x)
     if debug:
@@ -118,9 +118,6 @@ def limitinf(e,x):
         s.infty.sig=sign(c0,x)
         return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
-
-def has(e,x):
-    return not e.eval().diff(x).isequal(s.Rational(0))
 
 def sign(e,x):
     """Returns a sign of an expression at x->infty.
@@ -148,7 +145,7 @@ def sign(e,x):
         if sign(e.base,x) == 1: 
             return 1
     elif isinstance(e,s.log): 
-        return sign((e.arg-1).eval(),x)
+        return sign(e.arg-1,x)
     elif isinstance(e,s.Add):
 #        print limitinf(e,x) #FIXME this is wrong for -infty
 #        print sign(limitinf(e,x),x) #FIXME this is wrong for -infty
@@ -185,7 +182,7 @@ def rewrite(e,Omega,x,wsym):
     for f in Omega: #rewrite Omega using "w"
         c=mrv_leadterm(f.arg/g.arg,x)
         assert c[1]==0
-        O2.append((s.exp(tryexpand((f.arg-c[0]*g.arg).eval()))*wsym**c[0]).eval())
+        O2.append(s.exp(tryexpand(f.arg-c[0]*g.arg))*wsym**c[0])
     f=e #rewrite "e" using "w"
     for a,b in zip(Omega,O2):
         f=f.subs(a,b)
@@ -207,10 +204,10 @@ def rewrite(e,Omega,x,wsym):
     return f,logw
 
 def moveup(l,x):
-    return [e.subs(x,s.exp(x)).eval() for e in l]
+    return [e.subs(x,s.exp(x)) for e in l]
 
 def movedown(l,x):
-    return [e.subs(x,s.log(x)).eval() for e in l]
+    return [e.subs(x,s.log(x)) for e in l]
 
 def subexp(e,sub):
     n=s.Symbol("x",True)
@@ -218,10 +215,9 @@ def subexp(e,sub):
 
 def mrv_leadterm(e,x,Omega=[]):
     """Returns (c0, e0) for e."""
-    e = e.eval()
     if debug:
         print "mrvleadterm",e,Omega
-    if not has(e,x): return (e,s.Rational(0))
+    if not e.has(x): return (e,s.Rational(0))
     Omega = [t for t in Omega if subexp(e,t)]
     if Omega == []:
         Omega = mrv(e,x)
@@ -233,10 +229,10 @@ def mrv_leadterm(e,x,Omega=[]):
     #the expansion in pow however needs to be fixed.
     global whattosubs
     whattosubs=logw
-    series=f.series(wsym,1).eval()
+    series=f.series(wsym,1)
     n = 2
     while series==0 and n<10:
-        series=f.series(wsym,n).eval()
+        series=f.series(wsym,n)
         n += 1
     assert series!=0
     #series=series.subs(s.log(wsym),logw)
@@ -251,7 +247,7 @@ def mrv_leadterm(e,x,Omega=[]):
 
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
-    if not has(e,x): return []
+    if not e.has(x): return []
     elif e == x: return [x]
     elif isinstance(e, s.Mul): 
         a,b = e.getab()
@@ -260,7 +256,7 @@ def mrv(e,x):
         a,b = e.getab()
         return max(mrv(a,x),mrv(b,x),x)
     elif isinstance(e, s.Pow):
-        if has(e.exp,x):
+        if e.exp.has(x):
             return mrv(s.exp(e.exp * s.log(e.base)),x)
         else:
             return mrv(e.base,x)

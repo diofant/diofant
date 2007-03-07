@@ -34,7 +34,7 @@ class cos(Function):
         if isinstance(self.arg,Rational) and self.arg.iszero():
             return Rational(1)
         if self.arg==pi:
-            return (-Rational(1)).eval()
+            return -Rational(1)
         if self.arg==2*pi:
             return Rational(1)
         return self.hold()
@@ -50,6 +50,6 @@ class tan(Function):
         return Rational(1) / (cos(self.arg)**2)
         
     def eval(self):
-        return (sin(self.arg) / cos(self.arg)).eval()
+        return sin(self.arg) / cos(self.arg)
 
     
