@@ -7,19 +7,19 @@ class Integral(Basic):
     """
     Definite integral.
 
-    Integral(a,b,f,x) represents \int_a^b f(x) dx
+    Integral(f, (x,a,b) represents \int_a^b f(x) dx
 
     Usage:
 
-    print Integral(1,x, 1/t ,t)
+    print Integral(1/t, (t,1,x))
     
         will print: int_{1}^{x} (t^(-1)) dt
 
-    print Integral(1,x, 1/t ,t).doit()
+    print Integral(1/t, (t,1,x)).doit()
     
         will print: log(x)
 
-    print Integral(1,x, 1/t ,t).diff(x)
+    print Integral(1/t, (t,1,x)).diff(x)
     
         will print: 1/x
 
@@ -36,12 +36,9 @@ class Integral(Basic):
     """
 
     def __init__(self, f, (x, a, b)):
-        self.__init__old(a,b,f,x)
-
-    def __init__old(self, a, b, arg, x):
-        "int_a^b arg  dx"
+        "int_a^b f(x)  dx"
         Basic.__init__(self)
-        self.arg=self.sympify(arg)
+        self.f=self.sympify(f)
         self.a=self.sympify(a)
         self.b=self.sympify(b)
         assert isinstance(x, Symbol)
@@ -50,15 +47,15 @@ class Integral(Basic):
     def diff(self,sym):
         if sym==self.x:
             raise IntegralError("Cannot differentiate the integration variable")
-        return (self.b.diff(sym)*self.arg.subs(self.x,self.b)-\
-            self.a.diff(sym)*self.arg.subs(self.x,self.a))
+        return (self.b.diff(sym)*self.f.subs(self.x,self.b)-\
+            self.a.diff(sym)*self.f.subs(self.x,self.a))
 
     def __str__(self):
-        return "int_{%r}^{%r} (%r) d%r"%(self.a,self.b,self.arg,self.x)
+        return "int_{%r}^{%r} (%r) d%r"%(self.a,self.b,self.f,self.x)
 
     def doit(self):
         """Try to do the integral."""
-        F=self.primitive_function(self.arg,self.x)
+        F=self.primitive_function(self.f,self.x)
         return (F.subs(self.x,self.b)-F.subs(self.x,self.a))
 
     def primitive_function(self,f,x):
