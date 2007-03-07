@@ -141,7 +141,6 @@ class Basic(object):
         from symbol import Symbol
         from functions import log
         w=Symbol("l",dummy=True)
-        #print self, sym, "|",
         f = self.subs(log(sym),-w)
         e = f.subs(sym,Rational(0))
         fact = Rational(1)
@@ -150,7 +149,6 @@ class Basic(object):
             f = f.diff(sym)
             e += f.subs(sym,Rational(0))*(sym**i)/fact
         e=e.subs(w,-log(sym))
-        #print e
         return e
         
     def subs(self,old,new):
@@ -195,12 +193,6 @@ class Basic(object):
                         return  domul(t.args[:i] + t.args[i+1:]),  a.exp
                     if isinstance(a,Symbol):
                         return  domul(t.args[:i] + t.args[i+1:]),  Rational(1)
-                    from functions import log
-                    if isinstance(a,log):
-                        #hack
-                        assert False
-                        print "hack executed:"
-                        return domul(t.args[:i] + t.args[i+1:]), Rational(1000)
                     assert False
             return t,s.Rational(0)
         if not isinstance(self,Add):
@@ -210,14 +202,10 @@ class Basic(object):
         from functions import log
         for t in self.args:
             t2 = extract(t.subs(log(x),-l),x)
-            #print "t2:",t2,lowest,(lowest[1] - t2[1]).evalf()
-            #if t2[1]<lowest[1]:
             if (lowest[1] - t2[1]).evalf()>0:
                 lowest=t2
             elif t2[1] == lowest[1]:
                 lowest=((lowest[0] + t2[0]),lowest[1])
-        #print lowest,t,x
-        #print self.args,lowest
         return lowest[0].subs(l,-log(x)), lowest[1].subs(l,-log(x))
         
     def ldegree(self,sym):
