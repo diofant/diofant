@@ -2,8 +2,13 @@ from utils import sign
 
 class AutomaticEvaluationType(type):
     def __call__(self,*args,**kwargs):
+        if kwargs.has_key("evaluated"):
+            evaluated = kwargs["evaluated"]
+            del kwargs["evaluated"]
+        else:
+            evaluated = False
         obj=type.__call__(self,*args,**kwargs)
-        if obj.evaluated: return obj
+        if evaluated: return obj
         else: return obj.eval()
 
 class Basic(object):
@@ -11,7 +16,7 @@ class Basic(object):
     __metaclass__ = AutomaticEvaluationType
     
     def __init__(self,evaluated=False):
-        self.evaluated = evaluated;
+    #def __init__(self):
         self.mhash = 0
         
     def __repr__(self):
