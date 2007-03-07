@@ -43,7 +43,7 @@ w=Symbol("w")
 
 import pdb
 #pdb.run("limitinf(sqrt(log(x+1))-sqrt(log(x)),x)")
-#print limitinf(sqrt(log(x+1))-sqrt(log(x)),x)
+print limitinf(sqrt(log(x+1))-sqrt(log(x)),x)
 
 #e=sqrt(w-log(w))
 #print e
@@ -60,7 +60,3 @@ import pdb
 #e=(-2)*x.sqrt()-Rational(1)/2*w/x.sqrt()
 #print e
 #print e.print_tree()
-
-e=(-log(w)).sqrt()
-print e
-print e.subs(log(w),-x)

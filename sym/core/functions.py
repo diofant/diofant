@@ -119,7 +119,7 @@ class log(Function):
         #FIXME a huge hack. needs fixing.....
         from sym import limits
         #print limits.whattosubs
-        e=e.subs(log(w),limits.whattosubs)
+        #e=e.subs(log(w),limits.whattosubs)
         #print "    LN2:",e
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
