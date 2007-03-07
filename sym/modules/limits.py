@@ -79,8 +79,6 @@ import sym as s
 debug = False
 #debug=True
 
-whattosubs = None
-
 def intersect(a,b):
     for x in a:
         if member(x,b): return True
@@ -225,18 +223,13 @@ def mrv_leadterm(e,x,Omega=[]):
         return movedown(mrv_leadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym = s.Symbol("w",True)
     f,logw=rewrite(e,Omega,x,wsym)
-    #I still believe, this can be than later, as is commented out.
-    #the expansion in pow however needs to be fixed.
-    global whattosubs
-    whattosubs=logw
     series=f.series(wsym,1)
-    series=series.subs(s.log(wsym),whattosubs)
     n = 2
     while series==0 and n<10:
         series=f.series(wsym,n)
         n += 1
     assert series!=0
-    #series=series.subs(s.log(wsym),logw)
+    series=series.subs(s.log(wsym),logw)
     if debug:
         print "mrvleadterm:"
         print "  e:", e
