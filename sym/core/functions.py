@@ -114,17 +114,9 @@ class log(Function):
         w = sym
         c0,e0 = arg.leadterm(w)
         Phi=(arg/(c0*w**e0)-1).expand()
-        #print "  LN:",self,c0,w,e0,Phi
         e=log(c0)+e0*log(w)
-        #FIXME a huge hack. needs fixing.....
-        from sym import limits
-        #print limits.whattosubs
-        #e=e.subs(log(w),limits.whattosubs)
-        #print "    LN2:",e
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
-        #print "    LN3:",e.eval()
-        #stop
         return e
 
 ln = log
