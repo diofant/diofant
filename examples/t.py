@@ -34,7 +34,7 @@ y=Symbol("y")
 #if (1-x).subs(x,1) == 0.0:
 #    print "I found a root 0.0"
 
-e=(x+1)**2
+e=(x)**2
+a=Symbol("a")
 
-print Integral(1,3,e,x)
-print Integral(y,y**2,e,x).diff(y)
+print Integral(1,3,e,x).diff(a)
