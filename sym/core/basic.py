@@ -15,8 +15,7 @@ class Basic(object):
     
     __metaclass__ = AutomaticEvaluationType
     
-    def __init__(self,evaluated=False):
-    #def __init__(self):
+    def __init__(self):
         self.mhash = 0
         
     def __repr__(self):
