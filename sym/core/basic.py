@@ -107,7 +107,7 @@ class Basic(object):
         general rule of not changing)
         
         """
-        return self
+        return self.hold()
         
     def hold(self):
         """Sets "evaluated" flag. This means, we are in the canonical form,

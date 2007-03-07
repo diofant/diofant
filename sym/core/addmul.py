@@ -177,7 +177,7 @@ class Mul(Pair):
         if len(a)>1:
             return Mul(a,evaluated=True)
         elif len(a)==1:
-            return a[0].hold()
+            return a[0]
         else:
             return Rational(1)
             
