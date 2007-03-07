@@ -2,14 +2,14 @@ from utils import sign
 
 class AutomaticEvaluationType(type):
     def __call__(self,*args,**kwargs):
-        if kwargs.has_key("evaluated"):
-            evaluated = kwargs["evaluated"]
-            del kwargs["evaluated"]
+        if kwargs.has_key("evaluate"):
+            evaluate = kwargs["evaluate"]
+            del kwargs["evaluate"]
         else:
-            evaluated = False
+            evaluate = True
         obj=type.__call__(self,*args,**kwargs)
-        if evaluated: return obj
-        else: return obj.eval()
+        if evaluate: return obj.eval()
+        else: return obj
 
 class Basic(object):
     

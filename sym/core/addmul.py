@@ -168,7 +168,7 @@ class Mul(Pair):
         if hasattr(n, 'isone') and (not n.isone()): 
             a=[n]+a
         if len(a)>1:
-            return Mul(a,evaluated=True)
+            return Mul(a,evaluate=False)
         elif len(a)==1:
             return a[0]
         else:
@@ -311,7 +311,7 @@ class Add(Pair):
         a.sort(Basic.cmphash)
         if not n.iszero(): a = [n] + a
         if len(a)>1:
-            return Add(a,evaluated=True)
+            return Add(a,evaluate=False)
         elif len(a)==1:
             return a[0]
         else:
@@ -396,7 +396,7 @@ class NCMul(Mul):
         if n.iszero(): return Rational(0)
         if not n.isone(): a=[n]+a
         if len(a) > 1:
-            return Mul(a,evaluated=True)
+            return Mul(a,evaluate=False)
         elif len(a) == 1:
             return a[0]
         else:

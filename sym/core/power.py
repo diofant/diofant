@@ -139,7 +139,7 @@ class Pow(Basic):
                 if n > 1:
                     a = self.base
                     while n > 1:
-                        a = Mul(a,self.base,evaluated=True)
+                        a = Mul(a,self.base,evaluate=False)
                         #a *= self.base
                         n -= 1
                     return a.expand()
