@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sym as g
+from sym import Rational
 
 def testRational():
     n1=g.Rational(1,4)
@@ -87,3 +88,7 @@ def test_complex():
     assert abs(-a) == a
     assert abs(-a) != -a
     assert abs(a+g.I*b) == (a*a+b*b).sqrt()
+
+def test_int():
+    a=Rational(5)
+    assert int(a)==5

@@ -313,6 +313,9 @@ class Rational(Number):
             else:
                 return Rational(1, a ** -(self.p))
         return Pow(a, self )
+
+    def __int__(self):
+        return self.getinteger()
     
     def iszero(self):
         return self.p == 0 

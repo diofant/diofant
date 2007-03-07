@@ -81,8 +81,8 @@ which is the most difficult part of the algorithm.
 
 import sym as s
 
-debug = False
-#debug=True
+#debug = False
+debug=True
 strdebug = ""
 
 def intersect(a,b):
