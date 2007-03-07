@@ -274,8 +274,9 @@ class Rational(Number):
                     # 0 ** a = undefined, where a <= 0 
                     raise pole_error("pow::eval(): Division by 0.")
                 elif a == 0:
-                    return Rational(1)
                     #FIXME : mathematically wrong but needed for limits.py
+                    #raise pole_error("pow::eval(): Division by 0.")
+                    return Rational(1)
                 else:
                     # 0 ** a = 0, where a > 0
                     return Rational(0)
