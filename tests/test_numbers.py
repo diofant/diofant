@@ -44,6 +44,8 @@ def testRational_comparisons():
     assert n6<n7
     assert n8<n7
     assert n7>n8
+    assert (n1+1)**n2 < 2
+    assert ((n1+n6)/n7) < 1
 
     assert n4<n3
     assert n2<n3
@@ -80,6 +82,7 @@ def test_complex():
     assert (a+g.I*b).conjugate() !=  a+g.I*b
     assert (a+g.I*b).conjugate() ==  a-g.I*b
 
+    print abs(a)
     assert abs(a) == a
     assert abs(-a) == a
     assert abs(-a) != -a

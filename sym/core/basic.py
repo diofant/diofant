@@ -76,7 +76,11 @@ class Basic(object):
         return not self.__eq__(a)
         
     def __lt__(self,a):
-        raise NotImplementedError("'<' not supported.")
+        from utils import isnumber
+        if isnumber(self) and isnumber(a): 
+            return self.evalf() < float(a)
+        else:
+            raise NotImplementedError("'<' not supported.")
 
     @staticmethod
     def _doadd(a,b):
