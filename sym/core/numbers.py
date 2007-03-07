@@ -33,7 +33,7 @@ class Number(Basic):
         return Rational(0)
     
     def evalf(self):
-        return self.eval()
+        return self
     
 class Infinity(Number):
     """Infinity. Cannot be used in expressions like 1+infty.  

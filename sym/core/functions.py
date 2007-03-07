@@ -20,13 +20,13 @@ class Function(Basic):
         return self.mhash.value
     
     def diff(self,sym):
-        return (self.derivative()*self.arg.diff(sym)).eval()
+        return (self.derivative()*self.arg.diff(sym))
     
     def subs(self,old,new):
         e = Basic.subs(self,old,new)
         #if e==self:
         if e.isequal(self):
-            return (type(self)(self.arg.subs(old,new))).eval()
+            return (type(self)(self.arg.subs(old,new)))
         else:
             return e
         
@@ -48,7 +48,7 @@ class Function(Basic):
         if arg.has(sym):
             e = e.series(w,n)
         e = e.subs(w,arg)
-        return e.eval().expand()
+        return e.expand()
 
 class exp(Function):
     """Return e raised to the power of x
@@ -61,11 +61,11 @@ class exp(Function):
         return exp(self.arg)
         
     def expand(self):
-        return exp(self.arg.expand()).eval()
+        return exp(self.arg.expand())
         
     def eval(self):
         if self.evaluated: return self
-        arg = self.arg.eval()
+        arg = self.arg
         if isinstance(arg,Rational) and arg.iszero():
             return Rational(1)
         if isinstance(arg,log):
@@ -86,16 +86,16 @@ class log(Function):
         from addmul import Mul
         from power import Pow
         if self.evaluated: return self
-        arg=self.arg.eval()
+        arg=self.arg
         if isinstance(arg,Rational) and arg.isone():
             return Rational(0)
         elif isinstance(arg,exp):
             return arg.arg.hold()
         elif isinstance(arg,Mul):
             a,b = arg.getab()
-            return (log(a)+log(b)).eval()
+            return log(a)+log(b)
         elif isinstance(arg,Pow):
-            return (arg.exp * log(arg.base)).eval()
+            return arg.exp * log(arg.base)
         return log(arg,evaluated=True)
         
     def evalf(self):
@@ -126,6 +126,6 @@ class log(Function):
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
         #print "    LN3:",e.eval()
-        return e.eval()
+        return e
 
 ln = log
