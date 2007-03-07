@@ -82,7 +82,7 @@ def test_complex():
     assert (a+g.I*b).conjugate() !=  a+g.I*b
     assert (a+g.I*b).conjugate() ==  a-g.I*b
 
-    print abs(a)
+    assert str(abs(a))=="a"
     assert abs(a) == a
     assert abs(-a) == a
     assert abs(-a) != -a

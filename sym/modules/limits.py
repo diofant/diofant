@@ -230,11 +230,7 @@ def mrv_leadterm(e,x,Omega=[]):
     global whattosubs
     whattosubs=logw
     series=f.series(wsym,1)
-    #print "1:",series
     series=series.subs(s.log(wsym),whattosubs)
-    #print "2:",series, "|", s.log(wsym), "->", whattosubs
-    #print "The correct answer:"
-    #print wsym/x.sqrt()/2
     n = 2
     while series==0 and n<10:
         series=f.series(wsym,n)
