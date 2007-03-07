@@ -362,6 +362,9 @@ class Constant(Basic):
         self.mhash.addstr(str(type(self)))
         return self.mhash.value
 
+    def diff(self,sym):
+        return Rational(0)
+
 class ConstPi(Constant):
 
     def __str__(self):

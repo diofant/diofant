@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-from sym import exp,log,Symbol,infty,Rational,sin,cos,limitinf,limit
+from sym import exp,log,Symbol,infty,Rational,sin,cos,limitinf,limit,pi
 
 x=Symbol("x")
 a=Symbol("a")
@@ -55,7 +55,6 @@ def testsimpleproblems():
     assert limitinf(log(1+exp(x))/x,x)==1  #267b
 
 def test_functions():
-    pi=Symbol("pi")
     m=Symbol("m")
     n=Symbol("n")
     assert limit(sin(x)/x,x,2) == sin(2)/2 #216a
@@ -63,7 +62,7 @@ def test_functions():
     #assert limitinf(sin(x)/x,x) == 0 #216b
     assert limit(sin(3*x)/x,x,0) == 3 #217
     assert limit(sin(5*x)/sin(2*x),x,0) == Rational(5)/2 #218
-    #assert limit(sin(pi*x)/sin(3*pi*x),x,1) == Rational(1)/3 #219
+    assert limit(sin(pi*x)/sin(3*pi*x),x,0) == Rational(1)/3 #219
     assert limitinf(x*sin(pi/x),x) == pi #220
     assert limit((1-cos(x))/x**2,x,0) == Rational(1,2) #221
     assert limit((sin(x)-sin(a))/(x-a),x,a) == cos(a) #222
