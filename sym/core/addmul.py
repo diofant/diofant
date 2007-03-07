@@ -45,7 +45,7 @@ class Pair(Basic):
     def evalargs(self,a):
         b=[]
         for t in a:
-            b.append(t.eval())
+            b.append(t)
         return b
         
     def flatten(self,a):
@@ -156,7 +156,7 @@ class Mul(Pair):
             for y in exp:
                 b,bexp = self.get_baseandexp(y)
                 if (not ok) and a.isequal(b):
-                    e.append(Pow(a,Add(aexp,bexp)).eval())
+                    e.append(Pow(a,Add(aexp,bexp)))
                     ok = True
                 else:
                     e.append(y)
@@ -218,7 +218,7 @@ class Mul(Pair):
                 if i != j:
                     d *= self.args[j]
             r+=d
-        return r.eval()
+        return r
         
     def series(self,sym,n):
         """expansion for Mul
@@ -240,12 +240,12 @@ class Mul(Pair):
             d = Rational(0)
             for t in a.args:
                 d += (t*b).expand()
-            return d.eval()
+            return d
         elif isinstance(b,Add):
             d = Rational(0)
             for t in b.args:
                 d += (a*t).expand()
-            return d.eval()
+            return d
         else:
             return a*b
         
@@ -253,7 +253,7 @@ class Mul(Pair):
         a,b = self.getab()
         e = a.subs(old,new)*b.subs(old,new)
         if isinstance(e, Basic):
-            return e.eval()
+            return e
         else:
             return e
     
@@ -305,7 +305,7 @@ class Add(Pair):
             for y in exp:
                 bn, b = _extract_numeric(y)
                 if (not ok) and a.isequal(b):
-                    e.append(Mul(an + bn,a).eval())
+                    e.append(Mul(an + bn,a))
                     ok = True
                 else:
                     e.append(y)
@@ -344,20 +344,20 @@ class Add(Pair):
         d = Rational(0)
         for x in self.args:
             d += x.diff(sym)
-        return d.eval()
+        return d
     
     def expand(self):
         """Tries to expands all the terms in the sum."""
         d = Rational(0)
         for x in self.args:
             d += self.tryexpand(x)
-        return d.eval()
+        return d
     
     def subs(self,old,new):
         d = Rational(0)
         for x in self.args:
             d += x.subs(old,new)
-        return d.eval()
+        return d
     
     def series(self,sym,n):
         """expansion for add
@@ -371,7 +371,7 @@ class Add(Pair):
         except pole_error:
             a,b = self.getab()
             #there is a cancelation problem here:
-            return (a.series(sym,n)+b.series(sym,n)).eval()
+            return (a.series(sym,n)+b.series(sym,n))
 
 class NCMul(Mul):
     
@@ -399,7 +399,7 @@ class NCMul(Mul):
             for y in exp:
                 b,bexp = self.get_baseandexp(y)
                 if (not ok) and a.isequal(b):
-                    e.append(Pow(a,Add(aexp,bexp)).eval())
+                    e.append(Pow(a,Add(aexp,bexp)))
                     ok = True
                 else:
                     e.append(y)
