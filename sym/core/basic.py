@@ -70,7 +70,7 @@ class Basic(object):
         return self._dopow(a, self)
         
     def __eq__(self,a):
-        return self.eval().isequal(self.sympify(a).eval())
+        return self.isequal(self.sympify(a))
         
     def __ne__(self,a):
         return not self.__eq__(a)
@@ -149,7 +149,7 @@ class Basic(object):
             fact *= Rational(i)
             f = f.diff(sym)
             e += f.subs(sym,Rational(0))*(sym**i)/fact
-        return e.eval()
+        return e
         
     def subs(self,old,new):
         if self.isequal(old):
@@ -168,7 +168,7 @@ class Basic(object):
         """
         
         if not self.evaluated:
-            return self.eval().leadterm(x)
+            return self.leadterm(x)
         from numbers import Rational
         from power import Pow
         from addmul import Add,Mul
@@ -195,14 +195,14 @@ class Basic(object):
             return t,s.Rational(0)
         if not isinstance(self,Add):
             return extract(self,x)
-        lowest = [0,(Rational(10)**10).eval()]
+        lowest = [0,(Rational(10)**10)]
         for t in self.args:
             t2 = extract(t,x)
             #if t2[1]<lowest[1]:
             if (lowest[1] - t2[1]).evalf()>0:
                 lowest=t2
             elif t2[1] == lowest[1]:
-                lowest=((lowest[0] + t2[0]).eval(),lowest[1])
+                lowest=((lowest[0] + t2[0]),lowest[1])
         return lowest
         
     def ldegree(self,sym):
@@ -225,7 +225,7 @@ class Basic(object):
     def sqrt(self):
         """Returns square root of self."""
         from numbers import Rational
-        return (self**(Rational(1)/2)).eval()
+        return (self**(Rational(1)/2))
 
         
     def print_tree(self):
