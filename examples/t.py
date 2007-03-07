@@ -39,9 +39,28 @@ def sqrt(x):
 #    print "I found a root 0.0"
 
 e=(x)**2
-a=Symbol("a")
-t=Symbol("t")
+w=Symbol("w")
 
 import pdb
 #pdb.run("limitinf(sqrt(log(x+1))-sqrt(log(x)),x)")
-print limitinf(sqrt(log(x+1))-sqrt(log(x)),x)
+#print limitinf(sqrt(log(x+1))-sqrt(log(x)),x)
+
+#e=sqrt(w-log(w))
+#print e
+#e2=e.subs(log(w),-x)
+#print e2
+#e3=e2.series(w,1)
+#print e3
+#e4=e3.subs(x,-log(w))
+#print e4
+#print e.series(w,1)
+
+#x=Symbol("x") 
+#w=Symbol("w")
+#e=(-2)*x.sqrt()-Rational(1)/2*w/x.sqrt()
+#print e
+#print e.print_tree()
+
+e=(-log(w)).sqrt()
+print e
+print e.subs(log(w),-x)

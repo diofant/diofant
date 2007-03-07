@@ -3,6 +3,7 @@ sys.path.append(".")
 
 import sym as g
 import sym as s
+from sym import Symbol, log
 
 def testfunc():
     a=g.Symbol("a")
@@ -76,3 +77,10 @@ def test_pi():
     assert s.cos(2*s.pi)==1
     assert s.sin(s.pi)==0
     assert s.sin(2*s.pi)==0
+
+def test_bug1():
+    x=Symbol("x")
+    w=Symbol("w")
+    e=(-log(w)).sqrt()
+    assert e.subs(log(w),-x)!=-x.sqrt()
+    assert e.subs(log(w),-x)==x.sqrt()
