@@ -46,8 +46,8 @@ class Pow(Basic):
     def eval(self):
         from addmul import Mul
         if self.evaluated: return self
-        self.base = self.base.eval()
-        self.exp = self.exp.eval()
+        self.base = self.base
+        self.exp = self.exp
         if isinstance(self.exp,Rational) and self.exp.iszero():
             return Rational(1)
         if isinstance(self.exp,Rational) and self.exp.isone():
@@ -72,16 +72,16 @@ class Pow(Basic):
                 x = int(a**(1./bq)+0.5)
                 if x**bq == a:
                     assert isinstance(x,int)
-                    return (Rational(x)**self.exp.p).eval()
+                    return Rational(x)**self.exp.p
         if isinstance(self.base,Pow): 
-            return Pow(self.base.base,self.base.exp*self.exp).eval()
+            return Pow(self.base.base,self.base.exp*self.exp)
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
-            return (Pow(a,self.exp) * Pow(b,self.exp)).eval()
+            return (Pow(a,self.exp) * Pow(b,self.exp))
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.isinteger():
                 if self.exp.getinteger()==2:
-                    return (-Rational(1)).eval()
+                    return -Rational(1)
         return Pow(self.base,self.exp,evaluated=True)
         
     def evalf(self):
@@ -93,7 +93,7 @@ class Pow(Basic):
     def diff(self,sym):
         f = self.base
         g = self.exp
-        return (self*(g*log(f)).diff(sym)).eval()
+        return (self*(g*log(f)).diff(sym))
         
     def series(self,sym,n):
         from addmul import Add
@@ -117,10 +117,10 @@ class Pow(Basic):
                     #print n,Phi,c0,e0,g,self.base
                     return e.expand()
                 if not isinstance(self.exp,Rational):
-                    e = exp(self.exp * log(self.base)).eval()
+                    e = exp(self.exp * log(self.base))
                     return e.series(sym,n)
                 #self.base is kind of:  1/x^2 + 1/x + 1 + x + ...
-                e = self.base.series(sym,n).eval()
+                e = self.base.series(sym,n)
                 ldeg = e.ldegree(sym)
                 #print "power:",e,self.exp,ldeg,e.eval()
                 s= ((e*sym**(-ldeg)).expand()**self.exp).series(sym,n+
@@ -129,7 +129,7 @@ class Pow(Basic):
         try:
             return Basic.series(self,sym,n)
         except pole_error:
-            e = exp(self.exp*log(self.base)).eval()
+            e = exp(self.exp*log(self.base))
             return e.series(sym,n)
             
     def expand(self):
@@ -152,4 +152,4 @@ class Pow(Basic):
         elif exp(self.exp * log(self.base)) == old:
             return new
         else:
-            return (self.base.subs(old,new) ** self.exp.subs(old,new)).eval()
+            return (self.base.subs(old,new) ** self.exp.subs(old,new))
