@@ -79,7 +79,7 @@ class Real(Number):
         Number.__init__(self)
         if isinstance(num,str):
             num = decimal.Decimal(num)
-        assert utils.isnumber(num)
+#        assert utils.isnumber(num)
         if isinstance(num, decimal.Decimal):
             self.num = num
         elif isinstance(num, Real):
