@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 import sym as g
-from sym import sin,Symbol
+from sym import sin,Symbol,log
 
 def testseries():
     n3=g.Rational(3)
@@ -124,3 +124,11 @@ def test_seriesbug2():
     #some limits need this series expansion to work:
     e=(sin(2*w)/w)**(1+w)
     assert e.series(w,1).subs(w,0)==2
+
+def test_seriesbug3():
+    x=Symbol("x")
+    w=Symbol("w")
+
+    #some limits need this series expansion to work:
+    e=(w**(-log(5)/log(3))-1/w)**(1/x)
+    assert  e.series(w,1).subs(log(w),-log(3)*x).subs(w,0) == 5

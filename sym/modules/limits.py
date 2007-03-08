@@ -195,8 +195,8 @@ def sign(e,x):
     elif isinstance(e,s.log): 
         return sign(e.arg-1,x)
     elif isinstance(e,s.Add):
-#        print limitinf(e,x) #FIXME this is wrong for -infty
-#        print sign(limitinf(e,x),x) #FIXME this is wrong for -infty
+        #print limitinf(e,x) 
+        #print sign(limitinf(e,x),x) 
         return sign(limitinf(e,x),x) #FIXME this is wrong for -infty
     raise "cannot determine the sign of %s"%e
 

@@ -177,5 +177,5 @@ def test_others():
     assert s.limitinf(sqrt(log(x+1))-sqrt(log(x)),x)==0
     assert s.limit(((1+x)**a-1)/x,x,0)==a
     assert s.limit((x**(1/n)-1)/(x**(1/m)-1),x,1)==m/n
-    #8.12
-    #assert s.limitinf((3**x-5**x)**(1/x),x)==5
+    #8.12 - originally, it was 3**x-5**x, but this is nonsense
+    assert s.limitinf((5**x-3**x)**(1/x),x)==5

@@ -1,6 +1,7 @@
 import hashing
 from basic import Basic
 from numbers import Rational, Real
+from utils import isnumber
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 
@@ -42,12 +43,18 @@ class Function(Basic):
             return Basic.series(self,sym,n)
         except pole_error:
             pass
+        #this only works, if arg(0) -> 0, otherwise we are in trouble
         arg = self.arg.series(sym,n)
+        l = Symbol("l",dummy=True)
+        #the arg(0) goes to z0
+        z0 = arg.subs(log(sym),l).subs(sym,0)
         w = Symbol("w",True)
         e = type(self)(w)
         if arg.has(sym):
             e = e.series(w,n)
-        e = e.subs(w,arg)
+        e = e.subs(w,arg-z0)
+
+        e= (exp(z0)*e).expand().subs(l,log(sym))
         return e.expand()
 
 class exp(Function):
@@ -114,6 +121,8 @@ class log(Function):
         w = sym
         c0,e0 = arg.leadterm(w)
         Phi=(arg/(c0*w**e0)-1).expand()
+        if isnumber(c0):
+            assert c0.evalf()>0
         e=log(c0)+e0*log(w)
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
