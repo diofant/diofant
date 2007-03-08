@@ -26,6 +26,9 @@ class sin(Function):
         
     def derivative(self):
         return cos(self.arg)
+
+    def bounded(self):
+        return True
         
     def eval(self):
         if self.arg == 0:
@@ -43,6 +46,9 @@ class cos(Function):
         
     def derivative(self):
         return -sin(self.arg)
+
+    def bounded(self):
+        return True
     
     def eval(self):
         if self.arg == 0:

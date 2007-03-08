@@ -230,6 +230,13 @@ class Basic(object):
         from numbers import Rational
         return (self**(Rational(1)/2))
 
+    def bounded(self):
+        """Is "self" bounded for all possible values of symbols?
+        
+        Generally not, but sin(x) and cos(x) are.
+        """
+        return False
+
         
     def print_tree(self):
         """The canonical tree representation

@@ -57,8 +57,7 @@ def test_functions():
     m=Symbol("m")
     n=Symbol("n")
     assert limit(sin(x)/x,x,2) == sin(2)/2 #216a
-    #doesn't have a taylor series around 0.... cannot compute
-    #assert limitinf(sin(x)/x,x) == 0 #216b
+    assert limitinf(sin(x)/x,x) == 0 #216b
     assert limit(sin(3*x)/x,x,0) == 3 #217
     assert limit(sin(5*x)/sin(2*x),x,0) == Rational(5)/2 #218
     assert limit(sin(pi*x)/sin(3*pi*x),x,0) == Rational(1)/3 #219
@@ -67,8 +66,7 @@ def test_functions():
     assert limit((sin(x)-sin(a))/(x-a),x,a) == cos(a) #222
     assert limit((cos(x)-cos(a))/(x-a),x,a) == -sin(a) #223
     assert limit((sin(x+h)-sin(x))/h,h,0) == cos(x) #225
-    #doesn't have a taylor series around 0.... cannot compute
-#    assert limit(x*sin(1/x),x,0) == 0 #227a
+    assert limit(x*sin(1/x),x,0) == 0 #227a
     assert limitinf(x*sin(1/x),x) == 1 #227b
     assert limit((cos(m*x)-cos(n*x))/x**2,x,0) == ((n**2-m**2)/2).expand() #232
     assert limit((tan(x)-sin(x))/x**3,x,0) == Rational(1,2) #233

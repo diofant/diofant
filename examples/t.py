@@ -18,5 +18,6 @@ w=Symbol("w")
 def sqrt(x):
     return x.sqrt()
 
-
+#import pdb
+#pdb.run('print limitinf(sin(x)/x,x)')
 print limitinf(sin(x)/x,x)

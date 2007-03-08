@@ -216,7 +216,19 @@ class Mul(Pair):
         first expand x, then e^x, then e^x-1, and finally (e^x-1)/x
         """
         a,b=self.getab()
-        return (a.series(sym,n)*b.series(sym,n)).expand()
+        x=a.series(sym,n)
+        try:
+            y=b.series(sym,n)
+        except pole_error:
+            #we are not able to expand b, 
+            #but if a goes to 0 and b is bounded, 
+            #the result is just a*const, so we just return a
+            a0 = x.subs(sym,0)
+            if a0==0 and b.bounded():
+                return x
+            #we cannot expand x*y
+            raise
+        return (x*y).expand()
         
     def expand(self):
         a,b = self.getab()
