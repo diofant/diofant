@@ -1,4 +1,4 @@
-from sym import Basic, Symbol, Number, Mul, Pow, log, Add
+from sympy import Basic, Symbol, Number, Mul, Pow, log, Add
 
 class IntegralError(Exception):
     pass

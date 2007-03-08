@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import py
 
-import sym as g
+import sympy as g
 
 def test_subs():
     n3=g.Rational(3)

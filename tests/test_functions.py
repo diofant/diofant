@@ -1,9 +1,9 @@
 import sys
 sys.path.append(".")
 
-import sym as g
-import sym as s
-from sym import Symbol, log
+import sympy as g
+import sympy as s
+from sympy import Symbol, log
 
 def testfunc():
     a=g.Symbol("a")

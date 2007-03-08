@@ -1,10 +1,10 @@
 import sys
 sys.path.append(".")
 
-import sym as s
+import sympy as s
 
 def testsets():
-    from sym.modules.limits import member,intersect,union
+    from sympy.modules.limits import member,intersect,union
     x=[1,2,3]
     y=[2,4]
     assert member(2,y)
@@ -16,7 +16,7 @@ def testsets():
     assert union(x,[4,5])==[1,2,3,4,5]
 
 def testcompare():
-    from sym.modules.limits import compare
+    from sympy.modules.limits import compare
     x=s.Symbol("y")
     assert compare(s.exp(x),x**5,x) == ">"
     assert compare(s.exp(x**2),s.exp(x)**2,x) == ">"
@@ -37,14 +37,14 @@ def eq(a,b):
         assert x==y
 
 def testmax():
-    from sym.modules.limits import max
+    from sympy.modules.limits import max
     x=s.Symbol("y")
     eq(max([s.exp(x)],[x**5],x),  [s.exp(x)])
     eq(max([s.exp(-x)],[x],x),  [s.exp(-x)])
 
 
 def testmrv():
-    from sym.modules.limits import mrv
+    from sympy.modules.limits import mrv
     x=s.Symbol("y")
     eq(mrv(s.exp(x+1/x),x),[s.exp(x+1/x)])
     eq(mrv(-s.exp(1/x),x),[x])
@@ -56,7 +56,7 @@ def testmrv():
 
 def test_simple_limit_manual():
     "example 3.15"
-    from sym.modules.limits import mrv
+    from sympy.modules.limits import mrv
     x = s.Symbol("y")
     f = (s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
     Omega=mrv(f,x)
@@ -76,7 +76,7 @@ def test_simple_limit_lessmanual():
     "example 3.15"
     x = s.Symbol("y")
     f = (s.exp(1/x-s.exp(-x))-s.exp(1/x))/s.exp(-x)
-    from sym.modules.limits import mrv_leadterm
+    from sympy.modules.limits import mrv_leadterm
     lterm = mrv_leadterm(f,x)
     assert lterm[0]==-s.exp(1/x)
     assert lterm[1]==0
@@ -144,7 +144,7 @@ def testlog():
 def testsubexp():
     x=s.Symbol("x")
     e=s.log(x)
-    from sym.modules.limits import subexp
+    from sympy.modules.limits import subexp
     assert subexp(e,x)
     assert not subexp(e,s.exp(x))
     assert subexp(s.exp(s.exp(x)+s.log(x)),x)
@@ -156,7 +156,7 @@ def sqrt(x):
     return x**s.Rational(1,2)
 
 def test_functions():
-    from sym import sin,cos,infty,Rational,exp,limit,limitinf
+    from sympy import sin,cos,infty,Rational,exp,limit,limitinf
     x=s.Symbol("x")
     assert limit(sin(x)/x,x,0) == 1
     assert limit(cos(x)/sin(x),x,0) == infty
@@ -165,7 +165,7 @@ def test_functions():
 
 def test_sign():
     x=s.Symbol("x")
-    from sym.modules.limits import sign
+    from sympy.modules.limits import sign
     assert sign((1/(s.log(2)+s.log(x))).eval(),x)==1
 
 def test_others():

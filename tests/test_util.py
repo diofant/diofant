@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-import sym as s
+import sympy as s
 
 def test_sign():
     assert s.utils.sign(-2)  == s.utils.sign(s.Rational(-2)) 

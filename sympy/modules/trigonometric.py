@@ -1,5 +1,5 @@
-from sym import Rational,Function
-from sym import pi
+from sympy import Rational,Function
+from sympy import pi
 
 class sin(Function):
     """

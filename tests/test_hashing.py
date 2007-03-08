@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-import sym as g
+import sympy as g
 
 def test_hashing_class():
     h1=g.core.hashing.mhash()
@@ -36,7 +36,7 @@ def test_basic_class():
     assert z.hash()==z2.hash()
 
 def test_bug():
-    from sym.core.hashing import mhash
+    from sympy.core.hashing import mhash
     m1=mhash()
     m1.addstr("<class 'sym.symbol.Symbol'>")
     m1.addstr("y")
@@ -51,7 +51,7 @@ def test_bug():
     assert m1.value!=m2.value
 
 def test_bug2():
-    from sym.core.hashing import mhash
+    from sympy.core.hashing import mhash
     num=123456
 
     m2a=mhash()
@@ -68,7 +68,7 @@ def test_bug3():
     assert y.subs(x,g.Real(3.2))!=9
 
 def test_bug4():
-    from sym.core.hashing import mhash
+    from sympy.core.hashing import mhash
     m1=mhash()
     m1.addstr("<class 'sym.core.symbol.Symbol'>")
     m1.addstr("x")
@@ -98,7 +98,7 @@ def test_bug5():
     assert g.cos(x)/g.sin(x)!=g.sin(x)/g.cos(x)
 
 def test_bug5h():
-    from sym.core import hashing
+    from sympy.core import hashing
     mhash=hashing.mhash()
     mhash.addstr("<class 'sym.core.numbers.Rational'>")
     mhash.addint(-1)
@@ -145,7 +145,7 @@ def test_bug5h():
     assert m.value!=m2.value
 
 def test_bug5h2():
-    from sym.core import hashing
+    from sympy.core import hashing
     mhash=hashing.mhash()
     mhash.addstr("<class 'sym.core.numbers.Rational'>")
     mhash.addint(-1)

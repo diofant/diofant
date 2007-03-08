@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-import sym as s
+import sympy as s
 import py
 
 x = s.Symbol('x')

@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-from sym import exp,log,Symbol,infty,Rational,sin,cos,limitinf,limit,pi
+from sympy import exp,log,Symbol,infty,Rational,sin,cos,limitinf,limit,pi
 
 x=Symbol("x")
 a=Symbol("a")

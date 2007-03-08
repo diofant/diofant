@@ -1,8 +1,8 @@
 import sys
 sys.path.append(".")
 
-import sym as g
-from sym import Rational
+import sympy as g
+from sympy import Rational
 
 def testRational():
     n1=g.Rational(1,4)

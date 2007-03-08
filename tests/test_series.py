@@ -3,8 +3,8 @@ sys.path.append(".")
 
 import py
 
-import sym as g
-from sym import sin,Symbol,log
+import sympy as g
+from sympy import sin,Symbol,log
 
 def testseries():
     n3=g.Rational(3)

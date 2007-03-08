@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import py
 
-from sym import Integral, Symbol, IntegralError, log
+from sympy import Integral, Symbol, IntegralError, log
 
 def test_basics():
     x=Symbol("x")

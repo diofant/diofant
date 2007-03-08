@@ -1,8 +1,8 @@
 import sys
 sys.path.append(".")
 
-import sym as g
-from sym import log,exp
+import sympy as g
+from sympy import log,exp
 
 def testeval():
     a=g.Symbol("a")

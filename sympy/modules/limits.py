@@ -79,7 +79,7 @@ which is the most difficult part of the algorithm.
 
 """
 
-import sym as s
+import sympy as s
 
 from decorator import decorator
 
