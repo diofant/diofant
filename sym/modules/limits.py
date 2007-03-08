@@ -132,6 +132,26 @@ def maketree(f,*args,**kw):
             tmp=[]
     return r
 
+def getattr_(obj, name, default_thunk):
+    "Similar to .setdefault in dictionaries."
+    try:
+        return getattr(obj, name)
+    except AttributeError:
+        default = default_thunk()
+        setattr(obj, name, default)
+        return default
+
+@decorator
+def memoize(func, *args):
+    dic = getattr_(func, "memoize_dic", dict)
+    # memoize_dic is created at the first call
+    if args in dic:
+        return dic[args]
+    else:
+        result = func(*args)
+        dic[args] = result
+        return result
+
 def intersect(a,b):
     for x in a:
         if member(x,b): return True
@@ -156,6 +176,7 @@ def limit(e,z,z0):
     return limitinf(e0,x)
 
 #@decorator(maketree)
+@memoize
 def limitinf(e,x):
     """Limit e(x) for x-> infty"""
     if not e.has(x): return e #e is a constant
@@ -281,6 +302,7 @@ def mrv_leadterm(e,x,Omega=[]):
     return series.leadterm(wsym)
 
 #@decorator(maketree)
+@memoize
 def mrv(e,x):
     "Returns the list of most rapidly varying (mrv) subexpressions of 'e'"
     if not e.has(x): return []
