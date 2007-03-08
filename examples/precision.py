@@ -1,6 +1,6 @@
 import sys
 sys.path.append("..")
 
-import sym
-e=sym.Rational(2)**50/sym.Rational(10)**50
+import sympy
+e=sympy.Rational(2)**50/sympy.Rational(10)**50
 print e

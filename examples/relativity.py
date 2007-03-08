@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 
-from sym import basic,exp,Symbol,sin,Rational
+from sympy import Basic,exp,Symbol,sin,Rational
 
 class Matrix(Basic):
     def __init__(self,mat):
@@ -15,7 +15,7 @@ class Matrix(Basic):
                 x=mat[j][i]
                 if isinstance(x,int):
                     x=Rational(x)
-                assert isinstance(x,basic)
+                assert isinstance(x,Basic)
                 a.append(x)
             self.mat.append(a)
     def inv(self):
@@ -31,7 +31,7 @@ class Matrix(Basic):
                     assert x==0
                 a.append(x)
             m.append(a)
-        return matrix(m)
+        return Matrix(m)
     def __str__(self):
         s="";
         for j in self.mat:
@@ -53,7 +53,7 @@ t=Symbol("t")
 r=Symbol("r")
 theta=Symbol("theta")
 phi=Symbol("phi")
-gdd=matrix(( (-exp(2*r),0,0,0), 
+gdd=Matrix(( (-exp(2*r),0,0,0), 
         (0, exp(2*r), 0, 0),
         (0, 0, r**2, 0),
         (0, 0, 0, r**2*sin(theta)**2)))

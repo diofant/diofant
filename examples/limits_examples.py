@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 
-from sym import exp,log,Symbol,Rational,sin,limit,limitinf
+from sympy import exp,log,Symbol,Rational,sin,limit,limitinf
 
 x=Symbol("x")
 a=Symbol("a")

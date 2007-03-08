@@ -1,12 +1,12 @@
 import sys
 sys.path.append("..")
 
-import sym
-a=sym.Symbol('a')
-b=sym.Symbol('b')
-e=sym.log((a+b)**5)
+import sympy
+a=sympy.Symbol('a')
+b=sympy.Symbol('b')
+e=sympy.log((a+b)**5)
 print e
-e=sym.exp(e)
+e=sympy.exp(e)
 print e
-e=sym.log(sym.exp((a+b)**5))
+e=sympy.log(sympy.exp((a+b)**5))
 print e

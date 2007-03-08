@@ -98,7 +98,7 @@ setup(
       version='1.0-pre', 
       description='Computer algebra system (CAS) in Python', 
       url='http://code.google.com/p/sympy', 
-      packages=['sym', 'sym.core', 'sym.modules'],
+      packages=['sympy', 'sympy.core', 'sympy.modules'],
       ext_modules = [],
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,

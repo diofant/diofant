@@ -1,9 +1,9 @@
 import sys
 sys.path.append("..")
 
-import sym
-a=sym.Symbol('a')
-b=sym.Symbol('b')
+import sympy
+a=sympy.Symbol('a')
+b=sympy.Symbol('b')
 e=(a+2*b)**5
 print e
 print e.diff(a)

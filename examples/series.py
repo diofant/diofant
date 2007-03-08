@@ -1,9 +1,9 @@
 import sys
 sys.path.append("..")
 
-import sym
-x=sym.Symbol('x')
-e=1/sym.cos(x)
+import sympy
+x=sympy.Symbol('x')
+e=1/sympy.cos(x)
 print e.series(x,10)
-e=1/sym.sin(x)
+e=1/sympy.sin(x)
 print e.series(x,4)

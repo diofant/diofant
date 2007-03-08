@@ -5,9 +5,9 @@ import sys
 sys.path.append("..")
 sys.path.append(".")
 
-from sym import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
-from sym import hashing, Integral, limitinf
-from sym.modules import limits
+from sympy import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
+from sympy import hashing, Integral, limitinf
+from sympy.modules import limits
 limits.debug=True
 
 x=Symbol("x") 
