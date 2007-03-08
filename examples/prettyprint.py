@@ -18,6 +18,8 @@ def p():
     print exp(x).sqrt()
     print exp(x).sqrt().sqrt()
 
+    print (1/cos(x)).series(x,10)
+
 print "sympy print:"
 p()
 basic.outputType="pretty"

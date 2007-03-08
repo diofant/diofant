@@ -237,8 +237,9 @@ class Rational(Number):
             return f % (self.p,self.q)
 
     def print_pretty(self):
-		return StringPict(self.print_sympy())
-    
+        if self.q == 1:
+            return StringPict(self.print_sympy())
+        return StringPict.stack("%d"%self.p,StringPict.LINE,"%d"%self.q)
             
     def __mul__(self,a):
         a=self.sympify(a)
