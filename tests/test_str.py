@@ -49,3 +49,9 @@ def test_bug4():
     assert str(e) not in ["(-2)*x^1/2(-1/2)*x^(-1/2)*w",
             "-2*x^1/2(-1/2)*x^(-1/2)*w","-2*x^1/2-1/2*x^-1/2*w"]
     assert str(e) in ["-2*x^(1/2)-1/2*x^(-1/2)*w"]
+
+def test_bug5():
+    x=Symbol("x")
+    e=1/x
+    assert str(e) != "x^-1"
+    assert str(e) == "x^(-1)"

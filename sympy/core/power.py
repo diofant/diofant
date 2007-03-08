@@ -33,7 +33,9 @@ class Pow(Basic):
             f += "%s"
         f += "^"
         if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
-            or (isinstance(self.exp,Rational) and not self.exp.isinteger()):
+            or (isinstance(self.exp,Rational) and \
+            (not self.exp.isinteger() or (self.exp.isinteger() and \
+            self.exp.getinteger() < 0)) ):
             f += "(%s)"
         else:
             f += "%s"

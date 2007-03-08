@@ -229,16 +229,10 @@ class Rational(Number):
         
     def __str__(self):
         if self.q == 1:
-            if False:#self.p < 0:
-                f = "(%d)"
-            else:
-                f = "%d"
+            f = "%d"
             return f % (self.p)
         else:
-            if False:# self.p < 0:
-                f = "(%d/%d)"
-            else:
-                f = "%d/%d"
+            f = "%d/%d"
             return f % (self.p,self.q)
             
     def __mul__(self,a):
