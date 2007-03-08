@@ -1,6 +1,7 @@
 import hashing
 from basic import Basic
 from numbers import Rational
+from prettyprint import StringPict
 
 dummycount=0
 
@@ -23,6 +24,9 @@ class Symbol(Basic):
 
     def print_sympy(self):
         return str(self.name)
+
+    def print_pretty(self):
+		return StringPict(self.print_sympy())
 
     def hash(self):
         if self.mhash: 

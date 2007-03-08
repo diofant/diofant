@@ -2,6 +2,8 @@ import hashing
 from basic import Basic
 from numbers import Number, Rational, Real
 from power import Pow,pole_error
+from prettyprint import StringPict
+from utils import isnumber
 
 class Pair(Basic):
     """Contains common code to add and mul classes.
@@ -120,6 +122,19 @@ class Mul(Pair):
                 f += "%s*"
         f = f[:-1]
         return f % tuple([str(x) for x in a])
+
+    def print_pretty(self):
+        result = []
+        for arg in self.args:
+            argpretty = arg.print_pretty()
+            if result:
+                if argpretty.height()>1: result.append(" ")
+                result.append('*')
+                if argpretty.height()>1: result.append(" ")
+            if isinstance(arg, Add):
+                argpretty = argpretty.parens()
+            result.append(argpretty)
+        return StringPict.next(*result)
         
     def print_prog(self):
         f = "Mul(%s"+",%s"*(len(self.args)-1)+")"
@@ -269,6 +284,14 @@ class Add(Pair):
             else:
               f += "+%s" % self.args[i]
         return f    
+    
+    def print_pretty(self):
+        result = []
+        for arg in self.args:
+            if result:
+                result.append('+')
+            result.append(arg.print_pretty())
+        return StringPict.next(*result)
                 
     def getab(self):
         """Pretend that self = a+b and return a,b

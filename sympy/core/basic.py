@@ -11,6 +11,8 @@ class AutomaticEvaluationType(type):
         if evaluate: return obj.eval()
         else: return obj
 
+outputType="sympy" #sympy, pretty
+
 class Basic(object):
     
     __metaclass__ = AutomaticEvaluationType
@@ -22,7 +24,12 @@ class Basic(object):
         return str(self)
 
     def __str__(self):
-        return self.print_sympy()
+        if outputType == "sympy":
+            return self.print_sympy()
+        elif outputType == "pretty":
+            return str(self.print_pretty())
+        else:
+            raise NotImplementedError("Unknown outputType=%s"%outputType)
     
     def __neg__(self):
         from numbers import Rational
@@ -240,8 +247,15 @@ class Basic(object):
         """
         return False
 
+    def print_sympy(self):
+        """The canonical sympy representation"""
+        return str(type(self))
+
+    def print_pretty(self):
+        """The pretty printing"""
+        raise NotImplementedError("Pretty printing not implemented for %s"
+                %self.__class__.__name__)
         
     def print_tree(self):
-        """The canonical tree representation
-        """
+        """The canonical tree representation"""
         return str(self)

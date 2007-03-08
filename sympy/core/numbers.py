@@ -2,6 +2,7 @@ import hashing
 from basic import Basic
 import utils 
 import decimal
+from prettyprint import StringPict
 
 class Number(Basic):
     """Represents any kind of number in sympy.
@@ -101,7 +102,7 @@ class Real(Number):
         else:
             f = "%r"
         return f % (str(self.num))
-    
+
     def __float__(self):
         return float(self.num)
         
@@ -234,6 +235,10 @@ class Rational(Number):
         else:
             f = "%d/%d"
             return f % (self.p,self.q)
+
+    def print_pretty(self):
+		return StringPict(self.print_sympy())
+    
             
     def __mul__(self,a):
         a=self.sympify(a)

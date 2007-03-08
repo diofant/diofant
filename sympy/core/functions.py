@@ -34,6 +34,14 @@ class Function(Basic):
     def print_sympy(self):
         f = "%s(%s)"
         return f%(self.getname(),str(self.arg))
+
+    def print_pretty(self):
+        from symbol import Symbol
+        result = self.arg.print_pretty()
+        if isinstance(self.arg, Symbol):
+            return result.left(self.getname(), ' ')
+        else:
+            return result.parens().left(self.getname())
     
     def series(self,sym,n):
         from numbers import Rational

@@ -4,6 +4,7 @@ from symbol import Symbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
 from utils import isnumber
+from prettyprint import StringPict
 
 class pole_error(Exception):
     pass
@@ -40,6 +41,18 @@ class Pow(Basic):
         else:
             f += "%s"
         return f % (self.base,self.exp)
+
+    def print_pretty(self):
+        a, b = self.base, self.exp
+        apretty = a.print_pretty()
+        if isinstance(b, Rational) and b.p==1 and b.q==2:
+            return apretty.root()
+        if not isinstance(a, Symbol):
+            apretty = apretty.parens()
+        bpretty = b.print_pretty()
+        exponent = bpretty.left(' '*apretty.width())
+        apretty = apretty.right(' '*bpretty.width())
+        return apretty.top(exponent)
         
     def get_baseandexp(self):
         return (self.base,self.exp)
