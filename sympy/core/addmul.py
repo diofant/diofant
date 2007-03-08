@@ -103,7 +103,7 @@ class Pair(Basic):
 
 class Mul(Pair):
      
-    def print_normal(self):
+    def print_sympy(self):
         f = ""
         a = self.args
         if isinstance(a[0],Rational):
@@ -124,9 +124,6 @@ class Mul(Pair):
     def print_prog(self):
         f = "Mul(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
-        
-    def __str__(self):
-        return self.print_normal()
         
     def get_baseandexp(self,a):
         if isinstance(a,Pow):
@@ -261,7 +258,7 @@ class Add(Pair):
         f = "Add(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
 
-    def print_normal(self):
+    def print_sympy(self):
         """Returns a string representation of the expression in self."""
         
         f = "%s" % self.args[0]
@@ -273,9 +270,6 @@ class Add(Pair):
               f += "+%s" % self.args[i]
         return f    
                 
-    def __str__(self):
-        return self.print_normal()
-    
     def getab(self):
         """Pretend that self = a+b and return a,b
         
@@ -371,7 +365,7 @@ class Add(Pair):
 
 class NCMul(Mul):
     
-    def print_normal(self):
+    def print_sympy(self):
         f = ""
         a = self.args
         for x in a:
@@ -382,9 +376,6 @@ class NCMul(Mul):
         f = f[:-1]
         return f % tuple([str(x) for x in a])
         
-    def __str__(self):
-        return self.print_normal()
-    
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
         

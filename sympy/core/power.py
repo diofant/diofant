@@ -24,7 +24,7 @@ class Pow(Basic):
         self.mhash.add(self.exp.hash())
         return self.mhash.value
         
-    def print_normal(self):
+    def print_sympy(self):
         from addmul import Pair
         f = ""
         if isinstance(self.base,Pair) or isinstance(self.base,Pow):
@@ -40,9 +40,6 @@ class Pow(Basic):
         else:
             f += "%s"
         return f % (self.base,self.exp)
-        
-    def __str__(self):
-        return self.print_normal()
         
     def get_baseandexp(self):
         return (self.base,self.exp)

@@ -20,6 +20,9 @@ class Basic(object):
         
     def __repr__(self):
         return str(self)
+
+    def __str__(self):
+        return self.print_sympy()
     
     def __neg__(self):
         from numbers import Rational

@@ -31,7 +31,7 @@ class Function(Basic):
         else:
             return e
         
-    def __str__(self):
+    def print_sympy(self):
         f = "%s(%s)"
         return f%(self.getname(),str(self.arg))
     

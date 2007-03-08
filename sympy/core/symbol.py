@@ -21,7 +21,7 @@ class Symbol(Basic):
             dummycount+=1
             self.dummycount=dummycount
 
-    def __str__(self):
+    def print_sympy(self):
         return str(self.name)
 
     def hash(self):

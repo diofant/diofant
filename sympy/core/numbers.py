@@ -47,7 +47,7 @@ class Infinity(Number):
         Number.__init__(self)
         self._sign=1
         
-    def __str__(self):
+    def print_sympy(self):
         return "Inf"
     
     def hash(self):
@@ -95,7 +95,7 @@ class Real(Number):
         self.mhash.addfloat(self.num)
         return self.mhash.value
         
-    def __str__(self):
+    def print_sympy(self):
         if self.num < 0:
             f = "(%r)"
         else:
@@ -227,7 +227,7 @@ class Rational(Number):
             a,b=b,c
         return a
         
-    def __str__(self):
+    def print_sympy(self):
         if self.q == 1:
             f = "%d"
             return f % (self.p)
@@ -352,7 +352,7 @@ class Rational(Number):
 class ImaginaryUnit(Basic):
     """Imaginary unit "i"."""
 
-    def __str__(self):
+    def print_sympy(self):
         return "i"
 
     def hash(self):
@@ -426,7 +426,7 @@ class ConstPi(Constant):
         # don't know how fiable it is
 
 
-    def __str__(self):
+    def print_sympy(self):
         return "pi"
 
 pi=ConstPi()
