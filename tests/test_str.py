@@ -14,7 +14,8 @@ def test_poly_str():
     #be in a different order. That happens for example when we change the 
     #hash algorithm. If it is correct, just add another item in the list [] of
     #correct results.
-    assert str((2*x-(7*x**2 - 2) + 3*y)) == "2*x-(-2+7*x^2)+3*y"
+    assert str((2*x-(7*x**2 - 2) + 3*y)) in ["2*x-(-2+7*x^2)+3*y",
+            "-(-2+7*x^2)+2*x+3*y"]
     assert str(x-y) in ["x-y", "-y+x"]
     assert str(2+-x) == "2-x"
     assert str(x-2) in ["x-2","-2+x"]
@@ -48,7 +49,7 @@ def test_bug4():
     e=-2*x.sqrt()-w/x.sqrt()/2
     assert str(e) not in ["(-2)*x^1/2(-1/2)*x^(-1/2)*w",
             "-2*x^1/2(-1/2)*x^(-1/2)*w","-2*x^1/2-1/2*x^-1/2*w"]
-    assert str(e) in ["-2*x^(1/2)-1/2*x^(-1/2)*w"]
+    assert str(e) in ["-2*x^(1/2)-1/2*x^(-1/2)*w", "-2*x^(1/2)-1/2*w*x^(-1/2)"]
 
 def test_bug5():
     x=Symbol("x")
