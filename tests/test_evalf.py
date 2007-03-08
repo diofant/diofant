@@ -3,11 +3,12 @@ sys.path.append(".")
 
 import sympy as s
 import py
+import decimal
 
 x = s.Symbol('x')
 
 def eq(a,b):
-    return abs(a-b)<0.0001
+    return abs(a-b)<decimal.Decimal("0.0001")
 
 def test_evalf():
     e = s.log(3)/s.log(2)-1

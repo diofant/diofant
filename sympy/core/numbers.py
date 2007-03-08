@@ -1,6 +1,7 @@
 import hashing
 from basic import Basic
 import utils 
+import decimal
 
 class Number(Basic):
     """Represents any kind of number in sympy.
@@ -73,12 +74,18 @@ class Real(Number):
             but in the future, we could use some other library)
     """
     
+    
     def __init__(self,num):
         Number.__init__(self)
         if isinstance(num,str):
-            num = float(num)
-        assert isinstance(num,float) or isinstance(num,int)
-        self.num = float(num)
+            num = decimal.Decimal(num)
+        assert utils.isnumber(num)
+        if isinstance(num, decimal.Decimal):
+            self.num = num
+        elif isinstance(num, Real):
+            self.num = num.evalf()
+        else:
+            self.num = decimal.Decimal(str(float(num)))
         
     def hash(self):
         if self.mhash: 
@@ -93,7 +100,7 @@ class Real(Number):
             f = "(%r)"
         else:
             f = "%r"
-        return f % (self.num)
+        return f % (str(self.num))
     
     def __float__(self):
         return float(self.num)
@@ -103,7 +110,10 @@ class Real(Number):
     
     def __add__(self,a):
         if utils.isnumber(a):
-            return Real(self.num + float(a))
+            if isinstance(a, Real):
+                return Real(self.num + a.num)
+            else:
+                return Real(self.num + decimal.Decimal(str(float(a))))
         else:
             assert isinstance(a, Basic)
             from addmul import Add
@@ -111,7 +121,8 @@ class Real(Number):
         
     def __mul__(self,a):
         if utils.isnumber(a):
-            return Real(self.num * float(a))
+            return Real(self.num * decimal.Decimal(str(float(a))))
+            #FIXME: too many boxing-unboxing
         else:
             assert isinstance(a, Basic)
             from addmul import Mul
@@ -119,17 +130,21 @@ class Real(Number):
         
     def __pow__(self,a):
         if utils.isnumber(a):
-            return Real(self.num ** float(a))
+            if isinstance(a, int):
+                return Real(self.num ** a)
+            elif isinstance(a, Rational) and a.q == 1:
+                return Real(self.num ** decimal.Decimal(a.p))
+            # can't do decimal ** decimal, the module doesen't handle it
         else:
             assert isinstance(a, Basic)
             from power import Pow
             return Pow(self, a)
         
     def __rpow__(self, a):
-        if utils.isnumber(a):
-            return float(a) ** self.num
-        else:
-            assert isinstance(a, Basic)
+#        if utils.isnumber(a):
+#            return float(a) ** self.num
+#        else:
+#            assert isinstance(a, Basic)
             from power import Pow
             return Pow(a, self)
         
@@ -214,7 +229,7 @@ class Rational(Number):
         
     def __str__(self):
         if self.q == 1:
-            if self.p < 0:
+            if False:#self.p < 0:
                 f = "(%d)"
             else:
                 f = "%d"
@@ -357,7 +372,10 @@ I=ImaginaryUnit()
 
 class Constant(Basic):
     """Mathematical constant abstract class."""
-
+    
+    def __call__(self, precision=28):
+            return self.evalf(precision)
+        
     def hash(self):
         if self.mhash: 
             return self.mhash.value
@@ -369,6 +387,50 @@ class Constant(Basic):
         return Rational(0)
 
 class ConstPi(Constant):
+    """
+    
+    Usage: pi -> Returns the mathematical constant pi 
+           pi() -> Returns a numerical aproximation for pi
+           
+    Notes:
+        Can have an option precision (integer) for the number of digits 
+        that will be returned. Default is set to 28
+       
+        pi() is a shortcut for pi.evalf()
+    
+    Examples: 
+        In [1]: pi
+        Out[1]: pi
+
+        In [2]: pi()
+        Out[2]: '3.141592653589793238462643383'
+
+        In [3]: pi(precision=200)
+        Out[3]: '3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303820'
+
+    """
+    
+    def evalf(self, precision=28):
+        """Compute Pi to the current precision.
+
+        >>> print pi.eval()
+        3.141592653589793238462643383
+        
+        """
+        decimal.getcontext().prec = precision + 2  # extra digits for intermediate steps
+        three = decimal.Decimal(3)      # substitute "three=3.0" for regular floats
+        lasts, t, s, n, na, d, da = 0, three, 3, 1, 0, 0, 24
+        while s != lasts:
+            lasts = s
+            n, na = n+na, na+8
+            d, da = d+da, da+32
+            t = (t * n) / d
+            s += t
+        decimal.getcontext().prec -= 2
+        return Real(+s)               # unary plus applies the new precision
+        # this was a recipe taken from http://docs.python.org/lib/decimal-recipes.html
+        # don't know how fiable it is
+
 
     def __str__(self):
         return "pi"
