@@ -54,9 +54,10 @@ class Function(Basic):
             e = e.series(w,n)
         e = e.subs(w,arg-z0)
 
-        #this only works for exp!! FIXME
+        #this only works for exp 
         #generally, the problem is with expanding around other point
         #than arg == 0.
+        assert isinstance(self,exp)
         e= (exp(z0)*e).expand().subs(l,log(sym))
         return e.expand()
 
