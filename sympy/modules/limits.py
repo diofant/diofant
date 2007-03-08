@@ -145,11 +145,12 @@ def getattr_(obj, name, default_thunk):
 def memoize(func, *args):
     dic = getattr_(func, "memoize_dic", dict)
     # memoize_dic is created at the first call
-    if args in dic:
-        return dic[args]
+    argshash=tuple([x.hash() for x in args])
+    if argshash in dic:
+        return dic[argshash]
     else:
         result = func(*args)
-        dic[args] = result
+        dic[argshash] = result
         return result
 
 def intersect(a,b):
@@ -188,6 +189,7 @@ def limitinf(e,x):
         return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
+@memoize
 def sign(e,x):
     """Returns a sign of an expression at x->infty.
     
