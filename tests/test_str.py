@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
+from sympy import Symbol,Rational
 
 x = g.Symbol('x')
 y = g.Symbol('y')
@@ -13,10 +14,10 @@ def test_poly_str():
     #be in a different order. That happens for example when we change the 
     #hash algorithm. If it is correct, just add another item in the list [] of
     #correct results.
-    #assert str((2*x-(7*x**2 - 2) + 3*y)) == "2*x-(7*x^2-2)+3*y"
+    assert str((2*x-(7*x**2 - 2) + 3*y)) == "2*x-(-2+7*x^2)+3*y"
     assert str(x-y) in ["x-y", "-y+x"]
     assert str(2+-x) == "2-x"
-    #assert str(x-2) == "x-2"
+    assert str(x-2) in ["x-2","-2+x"]
     assert str((x-y-z-w)) in ["x-y-z-w","-w-y-z+x","x-w-y-z"]
     assert str((x-y-z-w).eval()) in ["-w-y-z+x","x-w-y-z","-w+x-z-y",
             "-y-w-z+x","-y+x-z-w","-y+x-w-z"]
@@ -35,3 +36,10 @@ def test_bug2():
     a=str(e)
     b=str(e)
     assert a==b
+
+def test_bug3():
+    x=Symbol("x")
+    w=Symbol("w")
+    e=-2*x.sqrt()-w/x.sqrt()/2
+    assert str(e) not in ["(-2)*x^1/2(-1/2)*x^(-1/2)*w",
+            "-2*x^1/2(-1/2)*x^(-1/2)*w"]

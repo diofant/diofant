@@ -18,14 +18,15 @@ Modules already imported: sympy
 Symbols defined: x, y, z
 """
 
+import sys
 try:
-	from sym import *
+	from sympy import *
 
 except ImportError:
-	print "Could not find sympy\n...exiting"
+    print "Could not find sympy\n...exiting"
+    sys.exit()
 
 
-import sys
 import getopt
 
 def run_ipython_interpreter():
@@ -72,7 +73,7 @@ def run_python_interpreter():
 	        readline.write_history_file(histfile)
 		
 	sh = HistoryConsole()
-	sh.runcode("from sym import *")
+	sh.runcode("from sympy import *")
 	sh.runcode("x = Symbol('x')")
 	sh.runcode("y = Symbol('y')")
 	sh.runcode("z = Symbol('z')")

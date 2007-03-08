@@ -235,7 +235,7 @@ class Rational(Number):
                 f = "%d"
             return f % (self.p)
         else:
-            if self.p < 0:
+            if False:# self.p < 0:
                 f = "(%d/%d)"
             else:
                 f = "%d/%d"
