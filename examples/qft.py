@@ -33,6 +33,10 @@ class DiracMul(Mul):
                 +I*epsilon(j,k,3)*Pauli(3), True
         return Mul.try_to_coerce(x,xbase,xexp,y)
 
+    @staticmethod
+    def _domul(a, b):
+        return DiracMul(Basic.sympify(a), Basic.sympify(b))
+
 
 class Matrix(NCSymbol):
 
@@ -64,10 +68,6 @@ class Matrix(NCSymbol):
 
     @staticmethod
     def _domul(a, b):
-        if isinstance(a,Matrix) and isinstance(b,Matrix):
-            assert a.cols == b.lines
-            if isinstance(a,Pauli) and isinstance(b,Pauli):
-                return DiracMul(a,b)
         return DiracMul(Basic.sympify(a), Basic.sympify(b))
 
     def print_sympy(self):
@@ -127,7 +127,12 @@ assert sigma1*sigma1 == one
 assert sigma2*sigma2 == one
 assert sigma3*sigma3 == one
 
-#assert sigma1*2*sigma1 == 2*one
+assert sigma1*2*sigma1 == 2*one
+#assert sigma1*sigma3*sigma1 == sigma3
 
-print sigma1*2*sigma1
-print DiracMul(DiracMul(sigma1,Rational(2)),sigma1 )
+e= sigma1*sigma3*sigma1
+print e
+e= -I * sigma2 * sigma1
+print e
+e= sigma2 * sigma1 * (-I)
+print e
