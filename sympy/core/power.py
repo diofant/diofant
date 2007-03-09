@@ -107,6 +107,9 @@ class Pow(Basic):
             return self.base.evalf()**self.exp.evalf()
         else: 
             raise ValueError('Can not evaluate a symbolic value')
+
+    def commutative(self):
+        return self.base.commutative() and self.exp.commutative()
         
     def diff(self,sym):
         f = self.base

@@ -177,15 +177,4 @@ C=NCSymbol("C")
 
 b=Symbol("b")
 
-print A*B
-print A*B*C
-print B*C*A
-print A*b*B*3*C
-print (A+B)*C
-print C*(A+B)
-
-assert A*B != B*A
-assert A*B*C != C*B*A
-assert A*b*B*3*C == 3*b*A*B*C
-assert A*b*B*3*C != 3*b*B*A*C
-assert A*b*B*3*C == 3*A*B*C*b
+print A/A

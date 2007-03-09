@@ -164,14 +164,11 @@ class Mul(Pair):
             else:
                 return y, False
         
-        def _mul(exp,x):
+        def _mul_c(exp,x):
             xbase,xexp = self.get_baseandexp(x)
             e = []
             for i,y in enumerate(exp):
-                if x.commutative():
-                    z,ok = _trycoerce(x,xbase,xexp, y)
-                else:
-                    z,ok = y, False
+                z,ok = _trycoerce(x,xbase,xexp, y)
                 if isinstance(z, Number) and i!=0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
                     assert z in [1,-1]
@@ -184,14 +181,18 @@ class Mul(Pair):
             e.append(x)
             return e
 
+        def _mul_nc(exp,x):
+            if exp == []: return [x]
+            xbase,xexp = self.get_baseandexp(x)
+            #try to join only last and the one before last object
+            z,ok = _trycoerce(x,xbase,xexp, exp[-1])
+            if ok:
+                return exp[:-1]+[z]
+            else:
+                return exp[:-1]+[z]+[x]
+
         #(((a*4)*b)*a)*5  -> a*4*b*a*5:
         a = self.flatten(self.args)
-        #1*a*4*b*a*5 -> 20*a^2*b:
-        #we put 1 in front of everything
-        a = self.coerce([Rational(1)]+a,_mul)
-        n,a = a[0], a[1:]
-        #so that now "n" is a Number and "a" doesn't contain any number
-        if n == 0: return Rational(0)
         c_part = []
         nc_part = []
         for x in a:
@@ -199,6 +200,12 @@ class Mul(Pair):
                 c_part.append(x)
             else:
                 nc_part.append(x)
+        #we put 1 in front of everything
+        a = self.coerce([Rational(1)]+c_part,_mul_c)
+        n,c_part = a[0], a[1:]
+        #so that now "n" is a Number and "c_part" doesn't contain any number
+        if n == 0: return Rational(0)
+        nc_part = self.coerce(nc_part,_mul_nc)
         c_part.sort(Basic.cmphash)
         a=c_part+nc_part
         #put the number in front of all the other args

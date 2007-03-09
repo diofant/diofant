@@ -168,3 +168,12 @@ def testncmul():
     assert (A+B)*C != C*(A+B)
 
     assert C*(A+B)*C != C*C*(A+B)
+
+    assert (C*(A+B)).expand() == C*A+C*B
+    assert (C*(A+B)).expand() != A*C+B*C
+
+    assert A*A == A**2
+    assert (A+B)*(A+B) == (A+B)**2
+    assert ((A+B)**2).expand() == A**2 + A*B + B*A +B**2
+
+    assert A**-1  * A == 1
