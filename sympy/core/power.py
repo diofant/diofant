@@ -75,7 +75,7 @@ class Pow(Basic):
         if isinstance(self.base,Rational) and self.base.isone():
             return Rational(1)
         if isinstance(self.base,Real) and isinstance(self.exp,Real):
-            return self.base ** self.exp
+            return self
         if isinstance(self.base,Rational) and isinstance(self.exp,Rational):
             if self.exp.isinteger(): 
                 return self.base ** self.exp
