@@ -149,7 +149,7 @@ class Mul(Pair):
 
     @staticmethod
     def try_to_coerce(x,xbase,xexp,  y):
-        """Tries to add x=xbase^xexp   to y. 
+        """Tries to multiply x=xbase^xexp with y. 
         
         If it succeeds, returns (newy, True)
         otherwise (oldy, False)
