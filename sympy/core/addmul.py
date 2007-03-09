@@ -192,7 +192,15 @@ class Mul(Pair):
         n,a = a[0], a[1:]
         #so that now "n" is a Number and "a" doesn't contain any number
         if n == 0: return Rational(0)
-        a.sort(Basic.cmphash)
+        c_part = []
+        nc_part = []
+        for x in a:
+            if x.commutative():
+                c_part.append(x)
+            else:
+                nc_part.append(x)
+        c_part.sort(Basic.cmphash)
+        a=c_part+nc_part
         #put the number in front of all the other args
         if n != 1: a=[n]+a
         if len(a) > 1:
@@ -207,7 +215,7 @@ class Mul(Pair):
         if hasattr(a, 'evalf') and hasattr(b, 'evalf'):
             return a.evalf()*b.evalf()
         else: 
-            raise ValueError("Can not evaluate a symbolic value")
+            raise ValueError("Cannot evaluate a symbolic value")
             
     def getab(self):
         """Pretend that self=a*b and return a,b
@@ -284,7 +292,7 @@ class Mul(Pair):
             return e
     
 class Add(Pair):
-    
+
     def print_prog(self):
         f = "Add(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
@@ -308,6 +316,15 @@ class Add(Pair):
                 result.append('+')
             result.append(arg.print_pretty())
         return StringPict.next(*result)
+
+    def contains_ncobject(self,a):
+        for x in a:
+            if not x.commutative():
+                return False
+        return True
+
+    def commutative(self):
+        return self.contains_ncobject(self.args)
                 
     def getab(self):
         """Pretend that self = a+b and return a,b

@@ -43,3 +43,11 @@ class Symbol(Basic):
             return Rational(1)
         else:
             return Rational(0)
+
+class NCSymbol(Symbol):
+
+    def commutative(self):
+        return False
+
+    def diff(self,sym):
+        raise NotImplementedError("Doesn't have a meaning.")

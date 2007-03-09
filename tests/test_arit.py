@@ -154,11 +154,17 @@ def testexpand():
     assert e.expand() ==  1+g.Rational(1)/2*x**2
 
 def testncmul():
-    x=g.Symbol("x")
-    c=g.Symbol("c")
-    e=g.Mul(x,c)+g.Mul(c,x)
-    assert str(e) in ["x*c+c*x","2*x*c","2*c*x"]
-    assert e == 2*c*x
-    e=g.NCMul(c,x)+g.NCMul(x,c)
-    assert str(e) in ["c*x+x*c","x*c+c*x"]
-    assert e == g.NCMul(c,x)+g.NCMul(x,c)
+    A=g.NCSymbol("A")
+    B=g.NCSymbol("B")
+    C=g.NCSymbol("C")
+    b=g.Symbol("b")
+    assert A*B != B*A
+    assert A*B*C != C*B*A
+    assert A*b*B*3*C == 3*b*A*B*C
+    assert A*b*B*3*C != 3*b*B*A*C
+    assert A*b*B*3*C == 3*A*B*C*b
+
+    assert A+B==B+A
+    assert (A+B)*C != C*(A+B)
+
+    assert C*(A+B)*C != C*C*(A+B)
