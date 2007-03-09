@@ -251,6 +251,12 @@ class Basic(object):
         """All subclasses of Basic are commutative by default"""
         return True
 
+    @staticmethod
+    def muleval(x,y):
+        """See
+        http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335"""
+        return None, False
+
     def print_sympy(self):
         """The canonical sympy representation"""
         return str(type(self))

@@ -33,9 +33,9 @@ class DiracMul(Mul):
                 +I*epsilon(j,k,3)*Pauli(3), True
         return Mul.try_to_coerce(x,xbase,xexp,y)
 
-    @staticmethod
-    def _domul(a, b):
-        return DiracMul(Basic.sympify(a), Basic.sympify(b))
+#    @staticmethod
+#    def _domul(a, b):
+#        return DiracMul(Basic.sympify(a), Basic.sympify(b))
 
 
 class Matrix(NCSymbol):
@@ -66,9 +66,9 @@ class Matrix(NCSymbol):
                 self.mhash.add(x.hash())
         return self.mhash.value
 
-    @staticmethod
-    def _domul(a, b):
-        return DiracMul(Basic.sympify(a), Basic.sympify(b))
+#    @staticmethod
+#    def _domul(a, b):
+#        return DiracMul(Basic.sympify(a), Basic.sympify(b))
 
     def print_sympy(self):
         s="";
@@ -106,6 +106,17 @@ class Pauli(Matrix):
         self.i=i
         Matrix.__init__(self, mat)
 
+    @staticmethod
+    def muleval(x, y):
+        if isinstance(x, Pauli) and isinstance(y, Pauli):
+            j=y.i
+            k=x.i
+            return Pauli(0)*delta(j,k) \
+                +I*epsilon(j,k,1)*Pauli(1) \
+                +I*epsilon(j,k,2)*Pauli(2) \
+                +I*epsilon(j,k,3)*Pauli(3), True
+        return None, False
+
     def print_sympy(self):
         if self.i == 0:
             return "one"
@@ -128,11 +139,4 @@ assert sigma2*sigma2 == one
 assert sigma3*sigma3 == one
 
 assert sigma1*2*sigma1 == 2*one
-#assert sigma1*sigma3*sigma1 == sigma3
-
-e= sigma1*sigma3*sigma1
-print e
-e= -I * sigma2 * sigma1
-print e
-e= sigma2 * sigma1 * (-I)
-print e
+assert sigma1*sigma3*sigma1 == -sigma3

@@ -155,6 +155,19 @@ class Mul(Pair):
         otherwise (oldy, False)
         where oldy is the original y 
         """
+        z1,ok1 = x.muleval(x,y)
+        z2,ok2 = y.muleval(x,y)
+
+        if ok1 or ok2:
+            if (ok1 and ok2):
+                #sanity check
+                assert z1==z2
+            if ok1:
+                return z1, True
+            if ok2:
+                return z2, True
+
+
         if isinstance(x,Number) and isinstance(y, Number):
             return x*y, True
         ybase,yexp = Mul.get_baseandexp(y)
@@ -194,21 +207,30 @@ class Mul(Pair):
             else:
                 return exp[:-1]+[z]+[x]
 
+        def _nc_separate(a):
+            c_part = []
+            nc_part = []
+            for x in a:
+                if x.commutative():
+                    c_part.append(x)
+                else:
+                    nc_part.append(x)
+            return c_part, nc_part
+
         #(((a*4)*b)*a)*5  -> a*4*b*a*5:
         a = self.flatten(self.args)
-        c_part = []
-        nc_part = []
-        for x in a:
-            if x.commutative():
-                c_part.append(x)
-            else:
-                nc_part.append(x)
+        #separate C and NC parts
+        c_part, nc_part = _nc_separate(a)
+        nc_part_tmp = self.coerce(nc_part,_mul_nc)
+        #the coerce method could generate some C things, or nested Muls, so
+        #flatten and separate C and NC parts again
+        nc_part_tmp = self.flatten(nc_part_tmp)
+        c_part2, nc_part = _nc_separate(nc_part_tmp)
         #we put 1 in front of everything
-        a = self.coerce([Rational(1)]+c_part,_mul_c)
+        a = self.coerce([Rational(1)]+c_part+c_part2,_mul_c)
         n,c_part = a[0], a[1:]
         #so that now "n" is a Number and "c_part" doesn't contain any number
         if n == 0: return Rational(0)
-        nc_part = self.coerce(nc_part,_mul_nc)
         c_part.sort(Basic.cmphash)
         a=c_part+nc_part
         #put the number in front of all the other args
