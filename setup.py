@@ -26,7 +26,7 @@ from distutils.core import Command
 import sys
 
 # Make sure I have the right Python version.
-if sys.version_info[2] < 4:
+if sys.version_info[1] < 4:
     print "Sympy requires Python 2.4 or newer.  Python %d.%d detected" % \
           sys.version_info[:2]
     sys.exit(-1)
@@ -94,11 +94,12 @@ class test_sympy_core(Command):
 
 
 setup(
-      name='Sympy', 
-      version='1.0-pre', 
-      description='Computer algebra system (CAS) in Python', 
-      url='http://code.google.com/p/sympy', 
-      packages=['sympy', 'sympy.core', 'sympy.modules'],
+      name = 'Sympy', 
+      version = '1.0-pre', 
+      description = 'Computer algebra system (CAS) in Python', 
+      url = 'http://code.google.com/p/sympy', 
+      packages = ['sympy', 'sympy.core', 'sympy.modules'],
+      scripts = ['isym.py'],
       ext_modules = [],
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
