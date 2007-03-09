@@ -166,7 +166,10 @@ class Mul(Pair):
             xbase,xexp = self.get_baseandexp(x)
             e = []
             for i,y in enumerate(exp):
-                z,ok=_trycoerce(x,xbase,xexp, y)
+                if x.commutative():
+                    z,ok = _trycoerce(x,xbase,xexp, y)
+                else:
+                    z,ok = y, False
                 e.append(z)
                 if ok: 
                     e.extend(exp[i+1:])
@@ -180,20 +183,19 @@ class Mul(Pair):
             else:
                 return Real.__mul__(a,b)
         
+        #(((a*4)*b)*a)*5  -> a*4*b*a*5:
         a = self.flatten(self.args)
-        #create Powers: a*b*a -> a^2*b
+        #a*4*b*a*5 -> a^2*4*b*5:
         a = self.coerce(a,_mul)
-        #coerce and multiply through the numbers
+        #a^2*4*b*5  -> 20*a^2*b:
         n,a = self.coerce_numbers(a, mymul, Rational(1))
-        if hasattr(n, 'iszero') and n.iszero(): 
-                return Rational(0)
+        if n == 0: return Rational(0)
         a.sort(Basic.cmphash)
         #put the number in front of all the other args
-        if hasattr(n, 'isone') and (not n.isone()): 
-            a=[n]+a
-        if len(a)>1:
+        if n != 1: a=[n]+a
+        if len(a) > 1:
             return Mul(a,evaluate=False)
-        elif len(a)==1:
+        elif len(a) == 1:
             return a[0]
         else:
             return Rational(1)

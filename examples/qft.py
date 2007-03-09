@@ -1,4 +1,5 @@
 import sys
+sys.path.append(".")
 sys.path.append("..")
 
 from sympy import Basic,exp,Symbol,sin,Rational,I,NCMul,Mul
@@ -6,7 +7,7 @@ from sympy import hashing
 
 class NCSymbol(Symbol):
 
-    def commutative():
+    def commutative(self):
         return False
 
 def delta(i,j):
