@@ -2,13 +2,8 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 
-from sympy import Basic,exp,Symbol,sin,Rational,I,NCMul,Mul
+from sympy import Basic,exp,Symbol,sin,Rational,I,Mul,NCSymbol
 from sympy import hashing
-
-class NCSymbol(Symbol):
-
-    def commutative(self):
-        return False
 
 def delta(i,j):
     if i==j:
@@ -24,36 +19,22 @@ def epsilon(i,j,k):
     else:
         return 0
 
-class DiracMul(NCMul):
+class DiracMul(Mul):
     """Implements simplifications for Pauli and Dirac matrices"""
 
-    def eval(self):
-        for x in self.args:
-            assert isinstance(x,Pauli)
-        a,b=self.getab()
-        if len(self.args)==2:
-            j=self.args[0].i
-            k=self.args[1].i
+    @staticmethod
+    def try_to_coerce(x,xbase,xexp,  y):
+        if isinstance(x, Pauli) and isinstance(y, Pauli):
+            j=y.i
+            k=x.i
             return Pauli(0)*delta(j,k) \
                 +I*epsilon(j,k,1)*Pauli(1) \
                 +I*epsilon(j,k,2)*Pauli(2) \
-                +I*epsilon(j,k,3)*Pauli(3)
-        assert False
-        r= NCMul.eval(self)
-        if isinstance(r,NCMul):
-            a=[]
-            for x in r.args:
-                if isinstance(x,Pow):
-                    a.append(x)
-                    print x
-                else:
-                    a.append(x)
-            return NCMul(a,evaluate=False)
-        else:
-            return r
+                +I*epsilon(j,k,3)*Pauli(3), True
+        return Mul.try_to_coerce(x,xbase,xexp,y)
 
 
-class Matrix(Basic):
+class Matrix(NCSymbol):
 
     def __init__(self,mat):
         Basic.__init__(self)
@@ -84,35 +65,10 @@ class Matrix(Basic):
     @staticmethod
     def _domul(a, b):
         if isinstance(a,Matrix) and isinstance(b,Matrix):
-            #matrix*matrix is noncommutative
             assert a.cols == b.lines
             if isinstance(a,Pauli) and isinstance(b,Pauli):
                 return DiracMul(a,b)
-            return NCMul(a, b)
-        else:
-            #matrix*const is commutative
-            return Mul(Basic.sympify(a), Basic.sympify(b))
-
-    def __mul__(self,a):
-        return self._domul(self, a)
-        
-    def __rmul__(self,a):
-        return self._domul(a, self)
-
-    def inv(self):
-        m=[]
-        for j in range(self.lines):
-            a=[]
-            for i in range(self.cols):
-                x=self.mat[j][i]
-                if i==j: 
-                    x=1/x
-                else:
-                    #test that the matrix is diagonal
-                    assert x==0
-                a.append(x)
-            m.append(a)
-        return Matrix(m)
+        return DiracMul(Basic.sympify(a), Basic.sympify(b))
 
     def print_sympy(self):
         s="";
@@ -160,6 +116,9 @@ sigma1=Pauli(1)
 sigma2=Pauli(2)
 sigma3=Pauli(3)
 
+assert sigma1 == sigma1
+assert sigma1 != sigma2
+
 assert sigma1*sigma2 == I*sigma3
 assert sigma3*sigma1 == I*sigma2
 assert sigma2*sigma3 == I*sigma1
@@ -168,13 +127,7 @@ assert sigma1*sigma1 == one
 assert sigma2*sigma2 == one
 assert sigma3*sigma3 == one
 
-#print sigma1*2*sigma1 
 #assert sigma1*2*sigma1 == 2*one
 
-A=NCSymbol("A")
-B=NCSymbol("B")
-C=NCSymbol("C")
-
-b=Symbol("b")
-
-print A/A
+print sigma1*2*sigma1
+print DiracMul(DiracMul(sigma1,Rational(2)),sigma1 )

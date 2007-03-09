@@ -140,35 +140,38 @@ class Mul(Pair):
         f = "Mul(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
         
-    def get_baseandexp(self,a):
+    @staticmethod
+    def get_baseandexp(a):
         if isinstance(a,Pow):
             return a.get_baseandexp()
         else:
             return (a,Rational(1))
+
+    @staticmethod
+    def try_to_coerce(x,xbase,xexp,  y):
+        """Tries to add x=xbase^xexp   to y. 
+        
+        If it succeeds, returns (newy, True)
+        otherwise (oldy, False)
+        where oldy is the original y 
+        """
+        if isinstance(x,Number) and isinstance(y, Number):
+            return x*y, True
+        ybase,yexp = Mul.get_baseandexp(y)
+        if xbase.isequal(ybase):
+            return Pow(xbase,Add(xexp,yexp)), True
+        else:
+            return y, False
             
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
 
-        def _trycoerce(x,xbase,xexp,  y):
-            """Tries to add x=xbase^xexp   to y. 
-            
-            If it succeeds, returns (newy, True)
-            otherwise (oldy, False)
-            where oldy is the original y 
-            """
-            if isinstance(x,Number) and isinstance(y, Number):
-                return x*y, True
-            ybase,yexp = self.get_baseandexp(y)
-            if xbase.isequal(ybase):
-                return Pow(xbase,Add(xexp,yexp)), True
-            else:
-                return y, False
         
         def _mul_c(exp,x):
             xbase,xexp = self.get_baseandexp(x)
             e = []
             for i,y in enumerate(exp):
-                z,ok = _trycoerce(x,xbase,xexp, y)
+                z,ok = self.try_to_coerce(x,xbase,xexp, y)
                 if isinstance(z, Number) and i!=0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
                     assert z in [1,-1]
@@ -185,7 +188,7 @@ class Mul(Pair):
             if exp == []: return [x]
             xbase,xexp = self.get_baseandexp(x)
             #try to join only last and the one before last object
-            z,ok = _trycoerce(x,xbase,xexp, exp[-1])
+            z,ok = self.try_to_coerce(x,xbase,xexp, exp[-1])
             if ok:
                 return exp[:-1]+[z]
             else:
@@ -211,7 +214,8 @@ class Mul(Pair):
         #put the number in front of all the other args
         if n != 1: a=[n]+a
         if len(a) > 1:
-            return Mul(a,evaluate=False)
+            #construct self again, but evaluated this time
+            return type(self)(a,evaluate=False)
         elif len(a) == 1:
             return a[0]
         else:
@@ -425,49 +429,6 @@ class Add(Pair):
             a,b = self.getab()
             #there is a cancelation problem here:
             return (a.series(sym,n)+b.series(sym,n))
-
-class NCMul(Mul):
-    
-    def print_sympy(self):
-        f = ""
-        a = self.args
-        for x in a:
-            if isinstance(x,Pair):
-                f += "(%s)*"
-            else:
-                f += "%s*"
-        f = f[:-1]
-        return f % tuple([str(x) for x in a])
-        
-    def eval(self):
-        "Flatten, put all Rationals in the front, sort arguments"
-        
-        def _mul(exp,x):
-            a,aexp = self.get_baseandexp(x)
-            e = []
-            ok = False
-            for y in exp:
-                b,bexp = self.get_baseandexp(y)
-                if (not ok) and a.isequal(b):
-                    e.append(Pow(a,Add(aexp,bexp)))
-                    ok = True
-                else:
-                    e.append(y)
-            if not ok: e.append(x)
-            return e
-        
-        a = self.flatten(self.args)
-        a = self.coerce(a,_mul)
-        n,a = self.coerce_numbers(a,Rational.__mul__, Rational(1))
-        if n.iszero(): return Rational(0)
-        if not n.isone(): a=[n]+a
-        if len(a) > 1:
-            #return NCMul(a,evaluate=False)
-            return type(self)(a,evaluate=False)
-        elif len(a) == 1:
-            return a[0]
-        else:
-            return Rational(1)
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
