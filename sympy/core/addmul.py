@@ -156,6 +156,8 @@ class Mul(Pair):
             otherwise (oldy, False)
             where oldy is the original y 
             """
+            if isinstance(x,Number) and isinstance(y, Number):
+                return x*y, True
             ybase,yexp = self.get_baseandexp(y)
             if xbase.isequal(ybase):
                 return Pow(xbase,Add(xexp,yexp)), True
@@ -170,25 +172,25 @@ class Mul(Pair):
                     z,ok = _trycoerce(x,xbase,xexp, y)
                 else:
                     z,ok = y, False
-                e.append(z)
+                if isinstance(z, Number) and i!=0:
+                    #c and 1/c could have been coerced to 1 or i^2 to -1
+                    assert z in [1,-1]
+                    e[0]*=z
+                else:
+                    e.append(z)
                 if ok: 
                     e.extend(exp[i+1:])
                     return e
             e.append(x)
             return e
 
-        def mymul(a,b):
-            if isinstance(a,Rational):
-                return Rational.__mul__(a,b)
-            else:
-                return Real.__mul__(a,b)
-        
         #(((a*4)*b)*a)*5  -> a*4*b*a*5:
         a = self.flatten(self.args)
-        #a*4*b*a*5 -> a^2*4*b*5:
-        a = self.coerce(a,_mul)
-        #a^2*4*b*5  -> 20*a^2*b:
-        n,a = self.coerce_numbers(a, mymul, Rational(1))
+        #1*a*4*b*a*5 -> 20*a^2*b:
+        #we put 1 in front of everything
+        a = self.coerce([Rational(1)]+a,_mul)
+        n,a = a[0], a[1:]
+        #so that now "n" is a Number and "a" doesn't contain any number
         if n == 0: return Rational(0)
         a.sort(Basic.cmphash)
         #put the number in front of all the other args
