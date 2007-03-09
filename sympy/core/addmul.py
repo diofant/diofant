@@ -422,7 +422,7 @@ class NCMul(Mul):
         if n.iszero(): return Rational(0)
         if not n.isone(): a=[n]+a
         if len(a) > 1:
-            return Mul(a,evaluate=False)
+            return NCMul(a,evaluate=False)
         elif len(a) == 1:
             return a[0]
         else:

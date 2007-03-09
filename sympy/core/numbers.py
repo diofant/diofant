@@ -26,9 +26,9 @@ class Number(Basic):
     def __float__(self):
         return self.evalf()
     
-    def __abs__(self):
-        from functions import abs_
-        return abs_(self)
+    #def __abs__(self):
+    #    from functions import abs_
+    #    return abs_(self)
     
     def diff(self,sym):
         return Rational(0)
