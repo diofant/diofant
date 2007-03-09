@@ -148,20 +148,32 @@ class Mul(Pair):
             
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
+
+        def _trycoerce(x,xbase,xexp,  y):
+            """Tries to add x=xbase^xexp   to y. 
+            
+            If it succeeds, returns (newy, True)
+            otherwise (oldy, False)
+            where oldy is the original y 
+            """
+            ybase,yexp = self.get_baseandexp(y)
+            if xbase.isequal(ybase):
+                return Pow(xbase,Add(xexp,yexp)), True
+            else:
+                return y, False
         
         def _mul(exp,x):
-            a,aexp = self.get_baseandexp(x)
+            xbase,xexp = self.get_baseandexp(x)
             e = []
-            ok = False
-            for y in exp:
-                b,bexp = self.get_baseandexp(y)
-                if (not ok) and a.isequal(b):
-                    e.append(Pow(a,Add(aexp,bexp)))
-                    ok = True
-                else:
-                    e.append(y)
-            if not ok: e.append(x)
+            for i,y in enumerate(exp):
+                z,ok=_trycoerce(x,xbase,xexp, y)
+                e.append(z)
+                if ok: 
+                    e.extend(exp[i+1:])
+                    return e
+            e.append(x)
             return e
+
         def mymul(a,b):
             if isinstance(a,Rational):
                 return Rational.__mul__(a,b)
@@ -422,7 +434,8 @@ class NCMul(Mul):
         if n.iszero(): return Rational(0)
         if not n.isone(): a=[n]+a
         if len(a) > 1:
-            return NCMul(a,evaluate=False)
+            #return NCMul(a,evaluate=False)
+            return type(self)(a,evaluate=False)
         elif len(a) == 1:
             return a[0]
         else:
