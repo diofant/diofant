@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
+from sympy import Symbol
 
 def testSymbol():
     a=g.Symbol("a")
@@ -177,3 +178,7 @@ def testncmul():
     assert ((A+B)**2).expand() == A**2 + A*B + B*A +B**2
 
     assert A**-1  * A == 1
+
+def test_powerbug():
+    x=Symbol("x")
+    assert x**2 == (-x)**2 

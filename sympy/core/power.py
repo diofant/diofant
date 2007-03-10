@@ -105,6 +105,11 @@ class Pow(Basic):
             if isinstance(self.exp,Rational) and self.exp.isinteger():
                 if int(self.exp) == 2:
                     return -Rational(1)
+        if isinstance(self.exp,Rational) and self.exp.isinteger():
+            if isinstance(self.base,Mul):
+                if int(self.exp) == 2:
+                    if self.base.args[0] == -1:
+                        return (-self.base)**self.exp
         return self
         
     def evalf(self):
