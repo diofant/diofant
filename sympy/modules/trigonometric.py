@@ -38,7 +38,6 @@ class sin(Function):
         if not self.arg.isnumber():
              return self
         a = 2*self.arg / pi
-        print a
         if a - int(float(a)) == 0:
             # arg is a multiple of pi
             a_mod4 = int(a) % 4
