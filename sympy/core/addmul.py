@@ -149,17 +149,14 @@ class Mul(Pair):
 
     @staticmethod
     def try_to_coerce(x, y):
-        """Tries to multiply x with y. 
-
-        The correct order is: x * y
+        """Tries to multiply x * y in this order and see if it simplifies. 
         
-        If it succeeds, returns (newy, True)
-        otherwise (oldy, False)
-        where oldy is the original y 
+        If it succeeds, returns (x*y, True)
+        otherwise (x, False)
+        where x is the original x 
         """
-        x,y=y,x
-        z1 = x.muleval(y,x)
-        z2 = y.muleval(y,x)
+        z1 = y.muleval(x,y)
+        z2 = x.muleval(x,y)
 
         if z1 or z2:
             if (z1 and z2):
@@ -170,7 +167,6 @@ class Mul(Pair):
             if z2:
                 return z2, True
 
-
         if isinstance(x,Number) and isinstance(y, Number):
             return x*y, True
         xbase,xexp = Mul.get_baseandexp(x)
@@ -178,7 +174,7 @@ class Mul(Pair):
         if xbase.isequal(ybase):
             return Pow(xbase,Add(xexp,yexp)), True
         else:
-            return y, False
+            return x, False
             
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
