@@ -230,9 +230,13 @@ class Mul(Pair):
         #so that now "n" is a Number and "c_part" doesn't contain any number
         if n == 0: return Rational(0)
         c_part.sort(Basic.cmphash)
+        #this if is for multiplying Symbol*Matrix and Number*Matrix
         if len(nc_part) == 1:
             if len(c_part) == 1:
                 z, ok = self.try_to_coerce(c_part[0], nc_part[0])
+                if ok: return z
+            if len(c_part) == 0:
+                z, ok = self.try_to_coerce(n, nc_part[0])
                 if ok: return z
         a=c_part+nc_part
         #put the number in front of all the other args

@@ -61,13 +61,11 @@ class Matrix(NCSymbol):
 
     @staticmethod
     def muleval(x, y):
-        print "x",type(x)
-        print "x",type(y)
-        if isinstance(x, Matrix) and not isinstance(y, NCSymbol):
-            r=zeronm(x.lines,x.cols)
-            for i in range(x.lines):
-                for j in range(x.cols):
-                    r[i,j]=x[i,j]*y
+        if isinstance(y, Matrix) and not isinstance(x, NCSymbol):
+            r=zeronm(y.lines,y.cols)
+            for i in range(y.lines):
+                for j in range(y.cols):
+                    r[i,j]=y[i,j]*x
             return r
         return None
 
@@ -285,12 +283,21 @@ assert c[1,1]==6
 assert c[2,0]==18
 assert c[2,1]==0
 
-print "-"*60
+x = Symbol("x")
 
 c = b * Symbol("x")
-
-print c
 assert isinstance(c,Matrix)
+assert c[0,0] == x
+assert c[0,1] == 2*x
+assert c[1,0] == 3*x
+assert c[1,1] == 0
+
+c = 5 * b
+assert isinstance(c,Matrix)
+assert c[0,0] == 5
+assert c[0,1] == 2*5
+assert c[1,0] == 3*5
+assert c[1,1] == 0
 
 gamma0=Dirac(0)
 gamma1=Dirac(1)
@@ -300,4 +307,5 @@ gamma5=Dirac(5)
 
 #print doit(gamma5 * gamma2)
 
-#print doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3))
+#assert doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3)) == gamma5
+print doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3)) 
