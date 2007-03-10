@@ -61,7 +61,8 @@ class Matrix(NCSymbol):
 
     @staticmethod
     def muleval(x, y):
-        stop
+        print "x",type(x)
+        print "x",type(y)
         if isinstance(x, Matrix) and not isinstance(y, NCSymbol):
             r=zeronm(x.lines,x.cols)
             for i in range(x.lines):
@@ -284,7 +285,9 @@ assert c[1,1]==6
 assert c[2,0]==18
 assert c[2,1]==0
 
-c = b * 5
+print "-"*60
+
+c = b * Symbol("x")
 
 print c
 assert isinstance(c,Matrix)

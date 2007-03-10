@@ -149,14 +149,15 @@ class Mul(Pair):
 
     @staticmethod
     def try_to_coerce(x, y):
-        """Tries to multiply x=xbase^xexp with y. 
+        """Tries to multiply x with y. 
 
-        The correct order is: y * x
+        The correct order is: x * y
         
         If it succeeds, returns (newy, True)
         otherwise (oldy, False)
         where oldy is the original y 
         """
+        x,y=y,x
         z1 = x.muleval(y,x)
         z2 = y.muleval(y,x)
 
@@ -186,7 +187,7 @@ class Mul(Pair):
         def _mul_c(exp,x):
             e = []
             for i,y in enumerate(exp):
-                z,ok = self.try_to_coerce(x, y)
+                z,ok = self.try_to_coerce(y,x)
                 if isinstance(z, Number) and i!=0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
                     assert z in [1,-1]
@@ -202,7 +203,7 @@ class Mul(Pair):
         def _mul_nc(exp,x):
             if exp == []: return [x]
             #try to join only last and the one before last object
-            z,ok = self.try_to_coerce(x, exp[-1])
+            z,ok = self.try_to_coerce(exp[-1], x)
             if ok:
                 return exp[:-1]+[z]
             else:
@@ -233,6 +234,10 @@ class Mul(Pair):
         #so that now "n" is a Number and "c_part" doesn't contain any number
         if n == 0: return Rational(0)
         c_part.sort(Basic.cmphash)
+        if len(nc_part) == 1:
+            if len(c_part) == 1:
+                z, ok = self.try_to_coerce(c_part[0], nc_part[0])
+                if ok: return z
         a=c_part+nc_part
         #put the number in front of all the other args
         if n != 1: a=[n]+a
