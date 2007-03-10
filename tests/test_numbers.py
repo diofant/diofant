@@ -60,6 +60,8 @@ def test_Real():
     a = g.Real(2) ** g.Real(3)
     assert a.evalf() == 8.0
     assert abs((g.pi ** -1).evalf() - 0.318309886184) < 0.0000001
+    a = g.Pow(g.Real(2), g.Real(4))
+    assert a.evalf() == g.Real(16.0)
 
 def test_inf():
     assert g.infty==g.infty
