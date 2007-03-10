@@ -98,7 +98,7 @@ class exp(Function):
         return self
     
     def evalf(self, precision=28):
-        if not isnumber(self.arg):
+        if not self.arg.isnumber():
             raise ValueError 
         x = Real(self.arg) # argument to decimal (full precision)
         decimal.getcontext().prec = precision + 2

@@ -289,6 +289,19 @@ class Basic(object):
         """
         return None
 
+    def isnumber(self):
+        """Return True if self is a number. False otherwise. 
+        """
+        
+        try:
+            self.evalf()
+            # if self has symbols it will raise
+            # an exception, which we will catch
+            # and return False
+            return True
+        except ValueError:
+            return False
+
     def print_sympy(self):
         """The canonical sympy representation"""
         return str(type(self))
