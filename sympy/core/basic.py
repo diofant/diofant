@@ -93,14 +93,14 @@ class Basic(object):
         
     def __lt__(self,a):
         from sympy.core.numbers import Real
-        if isnumber(self) and isnumber(a): 
+        if _isnumber(self) and _isnumber(a): 
             return self.evalf() < Real(a).evalf()
         else:
             raise NotImplementedError("'<' not supported.")
         
     def __gt__(self,a):
         from numbers import Real
-        if isnumber(self) and isnumber(a): 
+        if _isnumber(self) and _isnumber(a): 
             return self.evalf() > Real(a).evalf()
         else:
             raise NotImplementedError("'<' not supported.")
@@ -151,7 +151,7 @@ class Basic(object):
         return self.hash() == a.hash()
         
     def cmphash(a,b):
-        return sign(a.hash()-b.hash())
+        return _sign(a.hash()-b.hash())
         
     def diffn(self,sym,n):
         while n:
@@ -311,7 +311,7 @@ class Basic(object):
         """The canonical tree representation"""
         return str(self)
 
-def isnumber(x):
+def _isnumber(x):
     #don't use this function. Use x.isnumber() instead
     from numbers import Number
     from basic import Basic
@@ -321,7 +321,7 @@ def isnumber(x):
     assert isinstance(x, Basic)
     return x.isnumber()
 
-def sign(x):
+def _sign(x):
     """Return the sign of x, that is, 
     1 if x is positive, 0 if x == 0 and -1 if x is negative
     """
