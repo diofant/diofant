@@ -3,7 +3,6 @@ from basic import Basic
 from numbers import Number, Rational, Real
 from power import Pow,pole_error
 from prettyprint import StringPict
-from utils import isnumber
 
 class Pair(Basic):
     """Contains common code to add and mul classes.
@@ -251,7 +250,7 @@ class Mul(Pair):
             
     def evalf(self):
         a, b = self.getab()
-        if isnumber(a) and isnumber(b):
+        if a.isnumber() and b.isnumber():
             return Real(a)*Real(b)
         else: 
             raise ValueError("Cannot evaluate a symbolic value")

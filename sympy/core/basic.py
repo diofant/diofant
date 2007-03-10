@@ -94,7 +94,6 @@ class Basic(object):
         return not self.__eq__(a)
         
     def __lt__(self,a):
-        from utils import isnumber
         from sympy.core.numbers import Real
         if isnumber(self) and isnumber(a): 
             return self.evalf() < Real(a).evalf()
@@ -102,7 +101,6 @@ class Basic(object):
             raise NotImplementedError("'<' not supported.")
         
     def __gt__(self,a):
-        from utils import isnumber
         from numbers import Real
         if isnumber(self) and isnumber(a): 
             return self.evalf() > Real(a).evalf()
@@ -314,3 +312,13 @@ class Basic(object):
     def print_tree(self):
         """The canonical tree representation"""
         return str(self)
+
+def isnumber(x):
+    #don't use this function. Use x.isnumber() instead
+    from numbers import Number
+    from basic import Basic
+    from decimal import Decimal
+    if isinstance(x, (Number, int, float, long, Decimal)):
+        return True
+    assert isinstance(x, Basic)
+    return x.isnumber()

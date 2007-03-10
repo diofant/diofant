@@ -1,6 +1,5 @@
 from sympy.core.functions import Function
 from sympy.core.numbers import Real, Rational, pi
-from sympy.core.utils import isnumber
 import decimal
 
 class sin(Function):
@@ -36,7 +35,7 @@ class sin(Function):
         return True
         
     def eval(self):
-        if not isnumber(self.arg):
+        if not self.arg.isnumber():
              return self
         a = 2*self.arg / pi
         print a
@@ -53,7 +52,7 @@ class sin(Function):
         return self
     
     def evalf(self, precision=28):
-        if not isnumber(self.arg):
+        if not self.arg.isnumber():
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
         x = Real(self.arg)
@@ -82,7 +81,7 @@ class cos(Function):
         return True
     
     def eval(self):
-        if not isnumber(self.arg):
+        if not self.arg.isnumber():
              return self
         # case self.arg is a number 
         a = 2*self.arg / pi
@@ -99,7 +98,7 @@ class cos(Function):
         return self
     
     def evalf(self, precision=28):
-        if not isnumber(self.arg):
+        if not self.arg.isnumber():
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
         x = Real(self.arg)

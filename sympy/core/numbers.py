@@ -80,7 +80,7 @@ class Real(Number):
         Number.__init__(self)
         if isinstance(num,str):
             num = decimal.Decimal(num)
-        assert utils.isnumber(num)
+        assert isnumber(num)
         if isinstance(num, decimal.Decimal):
             self.num = num
         elif isinstance(num, Real):
@@ -110,7 +110,7 @@ class Real(Number):
         return int(self.evalf())
     
     def __add__(self,a):
-        if utils.isnumber(a):
+        if isnumber(a):
             if isinstance(a, Real):
                 return Real(self.num + a.num)
             else:
@@ -121,7 +121,7 @@ class Real(Number):
             return Add(self, a)
         
     def __mul__(self,a):
-        if utils.isnumber(a):
+        if isnumber(a):
             return Real(self.num * decimal.Decimal(str(float(a))))
             #FIXME: too many boxing-unboxing
         else:
@@ -388,3 +388,19 @@ class ConstPi(Constant):
         return "pi"
 
 pi=ConstPi()
+
+def isnumber(x):
+    #don't use this function. Use x.isnumber() instead
+    #everything in sympy should be subclasses of Basic anyway.
+
+    #if you need the testig for int, float, etc., just do it locally in your
+    #class, or even better, call Basic.sympify(x).isnumber().
+    #so that all the code which converts from python to sympy is localised in 
+    #sympify
+    from numbers import Number
+    from basic import Basic
+    from decimal import Decimal
+    if isinstance(x, (Number, int, float, long, Decimal)):
+        return True
+    assert isinstance(x, Basic)
+    return x.isnumber()
