@@ -1,5 +1,3 @@
-from utils import sign
-
 class AutomaticEvaluationType(type):
     def __call__(self,*args,**kwargs):
         if kwargs.has_key("evaluate"):
@@ -322,3 +320,11 @@ def isnumber(x):
         return True
     assert isinstance(x, Basic)
     return x.isnumber()
+
+def sign(x):
+    """Return the sign of x, that is, 
+    1 if x is positive, 0 if x == 0 and -1 if x is negative
+    """
+    if x < 0: return -1
+    elif x==0: return 0
+    else: return 1

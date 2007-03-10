@@ -1,6 +1,5 @@
 import hashing
 from basic import Basic
-import utils 
 import decimal
 from prettyprint import StringPict
 
@@ -180,7 +179,7 @@ class Rational(Number):
         assert (isinstance(p, int) or isinstance(p, long)) and \
                (isinstance(q, int) or isinstance(q, long))
         assert q != 0
-        s = utils.sign(p)*utils.sign(q)
+        s = sign(p)*sign(q)
         p = abs(p)
         q = abs(q)
         c = self.gcd(p,q)
@@ -188,7 +187,7 @@ class Rational(Number):
         self.q = q/c
         
     def sign(self):
-        return utils.sign(self.p)*utils.sign(self.q)
+        return sign(self.p)*sign(self.q)
         
     def hash(self):
         if self.mhash: 
@@ -404,3 +403,11 @@ def isnumber(x):
         return True
     assert isinstance(x, Basic)
     return x.isnumber()
+
+def sign(x):
+    """Return the sign of x, that is, 
+    1 if x is positive, 0 if x == 0 and -1 if x is negative
+    """
+    if x < 0: return -1
+    elif x==0: return 0
+    else: return 1
