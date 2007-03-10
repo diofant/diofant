@@ -280,6 +280,15 @@ class Basic(object):
         """
         return None
 
+    @staticmethod
+    def addeval(x,y):
+        """
+        Try to simplify x+y in this order. You can either return a simplified
+        expression or None.
+        
+        """
+        return None
+
     def print_sympy(self):
         """The canonical sympy representation"""
         return str(type(self))

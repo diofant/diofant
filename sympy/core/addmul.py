@@ -384,7 +384,7 @@ class Add(Pair):
         
     def eval(self):
         "Flatten, put all Rationals in the back, coerce, sort"
- 
+
         def _add(exp,x):
             an, a = _extract_numeric(x)
             e = []
@@ -395,7 +395,21 @@ class Add(Pair):
                     e.append(Mul(an + bn,a))
                     ok = True
                 else:
-                    e.append(y)
+                    z1 = x.addeval(y,x)
+                    z2 = y.addeval(y,x)
+
+                    if z1 or z2:
+                        if (z1 and z2):
+                            #sanity check
+                            assert z1==z2
+                        if z1:
+                            e.append(z1)
+                            ok = True
+                        elif z2:
+                            e.append(z2)
+                            ok = True
+                    else:
+                        e.append(y)
             if not ok: e.append(x)
             return e
 

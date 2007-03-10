@@ -40,6 +40,30 @@ class Matrix(NCSymbol):
             raise IndexError("Index out of range: a[%s]"%repr(key))
         return i,j
 
+    def __getattr__(self,name):
+        if name == "T":
+            #transposition
+            r=zeronm(self.cols,self.lines)
+            for i in range(self.lines):
+                for j in range(self.cols):
+                    r[j,i]=self[i,j]
+            return r
+        if name == "C":
+            #conjugation
+            r=zeronm(self.lines,self.cols)
+            for i in range(r.lines):
+                for j in range(r.cols):
+                    r[i,j]=self[i,j].conjugate()
+            return r
+        if name == "H":
+            #hermite conjugation
+            return self.T.C
+        if name == "D":
+            #dirac conjugation
+            return self.H * gamma(0)
+        raise AttributeError("'%s' object has no attribute '%s'"%
+                (self.__class__.__name__, name))
+
     def __getitem__(self,key):
         i,j=self.key2ij(key)
         return self.mat[i*self.cols+j]
@@ -49,8 +73,8 @@ class Matrix(NCSymbol):
         self.mat[i*self.cols+j] = value
 
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
+        #if self.mhash: 
+        #    return self.mhash.value
         self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
         self.mhash.addint(self.lines)
@@ -66,6 +90,24 @@ class Matrix(NCSymbol):
             for i in range(y.lines):
                 for j in range(y.cols):
                     r[i,j]=y[i,j]*x
+            return r
+        if isinstance(x, Matrix) and isinstance(y, Matrix):
+            return x.multiply(y)
+        return None
+
+    @staticmethod
+    def addeval(x, y):
+        if isinstance(x, Matrix) and isinstance(y, Matrix):
+            return x.add(y)
+        if isinstance(x, Matrix) and not isinstance(y, NCSymbol):
+            assert x.lines == x.cols
+            r=zeronm(x.lines,x.cols)
+            for i in range(x.lines):
+                for j in range(x.cols):
+                    if i==j:
+                        r[i,j]=x[i,j]+y
+                    else:
+                        r[i,j]=x[i,j]
             return r
         return None
 
@@ -83,6 +125,19 @@ class Matrix(NCSymbol):
         for i in range(self.lines):
             for j in range(b.cols):
                 r[i,j] = dotprod(self,b,i,j)
+        if r.lines == 1 and r.cols ==1: 
+            return r[0,0]
+        return r
+
+    def add(self,b):
+        """Returns self+b """
+
+        assert self.lines == b.lines
+        assert self.cols == b.cols
+        r=zeronm(self.lines,self.cols)
+        for i in range(self.lines):
+            for j in range(self.cols):
+                r[i,j] = self[i,j]+b[i,j]
         return r
 
     def print_sympy(self):
@@ -94,7 +149,7 @@ class Matrix(NCSymbol):
         return s
 
 def zero(n):
-    zeronm(n,m)
+    return zeronm(n,n)
 
 def zeronm(n,m):
     assert n>0
@@ -242,27 +297,27 @@ def doit(e):
     r=Dirac.one()
     for x in e.args[i:]:
         r = r.multiply(x)
-    return Mul([Rational(1)]+e.args[:i])*r
+    return Mul([Rational(1)]*2+e.args[:i])*r
 
 
-one2=Pauli(0)
-sigma1=Pauli(1)
-sigma2=Pauli(2)
-sigma3=Pauli(3)
+#one2=Pauli(0)
+#sigma1=Pauli(1)
+#sigma2=Pauli(2)
+#sigma3=Pauli(3)
 
-assert sigma1 == sigma1
-assert sigma1 != sigma2
+#assert sigma1 == sigma1
+#assert sigma1 != sigma2
 
-assert sigma1*sigma2 == I*sigma3
-assert sigma3*sigma1 == I*sigma2
-assert sigma2*sigma3 == I*sigma1
+#assert sigma1*sigma2 == I*sigma3
+#assert sigma3*sigma1 == I*sigma2
+#assert sigma2*sigma3 == I*sigma1
 
-assert sigma1*sigma1 == one2
-assert sigma2*sigma2 == one2
-assert sigma3*sigma3 == one2
+#assert sigma1*sigma1 == one2
+#assert sigma2*sigma2 == one2
+#assert sigma3*sigma3 == one2
 
-assert sigma1*2*sigma1 == 2*one2
-assert sigma1*sigma3*sigma1 == -sigma3
+#assert sigma1*2*sigma1 == 2*one2
+#assert sigma1*sigma3*sigma1 == -sigma3
 
 a=Matrix((
     (1, 2),
@@ -275,7 +330,7 @@ b = Matrix ((
     (3, 0),
     ))
 
-c= a.multiply(b)
+c= a*b
 assert c[0,0]==7
 assert c[0,1]==2
 assert c[1,0]==6
@@ -299,13 +354,145 @@ assert c[0,1] == 2*5
 assert c[1,0] == 3*5
 assert c[1,1] == 0
 
-gamma0=Dirac(0)
-gamma1=Dirac(1)
-gamma2=Dirac(2)
-gamma3=Dirac(3)
-gamma5=Dirac(5)
+#gamma0=Dirac(0)
+#gamma1=Dirac(1)
+#gamma2=Dirac(2)
+#gamma3=Dirac(3)
+#gamma5=Dirac(5)
 
-#print doit(gamma5 * gamma2)
+def sigma(i):
+    if i==1:
+        mat=( (
+            (0, 1),
+            (1, 0)
+            ) )
+    elif i==2:
+        mat=( (
+            (0, -I),
+            (I, 0)
+            ) )
+    elif i==3:
+        mat=( (
+            (1, 0),
+            (0, -1)
+            ) )
+    else:
+        raise "Invalid Pauli index"
+    return Matrix(mat)
 
-#assert doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3)) == gamma5
-print doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3)) 
+def gamma(mu):
+    if not mu in [0,1,2,3,5]:
+        raise "Invalid Dirac index"
+    if mu == 0:
+        mat = (
+                (1,0,0,0),
+                (0,1,0,0),
+                (0,0,-1,0),
+                (0,0,0,-1)
+                )
+    elif mu == 1:
+        mat = (
+                (0,0,0,1),
+                (0,0,1,0),
+                (0,-1,0,0),
+                (-1,0,0,0)
+                )
+    elif mu == 2:
+        mat = (
+                (0,0,0,-I),
+                (0,0,I,0),
+                (0,I,0,0),
+                (-I,0,0,0)
+                )
+    elif mu == 3:
+        mat = (
+                (0,0,1,0),
+                (0,0,0,-1),
+                (-1,0,0,0),
+                (0,1,0,0)
+                )
+    elif mu == 5:
+        mat = (
+                (0,0,1,0),
+                (0,0,0,1),
+                (1,0,0,0),
+                (0,1,0,0)
+                )
+    return Matrix(mat)
+
+gamma0=gamma(0)
+gamma1=gamma(1)
+gamma2=gamma(2)
+gamma3=gamma(3)
+gamma5=gamma(5)
+
+assert I * gamma0 * gamma1 * gamma2 * gamma3 == gamma5
+
+sigma1=sigma(1)
+sigma2=sigma(2)
+sigma3=sigma(3)
+
+assert sigma1 == sigma1
+assert sigma1 != sigma2
+
+assert sigma1*sigma2 == I*sigma3
+assert sigma3*sigma1 == I*sigma2
+assert sigma2*sigma3 == I*sigma1
+
+a=Symbol("a")
+b=Symbol("b")
+c=Symbol("c")
+
+#print a*sigma1+b*sigma2+c*sigma3
+
+E = Symbol("E")
+m = Symbol("m")
+
+def u(p,r):
+    """ p = (p1, p2, p3); r = 0,1 """
+    assert r in [1,2]
+    p1,p2,p3 = p
+    if r == 1:
+        ksi = Matrix([ [1],[0] ])
+    else:
+        ksi = Matrix([ [0],[1] ])
+    a = (sigma1*p1 + sigma2*p2 + sigma3*p3) / (E+m) * ksi
+    if a ==0:
+        a = zeronm(2,1)
+    return (E+m).sqrt() * Matrix([ [ksi[0,0]], [ksi[1,0]], [a[0,0]], [a[1,0]] ])
+
+def v(p,r):
+    """ p = (p1, p2, p3); r = 0,1 """
+    assert r in [1,2]
+    p1,p2,p3 = p
+    if r == 1:
+        ksi = Matrix([ [1],[0] ])
+    else:
+        ksi = -Matrix([ [0],[1] ])
+    a = (sigma1*p1 + sigma2*p2 + sigma3*p3) / (E+m) * ksi
+    if a ==0:
+        a = zeronm(2,1)
+    return (E+m).sqrt() * Matrix([ [a[0,0]], [a[1,0]], [ksi[0,0]], [ksi[1,0]] ])
+
+def pslash(p):
+    p1,p2,p3 = p
+    p0 = (m**2+p1**2+p2**2+p3**2).sqrt()
+    return gamma0*p0-gamma1*p1-gamma2*p2-gamma3*p3
+
+p = (a,b,c)
+
+assert u(p, 1).D * u(p, 2) == 0
+assert u(p, 2).D * u(p, 1) == 0
+
+e= v(p, 2).D * v(p, 2)
+print e.expand().subs(a, (E**2-m**2-b**2-c**2).sqrt()).expand()
+print
+e= u(p, 1) * u(p, 1).D+u(p, 2) * u(p, 2).D
+print e.expand().print_pretty()
+
+print
+f=pslash(p)+m
+e= f[0,0]
+
+
+print e.subs(a, (E**2-m**2-b**2-c**2).sqrt())
