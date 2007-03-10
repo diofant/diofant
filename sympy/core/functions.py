@@ -5,7 +5,6 @@ functions that use Function as its base class.
 import hashing
 from basic import Basic
 from numbers import Rational, Real
-from utils import isnumber
 import decimal
 
 class Function(Basic):
@@ -155,7 +154,7 @@ class log(Function):
         w = sym
         c0,e0 = arg.leadterm(w)
         Phi=(arg/(c0*w**e0)-1).expand()
-        if isnumber(c0):
+        if c0.isnumber():
             assert c0.evalf()>0
         e=log(c0)+e0*log(w)
         for i in range(1,n+1):
@@ -168,13 +167,13 @@ class abs_(Function):
     
     def eval(self):
         arg = self.arg
-        if isnumber(arg):
+        if arg.isnumber():
             return (arg*arg.conjugate()).expand()**Rational(1,2)
         else:
             return self
         
     def evalf(self):
-        if isnumber(self.arg):
+        if self.arg.isnumber():
             return self.eval()
         else:
             raise ValueError
@@ -202,7 +201,7 @@ class abs_(Function):
 def sign(Function):
     
     def eval(self):
-        if isnumber(self.arg):
+        if self.arg.isnumber():
             if self.arg < 0:
                 return Rational(-1)
             elif self.arg == 0:

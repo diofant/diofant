@@ -3,7 +3,6 @@ from basic import Basic
 from symbol import Symbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
-from utils import isnumber
 from prettyprint import StringPict
 
 class pole_error(Exception):
@@ -95,7 +94,7 @@ class Pow(Basic):
         if isinstance(self.base,Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
         if isinstance(self.base,exp): 
-            if isnumber(self.base.arg):
+            if self.base.arg.isnumber():
                 return exp(self.exp*self.base.arg)
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
@@ -109,12 +108,12 @@ class Pow(Basic):
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
                     n= self.base.args[0]
-                    if isnumber(n) and n<0:
+                    if n.isnumber() and n<0:
                         return (-self.base)**self.exp
         return self
         
     def evalf(self):
-        if isnumber(self.base) and isnumber(self.exp):
+        if self.base.isnumber() and self.exp.isnumber():
             return Real(float(self.base)**float(self.exp))
             #FIXME: we need a way of raising a decimal to the power of a decimal (it doesen't work if self.exp is not an integer
         else:
