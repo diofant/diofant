@@ -11,12 +11,12 @@ def isnumber(x):
     """
     
     from numbers import Number
-    from addmul import Pair
-    from power import Pow
+    from basic import Basic
+    from decimal import Decimal
     
-    if isinstance(x, (Number, int, float, long)):
+    if isinstance(x, (Number, int, float, long, Decimal)):
         return True
-    elif isinstance(x, (Pair, Pow)):
+    elif isinstance(x, Basic):
         try:
             x.evalf()
             # if x has symbols it will raise

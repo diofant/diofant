@@ -24,11 +24,11 @@ class Number(Basic):
         raise NotImplementedError
         
     def __float__(self):
-        return self.evalf()
+        return float(self.evalf())
     
-    #def __abs__(self):
-    #    from functions import abs_
-    #    return abs_(self)
+    def __abs__(self):
+        from functions import abs_
+        return abs_(self)
     
     def diff(self,sym):
         return Rational(0)
@@ -80,7 +80,7 @@ class Real(Number):
         Number.__init__(self)
         if isinstance(num,str):
             num = decimal.Decimal(num)
-#        assert utils.isnumber(num)
+        assert utils.isnumber(num)
         if isinstance(num, decimal.Decimal):
             self.num = num
         elif isinstance(num, Real):
@@ -98,9 +98,9 @@ class Real(Number):
         
     def print_sympy(self):
         if self.num < 0:
-            f = "(%r)"
+            f = "(%s)"
         else:
-            f = "%r"
+            f = "%s"
         return f % (str(self.num))
 
     def __float__(self):
@@ -130,30 +130,12 @@ class Real(Number):
             return Mul(self, a)
         
     def __pow__(self,a):
-        if utils.isnumber(a):
-            if isinstance(a, int):
-                return Real(self.num ** a)
-            elif isinstance(a, Rational) and a.q == 1:
-                return Real(self.num ** decimal.Decimal(a.p))
-            # can't do decimal ** decimal, the module doesen't handle it
-        else:
-            assert isinstance(a, Basic)
-            from power import Pow
-            return Pow(self, a)
+        from power import Pow
+        return Pow(self, a)
         
     def __rpow__(self, a):
-#        if utils.isnumber(a):
-#            return float(a) ** self.num
-#        else:
-#            assert isinstance(a, Basic)
-            from power import Pow
-            return Pow(a, self)
-        
-    def __lt__(self, a):
-        return self.num < a
-    
-    def __gt__(self, a):
-        return self.num > a
+        from power import Pow
+        return Pow(a, self)
         
     def iszero(self):
         if self.num == 0:
@@ -204,10 +186,6 @@ class Rational(Number):
         c = self.gcd(p,q)
         self.p = p/c*s
         self.q = q/c
-        
-    def __lt__(self,a):
-        """Compares two Rational numbers."""
-        return self.evalf() < float(a)
         
     def sign(self):
         return utils.sign(self.p)*utils.sign(self.q)
@@ -281,56 +259,19 @@ class Rational(Number):
     def __pow__(self,a):
         """Returns the self to the power of "a"
         """
-        from power import Pow, pole_error
+        from power import Pow
+        return Pow(self, a)
     
-        if utils.isnumber(a):
-            if self.p == 0:
-                if a < 0:
-                    # 0 ** a = undefined, where a <= 0 
-                    raise pole_error("pow::eval(): Division by 0.")
-                elif a == 0:
-                    #FIXME : mathematically wrong but needed for limits.py
-                    #raise pole_error("pow::eval(): Division by 0.")
-                    return Rational(1)
-                else:
-                    # 0 ** a = 0, where a > 0
-                    return Rational(0)
-            elif isinstance(a, Rational):
-                if a.q == 1:
-                    if a.p > 0:
-                        return Rational(self.p ** a.p, self.q ** a.p)
-                    else:
-                        return Rational(self.q**(-a.p),self.p**(-a.p))
-        return Pow(self, self.sympify(a))
-            
     def __rpow__(self, a):  
         """Returns "a" to the power of self
         """
         from power import Pow
-        if self.p == 0:
-            return Rational(1)
-        elif a == 0:
-            return Rational(0)
-        if self.q != 1:
-            #if self is an integer
-            if hasattr(a, 'evalf'):
-                return Pow(a.evalf(), self)
-            else:
-                return Pow(self.sympify(a), self)
-        elif isinstance(a, Rational):
-            if self.p > 0:
-                return Rational(a.p ** self.p, a.q ** self.p)
-            else:
-                return Rational(a.q ** (-self.p), a.p ** (-self.p))
-        elif isinstance(a, int):
-            if self.p > 0:
-                return Rational(a ** self.p)
-            else:
-                return Rational(1, a ** -(self.p))
-        return Pow(a, self )
+        return Pow(a, self)
+    
 
     def __int__(self):
-        return self.getinteger()
+        assert self.isinteger()
+        return self.p
     
     def iszero(self):
         return self.p == 0 
@@ -344,12 +285,8 @@ class Rational(Number):
     def isinteger(self):
         return self.q == 1
         
-    def getinteger(self):
-        assert self.isinteger()
-        return self.p
-        
     def evalf(self):
-        return float(self.p)/self.q
+        return decimal.Decimal(self.p)/self.q
         
     def diff(self,sym):
         return Rational(0)
@@ -374,8 +311,11 @@ class Constant(Basic):
     """Mathematical constant abstract class."""
     
     def __call__(self, precision=28):
-            return self.evalf(precision)
-        
+        return self.evalf(precision)
+       
+    def eval(self):
+        return self
+ 
     def hash(self):
         if self.mhash: 
             return self.mhash.value
@@ -385,6 +325,12 @@ class Constant(Basic):
 
     def diff(self,sym):
         return Rational(0)
+
+    def __mod__(self, a):
+        raise NotImplementedError
+
+    def __rmod__(self, a):
+            raise NotImplementedError
 
 class ConstPi(Constant):
     """

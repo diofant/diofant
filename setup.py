@@ -12,7 +12,7 @@ how to customize the install procedure read the output of:
 
     python setup.py --help install
 
-In addition, there are some other useful commands
+In addition, there are some other commands
 
     python setup.py test  -> will run the complete test suite
     python setup.py test_core -> will run only tests concerning core features
@@ -89,8 +89,12 @@ class test_sympy_core(Command):
             If you are on debian systems, the package is named python-codespeak-lib
             """
             sys.exit(-1)
-        #for x in tests_ro_run
         py.test.cmdline.main(args=self.tests_to_run)
+        
+class test_doc(Command):
+    pass
+
+
 
 
 setup(

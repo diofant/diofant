@@ -53,6 +53,13 @@ def testRational_comparisons():
     assert n1<n2
     assert n3>n1
     assert not n3<n1
+    assert not (Rational(-1) > 0)
+    assert Rational(-1) < 0
+    
+def test_Real():
+    a = g.Real(2) ** g.Real(3)
+    assert a.evalf() == 8.0
+    assert abs((g.pi ** -1).evalf() - 0.318309886184) < 0.0000001
 
 def test_inf():
     assert g.infty==g.infty
@@ -67,8 +74,7 @@ def test_powers():
 
 def test_realbug():
     x=g.Symbol("x")
-    assert str(2.0*x*x)in ["(2.000*x)*x","'2.000'*x^2",
-            "'2.000000'*x^2"]
+    assert str(2.0*x*x) in ["(2.000*x)*x","2.000*x^2"]
     assert str(2.1*x*x)!="(2.0*x)*x"
 
 def test_acceptint():
@@ -84,11 +90,11 @@ def test_complex():
     assert (a+g.I*b).conjugate() !=  a+g.I*b
     assert (a+g.I*b).conjugate() ==  a-g.I*b
 
-    assert str(abs(a))=="a"
-    assert abs(a) == a
-    assert abs(-a) == a
-    assert abs(-a) != -a
-    assert abs(a+g.I*b) == (a*a+b*b).sqrt()
+    assert str(abs(a))=="abs(a)"
+#    assert abs(a) == a
+#    assert abs(-a) == a
+#    assert abs(-a) != -a
+#    assert abs(a+g.I*b) == (a*a+b*b).sqrt()
 
 def test_int():
     a=Rational(5)

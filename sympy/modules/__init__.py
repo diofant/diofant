@@ -1,3 +1,4 @@
-from trigonometric import sin,cos,tan
-from limits import limit,limitinf
-from integrals import Integral,IntegralError
+from sympy.modules.trigonometric import sin,cos,tan
+from sympy.modules.limits import limit,limitinf
+from sympy.modules.integrals import Integral, IntegralError
+

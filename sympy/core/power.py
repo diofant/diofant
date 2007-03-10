@@ -36,7 +36,7 @@ class Pow(Basic):
         if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
             or (isinstance(self.exp,Rational) and \
             (not self.exp.isinteger() or (self.exp.isinteger() and \
-            self.exp.getinteger() < 0)) ):
+            int(self.exp) < 0)) ):
             f += "(%s)"
         else:
             f += "%s"
@@ -59,8 +59,6 @@ class Pow(Basic):
         
     def eval(self):
         from addmul import Mul
-        self.base = self.base
-        self.exp = self.exp
         if isinstance(self.exp,Rational) and self.exp.iszero():
             return Rational(1)
         if isinstance(self.exp,Rational) and self.exp.isone():
@@ -72,15 +70,22 @@ class Pow(Basic):
                 elif self.exp < 0:
                     raise pole_error("pow::eval(): Division by 0.")
             return Rational(0)
+        
         if isinstance(self.base,Rational) and self.base.isone():
             return Rational(1)
+        
         if isinstance(self.base,Real) and isinstance(self.exp,Real):
             return self
-        if isinstance(self.base,Rational) and isinstance(self.exp,Rational):
-            if self.exp.isinteger(): 
-                return self.base ** self.exp
+        
+        if isinstance(self.base, Rational) and isinstance(self.exp, Rational):
+            if self.exp.isinteger():
+                if self.exp > 0: 
+                    return Rational(self.base.p ** self.exp.p , self.base.q ** self.exp.p)
+                else:
+                    return Rational(self.base.q ** (-self.exp.p) , self.base.p ** (-self.exp.p) )
+                
             if self.base.isinteger():
-                a = self.base.getinteger()
+                a = int(self.base)
                 bq = self.exp.q
                 if a>0:
                     x = int(a**(1./bq)+0.5)
@@ -98,15 +103,16 @@ class Pow(Basic):
                 return (Pow(a,self.exp) * Pow(b,self.exp))
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.isinteger():
-                if self.exp.getinteger()==2:
+                if int(self.exp) == 2:
                     return -Rational(1)
         return self
         
     def evalf(self):
-        if hasattr(self.base, 'evalf') and hasattr(self.exp, 'evalf'):
-            return self.base.evalf()**self.exp.evalf()
-        else: 
-            raise ValueError('Can not evaluate a symbolic value')
+        if isnumber(self.base) and isnumber(self.exp):
+            return Real(float(self.base)**float(self.exp))
+            #FIXME: we need a way of raising a decimal to the power of a decimal (it doesen't work if self.exp is not an integer
+        else:
+            raise ValueError
 
     def commutative(self):
         return self.base.commutative() and self.exp.commutative()
@@ -160,7 +166,7 @@ class Pow(Basic):
         from addmul import Mul
         if isinstance(self.exp,Number):
             if self.exp.isinteger():
-                n=self.exp.getinteger()
+                n = int(self.exp)
                 if n > 1:
                     a = self.base
                     while n > 1:

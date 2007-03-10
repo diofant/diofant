@@ -251,8 +251,8 @@ class Mul(Pair):
             
     def evalf(self):
         a, b = self.getab()
-        if hasattr(a, 'evalf') and hasattr(b, 'evalf'):
-            return a.evalf()*b.evalf()
+        if isnumber(a) and isnumber(b):
+            return Real(a)*Real(b)
         else: 
             raise ValueError("Cannot evaluate a symbolic value")
             

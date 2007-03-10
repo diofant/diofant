@@ -1,14 +1,19 @@
+"""This module provides an abstract class Function, as well as some mathematical
+functions that use Function as its base class. 
+"""
+
 import hashing
 from basic import Basic
 from numbers import Rational, Real
 from utils import isnumber
+import decimal
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 
     It is the base class for common fuctions such as exp, log, sin, tan, etc.
     """
     
-    def __init__(self,arg):
+    def __init__(self, arg):
         Basic.__init__(self)
         self.arg = self.sympify(arg)
         
@@ -20,10 +25,13 @@ class Function(Basic):
         self.mhash.addint(self.arg.hash())
         return self.mhash.value
     
-    def diff(self,sym):
+    def diff(self, sym):
         return (self.derivative()*self.arg.diff(sym))
     
-    def subs(self,old,new):
+    def derivative(self):
+        raise NotImplementedError
+    
+    def subs(self, old, new):
         e = Basic.subs(self,old,new)
         #if e==self:
         if e.isequal(self):
@@ -43,8 +51,7 @@ class Function(Basic):
         else:
             return result.parens().left(self.getname())
     
-    def series(self,sym,n):
-        from numbers import Rational
+    def series(self, sym, n):
         from power import pole_error
         from symbol import Symbol
         try:
@@ -89,6 +96,21 @@ class exp(Function):
         if isinstance(arg,log):
             return arg.arg
         return self
+    
+    def evalf(self, precision=28):
+        if not isnumber(self.arg):
+            raise ValueError 
+        x = Real(self.arg) # argument to decimal (full precision)
+        decimal.getcontext().prec = precision + 2
+        i, lasts, s, fact, num = 0, 0, 1, 1, 1
+        while s != lasts:
+            lasts = s    
+            i += 1
+            fact *= i
+            num *= x     
+            s += num / fact   
+        decimal.getcontext().prec = precision - 2        
+        return +s
 
 class log(Function):
     """Return the natural logarithm (base e) of x
@@ -139,5 +161,53 @@ class log(Function):
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
         return e
+    
+class abs_(Function):
+    """Return the absolute value of x"""
+    
+    
+    def eval(self):
+        arg = self.arg
+        if isnumber(arg):
+            return (arg*arg.conjugate()).expand()**Rational(1,2)
+        else:
+            return self
+        
+    def evalf(self):
+        if isnumber(self.arg):
+            return self.eval()
+        else:
+            raise ValueError
+        
+    def derivative(self):
+        return sign(x)
+    
+    def getname(self):
+        return "abs"
+    
+    def series(self):
+        pass
+    
+    def __eq__(self, a):
+        #FIXME: currently this does not work
+        # here we are checking for function equality, like in
+        # abs(x) == abs(-x)
+        if isinstance(a, abs_): 
+            if a.arg**2 == self.arg**2:
+                return true
+            else:
+                return False
+        raise ArgumentError("Wrong function arguments")
+    
+def sign(Function):
+    
+    def eval(self):
+        if isnumber(self.arg):
+            if self.arg < 0:
+                return Rational(-1)
+            elif self.arg == 0:
+                return Rational(0)
+            else:
+                return Rational(1)
 
 ln = log

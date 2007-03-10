@@ -40,7 +40,10 @@ class Basic(object):
         
     def __add__(self,a):
         return self._doadd(self, a)
-    
+   
+    def __float__(self):
+        return float(self.evalf())
+ 
     def __abs__(self):
         """Returns the absolute value of self. 
         
@@ -52,8 +55,8 @@ class Basic(object):
         >>> abs(-x)
         x
         """
-        from numbers import Rational
-        return (self*self.conjugate()).expand()**Rational(1,2)
+        from functions import abs_
+        return abs_(self)
         
     def __radd__(self,a):
         return self._doadd(a, self)
@@ -92,8 +95,17 @@ class Basic(object):
         
     def __lt__(self,a):
         from utils import isnumber
+        from sympy.core.numbers import Real
         if isnumber(self) and isnumber(a): 
-            return self.evalf() < float(a)
+            return self.evalf() < Real(a).evalf()
+        else:
+            raise NotImplementedError("'<' not supported.")
+        
+    def __gt__(self,a):
+        from utils import isnumber
+        from numbers import Real
+        if isnumber(self) and isnumber(a): 
+            return self.evalf() > Real(a).evalf()
         else:
             raise NotImplementedError("'<' not supported.")
 
@@ -120,15 +132,20 @@ class Basic(object):
         
         """
         return self
-        
+   
+    def evalf(self):
+        raise ValueError
+ 
     @staticmethod
     def sympify(a):
         """for "a" int, returns Rational(a), for "a" float returns real, 
         otherwise "a" (=it's a Basic subclass)."""
+        import decimal
         from numbers import Rational, Real
-        if isinstance(a,int):
+        
+        if isinstance(a,int) or isinstance(a, long):
             return Rational(a)
-        elif isinstance(a,float):
+        elif isinstance(a,(float, decimal.Decimal)):
             return Real(a)
         else:
             assert isinstance(a,Basic)
