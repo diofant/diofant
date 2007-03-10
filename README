@@ -70,9 +70,10 @@ Now you can call "py.test" from anywhere.
 5. How to generate documentation
 --------------------------------
 
-You must have epydoc installed (http://epydoc.sf.net), if you use Debian, just
-install the "python-epydoc", package. Once you have a working copy of epydoc,
-execute from sympy's directory: 
+You must have epydoc installed (http://epydoc.sf.net), version 3.0. 
+Unfortunately, if you use Debian, there is only 2.1 in the unstable and it
+doesn't work, so you need to download and install it by hand.
+
+Once you have a working copy of epydoc, execute from sympy's directory: 
 
 epydoc --config apidoc.conf
-
