@@ -150,21 +150,23 @@ class Mul(Pair):
     @staticmethod
     def try_to_coerce(x,xbase,xexp,  y):
         """Tries to multiply x=xbase^xexp with y. 
+
+        The correct order is: y * x
         
         If it succeeds, returns (newy, True)
         otherwise (oldy, False)
         where oldy is the original y 
         """
-        z1,ok1 = x.muleval(x,y)
-        z2,ok2 = y.muleval(x,y)
+        z1 = x.muleval(y,x)
+        z2 = y.muleval(y,x)
 
-        if ok1 or ok2:
-            if (ok1 and ok2):
+        if z1 or z2:
+            if (z1 and z2):
                 #sanity check
                 assert z1==z2
-            if ok1:
+            if z1:
                 return z1, True
-            if ok2:
+            if z2:
                 return z2, True
 
 

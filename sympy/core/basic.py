@@ -254,8 +254,14 @@ class Basic(object):
     @staticmethod
     def muleval(x,y):
         """See
-        http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335"""
-        return None, False
+        http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335
+
+        Try to simplify x*y. You can either return a simplified expression
+        or None.
+        
+        
+        """
+        return None
 
     def print_sympy(self):
         """The canonical sympy representation"""
