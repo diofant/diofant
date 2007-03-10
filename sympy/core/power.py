@@ -107,8 +107,9 @@ class Pow(Basic):
                     return -Rational(1)
         if isinstance(self.exp,Rational) and self.exp.isinteger():
             if isinstance(self.base,Mul):
-                if int(self.exp) == 2:
-                    if self.base.args[0] == -1:
+                if int(self.exp) % 2 == 0:
+                    n= self.base.args[0]
+                    if isnumber(n) and n<0:
                         return (-self.base)**self.exp
         return self
         
