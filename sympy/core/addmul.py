@@ -148,7 +148,7 @@ class Mul(Pair):
             return (a,Rational(1))
 
     @staticmethod
-    def try_to_coerce(x,xbase,xexp,  y):
+    def try_to_coerce(x, y):
         """Tries to multiply x=xbase^xexp with y. 
 
         The correct order is: y * x
@@ -172,6 +172,7 @@ class Mul(Pair):
 
         if isinstance(x,Number) and isinstance(y, Number):
             return x*y, True
+        xbase,xexp = Mul.get_baseandexp(x)
         ybase,yexp = Mul.get_baseandexp(y)
         if xbase.isequal(ybase):
             return Pow(xbase,Add(xexp,yexp)), True
@@ -183,10 +184,9 @@ class Mul(Pair):
 
         
         def _mul_c(exp,x):
-            xbase,xexp = self.get_baseandexp(x)
             e = []
             for i,y in enumerate(exp):
-                z,ok = self.try_to_coerce(x,xbase,xexp, y)
+                z,ok = self.try_to_coerce(x, y)
                 if isinstance(z, Number) and i!=0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
                     assert z in [1,-1]
@@ -201,9 +201,8 @@ class Mul(Pair):
 
         def _mul_nc(exp,x):
             if exp == []: return [x]
-            xbase,xexp = self.get_baseandexp(x)
             #try to join only last and the one before last object
-            z,ok = self.try_to_coerce(x,xbase,xexp, exp[-1])
+            z,ok = self.try_to_coerce(x, exp[-1])
             if ok:
                 return exp[:-1]+[z]
             else:

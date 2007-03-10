@@ -28,62 +28,86 @@ class Matrix(NCSymbol):
         self.mat=[]
         for j in range(self.lines):
             assert len(mat[j])==self.cols
-            a=[]
             for i in range(self.cols):
-                x=mat[j][i]
-                if isinstance(x,int):
-                    x=Rational(x)
-                assert isinstance(x,Basic)
-                a.append(x)
-            self.mat.append(a)
+                self.mat.append(self.sympify(mat[j][i]))
+
+    def key2ij(self,key):
+        if not (isinstance(key,(list, tuple)) and len(key) == 2):
+            raise TypeError("wrong syntax: a[%s]. Use a[i,j] or a[(i,j)]"
+                    %repr(key))
+        i,j=key
+        if not (i>=0 and i<self.lines and j>=0 and j < self.cols):
+            raise IndexError("Index out of range: a[%s]"%repr(key))
+        return i,j
+
+    def __getitem__(self,key):
+        i,j=self.key2ij(key)
+        return self.mat[i*self.cols+j]
+
+    def __setitem__(self,key,value):
+        i,j=self.key2ij(key)
+        self.mat[i*self.cols+j] = value
 
     def hash(self):
         if self.mhash: 
             return self.mhash.value
         self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
-        for line in self.mat:
-            for x in line:
-                self.mhash.add(x.hash())
+        self.mhash.addint(self.lines)
+        self.mhash.addint(self.cols)
+        for x in self.mat:
+            self.mhash.add(x.hash())
         return self.mhash.value
 
     @staticmethod
     def muleval(x, y):
-        print "DDDD"
-        if isinstance(x, Matrix) and isinstance(y, Basic) \
-            and not isinstance(y, NCSymbol):
-                mat=[[1,2,1,1],[1,2,1,1],[1,2,1,1],[1,2,1,1]]
-                return Matrix(mat)
+        stop
+        if isinstance(x, Matrix) and not isinstance(y, NCSymbol):
+            r=zeronm(x.lines,x.cols)
+            for i in range(x.lines):
+                for j in range(x.cols):
+                    r[i,j]=x[i,j]*y
+            return r
         return None
 
     def multiply(self,b):
-        """ return self*b """
+        """Returns self*b """
 
-        def dotprod(a,b,j,i):
+        def dotprod(a,b,i,j):
+            assert a.cols == b.lines
             r=0
-            for x in range(4):
-                r+=a[j][x]*b[x][i]
+            for x in range(a.cols):
+                r+=a[i,x]*b[x,j]
             return r
 
-        assert self.cols == b.lines
-        r=[
-                [0,0,0,0],
-                [0,0,0,0],
-                [0,0,0,0],
-                [0,0,0,0]
-            ]
-        for j in range(4):
-            for i in range(4):
-                r[j][i] = dotprod(self.mat,b.mat,j,i)
-        return Matrix(r)
+        r=zeronm(self.lines,b.cols)
+        for i in range(self.lines):
+            for j in range(b.cols):
+                r[i,j] = dotprod(self,b,i,j)
+        return r
 
     def print_sympy(self):
         s="";
-        for j in self.mat:
-            for i in j:
-                s+="%s "%repr(i);
+        for i in range(self.lines):
+            for j in range(self.cols):
+                s+="%s "%repr(self[i,j]);
             s+="\n"
         return s
+
+def zero(n):
+    zeronm(n,m)
+
+def zeronm(n,m):
+    assert n>0
+    assert m>0
+    mat = ( [[0]*m]*n )
+    return Matrix(mat)
+
+def one(n):
+    m = zero(n)
+    for i in range(n):
+        m[i,i]=1
+    return m
 
 class Dirac(Matrix):
 
@@ -222,7 +246,7 @@ def doit(e):
     return Mul([Rational(1)]+e.args[:i])*r
 
 
-one=Pauli(0)
+one2=Pauli(0)
 sigma1=Pauli(1)
 sigma2=Pauli(2)
 sigma3=Pauli(3)
@@ -234,12 +258,36 @@ assert sigma1*sigma2 == I*sigma3
 assert sigma3*sigma1 == I*sigma2
 assert sigma2*sigma3 == I*sigma1
 
-assert sigma1*sigma1 == one
-assert sigma2*sigma2 == one
-assert sigma3*sigma3 == one
+assert sigma1*sigma1 == one2
+assert sigma2*sigma2 == one2
+assert sigma3*sigma3 == one2
 
-assert sigma1*2*sigma1 == 2*one
+assert sigma1*2*sigma1 == 2*one2
 assert sigma1*sigma3*sigma1 == -sigma3
+
+a=Matrix((
+    (1, 2),
+    (3, 1),
+    (0, 6),
+    ))
+
+b = Matrix ((
+    (1, 2),
+    (3, 0),
+    ))
+
+c= a.multiply(b)
+assert c[0,0]==7
+assert c[0,1]==2
+assert c[1,0]==6
+assert c[1,1]==6
+assert c[2,0]==18
+assert c[2,1]==0
+
+c = b * 5
+
+print c
+assert isinstance(c,Matrix)
 
 gamma0=Dirac(0)
 gamma1=Dirac(1)
@@ -247,11 +295,6 @@ gamma2=Dirac(2)
 gamma3=Dirac(3)
 gamma5=Dirac(5)
 
-print gamma0 * gamma1
-print gamma0 * gamma0
-print gamma2 * gamma5
-print gamma5 * gamma2
-
 #print doit(gamma5 * gamma2)
 
-print doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3))
+#print doit(I*Dirac(0)*Dirac(1)*Dirac(2)*Dirac(3))
