@@ -363,6 +363,12 @@ class ConstPi(Constant):
         3.141592653589793238462643383
         
         """
+        _pi_str = '3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068'
+        if precision <= 100:
+            # for small precision 
+            return Real(_pi_str[:precision])
+        #for arbitrary precision, we use series
+        # FIXME: better algorithms are known
         decimal.getcontext().prec = precision + 2  # extra digits for intermediate steps
         three = decimal.Decimal(3)      # substitute "three=3.0" for regular floats
         lasts, t, s, n, na, d, da = 0, three, 3, 1, 0, 0, 24
