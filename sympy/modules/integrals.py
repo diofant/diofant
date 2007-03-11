@@ -59,7 +59,7 @@ class Integral(Basic):
             self.a.diff(sym)*self.f.subs(self.x,self.a))
 
     def __str__(self):
-        if isinstance(self.a, type(None)):
+        if not isinstance(self.a, type(None)):
             # case definite integral
             return "int_{%r}^{%r} (%r) d%r"%(self.a,self.b,self.f,self.x)
         else:
