@@ -46,12 +46,12 @@ class Basic(object):
         """Returns the absolute value of self. 
         
         Example usage: 
-        >>> from sym import *
+        >>> from sympy import *
         >>> abs(1+2*I)
-        5^1/2
+        5^(1/2)
         >>> x = Symbol('x')
         >>> abs(-x)
-        x
+        abs(x)
         """
         from functions import abs_
         return abs_(self)
@@ -104,7 +104,7 @@ class Basic(object):
             return self.evalf() > Real(a).evalf()
         else:
             raise NotImplementedError("'<' not supported.")
-
+        
     @staticmethod
     def _doadd(a,b):
         from addmul import Add
@@ -147,9 +147,16 @@ class Basic(object):
             assert isinstance(a,Basic)
             return a
         
-    def isequal(self,a):
-        return self.hash() == a.hash()
+    def hash(self):
+        if self.mhash: 
+            return self.mhash.value
+        self.mhash = hashing.mhash()
+        self.mhash.addstr(str(type(self)))
         
+    def isequal(self,a):
+        return self.hash() == (self.sympify(a)).hash()
+        
+    @staticmethod
     def cmphash(a,b):
         return _sign(a.hash()-b.hash())
         
@@ -198,6 +205,7 @@ class Basic(object):
             if len(x) > 1:
                 return Mul(x)
             return x[0]
+        
         def extract(t,x):
             """Parses "t(x)", which is expected to be in the form c0*x^e0,
             and returns (c0,e0). It raises an exception, if "t(x)" is not

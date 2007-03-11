@@ -16,6 +16,7 @@ In addition, there are some other commands
 
     python setup.py test  -> will run the complete test suite
     python setup.py test_core -> will run only tests concerning core features
+    python setup.py test_doc -> will run tests on the examples of the documentation
     
 Or, if all else fails, feel free to write to the sympy list at
 sympy@googlegroups.com and ask for help.
@@ -91,8 +92,46 @@ class test_sympy_core(Command):
             sys.exit(-1)
         py.test.cmdline.main(args=self.tests_to_run)
         
-class test_doc(Command):
-    pass
+class test_sympy_doc(Command):
+    
+    description = "Run the tests for the examples in the documentation"
+    user_options = []  # distutils complains if this is not here.
+    
+    def initialize_options(self):  # distutils wants this
+        pass
+    
+    def finalize_options(self):    # this too
+        pass
+    
+    def run(self):
+        import unittest
+        import doctest
+        
+        import os
+        import re
+    
+        files = []
+        for x in os.listdir('sympy/core/'):
+            files += ['sympy.core.' + x]
+        for x in os.listdir('sympy/modules/'):
+            files += ['sympy.modules.'+x]
+        files += ['sympy.__init__.py']
+        test = re.compile('\.py$')
+        files = filter(test.search, files)
+        
+        modules = []
+        for x in files:
+            modules += [x[:-3]]
+    
+        suite = unittest.TestSuite()
+        for mod in modules:
+            try:
+                suite.addTest(doctest.DocTestSuite(mod))
+            except ValueError: #if we don't have tests for the module, it will raise an Exception
+                                # the plan is that in the future all modules have tests and we can remove this except
+                pass
+        runner = unittest.TextTestRunner()
+        runner.run(suite)
 
 
 
@@ -107,6 +146,7 @@ setup(
       ext_modules = [],
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
+                     'test_doc' : test_sympy_doc,
                      },
       )
 

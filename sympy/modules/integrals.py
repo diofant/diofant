@@ -11,17 +11,17 @@ class Integral(Basic):
 
     Usage:
 
-    print Integral(1/t, (t,1,x))
+    print Integral(1/t, (t,1,x)) will print::
     
-        will print: int_{1}^{x} (t^(-1)) dt
+        int_{1}^{x} (t^(-1)) dt
 
-    print Integral(1/t, (t,1,x)).doit()
+    print Integral(1/t, (t,1,x)).doit() will print::
     
-        will print: log(x)
+        log(x)
 
-    print Integral(1/t, (t,1,x)).diff(x)
+    print Integral(1/t, (t,1,x)).diff(x) will print::
     
-        will print: 1/x
+        1/x
 
     
     Currently can only integrate very simple functions, like polynoms.

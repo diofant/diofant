@@ -1,4 +1,5 @@
 """Prettyprinter idea by Jurjen Bos 2007
+
 (I hate spammers: mail me at pietjepuk314 at the reverse of ku.oc.oohay).
 
 Adapted for sympy by Ondrej Certik 2007.
@@ -65,7 +66,8 @@ class StringPict:
 	def right(self, *args):
 		"""Put pictures next to this one.
 		(Multiline) strings are allowed, and are given a baseline of 0.
-		>>> stringPicture("10").right("+",StringPict("1\r-\r2",1))
+		
+		>>> StringPict("10").right("+",StringPict("1\r-\r2",1))
 		   1
 		10+-
 		   2

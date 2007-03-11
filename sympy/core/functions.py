@@ -19,7 +19,7 @@ class Function(Basic):
     def hash(self):
         if self.mhash: 
             return self.mhash.value
-        self.mhash=hashing.mhash()
+        self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
         self.mhash.addint(self.arg.hash())
         return self.mhash.value
@@ -74,6 +74,17 @@ class Function(Basic):
         assert isinstance(self,exp)
         e= (exp(z0)*e).expand().subs(l,log(sym))
         return e.expand()
+    
+    def evalf(self, precision=28):
+        """
+        Evaluate the current function to a real number.
+        
+        @param precision: the precision used in the calculations, 
+        @type precision: C{int}
+        @return: Real number
+        
+        """
+        raise NotImplementedError
 
 class exp(Function):
     """Return e raised to the power of x
@@ -166,11 +177,16 @@ class abs_(Function):
     
     
     def eval(self):
+        from addmul import Mul
+        
         arg = self.arg
         if arg.isnumber():
             return (arg*arg.conjugate()).expand()**Rational(1,2)
-        else:
-            return self
+        elif isinstance(arg, Mul):
+            _t = arg.getab()[0]
+            if _t.isnumber() and _t < 0:
+                return abs(-self.arg)
+        return self
         
     def evalf(self):
         if self.arg.isnumber():
@@ -179,7 +195,7 @@ class abs_(Function):
             raise ValueError
         
     def derivative(self):
-        return sign(x)
+        return sign(self.arg)
     
     def getname(self):
         return "abs"
@@ -200,6 +216,9 @@ class abs_(Function):
     
 def sign(Function):
     
+    def getname(self):
+        return "sign"
+    
     def eval(self):
         if self.arg.isnumber():
             if self.arg < 0:
@@ -208,5 +227,14 @@ def sign(Function):
                 return Rational(0)
             else:
                 return Rational(1)
-
+            
+    def evalf(self, precision=28):
+        if isnumber(self.arg):
+            return self.eval()
+        else:
+            raise ArgumentError
+        
+    def derivative(self):
+        return Rational(0)
+    
 ln = log

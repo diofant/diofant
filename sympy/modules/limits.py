@@ -12,26 +12,30 @@ All functions are sorted according to how rapidly varying they are at infinity
 using the following rules. Any two functions f and g can be compared using the
 properties of L:
 
-L=lim  log|f(x)| / log|g(x)|           (for x -> infty)
+L=lim  log|f(x)| / log|g(x)|           (for x -> infty) 
 
-We define >, < ~ according to:
+We define >, < ~ according to::
+    
+    1. f > g .... L=+-infty 
+    
+        - f is greater than any power of g
+        - f is more rapidly varying than g
+        - f goes to infinity/zero faster than g
+    
+    
+    2. f < g .... L=0 
+    
+        - f is lower than any power of g
+    
+    3. f ~ g .... L!=0,+-infty 
+    
+        - both f and g are bounded from above and below by suitable integral powers
+        of the other
 
-f > g .... L=+-infty 
-    * f is greater than any power of g
-    * f is more rapidly varying than g
-    * f goes to infinity/zero faster than g
 
-
-f < g .... L=0 
-    * f is lower than any power of g
-
-f ~ g .... L!=0,+-infty 
-    * both f and g are bounded from above and below by suitable integral powers
-    of the other
-
-
-Examples: 
-
+Examples
+========
+::
     1 < x < exp(x) < exp(x^2) < exp(exp(x))
     1 ~ 3 ~ -5
     x ~ x^2 ~ x^3 ~ 1/x ~ x^m ~ -x
@@ -50,13 +54,13 @@ say it is {exp(x), exp(2x)}. Using the rule f ~ 1/f we find an element "w"
 (either from the list or a new one) from the same comparability class which
 goes to zero at infinity. In our example we set w=exp(-x) (but we could also
 set w=exp(-2x) or w=exp(-3x) ...). We rewrite the mrv set using w, in our case
-{1/w,1/w^2}, and substitute it into f. Then we expand f into a series in w:
+{1/w,1/w^2}, and substitute it into f. Then we expand f into a series in w::
 
-    f=c0*w^e0 + c1*w^e1 + ... + O(w^en),        where e0<e1<...<en, c0!=0
+    f = c0*w^e0 + c1*w^e1 + ... + O(w^en),        where e0<e1<...<en, c0!=0
 
 but for x->infty, lim f = lim c0*w^e0, because all the other terms go to zero,
-because w goes to zero faster than the ci and ei.
-So, 
+because w goes to zero faster than the ci and ei. So::
+
     for e0>0, lim f = 0
     for e0<0, lim f = +-infty   (the sign depends on the sign of c0)
     for e0=0, lim f = lim c0

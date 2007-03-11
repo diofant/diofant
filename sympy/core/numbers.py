@@ -63,15 +63,14 @@ class Infinity(Number):
 infty=Infinity()
 
 class Real(Number):
-    """Represents a floating point number.
-
-    Currently, it supports python floats only.
+    """Represents a floating point number. It is capable of representing
+    arbitrary-precision floating-point numbers
 
     Usage:
 
     Real(3.5)   .... 3.5 (the 3.5 was converted from a python float)
-    Real("3.5") .... 3.5 (currently, the 3.5 is also a python float,
-            but in the future, we could use some other library)
+    Real("3.0000000000000005")
+    
     """
     
     
@@ -291,21 +290,6 @@ class Rational(Number):
         return Rational(0)
     
 
-class ImaginaryUnit(Basic):
-    """Imaginary unit "i"."""
-
-    def print_sympy(self):
-        return "i"
-
-    def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        return self.mhash.value
-
-I=ImaginaryUnit()
-
 class Constant(Basic):
     """Mathematical constant abstract class."""
     
@@ -331,35 +315,59 @@ class Constant(Basic):
     def __rmod__(self, a):
             raise NotImplementedError
 
+class ImaginaryUnit(Constant):
+    """Imaginary unit "i"."""
+
+    def print_sympy(self):
+        return "i"
+    
+    def evalf(self):
+        """Evaluate to a float. By convention, will return 0, 
+        which means that evalf() of a complex number will mean 
+        the projection of the complex plane to the real line. 
+        For example:
+        >>> (1-2*I).evalf()
+        1.00
+        >>> (-2+1*I).evalf()
+        (-2.0)
+        """
+        return Rational(0)
+
+I = ImaginaryUnit()
+
 class ConstPi(Constant):
     """
     
-    Usage: pi -> Returns the mathematical constant pi 
+    Usage
+    ===== 
+           pi -> Returns the mathematical constant pi 
            pi() -> Returns a numerical aproximation for pi
            
-    Notes:
+    Notes
+    =====
         Can have an option precision (integer) for the number of digits 
         that will be returned. Default is set to 28
        
         pi() is a shortcut for pi.evalf()
     
-    Examples: 
-        In [1]: pi
-        Out[1]: pi
+    Further examples
+    ================
+        >>> pi
+        pi
 
-        In [2]: pi()
-        Out[2]: '3.141592653589793238462643383'
+        >>> pi()
+        3.14159265358979323846264338
 
-        In [3]: pi(precision=200)
-        Out[3]: '3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303820'
+        >>> pi(precision=200)
+        3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303820
 
     """
     
     def evalf(self, precision=28):
         """Compute Pi to the current precision.
 
-        >>> print pi.eval()
-        3.141592653589793238462643383
+        >>> print pi.evalf()
+        3.14159265358979323846264338
         
         """
         _pi_str = '3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068'

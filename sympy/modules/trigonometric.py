@@ -5,24 +5,30 @@ import decimal
 class sin(Function):
     """
     Usage
-        sin(x) -> Returns the sine of x (measured in radians)
+    =====
+      sin(x) -> Returns the sine of x (measured in radians)
         
     Notes
+    =====
         sin(x) will evaluate automatically in the case x is a 
         multiple of pi.
     
     Further examples
+    ================
+        >>> from sympy import *
+        >>> x = Symbol('x')
         >>> sin(x**2).diff(x)
         2*cos(x^2)*x
-        
         >>> sin(1).diff(x)
         0
         >>> sin(pi)
         0
         
-    See also: 
-       cos, tan
-       Definitions in trigonometry: http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html
+    See also
+    ========
+       L{cos}, L{tan}
+
+       U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
     
     def getname(self):

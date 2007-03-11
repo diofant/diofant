@@ -5,12 +5,12 @@ Computer algebra system (CAS) in python
 
 http://code.google.com/p/sympy/
 
+Author: Ondrej Certik <ondrej@certik.cz>
 
-Ondrej Certik <ondrej@certik.cz>
+Developers: Fabian Seoane <fabian@fseoane.net>
 
 License: GNU General Public License 2.0
 covers all the files in the sympy repository.
-
 
 
 0. Download
@@ -28,11 +28,13 @@ Examples are at:
 
 http://code.google.com/p/sympy/wiki/Examples
 
-Other documentation is in sym/__init__.py and in a form of comments in the
-source code, plus some information is at
-http://code.google.com/p/sympy/.
+Other documentation and examples are avaiable in the generated 
+api reference, which can be viewed at 
+http://sympy.googlecode.com/svn/api/index.html and via python's 
+help command 
 
-See also the "todo" file for things which are still missing.
+See also the "TODO" file for things which are still missing.
+
 
 2. Usage
 --------
@@ -44,6 +46,7 @@ From this directory, start python and:
 >>> print e.series(x,10)
 1+1/2*x^2+5/24*x^4+61/720*x^6+277/8064*x^8+50521/3628800*x^10
 
+
 3. Tests
 --------
 
@@ -52,6 +55,7 @@ to execute tests, run
 py.test
 
 in the current directory.  You may need to install py.test.
+
 
 4. How to install py.test
 -------------------------
@@ -66,6 +70,7 @@ This will create a "py-dist" directory in you home dir. Add this line to
 eval `python ~/py-dist/py/env.py`
 
 Now you can call "py.test" from anywhere.
+
 
 5. How to generate documentation
 --------------------------------

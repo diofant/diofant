@@ -1,13 +1,14 @@
-"""This module provides hashing.
+"""
+This module provides hashing.
 
 usage:
-    h=mhash()
-    h.addint(15)
-    h.addstr("hey man!")
-    h.addfloat(45.3)
-
-    print h.value
-
+    >>> h = mhash()
+    >>> h.addint(15)
+    >>> h.addstr("hey man!")
+    >>> h.addfloat(45.3)
+    >>> print h.value
+    1550928569
+    
 mhash.value contains the hash value which is generally a long int, that
 depends on the order of objects added. 
 """

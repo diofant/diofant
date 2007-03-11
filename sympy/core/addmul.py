@@ -5,7 +5,7 @@ from power import Pow,pole_error
 from prettyprint import StringPict
 
 class Pair(Basic):
-    """Contains common code to add and mul classes.
+    """Abstract class containing common code to add and mul classes.
     Should not be used directly
     """
 

@@ -10,13 +10,13 @@ import inspect, sys
 def getinfo(func):
     """
     Returns an info dictionary containing:
-    - name (the name of the function : str)
-    - argnames (the names of the arguments : list)
-    - defaults (the values of the default arguments : tuple)
-    - signature (the signature : str)
-    - doc (the docstring : str)
-    - module (the module name : str)
-    - dict (the function __dict__ : str)
+        - name (the name of the function : str)
+        - argnames (the names of the arguments : list)
+        - defaults (the values of the default arguments : tuple)
+        - signature (the signature : str)
+        - doc (the docstring : str)
+        - module (the module name : str)
+        - dict (the function __dict__ : str)
     
     >>> def f(self, x=1, y=2, *args, **kw): pass
 

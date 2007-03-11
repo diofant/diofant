@@ -8,9 +8,9 @@ dummycount=0
 class Symbol(Basic):
 
     def __init__(self,name,dummy=False):
-        """if dummy==True, then this Symbol is totally unique, i.e.:
+        """if dummy==True, then this Symbol is totally unique, i.e.::
             Symbol("x")==Symbol("x")
-        but:
+        but::
             Symbol("x",True)!=Symbol("x",True)
 
         """
