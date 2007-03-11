@@ -53,3 +53,5 @@ G{packagetree sympy}
 
 from core import *
 from modules import *
+
+__version__ = "0.2"

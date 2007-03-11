@@ -9,30 +9,25 @@ class Integral(Basic):
 
     Integral(f, (x,a,b) represents \int_a^b f(x) dx
 
-    Usage:
+    Usage
+    =====
 
-    print Integral(1/t, (t,1,x))
+    print Integral(1/t, (t,1,x))  will print::
     
-        will print: int_{1}^{x} (t^(-1)) dt
+         int_{1}^{x} (t^(-1)) dt
 
-    print Integral(1/t, (t,1,x)).doit()
+    print Integral(1/t, (t,1,x)).doit() will print::
     
-        will print: log(x)
+        log(x)
 
-    print Integral(1/t, (t,1,x)).diff(x)
+    print Integral(1/t, (t,1,x)).diff(x) will print: 
     
-        will print: 1/x
+        1/x
 
-    
     Currently can only integrate very simple functions, like polynoms.
     You can however implement as many formulas as you want at the end
     of the primitive_function() function.
 
-    The general algorithm for calculating integrals is described here:
-
-    http://sympy.googlecode.com/svn/trunk/doc/issac98.pdf
-
-    Someone just needs to implement it. :)
     """
 
     def __init__(self, f, args):
@@ -99,6 +94,61 @@ class Integral(Basic):
         raise IntegralError("Don't know how to do this integral. :(")
     
 def integrate(f, *args, **kargs):
+    """
+    Usage
+    =====
+    
+      Indefinite integrals
+      --------------------
+    
+      integrate(f, x) -> Returns the indefinite integral S{int} f(x) dx
+      
+      integrate(f, x, y) -> Return the indefinite double integral 
+      S{int} S{int} f(x, y) dy dx 
+      
+      integrate(f, x, y, z, ...) -> Return the indefinite multiple integral
+      (arbitrary number of variables) S{int} S{int} ... S{int} f(x, y, z, ...) dx ... dy dz
+    
+      
+      Definite Integrals
+      ------------------
+    
+      integrate(f, (x, a, b)) -> Returns the definite integral with integration 
+      limits a, b
+      
+      integrate(f, (x, a, b), (y, c, d)) -> Returns the definite double integral
+      
+      
+    Notes
+    =====
+    
+      Currently only very simple integrals are computed.The general algorithm 
+      for calculating integrals is described U{here<http://sympy.googlecode.com/svn/trunk/doc/issac98.pdf>}
+      Someone just needs to implement it. :)
+      
+      Has an optional parameter evaluate, which can have value True or False. 
+      If set to False, the integral will not be evaluated. Default is set to True.
+      
+      >>> integrate(x , (x,1,2), evaluate=False)
+      int_{1}^{2} (x) dx
+      
+   
+    Further examples
+    ================
+      >>> integrate(2*x*y, (x,0,1), (y,-1,2))
+      3/2
+      >>> integrate(y, y)
+      1/2*y^2
+      >>> integrate(y*x, y)
+      1/2*y^2*x
+      >>> integrate(y*x, x, y)
+      1/4*x^2*y^2
+      >>> integrate(x*y**2 , (x,1,2), y)
+      1/2*y^3
+      >>> integrate(x , (x,1,2), evaluate=False)
+      int_{1}^{2} (x) dx
+      
+    """
 
     def _integrate_one_var(f, args, kargs):
         """Integrate over one variable"""
