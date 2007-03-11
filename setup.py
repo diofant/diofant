@@ -12,11 +12,15 @@ how to customize the install procedure read the output of:
 
     python setup.py --help install
 
-In addition, there are some other commands
+In addition, there are some other commands:
 
     python setup.py test  -> will run the complete test suite
     python setup.py test_core -> will run only tests concerning core features
     python setup.py test_doc -> will run tests on the examples of the documentation
+    
+To get a full list of avaiable commands, read the output of: 
+
+    python setup.py --help-commands
     
 Or, if all else fails, feel free to write to the sympy list at
 sympy@googlegroups.com and ask for help.
