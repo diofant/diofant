@@ -137,12 +137,11 @@ class test_sympy_doc(Command):
         runner = unittest.TextTestRunner()
         runner.run(suite)
 
-
-
+import sympy
 
 setup(
       name = 'Sympy', 
-      version = '1.0-pre', 
+      version = sympy.__version__, 
       description = 'Computer algebra system (CAS) in Python', 
       url = 'http://code.google.com/p/sympy', 
       packages = ['sympy', 'sympy.core', 'sympy.modules'],
