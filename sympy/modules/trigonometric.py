@@ -27,8 +27,11 @@ class sin(Function):
     See also
     ========
        L{cos}, L{tan}
-
-       U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
+       
+       External links
+       --------------
+         
+         U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
     
     def getname(self):

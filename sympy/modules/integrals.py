@@ -148,6 +148,14 @@ def integrate(f, *args, **kargs):
       >>> integrate(x , (x,1,2), evaluate=False)
       int_{1}^{2} (x) dx
       
+    See also
+    ========
+    
+      - L{limit<sympy.modules.limits.limit>}
+       
+      - External links
+        - U{Riemman integral<http://planetmath.org/encyclopedia/RiemannIntegral.html>}
+      
     """
 
     def _integrate_one_var(f, args, kargs):
