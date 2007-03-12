@@ -67,16 +67,3 @@ def test_print_tree():
     e=(2*x-(7*x**2 - 2) + 3*y)
     e.print_tree()
 
-def test_ispoly():
-    x = Symbol("x")
-    y = Symbol("y")
-    assert not ( x.sqrt() ).ispoly(x)
-    assert ( Rational(2) ).ispoly(x)
-    assert ( x ).ispoly(x)
-    assert ( x**2 ).ispoly(x)
-    assert ( x**2 + 3*x - 8 ).ispoly(x)
-    assert ( x**2 + 3*x*y.sqrt() - 8 ).ispoly(x)
-    assert not ( x**2 + 3*x*y.sqrt() - 8 ).ispoly(y)
-
-    #assert Rational(1).ispoly(sin(x))
-    #assert not exp(x).ispoly(sin(x))

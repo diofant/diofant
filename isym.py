@@ -54,7 +54,7 @@ def run_ipython_interpreter():
 	z = Symbol('z')
 
 	# Now start an embedded ipython.
-	ipshell(welcome_msg)
+	ipshell(welcome_msg_ipython)
 	sys.exit("Exiting ...")
 
 def run_python_interpreter():
