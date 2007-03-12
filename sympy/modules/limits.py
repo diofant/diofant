@@ -85,6 +85,7 @@ which is the most difficult part of the algorithm.
 
 import sympy as s
 from sympy import Basic, mhash
+from sympy.core.prettyprint import StringPict
 
 from decorator import decorator
 
@@ -381,6 +382,11 @@ class Limit(Basic):
         self.mhash.addint(self.x.hash())
         self.mhash.addint(self.x0.hash())
         return self.mhash.value
+
+    def print_pretty(self):
+         e, x, t = [a.print_pretty() for a in (self.e,self.x,self.x0)]
+         return StringPict('lim').below(StringPict.next(x, '->', t)) \
+                 .right(' ', e)
 
 def limit(e,z,z0):
     """Currently only limit z->z0+"""
