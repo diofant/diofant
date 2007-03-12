@@ -68,7 +68,8 @@ def test_Dirac():
     gamma3=gamma(3)
     gamma5=gamma(5)
 
-    assert I * gamma0 * gamma1 * gamma2 * gamma3 == gamma5
+    assert gamma5 == I * gamma0 * gamma1 * gamma2 * gamma3
     assert gamma1 * gamma2 + gamma2 * gamma1 == zero(4)
     assert gamma0 * gamma0 == one(4) * minkowski_tensor[0,0]
+    assert gamma2 * gamma2 != one(4) * minkowski_tensor[0,0]
     assert gamma2 * gamma2 == one(4) * minkowski_tensor[2,2]
