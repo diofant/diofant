@@ -266,3 +266,10 @@ def gamma(mu,lower=False):
         g[3,3] = -1
         m = g * m
     return m
+
+minkowski_tensor = Matrix( (
+    (1,0,0,0),
+    (0,-1,0,0),
+    (0,0,-1,0),
+    (0,0,0,-1)
+    ))

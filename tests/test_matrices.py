@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import sigma, gamma, one, I, Matrix, Symbol
+from sympy import sigma, gamma, zero, one, I, Matrix, Symbol, minkowski_tensor
 
 def test_multiplication():
     a=Matrix((
@@ -69,4 +69,6 @@ def test_Dirac():
     gamma5=gamma(5)
 
     assert I * gamma0 * gamma1 * gamma2 * gamma3 == gamma5
-    #assert gamma1 * gamma2 + gamma2 * gamma1 == 0
+    assert gamma1 * gamma2 + gamma2 * gamma1 == zero(4)
+    assert gamma0 * gamma0 == one(4) * minkowski_tensor[0,0]
+    assert gamma2 * gamma2 == one(4) * minkowski_tensor[2,2]
