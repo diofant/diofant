@@ -327,8 +327,16 @@ class Basic(object):
         from power import Pow
         from numbers import Rational, Number
         from addmul import Add,Mul
+        from symbol import Symbol
+        #if not isinstance(x, Symbol):
+        #    d=Symbol("d",dummy=True)
+        #    e=self.subs(x,d)
+        #    if e.has(x):
+        #        return False
+        #    print e,x
+        #    return e.ispoly(d)
         if not self.has(x):
-            print 'yoooo'
+            #print 'yoooo'
             return True
         if isinstance(self,Number):
             return True

@@ -97,6 +97,13 @@ class Matrix(object):
                 r[i,j]=self[i,j].expand()
         return r
 
+    def subs(self,a,b):
+        r=zeronm(self.lines,self.cols)
+        for i in range(self.lines):
+            for j in range(self.cols):
+                r[i,j]=self[i,j].subs(a,b)
+        return r
+
     def __sub__(self,a):
         return self + (-a)
 
@@ -113,7 +120,7 @@ class Matrix(object):
         return self.addeval(self,a)
 
     def __div__(self,a):
-        return self * (1/a)
+        return self * (Rational(1)/a)
 
     @staticmethod
     def addeval(x, y):
@@ -512,7 +519,10 @@ print e.expand()
 
 print
 f=pslash(p)+m
-e= f[0,0]
 
+print f.subs(a, (E**2-m**2-b**2-c**2).sqrt())
 
-print e.subs(a, (E**2-m**2-b**2-c**2).sqrt())
+print "-"*20
+print e.expand().subs(E, (m**2+a**2+b**2+c**2).sqrt())
+print f.subs(a, (E**2-m**2-b**2-c**2).sqrt()).subs(E,
+        (m**2+a**2+b**2+c**2).sqrt())

@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, Rational
+from sympy import Symbol, Rational, sin, exp
 
 def dotest(s):
     x = g.Symbol("x")
@@ -77,3 +77,6 @@ def test_ispoly():
     assert ( x**2 + 3*x - 8 ).ispoly(x)
     assert ( x**2 + 3*x*y.sqrt() - 8 ).ispoly(x)
     assert not ( x**2 + 3*x*y.sqrt() - 8 ).ispoly(y)
+
+    #assert Rational(1).ispoly(sin(x))
+    #assert not exp(x).ispoly(sin(x))
