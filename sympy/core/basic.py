@@ -319,6 +319,28 @@ class Basic(object):
         """The canonical tree representation"""
         return str(self)
 
+    def ispoly(self,x):
+        from power import Pow
+        from numbers import Rational, Number
+        from addmul import Add,Mul
+        if not self.has(x):
+            return True
+        if isinstance(self,Number):
+            return True
+        if self==x:
+            return True
+        if isinstance(self,Pow):
+            if isinstance(self.exp, Rational) and self.exp.isinteger():
+                if int(self.exp)>0 and self.base.ispoly(x):
+                    return True
+        if isinstance(self,Add):
+            a,b = self.getab()
+            return a.ispoly(x) and b.ispoly(x)
+        if isinstance(self,Mul):
+            a,b = self.getab()
+            return a.ispoly(x) and b.ispoly(x)
+        return False
+
 def _isnumber(x):
     #don't use this function. Use x.isnumber() instead
     from numbers import Number
