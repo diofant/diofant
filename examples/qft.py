@@ -407,7 +407,7 @@ def sigma(i):
         raise "Invalid Pauli index"
     return Matrix(mat)
 
-def gamma(mu):
+def gamma(mu,lower=False):
     if not mu in [0,1,2,3,5]:
         raise "Invalid Dirac index"
     if mu == 0:
@@ -445,7 +445,14 @@ def gamma(mu):
                 (1,0,0,0),
                 (0,1,0,0)
                 )
-    return Matrix(mat)
+    m= Matrix(mat)
+    if lower:
+        g= one(4) 
+        g[1,1] = -1
+        g[2,2] = -1
+        g[3,3] = -1
+        m = g * m
+    return m
 
 gamma0=gamma(0)
 gamma1=gamma(1)
@@ -511,18 +518,45 @@ p = (a,b,c)
 assert u(p, 1).D * u(p, 2) == 0
 assert u(p, 2).D * u(p, 1) == 0
 
-e= v(p, 2).D * v(p, 2)
-print e.expand().subs(a, (E**2-m**2-b**2-c**2).sqrt()).expand()
-print
-e= u(p, 1) * u(p, 1).D+u(p, 2) * u(p, 2).D
-print e.expand()
+#e= v(p, 2).D * v(p, 2)
+#print e.expand().subs(a, (E**2-m**2-b**2-c**2).sqrt()).expand()
+#print
+#e= u(p, 1) * u(p, 1).D+u(p, 2) * u(p, 2).D
+#print e.expand()
 
-print
-f=pslash(p)+m
+#print
+#f=pslash(p)+m
 
-print f.subs(a, (E**2-m**2-b**2-c**2).sqrt())
+#print f.subs(a, (E**2-m**2-b**2-c**2).sqrt())
 
-print "-"*20
-print e.expand().subs(E, (m**2+a**2+b**2+c**2).sqrt())
-print f.subs(a, (E**2-m**2-b**2-c**2).sqrt()).subs(E,
-        (m**2+a**2+b**2+c**2).sqrt())
+#print "-"*20
+#print e.expand().subs(E, (m**2+a**2+b**2+c**2).sqrt())
+#print f.subs(a, (E**2-m**2-b**2-c**2).sqrt()).subs(E,
+#        (m**2+a**2+b**2+c**2).sqrt())
+
+p1,p2,p3 =[Symbol(x) for x in ["p1","p2","p3"]]
+pp1,pp2,pp3 =[Symbol(x) for x in ["pp1","pp2","pp3"]]
+k1,k2,k3 =[Symbol(x) for x in ["k1","k2","k3"]]
+kp1,kp2,kp3 =[Symbol(x) for x in ["kp1","kp2","kp3"]]
+
+p = (p1,p2,p3)
+pp = (pp1,pp2,pp3)
+
+k = (k1,k2,k3)
+kp = (kp1,kp2,kp3)
+
+mu = Symbol("mu")
+
+M0 = [ ( v(pp, 1).D * gamma(mu) * u(p, 1) ) * ( u(k, 1).D * gamma(mu,True) * \
+        v(kp, 1) ) for mu in range(4)]
+M = M0[0]+M0[1]+M0[2]+M0[3]
+assert isinstance(M, Basic)
+
+d=Symbol("d",True) #d=E+m
+
+print M
+print "-"*40
+M = ((M.subs(E,d-m)).expand() * d**2 ).expand()
+print "1/(E+m)**2 * ",M
+#assert not M.has(d)
+print (M * M.conjugate()).expand()
