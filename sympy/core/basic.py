@@ -46,12 +46,12 @@ class Basic(object):
         """Returns the absolute value of self. 
         
         Example usage: 
-        >>> from sympy import *
-        >>> abs(1+2*I)
-        5^(1/2)
-        >>> x = Symbol('x')
-        >>> abs(-x)
-        abs(x)
+          >>> from sympy import *
+          >>> abs(1+2*I)
+          5^(1/2)
+          >>> x = Symbol('x')
+          >>> abs(-x)
+          abs(x)
         """
         from functions import abs_
         return abs_(self)
@@ -328,6 +328,7 @@ class Basic(object):
         from numbers import Rational, Number
         from addmul import Add,Mul
         if not self.has(x):
+            print 'yoooo'
             return True
         if isinstance(self,Number):
             return True
