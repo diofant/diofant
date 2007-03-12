@@ -171,6 +171,8 @@ class log(Function):
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
         return e
+
+ln = log
     
 class abs_(Function):
     """Return the absolute value of x"""
@@ -214,7 +216,7 @@ class abs_(Function):
                 return False
         raise ArgumentError("Wrong function arguments")
     
-def sign(Function):
+class sign(Function):
     
     def getname(self):
         return "sign"
@@ -237,4 +239,22 @@ def sign(Function):
     def derivative(self):
         return Rational(0)
     
-ln = log
+
+class Derivative(Basic):
+
+    def __init__(self,f,x):
+        Basic.__init__(self)
+        self.f=self.sympify(f)
+        self.x=self.sympify(x)
+
+    def doit(self):
+        return self.f.diff(self.x)
+
+    def hash(self):
+        if self.mhash: 
+            return self.mhash.value
+        self.mhash = hashing.mhash()
+        self.mhash.addstr(str(type(self)))
+        self.mhash.addint(self.f.hash())
+        self.mhash.addint(self.x.hash())
+        return self.mhash.value

@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import sympy as g
 import sympy as s
-from sympy import Symbol, log
+from sympy import Symbol, log, Derivative
 
 def testfunc():
     a=g.Symbol("a")
@@ -87,3 +87,9 @@ def test_bug1():
 
     e=(-5*log(w)).sqrt()
     assert e.subs(log(w),-x)==(5*x).sqrt()
+
+def test_Derivative():
+    x=Symbol("x")
+    e=Derivative(log(x),x)
+    assert e!=1/x
+    assert e.doit()==1/x
