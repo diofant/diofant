@@ -135,3 +135,17 @@ class tan(Function):
         return sin(self.arg) / cos(self.arg)
 
     
+class arctan(Function):
+    """Return the tangent of x (measured in radians)
+    """
+    
+    def getname(self):
+        return "arctan"
+        
+    def derivative(self):
+        return Rational(1) / (1+(self.arg)**2)
+        
+    def eval(self):
+        if self.arg == 0:
+            return Rational(0)
+        return self

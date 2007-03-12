@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import sympy as g
 import sympy as s
-from sympy import Symbol, log, Derivative
+from sympy import Symbol, log, Derivative, arctan
 
 def testfunc():
     a=g.Symbol("a")
@@ -93,3 +93,8 @@ def test_Derivative():
     e=Derivative(log(x),x)
     assert e!=1/x
     assert e.doit()==1/x
+
+def test_invtrig():
+    x=Symbol("x")
+    assert arctan(0) == 0
+    assert arctan(x).diff(x) == 1/(1+x**2)
