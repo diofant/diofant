@@ -66,6 +66,10 @@ class Basic(object):
         return self._doadd(a, -self)
         
     def __mul__(self,a):
+        try:
+            a=self.sympify(a)
+        except:
+            return a.__rmul__(self)
         return self._domul(self, a)
         
     def __rmul__(self,a):

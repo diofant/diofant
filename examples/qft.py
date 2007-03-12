@@ -19,17 +19,16 @@ def epsilon(i,j,k):
     else:
         return 0
 
-class Matrix(NCSymbol):
+class Matrix(object):
 
     def __init__(self,mat):
-        Basic.__init__(self)
         self.lines=len(mat)
         self.cols=len(mat[0])
         self.mat=[]
         for j in range(self.lines):
             assert len(mat[j])==self.cols
             for i in range(self.cols):
-                self.mat.append(self.sympify(mat[j][i]))
+                self.mat.append(Basic.sympify(mat[j][i]))
 
     def key2ij(self,key):
         if not (isinstance(key,(list, tuple)) and len(key) == 2):
@@ -83,17 +82,38 @@ class Matrix(NCSymbol):
             self.mhash.add(x.hash())
         return self.mhash.value
 
-    @staticmethod
-    def muleval(x, y):
-        if isinstance(y, Matrix) and not isinstance(x, NCSymbol):
-            r=zeronm(y.lines,y.cols)
-            for i in range(y.lines):
-                for j in range(y.cols):
-                    r[i,j]=y[i,j]*x
-            return r
-        if isinstance(x, Matrix) and isinstance(y, Matrix):
-            return x.multiply(y)
-        return None
+    def __rmul__(self,a):
+        assert not isinstance(a,Matrix)
+        r=zeronm(self.lines,self.cols)
+        for i in range(self.lines):
+            for j in range(self.cols):
+                r[i,j]=a*self[i,j]
+        return r
+
+    def expand(self):
+        r=zeronm(self.lines,self.cols)
+        for i in range(self.lines):
+            for j in range(self.cols):
+                r[i,j]=self[i,j].expand()
+        return r
+
+    def __sub__(self,a):
+        return self + (-a)
+
+    def __mul__(self,a):
+        if isinstance(a,Matrix):
+            return self.multiply(a)
+        r=zeronm(self.lines,self.cols)
+        for i in range(self.lines):
+            for j in range(self.cols):
+                r[i,j]=self[i,j]*a
+        return r
+
+    def __add__(self,a):
+        return self.addeval(self,a)
+
+    def __div__(self,a):
+        return self * (1/a)
 
     @staticmethod
     def addeval(x, y):
@@ -109,7 +129,7 @@ class Matrix(NCSymbol):
                     else:
                         r[i,j]=x[i,j]
             return r
-        return None
+        raise "unimplemented"
 
     def multiply(self,b):
         """Returns self*b """
@@ -139,6 +159,17 @@ class Matrix(NCSymbol):
             for j in range(self.cols):
                 r[i,j] = self[i,j]+b[i,j]
         return r
+
+    def __neg__(self):
+        return -1*self
+
+    def __eq__(self,a):
+        if not isinstance(a, (Matrix, Basic)):
+            a = Basic.sympify(a)
+        return self.hash() == a.hash()
+
+    def __str__(self):
+        return self.print_sympy()
 
     def print_sympy(self):
         s="";
@@ -288,17 +319,6 @@ class Pauli(Matrix):
         if self.i == 0:
             return "one"
         return "sigma%d"%self.i
-
-def doit(e):
-    assert isinstance(e, Mul)
-    i=0
-    while not isinstance(e.args[i],Matrix):
-        i+=1
-    r=Dirac.one()
-    for x in e.args[i:]:
-        r = r.multiply(x)
-    return Mul([Rational(1)]*2+e.args[:i])*r
-
 
 #one2=Pauli(0)
 #sigma1=Pauli(1)
@@ -488,7 +508,7 @@ e= v(p, 2).D * v(p, 2)
 print e.expand().subs(a, (E**2-m**2-b**2-c**2).sqrt()).expand()
 print
 e= u(p, 1) * u(p, 1).D+u(p, 2) * u(p, 2).D
-print e.expand().print_pretty()
+print e.expand()
 
 print
 f=pslash(p)+m
