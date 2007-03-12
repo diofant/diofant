@@ -13,6 +13,6 @@ G{packagetree sympy.modules}
 """
 
 from sympy.modules.trigonometric import sin,cos,tan
-from sympy.modules.limits import limit, limitinf
+from sympy.modules.limits import limit, limitinf, Limit
 from sympy.modules.integrals import Integral, IntegralError, integrate
 

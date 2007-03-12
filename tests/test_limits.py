@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as s
+from sympy import Limit,log
 
 def testsets():
     from sympy.modules.limits import member,intersect,union
@@ -181,3 +182,12 @@ def test_others():
     assert s.limitinf((3**x+5**x)**(1/x),x)==5
     #this is a similar limit
     assert s.limitinf((5**x-3**x)**(1/x),x)==5
+
+def test_Limit():
+    x=s.Symbol("x")
+    e=Limit(x*log(x),x,0)
+    assert e!=0
+    assert e.doit()==0
+    e2=Limit(x*log(x*x),x,0)
+    assert e!=e2
+    assert e.doit()==e2.doit()

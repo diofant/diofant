@@ -84,6 +84,7 @@ which is the most difficult part of the algorithm.
 """
 
 import sympy as s
+from sympy import Basic, mhash
 
 from decorator import decorator
 
@@ -359,3 +360,30 @@ def compare(a,b,x):
     if c==s.Rational(0): return "<"
     elif c==s.infty: return ">"
     else: return "="
+
+class Limit(Basic):
+
+    def __init__(self,e,x,x0):
+        Basic.__init__(self)
+        self.e=self.sympify(e)
+        self.x=self.sympify(x)
+        self.x0=self.sympify(x0)
+
+    def doit(self):
+        return limit(self.e,self.x,self.x0)
+
+    def hash(self):
+        if self.mhash: 
+            return self.mhash.value
+        self.mhash = mhash()
+        self.mhash.addstr(str(type(self)))
+        self.mhash.addint(self.e.hash())
+        self.mhash.addint(self.x.hash())
+        self.mhash.addint(self.x0.hash())
+        return self.mhash.value
+
+def limit(e,z,z0):
+    """Currently only limit z->z0+"""
+    x=s.Symbol("x",True)
+    e0=e.subs(z,z0+1/x)
+    return limitinf(e0,x)
