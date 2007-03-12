@@ -18,10 +18,24 @@ Modules already imported: sympy
 Symbols defined: x, y, z
 """
 
+welcome_msg_ipython = """
+Python console for sympy.
+
+Modules already imported: sympy
+Symbols defined: x, y, z
+
+?       -> Introduction to IPython's features.
+%magic  -> Information about IPython's 'magic' % functions.
+help    -> Python's own help system.
+object? -> Details about 'object'. ?object also works, ?? prints more.
+"""
+
 import sys
 try:
-	from sympy import *
-
+    import sympy
+    from sympy import *
+    # leave both so that the user can do help(sympy) and the like
+    
 except ImportError:
     print "Could not find sympy\n...exiting"
     sys.exit()

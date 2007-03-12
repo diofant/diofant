@@ -129,12 +129,11 @@ def integrate(f, *args, **kargs):
       Has an optional parameter evaluate, which can have value True or False. 
       If set to False, the integral will not be evaluated. Default is set to True.
       
-      >>> integrate(x , (x,1,2), evaluate=False)
-      int_{1}^{2} (x) dx
-      
    
     Further examples
     ================
+      >>> from sympy import Symbol
+      >>> x, y = Symbol('x'), Symbol('y')
       >>> integrate(2*x*y, (x,0,1), (y,-1,2))
       3/2
       >>> integrate(y, y)
