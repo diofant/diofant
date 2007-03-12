@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Rational
+from sympy import Rational, Symbol
 
 def testRational():
     n1=g.Rational(1,4)
@@ -93,10 +93,21 @@ def test_complex():
     assert (a+g.I*b).conjugate() ==  a-g.I*b
 
     assert str(abs(a))=="abs(a)"
-#    assert abs(a) == a
-#    assert abs(-a) == a
-#    assert abs(-a) != -a
-#    assert abs(a+g.I*b) == (a*a+b*b).sqrt()
+
+def test_abs1():
+    a=Symbol("a", real=True)
+    b=Symbol("b", real=True)
+    assert abs(a) == a
+    assert abs(-a) == a
+    assert abs(-a) != -a
+    assert abs(a+g.I*b) == (a*a+b*b).sqrt()
+
+def test_abs2():
+    a=Symbol("a", real=False)
+    b=Symbol("b", real=False)
+    assert abs(a) != a
+    assert abs(-a) != a
+    assert abs(a+g.I*b) != (a*a+b*b).sqrt()
 
 def test_int():
     a=Rational(5)

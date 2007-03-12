@@ -7,16 +7,19 @@ dummycount=0
 
 class Symbol(Basic):
 
-    def __init__(self,name,dummy=False):
+    def __init__(self,name,dummy=False, real=False):
         """if dummy==True, then this Symbol is totally unique, i.e.::
             Symbol("x")==Symbol("x")
         but::
             Symbol("x",True)!=Symbol("x",True)
 
+            real ... does the symbol represent a real or complex number?
+
         """
         Basic.__init__(self)
         self.name=name
         self.dummy=dummy
+        self.real = real
         if dummy:
             global dummycount
             dummycount+=1

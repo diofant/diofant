@@ -179,15 +179,25 @@ class abs_(Function):
     
     
     def eval(self):
-        from addmul import Mul
+        from addmul import Mul,Add
+        from symbol import Symbol
+        from numbers import I
         
         arg = self.arg
-        if arg.isnumber():
+        if arg.isnumber() or (isinstance(arg, Symbol) and arg.real):
             return (arg*arg.conjugate()).expand()**Rational(1,2)
         elif isinstance(arg, Mul):
             _t = arg.getab()[0]
             if _t.isnumber() and _t < 0:
                 return abs(-self.arg)
+        elif isinstance(arg, Add):
+            b,a = arg.getab()
+            if isinstance(a, Symbol) and a.real:
+                if isinstance(b, Mul):
+                    a,b=b.getab()
+                    if a == I:
+                        if isinstance(b, Symbol) and b.real:
+                            return (arg*arg.conjugate()).expand()**Rational(1,2)
         return self
         
     def evalf(self):
@@ -205,7 +215,7 @@ class abs_(Function):
     def series(self):
         pass
     
-    def __eq__(self, a):
+    def x__eq__(self, a):
         #FIXME: currently this does not work
         # here we are checking for function equality, like in
         # abs(x) == abs(-x)
