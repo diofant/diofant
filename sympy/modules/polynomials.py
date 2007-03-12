@@ -7,7 +7,7 @@ def ispoly(p,x):
     #if not isinstance(x, Symbol):
     #    d=Symbol("d",dummy=True)
     #    e=p.subs(x,d)
-    #    if e.has(x):
+    #    if e.has(x): #this "x" is the variable in sin(x), for example
     #        return False
     #    print e,x
     #    return e.ispoly(d)
