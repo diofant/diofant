@@ -59,7 +59,7 @@ def tex2png(eq,pygame):
     # compile LaTeX document. A DVI file is created
     cwd = os.getcwd()
     os.chdir("/tmp")
-    pexpect.run('pdftex -fmt=csplain %s' % texfn)
+    pexpect.run('tex %s' % texfn)
 
     # Run dvipng on the generated DVI file. Use tight bounding box. 
     # Magnification is set to 1200
