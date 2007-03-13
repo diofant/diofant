@@ -1,3 +1,6 @@
+#install TeX and these Debian packages: python-pygame, python-pexpect, dvipng
+#
+
 def print_pygame(st):
     try:
         import pygame
@@ -16,6 +19,11 @@ def print_pygame(st):
     screen.blit(text, textpos)
     pygame.display.flip()
 
+    image = tex2png(st,pygame)
+    imagepos = image.get_rect(centerx=screen.get_width()/2).move((0,30))
+    screen.blit(image, imagepos)
+    pygame.display.flip()
+
     while 1:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -25,5 +33,46 @@ def print_pygame(st):
             elif event.type == KEYDOWN and event.key == K_q:
                 return
 
-        #screen.blit(text, textpos)
-        #pygame.display.flip()
+def tex2png(eq,pygame):
+    #http://www.fauskes.net/nb/htmleqII/
+    import os, sys
+
+    import pexpect
+
+    # Include your favourite plain TeX packages and commands here
+    tex_preamble = r"""\nopagenumbers
+"""
+
+    texfn = '/tmp/x.tex'
+
+    # create a LaTeX document and insert equations
+    f = open(texfn,'w')
+    f.write(tex_preamble)
+    f.write(r"""$$%s$$
+\vfill
+\eject
+""" % eq)
+    # end LaTeX document    
+    f.write(r'\bye')
+    f.close()
+
+    # compile LaTeX document. A DVI file is created
+    cwd = os.getcwd()
+    os.chdir("/tmp")
+    pexpect.run('pdftex -fmt=csplain %s' % texfn)
+
+    # Run dvipng on the generated DVI file. Use tight bounding box. 
+    # Magnification is set to 1200
+    cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
+    + "-o x.png /tmp/x.dvi" 
+    pexpect.run(cmd) 
+    image = pygame.image.load("/tmp/x.png")
+
+    #remove temporary files
+    os.remove("/tmp/x.tex")
+    os.remove("/tmp/x.dvi")
+    os.remove("/tmp/x.log")
+    os.remove("/tmp/x.png")
+    os.chdir(cwd)
+
+    return image

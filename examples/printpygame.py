@@ -1,5 +1,6 @@
 import sys
 sys.path.append("..")
+sys.path.append(".")
 
 from sympy import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
 from sympy.core import basic
@@ -25,4 +26,5 @@ p()
 basic.outputType="pygame"
 print "_"*70
 print "pretty print:"
-p()
+#p()
+print x**x
