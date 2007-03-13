@@ -212,6 +212,14 @@ class Rational(Number):
             f = "%d/%d"
             return f % (self.p,self.q)
 
+    def print_tex(self):
+        if self.q == 1:
+            f = "%d"
+            return f % (self.p)
+        else:
+            f = "{%d \over %d}"
+            return f % (self.p,self.q)
+
     def print_pretty(self):
         if self.q == 1:
             return StringPict(self.print_sympy())

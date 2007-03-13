@@ -42,6 +42,10 @@ class Function(Basic):
         f = "%s(%s)"
         return f%(self.getname(),self.arg.print_sympy())
 
+    def print_tex(self):
+        f = "%s(%s)"
+        return f%(self.getname_tex(),self.arg.print_tex())
+
     def print_pretty(self):
         from symbol import Symbol
         result = self.arg.print_pretty()
@@ -49,6 +53,9 @@ class Function(Basic):
             return result.left(self.getname(), ' ')
         else:
             return result.parens().left(self.getname())
+
+    def getname_tex(self):
+        return r"{\rm %s}"%self.getname()
     
     def series(self, sym, n):
         from power import pole_error

@@ -7,7 +7,7 @@ dummycount=0
 
 class Symbol(Basic):
 
-    def __init__(self,name,dummy=False, real=False):
+    def __init__(self,name,dummy=False, real=False, nametex=None):
         """if dummy==True, then this Symbol is totally unique, i.e.::
             Symbol("x")==Symbol("x")
         but::
@@ -18,6 +18,10 @@ class Symbol(Basic):
         """
         Basic.__init__(self)
         self.name=name
+        if nametex:
+            self.name_tex = nametex
+        else:
+            self.name_tex = name
         self.dummy=dummy
         self.real = real
         if dummy:
@@ -27,6 +31,9 @@ class Symbol(Basic):
 
     def print_sympy(self):
         return str(self.name)
+
+    def print_tex(self):
+        return str(self.name_tex)
 
     def print_pretty(self):
 		return StringPict(self.print_sympy())

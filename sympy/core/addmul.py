@@ -122,6 +122,24 @@ class Mul(Pair):
         f = f[:-1]
         return f % tuple([x.print_sympy() for x in a])
 
+    def print_tex(self):
+        f = ""
+        a = self.args
+        if isinstance(a[0],Rational):
+            if a[0].isminusone():
+                f = "-"
+                a = self.args[1:]
+            elif a[0].isone():
+                f = ""
+                a = self.args[1:]
+        for x in a:
+            if isinstance(x,Pair):
+                f += "(%s)"
+            else:
+                f += "%s "
+        f = f[:-1]
+        return f % tuple([x.print_tex() for x in a])
+
     def print_pretty(self):
         result = []
         for arg in self.args:
@@ -345,6 +363,16 @@ class Add(Pair):
               f += "%s" % self.args[i].print_sympy()
             else:
               f += "+%s" % self.args[i].print_sympy()
+        return f    
+
+    def print_tex(self):
+        f = "%s" % self.args[0].print_tex()
+        for i in range(1,len(self.args)):
+            num_part = _extract_numeric(self.args[i])[0]
+            if num_part < 0:
+              f += "%s" % self.args[i].print_tex()
+            else:
+              f += "+%s" % self.args[i].print_tex()
         return f    
     
     def print_pretty(self):

@@ -23,8 +23,8 @@ def p():
 
 print "sympy print:"
 p()
+#basic.outputType="tex"
 basic.outputType="pygame"
 print "_"*70
 print "pretty print:"
-#p()
-print x**x
+p()

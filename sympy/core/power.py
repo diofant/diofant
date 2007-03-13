@@ -41,6 +41,23 @@ class Pow(Basic):
             f += "%s"
         return f % (self.base.print_sympy(),self.exp.print_sympy())
 
+    def print_tex(self):
+        from addmul import Pair
+        f = ""
+        if isinstance(self.base,Pair) or isinstance(self.base,Pow):
+            f += "{(%s)}"
+        else:
+            f += "{%s}"
+        f += "^"
+        if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
+            or (isinstance(self.exp,Rational) and \
+            (not self.exp.isinteger() or (self.exp.isinteger() and \
+            int(self.exp) < 0)) ):
+            f += "{(%s)}"
+        else:
+            f += "{%s}"
+        return f % (self.base.print_tex(),self.exp.print_tex())
+
     def print_pretty(self):
         a, b = self.base, self.exp
         apretty = a.print_pretty()

@@ -9,7 +9,7 @@ class AutomaticEvaluationType(type):
         if evaluate: return obj.eval()
         else: return obj
 
-outputType="sympy" #sympy, pretty, pygame
+outputType="sympy" #sympy, pretty, pygame, tex
 
 class Basic(object):
     
@@ -26,6 +26,8 @@ class Basic(object):
             return self.print_sympy()
         elif outputType == "pretty":
             return str(self.print_pretty())
+        elif outputType == "tex":
+            return self.print_tex()
         elif outputType == "pygame":
             return self.print_pygame()
         else:
@@ -324,9 +326,14 @@ class Basic(object):
     def print_pygame(self):
         """The pygame printing"""
         from printpygame import print_pygame
-        s=self.print_sympy()
+        s=self.print_tex()
         print_pygame(s)
         return s
+
+    def print_tex(self):
+        """The TeX printing"""
+        raise NotImplementedError("TeX printing not implemented for %s"
+                %self.__class__.__name__)
         
     def print_tree(self):
         """The canonical tree representation"""
