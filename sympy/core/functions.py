@@ -40,7 +40,7 @@ class Function(Basic):
         
     def print_sympy(self):
         f = "%s(%s)"
-        return f%(self.getname(),str(self.arg))
+        return f%(self.getname(),self.arg.print_sympy())
 
     def print_pretty(self):
         from symbol import Symbol

@@ -120,7 +120,7 @@ class Mul(Pair):
             else:
                 f += "%s*"
         f = f[:-1]
-        return f % tuple([str(x) for x in a])
+        return f % tuple([x.print_sympy() for x in a])
 
     def print_pretty(self):
         result = []
@@ -338,13 +338,13 @@ class Add(Pair):
     def print_sympy(self):
         """Returns a string representation of the expression in self."""
         
-        f = "%s" % self.args[0]
+        f = "%s" % self.args[0].print_sympy()
         for i in range(1,len(self.args)):
             num_part = _extract_numeric(self.args[i])[0]
             if num_part < 0:
-              f += "%s" % self.args[i]
+              f += "%s" % self.args[i].print_sympy()
             else:
-              f += "+%s" % self.args[i]
+              f += "+%s" % self.args[i].print_sympy()
         return f    
     
     def print_pretty(self):

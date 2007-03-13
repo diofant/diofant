@@ -39,7 +39,7 @@ class Pow(Basic):
             f += "(%s)"
         else:
             f += "%s"
-        return f % (self.base,self.exp)
+        return f % (self.base.print_sympy(),self.exp.print_sympy())
 
     def print_pretty(self):
         a, b = self.base, self.exp

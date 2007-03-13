@@ -9,7 +9,7 @@ class AutomaticEvaluationType(type):
         if evaluate: return obj.eval()
         else: return obj
 
-outputType="sympy" #sympy, pretty
+outputType="sympy" #sympy, pretty, pygame
 
 class Basic(object):
     
@@ -26,6 +26,8 @@ class Basic(object):
             return self.print_sympy()
         elif outputType == "pretty":
             return str(self.print_pretty())
+        elif outputType == "pygame":
+            return self.print_pygame()
         else:
             raise NotImplementedError("Unknown outputType=%s"%outputType)
     
@@ -318,6 +320,13 @@ class Basic(object):
         """The pretty printing"""
         raise NotImplementedError("Pretty printing not implemented for %s"
                 %self.__class__.__name__)
+
+    def print_pygame(self):
+        """The pygame printing"""
+        from printpygame import print_pygame
+        s=self.print_sympy()
+        print_pygame(s)
+        return s
         
     def print_tree(self):
         """The canonical tree representation"""
