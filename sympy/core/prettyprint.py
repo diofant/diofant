@@ -67,7 +67,7 @@ class StringPict:
 		"""Put pictures next to this one.
 		(Multiline) strings are allowed, and are given a baseline of 0.
 		
-		>>> StringPict("10").right("+",StringPict("1\r-\r2",1))
+		>>> print StringPict("10").right("+",StringPict("1\r-\r2",1))
 		   1
 		10+-
 		   2
@@ -120,10 +120,11 @@ class StringPict:
 	def below(self, *args):
 		"""Put pictures under this picture.
 		Baseline is baseline of top picture
-		>>> StringPict("x+3").below(StringPict.LINE, '3')
+		>>> print StringPict("x+3").below(StringPict.LINE, '3')
 		x+3
-		---
-		 3
+    	---
+     	 3 
+
 		"""
 		result = StringPict.stack(self, *args)
 		result.baseline = self.baseline
