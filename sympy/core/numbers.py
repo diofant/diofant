@@ -199,9 +199,8 @@ class Rational(Number):
         
     def gcd(self,a,b):
         """Primitive algorithm for a greatest common divisor of "a" and "b"."""
-        while b!=0:
-            c = a % b
-            a,b=b,c
+        while b:
+            a, b = b, a % b
         return a
         
     def print_sympy(self):
