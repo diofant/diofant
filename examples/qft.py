@@ -559,4 +559,6 @@ print "-"*40
 M = ((M.subs(E,d-m)).expand() * d**2 ).expand()
 print "1/(E+m)**2 * ",M
 #assert not M.has(d)
-print (M * M.conjugate()).expand()
+x= (M * M.conjugate())
+print x
+print x.expand()
