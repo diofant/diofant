@@ -20,9 +20,7 @@ its capabilities include:
     - integration (currently it can do only very simple integrals)
     - taylor series
     - basic substitution (like x-> ln(x))
-    - arbitrary precision integers and
-    - rationals
-    - standard (python) floats
+    - arbitrary precision integers, rationals and floats
     - complex numbers (currently only simple things)
     - limits
 
