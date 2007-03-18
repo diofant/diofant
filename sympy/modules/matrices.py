@@ -154,26 +154,10 @@ class Matrix(object):
         return r
 
     def __add__(self,a):
-        return self.addeval(self,a)
+        return self.add(a)
 
     def __div__(self,a):
         return self * (Rational(1)/a)
-
-    @staticmethod
-    def addeval(x, y):
-        if isinstance(x, Matrix) and isinstance(y, Matrix):
-            return x.add(y)
-        if isinstance(x, Matrix) and not isinstance(y, NCSymbol):
-            assert x.lines == x.cols
-            r=zeronm(x.lines,x.cols)
-            for i in range(x.lines):
-                for j in range(x.cols):
-                    if i==j:
-                        r[i,j]=x[i,j]+y
-                    else:
-                        r[i,j]=x[i,j]
-            return r
-        raise "unimplemented"
 
     def multiply(self,b):
         """Returns self*b """
@@ -242,6 +226,9 @@ def one(n):
     return m
 
 def sigma(i):
+    """Returns a Pauli matrix sigma_i. i=1,2,3 
+
+    """
     if i==1:
         mat=( (
             (0, 1),
@@ -262,6 +249,14 @@ def sigma(i):
     return Matrix(mat)
 
 def gamma(mu,lower=False):
+    """Returns a Dirac gamma matrix gamma^mu in the standard 
+    (Dirac) representation.
+
+    If you want gamma_mu, use gamma(mu, True).
+    
+    We use a convention:
+
+    gamma^5 = I * gamma^0 * gamma^1 * gamma^2 * gamma^3 """
     if not mu in [0,1,2,3,5]:
         raise "Invalid Dirac index"
     if mu == 0:
@@ -300,12 +295,9 @@ def gamma(mu,lower=False):
                 (0,1,0,0)
                 )
     m= Matrix(mat)
-    if lower:
-        g= one(4) 
-        g[1,1] = -1
-        g[2,2] = -1
-        g[3,3] = -1
-        m = g * m
+    if lower: 
+        if mu in [1,2,3,5]:
+            m = - m
     return m
 
 minkowski_tensor = Matrix( (
