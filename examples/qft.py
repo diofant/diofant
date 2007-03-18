@@ -3,7 +3,7 @@ sys.path.append(".")
 sys.path.append("..")
 
 from sympy import Basic,exp,Symbol,sin,Rational,I,Mul,NCSymbol, Matrix, \
-    gamma, sigma
+    gamma, sigma, one
 
 def delta(i,j):
     if i==j:
@@ -122,6 +122,13 @@ def pslash(p):
     p0 = (m**2+p1**2+p2**2+p3**2).sqrt()
     return gamma0*p0-gamma1*p1-gamma2*p2-gamma3*p3
 
+def Tr(M):
+    assert M.lines == M.cols
+    t = 0
+    for i in range(M.lines):
+        t+=M[i,i]
+    return t
+
 p = (a,b,c)
 
 assert u(p, 1).D * u(p, 2) == 0
@@ -140,19 +147,25 @@ kp = (kp1,kp2,kp3)
 
 mu = Symbol("mu")
 
-M0 = [ ( v(pp, 1).D * gamma(mu) * u(p, 1) ) * ( u(k, 1).D * gamma(mu,True) * \
-        v(kp, 1) ) for mu in range(4)]
-M = M0[0]+M0[1]+M0[2]+M0[3]
-assert isinstance(M, Basic)
+#e = (pslash(p)+m*one(4))*(pslash(k)-m*one(4))
+#f = pslash(p)+m*one(4)
+#g = pslash(p)-m*one(4)
+#print Tr(f*g)
+print Tr(pslash(p) * pslash(k)).expand()
 
-d=Symbol("d",True) #d=E+m
+#M0 = [ ( v(pp, 1).D * gamma(mu) * u(p, 1) ) * ( u(k, 1).D * gamma(mu,True) * \
+#        v(kp, 1) ) for mu in range(4)]
+#M = M0[0]+M0[1]+M0[2]+M0[3]
+#assert isinstance(M, Basic)
 
-print M
-print "-"*40
-M = ((M.subs(E,d-m)).expand() * d**2 ).expand()
-print "1/(E+m)**2 * ",M
-print "-"*40
-x,y= get_re_im(M)
-print x,y
-e = x**2+y**2
-print e
+#d=Symbol("d",True) #d=E+m
+
+#print M
+#print "-"*40
+#M = ((M.subs(E,d-m)).expand() * d**2 ).expand()
+#print "1/(E+m)**2 * ",M
+#print "-"*40
+#x,y= get_re_im(M)
+#print x,y
+#e = x**2+y**2
+#print e

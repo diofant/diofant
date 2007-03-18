@@ -82,33 +82,6 @@ def test_realbug():
 def test_acceptint():
     g.Real(4)
 
-def test_complex():
-    a=g.Symbol("a")
-    b=g.Symbol("b")
-    e=(a+g.I*b)*(a-g.I*b)
-    assert e.expand() == a**2+b**2
-    assert e.expand() != a**2-b**2
-
-    assert (a+g.I*b).conjugate() !=  a+g.I*b
-    assert (a+g.I*b).conjugate() ==  a-g.I*b
-
-    assert str(abs(a))=="abs(a)"
-
-def test_abs1():
-    a=Symbol("a", real=True)
-    b=Symbol("b", real=True)
-    assert abs(a) == a
-    assert abs(-a) == a
-    assert abs(-a) != -a
-    assert abs(a+g.I*b) == (a*a+b*b).sqrt()
-
-def test_abs2():
-    a=Symbol("a", real=False)
-    b=Symbol("b", real=False)
-    assert abs(a) != a
-    assert abs(-a) != a
-    assert abs(a+g.I*b) != (a*a+b*b).sqrt()
-
 def test_int():
     a=Rational(5)
     assert int(a)==5
