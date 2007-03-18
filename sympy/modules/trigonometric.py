@@ -1,5 +1,5 @@
-from sympy.core.functions import Function
-from sympy.core.numbers import Real, Rational, pi
+from sympy.core.functions import Function, exp
+from sympy.core.numbers import Real, Rational, pi, I
 import decimal
 
 class sin(Function):
@@ -74,6 +74,12 @@ class sin(Function):
             s += num / fact * sign 
         decimal.getcontext().prec = precision - 2        
         return +s
+
+    def evalc(self):
+        x, y = self.arg.get_re_im()
+        sinh = (exp(y)-exp(-y))/2
+        cosh = (exp(y)+exp(-y))/2
+        return sin(x)*cosh + I*cos(x)*sinh
     
 class cos(Function):
     """Return the cosine of x (measured in radians)
@@ -120,6 +126,12 @@ class cos(Function):
             s += num / fact * sign 
         decimal.getcontext().prec = precision - 2        
         return +s
+
+    def evalc(self):
+        x, y = self.arg.get_re_im()
+        sinh = (exp(y)-exp(-y))/2
+        cosh = (exp(y)+exp(-y))/2
+        return cos(x)*cosh - I*sin(x)*sinh
 
 class tan(Function):
     """Return the tangent of x (measured in radians)
