@@ -34,6 +34,9 @@ class Number(Basic):
     
     def evalf(self):
         return self
+
+    def evalc(self):
+        return self
     
 class Infinity(Number):
     """Infinity. Cannot be used in expressions like 1+infty.  

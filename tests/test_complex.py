@@ -33,6 +33,8 @@ def test_abs2():
 def test_evalc():
     x=Symbol("x", real=True)
     y=Symbol("y", real=True)
+    assert ((x+I*y)**2).evalc() == x**2+2*I*x*y - y**2
+
     assert exp(I*x) != cos(x)+I*sin(x)
     assert exp(I*x).evalc() == cos(x)+I*sin(x)
 

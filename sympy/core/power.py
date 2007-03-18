@@ -197,6 +197,15 @@ class Pow(Basic):
                         n -= 1
                     return a.expand()
         return self
+
+    def evalc(self):
+        e=self.expand()
+        if e!=self:
+            return e.evalc()
+        if isinstance(e.base, Symbol):
+            #this is wrong for nonreal exponent
+            return self
+        raise NotImplementedError
         
     def subs(self,old,new):
         if self == old:
