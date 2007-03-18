@@ -27,6 +27,7 @@ class Matrix(object):
                 self.mat.append(Basic.sympify(mat[j][i]))
 
     def key2ij(self,key):
+        """Converts key=(4,6) to 4,6 and ensures the key is correct."""
         if not (isinstance(key,(list, tuple)) and len(key) == 2):
             raise TypeError("wrong syntax: a[%s]. Use a[i,j] or a[(i,j)]"
                     %repr(key))
@@ -36,6 +37,20 @@ class Matrix(object):
         return i,j
 
     def __getattr__(self,name):
+        """
+        >>> from sympy import *
+        >>> m=Matrix(((1,2+I),(3,4)))
+        >>> m  #doctest: +NORMALIZE_WHITESPACE
+        1 2+i
+        3 4
+        >>> m.T #doctest: +NORMALIZE_WHITESPACE
+        1 3
+        2+i 4
+        >>> m.H #doctest: +NORMALIZE_WHITESPACE
+        1 3
+        2-i 4
+
+        """
         if name == "T":
             #transposition
             r=zeronm(self.cols,self.lines)
@@ -60,14 +75,40 @@ class Matrix(object):
                 (self.__class__.__name__, name))
 
     def __getitem__(self,key):
+        """
+        >>> from sympy import *
+        >>> m=Matrix(((1,2+I),(3,4)))
+        >>> m  #doctest: +NORMALIZE_WHITESPACE
+        1 2+i
+        3 4
+        >>> m[1,0]
+        3
+        >>> m.H[1,0]
+        2-i
+
+        """
         i,j=self.key2ij(key)
         return self.mat[i*self.cols+j]
 
     def __setitem__(self,key,value):
+        """
+        >>> from sympy import *
+        >>> m=Matrix(((1,2+I),(3,4)))
+        >>> m  #doctest: +NORMALIZE_WHITESPACE
+        1 2+i
+        3 4
+        >>> m[1,0]=9 
+        >>> m  #doctest: +NORMALIZE_WHITESPACE
+        1 2+i
+        9 4
+
+        """
         i,j=self.key2ij(key)
         self.mat[i*self.cols+j] = Basic.sympify(value)
 
     def hash(self):
+        """Compute a hash every time, because the matrix elements
+        could change."""
         #if self.mhash: 
         #    return self.mhash.value
         self.mhash = hashing.mhash()
