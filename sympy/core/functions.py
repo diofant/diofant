@@ -113,6 +113,14 @@ class exp(Function):
         if isinstance(arg,log):
             return arg.arg
         return self
+
+    def evalc(self):
+        from numbers import I
+        from addmul import Mul
+        #we will need to move sin,cos to core
+        from sympy.modules import cos,sin
+        x,y = self.arg.get_re_im()
+        return exp(x)*cos(y)+I*exp(x)*sin(y)
     
     def evalf(self, precision=28):
         if not self.arg.isnumber():

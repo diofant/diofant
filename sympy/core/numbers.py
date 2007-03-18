@@ -340,6 +340,9 @@ class ImaginaryUnit(Constant):
         """
         return Rational(0)
 
+    def evalc(self):
+        return self
+
 I = ImaginaryUnit()
 
 class ConstPi(Constant):

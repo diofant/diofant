@@ -54,6 +54,11 @@ class Symbol(Basic):
         else:
             return Rational(0)
 
+    def evalc(self):
+        if self.real:
+            return self
+        raise NotImplementedError
+
 class NCSymbol(Symbol):
 
     def commutative(self):

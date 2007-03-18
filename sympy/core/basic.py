@@ -139,6 +139,22 @@ class Basic(object):
    
     def evalf(self):
         raise ValueError
+
+    def evalc(self):
+        """Rewrites self in the form x+i*y.
+
+        It should raise an exceptin, if this is not possible.
+        
+        """
+        raise NotImplementedError
+
+    def get_re_im(self):
+        """Returns (x,y) where self=x+i*y""" 
+        from numbers import I
+        e=self.evalc()
+        x = e.subs(I,0)
+        y = (e+(-x).expand()).subs(I,1)
+        return x,y
  
     @staticmethod
     def sympify(a):

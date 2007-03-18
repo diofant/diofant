@@ -272,6 +272,10 @@ class Mul(Pair):
             return Real(a)*Real(b)
         else: 
             raise ValueError("Cannot evaluate a symbolic value")
+
+    def evalc(self):
+        a, b = self.getab()
+        return (a.evalc() * b.evalc()).expand()
             
     def getab(self):
         """Pretend that self=a*b and return a,b
@@ -465,6 +469,10 @@ class Add(Pair):
             return a.evalf() + b.evalf()
         else:
             raise ValueError('Can not evaluate a symbolic value')
+
+    def evalc(self):
+        a, b = self.getab()
+        return (a.evalc() + b.evalc()).expand()
     
     def diff(self,sym):
         d = Rational(0)
