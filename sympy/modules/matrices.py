@@ -1,20 +1,6 @@
 from sympy.core import Basic,exp,Symbol,Rational,I,Mul,NCSymbol
 from sympy.core import hashing
 
-def delta(i,j):
-    if i==j:
-        return 1
-    else:
-        return 0
-
-def epsilon(i,j,k):
-    if (i,j,k) in [(1,2,3), (2,3,1), (3,1,2)]:
-        return 1
-    elif (i,j,k) in [(1,3,2), (3,2,1), (2,1,3)]:
-        return -1
-    else:
-        return 0
-
 class Matrix(object):
 
     def __init__(self,mat):
@@ -109,8 +95,6 @@ class Matrix(object):
     def hash(self):
         """Compute a hash every time, because the matrix elements
         could change."""
-        #if self.mhash: 
-        #    return self.mhash.value
         self.mhash = hashing.mhash()
         self.mhash.addstr(str(type(self)))
         self.mhash.addint(self.lines)
@@ -228,6 +212,10 @@ def one(n):
 def sigma(i):
     """Returns a Pauli matrix sigma_i. i=1,2,3 
 
+    See also:
+
+    http://en.wikipedia.org/wiki/Pauli_matrices
+
     """
     if i==1:
         mat=( (
@@ -256,7 +244,14 @@ def gamma(mu,lower=False):
     
     We use a convention:
 
-    gamma^5 = I * gamma^0 * gamma^1 * gamma^2 * gamma^3 """
+    gamma^5 = I * gamma^0 * gamma^1 * gamma^2 * gamma^3 
+    gamma_5 = I * gamma_0 * gamma_1 * gamma_2 * gamma_3 = - gamma^5
+
+    See also:
+
+    http://en.wikipedia.org/wiki/Gamma_matrices
+
+    """
     if not mu in [0,1,2,3,5]:
         raise "Invalid Dirac index"
     if mu == 0:
@@ -300,6 +295,8 @@ def gamma(mu,lower=False):
             m = - m
     return m
 
+#Minkowski tensor using the convention (+,-,-,-) used in the Quantum Field
+#Theory
 minkowski_tensor = Matrix( (
     (1,0,0,0),
     (0,-1,0,0),
