@@ -1,44 +1,9 @@
 import sys
+sys.path.append(".")
 sys.path.append("..")
 
-from sympy import Basic,exp,Symbol,sin,Rational
-
-class Matrix(Basic):
-    def __init__(self,mat):
-        self.lines=len(mat)
-        self.cols=len(mat[0])
-        self.mat=[]
-        for j in range(self.lines):
-            assert len(mat[j])==self.cols
-            a=[]
-            for i in range(self.cols):
-                x=mat[j][i]
-                if isinstance(x,int):
-                    x=Rational(x)
-                assert isinstance(x,Basic)
-                a.append(x)
-            self.mat.append(a)
-    def inv(self):
-        m=[]
-        for j in range(self.lines):
-            a=[]
-            for i in range(self.cols):
-                x=self.mat[j][i]
-                if i==j: 
-                    x=1/x
-                else:
-                    #test that the matrix is diagonal
-                    assert x==0
-                a.append(x)
-            m.append(a)
-        return Matrix(m)
-    def __str__(self):
-        s="";
-        for j in self.mat:
-            for i in j:
-                s+="%18s "%repr(i);
-            s+="\n"
-        return s
+from sympy import Basic,exp,Symbol,sin,Rational, Matrix, Function, \
+    Derivative
 
 def grad(f,X):
     a=[]
@@ -47,25 +12,68 @@ def grad(f,X):
     return a
 
 def d(m,x):
-    return grad(m[0][0],x)
+    return grad(m[0,0],x)
+
+class MT(object):
+    def __init__(self,m):
+        self.gdd=m
+        self.guu=m.inv()
+
+    def __str__(self):
+        return "g_dd =\n" + str(self.gdd)
+
+    def dd(self,i,j):
+        return self.gdd[i,j]
+
+    def uu(self,i,j):
+        return self.guu[i,j]
+
+class G(object):
+    def __init__(self,g,x):
+        self.g = g
+        self.x = x
+
+    def udd(self,i,k,l):
+        g=self.g
+        x=self.x
+        r=0
+        for m in [0,1,2,3]:
+            r+=g.uu(i,m)/2 * (g.dd(m,k).diff(x[l])+g.dd(m,l).diff(x[k]) \
+                    - g.dd(k,l).diff(x[m]))
+        return r
+
+class nu(Function):
+    def getname(self):
+        return "nu"
+
+class lam(Function):
+    def getname(self):
+        return "lambda"
 
 t=Symbol("t")
 r=Symbol("r")
 theta=Symbol("theta")
 phi=Symbol("phi")
-gdd=Matrix(( (-exp(2*r),0,0,0), 
-        (0, exp(2*r), 0, 0),
+
+gdd=Matrix(( (-exp(nu(r)),0,0,0), 
+        (0, exp(lam(r)), 0, 0),
         (0, 0, r**2, 0),
         (0, 0, 0, r**2*sin(theta)**2)))
+g=MT(gdd)
 X=(t,r,theta,phi)
-guu=gdd.inv()
-gddd=d(gdd.mat,X)
-print X
-print gdd
-print guu
-print gddd
+Gamma=G(g,X)
 
-sys.exit()
+print g
+print Gamma.udd(0,1,0)
+print Gamma.udd(0,0,1)
+
+print Gamma.udd(1,0,0)
+print Gamma.udd(1,1,1)
+print Gamma.udd(1,2,2)
+print Gamma.udd(1,3,3)
+print
+print nu(r).diff(r)
+print nu(r).diff(t)
 
 """
 #this is the input to eigenmath:

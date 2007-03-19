@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import sympy as g
 import sympy as s
-from sympy import Symbol, log, Derivative, arctan
+from sympy import Symbol, log, Derivative, arctan, Function
 
 def testfunc():
     a=g.Symbol("a")
@@ -98,3 +98,17 @@ def test_invtrig():
     x=Symbol("x")
     assert arctan(0) == 0
     assert arctan(x).diff(x) == 1/(1+x**2)
+
+def test_general_function():
+    class nu(Function):
+        def getname(self):
+            return "nu"
+
+    x=Symbol("x")
+    y=Symbol("y")
+    e=nu(x)
+    edx=e.diff(x)
+    edy=e.diff(y)
+    assert e==nu(x)
+    assert edx!=nu(x)
+    assert edy==0

@@ -186,6 +186,21 @@ class Matrix(object):
     def __repr__(self):
         return str(self)
 
+    def inv(self):
+        assert self.cols==self.lines
+        m=zero(self.cols)
+        for i in range(self.lines):
+            for j in range(self.cols):
+                x=self[i,j]
+                if i==j: 
+                    x=1/x
+                else:
+                    if x!=0:
+                        raise NotImplementedError("Matrix inversion is \
+                            currently only implemented for diagonal matrices")
+                m[i,j] = x
+        return m
+
     def print_sympy(self):
         s="";
         for i in range(self.lines):

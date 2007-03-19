@@ -28,7 +28,7 @@ class Function(Basic):
         return (self.derivative()*self.arg.diff(sym))
     
     def derivative(self):
-        raise NotImplementedError
+        return Derivative(self,self.arg)
     
     def subs(self, old, new):
         e = Basic.subs(self,old,new)
@@ -91,6 +91,8 @@ class Function(Basic):
         @return: Real number
         
         """
+        if not self.arg.isnumber():
+            raise ValueError 
         raise NotImplementedError
 
 class exp(Function):
@@ -284,3 +286,9 @@ class Derivative(Basic):
         self.mhash.addint(self.f.hash())
         self.mhash.addint(self.x.hash())
         return self.mhash.value
+
+    def print_sympy(self):
+        if isinstance(self.f,Function):
+            return "%s'(%r)"%(self.f.getname(),self.f.arg)
+        else:
+            return "(%r)'"%self.f
