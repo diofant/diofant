@@ -2,8 +2,10 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 
-from sympy import Basic,exp,Symbol,sin,Rational, Matrix, Function, \
-    Derivative
+from sympy import exp, Symbol, sin, Rational, Derivative
+
+from sympy.core import Basic, Function
+from sympy.modules.matrices import Matrix
 
 def grad(f,X):
     a=[]

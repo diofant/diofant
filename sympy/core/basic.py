@@ -79,7 +79,8 @@ class Basic(object):
         if self._assumptions.has_key(name):
             return self._assumptions[name]
         else:
-            raise AttributeError("Attribute not found in this class")
+            raise AttributeError("'%s' object has no attribute '%s'"%
+                (self.__class__.__name__, name))
         
     def __repr__(self):
         return str(self)

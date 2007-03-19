@@ -270,6 +270,15 @@ class Derivative(Basic):
     def doit(self):
         return self.f.diff(self.x)
 
+    def diff(self,x):
+        return Derivative(self,x)
+
+    def __str__(self):
+        if isinstance(self.f,Function):
+            return "%s'(%r)"%(self.f.getname(),self.f.arg)
+        else:
+            return "(%r)'"%self.f
+
     def hash(self):
         if self.mhash: 
             return self.mhash.value
