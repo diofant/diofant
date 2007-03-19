@@ -287,6 +287,9 @@ class Derivative(Basic):
         self.mhash.addint(self.x.hash())
         return self.mhash.value
 
+    def diff(self,x):
+        return Derivative(self,x)
+
     def print_sympy(self):
         if isinstance(self.f,Function):
             return "%s'(%r)"%(self.f.getname(),self.f.arg)

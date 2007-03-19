@@ -42,6 +42,33 @@ class G(object):
                     - g.dd(k,l).diff(x[m]))
         return r
 
+class Riemann(object):
+    def __init__(self,G,x):
+        self.G = G
+        self.x = x
+
+    def uddd(self,rho,sigma,mu,nu):
+        G=self.G
+        x=self.x
+        r=G.udd(rho,nu,sigma).diff(x[mu])-G.udd(rho,mu,sigma).diff(x[nu])
+        for lam in [0,1,2,3]:
+            r+=G.udd(sigma,mu,lam)*G.udd(lam,nu,sigma) \
+                -G.udd(sigma,nu,lam)*G.udd(lam,mu,sigma)
+        return r
+
+class Ricci(object):
+    def __init__(self,R,x):
+        self.R = R
+        self.x = x
+
+    def dd(self,mu,nu):
+        R=self.R
+        x=self.x
+        r=0
+        for lam in [0,1,2,3]:
+            r+=R.uddd(lam,mu,lam,nu)
+        return r
+
 class nu(Function):
     def getname(self):
         return "nu"
@@ -55,25 +82,50 @@ r=Symbol("r")
 theta=Symbol("theta")
 phi=Symbol("phi")
 
-gdd=Matrix(( (-exp(nu(r)),0,0,0), 
-        (0, exp(lam(r)), 0, 0),
-        (0, 0, r**2, 0),
-        (0, 0, 0, r**2*sin(theta)**2)))
+gdd=Matrix(( 
+    (-exp(nu(r)),0,0,0), 
+    (0, exp(lam(r)), 0, 0),
+    (0, 0, r**2, 0),
+    (0, 0, 0, r**2*sin(theta)**2)
+    ))
+#gdd=Matrix(( 
+#    (1, 0, 0, 0), 
+#    (0, 1, 0, 0),
+#    (0, 0, r**2, 0),
+#    (0, 0, 0, r**2*sin(theta)**2)
+#    ))
+#gdd=Matrix(( 
+#    (1, 0, 0, 0), 
+#    (0, 1, 0, 0),
+#    (0, 0, 1, 0),
+#    (0, 0, 0, r**2)
+#    ))
 g=MT(gdd)
 X=(t,r,theta,phi)
 Gamma=G(g,X)
+Rmn=Ricci(Riemann(Gamma,X),X)
 
-print g
-print Gamma.udd(0,1,0)
-print Gamma.udd(0,0,1)
-
-print Gamma.udd(1,0,0)
-print Gamma.udd(1,1,1)
-print Gamma.udd(1,2,2)
-print Gamma.udd(1,3,3)
-print
-print nu(r).diff(r)
-print nu(r).diff(t)
+#print g
+#print Gamma.udd(0,1,0)
+#print Gamma.udd(0,0,1)
+#print
+#print Gamma.udd(1,0,0)
+#print Gamma.udd(1,1,1)
+#print Gamma.udd(1,2,2)
+#print Gamma.udd(1,3,3)
+#print
+#print Gamma.udd(2,2,1)
+#print Gamma.udd(2,1,2)
+#print Gamma.udd(2,3,3)
+#print
+#print Gamma.udd(3,2,3)
+#print Gamma.udd(3,3,2)
+#print Gamma.udd(3,1,3)
+#print Gamma.udd(3,3,1)
+#print "-"*40
+print Rmn.dd(0,0)
+print "scalar curvature:"
+print Rmn.dd(0,0)+Rmn.dd(1,1)+Rmn.dd(2,2)+Rmn.dd(3,3)
 
 """
 #this is the input to eigenmath:
