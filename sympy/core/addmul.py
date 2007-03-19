@@ -203,7 +203,9 @@ class Mul(Pair):
                 z,ok = self.try_to_coerce(y,x)
                 if isinstance(z, Number) and i!=0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
-                    assert z in [1,-1]
+                    #or 2^(1/2)^2 to 2, etc.
+                    #z == 0 is probably a bug
+                    assert z!=0
                     e[0]*=z
                 else:
                     e.append(z)

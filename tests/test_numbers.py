@@ -85,3 +85,7 @@ def test_acceptint():
 def test_int():
     a=Rational(5)
     assert int(a)==5
+
+def test_sqrtbug():
+    assert ((Rational(2).sqrt()+1)*(Rational(2).sqrt()-1)).expand() == 1
+
