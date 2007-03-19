@@ -10,7 +10,7 @@ def print_pygame(st):
         return
     from pygame import QUIT, KEYDOWN, K_ESCAPE, K_q
     pygame.font.init()
-    size = 640, 240
+    size = 1240, 240
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
     font = pygame.font.Font(None, 24)
@@ -63,7 +63,8 @@ def tex2png(eq,pygame):
 
     # Run dvipng on the generated DVI file. Use tight bounding box. 
     # Magnification is set to 1200
-    cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
+    #cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
+    cmd = "dvipng -T tight -x 1200 -z 9 -bg transparent " \
     + "-o x.png /tmp/x.dvi" 
     pexpect.run(cmd) 
     image = pygame.image.load("/tmp/x.png")

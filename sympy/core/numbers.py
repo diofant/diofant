@@ -219,8 +219,12 @@ class Rational(Number):
             f = "%d"
             return f % (self.p)
         else:
-            f = "{%d \over %d}"
-            return f % (self.p,self.q)
+            if self.p < 0:
+                f = "-{%d \over %d}"
+                return f % (-self.p,self.q)
+            else:
+                f = "{%d \over %d}"
+                return f % (self.p,self.q)
 
     def print_pretty(self):
         if self.q == 1:

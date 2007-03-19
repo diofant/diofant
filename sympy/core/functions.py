@@ -295,3 +295,9 @@ class Derivative(Basic):
             return "%s'(%r)"%(self.f.getname(),self.f.arg)
         else:
             return "(%r)'"%self.f
+
+    def print_tex(self):
+        if isinstance(self.f,Function):
+            return r"{\rm %s}'(%s)"%(self.f.getname(),self.f.arg.print_tex())
+        else:
+            return "(%s)'"%self.f.print_tex()
