@@ -143,10 +143,10 @@ print Gamma.udd(3,3,2)
 print Gamma.udd(3,1,3)
 print Gamma.udd(3,3,1)
 print "-"*40
-print Rmn.dd(0,0).print_pygame()
-print Rmn.dd(1,1).print_pygame()
-print Rmn.dd(2,2).print_pygame()
-print Rmn.dd(3,3).print_pygame()
-print "scalar curvature:"
+print Rmn.dd(0,0)#.print_pygame()
+print Rmn.dd(1,1)#.print_pygame()
+print Rmn.dd(2,2)#.print_pygame()
+print Rmn.dd(3,3)#.print_pygame()
+#print "scalar curvature:"
 #print curvature(Rmn)
 #print R.print_pygame()
