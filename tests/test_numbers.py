@@ -82,6 +82,24 @@ def test_realbug():
 def test_acceptint():
     g.Real(4)
 
+def test_evalc():
+    x=Symbol("x", is_real=True)
+    y=Symbol("y", is_real=True)
+    assert ((x+I*y)**2).evalc() == x**2+2*I*x*y - y**2
+
+    assert exp(I*x) != cos(x)+I*sin(x)
+    assert exp(I*x).evalc() == cos(x)+I*sin(x)
+
+    assert exp(I*x+y).evalc() == exp(y)*cos(x)+I*sin(x)*exp(y)
+
+    assert sin(I*x).evalc() == I * (exp(x)-exp(-x))/2
+    assert sin(x+I*y).evalc() == sin(x)*(exp(y)+exp(-y))/2 + \
+            I * (exp(y)-exp(-y))/2 * cos(x)
+
+    assert cos(I*x).evalc() == (exp(x)+exp(-x))/2
+    assert cos(x+I*y).evalc() == cos(x)*(exp(y)+exp(-y))/2 - \
+            I * (exp(y)-exp(-y))/2 * sin(x)
+
 def test_complex():
     a = g.Symbol("a")
     b = g.Symbol("b")
