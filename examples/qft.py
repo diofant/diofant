@@ -3,74 +3,7 @@ sys.path.append(".")
 sys.path.append("..")
 
 from sympy import Basic,exp,Symbol,sin,Rational,I,Mul,NCSymbol, Matrix, \
-    gamma, sigma, one
-
-def delta(i,j):
-    if i==j:
-        return 1
-    else:
-        return 0
-
-def epsilon(i,j,k):
-    if (i,j,k) in [(1,2,3), (2,3,1), (3,1,2)]:
-        return 1
-    elif (i,j,k) in [(1,3,2), (3,2,1), (2,1,3)]:
-        return -1
-    else:
-        return 0
-
-#implement this using the NCSymbols, in paulialgebra.py in modules
-class Pauli(Matrix):
-
-    def __init__(self,i):
-        if i==0:
-            mat=( (
-                (1, 0),
-                (0, 1)
-                ) )
-        elif i==1:
-            mat=( (
-                (0, 1),
-                (1, 0)
-                ) )
-        elif i==2:
-            mat=( (
-                (0, -I),
-                (I, 0)
-                ) )
-        elif i==3:
-            mat=( (
-                (1, 0),
-                (0, -1)
-                ) )
-        else:
-            raise "Invalid Pauli index"
-        self.i=i
-        Matrix.__init__(self, mat)
-
-    @staticmethod
-    def muleval(x, y):
-        if isinstance(x, Pauli) and isinstance(y, Pauli):
-            j=x.i
-            k=y.i
-            if j == 0: return x
-            if k == 0: return y
-            return Pauli(0)*delta(j,k) \
-                +I*epsilon(j,k,1)*Pauli(1) \
-                +I*epsilon(j,k,2)*Pauli(2) \
-                +I*epsilon(j,k,3)*Pauli(3)
-        return None
-
-    def print_sympy(self):
-        if self.i == 0:
-            return "one"
-        return "sigma%d"%self.i
-
-
-def get_re_im(a):
-    x = a.subs(I,0)
-    y = (a+(-x).expand()).subs(I,1)
-    return x,y
+    gamma, sigma, one, Pauli
 
 #gamma^mu
 gamma0=gamma(0)
@@ -151,7 +84,7 @@ mu = Symbol("mu")
 #f = pslash(p)+m*one(4)
 #g = pslash(p)-m*one(4)
 #print Tr(f*g)
-print Tr(pslash(p) * pslash(k)).expand()
+#print Tr(pslash(p) * pslash(k)).expand()
 
 #M0 = [ ( v(pp, 1).D * gamma(mu) * u(p, 1) ) * ( u(k, 1).D * gamma(mu,True) * \
 #        v(kp, 1) ) for mu in range(4)]
@@ -169,3 +102,7 @@ print Tr(pslash(p) * pslash(k)).expand()
 #print x,y
 #e = x**2+y**2
 #print e
+
+print Pauli(1)*Pauli(1)
+#print Pauli(1)**2
+#print Pauli(1)*2*Pauli(1)

@@ -18,3 +18,4 @@ from sympy.modules.integrals import integrate, IntegralError
 from sympy.modules.polynomials import ispoly
 from sympy.modules.matrices import Matrix, zero, one, gamma, sigma, \
     minkowski_tensor
+from sympy.modules.paulialgebra import Pauli
