@@ -185,7 +185,7 @@ class abs_(Function):
     
     mathml_tag = "abs"
    
-    def get_name(self):
+    def getname(self):
         return "abs"
  
     def eval(self):

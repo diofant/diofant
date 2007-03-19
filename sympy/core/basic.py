@@ -36,12 +36,6 @@ class Basic(object):
     """
     __metaclass__ = AutomaticEvaluationType
     
-    __assumptions = {
-                     'is_real' : None, 
-                     'is_integer' : None,
-                     'is_commutative' : None, 
-                     'is_bounded' : None, 
-                     }
     
     @property
     def mathml_tag(self):
@@ -59,10 +53,16 @@ class Basic(object):
         return self.__class__.__name__.lower()
     
     def __init__(self, *args, **kwargs):
+        self._assumptions = {
+                 'is_real' : None, 
+                 'is_integer' : None,
+                 'is_commutative' : None, 
+                 'is_bounded' : None, 
+                 }
         self.mhash = 0
         for k in kwargs.keys():
-            if self.__assumptions.has_key(k):
-                self.__assumptions[k] = kwargs[k]
+            if self._assumptions.has_key(k):
+                self._assumptions[k] = kwargs[k]
             else:
                 raise NotImplementedError ( "Assumption not implemented" )
         
@@ -75,8 +75,8 @@ class Basic(object):
         return Add(self.sympify(a), self)
         
     def __getattr__(self, name):
-        if self.__assumptions.has_key(name):
-            return self.__assumptions[name]
+        if self._assumptions.has_key(name):
+            return self._assumptions[name]
         else:
             raise AttributeError("Attribute not found in this class")
         

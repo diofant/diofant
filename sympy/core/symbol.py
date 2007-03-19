@@ -31,14 +31,14 @@ class Symbol(Basic):
 
         """
         
-        __assumptions = {
+        self._assumptions = {
                          'is_commutative' : True, 
                          }
         
         for k in kwargs.keys():
-            __assumptions[k] = kwargs[k]
+            self._assumptions[k] = kwargs[k]
         
-        Basic.__init__(self, **__assumptions)
+        Basic.__init__(self, **self._assumptions)
         self.name = name
         self.dummy = dummy
         if dummy:
