@@ -151,7 +151,7 @@ setup(
       description = 'Computer algebra system (CAS) in Python', 
       url = 'http://code.google.com/p/sympy', 
       packages = ['sympy', 'sympy.core', 'sympy.modules'],
-      scripts = ['isym.py'],
+      scripts = ['bin/isym.py'],
       ext_modules = [],
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
