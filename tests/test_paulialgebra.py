@@ -19,11 +19,14 @@ def test_Pauli():
     assert sigma2*sigma2 == 1
     assert sigma3*sigma3 == 1
 
+    assert sigma1**0 == 1
+    assert sigma1**1 == sigma1
     assert sigma1**2 == 1
-    assert sigma3**2 == 1
-
     assert sigma1**3 == sigma1
     assert sigma1**4 == 1
+
+    assert sigma3**2 == 1
+
 
     assert sigma1*2*sigma1 == 2
     assert sigma1*sigma3*sigma1 == -sigma3
