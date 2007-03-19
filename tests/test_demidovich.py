@@ -3,7 +3,6 @@ sys.path.append(".")
 from sympy import exp,log,Symbol,infty,Rational,sin,cos,limitinf,limit,pi
 
 x=Symbol("x")
-a=Symbol("a")
 h=Symbol("h")
 
 def sqrt(x):
@@ -21,7 +20,8 @@ def tan(x):
 def limitminf(f,x):
     return limitinf(f.subs(x,-x),x)
 
-def testsimpleproblems():
+def test_simple_problems():
+    a = Symbol('a')
     assert limitinf((x+1)*(x+2)*(x+3)/x**3,x)==1  #172
     assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
@@ -54,8 +54,9 @@ def testsimpleproblems():
     assert limitinf(log(1+exp(x))/x,x)==1  #267b
 
 def test_functions():
-    m=Symbol("m")
-    n=Symbol("n")
+    a = Symbol("a")
+    m = Symbol("m")
+    n = Symbol("n")
     assert limit(sin(x)/x,x,2) == sin(2)/2 #216a
     assert limitinf(sin(x)/x,x) == 0 #216b
     assert limit(sin(3*x)/x,x,0) == 3 #217

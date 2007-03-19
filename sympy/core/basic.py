@@ -9,29 +9,82 @@ class AutomaticEvaluationType(type):
         if evaluate: return obj.eval()
         else: return obj
 
-outputType="sympy" #sympy, pretty, pygame, tex
 
 class Basic(object):
+    """
+    Base class for all objects in sympy
     
+    possible assumptions are: 
+        
+        - is_real
+        
+        - is_commutative
+        
+        - is_bounded
+        
+    Assumptions can have 3 possible values: 
+    
+        - True, when we are sure about a property. For example, when we are
+        working only with real numbers:
+        >>> x = Symbol('x', is_real = True)
+        x
+        
+        - False
+        
+        - None (if you don't know if the property is True or false)
+        
+    """
     __metaclass__ = AutomaticEvaluationType
     
-    def __init__(self):
+    __assumptions = {
+                     'is_real' : None, 
+                     'is_integer' : None,
+                     'is_commutative' : None, 
+                     'is_bounded' : None, 
+                     }
+    
+    @property
+    def mathml_tag(self):
+        """Return the mathml tag of the current object. 
+        
+        For example, symbol x has a mathml representation as 
+           <ci>x</ci>
+        So x.mathml returns "ci"
+
+        Basic.mathml_tag() returns the class name as the mathml_tag, this is
+        the case sometimes (sin, cos, exp, etc.). Otherwise just override this
+        method in your class.
+        """
+        
+        return self.__class__.__name__.lower()
+    
+    def __init__(self, *args, **kwargs):
         self.mhash = 0
+        for k in kwargs.keys():
+            if self.__assumptions.has_key(k):
+                self.__assumptions[k] = kwargs[k]
+            else:
+                raise NotImplementedError ( "Assumption not implemented" )
+        
+    def __add__(self,a):
+        from addmul import Add
+        return Add(self, self.sympify(a))
+    
+    def __radd__(self,a):
+        from addmul import Add
+        return Add(self.sympify(a), self)
+        
+    def __getattr__(self, name):
+        if self.__assumptions.has_key(name):
+            return self.__assumptions[name]
+        else:
+            raise AttributeError("Attribute not found in this class")
         
     def __repr__(self):
         return str(self)
 
     def __str__(self):
-        if outputType == "sympy":
-            return self.print_sympy()
-        elif outputType == "pretty":
-            return str(self.print_pretty())
-        elif outputType == "tex":
-            return self.print_tex()
-        elif outputType == "pygame":
-            return self.print_pygame()
-        else:
-            raise NotImplementedError("Unknown outputType=%s"%outputType)
+        return str(type(self))
     
     def __neg__(self):
         from numbers import Rational
@@ -39,10 +92,7 @@ class Basic(object):
         
     def __pos__(self):
         return self
-        
-    def __add__(self,a):
-        return self._doadd(self, a)
-   
+    
     def __float__(self):
         return float(self.evalf())
  
@@ -217,6 +267,7 @@ class Basic(object):
         return self.subs(sub,n)!=self
         
     def leadterm(self,x):
+        #TODO: move out of Basic
         """Returns the leading term c0*x^e0 of the power series 'self' in x
         with the lowest power of x in a form (c0,e0)
         """
@@ -231,6 +282,8 @@ class Basic(object):
             return x[0]
         
         def extract(t,x):
+            # TODO: move out of Basic
+            # 
             """Parses "t(x)", which is expected to be in the form c0*x^e0,
             and returns (c0,e0). It raises an exception, if "t(x)" is not
             in this form.
@@ -264,6 +317,7 @@ class Basic(object):
         return lowest[0].subs(l,-log(x)), lowest[1].subs(l,-log(x))
         
     def ldegree(self,sym):
+        #TODO: move out of Basic
         """Returns the lowest power of the sym
         """
         return self.leadterm(sym)[1]
@@ -281,6 +335,7 @@ class Basic(object):
         return self.subs(I,-I)
 
     def sqrt(self):
+        #TODO: move to functions
         """Returns square root of self."""
         from numbers import Rational
         return (self**(Rational(1)/2))
@@ -330,32 +385,17 @@ class Basic(object):
         except ValueError:
             return False
 
-    def print_sympy(self):
-        """The canonical sympy representation"""
-        return str(type(self))
-
-    def print_pretty(self):
-        """The pretty printing"""
-        raise NotImplementedError("Pretty printing not implemented for %s"
-                %self.__class__.__name__)
-
-    def print_pygame(self):
-        """The pygame printing"""
-        from printpygame import print_pygame
-        s=self.print_tex()
-        print_pygame(s)
-        return s
-
-    def print_tex(self):
-        """The TeX printing"""
-        raise NotImplementedError("TeX printing not implemented for %s"
-                %self.__class__.__name__)
-        
+    @property
+    def mathml(self):
+        """Returns a MathML expression representing the current object"""
+        return "<%s> %s </%s>" % (self.mathml_tag, str(self), self.mathml_tag)
+    
     def print_tree(self):
         """The canonical tree representation"""
         return str(self)
 
 def _isnumber(x):
+    # TODO: remove
     #don't use this function. Use x.isnumber() instead
     from numbers import Number
     from basic import Basic

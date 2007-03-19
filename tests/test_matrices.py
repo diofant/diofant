@@ -1,7 +1,8 @@
 import sys
 sys.path.append(".")
 
-from sympy import sigma, gamma, zero, one, I, Matrix, Symbol, minkowski_tensor
+from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix,minkowski_tensor
+from sympy import Symbol
 
 def test_multiplication():
     a=Matrix((

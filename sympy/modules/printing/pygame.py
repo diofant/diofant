@@ -1,16 +1,19 @@
 #install TeX and these Debian packages: python-pygame, python-pexpect, dvipng
 #
 
+import tempfile
+
+try:
+    import pygame
+except ImportError:
+    print "Pygame is not installed. In Debian, install the " \
+        "python-pygame package."
+
 def print_pygame(st):
-    try:
-        import pygame
-    except ImportError:
-        print "Pygame is not installed. In Debian, install the " \
-            "python-pygame package."
-        return
+
     from pygame import QUIT, KEYDOWN, K_ESCAPE, K_q
     pygame.font.init()
-    size = 1240, 240
+    size = 640, 240
     screen = pygame.display.set_mode(size)
     screen.fill((255, 255, 255))
     font = pygame.font.Font(None, 24)
@@ -43,10 +46,11 @@ def tex2png(eq,pygame):
     tex_preamble = r"""\nopagenumbers
 """
 
-    texfn = '/tmp/x.tex'
+    tmp1 = tempfile.mktemp()
+    #texfn = '/tmp/x.tex'
 
     # create a LaTeX document and insert equations
-    f = open(texfn,'w')
+    f = open(tmp1,'w')
     f.write(tex_preamble)
     f.write(r"""$$%s$$
 \vfill
@@ -63,8 +67,7 @@ def tex2png(eq,pygame):
 
     # Run dvipng on the generated DVI file. Use tight bounding box. 
     # Magnification is set to 1200
-    #cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
-    cmd = "dvipng -T tight -x 1200 -z 9 -bg transparent " \
+    cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
     + "-o x.png /tmp/x.dvi" 
     pexpect.run(cmd) 
     image = pygame.image.load("/tmp/x.png")

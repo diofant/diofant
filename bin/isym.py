@@ -11,6 +11,8 @@ command line options:
   -h : prints this help message
 """
 
+__author__ = "Fabian Seoane <fabian@fseoane.net>"
+
 welcome_msg = """
 Python console for sympy.
 
@@ -37,8 +39,16 @@ try:
     # leave both so that the user can do help(sympy) and the like
     
 except ImportError:
-    print "Could not find sympy\n...exiting"
-    sys.exit()
+    try:
+        #let's see if we are running with sympy uninstalled
+        import sys
+        sys.path.append('..')
+        sys.path.append('.') # typically, you would run this from sympy/ or from sympy/bin/
+        import sympy
+        from sympy import *
+    except ImportError:
+        print "\nERROR:Could not find sympy\n...exiting\n"
+        sys.exit()
 
 
 import getopt

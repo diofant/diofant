@@ -14,7 +14,6 @@ class sin(Function):
         multiple of pi.
     
     Further examples
-    ================
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> sin(x**2).diff(x)

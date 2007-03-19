@@ -1,35 +1,52 @@
 import hashing
 from basic import Basic
 from numbers import Rational
-from prettyprint import StringPict
+#from prettyprint import StringPict
 
 dummycount=0
 
 class Symbol(Basic):
+    """
+    Assumptions: 
+       is_real = True
+       is_commutative = True
+       
+   You can override the default assumptions in the constructor:
+   >>> A = Symbol('A', is_commutative = False)
+   A
+   """
+    
+    mathml_tag = "ci"
 
-    def __init__(self,name,dummy=False, real=False, nametex=None):
+    def __init__(self, name, dummy=False, *args, **kwargs):
         """if dummy==True, then this Symbol is totally unique, i.e.::
-            Symbol("x")==Symbol("x")
-        but::
-            Symbol("x",True)!=Symbol("x",True)
-
-            real ... does the symbol represent a real or complex number?
+        
+        >>> Symbol("x") == Symbol("x")
+        True
+        
+        but with the dummy variable ::
+        
+        >>> Symbol("x", dummy = True) == Symbol("x", dummy = True)
+        False
 
         """
-        Basic.__init__(self)
-        self.name=name
-        if nametex:
-            self.name_tex = nametex
-        else:
-            self.name_tex = name
-        self.dummy=dummy
-        self.real = real
+        
+        __assumptions = {
+                         'is_commutative' : True, 
+                         }
+        
+        for k in kwargs.keys():
+            __assumptions[k] = kwargs[k]
+        
+        Basic.__init__(self, **__assumptions)
+        self.name = name
+        self.dummy = dummy
         if dummy:
             global dummycount
             dummycount+=1
             self.dummycount=dummycount
 
-    def print_sympy(self):
+    def __str__(self):
         return str(self.name)
 
     def print_tex(self):
@@ -37,7 +54,7 @@ class Symbol(Basic):
 
     def print_pretty(self):
 		return StringPict(self.print_sympy())
-
+        
     def hash(self):
         if self.mhash: 
             return self.mhash.value
@@ -55,7 +72,7 @@ class Symbol(Basic):
             return Rational(0)
 
     def evalc(self):
-        if self.real:
+        if self.is_real:
             return self
         raise NotImplementedError
 

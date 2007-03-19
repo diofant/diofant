@@ -2,7 +2,8 @@ import sys
 sys.path.append(".")
 
 import sympy as s
-from sympy import Limit,log
+from sympy.modules.limits import Limit
+from sympy import log
 
 def testsets():
     from sympy.modules.limits import member,intersect,union

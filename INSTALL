@@ -1,0 +1,123 @@
+
+Basic Installation
+==================
+
+These are generic installation instructions.
+
+The simplest way to compile this package is:
+
+  1. `cd` to the directory containing the package's source code.
+
+  2. Type `python setup.py build` to build the package.
+
+  3. Type `sudo python setup.py install` to install the module.
+
+  4. You can remove the compiled extension modules and other installation
+     related files from the source code directory by typing
+     `sudo python setup.py clean --all clean`. 
+
+
+Operation Controls
+==================
+
+   The 'setup.py' script recognizes the following options to control how it
+operates:
+
+usage: ./setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+   or: ./setup.py --help
+   or: ./setup.py --help-commands
+   or: ./setup.py cmd --help
+
+  --verbose (-v)  run verbosely (default)
+  --quiet (-q)    run quietly (turns verbosity off)
+  --dry-run (-n)  don't actually do anything
+  --help (-h)     show help message
+  --help-commands     list all available commands
+  --name              print package name
+  --version (-V)      print package version
+  --fullname          print <package name>-<version>
+  --author            print the author's name
+  --author-email      print the author's email address
+  --maintainer        print the maintainer's name
+  --maintainer-email  print the maintainer's email address
+  --contact           print the name of the maintainer if present, else author
+  --contact-email     print the email of the maintainer if present, else
+                      author
+  --url               print the URL for this package
+  --licence           print the licence of the package
+  --license           alias for --licence
+  --description       print the package description
+  build        build everything needed to install
+    --build-base (-b)  base directory for build library
+    --build-purelib    build directory for platform-neutral distributions
+    --build-platlib    build directory for platform-specific distributions
+    --build-lib        build directory for all distribution (defaults to either
+                       build-purelib or build-platlib
+    --build-temp (-t)  temporary build directory
+    --debug (-g)       compile extensions and libraries with debugging
+    --force (-f)       forcibly build everything (ignore file timestamps
+  build_py     "build" pure Python modules (copy to build directory)
+    --build-lib (-d)  directory to "build" (copy) to
+    --force (-f)      forcibly build everything (ignore file timestamps
+  build_ext    build C/C++ extensions (compile/link to build directory)
+    --build-lib (-b)     directory for compiled extension modules
+    --build-temp (-t)    directory for temporary files (build by-products)
+    --inplace (-i)       ignore build-lib and put compiled extensions into the
+    --include-dirs (-I)  list of directories to search for header files
+    --define (-D)        C preprocessor macros to define
+    --undef (-U)         C preprocessor macros to undefine
+    --libraries (-l)     external C libraries to link with
+    --library-dirs (-L)  directories to search for external C libraries
+    --rpath (-R)         directories to search for shared C libraries at
+                         runtime
+    --link-objects (-O)  extra explicit link objects to include in the link
+    --debug (-g)         compile/link with debugging information
+    --force (-f)         forcibly build everything (ignore file timestamps
+  build_clib   build C/C++ libraries used by Python extensions
+    --build-clib (-b)  directory to build C/C++ libraries to
+    --build-temp (-t)  directory to put temporary build by-products
+    --debug (-g)       compile with debugging information
+    --force (-f)       forcibly build everything (ignore file timestamps
+  install      install everything from build directory
+    --prefix            installation prefix
+    --exec-prefix       (Unix only) prefix for platform-specific files
+    --home              (Unix only) home directory to install under
+    --install-base      base installation directory (instead of --prefix or --
+                        home)
+    --install-platbase  base installation directory for platform-specific files
+                        (instead of --exec-prefix or --home)
+    --install-purelib   installation directory for pure Python module
+                        distributions
+    --install-platlib   installation directory for non-pure module
+                        distributions
+    --install-lib       installation directory for all module distributions
+                        (overrides --install-purelib and --install-platlib)
+    --install-scripts   installation directory for Python scripts
+    --install-data      installation directory for data files
+  install_lib  install pure Python modules
+    --install-dir (-d)  directory to install to
+    --build-dir (-b)    build directory (where to install from)
+    --compile (-c)      compile .py to .pyc
+    --optimize (-o)     compile .py to .pyo (optimized)
+  clean        clean up output of 'build' command
+    --build-base (-b)  base build directory (default: 'build.build-base')
+    --build-lib        build directory for all modules (default: 'build.build-
+                       lib')
+    --build-temp (-t)  temporary build directory (default: 'build.build-temp')
+    --all (-a)         remove all build output, not just temporary by-products
+  sdist        create a source distribution (tarball, zip file, etc.)
+    --template (-t)   name of manifest template file [default: MANIFEST.in]
+    --manifest (-m)   name of manifest file [default: MANIFEST]
+    --use-defaults    include the default file set in the manifest [default;
+                      disable with --no-defaults]
+    --manifest-only   just regenerate the manifest and then stop
+    --force-manifest  forcibly regenerate the manifest and carry on as usual
+    --formats         formats for source distribution (tar, ztar, gztar, or
+                      zip)
+    --keep-tree (-k)  keep the distribution tree around after creating archive
+  bdist        create a built (binary) distribution
+    --format (-f)  format for distribution (tar, ztar, gztar, zip)
+  bdist_dumb   create a "dumb" built distribution
+    --format (-f)     archive format to create (tar, ztar, gztar, zip)
+    --keep-tree (-k)  keep the pseudo-installation tree around after creating
+

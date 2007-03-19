@@ -1,7 +1,6 @@
 import hashing
 from basic import Basic
 import decimal
-from prettyprint import StringPict
 
 class Number(Basic):
     """Represents any kind of number in sympy.
@@ -16,12 +15,14 @@ class Number(Basic):
     Rational(1) + Rational(2)**( Rational(1)/2 )
     """
     
+    mathml_tag = "cn"
+    
     def __init__(self):
         Basic.__init__(self)
         
     def __int__(self):
         raise NotImplementedError
-        
+    
     def __float__(self):
         return float(self.evalf())
     
@@ -97,7 +98,7 @@ class Real(Number):
         self.mhash.addfloat(self.num)
         return self.mhash.value
         
-    def print_sympy(self):
+    def __str__(self):
         if self.num < 0:
             f = "(%s)"
         else:
@@ -206,7 +207,7 @@ class Rational(Number):
             a, b = b, a % b
         return a
         
-    def print_sympy(self):
+    def __str__(self):
         if self.q == 1:
             f = "%d"
             return f % (self.p)
@@ -214,23 +215,6 @@ class Rational(Number):
             f = "%d/%d"
             return f % (self.p,self.q)
 
-    def print_tex(self):
-        if self.q == 1:
-            f = "%d"
-            return f % (self.p)
-        else:
-            if self.p < 0:
-                f = "-{%d \over %d}"
-                return f % (-self.p,self.q)
-            else:
-                f = "{%d \over %d}"
-                return f % (self.p,self.q)
-
-    def print_pretty(self):
-        if self.q == 1:
-            return StringPict(self.print_sympy())
-        return StringPict.stack("%d"%self.p,StringPict.LINE,"%d"%self.q)
-            
     def __mul__(self,a):
         a=self.sympify(a)
         if isinstance(a, Rational):
@@ -332,8 +316,8 @@ class Constant(Basic):
 class ImaginaryUnit(Constant):
     """Imaginary unit "i"."""
 
-    def print_sympy(self):
-        return "i"
+    def __str__(self):
+        return "I"
     
     def evalf(self):
         """Evaluate to a float. By convention, will return 0, 
@@ -408,7 +392,7 @@ class ConstPi(Constant):
         # don't know how fiable it is
 
 
-    def print_sympy(self):
+    def __str__(self):
         return "pi"
 
 pi=ConstPi()

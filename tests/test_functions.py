@@ -3,9 +3,11 @@ sys.path.append(".")
 
 import sympy as g
 import sympy as s
-from sympy import Symbol, log, Derivative, arctan, Function
+from sympy import Symbol, log, arctan
+from sympy.core.functions import Function
+from sympy.modules.derivatives import Derivative
 
-def testfunc():
+def test_func():
     a=g.Symbol("a")
     b=g.Symbol("b")
     c=g.Symbol("c")
@@ -31,18 +33,18 @@ def testfunc():
     assert e == 2**a*g.log(g.Rational(2))**(-1)
     assert e.diff(a) == 2**a
 
-def testexplog():
+def test_exp_log():
     x=g.Symbol("x")
     assert g.log(g.exp(x))==x
     assert g.exp(g.log(x))==x
 
-def testlogexpansion():
+def test_log_expansion():
     x=g.Symbol("x")
     y=g.Symbol("y")
     assert g.log(x*y)==g.log(x)+g.log(y)
     assert g.log(x**2)==2*g.log(x)
 
-def testloghashingbug():
+def test_log_hashing_bug():
     x=s.Symbol("y")
     assert x!=s.log(s.log(x))
     assert x.hash()!=s.log(s.log(x)).hash()
@@ -63,11 +65,11 @@ def testloghashingbug():
     assert e!=x
 
 
-def testexpbug():
+def test_exp_bug():
     x=s.Symbol("x")
     assert s.exp(1*s.log(x))==x
 
-def testexpexpand():
+def test_exp_expand():
     x=s.Symbol("x")
     e=s.exp(s.log(s.Rational(2))*(1+x)-s.log(s.Rational(2))*x)
     assert e.expand()==2

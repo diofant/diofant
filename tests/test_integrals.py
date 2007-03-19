@@ -3,7 +3,8 @@ sys.path.append(".")
 
 import py
 
-from sympy import integrate, Symbol, IntegralError, log, Rational
+from sympy import integrate, Symbol, log, Rational
+from sympy.modules.integrals import IntegralError
 
 x=Symbol("x")
 t=Symbol("t")

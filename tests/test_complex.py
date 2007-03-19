@@ -16,23 +16,23 @@ def test_complex():
     assert str(abs(a))=="abs(a)"
 
 def test_abs1():
-    a=Symbol("a", real=True)
-    b=Symbol("b", real=True)
+    a=Symbol("a", is_real=True)
+    b=Symbol("b", is_real=True)
     assert abs(a) == a
     assert abs(-a) == a
     assert abs(-a) != -a
     assert abs(a+I*b) == (a*a+b*b).sqrt()
 
 def test_abs2():
-    a=Symbol("a", real=False)
-    b=Symbol("b", real=False)
+    a=Symbol("a", is_real=False)
+    b=Symbol("b", is_real=False)
     assert abs(a) != a
     assert abs(-a) != a
     assert abs(a+I*b) != (a*a+b*b).sqrt()
 
 def test_evalc():
-    x=Symbol("x", real=True)
-    y=Symbol("y", real=True)
+    x=Symbol("x", is_real=True)
+    y=Symbol("y", is_real=True)
     assert ((x+I*y)**2).evalc() == x**2+2*I*x*y - y**2
 
     assert exp(I*x) != cos(x)+I*sin(x)

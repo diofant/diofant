@@ -154,10 +154,10 @@ def testexpand():
     assert e == (x**2+g.Rational(1)/2*x**4)*x**(-2)
     assert e.expand() ==  1+g.Rational(1)/2*x**2
 
-def testncmul():
-    A=g.NCSymbol("A")
-    B=g.NCSymbol("B")
-    C=g.NCSymbol("C")
+def test_ncmul():
+    A=g.core.NCSymbol("A")
+    B=g.core.NCSymbol("B")
+    C=g.core.NCSymbol("C")
     b=g.Symbol("b")
     assert A*B != B*A
     assert A*B*C != C*B*A

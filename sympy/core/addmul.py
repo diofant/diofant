@@ -2,13 +2,12 @@ import hashing
 from basic import Basic
 from numbers import Number, Rational, Real
 from power import Pow,pole_error
-from prettyprint import StringPict
 
 class Pair(Basic):
     """Abstract class containing common code to add and mul classes.
     Should not be used directly
     """
-
+    
     def __init__(self,*args):
         Basic.__init__(self)
         if len(args) == 2:
@@ -21,7 +20,15 @@ class Pair(Basic):
         
     def __lt__(self, a):
         return self.evalf() < a
-            
+    
+    @property
+    def mathml(self):
+        s = "<apply>" + "<" + self.mathml_tag + "/>"
+        for a in self.args:
+                s += a.mathml
+        s += "</apply>"
+        return s
+    
     def hash(self):
         if self.mhash: 
             return self.mhash.value
@@ -103,8 +110,10 @@ class Pair(Basic):
 
 
 class Mul(Pair):
+    
+    mathml_tag = "times"
      
-    def print_sympy(self):
+    def __str__(self):
         f = ""
         a = self.args
         if isinstance(a[0],Rational):
@@ -120,39 +129,9 @@ class Mul(Pair):
             else:
                 f += "%s*"
         f = f[:-1]
-        return f % tuple([x.print_sympy() for x in a])
+        return f % tuple([str(x) for x in a])
+    
 
-    def print_tex(self):
-        f = ""
-        a = self.args
-        if isinstance(a[0],Rational):
-            if a[0].isminusone():
-                f = "-"
-                a = self.args[1:]
-            elif a[0].isone():
-                f = ""
-                a = self.args[1:]
-        for x in a:
-            if isinstance(x,Pair):
-                f += "(%s)"
-            else:
-                f += "%s "
-        f = f[:-1]
-        return f % tuple([x.print_tex() for x in a])
-
-    def print_pretty(self):
-        result = []
-        for arg in self.args:
-            argpretty = arg.print_pretty()
-            if result:
-                if argpretty.height()>1: result.append(" ")
-                result.append('*')
-                if argpretty.height()>1: result.append(" ")
-            if isinstance(arg, Add):
-                argpretty = argpretty.parens()
-            result.append(argpretty)
-        return StringPict.next(*result)
-        
     def print_prog(self):
         f = "Mul(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
@@ -166,6 +145,7 @@ class Mul(Pair):
 
     @staticmethod
     def try_to_coerce(x, y):
+        #TODO: see __coerce__
         """Tries to multiply x * y in this order and see if it simplifies. 
         
         If it succeeds, returns (x*y, True)
@@ -365,47 +345,31 @@ class Mul(Pair):
             return e
     
 class Add(Pair):
-
+    
+    mathml_tag = "plus"
+    
     def print_prog(self):
         f = "Add(%s"+",%s"*(len(self.args)-1)+")"
         return f % tuple([str(x) for x in self.args])
 
-    def print_sympy(self):
+    def __str__(self):
         """Returns a string representation of the expression in self."""
         
-        f = "%s" % self.args[0].print_sympy()
+        f = "%s" % str(self.args[0])
         for i in range(1,len(self.args)):
             num_part = _extract_numeric(self.args[i])[0]
             if num_part < 0:
-              f += "%s" % self.args[i].print_sympy()
+              f += "%s" % str(self.args[i])
             else:
-              f += "+%s" % self.args[i].print_sympy()
+              f += "+%s" % str(self.args[i])
         return f    
-
-    def print_tex(self):
-        f = "%s" % self.args[0].print_tex()
-        for i in range(1,len(self.args)):
-            num_part = _extract_numeric(self.args[i])[0]
-            if num_part < 0:
-              f += "%s" % self.args[i].print_tex()
-            else:
-              f += "+%s" % self.args[i].print_tex()
-        return f    
-    
-    def print_pretty(self):
-        result = []
-        for arg in self.args:
-            if result:
-                result.append('+')
-            result.append(arg.print_pretty())
-        return StringPict.next(*result)
 
     def contains_ncobject(self,a):
         for x in a:
             if not x.commutative():
                 return False
         return True
-
+            
     def commutative(self):
         return self.contains_ncobject(self.args)
                 
@@ -413,7 +377,7 @@ class Add(Pair):
         """Pretend that self = a+b and return a,b
         
         in general, self=a+b+c+d+..., but in many algorithms, we 
-        want to have just 2 arguments to add. Use this function to 
+        want to ha+ve just 2 arguments to add. Use this function to 
         simulate this interface. (the returned b = b+c+d.... )
         """
         a=self.args[0]

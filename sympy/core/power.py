@@ -3,12 +3,14 @@ from basic import Basic
 from symbol import Symbol, NCSymbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
-from prettyprint import StringPict
+#from prettyprint import StringPict
 
 class pole_error(Exception):
     pass
 
 class Pow(Basic):
+    
+    mathml_tag = "power"
 
     def __init__(self,a,b):
         Basic.__init__(self)
@@ -24,14 +26,14 @@ class Pow(Basic):
         self.mhash.add(self.exp.hash())
         return self.mhash.value
         
-    def print_sympy(self):
+    def __str__(self):
         from addmul import Pair
         f = ""
         if isinstance(self.base,Pair) or isinstance(self.base,Pow):
             f += "(%s)"
         else:
             f += "%s"
-        f += "^"
+        f += "**"
         if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
             or (isinstance(self.exp,Rational) and \
             (not self.exp.isinteger() or (self.exp.isinteger() and \
@@ -39,36 +41,15 @@ class Pow(Basic):
             f += "(%s)"
         else:
             f += "%s"
-        return f % (self.base.print_sympy(),self.exp.print_sympy())
-
-    def print_tex(self):
-        from addmul import Pair
-        f = ""
-        if isinstance(self.base,Pair) or isinstance(self.base,Pow):
-            f += "{(%s)}"
-        else:
-            f += "{%s}"
-        f += "^"
-        if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
-            or (isinstance(self.exp,Rational) and \
-            (not self.exp.isinteger() or (self.exp.isinteger() and \
-            int(self.exp) < 0)) ):
-            f += "{(%s)}"
-        else:
-            f += "{%s}"
-        return f % (self.base.print_tex(),self.exp.print_tex())
-
-    def print_pretty(self):
-        a, b = self.base, self.exp
-        apretty = a.print_pretty()
-        if isinstance(b, Rational) and b.p==1 and b.q==2:
-            return apretty.root()
-        if not isinstance(a, Symbol):
-            apretty = apretty.parens()
-        bpretty = b.print_pretty()
-        exponent = bpretty.left(' '*apretty.width())
-        apretty = apretty.right(' '*bpretty.width())
-        return apretty.top(exponent)
+        return f % (str(self.base), str(self.exp))
+    
+    @property
+    def mathml(self):
+        s = "<apply>" + "<" + self.mathml_tag + "/>"
+        for a in self.get_baseandexp():
+                s += a.mathml
+        s += "</apply>"
+        return s
         
     def get_baseandexp(self):
         return (self.base,self.exp)
@@ -139,6 +120,7 @@ class Pow(Basic):
                         return r
         return self
         
+
     def evalf(self):
         if self.base.isnumber() and self.exp.isnumber():
             return Real(float(self.base)**float(self.exp))

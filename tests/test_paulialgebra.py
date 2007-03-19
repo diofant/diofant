@@ -1,7 +1,8 @@
 import sys
 sys.path.append(".")
 
-from sympy import I, Pauli
+from sympy import I
+from sympy.modules.paulialgebra import Pauli
 
 def test_Pauli():
     sigma1=Pauli(1)

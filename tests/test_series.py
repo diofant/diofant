@@ -22,7 +22,7 @@ def testseries():
 
     e=((g.exp(x)-1)/x)
     assert e.series(x,1) == g.Rational(1)
-    py.test.raises(g.pole_error, g.Basic.series, e,x,0)
+    py.test.raises(g.core.power.pole_error, g.core.basic.Basic.series, e,x,0)
 
     #e=2*g.sin(x)*g.cos(x)
     #print
@@ -113,7 +113,7 @@ def test_subsbug1():
     x=g.Symbol("x")
     e=1+x**g.Rational(1,2)
     e=e.diff(x)
-    py.test.raises(g.pole_error,e.subs,x,g.Rational(0))
+    py.test.raises(g.core.power.pole_error,e.subs,x,g.Rational(0))
 
 def test_seriesbug2():
     w=Symbol("w")

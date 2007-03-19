@@ -38,25 +38,14 @@ class Function(Basic):
         else:
             return e
         
-    def print_sympy(self):
+    def __str__(self):
         f = "%s(%s)"
-        return f%(self.getname(),self.arg.print_sympy())
+        return f % (self.getname(),str(self.arg))
 
-    def print_tex(self):
-        f = "%s(%s)"
-        return f%(self.getname_tex(),self.arg.print_tex())
-
-    def print_pretty(self):
-        from symbol import Symbol
-        result = self.arg.print_pretty()
-        if isinstance(self.arg, Symbol):
-            return result.left(self.getname(), ' ')
-        else:
-            return result.parens().left(self.getname())
-
-    def getname_tex(self):
-        return r"{\rm %s}"%self.getname()
-    
+    @property
+    def mathml(self):
+        return "<apply><%s/> %s </apply>" % (self.mathml_tag, self.arg.mathml)
+        
     def series(self, sym, n):
         from power import pole_error
         from symbol import Symbol
@@ -194,14 +183,18 @@ ln = log
 class abs_(Function):
     """Return the absolute value of x"""
     
-    
+    mathml_tag = "abs"
+   
+    def get_name(self):
+        return "abs"
+ 
     def eval(self):
         from addmul import Mul,Add
         from symbol import Symbol
         from numbers import I
         
         arg = self.arg
-        if arg.isnumber() or (isinstance(arg, Symbol) and arg.real):
+        if arg.isnumber() or (isinstance(arg, Symbol) and arg.is_real):
             return (arg*arg.conjugate()).expand()**Rational(1,2)
         elif isinstance(arg, Mul):
             _t = arg.getab()[0]
@@ -209,11 +202,11 @@ class abs_(Function):
                 return abs(-self.arg)
         elif isinstance(arg, Add):
             b,a = arg.getab()
-            if isinstance(a, Symbol) and a.real:
+            if isinstance(a, Symbol) and a.is_real:
                 if isinstance(b, Mul):
                     a,b=b.getab()
                     if a == I:
-                        if isinstance(b, Symbol) and b.real:
+                        if isinstance(b, Symbol) and b.is_real:
                             return (arg*arg.conjugate()).expand()**Rational(1,2)
         return self
         
@@ -266,7 +259,6 @@ class sign(Function):
         
     def derivative(self):
         return Rational(0)
-    
 
 class Derivative(Basic):
 
@@ -287,17 +279,3 @@ class Derivative(Basic):
         self.mhash.addint(self.x.hash())
         return self.mhash.value
 
-    def diff(self,x):
-        return Derivative(self,x)
-
-    def print_sympy(self):
-        if isinstance(self.f,Function):
-            return "%s'(%r)"%(self.f.getname(),self.f.arg)
-        else:
-            return "(%r)'"%self.f
-
-    def print_tex(self):
-        if isinstance(self.f,Function):
-            return r"{\rm %s}'(%s)"%(self.f.getname(),self.f.arg.print_tex())
-        else:
-            return "(%s)'"%self.f.print_tex()
