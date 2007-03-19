@@ -26,7 +26,8 @@ class Basic(object):
     
         - True, when we are sure about a property. For example, when we are
         working only with real numbers:
-        >>> x = Symbol('x', is_real = True)
+        >>> from sympy import *
+        >>> Symbol('x', is_real = True)
         x
         
         - False
@@ -102,7 +103,7 @@ class Basic(object):
         Example usage: 
           >>> from sympy import *
           >>> abs(1+2*I)
-          5^(1/2)
+          5**(1/2)
           >>> x = Symbol('x')
           >>> abs(-x)
           abs(x)

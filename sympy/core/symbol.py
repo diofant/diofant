@@ -13,7 +13,6 @@ class Symbol(Basic):
        
    You can override the default assumptions in the constructor:
    >>> A = Symbol('A', is_commutative = False)
-   A
    """
     
     mathml_tag = "ci"

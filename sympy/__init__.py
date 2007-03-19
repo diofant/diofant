@@ -31,7 +31,7 @@ interpreter:
     >>> x = Symbol('x')
     >>> e = 1/cos(x)
     >>> print e.series(x,10)
-    1+50521/3628800*x^10+61/720*x^6+1/2*x^2+5/24*x^4+277/8064*x^8
+    1+50521/3628800*x**10+61/720*x**6+1/2*x**2+5/24*x**4+277/8064*x**8
 
 For full documentation, see the docs at our web page:
 U{http://code.google.com/p/sympy/wiki/Documentation}

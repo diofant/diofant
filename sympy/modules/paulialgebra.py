@@ -30,13 +30,13 @@ class Pauli(NCSymbol):
     >>> Pauli(1)
     sigma1
     >>> Pauli(1)*Pauli(2)
-    i*sigma3
+    I*sigma3
     >>> Pauli(1)*Pauli(1)
     1
     >>> Pauli(3)**4
     1
     >>> Pauli(1)*Pauli(2)*Pauli(3)
-    i
+    I
 
     """
 

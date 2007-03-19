@@ -27,14 +27,14 @@ class Matrix(object):
         >>> from sympy import *
         >>> m=Matrix(((1,2+I),(3,4)))
         >>> m  #doctest: +NORMALIZE_WHITESPACE
-        1 2+i
+        1 2+I
         3 4
         >>> m.T #doctest: +NORMALIZE_WHITESPACE
         1 3
-        2+i 4
+        2+I 4
         >>> m.H #doctest: +NORMALIZE_WHITESPACE
         1 3
-        2-i 4
+        2-I 4
 
         """
         if name == "T":
@@ -65,12 +65,12 @@ class Matrix(object):
         >>> from sympy import *
         >>> m=Matrix(((1,2+I),(3,4)))
         >>> m  #doctest: +NORMALIZE_WHITESPACE
-        1 2+i
+        1 2+I
         3 4
         >>> m[1,0]
         3
         >>> m.H[1,0]
-        2-i
+        2-I
 
         """
         i,j=self.key2ij(key)
@@ -81,11 +81,11 @@ class Matrix(object):
         >>> from sympy import *
         >>> m=Matrix(((1,2+I),(3,4)))
         >>> m  #doctest: +NORMALIZE_WHITESPACE
-        1 2+i
+        1 2+I
         3 4
         >>> m[1,0]=9 
         >>> m  #doctest: +NORMALIZE_WHITESPACE
-        1 2+i
+        1 2+I
         9 4
 
         """
