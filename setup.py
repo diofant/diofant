@@ -60,7 +60,7 @@ class test_sympy(Command):
             """
             sys.exit(-1)
         py.test.cmdline.main(args=["tests"])
-        # change back to the current directory
+        test_sympy_doc.run_doctest() # run also the doc test suite
 
 class test_sympy_core(Command):
     """Run only the tests concerning features of sympy.core.
@@ -84,7 +84,8 @@ class test_sympy_core(Command):
     
     def finalize_options(self):    # this too
         pass
-    
+
+        
     def run(self):
         try:
             import py
@@ -107,7 +108,9 @@ class test_sympy_doc(Command):
     def finalize_options(self):    # this too
         pass
     
-    def run(self):
+    @staticmethod
+    def run_doctest():
+        
         import unittest
         import doctest
         
@@ -137,6 +140,9 @@ class test_sympy_doc(Command):
         runner = unittest.TextTestRunner()
         runner.run(suite)
 
+    def run(self):
+        self.run_doctest()
+        
 import sympy
 
 setup(
