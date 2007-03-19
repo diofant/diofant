@@ -1,6 +1,6 @@
 import hashing
 from basic import Basic
-from symbol import Symbol
+from symbol import Symbol, NCSymbol
 from numbers import Rational,Real,Number,ImaginaryUnit
 from functions import log,exp
 from prettyprint import StringPict
@@ -127,6 +127,16 @@ class Pow(Basic):
                     n= self.base.args[0]
                     if n.isnumber() and n<0:
                         return (-self.base)**self.exp
+        if isinstance(self.base, NCSymbol):
+            if isinstance(self.exp, Rational) and self.exp.isinteger():
+                    n = int(self.exp)
+                    #only try to simplify it for low exponents (for speed
+                    #reasons).
+                    if n > 1 and n < 10:
+                        r = self.base
+                        for i in range(n-1):
+                            r = r * self.base
+                        return r
         return self
         
     def evalf(self):

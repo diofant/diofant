@@ -33,6 +33,8 @@ class Pauli(NCSymbol):
     i*sigma3
     >>> Pauli(1)*Pauli(1)
     1
+    >>> Pauli(3)**4
+    1
     >>> Pauli(1)*Pauli(2)*Pauli(3)
     i
 

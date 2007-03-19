@@ -189,6 +189,14 @@ class Mul(Pair):
         xbase,xexp = Mul.get_baseandexp(x)
         ybase,yexp = Mul.get_baseandexp(y)
         if xbase.isequal(ybase):
+            #this whole "if" is to correctly cooperate with Pow.eval()
+            #so we don't get infinite recursion. It's not elegant, but it
+            #works.
+            if not xbase.commutative():
+                e = Add(xexp,yexp)
+                if e != 0:
+                    return Pow(xbase,e,evaluate=False), True
+
             return Pow(xbase,Add(xexp,yexp)), True
         else:
             return x, False
@@ -196,7 +204,6 @@ class Mul(Pair):
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
 
-        
         def _mul_c(exp,x):
             e = []
             for i,y in enumerate(exp):
@@ -225,6 +232,7 @@ class Mul(Pair):
                 return exp[:-1]+[z]+[x]
 
         def _nc_separate(a):
+            """Separates commutative and non-commutative parts of "a" """
             c_part = []
             nc_part = []
             for x in a:
@@ -250,6 +258,9 @@ class Mul(Pair):
         if n == 0: return Rational(0)
         c_part.sort(Basic.cmphash)
         #this if is for multiplying Symbol*Matrix and Number*Matrix
+        #I think it's not needed anymore, since Matrix is implemented
+        #differently now. But I am leaving it here for now, because
+        #it works and the noncommutative objects are not well tested yet.
         if len(nc_part) == 1:
             if len(c_part) == 1:
                 z, ok = self.try_to_coerce(c_part[0], nc_part[0])
