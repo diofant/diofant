@@ -1,5 +1,15 @@
 from sympy.core import Basic,exp,Symbol,Rational,I,Mul,NCSymbol
 
+"""
+This module implements Pauli algebra by subclassing NCSymbol. Only aglebraic
+properties of Pauli matrices are used (we don't use the Matrix class).
+
+See the documentation to the class Pauli for examples.
+
+See also:
+    http://en.wikipedia.org/wiki/Pauli_matrices
+"""
+
 def delta(i,j):
     if i==j:
         return 1
@@ -15,6 +25,18 @@ def epsilon(i,j,k):
         return 0
 
 class Pauli(NCSymbol):
+    """
+    >>> from sympy import *
+    >>> Pauli(1)
+    sigma1
+    >>> Pauli(1)*Pauli(2)
+    i*sigma3
+    >>> Pauli(1)*Pauli(1)
+    1
+    >>> Pauli(1)*Pauli(2)*Pauli(3)
+    i
+
+    """
 
     def __init__(self,i):
         if not i in [1,2,3]:
