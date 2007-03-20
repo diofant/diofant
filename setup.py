@@ -3,7 +3,7 @@
 
 This uses Distutils (http://python.org/sigs/distutils-sig/) the standard
 python mechanism for installing packages. For the easiest installation
-just type the command:
+just type the command (you'll probably need root privileges for that):
 
     python setup.py install
 
@@ -150,7 +150,8 @@ setup(
       version = sympy.__version__, 
       description = 'Computer algebra system (CAS) in Python', 
       url = 'http://code.google.com/p/sympy', 
-      packages = ['sympy', 'sympy.core', 'sympy.modules'],
+      packages = ['sympy', 'sympy.core', 'sympy.modules', 
+                  'sympy.modules.mathml', 'sympy.modules.printing'],
       scripts = ['bin/isym.py'],
       ext_modules = [],
       cmdclass    = {'test': test_sympy, 
