@@ -146,7 +146,7 @@ class test_sympy_doc(Command):
 import sympy
 
 setup(
-      name = 'Sympy', 
+      name = 'sympy', 
       version = sympy.__version__, 
       description = 'Computer algebra system (CAS) in Python', 
       url = 'http://code.google.com/p/sympy', 

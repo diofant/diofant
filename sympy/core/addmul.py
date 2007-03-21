@@ -1,14 +1,14 @@
-import hashing
-from basic import Basic
-from numbers import Number, Rational, Real
-from power import Pow,pole_error
+import sympy.core.hashing as hashing
+from sympy.core.basic import Basic
+from sympy.core.numbers import Number, Rational, Real
+from sympy.core.power import Pow, pole_error
 
 class Pair(Basic):
     """Abstract class containing common code to add and mul classes.
     Should not be used directly
     """
     
-    def __init__(self,*args):
+    def __init__(self, *args):
         Basic.__init__(self)
         if len(args) == 2:
             self.args = [args[0],args[1]]
@@ -25,7 +25,7 @@ class Pair(Basic):
     def mathml(self):
         s = "<apply>" + "<" + self.mathml_tag + "/>"
         for a in self.args:
-                s += a.mathml
+            s += a.mathml
         s += "</apply>"
         return s
     
@@ -38,13 +38,13 @@ class Pair(Basic):
             self.mhash.add(i.hash())
         return self.mhash.value
         
-    def tryexpand(self,a):
+    def tryexpand(self, a):
         if isinstance(a,Mul) or isinstance(a,Pow):
             return a.expand()
         else:
             return a
             
-    def flatten(self,a):
+    def flatten(self, a):
         """flatten([add(x,4),Mul(a,5),add(x,b),x]) ->
                 [x,4,Mul(a,5),x,b,x] if self is add
                 [add(x,4),a,5,add(x,b),x] if self is Mul
@@ -62,14 +62,14 @@ class Pair(Basic):
                 b.append(x)
         return b
         
-    def coerce(self,a,action):
+    def coerce(self, a, action):
         """coerce([x,y,z],action) -> action(action(action([],x),y),z)"""
         #equivalent code:
         #exp=[]
         #for x in a:
         #    exp=action(exp,x)
         #return exp
-        return reduce(action,a,[])
+        return reduce(action, a, [])
         
     def coerce_numbers(self,a,action,default):
         """coercenumbers([x,4,a,10],action,Rational(1)) ->
@@ -78,11 +78,11 @@ class Pair(Basic):
         picks out the numbers of the list "a" and applies the action on them
         (add or Mul).
         """
-        n=default
-        b=[]
+        n = default
+        b = []
         for x in a:
             if isinstance(x,Number):
-                n=action(n,x)
+                n = action(n,x)
             else:
                 b.append(x)
         return (n,b)
@@ -359,9 +359,9 @@ class Add(Pair):
         for i in range(1,len(self.args)):
             num_part = _extract_numeric(self.args[i])[0]
             if num_part < 0:
-              f += "%s" % str(self.args[i])
+                f += "%s" % str(self.args[i])
             else:
-              f += "+%s" % str(self.args[i])
+                f += "+%s" % str(self.args[i])
         return f    
 
     def contains_ncobject(self,a):

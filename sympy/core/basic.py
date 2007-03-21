@@ -33,10 +33,9 @@ class Basic(object):
         - False
         
         - None (if you don't know if the property is True or false)
-        
     """
+
     __metaclass__ = AutomaticEvaluationType
-    
     
     @property
     def mathml_tag(self):
@@ -269,7 +268,7 @@ class Basic(object):
         return self.subs(sub,n)!=self
         
     def leadterm(self,x):
-        #TODO: move out of Basic
+        #TODO: move out of Basic, maybe to utils.py?
         """Returns the leading term c0*x^e0 of the power series 'self' in x
         with the lowest power of x in a form (c0,e0)
         """

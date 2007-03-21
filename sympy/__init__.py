@@ -39,17 +39,17 @@ U{http://code.google.com/p/sympy/wiki/Documentation}
 Structure
 =========
 
-Sympy is basically divided in two modules: the core module, which contains the classes
-needed for basic symbolic manipulations, like the definition of Symbol or Rational number, and
-a some high-level modules, that are responsable for high-level work done with sympy: 
-limits, integration, solving, etc., and is the one you will have to look at if you are
-searching for examples on how to extend sympy
+Sympy is basically divided in two modules: the core module, which contains 
+the classes needed for basic symbolic manipulations, like the definition of a
+Symbol or a Rational number, and sympy.modules, a high-level module that 
+contains algorithms for sumbolic computations, like limit, integration, etc.
 
 
 G{packagetree sympy}
 """
 
-__version__ = "0.3-pre"
+__version__ = "0.3"
+__revision__ = "pre"
 
 from sympy.core import Symbol, Rational, Real, exp, log, sign, infty, pi, I
 from sympy.modules.limits import limit, limitinf
