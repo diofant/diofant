@@ -24,18 +24,6 @@ svn checkout http://sympy.googlecode.com/svn/trunk/ sympy
 
 http://code.google.com/p/sympy/wiki/Documentation
 
-Examples are at:
-
-http://code.google.com/p/sympy/wiki/Examples
-
-Other documentation and examples are avaiable in the generated 
-api reference, which can be viewed at 
-http://sympy.googlecode.com/svn/api/index.html and via python's 
-help command 
-
-See also the "TODO" file for things which are still missing.
-
-
 2. Usage
 --------
 
@@ -52,11 +40,11 @@ sympy namespace and defines three symbols: x, y, z.
 
 To start it issue:
 
-  ./bin/isym.py
+  ./bin/isympy
 
 from this directory if sympy is not installed or simply
 
-  isym.py
+  isympy
 
 if sympy is installed somewhere in your PATH
 
@@ -66,7 +54,7 @@ if sympy is installed somewhere in your PATH
 
 to execute tests, run
 
-py.test
+python setup.py test
 
 in the current directory.  You may need to install py.test.
 
@@ -79,7 +67,7 @@ Execute in your home directory:
 svn co http://codespeak.net/svn/py/dist py-dist
 
 This will create a "py-dist" directory in you home dir. Add this line to
-.bashrc:
+your .bashrc:
 
 eval `python ~/py-dist/py/env.py`
 
@@ -98,3 +86,14 @@ doesn't work, so you need to download and install it by hand.
 Once you have a working copy of epydoc, execute from sympy's directory: 
 
 epydoc --config doc/apidoc.conf
+
+6. How to create a Debian package
+---------------------------------
+
+First install these packages: cdbs, debhelper, fakeroot
+
+Then issue:
+
+fakeroot dpkg-buildpackage
+
+This will create a python-sympy Debian package in the parent directory.
