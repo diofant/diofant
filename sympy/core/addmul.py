@@ -1,4 +1,4 @@
-import sympy.core.hashing as hashing
+import hashing
 from sympy.core.basic import Basic
 from sympy.core.numbers import Number, Rational, Real
 from sympy.core.power import Pow, pole_error
