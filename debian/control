@@ -1,0 +1,17 @@
+Source: sympy
+Section: python
+Priority: optional
+Maintainer: Fabian Seoane <fabian@fseoane.net>
+Build-Depends: cdbs, debhelper (>= 5)
+Standards-Version: 3.7.2
+XS-Python-Version: all
+
+Package: python-sympy
+Architecture: all 
+Depends: ${python:Depends}, python-libxslt1 
+XB-Python-Version: ${python:Versions}
+Description: Computer Algebra System (CAS) in Python
+ sympy is a symbolic manipulation package, written in pure Python. Its aim is to
+ become a full featured CAS in Python, while keeping the code as simple as
+ possible in order to be comprehensible and easily extensible.
+ homepage: http://code.google.com/p/sympy/

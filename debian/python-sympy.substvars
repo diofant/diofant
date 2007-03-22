@@ -1,0 +1,2 @@
+python:Versions=all
+python:Depends=python, python-central (>= 0.5.6ubuntu2)

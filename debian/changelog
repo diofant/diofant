@@ -1,0 +1,6 @@
+sympy (0.3-pre-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Fabian <fabian@fseoane.net>  Wed, 21 Mar 2007 13:56:19 +0100
+

@@ -155,7 +155,7 @@ setup(
       package_data = {'sympy.modules.mathml' : ['data/mmlctop.xsl', 
                                                 'data/mmltex.xsl',
                                                 'data/simple_mmlctop.xsl' ]},
-      scripts = ['bin/isym.py'],
+      scripts = ['bin/isympy'],
       ext_modules = [],
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
