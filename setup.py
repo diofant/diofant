@@ -157,6 +157,7 @@ setup(
                                                 'data/simple_mmlctop.xsl' ]},
       scripts = ['bin/isympy'],
       ext_modules = [],
+      data_files = [('share/man/man1', ['doc/man/isympy.1'])],
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
                      'test_doc' : test_sympy_doc,

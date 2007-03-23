@@ -2,6 +2,14 @@
 # -*- makefile -*-
 
 DEB_PYTHON_SYSTEM=pycentral
+DBK2MAN_XSL=/usr/share/docbook2X/xslt/man/docbook.xsl
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
+
+makebuilddir/python-sympy::
+	docbook2x-man doc/man/isympy.xml
+	mv isympy.1 doc/man/isympy.1
+
+clean::
+	-rm doc/man/isympy.1
