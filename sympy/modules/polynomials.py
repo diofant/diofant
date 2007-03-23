@@ -28,3 +28,13 @@ def ispoly(p,x):
         a,b = p.getab()
         return ispoly(a, x) and ispoly(b, x)
     return False
+
+def fact(n):
+    "Returns n!"
+    if n == 0: return 1
+    else: return fact(n-1)*n
+
+def coeff(poly, x, n):
+    """Returns the coefficient of x**n in the polynomial"""
+    assert ispoly(poly,x)
+    return poly.diffn(x,n).subs(x,0)/fact(n)

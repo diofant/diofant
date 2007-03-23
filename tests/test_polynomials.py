@@ -18,3 +18,13 @@ def test_ispoly():
 
     #assert Rational(1).ispoly(sin(x))
     #assert not exp(x).ispoly(sin(x))
+
+def test_coeff():
+    x = Symbol("x")
+    assert coeff(x**2, x, 1) == 0
+    assert coeff(x**2, x, 2) == 1
+    assert coeff(x**2, x, 2) != 0
+
+    assert coeff(2*x+18*x**8, x, 1) == 2
+    assert coeff(2*x+18*x**8, x, 4) == 0
+    assert coeff(2*x+18*x**8, x, 8) == 18
