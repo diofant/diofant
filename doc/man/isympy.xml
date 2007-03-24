@@ -120,7 +120,7 @@ and docbook-xsl in your Build-Depends control field.
   <refsect1>
     <title>SEE ALSO</title>
 
-    <para></para>
+    <para>Homepage: http://code.google.com/p/sympy/</para>
 
   </refsect1>
   <refsect1>
