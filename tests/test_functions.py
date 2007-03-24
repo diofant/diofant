@@ -112,7 +112,11 @@ def test_general_function():
     e=nu(x)
     edx=e.diff(x)
     edy=e.diff(y)
-    assert e==nu(x)
-    assert edx!=nu(x)
-    assert edx==Derivative(nu(x), x)
-    assert edy==0
+    edxdx=e.diff(x).diff(x)
+    edxdy=e.diff(x).diff(y)
+    assert e == nu(x)
+    assert edx != nu(x)
+    assert edx == Derivative(nu(x), x)
+    assert edy == 0
+    assert edxdx == Derivative(Derivative(nu(x), x), x)
+    assert edxdy == 0

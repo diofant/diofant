@@ -267,6 +267,12 @@ class Derivative(Basic):
         self.f=self.sympify(f)
         self.x=self.sympify(x)
 
+    def eval(self):
+        if isinstance(self.f, Derivative):
+            if self.f.x != self.x and not self.f.has(self.x):
+                return Rational(0)
+        return self
+
     def doit(self):
         return self.f.diff(self.x)
 
