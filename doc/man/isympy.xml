@@ -35,9 +35,9 @@ and docbook-xsl in your Build-Depends control field.
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
   <!ENTITY dhemail     "<email>fabian@fseoane.net</email>">
-  <!ENTITY dhusername  "Fabian">
+  <!ENTITY dhusername  "Fabian Seoane">
   <!ENTITY dhucpackage "<refentrytitle>isympy</refentrytitle>">
-  <!ENTITY dhpackage   "sympy">
+  <!ENTITY dhpackage   "isympy">
 
   <!ENTITY debian      "<productname>Debian</productname>">
   <!ENTITY gnu         "<acronym>GNU</acronym>">
