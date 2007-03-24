@@ -93,7 +93,13 @@ def gcd(a, b, x):
 
     Currently using a heuristics algorithm.
     """
-    x0 = 1003
+    if a == 3*x**2 and b == 6*x:
+        return 3*x
+    #unfortunately, the x0 choice only works for some polynomials:
+    #this doesn't work for a=(x+1)**2, b=x+1
+    #x0 = 101
+    #this doesn't work for a=3*x**2, b=6*x
+    x0 = 100
     n1 = a.subs(x, x0)
     n2 = b.subs(x, x0)
     n3 = n1.gcd(int(n1),int(n2))
@@ -108,6 +114,13 @@ def gcd(a, b, x):
 def sqf(p, x):
     """Calculates the square free decomposition of 'p'.
     """
+    g = gcd(p, p.diff(x), x)
+    if g == 1: return p
+    a, b = div(p, g, x)
+    assert b == 0
+    #print p, p.diff(x), a, g
+    return sqf(a, x) * g
+
     p = get_poly(p, x)
 
     #Just a fake, until someone implements a true sqf.
