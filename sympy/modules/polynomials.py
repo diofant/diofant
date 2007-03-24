@@ -105,10 +105,13 @@ def gcd(a, b, x):
                 c.append((t,n))
         return poly(c, x)
 
-    c = getcandidate(a, b, x, 100)
-    if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0: return c
-    c = getcandidate(a, b, x, 101)
-    if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0: return c
+    #try some values of x0. If you find polynomials for which gcd doesn't
+    #work, just find a number of x0, that works and add it to the end
+    #of this list:
+    for x0 in [100, 101]:
+        c = getcandidate(a, b, x, x0)
+        if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0: 
+            return c
 
     raise PolynomialException("Can't calculate gcd for these polynomials")
 
@@ -135,7 +138,7 @@ def div(f, g, x):
         if isinstance(s1, Mul):
             a,b = s1.getab()
             if isinstance(a, Number) and not a.isinteger():
-                #the coefficient is rational but not real, let's
+                #the coefficient is rational but not integer, let's
                 #put it in the remainder and we are done
                 return q, f
         f = (f - g*s1).expand()
