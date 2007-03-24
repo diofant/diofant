@@ -167,14 +167,14 @@ class Basic(object):
         
     def __lt__(self,a):
         from sympy.core.numbers import Real
-        if _isnumber(self) and _isnumber(a): 
+        if self._isnumber(self) and self._isnumber(a): 
             return self.evalf() < Real(a).evalf()
         else:
             raise NotImplementedError("'<' not supported.")
         
     def __gt__(self,a):
         from numbers import Real
-        if _isnumber(self) and _isnumber(a): 
+        if self._isnumber(self) and self._isnumber(a): 
             return self.evalf() > Real(a).evalf()
         else:
             raise NotImplementedError("'<' not supported.")
@@ -249,7 +249,7 @@ class Basic(object):
         
     @staticmethod
     def cmphash(a,b):
-        return _sign(a.hash()-b.hash())
+        return Basic._sign(a.hash()-b.hash())
         
     def diffn(self,sym,n):
         while n:
@@ -399,56 +399,58 @@ class Basic(object):
     def print_tree(self):
         """The canonical tree representation"""
         return str(self)
+    
+    def atoms(self, s = [], type=None):
+        """Returns the atoms (objects of length 1) that form current
+        object. 
+        
+        Example: 
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> y = Symbol('y')
+        >>> (x+y**2+ 2*x*y).atoms()
+        [y, 2, x]
+        
+        You can also filter the results by a given type of object
+        >>> (x+y+2+y**2*sin(x)).atoms(type=sin)
+        [sin(x)]
+        
+        >>> (x+y+2+y**2*sin(x)).atoms(type=Symbol)
+        [y, x]
+        
+        >>> (x+y+2+y**2*sin(x)).atoms(type=Number)
+        [2]
+        """
+        s_temp = s[:] # make a copy to avoid collision with global s
+        for arg in self:
+            if len(arg) == 1:
+                if not arg in s_temp:
+                    s_temp.append(arg)
+            else:
+                # recursive
+                s_temp = arg.atoms(s_temp)
+        if type is not None:
+            # sort only the atoms of a given type
+            return filter(lambda x : isinstance(x, type), s_temp)
+        return s_temp
 
-def _isnumber(x):
-    # TODO: remove
-    #don't use this function. Use x.isnumber() instead
-    from numbers import Number
-    from basic import Basic
-    from decimal import Decimal
-    if isinstance(x, (Number, int, float, long, Decimal)):
-        return True
-    assert isinstance(x, Basic)
-    return x.isnumber()
-
-def _sign(x):
-    """Return the sign of x, that is, 
-    1 if x is positive, 0 if x == 0 and -1 if x is negative
-    """
-    if x < 0: return -1
-    elif x==0: return 0
-    else: return 1
-
-def atoms(expr, s = [], type=None):
-    """Returns the atoms (objects of length 1) that form the 
-    expression. 
+    @staticmethod
+    def _isnumber(x):
+        # TODO: remove
+        #don't use this function. Use x.isnumber() instead
+        from numbers import Number
+        from basic import Basic
+        from decimal import Decimal
+        if isinstance(x, (Number, int, float, long, Decimal)):
+            return True
+        assert isinstance(x, Basic)
+        return x.isnumber()
     
-    Example: 
-    >>> from sympy import *
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> atoms(x+y**2+ 2*x*y)
-    [y, 2, x]
-    
-    You can also filter the results by a given type of object
-    >>> atoms(x+y+2+y**2*sin(x), type=sin)
-    [sin(x)]
-    
-    >>> atoms(x+y+2+y**2*sin(x), type=Symbol)
-    [y, x]
-    
-    >>> atoms(x+y+2+y**2*sin(x), type=Number)
-    [2]
-    """
-    s_temp = s[:] # make a copy to avoid collision with global s
-    for arg in expr:
-        if len(arg) == 1:
-            if not arg in s_temp:
-                s_temp.append(arg)
-        else:
-            # recursive
-            s_temp = atoms(arg, s_temp)
-    if type is not None:
-        # sort only the atoms of a given type
-        return filter(lambda x : isinstance(x, type), s_temp)
-    return s_temp
+    @staticmethod
+    def _sign(x):
+        """Return the sign of x, that is, 
+        1 if x is positive, 0 if x == 0 and -1 if x is negative
+        """
+        if x < 0: return -1
+        elif x==0: return 0
+        else: return 1

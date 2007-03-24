@@ -52,7 +52,7 @@ __version__ = "0.3"
 __revision__ = "pre"
 
 from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
-from sympy.core import atoms, pi, I
+from sympy.core import pi, I
 
 from sympy.modules.limits import limit, limitinf
 from sympy.modules.trigonometric import sin, cos, tan, arctan
