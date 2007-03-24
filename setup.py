@@ -99,10 +99,12 @@ class clean(Command):
         import os
         os.system("py.cleanup")
         os.system("rm -f python-build-stamp-2.4")
+        os.system("rm -f MANIFEST")
         os.system("rm -f debian/files")
         os.system("rm -f debian/python-sympy.substvars")
         os.system("rm -rf debian/python-sympy")
         os.system("rm -rf build")
+        os.system("rm -rf dist")
 
 class test_sympy_core(Command):
     """Run only the tests concerning features of sympy.core.
