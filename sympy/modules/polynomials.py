@@ -2,32 +2,15 @@
 
 from sympy.core import Pow, Add, Mul, Rational, Number, Symbol
 
-def ispoly(p,x):
+class PolynomialException(Exception):
+    pass
 
-    #if not isinstance(x, Symbol):
-    #    d=Symbol("d",dummy=True)
-    #    e=p.subs(x,d)
-    #    if e.has(x): #this "x" is the variable in sin(x), for example
-    #        return False
-    #    print e,x
-    #    return e.ispoly(d)
-    if not p.has(x):
-        return True
-    if isinstance(p,Number):
-        return True
-    if p==x:
-        return True
-    if isinstance(p, Pow):
-        if isinstance(p.exp, Rational) and p.exp.isinteger():
-            if int(p.exp)>0 and ispoly( p.base, x):
-                return True
-    if isinstance(p,Add):
-        a,b = p.getab()
-        return ispoly(a, x) and ispoly(b, x)
-    if isinstance(p,Mul):
-        a,b = p.getab()
-        return ispoly(a, x) and ispoly(b, x)
-    return False
+def ispoly(p,x):
+    try:
+        get_poly(p,x)
+    except PolynomialException:
+        return False
+    return True
 
 def fact(n):
     "Returns n!"
@@ -38,3 +21,31 @@ def coeff(poly, x, n):
     """Returns the coefficient of x**n in the polynomial"""
     assert ispoly(poly,x)
     return poly.diffn(x,n).subs(x,0)/fact(n)
+
+def get_poly(p, x):
+    if not p.has(x):
+        return [(p,0)]
+    if p==x:
+        return [(1,1)]
+    if isinstance(p, Pow):
+        if isinstance(p.exp, Rational) and p.exp.isinteger():
+            n = int(p.exp)
+            if n>0 and isinstance(p.base, Symbol):
+                return [(1,n)]
+    if isinstance(p,Add):
+        a,b = p.getab()
+        r = get_poly(a,x) + get_poly(b,x)
+        r.sort(key = lambda x: x[1])
+        return r
+    if isinstance(p,Mul):
+        a,b = p.getab()
+        if isinstance(a, Number):
+            c,n = get_poly(b,x)[0]
+            return [(a,n)]
+        a, b = get_poly(a,x), get_poly(b,x)
+        assert len(a) == 1
+        assert len(b) == 1
+        a, b = a[0], b[0]
+        r = (a[0]*b[0], a[1]+b[1])
+        return [r]
+    raise PolynomialException("p is not a polynomial")
