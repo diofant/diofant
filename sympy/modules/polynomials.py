@@ -93,7 +93,7 @@ def gcd(a, b, x):
 
     Currently using a heuristics algorithm.
     """
-    x0 = 100
+    x0 = 1003
     n1 = a.subs(x, x0)
     n2 = b.subs(x, x0)
     n3 = n1.gcd(int(n1),int(n2))
