@@ -84,7 +84,7 @@ and docbook-xsl in your Build-Depends control field.
     <para>This manual page documents briefly the
       <command>&dhpackage;</command> command.</para>
 
-    <para>isympy is a Python shell for sympy. It imports the modules
+    <para>isympy is a Python shell for SymPy. It imports the modules
     sympy and defines the symbols x, y, z. 
     </para>
 
