@@ -120,3 +120,7 @@ def test_general_function():
     assert edy == 0
     assert edxdx == Derivative(Derivative(nu(x), x), x)
     assert edxdy == 0
+
+    #this works, but is semantically wrong, we need to settle on some interface
+    #first
+    assert nu(x**2).diff(x) == Derivative(nu(x**2), x**2) * 2*x
