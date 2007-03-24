@@ -33,9 +33,6 @@ class sin(Function):
          U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
     
-    def getname(self):
-        return "sin"
-        
     def derivative(self):
         return cos(self.arg)
 
@@ -84,9 +81,6 @@ class cos(Function):
     """Return the cosine of x (measured in radians)
     """
     
-    def getname(self):
-        return "cos"
-        
     def derivative(self):
         return -sin(self.arg)
 
@@ -136,9 +130,6 @@ class tan(Function):
     """Return the tangent of x (measured in radians)
     """
     
-    def getname(self):
-        return "tan"
-        
     def derivative(self):
         return Rational(1) / (cos(self.arg)**2)
         
@@ -150,9 +141,6 @@ class arctan(Function):
     """Return the tangent of x (measured in radians)
     """
     
-    def getname(self):
-        return "arctan"
-        
     def derivative(self):
         return Rational(1) / (1+(self.arg)**2)
         

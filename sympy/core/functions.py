@@ -15,6 +15,9 @@ class Function(Basic):
     def __init__(self, arg):
         Basic.__init__(self)
         self.arg = self.sympify(arg)
+
+    def getname(self):
+        return self.__class__.__name__
         
     def hash(self):
         if self.mhash: 
@@ -88,9 +91,6 @@ class exp(Function):
     """Return e raised to the power of x
     """ 
     
-    def getname(self):
-        return "exp"
-        
     def derivative(self):
         return exp(self.arg)
         
@@ -132,9 +132,6 @@ class log(Function):
     """Return the natural logarithm (base e) of x
     """
     
-    def getname(self):
-        return "log"
-        
     def derivative(self):
         return Rational(1)/self.arg
         
@@ -219,9 +216,6 @@ class abs_(Function):
     def derivative(self):
         return sign(self.arg)
     
-    def getname(self):
-        return "abs"
-    
     def series(self):
         pass
     
@@ -237,9 +231,6 @@ class abs_(Function):
         raise ArgumentError("Wrong function arguments")
     
 class sign(Function):
-    
-    def getname(self):
-        return "sign"
     
     def eval(self):
         if self.arg.isnumber():

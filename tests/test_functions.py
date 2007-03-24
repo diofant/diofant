@@ -104,8 +104,7 @@ def test_invtrig():
 
 def test_general_function():
     class nu(Function):
-        def getname(self):
-            return "nu"
+        pass
 
     x=Symbol("x")
     y=Symbol("y")
