@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol,Rational
+from sympy import Symbol, Rational, Derivative
 
 x = g.Symbol('x')
 y = g.Symbol('y')
@@ -56,3 +56,8 @@ def test_bug5():
     e=1/x
     assert str(e) != "x**-1"
     assert str(e) == "x**(-1)"
+
+def test_Derivative():
+    x = Symbol("x")
+    e = Derivative(x**2, x)
+    assert str(e) == "(x**2)'"

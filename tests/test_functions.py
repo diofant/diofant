@@ -114,4 +114,5 @@ def test_general_function():
     edy=e.diff(y)
     assert e==nu(x)
     assert edx!=nu(x)
+    assert edx==Derivative(nu(x), x)
     assert edy==0
