@@ -91,10 +91,10 @@ epydoc --config doc/apidoc.conf
 6. How to create a Debian package
 ---------------------------------
 
-First install these packages: cdbs, debhelper, fakeroot
+First install these packages: cdbs, debhelper, fakeroot, docbook2x
 
 Then issue:
 
-fakeroot dpkg-buildpackage
+python setup.py build_dpkg
 
 This will create a python-sympy Debian package in the parent directory.
