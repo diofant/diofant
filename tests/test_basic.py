@@ -57,8 +57,7 @@ def test_ldegree():
 def test_leadterm():
     x=g.Symbol("x")
     log=g.log
-    assert (3+2*x**(log(3)/log(2)-1)).eval().leadterm(x)==(3,0)
-
+    assert (3+2*x**(log(3)/log(2)-1)).leadterm(x)==(3,0)
 
 def test_print_tree():
     x=g.Symbol("x") 

@@ -1,9 +1,8 @@
 import hashing
 from basic import Basic
 from symbol import Symbol, NCSymbol
-from numbers import Rational,Real,Number,ImaginaryUnit
-from functions import log,exp
-#from prettyprint import StringPict
+from numbers import Rational, Real, Number, ImaginaryUnit
+from functions import log, exp
 
 class pole_error(Exception):
     pass
@@ -14,17 +13,17 @@ class Pow(Basic):
 
     def __init__(self,a,b):
         Basic.__init__(self)
-        self.base = self.sympify(a)
-        self.exp = self.sympify(b)
+        self._args = [Basic.sympify(a), Basic.sympify(b)]
         
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash=hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.add(self.base.hash())
-        self.mhash.add(self.exp.hash())
-        return self.mhash.value
+        if self._mhash:
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.add(self.base.hash())
+        self._mhash.add(self.exp.hash())
+        return self._mhash.value
+
         
     def __str__(self):
         from addmul import Pair
@@ -46,13 +45,18 @@ class Pow(Basic):
     @property
     def mathml(self):
         s = "<apply>" + "<" + self.mathml_tag + "/>"
-        for a in self.get_baseandexp():
+        for a in self._args:
                 s += a.mathml
         s += "</apply>"
         return s
         
-    def get_baseandexp(self):
-        return (self.base,self.exp)
+    @property
+    def base(self):
+        return self._args[0]
+    
+    @property
+    def exp(self):
+        return self._args[1]
         
     def eval(self):
         from addmul import Mul
@@ -92,21 +96,21 @@ class Pow(Basic):
         if isinstance(self.base,Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
         if isinstance(self.base,exp): 
-            if self.base.arg.isnumber():
-                return exp(self.exp*self.base.arg)
+            if self.base.isnumber():
+                return exp(self.exp*self.base._args)
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
             if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
                 return (Pow(a,self.exp) * Pow(b,self.exp))
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.isinteger():
-                if int(self.exp) == 2:
-                    return -Rational(1)
+                if int(self.exp) % 2 == 0:
+                    return Rational(-1) ** ((int(self.exp) % 4)/2)
         if isinstance(self.exp,Rational) and self.exp.isinteger():
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
-                    n= self.base.args[0]
-                    if n.isnumber() and n<0:
+                    n = self.base[0]
+                    if n.isnumber() and n < 0:
                         return (-self.base)**self.exp
         if isinstance(self.base, NCSymbol):
             if isinstance(self.exp, Rational) and self.exp.isinteger():
@@ -128,8 +132,9 @@ class Pow(Basic):
         else:
             raise ValueError
 
-    def commutative(self):
-        return self.base.commutative() and self.exp.commutative()
+    @property
+    def is_commutative(self):
+        return self.base.is_commutative and self.exp.is_commutative
         
     def diff(self,sym):
         f = self.base
@@ -197,6 +202,7 @@ class Pow(Basic):
         if isinstance(e.base, Symbol):
             #this is wrong for nonreal exponent
             return self
+        print self
         raise NotImplementedError
         
     def subs(self,old,new):

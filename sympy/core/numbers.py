@@ -1,5 +1,5 @@
-import hashing
-from basic import Basic
+from sympy.core import hashing
+from sympy.core.basic import Basic
 import decimal
 
 class Number(Basic):
@@ -18,10 +18,13 @@ class Number(Basic):
     mathml_tag = "cn"
     
     def __init__(self):
-        Basic.__init__(self)
+        Basic.__init__(self, is_commutative = True)
         
     def __int__(self):
         raise NotImplementedError
+    
+    def __len__(self):
+        return 1
     
     def __float__(self):
         return float(self.evalf())
@@ -55,11 +58,11 @@ class Infinity(Number):
         return "Inf"
     
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        return self._mhash.value
     
     def sign(self):
         return self._sign
@@ -91,12 +94,12 @@ class Real(Number):
             self.num = decimal.Decimal(str(float(num)))
         
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash=hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addfloat(self.num)
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash=hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addfloat(self.num)
+        return self._mhash.value
         
     def __str__(self):
         if self.num < 0:
@@ -138,12 +141,6 @@ class Real(Number):
     def __rpow__(self, a):
         from power import Pow
         return Pow(a, self)
-        
-    def iszero(self):
-        if self.num == 0:
-            return True
-        else: 
-            return False
         
     def isone(self):
         if self.num == 1:
@@ -193,13 +190,13 @@ class Rational(Number):
         return sign(self.p)*sign(self.q)
         
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addint(self.p)
-        self.mhash.addint(self.q)
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addint(self.p)
+        self._mhash.addint(self.q)
+        return self._mhash.value
         
     def gcd(self,a,b):
         """Primitive algorithm for a greatest common divisor of "a" and "b"."""
@@ -291,6 +288,9 @@ class Rational(Number):
 class Constant(Basic):
     """Mathematical constant abstract class."""
     
+    def __init__(self):
+        Basic.__init__(self, is_commutative = True)
+    
     def __call__(self, precision=28):
         return self.evalf(precision)
        
@@ -298,11 +298,11 @@ class Constant(Basic):
         return self
  
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        return self._mhash.value
 
     def diff(self,sym):
         return Rational(0)
@@ -373,7 +373,7 @@ class ConstPi(Constant):
         """
         _pi_str = '3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068'
         if precision <= 100:
-            # for small precision 
+            # cache for small precision 
             return Real(_pi_str[:precision])
         #for arbitrary precision, we use series
         # FIXME: better algorithms are known

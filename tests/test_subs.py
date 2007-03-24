@@ -32,12 +32,12 @@ def test_subs():
     assert e == 2*g.cos(x)**2
 
 def test_logexppow():
-    x=g.Symbol("x")
-    w=g.Symbol("dummy :)")
-    e=(3**(1+x)+2**(1+x))/(3**x+2**x)
-    e=e.eval()
-    assert e.subs(2**x,w)!=e
-    assert e.subs(g.exp(x*g.log(g.Rational(2))),w)!=e
+    x = g.Symbol("x")
+    w = g.Symbol("dummy :)")
+    e = (3**(1+x)+2**(1+x))/(3**x+2**x)
+    e = e.eval()
+    assert e.subs(2**x, w) != e
+    assert e.subs(g.exp(x*g.log(g.Rational(2))),w) != e
 
 def test_bug():
     x1=g.Symbol("x1")

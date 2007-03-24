@@ -222,7 +222,7 @@ def sign(e,x):
         if sign(e.base,x) == 1: 
             return 1
     elif isinstance(e, s.log): 
-        return sign(e.arg-1, x)
+        return sign(e._args -1, x)
     elif isinstance(e, s.core.Add):
         #print limitinf(e,x) 
         #print sign(limitinf(e,x),x) 
@@ -253,15 +253,15 @@ def rewrite(e,Omega,x,wsym):
     Omega.sort(cmp=cmpfunc)
     g=Omega[-1] #g is going to be the "w" - the simplest one in the mrv set
     assert isinstance(g,s.exp) #all items in Omega should be exponencials
-    sig= (sign(g.arg,x)==1) 
+    sig= (sign(g._args,x)==1) 
     if sig: wsym=1/wsym #if g goes to infty, substitute 1/w
     #O2 is a list, which results by rewriting each item in Omega using "w"
     O2=[]
     for f in Omega: 
         assert isinstance(f,s.exp) #all items in Omega should be exponencials
-        c=mrv_leadterm(f.arg/g.arg,x)
+        c=mrv_leadterm(f._args/g._args,x)
         assert c[1]==0
-        O2.append(s.exp(tryexpand(f.arg-c[0]*g.arg))*wsym**c[0])
+        O2.append(s.exp(tryexpand(f._args-c[0]*g._args))*wsym**c[0])
     #Remember that Omega contains subexpressions of "e". So now we find
     #them in "e" and substitute them for our rewriting, stored in O2
     f=e 
@@ -271,7 +271,7 @@ def rewrite(e,Omega,x,wsym):
     #tmp.append("Omega=%s; O2=%s; w=%s; wsym=%s\n"%(Omega,O2,g,wsym))
 
     #finally compute the logarithm of w (logw). 
-    logw=g.arg
+    logw=g._args
     if sig: logw=-logw     #log(w)->log(1/w)=-log(w)
     return f,logw
 
@@ -327,14 +327,14 @@ def mrv(e,x):
         else:
             return mrv(e.base,x)
     elif isinstance(e, s.log): 
-        return mrv(e.arg, x)
+        return mrv(e._args, x)
     elif isinstance(e, s.exp): 
-        if limitinf(e.arg,x) == s.infty:
-            return max([e],mrv(e.arg, x), x)
+        if limitinf(e._args,x) == s.infty:
+            return max([e],mrv(e._args, x), x)
         else:
-            return mrv(e.arg,x)
+            return mrv(e._args,x)
     elif isinstance(e, s.core.Function): 
-        return mrv(e.arg,x)
+        return mrv(e._args,x)
     raise "unimplemented in mrv: %s"%e
 
 def max(f,g,x):
@@ -374,14 +374,14 @@ class Limit(Basic):
         return limit(self.e,self.x,self.x0)
 
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addint(self.e.hash())
-        self.mhash.addint(self.x.hash())
-        self.mhash.addint(self.x0.hash())
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addint(self.e.hash())
+        self._mhash.addint(self.x.hash())
+        self._mhash.addint(self.x0.hash())
+        return self._mhash.value
     
     @property
     def mathml(self):

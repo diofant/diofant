@@ -47,24 +47,27 @@ class Symbol(Basic):
 
     def __str__(self):
         return str(self.name)
+    
+    def __getitem__(self, iter):
+        return (self,)[iter]
 
-    def print_tex(self):
-        return str(self.name_tex)
+    def __len__(self):
+        return 1
 
-    def print_pretty(self):
-		return StringPict(self.print_sympy())
-        
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addstr(self.name)
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addstr(self.name)
         if self.dummy:
-            self.mhash.addint(self.dummycount)
-        return self.mhash.value
+            self._mhash.addint(self.dummycount)
+        return self._mhash.value
 
     def diff(self,sym):
+        if not self.is_commutative:
+            raise NotImplementedError("Differentiation of non-commutative objects. " + \
+                                      + "Doesn't have a meaning.")
         if self.isequal(sym):
             return Rational(1)
         else:
@@ -77,7 +80,8 @@ class Symbol(Basic):
 
 class NCSymbol(Symbol):
 
-    def commutative(self):
+    @property
+    def is_commutative(self):
         return False
 
     def diff(self,sym):

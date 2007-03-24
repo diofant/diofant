@@ -1,4 +1,12 @@
+"""Base class for all objects in sympy"""
+
+from sympy.core import hashing
+
 class AutomaticEvaluationType(type):
+    """Metaclass for all objects in sympy
+     It evaluates the object just after creation, so that for example
+     x+2*x becomes 3*x
+     """
     def __call__(self,*args,**kwargs):
         if kwargs.has_key("evaluate"):
             evaluate = kwargs["evaluate"]
@@ -59,7 +67,8 @@ class Basic(object):
                  'is_commutative' : None, 
                  'is_bounded' : None, 
                  }
-        self.mhash = 0
+        self._mhash = 0
+        self._args = []
         for k in kwargs.keys():
             if self._assumptions.has_key(k):
                 self._assumptions[k] = kwargs[k]
@@ -80,7 +89,13 @@ class Basic(object):
         else:
             raise AttributeError("'%s' object has no attribute '%s'"%
                 (self.__class__.__name__, name))
-        
+    
+    def __getitem__(self, iter):
+        return self._args[iter]
+    
+    def __len__(self):
+        return len(self._args)
+    
     def __repr__(self):
         return str(self)
 
@@ -223,10 +238,11 @@ class Basic(object):
             return a
         
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        return self._mhash.value
         
     def isequal(self,a):
         return self.hash() == (self.sympify(a)).hash()
@@ -257,7 +273,7 @@ class Basic(object):
         return e
         
     def subs(self,old,new):
-        if self.isequal(old):
+        if self == old:
             return self.sympify(new)
         else:
             return self
@@ -268,23 +284,22 @@ class Basic(object):
         return self.subs(sub,n)!=self
         
     def leadterm(self,x):
-        #TODO: move out of Basic, maybe to utils.py?
         """Returns the leading term c0*x^e0 of the power series 'self' in x
         with the lowest power of x in a form (c0,e0)
         """
+        #TODO: move out of Basic, maybe to polynomials.py?
         
         from numbers import Rational
         from power import Pow
         from addmul import Add,Mul
         from symbol import Symbol
+        
         def domul(x):
             if len(x) > 1:
-                return Mul(x)
+                return Mul(*x)
             return x[0]
         
         def extract(t,x):
-            # TODO: move out of Basic
-            # 
             """Parses "t(x)", which is expected to be in the form c0*x^e0,
             and returns (c0,e0). It raises an exception, if "t(x)" is not
             in this form.
@@ -296,31 +311,32 @@ class Basic(object):
             elif isinstance(t,Symbol):
                 return  Rational(1),  Rational(1)
             assert isinstance(t,Mul)
-            for i,a in enumerate(t.args):
+            for i,a in enumerate(t._args):
                 if a.has(x):
                     if isinstance(a,Pow):
-                        return  domul(t.args[:i] + t.args[i+1:]),  a.exp
+                        return  domul(t[:i] + t[i+1:]),  a.exp
                     if isinstance(a,Symbol):
-                        return  domul(t.args[:i] + t.args[i+1:]),  Rational(1)
+                        return  domul(t[:i] + t[i+1:]),  Rational(1)
                     assert False
             return t,s.Rational(0)
+        
         if not isinstance(self,Add):
             return extract(self,x)
         lowest = [0,(Rational(10)**10)]
-        l=Symbol("l",dummy=True)
+        l = Symbol("l",dummy=True)
         from functions import log
-        for t in self.args:
+        for t in self[:]:
             t2 = extract(t.subs(log(x),-l),x)
             if (lowest[1] - t2[1]).evalf()>0:
                 lowest=t2
             elif t2[1] == lowest[1]:
-                lowest=((lowest[0] + t2[0]),lowest[1])
+                lowest = ((lowest[0] + t2[0]),lowest[1])
         return lowest[0].subs(l,-log(x)), lowest[1].subs(l,-log(x))
         
     def ldegree(self,sym):
-        #TODO: move out of Basic
         """Returns the lowest power of the sym
         """
+        #TODO: move out of Basic
         return self.leadterm(sym)[1]
         
     def expand(self):
@@ -336,21 +352,10 @@ class Basic(object):
         return self.subs(I,-I)
 
     def sqrt(self):
-        #TODO: move to functions
         """Returns square root of self."""
+        #TODO: move to functions
         from numbers import Rational
         return (self**(Rational(1)/2))
-
-    def bounded(self):
-        """Is "self" bounded for all possible values of symbols?
-        
-        Generally not, but sin(x) and cos(x) are.
-        """
-        return False
-
-    def commutative(self):
-        """All subclasses of Basic are commutative by default"""
-        return True
 
     @staticmethod
     def muleval(x,y):
@@ -413,3 +418,37 @@ def _sign(x):
     if x < 0: return -1
     elif x==0: return 0
     else: return 1
+
+def atoms(expr, s = [], type=None):
+    """Returns the atoms (objects of length 1) that form the 
+    expression. 
+    
+    Example: 
+    >>> from sympy import *
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> atoms(x+y**2+ 2*x*y)
+    [y, 2, x]
+    
+    You can also filter the results by a given type of object
+    >>> atoms(x+y+2+y**2*sin(x), type=sin)
+    [sin(x)]
+    
+    >>> atoms(x+y+2+y**2*sin(x), type=Symbol)
+    [y, x]
+    
+    >>> atoms(x+y+2+y**2*sin(x), type=Number)
+    [2]
+    """
+    s_temp = s[:] # make a copy to avoid collision with global s
+    for arg in expr:
+        if len(arg) == 1:
+            if not arg in s_temp:
+                s_temp.append(arg)
+        else:
+            # recursive
+            s_temp = atoms(arg, s_temp)
+    if type is not None:
+        # sort only the atoms of a given type
+        return filter(lambda x : isinstance(x, type), s_temp)
+    return s_temp

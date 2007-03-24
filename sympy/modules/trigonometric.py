@@ -34,15 +34,15 @@ class sin(Function):
     """
     
     def derivative(self):
-        return cos(self.arg)
+        return cos(self._args)
 
     def bounded(self):
         return True
         
     def eval(self):
-        if not self.arg.isnumber():
+        if not self._args.isnumber():
              return self
-        a = 2*self.arg / pi
+        a = 2*self._args / pi
         if a - int(float(a)) == 0:
             # arg is a multiple of pi
             a_mod4 = int(a) % 4
@@ -56,10 +56,10 @@ class sin(Function):
         return self
     
     def evalf(self, precision=28):
-        if not self.arg.isnumber():
+        if not self._args.isnumber():
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
-        x = Real(self.arg)
+        x = Real(self._args)
         i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
         while s != lasts:
             lasts = s    
@@ -72,7 +72,7 @@ class sin(Function):
         return +s
 
     def evalc(self):
-        x, y = self.arg.get_re_im()
+        x, y = self._args.get_re_im()
         sinh = (exp(y)-exp(-y))/2
         cosh = (exp(y)+exp(-y))/2
         return sin(x)*cosh + I*cos(x)*sinh
@@ -82,16 +82,16 @@ class cos(Function):
     """
     
     def derivative(self):
-        return -sin(self.arg)
+        return -sin(self._args)
 
     def bounded(self):
         return True
     
     def eval(self):
-        if not self.arg.isnumber():
+        if not self._args.isnumber():
              return self
-        # case self.arg is a number 
-        a = 2*self.arg / pi
+        # case self._args is a number 
+        a = 2*self._args / pi
         if a - int(float(a)) == 0:
             # arg is a multiple of pi
             a_mod4 = int(a) % 4
@@ -105,10 +105,10 @@ class cos(Function):
         return self
     
     def evalf(self, precision=28):
-        if not self.arg.isnumber():
+        if not self._args.isnumber():
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
-        x = Real(self.arg)
+        x = Real(self._args)
         i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
         while s != lasts:
             lasts = s    
@@ -121,7 +121,7 @@ class cos(Function):
         return +s
 
     def evalc(self):
-        x, y = self.arg.get_re_im()
+        x, y = self._args.get_re_im()
         sinh = (exp(y)-exp(-y))/2
         cosh = (exp(y)+exp(-y))/2
         return cos(x)*cosh - I*sin(x)*sinh
@@ -131,10 +131,10 @@ class tan(Function):
     """
     
     def derivative(self):
-        return Rational(1) / (cos(self.arg)**2)
+        return Rational(1) / (cos(self._args)**2)
         
     def eval(self):
-        return sin(self.arg) / cos(self.arg)
+        return sin(self._args) / cos(self._args)
 
     
 class arctan(Function):
@@ -142,9 +142,9 @@ class arctan(Function):
     """
     
     def derivative(self):
-        return Rational(1) / (1+(self.arg)**2)
+        return Rational(1) / (1+(self._args)**2)
         
     def eval(self):
-        if self.arg == 0:
+        if self._args == 0:
             return Rational(0)
         return self

@@ -13,41 +13,45 @@ class Function(Basic):
     """
     
     def __init__(self, arg):
-        Basic.__init__(self)
-        self.arg = self.sympify(arg)
+        Basic.__init__(self, is_commutative=True)
+        self._args = self.sympify(arg)
 
     def getname(self):
         return self.__class__.__name__
         
+    def __getitem__(self, iter):
+        return (self._args,)[iter]
+        # do this to force extra nesting and so [:] is coherent across sympy
+    
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addint(self.arg.hash())
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addint(self._args.hash())
+        return self._mhash.value
     
     def diff(self, sym):
-        return (self.derivative()*self.arg.diff(sym))
+        return (self.derivative()*self._args.diff(sym))
     
     def derivative(self):
-        return Derivative(self,self.arg)
+        return Derivative(self,self._args)
     
     def subs(self, old, new):
         e = Basic.subs(self,old,new)
         #if e==self:
         if e.isequal(self):
-            return (type(self)(self.arg.subs(old,new)))
+            return (type(self)(self._args.subs(old,new)))
         else:
             return e
         
     def __str__(self):
         f = "%s(%s)"
-        return f % (self.getname(),str(self.arg))
+        return f % (self.getname(),str(self._args))
 
     @property
     def mathml(self):
-        return "<apply><%s/> %s </apply>" % (self.mathml_tag, self.arg.mathml)
+        return "<apply><%s/> %s </apply>" % (self.mathml_tag, self._args.mathml)
         
     def series(self, sym, n):
         from power import pole_error
@@ -57,7 +61,7 @@ class Function(Basic):
         except pole_error:
             pass
         #this only works, if arg(0) -> 0, otherwise we are in trouble
-        arg = self.arg.series(sym,n)
+        arg = self._args.series(sym,n)
         l = Symbol("l",dummy=True)
         #the arg(0) goes to z0
         z0 = arg.subs(log(sym),l).subs(sym,0)
@@ -83,7 +87,7 @@ class Function(Basic):
         @return: Real number
         
         """
-        if not self.arg.isnumber():
+        if not self._args.isnumber():
             raise ValueError 
         raise NotImplementedError
 
@@ -92,17 +96,17 @@ class exp(Function):
     """ 
     
     def derivative(self):
-        return exp(self.arg)
+        return exp(self._args)
         
     def expand(self):
-        return exp(self.arg.expand())
+        return exp(self._args.expand())
         
     def eval(self):
-        arg = self.arg
+        arg = self._args
         if isinstance(arg,Rational) and arg.iszero():
             return Rational(1)
         if isinstance(arg,log):
-            return arg.arg
+            return arg._args
         return self
 
     def evalc(self):
@@ -110,13 +114,13 @@ class exp(Function):
         from addmul import Mul
         #we will need to move sin,cos to core
         from sympy.modules import cos,sin
-        x,y = self.arg.get_re_im()
+        x,y = self._args.get_re_im()
         return exp(x)*cos(y)+I*exp(x)*sin(y)
     
     def evalf(self, precision=28):
-        if not self.arg.isnumber():
+        if not self._args.isnumber():
             raise ValueError 
-        x = Real(self.arg) # argument to decimal (full precision)
+        x = Real(self._args) # argument to decimal (full precision)
         decimal.getcontext().prec = precision + 2
         i, lasts, s, fact, num = 0, 0, 1, 1, 1
         while s != lasts:
@@ -133,16 +137,16 @@ class log(Function):
     """
     
     def derivative(self):
-        return Rational(1)/self.arg
+        return Rational(1)/self._args
         
     def eval(self):
         from addmul import Mul
         from power import Pow
-        arg=self.arg
+        arg = self._args
         if isinstance(arg,Rational) and arg.isone():
             return Rational(0)
         elif isinstance(arg,exp):
-            return arg.arg
+            return arg._args
         elif isinstance(arg,Mul):
             a,b = arg.getab()
             return log(a)+log(b)
@@ -152,7 +156,7 @@ class log(Function):
         
     def evalf(self):
         import math
-        return math.log(self.arg.evalf())
+        return math.log(self._args.evalf())
         
     def series(self,sym,n):
         from numbers import Rational
@@ -161,7 +165,7 @@ class log(Function):
             return Basic.series(self,sym,n)
         except pole_error:
             pass
-        arg=self.arg.series(sym,n)
+        arg=self._args.series(sym,n)
         #write arg as=c0*w^e0*(1+Phi)
         #log(arg)=log(c0)+e0*log(w)+log(1+Phi)
         #plus we expand log(1+Phi)=Phi-Phi**2/2+Phi**3/3...
@@ -190,13 +194,13 @@ class abs_(Function):
         from symbol import Symbol
         from numbers import I
         
-        arg = self.arg
+        arg = self._args
         if arg.isnumber() or (isinstance(arg, Symbol) and arg.is_real):
             return (arg*arg.conjugate()).expand()**Rational(1,2)
         elif isinstance(arg, Mul):
             _t = arg.getab()[0]
             if _t.isnumber() and _t < 0:
-                return abs(-self.arg)
+                return abs(-self._args)
         elif isinstance(arg, Add):
             b,a = arg.getab()
             if isinstance(a, Symbol) and a.is_real:
@@ -208,13 +212,13 @@ class abs_(Function):
         return self
         
     def evalf(self):
-        if self.arg.isnumber():
+        if self._args.isnumber():
             return self.eval()
         else:
             raise ValueError
         
     def derivative(self):
-        return sign(self.arg)
+        return sign(self._args)
     
     def series(self):
         pass
@@ -224,7 +228,7 @@ class abs_(Function):
         # here we are checking for function equality, like in
         # abs(x) == abs(-x)
         if isinstance(a, abs_): 
-            if a.arg**2 == self.arg**2:
+            if a._args**2 == self._args**2:
                 return true
             else:
                 return False
@@ -233,17 +237,17 @@ class abs_(Function):
 class sign(Function):
     
     def eval(self):
-        if self.arg.isnumber():
-            if self.arg < 0:
+        if self._args.isnumber():
+            if self._args < 0:
                 return Rational(-1)
-            elif self.arg == 0:
+            elif self._args == 0:
                 return Rational(0)
             else:
                 return Rational(1)
         return self
             
     def evalf(self, precision=28):
-        if isnumber(self.arg):
+        if isnumber(self._args):
             return self.eval()
         else:
             raise ArgumentError
@@ -272,16 +276,16 @@ class Derivative(Basic):
 
     def __str__(self):
         if isinstance(self.f,Function):
-            return "%s'(%r)"%(self.f.getname(),self.f.arg)
+            return "%s'(%r)"%(self.f.getname(),self.f._args)
         else:
             return "(%r)'"%self.f
 
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addint(self.f.hash())
-        self.mhash.addint(self.x.hash())
-        return self.mhash.value
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addint(self.f.hash())
+        self._mhash.addint(self.x.hash())
+        return self._mhash.value
 

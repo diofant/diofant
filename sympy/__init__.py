@@ -51,8 +51,16 @@ G{packagetree sympy}
 __version__ = "0.3"
 __revision__ = "pre"
 
-from sympy.core import Symbol, Rational, Real, exp, log, sign, infty, pi, I
+from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
+from sympy.core import atoms, pi, I
+
 from sympy.modules.limits import limit, limitinf
 from sympy.modules.trigonometric import sin, cos, tan, arctan
 from sympy.modules.integrals import integrate
 from sympy.core.functions import Derivative
+
+# try to import optinal modules
+try: 
+    from sympy.modules.printing import print_gtk
+except ImportError:
+    pass

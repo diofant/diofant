@@ -10,41 +10,38 @@ class Pair(Basic):
     
     def __init__(self, *args):
         Basic.__init__(self)
-        if len(args) == 2:
-            self.args = [args[0],args[1]]
-        elif len(args) == 1:
-            self.args = args[0]
-            assert len(self.args) > 1
-        else:
-            raise Exception("accept only 1 or 2 arguments")
-        
+        for arg in args:
+            assert isinstance(arg, Basic)
+        self._args = args
+
     def __lt__(self, a):
         return self.evalf() < a
     
     @property
     def mathml(self):
         s = "<apply>" + "<" + self.mathml_tag + "/>"
-        for a in self.args:
+        for a in self._args:
             s += a.mathml
         s += "</apply>"
         return s
     
     def hash(self):
-        if self.mhash: 
-            return self.mhash.value
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        for i in self.args:
-            self.mhash.add(i.hash())
-        return self.mhash.value
-        
+        if self._mhash:
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        for i in self[:]:
+            self._mhash.add(i.hash())
+        return self._mhash.value
+
+    
     def tryexpand(self, a):
         if isinstance(a,Mul) or isinstance(a,Pow):
             return a.expand()
         else:
             return a
             
-    def flatten(self, a):
+    def flatten(self, a ):
         """flatten([add(x,4),Mul(a,5),add(x,b),x]) ->
                 [x,4,Mul(a,5),x,b,x] if self is add
                 [add(x,4),a,5,add(x,b),x] if self is Mul
@@ -57,12 +54,13 @@ class Pair(Basic):
         b=[]
         for x in a:
             if isinstance(x,type(self)):
-                b.extend(x.args)
+                b.extend(x[:])
             else:
                 b.append(x)
         return b
         
-    def coerce(self, a, action):
+    @staticmethod
+    def coerce(a, action):
         """coerce([x,y,z],action) -> action(action(action([],x),y),z)"""
         #equivalent code:
         #exp=[]
@@ -71,7 +69,8 @@ class Pair(Basic):
         #return exp
         return reduce(action, a, [])
         
-    def coerce_numbers(self,a,action,default):
+    @staticmethod
+    def coerce_numbers(a, action, default):
         """coercenumbers([x,4,a,10],action,Rational(1)) ->
                 (action(action(Rational(1),4),10),[x,a])
 
@@ -103,10 +102,17 @@ class Pair(Basic):
         else:
             assert(isinstance(self,Add))
             f="Add\n"
-        for a in self.args[:-1]:
+        for a in self._args[:-1]:
             f += indent(a.print_tree())
-        f += indent(self.args[-1].print_tree(),2)
+        f += indent(self._args[-1].print_tree(),2)
         return f
+    
+    @property        
+    def is_commutative(self):
+        for x in self[:]:
+            if not x.is_commutative:
+                return False
+        return True
 
 
 class Mul(Pair):
@@ -115,14 +121,14 @@ class Mul(Pair):
      
     def __str__(self):
         f = ""
-        a = self.args
+        a = self._args
         if isinstance(a[0],Rational):
             if a[0].isminusone():
                 f = "-"
-                a = self.args[1:]
+                a = self._args[1:]
             elif a[0].isone():
                 f = ""
-                a = self.args[1:]
+                a = self._args[1:]
         for x in a:
             if isinstance(x,Pair):
                 f += "(%s)*"
@@ -133,13 +139,14 @@ class Mul(Pair):
     
 
     def print_prog(self):
-        f = "Mul(%s"+",%s"*(len(self.args)-1)+")"
-        return f % tuple([str(x) for x in self.args])
+        f = "Mul(%s"+",%s"*(len(self._args)-1)+")"
+        return f % tuple([str(x) for x in self._args])
         
     @staticmethod
     def get_baseandexp(a):
+        # TODO: remove
         if isinstance(a,Pow):
-            return a.get_baseandexp()
+            return a[:]
         else:
             return (a,Rational(1))
 
@@ -172,7 +179,7 @@ class Mul(Pair):
             #this whole "if" is to correctly cooperate with Pow.eval()
             #so we don't get infinite recursion. It's not elegant, but it
             #works.
-            if not xbase.commutative():
+            if not xbase.is_commutative:
                 e = Add(xexp,yexp)
                 if e != 0:
                     return Pow(xbase,e,evaluate=False), True
@@ -188,12 +195,12 @@ class Mul(Pair):
             e = []
             for i,y in enumerate(exp):
                 z,ok = self.try_to_coerce(y,x)
-                if isinstance(z, Number) and i!=0:
+                if isinstance(z, Number) and i != 0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
                     #or 2^(1/2)^2 to 2, etc.
                     #z == 0 is probably a bug
-                    assert z!=0
-                    e[0]*=z
+                    assert z != 0
+                    e[0] *= z
                 else:
                     e.append(z)
                 if ok: 
@@ -216,14 +223,14 @@ class Mul(Pair):
             c_part = []
             nc_part = []
             for x in a:
-                if x.commutative():
+                if x.is_commutative:
                     c_part.append(x)
                 else:
                     nc_part.append(x)
             return c_part, nc_part
 
         #(((a*4)*b)*a)*5  -> a*4*b*a*5:
-        a = self.flatten(self.args)
+        a = self.flatten(self._args)
         #separate C and NC parts
         c_part, nc_part = _nc_separate(a)
         nc_part_tmp = self.coerce(nc_part,_mul_nc)
@@ -253,7 +260,7 @@ class Mul(Pair):
         if n != 1: a=[n]+a
         if len(a) > 1:
             #construct self again, but evaluated this time
-            return type(self)(a,evaluate=False)
+            return Mul(evaluate=False, *a)
         elif len(a) == 1:
             return a[0]
         else:
@@ -277,21 +284,22 @@ class Mul(Pair):
         want to have just 2 arguments to Mul. Use this function to 
         simulate this interface. (the returned b = b*c*d.... )
         """
-        a=self.args[0]
-        if len(self.args)==2:
-            b=self.args[1]
+        a = self._args[0]
+        if len(self._args) == 1:
+            b = Rational(1)
+        elif len(self._args) == 2:
+            b = self._args[1]
         else:
-            assert len(self.args) > 2
-            b=Mul(self.args[1:])
+            b = Mul(*self._args[1:])
         return (a,b)
         
     def diff(self,sym):
         r = Rational(0)
-        for i in range(len(self.args)):
-            d = self.args[i].diff(sym)
-            for j in range(len(self.args)):
+        for i in range(len(self._args)):
+            d = self._args[i].diff(sym)
+            for j in range(len(self._args)):
                 if i != j:
-                    d *= self.args[j]
+                    d *= self._args[j]
             r+=d
         return r
         
@@ -325,12 +333,12 @@ class Mul(Pair):
         b = self.tryexpand(b)
         if isinstance(a,Add):
             d = Rational(0)
-            for t in a.args:
+            for t in a[:]:
                 d += (t*b).expand()
             return d
         elif isinstance(b,Add):
             d = Rational(0)
-            for t in b.args:
+            for t in b[:]:
                 d += (a*t).expand()
             return d
         else:
@@ -349,29 +357,21 @@ class Add(Pair):
     mathml_tag = "plus"
     
     def print_prog(self):
-        f = "Add(%s"+",%s"*(len(self.args)-1)+")"
-        return f % tuple([str(x) for x in self.args])
+        f = "Add(%s"+",%s"*(len(self._args)-1)+")"
+        return f % tuple([str(x) for x in self._args])
 
     def __str__(self):
         """Returns a string representation of the expression in self."""
         
-        f = "%s" % str(self.args[0])
-        for i in range(1,len(self.args)):
-            num_part = _extract_numeric(self.args[i])[0]
+        f = "%s" % str(self._args[0])
+        for i in range(1,len(self._args)):
+            num_part = _extract_numeric(self._args[i])[0]
             if num_part < 0:
-                f += "%s" % str(self.args[i])
+                f += "%s" % str(self._args[i])
             else:
-                f += "+%s" % str(self.args[i])
+                f += "+%s" % str(self._args[i])
         return f    
 
-    def contains_ncobject(self,a):
-        for x in a:
-            if not x.commutative():
-                return False
-        return True
-            
-    def commutative(self):
-        return self.contains_ncobject(self.args)
                 
     def getab(self):
         """Pretend that self = a+b and return a,b
@@ -380,12 +380,14 @@ class Add(Pair):
         want to ha+ve just 2 arguments to add. Use this function to 
         simulate this interface. (the returned b = b+c+d.... )
         """
-        a=self.args[0]
-        if len(self.args)==2:
-            b=self.args[1]
+        a=self._args[0]
+        if len(self._args) == 1:
+            b = Rational(0)
+        elif len(self._args) == 2:
+            b = self._args[1]
         else:
-            assert len(self.args) > 2
-            b = Add(self.args[1:])
+            assert len(self._args) > 2
+            b = Add(*self._args[1:])
         return (a,b)
     
 
@@ -409,7 +411,7 @@ class Add(Pair):
                     if z1 or z2:
                         if (z1 and z2):
                             #sanity check
-                            assert z1==z2
+                            assert z1 == z2
                         if z1:
                             e.append(z1)
                             ok = True
@@ -427,15 +429,16 @@ class Add(Pair):
             else:
                 return Real.__add__(a,b)
         
-        a = self.flatten(self.args)
+        a = self.flatten(self._args)
         a = self.coerce(a,_add)
         #n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
         n,a = self.coerce_numbers(a, myadd, Rational(0))
         a.sort(Basic.cmphash)
-        if not n.iszero(): a = [n] + a
+        if n != 0:
+            a = [n] + a
         if len(a)>1:
-            return Add(a,evaluate=False)
-        elif len(a)==1:
+            return Add(evaluate=False, *a)
+        elif len(a) == 1:
             return a[0]
         else:
             return Rational(0)
@@ -453,20 +456,20 @@ class Add(Pair):
     
     def diff(self,sym):
         d = Rational(0)
-        for x in self.args:
+        for x in self._args:
             d += x.diff(sym)
         return d
     
     def expand(self):
         """Tries to expands all the terms in the sum."""
         d = Rational(0)
-        for x in self.args:
+        for x in self._args:
             d += self.tryexpand(x)
         return d
     
     def subs(self,old,new):
         d = Rational(0)
-        for x in self.args:
+        for x in self._args:
             d += x.subs(old,new)
         return d
     
@@ -489,7 +492,7 @@ def _extract_numeric(x):
     For example, 1*x -> (1,x)
     Works only with simple expressions. 
     """
-    if isinstance(x, Mul) and isinstance(x.args[0], Number):
+    if isinstance(x, Mul) and isinstance(x._args[0], Number):
         return x.getab()
     else:
         return (Rational(1), x)
