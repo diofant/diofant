@@ -19,13 +19,14 @@ covers all the files in the sympy repository.
 svn checkout http://sympy.googlecode.com/svn/trunk/ sympy
 
 
-1. Documentation
----------------
+1. Documentation and usage
+--------------------------
+
+Everything is at:
 
 http://code.google.com/p/sympy/wiki/Documentation
 
-2. Usage
---------
+If you don't want to read that, here is a short usage:
 
 From this directory, start python and:
 >>> from sympy import Symbol, cos
@@ -35,18 +36,18 @@ From this directory, start python and:
 1+1/2*x^2+5/24*x^4+61/720*x^6+277/8064*x^8+50521/3628800*x^10
 
 Sympy also comes with a console that is a simple wrapper around the
-classic python console (or ipython when available) that loades the
+classic python console (or ipython when available) that loads the
 sympy namespace and defines three symbols: x, y, z.
 
 To start it issue:
 
   ./bin/isympy
 
-from this directory if sympy is not installed or simply
+from this directory if SymPy is not installed or simply
 
   isympy
 
-if sympy is installed somewhere in your PATH
+if SymPy is installed somewhere in your PATH.
 
 
 3. Tests
@@ -56,11 +57,13 @@ to execute tests, run
 
 python setup.py test
 
-in the current directory.  You may need to install py.test.
+in the current directory.  You need to have py.test installed.
 
 
 4. How to install py.test
 -------------------------
+
+If you use Debian, just install the python-codespeak-lib. Otherwise:
 
 Execute in your home directory:
 
@@ -72,8 +75,6 @@ your .bashrc:
 eval `python ~/py-dist/py/env.py`
 
 Now you can call "py.test" from anywhere.
-
-If you use Debian, just install the python-codespeak-lib.
 
 
 5. How to generate documentation
