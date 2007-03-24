@@ -1,4 +1,4 @@
-sympy (0.3-pre-1) unstable; urgency=low
+sympy (0.3) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
