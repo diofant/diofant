@@ -15,7 +15,6 @@ G{packagetree sympy.modules}
 from sympy.modules.trigonometric import sin, cos, tan, arctan
 from sympy.modules.limits import limit, limitinf, Limit
 from sympy.modules.integrals import integrate
-from sympy.modules.derivatives import derivate
 from sympy.modules.polynomials import ispoly
 from sympy.modules.paulialgebra import Pauli
 from sympy.modules.matrices import Matrix, zero, one, gamma, sigma
