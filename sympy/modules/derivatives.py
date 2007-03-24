@@ -1,7 +1,8 @@
 
 from sympy.core import Basic, hashing
 
-class Derivative(Basic):
+#currently, the Derivative class is in core.functions
+class xDerivative(Basic):
 
     def __init__(self,f,x):
         Basic.__init__(self)

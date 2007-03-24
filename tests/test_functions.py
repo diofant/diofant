@@ -5,7 +5,8 @@ import sympy as g
 import sympy as s
 from sympy import Symbol, log, arctan
 from sympy.core.functions import Function
-from sympy.modules.derivatives import Derivative
+#from sympy.modules.derivatives import Derivative
+from sympy.core.functions import Derivative
 
 def test_func():
     a=g.Symbol("a")
