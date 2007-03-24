@@ -61,6 +61,24 @@ class test_sympy(Command):
             sys.exit(-1)
         py.test.cmdline.main(args=["tests"])
         test_sympy_doc.run_doctest() # run also the doc test suite
+        
+class build_dpkg(Command):
+    """Make a nice .deb package
+    """
+    
+    description = "Make a deb package using dpkg"
+    user_options = []  # distutils complains if this is not here.
+
+
+    def initialize_options(self):  # distutils wants this
+        pass
+    
+    def finalize_options(self):    # this too
+        pass
+    
+    def run(self):
+        import os
+        os.system("fakeroot dpkg-buildpackage")
 
 class test_sympy_core(Command):
     """Run only the tests concerning features of sympy.core.
@@ -161,6 +179,7 @@ setup(
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
                      'test_doc' : test_sympy_doc,
+                     'build_dpkg' : build_dpkg, 
                      },
       )
 
