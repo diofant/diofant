@@ -76,7 +76,7 @@ class test_sympy_core(Command):
                    "tests/test_functions.py", "tests/test_hashing.py", 
                    "tests/test_numbers.py", "tests/test_series.py", 
                    "tests/test_str.py", "tests/test_subs.py", 
-                   "tests/test_symbol.py", "tests/test_util.py" 
+                   "tests/test_symbol.py"
                    ]
     
     def initialize_options(self):  # distutils wants this
