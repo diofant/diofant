@@ -121,16 +121,6 @@ def sqf(p, x):
     #print p, p.diff(x), a, g
     return sqf(a, x) * g
 
-    p = get_poly(p, x)
-
-    #Just a fake, until someone implements a true sqf.
-    if p == [(3,2)]:
-        return poly([(3,2)], x)
-    if p == [(1, 0), (2, 1), (1, 2)]:
-        return (x+1)**2
-
-    raise PolynomialException("sqf not (yet) implemented for this case")
-
 def div(f, g, x):
     """Expresses f = g*q + r, returns (q,r)
     """
