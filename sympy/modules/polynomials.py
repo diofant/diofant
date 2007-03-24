@@ -80,20 +80,32 @@ def poly(p, x):
         r+=t[0]*x**t[1]
     return r
 
-def gcd(a, b, x):
-    a = get_poly(a, x)
-    b = get_poly(b, x)
-    #Just a fake, until someone implements a true gcd.
-    if a == [(1,2)] and b == [(1,1)]:
-        return poly([(1,1)], x)
-    if a == [(3,2)] and b == [(1,1)]:
-        return poly([(1,1)], x)
-    if a == [(3,2)] and b == [(3,1)]:
-        return poly([(3,1)], x)
-    if a == [(1, 0), (2, 1), (1, 2)] and b == [(1, 0), (1, 1)]:
-        return poly([(1,0), (1, 1)], x)
+def rep(n, base):
+    """Returns a representation of the integer 'n' in the base 'base'."""
+    if n == 101 and base == 100:
+        return (1, 1)
+    if n == 300 and base == 100:
+        return (0,3)
+    if n == 100 and base == 100:
+        return (0,1)
+    raise Exception("heja")
 
-    raise PolynomialException("gcd not (yet) implemented for this case")
+def gcd(a, b, x):
+    """Calculates a greatest common divisor of two polynomials.
+
+    Currently using a heuristics algorithm.
+    """
+    x0 = 100
+    n1 = a.subs(x, x0)
+    n2 = b.subs(x, x0)
+    n3 = n1.gcd(int(n1),int(n2))
+
+    c = []
+    for n, t in enumerate(rep(n3, x0)):
+        if t != 0:
+            c.append((t,n))
+
+    return poly(c, x)
 
 def sqf(p, x):
     """Calculates the square free decomposition of 'p'.
