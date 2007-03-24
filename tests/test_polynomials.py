@@ -74,3 +74,10 @@ def test_sqf():
     x = Symbol("x")
     assert sqf(3*x**2, x) == 3*x**2
     assert sqf(x**2+2*x+1, x) == (x+1)**2
+
+def test_div():
+    x = Symbol("x")
+    assert div(x**3-12*x**2-42, x-3, x) == (x**2-9*x-27, -123)
+    assert div(x**3-12*x**2-42, x**2+x-3, x) == (x-13, 16*x-81)
+
+    assert div(3*x**3, x**2, x) == (3*x, 0)

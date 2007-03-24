@@ -117,3 +117,16 @@ def sqf(p, x):
         return (x+1)**2
 
     raise PolynomialException("sqf not (yet) implemented for this case")
+
+def div(f, g, x):
+    """Expresses f = g*q + r, returns (q,r)
+    """
+    fp = get_poly(f, x)
+    gp = get_poly(g, x)
+    q = 0
+    while fp[-1][1] >= gp[-1][1]:
+        s1 = poly([fp[-1]], x) / poly([gp[-1]], x)
+        f = (f - g*s1).expand()
+        fp = get_poly(f, x)
+        q+=s1
+    return q, f
