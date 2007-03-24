@@ -80,6 +80,30 @@ class build_dpkg(Command):
         import os
         os.system("fakeroot dpkg-buildpackage")
 
+class clean(Command):
+    """Cleans *.py and debian trashs, so you should get the same copy as 
+    is in the svn.
+    """
+    
+    description = "Clean everything"
+    user_options = []  # distutils complains if this is not here.
+
+
+    def initialize_options(self):  # distutils wants this
+        pass
+    
+    def finalize_options(self):    # this too
+        pass
+
+    def run(self):
+        import os
+        os.system("py.cleanup")
+        os.system("rm -f python-build-stamp-2.4")
+        os.system("rm -f debian/files")
+        os.system("rm -f debian/python-sympy.substvars")
+        os.system("rm -rf debian/python-sympy")
+        os.system("rm -rf build")
+
 class test_sympy_core(Command):
     """Run only the tests concerning features of sympy.core.
     It's a lot faster than running the complete test suite.
@@ -180,6 +204,7 @@ setup(
                      'test_core' : test_sympy_core,
                      'test_doc' : test_sympy_doc,
                      'build_dpkg' : build_dpkg, 
+                     'clean' : clean, 
                      },
       )
 
