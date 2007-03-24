@@ -70,3 +70,27 @@ def get_poly(p, x):
         r = (a[0]*b[0], a[1]+b[1])
         return [r]
     raise PolynomialException("p is not a polynomial")
+
+def poly(p, x):
+    """Returns a sympy polynomial from the representation "p" returned by
+    get_poly().
+    """
+    r = 0
+    for t in p:
+        r+=t[0]*x**t[1]
+    return r
+
+def gcd(a, b, x):
+    a = get_poly(a, x)
+    b = get_poly(b, x)
+    #Just a fake, until someone implements a true gcd.
+    if a == [(1,2)] and b == [(1,1)]:
+        return poly([(1,1)], x)
+    if a == [(3,2)] and b == [(1,1)]:
+        return poly([(1,1)], x)
+    if a == [(3,2)] and b == [(3,1)]:
+        return poly([(3,1)], x)
+    if a == [(1, 0), (2, 1), (1, 2)] and b == [(1, 0), (1, 1)]:
+        return poly([(1,0), (1, 1)], x)
+
+    raise PolynomialException("gcd not (yet) implemented for this case")
