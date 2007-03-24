@@ -8,7 +8,8 @@ XS-Python-Version: all
 
 Package: python-sympy
 Architecture: all 
-Depends: ${python:Depends}, python-libxslt1 
+Depends: ${python:Depends}, python-libxslt1
+Recommends: libgtkmathview-bin  
 XB-Python-Version: ${python:Versions}
 Description: Computer Algebra System (CAS) in Python
  SymPy is a symbolic manipulation package, written in pure Python. Its aim is to
