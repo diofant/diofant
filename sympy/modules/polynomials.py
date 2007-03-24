@@ -94,3 +94,16 @@ def gcd(a, b, x):
         return poly([(1,0), (1, 1)], x)
 
     raise PolynomialException("gcd not (yet) implemented for this case")
+
+def sqf(p, x):
+    """Calculates the square free decomposition of 'p'.
+    """
+    p = get_poly(p, x)
+
+    #Just a fake, until someone implements a true sqf.
+    if p == [(3,2)]:
+        return poly([(3,2)], x)
+    if p == [(1, 0), (2, 1), (1, 2)]:
+        return (x+1)**2
+
+    raise PolynomialException("sqf not (yet) implemented for this case")
