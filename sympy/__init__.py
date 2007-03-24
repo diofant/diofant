@@ -9,20 +9,27 @@ possible in order to be comprehensible and easily extensible.
 Features
 ========
 
-Currently, Sympy has only around 1600 lines of code (including comments) and
-its capabilities include:
+Currently, SymPy core has only around 1500 lines of code (including extensive
+comments) and its capabilities include:
 
-    - basic arithmetics *, /, +, -
-    - basic simplification (like a*b*b + 2*b*a*b -> 3*a*b^2)
-    - expansion (like (a+b)^2 -> a^2 + 2*a*b + b^2)
-    - functions (exp, ln, sin, cos, tan, ...)
-    - differentiation
-    - integration (currently it can do only very simple integrals)
-    - taylor series
-    - basic substitution (like x-> ln(x))
-    - arbitrary precision integers, rationals and floats
-    - complex numbers (currently only simple things)
-    - limits
+    * basic arithmetics *,/,+,-
+    * basic simplification (like a*b*b + 2*b*a*b -> 3*a*b^2)
+    * expansion (like (a+b)^2 -> a^2 + 2*a*b + b^2)
+    * functions (exp, ln, sin, cos, tan, ...)
+    * complex numbers (like exp(I*x).evalc() ->
+    * cos(x)+I*sin(x))
+    * differentiation
+    * taylor series
+    * basic substitution (like x-> ln(x))
+    * arbitrary precision integers,
+    * rationals and floats 
+
+Then there are SymPy modules (1000 lines) for these tasks:
+
+    * limits (like limit(x*log(x), x, 0) -> 0)
+    * integration (currently it can only do very simple integrals)
+    * polynomials (division, gcd, square free decomposition)
+    * symbolic matrices 
 
 To help you get started, here is a simple example in the python
 interpreter:
