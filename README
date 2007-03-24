@@ -98,3 +98,10 @@ Then issue:
 python setup.py build_dpkg
 
 This will create a python-sympy Debian package in the parent directory.
+
+7. Clean
+--------
+
+To clean everything (thus getting the same tree as in the svn):
+
+python setup.py clean
