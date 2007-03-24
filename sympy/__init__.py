@@ -42,7 +42,7 @@ Structure
 Sympy is basically divided in two modules: the core module, which contains 
 the classes needed for basic symbolic manipulations, like the definition of a
 Symbol or a Rational number, and sympy.modules, a high-level module that 
-contains algorithms for sumbolic computations, like limit, integration, etc.
+contains algorithms for symbolic computations, like limit, integration, etc.
 
 
 G{packagetree sympy}
