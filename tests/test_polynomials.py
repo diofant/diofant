@@ -39,4 +39,6 @@ def test_get_poly():
     assert get_poly(2*x**100+3*x**2 - 5,x) == [(-5, 0), (3,2), (2, 100)]
 
     assert get_poly(y.sqrt()*x,x) == [(y.sqrt(),1)]
+    assert get_poly(x**2 + 3*x*y.sqrt() - 8, x) == [(-8, 0), (3*y.sqrt(), 1), 
+            (1, 2)]
     py.test.raises(PolynomialException, "get_poly(x.sqrt(),x)")

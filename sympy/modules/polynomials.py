@@ -6,14 +6,17 @@ class PolynomialException(Exception):
     pass
 
 def ispoly(p,x):
+    """Is 'p' a polynomial in 'x'? Return True or False"""
     try:
+        #basically, the polynomial is whatever we can convert using
+        #the get_poly(). See it's docstring for more info.
         get_poly(p,x)
     except PolynomialException:
         return False
     return True
 
 def fact(n):
-    "Returns n!"
+    """Returns n!"""
     if n == 0: return 1
     else: return fact(n-1)*n
 
@@ -36,8 +39,8 @@ def get_poly(p, x):
     >>> from sympy.modules.polynomials import get_poly
     >>> x = Symbol("x")
     >>> y = Symbol("y")
-    >>> get_poly(x**2 + 3*x*y.sqrt() - 8, x)
-    [(-8, 0), (3, 1), (1, 2)]
+    >>> get_poly(x**2 + 3*x**7*y.sqrt() - 8, x)
+    [(-8, 0), (1, 2), (3*y**(1/2), 7)]
 
     
     """
@@ -59,7 +62,7 @@ def get_poly(p, x):
         a,b = p.getab()
         if isinstance(a, Number):
             c,n = get_poly(b,x)[0]
-            return [(a,n)]
+            return [(a*c,n)]
         a, b = get_poly(a,x), get_poly(b,x)
         assert len(a) == 1
         assert len(b) == 1
