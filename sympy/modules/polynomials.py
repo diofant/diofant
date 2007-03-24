@@ -82,13 +82,11 @@ def poly(p, x):
 
 def rep(n, base):
     """Returns a representation of the integer 'n' in the base 'base'."""
-    if n == 101 and base == 100:
-        return (1, 1)
-    if n == 300 and base == 100:
-        return (0,3)
-    if n == 100 and base == 100:
-        return (0,1)
-    raise Exception("heja")
+    r = []
+    while n!=0:
+        r.append(n % base)
+        n = (n - r[-1])/base
+    return tuple(r)
 
 def gcd(a, b, x):
     """Calculates a greatest common divisor of two polynomials.

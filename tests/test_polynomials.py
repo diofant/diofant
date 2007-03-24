@@ -61,6 +61,14 @@ def test_gcd():
     assert gcd(3*x**2, x, x) == x
     assert gcd(3*x**2, 3*x, x) == 3*x
     assert gcd(x**2+2*x+1, x+1, x) == x+1
+    assert gcd(x**2+2*x+2, x+1, x) == 1
+
+def test_rep():
+    assert rep(101,100) == (1,1)
+    assert rep(300,100) == (0,3)
+    assert rep(100,100) == (0,1)
+
+    assert rep(100,10) == (0,0,1)
 
 def test_sqf():
     x = Symbol("x")
