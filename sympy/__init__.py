@@ -56,7 +56,6 @@ G{packagetree sympy}
 """
 
 __version__ = "0.3"
-__revision__ = "pre"
 
 from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
 from sympy.core import pi, I
