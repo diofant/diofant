@@ -1,6 +1,6 @@
 """Module with some routines for polynomials"""
 
-from sympy.core import Pow, Add, Mul, Rational, Number, Symbol
+from sympy.core import Pow, Add, Mul, Rational, Number, Symbol, Basic
 
 class PolynomialException(Exception):
     pass
@@ -44,6 +44,7 @@ def get_poly(p, x):
 
     
     """
+    p = Basic.sympify(p)
     if not p.has(x):
         return [(p,0)]
     if p==x:
@@ -93,23 +94,23 @@ def gcd(a, b, x):
 
     Currently using a heuristics algorithm.
     """
-    if a == 3*x**2 and b == 6*x:
-        return 3*x
-    #unfortunately, the x0 choice only works for some polynomials:
-    #this doesn't work for a=(x+1)**2, b=x+1
-    #x0 = 101
-    #this doesn't work for a=3*x**2, b=6*x
-    x0 = 100
-    n1 = a.subs(x, x0)
-    n2 = b.subs(x, x0)
-    n3 = n1.gcd(int(n1),int(n2))
 
-    c = []
-    for n, t in enumerate(rep(n3, x0)):
-        if t != 0:
-            c.append((t,n))
+    def getcandidate(a, b, x, x0):
+        n1 = a.subs(x, x0)
+        n2 = b.subs(x, x0)
+        n3 = n1.gcd(int(n1),int(n2))
+        c = []
+        for n, t in enumerate(rep(n3, x0)):
+            if t != 0:
+                c.append((t,n))
+        return poly(c, x)
 
-    return poly(c, x)
+    c = getcandidate(a, b, x, 100)
+    if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0: return c
+    c = getcandidate(a, b, x, 101)
+    if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0: return c
+
+    raise PolynomialException("Can't calculate gcd for these polynomials")
 
 def sqf(p, x):
     """Calculates the square free decomposition of 'p'.
@@ -118,17 +119,25 @@ def sqf(p, x):
     if g == 1: return p
     a, b = div(p, g, x)
     assert b == 0
-    #print p, p.diff(x), a, g
     return sqf(a, x) * g
 
 def div(f, g, x):
     """Expresses f = g*q + r, returns (q,r)
+
+    All coefficients of 'f' and 'g' are assumed to be integers,
+    and coefficients in 'q' and 'r' are then guaranteed to be integers.
     """
     fp = get_poly(f, x)
     gp = get_poly(g, x)
     q = 0
-    while fp[-1][1] >= gp[-1][1]:
+    while fp[-1][1] >= gp[-1][1] and fp[-1][0]!=0:
         s1 = poly([fp[-1]], x) / poly([gp[-1]], x)
+        if isinstance(s1, Mul):
+            a,b = s1.getab()
+            if isinstance(a, Number) and not a.isinteger():
+                #the coefficient is rational but not real, let's
+                #put it in the remainder and we are done
+                return q, f
         f = (f - g*s1).expand()
         fp = get_poly(f, x)
         q+=s1

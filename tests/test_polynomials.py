@@ -64,7 +64,8 @@ def test_gcd():
     assert gcd(x**2+2*x+1, x+1, x) == x+1
     assert gcd(x**2+2*x+2, x+1, x) == 1
 
-    assert gcd((x+1)**2, 2*(1+x), x) == 1+x
+    assert gcd(x**2+2*x+1, 2+2*x, x) == 1+x
+    assert gcd(x**2+2*x+2, 2+2*x, x) == 1
 
 def test_rep():
     assert rep(101,100) == (1,1)
@@ -82,5 +83,8 @@ def test_div():
     x = Symbol("x")
     assert div(x**3-12*x**2-42, x-3, x) == (x**2-9*x-27, -123)
     assert div(x**3-12*x**2-42, x**2+x-3, x) == (x-13, 16*x-81)
+
+    assert div(2+2*x+x**2, 1, x) == (2+2*x+x**2, 0)
+    assert div(2+2*x+x**2, 2, x) == (0, 2+2*x+x**2)
 
     assert div(3*x**3, x**2, x) == (3*x, 0)
