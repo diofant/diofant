@@ -11,9 +11,9 @@ class Matrix(object):
     	>>> Matrix( (1,2+I), (3,4) ) #doctest:+NORMALIZE_WHITESPACE
     	1 2+I
     	3 4
-        >>> Matrix(2, 2, lambda i,j: i*j ) #doctest:+NORMALIZE_WHITESPACE
-        0 0
+        >>> Matrix(2, 2, lambda i,j: (i+1)*j ) #doctest:+NORMALIZE_WHITESPACE
         0 1
+        0 2
         
         Note: in SymPy we count indices from 0. The rule however counts from 1.
         """
