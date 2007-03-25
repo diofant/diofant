@@ -83,3 +83,18 @@ def test_Dirac():
 
     assert gamma(5,True) == \
         I*gamma(0,True)*gamma(1,True)*gamma(2,True)*gamma(3,True)
+
+def test_creation():
+    x = Symbol("x")
+    a = Matrix([x, 0], [0, 0])
+    m = a
+    assert m.cols == m.lines
+    assert m.cols == 2
+    assert m[:] == [x,0,0,0]
+    b = Matrix(2,2, [x, 0, 0, 0])
+    m = b
+    assert m.cols == m.lines
+    assert m.cols == 2
+    assert m[:] == [x,0,0,0]
+
+    assert a == b

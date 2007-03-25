@@ -26,6 +26,15 @@ class Matrix(object):
             for i in range(self.lines):
                 for j in range(self.cols):
                     self.mat.append(Basic.sympify(operation(i, j)))
+        elif len(args)==3 and isinstance(args[0],int) and \
+                isinstance(args[1],int) and isinstance(args[2], (list, tuple)):
+            self.lines=args[0]
+            self.cols=args[1]
+            mat = args[2]
+            self.mat=[]
+            for j in range(self.lines):
+                for i in range(self.cols):
+                    self.mat.append(Basic.sympify(mat[j*self.cols+i]))
         else:
             if len(args) == 1:
                 mat = args[0]
