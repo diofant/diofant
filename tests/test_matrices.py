@@ -40,6 +40,12 @@ def test_multiplication():
     assert c[1,0] == 3*5
     assert c[1,1] == 0
 
+def test_power():
+    A = Matrix([[2,3],[4,5]])
+    assert (A**5)[:] == [6140, 8097, 10796, 14237]
+    A = Matrix([[2, 1, 3],[4,2, 4], [6,12, 1]])
+    assert (A**3)[:] == [290, 262, 251, 448, 440, 368, 702, 954, 433]
+
 def test_Pauli():
     #this and the following test are testing both Pauli and Dirac matrices
     #and also that the general Matrix class works correctly in a real world

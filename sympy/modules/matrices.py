@@ -95,6 +95,8 @@ class Matrix(object):
         2-I
 
         """
+        if isinstance(key, slice):
+            return self.mat[key]
         i,j=self.key2ij(key)
         return self.mat[i*self.cols+j]
 
@@ -146,6 +148,18 @@ class Matrix(object):
         if isinstance(a,Matrix):
             return self.multiply(a)
         return Matrix(self.lines,self.cols, lambda i,j: self[i,j]*a)
+
+    def __pow__(self, num):
+        if isinstance(num, int) or (isinstance(num, Rational) and num.isinsteger()):
+            if num < 0:
+	        a = self.inv() # A**-2 = (A**-1)**2
+                num = -num
+            else:
+                a = self
+            for i in range(1, num):
+                a *= self
+            return a
+        raise NotImplementedError('Can only rise to the power of an integer for now')
 
     def __add__(self,a):
         return self.add(a)
