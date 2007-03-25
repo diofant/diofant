@@ -15,6 +15,7 @@ how to customize the install procedure read the output of:
 In addition, there are some other commands:
 
     python setup.py bdist_dpkg -> will make a deb package in the parent diretory
+    python setup.py clean -> will clean all trash (*.pyc and stuff)
     python setup.py test  -> will run the complete test suite
     python setup.py test_core -> will run only tests concerning core features
     python setup.py test_doc -> will run tests on the examples of the documentation
@@ -82,7 +83,7 @@ class bdist_dpkg(Command):
         os.system("fakeroot dpkg-buildpackage")
 
 class clean(Command):
-    """Cleans *.py and debian trashs, so you should get the same copy as 
+    """Cleans *.pyc and debian trashs, so you should get the same copy as 
     is in the svn.
     """
     
