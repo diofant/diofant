@@ -150,7 +150,7 @@ class Matrix(object):
         return Matrix(self.lines,self.cols, lambda i,j: self[i,j]*a)
 
     def __pow__(self, num):
-        if isinstance(num, int) or (isinstance(num, Rational) and num.isinsteger()):
+        if isinstance(num, int) or (isinstance(num, Rational) and num.isinteger()):
             if num < 0:
 	        a = self.inv() # A**-2 = (A**-1)**2
                 num = -num
