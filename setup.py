@@ -62,7 +62,7 @@ class test_sympy(Command):
         py.test.cmdline.main(args=["tests"])
         test_sympy_doc.run_doctest() # run also the doc test suite
         
-class build_dpkg(Command):
+class bdist_dpkg(Command):
     """Make a nice .deb package
     """
     
@@ -205,7 +205,7 @@ setup(
       cmdclass    = {'test': test_sympy, 
                      'test_core' : test_sympy_core,
                      'test_doc' : test_sympy_doc,
-                     'build_dpkg' : build_dpkg, 
+                     'bdist_dpkg' : bdist_dpkg, 
                      'clean' : clean, 
                      },
       )
