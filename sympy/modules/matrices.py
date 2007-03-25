@@ -24,7 +24,7 @@ class Matrix(object):
             self.mat = []
             for i in range(self.lines):
                 for j in range(self.cols):
-                    self.mat.append(operation(i+1, j+1))
+                    self.mat.append(Basic.sympify(operation(i+1, j+1)))
         else:
             if len(args) == 1:
                 mat = args[0]
@@ -68,18 +68,11 @@ class Matrix(object):
         """
         if name == "T":
             #transposition
-            r=zeronm(self.cols,self.lines)
-            for i in range(self.lines):
-                for j in range(self.cols):
-                    r[j,i]=self[i,j]
-            return r
+            return Matrix(self.lines,self.cols, lambda i,j: self[j-1,i-1])
         if name == "C":
             #conjugation
-            r=zeronm(self.lines,self.cols)
-            for i in range(r.lines):
-                for j in range(r.cols):
-                    r[i,j]=self[i,j].conjugate()
-            return r
+            return Matrix(self.lines,self.cols, 
+                    lambda i,j: self[i-1,j-1].conjugate())
         if name == "H":
             #hermite conjugation
             return self.T.C
@@ -141,18 +134,10 @@ class Matrix(object):
         return r
 
     def expand(self):
-        r=zeronm(self.lines,self.cols)
-        for i in range(self.lines):
-            for j in range(self.cols):
-                r[i,j]=self[i,j].expand()
-        return r
+        return Matrix(self.lines,self.cols, lambda i,j: self[i-1,j-1].expand())
 
     def subs(self,a,b):
-        r=zeronm(self.lines,self.cols)
-        for i in range(self.lines):
-            for j in range(self.cols):
-                r[i,j]=self[i,j].subs(a,b)
-        return r
+        return Matrix(self.lines,self.cols, lambda i,j: self[i-1,j-1].subs(a,b))
 
     def __sub__(self,a):
         return self + (-a)
@@ -160,11 +145,7 @@ class Matrix(object):
     def __mul__(self,a):
         if isinstance(a,Matrix):
             return self.multiply(a)
-        r=zeronm(self.lines,self.cols)
-        for i in range(self.lines):
-            for j in range(self.cols):
-                r[i,j]=self[i,j]*a
-        return r
+        return Matrix(self.lines,self.cols, lambda i,j: self[i-1,j-1]*a)
 
     def __add__(self,a):
         return self.add(a)
@@ -182,10 +163,7 @@ class Matrix(object):
                 r+=a[i,x]*b[x,j]
             return r
 
-        r=zeronm(self.lines,b.cols)
-        for i in range(self.lines):
-            for j in range(b.cols):
-                r[i,j] = dotprod(self,b,i,j)
+        r = Matrix(self.lines,self.cols, lambda i,j: dotprod(self,b,i-1,j-1))
         if r.lines == 1 and r.cols ==1: 
             return r[0,0]
         return r
@@ -195,11 +173,8 @@ class Matrix(object):
 
         assert self.lines == b.lines
         assert self.cols == b.cols
-        r=zeronm(self.lines,self.cols)
-        for i in range(self.lines):
-            for j in range(self.cols):
-                r[i,j] = self[i,j]+b[i,j]
-        return r
+        return Matrix(self.lines,self.cols, lambda i,j: 
+                self[i-1,j-1]+b[i-1,j-1])
 
     def __neg__(self):
         return -1*self
@@ -254,8 +229,7 @@ def zero(n):
 def zeronm(n,m):
     assert n>0
     assert m>0
-    mat = ( [[0]*m]*n )
-    return Matrix(mat)
+    return Matrix(n,m, lambda i,j: 0)
 
 def one(n):
     m = zero(n)
