@@ -59,11 +59,12 @@ __version__ = "0.3"
 
 from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
 from sympy.core import pi, I
+from sympy.core.functions import Derivative
 
 from sympy.modules.limits import limit, limitinf
 from sympy.modules.trigonometric import sin, cos, tan, arctan
 from sympy.modules.integrals import integrate
-from sympy.core.functions import Derivative
+from sympy.modules.matrices import Matrix
 
 # try to import optinal modules
 try: 

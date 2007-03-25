@@ -9,8 +9,6 @@ def print_gtk(x):
     """Print to Gtkmathview, a gtk widget capable of rendering MathML.
     Needs libgtkmathview-bin"""
     
-    assert isinstance(x, Basic)
-    
     tmp = tempfile.mktemp() # create a temp file to store the result
     file = open(tmp, 'wb')
     

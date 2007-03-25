@@ -1,5 +1,5 @@
 
-March 24, Fabian Seoane <fabian@fseoane.net>
+March 24 2007, Fabian Seoane <fabian@fseoane.net>
 
 	* implement slices on sympy's objects. Slices is now the recomended way to
 	access all of sympy's nested objects. Examples: 
@@ -49,12 +49,6 @@ March 24, Fabian Seoane <fabian@fseoane.net>
         * added this Changelog file
 
 
-	=== some things that must be revised: ===
-		 
-	 * the hash() method is similar in all the classes, maybe we could provide a
-	 generic hash method in basic (now that we can iterate over the contained
-	 elements this should be easy) that should only be overriden in some cases
-	 
 	 * Pair.coerce: not used outside addmul.py, maybe should be private
 	
 	TODO: 

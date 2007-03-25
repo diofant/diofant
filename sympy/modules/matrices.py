@@ -209,6 +209,16 @@ class Matrix(object):
             s+="\n"
         return s
 
+    @property
+    def mathml(self):
+        mml = ""
+        for i in range(self.lines):
+            mml += "<matrixrow>"
+            for j in range(self.cols):
+                mml += self[i,j].mathml
+            mml += "</matrixrow>"
+        return "<matrix>" + mml + "</matrix>"
+
 def zero(n):
     return zeronm(n,n)
 
