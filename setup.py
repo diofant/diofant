@@ -14,6 +14,7 @@ how to customize the install procedure read the output of:
 
 In addition, there are some other commands:
 
+    python setup.py bdist_dpkg -> will make a deb package in the parent diretory
     python setup.py test  -> will run the complete test suite
     python setup.py test_core -> will run only tests concerning core features
     python setup.py test_doc -> will run tests on the examples of the documentation

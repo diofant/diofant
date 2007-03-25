@@ -95,7 +95,7 @@ First install these packages: cdbs, debhelper, fakeroot, docbook2x
 
 Then issue:
 
-python setup.py build_dpkg
+python setup.py bdist_dpkg
 
 This will create a python-sympy Debian package in the parent directory.
 
