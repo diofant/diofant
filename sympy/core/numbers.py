@@ -148,8 +148,9 @@ class Real(Number):
         else:
             return False
         
-    def isinteger(self):
-        return False
+    @property
+    def is_integer(self):
+        return int(self) - self.evalf() == 0
         
     def evalf(self):
         #evalf() should return either a float or an exception
@@ -263,7 +264,7 @@ class Rational(Number):
     
 
     def __int__(self):
-        assert self.isinteger()
+        assert self.is_integer
         return self.p
     
     def iszero(self):
@@ -275,7 +276,19 @@ class Rational(Number):
     def isminusone(self):
         return self.p == -1 and self.q == 1
         
-    def isinteger(self):
+    @property
+    def is_integer(self):
+        """Returns True if the current number is an integer
+        and False otherwise. 
+        
+        Examples
+        ========
+            >>> Rational(1).is_integer
+            True
+            >>> Rational(1,2).is_integer
+            False
+            
+        """
         return self.q == 1
         
     def evalf(self):

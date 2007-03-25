@@ -50,7 +50,7 @@ def get_poly(p, x):
     if p==x:
         return [(1,1)]
     if isinstance(p, Pow):
-        if isinstance(p.exp, Rational) and p.exp.isinteger():
+        if isinstance(p.exp, Rational) and p.exp.is_integer:
             n = int(p.exp)
             if n>0 and isinstance(p.base, Symbol):
                 return [(1,n)]
@@ -137,7 +137,7 @@ def div(f, g, x):
         s1 = poly([fp[-1]], x) / poly([gp[-1]], x)
         if isinstance(s1, Mul):
             a,b = s1.getab()
-            if isinstance(a, Number) and not a.isinteger():
+            if isinstance(a, Number) and not a.is_integer:
                 #the coefficient is rational but not integer, let's
                 #put it in the remainder and we are done
                 return q, f

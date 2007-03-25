@@ -1,4 +1,11 @@
 
+March 25 2007, Fabian Seoane <fabian@fseoane.net>
+       * isnumber() renamed to is_number for consistency with other methods in
+       sympy and with assumptions, now it works as an assumption, so it is
+       more intuitive: 
+           x.is_real --> True/False
+	   x.is_number --> True/False
+
 March 24 2007, Fabian Seoane <fabian@fseoane.net>
 
 	* implement slices on sympy's objects. Slices is now the recomended way to

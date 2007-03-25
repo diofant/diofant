@@ -35,7 +35,7 @@ class Pow(Basic):
         f += "**"
         if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
             or (isinstance(self.exp,Rational) and \
-            (not self.exp.isinteger() or (self.exp.isinteger() and \
+            (not self.exp.is_integer or (self.exp.is_integer and \
             int(self.exp) < 0)) ):
             f += "(%s)"
         else:
@@ -65,7 +65,7 @@ class Pow(Basic):
         if isinstance(self.exp,Rational) and self.exp.isone():
             return self.base
         if isinstance(self.base,Rational) and self.base.iszero():
-            if isinstance(self.exp,Rational):# and self.exp.isinteger():
+            if isinstance(self.exp,Rational):# and self.exp.is_integer:
                 if self.exp.iszero():
                     raise pole_error("pow::eval(): 0^0.")
                 elif self.exp < 0:
@@ -79,13 +79,13 @@ class Pow(Basic):
             return self
         
         if isinstance(self.base, Rational) and isinstance(self.exp, Rational):
-            if self.exp.isinteger():
+            if self.exp.is_integer:
                 if self.exp > 0: 
                     return Rational(self.base.p ** self.exp.p , self.base.q ** self.exp.p)
                 else:
                     return Rational(self.base.q ** (-self.exp.p) , self.base.p ** (-self.exp.p) )
                 
-            if self.base.isinteger():
+            if self.base.is_integer:
                 a = int(self.base)
                 bq = self.exp.q
                 if a>0:
@@ -103,17 +103,17 @@ class Pow(Basic):
             if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
                 return (Pow(a,self.exp) * Pow(b,self.exp))
         if isinstance(self.base,ImaginaryUnit):
-            if isinstance(self.exp,Rational) and self.exp.isinteger():
+            if isinstance(self.exp,Rational) and self.exp.is_integer:
                 if int(self.exp) % 2 == 0:
                     return Rational(-1) ** ((int(self.exp) % 4)/2)
-        if isinstance(self.exp,Rational) and self.exp.isinteger():
+        if isinstance(self.exp,Rational) and self.exp.is_integer:
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
                     n = self.base[0]
                     if n.isnumber() and n < 0:
                         return (-self.base)**self.exp
         if isinstance(self.base, NCSymbol):
-            if isinstance(self.exp, Rational) and self.exp.isinteger():
+            if isinstance(self.exp, Rational) and self.exp.is_integer:
                     n = int(self.exp)
                     #only try to simplify it for low exponents (for speed
                     #reasons).
@@ -184,7 +184,7 @@ class Pow(Basic):
     def expand(self):
         from addmul import Mul
         if isinstance(self.exp,Number):
-            if self.exp.isinteger():
+            if self.exp.is_integer:
                 n = int(self.exp)
                 if n > 1:
                     a = self.base
