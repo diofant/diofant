@@ -3,14 +3,41 @@ from sympy.core import hashing
 
 class Matrix(object):
 
-    def __init__(self,mat):
-        self.lines=len(mat)
-        self.cols=len(mat[0])
-        self.mat=[]
-        for j in range(self.lines):
-            assert len(mat[j])==self.cols
-            for i in range(self.cols):
-                self.mat.append(Basic.sympify(mat[j][i]))
+    def __init__(self, *args):
+        """
+        Matrix can be constructed with values or a rule.
+        >>> from sympy import *
+        >>> Matrix( (1,2+I), (3,4) )  #doctest: +NORMALIZE_WHITESPACE
+        1 2+I
+        3 4
+        >>> Matrix(2, 2, lambda i,j: i*j )  #doctest: NORMALIZE_WHITESPACE
+        1 2
+        2 4
+        """
+        if len(args) == 3 and callable(args[2]):
+            operation = args[2]
+            assert isinstance(args[0], int) and isinstance(args[1], int)
+            self.lines = args[0]
+            self.cols = args[1]
+            self.mat = []
+            for i in range(self.lines):
+                for j in range(self.cols):
+                    self.mat.append(operation(i+1, j+1))
+        else:
+            if len(args) == 1:
+                mat = args[0]
+            else:
+                mat = args
+            if not isinstance(mat[0], (list, tuple)):
+                # make each elements singleton
+                mat = [ [element] for element in mat ]
+            self.lines=len(mat)
+            self.cols=len(mat[0])
+            self.mat=[]
+            for j in range(self.lines):
+                assert len(mat[j])==self.cols
+                for i in range(self.cols):
+                    self.mat.append(Basic.sympify(mat[j][i]))
 
     def key2ij(self,key):
         """Converts key=(4,6) to 4,6 and ensures the key is correct."""
