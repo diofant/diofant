@@ -160,22 +160,17 @@ class test_sympy_doc(Command):
         import unittest
         import doctest
         
-        import os
-        import re
-    
-        files = []
-        for x in os.listdir('sympy/core/'):
-            files += ['sympy.core.' + x]
-        for x in os.listdir('sympy/modules/'):
-            files += ['sympy.modules.'+x]
-        files += ['sympy.__init__.py']
-        test = re.compile('\.py$')
-        files = filter(test.search, files)
-        
+        import glob
+
+	files = glob.glob('sympy/*/*.py') + glob.glob('sympy/modules/*/*.py')
+
         modules = []
         for x in files:
-            modules += [x[:-3]]
-    
+            modules.append(x.replace('/', '.')[:-3])
+            #put . as separator and strip the extension (.py)
+
+        modules.append('sympy')
+        
         suite = unittest.TestSuite()
         for mod in modules:
             try:

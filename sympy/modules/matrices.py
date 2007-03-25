@@ -6,14 +6,15 @@ class Matrix(object):
     def __init__(self, *args):
         """
         Matrix can be constructed with values or a rule.
+        
         >>> from sympy import *
-        >>> Matrix( (1,2+I), (3,4) )  #doctest: +NORMALIZE_WHITESPACE
-        1 2+I
-        3 4
-        >>> Matrix(2, 2, lambda i,j: i*j )  #doctest: NORMALIZE_WHITESPACE
-        1 2
-        2 4
-
+    	>>> Matrix( (1,2+I), (3,4) ) #doctest:+NORMALIZE_WHITESPACE
+    	1 2+I
+    	3 4
+        >>> Matrix(2, 2, lambda i,j: i*j ) #doctest:+NORMALIZE_WHITESPACE
+        0 0
+        0 1
+        
         Note: in SymPy we count indices from 0. The rule however counts from 1.
         """
         if len(args) == 3 and callable(args[2]):

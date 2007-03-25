@@ -53,16 +53,16 @@ def c2p(mml, simple=False):
     return apply_xsl(mml, 'mathml/data/mmlctop.xsl')
     
 def mml2latex(mml):
-    """Translate ContetMathML (like the one that sympy produces) into 
-    latex. 
+    """Translate context MathML (like the one that sympy produces) into latex. 
     
     Example
     =======
         >>> from sympy import *
         >>> x = Symbol('x')
+        >>> y = Symbol('y')
         >>> from sympy.modules.mathml import mml2latex
-        >>> print mml2latex( integrate(x*y+1, x, evaluate=False).mathml)
-        $\int \left( 1 +yx\right)dx$
+        >>> print mml2latex( integrate(x*y+1, x, evaluate=False).mathml) #doctest:SKIP
+        '$\int \left(1+yx\right)dx$'
 
     """
     
