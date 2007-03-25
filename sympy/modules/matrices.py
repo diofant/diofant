@@ -13,6 +13,8 @@ class Matrix(object):
         >>> Matrix(2, 2, lambda i,j: i*j )  #doctest: NORMALIZE_WHITESPACE
         1 2
         2 4
+
+        Note: in SymPy we count indices from 0. The rule however counts from 1.
         """
         if len(args) == 3 and callable(args[2]):
             operation = args[2]
@@ -29,7 +31,7 @@ class Matrix(object):
             else:
                 mat = args
             if not isinstance(mat[0], (list, tuple)):
-                # make each elements singleton
+                # make each element a singleton
                 mat = [ [element] for element in mat ]
             self.lines=len(mat)
             self.cols=len(mat[0])
