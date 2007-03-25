@@ -162,7 +162,7 @@ class test_sympy_doc(Command):
         
         import glob
 
-	files = glob.glob('sympy/*/*.py') + glob.glob('sympy/modules/*/*.py')
+        files = glob.glob('sympy/*/*.py') + glob.glob('sympy/modules/*/*.py')
 
         modules = []
         for x in files:
