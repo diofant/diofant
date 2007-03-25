@@ -24,7 +24,7 @@ class Matrix(object):
             self.mat = []
             for i in range(self.lines):
                 for j in range(self.cols):
-                    self.mat.append(Basic.sympify(operation(i+1, j+1)))
+                    self.mat.append(Basic.sympify(operation(i, j)))
         else:
             if len(args) == 1:
                 mat = args[0]
@@ -68,11 +68,11 @@ class Matrix(object):
         """
         if name == "T":
             #transposition
-            return Matrix(self.lines,self.cols, lambda i,j: self[j-1,i-1])
+            return Matrix(self.lines,self.cols, lambda i,j: self[j,i])
         if name == "C":
             #conjugation
             return Matrix(self.lines,self.cols, 
-                    lambda i,j: self[i-1,j-1].conjugate())
+                    lambda i,j: self[i,j].conjugate())
         if name == "H":
             #hermite conjugation
             return self.T.C
@@ -134,10 +134,10 @@ class Matrix(object):
         return r
 
     def expand(self):
-        return Matrix(self.lines,self.cols, lambda i,j: self[i-1,j-1].expand())
+        return Matrix(self.lines,self.cols, lambda i,j: self[i,j].expand())
 
     def subs(self,a,b):
-        return Matrix(self.lines,self.cols, lambda i,j: self[i-1,j-1].subs(a,b))
+        return Matrix(self.lines,self.cols, lambda i,j: self[i,j].subs(a,b))
 
     def __sub__(self,a):
         return self + (-a)
@@ -145,7 +145,7 @@ class Matrix(object):
     def __mul__(self,a):
         if isinstance(a,Matrix):
             return self.multiply(a)
-        return Matrix(self.lines,self.cols, lambda i,j: self[i-1,j-1]*a)
+        return Matrix(self.lines,self.cols, lambda i,j: self[i,j]*a)
 
     def __add__(self,a):
         return self.add(a)
@@ -163,7 +163,7 @@ class Matrix(object):
                 r+=a[i,x]*b[x,j]
             return r
 
-        r = Matrix(self.lines,self.cols, lambda i,j: dotprod(self,b,i-1,j-1))
+        r = Matrix(self.lines,self.cols, lambda i,j: dotprod(self,b,i,j))
         if r.lines == 1 and r.cols ==1: 
             return r[0,0]
         return r
@@ -174,7 +174,7 @@ class Matrix(object):
         assert self.lines == b.lines
         assert self.cols == b.cols
         return Matrix(self.lines,self.cols, lambda i,j: 
-                self[i-1,j-1]+b[i-1,j-1])
+                self[i,j]+b[i,j])
 
     def __neg__(self):
         return -1*self
