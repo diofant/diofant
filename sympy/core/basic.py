@@ -49,9 +49,11 @@ class Basic(object):
     def mathml_tag(self):
         """Return the mathml tag of the current object. 
         
-        For example, symbol x has a mathml representation as 
+        For example, if symbol x has a mathml representation as::
+        
            <ci>x</ci>
-        So x.mathml returns "ci"
+           
+        then x.mathml should return "ci"
 
         Basic.mathml_tag() returns the class name as the mathml_tag, this is
         the case sometimes (sin, cos, exp, etc.). Otherwise just override this

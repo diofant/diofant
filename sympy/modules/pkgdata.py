@@ -3,7 +3,7 @@ pkgdata is a simple, extensible way for a package to acquire data file
 resources.
 
 The getResource function is equivalent to the standard idioms, such as
-the following minimal implementation:
+the following minimal implementation::
     
     import sys, os
 
@@ -26,7 +26,7 @@ def get_resource(identifier, pkgname=__name__):
     Acquire a readable object for a given package name and identifier.
     An IOError will be raised if the resource can not be found.
 
-    For example:
+    For example::
         mydata = get_esource('mypkgdata.jpg').read()
 
     Note that the package name must be fully qualified, if given, such

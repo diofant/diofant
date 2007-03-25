@@ -7,13 +7,13 @@ dummycount=0
 
 class Symbol(Basic):
     """
-    Assumptions: 
+    Assumptions::
        is_real = True
        is_commutative = True
-       
-   You can override the default assumptions in the constructor:
-   >>> A = Symbol('A', is_commutative = False)
-   """
+
+    You can override the default assumptions in the constructor::
+       >>> A = Symbol('A', is_commutative = False)
+    """
     
     mathml_tag = "ci"
 

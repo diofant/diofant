@@ -20,7 +20,7 @@ class Integral(Basic):
     
         log(x)
 
-    print Integral(1/t, (t,1,x)).diff(x) will print: 
+    print Integral(1/t, (t,1,x)).diff(x) will print::
     
         1/x
 

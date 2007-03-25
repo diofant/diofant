@@ -42,9 +42,10 @@ class Pair(Basic):
             return a
             
     def flatten(self, a ):
-        """flatten([add(x,4),Mul(a,5),add(x,b),x]) ->
-                [x,4,Mul(a,5),x,b,x] if self is add
-                [add(x,4),a,5,add(x,b),x] if self is Mul
+        """::
+            flatten([add(x,4),Mul(a,5),add(x,b),x]) ->
+                  [x,4,Mul(a,5),x,b,x] if self is add
+                  [add(x,4),a,5,add(x,b),x] if self is Mul
 
         returns a copy of "a", where the the classes of the same type as this
         (e.g. if we are Mul, then all the Muls, if we are add, then all the
@@ -71,8 +72,8 @@ class Pair(Basic):
         
     @staticmethod
     def coerce_numbers(a, action, default):
-        """coercenumbers([x,4,a,10],action,Rational(1)) ->
-                (action(action(Rational(1),4),10),[x,a])
+        """coercenumbers([x,4,a,10],action,Rational(1)) -> 
+        (action(action(Rational(1),4),10),[x,a])
 
         picks out the numbers of the list "a" and applies the action on them
         (add or Mul).

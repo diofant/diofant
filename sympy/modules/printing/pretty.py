@@ -119,11 +119,11 @@ class StringPict:
 
 	def below(self, *args):
 		"""Put pictures under this picture.
-		Baseline is baseline of top picture
-		>>> print StringPict("x+3").below(StringPict.LINE, '3')
-		x+3
-    	---
-     	 3 
+		Baseline is baseline of top picture::
+			>>> print StringPict("x+3").below(StringPict.LINE, '3')
+			x+3
+    		---
+     	 	3 
 
 		"""
 		result = StringPict.stack(self, *args)
