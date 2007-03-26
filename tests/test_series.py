@@ -158,6 +158,8 @@ def test_order():
     assert x*Order(x) == Order(x**2)
     assert Order(x)*x == Order(x**2)
     assert Order(x**3)*x == Order(x**4)
+
+    assert ((x+Order(x)) - (x+Order(x))) == Order(x)
     assert Order(x)/x == Order(1)
 
     assert Order(x)*Order(x) == Order(x**2)

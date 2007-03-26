@@ -133,4 +133,6 @@ class Order(Basic):
             raise NotImplementedError()
         if isinstance(x, Order):
             return Order(x[0]+y)
+        if isinstance(y, Order):
+            return Order(x+y[0])
         return None
