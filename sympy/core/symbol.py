@@ -86,3 +86,51 @@ class NCSymbol(Symbol):
 
     def diff(self,sym):
         raise NotImplementedError("Doesn't have a meaning.")
+
+class Order(Basic):
+
+    def __init__(self, f):
+        """O(f) at the point x = 0"""
+        Basic.__init__(self)
+        self._args = [self.sympify(f)]
+
+    def eval(self):
+        from addmul import Mul, Add
+        from numbers import Number
+        f = self[0]
+        if isinstance(f, Mul):
+            if isinstance(f[0],Number):
+                assert len(f) == 2
+                return Order(f[1])
+        if isinstance(f, Add):
+            if isinstance(f[0],Number):
+                assert len(f) == 2
+                return Order(f[1])
+        return self
+
+    def hash(self):
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = hashing.mhash()
+        self._mhash.addstr(str(type(self)))
+        self._mhash.addint(self[0].hash())
+        return self._mhash.value
+
+    def __str__(self):
+        return "O(%s)"%str(self[0])
+
+    @staticmethod
+    def muleval(x, y):
+        if isinstance(x, Order) and isinstance(y, Order):
+            return Order(x[0]*y[0])
+        if isinstance(y, Order):
+            return Order(x*y[0])
+        return None
+
+    @staticmethod
+    def addeval(x, y):
+        if isinstance(x, Order) and isinstance(y, Order):
+            raise NotImplementedError()
+        if isinstance(x, Order):
+            return Order(x[0]+y)
+        return None

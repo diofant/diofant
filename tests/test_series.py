@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 import sympy as g
-from sympy import sin,Symbol,log
+from sympy import sin, Symbol, log, Order
 
 def testseries():
     n3=g.Rational(3)
@@ -132,3 +132,31 @@ def test_seriesbug3():
     #some limits need this series expansion to work:
     e=(w**(-log(5)/log(3))-1/w)**(1/x)
     assert  e.series(w,1).subs(log(w),-log(3)*x).subs(w,0) == 5
+
+def test_order():
+    x = Symbol("x")
+    assert Order(x) == Order(x)
+    assert Order(x**2) == Order(x**2)
+    assert Order(x) != Order(x**2)
+
+    assert Order(x) + Order(x) == Order(x)
+    assert Order(x) - Order(x) != 0
+    assert Order(x) - Order(x) == Order(x)
+
+    assert Order(2*x) == Order(x)
+    assert 2*Order(x) == Order(x)
+    assert Order(3*x) == Order(x)
+    assert 3*Order(x) == Order(x)
+    assert Order(x) == Order(x*8)
+    assert Order(x) == Order(x)*8
+
+    assert Order(x+1) == Order(x)
+    assert Order(x)+1 == Order(x)
+    assert Order(x)+x == Order(x)
+
+    assert x*Order(x) != Order(x)
+    assert x*Order(x) == Order(x**2)
+    assert Order(x)*x == Order(x**2)
+    assert Order(x)/x == Order(1)
+
+    assert Order(x)*Order(x) == Order(x**2)

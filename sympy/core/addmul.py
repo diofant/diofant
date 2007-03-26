@@ -411,8 +411,10 @@ class Add(Pair):
 
                     if z1 or z2:
                         if (z1 and z2):
-                            #sanity check
-                            assert z1 == z2
+                            #sanity check, only when z1 and z2 are not Order
+                            from symbol import Order
+                            if not isinstance(z1,Order):
+                                assert z1 == z2
                         if z1:
                             e.append(z1)
                             ok = True
