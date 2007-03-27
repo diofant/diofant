@@ -208,9 +208,6 @@ class Matrix(object):
             a = Basic.sympify(a)
         return self.hash() == a.hash()
 
-    def __str__(self):
-        return self.print_sympy()
-
     def __repr__(self):
         return str(self)
 
