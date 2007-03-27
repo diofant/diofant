@@ -568,21 +568,6 @@ class Add(Pair):
             return (a.series(sym,n)+b.series(sym,n))
 
     def match(self, pattern, syms):
-        if len(self) == 2:
-            r1 = self[0].match(pattern[0], syms)
-            if r1!=None: 
-                r2 = self[1].match(pattern[1], syms)
-                #print "Add",self,pattern,r1,r2
-                if r1!=None and r2!=None:
-                    if r1 == {}: 
-                        return r2
-                    else:
-                        return r1
-            r = self[0].match(pattern[1], syms)
-            if r!=None: 
-                r = self[1].match(pattern[0], syms)
-                if r!=None: return r
-            return None
         if len(syms) == 1:
             p = syms[0]
             if not pattern.has(p):
