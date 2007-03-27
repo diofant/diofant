@@ -33,10 +33,10 @@ def test_basics():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
     p,q = [Symbol(Y) for Y in ["p","q"]]
     e = (x+y)**a
-    assert e.match(p**q,[p,q]) == (x+y, a)
+    assert e.match(p**q,[p,q]) == {p: x+y, q: a}
     assert e.match(p**p,[p]) == None
     e = (x+y)**(x+y)
-    assert e.match(p**p,[p]) == (x+y,)
-    assert e.match(p**q,[p,q]) == (x+y, x+y)
+    assert e.match(p**p,[p]) == {p: x+y}
+    assert e.match(p**q,[p,q]) == {p: x+y, q: x+y}
     e = (a+b)*(a+c)
     assert e.match((p+b)*(p+c),[p]) == {p: a}

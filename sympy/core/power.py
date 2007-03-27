@@ -245,7 +245,7 @@ class Pow(Basic):
     def match(self, pattern, syms):
         if len(syms) == 1:
             if self[0]==self[1]:
-                return (self[0],)
+                return {syms[0]: self[0]}
             return None
         else:
-            return self[0],self[1]
+            return {syms[0]: self[0], syms[1]: self[1]}
