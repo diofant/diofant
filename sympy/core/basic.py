@@ -13,10 +13,12 @@ class AutomaticEvaluationType(type):
             del kwargs["evaluate"]
         else:
             evaluate = True
-        obj=type.__call__(self,*args,**kwargs)
-        if evaluate: return obj.eval()
-        else: return obj
-
+        obj = type.__call__(self,*args,**kwargs)
+        if evaluate: 
+            return obj.eval()
+        else: 
+            return obj
+        
 
 class Basic(object):
     """

@@ -37,7 +37,7 @@ class Number(Basic):
         return Rational(0)
     
     def evalf(self):
-        return self
+        raise NotImplementedError
 
     def evalc(self):
         return self
@@ -50,12 +50,20 @@ class Infinity(Number):
     this class represents all kinds of infinity, i.e. both +-infty.
     """
     
-    def __init__(self):
+    def __init__(self, sign=1):
         Number.__init__(self)
-        self._sign=1
+        if sign not in [1,-1]:
+            raise ArgumentError("Sign can only have values 1 or -1")
+        self._sign = sign
         
-    def print_sympy(self):
-        return "Inf"
+    def __str__(self):
+        if self._sign == 1:
+            return "Inf"
+        else:
+            return "-Inf" 
+    
+    def __neg__(self):
+        return Infinity(sign=-1)
     
     def hash(self):
         if self._mhash: 

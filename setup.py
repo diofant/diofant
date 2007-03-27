@@ -163,9 +163,16 @@ class test_sympy_doc(Command):
         import glob
 
         files = glob.glob('sympy/*/*.py') + glob.glob('sympy/modules/*/*.py')
+        
+        # files without doctests or that don't work
+        files.remove('sympy/modules/printing/pygame_.py')
+        files.remove('sympy/modules/printing/pretty.py') # see issue 53
 
         modules = []
         for x in files:
+            if len(x) > 12 and x[-11:] == '__init__.py':
+                x = x.replace('/__init__', '') 
+                print x
             modules.append(x.replace('/', '.')[:-3])
             #put . as separator and strip the extension (.py)
 
@@ -173,11 +180,11 @@ class test_sympy_doc(Command):
         
         suite = unittest.TestSuite()
         for mod in modules:
-            try:
-                suite.addTest(doctest.DocTestSuite(mod))
-            except ValueError: #if we don't have tests for the module, it will raise an Exception
+    #        try:
+            suite.addTest(doctest.DocTestSuite(mod))
+     #       except ValueError: #if we don't have tests for the module, it will raise an Exception
                                 # the plan is that in the future all modules have tests and we can remove this except
-                pass
+      #          pass
         runner = unittest.TextTestRunner()
         runner.run(suite)
 

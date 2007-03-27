@@ -437,7 +437,7 @@ class Add(Pair):
         Usage
         =====
             This method is called automatically when an instance of this class
-            is created, so there is no need to call it directly. 
+            is created, and will always return a new object. 
             
         Notes
         =====

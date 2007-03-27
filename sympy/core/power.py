@@ -8,7 +8,36 @@ class pole_error(Exception):
     pass
 
 class Pow(Basic):
+    """
+    Usage
+    =====
+        This class represent's the power of two elements. so whenever you call '**', an 
+        instance of this class is created. 
+        
+    Notes
+    =====
+        When an instance of this class is created, the method .eval() is called and will
+        preform some inexpensive symplifications. 
+        
+        In some cases, the eval() method will return an object that is not an instance of the
+        class Add, so for example if x is a Symbol, (x+x) will create a class Add with arguments
+        (x,x) , that will be evaluated via the .eval() method, and this method will return a 
+        class Mul with arguments (2,x), that is how x+x --> 2*x is done
+        
+    Examples
+    ========
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> type(1+x)
+        <class 'sympy.core.addmul.Add'>
+        >>> (1+x)[:]
+        (1, x)
     
+    See also
+    ========
+        L{Add.eval}
+    """
+        
     mathml_tag = "power"
 
     def __init__(self,a,b):

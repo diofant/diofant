@@ -229,7 +229,7 @@ class Matrix(object):
                 m[i,j] = x
         return m
 
-    def print_sympy(self):
+    def __str__(self):
         s="";
         for i in range(self.lines):
             for j in range(self.cols):

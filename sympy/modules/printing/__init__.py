@@ -9,10 +9,10 @@ Examples
     
     >>> x = Symbol('x')
     >>> f = integrate(exp(x), x, evaluate=False)
-    >>> print_gtk( f ) #doctest:SKIP
-    
-    >>> print_latex( f )
-    '$\\int {e}^{x}dx$'
+
+    #>>> print_gtk( f ) 
+    >>> print print_latex( f )
+    $\int {e}^{x}dx$
 
 """
 
