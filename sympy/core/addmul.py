@@ -577,10 +577,6 @@ class Add(Pair):
                 else:
                     return None
             rest = pattern - p
-            for i in range(len(self)):
-                r = (self-self[i]).match(rest,[p])
-                if r=={}:
-                    return {p: self[i]}
             from symbol import Symbol
             if isinstance(rest, Symbol):
                 if rest in self[:]:
@@ -591,7 +587,6 @@ class Add(Pair):
                 if not (x in self[:]):
                     return None
             return {p: (self - rest).expand()}
-            return None
         return NotImplementedError("More than one pattern symbol")
 
 def _extract_numeric(x):
