@@ -390,7 +390,7 @@ class Limit(Basic):
         s += self.e.mathml
         s += "</apply>"
         return s
-        
+    
     def print_pretty(self):
          e, x, t = [a.print_pretty() for a in (self.e,self.x,self.x0)]
          return StringPict('lim').below(StringPict.next(x, '->', t)) \
@@ -400,6 +400,10 @@ def limit(e,z,z0, evaluate=True):
     """Currently only limit z->z0+"""
     if not evaluate:
         return Limit(e, z, z0)
+    if z0 == s.infty:
+        return limitinf(e, z)
+    if z0 == -s.infty:
+        return limitinf(-e, z)
     x=s.Symbol("x",True)
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)

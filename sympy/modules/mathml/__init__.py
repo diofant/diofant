@@ -5,8 +5,6 @@ To use this module, you will need libxml2 and libxslt, with it's
 respective python bindings.
 """
 
-import libxml2
-import libxslt
 from sympy.modules.pkgdata import get_resource
 
 def add_mathml_headers(s):
@@ -22,6 +20,9 @@ def apply_xsl(mml, xsl):
     @param xsl: a string representing a path to a xsl (xml sylesheet) 
         file. This file name is relative to the PYTHONPATH
     """
+    
+    import libxml2
+    import libxslt
     
     s = get_resource(xsl).read()
     

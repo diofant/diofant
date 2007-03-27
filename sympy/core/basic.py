@@ -387,14 +387,9 @@ class Basic(object):
         """Return True if self is a number. False otherwise. 
         """
         
-        try:
-            self.evalf()
-            # if self has symbols it will raise
-            # an exception, which we will catch
-            # and return False
-            return True
-        except ValueError:
-            return False
+        return not 'ci' in self.mathml
+        # ci is the mathml notation for symbol, so we assume that 
+        # if it's mathml has not the ci tag, then it has no symbols
 
     @property
     def mathml(self):

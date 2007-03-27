@@ -146,10 +146,6 @@ class Mul(Pair):
         return f % tuple([str(x) for x in a])
     
 
-    def print_prog(self):
-        f = "Mul(%s"+",%s"*(len(self._args)-1)+")"
-        return f % tuple([str(x) for x in self._args])
-        
     @staticmethod
     def get_baseandexp(a):
         # TODO: remove
@@ -407,10 +403,6 @@ class Add(Pair):
     
     mathml_tag = "plus"
     
-    def print_prog(self):
-        f = "Add(%s"+",%s"*(len(self._args)-1)+")"
-        return f % tuple([str(x) for x in self._args])
-
     def __str__(self):
         """Returns a string representation of the expression in self."""
         

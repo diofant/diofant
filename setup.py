@@ -167,6 +167,14 @@ class test_sympy_doc(Command):
         # files without doctests or that don't work
         files.remove('sympy/modules/printing/pygame_.py')
         files.remove('sympy/modules/printing/pretty.py') # see issue 53
+        
+        #testing for optional libraries
+        try:
+            import libxslt
+        except ImportError:
+            #remove tests that make use of libxslt1
+            files.remove('sympy/modules/printing/latex.py')
+            files.remove('sympy/modules/printing/__init__.py')
 
         modules = []
         for x in files:

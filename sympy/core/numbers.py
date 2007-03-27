@@ -74,6 +74,16 @@ class Infinity(Number):
     
     def sign(self):
         return self._sign
+    
+    def __lt__(self, num):
+        if self.sympify(num).isnumber():
+            if self._sign == -1:
+                return True
+            else:
+                return False
+    
+    def __gt__(self, num):
+        return not self.__lt__(num)
 
 infty=Infinity()
 
