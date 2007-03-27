@@ -357,6 +357,24 @@ class Mul(Pair):
             return e
 
     def match(self, pattern, syms):
+        if len(syms) == 1:
+            p = syms[0]
+            if not pattern.has(p):
+                if self == pattern:
+                    return {}
+                else:
+                    return None
+            rest = pattern / p
+            from symbol import Symbol
+            if isinstance(rest, Symbol):
+                if rest in self[:]:
+                    return {p: self / rest}
+                else:
+                    return None
+            for x in rest[:]:
+                if not (x in self[:]):
+                    return None
+            return {p: (self / rest).expand()}
         if len(self) == 2:
             r = self[0].match(pattern[0], syms)
             if r!=None: return r
@@ -367,7 +385,7 @@ class Mul(Pair):
             r = self[1].match(pattern[0], syms)
             if r!=None: return r
             return None
-        return Basic.match(self, pattern, syms)
+        raise NotImplementedError()
 
 
 class Add(Pair):
@@ -575,11 +593,16 @@ class Add(Pair):
                     return {p: self - rest}
                 else:
                     return None
-            for x in rest[:]:
-                if not (x in self[:]):
-                    return None
-            return {p: (self - rest).expand()}
-        return NotImplementedError("More than one pattern symbol")
+            if isinstance(rest, Add):
+                for x in rest[:]:
+                    if not (x in self[:]):
+                        return None
+                return {p: (self - rest).expand()}
+            if not (rest in self[:]):
+                return None
+            else:
+                return {p: (self - rest).expand()}
+        raise NotImplementedError()
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
