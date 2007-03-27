@@ -164,6 +164,7 @@ class Basic(object):
         return self._dopow(a, self)
         
     def __eq__(self,a):
+        if a == None: return False
         return self.isequal(self.sympify(a))
         
     def __ne__(self,a):
@@ -458,3 +459,15 @@ class Basic(object):
         if x < 0: return -1
         elif x==0: return 0
         else: return 1
+
+    def match(self, pattern, syms):
+        if len(syms) == 1:
+            if pattern == syms[0]:
+                return self
+        if type(self) != type(pattern):
+            return None
+        for a,b in zip(self,pattern):
+            r = a.match(b, syms)
+            if r==None:
+                return None
+        return r

@@ -243,4 +243,9 @@ class Pow(Basic):
             return (self.base.subs(old,new) ** self.exp.subs(old,new))
 
     def match(self, pattern, syms):
-        return self[0],self[1]
+        if len(syms) == 1:
+            if self[0]==self[1]:
+                return (self[0],)
+            return None
+        else:
+            return self[0],self[1]

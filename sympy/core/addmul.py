@@ -359,7 +359,22 @@ class Mul(Pair):
             return e
         else:
             return e
-    
+
+    def match(self, pattern, syms):
+        if len(self) == 2:
+            r = self[0].match(pattern[0], syms)
+            if r!=None: return r
+            r = self[1].match(pattern[1], syms)
+            if r!=None: return r
+            r = self[0].match(pattern[1], syms)
+            if r!=None: return r
+            r = self[1].match(pattern[0], syms)
+            if r!=None: return r
+            stop
+            return None
+        return Basic.match(self, pattern, syms)
+
+
 class Add(Pair):
     """
     Usage
@@ -552,6 +567,21 @@ class Add(Pair):
             a,b = self.getab()
             #there is a cancelation problem here:
             return (a.series(sym,n)+b.series(sym,n))
+
+    def match(self, pattern, syms):
+        if len(self) == 2:
+            r = self[0].match(pattern[0], syms)
+            if r!=None: 
+                r = self[1].match(pattern[1], syms)
+                if r!=None: return r
+            r = self[0].match(pattern[1], syms)
+            print "Add",self,pattern, r
+            if r!=None: 
+                print "Add",self,pattern, r
+                r = self[1].match(pattern[0], syms)
+                if r!=None: return r
+            return None
+        return Basic.match(self, pattern, syms)
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.

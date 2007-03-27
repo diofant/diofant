@@ -78,6 +78,14 @@ class Symbol(Basic):
             return self
         raise NotImplementedError
 
+    def match(self, pattern, syms):
+        if len(syms) == 1:
+            if pattern == syms[0]:
+                return {syms[0]: self}
+            if self == pattern:
+                return {}
+        return None
+
 class NCSymbol(Symbol):
 
     @property
