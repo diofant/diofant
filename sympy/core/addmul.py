@@ -1,3 +1,10 @@
+"""
+This module has the necessary code to represent addition and multiplication of elements, via
+the classes Add, Mul and it's base class, Pair. 
+
+This is a central part of the core
+"""
+
 import hashing
 from sympy.core.basic import Basic
 from sympy.core.numbers import Number, Rational, Real
@@ -153,13 +160,13 @@ class Mul(Pair):
 
     @staticmethod
     def try_to_coerce(x, y):
-        #TODO: see __coerce__
         """Tries to multiply x * y in this order and see if it simplifies. 
         
         If it succeeds, returns (x*y, True)
         otherwise (x, False)
         where x is the original x 
         """
+        #TODO: See also: L{Add.eval}
         z1 = y.muleval(x,y)
         z2 = x.muleval(x,y)
 
@@ -354,6 +361,35 @@ class Mul(Pair):
             return e
     
 class Add(Pair):
+    """
+    Usage
+    =====
+        This class represent's the addition of two elements. so whenever you call '+', an 
+        instance of this class is created. 
+        
+    Notes
+    =====
+        When an instance of this class is created, the method .eval() is called and will
+        preform some inexpensive symplifications. 
+        
+        In some cases, the eval() method will return an object that is not an instance of the
+        class Add, so for example if x is a Symbol, (x+x) will create a class Add with arguments
+        (x,x) , that will be evaluated via the .eval() method, and this method will return a 
+        class Mul with arguments (2,x), that is how x+x --> 2*x is done
+        
+    Examples
+    ========
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> type(1+x)
+        <class 'sympy.core.addmul.Add'>
+        >>> (1+x)[:]
+        (1, x)
+    
+    See also
+    ========
+        L{Add.eval}
+    """
     
     mathml_tag = "plus"
     
@@ -380,6 +416,9 @@ class Add(Pair):
         in general, self=a+b+c+d+..., but in many algorithms, we 
         want to ha+ve just 2 arguments to add. Use this function to 
         simulate this interface. (the returned b = b+c+d.... )
+        
+        If you want to obtain all the arguments of a given expression, use
+        the slices syntax, like in (1+x)[:]
         """
         a=self._args[0]
         if len(self._args) == 1:
@@ -394,7 +433,32 @@ class Add(Pair):
 
         
     def eval(self):
-        "Flatten, put all Rationals in the back, coerce, sort"
+        """
+        Usage
+        =====
+            This method is called automatically when an instance of this class
+            is created, so there is no need to call it directly. 
+            
+        Notes
+        =====
+            Currently, what this method does is: 
+            
+                - flatten all arguments, i.e, substitute all instances of Add by their arguments
+                  for example, self.flatten(1, 1+x ) --> [1,1,x]
+                
+                - adds it's arguments beying aware of some identities, like that x+x -> 2*x and 
+                  that numbers can be added without restrictions using their own __add__ method
+                
+                - sort
+        See also
+        ========
+            L{Mul.eval}, L{Pow.eval}
+            
+        TODO
+        ====
+            - Perform a complexity analysis
+            - probably optimizations can be done (algorithmic optimizations)
+        """
 
         def _add(exp,x):
             an, a = _extract_numeric(x)
@@ -426,16 +490,15 @@ class Add(Pair):
             if not ok: e.append(x)
             return e
 
-        def myadd(a,b):
-            if isinstance(a,Rational):
-                return Rational.__add__(a,b)
-            else:
-                return Real.__add__(a,b)
+        def _add_Number(a,b):
+            """Adds two Real or Rational Numbers"""
+            if isinstance(a,Number):
+                return a+b
         
         a = self.flatten(self._args)
         a = self.coerce(a,_add)
         #n,a = self.coerce_numbers(a, Rational.__add__, Rational(0))
-        n,a = self.coerce_numbers(a, myadd, Rational(0))
+        n,a = self.coerce_numbers(a, _add_Number, Rational(0))
         a.sort(Basic.cmphash)
         if n != 0:
             a = [n] + a

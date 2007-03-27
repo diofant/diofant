@@ -13,7 +13,8 @@ class sin(Function):
         sin(x) will evaluate automatically in the case x is a 
         multiple of pi.
     
-    Further examples
+    Examples
+    ========
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> sin(x**2).diff(x)
