@@ -12,11 +12,15 @@ def test_symbol():
     assert e.match(p,[p]) == {p: a}
     assert e.match(p,[p]) != {p: b}
 
-def xtest_add():
+def test_add():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
     p,q = [Symbol(Y) for Y in ["p","q"]]
-    e = (a+b)
-    assert e.match(p+b,[p]) == (a,)
+    e = a+b
+    assert e.match(p+b,[p]) == {p: a}
+    assert e.match(p+a,[p]) == {p: b}
+    e = a+b+c
+    #assert e.match(a+p+c,[p]) == {p: b}
+    #assert e.match(b+p+c,[p]) == {p: a}
 
 def test_basics():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
