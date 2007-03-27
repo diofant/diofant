@@ -581,7 +581,7 @@ class Add(Pair):
                 if r=={}:
                     return {p: self[i]}
             return None
-        return Basic.match(self, pattern, syms)
+        return NotImplementedError("More than one pattern symbol")
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
