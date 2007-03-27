@@ -31,7 +31,7 @@ def test_add():
     e = 4*x+5
     assert e.match(4*x+c,[c]) == {c: 5}
     assert e.match(3*x+c,[c]) == None
-    #assert e.match(b*x+5,[b]) == {b: 4}
+    assert e.match(b*x+5,[b]) == {b: 4}
     #assert e.match(b*x+c,[b,c]) == {b: 4, c: 5}
 
 def test_power():

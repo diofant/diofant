@@ -587,6 +587,11 @@ class Add(Pair):
                 else:
                     return None
             rest = pattern - p
+            if rest.has(p):
+                if isinstance(pattern, Add):
+                    return {p: 4}
+                else:
+                    raise NotImplementedError()
             from symbol import Symbol
             if isinstance(rest, Symbol):
                 if rest in self[:]:
