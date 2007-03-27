@@ -19,8 +19,14 @@ def test_add():
     assert e.match(p+b,[p]) == {p: a}
     assert e.match(p+a,[p]) == {p: b}
     e = a+b+c
-    #assert e.match(a+p+c,[p]) == {p: b}
-    #assert e.match(b+p+c,[p]) == {p: a}
+    assert e.match(a+p+c,[p]) == {p: b}
+    assert e.match(b+p+c,[p]) == {p: a}
+    e = a+b+c+x
+    assert e.match(a+p+x+c,[p]) == {p: b}
+    assert e.match(b+p+c+x,[p]) == {p: a}
+    #e = a+b+c+x
+    #assert e.match(a+p+c,[p]) == {p: b+x}
+    #assert e.match(b+p+c,[p]) == {p: a+x}
 
 def test_basics():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]

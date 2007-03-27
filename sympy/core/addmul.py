@@ -583,6 +583,19 @@ class Add(Pair):
                 r = self[1].match(pattern[0], syms)
                 if r!=None: return r
             return None
+        if len(syms) == 1:
+            p = syms[0]
+            if not pattern.has(p):
+                if self == pattern:
+                    return {}
+                else:
+                    return None
+            rest = pattern - p
+            for i in range(len(self)):
+                r = (self-self[i]).match(rest,[p])
+                if r=={}:
+                    return {p: self[i]}
+            return None
         return Basic.match(self, pattern, syms)
 
 def _extract_numeric(x):
