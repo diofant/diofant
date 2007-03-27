@@ -587,6 +587,10 @@ class Add(Pair):
                     return {p: self - rest}
                 else:
                     return None
+            for x in rest[:]:
+                if not (x in self[:]):
+                    return None
+            return {p: (self - rest).expand()}
             return None
         return NotImplementedError("More than one pattern symbol")
 
