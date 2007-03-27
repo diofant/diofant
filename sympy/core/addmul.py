@@ -565,6 +565,7 @@ class Add(Pair):
         except pole_error:
             a,b = self.getab()
             #there is a cancelation problem here:
+            #implement the class Order
             return (a.series(sym,n)+b.series(sym,n))
 
     def match(self, pattern, syms):
@@ -580,6 +581,12 @@ class Add(Pair):
                 r = (self-self[i]).match(rest,[p])
                 if r=={}:
                     return {p: self[i]}
+            from symbol import Symbol
+            if isinstance(rest, Symbol):
+                if rest in self[:]:
+                    return {p: self - rest}
+                else:
+                    return None
             return None
         return NotImplementedError("More than one pattern symbol")
 

@@ -24,7 +24,8 @@ def test_add():
     e = a+b+c+x
     assert e.match(a+p+x+c,[p]) == {p: b}
     assert e.match(b+p+c+x,[p]) == {p: a}
-    e = a+b+c+x
+    assert e.match(b,[p]) == None
+    assert e.match(b+p,[p]) == {p: a+c+x}
     #assert e.match(a+p+c,[p]) == {p: b+x}
     #assert e.match(b+p+c,[p]) == {p: a+x}
 
