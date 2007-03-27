@@ -12,7 +12,7 @@ Examples
     >>> print_gtk( f ) #doctest:SKIP
     
     >>> print_latex( f )
-    '$\\int {e}^{x}dx$'caca
+    '$\\int {e}^{x}dx$'
 
 """
 
