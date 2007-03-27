@@ -31,5 +31,5 @@ def test_basics():
     e = (x+y)**(x+y)
     assert e.match(p**p,[p]) == (x+y,)
     assert e.match(p**q,[p,q]) == (x+y, x+y)
-    #e = (a+b)*(a+c)
-    #assert e.match((p+b)*(p+c),[p]) == (a,)
+    e = (a+b)*(a+c)
+    assert e.match((p+b)*(p+c),[p]) == {p: a}

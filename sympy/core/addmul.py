@@ -370,7 +370,6 @@ class Mul(Pair):
             if r!=None: return r
             r = self[1].match(pattern[0], syms)
             if r!=None: return r
-            stop
             return None
         return Basic.match(self, pattern, syms)
 
