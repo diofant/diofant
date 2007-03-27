@@ -212,3 +212,6 @@ class Pow(Basic):
             return new
         else:
             return (self.base.subs(old,new) ** self.exp.subs(old,new))
+
+    def match(self, pattern, syms):
+        return self[0],self[1]
