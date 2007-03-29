@@ -12,6 +12,10 @@ def test_symbol():
     assert e.match(p,[p]) == {p: a}
     assert e.match(p,[p]) != {p: b}
 
+    e = Rational(5)
+    assert e.match(c, [c]) == {c: 5}
+    assert e.match(c, [b,c]) == {c: 5}
+
 def test_add():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
     p,q = [Symbol(Y) for Y in ["p","q"]]
@@ -32,7 +36,7 @@ def test_add():
     assert e.match(4*x+c,[c]) == {c: 5}
     assert e.match(3*x+c,[c]) == None
     assert e.match(b*x+5,[b]) == {b: 4}
-    #assert e.match(b*x+c,[b,c]) == {b: 4, c: 5}
+    assert e.match(b*x+c,[b,c]) == {b: 4, c: 5}
 
 def test_power():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]

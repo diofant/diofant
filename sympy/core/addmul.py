@@ -611,6 +611,13 @@ class Add(Pair):
                 return None
             else:
                 return {p: (self - rest).expand()}
+        assert isinstance(pattern, Add)
+        ops = list(self[:])[:]
+        pat = list(pattern[:])[:]
+        r = ops[0].match(pat[1],syms)
+        r2 = ops[1].match(pat[0],syms)
+        r.update(r2)
+        return r
         raise NotImplementedError()
 
 def _extract_numeric(x):

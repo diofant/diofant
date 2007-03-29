@@ -327,7 +327,13 @@ class Rational(Number):
         
     def diff(self,sym):
         return Rational(0)
-    
+
+    def match(self, pattern, syms):
+        from symbol import Symbol
+        if isinstance(pattern, Symbol):
+            return {syms[syms.index(pattern)]: self}
+        return None
+   
 
 class Constant(Basic):
     """Mathematical constant abstract class.
