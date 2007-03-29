@@ -43,10 +43,25 @@ class Number(Basic):
         return self
     
 class Infinity(Number):
-    """Infinity. Cannot be used in expressions like 1+infty.  
-    Only as a Symbol, for example results of limits, integration limits etc.
-    Can however be used in comparisons, like infty!=1, or infty!=x**3
-    
+    """
+    Usage
+    =====
+        Represents mathematical infinity. 
+        
+    Notes
+    =====
+        Cannot be used in expressions like infty/infty, but can be used in some
+        very simple expressions like 1*infty
+          
+        Should be used only as a Symbol, for example results of limits, integration limits etc.
+        Can however be used in comparisons, like infty!=1, or infty!=x**3
+          
+    Examples
+    ========
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> limit(x, x, infty)
+        Inf
     """
     
     def __init__(self, sign=1):

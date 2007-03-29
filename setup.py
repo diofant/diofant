@@ -188,11 +188,8 @@ class test_sympy_doc(Command):
         
         suite = unittest.TestSuite()
         for mod in modules:
-    #        try:
             suite.addTest(doctest.DocTestSuite(mod))
-     #       except ValueError: #if we don't have tests for the module, it will raise an Exception
-                                # the plan is that in the future all modules have tests and we can remove this except
-      #          pass
+            
         runner = unittest.TextTestRunner()
         runner.run(suite)
 

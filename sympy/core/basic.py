@@ -243,7 +243,7 @@ class Basic(object):
             It currently accepts as arguments: 
                 - any object defined in sympy (except maybe matrices [TODO])
                 - standard numeric python types: int, long, float, Decimal
-                - strings (like "0.09" or "2e-19"
+                - strings (like "0.09" or "2e-19")
             
             If the argument is already a type that sympy understands, it will do
             nothing but return that value - this can be used at the begining of a
