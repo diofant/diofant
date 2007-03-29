@@ -331,7 +331,10 @@ class Rational(Number):
     def match(self, pattern, syms):
         from symbol import Symbol
         if isinstance(pattern, Symbol):
-            return {syms[syms.index(pattern)]: self}
+            try:
+                return {syms[syms.index(pattern)]: self}
+            except ValueError:
+                pass
         if isinstance(pattern, Rational):
             if self==pattern:
                 return {}

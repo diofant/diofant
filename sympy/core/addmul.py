@@ -11,8 +11,8 @@ from sympy.core.numbers import Number, Rational, Real, Infinity
 from sympy.core.power import Pow, pole_error
 
 class Pair(Basic):
-    """Abstract class containing common code to add and mul classes.
-    Should not be used directly
+    """Abstract class containing common code to Add and Mul classes.
+    Should not be used directly.
     """
     
     def __init__(self, *args):
@@ -121,6 +121,46 @@ class Pair(Basic):
             if not x.is_commutative:
                 return False
         return True
+
+    def match(self, pattern, syms):
+        if len(syms) == 1:
+            if not pattern.has(syms[0]):
+                if self == pattern:
+                    return {}
+                else:
+                    return None
+        assert isinstance(pattern, type(self))
+        ops = list(self[:])[:]
+        pat = list(pattern[:])[:]
+        global_wildcard = None
+        for p in pat:
+            if p in syms:
+                if global_wildcard:
+                    raise "Can't have more than 1 global wildcards"
+                global_wildcard = p
+        if global_wildcard:
+            pat.remove(global_wildcard)
+        r2 = {}
+        for p in pat:
+            for o in ops:
+                r = o.match(p,syms)
+                #print o,p,syms,"->",r
+                if r!= None:
+                    ops.remove(o)
+                    break
+            if r == None:
+                return None
+            r2.update(r)
+        if global_wildcard:
+            if len(ops) == 0:
+                return None
+            elif len(ops) == 1:
+                rst = ops[0]
+            else:
+                rst = type(self)(*ops)
+            r2.update({global_wildcard: rst})
+        #print "XX",r2,self,pat,global_wildcard
+        return r2
 
 
 class Mul(Pair):
@@ -360,51 +400,6 @@ class Mul(Pair):
         else:
             return e
 
-    def match(self, pattern, syms):
-        if len(syms) == 1:
-            p = syms[0]
-            if not pattern.has(p):
-                if self == pattern:
-                    return {}
-                else:
-                    return None
-            rest = pattern / p
-            from symbol import Symbol
-            if isinstance(rest, Symbol):
-                if rest in self[:]:
-                    return {p: self / rest}
-                else:
-                    return None
-            for x in rest[:]:
-                if not (x in self[:]):
-                    return None
-            return {p: (self / rest).expand()}
-        from symbol import Symbol
-        if isinstance(pattern, Symbol):
-            return {syms[syms.index(pattern)]: self}
-        assert isinstance(pattern, Mul)
-        ops = list(self[:])[:]
-        pat = list(pattern[:])[:]
-        r2 = {}
-        for o in ops:
-            for p in pat:
-                r = o.match(p,syms)
-                if r!= None:
-                    if r == {}:
-                        break
-                    assert len(r) == 1
-                    if not r2.has_key(r.keys()[0]):
-                        #print r2,r,o,p,syms
-                        break
-            if r == None:
-                #print "problem:",ops,pat,o,p,r2
-                #if r2!={}:
-                #    return r2
-                return None
-            if r!=None:
-                r2.update(r)
-        return r2
-
 
 class Add(Pair):
     """
@@ -500,6 +495,8 @@ class Add(Pair):
         ====
             - Perform a complexity analysis
             - probably optimizations can be done (algorithmic optimizations)
+            - the problem is with addeval() and muleval(), that some classes
+              implement, like Pauli and with noncommutativity of some objects
         """
 
         def _add(exp,x):
@@ -595,49 +592,6 @@ class Add(Pair):
             #there is a cancelation problem here:
             #implement the class Order
             return (a.series(sym,n)+b.series(sym,n))
-
-    def match(self, pattern, syms):
-        if len(syms) == 1:
-            p = syms[0]
-            if not pattern.has(p):
-                if self == pattern:
-                    return {}
-                else:
-                    return None
-        assert isinstance(pattern, Add)
-        ops = list(self[:])[:]
-        pat = list(pattern[:])[:]
-        global_wildcard = None
-        for p in pat:
-            if p in syms:
-                if global_wildcard:
-                    raise "Can't have more than 1 global wildcards"
-                global_wildcard = p
-        if global_wildcard:
-            pat.remove(global_wildcard)
-        r2 = {}
-        for p in pat:
-            for o in ops:
-                r = o.match(p,syms)
-                #print o,p,syms,"->",r
-                if r!= None:
-                    ops.remove(o)
-                    break
-            if r == None:
-                r2 = r
-                break
-            r2.update(r)
-        if global_wildcard:
-            if len(ops) == 0:
-                rst = Rational(0)
-            elif len(ops) == 1:
-                rst = ops[0]
-            else:
-                rst = Add(*ops)
-            if r2 != None:
-                r2.update({global_wildcard: rst})
-        #print "XX",r2,self,pat,global_wildcard
-        return r2
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
