@@ -330,7 +330,10 @@ class Rational(Number):
     
 
 class Constant(Basic):
-    """Mathematical constant abstract class."""
+    """Mathematical constant abstract class.
+    
+    Is the base class for constatns such as pi or e
+    """
     
     def __init__(self):
         Basic.__init__(self, is_commutative = True)

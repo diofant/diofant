@@ -176,12 +176,6 @@ def union(a,b):
             z.append(x)
     return z
 
-def limit(e,z,z0):
-    """Currently only limit z->z0+"""
-    x=s.Symbol("x",True)
-    e0=e.subs(z,z0+1/x)
-    return limitinf(e0,x)
-
 #@decorator(maketree)
 @memoize
 def limitinf(e,x):
