@@ -61,27 +61,15 @@ class Infinity(Number):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> limit(x, x, infty)
-        Inf
+        Infinity
     """
     
     def __init__(self, sign=1):
-        Basic.__init__(self)
-        if sign not in [1,-1]:
-            raise ArgumentError("Sign can only have values 1 or -1")
-        self._sign = sign
+        Basic.__init__(self, 
+                       is_real = False, 
+                       is_commutative = False, 
+                       )
         
-    def __str__(self):
-        if self._sign == 1:
-            return "Inf"
-        else:
-            return "-Inf" 
-    
-    def __neg__(self):
-        return Infinity(sign=-1)
-    
-    def __add__(self, a):
-        raise NotImplementedError
-    
     def hash(self):
         if self._mhash: 
             return self._mhash.value
@@ -258,8 +246,6 @@ class Rational(Number):
         a = self.sympify(a)
         if isinstance(a, Rational):
             return Rational(self.p * a.p, self.q * a.q)
-            print self
-            print a
         elif isinstance(a, int) or isinstance(a, long):
             return Rational(self.p * a, self.q)
         elif isinstance(a, Real):
@@ -272,11 +258,13 @@ class Rational(Number):
         return self.__mul__(a)
     
     def __div__(self, a):
+        #TODO: move to Mul.eval
         if isinstance(a, int):
             return Rational(self.p, self.q *a)
         return self * (a**Rational(-1))
         
     def __rdiv__(self, a):
+        #TODO: move to Mul.eval
         if isinstance(a, int):
             return Rational(self.q * a, self.p )
         return self * (a**Rational(-1))

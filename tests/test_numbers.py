@@ -68,7 +68,9 @@ def test_inf():
     assert g.infty != 1
     assert 1*g.infty == g.infty
     assert 1 != g.infty
+    assert g.infty != -g.infty
     assert g.infty != g.Symbol("x")**3
+    
 
 def test_powers():
     assert 64**(g.Rational(1)/3)==4

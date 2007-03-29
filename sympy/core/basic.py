@@ -104,9 +104,9 @@ class Basic(object):
     
     def __repr__(self):
         return str(self)
-
+    
     def __str__(self):
-        return str(type(self))
+        return self.__class__.__name__
     
     def __neg__(self):
         from numbers import Rational
@@ -174,18 +174,19 @@ class Basic(object):
         
     def __lt__(self,a):
         from sympy.core.numbers import Real
-        if self._isnumber(self) and self._isnumber(a): 
-            return self.evalf() < Real(a).evalf()
+        a = Basic.sympify(a)
+        if self.is_number and a.is_number: 
+            return self.evalf() < a.evalf()
         else:
             raise NotImplementedError("'<' not supported.")
         
     def __gt__(self,a):
-        from numbers import Real
-        if self._isnumber(self) and self._isnumber(a): 
-            return self.evalf() > Real(a).evalf()
+        a = Basic.sympify(a)
+        if self.is_number and a.is_number: 
+            return self.evalf() > a.evalf()
         else:
             raise NotImplementedError("'<' not supported.")
-        
+    
     @staticmethod
     def _doadd(a,b):
         from addmul import Add

@@ -205,13 +205,13 @@ def sign(e,x):
     """
     #print "sign:",e
     if isinstance(e,s.core.Number):
-        return e.sign()
+        return s.sign(e)
     elif not e.has(x):
         return e.evalf() > 0
     elif e == x: 
         return 1
     elif isinstance(e,s.core.Mul): 
-        a,b=e.getab()
+        a,b = e.getab()
         return sign(a,x)*sign(b,x)
 #    elif isinstance(e,s.add): 
 #        a,b=e.getab()

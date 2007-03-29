@@ -34,6 +34,9 @@ def test_func():
     assert e == 2**a*g.log(g.Rational(2))**(-1)
     assert e.diff(a) == 2**a
 
+def test_log():
+    assert g.log(2) > 0
+
 def test_exp_log():
     x=g.Symbol("x")
     assert g.log(g.exp(x))==x
@@ -64,6 +67,9 @@ def test_log_hashing_bug():
     assert not isinstance(x,s.log)
     assert s.log(s.log(x)).hash() != x.hash()
     assert e!=x
+
+def test_sign():
+    assert s.sign(s.log(2)) == 1
 
 
 def test_exp_bug():

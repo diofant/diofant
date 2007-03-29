@@ -87,8 +87,6 @@ class Function(Basic):
         @return: Real number
         
         """
-        if not self._args.is_number:
-            raise ValueError 
         raise NotImplementedError
 
 class exp(Function):
@@ -155,8 +153,9 @@ class log(Function):
         return self
         
     def evalf(self):
+        #TODO: add precision
         import math
-        return math.log(self._args.evalf())
+        return Real(math.log(self._args.evalf()) )
         
     def series(self,sym,n):
         from numbers import Rational
@@ -237,7 +236,7 @@ class abs_(Function):
 class sign(Function):
     
     def eval(self):
-        if self._args.isn_umber:
+        if self._args.is_number:
             if self._args < 0:
                 return Rational(-1)
             elif self._args == 0:

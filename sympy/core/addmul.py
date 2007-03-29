@@ -249,7 +249,8 @@ class Mul(Pair):
         a = self.coerce([Rational(1)]+c_part+c_part2,_mul_c)
         n,c_part = a[0], a[1:]
         #so that now "n" is a Number and "c_part" doesn't contain any number
-        if n == 0: return Rational(0)
+        if n == 0: 
+            return Rational(0)
         c_part.sort(Basic.cmphash)
         #this if is for multiplying Symbol*Matrix and Number*Matrix
         #I think it's not needed anymore, since Matrix is implemented
