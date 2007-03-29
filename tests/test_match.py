@@ -18,6 +18,9 @@ def test_symbol():
     e = Rational(5)
     assert e.match(c, [c]) == {c: 5}
     assert e.match(c, [b,c]) == {c: 5}
+    assert e.match(e, [b]) == {}
+    assert e.match(e, [b,c]) == {}
+    assert e.match(e+1, [b,c]) == None
 
 def test_add():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -67,5 +70,5 @@ def test_mul():
     e = a*x*b*c
     assert e.match(p*x,[p]) == {p: a*b*c}
     assert e.match(c*p*x,[p]) == {p: a*b}
-    #e = (a+b)*(a+c)
+    e = (a+b)*(a+c)
     #assert e.match((p+b)*(p+c),[p]) == {p: a}

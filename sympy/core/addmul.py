@@ -604,50 +604,40 @@ class Add(Pair):
                     return {}
                 else:
                     return None
-            rest = pattern - p
-            if rest.has(p):
-                if isinstance(pattern, Add):
-                    return {p: 4}
-                else:
-                    raise NotImplementedError()
-            from symbol import Symbol
-            if isinstance(rest, Symbol):
-                if rest in self[:]:
-                    return {p: self - rest}
-                else:
-                    return None
-            if isinstance(rest, Add):
-                for x in rest[:]:
-                    if not (x in self[:]):
-                        return None
-                return {p: (self - rest).expand()}
-            if not (rest in self[:]):
-                return None
-            else:
-                return {p: (self - rest).expand()}
         assert isinstance(pattern, Add)
         ops = list(self[:])[:]
         pat = list(pattern[:])[:]
+        global_wildcard = None
+        for p in pat:
+            if p in syms:
+                if global_wildcard:
+                    raise "Can't have more than 1 global wildcards"
+                global_wildcard = p
+        if global_wildcard:
+            pat.remove(global_wildcard)
         r2 = {}
-        #print "_"*40
-        for o in ops:
-            for p in pat:
+        for p in pat:
+            for o in ops:
                 r = o.match(p,syms)
-                #print "MATCH",o,p,syms,r
+                #print o,p,syms,"->",r
                 if r!= None:
-                    assert len(r) == 1
-                    if not r2.has_key(r.keys()[0]):
-                        #print self,pattern,r2,r,o,p,syms
-                        break
-                    else:
-                        r = None
+                    ops.remove(o)
+                    break
             if r == None:
-                #print "XX",r2,o,p,ops,pat
-                return None
+                r2 = r
+                break
             r2.update(r)
-        #print r2
+        if global_wildcard:
+            if len(ops) == 0:
+                rst = Rational(0)
+            elif len(ops) == 1:
+                rst = ops[0]
+            else:
+                rst = Add(*ops)
+            if r2 != None:
+                r2.update({global_wildcard: rst})
+        #print "XX",r2,self,pat,global_wildcard
         return r2
-        raise NotImplementedError()
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.

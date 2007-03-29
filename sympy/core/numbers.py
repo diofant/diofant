@@ -332,6 +332,9 @@ class Rational(Number):
         from symbol import Symbol
         if isinstance(pattern, Symbol):
             return {syms[syms.index(pattern)]: self}
+        if isinstance(pattern, Rational):
+            if self==pattern:
+                return {}
         return None
    
 

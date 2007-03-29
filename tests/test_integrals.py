@@ -22,6 +22,7 @@ def test_basics():
 
     assert integrate(t**2, (t,x,2*x), evaluate=False).diff(x)==7*x**2
 
+
 def test_integration():
     x=Symbol("x")
     t=Symbol("t")
@@ -34,6 +35,8 @@ def test_integration():
     assert integrate(1/t, (t,1,x)) == log(x)
 
     assert integrate(t**2+5*t-8, (t,0,x))==x**3/3+5*x**2/2-8*x
+
+    assert integrate(x**2, x) == x**3/3
 
     a=Symbol("a")
     b=Symbol("b")
