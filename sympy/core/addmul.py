@@ -7,7 +7,7 @@ This is a central part of the core
 
 import hashing
 from sympy.core.basic import Basic
-from sympy.core.numbers import Number, Rational, Real
+from sympy.core.numbers import Number, Rational, Real, Infinity
 from sympy.core.power import Pow, pole_error
 
 class Pair(Basic):
@@ -174,6 +174,9 @@ class Mul(Pair):
                 return z1, True
             if z2:
                 return z2, True
+        
+        if isinstance(x, Infinity) or isinstance(y, Infinity):
+            return x, False
 
         if isinstance(x,Number) and isinstance(y, Number):
             return x*y, True
@@ -199,7 +202,7 @@ class Mul(Pair):
             e = []
             for i,y in enumerate(exp):
                 z,ok = self.try_to_coerce(y,x)
-                if isinstance(z, Number) and i != 0:
+                if isinstance(z, (Rational, Real)) and i != 0:
                     #c and 1/c could have been coerced to 1 or i^2 to -1
                     #or 2^(1/2)^2 to 2, etc.
                     #z == 0 is probably a bug
@@ -272,7 +275,7 @@ class Mul(Pair):
             
     def evalf(self):
         a, b = self.getab()
-        if a.isnumber() and b.isnumber():
+        if a.is_number and b.is_number:
             return Real(a)*Real(b)
         else: 
             raise ValueError("Cannot evaluate a symbolic value")

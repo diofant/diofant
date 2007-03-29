@@ -55,8 +55,9 @@ contains algorithms for symbolic computations, like limit, integration, etc.
 G{packagetree sympy}
 """
 
-__version__ = "0.3"
+__version__ = "0.4-pre"
 
+from sympy.core import Basic
 from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
 from sympy.core import pi, I, Order, Add, Mul
 from sympy.core.functions import Derivative

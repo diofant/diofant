@@ -87,7 +87,7 @@ class Function(Basic):
         @return: Real number
         
         """
-        if not self._args.isnumber():
+        if not self._args.is_number:
             raise ValueError 
         raise NotImplementedError
 
@@ -118,7 +118,7 @@ class exp(Function):
         return exp(x)*cos(y)+I*exp(x)*sin(y)
     
     def evalf(self, precision=28):
-        if not self._args.isnumber():
+        if not self._args.is_number:
             raise ValueError 
         x = Real(self._args) # argument to decimal (full precision)
         decimal.getcontext().prec = precision + 2
@@ -172,7 +172,7 @@ class log(Function):
         w = sym
         c0,e0 = arg.leadterm(w)
         Phi=(arg/(c0*w**e0)-1).expand()
-        if c0.isnumber():
+        if c0.is_number:
             assert c0.evalf()>0
         e=log(c0)+e0*log(w)
         for i in range(1,n+1):
@@ -195,11 +195,11 @@ class abs_(Function):
         from numbers import I
         
         arg = self._args
-        if arg.isnumber() or (isinstance(arg, Symbol) and arg.is_real):
+        if arg.is_number or (isinstance(arg, Symbol) and arg.is_real):
             return (arg*arg.conjugate()).expand()**Rational(1,2)
         elif isinstance(arg, Mul):
             _t = arg.getab()[0]
-            if _t.isnumber() and _t < 0:
+            if _t.is_number and _t < 0:
                 return abs(-self._args)
         elif isinstance(arg, Add):
             b,a = arg.getab()
@@ -212,7 +212,7 @@ class abs_(Function):
         return self
         
     def evalf(self):
-        if self._args.isnumber():
+        if self._args.is_number:
             return self.eval()
         else:
             raise ValueError
@@ -237,7 +237,7 @@ class abs_(Function):
 class sign(Function):
     
     def eval(self):
-        if self._args.isnumber():
+        if self._args.isn_umber:
             if self._args < 0:
                 return Rational(-1)
             elif self._args == 0:
@@ -247,7 +247,7 @@ class sign(Function):
         return self
             
     def evalf(self, precision=28):
-        if isnumber(self._args):
+        if self._args.is_number:
             return self.eval()
         else:
             raise ArgumentError

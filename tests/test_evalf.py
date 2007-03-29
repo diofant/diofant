@@ -16,7 +16,7 @@ def test_evalf():
     f = 2*x+2
     py.test.raises(ValueError,f.evalf)
     e = (s.Rational(2).sqrt()+1)/3
-    assert e.isnumber()     
+    assert e.is_number     
 
 def test_bug1():
     x=s.Symbol('x')

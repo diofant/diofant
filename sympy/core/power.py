@@ -125,7 +125,7 @@ class Pow(Basic):
         if isinstance(self.base,Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
         if isinstance(self.base,exp): 
-            if self.base.isnumber():
+            if self.base.is_number:
                 return exp(self.exp*self.base._args)
         if isinstance(self.base,Mul): 
             a,b = self.base.getab()
@@ -139,7 +139,7 @@ class Pow(Basic):
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
                     n = self.base[0]
-                    if n.isnumber() and n < 0:
+                    if n.is_number and n < 0:
                         return (-self.base)**self.exp
         if isinstance(self.base, NCSymbol):
             if isinstance(self.exp, Rational) and self.exp.is_integer:
@@ -155,7 +155,7 @@ class Pow(Basic):
         
 
     def evalf(self):
-        if self.base.isnumber() and self.exp.isnumber():
+        if self.base.is_number and self.exp.is_number:
             return Real(float(self.base)**float(self.exp))
             #FIXME: we need a way of raising a decimal to the power of a decimal (it doesen't work if self.exp is not an integer
         else:

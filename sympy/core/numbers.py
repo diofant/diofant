@@ -47,11 +47,10 @@ class Infinity(Number):
     Only as a Symbol, for example results of limits, integration limits etc.
     Can however be used in comparisons, like infty!=1, or infty!=x**3
     
-    this class represents all kinds of infinity, i.e. both +-infty.
     """
     
     def __init__(self, sign=1):
-        Number.__init__(self)
+        Basic.__init__(self)
         if sign not in [1,-1]:
             raise ArgumentError("Sign can only have values 1 or -1")
         self._sign = sign
@@ -65,6 +64,9 @@ class Infinity(Number):
     def __neg__(self):
         return Infinity(sign=-1)
     
+    def __add__(self, a):
+        raise NotImplementedError
+    
     def hash(self):
         if self._mhash: 
             return self._mhash.value
@@ -76,7 +78,7 @@ class Infinity(Number):
         return self._sign
     
     def __lt__(self, num):
-        if self.sympify(num).isnumber():
+        if self.sympify(num).is_number:
             if self._sign == -1:
                 return True
             else:
@@ -85,7 +87,7 @@ class Infinity(Number):
     def __gt__(self, num):
         return not self.__lt__(num)
 
-infty=Infinity()
+infty = Infinity()
 
 class Real(Number):
     """Represents a floating point number. It is capable of representing
@@ -100,10 +102,12 @@ class Real(Number):
     
     
     def __init__(self,num):
-        Number.__init__(self)
+        Basic.__init__(self, 
+                        is_real = True, 
+                        is_commutative = True, 
+                        )
         if isinstance(num,str):
             num = decimal.Decimal(num)
-        assert isnumber(num)
         if isinstance(num, decimal.Decimal):
             self.num = num
         elif isinstance(num, Real):
@@ -144,7 +148,7 @@ class Real(Number):
             return Add(self, a)
         
     def __mul__(self,a):
-        if isnumber(a):
+        if Basic.sympify(a).is_number:
             return Real(self.num * decimal.Decimal(str(float(a))))
             #FIXME: too many boxing-unboxing
         else:
@@ -174,6 +178,7 @@ class Real(Number):
         #evalf() should return either a float or an exception
         return self.num
 
+
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
 
@@ -186,7 +191,10 @@ class Rational(Number):
     """
     
     def __init__(self,*args):
-        Number.__init__(self)
+        Basic.__init__(self, 
+                       is_real = True, 
+                       is_commutative = True, 
+                       )
         if len(args)==1:
             p = args[0]
             q = 1 
@@ -232,9 +240,11 @@ class Rational(Number):
             return f % (self.p,self.q)
 
     def __mul__(self,a):
-        a=self.sympify(a)
+        a = self.sympify(a)
         if isinstance(a, Rational):
             return Rational(self.p * a.p, self.q * a.q)
+            print self
+            print a
         elif isinstance(a, int) or isinstance(a, long):
             return Rational(self.p * a, self.q)
         elif isinstance(a, Real):
@@ -347,6 +357,12 @@ class Constant(Basic):
 class ImaginaryUnit(Constant):
     """Imaginary unit "i"."""
 
+    def __init__(self):
+        Basic.__init__(self, 
+                       is_real = False, 
+                       is_commutative = True, 
+                       )
+
     def __str__(self):
         return "I"
     
@@ -395,6 +411,12 @@ class ConstPi(Constant):
 
     """
     
+    def __init__(self):
+        Basic.__init__(self,
+                       is_commutative = True, 
+                       is_real = True, 
+                       )
+    
     def evalf(self, precision=28):
         """Compute Pi to the current precision.
 
@@ -429,11 +451,12 @@ class ConstPi(Constant):
 pi=ConstPi()
 
 def isnumber(x):
-    #don't use this function. Use x.isnumber() instead
+    """DEPRECATED"""
+    #don't use this function. Use x.is_number instead
     #everything in sympy should be subclasses of Basic anyway.
 
     #if you need the testig for int, float, etc., just do it locally in your
-    #class, or even better, call Basic.sympify(x).isnumber().
+    #class, or even better, call Basic.sympify(x).is_number.
     #so that all the code which converts from python to sympy is localised in 
     #sympify
     from numbers import Number
@@ -442,7 +465,7 @@ def isnumber(x):
     if isinstance(x, (Number, int, float, long, Decimal)):
         return True
     assert isinstance(x, Basic)
-    return x.isnumber()
+    return x.is_number
 
 def sign(x):
     """Return the sign of x, that is, 

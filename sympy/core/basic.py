@@ -30,6 +30,8 @@ class Basic(object):
         
         - is_commutative
         
+        - is_number
+        
         - is_bounded
         
     Assumptions can have 3 possible values: 
@@ -229,14 +231,49 @@ class Basic(object):
  
     @staticmethod
     def sympify(a):
-        """for "a" int, returns Rational(a), for "a" float returns real, 
-        otherwise "a" (=it's a Basic subclass)."""
+        """
+        Usage
+        =====
+            Converts an arbitrary expression to a type that can be used
+            inside sympy. For example, it will convert python int's into
+            instance of sympy.Rational, floats into intances of sympy.Real, etc.
+            
+        Notes
+        =====
+            It currently accepts as arguments: 
+                - any object defined in sympy (except maybe matrices [TODO])
+                - standard numeric python types: int, long, float, Decimal
+                - strings (like "0.09" or "2e-19"
+            
+            If the argument is already a type that sympy understands, it will do
+            nothing but return that value - this can be used at the begining of a
+            method to ensure you are workint with the corerct type. 
+            
+        Examples
+        ========
+            >>> def is_real(a):
+            ...     a = Basic.sympify(a)
+            ...     return a.is_real
+            >>> is_real(2.0)
+            True
+            >>> is_real(2)
+            True
+            >>> is_real("2.0")
+            True
+            >>> is_real("2e-45")
+            True
+        """
+        
+        if isinstance(a, Basic):
+            #most common case
+            return a
+        
         import decimal
         from numbers import Rational, Real
         
         if isinstance(a,int) or isinstance(a, long):
             return Rational(a)
-        elif isinstance(a,(float, decimal.Decimal)):
+        elif isinstance(a,(float, decimal.Decimal, str)):
             return Real(a)
         else:
             assert isinstance(a,Basic)
@@ -383,7 +420,8 @@ class Basic(object):
         """
         return None
 
-    def isnumber(self):
+    @property
+    def is_number(self):
         """Return True if self is a number. False otherwise. 
         """
         
@@ -437,14 +475,14 @@ class Basic(object):
     @staticmethod
     def _isnumber(x):
         # TODO: remove
-        #don't use this function. Use x.isnumber() instead
+        #don't use this function. Use x.is_number instead
         from numbers import Number
         from basic import Basic
         from decimal import Decimal
         if isinstance(x, (Number, int, float, long, Decimal)):
             return True
         assert isinstance(x, Basic)
-        return x.isnumber()
+        return x.is_number
     
     @staticmethod
     def _sign(x):

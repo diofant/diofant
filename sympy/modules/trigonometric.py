@@ -41,7 +41,7 @@ class sin(Function):
         return True
         
     def eval(self):
-        if not self._args.isnumber():
+        if not self._args.is_number:
              return self
         a = 2*self._args / pi
         if a - int(float(a)) == 0:
@@ -57,7 +57,7 @@ class sin(Function):
         return self
     
     def evalf(self, precision=28):
-        if not self._args.isnumber():
+        if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
         x = Real(self._args)
@@ -89,7 +89,7 @@ class cos(Function):
         return True
     
     def eval(self):
-        if not self._args.isnumber():
+        if not self._args.is_number:
              return self
         # case self._args is a number 
         a = 2*self._args / pi
@@ -106,7 +106,7 @@ class cos(Function):
         return self
     
     def evalf(self, precision=28):
-        if not self._args.isnumber():
+        if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
         x = Real(self._args)
