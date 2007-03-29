@@ -614,10 +614,16 @@ class Add(Pair):
         assert isinstance(pattern, Add)
         ops = list(self[:])[:]
         pat = list(pattern[:])[:]
-        r = ops[0].match(pat[1],syms)
-        r2 = ops[1].match(pat[0],syms)
-        r.update(r2)
-        return r
+        r2 = {}
+        for o in ops:
+            for p in pat:
+                r = o.match(p,syms)
+                if r!= None:
+                    assert len(r) == 1
+                    if not r2.has_key(r.keys()[0]):
+                        break
+            r2.update(r)
+        return r2
         raise NotImplementedError()
 
 def _extract_numeric(x):
