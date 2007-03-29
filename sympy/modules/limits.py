@@ -391,7 +391,11 @@ class Limit(Basic):
                  .right(' ', e)
 
 def limit(e,z,z0, evaluate=True):
-    """Currently only limit z->z0+"""
+    """Compute the limit of e(z) at the point z0. 
+        z0 can be infty
+        Currently only limit z->z0+"""
+    if not isinstance(z, s.Symbol):
+        raise NotImplementedError("Second argument must be a Symbol")
     if not evaluate:
         return Limit(e, z, z0)
     if z0 == s.infty:
