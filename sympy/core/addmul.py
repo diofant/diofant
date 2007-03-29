@@ -379,17 +379,31 @@ class Mul(Pair):
                 if not (x in self[:]):
                     return None
             return {p: (self / rest).expand()}
-        if len(self) == 2:
-            r = self[0].match(pattern[0], syms)
-            if r!=None: return r
-            r = self[1].match(pattern[1], syms)
-            if r!=None: return r
-            r = self[0].match(pattern[1], syms)
-            if r!=None: return r
-            r = self[1].match(pattern[0], syms)
-            if r!=None: return r
-            return None
-        raise NotImplementedError()
+        from symbol import Symbol
+        if isinstance(pattern, Symbol):
+            return {syms[syms.index(pattern)]: self}
+        assert isinstance(pattern, Mul)
+        ops = list(self[:])[:]
+        pat = list(pattern[:])[:]
+        r2 = {}
+        for o in ops:
+            for p in pat:
+                r = o.match(p,syms)
+                if r!= None:
+                    if r == {}:
+                        break
+                    assert len(r) == 1
+                    if not r2.has_key(r.keys()[0]):
+                        #print r2,r,o,p,syms
+                        break
+            if r == None:
+                #print "problem:",ops,pat,o,p,r2
+                #if r2!={}:
+                #    return r2
+                return None
+            if r!=None:
+                r2.update(r)
+        return r2
 
 
 class Add(Pair):
@@ -615,14 +629,23 @@ class Add(Pair):
         ops = list(self[:])[:]
         pat = list(pattern[:])[:]
         r2 = {}
+        #print "_"*40
         for o in ops:
             for p in pat:
                 r = o.match(p,syms)
+                #print "MATCH",o,p,syms,r
                 if r!= None:
                     assert len(r) == 1
                     if not r2.has_key(r.keys()[0]):
+                        #print self,pattern,r2,r,o,p,syms
                         break
+                    else:
+                        r = None
+            if r == None:
+                #print "XX",r2,o,p,ops,pat
+                return None
             r2.update(r)
+        #print r2
         return r2
         raise NotImplementedError()
 

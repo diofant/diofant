@@ -11,6 +11,9 @@ def test_symbol():
     assert e.match(a,[p]) == {}
     assert e.match(p,[p]) == {p: a}
     assert e.match(p,[p]) != {p: b}
+    
+    e = x
+    assert e.match(x,[b,c]) == {}
 
     e = Rational(5)
     assert e.match(c, [c]) == {c: 5}
@@ -38,8 +41,7 @@ def test_add():
     assert e.match(b*x+5,[b]) == {b: 4}
     assert e.match(b*x+c,[b,c]) == {b: 4, c: 5}
     e = 4*x+5*y+6
-    assert e.match(a*x+b*y+c,[a,b,c]) in [{a: 4, b: 5, c: 6},
-            {a: 5, b: 4, c: 6}]
+    assert e.match(a*x+b*y+c,[a,b,c]) == {a: 4, b: 5, c: 6}
 
 def test_power():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -59,6 +61,9 @@ def test_mul():
     p,q = [Symbol(Y) for Y in ["p","q"]]
     e = 4*x
     assert e.match(b*x,[b]) == {b: 4}
+    assert e.match(b*x,[b,c]) == {b: 4}
+    assert e.match(b*y,[b]) == None
+    assert e.match(b*y,[a,b,c]) == None
     e = a*x*b*c
     assert e.match(p*x,[p]) == {p: a*b*c}
     assert e.match(c*p*x,[p]) == {p: a*b}

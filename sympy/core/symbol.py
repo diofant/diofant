@@ -79,6 +79,8 @@ class Symbol(Basic):
         raise NotImplementedError
 
     def match(self, pattern, syms):
+        if self == pattern:
+            return {}
         if len(syms) == 1:
             if pattern == syms[0]:
                 return {syms[0]: self}
