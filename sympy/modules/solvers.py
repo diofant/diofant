@@ -4,7 +4,7 @@ both algebraic (solve) and differential (dsolve).
 """
 
 from sympy import Basic, Symbol, Number, Mul, log, Add, Derivative, \
-        sin, cos
+        sin, cos, integrate
 
 def solve(eq, vars):
     """
@@ -66,7 +66,7 @@ def dsolve(eq, funcs):
     raise "Sorry, can't solve it (yet)."
 
 def solve_ODE_first_order(a, b, f, x):
-    return integrate(b/a, x) + Symbol("C1")
+    return integrate(-b/a, x) + Symbol("C1")
 
 
 def wo(di, x):

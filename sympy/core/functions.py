@@ -260,6 +260,7 @@ class Derivative(Basic):
         Basic.__init__(self)
         self.f=self.sympify(f)
         self.x=self.sympify(x)
+        self._args = (self.f, self.x)
 
     def eval(self):
         if isinstance(self.f, Derivative):

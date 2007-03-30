@@ -502,10 +502,14 @@ class Basic(object):
         elif x==0: return 0
         else: return 1
 
-    def match(self, pattern, syms):
+    def match(self, pattern, syms=None):
+        #print "B",self,pattern,syms,type(self),type(pattern)
+        from symbol import Symbol
+        if syms == None:
+            syms = pattern.atoms(type=Symbol)
         if len(syms) == 1:
             if pattern == syms[0]:
-                return self
+                return {syms[0]: self}
         if type(self) != type(pattern):
             from addmul import Mul
             from numbers import Rational
@@ -513,8 +517,15 @@ class Basic(object):
                 return Mul(Rational(1),self,
                         evaluate = False).match(pattern,syms)
             return None
+        r2 = None
+        #print "aaaa",self,pattern
         for a,b in zip(self,pattern):
             r = a.match(b, syms)
+            #print "A",a,b,syms,"-->",r
             if r==None:
                 return None
-        return r
+            if r2 == None:
+                r2 = r
+            else:
+                r2.update(r)
+        return r2

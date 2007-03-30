@@ -13,8 +13,8 @@ def test_quadratic():
     assert solve(((x-1)*(x-2)).expand(), x) in [[1,2], [2,1]]
     assert solve(((x-1)*(x-1)).expand(), x) == [1]
 
-def xtest_ODE_first_order():
+def test_ODE_first_order():
     class f(Function):
         pass
     x = Symbol("x")
-    assert dsolve(3*Derivative(f(x),x)-1, f(x)) == 3
+    assert dsolve(3*Derivative(f(x),x)-1, [f(x)]) == x/3+Symbol("C1")

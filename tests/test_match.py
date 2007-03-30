@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol, cos
+from sympy import Rational, Symbol, cos, Function, Derivative
 
 def test_symbol():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -105,3 +105,20 @@ def test_interface():
 
     assert (x*y).match(p*q,[p,q]) in [{p:x, q:y}, {p:y, q:x}]
     assert (x+y).match(p+q,[p,q]) in [{p:x, q:y}, {p:y, q:x}]
+
+def test_derivative():
+    x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
+    p,q = [Symbol(Y) for Y in ["p","q"]]
+    class f(Function): pass
+    x = Symbol("x")
+    fd = Derivative(f(x),x)
+    e = fd+1
+    assert e.match(a+1) == {a: fd}
+    e = fd
+    assert e.match(a) == {a: fd}
+    e = fd
+    assert e.match(fd,[a]) == {}
+    e = 3*fd
+    assert e.match(a*fd, [a]) != None
+    e = 3*fd - 1
+    assert e.match(a*fd + b, [a,b]) == {a:3, b:-1}
