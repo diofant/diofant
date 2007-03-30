@@ -258,7 +258,8 @@ class Pow(Basic):
         from addmul import Mul
         if isinstance(pattern, Mul):
             return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
-        assert isinstance(pattern, Pow)
+        if not isinstance(pattern, Pow):
+            return None
         r1 = self[0].match(pattern[0],syms)
         if r1!=None:
             r2 = self[1].match(pattern[1],syms)

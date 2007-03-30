@@ -4,6 +4,7 @@ sys.path.append(".")
 import py
 
 import sympy as g
+from sympy import Symbol, sin, cos
 
 def test_subs():
     n3=g.Rational(3)
@@ -49,3 +50,12 @@ def test_subbug1():
     x=g.Symbol("x")
     e=(x**x).subs(x,1)
     e=(x**x).subs(x,1.0)
+
+def test_dict():
+    x,a,b,c = [Symbol(s, dummy = True) for s in ["x","a","b","c"]]
+    f = 3*cos(4*x)
+    r = f.match(a*cos(b*x), [a,b])
+    assert r == {a: 3, b: 4}
+    e =  a/b * sin(b*x)
+    assert e.subs_dict(r) == r[a]/r[b] * sin(r[b]*x)
+    assert e.subs_dict(r) == 3 * sin(4*x) / 4

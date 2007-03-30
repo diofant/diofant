@@ -314,8 +314,16 @@ class Basic(object):
             e += f.subs(sym,Rational(0))*(sym**i)/fact
         e=e.subs(w,-log(sym))
         return e
+
+    def subs_dict(self, di):
+        """Substitutes all old -> new defined in the dictionary "di"."""
+        x = self
+        for d in di:
+            x = x.subs(d,di[d])
+        return x
         
     def subs(self,old,new):
+        """Substitutes an expression old -> new."""
         if self == old:
             return self.sympify(new)
         else:

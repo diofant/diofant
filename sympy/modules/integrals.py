@@ -83,7 +83,7 @@ class Integral(Basic):
     def primitive_function(f,x):
         """Try to calculate a primitive function to "f(x)".
         
-        Use heuristics.
+        Use heuristics and an integral table.
         """
         if isinstance(f,Mul):
             a,b = f.getab()
@@ -100,14 +100,14 @@ class Integral(Basic):
                 else: return x**(f.exp+1)/(f.exp+1)
 
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
-        r = f.match(a/(b*x+c), [a,b,c])
-        if r != None:
-            return r[a]/r[b] * log(abs(r[b]*x+r[c]))
-        r = f.match(a*cos(b*x), [a,b])
-        if r != None:
-            return r[a]/r[b] * sin(r[b]*x)
-
-        #Implement any other formula here
+        integral_table = {
+                a/(b*x+c): a/b * log(abs(b*x+c)),
+                a*cos(b*x): a/b * sin(b*x),
+                }
+        for k in integral_table:
+            r = f.match(k, [a,b,c])
+            if r != None:
+                return integral_table[k].subs_dict(r)
 
         raise IntegralError("Don't know how to do this integral. :(")
     
