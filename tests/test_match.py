@@ -72,6 +72,8 @@ def test_power():
     e = 1/(x+1)
     assert e.match(a/(b*x+c),[a,b,c]) == {a: 1, b: 1, c: 1}
 
+    assert ((2*x)**2).match(a*q**p, [a, q, p]) == {p: 2, q: x, a: 4}
+
 def test_mul():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
     p,q = [Symbol(Y) for Y in ["p","q"]]

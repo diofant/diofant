@@ -266,7 +266,7 @@ class Pow(Basic):
         r1 = self[0].match(pattern[0],syms)
         if r1!=None:
             r2 = self[1].match(pattern[1],syms)
-            #print r1,r2,self[1],pattern[1],syms
+            #print r1,r2,"<--",self[1],pattern[1],syms
             if r2!=None:
                 return addmatches(r1,r2)
         return None
