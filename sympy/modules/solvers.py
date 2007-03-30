@@ -63,10 +63,17 @@ def dsolve(eq, funcs):
         r = eq.match(a*Derivative(f,x) + b, [a,b])
         if r and wo(r,f): return solve_ODE_first_order(r[a], r[b], f, x)
 
+        r = eq.match(a*Derivative(Derivative(f,x),x) + b*f, [a,b])
+        if r and wo(r,f): return solve_ODE_second_order(r[a], 0, r[b], f, x)
+
     raise "Sorry, can't solve it (yet)."
 
 def solve_ODE_first_order(a, b, f, x):
     return integrate(-b/a, x) + Symbol("C1")
+
+def solve_ODE_second_order(a, b, c, f, x):
+    #a very special case, for b=0 and a,c not depending on x:
+    return Symbol("C1")*sin((c/a).sqrt()*x)+Symbol("C2")*cos((c/a).sqrt()*x)
 
 
 def wo(di, x):
