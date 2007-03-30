@@ -244,13 +244,15 @@ class Pow(Basic):
 
     def match(self, pattern, syms):
         def addmatches(r1,r2):
-            #print r1,r2
             l1 = list(r1)
             l2 = list(r2)
             if l1 == l2:
-                p = l1[0]
-                if r1[p] != r2[p]:
-                    return None
+                if l1 != []:
+                    #fix it in a general case
+                    assert len(l1)==1
+                    p = l1[0]
+                    if r1[p] != r2[p]:
+                        return None
             r1.update(r2)
             return r1
         assert isinstance(pattern, Pow)
