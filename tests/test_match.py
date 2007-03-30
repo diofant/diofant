@@ -105,6 +105,7 @@ def test_interface():
 
     assert (x*y).match(p*q,[p,q]) in [{p:x, q:y}, {p:y, q:x}]
     assert (x+y).match(p+q,[p,q]) in [{p:x, q:y}, {p:y, q:x}]
+    assert (x*y+1).match(p*q,[p,q]) == None
 
 def test_derivative():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]

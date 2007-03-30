@@ -141,7 +141,8 @@ class Pair(Basic):
                 return {syms[syms.index(pattern)]: self}
             except ValueError:
                 pass
-        assert isinstance(pattern, type(self))
+        if not isinstance(pattern, type(self)):
+            return None
         ops = list(self[:])[:]
         pat = list(pattern[:])[:]
         global_wildcard = None
