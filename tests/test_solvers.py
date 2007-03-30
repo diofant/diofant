@@ -1,7 +1,8 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol, cos, solve, dsolve, Function, Derivative
+from sympy import Rational, Symbol, cos, solve, dsolve, Function, Derivative, \
+        log
 
 def test_linear():
     x = Symbol("x")
@@ -18,3 +19,4 @@ def test_ODE_first_order():
         pass
     x = Symbol("x")
     assert dsolve(3*Derivative(f(x),x)-1, [f(x)]) == x/3+Symbol("C1")
+    assert dsolve(x*Derivative(f(x),x)-1, [f(x)]) == log(abs(x))+Symbol("C1")

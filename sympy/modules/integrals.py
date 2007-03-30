@@ -96,7 +96,7 @@ class Integral(Basic):
         if f==x: return x**2/2
         if isinstance(f,Pow):
             if f.base==x and isinstance(f.exp,Number):
-                if f.exp==-1: return log(x)
+                if f.exp==-1: return log(abs(x))
                 else: return x**(f.exp+1)/(f.exp+1)
 
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
