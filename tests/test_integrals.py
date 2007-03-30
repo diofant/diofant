@@ -54,4 +54,6 @@ def test_multiple_integration():
 def test_integration_table():
     x=Symbol("x")
     assert integrate(1/(x+1), x) == log(abs(x+1))
+    assert integrate(-4*sin(4*x), x) == cos(4*x)
     assert integrate(3*cos(4*x), x) == 3*sin(4*x)/4
+    assert integrate(log(x), x) == x*log(x) - x

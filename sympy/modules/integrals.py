@@ -102,7 +102,9 @@ class Integral(Basic):
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
         integral_table = {
                 a/(b*x+c): a/b * log(abs(b*x+c)),
+                a*sin(b*x): -a/b * cos(b*x),
                 a*cos(b*x): a/b * sin(b*x),
+                log(x): x*log(x)-x
                 }
         for k in integral_table:
             r = f.match(k, [a,b,c])
