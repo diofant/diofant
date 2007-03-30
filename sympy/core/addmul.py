@@ -149,8 +149,11 @@ class Pair(Basic):
             if p in syms:
                 if global_wildcard:
                     #unpredictable result, do we really need this?
+                    #currently this can never happen, I added the "break"
+                    #below....
                     raise "Can't have more than 1 global wildcards"
                 global_wildcard = p
+                break
         if global_wildcard:
             pat.remove(global_wildcard)
         r2 = {}
