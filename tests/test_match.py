@@ -10,6 +10,7 @@ def test_symbol():
     assert e.match(b,[p]) == None
     assert e.match(a,[p]) == {}
     assert e.match(p,[p]) == {p: a}
+    assert e.match(p,[p,q]) == {p: a}
     assert e.match(p,[p]) != {p: b}
     
     e = x
@@ -56,8 +57,11 @@ def test_power():
     assert e.match(p**p,[p]) == {p: x+y}
     assert e.match(p**q,[p,q]) == {p: x+y, q: x+y}
 
-    #e = 3/(4*x+5)
-    #assert e.match(a/(b*x+c),[a,b,c]) == {a: 3, b: 4, c: 5}
+    e = 3/(4*x+5)
+    assert e.match(3/(a*x+b), [a,b]) == {a: 4, b: 5}
+
+    e = 3/(4*x+5)
+    assert e.match(a/(b*x+c),[a,b,c]) == {a: 3, b: 4, c: 5}
 
 def test_mul():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -71,4 +75,4 @@ def test_mul():
     assert e.match(p*x,[p]) == {p: a*b*c}
     assert e.match(c*p*x,[p]) == {p: a*b}
     e = (a+b)*(a+c)
-    #assert e.match((p+b)*(p+c),[p]) == {p: a}
+    assert e.match((p+b)*(p+c),[p]) == {p: a}

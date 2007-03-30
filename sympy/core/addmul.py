@@ -124,11 +124,20 @@ class Pair(Basic):
 
     def match(self, pattern, syms):
         if len(syms) == 1:
-            if not pattern.has(syms[0]):
+            if pattern.has(syms[0]):
+                if pattern == syms[0]:
+                    return {syms[0]: self}
+            else:
                 if self == pattern:
                     return {}
                 else:
                     return None
+        from symbol import Symbol
+        if isinstance(pattern, Symbol):
+            try:
+                return {syms[syms.index(pattern)]: self}
+            except ValueError:
+                pass
         assert isinstance(pattern, type(self))
         ops = list(self[:])[:]
         pat = list(pattern[:])[:]

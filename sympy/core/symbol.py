@@ -86,6 +86,11 @@ class Symbol(Basic):
                 return {syms[0]: self}
             if self == pattern:
                 return {}
+        if isinstance(pattern, Symbol):
+            try:
+                return {syms[syms.index(pattern)]: self}
+            except ValueError:
+                pass
         return None
 
 class NCSymbol(Symbol):

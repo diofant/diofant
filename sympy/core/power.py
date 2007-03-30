@@ -243,9 +243,21 @@ class Pow(Basic):
             return (self.base.subs(old,new) ** self.exp.subs(old,new))
 
     def match(self, pattern, syms):
-        if len(syms) == 1:
-            if self[0]==self[1]:
-                return {syms[0]: self[0]}
-            return None
-        else:
-            return {syms[0]: self[0], syms[1]: self[1]}
+        def addmatches(r1,r2):
+            #print r1,r2
+            l1 = list(r1)
+            l2 = list(r2)
+            if l1 == l2:
+                p = l1[0]
+                if r1[p] != r2[p]:
+                    return None
+            r1.update(r2)
+            return r1
+        assert isinstance(pattern, Pow)
+        r1 = self[0].match(pattern[0],syms)
+        if r1!=None:
+            r2 = self[1].match(pattern[1],syms)
+            #print r1,r2,self[1],pattern[1],syms
+            if r2!=None:
+                return addmatches(r1,r2)
+        return None
