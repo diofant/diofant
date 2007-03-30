@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import py
 
-from sympy import integrate, Symbol, log, Rational
+from sympy import integrate, Symbol, log, Rational, cos, sin
 from sympy.modules.integrals import IntegralError
 
 x=Symbol("x")
@@ -50,3 +50,8 @@ def test_multiple_integration():
     assert integrate((x**2)*(y**2), (x,0,1), (y,-1,2)) == Rational(1)
     assert integrate((y**2)*(x**2), x, y) == Rational(1,9)*(x**3)*(y**3)
     
+
+def test_integration_table():
+    x=Symbol("x")
+    assert integrate(1/(x+1), x) == log(abs(x+1))
+    assert integrate(3*cos(4*x), x) == 3*sin(4*x)/4

@@ -499,6 +499,11 @@ class Basic(object):
             if pattern == syms[0]:
                 return self
         if type(self) != type(pattern):
+            from addmul import Mul
+            from numbers import Rational
+            if isinstance(pattern, Mul):
+                return Mul(Rational(1),self,
+                        evaluate = False).match(pattern,syms)
             return None
         for a,b in zip(self,pattern):
             r = a.match(b, syms)

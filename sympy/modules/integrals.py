@@ -1,4 +1,5 @@
 from sympy.core import Basic, Symbol, Number, Mul, Pow, log, Add
+from sympy.modules import cos, sin
 
 class IntegralError(Exception):
     pass
@@ -97,6 +98,14 @@ class Integral(Basic):
             if f.base==x and isinstance(f.exp,Number):
                 if f.exp==-1: return log(x)
                 else: return x**(f.exp+1)/(f.exp+1)
+
+        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
+        r = f.match(a/(b*x+c), [a,b,c])
+        if r != None:
+            return r[a]/r[b] * log(abs(r[b]*x+r[c]))
+        r = f.match(a*cos(b*x), [a,b])
+        if r != None:
+            return r[a]/r[b] * sin(r[b]*x)
 
         #Implement any other formula here
 

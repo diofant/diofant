@@ -91,6 +91,9 @@ class Symbol(Basic):
                 return {syms[syms.index(pattern)]: self}
             except ValueError:
                 pass
+        from addmul import Mul
+        if isinstance(pattern, Mul):
+            return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
         return None
 
 class NCSymbol(Symbol):

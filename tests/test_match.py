@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol
+from sympy import Rational, Symbol, cos
 
 def test_symbol():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -66,6 +66,11 @@ def test_power():
     e = 3*x**2+y*x+p
     assert e.match(a*x**2+b*x+c,[a,b,c]) == {a: 3, b: y, c: p}
 
+    e = 2/(x+1)
+    assert e.match(a/(b*x+c),[a,b,c]) == {a: 2, b: 1, c: 1}
+
+    e = 1/(x+1)
+    assert e.match(a/(b*x+c),[a,b,c]) == {a: 1, b: 1, c: 1}
 
 def test_mul():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -80,3 +85,11 @@ def test_mul():
     assert e.match(c*p*x,[p]) == {p: a*b}
     e = (a+b)*(a+c)
     assert e.match((p+b)*(p+c),[p]) == {p: a}
+
+    e = x
+    assert e.match(a*x,[a]) == {a: 1}
+
+def test_functions():
+    x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
+    f = cos(5*x)
+    assert f.match(a*cos(b*x), [a,b]) == {a: 1, b: 5}
