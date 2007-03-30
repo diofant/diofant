@@ -242,7 +242,10 @@ class Pow(Basic):
         else:
             return (self.base.subs(old,new) ** self.exp.subs(old,new))
 
-    def match(self, pattern, syms):
+    def match(self, pattern, syms=None):
+        from symbol import Symbol
+        if syms == None:
+            syms = pattern.atoms(type=Symbol)
         def addmatches(r1,r2):
             l1 = list(r1)
             l2 = list(r2)

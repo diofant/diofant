@@ -93,3 +93,11 @@ def test_functions():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
     f = cos(5*x)
     assert f.match(a*cos(b*x), [a,b]) == {a: 1, b: 5}
+
+def test_interface():
+    x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
+    assert (x+1).match(a+1) == {a: x}
+    assert (x*3).match(a*3) == {a: x}
+    assert (x**3).match(a**3) == {a: x}
+    #assert (a*cos(b)).atoms(type=Symbol) == [a,b]
+    #assert (x*cos(y)).match(a*cos(b)) == {a: x, b: y}

@@ -122,7 +122,11 @@ class Pair(Basic):
                 return False
         return True
 
-    def match(self, pattern, syms):
+    def match(self, pattern, syms=None):
+        from symbol import Symbol
+        if syms == None:
+            syms = pattern.atoms(type=Symbol)
+            print syms
         if len(syms) == 1:
             if pattern.has(syms[0]):
                 if pattern == syms[0]:
@@ -132,7 +136,6 @@ class Pair(Basic):
                     return {}
                 else:
                     return None
-        from symbol import Symbol
         if isinstance(pattern, Symbol):
             try:
                 return {syms[syms.index(pattern)]: self}
@@ -145,6 +148,7 @@ class Pair(Basic):
         for p in pat:
             if p in syms:
                 if global_wildcard:
+                    #unpredictable result, do we really need this?
                     raise "Can't have more than 1 global wildcards"
                 global_wildcard = p
         if global_wildcard:
