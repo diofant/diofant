@@ -126,7 +126,7 @@ class Pair(Basic):
         from symbol import Symbol
         if syms == None:
             syms = pattern.atoms(type=Symbol)
-            print syms
+            #print syms
         if len(syms) == 1:
             if pattern.has(syms[0]):
                 if pattern == syms[0]:
