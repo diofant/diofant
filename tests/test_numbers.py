@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Rational, Symbol
+from sympy import Rational, Symbol, Real
 
 def testRational():
     n1=g.Rational(1,4)
@@ -121,3 +121,6 @@ def test_int():
 def test_sqrtbug():
     assert ((Rational(2).sqrt()+1)*(Rational(2).sqrt()-1)).expand() == 1
 
+def test_Realeval():
+    a = Real(3.2)
+    assert isinstance(a**2, Real)

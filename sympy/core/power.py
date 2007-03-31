@@ -141,6 +141,8 @@ class Pow(Basic):
                     n = self.base[0]
                     if n.is_number and n < 0:
                         return (-self.base)**self.exp
+        if isinstance(self[0],Real) and self[1].is_number:
+            return Real(self[0]**self[1].evalf())
         if isinstance(self.base, NCSymbol):
             if isinstance(self.exp, Rational) and self.exp.is_integer:
                     n = int(self.exp)
