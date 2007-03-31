@@ -43,10 +43,13 @@ def test_exp_log():
     assert g.exp(g.log(x))==x
 
 def test_log_expansion():
-    x=g.Symbol("x")
-    y=g.Symbol("y")
-    assert g.log(x*y)==g.log(x)+g.log(y)
-    assert g.log(x**2)==2*g.log(x)
+    x=Symbol("x")
+    y=Symbol("y")
+    assert log(x*y)!=log(x)+log(y)
+    assert log(x**2)!=2*log(x)
+    assert log(x*y).expand()==log(x)+log(y)
+    assert log(x**2).expand()==2*log(x)
+    assert (log(x**-5)**-1).expand() == -1/log(x)/5
 
 def test_log_hashing_bug():
     x=s.Symbol("y")

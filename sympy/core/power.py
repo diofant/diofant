@@ -176,6 +176,7 @@ class Pow(Basic):
             try:
                 return Basic.series(self,sym,n)
             except pole_error:
+                #self=self.expand()
                 if isinstance(self.exp,Rational) and self.exp.isminusone():
                     g = self.base.series(sym,n)
                     #write g as g=c0*w^e0*(1+Phi)
@@ -222,6 +223,7 @@ class Pow(Basic):
                         #a *= self.base
                         n -= 1
                     return a.expand()
+        return Pow(self[0].expand(),self[1].expand())
         return self
 
     def evalc(self):

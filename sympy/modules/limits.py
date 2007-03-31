@@ -298,7 +298,7 @@ def mrv_leadterm(e,x,Omega=[]):
         return movedown(mrv_leadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
     wsym = s.Symbol("w",True)
     f,logw=rewrite(e,Omega,x,wsym)
-    series=f.series(wsym,1)
+    series=f.expand().series(wsym,1)
     n = 2
     while series==0 and n<10:
         series=f.series(wsym,n)

@@ -145,12 +145,24 @@ class log(Function):
             return Rational(0)
         elif isinstance(arg,exp):
             return arg._args
-        elif isinstance(arg,Mul):
-            a,b = arg.getab()
-            return log(a)+log(b)
-        elif isinstance(arg,Pow):
-            return arg.exp * log(arg.base)
+        #elif isinstance(arg,Mul):
+        #    a,b = arg.getab()
+        #    return log(a)+log(b)
+        #elif isinstance(arg,Pow):
+        #    return arg.exp * log(arg.base)
         return self
+
+    def expand(self):
+        from addmul import Mul
+        from power import Pow
+        arg = self[0]
+        if isinstance(arg,Mul):
+            a,b = arg.getab()
+            return log(a).expand()+log(b).expand()
+        elif isinstance(arg,Pow):
+            return arg.exp * log(arg.base).expand()
+        else:
+            return self
         
     def evalf(self):
         #TODO: add precision
