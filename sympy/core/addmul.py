@@ -378,7 +378,15 @@ class Mul(Pair):
         first expand x, then e^x, then e^x-1, and finally (e^x-1)/x
         """
         a,b=self.getab()
-        x=a.series(sym,n)
+        try:
+            x=a.series(sym,n)
+        except pole_error:
+            y=b.series(sym,n)
+            a0 = y.subs(sym,0)
+            if a0==0 and a.bounded():
+                return y
+            #we cannot expand x*y
+            raise
         try:
             y=b.series(sym,n)
         except pole_error:
