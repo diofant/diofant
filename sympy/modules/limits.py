@@ -187,6 +187,7 @@ def limitinf(e,x):
     elif sig==-1: 
         s.infty.sig=sign(c0,x)
         return s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
+#        return sign(c0, x) * s.infty #e0<0: lim f = +-infty   (the sign depends on the sign of c0)
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
 @memoize
