@@ -1,3 +1,9 @@
+sympy (0.3-2) unstable; urgency=low
+
+  * Changed maintainer to Ondrej Certik <ondrej@certik.cz>
+
+ -- Ondrej Certik <ondrej@certik.cz>  Sat, 07 Apr 2007 22:06:57 +0200
+
 sympy (0.3) unstable; urgency=low
 
   * Release 0.3 
