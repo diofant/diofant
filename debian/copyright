@@ -1,24 +1,30 @@
+Upstream Authors: Ondrej Certik, Fabian Seoane
+
+Copyright 2006, 2007 Ondrej Certik
+          2007 Fabian Seoane
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License with
+ the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
+ if not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ Suite 330, Boston, MA  02111-1307  USA
+
+On Debian systems, the complete text of the GNU General Public
+License, version 2, can be found in /usr/share/common-licenses/GPL-2.
+
+
 This package was debianized by Fabian Seoane <fabian@fseoane.net> on
 Wed, 21 Mar 2007 13:56:19 +0100.
 
 Current maintainer is Ondrej Certik <ondrej@certik.cz>.
 
 It was downloaded from http://code.google.com/p/sympy/
-
-Upstream Author: Ondrej Certik, Fabian Seoane
-
-Copyright: 2007 Ondrej Certik, Fabian Seoane
-
-License:
-
-You are free to distribute this software under the terms of
-the GNU General Public License  either version 2 of the License,
-or (at your option) any later version.
-
-The Debian packaging is (C) 2007, Fabian <fabian@fseoane.net> and
-is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
-
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
-
