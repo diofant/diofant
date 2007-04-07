@@ -12,4 +12,4 @@ makebuilddir/python-sympy::
 	mv isympy.1 doc/man/isympy.1
 
 clean::
-	-rm doc/man/isympy.1
+	-rm -f doc/man/isympy.1

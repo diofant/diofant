@@ -1,7 +1,7 @@
 Source: sympy
 Section: python
 Priority: optional
-Maintainer: Fabian Seoane <fabian@fseoane.net>
+Maintainer: Ondrej Certik <ondrej@certik.cz>
 Build-Depends: cdbs, debhelper (>= 5)
 Standards-Version: 3.7.2
 XS-Python-Version: all

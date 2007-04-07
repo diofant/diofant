@@ -88,13 +88,12 @@ class clean(Command):
     """
     
     description = "Clean everything"
-    user_options = []  # distutils complains if this is not here.
+    user_options = [("all","a","the same")]  
 
-
-    def initialize_options(self):  # distutils wants this
-        pass
+    def initialize_options(self):  
+        self.all = None
     
-    def finalize_options(self):    # this too
+    def finalize_options(self):   
         pass
 
     def run(self):
