@@ -1,3 +1,8 @@
+The changelog is tracked at the web only:
+
+http://code.google.com/p/sympy/wiki/Changes
+
+Old Changelog:
 
 March 25 2007, Fabian Seoane <fabian@fseoane.net>
        * isnumber() renamed to is_number for consistency with other methods in
