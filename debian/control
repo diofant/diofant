@@ -2,13 +2,13 @@ Source: sympy
 Section: python
 Priority: optional
 Maintainer: Ondrej Certik <ondrej@certik.cz>
-Build-Depends: cdbs, debhelper (>= 5), python-central (>= 0.5),  python | python-dev | python-all-dev, docbook2x
+Build-Depends: cdbs (>=0.4.41), debhelper (>= 5), python-central (>= 0.5),  python-all-dev (>=2.3.5-11)
 Standards-Version: 3.7.2
 XS-Python-Version: all
 
 Package: python-sympy
 Architecture: all 
-Depends: ${python:Depends}, python-libxslt1
+Depends: ${python:Depends}, python-libxslt1 (>= 1.1.17-2), python-libxml2 (>= 2.6.26.dfsg-2)
 Recommends: libgtkmathview-bin  
 XB-Python-Version: ${python:Versions}
 Description: Computer Algebra System (CAS) in Python

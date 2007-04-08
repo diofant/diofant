@@ -1,3 +1,13 @@
+sympy (0.3-2) unstable; urgency=low
+
+  * replaced "python | python-dev | python-all-dev" with "python-all-dev
+    (>=2.3.5-11)"
+  * added versioned dependency on cdbs and python-libxslt1
+  * added missing Depends/Recommends
+
+
+ -- Ondrej Certik <ondrej@certik.cz>  Mon, 09 Apr 2007 00:26:28 +0200
+
 sympy (0.3-1) unstable; urgency=low
 
   * Release 0.3 

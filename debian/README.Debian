@@ -15,4 +15,6 @@ program, that is basically just a python/ipython shell, that imports the
 frequently used commands. It's highly recommended for playing with SymPy. See
 "man isympy" for more info. 
 
+All the documentation for SymPy can be found on the home page.
+
 Ondrej Certik <ondrej@certik.cz>
