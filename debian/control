@@ -2,7 +2,7 @@ Source: sympy
 Section: python
 Priority: optional
 Maintainer: Ondrej Certik <ondrej@certik.cz>
-Build-Depends: cdbs, debhelper (>= 5), python-central (>= 0.5),  python | python-dev | python-all-dev
+Build-Depends: cdbs, debhelper (>= 5), python-central (>= 0.5),  python | python-dev | python-all-dev, docbook2x
 Standards-Version: 3.7.2
 XS-Python-Version: all
 

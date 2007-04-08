@@ -80,7 +80,18 @@ class bdist_dpkg(Command):
     
     def run(self):
         import os
-        os.system("fakeroot dpkg-buildpackage")
+        #fix the hardcoded versions numbers:
+        os.system("rm -rf /tmp/sympy-0.3")
+        os.system("svn export . /tmp/sympy-0.3")
+        os.system("cd /tmp;tar czf sympy_0.3.orig.tar.gz sympy-0.3")
+        os.system("cd /tmp/sympy-0.3; fakeroot dpkg-buildpackage")
+        print "-"*50
+        print "These files were created in /tmp:"
+        print "sympy_0.3.orig.tar.gz"
+        print "sympy_0.3-2_i386.changes"
+        print "sympy_0.3-2.diff.gz"
+        print "sympy_0.3-2.dsc"
+        print "python-sympy_0.3-2_all.deb"
 
 class clean(Command):
     """Cleans *.pyc and debian trashs, so you should get the same copy as 
