@@ -155,17 +155,17 @@ def testexpand():
     assert e.expand() ==  1+g.Rational(1)/2*x**2
 
 def test_ncmul():
-    A=g.core.NCSymbol("A")
-    B=g.core.NCSymbol("B")
-    C=g.core.NCSymbol("C")
-    b=g.Symbol("b")
+    A = Symbol("A", is_commutative=False)
+    B = Symbol("B", is_commutative=False)
+    C = Symbol("C", is_commutative=False)
+    b = Symbol("b")
     assert A*B != B*A
     assert A*B*C != C*B*A
     assert A*b*B*3*C == 3*b*A*B*C
     assert A*b*B*3*C != 3*b*B*A*C
     assert A*b*B*3*C == 3*A*B*C*b
 
-    assert A+B==B+A
+    assert A+B == B+A
     assert (A+B)*C != C*(A+B)
 
     assert C*(A+B)*C != C*C*(A+B)
@@ -178,6 +178,17 @@ def test_ncmul():
     assert ((A+B)**2).expand() == A**2 + A*B + B*A +B**2
 
     assert A**-1  * A == 1
+    assert A/A == 1
+    assert A/(A**2) == 1/A
+
+    assert A/(1+A) == A/(1+A)
+
+def test_ncpow():
+    x = Symbol('x', is_commutative=False)
+    y = Symbol('y', is_commutative=False)
+   
+    assert (x**2)*(y**2) != (y**2)*(x**2)
+    assert (x**-2)*y != y*(x**2)
 
 def test_powerbug():
     x=Symbol("x")
