@@ -1,6 +1,6 @@
 import hashing
 from basic import Basic
-from symbol import Symbol, NCSymbol
+from symbol import Symbol
 from numbers import Rational, Real, Number, ImaginaryUnit
 from functions import log, exp
 
@@ -18,20 +18,16 @@ class Pow(Basic):
     =====
         When an instance of this class is created, the method .eval() is called and will
         preform some inexpensive symplifications. 
-        
-        In some cases, the eval() method will return an object that is not an instance of the
-        class Add, so for example if x is a Symbol, (x+x) will create a class Add with arguments
-        (x,x) , that will be evaluated via the .eval() method, and this method will return a 
-        class Mul with arguments (2,x), that is how x+x --> 2*x is done
+
         
     Examples
     ========
         >>> from sympy import *
         >>> x = Symbol('x')
-        >>> type(1+x)
-        <class 'sympy.core.addmul.Add'>
-        >>> (1+x)[:]
-        (1, x)
+        >>> type(x**2)
+        <class 'sympy.core.power.Pow'>
+        >>> (x**2)[:]
+        [x, 2]
     
     See also
     ========
@@ -143,7 +139,7 @@ class Pow(Basic):
                         return (-self.base)**self.exp
         if isinstance(self[0],Real) and self[1].is_number:
             return Real(self[0]**self[1].evalf())
-        if isinstance(self.base, NCSymbol):
+        if not self.base.is_commutative:
             if isinstance(self.exp, Rational) and self.exp.is_integer:
                     n = int(self.exp)
                     #only try to simplify it for low exponents (for speed

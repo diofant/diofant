@@ -1,7 +1,7 @@
-from sympy.core import Basic,exp,Symbol,Rational,I,Mul,NCSymbol
+from sympy.core import Basic,exp,Symbol,Rational,I,Mul
 
 """
-This module implements Pauli algebra by subclassing NCSymbol. Only aglebraic
+This module implements Pauli algebra by subclassing Symbol. Only aglebraic
 properties of Pauli matrices are used (we don't use the Matrix class).
 
 See the documentation to the class Pauli for examples.
@@ -24,7 +24,7 @@ def epsilon(i,j,k):
     else:
         return 0
 
-class Pauli(NCSymbol):
+class Pauli(Symbol):
     """
     >>> from sympy import *
     >>> Pauli(1)
@@ -44,7 +44,7 @@ class Pauli(NCSymbol):
         if not i in [1,2,3]:
             raise "Invalid Pauli index"
         self.i=i
-        NCSymbol.__init__(self, "sigma%d"%i)
+        Symbol.__init__(self, "sigma%d"%i, is_commutative=False)
 
     @staticmethod
     def muleval(x, y):

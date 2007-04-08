@@ -70,7 +70,7 @@ class sin(Function):
             sign *= -1
             s += num / fact * sign 
         decimal.getcontext().prec = precision - 2        
-        return +s
+        return s
 
     def evalc(self):
         x, y = self._args.get_re_im()
@@ -119,7 +119,7 @@ class cos(Function):
             sign *= -1
             s += num / fact * sign 
         decimal.getcontext().prec = precision - 2        
-        return +s
+        return s
 
     def evalc(self):
         x, y = self._args.get_re_im()
