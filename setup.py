@@ -84,7 +84,7 @@ class bdist_dpkg(Command):
         os.system("rm -rf /tmp/sympy-0.3")
         os.system("svn export . /tmp/sympy-0.3")
         os.system("cd /tmp;tar czf sympy_0.3.orig.tar.gz sympy-0.3")
-        os.system("cd /tmp/sympy-0.3; fakeroot dpkg-buildpackage")
+        os.system("cd /tmp/sympy-0.3; fakeroot dpkg-buildpackage -sa")
         print "-"*50
         print "These files were created in /tmp:"
         print "sympy_0.3.orig.tar.gz"
