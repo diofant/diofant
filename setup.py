@@ -159,9 +159,6 @@ class clean(Command):
         os.system("py.cleanup")
         os.system("rm -f python-build-stamp-2.4")
         os.system("rm -f MANIFEST")
-        os.system("rm -f debian/files")
-        os.system("rm -f debian/python-sympy.substvars")
-        os.system("rm -rf debian/python-sympy")
         os.system("rm -rf build")
         os.system("rm -rf dist")
 
