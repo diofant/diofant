@@ -81,18 +81,18 @@ class bdist_dpkg(Command):
     def run(self):
         """
         Copies the current local svn copy to the dist/sympy-svn739,
-        creates dist/sympy_0.4-pre~svn739.orig.tar.gz from that and then
+        creates dist/sympy_0.4-pre+svn739.orig.tar.gz from that and then
         a debian package.
 
         debian/changelog contains a version like this:
 
-        0.4-pre~svn739-1
+        0.4-pre+svn739-1
 
         where the last "-1" is a debian version and this is the only place that
         contains this number. The "0.4-pre" should be the same as
         sympy.__init__ and svn739 should be the same as the current svn number.
 
-        This method checks that 0.4-pre~svn739 in changelog is consistent,
+        This method checks that 0.4-pre+svn739 in changelog is consistent,
         otherwise refuses to continue.
         """
         import os
@@ -102,12 +102,12 @@ class bdist_dpkg(Command):
             rev = fout.readlines()
             return int(rev[0])
         def get_changelog_version_revision():
-            """Reads the first line in changelog, parses 0.4-pre~svn739-1 and
+            """Reads the first line in changelog, parses 0.4-pre+svn739-1 and
             returns ("0.4-pre",739,1)
             """
             l = file("debian/changelog").readline()
             import re
-            m = re.match("sympy \((\S+)~svn(\d+)\-(\d+)\) ",l)
+            m = re.match("sympy \((\S+)\+svn(\d+)\-(\d+)\) ",l)
             if m:
                 g = m.groups()
                 if len(g) == 3:
@@ -128,9 +128,9 @@ class bdist_dpkg(Command):
         print "exporting svn to dist/sympy-svn%d" % revision
         os.system("svn -q export . dist/sympy-svn%d" % revision)
         os.system("rm -rf dist/sympy-svn%d/debian" % revision)
-        print "creating dist/sympy_%s~svn%d.orig.tar.gz" \
+        print "creating dist/sympy_%s+svn%d.orig.tar.gz" \
                 % (sympy.__version__, revision)
-        os.system("cd dist; tar zcf sympy_%s~svn%d.orig.tar.gz sympy-svn%d" \
+        os.system("cd dist; tar zcf sympy_%s+svn%d.orig.tar.gz sympy-svn%d" \
                 %(sympy.__version__, revision, revision))
         print "creating the deb package"
         os.system("cp -a debian dist/sympy-svn%d/debian" % revision)
