@@ -31,6 +31,7 @@ sympy@googlegroups.com and ask for help.
 from distutils.core import setup
 from distutils.core import Command
 import sys
+import sympy
 
 # Make sure I have the right Python version.
 if sys.version_info[1] < 4:
@@ -70,7 +71,8 @@ class bdist_dpkg(Command):
     
     description = "Make a deb package using dpkg"
     user_options = []  # distutils complains if this is not here.
-
+ 
+    __debversion__ = sympy.__version__ + "-2" # change this with a new 
 
     def initialize_options(self):  # distutils wants this
         pass
@@ -81,17 +83,17 @@ class bdist_dpkg(Command):
     def run(self):
         import os
         #fix the hardcoded versions numbers:
-        os.system("rm -rf /tmp/sympy-0.3")
-        os.system("svn export . /tmp/sympy-0.3")
-        os.system("cd /tmp;tar czf sympy_0.3.orig.tar.gz sympy-0.3")
-        os.system("cd /tmp/sympy-0.3; fakeroot dpkg-buildpackage -sa")
+        os.system("rm -rf /tmp/sympy-%s" % sympy.__version__)
+        os.system("svn export . /tmp/sympy-%s" % sympy.__version__)
+        os.system("cd /tmp;tar czf sympy_%s.orig.tar.gz sympy-" % sympy.__version__)
+        os.system("cd /tmp/sympy-%s; fakeroot dpkg-buildpackage -sa" % sympy.__version__)
         print "-"*50
         print "These files were created in /tmp:"
-        print "sympy_0.3.orig.tar.gz"
-        print "sympy_0.3-2_i386.changes"
-        print "sympy_0.3-2.diff.gz"
-        print "sympy_0.3-2.dsc"
-        print "python-sympy_0.3-2_all.deb"
+        print "sympy_%s.orig.tar.gz" % sympy.__version__
+        print "sympy_%s_i386.changes" % self.__debversion__
+        print "sympy_%s.diff.gz" % self.__debversion__
+        print "sympy_%s.dsc" % self.__debversion__
+        print "python-sympy_%s_all.deb" % self.__debversion__
 
 class clean(Command):
     """Cleans *.pyc and debian trashs, so you should get the same copy as 
