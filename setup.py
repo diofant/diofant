@@ -69,10 +69,8 @@ class bdist_dpkg(Command):
     """Make a nice .deb package
     """
     
-    description = "Make a deb package using dpkg"
+    description = "Make a deb package using dpkg (debuild)"
     user_options = []  # distutils complains if this is not here.
- 
-    __debversion__ = sympy.__version__ + "-2" # change this with a new 
 
     def initialize_options(self):  # distutils wants this
         pass
@@ -81,27 +79,66 @@ class bdist_dpkg(Command):
         pass
     
     def run(self):
+        """
+        Copies the current local svn copy to the dist/sympy-svn739,
+        creates dist/sympy_0.4-pre~svn739.orig.tar.gz from that and then
+        a debian package.
+
+        debian/changelog contains a version like this:
+
+        0.4-pre~svn739-1
+
+        where the last "-1" is a debian version and this is the only place that
+        contains this number. The "0.4-pre" should be the same as
+        sympy.__init__ and svn739 should be the same as the current svn number.
+
+        This method checks that 0.4-pre~svn739 in changelog is consistent,
+        otherwise refuses to continue.
+        """
         import os
-        revision=739
-        os.system("mkdir dist")
-        os.system("svn -q export -r %d . dist/sympy-svn%d" \
-                % (revision, revision))
+        def get_revision():
+            """Returns the current svn revision number as an int."""
+            fin, fout = os.popen2("svn --non-interactive info | grep Revision | cut -c 11-")
+            rev = fout.readlines()
+            return int(rev[0])
+        def get_changelog_version_revision():
+            """Reads the first line in changelog, parses 0.4-pre~svn739-1 and
+            returns ("0.4-pre",739,1)
+            """
+            l = file("debian/changelog").readline()
+            import re
+            m = re.match("sympy \((\S+)~svn(\d+)\-(\d+)\) ",l)
+            if m:
+                g = m.groups()
+                if len(g) == 3:
+                    #version, svn revision, debian revision
+                    #('0.4-pre', '739', '1') 
+                    v, r, dr = g
+                    return v, int(r), int(dr)
+            print l
+            raise "Don't understant the syntax in changelog"
+        v,r,dr = get_changelog_version_revision()
+        revision=get_revision()
+        if sympy.__version__ != v or revision != r:
+            print "The version/revision in debian/changelog (%s-svn%d) is " \
+                "inconsistent\nwith the sympy.__version__ (%s) and svn " \
+                "revision (%d)" % (v, r, sympy.__version__, revision)
+            return
+        os.system("mkdir -p dist")
+        print "exporting svn to dist/sympy-svn%d" % revision
+        os.system("svn -q export . dist/sympy-svn%d" % revision)
         os.system("rm -rf dist/sympy-svn%d/debian" % revision)
+        print "creating dist/sympy_%s~svn%d.orig.tar.gz" \
+                % (sympy.__version__, revision)
         os.system("cd dist; tar zcf sympy_%s~svn%d.orig.tar.gz sympy-svn%d" \
                 %(sympy.__version__, revision, revision))
+        print "creating the deb package"
         os.system("cp -a debian dist/sympy-svn%d/debian" % revision)
         os.system("rm -rf dist/sympy-svn%d/debian/.svn" % revision)
         os.system("cd dist/sympy-svn%d; debuild -sa -us -uc" % revision)
         os.system("rm -rf dist/sympy-svn%d" % (revision))
-        #os.system("rm -rf /tmp/sympy-%s" % sympy.__version__)
-        #os.system("svn export . /tmp/sympy-%s" % sympy.__version__)
-        #print "-"*50
-        #print "These files were created in /tmp:"
-        #print "sympy_%s.orig.tar.gz" % sympy.__version__
-        #print "sympy_%s_i386.changes" % self.__debversion__
-        #print "sympy_%s.diff.gz" % self.__debversion__
-        #print "sympy_%s.dsc" % self.__debversion__
-        #print "python-sympy_%s_all.deb" % self.__debversion__
+        print "-"*50
+        print "Done. Files genereated in the dist/ directory"
 
 class clean(Command):
     """Cleans *.pyc and debian trashs, so you should get the same copy as 
