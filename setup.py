@@ -83,11 +83,16 @@ class bdist_dpkg(Command):
     def run(self):
         import os
         revision=739
-        os.system("svn -q export -r %d . sympy-svn%d" %(revision, revision))
-        os.system("tar zcf sympy_%s~svn%d.orig.tar.gz sympy-svn%d" \
+        os.system("mkdir dist")
+        os.system("svn -q export -r %d . dist/sympy-svn%d" \
+                % (revision, revision))
+        os.system("rm -rf dist/sympy-svn%d/debian" % revision)
+        os.system("cd dist; tar zcf sympy_%s~svn%d.orig.tar.gz sympy-svn%d" \
                 %(sympy.__version__, revision, revision))
-        os.system("cd sympy-svn%d; debuild -sa -us -uc" % revision)
-        os.system("rm -rf sympy-svn%d" % (revision))
+        os.system("cp -a debian dist/sympy-svn%d/debian" % revision)
+        os.system("rm -rf dist/sympy-svn%d/debian/.svn" % revision)
+        os.system("cd dist/sympy-svn%d; debuild -sa -us -uc" % revision)
+        os.system("rm -rf dist/sympy-svn%d" % (revision))
         #os.system("rm -rf /tmp/sympy-%s" % sympy.__version__)
         #os.system("svn export . /tmp/sympy-%s" % sympy.__version__)
         #print "-"*50
