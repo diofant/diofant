@@ -1,4 +1,4 @@
-sympy (0.4-pre+svn765-1) unstable; urgency=low
+sympy (0.4~pre+svn770-1) unstable; urgency=low
 
   * Initial Debian release (closes: #418410) 
 

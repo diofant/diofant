@@ -55,7 +55,13 @@ contains algorithms for symbolic computations, like limit, integration, etc.
 G{packagetree sympy}
 """
 
-__version__ = "0.4-pre"
+#use the "0.4~pre"  or "0.3", but not "0.4-pre", run this to see why:
+#
+#$ dpkg --compare-versions 0.4-pre+svn756-1 lt 0.4 && echo true || echo false
+#$ dpkg --compare-versions 0.4~pre+svn756-1 lt 0.4 && echo true || echo false
+#$ dpkg --compare-versions 0.3+svn756-1 lt 0.4 && echo true || echo false
+
+__version__ = "0.4~pre"
 
 from sympy.core import Basic
 from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
