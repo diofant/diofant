@@ -17,4 +17,8 @@ frequently used commands. It's highly recommended for playing with SymPy. See
 
 All the documentation for SymPy can be found on the home page.
 
+Examples can be found in 
+
+/usr/share/doc/python-sympy/examples
+
 Ondrej Certik <ondrej@certik.cz>

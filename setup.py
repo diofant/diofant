@@ -125,18 +125,19 @@ class bdist_dpkg(Command):
                 "revision (%d)" % (v, r, sympy.__version__, revision)
             return
         os.system("mkdir -p dist")
-        print "exporting svn to dist/sympy-svn%d" % revision
-        os.system("svn -q export . dist/sympy-svn%d" % revision)
-        os.system("rm -rf dist/sympy-svn%d/debian" % revision)
+        tmpdir = "sympy-%s+svn%d" % (sympy.__version__, revision)
+        print "exporting svn to dist/%s" % tmpdir
+        os.system("svn -q export . dist/%s" % tmpdir)  
+        os.system("rm -rf dist/%s/debian" % tmpdir)
         print "creating dist/sympy_%s+svn%d.orig.tar.gz" \
                 % (sympy.__version__, revision)
-        os.system("cd dist; tar zcf sympy_%s+svn%d.orig.tar.gz sympy-svn%d" \
-                %(sympy.__version__, revision, revision))
+        os.system("cd dist; tar zcf sympy_%s+svn%d.orig.tar.gz %s" \
+                %(sympy.__version__, revision, tmpdir))
         print "creating the deb package"
-        os.system("cp -a debian dist/sympy-svn%d/debian" % revision)
-        os.system("rm -rf dist/sympy-svn%d/debian/.svn" % revision)
-        os.system("cd dist/sympy-svn%d; debuild -sa -us -uc" % revision)
-        os.system("rm -rf dist/sympy-svn%d" % (revision))
+        os.system("cp -a debian dist/%s/debian" % tmpdir)
+        os.system("rm -rf dist/%s/debian/.svn" % tmpdir)
+        os.system("cd dist/%s; debuild -sa -us -uc" % tmpdir)
+        os.system("rm -rf dist/%s" % tmpdir)
         print "-"*50
         print "Done. Files genereated in the dist/ directory"
 
