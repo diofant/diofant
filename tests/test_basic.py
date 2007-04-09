@@ -69,7 +69,7 @@ def test_print_tree():
 def test_atoms():
    x = g.Symbol('x')
    y = g.Symbol('y')
-   assert g.Basic.atoms(1+x) == [1,x]
-   assert g.Basic.atoms(1+2*g.cos(x)) == [1,2,x]
-   assert g.Basic.atoms(2*(x**(y**x))) == [2,x,y]
+   assert (1+x).atoms() == [1,x]
+   assert (1+2*g.cos(x)).atoms() == [1,2,x]
+   assert (2*(x**(y**x))).atoms() == [2,x,y]
    
