@@ -82,18 +82,21 @@ class bdist_dpkg(Command):
     
     def run(self):
         import os
-        #fix the hardcoded versions numbers:
-        os.system("rm -rf /tmp/sympy-%s" % sympy.__version__)
-        os.system("svn export . /tmp/sympy-%s" % sympy.__version__)
-        os.system("cd /tmp;tar czf sympy_%s.orig.tar.gz sympy-" % sympy.__version__)
-        os.system("cd /tmp/sympy-%s; fakeroot dpkg-buildpackage -sa" % sympy.__version__)
-        print "-"*50
-        print "These files were created in /tmp:"
-        print "sympy_%s.orig.tar.gz" % sympy.__version__
-        print "sympy_%s_i386.changes" % self.__debversion__
-        print "sympy_%s.diff.gz" % self.__debversion__
-        print "sympy_%s.dsc" % self.__debversion__
-        print "python-sympy_%s_all.deb" % self.__debversion__
+        revision=739
+        os.system("svn -q export -r %d . sympy-svn%d" %(revision, revision))
+        os.system("tar zcf sympy_%s~svn%d.orig.tar.gz sympy-svn%d" \
+                %(sympy.__version__, revision, revision))
+        os.system("cd sympy-svn%d; debuild -sa -us -uc" % revision)
+        os.system("rm -rf sympy-svn%d" % (revision))
+        #os.system("rm -rf /tmp/sympy-%s" % sympy.__version__)
+        #os.system("svn export . /tmp/sympy-%s" % sympy.__version__)
+        #print "-"*50
+        #print "These files were created in /tmp:"
+        #print "sympy_%s.orig.tar.gz" % sympy.__version__
+        #print "sympy_%s_i386.changes" % self.__debversion__
+        #print "sympy_%s.diff.gz" % self.__debversion__
+        #print "sympy_%s.dsc" % self.__debversion__
+        #print "python-sympy_%s_all.deb" % self.__debversion__
 
 class clean(Command):
     """Cleans *.pyc and debian trashs, so you should get the same copy as 

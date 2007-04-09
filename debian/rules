@@ -12,4 +12,16 @@ makebuilddir/python-sympy::
 	mv isympy.1 doc/man/isympy.1
 
 clean::
-	-rm -f doc/man/isympy.1
+	-rm -f doc/man/isympy.1 debian/python-sympy.postinst.debhelper
+
+#run this from the sympy root directory
+tarball:
+	@if [ "$$REVISION" = "" ]; then \
+		REVISION=`svn --non-interactive info | grep Revision | cut -c 11-`; \
+	fi; \
+	if [ "$$REVISION" = "" ]; then exit 1; fi; \
+	svn -q export -r $${REVISION} . sympy-svn$${REVISION}; \
+	VERSION=`grep "__version__ = " sympy-svn$${REVISION}/sympy/__init__.py | cut -d '"' -f 2`; \
+	tar zcf /tmp/sympy_$$VERSION~svn$${REVISION}.orig.tar.gz sympy-svn$${REVISION}; \
+	rm -rf sympy-svn$${REVISION}; \
+	echo file sympy_$$VERSION~svn$${REVISION}.orig.tar.gz successfully created

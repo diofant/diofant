@@ -1,4 +1,10 @@
-sympy (0.3-2) unstable; urgency=low
+sympy (0.4-pre~svn739-1) unstable; urgency=low
+
+  * Initial Debian release (closes: #418410) 
+
+ -- Ondrej Certik <ondrej@certik.cz>  Mon, 09 Apr 2007 17:52:55 +0200
+
+sympy (0.3-2) UNRELEASED; urgency=low
 
   * replaced "python | python-dev | python-all-dev" with "python-all-dev
     (>=2.3.5-11)"
@@ -10,7 +16,7 @@ sympy (0.3-2) unstable; urgency=low
 
  -- Ondrej Certik <ondrej@certik.cz>  Mon, 09 Apr 2007 00:26:28 +0200
 
-sympy (0.3-1) unstable; urgency=low
+sympy (0.3-1) UNRELEASED; urgency=low
 
   * Release 0.3 
   * Changed maintainer to Ondrej Certik <ondrej@certik.cz>
