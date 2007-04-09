@@ -459,18 +459,20 @@ class Basic(object):
         [y, 2, x]
         
         You can also filter the results by a given type of object
-        >>> (x+y+2+y**2*sin(x)).atoms(type=sin)
-        [sin(x)]
-        
         >>> (x+y+2+y**2*sin(x)).atoms(type=Symbol)
-        [y, x]
+        [x, y]
         
         >>> (x+y+2+y**2*sin(x)).atoms(type=Number)
         [2]
         """
+        from sympy.core.numbers import Number
+        from sympy.core.symbol import Symbol
+
+        atoms_class = (Number, Symbol)
+
         s_temp = s[:] # make a copy to avoid collision with global s
         for arg in self:
-            if len(arg) == 1:
+            if isinstance(arg, atoms_class):
                 if not arg in s_temp:
                     s_temp.append(arg)
             else:

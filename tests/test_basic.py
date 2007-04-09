@@ -66,3 +66,8 @@ def test_print_tree():
     e=(2*x-(7*x**2 - 2) + 3*y)
     e.print_tree()
 
+def test_atoms():
+   x = g.Symbol('x')
+   assert g.Basic.atoms(1+x) == [1,x]
+   assert g.Basic.atoms(1+2*g.cos(x)) == [1,2,x]
+   
