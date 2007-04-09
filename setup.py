@@ -136,7 +136,8 @@ class bdist_dpkg(Command):
         print "creating the deb package"
         os.system("cp -a debian dist/%s/debian" % tmpdir)
         os.system("rm -rf dist/%s/debian/.svn" % tmpdir)
-        os.system("cd dist/%s; debuild -sa -us -uc" % tmpdir)
+        #os.system("cd dist/%s; debuild -sa -us -uc" % tmpdir)
+        os.system("cd dist/%s; debuild" % tmpdir)
         os.system("rm -rf dist/%s" % tmpdir)
         print "-"*50
         print "Done. Files genereated in the dist/ directory"
