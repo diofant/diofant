@@ -1,4 +1,4 @@
-from sympy.core import Basic,exp,Symbol,Rational,I,Mul,NCSymbol
+from sympy.core import Basic,exp,Symbol,Rational,I,Mul
 from sympy.core import hashing
 
 class Matrix(object):

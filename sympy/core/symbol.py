@@ -13,6 +13,11 @@ class Symbol(Basic):
 
     You can override the default assumptions in the constructor::
        >>> A = Symbol('A', is_commutative = False)
+       >>> B = Symbol('B', is_commutative = False)
+       >>> A*B != B*A
+       True
+       >>> A*B*2 == 2*A*B # multiplication by scalars is commutative
+       True
     """
     
     mathml_tag = "ci"
@@ -95,15 +100,6 @@ class Symbol(Basic):
         if isinstance(pattern, Mul):
             return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
         return None
-
-class NCSymbol(Symbol):
-
-    @property
-    def is_commutative(self):
-        return False
-
-    def diff(self,sym):
-        raise NotImplementedError("Doesn't have a meaning.")
 
 class Order(Basic):
 
