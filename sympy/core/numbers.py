@@ -23,9 +23,6 @@ class Number(Basic):
     def __int__(self):
         raise NotImplementedError
     
-    def __len__(self):
-        return 1
-    
     def __float__(self):
         return float(self.evalf())
     

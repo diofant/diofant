@@ -99,9 +99,6 @@ class Basic(object):
     def __getitem__(self, iter):
         return self._args[iter]
     
-    def __len__(self):
-        return len(self._args)
-    
     def __repr__(self):
         return str(self)
     

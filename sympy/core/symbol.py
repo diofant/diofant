@@ -56,9 +56,6 @@ class Symbol(Basic):
     def __getitem__(self, iter):
         return (self,)[iter]
 
-    def __len__(self):
-        return 1
-
     def hash(self):
         if self._mhash: 
             return self._mhash.value
@@ -114,11 +111,11 @@ class Order(Basic):
         f = self[0]
         if isinstance(f, Mul):
             if isinstance(f[0],Number):
-                assert len(f) == 2
+                assert len(f[:]) == 2
                 return Order(f[1])
         if isinstance(f, Add):
             if isinstance(f[0],Number):
-                assert len(f) == 2
+                assert len(f[:]) == 2
                 return Order(f[1])
         return self
 

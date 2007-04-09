@@ -20,7 +20,7 @@ def solve(eq, vars):
     """
 
     #currently only solve for one function
-    if len(vars) == 1:
+    if isinstance(vars, Symbol) or len(vars) == 1:
         x = vars[0]
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
 
