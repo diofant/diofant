@@ -12,7 +12,7 @@ makebuilddir/python-sympy::
 	mv isympy.1 doc/man/isympy.1
 
 clean::
-	-rm -f doc/man/isympy.1 debian/python-sympy.postinst.debhelper
+	-rm -f doc/man/isympy.1
 
 #run this from the sympy root directory
 tarball:
