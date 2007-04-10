@@ -119,20 +119,28 @@ class bdist_dpkg(Command):
             raise "Don't understant the syntax in changelog"
         v,r,dr = get_changelog_version_revision()
         revision=get_revision()
-        if sympy.__version__ != v or revision != r:
+        version = sympy.__version__
+        pos = version.find("-")
+        if pos != -1:
+            #change "-" to "~" in the Debian package name run this to see why:
+#$ dpkg --compare-versions 0.4-pre+svn756-1 lt 0.4 && echo true || echo false
+#$ dpkg --compare-versions 0.4~pre+svn756-1 lt 0.4 && echo true || echo false
+#$ dpkg --compare-versions 0.3+svn756-1 lt 0.4 && echo true || echo false
+            version = version[:pos]+"~"+version[pos+1:]
+        if version != v or revision != r:
             print "The version/revision in debian/changelog (%s-svn%d) is " \
                 "inconsistent\nwith the sympy.__version__ (%s) and svn " \
                 "revision (%d)" % (v, r, sympy.__version__, revision)
             return
         os.system("mkdir -p dist")
-        tmpdir = "sympy-%s+svn%d" % (sympy.__version__, revision)
+        tmpdir = "sympy-%s+svn%d" % (version, revision)
         print "exporting svn to dist/%s" % tmpdir
         os.system("svn -q export . dist/%s" % tmpdir)  
         os.system("rm -rf dist/%s/debian" % tmpdir)
         print "creating dist/sympy_%s+svn%d.orig.tar.gz" \
-                % (sympy.__version__, revision)
+                % (version, revision)
         os.system("cd dist; tar zcf sympy_%s+svn%d.orig.tar.gz %s" \
-                %(sympy.__version__, revision, tmpdir))
+                %(version, revision, tmpdir))
         print "creating the deb package"
         os.system("cp -a debian dist/%s/debian" % tmpdir)
         os.system("rm -rf dist/%s/debian/.svn" % tmpdir)

@@ -17,10 +17,10 @@ clean::
 #run this from the sympy root directory
 tarball:
 	@if [ "$$REVISION" = "" ]; then \
-		REVISION=`svn --non-interactive info | grep Revision | cut -c 11-`; \
+		REVISION=`LC_ALL=C svn --non-interactive info http://sympy.googlecode.com/svn/trunk/ | grep Revision | cut -c 11-`; \
 	fi; \
 	if [ "$$REVISION" = "" ]; then exit 1; fi; \
-	svn -q export -r $${REVISION} . sympy-svn$${REVISION}; \
+	svn -q export -r $${REVISION} --exclude=debian http://sympy.googlecode.com/svn/trunk/ sympy-svn$${REVISION}; \
 	VERSION=`grep "__version__ = " sympy-svn$${REVISION}/sympy/__init__.py | cut -d '"' -f 2`; \
 	tar zcf /tmp/sympy_$$VERSION~svn$${REVISION}.orig.tar.gz sympy-svn$${REVISION}; \
 	rm -rf sympy-svn$${REVISION}; \
