@@ -202,6 +202,11 @@ class Mul(Pair):
         f = f[:-1]
         return f % tuple([str(x) for x in a])
     
+    def __float__(self):
+        a = 1
+        for arg in self._args[:]:
+            a *= float(arg)
+        return a
 
     @staticmethod
     def get_baseandexp(a):
@@ -471,7 +476,12 @@ class Add(Pair):
                 f += "+%s" % str(self._args[i])
         return f    
 
-                
+    def __float__(self):
+        a = 0
+        for arg in self._args[:]:
+            a += float(arg)
+        return a                
+
     def getab(self):
         """Pretend that self = a+b and return a,b
         
