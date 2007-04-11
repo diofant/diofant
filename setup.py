@@ -77,8 +77,45 @@ class bdist_dpkg(Command):
     
     def finalize_options(self):    # this too
         pass
-    
+
     def run(self):
+        import os
+        def get_changelog_version_revision():
+            """Reads the first line in changelog, parses 0.4~pre+svn739-1 and
+            returns ("0.4~pre",739,1)
+            """
+            l = file("debian/changelog").readline()
+            import re
+            m = re.match("sympy \((\S+)\+svn(\d+)\-(\d+)\) ",l)
+            if m:
+                g = m.groups()
+                if len(g) == 3:
+                    #version, svn revision, debian revision
+                    #('0.4~pre', '739', '1') 
+                    v, r, dr = g
+                    return v, int(r), int(dr)
+            print l
+            raise "Don't understant the syntax in changelog"
+        version,revision,drevision = get_changelog_version_revision()
+        os.system("mkdir -p dist")
+        tmpdir = "sympy-%s+svn%d" % (version, revision)
+        print "exporting svn (%d) to dist/%s" % (revision,tmpdir)
+        os.system("svn -q export -r %d " % revision +
+            "http://sympy.googlecode.com/svn/trunk/ dist/%s" % tmpdir)  
+        os.system("rm -rf dist/%s/debian" % tmpdir)
+        print "creating dist/sympy_%s+svn%d.orig.tar.gz" % (version, revision)
+        os.system("cd dist; tar zcf sympy_%s+svn%d.orig.tar.gz %s" \
+                %(version, revision, tmpdir))
+        print "creating the deb package"
+        os.system("cp -a debian dist/%s/debian" % tmpdir)
+        os.system("rm -rf dist/%s/debian/.svn" % tmpdir)
+        #os.system("cd dist/%s; debuild -sa -us -uc" % tmpdir)
+        os.system("cd dist/%s; debuild" % tmpdir)
+        #os.system("rm -rf dist/%s" % tmpdir)
+        print "-"*50
+        print "Done. Files genereated in the dist/ directory"
+    
+    def run_old(self):
         """
         Copies the current local svn copy to the dist/sympy-svn739,
         creates dist/sympy_0.4-pre+svn739.orig.tar.gz from that and then
