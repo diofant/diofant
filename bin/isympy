@@ -50,6 +50,11 @@ except ImportError:
         print "\nERROR:Could not find sympy\n...exiting\n"
         sys.exit()
 
+# try to import optional modules
+try:
+        from sympy.modules.graphing import *
+except ImportError: 
+        print "No plotting facilities (missing matplotlib)"
 
 import getopt
 

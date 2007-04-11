@@ -14,4 +14,4 @@ G{packagetree sympy.modules}
 
 #we import everything in the ../__init__.py
 #this line will be fixed:
-from sympy.modules.trigonometric import sin, cos, tan, arctan
+from sympy.modules.trigonometric import sin, cos, tan, atan

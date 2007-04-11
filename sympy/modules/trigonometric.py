@@ -1,6 +1,7 @@
 from sympy.core.functions import Function, exp
 from sympy.core.numbers import Real, Rational, pi, I
 import decimal
+import math
 
 class sin(Function):
     """
@@ -33,7 +34,13 @@ class sin(Function):
          
          U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
-    
+
+    def __float__(self):
+        if self._args.is_number:
+            return math.sin( self._args )
+        else:
+            raise ValueError("Cannot evaluate at a symbolic value")
+
     def derivative(self):
         return cos(self._args)
 
@@ -79,9 +86,43 @@ class sin(Function):
         return sin(x)*cosh + I*cos(x)*sinh
     
 class cos(Function):
-    """Return the cosine of x (measured in radians)
+    """
+    Usage
+    =====
+      cos(x) -> Returns the cosine of x (measured in radians)
+        
+    Notes
+    =====
+        cos(x) will evaluate automatically in the case x is a 
+        multiple of pi.
+    
+    Examples
+    ========
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> cos(x**2).diff(x)
+        -2*sin(x**2)*x
+        >>> cos(1).diff(x)
+        0
+        >>> cos(pi)
+        -1
+        
+    See also
+    ========
+       L{sin}, L{tan}
+       
+       External links
+       --------------
+         
+         U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
     
+    def __float__(self):
+        if self._args.is_number:
+            return math.cos( self._args )
+        else:
+            raise ValueError("Cannot evaluate at a symbolic value")
+
     def derivative(self):
         return -sin(self._args)
 
@@ -128,20 +169,61 @@ class cos(Function):
         return cos(x)*cosh - I*sin(x)*sinh
 
 class tan(Function):
-    """Return the tangent of x (measured in radians)
+    """
+    Usage
+    =====
+      tan(x) -> Returns the tangent of x (measured in radians)
+        
+    Notes
+    =====
+        tan(x) will evaluate automatically in the case x is a 
+        multiple of pi.
+    
+    Examples
+    ========
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> tan(x**2).diff(x)
+        2*cos(x**2)**(-2)*x
+        >>> tan(1).diff(x)
+        0
+        
+    See also
+    ========
+       L{sin}, L{tan}
+       
+       External links
+       --------------
+         
+         U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
     
+    def __float__(self):
+        if self._args.is_number:
+            return math.tan( self._args )
+        else:
+            raise ValueError("Cannot evaluate at a symbolic value")
+
     def derivative(self):
         return Rational(1) / (cos(self._args)**2)
         
     def eval(self):
-        return sin(self._args) / cos(self._args)
+        return self
+
+    def evalf(self):
+        return sin(self._args).evalf() / cos(self._args).evalf()
 
     
-class arctan(Function):
+class atan(Function):
     """Return the tangent of x (measured in radians)
     """
-    
+
+    def __float__(self):
+        if self._args.is_number:
+            return math.atan( self._args )
+        else:
+            raise ValueError("Cannot evaluate at a symbolic value")
+
     def derivative(self):
         return Rational(1) / (1+(self._args)**2)
         

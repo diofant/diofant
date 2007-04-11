@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import sympy as g
 import sympy as s
-from sympy import Symbol, log, arctan
+from sympy import Symbol, log, atan
 from sympy.core.functions import Function
 #from sympy.modules.derivatives import Derivative
 from sympy.core.functions import Derivative
@@ -108,8 +108,8 @@ def test_Derivative():
 
 def test_invtrig():
     x=Symbol("x")
-    assert arctan(0) == 0
-    assert arctan(x).diff(x) == 1/(1+x**2)
+    assert atan(0) == 0
+    assert atan(x).diff(x) == 1/(1+x**2)
 
 def test_general_function():
     class nu(Function):

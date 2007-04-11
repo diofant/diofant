@@ -63,7 +63,7 @@ from sympy.core import pi, I, Order, Add, Mul
 from sympy.core.functions import Function, Derivative
 
 from sympy.modules.limits import limit, limitinf
-from sympy.modules.trigonometric import sin, cos, tan, arctan
+from sympy.modules.trigonometric import sin, cos, tan, atan
 from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve

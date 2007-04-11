@@ -445,7 +445,7 @@ class Basic(object):
         return str(self)
     
     def atoms(self, s = [], type=None):
-        """Returns the atoms (objects of length 1) that form current
+        """Returns the atoms that form current
         object. 
         
         Example: 
