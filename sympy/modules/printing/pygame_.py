@@ -3,13 +3,13 @@
 
 import tempfile
 
-try:
-    import pygame
-except ImportError:
-    print "Pygame is not installed. In Debian, install the " \
-        "python-pygame package."
-
 def print_pygame(st):
+
+    try:
+        import pygame
+    except ImportError:
+        print "Pygame is not installed. In Debian, install the " \
+            "python-pygame package."
 
     from pygame import QUIT, KEYDOWN, K_ESCAPE, K_q
     pygame.font.init()

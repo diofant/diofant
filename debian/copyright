@@ -28,7 +28,7 @@ Wed, 21 Mar 2007 13:56:19 +0100.
 Current maintainer is Ondrej Certik <ondrej@certik.cz>.
 
 It was downloaded from http://code.google.com/p/sympy/
-(`REVISION=771 ./debian/rules tarball`)
+(`REVISION=775 ./debian/rules tarball`)
 
 The file sympy/modules/decorator.py is Copyright Michele Simionato
 (http://www.phyast.pitt.edu/~micheles/python/documentation.html)
