@@ -101,7 +101,7 @@ class bdist_dpkg(Command):
         tmpdir = "sympy-%s+svn%d" % (version, revision)
         print "exporting svn (%d) to dist/%s" % (revision,tmpdir)
         os.system("svn -q export -r %d " % revision +
-            "http://sympy.googlecode.com/svn/trunk/ dist/%s" % tmpdir)  
+                "http://sympy.googlecode.com/svn/trunk/ dist/%s" % tmpdir)  
         os.system("rm -rf dist/%s/debian" % tmpdir)
         print "creating dist/sympy_%s+svn%d.orig.tar.gz" % (version, revision)
         os.system("cd dist; tar zcf sympy_%s+svn%d.orig.tar.gz %s" \
