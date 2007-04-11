@@ -6,6 +6,7 @@ import hashing
 from basic import Basic
 from numbers import Rational, Real
 import decimal
+import math
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 
@@ -15,6 +16,15 @@ class Function(Basic):
     def __init__(self, arg):
         Basic.__init__(self, is_commutative=True)
         self._args = self.sympify(arg)
+
+    def __float__(self):
+        if self._args.is_number:
+            try:
+                return eval("math.%s( self._args )" % self.__class__.__name__ )
+            except NameError:
+                return float(self.evalf())
+        else:
+            raise ValueError("Cannot evaluate at a symbolic value")
 
     def getname(self):
         return self.__class__.__name__
@@ -92,7 +102,7 @@ class Function(Basic):
 class exp(Function):
     """Return e raised to the power of x
     """ 
-    
+
     def derivative(self):
         return exp(self._args)
         

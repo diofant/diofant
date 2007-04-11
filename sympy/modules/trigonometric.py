@@ -35,12 +35,6 @@ class sin(Function):
          U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
 
-    def __float__(self):
-        if self._args.is_number:
-            return math.sin( self._args )
-        else:
-            raise ValueError("Cannot evaluate at a symbolic value")
-
     def derivative(self):
         return cos(self._args)
 
@@ -116,12 +110,7 @@ class cos(Function):
          
          U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
-    
-    def __float__(self):
-        if self._args.is_number:
-            return math.cos( self._args )
-        else:
-            raise ValueError("Cannot evaluate at a symbolic value")
+
 
     def derivative(self):
         return -sin(self._args)
@@ -151,7 +140,7 @@ class cos(Function):
             raise ValueError("Argument can't be a symbolic value")
         decimal.getcontext().prec = precision + 2
         x = Real(self._args)
-        i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
+        i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
         while s != lasts:
             lasts = s    
             i += 2
@@ -197,12 +186,7 @@ class tan(Function):
          
          U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
-    
-    def __float__(self):
-        if self._args.is_number:
-            return math.tan( self._args )
-        else:
-            raise ValueError("Cannot evaluate at a symbolic value")
+
 
     def derivative(self):
         return Rational(1) / (cos(self._args)**2)
@@ -217,12 +201,6 @@ class tan(Function):
 class atan(Function):
     """Return the tangent of x (measured in radians)
     """
-
-    def __float__(self):
-        if self._args.is_number:
-            return math.atan( self._args )
-        else:
-            raise ValueError("Cannot evaluate at a symbolic value")
 
     def derivative(self):
         return Rational(1) / (1+(self._args)**2)
