@@ -28,7 +28,9 @@ Wed, 21 Mar 2007 13:56:19 +0100.
 Current maintainer is Ondrej Certik <ondrej@certik.cz>.
 
 It was downloaded from http://code.google.com/p/sympy/
-(`REVISION=775 ./debian/rules tarball`)
+(download the svn version and then `python setup.py bdist_dpkg`, this will
+checkout a svn version as described in the debian/changelog and create a
+package)
 
 The file sympy/modules/decorator.py is Copyright Michele Simionato
 (http://www.phyast.pitt.edu/~micheles/python/documentation.html)

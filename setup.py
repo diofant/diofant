@@ -79,6 +79,15 @@ class bdist_dpkg(Command):
         pass
 
     def run(self):
+        """
+        debian/changelog contains a version like this:
+
+        0.4~pre+svn739-1
+
+        This method parses it, then checkouts the svn revision as directed (739
+        in this example), but applies the current top svn debian dir to it, and
+        executes "debuild" in that temporary directory.
+        """
         import os
         def get_changelog_version_revision():
             """Reads the first line in changelog, parses 0.4~pre+svn739-1 and
@@ -111,7 +120,7 @@ class bdist_dpkg(Command):
         os.system("rm -rf dist/%s/debian/.svn" % tmpdir)
         #os.system("cd dist/%s; debuild -sa -us -uc" % tmpdir)
         os.system("cd dist/%s; debuild" % tmpdir)
-        #os.system("rm -rf dist/%s" % tmpdir)
+        os.system("rm -rf dist/%s" % tmpdir)
         print "-"*50
         print "Done. Files genereated in the dist/ directory"
     
