@@ -309,6 +309,8 @@ class test_sympy_doc(Command):
         
         import glob
 
+        print "Testing docstrings."
+
         files = glob.glob('sympy/*/*.py') + glob.glob('sympy/modules/*/*.py')
         
         # files without doctests or that don't work
