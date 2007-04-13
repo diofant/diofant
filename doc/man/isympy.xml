@@ -99,10 +99,6 @@
 				<arg choice="plain"><option>-c</option></arg>
 				<arg choice="plain"><option>--console</option></arg>
 			</group>
-			<group choice="opt">
-				<arg choice="plain"><option>-c <replaceable>config-file</replaceable></option></arg>
-				<arg choice="plain"><option>--config=<replaceable>config-file</replaceable></option></arg>
-			</group>
 		</cmdsynopsis>
 		<cmdsynopsis>
 			<command>&dhpackage;</command>
