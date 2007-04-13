@@ -9,33 +9,18 @@ command line options:
        default is set to ipython
        
   -h : prints this help message
+
+  --version: prints version number
 """
 
 __author__ = "Fabian Seoane <fabian@fseoane.net>"
-
-welcome_msg = """
-Python console for sympy.
-
-Modules already imported: sympy
-Symbols defined: x, y, z
-"""
-
-welcome_msg_ipython = """
-Python console for sympy.
-
-Modules already imported: sympy
-Symbols defined: x, y, z
-
-?       -> Introduction to IPython's features.
-%magic  -> Information about IPython's 'magic' % functions.
-help    -> Python's own help system.
-object? -> Details about 'object'. ?object also works, ?? prints more.
-"""
 
 import sys
 try:
     import sympy
     from sympy import *
+    from sympy.core import *
+    from sympy.modules import *
     # leave both so that the user can do help(sympy) and the like
     
 except ImportError:
@@ -50,13 +35,31 @@ except ImportError:
         print "\nERROR:Could not find sympy\n...exiting\n"
         sys.exit()
 
+imported_modules = "\tsympy\n\tsympy.core\n\tsympy.modules\n"
+
 # try to import optional modules
 try:
         from sympy.modules.graphing import *
+        imported_modules += "\tsympy.modules.graphing\n"
 except ImportError: 
         print "No plotting facilities (missing matplotlib)"
 
-import getopt
+welcome_msg = """
+Python console for sympy.
+
+Imported modules (from module import *): 
+""" + imported_modules + """
+Symbols defined: x, y, z
+"""
+
+welcome_msg_ipython = welcome_msg + """
+
+?       -> Introduction to IPython's features.
+%magic  -> Information about IPython's 'magic' % functions.
+help    -> Python's own help system.
+object? -> Details about 'object'. ?object also works, ?? prints more.
+"""
+
 
 def run_ipython_interpreter():
 	
@@ -104,6 +107,7 @@ the "ipython" package and start isym.py again.\n"""
 		
 	sh = HistoryConsole()
 	sh.runcode("from sympy import *")
+        sh.runcode("from sympy.modules.graphing import *")
 	sh.runcode("x = Symbol('x')")
 	sh.runcode("y = Symbol('y')")
 	sh.runcode("z = Symbol('z')")
@@ -111,24 +115,25 @@ the "ipython" package and start isym.py again.\n"""
 	sys.exit("Exiting ...")
 
 
+from optparse import OptionParser
 
-argv = sys.argv[1:]
+def main():
+    parser = OptionParser("usage: isympy [options]", version=sympy.__version__ )
+    parser.add_option("-c", "--console", dest="console",
+                      help="specify a python interactive interpreter, python or ipython")
+    (options, args) = parser.parse_args()
 
-optlist, rest = getopt.getopt(argv, "c:h")
+    if options.console == "python":
+        run_python_interpreter()
+    elif options.console == "ipython":
+        run_ipython_interpreter()
 
-for opt in optlist:
-	if opt[0] == '-c':
-		if opt[1] == 'python':
-			run_python_interpreter()
-		elif opt[1] == 'ipython':
-			run_ipython_interpreter()
-	elif opt[0] == '-h':
-		print __doc__
-		sys.exit()
+    try:
+        run_ipython_interpreter()
 
-try:
-	run_ipython_interpreter()
-	
-except ImportError:
-	run_python_interpreter()
+    except ImportError:
+        run_python_interpreter()
+
+if __name__ == "__main__":
+    main()
 

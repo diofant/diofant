@@ -1,139 +1,178 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<?xml-stylesheet type="text/xsl"
+	href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+	"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
 
-<!--
+<!-- Process this file with an XSLT processor, e.g. xsltproc:    -->
+<!-- `xsltproc \
+      -''-nonet \
+      -''-param man.charmap.use.subset "0" \
+      -''-param make.year.ranges "1" \
+      -''-param make.single.year.ranges "1" \
+      manpage.xml'                                               -->
 
-Process this file with an XSLT processor: `xsltproc \
--''-nonet /usr/share/sgml/docbook/stylesheet/xsl/nwalsh/\
-manpages/docbook.xsl manpage.dbk'.  A manual page
-<package>.<section> will be generated.  You may view the
-manual page with: nroff -man <package>.<section> | less'.  A
-typical entry in a Makefile or Makefile.am is:
+  <!-- Fill in your name for FIRSTNAME and SURNAME.              -->
+  <!ENTITY dhfirstname "Fabian">
+  <!ENTITY dhsurname   "Seoane">
+  <!ENTITY dhemail     "fabian@fseoane.net">
+  <!-- dhusername could also be set to "&firstname; &surname;".  -->
+  <!ENTITY dhusername  "&dhfirstname; &dhsurname;">
 
-DB2MAN=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/\
-manpages/docbook.xsl
-XP=xsltproc -''-nonet
+  <!-- Please adjust the date whenever revising the manpage.     -->
+  <!ENTITY dhdate      "2007-04-12">
 
-manpage.1: manpage.dbk
-        $(XP) $(DB2MAN) $<
-    
-The xsltproc binary is found in the xsltproc package.  The
-XSL files are in docbook-xsl.  Please remember that if you
-create the nroff version in one of the debian/rules file
-targets (such as build), you will need to include xsltproc
-and docbook-xsl in your Build-Depends control field.
-
--->
-
-  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
-  <!ENTITY dhfirstname "<firstname>Seoane</firstname>">
-  <!ENTITY dhsurname   "<surname>fabian</surname>">
-  <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>March 21, 2007</date>">
-  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
-       allowed: see man(7), man(1). -->
-  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
-  <!ENTITY dhemail     "<email>fabian@fseoane.net</email>">
-  <!ENTITY dhusername  "Fabian Seoane">
-  <!ENTITY dhucpackage "<refentrytitle>isympy</refentrytitle>">
+  <!-- TITLE should be something like "User commands",           -->
+  <!-- "&dhpackage; command-line reference" or similar (see e.g. -->
+  <!-- http://www.tldp.org/HOWTO/Man-Page/q2.html). But limit    -->
+  <!-- the length to 30 chars.                                   -->
+  <!ENTITY dhtitle     "&dhpackage; command-line reference">
+  
+  <!ENTITY dhucpackage "isympy">
   <!ENTITY dhpackage   "isympy">
 
-  <!ENTITY debian      "<productname>Debian</productname>">
-  <!ENTITY gnu         "<acronym>GNU</acronym>">
-  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+  <!-- If the application e.g. belongs to a package like X.org,  -->
+  <!-- this should be set to the its name instead.               -->
+  <!ENTITY dhproduct   "python-sympy">
+  <!ENTITY dhrelease   "0.4">
+
+  <!-- SECTION should be 1-8, maybe w/ subsection other          -->
+  <!-- parameters are allowed: see man(7), man(1) and            -->
+  <!-- http://www.tldp.org/HOWTO/Man-Page/q2.html.               -->
+  <!ENTITY dhsection   "1">
+
 ]>
 
 <refentry>
-  <refentryinfo>
-    <address>
-      &dhemail;
-    </address>
-    <author>
-      &dhfirstname;
-      &dhsurname;
-    </author>
-    <copyright>
-      <year>2003</year>
-      <holder>&dhusername;</holder>
-    </copyright>
-    &dhdate;
-  </refentryinfo>
-  <refmeta>
-    &dhucpackage;
-
-    &dhsection;
-  </refmeta>
-  <refnamediv>
-    <refname>&dhpackage;</refname>
-
-    <refpurpose>interactive console for SymPy (Symbolic Python)</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <cmdsynopsis>
-      <command>&dhpackage;</command>
-
-      <arg><option>-e <replaceable>this</replaceable></option></arg>
-
-      <arg><option>--example <replaceable>that</replaceable></option></arg>
-    </cmdsynopsis>
-  </refsynopsisdiv>
-  <refsect1>
-    <title>isympy</title>
-
-    <para>This manual page documents briefly the
-      <command>&dhpackage;</command> command.</para>
-
-    <para>isympy is a Python shell for SymPy. It imports the modules
-    sympy and defines the symbols x, y, z. 
+	<refentryinfo>
+		<title>&dhtitle;</title>
+		<productname>&dhpackage;</productname>
+		<releaseinfo role="version">&dhrelease;</releaseinfo>
+		<date>&dhdate;</date>
+		<authorgroup>
+			<author>
+				<firstname>Ondrej</firstname>
+				<surname>Certik</surname>
+				<contrib>Design, programming.</contrib>
+				<address>
+					<email>ondrej@certik.cz</email>
+				</address>
+			</author>
+			<author>
+				<firstname>&dhfirstname;</firstname>
+				<surname>&dhsurname;</surname>
+				<contrib>Programming.</contrib>
+				<address>
+					<email>&dhemail;</email>
+				</address>
+			</author>
+		</authorgroup>
+		<copyright>
+			<year>2007</year>
+			<holder>Ondrej Certik</holder>
+		</copyright>
+		<legalnotice>
+			<para>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</para>
+			<orderedlist>
+				<listitem>
+					<para>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</para>
+				</listitem>
+				<listitem>
+					<para>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</para>
+				</listitem>
+			</orderedlist>
+			<para>THIS SOFTWARE IS PROVIDED BY THE AUTHOR &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</para>
+		</legalnotice>
+	</refentryinfo>
+	<refmeta>
+		<refentrytitle>&dhucpackage;</refentrytitle>
+		<manvolnum>&dhsection;</manvolnum>
+	</refmeta>
+	<refnamediv>
+		<refname>&dhpackage;</refname>
+		<refpurpose>interactive shell for SymPy</refpurpose>
+	</refnamediv>
+	<refsynopsisdiv>
+		<cmdsynopsis>
+			<command>&dhpackage;</command>
+			<group choice="opt">
+				<arg choice="plain"><option>-c</option></arg>
+				<arg choice="plain"><option>--console</option></arg>
+			</group>
+			<group choice="opt">
+				<arg choice="plain"><option>-c <replaceable>config-file</replaceable></option></arg>
+				<arg choice="plain"><option>--config=<replaceable>config-file</replaceable></option></arg>
+			</group>
+		</cmdsynopsis>
+		<cmdsynopsis>
+			<command>&dhpackage;</command>
+      <!-- Normally the help and version options make the programs stop
+			     right after outputting the requested information. -->
+			<group choice="opt">
+				<arg choice="plain">
+					<group choice="req">
+						<arg choice="plain"><option>-h</option></arg>
+						<arg choice="plain"><option>--help</option></arg>
+					</group>
+				</arg>
+				<arg choice="plain">
+					<group choice="req">
+						<arg choice="plain"><option>-v</option></arg>
+						<arg choice="plain"><option>--version</option></arg>
+					</group>
+				</arg>
+			</group>
+		</cmdsynopsis>
+	</refsynopsisdiv>
+	<refsect1 id="description">
+		<title>DESCRIPTION</title>
+    <para>isympy is a Python shell for SymPy. It is just a normal python shell (ipython shell if you have the ipython package installed) that imports
+          all the stuff SymPy needs so you don't have to. It imports the modules sympy, sympy.core, sympy.modules and tries to import the module 
+          sympy.modules.graphing if you have matplotlib installed. It also defines the symbols x, y, z. 
     </para>
-
-  </refsect1>
-  <refsect1>
-    <title>OPTIONS</title>
-
-    <para>These programs follow the usual &gnu; command line syntax,
-      with long options starting with two dashes (`-').  A summary of
-      options is included below.  For a complete description, see the
-      <application>Info</application> files.</para>
-
-    <variablelist>
-      <varlistentry>
-        <term><option>-h</option>
-        </term>
-        <listitem>
-          <para>Show summary of options.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>-c</option>
-        </term>
-        <listitem>
-          <para>specify a python interactive interpreter, 
-              currently only python or ipython. Example usage: 
-           ./shell.py -c python
-       </para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
-  </refsect1>
-  <refsect1>
-    <title>SEE ALSO</title>
-
-    <para>Homepage: http://code.google.com/p/sympy/</para>
-
-  </refsect1>
-  <refsect1>
-    <title>AUTHOR</title>
-
-    <para>This manual page was written by &dhusername; &dhemail;. Sympy 
-      is written by Ondrej Certik and &dhusername;
-    </para>
-	<para>
-	  On Debian systems, the complete text of the GNU General Public
-	  License can be found in /usr/share/common-licenses/GPL.
-	</para>
-
-  </refsect1>
+	</refsect1>
+	<refsect1 id="options">
+		<title>OPTIONS</title>
+		<variablelist>
+			<!-- Use the variablelist.term.separator and the
+			     variablelist.term.break.after parameters to
+			     control the term elements. -->
+			<varlistentry>
+				<term><option>-c <replaceable class="parameter">shell</replaceable></option></term>
+				<term><option>--console=<replaceable class="parameter">shell</replaceable></option></term>
+				<listitem>
+					<para>Use the specified shell (python or ipython) as console backend instead of the default one (ipython                                        if present or python in other case).</para>
+				</listitem>
+			</varlistentry>
+		</variablelist>
+	</refsect1>
+	<refsect1 id="files">
+		<title>FILES</title>
+		<variablelist>
+			<varlistentry>
+				<term><filename>${HOME}/.sympy-history</filename></term>
+				<listitem>
+					<para>Saves the history of commands when using the python shell as backed.</para>
+				</listitem>
+			</varlistentry>
+		</variablelist>
+	</refsect1>
+	
+	<refsect1 id="bugs">
+		<!-- Or use this section to tell about upstream BTS. -->
+		<title>BUGS</title>
+		<para>The upstreams <acronym>BTS</acronym> can be found at <ulink url="http://code.google.com/p/sympy/issues/list">http://code.google.com/p/sympy/issues/list</ulink></para>
+	</refsect1>
+	<refsect1 id="see_also">
+		<title>SEE ALSO</title>
+		<!-- In alpabetical order. -->
+		<para><citerefentry>
+				<refentrytitle>ipython</refentrytitle>
+				<manvolnum>1</manvolnum>
+			</citerefentry>, <citerefentry>
+				<refentrytitle>python</refentrytitle>
+				<manvolnum>1</manvolnum>
+			</citerefentry></para>
+	</refsect1>
 </refentry>
 
