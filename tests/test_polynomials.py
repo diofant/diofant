@@ -4,7 +4,7 @@ sys.path.append(".")
 
 import py
 
-from sympy import Symbol
+from sympy import *
 from sympy.modules.polynomials import *
 
 def test_ispoly():
@@ -12,11 +12,13 @@ def test_ispoly():
     y = Symbol("y")
     assert not ispoly( x.sqrt(), x )
     assert ispoly( Rational(2), x)
+    assert ispoly(x**2+1, x)
     assert ispoly( x, x)
     assert ispoly( x**2, x)
     assert ispoly( x**2 + 3*x - 8, x)
     assert ispoly( x**2 + 3*x*y.sqrt() - 8, x)
     assert not ispoly( x**2 + 3*x*y.sqrt() - 8 , y)
+    assert ispoly((x**2)*(y**2) + x*(y**2) + y*x + x + exp(2), (x,y) )
 
     #assert Rational(1).ispoly(sin(x))
     #assert not exp(x).ispoly(sin(x))

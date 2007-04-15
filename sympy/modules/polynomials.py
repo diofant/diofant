@@ -5,14 +5,52 @@ from sympy.core import Pow, Add, Mul, Rational, Number, Symbol, Basic
 class PolynomialException(Exception):
     pass
 
-def ispoly(p,x):
-    """Is 'p' a polynomial in 'x'? Return True or False"""
+def ispoly(p, var=None):
+    """
+    Usage
+    =====
+      ispoly(p, var) -> Returns True if p is a polynomial in variable var. 
+                        Returns False otherwise.
+        
+    Notes
+    =====
+        You can check wether it's a polynomial in several variables at once giving a 
+        tuple of symbols second argument (like ispoly(x**2 + y + 1, (x,y)) ).See
+        examples for more info.
+    
+    Examples
+    ========
+        >>> from sympy import *
+        >>> from sympy.modules.polynomials import *
+        >>> x = Symbol('x')
+        >>> ispoly(x**2+x+1, x)
+        True
+        >>> y = Symbol('y')
+        >>> ispoly(x**2 + y + 1, (x,y)) #polynomial in variables x and y
+        True
+        >>> ispoly(x**2 + exp(y) + 1, (x,y))
+        False
+        
+    See also
+    ========
+       L{get_poly}, L{coeff}
+       
+    """
     try:
         #basically, the polynomial is whatever we can convert using
         #the get_poly(). See it's docstring for more info.
-        get_poly(p,x)
+        if var is None:
+            var = p.atoms(type=Symbol)[0] # make it work even if the user doesen't issue a variable
+            print "\t*** Warning. You have not issued a variable as argument."
+            print "\t*** Please see the interactive help on this function for more info"
+            print "\t*** Using %s as variable" % str(var)
+        for v in var:
+            get_poly(p, v)
     except PolynomialException:
         return False
+    except IndexError:
+        # if p.atoms() is empty
+        raise TypeError("Wrong arguments")
     return True
 
 def fact(n):
