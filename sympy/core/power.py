@@ -4,7 +4,7 @@ from symbol import Symbol
 from numbers import Rational, Real, Number, ImaginaryUnit
 from functions import log, exp
 
-class pole_error(Exception):
+class pole_error(ZeroDivisionError):
     pass
 
 class Pow(Basic):

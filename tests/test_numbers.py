@@ -3,6 +3,7 @@ sys.path.append(".")
 
 import sympy as g
 from sympy import Rational, Symbol, Real
+import py
 
 def testRational():
     n1=g.Rational(1,4)
@@ -71,6 +72,7 @@ def test_inf():
     assert g.infty != -g.infty
     assert g.infty != g.Symbol("x")**3
     assert g.infty + 1 == g.infty + 1
+    py.test.raises(ArithmeticError, lambda x: x-x, g.infty)
     
 
 def test_powers():

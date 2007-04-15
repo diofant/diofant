@@ -540,7 +540,10 @@ class Add(Pair):
             ok = False
             for y in exp:
                 bn, b = _extract_numeric(y)
-                if (not ok) and a.isequal(b):
+                if (not ok) and a == b:
+                    if isinstance(a, Infinity) or isinstance(b, Infinity):
+                        # case infty - infty
+                        raise ArithmeticError("Cannot compute this")
                     e.append(Mul(an + bn,a))
                     ok = True
                 else:
@@ -567,7 +570,9 @@ class Add(Pair):
         def _add_Number(a,b):
             """Adds two Real or Rational Numbers"""
             if isinstance(a,Number):
-                return a+b
+                return a + b
+            else:
+                raise ArgumentError
         
         a = self.flatten(self._args)
         a = self.coerce(a,_add)
