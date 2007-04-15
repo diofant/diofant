@@ -88,7 +88,7 @@ class Pair(Basic):
         n = default
         b = []
         for x in a:
-            if isinstance(x,Number):
+            if isinstance(x,(Real, Rational)):
                 n = action(n,x)
             else:
                 b.append(x)
@@ -195,7 +195,7 @@ class Mul(Pair):
                 f = ""
                 a = self._args[1:]
         for x in a:
-            if isinstance(x,Pair):
+            if isinstance(x, Pair):
                 f += "(%s)*"
             else:
                 f += "%s*"

@@ -298,9 +298,9 @@ class Derivative(Basic):
 
     def __str__(self):
         if isinstance(self.f,Function):
-            return "%s'(%r)"%(self.f.getname(),self.f._args)
+            return "%s'(%r)" % (self.f.getname(),self.f._args)
         else:
-            return "(%r)'"%self.f
+            return "(%r)'" % self.f
 
     def hash(self):
         if self._mhash: 

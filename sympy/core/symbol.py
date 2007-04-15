@@ -3,7 +3,7 @@ from basic import Basic
 from numbers import Rational
 #from prettyprint import StringPict
 
-dummycount=0
+dummycount = 0
 
 class Symbol(Basic):
     """

@@ -2,6 +2,8 @@ from sympy.core import hashing
 from sympy.core.basic import Basic
 import decimal
 
+dummycount = 0
+
 class Number(Basic):
     """Represents any kind of number in sympy.
 

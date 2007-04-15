@@ -70,6 +70,7 @@ def test_inf():
     assert 1 != g.infty
     assert g.infty != -g.infty
     assert g.infty != g.Symbol("x")**3
+    assert g.infty + 1 == g.infty + 1
     
 
 def test_powers():
