@@ -21,6 +21,7 @@ try:
     from sympy import *
     from sympy.core import *
     from sympy.modules import *
+    from sympy.modules.polynomials import *
     # leave both so that the user can do help(sympy) and the like
     
 except ImportError:
@@ -35,7 +36,7 @@ except ImportError:
         print "\nERROR:Could not find sympy\n...exiting\n"
         sys.exit()
 
-imported_modules = "\tsympy\n\tsympy.core\n\tsympy.modules\n"
+imported_modules = "\tsympy\n\tsympy.core\n\tsympy.modules\n\tsympy.modules.polynomials\n"
 
 # try to import optional modules
 try:
@@ -76,43 +77,43 @@ def run_ipython_interpreter():
 	sys.exit("Exiting ...")
 
 def run_python_interpreter():
-	print """
+    print """
 Couldn't locate IPython. Having IPython installed is greatly recomended.	
 See http://ipython.scipy.org for more details. If you use Debian, just install
 the "ipython" package and start isym.py again.\n"""
 	
-	import code
-	import readline
-	import atexit
-	import os
-	
-	
-	class HistoryConsole(code.InteractiveConsole):
-	    def __init__(self, locals=None, filename="<console>",
+    import code
+    import readline
+    import atexit
+    import os
+
+
+    class HistoryConsole(code.InteractiveConsole):
+        def __init__(self, locals=None, filename="<console>",
 	                 histfile=os.path.expanduser("~/.sympy-history")):
 	        code.InteractiveConsole.__init__(self)
 	        self.init_history(histfile)
 	
-	    def init_history(self, histfile):
+        def init_history(self, histfile):
 	        readline.parse_and_bind("tab: complete")
 	        if hasattr(readline, "read_history_file"):
 	            try:
 	                readline.read_history_file(histfile)
 	            except IOError:
 	                pass
-	            atexit.register(self.save_history, histfile)
+                atexit.register(self.save_history, histfile)
 	
-	    def save_history(self, histfile):
-	        readline.write_history_file(histfile)
-		
-	sh = HistoryConsole()
-	sh.runcode("from sympy import *")
-        sh.runcode("from sympy.modules.graphing import *")
-	sh.runcode("x = Symbol('x')")
-	sh.runcode("y = Symbol('y')")
-	sh.runcode("z = Symbol('z')")
-	sh.interact(welcome_msg)
-	sys.exit("Exiting ...")
+        def save_history(self, histfile):
+            readline.write_history_file(histfile)
+	
+    sh = HistoryConsole()
+    sh.runcode("from sympy import *")
+    sh.runcode("from sympy.modules.graphing import *")
+    sh.runcode("x = Symbol('x')")
+    sh.runcode("y = Symbol('y')")
+    sh.runcode("z = Symbol('z')")
+    sh.interact(welcome_msg)
+    sys.exit("Exiting ...")
 
 
 from optparse import OptionParser
@@ -127,12 +128,12 @@ def main():
         run_python_interpreter()
     elif options.console == "ipython":
         run_ipython_interpreter()
-
-    try:
-        run_ipython_interpreter()
-
-    except ImportError:
-        run_python_interpreter()
+    else:
+	    try:
+	        run_ipython_interpreter()
+	
+	    except ImportError:
+	        run_python_interpreter()
 
 if __name__ == "__main__":
     main()
