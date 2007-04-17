@@ -2,6 +2,7 @@
 #
 
 import tempfile
+from sympy.modules.printing import print_latex
 
 def print_pygame(st):
 
@@ -10,6 +11,8 @@ def print_pygame(st):
     except ImportError:
         print "Pygame is not installed. In Debian, install the " \
             "python-pygame package."
+
+    st = print_latex(st)
 
     from pygame import QUIT, KEYDOWN, K_ESCAPE, K_q
     pygame.font.init()
@@ -46,13 +49,13 @@ def tex2png(eq,pygame):
     tex_preamble = r"""\nopagenumbers
 """
 
-    tmp1 = tempfile.mktemp()
-    #texfn = '/tmp/x.tex'
+    #tmp1 = tempfile.mktemp()
+    tmp1 = '/tmp/x.tex'
 
     # create a LaTeX document and insert equations
     f = open(tmp1,'w')
     f.write(tex_preamble)
-    f.write(r"""$$%s$$
+    f.write(r"""$%s$
 \vfill
 \eject
 """ % eq)
@@ -63,20 +66,21 @@ def tex2png(eq,pygame):
     # compile LaTeX document. A DVI file is created
     cwd = os.getcwd()
     os.chdir("/tmp")
-    pexpect.run('tex %s' % texfn)
+    pexpect.run('tex %s' % tmp1)
 
     # Run dvipng on the generated DVI file. Use tight bounding box. 
     # Magnification is set to 1200
+    # currently, the dvipng is broken on debian.....
     cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
     + "-o x.png /tmp/x.dvi" 
     pexpect.run(cmd) 
     image = pygame.image.load("/tmp/x.png")
 
     #remove temporary files
-    os.remove("/tmp/x.tex")
-    os.remove("/tmp/x.dvi")
-    os.remove("/tmp/x.log")
-    os.remove("/tmp/x.png")
+    #os.remove("/tmp/x.tex")
+    #os.remove("/tmp/x.dvi")
+    #os.remove("/tmp/x.log")
+    #os.remove("/tmp/x.png")
     os.chdir(cwd)
 
     return image
