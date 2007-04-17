@@ -70,7 +70,7 @@ def run_python_interpreter():
     print """
 Couldn't locate IPython. Having IPython installed is greatly recomended.	
 See http://ipython.scipy.org for more details. If you use Debian, just install
-the "ipython" package and start isym.py again.\n"""
+the "ipython" package and start isympy again.\n"""
 	
     import code
     import readline
