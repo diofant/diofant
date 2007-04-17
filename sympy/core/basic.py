@@ -2,6 +2,8 @@
 
 from sympy.core import hashing
 
+dummycount = 0
+
 class AutomaticEvaluationType(type):
     """Metaclass for all objects in sympy
      It evaluates the object just after creation, so that for example
@@ -72,14 +74,16 @@ class Basic(object):
                  'is_integer' : None,
                  'is_commutative' : None, 
                  'is_bounded' : None, 
+                 'is_dummy' : None, 
                  }
         self._mhash = 0
         self._args = []
         for k in kwargs.keys():
+            #TODO: maybe use dict.update() for this
             if self._assumptions.has_key(k):
                 self._assumptions[k] = kwargs[k]
             else:
-                raise NotImplementedError ( "Assumption not implemented" )
+                raise NotImplementedError ( "Assumption %s not implemented" % str(k))
         
     def __add__(self,a):
         from addmul import Add
@@ -103,7 +107,7 @@ class Basic(object):
         return str(self)
     
     def __str__(self):
-        return self.__class__.__name__
+        return self.__class__.__name__ + "(" + str(self[:])[1:-1] + ")"
     
     def __neg__(self):
         from numbers import Rational
@@ -163,8 +167,12 @@ class Basic(object):
         return self._dopow(a, self)
         
     def __eq__(self,a):
-        if a == None: return False
-        return self.isequal(self.sympify(a))
+        """Test for equality of two expressions
+        Currently this is done by comparing the hashes of the two expressions
+        """
+        if a is None: 
+            return False
+        return hash(self) == hash(self.sympify(a))
         
     def __ne__(self,a):
         return not self.__eq__(a)
@@ -278,11 +286,14 @@ class Basic(object):
             return a
         
     def hash(self):
+        return hash(self)
+    
+    def __hash__(self):
         if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        return self._mhash.value
+            return self._mhash
+        self._mhash = hash(str(self))
+        return self._mhash
+    
         
     def isequal(self,a):
         return self.hash() == (self.sympify(a)).hash()
@@ -301,7 +312,7 @@ class Basic(object):
         from numbers import Rational
         from symbol import Symbol
         from functions import log
-        w=Symbol("l",dummy=True)
+        w=Symbol("l", is_dummy=True)
         f = self.subs(log(sym),-w)
         e = f.subs(sym,Rational(0))
         fact = Rational(1)
@@ -371,7 +382,7 @@ class Basic(object):
         if not isinstance(self,Add):
             return extract(self,x)
         lowest = [0,(Rational(10)**10)]
-        l = Symbol("l",dummy=True)
+        l = Symbol("l", is_dummy=True)
         from functions import log
         for t in self[:]:
             t2 = extract(t.subs(log(x),-l),x)
@@ -438,7 +449,11 @@ class Basic(object):
     @property
     def mathml(self):
         """Returns a MathML expression representing the current object"""
-        return "<%s> %s </%s>" % (self.mathml_tag, str(self), self.mathml_tag)
+        assumptions = ""
+        for a in self._assumptions: 
+            if self._assumptions[a] is not None:
+                assumptions += str(a) + ":" + str(self._assumptions[a]) + ";"
+        return "<%s sympy:assumptions='%s'> %s </%s>" % (self.mathml_tag, assumptions, str(self), self.mathml_tag)
     
     def print_tree(self):
         """The canonical tree representation"""
@@ -453,7 +468,7 @@ class Basic(object):
         >>> x = Symbol('x')
         >>> y = Symbol('y')
         >>> (x+y**2+ 2*x*y).atoms()
-        [y, 2, x]
+        [2, x, y]
         
         You can also filter the results by a given type of object
         >>> (x+y+2+y**2*sin(x)).atoms(type=Symbol)

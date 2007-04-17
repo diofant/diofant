@@ -1,4 +1,4 @@
-from sympy.core import hashing
+
 from sympy.core.basic import Basic
 import decimal
 
@@ -36,7 +36,7 @@ class Number(Basic):
         return Rational(0)
     
     def evalf(self):
-        raise NotImplementedError
+        raise NotImplementedError("cannot evaluate %s" % self.__class__.__name__)
 
     def evalc(self):
         return self
@@ -60,7 +60,7 @@ class Infinity(Number):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> limit(x, x, infty)
-        Infinity
+        Infinity()
     """
     
     def __init__(self, sign=1):
@@ -68,13 +68,6 @@ class Infinity(Number):
                        is_real = False, 
                        is_commutative = False, 
                        )
-        
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        return self._mhash.value
     
     def sign(self):
         return self._sign
@@ -88,6 +81,9 @@ class Infinity(Number):
     
     def __gt__(self, num):
         return not self.__lt__(num)
+    
+    def evalf(self):
+        return self
 
 infty = Infinity()
 
@@ -116,14 +112,6 @@ class Real(Number):
             self.num = num.evalf()
         else:
             self.num = decimal.Decimal(str(float(num)))
-        
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash=hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addfloat(self.num)
-        return self._mhash.value
         
     def __str__(self):
         if self.num < 0:
@@ -217,15 +205,6 @@ class Rational(Number):
         
     def sign(self):
         return sign(self.p)*sign(self.q)
-        
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addint(self.p)
-        self._mhash.addint(self.q)
-        return self._mhash.value
         
     def gcd(self,a,b):
         """Primitive algorithm for a greatest common divisor of "a" and "b"."""
@@ -340,7 +319,7 @@ class Rational(Number):
         return None
    
 
-class Constant(Basic):
+class Constant(Number):
     """Mathematical constant abstract class.
     
     Is the base class for constatns such as pi or e
@@ -354,13 +333,6 @@ class Constant(Basic):
        
     def eval(self):
         return self
- 
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        return self._mhash.value
 
     def diff(self,sym):
         return Rational(0)
@@ -370,6 +342,24 @@ class Constant(Basic):
 
     def __rmod__(self, a):
             raise NotImplementedError
+        
+    def match(self, pattern, syms):
+        if self == pattern:
+            return {}
+        if len(syms) == 1:
+            if pattern == syms[0]:
+                return {syms[0]: self}
+            if self == pattern:
+                return {}
+        if isinstance(pattern, Constant):
+            try:
+                return {syms[syms.index(pattern)]: self}
+            except ValueError:
+                pass
+        from addmul import Mul
+        if isinstance(pattern, Mul):
+            return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
+        return None
 
 class ImaginaryUnit(Constant):
     """Imaginary unit "i"."""

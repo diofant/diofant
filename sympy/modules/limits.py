@@ -202,7 +202,7 @@ def sign(e,x):
         e<0 ... -1
     """
     #print "sign:",e
-    if isinstance(e,s.core.Number):
+    if isinstance(e, (s.Rational, s.Real)):
         return s.sign(e)
     elif not e.has(x):
         return e.evalf() > 0
@@ -281,11 +281,11 @@ def movedown(l,x):
 
 def subexp(e,sub):
     """Is "sub" a subexpression of "e"? """
-    n=s.Symbol("x",True)
+    n = s.Symbol("x", is_dummy=True)
     #we substitute some symbol for the "sub", and if the 
     #expression changes, the substitution was successful, thus the answer
     #is yes.
-    return e.subs(sub,n)!=e
+    return e.subs(sub,n) != e
 
 #@decorator(maketree)
 def mrv_leadterm(e,x,Omega=[]):
@@ -296,7 +296,7 @@ def mrv_leadterm(e,x,Omega=[]):
         Omega = mrv(e,x)
     if member(x,Omega):
         return movedown(mrv_leadterm(moveup([e],x)[0],x,moveup(Omega,x)),x)
-    wsym = s.Symbol("w",True)
+    wsym = s.Symbol("w", is_dummy=True)
     f,logw=rewrite(e,Omega,x,wsym)
     series=f.expand().series(wsym,1)
     n = 2
@@ -364,22 +364,25 @@ class Limit(Basic):
 
     def __init__(self,e,x,x0):
         Basic.__init__(self)
-        self.e=self.sympify(e)
-        self.x=self.sympify(x)
-        self.x0=self.sympify(x0)
+        self._args = list()
+        self._args.append(self.sympify(e))
+        self._args.append(self.sympify(x))
+        self._args.append(self.sympify(x0))
+        
+    @property
+    def e(self):
+        return self._args[0]
+    
+    @property
+    def x(self):
+        return self._args[1]
+    
+    @property
+    def x0(self):
+        return self._args[2]
 
     def doit(self):
         return limit(self.e,self.x,self.x0)
-
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addint(self.e.hash())
-        self._mhash.addint(self.x.hash())
-        self._mhash.addint(self.x0.hash())
-        return self._mhash.value
     
     @property
     def mathml(self):
@@ -406,6 +409,6 @@ def limit(e,z,z0, evaluate=True):
         return limitinf(e, z)
     if z0 == -s.infty:
         return limitinf(-e, z)
-    x=s.Symbol("x",True)
+    x=s.Symbol("x", is_dummy=True)
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)

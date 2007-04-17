@@ -129,13 +129,7 @@ class Matrix(object):
     def hash(self):
         """Compute a hash every time, because the matrix elements
         could change."""
-        self.mhash = hashing.mhash()
-        self.mhash.addstr(str(type(self)))
-        self.mhash.addint(self.lines)
-        self.mhash.addint(self.cols)
-        for x in self.mat:
-            self.mhash.add(x.hash())
-        return self.mhash.value
+        return hash(self.mathml)
 
     def __rmul__(self,a):
         assert not isinstance(a,Matrix)

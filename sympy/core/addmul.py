@@ -5,7 +5,6 @@ the classes Add, Mul and it's base class, Pair.
 This is a central part of the core
 """
 
-import hashing
 from sympy.core.basic import Basic
 from sympy.core.numbers import Number, Rational, Real, Infinity
 from sympy.core.power import Pow, pole_error
@@ -31,16 +30,6 @@ class Pair(Basic):
             s += a.mathml
         s += "</apply>"
         return s
-    
-    def hash(self):
-        if self._mhash:
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        for i in self[:]:
-            self._mhash.add(i.hash())
-        return self._mhash.value
-
     
     def tryexpand(self, a):
         if isinstance(a,Mul) or isinstance(a,Pow):
@@ -118,12 +107,14 @@ class Pair(Basic):
     @property        
     def is_commutative(self):
         for x in self[:]:
+            #checks wether all arguments are commutative
             if not x.is_commutative:
                 return False
         return True
 
     def match(self, pattern, syms=None):
-        from symbol import Symbol
+        from sympy.core.symbol import Symbol
+        from sympy.core.numbers import Constant
         if syms == None:
             syms = pattern.atoms(type=Symbol)
             #print syms
@@ -136,7 +127,7 @@ class Pair(Basic):
                     return {}
                 else:
                     return None
-        if isinstance(pattern, Symbol):
+        if isinstance(pattern, (Symbol, Constant)):
             try:
                 return {syms[syms.index(pattern)]: self}
             except ValueError:
@@ -157,7 +148,7 @@ class Pair(Basic):
                 break
         if global_wildcard:
             pat.remove(global_wildcard)
-        r2 = {}
+        r2 = dict()
         for p in pat:
             for o in ops:
                 r = o.match(p,syms)
@@ -240,7 +231,7 @@ class Mul(Pair):
         if isinstance(x, Infinity) or isinstance(y, Infinity):
             return x, False
 
-        if isinstance(x,Number) and isinstance(y, Number):
+        if isinstance(x,(Real, Rational)) and isinstance(y, (Real, Rational)):
             return x*y, True
         xbase,xexp = Mul.get_baseandexp(x)
         ybase,yexp = Mul.get_baseandexp(y)
@@ -388,7 +379,7 @@ class Mul(Pair):
         except pole_error:
             y=b.series(sym,n)
             a0 = y.subs(sym,0)
-            if a0==0 and a.bounded():
+            if a0==0 and a.is_bounded:
                 return y
             #we cannot expand x*y
             raise
@@ -399,7 +390,7 @@ class Mul(Pair):
             #but if a goes to 0 and b is bounded, 
             #the result is just a*const, so we just return a
             a0 = x.subs(sym,0)
-            if a0==0 and b.bounded():
+            if a0==0 and b.is_bounded:
                 return x
             #we cannot expand x*y
             raise
@@ -569,7 +560,7 @@ class Add(Pair):
 
         def _add_Number(a,b):
             """Adds two Real or Rational Numbers"""
-            if isinstance(a,Number):
+            if isinstance(a,(Real, Rational)):
                 return a + b
             else:
                 raise ArgumentError
@@ -638,7 +629,7 @@ def _extract_numeric(x):
     For example, 1*x -> (1,x)
     Works only with simple expressions. 
     """
-    if isinstance(x, Mul) and isinstance(x._args[0], Number):
+    if isinstance(x, Mul) and isinstance(x._args[0], (Rational, Real)):
         return x.getab()
     else:
         return (Rational(1), x)

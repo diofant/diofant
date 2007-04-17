@@ -1,4 +1,4 @@
-import hashing
+
 from basic import Basic
 from numbers import Rational
 #from prettyprint import StringPict
@@ -21,22 +21,24 @@ class Symbol(Basic):
     """
     
     mathml_tag = "ci"
+    
+    dummy_num = 0
 
-    def __init__(self, name, dummy=False, *args, **kwargs):
-        """if dummy==True, then this Symbol is totally unique, i.e.::
+    def __init__(self, name, *args, **kwargs):
+        """if is_dummy==True, then this Symbol is totally unique, i.e.::
         
         >>> Symbol("x") == Symbol("x")
         True
         
         but with the dummy variable ::
         
-        >>> Symbol("x", dummy = True) == Symbol("x", dummy = True)
+        >>> Symbol("x", is_dummy = True) == Symbol("x", is_dummy = True)
         False
 
         """
         
         self._assumptions = {
-                         'is_commutative' : True, 
+                         'is_commutative' : True,
                          }
         
         for k in kwargs.keys():
@@ -44,27 +46,20 @@ class Symbol(Basic):
         
         Basic.__init__(self, **self._assumptions)
         self.name = name
-        self.dummy = dummy
-        if dummy:
+        if self.is_dummy:
             global dummycount
-            dummycount+=1
-            self.dummycount=dummycount
+            self.dummy_num = dummycount
+            dummycount += 1
 
     def __str__(self):
-        return str(self.name)
+        if not self.is_dummy:
+            return str(self.name)
+        else:
+            # if x is dummy
+            return str(self.name + '__' + str(self.dummy_num))
     
     def __getitem__(self, iter):
         return (self,)[iter]
-
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addstr(self.name)
-        if self.dummy:
-            self._mhash.addint(self.dummycount)
-        return self._mhash.value
 
     def diff(self,sym):
         if not self.is_commutative:
@@ -107,25 +102,17 @@ class Order(Basic):
 
     def eval(self):
         from addmul import Mul, Add
-        from numbers import Number
+        from numbers import Real, Rational
         f = self[0]
         if isinstance(f, Mul):
-            if isinstance(f[0],Number):
+            if isinstance(f[0], (Real, Rational)):
                 assert len(f[:]) == 2
                 return Order(f[1])
         if isinstance(f, Add):
-            if isinstance(f[0],Number):
+            if isinstance(f[0], (Real, Rational)):
                 assert len(f[:]) == 2
                 return Order(f[1])
         return self
-
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addint(self[0].hash())
-        return self._mhash.value
 
     def __str__(self):
         return "O(%s)"%str(self[0])

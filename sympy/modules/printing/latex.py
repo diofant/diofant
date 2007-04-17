@@ -15,7 +15,7 @@ def print_latex(x):
         >>> y = Symbol('y')
         >>> from sympy.modules.printing import print_latex
         >>> print print_latex( integrate(x*y-2, x, evaluate=False))
-        $\\int \\left(-2+yx\\right)dx$
+        $\\int \\left(-2+xy\\right)dx$
         
     Parameters
     ==========

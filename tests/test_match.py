@@ -29,6 +29,8 @@ def test_add():
     e = a+b
     assert e.match(p+b,[p]) == {p: a}
     assert e.match(p+a,[p]) == {p: b}
+    e = 1+b
+    assert e.match(p+b, [p,b]) in [{p:1, b:b}, {p:b, b:1}]
     e = a+b+c
     assert e.match(a+p+c,[p]) == {p: b}
     assert e.match(b+p+c,[p]) == {p: a}
@@ -90,6 +92,17 @@ def test_mul():
 
     e = x
     assert e.match(a*x,[a]) == {a: 1}
+    
+def test_complex():
+    x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
+    from sympy import I
+    (1+I).match(x+I, [x]) == {x : 1}
+    (a+I).match(x+I, [x]) == {x : a}
+    (a+b*I).match(x+y*I) == {x : a, y : b}
+    (2*I).match(x*I) == {x : 2}
+    (a*I).match(x*I) == {x : a}
+    (a*I).match(x*y) == {x : a, y : I}
+    (2*I).match(x*y) == {x : 2, y : I}
 
 def test_functions():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -102,7 +115,7 @@ def test_interface():
     assert (x+1).match(a+1) == {a: x}
     assert (x*3).match(a*3) == {a: x}
     assert (x**3).match(a**3) == {a: x}
-    assert (a*cos(b)).atoms(type=Symbol) == [a,b]
+    assert (a*cos(b)).atoms(type=Symbol) in [[a,b], [b, a]]
     assert (x*cos(y)).match(a*cos(b)) == {a: x, b: y}
 
     assert (x*y).match(p*q,[p,q]) in [{p:x, q:y}, {p:y, q:x}]

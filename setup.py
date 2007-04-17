@@ -324,6 +324,10 @@ class test_sympy_doc(Command):
             #remove tests that make use of libxslt1
             files.remove('sympy/modules/printing/latex.py')
             files.remove('sympy/modules/printing/__init__.py')
+        try:
+            import matplotlib
+        except ImportError:
+            files.remove('sympy/modules/graphing.py')
 
         modules = []
         for x in files:

@@ -99,7 +99,7 @@ class Integral(Basic):
                 if f.exp==-1: return log(abs(x))
                 else: return x**(f.exp+1)/(f.exp+1)
 
-        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
+        a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
         integral_table = {
                 a/(b*x+c): a/b * log(abs(b*x+c)),
                 a*sin(b*x): -a/b * cos(b*x),
@@ -161,7 +161,7 @@ def integrate(f, *args, **kargs):
       >>> integrate(y*x, y)
       1/2*y**2*x
       >>> integrate(y*x, x, y)
-      1/4*x**2*y**2
+      1/4*y**2*x**2
       >>> integrate(x*y**2 , (x,1,2), y)
       1/2*y**3
       >>> integrate(x , (x,1,2), evaluate=False)

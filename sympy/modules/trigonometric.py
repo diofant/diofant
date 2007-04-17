@@ -19,7 +19,7 @@ class sin(Function):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> sin(x**2).diff(x)
-        2*cos(x**2)*x
+        2*x*cos(x**2)
         >>> sin(1).diff(x)
         0
         >>> sin(pi)
@@ -38,7 +38,8 @@ class sin(Function):
     def derivative(self):
         return cos(self._args)
 
-    def bounded(self):
+    @property
+    def is_bounded(self):
         return True
         
     def eval(self):
@@ -95,7 +96,7 @@ class cos(Function):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> cos(x**2).diff(x)
-        -2*sin(x**2)*x
+        -2*x*sin(x**2)
         >>> cos(1).diff(x)
         0
         >>> cos(pi)
@@ -115,7 +116,8 @@ class cos(Function):
     def derivative(self):
         return -sin(self._args)
 
-    def bounded(self):
+    @property
+    def is_bounded(self):
         return True
     
     def eval(self):
@@ -173,7 +175,7 @@ class tan(Function):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> tan(x**2).diff(x)
-        2*cos(x**2)**(-2)*x
+        2*x*cos(x**2)**(-2)
         >>> tan(1).diff(x)
         0
         

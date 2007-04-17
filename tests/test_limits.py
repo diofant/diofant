@@ -192,3 +192,9 @@ def test_Limit():
     e2=Limit(x*log(x*x),x,0)
     assert e!=e2
     assert e.doit()==e2.doit()
+
+def test_error():
+    # make sure it exits greacefully if the limit can't be computed
+    import py
+    x = s.Symbol('x')
+    py.test.raises( NotImplementedError, s.limit , x , x+1, 0)

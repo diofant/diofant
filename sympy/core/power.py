@@ -1,7 +1,6 @@
-import hashing
 from basic import Basic
 from symbol import Symbol
-from numbers import Rational, Real, Number, ImaginaryUnit
+from numbers import Rational, Real, ImaginaryUnit
 from functions import log, exp
 
 class pole_error(ZeroDivisionError):
@@ -39,15 +38,6 @@ class Pow(Basic):
     def __init__(self,a,b):
         Basic.__init__(self)
         self._args = [Basic.sympify(a), Basic.sympify(b)]
-        
-    def hash(self):
-        if self._mhash:
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.add(self.base.hash())
-        self._mhash.add(self.exp.hash())
-        return self._mhash.value
 
         
     def __str__(self):
@@ -94,7 +84,7 @@ class Pow(Basic):
                 if self.exp.iszero():
                     raise pole_error("pow::eval(): 0^0.")
                 elif self.exp < 0:
-                    raise pole_error("pow::eval(): Division by 0.")
+                    raise pole_error("%s: Division by 0." % str(self))
             return Rational(0)
         
         if isinstance(self.base,Rational) and self.base.isone():
@@ -211,7 +201,7 @@ class Pow(Basic):
             
     def expand(self):
         from addmul import Mul
-        if isinstance(self.exp,Number):
+        if isinstance(self.exp, (Real, Rational)):
             if self.exp.is_integer:
                 n = int(self.exp)
                 if n > 1:

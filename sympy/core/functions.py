@@ -2,7 +2,6 @@
 functions that use Function as its base class. 
 """
 
-import hashing
 from basic import Basic
 from numbers import Rational, Real
 import decimal
@@ -32,14 +31,6 @@ class Function(Basic):
     def __getitem__(self, iter):
         return (self._args,)[iter]
         # do this to force extra nesting and so [:] is coherent across sympy
-    
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addint(self._args.hash())
-        return self._mhash.value
     
     def diff(self, sym):
         return (self.derivative()*self._args.diff(sym))
@@ -72,7 +63,7 @@ class Function(Basic):
             pass
         #this only works, if arg(0) -> 0, otherwise we are in trouble
         arg = self._args.series(sym,n)
-        l = Symbol("l",dummy=True)
+        l = Symbol("l", is_dummy=True)
         #the arg(0) goes to z0
         z0 = arg.subs(log(sym),l).subs(sym,0)
         w = Symbol("w",True)
@@ -222,14 +213,12 @@ class abs_(Function):
             _t = arg.getab()[0]
             if _t.is_number and _t < 0:
                 return abs(-self._args)
-        elif isinstance(arg, Add):
-            b,a = arg.getab()
-            if isinstance(a, Symbol) and a.is_real:
-                if isinstance(b, Mul):
-                    a,b=b.getab()
-                    if a == I:
-                        if isinstance(b, Symbol) and b.is_real:
-                            return (arg*arg.conjugate()).expand()**Rational(1,2)
+        a = Symbol('a')
+        b = Symbol('b')
+        match = arg.match(a+I*b, [a,b])
+        if  (match is not None) and match[a].is_real and match[b].is_real:
+            return (arg*arg.conjugate()).expand()**Rational(1,2)
+                            
         return self
         
     def evalf(self):
@@ -301,13 +290,4 @@ class Derivative(Basic):
             return "%s'(%r)" % (self.f.getname(),self.f._args)
         else:
             return "(%r)'" % self.f
-
-    def hash(self):
-        if self._mhash: 
-            return self._mhash.value
-        self._mhash = hashing.mhash()
-        self._mhash.addstr(str(type(self)))
-        self._mhash.addint(self.f.hash())
-        self._mhash.addint(self.x.hash())
-        return self._mhash.value
 

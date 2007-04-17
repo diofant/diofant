@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 """
 Python shell for sympy. Imports sympy and defines the symbols x, y, z. 
 
 command line options: 
   -c : permits to specify a python interactive interpreter, currently only 
        python or ipython. Example usage: 
-           ./shell.py -c python
+           isympy -c python
        default is set to ipython
        
   -h : prints this help message
@@ -98,7 +98,6 @@ the "ipython" package and start isympy again.\n"""
 	
     sh = HistoryConsole()
     sh.runcode("from sympy import *")
-    sh.runcode("from sympy.modules.graphing import *")
     sh.runcode("x = Symbol('x')")
     sh.runcode("y = Symbol('y')")
     sh.runcode("z = Symbol('z')")

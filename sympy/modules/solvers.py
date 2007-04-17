@@ -22,7 +22,7 @@ def solve(eq, vars):
     #currently only solve for one function
     if isinstance(vars, Symbol) or len(vars) == 1:
         x = vars[0]
-        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
+        a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
 
         r = eq.match(a*x + b, [a,b])
         if r and wo(r,x): return solve_linear(r[a], r[b])
@@ -58,7 +58,7 @@ def dsolve(eq, funcs):
     if len(funcs) == 1:
         f = funcs[0]
         x = f[0]
-        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
+        a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
 
         r = eq.match(a*Derivative(f,x) + b, [a,b])
         if r and wo(r,f): return solve_ODE_first_order(r[a], r[b], f, x)
