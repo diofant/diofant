@@ -1,9 +1,5 @@
 """Base class for all objects in sympy"""
 
-from sympy.core import hashing
-
-dummycount = 0
-
 class AutomaticEvaluationType(type):
     """Metaclass for all objects in sympy
      It evaluates the object just after creation, so that for example
