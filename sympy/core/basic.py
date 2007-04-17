@@ -339,7 +339,7 @@ class Basic(object):
             
     def has(self,sub):
         from symbol import Symbol
-        n = Symbol("dummy")
+        n = Symbol("dummy", is_dummy = True)
         return self.subs(sub,n)!=self
         
     def leadterm(self,x):
