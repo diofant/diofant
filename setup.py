@@ -31,6 +31,8 @@ sympy@googlegroups.com and ask for help.
 from distutils.core import setup
 from distutils.core import Command
 import sys
+import os
+
 import sympy
 
 # Make sure I have the right Python version.
@@ -316,6 +318,9 @@ class test_sympy_doc(Command):
         # files without doctests or that don't work
         files.remove('sympy/modules/printing/pygame_.py')
         files.remove('sympy/modules/printing/pretty.py') # see issue 53
+
+        #make it work on Windows too:
+        files = [f.replace(os.sep,"/") for f in files]
         
         #testing for optional libraries
         try:
