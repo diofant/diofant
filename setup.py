@@ -315,7 +315,7 @@ class test_sympy_doc(Command):
 
         files = glob.glob('sympy/*/*.py') + glob.glob('sympy/modules/*/*.py')
         #make it work on Windows too:
-        files = [f.replace(os.sep,"/") for f in files]
+        files = [f.replace("\\","/") for f in files]
         
         # files without doctests or that don't work
         files.remove('sympy/modules/printing/pygame_.py')
