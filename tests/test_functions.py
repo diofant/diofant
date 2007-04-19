@@ -132,3 +132,12 @@ def test_general_function():
     #this works, but is semantically wrong, we need to settle on some interface
     #first
     assert nu(x**2).diff(x) == Derivative(nu(x**2), x**2) * 2*x
+
+def test_derivative_subs_bug():
+    x = Symbol("x")
+    class l(Function): pass
+    class n(Function): pass
+    e = Derivative(n(x), x)
+    assert e.subs(n(x), l(x)) != e
+    assert e.subs(n(x), l(x)) == Derivative(l(x), x)
+    assert e.subs(n(x), -l(x)) == Derivative(-l(x), x)

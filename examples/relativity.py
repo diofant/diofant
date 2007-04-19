@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 
-from sympy import exp, Symbol, sin, Rational, Derivative
+from sympy import exp, Symbol, sin, Rational, Derivative, print_latex
 
 from sympy.core import Basic, Function
 from sympy.modules.matrices import Matrix
@@ -84,10 +84,12 @@ def curvature(Rmn):
 class nu(Function):
     def getname(self):
         return r"\nu"
+        return r"nu"
 
 class lam(Function):
     def getname(self):
         return r"\lambda"
+        return r"lambda"
 
 t=Symbol("t")
 r=Symbol("r")
@@ -145,10 +147,10 @@ print Gamma.udd(3,3,2)
 print Gamma.udd(3,1,3)
 print Gamma.udd(3,3,1)
 print "-"*40
-print Rmn.dd(0,0)#.print_pygame()
-print Rmn.dd(1,1)#.print_pygame()
-print Rmn.dd(2,2)#.print_pygame()
-print Rmn.dd(3,3)#.print_pygame()
+print Rmn.dd(0,0)
+print Rmn.dd(1,1)
+print Rmn.dd(2,2)
+print Rmn.dd(3,3)
 #print "scalar curvature:"
 #print curvature(Rmn)
 #print R.print_pygame()

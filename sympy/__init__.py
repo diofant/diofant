@@ -70,6 +70,6 @@ from sympy.modules.solvers import solve, dsolve
 
 # try to import optinal modules
 try: 
-    from sympy.modules.printing import print_gtk
+    from sympy.modules.printing import print_gtk, print_latex
 except ImportError:
     pass
