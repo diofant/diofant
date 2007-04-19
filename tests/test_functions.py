@@ -141,3 +141,13 @@ def test_derivative_subs_bug():
     assert e.subs(n(x), l(x)) != e
     assert e.subs(n(x), l(x)) == Derivative(l(x), x)
     assert e.subs(n(x), -l(x)) == Derivative(-l(x), x)
+
+def test_derivative_linearity():
+    x = Symbol("x")
+    y = Symbol("y")
+    class n(Function): pass
+    assert Derivative(-n(x), x) == -Derivative(n(x), x)
+    assert Derivative(8*n(x), x) == 8*Derivative(n(x), x)
+    assert Derivative(8*n(x), x) != 7*Derivative(n(x), x)
+    assert Derivative(8*n(x)*x, x) == 8*Derivative(x*n(x), x)
+    assert Derivative(8*n(x)*y*x, x) == 8*y*Derivative(x*n(x), x)

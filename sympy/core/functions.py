@@ -272,11 +272,36 @@ class Derivative(Basic):
         self.f=self.sympify(f)
         self.x=self.sympify(x)
         self._args = (self.f, self.x)
+        #i.e. self[:] = (f, x), which means self = f'(x)
 
     def eval(self):
+        from addmul import Mul
         if isinstance(self.f, Derivative):
             if self.f.x != self.x and not self.f.has(self.x):
                 return Rational(0)
+        if isinstance(self.f, Mul):
+            #(2*x)' -> 2*x'
+            atoms = self.f[:]
+            with_x = []
+            without_x = []
+            for x in atoms:
+                if x.has(self.x):
+                    with_x.append(x)
+                else:
+                    without_x.append(x)
+            if len(without_x) == 0:
+                return self
+            elif len(without_x) == 1:
+                a = without_x[0]
+            else:
+                a = Mul(*without_x)
+            if len(with_x) == 0:
+                b = 1
+            elif len(with_x) == 1:
+                b = with_x[0]
+            else:
+                b = Mul(*with_x)
+            return a*Derivative(b, self.x)
         return self
 
     def doit(self):
