@@ -40,6 +40,9 @@ class Number(Basic):
 
     def evalc(self):
         return self
+
+    def doit(self):
+        return self
     
 class Infinity(Number):
     """

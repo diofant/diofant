@@ -75,6 +75,9 @@ class Symbol(Basic):
             return self
         raise NotImplementedError
 
+    def doit(self):
+        return self
+
     def match(self, pattern, syms):
         if self == pattern:
             return {}

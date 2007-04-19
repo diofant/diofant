@@ -305,7 +305,7 @@ class Derivative(Basic):
         return self
 
     def doit(self):
-        return self.f.diff(self.x)
+        return self.f.doit().diff(self.x)
 
     def diff(self,x):
         return Derivative(self,x)

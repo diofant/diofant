@@ -512,6 +512,13 @@ class Basic(object):
         elif x==0: return 0
         else: return 1
 
+    def doit(self):
+        """Calls recursively doit() on every element in the expression tree. """
+        x = [a.doit() for a in self]
+        e = (type(self))(*x)
+        return e
+
+
     def match(self, pattern, syms=None):
         #print "B",self,pattern,syms,type(self),type(pattern)
         from symbol import Symbol
