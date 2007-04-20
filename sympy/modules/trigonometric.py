@@ -1,4 +1,4 @@
-from sympy.core.functions import Function, exp
+from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Real, Rational, pi, I
 import decimal
 import math
@@ -199,9 +199,26 @@ class tan(Function):
     def evalf(self):
         return sin(self._args).evalf() / cos(self._args).evalf()
 
+class asin(Function):
+    """Return the arc sine of x (measured in radians)"""
+    
+    def derivative(self):
+        return sqrt(1-self._args**2)**(-1)
+    
+    def eval(self):
+        return self
+    
+def acos(Function):
+    """Return the arc sine of x (measured in radians)"""
+    
+    def derivative(self):
+        return - sqrt(1-self._args**2)**(-1)
+    
+    def eval(self):
+        return self
     
 class atan(Function):
-    """Return the tangent of x (measured in radians)
+    """Return the arc tangent of x (measured in radians)
     """
 
     def derivative(self):
