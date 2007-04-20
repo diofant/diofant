@@ -28,3 +28,14 @@ def test_ODE_second_order():
     C1, C2 = Symbol("C1"), Symbol("C2")
     assert dsolve(Derivative(Derivative(f(x),x),x)+9*f(x), [f(x)]) == \
         sin(3*x)*C1+cos(3*x)*C2
+
+def test_ODE_1():
+    class l(Function): pass
+
+    r = Symbol("r")
+
+    e = Derivative(l(r),r)/r+Derivative(Derivative(l(r),r),r)/2- \
+        Derivative(l(r),r)**2/2
+
+    sol = dsolve(e, [l(r)])
+    assert (e.subs(l(r), sol).doit()).expand() == 0
