@@ -44,7 +44,7 @@ object? -> Details about 'object'. ?object also works, ?? prints more.
 """
 
 basic_import_code = """
-from sympy import *
+from sympy.core import *
 from sympy.modules import *
 from sympy.modules.polynomials import *
 

@@ -66,7 +66,7 @@ def coeff(poly, x, n):
 def get_poly(p, x):
     """Returns a python list representing the polynomial 'p(x)'.
     
-    'p' is a polynomial, for example: x**2 + 3*x*y.sqrt() - 8
+    'p' is a polynomial, for example: x**2 + 3*x*sqrt(y) - 8
     'x' is the variable of the polynomial, for example: x
     get_poly returns a python list of the form [(coeff0,n0), (coeff1,n1), ...]
     where p = coeff0*x**n0 + coeff1*x**n1 + ...
@@ -77,7 +77,7 @@ def get_poly(p, x):
     >>> from sympy.modules.polynomials import get_poly
     >>> x = Symbol("x")
     >>> y = Symbol("y")
-    >>> get_poly(x**2 + 3*x**7*y.sqrt() - 8, x)
+    >>> get_poly(x**2 + 3*x**7*sqrt(y) - 8, x)
     [(-8, 0), (1, 2), (3*y**(1/2), 7)]
 
     

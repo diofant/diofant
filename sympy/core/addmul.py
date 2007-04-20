@@ -465,7 +465,15 @@ class Add(Pair):
                 f += "%s" % str(self._args[i])
             else:
                 f += "+%s" % str(self._args[i])
-        return f    
+        return f
+
+    @property
+    def mathml(self):
+        s = "<apply>" + "<" + self.mathml_tag + "/>"
+        for a in self._args:
+            s += a.mathml
+        s += "</apply>"
+        return s
 
     def __float__(self):
         a = 0

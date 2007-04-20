@@ -14,7 +14,7 @@ class Number(Basic):
 
     If you want to represent for example 1+sqrt(2), then you need to do:
 
-    Rational(1) + Rational(2)**( Rational(1)/2 )
+    Rational(1) + sqrt(Rational(2))
     """
     
     mathml_tag = "cn"
@@ -130,7 +130,8 @@ class Real(Number):
         return int(self.evalf())
     
     def __add__(self,a):
-        if isnumber(a):
+        a = self.sympify(a)
+        if a.is_number:
             if isinstance(a, Real):
                 return Real(self.num + a.num)
             else:
@@ -459,23 +460,6 @@ class ConstPi(Constant):
         return "pi"
 
 pi=ConstPi()
-
-def isnumber(x):
-    """DEPRECATED"""
-    #don't use this function. Use x.is_number instead
-    #everything in sympy should be subclasses of Basic anyway.
-
-    #if you need the testig for int, float, etc., just do it locally in your
-    #class, or even better, call Basic.sympify(x).is_number.
-    #so that all the code which converts from python to sympy is localised in 
-    #sympify
-    from numbers import Number
-    from basic import Basic
-    from decimal import Decimal
-    if isinstance(x, (Number, int, float, long, Decimal)):
-        return True
-    assert isinstance(x, Basic)
-    return x.is_number
 
 def sign(x):
     """Return the sign of x, that is, 

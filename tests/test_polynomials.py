@@ -10,14 +10,14 @@ from sympy.modules.polynomials import *
 def test_ispoly():
     x = Symbol("x")
     y = Symbol("y")
-    assert not ispoly( x.sqrt(), x )
+    assert not ispoly( sqrt(x), x )
     assert ispoly( Rational(2), x)
     assert ispoly(x**2+1, x)
     assert ispoly( x, x)
     assert ispoly( x**2, x)
     assert ispoly( x**2 + 3*x - 8, x)
-    assert ispoly( x**2 + 3*x*y.sqrt() - 8, x)
-    assert not ispoly( x**2 + 3*x*y.sqrt() - 8 , y)
+    assert ispoly( x**2 + 3*x*sqrt(y) - 8, x)
+    assert not ispoly( x**2 + 3*x*sqrt(y) - 8 , y)
     assert ispoly((x**2)*(y**2) + x*(y**2) + y*x + x + exp(2), (x,y) )
 
     #assert Rational(1).ispoly(sin(x))
@@ -40,10 +40,10 @@ def test_get_poly():
     assert get_poly(2*x+3*x**2 - 5,x) == [(-5, 0), (2, 1), (3,2)]
     assert get_poly(2*x**100+3*x**2 - 5,x) == [(-5, 0), (3,2), (2, 100)]
 
-    assert get_poly(y.sqrt()*x,x) == [(y.sqrt(),1)]
-    assert get_poly(x**2 + 3*x*y.sqrt() - 8, x) == [(-8, 0), (3*y.sqrt(), 1), 
+    assert get_poly(sqrt(y)*x,x) == [(sqrt(y),1)]
+    assert get_poly(x**2 + 3*x*sqrt(y) - 8, x) == [(-8, 0), (3*sqrt(y), 1), 
             (1, 2)]
-    py.test.raises(PolynomialException, "get_poly(x.sqrt(),x)")
+    py.test.raises(PolynomialException, "get_poly(sqrt(x),x)")
 
 def test_poly():
     x = Symbol("x")
@@ -53,8 +53,8 @@ def test_poly():
     assert 2*x**100+3*x**2 - 5 == poly([(-5, 0), (3,2), (2, 100)],x)
     assert 2*x**100+3*x**2 - 6 != poly([(-5, 0), (3,2), (2, 100)],x)
 
-    assert y.sqrt()*x == poly([(y.sqrt(),1)],x)
-    assert x**2 + 3*x*y.sqrt() - 8 == poly([(-8, 0), (3*y.sqrt(), 1), 
+    assert sqrt(y)*x == poly([(sqrt(y),1)],x)
+    assert x**2 + 3*x*sqrt(y) - 8 == poly([(-8, 0), (3*sqrt(y), 1), 
         (1, 2)],x)
 
 def test_gcd():

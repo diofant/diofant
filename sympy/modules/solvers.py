@@ -4,7 +4,7 @@ both algebraic (solve) and differential (dsolve).
 """
 
 from sympy import Basic, Symbol, Number, Mul, log, Add, Derivative, \
-        sin, cos, integrate
+        sin, cos, integrate, sqrt
 
 def solve(eq, vars):
     """
@@ -44,8 +44,8 @@ def solve_quadratic(a, b, c):
         return [-b/(2*a)]
     else:
         return [
-                (-b+D.sqrt())/(2*a),
-                (-b-D.sqrt())/(2*a)
+                (-b+sqrt(D))/(2*a),
+                (-b-sqrt(D))/(2*a)
                ]
 
 def dsolve(eq, funcs):
@@ -73,7 +73,7 @@ def solve_ODE_first_order(a, b, f, x):
 
 def solve_ODE_second_order(a, b, c, f, x):
     #a very special case, for b=0 and a,c not depending on x:
-    return Symbol("C1")*sin((c/a).sqrt()*x)+Symbol("C2")*cos((c/a).sqrt()*x)
+    return Symbol("C1")*sin(sqrt(c/a)*x)+Symbol("C2")*cos(sqrt(c/a)*x)
 
 
 def wo(di, x):

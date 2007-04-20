@@ -244,6 +244,9 @@ class abs_(Function):
                 return False
         raise ArgumentError("Wrong function arguments")
     
+def sqrt(x):
+    return x**(Rational(1,2))
+    
 class sign(Function):
     
     def eval(self):

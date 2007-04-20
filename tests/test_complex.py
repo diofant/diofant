@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol, I, sin, cos, exp
+from sympy import *
 
 def test_complex():
     a=Symbol("a")
@@ -21,14 +21,14 @@ def test_abs1():
     assert abs(a) == a
     assert abs(-a) == a
     assert abs(-a) != -a
-    assert abs(a+I*b) == (a*a+b*b).sqrt()
+    assert abs(a+I*b) == sqrt(a*a+b*b)
 
 def test_abs2():
     a=Symbol("a", is_real=False)
     b=Symbol("b", is_real=False)
     assert abs(a) != a
     assert abs(-a) != a
-    assert abs(a+I*b) != (a*a+b*b).sqrt()
+    assert abs(a+I*b) != sqrt(a*a+b*b)
 
 def test_evalc():
     x=Symbol("x", is_real=True)

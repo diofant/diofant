@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, Rational, Derivative
+from sympy import Symbol, Rational, Derivative, sqrt
 
 x = g.Symbol('x')
 y = g.Symbol('y')
@@ -40,14 +40,14 @@ def test_bug2():
     assert a==b
 
 def test_bug3():
-    x=Symbol("x")
-    e=x.sqrt()
+    x = Symbol("x")
+    e = sqrt(x)
     assert str(e) == "x**(1/2)"
 
 def test_bug4():
     x=Symbol("x")
     w=Symbol("w")
-    e=-2*x.sqrt()-w/x.sqrt()/2
+    e=-2*sqrt(x)-w/sqrt(x)/2
     assert str(e) not in ["(-2)*x**1/2(-1/2)*x**(-1/2)*w",
             "-2*x**1/2(-1/2)*x**(-1/2)*w","-2*x**1/2-1/2*x**-1/2*w"]
     assert str(e) in ["-2*x**(1/2)-1/2*x**(-1/2)*w", "-2*x**(1/2)-1/2*w*x**(-1/2)", 

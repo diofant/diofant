@@ -1,12 +1,15 @@
 import sys
 sys.path.append(".")
-from sympy import exp,log,Symbol,infty,Rational,sin,cos,limitinf,limit,pi
+from sympy import *
+
+"""
+(*) in problem number means that the number is relative to the book "Anti-demidovich,
+problemas resueltos, Ed. URSS"
+
+"""
 
 x=Symbol("x")
 h=Symbol("h")
-
-def sqrt(x):
-    return x**Rational(1,2)
 
 def sqrt3(x):
     return x**Rational(1,3)
@@ -22,7 +25,7 @@ def limitminf(f,x):
 
 def test_simple_problems():
     a = Symbol('a')
-    assert limitinf((x+1)*(x+2)*(x+3)/x**3,x)==1  #172
+    assert limit((x+1)*(x+2)*(x+3)/x**3,x, infty)==1  #172
     assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
@@ -53,7 +56,7 @@ def test_simple_problems():
     assert limitminf(log(1+exp(x))/x,x)==0  #267a
     assert limitinf(log(1+exp(x))/x,x)==1  #267b
 
-def test_functions():
+def test_f1():
     a = Symbol("a")
     m = Symbol("m")
     n = Symbol("n")
@@ -64,7 +67,7 @@ def test_functions():
     assert limit(sin(pi*x)/sin(3*pi*x),x,0) == Rational(1)/3 #219
     assert limitinf(x*sin(pi/x),x) == pi #220
     assert limit((1-cos(x))/x**2,x,0) == Rational(1,2) #221
-    assert limit((sin(x)-sin(a))/(x-a),x,a) == cos(a) #222
+    assert limit((sin(x)-sin(a))/(x-a),x,a) == cos(a) #222, *176
     assert limit((cos(x)-cos(a))/(x-a),x,a) == -sin(a) #223
     assert limit((sin(x+h)-sin(x))/h,h,0) == cos(x) #225
     assert limit(x*sin(1/x),x,0) == 0 #227a
@@ -80,3 +83,9 @@ def test_functions():
     #assert limitinf(((x-1)/(x+1))**x,x) == exp(-2) #Primer 9
 
     assert limitinf((1+h/x)**x,x) == exp(h) #Primer 9
+
+def test_f2():
+    a = Symbol('a', is_real=True)
+    assert limit( (sqrt(cos(x)) - sqrt3(cos(x))) / (sin(x)**2) , x, 0) == -Rational(1, 12) #*184
+#    assert limit(sin(pi*sqrt(x**2 +1)), x, infty) == 0 #*226
+#    assert limit(asin(a*x)/x, x, 0) == a

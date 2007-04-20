@@ -12,7 +12,7 @@ def add_mathml_headers(s):
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:sympy="http://www.w3schools.com/furniture"
       xsi:schemaLocation="http://www.w3.org/1998/Math/MathML
-        http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd">\n  """ + s + "\n</math>"
+        http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd">""" + s + "</math>"
 
 
 def apply_xsl(mml, xsl):

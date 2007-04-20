@@ -1,14 +1,11 @@
 import sys
 sys.path.append("..")
 
-from sympy import exp,log,Symbol,Rational,sin,limit,limitinf
+from sympy import exp,log,Symbol,Rational,sin,limit,limitinf, sqrt
 
 x=Symbol("x")
 a=Symbol("a")
 h=Symbol("h")
-
-def sqrt(x):
-    return x**Rational(1,2)
 
 def sqrt3(x):
     return x**Rational(1,3)

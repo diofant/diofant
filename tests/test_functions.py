@@ -1,50 +1,46 @@
 import sys
 sys.path.append(".")
 
-import sympy as g
-import sympy as s
-from sympy import Symbol, log, atan
-from sympy.core.functions import Function
-#from sympy.modules.derivatives import Derivative
-from sympy.core.functions import Derivative
+from sympy import *
+from sympy.core.functions import Function, Derivative
 
 def test_func():
-    a=g.Symbol("a")
-    b=g.Symbol("b")
-    c=g.Symbol("c")
-    p=g.Rational(5)
-    e=a*b+g.sin(b**p)
-    assert e == a*b+g.sin(b**5)
+    a = Symbol("a")
+    b = Symbol("b")
+    c = Symbol("c")
+    p = Rational(5)
+    e = a*b + sin(b**p)
+    assert e == a*b + sin(b**5)
     assert e.diff(a) == b
-    assert e.diff(b) == a+5*b**4*g.cos(b**5)
-    e=g.tan(c)
-    assert e == g.tan(c)
-    assert e.diff(c) in [g.cos(c)**(-2),1+g.sin(c)**2/g.cos(c)**2]
-    e=c*g.log(c)-c
-    assert e == -c+c*g.log(c)
-    assert e.diff(c) == g.log(c)
-    e=g.log(g.sin(c))
-    assert e == g.log(g.sin(c))
-    assert e.diff(c) == g.sin(c)**(-1)*g.cos(c)
-    assert e.diff(c) != g.cos(c)**(-1)*g.sin(c)
-    assert e.diff(c) != g.sin(c)**(-2)*g.cos(c)
-    assert e.diff(c) != g.sin(c)**(-3)*g.cos(c)
-    t=g.Rational(2)
-    e=(t**a/g.log(t))
-    assert e == 2**a*g.log(g.Rational(2))**(-1)
+    assert e.diff(b) == a+5*b**4*cos(b**5)
+    e = tan(c)
+    assert e == tan(c)
+    assert e.diff(c) in [cos(c)**(-2),1 + sin(c)**2/cos(c)**2]
+    e = c*log(c)-c
+    assert e == -c+c*log(c)
+    assert e.diff(c) == log(c)
+    e = log(sin(c))
+    assert e == log(sin(c))
+    assert e.diff(c) == sin(c)**(-1)*cos(c)
+    assert e.diff(c) != cos(c)**(-1)*sin(c)
+    assert e.diff(c) != sin(c)**(-2)*cos(c)
+    assert e.diff(c) != sin(c)**(-3)*cos(c)
+    t = Rational(2)
+    e = (t**a/log(t))
+    assert e == 2**a*log(Rational(2))**(-1)
     assert e.diff(a) == 2**a
 
 def test_log():
-    assert g.log(2) > 0
+    assert log(2) > 0
 
 def test_exp_log():
-    x=g.Symbol("x")
-    assert g.log(g.exp(x))==x
-    assert g.exp(g.log(x))==x
+    x = Symbol("x")
+    assert log(exp(x))==x
+    assert exp(log(x))==x
 
 def test_log_expansion():
-    x=Symbol("x")
-    y=Symbol("y")
+    x = Symbol("x")
+    y = Symbol("y")
     assert log(x*y)!=log(x)+log(y)
     assert log(x**2)!=2*log(x)
     assert log(x*y).expand()==log(x)+log(y)
@@ -52,53 +48,53 @@ def test_log_expansion():
     assert (log(x**-5)**-1).expand() == -1/log(x)/5
 
 def test_log_hashing_bug():
-    x=s.Symbol("y")
-    assert x!=s.log(s.log(x))
-    assert x.hash()!=s.log(s.log(x)).hash()
-    assert s.log(x)!=s.log(s.log(s.log(x)))
+    x = Symbol("y")
+    assert x != log(log(x))
+    assert x.hash()!=log(log(x)).hash()
+    assert log(x)!=log(log(log(x)))
 
-    e=1/s.log(s.log(x)+s.log(s.log(x)))
+    e=1/log(log(x)+log(log(x)))
     e=e.eval()
-    assert isinstance(e.base,s.log)
-    e=1/s.log(s.log(x)+s.log(s.log(s.log(x))))
+    assert isinstance(e.base,log)
+    e=1/log(log(x)+log(log(log(x))))
     e=e.eval()
-    assert isinstance(e.base,s.log)
+    assert isinstance(e.base,log)
 
-    x=s.Symbol("x")
-    e=s.log(s.log(x))
-    assert isinstance(e,s.log)
-    assert not isinstance(x,s.log)
-    assert s.log(s.log(x)).hash() != x.hash()
+    x=Symbol("x")
+    e=log(log(x))
+    assert isinstance(e,log)
+    assert not isinstance(x,log)
+    assert log(log(x)).hash() != x.hash()
     assert e!=x
 
 def test_sign():
-    assert s.sign(s.log(2)) == 1
+    assert sign(log(2)) == 1
 
 
 def test_exp_bug():
-    x=s.Symbol("x")
-    assert s.exp(1*s.log(x))==x
+    x = Symbol("x")
+    assert exp(1*log(x))==x
 
 def test_exp_expand():
-    x=s.Symbol("x")
-    e=s.exp(s.log(s.Rational(2))*(1+x)-s.log(s.Rational(2))*x)
+    x = Symbol("x")
+    e = exp(log(Rational(2))*(1+x)-log(Rational(2))*x)
     assert e.expand()==2
 
 def test_pi():
-    assert s.cos(s.pi)==-1
-    assert s.cos(2*s.pi)==1
-    assert s.sin(s.pi)==0
-    assert s.sin(2*s.pi)==0
+    assert cos(pi)==-1
+    assert cos(2*pi)==1
+    assert sin(pi)==0
+    assert sin(2*pi)==0
 
 def test_bug1():
-    x=Symbol("x")
-    w=Symbol("w")
-    e=(-log(w)).sqrt()
-    assert e.subs(log(w),-x)!=-x.sqrt()
-    assert e.subs(log(w),-x)==x.sqrt()
+    x = Symbol("x")
+    w = Symbol("w")
+    e = sqrt(-log(w))
+    assert e.subs(log(w),-x) != -sqrt(x)
+    assert e.subs(log(w),-x) == sqrt(x)
 
-    e=(-5*log(w)).sqrt()
-    assert e.subs(log(w),-x)==(5*x).sqrt()
+    e = sqrt(-5*log(w))
+    assert e.subs(log(w),-x) == sqrt(5*x)
 
 def test_Derivative():
     x=Symbol("x")

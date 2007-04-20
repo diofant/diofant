@@ -16,10 +16,6 @@ x=Symbol("x")
 y=Symbol("y") 
 w=Symbol("w") 
 
-
-def sqrt(x):
-    return x.sqrt()
-
 #import pdb
 #pdb.run('print limitinf(sin(x)/x,x)')
 print x**x
@@ -29,5 +25,3 @@ print sin(x)**cos(x)
 print sin(x)/(cos(x)**2 * x**x +(2*y))
 
 print sin(x**2+exp(x))
-print exp(x).sqrt()
-print exp(x).sqrt().sqrt()

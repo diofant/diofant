@@ -281,10 +281,10 @@ class Basic(object):
             assert isinstance(a,Basic)
             return a
         
-    def hash(self):
-        return hash(self)
-    
     def __hash__(self):
+        return self.hash()
+    
+    def hash(self):
         if self._mhash: 
             return self._mhash
         self._mhash = hash(str(self))
@@ -405,12 +405,6 @@ class Basic(object):
         """
         from numbers import I
         return self.subs(I,-I)
-
-    def sqrt(self):
-        """Returns square root of self."""
-        #TODO: move to functions
-        from numbers import Rational
-        return (self**(Rational(1)/2))
 
     @staticmethod
     def muleval(x,y):

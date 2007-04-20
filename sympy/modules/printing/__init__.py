@@ -19,3 +19,4 @@ Examples
 from gtk import print_gtk
 from latex import print_latex
 from pygame_ import print_pygame
+from xml_ import print_xml

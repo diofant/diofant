@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Rational, Symbol, Real
+from sympy import Rational, Symbol, Real, sqrt
 import py
 
 def testRational():
@@ -108,22 +108,22 @@ def test_abs1():
     assert abs(a) == a
     assert abs(-a) == a
     assert abs(-a) != -a
-    assert abs(a+g.I*b) == (a*a+b*b).sqrt()
+    assert abs(a+g.I*b) == sqrt(a*a+b*b)
 
 def test_abs2():
     a=Symbol("a", is_real=False)
     b=Symbol("b", is_real=False)
     assert abs(a) != a
     assert abs(-a) != a
-    assert abs(a+g.I*b) != (a*a+b*b).sqrt()
+    assert abs(a+g.I*b) != sqrt(a*a+b*b)
 
 def test_int():
     a=Rational(5)
     assert int(a)==5
 
 def test_sqrtbug():
-    assert ((Rational(2).sqrt()+1)*(Rational(2).sqrt()-1)).expand() == 1
+    assert ((sqrt(Rational(2))+1)*(sqrt(Rational(2))-1)).expand() == 1
 
-def test_Realeval():
+def test_Real_eval():
     a = Real(3.2)
     assert isinstance(a**2, Real)

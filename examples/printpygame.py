@@ -16,8 +16,8 @@ def p():
     print sin(x)/(cos(x)**2 * x**x +(2*y))
 
     print sin(x**2+exp(x))
-    print exp(x).sqrt()
-    print exp(x).sqrt().sqrt()
+    print sqrt(exp(x))
+    print sqrt(exp(x))
 
     #print (1/cos(x)).series(x,10)
 

@@ -48,11 +48,11 @@ def v(p,r):
     a = (sigma1*p1 + sigma2*p2 + sigma3*p3) / (E+m) * ksi
     if a ==0:
         a = zeronm(2,1)
-    return (E+m).sqrt() * Matrix([ [a[0,0]], [a[1,0]], [ksi[0,0]], [ksi[1,0]] ])
+    return sqrt(E+m) * Matrix([ [a[0,0]], [a[1,0]], [ksi[0,0]], [ksi[1,0]] ])
 
 def pslash(p):
     p1,p2,p3 = p
-    p0 = (m**2+p1**2+p2**2+p3**2).sqrt()
+    p0 = sqrt(m**2+p1**2+p2**2+p3**2)
     return gamma0*p0-gamma1*p1-gamma2*p2-gamma3*p3
 
 def Tr(M):

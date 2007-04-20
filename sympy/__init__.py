@@ -58,9 +58,9 @@ G{packagetree sympy}
 __version__ = "0.4-pre"
 
 from sympy.core import Basic
-from sympy.core import Symbol, Number, Rational, Real, exp, log, sign, infty
+from sympy.core import Symbol, Number, Rational, Real, infty
 from sympy.core import pi, I, Order, Add, Mul
-from sympy.core.functions import Function, Derivative
+from sympy.core.functions import Function, Derivative, exp, log, sign, sqrt
 
 from sympy.modules.limits import limit, limitinf
 from sympy.modules.trigonometric import sin, cos, tan, atan
