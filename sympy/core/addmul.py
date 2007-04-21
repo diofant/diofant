@@ -112,10 +112,16 @@ class Pair(Basic):
                 return False
         return True
 
-    def match(self, pattern, syms=None):
+    def match(self, pattern, syms=None, exclude = "None"):
         #print self, pattern, syms
         from sympy.core.symbol import Symbol
         from sympy.core.numbers import Constant
+        if exclude == "None":
+            x = Symbol("x")
+            if pattern.has(x):
+                exclude = [x]
+            else:
+                exclude = None
         if syms == None:
             syms = pattern.atoms(type=Symbol)
             #print syms
@@ -154,15 +160,23 @@ class Pair(Basic):
                     ops.remove(o)
                     break
             if r == None:
-                #if type(self) == type(pattern):
-                    #print "HOla hej"
-                    #print p
-                    #print self/p
+                if type(self) == type(pattern):
+                    if isinstance(self,Mul):
+                        #if self.has(Symbol("r")):
+                        #    return (self/p).match(pattern/p, syms)
+                        #print self,pattern,syms, (self/p).match(pattern/p, syms)
+                        r = (self/p).match(pattern/p, syms)
+                        if exclude:
+                            for x in r:
+                                if r[x].has(exclude[0]):
+                                    return None
+                        return r
                 return None
             r2.update(r)
         if global_wildcard:
             if len(ops) == 0:
-                return None
+                #return None
+                rst = Rational(1)
             else:
                 rst = type(self)(*ops)
             r2.update({global_wildcard: rst})
