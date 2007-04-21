@@ -167,15 +167,15 @@ class Pair(Basic):
             if r == None:
                 if type(self) == type(pattern):
                     if isinstance(self,Mul):
-                        #if self.has(Symbol("r")):
-                        #    return (self/p).match(pattern/p, syms)
-                        #print self,pattern,syms, (self/p).match(pattern/p, syms)
                         r = (self/p).match(pattern/p, syms)
                         if exclude:
                             if r:
                                 for x in r:
                                     if r[x].has(exclude[0]):
                                         return None
+                                    if len(exclude) == 2:
+                                        if r[x].has(exclude[1]):
+                                            return None
                         return r
                 return None
             r2.update(r)

@@ -179,6 +179,7 @@ class Basic(object):
         if self.is_number and a.is_number: 
             return self.evalf() < a.evalf()
         else:
+            return self.hash() < a.hash()
             raise NotImplementedError("'<' not supported.")
         
     def __gt__(self,a):
@@ -186,6 +187,7 @@ class Basic(object):
         if self.is_number and a.is_number: 
             return self.evalf() > a.evalf()
         else:
+            return self.hash() > a.hash()
             raise NotImplementedError("'<' not supported.")
     
     @staticmethod

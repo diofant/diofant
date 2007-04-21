@@ -320,6 +320,9 @@ class Rational(Number):
         if isinstance(pattern, Rational):
             if self==pattern:
                 return {}
+        from addmul import Mul
+        if isinstance(pattern, Mul):
+            return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
         return None
    
 
