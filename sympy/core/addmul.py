@@ -159,9 +159,11 @@ class Pair(Basic):
                     ops.remove(o)
                     break
             if r == None:
+                #print self, pattern, ops, pat
                 if type(self) == type(pattern):
                     if isinstance(self,Mul):
                         r = (self/p).match(pattern/p, syms)
+                        #print "  ",r
                         if exclude:
                             if r:
                                 for x in r:
