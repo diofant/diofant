@@ -141,7 +141,7 @@ def test_derivative():
     e = 3*fd - 1
     assert e.match(a*fd + b, [a,b]) == {a:3, b:-1}
 
-def xtest_match_deriv_bug1():
+def test_match_deriv_bug1():
     class l(Function): pass
     class n(Function): pass
 
@@ -156,7 +156,12 @@ def xtest_match_deriv_bug1():
 
     t2 = ( t.diffn(r,2)/t ).expand()
 
-    a = Symbol("a", is_dummy = True)
+    a = Symbol("a")
+    tt = (a*t2).expand()
+    r = e.match(tt, [a])
+    assert r == {a: -Rational(1)/2}
+
+    a = Symbol("a__8")
     tt = (a*t2).expand()
     r = e.match(tt, [a])
     assert r == {a: -Rational(1)/2}
