@@ -116,20 +116,14 @@ class Pair(Basic):
         #print self, pattern, syms
         from sympy.core.symbol import Symbol
         from sympy.core.numbers import Constant
-        if exclude == "None":
-            #this is a quick hack, let's do it using the atoms().
-            x = Symbol("x")
-            if pattern.has(x):
-                exclude = [x]
-            else:
-                x = Symbol("r")
-                if pattern.has(x):
-                    exclude = [x]
-                else:
-                    exclude = None
         if syms == None:
             syms = pattern.atoms(type=Symbol)
             #print syms
+        if exclude == "None":
+            #extract the rest of the symbols in pattern (excluding syms)
+            exclude = list(set(pattern.atoms(type=Symbol))-set(syms))
+            if exclude == []:
+                exclude = None
         if len(syms) == 1:
             if pattern.has(syms[0]):
                 if pattern == syms[0]:

@@ -83,10 +83,8 @@ def test_mul():
     e = 4*x
     assert e.match(b*x,[b]) == {b: 4}
     assert e.match(b*x,[b,c]) == {b: 4}
-    #assert e.match(b*y,[b]) == None
-    assert e.match(b*y,[b]) == {b: 4*x/y}
-    #assert e.match(b*y,[a,b,c]) == None
-    assert e.match(b*y,[a,b,c]) == {b: 4*x/y}
+    assert e.match(b*y,[b]) == None
+    assert e.match(b*y,[a,b,c]) == None
     e = a*x*b*c
     assert e.match(p*x,[p]) == {p: a*b*c}
     assert e.match(c*p*x,[p]) == {p: a*b}
@@ -208,5 +206,6 @@ def test_behavior2():
     e = Rational(6)
     assert e.match(2*a, [a]) == {a: 3}
     e = 3*x**2+3*x+6
-    assert e.match(a*x**2+a*x+2*a, [a]) == {a: 3}
-    p = x**2
+    p = x
+    assert (e/p).expand().match(a*x**2+a*x+2*a, [a]) == None
+    #assert (e/p).expand().match(a*x**2+a*x+2*a, [a], exclude=None) == {a: 3/x}
