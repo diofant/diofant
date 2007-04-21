@@ -40,4 +40,30 @@ def eq2():
     print e
     print dsolve(e, [relativity.lam(r)])
 
-eq1()
+#eq1()
+
+def bug1():
+    class l(Function): pass
+    class n(Function): pass
+
+    r = Symbol("r")
+
+    e = Derivative(l(r),r)/r-Derivative(Derivative(n(r),r),r)/2- \
+        Derivative(n(r),r)**2/4+Derivative(n(r),r)*Derivative(l(r),r)/4
+
+    e = e.subs(n(r), -l(r))
+
+    t = r*exp(-l(r))
+
+    t2 = ( t.diffn(r,2)/t ).expand()
+
+    a = Symbol("a", is_dummy = True)
+    tt = (a*t2).expand()
+    print e
+    print tt
+    r = e.match(tt, [a])
+    print r
+    r = {a: -Rational(1)/2}
+    print r
+
+bug1()

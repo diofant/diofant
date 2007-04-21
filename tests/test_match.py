@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol, cos, Function, Derivative
+from sympy import Rational, Symbol, cos, Function, Derivative, exp
 
 def test_symbol():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
@@ -138,3 +138,55 @@ def test_derivative():
     assert e.match(a*fd, [a]) != None
     e = 3*fd - 1
     assert e.match(a*fd + b, [a,b]) == {a:3, b:-1}
+
+def xtest_match_deriv_bug1():
+    class l(Function): pass
+    class n(Function): pass
+
+    r = Symbol("r")
+
+    e = Derivative(l(r),r)/r-Derivative(Derivative(n(r),r),r)/2- \
+        Derivative(n(r),r)**2/4+Derivative(n(r),r)*Derivative(l(r),r)/4
+
+    e = e.subs(n(r), -l(r))
+
+    t = r*exp(-l(r))
+
+    t2 = ( t.diffn(r,2)/t ).expand()
+
+    a = Symbol("a", is_dummy = True)
+    tt = (a*t2).expand()
+    r = e.match(tt, [a])
+    assert r == {a: -Rational(1)/2}
+
+def xtest_match_bug2():
+    class l(Function): pass
+
+    r = Symbol("r")
+    e = Derivative(l(r),r)/r
+    a = Symbol("a", is_dummy = True)
+    tt = -a*2*Derivative(l(r),r)/r
+
+    r = e.match(tt, [a])
+    print e,tt
+    assert r == {a: -Rational(1)/2}
+
+def xtest_match_bug3():
+    class l(Function): pass
+
+    r = Symbol("r")
+    a = Symbol("a", is_dummy = True)
+    e = Derivative(l(r),r)
+    tt = -a*Derivative(l(r),r)
+
+    r = e.match(tt, [a])
+    assert r == {a: -Rational(1)/2}
+
+def xtest_match_bug4():
+    r = Symbol("r")
+    a = Symbol("a", is_dummy = True)
+    e = r
+    tt = -a*r
+
+    r = e.match(tt, [a])
+    assert r == {a: -1}

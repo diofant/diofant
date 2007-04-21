@@ -113,6 +113,7 @@ class Pair(Basic):
         return True
 
     def match(self, pattern, syms=None):
+        #print self, pattern, syms
         from sympy.core.symbol import Symbol
         from sympy.core.numbers import Constant
         if syms == None:
@@ -139,15 +140,11 @@ class Pair(Basic):
         global_wildcard = None
         for p in pat:
             if p in syms:
-                if global_wildcard:
-                    #unpredictable result, do we really need this?
-                    #currently this can never happen, I added the "break"
-                    #below....
-                    raise "Can't have more than 1 global wildcards"
                 global_wildcard = p
                 break
         if global_wildcard:
             pat.remove(global_wildcard)
+        #print ops,pat
         r2 = dict()
         for p in pat:
             for o in ops:
@@ -157,13 +154,15 @@ class Pair(Basic):
                     ops.remove(o)
                     break
             if r == None:
+                #if type(self) == type(pattern):
+                    #print "HOla hej"
+                    #print p
+                    #print self/p
                 return None
             r2.update(r)
         if global_wildcard:
             if len(ops) == 0:
                 return None
-            elif len(ops) == 1:
-                rst = ops[0]
             else:
                 rst = type(self)(*ops)
             r2.update({global_wildcard: rst})
