@@ -66,7 +66,7 @@ def test_power():
     assert e.match(a/(b*x+c),[a,b,c]) == {a: 3, b: 4, c: 5}
 
     e = 3*x**2+y*x+p
-    #assert e.match(a*x**2+b*x+c,[a,b,c]) == {a: 3, b: y, c: p}
+    assert e.match(a*x**2+b*x+c,[a,b,c]) == {a: 3, b: y, c: p}
 
     e = 2/(x+1)
     assert e.match(a/(b*x+c),[a,b,c]) == {a: 2, b: 1, c: 1}

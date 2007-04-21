@@ -82,14 +82,24 @@ def dsolve(eq, funcs):
         if r and wo(r,f): return solve_ODE_second_order(r[a], 0, r[b], f, x)
 
         #special equations, that we know how to solve
+
+        #ansatz:
         t = x*exp(-f)
-        tt = (a*t.diffn(x,2)/t).expand()
-        r = eq.match(tt, [a])
-        #there is a bug in match(), it should actually return this:
-        r = {a: -Rational(1)/2}
-        #check, that we've rewritten the equation correctly:
-        assert ( t.diffn(x,2)*r[a]/t ).expand() == eq
-        return solve_ODE_1(f, x)
+        r = eq.match((a*t.diffn(x,2)/t).expand(), [a])
+        if r:
+            #check, that we've rewritten the equation correctly:
+            assert ( t.diffn(x,2)*r[a]/t ).expand() == eq
+            return solve_ODE_1(f, x)
+        p = exp(f)**(-1)*exp(-f)
+        r = (eq/p).expand().match((a*t.diffn(x,2)/t).expand(), [a])
+        #print r
+        #print eq
+        #print (a*t.diffn(x,2)/t).expand()
+        #print eq.match((a*t.diffn(x,2)/t).expand(), [a], exclude = None)
+        if r:
+            #check, that we've rewritten the equation correctly:
+            assert ( t.diffn(x,2)*r[a]/t ).expand() == (eq/p).expand()
+            return solve_ODE_1(f, x)
 
     raise "Sorry, can't solve it (yet)."
 
