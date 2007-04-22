@@ -5,7 +5,7 @@ import sys
 sys.path.append("..")
 sys.path.append(".")
 
-from sympy import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
+from sympy import exp,log,Symbol,oo,Rational,sin,cos,limit,I,pi,Mul
 from sympy import hashing, Integral, limitinf
 from sympy.modules import limits
 from sympy.core import basic

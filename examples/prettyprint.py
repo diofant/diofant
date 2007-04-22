@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 
-from sympy import exp,log,Symbol,infty,Rational,sin,cos,limit,I,pi,Mul
+from sympy import exp,log,Symbol,oo,Rational,sin,cos,limit,I,pi,Mul
 from sympy.core import basic
 
 x=Symbol("x") 
