@@ -25,18 +25,18 @@ def limitminf(f,x):
 
 def test_simple_problems():
     a = Symbol('a')
-    assert limit((x+1)*(x+2)*(x+3)/x**3,x, infty)==1  #172
+    assert limit((x+1)*(x+2)*(x+3)/x**3,x, oo)==1  #172
     assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
     assert limitinf(x/sqrt3(x**3+10),x)==1  #Primjer 2
     assert limitinf((x+1)**2/(x**2+1),x)==1  #181
     assert limitinf(1000*x/(x**2-1),x)==0  #182
-    assert limitinf((x**2-5*x+1)/(3*x+7),x)==infty  #183
+    assert limitinf((x**2-5*x+1)/(3*x+7),x)==oo  #183
     assert limitinf((2*x**2-x+3)/(x**3-8*x+5),x)==0  #184
     assert limitinf((2*x**2-3*x-4)/sqrt(x**4+1),x)==2  #186
     assert limitinf((2*x+3)/(x+sqrt3(x)),x)==2  #187
-    assert limitinf(x**2/(10+x*sqrt(x)),x)==infty  #188
+    assert limitinf(x**2/(10+x*sqrt(x)),x)==oo  #188
     assert limitinf(sqrt3(x**2+1)/(x+1),x)==0  #189
     assert limitinf(sqrt(x)/sqrt(x+sqrt(x+sqrt(x))),x)==1  #190
     assert limit((x**2-(a+1)*x+a)/(x**3-a**3),x,a)==((a-1)/(3*a**2)).expand()  #196

@@ -91,25 +91,25 @@ def test_simple_limit_automatic():
 
 def testlimitinf_lenmrveq1():
     x = s.Symbol("y")
-    assert s.limitinf(x,x) == s.infty
-    assert s.limitinf(-x,x) == s.infty
-    assert s.limitinf(-x**2,x) == s.infty
+    assert s.limitinf(x,x) == s.oo
+    assert s.limitinf(-x,x) == s.oo
+    assert s.limitinf(-x**2,x) == s.oo
     assert s.limitinf(1/x,x) == 0
     assert s.limitinf(1/x,x) != 1
     assert s.limitinf(1+1/x,x) == 1
     assert s.limitinf(1+1/x,x) != 0
-    assert s.limitinf(s.exp(x),x) == s.infty
-    assert s.limitinf(-s.exp(x),x) == s.infty
+    assert s.limitinf(s.exp(x),x) == s.oo
+    assert s.limitinf(-s.exp(x),x) == s.oo
     assert s.limitinf(-s.exp(1/x),x) == -1
-    assert s.limitinf(s.exp(x)/x,x) == s.infty
+    assert s.limitinf(s.exp(x)/x,x) == s.oo
     assert s.limitinf(s.exp(x)/x,x) != 1
-    assert s.limitinf(x+s.exp(-x),x) == s.infty
-    assert s.limitinf(x+s.exp(-x**2),x) == s.infty
-    assert s.limitinf(x+s.exp(-s.exp(x)),x) == s.infty
+    assert s.limitinf(x+s.exp(-x),x) == s.oo
+    assert s.limitinf(x+s.exp(-x**2),x) == s.oo
+    assert s.limitinf(x+s.exp(-s.exp(x)),x) == s.oo
     assert s.limitinf(1/x-s.exp(-x),x) == 0
     assert s.limitinf(13+1/x-s.exp(-x),x) == 13
 
-    assert s.limitinf(x+1/x,x) == s.infty
+    assert s.limitinf(x+1/x,x) == s.oo
 
 def testlimit():
     x = s.Symbol("y")
@@ -141,7 +141,7 @@ def xtestlonglimit1():
 def testlog():
     x=s.Symbol("x")
     e=s.log(x)
-    assert s.limit(e,x,0)==s.infty
+    assert s.limit(e,x,0)==s.oo
 
 def testsubexp():
     x=s.Symbol("x")
@@ -158,10 +158,10 @@ def sqrt(x):
     return x**s.Rational(1,2)
 
 def test_functions():
-    from sympy import sin,cos,infty,Rational,exp,limit,limitinf
+    from sympy import sin,cos,oo,Rational,exp,limit,limitinf
     x=s.Symbol("x")
     assert limit(sin(x)/x,x,0) == 1
-    assert limit(cos(x)/sin(x),x,0) == infty
+    assert limit(cos(x)/sin(x),x,0) == oo
     assert limitinf(cos(1/x),x) == 1
     assert limitinf(exp(x)*(sin(1/x+exp(-x))-sin(1/x)),x) == 1
 
