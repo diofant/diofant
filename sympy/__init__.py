@@ -68,9 +68,6 @@ from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
 
-#deprecated way of naming infinity (use oo instead)
-infty = oo
-
 # try to import optinal modules
 try: 
     from sympy.modules.printing import print_gtk, print_latex
