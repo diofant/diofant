@@ -58,7 +58,7 @@ G{packagetree sympy}
 __version__ = "0.4-pre"
 
 from sympy.core import Basic
-from sympy.core import Symbol, Number, Rational, Real, infty
+from sympy.core import Symbol, Number, Rational, Real, oo
 from sympy.core import pi, I, Order, Add, Mul
 from sympy.core.functions import Function, Derivative, exp, log, sign, sqrt
 
@@ -67,6 +67,9 @@ from sympy.modules.trigonometric import sin, cos, tan, atan
 from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
+
+#deprecated way of naming infinity (use oo instead)
+infty = oo
 
 # try to import optinal modules
 try: 

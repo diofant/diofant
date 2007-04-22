@@ -52,17 +52,17 @@ class Infinity(Number):
         
     Notes
     =====
-        Cannot be used in expressions like infty/infty, but can be used in some
-        very simple expressions like 1*infty
+        Cannot be used in expressions like oo/oo, but can be used in some
+        very simple expressions like 1*oo
           
         Should be used only as a Symbol, for example results of limits, integration limits etc.
-        Can however be used in comparisons, like infty!=1, or infty!=x**3
+        Can however be used in comparisons, like oo!=1, or oo!=x**3
           
     Examples
     ========
         >>> from sympy import *
         >>> x = Symbol('x')
-        >>> limit(x, x, infty)
+        >>> limit(x, x, oo)
         Infinity()
     """
     
@@ -88,7 +88,7 @@ class Infinity(Number):
     def evalf(self):
         return self
 
-infty = Infinity()
+oo = Infinity()
 
 class Real(Number):
     """Represents a floating point number. It is capable of representing

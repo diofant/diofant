@@ -556,7 +556,7 @@ class Add(Pair):
                 bn, b = _extract_numeric(y)
                 if (not ok) and a == b:
                     if isinstance(a, Infinity) or isinstance(b, Infinity):
-                        # case infty - infty
+                        # case oo - oo
                         raise ArithmeticError("Cannot compute this")
                     e.append(Mul(an + bn,a))
                     ok = True
