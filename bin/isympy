@@ -25,6 +25,7 @@ basic_modules = """
     sympy.core
     sympy.modules
     sympy.modules.polynomials
+    sympy.modules.integrate
 """
 
 welcome_msg = """
@@ -44,10 +45,15 @@ object? -> Details about 'object'. ?object also works, ?? prints more.
 """
 
 basic_import_code = """
-from sympy.core import *
+from sympy.core.numbers import Real, Rational, pi
+from sympy.core.symbol import Symbol
+from sympy.core.functions import Function, exp, log, ln, sqrt, sign#, diff
 from sympy.modules import *
-from sympy.modules.polynomials import *
+from sympy.modules.polynomials import ispoly, get_poly, coeff
+from sympy.modules.integrals import integrate
+"""
 
+init_code = """
 x = Symbol('x')
 y = Symbol('y')
 z = Symbol('z')
@@ -61,6 +67,14 @@ def run_ipython_interpreter():
     ipshell = IPShellEmbed(args)
     api = ipshell.IP.getapi()
     api.ex(basic_import_code)
+    api.ex(init_code)
+    
+    ### create some magic commands
+    
+    def pretty_print(self, arg):
+        self.api.ex("print unicode((%s).pretty())" % arg)
+        
+    api.expose_magic("pprint", pretty_print)
 
     # Now start an embedded ipython.
     ipshell(welcome_msg_ipython)

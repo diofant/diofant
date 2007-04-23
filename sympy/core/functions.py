@@ -2,10 +2,12 @@
 functions that use Function as its base class. 
 """
 
-from basic import Basic
-from numbers import Rational, Real
+from sympy.core.basic import Basic
+from sympy.core.numbers import Rational, Real
 import decimal
 import math
+from sympy.core.stringPict import prettyForm
+
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 
@@ -54,7 +56,7 @@ class Function(Basic):
     def mathml(self):
         return "<apply><%s/> %s </apply>" % (self.mathml_tag, self._args.mathml)
         
-    def series(self, sym, n):
+    def series(self, sym, n=6):
         from power import pole_error
         from symbol import Symbol
         try:
@@ -77,7 +79,7 @@ class Function(Basic):
         #than arg == 0.
         assert isinstance(self,exp)
         e= (exp(z0)*e).expand().subs(l,log(sym))
-        return e.expand()
+        return e.expand() 
     
     def evalf(self, precision=28):
         """
@@ -89,6 +91,14 @@ class Function(Basic):
         
         """
         raise NotImplementedError
+    
+    def pretty(self):
+        """
+        Function application.
+        Some functions are optimized to omit parentheses.
+        They must have a single argument.
+        """
+        return prettyForm.apply(self.getname(), self._args)
 
 class exp(Function):
     """Return e raised to the power of x
@@ -130,6 +140,9 @@ class exp(Function):
             s += num / fact   
         decimal.getcontext().prec = precision - 2        
         return +s
+    
+    def pretty(self):
+        return prettyForm('e', binding=prettyForm.ATOM)**self._args.pretty()
 
 class log(Function):
     """Return the natural logarithm (base e) of x
@@ -189,7 +202,7 @@ class log(Function):
         e=log(c0)+e0*log(w)
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
-        return e
+        return e 
 
 ln = log
     
@@ -326,3 +339,19 @@ class Derivative(Basic):
             return Derivative(self[0].subs(old,new), self[1])
         else:
             return e
+
+def diff(f, x, times = 1, evaluate=True):
+    """Derivate f with respect to x
+    
+    It's just a wrapper to unify .diff() and the Derivative class, 
+    it's interface is similar to that of integrate()
+    
+    see http://documents.wolfram.com/v5/Built-inFunctions/AlgebraicComputation/Calculus/D.html
+    """
+    f = Basic.sympify(f)
+    if evaluate == True:
+        for i in range(0,times):
+            f = f.diff(x)
+        return f
+    else:
+        return Derivative(f, x)

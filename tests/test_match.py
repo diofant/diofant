@@ -3,6 +3,8 @@ sys.path.append(".")
 
 from sympy import Rational, Symbol, cos, Function, Derivative, exp
 
+from sympy.core.functions import diff
+
 def test_symbol():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
     p,q = [Symbol(Y) for Y in ["p","q"]]
@@ -153,7 +155,7 @@ def test_match_deriv_bug1():
 
     t = r*exp(-l(r))
 
-    t2 = ( t.diffn(r,2)/t ).expand()
+    t2 = ( diff(t, r,2)/t ).expand()
 
     a = Symbol("a")
     tt = (a*t2).expand()

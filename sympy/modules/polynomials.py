@@ -1,6 +1,7 @@
 """Module with some routines for polynomials"""
 
 from sympy.core import Pow, Add, Mul, Rational, Number, Symbol, Basic
+from sympy.core.functions import diff
 
 class PolynomialException(Exception):
     pass
@@ -61,7 +62,7 @@ def fact(n):
 def coeff(poly, x, n):
     """Returns the coefficient of x**n in the polynomial"""
     assert ispoly(poly,x)
-    return poly.diffn(x,n).subs(x,0)/fact(n)
+    return diff(poly, x,n).subs(x,0)/fact(n)
 
 def get_poly(p, x):
     """Returns a python list representing the polynomial 'p(x)'.

@@ -9,6 +9,8 @@ from sympy.core.basic import Basic
 from sympy.core.numbers import Number, Rational, Real, Infinity
 from sympy.core.power import Pow, pole_error
 
+from sympy.core.stringPict import prettyForm
+
 class Pair(Basic):
     """Abstract class containing common code to Add and Mul classes.
     Should not be used directly.
@@ -436,6 +438,8 @@ class Mul(Pair):
         else:
             return e
 
+    def pretty(self):
+        return prettyForm.__mul__(*[arg.pretty() for arg in self._args])
 
 class Add(Pair):
     """
@@ -646,6 +650,9 @@ class Add(Pair):
             #there is a cancelation problem here:
             #implement the class Order
             return (a.series(sym,n)+b.series(sym,n))
+        
+    def pretty(self):
+        return prettyForm.__add__(*[arg.pretty() for arg in self._args])
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.

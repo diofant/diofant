@@ -16,7 +16,6 @@ class AutomaticEvaluationType(type):
             return obj.eval()
         else: 
             return obj
-        
 
 class Basic(object):
     """
@@ -179,7 +178,6 @@ class Basic(object):
         if self.is_number and a.is_number: 
             return self.evalf() < a.evalf()
         else:
-            return self.hash() < a.hash()
             raise NotImplementedError("'<' not supported.")
         
     def __gt__(self,a):
@@ -187,7 +185,6 @@ class Basic(object):
         if self.is_number and a.is_number: 
             return self.evalf() > a.evalf()
         else:
-            return self.hash() > a.hash()
             raise NotImplementedError("'<' not supported.")
     
     @staticmethod
@@ -300,13 +297,24 @@ class Basic(object):
     def cmphash(a,b):
         return Basic._sign(a.hash()-b.hash())
         
-    def diffn(self,sym,n):
-        while n:
-            self = self.diff(sym)
-            n -= 1
-        return self
+    def series(self,sym, n=6):
+        """
+        Usage
+        =====
+            Return the Taylor series of self with respect to sym until the n-th term. 
         
-    def series(self,sym,n):
+        Notes
+        =====
+            If you don't specify n, the default is 6
+        
+        Examples
+        ========
+        
+            >>> from sympy import *
+            >>> x = Symbol('x')
+            >>> sin(x).series(x, 5)
+            x-1/6*x**3+1/120*x**5
+        """
         from numbers import Rational
         from symbol import Symbol
         from functions import log
@@ -410,13 +418,24 @@ class Basic(object):
 
     @staticmethod
     def muleval(x,y):
-        """See
-        http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335
-
-        Try to simplify x*y. You can either return a simplified expression
-        or None.
-        
-        
+        """
+        Usage
+        =====
+            Try to simplify x*y. You can either return a simplified expression
+            or None.
+        Notes
+        =====
+            This method is called from Add.eval() and Mul.eval(), so that means it
+            is called each time you create an instance of those classes
+    
+            See
+            http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335
+            
+        See also
+        ========
+            L{sympy.addmul.Add.eval}
+            L{sympy.addmul.Mul.eval}
+            L{sympy.power.Pow.eval}
         """
         return None
 
@@ -425,6 +444,8 @@ class Basic(object):
         """
         Try to simplify x+y in this order. You can either return a simplified
         expression or None.
+        
+        see docs for muleval
         
         """
         return None
@@ -542,3 +563,10 @@ class Basic(object):
             else:
                 r2.update(r)
         return r2
+
+    def pretty(self):
+        """Make representation as prettyForm: to be overridden
+        for everything that looks better in 2D.
+        """
+        from sympy.core.stringPict import prettyForm
+        return prettyForm('[%s]'%self)

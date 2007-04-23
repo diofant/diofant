@@ -4,6 +4,8 @@ sys.path.append(".")
 import sympy as g
 from sympy import Symbol, Rational, Derivative, sqrt
 
+from sympy.core.stringPict import *
+
 x = g.Symbol('x')
 y = g.Symbol('y')
 z = g.Symbol('z')
@@ -63,3 +65,7 @@ def test_Derivative():
     x = Symbol("x")
     e = Derivative(x**2, x)
     assert str(e) == "(x**2)'"
+    
+def test_pretty_print():
+    assert str( (x**2).pretty() ) == ' 2\nx '
+    assert str( (x**2 + x + 1).pretty()) in ['     2\n1+x+x ']

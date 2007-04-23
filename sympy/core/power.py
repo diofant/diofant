@@ -2,6 +2,8 @@ from basic import Basic
 from symbol import Symbol
 from numbers import Rational, Real, ImaginaryUnit
 from functions import log, exp
+from sympy.core.stringPict import prettyForm
+
 
 class pole_error(ZeroDivisionError):
     pass
@@ -260,3 +262,7 @@ class Pow(Basic):
             if r2!=None:
                 return addmatches(r1,r2)
         return None
+    
+    def pretty(self):
+        a, b = self._args
+        return a.pretty()**b.pretty()

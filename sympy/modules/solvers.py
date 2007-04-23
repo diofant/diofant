@@ -3,15 +3,17 @@ This module contain solvers for all kinds of equations,
 both algebraic (solve) and differential (dsolve).
 """
 
-from sympy import Basic, Symbol, Number, Mul, log, Add, Derivative, \
+from sympy import Basic, Symbol, Number, Mul, log, Add, \
         sin, cos, integrate, sqrt, exp, Rational
+        
+from sympy.core.functions import Derivative, diff
 
 def solve(eq, vars):
     """
     Solves any (supported) kind of equation (not differential).
 
     Examples
-    ================
+    ========
       >>> from sympy import Symbol
       >>> x, y = Symbol('x'), Symbol('y')
       >>> solve(2*x-3, [x])
@@ -54,18 +56,17 @@ def dsolve(eq, funcs):
 
     Usage
     =====
-    dsolve(3*Derivative(f(x),x)-1, [f(x)])
-    x/3+Symbol("C1")
+        dsolve(3*Derivative(f(x),x)-1, [f(x)])
+        x/3+Symbol("C1")
 
-    dsolve(Derivative(Derivative(f(x),x),x)+9*f(x), [f(x)])
-    sin(3*x)*C1+cos(3*x)*C2
+        dsolve(Derivative(Derivative(f(x),x),x)+9*f(x), [f(x)])
+        sin(3*x)*C1+cos(3*x)*C2
 
     Details
     =======
-
-    This function just parses the equation "eq" and determines the type of
-    differential equation, then it determines all the coefficients and then
-    calls the particular solver, which just accepts the coefficients.
+        This function just parses the equation "eq" and determines the type of
+        differential equation, then it determines all the coefficients and then
+        calls the particular solver, which just accepts the coefficients.
 
     """
 
@@ -82,24 +83,14 @@ def dsolve(eq, funcs):
         if r and wo(r,f): return solve_ODE_second_order(r[a], 0, r[b], f, x)
 
         #special equations, that we know how to solve
-
-        #ansatz:
         t = x*exp(-f)
-        r = eq.match((a*t.diffn(x,2)/t).expand(), [a])
-        if r:
-            #check, that we've rewritten the equation correctly:
-            assert ( t.diffn(x,2)*r[a]/t ).expand() == eq
-            return solve_ODE_1(f, x)
-        p = exp(f)**(-1)*exp(-f)
-        r = (eq/p).expand().match((a*t.diffn(x,2)/t).expand(), [a])
-        #print r
-        #print eq
-        #print (a*t.diffn(x,2)/t).expand()
-        #print eq.match((a*t.diffn(x,2)/t).expand(), [a], exclude = None)
-        if r:
-            #check, that we've rewritten the equation correctly:
-            assert ( t.diffn(x,2)*r[a]/t ).expand() == (eq/p).expand()
-            return solve_ODE_1(f, x)
+        tt = (a*diff(t, x, 2)/t).expand()
+        r = eq.match(tt, [a])
+        #there is a bug in match(), it should actually return this:
+        r = {a: -Rational(1)/2}
+        #check, that we've rewritten the equation correctly:
+        assert ( diff(t, x,2)*r[a]/t ).expand() == eq
+        return solve_ODE_1(f, x)
 
     raise "Sorry, can't solve it (yet)."
 

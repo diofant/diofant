@@ -1,6 +1,8 @@
 
 from sympy.core.basic import Basic
 import decimal
+from stringPict import prettyForm, stringPict
+
 
 dummycount = 0
 
@@ -171,6 +173,13 @@ class Real(Number):
     def evalf(self):
         #evalf() should return either a float or an exception
         return self.num
+    
+    def pretty(self):
+        if self.num < 0:
+            f = "(%s)"
+        else:
+            f = "%s"
+        return f % (str(self.num))
 
 
 class Rational(Number):
@@ -323,7 +332,13 @@ class Rational(Number):
         from addmul import Mul
         if isinstance(pattern, Mul):
             return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
+ 
         return None
+    
+    def pretty(self):
+        if self.q == 1: return prettyForm(str(self.p), prettyForm.ATOM)
+        else: return prettyForm(str(self.p))/prettyForm(str(self.q))
+ 
    
 
 class Constant(Number):
@@ -461,6 +476,9 @@ class ConstPi(Constant):
 
     def __str__(self):
         return "pi"
+    
+    def pretty(self):
+        return prettyForm("pi", unicode=u"\u03C0", binding=prettyForm.ATOM)
 
 pi=ConstPi()
 

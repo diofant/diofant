@@ -1,7 +1,7 @@
 
 from basic import Basic
 from numbers import Rational
-#from prettyprint import StringPict
+from sympy.core.stringPict import prettyForm
 
 dummycount = 0
 
@@ -95,6 +95,10 @@ class Symbol(Basic):
         if isinstance(pattern, Mul):
             return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
         return None
+    
+    def pretty(self): 
+        return prettyForm(self.name, binding=prettyForm.ATOM)
+
 
 class Order(Basic):
 

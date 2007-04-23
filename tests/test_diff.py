@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
+from sympy.core.functions import diff
 
 def testdiff():
     a=g.Symbol("a")
@@ -17,8 +18,8 @@ def testdiff():
     assert e.diff(b) == a
     assert e.diff(b).diff(a) == g.Rational(1)
     e=c**p
-    assert e.diffn(c,6) == g.Rational(0)
-    assert e.diffn(c,5) == g.Rational(120)
+    assert diff(e, c,6) == g.Rational(0)
+    assert diff(e, c,5) == g.Rational(120)
     e=c**g.Rational(2)
     assert e.diff(c) == 2*c
     e=(a*b*c)

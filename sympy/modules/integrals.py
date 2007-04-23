@@ -1,5 +1,6 @@
 from sympy.core import Basic, Symbol, Number, Mul, Pow, log, Add
 from sympy.modules import cos, sin
+from sympy.core.stringPict import stringPict
 
 class IntegralError(Exception):
     pass
@@ -112,6 +113,19 @@ class Integral(Basic):
                 return integral_table[k].subs_dict(r)
 
         raise IntegralError("Don't know how to do this integral. :(")
+    
+    def pretty(self):
+        if self.a is not None:
+            a = stringPict("|")
+            a = stringPict(*a.below("/ %s" % self.a))
+            a = stringPict(*a.top("/ %s" % self.b))
+        else: 
+            a = stringPict("|")
+            a = stringPict(*a.below("/"))
+            a = stringPict(*a.top("/"))
+        a = stringPict( *a.right(" %s d%s" % (self.f.pretty(), self.x) ) )
+        return a
+        
     
 def integrate(f, *args, **kargs):
     """
