@@ -68,4 +68,6 @@ def test_Derivative():
     
 def test_pretty_print():
     assert str( (x**2).pretty() ) == ' 2\nx '
-    assert str( (x**2 + x + 1).pretty()) in ['     2\n1+x+x ']
+    assert str( (x**2 + x + 1).pretty( )) in ['     2\n1+x+x ']
+    assert str( (2*x + exp(x)).pretty() ) in ['     x\n2*x+e ']
+    
