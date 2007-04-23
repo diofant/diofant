@@ -1,5 +1,7 @@
 from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Real, Rational, pi, I
+from sympy.core import Symbol
+
 import decimal
 import math
 
@@ -8,12 +10,12 @@ class sin(Function):
     Usage
     =====
       sin(x) -> Returns the sine of x (measured in radians)
-        
+
     Notes
     =====
-        sin(x) will evaluate automatically in the case x is a 
-        multiple of pi.
-    
+        sin(x) will evaluate automatically in the case x
+        is a multiple of pi, pi/2, pi/3, pi/4 and pi/6.
+
     Examples
     ========
         >>> from sympy import *
@@ -24,14 +26,18 @@ class sin(Function):
         0
         >>> sin(pi)
         0
-        
+        >>> sin(pi/2)
+        1
+        >>> sin(pi/6)
+        1/2
+
     See also
     ========
        L{cos}, L{tan}
-       
+
        External links
        --------------
-         
+
          U{Definitions in trigonometry<http://planetmath.org/encyclopedia/DefinitionsInTrigonometry.html>}
     """
 
@@ -41,23 +47,43 @@ class sin(Function):
     @property
     def is_bounded(self):
         return True
-        
+
     def eval(self):
-        if not self._args.is_number:
-             return self
-        a = 2*self._args / pi
-        if a - int(float(a)) == 0:
-            # arg is a multiple of pi
-            a_mod4 = int(a) % 4
-            if a_mod4 == 0 or a_mod4 == 2:
+        if self._args.is_number:
+            if self._args == 0:
                 return Rational(0)
             else:
-                if a_mod4 % 4 == 1: 
-	                   return Rational(1)
-                elif a_mod4 == 3:
-                    return Rational(-1)
+                a = Symbol('a')
+
+                coeff = self._args.match(a*pi, [a])
+
+                if coeff != None:
+                    arg = coeff [a]
+
+                    if isinstance(arg, int):
+                        return Rational(0)
+                    elif isinstance(arg, Rational):
+                        if arg.is_integer:
+                            return Rational(0)
+                        else:
+                            if arg.q == 2:
+                                result = Rational(1)
+                            elif arg.q == 3:
+                                result = Rational(1, 2)*sqrt(3)
+                            elif arg.q == 4:
+                                result = Rational(1, 2)*sqrt(2)
+                            elif arg.q == 6:
+                                result = Rational(1, 2)
+                            else:
+                                return self
+
+                            if (arg.p / arg.q) % 2 == 1:
+                                result *= -1
+
+                            return result
+
         return self
-    
+
     def evalf(self, precision=28):
         if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
