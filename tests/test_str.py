@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, Rational, Derivative, sqrt
+from sympy import Symbol, Rational, Derivative, sqrt, exp
 
 from sympy.core.stringPict import *
 
