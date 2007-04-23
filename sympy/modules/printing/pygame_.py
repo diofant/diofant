@@ -49,8 +49,8 @@ def tex2png(eq,pygame):
     tex_preamble = r"""\nopagenumbers
 """
 
-    #tmp1 = tempfile.mktemp()
-    tmp1 = '/tmp/x.tex'
+    x = tempfile.mktemp()
+    tmp1 = '%s.tex'%x
 
     # create a LaTeX document and insert equations
     f = open(tmp1,'w')
@@ -72,15 +72,15 @@ def tex2png(eq,pygame):
     # Magnification is set to 1200
     # currently, the dvipng is broken on debian.....
     cmd = "dvipng -T tight -x 1728 -z 9 -bg transparent " \
-    + "-o x.png /tmp/x.dvi" 
+    + "-o %s.png %s.dvi" % (x,x)
     pexpect.run(cmd) 
-    image = pygame.image.load("/tmp/x.png")
+    image = pygame.image.load("%s.png" % x)
 
     #remove temporary files
-    #os.remove("/tmp/x.tex")
-    #os.remove("/tmp/x.dvi")
-    #os.remove("/tmp/x.log")
-    #os.remove("/tmp/x.png")
+    os.remove("%s.tex" % x)
+    os.remove("%s.dvi" % x)
+    os.remove("%s.log" % x)
+    os.remove("%s.png" % x)
     os.chdir(cwd)
 
     return image
