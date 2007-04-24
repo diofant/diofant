@@ -72,7 +72,7 @@ def run_ipython_interpreter():
     ### create some magic commands
     
     def pretty_print(self, arg):
-        self.api.ex("print unicode((%s).pretty())" % arg)
+        self.api.ex("print str((%s).pretty())" % arg)
         
     api.expose_magic("pprint", pretty_print)
 
