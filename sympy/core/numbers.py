@@ -174,7 +174,7 @@ class Real(Number):
         #evalf() should return either a float or an exception
         return self.num
     
-    def pretty(self):
+    def __pretty__(self):
         if self.num < 0:
             f = "(%s)"
         else:
@@ -335,7 +335,7 @@ class Rational(Number):
  
         return None
     
-    def pretty(self):
+    def __pretty__(self):
         if self.q == 1: return prettyForm(str(self.p), prettyForm.ATOM)
         else: return prettyForm(str(self.p))/prettyForm(str(self.q))
  
@@ -477,7 +477,7 @@ class ConstPi(Constant):
     def __str__(self):
         return "pi"
     
-    def pretty(self):
+    def __pretty__(self):
         return prettyForm("pi", unicode=u"\u03C0", binding=prettyForm.ATOM)
 
 pi=ConstPi()

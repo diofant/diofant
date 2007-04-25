@@ -263,6 +263,6 @@ class Pow(Basic):
                 return addmatches(r1,r2)
         return None
     
-    def pretty(self):
+    def __pretty__(self):
         a, b = self._args
-        return a.pretty()**b.pretty()
+        return a.__pretty__()**b.__pretty__()

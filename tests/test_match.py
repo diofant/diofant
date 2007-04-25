@@ -1,7 +1,8 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol, cos, Function, Derivative, exp
+from sympy import Rational, Symbol, cos, Function, exp
+from sympy.core.functions import Derivative
 
 from sympy.core.functions import diff
 

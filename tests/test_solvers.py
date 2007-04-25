@@ -1,8 +1,9 @@
 import sys
 sys.path.append(".")
 
-from sympy import Rational, Symbol, cos, solve, dsolve, Function, Derivative, \
+from sympy import Rational, Symbol, cos, solve, dsolve, Function, diff, \
         log, sin
+from sympy.core.functions import Derivative
 
 def test_linear():
     x = Symbol("x")
@@ -15,18 +16,16 @@ def test_quadratic():
     assert solve(((x-1)*(x-1)).expand(), x) == [1]
 
 def test_ODE_first_order():
-    class f(Function):
-        pass
     x = Symbol("x")
-    assert dsolve(3*Derivative(f(x),x)-1, [f(x)]) == x/3+Symbol("C1")
-    assert dsolve(x*Derivative(f(x),x)-1, [f(x)]) == log(abs(x))+Symbol("C1")
+    f = Function(x)
+    assert dsolve(3*diff(f, x) -1, f) == x/3+Symbol("C1")
+    assert dsolve(x*diff(f, x) -1, f) == log(abs(x))+Symbol("C1")
 
 def test_ODE_second_order():
-    class f(Function):
-        pass
     x = Symbol("x")
+    f = Function(x)
     C1, C2 = Symbol("C1"), Symbol("C2")
-    assert dsolve(Derivative(Derivative(f(x),x),x)+9*f(x), [f(x)]) == \
+    assert dsolve(Derivative(Derivative(f,x),x)+9*f, [f]) == \
         sin(3*x)*C1+cos(3*x)*C2
 
 def test_ODE_1():

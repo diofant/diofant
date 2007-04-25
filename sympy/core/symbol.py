@@ -96,7 +96,7 @@ class Symbol(Basic):
             return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
         return None
     
-    def pretty(self): 
+    def __pretty__(self): 
         return prettyForm(self.name, binding=prettyForm.ATOM)
 
 

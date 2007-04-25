@@ -564,7 +564,7 @@ class Basic(object):
                 r2.update(r)
         return r2
 
-    def pretty(self):
+    def __pretty__(self):
         """Make representation as prettyForm: to be overridden
         for everything that looks better in 2D.
         """

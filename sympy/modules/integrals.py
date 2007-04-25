@@ -114,7 +114,7 @@ class Integral(Basic):
 
         raise IntegralError("Don't know how to do this integral. :(")
     
-    def pretty(self):
+    def __pretty__(self):
         if self.a is not None:
             a = stringPict("|")
             a = stringPict(*a.below("/ %s" % self.a))
@@ -123,7 +123,7 @@ class Integral(Basic):
             a = stringPict("|")
             a = stringPict(*a.below("/"))
             a = stringPict(*a.top("/"))
-        a = stringPict( *a.right(" %s d%s" % (self.f.pretty(), self.x) ) )
+        a = stringPict( *a.right(" %s d%s" % (self.f.__pretty__(), self.x) ) )
         return a
         
     

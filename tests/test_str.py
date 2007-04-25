@@ -2,9 +2,10 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, Rational, Derivative, sqrt, exp
+from sympy import Symbol, Rational, sqrt, exp, diff, integrate, log
 
 from sympy.core.stringPict import *
+from sympy.modules.printing.pretty import pretty
 
 x = g.Symbol('x')
 y = g.Symbol('y')
@@ -63,11 +64,13 @@ def test_bug5():
 
 def test_Derivative():
     x = Symbol("x")
-    e = Derivative(x**2, x)
+    e = diff(x**2, x, evaluate=False)
     assert str(e) == "(x**2)'"
     
 def test_pretty_print():
-    assert str( (x**2).pretty() ) == ' 2\nx '
-    assert str( (x**2 + x + 1).pretty( )) in ['     2\n1+x+x ']
-    assert str( (2*x + exp(x)).pretty() ) in ['     x\n2*x+e ',' x    \ne +2*x']
+    assert pretty( (x**2) ) == ' 2\nx '
+    assert pretty( (x**2 + x + 1)) in ['     2\n1+x+x ']
+    assert pretty( (2*x + exp(x)) ) in ['     x\n2*x+e ',' x    \ne +2*x']
+    f = integrate(log(x), x, evaluate=False)
+    assert pretty( f ) in ['/          \n| log(x) dx\n/          ']
     

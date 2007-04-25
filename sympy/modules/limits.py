@@ -392,8 +392,8 @@ class Limit(Basic):
         s += "</apply>"
         return s
     
-    def print_pretty(self):
-         e, x, t = [a.print_pretty() for a in (self.e,self.x,self.x0)]
+    def __pretty__(self):
+         e, x, t = [a.__pretty__() for a in (self.e,self.x,self.x0)]
          return StringPict('lim').below(StringPict.next(x, '->', t)) \
                  .right(' ', e)
 

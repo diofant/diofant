@@ -438,8 +438,8 @@ class Mul(Pair):
         else:
             return e
 
-    def pretty(self):
-        return prettyForm.__mul__(*[arg.pretty() for arg in self._args])
+    def __pretty__(self):
+        return prettyForm.__mul__(*[arg.__pretty__() for arg in self._args])
 
 class Add(Pair):
     """
@@ -651,8 +651,8 @@ class Add(Pair):
             #implement the class Order
             return (a.series(sym,n)+b.series(sym,n))
         
-    def pretty(self):
-        return prettyForm.__add__(*[arg.pretty() for arg in self._args])
+    def __pretty__(self):
+        return prettyForm.__add__(*[arg.__pretty__() for arg in self._args])
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.

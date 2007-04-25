@@ -92,7 +92,7 @@ class Function(Basic):
         """
         raise NotImplementedError
     
-    def pretty(self):
+    def __pretty__(self):
         """
         Function application.
         Some functions are optimized to omit parentheses.
@@ -141,8 +141,8 @@ class exp(Function):
         decimal.getcontext().prec = precision - 2        
         return +s
     
-    def pretty(self):
-        return prettyForm('e', binding=prettyForm.ATOM)**self._args.pretty()
+    def __pretty__(self):
+        return prettyForm('e', binding=prettyForm.ATOM)**self._args.__pretty__()
 
 class log(Function):
     """Return the natural logarithm (base e) of x

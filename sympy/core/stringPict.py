@@ -294,14 +294,14 @@ class prettyForm(stringPict):
         if function in prettyForm.simpleFunctions:
             #simple function: use only space if possible
             assert len(args)==1, "Simple function %s must have 1 argument"%function
-            arg = args[0].pretty()
+            arg = args[0].__pretty__()
             if arg.binding <= prettyForm.DIV:
                 #optimization: no parentheses necessary
                 return prettyForm(binding=prettyForm.FUNC, *arg.left(function+' '))
         argumentList = []
         for arg in args:
             argumentList.append(',')
-            argumentList.append(arg.pretty())
+            argumentList.append(arg.__pretty__())
         argumentList = stringPict(*stringPict.next(*argumentList[1:]))
         argumentList = stringPict(*argumentList.parens())
         return prettyForm(binding=prettyForm.ATOM, *argumentList.left(function))

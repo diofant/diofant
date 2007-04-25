@@ -51,6 +51,8 @@ from sympy.core.functions import Function, exp, log, ln, sqrt, sign, diff
 from sympy.modules import *
 from sympy.modules.polynomials import ispoly, get_poly, coeff
 from sympy.modules.integrals import integrate
+from sympy.modules.solvers import solve, dsolve
+from sympy.modules.printing.pretty import pretty_print, pprint, pretty
 """
 
 init_code = """
@@ -71,10 +73,10 @@ def run_ipython_interpreter():
     
     ### create some magic commands
     
-    def pretty_print(self, arg):
-        self.api.ex("print str((%s).pretty())" % arg)
+    #def pretty_print(self, arg):
+    #    self.api.ex("print str((%s).__pretty__())" % arg)
         
-    api.expose_magic("pprint", pretty_print)
+    #api.expose_magic("pprint", pretty_print)
 
     # Now start an embedded ipython.
     ipshell(welcome_msg_ipython)
@@ -111,7 +113,7 @@ the "ipython" package and start isympy again.\n"""
             readline.write_history_file(histfile)
 	
     sh = HistoryConsole()
-    sh.runcode("from sympy import *")
+    sh.runcode(basic_import_code)
     sh.runcode("x = Symbol('x')")
     sh.runcode("y = Symbol('y')")
     sh.runcode("z = Symbol('z')")
