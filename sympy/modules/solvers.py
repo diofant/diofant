@@ -81,6 +81,9 @@ def dsolve(eq, funcs):
         >>> x = Symbol('x')
         >>> f = Function(x)
         >>> dsolve(Derivative(Derivative(f,x),x)+9*f, f)
+        C2*cos(3*x)+C1*sin(3*x)
+
+        #this is probably returned on amd64
         sin(3*x)*C1+cos(3*x)*C2
 
     """

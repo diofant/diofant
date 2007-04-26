@@ -115,6 +115,21 @@ class Pair(Basic):
         return True
 
     def match(self, pattern, syms=None, exclude = "None"):
+        """
+        Imagine that we are matching (3*x**2).match(a*x,[a])
+
+        The optional parameter "exclude" is a list of variables ("x") that we
+        don't want to occur in the "a". This way, the user can specify, what
+        kind of matches he is interested in. The default behavior (if the user
+        doesn't specify this argument, i.e. exclude = "None") is:
+
+            1)if there is just one more variable besides the matched ones, for
+            example "x", then exclude = x.
+
+            2)otherwise exclude=None, which means, that 
+            Rational(2).match(a*x,[a],exlude = None) returns {a: 2/x}
+
+        """
         #print self, pattern, syms
         from sympy.core.symbol import Symbol
         from sympy.core.numbers import Constant
