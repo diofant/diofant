@@ -11,6 +11,7 @@ def print_pygame(st):
     except ImportError:
         print "Pygame is not installed. In Debian, install the " \
             "python-pygame package."
+        return
 
     st = print_latex(st)
 
