@@ -21,9 +21,7 @@ class Pair(Basic):
         for arg in args:
             assert isinstance(arg, Basic)
         self._args = args
-
-    def __lt__(self, a):
-        return self.evalf() < a
+        
     
     @property
     def mathml(self):
@@ -267,7 +265,7 @@ class Mul(Pair):
             return x*y, True
         xbase,xexp = Mul.get_baseandexp(x)
         ybase,yexp = Mul.get_baseandexp(y)
-        if xbase.isequal(ybase):
+        if xbase == ybase:
             #this whole "if" is to correctly cooperate with Pow.eval()
             #so we don't get infinite recursion. It's not elegant, but it
             #works.
@@ -350,9 +348,10 @@ class Mul(Pair):
                 if ok: return z
         a=c_part+nc_part
         #put the number in front of all the other args
-        if n != 1: a=[n]+a
+        if n != 1: 
+            a = [n]+a
         if len(a) > 1:
-            #construct self again, but evaluated this time
+            #construct self again, but non-evaluated this time
             return Mul(evaluate=False, *a)
         elif len(a) == 1:
             return a[0]

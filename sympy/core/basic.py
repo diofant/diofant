@@ -1,5 +1,7 @@
 """Base class for all objects in sympy"""
 
+from sympy.core.hashing import mhash
+
 class AutomaticEvaluationType(type):
     """Metaclass for all objects in sympy
      It evaluates the object just after creation, so that for example
@@ -167,7 +169,7 @@ class Basic(object):
         """
         if a is None: 
             return False
-        return hash(self) == hash(self.sympify(a))
+        return self.hash() == self.sympify(a).hash()
         
     def __ne__(self,a):
         return not self.__eq__(a)
@@ -281,17 +283,23 @@ class Basic(object):
             return a
         
     def __hash__(self):
-        return self.hash()
+        return hash(str(self.hash()))
+        # needed by sets and other python functions
+        # we do not return .hash() since this is a long
     
     def hash(self):
         if self._mhash: 
-            return self._mhash
-        self._mhash = hash(str(self))
-        return self._mhash
-    
-        
-    def isequal(self,a):
-        return self.hash() == (self.sympify(a)).hash()
+            return self._mhash.value
+        self._mhash = mhash()
+        self._mhash.addstr(self.__class__.__name__)
+        for item in self[:]:
+            if isinstance(item, Basic):
+                self._mhash.add(item.hash())
+            else:
+                self._mhash.addstr(str(item))
+        if self.is_dummy:
+            self._mhash.value += 1
+        return self._mhash.value
         
     @staticmethod
     def cmphash(a,b):
@@ -313,7 +321,7 @@ class Basic(object):
             >>> from sympy import *
             >>> x = Symbol('x')
             >>> sin(x).series(x, 5)
-            x-1/6*x**3+1/120*x**5
+            1/120*x**5+x-1/6*x**3
         """
         from numbers import Rational
         from symbol import Symbol
@@ -544,12 +552,15 @@ class Basic(object):
         if len(syms) == 1:
             if pattern == syms[0]:
                 return {syms[0]: self}
+        if isinstance(pattern, Symbol):
+            # case pattern is just a symbol: there's nothing to match
+            return {pattern: self}
         if type(self) != type(pattern):
             from addmul import Mul
             from numbers import Rational
             if isinstance(pattern, Mul):
                 return Mul(Rational(1),self,
-                        evaluate = False).match(pattern,syms)
+                        evaluate=False).match(pattern,syms)
             return None
         r2 = None
         #print "aaaa",self,pattern

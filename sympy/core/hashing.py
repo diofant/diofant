@@ -7,16 +7,16 @@ usage:
     >>> h.addstr("hey man!")
     >>> h.addfloat(45.3)
     >>> print h.value
-    1550928569
+    323161024673821609718502880993101779484
     
 mhash.value contains the hash value which is generally a long int, that
 depends on the order of objects added. 
 """
 
 def mhash():
-    #return Mmd5()
+    return Mmd5()
     #return Mbernstein()
-    return Mpython()
+    #return Mpython()
 
 class HashAlgorithm(object):
     """Abstract class for varios implementatios of a hash algorithm"""

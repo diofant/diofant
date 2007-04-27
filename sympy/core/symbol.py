@@ -1,6 +1,7 @@
 
-from basic import Basic
-from numbers import Rational
+from sympy.core.hashing import mhash
+from sympy.core.basic import Basic
+from sympy.core.numbers import Rational
 from sympy.core.stringPict import prettyForm
 
 dummycount = 0
@@ -57,15 +58,25 @@ class Symbol(Basic):
         else:
             # if x is dummy
             return str(self.name + '__' + str(self.dummy_num))
+
+    def hash(self):
+        if self._mhash: 
+            return self._mhash.value
+        self._mhash = mhash()
+        self._mhash.addstr(self.__class__.__name__)
+        self._mhash.addstr(self.name)
+        if self.is_dummy:
+            global dummycount
+            self._mhash.value += dummycount
+            dummycount += 1
+        return self._mhash.value
     
-    def __getitem__(self, iter):
-        return (self,)[iter]
 
     def diff(self,sym):
         if not self.is_commutative:
             raise NotImplementedError("Differentiation of non-commutative objects. " + \
                                       + "Doesn't have a meaning.")
-        if self.isequal(sym):
+        if self == sym:
             return Rational(1)
         else:
             return Rational(0)

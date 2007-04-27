@@ -34,6 +34,7 @@ class Number(Basic):
         from functions import abs_
         return abs_(self)
     
+    
     def diff(self,sym):
         return Rational(0)
     
@@ -117,6 +118,7 @@ class Real(Number):
             self.num = num.evalf()
         else:
             self.num = decimal.Decimal(str(float(num)))
+        self._args = [self.num]
         
     def __str__(self):
         if self.num < 0:
@@ -180,6 +182,17 @@ class Real(Number):
         else:
             f = "%s"
         return f % (str(self.num))
+    
+    def __eq__(self, a):
+        """this is overriden because by default, a python int get's converted
+        to a Rational, so things like Real(1) == 1, would return false
+        """
+        try:
+            return decimal.Decimal(str(a)) == self.num
+        except:
+            return False
+            
+            
 
 
 class Rational(Number):
@@ -215,6 +228,8 @@ class Rational(Number):
         c = self.gcd(p,q)
         self.p = p/c*s
         self.q = q/c
+        self._args = [self.p,self.q] # needed by .hash and others. we should move [p,q] to _args
+                        # and then create properties p and q
         
     def sign(self):
         return sign(self.p)*sign(self.q)

@@ -122,7 +122,7 @@ class cos(Function):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> cos(x**2).diff(x)
-        -2*x*sin(x**2)
+        -2*sin(x**2)*x
         >>> cos(1).diff(x)
         0
         >>> cos(pi)

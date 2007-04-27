@@ -23,12 +23,13 @@ def test_poly_str():
     assert str(x-y) in ["x-y", "-y+x"]
     assert str(2+-x) == "2-x"
     assert str(x-2) in ["x-2","-2+x"]
-    assert str(x-y-z-w) in ["x-y-z-w","-w-y-z+x","x-w-y-z", "-w+x-y-z", "-z-w-y+x"]
+    assert str(x-y-z-w) in ["x-y-z-w","-w-y-z+x","x-w-y-z", "-w+x-y-z", "-z-w-y+x", 
+                            "-y+x-w-z"]
     assert str(x-y-z-w) in ["-w-y-z+x","x-w-y-z","-w+x-z-y",
             "-y-w-z+x","-y+x-z-w","-y+x-w-z", "-w+x-y-z", "-z-w-y+x"]
     assert str(x-z*y**2*z*w) in ["-z**2*y**2*w+x", "x-w*y**2*z**2",
             "-y**2*z**2*w+x","x-w*z**2*y**2","x-y**2*z**2*w","x-y**2*w*z**2",
-            "x-z**2*y**2*w", "-w*z**2*y**2+x", "-w*y**2*z**2+x"]
+            "x-z**2*y**2*w", "-w*z**2*y**2+x", "-w*y**2*z**2+x", "x-z**2*w*y**2"]
 
 def test_bug1():
     e=(x-1*y*x*y)

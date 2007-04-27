@@ -11,7 +11,7 @@ def testequal():
     e2=2*a*b
     e3=a**3*b**2
     e4=a*b+b*a
-    assert not e1.isequal(e2)
+    assert not e1 == e2
     assert not e1==e2
     assert e1!=e2
     assert e2==e4

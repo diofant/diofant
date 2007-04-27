@@ -173,9 +173,9 @@ def integrate(f, *args, **kargs):
       >>> integrate(y, y)
       1/2*y**2
       >>> integrate(y*x, y)
-      1/2*y**2*x
+      1/2*x*y**2
       >>> integrate(y*x, x, y)
-      1/4*y**2*x**2
+      1/4*x**2*y**2
       >>> integrate(x*y**2 , (x,1,2), y)
       1/2*y**3
       >>> integrate(x , (x,1,2), evaluate=False)

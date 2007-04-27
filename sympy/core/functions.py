@@ -43,7 +43,7 @@ class Function(Basic):
     def subs(self, old, new):
         e = Basic.subs(self,old,new)
         #if e==self:
-        if e.isequal(self):
+        if e == self:
             return (type(self)(self._args.subs(old,new)))
         else:
             return e
@@ -335,7 +335,7 @@ class Derivative(Basic):
     def subs(self, old, new):
         e = Basic.subs(self,old,new)
         #if e==self:
-        if e.isequal(self):
+        if e == self:
             return Derivative(self[0].subs(old,new), self[1])
         else:
             return e

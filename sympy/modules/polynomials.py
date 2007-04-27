@@ -37,6 +37,9 @@ def ispoly(p, var=None):
        L{get_poly}, L{coeff}
        
     """
+    if isinstance(var, Basic):
+        # if the var argument is not a tuple or list
+        var = [var] # so we can iterate over it
     try:
         #basically, the polynomial is whatever we can convert using
         #the get_poly(). See it's docstring for more info.
