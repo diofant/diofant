@@ -110,8 +110,6 @@ def dsolve(eq, funcs):
         t = x*exp(-f)
         tt = (a*diff(t, x, 2)/t).expand()
         r = eq.match(tt, [a])
-        #there is a bug in match(), it should actually return this:
-        r = {a: -Rational(1)/2}
         #check, that we've rewritten the equation correctly:
         assert ( diff(t, x,2)*r[a]/t ).expand() == eq
         return solve_ODE_1(f, x)
