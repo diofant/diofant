@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 from sympy import Rational, Symbol, cos, solve, dsolve, Function, diff, \
-        log, sin
+        log, sin, exp
 from sympy.core.functions import Derivative
 
 def test_linear():
@@ -35,6 +35,11 @@ def test_ODE_1():
 
     e = Derivative(l(r),r)/r+Derivative(Derivative(l(r),r),r)/2- \
         Derivative(l(r),r)**2/2
+
+    sol = dsolve(e, [l(r)])
+    assert (e.subs(l(r), sol).doit()).expand() == 0
+
+    e = e*exp(-l(r))/exp(l(r))
 
     sol = dsolve(e, [l(r)])
     assert (e.subs(l(r), sol).doit()).expand() == 0
