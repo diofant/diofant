@@ -168,7 +168,10 @@ class Pair(Basic):
         r2 = dict()
         for p in pat:
             for o in ops:
-                r = o.match(p,syms)
+                if isinstance(o,Pair):
+                    r = o.match(p,syms, exclude = exclude)
+                else:
+                    r = o.match(p,syms)
                 #print o,p,syms,"->",r
                 if r!= None:
                     ops.remove(o)
