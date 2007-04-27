@@ -211,9 +211,4 @@ def test_behavior2():
     e = 3*x**2+3*x+6
     p = x
     assert (e/p).expand().match(a*x**2+a*x+2*a, [a]) == None
-    #this doesn't work yet:
     assert (e/p).expand().match(a*x**2+a*x+2*a, [a], exclude=None) == {a: 3/x}
-    
-    #The problem is in that 
-    #a*x**2 matches everything including 6, but then the a*x matches something
-    #else giving a different a. This needs to be fixed in the Pair.match()
