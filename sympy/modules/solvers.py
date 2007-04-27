@@ -110,9 +110,10 @@ def dsolve(eq, funcs):
         t = x*exp(-f)
         tt = (a*diff(t, x, 2)/t).expand()
         r = eq.match(tt, [a])
-        #check, that we've rewritten the equation correctly:
-        assert ( diff(t, x,2)*r[a]/t ).expand() == eq
-        return solve_ODE_1(f, x)
+        if r:
+            #check, that we've rewritten the equation correctly:
+            assert ( diff(t, x,2)*r[a]/t ).expand() == eq
+            return solve_ODE_1(f, x)
 
     raise NotImplementedError("Sorry, can't solve it (yet)")
 

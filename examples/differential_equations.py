@@ -12,7 +12,7 @@ def eq1():
     e = relativity.Rmn.dd(0,0)
     e = e.subs(relativity.nu(r), -relativity.lam(r))
     print e
-    #print dsolve(e, [relativity.lam(r)])
+    print dsolve(e, [relativity.lam(r)])
 
 def eq2():
     #class l(Function): pass
@@ -36,5 +36,5 @@ def eq2():
     print e
     print dsolve(e, [relativity.lam(r)])
 
-#eq1()
-eq2()
+eq1()
+#eq2()
