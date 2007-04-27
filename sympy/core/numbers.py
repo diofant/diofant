@@ -448,10 +448,10 @@ class ConstPi(Constant):
         pi
 
         >>> pi()
-        3.14159265358979323846264338
+        3.141592653589793238462643383
 
-        >>> pi(precision=200)
-        3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303820
+        >>> pi(precision=109)
+        3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148087
 
     """
     
@@ -460,34 +460,48 @@ class ConstPi(Constant):
                        is_commutative = True, 
                        is_real = True, 
                        )
-    
-    def evalf(self, precision=28):
-        """Compute Pi to the current precision.
 
-        >>> print pi.evalf()
-        3.14159265358979323846264338
+    def evalf(self, precision=28):
+        """
+        Compute PI to artibtrary precision using series developed by
+        Chudnovsky brothers. This series converges extraordinarily
+        rapidly, giving 14 decimal places per single iteration. 
         
         """
-        _pi_str = '3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068'
-        if precision <= 100:
-            # cache for small precision 
-            return Real(_pi_str[:precision])
-        #for arbitrary precision, we use series
-        # FIXME: better algorithms are known
-        decimal.getcontext().prec = precision + 2  # extra digits for intermediate steps
-        three = decimal.Decimal(3)      # substitute "three=3.0" for regular floats
-        lasts, t, s, n, na, d, da = 0, three, 3, 1, 0, 0, 24
-        while s != lasts:
-            lasts = s
-            n, na = n+na, na+8
-            d, da = d+da, da+32
-            t = (t * n) / d
-            s += t
-        decimal.getcontext().prec -= 2
-        return Real(+s)               # unary plus applies the new precision
-        # this was a recipe taken from http://docs.python.org/lib/decimal-recipes.html
-        # don't know how fiable it is
+        
+        A, B, C = 13591409, 545140134, 262537412640768000
+        D = 68925893036108889235415629824000000
+        
+        decimal.getcontext().prec = precision + 14
+        
+        r = A / decimal.Decimal(C).sqrt()
 
+        if (precision > 14):
+            n = precision / 15 + 1
+        
+            b, c = B, C**3
+            i, u, v, s = 1, 7, 4, -1
+            f_6, f_3, f_1 = 720, 6, 1
+
+            while i <= n:
+                r += (s * f_6 * (A + b)) / (f_1**3 * f_3 * decimal.Decimal(c).sqrt())
+
+                for k in range(u, u+6):
+                    f_6 *= k
+                
+                for k in range(v, v+3):
+                    f_3 *= k
+
+                u, v = u+6, v+3
+                b, i = b+B, i+1
+                
+                c, s, f_1 = c*D, s*(-1), f_1*i
+                
+        r = 1 / (12 * r)
+                
+        decimal.getcontext().prec -= 14
+
+        return Real(+r) 
 
     def __str__(self):
         return "pi"
