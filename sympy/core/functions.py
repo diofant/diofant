@@ -115,6 +115,9 @@ class exp(Function):
             for x in a:
                 r*=exp(x)
             return r
+        r = exp(self[0].combine())
+        if r!=self:
+            return r
         return exp(a)
         
     def eval(self):
