@@ -69,8 +69,15 @@ gdd=Matrix((
 
 mu = Idx("mu")
 nu = Idx("mu")
+i = Idx("i")
+m = Idx("m")
+k = Idx("k")
+l = Idx("l")
 g = Indexed(Symbol("A"), [mu,nu])
+Chr = g[i.up, m.up]/2 * (g[m.dn, k.dn].diff(l.up) + g[m.dn,l.dn].diff(k.up) \
+        - g[k.dn, l.dn].diff(m.up))
 #G = g.uu(i,m)/2 * (g.dd(m,k).diff(x[l])+g.dd(m,l).diff(x[k]) \
 #                    - g.dd(k,l).diff(x[m]))
 
 print g
+print Chr
