@@ -458,7 +458,7 @@ class Mul(Pair):
             return log(a[0]**b)
         if isinstance(b, log):
             return log(b[0]**a)
-        return self
+        return a*b
         
     def subs(self,old,new):
         a,b = self.getab()
@@ -659,6 +659,12 @@ class Add(Pair):
         for x in self._args:
             d += self.tryexpand(x)
         return d
+
+    def combine(self):
+        r = 0
+        for x in self:
+            r+=x.combine()
+        return r
     
     def subs(self,old,new):
         d = Rational(0)

@@ -13,6 +13,7 @@ def eq1():
     r = Symbol("r")
     e = relativity.Rmn.dd(0,0)
     e = e.subs(relativity.nu(r), -relativity.lam(r))
+    print e.combine()
     print dsolve(e, [relativity.lam(r)])
 
 def eq2():

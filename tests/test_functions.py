@@ -165,3 +165,8 @@ def test_combine():
     assert (2*log(x)).combine() == log(x**2)
     assert exp(2*log(x)) != x**2
     assert exp(2*log(x)).combine() == x**2
+
+    assert exp(x)*exp(-x)-1 !=0
+    assert (exp(x)*exp(-x)-1).combine() == 0
+
+    assert (2*exp(x)*exp(-x)).combine() == 2
