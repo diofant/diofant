@@ -78,6 +78,9 @@ class Infinity(Number):
     def __latex__(self):
         return "\infty"
     
+    def __pretty__(self):
+        return "oo"
+    
     def sign(self):
         return self._sign
     

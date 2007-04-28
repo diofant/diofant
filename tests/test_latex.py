@@ -22,3 +22,4 @@ def test_latex_integrals():
     
 def test_latex_limits():
     assert latex(limit(x, x, oo, evaluate=False)) == "$\lim_{x \to \infty}x$"
+    

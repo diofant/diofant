@@ -67,11 +67,5 @@ def test_Derivative():
     x = Symbol("x")
     e = diff(x**2, x, evaluate=False)
     assert str(e) == "(x**2)'"
-    
-def test_pretty_print():
-    assert pretty( (x**2) ) == ' 2\nx '
-    assert pretty( (x**2 + x + 1)) in ['     2\n1+x+x ']
-    assert pretty( (2*x + exp(x)) ) in ['     x\n2*x+e ',' x    \ne +2*x']
-    f = integrate(log(x), x, evaluate=False)
-    assert pretty( f ) in ['/          \n| log(x) dx\n/          ']
+
     

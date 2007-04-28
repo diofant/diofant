@@ -2,7 +2,7 @@ from basic import Basic
 from symbol import Symbol
 from numbers import Rational, Real, ImaginaryUnit
 from functions import log, exp
-from sympy.core.stringPict import prettyForm
+from sympy.core.stringPict import prettyForm, stringPict
 
 
 class pole_error(ZeroDivisionError):
@@ -58,6 +58,18 @@ class Pow(Basic):
         else:
             f += "%s"
         return f % (str(self.base), str(self.exp))
+    
+        
+    def __pretty__(self):
+        if self.exp == Rational(1,2): # if it's a square root
+            l_arg = len(self.base.__pretty__())
+            s =  stringPict("\\")
+            s = stringPict(*s.right("/"))
+            s = stringPict(*s.right(" %s" % str(self.base.__pretty__()) ))
+            s = stringPict(*s.top("    __" + "_"*l_arg))
+            return s
+        a, b = self._args
+        return a.__pretty__()**b.__pretty__()
     
     
     def __latex__(self):
@@ -288,9 +300,4 @@ class Pow(Basic):
             if r2!=None:
                 return addmatches(r1,r2)
         return None
-    
-    def __pretty__(self):
-        if self.exp == Rational(1,2): # if it's a square root
-            pass
-        a, b = self._args
-        return a.__pretty__()**b.__pretty__()
+
