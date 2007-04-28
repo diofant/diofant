@@ -108,7 +108,14 @@ class exp(Function):
         return exp(self._args)
         
     def expand(self):
-        return exp(self._args.expand())
+        from addmul import Add
+        a = self[0].expand()
+        if isinstance(a, Add):
+            r = 1
+            for x in a:
+                r*=exp(x)
+            return r
+        return exp(a)
         
     def eval(self):
         arg = self._args

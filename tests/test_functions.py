@@ -77,8 +77,11 @@ def test_exp_bug():
 
 def test_exp_expand():
     x = Symbol("x")
+    y = Symbol("y")
     e = exp(log(Rational(2))*(1+x)-log(Rational(2))*x)
     assert e.expand()==2
+    assert exp(x+y) != exp(x)*exp(y)
+    assert exp(x+y).expand() == exp(x)*exp(y)
 
 def test_pi():
     assert cos(pi)==-1
