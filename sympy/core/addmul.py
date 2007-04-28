@@ -448,12 +448,16 @@ class Mul(Pair):
             return a*b
 
     def combine(self):
-        from functions import exp
+        from functions import exp, log
         a,b = self.getab()
         a = a.combine()
         b = b.combine()
         if isinstance(a, exp) and isinstance(b, exp):
             return exp(a[0]+b[0])
+        if isinstance(a, log):
+            return log(a[0]**b)
+        if isinstance(b, log):
+            return log(b[0]**a)
         return self
         
     def subs(self,old,new):
