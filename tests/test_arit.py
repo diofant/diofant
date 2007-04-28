@@ -216,4 +216,4 @@ def test_ratsimp():
     #assert e.ratsimp() == -y/(6*x)
     e = -x-y-(x+y)**(-1)*y**2+(x+y)**(-1)*x**2
     assert e != -2*y
-    #assert e.ratsimp() == -2*y
+    assert e.ratsimp() == -2*y
