@@ -698,6 +698,23 @@ class Add(Pair):
         for x in self:
             r+=x.combine()
         return r
+
+    def ratsimp(self):
+        def get_num_denum(x):
+            """Matches x = a/b and returns a/b."""
+            from symbol import Symbol
+            a = Symbol("a", is_dummy = True)
+            b = Symbol("b", is_dummy = True)
+            r = x.match(a/b,[a,b])
+            if len(r) == 2:
+                return r[a],r[b]
+            return x, 1
+        x,y = self.getab()
+        a,b = get_num_denum(x.ratsimp())
+        c,d = get_num_denum(y.ratsimp())
+        num = a*d+b*c
+        denum = b*d
+        return num/denum
     
     def subs(self,old,new):
         d = Rational(0)

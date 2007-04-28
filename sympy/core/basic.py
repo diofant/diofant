@@ -428,6 +428,9 @@ class Basic(object):
     def combine(self):
         return self
 
+    def ratsimp(self):
+        return self
+
     def conjugate(self):
         """Returns a  complex conjugate of self. 
         
