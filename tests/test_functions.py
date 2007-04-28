@@ -147,3 +147,8 @@ def test_derivative_linearity():
     assert Derivative(8*n(x), x) != 7*Derivative(n(x), x)
     assert Derivative(8*n(x)*x, x) == 8*Derivative(x*n(x), x)
     assert Derivative(8*n(x)*y*x, x) == 8*y*Derivative(x*n(x), x)
+
+def test_combine():
+    x = Symbol("x")
+    assert exp(x)*exp(-x) != 1
+    assert (exp(x)*exp(-x)).combine() == 1

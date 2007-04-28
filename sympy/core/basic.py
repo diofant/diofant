@@ -415,6 +415,9 @@ class Basic(object):
     def expand(self):
         return self
 
+    def combine(self):
+        return self
+
     def conjugate(self):
         """Returns a  complex conjugate of self. 
         

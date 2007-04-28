@@ -446,6 +446,15 @@ class Mul(Pair):
             return d
         else:
             return a*b
+
+    def combine(self):
+        from functions import exp
+        a,b = self.getab()
+        a = a.combine()
+        b = b.combine()
+        if isinstance(a, exp) and isinstance(b, exp):
+            return exp(a[0]+b[0])
+        return self
         
     def subs(self,old,new):
         a,b = self.getab()
@@ -521,7 +530,7 @@ class Add(Pair):
         """Pretend that self = a+b and return a,b
         
         in general, self=a+b+c+d+..., but in many algorithms, we 
-        want to ha+ve just 2 arguments to add. Use this function to 
+        want to have just 2 arguments to add. Use this function to 
         simulate this interface. (the returned b = b+c+d.... )
         
         If you want to obtain all the arguments of a given expression, use
