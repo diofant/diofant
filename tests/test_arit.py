@@ -211,9 +211,10 @@ def test_ratsimp():
     assert e != (x+y)/(x*y)
     assert e.ratsimp() == (x+y)/(x*y)
 
-    #e = y/(3*x)-y/(2*x)
-    #assert e != -y/(6*x)
-    #assert e.ratsimp() == -y/(6*x)
     e = -x-y-(x+y)**(-1)*y**2+(x+y)**(-1)*x**2
     assert e != -2*y
     assert e.ratsimp() == -2*y
+
+    e = x/(x+y)+y/(x+y)
+    assert e != 1
+    assert e.ratsimp() == 1
