@@ -36,6 +36,6 @@ def eq4():
     print e
     #print dsolve(e, [relativity.lam(r)])
 
-#eq1()
+eq1()
 #eq2()
-eq4()
+#eq4()

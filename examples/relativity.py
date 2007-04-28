@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 
-from sympy import exp, Symbol, sin, Rational, Derivative, print_latex
+from sympy import exp, Symbol, sin, Rational, Derivative, dsolve
 
 from sympy.core import Basic, Function
 from sympy.modules.matrices import Matrix
@@ -131,6 +131,8 @@ Rmn=Ricci(Riemann(Gamma,X),X)
 
 if __name__ == "__main__":
     #print g
+    print "-"*40
+    print "Christoffel symbols:"
     print Gamma.udd(0,1,0)
     print Gamma.udd(0,0,1)
     print
@@ -148,10 +150,20 @@ if __name__ == "__main__":
     print Gamma.udd(3,1,3)
     print Gamma.udd(3,3,1)
     print "-"*40
+    print "Ricci tensor:"
     print Rmn.dd(0,0)
-    print Rmn.dd(1,1)
+    e =  Rmn.dd(1,1)
+    print e
     print Rmn.dd(2,2)
     print Rmn.dd(3,3)
+    #print
     #print "scalar curvature:"
     #print curvature(Rmn)
-    #print R.print_pygame()
+    print "-"*40
+    print "solve the Einstein's equations:"
+    e = e.subs(nu(r), -lam(r))
+    l =  dsolve(e, [lam(r)])
+    print lam(r)," = ",l
+    metric = gdd.subs(lam(r), l).subs(nu(r),-l)
+    print "metric:"
+    print metric
