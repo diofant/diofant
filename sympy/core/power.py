@@ -216,6 +216,14 @@ class Pow(Basic):
         return Pow(self[0].expand(),self[1].expand())
         return self
 
+    def combine(self):
+        from functions import exp
+        a = self[0].combine()
+        b = self[1].combine()
+        if isinstance(a, exp):
+            return exp(a[0]*b)
+        return self
+
     def evalc(self):
         e=self.expand()
         if e!=self:

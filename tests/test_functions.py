@@ -152,3 +152,9 @@ def test_combine():
     x = Symbol("x")
     assert exp(x)*exp(-x) != 1
     assert (exp(x)*exp(-x)).combine() == 1
+
+    assert exp(x)**2 != exp(2*x)
+    assert (exp(x)**2).combine() == exp(2*x)
+
+    assert exp(x)*exp(-x/2)*exp(-x/2) != 1
+    assert (exp(x)*exp(-x/2)*exp(-x/2)).combine() == 1
