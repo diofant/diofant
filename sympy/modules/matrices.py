@@ -142,6 +142,9 @@ class Matrix(object):
     def expand(self):
         return Matrix(self.lines,self.cols, lambda i,j: self[i,j].expand())
 
+    def combine(self):
+        return Matrix(self.lines,self.cols, lambda i,j: self[i,j].combine())
+
     def subs(self,a,b):
         return Matrix(self.lines,self.cols, lambda i,j: self[i,j].subs(a,b))
 

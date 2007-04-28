@@ -164,6 +164,6 @@ if __name__ == "__main__":
     e = e.subs(nu(r), -lam(r))
     l =  dsolve(e, [lam(r)])
     print lam(r)," = ",l
-    metric = gdd.subs(lam(r), l).subs(nu(r),-l)
+    metric = gdd.subs(lam(r), l).subs(nu(r),-l).combine()
     print "metric:"
     print metric
