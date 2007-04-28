@@ -75,6 +75,9 @@ class Infinity(Number):
                        is_commutative = False, 
                        )
     
+    def __latex__(self):
+        return "\infty"
+    
     def sign(self):
         return self._sign
     

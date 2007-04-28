@@ -48,6 +48,28 @@ class Integral(Basic):
             assert isinstance(args, Basic)
             self.x = args
             self.a , self.b = None, None
+            # todo self[:] ?
+            
+    def __latex__(self):
+        if self.a is None:
+            # if this is an indefinite integral
+            return "\int %s\,d%s" % (self.f.__latex__(), self.x.__latex__())
+        else:
+            return "\int^%s_%s %s\,d%s" % (self.a.__latex__(), self.b.__latex__(), 
+                                           self.f.__latex__(), self.x.__latex__() )
+    
+        
+    def __pretty__(self):
+        if self.a is not None:
+            a = stringPict("|")
+            a = stringPict(*a.below("/ %s" % self.a))
+            a = stringPict(*a.top("/ %s" % self.b))
+        else: 
+            a = stringPict("|")
+            a = stringPict(*a.below("/"))
+            a = stringPict(*a.top("/"))
+        a = stringPict( *a.right(" %s d%s" % (self.f.__pretty__(), self.x) ) )
+        return a
             
     @property
     def mathml(self):
@@ -113,18 +135,6 @@ class Integral(Basic):
                 return integral_table[k].subs_dict(r)
 
         raise IntegralError("Don't know how to do this integral. :(")
-    
-    def __pretty__(self):
-        if self.a is not None:
-            a = stringPict("|")
-            a = stringPict(*a.below("/ %s" % self.a))
-            a = stringPict(*a.top("/ %s" % self.b))
-        else: 
-            a = stringPict("|")
-            a = stringPict(*a.below("/"))
-            a = stringPict(*a.top("/"))
-        a = stringPict( *a.right(" %s d%s" % (self.f.__pretty__(), self.x) ) )
-        return a
         
     
 def integrate(f, *args, **kargs):

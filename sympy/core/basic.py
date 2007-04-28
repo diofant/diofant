@@ -89,6 +89,14 @@ class Basic(object):
     def __radd__(self,a):
         from addmul import Add
         return Add(self.sympify(a), self)
+    
+    def __div__(self,a):
+        from numbers import Rational
+        return self._domul(self,self._dopow(a,Rational(-1)))
+        
+    def __rdiv__(self,a):
+        from numbers import Rational
+        return self._domul(self.sympify(self) ** Rational(-1), self.sympify(a))
         
     def __getattr__(self, name):
         if self._assumptions.has_key(name):
@@ -148,14 +156,13 @@ class Basic(object):
         
     def __rmul__(self,a):
         return self._domul(a, self)
-        
-    def __div__(self,a):
-        from numbers import Rational
-        return self._domul(self,self._dopow(a,Rational(-1)))
-        
-    def __rdiv__(self,a):
-        from numbers import Rational
-        return self._domul(self.sympify(self) ** Rational(-1), self.sympify(a))
+    
+    def __pretty__(self):
+        """Make representation as prettyForm: to be overridden
+        for everything that looks better in 2D.
+        """
+        from sympy.core.stringPict import prettyForm
+        return prettyForm('[%s]'%self)
         
     def __pow__(self,a):
         return self._dopow(self, a)
@@ -188,6 +195,9 @@ class Basic(object):
             return self.evalf() > a.evalf()
         else:
             raise NotImplementedError("'<' not supported.")
+        
+    def __latex__(self):
+        return str(self) # override this for a custom latex representation
     
     @staticmethod
     def _doadd(a,b):
@@ -576,11 +586,6 @@ class Basic(object):
                 r2 = r
             else:
                 r2.update(r)
+
         return r2
 
-    def __pretty__(self):
-        """Make representation as prettyForm: to be overridden
-        for everything that looks better in 2D.
-        """
-        from sympy.core.stringPict import prettyForm
-        return prettyForm('[%s]'%self)

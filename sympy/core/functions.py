@@ -103,6 +103,12 @@ class Function(Basic):
 class exp(Function):
     """Return e raised to the power of x
     """ 
+    
+    def __pretty__(self):
+        return prettyForm('e', binding=prettyForm.ATOM)**self._args.__pretty__()
+    
+    def __latex__(self):
+        return "{e}^{%s}" % self[0].__latex__()
 
     def derivative(self):
         return exp(self._args)
@@ -150,9 +156,7 @@ class exp(Function):
             s += num / fact   
         decimal.getcontext().prec = precision - 2        
         return +s
-    
-    def __pretty__(self):
-        return prettyForm('e', binding=prettyForm.ATOM)**self._args.__pretty__()
+
 
 class log(Function):
     """Return the natural logarithm (base e) of x

@@ -5,9 +5,8 @@ usage:
     >>> h = mhash()
     >>> h.addint(15)
     >>> h.addstr("hey man!")
-    >>> h.addfloat(45.3)
     >>> print h.value
-    323161024673821609718502880993101779484
+    322055065595394571600238891420261570520
     
 mhash.value contains the hash value which is generally a long int, that
 depends on the order of objects added. 
@@ -25,10 +24,6 @@ class HashAlgorithm(object):
         """add an integer to the hash"""
         self.add(num)
 
-    def addfloat(self, num):
-        """Add a foat to the hash"""
-        self.add(hash(num))
-        
     def add(self, other):
         """Add an object to the hash"""
         raise NotImplementedError

@@ -232,6 +232,24 @@ class Mul(Pair):
             a *= float(arg)
         return a
 
+    def __latex__(self):
+        f = ""
+        a = self._args
+        if isinstance(a[0],Rational):
+            if a[0].isminusone():
+                f = "-"
+                a = self.args[1:]
+            elif a[0].isone():
+                f = ""
+                a = self.args[1:]
+        for x in a:
+            if isinstance(x,Pair):
+                f += "(%s)"
+            else:
+                f += "%s "
+        f = f[:-1]
+        return f % tuple([x.__latex__() for x in a])
+
     @staticmethod
     def get_baseandexp(a):
         # TODO: remove
@@ -508,6 +526,13 @@ class Add(Pair):
     
     mathml_tag = "plus"
     
+    
+    def __float__(self):
+        a = 0
+        for arg in self._args[:]:
+            a += float(arg)
+        return a  
+    
     def __str__(self):
         """Returns a string representation of the expression in self."""
         
@@ -519,6 +544,16 @@ class Add(Pair):
             else:
                 f += "+%s" % str(self._args[i])
         return f
+    
+    def __latex__(self):
+        f = "%s" % self[0].__latex__()
+        for i in range(1,len(self[:])):
+            num_part = _extract_numeric(self[i])[0]
+            if num_part < 0:
+              f += "%s" % self[i].__latex__()
+            else:
+              f += "+%s" % self[i].__latex__()
+        return f    
 
     @property
     def mathml(self):
@@ -526,13 +561,7 @@ class Add(Pair):
         for a in self._args:
             s += a.mathml
         s += "</apply>"
-        return s
-
-    def __float__(self):
-        a = 0
-        for arg in self._args[:]:
-            a += float(arg)
-        return a                
+        return s              
 
     def getab(self):
         """Pretend that self = a+b and return a,b

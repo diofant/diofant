@@ -59,6 +59,24 @@ class Pow(Basic):
             f += "%s"
         return f % (str(self.base), str(self.exp))
     
+    
+    def __latex__(self):
+        from addmul import Pair
+        f = ""
+        if isinstance(self.base,Pair) or isinstance(self.base,Pow):
+            f += "{(%s)}"
+        else:
+            f += "{%s}"
+        f += "^"
+        if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
+            or (isinstance(self.exp,Rational) and \
+            (not self.exp.is_integer or (self.exp.is_integer and \
+            int(self.exp) < 0)) ):
+            f += "{(%s)}"
+        else:
+            f += "{%s}"
+        return f % (self.base.__latex__(),self.exp.__latex__())
+    
     @property
     def mathml(self):
         s = "<apply>" + "<" + self.mathml_tag + "/>"
@@ -272,5 +290,7 @@ class Pow(Basic):
         return None
     
     def __pretty__(self):
+        if self.exp == Rational(1,2): # if it's a square root
+            pass
         a, b = self._args
         return a.__pretty__()**b.__pretty__()

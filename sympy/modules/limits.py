@@ -85,7 +85,7 @@ which is the most difficult part of the algorithm.
 
 import sympy as s
 from sympy.core import Basic, mhash
-#from sympy.core.prettyprint import StringPict
+from sympy.core.stringPict import stringPict
 
 from decorator import decorator
 
@@ -369,6 +369,19 @@ class Limit(Basic):
         self._args.append(self.sympify(x))
         self._args.append(self.sympify(x0))
         
+
+    def __pretty__(self):
+         e, x, t = [a.__pretty__() for a in (self.e,self.x,self.x0)]
+         a = stringPict('lim')
+         a = stringPict(*a.below('%s->%s' % (x, t)))
+         a = stringPict(*a.right(' %s' % e))
+         return a
+     
+    def __latex__(self):
+         return "\lim_{%s \to %s}%s" % (self.x.__latex__(), \
+                                                 self.x0.__latex__(), 
+                                                 self.e.__latex__() )
+                 
     @property
     def e(self):
         return self._args[0]
@@ -391,11 +404,7 @@ class Limit(Basic):
         s += self.e.mathml
         s += "</apply>"
         return s
-    
-    def __pretty__(self):
-         e, x, t = [a.__pretty__() for a in (self.e,self.x,self.x0)]
-         return StringPict('lim').below(StringPict.next(x, '->', t)) \
-                 .right(' ', e)
+
 
 def limit(e,z,z0, evaluate=True):
     """Compute the limit of e(z) at the point z0. 
