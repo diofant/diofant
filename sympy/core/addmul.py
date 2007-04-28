@@ -458,6 +458,10 @@ class Mul(Pair):
             return log(a[0]**b)
         if isinstance(b, log):
             return log(b[0]**a)
+        if isinstance(a, exp):
+            for x in b:
+                if isinstance(x, exp):
+                    return exp(a[0]+x[0])*b/x
         return a*b
         
     def subs(self,old,new):

@@ -153,6 +153,7 @@ def test_derivative_linearity():
 
 def test_combine():
     x = Symbol("x")
+    y = Symbol("y")
     assert exp(x)*exp(-x) != 1
     assert (exp(x)*exp(-x)).combine() == 1
 
@@ -170,3 +171,4 @@ def test_combine():
     assert (exp(x)*exp(-x)-1).combine() == 0
 
     assert (2*exp(x)*exp(-x)).combine() == 2
+    assert (x/exp(x)*exp(-x)).combine() == x*exp(-2*x)
