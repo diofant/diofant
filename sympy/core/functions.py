@@ -106,6 +106,9 @@ class exp(Function):
 
     def derivative(self):
         return exp(self._args)
+
+    def combine(self):
+        return exp(self[0].combine())
         
     def expand(self):
         from addmul import Add
@@ -114,9 +117,6 @@ class exp(Function):
             r = 1
             for x in a:
                 r*=exp(x)
-            return r
-        r = exp(self[0].combine())
-        if r!=self:
             return r
         return exp(a)
         
