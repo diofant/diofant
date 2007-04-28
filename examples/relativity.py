@@ -1,3 +1,7 @@
+"""
+This example calculates the Ricci tensor from the metric and does this
+on the example of Schwarzschild solution.
+"""
 import sys
 sys.path.append(".")
 sys.path.append("..")
