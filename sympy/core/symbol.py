@@ -51,6 +51,7 @@ class Symbol(Basic):
             global dummycount
             self.dummy_num = dummycount
             dummycount += 1
+        #self._args = [name]
 
     def __str__(self):
         if not self.is_dummy:
