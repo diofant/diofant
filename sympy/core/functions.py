@@ -6,7 +6,7 @@ from sympy.core.basic import Basic
 from sympy.core.numbers import Rational, Real
 import decimal
 import math
-from sympy.core.stringPict import prettyForm
+from sympy.core.stringPict import stringPict, prettyForm
 
 
 class Function(Basic):
@@ -303,6 +303,14 @@ class Derivative(Basic):
         self.x=self.sympify(x)
         self._args = (self.f, self.x)
         #i.e. self[:] = (f, x), which means self = f'(x)
+        
+    def __pretty__(self):
+         f, x = [a.__pretty__() for a in (self.f, self.x)]
+         a = prettyForm('d')
+         a = prettyForm(*a.below(stringPict.LINE, 'd%s' % str(x)))
+         a.baseline = a.baseline + 1
+         a = prettyForm(binding=prettyForm.FUNC, *stringPict.next(a, f))
+         return a
 
     def eval(self):
         from addmul import Mul

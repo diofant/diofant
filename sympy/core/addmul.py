@@ -491,7 +491,17 @@ class Mul(Pair):
             return e
 
     def __pretty__(self):
-        return prettyForm.__mul__(*[arg.__pretty__() for arg in self._args])
+        a = [] # items in the numerator
+        b = [] # items that are in the denominator (if any)
+        for item in self._args:
+            if isinstance(item, Pow) and item.exp == -1:
+                b.append( item.base.__pretty__() )
+            else:
+                a.append(item.__pretty__())
+        if len(b) == 0:
+            return prettyForm.__mul__(*a)
+        else:
+            return prettyForm.__mul__(*a) / prettyForm.__mul__(*b)
 
 class Add(Pair):
     """

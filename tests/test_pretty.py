@@ -7,11 +7,14 @@ from sympy import *
 from sympy.modules.printing import pretty
 
 x = Symbol('x')
+y = Symbol('y')
 
 def test_pretty_basic():
     assert pretty( (x**2) ) == ' 2\nx '
     assert pretty( (x**2 + x + 1)) in ['     2\n1+x+x ']
     assert pretty( 1/x ) == '1\n-\nx'
+    assert pretty( x/y ) == "x\n-\ny"
+    #assert pretty( -x/y ) == ""
     assert pretty( oo ) == "oo"
 
     

@@ -19,6 +19,7 @@ class stringPict:
         self.picture = stringPict.equalLengths(s.splitlines())
         #baseline is the line number of the "base line"
         self.baseline = baseline
+        self.binding = None
         
     def __len__(self):
         return len(str(self))
