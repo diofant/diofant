@@ -134,6 +134,8 @@ def test_seriesbug3():
     assert  e.series(w,1).subs(log(w),-log(3)*x).subs(w,0) == 5
 
 def test_order():
+    #these tests basically define the Order's behavior. So be very careful
+    #when changing them (as with every test in SymPy :)
     x = Symbol("x")
     assert Order(x) == Order(x)
     assert Order(x**2) == Order(x**2)
@@ -151,10 +153,13 @@ def test_order():
     assert Order(x) == Order(x)*8
 
     assert Order(x+1) == Order(x)
+    assert Order(x)+0 == Order(x)
+    assert Order(x)+0 == 0+Order(x)
     assert Order(x)+1 != Order(x)
     assert Order(x)+1 == 1+Order(x)
     assert Order(x)+x == Order(x)
     assert Order(x)+x**2 == Order(x)
+    assert Order(x)+x**3 == Order(x)
 
     assert x*Order(x) != Order(x)
     assert x*Order(x) == Order(x**2)

@@ -203,6 +203,8 @@ class Order(Basic):
                 return None
             if y == Symbol("x")**2 and x[0] == Symbol("x"):
                 return Order(x[0])
+            if y == Symbol("x")**3 and x[0] == Symbol("x"):
+                return Order(x[0])
             return Order(x[0]+y)
         if isinstance(y, Order):
             if x == 1 and y[0] == Symbol("x"):
