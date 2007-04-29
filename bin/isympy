@@ -46,7 +46,7 @@ object? -> Details about 'object'. ?object also works, ?? prints more.
 
 basic_import_code = """
 from sympy.core.numbers import Real, Rational, pi, oo
-from sympy.core.symbol import Symbol
+from sympy.core.symbol import Symbol, Order
 from sympy.core.functions import Function, exp, log, ln, sqrt, sign, diff
 from sympy.modules import *
 from sympy.modules.polynomials import ispoly, get_poly, coeff
