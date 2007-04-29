@@ -62,12 +62,19 @@ class Pow(Basic):
         
     def __pretty__(self):
         if self.exp == Rational(1,2): # if it's a square root
-            l_arg = len(self.base.__pretty__())
-            s =  stringPict("\\")
-            s = stringPict(*s.right("/"))
-            s = stringPict(*s.right(" %s" % str(self.base.__pretty__()) ))
-            s = stringPict(*s.top("    __" + "_"*l_arg))
-            return s
+            bpretty = self.base.__pretty__()
+            bl = int((bpretty.height() / 2.0) + 0.5)
+
+            s2 = stringPict("\\/")
+            for x in xrange(1, bpretty.height()):
+                s3 = stringPict(" " * (2*x+1) + "/")
+                s2 = stringPict(*s2.top(s3))
+            s2.baseline = -1
+
+            s = stringPict("__" + "_" * bpretty.width())
+            s = stringPict(*s.below("%s" % str(bpretty)))
+            s = stringPict(*s.left(s2))
+            return prettyForm(str(s), baseline=bl)
         a, b = self._args
         return a.__pretty__()**b.__pretty__()
     
