@@ -229,7 +229,7 @@ class Basic(object):
     def evalc(self):
         """Rewrites self in the form x+i*y.
 
-        It should raise an exceptin, if this is not possible.
+        It will raise an exception, if this is not possible.
         
         """
         raise NotImplementedError
@@ -319,7 +319,9 @@ class Basic(object):
         """
         Usage
         =====
-            Return the Taylor series of self with respect to sym until the n-th term. 
+            Return the Taylor series around 0 of self with respect to sym until
+            the n-th term. Use substitution if you want to get a series around
+            a different point.
         
         Notes
         =====
@@ -334,7 +336,7 @@ class Basic(object):
             1/120*x**5+x-1/6*x**3
         """
         from numbers import Rational
-        from symbol import Symbol
+        from symbol import Symbol, Order
         from functions import log
         w=Symbol("l", is_dummy=True)
         f = self.subs(log(sym),-w)
@@ -345,7 +347,7 @@ class Basic(object):
             f = f.diff(sym)
             e += f.subs(sym,Rational(0))*(sym**i)/fact
         e=e.subs(w,-log(sym))
-        return e
+        return e#+Order(sym**(n+1))
 
     def subs_dict(self, di):
         """Substitutes all old -> new defined in the dictionary "di"."""

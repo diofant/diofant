@@ -113,6 +113,56 @@ class Symbol(Basic):
 
 
 class Order(Basic):
+    """
+    Represents O(f(x)) at the point x = 0.
+
+    Definition
+    ==========
+
+    g(x) = O(f(x)) as x->a  if and only if
+    |g(x)|<=M|f(x)| near x=a                     (1)
+
+    In our case Order is for a=0. An equivalent way of saying (1) is:
+
+    lim_{x->a}  |g(x)/f(x)|  < oo
+    
+    Let's illustrate it on the following example:
+
+    sin x = x - x**3/3! + O(x**5)
+
+    where in this case O(x**5) = x**5/5! - x**7/7! + .... and the definition
+    of O means:
+
+    |x**5/5! - x**7/7! + ....| <= M|x**5|      near x=0
+
+    or equivalently:
+
+    lim_{x->0} |x**5/5! - x**7/7! + .... / x**5| < oo
+
+    which surely is true, because 
+    
+    lim_{x->0} |x**5/5! - x**7/7! + .... / x**5| = 1/5!
+
+
+    So intuitively O(x**3) means (in our case): all terms x**3, x**4 and
+    higher. But not x**2, x or 1.
+
+    Examples:
+    =========
+    >>> from sympy import *
+    >>> x = Symbol("x")
+    >>> Order(x)
+    O(x)
+    >>> Order(x)*x
+    O(x**2)
+    >>> Order(x)-Order(x)
+    O(x)
+
+       External links
+       --------------
+
+         U{Big O notation<http://en.wikipedia.org/wiki/Big_O_notation>}
+    """
 
     def __init__(self, f):
         """O(f) at the point x = 0"""
@@ -149,7 +199,13 @@ class Order(Basic):
         if isinstance(x, Order) and isinstance(y, Order):
             raise NotImplementedError()
         if isinstance(x, Order):
+            if y == 1 and x[0] == Symbol("x"):
+                return None
+            if y == Symbol("x")**2 and x[0] == Symbol("x"):
+                return Order(x[0])
             return Order(x[0]+y)
         if isinstance(y, Order):
+            if x == 1 and y[0] == Symbol("x"):
+                return None
             return Order(x+y[0])
         return None

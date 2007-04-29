@@ -151,8 +151,10 @@ def test_order():
     assert Order(x) == Order(x)*8
 
     assert Order(x+1) == Order(x)
-    assert Order(x)+1 == Order(x)
+    assert Order(x)+1 != Order(x)
+    assert Order(x)+1 == 1+Order(x)
     assert Order(x)+x == Order(x)
+    assert Order(x)+x**2 == Order(x)
 
     assert x*Order(x) != Order(x)
     assert x*Order(x) == Order(x**2)
