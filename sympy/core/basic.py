@@ -289,7 +289,8 @@ class Basic(object):
         elif isinstance(a,(float, decimal.Decimal, str)):
             return Real(a)
         else:
-            assert isinstance(a,Basic)
+            if not isinstance(a,Basic):
+                raise ValueError("%s must be a subclass of basic" % str(a))
             return a
         
     def __hash__(self):
