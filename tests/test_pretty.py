@@ -16,8 +16,10 @@ def test_pretty_basic():
     
 def test_pretty_functions():
     assert pretty( (2*x + exp(x)) ) in ['     x\n2*x+e ',' x    \ne +2*x']
-    assert pretty( sqrt(2) ) == '    ___\n  \\/ 2 '
-    assert pretty( sqrt(2+pi) ) == '    ______\n \\/ 2+pi  '
+    assert pretty( sqrt(2) ) == '  ___\n\\/ 2 '
+    assert pretty( sqrt(2+pi) ) == '  ______\n\\/ 2+pi '
+    # nesting of square roots
+    assert pretty( sqrt((sqrt(x+1))+1) ) == '    ___________\n   /     _____ \n \\/  1+\\/ 1+x  '
     
 def test_pretty_integrals():
     f = integrate(log(x), x, evaluate=False)

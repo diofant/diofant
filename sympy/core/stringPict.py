@@ -63,7 +63,7 @@ class stringPict:
                 oneEmptyLine * (totalPadding-basePadding))
 
         result = [''.join(lines) for lines in zip(*pictures)]
-        return '\n'.join(result),newBaseline
+        return '\n'.join(result), newBaseline
 
     def right(self, *args):
         """Put pictures next to this one.

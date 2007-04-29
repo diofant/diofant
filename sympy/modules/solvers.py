@@ -29,21 +29,30 @@ def solve(eq, vars):
         x = vars[0]
         a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
 
-        r = eq.match(a*x + b, [a,b])
+        r = eq.match(a*x + b, [a,b]) # linear equation
         if r and _wo(r,x): return solve_linear(r[a], r[b])
 
-        r = eq.match(a*x**2 + c, [a,c])
+        r = eq.match(a*x**2 + c, [a,c]) # quadratic equation
         if r and _wo(r,x): return solve_quadratic(r[a], 0, r[c])
 
-        r = eq.match(a*x**2 + b*x + c, [a,b,c])
+        r = eq.match(a*x**2 + b*x + c, [a,b,c]) # quadratic equation
         if r and _wo(r,x): return solve_quadratic(r[a], r[b], r[c])
+        
+        r = eq.match(a*x**3 + b*x**2 + c*x + d, [a,b,c,d])
+        if r and _wo(r, x):
+            a = b/a
+            b = c/a
+            c = d/a
+            return solve_cubic(r[a], r[b], r[c])
 
     raise "Sorry, can't solve it (yet)."
 
 def solve_linear(a, b):
+    """Solve a*x + b == 0"""
     return -b/a
 
 def solve_quadratic(a, b, c):
+    """Solve the cuadratic a*x**2 + b*x + c == 0"""
     D = b**2-4*a*c
     if D == 0:
         return [-b/(2*a)]
@@ -52,6 +61,31 @@ def solve_quadratic(a, b, c):
                 (-b+sqrt(D))/(2*a),
                 (-b-sqrt(D))/(2*a)
                ]
+def solve_cubic(a, b, c):
+    """Solve the (normalized) cubic x**3 + a*x**2 + b*x + c == 0
+    
+    arguments are supposed to be sympy objects (so no python float's, int's, etc.)
+    
+    Cardano's method: http://en.wikipedia.org/wiki/Cubic_equation#Cardano.27s_method
+    """
+    # we calculate the depressed cubic t**3 + p*t + q
+    
+    a = Rational(a)
+    b = Rational(b)
+    c = Rational(c) #FIXME
+    
+    p = b - (a**2)/3
+    q = c + (2*a**3 - 9*a*b)/27
+    
+    u_1 = ( (q/2) + sqrt((q**2)/4 + (p**3)/27) )**Rational(1,3)
+    u_2 = ( (q/2) - sqrt((q**2)/4 + (p**3)/27) )**Rational(1,3)
+    # todo: this irnores
+    
+    x_1 = p/(3*u_1) - u_1 - a/3
+    x_2 = p/(3*u_2) - u_2 - a/3
+    
+    return (x_1, x_2)
+    
 
 def dsolve(eq, funcs):
     """
@@ -93,10 +127,11 @@ def dsolve(eq, funcs):
 
     #currently only solve for one function
     if isinstance(funcs, Basic) or len(funcs) == 1:
-        if isinstance(funcs, (list, tuple)):
+        if isinstance(funcs, (list, tuple)): # normalize args
             f = funcs[0]
         else:
             f = funcs
+            
         x = f[0]
         a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
 
