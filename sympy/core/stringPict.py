@@ -264,14 +264,21 @@ class prettyForm(stringPict):
         """Make a pretty multiplication.
         Parentheses are needed around +, - and neg.
         """
-        arg = self
-        if arg.binding > prettyForm.MUL: arg = stringPict(*arg.parens())
-        result = [arg]
+        args = self
+        if args.binding > prettyForm.MUL: arg = stringPict(*args.parens())
+        result = [args]
         for arg in others:
             result.append('*')
             #add parentheses for weak binders
             if arg.binding > prettyForm.MUL: arg = stringPict(*arg.parens())
             result.append(arg)
+        len_res = len(result)
+        for i in xrange(len_res):
+            if i < len_res-1 and str(result[i]) == '-1' and result[i+1] == "*":
+                # substitute -1 by -, like in -1*x -> -x
+                result.pop(i)
+                result.pop(i)
+                result.insert(i, '-')
         return prettyForm(binding=prettyForm.MUL, *stringPict.next(*result))
 
     def __repr__(self):

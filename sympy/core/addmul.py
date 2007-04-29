@@ -496,6 +496,9 @@ class Mul(Pair):
         for item in self._args:
             if isinstance(item, Pow) and item.exp == -1:
                 b.append( item.base.__pretty__() )
+            #elif item == -1:
+             #   a.append(prettyForm("-"))
+                #pass
             else:
                 a.append(item.__pretty__())
         if len(b) == 0:
