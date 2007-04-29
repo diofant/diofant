@@ -2,7 +2,7 @@
 #
 
 import tempfile
-from sympy.modules.printing import print_latex
+from sympy.modules.printing import latex
 
 def print_pygame(st):
 
@@ -13,7 +13,7 @@ def print_pygame(st):
             "python-pygame package."
         return
 
-    st = print_latex(st)
+    st = latex(st)
 
     from pygame import QUIT, KEYDOWN, K_ESCAPE, K_q
     pygame.font.init()
@@ -41,6 +41,9 @@ def print_pygame(st):
                 return
 
 def tex2png(eq,pygame):
+    """
+    Accepts a latex equation in "eq" and returns an image with this equation.
+    """
     #http://www.fauskes.net/nb/htmleqII/
     import os, sys
 
