@@ -11,6 +11,7 @@ x = Symbol('x')
 def test_pretty_basic():
     assert pretty( (x**2) ) == ' 2\nx '
     assert pretty( (x**2 + x + 1)) in ['     2\n1+x+x ']
+    assert pretty( 1/x ) == '1\n-\nx'
     assert pretty( oo ) == "oo"
 
     
@@ -20,6 +21,9 @@ def test_pretty_functions():
     assert pretty( sqrt(2+pi) ) == '  ______\n\\/ 2+pi '
     # nesting of square roots
     assert pretty( sqrt((sqrt(x+1))+1) ) == '    ___________\n   /     _____ \n \\/  1+\\/ 1+x  '
+    assert pretty( diff(log(x), x, evaluate=False) ) == 'd       \n--log(x)\ndx      '
+    assert pretty( diff(log(x), x, evaluate=False) + x ) == '  /d       \\\nx+|--log(x)|\n  \\dx      /'
+    
     
 def test_pretty_integrals():
     f = integrate(log(x), x, evaluate=False)

@@ -75,6 +75,9 @@ class Pow(Basic):
             s = stringPict(*s.below("%s" % str(bpretty)))
             s = stringPict(*s.left(s2))
             return prettyForm(str(s), baseline=bl)
+        elif self.exp == -1:
+            # things like 1/x
+            return prettyForm("1") / self.base.__pretty__()
         a, b = self._args
         return a.__pretty__()**b.__pretty__()
     
