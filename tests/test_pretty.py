@@ -24,5 +24,5 @@ def test_pretty_integrals():
     assert pretty( f ) in ['/          \n| log(x) dx\n/          ']
     
 def test_pretty_limits():
-    assert pretty( limit(x, x, oo, evaluate=False) ) == ' lim  x\nx->oo  '
-    
+    assert pretty( limit(x, x, oo, evaluate=False) ) == ' lim x\nx->oo '
+    assert pretty( limit(x**2, x, 0, evaluate=False) ) == '     2\nlim x \nx->0  '  

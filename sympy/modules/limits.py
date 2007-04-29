@@ -85,7 +85,7 @@ which is the most difficult part of the algorithm.
 
 import sympy as s
 from sympy.core import Basic, mhash
-from sympy.core.stringPict import stringPict
+from sympy.core.stringPict import stringPict, prettyForm
 
 from decorator import decorator
 
@@ -372,9 +372,9 @@ class Limit(Basic):
 
     def __pretty__(self):
          e, x, t = [a.__pretty__() for a in (self.e,self.x,self.x0)]
-         a = stringPict('lim')
-         a = stringPict(*a.below('%s->%s' % (x, t)))
-         a = stringPict(*a.right(' %s' % e))
+         a = prettyForm('lim')
+         a = prettyForm(*a.below('%s->%s' % (x, t)))
+         a = prettyForm(*stringPict.next(a, e))
          return a
      
     def __latex__(self):

@@ -47,9 +47,6 @@ object? -> Details about 'object'. ?object also works, ?? prints more.
 basic_import_code = """
 from sympy import *
 from sympy.modules import *
-from sympy.modules.polynomials import ispoly, get_poly, coeff
-from sympy.modules.integrals import integrate
-from sympy.modules.solvers import solve, dsolve
 from sympy.modules.printing.pretty import pretty_print, pprint, pretty
 """
 
