@@ -196,18 +196,26 @@ class Order(Basic):
 
     @staticmethod
     def addeval(x, y):
+        from power import pole_error
         if isinstance(x, Order) and isinstance(y, Order):
+            #this doesn't seem to happen (if it does, just implement it)
             raise NotImplementedError()
         if isinstance(x, Order):
-            if y == 1 and x[0] == Symbol("x"):
+            #calculate inf (True if this limit is oo):
+            #inf = lim_{x->a}  |g(x)/f(x)| == oo
+            inf = False
+            try:
+                #we don't want to depend on the limit module, thus
+                #we use the pole_error way, which works in most cases
+                (y/x[0]).subs(Symbol("x"),0)
+            except pole_error:
+                inf = True
+
+            if inf:
                 return None
-            if y == Symbol("x")**2 and x[0] == Symbol("x"):
+            else:
                 return Order(x[0])
-            if y == Symbol("x")**3 and x[0] == Symbol("x"):
-                return Order(x[0])
-            return Order(x[0]+y)
+
         if isinstance(y, Order):
-            if x == 1 and y[0] == Symbol("x"):
-                return None
-            return Order(x+y[0])
+            return Order.addeval(y,x)
         return None
