@@ -1,5 +1,22 @@
-#install TeX and these Debian packages: python-pygame, python-pexpect, dvipng
-#
+"""
+install TeX and these Debian packages: python-pygame, python-pexpect, dvipng
+
+To view the equation in the evince:
+
+>>> printing.view(1/log(x))
+>>> 
+
+You can use any other viewer:
+
+>>> printing.view(1/log(x), psviewer = "kpdf")
+>>>
+
+Finally, you can view the equation in the pygame window:
+
+>>> printing.print_pygame(1/log(x))
+>>> 
+
+"""
 
 import tempfile
 from sympy.modules.printing import latex
@@ -88,3 +105,45 @@ def tex2png(eq,pygame):
     os.chdir(cwd)
 
     return image
+
+def view(eq, psviewer = "evince"):
+    """Launches a *.ps viewer (default: evince) with the equation.
+    """
+
+    import os, sys
+
+    import pexpect
+
+    tex_preamble = r"""\nopagenumbers
+"""
+
+    x = tempfile.mktemp()
+    tmp1 = '%s.tex'%x
+
+    # create a LaTeX document and insert equations
+    f = open(tmp1,'w')
+    f.write(tex_preamble)
+    f.write(r"""$%s$
+\vfill
+\eject
+""" % latex(eq))
+    # end LaTeX document    
+    f.write(r'\bye')
+    f.close()
+
+    # compile LaTeX document. A DVI file is created
+    cwd = os.getcwd()
+    os.chdir("/tmp")
+    pexpect.run('tex %s' % tmp1)
+
+    cmd = "dvips %s.dvi" % (x)
+    pexpect.run(cmd) 
+
+    #remove temporary files
+    os.remove("%s.tex" % x)
+    os.remove("%s.dvi" % x)
+    os.remove("%s.log" % x)
+    os.chdir(cwd)
+
+
+    os.system("%s %s.ps &" % (psviewer, x))
