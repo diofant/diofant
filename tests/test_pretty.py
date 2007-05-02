@@ -11,7 +11,8 @@ y = Symbol('y')
 
 def test_pretty_basic():
     assert pretty( (x**2) ) == ' 2\nx '
-#    assert pretty( 1-x ) == '1-x'
+    assert pretty( 1-x ) == '1-x'
+    assert pretty( 1-2*x ) == '1-2*x'
     assert pretty( (x**2 + x + 1))  == '     2\n1+x+x '
     assert pretty( 1/x ) == '1\n-\nx'
     assert pretty( x/y ) == "x\n-\ny"

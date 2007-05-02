@@ -764,6 +764,7 @@ class Add(Pair):
     def __pretty__(self):
         return prettyForm.__add__(*[arg.__pretty__() for arg in self._args])
 
+
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
     For example, 1*x -> (1,x)

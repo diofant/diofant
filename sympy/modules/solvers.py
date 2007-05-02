@@ -38,12 +38,12 @@ def solve(eq, vars):
         r = eq.match(a*x**2 + b*x + c, [a,b,c]) # quadratic equation
         if r and _wo(r,x): return solve_quadratic(r[a], r[b], r[c])
         
+        d = Symbol('d', is_dummy=True)        
         r = eq.match(a*x**3 + b*x**2 + c*x + d, [a,b,c,d])
-        if r and _wo(r, x):
-            a = b/a
-            b = c/a
-            c = d/a
-            return solve_cubic(r[a], r[b], r[c])
+        if r and _wo(r, x): return solve_cubic(r[a], r[b], r[c], r[d])
+        
+        r = eq.match(a*x**3 - b*x + c)
+        if r and _wo(r, x): return solve_cubic(r[a], 0, r[b], r[c])
 
     raise "Sorry, can't solve it (yet)."
 
@@ -61,8 +61,8 @@ def solve_quadratic(a, b, c):
                 (-b+sqrt(D))/(2*a),
                 (-b-sqrt(D))/(2*a)
                ]
-def solve_cubic(a, b, c):
-    """Solve the (normalized) cubic x**3 + a*x**2 + b*x + c == 0
+def solve_cubic(a, b, c, d):
+    """Solve the cubic a*x**3 + b*x**2 + c*x + d == 0
     
     arguments are supposed to be sympy objects (so no python float's, int's, etc.)
     
@@ -70,19 +70,22 @@ def solve_cubic(a, b, c):
     """
     # we calculate the depressed cubic t**3 + p*t + q
     
-    a = Rational(a)
-    b = Rational(b)
-    c = Rational(c) #FIXME
+    #normalize
+    a_1 = b / a
+    b_1 = c / a
+    c_1 = c / a
     
-    p = b - (a**2)/3
-    q = c + (2*a**3 - 9*a*b)/27
+    del a, b, c
+    
+    p = b_1 - (a_1**2)/3
+    q = c_1 + (2*a_1**3 - 9*a_1*b_1)/27
     
     u_1 = ( (q/2) + sqrt((q**2)/4 + (p**3)/27) )**Rational(1,3)
     u_2 = ( (q/2) - sqrt((q**2)/4 + (p**3)/27) )**Rational(1,3)
     # todo: this irnores
     
-    x_1 = p/(3*u_1) - u_1 - a/3
-    x_2 = p/(3*u_2) - u_2 - a/3
+    x_1 = p/(3*u_1) - u_1 - a_1/3
+    x_2 = p/(3*u_2) - u_2 - a_1/3
     
     return (x_1, x_2)
     

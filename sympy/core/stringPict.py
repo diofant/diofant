@@ -241,9 +241,11 @@ class prettyForm(stringPict):
         result = [arg]
         for arg in others:
             #add parentheses for weak binders
-            if arg.binding > prettyForm.NEG: arg = stringPict(*arg.parens())
+            if arg.binding > prettyForm.NEG: 
+                arg = stringPict(*arg.parens())
             #use existing minus sign if available
-            if arg.binding != prettyForm.NEG: result.append('+')
+            if arg.binding != prettyForm.NEG:
+                result.append('+')
             result.append(arg)
         return prettyForm(binding=prettyForm.ADD, *stringPict.next(*result))
 
@@ -279,7 +281,12 @@ class prettyForm(stringPict):
                 result.pop(i)
                 result.pop(i)
                 result.insert(i, '-')
-        return prettyForm(binding=prettyForm.MUL, *stringPict.next(*result))
+        if str(result[0])[0] == '-':
+            # if there is a - sign in front of all
+            bin = prettyForm.NEG
+        else:
+            bin = prettyForm.MUL
+        return prettyForm(binding=bin, *stringPict.next(*result))
 
     def __repr__(self):
         return "prettyForm(%r,%d,%d)"%(
