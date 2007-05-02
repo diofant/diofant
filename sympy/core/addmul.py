@@ -196,7 +196,10 @@ class Pair(Basic):
         if global_wildcard:
             if len(ops) == 0:
                 #return None
-                rst = Rational(1)
+                if isinstance(self, Add):
+                    rst = Rational(0)
+                else:
+                    rst = Rational(1)
             else:
                 rst = type(self)(*ops)
             r2.update({global_wildcard: rst})
@@ -720,7 +723,7 @@ class Add(Pair):
             a = Symbol("a", is_dummy = True)
             b = Symbol("b", is_dummy = True)
             r = x.match(a/b,[a,b])
-            if len(r) == 2:
+            if r is not None and len(r) == 2:
                 return r[a],r[b]
             return x, 1
         x,y = self.getab()

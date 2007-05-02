@@ -212,3 +212,14 @@ def test_behavior2():
     p = x
     assert (e/p).expand().match(a*x**2+a*x+2*a, [a]) == None
     assert (e/p).expand().match(a*x**2+a*x+2*a, [a], exclude=None) == {a: 3/x}
+
+def test_bug2():
+    a = Symbol("a")
+    b = Symbol("b")
+    c = Symbol("c")
+    x = Symbol("x")
+    y = Symbol("y")
+    r = (x+y).match(a+b+c, [a,b,c])
+    assert (a+b+c).subs_dict(r) == x+y
+
+
