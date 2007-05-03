@@ -220,6 +220,26 @@ class clean(Command):
         os.system("rm -rf build")
         os.system("rm -rf dist")
 
+class gen_doc(Command):
+    """Generate the (html) api documentation using epydoc
+
+    output is sent to the directory ../api/
+    """
+    
+    description = "generate the api doc"
+    user_options = [] 
+
+    def initialize_options(self):  
+        self.all = None
+    
+    def finalize_options(self):   
+        pass
+
+    def run(self):
+        import os
+        os.system("epydoc --no-frames -o ../api/ sympy")
+
+
 class test_sympy_core(Command):
     """Run only the tests concerning features of sympy.core.
     It's a lot faster than running the complete test suite.
@@ -374,6 +394,7 @@ setup(
                      'test_doc' : test_sympy_doc,
                      'bdist_dpkg' : bdist_dpkg, 
                      'test_dpkg' : test_sympy_dpkg,
+                     'gen_doc' : gen_doc,
                      'clean' : clean, 
                      },
       )
