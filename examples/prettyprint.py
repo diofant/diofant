@@ -1,28 +1,36 @@
 import sys
 sys.path.append("..")
 
-from sympy import exp,log,Symbol,oo,Rational,sin,cos,limit,I,pi,Mul
-from sympy.core import basic
+from sympy import *
 
 x=Symbol("x") 
 y=Symbol("y") 
 
-def p():
-    print x**x
-    print x+y+x
-    print sin(x)**x
-    print sin(x)**cos(x)
-    print sin(x)/(cos(x)**2 * x**x +(2*y))
 
-    print sin(x**2+exp(x))
-    print sqrt(exp(x))
-    print sqrt(sqrt(exp(x)))
+pprint( x**x )
+print '\n'# separate with two blank likes
 
-    print (1/cos(x)).series(x,10)
+pprint(x**2+y+x)
+print '\n'
 
-print "sympy print:"
-p()
-basic.outputType="pretty"
-print "_"*70
-print "pretty print:"
-p()
+pprint(sin(x)**x)
+print '\n'
+
+pprint( sin(x)**cos(x) )
+print '\n'
+
+pprint( sin(x)/(cos(x)**2 * x**x +(2*y)) )
+print '\n'
+
+pprint( sin(x**2+exp(x)) )
+print '\n'
+
+pprint( sqrt(exp(x)) )
+print '\n'
+
+pprint( sqrt(sqrt(exp(x))) )
+print '\n'
+
+pprint( (1/cos(x)).series(x,10) )
+print '\n'
+
