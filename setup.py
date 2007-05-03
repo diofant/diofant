@@ -227,7 +227,9 @@ class gen_doc(Command):
     """
     
     description = "generate the api doc"
-    user_options = [] 
+    user_options = []
+    
+    target_dir = "../api/" 
 
     def initialize_options(self):  
         self.all = None
@@ -237,7 +239,7 @@ class gen_doc(Command):
 
     def run(self):
         import os
-        os.system("epydoc --no-frames -o ../api/ sympy")
+        os.system("epydoc --no-frames -o %s sympy" % self.target_dir)
 
 
 class test_sympy_core(Command):
