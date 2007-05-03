@@ -18,3 +18,11 @@ def test_ratsimp():
     e = x/(x+y)+y/(x+y)
     assert e != 1
     assert ratsimp(e) == 1
+    
+def test_simplify():
+    x = Symbol('x')
+    y = Symbol('y')
+    e = 1/x + 1/y
+    assert e != (x+y)/(x*y)
+    assert simplify(e) == (x+y)/(x*y)
+    

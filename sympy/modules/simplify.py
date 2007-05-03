@@ -55,4 +55,4 @@ def ratsimp(expr):
 
 def simplify(expr):
     
-    return ratsimp(e.combine().expand())
+    return ratsimp(expr.combine().expand())
