@@ -4,9 +4,9 @@ sys.path.append(".")
 from sympy import *
 
 def test_complex():
-    a=Symbol("a")
-    b=Symbol("b")
-    e=(a+I*b)*(a-I*b)
+    a = Symbol("a")
+    b = Symbol("b")
+    e = (a+I*b)*(a-I*b)
     assert e.expand() == a**2+b**2
     assert e.expand() != a**2-b**2
 
@@ -16,23 +16,23 @@ def test_complex():
     assert str(abs(a))=="abs(a)"
 
 def test_abs1():
-    a=Symbol("a", is_real=True)
-    b=Symbol("b", is_real=True)
+    a=Symbol("a", real=True)
+    b=Symbol("b", real=True)
     assert abs(a) == a
     assert abs(-a) == a
     assert abs(-a) != -a
     assert abs(a+I*b) == sqrt(a*a+b*b)
 
 def test_abs2():
-    a=Symbol("a", is_real=False)
-    b=Symbol("b", is_real=False)
+    a=Symbol("a", real=False)
+    b=Symbol("b", real=False)
     assert abs(a) != a
     assert abs(-a) != a
     assert abs(a+I*b) != sqrt(a*a+b*b)
 
 def test_evalc():
-    x=Symbol("x", is_real=True)
-    y=Symbol("y", is_real=True)
+    x=Symbol("x", real=True)
+    y=Symbol("y", real=True)
     assert ((x+I*y)**2).evalc() == x**2+2*I*x*y - y**2
 
     assert exp(I*x) != cos(x)+I*sin(x)

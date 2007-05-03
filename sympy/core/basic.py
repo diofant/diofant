@@ -2,6 +2,7 @@
 
 from sympy.core.hashing import mhash
 
+
 class AutomaticEvaluationType(type):
     """Metaclass for all objects in sympy
      It evaluates the object just after creation, so that for example
@@ -38,7 +39,7 @@ class Basic(object):
         - True, when we are sure about a property. For example, when we are
         working only with real numbers:
         >>> from sympy import *
-        >>> Symbol('x', is_real = True)
+        >>> Symbol('x', real = True)
         x
         
         - False
@@ -47,23 +48,6 @@ class Basic(object):
     """
 
     __metaclass__ = AutomaticEvaluationType
-    
-    @property
-    def mathml_tag(self):
-        """Return the mathml tag of the current object. 
-        
-        For example, if symbol x has a mathml representation as::
-        
-           <ci>x</ci>
-           
-        then x.mathml should return "ci"
-
-        Basic.mathml_tag() returns the class name as the mathml_tag, this is
-        the case sometimes (sin, cos, exp, etc.). Otherwise just override this
-        method in your class.
-        """
-        
-        return self.__class__.__name__.lower()
     
     def __init__(self, *args, **kwargs):
         self._assumptions = {
@@ -74,6 +58,7 @@ class Basic(object):
                  'is_dummy' : None, 
                  }
         self._mhash = 0
+        self._mathml = None
         self._args = []
         for k in kwargs.keys():
             #TODO: maybe use dict.update() for this
@@ -195,6 +180,37 @@ class Basic(object):
             return self.evalf() > a.evalf()
         else:
             raise NotImplementedError("'<' not supported.")
+        
+    @property
+    def mathml_tag(self):
+        """Return the mathml tag of the current object. 
+        
+        For example, if symbol x has a mathml representation as::
+        
+           <ci>x</ci>
+           
+        then x.mathml_tag should return "ci"
+
+        Basic.mathml_tag() returns the class name as the mathml_tag, this is
+        the case sometimes (sin, cos, exp, etc.). Otherwise just override this
+        method in your class.
+        """
+        
+        return self.__class__.__name__.lower()
+        
+    def __mathml__(self):
+        """Returns a MathML expression representing the current object"""
+        import xml.dom.minidom
+        if self._mathml:
+            return self._mathml
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement(self.mathml_tag)
+        for arg in self._args:
+            x.appendChild( arg.__mathml__() )
+        self._mathml = x
+        
+        return self._mathml
+    
         
     def __latex__(self):
         return str(self) # override this for a custom latex representation
@@ -339,7 +355,7 @@ class Basic(object):
         from numbers import Rational
         from symbol import Symbol, Order
         from functions import log
-        w=Symbol("l", is_dummy=True)
+        w=Symbol("l", dummy=True)
         f = self.subs(log(sym),-w)
         e = f.subs(sym,Rational(0))
         fact = Rational(1)
@@ -366,7 +382,7 @@ class Basic(object):
             
     def has(self,sub):
         from symbol import Symbol
-        n = Symbol("dummy", is_dummy = True)
+        n = Symbol("dummy", dummy = True)
         return self.subs(sub,n)!=self
         
     def leadterm(self,x):
@@ -409,7 +425,7 @@ class Basic(object):
         if not isinstance(self,Add):
             return extract(self,x)
         lowest = [0,(Rational(10)**10)]
-        l = Symbol("l", is_dummy=True)
+        l = Symbol("l", dummy=True)
         from functions import log
         for t in self[:]:
             t2 = extract(t.subs(log(x),-l),x)
@@ -429,9 +445,6 @@ class Basic(object):
         return self
 
     def combine(self):
-        return self
-
-    def ratsimp(self):
         return self
 
     def conjugate(self):
@@ -482,19 +495,17 @@ class Basic(object):
         """Return True if self is a number. False otherwise. 
         """
         
-        return not 'ci' in self.mathml
+        mml = self.__mathml__()
+        
+        if mml.tagName == 'ci':
+            return False
+        
+        return len(self.__mathml__().getElementsByTagName('ci')) == 0
         # ci is the mathml notation for symbol, so we assume that 
         # if it's mathml has not the ci tag, then it has no symbols
+        # note that this does not work for symbols because en those, 'ci'
+        # is a top-level Tag
 
-    @property
-    def mathml(self):
-        """Returns a MathML expression representing the current object"""
-        assumptions = ""
-        for a in self._assumptions: 
-            if self._assumptions[a] is not None:
-                assumptions += str(a) + ":" + str(self._assumptions[a]) + ";"
-        return "<%s sympy:assumptions='%s'> %s </%s>" % (self.mathml_tag, assumptions, str(self), self.mathml_tag)
-    
     def print_tree(self):
         """The canonical tree representation"""
         return str(self)
@@ -535,18 +546,6 @@ class Basic(object):
             return filter(lambda x : isinstance(x, type), s_temp)
         return s_temp
 
-    @staticmethod
-    def _isnumber(x):
-        # TODO: remove
-        #don't use this function. Use x.is_number instead
-        from numbers import Number
-        from basic import Basic
-        from decimal import Decimal
-        if isinstance(x, (Number, int, float, long, Decimal)):
-            return True
-        assert isinstance(x, Basic)
-        return x.is_number
-    
     @staticmethod
     def _sign(x):
         """Return the sign of x, that is, 

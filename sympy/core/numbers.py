@@ -34,6 +34,17 @@ class Number(Basic):
         from functions import abs_
         return abs_(self)
     
+    def __mathml__(self):
+        import xml.dom.minidom
+        if self._mathml:
+            return self._mathml
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement(self.mathml_tag)
+        x.appendChild(dom.createTextNode(str(self)))
+        self._mathml = x
+        
+        return self._mathml
+    
     
     def diff(self,sym):
         return Rational(0)

@@ -31,6 +31,8 @@ class Integral(Basic):
     of the primitive_function() function.
 
     """
+    
+    mathml_tag = 'int'
 
     def __init__(self, f, args):
         "int_a^b f(x)  dx"
@@ -71,14 +73,26 @@ class Integral(Basic):
         a = stringPict( *a.right(" %s d%s" % (self.f.__pretty__(), self.x) ) )
         return a
             
-    @property
-    def mathml(self):
-        s = "<apply><int/>" + "<bvar>" + self.x.mathml + "</bvar>" 
-        if not isinstance(self.a, type(None)): # if this is a definite integral, put the integration limits
-            s += "<lowlimit>" + self.a.mathml + "</lowlimit>"
-            s += "<uplimit>" + self.b.mathml + "</uplimit>"
-        s += self.f.mathml + "</apply>"
-        return s
+    def __mathml__(self):
+        if self._mathml:
+            return self._mathml
+        import xml.dom.minidom
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement("apply")
+        x.appendChild(dom.createElement(self.mathml_tag))
+        
+        x_1 = dom.createElement('bvar')
+        x_2 = dom.createElement('lowlimit')
+        x_3 = dom.createElement('uplimit')
+        
+        x.appendChild(x_1)
+        x.appendChild(x_2)
+        x.appendChild(x_3)
+        x.appendChild( self.f.__mathml__() )
+        #TODO: add lowlimit, uplimit
+        self._mathml = x
+        
+        return self._mathml
             
     def diff(self,sym):
         if sym==self.x:
@@ -122,7 +136,7 @@ class Integral(Basic):
                 if f.exp==-1: return log(abs(x))
                 else: return x**(f.exp+1)/(f.exp+1)
 
-        a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
+        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
         integral_table = {
                 a/(b*x+c): a/b * log(abs(b*x+c)),
                 a*sin(b*x): -a/b * cos(b*x),

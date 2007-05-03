@@ -2,6 +2,7 @@
 
 from sympy.core import Basic
 from sympy.modules.mathml import c2p
+from sympy.modules.printing.xml_ import mathml
 import tempfile
 import os
 
@@ -12,7 +13,7 @@ def print_gtk(x):
     tmp = tempfile.mktemp() # create a temp file to store the result
     file = open(tmp, 'wb')
     
-    file.write( c2p(x.mathml, simple=True) )
+    file.write( c2p(mathml(x), simple=True) )
     file.close()
     
     os.system("mathmlviewer " + tmp)

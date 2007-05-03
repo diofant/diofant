@@ -57,6 +57,8 @@ class Pow(Basic):
             f += "(%s)"
         else:
             f += "%s"
+        if self.exp == -1:
+            return "(1/%s)" % str(self.base)
         return f % (str(self.base), str(self.exp))
     
         
@@ -99,13 +101,18 @@ class Pow(Basic):
             f += "{%s}"
         return f % (self.base.__latex__(),self.exp.__latex__())
     
-    @property
-    def mathml(self):
-        s = "<apply>" + "<" + self.mathml_tag + "/>"
-        for a in self._args:
-                s += a.mathml
-        s += "</apply>"
-        return s
+    def __mathml__(self):
+        import xml.dom.minidom
+        if self._mathml:
+            return self._mathml
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement("apply")
+        x_1 = dom.createElement(self.mathml_tag)
+        x.appendChild(x_1)
+        for arg in self._args:
+            x.appendChild( arg.__mathml__() )
+        self._mathml = x
+        return self._mathml
         
     @property
     def base(self):

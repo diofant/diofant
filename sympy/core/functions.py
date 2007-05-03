@@ -52,9 +52,16 @@ class Function(Basic):
         f = "%s(%s)"
         return f % (self.getname(),str(self._args))
 
-    @property
-    def mathml(self):
-        return "<apply><%s/> %s </apply>" % (self.mathml_tag, self._args.mathml)
+    def __mathml__(self):
+        import xml.dom.minidom
+        if self._mathml:
+            return self._mathml
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement("apply")
+        x.appendChild(dom.createElement(self.mathml_tag))
+        x.appendChild( self._args.__mathml__() )
+        self._mathml = x
+        return self._mathml
         
     def series(self, sym, n=6):
         from power import pole_error
@@ -65,7 +72,7 @@ class Function(Basic):
             pass
         #this only works, if arg(0) -> 0, otherwise we are in trouble
         arg = self._args.series(sym,n)
-        l = Symbol("l", is_dummy=True)
+        l = Symbol("l", dummy=True)
         #the arg(0) goes to z0
         z0 = arg.subs(log(sym),l).subs(sym,0)
         w = Symbol("w",True)
@@ -296,11 +303,13 @@ class sign(Function):
         return Rational(0)
 
 class Derivative(Basic):
+    
+    mathml_tag = 'diff'
 
     def __init__(self,f,x):
         Basic.__init__(self)
-        self.f=self.sympify(f)
-        self.x=self.sympify(x)
+        self.f = self.sympify(f)
+        self.x = self.sympify(x)
         self._args = (self.f, self.x)
         #i.e. self[:] = (f, x), which means self = f'(x)
         
@@ -311,6 +320,22 @@ class Derivative(Basic):
          a.baseline = a.baseline + 1
          a = prettyForm(binding=prettyForm.FUNC, *stringPict.next(a, f))
          return a
+     
+    def __mathml__(self):
+        if self._mathml:
+            return self._mathml
+        import xml.dom.minidom
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement("apply")
+        x.appendChild(dom.createElement(self.mathml_tag))
+        
+        x_1 = dom.createElement('bvar')
+        
+        x.appendChild(x_1)
+        x.appendChild( self.f.__mathml__() )
+        x.childNodes[1].appendChild( self.x.__mathml__() )
+        self._mathml = x
+        return self._mathml
 
     def eval(self):
         from addmul import Mul

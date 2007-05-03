@@ -67,9 +67,6 @@ from sympy.modules.trigonometric import sin, cos, tan, atan
 from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
+from sympy.modules.simplify import ratsimp, simplify
 
-# try to import optinal modules
-try: 
-    from sympy.modules.printing import print_gtk, print_latex
-except ImportError:
-    pass
+from sympy.modules.printing import pretty_print, pprint

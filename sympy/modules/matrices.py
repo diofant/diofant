@@ -129,7 +129,7 @@ class Matrix(object):
     def hash(self):
         """Compute a hash every time, because the matrix elements
         could change."""
-        return hash(self.mathml)
+        return hash(self.__str__() )
 
     def __rmul__(self,a):
         assert not isinstance(a,Matrix)
@@ -231,13 +231,12 @@ class Matrix(object):
             s+="\n"
         return s
 
-    @property
-    def mathml(self):
+    def __mathml__(self):
         mml = ""
         for i in range(self.lines):
             mml += "<matrixrow>"
             for j in range(self.cols):
-                mml += self[i,j].mathml
+                mml += self[i,j].__mathml__()
             mml += "</matrixrow>"
         return "<matrix>" + mml + "</matrix>"
 

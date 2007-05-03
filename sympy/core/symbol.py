@@ -25,21 +25,24 @@ class Symbol(Basic):
     
     dummy_num = 0
 
-    def __init__(self, name, *args, **kwargs):
-        """if is_dummy==True, then this Symbol is totally unique, i.e.::
+    def __init__(self, name, commutative=True, dummy=False, real=False, 
+                 *args, **kwargs):
+        """if dummy == True, then this Symbol is totally unique, i.e.::
         
         >>> Symbol("x") == Symbol("x")
         True
         
         but with the dummy variable ::
         
-        >>> Symbol("x", is_dummy = True) == Symbol("x", is_dummy = True)
+        >>> Symbol("x", dummy = True) == Symbol("x", dummy = True)
         False
 
         """
         
         self._assumptions = {
-                         'is_commutative' : True,
+                         'is_commutative' : commutative,
+                         'is_dummy': dummy, 
+                         'is_real': real, 
                          }
         
         for k in kwargs.keys():
@@ -59,6 +62,17 @@ class Symbol(Basic):
         else:
             # if x is dummy
             return str(self.name + '__' + str(self.dummy_num))
+        
+    def __mathml__(self):
+        import xml.dom.minidom
+        if self._mathml:
+            return self._mathml
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement(self.mathml_tag)
+        x.appendChild(dom.createTextNode(self.name))
+        self._mathml = x
+        
+        return self._mathml
 
     def hash(self):
         if self._mhash: 

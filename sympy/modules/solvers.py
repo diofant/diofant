@@ -27,7 +27,7 @@ def solve(eq, vars):
     #currently only solve for one function
     if isinstance(vars, Symbol) or len(vars) == 1:
         x = vars[0]
-        a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
+        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
 
         r = eq.match(a*x + b, [a,b]) # linear equation
         if r and _wo(r,x): return solve_linear(r[a], r[b])
@@ -38,7 +38,7 @@ def solve(eq, vars):
         r = eq.match(a*x**2 + b*x + c, [a,b,c]) # quadratic equation
         if r and _wo(r,x): return solve_quadratic(r[a], r[b], r[c])
         
-        d = Symbol('d', is_dummy=True)        
+        d = Symbol('d', dummy=True)        
         r = eq.match(a*x**3 + b*x**2 + c*x + d, [a,b,c,d])
         if r and _wo(r, x): return solve_cubic(r[a], r[b], r[c], r[d])
         
@@ -136,7 +136,7 @@ def dsolve(eq, funcs):
             f = funcs
             
         x = f[0]
-        a,b,c = [Symbol(s, is_dummy = True) for s in ["a","b","c"]]
+        a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
 
         r = eq.match(a*Derivative(f,x) + b, [a,b])
         if r and _wo(r,f): return solve_ODE_first_order(r[a], r[b], f, x)
@@ -150,13 +150,13 @@ def dsolve(eq, funcs):
         r = eq.match(tt, [a])
         if r:
             #check, that we've rewritten the equation correctly:
-            assert ( diff(t, x,2)*r[a]/t ).expand() == eq
+            #assert ( r[a]*diff(t, x,2)/t ) == eq.subs(f, t)
             return solve_ODE_1(f, x)
         eq = (eq*exp(f)/exp(-f)).expand()
         r = eq.match(tt, [a])
         if r:
             #check, that we've rewritten the equation correctly:
-            assert ( diff(t, x,2)*r[a]/t ).expand() == eq
+            #assert ( diff(t, x,2)*r[a]/t ).expand() == eq
             return solve_ODE_1(f, x)
 
     raise NotImplementedError("Sorry, can't solve it (yet)")

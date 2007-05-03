@@ -203,18 +203,3 @@ def test_powerbug():
     assert x**129 != (-x)**129 
 
     assert (2*x)**2 == (-2*x)**2 
-
-def test_ratsimp():
-    x = Symbol("x")
-    y = Symbol("y")
-    e = 1/x+1/y
-    assert e != (x+y)/(x*y)
-    assert e.ratsimp() == (x+y)/(x*y)
-
-    e = -x-y-(x+y)**(-1)*y**2+(x+y)**(-1)*x**2
-    assert e != -2*y
-    assert e.ratsimp() == -2*y
-
-    e = x/(x+y)+y/(x+y)
-    assert e != 1
-    assert e.ratsimp() == 1

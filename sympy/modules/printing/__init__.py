@@ -20,4 +20,4 @@ from pretty import pretty_print, pprint, pretty
 from gtk import print_gtk
 from latex import latex, print_latex
 from pygame_ import print_pygame, view
-from xml_ import print_xml
+from xml_ import print_mathml, mathml

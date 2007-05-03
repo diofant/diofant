@@ -52,7 +52,7 @@ def test_subbug1():
     e=(x**x).subs(x,1.0)
 
 def test_dict():
-    x,a,b,c = [Symbol(s, is_dummy = True) for s in ["x","a","b","c"]]
+    x,a,b,c = [Symbol(s, dummy = True) for s in ["x","a","b","c"]]
     f = 3*cos(4*x)
     r = f.match(a*cos(b*x), [a,b])
     assert r == {a: 3, b: 4}

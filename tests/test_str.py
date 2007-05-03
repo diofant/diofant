@@ -12,6 +12,10 @@ y = g.Symbol('y')
 z = g.Symbol('z')
 w = g.Symbol('w')
 
+
+def test_pow():
+    assert str(1/x) == "(1/x)"
+
 def test_poly_str():
     #if any of these tests fails, it can still be correct, just the terms can
     #be in a different order. That happens for example when we change the 
@@ -56,12 +60,6 @@ def test_bug4():
             "-2*x**1/2(-1/2)*x**(-1/2)*w","-2*x**1/2-1/2*x**-1/2*w"]
     assert str(e) in ["-2*x**(1/2)-1/2*x**(-1/2)*w", "-2*x**(1/2)-1/2*w*x**(-1/2)", 
                       "-1/2*x**(-1/2)*w-2*x**(1/2)", "-1/2*w*x**(-1/2)-2*x**(1/2)"]
-
-def test_bug5():
-    x=Symbol("x")
-    e=1/x
-    assert str(e) != "x**-1"
-    assert str(e) == "x**(-1)"
 
 def test_Derivative():
     x = Symbol("x")

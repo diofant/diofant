@@ -22,14 +22,19 @@ class Pair(Basic):
             assert isinstance(arg, Basic)
         self._args = args
         
-    
-    @property
-    def mathml(self):
-        s = "<apply>" + "<" + self.mathml_tag + "/>"
-        for a in self._args:
-            s += a.mathml
-        s += "</apply>"
-        return s
+    def __mathml__(self):
+        """Returns a MathML expression representing the current object"""
+        import xml.dom.minidom
+        if self._mathml:
+            return self._mathml
+        dom = xml.dom.minidom.Document()
+        x = dom.createElement('apply')
+        x_1 = dom.createElement(self.mathml_tag)
+        x.appendChild(x_1)
+        for arg in self._args:
+            x.appendChild( arg.__mathml__() )
+        self._mathml = x
+        return self._mathml
     
     def tryexpand(self, a):
         if isinstance(a,Mul) or isinstance(a,Pow):
@@ -455,7 +460,7 @@ class Mul(Pair):
         a,b = self.getab()
         a = self.tryexpand(a)
         b = self.tryexpand(b)
-        if isinstance(a,Add):
+        if isinstance(a, Add):
             d = Rational(0)
             for t in a[:]:
                 d += (t*b).expand()
@@ -570,14 +575,6 @@ class Add(Pair):
             else:
               f += "+%s" % self[i].__latex__()
         return f    
-
-    @property
-    def mathml(self):
-        s = "<apply>" + "<" + self.mathml_tag + "/>"
-        for a in self._args:
-            s += a.mathml
-        s += "</apply>"
-        return s              
 
     def getab(self):
         """Pretend that self = a+b and return a,b
@@ -714,34 +711,6 @@ class Add(Pair):
         for x in self:
             r+=x.combine()
         return r
-
-    def ratsimp(self):
-        from symbol import Symbol
-        from power import Pow
-        def get_num_denum(x):
-            """Matches x = a/b and returns a/b."""
-            a = Symbol("a", is_dummy = True)
-            b = Symbol("b", is_dummy = True)
-            r = x.match(a/b,[a,b])
-            if r is not None and len(r) == 2:
-                return r[a],r[b]
-            return x, 1
-        x,y = self.getab()
-        a,b = get_num_denum(x.ratsimp())
-        c,d = get_num_denum(y.ratsimp())
-        num = a*d+b*c
-        denum = b*d
-        #we need to cancel common factors from numerator and denumerator
-        #but SymPy doesn't yet have a multivariate polynomial factorisation
-        #so until we have it, we are just returning the correct results here
-        #to pass all tests... 
-        if isinstance(denum,Pow):
-            e = (num/denum[0]).expand()
-            f = (e/(-2*Symbol("y"))).expand()
-            if f == denum/denum[0]:
-                return -2*Symbol("y")
-            return e/(denum/denum[0])
-        return num/denum
     
     def subs(self,old,new):
         d = Rational(0)
