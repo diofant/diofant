@@ -1,6 +1,6 @@
 from sympy.core import Basic, Symbol, Number, Mul, Pow, log, Add
 from sympy.modules import cos, sin
-from sympy.core.stringPict import stringPict
+from sympy.core.stringPict import stringPict, prettyForm
 
 class IntegralError(Exception):
     pass
@@ -63,14 +63,14 @@ class Integral(Basic):
         
     def __pretty__(self):
         if self.a is not None:
-            a = stringPict("|")
-            a = stringPict(*a.below("/ %s" % self.a))
-            a = stringPict(*a.top("/ %s" % self.b))
+            a = prettyForm('|')
+            a = prettyForm(*a.below("/ %s" % self.a))
+            a = prettyForm(*a.top("/ %s" % self.b))
         else: 
-            a = stringPict("|")
-            a = stringPict(*a.below("/"))
-            a = stringPict(*a.top("/"))
-        a = stringPict( *a.right(" %s d%s" % (self.f.__pretty__(), self.x) ) )
+            a = prettyForm("|")
+            a = prettyForm(*a.below("/"))
+            a = prettyForm(*a.top("/"))
+        a = prettyForm( *stringPict.next(a, " ",  self.f.__pretty__(), " d" , self.x.__pretty__() ) )
         return a
             
     def __mathml__(self):

@@ -32,8 +32,14 @@ def test_pretty_functions():
     
     
 def test_pretty_integrals():
-    f = integrate(log(x), x, evaluate=False)
-    assert pretty( f ) in ['/          \n| log(x) dx\n/          ']
+    f_1 = integrate(log(x), x, evaluate=False)
+    assert pretty( f_1 ) == '/          \n| log(x) dx\n/          '
+    
+    f_2 = integrate(x**2, x, evaluate=False)
+    assert pretty( f_2 ) == '/  2   \n| x  dx\n/      '
+    
+    f_3 = integrate(x**(2**x), x, evaluate=False) # double nesting of pow
+    assert pretty( f_3 ) == '   / x\\   \n/  \\2 /   \n| x     dx\n/         '
     
 def test_pretty_limits():
     assert pretty( limit(x, x, oo, evaluate=False) ) == ' lim x\nx->oo '
