@@ -311,9 +311,9 @@ class Mul(Pair):
                 return Pow(xbase*ybase, xexp, evaluate=False), True
             elif xexp == -yexp:
                 if xexp > 0:
-                    return Pow(xbase/ybase, xexp, evaluate=False), True
+                    return Pow(xbase/ybase, xexp), True
                 else:
-                    return Pow(ybase/xbase, yexp, evaluate=False), True
+                    return Pow(ybase/xbase, yexp), True
             else:
                 return x, False
         else:

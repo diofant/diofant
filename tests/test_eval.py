@@ -2,9 +2,9 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import log,exp
+from sympy import *
 
-def testeval():
+def test_eval():
     a=g.Symbol("a")
     b=g.Symbol("b")
     e=a+b+a+b
@@ -44,6 +44,10 @@ def test_evalpow_bug():
     assert e==x
     e=1/(-1/x)
     assert e==-x
+    
+def test_mul_eval():
+    x = Symbol('x')
+    assert sqrt(50)/(sqrt(2)*x) == 5/x
 
 
 def test_expbug():

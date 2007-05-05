@@ -292,7 +292,6 @@ class Basic(object):
             >>> is_real("2e-45")
             True
         """
-        
         if isinstance(a, Basic):
             #most common case
             return a
@@ -495,17 +494,10 @@ class Basic(object):
         """Return True if self is a number. False otherwise. 
         """
         
-        mml = self.__mathml__()
+        from sympy.core.symbol import Symbol
         
-        if mml.tagName == 'ci':
-            return False
+        return self.atoms(type=Symbol) == []
         
-        return len(self.__mathml__().getElementsByTagName('ci')) == 0
-        # ci is the mathml notation for symbol, so we assume that 
-        # if it's mathml has not the ci tag, then it has no symbols
-        # note that this does not work for symbols because en those, 'ci'
-        # is a top-level Tag
-
     def print_tree(self):
         """The canonical tree representation"""
         return str(self)
