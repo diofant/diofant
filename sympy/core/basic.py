@@ -532,7 +532,12 @@ class Basic(object):
         from sympy.core.symbol import Symbol
 
         atoms_class = (Number, Symbol)
-
+        
+        if isinstance(self, atoms_class):
+            if type is None:
+                return [self]
+            return filter(lambda x : isinstance(x, type), [self])
+                
         s_temp = s[:] # make a copy to avoid collision with global s
         for arg in self:
             if isinstance(arg, atoms_class):

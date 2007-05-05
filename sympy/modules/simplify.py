@@ -33,7 +33,7 @@ def ratsimp(expr):
         a = Symbol("a", dummy = True)
         b = Symbol("b", dummy = True)
         r = x.match(a/b,[a,b])
-        if len(r) == 2:
+        if r is not None and len(r) == 2:
             return r[a],r[b]
         return x, 1
     x,y = expr.getab()

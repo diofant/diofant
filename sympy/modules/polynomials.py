@@ -94,8 +94,14 @@ def get_poly(p, x):
     if isinstance(p, Pow):
         if isinstance(p.exp, Rational) and p.exp.is_integer:
             n = int(p.exp)
-            if n>0 and isinstance(p.base, Symbol):
-                return [(1,n)]
+            if n>0:
+                if isinstance(p.base, Symbol):
+                    return [(1,n)]
+                else:
+                    # FIXME The return value isn't correct, but at least it
+                    #       doesn't break is_poly
+                    get_poly(p.base, x)
+                    return [(1,n)]
     if isinstance(p,Add):
         a,b = p.getab()
         r = get_poly(a,x) + get_poly(b,x)

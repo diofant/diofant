@@ -6,7 +6,7 @@ This is a central part of the core
 """
 
 from sympy.core.basic import Basic
-from sympy.core.numbers import Number, Rational, Real, Infinity
+from sympy.core.numbers import Rational, Real, Infinity
 from sympy.core.power import Pow, pole_error
 
 from sympy.core.stringPict import prettyForm
@@ -287,7 +287,8 @@ class Mul(Pair):
             if z2:
                 return z2, True
         
-        if isinstance(x, Infinity) or isinstance(y, Infinity):
+        # if it contains infinity
+        if (x.atoms(type=Infinity) != []) or y.atoms(type=Infinity) != []:
             return x, False
 
         if isinstance(x,(Real, Rational)) and isinstance(y, (Real, Rational)):
@@ -302,8 +303,19 @@ class Mul(Pair):
                 e = Add(xexp,yexp)
                 if e != 0:
                     return Pow(xbase,e,evaluate=False), True
-
             return Pow(xbase,Add(xexp,yexp)), True
+        elif xexp == 1 or yexp == 1 or xexp == -1 or yexp == -1:
+            return x, False
+        elif xexp.is_number and yexp.is_number:
+            if xexp == yexp:
+                return Pow(xbase*ybase, xexp, evaluate=False), True
+            elif xexp == -yexp:
+                if xexp > 0:
+                    return Pow(xbase/ybase, xexp, evaluate=False), True
+                else:
+                    return Pow(ybase/xbase, yexp, evaluate=False), True
+            else:
+                return x, False
         else:
             return x, False
             

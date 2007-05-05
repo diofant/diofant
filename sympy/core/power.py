@@ -44,6 +44,12 @@ class Pow(Basic):
         
     def __str__(self):
         from addmul import Pair
+        if self.exp == -1:
+            if isinstance(self.base, Pair):
+                return "(1/(%s))" % str(self.base)
+            else:
+                return "(1/%s)" % str(self.base)
+
         f = ""
         if isinstance(self.base,Pair) or isinstance(self.base,Pow):
             f += "(%s)"
@@ -57,8 +63,6 @@ class Pow(Basic):
             f += "(%s)"
         else:
             f += "%s"
-        if self.exp == -1:
-            return "(1/%s)" % str(self.base)
         return f % (str(self.base), str(self.exp))
     
         
