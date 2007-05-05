@@ -58,14 +58,23 @@ def test_addmul_eval():
     e = a*g.Rational(2)+a
     assert e == 3*a
     
+def test_pow_eval():
+    
+    assert sqrt(-4) == 2*I
+    assert sqrt( 4) == 2
+    
+    assert (8)**Rational(1,3) == 2
+    
+    assert sqrt(-2) == I*sqrt(2)
+    assert (-10)**Rational(1,3) != I*((10)**Rational(1,3))
     
 def test_mulpow_eval():
     x = Symbol('x')
     
     assert sqrt(50)/(sqrt(2)*x) == 5/x
-    #assert sqrt(-2) == I*sqrt(2)
-
-
+    assert sqrt(27)/sqrt(3) == 3
+    
+    
 def test_evalpow_bug():
     x = Symbol("x")
     

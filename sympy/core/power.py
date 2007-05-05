@@ -128,11 +128,13 @@ class Pow(Basic):
         
     def eval(self):
         from addmul import Mul
-        if isinstance(self.exp,Rational) and self.exp.iszero():
+        if isinstance(self.exp, Rational) and self.exp.iszero():
             return Rational(1)
-        if isinstance(self.exp,Rational) and self.exp.isone():
+        
+        if isinstance(self.exp, Rational) and self.exp.isone():
             return self.base
-        if isinstance(self.base,Rational) and self.base.iszero():
+        
+        if isinstance(self.base, Rational) and self.base.iszero():
             if isinstance(self.exp,Rational):# and self.exp.is_integer:
                 if self.exp.iszero():
                     raise pole_error("pow::eval(): 0^0.")
@@ -140,10 +142,10 @@ class Pow(Basic):
                     raise pole_error("%s: Division by 0." % str(self))
             return Rational(0)
         
-        if isinstance(self.base,Rational) and self.base.isone():
+        if isinstance(self.base, Rational) and self.base.isone():
             return Rational(1)
         
-        if isinstance(self.base,Real) and isinstance(self.exp,Real):
+        if isinstance(self.base, Real) and isinstance(self.exp,Real):
             return self
         
         if isinstance(self.base, Rational) and isinstance(self.exp, Rational):
@@ -156,32 +158,47 @@ class Pow(Basic):
             if self.base.is_integer:
                 a = int(self.base)
                 bq = self.exp.q
-                if a>0:
-                    x = int(a**(1./bq)+0.5)
-                    if x**bq == a:
-                        assert isinstance(x,int)
-                        return Rational(x)**self.exp.p
-        if isinstance(self.base,Pow): 
+                if a > 0:
+                    const = 1 # constant, will multiply the final result (it will do nothing in this case)
+                if a < 0:
+                    const = ImaginaryUnit()  # do sqrt(-2) -> I*sqrt(2)
+                    a = -a
+                x = int(a**(1./bq)+0.5) 
+                if x**bq == a: # if we can write self.base as integer**self.exp.q
+                    assert isinstance(x,int)
+                    return const*Rational(x)**self.exp.p
+                elif self.base < 0 and self.exp == Rational(1,2):
+                    # case base negative && not a perfect number, like sqrt(-2)
+                    # TODO: implement for exponent of 1/4, 1/6, 1/8, etc.
+                    return ImaginaryUnit()*Pow(-self.base, self.exp, evaluate=False)
+                    
+        if isinstance(self.base, Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
-        if isinstance(self.base,exp): 
+        
+        if isinstance(self.base, exp): 
             if self.base.is_number:
                 return exp(self.exp*self.base._args)
-        if isinstance(self.base,Mul): 
+            
+        if isinstance(self.base, Mul): 
             a,b = self.base.getab()
             if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
                 return (Pow(a,self.exp) * Pow(b,self.exp))
+            
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.is_integer:
                 if int(self.exp) % 2 == 0:
                     return Rational(-1) ** ((int(self.exp) % 4)/2)
+                
         if isinstance(self.exp,Rational) and self.exp.is_integer:
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
                     n = self.base[0]
                     if n.is_number and n < 0:
                         return (-self.base)**self.exp
+                    
         if isinstance(self[0],Real) and self[1].is_number:
             return Real(self[0]**self[1].evalf())
+        
         if not self.base.is_commutative:
             if isinstance(self.exp, Rational) and self.exp.is_integer:
                     n = int(self.exp)
