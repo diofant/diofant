@@ -161,7 +161,7 @@ class Pow(Basic):
                 if a > 0:
                     const = 1 # constant, will multiply the final result (it will do nothing in this case)
                 if a < 0:
-                    const = ImaginaryUnit()  # do sqrt(-2) -> I*sqrt(2)
+                    const = ImaginaryUnit()  # do sqrt(-4) -> I*4
                     a = -a
                 x = int(a**(1./bq)+0.5) 
                 if x**bq == a: # if we can write self.base as integer**self.exp.q
