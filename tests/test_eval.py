@@ -60,13 +60,18 @@ def test_addmul_eval():
     
 def test_pow_eval():
     
+    assert (-1)**Rational(1,2) == I
+    assert (-1)**Rational(1,3) == Rational(1,2)+Rational(1,2)*I*3**Rational(1,2)
+    
     assert sqrt(-4) == 2*I
     assert sqrt( 4) == 2
     
     assert (8)**Rational(1,3) == 2
     
     assert sqrt(-2) == I*sqrt(2)
+    assert (-1)**Rational(1,3) != I
     assert (-10)**Rational(1,3) != I*((10)**Rational(1,3))
+    assert (-2)**Rational(1,4) != (2)**Rational(1,4)
     
 def test_mulpow_eval():
     x = Symbol('x')

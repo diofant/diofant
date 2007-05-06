@@ -154,6 +154,13 @@ class Pow(Basic):
                     return Rational(self.base.p ** self.exp.p , self.base.q ** self.exp.p)
                 else:
                     return Rational(self.base.q ** (-self.exp.p) , self.base.p ** (-self.exp.p) )
+            if self.base == -1:
+                # calculate the roots of -1
+                from sympy.modules.trigonometric import sin, cos
+                from sympy.core.numbers import pi
+                r = cos(pi/self.exp.q) + ImaginaryUnit()*sin(pi/self.exp.q)
+                return r**self.exp.p
+                        
                 
             if self.base.is_integer:
                 a = int(self.base)
@@ -161,16 +168,16 @@ class Pow(Basic):
                 if a > 0:
                     const = 1 # constant, will multiply the final result (it will do nothing in this case)
                 if a < 0:
-                    const = ImaginaryUnit()  # do sqrt(-4) -> I*4
+                    const = (-1)** (self.exp)  # do sqrt(-4) -> I*4
                     a = -a
-                x = int(a**(1./bq)+0.5) 
+                x = int(a**(1./bq)+0.5)
                 if x**bq == a: # if we can write self.base as integer**self.exp.q
                     assert isinstance(x,int)
                     return const*Rational(x)**self.exp.p
-                elif self.base < 0 and self.exp == Rational(1,2):
+                elif self.base < 0:
                     # case base negative && not a perfect number, like sqrt(-2)
                     # TODO: implement for exponent of 1/4, 1/6, 1/8, etc.
-                    return ImaginaryUnit()*Pow(-self.base, self.exp, evaluate=False)
+                    return ((-1)**self.exp)*Pow(-self.base, self.exp, evaluate=False)
                     
         if isinstance(self.base, Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
