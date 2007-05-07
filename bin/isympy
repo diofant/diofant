@@ -46,7 +46,6 @@ object? -> Details about 'object'. ?object also works, ?? prints more.
 
 basic_import_code = """
 from sympy import *
-from sympy.modules.printing.pretty import pretty_print, pprint, pretty
 """
 
 init_code = """
