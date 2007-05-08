@@ -352,7 +352,7 @@ class test_sympy_doc(Command):
             files.remove('sympy/modules/printing/latex.py')
             files.remove('sympy/modules/printing/__init__.py')
         try:
-            import matplotlib
+            import pylab
         except ImportError:
             files.remove('sympy/modules/graphing.py')
 
