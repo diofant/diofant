@@ -67,3 +67,8 @@ def test_Derivative():
     assert str(e) == "(x**2)'"
 
     
+def test_x_div_y():
+    x = Symbol("x")
+    y = Symbol("y")
+    assert str(x/y) == "x/y"
+    assert str(y/x) == "y/x"

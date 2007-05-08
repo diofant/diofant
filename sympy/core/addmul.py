@@ -226,13 +226,28 @@ class Mul(Pair):
             elif a[0].isone():
                 f = ""
                 a = self._args[1:]
+
+        num = [] # items in numerator
+        den = [] # items in denominator
         for x in a:
-            if isinstance(x, Pair):
-                f += "(%s)*"
+            if isinstance(x, Pow) and x.exp == -1:
+                if isinstance(x.base, Pair):
+                    den.append( "(" + str(x.base) + ")" )
+                else:
+                    den.append( str(x.base) )
             else:
-                f += "%s*"
-        f = f[:-1]
-        return f % tuple([str(x) for x in a])
+                if isinstance(x, Pair):
+                    num.append( "(" + str(x) + ")" )
+                else:
+                    num.append( str(x) )
+
+        snum = str.join('*', num)
+        if len(den) == 0:
+            return "%s%s" % (f, snum)
+        else:
+            sden = str.join('*', den)
+            if len(den) > 1: sden = "(" + sden + ")"
+            return "%s%s/%s" % (f, snum, sden)
     
     def __float__(self):
         a = 1
