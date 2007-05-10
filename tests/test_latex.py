@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 from sympy import *
-from sympy.modules.printing import latex
+from sympy.modules.printing.latex import latex
 
 x = Symbol('x')
 

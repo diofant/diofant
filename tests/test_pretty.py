@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 from sympy import *
-from sympy.modules.printing import pretty
+from sympy.modules.printing.pretty import pretty
 
 x = Symbol('x')
 y = Symbol('y')

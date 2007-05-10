@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 from sympy import Symbol, Rational, sqrt, log, sin
-import sympy.modules.graphing as g
+#import sympy.modules.graphing as g
 
 x = Symbol('x')
 

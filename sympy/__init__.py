@@ -69,4 +69,5 @@ from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
 from sympy.modules.simplify import ratsimp, simplify
 
-from sympy.modules.printing import pretty_print, pprint
+from sympy.modules.printing.pretty import pretty, pretty_print, pprint
+from sympy.modules.printing.mathml import mathml

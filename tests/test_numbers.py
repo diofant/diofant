@@ -5,7 +5,7 @@ import sympy as g
 from sympy import Rational, Symbol, Real, sqrt
 import py
 
-def testRational():
+def test_Rational():
     n1=g.Rational(1,4)
     n2=g.Rational(1,3)
     n3=g.Rational(2,4)
@@ -31,7 +31,7 @@ def testRational():
     assert str(n2**n8) == "27"
     assert str(n7**n8) == "1/27"
 
-def testRational_comparisons():
+def test_Rational_cmp():
     n1=g.Rational(1,4)
     n2=g.Rational(1,3)
     n3=g.Rational(2,4)
@@ -64,7 +64,12 @@ def test_Real():
     a = g.Real(2) ** g.Real(4)
     assert a.evalf() == g.Real(16.0)
 
-def test_inf():
+
+def test_Real_eval():
+    a = Real(3.2)
+    assert isinstance(a**2, Real)
+
+def test_Infinity():
     assert g.oo == g.oo
     assert g.oo != 1
     assert 1*g.oo == g.oo
@@ -80,13 +85,11 @@ def test_powers():
     assert 64**(g.Rational(2)/3)==16
     assert 24*64**(-g.Rational(1)/2)==3
 
-def test_realbug():
-    x=g.Symbol("x")
-    assert str(2.0*x*x) in ["(2.000*x)*x","2.000*x**2"]
-    assert str(2.1*x*x)!="(2.0*x)*x"
+def test_accept_int():
+    assert g.Real(4) == 4
 
-def test_acceptint():
-    g.Real(4)
+def test_accept_str():
+    assert g.Real("0.2") == 0.2
 
 def test_complex():
     x=Symbol("x", is_real=True)
@@ -121,9 +124,11 @@ def test_int():
     a=Rational(5)
     assert int(a)==5
 
-def test_sqrtbug():
+def test_real_bug():
+    x=g.Symbol("x")
+    assert str(2.0*x*x) in ["(2.000*x)*x","2.000*x**2"]
+    assert str(2.1*x*x)!="(2.0*x)*x"
+
+def test_bug_sqrt():
     assert ((sqrt(Rational(2))+1)*(sqrt(Rational(2))-1)).expand() == 1
 
-def test_Real_eval():
-    a = Real(3.2)
-    assert isinstance(a**2, Real)

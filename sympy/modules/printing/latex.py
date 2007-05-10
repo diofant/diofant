@@ -18,7 +18,7 @@ def latex(x):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> y = Symbol('y')
-        >>> from sympy.modules.printing import print_latex
+        >>> from sympy.modules.printing.latex import latex
         >>> print latex( integrate(x*y-2, x, evaluate=False))
         $\int -2+x y\,dx$
         

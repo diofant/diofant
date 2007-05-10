@@ -15,10 +15,10 @@ Example
 
 from sympy import Symbol, Basic
 
-#try:
-#    import pylab
-#except ImportError:
-#    raise ImportError("To use this module you will need matplotlib (on debian, python-matplotlib)")
+try:
+    import pylab
+except ImportError:
+    raise ImportError("To use this module you will need matplotlib (on debian, python-matplotlib)")
 
 def plot(f, var=None, plot_points=100, axis=True, show=True, grid=True, title=None, xlabel=None, ylabel=None):
     """
