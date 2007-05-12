@@ -384,6 +384,9 @@ class Basic(object):
         n = Symbol("dummy", dummy = True)
         return self.subs(sub,n)!=self
         
+    def has_any(self, subs):
+        return len ([sub for sub in subs if self.has(sub) == True]) > 0
+
     def leadterm(self,x):
         """Returns the leading term c0*x^e0 of the power series 'self' in x
         with the lowest power of x in a form (c0,e0)

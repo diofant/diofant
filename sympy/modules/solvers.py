@@ -7,6 +7,8 @@ from sympy import Basic, Symbol, Number, Mul, log, Add, \
         sin, cos, integrate, sqrt, exp, Rational
         
 from sympy.core.functions import Derivative, diff
+from sympy.modules.polynomials import collect
+from sympy.modules.matrices import zeronm
 
 def solve(eq, vars):
     """
@@ -23,8 +25,7 @@ def solve(eq, vars):
     
     if isinstance(vars, Basic):
         vars = [vars]
-    
-    #currently only solve for one function
+
     if isinstance(vars, Symbol) or len(vars) == 1:
         x = vars[0]
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
@@ -44,8 +45,117 @@ def solve(eq, vars):
         
         r = eq.match(a*x**3 - b*x + c)
         if r and _wo(r, x): return solve_cubic(r[a], 0, r[b], r[c])
+    else:
+        # augmented matrix
+        n, m = len(eq), len(vars)
+        matrix = zeronm(n, m+1)
+        
+        index = {}
+        
+        for i in range(0, len(vars)):
+            index[vars[i]] = i
+        
+        for i in range(0, n):
+            poly = collect(Basic.sympify(eq[i]).expand(), vars)
+        
+            if poly is not None:
+                content, tail = poly
+            else:
+                break # at this point we will need Groebner basis 
+                      # and multivariate polynomial factorization
+
+            for (sym, coeff) in content.iteritems():
+                matrix[i, index[sym]] = coeff
+                
+            matrix[i, m] = -tail
+        else:
+            return solve_linear_system(matrix, vars)
 
     raise "Sorry, can't solve it (yet)."
+
+def solve_linear_system(matrix, syms):
+    i, m = 0, matrix.cols-1 # don't count augmentation
+
+    while i < matrix.lines:
+        if matrix [i, i] == 0:
+            # there is no pivot in current column
+            # so try to find one in other colums
+            for k in range(i+1, m):
+                if matrix[i, k] != 0:
+                    break
+            else:
+                if matrix[i, m] != 0:
+                    return {}   # no solutions
+                else:
+                    # zero row or was a linear combination of 
+                    # other rows so now we can safely skip it
+                    matrix.row_del(i)
+                    continue
+    
+            # we want to change the order of colums so
+            # the order of variables must also change
+            syms[i], syms[k] = syms[k], syms[i]            
+            matrix.col_swap(i, k)
+            
+        pivot = matrix [i, i] 
+
+        # divide all elements in the current row by the pivot
+        matrix.row(i, lambda x, _: x / pivot)
+            
+        for k in range(i+1, matrix.lines):
+            if matrix[k, i] != 0:
+                coeff = matrix[k, i]
+                
+                # subtract from the current row the row containing 
+                # pivot and multiplied by extracted coefficient
+                matrix.row(k, lambda x, j: x - matrix[i, j]*coeff)
+            
+        i += 1
+       
+    # if there weren't any problmes, augmented matrix is now
+    # in row-echelon form so we can check how many solutions
+    # there are and extract them using back substitution
+
+    if len(syms) == matrix.lines:
+        # this system is Cramer equivalent so there is
+        # finite number of solutions, exactly len(syms)
+        k, solutions = i-1, {}
+
+        while k >= 0:
+            content = matrix[k, m]
+
+            # make back substitution for variables
+            for j in range(k+1, m):
+                content -= matrix[k, j]*solutions[syms[j]]
+    
+            solutions[syms[k]] = content.expand()
+            
+            k -= 1
+            
+        return solutions
+    elif len(syms) > matrix.lines:
+        # this system will have infinite number of solutions
+        # dependent on exactly len(syms) - i parameters
+        k, solutions = i-1, {}
+
+        while k >= 0:
+            content = matrix[k, m]
+
+            # make back substitution for variables
+            for j in range(k+1, i):
+                content -= matrix[k, j]*solutions[syms[j]]
+    
+            # make back substitution for parameters
+            for j in range(i, m):
+                content -= matrix[k, j]*syms[j]
+                
+            solutions[syms[k]] = content.expand()
+            
+            k -= 1
+            
+        return solutions
+    else:
+        return {}   # no solutions
 
 def solve_linear(a, b):
     """Solve a*x + b == 0"""

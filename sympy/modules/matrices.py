@@ -239,6 +239,28 @@ class Matrix(object):
                 mml += self[i,j].__mathml__()
             mml += "</matrixrow>"
         return "<matrix>" + mml + "</matrix>"
+        
+    def row(self, i, f):
+        """Elementary row operation using functor"""
+        for j in range(0, self.cols):
+            self[i, j] = f(self[i, j], j)
+            
+    def col(self, j, f):
+        """Elementary column operation using functor"""
+        for i in range(0, self.lines):
+            self[i, j] = f(self[i, j], j)
+            
+    def row_swap(self, i, j):
+        for k in range(0, self.cols):
+            self[i, k], self[j, k] = self[j, k], self[i, k]
+            
+    def col_swap(self, i, j):
+        for k in range(0, self.lines):
+            self[k, i], self[k, j] = self[k, j], self[k, i]
+
+    def row_del(self, i):
+        self.mat = self.mat[:i*self.cols] + self.mat[(i+1)*self.cols:]
+        self.lines -= 1
 
 def zero(n):
     return zeronm(n,n)
