@@ -84,9 +84,11 @@ class sin(Function):
 
         return self
 
-    def evalf(self, precision=28):
+    def evalf(self, precision=18):
         if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
+        if precision <= 18:
+            return math.sin(self._args)
         decimal.getcontext().prec = precision + 2
         x = Real(self._args)
         i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
@@ -194,9 +196,11 @@ class cos(Function):
 
         return self
 
-    def evalf(self, precision=28):
+    def evalf(self, precision=18):
         if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
+        if precision <= 18:
+            return math.cos(self._args)
         decimal.getcontext().prec = precision + 2
         x = Real(self._args)
         i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1

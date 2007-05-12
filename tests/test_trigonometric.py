@@ -34,7 +34,7 @@ def test_cos():
     assert cos(5*pi/6) == -Rational(1, 2)*sqrt(3)
 
     assert float(cos(1)) == 0.54030230586813977
-    assert cos(1).evalf() == Decimal("0.540302305868171952183697906453")
+    assert cos(1).evalf(precision=28) == Decimal("0.540302305868171952183697906453")
     assert float(cos(1) + cos(2)) == 0.12415546932099736
     assert abs(float(cos(1)*cos(2)*cos(3)) - 0.22259495730990297) < 1e-15 
 
