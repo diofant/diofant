@@ -2,7 +2,7 @@
 
 from sympy.core import Basic
 from sympy.modules.mathml import c2p
-from sympy.modules.printing.xml_ import mathml
+#from sympy.modules.printing.xml_ import mathml
 import tempfile
 import os
 

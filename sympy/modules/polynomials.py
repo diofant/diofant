@@ -207,7 +207,7 @@ def collect(expr, syms):
        >>> from sympy.modules.polynomials import collect
        >>> x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
        >>> collect(2*x + sin(z)*x + cos(z)*y + 1, [x, y])
-       ({x: 2+sin(z), y: cos(z)}, 1)       
+       ({x: 2+sin(z), y: cos(z)}, 1)
 
     """
 
