@@ -1,6 +1,7 @@
 from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Real, Rational, pi, I
-from sympy.core import Symbol
+from sympy.core import Symbol, Add, Mul
+from simplify import ratsimp
 
 import decimal
 import math
@@ -56,7 +57,6 @@ class sin(Function):
                 a = Symbol('a')
 
                 coeff = self._args.match(a*pi, [a])
-
                 if coeff != None:
                     arg = coeff [a]
 
@@ -74,6 +74,8 @@ class sin(Function):
                                 result = Rational(1, 2)*sqrt(2)
                             elif arg.q == 6:
                                 result = Rational(1, 2)
+                            elif arg < 0:
+                                return -sin(-self._args)
                             else:
                                 return self
 
@@ -81,6 +83,12 @@ class sin(Function):
                                 result *= -1
 
                             return result
+
+            if self._args < 0:
+                return -sin(-self._args)
+
+        if isinstance(self._args, Mul) and self._args[0] == -1:
+            return -sin(-self._args)
 
         return self
 
@@ -107,6 +115,34 @@ class sin(Function):
         sinh = (exp(y)-exp(-y))/2
         cosh = (exp(y)+exp(-y))/2
         return sin(x)*cosh + I*cos(x)*sinh
+
+    def expand(self):
+        if isinstance(self._args, Add):
+            left = self._args[0]
+            right = self._args[1:]
+            if len(right) == 1:
+                right = right[0]
+            else:
+                right = Add(*right)
+            t1 = sin(left)*cos(right).expand()
+            t2 = cos(left)*sin(right).expand()
+            return (t1 + t2).expand()
+        elif isinstance(self._args, Mul):
+            n = self._args[0]
+            if isinstance(n, Rational) and n.is_integer:
+                # sin(nx) = 2 sin[(n-1)x] cos x - sin[(n-2)x]
+                x = Mul(*self._args[1:])
+                sign = 1
+                if n < 0:
+                    n = -n
+                    sign = -1
+                t1 = 2*sin((n-1)*x).expand()*cos(x).expand()
+                t2 = sin((n-2)*x).expand()
+                return sign*((t1 - t2).expand())
+            else:
+                return self
+        else:
+            return self
 
 class cos(Function):
     """
@@ -184,6 +220,8 @@ class cos(Function):
                                 result = Rational(1, 2)*sqrt(2)
                             elif arg.q == 6:
                                 result = Rational(1, 2)*sqrt(3)
+                            elif arg < 0:
+                                return cos(-arg)
                             else:
                                 return self
 
@@ -193,6 +231,11 @@ class cos(Function):
                                 result *= -1
 
                             return result
+            if self._args < 0:
+                return cos(-self._args)
+
+        if isinstance(self._args, Mul) and self._args[0] == -1:
+            return cos(-self._args)
 
         return self
 
@@ -219,6 +262,33 @@ class cos(Function):
         sinh = (exp(y)-exp(-y))/2
         cosh = (exp(y)+exp(-y))/2
         return cos(x)*cosh - I*sin(x)*sinh
+
+    def expand(self):
+        if isinstance(self._args, Add):
+            left = self._args[0]
+            right = self._args[1:]
+            if len(right) == 1:
+                right = right[0]
+            else:
+                right = Add(*right)
+            t1 = cos(left)*cos(right).expand()
+            t2 = sin(left)*sin(right).expand()
+            return (t1 - t2).expand()
+        elif isinstance(self._args, Mul):
+            n = self._args[0]
+            if isinstance(n, Rational) and n.is_integer:
+                # cos nx = 2 cos[(n-1)x] cos x - cos[(n-2)x]
+                n = self._args[0]
+                x = Mul(*self._args[1:])
+                if n < 0:
+                    n = -n
+                t1 = 2*cos((n-1)*x).expand()*cos(x).expand()
+                t2 = cos((n-2)*x).expand()
+                return (t1 - t2).expand()
+            else:
+                return self
+        else:
+            return self
 
 class tan(Function):
     """
@@ -255,10 +325,80 @@ class tan(Function):
         return Rational(1) / (cos(self._args)**2)
 
     def eval(self):
+        if self._args.is_number and self._args < 0:
+            return -tan(-self._args)
+        elif isinstance(self._args, Mul) and self._args[0] == -1:
+            return -tan(-self._args)
         return self
 
     def evalf(self):
         return sin(self._args).evalf() / cos(self._args).evalf()
+
+    def expand(self):
+        def expand_fraction(num, den):
+            """
+            A function to check to see if a fraction is of the form (a/b)/(c/d)
+            and then expands (a*d) and (b*c) separately so that if the
+            numerator is an Add instance, the fraction isn't broken up
+            into multiple instances.
+            """
+            from sympy.core import Add,Mul,Pow
+            if isinstance(den, Mul):
+                a,b = den.getab() 
+                if isinstance(a, Pow) and a.exp == -1:
+                    a,b = b,a
+                if isinstance(b, Pow) and b.exp == -1:
+                    ret = Rational(0)
+                    den = a
+                    if isinstance(num, Add):
+                        ret = Rational(0)
+                        for x in num:
+                            ret += (x * b.base)
+                        num = ret
+                    else:
+                        num *= b
+            return num.expand() / den.expand()
+        
+        if isinstance(self._args, Add):
+            left = self._args[0]
+            right = self._args[1:]
+            if len(right) == 1:
+                right = right[0]
+            else:
+                right = Add(*right)
+            a = tan(left).expand()
+            b = tan(right).expand()
+            t1 = (a + b).expand()
+            t2 = ratsimp( (1 - a*b).expand() )
+            return expand_fraction(t1, t2)
+        elif isinstance(self._args, Mul) and isinstance(self._args[0], Rational):
+            n = self._args[0]
+            if isinstance(n, Rational) and n.is_integer:
+                # tan nx = (tan[(n-1)x] + tan[x]) / (1 - tan[(n-1)x] tan[x])
+                x = Mul(*self._args[1:])
+                sign = 1
+                if n < 0:
+                    n = -n
+                    sign = -1
+
+                a = tan((n-1)*x).expand()
+                b = tan(x).expand()
+                t1 = (a + b).expand()
+                t2 = ratsimp( (1 - a*b).expand() )
+                return sign*expand_fraction(t1, t2)
+            else:
+                return self
+        else:
+            return self
+
+def sec(x):
+    return 1/cos(x)
+
+def csc(x):
+    return 1/sin(x)
+
+def cot(x):
+    return 1/tan(x)
 
 class asin(Function):
     """Return the arc sine of x (measured in radians)"""
