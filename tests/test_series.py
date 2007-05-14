@@ -4,33 +4,26 @@ sys.path.append(".")
 import py
 
 import sympy as g
-from sympy import sin, Symbol, log, Order
+from sympy import sin, Symbol, log, Order, Rational, exp
 
-def testseries():
-    n3=g.Rational(3)
-    n2=g.Rational(2)
-    n6=g.Rational(6)
-    x=g.Symbol("x")
-    c=g.Symbol("c")
-    e=g.sin(x)
-    assert str(e) == "sin(x)"
-    assert str(e.series(x,0)) == "0"
-    assert str(e.series(x,1)) == "x"
-    assert str(e.series(x,2)) == "x"
-    assert e.series(x,3) == x+(-g.Rational(1)/6)*x**3
-    assert e.series(x,4) == x+(-g.Rational(1)/6)*x**3
+def testseries1():
+    x=Symbol("x")
+    e=sin(x)
+    assert e.series(x,0) != 0
+    assert e.series(x,0) == Order(1)
+    assert e.series(x,1) == Order(x)
+    assert e.series(x,2) == x + Order(x**2)
+    assert e.series(x,3) == x + Order(x**3)
+    assert e.series(x,4) == x-x**3/6 + Order(x**4)
 
-    e=((g.exp(x)-1)/x)
-    assert e.series(x,1) == g.Rational(1)
+    e=(exp(x)-1)/x
+    assert e.series(x,2) == 1+Order(x)
+    #this tests, that the Basic.series() cannot do it (but Mul.series can)
     py.test.raises(g.core.power.pole_error, g.core.basic.Basic.series, e,x,0)
 
-    #e=2*g.sin(x)*g.cos(x)
-    #print
-    #print e.series(x,5)
-    #e=g.sin(2*x)
-    #e=g.tan(2*x)
-    #e=1/g.cos(x)
-    #print e.series(x,8)
+    assert x.series(x,0) == Order(1)
+    assert x.series(x,1) == Order(x)
+    assert x.series(x,2) == x
 
 def testseriesbug1():
     x=g.Symbol("x")
@@ -39,17 +32,17 @@ def testseriesbug1():
 
 def testseries2():
     x=g.Symbol("x")
-    assert ((x+1)**(-2)).series(x,3)==1-2*x+3*x**2-4*x**3
-    assert ((x+1)**(-1)).series(x,3)==1-x+x**2-x**3
+    assert ((x+1)**(-2)).series(x,4)==1-2*x+3*x**2-4*x**3+Order(x**4)
+    assert ((x+1)**(-1)).series(x,4)==1-x+x**2-x**3+Order(x**4)
     assert ((x+1)**0).series(x,3)==1
     assert ((x+1)**1).series(x,3)==1+x
-    assert ((x+1)**2).series(x,3)==1+2*x+x**2
-    assert ((x+1)**3).series(x,3)==1+3*x+3*x**2+x**3
+    assert ((x+1)**2).series(x,3)==1+2*x+x**2+Order(x**3)
+    assert ((x+1)**3).series(x,3)==1+3*x+3*x**2+Order(x**3)
 
-    assert (1/(1+x)).series(x,3)==1-x+x**2-x**3
-    assert (x+3/(1+2*x)).series(x,3)==3-5*x+12*x**2-24*x**3
+    assert (1/(1+x)).series(x,4)==1-x+x**2-x**3+Order(x**4)
+    assert (x+3/(1+2*x)).series(x,4)==3-5*x+12*x**2-24*x**3+Order(x**4)
 
-    assert ((1/x+1)**3).series(x,3)== x**(-3)+3*x**(-2)+3*x**(-1)
+    assert ((1/x+1)**3).series(x,3)== x**(-3)+3*x**(-2)+Order(x**(-1))
     assert (1/(1+1/x)).series(x,3)==x-x**2+x**3
     assert (1/(1+1/x**2)).series(x,6)==x**2-x**4+x**6-x**8+x**10-x**12
 
@@ -80,9 +73,9 @@ def test_bug2():
 #    print e.series(w,4)
 
 def test_exp():
-    x=g.Symbol("x")
+    x=Symbol("x")
     e=(1+x)**(1/x)
-    assert e.eval().series(x,1)==g.exp(1)
+    assert e.series(x,2) == exp(1)
 
 def test_exp2():
     x=g.Symbol("x")
@@ -117,13 +110,21 @@ def test_subsbug1():
 
 def test_seriesbug2():
     w=Symbol("w")
-    #simple case:
+    #simple case (1):
     e=((2*w)/w)**(1+w)
+    assert e.series(w,1) == 2 + Order(w)
     assert e.series(w,1).subs(w,0)==2
 
-    #some limits need this series expansion to work:
+    #test sin
+    e=sin(2*w)/w
+    assert e.series(w,2) == 2 + Order(w)
+
+    #more complicated case, but sin(x)~x, so the result is the same as in (1)
     e=(sin(2*w)/w)**(1+w)
-    assert e.series(w,1).subs(w,0)==2
+    #this doesn't work:
+    #assert e.series(w,1) == 2 + Order(w)
+    assert e.series(w,2) == 2 + 2*w*log(2)+Order(w**2)
+    assert e.series(w,2).subs(w,0)==2
 
 def test_seriesbug3():
     x=Symbol("x")
@@ -170,3 +171,32 @@ def test_order():
     assert Order(x)/x == Order(1)
 
     assert Order(x)*Order(x) == Order(x**2)
+
+    assert Order(1).diff(x) == Order(1)
+    assert Order(x).diff(x) == Order(1)
+    assert Order(x**2).diff(x) == Order(x)
+
+    assert Order(x)*Symbol("m") == Order(x)
+    a = Rational(1,3)+x**(-2)+Order(x)
+    b = Rational(1,6)-x**(-2)+Order(x)
+    assert a+b == Rational(1,2) + Order(x)
+
+    x = Symbol("w")
+    assert Order(x)+1 != Order(x)
+
+    assert (2+Order(x)) != 2
+    assert (2+Order(x)).removeOrder() == 2
+    assert (2+x+Order(x**2)).removeOrder() == x+2
+
+def test_order_bug():
+    x = Symbol("x")
+    a = -4
+    b = -3/x
+    e1 = Order(x)*a+Order(x)*b
+    e2 = Order(x)*(a+b)
+    assert e1==Order(1)
+    assert e1==e2
+
+    assert Order(x**2)*(1+2/x+3/x**2) == Order(1)
+
+    assert Order(1+2/x+3/x**2) == Order(1/x**2)

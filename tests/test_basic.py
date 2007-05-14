@@ -67,8 +67,8 @@ def test_print_tree():
     e.print_tree()
 
 def test_atoms():
-   x = g.Symbol('x')
-   y = g.Symbol('y')
+   x = Symbol('x')
+   y = Symbol('y')
    assert (1+x).atoms() == [1,x]
    assert x.atoms() == [x]
    assert (1+2*g.cos(x)).atoms() == [1,2,x]
@@ -76,4 +76,3 @@ def test_atoms():
    assert g.Rational(1,2).atoms() == [g.Rational(1,2)]
    
    assert g.Rational(1,2).atoms(type=(g.core.numbers.Infinity)) == []
-   

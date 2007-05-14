@@ -660,12 +660,15 @@ class Add(Pair):
             e = []
             ok = False
             for y in exp:
+	        # try to put all numeric parts together
                 bn, b = _extract_numeric(y)
                 if (not ok) and a == b:
                     if isinstance(a, Infinity) or isinstance(b, Infinity):
                         # case oo - oo
                         raise ArithmeticError("Cannot compute this")
-                    e.append(Mul(an + bn,a))
+		    _m = Mul(an+bn, a)
+		    if _m != 0:
+                        e.append(_m)
                     ok = True
                 else:
                     z1 = x.addeval(y,x)
@@ -738,6 +741,25 @@ class Add(Pair):
         for x in self:
             r+=x.combine()
         return r
+
+    def removeOrder(self):
+        """Removes the O(...) from the expression.
+        
+        Example:
+
+        assert (2+Order(x)) != 2
+        assert (2+Order(x)).removeOrder() == 2
+        assert (2+x+Order(x**2)).removeOrder() == x+2
+        """
+        from symbol import Order
+        for x in self:
+            if isinstance(x, Order):
+                a = list(self[:])
+                a.remove(x)
+                return Add(*a)
+        return self
+        raise "the Order not found, cannot remove"
+
     
     def subs(self,old,new):
         d = Rational(0)
@@ -758,6 +780,8 @@ class Add(Pair):
             a,b = self.getab()
             #there is a cancelation problem here:
             #implement the class Order
+            #print a.series(sym,n)
+            #print b.series(sym,n)
             return (a.series(sym,n)+b.series(sym,n))
         
     def __pretty__(self):

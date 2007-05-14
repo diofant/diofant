@@ -42,7 +42,6 @@ class Function(Basic):
     
     def subs(self, old, new):
         e = Basic.subs(self,old,new)
-        #if e==self:
         if e == self:
             return (type(self)(self._args.subs(old,new)))
         else:
@@ -66,19 +65,24 @@ class Function(Basic):
     def series(self, sym, n=6):
         from power import pole_error
         from symbol import Symbol
+        from addmul import Add
         try:
             return Basic.series(self,sym,n)
         except pole_error:
             pass
         #this only works, if arg(0) -> 0, otherwise we are in trouble
         arg = self._args.series(sym,n)
+        if isinstance(arg,Add):
+            arg = arg.removeOrder()
         l = Symbol("l", dummy=True)
         #the arg(0) goes to z0
         z0 = arg.subs(log(sym),l).subs(sym,0)
         w = Symbol("w",True)
         e = type(self)(w)
+        from addmul import Add
         if arg.has(sym):
             e = e.series(w,n)
+            e = e.removeOrder()
         e = e.subs(w,arg-z0)
 
         #this only works for exp 

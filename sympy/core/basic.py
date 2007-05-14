@@ -349,7 +349,7 @@ class Basic(object):
             >>> from sympy import *
             >>> x = Symbol('x')
             >>> sin(x).series(x, 5)
-            1/120*x**5+x-1/6*x**3
+            x+O(x**5)-1/6*x**3
         """
         from numbers import Rational
         from symbol import Symbol, Order
@@ -358,12 +358,15 @@ class Basic(object):
         f = self.subs(log(sym),-w)
         e = f.subs(sym,Rational(0))
         fact = Rational(1)
-        for i in range(1,n+1):
+        for i in range(1,n):
             fact *= Rational(i)
             f = f.diff(sym)
             e += f.subs(sym,Rational(0))*(sym**i)/fact
         e=e.subs(w,-log(sym))
-        return e#+Order(sym**(n+1))
+        if e == self:
+            return e
+        else:
+            return e+Order(sym**n)
 
     def subs_dict(self, di):
         """Substitutes all old -> new defined in the dictionary "di"."""
@@ -396,7 +399,11 @@ class Basic(object):
         from numbers import Rational
         from power import Pow
         from addmul import Add,Mul
-        from symbol import Symbol
+        from symbol import Symbol, Order
+        if isinstance(self,Add):
+            self = self.removeOrder()
+        if isinstance(self,Order):
+            self = Rational(0)
         
         def domul(x):
             if len(x) > 1:
@@ -533,6 +540,12 @@ class Basic(object):
                 return [self]
             return filter(lambda x : isinstance(x, type), [self])
                 
+        if isinstance(self, atoms_class):
+            if type:
+                if not isinstance(self, type):
+                    return []
+            return [self]
+
         s_temp = s[:] # make a copy to avoid collision with global s
         for arg in self:
             if isinstance(arg, atoms_class):

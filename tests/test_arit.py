@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol
+from sympy import Symbol, exp, Order
 
 def testSymbol():
     a=g.Symbol("a")
@@ -148,11 +148,11 @@ def testexpand():
     e=(a+b+c)*(a+c+p)
     assert e == (5+a+c)*(a+b+c)
     assert e.expand() == 5*a+5*b+5*c+2*a*c+b*c+a*b+a**2+c**2
-    x=g.Symbol("x")
-    s=g.exp(x*x)-1
-    e=s.series(x,4)/x**2
-    assert e == (x**2+g.Rational(1)/2*x**4)*x**(-2)
-    assert e.expand() ==  1+g.Rational(1)/2*x**2
+    x=Symbol("x")
+    s=exp(x*x)-1
+    e=s.series(x,5)/x**2
+    #assert e == (x**2+x**4/2)/x**2
+    assert e.expand() ==  1+x**2/2+Order(x**3)
 
 def test_ncmul():
     A = Symbol("A", is_commutative=False)

@@ -178,10 +178,22 @@ class Order(Basic):
          U{Big O notation<http://en.wikipedia.org/wiki/Big_O_notation>}
     """
 
-    def __init__(self, f):
+    def __init__(self, f, sym=None):
         """O(f) at the point x = 0"""
         Basic.__init__(self)
         self._args = [self.sympify(f)]
+        if sym:
+            self.sym = sym
+        else:
+            self.sym = self._args[0].atoms(type = Symbol)
+            if len(self.sym) == 1:
+                self.sym = self.sym[0]
+            else:
+                #well, let's try to guess
+                if self.sym == []:
+                    self.sym = Rational(1)
+                else:
+                    raise "Don't know the variable in Order"
 
     def eval(self):
         from addmul import Mul, Add
@@ -191,10 +203,28 @@ class Order(Basic):
             if isinstance(f[0], (Real, Rational)):
                 assert len(f[:]) == 2
                 return Order(f[1])
-        if isinstance(f, Add):
-            if isinstance(f[0], (Real, Rational)):
+            if not f[0].has(self.sym):
                 assert len(f[:]) == 2
                 return Order(f[1])
+            if not f[1].has(self.sym):
+                assert len(f[:]) == 2
+                return Order(f[0])
+            e = f.expand()
+            if isinstance(e, Add):
+                r=0
+                for x in e:
+                    r+=Order(x)
+                return r
+        if isinstance(f, Add):
+            if isinstance(f[0], (Real, Rational)):
+                if len(f[:]) == 2:
+                    return Order(f[1])
+            r=0
+            for x in f:
+                r+=Order(x)
+            return r
+        if isinstance(f, (Real, Rational)) and f!=0 and f!=1:
+            return Order(Rational(1))
         return self
 
     def __str__(self):
@@ -205,23 +235,39 @@ class Order(Basic):
         if isinstance(x, Order) and isinstance(y, Order):
             return Order(x[0]*y[0])
         if isinstance(y, Order):
-            return Order(x*y[0])
+            return Order(x*y[0],sym = y.sym)
         return None
 
     @staticmethod
     def addeval(x, y):
         from power import pole_error
         if isinstance(x, Order) and isinstance(y, Order):
-            #this doesn't seem to happen (if it does, just implement it)
-            raise NotImplementedError()
-        if isinstance(x, Order):
-            #calculate inf (True if this limit is oo):
+            if isinstance(x.sym, Symbol):
+                sym = x.sym
+            else:
+                sym = y.sym
+            #calculate inf = True if this limit is oo:
             #inf = lim_{x->a}  |g(x)/f(x)| == oo
             inf = False
             try:
                 #we don't want to depend on the limit module, thus
                 #we use the pole_error way, which works in most cases
-                (y/x[0]).subs(Symbol("x"),0)
+                (y[0]/x[0]).subs(sym,0)
+            except pole_error:
+                inf = True
+            #print x,y,inf
+            if inf:
+                return y
+            else:
+                return x
+        if isinstance(x, Order):
+            #calculate inf = True if this limit is oo:
+            #inf = lim_{x->a}  |g(x)/f(x)| == oo
+            inf = False
+            try:
+                #we don't want to depend on the limit module, thus
+                #we use the pole_error way, which works in most cases
+                (y/x[0]).subs(x.sym,0)
             except pole_error:
                 inf = True
 
@@ -233,3 +279,23 @@ class Order(Basic):
         if isinstance(y, Order):
             return Order.addeval(y,x)
         return None
+
+    def subs(self,old,new):
+        """Substitutes an expression old -> new."""
+        e = Basic.subs(self,old,new)
+        if e == self:
+            if old == self.sym:
+                if new == 0:
+                    return Rational(0)
+		elif isinstance(new, Symbol):
+		    return Order(new)
+                else:
+                    raise ValueError("Cannot substitute (%s, %s) in Order" % (new, old) )
+        return e
+
+    def diff(self, var):
+        e = self[0].diff(var)
+        if e == 0:
+            return Order(1)
+        else:
+            return Order(e)
