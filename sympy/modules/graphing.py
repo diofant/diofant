@@ -1,91 +1,109 @@
 """
-This module supports function graphing. Currently 2D graphing
-is supported, and 3D is planned under Brian Jorgensen's Summer
-of Code project. 2D graphing requires matplotlib.
+Utility functions for plotting sympy functions.
 
-Example
-=======
-
->>> from sympy import Symbol
->>> x = Symbol('x')
->>> y = x**2+x
-
-#>>> plot(y, [x, -10.0, 10.0], show=False)
+See examples\mplot2d.py and examples\mplot3d.py for usable 2d and 3d
+graphing functions using matplotlib.
 """
 
-from sympy import Symbol, Basic
+from numpy import repeat, arange, empty, ndarray, array
+from sympy import Symbol, Basic, Real, Rational, I
 
-try:
-    import pylab
-except ImportError:
-    raise ImportError("To use this module you will need matplotlib (on debian, python-matplotlib)")
-
-def plot(f, var=None, plot_points=100, axis=True, show=True, grid=True, title=None, xlabel=None, ylabel=None):
+def sample2d(f, x_args):
     """
-    Tries to be similar to mathematica syntax:
-    http://documents.wolfram.com/mathematica/functions/Plot
-    
-    'f' can be a single function or a list of functions.
-    
-    'var' should be in the format (x, x_min, x_max) where x is a
-    sympy Symbol representing the independent variable in f.
+    Samples a 2d function f over specified intervals and returns two
+    arrays (X, Y) suitable for plotting with matlab (matplotlib)
+    syntax. See examples\mplot2d.py.
 
-    plot([sqrt(x), log(x)], [x, -10.0, 10.0]) #doctest: +SKIP
+    f is a function of one variable, such as x**2.
+    x_args is an interval given in the form (var, min, max, n)
     """
-
     try:
-        len(f)
-    except (TypeError):
-        f = [f]
+        f = Basic.sympify(f)
+    except:
+        raise ValueError("f could not be interpretted as a SymPy function")
+    try:
+        x, x_min, x_max, x_n = x_args
+    except:
+        raise ValueError("x_args must be a tuple of the form (var, min, max, n)")
 
-    if len(f[0].atoms(type=Symbol)) == 0:
-        raise ValueError("First argument must be an expression of one variable.")
+    x_l = float(x_max - x_min)
+    x_d = x_l/float(x_n)
+    X = arange(float(x_min), float(x_max)+x_d, x_d)
 
-    if len(f[0].atoms(type=Symbol)) > 1:
-        # plot3d
-        raise ValueError("First argument must be an expression of one variable. 3d graphing not yet supported.")
+    Y = empty(len(X))
+    for i in range(len(X)):
+        try:
+            Y[i] = float(f.subs(x, X[i]))
+        except:
+            Y[i] = None
+    return X, Y
 
-    #plot2d
-    v, v_min, v_max = None, None, None
+def sample3d(f, x_args, y_args):
+    """
+    Samples a 3d function f over specified intervals and returns three
+    2d arrays (X, Y, Z) suitable for plotting with matlab (matplotlib)
+    syntax. See examples\mplot3d.py.
 
-    if var is None:
-        v, v_min, v_max = f.atoms(type=Symbol)[0], -10.0, 10.0
-    elif len(var) == 3:
-        v, v_min, v_max = var[0], float(var[1]), float(var[2])
-    else:
-        raise ValueError("Second argument must be in the form (x, x_min, x_max)")
+    f is a function of two variables, such as x**2 + y**2.
+    x_args and y_args are intervals given in the form (var, min, max, n)
+    """
+    x, x_min, x_max, x_n = None, None, None, None
+    y, y_min, y_max, y_n = None, None, None, None
+    try:
+        f = Basic.sympify(f)
+    except:
+        raise ValueError("f could not be interpretted as a SymPy function")
+    try:
+        x, x_min, x_max, x_n = x_args
+        y, y_min, y_max, y_n = y_args
+    except:
+        raise ValueError("x_args and y_args must be tuples of the form (var, min, max, intervals)")
+
+    x_l = float(x_max - x_min)
+    x_d = x_l/float(x_n)
+    x_a = arange(float(x_min), float(x_max)+x_d, x_d)
+
+    y_l = float(y_max - y_min)
+    y_d = y_l/float(y_n)
+    y_a = arange(float(y_min), float(y_max)+y_d, y_d)
+
+    def meshgrid(x, y):
+        """
+        Taken from matplotlib.mlab.meshgrid.
+        """
+        x = array(x)
+        y = array(y)
+        numRows, numCols = len(y), len(x)
+        x.shape = 1, numCols
+        X = repeat(x, numRows, 0)
+
+        y.shape = numRows, 1
+        Y = repeat(y, numCols, 1)
+        return X, Y
+
+    X, Y = meshgrid(x_a, y_a)
     
-    plot_points = float(plot_points)
-
-    def plot_f(f, v, v_min, v_max, plot_points):
-        delta = (v_max - v_min) / plot_points
-        x_a = pylab.arange(v_min, v_max, delta)
-        y_a = []
-        for x in x_a:
+    Z = ndarray((len(X), len(X[0])))
+    for j in range(len(X)):
+        for k in range(len(X[0])):
             try:
-                y_i = float( f.subs(v, Basic.sympify(x)) )
-            except (OverflowError, ValueError):
-                y_i = None # f(x) is undefined or otherwise unplottable
-            y_a.append(y_i)
+                Z[j][k] = float( f.subs(x, X[j][k]).subs(y, Y[j][k]) )
+            except:
+                Z[j][k] = 0
+    return X, Y, Z
 
-        pylab.plot(x_a, y_a)
+def sample(f, *var_args):
+    """
+    Samples a 2d or 3d function over specified intervals and returns
+    a dataset suitable for plotting with matlab (matplotlib) syntax.
+    Wrapper for sample2d and sample3d.
 
-    for fx in f:
-        plot_f(fx, v, v_min, v_max, plot_points)
-
-    if title == None:
-        title = ", ".join([str(fx) for fx in f])
-    pylab.title(title)
-    
-    if xlabel != None: pylab.xlabel(xlabel)
-    if ylabel != None: pylab.ylabel(ylabel)
-    
-    pylab.grid(grid)
-    pylab.draw()
-
-    if show:
-        pylab.show()
-
-    return
-    return True
-
+    f is a function of one or two variables, such as x**2.
+    var_args are intervals for each variable given in the form (var, min, max, n)
+    """
+    if len(var_args) == 1:
+        return sample2d(f, var_args[0])
+    elif len(var_args) == 2:
+        return sample3d(f, var_args[0], var_args[1])
+    else:
+        raise ValueError("Only 2d and 3d sampling are supported at this time.")
