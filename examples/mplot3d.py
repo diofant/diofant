@@ -1,3 +1,6 @@
+import sys
+sys.path.append("..")
+
 from sympy import Symbol, Basic
 from sympy.modules.graphing import sample
 
