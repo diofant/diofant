@@ -8,6 +8,10 @@ def mplot2d(f, var, show=True):
     """
     Plot a 2d function using matplotlib/Tk.
     """
+
+    import warnings
+    warnings.filterwarnings("ignore", "Could not match \S")
+
     try:
         import pylab as p
     except ImportError:

@@ -8,6 +8,10 @@ def mplot3d(f, var1, var2, show=True):
     """
     Plot a 3d function using matplotlib/Tk.
     """
+
+    import warnings
+    warnings.filterwarnings("ignore", "Could not match \S")
+
     try:
         import pylab as p
         import matplotlib.axes3d as p3
