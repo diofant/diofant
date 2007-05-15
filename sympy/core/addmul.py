@@ -329,9 +329,9 @@ class Mul(Pair):
                 return Pow(xbase*ybase, xexp, evaluate=False), True
             elif xexp == -yexp:
                 if xexp > 0:
-                    return Pow(xbase/ybase, xexp), True
+                    return Pow(xbase/ybase, xexp, evaluate=False), True
                 else:
-                    return Pow(ybase/xbase, yexp), True
+                    return Pow(ybase/xbase, yexp, evaluate=False), True
             else:
                 return x, False
         else:
@@ -539,9 +539,12 @@ class Mul(Pair):
                 #pass
             else:
                 a.append(item.__pretty__())
+
         if len(b) == 0:
             return prettyForm.__mul__(*a)
         else:
+            if len(a) == 0:
+                a.append( Rational(1).__pretty__() )
             return prettyForm.__mul__(*a) / prettyForm.__mul__(*b)
 
 class Add(Pair):
