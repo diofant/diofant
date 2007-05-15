@@ -17,7 +17,7 @@ class Polygon(GeometryEntity):
 
         for p in self._vertices:
             if not isinstance(p, Point):
-                raise TypeError("All arguments must be points")
+                raise TypeError("__init__ requires Point instancess")
 
         if len(self._vertices) < 3:
             raise ValueError("A polygon must have at least three points")
@@ -92,23 +92,38 @@ class Polygon(GeometryEntity):
             return False
 
         # Find index of the first point that is the same
-        n1,n2 = len(self._vertices), len(o._points)
-        i = -1
+        n1,n2 = len(self._vertices), len(o._vertices)
+        start_indices = []
         for ind in xrange(0, n1):
-            if self._vertices[ind] == o._points[0]:
-                i = ind
-                break
+            if self._vertices[ind] == o._vertices[0]:
+                start_indices.append(ind)
 
-        if i == -1:
+        if len(start_indices) == 0:
             return False
 
         # Check vertices
-        # TODO check in reverse also
         imax = max(n1, n2)
-        for ind in xrange(0, imax):
-            if self._vertices[(i + ind) % n1] != o._points[ind % n2]:
-                return False
-        return True
+        for start_ind in start_indices:
+            i = start_ind
+
+            # Check to see what orientation we should check
+            dir = 0
+            if self._vertices[(i + 1) % n1] == o._vertices[1]:
+                dir = 1
+            elif self._vertices[(i - 1) % n1] == o._vertices[1]:
+                dir = -1
+
+            # If either point to the left or right if the first point
+            # is value (i.e., dir is nonzero) then check in that direction
+            if dir != 0:
+                areEqual = True
+                for ind in xrange(2, imax):
+                    if self._vertices[(i + dir*ind) % n1] != o._vertices[ind % n2]:
+                        areEqual = False
+                        break
+                if areEqual: return True
+
+        return False
 
     def __ne__(self, o):
         return not self.__eq__(o)

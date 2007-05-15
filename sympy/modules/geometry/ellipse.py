@@ -1,5 +1,5 @@
 from sympy import Basic, Rational, Symbol, sqrt, cos, sin, pi
-from sympy.modules.simplify import simplify
+from sympy.modules.simplify import simplify, trigsimp
 from entity import GeometryEntity
 from point import Point
 from line import LinearEntity, Line
@@ -13,8 +13,8 @@ class Ellipse(GeometryEntity):
             raise TypeError("center must be be a Point")
         self._c = center
         # XXX Check for zero radii?
-        self._hr = horizontal_radius
-        self._vr = vertical_radius
+        self._hr = Basic.sympify(horizontal_radius)
+        self._vr = Basic.sympify(vertical_radius)
 
     @property
     def horizontal_radius(self):
@@ -204,7 +204,9 @@ class Ellipse(GeometryEntity):
             x = Symbol('x')
             y = Symbol('y')
             res = self.equation('x', 'y').subs_dict({x: o[0], y: o[1]})
-            return (simplify(res) == 0)
+            res = simplify(res)
+            #print res, trigsimp(res)
+            return (res == 0 or trigsimp(res) == 0)
         elif isinstance(o, Ellipse):
             return (self == o)
         else:

@@ -9,9 +9,9 @@ class Point(GeometryEntity):
     def __init__(self, *args, **kwargs):
         GeometryEntity.__init__(self, **kwargs)
         if isinstance(args[0], (Basic, int, float)):
-            self._coords = tuple(args)
+            self._coords = tuple([Basic.sympify(x) for x in args])
         else:
-            self._coords = tuple(args[0])
+            self._coords = tuple([Basic.sympify(x) for x in args[0]])
 
         if len(self._coords) > 2:
             raise NotImplementedError("Greater than two dimensions not yet supported")
@@ -63,8 +63,7 @@ class Point(GeometryEntity):
             u1 = Rational(2)*u[0] / dd
             u2 = Rational(2)*u[1] / dd
             u3 = (dd - Rational(2)) / dd
-            d = dd
-            return d,u1,u2,u3
+            return dd,u1,u2,u3
 
         d1,u1,u2,u3 = f(points[0])
         d2,v1,v2,v3 = f(points[1])
@@ -76,7 +75,7 @@ class Point(GeometryEntity):
             r = [p[1]*q[2] - p[2]*q[1], p[2]*q[0] - p[0]*q[2], p[0]*q[1] - p[1]*q[0]]
 
             test = simplify(r[0]*(s1-u1) + r[1]*(s2-u2) + r[2]*(s3-u3))
-            if test != Rational(0):
+            if test != 0:
                 return False
         return True
 

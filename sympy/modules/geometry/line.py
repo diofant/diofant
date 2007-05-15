@@ -7,8 +7,10 @@ class LinearEntity(GeometryEntity):
     """A linear entity (line, ray, segment, etc) in space."""
     def __init__(self, p1, p2, **kwargs):
         GeometryEntity.__init__(self, **kwargs)
+        if not isinstance(p1, Point) or not isinstance(p2, Point):
+            raise TypeError("__init__ requires Point instances")
         if p1 == p2:
-            raise ValueError("Segment.__init__ requires two distinct points")
+            raise ValueError("__init__ requires two distinct points")
         self._p1 = p1
         self._p2 = p2
 
