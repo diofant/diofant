@@ -241,6 +241,9 @@ class Mul(Pair):
                 else:
                     num.append( str(x) )
 
+        if len(num) == 0:
+            num.append("1")
+
         snum = str.join('*', num)
         if len(den) == 0:
             return "%s%s" % (f, snum)
