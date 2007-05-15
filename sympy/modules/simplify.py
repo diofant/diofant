@@ -1,6 +1,7 @@
 from sympy.core.symbol import Symbol
+from sympy.core.functions import Function
 from sympy.core.power import Pow
-from sympy.core.addmul import Add
+from sympy.core.addmul import Add, Mul
 
 def ratsimp(expr):
     """
@@ -24,8 +25,14 @@ def ratsimp(expr):
         ---
         y*x
     """
-    
-    if not isinstance(expr, Add):
+    if isinstance(expr, Pow):
+        return Pow(ratsimp(expr.base), ratsimp(expr.exp))
+    elif isinstance(expr, Mul):
+        res = []
+        for x in expr:
+            res.append( ratsimp(x) )
+        return Mul(*res)
+    elif not isinstance(expr, Add):
         return expr
 
     def get_num_denum(x):
@@ -52,6 +59,46 @@ def ratsimp(expr):
             return -2*Symbol("y")
         return e/(denum/denum[0])
     return num/denum
+
+def trigsimp(expr):
+    """
+    Usage
+    =====
+        trig(expr) -> reduces expression by using known trig identities
+        
+    Notes
+    =====
+        
+        
+    Examples
+    ========
+        >>> from sympy import *
+        >>> x = Symbol('x')
+        >>> y = Symbol('y')
+        >>> trigsimp(sin(x)**2 + cos(x)**2)
+        1
+    """
+    from trigonometric import sin, cos, tan, sec, csc, cot
+    a = Symbol('a', is_dummy=True)
+    b = Symbol('b', is_dummy=True)
+    c = Symbol('c', is_dummy=True)
+    d = Symbol('d', is_dummy=True)
+
+    identities = {
+        a*sin(b)**2 + c*cos(b)**2 + d: (a + (c-a)*cos(b)**2 + d, [a, b, c, d]),
+        a*sec(b)**2 - c*tan(b)**2 + d: (a + (c-a)*tan(b)**2 + d, [a, b, c, d]),
+        a*csc(b)**2 - c*cot(b)**2 + d: (a + (c-a)*cot(b)**2 + d, [a, b, c, d])
+    }
+    for identity in identities:
+        replacement,varlist = identities[identity]
+        ex = [x for x in expr.atoms() if isinstance(x, Symbol)]
+        try:
+            res = expr.match(identity, varlist, exclude=ex)
+        except:
+            res = expr.match(identity, varlist)
+        if res is not None:
+            expr = replacement.subs_dict(res)
+    return expr
 
 def simplify(expr):
     
