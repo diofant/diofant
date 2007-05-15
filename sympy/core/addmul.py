@@ -322,20 +322,22 @@ class Mul(Pair):
                 if e != 0:
                     return Pow(xbase,e,evaluate=False), True
             return Pow(xbase,Add(xexp,yexp)), True
-        elif xexp == 1 or yexp == 1 or xexp == -1 or yexp == -1:
-            return x, False
-        elif xexp.is_number and yexp.is_number:
-            if xexp == yexp:
-                return Pow(xbase*ybase, xexp, evaluate=False), True
-            elif xexp == -yexp:
-                if xexp > 0:
-                    return Pow(xbase/ybase, xexp, evaluate=False), True
-                else:
-                    return Pow(ybase/xbase, yexp, evaluate=False), True
-            else:
-                return x, False
+        #elif xexp.is_number and yexp.is_number:
         else:
+            # This speeds things up
+            if xexp == 1 or yexp == 1 or xexp == -1 or yexp == -1:
+                return x, False
+
+            if xexp == yexp:
+                expr = Mul(xbase, ybase)
+                return Pow(expr, xexp, evaluate=False), True
+            elif xexp == -yexp:
+                den = Pow(ybase, -1)
+                expr = Mul(xbase, den)
+                return Pow(expr, xexp, evaluate=True), True
             return x, False
+        #else:
+        #    return x, False
             
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
