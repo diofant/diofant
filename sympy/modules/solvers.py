@@ -30,6 +30,8 @@ class Equation(Basic):
     def addeval(x, y):
         if isinstance(x, Equation) and isinstance(y, Equation):
             return Equation(x.lhs + y.lhs, x.rhs + y.rhs)
+        elif isinstance(x, Equation):
+            return Equation(x.lhs + y, x.rhs + y)
         else:
             return None
 
@@ -37,6 +39,8 @@ class Equation(Basic):
     def muleval(x, y):
         if isinstance(x, Equation) and isinstance(y, Equation):
             return Equation(x.lhs * y.lhs, x.rhs * y.rhs)
+        elif isinstance(x, Equation):
+            return Equation(x.lhs * y, x.rhs * y)            
         else:
             return None
             
@@ -46,11 +50,57 @@ class Equation(Basic):
                 return self.lhs.hash() == self.rhs.hash()
             else:
                 return self.lhs.hash() != self.rhs.hash()
+        elif isinstance(other, Equation):
+            return self.lhs.hash() == other.lhs.hash() and \
+                   self.rhs.hash() == other.rhs.hash()
         else:
-            raise TypeError
+            return self.lhs.hash() == other.hash() and \
+                   self.rhs.hash() == other.hash()
             
     def __nonzero__(self):
         return self.lhs.hash() == self.rhs.hash()
+        
+    # TODO : add printing
+        
+class Inequality(Basic):
+
+    def __init__(self, lhs, rhs):
+        Basic.__init__(self)
+
+        self._args = [Basic.sympify(lhs),
+                      Basic.sympify(rhs)]
+
+    @property
+    def lhs(self):
+        return self._args[0]
+
+    @property
+    def rhs(self):
+        return self._args[1]
+
+    @staticmethod
+    def addeval(x, y):
+        if isinstance(x, Inequality) and isinstance(y, Inequality):
+            return Inequality(x.lhs + y.lhs, x.rhs + y.rhs)
+        elif isinstance(x, Equation):
+            return Inequality(x.lhs + y, x.rhs + y)
+        else:
+            return None
+            
+    # TODO : add printing
+            
+class StrictInequality(Inequality):
+
+    @staticmethod
+    def addeval(x, y):
+        if isinstance(x, StrictInequality) and isinstance(y, StrictInequality):
+            return StrictInequality(x.lhs + y.lhs, x.rhs + y.rhs)
+        elif isinstance(x, Equation):
+            return StrictInequality(x.lhs + y, x.rhs + y)
+        else:
+            return None
+            
+    # TODO : add printing
 
 def solve(eq, vars):
     """
@@ -68,7 +118,7 @@ def solve(eq, vars):
     if isinstance(vars, Basic):
         vars = [vars]
 
-    if isinstance(vars, Symbol) or len(vars) == 1:
+    if isinstance(vars, Symbol) or len(vars) == 1: # change this
         x = vars[0]
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
 
@@ -160,13 +210,13 @@ def solve_linear_system(matrix, syms):
 
     if len(syms) == matrix.lines:
         # this system is Cramer equivalent so there is
-        # finite number of solutions, exactly len(syms)
+        # exactly one solution to this system of equations 
         k, solutions = i-1, {}
 
         while k >= 0:
             content = matrix[k, m]
 
-            # make back substitution for variables
+            # run back-substitution for variables
             for j in range(k+1, m):
                 content -= matrix[k, j]*solutions[syms[j]]
     
@@ -183,11 +233,11 @@ def solve_linear_system(matrix, syms):
         while k >= 0:
             content = matrix[k, m]
 
-            # make back substitution for variables
+            # run back-substitution for variables
             for j in range(k+1, i):
                 content -= matrix[k, j]*solutions[syms[j]]
     
-            # make back substitution for parameters
+            # run back-substitution for parameters
             for j in range(i, m):
                 content -= matrix[k, j]*syms[j]
                 

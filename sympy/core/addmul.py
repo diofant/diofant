@@ -297,13 +297,13 @@ class Mul(Pair):
         z1 = y.muleval(x,y)
         z2 = x.muleval(x,y)
 
-        if z1 or z2:
-            if (z1 and z2):
+        if z1 is not None or z2 is not None:
+            if z1 is not None and z2 is not None:
                 #sanity check
                 assert z1==z2
-            if z1:
+            if z1 is not None:
                 return z1, True
-            if z2:
+            if z2 is not None:
                 return z2, True
         
         # if it contains infinity
@@ -683,16 +683,16 @@ class Add(Pair):
                     z1 = x.addeval(y,x)
                     z2 = y.addeval(y,x)
 
-                    if z1 or z2:
-                        if (z1 and z2):
+                    if z1 is not None or z2 is not None:
+                        if z1 is not None and z2 is not None:
                             #sanity check, only when z1 and z2 are not Order
                             from symbol import Order
                             if not isinstance(z1,Order):
                                 assert z1 == z2
-                        if z1:
+                        if z1 is not None:
                             e.append(z1)
                             ok = True
-                        elif z2:
+                        elif z2 is not None:
                             e.append(z2)
                             ok = True
                     else:

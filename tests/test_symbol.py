@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 from sympy import Symbol
+from sympy.modules.solvers import Inequality, StrictInequality
 import py
 
 def test_Symbol():
@@ -28,14 +29,16 @@ def test_Symbol_assumptions():
     assert x.is_dummy != True
 
 def test_lt_gt():
-    x = Symbol('x')
-    y = Symbol('y')
-    py.test.raises(NotImplementedError, "x<y")
-    py.test.raises(NotImplementedError, "x>y")
-    py.test.raises(NotImplementedError, "x>0")
-    py.test.raises(NotImplementedError, "x<0")
+    x, y = Symbol('x'), Symbol('y')
+    
+    assert (x < y) == Inequality(x, y)
+    assert (x > y) == Inequality(y, x)
+    assert (x < 0) == Inequality(x, 0)
+    assert (x > 0) == Inequality(0, x)
+    
+    assert (x <= y) == StrictInequality(x, y)
+    assert (x >= y) == StrictInequality(y, x)
+    assert (x <= 0) == StrictInequality(x, 0)
+    assert (x >= 0) == StrictInequality(0, x)
 
-    # let's check this also on classes Add, Mul, Pow
-    py.test.raises(NotImplementedError, "x+1>0")
-    py.test.raises(NotImplementedError, "2*x>0")
-    py.test.raises(NotImplementedError, "x**2>0")
+    assert (x**2+4*x+1 > 0) == Inequality(0, x**2+4*x+1)

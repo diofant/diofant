@@ -154,36 +154,78 @@ class Basic(object):
         
     def __rpow__(self,a):
         return self._dopow(a, self)
-        
+
     def __eq__(self, a):
-        """
-        Return new equation with lhs set to 'self' and rhs set to 'a'.
+        """Return new equation with lhs set to 'self' and rhs set to 'a'.
+           If You wanted just an boolean equality test then Equation class
+           will handle it in __nonzero__ and __eq__ routines.
         """
 
         if a is None: 
             return False
-            
-        from sympy.modules.solvers import Equation    
-        return Equation(self, self.sympify(a))
+        else:
+            from sympy.modules.solvers import Equation    
+            return Equation(self, self.sympify(a))
 
-    def __ne__(self,a):
-        return not self.__eq__(a)
-        
-    def __lt__(self,a):
-        from sympy.core.numbers import Real
-        a = Basic.sympify(a)
-        if self.is_number and a.is_number: 
-            return self.evalf() < a.evalf()
+    def __ne__(self, a):
+        if a is None: 
+            return False
         else:
-            raise NotImplementedError("'<' not supported.")
-        
-    def __gt__(self,a):
-        a = Basic.sympify(a)
-        if self.is_number and a.is_number: 
-            return self.evalf() > a.evalf()
+            return self.hash() != self.sympify(a).hash()
+
+    def __lt__(self, a):
+        """Make boolean comparison when both 'self' and 'a' are numbers or
+           else return new inequlaity with lhs and rhs set respectively. The
+           same applies to __le__, __gt__ and __ge__.
+        """
+
+        if a is None: 
+            return False
         else:
-            raise NotImplementedError("'<' not supported.")
-        
+            other = Basic.sympify(a)
+
+            if self.is_number and other.is_number: 
+                return self.evalf() < other.evalf()
+            else:
+                from sympy.modules.solvers import Inequality    
+                return Inequality(self, other)
+
+    def __le__(self, a):
+        if a is None: 
+            return False
+        else:
+            other = Basic.sympify(a)
+
+            if self.is_number and other.is_number: 
+                return self.evalf() <= other.evalf()
+            else:
+                from sympy.modules.solvers import StrictInequality    
+                return StrictInequality(self, other)
+
+    def __gt__(self, a):
+        if a is None: 
+            return False
+        else:
+            other = Basic.sympify(a)
+
+            if self.is_number and other.is_number: 
+                return self.evalf() > other.evalf()
+            else:
+                from sympy.modules.solvers import Inequality    
+                return Inequality(other, self)
+
+    def __ge__(self, a):
+        if a is None: 
+            return False
+        else:
+            other = Basic.sympify(a)
+
+            if self.is_number and other.is_number: 
+                return self.evalf() >= other.evalf()
+            else:
+                from sympy.modules.solvers import StrictInequality    
+                return StrictInequality(other, self)
+
     @property
     def mathml_tag(self):
         """Return the mathml tag of the current object. 
