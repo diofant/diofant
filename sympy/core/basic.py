@@ -155,14 +155,17 @@ class Basic(object):
     def __rpow__(self,a):
         return self._dopow(a, self)
         
-    def __eq__(self,a):
-        """Test for equality of two expressions
-        Currently this is done by comparing the hashes of the two expressions
+    def __eq__(self, a):
         """
+        Return new equation with lhs set to 'self' and rhs set to 'a'.
+        """
+
         if a is None: 
             return False
-        return self.hash() == self.sympify(a).hash()
-        
+            
+        from sympy.modules.solvers import Equation    
+        return Equation(self, self.sympify(a))
+
     def __ne__(self,a):
         return not self.__eq__(a)
         

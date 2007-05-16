@@ -17,7 +17,7 @@ class Symbol(Basic):
        >>> B = Symbol('B', is_commutative = False)
        >>> A*B != B*A
        True
-       >>> A*B*2 == 2*A*B # multiplication by scalars is commutative
+       >>> (A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
        True
     """
     
@@ -29,12 +29,12 @@ class Symbol(Basic):
                  *args, **kwargs):
         """if dummy == True, then this Symbol is totally unique, i.e.::
         
-        >>> Symbol("x") == Symbol("x")
+        >>> (Symbol("x") == Symbol("x")) == True
         True
         
         but with the dummy variable ::
         
-        >>> Symbol("x", dummy = True) == Symbol("x", dummy = True)
+        >>> (Symbol("x", dummy = True) == Symbol("x", dummy = True)) == True
         False
 
         """

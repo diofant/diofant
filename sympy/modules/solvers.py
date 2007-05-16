@@ -10,6 +10,48 @@ from sympy.core.functions import Derivative, diff
 from sympy.modules.polynomials import collect
 from sympy.modules.matrices import zeronm
 
+class Equation(Basic):
+
+    def __init__(self, lhs, rhs):
+        Basic.__init__(self)
+
+        self._args = [Basic.sympify(lhs),
+                      Basic.sympify(rhs)]
+
+    @property
+    def lhs(self):
+        return self._args[0]
+
+    @property
+    def rhs(self):
+        return self._args[1]
+
+    @staticmethod
+    def addeval(x, y):
+        if isinstance(x, Equation) and isinstance(y, Equation):
+            return Equation(x.lhs + y.lhs, x.rhs + y.rhs)
+        else:
+            return None
+
+    @staticmethod
+    def muleval(x, y):
+        if isinstance(x, Equation) and isinstance(y, Equation):
+            return Equation(x.lhs * y.lhs, x.rhs * y.rhs)
+        else:
+            return None
+            
+    def __eq__(self, other):
+        if isinstance(other, bool):
+            if other == True:
+                return self.lhs.hash() == self.rhs.hash()
+            else:
+                return self.lhs.hash() != self.rhs.hash()
+        else:
+            raise TypeError
+        
+    def __nonzero__(self):
+        return self.lhs.hash() == self.rhs.hash()
+
 def solve(eq, vars):
     """
     Solves any (supported) kind of equation (not differential).
