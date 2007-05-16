@@ -84,7 +84,7 @@ def test_sin():
     assert sin(x+y+z).expand() == sin(x)*cos(y)*cos(z) - sin(x)*sin(y)*sin(z) + cos(x)*sin(y)*cos(z) + cos(x)*cos(y)*sin(z)
 
     assert sin(2*x).expand() == 2*sin(x)*cos(x)
-    assert sin(-3*x).expand() == -(4*sin(x)*cos(x)**2 - sin(x))
+    assert sin(-3*x).expand() == -4*sin(x)*cos(x)**2 + sin(x)
 
 def test_tan():
     x = Symbol('x')

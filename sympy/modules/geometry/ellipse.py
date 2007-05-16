@@ -130,6 +130,7 @@ class Ellipse(GeometryEntity):
         det = simplify(b*b - a*c);
 
         result = []
+        print det
         if det == 0:
             t = -b / a
             i1 = lp[0] + (lp[0] - lp[1]) * t;
@@ -175,9 +176,10 @@ class Ellipse(GeometryEntity):
             # LinearEntity may be a ray/segment, so check the points
             # of intersection for coincidence first
             result = self._do_line_intersection(o)
-            for ind in xrange(0, len(result)):
-                if p not in o:
-                    del result[ind]
+            if result is not None:
+                for ind in xrange(0, len(result)):
+                    if p not in o:
+                        del result[ind]
             return result
         elif isinstance(o, Ellipse):
             if o == self:
@@ -206,7 +208,7 @@ class Ellipse(GeometryEntity):
             res = self.equation('x', 'y').subs_dict({x: o[0], y: o[1]})
             res = simplify(res)
             #print res, trigsimp(res)
-            return (res == 0 or trigsimp(res) == 0)
+            return bool(res == 0) or bool(trigsimp(res) == 0)
         elif isinstance(o, Ellipse):
             return (self == o)
         else:

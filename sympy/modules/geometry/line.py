@@ -50,7 +50,7 @@ class LinearEntity(GeometryEntity):
         try:
             a1,b1,c1 = l1._coeffs()
             a2,b2,c2 = l2._coeffs()
-            return simplify(a1*b2 - b1*a2) == Rational(0)
+            return bool(simplify(a1*b2 - b1*a2) == 0)
         except AttributeError:
             return False
 
@@ -60,7 +60,7 @@ class LinearEntity(GeometryEntity):
         try:
             a1,b1,c1 = l1._coeffs()
             a2,b2,c2 = l2._coeffs()
-            return simplify(a1*a2 + b1*b2) == Rational(0)
+            return bool(simplify(a1*a2 + b1*b2) == 0)
         except AttributeError:
             return False
 

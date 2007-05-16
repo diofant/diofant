@@ -180,7 +180,7 @@ class Triangle(Polygon):
             e1 = simplify(u1/v1)
             e2 = simplify(u2/v2)
             e3 = simplify(u3/v3)
-            return (e1 == e2) and (e2 == e3)
+            return bool(e1 == e2) and bool(e2 == e3)
 
         # There's only 6 permutations, so write them out
         return _are_similar(s1_1, s1_2, s1_3, *s2) or \
@@ -193,7 +193,7 @@ class Triangle(Polygon):
     def is_equilateral(self):
         """Returns True if the triangle is equilateral, False otherwise."""
         s = self.sides
-        return (s[0].length == s[1].length) and (s[1].length == s[2].length)
+        return bool(s[0].length == s[1].length) and bool(s[1].length == s[2].length)
 
     def is_right(self):
         """Returns True if the triangle is right-angled, False otherwise."""

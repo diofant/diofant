@@ -48,7 +48,7 @@ class Equation(Basic):
                 return self.lhs.hash() != self.rhs.hash()
         else:
             raise TypeError
-        
+            
     def __nonzero__(self):
         return self.lhs.hash() == self.rhs.hash()
 
