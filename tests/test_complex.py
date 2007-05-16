@@ -47,3 +47,10 @@ def test_evalc():
     assert cos(I*x).evalc() == (exp(x)+exp(-x))/2
     assert cos(x+I*y).evalc() == cos(x)*(exp(y)+exp(-y))/2 - \
             I * (exp(y)-exp(-y))/2 * sin(x)
+
+
+def test_pythoncomplex():
+    x = Symbol("x")
+    assert 4j*x == 4*x*I
+    assert 4j*x != 4.0*x*I
+    assert 4.1j*x != 4*x*I

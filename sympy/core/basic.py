@@ -351,7 +351,12 @@ class Basic(object):
         elif isinstance(a, complex):
             from numbers import I
             real,imag = Basic.sympify(a.real), Basic.sympify(a.imag)
-            return real + imag*I
+            ireal, iimag = int(real), int(imag)
+            t = ireal+iimag*1j
+            if t == a:
+                return ireal + iimag*I
+            else:
+                return real + imag*I
         else:
             if not isinstance(a,Basic):
                 raise ValueError("%s must be a subclass of basic" % str(a))
