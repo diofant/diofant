@@ -306,6 +306,10 @@ class Basic(object):
             return Rational(a)
         elif isinstance(a,(float, decimal.Decimal, str)):
             return Real(a)
+        elif isinstance(a, complex):
+            from numbers import I
+            real,imag = Basic.sympify(a.real), Basic.sympify(a.imag)
+            return real + imag*I
         else:
             if not isinstance(a,Basic):
                 raise ValueError("%s must be a subclass of basic" % str(a))

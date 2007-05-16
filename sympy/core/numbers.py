@@ -151,24 +151,30 @@ class Real(Number):
         return int(self.evalf())
     
     def __add__(self,a):
-        a = self.sympify(a)
+        from addmul import Add
+        a = Basic.sympify(a)
         if a.is_number:
             if isinstance(a, Real):
                 return Real(self.num + a.num)
+            elif not a.is_real:
+                return Add(self, a)
             else:
                 return Real(self.num + decimal.Decimal(str(float(a))))
         else:
             assert isinstance(a, Basic)
-            from addmul import Add
             return Add(self, a)
         
     def __mul__(self,a):
-        if Basic.sympify(a).is_number:
-            return Real(self.num * decimal.Decimal(str(float(a))))
-            #FIXME: too many boxing-unboxing
+        from addmul import Mul
+        a = Basic.sympify(a)
+        if a.is_number:
+            if a.is_real:
+                return Real(self.num * decimal.Decimal(str(float(a))))
+                #FIXME: too many boxing-unboxing
+            else:
+                return Mul(self, a)
         else:
             assert isinstance(a, Basic)
-            from addmul import Mul
             return Mul(self, a)
         
     def __pow__(self,a):
