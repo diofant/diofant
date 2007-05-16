@@ -32,6 +32,8 @@ class Equation(Basic):
             return Equation(x.lhs + y.lhs, x.rhs + y.rhs)
         elif isinstance(x, Equation):
             return Equation(x.lhs + y, x.rhs + y)
+        elif isinstance(y, Equation):
+            return Equation(x + y.lhs, x + y.rhs)
         else:
             return None
 
@@ -40,10 +42,12 @@ class Equation(Basic):
         if isinstance(x, Equation) and isinstance(y, Equation):
             return Equation(x.lhs * y.lhs, x.rhs * y.rhs)
         elif isinstance(x, Equation):
-            return Equation(x.lhs * y, x.rhs * y)            
+            return Equation(x.lhs * y, x.rhs * y)
+        elif isinstance(y, Equation):
+            return Equation(x * y.lhs, x * y.rhs)
         else:
             return None
-            
+
     def __eq__(self, other):
         if isinstance(other, bool):
             if other == True:
@@ -56,12 +60,26 @@ class Equation(Basic):
         else:
             return self.lhs.hash() == other.hash() and \
                    self.rhs.hash() == other.hash()
-            
+
+    def __ne__(self, other):
+        if isinstance(other, bool):
+            if other == False:
+                return self.lhs.hash() == self.rhs.hash()
+            else:
+                return self.lhs.hash() != self.rhs.hash()
+        elif isinstance(other, Equation):
+            return self.lhs.hash() != other.lhs.hash() or \
+                   self.rhs.hash() != other.rhs.hash()
+        else:
+            return self.lhs.hash() != other.hash() or \
+                   self.rhs.hash() != other.hash()
+
     def __nonzero__(self):
         return self.lhs.hash() == self.rhs.hash()
-        
-    # TODO : add printing
-        
+
+    def __latex__(self):
+        return "%s = %s" % (self.lhs.__latex__(), self.rhs.__latex__())
+
 class Inequality(Basic):
 
     def __init__(self, lhs, rhs):
@@ -82,25 +100,31 @@ class Inequality(Basic):
     def addeval(x, y):
         if isinstance(x, Inequality) and isinstance(y, Inequality):
             return Inequality(x.lhs + y.lhs, x.rhs + y.rhs)
-        elif isinstance(x, Equation):
+        elif isinstance(x, Inequality):
             return Inequality(x.lhs + y, x.rhs + y)
+        elif isinstance(y, Inequality):
+            return Inequality(x + y.lhs, x + y.rhs)
         else:
             return None
-            
-    # TODO : add printing
-            
+
+    def __latex__(self):
+        return "%s < %s" % (self.lhs.__latex__(), self.rhs.__latex__())
+
 class StrictInequality(Inequality):
 
     @staticmethod
     def addeval(x, y):
         if isinstance(x, StrictInequality) and isinstance(y, StrictInequality):
             return StrictInequality(x.lhs + y.lhs, x.rhs + y.rhs)
-        elif isinstance(x, Equation):
+        elif isinstance(x, StrictInequality):
             return StrictInequality(x.lhs + y, x.rhs + y)
+        elif isinstance(y, StrictInequality):
+            return StrictInequality(x + y.lhs, x + y.rhs)
         else:
             return None
-            
-    # TODO : add printing
+
+    def __latex__(self):
+        return "%s \le %s" % (self.lhs.__latex__(), self.rhs.__latex__())
 
 def solve(eq, vars):
     """
