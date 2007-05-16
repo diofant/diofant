@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Symbol
+from sympy import Symbol, exp
 from sympy.modules.simplify import *
 
 def test_ratsimp():
@@ -18,6 +18,11 @@ def test_ratsimp():
     e = x/(x+y)+y/(x+y)
     assert e != 1
     assert ratsimp(e) == 1
+    
+    e = 1/(1+1/x)
+    assert ratsimp(e) == x/(x+1)
+    assert (x+1)*ratsimp(e)/x == 1
+    assert ratsimp(exp(e)) == exp(x/(x+1))
     
 def test_simplify():
     x = Symbol('x')

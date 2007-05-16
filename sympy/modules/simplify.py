@@ -32,6 +32,8 @@ def ratsimp(expr):
         for x in expr:
             res.append( ratsimp(x) )
         return Mul(*res)
+    elif isinstance(expr, Function):
+        return type(expr)( ratsimp(expr[0]) )
     elif not isinstance(expr, Add):
         return expr
 

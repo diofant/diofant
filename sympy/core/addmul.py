@@ -8,6 +8,7 @@ This is a central part of the core
 from sympy.core.basic import Basic
 from sympy.core.numbers import Rational, Real, Infinity
 from sympy.core.power import Pow, pole_error
+from sympy.core.functions import Function
 
 from sympy.core.stringPict import prettyForm
 
@@ -37,7 +38,7 @@ class Pair(Basic):
         return self._mathml
     
     def tryexpand(self, a):
-        if isinstance(a,Mul) or isinstance(a,Pow):
+        if isinstance(a, (Mul, Pow, Function)):
             return a.expand()
         else:
             return a

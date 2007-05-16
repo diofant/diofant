@@ -1,5 +1,5 @@
 from sympy.core.functions import Function, exp, sqrt
-from sympy.core.numbers import Real, Rational, pi, I
+from sympy.core.numbers import Number, Real, Rational, pi, I
 from sympy.core import Symbol, Add, Mul
 from simplify import ratsimp
 
@@ -84,11 +84,11 @@ class sin(Function):
 
                             return result
 
-            if self._args < 0:
-                return -sin(-self._args)
-
-        if isinstance(self._args, Mul) and self._args[0] == -1:
+        if isinstance(self._args, Number) and self._args < 0:
             return -sin(-self._args)
+        elif isinstance(self._args, Mul):
+            if isinstance(self._args[0], Number) and self._args[0] < 0:
+                return -sin(-self._args)
 
         return self
 
@@ -138,7 +138,7 @@ class sin(Function):
                     sign = -1
                 t1 = 2*sin((n-1)*x).expand()*cos(x).expand()
                 t2 = sin((n-2)*x).expand()
-                return sign*((t1 - t2).expand())
+                return (sign*(t1 - t2)).expand()
             else:
                 return self
         else:
@@ -231,11 +231,12 @@ class cos(Function):
                                 result *= -1
 
                             return result
-            if self._args < 0:
-                return cos(-self._args)
-
-        if isinstance(self._args, Mul) and self._args[0] == -1:
+        
+        if isinstance(self._args, Number) and self._args < 0:
             return cos(-self._args)
+        elif isinstance(self._args, Mul):
+            if isinstance(self._args[0], Number) and self._args[0] < 0:
+                return cos(-self._args)
 
         return self
 
@@ -325,10 +326,11 @@ class tan(Function):
         return Rational(1) / (cos(self._args)**2)
 
     def eval(self):
-        if self._args.is_number and self._args < 0:
+        if isinstance(self._args, Number) and self._args < 0:
             return -tan(-self._args)
-        elif isinstance(self._args, Mul) and self._args[0] == -1:
-            return -tan(-self._args)
+        elif isinstance(self._args, Mul):
+            if isinstance(self._args[0], Number) and self._args[0] < 0:
+                return -tan(-self._args)
         return self
 
     def evalf(self):
@@ -383,9 +385,9 @@ class tan(Function):
 
                 a = tan((n-1)*x).expand()
                 b = tan(x).expand()
-                t1 = (a + b).expand()
+                t1 = (sign*(a + b)).expand()
                 t2 = ratsimp( (1 - a*b).expand() )
-                return sign*expand_fraction(t1, t2)
+                return expand_fraction(t1, t2)
             else:
                 return self
         else:
