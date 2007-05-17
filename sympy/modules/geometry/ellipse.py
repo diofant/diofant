@@ -120,7 +120,6 @@ class Ellipse(GeometryEntity):
 
         ldir = lp[1] - lp[0]
         diff = lp[0] - self._c
-
         mdir = (ldir[0] / hr_sq, ldir[1] / vr_sq)
         mdiff = (diff[0] / hr_sq, diff[1] / vr_sq)
 
@@ -130,15 +129,13 @@ class Ellipse(GeometryEntity):
         det = simplify(b*b - a*c);
 
         result = []
-        print det
         if det == 0:
             t = -b / a
-            i1 = lp[0] + (lp[0] - lp[1]) * t;
-            result.append(i1)
+            result.append( lp[0] + (lp[1] - lp[0]) * t )
         else:
             is_good = True
             try:
-                is_good = (det < 0)
+                is_good = (det > 0)
             except NotImplementedError: #symbolic, allow
                 is_good = True
 
@@ -146,17 +143,8 @@ class Ellipse(GeometryEntity):
                 root = sqrt(det)
                 t_a = (-b - root) / a
                 t_b = (-b + root) / a
-                try:
-                    if 0 <= t_a <= 1:
-                        result.append( lp[0] + (lp[0] - lp[1]) * t_a )
-                except NotImplementedError: #symbolic, allow
-                    result.append( lp[0] + (lp[0] - lp[1]) * t_a )
-
-                try:
-                    if 0 <= t_a <= 1:
-                        result.append( lp[0] + (lp[0] - lp[1]) * t_b )
-                except NotImplementedError: #symbolic, allow
-                    result.append( lp[0] + (lp[0] - lp[1]) * t_b )
+                result.append( lp[0] + (lp[1] - lp[0]) * t_a )
+                result.append( lp[0] + (lp[1] - lp[0]) * t_b )
 
         if len(result) == 0:
             return None
@@ -177,8 +165,8 @@ class Ellipse(GeometryEntity):
             # of intersection for coincidence first
             result = self._do_line_intersection(o)
             if result is not None:
-                for ind in xrange(0, len(result)):
-                    if p not in o:
+                for ind in xrange(len(result)-1, -1, -1):
+                    if result[ind] not in o:
                         del result[ind]
             return result
         elif isinstance(o, Ellipse):
