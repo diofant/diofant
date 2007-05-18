@@ -91,3 +91,17 @@ def test_evalpow_bug():
 
 def test_expbug():
     assert exp(-log(3))**(-1) == 3
+
+
+def test_symbol_expand():
+    x = Symbol('x')
+    y = Symbol('y')
+
+    f = x**4*y**4
+    assert f == x**4*y**4
+    assert f == f.expand()
+
+    g = (x*y)**4
+    assert f != g
+    assert f == g.expand()
+    assert g.expand() == g.expand().expand()

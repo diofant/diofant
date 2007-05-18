@@ -323,22 +323,21 @@ class Mul(Pair):
                 if e != 0:
                     return Pow(xbase,e,evaluate=False), True
             return Pow(xbase,Add(xexp,yexp)), True
-        #elif xexp.is_number and yexp.is_number:
-        else:
-            # This speeds things up
-            if xexp == 1 or yexp == 1 or xexp == -1 or yexp == -1:
-                return x, False
-
+        elif xexp == 1 or yexp == 1 or xexp == -1 or yexp == -1:
+            return x, False
+        # hack to fix polynomial expansion
+        elif xbase.is_number and y.base.is_number or \
+             isinstance(x.base, Function) and isinstance(y.base, Function):
             if xexp == yexp:
                 expr = Mul(xbase, ybase)
-                return Pow(expr, xexp, evaluate=False), True
+                return Pow(expr, xexp, evaluate=True), True
             elif xexp == -yexp:
                 den = Pow(ybase, -1)
                 expr = Mul(xbase, den)
                 return Pow(expr, xexp, evaluate=True), True
             return x, False
-        #else:
-        #    return x, False
+        else:
+            return x, False
             
     def eval(self):
         "Flatten, put all Rationals in the front, sort arguments"
