@@ -33,18 +33,6 @@ def test_coeff():
     assert coeff(2*x+18*x**8, x, 4) == 0
     assert coeff(2*x+18*x**8, x, 8) == 18
 
-def test_get_poly():
-    x = Symbol("x")
-    y = Symbol("y")
-    assert get_poly(3*x**2,x) == [(3,2)]
-    assert get_poly(2*x+3*x**2 - 5,x) == [(-5, 0), (2, 1), (3,2)]
-    assert get_poly(2*x**100+3*x**2 - 5,x) == [(-5, 0), (3,2), (2, 100)]
-
-    assert get_poly(sqrt(y)*x,x) == [(sqrt(y),1)]
-    assert get_poly(x**2 + 3*x*sqrt(y) - 8, x) == [(-8, 0), (3*sqrt(y), 1), 
-            (1, 2)]
-    py.test.raises(PolynomialException, "get_poly(sqrt(x),x)")
-
 def test_poly():
     x = Symbol("x")
     y = Symbol("y")
@@ -109,4 +97,24 @@ def test_collect():
     assert collect(x*y+2*y+z, [x, y, z]) == None
     assert collect(sin(x)*x+y+z, [x, y, z]) == None
     assert collect(sin(y)*x+y+z, [x, y, z]) == None
+
+def test_coeff_list():
+    x = Symbol('x')
+    y = Symbol('y')
+    z = Symbol('z')
+
+    from sympy.modules.trigonometric import sin
+
+    assert coeff_list(1) == [[1]]
+    assert coeff_list(x) == [[1,1]]
+    assert coeff_list(x**2+y**3) == [[1,2,0], [1,0,3]]
+    assert coeff_list(x**2+y**3, [y,x]) == [[1,3,0], [1,0,2]]
+    assert coeff_list(x*y) == [[1,1,1]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + y**5, [x,y]) \
+           == [[sin(z), 3, 0], [1, 2, 4], [1, 0, 5]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + y**5, [x,y], order='grlex') \
+           == [[1, 2, 4], [1, 0, 5], [sin(z), 3, 0]]
+
+    py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
+    py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
 

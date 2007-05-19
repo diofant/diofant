@@ -15,9 +15,10 @@ def ispoly(p, var=None):
         
     Notes
     =====
-        You can check wether it's a polynomial in several variables at once giving a 
-        tuple of symbols second argument (like ispoly(x**2 + y + 1, (x,y)) ).See
-        examples for more info.
+        You can check wether it's a polynomial in several variables at
+        once giving a tuple of symbols second argument
+        (like ispoly(x**2 + y + 1, (x,y)) ).
+
     
     Examples
     ========
@@ -34,7 +35,7 @@ def ispoly(p, var=None):
         
     See also
     ========
-       L{get_poly}, L{coeff}
+       L{coeff_list}, L{coeff}
        
     """
     if isinstance(var, Basic):
@@ -44,12 +45,13 @@ def ispoly(p, var=None):
         #basically, the polynomial is whatever we can convert using
         #the get_poly(). See it's docstring for more info.
         if var is None:
-            var = p.atoms(type=Symbol)[0] # make it work even if the user doesen't issue a variable
+            # make it work even if the user doesen't issue a variable
+            var = p.atoms(type=Symbol)[0] 
             print "\t*** Warning. You have not issued a variable as argument."
             print "\t*** Please see the interactive help on this function for more info"
             print "\t*** Using %s as variable" % str(var)
         for v in var:
-            get_poly(p, v)
+            coeff_list(p, v)
     except PolynomialException:
         return False
     except IndexError:
@@ -67,66 +69,25 @@ def coeff(poly, x, n):
     assert ispoly(poly,x)
     return diff(poly, x,n).subs(x,0)/fact(n)
 
-def get_poly(p, x):
-    """Returns a python list representing the polynomial 'p(x)'.
-    
-    'p' is a polynomial, for example: x**2 + 3*x*sqrt(y) - 8
-    'x' is the variable of the polynomial, for example: x
-    get_poly returns a python list of the form [(coeff0,n0), (coeff1,n1), ...]
-    where p = coeff0*x**n0 + coeff1*x**n1 + ...
-    and n0, n1, ... are sorted from the lower exponents up.
-
-    Example:
-    >>> from sympy import *
-    >>> from sympy.modules.polynomials import get_poly
-    >>> x = Symbol("x")
-    >>> y = Symbol("y")
-    >>> get_poly(x**2 + 3*x**7*sqrt(y) - 8, x)
-    [(-8, 0), (1, 2), (3*y**(1/2), 7)]
-
-    
-    """
-    p = Basic.sympify(p)
-    if not p.has(x):
-        return [(p,0)]
-    if p==x:
-        return [(1,1)]
-    if isinstance(p, Pow):
-        if isinstance(p.exp, Rational) and p.exp.is_integer:
-            n = int(p.exp)
-            if n>0:
-                if isinstance(p.base, Symbol):
-                    return [(1,n)]
-                else:
-                    # FIXME The return value isn't correct, but at least it
-                    #       doesn't break is_poly
-                    get_poly(p.base, x)
-                    return [(1,n)]
-    if isinstance(p,Add):
-        a,b = p.getab()
-        r = get_poly(a,x) + get_poly(b,x)
-        r.sort(key = lambda x: x[1])
-        return r
-    if isinstance(p,Mul):
-        a,b = p.getab()
-        if isinstance(a, Number):
-            c,n = get_poly(b,x)[0]
-            return [(a*c,n)]
-        a, b = get_poly(a,x), get_poly(b,x)
-        assert len(a) == 1
-        assert len(b) == 1
-        a, b = a[0], b[0]
-        r = (a[0]*b[0], a[1]+b[1])
-        return [r]
-    raise PolynomialException("p is not a polynomial")
-
-def poly(p, x):
+def poly(p, vars):
     """Returns a sympy polynomial from the representation "p" returned by
-    get_poly().
+    coeff_list().
     """
+
+    if isinstance(vars, Symbol):
+        vars = [vars]
+
+    if len(p) == 0:
+        return Rational(0)
+    elif len(p[0]) != len(vars) + 1:
+        raise PolynomialException('Wrong number of variables given.')
+    
     r = 0
-    for t in p:
-        r+=t[0]*x**t[1]
+    for item in p:
+        c = item[0]
+        for var in vars:
+            c *= var**item[vars.index(var)+1]
+        r += c
     return r
 
 def rep(n, base):
@@ -178,11 +139,11 @@ def div(f, g, x):
     All coefficients of 'f' and 'g' are assumed to be integers,
     and coefficients in 'q' and 'r' are then guaranteed to be integers.
     """
-    fp = get_poly(f, x)
-    gp = get_poly(g, x)
+    fp = coeff_list(f, x)
+    gp = coeff_list(g, x)
     q = 0
-    while fp[-1][1] >= gp[-1][1] and fp[-1][0]!=0:
-        s1 = poly([fp[-1]], x) / poly([gp[-1]], x)
+    while fp[0][1] >= gp[0][1] and fp[0][0]!=0:
+        s1 = poly([fp[0]], x) / poly([gp[0]], x)
         if isinstance(s1, Mul):
             a,b = s1.getab()
             if isinstance(a, Number) and not a.is_integer:
@@ -190,7 +151,7 @@ def div(f, g, x):
                 #put it in the remainder and we are done
                 return q, f
         f = (f - g*s1).expand()
-        fp = get_poly(f, x)
+        fp = coeff_list(f, x)
         q+=s1
     return q, f
     
@@ -257,3 +218,79 @@ def collect(expr, syms):
     else:
         return None
 
+def coeff_list(p, vars=None, order='lex'):
+    """Return the list of coeffs and exponents.
+
+    Currently, lexicographic ('lex') and graded lexicographic
+    ('grlex') orders are implemented. The list of variables determines
+    the order of the variables.
+    The coefficients are assumed to be real numbers, that is, you can
+    divide by them.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> from sympy.modules.trigonometric import sin
+    >>> coeff_list(x+sin(y)*x**2, [x])
+    [[sin(y), 2], [1, 1]]
+
+    >>> coeff_list(6*y**3+7*y*x**2)
+    [[7, 2, 1], [6, 0, 3]]
+
+    >>> coeff_list(6*y**3+7*y*x**2, [y,x])
+    [[6, 3, 0], [7, 1, 2]]
+    
+    """
+    p = Basic.sympify(p)
+    p = p.expand()
+
+    if isinstance(vars, Symbol):
+        vars = [vars]
+    if vars == None:
+        vars = p.atoms(type=Symbol)
+        vars.sort()
+
+    res = []
+    
+    if isinstance(p, Add):
+        for a in p._args:
+            res.append(*coeff_list(a, vars, order))
+    else:
+        if not isinstance(p, Mul):
+            p = Mul(Rational(1), p, evaluate=False) 
+        item = [Rational(1)] + len(vars)*[Rational(0)]
+        for factor in p._args:
+            # check if any of the vars appear
+            if filter(lambda x:x in vars, factor.atoms(type=Symbol)):
+                if isinstance(factor, Pow) \
+                   and (factor.base in vars) \
+                   and isinstance(factor.exp, Number) \
+                   and factor.exp.is_integer \
+                   and factor.exp > 0:
+                    item[vars.index(factor.base)+1] += factor.exp
+                elif isinstance(factor, Symbol):
+                    item[vars.index(factor)+1] += 1
+                else:
+                    raise PolynomialException('Not a polynomial!')
+            else: # the factor is relativly constant
+                item[0] *= factor
+        res = [item]
+    
+    # sort list according to monomial ordering
+    if order == 'lex':
+        res.sort(key=lambda x: x[1:], reverse=True)
+    elif order == 'grlex':
+        res.sort(key=lambda x: [sum(x[1:])] + x[1:], reverse=True)
+    else:
+        raise PolynomialException(order + 'is not an implemented order.')
+
+    # unify monomials
+    result = []
+    for item in res:
+        filt = filter(lambda x: x[1:] == item[1:], result)
+        if filt:
+            result[ result.index(filt[0]) ][0] += item[0]
+        else:
+            result.append(item)
+    
+    return result
