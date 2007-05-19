@@ -4,7 +4,7 @@ sys.path.append(".")
 import sympy as g
 from sympy import Symbol, exp, Order
 
-def testSymbol():
+def test_Symbol():
     a=g.Symbol("a")
     b=g.Symbol("b")
     c=g.Symbol("c")
@@ -16,7 +16,7 @@ def testSymbol():
     assert a*b*b+c==c+a*b**2
     assert a*b*b-c==-c+a*b**2
 
-def testarit():
+def test_arit():
     a=g.Symbol("a")
     b=g.Symbol("b")
     c=g.Symbol("c")
@@ -124,12 +124,12 @@ def testpow():
     e=a/b**2
     assert e == a*b**(-2)
 
-def testexpand():
-    a=g.Symbol("a")
-    b=g.Symbol("b")
-    c=g.Symbol("c")
-    p=g.Rational(5)
-    e=(a+b)*c
+def test_expand():
+    a = g.Symbol("a")
+    b = g.Symbol("b")
+    c = g.Symbol("c")
+    p = g.Rational(5)
+    e = (a+b)*c
     assert e == c*(a+b)
     assert (e.expand()-a*c-b*c) == g.Rational(0)
     e=(a+b)*(a+b)
@@ -153,6 +153,16 @@ def testexpand():
     e=s.series(x,5)/x**2
     #assert e == (x**2+x**4/2)/x**2
     assert e.expand() ==  1+x**2/2+Order(x**3)
+    
+def test_power_expand():
+    """Test for Pow.expand()"""
+    a = g.Symbol('a')
+    b = g.Symbol('b')
+    p = (a+b)**2
+    assert p.expand() == a**2 + b**2 + 2*a*b
+    
+    p = (1+2*(1+a))**2
+    assert p.expand() == 9 + 4*(a**2) + 12*a
 
 def test_ncmul():
     A = Symbol("A", is_commutative=False)

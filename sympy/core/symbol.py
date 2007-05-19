@@ -104,7 +104,10 @@ class Symbol(Basic):
     def doit(self):
         return self
 
-    def match(self, pattern, syms):
+    def match(self, pattern, syms=None):
+        if syms == None:
+            syms = pattern.atoms(type=Symbol)
+            
         if self == pattern:
             return {}
         if len(syms) == 1:

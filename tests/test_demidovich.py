@@ -10,6 +10,7 @@ problemas resueltos, Ed. URSS"
 
 x=Symbol("x")
 h=Symbol("h")
+a = Symbol('a')
 
 def test_leadterm():
     x=Symbol("x")
@@ -27,14 +28,15 @@ def tan(x):
 def limitminf(f,x):
     return limitinf(f.subs(x,-x),x)
 
-def test_simple_problems():
-    a = Symbol('a')
+def test_limits_simple_1():
     assert limit((x+1)*(x+2)*(x+3)/x**3,x, oo)==1  #172
     #assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
     assert limitinf(x/sqrt3(x**3+10),x)==1  #Primjer 2
     assert limitinf((x+1)**2/(x**2+1),x)==1  #181
+    
+def test_limits_simple_2():
     assert limitinf(1000*x/(x**2-1),x)==0  #182
     assert limitinf((x**2-5*x+1)/(3*x+7),x)==oo  #183
     assert limitinf((2*x**2-x+3)/(x**3-8*x+5),x)==0  #184
@@ -43,6 +45,8 @@ def test_simple_problems():
     assert limitinf(x**2/(10+x*sqrt(x)),x)==oo  #188
     assert limitinf(sqrt3(x**2+1)/(x+1),x)==0  #189
     #assert limitinf(sqrt(x)/sqrt(x+sqrt(x+sqrt(x))),x)==1  #190
+    
+def test_limits_simple_3():
     assert limit((x**2-(a+1)*x+a)/(x**3-a**3),x,a)==((a-1)/(3*a**2)).expand()  #196
     assert limit(((x+h)**3-x**3)/h,h,0)==3*x**2  #197
     assert limit((1/(1-x)-3/(1-x**3)),x,1)==-1  #198
@@ -51,6 +55,8 @@ def test_simple_problems():
     assert limit((sqrt(x)-8)/(sqrt3(x)-4),x,64)==3  #200
     assert limit((sqrt3(x)-1)/(sqrt4(x)-1),x,1)==Rational(4)/3  #201
     #assert limit((sqrt3(x**2)-2*sqrt3(x)+1)/(x-1)**2,x,1)==Rational(1)/9  #202
+
+def test_limits_simple_4():
     assert limit((sqrt(x)-sqrt(a))/(x-a),x,a)==1/(2*sqrt(a))  #Primer 5
     assert limit((sqrt(x)-1)/(sqrt3(x)-1),x,1)==Rational(3)/2  #205
     assert limit((sqrt(1+x)-sqrt(1-x))/x,x,0)==1  #207

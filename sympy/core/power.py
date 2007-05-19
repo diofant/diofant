@@ -284,11 +284,43 @@ class Pow(Basic):
                 return e.series(sym,n)
             
     def expand(self):
-        from addmul import Mul
+        from addmul import Add, Mul
+        
+        def _expand_bin(a, b, n):
+            """calculates the expansion of (a+b)**n using newton's binomial
+            formula (also called triangle of Pascal)
+            
+            See L{http://en.wikipedia.org/wiki/Binomial_theorem}
+            """
+            s = a**n
+            cur_coeff = Rational(1)
+            cur_exp = 1
+            for i in range(1, n+1):
+                # we could speed this using that the coefficients are
+                # symetrical
+                cur_coeff = cur_coeff * (n-i+1) / i
+                s += cur_coeff * (a**(n-i)) * (b**(i))
+            return s
+        
+        def _expand_multi(**args):
+            """calculate the expansion of (a1 + a2 + ...)**n
+            TODO
+            """
+            pass
+        
         if isinstance(self.exp, (Real, Rational)):
             if self.exp.is_integer:
                 n = int(self.exp)
                 if n > 1:
+                    base = self.base.expand()
+                    if isinstance(base, Add) and self.base.is_commutative:
+                        # try to expand using the binomial formula
+                        if len(base[:]) == 2:
+                            a, b = base.getab()
+                            return _expand_bin(a, b, n)
+                        else:
+                            #implement the multinomial formula
+                            pass
                     a = self.base
                     while n > 1:
                         a = Mul(a,self.base,evaluate=False)
