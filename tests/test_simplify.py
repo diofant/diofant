@@ -30,4 +30,8 @@ def test_simplify():
     e = 1/x + 1/y
     assert e != (x+y)/(x*y)
     assert simplify(e) == (x+y)/(x*y)
+
+    e = (4+4*x-2*(2+2*x))/(2+2*x)
+    assert e != 0
+    assert simplify(e) == 0
     

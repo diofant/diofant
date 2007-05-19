@@ -50,6 +50,11 @@ def ratsimp(expr):
     c,d = get_num_denum(ratsimp(y))
     num = a*d+b*c
     denum = b*d
+
+    # Check to see if the numerator actually expands to 0
+    if num.expand() == 0:
+        return 0
+
     #we need to cancel common factors from numerator and denumerator
     #but SymPy doesn't yet have a multivariate polynomial factorisation
     #so until we have it, we are just returning the correct results here
@@ -103,5 +108,4 @@ def trigsimp(expr):
     return expr
 
 def simplify(expr):
-    
     return ratsimp(expr.combine().expand())
