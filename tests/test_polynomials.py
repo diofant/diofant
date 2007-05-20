@@ -118,3 +118,17 @@ def test_coeff_list():
     py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
     py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
 
+def test_div_mv():
+    x = Symbol('x')
+    y = Symbol('y')
+
+    assert div_mv(1,1) == [1, 0]
+    assert div_mv(1,x,[x]) == [0, 1]
+    assert div_mv(x*y+2*x+y,x,[x]) == [2+y, y]
+    assert div_mv(x*y+2*x+y,x,[y]) == [2+(1+x)*y/x, 0]
+
+    assert div_mv(x*y**2 + 1, [x*y+1, y+1], [x,y]) == [y, -1, 2]
+    assert div_mv(x**2*y+x*y**2+y**2, [x*y-1, y**2-1], [x,y]) \
+           == [x+y, 1, 1+x+y]
+    assert div_mv(x**2*y+x*y**2+y**2, [y**2-1, x*y-1], [x,y]) \
+           == [1+x, x, 1+2*x]

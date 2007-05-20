@@ -82,24 +82,24 @@ def coeff(poly, x, n):
     assert ispoly(poly,x)
     return diff(poly, x,n).subs(x,0)/fact(n)
 
-def poly(p, vars):
+def poly(p, var):
     """Returns a sympy polynomial from the representation "p" returned by
     coeff_list().
     """
 
-    if isinstance(vars, Symbol):
-        vars = [vars]
+    if isinstance(var, Symbol):
+        var = [var]
 
     if len(p) == 0:
         return Rational(0)
-    elif len(p[0]) != len(vars) + 1:
+    elif len(p[0]) != len(var) + 1:
         raise PolynomialException('Wrong number of variables given.')
     
     r = 0
     for item in p:
         c = item[0]
-        for var in vars:
-            c *= var**item[vars.index(var)+1]
+        for v in var:
+            c *= v**item[var.index(v)+1]
         r += c
     return r
 
@@ -231,7 +231,7 @@ def collect(expr, syms):
     else:
         return None
 
-def coeff_list(p, vars=None, order='lex'):
+def coeff_list(p, var=None, order='lex'):
     """Return the list of coeffs and exponents.
 
     Currently, lexicographic ('lex') and graded lexicographic
@@ -257,32 +257,32 @@ def coeff_list(p, vars=None, order='lex'):
     p = Basic.sympify(p)
     p = p.expand()
 
-    if isinstance(vars, Symbol):
-        vars = [vars]
-    if vars == None:
-        vars = p.atoms(type=Symbol)
-        vars.sort()
+    if isinstance(var, Symbol):
+        var = [var]
+    if var == None:
+        var = p.atoms(type=Symbol)
+        var.sort()
 
     res = []
     
     if isinstance(p, Add):
         for a in p._args:
-            res.append(*coeff_list(a, vars, order))
+            res.append(*coeff_list(a, var, order))
     else:
         if not isinstance(p, Mul):
             p = Mul(Rational(1), p, evaluate=False) 
-        item = [Rational(1)] + len(vars)*[Rational(0)]
+        item = [Rational(1)] + len(var)*[Rational(0)]
         for factor in p._args:
-            # check if any of the vars appear
-            if filter(lambda x:x in vars, factor.atoms(type=Symbol)):
+            # check if any of the var appear
+            if filter(lambda x:x in var, factor.atoms(type=Symbol)):
                 if isinstance(factor, Pow) \
-                   and (factor.base in vars) \
+                   and (factor.base in var) \
                    and isinstance(factor.exp, Number) \
                    and factor.exp.is_integer \
                    and factor.exp > 0:
-                    item[vars.index(factor.base)+1] += factor.exp
+                    item[var.index(factor.base)+1] += factor.exp
                 elif isinstance(factor, Symbol):
-                    item[vars.index(factor)+1] += 1
+                    item[var.index(factor)+1] += 1
                 else:
                     raise PolynomialException('Not a polynomial!')
             else: # the factor is relativly constant
@@ -307,3 +307,62 @@ def coeff_list(p, vars=None, order='lex'):
             result.append(item)
     
     return result
+
+def div_mv(f, g_i, var=None, order='lex'):
+    """Returns q_i and r such that f = g_1*q_1 +...+ g_n*q_n + r
+
+    The g_i can be a single or a list of polynomials. The remainder r
+    has a leading term that is not divisible by any of the leading
+    terms of the g_i.
+    Different monomial orderings are possible, see coeff_list() for
+    details.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> div_mv(x**3+2*x+5, x+1, [x])
+    [3+x**2-x, 2]
+    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [x,y])
+    [2*x**2*y**2+2*y**4-y+2*x*y**3, 2*y**5+y**3-y**2]
+    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [y,x])
+    [-2*x**3*y-x**2+x-x*y-y**2-2*x**4, -x**2+x**3+2*x**5]
+    >>> div_mv(2*x**3*y**2 - x*y + y**3, [x-y, y**2], [x,y])
+    [2*x**2*y**2+2*y**4-y+2*x*y**3, -1+y+2*y**3, 0]
+    """
+
+    if not isinstance(g_i, list):
+        g_i = [g_i]
+    f = Basic.sympify(f)
+    g_i = map(Basic.sympify, g_i)
+
+    if var == None:
+        var = f.atoms(type=Symbol)
+        for g in g_i:
+            var_g = g.atoms(type=Symbol)
+            if var != var_g:
+                raise PolynomialException('Bad variables.')
+
+    f_cl = coeff_list(f, var, order)
+    g_i_cl = map(lambda g: coeff_list(g, var, order), g_i)
+
+    r = Rational(0)
+    q_i = len(g_i)*[Rational(0)]
+
+    while f != 0:
+        for g, g_cl in zip(g_i, g_i_cl):
+            # check if leading term of f is divisible by that of g
+            if all([x>=y for x,y in zip(f_cl[0][1:],g_cl[0][1:])]):
+                ff = poly([f_cl[0]], var) / poly([g_cl[0]], var)
+                q_i[g_i.index(g)] += ff
+                f = (f - ff * g).expand()
+                f_cl = coeff_list(f, var, order)
+                break
+        else: # no division occured, add the leading term to remainder
+            ff = poly([f_cl[0]], var)
+            r += ff
+            f -= ff
+            #f_cl = coeff_list(f, var, order)
+            f_cl = f_cl[1:]
+            
+
+    return q_i + [r]
