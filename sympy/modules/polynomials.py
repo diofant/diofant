@@ -38,26 +38,39 @@ def ispoly(p, var=None):
        L{coeff_list}, L{coeff}
        
     """
-    if isinstance(var, Basic):
+    p = Basic.sympify(p)
+
+    if var == None:
+        var = p.atoms(type=Symbol)
+    elif isinstance(var, Basic):
         # if the var argument is not a tuple or list
         var = [var] # so we can iterate over it
-    try:
-        #basically, the polynomial is whatever we can convert using
-        #the get_poly(). See it's docstring for more info.
-        if var is None:
-            # make it work even if the user doesen't issue a variable
-            var = p.atoms(type=Symbol)[0] 
-            print "\t*** Warning. You have not issued a variable as argument."
-            print "\t*** Please see the interactive help on this function for more info"
-            print "\t*** Using %s as variable" % str(var)
-        for v in var:
-            coeff_list(p, v)
-    except PolynomialException:
+
+    if len(var) == 0: 
+        return True # constant is polynomial.
+    elif len(var) > 1:
+        return ispoly(p, var[0]) and ispoly(p, var[1:])
+
+    if not var[0] in p.atoms(type=Symbol): 
+        return True # constant is polynomial.
+
+    # Now we look for one variable, that is in the expression.
+    if isinstance(p, Pow):
+        if isinstance(p.exp, Number) \
+           and p.exp.is_integer \
+           and p.exp > 0:
+            return ispoly(p.base, var[0])
+        else:
+            return False
+    elif isinstance(p, (Add, Mul)):
+        a, b = p.getab()
+        return ispoly(a, var[0]) and ispoly(b, var[0])
+    elif isinstance(p, Number):
+        return True
+    elif isinstance(p, Symbol):
+        return True
+    else:
         return False
-    except IndexError:
-        # if p.atoms() is empty
-        raise TypeError("Wrong arguments")
-    return True
 
 def fact(n):
     """Returns n!"""
