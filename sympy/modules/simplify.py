@@ -21,9 +21,9 @@ def ratsimp(expr):
         >>> y = Symbol('y')
         >>> e = ratsimp(1/x + 1/y)
         >>> pprint(e)
-        x+y
-        ---
-        y*x
+        x + y
+        -----
+         y*x 
     """
     if isinstance(expr, Pow):
         return Pow(ratsimp(expr.base), ratsimp(expr.exp))

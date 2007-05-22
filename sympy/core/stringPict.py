@@ -245,7 +245,7 @@ class prettyForm(stringPict):
                 arg = stringPict(*arg.parens())
             #use existing minus sign if available
             if arg.binding != prettyForm.NEG:
-                result.append('+')
+                result.append(' + ')
             result.append(arg)
         return prettyForm(binding=prettyForm.ADD, *stringPict.next(*result))
 

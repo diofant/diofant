@@ -62,16 +62,32 @@ class Integral(Basic):
     
         
     def __pretty__(self):
+        arg = prettyForm( *stringPict.next(self.f.__pretty__(), " d" , self.x.__pretty__()) )
+        arg.baseline = 0
+
+        # Create top and bottom parts based on definite/indefinite
         if self.a is not None:
-            a = prettyForm('|')
-            a = prettyForm(*a.below("/ %s" % self.a))
-            a = prettyForm(*a.top("/ %s" % self.b))
-        else: 
-            a = prettyForm("|")
-            a = prettyForm(*a.below("/"))
-            a = prettyForm(*a.top("/"))
-        a = prettyForm( *stringPict.next(a, " ",  self.f.__pretty__(), " d" , self.x.__pretty__() ) )
-        return a
+            t = "/ %s" % self.b
+            b = "/ %s" % self.a
+        else:
+            t = "/"
+            b = "/"
+
+        # Pad things so the integral sign is left-aligned properly
+        width = max(len(t), len(b))
+        t = prettyForm( t + (' ' * (width - len(t))) )
+        b = prettyForm( b + (' ' * (width - len(b))) )
+
+        # Create bar based on the height of the argument
+        c = '|' + (' ' * (width -1))
+        for x in xrange(1, arg.height()):
+            c += '\r|' + (' ' * (width -1))
+
+        # Construct the pretty form with the sign and the argument
+        a = prettyForm(c)
+        a = prettyForm(*a.below(b))
+        a = prettyForm(*a.top(t))
+        return prettyForm(*stringPict.right(a, " ", arg))
             
     def __mathml__(self):
         if self._mathml:

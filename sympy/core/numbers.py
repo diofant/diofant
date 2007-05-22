@@ -374,8 +374,13 @@ class Rational(Number):
         return None
     
     def __pretty__(self):
-        if self.q == 1: return prettyForm(str(self.p), prettyForm.ATOM)
-        else: return prettyForm(str(self.p))/prettyForm(str(self.q))
+        if self.q == 1:
+            return prettyForm(str(self.p), prettyForm.ATOM)
+        elif self.p < 0:
+            pform = prettyForm(str(-self.p))/prettyForm(str(self.q))
+            return prettyForm(*pform.left('- '))
+        else:
+            return prettyForm(str(self.p))/prettyForm(str(self.q))
  
    
 

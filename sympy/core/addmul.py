@@ -533,15 +533,20 @@ class Mul(Pair):
     def __pretty__(self):
         a = [] # items in the numerator
         b = [] # items that are in the denominator (if any)
+
+        # Gather terms for numerator/denominator
         for item in self._args:
             if isinstance(item, Pow) and item.exp == -1:
-                b.append( item.base.__pretty__() )
-            #elif item == -1:
-             #   a.append(prettyForm("-"))
-                #pass
+                b.append(item.base.__pretty__())
+            elif isinstance(item, Rational):
+                if item.p != 1:
+                    a.append( prettyForm(str(item.p)) )
+                if item.q != 1:
+                    b.append( prettyForm(str(item.q)) )
             else:
                 a.append(item.__pretty__())
 
+        # Construct a pretty form
         if len(b) == 0:
             return prettyForm.__mul__(*a)
         else:
@@ -793,8 +798,27 @@ class Add(Pair):
             return (a.series(sym,n)+b.series(sym,n))
         
     def __pretty__(self):
-        return prettyForm.__add__(*[arg.__pretty__() for arg in self._args])
-
+        #return prettyForm.__add__(*[arg.__pretty__() for arg in self._args])
+        from numbers import Number
+        from stringPict import stringPict
+        pforms = []
+        for ind in xrange(0, len(self._args)):
+            x = self._args[ind]
+            if isinstance(x, Mul) and isinstance(x[0], Number) \
+              and x[0] < 0:
+                pform1 = (-x).__pretty__()
+                if ind == 0:
+                    if '\r' in str(pform1):
+                        pform2 = '-'
+                    else:
+                        pform2 = '- '
+                else:
+                    pform2 = ' - '
+                pform = stringPict.next(pform2, pform1)
+                pforms.append(prettyForm(pform[0], pform[1], binding=prettyForm.NEG))
+            else:
+                pforms.append(x.__pretty__())
+        return prettyForm.__add__(*pforms)
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
