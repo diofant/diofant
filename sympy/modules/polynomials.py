@@ -366,3 +366,10 @@ def div_mv(f, g_i, var=None, order='lex'):
             
 
     return q_i + [r]
+
+
+def all(iterable):
+    for element in iterable:
+        if not element:
+            return False
+    return True
