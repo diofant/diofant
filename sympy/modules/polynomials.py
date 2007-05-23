@@ -234,9 +234,9 @@ def collect(expr, syms):
 def coeff_list(p, var=None, order='lex'):
     """Return the list of coeffs and exponents.
 
-    Currently, lexicographic ('lex') and graded lexicographic
-    ('grlex') orders are implemented. The list of variables determines
-    the order of the variables.
+    Currently, lexicographic ('lex'), graded lex ('grlex') and graded
+    reverse lex ('grevlex') orders are implemented. The list of
+    variables determines the order of the variables.
     The coefficients are assumed to be real numbers, that is, you can
     divide by them.
 
@@ -254,6 +254,11 @@ def coeff_list(p, var=None, order='lex'):
     [[6, 3, 0], [7, 1, 2]]
     
     """
+
+    def reverse(lisp):
+        lisp.reverse()
+        return lisp
+    
     p = Basic.sympify(p)
     p = p.expand()
 
@@ -294,6 +299,8 @@ def coeff_list(p, var=None, order='lex'):
         res.sort(key=lambda x: x[1:], reverse=True)
     elif order == 'grlex':
         res.sort(key=lambda x: [sum(x[1:])] + x[1:], reverse=True)
+    elif order == 'grevlex':
+        res.sort(key=lambda x: [sum(x[1:])] + reverse(x[1:]), reverse=True)
     else:
         raise PolynomialException(order + 'is not an implemented order.')
 
@@ -332,15 +339,16 @@ def div_mv(f, g_i, var=None, order='lex'):
 
     if not isinstance(g_i, list):
         g_i = [g_i]
-    f = Basic.sympify(f)
+    f = (Basic.sympify(f)).expand()
     g_i = map(Basic.sympify, g_i)
 
     if var == None:
         var = f.atoms(type=Symbol)
         for g in g_i:
-            var_g = g.atoms(type=Symbol)
-            if var != var_g:
-                raise PolynomialException('Bad variables.')
+            for v in g.atoms(type=Symbol):
+                if not v in var:
+                    var.append(v)
+        var.sort()
 
     f_cl = coeff_list(f, var, order)
     g_i_cl = map(lambda g: coeff_list(g, var, order), g_i)
@@ -354,19 +362,131 @@ def div_mv(f, g_i, var=None, order='lex'):
             if all([x>=y for x,y in zip(f_cl[0][1:],g_cl[0][1:])]):
                 ff = poly([f_cl[0]], var) / poly([g_cl[0]], var)
                 q_i[g_i.index(g)] += ff
-                f = (f - ff * g).expand()
+                f = (f - ff*g).expand()
                 f_cl = coeff_list(f, var, order)
                 break
         else: # no division occured, add the leading term to remainder
             ff = poly([f_cl[0]], var)
             r += ff
             f -= ff
-            #f_cl = coeff_list(f, var, order)
-            f_cl = f_cl[1:]
-            
+            f_cl = coeff_list(f, var, order)
 
     return q_i + [r]
 
+def groebner(f, var=None, order='lex', reduced=True):
+    """Computes a (reduced) Groebner base for a given list of polynomials.
+
+    Using an improved version of Buchberger's algorithm, following
+    Cox, Little, O'Shea: Ideals, Varieties and Algorithms.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> z = Symbol('z')
+    >>> groebner([y-x**2, z-x**3], [x,y,z], 'lex')
+    [-y+x**2, x*y-z, z*x-y**2, -z**2+y**3]
+    """
+
+    def mul_cl(p, q):
+        if len(p) != len(q):
+            raise PolynomialException('Bad list representation.')
+        r = [p[0]*q[0]]
+        for pp,qq in zip(p[1:],q[1:]):
+            r.append(pp + qq)
+        return r
+
+    def div_cl(p, q):
+        if len(p) != len(q):
+            raise PolynomialException('Bad list representation.')
+        r = [p[0]/q[0]]
+        for pp,qq in zip(p[1:],q[1:]):
+            r.append(pp - qq)
+        return r
+
+    def lcm_cl(p, q):
+        if len(p) != len(q):
+            raise PolynomialException('Bad list representation.')
+        r = [p[0]*q[0]]
+        for pp,qq in zip(p[1:],q[1:]):
+            r.append(max(pp, qq))
+        return r
+
+    def is_multiple_cl(p, q):
+        return all([x>=y for x,y in zip(p[1:],q[1:])])
+
+    if not isinstance(f, list):
+        if ispoly(f, var): 
+            return [f] # single polynomial is always Groebner base
+        else:
+            raise PolynomialException('Bad variables, or no polynomial.')
+
+    if var == None:
+        var = []
+        for p in f:
+            for v in p.atoms(type=Symbol):
+                if not v in var:
+                    var.append(v)
+        var.sort()
+
+    f = map(Basic.sympify, f)
+    f_cl = map(lambda x: coeff_list(x, var, order), f)
+    b = [] # Stores the unchecked combinations for s-poly's.
+    s = len(f)
+    for i in range(0, s-1):
+        for j in range(i+1, s):
+            b.append((i, j))
+
+    while b:
+        i, j = b[0]
+        crit = False
+        lcm = lcm_cl(f_cl[i][0], f_cl[j][0])
+        # Check if leading terms are relativly prime.
+        if  lcm != mul_cl(f_cl[i][0],f_cl[j][0]):
+            kk = filter(lambda k: k!=i and k!=j,range(0, s))
+            kk = filter(lambda k: not (min(i,k),max(i,k)) in b, kk)
+            kk = filter(lambda k: not (min(j,k),max(j,k)) in b, kk)
+            # Check if the lcm is divisible by another base element.
+            kk = filter(lambda k: is_multiple_cl(lcm,f_cl[k][0]), kk)
+            crit = not bool(kk)
+        if crit:
+            s_poly = f[i]*poly([div_cl(lcm, f_cl[i][0])], var) \
+                     - f[j]*poly([div_cl(lcm, f_cl[j][0])], var)
+            s_poly = (div_mv(s_poly, f, var, order)[-1]).expand()
+            if s_poly != 0: # we still have to add to the base.
+                s += 1
+                f.append(s_poly)
+                f_cl.append(coeff_list(s_poly, var, order))
+                for t in range(0, s-1): # With a new element come
+                    b.append((t, s-1))  # new combinationas to test.
+        b = b[1:] # Checked one more.
+
+    # We now have one possible Groebner base, probably too big.
+    if not reduced:
+        return f
+
+    # We can get rid of all elements, where the leading term can be
+    # reduced in the ideal of the remaining leading terms, that is,
+    # can be divided by one of the other leading terms.
+    blacklist = []
+    for p_cl in f_cl:
+        if filter(lambda x: is_multiple_cl(p_cl[0], x[0]),
+               filter(lambda x: not x in blacklist and x != p_cl, f_cl)):
+            blacklist.append(p_cl)
+    for p_cl in blacklist:
+        f_cl.remove(p_cl)
+
+    # Divide all basis elements by their leading coefficient, to get a
+    # leading 1.
+    f = map(lambda x: poly(x, var) / x[0][0], f_cl)
+
+    # We now have a minimal Groebner basis, which is still not unique.
+    # The next step is to reduce all basis elements in respect to the
+    # rest of the base (without touching the leading terms).
+    for p in f:
+        pp = div_mv(p, filter(lambda x: x != p, f), var, order)[-1]
+        f[f.index(p)] = pp.expand()
+    
+    return f
 
 def all(iterable):
     for element in iterable:

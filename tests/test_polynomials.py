@@ -110,10 +110,13 @@ def test_coeff_list():
     assert coeff_list(x**2+y**3) == [[1,2,0], [1,0,3]]
     assert coeff_list(x**2+y**3, [y,x]) == [[1,3,0], [1,0,2]]
     assert coeff_list(x*y) == [[1,1,1]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + y**5, [x,y]) \
-           == [[sin(z), 3, 0], [1, 2, 4], [1, 0, 5]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + y**5, [x,y], order='grlex') \
-           == [[1, 2, 4], [1, 0, 5], [sin(z), 3, 0]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y]) \
+           == [[sin(z), 3, 0], [1, 2, 4], [1, 1, 5]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='grlex') \
+           == [[1, 2, 4], [1, 1, 5], [sin(z), 3, 0]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y],
+               order='grevlex') == [[1, 1, 5], [1, 2, 4], [sin(z), 3, 0]]
+
 
     py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
     py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
@@ -132,3 +135,18 @@ def test_div_mv():
            == [x+y, 1, 1+x+y]
     assert div_mv(x**2*y+x*y**2+y**2, [y**2-1, x*y-1], [x,y]) \
            == [1+x, x, 1+2*x]
+
+def test_groebner():
+    x = Symbol('x')
+    y = Symbol('y')
+    z = Symbol('z')
+
+    # This one already is a Groebner base.
+    assert groebner([y-x**2, z-x**3], [y,z,x], 'lex', False) \
+           == [-x**2+y, z-x**3]
+
+    assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex', False) \
+           == [x**3-2*x*y, x+x**2*y-2*y**2, -x**2, 2*x*y, 2*y**2-x]
+    assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex', True) \
+           == [x**2, x*y, Rational(-1,2)*x+y**2]
+
