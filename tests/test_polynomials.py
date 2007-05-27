@@ -42,7 +42,7 @@ def test_poly():
     assert 2*x**100+3*x**2 - 6 != poly([(-5, 0), (3,2), (2, 100)],x)
 
     assert sqrt(y)*x == poly([(sqrt(y),1)],x)
-    assert x**2 + 3*x*sqrt(y) - 8 == poly([(-8, 0), (3*sqrt(y), 1), 
+    assert x**2 + 3*x*sqrt(y) - 8 == poly([(-8, 0), (3*sqrt(y), 1),
         (1, 2)],x)
 
 def test_gcd():
@@ -78,21 +78,70 @@ def test_div():
     assert div(2+2*x+x**2, 2, x) == (0, 2+2*x+x**2)
 
     assert div(3*x**3, x**2, x) == (3*x, 0)
-    
+
+def test_resultant():
+    x, a, b, c, = [Symbol(y) for y in ['x', 'a', 'b', 'c']]
+
+    s_res = resultant(x**2-1, x**3-x**2+2, x, method='sylvester').expand()
+    b_res = resultant(x**2-1, x**3-x**2+2, x, method='bezout').expand()
+
+    assert b_res == s_res == 0
+
+    s_res = resultant(3*x**3-x, 5*x**2+1, x, method='sylvester').expand()
+    b_res = resultant(3*x**3-x, 5*x**2+1, x, method='bezout').expand()
+
+    assert b_res == s_res == 64
+
+    s_res = resultant(x**2-2*x+7, x**3-x+5, x, method='sylvester').expand()
+    b_res = resultant(x**2-2*x+7, x**3-x+5, x, method='bezout').expand()
+
+    assert b_res == s_res == 265
+
+    s_res = resultant((x-a)**2-2, a**2-3, a, method='sylvester').expand()
+    b_res = resultant((x-a)**2-2, a**2-3, a, method='bezout').expand()
+
+    assert b_res == s_res == 1 - 10*x**2 + x**4
+
+    s_res = resultant((x-1)*(x-2)*(x-3), (x-4)*(x-5)*(x-6), x, method='sylvester').expand()
+    b_res = resultant((x-1)*(x-2)*(x-3), (x-4)*(x-5)*(x-6), x, method='bezout').expand()
+
+    assert b_res == s_res == -8640
+
+    s_res = resultant((x-1)*(x-2)*(x-3), (x-4)*(x-5)*(x-1), x, method='sylvester').expand()
+    b_res = resultant((x-1)*(x-2)*(x-3), (x-4)*(x-5)*(x-1), x, method='bezout').expand()
+
+    assert b_res == s_res == 0
+
+    s_res = resultant(x**3-1, x**3+2*x**2+2*x-1, x, method='sylvester').expand()
+    b_res = resultant(x**3-1, x**3+2*x**2+2*x-1, x, method='bezout').expand()
+
+    assert b_res == s_res == 16
+
+    s_res = resultant(3*x**2+2*a*x+3*a**2-2, 3*x**2-2*a*x+3*a**2-2, x, method='sylvester').expand()
+    b_res = resultant(3*x**2+2*a*x+3*a**2-2, 3*x**2-2*a*x+3*a**2-2, x, method='bezout').expand()
+
+    assert b_res == s_res == 144*a**4 - 96*a**2
+
+    s_res = resultant((x-a)*(x-b), x-c, x, method='sylvester').expand()
+    b_res = resultant((x-a)*(x-b), x-c, x, method='bezout').expand()
+
+    assert b_res == s_res == ((a-c)*(b-c)).expand()
+
 def test_collect():
     x = Symbol('x')
     y = Symbol('y')
     z = Symbol('z')
     a = Symbol('a')
-    
+
     from sympy.modules.trigonometric import sin, cos
-    
+
     assert collect(x, [x, y, z]) == ({x: 1}, 0)
     assert collect(x-1, [x, y, z]) == ({x: 1}, -1)
     assert collect(x+y+z, [x, y, z]) == ({x: 1, y: 1, z: 1}, 0)
-    assert collect(sin(a)*x-2*cos(a)*y+1024*z-a, [x, y]) == ({x: sin(a), y: -2*cos(a)}, 1024*z-a)  
-    assert collect(2*x + sin(z)*x + cos(a)*y + z + cos(a) + cos(a)*x + 1, [x, y]) == ({x: 2+sin(z)+cos(a), y: cos(a)}, z+cos(a)+1)       
-       
+    assert collect(sin(a)*x-2*cos(a)*y+1024*z-a, [x, y]) \
+            == ({x: sin(a), y: -2*cos(a)}, 1024*z-a)
+    assert collect(2*x + sin(z)*x + cos(a)*y + z + cos(a) + cos(a)*x + 1, [x, y]) \
+            == ({x: 2+sin(z)+cos(a), y: cos(a)}, z+cos(a)+1)
     assert collect(x*y, [x, y]) == None
     assert collect(x*y+2*y+z, [x, y, z]) == None
     assert collect(sin(x)*x+y+z, [x, y, z]) == None

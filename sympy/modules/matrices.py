@@ -1,20 +1,23 @@
 from sympy.core import Basic,exp,Symbol,Rational,I,Mul
 from sympy.core import hashing
 
+class NonSquareMatrixException(Exception):
+    pass
+
 class Matrix(object):
 
     def __init__(self, *args):
         """
         Matrix can be constructed with values or a rule.
-        
+
         >>> from sympy import *
-    	>>> Matrix( (1,2+I), (3,4) ) #doctest:+NORMALIZE_WHITESPACE
-    	1 2+I
-    	3 4
+        >>> Matrix( (1,2+I), (3,4) ) #doctest:+NORMALIZE_WHITESPACE
+        1 2+I
+        3 4
         >>> Matrix(2, 2, lambda i,j: (i+1)*j ) #doctest:+NORMALIZE_WHITESPACE
         0 1
         0 2
-        
+
         Note: in SymPy we count indices from 0. The rule however counts from 1.
         """
         if len(args) == 3 and callable(args[2]):
@@ -81,7 +84,7 @@ class Matrix(object):
             return Matrix(self.lines,self.cols, lambda i,j: self[j,i])
         if name == "C":
             #conjugation
-            return Matrix(self.lines,self.cols, 
+            return Matrix(self.lines,self.cols,
                     lambda i,j: self[i,j].conjugate())
         if name == "H":
             #hermite conjugation
@@ -117,7 +120,7 @@ class Matrix(object):
         >>> m  #doctest: +NORMALIZE_WHITESPACE
         1 2+I
         3 4
-        >>> m[1,0]=9 
+        >>> m[1,0]=9
         >>> m  #doctest: +NORMALIZE_WHITESPACE
         1 2+I
         9 4
@@ -159,7 +162,7 @@ class Matrix(object):
     def __pow__(self, num):
         if isinstance(num, int) or (isinstance(num, Rational) and num.isinteger()):
             if num < 0:
-	        a = self.inv() # A**-2 = (A**-1)**2
+                a = self.inv() # A**-2 = (A**-1)**2
                 num = -num
             else:
                 a = self
@@ -185,7 +188,7 @@ class Matrix(object):
             return r
 
         r = Matrix(self.lines,self.cols, lambda i,j: dotprod(self,b,i,j))
-        if r.lines == 1 and r.cols ==1: 
+        if r.lines == 1 and r.cols ==1:
             return r[0,0]
         return r
 
@@ -194,7 +197,7 @@ class Matrix(object):
 
         assert self.lines == b.lines
         assert self.cols == b.cols
-        return Matrix(self.lines,self.cols, lambda i,j: 
+        return Matrix(self.lines,self.cols, lambda i,j:
                 self[i,j]+b[i,j])
 
     def __neg__(self):
@@ -214,7 +217,7 @@ class Matrix(object):
         for i in range(self.lines):
             for j in range(self.cols):
                 x=self[i,j]
-                if i==j: 
+                if i==j:
                     x=1/x
                 else:
                     if x!=0:
@@ -239,21 +242,21 @@ class Matrix(object):
                 mml += self[i,j].__mathml__()
             mml += "</matrixrow>"
         return "<matrix>" + mml + "</matrix>"
-        
+
     def row(self, i, f):
         """Elementary row operation using functor"""
         for j in range(0, self.cols):
             self[i, j] = f(self[i, j], j)
-            
+
     def col(self, j, f):
         """Elementary column operation using functor"""
         for i in range(0, self.lines):
             self[i, j] = f(self[i, j], j)
-            
+
     def row_swap(self, i, j):
         for k in range(0, self.cols):
             self[i, k], self[j, k] = self[j, k], self[i, k]
-            
+
     def col_swap(self, i, j):
         for k in range(0, self.lines):
             self[k, i], self[k, j] = self[k, j], self[k, i]
@@ -261,6 +264,63 @@ class Matrix(object):
     def row_del(self, i):
         self.mat = self.mat[:i*self.cols] + self.mat[(i+1)*self.cols:]
         self.lines -= 1
+
+    @property
+    def is_square(self):
+        return self.lines == self.cols
+
+    def clone(self):
+        return Matrix(self.lines, self.cols, lambda i, j: self[i, j])
+
+    def det(self):
+        """Compute matrix determinant using Bareis' fraction-free
+           algorithm which is an extension of the well known Gaussian
+           elimination method. This approach is best suited for dense
+           symbolic matrices and will result in a determinant with
+           minimal numer of fractions. It means that less term
+           rewriting is needed on resulting formulae.
+
+           TODO: Implement algorithm for sparse matrices (SFF).
+        """
+
+        if not self.is_square:
+            raise NonSquareMatrixException()
+
+        M, n = self.clone(), self.lines
+
+        if n == 1:
+            det = M[0, 0]
+        elif n == 2:
+            det = M[0, 0]*M[1, 1] - M[0, 1]*M[1, 0]
+        else:
+            sign = 1 # track current sign in case of column swap
+
+            for k in range(n-1):
+                # look for a pivot in the current column
+                # and assume det == 0 if none is found
+                if M[k, k] == 0:
+                    for i in range(k+1, n):
+                        if M[i, k] != 0:
+                            M.row_swap(i, k)
+                            sign *= -1
+                            break
+                    else:
+                        return Rational(0)
+
+                # proceed with Bareis' fraction-free (FF)
+                # form of Gaussian elimination algorithm
+                for i in range(k+1, n):
+                    for j in range(k+1, n):
+                        D = M[k, k]*M[i, j] - M[i, k]*M[k, j]
+
+                        if k > 0:
+                            M[i, j] = D / M[k-1, k-1]
+                        else:
+                            M[i, j] = D
+
+            det = sign * M[n-1, n-1]
+
+        return det
 
 def zero(n):
     return zeronm(n,n)
@@ -277,7 +337,7 @@ def one(n):
     return m
 
 def sigma(i):
-    """Returns a Pauli matrix sigma_i. i=1,2,3 
+    """Returns a Pauli matrix sigma_i. i=1,2,3
 
     See also:
 
@@ -304,14 +364,14 @@ def sigma(i):
     return Matrix(mat)
 
 def gamma(mu,lower=False):
-    """Returns a Dirac gamma matrix gamma^mu in the standard 
+    """Returns a Dirac gamma matrix gamma^mu in the standard
     (Dirac) representation.
 
     If you want gamma_mu, use gamma(mu, True).
-    
+
     We use a convention:
 
-    gamma^5 = I * gamma^0 * gamma^1 * gamma^2 * gamma^3 
+    gamma^5 = I * gamma^0 * gamma^1 * gamma^2 * gamma^3
     gamma_5 = I * gamma_0 * gamma_1 * gamma_2 * gamma_3 = - gamma^5
 
     See also:
@@ -357,7 +417,7 @@ def gamma(mu,lower=False):
                 (0,1,0,0)
                 )
     m= Matrix(mat)
-    if lower: 
+    if lower:
         if mu in [1,2,3,5]:
             m = - m
     return m

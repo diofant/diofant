@@ -18,12 +18,12 @@ def test_ratsimp():
     e = x/(x+y)+y/(x+y)
     assert e != 1
     assert ratsimp(e) == 1
-    
+
     e = 1/(1+1/x)
     assert ratsimp(e) == x/(x+1)
     assert (x+1)*ratsimp(e)/x == 1
     assert ratsimp(exp(e)) == exp(x/(x+1))
-    
+
 def test_simplify():
     x = Symbol('x')
     y = Symbol('y')
@@ -34,4 +34,13 @@ def test_simplify():
     e = (4+4*x-2*(2+2*x))/(2+2*x)
     assert e != 0
     assert simplify(e) == 0
-    
+
+def test_fraction():
+    x, y = Symbol('x'), Symbol('y')
+
+    assert fraction(x) == (x, 1)
+    assert fraction(1/x) == (1, x)
+    assert fraction(x/y) == (x, y)
+
+    assert fraction((x**2+1)/y) == (x**2+1, y)
+    assert fraction(x*(y+1)/y**7) == (x*(y+1), y**7)

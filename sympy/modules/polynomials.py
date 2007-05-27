@@ -2,6 +2,7 @@
 
 from sympy.core import Pow, Add, Mul, Rational, Number, Symbol, Basic
 from sympy.core.functions import diff
+from sympy.modules.matrices import zero
 
 class PolynomialException(Exception):
     pass
@@ -10,16 +11,16 @@ def ispoly(p, var=None):
     """
     Usage
     =====
-      ispoly(p, var) -> Returns True if p is a polynomial in variable var. 
+      ispoly(p, var) -> Returns True if p is a polynomial in variable var.
                         Returns False otherwise.
-        
+
     Notes
     =====
         You can check wether it's a polynomial in several variables at
         once giving a tuple of symbols second argument
         (like ispoly(x**2 + y + 1, (x,y)) ).
 
-    
+
     Examples
     ========
         >>> from sympy import *
@@ -32,11 +33,11 @@ def ispoly(p, var=None):
         True
         >>> ispoly(x**2 + exp(y) + 1, (x,y))
         False
-        
+
     See also
     ========
        L{coeff_list}, L{coeff}
-       
+
     """
     p = Basic.sympify(p)
 
@@ -46,12 +47,12 @@ def ispoly(p, var=None):
         # if the var argument is not a tuple or list
         var = [var] # so we can iterate over it
 
-    if len(var) == 0: 
+    if len(var) == 0:
         return True # constant is polynomial.
     elif len(var) > 1:
         return ispoly(p, var[0]) and ispoly(p, var[1:])
 
-    if not var[0] in p.atoms(type=Symbol): 
+    if not var[0] in p.atoms(type=Symbol):
         return True # constant is polynomial.
 
     # Now we look for one variable, that is in the expression.
@@ -94,7 +95,7 @@ def poly(p, var):
         return Rational(0)
     elif len(p[0]) != len(var) + 1:
         raise PolynomialException('Wrong number of variables given.')
-    
+
     r = 0
     for item in p:
         c = item[0]
@@ -132,7 +133,7 @@ def gcd(a, b, x):
     #of this list:
     for x0 in [100, 101]:
         c = getcandidate(a, b, x, x0)
-        if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0: 
+        if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0:
             return c
 
     raise PolynomialException("Can't calculate gcd for these polynomials")
@@ -167,7 +168,76 @@ def div(f, g, x):
         fp = coeff_list(f, x)
         q+=s1
     return q, f
-    
+
+def resultant(f, g, x, method='bezout'):
+    """Computes resultant of two polynomials in one variable. This
+       method can be used to verify if selected polynomials have
+       common root withot factoring them or computing any GCD's.
+
+       It can be also be used for variable elemination in case of
+       bivariate polynomials. Just assume that one of the variables
+       is a parameter and compute resultant with respect to the other
+       one and you will get univariate polynomial in single variable.
+
+       For now two algorithm have been implemented, based on
+       Sylvester and Bezout matrices. The default is Bezout.
+
+       TODO: Make Bezout approach run in O(s**2). Currently
+             it is O(s**3), where s = max(deg(f), deg(g)).
+    """
+
+    fp = coeff_list(f, x)
+    gp = coeff_list(g, x)
+
+    m, n = int(fp[0][1]), int(gp[0][1])
+
+    if method is 'sylvester':
+        M = zero(m+n)
+
+        for i in range(n):
+            for coeff, j in fp:
+                M[i, m-int(j)+i] = coeff
+
+        for i in range(m):
+            for coeff, j in gp:
+                M[i+n, n-int(j)+i] = coeff
+
+        return M.det()
+    elif method is 'bezout':
+        if n > m:
+            s, fp, gp = n, gp, fp
+        else:
+            s = m
+
+        p, q = [0]*(s+1), [0]*(s+1)
+
+        for coeff, j in fp:
+            p[int(j)] = coeff
+
+        for coeff, j in gp:
+            q[int(j)] = coeff
+
+        M = zero(s)
+
+        for i in range(s):
+            for j in range(i, s):
+                z = 1 + min(i, s-1-j)
+                terms = [0] * z
+
+                for k in range(z):
+                    terms[k] = p[j+k+1]*q[i-k] - p[i-k]*q[j+k+1]
+
+                M[i, j] = M[j, i] = Add(*terms)
+
+        if (s*(s-1)/2) % 2 == 0:
+            b = p[-1]**abs(n-m)
+        else:
+            b = -p[-1]**abs(n-m)
+
+        return (1/b) * M.det()
+    else:
+        raise ValueError("Invalid method: '%s'" % method)
+
 def collect(expr, syms):
     """Collect additive terms with respect to a list of variables in a linear
        multivariate polynomial. This function assumes the input expression is
@@ -252,13 +322,13 @@ def coeff_list(p, var=None, order='lex'):
 
     >>> coeff_list(6*y**3+7*y*x**2, [y,x])
     [[6, 3, 0], [7, 1, 2]]
-    
+
     """
 
     def reverse(lisp):
         lisp.reverse()
         return lisp
-    
+
     p = Basic.sympify(p)
     p = p.expand()
 
@@ -269,13 +339,13 @@ def coeff_list(p, var=None, order='lex'):
         var.sort()
 
     res = []
-    
+
     if isinstance(p, Add):
         for a in p._args:
             res.append(*coeff_list(a, var, order))
     else:
         if not isinstance(p, Mul):
-            p = Mul(Rational(1), p, evaluate=False) 
+            p = Mul(Rational(1), p, evaluate=False)
         item = [Rational(1)] + len(var)*[Rational(0)]
         for factor in p._args:
             # check if any of the var appear
@@ -293,7 +363,7 @@ def coeff_list(p, var=None, order='lex'):
             else: # the factor is relativly constant
                 item[0] *= factor
         res = [item]
-    
+
     # sort list according to monomial ordering
     if order == 'lex':
         res.sort(key=lambda x: x[1:], reverse=True)
@@ -312,7 +382,7 @@ def coeff_list(p, var=None, order='lex'):
             result[ result.index(filt[0]) ][0] += item[0]
         else:
             result.append(item)
-    
+
     return result
 
 def div_mv(f, g_i, var=None, order='lex'):
@@ -415,7 +485,7 @@ def groebner(f, var=None, order='lex', reduced=True):
         return all([x>=y for x,y in zip(p[1:],q[1:])])
 
     if not isinstance(f, list):
-        if ispoly(f, var): 
+        if ispoly(f, var):
             return [f] # single polynomial is always Groebner base
         else:
             raise PolynomialException('Bad variables, or no polynomial.')
@@ -485,7 +555,7 @@ def groebner(f, var=None, order='lex', reduced=True):
     for p in f:
         pp = div_mv(p, filter(lambda x: x != p, f), var, order)[-1]
         f[f.index(p)] = pp.expand()
-    
+
     return f
 
 def all(iterable):
