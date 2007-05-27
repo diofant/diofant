@@ -12,8 +12,9 @@ Paprocki, Jason Gedge, Robert Schwarz
 
 Other contributors: Jurjen N.E. Bos
 
-License: GNU General Public License 2.0
-covers all the files in the sympy repository.
+License: New BSD License (see the LICENSE file for details)
+covers all files in the sympy repository except sympy/modules/decorator.py,
+that has it's own license (look into the file for details).
 
 
 0. Download
