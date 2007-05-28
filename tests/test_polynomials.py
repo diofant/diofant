@@ -215,9 +215,9 @@ def test_lcm_mv():
 def test_gcd_mv():
     x = Symbol('x')
     y = Symbol('y')
-
+    z = Symbol('z')
+    
     assert gcd_mv(3, 4) == Rational(12)
     assert gcd_mv(3, 4, monic=True) == Rational(1)
     assert gcd_mv(x, y) == Rational(1)
-    assert gcd_mv(x+y, x**2+2*x*y+y**2) == x+y
-
+    assert gcd_mv(sin(z)*(x+y), x**2+2*x*y+y**2, [x, y], monic=True) == x+y

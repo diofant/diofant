@@ -633,6 +633,6 @@ def gcd_mv(f, g, var=None, order='lex', monic=False):
 
     if monic:
         q_cl = coeff_list(q, var, order)
-        q = q/q_cl[0][0]
+        q = (q/q_cl[0][0]).expand()
 
     return q
