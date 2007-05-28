@@ -190,6 +190,10 @@ def test_groebner():
     y = Symbol('y')
     z = Symbol('z')
 
+    assert groebner(y*x, [x]) == [x]
+    assert groebner(y*x, [x], reduced=False) == [x*y]
+    assert groebner(x*y, [z]) == [1]
+    
     # This one already is a Groebner base.
     assert groebner([y-x**2, z-x**3], [y,z,x], 'lex', False) \
            == [-x**2+y, z-x**3]
@@ -198,4 +202,22 @@ def test_groebner():
            == [x**3-2*x*y, x+x**2*y-2*y**2, -x**2, 2*x*y, 2*y**2-x]
     assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex', True) \
            == [x**2, x*y, Rational(-1,2)*x+y**2]
+
+def test_lcm_mv():
+    x = Symbol('x')
+    y = Symbol('y')
+
+    assert lcm_mv(3, 4) == Rational(1)
+    assert lcm_mv(4, y) == y
+    assert lcm_mv(x, y) == x*y
+    assert lcm_mv(y*(x+1), x, [x]) == x+x**2
+
+def test_gcd_mv():
+    x = Symbol('x')
+    y = Symbol('y')
+
+    assert gcd_mv(3, 4) == Rational(12)
+    assert gcd_mv(3, 4, monic=True) == Rational(1)
+    assert gcd_mv(x, y) == Rational(1)
+    assert gcd_mv(x+y, x**2+2*x*y+y**2) == x+y
 
