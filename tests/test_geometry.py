@@ -280,6 +280,12 @@ def test_polygon():
     assert len(g.intersection(t1.altitudes[p1], t1.altitudes[p2])) == 1
     assert len(g.intersection(t1.medians[p1], t1.medians[p2])) == 1
 
+def test_util():
+    p = [g.Point(-5,-1), g.Point(-2,1), g.Point(-2,-1), g.Point(-1,-3), g.Point(0,0),
+         g.Point(1,1), g.Point(2,2), g.Point(2,-1), g.Point(3,1), g.Point(4,-1), g.Point(6,2)]
+    ch = g.Polygon(p[0], p[3], p[9], p[10], p[6], p[1])
+    assert g.convex_hull(p) == ch
+
 if __name__ == "__main__":
     from sys import modules,stderr,exc_info,excepthook
     import hotshot, hotshot.stats

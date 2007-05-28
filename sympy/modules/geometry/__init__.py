@@ -7,8 +7,4 @@ from point import Point
 from line import LinearEntity, Line, Ray, Segment
 from ellipse import Ellipse, Circle
 from polygon import Polygon, RegularPolygon, Triangle
-
-
-def intersection(e1, e2):
-    from entity import GeometryEntity
-    return GeometryEntity.intersection(e1, e2)
+from util import *

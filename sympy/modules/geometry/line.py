@@ -6,11 +6,11 @@ from point import Point
 class LinearEntity(GeometryEntity):
     """A linear entity (line, ray, segment, etc) in space."""
     def __init__(self, p1, p2, **kwargs):
-        GeometryEntity.__init__(self, **kwargs)
+        GeometryEntity.__init__(self, [p1, p2], **kwargs)
         if not isinstance(p1, Point) or not isinstance(p2, Point):
             raise TypeError("__init__ requires Point instances")
         if p1 == p2:
-            raise ValueError("__init__ requires two distinct points")
+            raise RuntimeError("__init__ requires two distinct points")
         self._p1 = p1
         self._p2 = p2
 
@@ -33,7 +33,7 @@ class LinearEntity(GeometryEntity):
 
         try:
             # Get the intersection (if parallel)
-            p = args[0].intersection(args[1])
+            p = GeometryEntity.do_intersection(args[0], args[1])
             if p is None: return False
 
             # Make sure the intersection is on every line
@@ -106,7 +106,7 @@ class LinearEntity(GeometryEntity):
         if p in self:
             return None
         pl = self.perpendicular_line(p)
-        p2 = GeometryEntity.intersection(self, pl)[0]
+        p2 = GeometryEntity.do_intersection(self, pl)[0]
         return Segment(p, p2)
 
     def projection(self, o):
@@ -119,20 +119,13 @@ class LinearEntity(GeometryEntity):
 
         if isinstance(o, Point):
             return project(o)
-        elif isinstance(o, Ray):
+        elif isinstance(o, (Ray, Segment)):
             n_p1 = project(o._p1)
             n_p2 = project(o._p2)
             if n_p1 == n_p2:
                 return n_p1
             else:
-                return Ray(n_p1, n_p2)
-        elif isinstance(o, Segment):
-            n_p1 = project(o._p1)
-            n_p2 = project(o._p2)
-            if n_p1 == n_p2:
-                return n_p1
-            else:
-                return Segment(n_p1, n_p2)
+                return (type(o))(n_p1, n_p2)
         else:
             raise ValueError("Line.projection accepts only Point, Ray, or Segment")
 
@@ -154,25 +147,20 @@ class LinearEntity(GeometryEntity):
         return (self._p1, self._p2)
 
     def intersection(self, o):
-        """
-        Returns the intersection of the line and another entity, or None if
-        there is no intersection.
-        """
         if isinstance(o, Point):
             if o in self:
                 return [o]
             else:
                 return None
         elif isinstance(o, LinearEntity):
-            if LinearEntity.are_parallel(self, o):
+            a1,b1,c1 = self._coeffs()
+            a2,b2,c2 = o._coeffs()
+            t = simplify(a1*b2 - a2*b1)
+            if t == 0: # are parallel?
                 if self == o:
                     return [o]
                 else:
                     return None
-
-            a1,b1,c1 = self._coeffs()
-            a2,b2,c2 = o._coeffs()
-            t = simplify(a1*b2 - a2*b1)
             px = simplify((b1*c2 - c1*b2) / t)
             py = simplify((a2*c1 - a1*c2) / t)
             inter = Point(px, py)
@@ -180,18 +168,11 @@ class LinearEntity(GeometryEntity):
                 return [inter]
             return None
         else:
-            n = type(o).__name__
-            raise NotImplementedError("Unable to find intersection with " + n)
-
-    def __hash__(self):
-        return hash((self._p1, self._p2))
+            raise NotImplementedError()
 
     def __str__(self):
         n = type(self).__name__
         return "%s(%s, %s)" % (n, str(self._p1), str(self._p2))
-
-    def __repr__(self):
-        return str(self)
 
 
 class Line(LinearEntity):
@@ -214,29 +195,31 @@ class Line(LinearEntity):
         t = Symbol('t')
         p = self.arbitrary_point('t')
         subs_val = randint(-maxint-1, maxint)
-        return Point(p[0].subs(t, subs_val).eval(), p[1].subs(t, subs_val).eval())
+        return Point(p[0].subs(t, subs_val), p[1].subs(t, subs_val))
 
     def equation(self, xaxis_name='x', yaxis_name='y'):
         """Returns the equation for this line"""
         x = Symbol(xaxis_name)
         y = Symbol(yaxis_name)
         a,b,c = self._coeffs()
-        return simplify(a*x + b*y + c)
+        #return simplify(a*x + b*y + c)
+        return a*x + b*y + c
 
     def __contains__(self, o):
         if isinstance(o, Line):
             return self.__eq__(o)
         elif isinstance(o, Point):
-            return Point.are_collinear(self._p1, self._p2, o)
+            x = Symbol('x')
+            y = Symbol('y')
+            r = self.equation().subs_dict({x: o[0], y: o[1]})
+            x = simplify(r)
+            return bool(x == 0)
         else:
             return False
 
     def __eq__(self, o):
         if not isinstance(o, Line): return False
         return Point.are_collinear(self._p1, self._p2, o._p1, o._p2)
-
-    def __ne__(self, o):
-        return not self.__eq__(o)
 
 
 class Ray(LinearEntity):
@@ -262,6 +245,7 @@ class Ray(LinearEntity):
             y = randint(self._p1[1], maxint)
         else:
             lower,upper = -maxint-1,maxint
+            # TODO Avoid using < and >
             if self._p1[0] < self._p2[0]:
                 lower = self._p1[0]
             else:
@@ -273,10 +257,6 @@ class Ray(LinearEntity):
         return Point(x, y)
 
     #def intersection(self, o):
-    #    """
-    #    Returns the intersection of the ray and another entity, or None if
-    #    there is no intersection.
-    #    """
     #    s = LinearEntity.intersection(self, o)
     #    if s is None:
     #        return None
@@ -289,9 +269,6 @@ class Ray(LinearEntity):
         if not isinstance(o, Ray):
             return False
         return ((self._p1 == o._p1) and (o._p2 in self))
-
-    def __ne__(self, o):
-        return not self.__eq__(o)
 
     def __contains__(self, o):
         if isinstance(o, Ray):
@@ -320,9 +297,6 @@ class Ray(LinearEntity):
     def __str__(self):
         return "Ray(%s, %s)" % (str(self._p1), str(self._p2))
 
-    def __repr__(self):
-        return str(self)
-
 class Segment(LinearEntity):
     """A line segment in space."""
 
@@ -348,10 +322,6 @@ class Segment(LinearEntity):
         return Point(x, y)
 
     #def intersection(self, o):
-    #    """
-    #    Returns the intersection of the segment and another entity, or None
-    #    if there is no intersection.
-    #    """
     #    s = LinearEntity.intersection(self, o)
     #    if s is None:
     #        return None
@@ -400,9 +370,6 @@ class Segment(LinearEntity):
         except AttributeError:
             return False
 
-    def __ne__(self, o):
-        return not self.__eq__(o)
-
     def __contains__(self, o):
         if isinstance(o, Segment):
             return ((o._p1 in self) and (o._p2 in self))
@@ -418,6 +385,3 @@ class Segment(LinearEntity):
 
     def __str__(self):
         return "Segment(%s, %s)" % (str(self._p1), str(self._p2))
-
-    def __repr__(self):
-        return str(self)

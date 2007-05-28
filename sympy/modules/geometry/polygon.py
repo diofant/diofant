@@ -1,4 +1,4 @@
-from sympy import Basic, Rational, Symbol
+from sympy import Basic, Rational, Symbol, cos, sin, pi
 from sympy.modules.simplify import simplify
 from entity import GeometryEntity
 from point import Point
@@ -9,18 +9,18 @@ from line import LinearEntity, Line, Segment
 class Polygon(GeometryEntity):
     """A polygon in space."""
     def __init__(self, *args, **kwargs):
-        GeometryEntity.__init__(self, **kwargs)
-        if not isinstance(args[0], GeometryEntity):
+        GeometryEntity.__init__(self, *args, **kwargs)
+        if not isinstance(args[0], Point):
             self._vertices = tuple(args[0])
         else:
             self._vertices = tuple(args)
 
         for p in self._vertices:
             if not isinstance(p, Point):
-                raise TypeError("__init__ requires Point instancess")
+                raise TypeError("__init__ requires Point instances")
 
         if len(self._vertices) < 3:
-            raise ValueError("A polygon must have at least three points")
+            raise RuntimeError("A polygon must have at least three points")
 
     @property
     def area(self):
@@ -35,7 +35,9 @@ class Polygon(GeometryEntity):
     @property
     def perimeter(self):
         """Returns the perimeter of the polygon."""
-        p = sum([side.length for side in self.sides])
+        p = 0
+        for ind in xrange(-1, len(self._vertices)-1):
+            p += Point.distance(self._vertices[ind], self._vertices[ind+1])
         return simplify(p)
 
     @property
@@ -49,7 +51,7 @@ class Polygon(GeometryEntity):
         # TODO Double check this formula
         x = Rational(0)
         y = Rational(0)
-        n = Rational(len(self._points))
+        n = len(self._points)
         for p in self._vertices:
             x += p[0]
             y += p[1]
@@ -61,19 +63,15 @@ class Polygon(GeometryEntity):
     def sides(self):
         """Returns a list of the sides."""
         res = []
-        for ind in xrange(1, len(self._vertices)):
-            res.append( Segment(self._vertices[ind-1], self._vertices[ind]) )
+        for ind in xrange(0, len(self._vertices)-1):
+            res.append( Segment(self._vertices[ind], self._vertices[ind+1]) )
         res.append( Segment(self._vertices[-1], self._vertices[0]) )
         return res
 
     def intersection(self, o):
-        """
-        Returns the intersection of the Polygon and another entity, or None if
-        there is no intersection.
-        """
         res = []
         for side in self.sides:
-            inter = GeometryEntity.intersection(side, o)
+            inter = GeometryEntity.do_intersection(side, o)
             if inter is not None:
                 res.extend(inter)
 
@@ -125,12 +123,6 @@ class Polygon(GeometryEntity):
 
         return False
 
-    def __ne__(self, o):
-        return not self.__eq__(o)
-
-    def __hash__(self):
-        return hash(self._vertices)
-
     def __contains__(self, o):
         if isinstance(o, Polygon):
             return self == o
@@ -147,26 +139,83 @@ class Polygon(GeometryEntity):
             return False
 
     def __str__(self):
-        #what_am_i = {
-        #    3: "Triangle",
-        #    4: "Quadrilateral",
-        #    5: "Pentagon",
-        #    6: "Hexagon",
-        #    7: "Heptagon",
-        #    8: "Octagon",
-        #    9: "Nonagon",
-        #    10: "Decagon"
-        #}.get(len(self._vertices), "Polygon")
-        return "Polygon(%d sides)" % len(self._vertices)
+        return "Polygon(%d sides)" % (len(self._vertices)-1)
 
-    def __repr__(self):
-        return str(self)
 
 class RegularPolygon(Polygon):
-    def __init__(self, *args, **kwargs):
-        Polygon.__init__(self, *args, **kwargs)
+    """A regular polygon."""
+    def __init__(self, c, r, n, **kwargs):
+        r = Basic.sympify(r)
+
+        if not isinstance(c, Point):
+            raise ValueError("RegularPolygon.__init__ requires c to be a Point instance")
+
+        if not isinstance(r, Basic):
+            raise ValueError("RegularPolygon.__init__ requires c to be a number or Basic instance")
+
+        self._c = c
+        self._r = r
+        points = []
+        for k in xrange(0, n):
+            points.append( Point(c[0] + r*cos(2*k*pi/n), c[1] + r*sin(2*k*pi/n)) )
+        Polygon.__init__(self, points, **kwargs)
+
+    @property
+    def center(self):
+        """
+        Returns the center of the regular polygon (i.e., the center of the
+        circumscribing circle).
+        """
+        return self._c
+
+    @property
+    def radius(self):
+        """
+        Returns the radius of the regular polygon (i.e., the radius of the
+        circumscribing circle).
+        """
+        return self._r
+
+    @property
+    def apothem(self):
+        """
+        Returns the apothem/inradius of the regular polygon (i.e., the
+        radius of the inscribed circle).
+        """
+        n = len(self._vertices)
+        return self._r * cos(pi/n)
+
+    @property
+    def interior_angle(self):
+        """Returns the measure of the interior angles."""
+        n = len(self._vertices)
+        return (n-2)*pi/n
+
+    @property
+    def exterior_angle(self):
+        """Returns the measure of the exterior angles."""
+        n = len(self._vertices)
+        return 2*pi/n
+
+    @property
+    def circumcircle(self):
+        """Returns a Circle instance describing the circumcircle."""
+        return Circle(self._c, self._r)
+
+    @property
+    def incircle(self):
+        """Returns a Circle instance describing the inscribed circle."""
+        return Circle(self._c, self.apothem)
+
 
 class Triangle(Polygon):
+    """A triangle (3 sided polygon)."""
+
+    def __init__(self, *args, **kwargs):
+        Polygon.__init__(self, *args, **kwargs)
+        if len(self._vertices) != 3:
+            raise RuntimeError("A triangle requires exactly 3 points")
+
     @staticmethod
     def are_similar(t1, t2):
         """
@@ -211,9 +260,6 @@ class Triangle(Polygon):
         Returns the altitudes of the triangle in a dictionary where the key
         is the vertex and the value is the altitude at that point.
         """
-        # XXX Is this abusing the fact that we know how self.sides
-        #     constructs its side, or shall we consider the way
-        #     self.sides is constructed is standard?
         s = self.sides
         v = self._vertices
         return {v[0]: s[1].perpendicular_segment(v[0]),
@@ -247,9 +293,9 @@ class Triangle(Polygon):
         s = self.sides
         v = self._vertices
         c = self.incenter
-        l1 = Segment(v[0], GeometryEntity.intersection(Line(v[0], c), s[1])[0])
-        l2 = Segment(v[1], GeometryEntity.intersection(Line(v[1], c), s[2])[0])
-        l3 = Segment(v[2], GeometryEntity.intersection(Line(v[2], c), s[0])[0])
+        l1 = Segment(v[0], GeometryEntity.do_intersection(Line(v[0], c), s[1])[0])
+        l2 = Segment(v[1], GeometryEntity.do_intersection(Line(v[1], c), s[2])[0])
+        l3 = Segment(v[2], GeometryEntity.do_intersection(Line(v[2], c), s[0])[0])
         return {v[0]: l1, v[1]: l2, v[2]: l3}
 
     @property

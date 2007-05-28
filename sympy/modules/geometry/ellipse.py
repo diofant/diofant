@@ -7,14 +7,13 @@ from line import LinearEntity, Line
 class Ellipse(GeometryEntity):
     """An ellipse in space."""
 
-    def __init__(self, center, horizontal_radius, vertical_radius, **kwargs):
-        GeometryEntity.__init__(self, **kwargs)
+    def __init__(self, center, h_radius, v_radius, **kwargs):
+        GeometryEntity.__init__(self, [center, h_radius, v_radius], **kwargs)
         if not isinstance(center, Point):
             raise TypeError("center must be be a Point")
         self._c = center
-        # XXX Check for zero radii?
-        self._hr = Basic.sympify(horizontal_radius)
-        self._vr = Basic.sympify(vertical_radius)
+        self._hr = Basic.sympify(h_radius)
+        self._vr = Basic.sympify(v_radius)
 
     @property
     def horizontal_radius(self):
@@ -62,7 +61,7 @@ class Ellipse(GeometryEntity):
         else:
             # TODO If p is not on the ellipse, attempt to create the
             #      tangent(s) from point p to the ellipse.
-            return None
+            raise NotImplementedError("Cannot find tangent lines when p is not on the ellipse")
 
     def is_tangent(self, o):
         """Returns True if o is tangent to the ellipse, False otherwise."""
@@ -111,8 +110,8 @@ class Ellipse(GeometryEntity):
         def dot(p1, p2):
             sum = Rational(0)
             for ind in xrange(0, len(p1)):
-                sum += simplify(p1[ind] * p2[ind])
-            return sum
+                sum += p1[ind] * p2[ind]
+            return simplify(sum)
 
         hr_sq = self._hr ** Rational(2)
         vr_sq = self._vr ** Rational(2)
@@ -174,29 +173,22 @@ class Ellipse(GeometryEntity):
                 return self
             else:
                 # TODO
-                raise NotImplementedError("Unable to find intersection with " + n)
-        else:
-            n = type(o).__name__
-            raise NotImplementedError("Unable to find intersection with " + n)
+                pass
+
+        raise NotImplementedError()
 
     def __eq__(self, o):
         return ((self._c == o._c) and
                 (self._hr == o._hr) and (self._vr == o._vr))
 
-    def __ne__(self, o):
-        return not self.__eq__(o)
-
-    def __hash__(self):
-        return hash((self._c, self._hr, self._vr))
-
     def __contains__(self, o):
         if isinstance(o, Point):
+            from sympy.modules.simplify import trigsimp
             x = Symbol('x')
             y = Symbol('y')
             res = self.equation('x', 'y').subs_dict({x: o[0], y: o[1]})
-            res = simplify(res)
-            #print res, trigsimp(res)
-            return bool(res == 0) or bool(trigsimp(res) == 0)
+            res = trigsimp(simplify(res))
+            return bool(res == 0)
         elif isinstance(o, Ellipse):
             return (self == o)
         else:
@@ -206,8 +198,6 @@ class Ellipse(GeometryEntity):
         args = (str(self._c), str(self._hr), str(self._vr))
         return "Ellipse(center=%s, horizontal radius=%s, vertical radius=%s)" % args
 
-    def __repr__(self):
-        return self.__str__()
 
 class Circle(Ellipse):
     """A circle in space."""
@@ -226,7 +216,7 @@ class Circle(Ellipse):
 
     @property
     def circumference(self):
-        return simplify(Rational(2) * pi * self.radius)
+        return Rational(2) * pi * self.radius
 
     def equation(self, xaxis_name='x', yaxis_name='y'):
         """Returns the equation of the circle."""
@@ -237,37 +227,31 @@ class Circle(Ellipse):
         return t1 + t2 - self._hr**Rational(2)
 
     def intersection(self, o):
-        try:
-            return Ellipse.intersection(self, o)
-        except NotImplementedError:
-            if isinstance(o, Circle):
-                dx,dy = o._c - self._c
-                d = sqrt( simplify(dy**2 + dx**2) )
-                a = simplify( (self._hr**2 - o._hr**2 + d**2) / (Rational(2) * d) )
+        if isinstance(o, Circle):
+            dx,dy = o._c - self._c
+            d = sqrt( simplify(dy**2 + dx**2) )
+            a = simplify((self._hr**2 - o._hr**2 + d**2) / (Rational(2) * d))
 
-                x2 = simplify(self._c[0] + (dx * a/d))
-                y2 = simplify(self._c[1] + (dy * a/d))
+            x2 = self._c[0] + (dx * a/d)
+            y2 = self._c[1] + (dy * a/d)
 
-                h = sqrt( simplify(r0**2 - a**2) )
-                rx = simplify(-dy * (h/d))
-                ry = simplify(dx * (h/d))
+            h = sqrt( simplify(self._hr**2 - a**2) )
+            rx = -dy * (h/d)
+            ry =  dx * (h/d)
 
-                xi_1 = simplify(x2 + rx)
-                xi_2 = simplify(x2 - rx)
-                yi_1 = simplify(y2 + ry)
-                yi_2 = simplify(y2 - ry)
+            xi_1 = simplify(x2 + rx)
+            xi_2 = simplify(x2 - rx)
+            yi_1 = simplify(y2 + ry)
+            yi_2 = simplify(y2 - ry)
 
-                ret = [Point(xi_1, yi_1)]
-                if xi_1 != xi_2 or yi_1 != yi_2:
-                    ret.append(Point(xi_2, yi_2))
-                return ret
-            elif isinstance(o, Ellipse):
-                a,b,r = o.horizontal_radius,o.vertical_radius,self._hr
-                t1 = sqrt(simplify((r**2 - b**2)/(a**2 - b**2)))
-                t2 = sqrt(simplify((a**2 - r**2)/(a**2 - b**2)))
-                return [simplify(a*t1),
-                        simplify(b*t1),
-                        simplify(-a*t1),
-                        simplify(-b*t1)]
+            ret = [Point(xi_1, yi_1)]
+            if xi_1 != xi_2 or yi_1 != yi_2:
+                ret.append(Point(xi_2, yi_2))
+            return ret
+        elif isinstance(o, Ellipse):
+            a,b,r = o.horizontal_radius,o.vertical_radius,self._hr
+            x = a*sqrt(simplify((r**2 - b**2)/(a**2 - b**2)))
+            y = b*sqrt(simplify((a**2 - r**2)/(a**2 - b**2)))
+            return list(set([Point(x,y), Point(x,-y), Point(-x,y), Point(-x,-y)]))
 
-        raise NotImplementedError("Unable to find intersection with " + n)
+        return Ellipse.intersection(self, o)
