@@ -12,5 +12,5 @@ Structure
 G{packagetree sympy.modules}
 """
 
-from sympy.modules.trigonometric import sin, cos, tan, atan, asin
+from sympy.modules.trigonometric import sin, cos, tan, sec, csc, cot, atan, asin
 from sympy.modules.limits import limit

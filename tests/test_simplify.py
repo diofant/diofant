@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Symbol, exp
+from sympy import Symbol, exp, cos, sin, tan, sec, csc, cot
 from sympy.modules.simplify import *
 
 def test_ratsimp():
@@ -23,6 +23,14 @@ def test_ratsimp():
     assert ratsimp(e) == x/(x+1)
     assert (x+1)*ratsimp(e)/x == 1
     assert ratsimp(exp(e)) == exp(x/(x+1))
+
+def test_trigsimp():
+    x = Symbol('x')
+    y = Symbol('y')
+    assert trigsimp(5*cos(x)**2 + 5*sin(x)**2) == 5
+    assert trigsimp(5*cos(x/2)**2 + 2*sin(x/2)**2) == 2 + 3*cos(x/2)**2
+    assert trigsimp(1 + tan(x)**2) == sec(x)**2
+    assert trigsimp(1 + cot(x)**2) == csc(x)**2
 
 def test_simplify():
     x = Symbol('x')

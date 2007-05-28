@@ -21,16 +21,16 @@ def test_point():
     assert len(p1) == 2
     assert p2[1] == y2
     assert (p3+p4) == p4
-    assert (p2-p1) == (y1-x1, y2-x2)
-    assert p4*Rational(5) == (5, 5)
-    assert -p2 == (-y1, -y2)
+    assert (p2-p1) == g.Point(y1-x1, y2-x2)
+    assert p4*5 == g.Point(5, 5)
+    assert -p2 == g.Point(-y1, -y2)
 
-    assert g.Point.midpoint(p3, p4) == [half, half]
-    assert g.Point.midpoint(p1, p4) == [half + half*x1, half + half*x2]
+    assert g.Point.midpoint(p3, p4) == g.Point(half, half)
+    assert g.Point.midpoint(p1, p4) == g.Point(half + half*x1, half + half*x2)
     assert g.Point.midpoint(p2, p2) == p2
 
     assert g.Point.distance(p3, p4) == sqrt(2)
-    assert g.Point.distance(p1, p2) == sqrt((x1-y1)**2 + (x2-y2)**2).expand()
+    assert g.Point.distance(p1, p2) == simplify(sqrt((x1-y1)**2 + (x2-y2)**2))
     assert g.Point.distance(p1, p1) == 0
     assert g.Point.distance(p3, p2) == abs(p2)
 
@@ -46,7 +46,7 @@ def test_point():
     p2_2 = g.Point(0, x1)
     p2_3 = g.Point(-x1, 0)
     p2_4 = g.Point(0, -x1)
-    p2_5 = g.Point(-x1, 1 + x2**2)
+    p2_5 = g.Point(x1, 5)
     assert g.Point.are_concyclic(p2_1)
     assert g.Point.are_concyclic(p2_1, p2_2)
     assert g.Point.are_concyclic(p2_1, p2_2, p2_3, p2_4)
@@ -72,8 +72,8 @@ def test_line():
     assert p1 in l1 # is p1 on the line l1?
     assert p1 not in l3
 
-    assert l1.equation() in (x-y, y-x)
-    assert l3.equation() in (x-x1, x1-x)
+    assert simplify(l1.equation()) in (x-y, y-x)
+    assert simplify(l3.equation()) in (x-x1, x1-x)
 
     assert l2.arbitrary_point() in l2
     for ind in xrange(0, 5):
@@ -100,7 +100,6 @@ def test_line():
     assert g.intersection(l1, p1) == [p1]
     assert g.intersection(l1, p5) is None
     assert g.intersection(l1, l2) == [l1]
-    assert g.intersection(l1, l3) == [g.Point(x1, x1)]
     assert g.intersection(l1, l1.parallel_line(p5)) is None
 
     # Concurrency
@@ -116,9 +115,6 @@ def test_line():
 
     # TODO Finding angles
 
-    # Combinations of the line functionality
-    assert g.LinearEntity.are_parallel(l1.perpendicular_line(p3), l1.perpendicular_line(p5))
-    assert g.LinearEntity.are_perpendicular(l1.perpendicular_line(p4), l2)
 
     # Testing Rays and Segments (very similar to Lines)
     r1 = g.Ray(p1, g.Point(-1, 5))
@@ -177,14 +173,23 @@ def test_ellipse():
     assert e1.is_tangent(g.Line(g.Point(0, 0), g.Point(1, 1))) is False
 
     # Intersection
-    l1 = g.Line(g.Point(1-half, -5), g.Point(1-half, 5))
-    l2 = g.Line(g.Point(-1, 1), g.Point(5, 1))
-    l3 = g.Line(g.Point(-10, 0), g.Point(0, 10))
+    l1 = g.Line(g.Point(1, -5), g.Point(1, 5))
+    l2 = g.Line(g.Point(-5, -1), g.Point(5, -1))
+    l3 = g.Line(g.Point(-1, -1), g.Point(1, 1))
+    l4 = g.Line(g.Point(-10, 0), g.Point(0, 10))
+    pts_c1_l3 = [g.Point(sqrt(2)/2, sqrt(2)/2), g.Point(-sqrt(2)/2, -sqrt(2)/2)]
 
-    assert g.intersection(e1, p5) == [p5]
-    assert g.intersection(e2, l1) == [g.Point(1-half, 1)]
-    assert g.intersection(e2, l2) == [g.Point(1-half, 1), g.Point(1+half, 1)]
-    assert g.intersection(e2, l3) is None
+    assert g.intersection(e2, l4) is None
+    assert g.intersection(c1, g.Point(1, 0)) == [g.Point(1, 0)]
+    assert g.intersection(c1, l1) == [g.Point(1, 0)]
+    assert g.intersection(c1, l2) == [g.Point(0, -1)]
+    # Requires simplification of square roots [ sqrt(8) == 2sqrt(2) ]
+    #assert g.intersection(c1, l3) in [pts_c1_l3, [pts_c1_l3[1], pts_c1_l3[0]]]
+
+    e1 = g.Circle(g.Point(0, 0), 5)
+    e2 = g.Ellipse(g.Point(0, 0), 5, 20)
+    assert g.intersection(e1, e2) in \
+        [[g.Point(5, 0), g.Point(-5, 0)], [g.Point(-5, 0), g.Point(5, 0)]]
 
     # Combinations of above
     assert e3.is_tangent(e3.tangent_line(p1 + g.Point(y1, 0)))
@@ -211,7 +216,15 @@ def test_polygon():
     #
     # Regular polygon
     #
-    
+    p1 = g.RegularPolygon(g.Point(0, 0), 10, 5)
+    p2 = g.RegularPolygon(g.Point(0, 0), 5, 5)
+
+    assert p1 != p2
+    assert p1.interior_angle == 3*pi/5
+    assert p1.exterior_angle == 2*pi/5
+    assert p2.apothem == 5*cos(pi/5)
+    assert p2.circumcircle == g.Circle(g.Point(0, 0), 5)
+    assert p2.incircle == g.Circle(g.Point(0, 0), p2.apothem)
 
     #
     # Triangle
@@ -228,6 +241,7 @@ def test_polygon():
     s3 = t3.sides
 
     # Basic stuff
+    assert t1.area == Rational(25,2)
     assert t1.is_right()
     assert t2.is_right() is False
     assert t3.is_right()
@@ -240,11 +254,6 @@ def test_polygon():
     assert g.Triangle.are_similar(t1, t2) is False
     assert g.Triangle.are_similar(t1, t3)
     assert g.Triangle.are_similar(t2, t3) is False
-
-    # Pythagorean identity
-    assert t1.area == Rational(25,2)
-    assert s1[1].length**2 == s1[0].length**2 + s1[2].length**2
-    assert (s3[1].length**2).expand() == (s3[0].length**2 + s3[2].length**2).expand()
 
     # Bisectors
     #XXX Requires proper simplification of radicals
@@ -273,15 +282,17 @@ def test_polygon():
 
 if __name__ == "__main__":
     from sys import modules,stderr,exc_info,excepthook
+    import hotshot, hotshot.stats
+
     curr_module = modules[__name__]
     for member in dir(curr_module):
-        if member.startswith('test_'):
+        if member.startswith("test_"):
             try:
-                sys.stderr.write('Testing %s...' % member)
+                sys.stderr.write("Testing %s..." % member)
                 curr_module.__dict__[member]()
-                print "SUCCESS!"
+                sys.stderr.write("SUCCESS!\n")
             except AssertionError, e:
-                print "FAILED!"
-                print "-" * 25
+                sys.stderr.write("FAILED!\n")
+                sys.stderr.write('-' * 25 + '\n')
                 excepthook(*exc_info())
-                print "-" * 25
+                sys.stderr.write('-' * 25 + '\n')

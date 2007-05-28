@@ -165,29 +165,58 @@ def trigsimp(expr):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> y = Symbol('y')
-        >>> trigsimp(sin(x)**2 + cos(x)**2)
-        1
+        >>> trigsimp(2*sin(x)**2 + 2*cos(x)**2)
+        2
     """
     from trigonometric import sin, cos, tan, sec, csc, cot
-    a = Symbol('a', is_dummy=True)
-    b = Symbol('b', is_dummy=True)
-    c = Symbol('c', is_dummy=True)
-    d = Symbol('d', is_dummy=True)
+    if isinstance(expr, Function):
+        return type(expr)( trigsimp(expr[0]) )
+    elif isinstance(expr, Mul):
+        ret = Rational(1)
+        for x in expr:
+            ret *= trigsimp(x)
+        return ret
+    elif isinstance(expr, Add) and len(expr[:]) > 1:
+        # The type of functions we're interested in
+        a = Symbol('a', is_dummy=True)
+        b = Symbol('b', is_dummy=True)
+        matchers = {"sin": a*sin(b)**2, "tan": a*tan(b)**2, "cot": a*cot(b)**2}
 
-    identities = {
-        a*sin(b)**2 + c*cos(b)**2 + d: (a + (c-a)*cos(b)**2 + d, [a, b, c, d]),
-        a*sec(b)**2 - c*tan(b)**2 + d: (a + (c-a)*tan(b)**2 + d, [a, b, c, d]),
-        a*csc(b)**2 - c*cot(b)**2 + d: (a + (c-a)*cot(b)**2 + d, [a, b, c, d])
-    }
-    for identity in identities:
-        replacement,varlist = identities[identity]
-        ex = [x for x in expr.atoms() if isinstance(x, Symbol)]
-        try:
-            res = expr.match(identity, varlist, exclude=ex)
-        except:
-            res = expr.match(identity, varlist)
-        if res is not None:
-            expr = replacement.subs_dict(res)
+        # The matches we find
+        matches = {"sin": [], "tan": [], "cot": []}
+
+        # Scan for the terms we need
+        ret = Rational(0)
+        for x in expr:
+            x = trigsimp(x)
+            res = None
+            ex = [atom for atom in expr.atoms() if isinstance(atom, Symbol)]
+            for mname in matchers:
+                try:
+                    res = x.match(matchers[mname], [a,b], exclude=ex)
+                except:
+                    res = x.match(matchers[mname], [a,b])
+                if res is not None:
+                    if a in res and b in res:
+                        matches[mname].append( (res[a], res[b]) )
+                        break
+                    else:
+                        res = None
+
+            if res is not None:
+                continue
+            ret += x
+
+        # Expand matches
+        for match in matches["sin"]:
+            ret += match[0] - match[0]*cos(match[1])**2
+        for match in matches["tan"]:
+            ret += match[0]*sec(match[1])**2 - match[0]
+        for match in matches["cot"]:
+            ret += match[0]*csc(match[1])**2 - match[0]
+
+        return ret
+
     return expr
 
 def simplify(expr):

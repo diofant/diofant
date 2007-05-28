@@ -750,7 +750,7 @@ class Add(Pair):
         return d
 
     def combine(self):
-        r = 0
+        r = Rational(0)
         for x in self:
             r+=x.combine()
         return r
