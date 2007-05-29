@@ -7,4 +7,4 @@ from point import Point
 from line import LinearEntity, Line, Ray, Segment
 from ellipse import Ellipse, Circle
 from polygon import Polygon, RegularPolygon, Triangle
-#from util import *
+from util import *

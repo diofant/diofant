@@ -23,7 +23,9 @@ class Point(GeometryEntity):
         """
         points = GeometryEntity._normalize_args(args)
 
-        assert all([isinstance(x, Point) for x in points])
+        for x in points:
+            assert isinstance(x, Point)
+        
         if len(points) == 0: return False
         if len(points) <= 2: return True
 
