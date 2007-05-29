@@ -301,14 +301,14 @@ def collect(expr, syms):
     else:
         return None
 
-def coeff_list(p, var=None, order='lex'):
+def coeff_list(p, var=None, order='grevlex'):
     """Return the list of coeffs and exponents.
 
-    Currently, lexicographic ('lex'), graded lex ('grlex') and graded
-    reverse lex ('grevlex') orders are implemented. The list of
-    variables determines the order of the variables.
-    The coefficients are assumed to be real numbers, that is, you can
-    divide by them.
+    Currently, lexicographic ('lex'), graded lex ('grlex'), graded
+    reverse lex ('grevlex') and 1-elimination ('1-el')orders are implemented.
+    The list of variables determines the order of the variables.
+    The coefficients are assumed to be non-zero real numbers, that is,
+    you can divide by them.
 
     Examples:
     >>> x = Symbol('x')
@@ -370,9 +370,13 @@ def coeff_list(p, var=None, order='lex'):
     elif order == 'grlex':
         res.sort(key=lambda x: [sum(x[1:])] + x[1:], reverse=True)
     elif order == 'grevlex':
-        res.sort(key=lambda x: [sum(x[1:])] + reverse(x[1:]), reverse=True)
+        res.sort(key=lambda x: [sum(x[1:])]
+                 + reverse(map(lambda l:-l, x[1:])), reverse=True)
+    elif order == '1-el':
+        res.sort(key=lambda x: [x[1]] + [sum(x[2:])]
+                 + reverse(map(lambda l:-l, x[2:])), reverse=True)
     else:
-        raise PolynomialException(order + 'is not an implemented order.')
+        raise PolynomialException(str(order) + 'is not an implemented order.')
 
     # unify monomials
     result = []
@@ -385,7 +389,7 @@ def coeff_list(p, var=None, order='lex'):
 
     return result
 
-def div_mv(f, g_i, var=None, order='lex'):
+def div_mv(f, g_i, var=None, order='grevlex'):
     """Returns q_i and r such that f = g_1*q_1 +...+ g_n*q_n + r
 
     The g_i can be a single or a list of polynomials. The remainder r
@@ -399,11 +403,11 @@ def div_mv(f, g_i, var=None, order='lex'):
     >>> y = Symbol('y')
     >>> div_mv(x**3+2*x+5, x+1, [x])
     [3+x**2-x, 2]
-    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [x,y])
+    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [x,y], 'lex')
     [2*x**2*y**2+2*y**4-y+2*x*y**3, 2*y**5+y**3-y**2]
-    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [y,x])
+    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [y,x], 'lex')
     [-2*x**3*y-x**2+x-x*y-y**2-2*x**4, -x**2+x**3+2*x**5]
-    >>> div_mv(2*x**3*y**2 - x*y + y**3, [x-y, y**2], [x,y])
+    >>> div_mv(2*x**3*y**2 - x*y + y**3, [x-y, y**2], [x,y], 'lex')
     [2*x**2*y**2+2*y**4-y+2*x*y**3, -1+y+2*y**3, 0]
     """
 
@@ -430,6 +434,8 @@ def div_mv(f, g_i, var=None, order='lex'):
         for g, g_cl in zip(g_i, g_i_cl):
             # check if leading term of f is divisible by that of g
             if all([x>=y for x,y in zip(f_cl[0][1:],g_cl[0][1:])]):
+                if g_cl[0][0] == 0:
+                    continue
                 ff = poly([f_cl[0]], var) / poly([g_cl[0]], var)
                 q_i[g_i.index(g)] += ff
                 f = (f - ff*g).expand()
@@ -443,7 +449,7 @@ def div_mv(f, g_i, var=None, order='lex'):
 
     return q_i + [r]
 
-def groebner(f, var=None, order='lex', reduced=True):
+def groebner(f, var=None, order='grevlex', reduced=True):
     """Computes a (reduced) Groebner base for a given list of polynomials.
 
     Using an improved version of Buchberger's algorithm, following
@@ -496,12 +502,21 @@ def groebner(f, var=None, order='lex', reduced=True):
         var.sort()
 
     f = map(Basic.sympify, f)
+    # filter trivial or double entries
+    ff = filter(lambda x: x!=0, f)
+    f = []
+    for p in ff:
+        if not p in f:
+            f.append(p)
     f_cl = map(lambda x: coeff_list(x, var, order), f)
     b = [] # Stores the unchecked combinations for s-poly's.
     s = len(f)
     for i in range(0, s-1):
         for j in range(i+1, s):
             b.append((i, j))
+    # empty ideal
+    if s == 0:
+        return([Rational(0)])
 
     while b:
         i, j = b[0]
@@ -542,16 +557,21 @@ def groebner(f, var=None, order='lex', reduced=True):
     for p_cl in blacklist:
         f_cl.remove(p_cl)
 
+    # We can now sort the basis elements according to their leading
+    # term.
+    f_cl.sort(key=lambda x: x[0][1:], reverse=True)
+
     # Divide all basis elements by their leading coefficient, to get a
     # leading 1.
-    f = map(lambda x: poly(x, var) / x[0][0], f_cl)
+    f = map(lambda x: (poly(x, var)/x[0][0]).expand(), f_cl)
 
     # We now have a minimal Groebner basis, which is still not unique.
     # The next step is to reduce all basis elements in respect to the
     # rest of the base (without touching the leading terms).
-    for p in f:
-        pp = div_mv(p, filter(lambda x: x != p, f), var, order)[-1]
-        f[f.index(p)] = pp.expand()
+    # As the basis is already sorted, the rest gets smaller each time.
+    for i,p in enumerate(f[0:-1]):
+        pp = div_mv(p, f[i+1:], var, order)[-1]
+        f[i] = pp
 
     return f
 
@@ -584,11 +604,13 @@ def lcm_mv(f, g, var=None):
                     var.append(v)
         var.sort()
 
+    # TODO: check for common monomials first?
+
     # Compute a lexicographic Groebner base of the sum of the
     # two principal ideals generated by t*f and (t-1)*g.
     t = Symbol('t', dummy=True)
     var2 = [t] + var
-    G = groebner([t*f, (t-1)*g], var2, order='lex', reduced=True)
+    G = groebner([t*f, (t-1)*g], var2, order='1-el', reduced=True)
 
     # Now intersect this result with the polynomial ring in the
     # variables in `var', that is, eliminate t.
@@ -597,11 +619,11 @@ def lcm_mv(f, g, var=None):
     # The intersection should be a principal ideal, that is generated
     # by a single polynomial.
     if not len(I) == 1:
-        raise PolynomialException("More than one generator.")
+        raise PolynomialException("No single generator.")
 
     return I[0]
 
-def gcd_mv(f, g, var=None, order='lex', monic=False):
+def gcd_mv(f, g, var=None, order='grevlex', monic=False):
     """Computes the gcd of two polynomials.
 
     Here, the product of f and g is divided by their lcm.
@@ -626,7 +648,7 @@ def gcd_mv(f, g, var=None, order='lex', monic=False):
         var.sort()
 
     lcm = lcm_mv(f, g, var)
-    q, r = div_mv(f*g, lcm, var, 'lex')
+    q, r = div_mv(f*g, lcm, var, order)
 
     if not r == 0:
         raise PolynomialException('lcm does not divide product.')
@@ -636,3 +658,182 @@ def gcd_mv(f, g, var=None, order='lex', monic=False):
         q = (q/q_cl[0][0]).expand()
 
     return q
+
+class Ideal:
+    """Describes a polynomial ideal over the real numbers.
+
+    Try to avoid different variables and orders between the ideals, give
+    them explicitly; the automatic handlers don't always act as expected.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> I = Ideal([x, y**2])
+    >>> J = Ideal(x*y)
+    >>> I == J
+    False
+    >>> I*J == I.intersect(J)
+    False
+    >>> I**2 == I*I
+    True
+    """
+    def __init__(self, f=[Rational(0)], var=None, order='grevlex',
+                 is_groebner=None):
+        if not isinstance(f, list):
+            f = [f]
+        self.f = map(Basic.sympify, f)
+        if var == None:
+            var = []
+            for p in self.f:
+                var += filter(lambda x: not x in var, p.atoms(type=Symbol))
+            var.sort()
+        self.var = var
+        self.order = order
+        self.is_groebner = is_groebner
+        for p in self.f:
+            if not ispoly(p, self.var):
+                raise PolynomialException('Non-polynomial as generator.')
+
+    def __len__(self):
+        return len(self.f)
+
+    def __iter__(self):
+        return self.f.__iter__()
+
+    def __add__(self, other):
+        """f is in I + J iff there are g in I, h in J such that f = g+h
+        """
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+    
+        var = self.var + filter(lambda x: not x in self.var, other.var)
+        var.sort()
+
+        if self.order == other.order:
+            order = self.order
+        else:
+            order = None
+
+        f = self.f + filter(lambda x: not x in self.f, other.f)
+        
+        return Ideal(f, var, order)
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __mul__(self, other):
+        """f is in I*J iff f is a sum of products of elements of I and J
+        """
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+
+        var = self.var + filter(lambda x: not x in self.var, other.var)
+        var.sort()
+
+        if self.order == other.order:
+            order = self.order
+        else:
+            order = None
+
+        f = []
+        for p in self.f:
+            for q in other.f:
+                f.append(p*q)
+
+        return Ideal(f, var, order)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __pow__(self, other):
+        """Repeated product of self.
+        """
+        other = Basic.sympify(other)
+        if not (isinstance(other, Number)
+                and other.is_integer
+                and other >= 0):
+            raise PolynomialException('Illegal power of ideal.')
+
+        if other == 0:
+            return Ideal(Rational(1), self.var, self.order, True)
+        elif other == 1:
+            return self
+
+        # avoid repeated elements
+        f = self.f[:]
+        I = Ideal(Rational(0), self.var, self.order)
+
+        for p in self.f:
+            I += p*Ideal(f,self.var, self.order)**(other-1)
+            f.remove(p)
+
+        return I
+
+    def __mod__(self, other):
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+        other.groebner()
+
+        f = []
+        for p in self.f:
+            f.append(div_mv(p, other.f, other.var, other.order)[-1])
+        f = filter(lambda x: x!=0, f)
+        return Ideal(f, other.var, other.order)
+
+    def __contains__(self, other):
+        other = Basic.sympify(other)
+        if not ispoly(other, self.var):
+            return False
+        self.groebner()
+        rem = div_mv(other, self.f, self.var, self.order)[-1]
+        if rem == 0:
+            return True
+        else:
+            return False
+
+    def __eq__(self, other):
+        if not isinstance(other, Ideal):
+            other = Ideal(other, self.var, self.order)
+        # Try to save Groebner base computations.       
+        if self.var != other.var or self.order != other.order:
+            if self.is_groebner:
+                s = self
+                o = Ideal(other.f, self.var, self.order)
+                o.groebner()
+            elif other.is_groebner:
+                o = other
+                s = Ideal(self.f, other.var, other.order)
+                s.groebner()
+            else:
+                s = Ideal(self.f)
+                o = Ideal(other.f)
+                s.groebner()
+                o.groebner()
+            return s.f == o.f
+        else:
+            self.groebner()
+            other.groebner()
+            return self.f == other.f
+
+    def groebner(self, reduced=True):
+        if not self.is_groebner:
+            self.f = groebner(self.f, self.var, self.order, reduced)
+            self.is_groebner = True
+
+    def intersect(self, other):
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+        t = Symbol('t', dummy=True)
+        I = t*self + (1-t)*other
+        I.order = '1-el'
+        I.groebner()
+        f = filter(lambda p: not t in p.atoms(type=Symbol), I.f)
+        if self.var == other.var:
+            var = self.var
+        else:
+            var = None
+        if self.order == other.order:
+            order = self.order
+        else:
+            order = None
+        return Ideal(f, var, order)

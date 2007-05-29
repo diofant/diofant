@@ -156,16 +156,19 @@ def test_coeff_list():
 
     assert coeff_list(1) == [[1]]
     assert coeff_list(x) == [[1,1]]
-    assert coeff_list(x**2+y**3) == [[1,2,0], [1,0,3]]
+    assert coeff_list(x**2+y**3, order='lex') == [[1,2,0], [1,0,3]]
     assert coeff_list(x**2+y**3, [y,x]) == [[1,3,0], [1,0,2]]
     assert coeff_list(x*y) == [[1,1,1]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y]) \
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='lex') \
            == [[sin(z), 3, 0], [1, 2, 4], [1, 1, 5]]
     assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='grlex') \
            == [[1, 2, 4], [1, 1, 5], [sin(z), 3, 0]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y],
-               order='grevlex') == [[1, 1, 5], [1, 2, 4], [sin(z), 3, 0]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x**5*y, [x,y],
+               order='grevlex') == [[1, 5, 1], [1, 2, 4], [sin(z), 3, 0]]
+    assert coeff_list(z*x + x**2*y**2 + x**3*y, [z,x,y], order='1-el') \
+           == [[1,1,1,0], [1,0,3,1], [1,0,2,2]]
 
+    #TODO better test that differs between all orders ?
 
     py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
     py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
@@ -221,3 +224,22 @@ def test_gcd_mv():
     assert gcd_mv(3, 4, monic=True) == Rational(1)
     assert gcd_mv(x, y) == Rational(1)
     assert gcd_mv(sin(z)*(x+y), x**2+2*x*y+y**2, [x, y], monic=True) == x+y
+
+def test_Ideal():
+    x = Symbol('x')
+    y = Symbol('y')
+    z = Symbol('z')
+
+    # TODO: more complete tests?
+    assert len(Ideal()) == 1
+    assert not x in Ideal()
+    I = Ideal([x,y], [x,y])
+    assert x*y**2 in I
+    assert z*x in I
+    assert not z in I
+    assert I == I + Ideal()
+    assert Ideal() == Ideal()*I
+    assert I + I == I
+    assert I == I % Ideal()
+    assert Ideal() == Ideal(x*y, [x,y]) % I
+    assert Ideal(z, [x,y,z]) == Ideal([x,z], [x,y,z]) % Ideal([x,y], [x,y,z])
