@@ -336,7 +336,7 @@ def coeff_list(p, var=None, order='grevlex'):
         var = [var]
     if var == None:
         var = p.atoms(type=Symbol)
-        var.sort()
+        var.sort(Basic.cmphash)
 
     res = []
 
@@ -422,7 +422,7 @@ def div_mv(f, g_i, var=None, order='grevlex'):
             for v in g.atoms(type=Symbol):
                 if not v in var:
                     var.append(v)
-        var.sort()
+        var.sort(Basic.cmphash)
 
     f_cl = coeff_list(f, var, order)
     g_i_cl = map(lambda g: coeff_list(g, var, order), g_i)
@@ -499,7 +499,7 @@ def groebner(f, var=None, order='grevlex', reduced=True):
             for v in p.atoms(type=Symbol):
                 if not v in var:
                     var.append(v)
-        var.sort()
+        var.sort(key=str)
 
     f = map(Basic.sympify, f)
     # filter trivial or double entries
@@ -602,7 +602,7 @@ def lcm_mv(f, g, var=None):
             for v in p.atoms(type=Symbol):
                 if not v in var:
                     var.append(v)
-        var.sort()
+        var.sort(key=str)
 
     # TODO: check for common monomials first?
 
@@ -645,7 +645,7 @@ def gcd_mv(f, g, var=None, order='grevlex', monic=False):
             for v in p.atoms(type=Symbol):
                 if not v in var:
                     var.append(v)
-        var.sort()
+        var.sort(key=str)
 
     lcm = lcm_mv(f, g, var)
     q, r = div_mv(f*g, lcm, var, order)
@@ -686,7 +686,7 @@ class Ideal:
             var = []
             for p in self.f:
                 var += filter(lambda x: not x in var, p.atoms(type=Symbol))
-            var.sort()
+            var.sort(key=str)
         self.var = var
         self.order = order
         self.is_groebner = is_groebner
@@ -707,7 +707,7 @@ class Ideal:
             other = Ideal(other)
     
         var = self.var + filter(lambda x: not x in self.var, other.var)
-        var.sort()
+        var.sort(key=str)
 
         if self.order == other.order:
             order = self.order
@@ -728,7 +728,7 @@ class Ideal:
             other = Ideal(other)
 
         var = self.var + filter(lambda x: not x in self.var, other.var)
-        var.sort()
+        var.sort(key=str)
 
         if self.order == other.order:
             order = self.order
