@@ -700,6 +700,13 @@ class Ideal:
     def __iter__(self):
         return self.f.__iter__()
 
+    def __str__(self):
+        return self.f.__str__()
+
+    def __repr__(self):
+        return 'Ideal(%s, %s, %s, %s)' % (repr(self.f), repr(self.var), 
+               self.order, repr(self.is_groebner) )
+
     def __add__(self, other):
         """f is in I + J iff there are g in I, h in J such that f = g+h
         """
