@@ -20,6 +20,7 @@ def test_pretty_basic():
     assert pretty( x/y ) == 'x\n-\ny'
     assert pretty( -x/y ) == '-x\n--\ny '
     assert pretty( (x-2)/y ) == '-2 + x\n------\n  y   '
+    assert pretty( (1+x)*y ) in ['(1 + x)*y', 'y*(1 + x)']
     assert pretty( oo ) == "oo"
 
     

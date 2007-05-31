@@ -537,14 +537,27 @@ class Mul(Pair):
         # Gather terms for numerator/denominator
         for item in self._args:
             if isinstance(item, Pow) and item.exp == -1:
-                b.append(item.base.__pretty__())
+                b.append(item.base)
             elif isinstance(item, Rational):
                 if item.p != 1:
-                    a.append( prettyForm(str(item.p)) )
+                    a.append( Rational(item.p) )
                 if item.q != 1:
-                    b.append( prettyForm(str(item.q)) )
+                    b.append( Rational(item.q) )
             else:
-                a.append(item.__pretty__())
+                a.append(item)
+
+        # Convert to pretty forms
+        for i in xrange(0, len(a)):
+            if isinstance(a[i], Add) and len(a) > 1:
+                a[i] = prettyForm(*a[i].__pretty__().parens())
+            else:
+                a[i] = a[i].__pretty__()
+
+        for i in xrange(0, len(b)):
+            if isinstance(b[i], Add) and len(b) > 1:
+                b[i] = prettyForm(*b[i].__pretty__().parens())
+            else:
+                b[i] = b[i].__pretty__()
 
         # Construct a pretty form
         if len(b) == 0:
