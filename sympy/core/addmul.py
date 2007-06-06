@@ -267,10 +267,10 @@ class Mul(Pair):
         if isinstance(a[0],Rational):
             if a[0].isminusone():
                 f = ["-"]
-                a = self.args[1:]
+                a = self._args[1:]
             elif a[0].isone():
                 f = []
-                a = self.args[1:]
+                a = self._args[1:]
         multsymb = "\cdot"
         for x in a:
             xs = x.__latex__()
