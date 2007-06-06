@@ -259,26 +259,6 @@ class Mul(Pair):
             a *= float(arg)
         return a
 
-    '''
-    def __latex__(self):
-        f = ""
-        a = self._args
-        if isinstance(a[0],Rational):
-            if a[0].isminusone():
-                f = "-"
-                a = self.args[1:]
-            elif a[0].isone():
-                f = ""
-                a = self.args[1:]
-        for x in a:
-            if isinstance(x,Pair):
-                f += "(%s)"
-            else:
-                f += "%s "
-        f = f[:-1]
-        return f % tuple([x.__latex__() for x in a])
-    '''
-
     def __latex__(self):
         from symbol import Symbol
         from power import Pow
