@@ -259,6 +259,7 @@ class Mul(Pair):
             a *= float(arg)
         return a
 
+    '''
     def __latex__(self):
         f = ""
         a = self._args
@@ -276,6 +277,39 @@ class Mul(Pair):
                 f += "%s "
         f = f[:-1]
         return f % tuple([x.__latex__() for x in a])
+    '''
+
+    def __latex__(self):
+        from symbol import Symbol
+        from power import Pow
+        f = []
+        a = self._args
+        if isinstance(a[0],Rational):
+            if a[0].isminusone():
+                f = ["-"]
+                a = self.args[1:]
+            elif a[0].isone():
+                f = []
+                a = self.args[1:]
+        multsymb = "\cdot"
+        for x in a:
+            xs = x.__latex__()
+            if isinstance(x,Pair):
+                f += ["(%s)" % xs]
+            # Insert explicit multiplication sign in some cases
+            elif isinstance(x, Symbol) and "mathrm" in xs or \
+                 isinstance(x, Pow) and "mathrm" in x.base.__latex__():
+                f += [multsymb] + [xs] + [multsymb]
+            else:
+                f += [xs]
+        # Remove extra multiplication signs
+        for i in range(len(f)-1):
+            if f[i] == f[i+1] == multsymb:
+                f[i] = ""
+        f = [x for x in f if x]
+        if f[0] == multsymb: f = f[1:]
+        if f[-1] == multsymb: f = f[:-1]
+        return " ".join(f)
 
     @staticmethod
     def get_baseandexp(a):
@@ -686,14 +720,14 @@ class Add(Pair):
             e = []
             ok = False
             for y in exp:
-	        # try to put all numeric parts together
+            # try to put all numeric parts together
                 bn, b = _extract_numeric(y)
                 if (not ok) and a == b:
                     if isinstance(a, Infinity) or isinstance(b, Infinity):
                         # case oo - oo
                         raise ArithmeticError("Cannot compute this")
-		    _m = Mul(an+bn, a)
-		    if _m != 0:
+                    _m = Mul(an+bn, a)
+                    if _m != 0:
                         e.append(_m)
                     ok = True
                 else:

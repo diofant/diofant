@@ -437,7 +437,10 @@ class ImaginaryUnit(Constant):
 
     def __str__(self):
         return "I"
-    
+
+    def __latex__(self):
+        return "\mathrm{i}"
+
     def evalf(self):
         """Evaluate to a float. By convention, will return 0, 
         which means that evalf() of a complex number will mean 
@@ -533,6 +536,9 @@ class ConstPi(Constant):
 
     def __str__(self):
         return "pi"
+    
+    def __latex__(self):
+        return "\pi"
     
     def __pretty__(self):
         return prettyForm("pi", unicode=u"\u03C0", binding=prettyForm.ATOM)

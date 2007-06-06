@@ -62,7 +62,18 @@ class Symbol(Basic):
         else:
             # if x is dummy
             return str(self.name + '__' + str(self.dummy_num))
-        
+
+    def __latex__(self):
+        if len(self.name) == 1:
+            return self.name
+        greek = set(['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta',
+          'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi',
+          'omicron', 'pi', 'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi',
+          'psi', 'omega'])
+        if self.name in greek or (self.name[0].lower() + self.name[1:]) in greek:
+            return "\\" + self.name
+        return "\mathrm{%s}" % self.name
+
     def __mathml__(self):
         import xml.dom.minidom
         if self._mathml:
@@ -290,8 +301,8 @@ class Order(Basic):
             if old == self.sym:
                 if new == 0:
                     return Rational(0)
-		elif isinstance(new, Symbol):
-		    return Order(new)
+                elif isinstance(new, Symbol):
+                    return Order(new)
                 else:
                     raise ValueError("Cannot substitute (%s, %s) in Order" % (new, old) )
         return e

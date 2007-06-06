@@ -71,3 +71,4 @@ from sympy.modules.simplify import ratsimp, simplify
 
 from sympy.modules.printing.pretty import pretty, pretty_print, pprint
 from sympy.modules.printing.mathml import mathml
+from sympy.modules.printing.latex import latex
