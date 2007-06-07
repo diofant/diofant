@@ -3,6 +3,7 @@ functions that use Function as its base class.
 """
 
 from sympy.core.basic import Basic
+from sympy.core.symbol import Symbol
 from sympy.core.numbers import Rational, Real
 import decimal
 import math
@@ -61,6 +62,11 @@ class Function(Basic):
         x.appendChild( self._args.__mathml__() )
         self._mathml = x
         return self._mathml
+
+    def __latex__(self):
+        s = Symbol(self.getname()).__latex__()
+        s += r"\left(%s\right)" % self._args.__latex__()
+        return s
         
     def series(self, sym, n=6):
         from power import pole_error
@@ -340,6 +346,15 @@ class Derivative(Basic):
         x.childNodes[1].appendChild( self.x.__mathml__() )
         self._mathml = x
         return self._mathml
+
+    def __latex__(self):
+        from sympy.core.addmul import Add
+        s = r"\frac{\partial}{\partial %s} " % self.x.__latex__()
+        if isinstance(self.f, Add):
+            s += r"\left(" + self.f.__latex__() + r"\right)"
+        else:
+            s += self.f.__latex__()
+        return s
 
     def eval(self):
         from addmul import Mul

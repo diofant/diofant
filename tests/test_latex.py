@@ -25,10 +25,21 @@ def test_latex_symbols():
 def test_latex_functions():
     assert latex(exp(x)) == "${e}^{x}$"
     assert latex(exp(I*pi)) == "${e}^{\mathrm{i} \pi}$"
+    class f(Function): pass
+    class beta(Function): pass
+    assert latex(f(x)) == r"$f\left(x\right)$"
+    assert latex(beta(x)) == r"$\beta\left(x\right)$"
+    assert latex(sin(x)) == r"$\mathrm{sin}\left(x\right)$"
+
+def test_latex_derivatives():
+    assert latex(diff(x**3, x, evaluate=False)) == \
+        r"$\frac{\partial}{\partial x} {x}^{3}$"
+    assert latex(diff(sin(x)+x**2, x, evaluate=False)) == \
+        r"$\frac{\partial}{\partial x} \left(\mathrm{sin}\left(x\right)+{x}^{2}\right)$"
 
 def test_latex_integrals():
-    assert latex(integrate(log(x), x, evaluate=False)) == "$\int log(x)\,dx$"
-    assert latex(integrate(x**2, (x,0,1), evaluate=False)) == "$\int^0_1 {x}^{2}\,dx$"
+    assert latex(integrate(log(x), x, evaluate=False)) == r"$\int \mathrm{log}\left(x\right)\,dx$"
+    assert latex(integrate(x**2, (x,0,1), evaluate=False)) == r"$\int^0_1 {x}^{2}\,dx$"
     
 def test_latex_limits():
-    assert latex(limit(x, x, oo, evaluate=False)) == "$\lim_{x \to \infty}x$"
+    assert latex(limit(x, x, oo, evaluate=False)) == r"$\lim_{x \to \infty}x$"

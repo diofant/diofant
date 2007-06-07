@@ -387,7 +387,7 @@ class Limit(Basic):
          return a
      
     def __latex__(self):
-         return "\lim_{%s \to %s}%s" % (self.x.__latex__(), \
+         return r"\lim_{%s \to %s}%s" % (self.x.__latex__(), \
                                                  self.x0.__latex__(), 
                                                  self.e.__latex__() )
                  
