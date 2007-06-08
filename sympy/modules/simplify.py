@@ -1,13 +1,9 @@
 from sympy.core.basic import Basic
 from sympy.core.symbol import Symbol
 from sympy.core.functions import Function
-from sympy.core.power import Pow
-from sympy.core.addmul import Add, Mul
 from sympy.core.numbers import Rational
-
-###
-### SANDBOX : term rewriting
-###
+from sympy.core.addmul import Add, Mul
+from sympy.core.power import Pow
 
 def fraction(expr):
     """Returns a pair with expression's numerator and denominator.
@@ -27,6 +23,8 @@ def fraction(expr):
        (x, y)
        >>> fraction(x)
        (x, 1)
+       >>> fraction(Rational(1, 2))
+       (1, 2)
 
     """
 
@@ -47,6 +45,8 @@ def fraction(expr):
         numer, denom = Mul(*numer), Mul(*denom)
     elif isinstance(expr, Pow) and expr.exp < 0:
         numer, denom = Rational(1), expr.base
+    elif isinstance(expr, Rational):
+        numer, denom = Rational(expr.p), Rational(expr.q)
     else:
         numer, denom = expr, Rational(1)
 
@@ -58,9 +58,27 @@ def numer(expr):
 def denom(expr):
     return fraction(expr)[1]
 
-def fracsimp(expr):
-    """Denests fractional expressions and puts everything
-       into a single fraction with expanded numerator.
+def numer_expand(expr):
+    a, b = fraction(expr)
+    return a.expand() / b
+
+def denom_expand(expr):
+    a, b = fraction(expr)
+    return a / b.expand()
+
+def together(expr):
+    """Combine together and denest rational functions into a single
+       fraction. No futher expansion is performed, use appropriate
+       functions respectively.
+
+       >>> from sympy import Symbol
+       >>> x, y = Symbol('x'), Symbol('y')
+
+       >>> together(1/x + 1/y)
+       (x+y)/(y*x)
+       >>> together(1/(1 + 1/x))
+       x/(1+x)
+
     """
 
     expr = Basic.sympify(expr)
@@ -69,26 +87,22 @@ def fracsimp(expr):
         numers, denoms = [], []
 
         for term in expr:
-            p, q = fraction(fracsimp(term))
+            p, q = fraction(together(term))
 
             numers.append(p)
             denoms.append(q)
 
         for i in range(len(denoms)):
             term = Mul(*(denoms[:i] + denoms[i+1:]))
-            numers[i] = (numers[i] * term).expand()
+            numers[i] = numers[i] * term
 
         return Add(*numers)/Mul(*denoms)
     elif isinstance(expr, Mul):
-        return Mul(*[fracsimp(t) for t in expr])
+        return Mul(*[together(t) for t in expr])
     elif isinstance(expr, Pow):
-        return Pow(fracsimp(expr.base), expr.exp)
+        return Pow(together(expr.base), expr.exp)
     else:
         return expr
-
-###
-### END
-###
 
 def ratsimp(expr):
     """

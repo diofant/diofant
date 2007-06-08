@@ -2,6 +2,7 @@ import sys
 sys.path.append(".")
 
 from sympy import Symbol, exp, cos, sin, tan, sec, csc, cot
+from sympy.core.numbers import Rational
 from sympy.modules.simplify import *
 
 def test_ratsimp():
@@ -46,9 +47,25 @@ def test_simplify():
 def test_fraction():
     x, y = Symbol('x'), Symbol('y')
 
+    assert fraction(Rational(1, 2)) == (1, 2)
+
     assert fraction(x) == (x, 1)
     assert fraction(1/x) == (1, x)
     assert fraction(x/y) == (x, y)
 
     assert fraction((x**2+1)/y) == (x**2+1, y)
     assert fraction(x*(y+1)/y**7) == (x*(y+1), y**7)
+
+def test_together():
+    x, y = Symbol('x'), Symbol('y')
+
+    assert together(1/x) == 1/x
+
+    assert together(1/x + 1) == (x+1)/x
+    assert together(1/x + x) == (x**2+1)/x
+
+    assert together(1/x + Rational(1, 2)) == (x+2)/(2*x)
+
+    assert together(1/x + 2/y) == (2*x+y)/(y*x)
+    assert together(1/(1 + 1/x)) == x/(1+x)
+    assert together(x/(1 + 1/x)) == x**2/(1+x)
