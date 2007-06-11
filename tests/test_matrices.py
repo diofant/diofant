@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix,minkowski_tensor
+from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix,minkowski_tensor,eye 
 from sympy import Symbol
 
 def test_multiplication():
@@ -147,3 +147,51 @@ def test_determinant():
                     (-2,  0,  7, 0, 2),
                     (-3, -2,  4, 5, 3),
                     ( 1,  0,  0, 0, 1) )).det() == 123
+
+def test_submatrix():
+    m0 = eye(4)
+    assert m0[0:3, 0:3] == eye(3)
+    assert m0[2:4, 0:2] == zero(2)
+
+    m1 = Matrix(3,3, lambda i,j: i+j)
+    assert m1[0,:] == Matrix(1,3,(0,1,2))
+    assert m1[1:3, 1] == Matrix(2,1,(2,3))
+
+def test_submatrix_assignment():
+    m = zero(4)
+    m[2:4, 2:4] = eye(2)
+    assert m == Matrix((0,0,0,0), 
+                        (0,0,0,0),
+                        (0,0,1,0),
+                        (0,0,0,1))
+    m[0:2, 0:2] = eye(2)
+    assert m == eye(4)
+    m[:,0] = Matrix(4,1,(1,2,3,4))
+    assert m == Matrix((1,0,0,0), 
+                        (2,1,0,0),
+                        (3,0,1,0),
+                        (4,0,0,1))
+    m[:,:] = zero(4)
+    assert m == zero(4)
+    m[:,:] = ((1,2,3,4),(5,6,7,8),(9, 10, 11, 12),(13,14,15,16))
+    assert m == Matrix(((1,2,3,4),
+                        (5,6,7,8),
+                        (9, 10, 11, 12),
+                        (13,14,15,16)))
+    m[0:2, 0] = [0,0]
+    assert m == Matrix(((0,2,3,4),
+                        (0,6,7,8),
+                        (9, 10, 11, 12),
+                        (13,14,15,16)))
+
+def test_reshape():
+    m0 = eye(3)
+    assert m0.reshape(1,9) == Matrix(1,9,(1,0,0,0,1,0,0,0,1))
+    m1 = Matrix(3,4, lambda i,j: i+j)
+    assert m1.reshape(4,3) == Matrix((0,1,2), (3,1,2), (3,4,2), (3,4,5))
+    assert m1.reshape(2,6) == Matrix((0,1,2,3,1,2), (3,4,2,3,4,5))
+
+def test_applyfunc():
+    m0 = eye(3)
+    assert m0.applyfunc(lambda x:2*x) == eye(3)*2
+    assert m0.applyfunc(lambda x: 0 ) == zero(3)

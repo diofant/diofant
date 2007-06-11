@@ -108,10 +108,18 @@ class Matrix(object):
         2-I
 
         """
-        if isinstance(key, slice):
+        # row-wise decomposition of matrix
+        if isinstance(key, slice) or isinstance(key, int):
             return self.mat[key]
-        i,j=self.key2ij(key)
-        return self.mat[i*self.cols+j]
+        # proper 2-index access
+        assert len(key) == 2
+        if isinstance(key[0], int) and isinstance(key[1], int):
+            i,j=self.key2ij(key)
+            return self.mat[i*self.cols+j]
+        elif isinstance(key[0], slice) or isinstance(key[1], slice):
+            return self.submatrix(key)
+        else:
+            raise IndexError("Index out of range: a[%s]"%repr(key))
 
     def __setitem__(self,key,value):
         """
@@ -126,8 +134,27 @@ class Matrix(object):
         9 4
 
         """
-        i,j=self.key2ij(key)
-        self.mat[i*self.cols+j] = Basic.sympify(value)
+        assert len(key) == 2
+        if isinstance(key[0], slice) or isinstance(key[1], slice):
+            if isinstance(value, Matrix):
+                self.copyin_matrix(key, value)
+            if isinstance(value, (list, tuple)):
+                self.copyin_list(key, value)
+        else:
+            i,j=self.key2ij(key)
+            self.mat[i*self.cols+j] = Basic.sympify(value)
+
+    def copyin_matrix(self, key, value):
+        rlo, rhi = self.slice2bounds(key[0], self.lines)
+        clo, chi = self.slice2bounds(key[1], self.cols)
+        assert value.lines == rhi - rlo and value.cols == chi - clo
+        for i in range(value.lines):
+            for j in range(value.cols):
+                self.mat[(i+rlo)*self.cols + (j+clo)] = value[i,j]
+
+    def copyin_list(self, key, value):
+        assert isinstance(value, (list, tuple))
+        self.copyin_matrix(key, Matrix(value))
 
     def hash(self):
         """Compute a hash every time, because the matrix elements
@@ -265,6 +292,112 @@ class Matrix(object):
         self.mat = self.mat[:i*self.cols] + self.mat[(i+1)*self.cols:]
         self.lines -= 1
 
+    def submatrix(self, keys):
+        """
+        >>> from sympy import *
+        >>> m = Matrix(4,4,lambda i,j: i+j)
+        >>> m   #doctest: +NORMALIZE_WHITESPACE
+        0 1 2 3 
+        1 2 3 4 
+        2 3 4 5 
+        3 4 5 6 
+        >>> m[0:1, 1]   #doctest: +NORMALIZE_WHITESPACE
+        1 
+        >>> m[0:2, 0:1] #doctest: +NORMALIZE_WHITESPACE
+        0 
+        1 
+        >>> m[2:4, 2:4] #doctest: +NORMALIZE_WHITESPACE
+        4 5 
+        5 6 
+        """
+        assert isinstance(keys[0], slice) or isinstance(keys[1], slice)
+        rlo, rhi = self.slice2bounds(keys[0], self.lines)
+        clo, chi = self.slice2bounds(keys[1], self.cols)
+        if not ( 0<=rlo<=rhi and 0<=clo<=chi ):
+            raise IndexError("Slice indices out of range: a[%s]"%repr(keys))
+        return Matrix(rhi-rlo, chi-clo, lambda i,j: self[i+rlo, j+clo])
+
+    def slice2bounds(self, key, defmax):
+        """
+            Takes slice or number and returns (min,max) for iteration
+            Takes a default maxval to deal with the slice ':' which is (none, none)
+        """
+        if isinstance(key, slice):
+            lo, hi = 0, defmax
+            if key.start != None:
+                lo = key.start
+            if key.stop != None:
+                hi = key.stop
+            return lo, hi
+        elif isinstance(key, int):
+            return key, key+1
+        else:
+            raise IndexError("Improper index type")
+
+    def applyfunc(self, f):
+        """
+        >>> from sympy import *
+        >>> m = Matrix(2,2,lambda i,j: i*2+j)
+        >>> m   #doctest: +NORMALIZE_WHITESPACE
+        0 1 
+        2 3 
+        >>> m.applyfunc(lambda i: 2*i)  #doctest: +NORMALIZE_WHITESPACE
+        0 2 
+        4 6
+        """
+        assert callable(f)
+        return Matrix(self.lines, self.cols, lambda i,j: f(self[i,j]))
+
+    def reshape(self, _rows, _cols):
+        """
+        >>> from sympy import *
+        >>> m = Matrix(2,3,lambda i,j: 1)
+        >>> m   #doctest: +NORMALIZE_WHITESPACE
+        1 1 1 
+        1 1 1 
+        >>> m.reshape(1,6)  #doctest: +NORMALIZE_WHITESPACE
+        1 1 1 1 1 1 
+        >>> m.reshape(3,2)  #doctest: +NORMALIZE_WHITESPACE
+        1 1 
+        1 1 
+        1 1
+        """
+        if self.lines*self.cols != _rows*_cols:
+            print "Invalid reshape parameters %d %d" % (_rows, _cols)
+        return Matrix(_rows, _cols, lambda i,j: self.mat[i*_cols + j])
+    
+    def print_nonzero (self, symb="X"):
+        """
+        Shows location of non-zero entries for fast shape lookup
+        >>> from sympy import *
+        >>> m = Matrix(2,3,lambda i,j: i*3+j)
+        >>> m           #doctest: +NORMALIZE_WHITESPACE
+        0 1 2 
+        3 4 5 
+        >>> m.print_nonzero()   #doctest: +NORMALIZE_WHITESPACE
+        [ XX]
+        [XXX]
+        >>> m = modules.matrices.eye(4)
+        >>> m.print_nonzero("x")    #doctest: +NORMALIZE_WHITESPACE
+        [x   ]
+        [ x  ]
+        [  x ]
+        [   x]
+        """
+        s="";
+        for i in range(self.lines):
+            s+="["
+            for j in range(self.cols):
+                if self[i,j] == 0:
+                    s+=" "
+                else:
+                    s+= symb+""
+            s+="]\n"
+        print s
+    
+    def LUdecomposition(self):
+        pass
+    
     @property
     def is_square(self):
         return self.lines == self.cols
@@ -335,6 +468,13 @@ def one(n):
     for i in range(n):
         m[i,i]=1
     return m
+
+def eye(n):
+    assert n>0
+    out = zeronm(n,n)
+    for i in range(n):
+        out[i,i]=1
+    return out
 
 def sigma(i):
     """Returns a Pauli matrix sigma_i. i=1,2,3
