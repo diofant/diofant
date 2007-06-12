@@ -214,19 +214,61 @@ class Real(Number):
             return decimal.Decimal(str(a)) == self.num
         except:
             return False
-            
-            
 
+def _parse_rational(s):
+    """Parse rational number from string representation"""
+    # Simple fraction
+    if "/" in s:
+        p, q = s.split("/")
+        return int(p), int(q)
+    # Recurring decimal
+    elif "[" in s:
+        s, periodic = s.split("[")
+        periodic = periodic.rstrip("]")
+        offset = len(s) - s.index(".") - 1
+        n1 = int(periodic)
+        n2 = int("9" * len(periodic))
+        r = Rational(*_parse_rational(s)) + Rational(n1, n2*10**offset)
+        return r.p, r.q
+    # Ordinary decimal string. Use the Decimal class's built-in parser
+    else:
+        sign, digits, expt = decimal.Decimal(s).as_tuple()
+        p = (1, -1)[sign] * int("".join(str(x) for x in digits))
+        if expt >= 0:
+            return p*(10**expt), 1
+        else:
+            return p, 10**-expt
+
+def _load_decimal(d):
+    """Create Rational from a Decimal instance"""
 
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
 
     Thanks to support of long ints in Python. 
 
-    Usage:
+    Examples
+    ========
 
-    Rational(3)      ... 3
-    Rational(1,2)    ... 1/2
+    >>> Rational(3)
+    3
+    >>> Rational(1,2)
+    1/2
+
+    You can create a rational from a string:
+    >>> Rational("3/5")
+    3/5
+    >>> Rational("1.23")
+    123/100
+
+    Use square brackets to indicate a recurring decimal:
+    >>> Rational("0.[333]")
+    1/3
+    >>> Rational("1.2[05]")
+    1193/990
+    >>> float(Rational(1193,990))
+    1.2050505050505051
+
     """
     
     def __init__(self,*args):
@@ -235,8 +277,11 @@ class Rational(Number):
                        is_commutative = True, 
                        )
         if len(args)==1:
-            p = args[0]
-            q = 1 
+            if isinstance(args[0], str):
+                p, q = _parse_rational(args[0])
+            else:
+                p = args[0]
+                q = 1
         elif len(args)==2:
             p = args[0]
             q = args[1]

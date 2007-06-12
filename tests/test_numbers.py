@@ -30,6 +30,14 @@ def test_Rational():
     assert str(n2**n7) == "1/27"
     assert str(n2**n8) == "27"
     assert str(n7**n8) == "1/27"
+    assert Rational("-25") == -25
+    assert Rational("25/7") == Rational(25,7)
+    assert Rational("-123/567") == Rational(-123,567)
+    assert Rational("1.25") == Rational(5,4)
+    assert Rational("-2.6e-2") == Rational(-13,500)
+    assert Rational("0.1[23]") == Rational(61,495)
+    assert Rational("5.1[666]") == Rational(31,6)
+    assert Rational("0.[9]") == 1
 
 def test_Rational_cmp():
     n1=g.Rational(1,4)
