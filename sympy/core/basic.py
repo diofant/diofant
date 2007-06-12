@@ -169,7 +169,7 @@ class Basic(object):
 
     def __ne__(self, a):
         if a is None: 
-            return False
+            return True
         else:
             return self.hash() != self.sympify(a).hash()
 
