@@ -5,6 +5,40 @@ from functions import log, exp
 from sympy.core.stringPict import prettyForm, stringPict
 
 
+def integer_nthroot(y, n):
+    """Return a tuple containing x = floor(y**(1/n))
+    and a boolean indicating whether the result is exact (that is,
+    whether x**n == y).
+
+    >>> nthroot(16,2)
+    (4, True)
+    >>> nthroot(26,2)
+    (5, False)
+    >>> nthroot(1234567**7, 7)
+    (1234567, True)
+    >>> nthroot(1234567**7+1, 7)
+    (1234567, False)
+
+    """
+    y = int(y); n = int(n)
+    if y < 0: raise ValueError, "y must not be negative"
+    if n < 1: raise ValueError, "n must be positive"
+    if y in (0, 1): return y, True
+    if n == 1: return y, True
+
+    # Search with Newton's method, starting from floating-point
+    # approximation. Care must be taken to avoid overflow.
+    from math import log as _log
+    guess = 2**int(_log(y, 2)/n)
+    xprev, x = -1, guess
+    while abs(x - xprev) > 1:
+        t = x**(n-1)
+        xprev, x = x, x - (t*x-y)//(n*t)
+    # Compensate
+    while x**n > y:
+        x -= 1
+    return x, x**n == y
+
 class pole_error(ZeroDivisionError):
     pass
 
@@ -149,39 +183,43 @@ class Pow(Basic):
             return self
         
         if isinstance(self.base, Rational) and isinstance(self.exp, Rational):
+
             if self.exp.is_integer:
                 if self.exp > 0: 
                     return Rational(self.base.p ** self.exp.p , self.base.q ** self.exp.p)
                 else:
                     return Rational(self.base.q ** (-self.exp.p) , self.base.p ** (-self.exp.p) )
+
             if self.base == -1:
                 # calculate the roots of -1
                 from sympy.modules.trigonometric import sin, cos
                 from sympy.core.numbers import pi
                 r = cos(pi/self.exp.q) + ImaginaryUnit()*sin(pi/self.exp.q)
                 return r**self.exp.p
-                        
-                
-            if self.base.is_integer:
-                a = int(self.base)
-                bq = self.exp.q
-                if a > 0:
-                    const = 1 # constant, will multiply the final result (it will do nothing in this case)
-                if a < 0:
-                    const = (-1)** (self.exp)  # do sqrt(-4) -> I*4
-                    a = -a
-                x = int(a**(1./bq)+0.5)
-                if x**bq == a: # if we can write self.base as integer**self.exp.q
-                    assert isinstance(x,int)
-                    return const*Rational(x)**self.exp.p
-                elif self.base < 0:
-                    # case base negative && not a perfect number, like sqrt(-2)
-                    # TODO: implement for exponent of 1/4, 1/6, 1/8, etc.
-                    return ((-1)**self.exp)*Pow(-self.base, self.exp, evaluate=False)
-                    
+
+            # Rational ** Rational, general case. Calculate explicitly whenever possible.
+            a = self.base
+            b = self.exp
+            if a >= 0:
+                x, xexact = integer_nthroot(a.p, b.q)
+                y, yexact = integer_nthroot(a.q, b.q)
+                if xexact and yexact:
+                    res = Rational(x ** abs(b.p), y ** abs(b.p))
+                    if b >= 0:
+                        return res
+                    else:
+                        return 1/res
+            else:
+                return Pow(-1, b) * Pow(-a, b)
+
+            # left out:
+            # case base negative && not a perfect number, like sqrt(-2)
+            # TODO: implement for exponent of 1/4, 1/6, 1/8, etc.
+            # return ((-1)**self.exp)*Pow(-self.base, self.exp, evaluate=False)
+
         if isinstance(self.base, Pow): 
             return Pow(self.base.base,self.base.exp*self.exp)
-        
+
         if isinstance(self.base, exp): 
             if self.base.is_number:
                 return exp(self.exp*self.base._args)

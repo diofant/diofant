@@ -3,6 +3,7 @@ sys.path.append(".")
 
 import sympy as g
 from sympy import Rational, Symbol, Real, sqrt
+from sympy.core.power import integer_nthroot
 import py
 
 def test_Rational():
@@ -30,16 +31,16 @@ def test_Rational():
     assert str(n2**n7) == "1/27"
     assert str(n2**n8) == "27"
     assert str(n7**n8) == "1/27"
-    assert Rational("-25") == -25
-    assert Rational("25/7") == Rational(25,7)
-    assert Rational("-123/567") == Rational(-123,567)
-    assert Rational("1.25") == Rational(5,4)
-    assert Rational("-2.6e-2") == Rational(-13,500)
-    assert Rational("0.1[23]") == Rational(61,495)
-    assert Rational("5.1[666]") == Rational(31,6)
-    assert Rational("-5.1[666]") == Rational(-31,6)
-    assert Rational("0.[9]") == 1
-    assert Rational("-0.[9]") == -1
+    assert str(Rational("-25")) == "-25"
+    assert str(Rational("25/7")) == "25/7"
+    assert str(Rational("-123/569")) == "-123/569"
+    assert str(Rational("1.25")) == "5/4"
+    assert str(Rational("-2.6e-2")) == "-13/500"
+    assert str(Rational("0.1[23]")) == "61/495"
+    assert str(Rational("5.1[666]")) == "31/6"
+    assert str(Rational("-5.1[666]")) == "-31/6"
+    assert str(Rational("0.[9]")) == "1"
+    assert str(Rational("-0.[9]")) == "-1"
 
 def test_Rational_cmp():
     n1=g.Rational(1,4)
@@ -88,12 +89,38 @@ def test_Infinity():
     assert g.oo != g.Symbol("x")**3
     assert g.oo + 1 == g.oo + 1
     py.test.raises(ArithmeticError, lambda x: x-x, g.oo)
-    
 
 def test_powers():
+    assert integer_nthroot(1, 2) == (1, True)
+    assert integer_nthroot(1, 5) == (1, True)
+    assert integer_nthroot(2, 1) == (2, True)
+    assert integer_nthroot(2, 2) == (1, False)
+    assert integer_nthroot(2, 5) == (1, False)
+    assert integer_nthroot(4, 2) == (2, True)
+    assert integer_nthroot(123**25, 25) == (123, True)
+    assert integer_nthroot(123**25+1, 25) == (123, False)
+    assert integer_nthroot(123**25-1, 25) == (122, False)
+
+    assert str(Rational(1,4) ** Rational(1,2)) == "1/2"
+    assert str(Rational(1,36) ** Rational(1,2)) == "1/6"
+    assert str(Rational(5**3, 8**3) ** Rational(4,3)) == \
+        str(Rational(5**4, 8**4))
+    assert str(Rational(-4,7) ** Rational(1,2)) == \
+        str(g.I*Rational(4,7)**Rational(1,2))
+
+    assert str((123**25) ** Rational(1,25)) == "123"
+    assert str((123**25+1)**Rational(1,25)) != "123"
+    assert str((123**25-1)**Rational(1,25)) != "123"
+    assert str((123**25-1)**Rational(1,25)) != "122"
+    assert str(Rational(3,5)**(-Rational(1,2))) == "3/5**(-1/2)"
+    assert str(Rational(81,36)**(Rational(3,2))) == "27/8"
+    assert str(Rational(81,36)**(-Rational(3,2))) == "8/27"
+
     assert 64**(g.Rational(1)/3)==4
     assert 64**(g.Rational(2)/3)==16
     assert 24*64**(-g.Rational(1)/2)==3
+
+    assert str((-4)**Rational(1,2)) == str(2*g.I)
 
 def test_accept_int():
     assert g.Real(4) == 4
@@ -122,8 +149,8 @@ def test_abs1():
     assert abs(-a) == a
     assert abs(-a) != -a
     assert abs(a+g.I*b) == sqrt(a*a+b*b)
-    assert abs(Rational(1,6)) == Rational(1,6)
-    assert abs(Rational(-1,6)) == Rational(1,6)
+    assert str(abs(Rational(1,6))) == "1/6"
+    assert str(abs(Rational(-1,6))) == "1/6"
 
 def test_abs2():
     a=Symbol("a", is_real=False)
