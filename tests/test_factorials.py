@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 from sympy import *
-from sympy.modules.factorialgamma import *
+from sympy.modules.specfun.factorials import *
 from sympy.modules.printing.latex import latex
 
 x = Symbol('x')

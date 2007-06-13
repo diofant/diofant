@@ -23,7 +23,7 @@ class factorial(Function):
     Examples
     ========
         >>> from sympy import *
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> factorial(5)
         120
         >>> factorial(0)
@@ -78,7 +78,7 @@ class factorial2(Function):
     Examples
     ========
         >>> from sympy import *
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> factorial2(5)
         15
         >>> factorial2(6)
@@ -120,7 +120,7 @@ def factorial_quotient(p, q):
     Examples
     ========
         >>> from sympy import *
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> factorial_quotient(pi+1, pi)
         1+pi
 
@@ -157,7 +157,7 @@ class rising_factorial(Function2):
 
     Examples
     ========
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> rising_factorial(3, 2)
         12
 
@@ -181,7 +181,7 @@ class falling_factorial(Function2):
 
     Examples
     ========
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> falling_factorial(5, 3)
         60
 
@@ -212,7 +212,7 @@ class binomial(Function2):
     Examples
     ========
         >>> from sympy import *
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> binomial(15,8)
         6435
         >>> # Building Pascal's triangle
@@ -275,7 +275,7 @@ class gamma(Function):
     Examples
     ========
         >>> from sympy import *
-        >>> from sympy.modules.factorialgamma import *
+        >>> from sympy.modules.specfun.factorials import *
         >>> gamma(3)
         2
         >>> gamma(Rational(1,2))
