@@ -122,6 +122,8 @@ def test_abs1():
     assert abs(-a) == a
     assert abs(-a) != -a
     assert abs(a+g.I*b) == sqrt(a*a+b*b)
+    assert abs(Rational(1,6)) == Rational(1,6)
+    assert abs(Rational(-1,6)) == Rational(1,6)
 
 def test_abs2():
     a=Symbol("a", is_real=False)

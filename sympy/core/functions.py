@@ -252,7 +252,10 @@ class abs_(Function):
         
         arg = self._args
         if arg.is_number or (isinstance(arg, Symbol) and arg.is_real):
-            return (arg*arg.conjugate()).expand()**Rational(1,2)
+            if isinstance(arg, Rational):
+                return Rational(abs(arg.p), arg.q)
+            else:
+                return (arg*arg.conjugate()).expand()**Rational(1,2)
         elif isinstance(arg, Mul):
             _t = arg.getab()[0]
             if _t.is_number and _t < 0:
