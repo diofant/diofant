@@ -7,6 +7,399 @@ from sympy.modules.matrices import zero
 class PolynomialException(Exception):
     pass
 
+class Polynomial:
+    """Polynomial representation in coefficient list form.
+
+    This brings higher efficiency, but also more readable code, since
+    there is no more need of two representation side-by-side that need
+    to be in sync, in all the internal algorithms.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> f = Polynomial(x)
+    >>> f
+    Polynomial(x, [x], 'grevlex', 'int')
+    >>> g = Polynomial(y+1)
+    >>> f + g
+    Polynomial(1+x+y, [x, y], 'grevlex', 'int')
+    >>> f * g
+    Polynomial(x+x*y, [x, y], 'grevlex', 'int')
+    """
+    def __init__(self, p, var=None, order='grevlex', coeff='int'):
+        p = Basic.sympify(p)
+        if var == None:
+            var = p.atoms(type=Symbol)
+            var.sort(key=str)
+        self.var = var
+        self.order = order
+        self.p = coeff_list(p, self.var, self.order)
+        # Try to find the lowest coefficient ring for this polynomial,
+        # (they are sorted by inclusion, from left to right.)
+        if coeff == None:
+            coeffs = ['int', 'rat', 'real', 'cplx', 'sym']
+            coeff = 'int'
+            for term in self.p:
+                if not isinstance(term[0], Number):
+                    coeff = 'sym'
+                    break
+                elif isinstance(term[0], Rational):
+                    if term[0].is_integer:
+                        coeff = max(coeff, 'int', key=coeffs.index)
+                    else:
+                        coeff = max(coeff, 'rat', key=coeffs.index)
+                elif isinstance(term[0], Real):
+                    coeff = max('real', coeff, key=coeffs.index)
+                else:
+                    coeff = 'cplx'
+        self.coeff = coeff
+        
+    def __str__(self):
+        return str(poly(self.p, self.var))
+
+    def __repr__(self):
+        return 'Polynomial(%s, %s, %s, %s)' % (repr(poly(self.p, self.var)),
+               repr(self.var), repr(self.order), repr(self.coeff))
+
+    def copy(self):
+        p = Polynomial(0, self.var, self.order, self.coeff)
+        # deep copy nested list
+        p.p = []
+        for term in self.p:
+            p.p.append(term[:])
+        return p
+
+    def set(self, p=None, var=None, order=None, coeff=None):
+        if p == None and (var != None or order != None):
+            p = poly(self.p, self.var)
+        if var != None:
+            self.var = var
+        if order != None:
+            self.order = order
+        if coeff != None:
+            self.coeff = coeff
+        if p != None:
+            self.p = coeff_list(p, self.var, self.order)
+                
+    def __add__(self, other):
+
+        def cmp_term(a, b, order):
+            if order == 'lex':
+                return cmp(a[1:], b[1:])
+            elif order == 'grlex':
+                return cmp([sum(a[1:])]+a[1:], [sum(b[1:])]+b[1:])
+            elif order == 'grevlex':
+                return cmp([sum(a[1:])]+reverse(map(lambda l:-l, a[1:])),
+                           [sum(b[1:])]+reverse(map(lambda l:-l, b[1:])))
+            elif order == '1-el':
+                return cmp([a[1]]+[sum(a[2:])]+reverse(map(lambda l:-l,a[2:])),
+                           [b[1]]+[sum(b[2:])]+reverse(map(lambda l:-l,b[2:])))
+            else:
+                raise PolynomialException(str(order)
+                                          + 'is not an implemented order.')
+        
+        if not isinstance(other, Polynomial):
+            return self.__add__(Polynomial(other))
+
+        if self.coeff == other.coeff:
+            coeff = self.coeff
+        else:
+            coeffs = ['int', 'rat', 'real', 'cplx', 'sym']
+            coeff = max(self.coeff, other.coeff, key=coeffs.index)
+            
+        if self.var != other.var or self.order != other.order:
+            if self.var != other.var:
+                var = self.var + filter(lambda x: not x in self.var, other.var)
+                var.sort(key=str)
+            else:
+                var = self.var
+            if self.order == other.order:
+                order = self.order
+            else:
+                order = 'grevlex'
+            s = self.copy()
+            s.set(var=var, order=order, coeff=coeff)
+            o = other.copy()
+            o.set(var=var, order=order, coeff=coeff)
+            return s+o
+
+        # Finally, the actual addition can begin!
+        r = Polynomial(0, self.var, self.order, coeff)
+        r.p = []
+        # Merge the terms of self and other:
+        i, j = 0, 0
+        while i < len(self.p) and j < len(other.p):
+            if (self.p[i][1:] == other.p[j][1:]):
+                c = self.p[i][0]+other.p[j][0]
+                if c != 0:
+                    r.p.append([c] + self.p[i][1:])
+                    i += 1
+                    j += 1
+            elif cmp_term(self.p[i], other.p[j], r.order) > 0:
+                r.p.append(self.p[i])
+                i += 1
+            else:
+                r.p.append(other.p[j])
+                j += 1
+        r.p += self.p[i:]
+        r.p += other.p[j:]
+        # check for remaining zeros
+        if len(r.p) > 1:
+            r.p = filter(lambda t:t[0] != 0, r.p)
+        return r
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __mul__(self, other):
+        if not isinstance(other, Polynomial):
+            return self.__mul__(Polynomial(other))
+
+        if self.coeff == other.coeff:
+            coeff = self.coeff
+        else:
+            coeffs = ['int', 'rat', 'real', 'cplx', 'sym']
+            coeff = max(self.coeff, other.coeff, key=coeffs.index)
+            
+        if self.var != other.var or self.order != other.order:
+            if self.var != other.var:
+                var = self.var + filter(lambda x: not x in self.var, other.var)
+                var.sort(key=str)
+            else:
+                var = self.var
+            if self.order == other.order:
+                order = self.order
+            else:
+                order = 'grevlex'
+            s = self.copy()
+            s.set(var=var, order=order, coeff=coeff)
+            o = other.copy()
+            o.set(var=var, order=order, coeff=coeff)
+            return s*o
+
+        # Finally, the actual multiplication can begin!
+        r = Polynomial(0, self.var, self.order, coeff)
+        # Distribute the multiplication
+        for self_term in self.p:
+            temp = other.copy()
+            for i in range(0, len(temp.p)):
+                temp.p[i][0] *= self_term[0]
+                for j in range(1, len(self_term)):
+                    temp.p[i][j] += self_term[j]
+            r += temp
+        return r
+        
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def poly(self):
+        return poly(self.p, self.var)
+
+    def diff(self, v):
+        if not v in self.var:
+            return Polynomial(p=Rational(0), order=self.order)
+        else:
+            r = self.copy()
+            r.p = []
+            i = self.var.index(v) + 1
+            for term in self.p: # iterate over non-changed list
+                if term[i] > 0:
+                    copy = term[:]
+                    copy[0] *= copy[i]
+                    copy[i] -= 1
+                    r.p.append(copy)
+            if len(r.p) == 0:
+                r.var = []
+                r.p = [[0]]
+            return r
+                
+class Ideal:
+    """Describes a polynomial ideal over the real numbers.
+
+    Try to avoid different variables and orders between the ideals, give
+    them explicitly; the automatic handlers don't always act as expected.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> I = Ideal([x, y**2])
+    >>> J = Ideal(x*y)
+    >>> I == J
+    False
+    >>> I*J == I.intersect(J)
+    False
+    >>> I**2 == I*I
+    True
+    """
+    def __init__(self, f=[Rational(0)], var=None, order='grevlex',
+                 is_groebner=None):
+        if not isinstance(f, list):
+            f = [f]
+        self.f = map(Basic.sympify, f)
+        if var == None:
+            var = []
+            for p in self.f:
+                var += filter(lambda x: not x in var, p.atoms(type=Symbol))
+            var.sort(key=str)
+        self.var = var
+        self.order = order
+        self.is_groebner = is_groebner
+        for p in self.f:
+            if not ispoly(p, self.var):
+                raise PolynomialException('Non-polynomial as generator.')
+
+    def __len__(self):
+        return len(self.f)
+
+    def __iter__(self):
+        return self.f.__iter__()
+
+    def __str__(self):
+        return self.f.__str__()
+
+    def __repr__(self):
+        return 'Ideal(%s, %s, %s, %s)' % (repr(self.f), repr(self.var), 
+               self.order, repr(self.is_groebner) )
+
+    def __add__(self, other):
+        """f is in I + J iff there are g in I, h in J such that f = g+h
+        """
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+    
+        var = self.var + filter(lambda x: not x in self.var, other.var)
+        var.sort(key=str)
+
+        if self.order == other.order:
+            order = self.order
+        else:
+            order = None
+
+        f = self.f + filter(lambda x: not x in self.f, other.f)
+        
+        return Ideal(f, var, order)
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __mul__(self, other):
+        """f is in I*J iff f is a sum of products of elements of I and J
+        """
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+
+        var = self.var + filter(lambda x: not x in self.var, other.var)
+        var.sort(key=str)
+
+        if self.order == other.order:
+            order = self.order
+        else:
+            order = None
+
+        f = []
+        for p in self.f:
+            for q in other.f:
+                f.append(p*q)
+
+        return Ideal(f, var, order)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __pow__(self, other):
+        """Repeated product of self.
+        """
+        other = Basic.sympify(other)
+        if not (isinstance(other, Number)
+                and other.is_integer
+                and other >= 0):
+            raise PolynomialException('Illegal power of ideal.')
+
+        if other == 0:
+            return Ideal(Rational(1), self.var, self.order, True)
+        elif other == 1:
+            return self
+
+        # avoid repeated elements
+        f = self.f[:]
+        I = Ideal(Rational(0), self.var, self.order)
+
+        for p in self.f:
+            I += p*Ideal(f,self.var, self.order)**(other-1)
+            f.remove(p)
+
+        return I
+
+    def __mod__(self, other):
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+        other.groebner()
+
+        f = []
+        for p in self.f:
+            f.append(div_mv(p, other.f, other.var, other.order)[-1])
+        f = filter(lambda x: x!=0, f)
+        return Ideal(f, other.var, other.order)
+
+    def __contains__(self, other):
+        other = Basic.sympify(other)
+        if not ispoly(other, self.var):
+            return False
+        self.groebner()
+        rem = div_mv(other, self.f, self.var, self.order)[-1]
+        if rem == 0:
+            return True
+        else:
+            return False
+
+    def __eq__(self, other):
+        if not isinstance(other, Ideal):
+            other = Ideal(other, self.var, self.order)
+        # Try to save Groebner base computations.       
+        if self.var != other.var or self.order != other.order:
+            if self.is_groebner:
+                s = self
+                o = Ideal(other.f, self.var, self.order)
+                o.groebner()
+            elif other.is_groebner:
+                o = other
+                s = Ideal(self.f, other.var, other.order)
+                s.groebner()
+            else:
+                s = Ideal(self.f)
+                o = Ideal(other.f)
+                s.groebner()
+                o.groebner()
+            return s.f == o.f
+        else:
+            self.groebner()
+            other.groebner()
+            return self.f == other.f
+
+    def groebner(self, reduced=True):
+        if not self.is_groebner:
+            self.f = groebner(self.f, self.var, self.order, reduced)
+            self.is_groebner = True
+
+    def intersect(self, other):
+        if not isinstance(other, Ideal):
+            other = Ideal(other)
+        t = Symbol('t', dummy=True)
+        I = t*self + (1-t)*other
+        I.order = '1-el'
+        I.groebner()
+        f = filter(lambda p: not t in p.atoms(type=Symbol), I.f)
+        if self.var == other.var:
+            var = self.var
+        else:
+            var = None
+        if self.order == other.order:
+            order = self.order
+        else:
+            order = None
+        return Ideal(f, var, order)
+
+
 def ispoly(p, var=None):
     """
     Usage
@@ -325,10 +718,6 @@ def coeff_list(p, var=None, order='grevlex'):
 
     """
 
-    def reverse(lisp):
-        lisp.reverse()
-        return lisp
-
     p = Basic.sympify(p)
     p = p.expand()
 
@@ -581,6 +970,10 @@ def all(iterable):
             return False
     return True
 
+def reverse(lisp):
+    lisp.reverse()
+    return lisp
+
 def lcm_mv(f, g, var=None):
     """Computes the lcm of two polynomials.
 
@@ -659,188 +1052,3 @@ def gcd_mv(f, g, var=None, order='grevlex', monic=False):
 
     return q
 
-class Ideal:
-    """Describes a polynomial ideal over the real numbers.
-
-    Try to avoid different variables and orders between the ideals, give
-    them explicitly; the automatic handlers don't always act as expected.
-
-    Examples:
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> I = Ideal([x, y**2])
-    >>> J = Ideal(x*y)
-    >>> I == J
-    False
-    >>> I*J == I.intersect(J)
-    False
-    >>> I**2 == I*I
-    True
-    """
-    def __init__(self, f=[Rational(0)], var=None, order='grevlex',
-                 is_groebner=None):
-        if not isinstance(f, list):
-            f = [f]
-        self.f = map(Basic.sympify, f)
-        if var == None:
-            var = []
-            for p in self.f:
-                var += filter(lambda x: not x in var, p.atoms(type=Symbol))
-            var.sort(key=str)
-        self.var = var
-        self.order = order
-        self.is_groebner = is_groebner
-        for p in self.f:
-            if not ispoly(p, self.var):
-                raise PolynomialException('Non-polynomial as generator.')
-
-    def __len__(self):
-        return len(self.f)
-
-    def __iter__(self):
-        return self.f.__iter__()
-
-    def __str__(self):
-        return self.f.__str__()
-
-    def __repr__(self):
-        return 'Ideal(%s, %s, %s, %s)' % (repr(self.f), repr(self.var), 
-               self.order, repr(self.is_groebner) )
-
-    def __add__(self, other):
-        """f is in I + J iff there are g in I, h in J such that f = g+h
-        """
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-    
-        var = self.var + filter(lambda x: not x in self.var, other.var)
-        var.sort(key=str)
-
-        if self.order == other.order:
-            order = self.order
-        else:
-            order = None
-
-        f = self.f + filter(lambda x: not x in self.f, other.f)
-        
-        return Ideal(f, var, order)
-
-    def __radd__(self, other):
-        return self.__add__(other)
-
-    def __mul__(self, other):
-        """f is in I*J iff f is a sum of products of elements of I and J
-        """
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-
-        var = self.var + filter(lambda x: not x in self.var, other.var)
-        var.sort(key=str)
-
-        if self.order == other.order:
-            order = self.order
-        else:
-            order = None
-
-        f = []
-        for p in self.f:
-            for q in other.f:
-                f.append(p*q)
-
-        return Ideal(f, var, order)
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __pow__(self, other):
-        """Repeated product of self.
-        """
-        other = Basic.sympify(other)
-        if not (isinstance(other, Number)
-                and other.is_integer
-                and other >= 0):
-            raise PolynomialException('Illegal power of ideal.')
-
-        if other == 0:
-            return Ideal(Rational(1), self.var, self.order, True)
-        elif other == 1:
-            return self
-
-        # avoid repeated elements
-        f = self.f[:]
-        I = Ideal(Rational(0), self.var, self.order)
-
-        for p in self.f:
-            I += p*Ideal(f,self.var, self.order)**(other-1)
-            f.remove(p)
-
-        return I
-
-    def __mod__(self, other):
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-        other.groebner()
-
-        f = []
-        for p in self.f:
-            f.append(div_mv(p, other.f, other.var, other.order)[-1])
-        f = filter(lambda x: x!=0, f)
-        return Ideal(f, other.var, other.order)
-
-    def __contains__(self, other):
-        other = Basic.sympify(other)
-        if not ispoly(other, self.var):
-            return False
-        self.groebner()
-        rem = div_mv(other, self.f, self.var, self.order)[-1]
-        if rem == 0:
-            return True
-        else:
-            return False
-
-    def __eq__(self, other):
-        if not isinstance(other, Ideal):
-            other = Ideal(other, self.var, self.order)
-        # Try to save Groebner base computations.       
-        if self.var != other.var or self.order != other.order:
-            if self.is_groebner:
-                s = self
-                o = Ideal(other.f, self.var, self.order)
-                o.groebner()
-            elif other.is_groebner:
-                o = other
-                s = Ideal(self.f, other.var, other.order)
-                s.groebner()
-            else:
-                s = Ideal(self.f)
-                o = Ideal(other.f)
-                s.groebner()
-                o.groebner()
-            return s.f == o.f
-        else:
-            self.groebner()
-            other.groebner()
-            return self.f == other.f
-
-    def groebner(self, reduced=True):
-        if not self.is_groebner:
-            self.f = groebner(self.f, self.var, self.order, reduced)
-            self.is_groebner = True
-
-    def intersect(self, other):
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-        t = Symbol('t', dummy=True)
-        I = t*self + (1-t)*other
-        I.order = '1-el'
-        I.groebner()
-        f = filter(lambda p: not t in p.atoms(type=Symbol), I.f)
-        if self.var == other.var:
-            var = self.var
-        else:
-            var = None
-        if self.order == other.order:
-            order = self.order
-        else:
-            order = None
-        return Ideal(f, var, order)

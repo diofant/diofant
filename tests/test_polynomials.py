@@ -7,6 +7,31 @@ import py
 from sympy import *
 from sympy.modules.polynomials import *
 
+def test_Polynomial():
+    x = Symbol("x")
+    y = Symbol("y")
+    f = Polynomial(x+2)
+    g = Polynomial(y**2-1)
+    h = f + g
+    assert f.var == [x]
+    assert f.p == [[1,1], [2,0]]
+    assert str(f) == "2+x"
+    assert repr(f) == "Polynomial(2+x, [x], 'grevlex', 'int')"
+    assert f.poly() == x+2
+    assert h.var == [x, y]
+    assert h.p == [[1, 0, 2], [1, 1, 0], [1, 0, 0]]
+    h = f*Polynomial(y,[x])
+    assert h.var == [x]
+    assert h.p == [[y, 1], [2*y, 0]]
+    h = f*y
+    assert h.var == [x, y]
+    assert h.p == [[1, 1, 1], [2, 0, 1]]
+    h.set(var=[y])
+    assert h.var == [y]
+    assert h.p == [[2+x, 1]]
+    assert h.diff(x).p == [[0]]
+    assert h.diff(y).p == [[2+x, 0]]
+    
 def test_ispoly():
     x = Symbol("x")
     y = Symbol("y")
