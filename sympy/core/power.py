@@ -6,20 +6,26 @@ from sympy.core.stringPict import prettyForm, stringPict
 
 
 def integer_nthroot(y, n):
-    """Return a tuple containing x = floor(y**(1/n))
-    and a boolean indicating whether the result is exact (that is,
-    whether x**n == y).
-
-    >>> nthroot(16,2)
-    (4, True)
-    >>> nthroot(26,2)
-    (5, False)
-    >>> nthroot(1234567**7, 7)
-    (1234567, True)
-    >>> nthroot(1234567**7+1, 7)
-    (1234567, False)
-
     """
+    Usage
+    =====
+        Return a tuple containing x = floor(y**(1/n))
+        and a boolean indicating whether the result is exact (that is,
+        whether x**n == y).
+        
+    Examples
+    ========
+
+        >>> integer_nthroot(16,2)
+        (4, True)
+        >>> integer_nthroot(26,2)
+        (5, False)
+        >>> integer_nthroot(1234567**7, 7)
+        (1234567L, True)
+        >>> integer_nthroot(1234567**7+1, 7)
+        (1234567L, False)
+    """
+
     y = int(y); n = int(n)
     if y < 0: raise ValueError, "y must not be negative"
     if n < 1: raise ValueError, "n must be positive"
