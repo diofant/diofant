@@ -37,7 +37,9 @@ def test_Rational():
     assert Rational("-2.6e-2") == Rational(-13,500)
     assert Rational("0.1[23]") == Rational(61,495)
     assert Rational("5.1[666]") == Rational(31,6)
+    assert Rational("-5.1[666]") == Rational(-31,6)
     assert Rational("0.[9]") == 1
+    assert Rational("-0.[9]") == -1
 
 def test_Rational_cmp():
     n1=g.Rational(1,4)

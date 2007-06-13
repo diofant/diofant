@@ -223,13 +223,17 @@ def _parse_rational(s):
         return int(p), int(q)
     # Recurring decimal
     elif "[" in s:
+        sign = 1
+        if s[0] == "-":
+            sign = -1
+            s = s[1:]
         s, periodic = s.split("[")
         periodic = periodic.rstrip("]")
         offset = len(s) - s.index(".") - 1
         n1 = int(periodic)
         n2 = int("9" * len(periodic))
         r = Rational(*_parse_rational(s)) + Rational(n1, n2*10**offset)
-        return r.p, r.q
+        return sign*r.p, r.q
     # Ordinary decimal string. Use the Decimal class's built-in parser
     else:
         sign, digits, expt = decimal.Decimal(s).as_tuple()
