@@ -190,6 +190,14 @@ def solve(eq, vars):
     raise "Sorry, can't solve it (yet)."
 
 def solve_linear_system(matrix, syms):
+    """
+    Fraction free Gaussian elimination (the result is an upper diagonal matrix).
+
+    This algorithm works for both any type of system (with 0, 1 or infinite
+    number of solutions).
+
+    Look into the test_solvers.py for examples of usage.
+    """
     i, m = 0, matrix.cols-1 # don't count augmentation
 
     while i < matrix.lines:
