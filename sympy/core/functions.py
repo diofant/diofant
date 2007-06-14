@@ -228,11 +228,16 @@ class log(Function):
     def series(self,sym,n):
         from numbers import Rational
         from power import pole_error
-        try:
-            return Basic.series(self,sym,n)
-        except pole_error:
-            pass
-        arg=self._args.series(sym,n)
+        from symbol import Order
+        if not self.has(Order(sym)):
+            try:
+                return Basic.series(self,sym,n)
+            except pole_error:
+                pass
+        if not self.has(Order(sym)):
+            arg=self._args.series(sym,n)
+        else:
+            arg=self._args
         #write arg as=c0*w^e0*(1+Phi)
         #log(arg)=log(c0)+e0*log(w)+log(1+Phi)
         #plus we expand log(1+Phi)=Phi-Phi**2/2+Phi**3/3...

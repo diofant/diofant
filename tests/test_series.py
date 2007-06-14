@@ -223,6 +223,11 @@ def test_orderbug3():
 
 def test_expbug4():
     x = Symbol("x")
-    assert (log(sin(2*x)/x)*(1+x)).series(x,2)==log(2)+Order(x)
-    assert exp(log(2)+Order(x)).series(x,2)==2+Order(x)
-    assert exp(log(sin(2*x)/x)*(1+x)).series(x,2)==2+Order(x)
+    assert (log(sin(2*x)/x)*(1+x)).series(x,2) == log(2)+Order(x)
+    assert exp(log(2)+Order(x)).series(x,2) == 2+Order(x)
+    assert exp(log(sin(2*x)/x)*(1+x)).series(x,2) == 2+Order(x)
+    assert ((2+Order(x))**(1+x)).series(x,2) == 2+Order(x)
+
+def test_logbug4():
+    x = Symbol("x")
+    assert log(2+Order(x)).series(x,2) == log(2)+Order(x)

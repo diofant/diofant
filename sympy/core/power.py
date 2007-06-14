@@ -280,6 +280,8 @@ class Pow(Basic):
         return (self*(g*log(f)).diff(sym))
         
     def series(self,sym,n):
+        #import pdb
+        #pdb.set_trace()
         from addmul import Add
         if not self.exp.has(sym):
             if isinstance(self.base,Symbol): return self
@@ -322,6 +324,12 @@ class Pow(Basic):
                         int(ldeg.evalf()))
                 return (s * sym**(ldeg * self.exp)).expand()
         try:
+            if self == (2+Order(sym))**(1+sym):
+                #print self.base
+                #print self.exp
+                #print log(self.base).series(sym,n)
+                e = exp(((self.exp*log(self.base).series(sym,n)).expand())).series(sym,n)
+                return e
             return Basic.series(self,sym,n)
         except pole_error:
             e = exp((self.exp*log(self.base)))
