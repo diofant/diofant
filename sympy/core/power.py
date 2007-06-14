@@ -324,9 +324,14 @@ class Pow(Basic):
         try:
             return Basic.series(self,sym,n)
         except pole_error:
+            e = exp((self.exp*log(self.base)))
+            #print e,e.series(sym,n)
+            return e.series(sym,n)
             try:
                 a=self.base.series(sym,n)
                 b=self.exp.series(sym,n)
+                #e = exp((b*log(a)))
+                #return e.series(sym,n)
                 return Basic.series((a**b),sym,n)
             except pole_error:
                 e = exp((self.exp*log(self.base)))

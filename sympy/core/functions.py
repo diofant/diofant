@@ -9,6 +9,7 @@ import decimal
 import math
 from sympy.core.stringPict import stringPict, prettyForm
 
+#first = True
 
 class Function(Basic):
     """Abstract class representing a mathematical function. 
@@ -69,6 +70,11 @@ class Function(Basic):
         return s
         
     def series(self, sym, n=6):
+        #import pdb
+        #global first
+        #if first:
+        #    pdb.set_trace()
+        #    first = False
         from power import pole_error
         from symbol import Symbol
         from addmul import Add
@@ -78,25 +84,26 @@ class Function(Basic):
             pass
         #this only works, if arg(0) -> 0, otherwise we are in trouble
         arg = self._args.series(sym,n)
+        argorig = arg
         if isinstance(arg,Add):
             arg = arg.removeOrder()
         l = Symbol("l", dummy=True)
         #the arg(0) goes to z0
         z0 = arg.subs(log(sym),l).subs(sym,0)
-        w = Symbol("w",True)
+        w = Symbol("w",dummy=True)
         e = type(self)(w)
         from addmul import Add
         if arg.has(sym):
             e = e.series(w,n)
             e = e.removeOrder()
-        e = e.subs(w,arg-z0)
+        e = e.subs(w,argorig-z0)
 
         #this only works for exp 
         #generally, the problem is with expanding around other point
         #than arg == 0.
         assert isinstance(self,exp)
         e= (exp(z0)*e).expand().subs(l,log(sym))
-        return e.expand() 
+        return e.expand().series(sym,n)
     
     def evalf(self, precision=28):
         """
@@ -174,6 +181,10 @@ class exp(Function):
         decimal.getcontext().prec = precision - 2        
         return +s
 
+#    def series(self,sym,n):
+#        a=self._args.series(sym,n)
+#        e=exp(a).series(sym,n)
+#        return e
 
 class log(Function):
     """Return the natural logarithm (base e) of x

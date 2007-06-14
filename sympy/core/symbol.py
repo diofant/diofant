@@ -223,8 +223,7 @@ class Order(Basic):
         f = self[0]
         if isinstance(f, Mul):
             if isinstance(f[0], (Real, Rational)):
-                assert len(f[:]) == 2
-                return Order(f[1])
+                return Order(Mul(*f[1:]))
             if not f[0].has(self.sym):
                 assert len(f[:]) == 2
                 return Order(f[1])
@@ -238,9 +237,9 @@ class Order(Basic):
                     r+=Order(x)
                 return r
         if isinstance(f, Add):
-            if isinstance(f[0], (Real, Rational)):
-                if len(f[:]) == 2:
-                    return Order(f[1])
+            #if isinstance(f[0], (Real, Rational)):
+            #    if len(f[:]) == 2:
+            #        return Order(f[1])
             r=0
             for x in f:
                 r+=Order(x)

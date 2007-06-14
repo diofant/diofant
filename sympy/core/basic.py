@@ -414,9 +414,12 @@ class Basic(object):
         fact = Rational(1)
         for i in range(1,n):
             fact *= Rational(i)
+            #print "x1",f
             f = f.diff(sym)
+            #print "x2",f
             e += f.subs(sym,Rational(0))*(sym**i)/fact
         e=e.subs(w,-log(sym))
+        #print self,e
         if e == self:
             return e
         else:

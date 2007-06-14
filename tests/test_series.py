@@ -75,7 +75,7 @@ def test_bug2():
 def test_exp():
     x=Symbol("x")
     e=(1+x)**(1/x)
-    assert e.series(x,2) == exp(1)
+    assert e.series(x,2) == exp(1)+O(x)
 
 def test_exp2():
     x=g.Symbol("x")
@@ -128,7 +128,7 @@ def test_seriesbug2():
     e=(sin(2*w)/w)**(1+w)
     #this doesn't work:
     #assert e.series(w,1) == 2 + Order(w)
-    assert e.series(w,2) == 2 + 2*w*log(2)+Order(w**2)
+    assert e.series(w,3) == 2 + 2*w*log(2)+Order(w**2)
     assert e.series(w,2).subs(w,0)==2
 
 def test_seriesbug3():
@@ -158,7 +158,7 @@ def test_order():
     assert Order(x) == Order(x*8)
     assert Order(x) == Order(x)*8
 
-    assert Order(x+1) == Order(x)
+    assert Order(x+1) == Order(1)
     assert Order(x)+0 == Order(x)
     assert Order(x)+0 == 0+Order(x)
     assert Order(x)+1 != Order(x)
@@ -216,3 +216,13 @@ def test_order_expand_bug():
 
     e = (2/x+3*x**(-2))*(Order(x**3)+x**2)
     assert e.expand() == 3+Order(x)
+
+def test_orderbug3():
+    x = Symbol("x")
+    assert Order(x+1)==Order(1)
+
+def test_expbug4():
+    x = Symbol("x")
+    assert (log(sin(2*x)/x)*(1+x)).series(x,2)==log(2)+Order(x)
+    assert exp(log(2)+Order(x)).series(x,2)==2+Order(x)
+    assert exp(log(sin(2*x)/x)*(1+x)).series(x,2)==2+Order(x)
