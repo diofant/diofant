@@ -2,7 +2,7 @@ import sys
 sys.path.append("..")
 
 from sympy import Symbol, Basic
-from sympy.modules.graphing import sample
+from sample import sample
 
 def mplot2d(f, var, show=True):
     """

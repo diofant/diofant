@@ -177,6 +177,9 @@ class test_sympy_doc(Command):
         # files without doctests or that don't work
         files.remove('sympy/modules/printing/pygame_.py')
         files.remove('sympy/modules/printing/pretty.py') # see issue 53
+        # at this time Plot does not have doctests
+        plotting_path = 'sympy/modules/plotting'
+        files = [f for f in files if not f.startswith(plotting_path)]
 
         
         #testing for optional libraries
@@ -186,10 +189,6 @@ class test_sympy_doc(Command):
             #remove tests that make use of libxslt1
             files.remove('sympy/modules/printing/latex.py')
             files.remove('sympy/modules/printing/__init__.py')
-        try:
-            import pylab
-        except ImportError:
-            files.remove('sympy/modules/graphing.py')
 
         modules = []
         for x in files:
