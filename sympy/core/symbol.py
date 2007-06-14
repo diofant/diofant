@@ -222,13 +222,16 @@ class Order(Basic):
         from numbers import Real, Rational
         f = self[0]
         if isinstance(f, Mul):
+            #FIXME - this is very ugly
             if isinstance(f[0], (Real, Rational)):
                 return Order(Mul(*f[1:]))
             if not f[0].has(self.sym):
-                assert len(f[:]) == 2
+                return Order(Mul(*f[1:]))
+                #assert len(f[:]) == 2
                 return Order(f[1])
             if not f[1].has(self.sym):
-                assert len(f[:]) == 2
+                #return Order(Mul(*((f[0],)+f[2:])))
+                #assert len(f[:]) == 2
                 return Order(f[0])
             e = f.expand()
             if isinstance(e, Add):

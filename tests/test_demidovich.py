@@ -28,9 +28,12 @@ def tan(x):
 def limitminf(f,x):
     return limitinf(f.subs(x,-x),x)
 
+def xtest_limits_simple_0():
+    #this runs forever....
+    assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
+
 def test_limits_simple_1():
     assert limit((x+1)*(x+2)*(x+3)/x**3,x, oo)==1  #172
-    #assert limitinf((2**(x+1)+3**(x+1))/(2**x+3**x),x)==3  #175
     assert limitinf(sqrt(x+1)-sqrt(x),x)==0  #179
     assert limitinf((2*x-3)*(3*x+5)*(4*x-6)/(3*x**3+x-1),x)==8  #Primjer 1
     assert limitinf(x/sqrt3(x**3+10),x)==1  #Primjer 2
@@ -90,7 +93,7 @@ def test_f1():
 
     assert limit((sin(2*x)/x)**(1+x),x,0) == 2 #Primer 7
     assert limitinf(((x+1)/(2*x+1))**(x**2),x) == 0 #Primer 8
-    #assert limitinf(((x-1)/(x+1))**x,x) == exp(-2) #Primer 9
+    assert limitinf(((x-1)/(x+1))**x,x) == exp(-2) #Primer 9
 
     assert limitinf((1+h/x)**x,x) == exp(h) #Primer 9
 
