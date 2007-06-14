@@ -12,6 +12,17 @@ from sympy.core.functions import Function
 
 from sympy.core.stringPict import prettyForm
 
+#from decorator import decorator
+
+#@decorator
+#def debug(f,*args,**kw):
+    #print "-"*40
+    #print "starting %s%s" % (f.func_name,args)
+#    r = f(*args,**kw)
+    #print "done %s%s = %s" % (f.func_name,args,r)
+    #print "-"*40
+#    return r
+
 class Pair(Basic):
     """Abstract class containing common code to Add and Mul classes.
     Should not be used directly.
@@ -500,6 +511,7 @@ class Mul(Pair):
                 return x
             #we cannot expand x*y
             raise
+        #print x,y,x*y,(x*y).expand()
         return (x*y).expand()
         
     def expand(self):
@@ -665,6 +677,7 @@ class Add(Pair):
     
 
         
+#    @debug
     def eval(self):
         """
         Usage
@@ -695,6 +708,7 @@ class Add(Pair):
               implement, like Pauli and with noncommutativity of some objects
         """
 
+#        @debug
         def _add(exp,x):
             an, a = _extract_numeric(x)
             e = []
@@ -711,8 +725,10 @@ class Add(Pair):
                         e.append(_m)
                     ok = True
                 else:
+                    #print "I",x,y
                     z1 = x.addeval(y,x)
                     z2 = y.addeval(y,x)
+                    #print "R",z1,z2,e,y,ok
 
                     if z1 is not None or z2 is not None:
                         if z1 is not None and z2 is not None:
@@ -720,12 +736,13 @@ class Add(Pair):
                             from symbol import Order
                             if not isinstance(z1,Order):
                                 assert z1 == z2
-                        if z1 is not None:
-                            e.append(z1)
-                            ok = True
-                        elif z2 is not None:
-                            e.append(z2)
-                            ok = True
+                        if not ok:
+                            if z1 is not None:
+                                e.append(z1)
+                                ok = True
+                            elif z2 is not None:
+                                e.append(z2)
+                                ok = True
                     else:
                         e.append(y)
             if not ok: e.append(x)

@@ -6,6 +6,14 @@ from sympy.core.stringPict import prettyForm
 
 dummycount = 0
 
+#from decorator import decorator
+
+#@decorator
+#def debug(f,*args,**kw):
+#    r = f(*args,**kw)
+#    print "%s%s = %s\n" % (f.func_name,args,r)
+#    return r
+
 class Symbol(Basic):
     """
     Assumptions::

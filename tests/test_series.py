@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 import sympy as g
-from sympy import sin, Symbol, log, Order, Rational, exp
+from sympy import sin, Symbol, log, Order, Rational, exp, O
 
 def testseries1():
     x=Symbol("x")
@@ -43,8 +43,8 @@ def testseries2():
     assert (x+3/(1+2*x)).series(x,4)==3-5*x+12*x**2-24*x**3+Order(x**4)
 
     assert ((1/x+1)**3).series(x,3)== x**(-3)+3*x**(-2)+Order(x**(-1))
-    assert (1/(1+1/x)).series(x,3)==x-x**2+x**3
-    assert (1/(1+1/x**2)).series(x,6)==x**2-x**4+x**6-x**8+x**10-x**12
+    assert (1/(1+1/x)).series(x,4)==x-x**2+x**3-x**4+Order(x**5)
+    assert (1/(1+1/x**2)).series(x,6)==x**2-x**4+x**6-x**8+x**10-x**12+Order(x**14)
 
 def xtestfind(self):
     a=g.Symbol("a")
@@ -84,6 +84,11 @@ def test_exp2():
     e=w**(1-log(x)/(log(2)+log(x)))
     assert e.eval().series(w,1)!=0
 
+def test_bug3():
+    x=g.Symbol("x")
+    e=(2/x+3/x**2)/(1/x+1/x**2)
+    assert e.series(x,1) == 3+Order(x)
+
 def test_generalexponent():
     x=g.Symbol("x")
     log=g.log
@@ -100,7 +105,7 @@ def test_generalexponent():
     e=1+x**g.Rational(1,2)
     assert e.eval().series(x,4)==1+x**g.Rational(1,2)
     e=1/(1+x**g.Rational(1,2))
-    assert e.eval().series(x,2)==1-x**g.Rational(1,2)
+    assert e.eval().series(x,2)==1-x**g.Rational(1,2)+Order(x)
 
 def test_subsbug1():
     x=g.Symbol("x")
@@ -200,3 +205,14 @@ def test_order_bug():
     assert Order(x**2)*(1+2/x+3/x**2) == Order(1)
 
     assert Order(1+2/x+3/x**2) == Order(1/x**2)
+
+def test_order_expand_bug():
+    x = Symbol("x")
+
+    assert O(x**2)+x+O(x) == O(x)
+    a=Order(x**2)+2*x
+    b=3+Order(x)
+    assert a+b == 3+Order(x)
+
+    e = (2/x+3*x**(-2))*(Order(x**3)+x**2)
+    assert e.expand() == 3+Order(x)

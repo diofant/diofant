@@ -299,9 +299,14 @@ class Pow(Basic):
                     c0,e0 = g.leadterm(sym)
                     Phi = (g/(c0*sym**e0)-1).expand()
                     e = 0
+                    #n-=1
                     for i in range(n):
                         e += (-1)**i * Phi**i
+                    #print e
+                    e+=Order(Phi**n)
                     e *= sym ** (-e0) / c0
+                    #print "s",e
+                    #stop
                     #print n,Phi,c0,e0,g,self.base
                     return e.expand()
                 if not isinstance(self.exp,Rational):
