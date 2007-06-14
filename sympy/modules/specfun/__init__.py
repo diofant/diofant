@@ -5,4 +5,5 @@ and so on.
 """
 
 from factorials import factorial, binomial, gamma
+from orthogonal_polynomials import legendre, legendre_zero
 from zeta_functions import bernoulli, zeta
