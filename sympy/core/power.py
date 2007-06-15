@@ -401,14 +401,29 @@ class Pow(Basic):
         return self
 
     def evalc(self):
-        e=self.expand()
-        if e!=self:
-            return e.evalc()
-        if isinstance(e.base, Symbol):
-            #this is wrong for nonreal exponent
+        if self.exp.is_number:
+            c = self.base.evalc()
+            if self.exp.is_integer:
+                r = c ** self.exp
+                re = r.expand()
+                if re == r:
+                    return re
+                else:
+                    return re.evalc()
+            else:
+                from sympy.modules.trigonometric import atan, cos, sin
+                from sympy.core.numbers import I
+                re,im = c.get_re_im()
+                r = (re**2 + im**2)**Rational(1,2)
+                t = atan(im / re)
+                
+                #tp = ((t + 2*k*pi) / self.exp)*I  # this is right, for k=...,-2,-1,0,1,2,...
+                rp = r**self.exp
+                tp = t*self.exp
+                
+                return rp*cos(tp) + rp*sin(tp)*I
+        else:
             return self
-        print self
-        raise NotImplementedError
         
     def subs(self,old,new):
         if self == old:

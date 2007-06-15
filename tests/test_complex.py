@@ -54,3 +54,7 @@ def test_pythoncomplex():
     assert 4j*x == 4*x*I
     assert 4j*x != 4.0*x*I
     assert 4.1j*x != 4*x*I
+
+def test_rootcomplex():
+    assert ((1+I)**Rational(1,2)).evalc() == 2**Rational(1,4)*cos(Rational(1,2)*atan(1))+2**(Rational(1,4))*sin(Rational(1,2)*atan(1))*I
+    assert (sqrt(-10)*I).get_re_im() == (-sqrt(10), 0)

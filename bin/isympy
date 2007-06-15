@@ -28,21 +28,18 @@ basic_modules = """
     sympy.modules.integrate
 """
 
-welcome_msg = """
-Python console for sympy.
+welcome_msg = """Python console for sympy."""
 
-Imported modules (from module import *): 
-""" + basic_modules + """
-Symbols defined: x, y, z
-"""
+#Imported modules (from module import *): 
+#""" + basic_modules + """
+#Symbols defined: x, y, z
+#"""
 
 welcome_msg_ipython = welcome_msg + """
-
 ?       -> Introduction to IPython's features.
 %magic  -> Information about IPython's 'magic' % functions.
 help    -> Python's own help system.
-object? -> Details about 'object'. ?object also works, ?? prints more.
-"""
+object? -> Details about 'object'. ?object also works, ?? prints more."""
 
 basic_import_code = """
 from sympy import *
