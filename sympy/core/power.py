@@ -280,15 +280,12 @@ class Pow(Basic):
         return (self*(g*log(f)).diff(sym))
         
     def series(self,sym,n):
-        import pdb
-        #pdb.set_trace()
         from addmul import Add
         if not self.exp.has(sym):
             if isinstance(self.base,Symbol): return self
             try:
                 return Basic.series(self,sym,n)
             except pole_error:
-                #self=self.expand()
                 if isinstance(self.exp,Rational) and self.exp.isminusone():
                     g = self.base.series(sym,n)
                     if isinstance(g, Add):
@@ -304,12 +301,8 @@ class Pow(Basic):
                     #n-=1
                     for i in range(n):
                         e += (-1)**i * Phi**i
-                    #print e
                     e+=O(Phi**n)
                     e *= sym ** (-e0) / c0
-                    #print "s",e
-                    #stop
-                    #print n,Phi,c0,e0,g,self.base
                     return e.expand()
                 if not isinstance(self.exp,Rational):
                     e = exp(self.exp * log(self.base))
@@ -319,27 +312,20 @@ class Pow(Basic):
                 if isinstance(e, Add):
                     e = e.removeO()
                 ldeg = e.ldegree(sym)
-                #print "power:",e,self.exp,ldeg,e.eval()
                 s= ((e*sym**(-ldeg)).expand()**self.exp).series(sym,n+
                         int(ldeg.evalf()))
                 return (s * sym**(ldeg * self.exp)).expand()
         try:
-            if self == (2+O(sym))**(1+sym):
-                #print self.base
-                #print self.exp
-                #print log(self.base).series(sym,n)
+            if self.has(O(sym)):
                 e = exp(((self.exp*log(self.base).series(sym,n)).expand())).series(sym,n)
                 return e
             return Basic.series(self,sym,n)
         except pole_error:
             e = exp((self.exp*log(self.base)))
-            #print e,e.series(sym,n)
             return e.series(sym,n)
             try:
                 a=self.base.series(sym,n)
                 b=self.exp.series(sym,n)
-                #e = exp((b*log(a)))
-                #return e.series(sym,n)
                 return Basic.series((a**b),sym,n)
             except pole_error:
                 e = exp((self.exp*log(self.base)))
