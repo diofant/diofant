@@ -9,8 +9,6 @@ import decimal
 import math
 from sympy.core.stringPict import stringPict, prettyForm
 
-#first = True
-
 class Function(Basic):
     """Abstract class representing a mathematical function. 
     It is the base class for common fuctions such as exp, log, sin, tan, etc.
@@ -70,12 +68,6 @@ class Function(Basic):
         return s
         
     def series(self, sym, n=6):
-        #import pdb
-        #pdb.set_trace()
-        #global first
-        #if first:
-        #    pdb.set_trace()
-        #    first = False
         from power import pole_error
         from symbol import Symbol, O
         from addmul import Add
@@ -187,11 +179,6 @@ class exp(Function):
             s += num / fact   
         decimal.getcontext().prec = precision - 2        
         return +s
-
-#    def series(self,sym,n):
-#        a=self._args.series(sym,n)
-#        e=exp(a).series(sym,n)
-#        return e
 
 class log(Function):
     """Return the natural logarithm (base e) of x
