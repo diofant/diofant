@@ -1100,6 +1100,15 @@ def roots(a, var=None):
 
 def factor(a, var=None):
     """Factors the polynomial a.
+
+    Example:
+    >>> x = Symbol("x")
+    >>> factor(x**6-1)
+    (1+x)*(1+x**4+x**2)*(-1+x)
+
+    Note: as you can see, it only factors out the rational roots, here the
+    correct answer should be:
+    (x - 1)*(x + 1)*(x^2 - x + 1)*(x^2 + x + 1)
     """
     if var==None:
         var = a.atoms(type=Symbol)[0]
