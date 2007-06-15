@@ -148,7 +148,7 @@ class Symbol(Basic):
         return prettyForm(self.name, binding=prettyForm.ATOM)
 
 
-class Order(Basic):
+class O(Basic):
     """
     Represents O(f(x)) at the point x = 0.
 
@@ -158,7 +158,7 @@ class Order(Basic):
     g(x) = O(f(x)) as x->a  if and only if
     |g(x)|<=M|f(x)| near x=a                     (1)
 
-    In our case Order is for a=0. An equivalent way of saying (1) is:
+    In our case O is for a=0. An equivalent way of saying (1) is:
 
     lim_{x->a}  |g(x)/f(x)|  < oo
     
@@ -187,11 +187,11 @@ class Order(Basic):
     =========
     >>> from sympy import *
     >>> x = Symbol("x")
-    >>> Order(x)
+    >>> O(x)
     O(x)
-    >>> Order(x)*x
+    >>> O(x)*x
     O(x**2)
-    >>> Order(x)-Order(x)
+    >>> O(x)-O(x)
     O(x)
 
        External links
@@ -215,7 +215,7 @@ class Order(Basic):
                 if self.sym == []:
                     self.sym = Rational(1)
                 else:
-                    raise "Don't know the variable in Order"
+                    raise "Don't know the variable in O"
 
     def eval(self):
         from addmul import Mul, Add
@@ -224,31 +224,31 @@ class Order(Basic):
         if isinstance(f, Mul):
             #FIXME - this is very ugly
             if isinstance(f[0], (Real, Rational)):
-                return Order(Mul(*f[1:]))
+                return O(Mul(*f[1:]))
             if not f[0].has(self.sym):
-                return Order(Mul(*f[1:]))
+                return O(Mul(*f[1:]))
                 #assert len(f[:]) == 2
-                return Order(f[1])
+                return O(f[1])
             if not f[1].has(self.sym):
-                #return Order(Mul(*((f[0],)+f[2:])))
+                #return O(Mul(*((f[0],)+f[2:])))
                 #assert len(f[:]) == 2
-                return Order(f[0])
+                return O(f[0])
             e = f.expand()
             if isinstance(e, Add):
                 r=0
                 for x in e:
-                    r+=Order(x)
+                    r+=O(x)
                 return r
         if isinstance(f, Add):
             #if isinstance(f[0], (Real, Rational)):
             #    if len(f[:]) == 2:
-            #        return Order(f[1])
+            #        return O(f[1])
             r=0
             for x in f:
-                r+=Order(x)
+                r+=O(x)
             return r
         if isinstance(f, (Real, Rational)) and f!=0 and f!=1:
-            return Order(Rational(1))
+            return O(Rational(1))
         return self
 
     def __str__(self):
@@ -256,16 +256,16 @@ class Order(Basic):
 
     @staticmethod
     def muleval(x, y):
-        if isinstance(x, Order) and isinstance(y, Order):
-            return Order(x[0]*y[0])
-        if isinstance(y, Order):
-            return Order(x*y[0],sym = y.sym)
+        if isinstance(x, O) and isinstance(y, O):
+            return O(x[0]*y[0])
+        if isinstance(y, O):
+            return O(x*y[0],sym = y.sym)
         return None
 
     @staticmethod
     def addeval(x, y):
         from power import pole_error
-        if isinstance(x, Order) and isinstance(y, Order):
+        if isinstance(x, O) and isinstance(y, O):
             if isinstance(x.sym, Symbol):
                 sym = x.sym
             else:
@@ -284,7 +284,7 @@ class Order(Basic):
                 return y
             else:
                 return x
-        if isinstance(x, Order):
+        if isinstance(x, O):
             #calculate inf = True if this limit is oo:
             #inf = lim_{x->a}  |g(x)/f(x)| == oo
             inf = False
@@ -298,10 +298,10 @@ class Order(Basic):
             if inf:
                 return None
             else:
-                return Order(x[0])
+                return O(x[0])
 
-        if isinstance(y, Order):
-            return Order.addeval(y,x)
+        if isinstance(y, O):
+            return O.addeval(y,x)
         return None
 
     def subs(self,old,new):
@@ -312,14 +312,14 @@ class Order(Basic):
                 if new == 0:
                     return Rational(0)
                 elif isinstance(new, Symbol):
-                    return Order(new)
+                    return O(new)
                 else:
-                    raise ValueError("Cannot substitute (%s, %s) in Order" % (new, old) )
+                    raise ValueError("Cannot substitute (%s, %s) in O" % (new, old) )
         return e
 
     def diff(self, var):
         e = self[0].diff(var)
         if e == 0:
-            return Order(1)
+            return O(1)
         else:
-            return Order(e)
+            return O(e)

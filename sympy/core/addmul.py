@@ -732,9 +732,9 @@ class Add(Pair):
 
                     if z1 is not None or z2 is not None:
                         if z1 is not None and z2 is not None:
-                            #sanity check, only when z1 and z2 are not Order
-                            from symbol import Order
-                            if not isinstance(z1,Order):
+                            #sanity check, only when z1 and z2 are not O
+                            from symbol import O
+                            if not isinstance(z1,O):
                                 assert z1 == z2
                         if not ok:
                             if z1 is not None:
@@ -799,23 +799,26 @@ class Add(Pair):
             r+=x.combine()
         return r
 
-    def removeOrder(self):
+    def removeO(self):
+        return self.removeO()
+
+    def removeO(self):
         """Removes the O(...) from the expression.
         
         Example:
 
-        assert (2+Order(x)) != 2
-        assert (2+Order(x)).removeOrder() == 2
-        assert (2+x+Order(x**2)).removeOrder() == x+2
+        assert (2+O(x)) != 2
+        assert (2+O(x)).removeO() == 2
+        assert (2+x+O(x**2)).removeO() == x+2
         """
-        from symbol import Order
+        from symbol import O
         for x in self:
-            if isinstance(x, Order):
+            if isinstance(x, O):
                 a = list(self[:])
                 a.remove(x)
                 return Add(*a)
         return self
-        raise "the Order not found, cannot remove"
+        raise "the O not found, cannot remove"
 
     
     def subs(self,old,new):
@@ -836,7 +839,7 @@ class Add(Pair):
         except pole_error:
             a,b = self.getab()
             #there is a cancelation problem here:
-            #implement the class Order
+            #implement the class O
             #print a.series(sym,n)
             #print b.series(sym,n)
             return (a.series(sym,n)+b.series(sym,n))

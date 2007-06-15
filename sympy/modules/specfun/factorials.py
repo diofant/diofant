@@ -2,7 +2,7 @@ from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Number, Real, Rational, pi, I, oo
 from sympy.core import Symbol, Add, Mul, Basic
 from sympy.modules.simplify import simplify
-from sympy import Order
+from sympy import O
 from sympy.modules.trigonometric import sin
 
 # Factorial and gamma related functions
@@ -50,7 +50,7 @@ class factorial(Function):
 
     # This should give a series expansion around x = oo. Needs fixing
     def _series(self, x, n):
-        return sqrt(2*pi*x) * x**x * exp(-x) * (1 + Order(1/x))
+        return sqrt(2*pi*x) * x**x * exp(-x) * (1 + O(1/x))
 
     def __latex__(self):
         x = self._args

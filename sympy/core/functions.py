@@ -71,22 +71,27 @@ class Function(Basic):
         
     def series(self, sym, n=6):
         #import pdb
+        #pdb.set_trace()
         #global first
         #if first:
         #    pdb.set_trace()
         #    first = False
         from power import pole_error
-        from symbol import Symbol
+        from symbol import Symbol, O
         from addmul import Add
-        try:
-            return Basic.series(self,sym,n)
-        except pole_error:
-            pass
+        if not self.has(O(sym)):
+            try:
+                return Basic.series(self,sym,n)
+            except pole_error:
+                pass
         #this only works, if arg(0) -> 0, otherwise we are in trouble
-        arg = self._args.series(sym,n)
+        if not self.has(O(sym)):
+            arg = self._args.series(sym,n)
+        else:
+            arg = self._args
         argorig = arg
         if isinstance(arg,Add):
-            arg = arg.removeOrder()
+            arg = arg.removeO()
         l = Symbol("l", dummy=True)
         #the arg(0) goes to z0
         z0 = arg.subs(log(sym),l).subs(sym,0)
@@ -95,7 +100,7 @@ class Function(Basic):
         from addmul import Add
         if arg.has(sym):
             e = e.series(w,n)
-            e = e.removeOrder()
+            e = e.removeO()
         e = e.subs(w,argorig-z0)
 
         #this only works for exp 
@@ -103,6 +108,8 @@ class Function(Basic):
         #than arg == 0.
         assert isinstance(self,exp)
         e= (exp(z0)*e).expand().subs(l,log(sym))
+        if isinstance(e,Add) and e.has(O(sym)):
+            return e
         return e.expand().series(sym,n)
     
     def evalf(self, precision=28):
@@ -228,13 +235,13 @@ class log(Function):
     def series(self,sym,n):
         from numbers import Rational
         from power import pole_error
-        from symbol import Order
-        if not self.has(Order(sym)):
+        from symbol import O
+        if not self.has(O(sym)):
             try:
                 return Basic.series(self,sym,n)
             except pole_error:
                 pass
-        if not self.has(Order(sym)):
+        if not self.has(O(sym)):
             arg=self._args.series(sym,n)
         else:
             arg=self._args

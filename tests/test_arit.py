@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, exp, Order
+from sympy import Symbol, exp, O
 
 def test_Symbol():
     a=g.Symbol("a")
@@ -152,7 +152,7 @@ def test_expand():
     s=exp(x*x)-1
     e=s.series(x,5)/x**2
     #assert e == (x**2+x**4/2)/x**2
-    assert e.expand() ==  1+x**2/2+Order(x**3)
+    assert e.expand() ==  1+x**2/2+O(x**3)
     
 def test_power_expand():
     """Test for Pow.expand()"""

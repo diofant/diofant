@@ -403,10 +403,10 @@ class Basic(object):
             >>> from sympy import *
             >>> x = Symbol('x')
             >>> sin(x).series(x, 5)
-            x+O(x**5)-1/6*x**3
+            O(x**5)+x-1/6*x**3
         """
         from numbers import Rational
-        from symbol import Symbol, Order
+        from symbol import Symbol, O
         from functions import log
         w=Symbol("l", dummy=True)
         f = self.subs(log(sym),-w)
@@ -423,7 +423,7 @@ class Basic(object):
         if e == self:
             return e
         else:
-            return e+Order(sym**n)
+            return e+O(sym**n)
 
     def subs_dict(self, di):
         """Substitutes all old -> new defined in the dictionary "di"."""
@@ -456,10 +456,10 @@ class Basic(object):
         from numbers import Rational
         from power import Pow
         from addmul import Add,Mul
-        from symbol import Symbol, Order
+        from symbol import Symbol, O
         if isinstance(self,Add):
-            self = self.removeOrder()
-        if isinstance(self,Order):
+            self = self.removeO()
+        if isinstance(self,O):
             self = Rational(0)
         
         def domul(x):

@@ -38,7 +38,7 @@ interpreter:
     >>> x = Symbol('x')
     >>> e = 1/cos(x)
     >>> print e.series(x,10)
-    1+O(x**10)+1/2*x**2+5/24*x**4+61/720*x**6+277/8064*x**8
+    1+1/2*x**2+O(x**10)+5/24*x**4+61/720*x**6+277/8064*x**8
 
 For full documentation, see the docs at our web page:
 U{http://code.google.com/p/sympy/wiki/Documentation}
@@ -58,8 +58,7 @@ G{packagetree sympy}
 __version__ = "0.4-pre"
 
 from sympy.core import Basic
-from sympy.core import Symbol, Number, Rational, Real, oo, Order
-O=Order
+from sympy.core import Symbol, Number, Rational, Real, oo, O
 from sympy.core import pi, I, Add, Mul
 from sympy.core.functions import Function, diff, Derivative, exp, log, sign, sqrt
 

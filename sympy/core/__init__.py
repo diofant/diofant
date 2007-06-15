@@ -2,7 +2,7 @@
 """
 
 from sympy.core.basic import Basic
-from sympy.core.symbol import Symbol, Order
+from sympy.core.symbol import Symbol, O
 from sympy.core.functions import Function, exp, log, ln, sqrt, sign#, diff
 from sympy.core.numbers import Rational, Real, Number, oo, I, pi
 from sympy.core.power import Pow, pole_error
