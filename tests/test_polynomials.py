@@ -277,3 +277,18 @@ def test_roots():
     assert roots(2*x**2-3*x+1) == [1,Rational(1)/2]
     assert roots(x**2-1) == [1,-1]
     assert roots(x**2+1) == []
+    assert roots(x**3-1) == [1]
+
+    assert roots(x**3) == [0]
+    assert roots(x**3-x) == [0,1,-1]
+    assert roots(Rational(2),x) == []
+
+def test_factor():
+    x = Symbol("x")
+    assert factor(x**2-1) == (x+1)*(x-1)
+    assert factor(x**3-1) == (x-1)*(x**2+x+1)
+    assert factor(x**2+2*x+1) == (x+1)**2
+    assert factor(x**3-3*x**2+3*x-1) == (x-1)**3
+    assert factor(x**3-3*x**2+3*x-1) == (x-1)**3
+    assert factor(x**2+x-2) == (x-1)*(x+2)
+    assert factor(x**3-x) == x*(x-1)*(x+1)

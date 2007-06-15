@@ -1075,22 +1075,39 @@ def roots(a, var=None):
     if var==None:
         var = a.atoms(type=Symbol)[0]
 
+    r = []
     c = coeff_list(a)
-    assert c[-1][1] == 0
+    if len(c[0]) == 1:
+        return []
+    if c[-1][1] != 0:
+        r.append(Rational(0))
     lastnum = c[-1][0]
     firstnum = c[0][0]
     if not lastnum.is_integer:
         m = lastnum.q
-        lastnum*=m
-        firstnum*=m
+        lastnum *= m
+        firstnum *= m
     if not firstnum.is_integer:
         m = firstnum.q
-        lastnum*=m
-        firstnum*=m
+        lastnum *= m
+        firstnum *= m
     last_d = find_divisors(lastnum)
     first_d = find_divisors(firstnum)
-    r = []
     for t in candidates(first_d, last_d):
         if a.subs(var, t) == 0:
             r.append(t)
     return r
+
+def factor(a, var=None):
+    """Factors the polynomial a.
+    """
+    if var==None:
+        var = a.atoms(type=Symbol)[0]
+    p = 1
+    for r in roots(a, var): 
+        p *= (var-r)
+    if p == 1: 
+        return a
+    q,r = div(a, p, var)
+    assert r == 0
+    return factor(q, var)*p
