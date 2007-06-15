@@ -447,9 +447,9 @@ class Matrix(object):
                b.lines == 1 and b.cols == 3):
             raise "Dimensions incorrect for cross product"
         else:
-            return Matrix((self[1]*b[2] - self[2]*b[1]),
-                          (self[2]*b[0] - self[0]*b[2]),
-                          (self[0]*b[1] - self[1]*b[0]))
+            return Matrix(1,3,((self[1]*b[2] - self[2]*b[1]),
+                               (self[2]*b[0] - self[0]*b[2]),
+                               (self[0]*b[1] - self[1]*b[0])))
 
     
     @property
@@ -649,7 +649,6 @@ minkowski_tensor = Matrix( (
 def permuteBkwd(M, perm):
     copy = M[:,:]
     for i in range(len(perm)-1, -1, -1):
-        print "swapping %d %d", perm[i][0], perm[i][1]
         copy.row_swap(perm[i][0], perm[i][1])
     return copy
 
@@ -663,7 +662,7 @@ def LUsolve(system, rhs):
     assert rhs.lines == system.lines
     A, perm = system.LUdecomposition_Simple()
     n = system.lines
-    b = rhs[:,:]
+    b = permuteFwd(rhs, perm)
     # forward substitution, all diag entries are scaled to 1
     for i in range(n):
         for j in range(i):
