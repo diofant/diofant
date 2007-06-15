@@ -1,0 +1,57 @@
+"""Simple helper functions common to several algorithms"""
+
+def all(iterable):
+    """True if all elements are True"""
+    for element in iterable:
+        if not element:
+            return False
+    return True
+
+def one(iterable):
+    """True if at least one element is True"""
+    for element in iterable:
+        if element:
+            return True
+    return False
+
+def reverse(lisp):
+    """Return a list with reversed order"""
+    lisp.reverse()
+    return lisp
+
+def term_cmp(a, b, order):
+    if order == 'lex':
+        return cmp(a[1:], b[1:])
+    elif order == 'grlex':
+        return cmp([sum(a[1:])]+a[1:], [sum(b[1:])]+b[1:])
+    elif order == 'grevlex':
+        return cmp([sum(a[1:])]+reverse(map(lambda l:-l, a[1:])),
+                   [sum(b[1:])]+reverse(map(lambda l:-l, b[1:])))
+    elif order == '1-el':
+        return cmp([a[1]]+[sum(a[2:])]+reverse(map(lambda l:-l,a[2:])),
+                   [b[1]]+[sum(b[2:])]+reverse(map(lambda l:-l,b[2:])))
+    else:
+        raise PolynomialException(str(order) + 'is not an implemented order.')
+
+def term_mult(a, b):
+    """Returns a term that represents the multiplication of a and b.
+
+    a and b are assumed to be terms of coefficient lists of
+    Polynomials of same the variables.
+    """
+    return [a[0]*b[0]] + map(lambda (x,y): x+y, zip(a[1:], b[1:]))
+
+def term_div(a, b):
+    """Returns a term that represents the division of a by b.
+
+    a and b are assumed to be terms of coefficient lists of
+    Polynomials of same the variables. Divisibility is not tested.
+    """
+    return [a[0]/b[0]] + map(lambda (x,y): x-y, zip(a[1:], b[1:]))
+
+def term_is_mult(a, b):
+    """Return True if a is a multiple of b
+
+    a and b are assumed to be terms of coefficient lists of
+    Polynomials of same the variables."""
+    return all([x >= 0 for x in term_div(a, b)[1:]])
