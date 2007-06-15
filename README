@@ -7,10 +7,16 @@ http://code.google.com/p/sympy/
 
 Author: Ondrej Certik <ondrej@certik.cz>
 
-Developers: Fabian Seoane <fabian@fseoane.net>, Brian Jorgensen, Mateusz
-Paprocki, Jason Gedge, Robert Schwarz
-
-Other contributors: Jurjen N.E. Bos
+Developers and contributors (in the order they joined the project): 
+    Fabian Seoane <fabian@fseoane.net>
+    Jurjen N.E. Bos <jnebos@gmail.com>
+    Mateusz Paprocki <mattpap@gmail.com> 
+    Brian Jorgensen <brian.jorgensen@gmail.com>
+    Jason Gedge <inferno1386@gmail.com>
+    Robert Schwarz <lethargo@googlemail.com>
+    Pearu Peterson <pearu.peterson@gmail.com>
+    Fredrik Johansson <fredrik.johansson@gmail.com>
+    Chris Wu <chris.wu@gmail.com>
 
 License: New BSD License (see the LICENSE file for details)
 covers all files in the sympy repository except sympy/modules/decorator.py,
