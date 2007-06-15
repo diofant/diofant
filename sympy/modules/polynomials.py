@@ -521,9 +521,9 @@ def gcd(a, b, x):
                 c.append((t,n))
         return poly(c, x)
 
-    #try some values of x0. If you find polynomials for which gcd doesn't
-    #work, just find a number of x0, that works and add it to the end
-    #of this list:
+    #try some values of x0. If you find polynomials for which gcd doesn't work
+    #(raises an exception), just find a number of x0, that works and add it to
+    #the end of this list:
     for x0 in [100, 101]:
         c = getcandidate(a, b, x, x0)
         if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0:
@@ -1052,3 +1052,45 @@ def gcd_mv(f, g, var=None, order='grevlex', monic=False):
 
     return q
 
+def roots(a, var=None):
+    """Returns all rational roots of the equation a=0, where a is a
+    polynomial."""
+
+    def find_divisors(num):
+        num = abs(int(num))
+        r = []
+        for x in range(1,num+1):
+            if num % x == 0:
+                r.append(x)
+        return r
+
+    def candidates(f, l):
+        r = []
+        for x in f:
+            for y in l:
+                r.append(Rational(y,x))
+                r.append(-Rational(y,x))
+        return r
+
+    if var==None:
+        var = a.atoms(type=Symbol)[0]
+
+    c = coeff_list(a)
+    assert c[-1][1] == 0
+    lastnum = c[-1][0]
+    firstnum = c[0][0]
+    if not lastnum.is_integer:
+        m = lastnum.q
+        lastnum*=m
+        firstnum*=m
+    if not firstnum.is_integer:
+        m = firstnum.q
+        lastnum*=m
+        firstnum*=m
+    last_d = find_divisors(lastnum)
+    first_d = find_divisors(firstnum)
+    r = []
+    for t in candidates(first_d, last_d):
+        if a.subs(var, t) == 0:
+            r.append(t)
+    return r

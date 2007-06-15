@@ -268,3 +268,12 @@ def test_Ideal():
     assert I == I % Ideal()
     assert Ideal() == Ideal(x*y, [x,y]) % I
     assert Ideal(z, [x,y,z]) == Ideal([x,z], [x,y,z]) % Ideal([x,y], [x,y,z])
+
+
+def test_roots():
+    x = Symbol("x")
+    assert roots(x**2-3*x+2) == [1,2]
+    assert roots(x**2-3*x/2+Rational(1,2)) == [1,Rational(1)/2]
+    assert roots(2*x**2-3*x+1) == [1,Rational(1)/2]
+    assert roots(x**2-1) == [1,-1]
+    assert roots(x**2+1) == []
