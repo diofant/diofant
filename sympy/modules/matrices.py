@@ -1,5 +1,6 @@
 from sympy import Basic,exp,Symbol,Rational,I,Mul
 from sympy.core import hashing
+import random
 
 class NonSquareMatrixException(Exception):
     pass
@@ -61,6 +62,7 @@ class Matrix(object):
                     %repr(key))
         i,j=key
         if not (i>=0 and i<self.lines and j>=0 and j < self.cols):
+            print self.lines, " ", self.cols
             raise IndexError("Index out of range: a[%s]"%repr(key))
         return i,j
 
@@ -214,7 +216,7 @@ class Matrix(object):
                 r+=a[i,x]*b[x,j]
             return r
 
-        r = Matrix(self.lines,self.cols, lambda i,j: dotprod(self,b,i,j))
+        r = Matrix(self.lines,b.cols, lambda i,j: dotprod(self,b,i,j))
         if r.lines == 1 and r.cols ==1:
             return r[0,0]
         return r
@@ -235,23 +237,21 @@ class Matrix(object):
             a = Basic.sympify(a)
         return self.hash() == a.hash()
 
+    def __ne__(self,a):
+        if not isinstance(a, (Matrix, Basic)):
+            a = Basic.sympify(a)
+        return self.hash() != a.hash()
+
     def __repr__(self):
         return str(self)
 
     def inv(self):
         assert self.cols==self.lines
-        m=zero(self.cols)
-        for i in range(self.lines):
-            for j in range(self.cols):
-                x=self[i,j]
-                if i==j:
-                    x=1/x
-                else:
-                    if x!=0:
-                        raise NotImplementedError("Matrix inversion is \
-                            currently only implemented for diagonal matrices")
-                m[i,j] = x
-        return m
+        # current inversion comes from LUdecomposition
+        return self.inverse_LU()
+
+    def inverse_LU(matrix):
+        return LUsolve(matrix, eye(matrix.lines))
 
     def __str__(self):
         s="";
@@ -396,11 +396,69 @@ class Matrix(object):
         print s
     
     def LUdecomposition(self):
-        pass
+        combined, p = self.LUdecomposition_Simple()
+        L = zero(self.lines)
+        U = zero(self.lines)
+        for i in range(self.lines):
+            for j in range(self.lines):
+                if i > j:
+                    L[i,j] = combined[i,j]
+                else:
+                    if i == j:
+                        L[i,i] = 1
+                    U[i,j] = combined[i,j]
+        return L, U, p
+    
+    def LUdecomposition_Simple(self):
+        # returns A compused of L,U (L's diag entries are 1) and
+        # p which is the list of the row swaps (in order)
+        assert self.lines == self.cols
+        n = self.lines
+        A = self[:,:]
+        p = []
+        # factorization
+        for j in range(n):
+            for i in range(j):
+                for k in range(i):
+                    A[i,j] = A[i,j] - A[i,k]*A[k,j]
+            pivot = -1
+            for i in range(j,n):
+                for k in range(j):
+                    A[i,j] = A[i,j] - A[i,k]*A[k,j]
+                # find the first non-zero pivot, includes any expression
+                if pivot == -1 and A[i,j] != 0:
+                    pivot = i
+            if pivot < 0:
+                raise "Error: non-invertible matrix passed to LUdecomposition_Simple()"
+            if pivot != j: # row must be swapped
+                A.row_swap(pivot,j)
+                p.append([pivot,j])
+            assert A[j,j] != 0
+            scale = 1 / A[j,j]
+            for i in range(j+1,n):
+                A[i,j] = A[i,j] * scale
+        return A, p
+
+    def LUdecomposition_Block(self):
+        raise NotImplementedError("Not yet implemented")
     
     @property
     def is_square(self):
         return self.lines == self.cols
+
+    def is_upper(self):
+        for i in range(self.cols):
+            for j in range(self.lines):
+                if i > j and self.mat[i*self.cols+j] != 0:
+                    return False
+        return True
+    
+    def is_lower(self):
+        for i in range(self.cols):
+            for j in range(self.lines):
+                if i < j and self.mat[i*self.cols+j] != 0:
+                    return False
+        return True
 
     def clone(self):
         return Matrix(self.lines, self.cols, lambda i, j: self[i, j])
@@ -475,6 +533,13 @@ def eye(n):
     for i in range(n):
         out[i,i]=1
     return out
+
+def randMatrix(r,c,min=0,max=99,seed=[]):
+    if seed == []:
+        random.seed()
+    else:
+        random.seed(seed)       # use system time
+    return Matrix(r,c,lambda i,j: random.randint(min,max))
 
 def sigma(i):
     """Returns a Pauli matrix sigma_i. i=1,2,3
@@ -570,3 +635,32 @@ minkowski_tensor = Matrix( (
     (0,0,-1,0),
     (0,0,0,-1)
     ))
+
+def permuteBkwd(M, perm):
+    copy = M[:,:]
+    for i in range(len(perm)-1, -1, -1):
+        print "swapping %d %d", perm[i][0], perm[i][1]
+        copy.row_swap(perm[i][0], perm[i][1])
+    return copy
+
+def permuteFwd(M, perm):
+    copy = M[:,:]
+    for i in range(len(perm)):
+        copy.row_swap(perm[i][0], perm[i][1])
+    return copy
+
+def LUsolve(system, rhs):
+    assert rhs.lines == system.lines
+    A, perm = system.LUdecomposition_Simple()
+    n = system.lines
+    b = rhs[:,:]
+    # forward substitution, all diag entries are scaled to 1
+    for i in range(n):
+        for j in range(i):
+            b.row(i, lambda x,k: x - b[j,k]*A[i,j])
+    # backward substitution
+    for i in range(n-1,-1,-1):
+        for j in range(i+1, n):
+            b.row(i, lambda x,k: x - b[j,k]*A[i,j])
+        b.row(i, lambda x,k: x / A[i,i])
+    return b

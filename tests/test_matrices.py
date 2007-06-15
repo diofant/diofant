@@ -1,7 +1,8 @@
 import sys
 sys.path.append(".")
 
-from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix,minkowski_tensor,eye 
+from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix, \
+                                    minkowski_tensor, eye, randMatrix, permuteBkwd
 from sympy import Symbol
 
 def test_multiplication():
@@ -195,3 +196,16 @@ def test_applyfunc():
     m0 = eye(3)
     assert m0.applyfunc(lambda x:2*x) == eye(3)*2
     assert m0.applyfunc(lambda x: 0 ) == zero(3)
+
+def test_random():
+    M = randMatrix(3,3)
+    M = randMatrix(3,3,seed=3)
+    M = randMatrix(3,4,0,150)
+
+def test_LUdecomp():
+    for i in range(5):
+        testmat = randMatrix(4,4)
+        L,U,p = testmat.LUdecomposition()
+        assert L.is_lower()
+        assert U.is_upper()
+        assert permuteBkwd(L*U,p)-testmat == zero(4)
