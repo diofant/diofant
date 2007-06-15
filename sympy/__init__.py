@@ -57,10 +57,14 @@ G{packagetree sympy}
 
 __version__ = "0.4-pre"
 
-from sympy.core import Basic
-from sympy.core import Symbol, Number, Rational, Real, oo, O
-from sympy.core import pi, I, Add, Mul
-from sympy.core.functions import Function, diff, Derivative, exp, log, sign, sqrt
+from sympy.core.basic import Basic
+from sympy.core.symbol import Symbol, O
+from sympy.core.functions import Function, exp, log, ln, sqrt, sign, diff
+from sympy.core.functions import Derivative
+from sympy.core.numbers import Rational, Real, Number, oo, I, pi
+from sympy.core.power import Pow, pole_error
+from sympy.core.addmul import Add, Mul
+from sympy.core.hashing import mhash
 
 from sympy.modules.limits import limit, limitinf
 from sympy.modules.trigonometric import sin, cos, tan, sec, csc, cot, atan, asin

@@ -1,6 +1,6 @@
 from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Number, Real, Rational, pi, I
-from sympy.core import Symbol, Add, Mul
+from sympy import Symbol, Add, Mul
 from simplify import ratsimp
 
 import decimal
@@ -344,7 +344,7 @@ class tan(Function):
             numerator is an Add instance, the fraction isn't broken up
             into multiple instances.
             """
-            from sympy.core import Add,Mul,Pow
+            from sympy import Add,Mul,Pow
             if isinstance(den, Mul):
                 a,b = den.getab() 
                 if isinstance(a, Pow) and a.exp == -1:

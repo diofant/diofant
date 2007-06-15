@@ -1,4 +1,4 @@
-from sympy.core import Basic, Symbol, Number, Pow, Add, Mul
+from sympy import Basic, Symbol, Number, Pow, Add, Mul
 
 
 class GeometryEntity(object):

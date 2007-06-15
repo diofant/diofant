@@ -1,5 +1,4 @@
-from sympy.core import Basic
-#from sympy.modules.mathml import add_mathml_headers
+from sympy import Basic
 
 def mathml(expr):
     """Returns the mathml representation of expr"""

@@ -1,6 +1,6 @@
 from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Number, Real, Rational, pi, I, oo
-from sympy.core import Symbol, Add, Mul, Basic
+from sympy import Symbol, Add, Mul, Basic
 from sympy.modules.simplify import simplify
 from sympy import O
 from sympy.modules.trigonometric import sin

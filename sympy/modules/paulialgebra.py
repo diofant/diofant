@@ -1,4 +1,4 @@
-from sympy.core import Basic,exp,Symbol,Rational,I,Mul
+from sympy import Basic,exp,Symbol,Rational,I,Mul
 
 """
 This module implements Pauli algebra by subclassing Symbol. Only aglebraic

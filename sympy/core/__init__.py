@@ -1,10 +1,8 @@
-"""Core module. Provides the basic operations needed in sympy
-"""
+"""Core module. 
 
-from sympy.core.basic import Basic
-from sympy.core.symbol import Symbol, O
-from sympy.core.functions import Function, exp, log, ln, sqrt, sign#, diff
-from sympy.core.numbers import Rational, Real, Number, oo, I, pi
-from sympy.core.power import Pow, pole_error
-from sympy.core.addmul import Add, Mul
-from sympy.core.hashing import mhash
+Provides the basic operations needed in SymPy. It can be viewed as the smallest
+possible self-consistent part (core) of SymPy. It should have a well-defined
+interface. Allowing us to possibly rewrite the core in C++ (optionally), or
+just use some clever new algorithms to speed it up and the sympy.modules should
+work without touching them.
+"""

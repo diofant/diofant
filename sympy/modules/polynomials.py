@@ -1,7 +1,7 @@
 """Module with some routines for polynomials"""
 
-from sympy.core import Pow, Add, Mul, Rational, Number, Symbol, Basic
-from sympy.core.functions import diff
+from sympy import Pow, Add, Mul, Rational, Number, Symbol, Basic
+from sympy import diff
 from sympy.modules.matrices import zero
 
 class PolynomialException(Exception):

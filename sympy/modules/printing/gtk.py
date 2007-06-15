@@ -1,6 +1,6 @@
 """Printing using GtkMathView"""
 
-from sympy.core import Basic
+from sympy import Basic
 from sympy.modules.mathml import c2p
 from sympy.modules.printing.mathml import mathml
 import tempfile

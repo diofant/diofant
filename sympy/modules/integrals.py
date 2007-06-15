@@ -1,4 +1,4 @@
-from sympy.core import Basic, Symbol, Number, Mul, Pow, log, Add
+from sympy import Basic, Symbol, Number, Mul, Pow, log, Add
 from sympy import cos, sin
 from sympy.core.stringPict import stringPict, prettyForm
 
