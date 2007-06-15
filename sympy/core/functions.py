@@ -89,7 +89,6 @@ class Function(Basic):
         z0 = arg.subs(log(sym),l).subs(sym,0)
         w = Symbol("w",dummy=True)
         e = type(self)(w)
-        from addmul import Add
         if arg.has(sym):
             e = e.series(w,n)
             e = e.removeO()
@@ -100,6 +99,7 @@ class Function(Basic):
         #than arg == 0.
         assert isinstance(self,exp)
         e= (exp(z0)*e).expand().subs(l,log(sym))
+        #if isinstance(e,Add) and e.has(O(sym)):
         if isinstance(e,Add) and e.has(O(sym)):
             return e
         return e.expand().series(sym,n)
