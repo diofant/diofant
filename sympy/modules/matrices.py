@@ -441,6 +441,16 @@ class Matrix(object):
 
     def LUdecomposition_Block(self):
         raise NotImplementedError("Not yet implemented")
+
+    def cross(self, b):
+        if not (self.lines == 1 and self.cols == 3 and \
+               b.lines == 1 and b.cols == 3):
+            raise "Dimensions incorrect for cross product"
+        else:
+            return Matrix((self[1]*b[2] - self[2]*b[1]),
+                          (self[2]*b[0] - self[0]*b[2]),
+                          (self[0]*b[1] - self[1]*b[0]))
+
     
     @property
     def is_square(self):
@@ -664,3 +674,28 @@ def LUsolve(system, rhs):
             b.row(i, lambda x,k: x - b[j,k]*A[i,j])
         b.row(i, lambda x,k: x / A[i,i])
     return b
+
+def jacobian(flist, varlist):
+    if isinstance(flist, Matrix):
+        assert flist.lines == 1
+        m = flist.cols
+    elif isinstance(flist, (list, tuple)):
+        m = len(flist)
+    if isinstance(varlist, Matrix):
+        assert varlist.lines == 1
+        n = varlist.cols
+    elif isinstance(varlist, (list, tuple)):
+        n = len(varlist)
+    assert n > 0 # need to diff by something
+    J = zeronm(m,n)
+    for i in range(m):
+        if isinstance(flist[i], (float, int)):
+            continue    # constant function, jacobian row is zero
+        try:
+            tmp = flist[i].diff(varlist[0])   # check differentiability
+            J[i,0] = tmp
+        except AttributeError:
+            raise "Function %d is not differentiable" % i
+        for j in range(1,n):
+            J[i,j] = flist[i].diff(varlist[j])
+    return J
