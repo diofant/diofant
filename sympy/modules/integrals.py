@@ -1,5 +1,5 @@
 from sympy.core import Basic, Symbol, Number, Mul, Pow, log, Add
-from sympy.modules import cos, sin
+from sympy import cos, sin
 from sympy.core.stringPict import stringPict, prettyForm
 
 class IntegralError(Exception):

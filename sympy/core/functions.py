@@ -169,7 +169,7 @@ class exp(Function):
         from numbers import I
         from addmul import Mul
         #we will need to move sin,cos to core
-        from sympy.modules import cos,sin
+        from sympy import cos,sin
         x,y = self._args.get_re_im()
         return exp(x)*cos(y)+I*exp(x)*sin(y)
     
