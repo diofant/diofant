@@ -77,7 +77,7 @@ class Infinity(Number):
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> limit(x, x, oo)
-        Infinity()
+        oo
     """
     
     def __init__(self, sign=1):
@@ -90,6 +90,9 @@ class Infinity(Number):
         return "\infty"
     
     def __pretty__(self):
+        return "oo"
+
+    def __str__(self):
         return "oo"
     
     def sign(self):
