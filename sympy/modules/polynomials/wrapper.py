@@ -585,7 +585,7 @@ def groebner(f, var=None, order='grevlex', reduced=True):
 
     return f
 
-def lcm_mv(f, g, var=None):
+def lcm_mv(f, g, var=None, monic=False):
     """Computes the lcm of two polynomials.
 
     This is a special case of the intersection of two ideals using Groebner
@@ -627,6 +627,17 @@ def lcm_mv(f, g, var=None):
     if not len(I) == 1:
         raise PolynomialException("No single generator.")
 
+    # temporary solution, leading coefficient depends on order?
+    if not monic:
+        ff = coeff_list(f, var)[0][0]
+        gg = coeff_list(g, var)[0][0]
+        if isinstance(ff, Rational) and isinstance(gg, Rational):
+            if ff.is_integer and gg.is_integer:
+                c = ff*gg/Rational(Rational(0).gcd(ff.p,gg.p))
+                I[0] *= c
+        else:
+            c = lcm_mv(ff,gg)
+            I[0] *= c
     return I[0]
 
 def gcd_mv(f, g, var=None, order='grevlex', monic=False):
@@ -655,7 +666,7 @@ def gcd_mv(f, g, var=None, order='grevlex', monic=False):
                     var.append(v)
         var.sort(key=str)
 
-    lcm = lcm_mv(f, g, var)
+    lcm = lcm_mv(f, g, var, monic=True)
     q, r = div_mv(f*g, lcm, var, order)
 
     if not r == 0:

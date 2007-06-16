@@ -235,10 +235,11 @@ def test_lcm_mv():
     x = Symbol('x')
     y = Symbol('y')
 
-    assert lcm_mv(3, 4) == Rational(1)
-    assert lcm_mv(4, y) == y
+    assert lcm_mv(3, 4) == Rational(12)
+    assert lcm_mv(4, y) == 4*y
     assert lcm_mv(x, y) == x*y
-    assert lcm_mv(y*(x+1), x, [x]) == x+x**2
+    assert lcm_mv(y*(x+1), x, [x]) == y*(x+x**2)
+    assert lcm_mv(2*x, x**2) == 2*x**2 
 
 def test_gcd_mv():
     x = Symbol('x')
