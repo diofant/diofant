@@ -435,4 +435,7 @@ class atan(Function):
     def eval(self):
         if self._args == 0:
             return Rational(0)
+        elif isinstance(self._args, Mul):
+            if isinstance(self._args[0], Number) and self._args[0] < 0:
+                return -atan(-self._args)
         return self

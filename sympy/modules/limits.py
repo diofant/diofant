@@ -441,7 +441,7 @@ def limit(e,z,z0, evaluate=True):
     if z0 == s.oo:
         return limitinf(e, z)
     if z0 == -s.oo:
-        return limitinf(-e, z)
+        return limitinf(e.subs(z,-z), z)
     x=s.Symbol("x", dummy=True)
     e0=e.subs(z,z0+1/x)
     return limitinf(e0,x)
