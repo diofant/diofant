@@ -2,8 +2,6 @@ import sys
 sys.path.append(".")
 from sympy import *
 
-from sympy.modules.limits import limitinf
-
 """
 (*) in problem number means that the number is relative to the book "Anti-demidovich,
 problemas resueltos, Ed. URSS"
@@ -28,7 +26,11 @@ def tan(x):
     return sin(x)/cos(x)
 
 def limitminf(f,x):
-    return limitinf(f.subs(x,-x),x)
+    return limit(f.subs(x,-x),x,oo)
+    return limit(f,x,-oo)
+
+def limitinf(f,x):
+    return limit(f,x,oo)
 
 def xtest_limits_simple_0():
     #this runs forever....
