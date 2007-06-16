@@ -92,14 +92,14 @@ def test_simple_limit_automatic():
 def testlimitinf_lenmrveq1():
     x = Symbol("y")
     assert limit(x,x,oo) == oo
-    assert limit(-x,x,oo) == oo
-    assert limit(-x**2,x,oo) == oo
+    assert limit(-x,x,oo) == -oo
+    assert limit(-x**2,x,oo) == -oo
     assert limit(1/x,x,oo) == 0
     assert limit(1/x,x,oo) != 1
     assert limit(1+1/x,x,oo) == 1
     assert limit(1+1/x,x,oo) != 0
     assert limit(exp(x),x,oo) == oo
-    assert limit(-exp(x),x,oo) == oo
+    assert limit(-exp(x),x,oo) == -oo
     assert limit(-exp(1/x),x,oo) == -1
     assert limit(exp(x)/x,x,oo) == oo
     assert limit(exp(x)/x,x,oo) != 1
@@ -167,6 +167,7 @@ def test_sign():
     x=Symbol("x")
     from sympy.modules.limits import sign
     assert sign((1/(log(2)+log(x))).eval(),x)==1
+    assert sign(-log(2),x) == -1
 
 def test_others():
     x=Symbol("x")
@@ -212,12 +213,12 @@ def test_minusbug1():
 def test_minusbug2():
     x = Symbol("x")
     assert limit(x, x, oo) == oo
-    #assert limit(x, x, -oo) == -oo
-    #assert limit(-x, x, oo) == -oo
+    assert limit(x, x, -oo) == -oo
+    assert limit(-x, x, oo) == -oo
     assert limit(-x, x, -oo) == oo
 
 
 def test_limitsleft():
     x = Symbol("x")
     assert limit(1/x, x, 0) == oo
-    #assert limit(1/x, x, 0, left=True) == -oo
+    assert limit(1/x, x, 0, left=True) == -oo

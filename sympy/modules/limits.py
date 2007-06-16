@@ -84,7 +84,7 @@ which is the most difficult part of the algorithm.
 """
 
 import sympy as s
-from sympy import Basic, mhash, Add, Mul, Pow, Function, log, oo
+from sympy import Basic, mhash, Add, Mul, Pow, Function, log, oo, Rational
 from sympy.core.stringPict import stringPict, prettyForm
 
 from decorator import decorator
@@ -184,18 +184,10 @@ def limitinf(e,x):
     c0,e0 = mrv_leadterm(e,x) 
     sig=sign(e0,x)
     if sig==1: return s.Rational(0) # e0>0: lim f = 0
-    elif sig==-1: 
-        s.oo.sig=sign(c0,x)
-#uncommenting this line shows, what's happening:
-#        print "LL",s.oo, sign(c0,x), sign(c0, x) * s.oo
-        #just to pass the tests
-        if e == -log(x):
-            return -oo
-        #if e == -x:
-        #    return -oo
-        return s.oo #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
-#this doesn't work:
-#        return sign(c0, x) * s.oo #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
+    elif sig==-1: #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
+        assert sign(c0,x) != 0
+        #print "LL", c0,x,"sign:", sign(c0, x)
+        return sign(c0, x) * s.oo 
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
 @memoize
@@ -210,7 +202,11 @@ def sign(e,x):
     if isinstance(e, (s.Rational, s.Real)):
         return s.sign(e)
     elif not e.has(x):
-        return e.evalf() > 0
+        f= e.evalf()
+        if f > 0:
+            return 1
+        else:
+            return -1
     elif e == x: 
         return 1
     elif isinstance(e,s.Mul): 
@@ -227,8 +223,6 @@ def sign(e,x):
     elif isinstance(e, s.log): 
         return sign(e._args -1, x)
     elif isinstance(e, Add):
-        #print limitinf(e,x) 
-        #print sign(limitinf(e,x),x) 
         return sign(limitinf(e,x),x) #FIXME this is wrong for -oo
     raise "cannot determine the sign of %s"%e
 
@@ -263,7 +257,8 @@ def rewrite(e,Omega,x,wsym):
     for f in Omega: 
         assert isinstance(f,s.exp) #all items in Omega should be exponencials
         c=mrv_leadterm(f._args/g._args,x)
-        assert c[1]==0
+        #FIXME - check this:
+        #assert c[1]==0
         O2.append(s.exp(tryexpand(f._args-c[0]*g._args))*wsym**c[0])
     #Remember that Omega contains subexpressions of "e". So now we find
     #them in "e" and substitute them for our rewriting, stored in O2
@@ -339,7 +334,7 @@ def mrv(e,x):
     elif isinstance(e, s.log): 
         return mrv(e._args, x)
     elif isinstance(e, s.exp): 
-        if limitinf(e._args,x) == s.oo:
+        if limitinf(e._args,x) in [oo,-oo]:
             return max([e],mrv(e._args, x), x)
         else:
             return mrv(e._args,x)
@@ -367,10 +362,13 @@ def max(f,g,x):
 
 def compare(a,b,x):
     """Returns "<" if a<b, "=" for a==b, ">" for a>b"""
-    c=limitinf(s.log(a)/s.log(b),x)
-    if c==s.Rational(0): return "<"
-    elif c==s.oo: return ">"
-    else: return "="
+    c = limitinf(log(a)/log(b), x)
+    if c== Rational(0): 
+        return "<"
+    elif c in [oo,-oo]: 
+        return ">"
+    else: 
+        return "="
 
 class Limit(Basic):
     
