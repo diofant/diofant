@@ -2,6 +2,8 @@ import sys
 sys.path.append(".")
 from sympy import *
 
+from sympy.modules.limits import limitinf
+
 """
 (*) in problem number means that the number is relative to the book "Anti-demidovich,
 problemas resueltos, Ed. URSS"
