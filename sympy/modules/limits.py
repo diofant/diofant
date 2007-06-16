@@ -185,8 +185,8 @@ def limitinf(e,x):
     sig=sign(e0,x)
     if sig==1: return s.Rational(0) # e0>0: lim f = 0
     elif sig==-1: #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
+        #the leading term shouldn't be 0:
         assert sign(c0,x) != 0
-        #print "LL", c0,x,"sign:", sign(c0, x)
         return sign(c0, x) * s.oo 
     elif sig==0: return limitinf(c0,x) #e0=0: lim f = lim c0
 
@@ -198,7 +198,6 @@ def sign(e,x):
         e==0 .. 0
         e<0 ... -1
     """
-    #print "sign:",e
     if isinstance(e, (s.Rational, s.Real)):
         return s.sign(e)
     elif not e.has(x):
@@ -223,7 +222,7 @@ def sign(e,x):
     elif isinstance(e, s.log): 
         return sign(e._args -1, x)
     elif isinstance(e, Add):
-        return sign(limitinf(e,x),x) #FIXME this is wrong for -oo
+        return sign(limitinf(e,x),x)
     raise "cannot determine the sign of %s"%e
 
 def tryexpand(a):
@@ -257,8 +256,8 @@ def rewrite(e,Omega,x,wsym):
     for f in Omega: 
         assert isinstance(f,s.exp) #all items in Omega should be exponencials
         c=mrv_leadterm(f._args/g._args,x)
-        #FIXME - check this:
-        #assert c[1]==0
+        #the c is a constant, because both f and g are from Omega:
+        assert c[1]==0
         O2.append(s.exp(tryexpand(f._args-c[0]*g._args))*wsym**c[0])
     #Remember that Omega contains subexpressions of "e". So now we find
     #them in "e" and substitute them for our rewriting, stored in O2
