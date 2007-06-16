@@ -426,6 +426,12 @@ class atan(Function):
     def derivative(self):
         return Rational(1) / (1+(self._args)**2)
 
+    def series(self, x, n=6):
+        #expanding around infinity can actually be achieved for atan:
+        if self._args == 1/x:
+            return pi/2
+        return Function.series(self, x, n)
+
     def eval(self):
         if self._args == 0:
             return Rational(0)

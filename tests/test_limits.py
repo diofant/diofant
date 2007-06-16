@@ -3,7 +3,7 @@ sys.path.append(".")
 
 import sympy as s
 from sympy.modules.limits import Limit
-from sympy import log
+from sympy import log, limit, atan, Symbol, oo, pi
 
 def testsets():
     from sympy.modules.limits import member,intersect,union
@@ -198,3 +198,9 @@ def test_error():
     import py
     x = s.Symbol('x')
     py.test.raises( NotImplementedError, s.limit , x , x+1, 0)
+
+def test_atan():
+    x = Symbol("x")
+    assert limit(atan(x), x, 0) == 0
+    assert limit(atan(x), x, -oo) == -pi/2
+    assert limit(atan(x), x, oo) == pi/2

@@ -389,9 +389,9 @@ class Basic(object):
         """
         Usage
         =====
-            Return the Taylor series around 0 of self with respect to sym until
-            the n-th term. Use substitution if you want to get a series around
-            a different point.
+            Return the Taylor series around 0+ (i.e. 0 from the right) of self
+            with respect to sym until the n-th term. Use substitution if you
+            want to get a series around a different point or from the left.
         
         Notes
         =====
