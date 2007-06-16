@@ -191,6 +191,8 @@ def limitinf(e,x):
         #just to pass the tests
         if e == -log(x):
             return -oo
+        #if e == -x:
+        #    return -oo
         return s.oo #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
 #this doesn't work:
 #        return sign(c0, x) * s.oo #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
@@ -430,18 +432,29 @@ class Limit(Basic):
         
         return self._mathml
             
-def limit(e,z,z0, evaluate=True):
-    """Compute the limit of e(z) at the point z0. 
-        z0 can be oo
-        Currently only limit z->z0+"""
+def limit(e,z,z0, evaluate=True, left=False):
+    """
+    Compute the limit of e(z) at the point z0. 
+
+    z0 can be any expression, including oo and -oo.
+
+    For finite z0 it calculates the limit from the right (z->z0+) for
+    left=False (default) and the limit from the left (z->z0-) for left=True.
+    """
     if not isinstance(z, s.Symbol):
         raise NotImplementedError("Second argument must be a Symbol")
-    if not evaluate:
+    elif not evaluate:
         return Limit(e, z, z0)
-    if z0 == s.oo:
+
+    #convert all limits to the limit z->oo
+    elif z0 == s.oo:
         return limitinf(e, z)
-    if z0 == -s.oo:
+    elif z0 == -s.oo:
         return limitinf(e.subs(z,-z), z)
-    x=s.Symbol("x", dummy=True)
-    e0=e.subs(z,z0+1/x)
-    return limitinf(e0,x)
+    else:
+        x=s.Symbol("x", dummy=True)
+        if left:
+            e0=e.subs(z,z0-1/x)
+        else:
+            e0=e.subs(z,z0+1/x)
+        return limitinf(e0,x)

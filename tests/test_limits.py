@@ -202,9 +202,22 @@ def test_atan():
     assert limit(atan(x), x, -oo) == -pi/2
     assert limit(atan(x), x, oo) == pi/2
 
-def test_minusbug():
+def test_minusbug1():
     x = Symbol("x")
     a=limit(log(1+exp(x))/x,x,-oo)
     b=limit(log(1+exp(-x))/(-x),x,oo)
     assert a==0
     assert a==b
+
+def test_minusbug2():
+    x = Symbol("x")
+    assert limit(x, x, oo) == oo
+    #assert limit(x, x, -oo) == -oo
+    #assert limit(-x, x, oo) == -oo
+    assert limit(-x, x, -oo) == oo
+
+
+def test_limitsleft():
+    x = Symbol("x")
+    assert limit(1/x, x, 0) == oo
+    #assert limit(1/x, x, 0, left=True) == -oo
