@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy.modules.limits import Limit, limitinf
+from sympy.modules.limits import Limit
 from sympy import log, limit, atan, Symbol, oo, pi, Rational
 from sympy import sin, cos, exp
 
@@ -87,29 +87,28 @@ def test_simple_limit_automatic():
     "example 3.15"
     x = Symbol("y")
     f = (exp(1/x-exp(-x))-exp(1/x))/exp(-x)
-    assert limitinf(f,x) == -1
+    assert limit(f,x,oo) == -1
 
 def testlimitinf_lenmrveq1():
     x = Symbol("y")
-    assert limitinf(x,x) == oo
-    assert limitinf(-x,x) == oo
-    assert limitinf(-x**2,x) == oo
-    assert limitinf(1/x,x) == 0
-    assert limitinf(1/x,x) != 1
-    assert limitinf(1+1/x,x) == 1
-    assert limitinf(1+1/x,x) != 0
-    assert limitinf(exp(x),x) == oo
-    assert limitinf(-exp(x),x) == oo
-    assert limitinf(-exp(1/x),x) == -1
-    assert limitinf(exp(x)/x,x) == oo
-    assert limitinf(exp(x)/x,x) != 1
-    assert limitinf(x+exp(-x),x) == oo
-    assert limitinf(x+exp(-x**2),x) == oo
-    assert limitinf(x+exp(-exp(x)),x) == oo
-    assert limitinf(1/x-exp(-x),x) == 0
-    assert limitinf(13+1/x-exp(-x),x) == 13
-
-    assert limitinf(x+1/x,x) == oo
+    assert limit(x,x,oo) == oo
+    assert limit(-x,x,oo) == oo
+    assert limit(-x**2,x,oo) == oo
+    assert limit(1/x,x,oo) == 0
+    assert limit(1/x,x,oo) != 1
+    assert limit(1+1/x,x,oo) == 1
+    assert limit(1+1/x,x,oo) != 0
+    assert limit(exp(x),x,oo) == oo
+    assert limit(-exp(x),x,oo) == oo
+    assert limit(-exp(1/x),x,oo) == -1
+    assert limit(exp(x)/x,x,oo) == oo
+    assert limit(exp(x)/x,x,oo) != 1
+    assert limit(x+exp(-x),x,oo) == oo
+    assert limit(x+exp(-x**2),x,oo) == oo
+    assert limit(x+exp(-exp(x)),x,oo) == oo
+    assert limit(1/x-exp(-x),x,oo) == 0
+    assert limit(13+1/x-exp(-x),x,oo) == 13
+    assert limit(x+1/x,x,oo) == oo
 
 def testlimit():
     x = Symbol("y")
@@ -122,18 +121,18 @@ def testlimit():
 
 def testlimitinf_lenmrveq2():
     x = Symbol("y")
-    assert limitinf(exp(x+exp(-x))-exp(x),x) == 1
-    assert limitinf(1/exp(-x+exp(-x))-exp(x),x) == -1
+    assert limit(exp(x+exp(-x))-exp(x), x, oo) == 1
+    assert limit(1/exp(-x+exp(-x))-exp(x), x, oo) == -1
     #example 8.19
-    e=(log(log(x)+log(log(x)))-log(log(x)))/log(log(x)+log(log(log(x))))*log(x)
-    #assert limitinf(e,x)==1
+    #e=(log(log(x)+log(log(x)))-log(log(x)))/log(log(x)+log(log(log(x))))*log(x)
+    #assert limit(e,x,oo)==1
 
 def xtestlonglimit1():
     "example 8.18"
     x = Symbol("y")
     h = exp(-x/(1+exp(-x)))
     e = (exp(h)*exp(-x/(1+h))*exp(exp(-x+h)))/h**2-exp(x)+x
-    l = limitinf(e,x)
+    l = limit(e, x, oo)
     print "limit=",l
     assert l== 2
     assert l!= 1
@@ -161,8 +160,8 @@ def test_functions():
     x=Symbol("x")
     assert limit(sin(x)/x,x,0) == 1
     assert limit(cos(x)/sin(x),x,0) == oo
-    assert limitinf(cos(1/x),x) == 1
-    assert limitinf(exp(x)*(sin(1/x+exp(-x))-sin(1/x)),x) == 1
+    assert limit(cos(1/x),x,oo) == 1
+    assert limit(exp(x)*(sin(1/x+exp(-x))-sin(1/x)),x,oo) == 1
 
 def test_sign():
     x=Symbol("x")
@@ -174,13 +173,13 @@ def test_others():
     a=Symbol("a")
     m=Symbol("m")
     n=Symbol("n")
-    assert limitinf(sqrt(log(x+1))-sqrt(log(x)),x)==0
+    assert limit(sqrt(log(x+1))-sqrt(log(x)),x,oo)==0
     assert limit(((1+x)**a-1)/x,x,0)==a
     assert limit((x**(1/n)-1)/(x**(1/m)-1),x,1)==m/n
     #8.12 
-    assert limitinf((3**x+5**x)**(1/x),x)==5
+    assert limit((3**x+5**x)**(1/x),x,oo)==5
     #this is a similar limit
-    assert limitinf((5**x-3**x)**(1/x),x)==5
+    assert limit((5**x-3**x)**(1/x),x,oo)==5
 
 def test_Limit():
     x=Symbol("x")
