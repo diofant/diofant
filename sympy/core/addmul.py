@@ -482,14 +482,18 @@ class Mul(Pair):
         return r
         
     def series(self,sym,n):
-        """expansion for Mul
-        need to handle this correctly:
+        """Series expansion for Mul.
+
+        It needs to handle this correctly:
+
         (e^x-1)/x  -> 1+x/2+x^2/6
-        the first term is (e^x-1)/x evaluated at x=0. normally, we would use
-        a limit. but in cas, the limit is computed using series. so we must
+
+        the first term is (e^x-1)/x evaluated at x=0, normally, we would use
+        a limit. But in a CAS, the limit is computed using series, so we must
         calculate series differently - using the bottom up approach:
-        first expand x, then e^x, then e^x-1, and finally (e^x-1)/x
+        first expand x, then e^x, then e^x-1, and finally (e^x-1)/x.
         """
+
         a,b=self.getab()
         try:
             x=a.series(sym,n)
