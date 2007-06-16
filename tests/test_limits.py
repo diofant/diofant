@@ -139,9 +139,9 @@ def xtestlonglimit1():
     assert l!= 1
 
 def testlog():
-    x=s.Symbol("x")
-    e=s.log(x)
-    assert s.limit(e,x,0)==s.oo
+    x=Symbol("x")
+    assert limit(log(x),x,0)==-oo
+    assert limit(log(x),x,oo)==oo
 
 def testsubexp():
     x=s.Symbol("x")

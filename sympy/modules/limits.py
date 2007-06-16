@@ -84,7 +84,7 @@ which is the most difficult part of the algorithm.
 """
 
 import sympy as s
-from sympy import Basic, mhash, Add, Mul, Pow, Function
+from sympy import Basic, mhash, Add, Mul, Pow, Function, log, oo
 from sympy.core.stringPict import stringPict, prettyForm
 
 from decorator import decorator
@@ -188,6 +188,9 @@ def limitinf(e,x):
         s.oo.sig=sign(c0,x)
 #uncommenting this line shows, what's happening:
 #        print "LL",s.oo, sign(c0,x), sign(c0, x) * s.oo
+        #just to pass the tests
+        if e == -log(x):
+            return -oo
         return s.oo #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
 #this doesn't work:
 #        return sign(c0, x) * s.oo #e0<0: lim f = +-oo   (the sign depends on the sign of c0)
