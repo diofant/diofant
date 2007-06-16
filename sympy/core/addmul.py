@@ -606,13 +606,15 @@ class Add(Pair):
         
     Notes
     =====
-        When an instance of this class is created, the method .eval() is called and will
-        preform some inexpensive symplifications. 
+        When an instance of this class is created, the method .eval()
+        is called and will perform some inexpensive simplifications. 
         
-        In some cases, the eval() method will return an object that is not an instance of the
-        class Add, so for example if x is a Symbol, (x+x) will create a class Add with arguments
-        (x,x) , that will be evaluated via the .eval() method, and this method will return a 
-        class Mul with arguments (2,x), that is how x+x --> 2*x is done
+        In some cases, the eval() method will return an object that is
+        not an instance of the class Add. So, for example, if x is a
+        Symbol, (x+x) will create a class Add with arguments (x,x),
+        that will be evaluated via the .eval() method, and this method
+        will return a class Mul with arguments (2,x). That is how
+        x+x --> 2*x is done.
         
     Examples
     ========
@@ -686,30 +688,32 @@ class Add(Pair):
         """
         Usage
         =====
-            This method is called automatically when an instance of this class
-            is created, and will always return a new object. 
+            This method is called automatically when an instance of
+            this class is created, and will always return a new object. 
             
         Notes
         =====
             Currently, what this method does is: 
             
-                - flatten all arguments, i.e, substitute all instances of Add by their arguments
-                  for example, self.flatten(1, 1+x ) --> [1,1,x]
+                - Flatten all arguments, i.e, substitute all instances
+                  of Add by their arguments for example:
+                  self.flatten(1, 1+x ) --> [1,1,x]
                 
-                - adds it's arguments beying aware of some identities, like that x+x -> 2*x and 
-                  that numbers can be added without restrictions using their own __add__ method
+                - Add its arguments being aware of some identities,
+                  like that x+x -> 2*x and that numbers can be added
+                  without restrictions using their own __add__ method.
                 
-                - sort
+                - Sort
         See also
         ========
             L{Mul.eval}, L{Pow.eval}
             
         TODO
         ====
-            - Perform a complexity analysis
-            - probably optimizations can be done (algorithmic optimizations)
-            - the problem is with addeval() and muleval(), that some classes
-              implement, like Pauli and with noncommutativity of some objects
+            - Perform a complexity analysis.
+            - Probably optimizations can be done (algorithmic optimizations).
+            - The problem is with addeval() and muleval(), that some classes
+              implement, like Pauli and non-commutativity of some objects.
         """
 
 #        @debug
