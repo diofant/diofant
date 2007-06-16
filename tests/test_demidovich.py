@@ -25,10 +25,6 @@ def sqrt4(x):
 def tan(x):
     return sin(x)/cos(x)
 
-def limitminf(f,x):
-    return limit(f.subs(x,-x),x,oo)
-    return limit(f,x,-oo)
-
 def xtest_limits_simple_0():
     #this runs forever....
     assert limit((2**(x+1)+3**(x+1))/(2**x+3**x),x,oo)==3  #175
@@ -67,7 +63,7 @@ def test_limits_simple_4():
     assert limit(sqrt(x**2-5*x+6)-x,x,oo)==-Rational(5)/2  #213
     assert limit(x*(sqrt(x**2+1)-x),x,oo)==Rational(1)/2  #214
     assert limit(x-sqrt3(x**3-1),x,oo)==0  #215
-    assert limitminf(log(1+exp(x))/x,x)==0  #267a
+    assert limit(log(1+exp(x))/x,x,-oo)==0  #267a
     assert limit(log(1+exp(x))/x,x,oo)==1  #267b
 
 def test_f1():
