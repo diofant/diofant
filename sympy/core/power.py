@@ -168,6 +168,7 @@ class Pow(Basic):
         
     def eval(self):
         from addmul import Mul
+        from numbers import oo
         if isinstance(self.exp, Rational) and self.exp.iszero():
             return Rational(1)
         
@@ -260,6 +261,9 @@ class Pow(Basic):
                         for i in range(n-1):
                             r = r * self.base
                         return r
+
+        if self.exp == -1 and self.base == oo:
+            return Rational(0)
         return self
         
 

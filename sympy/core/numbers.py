@@ -66,11 +66,10 @@ class Infinity(Number):
         
     Notes
     =====
-        Cannot be used in expressions like oo/oo, but can be used in some
-        very simple expressions like 1*oo
-          
-        Should be used only as a Symbol, for example results of limits, integration limits etc.
-        Can however be used in comparisons, like oo!=1, or oo!=x**3
+        Can be used in expressions that are meaningful, so for example oo-oo,
+        or oo/oo raise exception, but 1+oo, 2*oo, oo+oo are legal (and produce
+        oo). Can be used in comparisons, like oo!=1, or oo!=x**3 and as results
+        of limits, integration limits etc.
           
     Examples
     ========
@@ -110,6 +109,32 @@ class Infinity(Number):
     
     def evalf(self):
         return self
+
+    @staticmethod
+    def muleval(a, b):
+        if isinstance(a, Infinity) and b.is_number:
+            if b > 0:
+                return oo
+            elif b < 0 and b != -1:
+                return -oo
+            elif b == 0:
+                raise ArithmeticError("Cannot compute oo*0")
+        a, b = b, a
+        if isinstance(a, Infinity) and b.is_number:
+            if b > 0:
+                return oo
+            elif b < 0 and b != -1:
+                return -oo
+            elif b == 0:
+                raise ArithmeticError("Cannot compute 0*oo")
+
+    @staticmethod
+    def addeval(a, b):
+        #print a,b
+        if isinstance(a, Infinity) and b.is_number:
+            return oo
+        if isinstance(b, Infinity) and a.is_number:
+            return oo
 
 oo = Infinity()
 

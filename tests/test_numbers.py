@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Rational, Symbol, Real, sqrt
+from sympy import Rational, Symbol, Real, sqrt, oo
 from sympy.core.power import integer_nthroot
 import py
 
@@ -81,14 +81,25 @@ def test_Real_eval():
     assert isinstance(a**2, Real)
 
 def test_Infinity():
-    assert g.oo == g.oo
-    assert g.oo != 1
-    assert 1*g.oo == g.oo
-    assert 1 != g.oo
-    assert g.oo != -g.oo
-    assert g.oo != g.Symbol("x")**3
-    assert g.oo + 1 == g.oo + 1
-    py.test.raises(ArithmeticError, lambda x: x-x, g.oo)
+    assert oo == oo
+    assert oo != 1
+    assert 1*oo == oo
+    assert 1 != oo
+    assert oo != -oo
+    assert oo != Symbol("x")**3
+    assert oo + 1 == oo + 1
+    assert oo + 1 == oo
+    assert 2 + oo == oo
+    assert 3*oo + 2 == oo
+    assert -oo*3 == -oo
+    assert oo + oo == oo
+    assert -oo + oo*(-5) == -oo
+    assert 1/oo  == 0
+    assert 1/(-oo)  == 0
+    assert 8/oo  == 0
+    py.test.raises(ArithmeticError, "oo-oo")
+    py.test.raises(ArithmeticError, "oo*0")
+    py.test.raises(ArithmeticError, "oo/oo")
 
 def test_powers():
     assert integer_nthroot(1, 2) == (1, True)

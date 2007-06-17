@@ -419,7 +419,8 @@ class Mul(Pair):
         n,c_part = a[0], a[1:]
         #so that now "n" is a Number and "c_part" doesn't contain any number
         if n == 0: 
-            return Rational(0)
+            if self.atoms(type=Infinity) == []:
+                return Rational(0)
         c_part.sort(Basic.cmphash)
         #this if is for multiplying Symbol*Matrix and Number*Matrix
         #I think it's not needed anymore, since Matrix is implemented
@@ -726,8 +727,9 @@ class Add(Pair):
                 bn, b = _extract_numeric(y)
                 if (not ok) and a == b:
                     if isinstance(a, Infinity) or isinstance(b, Infinity):
-                        # case oo - oo
-                        raise ArithmeticError("Cannot compute this")
+                        if x != y:
+                            # case oo - oo
+                            raise ArithmeticError("Cannot compute oo-oo")
                     _m = Mul(an+bn, a)
                     if _m != 0:
                         e.append(_m)
