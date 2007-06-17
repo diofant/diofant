@@ -355,7 +355,9 @@ class Mul(Pair):
              isinstance(x.base, Function) and isinstance(y.base, Function):
             if xexp == yexp:
                 expr = Mul(xbase, ybase)
-                return Pow(expr, xexp, evaluate=True), True
+                # Don't evaluate Pow to avoid infinite recursion!
+                # return Pow(expr, xexp, evaluate=True), True
+                return Pow(expr, xexp, evaluate=False), True
             elif xexp == -yexp:
                 den = Pow(ybase, -1)
                 expr = Mul(xbase, den)
