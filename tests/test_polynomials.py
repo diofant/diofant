@@ -14,23 +14,21 @@ def test_Polynomial():
     g = Polynomial(y**2-1)
     h = f + g
     assert f.var == [x]
-    assert f.p == [[1,1], [2,0]]
+    assert f.cl == [[1,1], [2,0]]
     assert str(f) == "2+x"
-    assert repr(f) == "Polynomial(2+x, [x], 'grevlex', 'int')"
-    assert f.poly() == x+2
+    assert repr(f) == "Polynomial(2+x, [x], 'grevlex', 'sym')"
+    assert f.basic == x+2
     assert h.var == [x, y]
-    assert h.p == [[1, 0, 2], [1, 1, 0], [1, 0, 0]]
+    assert h.cl == [[1, 0, 2], [1, 1, 0], [1, 0, 0]]
     h = f*Polynomial(y,[x])
     assert h.var == [x]
-    assert h.p == [[y, 1], [2*y, 0]]
+    assert h.cl == [[y, 1], [2*y, 0]]
     h = f*y
     assert h.var == [x, y]
-    assert h.p == [[1, 1, 1], [2, 0, 1]]
-    h.set(var=[y])
+    assert h.cl == [[1, 1, 1], [2, 0, 1]]
+    h.var=[y]
     assert h.var == [y]
-    assert h.p == [[2+x, 1]]
-    assert h.diff(x).p == [[0]]
-    assert h.diff(y).p == [[2+x, 0]]
+    assert h.cl == [[2+x, 1]]
     
 def test_ispoly():
     x = Symbol("x")
@@ -44,9 +42,6 @@ def test_ispoly():
     assert ispoly( x**2 + 3*x*sqrt(y) - 8, x)
     assert not ispoly( x**2 + 3*x*sqrt(y) - 8 , y)
     assert ispoly((x**2)*(y**2) + x*(y**2) + y*x + x + exp(2), (x,y) )
-
-    #assert Rational(1).ispoly(sin(x))
-    #assert not exp(x).ispoly(sin(x))
 
 def test_coeff():
     x = Symbol("x")

@@ -55,3 +55,20 @@ def term_is_mult(a, b):
     a and b are assumed to be terms of coefficient lists of
     Polynomials of same the variables."""
     return all([x >= 0 for x in term_div(a, b)[1:]])
+
+def merge_var(*a):
+    """Return a sorted list of the symbols in the arguments"""
+    result = []
+    for var in a:
+        for sym in var:
+            if not sym in result:
+                result.append(sym)
+    result.sort(key=str)
+    return result
+
+def copy_cl(cl):
+    """Deep copy of nested lists like the coefficient list of Polynomial"""
+    result = []
+    for term in cl:
+        result.append(term[:])
+    return result
