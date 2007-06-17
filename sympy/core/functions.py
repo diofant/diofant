@@ -94,12 +94,9 @@ class Function(Basic):
             e = e.removeO()
         e = e.subs(w,argorig-z0)
 
-        #this only works for exp 
-        #generally, the problem is with expanding around other point
-        #than arg == 0.
-        assert isinstance(self,exp)
+        #this only works for exp or when z0=0, otherwise there is a problem
+        #with expanding around other point than arg == 0:
         e= (exp(z0)*e).expand().subs(l,log(sym))
-        #if isinstance(e,Add) and e.has(O(sym)):
         if isinstance(e,Add) and e.has(O(sym)):
             return e
         return e.expand().series(sym,n)
