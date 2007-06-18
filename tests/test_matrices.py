@@ -2,8 +2,7 @@ import sys
 sys.path.append(".")
 
 from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix, \
-                                    minkowski_tensor, eye, randMatrix, permuteBkwd, \
-                                    LUsolve
+                                    minkowski_tensor, eye, randMatrix
 from sympy import Symbol
 
 def test_multiplication():
@@ -211,7 +210,7 @@ def test_LUdecomp():
     L,U,p = testmat.LUdecomposition()
     assert L.is_lower()
     assert U.is_upper()
-    assert permuteBkwd(L*U,p)-testmat == zero(4)
+    assert (L*U).permuteBkwd(p)-testmat == zero(4)
     
     testmat = Matrix([[6,-2,7,4],
                       [0,3,6,7],
@@ -220,7 +219,7 @@ def test_LUdecomp():
     L,U,p = testmat.LUdecomposition()
     assert L.is_lower()
     assert U.is_upper()
-    assert permuteBkwd(L*U,p)-testmat == zero(4)
+    assert (L*U).permuteBkwd(p)-testmat == zero(4)
 
 def test_LUsolve():
     A = Matrix([[2,3,5],
@@ -228,14 +227,14 @@ def test_LUsolve():
                 [8,3,6]])
     x = Matrix(3,1,[3,7,5])
     b = A*x
-    soln = LUsolve(A,b)
+    soln = A.LUsolve(b)
     assert soln == x
     A = Matrix([[0,-1,2],
                 [5,10,7],
                 [8,3,4]])
     x = Matrix(3,1,[-1,2,5])
     b = A*x
-    soln = LUsolve(A,b)
+    soln = A.LUsolve(b)
     assert soln == x
 
 def test_inverse():
@@ -251,3 +250,10 @@ def test_cross():
     v1 = Matrix(1,3,[1,2,3])
     v2 = Matrix(1,3,[3,4,5])
     assert v1.cross(v2) == Matrix(1,3,[-2,4,-2])
+
+def test_cofactor():
+    assert eye(3) == eye(3).cofactorMatrix()
+    test = Matrix([[1,3,2],[2,6,3],[2,3,6]])
+    assert test.cofactorMatrix() == Matrix([[27,-6,-6],[-12,2,3],[-3,1,0]])
+    test = Matrix([[1,2,3],[4,5,6],[7,8,9]])
+    assert test.cofactorMatrix() == Matrix([[-3,6,-3],[6,-12,6],[-3,6,-3]])

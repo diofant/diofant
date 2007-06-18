@@ -251,7 +251,7 @@ class Matrix(object):
         return self.inverse_LU()
 
     def inverse_LU(matrix):
-        return LUsolve(matrix, eye(matrix.lines))
+        return matrix.LUsolve(eye(matrix.lines))
 
     def __str__(self):
         s="";
@@ -291,6 +291,35 @@ class Matrix(object):
     def row_del(self, i):
         self.mat = self.mat[:i*self.cols] + self.mat[(i+1)*self.cols:]
         self.lines -= 1
+
+    def col_del(self, i):
+        """
+        >>> import sympy
+        >>> M = sympy.modules.matrices.eye(3)
+        >>> M.col_del(1)
+        >>> M   #doctest: +NORMALIZE_WHITESPACE
+        1 0 
+        0 0 
+        0 1
+        """
+        for j in range(self.lines-1, -1, -1):
+            del self.mat[i+j*self.cols]
+        self.cols -= 1
+
+    def row_join(self, rhs):
+        # concatenates two matrices along self's last and rhs's first col
+        assert self.lines == rhs.lines
+        newmat = zeronm(self.lines, self.cols + rhs.cols)
+        newmat[:,:self.cols] = self[:,:]
+        newmat[:,self.cols:] = rhs
+        return newmat
+
+    def col_join(self, bott):
+        assert self.cols == bott.cols
+        newmat = zeronm(self.lines+bott.lines, self.cols)
+        newmat[:self.lines,:] = self[:,:]
+        newmat[self.lines:,:] = bott
+        return newmat 
 
     def submatrix(self, keys):
         """
@@ -395,6 +424,23 @@ class Matrix(object):
             s+="]\n"
         print s
     
+    def LUsolve(self, rhs):
+        assert rhs.lines == self.lines
+        A, perm = self.LUdecomposition_Simple()
+        n = self.lines
+        b = rhs.permuteFwd(perm)
+        # forward substitution, all diag entries are scaled to 1
+        for i in range(n):
+            for j in range(i):
+                b.row(i, lambda x,k: x - b[j,k]*A[i,j])
+        # backward substitution
+        for i in range(n-1,-1,-1):
+            for j in range(i+1, n):
+                b.row(i, lambda x,k: x - b[j,k]*A[i,j])
+            b.row(i, lambda x,k: x / A[i,i])
+        return b
+
+    
     def LUdecomposition(self):
         combined, p = self.LUdecomposition_Simple()
         L = zero(self.lines)
@@ -451,6 +497,39 @@ class Matrix(object):
                                (self[2]*b[0] - self[0]*b[2]),
                                (self[0]*b[1] - self[1]*b[0])))
 
+
+    def permuteBkwd(self, perm):
+        copy = self[:,:]
+        for i in range(len(perm)-1, -1, -1):
+            copy.row_swap(perm[i][0], perm[i][1])
+        return copy
+
+    def permuteFwd(self, perm):
+        copy = self[:,:]
+        for i in range(len(perm)):
+            copy.row_swap(perm[i][0], perm[i][1])
+        return copy
+
+    def delRowCol(self, i, j):
+        #used only for cofactors, makes a copy
+        M = self[:,:]
+        M.row_del(i)
+        M.col_del(j)
+        return M
+
+    def cofactorMatrix(self):
+        return Matrix(self.lines, self.cols, lambda i,j: self.cofactor(i,j))
+
+    def minorEntry(self, i, j):
+        assert 0 <= i < self.lines and 0 <= j < self.cols
+        return self.delRowCol(i,j).det()
+
+    def cofactor(self, i, j):
+        if (i+j) % 2 == 0:
+            return self.minorEntry(i,j)
+        else:
+            return -1 * self.minorEntry(i,j)
+        
     
     @property
     def is_square(self):
@@ -645,34 +724,6 @@ minkowski_tensor = Matrix( (
     (0,0,-1,0),
     (0,0,0,-1)
     ))
-
-def permuteBkwd(M, perm):
-    copy = M[:,:]
-    for i in range(len(perm)-1, -1, -1):
-        copy.row_swap(perm[i][0], perm[i][1])
-    return copy
-
-def permuteFwd(M, perm):
-    copy = M[:,:]
-    for i in range(len(perm)):
-        copy.row_swap(perm[i][0], perm[i][1])
-    return copy
-
-def LUsolve(system, rhs):
-    assert rhs.lines == system.lines
-    A, perm = system.LUdecomposition_Simple()
-    n = system.lines
-    b = permuteFwd(rhs, perm)
-    # forward substitution, all diag entries are scaled to 1
-    for i in range(n):
-        for j in range(i):
-            b.row(i, lambda x,k: x - b[j,k]*A[i,j])
-    # backward substitution
-    for i in range(n-1,-1,-1):
-        for j in range(i+1, n):
-            b.row(i, lambda x,k: x - b[j,k]*A[i,j])
-        b.row(i, lambda x,k: x / A[i,i])
-    return b
 
 def jacobian(flist, varlist):
     if isinstance(flist, Matrix):
