@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, exp, O
+from sympy import Symbol, exp, O, sqrt, Rational
 
 def test_Symbol():
     a=g.Symbol("a")
@@ -123,6 +123,8 @@ def testpow():
     assert e.diff(a) == 2*b*5**(g.Rational(1)/2)
     e=a/b**2
     assert e == a*b**(-2)
+
+    assert sqrt(2*(1+sqrt(2))) == (2*(1+2**(Rational(1,2))))**(Rational(1,2))
 
 def test_expand():
     a = g.Symbol("a")
