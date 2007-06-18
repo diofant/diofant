@@ -96,7 +96,7 @@
 		<cmdsynopsis>
 			<command>&dhpackage;</command>
 			<group choice="opt">
-				<arg choice="plain"><option>-c</option></arg>
+				<arg choice="plain"><option>\-c</option></arg>
 				<arg choice="plain"><option>--console</option></arg>
 			</group>
 		</cmdsynopsis>
@@ -107,13 +107,13 @@
 			<group choice="opt">
 				<arg choice="plain">
 					<group choice="req">
-						<arg choice="plain"><option>-h</option></arg>
+						<arg choice="plain"><option>\-h</option></arg>
 						<arg choice="plain"><option>--help</option></arg>
 					</group>
 				</arg>
 				<arg choice="plain">
 					<group choice="req">
-						<arg choice="plain"><option>-v</option></arg>
+						<arg choice="plain"><option>\-v</option></arg>
 						<arg choice="plain"><option>--version</option></arg>
 					</group>
 				</arg>
