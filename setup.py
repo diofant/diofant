@@ -220,6 +220,8 @@ setup(
                     'sympy.modules.geometry',
                     'sympy.modules.mathml', 
                     'sympy.modules.plotting',
+                    'sympy.modules.plotting.renderables',
+                    'sympy.modules.plotting.scene',
                     'sympy.modules.polynomials',
                     'sympy.modules.printing',
                     'sympy.modules.specfun',
