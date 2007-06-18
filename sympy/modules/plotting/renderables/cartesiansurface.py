@@ -17,7 +17,12 @@ class CartesianSurface(Renderable):
         y, self.y_min, self.y_max, self.y_steps = i_y
         self.y_set = frange(self.y_min, self.y_max, self.y_steps)
         self.x_set = frange(self.x_min, self.x_max, self.x_steps)
-        self.vertices = [ [(x_e, float(f.subs(x, x_e).subs(y, y_e)), y_e) for y_e in self.y_set] for x_e in self.x_set ]
+        def eval(f, x, y, x_e, y_e):
+            try:
+                return float(f.subs(x, x_e).subs(y, y_e))
+            except:
+                return None
+        self.vertices = [ [(x_e, eval(f, x,y, x_e,y_e), y_e) for y_e in self.y_set] for x_e in self.x_set ]
         self.calczrange()
         global instantiation_count
         self.colorscheme = instantiation_count % len(self.colorschemes)
@@ -27,6 +32,8 @@ class CartesianSurface(Renderable):
         self.z_max, self.z_min = None, None
         for j in range(len(self.y_set)):
             for i in range(len(self.x_set)):
+                if self.vertices[i][j][1] == None:
+                    continue
                 if self.z_max == None:
                     self.z_max = self.vertices[i][j][1]
                     self.z_min = self.vertices[i][j][1]
@@ -55,6 +62,11 @@ class CartesianSurface(Renderable):
             glBegin(GL_TRIANGLE_STRIP)
             for y in range(0, y_len):
 
+                if (self.vertices[x][y][1] == None) or (self.vertices[x-1][y][1] == None):
+                    glEnd()
+                    glBegin(GL_TRIANGLE_STRIP)
+                    continue
+                
                 glColor3f(*self.applycolor(*self.vertices[x][y]))
                 glVertex3f(*self.vertices[x][y]);
 

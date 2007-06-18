@@ -12,7 +12,12 @@ class CartesianCurve(Renderable):
     def __init__(self, f, i_x):
         x, x_min, x_max, x_steps = i_x
         x_set = frange(x_min, x_max, x_steps)
-        self.vertices = [ (x_e, float(f.subs(x, x_e)), 0.0) for x_e in x_set]
+        def eval(f, x, x_e):
+            try:
+                return float(f.subs(x, x_e))
+            except:
+                return None
+        self.vertices = [ (x_e, eval(f, x, x_e), 0.0) for x_e in x_set]
         self.calczmax()
     
     def calczmax(self):
@@ -29,6 +34,10 @@ class CartesianCurve(Renderable):
         glBegin(GL_LINE_STRIP)
         for x in range(0, len(self.vertices)):
             z_r = rinterpolate(self.z_min, self.z_max, self.vertices[x][1])
+            if self.vertices[x][1] == None:
+                glEnd()
+                glBegin(GL_LINE_STRIP)
+                continue
             glColor3f(*interpolatecolor((0.0,0.0,1.0),(1.0,0.0,0.0),z_r))
             glVertex3f(*self.vertices[x]);
         glEnd()

@@ -1,4 +1,7 @@
 import sys
+import os
+import threading
+from time import sleep
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -56,8 +59,7 @@ class Scene(object):
         self._renderables[i] = v
     def __delitem__(self, i): del self._renderables[i] 
 
-    
-    def show(self):
+    def glutloop(self):
         """
         Create the GLUT window and start the rendering loop.
         """
@@ -82,6 +84,11 @@ class Scene(object):
         gluPerspective(45.0, float(self.width)/float(self.height), 0.1, 100.0)
         glMatrixMode(GL_MODELVIEW)
         glutMainLoop()
+        
+    def show(self):
+        #while glutGetWindow() != 0: pass
+        #threading.Thread(target=self.glutloop).start()
+        self.glutloop()
     
     def _onrender(self):
         """
@@ -108,6 +115,7 @@ class Scene(object):
         """
         ESCAPE = '\033'
         if args[0] == ESCAPE:
+            #glutDestroyWindow(self._window) #doesn't work yet
             sys.exit()
         # zoom in
         elif args[0] == 'r':
