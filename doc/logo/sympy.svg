@@ -14,7 +14,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
-   sodipodi:docbase="C:\Documents and Settings\Administrator\Desktop\nexweb"
+   sodipodi:docbase="C:\Source\sympy\doc\logo"
    sodipodi:docname="sympy.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="C:\Documents and Settings\Administrator\Desktop\nexweb\sympy-500px.png"
@@ -30,16 +30,16 @@
      objecttolerance="10"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="426.70782"
-     inkscape:cy="799.19519"
+     inkscape:zoom="0.5"
+     inkscape:cx="501.15969"
+     inkscape:cy="759.19519"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="svg2"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="947"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
+     inkscape:window-x="0"
+     inkscape:window-y="22"
      showguides="true"
      inkscape:guide-bbox="true" />
   <defs
@@ -170,16 +170,16 @@
    style="font-size:122.68216705px" /></tspan></text>
   <text
      id="text12927"
-     x="122.91182"
-     y="625.23969"
+     x="119.97973"
+     y="641.61029"
      transform="scale(1.0231651,0.9773593)"
      xml:space="preserve"
-     style="font-size:12.27798176px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:#7d7d7d;stroke-width:2.00000007;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Euclid;stroke-miterlimit:4;stroke-dasharray:none"><tspan
-       y="625.23969"
+     style="font-size:12.27798176px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:#7d7d7d;stroke-width:1.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Euclid"><tspan
+       y="641.61029"
        id="tspan12929"
-       style="font-size:160px;stroke:#7d7d7d;stroke-opacity:1;stroke-width:2.00000007;stroke-miterlimit:4;stroke-dasharray:none"
-       x="122.91182"
-       sodipodi:role="line">Sympy</tspan></text>
+       style="font-size:160px;stroke:#7d7d7d;stroke-width:1.99999976;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="119.97973"
+       sodipodi:role="line">SymPy</tspan></text>
   <g
      inkscape:groupmode="layer"
      id="layer7"
