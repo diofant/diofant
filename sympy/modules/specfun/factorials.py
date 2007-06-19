@@ -344,37 +344,3 @@ class upper_gamma(Function2):
             b = a-1
             return b*upper_gamma(b, x) + x**b * exp(-x)
         return self
-
-"""
-from sympy import *
-from sympy.modules.specfun.factorials import lower_gamma, upper_gamma
-
-x = Symbol('x')
-
-upper_gamma(3, x)
-
-
-x^n Exp[a x] Cos[b x] Sin[c x], x]
-
-
-        I  1 + n
-Out[2]= - x      (ExpIntegralE[-n, -((a - I (b - c)) x)] -
-        4
-
->      ExpIntegralE[-n, -((a + I (b - c)) x)] -
-
->      ExpIntegralE[-n, -((a - I (b + c)) x)] +
-
->      ExpIntegralE[-n, -((a + I (b + c)) x)])
-
-upper_gamma(
-
-Integrate[x^n Exp[a x], x]
-
-            1 + n         -1 - n
-Out[21]= -(x      (-(a x))       Gamma[1 + n, -(a x)])
-
-
-
-
-"""
