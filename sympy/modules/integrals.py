@@ -161,12 +161,15 @@ class Integral(Basic):
                     if f.exp==-1: return log(abs(x)) * other
                     else: return x**(f.exp+1)/(f.exp+1) * other
 
+        from sympy import exp
+        from sympy.modules.specfun.factorials import upper_gamma
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
         integral_table = {
                 a/(b*x+c): a/b * log(abs(b*x+c)),
                 a*sin(b*x): -a/b * cos(b*x),
                 a*cos(b*x): a/b * sin(b*x),
-                log(x): x*log(x)-x
+                log(x): x*log(x)-x,
+                x**a * exp(b*x) : (-1)*x**(a+1)*(-b*x)**(-a-1)*upper_gamma(a+1,-b*x)
                 }
         for k in integral_table:
             r = f.match(k, [a,b,c])

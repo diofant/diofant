@@ -141,12 +141,29 @@ def factorial_quotient(p, q):
         return t
     return factorial(p) / factorial(q)
 
+
 # This class is a temporary solution
 class Function2(Function):
+
     def __init__(self, x, y):
         Basic.__init__(self, is_commutative=True)
         self._args = self.sympify(x), self.sympify(y)
 
+    def atoms(self, s=[], type=None):
+        x, y = self._args
+
+        s_temp = list(set(x.atoms()) | set(y.atoms()))
+
+        if type is not None:
+            return filter(lambda x : isinstance(x, type), s_temp)
+
+        return s_temp
+
+    def subs(self, old, new):
+        x, y = self._args
+        x = x.subs(old, new)
+        y = y.subs(old, new)
+        return self.__class__(x, y)
 
 class rising_factorial(Function2):
     """
@@ -294,3 +311,70 @@ class gamma(Function):
     def __latex__(self):
         return "\Gamma(" + self._args.__latex__() + ")"
 
+
+class lower_gamma(Function2):
+    """
+    Lower incomplete gamma function
+    
+    gamma(a, x)
+    """
+    def eval(self):
+        a, x = self._args
+        if a == 1:
+            return 1 - exp(-x)
+        if a.is_integer and a > 1:
+            b = a-1
+            return b*lower_gamma(b, x) - x**b * exp(-x)
+        return self
+
+
+class upper_gamma(Function2):
+    """
+    Upper incomplete gamma function
+
+    Gamma(a, x)
+    """
+    def eval(self):
+        a, x = self._args
+        if x == 0:
+            return gamma(a)
+        if a == 1:
+            return exp(-x)
+        if a.is_integer and a > 1:
+            b = a-1
+            return b*upper_gamma(b, x) + x**b * exp(-x)
+        return self
+
+"""
+from sympy import *
+from sympy.modules.specfun.factorials import lower_gamma, upper_gamma
+
+x = Symbol('x')
+
+upper_gamma(3, x)
+
+
+x^n Exp[a x] Cos[b x] Sin[c x], x]
+
+
+        I  1 + n
+Out[2]= - x      (ExpIntegralE[-n, -((a - I (b - c)) x)] -
+        4
+
+>      ExpIntegralE[-n, -((a + I (b - c)) x)] -
+
+>      ExpIntegralE[-n, -((a - I (b + c)) x)] +
+
+>      ExpIntegralE[-n, -((a + I (b + c)) x)])
+
+upper_gamma(
+
+Integrate[x^n Exp[a x], x]
+
+            1 + n         -1 - n
+Out[21]= -(x      (-(a x))       Gamma[1 + n, -(a x)])
+
+
+
+
+"""

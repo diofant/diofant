@@ -50,10 +50,12 @@ def test_multiple_integration():
     assert integrate((x**2)*(y**2), (x,0,1), (y,-1,2)) == Rational(1)
     assert integrate((y**2)*(x**2), x, y) == Rational(1,9)*(x**3)*(y**3)
     
-
 def test_integration_table():
     x=Symbol("x")
     assert integrate(1/(x+1), x) == log(abs(x+1))
     assert integrate(-4*sin(4*x), x) == cos(4*x)
     assert integrate(3*cos(4*x), x) == 3*sin(4*x)/4
     assert integrate(log(x), x) == x*log(x) - x
+    from sympy import simplify, Pow, diff, exp
+    assert integrate(Pow(x,0,evaluate=False)*exp(1*x,evaluate=False), x) == exp(x)
+    assert simplify(diff(integrate(x**3 * exp(4*x), x), x)) == x**3 * exp(4*x)

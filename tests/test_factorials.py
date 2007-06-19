@@ -94,3 +94,6 @@ def test_gamma():
     assert gamma(3) == 2
     assert gamma(Rational(1,2)) == sqrt(pi)
     assert latex(gamma(3+x)) == "$\Gamma(3+x)$"
+    from sympy import simplify
+    assert simplify(lower_gamma(1,x) + upper_gamma(1,x)) == gamma(1)
+    assert simplify(lower_gamma(5,x) + upper_gamma(5,x)) == gamma(5)
