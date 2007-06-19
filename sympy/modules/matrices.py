@@ -354,12 +354,21 @@ class Matrix(object):
         if isinstance(key, slice):
             lo, hi = 0, defmax
             if key.start != None:
-                lo = key.start
+                if key.start >= 0:
+                    lo = key.start
+                else:
+                    lo = defmax+key.start
             if key.stop != None:
-                hi = key.stop
+                if key.stop >= 0:
+                    hi = key.stop
+                else:
+                    hi = defmax+key.stop
             return lo, hi
         elif isinstance(key, int):
-            return key, key+1
+            if key >= 0:
+                return key, key+1
+            else:
+                return defmax+key, defmax+key+1
         else:
             raise IndexError("Improper index type")
 
@@ -440,7 +449,6 @@ class Matrix(object):
             b.row(i, lambda x,k: x / A[i,i])
         return b
 
-    
     def LUdecomposition(self):
         combined, p = self.LUdecomposition_Simple()
         L = zero(self.lines)
@@ -454,7 +462,7 @@ class Matrix(object):
                         L[i,i] = 1
                     U[i,j] = combined[i,j]
         return L, U, p
-    
+
     def LUdecomposition_Simple(self):
         # returns A compused of L,U (L's diag entries are 1) and
         # p which is the list of the row swaps (in order)
@@ -497,6 +505,12 @@ class Matrix(object):
                                (self[2]*b[0] - self[0]*b[2]),
                                (self[0]*b[1] - self[1]*b[0])))
 
+    def dot(self, b):
+        if not (self.lines == 1 and self.cols == 3 and \
+               b.lines == 1 and b.cols == 3):
+            raise "Dimensions incorrect for dot product"
+        else:
+            return self[0]*b[0] + self[1]*b[1] + self[2]*b[2]
 
     def permuteBkwd(self, perm):
         copy = self[:,:]
@@ -726,6 +740,8 @@ minkowski_tensor = Matrix( (
     ))
 
 def jacobian(flist, varlist):
+    # flist is a vector of expression representing functions f_i(x_1, ..., x_n)
+    # varlist is the set of x_i's in order
     if isinstance(flist, Matrix):
         assert flist.lines == 1
         m = flist.cols

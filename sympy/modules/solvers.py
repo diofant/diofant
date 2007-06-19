@@ -281,6 +281,17 @@ def solve_linear_system(matrix, syms):
     else:
         return {}   # no solutions
 
+def solve_linear_system_LU(matrix, syms):
+    """ LU function works for invertible only """
+    assert matrix.lines == matrix.cols-1
+    A = matrix[:matrix.lines,:matrix.lines]
+    b = matrix[:,matrix.cols-1:]
+    soln = A.LUsolve(b)
+    solutions = {}
+    for i in range(soln.lines):
+        solutions[syms[i]] = soln[i,0]
+    return solutions
+
 def solve_linear(a, b):
     """Solve a*x + b == 0"""
     return -b/a

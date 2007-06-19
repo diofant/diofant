@@ -2,7 +2,8 @@ import sys
 sys.path.append(".")
 
 from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix, \
-                                    minkowski_tensor, eye, randMatrix
+                                    minkowski_tensor, eye, randMatrix, \
+                                    jacobian
 from sympy import Symbol
 
 def test_multiplication():
@@ -157,6 +158,10 @@ def test_submatrix():
     m1 = Matrix(3,3, lambda i,j: i+j)
     assert m1[0,:] == Matrix(1,3,(0,1,2))
     assert m1[1:3, 1] == Matrix(2,1,(2,3))
+    
+    m2 = Matrix([0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15])
+    assert m2[:,-1] == Matrix(4,1,[3,7,11,15])
+    assert m2[-2:,:] == Matrix([[8,9,10,11],[12,13,14,15]])
 
 def test_submatrix_assignment():
     m = zero(4)
@@ -257,3 +262,13 @@ def test_cofactor():
     assert test.cofactorMatrix() == Matrix([[27,-6,-6],[-12,2,3],[-3,1,0]])
     test = Matrix([[1,2,3],[4,5,6],[7,8,9]])
     assert test.cofactorMatrix() == Matrix([[-3,6,-3],[6,-12,6],[-3,6,-3]])
+
+def test_jacobian():
+    x = Symbol('x')
+    y = Symbol('y')
+    L = [x**2*y, 2*y**2 + x*y]
+    syms = [x,y]
+    assert jacobian(L, syms) == Matrix([[2*x*y, x**2],[y, 4*y+x]])
+
+    L = [x, x**2*y**3]
+    assert jacobian(L, syms) == Matrix([[1, 0], [2*x*y**3, x**2*3*y**2]])
