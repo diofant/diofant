@@ -55,7 +55,7 @@ contains algorithms for symbolic computations, like limit, integration, etc.
 G{packagetree sympy}
 """
 
-__version__ = "0.4-pre"
+__version__ = "0.4.1"
 
 from sympy.core.basic import Basic
 from sympy.core.symbol import Symbol, O
