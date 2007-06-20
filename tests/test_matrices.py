@@ -250,6 +250,8 @@ def test_inverse():
                 [8,3,6]])
     Ainv = A.inv()
     assert A*Ainv == eye(3)
+    Ainv2 = A.inv("LU")
+    assert Ainv == Ainv2
 
 def test_cross():
     v1 = Matrix(1,3,[1,2,3])
@@ -272,3 +274,11 @@ def test_jacobian():
 
     L = [x, x**2*y**3]
     assert jacobian(L, syms) == Matrix([[1, 0], [2*x*y**3, x**2*3*y**2]])
+
+def test_charpoly():
+    x = Symbol('x')
+    y = Symbol('y')
+    eye3 = eye(3)
+    assert eye3.charpoly(x) == (1-x)**3
+    assert eye3.charpoly(y) == (1-y)**3
+

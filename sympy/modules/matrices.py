@@ -245,13 +245,15 @@ class Matrix(object):
     def __repr__(self):
         return str(self)
 
-    def inv(self):
+    def inv(self, method="GE"):
         assert self.cols==self.lines
-        # current inversion comes from LUdecomposition
-        return self.inverse_LU()
-
-    def inverse_LU(matrix):
-        return matrix.LUsolve(eye(matrix.lines))
+        # gaussian by default, also can be done by LU
+        if method == "GE":
+            return self.inverse_GE()
+        elif method == "LU":
+            return self.inverse_LU()
+        else:
+            raise "Inversion method unrecognized"
 
     def __str__(self):
         s="";
@@ -543,8 +545,7 @@ class Matrix(object):
             return self.minorEntry(i,j)
         else:
             return -1 * self.minorEntry(i,j)
-        
-    
+
     @property
     def is_square(self):
         return self.lines == self.cols
@@ -615,6 +616,52 @@ class Matrix(object):
             det = sign * M[n-1, n-1]
 
         return det
+
+    def inverse_LU(matrix):
+        return matrix.LUsolve(eye(matrix.lines))
+
+
+    def inverse_GE(self):
+        # for testing only
+        assert self.lines == self.cols
+        assert self.det() != 0
+        big = self.row_join(eye(self.lines))
+
+        for i in range(big.lines):
+            # find a pivot
+            if big[i,i] == 0:
+                for k in range(i+1,big.lines):
+                    if big[k,i] != 0:
+                        break
+                if k == big.lines:
+                    raise "matrix not invertible" # this should not happen
+                big.row_swap(i,k)
+            # now eliminate
+            scale = big[i,i]
+            big.row(i, lambda x, _: x / scale)
+            #print big
+            for j in range(i+1,big.lines):
+                scale = big[j,i]
+                #print "using i,j and scale level: ", i, j, scale
+                big.row(j, lambda x, k: x - big[i,k]*scale)
+                #print big
+        for i in range(big.lines-1, -1, -1):
+            for j in range(i-1, -1, -1):
+                scale = big[j,i]
+                big.row(j, lambda x, k: x - big[i,k]*scale)
+        return big[:,big.lines:]
+    
+    
+    def charpoly(self, var):
+        assert self.lines == self.cols
+        if isinstance(var, Symbol):
+            x = var
+        else:
+            raise "Input variable to charpoly not valid"
+        copy = self[:,:]
+        for i in range(self.lines):
+            copy[i,i] -= x
+        return copy.det()
 
 def zero(n):
     return zeronm(n,n)
@@ -765,3 +812,9 @@ def jacobian(flist, varlist):
         for j in range(1,n):
             J[i,j] = flist[i].diff(varlist[j])
     return J
+
+
+
+
+
+
