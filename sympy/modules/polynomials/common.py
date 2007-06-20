@@ -47,7 +47,8 @@ def term_div(a, b):
     a and b are assumed to be terms of coefficient lists of
     Polynomials of same the variables. Divisibility is not tested.
     """
-    return [a[0]/b[0]] + map(lambda (x,y): x-y, zip(a[1:], b[1:]))
+    # TODO: Check if expand is necessary?
+    return [(a[0]/b[0]).expand()] + map(lambda (x,y): x-y, zip(a[1:], b[1:]))
 
 def term_is_mult(a, b):
     """Return True if a is a multiple of b
@@ -72,3 +73,19 @@ def copy_cl(cl):
     for term in cl:
         result.append(term[:])
     return result
+
+def sort_cl(cl, order):
+    """Sort a given list with respect to the given order"""
+    if order == 'lex':
+        cl.sort(key=lambda x: x[1:], reverse=True)
+    elif order == 'grlex':
+        cl.sort(key=lambda x: [sum(x[1:])] + x[1:], reverse=True)
+    elif order == 'grevlex':
+        cl.sort(key=lambda x: [sum(x[1:])]
+                 + reverse(map(lambda l:-l, x[1:])), reverse=True)
+    elif order == '1-el':
+        cl.sort(key=lambda x: [x[1]] + [sum(x[2:])]
+                 + reverse(map(lambda l:-l, x[2:])), reverse=True)
+    else:
+        raise PolynomialException(str(order) + 'is not an implemented order.')
+    return cl

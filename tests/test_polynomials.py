@@ -43,6 +43,29 @@ def test_ispoly():
     assert not ispoly( x**2 + 3*x*sqrt(y) - 8 , y)
     assert ispoly((x**2)*(y**2) + x*(y**2) + y*x + x + exp(2), (x,y) )
 
+def test_div():
+    x = Symbol("x")
+    y = Symbol('y')
+
+    assert div(x**3-12*x**2-42, x-3, x) == (x**2-9*x-27, -123)
+    assert div(x**3-12*x**2-42, x**2+x-3, x) == (x-13, 16*x-81)
+
+    assert div(2+2*x+x**2, 1, x) == (2+2*x+x**2, 0)
+    assert div(2+2*x+x**2, 2, x, coeff='int') == (1+x, x**2)
+
+    assert div(3*x**3, x**2, x) == (3*x, 0)
+
+    assert div(1,1) == (1, 0)
+    assert div(1,x,[x]) == (0, 1)
+    assert div(x*y+2*x+y,x,[x]) == (2+y, y)
+    assert div(x*y+2*x+y,x,[y]) == (2+(1+1/x)*y, 0)
+
+    assert div(x*y**2 + 1, [x*y+1, y+1], [x,y]) == ([y, -1], 2)
+    assert div(x**2*y+x*y**2+y**2, [x*y-1, y**2-1], [x,y]) \
+           == ([x+y, 1], 1+x+y)
+    assert div(x**2*y+x*y**2+y**2, [y**2-1, x*y-1], [x,y]) \
+           == ([1+x, x], 1+2*x)
+
 def test_coeff():
     x = Symbol("x")
     assert coeff(x**2, x, 1) == 0
@@ -88,16 +111,6 @@ def test_sqf():
     x = Symbol("x")
     assert sqf(3*x**2, x) == 3*x**2
     assert sqf(x**2+2*x+1, x) == (x+1)**2
-
-def test_div():
-    x = Symbol("x")
-    assert div(x**3-12*x**2-42, x-3, x) == (x**2-9*x-27, -123)
-    assert div(x**3-12*x**2-42, x**2+x-3, x) == (x-13, 16*x-81)
-
-    assert div(2+2*x+x**2, 1, x) == (2+2*x+x**2, 0)
-    assert div(2+2*x+x**2, 2, x) == (0, 2+2*x+x**2)
-
-    assert div(3*x**3, x**2, x) == (3*x, 0)
 
 def test_resultant():
     x, a, b, c, = [Symbol(y) for y in ['x', 'a', 'b', 'c']]
@@ -193,21 +206,6 @@ def test_coeff_list():
     py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
     py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
 
-def test_div_mv():
-    x = Symbol('x')
-    y = Symbol('y')
-
-    assert div_mv(1,1) == [1, 0]
-    assert div_mv(1,x,[x]) == [0, 1]
-    assert div_mv(x*y+2*x+y,x,[x]) == [2+y, y]
-    assert div_mv(x*y+2*x+y,x,[y]) == [2+(1+x)*y/x, 0]
-
-    assert div_mv(x*y**2 + 1, [x*y+1, y+1], [x,y]) == [y, -1, 2]
-    assert div_mv(x**2*y+x*y**2+y**2, [x*y-1, y**2-1], [x,y]) \
-           == [x+y, 1, 1+x+y]
-    assert div_mv(x**2*y+x*y**2+y**2, [y**2-1, x*y-1], [x,y]) \
-           == [1+x, x, 1+2*x]
-
 def test_groebner():
     x = Symbol('x')
     y = Symbol('y')
@@ -264,7 +262,6 @@ def test_Ideal():
     assert I == I % Ideal()
     assert Ideal() == Ideal(x*y, [x,y]) % I
     assert Ideal(z, [x,y,z]) == Ideal([x,z], [x,y,z]) % Ideal([x,y], [x,y,z])
-
 
 def test_roots():
     x = Symbol("x")

@@ -1,12 +1,14 @@
 """Module providing the class Polynomial and low-level functions"""
 
 from sympy import Add, Basic, Mul, Number, Pow, Rational, Real, Symbol
-from sympy.modules.polynomials.common import *
-
-coeff_rings = ['int', 'rat', 'real', 'cplx', 'sym']
 
 class PolynomialException(Exception):
     pass
+
+coeff_rings = ['int', 'rat', 'real', 'cplx', 'sym']
+default_order = 'grevlex' # Global default, most efficient for division?
+
+from sympy.modules.polynomials.common import *
 
 class Polynomial(Basic):
     """Polynomial representation in coefficient list form.
@@ -27,6 +29,7 @@ class Polynomial(Basic):
     True
     """
     def __init__(self, p, var=None, order=None, coeff=None):
+        # TODO: Remove, if not necessary.
         p = Basic.sympify(p)
         if not isinstance(p, Basic):
             raise PolynomialException(
@@ -83,16 +86,14 @@ class Polynomial(Basic):
 
     def get_order(self):
         if self._order == None:
-            self._order = 'grevlex' # Global default, most efficient?
+            self._order = 'grevlex' #default_order
         return self._order
     def set_order(self, order):
-        # TODO: Check if order is implemented?
-        # TODO: Check if self.var is really changed?
-        # TODO: Just re-sort, instead of delete?
-        if self._cl != None: # The coefficient list is no longer good.
-            self.basic
-            self._cl = None
+        # TODO: Check if order is implemented? (Is checked below, in sort_cl)
         self._order = order
+        if self._cl != None: # The coefficient list is no longer in order.
+            sort_cl(self._cl, self._order)
+            self._cl = None
     order = property(get_order, set_order)
     
     def get_var(self):
@@ -131,14 +132,16 @@ class Polynomial(Basic):
         return self.basic != other
 
     def __pos__(self):
-        return self
+        return self.copy()
 
     def __neg__(self):
-        if self._basic != None:
-            self._basic = -self._basic
-        if self._cl != None:
-            for term in self._cl:
+        r = self.copy()
+        if r._basic != None:
+            r._basic = -r._basic
+        if r._cl != None:
+            for term in r._cl:
                 term[0] *= Rational(-1)
+        return r
 
     def __add__(self, other):
         # Uses Add class if one summand doesn't yet have coeff list ready.
@@ -180,7 +183,8 @@ class Polynomial(Basic):
         i, j = 0, 0
         while i < len(s) and j < len(o):
             if (s[i][1:] == o[j][1:]):
-                c = s[i][0]+o[j][0]
+                # TODO: Check if expand is necessary?
+                c = (s[i][0]+o[j][0]).expand()
                 if c != 0:
                     cl.append([c] + s[i][1:])
                 i += 1
@@ -209,7 +213,10 @@ class Polynomial(Basic):
         return self.__add__(-other)
 
     def __rsub__(self, other):
-        return other.__add__(-self)
+        if isinstance(other, Polynomial):
+            return other.__add__(-self)
+        else:
+            return Polynomial(other).__add__(-self)
 
     def __mul__(self, other):
         # Uses Mul class if one factor doesn't yet have coeff list ready.
@@ -245,12 +252,13 @@ class Polynomial(Basic):
             o = other.cl
 
         # Finally, the actual multiplication can begin!
-        r = Polynomial_old(0, var, order, coeff)
+        r = Polynomial(0, var, order, coeff)
         cl = r.cl
         # Distribute the multiplication
         for self_term in s:
             co = copy_cl(o)
             for i in range(0, len(co)):
+                # TODO: Check if expand is necessary?
                 co[i][0] = (co[i][0] * self_term[0]).expand()
                 for j in range(1, len(self_term)):
                     co[i][j] += self_term[j]
@@ -258,7 +266,8 @@ class Polynomial(Basic):
             i, j = 0, 0
             while i < len(cl) and j < len(co):
                 if (cl[i][1:] == co[j][1:]):
-                    c = cl[i][0] + co[j][0]
+                    # TODO: Check if expand is necessary?
+                    c = (cl[i][0] + co[j][0]).expand()
                     if c == 0:
                         cl[i:i+1] = () # remove cancelled term
                     else:
@@ -285,6 +294,17 @@ class Polynomial(Basic):
     def __rmul__(self, other):
         return self.__mul__(other)
 
+    def __pow__(self, exp):
+        # Why do we need to sympify?
+        exp = Basic.sympify(exp)
+        # TODO: Also do some list-based algorithm?
+        if not (isinstance(exp, Rational) and exp.is_integer):
+                # TODO: Check if it is a polynomial anyway?
+                raise PolynomialException("Can't take rational powers.")
+        r = self.copy()
+        r.basic **= exp
+        return r
+        
     def copy(self):
         r = Polynomial(Rational(0), self.var, self.order, self.coeff)
         if self._basic != None:
@@ -316,10 +336,8 @@ def coeff_list(p, var=None, order='grevlex'):
     [[6, 3, 0], [7, 1, 2]]
 
     """
-
     p = Basic.sympify(p)
     p = p.expand()
-
     if isinstance(var, Symbol):
         var = [var]
     if var == None:
@@ -327,7 +345,6 @@ def coeff_list(p, var=None, order='grevlex'):
         var.sort(Basic.cmphash)
 
     res = []
-
     if isinstance(p, Add):
         for a in p._args:
             res.append(*coeff_list(a, var, order))
@@ -352,20 +369,8 @@ def coeff_list(p, var=None, order='grevlex'):
                 item[0] *= factor
         res = [item]
 
-    # sort list according to monomial ordering
-    if order == 'lex':
-        res.sort(key=lambda x: x[1:], reverse=True)
-    elif order == 'grlex':
-        res.sort(key=lambda x: [sum(x[1:])] + x[1:], reverse=True)
-    elif order == 'grevlex':
-        res.sort(key=lambda x: [sum(x[1:])]
-                 + reverse(map(lambda l:-l, x[1:])), reverse=True)
-    elif order == '1-el':
-        res.sort(key=lambda x: [x[1]] + [sum(x[2:])]
-                 + reverse(map(lambda l:-l, x[2:])), reverse=True)
-    else:
-        raise PolynomialException(str(order) + 'is not an implemented order.')
-
+    sort_cl(res, order)
+    
     # unify monomials
     result = []
     for item in res:
@@ -374,9 +379,7 @@ def coeff_list(p, var=None, order='grevlex'):
             result[ result.index(filt[0]) ][0] += item[0]
         else:
             result.append(item)
-
     return result
-
 
 def ispoly(p, var=None):
     """
@@ -406,23 +409,19 @@ def ispoly(p, var=None):
 
     """
     p = Basic.sympify(p)
-
     if var == None:
         var = p.atoms(type=Symbol)
-    elif isinstance(var, Basic):
-        # if the var argument is not a tuple or list
-        var = [var] # so we can iterate over it
-
+    elif isinstance(var, Symbol):
+        var = [var] # We want to iterate.
     if len(var) == 0:
-        return True # constant is polynomial.
+        return True # Constants are polynomials.
     elif len(var) > 1:
         return ispoly(p, var[0]) and ispoly(p, var[1:])
 
     if not var[0] in p.atoms(type=Symbol):
-        return True # constant is polynomial.
-
-    # Now we look for one variable, that is in the expression.
-    if isinstance(p, Pow):
+        return True # Constants are polynomials.
+    # Now we look for one variable, guaranteed to be in the expression.
+    elif isinstance(p, Pow):
         if isinstance(p.exp, Number) \
            and p.exp.is_integer \
            and p.exp > 0:
@@ -434,7 +433,7 @@ def ispoly(p, var=None):
         return ispoly(a, var[0]) and ispoly(b, var[0])
     elif isinstance(p, Number):
         return True
-    elif isinstance(p, Symbol):
+    elif isinstance(p, Symbol): # This is the right Symbol, see above.
         return True
     else:
         return False
@@ -444,16 +443,14 @@ def poly(p, var):
     """Returns a sympy polynomial from the representation p returned by
     coeff_list().
     """
-
     if isinstance(var, Symbol):
         var = [var]
-
     if len(p) == 0:
-        return Rational(0)
+        raise PolynomialException('Bad coefficient list.')
     elif len(p[0]) != len(var) + 1:
         raise PolynomialException('Wrong number of variables given.')
 
-    r = 0
+    r = Rational(0)
     for item in p:
         c = item[0]
         for v in var:

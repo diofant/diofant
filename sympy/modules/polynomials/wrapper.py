@@ -1,13 +1,60 @@
-"""Module providing a user-friendly interface to the polynomial algorithms"""
+"""Module providing a user-friendly interface to the polynomial algorithms."""
 
 from sympy.core.functions import diff
 from sympy.modules.matrices import zero
 
 from sympy.modules.polynomials.base import *
-#from sympy.modules.polynomials import divP
+from sympy.modules.polynomials import div_
              
+def div(f, g, var=None, order=None, coeff=None):
+    """Polynomial division of f by g, returns quotients and remainder.
+
+    Univariate and multivariate polynomials are possible. The argument
+    g can also be a list of polynomials to be used as divisors. This
+    algorithm doesn't stop when the leading terms don't divide, but
+    instead tries to reduce smaller terms after that. When dealing
+    with multiple variables, the monomial ordering in use has
+    influence over the result. Optionally, a ring of coefficients can
+    be indicated, to restrict computations to this domain.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> div(x**2+6*x+1, 3*x-1)
+    (19/9+1/3*x, 28/9)
+    >>> div(x**2+6*x+1, 3*x-1, coeff='int')
+    (2, 3+x**2)
+    >>> div(2*x**3*y**2 - x*y + y**3, [x-y, y**2], [x,y], 'lex')
+    ([2*x**2*y**2+2*y**4-y+2*x*y**3, -1+y+2*y**3], 0)
+
+    """
+    f = Basic.sympify(f)
+    if not isinstance(g, list):
+        g = [g]
+    g = map(lambda x: Basic.sympify(x), g)
+    if not isinstance(var, list):
+        var = [var]
+    if len(var) > 0 and var[0] == None:
+        var = merge_var(f.atoms(type=Symbol,
+                        *[g_i.atoms(type=Symbol) for g_i in g]))
+    f = Polynomial(f, var, order, coeff)
+    g = map(lambda x: Polynomial(x, var, order, coeff), g)
+    if coeff != None:
+        if not coeff in coeff_rings:
+            raise PolynomialException(
+                "%s is not an implemented coefficient ring." % coeff)
+        elif coeff == 'int':
+            # TODO: Check if given polynomials have integer coeffs?
+            q, r = div_.mv_int(f, g)
+    else: # coeff == None
+        q, r = div_.mv(f, g)
+    if len(q) == 1:
+        return q[0].basic, r.basic
+    else:
+        return map(lambda x: x.basic, q), r.basic
+
 class Ideal:
-    """Describes a polynomial ideal over the real numbers.
+    """Describes a polynomial ideal over a field, with several variables.
 
     Try to avoid different variables and orders between the ideals, give
     them explicitly; the automatic handlers don't always act as expected.
@@ -55,7 +102,7 @@ class Ideal:
                self.order, repr(self.is_groebner) )
 
     def __add__(self, other):
-        """f is in I + J iff there are g in I, h in J such that f = g+h
+        """f is in I + J iff there are g in I, h in J such that f = g+h.
         """
         if not isinstance(other, Ideal):
             other = Ideal(other)
@@ -76,7 +123,7 @@ class Ideal:
         return self.__add__(other)
 
     def __mul__(self, other):
-        """f is in I*J iff f is a sum of products of elements of I and J
+        """f is in I*J iff f is a sum of products of elements of I and J.
         """
         if not isinstance(other, Ideal):
             other = Ideal(other)
@@ -130,7 +177,7 @@ class Ideal:
 
         f = []
         for p in self.f:
-            f.append(div_mv(p, other.f, other.var, other.order)[-1])
+            f.append(div(p, other.f, other.var, other.order)[-1])
         f = filter(lambda x: x!=0, f)
         return Ideal(f, other.var, other.order)
 
@@ -139,7 +186,7 @@ class Ideal:
         if not ispoly(other, self.var):
             return False
         self.groebner()
-        rem = div_mv(other, self.f, self.var, self.order)[-1]
+        rem = div(other, self.f, self.var, self.order)[-1]
         if rem == 0:
             return True
         else:
@@ -232,7 +279,8 @@ def gcd(a, b, x):
     #of this list:
     for x0 in [100, 101]:
         c = getcandidate(a, b, x, x0)
-        if div(a, c, x)[1] == 0 and div(b, c, x)[1] == 0:
+        if div(a, c, x, coeff='int')[1] == 0 \
+               and div(b, c, x, coeff='int')[1] == 0:
             return c
 
     raise PolynomialException("Can't calculate gcd for these polynomials")
@@ -246,27 +294,6 @@ def sqf(p, x):
     assert b == 0
     return sqf(a, x) * g
 
-def div(f, g, x):
-    """Expresses f = g*q + r, returns (q,r)
-
-    All coefficients of 'f' and 'g' are assumed to be integers,
-    and coefficients in 'q' and 'r' are then guaranteed to be integers.
-    """
-    fp = coeff_list(f, x)
-    gp = coeff_list(g, x)
-    q = 0
-    while fp[0][1] >= gp[0][1] and fp[0][0]!=0:
-        s1 = poly([fp[0]], x) / poly([gp[0]], x)
-        if isinstance(s1, Mul):
-            a,b = s1.getab()
-            if isinstance(a, Number) and not a.is_integer:
-                #the coefficient is rational but not integer, let's
-                #put it in the remainder and we are done
-                return q, f
-        f = (f - g*s1).expand()
-        fp = coeff_list(f, x)
-        q+=s1
-    return q, f
 
 def resultant(f, g, x, method='bezout'):
     """Computes resultant of two polynomials in one variable. This
@@ -399,66 +426,6 @@ def collect(expr, syms):
     else:
         return None
 
-def div_mv(f, g_i, var=None, order='grevlex'):
-    """Returns q_i and r such that f = g_1*q_1 +...+ g_n*q_n + r
-
-    The g_i can be a single or a list of polynomials. The remainder r
-    has a leading term that is not divisible by any of the leading
-    terms of the g_i.
-    Different monomial orderings are possible, see coeff_list() for
-    details.
-
-    Examples:
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> div_mv(x**3+2*x+5, x+1, [x])
-    [3+x**2-x, 2]
-    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [x,y], 'lex')
-    [2*x**2*y**2+2*y**4-y+2*x*y**3, 2*y**5+y**3-y**2]
-    >>> div_mv(2*x**3*y**2 - x*y + y**3, x-y, [y,x], 'lex')
-    [-2*x**3*y-x**2+x-x*y-y**2-2*x**4, -x**2+x**3+2*x**5]
-    >>> div_mv(2*x**3*y**2 - x*y + y**3, [x-y, y**2], [x,y], 'lex')
-    [2*x**2*y**2+2*y**4-y+2*x*y**3, -1+y+2*y**3, 0]
-    """
-
-    if not isinstance(g_i, list):
-        g_i = [g_i]
-    f = (Basic.sympify(f)).expand()
-    g_i = map(Basic.sympify, g_i)
-
-    if var == None:
-        var = f.atoms(type=Symbol)
-        for g in g_i:
-            for v in g.atoms(type=Symbol):
-                if not v in var:
-                    var.append(v)
-        var.sort(Basic.cmphash)
-
-    f_cl = coeff_list(f, var, order)
-    g_i_cl = map(lambda g: coeff_list(g, var, order), g_i)
-
-    r = Rational(0)
-    q_i = len(g_i)*[Rational(0)]
-
-    while f != 0:
-        for g, g_cl in zip(g_i, g_i_cl):
-            # check if leading term of f is divisible by that of g
-            if all([x>=y for x,y in zip(f_cl[0][1:],g_cl[0][1:])]):
-                if g_cl[0][0] == 0:
-                    continue
-                ff = poly([f_cl[0]], var) / poly([g_cl[0]], var)
-                q_i[g_i.index(g)] += ff
-                f = (f - ff*g).expand()
-                f_cl = coeff_list(f, var, order)
-                break
-        else: # no division occured, add the leading term to remainder
-            ff = poly([f_cl[0]], var)
-            r += ff
-            f -= ff
-            f_cl = coeff_list(f, var, order)
-
-    return q_i + [r]
-
 def groebner(f, var=None, order='grevlex', reduced=True):
     """Computes a (reduced) Groebner base for a given list of polynomials.
 
@@ -543,7 +510,7 @@ def groebner(f, var=None, order='grevlex', reduced=True):
         if crit:
             s_poly = f[i]*poly([div_cl(lcm, f_cl[i][0])], var) \
                      - f[j]*poly([div_cl(lcm, f_cl[j][0])], var)
-            s_poly = (div_mv(s_poly, f, var, order)[-1]).expand()
+            s_poly = (div(s_poly, f, var, order)[-1]).expand()
             if s_poly != 0: # we still have to add to the base.
                 s += 1
                 f.append(s_poly)
@@ -580,7 +547,7 @@ def groebner(f, var=None, order='grevlex', reduced=True):
     # rest of the base (without touching the leading terms).
     # As the basis is already sorted, the rest gets smaller each time.
     for i,p in enumerate(f[0:-1]):
-        pp = div_mv(p, f[i+1:], var, order)[-1]
+        pp = div(p, f[i+1:], var, order)[-1]
         f[i] = pp
 
     return f
@@ -667,7 +634,7 @@ def gcd_mv(f, g, var=None, order='grevlex', monic=False):
         var.sort(key=str)
 
     lcm = lcm_mv(f, g, var, monic=True)
-    q, r = div_mv(f*g, lcm, var, order)
+    q, r = div(f*g, lcm, var, order)
 
     if not r == 0:
         raise PolynomialException('lcm does not divide product.')
