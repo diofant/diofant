@@ -163,5 +163,15 @@ def test_assumptions():
     assert x.is_nonpositive == None
     assert x.is_nonnegative == None
 
+    x = Basic(is_nni=True)
+
+    assert x.is_integer == True
+    assert x.is_nonnegative == True
+
+    x = Basic(is_npi=True)
+
+    assert x.is_integer == True
+    assert x.is_nonpositive == True
+
     py.test.raises(AttributeError, "x.is_real = False")
 

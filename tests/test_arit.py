@@ -67,7 +67,7 @@ def test_arit():
     assert e == -1 -a
     e = Rational(1,2)*(1+a)
     assert e == Rational(1,2) + a/2
-    
+
 def testdiv():
     a=g.Symbol("a")
     b=g.Symbol("b")
@@ -159,14 +159,14 @@ def test_expand():
     e=s.series(x,5)/x**2
     #assert e == (x**2+x**4/2)/x**2
     assert e.expand() ==  1+x**2/2+O(x**3)
-    
+
 def test_power_expand():
     """Test for Pow.expand()"""
     a = g.Symbol('a')
     b = g.Symbol('b')
     p = (a+b)**2
     assert p.expand() == a**2 + b**2 + 2*a*b
-    
+
     p = (1+2*(1+a))**2
     assert p.expand() == 9 + 4*(a**2) + 12*a
 
@@ -202,20 +202,85 @@ def test_ncmul():
 def test_ncpow():
     x = Symbol('x', is_commutative=False)
     y = Symbol('y', is_commutative=False)
-   
+
     assert (x**2)*(y**2) != (y**2)*(x**2)
     assert (x**-2)*y != y*(x**2)
 
 def test_powerbug():
     x=Symbol("x")
-    assert x**1 != (-x)**1 
-    assert x**2 == (-x)**2 
-    assert x**3 != (-x)**3 
-    assert x**4 == (-x)**4 
-    assert x**5 != (-x)**5 
-    assert x**6 == (-x)**6 
+    assert x**1 != (-x)**1
+    assert x**2 == (-x)**2
+    assert x**3 != (-x)**3
+    assert x**4 == (-x)**4
+    assert x**5 != (-x)**5
+    assert x**6 == (-x)**6
 
-    assert x**128 == (-x)**128 
-    assert x**129 != (-x)**129 
+    assert x**128 == (-x)**128
+    assert x**129 != (-x)**129
 
-    assert (2*x)**2 == (-2*x)**2 
+    assert (2*x)**2 == (-2*x)**2
+
+def test_mul_assumptions():
+    x = Symbol('x')
+
+    k = Symbol('k', integer=True, negative=True)
+    n = Symbol('n', integer=True, negative=True)
+    m = Symbol('m', integer=True, positive=True)
+
+    assert (2*k).is_integer == True
+    assert (-k).is_integer == True
+
+    assert (k/3).is_integer == False
+    assert (x*k*n).is_integer == None
+
+    assert (2*n).is_negative == True
+    assert (2*n).is_positive == False
+
+    assert (-n).is_negative == False
+    assert (-n).is_positive == True
+
+    assert (k*n).is_negative == False
+    assert (k*n).is_positive == True
+
+    assert (k*m).is_negative == True
+    assert (k*m).is_positive == False
+
+    assert (k*n*m).is_negative == False
+    assert (k*n*m).is_positive == True
+
+    k = Symbol('k', integer=True, odd=True)
+    n = Symbol('n', integer=True, odd=True)
+    m = Symbol('m', integer=True, even=True)
+
+    assert (2*n).is_even == True
+    assert (2*n).is_odd == False
+
+    assert (2*m).is_even == True
+    assert (2*m).is_odd == False
+
+    assert (-n).is_even == False
+    assert (-n).is_odd == True
+
+    assert (k*n).is_even == False
+    assert (k*n).is_odd == True
+
+    assert (k*m).is_even == True
+    assert (k*m).is_odd == False
+
+    assert (k*n*m).is_even == True
+    assert (k*n*m).is_odd == False
+
+    k = Symbol('k', negative=True)
+    n = Symbol('n', nonnegative=True)
+    m = Symbol('m', nonpositive=True)
+
+    assert (k*n).is_negative == None
+    assert (k*n).is_positive == None
+    assert (k*n).is_nonnegative == None
+    assert (k*n).is_nonpositive == True
+
+    assert (k*m).is_negative == None
+    assert (k*m).is_positive == None
+    assert (k*m).is_nonnegative == True
+    assert (k*m).is_nonpositive == None
+

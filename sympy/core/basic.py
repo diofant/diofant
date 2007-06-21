@@ -21,32 +21,67 @@ class AutomaticEvaluationType(type):
             return obj
 
 class Basic(object):
-    """
-    Base class for all objects in sympy
+    """Base class for all objects in SymPy. It is possible to specify
+       objects' behaviour using assumptions mechanism. This is most
+       useful in pure symbolic algorithms which eg. would be able to
+       perform more specific rewriting to intermediate expressions,
+       giving simplified and probably more readable results.
 
-    possible assumptions are:
+       Possible assumptions are:
 
-        - is_real
+        - is_number, is_real, is_integer
+
+        - is_negative, is_positive
+
+        - is_nonnegative, is_nonpositive
+
+        - is_odd, is_even, is_prime
+
+        - is_nonzero
 
         - is_commutative
 
-        - is_number
-
         - is_bounded
 
-    Assumptions can have 3 possible values:
+        - is_dummy
 
-        - True, when we are sure about a property. For example, when we are
-        working only with real numbers:
-        >>> from sympy import *
-        >>> Symbol('x', real = True)
-        x
+       Assumptions are defined in triple-valued logic (in Python sense)
+       using True, when we are certain that property applies to given
+       object, None, when we aren't sure and False otherwise:
 
-        - False
+       >>> from sympy import *
+       >>> x = Symbol('x')
 
-        - None (if you don't know if the property is True or false)
+       >>> sin(x).is_bounded
+       True
 
+       >>> print Symbol('x').is_negative
+       None
 
+       >>> Rational(1, 2).is_integer
+       False
+
+       To assume something about SymPy's object, it is neccesary to put
+       appropriate flags in selectd object's constructor:
+
+       >>> Symbol('k', integer = True).is_integer
+       True
+       >>> Symbol('k', is_integer = True).is_integer
+       True
+
+       Once object is created and assumptions set it is not allowed to
+       change their value without creating new object.
+
+       Sometimes the list of required assumtions can be really long. In
+       this case you can use abbreviations to reduce the amount of typing:
+
+       >>> k = Symbol('k', integer = True, nonnegative = True)
+       >>> k.is_integer and k.is_nonnegative
+       True
+
+       >>> k = Symbol('k', nni = True)
+       >>> k.is_integer and k.is_nonnegative
+       True
 
     """
 
@@ -74,7 +109,7 @@ class Basic(object):
             }
 
         dependencies = {
-            'is_integer'     : lambda x: { 'is_real'     : x },
+            'is_integer'     : lambda x: { 'is_real'        : x },
 
             'is_negative'    : lambda x: { 'is_positive'    : not x,
                                            'is_nonnegative' : not x },
@@ -98,20 +133,33 @@ class Basic(object):
                                            'is_positive'    : x or None,
                                            'is_negative'    : (not x) and None,
                                            'is_nonpositive' : (not x) and None },
+
             }
+
+        abbreviations = {
+            'is_nni'        : [ 'is_integer', 'is_nonnegative' ],
+            'is_npi'        : [ 'is_integer', 'is_nonpositive' ],
+            }
+
+        def update_assumptions(key, value):
+            if value is not None:
+                if dependencies.has_key(key):
+                    self._assumptions.update(dependencies[key](value))
+
+                self._assumptions[key] = value
 
         for key in kwargs.keys():
             value = kwargs[key]
 
+            # this is for compatibility reason
             if key[0:3] != 'is_':
                 key = 'is_' + key
 
             if self._assumptions.has_key(key):
-                if value is not None:
-                    if dependencies.has_key(key):
-                        self._assumptions.update(dependencies[key](value))
-
-                    self._assumptions[key] = value
+                update_assumptions(key, value)
+            elif abbreviations.has_key(key):
+                for key in abbreviations[key]:
+                    update_assumptions(key, value)
             else:
                 raise NotImplementedError("Assumption %s not implemented" % str(key))
 
