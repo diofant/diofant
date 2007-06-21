@@ -12,28 +12,28 @@ class Number(Basic):
 
     Floating point numbers are represented by the Real class.
     Integer numbers (of any size), together with rational numbers (again, there
-    is no limit on their size) are represented by the Rational class. 
+    is no limit on their size) are represented by the Rational class.
 
     If you want to represent for example 1+sqrt(2), then you need to do:
 
     Rational(1) + sqrt(Rational(2))
     """
-    
+
     mathml_tag = "cn"
-    
+
     def __init__(self):
         Basic.__init__(self, is_commutative = True)
-        
+
     def __int__(self):
         raise NotImplementedError
-    
+
     def __float__(self):
         return float(self.evalf())
-    
+
     def __abs__(self):
         from functions import abs_
         return abs_(self)
-    
+
     def __mathml__(self):
         import xml.dom.minidom
         if self._mathml:
@@ -42,13 +42,13 @@ class Number(Basic):
         x = dom.createElement(self.mathml_tag)
         x.appendChild(dom.createTextNode(str(self)))
         self._mathml = x
-        
+
         return self._mathml
-    
-    
+
+
     def diff(self,sym):
         return Rational(0)
-    
+
     def evalf(self):
         raise NotImplementedError("cannot evaluate %s" % self.__class__.__name__)
 
@@ -57,20 +57,20 @@ class Number(Basic):
 
     def doit(self):
         return self
-    
+
 class Infinity(Number):
     """
     Usage
     =====
-        Represents mathematical infinity. 
-        
+        Represents mathematical infinity.
+
     Notes
     =====
         Can be used in expressions that are meaningful, so for example oo-oo,
         or oo/oo raise exception, but 1+oo, 2*oo, oo+oo are legal (and produce
         oo). Can be used in comparisons, like oo!=1, or oo!=x**3 and as results
         of limits, integration limits etc.
-          
+
     Examples
     ========
         >>> from sympy import *
@@ -78,35 +78,35 @@ class Infinity(Number):
         >>> limit(x, x, oo)
         oo
     """
-    
+
     def __init__(self, sign=1):
-        Basic.__init__(self, 
-                       is_real = False, 
-                       is_commutative = False, 
+        Basic.__init__(self,
+                       is_real = False,
+                       is_commutative = False,
                        )
-    
+
     def __latex__(self):
         return "\infty"
-    
+
     def __pretty__(self):
         return "oo"
 
     def __str__(self):
         return "oo"
-    
+
     def sign(self):
         return self._sign
-    
+
     def __lt__(self, num):
         if self.sympify(num).is_number:
             if self._sign == -1:
                 return True
             else:
                 return False
-    
+
     def __gt__(self, num):
         return not self.__lt__(num)
-    
+
     def evalf(self):
         return self
 
@@ -146,14 +146,14 @@ class Real(Number):
 
     Real(3.5)   .... 3.5 (the 3.5 was converted from a python float)
     Real("3.0000000000000005")
-    
+
     """
-    
-    
+
+
     def __init__(self,num):
-        Basic.__init__(self, 
-                        is_real = True, 
-                        is_commutative = True, 
+        Basic.__init__(self,
+                        is_real = True,
+                        is_commutative = True,
                         )
         if isinstance(num,str):
             num = decimal.Decimal(num)
@@ -164,7 +164,7 @@ class Real(Number):
         else:
             self.num = decimal.Decimal(str(float(num)))
         self._args = [self.num]
-        
+
     def __str__(self):
         if self.num < 0:
             f = "(%s)"
@@ -174,10 +174,10 @@ class Real(Number):
 
     def __float__(self):
         return float(self.num)
-        
+
     def __int__(self):
         return int(self.evalf())
-    
+
     def __add__(self,a):
         from addmul import Add
         a = Basic.sympify(a)
@@ -191,7 +191,7 @@ class Real(Number):
         else:
             assert isinstance(a, Basic)
             return Add(self, a)
-        
+
     def __mul__(self,a):
         from addmul import Mul
         a = Basic.sympify(a)
@@ -204,36 +204,36 @@ class Real(Number):
         else:
             assert isinstance(a, Basic)
             return Mul(self, a)
-        
+
     def __pow__(self,a):
         from power import Pow
         return Pow(self, a)
-        
+
     def __rpow__(self, a):
         from power import Pow
         return Pow(a, self)
-        
+
     def isone(self):
         if self.num == 1:
             return True
         else:
             return False
-        
+
     @property
     def is_integer(self):
         return int(self) - self.evalf() == 0
-        
+
     def evalf(self):
         #evalf() should return either a float or an exception
         return self.num
-    
+
     def __pretty__(self):
         if self.num < 0:
             f = "(%s)"
         else:
             f = "%s"
         return f % (str(self.num))
-    
+
     def __eq__(self, a):
         """this is overriden because by default, a python int get's converted
         to a Rational, so things like Real(1) == 1, would return false
@@ -277,7 +277,7 @@ def _load_decimal(d):
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
 
-    Thanks to support of long ints in Python. 
+    Thanks to support of long ints in Python.
 
     Examples
     ========
@@ -302,11 +302,11 @@ class Rational(Number):
     1.2050505050505051
 
     """
-    
+
     def __init__(self,*args):
-        Basic.__init__(self, 
-                       is_real = True, 
-                       is_commutative = True, 
+        Basic.__init__(self,
+                       is_real = True,
+                       is_commutative = True,
                        )
         if len(args)==1:
             if isinstance(args[0], str):
@@ -330,16 +330,16 @@ class Rational(Number):
         self.q = q/c
         self._args = [self.p,self.q] # needed by .hash and others. we should move [p,q] to _args
                         # and then create properties p and q
-        
+
     def sign(self):
         return sign(self.p)*sign(self.q)
-        
+
     def gcd(self,a,b):
         """Primitive algorithm for a greatest common divisor of "a" and "b"."""
         while b:
             a, b = b, a % b
         return a
-        
+
     def __str__(self):
         if self.q == 1:
             f = "%d"
@@ -359,22 +359,22 @@ class Rational(Number):
         else:
             from addmul import Mul
             return Mul(self, a)
-    
+
     def __rmul__(self, a):
         return self.__mul__(a)
-    
+
     def __div__(self, a):
         #TODO: move to Mul.eval
         if isinstance(a, int):
             return Rational(self.p, self.q *a)
         return self * (a**Rational(-1))
-        
+
     def __rdiv__(self, a):
         #TODO: move to Mul.eval
         if isinstance(a, int):
             return Rational(self.q * a, self.p )
         return self * (a**Rational(-1))
-    
+
     def __add__(self,a):
         a=self.sympify(a)
         if isinstance(a, Rational):
@@ -386,51 +386,38 @@ class Rational(Number):
         else:
             from addmul import Add
             return Add(self, a)
-        
+
     def __pow__(self,a):
         """Returns the self to the power of "a"
         """
         from power import Pow
         return Pow(self, a)
-    
-    def __rpow__(self, a):  
+
+    def __rpow__(self, a):
         """Returns "a" to the power of self
         """
         from power import Pow
         return Pow(a, self)
-    
+
 
     def __int__(self):
         assert self.is_integer
         return self.p
-    
+
+    ###
     def iszero(self):
-        return self.p == 0 
-        
+        return self.p == 0
+
     def isone(self):
         return self.p == 1 and self.q == 1
-        
+
     def isminusone(self):
         return self.p == -1 and self.q == 1
-        
-    @property
-    def is_integer(self):
-        """Returns True if the current number is an integer
-        and False otherwise. 
-        
-        Examples
-        ========
-            >>> Rational(1).is_integer
-            True
-            >>> Rational(1,2).is_integer
-            False
-            
-        """
-        return self.q == 1
-        
+    ###
+
     def evalf(self):
         return decimal.Decimal(self.p)/self.q
-        
+
     def diff(self,sym):
         return Rational(0)
 
@@ -447,9 +434,9 @@ class Rational(Number):
         from addmul import Mul
         if isinstance(pattern, Mul):
             return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
- 
+
         return None
-    
+
     def __pretty__(self):
         if self.q == 1:
             return prettyForm(str(self.p), prettyForm.ATOM)
@@ -458,21 +445,64 @@ class Rational(Number):
             return prettyForm(*pform.left('- '))
         else:
             return prettyForm(str(self.p))/prettyForm(str(self.q))
- 
-   
+
+    @property
+    def is_integer(self):
+        return self.q == 1
+
+    @property
+    def is_zero(self):
+        return self.p == 0
+
+    @property
+    def is_unit(self):
+        return self.p == 1 and self.q == 1
+
+    @property
+    def is_odd(self):
+        return self.is_integer and self.p & 1 == 1
+
+    @property
+    def is_even(self):
+        return self.is_integer and self.p & 1 == 0
+
+    @property
+    def is_prime(self):
+        from sympy.modules.concrete.primes import is_prime
+        return self.is_integer and is_prime(self.p)
+
+    @property
+    def is_nonzero(self):
+        return self.p != 0
+
+    @property
+    def is_negative(self):
+        return self.p < 0
+
+    @property
+    def is_nonnegative(self):
+        return self.p >= 0
+
+    @property
+    def is_positive(self):
+        return self.p > 0
+
+    @property
+    def is_nonpositive(self):
+        return self.p <= 0
 
 class Constant(Number):
     """Mathematical constant abstract class.
-    
+
     Is the base class for constatns such as pi or e
     """
-    
+
     def __init__(self):
         Basic.__init__(self, is_commutative = True)
-    
+
     def __call__(self, precision=28):
         return self.evalf(precision)
-       
+
     def eval(self):
         return self
 
@@ -484,7 +514,7 @@ class Constant(Number):
 
     def __rmod__(self, a):
             raise NotImplementedError
-        
+
     def match(self, pattern, syms):
         if self == pattern:
             return {}
@@ -507,9 +537,9 @@ class ImaginaryUnit(Constant):
     """Imaginary unit "i"."""
 
     def __init__(self):
-        Basic.__init__(self, 
-                       is_real = False, 
-                       is_commutative = True, 
+        Basic.__init__(self,
+                       is_real = False,
+                       is_commutative = True,
                        )
 
     def __str__(self):
@@ -519,9 +549,9 @@ class ImaginaryUnit(Constant):
         return "\mathrm{i}"
 
     def evalf(self):
-        """Evaluate to a float. By convention, will return 0, 
-        which means that evalf() of a complex number will mean 
-        the projection of the complex plane to the real line. 
+        """Evaluate to a float. By convention, will return 0,
+        which means that evalf() of a complex number will mean
+        the projection of the complex plane to the real line.
         For example:
         >>> (1-2*I).evalf()
         1.00
@@ -537,19 +567,19 @@ I = ImaginaryUnit()
 
 class ConstPi(Constant):
     """
-    
+
     Usage
-    ===== 
-           pi -> Returns the mathematical constant pi 
+    =====
+           pi -> Returns the mathematical constant pi
            pi() -> Returns a numerical aproximation for pi
-           
+
     Notes
     =====
-        Can have an option precision (integer) for the number of digits 
+        Can have an option precision (integer) for the number of digits
         that will be returned. Default is set to 28
-       
+
         pi() is a shortcut for pi.evalf()
-    
+
     Further examples
     ================
         >>> pi
@@ -562,31 +592,31 @@ class ConstPi(Constant):
         3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148087
 
     """
-    
+
     def __init__(self):
         Basic.__init__(self,
-                       is_commutative = True, 
-                       is_real = True, 
+                       is_commutative = True,
+                       is_real = True,
                        )
 
     def evalf(self, precision=28):
         """
         Compute PI to artibtrary precision using series developed by
         Chudnovsky brothers. This series converges extraordinarily
-        rapidly, giving 14 decimal places per single iteration. 
-        
+        rapidly, giving 14 decimal places per single iteration.
+
         """
-        
+
         A, B, C = 13591409, 545140134, 262537412640768000
         D = 68925893036108889235415629824000000
-        
+
         decimal.getcontext().prec = precision + 14
-        
+
         r = A / decimal.Decimal(C).sqrt()
 
         if (precision > 14):
             n = precision / 15 + 1
-        
+
             b, c = B, C**3
             i, u, v, s = 1, 7, 4, -1
             f_6, f_3, f_1 = 720, 6, 1
@@ -596,34 +626,34 @@ class ConstPi(Constant):
 
                 for k in range(u, u+6):
                     f_6 *= k
-                
+
                 for k in range(v, v+3):
                     f_3 *= k
 
                 u, v = u+6, v+3
                 b, i = b+B, i+1
-                
+
                 c, s, f_1 = c*D, s*(-1), f_1*i
-                
+
         r = 1 / (12 * r)
-                
+
         decimal.getcontext().prec -= 14
 
-        return Real(+r) 
+        return Real(+r)
 
     def __str__(self):
         return "pi"
-    
+
     def __latex__(self):
         return "\pi"
-    
+
     def __pretty__(self):
         return prettyForm("pi", unicode=u"\u03C0", binding=prettyForm.ATOM)
 
 pi=ConstPi()
 
 def sign(x):
-    """Return the sign of x, that is, 
+    """Return the sign of x, that is,
     1 if x is positive, 0 if x == 0 and -1 if x is negative
     """
     if x < 0: return -1

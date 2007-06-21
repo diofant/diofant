@@ -15,104 +15,189 @@ class AutomaticEvaluationType(type):
         else:
             evaluate = True
         obj = type.__call__(self,*args,**kwargs)
-        if evaluate: 
+        if evaluate:
             return obj.eval()
-        else: 
+        else:
             return obj
 
 class Basic(object):
     """
     Base class for all objects in sympy
-    
-    possible assumptions are: 
-        
+
+    possible assumptions are:
+
         - is_real
-        
+
         - is_commutative
-        
+
         - is_number
-        
+
         - is_bounded
-        
-    Assumptions can have 3 possible values: 
-    
+
+    Assumptions can have 3 possible values:
+
         - True, when we are sure about a property. For example, when we are
         working only with real numbers:
         >>> from sympy import *
         >>> Symbol('x', real = True)
         x
-        
+
         - False
-        
+
         - None (if you don't know if the property is True or false)
+
+
+
     """
 
     __metaclass__ = AutomaticEvaluationType
-    
+
     def __init__(self, *args, **kwargs):
-        self._assumptions = {
-                 'is_real' : None, 
-                 'is_integer' : None,
-                 'is_commutative' : None, 
-                 'is_bounded' : None, 
-                 'is_dummy' : None, 
-                 }
         self._mhash = 0
         self._mathml = None
         self._args = []
-        for k in kwargs.keys():
-            #TODO: maybe use dict.update() for this
-            if self._assumptions.has_key(k):
-                self._assumptions[k] = kwargs[k]
+
+        self._assumptions = {
+            'is_real'        : None,
+            'is_integer'     : None,
+            'is_negative'    : None,
+            'is_positive'    : None,
+            'is_nonnegative' : None,
+            'is_nonpositive' : None,
+            'is_nonzero'     : None,
+            'is_commutative' : None,
+            'is_bounded'     : None,
+            'is_dummy'       : None,
+            'is_prime'       : None,
+            'is_odd'         : None,
+            'is_even'        : None,
+            }
+
+        dependencies = {
+            'is_integer'     : lambda x: { 'is_real'     : x },
+
+            'is_negative'    : lambda x: { 'is_positive'    : not x,
+                                           'is_nonnegative' : not x },
+
+            'is_positive'    : lambda x: { 'is_negative'    : not x,
+                                           'is_nonpositive' : not x },
+
+            'is_nonnegative' : lambda x: { 'is_negative'    : not x },
+            'is_nonpositive' : lambda x: { 'is_positive'    : not x },
+
+            'is_odd'         : lambda x: { 'is_integer'     : x or None,
+                                           'is_real'        : x or None,
+                                           'is_even'        : (not x) and None },
+
+            'is_even'        : lambda x: { 'is_integer'     : x or None,
+                                           'is_real'        : x or None,
+                                           'is_odd'         : (not x) and None },
+
+            'is_prime'       : lambda x: { 'is_integer'     : x or None,
+                                           'is_real'        : x or None,
+                                           'is_positive'    : x or None,
+                                           'is_negative'    : (not x) and None,
+                                           'is_nonpositive' : (not x) and None },
+            }
+
+        for key in kwargs.keys():
+            value = kwargs[key]
+
+            if key[0:3] != 'is_':
+                key = 'is_' + key
+
+            if self._assumptions.has_key(key):
+                if value is not None:
+                    if dependencies.has_key(key):
+                        self._assumptions.update(dependencies[key](value))
+
+                    self._assumptions[key] = value
             else:
-                raise NotImplementedError ( "Assumption %s not implemented" % str(k))
-        
-    def __add__(self,a):
-        from addmul import Add
-        return Add(self, self.sympify(a))
-    
-    def __radd__(self,a):
-        from addmul import Add
-        return Add(self.sympify(a), self)
-    
-    def __div__(self,a):
-        from numbers import Rational
-        return self._domul(self,self._dopow(a,Rational(-1)))
-        
-    def __rdiv__(self,a):
-        from numbers import Rational
-        return self._domul(self.sympify(self) ** Rational(-1), self.sympify(a))
-        
+                raise NotImplementedError("Assumption %s not implemented" % str(key))
+
     def __getattr__(self, name):
         if self._assumptions.has_key(name):
             return self._assumptions[name]
         else:
             raise AttributeError("'%s' object has no attribute '%s'"%
                 (self.__class__.__name__, name))
-    
+
+    def __setattr__(self, name, value):
+        if name[0:3] != 'is_':
+            object.__setattr__(self, name, value)
+        else:
+             raise AttributeError("Modification of assumptions is not allowed")
+
+    @property
+    def is_zero(self):
+        return None
+
+    @property
+    def is_unit(self):
+        return None
+
+    @property
+    def is_negative_integer(self):
+        return self.is_integer and self.is_negative
+
+    @property
+    def is_nonnegative_integer(self):
+        return self.is_integer and self.is_nonnegative
+
+    @property
+    def is_positive_integer(self):
+        return self.is_integer and self.is_positive
+
+    @property
+    def is_nonpositive_integer(self):
+        return self.is_integer and self.is_nonpositive
+
+    @property
+    def is_number(self):
+        """Return True if self is a number or False otherwise."""
+
+        from sympy.core.symbol import Symbol
+        return self.atoms(type=Symbol) == []
+
+    def __add__(self,a):
+        from addmul import Add
+        return Add(self, self.sympify(a))
+
+    def __radd__(self,a):
+        from addmul import Add
+        return Add(self.sympify(a), self)
+
+    def __div__(self,a):
+        from numbers import Rational
+        return self._domul(self,self._dopow(a,Rational(-1)))
+
+    def __rdiv__(self,a):
+        from numbers import Rational
+        return self._domul(self.sympify(self) ** Rational(-1), self.sympify(a))
+
     def __getitem__(self, iter):
         return self._args[iter]
-    
+
     def __repr__(self):
         return str(self)
-    
+
     def __str__(self):
         return self.__class__.__name__ + "(" + str(self[:])[1:-1] + ")"
-    
+
     def __neg__(self):
         from numbers import Rational
         return self._domul(Rational(-1),self)
-        
+
     def __pos__(self):
         return self
-    
+
     def __float__(self):
         return float(self.evalf())
- 
+
     def __abs__(self):
-        """Returns the absolute value of self. 
-        
-        Example usage: 
+        """Returns the absolute value of self.
+
+        Example usage:
           >>> from sympy import *
           >>> abs(1+2*I)
           5**(1/2)
@@ -122,36 +207,36 @@ class Basic(object):
         """
         from functions import abs_
         return abs_(self)
-        
+
     def __radd__(self,a):
         return self._doadd(a, self)
-        
+
     def __sub__(self,a):
         return self._doadd(self, -a)
-        
+
     def __rsub__(self,a):
         return self._doadd(a, -self)
-        
+
     def __mul__(self,a):
         try:
             a=self.sympify(a)
         except:
             return a.__rmul__(self)
         return self._domul(self, a)
-        
+
     def __rmul__(self,a):
         return self._domul(a, self)
-    
+
     def __pretty__(self):
         """Make representation as prettyForm: to be overridden
         for everything that looks better in 2D.
         """
         from sympy.core.stringPict import prettyForm
         return prettyForm('[%s]'%self)
-        
+
     def __pow__(self,a):
         return self._dopow(self, a)
-        
+
     def __rpow__(self,a):
         return self._dopow(a, self)
 
@@ -161,14 +246,14 @@ class Basic(object):
            will handle it in __nonzero__ and __eq__ routines.
         """
 
-        if a is None: 
+        if a is None:
             return False
         else:
-            from sympy.modules.solvers import Equation    
+            from sympy.modules.solvers import Equation
             return Equation(self, self.sympify(a))
 
     def __ne__(self, a):
-        if a is None: 
+        if a is None:
             return True
         else:
             return self.hash() != self.sympify(a).hash()
@@ -179,70 +264,70 @@ class Basic(object):
            same applies to __le__, __gt__ and __ge__.
         """
 
-        if a is None: 
+        if a is None:
             return False
         else:
             other = Basic.sympify(a)
 
-            if self.is_number and other.is_number: 
+            if self.is_number and other.is_number:
                 return self.evalf() < other.evalf()
             else:
-                from sympy.modules.solvers import Inequality    
+                from sympy.modules.solvers import Inequality
                 return Inequality(self, other)
 
     def __le__(self, a):
-        if a is None: 
+        if a is None:
             return False
         else:
             other = Basic.sympify(a)
 
-            if self.is_number and other.is_number: 
+            if self.is_number and other.is_number:
                 return self.evalf() <= other.evalf()
             else:
-                from sympy.modules.solvers import StrictInequality    
+                from sympy.modules.solvers import StrictInequality
                 return StrictInequality(self, other)
 
     def __gt__(self, a):
-        if a is None: 
+        if a is None:
             return False
         else:
             other = Basic.sympify(a)
 
-            if self.is_number and other.is_number: 
+            if self.is_number and other.is_number:
                 return self.evalf() > other.evalf()
             else:
-                from sympy.modules.solvers import Inequality    
+                from sympy.modules.solvers import Inequality
                 return Inequality(other, self)
 
     def __ge__(self, a):
-        if a is None: 
+        if a is None:
             return False
         else:
             other = Basic.sympify(a)
 
-            if self.is_number and other.is_number: 
+            if self.is_number and other.is_number:
                 return self.evalf() >= other.evalf()
             else:
-                from sympy.modules.solvers import StrictInequality    
+                from sympy.modules.solvers import StrictInequality
                 return StrictInequality(other, self)
 
     @property
     def mathml_tag(self):
-        """Return the mathml tag of the current object. 
-        
+        """Return the mathml tag of the current object.
+
         For example, if symbol x has a mathml representation as::
-        
+
            <ci>x</ci>
-           
+
         then x.mathml_tag should return "ci"
 
         Basic.mathml_tag() returns the class name as the mathml_tag, this is
         the case sometimes (sin, cos, exp, etc.). Otherwise just override this
         method in your class.
         """
-        
+
         return self.__class__.__name__.lower()
-        
+
     def __mathml__(self):
         """Returns a MathML expression representing the current object"""
         import xml.dom.minidom
@@ -253,13 +338,13 @@ class Basic(object):
         for arg in self._args:
             x.appendChild( arg.__mathml__() )
         self._mathml = x
-        
+
         return self._mathml
-    
-        
+
+
     def __latex__(self):
         return str(self) # override this for a custom latex representation
-    
+
     @staticmethod
     def _doadd(a,b):
         from addmul import Add
@@ -276,14 +361,14 @@ class Basic(object):
         return Pow(Basic.sympify(a), Basic.sympify(b))
 
     def eval(self):
-        """Returns canonical form of myself. 
-        
+        """Returns canonical form of myself.
+
         The eval() method should alway return a new object (following the
         general rule of not changing)
-        
+
         """
         return self
-   
+
     def evalf(self):
         raise ValueError
 
@@ -291,18 +376,18 @@ class Basic(object):
         """Rewrites self in the form x+i*y.
 
         It will raise an exception, if this is not possible.
-        
+
         """
         raise NotImplementedError
 
     def get_re_im(self):
-        """Returns (x,y) where self=x+i*y""" 
+        """Returns (x,y) where self=x+i*y"""
         from numbers import I
         e=self.evalc()
         x = e.subs(I,0)
         y = (e+(-x).expand()).subs(I,1)
         return x,y
- 
+
     @staticmethod
     def sympify(a):
         """
@@ -311,18 +396,18 @@ class Basic(object):
             Converts an arbitrary expression to a type that can be used
             inside sympy. For example, it will convert python int's into
             instance of sympy.Rational, floats into intances of sympy.Real, etc.
-            
+
         Notes
         =====
-            It currently accepts as arguments: 
+            It currently accepts as arguments:
                 - any object defined in sympy (except maybe matrices [TODO])
                 - standard numeric python types: int, long, float, Decimal
                 - strings (like "0.09" or "2e-19")
-            
+
             If the argument is already a type that sympy understands, it will do
             nothing but return that value - this can be used at the begining of a
-            method to ensure you are workint with the corerct type. 
-            
+            method to ensure you are workint with the corerct type.
+
         Examples
         ========
             >>> def is_real(a):
@@ -340,10 +425,10 @@ class Basic(object):
         if isinstance(a, Basic):
             #most common case
             return a
-        
+
         import decimal
         from numbers import Rational, Real
-        
+
         if isinstance(a,int) or isinstance(a, long):
             return Rational(a)
         elif isinstance(a,(float, decimal.Decimal, str)):
@@ -361,14 +446,14 @@ class Basic(object):
             if not isinstance(a,Basic):
                 raise ValueError("%s must be a subclass of basic" % str(a))
             return a
-        
+
     def __hash__(self):
         return hash(str(self.hash()))
         # needed by sets and other python functions
         # we do not return .hash() since this is a long
-    
+
     def hash(self):
-        if self._mhash: 
+        if self._mhash:
             return self._mhash.value
         self._mhash = mhash()
         self._mhash.addstr(self.__class__.__name__)
@@ -380,11 +465,11 @@ class Basic(object):
         if self.is_dummy:
             self._mhash.value += 1
         return self._mhash.value
-        
+
     @staticmethod
     def cmphash(a,b):
         return Basic._sign(a.hash()-b.hash())
-        
+
     def series(self,sym, n=6):
         """
         Usage
@@ -392,14 +477,14 @@ class Basic(object):
             Return the Taylor series around 0+ (i.e. 0 from the right) of self
             with respect to sym until the n-th term. Use substitution if you
             want to get a series around a different point or from the left.
-        
+
         Notes
         =====
             If you don't specify n, the default is 6
-        
+
         Examples
         ========
-        
+
             >>> from sympy import *
             >>> x = Symbol('x')
             >>> sin(x).series(x, 5)
@@ -431,19 +516,19 @@ class Basic(object):
         for d in di:
             x = x.subs(d,di[d])
         return x
-        
+
     def subs(self,old,new):
         """Substitutes an expression old -> new."""
         if self == old:
             return self.sympify(new)
         else:
             return self
-            
+
     def has(self,sub):
         from symbol import Symbol
         n = Symbol("dummy", dummy = True)
         return self.subs(sub,n)!=self
-        
+
     def has_any(self, subs):
         return len ([sub for sub in subs if self.has(sub) == True]) > 0
 
@@ -452,7 +537,7 @@ class Basic(object):
         with the lowest power of x in a form (c0,e0)
         """
         #TODO: move out of Basic, maybe to polynomials.py?
-        
+
         from numbers import Rational
         from power import Pow
         from addmul import Add,Mul
@@ -461,12 +546,12 @@ class Basic(object):
             self = self.removeO()
         if isinstance(self,O):
             self = Rational(0)
-        
+
         def domul(x):
             if len(x) > 1:
                 return Mul(*x)
             return x[0]
-        
+
         def extract(t,x):
             """Parses "t(x)", which is expected to be in the form c0*x^e0,
             and returns (c0,e0). It raises an exception, if "t(x)" is not
@@ -487,7 +572,7 @@ class Basic(object):
                         return  domul(t[:i] + t[i+1:]),  Rational(1)
                     assert False
             return t,s.Rational(0)
-        
+
         if not isinstance(self,Add):
             return extract(self,x)
         lowest = [0,(Rational(10)**10)]
@@ -500,13 +585,13 @@ class Basic(object):
             elif t2[1] == lowest[1]:
                 lowest = ((lowest[0] + t2[0]),lowest[1])
         return lowest[0].subs(l,-log(x)), lowest[1].subs(l,-log(x))
-        
+
     def ldegree(self,sym):
         """Returns the lowest power of the sym
         """
         #TODO: move out of Basic
         return self.leadterm(sym)[1]
-        
+
     def expand(self):
         return self
 
@@ -514,8 +599,8 @@ class Basic(object):
         return self
 
     def conjugate(self):
-        """Returns a  complex conjugate of self. 
-        
+        """Returns a  complex conjugate of self.
+
         Note: this implementeation assumes that all Symbols are real,
         so we just need to change the sign at "i".
         """
@@ -533,10 +618,10 @@ class Basic(object):
         =====
             This method is called from Add.eval() and Mul.eval(), so that means it
             is called each time you create an instance of those classes
-    
+
             See
             http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335
-            
+
         See also
         ========
             L{sympy.addmul.Add.eval}
@@ -550,40 +635,31 @@ class Basic(object):
         """
         Try to simplify x+y in this order. You can either return a simplified
         expression or None.
-        
+
         see docs for muleval
-        
+
         """
         return None
 
-    @property
-    def is_number(self):
-        """Return True if self is a number. False otherwise. 
-        """
-        
-        from sympy.core.symbol import Symbol
-        
-        return self.atoms(type=Symbol) == []
-        
     def print_tree(self):
         """The canonical tree representation"""
         return str(self)
-    
+
     def atoms(self, s = [], type=None):
         """Returns the atoms that form current
-        object. 
-        
-        Example: 
+        object.
+
+        Example:
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> y = Symbol('y')
         >>> (x+y**2+ 2*x*y).atoms()
         [2, x, y]
-        
+
         You can also filter the results by a given type of object
         >>> (x+y+2+y**2*sin(x)).atoms(type=Symbol)
         [x, y]
-        
+
         >>> (x+y+2+y**2*sin(x)).atoms(type=Number)
         [2]
         """
@@ -591,12 +667,12 @@ class Basic(object):
         from sympy.core.symbol import Symbol
 
         atoms_class = (Number, Symbol)
-        
+
         if isinstance(self, atoms_class):
             if type is None:
                 return [self]
             return filter(lambda x : isinstance(x, type), [self])
-                
+
         if isinstance(self, atoms_class):
             if type:
                 if not isinstance(self, type):
@@ -618,7 +694,7 @@ class Basic(object):
 
     @staticmethod
     def _sign(x):
-        """Return the sign of x, that is, 
+        """Return the sign of x, that is,
         1 if x is positive, 0 if x == 0 and -1 if x is negative
         """
         if x < 0: return -1

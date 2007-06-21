@@ -67,7 +67,49 @@ def test_Rational_cmp():
     assert not n3<n1
     assert not (Rational(-1) > 0)
     assert Rational(-1) < 0
-    
+
+def test_Rational_assumptions():
+    a = Rational(0)
+    b = Rational(1)
+    c = Rational(-29)
+    d = Rational(41, 37)
+    e = Rational(79)
+
+    assert a.is_zero == True
+    assert a.is_unit == False
+    assert a.is_integer == True
+    assert a.is_nonnegative == True
+    assert a.is_nonpositive == True
+    assert a.is_negative == False
+    assert a.is_positive == False
+    assert a.is_nonzero == False
+
+    assert b.is_zero == False
+    assert b.is_unit == True
+    assert b.is_integer == True
+    assert b.is_nonnegative == True
+    assert b.is_nonpositive == False
+    assert b.is_negative == False
+    assert b.is_positive == True
+    assert b.is_nonzero == True
+
+    assert c.is_negative_integer == True
+    assert c.is_nonpositive_integer == True
+    assert c.is_positive_integer == False
+    assert c.is_nonnegative_integer == False
+
+    assert d.is_integer == False
+    assert d.is_nonzero == True
+
+    assert a.is_even == True
+    assert b.is_odd == True
+
+    assert d.is_even == False
+    assert d.is_odd == False
+
+    assert e.is_prime == True
+    assert d.is_prime == False
+
 def test_Real():
     a = g.Real(2) ** g.Real(3)
     assert a.evalf() == 8.0
@@ -181,4 +223,7 @@ def test_real_bug():
 
 def test_bug_sqrt():
     assert ((sqrt(Rational(2))+1)*(sqrt(Rational(2))-1)).expand() == 1
+
+
+
 

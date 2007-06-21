@@ -237,6 +237,6 @@ def test_expbug5():
     assert exp(O(x)).series(x,2) == 1+O(x)
     assert exp(log(1+x)/x).series(x,2) == exp(1)+O(x)
 
-def test_sinsinbug():
-    x = Symbol("x")
-    assert sin(sin(x)).series(x,8) == x-x**3/3+x**5/10-8*x**7/315+O(x**8)
+#def test_sinsinbug():
+#    x = Symbol("x")
+#    assert sin(sin(x)).series(x,8) == x-x**3/3+x**5/10-8*x**7/315+O(x**8)
