@@ -9,6 +9,7 @@ from sympy import Basic, Symbol, Number, Mul, log, Add, \
 from sympy.core.functions import Derivative, diff
 from sympy.modules.polynomials import collect
 from sympy.modules.matrices import zeronm
+from sympy.modules.simplify import simplify
 
 class Equation(Basic):
 
@@ -252,7 +253,7 @@ def solve_linear_system(matrix, syms):
             for j in range(k+1, m):
                 content -= matrix[k, j]*solutions[syms[j]]
     
-            solutions[syms[k]] = content.expand()
+            solutions[syms[k]] = simplify(content)
             
             k -= 1
             
@@ -273,7 +274,7 @@ def solve_linear_system(matrix, syms):
             for j in range(i, m):
                 content -= matrix[k, j]*syms[j]
                 
-            solutions[syms[k]] = content.expand()
+            solutions[syms[k]] = simplify(content)
             
             k -= 1
             

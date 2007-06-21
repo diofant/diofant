@@ -92,7 +92,9 @@ def test_tan():
     z = Symbol('z')
     assert tan(-x).expand() == -tan(x)
     assert tan(-x-y).expand() == (-tan(x) - tan(y)) / (1 - tan(x)*tan(y))
-    assert tan(x+y+z).expand() == (tan(x) + tan(y) + tan(z) - tan(x)*tan(y)*tan(z)) / (1 - tan(x)*tan(y) - tan(x)*tan(z) - tan(y)*tan(z)) 
+    assert tan(x+y+z).expand() == \
+           (tan(x) + tan(y) + tan(z) - tan(x)*tan(y)*tan(z)) \
+           / (1 - tan(x)*tan(y) - tan(x)*tan(z) - tan(y)*tan(z)) 
 
     assert tan(2*x).expand() == 2*tan(x) / (1 - tan(x)**2)
-    assert tan(-3*x).expand() == -(3*tan(x) - tan(x)**3) / (1 - 3*tan(x)**2)
+    assert tan(-3*x).expand() == -((3*tan(x) - tan(x)**3) / (1 - 3*tan(x)**2))

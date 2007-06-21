@@ -40,13 +40,13 @@ def test_evalc():
 
     assert exp(I*x+y).evalc() == exp(y)*cos(x)+I*sin(x)*exp(y)
 
-    assert sin(I*x).evalc() == I * (exp(x)-exp(-x))/2
-    assert sin(x+I*y).evalc() == sin(x)*(exp(y)+exp(-y))/2 + \
-            I * (exp(y)-exp(-y))/2 * cos(x)
+    assert sin(I*x).evalc() == I * (exp(x)/2-exp(-x)/2)
+    assert sin(x+I*y).evalc() == sin(x)*(exp(y)/2+exp(-y)/2) + \
+            I * (exp(y)/2-exp(-y)/2) * cos(x)
 
-    assert cos(I*x).evalc() == (exp(x)+exp(-x))/2
-    assert cos(x+I*y).evalc() == cos(x)*(exp(y)+exp(-y))/2 - \
-            I * (exp(y)-exp(-y))/2 * sin(x)
+    assert cos(I*x).evalc() == (exp(x)/2+exp(-x)/2)
+    assert cos(x+I*y).evalc() == cos(x)*(exp(y)/2+exp(-y)/2) - \
+            I * (exp(y)/2-exp(-y)/2) * sin(x)
 
 
 def test_pythoncomplex():

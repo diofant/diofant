@@ -23,7 +23,7 @@ def test_poly_str():
     #correct results.
     assert str((2*x-(7*x**2 - 2) + 3*y)) in ["2*x-(-2+7*x**2)+3*y",
             "-(-2+7*x**2)+2*x+3*y", "3*y-(-2+7*x**2)+2*x", "-(-2+7*x**2)+3*y+2*x",
-            "2*x+3*y-(-2+7*x**2)", "3*y+2*x-(-2+7*x**2)"]
+            "2*x+3*y-(-2+7*x**2)", "3*y+2*x-(-2+7*x**2)", "2+3*y-7*x**2+2*x"]
     assert str(x-y) in ["x-y", "-y+x"]
     assert str(2+-x) == "2-x"
     assert str(x-2) in ["x-2","-2+x"]

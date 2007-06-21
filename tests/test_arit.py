@@ -63,7 +63,11 @@ def test_arit():
     assert e == a**(-1)
     e=2**a**2
     assert e == 2**(a**2)
-
+    e = -(1+a)
+    assert e == -1 -a
+    e = Rational(1,2)*(1+a)
+    assert e == Rational(1,2) + a/2
+    
 def testdiv():
     a=g.Symbol("a")
     b=g.Symbol("b")
