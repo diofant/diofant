@@ -61,7 +61,7 @@ class Basic(object):
        >>> Rational(1, 2).is_integer
        False
 
-       To assume something about SymPy's object, it is neccesary to put
+       To assume something about SymPy's object, it is necessary to put
        appropriate flags in selectd object's constructor:
 
        >>> Symbol('k', integer = True).is_integer
@@ -78,9 +78,13 @@ class Basic(object):
        >>> k = Symbol('k', integer = True, nonnegative = True)
        >>> k.is_integer and k.is_nonnegative
        True
+       >>> k.is_nonnegative_integer
+       True
 
        >>> k = Symbol('k', nni = True)
        >>> k.is_integer and k.is_nonnegative
+       True
+       >>> k.is_nonnegative_integer
        True
 
     """
@@ -111,10 +115,10 @@ class Basic(object):
         dependencies = {
             'is_integer'     : lambda x: { 'is_real'        : x },
 
-            'is_negative'    : lambda x: { 'is_positive'    : not x,
+            'is_negative'    : lambda x: { 'is_positive'    : (not x) and None,
                                            'is_nonnegative' : not x },
 
-            'is_positive'    : lambda x: { 'is_negative'    : not x,
+            'is_positive'    : lambda x: { 'is_negative'    : (not x) and None,
                                            'is_nonpositive' : not x },
 
             'is_nonnegative' : lambda x: { 'is_negative'    : not x },
@@ -137,8 +141,8 @@ class Basic(object):
             }
 
         abbreviations = {
-            'is_nni'        : [ 'is_integer', 'is_nonnegative' ],
-            'is_npi'        : [ 'is_integer', 'is_nonpositive' ],
+            'is_nni'         : [ 'is_integer', 'is_nonnegative' ],
+            'is_npi'         : [ 'is_integer', 'is_nonpositive' ],
             }
 
         def update_assumptions(key, value):

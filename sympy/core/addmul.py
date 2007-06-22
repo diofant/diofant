@@ -129,6 +129,22 @@ class Pair(Basic):
                 return False
         return True
 
+    @property
+    def is_integer(self):
+        memo = True
+
+        for term in self:
+            result = term.is_integer
+
+            if result is None:
+                return None
+            elif result == False:
+                # remember if there is non-integer symbol, but
+                # keep iterating because we can still find None
+                memo = False
+
+        return memo
+
     def match(self, pattern, syms=None, exclude = "None"):
         """
         Imagine that we are matching (3*x**2).match(a*x,[a])
@@ -610,24 +626,20 @@ class Mul(Pair):
             return prettyForm.__mul__(*a) / prettyForm.__mul__(*b)
 
     @property
-    def is_integer(self):
-        for term in self:
-            result = term.is_integer
-
-            if result != True:
-                return result
-
-        return True
-
-    @property
     def is_odd(self):
+        memo = True
+
         for term in self:
             result = term.is_odd
 
-            if result != True:
-                return result
+            if result is None:
+                return None
+            elif result == False:
+                # remember if there is non-odd symbol, but keep
+                # iterating because we can still find None
+                memo = False
 
-        return True
+        return memo
 
     @property
     def is_even(self):
@@ -638,7 +650,7 @@ class Mul(Pair):
         for term in self:
             result = term.is_even
 
-            if result == None:
+            if result is None:
                 return None
             elif result == True:
                 memo = True
@@ -647,15 +659,15 @@ class Mul(Pair):
 
     @property
     def is_negative(self):
-        negative = 0
+        negative_count = 0
 
         for term in self:
             result = term.is_negative
 
-            if result == None:
+            if result is None:
                 return None
             elif result == True:
-                negative += 1
+                negative_count += 1
                 continue
 
             # we could have ended here as this term is non-negative,
@@ -667,19 +679,19 @@ class Mul(Pair):
                 return result
 
         # we need odd number of negative terms
-        return negative & 1 == 1
+        return negative_count & 1 == 1
 
     @property
     def is_positive(self):
-        negative = 0
+        negative_count = 0
 
         for term in self:
             result = term.is_negative
 
-            if result == None:
+            if result is None:
                 return None
             elif result == True:
-                negative += 1
+                negative_count += 1
                 continue
 
             # we could have ended here as this term is non-negative,
@@ -691,11 +703,11 @@ class Mul(Pair):
                 return result
 
         # we need even number of negative terms
-        return negative & 1 == 0
+        return negative_count & 1 == 0
 
     @property
     def is_nonnegative(self):
-        memo, negative = False, 0
+        memo, negative_count = False, 0
 
         for term in self:
             neg = term.is_negative
@@ -705,7 +717,7 @@ class Mul(Pair):
                 memo = True
 
             if neg or npi == True:
-                negative += 1
+                negative_count += 1
                 continue
 
             pos = term.is_positive
@@ -720,11 +732,11 @@ class Mul(Pair):
                 memo = True
 
         # we need even number of negative terms
-        return (memo and negative & 1 == 0) or None
+        return (memo and negative_count & 1 == 0) or None
 
     @property
     def is_nonpositive(self):
-        memo, negative = False, 0
+        memo, negative_count = False, 0
 
         for term in self:
             neg = term.is_negative
@@ -734,7 +746,7 @@ class Mul(Pair):
                 memo = True
 
             if neg or npi == True:
-                negative += 1
+                negative_count += 1
                 continue
 
             pos = term.is_positive
@@ -749,14 +761,14 @@ class Mul(Pair):
                 memo = True
 
         # we need odd number of negative terms
-        return (memo and negative & 1 == 1) or None
+        return (memo and negative_count & 1 == 1) or None
 
 class Add(Pair):
     """
     Usage
     =====
-        This class represent's the addition of two elements. so whenever you call '+', an
-        instance of this class is created.
+        This class represent's the addition of two elements. so whenever
+        you call '+', an instance of this class is created.
 
     Notes
     =====
@@ -1029,6 +1041,150 @@ class Add(Pair):
             else:
                 pforms.append(x.__pretty__())
         return prettyForm.__add__(*pforms)
+
+    @property
+    def is_odd(self):
+        odd_count = 0
+
+        for term in self:
+            result = term.is_odd
+
+            if result is None:
+                return None
+            elif result == True:
+                odd_count += 1
+                continue
+
+            # we could have ended here but if integer
+            # is not odd it does not mean it is even
+            result = term.is_even
+
+            if result != True:
+                return result
+
+        return odd_count & 1 == 1
+
+    @property
+    def is_even(self):
+        odd_count = 0
+
+        for term in self:
+            result = term.is_odd
+
+            if result is None:
+                return None
+            elif result == True:
+                odd_count += 1
+                continue
+
+            # we could have ended here but if integer
+            # is not odd it does not mean it is even
+            result = term.is_even
+
+            if result != True:
+                return result
+
+        return odd_count & 1 == 0
+
+    @property
+    def is_negative(self):
+        memo, positive_count = False, 0
+
+        for term in self:
+            result = term.is_negative
+
+            if result is None:
+                return None
+            elif result == False:
+                result = term.is_positive
+
+                if result != True or memo:
+                    return None
+                else:
+                    positive_count += 1
+            elif positive_count > 0:
+                return None
+            else:
+                memo = True
+
+        # it could have happend that all terms were positive
+        # so in this case return rather False than None
+        return positive_count != len(self[:])
+
+    @property
+    def is_positive(self):
+        memo, negative_count = False, 0
+
+        for term in self:
+            result = term.is_positive
+
+            if result is None:
+                return None
+            elif result == False:
+                result = term.is_negative
+
+                if result != True or memo:
+                    return None
+                else:
+                    negative_count += 1
+            elif negative_count > 0:
+                return None
+            else:
+                memo = True
+
+        # it could have happend that all terms were negative
+        # so in this case return rather False than None
+        return negative_count != len(self[:])
+
+    @property
+    def is_nonpositive(self):
+        memo, positive_count = False, 0
+
+        for term in self:
+            result = term.is_negative or term.is_nonpositive
+
+            if result is None:
+                return None
+            elif result == False:
+                result = term.is_positive
+
+                if result != True or memo:
+                    return None
+                else:
+                    positive_count += 1
+            elif positive_count > 0:
+                return None
+            else:
+                memo = True
+
+        # it could have happend that all terms were positive
+        # so in this case return rather False than None
+        return positive_count != len(self[:])
+
+    @property
+    def is_nonnegative(self):
+        memo, negative_count = False, 0
+
+        for term in self:
+            result = term.is_positive or term.is_nonnegative
+
+            if result is None:
+                return None
+            elif result == False:
+                result = term.is_negative
+
+                if result != True or memo:
+                    return None
+                else:
+                    negative_count += 1
+            elif negative_count > 0:
+                return None
+            else:
+                memo = True
+
+        # it could have happend that all terms were negative
+        # so in this case return rather False than None
+        return negative_count != len(self[:])
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.
