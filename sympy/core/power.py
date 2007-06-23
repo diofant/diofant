@@ -334,7 +334,7 @@ class Pow(Basic):
             except pole_error:
                 e = exp((self.exp*log(self.base)))
                 return e.series(sym,n)
-            
+
     def expand(self):
         from addmul import Add, Mul
         
@@ -379,6 +379,11 @@ class Pow(Basic):
                         #a *= self.base
                         n -= 1
                     return a.expand()
+                if n < 0:
+                    p = Pow(self.base, -self.exp).expand()
+                    if isinstance(p, Mul):
+                        return Mul(*(a**(-1) for a in p[:]))
+
         return Pow(self[0].expand(),self[1].expand())
         return self
 

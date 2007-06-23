@@ -130,6 +130,17 @@ def testpow():
 
     assert sqrt(2*(1+sqrt(2))) == (2*(1+2**(Rational(1,2))))**(Rational(1,2))
 
+    x = Symbol('x')
+    y = Symbol('y')
+
+    assert ((x*y)**3).expand() == y**3 * x**3
+    assert ((x*y)**-3).expand() == y**-3 * x**-3
+
+    assert (x**5*(3*x)**(3)).expand() == 27 * x**8
+    assert (x**5*(-3*x)**(3)).expand() == -27 * x**8
+    assert (x**5*(3*x)**(-3)).expand() == Rational(1,27) * x**2
+    assert (x**5*(-3*x)**(-3)).expand() == -Rational(1,27) * x**2
+
 def test_expand():
     a = g.Symbol("a")
     b = g.Symbol("b")
