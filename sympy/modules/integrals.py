@@ -168,12 +168,19 @@ class Integral(Basic):
                 a/(b*x+c): a/b * log(abs(b*x+c)),
                 a*sin(b*x): -a/b * cos(b*x),
                 a*cos(b*x): a/b * sin(b*x),
-                log(x): x*log(x)-x,
+                log(a*x): x*log(a*x)-x,
+                # Note: the next two entries are special cases of the
+                # third and would be redundant with a more powerful match()
+                exp(a*x) : exp(a*x)/a,
+                x * exp(a*x) : exp(a*x) * (a*x-1) / a**2,
                 x**a * exp(b*x) : (-1)*x**(a+1)*(-b*x)**(-a-1)*upper_gamma(a+1,-b*x)
                 }
         for k in integral_table:
             r = f.match(k, [a,b,c])
             if r != None:
+                # Prevent matching nonconstant expressions 
+                if [1 for v in r.values() if v.has(x)]:
+                    break
                 return integral_table[k].subs_dict(r)
 
         raise IntegralError("Don't know how to do this integral. :(")

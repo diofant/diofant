@@ -49,13 +49,21 @@ def test_multiple_integration():
     y = Symbol('y')
     assert integrate((x**2)*(y**2), (x,0,1), (y,-1,2)) == Rational(1)
     assert integrate((y**2)*(x**2), x, y) == Rational(1,9)*(x**3)*(y**3)
-    
+
 def test_integration_table():
+    from sympy import simplify, diff, exp
+
     x=Symbol("x")
     assert integrate(1/(x+1), x) == log(abs(x+1))
     assert integrate(-4*sin(4*x), x) == cos(4*x)
     assert integrate(3*cos(4*x), x) == 3*sin(4*x)/4
     assert integrate(log(x), x) == x*log(x) - x
-    from sympy import simplify, Pow, diff, exp
-    assert integrate(Pow(x,0,evaluate=False)*exp(1*x,evaluate=False), x) == exp(x)
+    assert integrate(log(3*x), x) == x*log(3*x) - x
+
+    # This test is to ensure that the integral table does not look
+    # up the *wrong* answer.
+    py.test.raises(IntegralError, "integrate(exp(x**x) / (x+1), x)")
+
+    assert integrate(exp(x), x) == exp(x)
+    assert integrate(2*exp(3*x), x) == 2*exp(3*x)/3
     assert simplify(diff(integrate(x**3 * exp(4*x), x), x)) == x**3 * exp(4*x)
