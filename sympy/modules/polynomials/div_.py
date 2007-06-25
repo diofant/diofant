@@ -15,8 +15,7 @@ def mv(f, g):
     """
     if not isinstance(g, list):
         g = [g]
-    r = Polynomial(0, f.var, f.order, f.coeff)
-    r.cl # Create empty coefficient list
+    r = Polynomial([[Rational(0)]+[0]*len(f.var)], f.var, f.order, f.coeff)
     q = []
     for i in range(0,len(g)):
         q.append(r.copy())
@@ -28,15 +27,14 @@ def mv(f, g):
             # Check if leading term of f is divisible by that of g_i.
             # TODO: Don't repeat term_div!
             if term_is_mult(f.cl[0], g_i.cl[0]):
-                quot = Polynomial(0, f.var, f.order, f.coeff)
-                quot.cl = [term_div(f.cl[0], g_i.cl[0])]
+                quot = Polynomial([term_div(f.cl[0], g_i.cl[0])],
+                                  f.var, f.order, f.coeff)
                 q[g.index(g_i)] += quot
                 f -= quot*g_i
                 break
         else: # No division occured, add the leading term to remainder.
             # TODO: Don't create Polynomial, act on lists directly. 
-            lt = Polynomial(0, f.var, f.order, f.coeff)
-            lt.cl = [f.cl[0]]
+            lt = Polynomial([f.cl[0]], f.var, f.order, f.coeff)
             r += lt # Append to the end.
             f -= lt # Remove from the beginning.
     return q, r
@@ -55,8 +53,7 @@ def mv_int(f, g):
     """
     if not isinstance(g, list):
         g = [g]
-    r = Polynomial(0, f.var, f.order, f.coeff)
-    r.cl # Create empty coefficient list
+    r = Polynomial([[Rational(0)]+[0]*len(f.var)], f.var, f.order, f.coeff)
     q = []
     for i in range(0,len(g)):
         q.append(r.copy())
@@ -69,15 +66,14 @@ def mv_int(f, g):
             # TODO: Don't repeat term_div!
             if term_is_mult(f.cl[0], g_i.cl[0]) \
                and (f.cl[0][0]/g_i.cl[0][0]).is_integer:
-                quot = Polynomial(0, f.var, f.order, f.coeff)
-                quot.cl = [term_div(f.cl[0], g_i.cl[0])]
+                quot = Polynomial([term_div(f.cl[0], g_i.cl[0])],
+                                  f.var, f.order, f.coeff)
                 q[g.index(g_i)] += quot
                 f -= quot*g_i
                 break
         else: # No division occured, add the leading term to remainder.
             # TODO: Don't create Polynomial, act on lists directly. 
-            lt = Polynomial(0, f.var, f.order, f.coeff)
-            lt.cl = [f.cl[0]]
+            lt = Polynomial([f.cl[0]], f.var, f.order, f.coeff)
             r += lt # Append to the end.
             f -= lt # Remove from the beginning.
     return q, r

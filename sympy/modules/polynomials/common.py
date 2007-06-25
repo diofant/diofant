@@ -1,5 +1,8 @@
 """Simple helper functions common to several algorithms"""
 
+from sympy import Add, Basic, Mul, Number, Pow, Rational, Real, Symbol
+from sympy.modules.polynomials.base import PolynomialException
+
 def all(iterable):
     """True if all elements are True"""
     for element in iterable:
@@ -56,6 +59,13 @@ def term_is_mult(a, b):
     a and b are assumed to be terms of coefficient lists of
     Polynomials of same the variables."""
     return all([x >= 0 for x in term_div(a, b)[1:]])
+
+def term_lcm(a, b):
+    # TODO: Compute lcm oder product of coefficients?
+    r = [Rational(1)] # [a[0]*b[0]]
+    for aa, bb in zip(a[1:], b[1:]):
+        r.append(max(aa, bb))
+    return r
 
 def merge_var(*a):
     """Return a sorted list of the symbols in the arguments"""

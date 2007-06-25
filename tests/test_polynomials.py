@@ -7,6 +7,8 @@ import py
 from sympy import *
 from sympy.modules.polynomials import *
 
+## sympy/modules/polynomials/base.py
+
 def test_Polynomial():
     x = Symbol("x")
     y = Symbol("y")
@@ -18,6 +20,7 @@ def test_Polynomial():
     assert str(f) == "2+x"
     assert repr(f) == "Polynomial(2+x, [x], 'grevlex', 'sym')"
     assert f.basic == x+2
+    assert f == Polynomial(f.cl, f.var, f.var)
     assert h.var == [x, y]
     assert h.cl == [[1, 0, 2], [1, 1, 0], [1, 0, 0]]
     h = f*Polynomial(y,[x])
@@ -29,6 +32,32 @@ def test_Polynomial():
     h.var=[y]
     assert h.var == [y]
     assert h.cl == [[2+x, 1]]
+
+def test_coeff_list():
+    x = Symbol('x')
+    y = Symbol('y')
+    z = Symbol('z')
+
+    from sympy.modules.trigonometric import sin
+
+    assert coeff_list(1) == [[1]]
+    assert coeff_list(x) == [[1,1]]
+    assert coeff_list(x**2+y**3, order='lex') == [[1,2,0], [1,0,3]]
+    assert coeff_list(x**2+y**3, [y,x]) == [[1,3,0], [1,0,2]]
+    assert coeff_list(x*y) == [[1,1,1]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='lex') \
+           == [[sin(z), 3, 0], [1, 2, 4], [1, 1, 5]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='grlex') \
+           == [[1, 2, 4], [1, 1, 5], [sin(z), 3, 0]]
+    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x**5*y, [x,y],
+               order='grevlex') == [[1, 5, 1], [1, 2, 4], [sin(z), 3, 0]]
+    assert coeff_list(z*x + x**2*y**2 + x**3*y, [z,x,y], order='1-el') \
+           == [[1,1,1,0], [1,0,3,1], [1,0,2,2]]
+
+    #TODO better test that differs between all orders ?
+
+    py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
+    py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
     
 def test_ispoly():
     x = Symbol("x")
@@ -42,6 +71,20 @@ def test_ispoly():
     assert ispoly( x**2 + 3*x*sqrt(y) - 8, x)
     assert not ispoly( x**2 + 3*x*sqrt(y) - 8 , y)
     assert ispoly((x**2)*(y**2) + x*(y**2) + y*x + x + exp(2), (x,y) )
+
+def test_poly():
+    x = Symbol("x")
+    y = Symbol("y")
+    assert 3*x**2 == poly([(3,2)],x)
+    assert 2*x+3*x**2 - 5 == poly([(-5, 0), (2, 1), (3,2)],x)
+    assert 2*x**100+3*x**2 - 5 == poly([(-5, 0), (3,2), (2, 100)],x)
+    assert 2*x**100+3*x**2 - 6 != poly([(-5, 0), (3,2), (2, 100)],x)
+
+    assert sqrt(y)*x == poly([(sqrt(y),1)],x)
+    assert x**2 + 3*x*sqrt(y) - 8 == poly([(-8, 0), (3*sqrt(y), 1),
+        (1, 2)],x)
+
+## sympy/modules/polynomials/wrapper.py
 
 def test_div():
     x = Symbol("x")
@@ -66,6 +109,56 @@ def test_div():
     assert div(x**2*y+x*y**2+y**2, [y**2-1, x*y-1], [x,y]) \
            == ([1+x, x], 1+2*x)
 
+def test_gcd():
+    x = Symbol("x")
+    y = Symbol("y")
+    z = Symbol("z")
+    
+    assert gcd(x**2, x, x) == x
+    assert gcd(3*x**2, x, x) == x
+    assert gcd(3*x**2, 6*x, x, coeff='int') == 3*x
+    assert gcd(3*x**2, 6*x, x) == x
+    assert gcd(x**2+2*x+1, x+1, x) == x+1
+    assert gcd(x**2+2*x+2, x+1, x) == 1
+
+    assert gcd(x**2+2*x+1, 2+2*x, x) == 1+x
+    assert gcd(x**2+2*x+2, 2+2*x, x) == 1
+
+    assert gcd(4, 6) == Rational(1)
+    assert gcd(6, 4, coeff='int') == Rational(2)
+    assert gcd(x, y) == Rational(1)
+    assert gcd(sin(z)*(x+y), x**2+2*x*y+y**2, [x, y]) == x+y
+
+def test_groebner():
+    x = Symbol('x')
+    y = Symbol('y')
+    z = Symbol('z')
+
+    assert groebner(y*x, [x]) == [x]
+    assert groebner(y*x, [x], reduced=False) == [x*y]
+    assert groebner(x*y, [z]) == [1]
+    
+    # This one already is a Groebner base.
+    assert groebner([y-x**2, z-x**3], [y,z,x], 'lex', reduced=False) \
+           == [-x**2+y, z-x**3]
+
+    assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex',
+                    reduced=False) \
+           == [x**3-2*x*y, x+x**2*y-2*y**2, -x**2, -2*x*y, -2*y**2+x]
+    assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex') \
+           == [x**2, x*y, Rational(-1,2)*x+y**2]
+
+def test_lcm():
+    x = Symbol('x')
+    y = Symbol('y')
+
+    assert lcm(6, 4) == Rational(1)
+    assert lcm(6, 4, coeff='int') == Rational(12)
+    assert lcm(4, y) == y
+    assert lcm(x, y) == x*y
+    assert lcm(y*(x+1), x, [x]) ==x+x**2
+    assert lcm(2*x, x**2, coeff='int') == 2*x**2 
+
 def test_coeff():
     x = Symbol("x")
     assert coeff(x**2, x, 1) == 0
@@ -75,37 +168,6 @@ def test_coeff():
     assert coeff(2*x+18*x**8, x, 1) == 2
     assert coeff(2*x+18*x**8, x, 4) == 0
     assert coeff(2*x+18*x**8, x, 8) == 18
-
-def test_poly():
-    x = Symbol("x")
-    y = Symbol("y")
-    assert 3*x**2 == poly([(3,2)],x)
-    assert 2*x+3*x**2 - 5 == poly([(-5, 0), (2, 1), (3,2)],x)
-    assert 2*x**100+3*x**2 - 5 == poly([(-5, 0), (3,2), (2, 100)],x)
-    assert 2*x**100+3*x**2 - 6 != poly([(-5, 0), (3,2), (2, 100)],x)
-
-    assert sqrt(y)*x == poly([(sqrt(y),1)],x)
-    assert x**2 + 3*x*sqrt(y) - 8 == poly([(-8, 0), (3*sqrt(y), 1),
-        (1, 2)],x)
-
-def test_gcd():
-    x = Symbol("x")
-    assert gcd(x**2, x, x) == x
-    assert gcd(3*x**2, x, x) == x
-    assert gcd(3*x**2, 3*x, x) == 3*x
-    assert gcd(3*x**2, 6*x, x) == 3*x
-    assert gcd(x**2+2*x+1, x+1, x) == x+1
-    assert gcd(x**2+2*x+2, x+1, x) == 1
-
-    assert gcd(x**2+2*x+1, 2+2*x, x) == 1+x
-    assert gcd(x**2+2*x+2, 2+2*x, x) == 1
-
-def test_rep():
-    assert rep(101,100) == (1,1)
-    assert rep(300,100) == (0,3)
-    assert rep(100,100) == (0,1)
-
-    assert rep(100,10) == (0,0,1)
 
 def test_sqf():
     x = Symbol("x")
@@ -179,70 +241,6 @@ def test_collect():
     assert collect(x*y+2*y+z, [x, y, z]) == None
     assert collect(sin(x)*x+y+z, [x, y, z]) == None
     assert collect(sin(y)*x+y+z, [x, y, z]) == None
-
-def test_coeff_list():
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-
-    from sympy.modules.trigonometric import sin
-
-    assert coeff_list(1) == [[1]]
-    assert coeff_list(x) == [[1,1]]
-    assert coeff_list(x**2+y**3, order='lex') == [[1,2,0], [1,0,3]]
-    assert coeff_list(x**2+y**3, [y,x]) == [[1,3,0], [1,0,2]]
-    assert coeff_list(x*y) == [[1,1,1]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='lex') \
-           == [[sin(z), 3, 0], [1, 2, 4], [1, 1, 5]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x*y**5, [x,y], order='grlex') \
-           == [[1, 2, 4], [1, 1, 5], [sin(z), 3, 0]]
-    assert coeff_list(x**2*y**4 + sin(z)*x**3 + x**5*y, [x,y],
-               order='grevlex') == [[1, 5, 1], [1, 2, 4], [sin(z), 3, 0]]
-    assert coeff_list(z*x + x**2*y**2 + x**3*y, [z,x,y], order='1-el') \
-           == [[1,1,1,0], [1,0,3,1], [1,0,2,2]]
-
-    #TODO better test that differs between all orders ?
-
-    py.test.raises(PolynomialException, "coeff_list(sqrt(x),x)")
-    py.test.raises(PolynomialException, "coeff_list(sin(x),x)")
-
-def test_groebner():
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-
-    assert groebner(y*x, [x]) == [x]
-    assert groebner(y*x, [x], reduced=False) == [x*y]
-    assert groebner(x*y, [z]) == [1]
-    
-    # This one already is a Groebner base.
-    assert groebner([y-x**2, z-x**3], [y,z,x], 'lex', False) \
-           == [-x**2+y, z-x**3]
-
-    assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex', False) \
-           == [x**3-2*x*y, x+x**2*y-2*y**2, -x**2, 2*x*y, 2*y**2-x]
-    assert groebner([x**3-2*x*y, x**2*y-2*y**2+x], [x,y], 'grlex', True) \
-           == [x**2, x*y, Rational(-1,2)*x+y**2]
-
-def test_lcm_mv():
-    x = Symbol('x')
-    y = Symbol('y')
-
-    assert lcm_mv(3, 4) == Rational(12)
-    assert lcm_mv(4, y) == 4*y
-    assert lcm_mv(x, y) == x*y
-    assert lcm_mv(y*(x+1), x, [x]) == y*(x+x**2)
-    assert lcm_mv(2*x, x**2) == 2*x**2 
-
-def test_gcd_mv():
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-    
-    assert gcd_mv(3, 4) == Rational(12)
-    assert gcd_mv(3, 4, monic=True) == Rational(1)
-    assert gcd_mv(x, y) == Rational(1)
-    assert gcd_mv(sin(z)*(x+y), x**2+2*x*y+y**2, [x, y], monic=True) == x+y
 
 def test_Ideal():
     x = Symbol('x')

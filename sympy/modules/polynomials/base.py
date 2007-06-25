@@ -1,7 +1,5 @@
 """Module providing the class Polynomial and low-level functions"""
 
-from sympy import Add, Basic, Mul, Number, Pow, Rational, Real, Symbol
-
 class PolynomialException(Exception):
     pass
 
@@ -29,22 +27,30 @@ class Polynomial(Basic):
     True
     """
     def __init__(self, p, var=None, order=None, coeff=None):
-        # TODO: Remove, if not necessary.
-        p = Basic.sympify(p)
-        if not isinstance(p, Basic):
-            raise PolynomialException(
-                'Can not create Polynomial out of a %s!' % type(p))
-        # TODO: Check if really a polynomial?
-        # Is an instance of Basic, get per property basic
-        self._basic = p
-        # Get per property var
+        # Constructor by coeff list:
+        if isinstance(p, list):
+            if var == None or order == None:
+                raise PolynomialException(
+                    'Ambigous coefficient list given, need var/order.')
+            self._cl = p
+            self._basic = None
+        else:
+            # TODO: Remove, if not necessary.
+            p = Basic.sympify(p)
+            if not isinstance(p, Basic):
+                raise PolynomialException(
+                    'Can not create Polynomial out of a %s!' % type(p))
+            # TODO: Check if really a polynomial?
+            # Is an instance of Basic, get per property basic
+            self._basic = p
+            # Coefficient list, use property cl
+            self._cl = None
+        # Use property var
         self._var = var
-        # Get per property order
+        # Use property order
         self._order = order
-        # Get per property coeff
+        # Use property coeff
         self._coeff = coeff
-        # Coefficient list, get per property cl
-        self._cl = None
 
     def get_basic(self):
         if self._basic == None:
@@ -149,7 +155,10 @@ class Polynomial(Basic):
             # TODO: Which var to choose?
             return Polynomial(self.basic + other, order=self.order)
 
-        var = merge_var(self.var, other.var)
+        if self.var != other.var:
+            var = merge_var(self.var, other.var)
+        else:
+            var = self.var
         if self.order == other.order:
             order = self.order
         else:
@@ -224,7 +233,10 @@ class Polynomial(Basic):
             # TODO: Which var to choose?
             return Polynomial(self.basic * other, order=self.order)
 
-        var = merge_var(self.var, other.var)
+        if self.var == other.var:
+            var = self.var
+        else:
+            var = merge_var(self.var, other.var)
         if self.order == other.order:
             order = self.order
         else:
@@ -274,7 +286,7 @@ class Polynomial(Basic):
                         cl[i][0] = c
                         i += 1
                     j += 1
-                elif term_cmp(cl[i], co[j], order) > 0:
+                elif term_cmp(cl[i], co[j], r.order) > 0:
                     i += 1
                 else:
                     cl.insert(i, co[j])
@@ -312,6 +324,16 @@ class Polynomial(Basic):
         if self._cl != None:
             r._cl = copy_cl(self._cl)
         return r
+
+    def content(self):
+        if self.coeff != 'int':
+            return Rational(1)
+        else:
+            c = map(lambda t: t[0], self.cl)
+            assert all(map(lambda x:isinstance(x, Rational) and x.is_integer,
+                           c))
+            c = map(lambda x:x.p, c)
+            return Rational(abs(reduce(Rational(0).gcd, c)))
 
 def coeff_list(p, var=None, order='grevlex'):
     """Return the list of coeffs and exponents.

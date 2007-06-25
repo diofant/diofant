@@ -5,6 +5,9 @@ from sympy.modules.matrices import zero
 
 from sympy.modules.polynomials.base import *
 from sympy.modules.polynomials import div_
+from sympy.modules.polynomials import gcd_
+from sympy.modules.polynomials import groebner_
+from sympy.modules.polynomials import lcm_
              
 def div(f, g, var=None, order=None, coeff=None):
     """Polynomial division of f by g, returns quotients and remainder.
@@ -53,6 +56,148 @@ def div(f, g, var=None, order=None, coeff=None):
     else:
         return map(lambda x: x.basic, q), r.basic
 
+def gcd(f, g, var=None, order=None, coeff=None):
+    """Greatest common divisor of two polynomials.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> gcd(4*x**2*y, 6*x*y**2)
+    x*y
+    >>> gcd(4*x**2*y, 6*x*y**2, coeff='int')
+    2*x*y
+
+    """
+    f = Basic.sympify(f)
+    g = Basic.sympify(g)    
+    if isinstance(var, Symbol):
+        var = [var]
+    if var == None:
+        var = merge_var(f.atoms(type=Symbol), g.atoms(type=Symbol))
+    if len(var) == 0:
+        if coeff == 'int':
+            assert isinstance(f, Rational) and isinstance(g, Rational)
+            assert f.is_integer and g.is_integer
+            return abs(Rational(0).gcd(f.p, g.p))
+        else:
+            return Rational(1)
+    elif len(var) == 1:
+        if coeff == 'int':
+            f = Polynomial(f, var, order, coeff)
+            cf = f.content()
+            f.cl = map(lambda t:[t[0]/cf] + t[1:], f.cl)
+            g = Polynomial(g, var, order, coeff)
+            cg = g.content()
+            g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
+            return abs(Rational(0).gcd(cf.p, cg.p)) * \
+                   gcd_.uv(f, g).basic
+        else:
+            r =  gcd_.uv(Polynomial(f, var, order, coeff),
+                         Polynomial(g, var, order, coeff))
+            return r.basic
+    else:
+        if coeff == 'int':
+            f = Polynomial(f, var, order, coeff)
+            cf = f.content()
+            f.cl = map(lambda t:[t[0]/cf] + t[1:], f.cl)
+            g = Polynomial(g, var, order, coeff)
+            cg = g.content()
+            g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
+            return abs(Rational(0).gcd(cf.p, cg.p)) * \
+                   gcd_.mv(f, g).basic
+        else:
+            r =  gcd_.mv(Polynomial(f, var, order, coeff),
+                         Polynomial(g, var, order, coeff))
+            return r.basic
+
+def groebner(f, var=None, order=None, coeff=None, reduced=True):
+    """Computes the (reduced) Groebner base of given polynomials.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> groebner([x**2 + y**3, y**2-x], order='lex')
+    [x-y**2, y**3+y**4]
+
+    """
+    if isinstance(f, Basic):
+        f = [f]
+    f = map(lambda p: Basic.sympify(p).expand(), f)
+    # filter trivial or double entries
+    ff = filter(lambda x: x!=0, f)
+    if not ff: # Zero Ideal
+        return [Rational(0)]
+    f = []
+    for p in ff:
+        if not p in f:
+            f.append(p)
+    if isinstance(var, Symbol):
+        var = [var]
+    if var == None:
+        var = merge_var(*map(lambda p: p.atoms(type=Symbol),f))
+    f = map(lambda p: Polynomial(p, var, order, coeff), f)
+    g = groebner_.groebner(f, reduced)
+    return map(lambda p: p.basic, g)
+
+def lcm(f, g, var=None, order=None, coeff=None):
+    """Least common divisor of two polynomials.
+    
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> lcm(4*x**2*y, 6*x*y**2)
+    x**2*y**2
+    >>> lcm(4*x**2*y, 6*x*y**2, coeff='int')
+    12*x**2*y**2
+    """
+    f = Basic.sympify(f)
+    g = Basic.sympify(g)
+    if isinstance(var, Symbol):
+        var = [var]
+    if var == None:
+        var = merge_var(f.atoms(type=Symbol), g.atoms(type=Symbol))
+    if len(var) == 0:
+        if coeff == 'int':
+            assert isinstance(f, Rational) and isinstance(g, Rational)
+            assert f.is_integer and g.is_integer
+            if f == Rational(0) or g == Rational(0):
+                return Rational(0)
+            return abs(f*g / Rational(0).gcd(f.p, g.p))
+        else:
+            return Rational(1)
+    if len(var) == 1:
+        if coeff == 'int':
+            f = Polynomial(f, var, order, coeff)
+            cf = f.content()
+            f.cl = map(lambda t:[t[0]/cf] + t[1:], f.cl)
+            g = Polynomial(g, var, order, coeff)
+            cg = g.content()
+            g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
+            if cf == Rational(0) or cg == Rational(0):
+                return Rational(0)
+            return abs(cf*cg / Rational(0).gcd(cf.p, cg.p)) * \
+                   lcm_.uv(f, g).basic
+        else:
+            r = lcm_.uv(Polynomial(f, var, order, coeff),
+                        Polynomial(g, var, order, coeff))
+            return r.basic
+    else:
+        if coeff == 'int':
+            f = Polynomial(f, var, order, coeff)
+            cf = f.content()
+            f.cl = map(lambda t:[t[0]/cf] + t[1:], f.cl)
+            g = Polynomial(g, var, order, coeff)
+            cg = g.content()
+            g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
+            if cf == Rational(0) or cg == Rational(0):
+                return Rational(0)
+            return abs(cf*cg / Rational(0).gcd(cf.p, cg.p)) * \
+                   lcm_.mv(f, g).basic
+        else:
+            r = lcm_.mv(Polynomial(f, var, order, coeff),
+                        Polynomial(g, var, order, coeff))
+            return r.basic
+            
 class Ideal:
     """Describes a polynomial ideal over a field, with several variables.
 
@@ -218,7 +363,7 @@ class Ideal:
 
     def groebner(self, reduced=True):
         if not self.is_groebner:
-            self.f = groebner(self.f, self.var, self.order, reduced)
+            self.f = groebner(self.f, self.var, self.order, None, reduced)
             self.is_groebner = True
 
     def intersect(self, other):
@@ -239,51 +384,16 @@ class Ideal:
             order = None
         return Ideal(f, var, order)
 
-def fact(n):
-    """Returns n!"""
-    if n == 0: return 1
-    else: return fact(n-1)*n
-
 def coeff(poly, x, n):
     """Returns the coefficient of x**n in the polynomial"""
     assert ispoly(poly,x)
-    return diff(poly, x,n).subs(x,0)/fact(n)
-
-
-def rep(n, base):
-    """Returns a representation of the integer 'n' in the base 'base'."""
-    r = []
-    while n!=0:
-        r.append(n % base)
-        n = (n - r[-1])/base
-    return tuple(r)
-
-def gcd(a, b, x):
-    """Calculates a greatest common divisor of two polynomials.
-
-    Currently using a heuristics algorithm.
-    """
-
-    def getcandidate(a, b, x, x0):
-        n1 = a.subs(x, x0)
-        n2 = b.subs(x, x0)
-        n3 = n1.gcd(int(n1),int(n2))
-        c = []
-        for n, t in enumerate(rep(n3, x0)):
-            if t != 0:
-                c.append((t,n))
-        return poly(c, x)
-
-    #try some values of x0. If you find polynomials for which gcd doesn't
-    #work, just find a number of x0, that works and add it to the end
-    #of this list:
-    for x0 in [100, 101]:
-        c = getcandidate(a, b, x, x0)
-        if div(a, c, x, coeff='int')[1] == 0 \
-               and div(b, c, x, coeff='int')[1] == 0:
-            return c
-
-    raise PolynomialException("Can't calculate gcd for these polynomials")
+    p = Polynomial(poly, x)
+    t = filter(lambda t:t[1]==n,p.cl)
+    if len(t) == 0:
+        return Rational(0)
+    else:
+        return t[0][0]
+#    return diff(poly, x,n).subs(x,0)/fact(n)
 
 def sqf(p, x):
     """Calculates the square free decomposition of 'p'.
@@ -293,7 +403,6 @@ def sqf(p, x):
     a, b = div(p, g, x)
     assert b == 0
     return sqf(a, x) * g
-
 
 def resultant(f, g, x, method='bezout'):
     """Computes resultant of two polynomials in one variable. This
@@ -425,225 +534,6 @@ def collect(expr, syms):
         return ({}, expr)
     else:
         return None
-
-def groebner(f, var=None, order='grevlex', reduced=True):
-    """Computes a (reduced) Groebner base for a given list of polynomials.
-
-    Using an improved version of Buchberger's algorithm, following
-    Cox, Little, O'Shea: Ideals, Varieties and Algorithms.
-
-    Examples:
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> z = Symbol('z')
-    >>> groebner([y-x**2, z-x**3], [x,y,z], 'lex')
-    [-y+x**2, x*y-z, z*x-y**2, -z**2+y**3]
-    """
-
-    def mul_cl(p, q):
-        if len(p) != len(q):
-            raise PolynomialException('Bad list representation.')
-        r = [p[0]*q[0]]
-        for pp,qq in zip(p[1:],q[1:]):
-            r.append(pp + qq)
-        return r
-
-    def div_cl(p, q):
-        if len(p) != len(q):
-            raise PolynomialException('Bad list representation.')
-        r = [p[0]/q[0]]
-        for pp,qq in zip(p[1:],q[1:]):
-            r.append(pp - qq)
-        return r
-
-    def lcm_cl(p, q):
-        if len(p) != len(q):
-            raise PolynomialException('Bad list representation.')
-        r = [p[0]*q[0]]
-        for pp,qq in zip(p[1:],q[1:]):
-            r.append(max(pp, qq))
-        return r
-
-    def is_multiple_cl(p, q):
-        return all([x>=y for x,y in zip(p[1:],q[1:])])
-
-    if not isinstance(f, list):
-        f = [f]
-
-    if var == None:
-        var = []
-        for p in f:
-            for v in p.atoms(type=Symbol):
-                if not v in var:
-                    var.append(v)
-        var.sort(key=str)
-
-    f = map(Basic.sympify, f)
-    # filter trivial or double entries
-    ff = filter(lambda x: x!=0, f)
-    f = []
-    for p in ff:
-        if not p in f:
-            f.append(p)
-    f_cl = map(lambda x: coeff_list(x, var, order), f)
-    b = [] # Stores the unchecked combinations for s-poly's.
-    s = len(f)
-    for i in range(0, s-1):
-        for j in range(i+1, s):
-            b.append((i, j))
-    # empty ideal
-    if s == 0:
-        return([Rational(0)])
-
-    while b:
-        i, j = b[0]
-        crit = False
-        lcm = lcm_cl(f_cl[i][0], f_cl[j][0])
-        # Check if leading terms are relativly prime.
-        if  lcm != mul_cl(f_cl[i][0],f_cl[j][0]):
-            kk = filter(lambda k: k!=i and k!=j,range(0, s))
-            kk = filter(lambda k: not (min(i,k),max(i,k)) in b, kk)
-            kk = filter(lambda k: not (min(j,k),max(j,k)) in b, kk)
-            # Check if the lcm is divisible by another base element.
-            kk = filter(lambda k: is_multiple_cl(lcm,f_cl[k][0]), kk)
-            crit = not bool(kk)
-        if crit:
-            s_poly = f[i]*poly([div_cl(lcm, f_cl[i][0])], var) \
-                     - f[j]*poly([div_cl(lcm, f_cl[j][0])], var)
-            s_poly = (div(s_poly, f, var, order)[-1]).expand()
-            if s_poly != 0: # we still have to add to the base.
-                s += 1
-                f.append(s_poly)
-                f_cl.append(coeff_list(s_poly, var, order))
-                for t in range(0, s-1): # With a new element come
-                    b.append((t, s-1))  # new combinationas to test.
-        b = b[1:] # Checked one more.
-
-    # We now have one possible Groebner base, probably too big.
-    if not reduced:
-        return f
-
-    # We can get rid of all elements, where the leading term can be
-    # reduced in the ideal of the remaining leading terms, that is,
-    # can be divided by one of the other leading terms.
-    blacklist = []
-    for p_cl in f_cl:
-        if filter(lambda x: is_multiple_cl(p_cl[0], x[0]),
-               filter(lambda x: not x in blacklist and x != p_cl, f_cl)):
-            blacklist.append(p_cl)
-    for p_cl in blacklist:
-        f_cl.remove(p_cl)
-
-    # We can now sort the basis elements according to their leading
-    # term.
-    f_cl.sort(key=lambda x: x[0][1:], reverse=True)
-
-    # Divide all basis elements by their leading coefficient, to get a
-    # leading 1.
-    f = map(lambda x: (poly(x, var)/x[0][0]).expand(), f_cl)
-
-    # We now have a minimal Groebner basis, which is still not unique.
-    # The next step is to reduce all basis elements in respect to the
-    # rest of the base (without touching the leading terms).
-    # As the basis is already sorted, the rest gets smaller each time.
-    for i,p in enumerate(f[0:-1]):
-        pp = div(p, f[i+1:], var, order)[-1]
-        f[i] = pp
-
-    return f
-
-def lcm_mv(f, g, var=None, monic=False):
-    """Computes the lcm of two polynomials.
-
-    This is a special case of the intersection of two ideals using Groebner
-    bases and the elimination theorem.
-
-    Examples:
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> lcm_mv(x**2*y, x*y**2)
-    x**2*y**2
-    """
-    f = Basic.sympify(f)
-    g = Basic.sympify(g)
-
-    if isinstance(var, Symbol):
-        var = [var]
-    if var == None:
-        var = []
-        for p in [f, g]:
-            for v in p.atoms(type=Symbol):
-                if not v in var:
-                    var.append(v)
-        var.sort(key=str)
-
-    # TODO: check for common monomials first?
-
-    # Compute a lexicographic Groebner base of the sum of the
-    # two principal ideals generated by t*f and (t-1)*g.
-    t = Symbol('t', dummy=True)
-    var2 = [t] + var
-    G = groebner([t*f, (t-1)*g], var2, order='1-el', reduced=True)
-
-    # Now intersect this result with the polynomial ring in the
-    # variables in `var', that is, eliminate t.
-    I = filter(lambda p: not t in p.atoms(type=Symbol), G)
-
-    # The intersection should be a principal ideal, that is generated
-    # by a single polynomial.
-    if not len(I) == 1:
-        raise PolynomialException("No single generator.")
-
-    # temporary solution, leading coefficient depends on order?
-    if not monic:
-        ff = coeff_list(f, var)[0][0]
-        gg = coeff_list(g, var)[0][0]
-        if isinstance(ff, Rational) and isinstance(gg, Rational):
-            if ff.is_integer and gg.is_integer:
-                c = ff*gg/Rational(Rational(0).gcd(ff.p,gg.p))
-                I[0] *= c
-        else:
-            c = lcm_mv(ff,gg)
-            I[0] *= c
-    return I[0]
-
-def gcd_mv(f, g, var=None, order='grevlex', monic=False):
-    """Computes the gcd of two polynomials.
-
-    Here, the product of f and g is divided by their lcm.
-    The result can optionally be turned into a monic polyonomial, with
-    leading coefficient 1, relative to given order.
-
-    Examples:
-    >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> gcd_mv(x**2*y, x*y**2)
-    x*y
-    """
-    f = Basic.sympify(f)
-    g = Basic.sympify(g)
-
-    if isinstance(var, Symbol):
-        var = [var]
-    if var == None:
-        var = []
-        for p in [f, g]:
-            for v in p.atoms(type=Symbol):
-                if not v in var:
-                    var.append(v)
-        var.sort(key=str)
-
-    lcm = lcm_mv(f, g, var, monic=True)
-    q, r = div(f*g, lcm, var, order)
-
-    if not r == 0:
-        raise PolynomialException('lcm does not divide product.')
-
-    if monic:
-        q_cl = coeff_list(q, var, order)
-        q = (q/q_cl[0][0]).expand()
-
-    return q
 
 def roots(a, var=None):
     """Returns all rational roots of the equation a=0, where a is a
