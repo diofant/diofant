@@ -843,8 +843,32 @@ minkowski_tensor = Matrix( (
     (0,0,0,-1)
     ))
 
-class SMatrix(Matrix):
+def hessian(f, varlist):
+    # f is the expression representing a function f, return regular matrix
+    if isinstance(varlist, (list, tuple)):
+        m = len(varlist)
+    elif isinstance(varlist, Matrix):
+        m = varlist.cols
+        assert varlist.lines == 1
+    else:
+        raise "Improper variable list in hessian function"
+    assert m > 0
+    try:
+        f.diff(varlist[0])   # check differentiability
+    except AttributeError:
+        raise "Function %d is not differentiable" % i
+    out = zero(m)
+    for i in range(m):
+        for j in range(i,m):
+            out[i,j] = f.diff(varlist[i]).diff(varlist[j])
+    for i in range(m):
+        for j in range(i):
+            out[i,j] = out[j,i]
+    return out
+    
 
+
+class SMatrix(Matrix):
     def __init__(self, *args):
         if len(args) == 3 and callable(args[2]):
             op = args[2]

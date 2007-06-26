@@ -3,7 +3,7 @@ sys.path.append(".")
 
 from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix, \
                                     minkowski_tensor, eye, randMatrix, \
-                                    SMatrix
+                                    SMatrix, hessian
 from sympy import Symbol
 
 def test_multiplication():
@@ -265,7 +265,7 @@ def test_cofactor():
     test = Matrix([[1,2,3],[4,5,6],[7,8,9]])
     assert test.cofactorMatrix() == Matrix([[-3,6,-3],[6,-12,6],[-3,6,-3]])
 
-def test_jacobian():
+def test_jacobian_hessian():
     x = Symbol('x')
     y = Symbol('y')
     L = Matrix(1,2,[x**2*y, 2*y**2 + x*y])
@@ -274,6 +274,13 @@ def test_jacobian():
 
     L = Matrix(1,2,[x, x**2*y**3])
     assert L.jacobian(syms) == Matrix([[1, 0], [2*x*y**3, x**2*3*y**2]])
+
+    f = x**2*y
+    syms = [x,y]
+    assert hessian(f, syms) == Matrix([[2*y, 2*x], [2*x, 0]])
+
+    f = x**2*y**3
+    assert hessian(f, syms) == Matrix([[2*y**3, 6*x*y**2],[6*x*y**2, 6*x**2*y]])
 
 def test_charpoly():
     x = Symbol('x')
