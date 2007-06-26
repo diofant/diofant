@@ -9,6 +9,7 @@ from sympy.modules.polynomials import gcd_
 from sympy.modules.polynomials import groebner_
 from sympy.modules.polynomials import lcm_
 from sympy.modules.polynomials import roots_
+from sympy.modules.polynomials import sqf_
 
 def coeff(poly, x, n):
     """Returns the coefficient of x**n in the polynomial"""
@@ -436,11 +437,49 @@ def roots(a, var=None):
             r.append(t)
     return r
 
-def sqf(p, x):
-    """Calculates the square free decomposition of 'p'.
+def sqf(f, var=None):
+    """Computes the square-free decomposition of 'f'.
+
+    Only works for univariate polynomials.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> sqf(2*x**3 + 2*x**2)
+    (2+2*x)*x**2
+
     """
-    g = gcd(p, p.diff(x), x)
-    if g == 1: return p
-    a, b = div(p, g, x)
-    assert b == 0
-    return sqf(a, x) * g
+    f = Basic.sympify(f)
+    if isinstance(var, Symbol):
+        var = [var]
+    if var == None:
+        var = f.atoms(type=Symbol)
+    if len(var) != 1:
+        raise PolynomialException('Not an univariate polynomial.')
+
+    a = sqf_.uv(Polynomial(f, var))
+
+    result = 1
+    for i, p in enumerate(a):
+        result *= (p.basic)**(i+1)
+    return result
+
+def sqf_part(f, var=None):
+    """Computes the square-free part of f.
+
+    Only works for univariate polynomials.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> sqf_part(2*x**3 + 2*x**2)
+    2*x**2+2*x
+
+    """
+    f = Basic.sympify(f)
+    if isinstance(var, Symbol):
+        var = [var]
+    if var == None:
+        var = f.atoms(type=Symbol)
+    if len(var) != 1:
+        raise PolynomialException('Not an univariate polynomial.')
+
+    return (sqf_.uv_part(Polynomial(f, var))).basic

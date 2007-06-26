@@ -32,6 +32,10 @@ def test_Polynomial():
     h.var=[y]
     assert h.var == [y]
     assert h.cl == [[2+x, 1]]
+    assert Polynomial(Rational(1),[x]).diff(x) \
+           == Polynomial(Rational(0), [x])
+    assert Polynomial(x**3*y).diff(x) == Polynomial(3*x**2*y)
+    assert Polynomial([[1,1]], [x], 'lex').diff(x) == Polynomial(Rational(1), [x])
 
 def test_coeff_list():
     x = Symbol('x')
@@ -277,6 +281,13 @@ def test_sqf():
     x = Symbol("x")
     assert sqf(3*x**2, x) == 3*x**2
     assert sqf(x**2+2*x+1, x) == (x+1)**2
+    assert sqf(x**5 - x**4 - x + 1) == (x-1)**2*(x**3 + x**2 + x + 1)
+
+def test_sqf_part():
+    x = Symbol('x')
+    assert sqf_part(3*x**2, x) == 3*x
+    assert sqf_part(x**2 + 2*x + 1, x) == x+1
+    assert sqf_part(x**5 - x**4 - x + 1) == x**4 - 1
 
 ## sympy/modules/polynomials/ideals.py
     

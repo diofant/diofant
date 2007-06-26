@@ -330,10 +330,22 @@ class Polynomial(Basic):
             return Rational(1)
         else:
             c = map(lambda t: t[0], self.cl)
-            assert all(map(lambda x:isinstance(x, Rational) and x.is_integer,
-                           c))
+            assert all(map(lambda x:isinstance(x,Rational) and x.is_integer, c))
             c = map(lambda x:x.p, c)
             return Rational(abs(reduce(Rational(0).gcd, c)))
+
+    def diff(self, x):
+        if not x in self.var:
+            return Polynomial(Rational(0), self.var, self.order, self.coeff)
+        elif self._cl == None:
+            return Polynomial(self.basic.diff(x), self.var, self.order, self.coeff)
+        r = self.copy()
+        i = r.var.index(x) + 1
+        r.cl = filter(lambda t:t[i] > 0, r.cl)
+        if len(r.cl) == 0:
+            return Polynomial(Rational(0), self.var, self.order, self.coeff)
+        r.cl = map(lambda t:[t[0]*t[i]] + t[1:i] + [t[i]-1] + t[i+1:], r.cl)
+        return r
 
 def coeff_list(p, var=None, order='grevlex'):
     """Return the list of coeffs and exponents.
@@ -369,7 +381,7 @@ def coeff_list(p, var=None, order='grevlex'):
     res = []
     if isinstance(p, Add):
         for a in p._args:
-            res.append(*coeff_list(a, var, order))
+            res += coeff_list(a, var, order)
     else:
         if not isinstance(p, Mul):
             p = Mul(Rational(1), p, evaluate=False)
