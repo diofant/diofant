@@ -8,7 +8,80 @@ from sympy.modules.polynomials import div_
 from sympy.modules.polynomials import gcd_
 from sympy.modules.polynomials import groebner_
 from sympy.modules.polynomials import lcm_
-             
+from sympy.modules.polynomials import roots_
+
+def coeff(poly, x, n):
+    """Returns the coefficient of x**n in the polynomial"""
+    assert ispoly(poly,x)
+    p = Polynomial(poly, x)
+    t = filter(lambda t:t[1]==n,p.cl)
+    if len(t) == 0:
+        return Rational(0)
+    else:
+        return t[0][0]
+
+def collect(expr, syms):
+    """Collect additive terms with respect to a list of variables in a linear
+       multivariate polynomial. This function assumes the input expression is
+       in an expanded form and will return None if this is not a linear
+       polynomial or else a pair of the following form:
+
+          ( { variable : coefficient }, free term )
+
+       Example:
+       >>> from sympy import *
+       >>> from sympy.modules.polynomials import collect
+       >>> x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
+       >>> collect(2*x + sin(z)*x + cos(z)*y + 1, [x, y])
+       ({x: 2+sin(z), y: cos(z)}, 1)
+
+    """
+    if isinstance(expr, (Add, Mul)):
+        content, tail = {}, 0
+
+        if isinstance(expr, Mul):
+            expr = [expr]
+
+        for term in expr:
+            coeff = 1
+
+            while isinstance(term, Mul):
+                a, term = term.getab()
+
+                if isinstance(a, Symbol) and a in syms:
+                    if (term.has_any(syms)):
+                        return None
+                    else:
+                        coeff *= term
+
+                        if a in content:
+                            content[a] += coeff
+                        else:
+                            content[a] = coeff
+
+                        break
+                else:
+                    if (a.has_any(syms)):
+                        return None
+                    else:
+                        coeff *= a
+            else:
+                if isinstance(term, Symbol) and term in syms:
+                    if term in content:
+                        content[term] += coeff
+                    else:
+                        content[term] = coeff
+                else:
+                    tail += coeff * term
+
+        return (content, tail)
+    elif isinstance(expr, Symbol) and expr in syms:
+        return ({expr : 1}, 0)
+    elif isinstance(expr, Basic) and not expr.has_any(syms):
+        return ({}, expr)
+    else:
+        return None
+
 def div(f, g, var=None, order=None, coeff=None):
     """Polynomial division of f by g, returns quotients and remainder.
 
@@ -55,6 +128,29 @@ def div(f, g, var=None, order=None, coeff=None):
         return q[0].basic, r.basic
     else:
         return map(lambda x: x.basic, q), r.basic
+
+def factor(a, var=None):
+    """Factors the polynomial a.
+
+    Example:
+    >>> x = Symbol('x')
+    >>> factor(x**6-1)
+    (1+x)*(1+x**4+x**2)*(-1+x)
+
+    Note: as you can see, it only factors out the rational roots, here the
+    correct answer should be:
+    (x - 1)*(x + 1)*(x**2 - x + 1)*(x**2 + x + 1)
+    """
+    if var==None:
+        var = a.atoms(type=Symbol)[0]
+    p = 1
+    for r in roots(a, var): 
+        p *= (var-r)
+    if p == 1: 
+        return a
+    q,r = div(a, p, var)
+    assert r == 0
+    return factor(q, var)*p
 
 def gcd(f, g, var=None, order=None, coeff=None):
     """Greatest common divisor of two polynomials.
@@ -197,212 +293,33 @@ def lcm(f, g, var=None, order=None, coeff=None):
             r = lcm_.mv(Polynomial(f, var, order, coeff),
                         Polynomial(g, var, order, coeff))
             return r.basic
-            
-class Ideal:
-    """Describes a polynomial ideal over a field, with several variables.
 
-    Try to avoid different variables and orders between the ideals, give
-    them explicitly; the automatic handlers don't always act as expected.
+def real_roots(f, a=None, b=None):
+    """Returns the number of unique real roots of f in the interval (a, b].
+
+    Assumes an univariate, square-free polynomial with real coefficients.
+    The boundaries a and b can be omitted to check the whole real line.
 
     Examples:
     >>> x = Symbol('x')
-    >>> y = Symbol('y')
-    >>> I = Ideal([x, y**2])
-    >>> J = Ideal(x*y)
-    >>> I == J
-    False
-    >>> I*J == I.intersect(J)
-    False
-    >>> I**2 == I*I
-    True
-    """
-    def __init__(self, f=[Rational(0)], var=None, order='grevlex',
-                 is_groebner=None):
-        if not isinstance(f, list):
-            f = [f]
-        self.f = map(Basic.sympify, f)
-        if var == None:
-            var = []
-            for p in self.f:
-                var += filter(lambda x: not x in var, p.atoms(type=Symbol))
-            var.sort(key=str)
-        self.var = var
-        self.order = order
-        self.is_groebner = is_groebner
-        for p in self.f:
-            if not ispoly(p, self.var):
-                raise PolynomialException('Non-polynomial as generator.')
-
-    def __len__(self):
-        return len(self.f)
-
-    def __iter__(self):
-        return self.f.__iter__()
-
-    def __str__(self):
-        return self.f.__str__()
-
-    def __repr__(self):
-        return 'Ideal(%s, %s, %s, %s)' % (repr(self.f), repr(self.var), 
-               self.order, repr(self.is_groebner) )
-
-    def __add__(self, other):
-        """f is in I + J iff there are g in I, h in J such that f = g+h.
-        """
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
+    >>> real_roots(x**2 - 1)
+    2
+    >>> real_roots(x**2 - 1, 0, 2)
+    1
     
-        var = self.var + filter(lambda x: not x in self.var, other.var)
-        var.sort(key=str)
-
-        if self.order == other.order:
-            order = self.order
-        else:
-            order = None
-
-        f = self.f + filter(lambda x: not x in self.f, other.f)
-        
-        return Ideal(f, var, order)
-
-    def __radd__(self, other):
-        return self.__add__(other)
-
-    def __mul__(self, other):
-        """f is in I*J iff f is a sum of products of elements of I and J.
-        """
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-
-        var = self.var + filter(lambda x: not x in self.var, other.var)
-        var.sort(key=str)
-
-        if self.order == other.order:
-            order = self.order
-        else:
-            order = None
-
-        f = []
-        for p in self.f:
-            for q in other.f:
-                f.append(p*q)
-
-        return Ideal(f, var, order)
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __pow__(self, other):
-        """Repeated product of self.
-        """
-        other = Basic.sympify(other)
-        if not (isinstance(other, Number)
-                and other.is_integer
-                and other >= 0):
-            raise PolynomialException('Illegal power of ideal.')
-
-        if other == 0:
-            return Ideal(Rational(1), self.var, self.order, True)
-        elif other == 1:
-            return self
-
-        # avoid repeated elements
-        f = self.f[:]
-        I = Ideal(Rational(0), self.var, self.order)
-
-        for p in self.f:
-            I += p*Ideal(f,self.var, self.order)**(other-1)
-            f.remove(p)
-
-        return I
-
-    def __mod__(self, other):
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-        other.groebner()
-
-        f = []
-        for p in self.f:
-            f.append(div(p, other.f, other.var, other.order)[-1])
-        f = filter(lambda x: x!=0, f)
-        return Ideal(f, other.var, other.order)
-
-    def __contains__(self, other):
-        other = Basic.sympify(other)
-        if not ispoly(other, self.var):
-            return False
-        self.groebner()
-        rem = div(other, self.f, self.var, self.order)[-1]
-        if rem == 0:
-            return True
-        else:
-            return False
-
-    def __eq__(self, other):
-        if not isinstance(other, Ideal):
-            other = Ideal(other, self.var, self.order)
-        # Try to save Groebner base computations.       
-        if self.var != other.var or self.order != other.order:
-            if self.is_groebner:
-                s = self
-                o = Ideal(other.f, self.var, self.order)
-                o.groebner()
-            elif other.is_groebner:
-                o = other
-                s = Ideal(self.f, other.var, other.order)
-                s.groebner()
-            else:
-                s = Ideal(self.f)
-                o = Ideal(other.f)
-                s.groebner()
-                o.groebner()
-            return s.f == o.f
-        else:
-            self.groebner()
-            other.groebner()
-            return self.f == other.f
-
-    def groebner(self, reduced=True):
-        if not self.is_groebner:
-            self.f = groebner(self.f, self.var, self.order, None, reduced)
-            self.is_groebner = True
-
-    def intersect(self, other):
-        if not isinstance(other, Ideal):
-            other = Ideal(other)
-        t = Symbol('t', dummy=True)
-        I = t*self + (1-t)*other
-        I.order = '1-el'
-        I.groebner()
-        f = filter(lambda p: not t in p.atoms(type=Symbol), I.f)
-        if self.var == other.var:
-            var = self.var
-        else:
-            var = None
-        if self.order == other.order:
-            order = self.order
-        else:
-            order = None
-        return Ideal(f, var, order)
-
-def coeff(poly, x, n):
-    """Returns the coefficient of x**n in the polynomial"""
-    assert ispoly(poly,x)
-    p = Polynomial(poly, x)
-    t = filter(lambda t:t[1]==n,p.cl)
-    if len(t) == 0:
-        return Rational(0)
-    else:
-        return t[0][0]
-#    return diff(poly, x,n).subs(x,0)/fact(n)
-
-def sqf(p, x):
-    """Calculates the square free decomposition of 'p'.
     """
-    g = gcd(p, p.diff(x), x)
-    if g == 1: return p
-    a, b = div(p, g, x)
-    assert b == 0
-    return sqf(a, x) * g
+    f = Basic.sympify(f)
+    if a != None:
+        a = Basic.sympify(a)
+    if b != None:
+        b = Basic.sympify(b)
+    var = f.atoms(type=Symbol)
+    if len(var) == 1:
+        var = var[0]
+    else:
+        raise PolynomialException('Not an univariate polynomial.')
+    ss = roots_.sturm(Polynomial(f))
+    return roots_.real_roots(ss, a, b)
 
 def resultant(f, g, x, method='bezout'):
     """Computes resultant of two polynomials in one variable. This
@@ -473,68 +390,6 @@ def resultant(f, g, x, method='bezout'):
     else:
         raise ValueError("Invalid method: '%s'" % method)
 
-def collect(expr, syms):
-    """Collect additive terms with respect to a list of variables in a linear
-       multivariate polynomial. This function assumes the input expression is
-       in an expanded form and will return None if this is not a linear
-       polynomial or else a pair of the following form:
-
-          ( { variable : coefficient }, free term )
-
-       Example:
-       >>> from sympy import *
-       >>> from sympy.modules.polynomials import collect
-       >>> x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
-       >>> collect(2*x + sin(z)*x + cos(z)*y + 1, [x, y])
-       ({x: 2+sin(z), y: cos(z)}, 1)
-
-    """
-    if isinstance(expr, (Add, Mul)):
-        content, tail = {}, 0
-
-        if isinstance(expr, Mul):
-            expr = [expr]
-
-        for term in expr:
-            coeff = 1
-
-            while isinstance(term, Mul):
-                a, term = term.getab()
-
-                if isinstance(a, Symbol) and a in syms:
-                    if (term.has_any(syms)):
-                        return None
-                    else:
-                        coeff *= term
-
-                        if a in content:
-                            content[a] += coeff
-                        else:
-                            content[a] = coeff
-
-                        break
-                else:
-                    if (a.has_any(syms)):
-                        return None
-                    else:
-                        coeff *= a
-            else:
-                if isinstance(term, Symbol) and term in syms:
-                    if term in content:
-                        content[term] += coeff
-                    else:
-                        content[term] = coeff
-                else:
-                    tail += coeff * term
-
-        return (content, tail)
-    elif isinstance(expr, Symbol) and expr in syms:
-        return ({expr : 1}, 0)
-    elif isinstance(expr, Basic) and not expr.has_any(syms):
-        return ({}, expr)
-    else:
-        return None
-
 def roots(a, var=None):
     """Returns all rational roots of the equation a=0, where a is a
     polynomial."""
@@ -581,25 +436,11 @@ def roots(a, var=None):
             r.append(t)
     return r
 
-def factor(a, var=None):
-    """Factors the polynomial a.
-
-    Example:
-    >>> x = Symbol('x')
-    >>> factor(x**6-1)
-    (1+x)*(1+x**4+x**2)*(-1+x)
-
-    Note: as you can see, it only factors out the rational roots, here the
-    correct answer should be:
-    (x - 1)*(x + 1)*(x**2 - x + 1)*(x**2 + x + 1)
+def sqf(p, x):
+    """Calculates the square free decomposition of 'p'.
     """
-    if var==None:
-        var = a.atoms(type=Symbol)[0]
-    p = 1
-    for r in roots(a, var): 
-        p *= (var-r)
-    if p == 1: 
-        return a
-    q,r = div(a, p, var)
-    assert r == 0
-    return factor(q, var)*p
+    g = gcd(p, p.diff(x), x)
+    if g == 1: return p
+    a, b = div(p, g, x)
+    assert b == 0
+    return sqf(a, x) * g

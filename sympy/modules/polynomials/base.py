@@ -46,6 +46,8 @@ class Polynomial(Basic):
             # Coefficient list, use property cl
             self._cl = None
         # Use property var
+        if isinstance(var, Symbol):
+            var = [var]
         self._var = var
         # Use property order
         self._order = order
@@ -142,11 +144,10 @@ class Polynomial(Basic):
 
     def __neg__(self):
         r = self.copy()
-        if r._basic != None:
-            r._basic = -r._basic
         if r._cl != None:
-            for term in r._cl:
-                term[0] *= Rational(-1)
+            r._cl = map(lambda t:[t[0]*Rational(-1)]+t[1:], r._cl)
+        if r._basic != None:
+            r._basic *= Rational(-1)
         return r
 
     def __add__(self, other):
@@ -319,8 +320,7 @@ class Polynomial(Basic):
         
     def copy(self):
         r = Polynomial(Rational(0), self.var, self.order, self.coeff)
-        if self._basic != None:
-            r._basic = self._basic
+        r._basic = self._basic
         if self._cl != None:
             r._cl = copy_cl(self._cl)
         return r
