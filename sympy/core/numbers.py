@@ -166,11 +166,7 @@ class Real(Number):
         self._args = [self.num]
 
     def __str__(self):
-        if self.num < 0:
-            f = "(%s)"
-        else:
-            f = "%s"
-        return f % (str(self.num))
+        return str(self.num)
 
     def __float__(self):
         return float(self.num)
@@ -228,11 +224,7 @@ class Real(Number):
         return self.num
 
     def __pretty__(self):
-        if self.num < 0:
-            f = "(%s)"
-        else:
-            f = "%s"
-        return f % (str(self.num))
+        return str(self.num)
 
     def __eq__(self, a):
         """this is overriden because by default, a python int get's converted
@@ -556,7 +548,7 @@ class ImaginaryUnit(Constant):
         >>> (1-2*I).evalf()
         1.00
         >>> (-2+1*I).evalf()
-        (-2.0)
+        -2.0
         """
         return Rational(0)
 
