@@ -29,7 +29,7 @@ class Basic(object):
 
        Possible assumptions are:
 
-        - is_number, is_real, is_integer
+        - is_real, is_integer
 
         - is_negative, is_positive
 
@@ -45,9 +45,19 @@ class Basic(object):
 
         - is_dummy
 
-       Assumptions are defined in triple-valued logic (in Python sense)
-       using True, when we are certain that property applies to given
-       object, None, when we aren't sure and False otherwise:
+       There are also assumption-like query functions:
+
+        - is_number, is_zero, is_unit
+
+       and combinations of all mentioned above:
+
+        - is_negative_integer, is_positive_integer
+
+        - is_nonnegative_integer, is_nonpositive_integer
+
+       Assumptions are defined in ternary logic (in Python sense)
+       using True, when we are certain that property applies to
+       given object, None, when we aren't sure and False otherwise:
 
        >>> from sympy import *
        >>> x = Symbol('x')
@@ -55,22 +65,22 @@ class Basic(object):
        >>> sin(x).is_bounded
        True
 
-       >>> print Symbol('x').is_negative
+       >>> print x.is_negative
        None
 
        >>> Rational(1, 2).is_integer
        False
 
        To assume something about SymPy's object, it is necessary to put
-       appropriate flags in selectd object's constructor:
+       appropriate flags in selected object's constructor:
 
        >>> Symbol('k', integer = True).is_integer
        True
        >>> Symbol('k', is_integer = True).is_integer
        True
 
-       Once object is created and assumptions set it is not allowed to
-       change their value without creating new object.
+       Once an object is created and assumptions set it is not allowed
+       to change their value without creating new object.
 
        Sometimes the list of required assumtions can be really long. In
        this case you can use abbreviations to reduce the amount of typing:
@@ -80,6 +90,8 @@ class Basic(object):
        True
        >>> k.is_nonnegative_integer
        True
+
+       is the same as the following shortened version
 
        >>> k = Symbol('k', nni = True)
        >>> k.is_integer and k.is_nonnegative
@@ -96,33 +108,40 @@ class Basic(object):
         self._mathml = None
         self._args = []
 
-        self._assumptions = {
-            'is_real'        : None,
-            'is_integer'     : None,
-            'is_negative'    : None,
-            'is_positive'    : None,
-            'is_nonnegative' : None,
-            'is_nonpositive' : None,
-            'is_nonzero'     : None,
-            'is_commutative' : None,
-            'is_bounded'     : None,
-            'is_dummy'       : None,
-            'is_prime'       : None,
-            'is_odd'         : None,
-            'is_even'        : None,
+        self._assumptions = {        ## Objects that overrides the defaults:
+            'is_real'        : None, # Symbol
+            'is_integer'     : None, # Rational, Pair, Pow
+            'is_negative'    : None, # Rational, Add, Mul
+            'is_positive'    : None, # Rational, Add, Mul
+            'is_nonnegative' : None, # Rational, Add, Mul
+            'is_nonpositive' : None, # Rational, Add, Mul
+            'is_nonzero'     : None, # Rational
+            'is_commutative' : None, # Symbol, Number, Pair, Pow
+            'is_bounded'     : None, # sin, cos
+            'is_dummy'       : None, # Symbol
+            'is_prime'       : None, # Rational
+            'is_odd'         : None, # Rational, Add, Mul, Pow
+            'is_even'        : None, # Rational, Add, Mul, Pow
             }
 
         dependencies = {
             'is_integer'     : lambda x: { 'is_real'        : x },
 
             'is_negative'    : lambda x: { 'is_positive'    : (not x) and None,
-                                           'is_nonnegative' : not x },
+                                           'is_nonnegative' : not x,
+                                           'is_nonpositive' : x or None },
 
             'is_positive'    : lambda x: { 'is_negative'    : (not x) and None,
-                                           'is_nonpositive' : not x },
+                                           'is_nonpositive' : not x,
+                                           'is_nonnegative' : x or None },
 
-            'is_nonnegative' : lambda x: { 'is_negative'    : not x },
-            'is_nonpositive' : lambda x: { 'is_positive'    : not x },
+            'is_nonnegative' : lambda x: { 'is_negative'    : not x,
+                                           'is_positive'    : x and None,
+                                           'is_nonpositive' : None },
+
+            'is_nonpositive' : lambda x: { 'is_positive'    : not x,
+                                           'is_negative'    : x and None,
+                                           'is_nonnegative' : None },
 
             'is_odd'         : lambda x: { 'is_integer'     : x or None,
                                            'is_real'        : x or None,
@@ -137,10 +156,11 @@ class Basic(object):
                                            'is_positive'    : x or None,
                                            'is_negative'    : (not x) and None,
                                            'is_nonpositive' : (not x) and None },
-
             }
 
         abbreviations = {
+            'is_ni'          : [ 'is_integer', 'is_negative' ],
+            'is_pi'          : [ 'is_integer', 'is_positive' ],
             'is_nni'         : [ 'is_integer', 'is_nonnegative' ],
             'is_npi'         : [ 'is_integer', 'is_nonpositive' ],
             }
@@ -165,13 +185,13 @@ class Basic(object):
                 for key in abbreviations[key]:
                     update_assumptions(key, value)
             else:
-                raise NotImplementedError("Assumption %s not implemented" % str(key))
+                raise NotImplementedError("Assumption '%s' not implemented" % str(key))
 
     def __getattr__(self, name):
         if self._assumptions.has_key(name):
             return self._assumptions[name]
         else:
-            raise AttributeError("'%s' object has no attribute '%s'"%
+            raise AttributeError("'%s' object has no attribute '%s'" %
                 (self.__class__.__name__, name))
 
     def __setattr__(self, name, value):

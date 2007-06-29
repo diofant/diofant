@@ -123,14 +123,25 @@ class Pair(Basic):
 
     @property
     def is_commutative(self):
-        for x in self[:]:
-            #checks wether all arguments are commutative
-            if not x.is_commutative:
-                return False
-        return True
+        """Add or Mul are commutative if all their components are commutative."""
+
+        memo = True
+
+        for term in self:
+            result = term.is_commutative
+
+            if result is None:
+                return None
+            elif result == False:
+                # remember if there is non-commutative symbol, but
+                # keep iterating because we can still find None
+                memo = False
+
+        return memo
 
     @property
     def is_integer(self):
+        """Add or Mul are integers if all their components are integers."""
         memo = True
 
         for term in self:
@@ -627,7 +638,8 @@ class Mul(Pair):
 
     @property
     def is_odd(self):
-        memo = True
+        # all objects in the sequence have to be odd
+        has_all_odd = True
 
         for term in self:
             result = term.is_odd
@@ -635,17 +647,17 @@ class Mul(Pair):
             if result is None:
                 return None
             elif result == False:
-                # remember if there is non-odd symbol, but keep
-                # iterating because we can still find None
-                memo = False
+                # remember that there is a non-odd object, but
+                # keep iterating because we can still find None
+                has_all_odd = False
 
-        return memo
+        return has_all_odd
 
     @property
     def is_even(self):
         # we need at least one even valued object
         # so remember if this occured in the sequence
-        memo = False
+        has_even = False
 
         for term in self:
             result = term.is_even
@@ -653,115 +665,136 @@ class Mul(Pair):
             if result is None:
                 return None
             elif result == True:
-                memo = True
+                # remember that there is an even object, but
+                # keep iterating because we can still find None
+                has_even = True
 
-        return memo
+        return has_even
+
+    ##
+    # Truth Table for (in order):
+    #
+    # - is_negative
+    # - is_positive
+    # - is_nonnegative
+    # - is_nonpositive
+    #
+    # ===========================================
+    # | - - | F T T F || -0 -0 | -0 - | F N T N |
+    # | + + | F T T F || +0 +0 | +0 + | F N T N |
+    # | - + | T F F T || -0 +0 | -0 + | N F N T |
+    # | + - | T F F T || +0 -0 | +0 - | N F N T |
+    # ===========================================
+
+    def _assumptions_helper(self):
+        """This helper function returns a tuple with the number
+           of negative and nonpositive terms and tells if there is
+           zero allowed in any of the terms. Otherwise it returns
+           False or None according to the most recent query result.
+        """
+        negative_count = 0
+        has_zero = False
+
+        for term in self:
+
+            result = term.is_negative
+
+            if result == True:
+                negative_count += 1
+                continue
+            elif result is None:
+                result = term.is_nonpositive
+
+                if result == True:
+                    negative_count += 1
+                    has_zero = True
+                    continue
+
+            # not a negative or nonpositive term but still don't
+            # know if this is really a positive or nonnegative term
+            result = term.is_positive
+
+            if result is None:
+                result = term.is_nonnegative
+
+                if result == True:
+                    has_zero = True
+                else:
+                    # can't deduce anything so fail (False or None)
+                    return result
+            elif result == False:
+                # here we know exactly nothing so say None
+                return None
+
+        return negative_count, has_zero
 
     @property
     def is_negative(self):
-        negative_count = 0
+        result = self._assumptions_helper()
 
-        for term in self:
-            result = term.is_negative
+        if isinstance(result, tuple):
+            negative_count, has_zero = result
+        else:
+            return result
 
-            if result is None:
+        if negative_count & 1 == 0:
+            return False
+        else:
+            if has_zero == True:
                 return None
-            elif result == True:
-                negative_count += 1
-                continue
-
-            # we could have ended here as this term is non-negative,
-            # but it does not mean it's always positive because it
-            # could be zero and we require strict relation here
-            result = term.is_positive
-
-            if result != True:
-                return result
-
-        # we need odd number of negative terms
-        return negative_count & 1 == 1
+            else:
+                return True
 
     @property
     def is_positive(self):
-        negative_count = 0
+        result = self._assumptions_helper()
 
-        for term in self:
-            result = term.is_negative
+        if isinstance(result, tuple):
+            negative_count, has_zero = result
+        else:
+            return result
 
-            if result is None:
+        if negative_count & 1 == 1:
+            return False
+        else:
+            if has_zero == True:
                 return None
-            elif result == True:
-                negative_count += 1
-                continue
-
-            # we could have ended here as this term is non-negative,
-            # but it does not mean it's always positive because it
-            # could be zero and we require strict relation here
-            result = term.is_positive
-
-            if result != True:
-                return result
-
-        # we need even number of negative terms
-        return negative_count & 1 == 0
-
-    @property
-    def is_nonnegative(self):
-        memo, negative_count = False, 0
-
-        for term in self:
-            neg = term.is_negative
-            npi = term.is_nonpositive
-
-            if npi == True:
-                memo = True
-
-            if neg or npi == True:
-                negative_count += 1
-                continue
-
-            pos = term.is_positive
-            nni = term.is_nonnegative
-
-            result = pos or nni
-
-            if result != True:
-                return result
-
-            if nni == True:
-                memo = True
-
-        # we need even number of negative terms
-        return (memo and negative_count & 1 == 0) or None
+            else:
+                return True
 
     @property
     def is_nonpositive(self):
-        memo, negative_count = False, 0
+        result = self._assumptions_helper()
 
-        for term in self:
-            neg = term.is_negative
-            npi = term.is_nonpositive
+        if isinstance(result, tuple):
+            negative_count, has_zero = result
+        else:
+            return result
 
-            if npi == True:
-                memo = True
+        if negative_count & 1 == 0:
+            if has_zero == True:
+                return None
+            else:
+                return False
+        else:
+            return True
 
-            if neg or npi == True:
-                negative_count += 1
-                continue
+    @property
+    def is_nonnegative(self):
+        result = self._assumptions_helper()
 
-            pos = term.is_positive
-            nni = term.is_nonnegative
+        if isinstance(result, tuple):
+            negative_count, has_zero = result
+        else:
+            return result
 
-            result = pos or nni
-
-            if result != True:
-                return result
-
-            if nni == True:
-                memo = True
-
-        # we need odd number of negative terms
-        return (memo and negative_count & 1 == 1) or None
+        if negative_count & 1 == 1:
+            if has_zero == True:
+                return None
+            else:
+                return False
+        else:
+            return True
 
 class Add(Pair):
     """
@@ -1055,13 +1088,14 @@ class Add(Pair):
                 odd_count += 1
                 continue
 
-            # we could have ended here but if integer
-            # is not odd it does not mean it is even
+            # this is a non-odd object but it does not mean it's
+            # even, because it doesn't have to be integer at all
             result = term.is_even
 
             if result != True:
                 return result
 
+        # we need odd number of odd values
         return odd_count & 1 == 1
 
     @property
@@ -1077,114 +1111,145 @@ class Add(Pair):
                 odd_count += 1
                 continue
 
-            # we could have ended here but if integer
-            # is not odd it does not mean it is even
+            # this is a non-odd object but it does not mean it's
+            # even, because it doesn't have to be integer at all
             result = term.is_even
 
             if result != True:
                 return result
 
+        # we need even number of odd values
         return odd_count & 1 == 0
 
-    @property
-    def is_negative(self):
-        memo, positive_count = False, 0
+    def _assumptions_helper(self):
+        """This helper function returns a tuple containing True in
+           the first field if all terms are negative or nonpositive
+           and False otherwise, and tells in the other if there is
+           zero allowed in any of the terms. Otherwise it returns
+           False or None according to the most recent query result.
+        """
+        has_negative = False
+        has_positive = False
+        has_zero = False
 
         for term in self:
+
+            if has_negative and has_positive:
+                # mixed signs so no idea what the total sign is
+                return None
+
             result = term.is_negative
 
-            if result is None:
-                return None
-            elif result == False:
-                result = term.is_positive
+            if result == True:
+                has_negative = True
+                continue
+            elif result is None:
+                result = term.is_nonpositive
 
-                if result != True or memo:
-                    return None
-                else:
-                    positive_count += 1
-            elif positive_count > 0:
-                return None
-            else:
-                memo = True
+                if result == True:
+                    has_negative = True
+                    has_zero = True
+                    continue
 
-        # it could have happend that all terms were positive
-        # so in this case return rather False than None
-        return positive_count != len(self[:])
-
-    @property
-    def is_positive(self):
-        memo, negative_count = False, 0
-
-        for term in self:
+            # not a negative or nonpositive term but still don't
+            # know if this is really a positive or nonnegative term
             result = term.is_positive
 
             if result is None:
-                return None
-            elif result == False:
-                result = term.is_negative
+                result = term.is_nonnegative
 
-                if result != True or memo:
-                    return None
+                if result == True:
+                    has_zero = True
                 else:
-                    negative_count += 1
-            elif negative_count > 0:
+                    # can't deduce anything, so fail (False or None)
+                    return result
+            elif result == False:
+                # here we know exactly nothing so say None
+                return None
+
+            has_positive = True
+
+        # yet another redundant test
+        if not has_negative or not has_positive:
+            return has_negative, has_zero
+        else:
+            return None
+
+    @property
+    def is_negative(self):
+        result = self._assumptions_helper()
+
+        if isinstance(result, tuple):
+            has_negative, has_zero = result
+        else:
+            return result
+
+        if has_negative:
+            if has_zero:
                 return None
             else:
-                memo = True
+                return True
+        else:
+            return False
 
-        # it could have happend that all terms were negative
-        # so in this case return rather False than None
-        return negative_count != len(self[:])
+    @property
+    def is_positive(self):
+        result = self._assumptions_helper()
+
+        if isinstance(result, tuple):
+            has_negative, has_zero = result
+        else:
+            return result
+
+        if not has_negative:
+            if has_zero:
+                return None
+            else:
+                return True
+        else:
+            return False
 
     @property
     def is_nonpositive(self):
-        memo, positive_count = False, 0
+        result = self._assumptions_helper()
 
-        for term in self:
-            result = term.is_negative or term.is_nonpositive
+        if isinstance(result, tuple):
+            has_negative, has_zero = result
+        else:
+            return result
 
-            if result is None:
-                return None
-            elif result == False:
-                result = term.is_positive
-
-                if result != True or memo:
-                    return None
-                else:
-                    positive_count += 1
-            elif positive_count > 0:
+        if has_negative:
+            return True
+            #if has_zero:
+            #    return True
+            #else:
+            #    return None
+        else:
+            if has_zero:
                 return None
             else:
-                memo = True
-
-        # it could have happend that all terms were positive
-        # so in this case return rather False than None
-        return positive_count != len(self[:])
+                return False
 
     @property
     def is_nonnegative(self):
-        memo, negative_count = False, 0
+        result = self._assumptions_helper()
 
-        for term in self:
-            result = term.is_positive or term.is_nonnegative
+        if isinstance(result, tuple):
+            has_negative, has_zero = result
+        else:
+            return result
 
-            if result is None:
-                return None
-            elif result == False:
-                result = term.is_negative
-
-                if result != True or memo:
-                    return None
-                else:
-                    negative_count += 1
-            elif negative_count > 0:
+        if not has_negative:
+            return True
+            #if has_zero:
+            #    return True
+            #else:
+            #    return None
+        else:
+            if has_zero:
                 return None
             else:
-                memo = True
-
-        # it could have happend that all terms were negative
-        # so in this case return rather False than None
-        return negative_count != len(self[:])
+                return False
 
 def _extract_numeric(x):
     """Returns the numeric and symbolic part of x.

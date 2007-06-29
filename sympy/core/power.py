@@ -12,7 +12,7 @@ def integer_nthroot(y, n):
         Return a tuple containing x = floor(y**(1/n))
         and a boolean indicating whether the result is exact (that is,
         whether x**n == y).
-        
+
     Examples
     ========
 
@@ -52,15 +52,15 @@ class Pow(Basic):
     """
     Usage
     =====
-        This class represent's the power of two elements. so whenever you call '**', an 
-        instance of this class is created. 
-        
+        This class represent's the power of two elements. so whenever you call '**', an
+        instance of this class is created.
+
     Notes
     =====
         When an instance of this class is created, the method .eval() is called and will
-        preform some inexpensive symplifications. 
+        preform some inexpensive symplifications.
 
-        
+
     Examples
     ========
         >>> from sympy import *
@@ -69,19 +69,19 @@ class Pow(Basic):
         <class 'sympy.core.power.Pow'>
         >>> (x**2)[:]
         [x, 2]
-    
+
     See also
     ========
         L{Add.eval}
     """
-        
+
     mathml_tag = "power"
 
     def __init__(self,a,b):
         Basic.__init__(self)
         self._args = [Basic.sympify(a), Basic.sympify(b)]
 
-        
+
     def __str__(self):
         from addmul import Pair
         if self.exp == -1:
@@ -104,8 +104,8 @@ class Pow(Basic):
         else:
             f += "%s"
         return f % (str(self.base), str(self.exp))
-    
-        
+
+
     def __pretty__(self):
         if self.exp == Rational(1,2): # if it's a square root
             bpretty = self.base.__pretty__()
@@ -126,8 +126,8 @@ class Pow(Basic):
             return prettyForm("1") / self.base.__pretty__()
         a, b = self._args
         return a.__pretty__()**b.__pretty__()
-    
-    
+
+
     def __latex__(self):
         from addmul import Pair
         f = ""
@@ -144,7 +144,7 @@ class Pow(Basic):
         else:
             f += "{%s}"
         return f % (self.base.__latex__(),self.exp.__latex__())
-    
+
     def __mathml__(self):
         import xml.dom.minidom
         if self._mathml:
@@ -157,24 +157,24 @@ class Pow(Basic):
             x.appendChild( arg.__mathml__() )
         self._mathml = x
         return self._mathml
-        
+
     @property
     def base(self):
         return self._args[0]
-    
+
     @property
     def exp(self):
         return self._args[1]
-        
+
     def eval(self):
         from addmul import Mul
         from numbers import oo
         if isinstance(self.exp, Rational) and self.exp.iszero():
             return Rational(1)
-        
+
         if isinstance(self.exp, Rational) and self.exp.isone():
             return self.base
-        
+
         if isinstance(self.base, Rational) and self.base.iszero():
             if isinstance(self.exp,Rational):# and self.exp.is_integer:
                 if self.exp.iszero():
@@ -182,17 +182,17 @@ class Pow(Basic):
                 elif self.exp < 0:
                     raise pole_error("%s: Division by 0." % str(self))
             return Rational(0)
-        
+
         if isinstance(self.base, Rational) and self.base.isone():
             return Rational(1)
-        
+
         if isinstance(self.base, Real) and isinstance(self.exp,Real):
             return self
-        
+
         if isinstance(self.base, Rational) and isinstance(self.exp, Rational):
 
             if self.exp.is_integer:
-                if self.exp > 0: 
+                if self.exp > 0:
                     return Rational(self.base.p ** self.exp.p , self.base.q ** self.exp.p)
                 else:
                     return Rational(self.base.q ** (-self.exp.p) , self.base.p ** (-self.exp.p) )
@@ -224,33 +224,33 @@ class Pow(Basic):
             # TODO: implement for exponent of 1/4, 1/6, 1/8, etc.
             # return ((-1)**self.exp)*Pow(-self.base, self.exp, evaluate=False)
 
-        if isinstance(self.base, Pow): 
+        if isinstance(self.base, Pow):
             return Pow(self.base.base,self.base.exp*self.exp)
 
-        if isinstance(self.base, exp): 
+        if isinstance(self.base, exp):
             if self.base.is_number:
                 return exp(self.exp*self.base._args)
-            
-        if isinstance(self.base, Mul): 
+
+        if isinstance(self.base, Mul):
             a,b = self.base.getab()
             if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
                 return (Pow(a,self.exp) * Pow(b,self.exp))
-            
+
         if isinstance(self.base,ImaginaryUnit):
             if isinstance(self.exp,Rational) and self.exp.is_integer:
                 if int(self.exp) % 2 == 0:
                     return Rational(-1) ** ((int(self.exp) % 4)/2)
-                
+
         if isinstance(self.exp,Rational) and self.exp.is_integer:
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
                     n = self.base[0]
                     if n.is_number and n < 0:
                         return (-self.base)**self.exp
-                    
+
         if isinstance(self[0],Real) and self[1].is_number:
             return Real(self[0]**self[1].evalf())
-        
+
         if not self.base.is_commutative:
             if isinstance(self.exp, Rational) and self.exp.is_integer:
                     n = int(self.exp)
@@ -265,7 +265,7 @@ class Pow(Basic):
         if self.exp == -1 and self.base == oo:
             return Rational(0)
         return self
-        
+
 
     def evalf(self):
         if self.base.is_number and self.exp.is_number:
@@ -274,15 +274,11 @@ class Pow(Basic):
         else:
             raise ValueError
 
-    @property
-    def is_commutative(self):
-        return self.base.is_commutative and self.exp.is_commutative
-        
     def diff(self,sym):
         f = self.base
         g = self.exp
         return (self*(g*log(f)).diff(sym))
-        
+
     def series(self,sym,n):
         from addmul import Add
         if not self.exp.has(sym):
@@ -337,11 +333,11 @@ class Pow(Basic):
 
     def expand(self):
         from addmul import Add, Mul
-        
+
         def _expand_bin(a, b, n):
             """calculates the expansion of (a+b)**n using newton's binomial
             formula (also called triangle of Pascal)
-            
+
             See L{http://en.wikipedia.org/wiki/Binomial_theorem}
             """
             s = a**n
@@ -353,13 +349,13 @@ class Pow(Basic):
                 cur_coeff = cur_coeff * (n-i+1) / i
                 s += cur_coeff * (a**(n-i)) * (b**(i))
             return s
-        
+
         def _expand_multi(**args):
             """calculate the expansion of (a1 + a2 + ...)**n
             TODO
             """
             pass
-        
+
         if isinstance(self.exp, (Real, Rational)):
             if self.exp.is_integer:
                 n = int(self.exp)
@@ -411,15 +407,15 @@ class Pow(Basic):
                 re,im = c.get_re_im()
                 r = (re**2 + im**2)**Rational(1,2)
                 t = atan(im / re)
-                
+
                 #tp = ((t + 2*k*pi) / self.exp)*I  # this is right, for k=...,-2,-1,0,1,2,...
                 rp = r**self.exp
                 tp = t*self.exp
-                
+
                 return rp*cos(tp) + rp*sin(tp)*I
         else:
             return self
-        
+
     def subs(self,old,new):
         if self == old:
             return new
@@ -456,4 +452,39 @@ class Pow(Basic):
             if r2!=None:
                 return addmatches(r1,r2)
         return None
+
+    @property
+    def is_commutative(self):
+        return self.base.is_commutative and self.exp.is_commutative
+
+    @property
+    def is_integer(self):
+        if self.base.is_integer and self.exp.is_integer:
+            return self.exp.is_nonnegative
+        else:
+            return None
+
+    @property
+    def is_even(self):
+        return self.base.is_even and self.exp.is_nonnegative_integer
+
+    @property
+    def is_odd(self):
+        return self.base.is_odd and self.exp.is_nonnegative_integer
+
+#    @property
+#    def is_negative(self):
+#        pass
+
+#    @property
+#    def is_positive(self):
+#        pass
+
+#    @property
+#    def is_nonpositive(self):
+#        pass
+
+#    @property
+#    def is_nonnegative(self):
+#        pass
 

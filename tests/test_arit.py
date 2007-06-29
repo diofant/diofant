@@ -231,12 +231,11 @@ def test_powerbug():
 
     assert (2*x)**2 == (-2*x)**2
 
-def test_mul_assumptions():
+def test_Add_Mul_is_integer():
     x = Symbol('x')
 
-    k = Symbol('k', integer=True, negative=True)
-    n = Symbol('n', integer=True, negative=True)
-    m = Symbol('m', integer=True, positive=True)
+    k = Symbol('k', integer=True)
+    n = Symbol('n', integer=True)
 
     assert (2*k).is_integer == True
     assert (-k).is_integer == True
@@ -244,27 +243,20 @@ def test_mul_assumptions():
     assert (x*k*n).is_integer == None
     assert (x/3).is_integer == None
 
-    assert (2*n).is_negative == True
-    assert (2*n).is_positive == False
+    assert (k+n).is_integer == True
+    assert (k+x).is_integer == None
+    assert (k+n*x).is_integer == None
+    assert (k+n/3).is_integer == False
 
-    assert (-n).is_negative == False
-    assert (-n).is_positive == True
-
-    assert (k*n).is_negative == False
-    assert (k*n).is_positive == True
-
-    assert (k*m).is_negative == True
-    assert (k*m).is_positive == False
-
-    assert (k*n*m).is_negative == False
-    assert (k*n*m).is_positive == True
+def test_Mul_is_even_odd():
+    x = Symbol('x', integer=True)
 
     k = Symbol('k', odd=True)
     n = Symbol('n', odd=True)
     m = Symbol('m', even=True)
 
-    assert (x/3).is_even == None
-    assert (x/3).is_odd == None
+    assert (k/3).is_even == False
+    assert (k/3).is_odd == False
 
     assert (2*n).is_even == True
     assert (2*n).is_odd == False
@@ -284,53 +276,35 @@ def test_mul_assumptions():
     assert (k*n*m).is_even == True
     assert (k*n*m).is_odd == False
 
-    k = Symbol('k', negative=True)
-    n = Symbol('n', nonnegative=True)
-    m = Symbol('m', nonpositive=True)
+    assert (k*n*x).is_odd == None
+    assert (k*n*x).is_even == None
 
-    assert (k*n).is_negative == None
-    assert (k*n).is_positive == None
-    assert (k*n).is_nonnegative == None
-    assert (k*n).is_nonpositive == True
-
-    assert (k*m).is_negative == None
-    assert (k*m).is_positive == None
-    assert (k*m).is_nonnegative == True
-    assert (k*m).is_nonpositive == None
-
-def test_add_assumptions():
-    x = Symbol('x')
+def test_Add_is_even_odd():
+    x = Symbol('x', integer=True)
 
     k = Symbol('k', odd=True)
     n = Symbol('n', even=True)
 
-    assert (k+n).is_integer == True
-    assert (k+x).is_integer == None
-    assert (k+n*x).is_integer == None
-    assert (k+n/3).is_integer == False
-
-    assert (2+k).is_odd == True
     assert (2+k).is_even == False
+    assert (2+k).is_odd == True
 
-    assert (7-k).is_odd == False
     assert (7-k).is_even == True
+    assert (7-k).is_odd == False
 
-    assert (11-n).is_odd == True
     assert (11-n).is_even == False
+    assert (11-n).is_odd == True
 
-    assert (-8+n).is_odd == False
     assert (-8+n).is_even == True
+    assert (-8+n).is_odd == False
 
-    assert (n+k).is_odd == True
     assert (n+k).is_even == False
+    assert (n+k).is_odd == True
 
-    assert (n-k).is_odd == True
     assert (n-k).is_even == False
+    assert (n-k).is_odd == True
 
-    assert (n+2*k).is_odd == False
     assert (n+2*k).is_even == True
-
-    x = Symbol('x', integer=True)
+    assert (n+2*k).is_odd == False
 
     assert (k+n+x).is_odd == None
     assert (k+n-x).is_even == None
@@ -338,60 +312,432 @@ def test_add_assumptions():
     assert (2*k+n*x).is_odd == None
     assert (2*k+n*x).is_even == None
 
+def test_Mul_is_negative_positive():
+    x = Symbol('x')
+
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
+    u = Symbol('u', nonnegative=True)
+    v = Symbol('v', nonpositive=True)
+
+    assert k.is_negative == True
+    assert (-k).is_negative == False
+    assert (2*k).is_negative == True
+
+    assert n.is_negative == False
+    assert (-n).is_negative == True
+    assert (2*n).is_negative == False
+
+    assert (n*k).is_negative == True
+    assert (2*n*k).is_negative == True
+    assert (-n*k).is_negative == False
+
+    assert u.is_negative == False
+    assert (-u).is_negative == None
+    assert (2*u).is_negative == False
+
+    assert v.is_negative == None
+    assert (-v).is_negative == False
+    assert (2*v).is_negative == None
+
+    assert (u*v).is_negative == None
+
+    assert (k*u).is_negative == None
+    assert (k*v).is_negative == False
+
+    assert (n*u).is_negative == False
+    assert (n*v).is_negative == None
+
+    assert (v*k*u).is_negative == False
+    assert (v*n*u).is_negative == None
+
+    assert (-v*k*u).is_negative == None
+    assert (-v*n*u).is_negative == False
+
+    assert (17*v*k*u).is_negative == False
+    assert (17*v*n*u).is_negative == None
+
+    assert (k*v*n*u).is_negative == False
+
+    assert (x*k).is_negative == None
+    assert (u*v*n*x*k).is_negative == None
+
+    assert k.is_positive == False
+    assert (-k).is_positive == True
+    assert (2*k).is_positive == False
+
+    assert n.is_positive == True
+    assert (-n).is_positive == False
+    assert (2*n).is_positive == True
+
+    assert (n*k).is_positive == False
+    assert (2*n*k).is_positive == False
+    assert (-n*k).is_positive == True
+
+    assert u.is_positive == None
+    assert (-u).is_positive == False
+    assert (2*u).is_positive == None
+
+    assert v.is_positive == False
+    assert (-v).is_positive == None
+    assert (2*v).is_positive == False
+
+    assert (u*v).is_positive == False
+
+    assert (k*u).is_positive == False
+    assert (k*v).is_positive == None
+
+    assert (n*u).is_positive == None
+    assert (n*v).is_positive == False
+
+    assert (v*k*u).is_positive == None
+    assert (v*n*u).is_positive == False
+
+    assert (-v*k*u).is_positive == False
+    assert (-v*n*u).is_positive == None
+
+    assert (17*v*k*u).is_positive == None
+    assert (17*v*n*u).is_positive == False
+
+    assert (k*v*n*u).is_positive == None
+
+    assert (x*k).is_positive == None
+    assert (u*v*n*x*k).is_positive == None
+
+def test_Mul_is_nonpositive_nonnegative():
+    x = Symbol('x')
+
+    k = Symbol('k', negative=True)
+    n = Symbol('n', positive=True)
+    u = Symbol('u', nonnegative=True)
+    v = Symbol('v', nonpositive=True)
+
+    assert k.is_nonpositive == True
+    assert (-k).is_nonpositive == False
+    assert (2*k).is_nonpositive == True
+
+    assert n.is_nonpositive == False
+    assert (-n).is_nonpositive == True
+    assert (2*n).is_nonpositive == False
+
+    assert (n*k).is_nonpositive == True
+    assert (2*n*k).is_nonpositive == True
+    assert (-n*k).is_nonpositive == False
+
+    assert u.is_nonpositive == None
+    assert (-u).is_nonpositive == True
+    assert (2*u).is_nonpositive == None
+
+    assert v.is_nonpositive == True
+    assert (-v).is_nonpositive == None
+    assert (2*v).is_nonpositive == True
+
+    assert (u*v).is_nonpositive == True
+
+    assert (k*u).is_nonpositive == True
+    assert (k*v).is_nonpositive == None
+
+    assert (n*u).is_nonpositive == None
+    assert (n*v).is_nonpositive == True
+
+    assert (v*k*u).is_nonpositive == None
+    assert (v*n*u).is_nonpositive == True
+
+    assert (-v*k*u).is_nonpositive == True
+    assert (-v*n*u).is_nonpositive == None
+
+    assert (17*v*k*u).is_nonpositive == None
+    assert (17*v*n*u).is_nonpositive == True
+
+    assert (k*v*n*u).is_nonpositive == None
+
+    assert (x*k).is_nonpositive == None
+    assert (u*v*n*x*k).is_nonpositive == None
+
+    assert k.is_nonnegative == False
+    assert (-k).is_nonnegative == True
+    assert (2*k).is_nonnegative == False
+
+    assert n.is_nonnegative == True
+    assert (-n).is_nonnegative == False
+    assert (2*n).is_nonnegative == True
+
+    assert (n*k).is_nonnegative == False
+    assert (2*n*k).is_nonnegative == False
+    assert (-n*k).is_nonnegative == True
+
+    assert u.is_nonnegative == True
+    assert (-u).is_nonnegative == None
+    assert (2*u).is_nonnegative == True
+
+    assert v.is_nonnegative == None
+    assert (-v).is_nonnegative == True
+    assert (2*v).is_nonnegative == None
+
+    assert (u*v).is_nonnegative == None
+
+    assert (k*u).is_nonnegative == None
+    assert (k*v).is_nonnegative == True
+
+    assert (n*u).is_nonnegative == True
+    assert (n*v).is_nonnegative == None
+
+    assert (v*k*u).is_nonnegative == True
+    assert (v*n*u).is_nonnegative == None
+
+    assert (-v*k*u).is_nonnegative == None
+    assert (-v*n*u).is_nonnegative == True
+
+    assert (17*v*k*u).is_nonnegative == True
+    assert (17*v*n*u).is_nonnegative == None
+
+    assert (k*v*n*u).is_nonnegative == True
+
+    assert (x*k).is_nonnegative == None
+    assert (u*v*n*x*k).is_nonnegative == None
+
+def test_Add_is_even_odd():
+    x = Symbol('x', integer=True)
+
+    k = Symbol('k', odd=True)
+    n = Symbol('n', odd=True)
+    m = Symbol('m', even=True)
+
+    assert (k+7).is_even == True
+    assert (k+7).is_odd == False
+
+    assert (-k+7).is_even == True
+    assert (-k+7).is_odd == False
+
+    assert (k-12).is_even == False
+    assert (k-12).is_odd == True
+
+    assert (-k-12).is_even == False
+    assert (-k-12).is_odd == True
+
+    assert (k+n).is_even == True
+    assert (k+n).is_odd == False
+
+    assert (k+m).is_even == False
+    assert (k+m).is_odd == True
+
+    assert (k+n+m).is_even == True
+    assert (k+n+m).is_odd == False
+
+    assert (k+n+x+m).is_even == None
+    assert (k+n+x+m).is_odd == None
+
+def test_Add_is_negative_positive():
+    x = Symbol('x')
+
+    k = Symbol('k', negative=True)
+    n = Symbol('n', positive=True)
+    u = Symbol('u', nonnegative=True)
+    v = Symbol('v', nonpositive=True)
 
     assert (k-2).is_negative == True
-    assert (k-2).is_positive == False
-
-    assert (k+2).is_negative == None
-    assert (k+2).is_positive == None
-
-    assert (-k+2).is_negative == False
-    assert (-k+2).is_positive == True
-
-    assert (-k-2).is_negative == None
-    assert (-k-2).is_positive == None
-
-    assert (k-2-x).is_negative == None
-    assert (k-2-x).is_positive == None
-
-    assert (k+n).is_negative == None
-    assert (k+n).is_positive == None
+    assert (k+17).is_negative == None
+    assert (-k-5).is_negative == None
+    assert (-k+123).is_negative == False
 
     assert (k-n).is_negative == True
+    assert (k+n).is_negative == None
+    assert (-k-n).is_negative == None
+    assert (-k+n).is_negative == False
+
+    assert (k-n-2).is_negative == True
+    assert (k+n+17).is_negative == None
+    assert (-k-n-5).is_negative == None
+    assert (-k+n+123).is_negative == False
+
+    assert (-2*k+123*n+17).is_negative == False
+
+    assert (k+u).is_negative == None
+    assert (k+v).is_negative == None
+    assert (n+u).is_negative == False
+    assert (n+v).is_negative == None
+
+    assert (u-v).is_negative == False
+    assert (u+v).is_negative == None
+    assert (-u-v).is_negative == None
+    assert (-u+v).is_negative == None
+
+    assert (u-v+n+2).is_negative == False
+    assert (u+v+n+2).is_negative == None
+    assert (-u-v+n+2).is_negative == None
+    assert (-u+v+n+2).is_negative == None
+
+    assert (k+x).is_negative == None
+    assert (k+x-n).is_negative == None
+
+    assert (k-2).is_positive == False
+    assert (k+17).is_positive == None
+    assert (-k-5).is_positive == None
+    assert (-k+123).is_positive == True
+
     assert (k-n).is_positive == False
+    assert (k+n).is_positive == None
+    assert (-k-n).is_positive == None
+    assert (-k+n).is_positive == True
 
-    assert (-2*k+n+17).is_negative == False
-    assert (-2*k+n+17).is_positive == True
+    assert (k-n-2).is_positive == False
+    assert (k+n+17).is_positive == None
+    assert (-k-n-5).is_positive == None
+    assert (-k+n+123).is_positive == True
 
-    k = Symbol('k', nonnegative=True)
-    n = Symbol('n', nonpositive=True)
+    assert (-2*k+123*n+17).is_positive == True
 
-    assert (k+2).is_nonnegative == True
-    assert (k+2).is_nonpositive == None
+    assert (k+u).is_positive == None
+    assert (k+v).is_positive == False
+    assert (n+u).is_positive == None
+    assert (n+v).is_positive == None
 
-    assert (k-2).is_nonnegative == None
-    assert (k-2).is_nonpositive == None
+    assert (u-v).is_positive == None
+    assert (u+v).is_positive == None
+    assert (-u-v).is_positive == None
+    assert (-u+v).is_positive == False
 
-    assert (-k+2).is_nonnegative == None
-    assert (-k+2).is_nonpositive == None
+    assert (u-v-n-2).is_positive == None
+    assert (u+v-n-2).is_positive == None
+    assert (-u-v-n-2).is_positive == None
+    assert (-u+v-n-2).is_positive == False
 
-    assert (-k-2).is_nonnegative == None
-    assert (-k-2).is_nonpositive == True
+    assert (n+x).is_positive == None
+    assert (n+x-k).is_positive == None
 
-    assert (k+n).is_nonnegative == None
+def test_Add_is_nonpositive_nonnegative():
+    x = Symbol('x')
+
+    k = Symbol('k', negative=True)
+    n = Symbol('n', positive=True)
+    u = Symbol('u', nonnegative=True)
+    v = Symbol('v', nonpositive=True)
+
+    assert (u-2).is_nonpositive == None
+    assert (u+17).is_nonpositive == None
+    assert (-u-5).is_nonpositive == True
+    assert (-u+123).is_nonpositive == None
+
+    assert (u-v).is_nonpositive == None
+    assert (u+v).is_nonpositive == None
+    assert (-u-v).is_nonpositive == None
+    assert (-u+v).is_nonpositive == True
+
+    assert (u-v-2).is_nonpositive == None
+    assert (u+v+17).is_nonpositive == None
+    assert (-u-v-5).is_nonpositive == None
+    assert (-u+v-123).is_nonpositive == True
+
+    assert (-2*u+123*v-17).is_nonpositive == True
+
+    assert (k+u).is_nonpositive == None
+    assert (k+v).is_nonpositive == True
+    assert (n+u).is_nonpositive == None
+    assert (n+v).is_nonpositive == None
+
+    assert (k-n).is_nonpositive == True
     assert (k+n).is_nonpositive == None
-
-    assert (k-n).is_nonnegative == True
-    assert (k-n).is_nonpositive == None
-
-    assert (-k+n).is_nonnegative == None
-    assert (-k+n).is_nonpositive == True
-
-    assert (-k-n).is_nonnegative == None
     assert (-k-n).is_nonpositive == None
+    assert (-k+n).is_nonpositive == False
 
-def test_pow_assumptions():
-    pass
+    assert (k-n+u+2).is_nonpositive == None
+    assert (k+n+u+2).is_nonpositive == None
+    assert (-k-n+u+2).is_nonpositive == None
+    assert (-k+n+u+2).is_nonpositive == None
+
+    assert (u+x).is_nonpositive == None
+    assert (v-x-n).is_nonpositive == None
+
+    assert (u-2).is_nonnegative == None
+    assert (u+17).is_nonnegative == True
+    assert (-u-5).is_nonnegative == None
+    assert (-u+123).is_nonnegative == None
+
+    assert (u-v).is_nonnegative == True
+    assert (u+v).is_nonnegative == None
+    assert (-u-v).is_nonnegative == None
+    assert (-u+v).is_nonnegative == None
+
+    assert (u-v+2).is_nonnegative == True
+    assert (u+v+17).is_nonnegative == None
+    assert (-u-v-5).is_nonnegative == None
+    assert (-u+v-123).is_nonnegative == None
+
+    assert (2*u-123*v+17).is_nonnegative == True
+
+    assert (k+u).is_nonnegative == None
+    assert (k+v).is_nonnegative == None
+    assert (n+u).is_nonnegative == True
+    assert (n+v).is_nonnegative == None
+
+    assert (k-n).is_nonnegative == False
+    assert (k+n).is_nonnegative == None
+    assert (-k-n).is_nonnegative == None
+    assert (-k+n).is_nonnegative == True
+
+    assert (k-n-u-2).is_nonnegative == None
+    assert (k+n-u-2).is_nonnegative == None
+    assert (-k-n-u-2).is_nonnegative == None
+    assert (-k+n-u-2).is_nonnegative == None
+
+    assert (u-x).is_nonnegative == None
+    assert (v+x+n).is_nonnegative == None
+
+def test_Pow_is_integer():
+    x = Symbol('x')
+
+    k = Symbol('k', integer=True)
+    n = Symbol('n', nni=True)
+    m = Symbol('m', pi=True)
+
+    assert (k**2).is_integer == True
+    assert (k**(-2)).is_integer == False
+
+    assert (2**k).is_integer == None
+    assert (2**(-k)).is_integer == None
+
+    assert (2**n).is_integer == True
+    assert (2**(-n)).is_integer == None
+
+    assert (2**m).is_integer == True
+    assert (2**(-m)).is_integer == False
+
+    assert (x**2).is_integer == None
+    assert (2**x).is_integer == None
+
+    assert (k**n).is_integer == True
+    assert (k**(-n)).is_integer == None
+
+    assert (k**x).is_integer == None
+    assert (x**k).is_integer == None
+
+    assert (k**(n*m)).is_integer == True
+    assert (k**(-n*m)).is_integer == None
+
+def test_Pow_is_even_odd():
+    x = Symbol('x')
+
+    k = Symbol('k', even=True)
+    n = Symbol('n', odd=True)
+    m = Symbol('m', nni=True)
+
+    assert (k**2).is_even == True
+    assert (n**2).is_even == False
+    assert (2**k).is_even == None
+
+    assert (k**m).is_even == True
+    assert (n**m).is_even == False
+
+    assert (k**x).is_even == None
+    assert (n**x).is_even == False
+
+    assert (k**2).is_odd == False
+    assert (n**2).is_odd == True
+    assert (3**k).is_odd == None
+
+    assert (k**m).is_odd == False
+    assert (n**m).is_odd == True
+
+    assert (k**x).is_odd == False
+    assert (n**x).is_odd == None
 
