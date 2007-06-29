@@ -141,6 +141,14 @@ def testpow():
     assert (x**5*(3*x)**(-3)).expand() == Rational(1,27) * x**2
     assert (x**5*(-3*x)**(-3)).expand() == -Rational(1,27) * x**2
 
+    n = Symbol('k', even=False)
+    k = Symbol('k', even=True)
+
+    assert (-1)**x == (-1)**x
+    assert (-1)**n == (-1)**n
+    assert (-2)**k == 2**k
+    assert (-1)**k == 1
+
 def test_expand():
     a = g.Symbol("a")
     b = g.Symbol("b")
@@ -182,9 +190,9 @@ def test_power_expand():
     assert p.expand() == 9 + 4*(a**2) + 12*a
 
 def test_ncmul():
-    A = Symbol("A", is_commutative=False)
-    B = Symbol("B", is_commutative=False)
-    C = Symbol("C", is_commutative=False)
+    A = Symbol("A", commutative=False)
+    B = Symbol("B", commutative=False)
+    C = Symbol("C", commutative=False)
     b = Symbol("b")
     assert A*B != B*A
     assert A*B*C != C*B*A
@@ -211,8 +219,8 @@ def test_ncmul():
     assert A/(1+A) == A/(1+A)
 
 def test_ncpow():
-    x = Symbol('x', is_commutative=False)
-    y = Symbol('y', is_commutative=False)
+    x = Symbol('x', commutative=False)
+    y = Symbol('y', commutative=False)
 
     assert (x**2)*(y**2) != (y**2)*(x**2)
     assert (x**-2)*y != y*(x**2)
@@ -255,8 +263,14 @@ def test_Mul_is_even_odd():
     n = Symbol('n', odd=True)
     m = Symbol('m', even=True)
 
-    assert (k/3).is_even == False
-    assert (k/3).is_odd == False
+    assert (2*x).is_even == True
+    assert (2*x).is_odd == False
+
+    assert (3*x).is_even == None
+    assert (3*x).is_odd == None
+
+    assert (k/3).is_even == None
+    assert (k/3).is_odd == None
 
     assert (2*n).is_even == True
     assert (2*n).is_odd == False
@@ -276,8 +290,8 @@ def test_Mul_is_even_odd():
     assert (k*n*m).is_even == True
     assert (k*n*m).is_odd == False
 
-    assert (k*n*x).is_odd == None
-    assert (k*n*x).is_even == None
+    assert (k*m*x).is_even == True
+    assert (k*m*x).is_odd == False
 
 def test_Add_is_even_odd():
     x = Symbol('x', integer=True)
@@ -740,4 +754,70 @@ def test_Pow_is_even_odd():
 
     assert (k**x).is_odd == False
     assert (n**x).is_odd == None
+
+def test_Pow_is_negative_positive():
+    x = Symbol('x')
+
+    k = Symbol('k', pi=True)
+    n = Symbol('n', even=True)
+    m = Symbol('m', odd=True)
+
+    assert (2**x).is_positive == True
+    assert ((-2)**x).is_positive == None
+    assert ((-2)**n).is_positive == True
+    assert ((-2)**m).is_positive == False
+
+    assert (k**2).is_positive == True
+    assert (k**(-2)).is_positive == True
+
+    assert (k**x).is_positive == True
+    assert ((-k)**x).is_positive == None
+    assert ((-k)**n).is_positive == True
+    assert ((-k)**m).is_positive == False
+
+    assert (2**x).is_negative == False
+    assert ((-2)**x).is_negative == None
+    assert ((-2)**n).is_negative == False
+    assert ((-2)**m).is_negative == True
+
+    assert (k**2).is_negative == False
+    assert (k**(-2)).is_negative == False
+
+    assert (k**x).is_negative == False
+    assert ((-k)**x).is_negative == None
+    assert ((-k)**n).is_negative == False
+    assert ((-k)**m).is_negative == True
+
+def test_Pow_is_nonpositive_nonnegative():
+    x = Symbol('x')
+
+    k = Symbol('k', nni=True)
+    n = Symbol('n', even=True)
+    m = Symbol('m', odd=True)
+
+    assert (2**x).is_nonnegative == True
+    assert ((-2)**x).is_nonnegative == None
+    assert ((-2)**n).is_nonnegative == True
+    assert ((-2)**m).is_nonnegative == False
+
+    assert (k**2).is_nonnegative == True
+    assert (k**(-2)).is_nonnegative == True
+
+    assert (k**x).is_nonnegative == True
+    assert ((-k)**x).is_nonnegative == None
+    assert ((-k)**n).is_nonnegative == True
+    assert ((-k)**m).is_nonnegative == False
+
+    assert (2**x).is_nonpositive == False
+    assert ((-2)**x).is_nonpositive == None
+    assert ((-2)**n).is_nonpositive == False
+    assert ((-2)**m).is_nonpositive == True
+
+    assert (k**2).is_nonpositive == None
+    assert (k**(-2)).is_nonpositive == None
+
+    assert (k**x).is_nonpositive == None
+    assert ((-k)**x).is_nonpositive == None
+    assert ((-k)**n).is_nonpositive == False
+    assert ((-k)**m).is_nonpositive == True
 

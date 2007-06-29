@@ -111,10 +111,10 @@ class Basic(object):
         self._assumptions = {        ## Objects that overrides the defaults:
             'is_real'        : None, # Symbol
             'is_integer'     : None, # Rational, Pair, Pow
-            'is_negative'    : None, # Rational, Add, Mul
-            'is_positive'    : None, # Rational, Add, Mul
-            'is_nonnegative' : None, # Rational, Add, Mul
-            'is_nonpositive' : None, # Rational, Add, Mul
+            'is_negative'    : None, # Rational, Add, Mul, Pow
+            'is_positive'    : None, # Rational, Add, Mul, Pow
+            'is_nonnegative' : None, # Rational, Add, Mul, Pow
+            'is_nonpositive' : None, # Rational, Add, Mul, Pow
             'is_nonzero'     : None, # Rational
             'is_commutative' : None, # Symbol, Number, Pair, Pow
             'is_bounded'     : None, # sin, cos
@@ -137,11 +137,11 @@ class Basic(object):
 
             'is_nonnegative' : lambda x: { 'is_negative'    : not x,
                                            'is_positive'    : x and None,
-                                           'is_nonpositive' : None },
+                                           'is_nonpositive' : (not x) or None },
 
             'is_nonpositive' : lambda x: { 'is_positive'    : not x,
                                            'is_negative'    : x and None,
-                                           'is_nonnegative' : None },
+                                           'is_nonnegative' : (not x) or None },
 
             'is_odd'         : lambda x: { 'is_integer'     : x or None,
                                            'is_real'        : x or None,

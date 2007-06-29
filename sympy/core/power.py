@@ -169,22 +169,27 @@ class Pow(Basic):
     def eval(self):
         from addmul import Mul
         from numbers import oo
-        if isinstance(self.exp, Rational) and self.exp.iszero():
-            return Rational(1)
 
-        if isinstance(self.exp, Rational) and self.exp.isone():
-            return self.base
+        if isinstance(self.exp, Rational):
+            if self.exp.is_zero:
+                return Rational(1)
+            elif self.exp.is_unit:
+                return self.base
 
-        if isinstance(self.base, Rational) and self.base.iszero():
-            if isinstance(self.exp,Rational):# and self.exp.is_integer:
-                if self.exp.iszero():
-                    raise pole_error("pow::eval(): 0^0.")
-                elif self.exp < 0:
-                    raise pole_error("%s: Division by 0." % str(self))
-            return Rational(0)
+        if isinstance(self.base, Rational):
+            if self.base.is_zero:
+                if isinstance(self.exp, Rational):
+                    if self.exp.is_zero:
+                        raise pole_error("pow::eval(): 0^0.")
+                    elif self.exp.is_negative:
+                        raise pole_error("%s: Division by 0." % str(self))
 
-        if isinstance(self.base, Rational) and self.base.isone():
-            return Rational(1)
+                return Rational(0)
+            elif self.base.is_unit:
+                return Rational(1)
+            elif self.base.is_nonpositive and self.exp.is_even:
+                return Pow(abs(self.base), self.exp)
+
 
         if isinstance(self.base, Real) and isinstance(self.exp,Real):
             return self
@@ -472,19 +477,19 @@ class Pow(Basic):
     def is_odd(self):
         return self.base.is_odd and self.exp.is_nonnegative_integer
 
-#    @property
-#    def is_negative(self):
-#        pass
+    @property
+    def is_negative(self):
+        return self.base.is_negative and self.exp.is_odd
 
-#    @property
-#    def is_positive(self):
-#        pass
+    @property
+    def is_positive(self):
+        return self.base.is_positive or self.exp.is_even
 
-#    @property
-#    def is_nonpositive(self):
-#        pass
+    @property
+    def is_nonpositive(self):
+        return self.base.is_nonpositive and self.exp.is_odd
 
-#    @property
-#    def is_nonnegative(self):
-#        pass
+    @property
+    def is_nonnegative(self):
+        return self.base.is_nonnegative or self.exp.is_even
 

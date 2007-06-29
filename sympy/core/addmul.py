@@ -638,38 +638,71 @@ class Mul(Pair):
 
     @property
     def is_odd(self):
-        # all objects in the sequence have to be odd
-        has_all_odd = True
+        """Product is odd iff there all its components are odd.
+           Otherwise this query will return False or None if
+           not all objects odd and some are only defined to
+           be integers.
 
-        for term in self:
-            result = term.is_odd
+           >>> from sympy import *
+           >>> k = Symbol('k', integer=True)
 
-            if result is None:
-                return None
-            elif result == False:
-                # remember that there is a non-odd object, but
-                # keep iterating because we can still find None
-                has_all_odd = False
+           >>> (3*k).is_odd
+           True
 
-        return has_all_odd
+           >>> (2*k).is_odd is None
+           True
 
-    @property
-    def is_even(self):
-        # we need at least one even valued object
-        # so remember if this occured in the sequence
+        """
+        has_unknown = False
         has_even = False
 
         for term in self:
-            result = term.is_even
-
-            if result is None:
+            if term.is_integer:
+                if term.is_even:
+                    has_even = True
+                elif not term.is_odd:
+                    has_unknown = True
+            else:
                 return None
-            elif result == True:
-                # remember that there is an even object, but
-                # keep iterating because we can still find None
-                has_even = True
 
-        return has_even
+        if has_unknown:
+            return (not has_even) and None
+        else:
+            return not has_even
+
+    @property
+    def is_even(self):
+        """Product is even iff there is at least one even object
+           contained in it. Otherwise this query will return False
+           or None if there are no even objects and some are only
+           defined to be integers.
+
+           >>> from sympy import *
+           >>> k = Symbol('k', integer=True)
+
+           >>> (2*k).is_even
+           True
+
+           >>> (3*k).is_even is None
+           True
+
+        """
+        has_unknown = False
+        has_even = False
+
+        for term in self:
+            if term.is_integer:
+                if term.is_even:
+                    has_even = True
+                elif not term.is_odd:
+                    has_unknown = True
+            else:
+                return None
+
+        if has_unknown:
+            return has_even or None
+        else:
+            return has_even
 
     ##
     # Truth Table for (in order):
@@ -1220,10 +1253,6 @@ class Add(Pair):
 
         if has_negative:
             return True
-            #if has_zero:
-            #    return True
-            #else:
-            #    return None
         else:
             if has_zero:
                 return None
@@ -1241,10 +1270,6 @@ class Add(Pair):
 
         if not has_negative:
             return True
-            #if has_zero:
-            #    return True
-            #else:
-            #    return None
         else:
             if has_zero:
                 return None
