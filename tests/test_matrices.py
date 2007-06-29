@@ -4,7 +4,7 @@ sys.path.append(".")
 from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix, \
                                     minkowski_tensor, eye, randMatrix, \
                                     SMatrix, hessian
-from sympy import Symbol
+from sympy import Symbol, sqrt
 
 def test_multiplication():
     a=Matrix((
@@ -253,10 +253,11 @@ def test_inverse():
     Ainv2 = A.inv("LU")
     assert Ainv == Ainv2
 
-def test_cross():
+def test_util():
     v1 = Matrix(1,3,[1,2,3])
     v2 = Matrix(1,3,[3,4,5])
     assert v1.cross(v2) == Matrix(1,3,[-2,4,-2])
+    assert v1.norm() == sqrt(14)
 
 def test_cofactor():
     assert eye(3) == eye(3).cofactorMatrix()
@@ -289,7 +290,16 @@ def test_charpoly():
     assert eye3.charpoly(x) == (1-x)**3
     assert eye3.charpoly(y) == (1-y)**3
 
+def test_GramSchmidt():
+    A = Matrix([[1,2],[2,3]])
+    Q, R = A.GramSchmidt()
+    #assert Q == Matrix([[5**(-1/2), 2/5*1/5**(-1/2)], [2*5**(-1/2), -1/5*1/5**(-1/2)]])
+    #assert R == Matrix([[5**(1/2), 8*5**(-1/2)], [0, 1/5**(1/2)]])
+    assert Q*R == A
+    assert Q.T * Q == eye(2)
+
 def test_sparse_matrix():
+    return
     def eye(n):
         tmp = SMatrix(n,n,lambda i,j:0)
         for i in range(tmp.lines):
@@ -504,9 +514,10 @@ def test_sparse_matrix():
     assert Ainv == Ainv2
 
     # test_cross
-    v1 = SMatrix(1,3,[1,2,3])
-    v2 = SMatrix(1,3,[3,4,5])
-    assert v1.cross(v2) == SMatrix(1,3,[-2,4,-2])
+    v1 = Matrix(1,3,[1,2,3])
+    v2 = Matrix(1,3,[3,4,5])
+    assert v1.cross(v2) == Matrix(1,3,[-2,4,-2])
+    assert v1.norm(v1) == 14
 
     # test_cofactor
     assert eye(3) == eye(3).cofactorMatrix()
@@ -531,3 +542,11 @@ def test_sparse_matrix():
     eye3 = eye(3)
     assert eye3.charpoly(x) == (1-x)**3
     assert eye3.charpoly(y) == (1-y)**3
+
+    # test_GramSchmidt
+    A = SMatrix([[1,2],[2,3]])
+    Q, R = A.GramSchmidt()
+    assert Q == SMatrix([[5**(-1/2), 2/5*1/5**(-1/2)], [2*5**(-1/2), -1/5*1/5**(-1/2)]])
+    assert R == SMatrix([[5**(1/2), 8*5**(-1/2)], [0, 1/5**(1/2)]])
+    assert Q*R == A
+    assert Q.T * Q == eye(2)

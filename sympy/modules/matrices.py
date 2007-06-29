@@ -1,4 +1,4 @@
-from sympy import Basic,exp,Symbol,Rational,I,Mul
+from sympy import Basic,exp,Symbol,Rational,I,Mul, sqrt
 from sympy.core import hashing
 import random
 
@@ -84,7 +84,7 @@ class Matrix(object):
         out = self[:,:]
         if name == "T":
             #transposition
-            out.reshape(self.cols, self.lines)
+            out = out.reshape(self.cols, self.lines)
             out[:,:] = Matrix(self.cols,self.lines, lambda i,j: self[j,i])
             return out
         if name == "C":
@@ -519,41 +519,6 @@ class Matrix(object):
     def LUdecomposition_Block(self):
         raise NotImplementedError("Not yet implemented")
 
-    def cross(self, b):
-        if not (self.lines == 1 and self.cols == 3 and \
-               b.lines == 1 and b.cols == 3):
-            raise "Dimensions incorrect for cross product"
-        else:
-            return Matrix(1,3,((self[1]*b[2] - self[2]*b[1]),
-                               (self[2]*b[0] - self[0]*b[2]),
-                               (self[0]*b[1] - self[1]*b[0])))
-
-    def dot(self, b):
-        if not (self.lines == 1 and self.cols == 3 and \
-               b.lines == 1 and b.cols == 3):
-            raise "Dimensions incorrect for dot product"
-        else:
-            return self[0]*b[0] + self[1]*b[1] + self[2]*b[2]
-
-    def permuteBkwd(self, perm):
-        copy = self[:,:]
-        for i in range(len(perm)-1, -1, -1):
-            copy.row_swap(perm[i][0], perm[i][1])
-        return copy
-
-    def permuteFwd(self, perm):
-        copy = self[:,:]
-        for i in range(len(perm)):
-            copy.row_swap(perm[i][0], perm[i][1])
-        return copy
-
-    def delRowCol(self, i, j):
-        #used only for cofactors, makes a copy
-        M = self[:,:]
-        M.row_del(i)
-        M.col_del(j)
-        return M
-
     def cofactorMatrix(self):
         out = self[:,:]
         out[:,:] = Matrix(self.lines, self.cols, lambda i,j: self.cofactor(i,j))
@@ -568,7 +533,7 @@ class Matrix(object):
             return self.minorEntry(i,j)
         else:
             return -1 * self.minorEntry(i,j)
-    
+
     def jacobian(self, varlist):
         # self is a vector of expression representing functions f_i(x_1, ..., x_n)
         # varlist is the set of x_i's in order
@@ -592,6 +557,96 @@ class Matrix(object):
             for j in range(1,n):
                 J[i,j] = self[i].diff(varlist[j])
         return J
+    
+    def GramSchmidt(self):
+        # return Q*R where Q is orthogonal and R is upper triangular
+        # assume full-rank square, for now
+        assert self.lines == self.cols
+        n = self.lines
+        Q = self.zero(n)
+        R = self.zero(n)
+        for j in range(n):      # for each column vector
+            tmp = self[:,j]     # take original v
+            for i in range(j):
+                # subtract the project of self on new vector
+                tmp -= self[:,j].dot(Q[:,i]) * Q[:,i]
+            # normalize it
+            R[j,j] = tmp.norm()
+            Q[:,j] = tmp / R[j,j]
+            assert Q[:,j].norm() == 1
+            for i in range(j):
+                R[i,j] = Q[:,i].dot(self[:,j])
+        return Q,R
+    
+    # Utility functions
+    def simplify(self):
+        for i in range(self.lines):
+            for j in range(self.cols):
+                self[i,j] = self[i,j].simplify()
+
+    def expand(self):
+        for i in range(self.lines):
+            for j in range(self.cols):
+                self[i,j] = self[i,j].expand()
+    
+    def evaluate(self):
+        for i in range(self.lines):
+            for j in range(self.cols):
+                self[i,j] = self[i,j].eval()        
+    
+    def cross(self, b):
+        assert isinstance(b, (list, tuple, Matrix))
+        if not (self.lines == 1 and self.cols == 3 or \
+                self.lines == 3 and self.cols == 1 ) and \
+                (b.lines == 1 and b.cols == 3 or \
+                b.lines == 3 and b.cols == 1):
+            raise "Dimensions incorrect for cross product"
+        else:
+            return Matrix(1,3,((self[1]*b[2] - self[2]*b[1]),
+                               (self[2]*b[0] - self[0]*b[2]),
+                               (self[0]*b[1] - self[1]*b[0])))
+
+    def dot(self, b):
+        assert isinstance(b, (list, tuple, Matrix))
+        if isinstance(b, (list, tuple)):
+            m = len(b)
+        else:
+            m = b.lines * b.cols
+        assert self.cols*self.lines == m
+        prod = 0
+        for i in range(m):
+            prod += self[i] * b[i]
+        return prod
+
+    def norm(self):
+        assert self.lines == 1 or self.cols == 1
+        out = Basic.sympify(0)
+        for i in range(self.lines * self.cols):
+            out += self[i]*self[i]
+        return sqrt(out)
+    
+    def project(self, v):
+        # project ONTO v
+        return v * (self.dot(v) / v.dot(v))
+
+    def permuteBkwd(self, perm):
+        copy = self[:,:]
+        for i in range(len(perm)-1, -1, -1):
+            copy.row_swap(perm[i][0], perm[i][1])
+        return copy
+
+    def permuteFwd(self, perm):
+        copy = self[:,:]
+        for i in range(len(perm)):
+            copy.row_swap(perm[i][0], perm[i][1])
+        return copy
+
+    def delRowCol(self, i, j):
+        #used only for cofactors, makes a copy
+        M = self[:,:]
+        M.row_del(i)
+        M.col_del(j)
+        return M
     
     def zeronm(self, n, m):
         # used so that certain functions above can use this
@@ -866,7 +921,18 @@ def hessian(f, varlist):
             out[i,j] = out[j,i]
     return out
     
-
+def GramSchmidt(vlist):
+    out = []
+    m = len(vlist)
+    for i in range(m):
+        tmp = vlist[i]
+        for j in range(i):
+            tmp -= vlist[i].project(out[j])
+        print tmp
+        if tmp == Matrix([[0,0,0]]):
+            raise "GramSchmidt: vector set not linearly independent"
+        out.append(tmp)
+    return out
 
 class SMatrix(Matrix):
     def __init__(self, *args):
@@ -1044,8 +1110,11 @@ class SMatrix(Matrix):
         return SMatrix(_rows, _cols, newD)
 
     def cross(self, b):
-        if not (self.lines == 1 and self.cols == 3 and \
-               b.lines == 1 and b.cols == 3):
+        assert isinstance(b, (list, tuple, Matrix))
+        if not (self.lines == 1 and self.cols == 3 or \
+                self.lines == 3 and self.cols == 1 ) and \
+                (b.lines == 1 and b.cols == 3 or \
+                b.lines == 3 and b.cols == 1):
             raise "Dimensions incorrect for cross product"
         else:
             return SMatrix(1,3,((self[1]*b[2] - self[2]*b[1]),
