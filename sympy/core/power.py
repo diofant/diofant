@@ -463,6 +463,10 @@ class Pow(Basic):
         return self.base.is_commutative and self.exp.is_commutative
 
     @property
+    def is_real(self):
+        return self.base.is_real and self.exp.is_real
+
+    @property
     def is_integer(self):
         if self.base.is_integer and self.exp.is_integer:
             return self.exp.is_nonnegative
@@ -483,17 +487,17 @@ class Pow(Basic):
 
     @property
     def is_negative(self):
-        return self.base.is_negative and self.exp.is_odd
+        return self.is_real and self.base.is_negative and self.exp.is_odd
 
     @property
     def is_positive(self):
-        return self.base.is_positive or self.exp.is_even
+        return self.is_real and self.base.is_positive or self.exp.is_even
 
     @property
     def is_nonpositive(self):
-        return self.base.is_nonpositive and self.exp.is_odd
+        return self.is_real and self.base.is_nonpositive and self.exp.is_odd
 
     @property
     def is_nonnegative(self):
-        return self.base.is_nonnegative or self.exp.is_even
+        return self.is_real and self.base.is_nonnegative or self.exp.is_even
 

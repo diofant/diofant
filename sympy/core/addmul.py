@@ -121,77 +121,83 @@ class Pair(Basic):
         f += indent(self._args[-1].print_tree(),2)
         return f
 
-    @property
-    def is_commutative(self):
-        """Add or Mul are commutative if all their components are commutative."""
+    def has_property(self, functor):
+        """Test if product or summation has some specific property
+           denoted with the functor. This will be True iff all its
+           components poses this property. If there is at least one
+           object with fails, this query will return False and in
+           all other cases None.
 
-        memo = True
+           This method will be used in the following assumptions:
 
-        for term in self:
-            result = term.is_commutative
+               - is_commutative
 
-            if result is None:
-                return None
-            elif result == False:
-                # remember if there is non-commutative symbol, but
-                # keep iterating because we can still find None
-                memo = False
+               - is_real
 
-        return memo
+               - is_integer
 
-    @property
-    def is_integer(self):
-        """Add or Mul are integers if all their components are integers."""
-        memo = True
+               - is_bounded
 
-        for term in self:
-            result = term.is_integer
-
-            if result is None:
-                return None
-            elif result == False:
-                # remember if there is non-integer symbol, but
-                # keep iterating because we can still find None
-                memo = False
-
-        return memo
-
-    @property
-    def is_bounded(self):
-        """Product or summation is bounded iff all its components
-           are bounded. If there is at least one unbounded object
-           this query will return False and None in other cases.
+           Example will clarify usage of this query:
 
            >>> from sympy import *
            >>> x = Symbol('x')
 
-           >>> 2*sin(x).is_bounded
-           True
-           >>> 2+sin(x).is_bounded
+           # both bounded in a product
+           >>> (2*sin(x)).has_property('is_bounded')
            True
 
-           >>> sin(x)*exp(x).is_bounded
+           # both bounded in a summation
+           >>> (2+sin(x)).has_property('is_bounded')
+           True
+
+           # contains an unbounded functions
+           >>> (sin(x)*exp(x)).has_property('is_bounded')
            False
 
-           >>> x*sin(x).is_bounded is None
-           True
+           # contains unspecifed object but also unbounded
+           >>> (x*sin(x)*exp(x)).has_property('is_bounded')
+           False
+
+           # contains unspecifed and bounded objects, so say don't know
+           >>> print (x*sin(x)).has_property('is_bounded')
+           None
 
         """
         has_unknown = False
-        has_unbounded = False
+        has_property = True
 
         for term in self:
-            result = term.is_bounded
+            result = getattr(term, functor)
 
             if result is None:
                 has_unknown = True
             elif result == False:
-                has_unbounded = True
+                has_property = False
 
         if has_unknown:
-            return (not has_unbounded) and None
+            # return False rather than None if there
+            # is at least one object that does not
+            # poses specifed property
+            return has_property and None
         else:
-            return not has_unbounded
+            return has_property
+
+    @property
+    def is_commutative(self):
+        return self.has_property('is_commutative')
+
+    @property
+    def is_real(self):
+        return self.has_property('is_real')
+
+    @property
+    def is_integer(self):
+        return self.has_property('is_integer')
+
+    @property
+    def is_bounded(self):
+        return self.has_property('is_bounded')
 
     def match(self, pattern, syms=None, exclude = "None"):
         """
@@ -766,6 +772,10 @@ class Mul(Pair):
         has_zero = False
 
         for term in self:
+            if not term.is_real:
+                # not a real valued object, probably complex,
+                # so there is no total order relation defined
+                return None
 
             result = term.is_negative
 
@@ -1203,6 +1213,11 @@ class Add(Pair):
         has_zero = False
 
         for term in self:
+
+            if not term.is_real:
+                # not a real valued object, probably complex,
+                # so there is no total order relation defined
+                return None
 
             if has_negative and has_positive:
                 # mixed signs so no idea what the total sign is

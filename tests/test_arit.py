@@ -249,7 +249,6 @@ def test_Add_Mul_is_integer():
     assert (-k).is_integer == True
     assert (k/3).is_integer == False
     assert (x*k*n).is_integer == None
-    assert (x/3).is_integer == None
 
     assert (k+n).is_integer == True
     assert (k+x).is_integer == None
@@ -340,7 +339,8 @@ def test_Add_is_even_odd():
     assert (2*k+n*x).is_even == None
 
 def test_Mul_is_negative_positive():
-    x = Symbol('x')
+    x = Symbol('x', real=True)
+    y = Symbol('y', real=False)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -358,6 +358,7 @@ def test_Mul_is_negative_positive():
     assert (n*k).is_negative == True
     assert (2*n*k).is_negative == True
     assert (-n*k).is_negative == False
+    assert (n*k*y).is_negative == None
 
     assert u.is_negative == False
     assert (-u).is_negative == None
@@ -400,6 +401,7 @@ def test_Mul_is_negative_positive():
     assert (n*k).is_positive == False
     assert (2*n*k).is_positive == False
     assert (-n*k).is_positive == True
+    assert (-n*k*y).is_positive == None
 
     assert u.is_positive == None
     assert (-u).is_positive == False
@@ -432,7 +434,7 @@ def test_Mul_is_negative_positive():
     assert (u*v*n*x*k).is_positive == None
 
 def test_Mul_is_nonpositive_nonnegative():
-    x = Symbol('x')
+    x = Symbol('x', real=True)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -555,7 +557,7 @@ def test_Add_is_even_odd():
     assert (k+n+x+m).is_odd == None
 
 def test_Add_is_negative_positive():
-    x = Symbol('x')
+    x = Symbol('x', real=True)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -633,7 +635,7 @@ def test_Add_is_negative_positive():
     assert (n+x-k).is_positive == None
 
 def test_Add_is_nonpositive_nonnegative():
-    x = Symbol('x')
+    x = Symbol('x', real=True)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -741,7 +743,7 @@ def test_Pow_is_integer():
     assert (k**(n*m)).is_integer == True
     assert (k**(-n*m)).is_integer == None
 
-def test_Pow_is_integer():
+def test_Pow_is_bounded():
     x = Symbol('x')
 
     assert (x**2).is_bounded == None
@@ -781,7 +783,7 @@ def test_Pow_is_even_odd():
     assert (n**x).is_odd == None
 
 def test_Pow_is_negative_positive():
-    x = Symbol('x')
+    x = Symbol('x', real=True)
 
     k = Symbol('k', pi=True)
     n = Symbol('n', even=True)
@@ -814,7 +816,7 @@ def test_Pow_is_negative_positive():
     assert ((-k)**m).is_negative == True
 
 def test_Pow_is_nonpositive_nonnegative():
-    x = Symbol('x')
+    x = Symbol('x', real=True)
 
     k = Symbol('k', nni=True)
     n = Symbol('n', even=True)

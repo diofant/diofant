@@ -49,6 +49,10 @@ class sin(Function):
     def is_bounded(self):
         return True
 
+    @property
+    def is_real(self):
+        return self._args.is_real
+
     def eval(self):
         if self._args.is_number:
             if self._args == 0:
@@ -188,6 +192,10 @@ class cos(Function):
     def is_bounded(self):
         return True
 
+    @property
+    def is_real(self):
+        return self._args.is_real
+
     def eval(self):
         if self._args.is_number:
             if self._args == 0:
@@ -231,7 +239,7 @@ class cos(Function):
                                 result *= -1
 
                             return result
-        
+
         if isinstance(self._args, Number) and self._args < 0:
             return cos(-self._args)
         elif isinstance(self._args, Mul):
@@ -325,6 +333,14 @@ class tan(Function):
     def derivative(self):
         return Rational(1) / (cos(self._args)**2)
 
+    @property
+    def is_bounded(self):
+        return False
+
+    @property
+    def is_real(self):
+        return self._args.is_real
+
     def eval(self):
         if isinstance(self._args, Number) and self._args < 0:
             return -tan(-self._args)
@@ -346,7 +362,7 @@ class tan(Function):
             """
             from sympy import Add,Mul,Pow
             if isinstance(den, Mul):
-                a,b = den.getab() 
+                a,b = den.getab()
                 if isinstance(a, Pow) and a.exp == -1:
                     a,b = b,a
                 if isinstance(b, Pow) and b.exp == -1:
@@ -360,7 +376,7 @@ class tan(Function):
                     else:
                         num *= b
             return num.expand() / den.expand()
-        
+
         if isinstance(self._args, Add):
             left = self._args[0]
             right = self._args[1:]

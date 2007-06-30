@@ -181,6 +181,10 @@ class exp(Function):
     def is_bounded(self):
         return False
 
+    @property
+    def is_real(self):
+        return self._args.is_real
+
 class log(Function):
     """Return the natural logarithm (base e) of x
     """
@@ -249,6 +253,10 @@ class log(Function):
     @property
     def is_bounded(self):
         return False
+
+    @property
+    def is_real(self):
+        return self._args.is_real
 
 ln = log
 

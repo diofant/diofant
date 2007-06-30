@@ -109,7 +109,7 @@ class Basic(object):
         self._args = []
 
         self._assumptions = {        ## Objects that overrides the defaults:
-            'is_real'        : None, # Symbol
+            'is_real'        : None, # Rational, Symbol, Pair, Pow, exp, log, sin, cos, tan
             'is_integer'     : None, # Rational, Pair, Pow
             'is_negative'    : None, # Rational, Add, Mul, Pow
             'is_positive'    : None, # Rational, Add, Mul, Pow
@@ -117,7 +117,7 @@ class Basic(object):
             'is_nonpositive' : None, # Rational, Add, Mul, Pow
             'is_nonzero'     : None, # Rational
             'is_commutative' : None, # Symbol, Number, Pair, Pow
-            'is_bounded'     : None, # sin, cos, exp, log, Pair, Pow
+            'is_bounded'     : None, # Pair, Pow, sin, cos, exp, log, tan
             'is_dummy'       : None, # Symbol
             'is_prime'       : None, # Rational
             'is_odd'         : None, # Rational, Add, Mul, Pow
@@ -129,19 +129,23 @@ class Basic(object):
 
             'is_negative'    : lambda x: { 'is_positive'    : (not x) and None,
                                            'is_nonnegative' : not x,
-                                           'is_nonpositive' : x or None },
+                                           'is_nonpositive' : x or None,
+                                           'is_real'        : x or None },
 
             'is_positive'    : lambda x: { 'is_negative'    : (not x) and None,
                                            'is_nonpositive' : not x,
-                                           'is_nonnegative' : x or None },
+                                           'is_nonnegative' : x or None,
+                                           'is_real'        : x or None },
 
             'is_nonnegative' : lambda x: { 'is_negative'    : not x,
                                            'is_positive'    : x and None,
-                                           'is_nonpositive' : (not x) or None },
+                                           'is_nonpositive' : (not x) or None,
+                                           'is_real'        : x or None },
 
             'is_nonpositive' : lambda x: { 'is_positive'    : not x,
                                            'is_negative'    : x and None,
-                                           'is_nonnegative' : (not x) or None },
+                                           'is_nonnegative' : (not x) or None,
+                                           'is_real'        : x or None },
 
             'is_odd'         : lambda x: { 'is_integer'     : x or None,
                                            'is_real'        : x or None,
