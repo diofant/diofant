@@ -76,7 +76,7 @@ def test_Rational_assumptions():
     e = Rational(79)
 
     assert a.is_zero == True
-    assert a.is_unit == False
+    assert a.is_one == False
     assert a.is_integer == True
     assert a.is_nonnegative == True
     assert a.is_nonpositive == True
@@ -85,7 +85,7 @@ def test_Rational_assumptions():
     assert a.is_nonzero == False
 
     assert b.is_zero == False
-    assert b.is_unit == True
+    assert b.is_one == True
     assert b.is_integer == True
     assert b.is_nonnegative == True
     assert b.is_nonpositive == False
@@ -109,6 +109,8 @@ def test_Rational_assumptions():
 
     assert e.is_prime == True
     assert d.is_prime == False
+
+    assert a.is_bounded == True
 
 def test_Real():
     a = g.Real(2) ** g.Real(3)

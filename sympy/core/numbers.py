@@ -391,21 +391,9 @@ class Rational(Number):
         from power import Pow
         return Pow(a, self)
 
-
     def __int__(self):
         assert self.is_integer
         return self.p
-
-    ###
-    def iszero(self):
-        return self.p == 0
-
-    def isone(self):
-        return self.p == 1 and self.q == 1
-
-    def isminusone(self):
-        return self.p == -1 and self.q == 1
-    ###
 
     def evalf(self):
         return decimal.Decimal(self.p)/self.q
@@ -447,8 +435,16 @@ class Rational(Number):
         return self.p == 0
 
     @property
-    def is_unit(self):
+    def is_one(self):
         return self.p == 1 and self.q == 1
+
+    @property
+    def is_minus_one(self):
+        return self.p == -1 and self.q == 1
+
+    @property
+    def is_bounded(self):
+        return True
 
     @property
     def is_odd(self):

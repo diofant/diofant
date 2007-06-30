@@ -173,7 +173,7 @@ class Pow(Basic):
         if isinstance(self.exp, Rational):
             if self.exp.is_zero:
                 return Rational(1)
-            elif self.exp.is_unit:
+            elif self.exp.is_one:
                 return self.base
 
         if isinstance(self.base, Rational):
@@ -185,7 +185,7 @@ class Pow(Basic):
                         raise pole_error("%s: Division by 0." % str(self))
 
                 return Rational(0)
-            elif self.base.is_unit:
+            elif self.base.is_one:
                 return Rational(1)
             elif self.base.is_nonpositive and self.exp.is_even:
                 return Pow(abs(self.base), self.exp)
@@ -291,7 +291,7 @@ class Pow(Basic):
             try:
                 return Basic.series(self,sym,n)
             except pole_error:
-                if isinstance(self.exp,Rational) and self.exp.isminusone():
+                if isinstance(self.exp,Rational) and self.exp.is_minus_one:
                     g = self.base.series(sym,n)
                     if isinstance(g, Add):
                         g = g.removeO()
@@ -468,6 +468,10 @@ class Pow(Basic):
             return self.exp.is_nonnegative
         else:
             return None
+
+    @property
+    def is_bounded(self):
+        return self.base.is_bounded and self.exp.is_bounded and self.exp.is_nonnegative
 
     @property
     def is_even(self):

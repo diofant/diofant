@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 
 import sympy as g
-from sympy import Symbol, exp, O, sqrt, Rational
+from sympy import Symbol, sin, cos, exp, O, sqrt, Rational
 
 def test_Symbol():
     a=g.Symbol("a")
@@ -255,6 +255,19 @@ def test_Add_Mul_is_integer():
     assert (k+x).is_integer == None
     assert (k+n*x).is_integer == None
     assert (k+n/3).is_integer == False
+
+def test_Add_Mul_is_bounded():
+    x = Symbol('x')
+
+    assert sin(x).is_bounded == True
+    assert (x*sin(x)).is_bounded == None
+    assert (1024*sin(x)).is_bounded == True
+    assert (sin(x)*exp(x)).is_bounded == False
+    assert (sin(x)*cos(x)).is_bounded == True
+    assert (x*sin(x)*exp(x)).is_bounded == False
+
+    assert (sin(x)-67).is_bounded == True
+    assert (sin(x)+exp(x)).is_bounded == False
 
 def test_Mul_is_even_odd():
     x = Symbol('x', integer=True)
@@ -727,6 +740,18 @@ def test_Pow_is_integer():
 
     assert (k**(n*m)).is_integer == True
     assert (k**(-n*m)).is_integer == None
+
+def test_Pow_is_integer():
+    x = Symbol('x')
+
+    assert (x**2).is_bounded == None
+
+    assert (sin(x)**2).is_bounded == True
+    assert (sin(x)**x).is_bounded == None
+    assert (sin(x)**exp(x)).is_bounded == False
+
+    assert (1/sin(x)).is_bounded == False
+    assert (1/exp(x)).is_bounded == False
 
 def test_Pow_is_even_odd():
     x = Symbol('x')

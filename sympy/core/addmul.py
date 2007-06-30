@@ -156,6 +156,43 @@ class Pair(Basic):
 
         return memo
 
+    @property
+    def is_bounded(self):
+        """Product or summation is bounded iff all its components
+           are bounded. If there is at least one unbounded object
+           this query will return False and None in other cases.
+
+           >>> from sympy import *
+           >>> x = Symbol('x')
+
+           >>> 2*sin(x).is_bounded
+           True
+           >>> 2+sin(x).is_bounded
+           True
+
+           >>> sin(x)*exp(x).is_bounded
+           False
+
+           >>> x*sin(x).is_bounded is None
+           True
+
+        """
+        has_unknown = False
+        has_unbounded = False
+
+        for term in self:
+            result = term.is_bounded
+
+            if result is None:
+                has_unknown = True
+            elif result == False:
+                has_unbounded = True
+
+        if has_unknown:
+            return (not has_unbounded) and None
+        else:
+            return not has_unbounded
+
     def match(self, pattern, syms=None, exclude = "None"):
         """
         Imagine that we are matching (3*x**2).match(a*x,[a])
@@ -259,10 +296,10 @@ class Mul(Pair):
         f = ""
         a = self._args
         if isinstance(a[0],Rational):
-            if a[0].isminusone():
+            if a[0].is_minus_one:
                 f = "-"
                 a = self._args[1:]
-            elif a[0].isone():
+            elif a[0].is_one:
                 f = ""
                 a = self._args[1:]
 
@@ -303,10 +340,10 @@ class Mul(Pair):
         f = []
         a = self._args
         if isinstance(a[0],Rational):
-            if a[0].isminusone():
+            if a[0].is_minus_one:
                 f = ["-"]
                 a = self._args[1:]
-            elif a[0].isone():
+            elif a[0].is_one:
                 f = []
                 a = self._args[1:]
         multsymb = "\cdot"

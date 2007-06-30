@@ -117,7 +117,7 @@ class Basic(object):
             'is_nonpositive' : None, # Rational, Add, Mul, Pow
             'is_nonzero'     : None, # Rational
             'is_commutative' : None, # Symbol, Number, Pair, Pow
-            'is_bounded'     : None, # sin, cos
+            'is_bounded'     : None, # sin, cos, exp, log, Pair, Pow
             'is_dummy'       : None, # Symbol
             'is_prime'       : None, # Rational
             'is_odd'         : None, # Rational, Add, Mul, Pow
@@ -205,7 +205,11 @@ class Basic(object):
         return None
 
     @property
-    def is_unit(self):
+    def is_one(self):
+        return None
+
+    @property
+    def is_minus_one(self):
         return None
 
     @property

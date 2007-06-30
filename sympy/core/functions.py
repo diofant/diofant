@@ -1,5 +1,5 @@
 """This module provides an abstract class Function, as well as some mathematical
-functions that use Function as its base class. 
+functions that use Function as its base class.
 """
 
 from sympy.core.basic import Basic
@@ -10,10 +10,10 @@ import math
 from sympy.core.stringPict import stringPict, prettyForm
 
 class Function(Basic):
-    """Abstract class representing a mathematical function. 
+    """Abstract class representing a mathematical function.
     It is the base class for common fuctions such as exp, log, sin, tan, etc.
     """
-    
+
     def __init__(self, arg):
         Basic.__init__(self, is_commutative=True)
         self._args = self.sympify(arg)
@@ -29,24 +29,24 @@ class Function(Basic):
 
     def getname(self):
         return self.__class__.__name__
-        
+
     def __getitem__(self, iter):
         return (self._args,)[iter]
         # do this to force extra nesting and so [:] is coherent across sympy
-    
+
     def diff(self, sym):
         return (self.derivative()*self._args.diff(sym))
-    
+
     def derivative(self):
         return Derivative(self,self._args)
-    
+
     def subs(self, old, new):
         e = Basic.subs(self,old,new)
         if e == self:
             return (type(self)(self._args.subs(old,new)))
         else:
             return e
-        
+
     def __str__(self):
         f = "%s(%s)"
         return f % (self.getname(),str(self._args))
@@ -66,7 +66,7 @@ class Function(Basic):
         s = Symbol(self.getname()).__latex__()
         s += r"\left(%s\right)" % self._args.__latex__()
         return s
-        
+
     def series(self, sym, n=6):
         from power import pole_error
         from symbol import Symbol, O
@@ -100,18 +100,18 @@ class Function(Basic):
         if isinstance(e,Add) and e.has(O(sym)):
             return e
         return e.expand().series(sym,n)
-    
+
     def evalf(self, precision=28):
         """
         Evaluate the current function to a real number.
-        
-        @param precision: the precision used in the calculations, 
+
+        @param precision: the precision used in the calculations,
         @type precision: C{int}
         @return: Real number
-        
+
         """
         raise NotImplementedError
-    
+
     def __pretty__(self):
         """
         Function application.
@@ -122,11 +122,11 @@ class Function(Basic):
 
 class exp(Function):
     """Return e raised to the power of x
-    """ 
-    
+    """
+
     def __pretty__(self):
         return prettyForm('e', binding=prettyForm.ATOM)**self._args.__pretty__()
-    
+
     def __latex__(self):
         return "{e}^{%s}" % self[0].__latex__()
 
@@ -135,7 +135,7 @@ class exp(Function):
 
     def combine(self):
         return exp(self[0].combine())
-        
+
     def expand(self):
         from addmul import Add
         a = self[0].expand()
@@ -145,10 +145,10 @@ class exp(Function):
                 r*=exp(x)
             return r
         return exp(a)
-        
+
     def eval(self):
         arg = self._args
-        if isinstance(arg,Rational) and arg.iszero():
+        if isinstance(arg,Rational) and arg.is_zero:
             return Rational(1)
         if isinstance(arg,log):
             return arg._args
@@ -161,34 +161,38 @@ class exp(Function):
         from sympy import cos,sin
         x,y = self._args.get_re_im()
         return exp(x)*cos(y)+I*exp(x)*sin(y)
-    
+
     def evalf(self, precision=28):
         if not self._args.is_number:
-            raise ValueError 
+            raise ValueError
         x = Real(self._args) # argument to decimal (full precision)
         decimal.getcontext().prec = precision + 2
         i, lasts, s, fact, num = 0, 0, 1, 1, 1
         while s != lasts:
-            lasts = s    
+            lasts = s
             i += 1
             fact *= i
-            num *= x     
-            s += num / fact   
-        decimal.getcontext().prec = precision - 2        
+            num *= x
+            s += num / fact
+        decimal.getcontext().prec = precision - 2
         return +s
+
+    @property
+    def is_bounded(self):
+        return False
 
 class log(Function):
     """Return the natural logarithm (base e) of x
     """
-    
+
     def derivative(self):
         return Rational(1)/self._args
-        
+
     def eval(self):
         from addmul import Mul
         from power import Pow
         arg = self._args
-        if isinstance(arg,Rational) and arg.isone():
+        if isinstance(arg,Rational) and arg.is_one:
             return Rational(0)
         elif isinstance(arg,exp):
             return arg._args
@@ -210,12 +214,12 @@ class log(Function):
             return arg.exp * log(arg.base).expand()
         else:
             return self
-        
+
     def evalf(self):
         #TODO: add precision
         import math
         return Real(math.log(self._args.evalf()) )
-        
+
     def series(self,sym,n):
         from numbers import Rational
         from power import pole_error
@@ -240,23 +244,27 @@ class log(Function):
         e=log(c0)+e0*log(w)
         for i in range(1,n+1):
             e+=(-1)**(i+1) * Phi**i /i
-        return e 
+        return e
+
+    @property
+    def is_bounded(self):
+        return False
 
 ln = log
-    
+
 class abs_(Function):
     """Return the absolute value of x"""
-    
+
     mathml_tag = "abs"
-   
+
     def getname(self):
         return "abs"
- 
+
     def eval(self):
         from addmul import Mul,Add
         from symbol import Symbol
         from numbers import I
-        
+
         arg = self._args
         if arg.is_number or (isinstance(arg, Symbol) and arg.is_real):
             if isinstance(arg, Rational):
@@ -272,37 +280,37 @@ class abs_(Function):
         match = arg.match(a+I*b, [a,b])
         if  (match is not None) and match[a].is_real and match[b].is_real:
             return (arg*arg.conjugate()).expand()**Rational(1,2)
-                            
+
         return self
-        
+
     def evalf(self):
         if self._args.is_number:
             return self.eval()
         else:
             raise ValueError
-        
+
     def derivative(self):
         return sign(self._args)
-    
+
     def series(self):
         pass
-    
+
     def x__eq__(self, a):
         #FIXME: currently this does not work
         # here we are checking for function equality, like in
         # abs(x) == abs(-x)
-        if isinstance(a, abs_): 
+        if isinstance(a, abs_):
             if a._args**2 == self._args**2:
                 return true
             else:
                 return False
         raise ArgumentError("Wrong function arguments")
-    
+
 def sqrt(x):
     return x**(Rational(1,2))
-    
+
 class sign(Function):
-    
+
     def eval(self):
         if self._args.is_number:
             if self._args < 0:
@@ -312,18 +320,18 @@ class sign(Function):
             else:
                 return Rational(1)
         return self
-            
+
     def evalf(self, precision=28):
         if self._args.is_number:
             return self.eval()
         else:
             raise ArgumentError
-        
+
     def derivative(self):
         return Rational(0)
 
 class Derivative(Basic):
-    
+
     mathml_tag = 'diff'
 
     def __init__(self,f,x):
@@ -332,7 +340,7 @@ class Derivative(Basic):
         self.x = self.sympify(x)
         self._args = (self.f, self.x)
         #i.e. self[:] = (f, x), which means self = f'(x)
-        
+
     def __pretty__(self):
          f, x = [a.__pretty__() for a in (self.f, self.x)]
          a = prettyForm('d')
@@ -340,7 +348,7 @@ class Derivative(Basic):
          a.baseline = a.baseline + 1
          a = prettyForm(binding=prettyForm.FUNC, *stringPict.next(a, f))
          return a
-     
+
     def __mathml__(self):
         if self._mathml:
             return self._mathml
@@ -348,9 +356,9 @@ class Derivative(Basic):
         dom = xml.dom.minidom.Document()
         x = dom.createElement("apply")
         x.appendChild(dom.createElement(self.mathml_tag))
-        
+
         x_1 = dom.createElement('bvar')
-        
+
         x.appendChild(x_1)
         x.appendChild( self.f.__mathml__() )
         x.childNodes[1].appendChild( self.x.__mathml__() )
@@ -418,10 +426,10 @@ class Derivative(Basic):
 
 def diff(f, x, times = 1, evaluate=True):
     """Derivate f with respect to x
-    
-    It's just a wrapper to unify .diff() and the Derivative class, 
+
+    It's just a wrapper to unify .diff() and the Derivative class,
     it's interface is similar to that of integrate()
-    
+
     see http://documents.wolfram.com/v5/Built-inFunctions/AlgebraicComputation/Calculus/D.html
     """
     f = Basic.sympify(f)
