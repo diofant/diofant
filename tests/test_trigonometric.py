@@ -98,3 +98,24 @@ def test_tan():
 
     assert tan(2*x).expand() == 2*tan(x) / (1 - tan(x)**2)
     assert tan(-3*x).expand() == -((3*tan(x) - tan(x)**3) / (1 - 3*tan(x)**2))
+
+def test_tan_cst():
+    assert tan(0)       == 0
+    assert tan(pi/4)    == 1
+#   assert tan(pi/2)    == oo
+
+
+def test_asin():
+    assert asin(0)      == 0
+    assert asin(-1)     == -pi/2
+
+def test_acos():
+    assert acos(0)      == pi/2
+    assert acos(1)      == 0
+    assert acos(-1)     == pi
+
+def test_atan():
+    assert atan(1)      == pi/4
+    assert atan(oo)     == pi/2
+    #assert atan(-oo)    == -pi/2   XXX infinite recursion
+    assert atan(-sqrt(3))== - pi/3

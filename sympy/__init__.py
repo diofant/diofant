@@ -67,7 +67,7 @@ from sympy.core.addmul import Add, Mul
 from sympy.core.hashing import mhash
 
 from sympy.modules.limits import limit
-from sympy.modules.trigonometric import sin, cos, tan, sec, csc, cot, atan, asin
+from sympy.modules.trigonometric import sin, cos, tan, sec, csc, cot, atan, asin, acos
 from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
