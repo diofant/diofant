@@ -113,11 +113,15 @@ def test_Rational_assumptions():
     assert a.is_bounded == True
 
 def test_Real():
+    def eq(a, b):
+        t = Real("1.0E-15")
+        return (-t < a-b < t)
+
     a = g.Real(2) ** g.Real(3)
-    assert a.evalf() == 8.0
-    assert abs((g.pi ** -1).evalf() - 0.318309886184) < 0.0000001
+    assert a.evalf() == g.Real(8)
+    assert eq((g.pi ** -1).evalf(), Real("0.31830988618379067"))
     a = g.Real(2) ** g.Real(4)
-    assert a.evalf() == g.Real(16.0)
+    assert a.evalf() == g.Real(16)
 
 
 def test_Real_eval():
