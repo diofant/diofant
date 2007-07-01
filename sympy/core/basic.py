@@ -449,7 +449,7 @@ class Basic(object):
         """
         return self
 
-    def evalf(self):
+    def evalf(self, precision=18):
         raise ValueError
 
     def evalc(self):

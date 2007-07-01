@@ -101,7 +101,7 @@ class Function(Basic):
             return e
         return e.expand().series(sym,n)
 
-    def evalf(self, precision=28):
+    def evalf(self, precision=18):
         """
         Evaluate the current function to a real number.
 
@@ -162,20 +162,26 @@ class exp(Function):
         x,y = self._args.get_re_im()
         return exp(x)*cos(y)+I*exp(x)*sin(y)
 
-    def evalf(self, precision=28):
+    def evalf(self, precision=18):
         if not self._args.is_number:
             raise ValueError
-        x = Real(self._args) # argument to decimal (full precision)
+
+        if precision <= 18:
+            return Real(math.exp(self._args.evalf()))
+
         decimal.getcontext().prec = precision + 2
-        i, lasts, s, fact, num = 0, 0, 1, 1, 1
+
+        x = Real(self._args, precision+2) # argument to decimal (full precision)
+        i, lasts, s, fact, num = 0, 0, Real(1), Real(1), Real(1)
         while s != lasts:
             lasts = s
             i += 1
             fact *= i
             num *= x
             s += num / fact
-        decimal.getcontext().prec = precision - 2
-        return +s
+
+        decimal.getcontext().prec = precision
+        return Real(+s)
 
     @property
     def is_bounded(self):
@@ -219,10 +225,31 @@ class log(Function):
         else:
             return self
 
-    def evalf(self):
-        #TODO: add precision
-        import math
-        return Real(math.log(self._args.evalf()) )
+    def evalf(self, precision=18):
+        # TODO Get a series that converges much faster in different cases:
+        #       - argument close to 0
+        #       - argument large (greater than 100; higher precision even worse)
+        if not self._args.is_number or not self._args > 0:
+            raise ValueError
+        if precision <= 18 or self._args < 0.1:
+            # XXX the series below converges too slowly for x close to 0 so
+            #     accept the case of x < 0.1 in here for now
+            return Real(math.log(self._args.evalf()))
+
+        decimal.getcontext().prec = precision + 2
+
+        x = Real(self._args, precision+2)
+        x = 1 - Real(2) / (x+1)
+        i, lasts, s, num = Real(1), 0, x, x
+        while s != lasts:
+            lasts = s
+            i += 2
+            num *= x*x
+            s += num / i
+        s = 2*s
+
+        decimal.getcontext().prec = precision
+        return Real(+s)
 
     def series(self,sym,n):
         from numbers import Rational
@@ -291,7 +318,7 @@ class abs_(Function):
 
         return self
 
-    def evalf(self):
+    def evalf(self, precision=18):
         if self._args.is_number:
             return self.eval()
         else:
@@ -329,7 +356,7 @@ class sign(Function):
                 return Rational(1)
         return self
 
-    def evalf(self, precision=28):
+    def evalf(self, precision=18):
         if self._args.is_number:
             return self.eval()
         else:

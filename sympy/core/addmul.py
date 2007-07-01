@@ -526,10 +526,10 @@ class Mul(Pair):
         else:
             return Rational(1)
 
-    def evalf(self):
+    def evalf(self, precision=18):
         a, b = self.getab()
         if a.is_number and b.is_number:
-            return Real(a)*Real(b)
+            return a.evalf(precision)*b.evalf(precision)
         else:
             raise ValueError("Cannot evaluate a symbolic value")
 
@@ -1057,10 +1057,10 @@ class Add(Pair):
         else:
             return Rational(0)
 
-    def evalf(self):
+    def evalf(self, precision=18):
         a,b = self.getab()
         if hasattr(a, 'evalf') and hasattr(b, 'evalf'):
-            return a.evalf() + b.evalf()
+            return a.evalf(precision) + b.evalf(precision)
         else:
             raise ValueError('Can not evaluate a symbolic value')
 

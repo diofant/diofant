@@ -115,9 +115,11 @@ class sin(Function):
         if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
         if precision <= 18:
-            return math.sin(self._args)
+            return Real(math.sin(self._args))
+
         decimal.getcontext().prec = precision + 2
-        x = Real(self._args)
+
+        x = Real(self._args, precision+2)
         i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
         while s != lasts:
             lasts = s
@@ -126,8 +128,9 @@ class sin(Function):
             num *= x * x
             sign *= -1
             s += num / fact * sign
-        decimal.getcontext().prec = precision - 2
-        return s
+
+        decimal.getcontext().prec = precision
+        return Real(+s)
 
     def evalc(self):
         x, y = self._args.get_re_im()
@@ -253,10 +256,12 @@ class cos(Function):
         if not self._args.is_number:
             raise ValueError("Argument can't be a symbolic value")
         if precision <= 18:
-            return math.cos(self._args)
+            return Real(math.cos(self._args))
+
         decimal.getcontext().prec = precision + 2
-        x = Real(self._args)
-        i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
+
+        x = Real(self._args, precision+2)
+        i, lasts, s, fact, num, sign = 0, 0, Real(1), Real(1), Real(1), Real(1)
         while s != lasts:
             lasts = s
             i += 2
@@ -264,8 +269,9 @@ class cos(Function):
             num *= x * x
             sign *= -1
             s += num / fact * sign
-        decimal.getcontext().prec = precision - 2
-        return s
+
+        decimal.getcontext().prec = precision
+        return Real(+s)
 
     def evalc(self):
         x, y = self._args.get_re_im()
@@ -357,8 +363,8 @@ class tan(Function):
                 return -tan(-self._args)
         return self
 
-    def evalf(self):
-        return sin(self._args).evalf() / cos(self._args).evalf()
+    def evalf(self, precision=18):
+        return sin(self._args).evalf(precision) / cos(self._args).evalf(precision)
 
     def expand(self):
         def expand_fraction(num, den):
@@ -432,6 +438,32 @@ class asin(Function):
     def derivative(self):
         return sqrt(1-self._args**2)**(-1)
 
+    def evalf(self, precision=18):
+        if not self._args.is_number:
+            raise ValueError("Argument can't be a symbolic value")
+        if self._args > 1 or self._args < -1:
+            raise ValueError("Argument has to be in the interval [-1, 1]")
+        if self._args == 1:
+            return pi.evalf(precision)/2
+        if self._args == -1:
+            return -pi.evalf(precision)/2
+        if precision <= 18:
+            return Real(math.asin(self._args))
+
+        decimal.getcontext().prec = precision + 2
+
+        x = Real(self._args, precision)
+        i, lasts, s, fact_num, fact_den, num = 0, 0, x, Real(1), Real(1), x
+        while s != lasts:
+            lasts = s
+            i += 2
+            fact_num *= i-1
+            fact_den *= i
+            num *= x*x
+            s += (num * fact_num) / (fact_den * (i+1))
+
+        decimal.getcontext().prec = precision
+        return Real(+s)
 
     def eval(self):
         # FIXME move to class level.
@@ -454,10 +486,18 @@ class asin(Function):
             return self
 
 class acos(Function):
-    """Return the arc sine of x (measured in radians)"""
+    """Return the arc cosine of x (measured in radians)"""
 
     def derivative(self):
         return - sqrt(1-self._args**2)**(-1)
+
+    def evalf(self, precision=18):
+        decimal.getcontext().prec = precision + 2
+        a = pi.evalf(precision+2)/2
+        b = asin(self._args).evalf(precision+2)
+        ret = a-b
+        decimal.getcontext().prec = precision
+        return Real(+ret)
 
     def eval(self):
         # FIXME move to class level.
@@ -469,8 +509,6 @@ class acos(Function):
             Rational(1,2):          pi/3,
             Rational(0):            pi/2
         }
-
-        print 'acos: ', self._args
 
         # acos(-x) = pi - acos(x)
         if self._args.is_number and self._args < 0:
@@ -515,3 +553,28 @@ class atan(Function):
             return cst_table[ self._args ]
         except KeyError:
             return self
+
+    def evalf(self, precision=18):
+        # TODO Speed up since large arguments converge slowly
+        if not self._args.is_number:
+            raise ValueError("Argument can't be a symbolic value")
+        if precision <= 18:
+            return Real(math.atan(self._args))
+
+        decimal.getcontext().prec = precision + 2
+
+        x = Real(self._args, precision+2)
+        xp = 1 - Real(1) / (x*x + 1)
+        i, lasts, s, fact_num, fact_den, num = 0, 0, Real(1), Real(1), Real(1), Real(1)
+        b = Real(1)
+        while s != lasts:
+            lasts = s
+            i += 2
+            fact_num *= i
+            fact_den *= i+1
+            num *= xp
+            s += (num * fact_num) / fact_den
+        s = (x / (1 + x*x))*s
+
+        decimal.getcontext().prec = precision
+        return +s

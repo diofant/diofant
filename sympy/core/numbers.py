@@ -45,7 +45,7 @@ class Number(Basic):
     def diff(self,sym):
         return Rational(0)
 
-    def evalf(self):
+    def evalf(self, precision=18):
         raise NotImplementedError("cannot evaluate %s" % self.__class__.__name__)
 
     def evalc(self):
@@ -103,7 +103,7 @@ class Infinity(Number):
     def __gt__(self, num):
         return not self.__lt__(num)
 
-    def evalf(self):
+    def evalf(self, precision=18):
         return self
 
     @staticmethod
@@ -146,7 +146,7 @@ class Real(Number):
     """
 
 
-    def __init__(self,num):
+    def __init__(self, num, precision=18):
         Basic.__init__(self,
                         is_real = True,
                         is_commutative = True,
@@ -155,8 +155,10 @@ class Real(Number):
             num = decimal.Decimal(num)
         if isinstance(num, decimal.Decimal):
             self.num = num
-        elif isinstance(num, Real):
-            self.num = num.evalf()
+        elif hasattr(num, 'evalf'):
+            self.num = num.evalf(precision)
+            if not isinstance(self.num, decimal.Decimal):
+                self.num = decimal.Decimal(str(self.num))
         else:
             self.num = decimal.Decimal(str(float(num)))
         self._args = [self.num]
@@ -168,7 +170,7 @@ class Real(Number):
         return float(self.num)
 
     def __int__(self):
-        return int(self.evalf())
+        return int(self.num)
 
     def __add__(self,a):
         from addmul import Add
@@ -188,7 +190,9 @@ class Real(Number):
         from addmul import Mul
         a = Basic.sympify(a)
         if a.is_number:
-            if a.is_real:
+            if isinstance(a, Real):
+                return Real(self.num * a.num)
+            elif a.is_real:
                 return Real(self.num * decimal.Decimal(str(float(a))))
                 #FIXME: too many boxing-unboxing
             else:
@@ -196,6 +200,22 @@ class Real(Number):
         else:
             assert isinstance(a, Basic)
             return Mul(self, a)
+
+    def __div__(self,a):
+        from addmul import Mul
+        from power import Pow
+        a = Basic.sympify(a)
+        if a.is_number:
+            if isinstance(a, Real):
+                return Real(self.num / a.num)
+            elif a.is_real:
+                return Real(self.num / decimal.Decimal(str(float(a))))
+                #FIXME: too many boxing-unboxing
+            else:
+                return Mul(self, Pow(a, -1))
+        else:
+            assert isinstance(a, Basic)
+            return Mul(self, Pow(a, -1))
 
     def __pow__(self,a):
         from power import Pow
@@ -215,19 +235,52 @@ class Real(Number):
     def is_integer(self):
         return int(self) - self.evalf() == 0
 
-    def evalf(self):
+    def evalf(self, precision=18):
         #evalf() should return either a float or an exception
-        return self.num
+        return self
 
     def __pretty__(self):
         return str(self.num)
+
+    def __pos__(self):
+        return Real(+self.num)
+
+    def __gt__(self, a):
+        try:
+            return self.num > decimal.Decimal(str(a))
+        except:
+            return False
+
+    def __ge__(self, a):
+        try:
+            return self.num >= decimal.Decimal(str(a))
+        except:
+            return False
+
+    def __lt__(self, a):
+        try:
+            return self.num < decimal.Decimal(str(a))
+        except:
+            return False
+
+    def __le__(self, a):
+        try:
+            return self.num <= decimal.Decimal(str(a))
+        except:
+            return False
+
+    def __ne__(self, a):
+        try:
+            return self.num != decimal.Decimal(str(a))
+        except:
+            return False
 
     def __eq__(self, a):
         """this is overriden because by default, a python int get's converted
         to a Rational, so things like Real(1) == 1, would return false
         """
         try:
-            return decimal.Decimal(str(a)) == self.num
+            return self.num == decimal.Decimal(str(a))
         except:
             return False
 
@@ -391,8 +444,10 @@ class Rational(Number):
         assert self.is_integer
         return self.p
 
-    def evalf(self):
-        return decimal.Decimal(self.p)/self.q
+    def evalf(self, precision=18):
+        decimal.localcontext().prec = precision
+        ret = decimal.Decimal(self.p)/self.q
+        return Real(+ret)
 
     def diff(self,sym):
         return Rational(0)
@@ -532,17 +587,17 @@ class ImaginaryUnit(Constant):
     def __latex__(self):
         return "\mathrm{i}"
 
-    def evalf(self):
+    def evalf(self, precision=18):
         """Evaluate to a float. By convention, will return 0,
         which means that evalf() of a complex number will mean
         the projection of the complex plane to the real line.
         For example:
         >>> (1-2*I).evalf()
-        1.00
+        1.0
         >>> (-2+1*I).evalf()
         -2.0
         """
-        return Rational(0)
+        return Real(0)
 
     def evalc(self):
         return self
@@ -621,8 +676,7 @@ class ConstPi(Constant):
 
         r = 1 / (12 * r)
 
-        decimal.getcontext().prec -= 14
-
+        decimal.getcontext().prec = precision
         return Real(+r)
 
     def __str__(self):

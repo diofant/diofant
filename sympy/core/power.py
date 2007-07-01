@@ -272,10 +272,20 @@ class Pow(Basic):
         return self
 
 
-    def evalf(self):
+    def evalf(self, precision=18):
         if self.base.is_number and self.exp.is_number:
-            return Real(float(self.base)**float(self.exp))
-            #FIXME: we need a way of raising a decimal to the power of a decimal (it doesen't work if self.exp is not an integer
+            if self.exp.is_integer:
+                import decimal
+                decimal.getcontext().prec = precision + 2
+
+                s = decimal.Decimal(str(self.base.evalf(precision)))
+                s = s ** int(self.exp)
+
+                decimal.getcontext().prec = precision
+                return Real(+s)
+            if precision <= 18:
+                return Real(float(self.base) ** float(self.exp))
+            return exp(self.exp * log(self.base)).evalf(precision)
         else:
             raise ValueError
 
