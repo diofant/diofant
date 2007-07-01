@@ -30,10 +30,6 @@ class Number(Basic):
     def __float__(self):
         return float(self.evalf())
 
-    def __abs__(self):
-        from functions import abs_
-        return abs_(self)
-
     def __mathml__(self):
         import xml.dom.minidom
         if self._mathml:

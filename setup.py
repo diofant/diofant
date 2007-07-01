@@ -213,6 +213,7 @@ setup(
       name = 'sympy', 
       version = sympy.__version__, 
       description = 'Computer algebra system (CAS) in Python', 
+      license = 'BSD',
       url = 'http://code.google.com/p/sympy', 
       packages = ['sympy', 
                     'sympy.core', 'sympy.modules',
