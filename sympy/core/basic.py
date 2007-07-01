@@ -486,7 +486,7 @@ class Basic(object):
 
             If the argument is already a type that sympy understands, it will do
             nothing but return that value - this can be used at the begining of a
-            method to ensure you are workint with the corerct type.
+            method to ensure you are working with the correct type.
 
         Examples
         ========

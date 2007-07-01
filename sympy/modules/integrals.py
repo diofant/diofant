@@ -9,7 +9,7 @@ class Integral(Basic):
     """
     Definite integral.
 
-    Integral(f, (x,a,b) represents \int_a^b f(x) dx
+    Integral(f, (x,a,b)) represents \int_a^b f(x) dx
 
     Usage
     =====
