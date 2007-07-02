@@ -249,8 +249,9 @@ class Pow(Basic):
         if isinstance(self.exp,Rational) and self.exp.is_integer:
             if isinstance(self.base,Mul):
                 if int(self.exp) % 2 == 0:
+                    from functions import Function
                     n = self.base[0]
-                    if n.is_number and n < 0:
+                    if n.is_number and not isinstance(n, Function) and n < 0:
                         return (-self.base)**self.exp
 
         if isinstance(self[0],Real) and self[1].is_number:
