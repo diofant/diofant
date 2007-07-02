@@ -92,5 +92,4 @@ Please see source of plotting.py.
     print "Now building model and opening plot window..."
 
     Plot( x*y**3-y*x**3, x**2+y**2+1, [x, -1, 1, 12], [y, -1, 1, 12], -x, x, [x, -1, 1, 1] )
-    
     #Plot( x**2-y**2, [x, -1, 1, 10], [y, -1, 1, 10] )

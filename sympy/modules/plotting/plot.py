@@ -13,7 +13,7 @@ class Plot(object):
     see examples\plotting.py
     """
 
-    window_title = "Sympy Plot - %s"
+    window_title = "SymPy Plot - %s"
     f_str_list = []
     def __init__(self, *fargs, **kwargs):
         """

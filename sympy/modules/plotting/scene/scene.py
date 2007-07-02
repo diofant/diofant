@@ -7,6 +7,10 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
+ROTATE = 1
+TRANSLATE = 2
+ZOOM = 3
+
 class Renderable(object):
     """
     Base class for objects which can be rendered by a Scene.
@@ -43,6 +47,8 @@ class Scene(object):
         self.yrot = 0.0
         self.xrot = 0.0
 
+        self.mouse_x, self.mouse_y = -1, -1
+        self.mouse_mode = None
 
     """
     Renderable object list accessors
@@ -74,6 +80,8 @@ class Scene(object):
         glutIdleFunc(self._onrender)
         glutReshapeFunc(self._onresize)
         glutKeyboardFunc(self._onkeypress)
+        glutMotionFunc(self._onmousemove)
+        glutMouseFunc(self._onmouseupdown)
         glClearColor(0.0, 0.0, 0.0, 0.0)
         glClearDepth(1.0)
         glDepthFunc(GL_LESS)
@@ -114,7 +122,7 @@ class Scene(object):
         GLUT key press callback
         """
         ESCAPE = '\033'
-        if args[0] == ESCAPE:
+        if args[0] == ESCAPE or args[0] == 'q':
             #glutDestroyWindow(self._window) #doesn't work yet
             sys.exit()
         # zoom in
@@ -148,3 +156,29 @@ class Scene(object):
         glLoadIdentity()
         gluPerspective(45.0, float(self.width)/float(self.height), 0.1, 500.0)
         glMatrixMode(GL_MODELVIEW)
+
+    def _onmousemove(self, x, y):
+        if self.mouse_x > 0 and self.mouse_y > 0:
+            d_x, d_y = (x-self.mouse_x), (y-self.mouse_y)
+            
+            if self.mouse_mode == ROTATE:
+                self.yrot += (d_x/float(self.width))*100
+                self.xrot += (d_y/float(self.height))*100
+            elif self.mouse_mode == ZOOM:
+                self.dist += d_y/30.0
+                
+            self.mouse_x, self.mouse_y = x, y
+            
+
+    def _onmouseupdown(self, button, state, x, y):
+        if state == GLUT_UP:
+            self.mouse_x, self.mouse_y = -1, -1
+            self.mouse_mode = None
+        elif state == GLUT_DOWN:
+            self.mouse_x, self.mouse_y = x, y
+            if button == GLUT_LEFT_BUTTON:
+                self.mouse_mode = ROTATE
+            elif button == GLUT_RIGHT_BUTTON:
+            #    self.mouse_mode = TRANSLATE #coming
+            #elif button == 3:
+                self.mouse_mode = ZOOM
