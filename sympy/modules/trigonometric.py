@@ -492,6 +492,9 @@ class acos(Function):
         return - sqrt(1-self._args**2)**(-1)
 
     def evalf(self, precision=18):
+        if precision <= 18:
+            return Real(math.acos(self._args))
+
         decimal.getcontext().prec = precision + 2
         a = pi.evalf(precision+2)/2
         b = asin(self._args).evalf(precision+2)

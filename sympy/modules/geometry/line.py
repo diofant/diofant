@@ -5,6 +5,7 @@ from point import Point
 
 class LinearEntity(GeometryEntity):
     """A linear entity (line, ray, segment, etc) in space."""
+
     def __init__(self, p1, p2, **kwargs):
         GeometryEntity.__init__(self, [p1, p2], **kwargs)
         if not isinstance(p1, Point) or not isinstance(p2, Point):
@@ -14,14 +15,14 @@ class LinearEntity(GeometryEntity):
         self._p1 = p1
         self._p2 = p2
 
-    def _coeffs(self):
+    @property
+    def coefficients(self):
         """Returns the coefficients (a,b,c) for equation ax+by+c=0"""
         return (self._p1[1]-self._p2[1],
                 self._p2[0]-self._p1[0],
                 self._p1[0]*self._p2[1] - self._p1[1]*self._p2[0])
 
-    @staticmethod
-    def are_concurrent(*args):
+    def is_concurrent(*args):
         """Returns True if the set of lines are concurrent, False otherwise"""
         _args = args
         args = GeometryEntity._normalize_args(args)
@@ -34,7 +35,7 @@ class LinearEntity(GeometryEntity):
         try:
             # Get the intersection (if parallel)
             p = GeometryEntity.do_intersection(args[0], args[1])
-            if p is None: return False
+            if len(p) == 0: return False
 
             # Make sure the intersection is on every line
             for ind in xrange(2, len(args)):
@@ -44,30 +45,30 @@ class LinearEntity(GeometryEntity):
         except AttributeError:
             return False
 
-    @staticmethod
-    def are_parallel(l1, l2):
+    def is_parallel(l1, l2):
         """Returns True if l1 and l2 are parallel, False otherwise"""
         try:
-            a1,b1,c1 = l1._coeffs()
-            a2,b2,c2 = l2._coeffs()
+            a1,b1,c1 = l1.coefficients
+            a2,b2,c2 = l2.coefficients
             return bool(simplify(a1*b2 - b1*a2) == 0)
         except AttributeError:
             return False
 
-    @staticmethod
-    def are_perpendicular(l1, l2):
+    def is_perpendicular(l1, l2):
         """Returns True if l1 and l2 are perpendicular, False otherwise"""
         try:
-            a1,b1,c1 = l1._coeffs()
-            a2,b2,c2 = l2._coeffs()
+            a1,b1,c1 = l1.coefficients
+            a2,b2,c2 = l2.coefficients
             return bool(simplify(a1*a2 + b1*b2) == 0)
         except AttributeError:
             return False
 
-    @staticmethod
-    def angles(l1, l2):
-        """Returns the two angles formed between these lines."""
-        return None
+    def angle_between(l1, l2):
+        """Returns an angle formed between the two lines lines."""
+        from sympy.modules.trigonometric import acos
+        v1 = l1._p2 - l1._p1
+        v2 = l2._p2 - l2._p1
+        return acos( (v1[0]*v2[0]+v1[1]*v2[1]) / (abs(v1)*abs(v2)) )
 
     def parallel_line(self, p):
         """
@@ -100,11 +101,11 @@ class LinearEntity(GeometryEntity):
     def perpendicular_segment(self, p):
         """
         Returns a new Segment which connects p to a point on this line
-        and is also perpendicular to this line. Returns None if p is on
+        and is also perpendicular to this line. Returns p if p is on
         this line.
         """
         if p in self:
-            return None
+            return p
         pl = self.perpendicular_line(p)
         p2 = GeometryEntity.do_intersection(self, pl)[0]
         return Segment(p, p2)
@@ -115,7 +116,7 @@ class LinearEntity(GeometryEntity):
             """Projects a point onto self."""
             if p in self: return p
             l1 = self.perpendicular_line(p)
-            return self.intersection(l1)[0]
+            return self._intersection(l1)[0]
 
         if isinstance(o, Point):
             return project(o)
@@ -146,27 +147,27 @@ class LinearEntity(GeometryEntity):
         """Get the two points used to define this linear entity."""
         return (self._p1, self._p2)
 
-    def intersection(self, o):
+    def _intersection(self, o):
         if isinstance(o, Point):
             if o in self:
                 return [o]
             else:
-                return None
+                return []
         elif isinstance(o, LinearEntity):
-            a1,b1,c1 = self._coeffs()
-            a2,b2,c2 = o._coeffs()
+            a1,b1,c1 = self.coefficients
+            a2,b2,c2 = o.coefficients
             t = simplify(a1*b2 - a2*b1)
             if t == 0: # are parallel?
                 if self == o:
                     return [o]
                 else:
-                    return None
+                    return []
             px = simplify((b1*c2 - c1*b2) / t)
             py = simplify((a2*c1 - a1*c2) / t)
             inter = Point(px, py)
             if inter in self and inter in o:
                 return [inter]
-            return None
+            return []
         else:
             raise NotImplementedError()
 
@@ -201,9 +202,9 @@ class Line(LinearEntity):
         """Returns the equation for this line"""
         x = Symbol(xaxis_name)
         y = Symbol(yaxis_name)
-        a,b,c = self._coeffs()
-        #return simplify(a*x + b*y + c)
-        return a*x + b*y + c
+        a,b,c = self.coefficients
+        return simplify(a*x + b*y + c)
+        #return a*x + b*y + c
 
     def __contains__(self, o):
         if isinstance(o, Line):
@@ -219,7 +220,7 @@ class Line(LinearEntity):
 
     def __eq__(self, o):
         if not isinstance(o, Line): return False
-        return Point.are_collinear(self._p1, self._p2, o._p1, o._p2)
+        return Point.is_collinear(self._p1, self._p2, o._p1, o._p2)
 
 
 class Ray(LinearEntity):
@@ -251,19 +252,14 @@ class Ray(LinearEntity):
             else:
                 upper = self._p1[0]
 
-            a,b,c = self._coeffs()
+            a,b,c = self.coefficients
             x = simplify( randint(lower, upper) )
             y = simplify( (-c - a*x) / b )
         return Point(x, y)
 
-    #def intersection(self, o):
-    #    s = LinearEntity.intersection(self, o)
-    #    if s is None:
-    #        return None
-    #    elif s[0] in self:
-    #        return s
-    #    else:
-    #        return None
+    @property
+    def source(self):
+        return self._p1
 
     def __eq__(self, o):
         if not isinstance(o, Ray):
@@ -277,18 +273,20 @@ class Ray(LinearEntity):
         elif isinstance(o, Segment):
             return ((o._p1 in self) and (o._p2 in self))
         elif isinstance(o, Point):
-            if Point.are_collinear(self._p1, self._p2, o):
-                return True
-                # Ignore comparisons for now, symbolic stuff might cause issues
-                #if self._p1[0] == self._p2[0]:
-                #    if self._p1[1] < self._p2[1]:
-                #        return o[1] >= self._p1[1]
-                #    else:
-                #        return o[1] <= self._p1[1]
-                #elif self._p1[0] <= self._p2[0]:
-                #    return o[0] >= self._p1[0]
-                #else:
-                #    return o[0] <= self._p1[0]
+            if Point.is_collinear(self._p1, self._p2, o):
+                if self._p1[0].is_number and self._p1[1].is_number \
+                        and self._p2[0].is_number and self._p2[1].is_number:
+                    if self._p1[0] == self._p2[0]:
+                        if self._p1[1] < self._p2[1]:
+                            return o[1] >= self._p1[1]
+                        else:
+                            return o[1] <= self._p1[1]
+                    elif self._p1[0] <= self._p2[0]:
+                        return o[0] >= self._p1[0]
+                    else:
+                        return o[0] <= self._p1[0]
+                else:
+                    return True
             else:
                 return False
         else:
@@ -316,25 +314,17 @@ class Segment(LinearEntity):
             x = self._p1[0]
             y = randint(self._p1[1], self._p2[1])
         else:
-            a,b,c = self._coeffs()
+            a,b,c = self.coefficients
             x = simplify( randint(self._p1[0], self._p2[0]) )
             y = simplify( (-c - a*x) / b )
         return Point(x, y)
-
-    #def intersection(self, o):
-    #    s = LinearEntity.intersection(self, o)
-    #    if s is None:
-    #        return None
-    #    elif s[0] in self:
-    #        return s
-    #    else:
-    #        return None
 
     def perpendicular_bisector(self, p=None):
         """
         Returns the perpendicular bisector of this segment. If no point is
         specified then a Line instance is returned. If a Point is given then
-        a segment is returned joining it and the midpoint of this segment.
+        a segment is returned joining it and the midpoint of this segment,
+        unless the point is not on the line, in which the Line will be returned.
         """
         if p is None:
             return LinearEntity.perpendicular_line(self, self.midpoint)
@@ -343,7 +333,7 @@ class Segment(LinearEntity):
             if p in l:
                 return Segment(self.midpoint, p)
             else:
-                return None
+                return l
 
     @property
     def length(self):
@@ -354,9 +344,6 @@ class Segment(LinearEntity):
     def midpoint(self):
         """Returns the midpoint of this segment."""
         return Point.midpoint(self._p1, self._p2)
-
-    def __len__(self, ind):
-        return 2
 
     def __getitem__(self, ind):
         return (self._p1, self._p2)[ind]
@@ -374,10 +361,12 @@ class Segment(LinearEntity):
         if isinstance(o, Segment):
             return ((o._p1 in self) and (o._p2 in self))
         elif isinstance(o, Point):
-            if Point.are_collinear(self._p1, self._p2, o):
-                return True
-                #x1,x2 = self._p1[0], self._p2[0]
-                #return (min(x1,x2) <= o[0] <= max(x1,x2))
+            if Point.is_collinear(self._p1, self._p2, o):
+                x1,x2 = self._p1[0], self._p2[0]
+                if x1.is_number and x2.is_number:
+                    return (min(x1,x2) <= o[0] <= max(x1,x2))
+                else:
+                    return True
             else:
                 return False
         else:

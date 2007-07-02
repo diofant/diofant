@@ -12,6 +12,11 @@ y1 = Symbol('y1')
 y2 = Symbol('y2')
 half = Rational(1,2)
 
+def feq(a, b):
+    """Test if two floating point values are 'equal'."""
+    t = Real("1.0E-10")
+    return -t < a-b < t
+
 def test_point():
     p1 = g.Point(x1, x2)
     p2 = g.Point(y1, y2)
@@ -37,20 +42,20 @@ def test_point():
     p1_1 = g.Point(x1, x1)
     p1_2 = g.Point(y2, y2)
     p1_3 = g.Point(x1 + 1, x1)
-    assert g.Point.are_collinear(p3)
-    assert g.Point.are_collinear(p3, p4)
-    assert g.Point.are_collinear(p3, p4, p1_1, p1_2)
-    assert g.Point.are_collinear(p3, p4, p1_1, p1_3) is False
+    assert g.Point.is_collinear(p3)
+    assert g.Point.is_collinear(p3, p4)
+    assert g.Point.is_collinear(p3, p4, p1_1, p1_2)
+    assert g.Point.is_collinear(p3, p4, p1_1, p1_3) is False
 
     p2_1 = g.Point(x1, 0)
     p2_2 = g.Point(0, x1)
     p2_3 = g.Point(-x1, 0)
     p2_4 = g.Point(0, -x1)
     p2_5 = g.Point(x1, 5)
-    assert g.Point.are_concyclic(p2_1)
-    assert g.Point.are_concyclic(p2_1, p2_2)
-    assert g.Point.are_concyclic(p2_1, p2_2, p2_3, p2_4)
-    assert g.Point.are_concyclic(p2_1, p2_2, p2_3, p2_5) is False
+    assert g.Point.is_concyclic(p2_1)
+    assert g.Point.is_concyclic(p2_1, p2_2)
+    assert g.Point.is_concyclic(p2_1, p2_2, p2_3, p2_4)
+    assert g.Point.is_concyclic(p2_1, p2_2, p2_3, p2_5) is False
 
 def test_line():
     p1 = g.Point(0, 0)
@@ -83,38 +88,39 @@ def test_line():
     p1_1 = g.Point(-x1, x1)
     l1_1 = g.Line(p1, p1_1)
     assert l1.perpendicular_line(p1) == l1_1
-    assert g.LinearEntity.are_perpendicular(l1, l1_1)
-    assert g.LinearEntity.are_perpendicular(l1 , l2) is False
+    assert g.Line.is_perpendicular(l1, l1_1)
+    assert g.Line.is_perpendicular(l1 , l2) is False
 
     # Parallelity
     p2_1 = g.Point(-2*x1, 0)
     l2_1 = g.Line(p3, p5)
     assert l2.parallel_line(p1_1) == g.Line(p2_1, p1_1)
     assert l2_1.parallel_line(p1) == g.Line(p1, g.Point(0, 2))
-    assert g.LinearEntity.are_parallel(l1, l2)
-    assert g.LinearEntity.are_parallel(l2, l3) is False
-    assert g.LinearEntity.are_parallel(l2, l2.parallel_line(p1_1))
-    assert g.LinearEntity.are_parallel(l2_1, l2_1.parallel_line(p1))
+    assert g.Line.is_parallel(l1, l2)
+    assert g.Line.is_parallel(l2, l3) is False
+    assert g.Line.is_parallel(l2, l2.parallel_line(p1_1))
+    assert g.Line.is_parallel(l2_1, l2_1.parallel_line(p1))
 
     # Intersection
     assert g.intersection(l1, p1) == [p1]
-    assert g.intersection(l1, p5) is None
+    assert g.intersection(l1, p5) == []
     assert g.intersection(l1, l2) == [l1]
-    assert g.intersection(l1, l1.parallel_line(p5)) is None
+    assert g.intersection(l1, l1.parallel_line(p5)) == []
 
     # Concurrency
     l3_1 = g.Line(g.Point(5, x1), g.Point(-Rational(3,5), x1))
-    assert g.LinearEntity.are_concurrent(l1, l3)
-    assert g.LinearEntity.are_concurrent(l1, l3, l3_1)
-    assert g.LinearEntity.are_concurrent(l1, l1_1, l3) is False
+    assert g.Line.is_concurrent(l1, l3)
+    assert g.Line.is_concurrent(l1, l3, l3_1)
+    assert g.Line.is_concurrent(l1, l1_1, l3) is False
 
     # Projection
     assert l2.projection(p4) == p4
     assert l1.projection(p1_1) == p1
     assert l3.projection(p2) == g.Point(x1, 1)
 
-    # TODO Finding angles
-
+    # Finding angles
+    l1_1 = g.Line(p1, g.Point(5, 0))
+    assert feq(g.Line.angle_between(l1, l1_1).evalf(), pi()/4)
 
     # Testing Rays and Segments (very similar to Lines)
     r1 = g.Ray(p1, g.Point(-1, 5))
@@ -153,10 +159,14 @@ def test_ellipse():
     assert c1.area == e1.area
     assert c1.circumference == 2*pi
 
-    # XXX Requires trig simplification (i.e., sin(x)**2 + cos(x)**2 = 1)
-    #assert e2.arbitrary_point() in e2
-    #for ind in xrange(0, 5):
-    #    assert e3.random_point() in e3
+    assert e2.arbitrary_point() in e2
+    for ind in xrange(0, 5):
+        assert e3.random_point() in e3
+
+    # Foci
+    f1,f2 = g.Point(sqrt(12), 0), g.Point(-sqrt(12), 0)
+    ef = g.Ellipse(g.Point(0, 0), 4, 2)
+    assert ef.foci in [(f1, f2), (f2, f1)]
 
     # Tangents
     v = sqrt(2) / 2
@@ -179,7 +189,7 @@ def test_ellipse():
     l4 = g.Line(g.Point(-10, 0), g.Point(0, 10))
     pts_c1_l3 = [g.Point(sqrt(2)/2, sqrt(2)/2), g.Point(-sqrt(2)/2, -sqrt(2)/2)]
 
-    assert g.intersection(e2, l4) is None
+    assert g.intersection(e2, l4) == []
     assert g.intersection(c1, g.Point(1, 0)) == [g.Point(1, 0)]
     assert g.intersection(c1, l1) == [g.Point(1, 0)]
     assert g.intersection(c1, l2) == [g.Point(0, -1)]
@@ -203,6 +213,12 @@ def test_polygon():
         g.Point(6, 0), g.Point(3,-1),
         g.Point(0, 0), g.Point(0, 3),
         g.Point(2, 3), g.Point(4, 5))
+    p3 = g.Polygon(
+        g.Point(0, 0), g.Point(3, 0),
+        g.Point(5, 2), g.Point(4, 4))
+    p4 = g.Polygon(
+        g.Point(0, 0), g.Point(4, 4),
+        g.Point(5, 2), g.Point(3, 0))
 
     #
     # General polygon
@@ -212,6 +228,9 @@ def test_polygon():
     assert len(p1.sides) == 6
     assert p1.perimeter == 5+2*sqrt(10)+sqrt(29)+sqrt(8)
     assert p1.area == 22
+    assert not p1.is_convex()
+    assert p3.is_convex()
+    assert p4.is_convex()  # ensure convex for both CW and CCW point specification
 
     #
     # Regular polygon
@@ -225,11 +244,26 @@ def test_polygon():
     assert p2.apothem == 5*cos(pi/5)
     assert p2.circumcircle == g.Circle(g.Point(0, 0), 5)
     assert p2.incircle == g.Circle(g.Point(0, 0), p2.apothem)
+    assert p1.is_convex()
+
+    #
+    # Angles
+    #
+    angles = p4.angles
+    assert feq(angles[g.Point(0, 0)].evalf(), Real("0.7853981633974483"))
+    assert feq(angles[g.Point(4, 4)].evalf(), Real("1.2490457723982544"))
+    assert feq(angles[g.Point(5, 2)].evalf(), Real("1.8925468811915388"))
+    assert feq(angles[g.Point(3, 0)].evalf(), Real("2.3561944901923449"))
+
+    angles = p3.angles
+    assert feq(angles[g.Point(0, 0)].evalf(), Real("0.7853981633974483"))
+    assert feq(angles[g.Point(4, 4)].evalf(), Real("1.2490457723982544"))
+    assert feq(angles[g.Point(5, 2)].evalf(), Real("1.8925468811915388"))
+    assert feq(angles[g.Point(3, 0)].evalf(), Real("2.3561944901923449"))
 
     #
     # Triangle
     #
-    five = Rational(5)
     p1 = g.Point(0, 0)
     p2 = g.Point(5, 0)
     p3 = g.Point(0, 5)
@@ -246,14 +280,16 @@ def test_polygon():
     assert t2.is_right() is False
     assert t3.is_right()
     assert p1 in t1
-    assert g.Point(five, five) not in t2
+    assert g.Point(5, 5) not in t2
+    assert t1.is_convex()
+    assert feq(t1.angles[p1].evalf(precision=20), pi.evalf(precision=20)/2)
 
     assert t1.is_equilateral() is False
     assert t2.is_equilateral()
     assert t3.is_equilateral() is False
-    assert g.Triangle.are_similar(t1, t2) is False
-    assert g.Triangle.are_similar(t1, t3)
-    assert g.Triangle.are_similar(t2, t3) is False
+    assert g.are_similar(t1, t2) is False
+    assert g.are_similar(t1, t3)
+    assert g.are_similar(t2, t3) is False
 
     # Bisectors
     #XXX Requires proper simplification of radicals

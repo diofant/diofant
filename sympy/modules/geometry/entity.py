@@ -9,15 +9,18 @@ class GeometryEntity(object):
 
     @staticmethod
     def do_intersection(e1, e2):
-        """Determine the intersection between two geometrical entities"""
+        """
+        Determines the intersection between two geometrical entities. Returns
+        a list of all of the intersections.
+        """
         try:
-            return e1.intersection(e2)
-        except AttributeError, NotImplementedError:
+            return e1._intersection(e2)
+        except Exception:
             pass
 
         try:
-            return e2.intersection(e1)
-        except AttributeError, NotImplementedError:
+            return e2._intersection(e1)
+        except Exception:
             n1,n2 = type(e1).__name__, type(e2).__name__
             raise NotImplementedError("Unable to determine intersection between '%s' and '%s'" % (n1, n2))
 
@@ -31,10 +34,10 @@ class GeometryEntity(object):
         except:
             return args
 
-    def intersection(self, o):
+    def _intersection(self, o):
         """
-        Returns the intersection of this entity and another entity, or None if
-        there is no intersection.
+        Returns a list of all of the intersections of this entity and another
+        entity.
         """
         raise NotImplementedError()
 

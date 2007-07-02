@@ -191,7 +191,7 @@ def trigsimp(expr):
             ret *= trigsimp(x)
         return ret
     elif isinstance(expr, Pow):
-        return Pow(trigsimp(expr.base), trigsimp(expr.exp), evaluate=False)
+        return Pow(trigsimp(expr.base), trigsimp(expr.exp))
     elif isinstance(expr, Add) and len(expr[:]) > 1:
         # The type of functions we're interested in
         a = Symbol('a', is_dummy=True)

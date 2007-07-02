@@ -1,17 +1,32 @@
-def intersection(e1, e2):
+#
+#
+#
+def intersection(*args):
     """
-    Finds the intersection between two GeometryEntity instances. Returns a list
-    of all the intersections, or None if there is none. Will raise a
-    NotImplementedError exception if unable to calculate the intersection.
+    Finds the intersection between a list GeometryEntity instances. Returns a
+    list of all the intersections, Will raise a NotImplementedError exception
+    if unable to calculate the intersection.
     """
     from entity import GeometryEntity
-    try:
-        return GeometryEntity.do_intersection(e1, e2)
-    except NotImplementedError:
-        n1 = e1.__class__.__name__
-        n2 = e2.__class__.__name__
-        raise NotImplementedError("Cannot find intersection between %s and %s" % (n1, n2))
 
+    entities = []
+    if isinstance(args[0], GeometryEntity):
+        entities = args
+    else:
+        entities = args[0]
+
+    if len(entities) <= 1: return []
+    res = GeometryEntity.do_intersection(entities[0], entities[1])
+    for entity in entities[2:]:
+        newres = []
+        for x in res:
+            newres.extend( GeometryEntity.do_intersection(x, entity) )
+        res = newres
+    return res
+
+#
+#
+#
 def convex_hull(*args):
     """
     Returns a Polygon representing the convex hull of a set of 2D points.
@@ -25,9 +40,6 @@ def convex_hull(*args):
     if isinstance(args[0], Point):
         p = args
 
-    def tarea(a, b, c):
-        return (b[0] - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(b[1] - a[1])
-
     # Basic checks
     if len(p) == 1:
         return p[0]
@@ -40,6 +52,9 @@ def convex_hull(*args):
         if (p[i][1] < p[m][1]) or ((p[i][1] == p[m][1]) and (p[i][0] > p[m][0])):
             m = i
     p[0], p[m] = p[m], p[0]
+
+    def tarea(a, b, c):
+        return (b[0] - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(b[1] - a[1])
 
     # Sort points
     destroy = {}
@@ -86,3 +101,16 @@ def convex_hull(*args):
         else:
             top.pop()
     return Polygon(top)
+
+#
+#
+#
+def are_similar(e1, e2):
+    """
+    Returns True if e1 and e2 are similar (one can be uniformly scaled to
+    the other) or False otherwise.
+    """
+    try:
+        return e1._is_similar(e2)
+    except AttributeError:
+        return e2._is_similar(e1)

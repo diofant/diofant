@@ -3,11 +3,11 @@ from sympy.modules.simplify import simplify
 from entity import GeometryEntity
 from point import Point
 from ellipse import Circle
-from line import LinearEntity, Line, Segment
+from line import Line, Segment
 
 
 class Polygon(GeometryEntity):
-    """A polygon in space."""
+    """A simple polygon in space."""
     def __init__(self, *args, **kwargs):
         GeometryEntity.__init__(self, *args, **kwargs)
         if not isinstance(args[0], Point):
@@ -31,6 +31,42 @@ class Polygon(GeometryEntity):
             pii = self._vertices[ind+1]
             area += pi[0]*pii[1]-pii[0]*pi[1]
         return simplify(area) / Rational(2)
+
+    @property
+    def angles(self):
+        """
+        Returns a dictionary of {point: angle} entries containing the
+        measure of all the internal angle of this polygon at each vertex.
+        """
+        def tarea(a, b, c):
+            return (b[0] - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(b[1] - a[1])
+
+        def isright(a, b, c):
+            return (tarea(a, b, c) <= 0)
+
+        # Determine orientation of points
+        cw = True
+        if not isright(self._vertices[-1], self._vertices[0], self._vertices[1]):
+            cw = False
+
+        ret = {}
+        if cw:
+            for i in xrange(0, len(self._vertices)):
+                a,b,c = self._vertices[i-2], self._vertices[i-1], self._vertices[i]
+                ang = Line.angle_between(Line(b, a), Line(b, c))
+                if not isright(a, b, c):
+                    ret[b] = 360 - ang
+                else:
+                    ret[b] = ang
+        else:
+            for i in xrange(0, len(self._vertices)):
+                a,b,c = self._vertices[i-2], self._vertices[i-1], self._vertices[i]
+                ang = Line.angle_between(Line(b, a), Line(b, c))
+                if isright(a, b, c):
+                    ret[b] = 360 - ang
+                else:
+                    ret[b] = ang
+        return ret
 
     @property
     def perimeter(self):
@@ -68,15 +104,37 @@ class Polygon(GeometryEntity):
         res.append( Segment(self._vertices[-1], self._vertices[0]) )
         return res
 
-    def intersection(self, o):
+    def is_convex(self):
+        """Returns True if this polygon is convex, False otherwise."""
+        #XXX Should we override this in RegularPoygon and Triangle since they
+        #    are never convex (if the tiny performance boost is important)
+        def tarea(a, b, c):
+            return (b[0] - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(b[1] - a[1])
+
+        def isright(a, b, c):
+            return (tarea(a, b, c) <= 0)
+
+        # Determine orientation of points
+        cw = True
+        if not isright(self._vertices[-2], self._vertices[-1], self._vertices[0]):
+            cw = False
+
+        if cw:
+            for i in xrange(0, len(self._vertices)):
+                if not isright(self._vertices[i-2], self._vertices[i-1], self._vertices[i]):
+                    return False
+        else:
+            for i in xrange(0, len(self._vertices)):
+                if isright(self._vertices[i-2], self._vertices[i-1], self._vertices[i]):
+                    return False
+        return True
+
+    def _intersection(self, o):
         res = []
         for side in self.sides:
             inter = GeometryEntity.do_intersection(side, o)
             if inter is not None:
                 res.extend(inter)
-
-        if len(res) == 0:
-            return None
         return res
 
     def __len__(self):
@@ -207,6 +265,13 @@ class RegularPolygon(Polygon):
         """Returns a Circle instance describing the inscribed circle."""
         return Circle(self._c, self.apothem)
 
+    @property
+    def angles(self):
+        ret = {}
+        ang = self.interior_angle
+        for v in self._vertices:
+            ret[v] = ang
+        return ret
 
 class Triangle(Polygon):
     """A triangle (3 sided polygon)."""
@@ -216,15 +281,13 @@ class Triangle(Polygon):
         if len(self._vertices) != 3:
             raise RuntimeError("A triangle requires exactly 3 points")
 
-    @staticmethod
-    def are_similar(t1, t2):
-        """
-        Returns the True if triangles t1 and t2 are similar,
-        False otherwise.
-        """
+    def _is_similar(t1, t2):
+        """Returns True if triangles t1 and t2 are similar, False otherwise."""
+        if not isinstance(t2, Polygon) or len(t2) != 3:
+            return False
+
         s1_1, s1_2, s1_3 = [side.length for side in t1.sides]
         s2 = [side.length for side in t2.sides]
-        #print [s1_1, s1_2, s1_3] + s2
         def _are_similar(u1, u2, u3, v1, v2, v3):
             e1 = simplify(u1/v1)
             e2 = simplify(u2/v2)
@@ -250,9 +313,9 @@ class Triangle(Polygon):
         #    if angle == pi/2: return True
         #return False
         s = self.sides
-        return LinearEntity.are_perpendicular(s[0], s[1]) or \
-               LinearEntity.are_perpendicular(s[1], s[2]) or \
-               LinearEntity.are_perpendicular(s[0], s[2])
+        return Segment.is_perpendicular(s[0], s[1]) or \
+               Segment.is_perpendicular(s[1], s[2]) or \
+               Segment.is_perpendicular(s[0], s[2])
 
     @property
     def altitudes(self):

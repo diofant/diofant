@@ -4,7 +4,7 @@ entities and functions needed to construct basic geometrical data and to
 perform simple informational queries.
 """
 from point import Point
-from line import LinearEntity, Line, Ray, Segment
+from line import Line, Ray, Segment
 from ellipse import Ellipse, Circle
 from polygon import Polygon, RegularPolygon, Triangle
 from util import *

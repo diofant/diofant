@@ -43,8 +43,20 @@ class Ellipse(GeometryEntity):
 
     @property
     def foci(self):
-        """Returns the foci of the ellipse."""
-        pass
+        """Returns the foci of the ellipse, if the radii are numerical."""
+        c = self._c
+        if self._hr == self._vr:
+            return c
+
+        if not (self._hr.is_number and self._vr.is_number):
+            raise Exception("foci can only be determined on numerical radii")
+
+        elif self._hr < self._vr:
+            v = sqrt(self._vr**2 - self._hr**2)
+            return (c+Point(0, -v), c+Point(0, v))
+        else:
+            v = sqrt(self._hr**2 - self._vr**2)
+            return (c+Point(-v, 0), c+Point(v, 0))
 
     def tangent_line(self, p):
         """
@@ -68,15 +80,22 @@ class Ellipse(GeometryEntity):
         inter = None
         if isinstance(o, Ellipse):
             inter = self.intersection(o)
-            return (inter is not None) and isinstance(inter[0], Point)
+            return (inter is not None and isinstance(inter[0], Point) and len(inter) == 1)
         elif isinstance(o, LinearEntity):
             inter = self._do_line_intersection(o)
             if (inter is not None) and len(inter) == 1:
                 return (inter[0] in o)
             else:
                 return False
+        elif isinstance(o, Polygon):
+            c = 0
+            for seg in o.sides:
+                inter = self._do_line_intersection(o)
+                if (inter is not None and inter[0] in o):
+                    c += len(inter)
+            return (c == 1)
         else:
-            raise NotImplementedError("Ellipse.is_tangent requires a Line or Ellipse instance")
+            raise NotImplementedError("Unknown argument type")
 
     def arbitrary_point(self, parameter_name='t'):
         """Returns a symbolic point that is on the ellipse."""
@@ -90,9 +109,8 @@ class Ellipse(GeometryEntity):
         t = Symbol('t')
         p = self.arbitrary_point('t')
         subs_val = randint(-maxint-1, maxint)
-        return Point(p[0].subs(t, subs_val).eval(), p[1].subs(t, subs_val).eval())
+        return Point(p[0].subs(t, subs_val), p[1].subs(t, subs_val))
 
-    #@property
     def equation(self, xaxis_name='x', yaxis_name='y'):
         """Returns the equation of the ellipse."""
         x = Symbol(xaxis_name)
@@ -144,12 +162,9 @@ class Ellipse(GeometryEntity):
                 t_b = (-b + root) / a
                 result.append( lp[0] + (lp[1] - lp[0]) * t_a )
                 result.append( lp[0] + (lp[1] - lp[0]) * t_b )
-
-        if len(result) == 0:
-            return None
         return result
 
-    def intersection(self, o):
+    def _intersection(self, o):
         """
         Returns the intersection of the ellipse and another entity, or None if
         there is no intersection.
@@ -158,7 +173,7 @@ class Ellipse(GeometryEntity):
             if o in self:
                 return [o]
             else:
-                return None
+                return []
         elif isinstance(o, LinearEntity):
             # LinearEntity may be a ray/segment, so check the points
             # of intersection for coincidence first
@@ -226,7 +241,7 @@ class Circle(Ellipse):
         t2 = (y - self._c[1])**Rational(2)
         return t1 + t2 - self._hr**Rational(2)
 
-    def intersection(self, o):
+    def _intersection(self, o):
         if isinstance(o, Circle):
             dx,dy = o._c - self._c
             d = sqrt( simplify(dy**2 + dx**2) )
@@ -254,4 +269,4 @@ class Circle(Ellipse):
             y = b*sqrt(simplify((a**2 - r**2)/(a**2 - b**2)))
             return list(set([Point(x,y), Point(x,-y), Point(-x,y), Point(-x,-y)]))
 
-        return Ellipse.intersection(self, o)
+        return Ellipse._intersection(self, o)

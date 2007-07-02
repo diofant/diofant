@@ -15,8 +15,7 @@ class Point(GeometryEntity):
         if len(self._coords) > 2:
             raise NotImplementedError("Greater than two dimensions not yet supported")
 
-    @staticmethod
-    def are_collinear(*args):
+    def is_collinear(*args):
         """
         Test whether or not a set of points are collinear. Returns True if
         the set of points are collinear, or False otherwise.
@@ -25,7 +24,6 @@ class Point(GeometryEntity):
 
         for x in points:
             assert isinstance(x, Point)
-        
         if len(points) == 0: return False
         if len(points) <= 2: return True
 
@@ -46,8 +44,7 @@ class Point(GeometryEntity):
                 return False
         return True
 
-    @staticmethod
-    def are_concyclic(*args):
+    def is_concyclic(*args):
         """
         Test whether or not a set of points are concyclic (i.e., on the same
         circle). Returns True if they are concyclic, or False otherwise.
@@ -57,7 +54,7 @@ class Point(GeometryEntity):
         points = GeometryEntity._normalize_args(args)
         if len(points) == 0: return False
         if len(points) <= 2: return True
-        if len(points) == 3: return (not Point.are_collinear(points))
+        if len(points) == 3: return (not Point.is_collinear(points))
 
         def f(u):
             dd = u[0]**Rational(2) + u[1]**Rational(2) + Rational(1)
@@ -82,7 +79,7 @@ class Point(GeometryEntity):
 
     @staticmethod
     def distance(p1, p2):
-        """Get the distance between two points."""
+        """Get the Euclidean distance between two points."""
         res = Rational(0)
         for ind in xrange(0, len(p1)):
             res += (p1[ind] - p2[ind])**Rational(2)
@@ -90,8 +87,19 @@ class Point(GeometryEntity):
 
     @staticmethod
     def midpoint(p1, p2):
-        """Get the midpoint between two points."""
+        """Get the midpoint of two points."""
         return Point( simplify((p1[ind] + p2[ind])*Rational(1,2)) for ind in xrange(0, len(p1)) )
+
+    def evalf(self, precision=18):
+        """
+        Evaluate and return a Point where every coordinate is evaluated to
+        a floating point number.
+        """
+        from sympy.core.numbers import Real
+        coords = []
+        for x in self._coords:
+            coords.append( Real(x, precision) )
+        return Point(coords)
 
     def __getitem__(self, ind):
         """Get a specific coordinate."""
@@ -110,14 +118,8 @@ class Point(GeometryEntity):
         except:
             return False
 
-    def __nonzero__(self):
-        """
-        Returns True if this point is not the origin (i.e., has at least one nonzero,
-        entry) or False otherwise.
-        """
-        return any(self)
-
     def __add__(self, a):
+        """Coordinate-based addition."""
         if isinstance(a, Point):
             if len(a) == len(self):
                 return Point([simplify(self[ind] + a[ind]) for ind in xrange(0, len(a))])
@@ -128,6 +130,7 @@ class Point(GeometryEntity):
             return Point([simplify(self[ind] + a) for ind in xrange(0, len(a))])
 
     def __sub__(self, a):
+        """Coordinate-based subtraction."""
         if isinstance(a, Point):
             if len(a) == len(self):
                 return Point([simplify(self[ind] - a[ind]) for ind in xrange(0, len(a))])
@@ -138,15 +141,17 @@ class Point(GeometryEntity):
             return Point([simplify(self[ind] - a) for ind in xrange(0, len(a))])
 
     def __mul__(self, a):
+        """Coordinate-based multiplication."""
         a = Basic.sympify(a)
         return Point( [x*a for x in self] )
 
     def __div__(self, a):
+        """Coordinate-based division."""
         a = Basic.sympify(a)
         return Point( [x/a for x in self] )
 
     def __neg__(self):
-        """Returns a point with all coordinates having opposite signs as this one"""
+        """Coordinate-based negation."""
         return Point([-x for x in self])
 
     def __abs__(self):
