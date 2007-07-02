@@ -445,9 +445,12 @@ class Rational(Number):
         return self.p
 
     def evalf(self, precision=18):
-        decimal.localcontext().prec = precision
-        ret = decimal.Decimal(self.p)/self.q
-        return Real(+ret)
+        old_prec = decimal.getcontext().prec
+        if old_prec < precision:
+            decimal.getcontext().prec = precision
+        ret = Real(decimal.Decimal(self.p) / self.q)
+        decimal.getcontext().prec = old_prec
+        return ret
 
     def diff(self,sym):
         return Rational(0)
