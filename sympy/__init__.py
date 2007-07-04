@@ -72,7 +72,8 @@ from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
 from sympy.modules.simplify import ratsimp, simplify
-from sympy.modules.polynomials import factor, roots, div, groebner
+from sympy.modules.polynomials import div, gcd, factor, groebner, lcm, \
+     real_roots, resultant, roots, sqf, Ideal
 
 from sympy.modules.printing.pretty import pretty, pretty_print, pprint
 from sympy.modules.printing.mathml import mathml

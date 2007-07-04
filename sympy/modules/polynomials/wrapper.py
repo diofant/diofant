@@ -5,6 +5,7 @@ from sympy.modules.matrices import zero
 
 from sympy.modules.polynomials.base import *
 from sympy.modules.polynomials import div_
+from sympy.modules.polynomials import factor_
 from sympy.modules.polynomials import gcd_
 from sympy.modules.polynomials import groebner_
 from sympy.modules.polynomials import lcm_
@@ -130,28 +131,40 @@ def div(f, g, var=None, order=None, coeff=None):
     else:
         return map(lambda x: x.basic, q), r.basic
 
-def factor(a, var=None):
-    """Factors the polynomial a.
+def factor(f):
+    """Factors the polynomial f over the rationals.
 
     Example:
     >>> x = Symbol('x')
-    >>> factor(x**6-1)
-    (1+x)*(1+x**4+x**2)*(-1+x)
-
-    Note: as you can see, it only factors out the rational roots, here the
-    correct answer should be:
-    (x - 1)*(x + 1)*(x**2 - x + 1)*(x**2 + x + 1)
+    >>> factor(x**4-1)
+    (1+x)*(1+x**2)*(-1+x)
+    
     """
-    if var==None:
-        var = a.atoms(type=Symbol)[0]
-    p = 1
-    for r in roots(a, var): 
-        p *= (var-r)
-    if p == 1: 
-        return a
-    q,r = div(a, p, var)
-    assert r == 0
-    return factor(q, var)*p
+    f = Polynomial(f, coeff='int')
+    if len(f.var) != 1:
+        raise PolynomialException(
+            'Multivariate factorization not yet implemented.')
+
+    # Compute lcm of denominators in coefficients:
+    l = 1
+    for term in f.cl:
+        if not isinstance(term[0], Rational):
+            raise PolynomialException('Non-rational coefficient!')
+        l = l*term[0].q / Rational(0).gcd(l, term[0].q)
+
+    # Make f a polynomial in integer coefficients:
+    f.cl = map(lambda t:[t[0]*Rational(l)] + t[1:], f.cl)
+
+    # Remove content before factorization:
+    c = f.content()
+    f.cl = map(lambda t:[t[0]/c] + t[1:], f.cl)
+
+    # Get an re-assemble factors:
+    for p in factor_.uv_int(f):
+        c *= p.basic
+
+    return c
+
 
 def gcd(f, g, var=None, order=None, coeff=None):
     """Greatest common divisor of two polynomials.

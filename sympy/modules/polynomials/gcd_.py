@@ -9,6 +9,8 @@ def uv(f, g):
     """
     from sympy.modules.polynomials import div_
 
+    f = f.copy()
+    g = g.copy()
     while True:
         if g.cl[0][0] != 0:
             g.cl = map(lambda t: [t[0]/g.cl[0][0]] + t[1:], g.cl)
@@ -17,6 +19,28 @@ def uv(f, g):
             break
     return f
 
+def uv_int(f, g):
+    """For integer coefficients.
+    """
+    from sympy.modules.polynomials import div_
+
+    assert f.coeff == 'int' and g.coeff == 'int'
+    f = f.copy()
+    cf = f.content()
+    f.cl = map(lambda t:[t[0]/cf] + t[1:], f.cl)
+    g = g.copy()
+    cg = g.content()
+    g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
+    c = Rational(0).gcd(cf.p, cg.p)
+
+    while True:
+        if g.cl[0][0] != 0:
+            f, g = g, div_.mv(f, g)[-1]
+        else:
+            break
+    f.cl = map(lambda t:[t[0]*c] + t[1:], f.cl)
+    return f
+    
 def mv(f, g):
     """Computes the gcd of 2 polynomials by dividing their product by their lcm.
 

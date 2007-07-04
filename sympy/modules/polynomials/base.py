@@ -318,6 +318,15 @@ class Polynomial(Basic):
         r.basic **= exp
         return r
         
+    def __call__(self, *x):
+        # TODO: implement Horner's method for coefficient list?
+        if len(x) != len(self.var):
+            raise PolynomialException('No proper input for evaluation.')
+        r = self.basic
+        for vv, xx in zip(self.var, x):
+            r = r.subs(vv, xx)
+        return r
+
     def copy(self):
         r = Polynomial(Rational(0), self.var, self.order, self.coeff)
         r._basic = self._basic

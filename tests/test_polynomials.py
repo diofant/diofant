@@ -12,6 +12,7 @@ from sympy.modules.polynomials import *
 def test_Polynomial():
     x = Symbol("x")
     y = Symbol("y")
+    z = Symbol('z')
     f = Polynomial(x+2)
     g = Polynomial(y**2-1)
     h = f + g
@@ -36,6 +37,8 @@ def test_Polynomial():
            == Polynomial(Rational(0), [x])
     assert Polynomial(x**3*y).diff(x) == Polynomial(3*x**2*y)
     assert Polynomial([[1,1]], [x], 'lex').diff(x) == Polynomial(Rational(1), [x])
+    assert Polynomial(x**2 + y**2)(3,-4) == 25
+    assert Polynomial(y*x)(-z, z) == -z**2
 
 def test_coeff_list():
     x = Symbol('x')
@@ -152,6 +155,8 @@ def test_factor():
     assert factor(x**3-3*x**2+3*x-1) == (x-1)**3
     assert factor(x**2+x-2) == (x-1)*(x+2)
     assert factor(x**3-x) == x*(x-1)*(x+1)
+    assert factor(x**6-1) == (1+x**2-x)*(1+x)*(1+x+x**2)*(-1+x)
+    assert factor(2*x**2+5*x+2) == (2+x)*(1+2*x)
 
 def test_gcd():
     x = Symbol("x")

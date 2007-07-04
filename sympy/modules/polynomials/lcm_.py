@@ -17,6 +17,8 @@ def uv(f, g):
     q.cl = map(lambda t:[t[0]/q.cl[0][0]] + t[1:], q.cl)
     return q
 
+# TODO: implement uv_int?
+
 def mv(f, g):
     """Computes the lcm of two polynomials.
 

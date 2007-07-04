@@ -23,6 +23,30 @@ def uv(f):
     a.append(g[-1])
     return a
 
+def uv_int(f):
+    """Returns a decomposition of f in a1 * a2**2 * ... * an**n.
+
+    Here, the ai are pairwise prime and square-free polynomials, returned
+    in a list. f is assumed to be a univariate instance of Polynomial.
+    The numeric factor is re-distributed to keep integer coefficients.
+    """
+    assert f.coeff == 'int'
+    a = uv(f)
+
+    ca = int(a[0].content())
+    c = ca
+    for i,p in enumerate(a[1:]):
+        # Compute lcm of denominators in coefficients:
+        l = 1
+        for term in p.cl:
+            l = l*term[0].q / Rational(0).gcd(l ,term[0].q)
+        assert c % (l**(i+2)) == 0
+        c /= l**(i+2)
+        p.cl = map(lambda t:[t[0]*Rational(l)] + t[1:], p.cl)
+    ca /= c
+    a[0].cl = map(lambda t:[t[0]*Rational(1,ca)] + t[1:], a[0].cl)
+    return a
+
 def uv_part(f):
     """Returns the square-free part of f.
 
