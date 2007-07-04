@@ -151,16 +151,14 @@ class Real(Number):
                         is_real = True,
                         is_commutative = True,
                         )
-        if isinstance(num,str):
+        if isinstance(num, str):
             num = decimal.Decimal(num)
         if isinstance(num, decimal.Decimal):
             self.num = num
         elif hasattr(num, 'evalf'):
-            self.num = num.evalf(precision)
-            if not isinstance(self.num, decimal.Decimal):
-                self.num = decimal.Decimal(str(self.num))
+            self.num = num.evalf(precision).num
         else:
-            self.num = decimal.Decimal(str(float(num)))
+            self.num = decimal.Decimal(repr(float(num)))
         self._args = [self.num]
 
     def __str__(self):

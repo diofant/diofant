@@ -4,6 +4,10 @@ sys.path.append(".")
 from sympy import *
 from decimal import Decimal
 
+def feq(a,b):
+    t = 1E-15
+    return -t < a-b < t
+
 def test_cos():
     assert cos(0) == 1
     assert cos(pi) == -1
@@ -33,10 +37,10 @@ def test_cos():
     assert cos(pi/6) == Rational(1, 2)*sqrt(3)
     assert cos(5*pi/6) == -Rational(1, 2)*sqrt(3)
 
-    assert float(cos(1)) == 0.54030230586813977
+    assert feq( float(cos(1)), 0.54030230586813977 )
+    assert feq( float(cos(1) + cos(2)), 0.12415546932099736 )
+    assert feq( float(cos(1)*cos(2)*cos(3)), 0.22259495730990297 )
     assert cos(1).evalf(precision=28) == Real("0.5403023058681397174009366074")
-    assert float(cos(1) + cos(2)) == 0.12415546932099736
-    assert abs(float(cos(1)*cos(2)*cos(3)) - 0.22259495730990297) < 1e-15 
 
     x = Symbol('x')
     y = Symbol('y')
@@ -74,7 +78,7 @@ def test_sin():
     assert sin(7*pi/6) == -Rational(1, 2)
     assert sin(-5*pi/6) == -Rational(1, 2)
 
-    assert float(sin(1)) == 0.8414709848078965
+    assert feq( float(sin(1)), 0.8414709848078965 )
     assert sin(1).evalf(precision=28) == Real("0.8414709848078965066525023216")
 
     x = Symbol('x')
@@ -110,7 +114,7 @@ def test_asin():
     assert asin(0)      == 0
     assert asin(-1)     == -pi/2
 
-    assert float(asin(Real("0.3"))) == 0.30469265401539752
+    assert feq( float(asin(Real("0.3"))), 0.30469265401539752 )
     assert asin(Real("0.3")).evalf(precision=28) == Real("0.3046926540153975079720029612")
 
 def test_acos():
@@ -118,7 +122,7 @@ def test_acos():
     assert acos(1)      == 0
     assert acos(-1)     == pi
 
-    assert float(acos(Real("0.3"))) == 1.2661036727794992
+    assert feq( float(acos(Real("0.3"))), 1.2661036727794992 )
     assert acos(Real("0.3")).evalf(precision=28) == Real("1.266103672779499111259318730")
 
 def test_atan():
@@ -127,5 +131,5 @@ def test_atan():
     #assert atan(-oo)    == -pi/2   XXX infinite recursion
     assert atan(-sqrt(3))== - pi/3
 
-    assert float(atan(1)) == 0.78539816339744828
+    assert feq( float(atan(1)), 0.78539816339744828 )
     assert atan(1).evalf(precision=28) == Real("0.7853981633974483096156608458")
