@@ -283,7 +283,7 @@ class log(Function):
 
     @property
     def is_real(self):
-        return self._args.is_real
+        return self._args.is_real and self._args.is_nonnegative
 
 ln = log
 

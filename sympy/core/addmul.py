@@ -681,18 +681,21 @@ class Mul(Pair):
 
     @property
     def is_odd(self):
-        """Product is odd iff there all its components are odd.
-           Otherwise this query will return False or None if
-           not all objects odd and some are only defined to
-           be integers.
+        """Product is odd iff all its components are odd. Otherwise
+           this query will return False or None if not all objects
+           are odd and some are only defined to be integers.
 
            >>> from sympy import *
+           >>> n = Symbol('n', odd=True)
            >>> k = Symbol('k', integer=True)
 
-           >>> (3*k).is_odd
+           >>> (3*n).is_odd
            True
 
-           >>> (2*k).is_odd is None
+           >>> (2*k).is_odd
+           False
+
+           >>> (3*k).is_odd is None
            True
 
         """

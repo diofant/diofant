@@ -171,7 +171,7 @@ class Basic(object):
 
         def update_assumptions(key, value):
             if value is not None:
-                if dependencies.has_key(key):
+                if key in dependencies:
                     self._assumptions.update(dependencies[key](value))
 
                 self._assumptions[key] = value
@@ -183,16 +183,16 @@ class Basic(object):
             if key[0:3] != 'is_':
                 key = 'is_' + key
 
-            if self._assumptions.has_key(key):
+            if key in self._assumptions:
                 update_assumptions(key, value)
-            elif abbreviations.has_key(key):
+            elif key in abbreviations:
                 for key in abbreviations[key]:
                     update_assumptions(key, value)
             else:
                 raise NotImplementedError("Assumption '%s' not implemented" % str(key))
 
     def __getattr__(self, name):
-        if self._assumptions.has_key(name):
+        if name in self._assumptions:
             return self._assumptions[name]
         else:
             raise AttributeError("'%s' object has no attribute '%s'" %
@@ -202,7 +202,7 @@ class Basic(object):
         if name[0:3] != 'is_':
             object.__setattr__(self, name, value)
         else:
-             raise AttributeError("Modification of assumptions is not allowed")
+            raise AttributeError("Modification of assumptions is not allowed")
 
     @property
     def is_zero(self):
@@ -238,6 +238,8 @@ class Basic(object):
 
         from sympy.core.symbol import Symbol
         return self.atoms(type=Symbol) == []
+
+
 
     def __add__(self,a):
         from addmul import Add

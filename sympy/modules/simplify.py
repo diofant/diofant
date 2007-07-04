@@ -8,7 +8,7 @@ from sympy.core.power import Pow
 def fraction(expr):
     """Returns a pair with expression's numerator and denominator.
        If the given expression is not a fraction then this function
-       will assume denominator equal to one.
+       will assume that the denominator is equal to one.
 
        This function will not make any attempt to simplify nested
        fractions or to do any term rewriting at all.
@@ -23,27 +23,40 @@ def fraction(expr):
        (x, y)
        >>> fraction(x)
        (x, 1)
+       >>> fraction(x*y/2)
+       (x*y, 2)
        >>> fraction(Rational(1, 2))
        (1, 2)
 
-    """
+       This function will also work fine with assumptions:
 
+       >>> k = Symbol('k', negative=True)
+       >>> fraction(x * y**k)
+       (x, y**(-k))
+
+    """
     expr = Basic.sympify(expr)
 
     if isinstance(expr, Mul):
         numer, denom = [], []
 
         for term in expr:
-            if isinstance(term, Pow) and term.exp < 0:
-                if term.exp == -1:
+            if isinstance(term, Pow) and term.exp.is_negative:
+                if term.exp.is_minus_one:
                     denom.append(term.base)
                 else:
                     denom.append(Pow(term.base, -term.exp))
+            elif isinstance(term, Rational):
+                if term.is_integer:
+                    numer.append(term)
+                else:
+                    numer.append(Rational(term.p))
+                    denom.append(Rational(term.q))
             else:
                 numer.append(term)
 
         numer, denom = Mul(*numer), Mul(*denom)
-    elif isinstance(expr, Pow) and expr.exp < 0:
+    elif isinstance(expr, Pow) and expr.exp.is_negative:
         numer, denom = Rational(1), expr.base
     elif isinstance(expr, Rational):
         numer, denom = Rational(expr.p), Rational(expr.q)
@@ -57,6 +70,10 @@ def numer(expr):
 
 def denom(expr):
     return fraction(expr)[1]
+
+def fraction_expand(expr):
+    a, b = fraction(expr)
+    return a.expand() / b.expand()
 
 def numer_expand(expr):
     a, b = fraction(expr)
@@ -80,7 +97,6 @@ def together(expr):
        x/(1+x)
 
     """
-
     expr = Basic.sympify(expr)
 
     if isinstance(expr, Add):

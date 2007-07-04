@@ -52,12 +52,13 @@ def test_fraction():
     assert fraction(x) == (x, 1)
     assert fraction(1/x) == (1, x)
     assert fraction(x/y) == (x, y)
+    assert fraction(x/2) == (x, 2)
 
     assert fraction((x**2+1)/y) == (x**2+1, y)
     assert fraction(x*(y+1)/y**7) == (x*(y+1), y**7)
 
 def test_together():
-    x, y = Symbol('x'), Symbol('y')
+    x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
 
     assert together(1/x) == 1/x
 
@@ -69,3 +70,7 @@ def test_together():
     assert together(1/x + 2/y) == (2*x+y)/(y*x)
     assert together(1/(1 + 1/x)) == x/(1+x)
     assert together(x/(1 + 1/x)) == x**2/(1+x)
+
+    assert together(1/x + 1/y + 1/z) == (x*y + x*z + y*z)/(x*y*z)
+
+
