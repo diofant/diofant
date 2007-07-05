@@ -165,16 +165,16 @@ def test_gcd():
     
     assert gcd(x**2, x, x) == x
     assert gcd(3*x**2, x, x) == x
-    assert gcd(3*x**2, 6*x, x, coeff='int') == 3*x
-    assert gcd(3*x**2, 6*x, x) == x
+    assert gcd(3*x**2, 6*x, x, coeff='rat') == x
+    assert gcd(3*x**2, 6*x, x) == 3*x
     assert gcd(x**2+2*x+1, x+1, x) == x+1
     assert gcd(x**2+2*x+2, x+1, x) == 1
 
     assert gcd(x**2+2*x+1, 2+2*x, x) == 1+x
     assert gcd(x**2+2*x+2, 2+2*x, x) == 1
 
-    assert gcd(4, 6) == Rational(1)
-    assert gcd(6, 4, coeff='int') == Rational(2)
+    assert gcd(4, 6) == Rational(2)
+    assert gcd(6, 4, coeff='rat') == Rational(1)
     assert gcd(x, y) == Rational(1)
     assert gcd(sin(z)*(x+y), x**2+2*x*y+y**2, [x, y]) == x+y
 
@@ -201,12 +201,12 @@ def test_lcm():
     x = Symbol('x')
     y = Symbol('y')
 
-    assert lcm(6, 4) == Rational(1)
-    assert lcm(6, 4, coeff='int') == Rational(12)
-    assert lcm(4, y) == y
+    assert lcm(6, 4) == Rational(12)
+    assert lcm(6, 4, coeff='rat') == Rational(1)
+    assert lcm(4, y) == 4*y
     assert lcm(x, y) == x*y
     assert lcm(y*(x+1), x, [x]) ==x+x**2
-    assert lcm(2*x, x**2, coeff='int') == 2*x**2 
+    assert lcm(2*x, x**2) == 2*x**2 
 
 def test_real_roots():
     x = Symbol('x')

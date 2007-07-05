@@ -1,7 +1,7 @@
 """Simple helper functions common to several algorithms"""
 
 from sympy import Add, Basic, Mul, Number, Pow, Rational, Real, Symbol
-from sympy.modules.polynomials.base import PolynomialException
+from sympy.modules.polynomials.base import PolynomialException, coeff_rings
 
 def all(iterable):
     """True if all elements are True"""
@@ -99,3 +99,32 @@ def sort_cl(cl, order):
     else:
         raise PolynomialException(str(order) + 'is not an implemented order.')
     return cl
+
+def coeff_ring(atom):
+    """Determine the coefficient ring of some atom, or some list of atoms.
+    """
+    if not isinstance(atom, list):
+        if isinstance(atom, Rational):
+            if atom.is_integer:
+                return 'int'
+            else:
+                return 'rat'
+        elif atom.is_number:
+            if atom.is_real:
+                return 'real'
+            else:
+                return 'cplx'
+        elif isinstance(atom, Symbol):
+            return 'sym'
+        else:
+            raise PolynomialException(
+                "Coefficient of unknown type: %s", atom)
+    else:
+        # Get the coefficient ring of each atom and look for the worst case.
+        result = 'int'
+        for a in atom:
+            cr = coeff_ring(a)
+            assert type(cr) == str
+            if coeff_rings.index(cr) > coeff_rings.index(result):
+                result = cr
+        return result

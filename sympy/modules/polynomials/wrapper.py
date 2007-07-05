@@ -172,9 +172,9 @@ def gcd(f, g, var=None, order=None, coeff=None):
     Examples:
     >>> x = Symbol('x')
     >>> y = Symbol('y')
-    >>> gcd(4*x**2*y, 6*x*y**2)
+    >>> gcd(4*x**2*y, 6*x*y**2, coeff='rat')
     x*y
-    >>> gcd(4*x**2*y, 6*x*y**2, coeff='int')
+    >>> gcd(4*x**2*y, 6*x*y**2)
     2*x*y
 
     """
@@ -184,6 +184,11 @@ def gcd(f, g, var=None, order=None, coeff=None):
         var = [var]
     if var == None:
         var = merge_var(f.atoms(type=Symbol), g.atoms(type=Symbol))
+    if coeff == None:
+        atoms = f.atoms()
+        atoms += filter(lambda a: not a in atoms, g.atoms())
+        atoms = filter(lambda a: not a in var, atoms)
+        coeff = coeff_ring(atoms)
     if len(var) == 0:
         if coeff == 'int':
             assert isinstance(f, Rational) and isinstance(g, Rational)
@@ -255,9 +260,9 @@ def lcm(f, g, var=None, order=None, coeff=None):
     Examples:
     >>> x = Symbol('x')
     >>> y = Symbol('y')
-    >>> lcm(4*x**2*y, 6*x*y**2)
+    >>> lcm(4*x**2*y, 6*x*y**2, coeff='rat')
     x**2*y**2
-    >>> lcm(4*x**2*y, 6*x*y**2, coeff='int')
+    >>> lcm(4*x**2*y, 6*x*y**2)
     12*x**2*y**2
     """
     f = Basic.sympify(f)
@@ -266,6 +271,11 @@ def lcm(f, g, var=None, order=None, coeff=None):
         var = [var]
     if var == None:
         var = merge_var(f.atoms(type=Symbol), g.atoms(type=Symbol))
+    if coeff == None:
+        atoms = f.atoms()
+        atoms += filter(lambda a: not a in atoms, g.atoms())
+        atoms = filter(lambda a: not a in var, atoms)
+        coeff = coeff_ring(atoms)
     if len(var) == 0:
         if coeff == 'int':
             assert isinstance(f, Rational) and isinstance(g, Rational)
