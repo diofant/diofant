@@ -97,4 +97,4 @@ def test_f1():
 def test_f2():
     a = Symbol('a', is_real=True)
     assert limit( (sqrt(cos(x)) - sqrt3(cos(x))) / (sin(x)**2) , x, 0) == -Rational(1, 12) #*184
-    #assert limit(asin(a*x)/x, x, 0) == a
+    assert limit(asin(a*x)/x, x, 0) == a
