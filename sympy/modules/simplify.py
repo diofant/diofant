@@ -1,6 +1,7 @@
 from sympy.core.basic import Basic
 from sympy.core.symbol import Symbol
 from sympy.core.functions import Function, exp
+from sympy.core.functions import Derivative
 from sympy.core.numbers import Rational
 from sympy.core.addmul import Add, Mul
 from sympy.core.power import Pow
@@ -162,11 +163,12 @@ def separate(expr, deep=False):
     else:
         return expr
 
-def collect(expr, syms, pretty=True):
+def collect(expr, syms, pretty=True, exact=False):
     """Collect additive terms with respect to a list of symbols up
        to powers with rational exponents. By the term symbol here
        are meant arbitrary expressions, which can contain powers,
-       products, sums etc.
+       products, sums etc. In other words symbol is a pattern
+       which will be searched for in the expression's terms.
 
        This function will not apply any redundant expanding to the
        input expression, so user is assumed to enter expression in
@@ -176,7 +178,7 @@ def collect(expr, syms, pretty=True):
        powers using 'separate' function.
 
        There are two possible types of output. First, if 'pretty'
-       flag is set, this function will return an single expression
+       flag is set, this function will return a single expression
        or else it will return a dictionary with separated symbols
        up to rational powers as keys and collected sub-expressions
        as values respectively.
@@ -192,7 +194,7 @@ def collect(expr, syms, pretty=True):
        >>> collect(a*x**2 + b*x**2 + a*x - b*x + c, x)
        c+(-b+a)*x+(a+b)*x**2
 
-       The same result achieved but in dictionary form:
+       The same result can achieved in dictionary form:
 
        >>> collect(a*x**2 + b*x**2 + a*x - b*x + c, x, pretty=False)
        {x: -b+a, x**2: a+b, 1: c}
@@ -238,109 +240,196 @@ def collect(expr, syms, pretty=True):
        >>> collect(a*exp(2*x) + b*exp(2*x), exp(x))
        (a+b)*exp(2*x)
 
+       If you are interested only in collecting specific powers
+       of some symbols then set 'exact' flag in arguments:
+
+       >>> collect(a*x**7 + b*x**7, x, exact=True)
+       a*x**7+x**7*b
+
+       >>> collect(a*x**7 + b*x**7, x**7, exact=True)
+       (a+b)*x**7
+
+       You can also apply this function to differential equations, where
+       derivatives of arbitary order can be collected:
+
+       >>> from sympy import Derivative as D
+       >>> f = Function(x)
+
+       >>> collect(a*D(f,x) + b*D(f,x), D(f,x))
+       (a+b)*Function'(x)
+
+       >>> collect(a*D(D(f,x),x) + b*D(D(f,x),x), D(f,x))
+       (a+b)*(Function'(x))'
+
+       >>> collect(a*D(D(f,x),x) + b*D(D(f,x),x), D(f,x), exact=True)
+       a*(Function'(x))'+b*(Function'(x))'
+
+       >>> collect(a*D(D(f,x),x) + b*D(D(f,x),x) + a*D(f,x) + b*D(f,x), D(f,x))
+       (a+b)*Function'(x)+(a+b)*(Function'(x))'
+
+
     """
     def make_list(expr, kind):
+        # returns a list of elements taken from specified expresion
+        # when it is of sequence type, and singleton list otherwise
         if isinstance(expr, kind):
             return expr[:]
         else:
             return [expr]
 
-    def get_base_exp(expr):
-        this_exp = Rational(1)
+    def make_expression(terms):
+        product = []
+
+        for term, rat, sym, deriv in terms:
+            if deriv is not None:
+                var, order = deriv
+
+                while order > 0:
+                    term, order = Derivative(term, var), order-1
+
+            if sym is not None:
+                expo = rat*sym
+            else:
+                expo = rat
+
+            if expo.is_one:
+                product.append(term)
+            else:
+                if isinstance(term, exp):
+                    product.append(exp(expo*term._args))
+                else:
+                    product.append(Pow(term, expo))
+
+        return Mul(*product)
+
+    def parse_derivative(deriv):
+        # scan derivatives tower in the input expression and return
+        # underlying function and maximal differentiation order
+        expr, sym, order = deriv.f, deriv.x, 1
+
+        while isinstance(expr, Derivative) and expr.x == sym:
+            expr, order = expr.f, order+1
+
+        return expr, (sym, Rational(order))
+
+    def parse_term(expr):
+        rat_expo, sym_expo = Rational(1), None
+        sexpr, deriv = expr, None
 
         if isinstance(expr, Pow):
+            if isinstance(expr.base, Derivative):
+                sexpr, deriv = parse_derivative(expr.base)
+            else:
+                sexpr = expr.base
+
             if isinstance(expr.exp, Rational):
-                expr, this_exp = expr.base, expr.exp
+                rat_expo = expr.exp
             elif isinstance(expr.exp, Mul):
                 coeff, tail = expr.exp.getab()
 
                 if isinstance(coeff, Rational):
-                    expr, this_exp = Pow(expr.base, tail), coeff
+                    rat_expo, sym_expo = coeff, tail
+                else:
+                    sym_expo = expr.exp
+            else:
+                sym_expo = expr.exp
         elif isinstance(expr, exp):
             if isinstance(expr._args, Rational):
-                expr, this_exp = exp(Rational(1)), expr._args
+                sexpr, rat_expo = exp(Rational(1)), expr._args
             elif isinstance(expr._args, Mul):
                 coeff, tail = expr._args.getab()
 
                 if isinstance(coeff, Rational):
-                    expr, this_exp = exp(tail), coeff
+                    sexpr, rat_expo = exp(tail), coeff
+        elif isinstance(expr, Derivative):
+            sexpr, deriv = parse_derivative(expr)
 
-        return expr, this_exp
+        return sexpr, rat_expo, sym_expo, deriv
 
-    def has_symbol(terms, sym):
-        items = make_list(sym, Mul)
+    def parse_expression(terms, pattern):
+        pattern = make_list(pattern, Mul)
 
-        if len(terms) < len(items):
+        if len(terms) < len(pattern):
+            # pattern is longer than  matched product
+            # so no chance for positive parsing result
             return None
         else:
-            items = [ get_base_exp(i) for i in items ]
-            terms = [ get_base_exp(t) for t in terms ]
+            pattern = [ parse_term(elem) for elem in pattern ]
 
-            common_exp = Rational(1)
+            elems, common_expo = [], Rational(1)
 
-            for item, i_exp in items:
+            for elem, e_rat, e_sym, e_ord in pattern:
                 for j in range(len(terms)):
-                    term, t_exp = terms[j]
+                    term, t_rat, t_sym, t_ord = terms[j]
 
-                    if term == item:
-                        expo = t_exp / i_exp
+                    if elem == term and e_sym == t_sym:
+                        if exact == False:
+                            # we don't have to exact so find common exponent
+                            # for both expression's term and pattern's element
+                            expo = t_rat / e_rat
 
-                        if common_exp.is_one:
-                            common_exp = expo
+                            if common_expo.is_one:
+                                common_expo = expo
+                            else:
+                                # common exponent was negotiated before so
+                                # teher is no chance for pattern match unless
+                                # common and current exponents are equal
+                                if common_expo != expo:
+                                    return None
                         else:
-                            if common_exp != expo:
-                                return None
+                            # we ought to be exact so all fields of
+                            # interest must match in very details
+                            if e_rat != t_rat or e_ord != t_ord:
+                                continue
 
+                        # found common term so remove it from the expression
+                        # and try to match next element in the pattern
+                        elems.append(terms[j])
                         del terms[j]
+
                         break
                 else:
+                    # pattern element not found
                     return None
 
-            return terms, common_exp
+            return terms, elems, common_expo
 
-    expr = Basic.sympify(expr)
+    summa = [ separate(i) for i in make_list(Basic.sympify(expr), Add) ]
 
     if isinstance(syms, list):
         syms = [ separate(s) for s in syms ]
     else:
         syms = [ separate(syms) ]
 
-    collected, final = {}, {}
-    disliked = Rational(0)
+    collected, disliked = {}, Rational(0)
 
-    for prod in make_list(expr, Add):
-        prod = separate(prod)
+    for product in summa:
+        terms = [ parse_term(i) for i in make_list(product, Mul) ]
 
-        terms = make_list(prod, Mul)
-
-        for sym in syms:
-            result = has_symbol(terms, sym)
+        for symbol in syms:
+            result = parse_expression(terms, symbol)
 
             if result is not None:
-                terms, common_exp = result
-                index = sym, common_exp
-
-                prod = Mul(*[ Pow(term, expo) for term, expo in terms ])
+                terms, elems, common_expo = result
+                index = make_expression(elems)
 
                 if index in collected:
-                    collected[index] += prod
+                    collected[index] += make_expression(terms)
                 else:
-                    collected[index] = prod
+                    collected[index] = make_expression(terms)
 
                 break
         else:
-            disliked += prod
-
-    for ((sym, expo), expr) in collected.iteritems():
-        final[separate(sym**expo)] = expr
+            # none of the patterns matched
+            disliked += product
 
     if disliked != Rational(0):
-        final[Rational(1)] = disliked
+        collected[Rational(1)] = disliked
 
     if pretty:
-        return Add(*[ a*b for a, b in final.iteritems() ])
+        return Add(*[ a*b for a, b in collected.iteritems() ])
     else:
-        return final
+        return collected
 
 def ratsimp(expr):
     """

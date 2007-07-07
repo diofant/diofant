@@ -55,6 +55,8 @@ contains algorithms for symbolic computations, like limit, integration, etc.
 G{packagetree sympy}
 """
 
+import sys
+
 __version__ = "0.4.1"
 
 from sympy.core.basic import Basic
@@ -71,10 +73,13 @@ from sympy.modules.trigonometric import sin, cos, tan, sec, csc, cot, atan, asin
 from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
-from sympy.modules.simplify import ratsimp, simplify
+from sympy.modules.simplify import fraction, numer, denom, together, collect, ratsimp, simplify
 from sympy.modules.polynomials import div, gcd, factor, groebner, lcm, \
      real_roots, resultant, roots, sqf, Ideal
 
 from sympy.modules.printing.pretty import pretty, pretty_print, pprint
 from sympy.modules.printing.mathml import mathml
 from sympy.modules.printing.latex import latex
+
+if sys.version_info[1] < 5:
+    from sympy.modules.utils import any, all
