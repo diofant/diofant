@@ -286,7 +286,10 @@ def test_roots():
            + sin(6*pi/5)*I*Rational(3,2)**Rational(1,5),
            sin(8*pi/5)*I*Rational(3,2)**Rational(1,5) \
            + cos(8*pi/5)*Rational(3,2)**Rational(1,5)]
-    
+    assert roots(x**5 - Rational(3,2), coeff='real') == \
+           [Rational(3,2)**Rational(1,5)]
+    assert roots(x**5 - Rational(3,2), coeff='int') == []
+           
 def test_sqf():
     x = Symbol("x")
     assert sqf(3*x**2, x) == 3*x**2

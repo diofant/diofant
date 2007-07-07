@@ -178,14 +178,26 @@ def uv(f, verbose=False):
     if n == 0: # constant
         return []
     elif n == 1:
-        return [-(f.cl[1][0] / f.cl[0][0])]
+        result = [-(f.cl[1][0] / f.cl[0][0])]
     elif n == 2:
-        return quadratic(f)
+        result = quadratic(f)
     elif n == 3:
-        return cubic(f)
-    
-    res = n_poly(f)
-    if res != None:
-        return res
+        result = cubic(f)
     else:
-        return []
+        result = n_poly(f)
+        if result == None:
+            return []
+
+    # Filter roots by coefficient type:
+    if f.coeff in ['cplx', 'sym']:
+        return result
+    elif f.coeff == 'real':
+        return filter(lambda r: r.is_real, result)
+    elif f.coeff == 'rat':
+        return filter(lambda r: isinstance(r, Rational), result)
+    elif f.coeff == 'int':
+        return filter(
+            lambda r: isinstance(r, Rational) and r.is_integer, result)
+    else:
+        raise PolynomialException(
+            "%s not an implemented coeff type!" % f.coeff)
