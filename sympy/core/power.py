@@ -238,6 +238,14 @@ class Pow(Basic):
                         y, yexact = integer_nthroot(a.q, i)
                         if xexact and yexact:
                             return Rational(x, y)**Rational(b.p, b.q/i)
+                else:
+                    # Try to get some part of the base out, if exp > 1
+                    if self.exp.p > self.exp.q:
+                        i = self.exp.p / self.exp.q
+                        r = self.exp.p % self.exp.q
+                        return Mul(Pow(self.base, i),
+                                   Pow(self.base, Rational(r, self.exp.q)),
+                                   evaluate=False)
             else:
                 return Pow(-1, b) * Pow(-a, b)
 
