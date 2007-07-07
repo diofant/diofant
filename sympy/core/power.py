@@ -172,10 +172,19 @@ class Pow(Basic):
 
         if isinstance(self.exp, Rational):
             if self.exp.is_zero:
+                if isinstance(self, Rational) and self.base.is_zero:
+                    raise pole_error("pow::eval(): 0^0.")
                 return Rational(1)
             elif self.exp.is_one:
                 return self.base
-
+            elif isinstance(self.base, Mul) \
+                 and self.base[0].is_number \
+                 and self.base[0].is_negative:
+                if self.exp.p % 2 == 0:
+                    return Pow(-self.base, self.exp)
+                elif self.exp.q % 2 == 1:
+                    return -Pow(-self.base, self.exp)
+            
         if isinstance(self.base, Rational):
             if self.base.is_zero:
                 if isinstance(self.exp, Rational):
@@ -183,7 +192,6 @@ class Pow(Basic):
                         raise pole_error("pow::eval(): 0^0.")
                     elif self.exp.is_negative:
                         raise pole_error("%s: Division by 0." % str(self))
-
                 return Rational(0)
             elif self.base.is_one:
                 return Rational(1)
