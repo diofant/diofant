@@ -352,51 +352,77 @@ def resultant(f, g, x, method='bezout'):
     else:
         raise ValueError("Invalid method: '%s'" % method)
 
-def roots(a, var=None):
-    """Returns all rational roots of the equation a=0, where a is a
-    polynomial."""
+def roots(f, var=None, coeff=None, verbose=False):
+    """Compute the roots of an univariate polynomial.
 
-    def find_divisors(num):
-        num = abs(int(num))
-        r = []
-        for x in range(1,num+1):
-            if num % x == 0:
-                r.append(x)
-        return r
+    The coeff argument determines the type of the roots to look
+    for. The supported types include 'int', 'rat', 'real' and 'cplx'
+    and the coefficients of given polynomials are assumed to be of
+    this type.
 
-    def candidates(f, l):
-        r = []
-        for x in f:
-            for y in l:
-                r.append(Rational(y,x))
-                r.append(-Rational(y,x))
-        return r
+    Examples:
+    >>> x = Symbol('x')
+    >>> roots(x**2 - 1)
+    [-1, 1]
+    
+    """
+    f = Polynomial(f, var)
+    if len(f.var) != 1:
+        raise PolynomialException(
+            'Multivariate polynomials not yet supported.')
+    if coeff == None:
+        # Allow all roots by default.
+        coeff = coeff_rings[-1]
+    # Determine type of coefficients (for factorization purposes)
+    atoms = f.basic.atoms()
+    atoms = filter(lambda a: not a in f.var, atoms)
+    coeff2 = coeff_ring(atoms)
+    f.coeff = coeff2
+    
+    if f.coeff == 'rat':
+        # Compute lcm of denominators in coefficients:
+        l = 1
+        for term in f.cl:
+            if not isinstance(term[0], Rational):
+                raise PolynomialException('Non-rational coefficient!')
+            l = l*term[0].q / Rational(0).gcd(l, term[0].q)
 
-    if var==None:
-        var = a.atoms(type=Symbol)[0]
-
-    r = []
-    c = coeff_list(a)
-    if len(c[0]) == 1:
-        return []
-    if c[-1][1] != 0:
-        r.append(Rational(0))
-    lastnum = c[-1][0]
-    firstnum = c[0][0]
-    if not lastnum.is_integer:
-        m = lastnum.q
-        lastnum *= m
-        firstnum *= m
-    if not firstnum.is_integer:
-        m = firstnum.q
-        lastnum *= m
-        firstnum *= m
-    last_d = find_divisors(lastnum)
-    first_d = find_divisors(firstnum)
-    for t in candidates(first_d, last_d):
-        if a.subs(var, t) == 0:
-            r.append(t)
-    return r
+        # Make f a polynomial in integer coefficients:
+        f.cl = map(lambda t:[t[0]*Rational(l)] + t[1:], f.cl)
+        f.coeff = 'int'
+    if f.coeff in ['int', 'rat']:
+        # Remove content before factorization:
+        c = f.content()
+        f.cl = map(lambda t:[t[0]/c] + t[1:], f.cl)
+        # Hacks for special cases (where factorization would do harm)
+        # TODO: Support these cases differently, in roots_.uv
+        if len(f.cl) == 1:
+            if f.cl[0][1] == 0:
+                return []
+            else:
+                return[Rational(0)]
+        if len(f.cl) == 2:
+            f.coeff = coeff
+            result = []
+            if f.cl[1][1] > 0:
+                result.append(Rational(0))
+                f.cl = map(lambda t:[t[0], t[1]-f.cl[1][1]], f.cl)
+            return result + roots_.uv(f)    
+        else:
+            # Factor without multiplicity.
+            factors = []
+            factors = filter(lambda p: not p in factors,
+                             factor_.uv_int(f))
+    else:
+        factors = [f]
+        
+    # Now check for roots in each factor
+    result = []
+    for p in factors:
+        p.coeff = coeff
+        result += roots_.uv(p)
+        
+    return result
 
 def sqf(f, var=None):
     """Computes the square-free decomposition of 'f'.

@@ -22,6 +22,8 @@ def test_Polynomial():
     assert repr(f) == "Polynomial(2+x, [x], 'grevlex', 'sym')"
     assert f.basic == x+2
     assert f == Polynomial(f.cl, f.var, f.var)
+    assert f.nth_coeff(0) == 2
+    assert f.nth_coeff(2) == 0
     assert h.var == [x, y]
     assert h.cl == [[1, 0, 2], [1, 1, 0], [1, 0, 0]]
     h = f*Polynomial(y,[x])
@@ -250,18 +252,41 @@ def test_resultant():
     assert b_res == s_res == ((a-c)*(b-c)).expand()
 
 def test_roots():
+    a = Symbol("a")
+    b = Symbol("b")
+    c = Symbol("c")
     x = Symbol("x")
     assert roots(x**2-3*x+2) == [1,2]
-    assert roots(x**2-3*x/2+Rational(1,2)) == [1,Rational(1)/2]
-    assert roots(2*x**2-3*x+1) == [1,Rational(1)/2]
-    assert roots(x**2-1) == [1,-1]
-    assert roots(x**2+1) == []
-    assert roots(x**3-1) == [1]
-
+    assert roots(x**2-3*x/2+Rational(1,2)) == [1,Rational(1,2)]
+    assert roots(2*x**2-3*x+1) == [1,Rational(1,2)]
+    assert roots(x**2-1) == [-1, 1]
+    assert roots(x**2+1) == [-I, I]
+    assert roots(x**3-1) == [Rational(-1,2)-I/2*3**Rational(1,2), 1,
+                             Rational(-1,2)+I/2*3**Rational(1,2)]
     assert roots(x**3) == [0]
-    assert roots(x**3-x) == [0,1,-1]
+    assert roots(x**3-x) == [0,-1,1]
     assert roots(Rational(2),x) == []
-
+    assert roots(a*x**2 + b*x + c, var=[x], coeff='sym') == \
+           [-b/(a*2)+(((b/a)**2-4*c/a)**Rational(1,2))/2,
+            -b/(a*2)-(((b/a)**2-4*c/a)**Rational(1,2))/2]
+    assert roots(x**3 + x**2 + x + 1) == [-1, -I, I]
+    assert roots(x**4 - 1) == [1, I, -1, -I]
+    assert roots(x**4 + 1) == \
+          [2**Rational(1,2)*I/2+2**Rational(1,2)/2,
+           2**Rational(1,2)*I/2-2**Rational(1,2)/2,
+           -2**Rational(1,2)/2-2**Rational(1,2)*I/2,
+           -2**Rational(1,2)*I/2+2**Rational(1,2)/2]
+    assert roots(x**5 - Rational(3,2)) == \
+          [Rational(3,2)**Rational(1,5),
+           cos(2*pi/5)*Rational(3,2)**Rational(1,5) \
+           + sin(2*pi/5)*I*Rational(3,2)**Rational(1,5),
+           sin(4*pi/5)*I*Rational(3,2)**Rational(1,5) \
+           + Rational(3,2)**Rational(1,5)*cos(4*pi/5),
+           cos(6*pi/5)*Rational(3,2)**Rational(1,5) \
+           + sin(6*pi/5)*I*Rational(3,2)**Rational(1,5),
+           sin(8*pi/5)*I*Rational(3,2)**Rational(1,5) \
+           + cos(8*pi/5)*Rational(3,2)**Rational(1,5)]
+    
 def test_sqf():
     x = Symbol("x")
     assert sqf(3*x**2, x) == 3*x**2

@@ -16,7 +16,9 @@ def uv_int(f):
             # In a square-free polynomial, the roots appear only once.
             for root in rr:
                 pp = Polynomial(
-                    [[root.q, 1], [-root.p, 0]], f.var, f.order, f.coeff)
+                    [[Rational(root.q), 1],
+                     [Rational(-root.p), 0]],
+                    f.var, f.order, f.coeff)
                 result += [pp]*(i+1)
                 # TODO: remove assertion, speed up!
                 q, r = div_.mv_int(p, pp)

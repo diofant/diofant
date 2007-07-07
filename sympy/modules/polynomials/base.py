@@ -334,6 +334,15 @@ class Polynomial(Basic):
             r._cl = copy_cl(self._cl)
         return r
 
+    def nth_coeff(self, exponent):
+        if not isinstance(exponent, list):
+            exponent = [exponent]
+        for term in self.cl:
+            if term[1:] == exponent:
+                return term[0]
+        else: # No term with matching exponent found.
+            return Rational(0)
+
     def content(self):
         if self.coeff != 'int':
             return Rational(1)
