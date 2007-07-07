@@ -149,6 +149,8 @@ def testpow():
     assert (-2)**k == 2**k
     assert (-1)**k == 1
 
+    assert 4**Rational(1, 4) == 2**Rational(1, 2)
+
 def test_expand():
     a = g.Symbol("a")
     b = g.Symbol("b")

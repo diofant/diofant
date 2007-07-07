@@ -209,7 +209,8 @@ class Pow(Basic):
                 r = cos(pi/self.exp.q) + ImaginaryUnit()*sin(pi/self.exp.q)
                 return r**self.exp.p
 
-            # Rational ** Rational, general case. Calculate explicitly whenever possible.
+            # Rational ** Rational, general case.
+            # Calculate explicitly whenever possible.
             a = self.base
             b = self.exp
             if a >= 0:
@@ -221,6 +222,14 @@ class Pow(Basic):
                         return res
                     else:
                         return 1/res
+                # Now check also devisors of the exponents denominator
+                # TODO: Check if this slows down to much.
+                for i in range(2, b.q/2 + 1):
+                    if b.q % i == 0:
+                        x, xexact = integer_nthroot(a.p, i)
+                        y, yexact = integer_nthroot(a.q, i)
+                        if xexact and yexact:
+                            return Rational(x, y)**Rational(b.p, b.q/i)
             else:
                 return Pow(-1, b) * Pow(-a, b)
 
