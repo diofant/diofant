@@ -5,11 +5,11 @@ both algebraic (solve) and differential (dsolve).
 
 from sympy import Basic, Symbol, Number, Mul, log, Add, \
         sin, cos, integrate, sqrt, exp, Rational
-        
+
 from sympy.core.functions import Derivative, diff
-from sympy.modules.polynomials import collect
+from sympy.modules.simplify import collect, simplify
 from sympy.modules.matrices import zeronm
-from sympy.modules.simplify import simplify
+from sympy.modules.utils import any
 
 class Equation(Basic):
 
@@ -127,7 +127,7 @@ class StrictInequality(Inequality):
     def __latex__(self):
         return "%s \le %s" % (self.lhs.__latex__(), self.rhs.__latex__())
 
-def solve(eq, vars):
+def solve(eq, syms):
     """
     Solves any (supported) kind of equation (not differential).
 
@@ -139,12 +139,12 @@ def solve(eq, vars):
       3/2
 
     """
-    
-    if isinstance(vars, Basic):
-        vars = [vars]
 
-    if isinstance(vars, Symbol) or len(vars) == 1: # change this
-        x = vars[0]
+    if isinstance(syms, Basic):
+        syms = [syms]
+
+    if isinstance(syms, Symbol) or len(syms) == 1: # change this
+        x = syms[0]
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
 
         r = eq.match(a*x + b, [a,b]) # linear equation
@@ -155,51 +155,84 @@ def solve(eq, vars):
 
         r = eq.match(a*x**2 + b*x + c, [a,b,c]) # quadratic equation
         if r and _wo(r,x): return solve_quadratic(r[a], r[b], r[c])
-        
-        d = Symbol('d', dummy=True)        
+
+        d = Symbol('d', dummy=True)
         r = eq.match(a*x**3 + b*x**2 + c*x + d, [a,b,c,d])
         if r and _wo(r, x): return solve_cubic(r[a], r[b], r[c], r[d])
-        
+
         r = eq.match(a*x**3 - b*x + c)
         if r and _wo(r, x): return solve_cubic(r[a], 0, r[b], r[c])
     else:
         # augmented matrix
-        n, m = len(eq), len(vars)
+        n, m = len(eq), len(syms)
         matrix = zeronm(n, m+1)
-        
-        index = {}
-        
-        for i in range(0, len(vars)):
-            index[vars[i]] = i
-        
-        for i in range(0, n):
-            poly = collect(Basic.sympify(eq[i]).expand(), vars)
-        
-            if poly is not None:
-                content, tail = poly
-            else:
-                break # at this point we will need Groebner basis 
-                      # and multivariate polynomial factorization
 
-            for (sym, coeff) in content.iteritems():
-                matrix[i, index[sym]] = coeff
-                
-            matrix[i, m] = -tail
+        index = {}
+
+        for i in range(0, len(syms)):
+            index[syms[i]] = i
+
+        for i in range(0, n):
+            if isinstance(eq[i], Equation):
+                # got equation, so move all the
+                # terms to the left hand side
+                equ = eq[i].lhs - eq[i].rhs
+            else:
+                equ = Basic.sympify(eq[i])
+
+            content = collect(equ.expand(), syms, pretty=False)
+
+            for sym, expr in content.iteritems():
+                if isinstance(sym, Symbol) and not expr.has_any(syms):
+                    matrix[i, index[sym]] = expr
+                elif sym == Rational(1) and not expr.has_any(syms):
+                    matrix[i, m] = -expr
+                else:
+                    raise "Not a linear system."
         else:
-            return solve_linear_system(matrix, vars)
+            return solve_linear_system(matrix, syms)
+
+    # at this point we will need Groebner basis
+    # and multivariate polynomial factorization
 
     raise "Sorry, can't solve it (yet)."
 
-def solve_linear_system(matrix, syms):
-    """
-    Fraction free Gaussian elimination (the result is an upper diagonal matrix).
+def solve_linear_system(system, syms):
+    """Solve system of N linear equations with M variables, which means
+       both Cramer and over defined systems are supported. The possible
+       number of solutions is zero, one or infinite. Respectively this
+       functions will return empty dictionary or dictionary containing
+       the same or less number of items as the number of variables. If
+       there is infinite number of solutions, it will skip variables
+       with can be assigned with arbitrary values.
 
-    This algorithm works for both any type of system (with 0, 1 or infinite
-    number of solutions).
+       Input to this functions is a Nx(M+1) matrix, which means it has
+       to be in augmented form. If you are unhappy with such setting
+       use 'solve' method instead, where you can input equations
+       explicitely. And don't worry aboute the matrix, this function
+       is persistent and will make a local copy of it.
 
-    Look into the test_solvers.py for examples of usage.
+       The algorithm used here is fraction free Gaussian elimination,
+       which results, after elimination, in upper-triangular matrix.
+       Then solutions are found using back-substitution. This approach
+       is more efficient and compact than the Gauss-Jordan method.
+
+       >>> from sympy import *
+       >>> x, y = symbols('x', 'y')
+
+       Solve the following system:
+
+              x + 4 y ==  2
+           -2 x +   y == 14
+
+       >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
+       >>> solve_linear_system(system, [x, y])
+       {x: -6, y: 2}
+
     """
-    i, m = 0, matrix.cols-1 # don't count augmentation
+    #matrix = system.copy()  # we would like to be persistent
+    matrix = system          # where is copy() ???
+    i, m = 0, matrix.cols-1  # don't count augmentation
 
     while i < matrix.lines:
         if matrix [i, i] == 0:
@@ -212,38 +245,38 @@ def solve_linear_system(matrix, syms):
                 if matrix[i, m] != 0:
                     return {}   # no solutions
                 else:
-                    # zero row or was a linear combination of 
+                    # zero row or was a linear combination of
                     # other rows so now we can safely skip it
                     matrix.row_del(i)
                     continue
-    
+
             # we want to change the order of colums so
             # the order of variables must also change
-            syms[i], syms[k] = syms[k], syms[i]            
+            syms[i], syms[k] = syms[k], syms[i]
             matrix.col_swap(i, k)
-            
-        pivot = matrix [i, i] 
+
+        pivot = matrix [i, i]
 
         # divide all elements in the current row by the pivot
         matrix.row(i, lambda x, _: x / pivot)
-            
+
         for k in range(i+1, matrix.lines):
             if matrix[k, i] != 0:
                 coeff = matrix[k, i]
-                
-                # subtract from the current row the row containing 
+
+                # subtract from the current row the row containing
                 # pivot and multiplied by extracted coefficient
                 matrix.row(k, lambda x, j: x - matrix[i, j]*coeff)
-            
+
         i += 1
-       
+
     # if there weren't any problmes, augmented matrix is now
     # in row-echelon form so we can check how many solutions
     # there are and extract them using back substitution
 
     if len(syms) == matrix.lines:
         # this system is Cramer equivalent so there is
-        # exactly one solution to this system of equations 
+        # exactly one solution to this system of equations
         k, solutions = i-1, {}
 
         while k >= 0:
@@ -252,11 +285,11 @@ def solve_linear_system(matrix, syms):
             # run back-substitution for variables
             for j in range(k+1, m):
                 content -= matrix[k, j]*solutions[syms[j]]
-    
+
             solutions[syms[k]] = simplify(content)
-            
+
             k -= 1
-            
+
         return solutions
     elif len(syms) > matrix.lines:
         # this system will have infinite number of solutions
@@ -269,18 +302,101 @@ def solve_linear_system(matrix, syms):
             # run back-substitution for variables
             for j in range(k+1, i):
                 content -= matrix[k, j]*solutions[syms[j]]
-    
+
             # run back-substitution for parameters
             for j in range(i, m):
                 content -= matrix[k, j]*syms[j]
-                
+
+            # NOTE: I'm not sure if 'simplify' should be applied
+            # here. It would have been better if there was keyword
+            # simplify=True for this.
             solutions[syms[k]] = simplify(content)
-            
+
             k -= 1
-            
+
         return solutions
     else:
         return {}   # no solutions
+
+def particular_solution(sym, n, generator=None):
+    """Generate particular solution for the method of undetermined
+       coefficients. This function accepts user specifed list
+       of symbolic coefficiens or will prepare its own using
+       internal or user-defined generator.
+
+       Generator is a function which yields distinct names for
+       all the coefficients required by the particular solution.
+
+       >>> from sympy import *
+       >>> a, b, c, x = symbols('a', 'b', 'c', 'x')
+
+       >>> particular_solution(x, 2, [a, b, c])
+       x*b+c+x**2*a
+
+       >>> particular_solution(x, 2)
+       a_0+x*a_1+a_2*x**2
+
+       >>> particular_solution(x, 2, 'p')
+       p_0+x*p_1+x**2*p_2
+
+       >>> def alphabet(n):
+       ...    for i in range(n):
+       ...        yield chr(i+65)
+
+       >>> particular_solution(x, 4, alphabet)
+       x**4*A+E+x*D+x**3*B+x**2*C
+
+    """
+
+    if generator is None:
+        coeffs = [ Symbol("a_%s" % (n-i)) for i in range(n+1) ]
+    else:
+        if callable(generator):
+            coeffs = [ Symbol(name) for name in generator(n+1) ]
+        elif isinstance(generator, str):
+            coeffs = [ Symbol(generator+"_%s" % (n-i)) for i in range(n+1) ]
+        elif isinstance(generator, list):
+            coeffs = generator
+        else:
+            raise TypeError("'%s' is invalid coefficients "
+                            "generator" % type(generator))
+
+    return Add(*[ coeffs[i] * sym**(n-i) for i in range(n+1) ])
+
+def solve_undetermined_coeffs(equ, coeffs, sym):
+    """Solve equation of a type p(x; a_1, ..., a_k) == q(x) where both
+       p, q are univariate polynomials and f depends on k parameters.
+       The result of this functions is a dictionary with symbolic
+       values of those parameters with respect to coefficiens in q.
+
+       This functions accepts both Equations class instances and ordinary
+       SymPy expressions. Specification of parameters and variable is
+       obligatory for efficiency and simplicity reason.
+
+       >>> from sympy import *
+       >>> a, b, c, x = symbols('a', 'b', 'c', 'x')
+
+       >>> solve_undetermined_coeffs(2*a*x + a+b == x, [a, b], x)
+       {a: 1/2, b: -1/2}
+
+       >>> solve_undetermined_coeffs(a*c*x + a+b == x, [a, b], x)
+       {a: (1/c), b: -1/c}
+
+    """
+    if isinstance(equ, Equation):
+        # got equation, so move all the
+        # terms to the left hand side
+        equ = equ.lhs - equ.rhs
+
+    system = collect(equ, sym, pretty=False).values()
+
+    if not any([ equ.has(sym) for equ in system ]):
+        # consecutive powers in the input expressions have
+        # been successfully collected, so solve remaining
+        # system using Gaussian ellimination algorithm
+        return solve(system, coeffs)
+    else:
+        return {} # no solutions
 
 def solve_linear_system_LU(matrix, syms):
     """ LU function works for invertible only """
@@ -309,32 +425,32 @@ def solve_quadratic(a, b, c):
                ]
 def solve_cubic(a, b, c, d):
     """Solve the cubic a*x**3 + b*x**2 + c*x + d == 0
-    
+
     arguments are supposed to be sympy objects (so no python float's, int's, etc.)
-    
+
     Cardano's method: http://en.wikipedia.org/wiki/Cubic_equation#Cardano.27s_method
     """
     # we calculate the depressed cubic t**3 + p*t + q
-    
+
     #normalize
     a_1 = b / a
     b_1 = c / a
     c_1 = c / a
-    
+
     del a, b, c
-    
+
     p = b_1 - (a_1**2)/3
     q = c_1 + (2*a_1**3 - 9*a_1*b_1)/27
-    
+
     u_1 = ( (q/2) + sqrt((q**2)/4 + (p**3)/27) )**Rational(1,3)
     u_2 = ( (q/2) - sqrt((q**2)/4 + (p**3)/27) )**Rational(1,3)
     # todo: this irnores
-    
+
     x_1 = p/(3*u_1) - u_1 - a_1/3
     x_2 = p/(3*u_2) - u_2 - a_1/3
-    
+
     return (x_1, x_2)
-    
+
 
 def dsolve(eq, funcs):
     """
@@ -344,23 +460,23 @@ def dsolve(eq, funcs):
     =====
         dsolve(f, y(x)) -> Solve a differential equation f for the function y
 
-        
+
     Details
     =======
         @param f: ordinary differential equation
-        
+
         @param y: indeterminate function of one variable
-    
+
         - you can declare the derivative of an unknown function this way:
         >>> from sympy import *
         >>> x = Symbol('x') # x is the independent variable
         >>> f = Function(x) # f is a function of f
         >>> f_ = Derivative(f, x) # f_ will be the derivative of f with respect to x
-        
+
         - This function just parses the equation "eq" and determines the type of
         differential equation, then it determines all the coefficients and then
         calls the particular solver, which just accepts the coefficients.
-        
+
     Examples
     ========
         >>> from sympy import *
@@ -380,7 +496,7 @@ def dsolve(eq, funcs):
             f = funcs[0]
         else:
             f = funcs
-            
+
         x = f[0]
         a,b,c = [Symbol(s, dummy = True) for s in ["a","b","c"]]
 

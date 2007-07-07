@@ -58,7 +58,7 @@ G{packagetree sympy}
 __version__ = "0.4.1"
 
 from sympy.core.basic import Basic
-from sympy.core.symbol import Symbol, O
+from sympy.core.symbol import Symbol, symbols, O
 from sympy.core.functions import Function, exp, log, ln, sqrt, sign, diff
 from sympy.core.functions import Derivative
 from sympy.core.numbers import Rational, Real, Number, oo, I, pi

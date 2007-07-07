@@ -103,26 +103,6 @@ def test_coeff():
     assert coeff(2*x+18*x**8, x, 4) == 0
     assert coeff(2*x+18*x**8, x, 8) == 18
 
-def test_collect():
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-    a = Symbol('a')
-
-    from sympy.modules.trigonometric import sin, cos
-
-    assert collect(x, [x, y, z]) == ({x: 1}, 0)
-    assert collect(x-1, [x, y, z]) == ({x: 1}, -1)
-    assert collect(x+y+z, [x, y, z]) == ({x: 1, y: 1, z: 1}, 0)
-    assert collect(sin(a)*x-2*cos(a)*y+1024*z-a, [x, y]) \
-            == ({x: sin(a), y: -2*cos(a)}, 1024*z-a)
-    assert collect(2*x + sin(z)*x + cos(a)*y + z + cos(a) + cos(a)*x + 1, [x, y]) \
-            == ({x: 2+sin(z)+cos(a), y: cos(a)}, z+cos(a)+1)
-    assert collect(x*y, [x, y]) == None
-    assert collect(x*y+2*y+z, [x, y, z]) == None
-    assert collect(sin(x)*x+y+z, [x, y, z]) == None
-    assert collect(sin(y)*x+y+z, [x, y, z]) == None
-
 def test_div():
     x = Symbol("x")
     y = Symbol('y')

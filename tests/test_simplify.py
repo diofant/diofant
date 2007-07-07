@@ -73,4 +73,25 @@ def test_together():
 
     assert together(1/x + 1/y + 1/z) == (x*y + x*z + y*z)/(x*y*z)
 
+    assert together(sin(1/x+1/y)) == sin(1/x+1/y)
+    assert together(sin(1/x+1/y), deep=True) == sin((x+y)/(x*y))
 
+def test_separate():
+    x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
+
+    assert separate((x*y*z)**4) == x**4*y**4*z**4
+    assert separate((x*y*z)**x) == x**x*y**x*z**x
+    assert separate((x*(y*z)**2)**3) == x**3*y**6*z**6
+
+    assert separate((sin((x*y)**2)*y)**z) == sin((x*y)**2)**z*y**z
+    assert separate((sin((x*y)**2)*y)**z, deep=True) == sin(x**2*y**2)**z*y**z
+
+    assert separate(exp(x)**2) == exp(2*x)
+    assert separate((exp(x)*exp(y))**2) == exp(2*x)*exp(2*y)
+    assert separate((exp(x)*exp(y))**z) == exp(x*z)*exp(y*z)
+
+    assert separate((exp((x*y)**z)*exp(y))**2) == exp(2*(x*y)**z)*exp(2*y)
+    assert separate((exp((x*y)**z)*exp(y))**2, deep=True) == exp(2*x**z*y**z)*exp(2*y)
+
+def test_collect():
+    pass

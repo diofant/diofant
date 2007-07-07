@@ -22,68 +22,6 @@ def coeff(poly, x, n):
     else:
         return t[0][0]
 
-def collect(expr, syms):
-    """Collect additive terms with respect to a list of variables in a linear
-       multivariate polynomial. This function assumes the input expression is
-       in an expanded form and will return None if this is not a linear
-       polynomial or else a pair of the following form:
-
-          ( { variable : coefficient }, free term )
-
-       Example:
-       >>> from sympy import *
-       >>> from sympy.modules.polynomials import collect
-       >>> x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
-       >>> collect(2*x + sin(z)*x + cos(z)*y + 1, [x, y])
-       ({x: 2+sin(z), y: cos(z)}, 1)
-
-    """
-    if isinstance(expr, (Add, Mul)):
-        content, tail = {}, 0
-
-        if isinstance(expr, Mul):
-            expr = [expr]
-
-        for term in expr:
-            coeff = 1
-
-            while isinstance(term, Mul):
-                a, term = term.getab()
-
-                if isinstance(a, Symbol) and a in syms:
-                    if (term.has_any(syms)):
-                        return None
-                    else:
-                        coeff *= term
-
-                        if a in content:
-                            content[a] += coeff
-                        else:
-                            content[a] = coeff
-
-                        break
-                else:
-                    if (a.has_any(syms)):
-                        return None
-                    else:
-                        coeff *= a
-            else:
-                if isinstance(term, Symbol) and term in syms:
-                    if term in content:
-                        content[term] += coeff
-                    else:
-                        content[term] = coeff
-                else:
-                    tail += coeff * term
-
-        return (content, tail)
-    elif isinstance(expr, Symbol) and expr in syms:
-        return ({expr : 1}, 0)
-    elif isinstance(expr, Basic) and not expr.has_any(syms):
-        return ({}, expr)
-    else:
-        return None
-
 def div(f, g, var=None, order=None, coeff=None):
     """Polynomial division of f by g, returns quotients and remainder.
 
@@ -138,7 +76,7 @@ def factor(f):
     >>> x = Symbol('x')
     >>> factor(x**4-1)
     (1+x)*(1+x**2)*(-1+x)
-    
+
     """
     f = Polynomial(f, coeff='int')
     if len(f.var) != 1:
@@ -179,7 +117,7 @@ def gcd(f, g, var=None, order=None, coeff=None):
 
     """
     f = Basic.sympify(f)
-    g = Basic.sympify(g)    
+    g = Basic.sympify(g)
     if isinstance(var, Symbol):
         var = [var]
     if var == None:
@@ -256,7 +194,7 @@ def groebner(f, var=None, order=None, coeff=None, reduced=True):
 
 def lcm(f, g, var=None, order=None, coeff=None):
     """Least common divisor of two polynomials.
-    
+
     Examples:
     >>> x = Symbol('x')
     >>> y = Symbol('y')
@@ -330,7 +268,7 @@ def real_roots(f, a=None, b=None):
     2
     >>> real_roots(x**2 - 1, 0, 2)
     1
-    
+
     """
     f = Basic.sympify(f)
     if a != None:
