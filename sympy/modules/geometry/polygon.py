@@ -26,7 +26,7 @@ class Polygon(GeometryEntity):
     def area(self):
         """Returns the area of the polygon."""
         area = 0
-        for ind in xrange(0, len(self._vertices)-1):
+        for ind in xrange(-1, len(self._vertices)-1):
             pi = self._vertices[ind]
             pii = self._vertices[ind+1]
             area += pi[0]*pii[1]-pii[0]*pi[1]
@@ -84,16 +84,15 @@ class Polygon(GeometryEntity):
     @property
     def centroid(self):
         """Returns the centroid of the polygon."""
-        # TODO Double check this formula
-        x = Rational(0)
-        y = Rational(0)
-        n = len(self._points)
-        for p in self._vertices:
-            x += p[0]
-            y += p[1]
-        x = simplify(x/n)
-        y = simplify(y/n)
-        return Point(x, y)
+        A = 1 / (6*self.area)
+        cx,cy = 0,0
+        for ind in xrange(-1, len(self._vertices)-1):
+            pi = self._vertices[ind]
+            pii = self._vertices[ind+1]
+            v = pi[0]*pii[1]-pii[0]*pi[1]
+            cx += v*(pi[0] + pii[0])
+            cy += v*(pi[1] + pii[1])
+        return Point(simplify(A*cx), simplify(A*cy))
 
     @property
     def sides(self):
@@ -106,8 +105,8 @@ class Polygon(GeometryEntity):
 
     def is_convex(self):
         """Returns True if this polygon is convex, False otherwise."""
-        #XXX Should we override this in RegularPoygon and Triangle since they
-        #    are never convex (if the tiny performance boost is important)
+        # XXX Should we override this in RegularPoygon and Triangle since they
+        #     are never convex (if the tiny performance boost is important)
         def tarea(a, b, c):
             return (b[0] - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(b[1] - a[1])
 
@@ -199,6 +198,9 @@ class Polygon(GeometryEntity):
     def __str__(self):
         return "Polygon(%d sides)" % (len(self._vertices)-1)
 
+    def __repr__(self):
+        return "Polygon(%s)" % [repr(x) for x in self._vertices]
+
 
 class RegularPolygon(Polygon):
     """A regular polygon."""
@@ -273,6 +275,13 @@ class RegularPolygon(Polygon):
             ret[v] = ang
         return ret
 
+    def __str__(self):
+        return "RegularPolygon(%d sides)" % (len(self._vertices)-1)
+
+    def __repr__(self):
+        n = len(self._vertices) - 1
+        return "RegularPolygon(%s, %s, %r)" % (repr(self._c), repr(self._r), n)
+
 class Triangle(Polygon):
     """A triangle (3 sided polygon)."""
 
@@ -309,9 +318,6 @@ class Triangle(Polygon):
 
     def is_right(self):
         """Returns True if the triangle is right-angled, False otherwise."""
-        #for angle in self.angles:
-        #    if angle == pi/2: return True
-        #return False
         s = self.sides
         return Segment.is_perpendicular(s[0], s[1]) or \
                Segment.is_perpendicular(s[1], s[2]) or \
@@ -337,7 +343,9 @@ class Triangle(Polygon):
 
     @property
     def circumcenter(self):
-        return self.orthocenter
+        """Returns the circumcenter of the triangle."""
+        a,b,c = [x.perpendicular_bisector() for x in self.sides]
+        return GeometryEntity.do_intersection(a, b)[0]
 
     @property
     def circumradius(self):
@@ -350,8 +358,8 @@ class Triangle(Polygon):
     @property
     def bisectors(self):
         """
-        Returns the bisectors of the triangle in a dictionary where the key
-        is the vertex and the value is the bisector at that point.
+        Returns the angle bisectors of the triangle in a dictionary where the
+        key is the vertex and the value is the bisector at that point.
         """
         s = self.sides
         v = self._vertices
@@ -388,7 +396,6 @@ class Triangle(Polygon):
         Returns the medians of the triangle in a dictionary where the key
         is the vertex and the value is the median at that point.
         """
-        # XXX See Triangle.altitudes for comments on the usage of self.sides 
         s = self.sides
         v = self._vertices
         return {v[0]: Segment(s[1].midpoint, v[0]),
@@ -401,13 +408,11 @@ class Triangle(Polygon):
         s = self.sides
         return Triangle(s[0].midpoint, s[1].midpoint, s[2].midpoint)
 
-    @property
-    def excircles(self):
-        """
-        Returns a list of the three excircles for this triangle.
-        """
-        pass
+    #@property
+    #def excircles(self):
+    #    """Returns a list of the three excircles for this triangle."""
+    #    pass
 
     def __str__(self):
-        fmt_tuple = (str(self._vertices[0]), str(self._vertices[1]), str(self._vertices[2]))
+        fmt_tuple = (repr(self._vertices[0]), repr(self._vertices[1]), repr(self._vertices[2]))
         return "Triangle(%s, %s, %s)" % fmt_tuple

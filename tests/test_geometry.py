@@ -148,6 +148,10 @@ def test_ellipse():
     e3 = g.Ellipse(p1, y1, y1)
     c1 = g.Circle(p1, 1)
 
+    # Test creation with three points
+    cen,rad = g.Point(3*half, 2), 5*half
+    assert g.Circle(g.Point(0,0), g.Point(3,0), g.Point(0,4)) == g.Circle(cen, rad)
+
     # Basic Stuff
     assert e1 == c1
     assert e1 != e2
@@ -298,9 +302,12 @@ def test_polygon():
     ic = Rational(25) / (Rational(10) + sqrt(50))
     assert t1.incenter == g.Point(ic, ic)
 
-    # Medians
-    assert t1.medians[p1] == g.Segment(p1, g.Point(Rational(5,2), Rational(5,2)))
+    # Medians + Centroid
+    m = t1.medians
+    assert t1.centroid == g.Point(Rational(5,3), Rational(5,3))
+    assert m[p1] == g.Segment(p1, g.Point(Rational(5,2), Rational(5,2)))
     assert t3.medians[p1] == g.Segment(p1, g.Point(x1/2, x1/2))
+    assert g.intersection(m[p1], m[p2], m[p3]) == [t1.centroid]
 
     # Perpendicular
     altitudes = t1.altitudes

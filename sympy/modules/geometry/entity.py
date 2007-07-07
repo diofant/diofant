@@ -20,7 +20,7 @@ class GeometryEntity(object):
 
         try:
             return e2._intersection(e1)
-        except Exception:
+        except NotImplementedError:
             n1,n2 = type(e1).__name__, type(e2).__name__
             raise NotImplementedError("Unable to determine intersection between '%s' and '%s'" % (n1, n2))
 

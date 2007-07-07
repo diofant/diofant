@@ -72,7 +72,7 @@ class Ellipse(GeometryEntity):
             return Line(p, p2)
         else:
             # TODO If p is not on the ellipse, attempt to create the
-            #      tangent(s) from point p to the ellipse.
+            #      tangent(s) from point p to the ellipse..?
             raise NotImplementedError("Cannot find tangent lines when p is not on the ellipse")
 
     def is_tangent(self, o):
@@ -187,7 +187,7 @@ class Ellipse(GeometryEntity):
             if o == self:
                 return self
             else:
-                # TODO
+                # TODO This is a bit more complicated
                 pass
 
         raise NotImplementedError()
@@ -210,8 +210,7 @@ class Ellipse(GeometryEntity):
             return False
 
     def __str__(self):
-        args = (str(self._c), str(self._hr), str(self._vr))
-        return "Ellipse(center=%s, horizontal radius=%s, vertical radius=%s)" % args
+        return "Ellipse(%s, %s, %s)" % (repr(self._c), repr(self._hr), repr(self._vr))
 
 
 class Circle(Ellipse):
@@ -221,9 +220,16 @@ class Circle(Ellipse):
         if len(args) == 2:
             # Assume (center, radius) pair
             Ellipse.__init__(self, args[0], args[1], args[1], **kwargs)
-        elif len(args) == 3:
-            # Assume three points
-            raise NotImplementedError()
+        elif len(args) == 3 and isinstance(args[0], Point):
+            from polygon import Triangle
+            t = Triangle(args[0], args[1], args[2])
+            if t.area == 0:
+                raise Exception("Given points are not concyclic")
+            c = t.circumcenter
+            r = t.circumradius
+            Ellipse.__init__(self, c, r, r, **kwargs)
+        else:
+            raise Exception("Unknown set of arguments")
 
     @property
     def radius(self):
@@ -270,3 +276,6 @@ class Circle(Ellipse):
             return list(set([Point(x,y), Point(x,-y), Point(-x,y), Point(-x,-y)]))
 
         return Ellipse._intersection(self, o)
+
+    def __str__(self):
+        return "Circle(%s, %s)" % (repr(self._c), repr(self._hr))

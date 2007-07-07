@@ -12,8 +12,8 @@ class Point(GeometryEntity):
             self._coords = tuple([Basic.sympify(x) for x in args])
         else:
             self._coords = tuple([Basic.sympify(x) for x in args[0]])
-        if len(self._coords) > 2:
-            raise NotImplementedError("Greater than two dimensions not yet supported")
+        if len(self._coords) != 2:
+            raise NotImplementedError("Only two dimensional points currently supported")
 
     def is_collinear(*args):
         """

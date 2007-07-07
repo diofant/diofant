@@ -173,7 +173,7 @@ class LinearEntity(GeometryEntity):
 
     def __str__(self):
         n = type(self).__name__
-        return "%s(%s, %s)" % (n, str(self._p1), str(self._p2))
+        return "%s(%s, %s)" % (n, repr(self._p1), repr(self._p2))
 
 
 class Line(LinearEntity):
@@ -204,7 +204,6 @@ class Line(LinearEntity):
         y = Symbol(yaxis_name)
         a,b,c = self.coefficients
         return simplify(a*x + b*y + c)
-        #return a*x + b*y + c
 
     def __contains__(self, o):
         if isinstance(o, Line):
@@ -246,7 +245,6 @@ class Ray(LinearEntity):
             y = randint(self._p1[1], maxint)
         else:
             lower,upper = -maxint-1,maxint
-            # TODO Avoid using < and >
             if self._p1[0] < self._p2[0]:
                 lower = self._p1[0]
             else:
