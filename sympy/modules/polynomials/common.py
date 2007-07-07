@@ -128,3 +128,12 @@ def coeff_ring(atom):
             if coeff_rings.index(cr) > coeff_rings.index(result):
                 result = cr
         return result
+
+def integer_divisors(n):
+    n = abs(n)
+    r = []
+    for i in range(1, n/2+1):
+        if n % i == 0:
+            r.append(i)
+    r.append(n)
+    return r

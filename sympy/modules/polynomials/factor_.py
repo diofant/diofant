@@ -1,8 +1,7 @@
 """Various algorithms for the factorization of polynomials."""
 
 from sympy.modules.polynomials.base import *
-from sympy.modules.polynomials import div_
-from sympy.modules.polynomials import sqf_
+from sympy.modules.polynomials import div_, roots_, sqf_
 
 def uv_int(f):
     """Find the factorization of an univariate integer polynomial.
@@ -11,9 +10,19 @@ def uv_int(f):
     a = sqf_.uv_int(f)
     result = []
     for i, p in enumerate(a):
-        # Filter out constant Rational(1) factors
-        if p.cl[0][1] != 0:
-            # TODO: Check for rational roots first? (cheaper)
+        if p.cl[0][1] != 0: # Filter out constant Rational(1) factors
+            # Check for rational roots first:
+            rr = roots_.rat_roots(p)
+            # In a square-free polynomial, the roots appear only once.
+            for root in rr:
+                pp = Polynomial(
+                    [[root.q, 1], [-root.p, 0]], f.var, f.order, f.coeff)
+                result += [pp]*(i+1)
+                # TODO: remove assertion, speed up!
+                q, r = div_.mv_int(p, pp)
+                assert r.cl[0][0] == 0
+                p = q[0] # q is a list!
+            # Then try the rest with the kronecker algorithm:
             for pp in kronecker(p):
                 result += [pp]*(i+1)
     return result
@@ -38,15 +47,6 @@ def kronecker(f):
             p.cl = map(lambda t:[t[0]/c]+t[1:], p.cl)
             b.append(p)
         return b
-
-    def divisors(n):
-        n = abs(n)
-        r = []
-        for i in range(1, n/2+1):
-            if n % i == 0:
-                r.append(i)
-        r.append(n)
-        return r
 
     def combine(divs):
         # Don't try negative divisors for first value.
@@ -82,7 +82,7 @@ def kronecker(f):
             ff *= lf
         return lfs + kronecker(div_.mv_int(f, ff)[0][0])
     # All divisors of the values give possible values for g.
-    divs = map(divisors, map(int, values))
+    divs = map(integer_divisors, map(int, values))
     # Assemble all possible divisor combination
     combs = combine(divs)
     # Construct candidates for g.

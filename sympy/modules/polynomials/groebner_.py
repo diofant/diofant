@@ -17,7 +17,7 @@ def groebner(f, reduced=True):
             b.append((i, j))
     # empty ideal
     if s == 0:
-        return([Rational(0)])
+        return [Polynomial(Rational(0))]
 
     while b:
         # TODO: Choose better pair: sugar?

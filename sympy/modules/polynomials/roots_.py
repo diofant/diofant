@@ -43,3 +43,20 @@ def real_roots(s, a=None, b=None):
         sb = sign_changes(map(lambda p:p.basic.subs(p.var[0], b), s))
     return sa - sb
     
+def rat_roots(f):
+    """Returns a list of rational roots of an integer Polynomial.
+
+    For an polynomial an*x**n + ... + a0, all rational roots are of
+    the form p/q, where p and q are integer factors of a0 and an.
+    """
+    assert isinstance(f, Polynomial) and f.coeff == 'int'
+    an_divs = integer_divisors(int(f.cl[0][0]))
+    a0_divs = integer_divisors(int(f.cl[-1][0]))
+    result = []
+    for p in a0_divs:
+        for q in an_divs:
+            if f(Rational(p, q)) == 0:
+                result.append(Rational(p, q))
+            if f(Rational(-p, q)) == 0:
+                result.append(Rational(-p, q))
+    return result
