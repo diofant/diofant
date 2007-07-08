@@ -57,7 +57,7 @@ G{packagetree sympy}
 
 import sys
 
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 
 from sympy.core.basic import Basic
 from sympy.core.symbol import Symbol, symbols, O
