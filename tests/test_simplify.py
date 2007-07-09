@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 
-from sympy import Symbol, exp, cos, sin, tan, sec, csc, cot
+from sympy import Symbol, symbols, exp, cos, sin, tan, sec, csc, cot
 from sympy.core.numbers import Rational
 from sympy.modules.simplify import *
 
@@ -45,7 +45,7 @@ def test_simplify():
     assert simplify(e) == 0
 
 def test_fraction():
-    x, y = Symbol('x'), Symbol('y')
+    x, y, z = symbols('x', 'y', 'z')
 
     assert fraction(Rational(1, 2)) == (1, 2)
 
@@ -54,11 +54,17 @@ def test_fraction():
     assert fraction(x/y) == (x, y)
     assert fraction(x/2) == (x, 2)
 
+    assert fraction(x*y/z) == (x*y, z)
+    assert fraction(x/(y*z)) == (x, y*z)
+
+    assert fraction(1/y**2) == (1, y**2)
+    assert fraction(x/y**2) == (x, y**2)
+
     assert fraction((x**2+1)/y) == (x**2+1, y)
     assert fraction(x*(y+1)/y**7) == (x*(y+1), y**7)
 
 def test_together():
-    x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
+    x, y, z = symbols('x', 'y', 'z')
 
     assert together(1/x) == 1/x
 
@@ -72,6 +78,10 @@ def test_together():
     assert together(x/(1 + 1/x)) == x**2/(1+x)
 
     assert together(1/x + 1/y + 1/z) == (x*y + x*z + y*z)/(x*y*z)
+
+    assert together(1/(x*y) + 1/(x*y)**2) == y**(-2)*x**(-2)*(1+x*y)
+    assert together(1/(x*y) + 1/(x*y)**4) == y**(-4)*x**(-4)*(1+x**3*y**3)
+    assert together(1/(x**7*y) + 1/(x*y)**4) == y**(-4)*x**(-7)*(x**3+y**3)
 
     assert together(sin(1/x+1/y)) == sin(1/x+1/y)
     assert together(sin(1/x+1/y), deep=True) == sin((x+y)/(x*y))

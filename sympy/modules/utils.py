@@ -46,3 +46,49 @@ def any(iterable):
         if item:
             return True
     return False
+
+def make_list(expr, kind):
+    """Returns a list of elements taken from specified expresion
+       when it is of sequence type (Add or Mul) or singleton list
+       otherwise (Rational, Pow etc.).
+
+       >>> from sympy import *
+       >>> x, y = symbols('x', 'y')
+
+       >>> make_list(x*y, Mul)
+       [x, y]
+
+       >>> make_list(x*y, Add)
+       [x*y]
+
+       >>> make_list(x*y + y, Add)
+       [x*y, y]
+
+    """
+    if isinstance(expr, kind):
+        return list(expr[:])
+    else:
+        return [expr]
+
+def flatten(seq):
+    """Recursively denest iterable containers.
+
+       >>> flatten([1, 2, 3])
+       [1, 2, 3]
+
+       >>> flatten([1, 2, [3]])
+       [1, 2, 3]
+
+       >>> flatten([1, [2, 3], [4, 5]])
+       [1, 2, 3, 4, 5]
+    """
+    result = []
+
+    for e in seq:
+        if isinstance(e, list):
+            result.extend(flatten(e))
+        else:
+            result.append(e)
+
+    return result
+

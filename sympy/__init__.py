@@ -22,14 +22,14 @@ comments) and its capabilities include:
     - taylor series
     - basic substitution (like x-> ln(x))
     - arbitrary precision integers,
-    - rationals and floats 
+    - rationals and floats
 
 Then there are SymPy modules (1000 lines) for these tasks:
 
     - limits (like limit(x*log(x), x, 0) -> 0)
     - integration (currently it can only do very simple integrals)
     - polynomials (division, gcd, square free decomposition)
-    - symbolic matrices 
+    - symbolic matrices
 
 To help you get started, here is a simple example in the python
 interpreter:
@@ -46,9 +46,9 @@ U{http://code.google.com/p/sympy/wiki/Documentation}
 Structure
 =========
 
-Sympy is basically divided in two modules: the core module, which contains 
+Sympy is basically divided in two modules: the core module, which contains
 the classes needed for basic symbolic manipulations, like the definition of a
-Symbol or a Rational number, and sympy.modules, a high-level module that 
+Symbol or a Rational number, and sympy.modules, a high-level module that
 contains algorithms for symbolic computations, like limit, integration, etc.
 
 
@@ -73,9 +73,10 @@ from sympy.modules.trigonometric import sin, cos, tan, sec, csc, cot, atan, asin
 from sympy.modules.integrals import integrate
 from sympy.modules.matrices import Matrix
 from sympy.modules.solvers import solve, dsolve
-from sympy.modules.simplify import fraction, numer, denom, together, collect, ratsimp, simplify
+from sympy.modules.simplify import fraction, numer, denom, together, \
+    separate, collect, ratsimp, simplify
 from sympy.modules.polynomials import div, gcd, factor, groebner, lcm, \
-     real_roots, resultant, roots, sqf, Ideal
+    real_roots, resultant, roots, sqf, Ideal
 
 from sympy.modules.printing.pretty import pretty, pretty_print, pprint
 from sympy.modules.printing.mathml import mathml

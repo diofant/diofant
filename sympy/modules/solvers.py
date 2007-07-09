@@ -318,51 +318,6 @@ def solve_linear_system(system, syms):
     else:
         return {}   # no solutions
 
-def particular_solution(sym, n, generator=None):
-    """Generate particular solution for the method of undetermined
-       coefficients. This function accepts user specifed list
-       of symbolic coefficiens or will prepare its own using
-       internal or user-defined generator.
-
-       Generator is a function which yields distinct names for
-       all the coefficients required by the particular solution.
-
-       >>> from sympy import *
-       >>> a, b, c, x = symbols('a', 'b', 'c', 'x')
-
-       >>> particular_solution(x, 2, [a, b, c])
-       x*b+c+x**2*a
-
-       >>> particular_solution(x, 2)
-       a_0+x*a_1+a_2*x**2
-
-       >>> particular_solution(x, 2, 'p')
-       p_0+x*p_1+x**2*p_2
-
-       >>> def alphabet(n):
-       ...    for i in range(n):
-       ...        yield chr(i+65)
-
-       >>> particular_solution(x, 4, alphabet)
-       x**4*A+E+x*D+x**3*B+x**2*C
-
-    """
-
-    if generator is None:
-        coeffs = [ Symbol("a_%s" % (n-i)) for i in range(n+1) ]
-    else:
-        if callable(generator):
-            coeffs = [ Symbol(name) for name in generator(n+1) ]
-        elif isinstance(generator, str):
-            coeffs = [ Symbol(generator+"_%s" % (n-i)) for i in range(n+1) ]
-        elif isinstance(generator, list):
-            coeffs = generator
-        else:
-            raise TypeError("'%s' is invalid coefficients "
-                            "generator" % type(generator))
-
-    return Add(*[ coeffs[i] * sym**(n-i) for i in range(n+1) ])
-
 def solve_undetermined_coeffs(equ, coeffs, sym):
     """Solve equation of a type p(x; a_1, ..., a_k) == q(x) where both
        p, q are univariate polynomials and f depends on k parameters.

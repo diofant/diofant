@@ -6,6 +6,10 @@ from sympy.core.numbers import Rational
 from sympy.core.addmul import Add, Mul
 from sympy.core.power import Pow
 
+from sympy.modules.utils import make_list
+
+from sys import maxint
+
 def fraction(expr):
     """Returns a pair with expression's numerator and denominator.
        If the given expression is not a fraction then this function
@@ -24,6 +28,10 @@ def fraction(expr):
        (x, y)
        >>> fraction(x)
        (x, 1)
+
+       >>> fraction(1/y**2)
+       (1, y**2)
+
        >>> fraction(x*y/2)
        (x*y, 2)
        >>> fraction(Rational(1, 2))
@@ -58,7 +66,7 @@ def fraction(expr):
 
         numer, denom = Mul(*numer), Mul(*denom)
     elif isinstance(expr, Pow) and expr.exp.is_negative:
-        numer, denom = Rational(1), expr.base
+        numer, denom = Rational(1), Pow(expr.base, -expr.exp)
     elif isinstance(expr, Rational):
         numer, denom = Rational(expr.p), Rational(expr.q)
     else:
@@ -84,47 +92,9 @@ def denom_expand(expr):
     a, b = fraction(expr)
     return a / b.expand()
 
-def together(expr, deep=False):
-    """Combine together and denest rational functions into a single
-       fraction. No futher expansion is performed, use appropriate
-       functions respectively.
-
-       >>> from sympy import *
-       >>> x, y = symbols('x', 'y')
-
-       >>> together(1/x + 1/y)
-       (x+y)/(y*x)
-       >>> together(1/(1 + 1/x))
-       x/(1+x)
-
-    """
-    expr = Basic.sympify(expr)
-
-    if isinstance(expr, Add):
-        numers, denoms = [], []
-
-        for term in expr:
-            p, q = fraction(together(term, deep))
-
-            numers.append(p)
-            denoms.append(q)
-
-        for i in range(len(denoms)):
-            term = Mul(*(denoms[:i] + denoms[i+1:]))
-            numers[i] = numers[i] * term
-
-        return Add(*numers)/Mul(*denoms)
-    elif isinstance(expr, (Mul, Pow)):
-        return type(expr)(*[ together(t, deep) for t in expr ])
-    elif isinstance(expr, Function) and deep:
-        return type(expr)(together(expr._args, deep))
-    else:
-        return expr
-
 def separate(expr, deep=False):
-    """Rewrite or separate a power of product to a product of
-       powers. This function is highly specific so it won't
-       expand any nested products of summations etc.
+    """Rewrite or separate a power of product to a product of powers
+       but without any expanding, ie. rewriting products to summations.
 
        >>> from sympy import *
        >>> x, y, z = symbols('x', 'y', 'z')
@@ -140,6 +110,15 @@ def separate(expr, deep=False):
 
        >>> separate((exp(x)*exp(y))**x)
        exp(x*y)*exp(x**2)
+
+       Notice that summations are left un touched. If this is not the
+       requested behaviour, apply 'expand' to input expression before:
+
+       >>> separate(((x+y)*z)**2)
+       z**2*(x+y)**2
+
+       >>> separate((x*y)**(1+z))
+       y**(1+z)*x**(1+z)
 
     """
     expr = Basic.sympify(expr)
@@ -162,6 +141,159 @@ def separate(expr, deep=False):
         return type(expr)(separate(expr._args, deep))
     else:
         return expr
+
+def together(expr, deep=False, simplify=True):
+    """Combine together and denest rational functions into a single
+       fraction. By default the resulting expression is simplified
+       to reduce the total order of both numerator and denominator
+       and minimize the number of terms. This behaviour can avoided
+       by setting negative the 'simplify' flag, although performace
+       gain is rather low.
+
+       Densting is done recursively although on expression level.
+       This function will not attempt to rewrite functions interior
+       unless 'deep' flag is set.
+
+       By definition, 'together' is a complementary function to
+       'apart', so apart(together(expr)) should left expression
+       unhanged.
+
+       >>> from sympy import *
+       >>> x, y, z = symbols('x', 'y', 'z')
+
+       You can work with sums of fractions easily. The algorithm
+       used here will, in an iterative style, collect numerators
+       and denominator of all expressions involved and perform
+       needed simplifications:
+
+       >>> together(1/x + 1/y)
+       (x+y)/(y*x)
+
+       >>> together(1/x + 1/y + 1/z)
+       (z*x+x*y+z*y)/(y*x*z)
+
+       >>> together(1/(x*y) + 1/y**2)
+       (x+y)*y**(-2)/x
+
+       Or you can just denest multi-level fractinal expressions:
+
+       >>> together(1/(1 + 1/x))
+       x/(1+x)
+
+    """
+    def extract_exponents(terms):
+        result = []
+
+        for term in terms:
+            if isinstance(term, Pow):
+                if isinstance(term.exp, Rational):
+                    result.append([term.base, term.exp, None])
+                elif isinstance(term.exp, Mul):
+                    coeff, tail = term.exp.getab()
+
+                    if isinstance(coeff, Rational):
+                        result.append([term.base, coeff, tail])
+                    else:
+                        result.append([term.base, Rational(1), term.exp])
+            elif isinstance(term, exp):
+                if isinstance(term._args, Rational):
+                    result.append([exp(Rational(1)), term._args, None])
+                elif isinstance(term._args, Mul):
+                    coeff, tail = term._args.getab()
+
+                    if isinstance(coeff, Rational):
+                        result.append([exp(tail), coeff, None])
+                    else:
+                        result.append([term, Rational(1), None])
+            else:
+                result.append([term, Rational(1), None])
+
+        return result
+
+    def combine_exponents(terms):
+        result = []
+
+        for term in terms:
+            expr, expo, symb = term
+
+            if symb is None:
+                if expo.is_one:
+                    result.append(expr)
+                else:
+                    if isinstance(expr, exp):
+                        result.append(exp(expo*expr._args))
+                    else:
+                        result.append(Pow(expr, expo))
+            else:
+                result.append(Pow(expr, expo*symb))
+
+        return result
+
+    expr = separate(expr)
+
+    if isinstance(expr, Add):
+        numers, denoms = [], []
+
+        for term in expr:
+            p, q = fraction(together(term, deep))
+            numers.append(p); denoms.append(q)
+
+        if not simplify:
+            for i in range(len(denoms)):
+                numers[i] = Mul(*(denoms[:i] + denoms[i+1:] + [numers[i]]))
+
+            return Add(*numers)/Mul(*denoms)
+        else:
+            index, length = 0, maxint
+
+            for i in range(len(denoms)):
+                product = Mul(*(denoms[:i] + denoms[i+1:] + [numers[i]]))
+                numers[i] = extract_exponents(make_list(product, Mul))
+
+                if len(numers[i]) < length:
+                    index, length = i, len(numers[i])
+
+            common, final = [ e[:] for e in numers[index] ], []
+
+            for i in range(length):
+                c_base, c_expo, c_symb  = common[i]
+                candidates = []
+
+                for numer in numers:
+                    for j in range(len(numer)):
+                        base, expo, symb = numer[j]
+
+                        if c_base == base and c_symb == symb:
+                            c_expo = min(c_expo, expo)
+                            candidates.append(j)
+                            break
+                    else:
+                        break
+                else:
+                    for j, k in enumerate(candidates):
+                        base, expo, symb = numers[j][k]
+
+                        new_expo = abs(c_expo - expo)
+
+                        if new_expo != 0:
+                            numers[j][k][1] = new_expo
+                        else:
+                            del numers[j][k]
+
+                    final.append([c_base, c_expo, c_symb])
+
+            numers = Add(*[ Mul(*combine_exponents(e)) for e in numers ])
+            final = Mul(*combine_exponents(final))
+
+            return final*numers/Mul(*denoms)
+    elif isinstance(expr, (Mul, Pow)):
+        return type(expr)(*[ together(t, deep) for t in expr ])
+    elif isinstance(expr, Function) and deep:
+        return type(expr)(together(expr._args, deep))
+    else:
+        return expr
+
+#apart -> partial fractions decomposition (will be here :)
 
 def collect(expr, syms, pretty=True, exact=False):
     """Collect additive terms with respect to a list of symbols up
@@ -209,7 +341,7 @@ def collect(expr, syms, pretty=True, exact=False):
        >>> collect(x**2*y**4 + z*(x*y**2)**2 + z + a*z, [x*y**2, z])
        (1+z)*x**2*y**4+z*(1+a)
 
-       Also more complicated expressions can be used as collectors:
+       Also more complicated expressions can be used as patterns:
 
        >>> collect(a*sin(2*x) + b*sin(2*x), sin(2*x))
        (a+b)*sin(2*x)
@@ -267,16 +399,12 @@ def collect(expr, syms, pretty=True, exact=False):
        >>> collect(a*D(D(f,x),x) + b*D(D(f,x),x) + a*D(f,x) + b*D(f,x), D(f,x))
        (a+b)*Function'(x)+(a+b)*(Function'(x))'
 
+       Or you can even match both derivative order and exponent at time:
+
+       >>> collect(a*D(D(f,x),x)**2 + b*D(D(f,x),x)**2, D(f,x))
+       (a+b)*(Function'(x))'**2
 
     """
-    def make_list(expr, kind):
-        # returns a list of elements taken from specified expresion
-        # when it is of sequence type, and singleton list otherwise
-        if isinstance(expr, kind):
-            return expr[:]
-        else:
-            return [expr]
-
     def make_expression(terms):
         product = []
 
@@ -287,18 +415,13 @@ def collect(expr, syms, pretty=True, exact=False):
                 while order > 0:
                     term, order = Derivative(term, var), order-1
 
-            if sym is not None:
-                expo = rat*sym
-            else:
-                expo = rat
-
-            if expo.is_one:
-                product.append(term)
-            else:
-                if isinstance(term, exp):
-                    product.append(exp(expo*term._args))
+            if sym is None:
+                if rat.is_one:
+                    product.append(term)
                 else:
-                    product.append(Pow(term, expo))
+                    product.append(Pow(term, rat))
+            else:
+                product.append(Pow(term, rat*sym))
 
         return Mul(*product)
 
@@ -356,9 +479,14 @@ def collect(expr, syms, pretty=True, exact=False):
         else:
             pattern = [ parse_term(elem) for elem in pattern ]
 
-            elems, common_expo = [], Rational(1)
+            elems, common_expo, has_deriv = [], Rational(1), False
 
             for elem, e_rat, e_sym, e_ord in pattern:
+                if e_ord is not None:
+                    # there is derivative in the pattern so
+                    # there will by small performance penalty
+                    has_deriv = True
+
                 for j in range(len(terms)):
                     term, t_rat, t_sym, t_ord = terms[j]
 
@@ -392,7 +520,7 @@ def collect(expr, syms, pretty=True, exact=False):
                     # pattern element not found
                     return None
 
-            return terms, elems, common_expo
+            return terms, elems, common_expo, has_deriv
 
     summa = [ separate(i) for i in make_list(Basic.sympify(expr), Add) ]
 
@@ -410,13 +538,22 @@ def collect(expr, syms, pretty=True, exact=False):
             result = parse_expression(terms, symbol)
 
             if result is not None:
-                terms, elems, common_expo = result
-                index = make_expression(elems)
+                terms, elems, common_expo, has_deriv = result
+
+                # when there was derivative in current pattern we
+                # will need to rebuild its expression from scratch
+                if not has_deriv:
+                    index = Pow(symbol, common_expo)
+                else:
+                    index = make_expression(elems)
+
+                terms = separate(make_expression(terms))
+                index = separate(index)
 
                 if index in collected:
-                    collected[index] += make_expression(terms)
+                    collected[index] += terms
                 else:
-                    collected[index] = make_expression(terms)
+                    collected[index] = terms
 
                 break
         else:
