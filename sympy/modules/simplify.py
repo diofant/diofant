@@ -10,7 +10,7 @@ from sympy.modules.utils import make_list
 
 from sys import maxint
 
-def fraction(expr):
+def fraction(expr, pretty=True):
     """Returns a pair with expression's numerator and denominator.
        If the given expression is not a fraction then this function
        will assume that the denominator is equal to one.
@@ -43,36 +43,56 @@ def fraction(expr):
        >>> fraction(x * y**k)
        (x, y**(-k))
 
+       If we know nothing bout sign of some exponent, then its structure
+       will be analyzed and 'pretty' fraction will be returned:
+
+       >>> fraction(2*x**(-y))
+       (2, x**y)
+
+
     """
     expr = Basic.sympify(expr)
 
-    if isinstance(expr, Mul):
-        numer, denom = [], []
+    numer, denom = [], []
 
-        for term in expr:
-            if isinstance(term, Pow) and term.exp.is_negative:
+    for term in make_list(expr, Mul):
+        if isinstance(term, Pow):
+            if term.exp.is_negative:
                 if term.exp.is_minus_one:
                     denom.append(term.base)
                 else:
                     denom.append(Pow(term.base, -term.exp))
-            elif isinstance(term, Rational):
-                if term.is_integer:
-                    numer.append(term)
+            elif pretty and isinstance(term.exp, Mul):
+                coeff, tail = term.exp.getab()
+
+                if isinstance(coeff, Rational) and coeff.is_negative:
+                    denom.append(Pow(term.base, -term.exp))
                 else:
-                    numer.append(Rational(term.p))
-                    denom.append(Rational(term.q))
+                    numer.append(term)
             else:
                 numer.append(term)
+        elif isinstance(term, exp):
+            if term._args.is_negative:
+                denom.append(exp(-term.args))
+            elif pretty and isinstance(term._args, Mul):
+                coeff, tail = term._args.getab()
 
-        numer, denom = Mul(*numer), Mul(*denom)
-    elif isinstance(expr, Pow) and expr.exp.is_negative:
-        numer, denom = Rational(1), Pow(expr.base, -expr.exp)
-    elif isinstance(expr, Rational):
-        numer, denom = Rational(expr.p), Rational(expr.q)
-    else:
-        numer, denom = expr, Rational(1)
+                if isinstance(coeff, Rational) and coeff.is_negative:
+                    denom.append(exp(-term._args))
+                else:
+                    numer.append(term)
+            else:
+                numer.append(term)
+        elif isinstance(term, Rational):
+            if term.is_integer:
+                numer.append(term)
+            else:
+                numer.append(Rational(term.p))
+                denom.append(Rational(term.q))
+        else:
+            numer.append(term)
 
-    return (numer, denom)
+    return Mul(*numer), Mul(*denom)
 
 def numer(expr):
     return fraction(expr)[0]
@@ -142,21 +162,18 @@ def separate(expr, deep=False):
     else:
         return expr
 
-def together(expr, deep=False, simplify=True):
+def together(expr, deep=False):
     """Combine together and denest rational functions into a single
        fraction. By default the resulting expression is simplified
        to reduce the total order of both numerator and denominator
-       and minimize the number of terms. This behaviour can avoided
-       by setting negative the 'simplify' flag, although performace
-       gain is rather low.
+       and minimize the number of terms.
 
-       Densting is done recursively although on expression level.
-       This function will not attempt to rewrite functions interior
-       unless 'deep' flag is set.
+       Densting is done recursively on fractions level. However this
+       function will not attempt to rewrite composite objects, like
+       functions, interior unless 'deep' flag is set.
 
-       By definition, 'together' is a complementary function to
-       'apart', so apart(together(expr)) should left expression
-       unhanged.
+       By definition, 'together' is a complement to 'apart', so
+       apart(together(expr)) should left expression unhanged.
 
        >>> from sympy import *
        >>> x, y, z = symbols('x', 'y', 'z')
@@ -175,123 +192,110 @@ def together(expr, deep=False, simplify=True):
        >>> together(1/(x*y) + 1/y**2)
        (x+y)*y**(-2)/x
 
-       Or you can just denest multi-level fractinal expressions:
+       Or you can just denest multi-level fractional expressions:
 
        >>> together(1/(1 + 1/x))
        x/(1+x)
 
+       It also perfect possible to work with symbolic powers or
+       exponential functions or combinations of both:
+
+       >>> together(1/x**y + 1/x**(y-1))
+       x**(-y)*(1+x)
+
+       >>> together(1/x**(2*y) + 1/x**(y-z))
+       x**(-2*y)*(1+x**(z+y))
+
+       >>> together(1/exp(x) + 1/(x*exp(x)))
+       (1+x)/(x*exp(x))
+
+       >>> together(1/exp(2*x) + 1/(x*exp(3*x)))
+       (1+exp(x)*x)/(x*exp(3*x))
+
     """
-    def extract_exponents(terms):
-        result = []
+    def _together(expr):
+        if isinstance(expr, Add):
+            items, basis = [], {}
 
-        for term in terms:
-            if isinstance(term, Pow):
-                if isinstance(term.exp, Rational):
-                    result.append([term.base, term.exp, None])
-                elif isinstance(term.exp, Mul):
-                    coeff, tail = term.exp.getab()
+            for elem in expr:
+                numer, q = fraction(_together(elem))
 
-                    if isinstance(coeff, Rational):
-                        result.append([term.base, coeff, tail])
+                denom = {}
+
+                for term in make_list(q.expand(), Mul):
+                    expo = Rational(1)
+
+                    if isinstance(term, Pow):
+                        if isinstance(term.exp, Rational):
+                            term, expo = term.base, term.exp
+                        elif isinstance(term.exp, Mul):
+                            coeff, tail = term.exp.getab()
+
+                            if isinstance(coeff, Rational):
+                                term, expo = Pow(term.base, tail), coeff
+                    elif isinstance(term, exp):
+                        if isinstance(term._args, Rational):
+                            term, expo = exp(1), term._args
+                        elif isinstance(term._args, Mul):
+                            coeff, tail = term._args.getab()
+
+                            if isinstance(coeff, Rational):
+                                term, expo = exp(tail), coeff
+
+                    if term in denom:
+                        denom[term] += expo
                     else:
-                        result.append([term.base, Rational(1), term.exp])
-            elif isinstance(term, exp):
-                if isinstance(term._args, Rational):
-                    result.append([exp(Rational(1)), term._args, None])
-                elif isinstance(term._args, Mul):
-                    coeff, tail = term._args.getab()
+                        denom[term] = expo
 
-                    if isinstance(coeff, Rational):
-                        result.append([exp(tail), coeff, None])
+                    if term in basis:
+                        total, maxi = basis[term]
+
+                        n_total = total + expo
+                        n_maxi = max(maxi, expo)
+
+                        basis[term] = (n_total, n_maxi)
                     else:
-                        result.append([term, Rational(1), None])
-            else:
-                result.append([term, Rational(1), None])
+                        basis[term] = (expo, expo)
 
-        return result
+                items.append((numer, denom))
 
-    def combine_exponents(terms):
-        result = []
+            numerator, denominator = [], []
 
-        for term in terms:
-            expr, expo, symb = term
+            for (term, (total, maxi)) in basis.iteritems():
+                basis[term] = (total, total-maxi)
 
-            if symb is None:
-                if expo.is_one:
-                    result.append(expr)
+                if isinstance(term, exp):
+                    denominator.append(exp(maxi*term._args))
                 else:
-                    if isinstance(expr, exp):
-                        result.append(exp(expo*expr._args))
+                    denominator.append(Pow(term, maxi))
+
+            for (numer, denom) in items:
+                expr = []
+
+                for term in basis.iterkeys():
+                    total, sub = basis[term]
+
+                    if term in denom:
+                        expo = total-denom[term]-sub
                     else:
-                        result.append(Pow(expr, expo))
-            else:
-                result.append(Pow(expr, expo*symb))
+                        expo = total-sub
 
-        return result
+                    if isinstance(term, exp):
+                        expr.append(exp(expo*term._args))
+                    else:
+                        expr.append(Pow(term, expo))
 
-    expr = separate(expr)
+                numerator.append(Mul(*([numer] + expr)))
 
-    if isinstance(expr, Add):
-        numers, denoms = [], []
-
-        for term in expr:
-            p, q = fraction(together(term, deep))
-            numers.append(p); denoms.append(q)
-
-        if not simplify:
-            for i in range(len(denoms)):
-                numers[i] = Mul(*(denoms[:i] + denoms[i+1:] + [numers[i]]))
-
-            return Add(*numers)/Mul(*denoms)
+            return Add(*numerator)/Mul(*denominator)
+        elif isinstance(expr, (Mul, Pow)):
+            return type(expr)(*[ _together(t) for t in expr ])
+        elif isinstance(expr, Function) and deep:
+            return type(expr)(_together(expr._args))
         else:
-            index, length = 0, maxint
+            return expr
 
-            for i in range(len(denoms)):
-                product = Mul(*(denoms[:i] + denoms[i+1:] + [numers[i]]))
-                numers[i] = extract_exponents(make_list(product, Mul))
-
-                if len(numers[i]) < length:
-                    index, length = i, len(numers[i])
-
-            common, final = [ e[:] for e in numers[index] ], []
-
-            for i in range(length):
-                c_base, c_expo, c_symb  = common[i]
-                candidates = []
-
-                for numer in numers:
-                    for j in range(len(numer)):
-                        base, expo, symb = numer[j]
-
-                        if c_base == base and c_symb == symb:
-                            c_expo = min(c_expo, expo)
-                            candidates.append(j)
-                            break
-                    else:
-                        break
-                else:
-                    for j, k in enumerate(candidates):
-                        base, expo, symb = numers[j][k]
-
-                        new_expo = abs(c_expo - expo)
-
-                        if new_expo != 0:
-                            numers[j][k][1] = new_expo
-                        else:
-                            del numers[j][k]
-
-                    final.append([c_base, c_expo, c_symb])
-
-            numers = Add(*[ Mul(*combine_exponents(e)) for e in numers ])
-            final = Mul(*combine_exponents(final))
-
-            return final*numers/Mul(*denoms)
-    elif isinstance(expr, (Mul, Pow)):
-        return type(expr)(*[ together(t, deep) for t in expr ])
-    elif isinstance(expr, Function) and deep:
-        return type(expr)(together(expr._args, deep))
-    else:
-        return expr
+    return _together(separate(expr))
 
 #apart -> partial fractions decomposition (will be here :)
 
