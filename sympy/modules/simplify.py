@@ -6,11 +6,11 @@ from sympy.core.numbers import Rational
 from sympy.core.addmul import Add, Mul
 from sympy.core.power import Pow
 
-from sympy.modules.utils import make_list
+from sympy.modules.utils import make_list, all
 
 from sys import maxint
 
-def fraction(expr, pretty=True):
+def fraction(expr, exact=False):
     """Returns a pair with expression's numerator and denominator.
        If the given expression is not a fraction then this function
        will assume that the denominator is equal to one.
@@ -43,12 +43,18 @@ def fraction(expr, pretty=True):
        >>> fraction(x * y**k)
        (x, y**(-k))
 
-       If we know nothing bout sign of some exponent, then its structure
-       will be analyzed and 'pretty' fraction will be returned:
+       If we know nothing about sign of some exponent and 'exact'
+       flag is unset, then structure this exponent's structure will
+       be analyzed and pretty fraction will be returned:
 
        >>> fraction(2*x**(-y))
        (2, x**y)
 
+       >>> fraction(exp(-x))
+       (1, exp(x))
+
+       >>> fraction(exp(-x), exact=True)
+       (exp(-x), 1)
 
     """
     expr = Basic.sympify(expr)
@@ -62,7 +68,7 @@ def fraction(expr, pretty=True):
                     denom.append(term.base)
                 else:
                     denom.append(Pow(term.base, -term.exp))
-            elif pretty and isinstance(term.exp, Mul):
+            elif not exact and isinstance(term.exp, Mul):
                 coeff, tail = term.exp.getab()
 
                 if isinstance(coeff, Rational) and coeff.is_negative:
@@ -74,7 +80,7 @@ def fraction(expr, pretty=True):
         elif isinstance(term, exp):
             if term._args.is_negative:
                 denom.append(exp(-term.args))
-            elif pretty and isinstance(term._args, Mul):
+            elif not exact and isinstance(term._args, Mul):
                 coeff, tail = term._args.getab()
 
                 if isinstance(coeff, Rational) and coeff.is_negative:
@@ -213,9 +219,10 @@ def together(expr, deep=False):
        (1+exp(x)*x)/(x*exp(3*x))
 
     """
+
     def _together(expr):
         if isinstance(expr, Add):
-            items, basis = [], {}
+            items, coeffs, basis = [], [], {}
 
             for elem in expr:
                 numer, q = fraction(_together(elem))
@@ -241,6 +248,9 @@ def together(expr, deep=False):
 
                             if isinstance(coeff, Rational):
                                 term, expo = exp(tail), coeff
+                    elif isinstance(term, Rational):
+                        coeffs.append(term)
+                        continue
 
                     if term in denom:
                         denom[term] += expo
@@ -257,6 +267,8 @@ def together(expr, deep=False):
                     else:
                         basis[term] = (expo, expo)
 
+                    coeffs.append(Rational(1))
+
                 items.append((numer, denom))
 
             numerator, denominator = [], []
@@ -267,10 +279,22 @@ def together(expr, deep=False):
                 if isinstance(term, exp):
                     denominator.append(exp(maxi*term._args))
                 else:
-                    denominator.append(Pow(term, maxi))
+                    if maxi.is_one:
+                        denominator.append(term)
+                    else:
+                        denominator.append(Pow(term, maxi))
 
-            for (numer, denom) in items:
-                expr = []
+            if all([ c.is_integer for c in coeffs ]):
+                gcds = lambda x, y: Rational(1).gcd(int(x), int(y))
+                common = Rational(reduce(gcds, coeffs))
+            else:
+                common = Rational(1)
+
+            product = reduce(lambda x, y: x*y, coeffs) / common
+
+            for ((numer, denom), coeff) in zip(items, coeffs):
+
+                expr, coeff = [], product / (coeff*common)
 
                 for term in basis.iterkeys():
                     total, sub = basis[term]
@@ -283,11 +307,14 @@ def together(expr, deep=False):
                     if isinstance(term, exp):
                         expr.append(exp(expo*term._args))
                     else:
-                        expr.append(Pow(term, expo))
+                        if expo.is_one:
+                            expr.append(term)
+                        else:
+                            expr.append(Pow(term, expo))
 
-                numerator.append(Mul(*([numer] + expr)))
+                numerator.append(coeff*Mul(*([numer] + expr)))
 
-            return Add(*numerator)/Mul(*denominator)
+            return Add(*numerator)/(product*Mul(*denominator))
         elif isinstance(expr, (Mul, Pow)):
             return type(expr)(*[ _together(t) for t in expr ])
         elif isinstance(expr, Function) and deep:
