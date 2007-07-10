@@ -1,4 +1,6 @@
-from sympy import Basic,exp,Symbol,Rational,I,Mul, sqrt
+from sympy import Basic,exp,Symbol,Rational,I,Mul,sqrt
+#from sympy.modules.polynomials import roots
+import sympy.modules.polynomials
 from sympy.core import hashing
 import random
 
@@ -340,6 +342,13 @@ class Matrix(object):
         newmat[self.lines:,:] = bott
         return newmat 
 
+    def trace(self):
+        assert self.cols == self.lines
+        trace = 0
+        for i in range(self.cols):
+            trace += self[i,i]
+        return self
+
     def submatrix(self, keys):
         """
         >>> from sympy import *
@@ -526,7 +535,11 @@ class Matrix(object):
 
     def minorEntry(self, i, j):
         assert 0 <= i < self.lines and 0 <= j < self.cols
-        return self.delRowCol(i,j).det()
+        return self.minorMatrix(i,j).det()
+
+    def minorMatrix(self, i, j):
+        assert 0 <= i < self.lines and 0 <= j < self.cols
+        return self.delRowCol(i,j)
 
     def cofactor(self, i, j):
         if (i+j) % 2 == 0:
@@ -569,7 +582,7 @@ class Matrix(object):
             tmp = self[:,j]     # take original v
             for i in range(j):
                 # subtract the project of self on new vector
-                tmp -= self[:,j].dot(Q[:,i]) * Q[:,i]
+                tmp -= Q[:,i] * self[:,j].dot(Q[:,i])
             # normalize it
             R[j,j] = tmp.norm()
             Q[:,j] = tmp / R[j,j]
@@ -582,7 +595,10 @@ class Matrix(object):
     def simplify(self):
         for i in range(self.lines):
             for j in range(self.cols):
-                self[i,j] = self[i,j].simplify()
+                try:
+                    self[i,j] = self[i,j].simplify()
+                except:
+                    pass
 
     def expand(self):
         for i in range(self.lines):
@@ -754,12 +770,9 @@ class Matrix(object):
             # now eliminate
             scale = big[i,i]
             big.row(i, lambda x, _: x / scale)
-            #print big
             for j in range(i+1,big.lines):
                 scale = big[j,i]
-                #print "using i,j and scale level: ", i, j, scale
                 big.row(j, lambda x, k: x - big[i,k]*scale)
-                #print big
         for i in range(big.lines-1, -1, -1):
             for j in range(i-1, -1, -1):
                 scale = big[j,i]
@@ -777,6 +790,14 @@ class Matrix(object):
         for i in range(self.lines):
             copy[i,i] -= x
         return copy.det()
+    
+    def eigenvals(self, var=None):
+        """ Calls wrapper.py's roots(), doesn't support coeff type right now """
+        if var == None:
+            var = Symbol('x')
+        p = self.charpoly(var)
+        rl = sympy.modules.polynomials.roots(p)
+        print rl
 
 def zero(n):
     return zeronm(n,n)
@@ -928,7 +949,6 @@ def GramSchmidt(vlist):
         tmp = vlist[i]
         for j in range(i):
             tmp -= vlist[i].project(out[j])
-        print tmp
         if tmp == Matrix([[0,0,0]]):
             raise "GramSchmidt: vector set not linearly independent"
         out.append(tmp)

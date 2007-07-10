@@ -1,7 +1,8 @@
 """Module providing a user-friendly interface to the polynomial algorithms."""
 
 from sympy.core.functions import diff
-from sympy.modules.matrices import zero
+#from sympy.modules.matrices import zero
+import sympy.modules.matrices
 
 from sympy.modules.polynomials.base import *
 from sympy.modules.polynomials import div_
@@ -306,7 +307,7 @@ def resultant(f, g, x, method='bezout'):
     m, n = int(fp[0][1]), int(gp[0][1])
 
     if method is 'sylvester':
-        M = zero(m+n)
+        M = sympy.modules.matrices.zero(m+n)
 
         for i in range(n):
             for coeff, j in fp:
@@ -331,7 +332,7 @@ def resultant(f, g, x, method='bezout'):
         for coeff, j in gp:
             q[int(j)] = coeff
 
-        M = zero(s)
+        M = sympy.modules.matrices.zero(s)
 
         for i in range(s):
             for j in range(i, s):

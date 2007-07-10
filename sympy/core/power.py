@@ -198,7 +198,6 @@ class Pow(Basic):
             elif self.base.is_nonpositive and self.exp.is_even:
                 return Pow(abs(self.base), self.exp)
 
-
         if isinstance(self.base, Real) and isinstance(self.exp,Real):
             return self
 

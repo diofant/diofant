@@ -4,7 +4,7 @@ sys.path.append(".")
 from sympy.modules.matrices import sigma, gamma, zero, one, I, Matrix, \
                                     minkowski_tensor, eye, randMatrix, \
                                     SMatrix, hessian
-from sympy import Symbol, sqrt
+from sympy import Symbol, sqrt, Rational
 
 def test_multiplication():
     a=Matrix((
@@ -225,6 +225,13 @@ def test_LUdecomp():
     assert L.is_lower()
     assert U.is_upper()
     assert (L*U).permuteBkwd(p)-testmat == zero(4)
+    
+    x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
+    M = Matrix((1, x, 1), (2, y, 0), (y, 0, z))
+    L, U, p = M.LUdecomposition()
+    assert L.is_lower()
+    assert U.is_upper()
+    assert (L*U).permuteBkwd(p)-M == zero(3)
 
 def test_LUsolve():
     A = Matrix([[2,3,5],
@@ -292,10 +299,11 @@ def test_charpoly():
 
 def test_GramSchmidt():
     A = Matrix([[1,2],[2,3]])
-    Q, R = A.GramSchmidt()
-    #assert Q == Matrix([[5**(-1/2), 2/5*1/5**(-1/2)], [2*5**(-1/2), -1/5*1/5**(-1/2)]])
-    #assert R == Matrix([[5**(1/2), 8*5**(-1/2)], [0, 1/5**(1/2)]])
-    assert Q*R == A
+    Q, S = A.GramSchmidt()
+    R = Rational
+    assert Q == Matrix([[5**R(-1,2), (R(2)/5)*(R(1)/5)**R(-1,2)], [2*5**R(-1,2), (-R(1)/5)*(R(1)/5)**R(-1,2)]])
+    assert S == Matrix([[5**R(1,2), 8*5**R(-1,2)], [0, (R(1)/5)**R(1,2)]])
+    assert Q*S == A
     assert Q.T * Q == eye(2)
 
 def test_sparse_matrix():
@@ -485,6 +493,13 @@ def test_sparse_matrix():
     assert L.is_lower()
     assert U.is_upper()
     assert (L*U).permuteBkwd(p)-testmat == zero(4)
+    
+    x, y, z = Symbol('x'), Symbol('y'), Symbol('z')
+    M = Matrix((1, x, 1), (2, y, 0), (y, 0, z))
+    L, U, p = M.LUdecomposition()
+    assert L.is_lower()
+    assert U.is_upper()
+    assert (L*U).permuteBkwd(p)-M == zero(3)
 
     # test_LUsolve
     A = SMatrix([[2,3,5],
@@ -544,9 +559,10 @@ def test_sparse_matrix():
     assert eye3.charpoly(y) == (1-y)**3
 
     # test_GramSchmidt
-    A = SMatrix([[1,2],[2,3]])
-    Q, R = A.GramSchmidt()
-    assert Q == SMatrix([[5**(-1/2), 2/5*1/5**(-1/2)], [2*5**(-1/2), -1/5*1/5**(-1/2)]])
-    assert R == SMatrix([[5**(1/2), 8*5**(-1/2)], [0, 1/5**(1/2)]])
-    assert Q*R == A
+    A = Matrix([[1,2],[2,3]])
+    Q, S = A.GramSchmidt()
+    R = Rational
+    assert Q == Matrix([[5**R(-1,2), (R(2)/5)*(R(1)/5)**R(-1,2)], [2*5**R(-1,2), (-R(1)/5)*(R(1)/5)**R(-1,2)]])
+    assert S == Matrix([[5**R(1,2), 8*5**R(-1,2)], [0, (R(1)/5)**R(1,2)]])
+    assert Q*S == A
     assert Q.T * Q == eye(2)
