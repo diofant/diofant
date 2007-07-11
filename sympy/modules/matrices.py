@@ -1,7 +1,7 @@
-from sympy import Basic,exp,Symbol,Rational,I,Mul,sqrt
-#from sympy.modules.polynomials import roots
-import sympy.modules.polynomials
+from sympy import Basic, exp, Symbol, Rational, I, Mul, sqrt
 from sympy.core import hashing
+from sympy.modules.simplify import fraction, simplify
+import sympy.modules.polynomials
 import random
 
 class NonSquareMatrixException(Exception):
@@ -796,8 +796,14 @@ class Matrix(object):
         if var == None:
             var = Symbol('x')
         p = self.charpoly(var)
-        rl = sympy.modules.polynomials.roots(p)
-        print rl
+        num, den = fraction(p)
+        if den != 1:
+            divop = sympy.modules.polynomials.div(num, den)
+            assert divop[1] == 0
+            p = divop[0]
+        rl = sympy.modules.polynomials.roots(p, var)
+        return rl
+            
 
 def zero(n):
     return zeronm(n,n)

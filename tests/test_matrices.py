@@ -290,12 +290,6 @@ def test_jacobian_hessian():
     f = x**2*y**3
     assert hessian(f, syms) == Matrix([[2*y**3, 6*x*y**2],[6*x*y**2, 6*x**2*y]])
 
-def test_charpoly():
-    x = Symbol('x')
-    y = Symbol('y')
-    eye3 = eye(3)
-    assert eye3.charpoly(x) == (1-x)**3
-    assert eye3.charpoly(y) == (1-y)**3
 
 def test_GramSchmidt():
     A = Matrix([[1,2],[2,3]])
@@ -305,6 +299,21 @@ def test_GramSchmidt():
     assert S == Matrix([[5**R(1,2), 8*5**R(-1,2)], [0, (R(1)/5)**R(1,2)]])
     assert Q*S == A
     assert Q.T * Q == eye(2)
+
+def test_eigenvalues():
+    # test charpoly
+    x = Symbol('x')
+    y = Symbol('y')
+    eye3 = eye(3)
+    assert eye3.charpoly(x) == (1-x)**3
+    assert eye3.charpoly(y) == (1-y)**3
+    # test values
+    M = Matrix([(0,1,-1),
+                (1,1,0),
+                (-1,0,1) ])
+    vals = M.eigenvals()
+    vals.sort()
+    assert vals == [-1, 1, 2]
 
 def test_sparse_matrix():
     return
@@ -551,13 +560,6 @@ def test_sparse_matrix():
     L = SMatrix(1,2,[x, x**2*y**3])
     assert L.jacobian(syms) == SMatrix([[1, 0], [2*x*y**3, x**2*3*y**2]])
 
-    # test_charpoly
-    x = Symbol('x')
-    y = Symbol('y')
-    eye3 = eye(3)
-    assert eye3.charpoly(x) == (1-x)**3
-    assert eye3.charpoly(y) == (1-y)**3
-
     # test_GramSchmidt
     A = Matrix([[1,2],[2,3]])
     Q, S = A.GramSchmidt()
@@ -566,3 +568,17 @@ def test_sparse_matrix():
     assert S == Matrix([[5**R(1,2), 8*5**R(-1,2)], [0, (R(1)/5)**R(1,2)]])
     assert Q*S == A
     assert Q.T * Q == eye(2)
+    
+    # test charpoly
+    x = Symbol('x')
+    y = Symbol('y')
+    eye3 = eye(3)
+    assert eye3.charpoly(x) == (1-x)**3
+    assert eye3.charpoly(y) == (1-y)**3
+    # test values
+    M = Matrix([(0,1,-1),
+                (1,1,0),
+                (-1,0,1) ])
+    vals = M.eigenvals()
+    vals.sort()
+    assert vals == [-1, 1, 2]
