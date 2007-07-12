@@ -7,7 +7,7 @@ This module implements arbitrary-precision binary floating-point
 and fixed-point arithmetic. Due to performing all internal
 arithmetic on long Python integers instead of lists of
 single-digit integers, the arithmetic implemented here is
-typically 10-100 faster than decimal.py.
+typically 10-100 times faster than decimal.py.
 
 The two main features are the classes BinaryReal and
 BinaryComplex. Precision is controlled via the global 'context'
@@ -40,11 +40,15 @@ import decimal
 isi = isinstance
 Q = Rational
 
-#------------------------------------------------------------------
-#
-# First some utilities
-#
 
+######################################################################
+#
+#                     Low-level arithmetic types
+#
+######################################################################
+
+
+# Utilities
 
 def bitcount(n):
     """Give position of highest set bit in an integer"""
@@ -137,7 +141,6 @@ context = NumericalContext()
 context.prec = 64
 context.prec_mode = FLOAT
 
-
 class Numerical:
 
     def __init__(s, x, prec=None, prec_mode=None):
@@ -185,6 +188,10 @@ class Numerical:
     def __rshift__(s, t): return s.do_op('>>', t)
 
 
+#----------------------------------------------------------------------
+# BinaryReal
+#
+
 class BinaryReal(Numerical):
 
     def init(s, x, prec, prec_mode):
@@ -229,9 +236,7 @@ class BinaryReal(Numerical):
                 s.man = lshift(x.man, x.exp+prec)
                 s.exp = -prec
             elif isi(x, float):
-                # XXX: remove this constructor
-                t = BinaryReal(BinaryReal(x), prec=prec, prec_mode=FIXED)
-                s.man, s.exp = t.man_exp()
+                raise NotImplementedError
             elif isi(x, Q):
                 s.man = div(lshift(x.p, prec), x.q)
                 s.exp = -prec
@@ -274,6 +279,12 @@ class BinaryReal(Numerical):
             n = bitcount(s.man) - 64
             m = s.man >> n
             return math.ldexp(m, s.exp + n)
+
+    def __int__(s):
+        try:
+            return int(float(s))
+        except OverflowError:
+            return s.man << s.exp
 
     def __nonzero__(s):
         return s.man != 0
@@ -338,7 +349,7 @@ class BinaryReal(Numerical):
             raise ZeroDivisionError
         if prec_mode == FLOAT:
             if isi(t, BinaryReal):
-                # XXX: do this faster
+                # TODO: do this faster
                 extra = prec + bitcount(t.man)
                 man = div(lshift(s.man, extra), t.man)
                 exp = s.exp - t.exp - extra
@@ -368,9 +379,7 @@ class BinaryReal(Numerical):
         return s.lshift(s, -n, prec, prec_mode)
 
 
-
-#------------------------------------------------------------------
-#
+#----------------------------------------------------------------------
 # BinaryComplex
 #
 
@@ -422,7 +431,11 @@ class BinaryComplex(Numerical):
     def mul(s, t, prec, prec_mode):
         if isi(t, BinaryComplex):
             a = s.real; b = s.imag; c = t.real; d = t.imag
-            return BinaryComplex((a*c-b*d, a*d+b*c))
+            # TODO: faster addition would make this redundant
+            if b == d == 0:
+                return BinaryComplex((a*c, 0))
+            else:
+                return BinaryComplex((a*c-b*d, a*d+b*c))
         if isreal(t):
             return BinaryComplex((s.real*t, s.imag*t))
         raise NotImplementedError
@@ -447,14 +460,72 @@ class BinaryComplex(Numerical):
 
 
 
-
-#------------------------------------------------------------------
+######################################################################
 #
-# Transcendental functions
+#                     Transcendental functions
+#
+######################################################################
+
+
+# Utilities
+
+def make_binary(x):
+    if isreal(x) or (isinstance(x, str) and 'j' not in x):
+        return BinaryReal(x)
+    else:
+        return BinaryComplex(x)
+
+def make_arg_binary(f):
+    def g(x):
+        return f(make_binary(x))
+    return g
+
+def real_to_real(f):
+    def g(x):
+        y = f(x)
+        if isinstance(y, BinaryComplex) and isinstance(x, BinaryReal):
+            return y.real
+        return y
+    return g
+
+def constmemo(f):
+    f.memo_prec = -1
+    f.memo_val = None
+    def calc():
+        if context.prec <= f.memo_prec:
+            return +f.memo_val
+        f.memo_val = f()
+        f.memo_prec = context.prec
+        return +f.memo_val
+    return calc
+
+def extraprec(n):
+    def decorator(f):
+        def g(*args, **kwargs):
+            context.enter(prec=context.prec+n)
+            y = f(*args, **kwargs)
+            context.revert()
+            return +y
+        return g
+    return decorator
+
+_i = BinaryComplex((0,1))
+
+def _divmod(x, c):
+    if isi(x, BinaryReal):
+        n = int(x / c)
+        t = x - n*c
+        return n, t
+    if isi(x, BinaryComplex):
+        n = int(x.real / c)
+        t = x - n*c
+        return n, t
+
+#----------------------------------------------------------------------
+# Mathematical constants
 #
 
-def pif():
-    context.enter(prec=context.prec+10, prec_mode=FIXED)
+def machin(coefs, hyperbolic=False):
     def acot(x):
         s = w = BinaryReal(1)/x
         x = x**2
@@ -464,47 +535,289 @@ def pif():
             term = w / n
             if not term:
                 break
-            if n & 2: s -= term
-            else:     s += term
+            if hyperbolic or n & 2 == 0: s += term
+            else: s -= term
             n += 2
         return s
-    p = 4*(4*acot(5)-acot(239))
+    context.enter(prec=context.prec+15, prec_mode=FIXED)
+    s = 0
+    for a, b in coefs:
+        s += a*acot(b)
     context.revert()
-    return +p
+    return +s
 
-def expf(z):
-    r = 32
-    context.enter(prec=context.prec+r+10, prec_mode=FIXED)
-    z = BinaryComplex(z) >> r
-    a = w = BinaryComplex(1)
+@constmemo
+def pif():
+    return machin([(16, 5), (-4, 239)])
+
+@constmemo
+def log2f():
+    return machin([(18, 26), (-2, 4801), (8, 8749)], True)
+
+@constmemo
+def log10f():
+    return machin([(46, 31), (34, 49), (20, 161)], True)
+
+@constmemo
+def sqrt2f():
+    context.enter(prec=context.prec+10, prec_mode=FIXED)
+    # Newton's method
+    x = half = BinaryReal(1)>>1
+    d = 1
+    while d:
+        d = x * (half - x*x)
+        x += d
+    x <<= 1
+    context.revert()
+    return +x
+
+@constmemo
+def eulergammaf():
+    """
+    Compute a numerical approximation of Euler's constant ~= 0.577216
+
+    We use the Brent-McMillan formula, g ~= A(n)/B(n) - log(n), where
+        A(n) = sum_{k=0,1,2,...} (n**k / k!)**2 * H(k)
+        B(n) = sum_{k=0,1,2,...} (n**k / k!)**2
+        H(k) = 1 + 1/2 + 1/3 + ... + 1/k
+
+    The error is bounded by O(exp(-4n)). Choosing n to be a power
+    of two, 2**p, the logarithm becomes particularly easy to calculate.
+
+    Reference:
+    Xavier Gourdon & Pascal Sebah, The Euler constant: gamma
+    http://numbers.computation.free.fr/Constants/Gamma/gamma.pdf
+    """
+    # TODO: may need even more extra precision
+    context.enter(prec=context.prec+30, prec_mode=FIXED)
+    # choose p such that exp(-4*(2**p)) < 2**-n
+    p = int(math.log((context.prec/4) * math.log(2), 2)) + 1
+    n = 1 << p
+    one = BinaryReal(1)
+    H, A, B, npow, k, d = 0, 0, 0, 1, 1, 1
+    r = one
+    while r:
+        A += r * H
+        B += r
+        r = r * (n*n) / (k*k)
+        H += one / k
+        k += 1
+    S = (A / B) - p*log2f()
+    context.revert()
+    return +S
+
+
+#----------------------------------------------------------------------
+# Exponential function
+#
+
+@make_arg_binary
+@extraprec(3)
+def expf(x):
+    """
+    Calculate exp of a BinaryReal or BinaryComplex.
+
+    If x is a BinaryReal, we first rewrite x as t + n*log(2) and then
+    calculate exp(x) as exp(t)*(2**n). With |t| <= log(2) ~= 0.7,
+    exp(t) can be computed very quickly from the Maclaurin series
+    of exp, and multiplying a BinaryReal by 2**n costs nothing.
+
+    If x is a BinaryComplex, we use Euler's formula. It would be
+    possible to use Maclaurin series directly for complex numbers as
+    well, but that results in loss of precision near a root for the
+    real or imaginary part. In the future, such a method could be
+    used for prec_mode=FIXED.
+    """
+    if isi(x, BinaryReal):
+        n, t = _divmod(x, log2f())
+        return exp_near_0(t) << n
+    if isi(x, BinaryComplex):
+        mag = expf(x.real)
+        re = mag * cosf(x.imag)
+        im = mag * sinf(x.imag)
+        return BinaryComplex((re, im))
+
+# Helper for exp
+
+def exp_near_0(x, r=None):
+    """
+    Calculate exp(x) for a BinaryReal x that should be close to 0.
+    The method will work for large x and BinaryComplex's as well,
+    but less efficiently and with loss of relative precision
+    around a root of the real or imaginary part.
+
+    The basic algorithm is to sum the Maclaurin series
+
+        exp(x) = 1 + x + x**2/2 + x**3/6 + ...
+
+    using fixed-point arithmetic.
+
+    To improve the rate of convergence, we choose an integer r
+    and instead calculate exp(x/2**r)**(2**r) = exp(x). The optimal
+    value for r depends on the Python platform, the magnitude
+    of x, and the target precision, and has to be estimated
+    from experimental timings. One test with x ~= 0.3 showed that
+    r = 2.2*prec**0.42 gave a good fit to the optimal values for r
+    for prec between 1 and 10000 bits, on one particular machine.
+    This is used as a default value for r (it could be tweaked
+    in the future.)
+
+    This optimization makes the summation about twice as fast at
+    low precision levels and much faster at high precision
+    (roughly five times faster at 1000 decimal digits).
+    """
+    if r == None:
+        r = int(2.2*context.prec**0.42)
+    newprec = context.prec + r+8
+    context.enter(prec=newprec, prec_mode=FIXED)
+    a = s = BinaryReal(1)
+    # TODO: should be able to do x >> r . fix __rshift__
+    x = (+x) >> r
     k = 1
     while a:
-        a = a * z / k
-        w += a
+        a = a*x / k
+        s += a
         k += 1
-    for i in range(r):
-        w = w*w
-    if z.imag == 0:
-        w = w.real
+    for j in range(r):
+        s = s*s
     context.revert()
+    return s
+
+#----------------------------------------------------------------------
+# Sine
+#
+
+@real_to_real
+@make_arg_binary
+def sinf(x):
+    """
+    To evaluate sin(x) for a real x or a complex x that lies close to
+    the real axis, we first use the elementary translation and
+    reflection identities for trigonometric functions to obtain
+    an argument [with real part] between 0 and pi/4. Then we sum
+    the Maclaurin series for either cos or sin.
+
+    If x has a large imaginary part, we use the formula
+
+      sin(x+i*y) = sin(x)*cosh(y) + i*cos(x)*sinh(y)
+
+    with cosh and sinh computed from the real exp.
+
+    The trickery is needed to preserve relative precision near a
+    root. For prec_mode=FIXED, it would be possible to compute
+    cos and sin more directly from the complex exponential (instead of
+    vice versa).
+
+    The other trigonometric functions are computed from sin (and exp).
+    """
+    if isi(x, BinaryComplex):
+        re, im = x.real, x.imag
+    else:
+        re, im = x, 0
+    if re < 0:
+        return -sinf(-x)
+    if abs(im) < 1:
+        w = sin_near_real(x)
+    else:
+        context.enter(prec=context.prec+5)
+        a = sin_near_real(re)
+        b = sin_near_real(pif()/2 - re)
+        ey = expf(im)
+        eyinv = BinaryReal(1) / ey
+        cosh = (ey + eyinv)/2
+        sinh = (ey - eyinv)/2
+        w = BinaryComplex((a*cosh, b*sinh))
+        context.revert()
     return +w
 
-def cosf(z):
-    z = BinaryComplex(z)
-    eiz = expf(z * BinaryComplex((0, 1)))
-    w = (eiz + BinaryComplex(1)/eiz)/2
-    if z.imag == 0:
-        w = w.real
-    return +w
+# Sine helpers
 
-def sinf(z):
-    z = BinaryComplex(z)
-    eiz = expf(z * BinaryComplex((0, 1)))
-    # XXX: this sum formula is bad for z ~= 0
-    w = (eiz - BinaryComplex(1)/eiz) / BinaryComplex((0, 2))
-    if z.imag == 0:
-        w = w.real
-    return +w
+@extraprec(3)
+def sin_near_real(x):
+    """Compute an approximation of sin(x) where x is a BinaryReal
+    or a BinaryComplex. The real part of x can be arbitrarily
+    large, but the imaginary part should be close to 0, or this
+    function will be slow and cause loss of precision.
+    """
+    # Reduce argument mod pi/4 to obtain a base case
+    pi4 = pif() >> 2
+    n, t = _divmod(x, pi4)
+    if n%2 == 1: t = pi4 - t
+    if n%8 in (0, 3, 4, 7): r = sin_near_0(t)
+    else: r = cos_near_0(t)
+    if n%8 > 3: r = -r
+    return r
+
+def cos_near_0(x):
+    """Maclaurin series approximation for cos."""
+    context.enter(prec=context.prec+10, prec_mode=FIXED)
+    a = s = BinaryReal(1)
+    x2 = x*x
+    k = 2
+    while a:
+        a = a*x2 / ((k-1) * k)
+        if (k>>1)&1: s -= a
+        else:        s += a
+        k += 2
+    context.revert()
+    return s
+
+def sin_near_0(x):
+    """Maclaurin series approximation for sin. Unlike cos_near_0,
+    this function increases the precision for x close to 0 to
+    maintain a high relative precision."""
+    if isi(x, BinaryComplex):
+        extraprec = max(0, bitcount(x.real.man)-x.real.exp)
+    else:
+        extraprec = max(0, bitcount(x.man)-x.exp)
+    context.enter(prec=context.prec+10+extraprec, prec_mode=FIXED)
+    a = s = +x # x?
+    x2 = x*x
+    k = 3
+    while a:
+        a = a * x2 / ((k-1) * k)
+        if (k>>1)&1: s -= a
+        else:        s += a
+        k += 2
+    context.revert()
+    return s
+
+
+#----------------------------------------------------------------------
+# Additional trigonometric and hyperbolic functions
+#
+
+@make_arg_binary
+@extraprec(3)
+def cosf(x):
+    """Calculate cos of a BinaryReal or BinaryComplex"""
+    return sinf(x + pif()/2)
+
+@make_arg_binary
+@extraprec(3)
+def tanf(x):
+    """Calculate tan of a BinaryReal or BinaryComplex"""
+    return sinf(x)/cosf(x)
+
+@make_arg_binary
+def sinhf(x):
+    """Calculate sinh of a BinaryReal or BinaryComplex"""
+    return -_i*sinf(_i*x)
+
+@make_arg_binary
+def coshf(x):
+    """Calculate cosh of a BinaryReal or BinaryComplex"""
+    return cosf(_i*x)
+
+@make_arg_binary
+def tanhf(x):
+    """Calculate tanh of a BinaryReal or BinaryComplex"""
+    return -_i*tanf(_i*x)
+
+
+#----------------------------------------------------------------------
+# Inverse functions etc (much more work needed here)
+#
 
 def newton_polish(f, r0, prec, start_prec):
     def quadratic_steps(start, target):
@@ -520,6 +833,7 @@ def newton_polish(f, r0, prec, start_prec):
     return r
 
 def logf(z):
+    # TODO: argument reduction
     import cmath
     prec = context.prec
     z = BinaryComplex(z, prec=prec+5)
@@ -534,10 +848,6 @@ def logf(z):
     else:
         return y
 
+@extraprec(15)
 def powerf(x, y):
-    x = BinaryComplex(x)
-    y = BinaryComplex(y)
-    context.enter(prec=context.prec+15)
-    z = expf(logf(x) * y)
-    context.revert()
-    return +z
+    return expf(logf(x) * y)
