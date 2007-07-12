@@ -91,15 +91,16 @@ class Pow(Basic):
                 return "(1/%s)" % str(self.base)
 
         f = ""
-        if isinstance(self.base,Pair) or isinstance(self.base,Pow):
+        if isinstance(self.base,Pair) or isinstance(self.base,Pow) \
+           or (isinstance(self.base, Rational) and not self.base.is_integer):
             f += "(%s)"
         else:
             f += "%s"
         f += "**"
         if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
-            or (isinstance(self.exp,Rational) and \
-            (not self.exp.is_integer or (self.exp.is_integer and \
-            int(self.exp) < 0)) ):
+            or (isinstance(self.exp,Rational) and
+                (not self.exp.is_integer or
+                 (self.exp.is_integer and int(self.exp) < 0 ))):
             f += "(%s)"
         else:
             f += "%s"

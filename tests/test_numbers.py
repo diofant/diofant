@@ -171,7 +171,7 @@ def test_powers():
     assert str((123**25+1)**Rational(1,25)) != "123"
     assert str((123**25-1)**Rational(1,25)) != "123"
     assert str((123**25-1)**Rational(1,25)) != "122"
-    assert str(Rational(3,5)**(-Rational(1,2))) == "3/5**(-1/2)"
+    assert str(Rational(3,5)**(-Rational(1,2))) == "(3/5)**(-1/2)"
     assert str(Rational(81,36)**(Rational(3,2))) == "27/8"
     assert str(Rational(81,36)**(-Rational(3,2))) == "8/27"
 
