@@ -300,6 +300,32 @@ def test_GramSchmidt():
     assert Q*S == A
     assert Q.T * Q == eye(2)
 
+def test_nullspace():
+    # first test reduced row-ech form
+    R = Rational
+    
+    M = Matrix([[5,7,2,1],
+               [1,6,2,-1]])
+    out, tmp = M.rref()
+    assert out == Matrix([[1,0,-R(2)/23,R(13)/23],
+                              [0,1,R(8)/23, R(-6)/23]])
+    
+    M = Matrix([[1,3,0,2,6,3,1],
+                [-2,-6,0,-2,-8,3,1],
+                [3,9,0,0,6,6,2],
+                [-1,-3,0,1,0,9,3]])
+    out, tmp = M.rref()
+    assert out == Matrix([[1,3,0,0,2,0,0],
+                               [0,0,0,1,2,0,0],
+                               [0,0,0,0,0,1,R(1)/3],
+                               [0,0,0,0,0,0,0]])
+    # now check the vectors
+    basis = M.nullspace()
+    assert basis[0] == Matrix([[-3,1,0,0,0,0,0]])
+    assert basis[1] == Matrix([[0,0,1,0,0,0,0]])
+    assert basis[2] == Matrix([[-2,0,0,-2,1,0,0]])
+    assert basis[3] == Matrix([[0,0,0,0,0,R(-1)/3, 1]])
+    
 def test_eigenvalues():
     # test charpoly
     x = Symbol('x')
@@ -569,7 +595,34 @@ def test_sparse_matrix():
     assert Q*S == A
     assert Q.T * Q == eye(2)
     
-    # test charpoly
+    # test nullspace
+    # first test reduced row-ech form
+    R = Rational
+
+    M = Matrix([[5,7,2,1],
+               [1,6,2,-1]])
+    out, tmp = M.rref()
+    assert out == Matrix([[1,0,-R(2)/23,R(13)/23],
+                              [0,1,R(8)/23, R(-6)/23]])
+
+    M = Matrix([[1,3,0,2,6,3,1],
+                [-2,-6,0,-2,-8,3,1],
+                [3,9,0,0,6,6,2],
+                [-1,-3,0,1,0,9,3]])
+    out, tmp = M.rref()
+    assert out == Matrix([[1,3,0,0,2,0,0],
+                               [0,0,0,1,2,0,0],
+                               [0,0,0,0,0,1,R(1)/3],
+                               [0,0,0,0,0,0,0]])
+    # now check the vectors
+    basis = M.nullspace()
+    assert basis[0] == Matrix([[-3,1,0,0,0,0,0]])
+    assert basis[1] == Matrix([[0,0,1,0,0,0,0]])
+    assert basis[2] == Matrix([[-2,0,0,-2,1,0,0]])
+    assert basis[3] == Matrix([[0,0,0,0,0,R(-1)/3, 1]])
+
+
+    # test eigenvals
     x = Symbol('x')
     y = Symbol('y')
     eye3 = eye(3)

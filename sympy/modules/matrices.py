@@ -779,6 +779,56 @@ class Matrix(object):
                 big.row(j, lambda x, k: x - big[i,k]*scale)
         return big[:,big.lines:]
     
+    def rref(self):
+        # take any matrix and return reduced row-ech form and indices of pivot vars
+        # TODO: rewrite inverse_GE to use this
+        pivots, r = 0, self[:,:]        # pivot: index of next row to contain a pivot
+        pivotlist = []                  # indices of pivot variables (non-free)
+        for i in range(r.cols): 
+            if pivots == r.lines:
+                break
+            if r[pivots,i] == 0:
+                for k in range(pivots, r.lines):
+                    if r[k,i] != 0:
+                        break
+                if k == r.lines - 1:
+                    continue 
+                r.row_swap(pivots,k)
+            scale = r[pivots,i]
+            r.row(pivots, lambda x, _: x/scale)
+            for j in range(0, r.lines):
+                if j == pivots:
+                    continue
+                scale = r[j,i]
+                r.row(j, lambda x, k: x - r[pivots,k]*scale)
+            pivotlist.append(i)
+            pivots += 1
+        return r, pivotlist
+        
+    def nullspace(self):
+        # Returns list of vectors (Matrix objects) that span nullspace of self
+        assert self.cols >= self.lines
+        reduced, pivots = self.rref()
+        basis = []
+        # create a set of vectors for the basis
+        for i in range(self.cols - len(pivots)):
+            basis.append(zeronm(1,self.cols))
+        # contains the variable index to which the vector corresponds
+        basiskey, cur = [-1]*len(basis), 0
+        for i in range(self.cols):
+            if i not in pivots:
+                basiskey[cur] = i
+                cur += 1
+        for i in range(self.cols):
+            if i not in pivots: # free var, just set vector's ith place to 1
+                basis[basiskey.index(i)][0,i] = 1
+            else:               # add negative of nonpivot entry to corr vector
+                for j in range(i+1, self.cols):
+                    line = pivots.index(i)
+                    if reduced[line, j] != 0:
+                        assert j not in pivots
+                        basis[basiskey.index(j)][0,i] = -1 * reduced[line, j]
+        return basis
     
     def charpoly(self, var):
         assert self.lines == self.cols
