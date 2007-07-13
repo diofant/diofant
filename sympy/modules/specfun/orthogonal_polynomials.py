@@ -1,6 +1,7 @@
 from sympy.core.symbol import Symbol
-from sympy.core.numbers import Rational, Real
-from sympy.modules.simplify import simplify
+from sympy.core.numbers import Rational, Real, pi
+from sympy.core.functions import sqrt
+from sympy.modules.trigonometric import cos
 from factorials import Function2
 import decimal
 
@@ -18,38 +19,11 @@ def _newton(h, x0, eps):
         x = new
     return new
 
-
-class legendre(Function2):
-    """
-    Usage
-    =====
-        legendre(n, x) - nth Legendre polynomial of x, P_n(x)
-
-    Notes
-    =====
-        The Legendre polynomials are orthogonal on [-1, 1]
-        For all n, P_n(1) = 1
-        P_n is odd for odd n and even for even n
-
-    Examples
-    ========
-
-        >>> x = Symbol('x')
-        >>> legendre(3, x)
-        -3/2*x+5/2*x**3
-
-
-    See also
-    ========
-
-       External links
-       --------------
-         U{Wikipedia: Legendre polynomial<http://en.wikipedia.org/wiki/Legendre_polynomial>}
-    
-    """
-
+class _PolynomialSequence(Function2):
     _x = Symbol('x')
-    _memo = {0:Rational(1), 1:_x}
+
+    def _calc(self, n):
+        raise NotImplementedError
 
     def poly(self):
         n, x = self._args
@@ -60,25 +34,62 @@ class legendre(Function2):
             return self._memo[n]
         else:
             for i in range(m, n+1):
-                L = ((2*i-1)*self._x*self._memo[i-1] - (i-1)*self._memo[i-2])/i
-                L = simplify(L)
-                self._memo[i] = (L)
+                L = self._calc(i)
+                L = L.expand()
+                self._memo[i] = L
             return self._memo[n]
 
     def eval(self):
         n, x = self._args
-        if isinstance(x, legendre_zero) and x._args[0] == n:
+        if isinstance(x, self._zero_class) and x._args[0] == n:
             return 0
-        elif n.is_integer and n >= 0:
+        if n.is_integer and n >= 0:
+            for k in range(n):
+                if x == self._zero_class(n, k):
+                    return 0
             return self.poly().subs(self._x, x)
         return self
+
+
+class legendre(_PolynomialSequence):
+    """
+    Usage
+    =====
+        legendre(n, x) - nth Legendre polynomial of x, P_n(x)
+
+    Notes
+    =====
+        The Legendre polynomials are orthogonal on [-1, 1] with respect
+        to the constant weight 1.
+
+        For all n, P_n(1) = 1
+
+        P_n is odd for odd n and even for even n
+
+    Examples
+    ========
+        >>> x = Symbol('x')
+        >>> legendre(3, x)
+        -3/2*x+5/2*x**3
+
+    See also
+    ========
+       External links
+       --------------
+         U{Wikipedia: Legendre polynomial<http://en.wikipedia.org/wiki/Legendre_polynomial>}
+    """
+    _memo = {}
+
+    def _calc(self, n):
+        if n == 0: return Rational(1)
+        if n == 1: return self._x
+        return ((2*n-1)*self._x*self._memo[n-1] - (n-1)*self._memo[n-2])/n
 
 
 class legendre_zero(Function2):
     """
     Usage
     =====
-
         legendre_zero(n, k) represents the kth zero (counting from zero)
         of the nth Legendre polynomial; that is, if 0 <= k < n,
         legendre(n, legendre_zero(n, k)) == 0.
@@ -89,14 +100,25 @@ class legendre_zero(Function2):
 
     Examples
     ========
-
         >>> legendre(5, legendre_zero(5, 3)) == 0
         True
 
     """
 
-    def evalf(self, prec=10):
+    def eval(self):
+        n, k = self._args
+        if n.is_odd and (n-1)/2 == k:
+            return Rational(0)
+        if n == 2 and k == 0: return -sqrt(Rational(1,3))
+        if n == 2 and k == 1: return sqrt(Rational(1,3))
+        if n == 3 and k == 0: return -sqrt(Rational(3,5))
+        if n == 3 and k == 2: return sqrt(Rational(3,5))
+        # We could use SymPy's polynomial root-finding code for higher-degree
+        # polynomials, but it might not be helpful to do so by default
+        # since the expressions grow extremely complicated
+        return self
 
+    def evalf(self, prec=10):
         # Increasing the precision is really just a matter of using
         # a lower epsilon; the problem is that numerical evaluation of
         # polynomials currently doesn't work as it should
@@ -118,3 +140,63 @@ class legendre_zero(Function2):
         x = -math.cos(math.pi*(k+1-0.25)/(n+0.5))
 
         return _newton(lambda t: L(t)/Ld(t), x, eps)
+
+legendre._zero_class = legendre_zero
+
+
+class chebyshev(_PolynomialSequence):
+    """
+    Usage
+    =====
+        chebyshev(n, x) - nth Chebyshev polynomial (of the first
+        kind) of x, T_n(x)
+
+    Notes
+    =====
+        The Chebyshev polynomials are orthogonal on [-1, 1] with
+        respect to the weight 1/sqrt(1-x**2).
+
+    Examples
+    ========
+        >>> x = Symbol('x')
+        >>> chebyshev(3, x)
+        -3*x+4*x**3
+
+    See also
+    ========
+       External links
+       --------------
+         U{Wikipedia: Chebyshev polynomial<http://en.wikipedia.org/wiki/Chebyshev_polynomial>}
+    """
+    _memo = {}
+
+    def _calc(self, n):
+        if n == 0: return Rational(1)
+        if n == 1: return self._x
+        return 2*self._x*self._memo[n-1] - self._memo[n-2]
+
+
+class chebyshev_zero(Function2):
+    """
+    Usage
+    =====
+        chebyshev_zero(n, k) returns the kth zero (counting from zero)
+        of the nth Chebyshev polynomial; that is, if 0 <= k < n,
+        chebyshev(n, chebyshev_zero(n, k)) == 0.
+
+        The n,k-th zero is given explicitly by cos(pi*(2*k+1)/(2*n)).
+        Due to this simple form, chebyshev_zero always returns an
+        explicit expression (unlike legendre_zero).
+
+    Examples
+    ========
+        >>> chebyshev(5, chebyshev_zero(5, 3)) == 0
+        True
+
+    """
+    def eval(self):
+        n, k = self._args
+        return cos(pi*(2*k+1)/(2*n))
+
+
+chebyshev._zero_class = chebyshev_zero
