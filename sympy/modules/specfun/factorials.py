@@ -1,6 +1,6 @@
 from sympy.core.functions import Function, exp, sqrt
 from sympy.core.numbers import Number, Real, Rational, pi, I, oo
-from sympy import Symbol, Add, Mul, Basic
+from sympy import Symbol, Add, Mul, Pow, Basic
 from sympy.modules.simplify import simplify
 from sympy import O
 from sympy.modules.trigonometric import sin
@@ -17,8 +17,9 @@ class factorial(Function):
 
     Notes
     =====
-        factorial(x) is evaluated explicitly if x is an integer or half
-        an integer. If x is a negative integer, the value is infinite.
+        factorial(x) is evaluated explicitly if x is an integer or
+        half an integer. If x is a negative integer, the value is
+        infinite.
 
     Examples
     ========
@@ -34,18 +35,19 @@ class factorial(Function):
     """
     def eval(self):
         x = self._args
-        if x.is_integer:
-            if x < 0:
-                return oo
-            y = Rational(1)
-            for m in range(1, x+1):
-                y *= m
-            return y
-        elif isinstance(x, Rational) and x.q == 2:
-            n = (x.p + 1) / 2
-            if n < 0:
-                return (-1)**(-n+1) * pi * x / factorial(-x)
-            return sqrt(pi) * Rational(1, 2**n) * factorial2(2*n-1)
+        if isinstance(x, Rational):
+            if x.is_integer:
+                if x < 0:
+                    return oo
+                y = Rational(1)
+                for m in range(1, x+1):
+                    y *= m
+                return y
+            if x.q == 2:
+                n = (x.p + 1) / 2
+                if n < 0:
+                    return (-1)**(-n+1) * pi * x / factorial(-x)
+                return sqrt(pi) * Rational(1, 2**n) * factorial2(2*n-1)
         return self
 
     # This should give a series expansion around x = oo. Needs fixing
@@ -60,6 +62,9 @@ class factorial(Function):
         else:
             s = "(" + x.__latex__() + ")"
         return s + "!"
+
+def _fac(x):
+    return factorial(x, evaluate=False)
 
 
 class factorial2(Function):
@@ -87,7 +92,7 @@ class factorial2(Function):
     """
     def eval(self):
         x = self._args
-        if x.is_integer:
+        if isinstance(x, Rational) and x.is_integer:
             if int(x) % 2 == 0:
                 if x < 0:
                     return oo
@@ -110,36 +115,117 @@ class factorial2(Function):
         return s + "!!"
 
 
-def factorial_quotient(p, q):
-    """
-    Usage
-    =====
-        Calculate the quotient p!/q!, simplifying symbolically if possible.
-        If both p! and q! are infinite, the correct limit is returned
+# factorial_simplify helpers; could use refactoring
 
-    Examples
-    ========
-        >>> from sympy import *
-        >>> from sympy.modules.specfun.factorials import *
-        >>> factorial_quotient(pi+1, pi)
-        1+pi
-
-    """
-    p = Basic.sympify(p)
-    q = Basic.sympify(q)
-    delta = simplify(p-q)
-    if delta == 0:
-        return 1
-    if delta.is_integer:
-        t = Rational(1)
-        if delta > 0:
-            for k in range(1, delta+1):
-                t *= (q+k)
+def _collect_factors(expr):
+    assert isinstance(expr, Mul)
+    numer_args = []
+    denom_args = []
+    other = []
+    for x in expr:
+        if isinstance(x, Mul):
+            n, d, o = _collect_factors(x)
+            numer_args += n
+            denom_args += d
+            other += o
+        elif isinstance(x, Pow):
+            base, exp = x[:]
+            if isinstance(base, factorial) and \
+                isinstance(exp, Rational) and exp.is_integer:
+                if exp > 0:
+                    for i in range(exp): numer_args.append(base._args)
+                else:
+                    for i in range(-exp): denom_args.append(base._args)
+            else:
+                other.append(x)
+        elif isinstance(x, factorial):
+            numer_args.append(x._args)
         else:
-            for k in range(1, -delta+1):
-                t /= (p+k)
-        return t
-    return factorial(p) / factorial(q)
+            other.append(x)
+    return numer_args, denom_args, other
+
+# handle x!/(x+n)!
+def _simplify_quotient(na, da, other):
+    while 1:
+        candidates = []
+        for i, y in enumerate(na):
+            for j, x in enumerate(da):
+                delta = simplify(y - x)
+                if isinstance(delta, Rational) and delta.is_integer:
+                    candidates.append((delta, i, j))
+        if candidates:
+            # There may be multiple candidates. Choose the quotient pair
+            # that minimizes the work.
+            candidates.sort(key=lambda x: abs(x[0]))
+            delta, i, j = candidates[0]
+            p = na[i]
+            q = da[j]
+            t = Rational(1)
+            if delta > 0:
+                for k in range(1, delta+1):
+                    t *= (q+k)
+            else:
+                for k in range(1, -delta+1):
+                    t /= (p+k)
+            other.append(t)
+            del na[i], da[j]
+        else:
+            return
+
+# handle x!*(x+1) and x!/x
+def _simplify_recurrence(facs, other, reciprocal=False):
+    # this should probably be rewritten more elegantly
+    i = 0
+    while i < len(facs):
+        j = 0
+        while j < len(other):
+            if reciprocal:
+                if simplify(other[j] - facs[i]) == 0:
+                    facs[i] -= 1; del other[j]; j = -1
+                elif simplify(1/other[j] - facs[i]) == 1:
+                    facs[i] += 1; del other[j]; j = -1
+            else:
+                if simplify(other[j] - facs[i]) == 1:
+                    facs[i] += 1; del other[j]; j = -1
+                elif simplify(1/other[j] - facs[i]) == 0:
+                    facs[i] -= 1; del other[j]; j = -1
+            j += 1
+        i += 1
+
+def factorial_simplify(expr):
+    """
+    This function takes an expression containing factorials
+    and removes as many of them as possible by combining
+    products and quotients of factorials into polynomials
+    or other simpler expressions.
+    
+    TODO: handle reflection formula, duplication formula
+    double factorials
+    """
+    
+    if isinstance(expr, Add):
+        return Add(*(factorial_simplify(x) for x in expr))
+
+    if isinstance(expr, factorial):
+        return expr.eval()
+
+    if isinstance(expr, Pow):
+        return Pow(factorial_simplify(expr[0]), expr[1])
+
+    if isinstance(expr, Mul):
+        na, da, other = _collect_factors(expr)
+
+        _simplify_quotient(na, da, other)
+        _simplify_recurrence(na, other)
+        _simplify_recurrence(da, other, reciprocal=True)
+
+        result = Rational(1)
+        for n in na: result *= factorial(n).eval()
+        for d in da: result /= factorial(d).eval()
+        for o in other: result *= o
+        return result
+
+    return expr
 
 
 # This class is a temporary solution
@@ -182,7 +268,7 @@ class rising_factorial(Function2):
 
     def eval(self):
         x, n = self._args
-        return factorial_quotient(x+n-1, x-1)
+        return factorial_simplify(_fac(x+n-1) / _fac(x-1))
 
     def __latex__(self):
         x, n = self._args
@@ -205,7 +291,7 @@ class falling_factorial(Function2):
     """
     def eval(self):
         x, n = self._args
-        return factorial_quotient(x, x-n)
+        return factorial_simplify(_fac(x) / _fac(x-n))
 
     def __latex__(self):
         x, n = self._args
@@ -251,26 +337,12 @@ class binomial(Function2):
     """
     def eval(self):
         n, k = self._args
-        if k == 0 or n == k:
-            return Rational(1)
-        if n.is_integer and k.is_integer:
-            if n >= 0 and (k < 0 or (n-k) < 0):
-                return Rational(0)
-            # Todo: better support for negative integer arguments:
-            # handle factorial poles that cancel
-            pass
-        if n.is_integer and k.is_integer and n >= 0 and k >= 0:
-            # Choose the faster way to do the calculation
-            if k > n-k:
-                return factorial_quotient(n, k) / factorial(n-k)
-            else:
-                return factorial_quotient(n, n-k) / factorial(k)
-        if not n.is_integer and k.is_integer and k >= 0:
-            return factorial_quotient(n, n-k) / factorial(k)
-        if n == 0:
+
+        # TODO: move these two cases to factorial_simplify as well
+        if n == 0 and k != 0:
             return sin(pi*k)/(pi*k)
-        # Probably no simplification possible
-        return self
+
+        return factorial_simplify(_fac(n) / _fac(k) / _fac(n-k))
 
     def __latex__(self):
         n, k = self._args

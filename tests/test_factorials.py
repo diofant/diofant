@@ -8,20 +8,25 @@ from sympy.modules.specfun.factorials import *
 from sympy.modules.printing.latex import latex
 
 x = Symbol('x')
+y = Symbol('y')
+z = Symbol('z')
+
+fs = factorial_simplify
+fac = factorial
 
 def test_factorial():
-    assert [factorial(t) for t in [0,1,2,3,4]] == [1,1,2,6,24]
-    assert (factorial(-1) == oo) == True
-    assert factorial(Rational(1,2)) == Rational(1,2)*sqrt(pi)
-    assert factorial(Rational(3,2)) == Rational(3,4)*sqrt(pi)
-    assert factorial(Rational(5,2)) == Rational(15,8)*sqrt(pi)
-    assert factorial(Rational(-1,2)) == sqrt(pi)
-    assert factorial(Rational(-3,2)) == -2*sqrt(pi)
-    assert factorial(Rational(-5,2)) == Rational(4,3)*sqrt(pi)
-    assert factorial(Rational(-17,2)) == Rational(256,2027025)*sqrt(pi)
-    assert latex(factorial(x, evaluate=False)) == "$x!$"
-    assert latex(factorial(-4, evaluate=False)) == "$(-4)!$"
-    assert latex(factorial(-x, evaluate=False)) == "$(- x)!$"
+    assert [fac(t) for t in [0,1,2,3,4]] == [1,1,2,6,24]
+    assert (fac(-1) == oo) == True
+    assert fac(Rational(1,2)) == Rational(1,2)*sqrt(pi)
+    assert fac(Rational(3,2)) == Rational(3,4)*sqrt(pi)
+    assert fac(Rational(5,2)) == Rational(15,8)*sqrt(pi)
+    assert fac(Rational(-1,2)) == sqrt(pi)
+    assert fac(Rational(-3,2)) == -2*sqrt(pi)
+    assert fac(Rational(-5,2)) == Rational(4,3)*sqrt(pi)
+    assert fac(Rational(-17,2)) == Rational(256,2027025)*sqrt(pi)
+    assert latex(fac(x, evaluate=False)) == "$x!$"
+    assert latex(fac(-4, evaluate=False)) == "$(-4)!$"
+    assert latex(fac(-x, evaluate=False)) == "$(- x)!$"
 
 def test_factorial2():
     assert factorial2(0) == 1
@@ -42,14 +47,20 @@ def test_factorial2():
     assert latex(factorial2(-4, evaluate=False)) == "$(-4)!!$"
     assert latex(factorial2(-x, evaluate=False)) == "$(- x)!!$"
 
-def test_factorial_quotient():
-    assert factorial_quotient(x+5, x+5) == 1
-    assert factorial_quotient(x+1, x) == 1+x
-    assert factorial_quotient(x+2, x) == (1+x)*(2+x)
-    assert factorial_quotient(x+3, x) == (1+x)*(2+x)*(3+x)
-    assert factorial_quotient(x-1, x) == (1/x)
-    assert factorial_quotient(x-2, x) == 1/(x*(-1+x))
-    assert factorial_quotient(x-3, x) == 1/(x*(-1+x)*(-2+x))
+def test_factorial_simplify():
+    assert fs(fac(x+5)/fac(x+5)) == 1
+    assert fs(fac(x+1)/fac(x)) == 1+x
+    assert fs(fac(x+2)/fac(x)) == (1+x)*(2+x)
+    assert fs(fac(x+3)/fac(x)) == (1+x)*(2+x)*(3+x)
+    assert fs(fac(x-1)/fac(x)) == (1/x)
+    assert fs(fac(x-2)/fac(x)) == 1/(x*(-1+x))
+    assert fs(fac(x-3)/fac(x)) == 1/(x*(-1+x)*(-2+x))
+    assert fs(fac(x)*(x+1)*(x+2)) == fac(x+2)
+    assert fs(fac(x)/x/(x-1)) == fac(x-2)
+    assert fs(x*(x-1)/fac(x)) == 1/fac(x-2)
+    assert fs((1/(x+1))/fac(x)) == 1/fac(x+1)
+    assert fs(fac(x)*fac(y-2)*fac(z+2)/fac(z)/fac(y+1)) == fac(x)*(z+1)*(z+2)/(y-1)/y/(y+1)
+    assert fs(fac(x)*fac(y+1)*fac(z+2)/fac(z)/fac(y-2)) == fac(x)*(z+1)*(z+2)*(y-1)*y*(y+1)
 
 def test_rising_falling():
     assert rising_factorial(x, 0) == 1
