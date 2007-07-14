@@ -1,4 +1,7 @@
 from sympy import Basic, Symbol, Add, Mul, Pow, Rational, oo, simplify
+from sympy.modules.specfun.factorials import rising_factorial, \
+    factorial, factorial_simplify
+from sympy.modules.polynomials import ispoly
 
 class Sum(Basic):
     """
@@ -25,8 +28,8 @@ class Sum(Basic):
             return f*(b-a+1)
         if isinstance(f, Mul):
             L, R = f.getab()
-            if not L.has(i): return L*Sum(R, (i,a,b))
-            if not R.has(i): return R*Sum(L, (i,a,b))
+            if not L.has(i): return L*Sum(R, (i, a, b))
+            if not R.has(i): return R*Sum(L, (i, a, b))
         if isinstance(f, Add):
             L, R = f.getab()
             lsum = Sum(L, (i,a,b))
@@ -39,7 +42,7 @@ class Sum(Basic):
             f = Pow(i, 1, evaluate=False) # TODO: match should handle this
         p = Symbol('p', dummy=True)
         e = f.match(i**p, [p])
-        if e != None and not p.has(i):
+        if e != None:
             c = p.subs_dict(e)
             if c.is_integer and c >= 0:
                 from sympy.modules.specfun import bernoulli_poly as B
@@ -66,7 +69,7 @@ class Sum(Basic):
 
         return self
 
-# TODO: implement me
+
 class Product(Basic):
     """
     Symbolic product with a variable number of factors
@@ -81,4 +84,65 @@ class Product(Basic):
         self.f = self.sympify(f)
         self.a = self.sympify(a)
         self.b = self.sympify(b)
+
+    def __str__(self):
+        return "prod_{%s=%s}^{%s} %s" % (self.i, self.a, self.b, self.f)
+
+    def eval(self):
+        # Always call factorial_simplify
+        p = self._eval()
+        if isinstance(p, Product):
+            return self
+        else:
+            return factorial_simplify(p)
+
+    def _eval(self):
+        f, i, a, b = self.f, self.i, self.a, self.b
+
+        if not f.has(i):
+            return f**(b-a+1)
+
+        if isinstance(f, Mul):
+            L, R = f.getab()
+            lp = Product(L, (i, a, b))
+            rp = Product(R, (i, a, b))
+            if not (isinstance(lp, Product) and isinstance(rp, Product)):
+                return lp * rp
+
+        if isinstance(f, Pow):
+            base, exp = f[:]
+            if not base.has(i):
+                s = Sum(exp, (i, a, b))
+                if not isinstance(s, Sum):
+                    return base ** s
+            elif not exp.has(i):
+                p = Product(base, (i, a, b))
+                if not isinstance(p, Product):
+                    return p ** exp
+
+        # Arbitrary rational functions can be handled by rewriting them
+        # as combinations of linear factors. For now, handle explicitly
+        # given linear factors
+        if f == i:
+            return rising_factorial(a, b-a+1)
+
+        if ispoly(f, i):
+            p = Symbol('p', dummy=True)
+            q = Symbol('p', dummy=True)
+            e = f.match(p+q*i, [p, q])
+            if e != None:
+                pp = p.subs_dict(e)
+                qq = q.subs_dict(e)
+                r = qq**(b-a+1) * factorial(b+pp/qq) / factorial(a+pp/qq-1)
+                return r
+
+        # Brute force
+        if isinstance(a, Rational) and a.is_integer and \
+           isinstance(b, Rational) and b.is_integer:
+            p = 1
+            for j in range(a, b+1):
+                p *= f.subs(i, j)
+            return p
+
+        return self
 

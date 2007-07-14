@@ -54,6 +54,15 @@ class factorial(Function):
     def _series(self, x, n):
         return sqrt(2*pi*x) * x**x * exp(-x) * (1 + O(1/x))
 
+    def __str__(self):
+        x = self._args
+        if (isinstance(x, Rational) and x.is_integer and x >= 0) or \
+            isinstance(x, Symbol):
+            s = str(x)
+        else:
+            s = "(" + str(x) + ")"
+        return s + "!"
+
     def __latex__(self):
         x = self._args
         if (isinstance(x, Rational) and x.is_integer and x >= 0) or \
