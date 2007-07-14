@@ -19,6 +19,13 @@ def test_bernoulli():
     assert bernoulli(10) == Rational(5,66)
     assert bernoulli(1000001) == 0
 
+def test_bernoulli_poly():
+    x = Symbol('x')
+    assert bernoulli_poly(0, x) == 1
+    assert bernoulli_poly(1, x) == x-Rational(1,2)
+    assert bernoulli_poly(2, x) == x**2-x+Rational(1,6)
+    assert bernoulli_poly(3, x) == x**3 - (3*x**2)/2 + x/2
+
 def test_zeta():
     assert zeta(0) == Rational(-1,2)
     assert zeta(1) == oo

@@ -9,4 +9,4 @@ from factorials import factorial, factorial2, rising_factorial, \
     factorial_simplify
 from orthogonal_polynomials import legendre, legendre_zero, \
     chebyshev, chebyshev_zero
-from zeta_functions import bernoulli, zeta
+from zeta_functions import bernoulli, bernoulli_poly, zeta

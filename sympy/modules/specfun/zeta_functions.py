@@ -1,6 +1,6 @@
 from sympy.core.functions import Function, log
 from sympy.core.numbers import Rational, pi, oo
-from factorials import factorial, binomial
+from factorials import factorial, binomial, Function2
 
 # first some utilities for calculating Bernoulli numbers
 
@@ -76,6 +76,23 @@ class bernoulli(Function):
         if m % 6 == 2: return _b2mod6(m)
         if m % 6 == 4: return _b4mod6(m)
         return 0
+
+
+# TODO: speed up
+class bernoulli_poly(Function2):
+    """
+    bernoulli_poly(n, x) - nth Bernoulli polynomial of x
+    """
+    def eval(self):
+        n, x = self._args
+
+        if isinstance(n, Rational) and n.is_integer:
+            s = 0
+            for k in range(n+1):
+                s += binomial(n,k)*bernoulli(k)*x**(n-k)
+            return s
+
+        return self
 
 
 class zeta(Function):
