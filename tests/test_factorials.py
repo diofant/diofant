@@ -28,6 +28,22 @@ def test_factorial():
     assert latex(fac(-4, evaluate=False)) == "$(-4)!$"
     assert latex(fac(-x, evaluate=False)) == "$(- x)!$"
 
+def test_factorial_evalf():
+    def relcmp(a,b):
+        return abs(float(a-b))/abs(float(a))
+    for i in range(20):
+        assert relcmp(fac(i, evaluate=False).evalf(), fac(i)) < 1e-10
+    for i in range(-7, 7, 2):
+        x = Rational(i)/2
+        assert relcmp(fac(x, evaluate=False).evalf(), fac(x)) < 1e-10
+    assert relcmp(fac(165, evaluate=False).evalf(), fac(165)) < 1e-10
+    assert relcmp(fac(-0.75).evalf(), 3.6256099082219083) < 1e-10
+    assert relcmp((1-fac(1e-8).evalf())*10**8, 0.5772157) < 1e-5
+    assert relcmp((fac(-1e-8).evalf()-1)*10**8, 0.5772157) < 1e-5
+    re, im = fac(7+8*I).evalf().get_re_im()
+    assert relcmp(re, 1.84428481562553) < 1e-10
+    assert relcmp(im, -125.96060801751909) < 1e-10
+
 def test_factorial2():
     assert factorial2(0) == 1
     assert factorial2(2) == 2
