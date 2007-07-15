@@ -145,6 +145,7 @@ def test_Infinity():
     assert 1/oo  == 0
     assert 1/(-oo)  == 0
     assert 8/oo  == 0
+    assert oo**(-3) == 0
     py.test.raises(ArithmeticError, "oo-oo")
     py.test.raises(ArithmeticError, "oo*0")
     py.test.raises(ArithmeticError, "oo/oo")

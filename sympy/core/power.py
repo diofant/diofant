@@ -278,7 +278,6 @@ class Pow(Basic):
                     n = self.base[0]
                     if n.is_number and not isinstance(n, Function) and n < 0:
                         return (-self.base)**self.exp
-
         if isinstance(self[0],Real) and self[1].is_number:
             return Real(self[0]**self[1].evalf())
 
@@ -293,8 +292,9 @@ class Pow(Basic):
                             r = r * self.base
                         return r
 
-        if self.exp == -1 and self.base == oo:
+        if self.base == oo and isinstance(self.exp, Rational) and self.exp < 0:
             return Rational(0)
+
         return self
 
 

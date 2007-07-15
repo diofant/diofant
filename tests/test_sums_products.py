@@ -49,6 +49,12 @@ def test_composite_sums():
 def test_finite_sums():
     assert Sum(cos(n), (n, -2, 1)) == cos(-2)+cos(-1)+cos(0)+cos(1)
 
+def test_euler_maclaurin():
+    z = Sum(1/n**3, (n, 1, oo))
+    A, B = z.split(50).getab()
+    apery = (A + B.euler_maclaurin(8)).evalf(25)
+    assert abs(apery - Real("1.202056903159594285399738162")) < Real("1e-25")
+
 def test_products():
     assert Product(2, (n, a, b)) == 2**(b-a+1)
     assert Product(n, (n, 1, b)) == factorial(b)

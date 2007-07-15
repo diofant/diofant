@@ -1,6 +1,8 @@
-from sympy import Basic, Symbol, Add, Mul, Pow, Rational, oo, simplify
+from sympy import Basic, Symbol, Add, Mul, Pow, Rational, oo, simplify, \
+    diff, integrate
 from sympy.modules.specfun.factorials import rising_factorial, \
     factorial, factorial_simplify
+from sympy.modules.specfun.zeta_functions import bernoulli, bernoulli_poly
 from sympy.modules.polynomials import ispoly
 
 class Sum(Basic):
@@ -20,6 +22,18 @@ class Sum(Basic):
     def __str__(self):
         return "sum_{%s=%s}^{%s} %s" % (self.i, self.a, self.b, self.f)
 
+    def reindex(self, a):
+        """Reindex the sum to start at a new lower index a."""
+        diff = self.a - a
+        b = self.b - diff
+        f = self.f.subs(self.i, self.i + diff)
+        return Sum(f, (self.i, a, b))
+
+    def split(self, n):
+        """Split into two sums, the first with n terms."""
+        f, i, a, b = self.f, self.i, self.a, self.b
+        return Sum(f, (i, a, a+n-1)) + Sum(f, (i, a+n, b))
+
     def eval(self):
         f, i, a, b = self.f, self.i, self.a, self.b
 
@@ -34,7 +48,7 @@ class Sum(Basic):
             L, R = f.getab()
             lsum = Sum(L, (i,a,b))
             rsum = Sum(R, (i,a,b))
-            if not (isinstance(lsum, Sum) and isinstance(rsum, Sum)):
+            if not isinstance(lsum, Sum) and not isinstance(rsum, Sum):
                 return lsum + rsum
 
         # Polynomial terms with Faulhaber's formula
@@ -45,8 +59,8 @@ class Sum(Basic):
         if e != None:
             c = p.subs_dict(e)
             if c.is_integer and c >= 0:
-                from sympy.modules.specfun import bernoulli_poly as B
-                return ((B(c+1, b+1)-B(c+1, a))/(c+1)).expand()
+                s = (bernoulli_poly(c+1, b+1)-bernoulli_poly(c+1, a))/(c+1)
+                return s.expand()
 
         # Geometric terms
         if isinstance(f, Pow):
@@ -68,6 +82,23 @@ class Sum(Basic):
             return s
 
         return self
+
+    def euler_maclaurin(self, n=0):
+        """
+        Return n-th order Euler-Maclaurin approximation of self.
+        
+        The 0-th order approximation is simply the corresponding
+        integral
+        """
+        f, i, a, b = self.f, self.i, self.a, self.b
+        x = Symbol('x')
+        s = integrate(f.subs(i, x), (x, a, b))
+        if n > 0:
+            s += (f.subs(i, a) + f.subs(i, b))/2
+        for k in range(1, n):
+            g = diff(f, i, 2*k-1)
+            s += bernoulli(2*k)/factorial(2*k)*(g.subs(i,b)-g.subs(i,a))
+        return s
 
 
 class Product(Basic):
