@@ -131,6 +131,9 @@ def rat_roots(f):
                 result.append(Rational(p, q))
             if f(Rational(-p, q)) == 0:
                 result.append(Rational(-p, q))
+    # Now check, if 0 is a root
+    if f.basic.subs(f.var[0], Rational(0)).expand() == 0:
+        result.append(Rational(0))
     return result
 
 def real_roots(s, a=None, b=None):

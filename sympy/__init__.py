@@ -76,7 +76,7 @@ from sympy.modules.solvers import solve, dsolve
 from sympy.modules.simplify import fraction, numer, denom, together, \
     separate, collect, ratsimp, simplify
 from sympy.modules.polynomials import div, gcd, factor, groebner, lcm, \
-    real_roots, resultant, roots, sqf, Ideal
+    real_roots, resultant, roots, sqf, sqf_part, Ideal
 
 from sympy.modules.printing.pretty import pretty, pretty_print, pprint
 from sympy.modules.printing.mathml import mathml

@@ -75,14 +75,13 @@ def factor(f):
 
     Example:
     >>> x = Symbol('x')
-    >>> factor(x**4-1)
+    >>> y = Symbol('y')
+    >>> factor(x**4 - 1)
     (1+x)*(1+x**2)*(-1+x)
-
+    >>> factor(x**2 - y**2)
+    (y-x)*(-y-x)
     """
     f = Polynomial(f, coeff='int')
-    if len(f.var) != 1:
-        raise PolynomialException(
-            'Multivariate factorization not yet implemented.')
 
     # Compute lcm of denominators in coefficients:
     l = 1
@@ -99,10 +98,14 @@ def factor(f):
     f.cl = map(lambda t:[t[0]/c] + t[1:], f.cl)
 
     # Get an re-assemble factors:
-    for p in factor_.uv_int(f):
-        c *= p.basic
-
-    return c
+    result = Rational(1)
+    if len(f.var) == 1:
+        for p in factor_.uv_int(f):
+            result *= p.basic
+    if len(f.var) > 1:
+        for p in factor_.kronecker_mv(f):
+            result *= p.basic
+    return result*c/l
 
 
 def gcd(f, g, var=None, order=None, coeff=None):

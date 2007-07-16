@@ -1,7 +1,9 @@
 """Various algorithms for the factorization of polynomials."""
 
+import random
+
 from sympy.modules.polynomials.base import *
-from sympy.modules.polynomials import div_, roots_, sqf_
+from sympy.modules.polynomials import div_, gcd_, roots_, sqf_
 
 def uv_int(f):
     """Find the factorization of an univariate integer polynomial.
@@ -24,9 +26,10 @@ def uv_int(f):
                 q, r = div_.mv_int(p, pp)
                 assert r.cl[0][0] == 0
                 p = q[0] # q is a list!
-            # Then try the rest with the kronecker algorithm:
-            for pp in kronecker(p):
-                result += [pp]*(i+1)
+            if p.cl[0][1] != 0: # Filter out constant Rational(1) factors
+                # Then try the rest with the kronecker algorithm:
+                for pp in kronecker(p):
+                    result += [pp]*(i+1)
     return result
 
 def kronecker(f):
@@ -121,3 +124,156 @@ def kronecker(f):
         # No divisor found, f irreducible.
         # TODO: Try again with smaller degree divisors?
         return [f]
+
+def kronecker_mv(f):
+    """Multivariate polynomial factorization.
+
+    Depends on univariate factorization, and hence is restricted to
+    rational coefficients. Expects an instance of Polynomial with at
+    least 2 variables.
+
+    """
+    
+    def factor_combinations(lisp, m):
+        def recursion(fa, lisp, m):
+            if m == 0:
+                 yield fa
+            else:
+                for i, fa2 in enumerate(lisp[0 : len(lisp) + 1 - m]):
+                    for el in recursion(fa2 * fa, lisp[i + 1:], m - 1):
+                        yield el
+
+        for i, fa in enumerate(lisp[0 : len(lisp) + 1 - m]):
+            for el in recursion(fa, lisp[i + 1:], m - 1):
+                yield el
+
+    # First get degree bound, that is larger than all individual degrees.
+    d = 0
+    for term in f.cl:
+        for exponent in term[1:]:
+            if exponent > d:
+                d = exponent
+    d += 1
+    d = int(d)
+
+    # Now reduce the polynomial f to g in just variable, by the
+    # substitution x_i -> y**(d**i)
+    g = f.copy()
+    y = Symbol('y', dummy=True)
+    for v in f.var:
+        g.basic = g.basic.subs(v, y**(d**g.var.index(v)))
+    g.var = [y]
+
+    # We can now call the univariate factorization algorithm for g.
+    g_factors = uv_int(g)
+
+    # Trial division with all combinations of factors of g.
+    tested = []
+    result = []
+    for m in range(1, len(g_factors)):
+        for cand in factor_combinations(g_factors, m):
+            if cand in tested:
+                continue
+            # Inverse reduction
+            ff = Rational(0)
+            for term in cand.cl:
+                ff_term = term[0]
+                y_deg = term[1]
+                for v in f.var:
+                    v_deg = int(y_deg) % d
+                    y_deg = (y_deg - v_deg)/d
+                    ff_term *= v**v_deg
+                ff += ff_term
+            if ff == Rational(1):
+                continue
+            candidate = Polynomial(ff, f.var, f.order, f.coeff)
+            q, r = div_.mv_int(f, candidate)
+            if r == 0: # found a factor
+                result.append(candidate)
+                f = q[0]
+            else:
+                tested.append(cand)
+    if f != Rational(1):
+        result.append(f)
+    return result
+
+## def mv_int(f):
+##     """Complete multivariate polynomial factorization over the integers.
+
+##     Depends on univariate factorization.
+##     """
+
+##     var = f.var
+
+##     # TODO: Choose best main variable, such that leading coefficient is 1
+##     # or the degree is small!
+##     x = var[0]
+##     f.var = [x]
+##     # Get coefficients, now polynomials in the rest of the variables
+##     c = map(lambda t:t[0], f.cl)
+##     c = map(lambda t: Polynomial(t, var=var[1:]), c)
+
+##     # Get content removed from the polynomial, can be factored seperately
+##     content = reduce(gcd_.mv, c)
+##     for term, coeff in zip(f.cl, c):
+##         q, r = div_.mv(coeff, content)
+##         term[0] = q[0].basic
+##     f.cl = f.cl # To clear f.basic
+
+##     # Do square-free factorization with main variable
+##     a = sqf_.uv_int(f)
+
+##     # Run Wang's algorithm for all factors
+##     for i, p in enumerate(a):
+##         if p.cl[0][1:] != [0]*len(var): # Filter out constants
+##             for pp in wang(p, var):
+##                 result += [pp]*(i+1)
+
+##     # Combine result with content's factorization
+##     return  mv_int(content) + result
+
+## def wang(f, var):
+##     """Following
+##     Factoring Multivariate Polynomials Over the Integers
+##     Paul S. Wang; Linda Preiss Rothschild
+##     Mathematics of Computation, Vol. 29, No. 131. (July, 1975), pp. 935-950
+
+##     """
+
+##     def change(subs):
+##         i = random.randint(0, len(subs) + 1)
+##         subs[i] += 1
+##         return subs
+
+##     # First substitute the variables in var with integers,
+##     # such that the resulting polynomial is of same degree
+##     # and still square free
+##     # TODO: Which integers to use?
+##     substitutes = [Rational(0)]*len(var)
+##     while True:
+##         lead_coeff = f.cl[0][0]
+##         basic = f.basic
+##         for i, v in enumerate(var):
+##             lead_coeff = lead_coeff.subs(v, substitutes[i])
+##         if lead_coeff == Rational(0):
+##             substitutes = change(substitutes)
+##             continue
+##         for i, v in enumerate(var):
+##             basic = basic.subs(v, substitutes[i])
+##         if basic != sqf_part(basic):
+##             substitutes = change(substitutes)
+##             continue
+##         else: # Substitutes are fine, go on.
+##             break
+
+##     # Now factorize the remaining polynomial in one variable.
+##     ff = Polynomial(basic, f.var, f.order, f.coeff)
+##     factors = uv_int(ff)
+
+##     # When univariate polynomial is irreducible, the original was, too.
+##     if len(factors) == 1:
+##         return Polynomial(f.basic, f.var + var, f.order, f.coeff)
+
+##     # Now, try to reconstruct multivariate factor candidates from
+##     # the univariate ones.
+    

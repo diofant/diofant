@@ -130,16 +130,22 @@ def test_div():
 
 def test_factor():
     x = Symbol("x")
-    assert factor(x**2-1) == (x+1)*(x-1)
+    y = Symbol("y")
+    z = Symbol("z")
+#    assert factor(Rational(3, 8)*x**2 - Rational(3, 2)) \
+#           == Rational(3, 8)*(x + 2)*(x - 2)
     assert factor(x**3-1) == (x-1)*(x**2+x+1)
     assert factor(x**2+2*x+1) == (x+1)**2
-    assert factor(x**3-3*x**2+3*x-1) == (x-1)**3
     assert factor(x**3-3*x**2+3*x-1) == (x-1)**3
     assert factor(x**2+x-2) == (x-1)*(x+2)
     assert factor(x**3-x) == x*(x-1)*(x+1)
     assert factor(x**6-1) == (1+x**2-x)*(1+x)*(1+x+x**2)*(-1+x)
     assert factor(2*x**2+5*x+2) == (2+x)*(1+2*x)
 
+    assert factor(x**2 + y**2) == x**2 + y**2
+    assert factor(x*y + x*z + y*z) == x*y + x*z + y*z
+    assert factor(x*(y+1) + x*z) == x*(z + y + 1)
+    
 def test_gcd():
     x = Symbol("x")
     y = Symbol("y")
