@@ -4,7 +4,7 @@ sys.path.append(".")
 import py
 
 import sympy as g
-from sympy import Basic, Symbol, Rational, sin, exp
+from sympy import Basic, Symbol, Rational, Add, Mul, sin, exp
 
 def dotest(s):
     x = g.Symbol("x")
@@ -78,6 +78,15 @@ def test_atoms():
    assert g.Rational(1,2).atoms() == [g.Rational(1,2)]
 
    assert g.Rational(1,2).atoms(type=(g.core.numbers.Infinity)) == []
+
+def test_has_class():
+    expr = sin(4+exp(Symbol('x')))
+    assert expr.has_class(sin)
+    assert expr.has_class(Add)
+    assert expr.has_class(Rational)
+    assert expr.has_class(exp)
+    assert expr.has_class(Symbol)
+    assert not expr.has_class(Mul)
 
 def test_assumptions():
     x = Basic(is_integer=True)

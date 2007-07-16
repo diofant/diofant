@@ -614,6 +614,17 @@ class Basic(object):
     def has_any(self, subs):
         return len ([sub for sub in subs if self.has(sub) == True]) > 0
 
+    def has_class(self, cls):
+        if isinstance(self, cls):
+            return True
+        for x in self[:]:
+            try:
+                if x.has_class(cls):
+                    return True
+            except (TypeError, AttributeError):
+                break
+        return False
+
     def leadterm(self,x):
         """Returns the leading term c0*x^e0 of the power series 'self' in x
         with the lowest power of x in a form (c0,e0)

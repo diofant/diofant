@@ -731,4 +731,7 @@ def trigsimp(expr):
     return expr
 
 def simplify(expr):
+    from sympy.modules.specfun.factorials import factorial, factorial_simplify
+    if expr.has_class(factorial):
+        expr = factorial_simplify(expr)
     return ratsimp(expr.combine().expand())

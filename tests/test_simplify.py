@@ -33,6 +33,14 @@ def test_trigsimp():
     assert trigsimp(1 + tan(x)**2) == sec(x)**2
     assert trigsimp(1 + cot(x)**2) == csc(x)**2
 
+def test_factorial_simplify():
+    # There are more tests in test_factorials.py. These are just to
+    # ensure that simplify() calls factorial_simplify correctly
+    from sympy.modules.specfun.factorials import factorial
+    x = Symbol('x')
+    assert simplify(factorial(x)/x) == factorial(x-1)
+    assert simplify(factorial(factorial(x))) == factorial(factorial(x))
+
 def test_simplify():
     x = Symbol('x')
     y = Symbol('y')
