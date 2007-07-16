@@ -12,7 +12,7 @@ a = Symbol('a')
 b = Symbol('b')
 
 def test_str():
-    assert str(Sum(cos(3*n), (n, a, b))) == "sum_{n=a}^{b} cos(3*n)"
+    assert str(Sum(cos(3*n), (n, a, b))) == "Sum(cos(3*n), (n, a, b))"
 
 def test_arithmetic_sums():
     assert Sum(1, (n, a, b)) == b-a+1
