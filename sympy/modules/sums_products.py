@@ -19,8 +19,10 @@ class Sum(Basic):
         self.a = self.sympify(a)
         self.b = self.sympify(b)
 
-    def __str__(self):
-        return "sum_{%s=%s}^{%s} %s" % (self.i, self.a, self.b, self.f)
+    def __repr__(self):
+        return "Sum(%r, (%r, %r, %r))" % (self.f, self.i, self.a, self.b)
+
+    __str__ = __repr__
 
     def reindex(self, a):
         """Reindex the sum to start at a new lower index a."""
@@ -116,8 +118,10 @@ class Product(Basic):
         self.a = self.sympify(a)
         self.b = self.sympify(b)
 
-    def __str__(self):
-        return "prod_{%s=%s}^{%s} %s" % (self.i, self.a, self.b, self.f)
+    def __repr__(self):
+        return "Product(%r, (%r, %r, %r))" % (self.f, self.i, self.a, self.b)
+
+    __str__ = __repr__
 
     def eval(self):
         # Always call factorial_simplify

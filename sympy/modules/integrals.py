@@ -16,7 +16,7 @@ class Integral(Basic):
 
     print Integral(1/t, (t,1,x))  will print::
     
-         int_{1}^{x} (t^(-1)) dt
+         integrate(1/t, (t, 1, x))
 
     print Integral(1/t, (t,1,x)).doit() will print::
     
@@ -26,9 +26,9 @@ class Integral(Basic):
     
         1/x
 
-    Currently can only integrate very simple functions, like polynoms.
-    You can however implement as many formulas as you want at the end
-    of the primitive_function() function.
+    Currently can only integrate very simple functions, like
+    polynomials. You can however implement as many formulas as you want
+    in the table at the end of the primitive_function() method.
 
     """
     
@@ -116,13 +116,24 @@ class Integral(Basic):
         return (self.b.diff(sym)*self.f.subs(self.x,self.b)-\
             self.a.diff(sym)*self.f.subs(self.x,self.a))
 
-    def __str__(self):
+    def __repr__(self):
         if not isinstance(self.a, type(None)):
             # case definite integral
-            return "int_{%r}^{%r} (%r) d%r"%(self.a,self.b,self.f,self.x)
+            return "integrate(%r, (%r, %r, %r))" % (self.f,self.x,self.a,self.b)
         else:
             #case undefinite integral
-            return "int(%r) d%r" % (self.f, self.x)
+            return "integrate(%r, %r)" % (self.f, self.x)
+
+    # use __repr__ style instead for consistency with Sum and Product
+    __str__ = __repr__
+
+    #def __str__(self):
+    #    if not isinstance(self.a, type(None)):
+    #        # case definite integral
+    #        return "int_{%r}^{%r} (%r) d%r"%(self.a,self.b,self.f,self.x)
+    #    else:
+    #        #case undefinite integral
+    #        return "int(%r) d%r" % (self.f, self.x)
 
     def doit(self):
         """Try to do the integral."""
@@ -238,8 +249,8 @@ def integrate(f, *args, **kargs):
       >>> integrate(x*y**2 , (x,1,2), y)
       1/2*y**3
       >>> integrate(x , (x,1,2), evaluate=False)
-      int_{1}^{2} (x) dx
-      
+      integrate(x, (x, 1, 2))
+
     See also
     ========
     
