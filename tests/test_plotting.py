@@ -1,10 +1,19 @@
 import sys
 sys.path.append(".")
 
+disabled = False
+try:
+    from ctypes import *
+except:
+    disabled = True
+
 from sympy import Symbol, log
 x,y = Symbol('x'), Symbol('y')
 
-class xTestPlotting:
+class TestPlotting:
+    def __init__(self):
+        global disabled
+        self.disabled = disabled
 
     def test_import(self):
         from sympy.modules.plotting import Plot

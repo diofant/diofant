@@ -1,3 +1,8 @@
+try:
+    from ctypes import *
+except:
+    raise ImportError("ctypes is required for plotting.\n'easy_install ctypes' or visit http://sourceforge.net/projects/ctypes/")
+
 import sys
 import os
 try:

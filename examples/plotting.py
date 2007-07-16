@@ -1,3 +1,10 @@
+"""
+Plotting Example
+
+Note: In Python < 2.5, you will need the ctypes library
+to use plotting. It is included with Python 2.5 and later.
+"""
+
 import sys
 sys.path.append("..")
 
