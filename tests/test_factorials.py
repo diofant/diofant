@@ -124,3 +124,12 @@ def test_gamma():
     from sympy import simplify
     assert simplify(lower_gamma(1,x) + upper_gamma(1,x)) == gamma(1)
     assert simplify(lower_gamma(5,x) + upper_gamma(5,x)) == gamma(5)
+
+def test_derivatives():
+    x = Symbol('x')
+    from sympy.modules.specfun.zeta_functions import polygamma, euler_gamma
+    assert diff(gamma(4*x), x) == 4*gamma(4*x)*polygamma(0, 4*x)
+    assert diff(factorial(4*x), x) == 4*gamma(1+4*x)*polygamma(0, 1+4*x)
+    assert diff(log(gamma(x)), x, 5) == polygamma(4, x)
+    assert diff(factorial(x), x).subs(x, 0) == -euler_gamma
+    assert diff(factorial(x), x).subs(x, 4) == 50-24*euler_gamma

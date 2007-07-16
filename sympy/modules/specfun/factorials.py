@@ -68,6 +68,9 @@ class factorial(Function):
                 return sqrt(pi) * Rational(1, 2**n) * factorial2(2*n-1)
         return self
 
+    def diff(self, sym):
+        return gamma(self._args+1).diff(sym)
+
     def evalf(self):
         """Return a low-precision approximation of self."""
         a, b = self._args.get_re_im()
@@ -412,6 +415,11 @@ class gamma(Function):
             return self
         else:
             return y
+
+    def diff(self, sym):
+        from zeta_functions import polygamma
+        x = self._args
+        return gamma(x)*polygamma(0,x)*x.diff(sym)
 
     def __latex__(self):
         return "\Gamma(" + self._args.__latex__() + ")"

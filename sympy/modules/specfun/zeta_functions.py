@@ -1,5 +1,6 @@
-from sympy.core.functions import Function, log
-from sympy.core.numbers import Rational, pi, oo
+from sympy.core.functions import Function, log, sqrt
+from sympy.core.numbers import Number, Rational, Real, pi, oo
+from sympy.modules.trigonometric import cos, sin, tan
 from factorials import factorial, binomial, Function2
 
 # first some utilities for calculating Bernoulli numbers
@@ -141,3 +142,88 @@ class dirichlet_eta(Function):
             return log(2)
         else:
             return (1-2**(1-s)) * zeta(s)
+
+
+class harmonic(Function2):
+    """
+    harmonic(n, m=1) -- nth harmonic number (of order m)
+    """
+    def __init__(self, n, m=1, **kwargs):
+        Function2.__init__(self, n, m, **kwargs)
+
+    def __repr__(self):
+        return "harmonic(%r, %r)" % self._args
+
+    __str__ = __repr__
+
+    def eval(self):
+        n, m = self._args
+        if isinstance(n, Rational) and n >= 0 and \
+           isinstance(m, Rational) and m >= 0:
+            if n == 0:
+                return 0
+            s = 0
+            for i in range(1, n+1):
+                s += Rational(1)/i**m
+            return s
+        if n == oo:
+            return zeta(m)
+        return self
+
+
+# TODO: implement properly
+class _euler_gamma(Number):
+    def __str__(self):
+        return "euler_gamma"
+    def __latex__(self):
+        return "\gamma"
+    def evalf(self, prec=15):
+        return Real("0.57721566490153286060651209008")
+
+euler_gamma = _euler_gamma()
+
+
+class polygamma(Function2):
+    """
+    polygamma(m, z) -- m'th order polygamma function of z
+    """
+    def __repr__(self):
+        return "polygamma(%r, %r)" % self._args
+
+    __str__ = __repr__
+
+    def eval(self):
+        m, z = self._args
+        if m == 0:
+            # TODO: arbitrary rational arguments
+            if isinstance(z, Rational):
+                if z == 0:
+                    return oo
+                #if z < 0:
+                #    return polygamma(0, 1-z) - pi/tan(pi*z)
+                if z.is_integer and z > 0:
+                    return -euler_gamma + harmonic(z-1)
+        if m == 1:
+            if isinstance(z, Rational):
+                if z == 0:
+                    return oo
+                #if z < 0:
+                #    return -polygamma(1, 1-z) + pi**2 / sin(pi*z)**2
+                if z.is_integer and z > 0:
+                    return (pi**2)/6 - harmonic(z-1, 2)
+        return self
+
+    def diff(self, sym):
+        m, z = self._args
+        if m.diff(sym) != 0:
+            raise NotImplementedError
+        return polygamma(m+1, z) * z.diff(sym)
+
+def digamma(z):
+    return polygamma(0, z)
+
+def trigamma(z):
+    return polygamma(1, z)
+
+def tetragamma(z):
+    return polygamma(2, z)
