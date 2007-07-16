@@ -4,7 +4,7 @@ sys.path.append(".")
 from sympy import Symbol, log
 x,y = Symbol('x'), Symbol('y')
 
-class TestPlotting:
+class xTestPlotting:
 
     def test_import(self):
         from sympy.modules.plotting import Plot
