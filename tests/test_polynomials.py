@@ -132,8 +132,8 @@ def test_factor():
     x = Symbol("x")
     y = Symbol("y")
     z = Symbol("z")
-#    assert factor(Rational(3, 8)*x**2 - Rational(3, 2)) \
-#           == Rational(3, 8)*(x + 2)*(x - 2)
+    assert factor(Rational(3, 8)*x**2 - Rational(3, 2)) \
+           == Rational(3, 8)*((x + 2)*(x - 2))
     assert factor(x**3-1) == (x-1)*(x**2+x+1)
     assert factor(x**2+2*x+1) == (x+1)**2
     assert factor(x**3-3*x**2+3*x-1) == (x-1)**3
