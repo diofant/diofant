@@ -326,7 +326,7 @@ def test_nullspace():
     assert basis[2] == Matrix([[-2,0,0,-2,1,0,0]])
     assert basis[3] == Matrix([[0,0,0,0,0,R(-1)/3, 1]])
     
-def test_eigenvalues():
+def test_eigen():
     # test charpoly
     x = Symbol('x')
     y = Symbol('y')
@@ -339,7 +339,19 @@ def test_eigenvalues():
                 (-1,0,1) ])
     vals = M.eigenvals()
     vals.sort()
-    assert vals == [-1, 1, 2]
+    assert vals == [[-1,1],[1,1],[2,1]]
+    # test vectors
+    R = Rational
+    M = Matrix([ [1,0,0], 
+                 [0,1,0],
+                 [0,0,1]])
+    assert M.eigenvects() == [[1, 3, [Matrix(1,3,[1,0,0]), Matrix(1,3,[0,1,0]), Matrix(1,3,[0,0,1])]]]
+    M = Matrix([ [5,0,2],
+                 [3,2,0],
+                 [0,0,1]])
+    assert M.eigenvects() == [[1, 1, [Matrix(1,3,[R(-1)/2,R(3)/2,1])]], 
+                              [2, 1, [Matrix(1,3,[0,1,0])]], 
+                              [5, 1, [Matrix(1,3,[1,1,0])]]]
 
 def test_sparse_matrix():
     return
@@ -622,7 +634,7 @@ def test_sparse_matrix():
     assert basis[3] == Matrix([[0,0,0,0,0,R(-1)/3, 1]])
 
 
-    # test eigenvals
+    # test eigen
     x = Symbol('x')
     y = Symbol('y')
     eye3 = eye(3)
@@ -635,3 +647,15 @@ def test_sparse_matrix():
     vals = M.eigenvals()
     vals.sort()
     assert vals == [-1, 1, 2]
+    
+    R = Rational
+    M = Matrix([ [1,0,0], 
+                 [0,1,0],
+                 [0,0,1]])
+    assert M.eigenvects() == [[1, 3, [Matrix(1,3,[1,0,0]), Matrix(1,3,[0,1,0]), Matrix(1,3,[0,0,1])]]]
+    M = Matrix([ [5,0,2],
+                 [3,2,0],
+                 [0,0,1]])
+    assert M.eigenvects() == [[1, 1, [Matrix(1,3,[R(-1)/2,R(3)/2,1])]], 
+                              [2, 1, [Matrix(1,3,[0,1,0])]], 
+                              [5, 1, [Matrix(1,3,[1,1,0])]]]

@@ -279,7 +279,8 @@ class Matrix(object):
         for i in range(self.lines):
             for j in range(self.cols):
                 s+="%s "%repr(self[i,j]);
-            s+="\n"
+            if i != self.lines - 1:
+                s+="\n"
         return s
 
     def __mathml__(self):
@@ -572,12 +573,12 @@ class Matrix(object):
         return J
     
     def GramSchmidt(self):
+        # TODO: still doesn't work for large expressions, there's a bug in an eval somewhere
         # return Q*R where Q is orthogonal and R is upper triangular
         # assume full-rank square, for now
         assert self.lines == self.cols
         n = self.lines
-        Q = self.zero(n)
-        R = self.zero(n)
+        Q, R = self.zero(n), self.zero(n)
         for j in range(n):      # for each column vector
             tmp = self[:,j]     # take original v
             for i in range(j):
@@ -843,6 +844,7 @@ class Matrix(object):
     
     def eigenvals(self, var=None):
         """ Calls wrapper.py's roots(), doesn't support coeff type right now """
+        # returns list of pairs (eigenval, multiplicty)
         if var == None:
             var = Symbol('x')
         p = self.charpoly(var)
@@ -852,8 +854,34 @@ class Matrix(object):
             assert divop[1] == 0
             p = divop[0]
         rl = sympy.modules.polynomials.roots(p, var)
-        return rl
-            
+        assert len(rl) == self.lines
+        outlist = []
+        def f(num):
+            def g(n):
+                if num == n:
+                    return True
+                else:
+                    return False
+            return g
+        while rl != []:
+            n = len(filter(f(rl[0]), rl))
+            outlist.append([rl[0], n])
+            for i in range(n):
+                rl.remove(rl[0]) 
+        return outlist
+    
+    def eigenvects(self):
+        # return list of triples (eigenval, multiplicty, basis)
+        out, vlist = [], self.eigenvals()
+        for i in range(len(vlist)):
+            tmp = self - eye(self.lines)*vlist[i][0]
+            basis = tmp.nullspace()
+            if len(basis) != vlist[i][1]:
+                print "basis is", basis
+                print "vlist is", vlist[i]
+            vlist[i].append(basis)
+            out.append(vlist[i])
+        return out
 
 def zero(n):
     return zeronm(n,n)
