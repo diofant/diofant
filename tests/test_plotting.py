@@ -1,20 +1,10 @@
 import sys
 sys.path.append(".")
 
-try:
-    from OpenGL.GL import *
-    disabled = False
-except:
-    disabled = True
-
 from sympy import Symbol, log
 x,y = Symbol('x'), Symbol('y')
 
 class TestPlotting:
-    
-    def __init__(self):
-        global disabled
-        self.disabled = disabled
 
     def test_import(self):
         from sympy.modules.plotting import Plot
@@ -33,4 +23,4 @@ class TestPlotting:
 
     def test_plot_3d_discontinuous(self):
         from sympy.modules.plotting import Plot
-        Plot(1/x, [x, -1, 1, 2], [y, -1, 1, 1], show=False)
+        Plot(1/x, [x, -3, 3], [y, -1, 1, 1], show=False)

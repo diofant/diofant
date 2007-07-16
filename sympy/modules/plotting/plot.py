@@ -1,108 +1,152 @@
-from sympy import Basic, Symbol
-from scene import Scene
-from sympy.modules.plotting.scene import Renderable
-from renderables import CartesianCurve, CartesianSurface, ParametricCurve, Triangle, Simple3dAxes
-from util import getkwarg
+from threading import Lock
+from arg_parsing import parse_plot_args, parse_function_args
+from plot_object import PlotObject
+from plot_function import PlotFunction
+from plot_window import PlotWindow
+from bounding_box import BoundingBox
 
 class Plot(object):
     """
-    Plot is the primary user interface for plotting in sympy.
-
-    Usage Examples
-    =======
-    see examples\plotting.py
+    Flexible interface for plotting SymPy functions.
     """
 
-    window_title = "SymPy Plot - %s"
-    f_str_list = []
-    def __init__(self, *fargs, **kwargs):
-        """
-        
-        """
-        dist = getkwarg(kwargs, 'dist', 3.0)
+    default_width = 600
+    default_height = 600
 
-        self._scene = Scene(dist = dist)
-        self.append(*fargs, **kwargs)
-        self._scene.title = self.window_title % (", ".join(self.f_str_list))
+    def __init__(self, *args, **kwargs):
+        """
+        Initializes the Plot.
 
-        if getkwarg(kwargs, 'axes', True):
-            self._scene.append(Simple3dAxes())
-        if getkwarg(kwargs, 'show', len(fargs) > 0):
+        show [Boolean, default=True]
+            Display a UI window immediately after initialization?
+        """
+
+        self._render_object_lock = Lock() # see lock_begin/lock_end
+
+        self.clear() # initialize _functions list
+        self._clear_plotobjects() # initialize _plotobjects list
+        self.bounding_box = BoundingBox()
+        self.bounding_box.visible = kwargs.get('bbox', False) or kwargs.get('bounding_box', False)
+        self._append_plotobject(self.bounding_box)
+
+        self.width = kwargs.get('width', self.default_width)
+        self.height = kwargs.get('height', self.default_height)
+        self.wireframe = kwargs.get('wireframe', False)
+
+        self._calculations_in_progress = 0        
+
+        for f in parse_plot_args(*args):
+            self.append(f)     
+
+        self.window = None        
+
+        if kwargs.get('show', True):
             self.show()
 
-    def append(self, *fargs, **kwargs):
-
-        for functions, intervals in self.parse_args(*fargs):
-            for f in functions:
-                vars = f.atoms(type=Symbol)
-                var_count = len(vars)
-                i_count = len(intervals)
-                if var_count not in (0, 1, 2):
-                    raise ValueError( "Cannot plot %d variables." % (var_count) )
-                for v in vars:
-                    var_found = False
-                    for i in intervals:
-                        if i[0] == v:
-                            var_found = True
-                            break
-                    if not var_found:
-                        raise ValueError( "No interval given for variable %s." % (str(v)) )
-                self.f_str_list.append(str(f))
-                if i_count == 2:
-                    self._scene.append( CartesianSurface(f, intervals[0], intervals[1]) )
-                else:
-                    self._scene.append( CartesianCurve(f, intervals[0]) )
-
-    def parse_args(self, *fargs):
-        """
-        Generator which unpacks arguments to append() (and hence to __init__).
-        
-        Grammar
-        =======
-        *fargs := (Renderable|cluster)*
-        cluster := sympy-function+, interval+
-        interval := [var, var_min, var_max, var_steps]
-        
-        Ex. In Grammar
-        --------------
-        sympy-function, interval
-        Renderable, sympy-function, interval, interval, Renderable, sympy-function, sympy-function, interval
-        
-        Ex. Not In Grammar
-        ------------------
-        interval, sympy-function
-        """
-
-        def error_check(functions, intervals):
-            """
-            Error checking helper which removes redundancy.
-            """
-            f_error = "No functions specified for interval(s) '%s'"
-            i_error = "No interval specified for function(s) '%s'"
-            if len(functions) == 0: raise ValueError( f_error % (intervals) )
-            if len(intervals) == 0: raise ValueError( i_error % (functions) )
-            return (functions, intervals)
-
-        functions = []; intervals = []
-        for token in fargs:
-            if isinstance(token, Renderable):
-                self._scene.append(token)
-            else:
-                try:
-                    if len(token) == 4: #>= 3 and len(token) <= 4:
-                        if isinstance(token[0], Symbol): intervals.append(token)
-                except:
-                    try: f = Basic.sympify(token)
-                    except: raise ValueError( "Could not interpret token '%s'" % (token) )
-
-                    if len(intervals) != 0:
-                        yield error_check(functions, intervals)
-
-                        functions = []; intervals = []
-                    functions.append(f)
-
-        if len(functions) != 0 or len(intervals) != 0:
-            yield error_check(functions, intervals)
-
     def show(self):
-        self._scene.show()
+        """
+        Displays a UI window representing the Plot.
+        """
+        if self.window == None or self.window._window.has_exit:
+            self.window = PlotWindow(self, width=self.width, height=self.height,
+                                     wireframe=self.wireframe)
+        else:
+            self.window._window.activate()
+
+    def getimage(self, **kwargs):
+        """
+        Returns an Image representing the Plot. Requires PIL.
+        """
+        raise NotImplementedError()
+
+    def saveimage(self, filepath, **kwargs):
+        """
+        Saves an image file representing the Plot. Requires PIL.
+        """
+        raise NotImplementedError()
+
+    ### PlotFunction List Interfaces (for end-users) ###
+
+    def clear(self):
+        self.lock_begin()
+        self._functions = {}
+        self.lock_end()
+
+    def __getitem__(self, i):
+        return self._functions[i]
+
+    def __setitem__(self, i, args):
+        if not (isinstance(i, int) and i > 0):
+            raise ValueError("Function index must be a positive integer.")
+        if isinstance(args, PlotFunction):
+            f = args
+        else:
+            if not isinstance(args, (tuple, list)): args = [args]
+            self._calculations_in_progress += 1
+            f = parse_function_args(*args)
+            self._calculations_in_progress -= 1
+            assert isinstance(f, PlotFunction)
+        self.bounding_box.consider_function(f)
+        self.lock_begin()
+        self._functions[i] = f
+        self.lock_end()
+
+    def __delitem__(self, i):
+        self.lock_begin()
+        del self._functions[i] 
+        self.lock_end()
+
+    def firstavailableindex(self):
+        i=1
+        self.lock_begin()
+        while i in self._functions: i += 1
+        self.lock_end()
+        return i
+
+    def append(self, args):
+        # synchronization handled in __setitem__
+        self[self.firstavailableindex()] = args
+
+    def __len__(self):
+        return len(self._functions)
+
+    def __iter__(self):
+        return self._functions.itervalues()
+
+    def __str__(self):
+        s = ""
+        if len(self._functions) == 0:
+            s += "<empty>"
+        else:
+            self.lock_begin()
+            s += "\n".join(["%s[%i]: %s" % ("", i, str(self._functions[i]))
+                              for i in self._functions])
+            self.lock_end()
+        return s
+
+    ### PlotObject List Interfaces (for internal use and intrepid hackery) ##
+
+    def _clear_plotobjects(self):
+        self.lock_begin()
+        self._plotobjects = []
+        self.lock_end()
+
+    def _append_plotobject(self, o):
+        assert isinstance(o, PlotObject)
+        self.lock_begin()
+        self._plotobjects.append(o)
+        self.lock_end()
+
+    def _remove_plotobject(self, o):
+        self.lock_begin()
+        self._plotobjects.remove(o)
+        self.lock_end()
+
+    ### Thread Synchronization ###
+
+    def lock_begin(self):
+        self._render_object_lock.acquire()
+
+    def lock_end(self):
+        self._render_object_lock.release()
+
