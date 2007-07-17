@@ -232,7 +232,7 @@ class Matrix(object):
             r=0
             for x in range(a.cols):
                 r+=a[i,x]*b[x,j]
-            return r
+            return r.expand() # .expand() is a test
 
         r = Matrix(self.lines,b.cols, lambda i,j: dotprod(self,b,i,j))
         if r.lines == 1 and r.cols ==1:
@@ -572,7 +572,7 @@ class Matrix(object):
                 J[i,j] = self[i].diff(varlist[j])
         return J
     
-    def GramSchmidt(self):
+    def QRdecomposition(self):
         # TODO: still doesn't work for large expressions, there's a bug in an eval somewhere
         # return Q*R where Q is orthogonal and R is upper triangular
         # assume full-rank square, for now
@@ -584,6 +584,7 @@ class Matrix(object):
             for i in range(j):
                 # subtract the project of self on new vector
                 tmp -= Q[:,i] * self[:,j].dot(Q[:,i])
+                tmp.expand()
             # normalize it
             R[j,j] = tmp.norm()
             Q[:,j] = tmp / R[j,j]
@@ -863,6 +864,7 @@ class Matrix(object):
         for i in range(len(vlist)):
             tmp = self - eye(self.lines)*vlist[i][0]
             basis = tmp.nullspace()
+            # check if basis is right size, don't do it if symbolic - too many solutions
             if not tmp.is_symbolic():
                 assert len(basis) == vlist[i][1]
             vlist[i].append(basis)

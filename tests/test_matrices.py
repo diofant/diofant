@@ -265,8 +265,7 @@ def test_util():
     v2 = Matrix(1,3,[3,4,5])
     assert v1.cross(v2) == Matrix(1,3,[-2,4,-2])
     assert v1.norm() == sqrt(14)
-
-def test_cofactor():
+    # cofactor
     assert eye(3) == eye(3).cofactorMatrix()
     test = Matrix([[1,3,2],[2,6,3],[2,3,6]])
     assert test.cofactorMatrix() == Matrix([[27,-6,-6],[-12,2,3],[-3,1,0]])
@@ -291,14 +290,20 @@ def test_jacobian_hessian():
     assert hessian(f, syms) == Matrix([[2*y**3, 6*x*y**2],[6*x*y**2, 6*x**2*y]])
 
 
-def test_GramSchmidt():
+def test_QR():
     A = Matrix([[1,2],[2,3]])
-    Q, S = A.GramSchmidt()
+    Q, S = A.QRdecomposition()
     R = Rational
     assert Q == Matrix([[5**R(-1,2), (R(2)/5)*(R(1)/5)**R(-1,2)], [2*5**R(-1,2), (-R(1)/5)*(R(1)/5)**R(-1,2)]])
     assert S == Matrix([[5**R(1,2), 8*5**R(-1,2)], [0, (R(1)/5)**R(1,2)]])
     assert Q*S == A
     assert Q.T * Q == eye(2)
+
+    A = Matrix([[1,1,1],[1,1,3],[2,3,4]])
+    Q, R = A.QRdecomposition()
+    assert Q*Q.T == eye(Q.lines)
+    assert R.is_upper()
+    assert A == Q*R
 
 def test_nullspace():
     # first test reduced row-ech form
