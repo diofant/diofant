@@ -101,10 +101,10 @@ def factor(f):
     result = Rational(1)
     if len(f.var) == 1:
         for p in factor_.uv_int(f):
-            result *= p.basic
+            result *= p.basic.expand()
     if len(f.var) > 1:
         for p in factor_.kronecker_mv(f):
-            result *= p.basic
+            result *= p.basic.expand()
     return result*c/l
 
 

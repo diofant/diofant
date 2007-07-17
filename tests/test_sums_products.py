@@ -59,11 +59,14 @@ def test_products():
     assert Product(2, (n, a, b)) == 2**(b-a+1)
     assert Product(n, (n, 1, b)) == factorial(b)
     assert Product(n**3, (n, 1, b)) == factorial(b)**3
-    assert Product(3**(2+n), (n, a, b)) == 3**((4-3*a+5*b+b**2-a**2)/2)
+    assert Product(3**(2+n), (n, a, b)) \
+           == 3**(2*(1-a+b)+b/2+(b**2)/2+a/2-(a**2)/2)
     assert Product(n+1, (n, a, b)) == factorial(1+b)/factorial(a)
     assert Product((n+1)/(n-1), (n, a, b)) == b*(1+b)/(a*(a-1))
-    assert Product(n/(n+1)/(n+2), (n, a, b)) == a*factorial(a+1)/(b+1)/factorial(b+2)
-    assert Product(n*(n+1)/(n-1)/(n-2), (n, a, b)) == b**2*(b-1)*(1+b)/(a-1)**2/(a*(a-2))
+    assert Product(n/(n+1)/(n+2), (n, a, b)) \
+           == a*factorial(a+1)/(b+1)/factorial(b+2)
+    assert Product(n*(n+1)/(n-1)/(n-2), (n, a, b)) \
+           == b**2*(b-1)*(1+b)/(a-1)**2/(a*(a-2))
     assert Product(cos(n), (n, 3, 5)) == cos(3)*cos(4)*cos(5)
     # If Product managed to evaluate this one, it most likely got it wrong!
     assert isinstance(Product(n**n, (n, 1, b)), Product)

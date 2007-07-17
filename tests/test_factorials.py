@@ -132,4 +132,5 @@ def test_derivatives():
     assert diff(factorial(4*x), x) == 4*gamma(1+4*x)*polygamma(0, 1+4*x)
     assert diff(log(gamma(x)), x, 5) == polygamma(4, x)
     assert diff(factorial(x), x).subs(x, 0) == -euler_gamma
-    assert diff(factorial(x), x).subs(x, 4) == 50-24*euler_gamma
+    assert diff(factorial(x), x).subs(x, 4) \
+           == 24*(Rational(25, 12)-euler_gamma)

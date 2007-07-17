@@ -510,14 +510,14 @@ class Mul(Pair):
         if n != 1:
             a = [n]+a
         # Expand simple parantheses with Rational factors, e.g 2*(1+x)
-        if len(a) == 2 and isinstance(a[0], Rational) and isinstance(a[1], Add):
+        if len(a) == 2 and (a[0] == Rational(-1)) and isinstance(a[1], Add):
             return Add(*[a[0]*b for b in a[1]])
         # Distribute the minus sign in the first appearing sum.
-        #if len(a) > 2 and (a[0] == Rational(-1)) \
-        #   and Add in map(lambda x:type(x), a):
-        #    first_sum = map(lambda x:type(x), a).index(Add)
-        #    a[first_sum] = Add(*[a[0]*b for b in a[first_sum]])
-        #    a = a[1:]
+##         if len(a) > 2 and (a[0] == Rational(-1)) \
+##            and Add in map(lambda x:type(x), a):
+##             first_sum = map(lambda x:type(x), a).index(Add)
+##             a[first_sum] = Add(*[a[0]*b for b in a[first_sum]])
+##             a = a[1:]
         if len(a) > 1:
             #construct self again, but non-evaluated this time
             return Mul(evaluate=False, *a)
