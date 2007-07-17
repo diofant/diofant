@@ -3,7 +3,9 @@ from sympy import Basic, Symbol, Add, Mul, Pow, Rational, oo, simplify, \
 from sympy.modules.specfun.factorials import rising_factorial, \
     factorial, factorial_simplify
 from sympy.modules.specfun.zeta_functions import bernoulli, bernoulli_poly
-from sympy.modules.polynomials import ispoly
+from sympy.modules.simplify import fraction, ratsimp, together
+from sympy.modules.polynomials import ispoly, factor, PolynomialException
+
 
 class Sum(Basic):
     """
@@ -124,7 +126,11 @@ class Product(Basic):
     __str__ = __repr__
 
     def eval(self):
-        # Always call factorial_simplify
+        # Perform factorial_simplify on any subproduct. It
+        # would be better to do this only once at the end, but this
+        # currently creates SymPy-unequal output for mathematically
+        # equal input (see Wallis product example
+        # in test_sums_products)
         p = self._eval()
         if isinstance(p, Product):
             return self
@@ -155,12 +161,9 @@ class Product(Basic):
                 if not isinstance(p, Product):
                     return p ** exp
 
-        # Arbitrary rational functions can be handled by rewriting them
-        # as combinations of linear factors. For now, handle explicitly
-        # given linear factors
+        # Linear functions
         if f == i:
             return rising_factorial(a, b-a+1)
-
         if ispoly(f, i):
             p = Symbol('p', dummy=True)
             q = Symbol('p', dummy=True)
@@ -171,6 +174,18 @@ class Product(Basic):
                 r = qq**(b-a+1) * factorial(b+pp/qq) / factorial(a+pp/qq-1)
                 return r
 
+        # Given a more complicated rational expression, try to factor
+        # it into linear functions
+        if isinstance(f, Add):
+            try:
+                num, den = fraction(together(f))
+                g = factor(num) / factor(den)
+                p = Product(g, (i, a, b))
+                if not isinstance(p, Product):
+                    return p
+            except PolynomialException:
+                pass
+
         # Brute force
         if isinstance(a, Rational) and a.is_integer and \
            isinstance(b, Rational) and b.is_integer:
@@ -180,4 +195,3 @@ class Product(Basic):
             return p
 
         return self
-
