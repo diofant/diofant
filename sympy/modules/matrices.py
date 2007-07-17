@@ -696,6 +696,13 @@ class Matrix(object):
                 if i < j and self[i, j] != 0:
                     return False
         return True
+    
+    def is_symbolic(self):
+        for i in range(self.cols):
+            for j in range(self.lines):
+                if not self[i,j].is_number:
+                    return True
+        return False
 
     def clone(self):
         return Matrix(self.lines, self.cols, lambda i, j: self[i, j])
@@ -876,9 +883,8 @@ class Matrix(object):
         for i in range(len(vlist)):
             tmp = self - eye(self.lines)*vlist[i][0]
             basis = tmp.nullspace()
-            if len(basis) != vlist[i][1]:
-                print "basis is", basis
-                print "vlist is", vlist[i]
+            if not tmp.is_symbolic():
+                assert len(basis) == vlist[i][1]
             vlist[i].append(basis)
             out.append(vlist[i])
         return out
