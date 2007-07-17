@@ -759,33 +759,13 @@ class Matrix(object):
 
     def inverse_LU(self):
         return self.LUsolve(self.eye(self.lines))
-
+    
     def inverse_GE(self):
-        # for testing only
         assert self.lines == self.cols
         assert self.det() != 0
         big = self.row_join(self.eye(self.lines))
-
-        for i in range(big.lines):
-            # find a pivot
-            if big[i,i] == 0:
-                for k in range(i+1,big.lines):
-                    if big[k,i] != 0:
-                        break
-                if k == big.lines:
-                    raise "matrix not invertible" # this should not happen
-                big.row_swap(i,k)
-            # now eliminate
-            scale = big[i,i]
-            big.row(i, lambda x, _: x / scale)
-            for j in range(i+1,big.lines):
-                scale = big[j,i]
-                big.row(j, lambda x, k: x - big[i,k]*scale)
-        for i in range(big.lines-1, -1, -1):
-            for j in range(i-1, -1, -1):
-                scale = big[j,i]
-                big.row(j, lambda x, k: x - big[i,k]*scale)
-        return big[:,big.lines:]
+        red = big.rref()
+        return red[0][:,big.lines:]
     
     def rref(self):
         # take any matrix and return reduced row-ech form and indices of pivot vars
