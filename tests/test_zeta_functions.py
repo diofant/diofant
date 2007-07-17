@@ -63,5 +63,9 @@ def test_polygamma():
     assert polygamma(1, 1) == pi**2/6
     assert polygamma(1, 2) == pi**2/6 - 1
     assert polygamma(1, 3) == pi**2/6 - Rational(5,4)
+    assert polygamma(3, 1) == pi**4 / 15
+    assert polygamma(3, 5) == 6*(Rational(-22369,20736) + pi**4/90)
+    assert polygamma(5, 1) == 8 * pi**6 / 63
+    assert polygamma(3, Rational(1)/2) == pi**4
     x = Symbol('x')
     assert diff(polygamma(3, 7*x), x) == 7*polygamma(4, 7*x)

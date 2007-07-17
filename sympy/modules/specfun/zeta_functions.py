@@ -193,24 +193,23 @@ class polygamma(Function2):
     __str__ = __repr__
 
     def eval(self):
+        # TODO: rational arguments, reflection formula
         m, z = self._args
+        if m.is_integer and m >= 0 and z == 0:
+            return oo
         if m == 0:
-            # TODO: arbitrary rational arguments
             if isinstance(z, Rational):
-                if z == 0:
-                    return oo
                 #if z < 0:
                 #    return polygamma(0, 1-z) - pi/tan(pi*z)
                 if z.is_integer and z > 0:
                     return -euler_gamma + harmonic(z-1)
-        if m == 1:
-            if isinstance(z, Rational):
-                if z == 0:
-                    return oo
-                #if z < 0:
-                #    return -polygamma(1, 1-z) + pi**2 / sin(pi*z)**2
-                if z.is_integer and z > 0:
-                    return (pi**2)/6 - harmonic(z-1, 2)
+        # if m == 1:
+        #    if isinstance(z, Rational) and z < 0:
+        #        return -polygamma(1, 1-z) + pi**2 / sin(pi*z)**2
+        if m.is_integer and m > 0 and z.is_integer and z > 0:
+            return (-1)**(m+1)*factorial(m)*(zeta(m+1)-harmonic(z-1, m+1))
+        if m.is_integer and z == Rational(1,2):
+            return (-1)**(m+1)*factorial(m)*(2**(m+1)-1)*zeta(m+1)
         return self
 
     def diff(self, sym):
