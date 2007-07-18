@@ -10,14 +10,20 @@ def groebner(f, reduced=True):
     Cox, Little, O'Shea: Ideals, Varieties and Algorithms.
     """
 
+    
+    
+    # Filter out the zero elements
+    f = filter(lambda p: p.cl[0][0] != 0, f)
+
+    # empty ideal
+    if len(f) == 0:
+        return [Polynomial(Rational(0))]
+
     b = [] # Stores the unchecked combinations for s-poly's.
     s = len(f)
     for i in range(0, s-1):
         for j in range(i+1, s):
             b.append((i, j))
-    # empty ideal
-    if s == 0:
-        return [Polynomial(Rational(0))]
 
     while b:
         # TODO: Choose better pair: sugar?
@@ -35,11 +41,11 @@ def groebner(f, reduced=True):
             crit = not bool(kk)
         if crit:
             factor_i = Polynomial([term_div(lcm, f[i].cl[0])],
-                                  f[0].var, f[0].order)
+                                  f[0].var, f[0].order, f[0].coeff)
             factor_j = Polynomial([term_div(lcm, f[j].cl[0])],
-                                  f[0].var, f[0].order)
+                                  f[0].var, f[0].order, f[0].coeff)
             s_poly = f[i]*factor_i - f[j]*factor_j
-            s_poly = div_.mv(s_poly, f)[-1]
+            s_poly = div_.mv(s_poly, f)[-1] # reduce
             if s_poly.cl[0][0] != 0: # we still have to add it to the base.
                 s += 1
                 f.append(s_poly)

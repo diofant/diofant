@@ -370,17 +370,21 @@ def roots(f, var=None, coeff=None, verbose=False):
     [-1, 1]
     
     """
+
     f = Polynomial(f, var)
     if len(f.var) != 1:
         raise PolynomialException(
-            'Multivariate polynomials not yet supported.')
+            'Multivariate polynomials not supported.')
     if coeff == None:
         # Allow all roots by default.
         coeff = coeff_rings[-1]
     # Determine type of coefficients (for factorization purposes)
-    atoms = f.basic.atoms()
-    atoms = filter(lambda a: not a in f.var, atoms)
-    coeff2 = coeff_ring(atoms)
+    symbols = f.basic.atoms(type=Symbol)
+    symbols = filter(lambda a: not a in f.var, symbols)
+    if symbols:
+        coeff2 = 'sym'
+    else:
+        coeff2 = coeff_ring(get_numbers(f.basic))
     f.coeff = coeff2
     
     if f.coeff == 'rat':
@@ -427,6 +431,31 @@ def roots(f, var=None, coeff=None, verbose=False):
         result += roots_.uv(p)
         
     return result
+
+def solve_system(eqs, var=None, coeff=None):
+    """Solve a system of polynomial equations.
+
+    Only works for finite sets of solutions, which is not
+    tested. Currently, some equations can't be solved.
+
+    Examples:
+    >>> x = Symbol('x')
+    >>> y = Symbol('y')
+    >>> f = y - x
+    >>> g = x**2 + y**2 - 1
+    >>> solve_system([f, g])
+    [[-(1/2)**(1/2), -(1/2)**(1/2)], [(1/2)**(1/2), (1/2)**(1/2)]]
+    
+    """
+    if not isinstance(eqs, list):
+        eqs = [eqs]
+    if var == None:
+        var = merge_var(*[eq.atoms(type=Symbol) for eq in eqs])
+    if coeff == None:
+        # Allow all roots by default.
+        coeff = coeff_rings[-1]
+    eqs = map(lambda eq:Polynomial(eq, var=var, order='lex', coeff=coeff), eqs)
+    return roots_.equation_system(eqs)
 
 def sqf(f, var=None):
     """Computes the square-free decomposition of 'f'.

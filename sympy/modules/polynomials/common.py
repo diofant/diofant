@@ -42,7 +42,7 @@ def term_mult(a, b):
     a and b are assumed to be terms of coefficient lists of
     Polynomials of same the variables.
     """
-    return [a[0]*b[0]] + map(lambda (x,y): x+y, zip(a[1:], b[1:]))
+    return [(a[0]*b[0]).expand()] + map(lambda (x,y): x+y, zip(a[1:], b[1:]))
 
 def term_div(a, b):
     """Returns a term that represents the division of a by b.
@@ -137,3 +137,17 @@ def integer_divisors(n):
             r.append(i)
     r.append(n)
     return r
+
+def get_numbers(b):
+    result = []
+    b = b.expand()
+    if b.is_number:
+        return [b]
+    elif isinstance(b, Add):
+        for summand in b:
+            result += get_numbers(summand)
+    elif isinstance(b, Mul):
+        for factor in b:
+            if factor.is_number:
+                result.append(factor)
+    return result

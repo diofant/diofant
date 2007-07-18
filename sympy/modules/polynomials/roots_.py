@@ -3,7 +3,7 @@
 from sympy import exp, I, pi, sqrt 
 
 from sympy.modules.polynomials.base import *
-from sympy.modules.polynomials import div_
+from sympy.modules.polynomials import div_, groebner_
 
 def cubic(f):
     """Returns the real or complex roots of a cubic polynomial.
@@ -38,6 +38,67 @@ def cubic(f):
         return result
     else:
         return filter(lambda r: r.is_real , result)
+
+def equation_system(eqs):
+    """Solves a system of polynomial equation by variable elimination.
+
+    Assumes to get a list of instances of Polynomial, with matching
+    variables. Only works for zero-dimensional varieties, that is, a
+    finite number of solutions (untested!). 
+    """
+    def is_uv(f):
+        """Is an instance of Polynomial univariate in its last variable?
+        """
+        for term in f.cl:
+            for exponent in term[1:-1]:
+                if exponent > 0:
+                    return False
+        return True
+
+    # First compute a Groebner base with the polynomials,
+    # with lexicographic ordering, so that the last polynomial is
+    # univariate and can be solved.
+    for f in eqs:
+        f.order = 'lex'
+    gb = groebner_.groebner(eqs)
+
+    # Now filter the the base elements, to get only the univariate
+    eliminated = filter(is_uv, gb)
+    if len(eliminated) != 1:
+        raise PolynomialException("System currently not solvable.")
+
+    # Try to solve the polynomials with variables eliminated.
+    # TODO: Use another function in roots_ (to be written)
+    f = eliminated[0]
+    from sympy.modules.polynomials import roots
+    partial_solutions = roots(f.basic, f.var[-1], f.coeff)
+
+    # No solutions were found.
+    # TODO: Check if there exist some anyways?
+    if len(partial_solutions) == 0:
+        return []
+
+    # Is this the last equation, that is, deepest hierarchy?
+    if len(gb) == 1:
+        return map(lambda s:[s], partial_solutions)
+
+    # Finally, call this function recursively for each root replacing
+    # the corresponding variable in the system.
+    result = []
+    for r in partial_solutions:
+        new_system = []
+        for eq in gb[:-1]:
+            new_eq = eq.copy()
+            new_eq.basic = new_eq.basic.subs(new_eq.var[-1], r).expand()
+            if new_eq.cl[0][0] != 0:
+                new_eq.var = new_eq.var[:-1]
+                new_system.append(new_eq)
+        if not new_system:
+            return []
+        for nps in equation_system(new_system):
+            result.append(nps + [r])
+
+    return result
 
 def n_poly(f):
     """Checks if the polynomial can be simplifed by substituting the

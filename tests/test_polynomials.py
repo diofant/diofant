@@ -93,6 +93,19 @@ def test_poly():
     assert x**2 + 3*x*sqrt(y) - 8 == poly([(-8, 0), (3*sqrt(y), 1),
         (1, 2)],x)
 
+## sympy/modules/polynomials/common.py
+
+def test_coeff_ring():
+    from sympy.modules.polynomials.common import coeff_ring
+    x = Symbol("x")
+    assert coeff_ring([Rational(2)]) == 'int'
+    assert coeff_ring([Rational(2), Rational(1,2)]) == 'rat'
+    assert coeff_ring([Rational(2)**Rational(1,2)]) == 'real'
+    assert coeff_ring([Rational(1,2), Real(2.1)]) == 'real'
+    assert coeff_ring([pi]) == 'real'
+    assert coeff_ring([Real(2.1), Rational(-1)**Rational(1,2)]) == 'cplx'
+    assert coeff_ring([I, x]) == 'sym'
+
 ## sympy/modules/polynomials/wrapper.py
 
 def test_coeff():
@@ -295,6 +308,20 @@ def test_roots():
     assert roots(x**5 - Rational(3,2), coeff='real') == \
            [Rational(3,2)**Rational(1,5)]
     assert roots(x**5 - Rational(3,2), coeff='int') == []
+
+def test_solve_system():
+    x = Symbol("x")
+    y = Symbol("y")
+    z = Symbol("z")
+    assert solve_system(x-1) == [[1]]
+    assert solve_system([2*x - 3, 3*y/2 - 2*x, z - 5*y]) \
+           == [[Rational(3, 2), 2, 10]]
+    assert solve_system([y - x, y - x - 1]) == []
+    assert solve_system([y - x**2, y + x**2]) == [[0, 0]]
+    assert solve_system([y - x**2, y + x**2 + 1]) == \
+           [[-Rational(1,2)**Rational(1,2)*I, Rational(-1,2)],
+            [Rational(1,2)**Rational(1,2)*I, Rational(-1,2)]]
+    assert solve_system([y - x**2, y + x**2 + 1], coeff='real') == []
            
 def test_sqf():
     x = Symbol("x")
