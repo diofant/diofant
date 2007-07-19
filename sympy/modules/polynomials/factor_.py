@@ -147,14 +147,17 @@ def kronecker_mv(f):
             for el in recursion(fa, lisp[i + 1:], m - 1):
                 yield el
 
-    # First get degree bound, that is larger than all individual degrees.
-    d = 0
+    # First sort the variables by occuring exponents.
+    # Then get degree bound, that is larger than all individual degrees.
+    max_exp = {}
+    for v in f.var:
+        max_exp[v] = 0
     for term in f.cl:
-        for exponent in term[1:]:
-            if exponent > d:
-                d = exponent
-    d += 1
-    d = int(d)
+        for v, exponent in zip(f.var, term[1:]):
+            if exponent > max_exp[v]:
+                max_exp[v] = exponent
+    f.var.sort(key=lambda v:max_exp[v], reverse=True)
+    d = int(max_exp[f.var[0]]) + 1
 
     # Now reduce the polynomial f to g in just variable, by the
     # substitution x_i -> y**(d**i)
