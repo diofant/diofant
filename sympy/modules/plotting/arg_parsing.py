@@ -57,7 +57,7 @@ def parse_option_string(s):
     return options
 
 def parse_option_strings(args):
-    t = {'type':'cartesian'}
+    t = {'mode':'cartesian'}
     while len(args) > 0:
         a = parse_option_string(args[0])
         if a == None: break
@@ -70,8 +70,8 @@ def parse_plot_args(*args):
     Regexp:    (function+, interval*, option_string*)+
     Examples:   x**2, -x
                 x**2, [x, -5, 5]
-                sin(r), [r, -pi/Real(2), pi/Real(2)], "type=polar"
-                x**2, [x, -5, 5], sin(r), "type=polar"
+                sin(r), [r, -pi/Real(2), pi/Real(2)], "mode=polar"
+                x**2, [x, -5, 5], sin(r), "mode=polar"
     """
     args = list(args)
     while len(args) > 0:
@@ -84,7 +84,7 @@ def parse_plot_args(*args):
         if len(intervals) == 0 and len(options) == 0 and len(args) > 0:
             raise ValueError( "Could not interpret token '%s'." % (str(args[0])) )
 
-        if options['type'] == 'parametric':
+        if options['mode'] == 'parametric':
             yield PlotFunction(functions, intervals, options)
         else:
             for f in functions:
@@ -110,7 +110,7 @@ def parse_function_args(*args):
 
     if len(args) > 0:
         raise ValueError( "Could not interpret token '%s'." % (str(args[0])) )
-    if options['type'] == 'parametric':
+    if options['mode'] == 'parametric':
         return PlotFunction(functions, intervals, options)
     elif len(functions) == 1:
         return PlotFunction(functions[0], intervals, options)

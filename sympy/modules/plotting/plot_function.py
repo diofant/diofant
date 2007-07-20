@@ -12,10 +12,10 @@ class PlotFunction(PlotObject):
     z_min, z_max = 0.0, 0.0
 
     def __new__(cls, f, intervals, options):
-        subcls = PlotFunctionRegistry.get(options['type'])
+        subcls = PlotFunctionRegistry.get(options['mode'])
         if subcls == None:
-            error_str = "Plot type '%s' is not supported (or not registered)."
-            raise Exception(error_str % (options['type']))
+            error_str = "Plot mode '%s' is not supported (or not registered)."
+            raise Exception(error_str % (options['mode']))
         o = subcls(f, intervals, options)
         if 'visible' in options and options['visible'] == 'false':
             o.visible = False

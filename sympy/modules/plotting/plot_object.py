@@ -6,6 +6,13 @@ class PlotObject(object):
     """
     visible = True
 
+    def do_render(self):
+        """
+        Do not override in child class.
+        """
+        if self.visible:
+            self.render()
+
     def render(self):
         """
         OpenGL code to display this plot object.

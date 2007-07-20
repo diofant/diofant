@@ -25,20 +25,23 @@ class Plot(object):
 
         self.clear() # initialize _functions list
         self._clear_plotobjects() # initialize _plotobjects list
-        self.bounding_box = BoundingBox()
-        self.bounding_box.visible = kwargs.get('bbox', False) or kwargs.get('bounding_box', False)
-        self._append_plotobject(self.bounding_box)
 
         self.width = kwargs.get('width', self.default_width)
         self.height = kwargs.get('height', self.default_height)
         self.wireframe = kwargs.get('wireframe', False)
+        self.antialiasing = kwargs.get('antialiasing', True)
+        self.vsync = kwargs.get('vsync', False)
+
+        self.bounding_box = BoundingBox()
+        self.bounding_box.visible = kwargs.get('bounding_box', False)
+        self._append_plotobject(self.bounding_box)
 
         self._calculations_in_progress = 0        
 
         for f in parse_plot_args(*args):
             self.append(f)     
 
-        self.window = None        
+        self.window = None
 
         if kwargs.get('show', True):
             self.show()
@@ -47,11 +50,19 @@ class Plot(object):
         """
         Displays a UI window representing the Plot.
         """
-        if self.window == None or self.window._window.has_exit:
-            self.window = PlotWindow(self, width=self.width, height=self.height,
-                                     wireframe=self.wireframe)
+        if self.window != None and not self.window.window.has_exit:
+            self.window.window.activate()
         else:
-            self.window._window.activate()
+            self.window = PlotWindow(self,
+                                     wireframe=self.wireframe,
+                                     antialiasing=self.antialiasing,
+                                     width=self.width,
+                                     height=self.height,
+                                     vsync=self.vsync)
+
+    def close(self):
+        if self.window != None:
+            self.window.close()
 
     def getimage(self, **kwargs):
         """

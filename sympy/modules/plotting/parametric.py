@@ -18,8 +18,10 @@ class ParametricFunction(PlotFunction):
                 elif iv != v:
                     raise Exception("A parametric function cannot use more than 1 parameter (multiple Symbols found in functions).")
         if d in [2,3] and len(intervals) == 1: return object.__new__(ParametricCurve, functions, intervals, options)
-        elif d == 1: raise ValueError("Cannot plot a parametric function with only 1 dimension.")
-        else: raise ValueError("Cannot plot a parametric function with %i dimensions." % d)
+        elif d == 1:
+            raise ValueError("Cannot plot a parametric function with only 1 dimension.")
+        else:
+            raise ValueError("Cannot plot a parametric function with %i dimensions." % d)
 
 class ParametricCurve(PlotFunction):
     
@@ -51,7 +53,7 @@ class ParametricCurve(PlotFunction):
     def calculate_color_vertices(self):
         self.color_vertices = []
         for x, y, z in self.vertices:
-            self.color_vertices.append( (1,0,0) )
+            self.color_vertices.append( (0.7, 0.75, 0.8) )
 
     def render(self):
         glBegin(GL_LINE_STRIP)
