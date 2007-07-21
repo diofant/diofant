@@ -42,9 +42,10 @@ class Plot(object):
         """
         Displays a UI window representing the Plot.
         """
-        if self.window != None and self.window.context != None:
+        if self.window != None and not self.window.has_exit and self.window.context != None:
             self.window.activate()
         else:
+            self.window = None
             self.window = PlotWindow(self,
                                      wireframe=self.wireframe,
                                      antialiasing=self.antialiasing,
@@ -53,8 +54,7 @@ class Plot(object):
                                      vsync=self.vsync)
 
     def close(self):
-        if self.window != None and self.window.context != None:
-            self.window.close()
+        self.window.close()
 
     def getimage(self, **kwargs):
         """

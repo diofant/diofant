@@ -1,7 +1,7 @@
 from pyglet.gl import *
 from pyglet.window import Window
 
-from threading import Thread, Lock
+from threading import Thread, Lock, Event
 from time import clock
 
 global gl_lock
@@ -9,7 +9,7 @@ gl_lock = Lock()
 
 class ManagedWindow(Window):
 
-    fps_limit = 30
+    fps_limit = 60
     win_args = dict(width=400,
                     height=300,
                     vsync=False,
@@ -17,6 +17,7 @@ class ManagedWindow(Window):
 
     def __init__(self, **win_args):
         self.win_args = dict(self.win_args, **win_args)
+        self.close_later = False
         Thread(target=self.__event_loop__).start()
 
     def __event_loop__(self, **win_args):
@@ -31,7 +32,7 @@ class ManagedWindow(Window):
             gl_lock.release()
 
         # can't use pyglet's clock because
-        # we need one per thread
+        # we need one per event loop
         frame_duration = 1.0/self.fps_limit
 
         then = clock()
@@ -46,17 +47,23 @@ class ManagedWindow(Window):
             try:
                 self.switch_to()
                 self.dispatch_events()
-                self.clear()
-
-                self.update(dt)
 
                 if self.context != None:
-                    self.draw()
-                    self.flip()
+                    self.clear()
+                    self.update(dt)
+                    if self.context != None:
+                        self.draw()
+                        self.flip()
+                    if self.close_later:
+                        super(ManagedWindow, self).close()
+                        self.has_exit = True
             except Exception, e:
-                print "Error: %s" % str(e)
+                print "Event Loop Error: %s" % str(e)
             finally:
                 gl_lock.release()
+
+    def close(self):
+        self.close_later = True
 
     def setup(self):
         pass
