@@ -2,7 +2,7 @@ from pyglet.gl import *
 from pyglet.window import Window
 
 from threading import Thread, Lock
-from time import clock, sleep
+from time import clock
 
 global gl_lock
 gl_lock = Lock()
@@ -33,15 +33,13 @@ class ManagedWindow(Window):
         # can't use pyglet's clock because
         # we need one per thread
         frame_duration = 1.0/self.fps_limit
-        sleep_duration = frame_duration/10.0
 
         then = clock()
-        while not self.has_exit:
+        while not self.has_exit and self.context != None:
             dt = 0.0
             while dt < frame_duration:
                 now = clock()
                 dt = now-then
-                sleep(sleep_duration)
             then = now
 
             gl_lock.acquire()
@@ -51,9 +49,10 @@ class ManagedWindow(Window):
                 self.clear()
 
                 self.update(dt)
-                self.draw()
 
-                self.flip()
+                if self.context != None:
+                    self.draw()
+                    self.flip()
             except Exception, e:
                 print "Error: %s" % str(e)
             finally:
@@ -67,3 +66,4 @@ class ManagedWindow(Window):
 
     def draw(self):
         pass
+

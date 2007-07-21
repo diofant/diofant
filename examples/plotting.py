@@ -16,7 +16,7 @@ x, y = Symbol('x'), Symbol('y')
 
 if __name__ == "__main__":
 
-    p = Plot(width=400, height=400, bounding_box=True, wireframe=False)
+    p = Plot(width=400, height=300, bounding_box=True, wireframe=False)
 
     #p[1] = x, [x,-3,3,2]
     #p[2] = 1/x, [x,-3,3]
@@ -27,9 +27,10 @@ if __name__ == "__main__":
     #p[7] = sin(x), cos(x), [x, 0, 6.282], 'mode=parametric;visible=false'
     #p[8] = sin(x)/2, x/5.0, cos(x)/2, [x, -3.14, 3.14, 20], 'mode=parametric'
     #p[9] = x*y**3-y*x**3, [x,-1,1], [y,-1,1]
-    #p[10] = -1 + x**2 - y**2, [x,-1,1], [y,-1,1]
-    #p[11] =  1 - x**2 + y**2, [x,-1,1], [y,-1,1]
-    p[12] = x*y, [x,-1,1], [y,-1,1]
+    p[10] = -1 + x**2 - y**2, [x,-1,1], [y,-1,1]
+    p[11] =  1 - x**2 + y**2, [x,-1,1], [y,-1,1]
+    #p[12] = x*y, [x,-1,1], [y,-1,1]
+    #p[13] =  x**2 + y**2, [x,-1,1], [y,-1,1]
 
     #p.close()
     #p.show()

@@ -86,7 +86,9 @@ class Plot(object):
         else:
             if not isinstance(args, (tuple, list)): args = [args]
             self._calculations_in_progress += 1
+            #print "Calculating..."
             f = parse_function_args(*args)
+            #print "Finished."
             self._calculations_in_progress -= 1
             assert isinstance(f, PlotFunction)
         self.bounding_box.consider_function(f)
