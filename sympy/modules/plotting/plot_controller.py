@@ -32,9 +32,6 @@ class PlotController(object):
                 
                 key.RSHIFT:'modify_sensitivity',
                 key.LSHIFT:'modify_sensitivity',
-            
-                key.Q:'close',
-                key.ESCAPE:'close'
              }
 
     action = {
@@ -45,17 +42,12 @@ class PlotController(object):
                 'zoom_in':False, 
                 'zoom_out':False,
                 'modify_sensitivity':False,
-                'close':False
              }
     
     def __init__(self, window):
         self.window = window
         
     def update(self, dt):
-        if self.action['close']:
-            self.window.close()
-            return False
-
         z = 0
         if self.action['zoom_out']: z -= 1
         if self.action['zoom_in']: z += 1
@@ -83,7 +75,7 @@ class PlotController(object):
             return self.modified_mouse_sensitivity
         else:
             return self.normal_mouse_sensitivity
-        
+
     def get_key_sensitivity(self):
         if self.action['modify_sensitivity']:
             return self.modified_key_sensitivity

@@ -56,7 +56,7 @@ class ManagedWindow(Window):
                         self.flip()
                     if self.close_later:
                         super(ManagedWindow, self).close()
-                        self.has_exit = True
+
             except Exception, e:
                 print "Event Loop Error: %s" % str(e)
             finally:
