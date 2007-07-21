@@ -31,7 +31,7 @@ class PlotCamera(object):
         self._rot = self.get_matrix()
         glPopMatrix()
 
-    def apply(self):
+    def apply_transformation(self):
         glLoadIdentity()
         glTranslatef(0.0, 0.0, -self._dist)
         if self._rot != None:

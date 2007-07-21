@@ -53,6 +53,7 @@ class PlotController(object):
         
     def update(self, dt):
         if self.action['close']:
+            self.window.close()
             return False
 
         z = 0
@@ -71,7 +72,7 @@ class PlotController(object):
             dx = float(dx) * dt * 100.0 # yep, a magic number
             dy = float(dy) * dt * 100.0
 
-            p1 = (self.window.window.width/2, self.window.window.height/2)
+            p1 = (self.window.width/2, self.window.height/2)
             p2 = ( p1[0] + dx, p1[1] + dy )
             self.window.camera.spherical_rotate(p1, p2, self.get_key_sensitivity())
 

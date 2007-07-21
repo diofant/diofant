@@ -14,13 +14,6 @@ class Plot(object):
     default_height = 600
 
     def __init__(self, *args, **kwargs):
-        """
-        Initializes the Plot.
-
-        show [Boolean, default=True]
-            Display a UI window immediately after initialization?
-        """
-
         self._render_object_lock = Lock() # see lock_begin/lock_end
 
         self.clear() # initialize _functions list
@@ -42,7 +35,6 @@ class Plot(object):
             self.append(f)     
 
         self.window = None
-
         if kwargs.get('show', True):
             self.show()
 
@@ -50,8 +42,8 @@ class Plot(object):
         """
         Displays a UI window representing the Plot.
         """
-        if self.window != None and not self.window.window.has_exit:
-            self.window.window.activate()
+        if self.window != None and self.window.context != None:
+            self.window.activate()
         else:
             self.window = PlotWindow(self,
                                      wireframe=self.wireframe,
@@ -61,7 +53,7 @@ class Plot(object):
                                      vsync=self.vsync)
 
     def close(self):
-        if self.window != None:
+        if self.window != None and self.window.context != None:
             self.window.close()
 
     def getimage(self, **kwargs):
