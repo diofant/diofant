@@ -221,4 +221,8 @@ def test_bug2():
     r = (x+y).match(a+b+c, [a,b,c])
     assert (a+b+c).subs_dict(r) == x+y
 
+def test_bug3():
+     a = Symbol('a'); b = Symbol('b'); x = Symbol('x')
+
+     assert (b*x*exp(a*x)).match(x*exp(a*x),[a,b]) == None
 

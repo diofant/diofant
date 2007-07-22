@@ -290,6 +290,7 @@ class Pair(Basic):
             else:
                 rst = type(self)(*ops)
             r2.update({global_wildcard: rst})
+        elif len(ops) > 0: return None
         #print "XX",r2,self,pat,global_wildcard
         return r2
 
