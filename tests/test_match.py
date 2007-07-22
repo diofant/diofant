@@ -50,8 +50,7 @@ def test_add():
     assert e.match(b*x+5,[b]) == {b: 4}
     assert e.match(b*x+c,[b,c]) == {b: 4, c: 5}
     e = 4*x+5*y+6
-    #this needs to be fixed:
-    #assert e.match(a*x+b*y+c,[a,b,c], exclude=[x,y]) == {a: 4, b: 5, c: 6}
+    assert e.match(a*x+b*y+c,[a,b,c], exclude=[x,y]) == {a: 4, b: 5, c: 6}
 
 def test_power():
     x,y,a,b,c = [Symbol(Y) for Y in ["x","y","a","b","c"]]
