@@ -4,6 +4,7 @@ from plot_object import PlotObject
 from plot_function import PlotFunction
 from plot_window import PlotWindow
 from bounding_box import BoundingBox
+from grid_plane import GridPlane
 
 class Plot(object):
     """
@@ -24,10 +25,18 @@ class Plot(object):
         self.wireframe = kwargs.get('wireframe', False)
         self.antialiasing = kwargs.get('antialiasing', True)
         self.vsync = kwargs.get('vsync', False)
+        self.ortho = kwargs.get('ortho', False)
 
         self.bounding_box = BoundingBox()
         self.bounding_box.visible = kwargs.get('bounding_box', False)
         self._append_plotobject(self.bounding_box)
+
+        self.grid = kwargs.get('grid', None)
+        if isinstance(self.grid, str):
+            self.grid = (self.grid,)
+        if self.grid != None:
+            self.grid = GridPlane(*self.grid)
+            self._append_plotobject(self.grid)
 
         self._calculations_in_progress = 0        
 
@@ -51,7 +60,8 @@ class Plot(object):
                                      antialiasing=self.antialiasing,
                                      width=self.width,
                                      height=self.height,
-                                     vsync=self.vsync)
+                                     vsync=self.vsync,
+                                     ortho=self.ortho)
 
     def close(self):
         self.window.close()

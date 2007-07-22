@@ -24,7 +24,7 @@ class PlotWindow(ManagedWindow):
         super(PlotWindow, self).__init__(**window_args)
 
     def setup(self):
-        self.camera = PlotCamera(self)
+        self.camera = PlotCamera(self, ortho = self.ortho)
         self.controller = PlotController(self)
         self.push_handlers(self.controller)
 
@@ -45,16 +45,7 @@ class PlotWindow(ManagedWindow):
             glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
             glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST)
 
-        self.init_projection()
-
-    def init_projection(self):
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        if self.ortho:
-            raise NotImplementedError("Orthographic projection not implemented.")
-        else:
-            gluPerspective(60.0, float(self.width)/float(self.height), 0.1, 100.0)
-        glMatrixMode(GL_MODELVIEW)
+        self.camera.setup_projection()
 
     def update(self, dt):
         self.update_caption()
@@ -65,11 +56,11 @@ class PlotWindow(ManagedWindow):
         self.camera.apply_transformation()
         for r in self.plot._plotobjects:
             glPushMatrix()
-            r.render()
+            r.do_render()
             glPopMatrix()
         for r in self.plot._functions.itervalues():
             glPushMatrix()
-            r.render()
+            r.do_render()
             glPopMatrix()
         self.plot.lock_end()
 

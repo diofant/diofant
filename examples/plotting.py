@@ -16,7 +16,12 @@ x, y = Symbol('x'), Symbol('y')
 
 if __name__ == "__main__":
 
-    p = Plot(width=500, height=450, bounding_box=True, wireframe=False)
+    p = Plot(width = 500, height = 450,
+             grid = 'xy',
+             bounding_box = False,
+             wireframe = False,
+             #ortho = True)
+             ortho = False)
 
     #p[1] = x, [x,-3,3,2]
     #p[2] = 1/x, [x,-3,3]
@@ -31,6 +36,3 @@ if __name__ == "__main__":
     p[11] =  1 - x**2 + y**2, [x,-1,1], [y,-1,1]
     #p[12] = x*y, [x,-1,1], [y,-1,1]
     #p[13] =  x**2 + y**2, [x,-1,1,4], [y,-1,1,4]
-
-    #p.close()
-    #p.show()

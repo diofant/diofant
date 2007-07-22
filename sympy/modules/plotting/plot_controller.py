@@ -3,7 +3,7 @@ from pyglet.window.mouse import LEFT
 
 class PlotController(object):
     
-    normal_mouse_sensitivity = 6.0
+    normal_mouse_sensitivity = 4.0
     modified_mouse_sensitivity = 1.0
 
     normal_key_sensitivity = 16.0
@@ -34,7 +34,9 @@ class PlotController(object):
                 key.LSHIFT:'modify_sensitivity',
              }
 
-    action = {
+    def __init__(self, window):
+        self.action = {
+
                 'left':False,
                 'right':False,
                 'up':False,
@@ -42,9 +44,8 @@ class PlotController(object):
                 'zoom_in':False, 
                 'zoom_out':False,
                 'modify_sensitivity':False,
-             }
-    
-    def __init__(self, window):
+
+            }
         self.window = window
         
     def update(self, dt):
