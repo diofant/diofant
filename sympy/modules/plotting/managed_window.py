@@ -9,13 +9,13 @@ gl_lock = Lock()
 class ManagedWindow(Window):
 
     fps_limit = 60
-    win_args = dict(width=400,
-                    height=300,
-                    vsync=False,
-                    resizable=False)
+    default_win_args = dict(width=400,
+                            height=300,
+                            vsync=False,
+                            resizable=False)
 
     def __init__(self, **win_args):
-        self.win_args = dict(self.win_args, **win_args)
+        self.win_args = dict(self.default_win_args, **win_args)
         Thread(target=self.__event_loop__).start()
 
     def __event_loop__(self, **win_args):
@@ -32,8 +32,8 @@ class ManagedWindow(Window):
         clock = Clock()
         clock.set_fps_limit(self.fps_limit)
         while not self.has_exit:
-            dt = clock.tick()
             gl_lock.acquire()
+            dt = clock.tick()
             try:
                 self.switch_to()
                 self.dispatch_events()

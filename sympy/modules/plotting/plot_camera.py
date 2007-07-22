@@ -9,16 +9,19 @@ class PlotCamera(object):
     min_ortho_dist = 100.0
     max_ortho_dist = 10000.0
 
-    _dist = 10.0
-    _rot = None
-    
+    _default_dist = 10.0
     _default_ortho_dist = 1000.0
 
     def __init__(self, window, ortho = False):
+        self._dist = 0.0
+        self._rot = None
+    
         self.window = window
         self.ortho = ortho
         if self.ortho:
             self._dist = self._default_ortho_dist
+        else:
+            self._dist = self._default_dist
         self.init_rot_matrix()
 
     def get_matrix(self):
