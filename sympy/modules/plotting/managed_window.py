@@ -21,11 +21,12 @@ class ManagedWindow(Window):
     def __event_loop__(self, **win_args):
         gl_lock.acquire()
         try:
-            super(ManagedWindow, self).__init__(**self.win_args)
-            self.switch_to()
-            self.setup()
-        except Exception, e:
-            print "Window Setup Error: %s" % str(e)
+            try:
+                super(ManagedWindow, self).__init__(**self.win_args)
+                self.switch_to()
+                self.setup()
+            except Exception, e:
+                print "Window Setup Error: %s" % str(e)
         finally:
             gl_lock.release()
 
@@ -35,14 +36,15 @@ class ManagedWindow(Window):
             gl_lock.acquire()
             dt = clock.tick()
             try:
-                self.switch_to()
-                self.dispatch_events()
-                self.clear()
-                self.update(dt)
-                self.draw()
-                self.flip()
-            except Exception, e:
-                print "Window Event Loop Error: %s" % str(e)
+                try:
+                    self.switch_to()
+                    self.dispatch_events()
+                    self.clear()
+                    self.update(dt)
+                    self.draw()
+                    self.flip()
+                except Exception, e:
+                    print "Window Event Loop Error: %s" % str(e)
             finally:
                 gl_lock.release()
         super(ManagedWindow, self).close()
