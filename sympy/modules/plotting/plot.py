@@ -52,7 +52,8 @@ class Plot(object):
         Displays a UI window representing the Plot.
         """
         if self.window != None and not self.window.has_exit and self.window.context != None:
-            self.window.activate()
+            if self.window.visible:
+                self.window.activate()
         else:
             self.window = None
             self.window = PlotWindow(self,
@@ -66,16 +67,7 @@ class Plot(object):
     def close(self):
         self.window.close()
 
-    def getimage(self, **kwargs):
-        """
-        Returns an Image representing the Plot. Requires PIL.
-        """
-        raise NotImplementedError()
-
     def saveimage(self, filepath, **kwargs):
-        """
-        Saves an image file representing the Plot. Requires PIL.
-        """
         raise NotImplementedError()
 
     ### PlotFunction List Interfaces (for end-users) ###

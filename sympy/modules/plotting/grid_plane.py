@@ -3,7 +3,7 @@ from plot_object import PlotObject
 
 class GridPlane(PlotObject):
 
-    def __new__(cls, plane, pitch1=1.0, pitch2=1.0, res1=50, res2=50, origin=(0.0,0.0,0.0), color=(0.9,0.9,0.9)):
+    def __new__(cls, plane, pitch1=1.0, pitch2=1.0, res1=50, res2=50, origin=(0.0,0.0,-0.01), color=(0.9,0.9,0.9)):
         assert isinstance(plane, str)
         plane = plane.lower()
 
@@ -37,15 +37,22 @@ class GridPlane(PlotObject):
     def order_verts(self, v1, v2):
         raise Exception("This method is abstract.")
 
+    def transform(self, v1, v2):
+        va = self.order_verts(v1, v2)
+        vb = (va[0]+self.origin[0],
+              va[1]+self.origin[1],
+              va[2]+self.origin[2])
+        return vb
+
     def render(self):
         glColor3f(*self.color)
         glBegin(GL_LINES)
         for v1 in self.set1:
-            glVertex3f(*self.order_verts(v1, self.min2))
-            glVertex3f(*self.order_verts(v1, self.max2))
+            glVertex3f(*self.transform(v1, self.min2))
+            glVertex3f(*self.transform(v1, self.max2))
         for v2 in self.set2:
-            glVertex3f(*self.order_verts(self.min1, v2))
-            glVertex3f(*self.order_verts(self.max1, v2))
+            glVertex3f(*self.transform(self.min1, v2))
+            glVertex3f(*self.transform(self.max1, v2))
         glEnd()
 
 class GridPlaneXY(GridPlane):

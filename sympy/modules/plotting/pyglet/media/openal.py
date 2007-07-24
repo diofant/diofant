@@ -32,7 +32,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-# $Id: openal.py 878 2007-06-09 04:58:51Z Alex.Holkner $
+# $Id: openal.py 1045 2007-07-17 02:40:18Z r1chardj0n3s $
 
 import ctypes
 import sys
@@ -186,6 +186,7 @@ class OpenALSound(Sound):
 
         if _have_1_1:
             # Add buffer timestamp to sample offset
+            # XXX this occasionally goes backwards
             buffer_samples = al.ALint()
             al.alGetSourcei(self.source, al.AL_SAMPLE_OFFSET, buffer_samples)
             sample_rate = al.ALint()

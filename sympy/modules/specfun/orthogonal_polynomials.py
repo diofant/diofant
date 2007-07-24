@@ -1,10 +1,10 @@
-from sympy.core.symbol import Symbol
-from sympy.core.numbers import Rational, Real, pi
-from sympy.core.functions import sqrt
-from sympy.modules.trigonometric import cos
-from factorials import Function2
-import decimal
+#from sympy.core.symbol import Symbol
+#from sympy.core.numbers import Rational, Real, pi
+#from sympy.core.function import DefinedFunction
+#from sympy.modules.trigonometric import cos
+#import decimal
 
+from sympy.core import *
 
 # Simple implementation of Newton's method for root-finding
 def _newton(h, x0, eps):
@@ -19,14 +19,14 @@ def _newton(h, x0, eps):
         x = new
     return new
 
-class _PolynomialSequence(Function2):
+class _PolynomialSequence(DefinedFunction):
+    nofargs = 2
     _x = Symbol('x')
 
     def _calc(self, n):
         raise NotImplementedError
 
-    def poly(self):
-        n, x = self._args
+    def poly(self, n, x):
         assert n.is_integer and n >= 0
         n = int(n)
         m = len(self._memo)
@@ -39,19 +39,19 @@ class _PolynomialSequence(Function2):
                 self._memo[i] = L
             return self._memo[n]
 
-    def eval(self):
-        n, x = self._args
-        if isinstance(x, self._zero_class) and x._args[0] == n:
+    def _eval_apply(self, n, x):
+        if isinstance(x, Legendre_zero) and x._args[0] == n:
             return 0
         if n.is_integer and n >= 0:
             for k in range(n):
                 if x == self._zero_class(n, k):
                     return 0
-            return self.poly().subs(self._x, x)
-        return self
+            #return self.poly().subs(self._x, x)
+            return self.poly(n, x).subs(self._x, x)
+        #return self
 
 
-class legendre(_PolynomialSequence):
+class Legendre(_PolynomialSequence):
     """
     Usage
     =====
@@ -85,8 +85,10 @@ class legendre(_PolynomialSequence):
         if n == 1: return self._x
         return ((2*n-1)*self._x*self._memo[n-1] - (n-1)*self._memo[n-2])/n
 
+legendre = Legendre()
 
-class legendre_zero(Function2):
+
+class Legendre_zero(DefinedFunction):
     """
     Usage
     =====
@@ -104,9 +106,10 @@ class legendre_zero(Function2):
         True
 
     """
+    nofargs = 2
 
-    def eval(self):
-        n, k = self._args
+    def _eval_apply(self, n, k):
+        from sympy.core import sqrt
         if n.is_odd and (n-1)/2 == k:
             return Rational(0)
         if n == 2 and k == 0: return -sqrt(Rational(1,3))
@@ -116,7 +119,6 @@ class legendre_zero(Function2):
         # We could use SymPy's polynomial root-finding code for higher-degree
         # polynomials, but it might not be helpful to do so by default
         # since the expressions grow extremely complicated
-        return self
 
     def evalf(self, prec=10):
         # Increasing the precision is really just a matter of using
@@ -141,10 +143,11 @@ class legendre_zero(Function2):
 
         return _newton(lambda t: L(t)/Ld(t), x, eps)
 
+legendre_zero = Legendre_zero()
 legendre._zero_class = legendre_zero
 
 
-class chebyshev(_PolynomialSequence):
+class Chebyshev3(_PolynomialSequence):
     """
     Usage
     =====
@@ -175,8 +178,10 @@ class chebyshev(_PolynomialSequence):
         if n == 1: return self._x
         return 2*self._x*self._memo[n-1] - self._memo[n-2]
 
+#chebyshev = Chebyshev()
 
-class chebyshev_zero(Function2):
+
+class Chebyshev_zero(DefinedFunction):
     """
     Usage
     =====
@@ -194,9 +199,12 @@ class chebyshev_zero(Function2):
         True
 
     """
-    def eval(self):
-        n, k = self._args
+    nofargs = 2
+
+    def _eval_apply(self, n, k):
+        from sympy.core import cos
         return cos(pi*(2*k+1)/(2*n))
 
 
-chebyshev._zero_class = chebyshev_zero
+chebyshev_zero = Chebyshev_zero()
+Chebyshev3._zero_class = chebyshev_zero

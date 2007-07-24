@@ -15,7 +15,7 @@ def mv(f, g):
     """
     if not isinstance(g, list):
         g = [g]
-    r = Polynomial([[Rational(0)]+[0]*len(f.var)], f.var, f.order, f.coeff)
+    r = Polynomial([[S.Zero]+[0]*len(f.var)], f.var, f.order, f.coeff)
     q = []
     for i in range(0,len(g)):
         q.append(r.copy())
@@ -53,7 +53,7 @@ def mv_int(f, g):
     """
     if not isinstance(g, list):
         g = [g]
-    r = Polynomial([[Rational(0)]+[0]*len(f.var)], f.var, f.order, f.coeff)
+    r = Polynomial([[S.Zero]+[0]*len(f.var)], f.var, f.order, f.coeff)
     q = []
     for i in range(0,len(g)):
         q.append(r.copy())

@@ -37,7 +37,7 @@
 '''
 
 __docformat__ = 'restructuredtext'
-__version__ = '$Id: gdkpixbuf2.py 1033 2007-07-13 03:38:16Z Alex.Holkner $'
+__version__ = '$Id: gdkpixbuf2.py 1053 2007-07-18 13:32:00Z Alex.Holkner $'
 
 from ctypes import *
 
@@ -45,6 +45,7 @@ from pyglet.gl import *
 from pyglet.image import *
 from pyglet.image.codecs import *
 
+import pyglet.lib
 import pyglet.window
 
 gdk = pyglet.lib.load_library('gdk-x11-2.0')

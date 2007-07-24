@@ -98,3 +98,19 @@ def rinterpolate(a_min, a_max, a_value):
 
 def interpolate_color(color1, color2, ratio):
     return [interpolate(color1[i], color2[i], ratio) for i in range(3)]
+
+def fsubs(f, a, _a, b=None, _b=None):
+    """
+    Returns a float z = f(a) or z = f(a,b).
+    """
+    try:
+        if b == None:
+            return float(f.subs(a, _a)) # seems the best choice right now
+            #return f.subs(a, _a).evalf(precision=10) # not a float val
+            #return float(f.subs(a, _a).evalf(precision=10))
+        else:
+            return float(f.subs(a, _a).subs(b, _b))
+            #return f.subs(a, _a).subs(b, _b).evalf(precision=10)
+            #return float(f.subs(a, _a).subs(b, _b).evalf(precision=10))
+    except:
+        return None

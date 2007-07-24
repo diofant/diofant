@@ -12,7 +12,7 @@ def uv_int(f):
     a = sqf_.uv_int(f)
     result = []
     for i, p in enumerate(a):
-        if p.cl[0][1] != 0: # Filter out constant Rational(1) factors
+        if p.cl[0][1] != 0: # Filter out constant S.One factors
             # Check for rational roots first:
             rr = roots_.rat_roots(p)
             # In a square-free polynomial, the roots appear only once.
@@ -26,7 +26,7 @@ def uv_int(f):
                 q, r = div_.mv_int(p, pp)
                 assert r.cl[0][0] == 0
                 p = q[0] # q is a list!
-            if p.cl[0][1] != 0: # Filter out constant Rational(1) factors
+            if p.cl[0][1] != 0: # Filter out constant S.One factors
                 # Then try the rest with the kronecker algorithm:
                 for pp in kronecker(p):
                     result += [pp]*(i+1)
@@ -40,13 +40,13 @@ def kronecker(f):
         """Compute the base polynomials used for interpolation."""
         l=[]
         for x in pos:
-            l.append(Polynomial([[Rational(1),1],[-x,0]], f.var, f.order, f.coeff))
+            l.append(Polynomial([[S.One,1],[-x,0]], f.var, f.order, f.coeff))
         b=[]
         for i, x in enumerate(pos):
-            p = Polynomial([[Rational(1),0]], f.var, f.order, f.coeff)
+            p = Polynomial([[S.One,0]], f.var, f.order, f.coeff)
             for ll in l[:i]+l[i+1:]:
                 p *= ll
-            c = Rational(1)
+            c = S.One
             for xx in pos[:i]+pos[i+1:]:
                 c *= (x-xx)
             p.cl = map(lambda t:[t[0]/c]+t[1:], p.cl)
@@ -80,9 +80,9 @@ def kronecker(f):
     for x, y in zip(pos, values):
         if y == 0:
             lfs.append(Polynomial(
-                [[Rational(1),1], [-x, 0]], f.var, f.order, f.coeff))
+                [[S.One,1], [-x, 0]], f.var, f.order, f.coeff))
     if len(lfs) > 0:
-        ff = Polynomial([[Rational(1),0]], f.var, f.order, f.coeff)
+        ff = Polynomial([[S.One,0]], f.var, f.order, f.coeff)
         for lf in lfs:
             ff *= lf
         return lfs + kronecker(div_.mv_int(f, ff)[0][0])
@@ -93,7 +93,7 @@ def kronecker(f):
     # Construct candidates for g.
     cands = []
     for comb in combs:
-        cand = Polynomial(Rational(0), f.var, f.order, f.coeff) 
+        cand = Polynomial(S.Zero, f.var, f.order, f.coeff) 
         for c,b in zip(comb, base):
             cand += c*b
         # Filter out constant and non-integer polynomials!
@@ -178,7 +178,7 @@ def kronecker_mv(f):
             if cand in tested:
                 continue
             # Inverse reduction
-            ff = Rational(0)
+            ff = S.Zero
             for term in cand.cl:
                 ff_term = term[0]
                 y_deg = term[1]
@@ -187,7 +187,7 @@ def kronecker_mv(f):
                     y_deg = (y_deg - v_deg)/d
                     ff_term *= v**v_deg
                 ff += ff_term
-            if ff == Rational(1):
+            if ff == S.One:
                 continue
             candidate = Polynomial(ff, f.var, f.order, f.coeff)
             q, r = div_.mv_int(f, candidate)
@@ -196,7 +196,7 @@ def kronecker_mv(f):
                 f = q[0]
             else:
                 tested.append(cand)
-    if f != Rational(1):
+    if f != S.One:
         result.append(f)
     return result
 
@@ -252,13 +252,13 @@ def kronecker_mv(f):
 ##     # such that the resulting polynomial is of same degree
 ##     # and still square free
 ##     # TODO: Which integers to use?
-##     substitutes = [Rational(0)]*len(var)
+##     substitutes = [S.Zero]*len(var)
 ##     while True:
 ##         lead_coeff = f.cl[0][0]
 ##         basic = f.basic
 ##         for i, v in enumerate(var):
 ##             lead_coeff = lead_coeff.subs(v, substitutes[i])
-##         if lead_coeff == Rational(0):
+##         if lead_coeff == S.Zero:
 ##             substitutes = change(substitutes)
 ##             continue
 ##         for i, v in enumerate(var):

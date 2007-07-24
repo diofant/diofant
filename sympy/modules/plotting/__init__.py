@@ -14,5 +14,6 @@ except:
 from cartesian import CartesianFunction
 from polar import PolarFunction
 from parametric import ParametricFunction
+from spherical import SphericalFunction
 
 from plot import Plot

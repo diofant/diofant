@@ -1,5 +1,5 @@
-from sympy import Basic, Rational, Symbol, sqrt, cos, sin, pi
-from sympy.modules.simplify import simplify, trigsimp
+from sympy import *
+from sympy.modules.simplify import simplify#, trigsimp
 from entity import GeometryEntity
 from point import Point
 from line import LinearEntity, Line
@@ -48,7 +48,7 @@ class Ellipse(GeometryEntity):
         if self._hr == self._vr:
             return c
 
-        if not (self._hr.is_number and self._vr.is_number):
+        if self._hr.atoms(type=Symbol) or self._vr.atoms(type=Symbol):
             raise Exception("foci can only be determined on numerical radii")
 
         elif self._hr < self._vr:
@@ -198,11 +198,11 @@ class Ellipse(GeometryEntity):
 
     def __contains__(self, o):
         if isinstance(o, Point):
-            from sympy.modules.simplify import trigsimp
             x = Symbol('x')
             y = Symbol('y')
             res = self.equation('x', 'y').subs_dict({x: o[0], y: o[1]})
-            res = trigsimp(simplify(res))
+            #res = trigsimp(simplify(res)) 
+            res = simplify(res)
             return bool(res == 0)
         elif isinstance(o, Ellipse):
             return (self == o)

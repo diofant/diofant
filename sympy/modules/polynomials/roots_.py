@@ -110,11 +110,12 @@ def n_poly(f):
     def roots_of_unity(n):
         result = []
         for i in range(0,n):
-            result.append((exp(2*i*pi*I/n)).evalc())
+            # result.append((exp(2*i*pi*I/n)).evalc())
+            result.append(exp(2*i*pi*I/n))
         return result
 
     exponents = map(lambda t:int(t[1]), f.cl)
-    g = reduce(Rational(0).gcd, exponents)
+    g = reduce(numbers.gcd, exponents)
     if g == 1:
         return None
     n = int(f.cl[0][1]/g)
@@ -145,10 +146,10 @@ def quadratic(f):
 
     # Solve special cases:
     if len(f.cl) == 1:
-        return [Rational(0)]
+        return [S.Zero]
     if len(f.cl) == 2:
         if f.cl[1][1] == 1: # No constant term
-            return [Rational(0), -(f.cl[1][0])]
+            return [S.Zero, -(f.cl[1][0])]
         else: # No linear term
             q = -(f.cl[1][0])
             if q > 0:
@@ -162,7 +163,7 @@ def quadratic(f):
     p = f.cl[1][0]
     q = f.cl[2][0]
     discr = p**2 - 4*q
-    if (not discr.is_number) or discr > 0:
+    if (not discr.is_complex) or discr > 0:
         return [-p/2 + sqrt(discr)/2,
                 -p/2 - sqrt(discr)/2]
     elif discr == 0:
@@ -193,8 +194,8 @@ def rat_roots(f):
             if f(Rational(-p, q)) == 0:
                 result.append(Rational(-p, q))
     # Now check, if 0 is a root
-    if f.basic.subs(f.var[0], Rational(0)).expand() == 0:
-        result.append(Rational(0))
+    if f.basic.subs(f.var[0], S.Zero).expand() == 0:
+        result.append(S.Zero)
     return result
 
 def real_roots(s, a=None, b=None):
@@ -214,11 +215,11 @@ def real_roots(s, a=None, b=None):
             current = el
         return counter
     
-    if a == None: # a = -oo
+    if a is None: # a = -oo
         sa = sign_changes(map(lambda p:p.cl[0][0]*(-1)**p.cl[0][1], s))
     else:
         sa = sign_changes(map(lambda p:p.basic.subs(p.var[0], a), s))        
-    if b == None: # b = oo
+    if b is None: # b = oo
         sb = sign_changes(map(lambda p:p.cl[0][0], s))
     else:
         sb = sign_changes(map(lambda p:p.basic.subs(p.var[0], b), s))
@@ -231,7 +232,7 @@ def sturm(f):
     """
     seq = [f]
     seq.append(Polynomial(f.basic.diff(f.var[0]), f.var, f.order, f.coeff))
-    while seq[-1].cl[0][0] != Rational(0):
+    while seq[-1].cl[0][0] != S.Zero:
         seq.append(-(div_.mv(seq[-2], seq[-1])[-1]))
     return seq[:-1]
 
@@ -249,7 +250,7 @@ def uv(f, verbose=False):
         result = cubic(f)
     else:
         result = n_poly(f)
-        if result == None:
+        if result is None:
             return []
 
     # Filter roots by coefficient type:

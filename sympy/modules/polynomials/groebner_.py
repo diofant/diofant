@@ -17,7 +17,7 @@ def groebner(f, reduced=True):
 
     # empty ideal
     if len(f) == 0:
-        return [Polynomial(Rational(0))]
+        return [Polynomial(S.Zero)]
 
     b = [] # Stores the unchecked combinations for s-poly's.
     s = len(f)

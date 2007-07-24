@@ -19,6 +19,7 @@ class PlotWindow(ManagedWindow):
         self.antialiasing = antialiasing
         self.ortho = ortho
         self._calculating = False
+        self.camera = None
 
         window_args['caption'] = title
         super(PlotWindow, self).__init__(**window_args)
@@ -36,16 +37,24 @@ class PlotWindow(ManagedWindow):
 
         glShadeModel(GL_SMOOTH)
 
-        if self.wireframe:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-        else:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        self.setup_polygon_mode()
 
         if self.antialiasing:
             glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
             glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST)
 
         self.camera.setup_projection()
+
+    def on_resize(self, w, h):
+        super(PlotWindow, self).on_resize(w, h)
+        if self.camera != None:
+            self.camera.setup_projection()
+
+    def setup_polygon_mode(self):
+        if self.wireframe:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        else:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
     def update(self, dt):
         self.update_caption()

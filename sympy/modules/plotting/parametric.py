@@ -1,5 +1,5 @@
 from pyglet.gl import *
-from plot_function import PlotFunction, PlotFunctionRegistry, get_vars, count_vars, vrange
+from plot_function import PlotFunction, PlotFunctionRegistry, fsubs, get_vars, count_vars, vrange
     
 class ParametricFunction(PlotFunction):
 
@@ -40,15 +40,11 @@ class ParametricCurve(PlotFunction):
         if t_steps == None: t_steps = 60
 
         t_set = vrange(t_min, t_max, t_steps)
-        def eval(f, t, t_e):
-            try:
-                return float(f.subs(t, t_e))
-            except:
-                return None
+
         if len(self.f) == 2:
-            self.vertices = list( (eval(self.f[0], t, t_e), eval(self.f[1], t, t_e), 0.0) for t_e in t_set )
+            self.vertices = list( (fsubs(self.f[0], t, t_e), fsubs(self.f[1], t, t_e), 0.0) for t_e in t_set )
         elif len(self.f) == 3:
-            self.vertices = list( (eval(self.f[0], t, t_e), eval(self.f[1], t, t_e), eval(self.f[2], t, t_e)) for t_e in t_set )
+            self.vertices = list( (fsubs(self.f[0], t, t_e), fsubs(self.f[1], t, t_e), fsubs(self.f[2], t, t_e)) for t_e in t_set )
 
     def calculate_color_vertices(self):
         self.color_vertices = []

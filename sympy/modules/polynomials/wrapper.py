@@ -1,8 +1,7 @@
 """Module providing a user-friendly interface to the polynomial algorithms."""
 
-from sympy.core.functions import diff
-#from sympy.modules.matrices import zero
-import sympy.modules.matrices
+#from sympy.core.functions import diff
+#import sympy.modules.matrices
 
 from sympy.modules.polynomials.base import *
 from sympy.modules.polynomials import div_
@@ -13,13 +12,13 @@ from sympy.modules.polynomials import lcm_
 from sympy.modules.polynomials import roots_
 from sympy.modules.polynomials import sqf_
 
+# TODO: Remove/incorporate in Polynomial
 def coeff(poly, x, n):
     """Returns the coefficient of x**n in the polynomial"""
-    assert ispoly(poly,x)
     p = Polynomial(poly, x)
-    t = filter(lambda t:t[1]==n,p.cl)
+    t = filter(lambda t:t[1] == n, p.cl)
     if len(t) == 0:
-        return Rational(0)
+        return S.Zero
     else:
         return t[0][0]
 
@@ -38,11 +37,11 @@ def div(f, g, var=None, order=None, coeff=None):
     >>> x = Symbol('x')
     >>> y = Symbol('y')
     >>> div(x**2+6*x+1, 3*x-1)
-    (19/9+1/3*x, 28/9)
+    (19/9 + (1/3)*x, 28/9)
     >>> div(x**2+6*x+1, 3*x-1, coeff='int')
-    (2, 3+x**2)
+    (2, 3 + x**2)
     >>> div(2*x**3*y**2 - x*y + y**3, [x-y, y**2], [x,y], 'lex')
-    ([2*x**2*y**2+2*y**4-y+2*x*y**3, -1+y+2*y**3], 0)
+    ([-y + 2*y**4 + 2*x*y**3 + 2*x**2*y**2, (-1) + y + 2*y**3], 0)
 
     """
     f = Basic.sympify(f)
@@ -51,19 +50,19 @@ def div(f, g, var=None, order=None, coeff=None):
     g = map(lambda x: Basic.sympify(x), g)
     if not isinstance(var, list):
         var = [var]
-    if len(var) > 0 and var[0] == None:
-        var = merge_var(f.atoms(type=Symbol,
-                        *[g_i.atoms(type=Symbol) for g_i in g]))
+    if len(var) > 0 and var[0] is None:
+        var = merge_var(list(f.atoms(type=Symbol)),
+                        *[list(g_i.atoms(type=Symbol)) for g_i in g])
     f = Polynomial(f, var, order, coeff)
     g = map(lambda x: Polynomial(x, var, order, coeff), g)
-    if coeff != None:
+    if coeff is not None:
         if not coeff in coeff_rings:
             raise PolynomialException(
                 "%s is not an implemented coefficient ring." % coeff)
         elif coeff == 'int':
             # TODO: Check if given polynomials have integer coeffs?
             q, r = div_.mv_int(f, g)
-    else: # coeff == None
+    else: # coeff is None
         q, r = div_.mv(f, g)
     if len(q) == 1:
         return q[0].basic, r.basic
@@ -77,9 +76,9 @@ def factor(f):
     >>> x = Symbol('x')
     >>> y = Symbol('y')
     >>> factor(x**4 - 1)
-    (1+x)*(1+x**2)*(-1+x)
+    -(1 + x)*(1 + x**2)*(1 - x)
     >>> factor(x**2 - y**2)
-    (y-x)*(-y-x)
+    (y - x)*(-x - y)
     """
     f = Polynomial(f, coeff='int')
 
@@ -88,7 +87,7 @@ def factor(f):
     for term in f.cl:
         if not isinstance(term[0], Rational):
             raise PolynomialException('Non-rational coefficient!')
-        l = l*term[0].q / Rational(0).gcd(l, term[0].q)
+        l = l*term[0].q / numbers.gcd(l, term[0].q)
 
     # Make f a polynomial in integer coefficients:
     f.cl = map(lambda t:[t[0]*Rational(l)] + t[1:], f.cl)
@@ -98,7 +97,7 @@ def factor(f):
     f.cl = map(lambda t:[t[0]/c] + t[1:], f.cl)
 
     # Get an re-assemble factors:
-    result = Rational(1)
+    result = S.One
     if len(f.var) == 1:
         for p in factor_.uv_int(f):
             result *= p.basic.expand()
@@ -124,20 +123,20 @@ def gcd(f, g, var=None, order=None, coeff=None):
     g = Basic.sympify(g)
     if isinstance(var, Symbol):
         var = [var]
-    if var == None:
-        var = merge_var(f.atoms(type=Symbol), g.atoms(type=Symbol))
-    if coeff == None:
-        atoms = f.atoms()
-        atoms += filter(lambda a: not a in atoms, g.atoms())
+    if var is None:
+        var = merge_var(list(f.atoms(type=Symbol)), list(g.atoms(type=Symbol)))
+    if coeff is None:
+        atoms = list(f.atoms())
+        atoms += filter(lambda a: not a in atoms, list(g.atoms()))
         atoms = filter(lambda a: not a in var, atoms)
         coeff = coeff_ring(atoms)
     if len(var) == 0:
         if coeff == 'int':
             assert isinstance(f, Rational) and isinstance(g, Rational)
             assert f.is_integer and g.is_integer
-            return abs(Rational(0).gcd(f.p, g.p))
+            return abs(numbers.gcd(f.p, g.p))
         else:
-            return Rational(1)
+            return S.One
     elif len(var) == 1:
         if coeff == 'int':
             f = Polynomial(f, var, order, coeff)
@@ -146,7 +145,7 @@ def gcd(f, g, var=None, order=None, coeff=None):
             g = Polynomial(g, var, order, coeff)
             cg = g.content()
             g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
-            return abs(Rational(0).gcd(cf.p, cg.p)) * \
+            return abs(numbers.gcd(cf.p, cg.p)) * \
                    gcd_.uv(f, g).basic
         else:
             r =  gcd_.uv(Polynomial(f, var, order, coeff),
@@ -160,7 +159,7 @@ def gcd(f, g, var=None, order=None, coeff=None):
             g = Polynomial(g, var, order, coeff)
             cg = g.content()
             g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
-            return abs(Rational(0).gcd(cf.p, cg.p)) * \
+            return abs(numbers.gcd(cf.p, cg.p)) * \
                    gcd_.mv(f, g).basic
         else:
             r =  gcd_.mv(Polynomial(f, var, order, coeff),
@@ -174,7 +173,7 @@ def groebner(f, var=None, order=None, coeff=None, reduced=True):
     >>> x = Symbol('x')
     >>> y = Symbol('y')
     >>> groebner([x**2 + y**3, y**2-x], order='lex')
-    [x-y**2, y**3+y**4]
+    [x - y**2, y**3 + y**4]
 
     """
     if isinstance(f, Basic):
@@ -183,15 +182,15 @@ def groebner(f, var=None, order=None, coeff=None, reduced=True):
     # filter trivial or double entries
     ff = filter(lambda x: x!=0, f)
     if not ff: # Zero Ideal
-        return [Rational(0)]
+        return [S.Zero]
     f = []
     for p in ff:
         if not p in f:
             f.append(p)
     if isinstance(var, Symbol):
         var = [var]
-    if var == None:
-        var = merge_var(*map(lambda p: p.atoms(type=Symbol),f))
+    if var is None:
+        var = merge_var(*map(lambda p: list(p.atoms(type=Symbol)),f))
     f = map(lambda p: Polynomial(p, var, order, coeff), f)
     g = groebner_.groebner(f, reduced)
     return map(lambda p: p.basic, g)
@@ -211,22 +210,22 @@ def lcm(f, g, var=None, order=None, coeff=None):
     g = Basic.sympify(g)
     if isinstance(var, Symbol):
         var = [var]
-    if var == None:
-        var = merge_var(f.atoms(type=Symbol), g.atoms(type=Symbol))
-    if coeff == None:
-        atoms = f.atoms()
-        atoms += filter(lambda a: not a in atoms, g.atoms())
+    if var is None:
+        var = merge_var(list(f.atoms(type=Symbol)), list(g.atoms(type=Symbol)))
+    if coeff is None:
+        atoms = list(f.atoms())
+        atoms += filter(lambda a: not a in atoms, list(g.atoms()))
         atoms = filter(lambda a: not a in var, atoms)
         coeff = coeff_ring(atoms)
     if len(var) == 0:
         if coeff == 'int':
             assert isinstance(f, Rational) and isinstance(g, Rational)
             assert f.is_integer and g.is_integer
-            if f == Rational(0) or g == Rational(0):
-                return Rational(0)
-            return abs(f*g / Rational(0).gcd(f.p, g.p))
+            if f == S.Zero or g == S.Zero:
+                return S.Zero
+            return abs(f*g / numbers.gcd(f.p, g.p))
         else:
-            return Rational(1)
+            return S.One
     if len(var) == 1:
         if coeff == 'int':
             f = Polynomial(f, var, order, coeff)
@@ -235,9 +234,9 @@ def lcm(f, g, var=None, order=None, coeff=None):
             g = Polynomial(g, var, order, coeff)
             cg = g.content()
             g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
-            if cf == Rational(0) or cg == Rational(0):
-                return Rational(0)
-            return abs(cf*cg / Rational(0).gcd(cf.p, cg.p)) * \
+            if cf == S.Zero or cg == S.Zero:
+                return S.Zero
+            return abs(cf*cg / numbers.gcd(cf.p, cg.p)) * \
                    lcm_.uv(f, g).basic
         else:
             r = lcm_.uv(Polynomial(f, var, order, coeff),
@@ -251,9 +250,9 @@ def lcm(f, g, var=None, order=None, coeff=None):
             g = Polynomial(g, var, order, coeff)
             cg = g.content()
             g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
-            if cf == Rational(0) or cg == Rational(0):
-                return Rational(0)
-            return abs(cf*cg / Rational(0).gcd(cf.p, cg.p)) * \
+            if cf == S.Zero or cg == S.Zero:
+                return S.Zero
+            return abs(cf*cg / numbers.gcd(cf.p, cg.p)) * \
                    lcm_.mv(f, g).basic
         else:
             r = lcm_.mv(Polynomial(f, var, order, coeff),
@@ -275,11 +274,11 @@ def real_roots(f, a=None, b=None):
 
     """
     f = Basic.sympify(f)
-    if a != None:
+    if a is not None:
         a = Basic.sympify(a)
-    if b != None:
+    if b is not None:
         b = Basic.sympify(b)
-    var = f.atoms(type=Symbol)
+    var = list(f.atoms(type=Symbol))
     if len(var) == 1:
         var = var[0]
     else:
@@ -304,13 +303,15 @@ def resultant(f, g, x, method='bezout'):
              it is O(s**3), where s = max(deg(f), deg(g)).
     """
 
-    fp = coeff_list(f, x)
-    gp = coeff_list(g, x)
+    from sympy.modules.matrices import zero
+
+    fp = Polynomial(f, x).cl
+    gp = Polynomial(g, x).cl
 
     m, n = int(fp[0][1]), int(gp[0][1])
 
     if method is 'sylvester':
-        M = sympy.modules.matrices.zero(m+n)
+        M = zero(m+n)
 
         for i in range(n):
             for coeff, j in fp:
@@ -327,7 +328,8 @@ def resultant(f, g, x, method='bezout'):
         else:
             s = m
 
-        p, q = [0]*(s+1), [0]*(s+1)
+        p = [Basic.Zero()] * (s+1)
+        q = [Basic.Zero()] * (s+1)
 
         for coeff, j in fp:
             p[int(j)] = coeff
@@ -335,12 +337,12 @@ def resultant(f, g, x, method='bezout'):
         for coeff, j in gp:
             q[int(j)] = coeff
 
-        M = sympy.modules.matrices.zero(s)
+        M = zero(s)
 
         for i in range(s):
             for j in range(i, s):
                 z = 1 + min(i, s-1-j)
-                terms = [0] * z
+                terms = [Basic.Zero()] * z
 
                 for k in range(z):
                     terms[k] = p[j+k+1]*q[i-k] - p[i-k]*q[j+k+1]
@@ -375,11 +377,11 @@ def roots(f, var=None, coeff=None, verbose=False):
     if len(f.var) != 1:
         raise PolynomialException(
             'Multivariate polynomials not supported.')
-    if coeff == None:
+    if coeff is None:
         # Allow all roots by default.
         coeff = coeff_rings[-1]
     # Determine type of coefficients (for factorization purposes)
-    symbols = f.basic.atoms(type=Symbol)
+    symbols = list(f.basic.atoms(type=Symbol))
     symbols = filter(lambda a: not a in f.var, symbols)
     if symbols:
         coeff2 = 'sym'
@@ -393,7 +395,7 @@ def roots(f, var=None, coeff=None, verbose=False):
         for term in f.cl:
             if not isinstance(term[0], Rational):
                 raise PolynomialException('Non-rational coefficient!')
-            l = l*term[0].q / Rational(0).gcd(l, term[0].q)
+            l = l*term[0].q / numbers.gcd(l, term[0].q)
 
         # Make f a polynomial in integer coefficients:
         f.cl = map(lambda t:[t[0]*Rational(l)] + t[1:], f.cl)
@@ -408,12 +410,12 @@ def roots(f, var=None, coeff=None, verbose=False):
             if f.cl[0][1] == 0:
                 return []
             else:
-                return[Rational(0)]
+                return[S.Zero]
         if len(f.cl) == 2:
             f.coeff = coeff
             result = []
             if f.cl[1][1] > 0:
-                result.append(Rational(0))
+                result.append(S.Zero)
                 f.cl = map(lambda t:[t[0], t[1]-f.cl[1][1]], f.cl)
             return result + roots_.uv(f)    
         else:
@@ -441,17 +443,17 @@ def solve_system(eqs, var=None, coeff=None):
     Examples:
     >>> x = Symbol('x')
     >>> y = Symbol('y')
-    >>> f = y - x
-    >>> g = x**2 + y**2 - 1
+    >>> f = y - x           
+    >>> g = x**2 + y**2 - 1 
     >>> solve_system([f, g])
-    [[-(1/2)**(1/2), -(1/2)**(1/2)], [(1/2)**(1/2), (1/2)**(1/2)]]
+    [[-1/2*2**(1/2), -1/2*2**(1/2)], [(1/2)*2**(1/2), (1/2)*2**(1/2)]]
     
     """
     if not isinstance(eqs, list):
         eqs = [eqs]
-    if var == None:
-        var = merge_var(*[eq.atoms(type=Symbol) for eq in eqs])
-    if coeff == None:
+    if var is None:
+        var = merge_var(*[list(eq.atoms(type=Symbol)) for eq in eqs])
+    if coeff is None:
         # Allow all roots by default.
         coeff = coeff_rings[-1]
     eqs = map(lambda eq:Polynomial(eq, var=var, order='lex', coeff=coeff), eqs)
@@ -465,14 +467,14 @@ def sqf(f, var=None):
     Examples:
     >>> x = Symbol('x')
     >>> sqf(2*x**3 + 2*x**2)
-    (2+2*x)*x**2
+    x**2*(2 + 2*x)
 
     """
     f = Basic.sympify(f)
     if isinstance(var, Symbol):
         var = [var]
-    if var == None:
-        var = f.atoms(type=Symbol)
+    if var is None:
+        var = list(f.atoms(type=Symbol))
     if len(var) != 1:
         raise PolynomialException('Not an univariate polynomial.')
 
@@ -491,14 +493,14 @@ def sqf_part(f, var=None):
     Examples:
     >>> x = Symbol('x')
     >>> sqf_part(2*x**3 + 2*x**2)
-    2*x**2+2*x
+    2*x + 2*x**2
 
     """
     f = Basic.sympify(f)
     if isinstance(var, Symbol):
         var = [var]
-    if var == None:
-        var = f.atoms(type=Symbol)
+    if var is None:
+        var = list(f.atoms(type=Symbol))
     if len(var) != 1:
         raise PolynomialException('Not an univariate polynomial.')
 

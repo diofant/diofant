@@ -1,5 +1,5 @@
 from pyglet.gl import *
-from plot_function import PlotFunction, vrange
+from plot_function import PlotFunction, fsubs, vrange
 
 class CartesianFunction2d(PlotFunction):
     
@@ -18,12 +18,7 @@ class CartesianFunction2d(PlotFunction):
         if x_steps == None: x_steps = 60
 
         x_set = vrange(x_min, x_max, x_steps)
-        def eval(f, x, x_e):
-            try:
-                return float(f.subs(x, x_e))
-            except:
-                return None
-        self.vertices = list( (x_e, eval(self.f, x, x_e), 0.0) for x_e in x_set )
+        self.vertices = list( (x_e, fsubs(self.f, x, x_e), 0.0) for x_e in x_set )
 
     def calculate_color_vertices(self):
         self.color_vertices = []

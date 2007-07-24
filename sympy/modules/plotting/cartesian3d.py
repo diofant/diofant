@@ -1,5 +1,5 @@
 from pyglet.gl import *
-from plot_function import PlotFunction, vrange, rinterpolate, interpolate
+from plot_function import PlotFunction, vrange, fsubs, rinterpolate, interpolate
 
 from sympy import Basic
 from math import tan
@@ -27,13 +27,8 @@ class CartesianFunction3d(PlotFunction):
         x_set = vrange(self.x_min, self.x_max, x_steps)
         y_set = vrange(self.y_min, self.y_max, y_steps)
 
-        def eval(f, x, y, x_e, y_e):
-            try:
-                return float(f.subs(x, x_e).subs(y, y_e))
-            except:
-                return None
-        self.vertices = list( list( (x_e, y_e, eval(self.f, x, y, x_e, y_e))
-                                    for y_e in y_set ) for x_e in x_set )
+        self.vertices = list( list( (_x, _y, fsubs(self.f, x, _x, y, _y))
+                                    for _y in y_set ) for _x in x_set )
 
     def calculate_bounding_box(self):
         x_len = len(self.vertices)
@@ -52,8 +47,6 @@ class CartesianFunction3d(PlotFunction):
                     self.z_max = max([self.z_max, self.vertices[x][y][2]])
 
     def calculate_color_vertices(self, min_brightness=0.55, max_brightness=0.95):
-        max_brightness = 1.0 - max_brightness
-
         x_len = len(self.vertices)
         y_len = len(self.vertices[0])
 
@@ -64,9 +57,18 @@ class CartesianFunction3d(PlotFunction):
                 if self.vertices[x][y][2] == None:
                     self.color_vertices[x][y] = (0.0, 0.0, 0.0)
                 else:
-                    cx = interpolate( min_brightness, (1.0-max_brightness), rinterpolate(self.x_min, self.x_max, self.vertices[x][y][0]) )
-                    cy = interpolate( min_brightness, (1.0-max_brightness), rinterpolate(self.y_min, self.y_max, self.vertices[x][y][1]) )
-                    cz = interpolate( min_brightness, (1.0-max_brightness), rinterpolate(self.z_min, self.z_max, self.vertices[x][y][2]) )
+                    cx = interpolate( min_brightness, max_brightness,
+                                      rinterpolate(self.x_min,
+                                                   self.x_max,
+                                                   self.vertices[x][y][0]) )
+                    cy = interpolate( min_brightness, max_brightness,
+                                      rinterpolate(self.y_min,
+                                                   self.y_max,
+                                                   self.vertices[x][y][1]) )
+                    cz = interpolate( min_brightness, max_brightness,
+                                      rinterpolate(self.z_min,
+                                                   self.z_max,
+                                                   self.vertices[x][y][2]) )
                     self.color_vertices[x][y] = (cz, cx, cy)
 
     def render(self):
@@ -81,7 +83,7 @@ class CartesianFunction3d(PlotFunction):
                     glEnd()
                     glBegin(GL_TRIANGLE_STRIP)
                     continue
-                
+
                 glColor3f(*self.color_vertices[x][y])
                 glVertex3f(*self.vertices[x][y])
 

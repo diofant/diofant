@@ -1,21 +1,12 @@
 """Simple helper functions common to several algorithms"""
 
-from sympy import Add, Basic, Mul, Number, Pow, Rational, Real, Symbol
+from sympy.core import *
+from sympy.core.basic import S # Use Singleton comparisons.
+from sympy.core import numbers # Need numbers.gcd
+from sympy.core.numbers import NumberSymbol, ImaginaryUnit # To look for numbers
+from sympy.modules.utilities import *
+
 from sympy.modules.polynomials.base import PolynomialException, coeff_rings
-
-def all(iterable):
-    """True if all elements are True"""
-    for element in iterable:
-        if not element:
-            return False
-    return True
-
-def one(iterable):
-    """True if at least one element is True"""
-    for element in iterable:
-        if element:
-            return True
-    return False
 
 def reverse(lisp):
     """Return a list with reversed order"""
@@ -62,7 +53,7 @@ def term_is_mult(a, b):
 
 def term_lcm(a, b):
     # TODO: Compute lcm oder product of coefficients?
-    r = [Rational(1)] # [a[0]*b[0]]
+    r = [S.One] # [a[0]*b[0]]
     for aa, bb in zip(a[1:], b[1:]):
         r.append(max(aa, bb))
     return r
@@ -74,7 +65,7 @@ def merge_var(*a):
         for sym in var:
             if not sym in result:
                 result.append(sym)
-    result.sort(key=str)
+    result.sort()
     return result
 
 def copy_cl(cl):
@@ -103,23 +94,23 @@ def sort_cl(cl, order):
 def coeff_ring(atom):
     """Determine the coefficient ring of some atom, or some list of atoms.
     """
-    if not isinstance(atom, list):
-        if isinstance(atom, Rational):
-            if atom.is_integer:
-                return 'int'
-            else:
-                return 'rat'
-        elif atom.is_number:
-            if atom.is_real:
-                return 'real'
-            else:
-                return 'cplx'
-        elif isinstance(atom, Symbol):
-            return 'sym'
+    if isinstance(atom, (Number, NumberSymbol, ImaginaryUnit)) \
+        or (isinstance(atom, (Add, Mul))
+            and all(map(lambda a:isinstance(a, (Number, NumberSymbol,
+                                                ImaginaryUnit)), atom[:]))) \
+        or (isinstance(atom, Pow) and isinstance(atom.base, (Number,
+                                                             NumberSymbol,
+                                                             ImaginaryUnit))
+            and isinstance(atom.exp, (Number, NumberSymbol, ImaginaryUnit))):
+        if atom.is_integer:
+            return 'int'
+        elif atom.is_rational:
+            return 'rat'
+        elif atom.is_real:
+            return 'real'
         else:
-            raise PolynomialException(
-                "Coefficient of unknown type: %s", atom)
-    else:
+            return 'cplx'
+    elif isinstance(atom, list):
         # Get the coefficient ring of each atom and look for the worst case.
         result = 'int'
         for a in atom:
@@ -128,6 +119,27 @@ def coeff_ring(atom):
             if coeff_rings.index(cr) > coeff_rings.index(result):
                 result = cr
         return result
+    else:
+        return 'sym'
+
+def get_numbers(atom):
+    # TODO: Merge with coeff_ring, without recursion!
+    result = []
+    if isinstance(atom, (Number, NumberSymbol, ImaginaryUnit)) \
+        or (isinstance(atom, (Add, Mul))
+            and all(map(lambda a:isinstance(a, (Number,
+                                                NumberSymbol,
+                                                ImaginaryUnit)),
+                        atom[:]))) \
+        or (isinstance(atom, Pow) and isinstance(atom.base, (Number,
+                                                             NumberSymbol,
+                                                             ImaginaryUnit))
+            and isinstance(atom.exp, (Number, NumberSymbol, ImaginaryUnit))):
+        return [atom]
+    elif isinstance(atom, (Add, Mul)):
+        for a in atom:
+            result.append(get_numbers(a))
+    return result
 
 def integer_divisors(n):
     n = abs(n)
@@ -137,17 +149,3 @@ def integer_divisors(n):
             r.append(i)
     r.append(n)
     return r
-
-def get_numbers(b):
-    result = []
-    b = b.expand()
-    if b.is_number:
-        return [b]
-    elif isinstance(b, Add):
-        for summand in b:
-            result += get_numbers(summand)
-    elif isinstance(b, Mul):
-        for factor in b:
-            if factor.is_number:
-                result.append(factor)
-    return result

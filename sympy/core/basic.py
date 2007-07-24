@@ -1,474 +1,158 @@
 """Base class for all objects in sympy"""
 
-from sympy.core.hashing import mhash
+type_class = type
 
+import decimal
+from basic_methods import BasicMeths, cache_it, cache_it_immutable
 
-class AutomaticEvaluationType(type):
-    """Metaclass for all objects in sympy
-     It evaluates the object just after creation, so that for example
-     x+2*x becomes 3*x
-     """
-    def __call__(self,*args,**kwargs):
-        if kwargs.has_key("evaluate"):
-            evaluate = kwargs["evaluate"]
-            del kwargs["evaluate"]
-        else:
-            evaluate = True
-        obj = type.__call__(self,*args,**kwargs)
-        if evaluate:
-            return obj.eval()
-        else:
-            return obj
-
-class Basic(object):
-    """Base class for all objects in SymPy. It is possible to specify
-       objects' behaviour using assumptions mechanism. This is most
-       useful in pure symbolic algorithms which eg. would be able to
-       perform more specific rewriting to intermediate expressions,
-       giving simplified and probably more readable results.
-
-       Possible assumptions are:
-
-        - is_real, is_integer
-
-        - is_negative, is_positive
-
-        - is_nonnegative, is_nonpositive
-
-        - is_odd, is_even, is_prime
-
-        - is_nonzero
-
-        - is_commutative
-
-        - is_bounded
-
-        - is_dummy
-
-       There are also assumption-like query functions:
-
-        - is_number, is_zero, is_unit
-
-       and combinations of all mentioned above:
-
-        - is_negative_integer, is_positive_integer
-
-        - is_nonnegative_integer, is_nonpositive_integer
-
-       Assumptions are defined in ternary logic (in Python sense)
-       using True, when we are certain that property applies to
-       given object, None, when we aren't sure and False otherwise:
-
-       >>> from sympy import *
-       >>> x = Symbol('x')
-
-       >>> sin(x).is_bounded
-       True
-
-       >>> print x.is_negative
-       None
-
-       >>> Rational(1, 2).is_integer
-       False
-
-       To assume something about SymPy's object, it is necessary to put
-       appropriate flags in selected object's constructor:
-
-       >>> Symbol('k', integer = True).is_integer
-       True
-       >>> Symbol('k', is_integer = True).is_integer
-       True
-
-       Once an object is created and assumptions set it is not allowed
-       to change their value without creating new object.
-
-       Sometimes the list of required assumtions can be really long. In
-       this case you can use abbreviations to reduce the amount of typing:
-
-       >>> k = Symbol('k', integer = True, nonnegative = True)
-       >>> k.is_integer and k.is_nonnegative
-       True
-       >>> k.is_nonnegative_integer
-       True
-
-       is the same as the following shortened version
-
-       >>> k = Symbol('k', nni = True)
-       >>> k.is_integer and k.is_nonnegative
-       True
-       >>> k.is_nonnegative_integer
-       True
-
+class MemoizerArg:
+    """ See Memoizer.
     """
 
-    __metaclass__ = AutomaticEvaluationType
+    def __init__(self, allowed_types, converter = None, name = None):
+        self._allowed_types = allowed_types
+        self.converter = converter
+        self.name = name
 
-    def __init__(self, *args, **kwargs):
-        self._mhash = 0
-        self._mathml = None
-        self._args = []
-
-        self._assumptions = {        ## Objects that overrides the defaults:
-            'is_real'        : None, # Rational, Symbol, Pair, Pow, exp, log, sin, cos, tan
-            'is_integer'     : None, # Rational, Pair, Pow
-            'is_negative'    : None, # Rational, Add, Mul, Pow
-            'is_positive'    : None, # Rational, Add, Mul, Pow
-            'is_nonnegative' : None, # Rational, Add, Mul, Pow
-            'is_nonpositive' : None, # Rational, Add, Mul, Pow
-            'is_nonzero'     : None, # Rational
-            'is_commutative' : None, # Symbol, Number, Pair, Pow
-            'is_bounded'     : None, # Pair, Pow, sin, cos, exp, log, tan
-            'is_dummy'       : None, # Symbol
-            'is_prime'       : None, # Rational
-            'is_odd'         : None, # Rational, Add, Mul, Pow
-            'is_even'        : None, # Rational, Add, Mul, Pow
-            }
-
-        dependencies = {
-            'is_integer'     : lambda x: { 'is_real'        : x },
-
-            'is_negative'    : lambda x: { 'is_positive'    : (not x) and None,
-                                           'is_nonnegative' : not x,
-                                           'is_nonpositive' : x or None,
-                                           'is_real'        : x or None },
-
-            'is_positive'    : lambda x: { 'is_negative'    : (not x) and None,
-                                           'is_nonpositive' : not x,
-                                           'is_nonnegative' : x or None,
-                                           'is_real'        : x or None },
-
-            'is_nonnegative' : lambda x: { 'is_negative'    : not x,
-                                           'is_positive'    : x and None,
-                                           'is_nonpositive' : (not x) or None,
-                                           'is_real'        : x or None },
-
-            'is_nonpositive' : lambda x: { 'is_positive'    : not x,
-                                           'is_negative'    : x and None,
-                                           'is_nonnegative' : (not x) or None,
-                                           'is_real'        : x or None },
-
-            'is_odd'         : lambda x: { 'is_integer'     : x or None,
-                                           'is_real'        : x or None,
-                                           'is_even'        : (not x) and None },
-
-            'is_even'        : lambda x: { 'is_integer'     : x or None,
-                                           'is_real'        : x or None,
-                                           'is_odd'         : (not x) and None },
-
-            'is_prime'       : lambda x: { 'is_integer'     : x or None,
-                                           'is_real'        : x or None,
-                                           'is_positive'    : x or None,
-                                           'is_negative'    : (not x) and None,
-                                           'is_nonpositive' : (not x) and None },
-            }
-
-        abbreviations = {
-            'is_ni'          : [ 'is_integer', 'is_negative' ],
-            'is_pi'          : [ 'is_integer', 'is_positive' ],
-            'is_nni'         : [ 'is_integer', 'is_nonnegative' ],
-            'is_npi'         : [ 'is_integer', 'is_nonpositive' ],
-            }
-
-        def update_assumptions(key, value):
-            if value is not None:
-                if key in dependencies:
-                    self._assumptions.update(dependencies[key](value))
-
-                self._assumptions[key] = value
-
-        for key in kwargs.keys():
-            value = kwargs[key]
-
-            # this is for compatibility reason
-            if key[0:3] != 'is_':
-                key = 'is_' + key
-
-            if key in self._assumptions:
-                update_assumptions(key, value)
-            elif key in abbreviations:
-                for key in abbreviations[key]:
-                    update_assumptions(key, value)
-            else:
-                raise NotImplementedError("Assumption '%s' not implemented" % str(key))
-
-    def __getattr__(self, name):
-        if name in self._assumptions:
-            return self._assumptions[name]
+    def fix_allowed_types(self, have_been_here={}):
+        i = id(self)
+        if have_been_here.get(i): return
+        allowed_types = self._allowed_types
+        if isinstance(allowed_types, str):
+            self.allowed_types = getattr(Basic, allowed_types)
+        elif isinstance(allowed_types, (tuple, list)):
+            new_allowed_types = []
+            for t in allowed_types:
+                if isinstance(t, str):
+                    t = getattr(Basic, t)
+                new_allowed_types.append(t)
+            self.allowed_types = tuple(new_allowed_types)
         else:
-            raise AttributeError("'%s' object has no attribute '%s'" %
-                (self.__class__.__name__, name))
+            self.allowed_types = allowed_types
+        have_been_here[i] = True
+        return
 
-    def __setattr__(self, name, value):
-        if name[0:3] != 'is_':
-            object.__setattr__(self, name, value)
+    def process(self, obj, func, index = None):
+        if isinstance(obj, self.allowed_types):
+            if self.converter is not None:
+                obj = self.converter(obj)
+            return obj
+        func_src = '%s:%s:function %s' % (func.func_code.co_filename, func.func_code.co_firstlineno, func.func_name)
+        if index is None:
+            raise ValueError('%s return value must be of type %r but got %r' % (func_src, self.allowed_types, obj))
+        if isinstance(index, (int,long)):
+            raise ValueError('%s %s-th argument must be of type %r but got %r' % (func_src, index, self.allowed_types, obj))
+        if isinstance(index, str):
+            raise ValueError('%s %r keyword argument must be of type %r but got %r' % (func_src, index, self.allowed_types, obj))
+        raise NotImplementedError(`index,type(index)`)
+
+class Memoizer:
+    """ Memoizer function decorator generator.
+
+    Features:
+      - checks that function arguments have allowed types
+      - optionally apply converters to arguments
+      - cache the results of function calls
+      - optionally apply converter to function values
+
+    Usage:
+
+      @Memoizer(<allowed types for argument 0>,
+                MemoizerArg(<allowed types for argument 1>),
+                MemoizerArg(<allowed types for argument 2>, <convert argument before function call>),
+                MemoizerArg(<allowed types for argument 3>, <convert argument before function call>, name=<kw argument name>),
+                ...
+                return_value_converter = <None or converter function, usually makes a copy>
+                )
+      def function(<arguments>, <kw_argumnets>):
+          ...
+
+    Details:
+      - if allowed type is string object then there Basic must have attribute
+        with the string name that is used as the allowed type --- this is needed
+        for applying Memoizer decorator to Basic methods when Basic definition
+        is not defined.
+
+    Restrictions:
+      - arguments must be immutable
+      - when function values are mutable then one must use return_value_converter to
+        deep copy the returned values
+
+    Ref: http://en.wikipedia.org/wiki/Memoization
+    """
+
+    def __init__(self, *arg_templates, **kw_arg_templates):
+        new_arg_templates = []
+        for t in arg_templates:
+            if not isinstance(t, MemoizerArg):
+                t = MemoizerArg(t)
+            new_arg_templates.append(t)
+        self.arg_templates = tuple(new_arg_templates)
+        return_value_converter = kw_arg_templates.pop('return_value_converter', None)
+        self.kw_arg_templates = kw_arg_templates.copy()
+        for template in self.arg_templates:
+            if template.name is not None:
+                self.kw_arg_templates[template.name] = template
+        if return_value_converter is None:
+            self.return_value_converter = lambda obj: obj
         else:
-            raise AttributeError("Modification of assumptions is not allowed")
-
-    @property
-    def is_zero(self):
-        return None
-
-    @property
-    def is_one(self):
-        return None
-
-    @property
-    def is_minus_one(self):
-        return None
-
-    @property
-    def is_negative_integer(self):
-        return self.is_integer and self.is_negative
-
-    @property
-    def is_nonnegative_integer(self):
-        return self.is_integer and self.is_nonnegative
-
-    @property
-    def is_positive_integer(self):
-        return self.is_integer and self.is_positive
-
-    @property
-    def is_nonpositive_integer(self):
-        return self.is_integer and self.is_nonpositive
-
-    @property
-    def is_number(self):
-        """Return True if self is a number or False otherwise."""
-
-        from sympy.core.symbol import Symbol
-        return self.atoms(type=Symbol) == []
-
-
-
-    def __add__(self,a):
-        from addmul import Add
-        return Add(self, self.sympify(a))
-
-    def __radd__(self,a):
-        from addmul import Add
-        return Add(self.sympify(a), self)
-
-    def __div__(self,a):
-        from numbers import Rational
-        return self._domul(self,self._dopow(a,Rational(-1)))
-
-    def __rdiv__(self,a):
-        from numbers import Rational
-        return self._domul(self.sympify(self) ** Rational(-1), self.sympify(a))
-
-    def __getitem__(self, iter):
-        return self._args[iter]
-
-    def __repr__(self):
-        return str(self)
-
-    def __str__(self):
-        return self.__class__.__name__ + "(" + str(self[:])[1:-1] + ")"
-
-    def __neg__(self):
-        from numbers import Rational
-        return self._domul(Rational(-1),self)
-
-    def __pos__(self):
-        return self
-
-    def __float__(self):
-        return float(self.evalf())
-
-    def __abs__(self):
-        """Returns the absolute value of self.
-
-        Example usage:
-          >>> from sympy import *
-          >>> abs(1+2*I)
-          5**(1/2)
-          >>> x = Symbol('x')
-          >>> abs(-x)
-          abs(x)
-        """
-        from functions import abs_
-        return abs_(self)
-
-    def __radd__(self,a):
-        return self._doadd(a, self)
-
-    def __sub__(self,a):
-        return self._doadd(self, -a)
-
-    def __rsub__(self,a):
-        return self._doadd(a, -self)
-
-    def __mul__(self,a):
-        try:
-            a=self.sympify(a)
-        except:
-            return a.__rmul__(self)
-        return self._domul(self, a)
-
-    def __rmul__(self,a):
-        return self._domul(a, self)
-
-    def __pretty__(self):
-        """Make representation as prettyForm: to be overridden
-        for everything that looks better in 2D.
-        """
-        from sympy.core.stringPict import prettyForm
-        return prettyForm('[%s]'%self)
-
-    def __pow__(self,a):
-        return self._dopow(self, a)
-
-    def __rpow__(self,a):
-        return self._dopow(a, self)
-
-    def __eq__(self, a):
-        """Return new equation with lhs set to 'self' and rhs set to 'a'.
-           If You wanted just an boolean equality test then Equation class
-           will handle it in __nonzero__ and __eq__ routines.
-        """
-
-        if a is None:
-            return False
-        else:
-            from sympy.modules.solvers import Equation
-            return Equation(self, self.sympify(a))
-
-    def __ne__(self, a):
-        if a is None:
-            return True
-        else:
-            return self.hash() != self.sympify(a).hash()
-
-    def __lt__(self, a):
-        """Make boolean comparison when both 'self' and 'a' are numbers or
-           else return new inequlaity with lhs and rhs set respectively. The
-           same applies to __le__, __gt__ and __ge__.
-        """
-
-        if a is None:
-            return False
-        else:
-            other = Basic.sympify(a)
-
-            if self.is_number and other.is_number:
-                return self.evalf() < other.evalf()
-            else:
-                from sympy.modules.solvers import Inequality
-                return Inequality(self, other)
-
-    def __le__(self, a):
-        if a is None:
-            return False
-        else:
-            other = Basic.sympify(a)
-
-            if self.is_number and other.is_number:
-                return self.evalf() <= other.evalf()
-            else:
-                from sympy.modules.solvers import StrictInequality
-                return StrictInequality(self, other)
-
-    def __gt__(self, a):
-        if a is None:
-            return False
-        else:
-            other = Basic.sympify(a)
-
-            if self.is_number and other.is_number:
-                return self.evalf() > other.evalf()
-            else:
-                from sympy.modules.solvers import Inequality
-                return Inequality(other, self)
-
-    def __ge__(self, a):
-        if a is None:
-            return False
-        else:
-            other = Basic.sympify(a)
-
-            if self.is_number and other.is_number:
-                return self.evalf() >= other.evalf()
-            else:
-                from sympy.modules.solvers import StrictInequality
-                return StrictInequality(other, self)
-
-    @property
-    def mathml_tag(self):
-        """Return the mathml tag of the current object.
-
-        For example, if symbol x has a mathml representation as::
-
-           <ci>x</ci>
-
-        then x.mathml_tag should return "ci"
-
-        Basic.mathml_tag() returns the class name as the mathml_tag, this is
-        the case sometimes (sin, cos, exp, etc.). Otherwise just override this
-        method in your class.
-        """
-
-        return self.__class__.__name__.lower()
-
-    def __mathml__(self):
-        """Returns a MathML expression representing the current object"""
-        import xml.dom.minidom
-        if self._mathml:
-            return self._mathml
-        dom = xml.dom.minidom.Document()
-        x = dom.createElement(self.mathml_tag)
-        for arg in self._args:
-            x.appendChild( arg.__mathml__() )
-        self._mathml = x
-
-        return self._mathml
-
-
-    def __latex__(self):
-        return str(self) # override this for a custom latex representation
-
-    @staticmethod
-    def _doadd(a,b):
-        from addmul import Add
-        return Add(Basic.sympify(a), Basic.sympify(b))
-
-    @staticmethod
-    def _domul(a, b):
-        from addmul import Mul
-        return Mul(Basic.sympify(a), Basic.sympify(b))
-
-    @staticmethod
-    def _dopow(a, b):
-        from addmul import Pow
-        return Pow(Basic.sympify(a), Basic.sympify(b))
-
-    def eval(self):
-        """Returns canonical form of myself.
-
-        The eval() method should alway return a new object (following the
-        general rule of not changing)
-
-        """
-        return self
-
-    def evalf(self, precision=18):
-        raise ValueError
-
-    def evalc(self):
-        """Rewrites self in the form x+i*y.
-
-        It will raise an exception, if this is not possible.
-
-        """
-        raise NotImplementedError
-
-    def get_re_im(self):
-        """Returns (x,y) where self=x+i*y"""
-        from numbers import I
-        e=self.evalc()
-        x = e.subs(I,0)
-        y = (e+(-x).expand()).subs(I,1)
-        return x,y
+            self.return_value_converter = return_value_converter
+
+    def fix_allowed_types(self, have_been_here={}):
+        i = id(self)
+        if have_been_here.get(i): return
+        for t in self.arg_templates:
+            t.fix_allowed_types()
+        for k,t in self.kw_arg_templates.items():
+            t.fix_allowed_types()
+        have_been_here[i] = True
+
+    def __call__(self, func):
+        cache = {}
+        value_cache = {}
+        def wrapper(*args, **kw_args):
+            kw_items = tuple(kw_args.items())
+            try:
+                return self.return_value_converter(cache[args,kw_items])
+            except KeyError:
+                pass
+            self.fix_allowed_types()
+            new_args = tuple([template.process(a,func,i) for (a, template, i) in zip(args, self.arg_templates, range(len(args)))])
+            assert len(args)==len(new_args)
+            new_kw_args = {}
+            for k, v in kw_items:
+                template = self.kw_arg_templates[k]
+                v = template.process(v, func, k)
+                new_kw_args[k] = v
+            new_kw_items = tuple(new_kw_args.items())
+            try:
+                return self.return_value_converter(cache[new_args, new_kw_items])
+            except KeyError:
+                r = func(*new_args, **new_kw_args)
+                try:
+                    try:
+                        r = value_cache[r]
+                    except KeyError:
+                        value_cache[r] = r
+                except TypeError:
+                    pass
+                cache[new_args, new_kw_items] = cache[args, kw_items] = r
+                return self.return_value_converter(r)
+        return wrapper        
+
+#####
+
+class Basic(BasicMeths):
+    """
+    Base class for all objects in sympy.
+    """
+
+    def __new__(cls, *args, **assumptions):
+        obj = object.__new__(cls)
+        obj.assume(**assumptions)
+        obj._mhash = None # will be set by BasicMeths.__hash__ method.
+        obj._args = args  # all items in args must be Basic objects
+        return obj
 
     @staticmethod
     def sympify(a):
@@ -488,7 +172,7 @@ class Basic(object):
 
             If the argument is already a type that sympy understands, it will do
             nothing but return that value - this can be used at the begining of a
-            method to ensure you are working with the correct type.
+            method to ensure you are workint with the corerct type.
 
         Examples
         ========
@@ -505,331 +189,612 @@ class Basic(object):
             True
         """
         if isinstance(a, Basic):
-            #most common case
             return a
-
-        import decimal
-        from numbers import Rational, Real
-
-        if isinstance(a,int) or isinstance(a, long):
-            return Rational(a)
-        elif isinstance(a,(float, decimal.Decimal, str)):
-            return Real(a)
-        elif isinstance(a, complex):
-            from numbers import I
-            real,imag = Basic.sympify(a.real), Basic.sympify(a.imag)
+        if isinstance(a, bool):
+            raise NotImplementedError("bool support")
+        if isinstance(a, (int, long)):
+            return Basic.Integer(a)
+        if isinstance(a, (float, decimal.Decimal)):
+            return Basic.Real(a)
+        if isinstance(a, complex):
+            real, imag = Basic.sympify(a.real), Basic.sympify(a.imag)
             ireal, iimag = int(real), int(imag)
-            t = ireal+iimag*1j
+            t = ireal + iimag*1j
             if t == a:
-                return ireal + iimag*I
-            else:
-                return real + imag*I
-        else:
-            if not isinstance(a,Basic):
-                raise ValueError("%s must be a subclass of basic" % str(a))
-            return a
+                return ireal + iimag*Basic.ImaginaryUnit()
+            return real + Basic.ImaginaryUnit() * imag
+        if isinstance(a, str):
+            return parser.Expr(a).tosymbolic()
+        if isinstance(a, (list,tuple)) and len(a)==2:
+            return Basic.Interval(*a)
+        raise ValueError("%s must be a subclass of Basic" % (`a`))
 
-    def __hash__(self):
-        return hash(str(self.hash()))
-        # needed by sets and other python functions
-        # we do not return .hash() since this is a long
-
-    def hash(self):
-        if self._mhash:
-            return self._mhash.value
-        self._mhash = mhash()
-        self._mhash.addstr(self.__class__.__name__)
-        for item in self[:]:
-            if isinstance(item, Basic):
-                self._mhash.add(item.hash())
-            else:
-                self._mhash.addstr(str(item))
-        if self.is_dummy:
-            self._mhash.value += 1
-        return self._mhash.value
-
-    @staticmethod
-    def cmphash(a,b):
-        return Basic._sign(a.hash()-b.hash())
-
-    def series(self,sym, n=6):
-        """
-        Usage
-        =====
-            Return the Taylor series around 0+ (i.e. 0 from the right) of self
-            with respect to sym until the n-th term. Use substitution if you
-            want to get a series around a different point or from the left.
-
-        Notes
-        =====
-            If you don't specify n, the default is 6
-
-        Examples
-        ========
-
-            >>> from sympy import *
-            >>> x = Symbol('x')
-            >>> sin(x).series(x, 5)
-            O(x**5)+x-1/6*x**3
-        """
-        from numbers import Rational
-        from symbol import Symbol, O
-        from functions import log
-        w=Symbol("l", dummy=True)
-        f = self.subs(log(sym),-w)
-        e = f.subs(sym,Rational(0))
-        fact = Rational(1)
-        for i in range(1,n):
-            fact *= Rational(i)
-            #print "x1",f
-            f = f.diff(sym)
-            #print "x2",f
-            e += f.subs(sym,Rational(0))*(sym**i)/fact
-        e=e.subs(w,-log(sym))
-        #print self,e
-        if e == self:
-            return e
-        else:
-            return e+O(sym**n)
-
-    def subs_dict(self, di):
-        """Substitutes all old -> new defined in the dictionary "di"."""
-        x = self
-        for d in di:
-            x = x.subs(d,di[d])
-        return x
-
-    def subs(self,old,new):
-        """Substitutes an expression old -> new."""
-        if self == old:
-            return self.sympify(new)
-        else:
-            return self
-
-    def has(self,sub):
-        from symbol import Symbol
-        n = Symbol("dummy", dummy = True)
-        return self.subs(sub,n)!=self
-
-    def has_any(self, subs):
-        return len ([sub for sub in subs if self.has(sub) == True]) > 0
-
-    def has_class(self, cls):
-        if isinstance(self, cls):
-            return True
-        for x in self[:]:
-            try:
-                if x.has_class(cls):
-                    return True
-            except (TypeError, AttributeError):
-                break
-        return False
-
-    def leadterm(self,x):
-        """Returns the leading term c0*x^e0 of the power series 'self' in x
-        with the lowest power of x in a form (c0,e0)
-        """
-        #TODO: move out of Basic, maybe to polynomials.py?
-
-        from numbers import Rational
-        from power import Pow
-        from addmul import Add,Mul
-        from symbol import Symbol, O
-        if isinstance(self,Add):
-            self = self.removeO()
-        if isinstance(self,O):
-            self = Rational(0)
-
-        def domul(x):
-            if len(x) > 1:
-                return Mul(*x)
-            return x[0]
-
-        def extract(t,x):
-            """Parses "t(x)", which is expected to be in the form c0*x^e0,
-            and returns (c0,e0). It raises an exception, if "t(x)" is not
-            in this form.
-            """
-            if not t.has(x):
-                return t,Rational(0)
-            if isinstance(t,Pow):
-                return  Rational(1),  t.exp
-            elif isinstance(t,Symbol):
-                return  Rational(1),  Rational(1)
-            assert isinstance(t,Mul)
-            for i,a in enumerate(t._args):
-                if a.has(x):
-                    if isinstance(a,Pow):
-                        return  domul(t[:i] + t[i+1:]),  a.exp
-                    if isinstance(a,Symbol):
-                        return  domul(t[:i] + t[i+1:]),  Rational(1)
-                    assert False
-            return t,s.Rational(0)
-
-        if not isinstance(self,Add):
-            return extract(self,x)
-        lowest = [0,(Rational(10)**10)]
-        l = Symbol("l", dummy=True)
-        from functions import log
-        for t in self[:]:
-            t2 = extract(t.subs(log(x),-l),x)
-            if (lowest[1] - t2[1]).evalf()>0:
-                lowest=t2
-            elif t2[1] == lowest[1]:
-                lowest = ((lowest[0] + t2[0]),lowest[1])
-        return lowest[0].subs(l,-log(x)), lowest[1].subs(l,-log(x))
-
-    def ldegree(self,sym):
-        """Returns the lowest power of the sym
-        """
-        #TODO: move out of Basic
-        return self.leadterm(sym)[1]
-
-    def expand(self):
-        return self
-
-    def combine(self):
-        return self
-
-    def conjugate(self):
-        """Returns a  complex conjugate of self.
-
-        Note: this implementeation assumes that all Symbols are real,
-        so we just need to change the sign at "i".
-        """
-        from numbers import I
-        return self.subs(I,-I)
-
-    @staticmethod
-    def muleval(x,y):
-        """
-        Usage
-        =====
-            Try to simplify x*y. You can either return a simplified expression
-            or None.
-        Notes
-        =====
-            This method is called from Add.eval() and Mul.eval(), so that means it
-            is called each time you create an instance of those classes
-
-            See
-            http://groups.google.com/group/sympy/browse_thread/thread/aadbef6e2a4ae335
-
-        See also
-        ========
-            L{sympy.addmul.Add.eval}
-            L{sympy.addmul.Mul.eval}
-            L{sympy.power.Pow.eval}
-        """
-        return None
-
-    @staticmethod
-    def addeval(x,y):
-        """
-        Try to simplify x+y in this order. You can either return a simplified
-        expression or None.
-
-        see docs for muleval
-
-        """
-        return None
-
-    def print_tree(self):
-        """The canonical tree representation"""
-        return str(self)
-
-    def atoms(self, s = [], type=None):
-        """Returns the atoms that form current
-        object.
+    @Memoizer('Basic', MemoizerArg((type, type(None)), name='type'), return_value_converter = lambda obj: obj.copy())
+    def atoms(self, type=None):
+        """Returns the atoms that form current object.
 
         Example:
         >>> from sympy import *
         >>> x = Symbol('x')
         >>> y = Symbol('y')
         >>> (x+y**2+ 2*x*y).atoms()
-        [2, x, y]
+        set([2, x, y])
 
         You can also filter the results by a given type of object
         >>> (x+y+2+y**2*sin(x)).atoms(type=Symbol)
-        [x, y]
+        set([x, y])
 
         >>> (x+y+2+y**2*sin(x)).atoms(type=Number)
-        [2]
+        set([2])
         """
-        from sympy.core.numbers import Number
-        from sympy.core.symbol import Symbol
+        result = set()
+        if type is not None and not isinstance(type, type_class):
+            type = Basic.sympify(type).__class__
+        if isinstance(self, Atom):
+            if type is None or isinstance(self, type):
+                result.add(self)
+        else:
+            for obj in self:
+                result = result.union(obj.atoms(type=type))
+        return result
 
-        atoms_class = (Number, Symbol)
+    def _eval_is_polynomial(self, syms):
+        return False
 
-        if isinstance(self, atoms_class):
-            if type is None:
-                return [self]
-            return filter(lambda x : isinstance(x, type), [self])
+    def is_polynomial(self, *syms):
+        if syms:
+            syms = map(Basic.sympify, syms)
+        else:
+            syms = list(self.atoms(type=Basic.Symbol))
 
-        if isinstance(self, atoms_class):
-            if type:
-                if not isinstance(self, type):
-                    return []
-            return [self]
+        return self._eval_is_polynomial(syms)
 
-        s_temp = s[:] # make a copy to avoid collision with global s
-        for arg in self:
-            if isinstance(arg, atoms_class):
-                if not arg in s_temp:
-                    s_temp.append(arg)
-            else:
-                # recursive
-                s_temp = arg.atoms(s_temp)
-        if type is not None:
-            # sort only the atoms of a given type
-            return filter(lambda x : isinstance(x, type), s_temp)
-        return s_temp
+    def _eval_subs(self, old, new):
+        if self==old:
+            return new
+        return self
 
-    @staticmethod
-    def _sign(x):
-        """Return the sign of x, that is,
-        1 if x is positive, 0 if x == 0 and -1 if x is negative
+    @cache_it_immutable
+    def subs(self, old, new):
+        """Substitutes an expression old -> new."""
+        old = Basic.sympify(old)
+        new = Basic.sympify(new)
+        return self._eval_subs(old, new)
+
+    def _seq_subs(self, old, new):
+        if self==old:
+            return new
+        return self.__class__(*[s.subs(old, new) for s in self])
+
+    def _seq_evalf(self):
+        return self.__class__(*[s.evalf() for s in self])
+
+    def has(self, *patterns):
         """
-        if x < 0: return -1
-        elif x==0: return 0
-        else: return 1
+        Return True if self has any of the patterns.
+        """
+        if len(patterns)>1:
+            for p in patterns:
+                if self.has(p):
+                    return True
+            return False
+        elif not patterns:
+            raise TypeError("has() requires at least 1 argument (got none)")
+        p = Basic.sympify(patterns[0])
+        if isinstance(p, Basic.Symbol) and not isinstance(p, Basic.Wild): # speeds up
+            return p in self.atoms(p.__class__)
+        if p.matches(self) is not None:
+            return True
+        for e in self:
+            if e.has(p):
+                return True
+        return False
 
-    def doit(self):
-        """Calls recursively doit() on every element in the expression tree. """
-        x = [a.doit() for a in self]
-        e = (type(self))(*x)
-        return e
+    def _eval_derivative(self, s):
+        return
 
+    def _eval_integral(self, s):
+        return
 
-    def match(self, pattern, syms=None):
-        #print "B",self,pattern,syms,type(self),type(pattern)
-        from symbol import Symbol
-        if syms == None:
-            syms = pattern.atoms(type=Symbol)
-        if len(syms) == 1:
-            if pattern == syms[0]:
-                return {syms[0]: self}
-        if isinstance(pattern, Symbol):
-            # case pattern is just a symbol: there's nothing to match
-            return {pattern: self}
-        if type(self) != type(pattern):
-            from addmul import Mul
-            from numbers import Rational
-            if isinstance(pattern, Mul):
-                return Mul(Rational(1),self,
-                        evaluate=False).match(pattern,syms)
+    def _eval_defined_integral(self, s, a, b):
+        return
+
+    def _eval_apply(self, *args, **assumptions):
+        return
+
+    def _eval_fapply(self, *args, **assumptions):
+        return
+
+    def _eval_fpower(b, e):
+        return
+
+    def _eval_apply_power(self,b,e):
+        return
+
+    def _eval_apply_evalf(self,*args):
+        return
+
+    def _eval_eq_nonzero(self, other):
+        return
+
+    def _eval_apply_subs(self, *args):
+        return
+
+    def _calc_apply_positive(self, *args):
+        return
+
+    def _calc_apply_real(self, *args):
+        return
+
+    def _eval_conjugate(self):
+        if self.is_real:
+            return self
+
+    def conjugate(self):
+        return S.Conjugate(self)
+
+    def subs_dict(self, old_new_dict):
+        r = self
+        for old,new in old_new_dict.items():
+            r = r.subs(old,new)
+        return r
+
+    def matches(pattern, expr, repl_dict={}, evaluate=False):
+        """
+        Helper method for match() - switches the pattern and expr.
+
+        Can be used to solve linear equations:
+          >>> from sympy import Symbol, Wild
+          >>> a,b = map(Symbol, 'ab')
+          >>> x = Wild('x')
+          >>> (a+b*x).matches(0)
+          {x_: -a/b}
+
+        """
+        if evaluate:
+            pat = pattern
+            for old,new in repl_dict.items():
+                pat = pat.subs(old, new)
+            if pat!=pattern:
+                return pat.matches(expr, repl_dict)
+        expr = Basic.sympify(expr)
+        if not isinstance(expr, pattern.__class__):
             return None
-        r2 = None
-        #print "aaaa",self,pattern
-        for a,b in zip(self,pattern):
-            r = a.match(b, syms)
-            #print "A",a,b,syms,"-->",r
-            if r==None:
+        if len(expr[:]) != len(pattern[:]):
+            return None
+        if len(pattern[:])==0:
+            if pattern==expr:
+                return repl_dict
+            return None
+        d = repl_dict.copy()
+        i = 0
+        for p,e in zip(pattern, expr):
+            d = p.matches(e, d, evaluate=not i)
+            i += 1
+            if d is None:
                 return None
-            if r2 == None:
-                r2 = r
+        return d
+
+    def match(self, pattern, syms = None):
+        """
+        Pattern matching.
+
+        Wild symbols match all.
+
+        Return None when expression (self) does not match
+        with pattern. Otherwise return a dictionary such that
+
+          pattern.subs_dict(self.match(pattern)) == self
+
+        """
+        # syms argument is used for backward compatibility, will be removed
+        if syms is not None:
+            pat = pattern
+            wilds = []
+            for s in syms:
+                w = Basic.Wild(s.name)
+                pat = pat.subs(s,w)
+                wilds.append(w)
+            result = self.match(pat)
+            if result is not None:
+                for w,s in zip(wilds, syms):
+                    if w in result:
+                        result[s] = result[w]
+                        del result[w]
+            return result
+        #
+        return Basic.sympify(pattern).matches(self, {})
+
+    def solve4linearsymbol(eqn, rhs, symbols = None):
+        """ Solve equation
+          eqn == rhs
+        with respect to some linear symbol in eqn.
+        Returns (symbol, solution). If eqn is nonlinear
+        with respect to all symbols, then return
+        trivial solution (eqn, rhs).
+        """
+        if isinstance(eqn, Basic.Symbol):
+            return (eqn, rhs)
+        if symbols is None:
+            symbols = eqn.atoms(type=Basic.Symbol)
+        if symbols:
+            # find  symbol
+            for s in symbols:
+                deqn = eqn.diff(s)
+                if isinstance(deqn.diff(s), Basic.Zero):
+                    # eqn = a + b*c, a=eqn(c=0),b=deqn(c=0)
+                    return s, (rhs - eqn.subs(s,0))/deqn.subs(s,0)
+        # no linear symbol, return trivial solution
+        return eqn, rhs
+
+    def _calc_splitter(self, d):
+        if d.has_key(self):
+            return d[self]
+        r = self.__class__(*[t._calc_splitter(d) for t in self])
+        if d.has_key(r):
+            return d[r]
+        s = d[r] = Basic.Temporary()
+        return s
+
+    def splitter(self):
+        d = {}
+        r = self._calc_splitter(d)
+        l = [(s.dummy_index,s,e) for e,s in d.items()]
+        l.sort()
+        return [(s,e) for i,s,e in l]
+
+    @cache_it_immutable
+    def count_ops(self, symbolic=True):
+        """ Return the number of operations in expressions.
+
+        Examples:
+        >>> (1+a+b**2).count_ops()
+        POW + 2 * ADD
+        >>> (sin(x)*x+sin(x)**2).count_ops()
+        ADD + MUL + POW + 2 * SIN
+        """
+        return Basic.Integer(len(self[:])-1) + sum([t.count_ops(symbolic=symbolic) for t in self])
+
+    ###################################################################################
+    ##################### EXPRESSION REPRESENTATION METHODS ###########################
+    ###################################################################################
+
+    def _eval_expand(self):
+        if isinstance(self, Atom):
+            return self
+        return self.__class__(*[t.expand() for t in self], **self._assumptions)
+
+    @cache_it_immutable
+    def expand(self):
+        return self._eval_expand()
+
+    def normal(self):
+        n, d = self.as_numer_denom()
+        if isinstance(d, Basic.One):
+            return n
+        return n/d
+
+    def as_base_exp(self):
+        # a -> b ** e
+        return self, Basic.One()
+
+    def as_coeff_terms(self, x=None):
+        # a -> c * t
+        if x is not None:
+            if not self.has(x):
+                return self, []
+        return Basic.One(), [self]
+
+    def as_indep_terms(self, x):
+        coeff, terms = self.as_coeff_terms()
+        indeps = [coeff]
+        new_terms = []
+        for t in terms:
+            if t.has(x):
+                new_terms.append(x)
             else:
-                r2.update(r)
+                indeps.append(x)
+        return Mul(*indeps), Mul(*new_terms)
 
-        return r2
+    def as_coeff_factors(self, x=None):
+        # a -> c + f
+        if x is not None:
+            if not self.has(x):
+                return self, []
+        return Basic.Zero(), [self]
 
+    def as_numer_denom(self):
+        # a/b -> a,b
+        base, exp = self.as_base_exp()
+        coeff, terms = exp.as_coeff_terms()
+        if coeff.is_negative:
+            # b**-e -> 1, b**e
+            return Basic.One(), base ** (-exp)
+        return self, Basic.One()
+
+    def as_expr_orders(self):
+        """ Split expr + Order(..) to (expr, Order(..)).
+        """
+        l1 = []
+        l2 = []
+        if isinstance(self, Basic.Add):
+            for f in self:
+                if isinstance(f, Basic.Order):
+                    l2.append(f)
+                else:
+                    l1.append(f)
+        elif isinstance(self, Basic.Order):
+            l2.append(self)
+        else:
+            l1.append(self)
+        return Basic.Add(*l1), Basic.Add(*l2)
+
+    ###################################################################################
+    ##################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ####################
+    ###################################################################################
+
+    def diff(self, *symbols, **assumptions):
+        new_symbols = []
+        for s in symbols:
+            s = Basic.sympify(s)
+            if isinstance(s, Basic.Integer) and new_symbols:
+                last_s = new_symbols[-1]
+                i = int(s)
+                new_symbols += [last_s] * (i-1)
+            elif isinstance(s, Basic.Symbol):
+                new_symbols.append(s)
+            else:
+                raise TypeError(".diff() argument must be Symbol|Integer instance (got %s)" % (s.__class__.__name__))
+        ret = Basic.Derivative(self, *new_symbols, **assumptions)
+        return ret
+
+    def fdiff(self, *indices):
+        return Basic.FApply(Basic.FDerivative(*indices), self)
+
+    def integral(self, *symbols, **assumptions):
+        new_symbols = []
+        for s in symbols:
+            s = Basic.sympify(s)
+            if isinstance(s, Basic.Integer) and new_symbols:
+                last_s = new_symbols[-1]
+                i = int(s)
+                new_symbols += [last_s] * (i-1)
+            elif isinstance(s, (Basic.Symbol, Basic.Equality)):
+                new_symbols.append(s)
+            else:
+                raise TypeError(".integral() argument must be Symbol|Integer|Equality instance (got %s)" % (s.__class__.__name__))
+        return Basic.Integral(self, *new_symbols, **assumptions)
+
+    def __call__(self, *args):
+        return Basic.Apply(self, *args)
+
+    ###################################################################################
+    ##################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ##################
+    ###################################################################################
+
+    def series(self, x, n = 6):
+        """
+        Usage
+        =====
+            Return the Taylor series around 0 of self with respect to x until
+            the n-th term (default n is 6).
+
+        Notes
+        =====
+            For computing power series, use oseries() method.
+        """
+        x = Basic.sympify(x)
+        o = Basic.Order(x**n,x)
+        r = self.oseries(o)
+        if r==self:
+            return self
+        return r + o
+
+    @cache_it_immutable
+    def oseries(self, order, _cache={}):
+        """
+        Return the series of an expression upto given Order symbol.
+        """
+        if _cache.has_key((self, order)):
+            raise RuntimeError('Detected recursion while computing oseries(%s, %s)' % (self, order))
+        order = Basic.Order(order)
+        _cache[(self, order)] = 1
+        if isinstance(order, Basic.Zero):
+            del _cache[(self, order)]
+            return self
+        o = self.is_order
+        if o is not None:
+            if o.contains(order):
+                del _cache[(self, order)]
+                return self
+        if order.contains(self):
+            del _cache[(self, order)]
+            return Basic.Zero()
+        if len(order.symbols)>1:
+            r = self
+            for s in order.symbols:
+                o = Basic.Order(order.expr, s)
+                r = r.oseries(o)
+            del _cache[(self, order)]
+            return r
+        x = order.symbols[0]
+        if not self.has(x):
+            del _cache[(self, order)]
+            return self
+        obj = self._eval_oseries(order)
+        if obj is not None:
+            obj2 = obj.expand()
+            if obj2 != obj:
+                r = obj2.oseries(order)
+                del _cache[(self, order)]
+                return r
+            del _cache[(self, order)]
+            return obj2
+        del _cache[(self, order)]
+        raise NotImplementedError('(%s).oseries(%s)' % (self, order))    
+
+    def _eval_oseries(self, order):
+        return
+
+    def _compute_oseries(self, arg, order, taylor_term, unevaluated_func, correction = 0):
+        """
+        compute series sum(taylor_term(i, arg), i=0..n-1) such
+        that order.contains(taylor_term(n, arg)). Assumes that arg->0 as x->0.
+        """
+        x = order.symbols[0]
+        ln = Basic.Log()
+        o = Basic.Order(arg, x)
+        if isinstance(o, Basic.Zero):
+            return unevaluated_func(arg)
+        if o.expr==1:
+            e = ln(order.expr*x)/ln(x)
+        else:
+            e = ln(order.expr)/ln(o.expr)
+        n = e.limit(x,0) + 1 + correction
+        if n.is_unbounded:
+            # requested accuracy gives infinite series,
+            # order is probably nonpolynomial e.g. O(exp(-1/x), x).
+            return unevaluated_func(arg)
+        n = int(n)
+        assert n>=0,`n`
+        l = []
+        g = None
+        for i in range(n+2):
+            g = taylor_term(i, arg, g)
+            g = g.oseries(order)
+            l.append(g)
+        return Basic.Add(*l)
+
+    def limit(self, x, xlim, direction='<'):
+        """ Compute limit x->xlim.
+        """
+        return Basic.Limit(self, x, xlim, direction)
+
+    def inflimit(self, x): # inflimit has its own cache
+        x = Basic.sympify(x)
+        return Basic.InfLimit(self, x)
+
+    @cache_it_immutable
+    def as_leading_term(self, *symbols):
+        if len(symbols)>1:
+            c = self
+            for x in symbols:
+                c = c.as_leading_term(x)
+            return c
+        elif not symbols:
+            return self
+        x = Basic.sympify(symbols[0])
+        assert isinstance(x, Basic.Symbol),`x`
+        if not self.has(x):
+            return self
+        expr = self.expand()
+        obj = expr._eval_as_leading_term(x)
+        if obj is not None:
+            return obj
+        raise NotImplementedError('as_leading_term(%s, %s)' % (self, x))
+
+    def as_coeff_exponent(self, x):
+        """ c*x**e -> c,e where x can be any symbolic expression.
+        """
+        x = Basic.sympify(x)
+        wc = Basic.Wild()
+        we = Basic.Wild()
+        c, terms = self.as_coeff_terms()
+        p  = wc*x**we
+        d = self.match(p)
+        if d is not None:
+            return d[wc], d[we]
+        return self, Basic.Zero()
+
+    def ldegree(self, x):
+        x = Basic.sympify(x)
+        c,e = self.as_leading_term(x).as_coeff_exponent(x)
+        if not c.has(x):
+            return e
+        raise ValueError("cannot compute ldegree(%s, %s), got c=%s" % (self, x, c))
+
+    def leadterm(self, x):
+        x = Basic.sympify(x)
+        c,e = self.as_leading_term(x).as_coeff_exponent(x)
+        if not c.has(x):
+            return c,e
+        raise ValueError("cannot compute ldegree(%s, %s), got c=%s" % (self, x, c))
+
+    ##########################################################################
+    ##################### END OF BASIC CLASS #################################
+    ##########################################################################
+
+class Atom(Basic):
+
+    precedence = Basic.Atom_precedence
+
+    def _eval_derivative(self, s):
+        if self==s: return Basic.One()
+        return Basic.Zero()
+
+    def pattern_match(pattern, expr, repl_dict):
+        if pattern==expr:
+            return repl_dict
+        return None
+
+    def as_numer_denom(self):
+        return self, Basic.One()
+
+    def _calc_splitter(self, d):
+        return self
+
+    def count_ops(self, symbolic=True):
+        return Basic.Zero()
+
+    def _eval_integral(self, s):
+        if s==self:
+            return self**2/2
+        return self*s
+
+    def _eval_defined_integral(self, s, a, b):
+        if s==self:
+            return (b**2-a**2)/2
+        return self*(b-a)
+
+    def _eval_is_polynomial(self, syms):
+        return True
+
+    def _eval_oseries(self, order):
+        # .oseries() method checks for order.contains(self)
+        return self
+
+    def _eval_as_leading_term(self, x):
+        return self
+
+class Singleton(Basic):
+    """ Singleton object.
+    """
+
+    def __new__(cls, *args, **assumptions):
+        # if you need to overload __new__, then
+        # use the same code as below to ensure
+        # that only one instance of Singleton
+        # class is created.
+        obj = Singleton.__dict__.get(cls.__name__)
+        if obj is None:
+            obj = Basic.__new__(cls,*args,**assumptions)
+            setattr(Singleton, cls.__name__, obj)
+        return obj
+
+class SingletonFactory:
+    """
+    A map between singleton classes and the corresponding instances.
+    E.g. S.Exp == Basic.Exp()
+    """
+    def __getattr__(self, clsname):
+        obj = Singleton.__dict__.get(clsname)
+        if obj is None:
+            cls = getattr(Basic, clsname)
+            assert issubclass(cls, Singleton),`cls`
+            obj = cls()
+            setattr(self, clsname, obj)
+        return obj
+
+S = SingletonFactory()
+
+import parser

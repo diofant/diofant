@@ -1,5 +1,6 @@
-from sympy import Basic, Rational, Symbol, oo
+from sympy import *
 from sympy.modules.simplify import simplify
+
 from entity import GeometryEntity
 from point import Point
 
@@ -65,7 +66,6 @@ class LinearEntity(GeometryEntity):
 
     def angle_between(l1, l2):
         """Returns an angle formed between the two lines lines."""
-        from sympy.modules.trigonometric import acos
         v1 = l1._p2 - l1._p1
         v2 = l2._p2 - l2._p1
         return acos( (v1[0]*v2[0]+v1[1]*v2[1]) / (abs(v1)*abs(v2)) )
@@ -272,8 +272,10 @@ class Ray(LinearEntity):
             return ((o._p1 in self) and (o._p2 in self))
         elif isinstance(o, Point):
             if Point.is_collinear(self._p1, self._p2, o):
-                if self._p1[0].is_number and self._p1[1].is_number \
-                        and self._p2[0].is_number and self._p2[1].is_number:
+                
+                
+                if (not self._p1[0].atoms(type=Symbol)) and (not self._p1[1].atoms(type=Symbol)) \
+                        and (not self._p2[0].atoms(type=Symbol)) and (not self._p2[1].atoms(type=Symbol)):
                     if self._p1[0] == self._p2[0]:
                         if self._p1[1] < self._p2[1]:
                             return o[1] >= self._p1[1]
@@ -361,7 +363,7 @@ class Segment(LinearEntity):
         elif isinstance(o, Point):
             if Point.is_collinear(self._p1, self._p2, o):
                 x1,x2 = self._p1[0], self._p2[0]
-                if x1.is_number and x2.is_number:
+                if (not x1.atoms(type=Symbol)) and (not x2.atoms(type=Symbol)):
                     return (min(x1,x2) <= o[0] <= max(x1,x2))
                 else:
                     return True

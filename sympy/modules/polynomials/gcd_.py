@@ -31,7 +31,7 @@ def uv_int(f, g):
     g = g.copy()
     cg = g.content()
     g.cl = map(lambda t:[t[0]/cg] + t[1:], g.cl)
-    c = Rational(0).gcd(cf.p, cg.p)
+    c = numbers.gcd(cf.p, cg.p)
 
     while True:
         if g.cl[0][0] != 0:
@@ -52,7 +52,7 @@ def mv(f, g):
 
     lcm = lcm_.mv(f, g)
     q, r = div_.mv(f*g, lcm)
-    assert r == Rational(0)
+    assert r == S.Zero
     q = q[0] # q is a list!
     q.cl = map(lambda t:[t[0]/q.cl[0][0]] + t[1:], q.cl)
     return q

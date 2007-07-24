@@ -1,5 +1,7 @@
-from sympy import Basic, Rational, Symbol, cos, sin, pi
+from sympy import *
+
 from sympy.modules.simplify import simplify
+
 from entity import GeometryEntity
 from point import Point
 from ellipse import Circle
@@ -111,7 +113,7 @@ class Polygon(GeometryEntity):
             return (b[0] - a[0])*(c[1] - a[1]) - (c[0] - a[0])*(b[1] - a[1])
 
         def isright(a, b, c):
-            return (tarea(a, b, c) <= 0)
+            return tarea(a, b, c) <= 0
 
         # Determine orientation of points
         cw = True

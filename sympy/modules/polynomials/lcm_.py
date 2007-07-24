@@ -12,7 +12,7 @@ def uv(f, g):
 
     gcd = gcd_.uv(f, g)
     q, r = div_.mv(f*g, gcd)
-    assert r == Rational(0)
+    assert r == S.Zero
     q = q[0] # q is a list!
     q.cl = map(lambda t:[t[0]/q.cl[0][0]] + t[1:], q.cl)
     return q
@@ -37,7 +37,7 @@ def mv(f, g):
 
     # Now intersect this result with the polynomial ring in the
     # variables in `var', that is, eliminate t.
-    I = filter(lambda p: not t in p.basic.atoms(type=Symbol), G)
+    I = filter(lambda p: not t in list(p.basic.atoms(type=Symbol)), G)
 
     # The intersection should be a principal ideal, that is generated
     # by a single polynomial.

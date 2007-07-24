@@ -34,7 +34,7 @@
 # ----------------------------------------------------------------------------
 
 __docformat__ = 'restructuredtext'
-__version__ = '$Id: __init__.py 1040 2007-07-15 12:47:19Z Alex.Holkner $'
+__version__ = '$Id: __init__.py 1052 2007-07-18 13:29:00Z Alex.Holkner $'
 
 from ctypes import *
 import unicodedata
@@ -52,6 +52,7 @@ from pyglet.gl import gl_info
 from pyglet.gl import glu_info
 from pyglet.gl import glx
 from pyglet.gl import glxext_arb
+from pyglet.gl import glxext_mesa
 from pyglet.gl import glx_info
 
 import pyglet.window.xlib.xlib
@@ -440,6 +441,19 @@ class XlibWindow(BaseWindow):
         self._glx_1_3 = self.display.info.have_version(1, 3)
         self._have_SGI_video_sync = \
             self.display.info.have_extension('GLX_SGI_video_sync')
+        self._have_SGI_swap_control = \
+            self.display.info.have_extension('GLX_SGI_swap_control')
+        self._have_MESA_swap_control = \
+            self.display.info.have_extension('GLX_MESA_swap_control')
+
+        # In order of preference:
+        # 1. GLX_MESA_swap_control (more likely to work where video_sync will
+        #    not)
+        # 2. GLX_SGI_video_sync (does not work on Intel 945GM, but that has
+        #    MESA)
+        # 3. GLX_SGI_swap_control (cannot be disabled once enabled).
+        self._use_video_sync = (self._have_SGI_video_sync and 
+                                not self._have_MESA_swap_control)
 
         # Create X window if not already existing.
         if not self._window:
@@ -593,6 +607,8 @@ class XlibWindow(BaseWindow):
         else:
             glx.glXMakeCurrent(self._x_display, self._window, self._glx_context)
 
+        self.set_vsync(self._vsync)
+
         self._context.set_current()
         gl_info.set_active_context()
         glu_info.set_active_context()
@@ -600,7 +616,7 @@ class XlibWindow(BaseWindow):
     def flip(self):
         self.draw_mouse_cursor()
 
-        if self._vsync and self._have_SGI_video_sync:
+        if self._vsync and self._have_SGI_video_sync and self._use_video_sync:
             count = c_uint()
             glxext_arb.glXGetVideoSyncSGI(byref(count))
             glxext_arb.glXWaitVideoSyncSGI(
@@ -616,6 +632,13 @@ class XlibWindow(BaseWindow):
 
     def set_vsync(self, vsync):
         self._vsync = vsync
+        if not self._use_video_sync:
+            interval = vsync and 1 or 0
+            if self._have_MESA_swap_control:
+                glxext_mesa.glXSwapIntervalMESA(interval)
+            elif self._have_SGI_swap_control and interval:
+                # SGI_swap_control interval cannot be set to 0
+                glxext_arb.glXSwapIntervalSGI(interval)
 
     def set_caption(self, caption):
         self._caption = caption

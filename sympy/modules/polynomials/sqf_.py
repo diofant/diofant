@@ -39,7 +39,7 @@ def uv_int(f):
         # Compute lcm of denominators in coefficients:
         l = 1
         for term in p.cl:
-            l = l*term[0].q / Rational(0).gcd(l ,term[0].q)
+            l = l*term[0].q / numbers.gcd(l ,term[0].q)
         assert c % (l**(i+2)) == 0
         c /= l**(i+2)
         p.cl = map(lambda t:[t[0]*Rational(l)] + t[1:], p.cl)

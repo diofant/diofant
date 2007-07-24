@@ -127,7 +127,7 @@ will be presented the next time it is read or written to::
 '''
 
 __docformat__ = 'restructuredtext'
-__version__ = '$Id: __init__.py 922 2007-06-22 06:14:39Z r1chardj0n3s $'
+__version__ = '$Id: __init__.py 1056 2007-07-20 01:49:05Z r1chardj0n3s $'
 
 import sys
 import re
@@ -1210,7 +1210,7 @@ class Texture(AbstractImage):
                 GL constant giving texture target to use, typically
                 ``GL_TEXTURE_2D``.
             `min_width` : int
-                Minimum width of texture (may be increased to createa  power
+                Minimum width of texture (may be increased to create a power
                 of 2).
             `min_height` : int
                 Minimum height of texture (may be increased to create a power

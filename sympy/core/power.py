@@ -1,8 +1,6 @@
-from basic import Basic
-from symbol import Symbol, O
-from numbers import Rational, Real, ImaginaryUnit
-from functions import log, exp
-from sympy.core.stringPict import prettyForm, stringPict
+
+from basic import Basic, S, cache_it, cache_it_immutable
+from methods import ArithMeths, RelMeths, NoRelMeths
 
 
 def integer_nthroot(y, n):
@@ -45,119 +43,23 @@ def integer_nthroot(y, n):
         x -= 1
     return x, x**n == y
 
-class pole_error(ZeroDivisionError):
-    pass
 
-class Pow(Basic):
-    """
-    Usage
-    =====
-        This class represent's the power of two elements. so whenever you call '**', an
-        instance of this class is created.
+class Pow(Basic, ArithMeths, RelMeths):
 
-    Notes
-    =====
-        When an instance of this class is created, the method .eval() is called and will
-        preform some inexpensive symplifications.
+    precedence = Basic.Pow_precedence
 
-
-    Examples
-    ========
-        >>> from sympy import *
-        >>> x = Symbol('x')
-        >>> type(x**2)
-        <class 'sympy.core.power.Pow'>
-        >>> (x**2)[:]
-        [x, 2]
-
-    See also
-    ========
-        L{Add.eval}
-    """
-
-    mathml_tag = "power"
-
-    def __init__(self,a,b):
-        Basic.__init__(self)
-        self._args = [Basic.sympify(a), Basic.sympify(b)]
-
-
-    def __str__(self):
-        from addmul import Pair
-        if self.exp == -1:
-            if isinstance(self.base, Pair):
-                return "(1/(%s))" % str(self.base)
-            else:
-                return "(1/%s)" % str(self.base)
-
-        f = ""
-        if isinstance(self.base,Pair) or isinstance(self.base,Pow) \
-           or (isinstance(self.base, Rational) and not self.base.is_integer):
-            f += "(%s)"
-        else:
-            f += "%s"
-        f += "**"
-        if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
-            or (isinstance(self.exp,Rational) and
-                (not self.exp.is_integer or
-                 (self.exp.is_integer and int(self.exp) < 0 ))):
-            f += "(%s)"
-        else:
-            f += "%s"
-        return f % (str(self.base), str(self.exp))
-
-
-    def __pretty__(self):
-        if self.exp == Rational(1,2): # if it's a square root
-            bpretty = self.base.__pretty__()
-            bl = int((bpretty.height() / 2.0) + 0.5)
-
-            s2 = stringPict("\\/")
-            for x in xrange(1, bpretty.height()):
-                s3 = stringPict(" " * (2*x+1) + "/")
-                s2 = stringPict(*s2.top(s3))
-            s2.baseline = -1
-
-            s = stringPict("__" + "_" * bpretty.width())
-            s = stringPict(*s.below("%s" % str(bpretty)))
-            s = stringPict(*s.left(s2))
-            return prettyForm(str(s), baseline=bl)
-        elif self.exp == -1:
-            # things like 1/x
-            return prettyForm("1") / self.base.__pretty__()
-        a, b = self._args
-        return a.__pretty__()**b.__pretty__()
-
-
-    def __latex__(self):
-        from addmul import Pair
-        f = ""
-        if isinstance(self.base,Pair) or isinstance(self.base,Pow):
-            f += "{(%s)}"
-        else:
-            f += "{%s}"
-        f += "^"
-        if isinstance(self.exp,Pair) or isinstance(self.exp,Pow) \
-            or (isinstance(self.exp,Rational) and \
-            (not self.exp.is_integer or (self.exp.is_integer and \
-            int(self.exp) < 0)) ):
-            f += "{(%s)}"
-        else:
-            f += "{%s}"
-        return f % (self.base.__latex__(),self.exp.__latex__())
-
-    def __mathml__(self):
-        import xml.dom.minidom
-        if self._mathml:
-            return self._mathml
-        dom = xml.dom.minidom.Document()
-        x = dom.createElement("apply")
-        x_1 = dom.createElement(self.mathml_tag)
-        x.appendChild(x_1)
-        for arg in self._args:
-            x.appendChild( arg.__mathml__() )
-        self._mathml = x
-        return self._mathml
+    @cache_it_immutable
+    def __new__(cls, a, b, **assumptions):
+        a = Basic.sympify(a)
+        b = Basic.sympify(b)
+        if isinstance(b, Basic.Zero):
+            return Basic.One()
+        if isinstance(b, Basic.One):
+            return a
+        obj = a._eval_power(b)
+        if obj is None:
+            obj = Basic.__new__(cls, a, b, **assumptions)
+        return obj
 
     @property
     def base(self):
@@ -167,373 +69,331 @@ class Pow(Basic):
     def exp(self):
         return self._args[1]
 
-    def eval(self):
-        from addmul import Mul
-        from numbers import oo
+    def _eval_power(self, other):
+        if isinstance(other, Basic.Number):
+            if isinstance(self.exp, Basic.Number):
+                # (a ** 2) ** 3 -> a ** (2 * 3)
+                return Pow(self.base, self.exp * other)
+            if isinstance(other, Basic.Integer):
+                # (a ** b) ** 3 -> a ** (3 * b)
+                return Pow(self.base, self.exp * other)
+        if other.atoms(Basic.Wild):
+            return Pow(self.base, self.exp * other)
+        return
 
-        if isinstance(self.exp, Rational):
-            if self.exp.is_zero:
-                if isinstance(self, Rational) and self.base.is_zero:
-                    raise pole_error("pow::eval(): 0^0.")
-                return Rational(1)
-            elif self.exp.is_one:
-                return self.base
-            elif isinstance(self.base, Mul) \
-                 and self.base[0].is_number \
-                 and self.base[0].is_negative:
-                if self.exp.p % 2 == 0:
-                    return Pow(-self.base, self.exp)
-                elif self.exp.q % 2 == 1:
-                    return -Pow(-self.base, self.exp)
-            
-        if isinstance(self.base, Rational):
-            if self.base.is_zero:
-                if isinstance(self.exp, Rational):
-                    if self.exp.is_zero:
-                        raise pole_error("pow::eval(): 0^0.")
-                    elif self.exp.is_negative:
-                        raise pole_error("%s: Division by 0." % str(self))
-                return Rational(0)
-            elif self.base.is_one:
-                return Rational(1)
-            elif self.base.is_nonpositive and self.exp.is_even:
-                return Pow(abs(self.base), self.exp)
+    def _eval_is_commutative(self):
+        c1 = self.base.is_commutative
+        if c1 is None: return
+        c2 = self.base.is_commutative
+        if c2 is None: return
+        return c1 and c2
 
-        if isinstance(self.base, Real) and isinstance(self.exp,Real):
-            return self
+    def _eval_is_comparable(self):
+        c1 = self.base.is_comparable
+        if c1 is None: return
+        c2 = self.base.is_comparable
+        if c2 is None: return
+        return c1 and c2
 
-        if isinstance(self.base, Rational) and isinstance(self.exp, Rational):
+    def _eval_is_positive(self):
+        if self.base.is_positive:
+            if self.exp.is_real:
+                return True
+        elif self.base.is_negative:
+            if self.exp.is_even:
+                return True
+            if self.exp.is_odd:
+                return False
+        elif self.base.is_nonpositive:
+            if self.exp.is_odd:
+                return False
 
-            if self.exp.is_integer:
-                if self.exp > 0:
-                    return Rational(self.base.p ** self.exp.p , self.base.q ** self.exp.p)
-                else:
-                    return Rational(self.base.q ** (-self.exp.p) , self.base.p ** (-self.exp.p) )
+    def _eval_is_negative(self):
+        if self.base.is_negative:
+            if self.exp.is_odd:
+                return True
+            if self.exp.is_even:
+                return False
+        elif self.base.is_positive:
+            if self.exp.is_real:
+                return False
+        elif self.base.is_nonnegative:
+            if self.exp.is_real:
+                return False
+        elif self.base.is_nonpositive:
+            if self.exp.is_even:
+                return False
 
-            if self.base == -1:
-                # calculate the roots of -1
-                from sympy.modules.trigonometric import sin, cos
-                from sympy.core.numbers import pi
-                r = cos(pi/self.exp.q) + ImaginaryUnit()*sin(pi/self.exp.q)
-                return r**self.exp.p
+    def _eval_is_integer(self):
+        c1 = self.base.is_integer
+        if c1 is None: return
+        c2 = self.exp.is_integer
+        if c2 is None: return
+        if c1 and c2:
+            if self.exp.is_nonnegative or self.exp.is_positive:
+                return True
+            if self.exp.is_negative:
+                return False
 
-            # Rational ** Rational, general case.
-            # Calculate explicitly whenever possible.
-            a = self.base
-            b = self.exp
-            if a >= 0:
-                x, xexact = integer_nthroot(a.p, b.q)
-                y, yexact = integer_nthroot(a.q, b.q)
-                if xexact and yexact:
-                    res = Rational(x ** abs(b.p), y ** abs(b.p))
-                    if b >= 0:
-                        return res
-                    else:
-                        return 1/res
-                # Now check also devisors of the exponents denominator
-                # TODO: Check if this slows down to much.
-                for i in range(2, b.q/2 + 1):
-                    if b.q % i == 0:
-                        x, xexact = integer_nthroot(a.p, i)
-                        y, yexact = integer_nthroot(a.q, i)
-                        if xexact and yexact:
-                            return Rational(x, y)**Rational(b.p, b.q/i)
-                else:
-                    # Try to get some part of the base out, if exp > 1
-                    if self.exp.p > self.exp.q:
-                        i = self.exp.p / self.exp.q
-                        r = self.exp.p % self.exp.q
-                        return Mul(Pow(self.base, i),
-                                   Pow(self.base, Rational(r, self.exp.q)),
-                                   evaluate=False)
-            else:
-                return Pow(-1, b) * Pow(-a, b)
+    def _eval_is_real(self):
+        c1 = self.base.is_real
+        if c1 is None: return
+        c2 = self.exp.is_real
+        if c2 is None: return
+        if c1 and c2:
+            if self.base.is_positive:
+                return True
+            if self.base.is_negative:
+                if self.exp.is_integer:
+                    return True
 
-            # left out:
-            # case base negative && not a perfect number, like sqrt(-2)
-            # TODO: implement for exponent of 1/4, 1/6, 1/8, etc.
-            # return ((-1)**self.exp)*Pow(-self.base, self.exp, evaluate=False)
+    def _eval_is_odd(self):
+        if not (self.base.is_integer and self.exp.is_nonnegative): return
+        return self.base.is_odd
 
-        if isinstance(self.base, Pow):
-            return Pow(self.base.base,self.base.exp*self.exp)
+    def _eval_is_bounded(self):
+        if self.exp.is_negative:
+            if self.base.is_infinitesimal:
+                return False
+            if self.base.is_unbounded:
+                return True
+        c1 = self.base.is_bounded
+        if c1 is None: return
+        c2 = self.exp.is_bounded
+        if c2 is None: return
+        if c1 and c2:
+            if self.exp.is_nonnegative:
+                return True
 
-        if isinstance(self.base, exp):
-            if self.base.is_number:
-                return exp(self.exp*self.base._args)
-
-        if isinstance(self.base, Mul):
-            a,b = self.base.getab()
-            if self.exp==-1 or (isinstance(a,Rational) and a.evalf()>0):
-                return (Pow(a,self.exp) * Pow(b,self.exp))
-
-        if isinstance(self.base,ImaginaryUnit):
-            if isinstance(self.exp,Rational) and self.exp.is_integer:
-                if int(self.exp) % 2 == 0:
-                    return Rational(-1) ** ((int(self.exp) % 4)/2)
-
-        if isinstance(self.exp,Rational) and self.exp.is_integer:
-            if isinstance(self.base,Mul):
-                if int(self.exp) % 2 == 0:
-                    from functions import Function
-                    n = self.base[0]
-                    if n.is_number and not isinstance(n, Function) and n < 0:
-                        return (-self.base)**self.exp
-        if isinstance(self[0],Real) and self[1].is_number:
-            return Real(self[0]**self[1].evalf())
-
-        if not self.base.is_commutative:
-            if isinstance(self.exp, Rational) and self.exp.is_integer:
-                    n = int(self.exp)
-                    #only try to simplify it for low exponents (for speed
-                    #reasons).
-                    if n > 1 and n < 10:
-                        r = self.base
-                        for i in range(n-1):
-                            r = r * self.base
-                        return r
-
-        if self.base == oo and isinstance(self.exp, Rational) and self.exp < 0:
-            return Rational(0)
-
-        return self
-
-
-    def evalf(self, precision=18):
-        if self.base.is_number and self.exp.is_number:
-            if self.exp.is_integer:
-                import decimal
-                decimal.getcontext().prec = precision + 2
-
-                s = decimal.Decimal(str(self.base.evalf(precision)))
-                s = s ** int(self.exp)
-
-                decimal.getcontext().prec = precision
-                return Real(+s)
-            if precision <= 18:
-                return Real(float(self.base) ** float(self.exp))
-            return exp(self.exp * log(self.base)).evalf(precision)
+    def tostr(self, level=0):
+        precedence = self.precedence
+        b = self.base.tostr(precedence)
+        if isinstance(self.exp, Basic.NegativeOne):
+            r = '1/%s' % (b)
         else:
-            raise ValueError
+            r = '%s**%s' % (b,self.exp.tostr(precedence))
+        if precedence <= level:
+            return '(%s)' % (r)
+        return r
 
-    def diff(self,sym):
-        f = self.base
-        g = self.exp
-        return (self*(g*log(f)).diff(sym))
+    def _eval_subs(self, old, new):
+        if self==old: return new
+        if isinstance(old, self.__class__) and self.base==old.base:
+            coeff1,terms1 = self.exp.as_coeff_terms()
+            coeff2,terms2 = old.exp.as_coeff_terms()
+            if terms1==terms2: return new ** (coeff1/coeff2) # (x**(2*y)).subs(x**(3*y),z) -> z**(2/3*y)
+        if isinstance(old, Basic.ApplyExp):
+            coeff1,terms1 = old.args[0].as_coeff_terms()
+            coeff2,terms2 = (self.exp * Basic.Log()(self.base)).as_coeff_terms()
+            if terms1==terms2: return new ** (coeff1/coeff2) # (x**(2*y)).subs(exp(3*y*log(x)),z) -> z**(2/3*y)
+        return self.base.subs(old, new) ** self.exp.subs(old, new)
 
-    def series(self,sym,n):
-        from addmul import Add
-        if not self.exp.has(sym):
-            if isinstance(self.base,Symbol): return self
-            try:
-                return Basic.series(self,sym,n)
-            except pole_error:
-                if isinstance(self.exp,Rational) and self.exp.is_minus_one:
-                    g = self.base.series(sym,n)
-                    if isinstance(g, Add):
-                        g = g.removeO()
-                    elif isinstance(g, O):
-                        g = Rational(0)
-                    #write g as g=c0*w^e0*(1+Phi)
-                    #1/g is then 1/g=c0*w^(-e0)/(1+Phi)
-                    #plus we expand 1/(1+Phi)=1-Phi+Phi**2-Phi**3...
-                    c0,e0 = g.leadterm(sym)
-                    Phi = (g/(c0*sym**e0)-1).expand()
-                    e = 0
-                    #n-=1
-                    for i in range(n):
-                        e += (-1)**i * Phi**i
-                    e+=O(Phi**n)
-                    e *= sym ** (-e0) / c0
-                    return e.expand()
-                if not isinstance(self.exp,Rational):
-                    e = exp(self.exp * log(self.base))
-                    return e.series(sym,n)
-                #self.base is kind of:  1/x^2 + 1/x + 1 + x + ...
-                e = self.base.series(sym,n)
-                if isinstance(e, Add):
-                    e = e.removeO()
-                ldeg = e.ldegree(sym)
-                s= ((e*sym**(-ldeg)).expand()**self.exp).series(sym,n+
-                        int(ldeg.evalf()))
-                return (s * sym**(ldeg * self.exp)).expand()
-        try:
-            if self.has(O(sym)):
-                e = exp(((self.exp*log(self.base).series(sym,n)).expand())).series(sym,n)
-                return e
-            return Basic.series(self,sym,n)
-        except pole_error:
-            e = exp((self.exp*log(self.base)))
-            return e.series(sym,n)
-            try:
-                a=self.base.series(sym,n)
-                b=self.exp.series(sym,n)
-                return Basic.series((a**b),sym,n)
-            except pole_error:
-                e = exp((self.exp*log(self.base)))
-                return e.series(sym,n)
+    def as_base_exp(self):
+        if isinstance(self.base, Basic.Rational) and self.base.p==1:
+            return 1/self.base, -self.exp
+        return self.base, self.exp
 
-    def expand(self):
-        from addmul import Add, Mul
-
-        def _expand_bin(a, b, n):
-            """calculates the expansion of (a+b)**n using newton's binomial
-            formula (also called triangle of Pascal)
-
-            See L{http://en.wikipedia.org/wiki/Binomial_theorem}
-            """
-            s = a**n
-            cur_coeff = Rational(1)
-            cur_exp = 1
-            for i in range(1, n+1):
-                # we could speed this using that the coefficients are
-                # symetrical
-                cur_coeff = cur_coeff * (n-i+1) / i
-                s += cur_coeff * (a**(n-i)) * (b**(i))
-            return s
-
-        def _expand_multi(**args):
-            """calculate the expansion of (a1 + a2 + ...)**n
-            TODO
-            """
-            pass
-
-        if isinstance(self.exp, (Real, Rational)):
-            if self.exp.is_integer:
-                n = int(self.exp)
-                if n > 1:
-                    base = self.base.expand()
-                    if isinstance(base, Add) and self.base.is_commutative:
-                        # try to expand using the binomial formula
-                        if len(base[:]) == 2:
-                            a, b = base.getab()
-                            return _expand_bin(a, b, n)
+    def _eval_expand(self):
+        """
+        (a*b)**n -> a**n * b**n
+        (a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is positive integer
+        """
+        base = self.base.expand()
+        exponent = self.exp.expand()
+        result = base ** exponent
+        if isinstance(result, Pow):
+            base = result.base
+            exponent = result.exp
+        else:
+            return result
+        if isinstance(exponent, Basic.Integer):
+            if isinstance(base, Basic.Mul):
+                return Basic.Mul(*[t**exponent for t in base])
+            if exponent.is_positive and isinstance(base, Basic.Add):
+                m = int(exponent)
+                if base.is_commutative:
+                    p = []
+                    order_terms = []
+                    for o in base:
+                        if isinstance(o, Basic.Order):
+                            order_terms.append(o)
                         else:
-                            #implement the multinomial formula
-                            pass
-                    a = self.base
-                    while n > 1:
-                        a = Mul(a,self.base,evaluate=False)
-                        #a *= self.base
-                        n -= 1
-                    return a.expand()
-                if n < 0:
-                    p = Pow(self.base, -self.exp).expand()
-                    if isinstance(p, Mul):
-                        return Mul(*(a**(-1) for a in p[:]))
-
-        return Pow(self[0].expand(),self[1].expand())
-        return self
-
-    def combine(self):
-        from functions import exp
-        a = self[0].combine()
-        b = self[1].combine()
-        if isinstance(a, exp):
-            return exp(a[0]*b)
-        return self
-
-    def evalc(self):
-        if self.exp.is_number:
-            c = self.base.evalc()
-            if self.exp.is_integer:
-                r = c ** self.exp
-                re = r.expand()
-                if re == r:
-                    return re
+                            p.append(o)
+                    if order_terms:
+                        # (f(x) + O(x^n))^m -> f(x)^m + m*f(x)^{m-1} *O(x^n)
+                        f = Basic.Add(*p)
+                        fm1 = (f**(m-1)).expand()
+                        return (f*fm1).expand() + m*fm1*Basic.Add(*order_terms)
+                ## Consider polynomial
+                ##   P(x) = sum_{i=0}^n p_i x^k
+                ## and its m-th exponent
+                ##   P(x)^m = sum_{k=0}^{m n} a(m,k) x^k
+                ## The coefficients a(m,k) can be computed using the
+                ## J.C.P. Miller Pure Recurrence [see D.E.Knuth,
+                ## Seminumerical Algorithms, The art of Computer
+                ## Programming v.2, Addison Wesley, Reading, 1981;]:
+                ##  a(m,k) = 1/(k p_0) sum_{i=1}^n p_i ((m+1)i-k) a(m,k-i),
+                ## where a(m,0) = p_0^m.
+                    n = len(p)-1
+                    cache = {0: p[0] ** m}
+                    p0 = [t/p[0] for t in p]
+                    l = [cache[0]]
+                    Mul = Basic.Mul
+                    Rational = Basic.Rational
+                    for k in range(1, m * n + 1):
+                        a = []
+                        for i in range(1,n+1):
+                            if i<=k:
+                                a.append(Mul(Rational((m+1)*i-k,k), p0[i], cache[k-i]).expand())
+                        a = Basic.Add(*a)
+                        cache[k] = a
+                        l.append(a)
+                    return Basic.Add(*l)
                 else:
-                    return re.evalc()
+                    if m==2:
+                        p = base[:]
+                        return Basic.Add(*[t1*t2 for t1 in p for t2 in p])
+                    return Basic.Mul(base, Pow(base, m-1).expand()).expand()
+        return result
+
+    def _eval_derivative(self, s):
+        dbase = self.base.diff(s)
+        dexp = self.exp.diff(s)
+        return self * (dexp * Basic.Log()(self.base) + dbase * self.exp/self.base)
+
+    evalf = Basic._seq_evalf
+
+    def _calc_splitter(self, d):
+        if d.has_key(self):
+            return d[self]
+        base = self.base._calc_splitter(d)
+        exp = self.exp._calc_splitter(d)
+        if isinstance(exp, Basic.Integer):
+            if abs(exp.p)>2:
+                n = exp.p//2
+                r = exp.p - n
+                if n!=r:
+                    p1 = (base ** n)._calc_splitter(d)
+                    p2 = (base ** r)._calc_splitter(d)
+                    r = p1*p2
+                else:
+                    r = (base ** n)._calc_splitter(d) ** 2
+            elif exp.p==-2:
+                r = (1/base)._calc_splitter(d) ** 2
             else:
-                from sympy.modules.trigonometric import atan, cos, sin
-                from sympy.core.numbers import I
-                re,im = c.get_re_im()
-                r = (re**2 + im**2)**Rational(1,2)
-                t = atan(im / re)
-
-                #tp = ((t + 2*k*pi) / self.exp)*I  # this is right, for k=...,-2,-1,0,1,2,...
-                rp = r**self.exp
-                tp = t*self.exp
-
-                return rp*cos(tp) + rp*sin(tp)*I
+                r = base ** exp
         else:
-            return self
+            r = base ** exp
+        if d.has_key(r):
+            return d[r]
+        s = d[r] = Basic.Temporary()
+        return s
 
-    def subs(self,old,new):
-        if self == old:
-            return new
-        elif exp(self.exp * log(self.base)) == old:
-            return new
+    @cache_it_immutable
+    def count_ops(self, symbolic=True):
+        if symbolic:
+            return Basic.Add(*[t.count_ops(symbolic) for t in self[:]]) + Basic.Symbol('POW')
+        return Basic.Add(*[t.count_ops(symbolic) for t in self[:]]) + 1
+
+    def _eval_integral(self, s):
+        if not self.exp.has(s):
+            if self.base==s:
+                n = self.exp+1
+                return self.base ** n/n
+            y = Basic.Symbol('y',dummy=True)
+            x,ix = self.base.solve4linearsymbol(y,symbols=set([s]))
+            if isinstance(x, Basic.Symbol):
+                dx = 1/self.base.diff(x)
+                if not dx.has(s):
+                    return (y**self.exp*dx).integral(y).subs(y, self.base)
+
+    def _eval_defined_integral(self, s, a, b):
+        if not self.exp.has(s):
+            if self.base==s:
+                n = self.exp+1
+                return (b**n-a**n)/n
+            x,ix = self.base.solve4linearsymbol(s)
+            if isinstance(x, Basic.Symbol):
+                dx = ix.diff(x)
+                if isinstance(dx, Basic.Number):
+                    y = Basic.Symbol('y',dummy=True)
+                    return (y**self.exp*dx).integral(y==[self.base.subs(s,a), self.base.subs(s,b)])
+
+    def _eval_is_polynomial(self, syms):
+        if self.exp.has(*syms):
+            return False
+
+        if self.base.has(*syms):
+            # it would be nice to have is_nni working
+            return self.base._eval_is_polynomial(syms) and \
+                   self.exp.is_nonnegative and \
+                   self.exp.is_integer
         else:
-            return (self.base.subs(old,new) ** self.exp.subs(old,new))
+            return True
 
-    def match(self, pattern, syms=None):
-        from symbol import Symbol
-        if syms == None:
-            syms = pattern.atoms(type=Symbol)
-        def addmatches(r1,r2):
-            l1 = list(r1)
-            l2 = list(r2)
-            if l1 == l2:
-                if l1 != []:
-                    #fix it in a general case
-                    assert len(l1)==1
-                    p = l1[0]
-                    if r1[p] != r2[p]:
-                        return None
-            r1.update(r2)
-            return r1
-        from addmul import Mul
-        if isinstance(pattern, Mul):
-            return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
-        if not isinstance(pattern, Pow):
+    def as_numer_denom(self):
+        base, exp = self.as_base_exp()
+        c,t = exp.as_coeff_terms()
+        n,d = base.as_numer_denom()
+        if c.is_negative:
+            exp = -exp
+            n,d = d,n
+        return n ** exp, d ** exp
+
+    def matches(pattern, expr, repl_dict={}, evaluate=False):
+        Basic.matches.__doc__
+        if evaluate:
+            pat = pattern
+            for old,new in repl_dict.items():
+                pat = pat.subs(old, new)
+            if pat!=pattern:
+                return pat.matches(expr, repl_dict)
+        expr = Basic.sympify(expr)
+        b, e = expr.as_base_exp()
+        d = repl_dict.copy()
+        d = pattern.base.matches(b, d, evaluate=False)
+        if d is None:
             return None
-        r1 = self[0].match(pattern[0],syms)
-        if r1!=None:
-            r2 = self[1].match(pattern[1],syms)
-            #print r1,r2,"<--",self[1],pattern[1],syms
-            if r2!=None:
-                return addmatches(r1,r2)
-        return None
+        d = pattern.exp.matches(e, d, evaluate=True)
+        if d is None:
+            return Basic.matches(pattern, expr, repl_dict, evaluate)
+        return d
 
-    @property
-    def is_commutative(self):
-        return self.base.is_commutative and self.exp.is_commutative
+    def _eval_oseries(self, order):
+        """
+        f**g + O(h) == (f+O(k))**g -> .. -> f**g + O(f**(g-1)*k), hence O(k)==O(h*f**(1-g)).
+        If f->0 as x->0 then
+        """
+        x = order.symbols[0]
+        e = self.exp
+        b = self.base
+        ln = Basic.Log()
+        exp = Basic.Exp()
+        if e.has(x):
+            return exp(e * ln(b)).oseries(order)
+        if b==x: return self
+        b0 = b.limit(x,0)
+        if isinstance(b0, Basic.Zero) or b0.is_unbounded:
+            lt = b.as_leading_term(x)
+            o = order * lt**(1-e)
+            bs = b.oseries(o)
+            if isinstance(bs, Basic.Add):
+                # bs -> lt + rest -> lt * (1 + (bs/lt - 1))
+                return lt**e * ((bs/lt).expand()**e).oseries(order * lt**(-e))
+            return bs**e
+        o = order * (b0**-e)
+        # b -> b0 + (b-b0) -> b0 * (1 + (b/b0-1))
+        z = (b/b0-1)
+        r = self._compute_oseries(z, o, self.taylor_term, lambda z: 1+z) * b0**e
+        return r
 
-    @property
-    def is_real(self):
-        return self.base.is_real and self.exp.is_real
+    def _eval_as_leading_term(self, x):
+        if not self.exp.has(x):
+            return self.base.as_leading_term(x) ** self.exp
+        return Basic.Exp()(self.exp * Basic.Log()(self.base)).as_leading_term(x)
 
-    @property
-    def is_integer(self):
-        if self.base.is_integer and self.exp.is_integer:
-            return self.exp.is_nonnegative
-        else:
-            return None
-
-    @property
-    def is_bounded(self):
-        return self.base.is_bounded and self.exp.is_bounded and self.exp.is_nonnegative
-
-    @property
-    def is_even(self):
-        return self.base.is_even and self.exp.is_nonnegative_integer
-
-    @property
-    def is_odd(self):
-        return self.base.is_odd and self.exp.is_nonnegative_integer
-
-    @property
-    def is_negative(self):
-        return self.is_real and self.base.is_negative and self.exp.is_odd
-
-    @property
-    def is_positive(self):
-        return self.is_real and self.base.is_positive or self.exp.is_even
-
-    @property
-    def is_nonpositive(self):
-        return self.is_real and self.base.is_nonpositive and self.exp.is_odd
-
-    @property
-    def is_nonnegative(self):
-        return self.is_real and self.base.is_nonnegative or self.exp.is_even
-
+    @cache_it_immutable
+    def taylor_term(self, n, x, *previous_terms): # of (1+x)**e
+        if n<0: return Basic.Zero()
+        x = Basic.sympify(x)
+        return Basic.Binomial()(self.exp, n) * x**n

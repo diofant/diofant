@@ -12,7 +12,7 @@ def parse_functions(args):
     t = []
     while len(args) > 0:
         f = parse_function(args[0])
-        if f == None: break
+        if f is None: break
         t.append(f)
         args.pop(0)
     return t

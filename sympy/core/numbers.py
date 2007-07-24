@@ -1,138 +1,165 @@
 
-from sympy.core.basic import Basic
+import math
 import decimal
-from stringPict import prettyForm, stringPict
+import decimal_math
+from basic import Basic, Atom, Singleton, S, Memoizer, MemoizerArg
+from methods import RelMeths, ArithMeths
+
+@Memoizer((int, long), (int, long))
+def gcd(a, b):
+    '''Returns the Greatest Common Divisor,
+    implementing Euclid\'s algorithm.'''
+    while a:
+        a, b = b%a, a
+    return b
+
+@Memoizer((int, long), return_value_converter = lambda d: d.copy())
+def factor_trial_division(n):
+    """
+    Factor any integer into a product of primes, 0, 1, and -1.
+    Returns a dictionary {<prime: exponent>}.
+    """
+    if not n:
+        return {0:1}
+    factors = {}
+    if n < 0:
+        factors[-1] = 1
+        n = -n
+    if n==1:
+        factors[1] = 1
+        return factors
+    d = 2
+    while n % d == 0:
+        try:
+            factors[d] += 1
+        except KeyError:
+            factors[d] = 1
+        n //= d
+    d = 3
+    while n > 1 and d*d <= n:
+        if n % d:
+            d += 2
+        else:
+            try:
+                factors[d] += 1
+            except KeyError:
+                factors[d] = 1
+            n //= d
+    if n>1:
+        try:
+            factors[n] += 1
+        except KeyError:
+            factors[n] = 1
+    return factors
 
 
-dummycount = 0
-
-class Number(Basic):
+class Number(Atom, RelMeths, ArithMeths):
     """Represents any kind of number in sympy.
 
 
     Floating point numbers are represented by the Real class.
     Integer numbers (of any size), together with rational numbers (again, there
-    is no limit on their size) are represented by the Rational class.
+    is no limit on their size) are represented by the Rational class. 
 
     If you want to represent for example 1+sqrt(2), then you need to do:
 
     Rational(1) + sqrt(Rational(2))
     """
+    is_commutative = True
+    is_comparable = True
+    is_bounded = True
+    is_finite = True
 
-    mathml_tag = "cn"
+    def __new__(cls, *obj):
+        if len(obj)==1: obj=obj[0]
+        if isinstance(obj, (int, long)):
+            return Integer(obj)
+        if isinstance(obj,tuple) and len(obj)==2:
+            return Rational(*obj)
+        if isinstance(obj, (str,float,decimal.Decimal)):
+            return Real(obj)
+        if isinstance(obj, Number):
+            return obj
+        raise TypeError("expected str|int|long|float|Decimal|Number object but got %r" % (obj))
 
-    def __init__(self):
-        Basic.__init__(self, is_commutative = True)
+    def eval(self):
+        return self
 
-    def __int__(self):
-        raise NotImplementedError
+    def evalf(self):
+        return Real(self._as_decimal())
 
     def __float__(self):
-        return float(self.evalf())
+        return float(self._as_decimal())
 
-    def __mathml__(self):
-        import xml.dom.minidom
-        if self._mathml:
-            return self._mathml
-        dom = xml.dom.minidom.Document()
-        x = dom.createElement(self.mathml_tag)
-        x.appendChild(dom.createTextNode(str(self)))
-        self._mathml = x
+    def _as_decimal(self):
+        raise NotImplementedError('%s needs ._as_decimal() method' % (self.__class__.__name__))
 
-        return self._mathml
+    def _eval_derivative(self, s):
+        return Zero()
 
-
-    def diff(self,sym):
-        return Rational(0)
-
-    def evalf(self, precision=18):
-        raise NotImplementedError("cannot evaluate %s" % self.__class__.__name__)
-
-    def evalc(self):
+    def _eval_conjugate(self):
         return self
 
-    def doit(self):
-        return self
+    def _eval_apply(self, a):
+        return self*a
 
-class Infinity(Number):
-    """
-    Usage
-    =====
-        Represents mathematical infinity.
+    def _eval_order(self, *symbols):
+        # Order(5, x, y) -> Order(1,x,y)
+        return Basic.Order(Basic.One(),*symbols)
 
-    Notes
-    =====
-        Can be used in expressions that are meaningful, so for example oo-oo,
-        or oo/oo raise exception, but 1+oo, 2*oo, oo+oo are legal (and produce
-        oo). Can be used in comparisons, like oo!=1, or oo!=x**3 and as results
-        of limits, integration limits etc.
+    def sqrt(self): return Real(decimal_math.sqrt(self._as_decimal()))
+    def exp(self): return Real(decimal_math.exp(self._as_decimal()))
+    def log(self): return Real(decimal_math.log(self._as_decimal()))
+    def sin(self): return Real(decimal_math.sin(self._as_decimal()))
+    def cos(self): return Real(decimal_math.cos(self._as_decimal()))
+    def tan(self): return Real(decimal_math.tan(self._as_decimal()))
+    def cot(self): return Real(decimal_math.cot(self._as_decimal()))
+    def asin(self): return Real(decimal_math.asin(self._as_decimal()))
+    def acos(self): return Real(decimal_math.acos(self._as_decimal()))
+    def atan(self): return Real(decimal_math.atan(self._as_decimal()))
+    def acot(self): return Real(decimal_math.acot(self._as_decimal()))
+    def sinh(self): return Real(decimal_math.sinh(self._as_decimal()))
+    def cosh(self): return Real(decimal_math.cosh(self._as_decimal()))
+    def tanh(self): return Real(decimal_math.tanh(self._as_decimal()))
+    def coth(self): return Real(decimal_math.coth(self._as_decimal()))
+    def asinh(self): return Real(decimal_math.asinh(self._as_decimal()))
+    def acosh(self): return Real(decimal_math.acosh(self._as_decimal()))
+    def atanh(self): return Real(decimal_math.atanh(self._as_decimal()))
+    def acoth(self): return Real(decimal_math.acoth(self._as_decimal()))
 
-    Examples
-    ========
-        >>> from sympy import *
-        >>> x = Symbol('x')
-        >>> limit(x, x, oo)
-        oo
-    """
+    def __eq__(self, other):
+        raise NotImplementedError,'%s needs .__eq__() method' % (self.__class__.__name__)
+    def __ne__(self, other):
+        raise NotImplementedError,'%s needs .__ne__() method' % (self.__class__.__name__)
+    def __lt__(self, other):
+        raise NotImplementedError,'%s needs .__lt__() method' % (self.__class__.__name__)
+    def __le__(self, other):
+        raise NotImplementedError,'%s needs .__le__() method' % (self.__class__.__name__)
 
-    def __init__(self, sign=1):
-        Basic.__init__(self,
-                       is_real = False,
-                       is_commutative = False,
-                       )
+    def __gt__(self, other):
+        return Basic.sympify(other).__lt__(self)
+    def __ge__(self, other):
+        return Basic.sympify(other).__le__(self)
 
-    def __latex__(self):
-        return "\infty"
+    def as_coeff_terms(self, x=None):
+        # a -> c * t
+        return self, []
 
-    def __pretty__(self):
-        return "oo"
+decimal_to_Number_cls = {
+    decimal.Decimal('0').as_tuple():'Zero',
+    decimal.Decimal('1').as_tuple():'One',
+    decimal.Decimal('-1').as_tuple():'NegativeOne',
+    decimal.Decimal('Infinity').as_tuple():'Infinity',
+    decimal.Decimal('-Infinity').as_tuple():'NegativeInfinity',
+    decimal.Decimal('NaN').as_tuple():'NaN',
+    }
 
-    def __str__(self):
-        return "oo"
-
-    def sign(self):
-        return self._sign
-
-    def __lt__(self, num):
-        if self.sympify(num).is_number:
-            if self._sign == -1:
-                return True
-            else:
-                return False
-
-    def __gt__(self, num):
-        return not self.__lt__(num)
-
-    def evalf(self, precision=18):
-        return self
-
-    @staticmethod
-    def muleval(a, b):
-        if isinstance(a, Infinity) and b.is_number:
-            if b > 0:
-                return oo
-            elif b < 0 and b != -1:
-                return -oo
-            elif b == 0:
-                raise ArithmeticError("Cannot compute oo*0")
-        a, b = b, a
-        if isinstance(a, Infinity) and b.is_number:
-            if b > 0:
-                return oo
-            elif b < 0 and b != -1:
-                return -oo
-            elif b == 0:
-                raise ArithmeticError("Cannot compute 0*oo")
-
-    @staticmethod
-    def addeval(a, b):
-        #print a,b
-        if isinstance(a, Infinity) and b.is_number:
-            return oo
-        if isinstance(b, Infinity) and a.is_number:
-            return oo
-
-oo = Infinity()
+def convert_to_Decimal(num):
+    if isinstance(num, (str, int, long)):
+        num = decimal.Decimal(num)
+    elif isinstance(num, float):
+        num = Real.float_to_decimal(num)
+    return num
 
 class Real(Number):
     """Represents a floating point number. It is capable of representing
@@ -142,145 +169,150 @@ class Real(Number):
 
     Real(3.5)   .... 3.5 (the 3.5 was converted from a python float)
     Real("3.0000000000000005")
-
+    
     """
+    is_real = True
+    is_irrational = False
+    is_integer = False
 
+    @Memoizer(type, MemoizerArg((str, int, long, float, decimal.Decimal), convert_to_Decimal))
+    def __new__(cls, num):
+        singleton_cls_name = decimal_to_Number_cls.get(num.as_tuple(), None)
+        if singleton_cls_name is not None:
+            return getattr(Basic, singleton_cls_name)()
+        obj = Basic.__new__(cls)
+        obj.num = num
+        return obj
 
-    def __init__(self, num, precision=18):
-        Basic.__init__(self,
-                        is_real = True,
-                        is_commutative = True,
-                        )
-        if isinstance(num, str):
-            num = decimal.Decimal(num)
-        if isinstance(num, decimal.Decimal):
-            self.num = num
-        elif hasattr(num, 'evalf'):
-            self.num = num.evalf(precision).num
-        else:
-            self.num = decimal.Decimal(repr(float(num)))
-        self._args = [self.num]
+    @staticmethod
+    def float_to_decimal(f):
+        "Convert a floating point number to a Decimal with no loss of information"
+        # Transform (exactly) a float to a mantissa (0.5 <= abs(m) < 1.0) and an
+        # exponent.  Double the mantissa until it is an integer.  Use the integer
+        # mantissa and exponent to compute an equivalent Decimal.  If this cannot
+        # be done exactly, then retry with more precision.
 
-    def __str__(self):
-        return str(self.num)
+        mantissa, exponent = math.frexp(f)
+        while mantissa != int(mantissa):
+            mantissa *= 2.0
+            exponent -= 1
+        mantissa = int(mantissa)
 
-    def __float__(self):
-        return float(self.num)
+        oldcontext = decimal.getcontext()
+        decimal.setcontext(decimal.Context(traps=[decimal.Inexact]))
+        try:
+            while True:
+                try:
+                    return mantissa * decimal.Decimal(2) ** exponent
+                except decimal.Inexact:
+                    decimal.getcontext().prec += 1
+        finally:
+            decimal.setcontext(oldcontext)
+
+    def _hashable_content(self):
+        return (self.num,)
+
+    def tostr(self, level=0):
+        r = str(self.num.normalize())
+        if self.precedence<=level:
+            return '(%s)' % (r)
+        return r
+
+    def torepr(self):
+        return '%s(%r)' % (self.__class__.__name__, str(self.num))
+
+    def _eval_is_positive(self):
+        return self.num.as_tuple()[0] == 0
+
+    def _eval_is_negative(self):
+        return self.num.as_tuple()[0] != 0
+
+    def evalf(self): return self
+
+    def _as_decimal(self):
+        return self.num
+
+    def __neg__(self):
+        return Real(-self.num)
+
+    def __mul__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, Number):
+            return Real(self.num * other._as_decimal())
+        return Number.__mul__(self, other)
+
+    def __add__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, Number):
+            return Real(self.num + other._as_decimal())
+        return Number.__add__(self, other)
+
+    def _eval_power(b, e):
+        """
+        b is Real but not equal to rationals, integers, 0.5, oo, -oo, nan
+        e is symbolic object but not equal to 0, 1
+
+        (-p) ** r -> exp(r * log(-p)) -> exp(r * (log(p) + I*Pi)) ->
+                  -> p ** r * (sin(Pi*r) + cos(Pi*r) * I)
+        """
+        if isinstance(e, Number):
+            if isinstance(e, Integer):
+                e = e.p
+            else:
+                e = e._as_decimal()
+            if b.is_negative:
+                m = decimal_math.pow(-b.num, e)
+                a = decimal_math.pi() * e
+                s = m * decimal_math.sin(a)
+                c = m * decimal_math.cos(a)
+                return Real(s) + Real(c) * ImaginaryUnit()
+            return Real(decimal_math.pow(b.num, e))
+        return
+
+    def __abs__(self):
+        return Real(abs(self.num))
 
     def __int__(self):
         return int(self.num)
 
-    def __add__(self,a):
-        from addmul import Add
-        a = Basic.sympify(a)
-        if a.is_number:
-            if isinstance(a, Real):
-                return Real(self.num + a.num)
-            elif not a.is_real:
-                return Add(self, a)
-            else:
-                return Real(self.num + decimal.Decimal(str(float(a))))
-        else:
-            assert isinstance(a, Basic)
-            return Add(self, a)
+    def __float__(self):
+        return float(self.num)
 
-    def __mul__(self,a):
-        from addmul import Mul
-        a = Basic.sympify(a)
-        if a.is_number:
-            if isinstance(a, Real):
-                return Real(self.num * a.num)
-            elif a.is_real:
-                return Real(self.num * decimal.Decimal(str(float(a))))
-                #FIXME: too many boxing-unboxing
-            else:
-                return Mul(self, a)
-        else:
-            assert isinstance(a, Basic)
-            return Mul(self, a)
+    def __eq__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            if other.is_irrational: return False
+            return other.__eq__(self)
+        if other.is_comparable: other = other.evalf()
+        if isinstance(other, Number):
+            return bool(self._as_decimal()==other._as_decimal())
+        return RelMeths.__eq__(self, other)
+    def __ne__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            if other.is_irrational: return True
+            return other.__ne__(self)
+        if other.is_comparable: other = other.evalf()
+        if isinstance(other, Number):
+            return bool(self._as_decimal()!=other._as_decimal())
+        return RelMeths.__ne__(self, other)
+    def __lt__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            return other.__ge__(self)
+        if other.is_comparable: other = other.evalf()
+        if isinstance(other, Number):
+            return bool(self._as_decimal() < other._as_decimal())
+        return RelMeths.__lt__(self, other)
+    def __le__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            return other.__gt__(self)
+        if other.is_comparable: other = other.evalf()
+        if isinstance(other, Number):
+            return bool(self._as_decimal()<=other._as_decimal())
+        return RelMeths.__le__(self, other)
 
-    def __div__(self,a):
-        from addmul import Mul
-        from power import Pow
-        a = Basic.sympify(a)
-        if a.is_number:
-            if isinstance(a, Real):
-                return Real(self.num / a.num)
-            elif a.is_real:
-                return Real(self.num / decimal.Decimal(str(float(a))))
-                #FIXME: too many boxing-unboxing
-            else:
-                return Mul(self, Pow(a, -1))
-        else:
-            assert isinstance(a, Basic)
-            return Mul(self, Pow(a, -1))
-
-    def __pow__(self,a):
-        from power import Pow
-        return Pow(self, a)
-
-    def __rpow__(self, a):
-        from power import Pow
-        return Pow(a, self)
-
-    def isone(self):
-        if self.num == 1:
-            return True
-        else:
-            return False
-
-    @property
-    def is_integer(self):
-        return int(self) - self.evalf() == 0
-
-    def evalf(self, precision=18):
-        #evalf() should return either a float or an exception
-        return self
-
-    def __pretty__(self):
-        return str(self.num)
-
-    def __pos__(self):
-        return Real(+self.num)
-
-    def __gt__(self, a):
-        try:
-            return self.num > decimal.Decimal(str(a))
-        except:
-            return False
-
-    def __ge__(self, a):
-        try:
-            return self.num >= decimal.Decimal(str(a))
-        except:
-            return False
-
-    def __lt__(self, a):
-        try:
-            return self.num < decimal.Decimal(str(a))
-        except:
-            return False
-
-    def __le__(self, a):
-        try:
-            return self.num <= decimal.Decimal(str(a))
-        except:
-            return False
-
-    def __ne__(self, a):
-        try:
-            return self.num != decimal.Decimal(str(a))
-        except:
-            return False
-
-    def __eq__(self, a):
-        """this is overriden because by default, a python int get's converted
-        to a Rational, so things like Real(1) == 1, would return false
-        """
-        try:
-            return self.num == decimal.Decimal(str(a))
-        except:
-            return False
 
 def _parse_rational(s):
     """Parse rational number from string representation"""
@@ -310,391 +342,629 @@ def _parse_rational(s):
         else:
             return p, 10**-expt
 
-def _load_decimal(d):
-    """Create Rational from a Decimal instance"""
 
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
 
-    Thanks to support of long ints in Python.
+    Thanks to support of long ints in Python. 
 
-    Examples
-    ========
+    Usage:
 
-    >>> Rational(3)
-    3
-    >>> Rational(1,2)
-    1/2
-
-    You can create a rational from a string:
-    >>> Rational("3/5")
-    3/5
-    >>> Rational("1.23")
-    123/100
-
-    Use square brackets to indicate a recurring decimal:
-    >>> Rational("0.[333]")
-    1/3
-    >>> Rational("1.2[05]")
-    1193/990
-    >>> float(Rational(1193,990))
-    1.2050505050505051
-
+    Rational(3)      ... 3
+    Rational(1,2)    ... 1/2
     """
+    is_real = True
+    is_integer = False
+    is_rational = True
 
-    def __init__(self,*args):
-        Basic.__init__(self,
-                       is_real = True,
-                       is_commutative = True,
-                       )
-        if len(args)==1:
-            if isinstance(args[0], str):
-                p, q = _parse_rational(args[0])
+    @Memoizer(type, (int, long, str), MemoizerArg((int, long, type(None)), name="q"))
+    def __new__(cls, p, q = None):
+        if q is None:
+            if isinstance(p, str):
+                p, q = _parse_rational(p)
             else:
-                p = args[0]
-                q = 1
-        elif len(args)==2:
-            p = args[0]
-            q = args[1]
-        else:
-            raise "invalid number of arguments"
-        assert (isinstance(p, int) or isinstance(p, long)) and \
-               (isinstance(q, int) or isinstance(q, long))
-        assert q != 0
-        s = sign(p)*sign(q)
-        p = abs(p)
-        q = abs(q)
-        c = self.gcd(p,q)
-        self.p = p/c*s
-        self.q = q/c
-        self._args = [self.p,self.q] # needed by .hash and others. we should move [p,q] to _args
-                        # and then create properties p and q
+                return Integer(p)
+        if q==0:
+            if p==0: return NaN()
+            if p<0: return NegativeInfinity()
+            return Infinity()
+        if q<0:
+            q = -q
+            p = -p
+        n = gcd(abs(p), q)
+        if n>1:
+            p /= n
+            q /= n
+        if q==1: return Integer(p)
+        if p==1 and q==2: return Half()
+        obj = Basic.__new__(cls)
+        obj.p = p
+        obj.q = q
+        return obj
 
-    def sign(self):
-        return sign(self.p)*sign(self.q)
+    def _hashable_content(self):
+        return (self.p, self.q)
 
-    def gcd(self,a,b):
-        """Primitive algorithm for a greatest common divisor of "a" and "b"."""
-        while b:
-            a, b = b, a % b
-        return a
+    def tostr(self, level=0):
+        if self.precedence<=level:
+            return '(%s/%s)' % (self.p, self.q)
+        return '%s/%s' % (self.p, self.q)
 
-    def __str__(self):
-        if self.q == 1:
-            f = "%d"
-            return f % (self.p)
-        else:
-            f = "%d/%d"
-            return f % (self.p,self.q)
-
-    def __mul__(self,a):
-        a = self.sympify(a)
-        if isinstance(a, Rational):
-            return Rational(self.p * a.p, self.q * a.q)
-        elif isinstance(a, int) or isinstance(a, long):
-            return Rational(self.p * a, self.q)
-        elif isinstance(a, Real):
-            return a.__mul__(self)
-        else:
-            from addmul import Mul
-            return Mul(self, a)
-
-    def __rmul__(self, a):
-        return self.__mul__(a)
-
-    def __div__(self, a):
-        #TODO: move to Mul.eval
-        if isinstance(a, int):
-            return Rational(self.p, self.q *a)
-        return self * (a**Rational(-1))
-
-    def __rdiv__(self, a):
-        #TODO: move to Mul.eval
-        if isinstance(a, int):
-            return Rational(self.q * a, self.p )
-        return self * (a**Rational(-1))
-
-    def __add__(self,a):
-        a=self.sympify(a)
-        if isinstance(a, Rational):
-            return Rational(self.p*a.q+self.q*a.p,self.q*a.q)
-        elif isinstance(a, int) or isinstance(a, long):
-            return Rational(self.p + a*self.q, self.q)
-        elif isinstance(a, Real):
-            return a.__add__(self)
-        else:
-            from addmul import Add
-            return Add(self, a)
-
-    def __pow__(self,a):
-        """Returns the self to the power of "a"
-        """
-        from power import Pow
-        return Pow(self, a)
-
-    def __rpow__(self, a):
-        """Returns "a" to the power of self
-        """
-        from power import Pow
-        return Pow(a, self)
-
-    def __int__(self):
-        assert self.is_integer
-        return self.p
-
-    def evalf(self, precision=18):
-        old_prec = decimal.getcontext().prec
-        if old_prec < precision:
-            decimal.getcontext().prec = precision
-        ret = Real(decimal.Decimal(self.p) / self.q)
-        decimal.getcontext().prec = old_prec
-        return ret
-
-    def diff(self,sym):
-        return Rational(0)
-
-    def match(self, pattern, syms):
-        from symbol import Symbol
-        if isinstance(pattern, Symbol):
-            try:
-                return {syms[syms.index(pattern)]: self}
-            except ValueError:
-                pass
-        if isinstance(pattern, Rational):
-            if self==pattern:
-                return {}
-        from addmul import Mul
-        if isinstance(pattern, Mul):
-            return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
-
-        return None
-
-    def __pretty__(self):
-        if self.q == 1:
-            return prettyForm(str(self.p), prettyForm.ATOM)
-        elif self.p < 0:
-            pform = prettyForm(str(-self.p))/prettyForm(str(self.q))
-            return prettyForm(*pform.left('- '))
-        else:
-            return prettyForm(str(self.p))/prettyForm(str(self.q))
+    def torepr(self):
+        return '%s(%r, %r)' % (self.__class__.__name__, self.p, self.q)
 
     @property
-    def is_integer(self):
-        return self.q == 1
+    def precedence(self):
+        if self.p < 0:
+            return Basic.Add_precedence
+        return Basic.Mul_precedence
 
-    @property
-    def is_zero(self):
-        return self.p == 0
-
-    @property
-    def is_one(self):
-        return self.p == 1 and self.q == 1
-
-    @property
-    def is_minus_one(self):
-        return self.p == -1 and self.q == 1
-
-    @property
-    def is_bounded(self):
-        return True
-
-    @property
-    def is_odd(self):
-        return self.is_integer and self.p & 1 == 1
-
-    @property
-    def is_even(self):
-        return self.is_integer and self.p & 1 == 0
-
-    @property
-    def is_prime(self):
-        from sympy.modules.concrete.primes import is_prime
-        return self.is_integer and is_prime(self.p)
-
-    @property
-    def is_nonzero(self):
-        return self.p != 0
-
-    @property
-    def is_negative(self):
-        return self.p < 0
-
-    @property
-    def is_nonnegative(self):
-        return self.p >= 0
-
-    @property
-    def is_positive(self):
+    def _eval_is_positive(self):
         return self.p > 0
 
+    def _eval_is_negative(self):
+        return self.p < 0
+
+    def __neg__(self): return Rational(-self.p, self.q)
+
+    def __mul__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, Real):
+            return Real(self._as_decimal() * other.num)
+        if isinstance(other, Rational):
+            return Rational(self.p * other.p, self.q * other.q)
+        return Number.__mul__(self, other)
+
+    def __add__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, Real):
+            return Real(self._as_decimal() + other.num)
+        if isinstance(other, Rational):
+            if self.is_unbounded:
+                if other.is_bounded:
+                    return self
+                elif self==other:
+                    return self
+            else:
+                if other.is_unbounded:
+                    return other
+            return Rational(self.p * other.q + self.q * other.p, self.q * other.q)
+        return Number.__add__(self, other)
+
+    def _eval_power(b, e):
+        if isinstance(e, Number):
+            if isinstance(e, NaN): return NaN()
+            if isinstance(e, Real):
+                return Real(decimal_math.pow(b._as_decimal(), e.num))
+            if e.is_negative:
+                # (3/4)**-2 -> (4/3)**2
+                ne = -e
+                if isinstance(ne, One):
+                    return Rational(b.q, b.p)
+                return Rational(b.q, b.p) ** ne
+            if isinstance(e, Infinity):
+                if b.p > b.q:
+                    # (3/2)**oo -> oo
+                    return Infinity()
+                if b.p < -b.q:
+                    # (-3/2)**oo -> oo + I*oo
+                    return Infinity() + Infinity() * ImaginaryUnit()
+                return Zero()
+            if isinstance(e, Integer):
+                # (4/3)**2 -> 4**2 / 3**2
+                return Rational(b.p ** e.p, b.q ** e.p)
+            if isinstance(e, Rational):
+                if b.p!= 1:
+                    # (4/3)**(5/6) -> 4**(5/6) * 3**(-5/6)
+                    return Integer(b.p) ** e * Integer(b.q) ** (-e)
+                if abs(e.p)==1:
+                    factors = b.factors()
+                    l1 = []
+                    l12 = []
+                    l2 = []
+                    q = e.q
+                    for b1,e1 in factors.items():
+                        ee = abs(e1)
+
+                        i = ee//q
+                        r = ee - q*i
+
+                        if i:
+                            if e1<0:
+                                l12.append((b1**i, -1))
+                            else:
+                                l1.append(b1 ** i)
+                        if r:
+                            if e1<0:
+                                l2.append((b1**r, -e))
+                            else:
+                                l2.append((b1**r, e))
+
+                    if not (l1 or l12):
+                        return
+                    else:
+                        l1 += [Basic.Pow(*be) for be in l2 + l12]
+                        return Basic.Mul(*l1)
+                else:
+                    return (b**e.p)**Rational(1, e.q)
+
+        return
+
+    def _as_decimal(self):
+        return decimal.Decimal(self.p) / decimal.Decimal(self.q)
+
+    def __abs__(self):
+        return Rational(abs(self.p), self.q)
+
+    def __int__(self):
+        return int(self.p//self.q)
+
+    def __eq__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            if other.is_irrational: return False
+            return other.__eq__(self)
+        if other.is_comparable and not isinstance(other, Rational): other = other.evalf()
+        if isinstance(other, Number):
+            if isinstance(other, Real):
+                return bool(self._as_decimal()==other._as_decimal())
+            return bool(self.p==other.p and self.q==other.q)
+        return RelMeths.__eq__(self, other)
+    def __ne__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            if other.is_irrational: return True
+            return other.__ne__(self)
+        if other.is_comparable and not isinstance(other, Rational): other = other.evalf()
+        if isinstance(other, Number):
+            if isinstance(other, Real):
+                return bool(self._as_decimal()!=other._as_decimal())
+            return bool(self.p!=other.p or self.q!=other.q)
+        return RelMeths.__ne__(self, other)
+    def __lt__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            return other.__ge__(self)
+        if other.is_comparable and not isinstance(other, Rational): other = other.evalf()
+        if isinstance(other, Number):
+            if isinstance(other, Real):
+                return bool(self._as_decimal() < other._as_decimal())
+            return bool(self.p * other.q < self.q * other.p)
+        return RelMeths.__lt__(self, other)
+    def __le__(self, other):
+        other = Basic.sympify(other)
+        if isinstance(other, NumberSymbol):
+            return other.__gt__(self)
+        if other.is_comparable and not isinstance(other, Rational): other = other.evalf()
+        if isinstance(other, Number):
+            if isinstance(other, Real):
+                return bool(self._as_decimal()<=other._as_decimal())
+            return bool(self.p * other.q <= self.q * other.p)
+        return RelMeths.__le__(self, other)
+
+    def factors(self):
+        f = factor_trial_division(self.p).copy()
+        for p,e in factor_trial_division(self.q).items():
+            try: f[p] += -e
+            except KeyError: f[p] = -e
+        fi = {}
+        for p,e in f.items():
+            if e==0:
+                del f[p]
+            else:
+                try: fi[e] *= p
+                except KeyError: fi[e] = p
+        f = {}
+        for e,p in fi.items():
+            f[p] = e
+        if len(f)>1 and f.has_key(1): del f[1]
+        return f
+
+    def as_numer_denom(self):
+        return Integer(self.p), Integer(self.q)
+
+class Integer(Rational):
+
+    q = 1
+    is_integer = True
+
+    @Memoizer(type, (int, long))
+    def __new__(cls, i):
+        if isinstance(i, Integer):
+            return i
+        if i==0: return Zero()
+        if i==1: return One()
+        if i==-1: return NegativeOne()
+        obj = Basic.__new__(cls)
+        obj.p = i
+        return obj
+
+    def _eval_is_odd(self):
+        return bool(self.p % 2)
+
     @property
-    def is_nonpositive(self):
-        return self.p <= 0
+    def precedence(self):
+        if self.p < 0:
+            return 40 # same as Add
+        return Atom.precedence
 
-class Constant(Number):
-    """Mathematical constant abstract class.
+    def tostr(self, level=0):
+        if self.precedence<=level:
+            return '(%s)' % (self.p)
+        return str(self.p)
 
-    Is the base class for constatns such as pi or e
-    """
+    def torepr(self):
+        return '%s(%r)' % (self.__class__.__name__, self.p)
 
-    def __init__(self):
-        Basic.__init__(self, is_commutative = True)
+    def _eval_power(b, e):
+        if isinstance(e, Number):
+            if isinstance(e, NaN): return NaN()
+            if isinstance(e, Real):
+                return Real(decimal_math.pow(b._as_decimal(), e.num))
+            if e.is_negative:
+                # (3/4)**-2 -> (4/3)**2
+                ne = -e
+                if isinstance(ne, One):
+                    return Rational(1, b.p)
+                return Rational(1, b.p) ** ne
+            if isinstance(e, Infinity):
+                if b.p > 1:
+                    # (3)**oo -> oo
+                    return Infinity()
+                if b.p < -1:
+                    # (-3)**oo -> oo + I*oo
+                    return Infinity() + Infinity() * ImaginaryUnit()
+                return Zero()
+            if isinstance(e, Integer):
+                # (4/3)**2 -> 4**2 / 3**2
+                return Integer(b.p ** e.p)
+            if isinstance(e, Rational):
+                i = int(e)
+                if i:
+                    i = Integer(i)
+                    return b ** i * b ** (e - i)
+                if abs(e.p)==1:
+                    factors = b.factors()
+                    l1 = []
+                    l2 = []
+                    q = e.q
+                    for b1,e1 in factors.items():
+                        i = e1//q
+                        r = e1 - q*i
+                        if i:
+                            l1.append(b1 ** i)
+                        if r:
+                            l2.append((b1**r, e))
+                    if not l1:
+                        return
+                    l1 += [Basic.Pow(*be) for be in l2]
+                    return Basic.Mul(*l1)
+                else:
+                    return ((b**e.p)**(e/e.p))
+        return
 
-    def __call__(self, precision=28):
-        return self.evalf(precision)
+    def as_numer_denom(self):
+        return self, One()
 
-    def eval(self):
+    def __floordiv__(self, other):
+        return Integer(self.p // Integer(other).p)
+
+    def __rfloordiv__(self, other):
+        return Integer(Integer(other).p // self.p)
+        
+class Zero(Singleton, Integer):
+
+    p = 0
+    q = 1
+    is_positive = False
+    is_negative = False
+    is_finite = False
+
+    def _eval_power(b, e):
+        if e.is_negative:
+            return Infinity()
+        if e.is_positive:
+            return b
+        d = e.evalf()
+        if isinstance(d, Number):
+            if d.is_negative:
+                return Infinity()
+            return b
+        coeff, terms = e.as_coeff_terms()
+        if coeff.is_negative:
+            return Infinity() ** Basic.Mul(*terms)
+        if not isinstance(coeff, Basic.One):
+            return b ** Basic.Mul(*terms)
+
+    def _eval_order(self, *symbols):
+        # Order(0,x) -> 0
         return self
 
-    def diff(self,sym):
-        return Rational(0)
+class One(Singleton, Integer):
 
-    def __mod__(self, a):
-        raise NotImplementedError
+    p = 1
+    q = 1
 
-    def __rmod__(self, a):
-            raise NotImplementedError
+    def _eval_power(b, e):
+        return b
 
-    def match(self, pattern, syms):
-        if self == pattern:
-            return {}
-        if len(syms) == 1:
-            if pattern == syms[0]:
-                return {syms[0]: self}
-            if self == pattern:
-                return {}
-        if isinstance(pattern, Constant):
-            try:
-                return {syms[syms.index(pattern)]: self}
-            except ValueError:
-                pass
-        from addmul import Mul
-        if isinstance(pattern, Mul):
-            return Mul(Rational(1),self,evaluate = False).match(pattern,syms)
-        return None
+    def _eval_order(self, *symbols):
+        return
 
-class ImaginaryUnit(Constant):
-    """Imaginary unit "i"."""
+class NegativeOne(Singleton, Integer):
 
-    def __init__(self):
-        Basic.__init__(self,
-                       is_real = False,
-                       is_commutative = True,
-                       )
+    p = -1
+    q = 1
 
-    def __str__(self):
-        return "I"
+    def _eval_power(b, e):
+        if e.is_odd: return NegativeOne()
+        if e.is_even: return One()
+        if isinstance(e, Number):
+            if isinstance(e, Real):
+                a = e.num * decimal_math.pi()
+                s = decimal_math.sin(a)
+                c = decimal_math.cos(a)
+                return Real(s) + Real(c) * ImaginaryUnit()
+            if isinstance(e, NaN):
+                return NaN()
+            if isinstance(e, (Infinity, NegativeInfinity)):
+                return NaN()
+            if isinstance(e, Half):
+                return ImaginaryUnit()
+            if isinstance(e, Rational):
+                if e.q == 2:
+                    return ImaginaryUnit() ** Integer(e.p)
+                q = int(e)
+                if q:
+                    q = Integer(q)
+                    return b ** q * b ** (e - q)
+        return
 
-    def __latex__(self):
-        return "\mathrm{i}"
+class Half(Singleton, Rational):
 
-    def evalf(self, precision=18):
-        """Evaluate to a float. By convention, will return 0,
-        which means that evalf() of a complex number will mean
-        the projection of the complex plane to the real line.
-        For example:
-        >>> (1-2*I).evalf()
-        1.0
-        >>> (-2+1*I).evalf()
-        -2.0
+    p = 1
+    q = 2
+
+class Infinity(Singleton, Rational):
+
+    p = 1
+    q = 0
+
+    is_commutative = True
+    is_positive = True
+    is_bounded = False
+    is_finite = None
+    is_odd = None
+    
+    def tostr(self, level=0):
+        return 'oo'
+
+    def _eval_power(b, e):
         """
-        return Real(0)
+        e is symbolic object but not equal to 0, 1
 
-    def evalc(self):
-        return self
-
-I = ImaginaryUnit()
-
-class ConstPi(Constant):
-    """
-
-    Usage
-    =====
-           pi -> Returns the mathematical constant pi
-           pi() -> Returns a numerical aproximation for pi
-
-    Notes
-    =====
-        Can have an option precision (integer) for the number of digits
-        that will be returned. Default is set to 28
-
-        pi() is a shortcut for pi.evalf()
-
-    Further examples
-    ================
-        >>> pi
-        pi
-
-        >>> pi()
-        3.141592653589793238462643383
-
-        >>> pi(precision=109)
-        3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148087
-
-    """
-
-    def __init__(self):
-        Basic.__init__(self,
-                       is_commutative = True,
-                       is_real = True,
-                       )
-
-    def evalf(self, precision=28):
+        oo ** nan -> nan
+        oo ** (-p) -> 0, p is number, oo
         """
-        Compute PI to artibtrary precision using series developed by
-        Chudnovsky brothers. This series converges extraordinarily
-        rapidly, giving 14 decimal places per single iteration.
+        if e.is_positive:
+            return S.Infinity
+        if e.is_negative:
+            return S.Zero
+        if isinstance(e, Number):
+            if isinstance(e, NaN):
+                return NaN()
+        d = e.evalf()
+        if isinstance(d, Number):
+            return b ** d
+        return
 
+    def _as_decimal(self):
+        return decimal.Decimal('Infinity')
+
+class NegativeInfinity(Singleton, Rational):
+
+    p = -1
+    q = 0
+
+    is_commutative = True
+    is_real = True
+    is_positive = False
+    is_bounded = False
+    is_finite = False
+    
+    precedence = 40 # same as Add
+
+    def tostr(self, level=0):
+        return '-oo'
+
+    def _eval_power(b, e):
+        """
+        e is symbolic object but not equal to 0, 1
+
+        (-oo) ** nan -> nan
+        (-oo) ** oo  -> nan
+        (-oo) ** (-oo) -> nan
+        (-oo) ** e -> oo, e is positive even integer
+        (-oo) ** o -> -oo, o is positive odd integer
+        
+        """
+        if isinstance(e, Number):
+            if isinstance(e, (NaN, Infinity, NegativeInfinity)):
+                return NaN()
+            if isinstance(e, Integer):
+                if e.is_positive:
+                    if e.is_odd:
+                        return NegativeInfinity()
+                    return Infinity()
+            return NegativeOne()**e * Infinity() ** e
+        return
+
+    def _as_decimal(self):
+        return decimal.Decimal('-Infinity')
+
+class NaN(Singleton, Rational):
+
+    p = 0
+    q = 0
+
+    is_commutative = True
+    is_real = None
+    is_comparable = None
+    is_bounded = None
+    #is_unbounded = False
+
+    def tostr(self, level=0):
+        return 'nan'
+
+    def _as_decimal(self):
+        return decimal.Decimal('NaN')
+
+    def _eval_power(b, e):
+        if isinstance(e, Basic.Zero):
+            return S.One
+        return b
+
+class NumberSymbol(Singleton, Atom, RelMeths, ArithMeths):
+
+    is_commutative = True
+    is_comparable = True
+    is_bounded = True
+    is_finite = True
+
+    def approximation(self, number_cls):
+        """ Return an interval with number_cls endpoints
+        that contains the value of NumberSymbol.
+        If not implemented, then return None.
         """
 
-        A, B, C = 13591409, 545140134, 262537412640768000
-        D = 68925893036108889235415629824000000
+    def _eval_derivative(self, s):
+        return Zero()
+    def __eq__(self, other):
+        other = Basic.sympify(other)
+        if self is other: return True
+        if isinstance(other, Number) and self.is_irrational: return False
+        return RelMeths.__eq__(self, other)
+    def __ne__(self, other):
+        other = Basic.sympify(other)
+        if self is other: return False
+        if isinstance(other, Number) and self.is_irrational: return True
+        return RelMeths.__ne__(self, other)
+    def __lt__(self, other):
+        other = Basic.sympify(other)
+        if self is other: return False
+        if isinstance(other, Number):
+            approx = self.approximation_interval(other.__class__)
+            if approx is not None:
+                l,u = approx
+                if other < l: return False
+                if other > u: return True
+            return self.evalf()<other
+        if other.is_comparable:
+            other = other.evalf()
+            return self.evalf()<other
+        return RelMeths.__lt__(self, other)
+    def __le__(self, other):
+        other = Basic.sympify(other)
+        if self is other: return True
+        if other.is_comparable: other = other.evalf()
+        if isinstance(other, Number):
+            return self.evalf()<=other
+        return RelMeths.__le__(self, other)
+    def __gt__(self, other):
+        return (-self) < (-other)
+    def __ge__(self, other):
+        return (-self) <= (-other)
 
-        decimal.getcontext().prec = precision + 14
 
-        r = A / decimal.Decimal(C).sqrt()
+class Exp1(NumberSymbol):
 
-        if (precision > 14):
-            n = precision / 15 + 1
+    is_real = True
+    is_positive = True
+    is_negative = False # XXX Forces is_negative/is_nonnegative
+    is_irrational = True
 
-            b, c = B, C**3
-            i, u, v, s = 1, 7, 4, -1
-            f_6, f_3, f_1 = 720, 6, 1
+    def tostr(self, level=0):
+        return 'E'
 
-            while i <= n:
-                r += (s * f_6 * (A + b)) / (f_1**3 * f_3 * decimal.Decimal(c).sqrt())
+    def evalf(self):
+        return Real(decimal_math.e())
 
-                for k in range(u, u+6):
-                    f_6 *= k
+    def approximation_interval(self, number_cls):
+        if issubclass(number_cls,Integer):
+            return (Integer(2),Integer(3))
+        elif issubclass(number_cls,Rational):
+            pass
 
-                for k in range(v, v+3):
-                    f_3 *= k
+    def _eval_power(self, exp):
+        return Basic.Exp()(exp)
 
-                u, v = u+6, v+3
-                b, i = b+B, i+1
+class Pi(NumberSymbol):
 
-                c, s, f_1 = c*D, s*(-1), f_1*i
+    is_real = True
+    is_positive = True
+    is_negative = False # XXX Forces is_negative/is_nonnegative
+    is_irrational = True
 
-        r = 1 / (12 * r)
+    def approximation_interval(self, number_cls):
+        if issubclass(number_cls,Integer):
+            return (Integer(3),Integer(4))
+        elif issubclass(number_cls,Rational):
+            pass
 
-        decimal.getcontext().prec = precision
-        return Real(+r)
+    def tostr(self, level=0):
+        return 'Pi'
 
-    def __str__(self):
-        return "pi"
+    def evalf(self):
+        return Real(decimal_math.pi())
 
-    def __latex__(self):
-        return "\pi"
+class ImaginaryUnit(Singleton, Atom, RelMeths, ArithMeths):
 
-    def __pretty__(self):
-        return prettyForm("pi", unicode=u"\u03C0", binding=prettyForm.ATOM)
+    is_commutative = True
+    is_imaginary = True
+    is_bounded = True
+    is_finite = True
 
-pi=ConstPi()
+    def tostr(self, level=0):
+        return 'I'
 
-def sign(x):
-    """Return the sign of x, that is,
-    1 if x is positive, 0 if x == 0 and -1 if x is negative
-    """
-    if x < 0: return -1
-    elif x==0: return 0
-    else: return 1
+    def _eval_conjugate(self):
+        return -Basic.ImaginaryUnit()
+
+    def _eval_derivative(self, s):
+        return Zero()
+
+    def _eval_power(b, e):
+        """
+        b is I = sqrt(-1)
+        e is symbolic object but not equal to 0, 1
+
+        I ** r -> (-1)**(r/2) -> exp(r/2 * Pi * I) -> sin(Pi*r/2) + cos(Pi*r/2) * I, r is decimal
+        I ** 0 mod 4 -> 1
+        I ** 1 mod 4 -> I
+        I ** 2 mod 4 -> -1
+        I ** 3 mod 4 -> -I
+        """
+
+
+        if isinstance(e, Number):
+            #if isinstance(e, Decimal):
+            #    a = decimal_math.pi() * exponent.num / 2
+            #    return Decimal(decimal_math.sin(a) + decimal_math.cos(a) * ImaginaryUnit())
+            if isinstance(e, Integer):
+                e = e.p % 4
+                if e==0: return One()
+                if e==1: return ImaginaryUnit()
+                if e==2: return -One()
+                return -ImaginaryUnit()
+            return -One() ** (e * Half())
+        return
+
+    def as_base_exp(self):
+        return -One(),Rational(1,2)
+
+Basic.singleton['E'] = Exp1
+Basic.singleton['pi'] = Pi
+Basic.singleton['Pi'] = Pi
+Basic.singleton['I'] = ImaginaryUnit
+Basic.singleton['oo'] = Infinity
+Basic.singleton['nan'] = NaN

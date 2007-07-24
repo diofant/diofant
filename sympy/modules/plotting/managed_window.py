@@ -8,11 +8,11 @@ gl_lock = Lock()
 
 class ManagedWindow(Window):
 
-    fps_limit = 60
+    fps_limit = 40
     default_win_args = dict(width=400,
                             height=300,
                             vsync=False,
-                            resizable=False)
+                            resizable=True)
 
     def __init__(self, **win_args):
         self.win_args = dict(self.default_win_args, **win_args)
@@ -33,8 +33,8 @@ class ManagedWindow(Window):
         clock = Clock()
         clock.set_fps_limit(self.fps_limit)
         while not self.has_exit:
-            gl_lock.acquire()
             dt = clock.tick()
+            gl_lock.acquire()
             try:
                 try:
                     self.switch_to()
@@ -60,4 +60,3 @@ class ManagedWindow(Window):
 
     def draw(self):
         pass
-

@@ -1,26 +1,44 @@
 from pyglet.window import key
-from pyglet.window.mouse import LEFT
+from pyglet.window.mouse import LEFT, RIGHT
+from util import get_direction_vectors, mat_mult
 
 class PlotController(object):
     
     normal_mouse_sensitivity = 4.0
     modified_mouse_sensitivity = 1.0
 
-    normal_key_sensitivity = 16.0
-    modified_key_sensitivity = 4.0
+    normal_key_sensitivity = 160.0
+    modified_key_sensitivity = 40.0
 
     keymap = {
                 key.LEFT:'left',
                 key.A:'left',
+                key.NUM_4:'left',
                 
                 key.RIGHT:'right',
                 key.D:'right',
+                key.NUM_6:'right',
                 
                 key.UP:'up',
                 key.W:'up',
+                key.NUM_8:'up',
                 
                 key.DOWN:'down',
                 key.S:'down',
+                key.NUM_2:'down',
+                
+                key.Q:'spin_left',
+                key.NUM_7:'spin_left',
+                key.E:'spin_right',
+                key.NUM_9:'spin_right',
+
+                key.Z:'euler_y_neg',
+                key.NUM_1:'euler_y_neg',
+                key.C:'euler_y_pos',
+                key.NUM_3:'euler_y_pos',
+
+                key.X:'reset_rotations',
+                key.NUM_5:'reset_rotations',
                 
                 key.NUM_ADD:'zoom_in',
                 key.PAGEUP:'zoom_in',
@@ -36,13 +54,24 @@ class PlotController(object):
 
     def __init__(self, window):
         self.action = {
-
+                # Rotation around the view Y (up) vector
                 'left':False,
                 'right':False,
+                # Rotation around the view X vector
                 'up':False,
                 'down':False,
+                # Rotation around the view Z vector
+                'spin_left':False,
+                'spin_right':False,
+                # Rotation around the model Y vector
+                'euler_y_neg':False,
+                'euler_y_pos':False,
+                # Reset to the default rotation
+                'reset_rotations':False,
+                # Performs camera z-translation
                 'zoom_in':False, 
                 'zoom_out':False,
+                # Use alternative sensitivity (speed)
                 'modify_sensitivity':False,
 
             }
@@ -53,21 +82,30 @@ class PlotController(object):
         if self.action['zoom_out']: z -= 1
         if self.action['zoom_in']: z += 1
         if z != 0:
-            self.window.camera.zoom_relative(z/10.0, self.get_key_sensitivity())        
+            self.window.camera.zoom_relative(z/10.0, self.get_key_sensitivity()/10.0)        
         
-        dx, dy = 0, 0
+        dx, dy, dz = 0, 0, 0
         if self.action['left']: dx -= 1
         if self.action['right']: dx += 1
-        if self.action['down']: dy -= 1
-        if self.action['up']: dy += 1
+        if self.action['up']: dy -= 1
+        if self.action['down']: dy += 1
+        if self.action['spin_left']: dz += 1
+        if self.action['spin_right']: dz -= 1
+        if dx != 0:
+            self.window.camera.euler_rotate(dx*dt*self.get_key_sensitivity(), *(get_direction_vectors()[1]))
+        if dy != 0:
+            self.window.camera.euler_rotate(dy*dt*self.get_key_sensitivity(), *(get_direction_vectors()[0]))
+        if dz != 0:
+            self.window.camera.euler_rotate(dz*dt*self.get_key_sensitivity(), *(get_direction_vectors()[2]))
 
-        if dx != 0 or dy != 0:
-            dx = float(dx) * dt * 100.0 # yep, a magic number
-            dy = float(dy) * dt * 100.0
+        ey = 0
+        if self.action['euler_y_neg']: ey -= 1
+        if self.action['euler_y_pos']: ey += 1
+        if ey != 0:
+            self.window.camera.euler_rotate(ey*dt*self.get_key_sensitivity(), *(0,1,0))
 
-            p1 = (self.window.width/2, self.window.height/2)
-            p2 = ( p1[0] + dx, p1[1] + dy )
-            self.window.camera.spherical_rotate(p1, p2, self.get_key_sensitivity())
+        if self.action['reset_rotations']:
+            self.window.camera.init_rot_matrix()
 
         return True
 
@@ -94,6 +132,8 @@ class PlotController(object):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons & LEFT:
             self.window.camera.spherical_rotate((x-dx,y-dy),(x,y), self.get_mouse_sensitivity())
+        if buttons & RIGHT:
+            self.window.camera.translate(dx, dy, self.get_mouse_sensitivity())
 
     def on_mouse_scroll(self, x, y, dx, dy):
         self.window.camera.zoom_relative(dy, self.get_mouse_sensitivity())

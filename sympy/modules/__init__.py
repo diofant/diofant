@@ -1,14 +1,14 @@
-"""
-Description
-===========
 
-Modules of sympy. This is the place for the high-level functions 
-of sympy, like limit, integrate, trigonometric and special functions, graphing
-and more.
+# TODO: add description of each of the modules here
 
+__version__ = "0.5.0"
 
-Structure
-=========
+from series import *
+from simplify import *
+from solvers import *
+from matrices import *
+from geometry import *
+from polynomials import *
+from utilities import *
+from specfun import *
 
-G{packagetree sympy.modules}
-"""

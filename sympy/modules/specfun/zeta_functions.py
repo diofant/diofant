@@ -1,7 +1,10 @@
-from sympy.core.functions import Function, log, sqrt
-from sympy.core.numbers import Number, Rational, Real, pi, oo
-from sympy.modules.trigonometric import cos, sin, tan
-from factorials import factorial, binomial, Function2
+#from sympy.core.functions import Function, log, sqrt
+#from sympy.core.function import DefinedFunction
+#from sympy.core.numbers import Number, Rational, Real, pi, oo
+#from sympy.modules.trigonometric import cos, sin, tan
+from factorials import factorial
+
+from sympy.core import *
 
 # first some utilities for calculating Bernoulli numbers
 
@@ -46,7 +49,7 @@ def _b2mod6(m):
 def _b4mod6(m):
     return (-Rational(m+3, 6) - _bernoulli_sum(m, (m-4)//6)) / binomial(m+3, m)
 
-class bernoulli(Function):
+class Bernoulli(DefinedFunction):
     """
     Usage
     =====
@@ -66,37 +69,35 @@ class bernoulli(Function):
         0
 
     """
-    def eval(self):
-        m = self._args
-        if not (m.is_integer and m >= 0):
-            return self
-        m = int(m)
-        if m == 0: return 1
-        if m == 1: return -Rational(1,2)
-        if m % 6 == 0: return _b0mod6(m)
-        if m % 6 == 2: return _b2mod6(m)
-        if m % 6 == 4: return _b4mod6(m)
-        return 0
+    nofargs = 1
+
+    def _eval_apply(self, m):
+        if m.is_integer and m >= 0:
+            m = int(m)
+            if m == 0: return 1
+            if m == 1: return -Rational(1,2)
+            if m % 6 == 0: return _b0mod6(m)
+            if m % 6 == 2: return _b2mod6(m)
+            if m % 6 == 4: return _b4mod6(m)
+            return 0
 
 
 # TODO: speed up
-class bernoulli_poly(Function2):
+class BernoulliPoly(DefinedFunction):
     """
     bernoulli_poly(n, x) - nth Bernoulli polynomial of x
     """
-    def eval(self):
-        n, x = self._args
+    nofargs = 2
 
+    def _eval_apply(self, n, x):
         if isinstance(n, Rational) and n.is_integer:
             s = 0
             for k in range(n+1):
                 s += binomial(n,k)*bernoulli(k)*x**(n-k)
             return s
 
-        return self
 
-
-class zeta(Function):
+class zeta(DefinedFunction):
     """
     Usage
     =====
@@ -118,8 +119,9 @@ class zeta(Function):
         zeta(5)
 
     """
-    def eval(self):
-        s = self._args
+    nofargs = 1
+
+    def _eval_apply(self, s):
         if s.is_integer:
             if s == 0:
                 return Rational(-1,2)
@@ -129,35 +131,33 @@ class zeta(Function):
                 return abs(bernoulli(s)) * 2**(s-1) / factorial(s) * pi**s
             if s < 1:
                 return -bernoulli(-s+1)/(-s+1)
-        return self
 
 
-class dirichlet_eta(Function):
+class DirichletEta(DefinedFunction):
     """
     Dirichlet eta function
     """
-    def eval(self):
-        s = self._args
+    nofargs = 1
+
+    def _eval_apply(self, s):
         if s == 1:
             return log(2)
         else:
             return (1-2**(1-s)) * zeta(s)
 
 
-class harmonic(Function2):
+class Harmonic(DefinedFunction):
     """
     harmonic(n, m=1) -- nth harmonic number (of order m)
     """
-    def __init__(self, n, m=1, **kwargs):
-        Function2.__init__(self, n, m, **kwargs)
+    nofargs = 2
 
     def __repr__(self):
         return "harmonic(%r, %r)" % self._args
 
     __str__ = __repr__
 
-    def eval(self):
-        n, m = self._args
+    def _eval_apply(self, n, m):
         if isinstance(n, Rational) and n >= 0 and \
            isinstance(m, Rational) and m >= 0:
             if n == 0:
@@ -168,7 +168,6 @@ class harmonic(Function2):
             return s
         if n == oo:
             return zeta(m)
-        return self
 
 
 # TODO: implement properly
@@ -180,21 +179,22 @@ class _euler_gamma(Number):
     def evalf(self, prec=15):
         return Real("0.57721566490153286060651209008")
 
-euler_gamma = _euler_gamma()
+#euler_gamma = _euler_gamma()
 
 
-class polygamma(Function2):
+class PolyGamma(DefinedFunction):
     """
     polygamma(m, z) -- m'th order polygamma function of z
     """
+    nofargs = 2
+
     def __repr__(self):
         return "polygamma(%r, %r)" % self._args
 
     __str__ = __repr__
 
-    def eval(self):
+    def _eval_apply(self, m, z):
         # TODO: rational arguments, reflection formula
-        m, z = self._args
         if m.is_integer and m >= 0 and z == 0:
             return oo
         if m == 0:
@@ -210,7 +210,6 @@ class polygamma(Function2):
             return (-1)**(m+1)*factorial(m)*(zeta(m+1)-harmonic(z-1, m+1))
         if m.is_integer and z == Rational(1,2):
             return (-1)**(m+1)*factorial(m)*(2**(m+1)-1)*zeta(m+1)
-        return self
 
     def diff(self, sym):
         m, z = self._args
@@ -226,3 +225,10 @@ def trigamma(z):
 
 def tetragamma(z):
     return polygamma(2, z)
+
+
+bernoulli = Bernoulli()
+bernoulli_poly = BernoulliPoly()
+dirichlet_eta = DirichletEta()
+harmonic = Harmonic()
+polygamma = PolyGamma()
