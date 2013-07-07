@@ -26,7 +26,7 @@ from the names used in Bronstein's book.
 
 from functools import reduce
 
-from sympy import real_roots, sympify
+from sympy import real_roots, sympify, default_sort_key
 from sympy.core.function import Lambda
 from sympy.core.numbers import ilcm, oo, Integer
 from sympy.core.mul import Mul
@@ -38,6 +38,7 @@ from sympy.core.compatibility import ordered
 from sympy.integrals.heurisch import _symbols
 from sympy.functions import (acos, acot, asin, atan, cos, cot, exp, log,
                              Piecewise, sin, tan)
+
 from sympy.functions import sinh, cosh, tanh, coth
 from sympy.integrals import Integral, integrate
 from sympy.polys import (gcd, cancel, PolynomialError, Poly,
@@ -240,7 +241,6 @@ class DifferentialExtension(object):
         symlogs = set()
 
         while True:
-            restart = False
             if self.newf.is_rational_function(*self.T):
                 break
 
@@ -370,7 +370,7 @@ class DifferentialExtension(object):
                 self.backsubs.append((new, i))
 
             # remove any duplicates
-            logs = list(set(logs))
+            logs = sorted(set(logs), key=default_sort_key)
 
             if handle_first == 'exp' or not log_new_extension:
                 exp_new_extension = self._exp_part(exps, dummy=dummy)
@@ -734,7 +734,7 @@ def as_poly_1t(p, t, z):
     Examples
     ========
 
-    >>> from sympy import Symbol, random_poly
+    >>> from sympy import random_poly
     >>> from sympy.integrals.risch import as_poly_1t
     >>> from sympy.abc import x, z
 
