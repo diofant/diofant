@@ -196,6 +196,7 @@ def test_rsolve_raises():
     pytest.raises(ValueError, lambda: rsolve(y(n) - x(n + 1), y(n)))
     pytest.raises(ValueError, lambda: rsolve(y(n) - sqrt(n)*y(n + 1), y(n)))
     pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1), y(n), {x(0): 0}))
+    pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1) + y(n - 1)**2, y(n)))
 
 
 def test_issue_6844():
