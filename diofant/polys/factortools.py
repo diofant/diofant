@@ -1044,7 +1044,17 @@ def dmp_gf_factor(f, u, K):
         return lc, factors
 
 
-_factor_aa_methods = {'trager': dmp_ext_factor}
+def _dmp_aa_efactor(f, u, K):
+    from .factorization_alg_field import efactor
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    coeff, factors = efactor(f)
+    factors = [(ring.to_dense(f), k) for f, k in factors]
+    return coeff, factors
+
+
+_factor_aa_methods = {'trager': dmp_ext_factor,
+                      'modular': _dmp_aa_efactor}
 
 
 def dmp_factor_list(f, u, K0):

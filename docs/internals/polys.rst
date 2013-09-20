@@ -372,6 +372,12 @@ Heuristic GCD
 .. automodule:: diofant.polys.heuristicgcd
     :members:
 
+Factorization over algebraic number fields
+==========================================
+
+.. automodule:: diofant.polys.factorization_alg_field
+    :members:
+
 Undocumented
 ============
 

@@ -663,6 +663,9 @@ def test_dmp_factor_list():
     with config.using(aa_factor_method='trager'):
         assert R.dmp_factor_list(f) == r
 
+    with config.using(aa_factor_method='modular'):
+        assert R.dmp_factor_list(f) == r
+
 
 def test_gf_factor():
     R, x = ring('x', FF(11))

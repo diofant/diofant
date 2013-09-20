@@ -19,16 +19,14 @@ def eqs_to_matrix(eqs, ring):
     return m
 
 
-def solve_lin_sys(eqs, ring):
+def solve_lin_sys(eqs, ring, iszerofunc=lambda x: not x, scalefunc=None, elimfunc=None):
     """Solve a system of linear equations. """
-
-    assert ring.domain.is_Field
 
     # transform from equations to matrix form
     matrix = eqs_to_matrix(eqs, ring)
 
     # solve by row-reduction
-    echelon, pivots = matrix.rref(iszerofunc=lambda x: not x)
+    echelon, pivots = matrix.rref(iszerofunc=iszerofunc, scalefunc=scalefunc, elimfunc=elimfunc)
 
     if not pivots:
         return {}

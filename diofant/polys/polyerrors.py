@@ -10,7 +10,8 @@ __all__ = ('BasePolynomialError', 'ExactQuotientFailed',
            'DomainError', 'PolynomialError', 'UnificationFailed',
            'GeneratorsError', 'GeneratorsNeeded', 'ComputationFailed',
            'UnivariatePolynomialError', 'MultivariatePolynomialError',
-           'PolificationFailed', 'OptionError', 'FlagError')
+           'PolificationFailed', 'OptionError', 'FlagError',
+           'UnluckyLeadingCoefficient')
 
 
 class BasePolynomialError(Exception):
@@ -79,6 +80,10 @@ class HeuristicGCDFailed(BasePolynomialError):
 
 
 class ModularGCDFailed(BasePolynomialError):
+    pass
+
+
+class UnluckyLeadingCoefficient(BasePolynomialError):
     pass
 
 

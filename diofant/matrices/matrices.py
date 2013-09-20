@@ -1,5 +1,5 @@
 import collections
-from functools import reduce
+from functools import partial, reduce
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
@@ -2664,7 +2664,7 @@ class MatrixBase(DefaultPrinting):
 
         return self.adjugate() / d
 
-    def rref(self, iszerofunc=_iszero, simplify=False):
+    def rref(self, iszerofunc=_iszero, simplify=False, scalefunc=None, elimfunc=None):
         """Return reduced row-echelon form of matrix and indices of pivot vars.
 
         To simplify elements before finding nonzero pivots set simplify=True
@@ -2702,12 +2702,14 @@ class MatrixBase(DefaultPrinting):
                 else:
                     continue
             scale = r[pivot, i]
-            r.row_op(pivot, lambda x, _: x / scale)
+            _scalefunc = partial(scalefunc, scale=scale) if scalefunc else lambda x, _: x / scale
+            r.row_op(pivot, _scalefunc)
             for j in range(r.rows):
                 if j == pivot:
                     continue
                 scale = r[j, i]
-                r.zip_row_op(j, pivot, lambda x, y: x - scale*y)
+                _elimfunc = partial(elimfunc, scale=scale) if elimfunc else lambda x, y: x - scale*y
+                r.zip_row_op(j, pivot, _elimfunc)
             pivotlist.append(i)
             pivot += 1
         return self._new(r), pivotlist
