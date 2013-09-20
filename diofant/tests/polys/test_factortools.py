@@ -543,10 +543,9 @@ def test_factor_list():
 
     f, r = x**2 + y**2, (1, [(x - I*y, 1), (x + I*y, 1)])
 
-    assert f.factor_list() == r
-
-    with using(aa_factor_method='trager'):
-        assert f.factor_list() == r
+    for method in ('trager', 'modular'):
+        with using(aa_factor_method=method):
+            assert f.factor_list() == r
 
     R, x, y = ring('x y', RR)
 

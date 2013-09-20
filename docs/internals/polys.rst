@@ -295,6 +295,13 @@ Algebraic number fields
 .. currentmodule:: diofant.polys.numberfields
 .. autofunction:: minpoly_groebner
 
+Factorization over algebraic number fields
+==========================================
+
+.. automodule:: diofant.polys.factorization_alg_field
+    :members:
+    :private-members:
+
 Modular GCD
 ===========
 
