@@ -2499,7 +2499,7 @@ class Expr(Basic, EvalfMixin):
             o = s1.getO() or S.Zero
             if o:
                 # make sure the requested order is returned
-                ngot = o.getn()
+                ngot = ceiling(o.getn())
                 if ngot > n:
                     # leave o in its current form (e.g. with x*log(x)) so
                     # it eats terms properly, then replace it below
@@ -2518,7 +2518,7 @@ class Expr(Basic, EvalfMixin):
                         if newn != ngot:
                             ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
                             s1 = self._eval_nseries(x, n=ndo, logx=logx)
-                            while s1.getn() < n:
+                            while ceiling(s1.getn()) < n:
                                 s1 = self._eval_nseries(x, n=ndo, logx=logx)
                                 ndo += 1
                             break
@@ -2630,17 +2630,12 @@ class Expr(Basic, EvalfMixin):
             yield series - e
             e = series
 
-    def nseries(self, x=None, x0=0, n=6, dir='+', logx=None):
-        """Wrapper to _eval_nseries if assumptions allow, else to series.
+    def nseries(self, x, n=6, logx=None):
+        """Calculate "n" terms of series in x around 0
 
-        If x is given, x0 is 0, dir='+', and self has x, then _eval_nseries is
-        called. This calculates "n" terms in the innermost expressions and
-        then builds up the final series just by "cross-multiplying" everything
-        out.
-
-        The optional ``logx`` parameter can be used to replace any log(x) in the
-        returned series with a symbolic value to avoid evaluating log(x) at 0. A
-        symbol to use in place of log(x) should be provided.
+        This calculates n terms of series in the innermost expressions
+        and then builds up the final series just by "cross-multiplying"
+        everything out.
 
         Advantage -- it's fast, because we don't have to determine how many
         terms we need to calculate in advance.
@@ -2649,13 +2644,21 @@ class Expr(Basic, EvalfMixin):
         expected, but the O(x**n) term appended will always be correct and
         so the result, though perhaps shorter, will also be correct.
 
-        If any of those assumptions is not met, this is treated like a
-        wrapper to series which will try harder to return the correct
-        number of terms.
+        Parameters
+        ==========
+
+        x : Symbol
+            variable for series expansion (positive and finite symbol)
+        n : Integer, optional
+            number of terms to calculate.  Default is 6.
+        logx : Symbol, optional
+            This can be used to replace any log(x) in the returned series
+            with a symbolic value to avoid evaluating log(x) at 0.
 
         See Also
         ========
 
+        series
         lseries
 
         Examples
@@ -2663,66 +2666,61 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import sin, log, Symbol
         >>> from sympy.abc import x, y
-        >>> sin(x).nseries(x, 0, 6)
+        >>> sin(x).nseries(x)
         x - x**3/6 + x**5/120 + O(x**6)
-        >>> log(x+1).nseries(x, 0, 5)
+        >>> log(x + 1).nseries(x, 5)
         x - x**2/2 + x**3/3 - x**4/4 + O(x**5)
 
         Handling of the ``logx`` parameter --- in the following example the
         expansion fails since ``sin`` does not have an asymptotic expansion
-        at -oo (the limit of log(x) as x approaches 0):
+        at -oo (the limit of log(x) as x approaches 0).
 
         >>> e = sin(log(x))
-        >>> e.nseries(x, 0, 6)
+        >>> e.nseries(x)
         Traceback (most recent call last):
         ...
         PoleError: ...
         ...
         >>> logx = Symbol('logx')
-        >>> e.nseries(x, 0, 6, logx=logx)
+        >>> e.nseries(x, logx=logx)
         sin(logx)
 
-        In the following example, the expansion works but gives only an Order term
-        unless the ``logx`` parameter is used:
+        In the following example, the expansion works but gives only an
+        Order term unless the ``logx`` parameter is used:
 
         >>> e = x**y
-        >>> e.nseries(x, 0, 2)
+        >>> e.nseries(x, 2)
         O(log(x)**2)
-        >>> e.nseries(x, 0, 2, logx=logx)
+        >>> e.nseries(x, 2, logx=logx)
         E**(logx*y)
-        """
-        if x and x not in self.free_symbols:
-            return self
-        if x is None or x0 or dir != '+':  # {see XPOS above} or (x.is_positive == x.is_negative == None):
-            return self.series(x, x0, n, dir)
-        else:
-            return self._eval_nseries(x, n=n, logx=logx)
 
-    def _eval_nseries(self, x, n, logx):
-        """
-        Return series for self up to O(x**n) at x=0 from the positive direction.
+        Notes
+        =====
 
-        This is a method that should be overridden in subclasses. Users should
-        never call this method directly (use .nseries() instead), so you don't
-        have to write docstrings for _eval_nseries().
+        This method call the helper method _eval_nseries.  Such methods
+        should be implemented in subclasses.
 
-        The series expansion code is an important part of the gruntz algorithm
-        for determining limits. _eval_nseries has to return a generalized power
-        series with coefficients in C(log(x), log).
-        In more detail, the result of _eval_nseries(self, x, n) must be
+        The series expansion code is an important part of the gruntz
+        algorithm for determining limits. _eval_nseries has to return a
+        generalized power series with coefficients in C(log(x), log)::
+
            c_0*x**e_0 + ... (finitely many terms)
-        where e_i are numbers (not necessarily integers) and c_i involve only
-        numbers, the function log, and log(x).  (This also means it must not
-        contain log(x(1+p)), this *has* to be expanded to log(x)+log(1+p)
-        if x.is_positive and p.is_positive.)
+
+        where e_i are numbers (not necessarily integers) and c_i involve
+        only numbers, the function log, and log(x).  (This also means it
+        must not contain log(x(1 + p)), this *has* to be expanded to
+        log(x) + log(1 + p) if p.is_positive.)
         """
-        from sympy.utilities.misc import filldedent
-        raise NotImplementedError(filldedent("""
-                     The _eval_nseries method should be added to
-                     %s to give terms up to O(x**n) at x=0
-                     from the positive direction so it is available when
-                     nseries calls it.""" % self.func)
-                     )
+        from sympy import Dummy, collect
+        if x.is_positive and x.is_finite:
+            series = self._eval_nseries(x, n=n, logx=logx)
+            order = series.getO() or S.Zero
+            return collect(series.removeO(), x) + order
+        else:
+            p = Dummy('x', positive=True, finite=True)
+            e = self.subs(x, p)
+            e = e.nseries(p, n, logx=logx)
+            return e.subs(p, x)
 
     def aseries(self, x, n=6, bound=0, hir=False):
         """Returns asymptotic expansion for "self". See [3]_
