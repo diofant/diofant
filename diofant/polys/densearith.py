@@ -515,6 +515,58 @@ def dup_mul_karatsuba(f, g, K):
                    dup_lshift(hi, 2*n2, K), K)
 
 
+def _dup_eval1(f, N, K):
+    result = K.zero
+    for c in f:
+        result <<= N
+        result += c
+    return result
+
+
+def dup_pack_mul(f, g, K):
+    """
+    Multiply encoded integer polynomials.
+
+    References
+    ==========
+
+    * :cite:`Fateman2005encoding`
+
+    """
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
+    sign = 1
+    if f[0] < 0:
+        f = dmp_neg(f, 0, K)
+        sign = -sign
+    if g[0] < 0:
+        g = dmp_neg(g, 0, K)
+        sign = -sign
+    p = max(max(abs(x) for x in f), max(abs(x) for x in g))
+    N = min(df + 1, dg + 1).bit_length() + 2*p.bit_length() + 1
+    a = K.one << N
+    a2 = a // 2
+    mask = a - 1
+    sf = _dup_eval1(f, N, K)
+    sg = _dup_eval1(g, N, K)
+    r = sf*sg
+    v = []
+    carry = 0
+    while r or carry:
+        b = r & mask
+        if b < a2:
+            v.append(b + carry)
+            carry = 0
+        else:
+            v.append(b - a + carry)
+            carry = 1
+        r >>= N
+    v.reverse()
+    if sign == -1:
+        v = dmp_neg(v, 0, K)
+    return dmp_strip(v, 0)
+
+
 def dup_mul(f, g, K):
     """
     Multiply dense polynomials in ``K[x]``.
@@ -533,6 +585,9 @@ def dup_mul(f, g, K):
 
     if not (f and g):
         return []
+
+    if K.is_ZZ:
+        return dup_pack_mul(f, g, K)
 
     df = dmp_degree_in(f, 0, 0)
     dg = dmp_degree_in(g, 0, 0)
