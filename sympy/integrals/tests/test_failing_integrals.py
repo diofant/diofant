@@ -131,3 +131,13 @@ def test_issue_4941():
 def test_issue_4992():
     # Nonelementary integral.  Requires hypergeometric/Meijer-G handling.
     assert not integrate(log(x) * x**(k - 1) * exp(-x) / gamma(k), (x, 0, oo)).has(Integral)
+
+
+@pytest.mark.xfail
+def test_issue_4064():
+    # In[8]:= $Assumptions=Element[x, Reals]
+    # Out[8]= x \[Element] Reals
+    # In[9]:= Integrate[(-Sign[x - 2] + Sign[x - 1])*Cos[x], x]
+    # Out[9]= Piecewise[{{0, x <= 1}, {-2 Sin[1] + 2 Sin[x], 1 < x <= 2}},
+    #                   2 (-Sin[1] + Sin[2])]
+    assert not integrate((sign(x - 1) - sign(x - 2))*cos(x), x).has(Integral)
