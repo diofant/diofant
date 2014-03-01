@@ -707,7 +707,8 @@ def test_cosine_transform():
 
     assert cosine_transform(1/sqrt(a**2 + t**2), t, w) == sqrt(2)*meijerg(
         ((S(1)/2,), ()), ((0, 0), (S(1)/2,)), a**2*w**2/4)/(2*sqrt(pi))
-    assert inverse_cosine_transform(sqrt(2)*meijerg(((S(1)/2,), ()), ((0, 0), (S(1)/2,)), a**2*w**2/4)/(2*sqrt(pi)), w, t) == 1/(t*sqrt(a**2/t**2 + 1))
+    assert inverse_cosine_transform(sqrt(2)*meijerg(((S(1)/2,), ()), ((0, 0), (S(1)/2,)),
+        a**2*w**2/4)/(2*sqrt(pi)), w, t) == 1/(t*sqrt(1 + a**2/t**2))
 
 
 def test_hankel_transform():
@@ -733,8 +734,8 @@ def test_hankel_transform():
         m - 2)*gamma(-m/2 + nu/2 + 1)/gamma(m/2 + nu/2), k, r, nu) == r**(-m)
 
     assert hankel_transform(r**nu*exp(-a*r), r, k, nu) == \
-        2**(nu + 1)*a*k**(-nu - 3)*(a**2/k**2 + 1)**(-nu - S(
-                                                     3)/2)*gamma(nu + S(3)/2)/sqrt(pi)
+        2**(nu + 1)*a*k**(-nu - 3)*(a**2/k**2 +
+                                    1)**(-nu - S(3)/2)*gamma(nu + 3/2)/sqrt(pi)
     assert inverse_hankel_transform(
         2**(nu + 1)*a*k**(-nu - 3)*(a**2/k**2 + 1)**(-nu - S(3)/2)*gamma(
         nu + S(3)/2)/sqrt(pi), k, r, nu) == r**nu*exp(-a*r)

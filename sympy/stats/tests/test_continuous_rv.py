@@ -121,7 +121,7 @@ def test_cdf():
     X = Normal('x', 0, 1)
 
     d = cdf(X)
-    assert P(X < 1) == d(1)
+    assert P(X < 1).simplify() == d(1)
     assert d(0) == S.Half
 
     d = cdf(X, X > 0)  # given X>0

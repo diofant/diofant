@@ -478,6 +478,8 @@ def _mul_as_two_parts(f):
     >>> list(ordered(_mul_as_two_parts(x*sin(x)*exp(x))))
     [(x, E**x*sin(x)), (E**x*x, sin(x)), (x*sin(x), E**x)]
     """
+    from functools import cmp_to_key
+    from sympy.core import Basic
 
     gs = _mul_args(f)
     if len(gs) < 2:
@@ -486,6 +488,7 @@ def _mul_as_two_parts(f):
         if ((gs[0].is_Pow and gs[0].base is S.Exp1) and
                 (not gs[1].is_Pow or gs[1].base is not S.Exp1)):
             gs = [gs[1], gs[0]]
+        gs.sort(key=cmp_to_key(Basic.compare))
         return [tuple(gs)]
     return [(Mul(*x), Mul(*y)) for (x, y) in multiset_partitions(gs, 2)]
 

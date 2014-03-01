@@ -232,8 +232,6 @@ def test_collect_D():
     assert collect(a*fxx + b*fxx, fx) == (a + b)*D(fx, x)
     # issue 4784
     assert collect(5*f(x) + 3*fx, fx) == 5*f(x) + 3*fx
-    assert collect(f(x) + f(x)*diff(f(x), x) + x*diff(f(x), x)*f(x), f(x).diff(x)) == \
-        (x*f(x) + f(x))*D(f(x), x) + f(x)
     assert collect(f(x) + f(x)*diff(f(x), x) + x*diff(f(x), x)*f(x), f(x).diff(x), exact=True) == \
         (x*f(x) + f(x))*D(f(x), x) + f(x)
     assert collect(1/f(x) + 1/f(x)*diff(f(x), x) + x*diff(f(x), x)/f(x), f(x).diff(x), exact=True) == \
