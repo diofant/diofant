@@ -24,6 +24,7 @@ addons:
       - liblapack-dev
       - gfortran
       - graphviz
+      - enchant
 stages:
   - quality
   - test
@@ -46,6 +47,7 @@ matrix:
       script:
         - python setup.py flake8
         - python setup.py build_sphinx -W -b html
+        - python setup.py build_sphinx -W -b spelling
         - |
           if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then
             rm -rf build/

@@ -20,7 +20,8 @@ warnings.simplefilter('error', UserWarning)
 # Add any Sphinx extension module names here, as strings.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
               'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary',
-              'sphinx.ext.intersphinx', 'sphinx.ext.extlinks']
+              'sphinx.ext.intersphinx', 'sphinx.ext.extlinks',
+              'sphinxcontrib.spelling']
 
 # Whether to show all members of a class in the Methods and Attributes
 # sections automatically.
