@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-"""Distutils based setup script for SymPy.
+"""
+Setuptools-based setup script for SymPy.
 
-This uses Distutils (http://python.org/sigs/distutils-sig/) the standard
-python mechanism for installing packages.  Optionally, you can use
-Setuptools (http://pythonhosted.org/setuptools/setuptools.html) to automatically
-handle dependencies.  For the easiest installation
-just type the command (you'll probably need root privileges for that):
+This uses Setuptools (http://pythonhosted.org/setuptools/setuptools.html),
+a collection of enhancements to the standard Python distutils.
+For the easiest installation just type the command (you'll probably
+need root privileges for that):
 
     python setup.py install
 
@@ -34,40 +34,13 @@ import subprocess
 import os
 import shutil
 import glob
-
-mpmath_version = '0.19'
-
-try:
-    from setuptools import setup, Command
-except ImportError:
-    from distutils.core import setup, Command
-
-    # handle mpmath deps in the hard way:
-    from distutils.version import LooseVersion
-    try:
-        import mpmath
-        if mpmath.__version__ < LooseVersion(mpmath_version):
-            raise ImportError
-    except ImportError:
-        print("Please install the mpmath package with a version >= %s" % mpmath_version)
-        sys.exit(-1)
+from setuptools import setup, Command, find_packages
 
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
     print("SymPy requires Python 2.7 or newer. Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
-
-
-try:
-    from setuptools import find_packages
-except ImportError:
-    def find_packages(where='.'):
-        ret = []
-        for root, dirs, files in os.walk(where):
-            if '__init__.py' in files:
-                ret.append(re.sub('^[^A-z0-9_]+', '', root.replace('/', '.')))
-        return ret
 
 
 class audit(Command):
@@ -223,5 +196,5 @@ setup(name='sympy',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         ],
-      install_requires=['mpmath>=%s' % mpmath_version]
+      install_requires=['mpmath>=0.19']
       )
