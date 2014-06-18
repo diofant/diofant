@@ -117,3 +117,9 @@ sentence ``True``. If it is not satisfiable it will return ``False``.
 .. autofunction:: diofant.logic.inference.satisfiable
 
 .. TODO: write about CNF file format
+
+First Order Logic
+-----------------
+
+.. automodule:: diofant.logic.FOL
+    :members:

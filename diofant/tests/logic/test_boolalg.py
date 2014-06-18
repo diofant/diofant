@@ -391,8 +391,6 @@ def test_to_nnf():
     class Boo(BooleanFunction):
         pass
 
-    pytest.raises(ValueError, lambda: to_nnf(~Boo(A)))
-
     assert to_nnf(A | ~A | B) is true
     assert to_nnf(A & ~A & B) is false
     assert to_nnf(A >> B) == ~A | B

@@ -541,7 +541,7 @@ class Not(BooleanFunction):
             a, b, c = args
             return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
 
-        raise ValueError("Illegal operator %s in expression" % func)
+        return ~expr.to_nnf(simplify)
 
 
 class Xor(BooleanFunction):
