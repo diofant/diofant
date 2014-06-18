@@ -1261,6 +1261,63 @@ def test_diofant__logic__boolalg__Xor():
     assert _test_args(Xor(x, y, 2))
 
 
+def test_diofant__logic__FOL__FOL():
+    pass
+
+
+def test_diofant__logic__FOL__Callable():
+    pass
+
+
+def test_diofant__logic__FOL__Applied():
+    pass
+
+
+def test_diofant__logic__FOL__Predicate():
+    from diofant.logic.FOL import Predicate
+    assert _test_args(Predicate('P'))
+
+
+def test_diofant__logic__FOL__AppliedPredicate():
+    from diofant.logic.FOL import Predicate
+    P = Predicate('P')
+    assert _test_args(P(x, y))
+
+
+def test_diofant__logic__FOL__UndefinedBooleanFunction():
+    from diofant.logic.FOL import UndefinedBooleanFunction
+    assert _test_args(UndefinedBooleanFunction('f'))
+
+
+def test_diofant__logic__FOL__AppliedUndefinedBooleanFunction():
+    from diofant.logic.FOL import UndefinedBooleanFunction
+    f = UndefinedBooleanFunction('f')
+    assert _test_args(f(x, y))
+
+
+def test_diofant__logic__FOL__Constant():
+    from diofant.logic.FOL import Constant
+    assert _test_args(Constant('x'))
+
+
+def test_diofant__logic__FOL__Quantifier():
+    pass
+
+
+def test_diofant__logic__FOL__ForAll():
+    from diofant.logic.FOL import ForAll, Predicate
+    P = Predicate('P')
+    Q = Predicate('Q')
+    assert _test_args(ForAll(x, ForAll(y, P(x, y) >> Q(x, y))))
+
+
+def test_diofant__logic__FOL__Exists():
+    from diofant.logic.FOL import Exists, Predicate
+    P = Predicate('P')
+    Q = Predicate('Q')
+    assert _test_args(Exists(x, Exists(y, P(x, y) >> Q(x, y))))
+
+
 def test_diofant__matrices__expressions__matexpr__MatrixBase():
     pass
 

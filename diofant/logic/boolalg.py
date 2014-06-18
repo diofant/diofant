@@ -869,7 +869,7 @@ def to_nnf(expr, simplify=True):
             a, b, c = expr.args
             expr = (a | ~c) & (~a | ~b)
         else:
-            raise ValueError(f'Illegal operator {expr.func} in expression')
+            return ~to_nnf(expr, simplify)
 
     if isinstance(expr, Implies):
         a, b = expr.args
@@ -1148,8 +1148,11 @@ def is_literal(expr):
     False
 
     """
+    from .FOL import Applied, Quantifier
     if isinstance(expr, Not):
         expr = expr.args[0]
+    if isinstance(expr, Applied) and not isinstance(expr, Quantifier):
+        return True
     return not isinstance(expr, BooleanFunction)
 
 
