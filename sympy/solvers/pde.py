@@ -157,8 +157,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     >>> uy = u.diff(y)
     >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
     >>> pdsolve(eq)
-    Eq(f(x, y), F(3*x - 2*y)*exp(-2*x/13 - 3*y/13))
-
+    Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
     """
 
     given_hint = hint  # hint given by the user.
@@ -427,7 +426,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     >>> assert checkpdesol(eq, sol)[0]
     >>> eq = x*f(x,y) + f(x,y).diff(x)
     >>> checkpdesol(eq, sol)
-    (False, (x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1,), (4*x - 3*y,)))*exp(-6*x/25 - 8*y/25))
+    (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1,), (4*x - 3*y,))))
     """
 
     # Converting the pde into an equation
@@ -517,11 +516,11 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
           dx              dy
 
         >>> pprint(pdsolve(genform), use_unicode=False)
-                                 -c*(a*x + b*y)
-                                 ---------------
-                                      2    2
-                                     a  + b
-        f(x, y) = F(-a*y + b*x)*e
+                   -c*(a*x + b*y)
+                   ---------------
+                        2    2
+                       a  + b
+        f(x, y) = E               *F(-a*y + b*x)
 
     Examples
     ========
@@ -533,12 +532,12 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     >>> from sympy.abc import x,y
     >>> f = Function('f')
     >>> pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y))
-    Eq(f(x, y), F(x - y)*exp(-x/2 - y/2))
+    Eq(f(x, y), E**(-x/2 - y/2)*F(x - y))
     >>> pprint(pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y)), use_unicode=False)
-                          x   y
-                        - - - -
-                          2   2
-    f(x, y) = F(x - y)*e
+                 x   y
+               - - - -
+                 2   2
+    f(x, y) = E       *F(x - y)
 
     References
     ==========
@@ -588,40 +587,39 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
         a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
                   dx              dy
         >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'), use_unicode=False)
-                  //          b*x + c*y                                             \
-                  ||              /                                                 |
-                  ||             |                                                  |
-                  ||             |                                       a*xi       |
-                  ||             |                                     -------      |
-                  ||             |                                      2    2      |
-                  ||             |      /b*xi + c*eta  -b*eta + c*xi\  b  + c       |
-                  ||             |     G|------------, -------------|*e        d(xi)|
-                  ||             |      |   2    2         2    2   |               |
-                  ||             |      \  b  + c         b  + c    /               |
-                  ||             |                                                  |
-                  ||            /                                                   |
-                  ||                                                                |
-        f(x, y) = ||F(eta) + -------------------------------------------------------|*
-                  ||                                  2    2                        |
-                  \\                                 b  + c                         /
+                  /         /          b*x + c*y
+                  |         |              /
+                  |         |             |
+                  |         |             |        a*xi
+                  |         |             |      -------
+                  |         |             |       2    2
+                  |         |             |      b  + c   /b*xi + c*eta  -b*eta + c*xi
+                  |         |             |     E       *G|------------, -------------
+                  |         |             |               |   2    2         2    2
+                  |  -a*xi  |             |               \  b  + c         b  + c
+                  | ------- |             |
+                  |  2    2 |            /
+                  | b  + c  |
+        f(x, y) = |E       *|F(eta) + ------------------------------------------------
+                  |         |                                  2    2
+                  \         \                                 b  + c
         <BLANKLINE>
-                \|
-                ||
-                ||
-                ||
-                ||
-                ||
-                ||
-                ||
-                ||
-          -a*xi ||
-         -------||
-          2    2||
-         b  + c ||
-        e       ||
-                ||
-                /|eta=-b*y + c*x, xi=b*x + c*y
-
+               \\|
+               |||
+               |||
+               |||
+               |||
+               |||
+        \      |||
+        | d(xi)|||
+        |      |||
+        /      |||
+               |||
+               |||
+               |||
+        -------|||
+               |||
+               //|eta=-b*y + c*x, xi=b*x + c*y
 
     Examples
     ========
@@ -632,7 +630,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     >>> f = Function('f')
     >>> eq = -2*f(x,y).diff(x) + 4*f(x,y).diff(y) + 5*f(x,y) - exp(x + 3*y)
     >>> pdsolve(eq)
-    Eq(f(x, y), (F(4*x + 2*y) + exp(x/2 + 4*y)/15)*exp(x/2 - y))
+    Eq(f(x, y), E**(x/2 - y)*(E**(x/2 + 4*y)/15 + F(4*x + 2*y)))
 
     References
     ==========
@@ -710,7 +708,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     >>> f = Function('f')
     >>> eq =  x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
     >>> pdsolve(eq)
-    Eq(f(x, y), F(x*y)*exp(y**2/2) + 1)
+    Eq(f(x, y), E**(y**2/2)*F(x*y) + 1)
 
     References
     ==========
@@ -835,7 +833,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
 
     >>> eq = Eq(D(u(x, t), x), E**(u(x, t))*D(u(x, t), t))
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='add')
-    [exp(-X(x))*Derivative(X(x), x), exp(T(t))*Derivative(T(t), t)]
+    [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
 
     >>> eq = Eq(D(u(x, t), x, 2), D(u(x, t), t, 2))
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='mul')
@@ -918,8 +916,7 @@ def pde_separate_add(eq, fun, sep):
 
     >>> eq = Eq(D(u(x, t), x), E**(u(x, t))*D(u(x, t), t))
     >>> pde_separate_add(eq, u(x, t), [X(x), T(t)])
-    [exp(-X(x))*Derivative(X(x), x), exp(T(t))*Derivative(T(t), t)]
-
+    [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
     """
     return pde_separate(eq, fun, sep, strategy='add')
 

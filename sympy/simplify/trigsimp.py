@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from sympy.core.cache import cacheit
 from sympy.core import (sympify, Basic, S, Expr, expand_mul, factor_terms,
-    Mul, Dummy, igcd, FunctionClass, Add, symbols, Wild, expand)
+    Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols, Wild, expand)
 from sympy.core.compatibility import ordered, reduce, iterable
 from sympy.core.numbers import I, Integer
 from sympy.core.function import count_ops, _mexpand
@@ -526,7 +526,7 @@ def exptrigsimp(expr, simplify=True):
     >>> exptrigsimp(exp(z) + exp(-z))
     2*cosh(z)
     >>> exptrigsimp(cosh(z) - sinh(z))
-    exp(-z)
+    E**(-z)
     """
     from sympy.simplify.fu import hyper_as_trig, TR2i
     from sympy.simplify.simplify import bottom_up
@@ -545,13 +545,13 @@ def exptrigsimp(expr, simplify=True):
         newexpr = newexpr.simplify()
 
     # conversion from exp to hyperbolic
-    ex = newexpr.atoms(exp, S.Exp1)
+    ex = set(a for a in newexpr.atoms(Pow) if a.base is S.Exp1) | newexpr.atoms(S.Exp1)
     ex = [ei for ei in ex if 1/ei not in ex]
     # sinh and cosh
     for ei in ex:
         e2 = ei**-2
         if e2 in ex:
-            a = e2.args[0]/2 if e2 is not S.Exp1 else S.Half
+            a = e2.exp/2 if e2 is not S.Exp1 else S.Half
             newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
             newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
     # exp ratios to tan and tanh
@@ -559,7 +559,7 @@ def exptrigsimp(expr, simplify=True):
         n, d = ei - 1, ei + 1
         et = n/d
         etinv = d/n  # not 1/et or else recursion errors arise
-        a = ei.args[0] if ei.func is exp else S.One
+        a = ei.exp if ei.is_Pow and ei.base is S.Exp1 else S.One
         if a.is_Mul or a is S.ImaginaryUnit:
             c = a.as_coefficient(I)
             if c:
@@ -1039,7 +1039,7 @@ def __trigsimp(expr, deep=False):
     try:
         if not expr.has(*_trigs):
             raise TypeError
-        e = expr.atoms(exp)
+        e = set(a for a in expr.atoms(Pow) if a.base is S.Exp1)
         new = expr.rewrite(exp, deep=deep)
         if new == e:
             raise TypeError
@@ -1047,7 +1047,8 @@ def __trigsimp(expr, deep=False):
         if fnew != new:
             new = sorted([new, factor(new)], key=count_ops)[0]
         # if all exp that were introduced disappeared then accept it
-        if not (new.atoms(exp) - e):
+        ne = set(a for a in new.atoms(Pow) if a.base is S.Exp1)
+        if not (ne - e):
             expr = new
     except TypeError:
         pass

@@ -70,7 +70,7 @@ def test_Integral():
     assert mcode(Integral(exp(-x**2 - y**2),
                           (x, -oo, oo),
                           (y, -oo, oo))) == \
-        "Hold[Integrate[Exp[-x^2 - y^2], {x, -Infinity, Infinity}, " \
+        "Hold[Integrate[E^(-x^2 - y^2), {x, -Infinity, Infinity}, " \
         "{y, -Infinity, Infinity}]]"
 
 
@@ -79,5 +79,5 @@ def test_Sum():
     assert mcode(Sum(exp(-x**2 - y**2),
                      (x, -oo, oo),
                      (y, -oo, oo))) == \
-        "Hold[Sum[Exp[-x^2 - y^2], {x, -Infinity, Infinity}, " \
+        "Hold[Sum[E^(-x^2 - y^2), {x, -Infinity, Infinity}, " \
         "{y, -Infinity, Infinity}]]"

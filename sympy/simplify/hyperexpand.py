@@ -822,7 +822,7 @@ class FormulaCollection(object):
         ...     Hyper_Function)
         >>> f = FormulaCollection()
         >>> f.lookup_origin(Hyper_Function((), ())).closed_form
-        exp(_z)
+        E**_z
         >>> f.lookup_origin(Hyper_Function([1], ())).closed_form
         HyperRep_power1(-1, _z)
 
@@ -2452,7 +2452,7 @@ def hyperexpand(f, allow_hyper=False, rewrite='default'):
     >>> from sympy.functions import hyper
     >>> from sympy.abc import z
     >>> hyperexpand(hyper([], [], z))
-    exp(z)
+    E**z
 
     Non-hyperegeometric parts of the expression and hypergeometric expressions
     that are not recognised are left unchanged:

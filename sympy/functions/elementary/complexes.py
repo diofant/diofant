@@ -455,8 +455,6 @@ class Abs(Function):
                 if base.is_positive:
                     return base**re(exponent)
                 return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
-        if isinstance(arg, exp):
-            return exp(re(arg.args[0]))
         if arg.is_zero:  # it may be an Expr that is zero
             return S.Zero
         if arg.is_nonnegative:
@@ -988,6 +986,8 @@ def _polarify(eq, lift, pause=False):
         return r
     elif eq.is_Function:
         return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
+    elif eq.is_Pow and eq.base is S.Exp1:
+        return eq.func(eq.base, _polarify(eq.exp, lift, pause=False))
     elif isinstance(eq, Integral):
         # Don't lift the integration variable
         func = _polarify(eq.function, lift, pause=pause)
@@ -1070,11 +1070,13 @@ def _unpolarify(eq, exponents_only, pause=False):
         if eq.func is polar_lift:
             return _unpolarify(eq.args[0], exponents_only)
 
-    if eq.is_Pow:
+    if eq.is_Pow and eq.base is not S.Exp1:
         expo = _unpolarify(eq.exp, exponents_only)
         base = _unpolarify(eq.base, exponents_only,
             not (expo.is_integer and not pause))
         return base**expo
+    elif eq.is_Pow and eq.base is S.Exp1:
+        return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):
         return eq.func(*[_unpolarify(x, exponents_only, exponents_only)

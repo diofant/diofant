@@ -1090,7 +1090,7 @@ def test_separable2():
     sol8 = Eq(asinh(f(x)), C1 - log(log(x)))
     # integrate cannot handle the integral on the lhs (cos/tan)
     sol9str = ("Eq(Integral(cos(_y)/tan(_y), (_y, f(x))), "
-                "C1 + Integral(-E*exp(x), x))")
+                "C1 + Integral(-E*E**x, x))")
     sol10 = Eq(-log(-1 + sin(f(x))**2)/2, C1 - log(x**2 - a**2)/2)
     assert str(dsolve(eq6, hint='separable_Integral')) == sol6str
     assert dsolve(eq7, hint='separable', simplify=False) == sol7
@@ -2549,7 +2549,7 @@ def test_lie_group():
 
     eq = Eq(f(x).diff(x), x**2*f(x))
     sol = dsolve(eq, f(x), hint='lie_group')
-    assert sol == Eq(f(x), C1*exp(x**3)**(1/3))
+    assert sol == Eq(f(x), C1*exp(x**3/3))
     assert checkodesol(eq, sol)[0]
 
     eq = f(x).diff(x) + a*f(x) - c*exp(b*x)
@@ -2592,7 +2592,7 @@ def test_user_infinitesimals():
 
 def test_issue_7081():
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
-    assert dsolve(eq) == Eq(f(x), -((C1 + x**2)/(-C1 + x**2)))
+    assert dsolve(eq) == Eq(f(x), (C1 + x**2)/(C1 - x**2))
 
 
 def test_2nd_power_series_ordinary():

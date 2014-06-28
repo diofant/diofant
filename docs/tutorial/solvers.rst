@@ -150,8 +150,8 @@ would thus use
 To solve the ODE, pass it and the function to solve for to ``dsolve``.
 
     >>> dsolve(diffeq, f(x))
-                        x   cos(x)
-    f(x) = (C₁ + C₂⋅x)⋅ℯ  + ──────
+            x               cos(x)
+    f(x) = ℯ ⋅(C₁ + C₂⋅x) + ──────
                               2
 
 ``dsolve`` returns an instance of ``Eq``.  This is because in general,

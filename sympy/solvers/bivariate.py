@@ -53,16 +53,16 @@ def _mostfunc(lhs, func, X=None):
     >>> from sympy.functions.elementary.exponential import exp
     >>> from sympy.utilities.pytest import raises
     >>> from sympy.abc import x, y
-    >>> _mostfunc(exp(x) + exp(exp(x) + 2), exp)
-    exp(exp(x) + 2)
-    >>> _mostfunc(exp(x) + exp(exp(y) + 2), exp, x)
-    exp(x)
-    >>> _mostfunc(exp(x) + exp(exp(y) + 2), exp, x)
-    exp(x)
+    >>> _mostfunc(exp(x) + exp(exp(x) + 2), Pow)
+    E**(E**x + 2)
+    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
+    E**x
+    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
+    E**x
     >>> _mostfunc(x, exp, x) is None
     True
-    >>> _mostfunc(exp(x) + exp(x*y), exp, x)
-    exp(x)
+    >>> _mostfunc(exp(x) + exp(x*y), Pow, x)
+    E**x
     """
     fterms = [tmp for tmp in lhs.atoms(func) if (not X or
         X.is_Symbol and X in tmp.free_symbols or
@@ -93,7 +93,7 @@ def _linab(arg, symbol):
     >>> _linab(y + y*x + 2*x, x)
     (y + 2, y, x)
     >>> _linab(3 + 2*exp(x), x)
-    (2, 3, exp(x))
+    (2, 3, E**x)
     """
 
     arg = arg.expand()

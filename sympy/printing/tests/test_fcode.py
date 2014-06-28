@@ -72,7 +72,7 @@ def test_fcode_functions_with_integers():
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(S(10))) == "      x*2.30258509299405d0"
     assert fcode(log(S(10))) == "      2.30258509299405d0"
-    assert fcode(exp(10)) == "      22026.4657948067d0"
+    assert fcode(exp(10)) == "      parameter (E = 2.71828182845905d0)\n      E**10"
     assert fcode(x * log(log(10))) == "      x*0.834032445247956d0"
     assert fcode(x * log(log(S(10)))) == "      x*0.834032445247956d0"
 

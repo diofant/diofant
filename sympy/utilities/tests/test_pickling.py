@@ -601,7 +601,7 @@ def test_pickling_polys_rootoftools():
     for c in (RootOf, RootOf(f, 0)):
         check(c)
 
-    for c in (RootSum, RootSum(f, exp)):
+    for c in (RootSum, RootSum(f, Lambda(x, exp(x)))):
         check(c)
 
 # ================= printing ====================

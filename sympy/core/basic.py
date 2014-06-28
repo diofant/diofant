@@ -1037,7 +1037,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (x + y + 2).xreplace({x + y: 2})
         x + y + 2
         >>> (x + 2 + exp(x + 2)).xreplace({x + 2: y})
-        x + exp(y) + 2
+        E**y + x + 2
 
         xreplace doesn't differentiate between free and bound symbols. In the
         following, subs(x, y) would not change x since it is a bound symbol,
@@ -1544,17 +1544,17 @@ class Basic(with_metaclass(ManagedProperties)):
         Unspecified pattern:
 
         >>> sin(x).rewrite(exp)
-        -I*(exp(I*x) - exp(-I*x))/2
+        -I*(E**(I*x) - E**(-I*x))/2
 
         Pattern as a single function:
 
         >>> sin(x).rewrite(sin, exp)
-        -I*(exp(I*x) - exp(-I*x))/2
+        -I*(E**(I*x) - E**(-I*x))/2
 
         Pattern as a list of functions:
 
         >>> sin(x).rewrite([sin, ], exp)
-        -I*(exp(I*x) - exp(-I*x))/2
+        -I*(E**(I*x) - E**(-I*x))/2
         """
         if not args:
             return self

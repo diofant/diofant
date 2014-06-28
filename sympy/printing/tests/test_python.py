@@ -90,7 +90,7 @@ def test_python_relational():
 
 def test_python_functions():
     # Simple
-    assert python((2*x + exp(x))) in "x = Symbol('x')\ne = 2*x + exp(x)"
+    assert python((2*x + exp(x))) in "x = Symbol('x')\ne = E**x + 2*x"
     assert python(sqrt(2)) == 'e = sqrt(2)'
     assert python(2**Rational(1, 3)) == 'e = 2**Rational(1, 3)'
     assert python(sqrt(2 + pi)) == 'e = sqrt(2 + pi)'

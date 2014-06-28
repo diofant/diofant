@@ -164,7 +164,7 @@ def test_exp2():
     e = w**(1 - log(x)/(log(2) + log(x)))
     logw = Symbol("logw")
     assert e.nseries(
-        w, 0, 1, logx=logw) == exp(logw - logw*log(x)/(log(2) + log(x)))
+        w, 0, 1, logx=logw) == exp(logw)*x**(-logw/(log(x) + log(2)))
 
 
 def test_bug3():

@@ -155,9 +155,9 @@ Solve the differential equation `y'' - y = e^t`.
 
  >>> y = Function('y')
  >>> dsolve(Eq(y(t).diff(t, t) - y(t), exp(t)), y(t))
-            -t   ⎛     t⎞  t
- y(t) = C₂⋅ℯ   + ⎜C₁ + ─⎟⋅ℯ
-                 ⎝     2⎠
+         t ⎛     t⎞    -t
+ y(t) = ℯ ⋅⎜C₂ + ─⎟ + ℯ  ⋅C₁
+           ⎝     2⎠
 
 Find the eigenvalues of `\left[\begin{smallmatrix}1 & 2\\2 &
 2\end{smallmatrix}\right]`.

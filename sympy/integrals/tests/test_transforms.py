@@ -49,7 +49,7 @@ def test_as_integral():
     assert str(inverse_mellin_transform(f(s), s, x, (a, b)).rewrite('Integral')) \
         == "Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))"
     assert str(inverse_laplace_transform(f(s), s, x).rewrite('Integral')) == \
-        "Integral(f(s)*exp(s*x), (s, _c - oo*I, _c + oo*I))"
+        "Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))"
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 

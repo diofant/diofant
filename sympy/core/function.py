@@ -1705,7 +1705,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     Expand addition in exponents into multiplied bases.
 
     >>> exp(x + y).expand(power_exp=True)
-    exp(x)*exp(y)
+    E**x*E**y
     >>> (2**(x + y)).expand(power_exp=True)
     2**x*2**y
 
@@ -1804,18 +1804,18 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     - You can shut off unwanted methods::
 
         >>> (exp(x + y)*(x + y)).expand()
-        x*exp(x)*exp(y) + y*exp(x)*exp(y)
+        E**x*E**y*x + E**x*E**y*y
         >>> (exp(x + y)*(x + y)).expand(power_exp=False)
-        x*exp(x + y) + y*exp(x + y)
+        E**(x + y)*x + E**(x + y)*y
         >>> (exp(x + y)*(x + y)).expand(mul=False)
-        (x + y)*exp(x)*exp(y)
+        E**x*E**y*(x + y)
 
     - Use deep=False to only expand on the top level::
 
         >>> exp(x + exp(x + y)).expand()
-        exp(x)*exp(exp(x)*exp(y))
+        E**x*E**(E**x*E**y)
         >>> exp(x + exp(x + y)).expand(deep=False)
-        exp(x)*exp(exp(x + y))
+        E**(E**(x + y))*E**x
 
     - Hints are applied in an arbitrary, but consistent order (in the current
       implementation, they are applied in alphabetical order, except
@@ -2008,8 +2008,7 @@ def expand_mul(expr, deep=True):
     >>> from sympy import symbols, expand_mul, exp, log
     >>> x, y = symbols('x,y', positive=True)
     >>> expand_mul(exp(x+y)*(x+y)*log(x*y**2))
-    x*exp(x + y)*log(x*y**2) + y*exp(x + y)*log(x*y**2)
-
+    E**(x + y)*x*log(x*y**2) + E**(x + y)*y*log(x*y**2)
     """
     return sympify(expr).expand(deep=deep, mul=True, power_exp=False,
     power_base=False, basic=False, multinomial=False, log=False)
@@ -2026,8 +2025,7 @@ def expand_multinomial(expr, deep=True):
     >>> from sympy import symbols, expand_multinomial, exp
     >>> x, y = symbols('x y', positive=True)
     >>> expand_multinomial((x + exp(x + 1))**2)
-    x**2 + 2*x*exp(x + 1) + exp(2*x + 2)
-
+    2*E**(x + 1)*x + E**(2*x + 2) + x**2
     """
     return sympify(expr).expand(deep=deep, mul=False, power_exp=False,
     power_base=False, basic=False, multinomial=True, log=False)
@@ -2044,8 +2042,7 @@ def expand_log(expr, deep=True, force=False):
     >>> from sympy import symbols, expand_log, exp, log
     >>> x, y = symbols('x,y', positive=True)
     >>> expand_log(exp(x+y)*(x+y)*log(x*y**2))
-    (x + y)*(log(x) + 2*log(y))*exp(x + y)
-
+    E**(x + y)*(x + y)*(log(x) + 2*log(y))
     """
     return sympify(expr).expand(deep=deep, log=True, mul=False,
         power_exp=False, power_base=False, multinomial=False,
@@ -2064,7 +2061,6 @@ def expand_func(expr, deep=True):
     >>> from sympy.abc import x
     >>> expand_func(gamma(x + 2))
     x*(x + 1)*gamma(x)
-
     """
     return sympify(expr).expand(deep=deep, func=True, basic=False,
     log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
@@ -2099,7 +2095,7 @@ def expand_complex(expr, deep=True):
     >>> from sympy import expand_complex, exp, sqrt, I
     >>> from sympy.abc import z
     >>> expand_complex(exp(z))
-    I*exp(re(z))*sin(im(z)) + exp(re(z))*cos(im(z))
+    E**re(z)*I*sin(im(z)) + E**re(z)*cos(im(z))
     >>> expand_complex(sqrt(I))
     sqrt(2)/2 + sqrt(2)*I/2
 
@@ -2153,7 +2149,7 @@ def expand_power_base(expr, deep=True, force=False):
     2**y*sin(x)**y + 2**y*cos(x)**y
 
     >>> expand_power_base((2*exp(y))**x)
-    2**x*exp(y)**x
+    2**x*(E**y)**x
 
     >>> expand_power_base((2*cos(x))**y)
     2**y*cos(x)**y
@@ -2170,7 +2166,6 @@ def expand_power_base(expr, deep=True, force=False):
     2**(z + 1)*y**(z + 1)
     >>> ((2*y)**(1+z)).expand()
     2*2**z*y*y**z
-
     """
     return sympify(expr).expand(deep=deep, log=False, mul=False,
         power_exp=False, power_base=True, multinomial=False,

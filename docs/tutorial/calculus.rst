@@ -20,9 +20,9 @@ To take derivatives, use the ``diff`` function.
     >>> diff(cos(x), x)
     -sin(x)
     >>> diff(exp(x**2), x)
-         ⎛ 2⎞
-         ⎝x ⎠
-    2⋅x⋅ℯ
+       ⎛ 2⎞
+       ⎝x ⎠
+    2⋅ℯ    ⋅x
 
 ``diff`` can take multiple derivatives at once.  To take multiple derivatives,
 pass the variable as many times as you wish to differentiate, or pass a number
@@ -41,22 +41,21 @@ derivatives.  For example, each of the following will compute
 
     >>> expr = exp(x*y*z)
     >>> diff(expr, x, y, y, z, z, z, z)
-     3  2 ⎛ 3  3  3       2  2  2                ⎞  x⋅y⋅z
-    x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠⋅ℯ
+     x⋅y⋅z  3  2 ⎛ 3  3  3       2  2  2                ⎞
+    ℯ     ⋅x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠
     >>> diff(expr, x, y, 2, z, 4)
-     3  2 ⎛ 3  3  3       2  2  2                ⎞  x⋅y⋅z
-    x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠⋅ℯ
+     x⋅y⋅z  3  2 ⎛ 3  3  3       2  2  2                ⎞
+    ℯ     ⋅x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠
     >>> diff(expr, x, y, y, z, 4)
-     3  2 ⎛ 3  3  3       2  2  2                ⎞  x⋅y⋅z
-    x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠⋅ℯ
+     x⋅y⋅z  3  2 ⎛ 3  3  3       2  2  2                ⎞
+    ℯ     ⋅x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠
 
 ``diff`` can also be called as a method.  The two ways of calling ``diff`` are
 exactly the same, and are provided only for convenience.
 
     >>> expr.diff(x, y, y, z, 4)
-     3  2 ⎛ 3  3  3       2  2  2                ⎞  x⋅y⋅z
-    x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠⋅ℯ
-
+     x⋅y⋅z  3  2 ⎛ 3  3  3       2  2  2                ⎞
+    ℯ     ⋅x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠
 
 To create an unevaluated derivative, use the ``Derivative`` class.  It has the
 same syntax as ``diff``.
@@ -72,8 +71,8 @@ same syntax as ``diff``.
 To evaluate an unevaluated derivative, use the ``doit`` method.
 
     >>> deriv.doit()
-     3  2 ⎛ 3  3  3       2  2  2                ⎞  x⋅y⋅z
-    x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠⋅ℯ
+     x⋅y⋅z  3  2 ⎛ 3  3  3       2  2  2                ⎞
+    ℯ     ⋅x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠
 
 These unevaluated objects are useful for delaying the evaluation of the
 derivative, or for printing purposes.  They are also used when SymPy does not
@@ -162,19 +161,18 @@ definite integrals.  Here is a sampling of some of the power of ``integrate``.
     ...     exp(x))*exp(x)/((x - 1)**2*(x + 1)**2*(exp(x) + 1)), x)
     >>> integ
     ⌠
-    ⎮ ⎛ 4    2  x    2        x          x⎞  x
-    ⎮ ⎝x  + x ⋅ℯ  - x  - 2⋅x⋅ℯ  - 2⋅x - ℯ ⎠⋅ℯ
+    ⎮  x ⎛ x  2      x      x    4    2      ⎞
+    ⎮ ℯ ⋅⎝ℯ ⋅x  - 2⋅ℯ ⋅x - ℯ  + x  - x  - 2⋅x⎠
     ⎮ ──────────────────────────────────────── dx
-    ⎮               2        2 ⎛ x    ⎞
-    ⎮        (x - 1) ⋅(x + 1) ⋅⎝ℯ  + 1⎠
+    ⎮        ⎛ x    ⎞        2        2
+    ⎮        ⎝ℯ  + 1⎠⋅(x - 1) ⋅(x + 1)
     ⌡
     >>> integ.doit()
-                     x
-       ⎛ x    ⎞     ℯ
-    log⎝ℯ  + 1⎠ + ──────
-                   2
-                  x  - 1
-
+        x
+      ℯ         ⎛ x    ⎞
+    ────── + log⎝ℯ  + 1⎠
+     2
+    x  - 1
     >>> integ = Integral(sin(x**2), x)
     >>> integ
     ⌠
@@ -195,8 +193,8 @@ definite integrals.  Here is a sampling of some of the power of ``integrate``.
     >>> integ
     ∞
     ⌠
-    ⎮  y  -x
-    ⎮ x ⋅ℯ   dx
+    ⎮  -x  y
+    ⎮ ℯ  ⋅x  dx
     ⌡
     0
     >>> integ.doit()
@@ -204,8 +202,8 @@ definite integrals.  Here is a sampling of some of the power of ``integrate``.
     ⎪
     ⎪∞
     ⎪⌠
-    ⎨⎮  y  -x
-    ⎪⎮ x ⋅ℯ   dx    otherwise
+    ⎨⎮  -x  y
+    ⎪⎮ ℯ  ⋅x  dx    otherwise
     ⎪⌡
     ⎪0
     ⎩

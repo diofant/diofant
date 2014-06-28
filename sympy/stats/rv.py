@@ -486,7 +486,7 @@ def given(expr, condition=None, **kwargs):
            -(-Y + z)
            -----------
       ___       2
-    \/ 2 *e
+    \/ 2 *E
     ------------------
              ____
          2*\/ pi
@@ -683,7 +683,7 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     >>> density(2*D).dict
     {2: 1/6, 4: 1/6, 6: 1/6, 8: 1/6, 10: 1/6, 12: 1/6}
     >>> density(X)(x)
-    sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))
+    sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
     """
 
     if numsamples:

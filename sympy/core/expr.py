@@ -1507,7 +1507,7 @@ class Expr(Basic, EvalfMixin):
         >>> (sin(x)).as_independent(y)
         (sin(x), 1)
         >>> exp(x+y).as_independent(x)
-        (1, exp(x + y))
+        (1, E**(x + y))
 
         -- force self to be treated as an Add:
 
@@ -1549,7 +1549,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import separatevars, log
         >>> separatevars(exp(x+y)).as_independent(x)
-        (exp(y), exp(x))
+        (E**y, E**x)
         >>> (x + x*y).as_independent(y)
         (x, x*y)
         >>> separatevars(x + x*y).as_independent(y)
@@ -2411,7 +2411,7 @@ class Expr(Basic, EvalfMixin):
         >>> e.series(y, n=2)
         cos(x + 1) - y*sin(x + 1) + O(y**2)
         >>> e.series(x, n=2)
-        cos(exp(y)) - x*sin(exp(y)) + O(x**2)
+        cos(E**y) - x*sin(E**y) + O(x**2)
 
         If ``n=None`` then a generator of the series terms will be returned.
 
@@ -2674,7 +2674,7 @@ class Expr(Basic, EvalfMixin):
         >>> e.nseries(x, 0, 2)
         O(log(x)**2)
         >>> e.nseries(x, 0, 2, logx=logx)
-        exp(logx*y)
+        E**(logx*y)
         """
         if x and x not in self.free_symbols:
             return self
@@ -2722,15 +2722,15 @@ class Expr(Basic, EvalfMixin):
         >>> from sympy.abc import x, y
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
         >>> e.aseries(x)
-        (1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))*exp(-x)
+        E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
         >>> e.aseries(x, n=3, hir=True)
-        -exp(-2*x)*sin(1/x)/2 + exp(-x)*cos(1/x) + O(exp(-3*x), (x, oo))
+        -E**(-2*x)*sin(1/x)/2 + E**(-x)*cos(1/x) + O(E**(-3*x), (x, oo))
 
         >>> e = exp(exp(x)/(1 - 1/x))
         >>> e.aseries(x, bound=3)
-        exp(exp(x)/x**2)*exp(exp(x)/x)*exp(-exp(x) + exp(x)/(1 - 1/x) - exp(x)/x - exp(x)/x**2)*exp(exp(x))
+        E**(E**x)*E**(E**x/x**2)*E**(E**x/x)*E**(-E**x + E**x/(1 - 1/x) - E**x/x - E**x/x**2)
         >>> e.aseries(x)
-        exp(exp(x)/(1 - 1/x))
+        E**(E**x/(1 - 1/x))
 
         Notes
         =====
@@ -2776,7 +2776,7 @@ class Expr(Basic, EvalfMixin):
             s = a.aseries(x, n, bound=bound)
             s = s.func(*[t.removeO() for t in s.args])
             rep = exp(s.subs(x, 1/x).as_leading_term(x).subs(x, 1/x))
-            f = exp(self.args[0] - rep.args[0]) / d
+            f = exp(self.exp - rep.exp)/d
             logw = log(1/rep)
 
         s = f.series(d, 0, n)

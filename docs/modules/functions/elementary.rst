@@ -265,8 +265,7 @@ sympy.functions.elementary.exponential
 exp
 ---
 
-.. autoclass:: sympy.functions.elementary.exponential.exp
-   :members:
+.. autofunction:: sympy.functions.elementary.exponential.exp
 
 exp_polar
 ---------

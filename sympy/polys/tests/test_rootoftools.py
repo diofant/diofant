@@ -310,7 +310,6 @@ def test_RootSum___new__():
     raises(MultivariatePolynomialError, lambda: RootSum(x**3 + x + y))
     raises(ValueError, lambda: RootSum(x**2 + 3, lambda x: x))
 
-    assert RootSum(f, exp) == RootSum(f, Lambda(x, exp(x)))
     assert RootSum(f, log) == RootSum(f, Lambda(x, log(x)))
 
     assert isinstance(RootSum(f, auto=False), RootSum) is True
@@ -360,26 +359,26 @@ def test_RootSum___eq__():
 
 
 def test_RootSum_doit():
-    rs = RootSum(x**2 + 1, exp)
+    rs = RootSum(x**2 + 1, Lambda(x, exp(x)))
 
     assert isinstance(rs, RootSum) is True
     assert rs.doit() == exp(-I) + exp(I)
 
-    rs = RootSum(x**2 + a, exp, x)
+    rs = RootSum(x**2 + a, Lambda(x, exp(x)), x)
 
     assert isinstance(rs, RootSum) is True
     assert rs.doit() == exp(-sqrt(-a)) + exp(sqrt(-a))
 
 
 def test_RootSum_evalf():
-    rs = RootSum(x**2 + 1, exp)
+    rs = RootSum(x**2 + 1, Lambda(x, exp(x)))
 
     assert rs.evalf(n=20, chop=True).epsilon_eq(
         Float("1.0806046117362794348", 20), Float("1e-20")) is S.true
     assert rs.evalf(n=15, chop=True).epsilon_eq(
         Float("1.08060461173628", 15), Float("1e-15")) is S.true
 
-    rs = RootSum(x**2 + a, exp, x)
+    rs = RootSum(x**2 + a, Lambda(x, exp(x)), x)
 
     assert rs.evalf() == rs
 

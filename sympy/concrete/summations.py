@@ -83,7 +83,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     >>> Sum(x**k, (k, 0, oo)).doit()
     Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), True))
     >>> Sum(x**k/factorial(k), (k, 0, oo)).doit()
-    exp(x)
+    E**x
 
     Here are examples to do summation with symbolic indices.  You
     can use either Function of IndexedBase classes:
@@ -539,7 +539,7 @@ def summation(f, *symbols, **kwargs):
     >>> from sympy.abc import x
     >>> from sympy import factorial
     >>> summation(x**n/factorial(n), (n, 0, oo))
-    exp(x)
+    E**x
 
     See Also
     ========

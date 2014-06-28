@@ -32,9 +32,6 @@ def test_trigonometric():
     e = e.subs(sin(x), cos(x))
     assert e == 2*cos(x)**2
 
-    assert exp(pi).subs(exp, sin) == 0
-    assert cos(exp(pi)).subs(exp, sin) == 1
-
     i = Symbol('i', integer=True)
     zoo = S.ComplexInfinity
     assert tan(x).subs(x, pi/2) is zoo
@@ -401,7 +398,7 @@ def test_functions_subs():
     assert (f(x, y)).subs(f, sin) == f(x, y)
     assert (sin(x) + atan2(x, y)).subs([[atan2, f], [sin, g]]) == \
         f(x, y) + g(x)
-    assert (g(f(x + y, x))).subs([[f, l], [g, exp]]) == exp(x + sin(x + y))
+    assert (g(f(x + y, x))).subs([[f, l], [g, Lambda(x, exp(x))]]) == exp(x + sin(x + y))
 
 
 def test_derivative_subs():
