@@ -50,3 +50,4 @@ access any SymPy module, or use this contens:
    calculus/index.rst
    categories.rst
    diffgeom.rst
+   vector/index.rst
