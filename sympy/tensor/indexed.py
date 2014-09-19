@@ -138,7 +138,7 @@ class Indexed(Expr):
             raise IndexException("Indexed needs at least one index.")
         if isinstance(base, (str, Symbol)):
             base = IndexedBase(base)
-        elif not isinstance(base, IndexedBase):
+        elif not hasattr(base, '__getitem__') and not isinstance(base, IndexedBase):
             raise TypeError(filldedent("""
                 Indexed expects string, Symbol or IndexedBase as base."""))
         args = list(map(sympify, args))
