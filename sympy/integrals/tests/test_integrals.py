@@ -916,7 +916,6 @@ def test_integrate_series():
         x**10/3628800 + Integral(O(x**10), x)
 
     assert integrate(f, x) == g
-    assert diff(integrate(f, x), x) == f
 
     assert integrate(O(x**5), x) == Integral(O(x**5), x)
 
