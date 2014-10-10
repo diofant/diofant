@@ -13,6 +13,7 @@ PRECEDENCE = {
     "Relational": 35,
     "Add": 40,
     "Mul": 50,
+    "Mod": 50,
     "Pow": 60,
     "Not": 100,
     "Atom": 1000
@@ -28,6 +29,7 @@ PRECEDENCE_VALUES = {
     "Or": PRECEDENCE["Or"],
     "And": PRECEDENCE["And"],
     "Add": PRECEDENCE["Add"],
+    "Mod": PRECEDENCE["Mod"],
     "Pow": PRECEDENCE["Pow"],
     "Relational": PRECEDENCE["Relational"],
     "Sub": PRECEDENCE["Add"],

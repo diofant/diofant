@@ -496,6 +496,13 @@ class StrPrinter(Printer):
                 return '%s**%s' % (self.parenthesize(expr.base, PREC), e[1:-1])
         return '%s**%s' % (self.parenthesize(expr.base, PREC), e)
 
+    def _print_Mod(self, expr):
+        PREC = precedence(expr)
+
+        a, b = expr.args
+        return '%s%%%s' % (self.parenthesize(a, PREC),
+                           self.parenthesize(b, PREC))
+
     def _print_MatPow(self, expr):
         PREC = precedence(expr)
         return '%s**%s' % (self.parenthesize(expr.base, PREC),

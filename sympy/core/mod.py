@@ -16,7 +16,7 @@ class Mod(Function):
 
     >>> from sympy.abc import x, y
     >>> x**2 % y
-    Mod(x**2, y)
+    x**2%y
     >>> _.subs({x: 5, y: 6})
     1
 

@@ -1380,6 +1380,9 @@ class PrettyPrinter(Printer):
 
         return self._print(b)**self._print(e)
 
+    def _print_Mod(self, expr):
+        return prettyForm(sstr(expr))
+
     def __print_numer_denom(self, p, q):
         if q == 1:
             if p < 0:
