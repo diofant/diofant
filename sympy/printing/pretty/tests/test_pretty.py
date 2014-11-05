@@ -4801,6 +4801,15 @@ def test_Tr():
 def test_pretty_Add():
     eq = Mul(-2, x - 2, evaluate=False) + 5
     assert pretty(eq) == '-2*(x - 2) + 5'
+    eq = Add(0, 0, evaluate=False)
+    assert pretty(eq) == '0 + 0'
+    assert upretty(eq) == u('0 + 0')
+
+
+def test_pretty_Mul():
+    eq = Mul(1, 1, evaluate=False)
+    assert pretty(eq) == '1*1'
+    assert upretty(eq) == u('1⋅1')
 
 
 def test_issue_7179():

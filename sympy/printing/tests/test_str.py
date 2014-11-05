@@ -1,6 +1,6 @@
 from __future__ import division
 
-from sympy import (Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
+from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
     factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
     Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Rational, Float, Rel,
     S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
@@ -52,6 +52,7 @@ def test_Add():
     assert str(x - z*y**2*z*w) == "-w*y**2*z**2 + x"
     assert str(x - 1*y*x*y) == "-x*y**2 + x"
     assert str(sin(x).series(x, 0, 15)) == "x - x**3/6 + x**5/120 - x**7/5040 + x**9/362880 - x**11/39916800 + x**13/6227020800 + O(x**15)"
+    assert str(Add(0, 0, evaluate=False)) == "0 + 0"
 
 
 def test_Catalan():
@@ -218,6 +219,7 @@ def test_Mul():
     assert str(cc2*Rational(2)) == '2*CustomClass2()'
     assert str(cc2*Rational(2)*cc1) == '2*CustomClass1()*CustomClass2()'
     assert str(cc1*Rational(2)*cc2) == '2*CustomClass1()*CustomClass2()'
+    assert str(Mul(1, 1, evaluate=False)) == '1*1'
 
 
 def test_NaN():
