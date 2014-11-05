@@ -38,7 +38,8 @@ from diofant.logic.boolalg import And, Or, Xor
 from diofant.matrices import (Adjoint, HadamardProduct, Inverse, Transpose,
                               ZeroMatrix)
 from diofant.parsing.sympy_parser import parse_expr
-from diofant.printing.latex import (LatexPrinter, latex, other_symbols,
+from diofant.printing.latex import (LatexPrinter, greek_letters_set, latex,
+                                    other_symbols, tex_greek_dictionary,
                                     translate)
 from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
@@ -177,7 +178,14 @@ def test_latex_Float():
 
 def test_latex_symbols():
     Gamma, lmbda, rho = symbols('Gamma, lambda, rho')
-    mass, volume = symbols('mass, volume')
+    tau, Tau, TAU, taU = symbols('tau, Tau, TAU, taU')
+    assert latex(tau) == r"\tau"
+    assert latex(Tau) == "T"
+    assert latex(TAU) == r"\tau"
+    assert latex(taU) == r"\tau"
+    # Check that all capitalized greek letters are handled explicitly
+    capitalized_letters = {l.capitalize() for l in greek_letters_set}
+    assert len(capitalized_letters - set(tex_greek_dictionary.keys())) == 0
     assert latex(Gamma + lmbda) == r"\Gamma + \lambda"
     assert latex(Gamma * lmbda) == r"\Gamma \lambda"
     assert latex(Symbol('q1')) == r"q_{1}"
