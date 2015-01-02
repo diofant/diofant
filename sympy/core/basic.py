@@ -140,11 +140,10 @@ class Basic(with_metaclass(ManagedProperties)):
         {'commutative': True}
         >>> x = Symbol("x", positive=True)
         >>> x.assumptions0
-        {'commutative': True, 'complex': True, 'hermitian': True,
-        'imaginary': False, 'negative': False, 'nonnegative': True,
-        'nonpositive': False, 'nonzero': True, 'positive': True, 'real': True,
-        'zero': False}
-
+        {'commutative': True, 'complex': True, 'extended_real': True,
+         'hermitian': True, 'imaginary': False, 'negative': False,
+         'nonnegative': True, 'nonpositive': False, 'nonzero': True,
+         'positive': True, 'zero': False}
         """
         return {}
 
