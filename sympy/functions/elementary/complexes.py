@@ -46,7 +46,7 @@ class re(Function):
        sympy.functions.elementary.complexes.im
     """
 
-    is_real = True
+    is_extended_real = True
     unbranched = True  # implicitely works on the projection to C
 
     @classmethod
@@ -143,7 +143,7 @@ class im(Function):
     sympy.functions.elementary.complexes.re
     """
 
-    is_real = True
+    is_extended_real = True
     unbranched = True  # implicitely works on the projection to C
 
     @classmethod
@@ -415,7 +415,7 @@ class Abs(Function):
     sympy.functions.elementary.complexes.conjugate
     """
 
-    is_real = True
+    is_extended_real = True
     is_negative = False
     unbranched = True
 
@@ -572,7 +572,7 @@ class Abs(Function):
 class arg(Function):
     """Returns the argument (in radians) of a complex number"""
 
-    is_real = True
+    is_extended_real = True
     is_finite = True
 
     @classmethod

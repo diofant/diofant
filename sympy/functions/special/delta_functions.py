@@ -43,7 +43,7 @@ class DiracDelta(Function):
     .. [1] http://mathworld.wolfram.com/DeltaFunction.html
     """
 
-    is_real = True
+    is_extended_real = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:

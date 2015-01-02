@@ -459,8 +459,9 @@ class MinMaxBase(Expr, LatticeOp):
     n = evalf
 
     @property
-    def is_real(self):
+    def is_extended_real(self):
         return fuzzy_and(arg.is_extended_real for arg in self.args)
+
 
 class Max(MinMaxBase, Application):
     """

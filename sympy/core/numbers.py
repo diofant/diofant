@@ -663,7 +663,7 @@ class Float(Number):
     is_irrational = None
     is_number = True
 
-    is_real = True
+    is_extended_real = True
 
     is_Float = True
 
@@ -2896,7 +2896,7 @@ class ComplexInfinity(with_metaclass(Singleton, AtomicExpr)):
     is_number = True
     is_prime = False
     is_complex = True
-    is_real = False
+    is_extended_real = False
 
     __slots__ = []
 
@@ -3381,6 +3381,7 @@ class ImaginaryUnit(with_metaclass(Singleton, AtomicExpr)):
 
     is_commutative = True
     is_imaginary = True
+    is_extended_real = False
     is_finite = True
     is_number = True
     is_algebraic = True
