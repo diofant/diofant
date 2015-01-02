@@ -1763,7 +1763,7 @@ def test_mul_zero_detection():
     assert e.is_imaginary is None
     assert e.is_real is None
 
-    # _eval_is_real and _eval_is_zero both employ trapping of the
+    # _eval_is_extended_real and _eval_is_zero both employ trapping of the
     # zero value so args should be tested in both directions and
     # TO AVOID GETTING THE CACHED RESULT, Dummy MUST BE USED
 

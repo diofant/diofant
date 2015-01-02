@@ -443,8 +443,8 @@ class Add(Expr, AssocOp):
         return all(term._eval_is_algebraic_expr(syms) for term in self.args)
 
     # assumption methods
-    _eval_is_real = lambda self: _fuzzy_group(
-        (a.is_real for a in self.args), quick_exit=True)
+    _eval_is_extended_real = lambda self: _fuzzy_group(
+        (a.is_extended_real for a in self.args), quick_exit=True)
     _eval_is_complex = lambda self: _fuzzy_group(
         (a.is_complex for a in self.args), quick_exit=True)
     _eval_is_antihermitian = lambda self: _fuzzy_group(

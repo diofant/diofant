@@ -73,7 +73,7 @@ class RoundFunction(Function):
     def _eval_is_finite(self):
         return self.args[0].is_finite
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_integer(self):

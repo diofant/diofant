@@ -192,7 +192,7 @@ class besselj(BesselBase):
     def _eval_rewrite_as_jn(self, nu, z):
         return sqrt(2*z/pi)*jn(nu - S.Half, self.argument)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         nu, z = self.args
         if nu.is_integer and z.is_real:
             return True
@@ -271,7 +271,7 @@ class bessely(BesselBase):
     def _eval_rewrite_as_yn(self, nu, z):
         return sqrt(2*z/pi) * yn(nu - S.Half, self.argument)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         nu, z = self.args
         if nu.is_integer and z.is_positive:
             return True
@@ -371,7 +371,7 @@ class besseli(BesselBase):
     def _eval_rewrite_as_jn(self, nu, z):
         return self._eval_rewrite_as_besselj(*self.args).rewrite(jn)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         nu, z = self.args
         if nu.is_integer and z.is_real:
             return True
@@ -455,7 +455,7 @@ class besselk(BesselBase):
         if ay:
             return ay.rewrite(yn)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         nu, z = self.args
         if nu.is_integer and z.is_positive:
             return True
@@ -767,7 +767,7 @@ class AiryBase(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _as_real_imag(self, deep=True, **hints):

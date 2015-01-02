@@ -394,7 +394,7 @@ class sin(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_finite(self):
@@ -773,7 +773,7 @@ class cos(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_finite(self):
@@ -1043,7 +1043,7 @@ class tan(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_finite(self):
@@ -1286,7 +1286,7 @@ class cot(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_expand_trig(self, **hints):
@@ -1424,8 +1424,8 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     def _eval_expand_trig(self, **hints):
         return self._calculate_reciprocal("_eval_expand_trig", **hints)
 
-    def _eval_is_real(self):
-        return self._reciprocal_of(self.args[0])._eval_is_real()
+    def _eval_is_extended_real(self):
+        return self._reciprocal_of(self.args[0])._eval_is_extended_real()
 
     def _eval_as_leading_term(self, x):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
@@ -1764,7 +1764,7 @@ class asin(InverseTrigonometricFunction):
     def _eval_rewrite_as_acsc(self, arg):
         return acsc(1/arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         x = self.args[0]
         return x.is_real and (1 - abs(x)).is_nonnegative
 
@@ -1898,7 +1898,7 @@ class acos(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         x = self.args[0]
         return x.is_real and (1 - abs(x)).is_nonnegative
 
@@ -2061,7 +2061,7 @@ class atan(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_rewrite_as_log(self, x):
@@ -2211,7 +2211,7 @@ class acot(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_aseries(self, n, args0, x, logx):
@@ -2596,7 +2596,7 @@ class atan2(InverseTrigonometricFunction):
         d = x**2 + y**2
         return arg(n/sqrt(d)) - I*log(abs(n)/sqrt(abs(d)))
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real and self.args[1].is_real
 
     def _eval_conjugate(self):

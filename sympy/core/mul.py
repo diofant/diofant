@@ -1022,7 +1022,7 @@ class Mul(Expr, AssocOp):
         return has_polar and \
             all(arg.is_polar or arg.is_positive for arg in self.args)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         real = True
         zero = one_neither = False
 

@@ -193,7 +193,7 @@ class sinh(HyperbolicFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_finite(self):
@@ -342,7 +342,7 @@ class cosh(HyperbolicFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_finite(self):
@@ -481,7 +481,7 @@ class tanh(HyperbolicFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_real
 
     def _eval_is_finite(self):
@@ -678,7 +678,7 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
     def _eval_as_leading_term(self, x):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self._reciprocal_of(args[0]).is_real
 
     def _eval_is_finite(self):

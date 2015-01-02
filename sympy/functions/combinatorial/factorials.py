@@ -11,7 +11,6 @@ from sympy.core.compatibility import reduce, range
 from sympy.core.cache import cacheit
 
 
-
 class CombinatorialFunction(Function):
     """Base class for combinatorial functions. """
 
@@ -188,7 +187,7 @@ class factorial(CombinatorialFunction):
         if x.is_integer:
             return (x - 3).is_nonnegative
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         x = self.args[0]
         if x.is_nonnegative or x.is_noninteger:
             return True

@@ -134,7 +134,7 @@ class RootOf(Expr):
         # either case no free symbols should be reported.
         return set()
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         """Return ``True`` if the root is real. """
         return self.index < len(_reals_cache[self.poly])
 

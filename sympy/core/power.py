@@ -372,7 +372,7 @@ class Pow(Expr):
             check = self.func(*self.args)
             return check.is_Integer
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         from sympy import arg, exp, log, Mul
         real_b = self.base.is_real
         if real_b is None:

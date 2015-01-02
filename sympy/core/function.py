@@ -307,8 +307,8 @@ class Function(Application, Expr):
     ...             elif x is S.Infinity:
     ...                 return S.Zero
     ...
-    ...     def _eval_is_real(self):
-    ...         return self.args[0].is_real
+    ...     def _eval_is_extended_real(self):
+    ...         return self.args[0].is_extended_real
     ...
     >>> x = S('x')
     >>> my_func(0) + sin(0)

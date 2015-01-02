@@ -243,7 +243,7 @@ class RandomSymbol(Expr):
     def _eval_is_integer(self):
         return self.symbol.is_integer
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.symbol.is_real or self.pspace.is_real
 
     @property

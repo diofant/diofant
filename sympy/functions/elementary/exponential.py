@@ -174,7 +174,7 @@ class exp_polar(ExpBase):
     def _eval_power(self, other):
         return self.func(self.args[0]*other)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         if self.args[0].is_real:
             return True
 
@@ -351,7 +351,7 @@ class exp(ExpBase):
             return new**self.exp._subs(old, new)
         return Function._eval_subs(self, old, new)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         if self.args[0].is_real:
             return True
         elif self.args[0].is_imaginary:
@@ -666,7 +666,7 @@ class log(Function):
         else:
             return s.is_algebraic
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_positive
 
     def _eval_is_finite(self):
@@ -805,7 +805,7 @@ class LambertW(Function):
 
         raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         x = self.args[0]
         if len(self.args) == 1:
             k = S.Zero
