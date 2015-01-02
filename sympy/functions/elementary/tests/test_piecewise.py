@@ -454,11 +454,11 @@ def test_piecewise_complex():
     assert conjugate(p3) == p4
 
     assert p1.is_imaginary is False
-    assert p1.is_real is True
+    assert p1.is_extended_real is True
     assert p2.is_imaginary is True
-    assert p2.is_real is False
+    assert p2.is_extended_real is False
     assert p3.is_imaginary is None
-    assert p3.is_real is None
+    assert p3.is_extended_real is None
 
     assert p1.as_real_imag() == (p1, 0)
     assert p2.as_real_imag() == (0, -I*p2)

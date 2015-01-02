@@ -57,12 +57,12 @@ class BesselBase(Function):
 
     def _eval_conjugate(self):
         z = self.argument
-        if (z.is_real and z.is_negative) is False:
+        if (z.is_extended_real and z.is_negative) is False:
             return self.__class__(self.order.conjugate(), z.conjugate())
 
     def _eval_expand_func(self, **hints):
         nu, z, f = self.order, self.argument, self.__class__
-        if nu.is_real:
+        if nu.is_extended_real:
             if (nu - 1).is_positive:
                 return (-self._a*self._b*f(nu - 2, z)._eval_expand_func() +
                         2*self._a*(nu - 1)*f(nu - 1, z)._eval_expand_func()/z)
@@ -194,7 +194,7 @@ class besselj(BesselBase):
 
     def _eval_is_extended_real(self):
         nu, z = self.args
-        if nu.is_integer and z.is_real:
+        if nu.is_integer and z.is_extended_real:
             return True
 
     def _sage_(self):
@@ -373,7 +373,7 @@ class besseli(BesselBase):
 
     def _eval_is_extended_real(self):
         nu, z = self.args
-        if nu.is_integer and z.is_real:
+        if nu.is_integer and z.is_extended_real:
             return True
 
     def _sage_(self):
@@ -504,7 +504,7 @@ class hankel1(BesselBase):
 
     def _eval_conjugate(self):
         z = self.argument
-        if (z.is_real and z.is_negative) is False:
+        if (z.is_extended_real and z.is_negative) is False:
             return hankel2(self.order.conjugate(), z.conjugate())
 
 
@@ -548,7 +548,7 @@ class hankel2(BesselBase):
 
     def _eval_conjugate(self):
         z = self.argument
-        if (z.is_real and z.is_negative) is False:
+        if (z.is_extended_real and z.is_negative) is False:
             return hankel1(self.order.conjugate(), z.conjugate())
 
 from sympy.polys.orthopolys import spherical_bessel_fn as fn
@@ -768,10 +768,10 @@ class AiryBase(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _as_real_imag(self, deep=True, **hints):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)

@@ -108,7 +108,7 @@ class DiracDelta(Function):
             valid = True
             darg = abs(diff(self.args[0], x))
             for r, m in argroots.items():
-                if r.is_real is not False and m == 1:
+                if r.is_extended_real is not False and m == 1:
                     result += self.func(x - r)/darg.subs(x, r)
                 else:
                     # don't handle non-real and if m != 1 then
@@ -244,11 +244,11 @@ class Heaviside(Function):
             return S.One
 
     def _eval_rewrite_as_Piecewise(self, arg):
-        if arg.is_real:
+        if arg.is_extended_real:
             return Piecewise((1, arg > 0), (S(1)/2, Eq(arg, 0)), (0, True))
 
     def _eval_rewrite_as_sign(self, arg):
-        if arg.is_real:
+        if arg.is_extended_real:
             return (sign(arg)+1)/2
 
     def _sage_(self):

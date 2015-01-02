@@ -88,11 +88,11 @@ def _symbol(s, matching_symbol=None):
     >>> x = Symbol('x')
     >>> _symbol('y')
     y
-    >>> _.is_real
+    >>> _.is_extended_real
     True
     >>> _symbol(x)
     x
-    >>> _.is_real is None
+    >>> _.is_extended_real is None
     True
     >>> arb = Symbol('foo')
     >>> _symbol('arb', arb) # arb's name is foo so foo will not be returned

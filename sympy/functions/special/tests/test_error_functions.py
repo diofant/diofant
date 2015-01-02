@@ -40,8 +40,8 @@ def test_erf():
     assert erf(erf2inv(0, x)) == x
     assert erf(erf2inv(0, erf(erfcinv(1 - erf(erfinv(x)))))) == x
 
-    assert erf(I).is_real is False
-    assert erf(0).is_real is True
+    assert erf(I).is_extended_real is False
+    assert erf(0).is_extended_real is True
 
     assert conjugate(erf(z)) == erf(conjugate(z))
 
@@ -109,8 +109,8 @@ def test_erfc():
     assert erfc(-x) == S(2) - erfc(x)
     assert erfc(erfcinv(x)) == x
 
-    assert erfc(I).is_real is False
-    assert erfc(0).is_real is True
+    assert erfc(I).is_extended_real is False
+    assert erfc(0).is_extended_real is True
 
     assert conjugate(erfc(z)) == erfc(conjugate(z))
 
@@ -164,8 +164,8 @@ def test_erfi():
     assert erfi(I*erfcinv(x)) == I*(1 - x)
     assert erfi(I*erf2inv(0, x)) == I*x
 
-    assert erfi(I).is_real is False
-    assert erfi(0).is_real is True
+    assert erfi(I).is_extended_real is False
+    assert erfi(0).is_extended_real is True
 
     assert conjugate(erfi(z)) == erfi(conjugate(z))
 
@@ -222,8 +222,8 @@ def test_erf2():
     assert erf2(x, y).rewrite('uppergamma') == erf(y).rewrite(uppergamma) - erf(x).rewrite(uppergamma)
     assert erf2(x, y).rewrite('expint') == erf(y).rewrite(expint)-erf(x).rewrite(expint)
 
-    assert erf2(I, 0).is_real is False
-    assert erf2(0, 0).is_real is True
+    assert erf2(I, 0).is_extended_real is False
+    assert erf2(0, 0).is_extended_real is True
 
     assert conjugate(erf2(x, y)) == erf2(conjugate(x), conjugate(y))
 
@@ -583,7 +583,7 @@ def test_fresnel():
     assert fresnels(z).series(z, n=15) == \
         pi*z**3/6 - pi**3*z**7/336 + pi**5*z**11/42240 + O(z**15)
 
-    assert fresnels(w).is_real is True
+    assert fresnels(w).is_extended_real is True
 
     assert fresnels(z).as_real_imag() == \
         ((fresnels(re(z) - I*re(z)*Abs(im(z))/Abs(re(z)))/2 +
@@ -640,7 +640,7 @@ def test_fresnel():
         (-z**3/pi**2 + O(z**6))*cos(pi/(2*z**2)) + (z/pi - 3*z**5/pi**3 + \
         O(z**6))*sin(pi/(2*z**2)) + S.Half
 
-    assert fresnelc(w).is_real is True
+    assert fresnelc(w).is_extended_real is True
 
     assert fresnelc(z).as_real_imag() == \
         ((fresnelc(re(z) - I*re(z)*Abs(im(z))/Abs(re(z)))/2 +

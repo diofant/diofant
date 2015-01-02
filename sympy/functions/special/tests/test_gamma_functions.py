@@ -370,10 +370,10 @@ def test_loggamma():
     assert conjugate(loggamma(0)) == conjugate(loggamma(0))
     assert conjugate(loggamma(1)) == loggamma(conjugate(1))
     assert conjugate(loggamma(-oo)) == conjugate(loggamma(-oo))
-    assert loggamma(x).is_real is None
+    assert loggamma(x).is_extended_real is None
     y, z = Symbol('y', real=True), Symbol('z', imaginary=True, nonzero=True)
-    assert loggamma(y).is_real
-    assert loggamma(z).is_real is False
+    assert loggamma(y).is_extended_real
+    assert loggamma(z).is_extended_real is False
 
     def tN(N, M):
         assert loggamma(1/x)._eval_nseries(x, n=N).getn() == M
@@ -400,11 +400,11 @@ def test_issue_8657():
     m = Symbol('m', integer=True)
     o = Symbol('o', positive=True)
     p = Symbol('p', negative=True, integer=False)
-    assert gamma(n).is_real is False
-    assert gamma(m).is_real is None
-    assert gamma(o).is_real is True
-    assert gamma(p).is_real is True
-    assert gamma(w).is_real is None
+    assert gamma(n).is_extended_real is False
+    assert gamma(m).is_extended_real is None
+    assert gamma(o).is_extended_real is True
+    assert gamma(p).is_extended_real is True
+    assert gamma(w).is_extended_real is None
 
 
 def test_issue_8524():

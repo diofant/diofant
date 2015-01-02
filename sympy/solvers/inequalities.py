@@ -289,7 +289,7 @@ def reduce_abs_inequality(expr, rel, gen):
 
     reduce_abs_inequalities
     """
-    if gen.is_real is False:
+    if gen.is_extended_real is False:
         raise TypeError(filldedent('''
             can't solve inequalities with absolute
             values containing non-real variables'''))
@@ -419,7 +419,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
             r = S.false
         if r in (S.true, S.false):
             return r
-        if v.is_real is False:
+        if v.is_extended_real is False:
             return S.false
         else:
             v = v.n(2)
@@ -581,7 +581,7 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     # make vanilla symbol real
     recast = dict([(i, Dummy(i.name, real=True))
-        for i in gens if i.is_real is None])
+        for i in gens if i.is_extended_real is None])
     inequalities = [i.xreplace(recast) for i in inequalities]
     symbols = set([i.xreplace(recast) for i in symbols])
 

@@ -101,7 +101,7 @@ def test_sin():
 
     assert sin(k*pi*I) == sinh(k*pi)*I
 
-    assert sin(r).is_real is True
+    assert sin(r).is_extended_real is True
 
     assert sin(0, evaluate=False).is_algebraic
     assert sin(a).is_algebraic is None
@@ -288,7 +288,7 @@ def test_cos():
     assert cos(x*I) == cosh(x)
     assert cos(k*pi*I) == cosh(k*pi)
 
-    assert cos(r).is_real is True
+    assert cos(r).is_extended_real is True
 
     assert cos(0, evaluate=False).is_algebraic
     assert cos(a).is_algebraic is None
@@ -424,7 +424,7 @@ def test_tan():
 
     assert tan(k*pi*I) == tanh(k*pi)*I
 
-    assert tan(r).is_real is True
+    assert tan(r).is_extended_real is True
 
     assert tan(0, evaluate=False).is_algebraic
     assert tan(a).is_algebraic is None
@@ -555,7 +555,7 @@ def test_cot():
     assert cot(x*I) == -coth(x)*I
     assert cot(k*pi*I) == -coth(k*pi)*I
 
-    assert cot(r).is_real is True
+    assert cot(r).is_extended_real is True
 
     assert cot(a).is_algebraic is None
     assert cot(na).is_algebraic is False
@@ -655,9 +655,9 @@ def test_asin():
 
     assert asin(x).diff(x) == 1/sqrt(1 - x**2)
 
-    assert asin(0.2).is_real is True
-    assert asin(-2).is_real is False
-    assert asin(r).is_real is None
+    assert asin(0.2).is_extended_real is True
+    assert asin(-2).is_extended_real is False
+    assert asin(r).is_extended_real is None
 
     assert asin(-2*I) == -I*asinh(2)
 
@@ -701,9 +701,9 @@ def test_acos():
 
     assert acos(x).diff(x) == -1/sqrt(1 - x**2)
 
-    assert acos(0.2).is_real is True
-    assert acos(-2).is_real is False
-    assert acos(r).is_real is None
+    assert acos(0.2).is_extended_real is True
+    assert acos(-2).is_extended_real is False
+    assert acos(r).is_extended_real is None
 
     assert acos(Rational(1, 7), evaluate=False).is_positive is True
     assert acos(Rational(-1, 7), evaluate=False).is_positive is True
@@ -752,7 +752,7 @@ def test_atan():
     assert atan(oo) == pi/2
     assert atan(x).diff(x) == 1/(1 + x**2)
 
-    assert atan(r).is_real is True
+    assert atan(r).is_extended_real is True
 
     assert atan(-2*I) == -I*atanh(2)
     assert atan(p).is_positive is True
@@ -841,7 +841,7 @@ def test_acot():
     assert acot(-1/sqrt(3)) == -pi/3
     assert acot(x).diff(x) == -1/(1 + x**2)
 
-    assert acot(r).is_real is True
+    assert acot(r).is_extended_real is True
 
     assert acot(I*pi) == -I*acoth(pi)
     assert acot(-2*I) == I*acoth(2)
@@ -1182,8 +1182,8 @@ def test_sec():
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
 
-    assert sec(x).is_real == True
-    assert sec(z).is_real == None
+    assert sec(x).is_extended_real == True
+    assert sec(z).is_extended_real == None
 
     assert sec(a).is_algebraic is None
     assert sec(na).is_algebraic is False
@@ -1257,8 +1257,8 @@ def test_csc():
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
 
-    assert csc(x).is_real == True
-    assert csc(z).is_real == None
+    assert csc(x).is_extended_real == True
+    assert csc(z).is_extended_real == None
 
     assert csc(a).is_algebraic is None
     assert csc(na).is_algebraic is False

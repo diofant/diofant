@@ -576,7 +576,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (I*exp_polar(I*pi*2)).is_comparable
         False
         """
-        is_real = self.is_real
+        is_real = self.is_extended_real
         if is_real is False:
             return False
         is_number = self.is_number

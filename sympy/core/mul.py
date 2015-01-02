@@ -544,9 +544,9 @@ class Mul(Expr, AssocOp):
             #   infinite_real + infinite_im
             # and non-zero real or imaginary will not change that status.
             c_part = [c for c in c_part if not (c.is_nonzero and
-                                                c.is_real is not None)]
+                                                c.is_extended_real is not None)]
             nc_part = [c for c in nc_part if not (c.is_nonzero and
-                                                  c.is_real is not None)]
+                                                  c.is_extended_real is not None)]
 
         # 0
         elif coeff is S.Zero:
@@ -683,7 +683,7 @@ class Mul(Expr, AssocOp):
         coeffi = []
         addterms = S.One
         for a in self.args:
-            if a.is_real:
+            if a.is_extended_real:
                 coeffr.append(a)
             elif a.is_imaginary:
                 coeffi.append(a)
@@ -1031,7 +1031,7 @@ class Mul(Expr, AssocOp):
                 return t.is_complex
             elif t.is_imaginary:
                 real = not real
-            elif t.is_real:
+            elif t.is_extended_real:
                 if not zero:
                     z = t.is_zero
                     if not z and zero is False:
@@ -1040,7 +1040,7 @@ class Mul(Expr, AssocOp):
                         if all(a.is_finite for a in self.args):
                             return True
                         return
-            elif t.is_real is False:
+            elif t.is_extended_real is False:
                 if one_neither:
                     return  # complex terms might cancel
                 one_neither = True
@@ -1056,7 +1056,7 @@ class Mul(Expr, AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
-        return (S.ImaginaryUnit*self).is_real
+        return (S.ImaginaryUnit*self).is_extended_real
 
     def _eval_is_hermitian(self):
         real = True

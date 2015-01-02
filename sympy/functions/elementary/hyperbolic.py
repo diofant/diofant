@@ -134,7 +134,7 @@ class sinh(HyperbolicFunction):
         Returns this function as a complex coordinate.
         """
         from sympy import cos, sin
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -194,7 +194,7 @@ class sinh(HyperbolicFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_finite(self):
         arg = self.args[0]
@@ -282,7 +282,7 @@ class cosh(HyperbolicFunction):
 
     def as_real_imag(self, deep=True, **hints):
         from sympy import cos, sin
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -343,7 +343,7 @@ class cosh(HyperbolicFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_finite(self):
         arg = self.args[0]
@@ -442,7 +442,7 @@ class tanh(HyperbolicFunction):
 
     def as_real_imag(self, deep=True, **hints):
         from sympy import cos, sin
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -482,11 +482,11 @@ class tanh(HyperbolicFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_finite(self):
         arg = self.args[0]
-        if arg.is_real:
+        if arg.is_extended_real:
             return True
 
 
@@ -574,7 +574,7 @@ class coth(HyperbolicFunction):
 
     def as_real_imag(self, deep=True, **hints):
         from sympy import cos, sin
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -679,7 +679,7 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
 
     def _eval_is_extended_real(self):
-        return self._reciprocal_of(args[0]).is_real
+        return self._reciprocal_of(args[0]).is_extended_real
 
     def _eval_is_finite(self):
         return (1/self._reciprocal_of(args[0])).is_finite
@@ -939,7 +939,7 @@ class acosh(Function):
             }
 
             if arg in cst_table:
-                if arg.is_real:
+                if arg.is_extended_real:
                     return cst_table[arg]*S.ImaginaryUnit
                 return cst_table[arg]
 

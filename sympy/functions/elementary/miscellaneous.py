@@ -374,7 +374,7 @@ class MinMaxBase(Expr, LatticeOp):
         for arg in arg_sequence:
 
             # pre-filter, checking comparability of arguments
-            if (not isinstance(arg, Expr)) or (arg.is_real is False) or (arg is S.ComplexInfinity):
+            if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is S.ComplexInfinity):
                 raise ValueError("The argument '%s' is not comparable." % arg)
 
             if arg == cls.zero:
@@ -460,7 +460,7 @@ class MinMaxBase(Expr, LatticeOp):
 
     @property
     def is_real(self):
-        return fuzzy_and(arg.is_real for arg in self.args)
+        return fuzzy_and(arg.is_extended_real for arg in self.args)
 
 class Max(MinMaxBase, Application):
     """

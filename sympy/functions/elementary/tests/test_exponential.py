@@ -222,13 +222,13 @@ def test_exp_assumptions():
     r = Symbol('r', real=True)
     i = Symbol('i', imaginary=True)
     for e in exp, exp_polar:
-        assert e(x).is_real is None
+        assert e(x).is_extended_real is None
         assert e(x).is_imaginary is None
-        assert e(i).is_real is None
+        assert e(i).is_extended_real is None
         assert e(i).is_imaginary is None
-        assert e(r).is_real is True
+        assert e(r).is_extended_real is True
         assert e(r).is_imaginary is False
-        assert e(re(x)).is_real is True
+        assert e(re(x)).is_extended_real is True
         assert e(re(x)).is_imaginary is False
 
     assert exp(0, evaluate=False).is_algebraic
@@ -345,16 +345,16 @@ def test_lambertw():
         Float("0.701338383413663009202120278965", 30), 1e-29)
     assert re(LambertW(2, -1)).evalf().epsilon_eq(Float("-0.834310366631110"))
 
-    assert LambertW(-1).is_real is False  # issue 5215
-    assert LambertW(2, evaluate=False).is_real
+    assert LambertW(-1).is_extended_real is False  # issue 5215
+    assert LambertW(2, evaluate=False).is_extended_real
     p = Symbol('p', positive=True)
-    assert LambertW(p, evaluate=False).is_real
-    assert LambertW(p - 1, evaluate=False).is_real is None
-    assert LambertW(-p - 2/S.Exp1, evaluate=False).is_real is False
-    assert LambertW(S.Half, -1, evaluate=False).is_real is False
-    assert LambertW(-S.One/10, -1, evaluate=False).is_real
-    assert LambertW(-10, -1, evaluate=False).is_real is False
-    assert LambertW(-2, 2, evaluate=False).is_real is False
+    assert LambertW(p, evaluate=False).is_extended_real
+    assert LambertW(p - 1, evaluate=False).is_extended_real is None
+    assert LambertW(-p - 2/S.Exp1, evaluate=False).is_extended_real is False
+    assert LambertW(S.Half, -1, evaluate=False).is_extended_real is False
+    assert LambertW(-S.One/10, -1, evaluate=False).is_extended_real
+    assert LambertW(-10, -1, evaluate=False).is_extended_real is False
+    assert LambertW(-2, 2, evaluate=False).is_extended_real is False
 
     assert LambertW(0, evaluate=False).is_algebraic
     na = Symbol('na', nonzero=True, algebraic=True)

@@ -459,7 +459,7 @@ class Integral(AddWithLimits):
                 return ret
 
             meijerg1 = meijerg
-            if len(xab) == 3 and xab[1].is_real and xab[2].is_real \
+            if len(xab) == 3 and xab[1].is_extended_real and xab[2].is_extended_real \
                 and not function.is_Poly and \
                     (xab[1].has(oo, -oo) or xab[2].has(oo, -oo)):
                 ret = try_meijerg(function, xab)

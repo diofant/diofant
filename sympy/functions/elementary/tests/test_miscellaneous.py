@@ -104,7 +104,7 @@ def test_Min():
 
     a, b = Symbol('a', real=True), Symbol('b', real=True)
     # a and b are both real, Min(a, b) should be real
-    assert Min(a, b).is_real
+    assert Min(a, b).is_extended_real
 
     # issue 7619
     f = Function('f')
@@ -164,7 +164,7 @@ def test_Max():
 
     a, b = Symbol('a', real=True), Symbol('b', real=True)
     # a and b are both real, Max(a, b) should be real
-    assert Max(a, b).is_real
+    assert Max(a, b).is_extended_real
 
     # issue 7233
     e = Max(0, x)

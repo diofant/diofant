@@ -22,7 +22,7 @@ class RoundFunction(Function):
         from sympy import im
         if arg.is_integer:
             return arg
-        if arg.is_imaginary or (S.ImaginaryUnit*arg).is_real:
+        if arg.is_imaginary or (S.ImaginaryUnit*arg).is_extended_real:
             i = im(arg)
             if not i.has(S.ImaginaryUnit):
                 return cls(i)*S.ImaginaryUnit
@@ -52,8 +52,8 @@ class RoundFunction(Function):
         # Evaluate npart numerically if independent of spart
         if npart and (
             not spart or
-            npart.is_real and (spart.is_imaginary or (S.ImaginaryUnit*spart).is_real) or
-                npart.is_imaginary and spart.is_real):
+            npart.is_extended_real and (spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real) or
+                npart.is_imaginary and spart.is_extended_real):
             try:
                 r, i = get_integer_part(
                     npart, cls._dir, {}, return_ints=True)
@@ -65,7 +65,7 @@ class RoundFunction(Function):
         spart += npart
         if not spart:
             return ipart
-        elif spart.is_imaginary or (S.ImaginaryUnit*spart).is_real:
+        elif spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real:
             return ipart + cls(im(spart), evaluate=False)*S.ImaginaryUnit
         else:
             return ipart + cls(spart, evaluate=False)
@@ -74,10 +74,10 @@ class RoundFunction(Function):
         return self.args[0].is_finite
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_integer(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
 
 class floor(RoundFunction):
@@ -134,12 +134,12 @@ class floor(RoundFunction):
             return r
 
     def __le__(self, other):
-        if self.args[0] == other and other.is_real:
+        if self.args[0] == other and other.is_extended_real:
             return S.true
         return Le(self, other, evaluate=False)
 
     def __gt__(self, other):
-        if self.args[0] == other and other.is_real:
+        if self.args[0] == other and other.is_extended_real:
             return S.false
         return Gt(self, other, evaluate=False)
 
@@ -198,11 +198,11 @@ class ceiling(RoundFunction):
             return r
 
     def __lt__(self, other):
-        if self.args[0] == other and other.is_real:
+        if self.args[0] == other and other.is_extended_real:
             return S.false
         return Lt(self, other, evaluate=False)
 
     def __ge__(self, other):
-        if self.args[0] == other and other.is_real:
+        if self.args[0] == other and other.is_extended_real:
             return S.true
         return Ge(self, other, evaluate=False)

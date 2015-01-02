@@ -851,7 +851,7 @@ def solveset(f, symbol=None):
     elif not symbol.is_Symbol:
         raise ValueError('A Symbol must be given, not type %s: %s' % (type(symbol), symbol))
 
-    real = (symbol.is_real is True)
+    real = (symbol.is_extended_real is True)
 
     f = sympify(f)
 

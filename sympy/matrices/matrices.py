@@ -2158,7 +2158,7 @@ class MatrixBase(object):
         def cond():
             yield self.is_square
             yield fuzzy_and(
-                    self[i, i].is_real for i in range(self.rows))
+                    self[i, i].is_extended_real for i in range(self.rows))
             yield fuzzy_and(
                     (self[i, j] - self[j, i].conjugate()).is_zero
                     for i in range(self.rows)
@@ -3403,7 +3403,7 @@ class MatrixBase(object):
             if len(vects) != multiplicity:
                 all_iscorrect = False
                 break
-            elif reals_only and not eigenval.is_real:
+            elif reals_only and not eigenval.is_extended_real:
                 all_iscorrect = False
                 break
         res = all_iscorrect

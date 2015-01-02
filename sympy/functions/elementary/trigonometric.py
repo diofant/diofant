@@ -47,7 +47,7 @@ class TrigonometricFunction(Function):
         return re_part + im_part*S.ImaginaryUnit
 
     def _as_real_imag(self, deep=True, **hints):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.args[0].expand(deep, **hints), S.Zero)
@@ -395,11 +395,11 @@ class sin(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_finite(self):
         arg = self.args[0]
-        if arg.is_real:
+        if arg.is_extended_real:
             return True
 
 
@@ -774,12 +774,12 @@ class cos(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_finite(self):
         arg = self.args[0]
 
-        if arg.is_real:
+        if arg.is_extended_real:
             return True
 
 
@@ -1044,7 +1044,7 @@ class tan(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_is_finite(self):
         arg = self.args[0]
@@ -1287,7 +1287,7 @@ class cot(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_expand_trig(self, **hints):
         from sympy import im, re
@@ -1766,7 +1766,7 @@ class asin(InverseTrigonometricFunction):
 
     def _eval_is_extended_real(self):
         x = self.args[0]
-        return x.is_real and (1 - abs(x)).is_nonnegative
+        return x.is_extended_real and (1 - abs(x)).is_nonnegative
 
     def inverse(self, argindex=1):
         """
@@ -1900,7 +1900,7 @@ class acos(InverseTrigonometricFunction):
 
     def _eval_is_extended_real(self):
         x = self.args[0]
-        return x.is_real and (1 - abs(x)).is_nonnegative
+        return x.is_extended_real and (1 - abs(x)).is_nonnegative
 
     def _eval_rewrite_as_log(self, x):
         return S.Pi/2 + S.ImaginaryUnit * \
@@ -1930,9 +1930,9 @@ class acos(InverseTrigonometricFunction):
     def _eval_conjugate(self):
         z = self.args[0]
         r = self.func(self.args[0].conjugate())
-        if z.is_real is False:
+        if z.is_extended_real is False:
             return r
-        elif z.is_real and (z + 1).is_nonnegative and (z - 1).is_nonpositive:
+        elif z.is_extended_real and (z + 1).is_nonnegative and (z - 1).is_nonpositive:
             return r
 
 
@@ -2062,7 +2062,7 @@ class atan(InverseTrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_rewrite_as_log(self, x):
         return S.ImaginaryUnit/2 * (log(
@@ -2143,7 +2143,7 @@ class acot(InverseTrigonometricFunction):
             return s.is_rational
 
     def _eval_is_positive(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     @classmethod
     def eval(cls, arg):
@@ -2212,7 +2212,7 @@ class acot(InverseTrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == S.Infinity:
@@ -2560,7 +2560,7 @@ class atan2(InverseTrigonometricFunction):
             x = im(x)
             y = im(y)
 
-        if x.is_real and y.is_real:
+        if x.is_extended_real and y.is_extended_real:
             if x.is_positive:
                 return atan(y / x)
             elif x.is_negative:
@@ -2575,7 +2575,7 @@ class atan2(InverseTrigonometricFunction):
                     return -S.Pi/2
                 elif y.is_zero:
                     return S.NaN
-        if y.is_zero and x.is_real and x.is_nonzero:
+        if y.is_zero and x.is_extended_real and x.is_nonzero:
             return S.Pi * (S.One - Heaviside(x))
         if x.is_number and y.is_number:
             return -S.ImaginaryUnit*log(
@@ -2589,7 +2589,7 @@ class atan2(InverseTrigonometricFunction):
 
     def _eval_rewrite_as_arg(self, y, x):
         from sympy import arg
-        if x.is_real and y.is_real:
+        if x.is_extended_real and y.is_extended_real:
             return arg(x + y*S.ImaginaryUnit)
         I = S.ImaginaryUnit
         n = x + I*y
@@ -2597,7 +2597,7 @@ class atan2(InverseTrigonometricFunction):
         return arg(n/sqrt(d)) - I*log(abs(n)/sqrt(abs(d)))
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real and self.args[1].is_real
+        return self.args[0].is_extended_real and self.args[1].is_extended_real
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
@@ -2615,5 +2615,5 @@ class atan2(InverseTrigonometricFunction):
 
     def _eval_evalf(self, prec):
         y, x = self.args
-        if x.is_real and y.is_real:
+        if x.is_extended_real and y.is_extended_real:
             super(atan2, self)._eval_evalf(prec)

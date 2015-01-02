@@ -167,7 +167,7 @@ def test_sign():
     assert sign(x).is_complex is True
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
-    assert sign(x).is_real is None
+    assert sign(x).is_extended_real is None
     assert sign(x).is_zero is None
     assert sign(x).doit() == sign(x)
     assert sign(1.2*x) == sign(x)
@@ -187,7 +187,7 @@ def test_sign():
     xn = Symbol('xn', imaginary=True, nonzero=True)
     assert sign(x).is_imaginary is True
     assert sign(x).is_integer is None
-    assert sign(x).is_real is None
+    assert sign(x).is_extended_real is None
     assert sign(x).is_zero is None
     assert sign(x).diff(x) == 2*DiracDelta(-I*x)
     assert sign(xn).doit() == xn / Abs(xn)
@@ -196,7 +196,7 @@ def test_sign():
     x = Symbol('x', real=True)
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is True
-    assert sign(x).is_real is True
+    assert sign(x).is_extended_real is True
     assert sign(x).is_zero is None
     assert sign(x).diff(x) == 2*DiracDelta(x)
     assert sign(x).doit() == sign(x)
@@ -205,7 +205,7 @@ def test_sign():
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
-    assert sign(x).is_real is None
+    assert sign(x).is_extended_real is None
     assert sign(x).is_zero is False
     assert sign(x).doit() == x / Abs(x)
     assert sign(Abs(x)) == 1
@@ -214,7 +214,7 @@ def test_sign():
     x = Symbol('x', positive=True)
     assert sign(x).is_imaginary is False
     assert sign(x).is_integer is True
-    assert sign(x).is_real is True
+    assert sign(x).is_extended_real is True
     assert sign(x).is_zero is False
     assert sign(x).doit() == x / Abs(x)
     assert sign(Abs(x)) == 1
@@ -223,7 +223,7 @@ def test_sign():
     x = 0
     assert sign(x).is_imaginary is True
     assert sign(x).is_integer is True
-    assert sign(x).is_real is True
+    assert sign(x).is_extended_real is True
     assert sign(x).is_zero is True
     assert sign(x).doit() == 0
     assert sign(Abs(x)) == 0
@@ -232,7 +232,7 @@ def test_sign():
     nz = Symbol('nz', nonzero=True, integer=True)
     assert sign(nz).is_imaginary is False
     assert sign(nz).is_integer is True
-    assert sign(nz).is_real is True
+    assert sign(nz).is_extended_real is True
     assert sign(nz).is_zero is False
     assert sign(nz)**2 == 1
     assert (sign(nz)**3).args == (sign(nz), 3)
@@ -414,19 +414,19 @@ def test_Abs_real():
 
 def test_Abs_properties():
     x = Symbol('x')
-    assert Abs(x).is_real is True
+    assert Abs(x).is_extended_real is True
     assert Abs(x).is_rational is None
     assert Abs(x).is_positive is None
     assert Abs(x).is_nonnegative is True
 
     z = Symbol('z', complex=True, zero=False)
-    assert Abs(z).is_real is True
+    assert Abs(z).is_extended_real is True
     assert Abs(z).is_rational is None
     assert Abs(z).is_positive is True
     assert Abs(z).is_zero is False
 
     p = Symbol('p', positive=True)
-    assert Abs(p).is_real is True
+    assert Abs(p).is_extended_real is True
     assert Abs(p).is_rational is None
     assert Abs(p).is_positive is True
     assert Abs(p).is_zero is False

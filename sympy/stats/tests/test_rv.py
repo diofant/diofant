@@ -194,4 +194,4 @@ def test_density_constant():
 
 def test_real():
     x = Normal('x', 0, 1)
-    assert x.is_real
+    assert x.is_extended_real

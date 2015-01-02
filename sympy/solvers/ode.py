@@ -3719,7 +3719,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     p0, q0 = indicial
     sollist = solve(m*(m - 1) + m*p0 + q0, m)
     if sollist and isinstance(sollist, list) and all(
-        [sol.is_real for sol in sollist]):
+        [sol.is_extended_real for sol in sollist]):
         serdict1 = {}
         serdict2 = {}
         if len(sollist) == 1:
@@ -3961,7 +3961,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
                 if multiplicity != 1:
                     raise ValueError("Value should be 1")
                 collectterms = [(0, root, 0)] + collectterms
-            elif root.is_real:
+            elif root.is_extended_real:
                 gsol += ln(x)**i*(x**root) * constants.pop()
                 collectterms = [(i, root, 0)] + collectterms
             else:
@@ -4581,7 +4581,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
 
     chareq = Poly(chareq, symbol)
     chareqroots = [RootOf(chareq, k) for k in range(chareq.degree())]
-    chareq_is_complex = not all([i.is_real for i in chareq.all_coeffs()])
+    chareq_is_complex = not all([i.is_extended_real for i in chareq.all_coeffs()])
 
     # A generator of constants
     constants = list(get_numbered_constants(eq, num=chareq.degree()*2))

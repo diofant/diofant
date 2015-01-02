@@ -552,7 +552,7 @@ def test_only_exp_3():
 
 
 def test_atan2():
-    # The .inverse() method on atan2 works only if x.is_real is True and the
+    # The .inverse() method on atan2 works only if x.is_extended_real is True and the
     # second argument is a real constant
     assert solveset_real(atan2(x, 2) - pi/3, x) == FiniteSet(2*sqrt(3))
 

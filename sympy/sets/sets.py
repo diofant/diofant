@@ -721,7 +721,7 @@ class Interval(Set, EvalfMixin):
 
         inftys = [S.Infinity, S.NegativeInfinity]
         # Only allow real intervals (use symbols with 'is_real=True').
-        if not all(i.is_real is not False or i in inftys for i in (start, end)):
+        if not all(i.is_extended_real is not False or i in inftys for i in (start, end)):
             raise ValueError("Non-real intervals are not supported")
 
         # evaluate if possible
@@ -844,7 +844,7 @@ class Interval(Set, EvalfMixin):
         infty = S.NegativeInfinity, S.Infinity
         if self == Interval(*infty):
             l, r = self.left, self.right
-            if l.is_real or l in infty or r.is_real or r in infty:
+            if l.is_extended_real or r.is_extended_real:
                 return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -937,12 +937,12 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
-        if other.is_real is False:
+        if other.is_extended_real is False:
             return false
 
         if self.start is S.NegativeInfinity and self.end is S.Infinity:
-            if not other.is_real is None:
-                return other.is_real
+            if not other.is_extended_real is None:
+                return other.is_extended_real
 
         if self.left_open:
             expr = other > self.start
@@ -976,7 +976,7 @@ class Interval(Set, EvalfMixin):
 
         try:
             sing = [x for x in singularities(expr, var)
-                if x.is_real and x in self]
+                if x.is_extended_real and x in self]
         except NotImplementedError:
             return
 
@@ -993,7 +993,7 @@ class Interval(Set, EvalfMixin):
             solns = solve(diff(expr, var), var)
 
             extr = [_start, _end] + [f(x) for x in solns
-                                     if x.is_real and x in self]
+                                     if x.is_extended_real and x in self]
             start, end = Min(*extr), Max(*extr)
 
             left_open, right_open = False, False

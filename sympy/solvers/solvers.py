@@ -820,7 +820,7 @@ def solve(f, *symbols, **flags):
 
         # if we can split it into real and imaginary parts then do so
         freei = f[i].free_symbols
-        if freei and all(s.is_real or s.is_imaginary for s in freei):
+        if freei and all(s.is_extended_real or s.is_imaginary for s in freei):
             fr, fi = f[i].as_real_imag()
             # accept as long as new re, im, arg or atan2 are not introduced
             had = f[i].atoms(re, im, arg, atan2)
@@ -870,10 +870,10 @@ def solve(f, *symbols, **flags):
         for a in fi.atoms(Abs):
             if not a.has(*symbols):
                 continue
-            if a.args[0].is_real is None and a.args[0].is_imaginary is not True:
+            if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
                 raise NotImplementedError('solving %s when the argument '
                     'is not real or imaginary.' % a)
-            reps.append((a, piece(a.args[0]) if a.args[0].is_real else \
+            reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else \
                 piece(a.args[0]*S.ImaginaryUnit)))
         fi = fi.subs(reps)
 
@@ -888,7 +888,7 @@ def solve(f, *symbols, **flags):
     # see if re(s) or im(s) appear
     irf = []
     for s in symbols:
-        if s.is_real or s.is_imaginary:
+        if s.is_extended_real or s.is_imaginary:
             continue  # neither re(x) nor im(x) will appear
         # if re(s) or im(s) appear, the auxiliary equation must be present
         if any(fi.has(re(s), im(s)) for fi in f):
@@ -2487,7 +2487,7 @@ def _tsolve(eq, sym, **flags):
                     _solve(lhs.exp, sym, **flags))))
             elif (rhs is not S.Zero and
                         lhs.base.is_positive and
-                        lhs.exp.is_real):
+                        lhs.exp.is_extended_real):
                 return _solve(lhs.exp*log(lhs.base) - log(rhs), sym, **flags)
             elif lhs.base == 0 and rhs == 1:
                 return _solve(lhs.exp, sym, **flags)

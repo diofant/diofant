@@ -9,7 +9,7 @@ from sympy.utilities.pytest import raises, XFAIL
 
 def test_symbol_unset():
     x = Symbol('x', real=True, integer=True)
-    assert x.is_real is True
+    assert x.is_extended_real is True
     assert x.is_integer is True
     assert x.is_imaginary is None
     assert x.is_noninteger is False
@@ -23,7 +23,7 @@ def test_zero():
     assert z.is_rational is True
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -49,7 +49,7 @@ def test_one():
     assert z.is_rational is True
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -75,7 +75,7 @@ def test_negativeone():
     assert z.is_rational is True
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -102,7 +102,7 @@ def test_infinity():
     assert oo.is_rational is None
     assert oo.is_algebraic is None
     assert oo.is_transcendental is None
-    assert oo.is_real is True
+    assert oo.is_extended_real is True
     assert oo.is_complex is True
     assert oo.is_noninteger is None
     assert oo.is_irrational is None
@@ -129,7 +129,7 @@ def test_neg_infinity():
     assert mm.is_rational is None
     assert mm.is_algebraic is None
     assert mm.is_transcendental is None
-    assert mm.is_real is True
+    assert mm.is_extended_real is True
     assert mm.is_complex is True
     assert mm.is_noninteger is None
     assert mm.is_irrational is None
@@ -163,7 +163,7 @@ def test_nan():
     assert nan.is_rational is None
     assert nan.is_algebraic is None
     assert nan.is_transcendental is None
-    assert nan.is_real is None
+    assert nan.is_extended_real is None
     assert nan.is_complex is None
     assert nan.is_noninteger is None
     assert nan.is_irrational is None
@@ -189,7 +189,7 @@ def test_pos_rational():
     assert r.is_rational is True
     assert r.is_algebraic is True
     assert r.is_transcendental is False
-    assert r.is_real is True
+    assert r.is_extended_real is True
     assert r.is_complex is True
     assert r.is_noninteger is True
     assert r.is_irrational is False
@@ -253,7 +253,7 @@ def test_pi():
     assert z.is_rational is False
     assert z.is_algebraic is False
     assert z.is_transcendental is True
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is True
     assert z.is_irrational is True
@@ -278,7 +278,7 @@ def test_E():
     assert z.is_rational is False
     assert z.is_algebraic is False
     assert z.is_transcendental is True
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is True
     assert z.is_irrational is True
@@ -303,7 +303,7 @@ def test_I():
     assert z.is_rational is False
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is False
+    assert z.is_extended_real is False
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -325,7 +325,7 @@ def test_symbol_real():
     # issue 3848
     a = Symbol('a', real=False)
 
-    assert a.is_real is False
+    assert a.is_extended_real is False
     assert a.is_integer is False
     assert a.is_negative is False
     assert a.is_positive is False
@@ -514,14 +514,14 @@ def test_symbol_noncommutative():
     assert x.is_rational is False
     assert x.is_algebraic is False
     assert x.is_irrational is False
-    assert x.is_real is False
+    assert x.is_extended_real is False
     assert x.is_complex is False
 
 
 def test_other_symbol():
     x = Symbol('x', integer=True)
     assert x.is_integer is True
-    assert x.is_real is True
+    assert x.is_extended_real is True
 
     x = Symbol('x', integer=True, nonnegative=True)
     assert x.is_integer is True
@@ -564,7 +564,7 @@ def test_other_symbol():
     assert x.is_nonpositive is True
 
     with raises(AttributeError):
-        x.is_real = False
+        x.is_extended_real = False
 
     x = Symbol('x', algebraic=True)
     assert x.is_transcendental is False
@@ -589,7 +589,7 @@ def test_issue_3825():
 
 def test_issue_4822():
     z = (-1)**Rational(1, 3)*(1 - I*sqrt(3))
-    assert z.is_real in [True, None]
+    assert z.is_extended_real in [True, None]
 
 
 def test_hash_vs_typeinfo():
@@ -801,7 +801,7 @@ def test_sanitize_assumptions():
     # issue 6666
     for cls in (Symbol, Dummy, Wild):
         x = cls('x', real=1, positive=0)
-        assert x.is_real is True
+        assert x.is_extended_real is True
         assert x.is_positive is False
         assert cls('', real=True, positive=None).is_positive is None
         raises(ValueError, lambda: cls('', commutative=None))
@@ -823,15 +823,15 @@ def test_inconsistent():
 
 
 def test_issue_6631():
-    assert ((-1)**(I)).is_real is True
-    assert ((-1)**(I*2)).is_real is True
-    assert ((-1)**(I/2)).is_real is True
-    assert ((-1)**(I*S.Pi)).is_real is True
-    assert (I**(I + 2)).is_real is True
+    assert ((-1)**(I)).is_extended_real is True
+    assert ((-1)**(I*2)).is_extended_real is True
+    assert ((-1)**(I/2)).is_extended_real is True
+    assert ((-1)**(I*S.Pi)).is_extended_real is True
+    assert (I**(I + 2)).is_extended_real is True
 
 
 def test_issue_2730():
-    assert (1/(1 + I)).is_real is False
+    assert (1/(1 + I)).is_extended_real is False
 
 
 def test_issue_4149():
@@ -851,7 +851,7 @@ def test_issue_4149():
 
     # tests from the PR #7887:
     e = S("-sqrt(3)*I/2 + 0.866025403784439*I")
-    assert e.is_real is False
+    assert e.is_extended_real is False
     assert e.is_imaginary
 
 
@@ -862,9 +862,9 @@ def test_issue_2920():
 
 def test_issue_7899():
     x = Symbol('x', real=True)
-    assert (I*x).is_real is None
+    assert (I*x).is_extended_real is None
     assert ((x - I)*(x - 1)).is_zero is None
-    assert ((x - I)*(x - 1)).is_real is None
+    assert ((x - I)*(x - 1)).is_extended_real is None
 
 
 @XFAIL

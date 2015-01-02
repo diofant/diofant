@@ -588,7 +588,7 @@ class polygamma(Function):
             return self.args[0].is_even
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_aseries(self, n, args0, x, logx):
         from sympy import Order
@@ -923,7 +923,7 @@ class loggamma(Function):
         return log(gamma(z))
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_real
+        return self.args[0].is_extended_real
 
     def _eval_conjugate(self):
         z = self.args[0]

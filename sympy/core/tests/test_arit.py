@@ -35,7 +35,7 @@ def test_Symbol():
     x = Symbol('x', complex=True, real=False)
     assert x.is_imaginary is None  # could be I or 1 + I
     x = Symbol('x', complex=True, imaginary=False)
-    assert x.is_real is None  # could be 1 or 1 + I
+    assert x.is_extended_real is None  # could be 1 or 1 + I
     x = Symbol('x', real=True)
     assert x.is_complex
     x = Symbol('x', imaginary=True)
@@ -537,7 +537,7 @@ def test_Mul_is_negative_positive():
     assert (pos*neg).is_negative is True
     assert (2*pos*neg).is_negative is True
     assert (-pos*neg).is_negative is False
-    assert (pos*neg*y).is_negative is False     # y.is_real=F;  !real -> !neg
+    assert (pos*neg*y).is_negative is False     # y.is_extended_real=F;  !real -> !neg
 
     assert nneg.is_negative is False
     assert (-nneg).is_negative is None
@@ -580,7 +580,7 @@ def test_Mul_is_negative_positive():
     assert (pos*neg).is_positive is False
     assert (2*pos*neg).is_positive is False
     assert (-pos*neg).is_positive is True
-    assert (-pos*neg*y).is_positive is False    # y.is_real=F;  !real -> !neg
+    assert (-pos*neg*y).is_positive is False    # y.is_extended_real=F;  !real -> !neg
 
     assert nneg.is_positive is None
     assert (-nneg).is_positive is False
@@ -945,55 +945,55 @@ def test_Pow_is_real():
     x = Symbol('x', real=True)
     y = Symbol('y', real=True, positive=True)
 
-    assert (x**2).is_real is True
-    assert (x**3).is_real is True
-    assert (x**x).is_real is None
-    assert (y**x).is_real is True
+    assert (x**2).is_extended_real is True
+    assert (x**3).is_extended_real is True
+    assert (x**x).is_extended_real is None
+    assert (y**x).is_extended_real is True
 
-    assert (x**Rational(1, 3)).is_real is None
-    assert (y**Rational(1, 3)).is_real is True
+    assert (x**Rational(1, 3)).is_extended_real is None
+    assert (y**Rational(1, 3)).is_extended_real is True
 
-    assert sqrt(-1 - sqrt(2)).is_real is False
+    assert sqrt(-1 - sqrt(2)).is_extended_real is False
 
     i = Symbol('i', imaginary=True)
-    assert (i**i).is_real is None
-    assert (I**i).is_real is True
-    assert ((-I)**i).is_real is True
-    assert (2**i).is_real is None  # (2**(pi/log(2) * I)) is real, 2**I is not
-    assert (2**I).is_real is False
-    assert (2**-I).is_real is False
-    assert (i**2).is_real is True
-    assert (i**3).is_real is False
-    assert (i**x).is_real is None  # could be (-I)**(2/3)
+    assert (i**i).is_extended_real is None
+    assert (I**i).is_extended_real is True
+    assert ((-I)**i).is_extended_real is True
+    assert (2**i).is_extended_real is None  # (2**(pi/log(2) * I)) is real, 2**I is not
+    assert (2**I).is_extended_real is False
+    assert (2**-I).is_extended_real is False
+    assert (i**2).is_extended_real is True
+    assert (i**3).is_extended_real is False
+    assert (i**x).is_extended_real is None  # could be (-I)**(2/3)
     e = Symbol('e', even=True)
     o = Symbol('o', odd=True)
     k = Symbol('k', integer=True)
-    assert (i**e).is_real is True
-    assert (i**o).is_real is False
-    assert (i**k).is_real is None
-    assert (i**(4*k)).is_real is True
+    assert (i**e).is_extended_real is True
+    assert (i**o).is_extended_real is False
+    assert (i**k).is_extended_real is None
+    assert (i**(4*k)).is_extended_real is True
 
     x = Symbol("x", nonnegative=True)
     y = Symbol("y", nonnegative=True)
     assert im(x**y).expand(complex=True) is S.Zero
-    assert (x**y).is_real is True
+    assert (x**y).is_extended_real is True
     i = Symbol('i', imaginary=True)
-    assert (exp(i)**I).is_real is True
+    assert (exp(i)**I).is_extended_real is True
     assert log(exp(i)).is_imaginary is None  # i could be 2*pi*I
     c = Symbol('c', complex=True)
-    assert log(c).is_real is None  # c could be 0 or 2, too
-    assert log(exp(c)).is_real is None  # log(0), log(E), ...
+    assert log(c).is_extended_real is None  # c could be 0 or 2, too
+    assert log(exp(c)).is_extended_real is None  # log(0), log(E), ...
     n = Symbol('n', negative=False)
-    assert log(n).is_real is None
+    assert log(n).is_extended_real is None
     n = Symbol('n', nonnegative=True)
-    assert log(n).is_real is None
+    assert log(n).is_extended_real is None
 
-    assert sqrt(-I).is_real is False  # issue 7843
+    assert sqrt(-I).is_extended_real is False  # issue 7843
 
 
 def test_real_Pow():
     k = Symbol('k', integer=True, nonzero=True)
-    assert (k**(I*pi/log(k))).is_real
+    assert (k**(I*pi/log(k))).is_extended_real
 
 
 def test_Pow_is_finite():
@@ -1145,7 +1145,7 @@ def test_Pow_is_nonpositive_nonnegative():
     assert (k**(-2)).is_nonnegative is None
     assert (k**k).is_nonnegative is True
 
-    assert (k**x).is_nonnegative is None    # NOTE (0**x).is_real = U
+    assert (k**x).is_nonnegative is None    # NOTE (0**x).is_extended_real = U
     assert (l**x).is_nonnegative is True
     assert (l**x).is_positive is True
     assert ((-k)**x).is_nonnegative is None
@@ -1182,18 +1182,18 @@ def test_Mul_is_imaginary_real():
     x = Symbol('x')
 
     assert I.is_imaginary is True
-    assert I.is_real is False
+    assert I.is_extended_real is False
     assert (-I).is_imaginary is True
-    assert (-I).is_real is False
+    assert (-I).is_extended_real is False
     assert (3*I).is_imaginary is True
-    assert (3*I).is_real is False
+    assert (3*I).is_extended_real is False
     assert (I*I).is_imaginary is False
-    assert (I*I).is_real is True
+    assert (I*I).is_extended_real is True
 
     e = (p + p*I)
     j = Symbol('j', integer=True, zero=False)
-    assert (e**j).is_real is None
-    assert (e**(2*j)).is_real is None
+    assert (e**j).is_extended_real is None
+    assert (e**(2*j)).is_extended_real is None
     assert (e**j).is_imaginary is None
     assert (e**(2*j)).is_imaginary is None
 
@@ -1202,32 +1202,32 @@ def test_Mul_is_imaginary_real():
     assert (e**3).is_imaginary is False
     assert (e**4).is_imaginary is False
     assert (e**5).is_imaginary is False
-    assert (e**-1).is_real is False
-    assert (e**2).is_real is False
-    assert (e**3).is_real is False
-    assert (e**4).is_real
-    assert (e**5).is_real is False
+    assert (e**-1).is_extended_real is False
+    assert (e**2).is_extended_real is False
+    assert (e**3).is_extended_real is False
+    assert (e**4).is_extended_real
+    assert (e**5).is_extended_real is False
     assert (e**3).is_complex
 
     assert (r*i).is_imaginary is True
-    assert (r*i).is_real is None
+    assert (r*i).is_extended_real is None
 
     assert (x*i).is_imaginary is None
-    assert (x*i).is_real is None
+    assert (x*i).is_extended_real is None
 
     assert (i*ii).is_imaginary is False
-    assert (i*ii).is_real is True
+    assert (i*ii).is_extended_real is True
 
     assert (r*i*ii).is_imaginary is None
-    assert (r*i*ii).is_real is True
+    assert (r*i*ii).is_extended_real is True
 
     # Github's issue 5874:
     nr = Symbol('nr', real=False, complex=True)
     a = Symbol('a', real=True, nonzero=True)
     b = Symbol('b', real=True)
-    assert (i*nr).is_real is None
-    assert (a*nr).is_real is False
-    assert (b*nr).is_real is None
+    assert (i*nr).is_extended_real is None
+    assert (a*nr).is_extended_real is False
+    assert (b*nr).is_extended_real is None
 
 
 def test_Mul_hermitian_antihermitian():
@@ -1748,20 +1748,20 @@ def test_mul_zero_detection():
     i = Dummy(imaginary=True, finite=True)
     e = nz*r*c
     assert e.is_imaginary is None
-    assert e.is_real is None
+    assert e.is_extended_real is None
     e = nz*c
     assert e.is_imaginary is None
-    assert e.is_real is False
+    assert e.is_extended_real is False
     e = nz*i*c
     assert e.is_imaginary is False
-    assert e.is_real is None
+    assert e.is_extended_real is None
     # check for more than one complex; it is important to use
     # uniquely named Symbols to ensure that two factors appear
     # e.g. if the symbols have the same name they just become
     # a single factor, a power.
     e = nz*i*c*c2
     assert e.is_imaginary is None
-    assert e.is_real is None
+    assert e.is_extended_real is None
 
     # _eval_is_extended_real and _eval_is_zero both employ trapping of the
     # zero value so args should be tested in both directions and
@@ -1770,9 +1770,9 @@ def test_mul_zero_detection():
     # real is unknonwn
     def test(z, b, e):
         if z.is_zero and b.is_finite:
-            assert e.is_real and e.is_zero
+            assert e.is_extended_real and e.is_zero
         else:
-            assert e.is_real is None
+            assert e.is_extended_real is None
             if b.is_finite:
                 if z.is_zero:
                     assert e.is_zero
@@ -1798,9 +1798,9 @@ def test_mul_zero_detection():
     # real is True
     def test(z, b, e):
         if z.is_zero and not b.is_finite:
-            assert e.is_real is None
+            assert e.is_extended_real is None
         else:
-            assert e.is_real
+            assert e.is_extended_real
 
     for iz, ib in cartes(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz, real=True)

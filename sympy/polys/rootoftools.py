@@ -516,7 +516,7 @@ class RootOf(Expr):
 
     def _get_interval(self):
         """Internal function for retrieving isolation interval from cache. """
-        if self.is_real:
+        if self.is_extended_real:
             return _reals_cache[self.poly][self.index]
         else:
             reals_count = len(_reals_cache[self.poly])
@@ -524,7 +524,7 @@ class RootOf(Expr):
 
     def _set_interval(self, interval):
         """Internal function for updating isolation interval in cache. """
-        if self.is_real:
+        if self.is_extended_real:
             _reals_cache[self.poly][self.index] = interval
         else:
             reals_count = len(_reals_cache[self.poly])
@@ -541,7 +541,7 @@ class RootOf(Expr):
                 func = lambdify(g, self.expr)
 
             interval = self._get_interval()
-            if not self.is_real:
+            if not self.is_extended_real:
                 # For complex intervals, we need to keep refining until the
                 # imaginary interval is disjunct with other roots, that is,
                 # until both ends get refined.
@@ -551,7 +551,7 @@ class RootOf(Expr):
                     interval = interval.refine()
 
             while True:
-                if self.is_real:
+                if self.is_extended_real:
                     a = mpf(str(interval.a))
                     b = mpf(str(interval.b))
                     if a == b:
@@ -592,7 +592,7 @@ class RootOf(Expr):
                     # verification by findroot will raise a ValueError in this
                     # case and the interval will then be tightened -- and
                     # eventually the root will be found.
-                    if self.is_real:
+                    if self.is_extended_real:
                         if (a <= root <= b):
                             break
                     elif (ax <= root.real <= bx and ay <= root.imag <= by):
@@ -626,7 +626,7 @@ class RootOf(Expr):
 
         """
 
-        if not self.is_real:
+        if not self.is_extended_real:
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
         func = lambdify(self.poly.gen, self.expr)
         interval = self._get_interval()
@@ -649,8 +649,8 @@ class RootOf(Expr):
         if z is False:  # all roots will make z True but we don't know
                         # whether this is the right root if z is True
             return S.false
-        o = other.is_real, other.is_imaginary
-        s = self.is_real, self.is_imaginary
+        o = other.is_extended_real, other.is_imaginary
+        s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:
             return S.false
         i = self._get_interval()
@@ -666,11 +666,11 @@ class RootOf(Expr):
                 need[1] = False
         re, im = other.as_real_imag()
         if not im:
-            if self.is_real:
+            if self.is_extended_real:
                 a, b = [Rational(str(i)) for i in (a, b)]
                 return sympify(a < other and other < b)
             return S.false
-        if self.is_real:
+        if self.is_extended_real:
             return S.false
         z = r1, r2, i1, i2 = [Rational(str(j)) for j in (
             i.ax, i.bx, i.ay, i.by)]

@@ -108,13 +108,13 @@ def test_factorial():
     assert factorial(n).is_positive is None
     assert factorial(k).is_positive
 
-    assert factorial(x).is_real is None
-    assert factorial(n).is_real is None
-    assert factorial(k).is_real is True
-    assert factorial(r).is_real is None
-    assert factorial(s).is_real is True
-    assert factorial(t).is_real is True
-    assert factorial(u).is_real is True
+    assert factorial(x).is_extended_real is None
+    assert factorial(n).is_extended_real is None
+    assert factorial(k).is_extended_real is True
+    assert factorial(r).is_extended_real is None
+    assert factorial(s).is_extended_real is True
+    assert factorial(t).is_extended_real is True
+    assert factorial(u).is_extended_real is True
 
     assert factorial(x).is_composite is None
     assert factorial(n).is_composite is None
