@@ -168,7 +168,7 @@ def test_relational():
     assert (-pi <= 3) is S.true
     assert (-pi > 3) is S.false
     assert (-pi >= 3) is S.false
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     assert (r - 2 < r - 3) is S.false
     assert Lt(x + I, x + I + 2).func == Lt  # issue 8288
 
@@ -183,10 +183,10 @@ def test_relational_assumptions():
     assert (m2 <= 0) == Le(m2, 0)
     assert (m3 > 0) == Gt(m3, 0)
     assert (m4 >= 0) == Ge(m4, 0)
-    m1 = Symbol("m1", nonnegative=False, real=True)
-    m2 = Symbol("m2", positive=False, real=True)
-    m3 = Symbol("m3", nonpositive=False, real=True)
-    m4 = Symbol("m4", negative=False, real=True)
+    m1 = Symbol("m1", nonnegative=False, extended_real=True)
+    m2 = Symbol("m2", positive=False, extended_real=True)
+    m3 = Symbol("m3", nonpositive=False, extended_real=True)
+    m4 = Symbol("m4", negative=False, extended_real=True)
     assert (m1 < 0) is S.true
     assert (m2 <= 0) is S.true
     assert (m3 > 0) is S.true
@@ -199,10 +199,10 @@ def test_relational_assumptions():
     assert (m2 <= 0) is S.true
     assert (m3 > 0) is S.true
     assert (m4 >= 0) is S.true
-    m1 = Symbol("m1", negative=False, real=True)
-    m2 = Symbol("m2", nonpositive=False, real=True)
-    m3 = Symbol("m3", positive=False, real=True)
-    m4 = Symbol("m4", nonnegative=False, real=True)
+    m1 = Symbol("m1", negative=False, extended_real=True)
+    m2 = Symbol("m2", nonpositive=False, extended_real=True)
+    m3 = Symbol("m3", positive=False, extended_real=True)
+    m4 = Symbol("m4", nonnegative=False, extended_real=True)
     assert (m1 < 0) is S.false
     assert (m2 <= 0) is S.false
     assert (m3 > 0) is S.false

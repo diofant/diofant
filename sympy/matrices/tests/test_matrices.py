@@ -466,7 +466,7 @@ def test_expand():
     assert m1 == Matrix(
         [[x*y + x**2, 2], [x*y**2 + y*x**2, x*y + y*x**2 + x**3]])
 
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
 
     assert Matrix([exp(I*a)]).expand(complex=True) == \
         Matrix([cos(a) + I*sin(a)])
@@ -826,7 +826,7 @@ def test_eigen():
         [NS(j, 2) for j in r[i][2][0]]) for i in range(len(r))]
     assert sorted(r1) == sorted(r2)
 
-    eps = Symbol('eps', real=True)
+    eps = Symbol('eps', extended_real=True)
 
     M = Matrix([[abs(eps), I*eps    ],
                 [-I*eps,   abs(eps) ]])
@@ -1789,7 +1789,7 @@ def test_diagonal_solve():
 def test_matrix_norm():
     # Vector Tests
     # Test columns and symbols
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     v = Matrix([cos(x), sin(x)])
     assert trigsimp(v.norm(2)) == 1
     assert v.norm(10) == Pow(cos(x)**10 + sin(x)**10, S(1)/10)
@@ -1827,7 +1827,7 @@ def test_matrix_norm():
     C = Matrix([[0, -I], [I, 0]])
     D = Matrix([[1, 0], [0, -1]])
     L = [A, B, C, D]
-    alpha = Symbol('alpha', real=True)
+    alpha = Symbol('alpha', extended_real=True)
 
     for order in ['fro', 2, -2]:
         # Zero Check
@@ -1859,7 +1859,7 @@ def test_matrix_norm():
     d = Matrix([3, 2, I])
     e = Matrix([Integer(1e2), Rational(1, 1e2), 1])
     L = [a, b, c, d, e]
-    alpha = Symbol('alpha', real=True)
+    alpha = Symbol('alpha', extended_real=True)
 
     for order in [1, 2, -1, -2, S.Infinity, S.NegativeInfinity, pi]:
         # Zero Check
@@ -1882,7 +1882,7 @@ def test_matrix_norm():
 
 
 def test_singular_values():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     A = Matrix([[0, 1*I], [2, 0]])
     assert A.singular_values() == [2, 1]
@@ -1899,7 +1899,7 @@ def test_singular_values():
 
 
 def test_condition_number():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     A = eye(3)
     A[0, 0] = 10
     A[2, 2] = S(1)/10
@@ -2156,7 +2156,7 @@ def test_dot():
 
 def test_dual():
     B_x, B_y, B_z, E_x, E_y, E_z = symbols(
-        'B_x B_y B_z E_x E_y E_z', real=True)
+        'B_x B_y B_z E_x E_y E_z', extended_real=True)
     F = Matrix((
         (   0,  E_x,  E_y,  E_z),
         (-E_x,    0,  B_z, -B_y),

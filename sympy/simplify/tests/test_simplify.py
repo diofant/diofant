@@ -625,7 +625,7 @@ def test_powsimp():
     assert powsimp((1 + E*exp(E))*exp(-E), combine='base') == \
         (1 + E*exp(E))*exp(-E)
     x, y = symbols('x,y', nonnegative=True)
-    n = Symbol('n', real=True)
+    n = Symbol('n', extended_real=True)
     assert powsimp(y**n * (y/x)**(-n)) == x**n
     assert powsimp(x**(x**(x*y)*y**(x*y))*y**(x**(x*y)*y**(x*y)), deep=True) \
         == (x*y)**(x*y)**(x*y)
@@ -1136,7 +1136,7 @@ def test_logcombine_1():
     x, y = symbols("x,y")
     a = Symbol("a")
     z, w = symbols("z,w", positive=True)
-    b = Symbol("b", real=True)
+    b = Symbol("b", extended_real=True)
     assert logcombine(log(x) + 2*log(y)) == log(x) + 2*log(y)
     assert logcombine(log(x) + 2*log(y), force=True) == log(x*y**2)
     assert logcombine(a*log(w) + log(z)) == a*log(w) + log(z)

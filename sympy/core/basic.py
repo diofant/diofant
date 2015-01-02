@@ -125,7 +125,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         For example:
 
-          Symbol('x', real=True)
+          Symbol('x', extended_real=True)
           Symbol('x', integer=True)
 
         are different objects. In other words, besides Python type (Symbol in

@@ -310,7 +310,7 @@ def test_issue_4855():
 
 
 def test_order_conjugate_transpose():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     assert conjugate(Order(x)) == Order(conjugate(x))
     assert conjugate(Order(y)) == Order(conjugate(y))

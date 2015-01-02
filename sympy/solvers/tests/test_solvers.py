@@ -426,7 +426,7 @@ def test_solve_transcendental():
     assert solve(sin(sqrt(x))) == [0, pi**2]
 
     # issue 7602
-    a, b = symbols('a, b', real=True, negative=False)
+    a, b = symbols('a, b', extended_real=True, negative=False)
     assert str(solve(Eq(a, 0.5 - cos(pi*b)/2), b)) == \
         '[-0.318309886183791*acos(-2.0*a + 1.0) + 2.0, 0.318309886183791*acos(-2.0*a + 1.0)]'
 
@@ -539,7 +539,7 @@ def test_solve_inequalities():
         And(Or(And(Lt(-sqrt(2), x), Lt(x, -1)),
                And(Lt(1, x), Lt(x, sqrt(2)))), Eq(0, 0))
 
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     system = [Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]
 
     assert solve(system) == \
@@ -623,7 +623,7 @@ def test_PR1964():
 
 
 def test_issue_5197():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert solve(x**2 + 1, x) == []
     n = Symbol('n', integer=True, positive=True)
     assert solve((n - 1)*(n + 2)*(2*n - 1), n) == [1]
@@ -1353,7 +1353,7 @@ def test_minsolve_linear_system():
 
 def test_real_roots():
     # cf. issue 6650
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert len(solve(x**5 + x**3 + 1)) == 1
 
 
@@ -1367,7 +1367,7 @@ def test_issue_6528():
 
 
 def test_overdetermined():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     eqs = [Abs(4*x - 7) - 5, Abs(3 - 8*x) - 1]
     assert solve(eqs, x) == [(S.Half,)]
     assert solve(eqs, x, manual=True) == [(S.Half,)]
@@ -1378,7 +1378,7 @@ def test_issue_6605():
     x = symbols('x')
     assert solve(4**(x/2) - 2**(x/3)) == [0, 3*I*pi/log(2)]
     # while the first one passed, this one failed
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert solve(5**(x/2) - 2**(x/3)) == [0]
     b = sqrt(6)*sqrt(log(2))/sqrt(log(5))
     assert solve(5**(x/2) - 2**(3/x)) == [-b, b]
@@ -1411,7 +1411,7 @@ def test_issue_6792():
 
 def test_issues_6819_6820_6821_6248_8692():
     # issue 6821
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     assert solve(abs(x + 3) - 2*abs(x - 3)) == [1, 9]
     assert solve([abs(x) - 2, arg(x) - pi], x) == [(-2,), (2,)]
     assert set(solve(abs(x - 7) - 8)) == set([-S(1), S(15)])
@@ -1438,7 +1438,7 @@ def test_issues_6819_6820_6821_6248_8692():
     w = symbols('w', integer=True)
     assert solve(2*x**w - 4*y**w, w) == solve((x/y)**w - 2, w)
 
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     assert solve(x + y*I + 3) == {y: 0, x: -3}
     # issue 2642
     assert solve(x*(1 + I)) == [0]
@@ -1446,7 +1446,7 @@ def test_issues_6819_6820_6821_6248_8692():
     x, y = symbols('x y', imaginary=True)
     assert solve(x + y*I + 3 + 2*I) == {x: -2*I, y: 3*I}
 
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert solve(x + y + 3 + 2*I) == {x: -3, y: -2*I}
 
     # issue 6248
@@ -1627,7 +1627,7 @@ def test_piecewise():
 
 
 def test_real_imag_splitting():
-    a, b = symbols('a b', real=True)
+    a, b = symbols('a b', extended_real=True)
     assert solve(sqrt(a**2 + b**2) - 3, a) == \
         [-sqrt(-b**2 + 9), sqrt(-b**2 + 9)]
     a, b = symbols('a b', imaginary=True)
@@ -1652,13 +1652,13 @@ def test_issue_7547():
 
 
 def test_issue_7895():
-    r = symbols('r', real=True)
+    r = symbols('r', extended_real=True)
     assert solve(sqrt(r) - 2) == [4]
 
 
 def test_issue_2777():
     # the equations represent two circles
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     e1, e2 = sqrt(x**2 + y**2) - 10, sqrt(y**2 + (-x + 10)**2) - 3
     a, b = 191/S(20), 3*sqrt(391)/20
     ans = [(a, -b), (a, b)]

@@ -729,7 +729,7 @@ def test_Infinity_inequations():
     assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
 
     x = Symbol('x')
-    b = Symbol('b', finite=True, real=True)
+    b = Symbol('b', finite=True, extended_real=True)
     assert (x < oo) == Lt(x, oo)  # issue 7775
     assert b < oo and b > -oo and b <= oo and b >= -oo
     assert oo > b and oo >= b and (oo < b) == False and (oo <= b) == False
@@ -1325,7 +1325,7 @@ def test_issue_4122():
     assert (oo + x).is_Add  # x could be imaginary
     x = Symbol('x', nonnegative=True)
     assert oo + x == oo
-    x = Symbol('x', finite=True, real=True)
+    x = Symbol('x', finite=True, extended_real=True)
     assert oo + x == oo
 
     # similarily for negative infinity
@@ -1335,7 +1335,7 @@ def test_issue_4122():
     assert (-oo + x).is_Add
     x = Symbol('x', nonpositive=True)
     assert -oo + x == -oo
-    x = Symbol('x', finite=True, real=True)
+    x = Symbol('x', finite=True, extended_real=True)
     assert -oo + x == -oo
 
 

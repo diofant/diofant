@@ -211,7 +211,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         ========
 
         >>> from sympy import Symbol, Eq
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> (x>0).as_set()
         (0, oo)
         >>> Eq(x, 0).as_set()

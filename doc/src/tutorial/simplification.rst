@@ -353,7 +353,7 @@ but for now, all we need to know are the following.
   happens in that case.
 
     >>> x, y = symbols('x y', positive=True)
-    >>> a, b = symbols('a b', real=True)
+    >>> a, b = symbols('a b', extended_real=True)
     >>> z, t, c = symbols('z t c')
 
   .. TODO: Rewrite this using the new assumptions
@@ -497,7 +497,7 @@ conditions for the identities to hold are if `x` and `y` are positive and `n`
 is real.
 
     >>> x, y = symbols('x y', positive=True)
-    >>> n = symbols('n', real=True)
+    >>> n = symbols('n', extended_real=True)
 
 As before, ``z`` and ``t`` will be Symbols with no additional assumptions.
 

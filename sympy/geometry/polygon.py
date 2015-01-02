@@ -586,7 +586,7 @@ class Polygon(GeometryEntity):
         ========
 
         >>> from sympy import Polygon, S, Symbol
-        >>> t = Symbol('t', real=True)
+        >>> t = Symbol('t', extended_real=True)
         >>> tri = Polygon((0, 0), (1, 0), (1, 1))
         >>> p = tri.arbitrary_point('t')
         >>> perimeter = tri.perimeter
@@ -635,7 +635,7 @@ class Polygon(GeometryEntity):
         [t, 0, 1]
 
         """
-        t = Symbol(parameter, real=True)
+        t = Symbol(parameter, extended_real=True)
         return [t, 0, 1]
 
     def intersection(self, o):
@@ -1440,7 +1440,7 @@ class RegularPolygon(Polygon):
         True
         >>> p.encloses_point(Point(R/2, R/2 + (R - r)/10))
         False
-        >>> t = Symbol('t', real=True)
+        >>> t = Symbol('t', extended_real=True)
         >>> p.encloses_point(p.arbitrary_point().subs(t, S.Half))
         False
         >>> p.encloses_point(Point(5, 5))

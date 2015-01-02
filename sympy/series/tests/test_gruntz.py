@@ -15,8 +15,8 @@ to return the result.
 Nevertheless, the rest of the algorithm depends on compare working correctly.
 """
 
-x = Symbol('x', real=True)
-m = Symbol('m', real=True)
+x = Symbol('x', extended_real=True)
+m = Symbol('m', extended_real=True)
 
 
 runslow = False

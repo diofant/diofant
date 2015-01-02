@@ -614,7 +614,7 @@ def test_leading_term():
 
 
 def test_complex():
-    a, b = symbols('a,b', real=True)
+    a, b = symbols('a,b', extended_real=True)
     z = a + b*I
     for func in [sinh, cosh, tanh, coth, sech, csch]:
         assert func(z).conjugate() == func(a - b*I)
@@ -636,7 +636,7 @@ def test_complex():
 
 
 def test_complex_2899():
-    a, b = symbols('a,b', real=True)
+    a, b = symbols('a,b', extended_real=True)
     for deep in [True, False]:
         for func in [sinh, cosh, tanh, coth]:
             assert func(a).expand(complex=True, deep=deep) == func(a)

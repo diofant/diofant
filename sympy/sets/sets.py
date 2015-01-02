@@ -688,7 +688,7 @@ class Interval(Set, EvalfMixin):
     >>> Interval.open(0, 1)
     (0, 1)
 
-    >>> a = Symbol('a', real=True)
+    >>> a = Symbol('a', extended_real=True)
     >>> Interval(0, a)
     [0, a]
 
@@ -720,7 +720,7 @@ class Interval(Set, EvalfMixin):
                 "got %s and %s" % (left_open, right_open))
 
         inftys = [S.Infinity, S.NegativeInfinity]
-        # Only allow real intervals (use symbols with 'is_real=True').
+        # Only allow real intervals (use symbols with 'is_extended_real=True').
         if not all(i.is_extended_real is not False or i in inftys for i in (start, end)):
             raise ValueError("Non-real intervals are not supported")
 

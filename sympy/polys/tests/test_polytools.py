@@ -2283,7 +2283,7 @@ def test_factor():
 
     p = Symbol('p', positive=True)
     i = Symbol('i', integer=True)
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
 
     assert factor(sqrt(x*y)).is_Pow is True
 

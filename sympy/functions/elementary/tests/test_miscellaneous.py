@@ -102,7 +102,7 @@ def test_Min():
     assert Min(0, -x, 1 - 2*x).diff(x) == -Heaviside(x + Min(0, -2*x + 1)) \
         - 2*Heaviside(2*x + Min(0, -x) - 1)
 
-    a, b = Symbol('a', real=True), Symbol('b', real=True)
+    a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Min(a, b) should be real
     assert Min(a, b).is_extended_real
 
@@ -126,7 +126,7 @@ def test_Max():
     p_ = Symbol('p_', positive=True)
     np = Symbol('np', nonpositive=True)
     np_ = Symbol('np_', nonpositive=True)
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
 
     assert Max(5, 4) == 5
 
@@ -162,7 +162,7 @@ def test_Max():
         2*x*Heaviside(x**2 - Max(1, x + 1)) \
         + Heaviside(x - Max(1, x**2) + 1)
 
-    a, b = Symbol('a', real=True), Symbol('b', real=True)
+    a, b = Symbol('a', extended_real=True), Symbol('b', extended_real=True)
     # a and b are both real, Max(a, b) should be real
     assert Max(a, b).is_extended_real
 
@@ -173,7 +173,7 @@ def test_Max():
 
 
 def test_issue_8413():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     # we can't evaluate in general because non-reals are not
     # comparable: Min(floor(3.2 + I), 3.2 + I) -> ValueError
     assert Min(floor(x), x) == floor(x)

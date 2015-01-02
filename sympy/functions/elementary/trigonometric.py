@@ -998,7 +998,7 @@ class tan(TrigonometricFunction):
             coeff, terms = arg.as_coeff_Mul(rational=True)
             if coeff.is_Integer and coeff > 1:
                 I = S.ImaginaryUnit
-                z = Symbol('dummy', real=True)
+                z = Symbol('dummy', extended_real=True)
                 P = ((1 + I*z)**coeff).expand()
                 return (im(P)/re(P)).subs([(z, tan(terms))])
         return tan(arg)
@@ -1312,7 +1312,7 @@ class cot(TrigonometricFunction):
             coeff, terms = arg.as_coeff_Mul(rational=True)
             if coeff.is_Integer and coeff > 1:
                 I = S.ImaginaryUnit
-                z = Symbol('dummy', real=True)
+                z = Symbol('dummy', extended_real=True)
                 P = ((z + I)**coeff).expand()
                 return (re(P)/im(P)).subs([(z, cot(terms))])
         return cot(arg)

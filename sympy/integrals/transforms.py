@@ -237,7 +237,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
         b = oo
         aux = True
         conds = conjuncts(to_cnf(cond))
-        t = Dummy('t', real=True)
+        t = Dummy('t', extended_real=True)
         for c in conds:
             a_ = oo
             b_ = -oo
@@ -977,7 +977,7 @@ def _laplace_transform(f, t, s_, simplify=True):
         a = -oo
         aux = True
         conds = conjuncts(to_cnf(conds))
-        u = Dummy('u', real=True)
+        u = Dummy('u', extended_real=True)
         p, q, w1, w2, w3, w4, w5 = symbols(
             'p q w1 w2 w3 w4 w5', cls=Wild, exclude=[s])
         for c in conds:
@@ -1129,7 +1129,7 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
     # 1) Use inverse mellin transforms - related by a simple change of variables.
     # 2) Use the inversion integral.
 
-    t = Dummy('t', real=True)
+    t = Dummy('t', extended_real=True)
 
     def pw_simp(*args):
         """ Simplify a piecewise expression from hyperexpand. """

@@ -42,7 +42,7 @@ def test_exp_values():
 
 
 def test_exp_log():
-    x = Symbol("x", real=True)
+    x = Symbol("x", extended_real=True)
     assert log(exp(x)) == x
     assert exp(log(x)) == x
     assert log(x).inverse() == exp
@@ -90,7 +90,7 @@ def test_exp_subs():
     assert (x**3).subs(x**2, y) != y**(3/S(2))
     assert exp(exp(x) + exp(x**2)).subs(exp(exp(x)), y) == y * exp(exp(x**2))
     assert exp(x).subs(E, y) == y**x
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert exp(5*x).subs(exp(7*x), y) == y**Rational(5, 7)
     assert exp(2*x + 7).subs(exp(3*x), y) == y**Rational(2, 3) * exp(7)
     x = symbols('x', positive=True)
@@ -195,7 +195,7 @@ def test_log_symbolic():
     assert log(E, 2) == 1/log(2)
 
     p, q = symbols('p,q', positive=True)
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
 
     assert log(p**2) != 2*log(p)
     assert log(p**2).expand() == 2*log(p)
@@ -219,7 +219,7 @@ def test_log_symbolic():
 
 
 def test_exp_assumptions():
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     i = Symbol('i', imaginary=True)
     for e in exp, exp_polar:
         assert e(x).is_extended_real is None

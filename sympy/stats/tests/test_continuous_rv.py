@@ -31,8 +31,8 @@ x, y, z = map(Symbol, 'xyz')
 
 
 def test_single_normal():
-    mu = Symbol('mu', real=True, finite=True)
-    sigma = Symbol('sigma', real=True, positive=True, finite=True)
+    mu = Symbol('mu', extended_real=True, finite=True)
+    sigma = Symbol('sigma', extended_real=True, positive=True, finite=True)
     X = Normal('x', 0, 1)
     Y = X*sigma + mu
 
@@ -97,13 +97,13 @@ def test_multiple_normal():
 
 @slow
 def test_symbolic():
-    mu1, mu2 = symbols('mu1 mu2', real=True, finite=True)
-    s1, s2 = symbols('sigma1 sigma2', real=True, finite=True, positive=True)
-    rate = Symbol('lambda', real=True, positive=True, finite=True)
+    mu1, mu2 = symbols('mu1 mu2', extended_real=True, finite=True)
+    s1, s2 = symbols('sigma1 sigma2', extended_real=True, finite=True, positive=True)
+    rate = Symbol('lambda', extended_real=True, positive=True, finite=True)
     X = Normal('x', mu1, s1)
     Y = Normal('y', mu2, s2)
     Z = Exponential('z', rate)
-    a, b, c = symbols('a b c', real=True, finite=True)
+    a, b, c = symbols('a b c', extended_real=True, finite=True)
 
     assert E(X) == mu1
     assert E(X + Y) == mu1 + mu2
@@ -159,8 +159,8 @@ def test_ContinuousRV():
 
 
 def test_arcsin():
-    a = Symbol("a", real=True)
-    b = Symbol("b", real=True)
+    a = Symbol("a", extended_real=True)
+    b = Symbol("b", extended_real=True)
 
     X = Arcsin('x', a, b)
     assert density(X)(x) == 1/(pi*sqrt((-x + b)*(x - a)))
@@ -250,7 +250,7 @@ def test_erlang():
     assert density(X)(x) == x**(k - 1)*l**k*exp(-x*l)/gamma(k)
 
 def test_exponential():
-    rate = Symbol('lambda', positive=True, real=True, finite=True)
+    rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
     X = Exponential('x', rate)
 
     assert E(X) == 1/rate
@@ -284,7 +284,7 @@ def test_fisher_z():
 def test_frechet():
     a = Symbol("a", positive=True)
     s = Symbol("s", positive=True)
-    m = Symbol("m", real=True)
+    m = Symbol("m", extended_real=True)
 
     X = Frechet("x", a, s=s, m=m)
     assert density(X)(x) == a*((x - m)/s)**(-a - 1)*exp(-((x - m)/s)**(-a))/s
@@ -302,7 +302,7 @@ def test_gamma():
     # assert simplify(variance(X)) == k*theta**2  # handled numerically below
     assert E(X) == moment(X, 1)
 
-    k, theta = symbols('k theta', real=True, finite=True, positive=True)
+    k, theta = symbols('k theta', extended_real=True, finite=True, positive=True)
     X = Gamma('x', k, theta)
     assert simplify(E(X)) == k*theta
     # can't get things to simplify on this one so we use subs
@@ -332,15 +332,15 @@ def test_laplace():
     assert density(X)(x) == exp(-Abs(x - mu)/b)/(2*b)
 
 def test_logistic():
-    mu = Symbol("mu", real=True)
+    mu = Symbol("mu", extended_real=True)
     s = Symbol("s", positive=True)
 
     X = Logistic('x', mu, s)
     assert density(X)(x) == exp((-x + mu)/s)/(s*(exp((-x + mu)/s) + 1)**2)
 
 def test_lognormal():
-    mean = Symbol('mu', real=True, finite=True)
-    std = Symbol('sigma', positive=True, real=True, finite=True)
+    mean = Symbol('mu', extended_real=True, finite=True)
+    std = Symbol('sigma', positive=True, extended_real=True, finite=True)
     X = LogNormal('x', mean, std)
     # The sympy integrator can't do this too well
     #assert E(X) == exp(mean+std**2/2)
@@ -354,7 +354,7 @@ def test_lognormal():
     # The sympy integrator can't do this too well
     #assert E(X) ==
 
-    mu = Symbol("mu", real=True)
+    mu = Symbol("mu", extended_real=True)
     sigma = Symbol("sigma", positive=True)
 
     X = LogNormal('x', mu, sigma)
@@ -413,7 +413,7 @@ def test_pareto_numeric():
 
 
 def test_raised_cosine():
-    mu = Symbol("mu", real=True)
+    mu = Symbol("mu", extended_real=True)
     s = Symbol("s", positive=True)
 
     X = RaisedCosine("x", mu, s)
@@ -452,15 +452,15 @@ def test_triangular():
 
 
 def test_quadratic_u():
-    a = Symbol("a", real=True)
-    b = Symbol("b", real=True)
+    a = Symbol("a", extended_real=True)
+    b = Symbol("b", extended_real=True)
 
     X = QuadraticU("x", a, b)
     assert density(X)(x) == (Piecewise((12*(x - a/2 - b/2)**2/(-a + b)**3,
                           And(x <= b, a <= x)), (0, True)))
 
 def test_uniform():
-    l = Symbol('l', real=True, finite=True)
+    l = Symbol('l', extended_real=True, finite=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
 
@@ -483,7 +483,7 @@ def test_uniform_P():
     I decided to regress on this class for general cleanliness (and I suspect
     speed) of the algorithm.
     """
-    l = Symbol('l', real=True, finite=True)
+    l = Symbol('l', extended_real=True, finite=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
     assert P(X < l) == 0 and P(X > l + w) == 0

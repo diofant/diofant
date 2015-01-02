@@ -22,25 +22,25 @@ from sympy.solvers.solveset import (
     solveset_real, domain_check, solveset_complex,
     _is_function_class_equation, invert_real, invert_complex, solveset)
 
-a = Symbol('a', real=True)
-b = Symbol('b', real=True)
-c = Symbol('c', real=True)
-x = Symbol('x', real=True)
-y = Symbol('y', real=True)
-z = Symbol('z', real=True)
-q = Symbol('q', real=True)
-m = Symbol('m', real=True)
-n = Symbol('n', real=True)
+a = Symbol('a', extended_real=True)
+b = Symbol('b', extended_real=True)
+c = Symbol('c', extended_real=True)
+x = Symbol('x', extended_real=True)
+y = Symbol('y', extended_real=True)
+z = Symbol('z', extended_real=True)
+q = Symbol('q', extended_real=True)
+m = Symbol('m', extended_real=True)
+n = Symbol('n', extended_real=True)
 
 
 def test_invert_real():
-    x = Symbol('x', real=True)
-    x = Dummy(real=True)
+    x = Symbol('x', extended_real=True)
+    x = Dummy(extended_real=True)
     n = Symbol('n')
     d = Dummy()
     assert solveset(abs(x) - n, x) == solveset(abs(x) - d, x) == EmptySet()
 
-    n = Symbol('n', real=True)
+    n = Symbol('n', extended_real=True)
     assert invert_real(x + 3, y, x) == (x, FiniteSet(y - 3))
     assert invert_real(x*3, y, x) == (x, FiniteSet(y / 3))
 
@@ -513,7 +513,7 @@ def test_rewrite_trigh():
 
 @XFAIL
 def test_real_imag_splitting1():
-    a, b = symbols('a b', real=True, finite=True)
+    a, b = symbols('a b', extended_real=True, finite=True)
     s = solveset_real(sqrt(a**2 + b**2) - 3, a)
     assert s != S.EmptySet
     # FiniteSet(-sqrt(-b**2 + 9), sqrt(-b**2 + 9))
@@ -522,7 +522,7 @@ def test_real_imag_splitting1():
 
 
 def test_real_imag_splitting():
-    a, b = symbols('a b', real=True, finite=True)
+    a, b = symbols('a b', extended_real=True, finite=True)
     assert solveset_real(sqrt(a**2 - b**2) - 3, a) == \
         FiniteSet(-sqrt(b**2 + 9), sqrt(b**2 + 9))
 
@@ -719,7 +719,7 @@ def test_solve_lambert():
 
     a = Symbol('a')
     assert solveset_real(-a*x + 2*x*log(x), x) == FiniteSet(exp(a/2))
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
     assert solveset_real(a/x + exp(x/2), x) == \
         FiniteSet(2*LambertW(-a/2))
     assert solveset_real((a/x + exp(x/2)).diff(x), x) == \
@@ -778,7 +778,7 @@ def test_solve_lambert():
 
 
 def test_solveset():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     raises(ValueError, lambda: solveset(x + y))
 
     assert solveset(exp(x) - 1) == FiniteSet(0)
@@ -796,7 +796,7 @@ def test_solveset():
 
 def test_improve_coverage():
     from sympy.solvers.solveset import _has_rational_power
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     y = exp(x+1/x**2)
     raises(NotImplementedError, lambda: solveset(y**2+y, x))
 

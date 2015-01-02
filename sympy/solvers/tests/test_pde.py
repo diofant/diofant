@@ -17,7 +17,7 @@ def test_pde_separate_add():
 
 def test_pde_separate_mul():
     x, y, z, t = symbols("x,y,z,t")
-    c = Symbol("C", real=True)
+    c = Symbol("C", extended_real=True)
     Phi = Function('Phi')
     F, R, T, X, Y, Z, u = map(Function, 'FRTXYZu')
     r, theta, z = symbols('r,theta,z')

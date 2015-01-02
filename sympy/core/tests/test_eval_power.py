@@ -49,8 +49,8 @@ def test_issue_3449():
     assert (
         (x**Rational(3))**Rational(2, 5)) == (x**Rational(3))**Rational(2, 5)
 
-    a = Symbol('a', real=True)
-    b = Symbol('b', real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
     assert (a**2)**b == (abs(a)**b)**2
     assert sqrt(1/a) != 1/sqrt(a)  # e.g. for a = -1
     assert (a**3)**Rational(1, 3) != a
@@ -315,7 +315,7 @@ def test_issue_7638():
     assert (1 + I)**(4*I*f) == ((1 + I)**(12*I*f))**(S(1)/3)
 
     assert (((1 + I)**(I*(1 + 7*f)))**(S(1)/3)).exp == S(1)/3
-    r = symbols('r', real=True)
+    r = symbols('r', extended_real=True)
     assert sqrt(r**2) == abs(r)
     assert cbrt(r**3) != r
     assert sqrt(Pow(2*I, 5*S.Half)) != (2*I)**(5/S(4))

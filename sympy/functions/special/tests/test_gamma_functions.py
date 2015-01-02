@@ -11,7 +11,7 @@ from sympy.utilities.pytest import raises
 x = Symbol('x')
 y = Symbol('y')
 n = Symbol('n', integer=True)
-w = Symbol('w', real=True)
+w = Symbol('w', extended_real=True)
 
 def test_gamma():
     assert gamma(nan) == nan
@@ -371,7 +371,7 @@ def test_loggamma():
     assert conjugate(loggamma(1)) == loggamma(conjugate(1))
     assert conjugate(loggamma(-oo)) == conjugate(loggamma(-oo))
     assert loggamma(x).is_extended_real is None
-    y, z = Symbol('y', real=True), Symbol('z', imaginary=True, nonzero=True)
+    y, z = Symbol('y', extended_real=True), Symbol('z', imaginary=True, nonzero=True)
     assert loggamma(y).is_extended_real
     assert loggamma(z).is_extended_real is False
 

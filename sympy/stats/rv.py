@@ -990,7 +990,7 @@ def dependent(a, b):
     if pspace_independent(a, b):
         return False
 
-    z = Symbol('z', real=True)
+    z = Symbol('z', extended_real=True)
     # Dependent if density is unchanged when one is given information about
     # the other
     return (density(a, Eq(b, z)) != density(a) or

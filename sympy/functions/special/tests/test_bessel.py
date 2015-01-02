@@ -140,7 +140,7 @@ def test_expand():
     assert expand_func(besselj(n + S(1)/2, z).rewrite(jn)) == \
         sqrt(2)*sqrt(z)*jn(n, z)/sqrt(pi)
 
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     p = Symbol('p', positive=True)
     i = Symbol('i', integer=True)
 
@@ -273,8 +273,8 @@ def test_bessel_eval():
 
 def test_conjugate():
     from sympy import conjugate, I, Symbol
-    n, z, x = Symbol('n'), Symbol('z', real=False), Symbol('x', real=True)
-    y, t = Symbol('y', real=True, positive=True), Symbol('t', negative=True)
+    n, z, x = Symbol('n'), Symbol('z', extended_real=False), Symbol('x', extended_real=True)
+    y, t = Symbol('y', extended_real=True, positive=True), Symbol('t', negative=True)
 
     for f in [besseli, besselj, besselk, bessely, jn, yn, hankel1, hankel2]:
         assert f(n, -1).conjugate() != f(conjugate(n), -1)
@@ -338,8 +338,8 @@ def test_branching():
 
 def test_airy_base():
     z = Symbol('z')
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
 
     assert conjugate(airyai(z)) == airyai(conjugate(z))
     assert airyai(x).is_extended_real
@@ -351,7 +351,7 @@ def test_airy_base():
 
 
 def test_airyai():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -387,7 +387,7 @@ def test_airyai():
 
 
 def test_airybi():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -423,7 +423,7 @@ def test_airybi():
 
 
 def test_airyaiprime():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -457,7 +457,7 @@ def test_airyaiprime():
 
 
 def test_airybiprime():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 

@@ -132,7 +132,7 @@ def test_piecewise_free_symbols():
 
 
 def test_piecewise_integrate():
-    x, y = symbols('x y', real=True, finite=True)
+    x, y = symbols('x y', extended_real=True, finite=True)
 
     # XXX Use '<=' here! '>=' is not yet implemented ..
     f = Piecewise(((x - 2)**2, 0 <= x), (1, True))
@@ -224,10 +224,10 @@ def test_piecewise_integrate_inequality_conditions():
 
 
 def test_piecewise_integrate_symbolic_conditions():
-    a = Symbol('a', real=True, finite=True)
-    b = Symbol('b', real=True, finite=True)
-    x = Symbol('x', real=True, finite=True)
-    y = Symbol('y', real=True, finite=True)
+    a = Symbol('a', extended_real=True, finite=True)
+    b = Symbol('b', extended_real=True, finite=True)
+    x = Symbol('x', extended_real=True, finite=True)
+    y = Symbol('y', extended_real=True, finite=True)
     p0 = Piecewise((0, Or(x < a, x > b)), (1, True))
     p1 = Piecewise((0, x < a), (0, x > b), (1, True))
     p2 = Piecewise((0, x > b), (0, x < a), (1, True))

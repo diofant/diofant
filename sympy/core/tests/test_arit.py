@@ -32,15 +32,15 @@ def test_Symbol():
     assert a*b*b + c == c + a*b**2
     assert a*b*b - c == -c + a*b**2
 
-    x = Symbol('x', complex=True, real=False)
+    x = Symbol('x', complex=True, extended_real=False)
     assert x.is_imaginary is None  # could be I or 1 + I
     x = Symbol('x', complex=True, imaginary=False)
     assert x.is_extended_real is None  # could be 1 or 1 + I
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert x.is_complex
     x = Symbol('x', imaginary=True)
     assert x.is_complex
-    x = Symbol('x', real=False, imaginary=False)
+    x = Symbol('x', extended_real=False, imaginary=False)
     assert x.is_complex is None  # might be a non-number
 
 
@@ -370,7 +370,7 @@ def test_Add_Mul_is_integer():
 
 
 def test_Add_Mul_is_finite():
-    x = Symbol('x', real=True, finite=False)
+    x = Symbol('x', extended_real=True, finite=False)
 
     assert sin(x).is_finite is True
     assert (x*sin(x)).is_finite is False
@@ -511,8 +511,8 @@ def test_Add_is_even_odd():
 
 
 def test_Mul_is_negative_positive():
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=False, complex=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=False, complex=True)
     z = Symbol('z', zero=True)
 
     e = 2*z
@@ -636,7 +636,7 @@ def test_Mul_is_negative_positive_2():
 
 
 def test_Mul_is_nonpositive_nonnegative():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -729,7 +729,7 @@ def test_Mul_is_nonpositive_nonnegative():
 
 
 def test_Add_is_negative_positive():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -812,7 +812,7 @@ def test_Add_is_negative_positive():
     assert z.is_zero
 
 def test_Add_is_nonpositive_nonnegative():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     k = Symbol('k', negative=True)
     n = Symbol('n', positive=True)
@@ -937,13 +937,13 @@ def test_Pow_is_integer():
 
     assert ((-1)**k).is_integer
 
-    x = Symbol('x', real=True, integer=False)
+    x = Symbol('x', extended_real=True, integer=False)
     assert (x**2).is_integer is None  # issue 8641
 
 
 def test_Pow_is_real():
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True, positive=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True, positive=True)
 
     assert (x**2).is_extended_real is True
     assert (x**3).is_extended_real is True
@@ -997,7 +997,7 @@ def test_real_Pow():
 
 
 def test_Pow_is_finite():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     p = Symbol('p', positive=True)
     n = Symbol('n', negative=True)
 
@@ -1066,7 +1066,7 @@ def test_Pow_is_even_odd():
 
 
 def test_Pow_is_negative_positive():
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
 
     k = Symbol('k', integer=True, positive=True)
     n = Symbol('n', even=True)
@@ -1128,7 +1128,7 @@ def test_Pow_is_zero():
 
 
 def test_Pow_is_nonpositive_nonnegative():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     k = Symbol('k', integer=True, nonnegative=True)
     l = Symbol('l', integer=True, positive=True)
@@ -1175,7 +1175,7 @@ def test_Pow_is_nonpositive_nonnegative():
 
 
 def test_Mul_is_imaginary_real():
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     p = Symbol('p', positive=True)
     i = Symbol('i', imaginary=True)
     ii = Symbol('ii', imaginary=True)
@@ -1222,9 +1222,9 @@ def test_Mul_is_imaginary_real():
     assert (r*i*ii).is_extended_real is True
 
     # Github's issue 5874:
-    nr = Symbol('nr', real=False, complex=True)
-    a = Symbol('a', real=True, nonzero=True)
-    b = Symbol('b', real=True)
+    nr = Symbol('nr', extended_real=False, complex=True)
+    a = Symbol('a', extended_real=True, nonzero=True)
+    b = Symbol('b', extended_real=True)
     assert (i*nr).is_extended_real is None
     assert (a*nr).is_extended_real is False
     assert (b*nr).is_extended_real is None
@@ -1741,10 +1741,10 @@ def test_mul_coeff():
 
 
 def test_mul_zero_detection():
-    nz = Dummy(real=True, zero=False, finite=True)
-    r = Dummy(real=True)
-    c = Dummy(real=False, complex=True, finite=True)
-    c2 = Dummy(real=False, complex=True, finite=True)
+    nz = Dummy(extended_real=True, zero=False, finite=True)
+    r = Dummy(extended_real=True)
+    c = Dummy(extended_real=False, complex=True, finite=True)
+    c2 = Dummy(extended_real=False, complex=True, finite=True)
     i = Dummy(imaginary=True, finite=True)
     e = nz*r*c
     assert e.is_imaginary is None
@@ -1803,12 +1803,12 @@ def test_mul_zero_detection():
             assert e.is_extended_real
 
     for iz, ib in cartes(*[[True, False, None]]*2):
-        z = Dummy('z', nonzero=iz, real=True)
-        b = Dummy('b', finite=ib, real=True)
+        z = Dummy('z', nonzero=iz, extended_real=True)
+        b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(z, b, evaluate=False)
         test(z, b, e)
-        z = Dummy('z', nonzero=iz, real=True)
-        b = Dummy('b', finite=ib, real=True)
+        z = Dummy('z', nonzero=iz, extended_real=True)
+        b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(b, z, evaluate=False)
         test(z, b, e)
 

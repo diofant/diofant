@@ -60,7 +60,7 @@ def test_powers():
 
 
 def test_logexppow():   # no eval()
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     w = Symbol('w')
     e = (3**(1 + x) + 2**(1 + x))/(3**x + 2**x)
     assert e.subs(2**x, w) != e
@@ -577,7 +577,7 @@ def test_issue_6559():
 
 
 def test_issue_5261():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     e = I*x
     assert exp(e).subs(exp(x), y) == y**I
     assert (2**e).subs(2**x, y) == y**I

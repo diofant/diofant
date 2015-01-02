@@ -216,13 +216,13 @@ def test_seriesbug2b():
 
 
 def test_seriesbug2d():
-    w = Symbol("w", real=True)
+    w = Symbol("w", extended_real=True)
     e = log(sin(2*w)/w)
     assert e.series(w, n=5) == log(2) - 2*w**2/3 - 4*w**4/45 + O(w**5)
 
 
 def test_seriesbug2c():
-    w = Symbol("w", real=True)
+    w = Symbol("w", extended_real=True)
     #more complicated case, but sin(x)~x, so the result is the same as in (1)
     e = (sin(2*w)/w)**(1 + w)
     assert e.series(w, 0, 1) == 2 + O(w)
@@ -232,7 +232,7 @@ def test_seriesbug2c():
 
 
 def test_expbug4():
-    x = Symbol("x", real=True)
+    x = Symbol("x", extended_real=True)
     assert (log(
         sin(2*x)/x)*(1 + x)).series(x, 0, 2) == log(2) + x*log(2) + O(x**2, x)
     assert exp(
@@ -331,7 +331,7 @@ def test_issue_3506():
 
 
 def test_issue_3508():
-    x = Symbol("x", real=True)
+    x = Symbol("x", extended_real=True)
     assert log(sin(x)).series(x, n=5) == log(x) - x**2/6 - x**4/180 + O(x**5)
     e = -log(x) + x*(-log(x) + log(sin(2*x))) + log(sin(2*x))
     assert e.series(x, n=5) == \
@@ -363,15 +363,15 @@ def test_hyperbolic():
 
 
 def test_series2():
-    w = Symbol("w", real=True)
-    x = Symbol("x", real=True)
+    w = Symbol("w", extended_real=True)
+    x = Symbol("x", extended_real=True)
     e = w**(-2)*(w*exp(1/x - w) - w*exp(1/x))
     assert e.nseries(w, n=4) == -exp(1/x) + w * exp(1/x) / 2 + O(w**2)
 
 
 def test_series3():
-    w = Symbol("w", real=True)
-    x = Symbol("x", real=True)
+    w = Symbol("w", extended_real=True)
+    x = Symbol("x", extended_real=True)
     e = w**(-6)*(w**3*tan(w) - w**3*sin(w))
     assert e.nseries(w, n=8) == Integer(1)/2 + O(w**2)
 

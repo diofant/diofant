@@ -15,7 +15,7 @@ f, g, h = symbols('f g h', cls=Function)
 
 
 def test_f_expand_complex():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     assert f(x).expand(complex=True) == I*im(f(x)) + re(f(x))
     assert exp(x).expand(complex=True) == exp(x)

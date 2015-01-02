@@ -118,7 +118,7 @@ def test_recursive():
 
 def test_meijerint():
     from sympy import symbols, expand, arg
-    s, t, mu = symbols('s t mu', real=True)
+    s, t, mu = symbols('s t mu', extended_real=True)
     assert integrate(meijerg([], [], [0], [], s*t)
                      *meijerg([], [], [mu/2], [-mu/2], t**2/4),
                      (t, 0, oo)).is_Piecewise
@@ -336,10 +336,10 @@ def test_probability():
     # various integrals from probability theory
     from sympy.abc import x, y
     from sympy import symbols, Symbol, Abs, expand_mul, combsimp, powsimp, sin
-    mu1, mu2 = symbols('mu1 mu2', real=True, nonzero=True, finite=True)
-    sigma1, sigma2 = symbols('sigma1 sigma2', real=True, nonzero=True,
+    mu1, mu2 = symbols('mu1 mu2', extended_real=True, nonzero=True, finite=True)
+    sigma1, sigma2 = symbols('sigma1 sigma2', extended_real=True, nonzero=True,
                              finite=True, positive=True)
-    rate = Symbol('lambda', real=True, positive=True, finite=True)
+    rate = Symbol('lambda', extended_real=True, positive=True, finite=True)
 
     def normal(x, mu, sigma):
         return 1/sqrt(2*pi*sigma**2)*exp(-(x - mu)**2/2/sigma**2)
@@ -509,7 +509,7 @@ def test_probability():
     # can someone verify higher moments?
 
     # Laplace distribution
-    mu = Symbol('mu', real=True)
+    mu = Symbol('mu', extended_real=True)
     b = Symbol('b', positive=True)
     laplace = exp(-abs(x - mu)/b)/2/b
     assert integrate(laplace, (x, -oo, oo), meijerg=True) == 1

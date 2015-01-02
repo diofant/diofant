@@ -390,7 +390,7 @@ class Abs(Function):
     >>> from sympy import Abs, Symbol, S
     >>> Abs(-1)
     1
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
     >>> Abs(-x)
     Abs(x)
     >>> Abs(x**2)

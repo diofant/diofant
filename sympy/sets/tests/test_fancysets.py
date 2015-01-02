@@ -81,7 +81,7 @@ def test_halfcircle():
     # This test sometimes works and sometimes doesn't.
     # It may be an issue with solve? Maybe with using Lambdas/dummys?
     # I believe the code within fancysets is correct
-    r, th = symbols('r, theta', real=True)
+    r, th = symbols('r, theta', extended_real=True)
     L = Lambda((r, th), (r*cos(th), r*sin(th)))
     halfcircle = ImageSet(L, Interval(0, 1)*Interval(0, pi))
 

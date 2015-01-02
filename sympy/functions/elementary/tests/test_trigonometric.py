@@ -7,7 +7,7 @@ from sympy.core.compatibility import range
 from sympy.utilities.pytest import XFAIL, slow, raises
 
 x, y, z = symbols('x y z')
-r = Symbol('r', real=True)
+r = Symbol('r', extended_real=True)
 k = Symbol('k', integer=True)
 p = Symbol('p', positive=True)
 n = Symbol('n', negative=True)
@@ -781,7 +781,7 @@ def test_atan2():
     assert atan2(-1, 0) == -pi/2
     assert atan2(-1, 1) == -pi/4
     i = symbols('i', imaginary=True)
-    r = symbols('r', real=True)
+    r = symbols('r', extended_real=True)
     eq = atan2(r, i)
     ans = -I*log((i + I*r)/sqrt(i**2 + r**2))
     reps = ((r, 2), (i, I))
@@ -812,7 +812,7 @@ def test_atan2():
     assert ex.subs({x:2*I, y:3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
     assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/S(3)) + atan(3/S(2))
     i = symbols('i', imaginary=True)
-    r = symbols('r', real=True)
+    r = symbols('r', extended_real=True)
     e = atan2(i, r)
     rewrite = e.rewrite(arg)
     reps = {i: I, r: -2}
@@ -1081,7 +1081,7 @@ def test_inverses():
 
 
 def test_real_imag():
-    a, b = symbols('a b', real=True)
+    a, b = symbols('a b', extended_real=True)
     z = a + b*I
     for deep in [True, False]:
         assert sin(
@@ -1143,7 +1143,7 @@ def test_tancot_rewrite_sqrt():
                         assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), "fails for %d*pi/%d" % (i, n)
 
 def test_sec():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     z = symbols('z')
 
     assert sec.nargs == FiniteSet(1)
@@ -1213,7 +1213,7 @@ def test_sec():
 
 
 def test_csc():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     z = symbols('z')
 
     # https://github.com/sympy/sympy/issues/6707

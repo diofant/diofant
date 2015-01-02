@@ -201,7 +201,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     >>> from sympy import Poly, Symbol
     >>> from sympy.solvers.inequalities import reduce_rational_inequalities
 
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
 
     >>> reduce_rational_inequalities([[x**2 <= 0]], x)
     Eq(x, 0)
@@ -276,7 +276,7 @@ def reduce_abs_inequality(expr, rel, gen):
 
     >>> from sympy import Abs, Symbol
     >>> from sympy.solvers.inequalities import reduce_abs_inequality
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
 
     >>> reduce_abs_inequality(Abs(x - 5) - 3, '<', x)
     And(2 < x, x < 8)
@@ -360,7 +360,7 @@ def reduce_abs_inequalities(exprs, gen):
     >>> from sympy import Abs, Symbol
     >>> from sympy.abc import x
     >>> from sympy.solvers.inequalities import reduce_abs_inequalities
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
 
     >>> reduce_abs_inequalities([(Abs(3*x - 5) - 7, '<'),
     ... (Abs(x + 25) - 13, '>')], x)
@@ -386,7 +386,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     >>> from sympy.solvers.inequalities import solve_univariate_inequality
     >>> from sympy.core.symbol import Symbol
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
 
     >>> solve_univariate_inequality(x**2 >= 4, x)
     Or(And(-oo < x, x <= -2), And(2 <= x, x < oo))
@@ -580,7 +580,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     symbols = set(symbols) or gens
 
     # make vanilla symbol real
-    recast = dict([(i, Dummy(i.name, real=True))
+    recast = dict([(i, Dummy(i.name, extended_real=True))
         for i in gens if i.is_extended_real is None])
     inequalities = [i.xreplace(recast) for i in inequalities]
     symbols = set([i.xreplace(recast) for i in symbols])

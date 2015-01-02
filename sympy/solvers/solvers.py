@@ -317,24 +317,24 @@ def check_assumptions(expr, **assumptions):
 
        >>> check_assumptions(-5, integer=True)
        True
-       >>> check_assumptions(pi, real=True, integer=False)
+       >>> check_assumptions(pi, extended_real=True, integer=False)
        True
-       >>> check_assumptions(pi, real=True, negative=True)
+       >>> check_assumptions(pi, extended_real=True, negative=True)
        False
-       >>> check_assumptions(exp(I*pi/7), real=False)
+       >>> check_assumptions(exp(I*pi/7), extended_real=False)
        True
 
-       >>> x = Symbol('x', real=True, positive=True)
-       >>> check_assumptions(2*x + 1, real=True, positive=True)
+       >>> x = Symbol('x', extended_real=True, positive=True)
+       >>> check_assumptions(2*x + 1, extended_real=True, positive=True)
        True
-       >>> check_assumptions(-2*x - 5, real=True, positive=True)
+       >>> check_assumptions(-2*x - 5, extended_real=True, positive=True)
        False
 
        `None` is returned if check_assumptions() could not conclude.
 
-       >>> check_assumptions(2*x - 1, real=True, positive=True)
+       >>> check_assumptions(2*x - 1, extended_real=True, positive=True)
        >>> z = Symbol('z')
-       >>> check_assumptions(z, real=True)
+       >>> check_assumptions(z, extended_real=True)
     """
     expr = sympify(expr)
 

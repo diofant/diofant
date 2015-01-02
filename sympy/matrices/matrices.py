@@ -1770,7 +1770,7 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix, Symbol, trigsimp, cos, sin, oo
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> v = Matrix([cos(x), sin(x)])
         >>> trigsimp( v.norm() )
         1
@@ -3024,7 +3024,7 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix, Symbol
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> A = Matrix([[0, 1, 0], [0, x, 0], [-1, 0, 0]])
         >>> A.singular_values()
         [sqrt(x**2 + 1), 1, 0]

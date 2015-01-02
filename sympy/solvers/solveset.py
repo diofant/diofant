@@ -362,8 +362,8 @@ def solveset_real(f, symbol):
 
     >>> from sympy import Symbol, exp, sin, sqrt, I
     >>> from sympy.solvers.solveset import solveset_real
-    >>> x = Symbol('x', real=True)
-    >>> a = Symbol('a', real=True, finite=True, positive=True)
+    >>> x = Symbol('x', extended_real=True)
+    >>> a = Symbol('a', extended_real=True, finite=True, positive=True)
     >>> solveset_real(x**2 - 1, x)
     {-1, 1}
     >>> solveset_real(sqrt(5*x + 6) - 2 - x, x)
@@ -622,7 +622,7 @@ def _solve_radical(f, symbol, solveset_solver):
     else:
         y, yeq = cov
         if not solveset_solver(y - I, y):
-            yreal = Dummy('yreal', real=True)
+            yreal = Dummy('yreal', extended_real=True)
             yeq = yeq.xreplace({y: yreal})
             eq = eq.xreplace({y: yreal})
             y = yreal
@@ -824,7 +824,7 @@ def solveset(f, symbol=None):
       interface, then specify the variable to real. Alternatively use
       `solveset\_real`.
 
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
     >>> solveset(exp(x) - 1, x)
     {0}
     >>> solveset(Eq(exp(x), 1), x)

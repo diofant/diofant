@@ -8,7 +8,7 @@ from sympy.utilities.pytest import raises, XFAIL
 
 
 def test_symbol_unset():
-    x = Symbol('x', real=True, integer=True)
+    x = Symbol('x', extended_real=True, integer=True)
     assert x.is_extended_real is True
     assert x.is_integer is True
     assert x.is_imaginary is None
@@ -323,7 +323,7 @@ def test_I():
 
 def test_symbol_real():
     # issue 3848
-    a = Symbol('a', real=False)
+    a = Symbol('a', extended_real=False)
 
     assert a.is_extended_real is False
     assert a.is_integer is False
@@ -406,7 +406,7 @@ def test_neg_symbol_falsepositive():
 
 
 def test_symbol_falsepositive_real():
-    x = Symbol('x', positive=False, real=True)
+    x = Symbol('x', positive=False, extended_real=True)
     assert x.is_positive is False
     assert x.is_nonpositive is True
     assert x.is_negative is None
@@ -416,7 +416,7 @@ def test_symbol_falsepositive_real():
 
 
 def test_neg_symbol_falsepositive_real():
-    x = -Symbol('x', positive=False, real=True)
+    x = -Symbol('x', positive=False, extended_real=True)
     assert x.is_positive is None
     assert x.is_nonpositive is None
     assert x.is_negative is False
@@ -447,7 +447,7 @@ def test_neg_symbol_falsenonnegative():
 
 
 def test_symbol_falsenonnegative_real():
-    x = Symbol('x', nonnegative=False, real=True)
+    x = Symbol('x', nonnegative=False, extended_real=True)
     assert x.is_positive is False
     assert x.is_nonpositive is True
     assert x.is_negative is True
@@ -457,7 +457,7 @@ def test_symbol_falsenonnegative_real():
 
 
 def test_neg_symbol_falsenonnegative_real():
-    x = -Symbol('x', nonnegative=False, real=True)
+    x = -Symbol('x', nonnegative=False, extended_real=True)
     assert x.is_positive is True
     assert x.is_nonpositive is False
     assert x.is_negative is False
@@ -638,7 +638,7 @@ def test_Add_is_pos_neg():
     nn = Symbol('n', nonnegative=True, infinite=True)
     np = Symbol('n', nonpositive=True, infinite=True)
     p = Symbol('p', positive=True, infinite=True)
-    r = Dummy(real=True, finite=False)
+    r = Dummy(extended_real=True, finite=False)
     x = Symbol('x')
     xf = Symbol('xb', finite=True)
     assert (n + p).is_positive is None
@@ -800,10 +800,10 @@ def test_issue_6275():
 def test_sanitize_assumptions():
     # issue 6666
     for cls in (Symbol, Dummy, Wild):
-        x = cls('x', real=1, positive=0)
+        x = cls('x', extended_real=1, positive=0)
         assert x.is_extended_real is True
         assert x.is_positive is False
-        assert cls('', real=True, positive=None).is_positive is None
+        assert cls('', extended_real=True, positive=None).is_positive is None
         raises(ValueError, lambda: cls('', commutative=None))
     raises(ValueError, lambda: Symbol._sanitize(dict(commutative=None)))
 
@@ -818,7 +818,7 @@ def test_special_assumptions():
 
 def test_inconsistent():
     # cf. issues 5795 and 5545
-    raises(InconsistentAssumptions, lambda: Symbol('x', real=True,
+    raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
            commutative=False))
 
 
@@ -838,7 +838,7 @@ def test_issue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
     assert (3*I + S.Pi*I).is_imaginary
-    y = Symbol('y', real=True)
+    y = Symbol('y', extended_real=True)
     assert (3*I + S.Pi*I + y*I).is_imaginary is True
     p = Symbol('p', positive=True)
     assert (3*I + S.Pi*I + p*I).is_imaginary
@@ -861,7 +861,7 @@ def test_issue_2920():
 
 
 def test_issue_7899():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert (I*x).is_extended_real is None
     assert ((x - I)*(x - 1)).is_zero is None
     assert ((x - I)*(x - 1)).is_extended_real is None
@@ -880,5 +880,5 @@ def test_issue_8075():
 
 
 def test_issue_8642():
-    x = Symbol('x', real=True, integer=False)
+    x = Symbol('x', extended_real=True, integer=False)
     assert (x*2).is_integer is None

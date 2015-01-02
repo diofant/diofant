@@ -16,7 +16,7 @@ from sympy.core.function import ArgumentIndexError
 from sympy.utilities.pytest import raises
 
 x, y, z = symbols('x,y,z')
-w = Symbol("w", real=True)
+w = Symbol("w", extended_real=True)
 n = Symbol("n", integer=True)
 
 
@@ -425,7 +425,7 @@ def tn_arg(func):
 
 def test_li():
     z = Symbol("z")
-    zr = Symbol("z", real=True)
+    zr = Symbol("z", extended_real=True)
     zp = Symbol("z", positive=True)
     zn = Symbol("z", negative=True)
 

@@ -366,12 +366,12 @@ def test_imaginary_compare_raises_TypeError():
 def test_complex_compare_not_real():
     # two cases which are not real
     y = Symbol('y', imaginary=True, nonzero=True)
-    z = Symbol('z', complex=True, real=False)
+    z = Symbol('z', complex=True, extended_real=False)
     for w in (y, z):
         assert_all_ineq_raise_TypeError(2, w)
     # some cases which should remain un-evaluated
     t = Symbol('t')
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     z = Symbol('z', complex=True)
     for w in (x, z, t):
         assert_all_ineq_give_class_Inequality(2, w)
@@ -388,7 +388,7 @@ def test_complex_pure_imag_not_ordered():
     raises(TypeError, lambda: 2*I < 3*I)
 
     # more generally
-    x = Symbol('x', real=True, nonzero=True)
+    x = Symbol('x', extended_real=True, nonzero=True)
     y = Symbol('y', imaginary=True)
     z = Symbol('z', complex=True)
     assert_all_ineq_raise_TypeError(I, y)
@@ -635,7 +635,7 @@ def test_canonical():
 
 @XFAIL
 def test_issue_8444():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert (x <= oo) == (x >= -oo) == True
 
     x = symbols('x')
