@@ -824,3 +824,7 @@ def test_issue_2787():
 
 def test_issue_4668():
     assert summation(1/n, (n, 2, oo)) == oo
+
+
+def test_issue_8822():
+    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan

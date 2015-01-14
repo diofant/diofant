@@ -716,7 +716,15 @@ def _eval_sum_hyper(f, i, a):
     x = ab[0]/ab[1]
     h = hyper(ap, bq, x)
 
-    return f.subs(i, 0)*hyperexpand(h), h.convergence_statement
+    e = h
+    try:
+        e = hyperexpand(h)
+    except PolynomialError:
+        pass
+    if e is S.NaN and h.convergence_statement:
+        e = h
+
+    return f.subs(i, 0)*e, h.convergence_statement
 
 
 def eval_sum_hyper(f, i_a_b):
