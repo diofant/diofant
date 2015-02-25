@@ -8,8 +8,6 @@ from sympy import (Add, Basic, S, Symbol, Wild, Float, Integer, Rational, I,
     cancel, Tuple, default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
     exp_polar, expand, diff, O, Heaviside, Si, Max)
 from sympy.core.function import AppliedUndef
-from sympy.physics.secondquant import FockState
-from sympy.physics.units import meter
 from sympy.core.compatibility import range
 
 from sympy.utilities.pytest import raises, XFAIL
@@ -840,23 +838,12 @@ def test_has_tuple():
     assert Tuple(True).has(True) is True  # .has(1) will also be True
 
 
-def test_has_units():
-    from sympy.physics.units import m, s
-
-    assert (x*m/s).has(x)
-    assert (x*m/s).has(y, z) is False
-
-
 def test_has_polys():
     poly = Poly(x**2 + x*y*sin(z), x, y, t)
 
     assert poly.has(x)
     assert poly.has(x, y, z)
     assert poly.has(x, y, z, t)
-
-
-def test_has_physics():
-    assert FockState((x, y)).has(x)
 
 
 def test_as_poly_as_expr():
@@ -1248,8 +1235,6 @@ def test_free_symbols():
     assert (x).free_symbols == set([x])
     assert Integral(x, (x, 1, y)).free_symbols == set([y])
     assert (-Integral(x, (x, 1, y))).free_symbols == set([y])
-    assert meter.free_symbols == set()
-    assert (meter**x).free_symbols == set([x])
 
 
 def test_issue_5300():
@@ -1386,11 +1371,6 @@ def test_as_ordered_terms():
     assert f.as_ordered_terms(order="rev-grlex") == [2, y, x**2*y**2, x*y**4]
 
 
-def test_sort_key_atomic_expr():
-    from sympy.physics.units import m, s
-    assert sorted([-m, s], key=lambda arg: arg.sort_key()) == [-m, s]
-
-
 def test_issue_4199():
     # first subs and limit gives NaN
     a = x/y
@@ -1465,10 +1445,6 @@ def test_is_constant():
     z1, z2 = symbols('z1 z2', zero=True)
     assert (z1 + 2*z2).is_constant() is True
 
-    assert meter.is_constant() is True
-    assert (3*meter).is_constant() is True
-    assert (x*meter).is_constant() is False
-
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)
@@ -1482,8 +1458,6 @@ def test_equals():
     assert (sqrt(5)*sqrt(3)).equals(sqrt(3)) is False
     assert (sqrt(5) + sqrt(3)).equals(0) is False
     assert (sqrt(5) + pi).equals(0) is False
-    assert meter.equals(0) is False
-    assert (3*meter**2).equals(0) is False
     eq = -(-1)**(S(3)/4)*6**(S(1)/4) + (-6)**(S(1)/4)*I
     if eq != 0:  # if canonicalization makes this zero, skip the test
         assert eq.equals(0)

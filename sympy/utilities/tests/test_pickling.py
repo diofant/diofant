@@ -256,14 +256,6 @@ def test_ntheory():
     for c in (Sieve, Sieve()):
         check(c)
 
-#================== physics =====================
-from sympy.physics.paulialgebra import Pauli
-from sympy.physics.units import Unit
-
-
-def test_physics():
-    for c in (Unit, Unit("meter", "m"), Pauli, Pauli(1)):
-        check(c)
 
 #================== plotting ====================
 # XXX: These tests are not complete, so XFAIL them

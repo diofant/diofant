@@ -95,7 +95,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
         """
         from sympy import Basic
         from sympy.matrices import MatrixBase
-        from sympy.physics.vector import Vector, Dyadic
         if isinstance(o, (list, tuple, set, frozenset)):
             return all(_can_print_latex(i) for i in o)
         elif isinstance(o, dict):
@@ -104,7 +103,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
             return False
         # TODO : Investigate if "elif hasattr(o, '_latex')" is more useful
         # to use here, than these explicit imports.
-        elif isinstance(o, (Basic, MatrixBase, Vector, Dyadic)):
+        elif isinstance(o, (Basic, MatrixBase)):
             return True
         elif isinstance(o, (float, integer_types)) and print_builtin:
             return True
@@ -169,9 +168,8 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
     if IPython.__version__ >= '0.11':
         from sympy.core.basic import Basic
         from sympy.matrices.matrices import MatrixBase
-        from sympy.physics.vector import Vector, Dyadic
         printable_types = [Basic, MatrixBase, float, tuple, list, set,
-                frozenset, dict, Vector, Dyadic] + list(integer_types)
+                frozenset, dict] + list(integer_types)
 
         plaintext_formatter = ip.display_formatter.formatters['text/plain']
 

@@ -3,7 +3,6 @@ from sympy import (
     symbols, transpose,
 )
 from sympy.core.compatibility import range
-from sympy.physics.secondquant import evaluate_deltas, F
 
 x, y = symbols('x y')
 
@@ -112,18 +111,3 @@ def test_kronecker_delta_secondquant():
     assert D(q, v).killable_index == q
     assert D(q, p).preferred_index == p
     assert D(q, p).killable_index == q
-
-    EV = evaluate_deltas
-    assert EV(D(a, q)*F(q)) == F(a)
-    assert EV(D(i, q)*F(q)) == F(i)
-    assert EV(D(a, q)*F(a)) == D(a, q)*F(a)
-    assert EV(D(i, q)*F(i)) == D(i, q)*F(i)
-    assert EV(D(a, b)*F(a)) == F(b)
-    assert EV(D(a, b)*F(b)) == F(a)
-    assert EV(D(i, j)*F(i)) == F(j)
-    assert EV(D(i, j)*F(j)) == F(i)
-    assert EV(D(p, q)*F(q)) == F(p)
-    assert EV(D(p, q)*F(p)) == F(q)
-    assert EV(D(p, j)*D(p, i)*F(i)) == F(j)
-    assert EV(D(p, j)*D(p, i)*F(j)) == F(i)
-    assert EV(D(p, q)*D(p, i))*F(i) == D(q, i)*F(i)

@@ -32,7 +32,6 @@ from sympy.matrices import Matrix, GramSchmidt, eye
 from sympy.matrices.expressions.blockmatrix import BlockMatrix, block_collapse
 from sympy.matrices.expressions import MatrixSymbol, ZeroMatrix
 from sympy.galgebra.ga import MV
-from sympy.physics.quantum import Commutator
 from sympy.assumptions import assuming
 from sympy.polys.rings import vring
 from sympy.polys.fields import vfield
@@ -577,13 +576,6 @@ def test_H31():
 def test_H32():  # issue 6558
     raise NotImplementedError("[A*B*C - (A*B*C)**(-1)]*A*C*B (product \
                               of a non-commuting product and its inverse)")
-
-
-def test_H33():
-    A, B, C = symbols('A, B, C', commutative=False)
-    assert (Commutator(A, Commutator(B, C))
-        + Commutator(B, Commutator(C, A))
-        + Commutator(C, Commutator(A, B))).doit().expand() == 0
 
 
 # I. Trigonometry

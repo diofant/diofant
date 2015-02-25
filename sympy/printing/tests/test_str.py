@@ -7,7 +7,6 @@ from sympy import (Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
     WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
     subfactorial, true, false, Equivalent, Xor, Complement, SymmetricDifference)
 from sympy.core import Expr
-from sympy.physics.units import second, joule
 from sympy.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
 from sympy.geometry import Point, Circle
 
@@ -546,10 +545,6 @@ def test_tuple():
     assert str((x + y, 1 + x)) == sstr((x + y, 1 + x)) == "(x + y, x + 1)"
     assert str((x + y, (
         1 + x, x**2))) == sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
-
-def test_Unit():
-    assert str(second) == "s"
-    assert str(joule) == "kg*m**2/s**2"  # issue 5560
 
 
 def test_wild_str():

@@ -158,13 +158,6 @@ class Tr(Expr):
 
         #TODO: Current version ignores the indices set for partial trace.
 
-        >>> from sympy.core.trace import Tr
-        >>> from sympy.physics.quantum.operator import OuterProduct
-        >>> from sympy.physics.quantum.spin import JzKet, JzBra
-        >>> t = Tr(OuterProduct(JzKet(1,1), JzBra(1,1)))
-        >>> t.doit()
-        1
-
         """
         if hasattr(self.args[0], '_eval_trace'):
             return self.args[0]._eval_trace(indices=self.args[1])

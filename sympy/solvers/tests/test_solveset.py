@@ -17,8 +17,6 @@ from sympy.sets import FiniteSet
 
 from sympy.utilities.pytest import XFAIL, raises, skip
 from sympy.utilities.randtest import verify_numerically as tn
-from sympy.physics.units import cm
-
 
 from sympy.solvers.solveset import (
     solveset_real, domain_check, solveset_complex,
@@ -527,10 +525,6 @@ def test_real_imag_splitting():
     a, b = symbols('a b', real=True, finite=True)
     assert solveset_real(sqrt(a**2 - b**2) - 3, a) == \
         FiniteSet(-sqrt(b**2 + 9), sqrt(b**2 + 9))
-
-
-def test_units():
-    assert solveset_real(1/x - 1/(2*cm), x) == FiniteSet(2*cm)
 
 
 def test_solve_only_exp_1():
