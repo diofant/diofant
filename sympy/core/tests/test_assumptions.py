@@ -68,11 +68,6 @@ def test_one():
     assert z.is_composite is False  # issue 8807
 
 
-@XFAIL
-def test_one_is_composite():
-    assert S(1).is_composite is False
-
-
 def test_negativeone():
     z = Integer(-1)
     assert z.is_commutative is True
