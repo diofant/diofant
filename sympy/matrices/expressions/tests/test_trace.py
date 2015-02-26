@@ -67,7 +67,6 @@ def test_Trace_MatPow_doit():
     assert Trace(q).doit() == 29
 
 
-@XFAIL
 def test_Trace_doit_deep_False():
     X = Matrix([[1, 2], [3, 4]])
     q = MatPow(X, 2)
