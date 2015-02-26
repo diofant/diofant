@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from strategies import exhaust, do_one
 from strategies.core import typed
 
-from sympy.core import Mul, Basic, sympify, Add
+from sympy.core import Mul, Basic, sympify, Add, Number
 from sympy.core.compatibility import range
 from sympy.functions import adjoint
 from sympy.matrices.expressions.transpose import transpose
@@ -85,8 +85,8 @@ class MatMul(MatrixExpr):
     def _eval_trace(self):
         factor, mmul = self.as_coeff_mmul()
         if factor != 1:
-            from .trace import Trace
-            return factor * Trace(mmul)
+            from .trace import trace
+            return factor * trace(mmul.doit())
         else:
             raise NotImplementedError("Can't simplify any further")
 
@@ -171,7 +171,7 @@ def merge_explicit(matmul):
     newargs = []
     last = matmul.args[0]
     for arg in matmul.args[1:]:
-        if isinstance(arg, MatrixBase) and isinstance(last, MatrixBase):
+        if isinstance(arg, (MatrixBase, Number)) and isinstance(last, (MatrixBase, Number)):
             last = last * arg
         else:
             newargs.append(last)
