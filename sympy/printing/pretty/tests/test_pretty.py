@@ -16,7 +16,7 @@ from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
 from sympy.printing.pretty import pretty as xpretty
 from sympy.printing.pretty import pprint
 
-from sympy.utilities.pytest import raises
+from sympy.utilities.pytest import raises, XFAIL
 from sympy.core.trace import Tr
 
 from sympy.core.compatibility import u_decode as u
@@ -251,7 +251,7 @@ def test_upretty_sub_super():
     assert upretty( Symbol("F^1^2^3^4") ) == u('F¹ ² ³ ⁴')
 
 
-def test_upretty_subs_missingin_24():
+def test_upretty_subs_missing_in_24():
     assert upretty( Symbol('F_beta') ) == u('Fᵦ')
     assert upretty( Symbol('F_gamma') ) == u('Fᵧ')
     assert upretty( Symbol('F_rho') ) == u('Fᵨ')
@@ -267,14 +267,21 @@ def test_upretty_subs_missingin_24():
     assert upretty( Symbol('F_v') ) == u('Fᵥ')
     assert upretty( Symbol('F_x') ) == u('Fₓ')
 
-    assert upretty( Symbol('F_h') ) == u('Fₕ')
-    assert upretty( Symbol('F_k') ) == u('Fₖ')
-    assert upretty( Symbol('F_l') ) == u('Fₗ')
-    assert upretty( Symbol('F_m') ) == u('Fₘ')
-    assert upretty( Symbol('F_n') ) == u('Fₙ')
-    assert upretty( Symbol('F_p') ) == u('Fₚ')
-    assert upretty( Symbol('F_s') ) == u('Fₛ')
-    assert upretty( Symbol('F_t') ) == u('Fₜ')
+
+@XFAIL
+def test_missing_in_2X_issue_9047():
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        assert upretty( Symbol('F_h') ) == u('Fₕ')
+        assert upretty( Symbol('F_k') ) == u('Fₖ')
+        assert upretty( Symbol('F_l') ) == u('Fₗ')
+        assert upretty( Symbol('F_m') ) == u('Fₘ')
+        assert upretty( Symbol('F_n') ) == u('Fₙ')
+        assert upretty( Symbol('F_p') ) == u('Fₚ')
+        assert upretty( Symbol('F_s') ) == u('Fₛ')
+        assert upretty( Symbol('F_t') ) == u('Fₜ')
+
 
 def test_upretty_modifiers():
     # Accents
