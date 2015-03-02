@@ -807,8 +807,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         sympy.matrices.dense.DenseMatrix.col
         sympy.matrices.dense.MutableDenseMatrix.row_op
         """
-        self._mat[j::self.cols] = list(map(lambda t: f(*t),
-            list(zip(self._mat[j::self.cols], list(range(self.rows))))))
+        self._mat[j::self.cols] = [f(*t) for t in list(zip(self._mat[j::self.cols], list(range(self.rows))))]
 
     def row_swap(self, i, j):
         """Swap the two given rows of the matrix in-place.

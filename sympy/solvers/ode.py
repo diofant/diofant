@@ -2489,7 +2489,7 @@ def _get_constant_subexpressions(expr, Cs):
                         Ces.append(x)
             elif isinstance(expr, Integral):
                 if expr.free_symbols.issubset(Cs) and \
-                        all(map(lambda x: len(x) == 3, expr.limits)):
+                            all(len(x) == 3 for x in expr.limits):
                     Ces.append(expr)
             for i in expr.args:
                 _recursive_walk(i)
