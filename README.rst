@@ -12,6 +12,13 @@ The most recent documentation is available in HTML format online:
 
 http://omg.readthedocs.org/
 
+The online documentation is automatically generated for commits
+in the master branch of the repository, build status is available here:
+
+.. image:: https://readthedocs.org/projects/omg/badge/?version=latest
+    :target: https://readthedocs.org/projects/omg/?badge=latest
+    :alt: Documentation Status
+
 You can generate everything at the above site in your local copy of SymPy by::
 
     $ cd doc
