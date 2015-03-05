@@ -8,6 +8,10 @@ See the AUTHORS file for the list of authors.
 Documentation and usage
 -----------------------
 
+The most recent documentation is available in HTML format online:
+
+http://omg.readthedocs.org/
+
 You can generate everything at the above site in your local copy of SymPy by::
 
     $ cd doc
