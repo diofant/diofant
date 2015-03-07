@@ -566,10 +566,3 @@ systems.  In particular, the inverse trig functions use the python names
 of :func:`asin`, :func:`acos` and so on instead of the usual ``arcsin``
 and ``arccos``.  Use the methods described in :ref:`Symbols <symbols>`
 above to see the names of all SymPy functions.
-
-Special Symbols
-===============
-
-The symbols ``[]``, ``{}``, ``=``, and ``()`` have special meanings in
-Python, and thus in SymPy.  See the Python docs linked to above for
-additional information.
