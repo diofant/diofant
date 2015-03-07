@@ -107,10 +107,10 @@ SymPy's Architecture
 
 We try to make the sources easily understandable, so you can look into the
 sources and read the doctests, it should be well documented and if you don't
-understand something, ask on the mailinglist_.
+understand something, ask on the issues_.
 
-You can find all the decisions archived in the issues_, to see rationale for
-doing this and that.
+You can find all the decisions archived in the issues_ or in the oldissues_
+(up to issue 9035), to see rationale for doing this and that.
 
 Basics
 ------
@@ -498,32 +498,22 @@ So ``e`` and ``f`` are functions, ``g`` is not a function.
 Contributing
 ============
 
-We welcome every SymPy user to participate in it's development. Don't worry if
-you've never contributed to any open source project, we'll help you learn
-anything necessary, just ask on our mailinglist_.
-
-Don't be afraid to ask anything and don't worry that you are wasting our time
-if you are new to SymPy and ask questions that maybe most of the people know
-the answer to -- you are not, because that's exactly what the mailinglist_ is
-for and people answer your emails because they want to. Also we try hard to
-answer every email, so you'll always get some feedback and pointers what to do
-next.
+We welcome every SymPy user to participate in it's development.
 
 Improving the code
 ------------------
 
 Go to issues_ that are sorted by priority and simply find something that you
 would like to get fixed and fix it. If you find something odd, please report it
-into issues_ first before fixing it. Feel free to consult with us on the
-mailinglist_.  Then send your patch either to the issues_ or the mailinglist_.
+into issues_ first before fixing it.
 
 Please read our excellent `SymPy Patches Tutorial
 <https://github.com/sympy/sympy/wiki/Development-workflow>`_ at our
 wiki for a guide on how to write patches to SymPy, how to work with Git,
 and how to make your life easier as you get started with SymPy.
 
-.. _issues:             https://github.com/sympy/sympy/issues
-.. _mailinglist:        https://groups.google.com/forum/#!forum/sympy
+.. _issues:             https://github.com/skirpichev/omg/issues
+.. _oldissues:          https://github.com/sympy/sympy/issues
 
 Improving the docs
 ------------------

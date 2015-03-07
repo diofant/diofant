@@ -73,6 +73,4 @@ These are the goals of this tutorial:
 - To avoid unnecessary duplication, it is assumed that previous sections of
   the tutorial have already been read.
 
-Feedback on this tutorial, or on SymPy in general is always welcome. Just
-write to our `mailing list
-<https://groups.google.com/forum/?fromgroups#!forum/sympy>`_.
+Feedback on this tutorial, or on SymPy in general is always welcome.
