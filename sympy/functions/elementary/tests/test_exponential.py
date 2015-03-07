@@ -2,13 +2,10 @@ from sympy import (
     symbols, log, Float, nan, oo, zoo, I, pi, E, exp, Symbol,
     LambertW, sqrt, Rational, expand_log, S, sign, conjugate,
     sin, cos, sinh, cosh, tanh, exp_polar, re, Function, simplify)
-from sympy.abc import x, y
+from sympy.abc import x, y, z
 
 
 def test_exp_values():
-
-    x, y = symbols('x,y')
-
     k = Symbol('k', integer=True)
 
     assert exp(nan) == nan
@@ -52,15 +49,11 @@ def test_exp_log():
     assert exp(x).inverse() == log
 
     y = Symbol("y", polar=True)
-    z = Symbol("z")
     assert log(exp_polar(z)) == z
     assert exp(log(y)) == y
 
 
 def test_exp_expand():
-    x = Symbol("x")
-    y = Symbol("y")
-
     e = exp(log(Rational(2))*(1 + x) - log(Rational(2))*x)
     assert e.expand() == 2
     assert exp(x + y) != exp(x)*exp(y)
@@ -68,8 +61,6 @@ def test_exp_expand():
 
 
 def test_exp__as_base_exp():
-    x, y = symbols('x,y')
-
     assert exp(x).as_base_exp() == (E, x)
     assert exp(2*x).as_base_exp() == (E, 2*x)
     assert exp(x*y).as_base_exp() == (E, x*y)
@@ -85,7 +76,6 @@ def test_exp__as_base_exp():
 
 
 def test_exp_infinity():
-    y = Symbol('y')
     assert exp(I*y) != nan
     assert exp(I*oo) == nan
     assert exp(-I*oo) == nan
@@ -93,7 +83,7 @@ def test_exp_infinity():
 
 
 def test_exp_subs():
-    x, y = symbols('x,y')
+    x = Symbol('x')
     e = (exp(3*log(x), evaluate=False))  # evaluates to x**3
     assert e.subs(x**3, y**3) == e
     assert e.subs(x**2, 5) == e
@@ -112,12 +102,10 @@ def test_exp_subs():
 
 
 def test_exp_conjugate():
-    x = Symbol('x')
     assert conjugate(exp(x)) == exp(conjugate(x))
 
 
 def test_exp_rewrite():
-    x = symbols('x')
     assert exp(x).rewrite(sin) == sinh(x) + cosh(x)
     assert exp(x*I).rewrite(cos) == cos(x) + I*sin(x)
     assert exp(1).rewrite(cos) == sinh(1) + cosh(1)
@@ -127,7 +115,6 @@ def test_exp_rewrite():
 
 
 def test_exp_leading_term():
-    x = symbols('x')
     assert exp(x).as_leading_term(x) == 1
     assert exp(1/x).as_leading_term(x) == exp(1/x)
     assert exp(2 + x).as_leading_term(x) == exp(2)
@@ -194,8 +181,6 @@ def test_log_base():
 
 
 def test_log_symbolic():
-    x, y = symbols('x,y')
-
     assert log(x, exp(1)) == log(x)
     assert log(exp(x)) != x
 
@@ -234,7 +219,6 @@ def test_log_symbolic():
 
 
 def test_exp_assumptions():
-    x = Symbol('x')
     r = Symbol('r', real=True)
     i = Symbol('i', imaginary=True)
     for e in exp, exp_polar:
@@ -278,7 +262,6 @@ def test_log_assumptions():
 
 
 def test_log_hashing():
-    x = Symbol("y")
     assert x != log(log(x))
     assert hash(x) != hash(log(log(x)))
     assert log(x) != log(log(log(x)))
@@ -288,7 +271,6 @@ def test_log_hashing():
     e = 1/log(log(x) + log(log(log(x))))
     assert e.base.func is log
 
-    x = Symbol("x")
     e = log(log(x))
     assert e.func is log
     assert not x.func is log
@@ -341,7 +323,6 @@ def test_log_simplify():
 
 
 def test_lambertw():
-    x = Symbol('x')
     k = Symbol('k')
 
     assert LambertW(x, 0) == LambertW(x)
@@ -392,7 +373,6 @@ def test_issue_5673():
 
 def test_exp_expand_NC():
     A, B, C = symbols('A,B,C', commutative=False)
-    x, y, z = symbols('x,y,z')
 
     assert exp(A + B).expand() == exp(A + B)
     assert exp(A + B + C).expand() == exp(A + B + C)
@@ -401,7 +381,6 @@ def test_exp_expand_NC():
 
 
 def test_as_numer_denom():
-    from sympy.abc import x
     n = symbols('n', negative=True)
     assert exp(x).as_numer_denom() == (exp(x), 1)
     assert exp(-x).as_numer_denom() == (1, exp(x))
@@ -416,7 +395,6 @@ def test_as_numer_denom():
 
 def test_polar():
     x, y = symbols('x y', polar=True)
-    z = Symbol('z')
 
     assert abs(exp_polar(I*4)) == 1
     assert exp_polar(I*10).n() == exp_polar(I*10)
@@ -447,7 +425,6 @@ def test_log_product():
     assert simplify(expr) == expr
 
 def test_issue_8866():
-    x = Symbol('x')
     assert simplify(log(x, 10, evaluate=False)) == simplify(log(x, 10))
     assert expand_log(log(x, 10, evaluate=False)) == expand_log(log(x, 10))
 
