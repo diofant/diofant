@@ -104,6 +104,9 @@ def test_invert_complex():
     raises(ValueError, lambda: invert_real(S.One, y, x))
     raises(ValueError, lambda: invert_complex(x, x, x))
 
+    # https://github.com/skirpichev/omg/issues/16
+    assert invert_complex(sinh(x), 0, x) != (x, FiniteSet(0))
+
 
 def test_domain_check():
     assert domain_check(1/(1 + (1/(x+1))**2), x, -1) is False
