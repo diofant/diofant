@@ -2,6 +2,7 @@ from sympy import (
     symbols, log, Float, nan, oo, zoo, I, pi, E, exp, Symbol,
     LambertW, sqrt, Rational, expand_log, S, sign, conjugate,
     sin, cos, sinh, cosh, tanh, exp_polar, re, Function, simplify)
+from sympy.abc import x, y
 
 
 def test_exp_values():
@@ -130,6 +131,11 @@ def test_exp_leading_term():
     assert exp(x).as_leading_term(x) == 1
     assert exp(1/x).as_leading_term(x) == exp(1/x)
     assert exp(2 + x).as_leading_term(x) == exp(2)
+
+
+def test_exp_taylor_term():
+    assert exp(x).taylor_term(3, x) == x**3/6
+    assert exp(x).taylor_term(4, x) == x**4/24
 
 
 def test_log_values():
