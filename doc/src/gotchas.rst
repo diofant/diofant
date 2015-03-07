@@ -221,8 +221,7 @@ You can also import common symbol names from :mod:`sympy.abc`.
     'v', 'w', 'x', 'xi', 'y', 'z', 'zeta']
 
 If you want control over the assumptions of the variables, use
-:func:`Symbol` and :func:`symbols`.  See :ref:`Keyword
-Arguments<keyword-arguments>` below.
+:func:`Symbol` and :func:`symbols`.
 
 Lastly, it is recommended that you not use :obj:`I`, :obj:`E`, :obj:`S`,
 :obj:`N`, :obj:`C`, :obj:`O`, or :obj:`Q` for variable or symbol names, as those
