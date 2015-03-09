@@ -190,8 +190,6 @@ def test_files():
         "%(sep)sbin%(sep)ssympy_time_cache.py" % sepd,
         # Taken from Python stdlib:
         "%(sep)sparsing%(sep)ssympy_tokenize.py" % sepd,
-        # this one should be fixed:
-        "%(sep)splotting%(sep)spygletplot%(sep)s" % sepd,
     ])
     check_files(top_level_files, test)
     check_directory_tree(BIN_PATH, test, set(["~", ".pyc", ".sh"]), "*")

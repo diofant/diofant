@@ -62,8 +62,7 @@ class Plot(object):
     For interactive work the function ``plot`` is better suited.
 
     This class permits the plotting of sympy expressions using numerous
-    backends (matplotlib, textplot, the old pyglet module for sympy, Google
-    charts api, etc).
+    backends (matplotlib, textplot, Google charts api, etc).
 
     The figure can contain an arbitrary number of plots of sympy expressions,
     lists of coordinates of points, etc. Plot has a private attribute _series that

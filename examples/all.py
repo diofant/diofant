@@ -75,7 +75,6 @@ WINDOWED_EXAMPLES = [
     "intermediate.mplot3d",
     "intermediate.print_gtk",
     "advanced.autowrap_ufuncify",
-    "advanced.pyglet_plotting",
 ]
 
 EXAMPLE_DIR = os.path.dirname(__file__)
