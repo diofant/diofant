@@ -11,7 +11,7 @@ from sympy.galgebra.ga import MV, Nga, Com
 from sympy.galgebra.printing import GA_Printer
 from sympy.matrices import Matrix
 from sympy.simplify import collect, simplify
-from sympy.utilities.pytest import XFAIL
+from sympy.utilities.pytest import XFAIL, slow
 
 
 def F(x, n, nbar):
@@ -379,6 +379,7 @@ def test_basic_multivector_operations():
 
     return
 
+@slow
 def test_check_generalized_BAC_CAB_formulas():
     with GA_Printer():
         (a, b, c, d, e) = MV.setup('a b c d e')

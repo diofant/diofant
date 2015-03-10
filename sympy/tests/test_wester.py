@@ -2406,6 +2406,7 @@ def test_W2():
     assert integrate(1/(x - y)**2, (x, y - 1, y + 1)) == zoo
 
 
+@slow
 @XFAIL
 def test_W3():
     # integral is not  calculated
