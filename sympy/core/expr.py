@@ -678,6 +678,24 @@ class Expr(Basic, EvalfMixin):
             return diff
         return None
 
+    def _eval_is_zero(self):
+        if self.is_number:
+            try:
+                # check to see that we can get a value
+                n2 = self._eval_evalf(2)
+                if n2 is None:
+                    raise AttributeError
+                if n2._prec == 1:  # no significance
+                    raise AttributeError
+                if n2 == S.NaN:
+                    raise AttributeError
+            except (AttributeError, ValueError):
+                return
+            n, i = self.evalf(2).as_real_imag()
+            if n.is_Number and i.is_Number and n._prec != 1 and i._prec != 1:
+                if n != 0 or i != 0:
+                    return False
+
     def _eval_is_positive(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic

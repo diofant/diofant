@@ -2129,6 +2129,7 @@ class Zero(with_metaclass(Singleton, IntegerConstant)):
     is_negative = False
     is_zero = True
     is_number = True
+    is_imaginary = True
 
     __slots__ = []
 
@@ -3378,6 +3379,7 @@ class ImaginaryUnit(with_metaclass(Singleton, AtomicExpr)):
     is_number = True
     is_algebraic = True
     is_transcendental = False
+    is_real = False
 
     __slots__ = []
 

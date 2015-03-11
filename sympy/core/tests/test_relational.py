@@ -365,7 +365,7 @@ def test_imaginary_compare_raises_TypeError():
 
 def test_complex_compare_not_real():
     # two cases which are not real
-    y = Symbol('y', imaginary=True)
+    y = Symbol('y', imaginary=True, nonzero=True)
     z = Symbol('z', complex=True, real=False)
     for w in (y, z):
         assert_all_ineq_raise_TypeError(2, w)
@@ -379,7 +379,7 @@ def test_complex_compare_not_real():
 
 def test_imaginary_and_inf_compare_raises_TypeError():
     # See pull request #7835
-    y = Symbol('y', imaginary=True)
+    y = Symbol('y', imaginary=True, nonzero=True)
     assert_all_ineq_raise_TypeError(oo, y)
     assert_all_ineq_raise_TypeError(-oo, y)
 
@@ -417,7 +417,7 @@ def test_x_minus_y_not_same_as_x_lt_y():
     raises(TypeError, lambda: ineq.doit())
     assert ineq.lhs - ineq.rhs < 0
 
-    t = Symbol('t', imaginary=True)
+    t = Symbol('t', imaginary=True, nonzero=True)
     x = 2 + t
     y = 3 + t
     ineq = Lt(x, y, evaluate=False)
