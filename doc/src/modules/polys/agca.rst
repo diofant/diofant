@@ -190,6 +190,8 @@ and submodules:
 .. autoclass:: SubModule
    :members:
 
+.. autoclass:: FreeModuleElement
+   :members:
 
 Ideals are created very similarly to modules. For example, let's verify
 that the nodal cubic is indeed singular at the origin::
@@ -229,6 +231,9 @@ subquotient modules:
    :members:
 
 .. autoclass:: SubQuotientModule
+   :members:
+
+.. autoclass:: QuotientModuleElement
    :members:
 
 Module Homomorphisms and Syzygies

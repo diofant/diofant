@@ -2306,7 +2306,7 @@ def solve_linear_system_LU(matrix, syms):
     See Also
     ========
 
-    sympy.matrices.LUsolve
+    sympy.matrices.matrices.MatrixBase.LUsolve
 
     """
     if matrix.rows != matrix.cols - 1:

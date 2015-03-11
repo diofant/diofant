@@ -799,10 +799,6 @@ def split_list(l, split):
     return l[(i - 1)*len(l)//t:i*len(l)//t]
 
 
-from collections import namedtuple
-SymPyTestResults = namedtuple('TestResults', 'failed attempted')
-
-
 def sympytestfile(filename, module_relative=True, name=None, package=None,
              globs=None, verbose=None, report=True, optionflags=0,
              extraglobs=None, raise_on_error=False,
@@ -929,6 +925,9 @@ def sympytestfile(filename, module_relative=True, name=None, package=None,
         pdoctest.master = runner
     else:
         pdoctest.master.merge(runner)
+
+    from collections import namedtuple
+    SymPyTestResults = namedtuple('TestResults', 'failed attempted')
 
     return SymPyTestResults(runner.failures, runner.tries)
 

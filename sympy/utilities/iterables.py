@@ -453,12 +453,6 @@ def variations(seq, n, repetition=False):
         []
         >>> list(variations([0, 1], 3, repetition=True))[:4]
         [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1)]
-
-    See Also
-    ========
-
-    sympy.core.compatibility.permutations
-    sympy.core.compatibility.product
     """
     if not repetition:
         seq = tuple(seq)
@@ -657,7 +651,8 @@ def sift(seq, keyfunc):
 
     See Also
     ========
-    ordered
+
+    sympy.core.compatibility.ordered
     """
     m = defaultdict(list)
     for i in seq:
@@ -832,7 +827,7 @@ def topological_sort(graph, key=None):
         [7, 5, 11, 3, 10, 8, 9, 2]
 
     Only acyclic graphs can be sorted. If the input graph has a cycle,
-    then :py:exc:`ValueError` will be raised::
+    then ValueError will be raised::
 
         >>> topological_sort((V, E + [(10, 7)]))
         Traceback (most recent call last):
@@ -1219,6 +1214,7 @@ def multiset_partitions(multiset, m=None):
 
     See Also
     ========
+
     partitions
     sympy.combinatorics.partitions.Partition
     sympy.combinatorics.partitions.IntegerPartition
@@ -1372,6 +1368,7 @@ def partitions(n, m=None, k=None, size=False):
 
     See Also
     ========
+
     sympy.combinatorics.partitions.Partition
     sympy.combinatorics.partitions.IntegerPartition
 
@@ -1630,7 +1627,8 @@ def generate_bell(n):
 
     See Also
     ========
-    sympy.combinatorics.Permutation.next_trotterjohnson
+
+    sympy.combinatorics.permutations.Permutation.next_trotterjohnson
 
     References
     ==========

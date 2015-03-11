@@ -1255,7 +1255,8 @@ def plot(*args, **kwargs):
     See Also
     ========
 
-    Plot, LineOver1DRangeSeries.
+    Plot
+    sympy.plotting.plot.LineOver1DRangeSeries
 
     """
     args = list(map(sympify, args))

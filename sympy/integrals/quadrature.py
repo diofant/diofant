@@ -56,7 +56,12 @@ def gauss_legendre(n, n_digits):
     See Also
     ========
 
-    gauss_laguerre, gauss_gen_laguerre, gauss_hermite, gauss_chebyshev_t, gauss_chebyshev_u, gauss_jacobi
+    sympy.integrals.quadrature.gauss_laguerre
+    sympy.integrals.quadrature.gauss_gen_laguerre
+    sympy.integrals.quadrature.gauss_hermite
+    sympy.integrals.quadrature.gauss_chebyshev_t
+    sympy.integrals.quadrature.gauss_chebyshev_u
+    sympy.integrals.quadrature.gauss_jacobi
 
     References
     ==========
@@ -124,7 +129,12 @@ def gauss_laguerre(n, n_digits):
     See Also
     ========
 
-    gauss_legendre, gauss_gen_laguerre, gauss_hermite, gauss_chebyshev_t, gauss_chebyshev_u, gauss_jacobi
+    sympy.integrals.quadrature.gauss_legendre
+    sympy.integrals.quadrature.gauss_gen_laguerre
+    sympy.integrals.quadrature.gauss_hermite
+    sympy.integrals.quadrature.gauss_chebyshev_t
+    sympy.integrals.quadrature.gauss_chebyshev_u
+    sympy.integrals.quadrature.gauss_jacobi
 
     References
     ==========
@@ -192,7 +202,12 @@ def gauss_hermite(n, n_digits):
     See Also
     ========
 
-    gauss_legendre, gauss_laguerre, gauss_gen_laguerre, gauss_chebyshev_t, gauss_chebyshev_u, gauss_jacobi
+    sympy.integrals.quadrature.gauss_legendre
+    sympy.integrals.quadrature.gauss_laguerre
+    sympy.integrals.quadrature.gauss_gen_laguerre
+    sympy.integrals.quadrature.gauss_chebyshev_t
+    sympy.integrals.quadrature.gauss_chebyshev_u
+    sympy.integrals.quadrature.gauss_jacobi
 
     References
     ==========
@@ -264,7 +279,12 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     See Also
     ========
 
-    gauss_legendre, gauss_laguerre, gauss_hermite, gauss_chebyshev_t, gauss_chebyshev_u, gauss_jacobi
+    sympy.integrals.quadrature.gauss_legendre
+    sympy.integrals.quadrature.gauss_laguerre
+    sympy.integrals.quadrature.gauss_hermite
+    sympy.integrals.quadrature.gauss_chebyshev_t
+    sympy.integrals.quadrature.gauss_chebyshev_u
+    sympy.integrals.quadrature.gauss_jacobi
 
     References
     ==========
@@ -335,7 +355,12 @@ def gauss_chebyshev_t(n, n_digits):
     See Also
     ========
 
-    gauss_legendre, gauss_laguerre, gauss_hermite, gauss_gen_laguerre, gauss_chebyshev_u, gauss_jacobi
+    sympy.integrals.quadrature.gauss_legendre
+    sympy.integrals.quadrature.gauss_laguerre
+    sympy.integrals.quadrature.gauss_hermite
+    sympy.integrals.quadrature.gauss_gen_laguerre
+    sympy.integrals.quadrature.gauss_chebyshev_u
+    sympy.integrals.quadrature.gauss_jacobi
 
     References
     ==========
@@ -401,7 +426,12 @@ def gauss_chebyshev_u(n, n_digits):
     See Also
     ========
 
-    gauss_legendre, gauss_laguerre, gauss_hermite, gauss_gen_laguerre, gauss_chebyshev_t, gauss_jacobi
+    sympy.integrals.quadrature.gauss_legendre
+    sympy.integrals.quadrature.gauss_laguerre
+    sympy.integrals.quadrature.gauss_hermite
+    sympy.integrals.quadrature.gauss_gen_laguerre
+    sympy.integrals.quadrature.gauss_chebyshev_t
+    sympy.integrals.quadrature.gauss_jacobi
 
     References
     ==========
@@ -472,7 +502,12 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     See Also
     ========
 
-    gauss_legendre, gauss_laguerre, gauss_hermite, gauss_gen_laguerre, gauss_chebyshev_t, gauss_chebyshev_u
+    sympy.integrals.quadrature.gauss_legendre
+    sympy.integrals.quadrature.gauss_laguerre
+    sympy.integrals.quadrature.gauss_hermite
+    sympy.integrals.quadrature.gauss_gen_laguerre
+    sympy.integrals.quadrature.gauss_chebyshev_t
+    sympy.integrals.quadrature.gauss_chebyshev_u
 
     References
     ==========

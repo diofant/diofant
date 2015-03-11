@@ -275,6 +275,8 @@ Examples::
 Remarks: Use sympy.ntheory.isprime to test numeric values efficiently.
 
 
+.. _new-assumptions-real:
+
 real
 ----
 

@@ -43,6 +43,12 @@ acoth
 .. autoclass:: sympy.functions.elementary.hyperbolic.acoth
    :members:
 
+acsc
+----
+
+.. autoclass:: sympy.functions.elementary.trigonometric.acsc
+   :members:
+
 arg
 ---
 
@@ -73,6 +79,12 @@ asinh
 -----
 
 .. autoclass:: sympy.functions.elementary.hyperbolic.asinh
+   :members:
+
+asec
+----
+
+.. autoclass:: sympy.functions.elementary.trigonometric.asec
    :members:
 
 atan
@@ -150,6 +162,13 @@ coth
 .. autoclass:: sympy.functions.elementary.hyperbolic.coth
    :members:
 
+csc
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.csc
+   :members:
+
+
 exp
 ---
 
@@ -157,6 +176,12 @@ exp
    :members:
 
 .. seealso:: classes :py:class:`sympy.functions.elementary.exponential.log`
+
+exp_polar
+---------
+
+.. autoclass:: sympy.functions.elementary.exponential.exp_polar
+   :members:
 
 ExprCondPair
 ------------
@@ -189,13 +214,12 @@ Returns the imaginary part of an expression.
 
 Examples::
 
-
     >>> from sympy.functions import im
     >>> from sympy import I
     >>> im(2+3*I)
     3
 
-.. autoclass: sympy.functions.elementary.im
+.. autoclass:: sympy.functions.elementary.complexes.im
    :members:
 
 .. seealso::
@@ -271,6 +295,11 @@ Examples::
 .. seealso::
    :py:class:`sympy.functions.elementary.complexes.im`
 
+real_root
+---------
+
+.. autofunction:: sympy.functions.elementary.miscellaneous.real_root
+
 root
 ----
 
@@ -291,6 +320,12 @@ sinh
 ----
 
 .. autoclass:: sympy.functions.elementary.hyperbolic.sinh
+   :members:
+
+sec
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.sec
    :members:
 
 sqrt
@@ -323,3 +358,18 @@ tanh
 
 .. autoclass:: sympy.functions.elementary.hyperbolic.tanh
    :members:
+
+polar_lift
+----------
+
+.. autoclass:: sympy.functions.elementary.complexes.polar_lift
+
+periodic_argument
+-----------------
+
+.. autoclass:: sympy.functions.elementary.complexes.periodic_argument
+
+principal_branch
+----------------
+
+.. autoclass:: sympy.functions.elementary.complexes.principal_branch

@@ -130,7 +130,8 @@ class Ynm(Function):
     See Also
     ========
 
-    Ynm_c, Znm
+    sympy.functions.special.spherical_harmonics.Ynm_c
+    sympy.functions.special.spherical_harmonics.Znm
 
     References
     ==========
@@ -247,7 +248,8 @@ def Ynm_c(n, m, theta, phi):
     See Also
     ========
 
-    Ynm, Znm
+    sympy.functions.special.spherical_harmonics.Ynm
+    sympy.functions.special.spherical_harmonics.Znm
 
     References
     ==========
@@ -287,7 +289,8 @@ class Znm(Function):
     See Also
     ========
 
-    Ynm, Ynm_c
+    sympy.functions.special.spherical_harmonics.Ynm
+    sympy.functions.special.spherical_harmonics.Ynm_c
 
     References
     ==========

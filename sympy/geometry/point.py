@@ -512,9 +512,10 @@ class Point(GeometryEntity):
 
         See Also
         ========
-        geometry.entity.rotate
-        geometry.entity.scale
-        geometry.entity.translate
+
+        sympy.geometry.entity.GeometryEntity.rotate
+        sympy.geometry.entity.GeometryEntity.scale
+        sympy.geometry.entity.GeometryEntity.translate
         """
         x, y = self.args
         return Point(*(Matrix(1, 3, [x, y, 1])*matrix).tolist()[0][:2])
@@ -532,8 +533,7 @@ class Point(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.entity.translate
-
+        sympy.geometry.entity.GeometryEntity.translate
         """
 
         if isinstance(other, Point):

@@ -33,8 +33,8 @@ def ring(symbols, domain, order=lex):
     Parameters
     ----------
     symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`Domain` or coercible
-    order : :class:`Order` or coercible, optional, defaults to ``lex``
+    domain : :class:`~sympy.polys.domains.domain.Domain` or coercible
+    order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
     --------
@@ -61,8 +61,8 @@ def xring(symbols, domain, order=lex):
     Parameters
     ----------
     symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`Domain` or coercible
-    order : :class:`Order` or coercible, optional, defaults to ``lex``
+    domain : :class:`~sympy.polys.domains.domain.Domain` or coercible
+    order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
     --------
@@ -89,8 +89,8 @@ def vring(symbols, domain, order=lex):
     Parameters
     ----------
     symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`Domain` or coercible
-    order : :class:`Order` or coercible, optional, defaults to ``lex``
+    domain : :class:`~sympy.polys.domains.domain.Domain` or coercible
+    order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
     --------
@@ -116,9 +116,9 @@ def sring(exprs, *symbols, **options):
 
     Parameters
     ----------
-    exprs : :class:`Expr` or sequence of :class:`Expr` (sympifiable)
-    symbols : sequence of :class:`Symbol`/:class:`Expr`
-    options : keyword arguments understood by :class:`Options`
+    exprs : :class:`~sympy.core.expr.Expr` or sequence of :class:`~sympy.core.expr.Expr` (sympifiable)
+    symbols : sequence of :class:`~sympy.core.symbol.Symbol`/:class:`~sympy.core.expr.Expr`
+    options : keyword arguments understood by :class:`~sympy.polys.polyoptions.Options`
 
     Examples
     --------
@@ -1719,7 +1719,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         Parameters
         ----------
-        order : :class:`Order` or coercible, optional
+        order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional
 
         Examples
         --------
@@ -1743,7 +1743,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         Parameters
         ----------
-        order : :class:`Order` or coercible, optional
+        order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional
 
         Examples
         --------
@@ -1767,7 +1767,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         Parameters
         ----------
-        order : :class:`Order` or coercible, optional
+        order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional
 
         Examples
         --------
@@ -2277,6 +2277,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return poly
 
     def compose(f, x, a=None):
+        """Computes the functional composition."""
         ring = f.ring
         poly = ring.zero
         gens_map = dict(list(zip(ring.gens, list(range(ring.ngens)))))

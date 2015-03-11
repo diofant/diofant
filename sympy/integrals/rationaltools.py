@@ -33,7 +33,8 @@ def ratint(f, x, **flags):
        ========
 
        sympy.integrals.integrals.Integral.doit
-       ratint_logpart, ratint_ratpart
+       sympy.integrals.rationaltools.ratint_logpart
+       sympy.integrals.rationaltools.ratint_ratpart
     """
     if type(f) is not tuple:
         p, q = f.as_numer_denom()
@@ -136,7 +137,8 @@ def ratint_ratpart(f, g, x):
     See Also
     ========
 
-    ratint, ratint_logpart
+    sympy.integrals.rationaltools.ratint
+    sympy.integrals.rationaltools.ratint_logpart
     """
     from sympy import solve
 
@@ -170,13 +172,14 @@ def ratint_ratpart(f, g, x):
 
 
 def ratint_logpart(f, g, x, t=None):
-    """
+    r"""
     Lazard-Rioboo-Trager algorithm.
 
     Given a field K and polynomials f and g in K[x], such that f and g
     are coprime, deg(f) < deg(g) and g is square-free, returns a list
     of tuples (s_i, q_i) of polynomials, for i = 1..n, such that s_i
-    in K[t, x] and q_i in K[t], and:
+    in K[t, x] and q_i in K[t], and::
+
                            ___    ___
                  d  f   d  \  `   \  `
                  -- - = --  )      )   a log(s_i(a, x))
@@ -201,7 +204,8 @@ def ratint_logpart(f, g, x, t=None):
     See Also
     ========
 
-    ratint, ratint_ratpart
+    sympy.integrals.rationaltools.ratint
+    sympy.integrals.rationaltools.ratint_ratpart
     """
     f, g = Poly(f, x), Poly(g, x)
 

@@ -174,3 +174,11 @@ internally.
 .. autofunction:: sympy.stats.rv.random_symbols
 .. autofunction:: sympy.stats.rv.pspace
 .. autofunction:: sympy.stats.rv.rs_swap
+
+.. autofunction:: sympy.stats.rv.sampling_P
+.. autofunction:: sympy.stats.rv.sampling_E
+.. autofunction:: sympy.stats.rv.sample_iter_lambdify
+.. autofunction:: sympy.stats.rv.sample_iter_subs
+.. autofunction:: sympy.stats.rv.sampling_density
+.. autofunction:: sympy.stats.rv.independent
+.. autofunction:: sympy.stats.rv.dependent

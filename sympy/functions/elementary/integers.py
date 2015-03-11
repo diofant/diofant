@@ -104,7 +104,7 @@ class floor(RoundFunction):
     See Also
     ========
 
-    ceiling
+    sympy.functions.elementary.integers.ceiling
     """
     _dir = -1
 
@@ -168,7 +168,7 @@ class ceiling(RoundFunction):
     See Also
     ========
 
-    floor
+    sympy.functions.elementary.integers.floor
     """
     _dir = 1
 

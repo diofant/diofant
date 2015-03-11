@@ -801,11 +801,12 @@ def sample_iter(expr, condition=None, numsamples=S.Infinity, **kwargs):
 
     See Also
     ========
-    Sample
-    sampling_P
-    sampling_E
-    sample_iter_lambdify
-    sample_iter_subs
+
+    sympy.stats.sample
+    sympy.stats.rv.sampling_P
+    sympy.stats.rv.sampling_E
+    sympy.stats.rv.sample_iter_lambdify
+    sympy.stats.rv.sample_iter_subs
     """
     # lambdify is much faster but not as robust
     try:
@@ -894,9 +895,9 @@ def sampling_P(condition, given_condition=None, numsamples=1,
 
     See Also
     ========
-    P
-    sampling_E
-    sampling_density
+    sympy.stats.P
+    sympy.stats.rv.sampling_E
+    sympy.stats.rv.sampling_density
     """
 
     count_true = 0
@@ -928,9 +929,9 @@ def sampling_E(expr, given_condition=None, numsamples=1,
 
     See Also
     ========
-    P
-    sampling_P
-    sampling_density
+    sympy.stats.P
+    sympy.stats.rv.sampling_P
+    sympy.stats.rv.sampling_density
     """
 
     samples = sample_iter(expr, given_condition,
@@ -948,9 +949,9 @@ def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
 
     See Also
     ========
-    density
-    sampling_P
-    sampling_E
+    sympy.stats.density
+    sympy.stats.rv.sampling_P
+    sympy.stats.rv.sampling_E
     """
 
     results = {}
@@ -984,7 +985,7 @@ def dependent(a, b):
 
     See Also
     ========
-    independent
+    sympy.stats.rv.independent
     """
     if pspace_independent(a, b):
         return False
@@ -1020,7 +1021,7 @@ def independent(a, b):
 
     See Also
     ========
-    dependent
+    sympy.stats.rv.dependent
     """
     return not dependent(a, b)
 

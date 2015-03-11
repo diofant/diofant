@@ -192,7 +192,7 @@ class exp(ExpBase):
     See Also
     ========
 
-    log
+    sympy.functions.elementary.exponential.log
     """
 
     def fdiff(self, argindex=1):
@@ -441,7 +441,7 @@ class log(Function):
     See Also
     ========
 
-    exp
+    sympy.functions.elementary.exponential.exp
     """
 
     def fdiff(self, argindex=1):

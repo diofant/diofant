@@ -2,6 +2,8 @@
 
 Contains
 ========
+
+idiff
 intersection
 convex_hull
 are_coplanar

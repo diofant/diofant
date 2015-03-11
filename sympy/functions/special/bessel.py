@@ -624,7 +624,7 @@ class jn(SphericalBesselBase):
     .. math:: j_n(z) = f_n(z) \sin{z} + (-1)^{n+1} f_{-n-1}(z) \cos{z},
 
     where the coefficients :math:`f_n(z)` are available as
-    :func:`polys.orthopolys.spherical_bessel_fn`.
+    :func:`sympy.polys.orthopolys.spherical_bessel_fn`.
 
     See Also
     ========
@@ -697,7 +697,7 @@ def jn_zeros(n, k, method="sympy", dps=15):
 
     This returns an array of zeros of jn up to the k-th zero.
 
-    * method = "sympy": uses :func:`mpmath.besseljzero`
+    * method = "sympy": uses mpmath's function ``besseljzero``
     * method = "scipy": uses the
       `SciPy's sph_jn <http://docs.scipy.org/doc/scipy/reference/generated/scipy.special.jn.html>`_
       and

@@ -1976,7 +1976,8 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     ========
 
     expand_log, expand_mul, expand_multinomial, expand_complex, expand_trig,
-    expand_power_base, expand_power_exp, expand_func, hyperexpand
+    expand_power_base, expand_power_exp, expand_func,
+    sympy.simplify.hyperexpand.hyperexpand
 
     """
     # don't modify this; modify the Expr.expand method
@@ -2115,7 +2116,8 @@ def expand_complex(expr, deep=True):
 
     See Also
     ========
-    Expr.as_real_imag
+
+    sympy.core.expr.Expr.as_real_imag
     """
     return sympify(expr).expand(deep=deep, complex=True, basic=False,
     log=False, mul=False, power_exp=False, power_base=False, multinomial=False)

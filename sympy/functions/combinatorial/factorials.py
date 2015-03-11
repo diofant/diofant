@@ -73,7 +73,9 @@ class factorial(CombinatorialFunction):
        See Also
        ========
 
-       factorial2, RisingFactorial, FallingFactorial
+       sympy.functions.combinatorial.factorials.factorial2
+       sympy.functions.combinatorial.factorials.RisingFactorial
+       sympy.functions.combinatorial.factorials.FallingFactorial
     """
 
     def fdiff(self, argindex=1):
@@ -310,7 +312,9 @@ class factorial2(CombinatorialFunction):
     See Also
     ========
 
-    factorial, RisingFactorial, FallingFactorial
+    sympy.functions.combinatorial.factorials.factorial
+    sympy.functions.combinatorial.factorials.RisingFactorial
+    sympy.functions.combinatorial.factorials.FallingFactorial
     """
 
     @classmethod
@@ -414,7 +418,9 @@ class RisingFactorial(CombinatorialFunction):
        See Also
        ========
 
-       factorial, factorial2, FallingFactorial
+       sympy.functions.combinatorial.factorials.factorial
+       sympy.functions.combinatorial.factorials.factorial2
+       sympy.functions.combinatorial.factorials.FallingFactorial
     """
 
     @classmethod
@@ -489,7 +495,9 @@ class FallingFactorial(CombinatorialFunction):
        See Also
        ========
 
-       factorial, factorial2, RisingFactorial
+       sympy.functions.combinatorial.factorials.factorial
+       sympy.functions.combinatorial.factorials.factorial2
+       sympy.functions.combinatorial.factorials.RisingFactorial
     """
 
     @classmethod

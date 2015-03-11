@@ -335,8 +335,8 @@ def rs_series_from_list(p, c, x, prec, concur=1):
 
     See Also
     ========
-    sympy.polys.ring.compose
 
+    sympy.polys.rings.PolyElement.compose
     """
 
     ring = p.ring

@@ -115,47 +115,11 @@ set.
 >>> from sympy.functions.combinatorial.numbers import nC, nP, nT
 >>> items = 'baby'
 
-nC
---
+.. autofunction:: sympy.functions.combinatorial.numbers.nC
 
-Calculate the number of combinations of length ``k``.
+.. autofunction:: sympy.functions.combinatorial.numbers.nP
 
->>> [nC(items, k) for k in range(len(items) + 1)], nC(items)
-([1, 3, 4, 3, 1], 12)
->>> nC('aaa', 2)
-1
->>> nC('abc', 2)
-3
->>> nC(3, 2)
-3
-
-nP
---
-
-Calculate the number of permutations of length ``k``.
-
->>> [nP(items, k) for k in range(len(items) + 1)], nP(items)
-([1, 3, 7, 12, 12], 35)
->>> nC('aaa', 2)
-1
->>> nC('abc', 2)
-3
->>> nC(3, 2)
-3
-
-nT
---
-
-Calculate the number of partitions that have ``k`` parts.
-
->>> [nT(items, k) for k in range(len(items) + 1)], nT(items)
-([0, 1, 5, 4, 1], 11)
->>> nT('aaa', 2)
-1
->>> nT('abc', 2)
-3
->>> nT(3, 2)
-1
+.. autofunction:: sympy.functions.combinatorial.numbers.nT
 
 Note that the integer for ``n`` indicates *identical* items for ``nT`` but
 indicates ``n`` *different* items for ``nC`` and ``nP``.

@@ -44,10 +44,10 @@ class IntegralTransform(Function):
     This class represents unevaluated transforms.
 
     To implement a concrete transform, derive from this class and implement
-    the _compute_transform(f, x, s, **hints) and _as_integral(f, x, s)
+    the ``_compute_transform(f, x, s, **hints)`` and ``_as_integral(f, x, s)``
     functions. If the transform cannot be computed, raise IntegralTransformError.
 
-    Also set cls._name.
+    Also set ``cls._name``.
 
     Implement self._collapse_extra if your function returns more than just a
     number and possibly a convergence condition.
@@ -282,7 +282,7 @@ class MellinTransform(IntegralTransform):
     """
     Class representing unevaluated Mellin transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute Mellin transforms, see the :func:`mellin_transform`
     docstring.
@@ -329,7 +329,7 @@ def mellin_transform(f, x, s, **hints):
     (as above), and ``cond`` are auxiliary convergence conditions.
 
     If the integral cannot be computed in closed form, this function returns
-    an unevaluated :class:`MellinTransform` object.
+    an unevaluated :class:`~sympy.integrals.transforms.MellinTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`. If ``noconds=False``,
@@ -761,7 +761,7 @@ class InverseMellinTransform(IntegralTransform):
     """
     Class representing unevaluated inverse Mellin transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute inverse Mellin transforms, see the
     :func:`inverse_mellin_transform` docstring.
@@ -828,7 +828,7 @@ def inverse_mellin_transform(F, s, x, strip, **hints):
     inferred.
 
     If the integral cannot be computed in closed form, this function returns
-    an unevaluated :class:`InverseMellinTransform` object.
+    an unevaluated :class:`~sympy.integrals.transforms.InverseMellinTransform` object.
 
     Note that this function will assume x to be positive and real, regardless
     of the sympy assumptions!
@@ -1054,7 +1054,7 @@ class LaplaceTransform(IntegralTransform):
     """
     Class representing unevaluated Laplace transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute Laplace transforms, see the :func:`laplace_transform`
     docstring.
@@ -1098,7 +1098,7 @@ def laplace_transform(f, t, s, **hints):
     of convergence, and ``cond`` are auxiliary convergence conditions.
 
     If the integral cannot be computed in closed form, this function returns
-    an unevaluated :class:`LaplaceTransform` object.
+    an unevaluated :class:`~sympy.integrals.transforms.LaplaceTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`. If ``noconds=True``,
@@ -1195,7 +1195,7 @@ class InverseLaplaceTransform(IntegralTransform):
     """
     Class representing unevaluated inverse Laplace transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute inverse Laplace transforms, see the
     :func:`inverse_laplace_transform` docstring.
@@ -1243,7 +1243,7 @@ def inverse_laplace_transform(F, s, t, plane=None, **hints):
     versa.
 
     If the integral cannot be computed in closed form, this function returns
-    an unevaluated :class:`InverseLaplaceTransform` object.
+    an unevaluated :class:`~sympy.integrals.transforms.InverseLaplaceTransform` object.
 
     Note that this function will always assume `t` to be real,
     regardless of the sympy assumption on `t`.
@@ -1325,7 +1325,7 @@ class FourierTransform(FourierTypeTransform):
     """
     Class representing unevaluated Fourier transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute Fourier transforms, see the :func:`fourier_transform`
     docstring.
@@ -1348,10 +1348,7 @@ def fourier_transform(f, x, k, **hints):
     .. math:: F(k) = \int_{-\infty}^\infty f(x) e^{-2\pi i x k} \mathrm{d} x.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`FourierTransform` object.
-
-    For other Fourier transform conventions, see the function
-    :func:`sympy.integrals.transforms._fourier_transform`.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.FourierTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1380,7 +1377,7 @@ class InverseFourierTransform(FourierTypeTransform):
     """
     Class representing unevaluated inverse Fourier transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute inverse Fourier transforms, see the
     :func:`inverse_fourier_transform` docstring.
@@ -1403,10 +1400,7 @@ def inverse_fourier_transform(F, k, x, **hints):
     .. math:: f(x) = \int_{-\infty}^\infty F(k) e^{2\pi i x k} \mathrm{d} k.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`InverseFourierTransform` object.
-
-    For other Fourier transform conventions, see the function
-    :func:`sympy.integrals.transforms._fourier_transform`.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.InverseFourierTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1495,7 +1489,7 @@ class SineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated sine transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute sine transforms, see the :func:`sine_transform`
     docstring.
@@ -1519,7 +1513,7 @@ def sine_transform(f, x, k, **hints):
     .. math:: F(k) = \sqrt{\frac{2}{\pi}} \int_{0}^\infty f(x) \sin(2\pi x k) \mathrm{d} x.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`SineTransform` object.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.SineTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1548,7 +1542,7 @@ class InverseSineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated inverse sine transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute inverse sine transforms, see the
     :func:`inverse_sine_transform` docstring.
@@ -1572,7 +1566,7 @@ def inverse_sine_transform(F, k, x, **hints):
     .. math:: f(x) = \sqrt{\frac{2}{\pi}} \int_{0}^\infty F(k) \sin(2\pi x k) \mathrm{d} k.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`InverseSineTransform` object.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.InverseSineTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1602,7 +1596,7 @@ class CosineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated cosine transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute cosine transforms, see the :func:`cosine_transform`
     docstring.
@@ -1626,7 +1620,7 @@ def cosine_transform(f, x, k, **hints):
     .. math:: F(k) = \sqrt{\frac{2}{\pi}} \int_{0}^\infty f(x) \cos(2\pi x k) \mathrm{d} x.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`CosineTransform` object.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.CosineTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1655,7 +1649,7 @@ class InverseCosineTransform(SineCosineTypeTransform):
     """
     Class representing unevaluated inverse cosine transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute inverse cosine transforms, see the
     :func:`inverse_cosine_transform` docstring.
@@ -1679,7 +1673,7 @@ def inverse_cosine_transform(F, k, x, **hints):
     .. math:: f(x) = \sqrt{\frac{2}{\pi}} \int_{0}^\infty F(k) \cos(2\pi x k) \mathrm{d} k.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`InverseCosineTransform` object.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.InverseCosineTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1762,7 +1756,7 @@ class HankelTransform(HankelTypeTransform):
     """
     Class representing unevaluated Hankel transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute Hankel transforms, see the :func:`hankel_transform`
     docstring.
@@ -1778,7 +1772,7 @@ def hankel_transform(f, r, k, nu, **hints):
     .. math:: F_\nu(k) = \int_{0}^\infty f(r) J_\nu(k r) r \mathrm{d} r.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`HankelTransform` object.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.HankelTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.
@@ -1818,7 +1812,7 @@ class InverseHankelTransform(HankelTypeTransform):
     """
     Class representing unevaluated inverse Hankel transforms.
 
-    For usage of this class, see the :class:`IntegralTransform` docstring.
+    For usage of this class, see the :class:`~sympy.integrals.transforms.IntegralTransform` docstring.
 
     For how to compute inverse Hankel transforms, see the
     :func:`inverse_hankel_transform` docstring.
@@ -1834,7 +1828,7 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
     .. math:: f(r) = \int_{0}^\infty F_\nu(k) J_\nu(k r) k \mathrm{d} k.
 
     If the transform cannot be computed in closed form, this
-    function returns an unevaluated :class:`InverseHankelTransform` object.
+    function returns an unevaluated :class:`~sympy.integrals.transforms.InverseHankelTransform` object.
 
     For a description of possible hints, refer to the docstring of
     :func:`sympy.integrals.transforms.IntegralTransform.doit`.

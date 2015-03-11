@@ -103,7 +103,9 @@ def sqrt(arg):
     See Also
     ========
 
-    sympy.polys.rootoftools.RootOf, root, real_root
+    sympy.polys.rootoftools.RootOf
+    sympy.functions.elementary.miscellaneous.root
+    sympy.functions.elementary.miscellaneous.real_root
 
     References
     ==========
@@ -155,7 +157,9 @@ def cbrt(arg):
     See Also
     ========
 
-    sympy.polys.rootoftools.RootOf, root, real_root
+    sympy.polys.rootoftools.RootOf
+    sympy.functions.elementary.miscellaneous.root
+    sympy.functions.elementary.miscellaneous.real_root
 
     References
     ==========
@@ -239,7 +243,8 @@ def root(arg, n, k=0):
 
     sympy.polys.rootoftools.RootOf
     sympy.core.power.integer_nthroot
-    sqrt, real_root
+    sympy.functions.elementary.miscellaneous.sqrt
+    sympy.functions.elementary.miscellaneous.real_root
 
     References
     ==========
@@ -290,7 +295,8 @@ def real_root(arg, n=None):
 
     sympy.polys.rootoftools.RootOf
     sympy.core.power.integer_nthroot
-    root, sqrt
+    sympy.functions.elementary.miscellaneous.root
+    sympy.functions.elementary.miscellaneous.sqrt
     """
     from sympy import im, Piecewise
     if n is not None:
@@ -542,7 +548,7 @@ class Max(MinMaxBase, Application):
     See Also
     ========
 
-    Min : find minimum values
+    sympy.functions.elementary.miscellaneous.Min : find minimum values
     """
     zero = S.Infinity
     identity = S.NegativeInfinity
@@ -595,7 +601,7 @@ class Min(MinMaxBase, Application):
     See Also
     ========
 
-    Max : find maximum values
+    sympy.functions.elementary.miscellaneous.Max : find maximum values
     """
     zero = S.NegativeInfinity
     identity = S.Infinity

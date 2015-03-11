@@ -429,7 +429,7 @@ split_symbols = split_symbols_custom(_token_splittable)
 def implicit_multiplication(result, local_dict, global_dict):
     """Makes the multiplication operator optional in most cases.
 
-    Use this before :func:`implicit_application`, otherwise expressions like
+    Use this before :func:`~sympy.parsing.sympy_parser.implicit_application`, otherwise expressions like
     ``sin 2x`` will be parsed as ``x * sin(2)`` rather than ``sin(2*x)``.
 
     Example:
@@ -453,7 +453,7 @@ def implicit_multiplication(result, local_dict, global_dict):
 def implicit_application(result, local_dict, global_dict):
     """Makes parentheses optional in some cases for function calls.
 
-    Use this after :func:`implicit_multiplication`, otherwise expressions
+    Use this after :func:`~sympy.parsing.sympy_parser.implicit_multiplication`, otherwise expressions
     like ``sin 2x`` will be parsed as ``x * sin(2)`` rather than
     ``sin(2*x)``.
 
@@ -701,8 +701,8 @@ def rationalize(tokens, local_dict, global_dict):
     return result
 
 
-#: Standard transformations for :func:`parse_expr`.
-#: Inserts calls to :class:`Symbol`, :class:`Integer`, and other SymPy
+#: Standard transformations for :func:`~sympy.parsing.sympy_parser.parse_expr`.
+#: Inserts calls to :class:`~sympy.core.symbol.Symbol`, :class:`~sympy.core.numbers.Integer`, and other SymPy
 #: datatypes and allows the use of standard factorial notation (e.g. ``x!``).
 standard_transformations = (lambda_notation, auto_symbol, auto_number, factorial_notation)
 
@@ -802,9 +802,10 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     See Also
     ========
 
-    stringify_expr, eval_expr, standard_transformations,
-    implicit_multiplication_application
-
+    sympy.parsing.sympy_parser.stringify_expr
+    sympy.parsing.sympy_parser.eval_expr
+    sympy.parsing.sympy_parser.standard_transformations
+    sympy.parsing.sympy_parser.implicit_multiplication_application
     """
 
     if local_dict is None:

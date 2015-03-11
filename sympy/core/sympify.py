@@ -50,6 +50,7 @@ class CantSympify(object):
     """
     pass
 
+
 def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         evaluate=None):
     """Converts an arbitrary expression to a type that can be used inside SymPy.

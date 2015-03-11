@@ -15,8 +15,6 @@ from sympy.utilities import flatten
 from sympy.utilities.iterables import sift
 
 
-
-
 def _process_limits(*symbols):
     """Process the list of symbols and convert them to canonical limits,
     storing them as Tuple(symbol, lower, upper). The orientation of
@@ -120,7 +118,9 @@ class ExprWithLimits(Expr):
         See Also
         ========
 
-        limits, variables, free_symbols
+        sympy.concrete.expr_with_limits.ExprWithLimits.limits
+        sympy.concrete.expr_with_limits.ExprWithLimits.variables
+        sympy.concrete.expr_with_limits.ExprWithLimits.free_symbols
         """
         return self._args[0]
 
@@ -139,7 +139,9 @@ class ExprWithLimits(Expr):
         See Also
         ========
 
-        function, variables, free_symbols
+        sympy.concrete.expr_with_limits.ExprWithLimits.function
+        sympy.concrete.expr_with_limits.ExprWithLimits.variables
+        sympy.concrete.expr_with_limits.ExprWithLimits.free_symbols
         """
         return self._args[1:]
 
@@ -155,9 +157,10 @@ class ExprWithLimits(Expr):
         See Also
         ========
 
-        function, limits, free_symbols
-        as_dummy : Rename dummy variables
-        transform : Perform mapping on the dummy variable
+        sympy.concrete.expr_with_limits.ExprWithLimits.function
+        sympy.concrete.expr_with_limits.ExprWithLimits.limits
+        sympy.concrete.expr_with_limits.ExprWithLimits.free_symbols
+        sympy.concrete.expr_with_limits.ExprWithLimits.as_dummy : Rename dummy variables
         """
         return [l[0] for l in self.limits]
 
@@ -227,8 +230,7 @@ class ExprWithLimits(Expr):
         See Also
         ========
 
-        variables : Lists the integration variables
-        transform : Perform mapping on the integration variable
+        sympy.concrete.expr_with_limits.ExprWithLimits.variables : Lists the integration variables
         """
         reps = {}
         f = self.function
@@ -274,7 +276,6 @@ class ExprWithLimits(Expr):
         ========
 
         variables : Lists the integration variables
-        transform : Perform mapping on the dummy variable for intgrals
         change_index : Perform mapping on the sum and product dummy variables
 
         """

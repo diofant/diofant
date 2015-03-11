@@ -32,7 +32,8 @@ def AbelianGroup(*cyclic_orders):
 
     See Also
     ========
-    DirectProduct
+
+    sympy.combinatorics.group_constructs.DirectProduct
     """
     groups = []
     degree = 0
