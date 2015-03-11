@@ -413,7 +413,7 @@ class Range(Set):
             i += step
 
     def __len__(self):
-        return (self.stop - self.start)//self.step
+        return int((self.stop - self.start)//self.step)
 
     def __nonzero__(self):
         return True

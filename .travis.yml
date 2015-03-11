@@ -22,19 +22,19 @@ matrix:
     - python: 3.4
       env:
         - TEST_GMPY="true" TEST_MATPLOTLIB="true"
-    - python: "pypy"
+    - python: "pypy3"
       env:
         - TEST_DOCTESTS="true"
         - FASTCACHE="false"
-    - python: "pypy"
+    - python: "pypy3"
       env:
         - SPLIT="1/4"
         - FASTCACHE="false"
-    - python: "pypy"
+    - python: "pypy3"
       env:
         - SPLIT="2/4"
         - FASTCACHE="false"
-    - python: "pypy"
+    - python: "pypy3"
       env:
         - SPLIT="3/4"
         - FASTCACHE="false"
@@ -80,7 +80,7 @@ matrix:
       env:
         - TEST_SAGE="true"
         - FASTCACHE="false"
-    - python: "pypy"
+    - python: "pypy3"
       env:
         - SPLIT="4/4"
 before_install:

@@ -444,7 +444,7 @@ class MatrixBase(object):
 
         Implemented mainly so bool(Matrix()) == False.
         """
-        return self.rows*self.cols
+        return int(self.rows*self.cols)
 
     @property
     def shape(self):
