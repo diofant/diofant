@@ -29,6 +29,7 @@ def _base_ordering(base, degree):
 
     A list ``base_ordering`` such that ``base_ordering[point]`` is the
     number of ``point`` in the ordering.
+
     Examples
     ========
 
@@ -53,8 +54,8 @@ def _base_ordering(base, degree):
     References
     ==========
 
-    [1] Holt, D., Eick, B., O'Brien, E.
-    "Handbook of computational group theory"
+    .. [1] Holt, D., Eick, B., O'Brien, E.
+           "Handbook of computational group theory"
 
     """
     base_len = len(base)

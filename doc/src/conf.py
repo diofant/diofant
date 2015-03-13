@@ -15,7 +15,6 @@ import sys
 import sympy
 
 # If your extensions are in another directory, add it here.
-sys.path = ['../sympy', 'ext', '../ext'] + sys.path
 
 # General configuration
 # ---------------------
@@ -23,7 +22,10 @@ sys.path = ['../sympy', 'ext', '../ext'] + sys.path
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'numpydoc', 'sphinx.ext.graphviz', ]
+              'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary', ]
+
+numpydoc_show_class_members = False
+numpydoc_class_members_toctree = False
 
 # Use this to use pngmath instead
 #extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.pngmath', ]
