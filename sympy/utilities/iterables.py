@@ -1,7 +1,8 @@
 from __future__ import print_function, division
 
 from collections import defaultdict
-from itertools import combinations, permutations, product, product as cartes
+from itertools import (combinations, permutations, product,
+    combinations_with_replacement, product as cartes)
 import random
 from operator import gt
 
@@ -9,10 +10,8 @@ from sympy.core.decorators import deprecated
 from sympy.core import Basic
 
 # this is the logical location of these functions
-from sympy.core.compatibility import (
-    as_int, combinations_with_replacement, default_sort_key, is_sequence,
-    iterable, ordered, range
-)
+from sympy.core.compatibility import (as_int, default_sort_key,
+    is_sequence, iterable, ordered, range)
 
 from sympy.utilities.enumerative import (
     multiset_partitions_taocp, list_visitor, MultisetPartitionTraverser)

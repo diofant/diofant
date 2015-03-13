@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 from collections import defaultdict
+from itertools import combinations_with_replacement
 
 from sympy import SYMPY_DEBUG
 
@@ -11,9 +12,8 @@ from sympy.core import (Basic, S, Add, Mul, Pow,
     expand_power_exp)
 from sympy.core.add import _unevaluated_Add
 from sympy.core.cache import cacheit
-from sympy.core.compatibility import (combinations_with_replacement, iterable,
-    reduce, default_sort_key,
-    ordered, range, as_int)
+from sympy.core.compatibility import (iterable, reduce,
+    default_sort_key, ordered, range, as_int)
 from sympy.core.exprtools import Factors, gcd_terms
 from sympy.core.numbers import Float, I, pi, Rational, Integer
 from sympy.core.function import expand_log, count_ops, _mexpand

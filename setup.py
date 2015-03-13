@@ -55,8 +55,8 @@ except ImportError:
 PY3 = sys.version_info[0] > 2
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 6):
-    print("SymPy requires Python 2.6 or newer. Python %d.%d detected" % sys.version_info[:2])
+if sys.version_info[:2] < (2, 7):
+    print("SymPy requires Python 2.7 or newer. Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
 
 
@@ -192,21 +192,6 @@ class run_benchmarks(Command):
         benchmarking.main(['sympy'])
 
 
-classifiers = [
-    'License :: OSI Approved :: BSD License',
-    'Operating System :: OS Independent',
-    'Programming Language :: Python',
-    'Topic :: Scientific/Engineering',
-    'Topic :: Scientific/Engineering :: Mathematics',
-    'Topic :: Scientific/Engineering :: Physics',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.6',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.2',
-    'Programming Language :: Python :: 3.3',
-]
-
 long_description = '''SymPy is a Python library for symbolic mathematics. It aims
 to become a full-featured computer algebra system (CAS) while keeping the code
 as simple as possible in order to be comprehensible and easily extensible.
@@ -245,11 +230,8 @@ setup(name='sympy',
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Scientific/Engineering :: Physics',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         ],
       install_requires=['mpmath>=%s' % mpmath_version]
