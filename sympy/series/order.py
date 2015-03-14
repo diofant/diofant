@@ -179,7 +179,7 @@ class Order(Expr):
         if variables:
             if any(p != point[0] for p in point):
                 raise NotImplementedError
-            if point[0] is S.Infinity:
+            if point[0] in [S.Infinity, S.NegativeInfinity]:
                 s = dict([(k, 1/Dummy()) for k in variables])
                 rs = dict([(1/v, 1/k) for k, v in s.items()])
             elif point[0] is not S.Zero:
@@ -369,7 +369,10 @@ class Order(Expr):
             ratio = self.expr/expr.expr
             ratio = powsimp(ratio, deep=True, combine='exp')
             for s in common_symbols:
-                l = ratio.limit(s, point)
+                try:
+                    l = ratio.limit(s, point)
+                except NotImplementedError:
+                    l = None
                 from sympy.series.limits import Limit
                 if not isinstance(l, Limit):
                     l = l != 0
