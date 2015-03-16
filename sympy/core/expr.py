@@ -2757,21 +2757,23 @@ class Expr(Basic, EvalfMixin):
         .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
 
         """
+        from sympy import Dummy
         from sympy.series.gruntz import mrv, rewrite, mrv_leadterm
         from sympy.functions import exp, log
+        from sympy.series import Order
 
         if x.is_positive is x.is_negative is None:
-            xpos = C.Dummy('x', positive=True, finite=True)
+            xpos = Dummy('x', positive=True, finite=True)
             return self.subs(x, xpos).aseries(xpos, n, bound, hir).subs(xpos, x)
 
         omega, exps = mrv(self, x)
         if x in omega:
             s = self.subs(x, exp(x)).aseries(x, n, bound, hir).subs(x, log(x))
             if s.getO():
-                o = C.Order(1/x**n, (x, S.Infinity))
+                o = Order(1/x**n, (x, S.Infinity))
                 return s + o
             return s
-        d = C.Dummy('d', positive=True)
+        d = Dummy('d', positive=True)
         f, logw = rewrite(exps, omega, x, d)
 
         if self in omega:
