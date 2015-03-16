@@ -1106,6 +1106,12 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
                         return (cotm*cotx - 1) / (cotm + cotx)
             return
 
+        if pi_coeff is not None and not pi_coeff.is_Rational:
+            narg = pi_coeff*S.Pi
+            if narg != arg:
+                return cls(narg)
+            return
+
         t = cls._reciprocal_of.eval(arg)
         if hasattr(arg, 'inverse') and arg.inverse() == cls:
             return arg.args[0]
