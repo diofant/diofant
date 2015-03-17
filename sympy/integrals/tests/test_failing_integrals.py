@@ -105,6 +105,8 @@ def test_issue_1638b():
 @XFAIL
 @slow
 def test_issue_4891():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     # Requires the hypergeometric function.
     assert not integrate(cos(x)**y, x).has(Integral)
 
