@@ -32,8 +32,9 @@ class DiracDelta(Function):
     See Also
     ========
 
-    Heaviside
-    simplify, is_simple
+    sympy.functions.special.delta_functions.Heaviside
+    sympy.simplify.simplify.simplify
+    sympy.functions.special.delta_functions.DiracDelta.is_simple
     sympy.functions.special.tensor_functions.KroneckerDelta
 
     References
@@ -93,7 +94,8 @@ class DiracDelta(Function):
            See Also
            ========
 
-           is_simple, Directdelta
+           sympy.functions.special.delta_functions.DiracDelta.is_simple
+           sympy.functions.special.delta_functions.DiracDelta
 
         """
         from sympy.polys.polyroots import roots
@@ -150,8 +152,8 @@ class DiracDelta(Function):
            See Also
            ========
 
-           simplify, Directdelta
-
+           sympy.simplify.simplify.simplify
+           sympy.functions.special.delta_functions.DiracDelta
         """
         p = self.args[0].as_poly(x)
         if p:
@@ -209,7 +211,7 @@ class Heaviside(Function):
     See Also
     ========
 
-    DiracDelta
+    sympy.functions.special.delta_functions.DiracDelta
 
     References
     ==========

@@ -5,7 +5,7 @@ Symbolic Integrals
 
 The ``integrals`` module in SymPy implements methods to calculate definite and indefinite integrals of expressions.
 
-Principal method in this module is :func:`integrate`
+Principal method in this module is :func:`~sympy.integrals.integrals.integrate`
 
   - ``integrate(f, x)`` returns the indefinite integral :math:`\int f\,dx`
   - ``integrate(f, (x, a, b))`` returns the definite integral :math:`\int_{a}^{b} f\,dx`
@@ -91,10 +91,13 @@ Details are described here:
 API reference
 -------------
 
-.. autofunction:: sympy.integrals.integrate
-.. autofunction:: sympy.integrals.line_integrate
+.. autofunction:: sympy.integrals.integrals.integrate
+.. autofunction:: sympy.integrals.integrals.line_integrate
 .. autofunction:: sympy.integrals.deltafunctions.deltaintegrate
 .. autofunction:: sympy.integrals.rationaltools.ratint
+.. autofunction:: sympy.integrals.rationaltools.ratint_logpart
+.. autofunction:: sympy.integrals.rationaltools.ratint_ratpart
+.. autofunction:: sympy.integrals.heurisch.components
 .. autofunction:: sympy.integrals.heurisch.heurisch
 .. autofunction:: sympy.integrals.heurisch.heurisch_wrapper
 .. autofunction:: sympy.integrals.trigonometry.trigintegrate
@@ -103,12 +106,51 @@ API reference
 
 The class `Integral` represents an unevaluated integral and has some methods that help in the integration of an expression.
 
-.. autoclass:: sympy.integrals.Integral
+.. autoclass:: sympy.integrals.integrals.Integral
    :members:
 
    .. data:: is_commutative
 
       Returns whether all the free symbols in the integral are commutative.
+
+.. autoclass:: sympy.integrals.transforms.IntegralTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.MellinTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.InverseMellinTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.LaplaceTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.InverseLaplaceTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.FourierTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.InverseFourierTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.SineTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.InverseSineTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.CosineTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.InverseCosineTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.HankelTransform
+   :members:
+
+.. autoclass:: sympy.integrals.transforms.InverseHankelTransform
+   :members:
 
 TODO and Bugs
 -------------

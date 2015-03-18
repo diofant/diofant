@@ -444,7 +444,7 @@ For those users who wish to define a default operator precedence the functions
 Vector Basis and Metric
 =======================
 
-The two structures that define the :class:`MV` (multivector) class are the
+The two structures that define the :class:`~sympy.galgebra.ga.MV` (multivector) class are the
 symbolic basis vectors and the symbolic metric.  The symbolic basis
 vectors are input as a string with the symbol name separated by spaces.  For
 example if we are calculating the geometric algebra of a system with three
@@ -485,7 +485,7 @@ products of the basis vectors. Note that the symbols are named so that
 Note that the strings shown in equation :ref:`5.3 <eq3>` are only used when the values
 of :math:`g_{ij}` are output (printed).   In the *galgebra* module (library)
 the :math:`g_{ij}` symbols are stored in a static member of the multivector
-class :class:`MV` as the sympy matrix *MV.metric* (:math:`g_{ij}` = *MV.metric[i,j]*).
+class :class:`~sympy.galgebra.ga.MV` as the sympy matrix *MV.metric* (:math:`g_{ij}` = *MV.metric[i,j]*).
 
 The default definition of :math:`g` can be overwritten by specifying a string
 that will define :math:`g`. As an example consider a symbolic representation
@@ -1352,15 +1352,15 @@ The multivector class is initialized with:
 
    The *basis* and *metric* parameters were described in section :ref:`vbm`. If
    *rframe=True* the reciprocal frame of the symbolic bases vectors is calculated.
-   If *debug=True* the data structure required to initialize the :class:`MV` class
+   If *debug=True* the data structure required to initialize the :class:`~sympy.galgebra.ga.MV` class
    are printer out. *coords* is a tuple of :class:`sympy` symbols equal in length to
    the number of basis vectors.  These symbols are used as the arguments of a
    multivector field as a function of position and for calculating the derivatives
    of a multivector field (if *coords* is defined then *rframe* is automatically
-   set equal to *True*). Additionally, :func:`MV.setup` calculates the pseudo scalar,
+   set equal to *True*). Additionally, :func:`sympy.galgebra.ga.MV.setup` calculates the pseudo scalar,
    :math:`I` and makes them available to the programmer as *MV.I* and *MV.Iinv*.
 
-   :func:`MV.setup` always returns a tuple containing the basis vectors (as multivectors)
+   :func:`sympy.galgebra.ga.MV.setup` always returns a tuple containing the basis vectors (as multivectors)
    so that if we have the code
 
    .. code-block:: python
@@ -1388,7 +1388,7 @@ The multivector class is initialized with:
      (e1,e2,e3) = MV.setup('e*x|y|z')
 
    then the basis vectors would have been labeled *e_x*, *e_y*, and *e_z*.  If
-   *coords* is defined then :func:`MV.setup` returns the tuple
+   *coords* is defined then :func:`sympy.galgebra.ga.MV.setup` returns the tuple
 
    .. code-block:: python
 
@@ -1397,7 +1397,7 @@ The multivector class is initialized with:
 
    the basis vectros are again labeled *e_x*, *e_y*, and *e_z* and the
    additional vector *grad* is returned.  *grad* acts as the gradient
-   operator (geometric derivative) so that if :func:`F` is a multivector
+   operator (geometric derivative) so that if `F` is a multivector
    function of *(x,y,z)* then
 
    .. code-block:: python
@@ -1405,9 +1405,9 @@ The multivector class is initialized with:
      DFl = grad*F
      DFr = F*grad
 
-   are the left and right geometric derivatives of :func:`F`.
+   are the left and right geometric derivatives of `F`.
 
-   The final parameter in :func:`MV.setup` is *curv* which defines a
+   The final parameter in :func:`sympy.galgebra.ga.MV.setup` is *curv* which defines a
    curvilinear coordinate system. If 3-dimensional spherical coordinates
    are required we would define -
 
@@ -1476,7 +1476,7 @@ or with the multivector class constructor:
    *base* is a string that defines the name of the multivector for output
    purposes. *base* and  *mvtype* are defined by the following table and *fct* is a
    switch that will convert the symbolic coefficients of a multivector to functions
-   if coordinate variables have been defined when :func:`MV.setup` is called:
+   if coordinate variables have been defined when :func:`sympy.galgebra.ga.MV.setup` is called:
 
 
    .. list-table::
@@ -1540,8 +1540,8 @@ or with the multivector class constructor:
      is also true for the output of expressions containing reciprocal basis vectors.
 
 
-   If the *fct* argument of :func:`MV` is set to *True* and the *coords* argument in
-   :func:`MV.setup` is defined the symbolic coefficients of the multivector are functions
+   If the *fct* argument of :class:`~sympy.galgebra.ga.MV` is set to *True* and the *coords* argument in
+   :func:`sympy.galgebra.ga.MV.setup` is defined the symbolic coefficients of the multivector are functions
    of the coordinates.
 
 

@@ -92,8 +92,10 @@ Concrete Domains
 .. autoclass:: RationalField
    :members:
 
-.. autoclass:: AlgebraicField
+.. currentmodule:: sympy.polys.polyclasses
+.. autoclass:: sympy.polys.domains.AlgebraicField
    :members:
+.. currentmodule:: sympy.polys.domains
 
 .. autoclass:: FractionField
    :members:
@@ -750,6 +752,7 @@ Modular GCD
 .. autofunction:: modgcd_bivariate
 .. autofunction:: modgcd_multivariate
 .. autofunction:: func_field_modgcd
+.. autofunction:: _modgcd_multivariate_p
 
 Manipulation of power series
 ****************************************************************************
@@ -779,3 +782,11 @@ Undocumented
 
 Many parts of the polys module are still undocumented, and even where there is
 documentation it is scarce. Please contribute!
+
+.. currentmodule:: sympy.polys.polyoptions
+
+.. autoclass:: Order
+.. autoclass:: Options
+
+.. currentmodule:: sympy.polys.polyconfig
+.. autofunction:: setup

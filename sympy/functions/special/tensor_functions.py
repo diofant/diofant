@@ -21,8 +21,7 @@ def Eijk(*args, **kwargs):
     See Also
     ========
 
-    LeviCivita
-
+    sympy.functions.special.tensor_functions.LeviCivita
     """
     return LeviCivita(*args, **kwargs)
 
@@ -64,7 +63,7 @@ class LeviCivita(Function):
     See Also
     ========
 
-    Eijk
+    sympy.functions.special.tensor_functions.Eijk
 
     """
 
@@ -121,7 +120,7 @@ class KroneckerDelta(Function):
     See Also
     ========
 
-    eval
+    sympy.functions.special.tensor_functions.KroneckerDelta.eval
     sympy.functions.special.delta_functions.DiracDelta
 
     References
@@ -208,9 +207,9 @@ class KroneckerDelta(Function):
         See Also
         ========
 
-        is_below_fermi, is_only_below_fermi, is_only_above_fermi
-
-
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
         """
         if self.args[0].assumptions0.get("below_fermi"):
             return False
@@ -242,8 +241,9 @@ class KroneckerDelta(Function):
         See Also
         ========
 
-        is_above_fermi, is_only_above_fermi, is_only_below_fermi
-
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_above_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
         """
         if self.args[0].assumptions0.get("above_fermi"):
             return False
@@ -275,9 +275,9 @@ class KroneckerDelta(Function):
         See Also
         ========
 
-        is_above_fermi, is_below_fermi, is_only_below_fermi
-
-
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_above_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
         """
         return ( self.args[0].assumptions0.get("above_fermi")
                 or
@@ -308,9 +308,9 @@ class KroneckerDelta(Function):
         See Also
         ========
 
-        is_above_fermi, is_below_fermi, is_only_above_fermi
-
-
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_above_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
+        sympy.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
         """
         return ( self.args[0].assumptions0.get("below_fermi")
                 or
@@ -377,7 +377,7 @@ class KroneckerDelta(Function):
         See Also
         ========
 
-        killable_index
+        sympy.functions.special.tensor_functions.KroneckerDelta.killable_index
 
         """
         if self._get_preferred_index():
@@ -414,7 +414,7 @@ class KroneckerDelta(Function):
         See Also
         ========
 
-        preferred_index
+        sympy.functions.special.tensor_functions.KroneckerDelta.preferred_index
 
         """
         if self._get_preferred_index():

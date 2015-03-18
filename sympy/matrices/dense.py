@@ -154,12 +154,12 @@ class DenseMatrix(MatrixBase):
         See Also
         ========
 
-        col
-        row_op
-        row_swap
-        row_del
-        row_join
-        row_insert
+        sympy.matrices.dense.DenseMatrix.col
+        sympy.matrices.dense.MutableDenseMatrix.row_op
+        sympy.matrices.dense.MutableDenseMatrix.row_swap
+        sympy.matrices.dense.MutableDenseMatrix.row_del
+        sympy.matrices.matrices.MatrixBase.row_join
+        sympy.matrices.matrices.MatrixBase.row_insert
         """
         return self[i, :]
 
@@ -178,12 +178,12 @@ class DenseMatrix(MatrixBase):
         See Also
         ========
 
-        row
-        col_op
-        col_swap
-        col_del
-        col_join
-        col_insert
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.dense.MutableDenseMatrix.col_op
+        sympy.matrices.dense.MutableDenseMatrix.col_swap
+        sympy.matrices.dense.MutableDenseMatrix.col_del
+        sympy.matrices.matrices.MatrixBase.col_join
+        sympy.matrices.matrices.MatrixBase.col_insert
         """
         return self[:, j]
 
@@ -342,7 +342,8 @@ class DenseMatrix(MatrixBase):
 
         See Also
         ========
-        sympy.core.expr.equals
+
+        sympy.core.expr.Expr.equals
         """
         try:
             if self.shape != other.shape:
@@ -545,6 +546,7 @@ class DenseMatrix(MatrixBase):
 
     @call_highest_priority('__rmul__')
     def __mul__(self, other):
+        """Return self*other"""
         return super(DenseMatrix, self).__mul__(_force_mutable(other))
 
     @call_highest_priority('__mul__')
@@ -676,7 +678,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        copyin_list
+        sympy.matrices.dense.MutableDenseMatrix.copyin_list
         """
         rlo, rhi, clo, chi = self.key2bounds(key)
         shape = value.shape
@@ -722,7 +724,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        copyin_matrix
+        sympy.matrices.dense.MutableDenseMatrix.copyin_matrix
         """
         if not is_sequence(value):
             raise TypeError("`value` must be an ordered iterable, not %s." % type(value))
@@ -745,10 +747,10 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         See Also
         ========
-        row
-        row_op
-        col_op
 
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.dense.MutableDenseMatrix.row_op
+        sympy.matrices.dense.MutableDenseMatrix.col_op
         """
         i0 = i*self.cols
         k0 = k*self.cols
@@ -775,10 +777,10 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         See Also
         ========
-        row
-        zip_row_op
-        col_op
 
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.dense.MutableDenseMatrix.zip_row_op
+        sympy.matrices.dense.MutableDenseMatrix.col_op
         """
         i0 = i*self.cols
         ri = self._mat[i0: i0 + self.cols]
@@ -801,8 +803,9 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         See Also
         ========
-        col
-        row_op
+
+        sympy.matrices.dense.DenseMatrix.col
+        sympy.matrices.dense.MutableDenseMatrix.row_op
         """
         self._mat[j::self.cols] = list(map(lambda t: f(*t),
             list(zip(self._mat[j::self.cols], list(range(self.rows))))))
@@ -828,8 +831,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        row
-        col_swap
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.dense.MutableDenseMatrix.col_swap
         """
         for k in range(0, self.cols):
             self[i, k], self[j, k] = self[j, k], self[i, k]
@@ -855,8 +858,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        col
-        row_swap
+        sympy.matrices.dense.DenseMatrix.col
+        sympy.matrices.dense.MutableDenseMatrix.row_swap
         """
         for k in range(0, self.rows):
             self[k, i], self[k, j] = self[k, j], self[k, i]
@@ -878,8 +881,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        row
-        col_del
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.dense.MutableDenseMatrix.col_del
         """
         self._mat = self._mat[:i*self.cols] + self._mat[(i + 1)*self.cols:]
         self.rows -= 1
@@ -902,8 +905,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        col
-        row_del
+        sympy.matrices.dense.DenseMatrix.col
+        sympy.matrices.dense.MutableDenseMatrix.row_del
         """
         for j in range(self.rows - 1, -1, -1):
             del self._mat[i + j*self.cols]
@@ -930,8 +933,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        zeros
-        ones
+        sympy.matrices.dense.zeros
+        sympy.matrices.dense.ones
         """
         self._mat = [value]*len(self)
 
@@ -949,7 +952,7 @@ def list2numpy(l, dtype=object):  # pragma: no cover
     See Also
     ========
 
-    matrix2numpy
+    sympy.matrices.dense.matrix2numpy
     """
     from numpy import empty
     a = empty(len(l), dtype)
@@ -964,7 +967,7 @@ def matrix2numpy(m, dtype=object):  # pragma: no cover
     See Also
     ========
 
-    list2numpy
+    sympy.matrices.dense.list2numpy
     """
     from numpy import empty
     a = empty(m.shape, dtype)
@@ -1068,9 +1071,9 @@ def rot_axis3(theta):
     See Also
     ========
 
-    rot_axis1: Returns a rotation matrix for a rotation of theta (in radians)
+    sympy.matrices.dense.rot_axis1: Returns a rotation matrix for a rotation of theta (in radians)
         about the 1-axis
-    rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
+    sympy.matrices.dense.rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
         about the 2-axis
     """
     ct = cos(theta)
@@ -1111,9 +1114,9 @@ def rot_axis2(theta):
     See Also
     ========
 
-    rot_axis1: Returns a rotation matrix for a rotation of theta (in radians)
+    sympy.matrices.dense.rot_axis1: Returns a rotation matrix for a rotation of theta (in radians)
         about the 1-axis
-    rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
+    sympy.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
     """
     ct = cos(theta)
@@ -1154,9 +1157,9 @@ def rot_axis1(theta):
     See Also
     ========
 
-    rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
+    sympy.matrices.dense.rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
         about the 2-axis
-    rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
+    sympy.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
     """
     ct = cos(theta)
@@ -1186,7 +1189,7 @@ def matrix_multiply_elementwise(A, B):
     See Also
     ========
 
-    __mul__
+    sympy.matrices.dense.DenseMatrix.__mul__
     """
     if A.shape != B.shape:
         raise ShapeError()
@@ -1202,9 +1205,9 @@ def ones(r, c=None):
     See Also
     ========
 
-    zeros
-    eye
-    diag
+    sympy.matrices.dense.zeros
+    sympy.matrices.dense.eye
+    sympy.matrices.dense.diag
     """
     from .dense import Matrix
 
@@ -1221,9 +1224,9 @@ def zeros(r, c=None, cls=None):
     See Also
     ========
 
-    ones
-    eye
-    diag
+    sympy.matrices.dense.ones
+    sympy.matrices.dense.eye
+    sympy.matrices.dense.diag
     """
     if cls is None:
         from .dense import Matrix as cls
@@ -1236,9 +1239,9 @@ def eye(n, cls=None):
     See Also
     ========
 
-    diag
-    zeros
-    ones
+    sympy.matrices.dense.diag
+    sympy.matrices.dense.zeros
+    sympy.matrices.dense.ones
     """
     if cls is None:
         from sympy.matrices import Matrix as cls
@@ -1328,7 +1331,7 @@ def diag(*values, **kwargs):
     See Also
     ========
 
-    eye
+    sympy.matrices.dense.eye
     """
     from .sparse import MutableSparseMatrix
 
@@ -1435,8 +1438,8 @@ def hessian(f, varlist, constraints=[]):
     See Also
     ========
 
-    sympy.matrices.mutable.Matrix.jacobian
-    wronskian
+    sympy.matrices.matrices.MatrixBase.jacobian
+    sympy.matrices.dense.wronskian
     """
     # f is the expression representing a function f, return regular matrix
     if isinstance(varlist, MatrixBase):
@@ -1513,8 +1516,8 @@ def wronskian(functions, var, method='bareis'):
     See Also
     ========
 
-    sympy.matrices.mutable.Matrix.jacobian
-    hessian
+    sympy.matrices.matrices.MatrixBase.jacobian
+    sympy.matrices.dense.hessian
     """
     from .dense import Matrix
 

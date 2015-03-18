@@ -2130,7 +2130,7 @@ class Permutation(Basic):
         See Also
         ========
 
-        identity, cardinality, length, rank, size
+        is_Identity, cardinality, length, rank, size
         """
 
         return reduce(lcm, [len(cycle) for cycle in self.cyclic_form], 1)

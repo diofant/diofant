@@ -1372,7 +1372,7 @@ class PermutationGroup(Basic):
         See Also
         ========
 
-        coset_factor, has, in
+        coset_factor, sympy.core.basic.Basic.has
 
         """
         if not isinstance(g, Permutation):
@@ -1454,7 +1454,7 @@ class PermutationGroup(Basic):
         See Also
         ========
 
-        _check_cycles_alt_sym
+        sympy.combinatorics.util._check_cycles_alt_sym
 
         """
         if _random_prec is None:

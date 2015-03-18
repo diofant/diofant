@@ -24,8 +24,6 @@ specific hint.  See also the docstring on
     - :py:meth:`~sympy.solvers.ode.infinitesimals` - Returns the infinitesimals
       of the Lie group of point transformations of an ODE, such that it is
       invariant.
-    - :py:meth:`~sympy.solvers.ode_checkinfsol` - Checks if the given infinitesimals
-      are the actual infinitesimals of a first order ODE.
 
     These are the non-solver helper functions that are for internal use.  The
     user should use the various options to
@@ -80,7 +78,7 @@ hint, and it has its own function, named ``ode_<hint>``.  That function takes
 in the ODE and any match expression gathered by
 :py:meth:`~sympy.solvers.ode.classify_ode` and returns a solved result.  If
 this result has any integrals in it, the hint function will return an
-unevaluated :py:class:`~sympy.integrals.Integral` class.
+unevaluated :py:class:`~sympy.integrals.integrals.Integral` class.
 :py:meth:`~sympy.solvers.ode.dsolve`, which is the user wrapper function
 around all of this, will then call :py:meth:`~sympy.solvers.ode.odesimp` on
 the result, which, among other things, will attempt to solve the equation for
@@ -176,7 +174,7 @@ docstring formats correctly.
 
 If your solution method involves integrating, use :py:meth:`Integral()
 <sympy.integrals.integrals.Integral>` instead of
-:py:meth:`~sympy.core.expr.Expr.integrate`.  This allows the user to bypass
+:py:meth:`~sympy.integrals.integrals.integrate`.  This allows the user to bypass
 hard/slow integration by using the ``_Integral`` variant of your hint.  In
 most cases, calling :py:meth:`sympy.core.basic.Basic.doit` will integrate your
 solution.  If this is not the case, you will need to write special code in
@@ -191,7 +189,7 @@ to solve the solution for you, so you do not need to do that.  Lastly, if your
 ODE has a common simplification that can be applied to your solutions, you can
 add a special case in :py:meth:`~sympy.solvers.ode.odesimp` for it.  For
 example, solutions returned from the ``1st_homogeneous_coeff`` hints often
-have many :py:meth:`~sympy.functions.log` terms, so
+have many :py:meth:`~sympy.functions.elementary.exponential.log` terms, so
 :py:meth:`~sympy.solvers.ode.odesimp` calls
 :py:meth:`~sympy.simplify.simplify.logcombine` on them (it also helps to write
 the arbitrary constant as ``log(C1)`` instead of ``C1`` in this case).  Also
@@ -726,25 +724,25 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
     ``_Integral``
 
         If a classification has ``_Integral`` at the end, it will return the
-        expression with an unevaluated :py:class:`~sympy.integrals.Integral`
+        expression with an unevaluated :py:class:`~sympy.integrals.integrals.Integral`
         class in it.  Note that a hint may do this anyway if
-        :py:meth:`~sympy.core.expr.Expr.integrate` cannot do the integral,
+        :py:meth:`~sympy.integrals.integrals.integrate` cannot do the integral,
         though just using an ``_Integral`` will do so much faster.  Indeed, an
         ``_Integral`` hint will always be faster than its corresponding hint
         without ``_Integral`` because
-        :py:meth:`~sympy.core.expr.Expr.integrate` is an expensive routine.
+        :py:meth:`~sympy.integrals.integrals.integrate` is an expensive routine.
         If :py:meth:`~sympy.solvers.ode.dsolve` hangs, it is probably because
         :py:meth:`~sympy.core.expr.Expr.integrate` is hanging on a tough or
         impossible integral.  Try using an ``_Integral`` hint or
         ``all_Integral`` to get it return something.
 
         Note that some hints do not have ``_Integral`` counterparts.  This is
-        because :py:meth:`~sympy.solvers.ode.integrate` is not used in solving
+        because :py:meth:`~sympy.integrals.integrals.integrate` is not used in solving
         the ODE for those method. For example, `n`\th order linear homogeneous
         ODEs with constant coefficients do not require integration to solve,
         so there is no ``nth_linear_homogeneous_constant_coeff_Integrate``
         hint. You can easily evaluate any unevaluated
-        :py:class:`~sympy.integrals.Integral`\s in an expression by doing
+        :py:class:`~sympy.integrals.integrals.Integral`\s in an expression by doing
         ``expr.doit()``.
 
     Ordinals
@@ -1969,7 +1967,7 @@ def odesimp(eq, func, order, constants, hint):
     It may use knowledge of the type of solution that the hint returns to
     apply additional simplifications.
 
-    It also attempts to integrate any :py:class:`~sympy.integrals.Integral`\s
+    It also attempts to integrate any :py:class:`~sympy.integrals.integrals.Integral`\s
     in the expression, if the hint is not an ``_Integral`` hint.
 
     This function should have no effect on expressions returned by
@@ -2361,7 +2359,7 @@ def ode_sol_simplicity(sol, func, trysolving=True):
       a solution returned by ``dsolve(ode, func, simplify=False``).
     - If ``sol`` is not solved for ``func``, then base the result on the
       length of ``sol``, as computed by ``len(str(sol))``.
-    - If ``sol`` has any unevaluated :py:class:`~sympy.integrals.Integral`\s,
+    - If ``sol`` has any unevaluated :py:class:`~sympy.integrals.integrals.Integral`\s,
       this will automatically be considered less simple than any of the above.
 
     This function returns an integer such that if solution A is simpler than
@@ -2371,19 +2369,19 @@ def ode_sol_simplicity(sol, func, trysolving=True):
     Currently, the following are the numbers returned, but if the heuristic is
     ever improved, this may change.  Only the ordering is guaranteed.
 
-    +----------------------------------------------+-------------------+
-    | Simplicity                                   | Return            |
-    +==============================================+===================+
-    | ``sol`` solved for ``func``                  | ``-2``            |
-    +----------------------------------------------+-------------------+
-    | ``sol`` not solved for ``func`` but can be   | ``-1``            |
-    +----------------------------------------------+-------------------+
-    | ``sol`` is not solved nor solvable for       | ``len(str(sol))`` |
-    | ``func``                                     |                   |
-    +----------------------------------------------+-------------------+
-    | ``sol`` contains an                          | ``oo``            |
-    | :py:class:`~sympy.integrals.Integral`        |                   |
-    +----------------------------------------------+-------------------+
+    +------------------------------------------------+-------------------+
+    | Simplicity                                     | Return            |
+    +================================================+===================+
+    | ``sol`` solved for ``func``                    | ``-2``            |
+    +------------------------------------------------+-------------------+
+    | ``sol`` not solved for ``func`` but can be     | ``-1``            |
+    +------------------------------------------------+-------------------+
+    | ``sol`` is not solved nor solvable for         | ``len(str(sol))`` |
+    | ``func``                                       |                   |
+    +------------------------------------------------+-------------------+
+    | ``sol`` contains an                            | ``oo``            |
+    | :py:class:`~sympy.integrals.integrals.Integral`|                   |
+    +------------------------------------------------+-------------------+
 
     ``oo`` here means the SymPy infinity, which should compare greater than
     any integer.
@@ -3146,8 +3144,8 @@ def homogeneous_order(eq, *symbols):
     or `H(y/x)`.  This fact is used to solve 1st order ordinary differential
     equations whose coefficients are homogeneous of the same order (see the
     docstrings of
-    :py:meth:`~solvers.ode.ode_1st_homogeneous_coeff_subs_dep_div_indep` and
-    :py:meth:`~solvers.ode.ode_1st_homogeneous_coeff_subs_indep_div_dep`).
+    :py:meth:`~sympy.solvers.ode.ode_1st_homogeneous_coeff_subs_dep_div_indep` and
+    :py:meth:`~sympy.solvers.ode.ode_1st_homogeneous_coeff_subs_indep_div_dep`).
 
     Symbols can be functions, but every argument of the function must be a
     symbol, and the arguments of the function that appear in the expression

@@ -834,7 +834,9 @@ def pde_separate(eq, fun, sep, strategy='mul'):
 
     See Also
     ========
-    pde_separate_add, pde_separate_mul
+
+    sympy.solvers.pde.pde_separate_add
+    sympy.solvers.pde.pde_separate_mul
     """
 
     do_add = False

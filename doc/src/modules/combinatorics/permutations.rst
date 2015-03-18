@@ -13,6 +13,8 @@ Permutations
 
 .. _combinatorics-generators:
 
+.. autofunction:: _af_parity
+
 Generators
 ----------
 

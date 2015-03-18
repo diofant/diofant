@@ -96,7 +96,9 @@ class Integral(AddWithLimits):
         See Also
         ========
 
-        function, limits, variables
+        sympy.concrete.expr_with_limits.ExprWithLimits.function
+        sympy.concrete.expr_with_limits.ExprWithLimits.limits
+        sympy.concrete.expr_with_limits.ExprWithLimits.variables
         """
         return AddWithLimits.free_symbols.fget(self)
 
@@ -235,8 +237,8 @@ class Integral(AddWithLimits):
         See Also
         ========
 
-        variables : Lists the integration variables
-        as_dummy : Replace integration variables with dummy ones
+        sympy.concrete.expr_with_limits.ExprWithLimits.variables : Lists the integration variables
+        sympy.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
         """
 
         from sympy.solvers.solvers import solve, posify
@@ -367,9 +369,9 @@ class Integral(AddWithLimits):
         ========
 
         sympy.integrals.trigonometry.trigintegrate
-        sympy.integrals.risch.heurisch
+        sympy.integrals.heurisch.heurisch
         sympy.integrals.rationaltools.ratint
-        as_sum : Approximate the integral using a sum
+        sympy.integrals.integrals.Integral.as_sum : Approximate the integral using a sum
         """
         if not hints.get('integrals', True):
             return self
@@ -1018,7 +1020,7 @@ class Integral(AddWithLimits):
         See Also
         ========
 
-        Integral.doit : Perform the integration using any hints
+        sympy.integrals.integrals.Integral.doit : Perform the integration using any hints
         """
 
         limits = self.limits
@@ -1236,8 +1238,8 @@ def integrate(*args, **kwargs):
     See Also
     ========
 
-    Integral, Integral.doit
-
+    sympy.integrals.integrals.Integral
+    sympy.integrals.integrals.Integral.doit
     """
     meijerg = kwargs.pop('meijerg', None)
     conds = kwargs.pop('conds', 'piecewise')
@@ -1270,7 +1272,8 @@ def line_integrate(field, curve, vars):
     See Also
     ========
 
-    integrate, Integral
+    sympy.integrals.integrals.integrate
+    sympy.integrals.integrals.Integral
     """
     from sympy.geometry import Curve
     F = sympify(field)

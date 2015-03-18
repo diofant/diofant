@@ -171,8 +171,9 @@ class Product(ExprWithIntLimits):
     See Also
     ========
 
-    Sum, summation
-    product
+    sympy.concrete.summations.Sum
+    sympy.concrete.summations.summation
+    sympy.concrete.products.product
 
     References
     ==========
@@ -385,7 +386,9 @@ class Product(ExprWithIntLimits):
         See Also
         ========
 
-        index, reorder_limit, reorder
+        sympy.concrete.expr_with_intlimits.ExprWithIntLimits.index,
+        sympy.concrete.expr_with_intlimits.ExprWithIntLimits.reorder_limit,
+        sympy.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
 
         References
         ==========

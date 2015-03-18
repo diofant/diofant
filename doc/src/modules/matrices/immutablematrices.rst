@@ -1,21 +1,19 @@
 Immutable Matrices
 ==================
 
-.. module:: sympy
-
-The standard :class:`Matrix` class in SymPy is mutable. This is important for
+The standard Matrix class in SymPy is mutable. This is important for
 performance reasons but means that standard matrices can not interact well with
-the rest of SymPy. This is because the :class:`Basic` object, from which most
+the rest of SymPy. This is because the :class:`~sympy.core.basic.Basic` object, from which most
 SymPy classes inherit, is immutable.
 
-The mission of the :class:`ImmutableMatrix` class is to bridge the tension
+The mission of the :class:`~sympy.matrices.immutable.ImmutableMatrix` class is to bridge the tension
 between performance/mutability and safety/immutability. Immutable matrices can
 do almost everything that normal matrices can do but they inherit from
-:class:`Basic` and can thus interact more naturally with the rest of SymPy.
-:class:`ImmutableMatrix` also inherits from :class:`MatrixExpr`, allowing it to
+:class:`~sympy.core.basic.Basic` and can thus interact more naturally with the rest of SymPy.
+:class:`~sympy.matrices.immutable.ImmutableMatrix` also inherits from :class:`~sympy.matrices.expressions.MatrixExpr`, allowing it to
 interact freely with SymPy's Matrix Expression module.
 
-You can turn any Matrix-like object into an :class:`ImmutableMatrix` by calling
+You can turn any Matrix-like object into an :class:`~sympy.matrices.immutable.ImmutableMatrix` by calling
 the constructor
 
     >>> from sympy import Matrix, ImmutableMatrix

@@ -308,6 +308,11 @@ Ge
 .. autoclass:: Ge
    :members:
 
+Relational
+^^^^^^^^^^
+.. autoclass:: Relational
+   :members:
+
 Equality
 ^^^^^^^^
 .. autoclass:: Equality
@@ -464,6 +469,9 @@ evalf
 -----
 .. module:: sympy.core.evalf
 
+.. autoclass:: EvalfMixin
+   :members:
+
 PrecisionExhausted
 ^^^^^^^^^^^^^^^^^^
 .. autoclass:: PrecisionExhausted
@@ -489,7 +497,8 @@ Dict
 
 compatibility
 -------------
-.. module:: sympy.core.compatibility
+.. automodule:: sympy.core.compatibility
+   :members:
 
 iterable
 ^^^^^^^^

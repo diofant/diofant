@@ -200,16 +200,6 @@ def multiset_partitions_taocp(multiplicities):
     [['a', 'b'], ['b']],
     [['a'], ['b', 'b']],
     [['a'], ['b'], ['b']]]
-
-    See Also
-    ========
-
-    sympy.utilities.iterables.multiset_partititions: Takes a multiset
-        as input and directly yields multiset partitions.  It
-        dispatches to a number of functions, including this one, for
-        implementation.  Most users will find it more convenient to
-        use than multiset_partitions_taocp.
-
     """
 
     # Important variables.
@@ -383,8 +373,8 @@ class MultisetPartitionTraverser():
 
     See Also
     ========
+
     multiset_partitions_taocp
-    sympy.utilities.iterables.multiset_partititions
 
     Examples
     ========

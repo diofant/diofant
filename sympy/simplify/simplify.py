@@ -174,7 +174,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
     expected to provide an expression is an appropriate form. This makes
     :func:`collect` more predictable as there is no magic happening behind the
     scenes. However, it is important to note, that powers of products are
-    converted to products of powers using the :func:`expand_power_base`
+    converted to products of powers using the :func:`~sympy.core.function.expand_power_base`
     function.
 
     There are two possible types of output. First, if ``evaluate`` flag is
@@ -242,7 +242,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         >>> collect(a*x**(2*c) + b*x**(2*c), x**c)
         x**(2*c)*(a + b)
 
-    Note also that all previously stated facts about :func:`collect` function
+    Note also that all previously stated facts about :func:`~sympy.simplify.simplify.collect` function
     apply to the exponential function, so you can get::
 
         >>> from sympy import exp
@@ -292,10 +292,11 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         x**3 + 3*x**2*(a + 1) + 3*x*(a + 1)**2 + (a + 1)**3
 
     .. note:: Arguments are expected to be in expanded form, so you might have
-              to call :func:`expand` prior to calling this function.
+              to call :func:`~sympy.core.function.expand` prior to calling this function.
 
     See Also
     ========
+
     collect_const, collect_sqrt, rcollect
     """
     if evaluate is None:
@@ -3579,7 +3580,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     single argument as an expression and return a number such that if
     expression ``a`` is more complex than expression ``b``, then
     ``measure(a) > measure(b)``.  The default measure function is
-    :func:`count_ops`, which returns the total number of operations in the
+    :func:`~sympy.core.function.count_ops`, which returns the total number of operations in the
     expression.
 
     For example, if ``ratio=1``, ``simplify`` output can't be longer

@@ -151,6 +151,7 @@ class BooleanTrue(with_metaclass(Singleton, BooleanAtom)):
 
     See Also
     ========
+
     sympy.logic.boolalg.BooleanFalse
 
     """
@@ -201,6 +202,7 @@ class BooleanFalse(with_metaclass(Singleton, BooleanAtom)):
 
     See Also
     ========
+
     sympy.logic.boolalg.BooleanTrue
 
     """

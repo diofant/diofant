@@ -1302,7 +1302,7 @@ class Segment3D(LinearEntity3D):
     See Also
     ========
 
-    sympy.geometry.point.Point3D, Line3D
+    sympy.geometry.point3d.Point3D, Line3D
 
     Examples
     ========

@@ -1,7 +1,7 @@
 Details on the Hypergeometric Function Expansion Module
 #######################################################
 
-This page describes how the function :func:`hyperexpand` and related code
+This page describes how the function :func:`~sympy.simplify.hyperexpand.hyperexpand` and related code
 work. For usage, see the documentation of the symplify module.
 
 Hypergeometric Function Expansion Algorithm
@@ -361,7 +361,7 @@ Extending The Hypergeometric Tables
 
 Adding new formulae to the tables is straightforward. At the top of the file
 ``sympy/simplify/hyperexpand.py``, there is a function called
-:func:`add_formulae`. Nested in it are defined two helpers,
+:func:`~sympy.simplify.hyperexpand.add_formulae`. Nested in it are defined two helpers,
 ``add(ap, bq, res)`` and ``addb(ap, bq, B, C, M)``, as well as dummys
 ``a``, ``b``, ``c``, and ``z``.
 
@@ -374,7 +374,7 @@ line: ``add((-a, ), (), (1-z)**a)``.
 From the information provided, the matrices `B`, `C` and `M` will be computed,
 and the formula is now available when expanding hypergeometric functions.
 Next the test file ``sympy/simplify/tests/test_hyperexpand.py`` should be run,
-in particular the test :func:`test_formulae`. This will test the newly added
+in particular the test ``test_formulae``. This will test the newly added
 formula numerically. If it fails, there is (presumably) a typo in what was
 entered.
 
@@ -435,8 +435,8 @@ we proceed by computing `f(g(w))` (and simplifying naively)
 and indeed get back `w`. (In case of branched functions we have to be
 aware of branch cuts. In that case we take `w` to be a positive real
 number and check the formula. If what we have found works for positive
-`w`, then just replace :func:`exp` inside any branched function by
-:func:`exp\_polar` and what we get is right for `all` `w`.) Hence
+`w`, then just replace :func:`~sympy.functions.elementary.exponential.exp` inside any branched function by
+:func:`~sympy.functions.elementary.exponential.exp\_polar` and what we get is right for `all` `w`.) Hence
 we can write the formula as
 
 .. math ::
@@ -613,6 +613,8 @@ derived from them). These formulae are mostly taken from [Luke1969]_ and
 [Prudnikov1990]_. They are all tested numerically.
 
 .. automodule:: sympy.simplify.hyperexpand_doc
+
+.. autofunction:: sympy.simplify.hyperexpand.add_formulae
 
 References
 **********

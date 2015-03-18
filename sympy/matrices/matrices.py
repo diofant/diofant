@@ -306,6 +306,7 @@ class MatrixBase(object):
         return self._eval_trace()
 
     def inv(self, method=None, **kwargs):
+        r"""Returns the inverse of the matrix"""
         if not self.is_square:
             raise NonSquareMatrixError()
         if method is not None:
@@ -353,11 +354,13 @@ class MatrixBase(object):
         return K_inv
 
     def transpose(self):
+        """Matrix transposition."""
         return self._eval_transpose()
 
     T = property(transpose, None, None, "Matrix transposition.")
 
     def conjugate(self):
+        """By-element conjugation."""
         return self._eval_conjugate()
 
     C = property(conjugate, None, None, "By-element conjugation.")
@@ -1488,8 +1491,8 @@ class MatrixBase(object):
         See Also
         ========
 
-        hessian
-        wronskian
+        sympy.matrices.dense.hessian
+        sympy.matrices.dense.wronskian
         """
         if not isinstance(X, MatrixBase):
             X = self._new(X)
@@ -2451,7 +2454,7 @@ class MatrixBase(object):
 
         det_bareis
         berkowitz_det
-        det_LU
+        det_LU_decomposition
         """
 
         # if methods were made internal and all determinant calculations
@@ -2590,7 +2593,7 @@ class MatrixBase(object):
         See Also
         ========
 
-        inv
+        sympy.matrices.matrices.MatrixBase.inv
         inverse_GE
         inverse_ADJ
         """
@@ -2609,7 +2612,7 @@ class MatrixBase(object):
         See Also
         ========
 
-        inv
+        sympy.matrices.matrices.MatrixBase.inv
         inverse_LU
         inverse_ADJ
         """
@@ -2630,7 +2633,7 @@ class MatrixBase(object):
         See Also
         ========
 
-        inv
+        sympy.matrices.matrices.MatrixBase.inv
         inverse_LU
         inverse_GE
         """
@@ -3834,7 +3837,8 @@ class MatrixBase(object):
         See Also
         ========
 
-        row
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.sparse.SparseMatrix.row
         col_join
         """
         if self.rows != rhs.rows:
@@ -3866,7 +3870,8 @@ class MatrixBase(object):
         See Also
         ========
 
-        col
+        sympy.matrices.dense.DenseMatrix.col
+        sympy.matrices.sparse.SparseMatrix.col
         row_join
         """
         if self.cols != bott.cols:
@@ -3898,7 +3903,8 @@ class MatrixBase(object):
         See Also
         ========
 
-        row
+        sympy.matrices.dense.DenseMatrix.row
+        sympy.matrices.sparse.SparseMatrix.row
         col_insert
         """
         if pos == 0:
@@ -3939,7 +3945,8 @@ class MatrixBase(object):
         See Also
         ========
 
-        col
+        sympy.matrices.dense.DenseMatrix.col
+        sympy.matrices.sparse.SparseMatrix.col
         row_insert
         """
         if pos == 0:
@@ -4004,7 +4011,7 @@ class MatrixBase(object):
         See Also
         ========
 
-        inv
+        sympy.matrices.matrices.MatrixBase.inv
         pinv_solve
 
         References

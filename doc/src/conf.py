@@ -27,6 +27,9 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
 numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
 
+# If true, Sphinx will warn about all references where the target cannot be found.
+nitpicky = True
+
 # Use this to use pngmath instead
 #extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.pngmath', ]
 

@@ -63,7 +63,7 @@ def diophantine(eq, param=symbols("t", integer=True)):
     See Also
     ========
 
-    diop_solve()
+    sympy.solvers.diophantine.diop_solve
     """
     if isinstance(eq, Eq):
         eq = eq.lhs - eq.rhs
@@ -167,7 +167,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     See Also
     ========
 
-    diophantine()
+    sympy.solvers.diophantine.diophantine
     """
     var, coeff, eq_type = classify_diop(eq)
 
@@ -371,8 +371,10 @@ def diop_linear(eq, param=symbols("t", integer=True)):
     See Also
     ========
 
-    diop_quadratic(), diop_ternary_quadratic(), diop_general_pythagorean(),
-    diop_general_sum_of_squares()
+    sympy.solvers.diophantine.diop_quadratic
+    sympy.solvers.diophantine.diop_ternary_quadratic
+    sympy.solvers.diophantine.diop_general_pythagorean
+    sympy.solvers.diophantine.diop_general_sum_of_squares
     """
     var, coeff, diop_type = classify_diop(eq)
 
@@ -557,8 +559,10 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     See Also
     ========
 
-    diop_linear(), diop_ternary_quadratic(), diop_general_sum_of_squares(),
-    diop_general_pythagorean()
+    sympy.solvers.diophantine.diop_linear
+    sympy.solvers.diophantine.diop_ternary_quadratic
+    sympy.solvers.diophantine.diop_general_sum_of_squares
+    sympy.solvers.diophantine.diop_general_pythagorean
     """
     var, coeff, diop_type = classify_diop(eq)
 
@@ -842,7 +846,8 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     See Also
     ========
 
-    find_DN(), diop_bf_DN()
+    sympy.solvers.diophantine.find_DN
+    sympy.solvers.diophantine.diop_bf_DN
 
     References
     ==========
@@ -1143,7 +1148,7 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     See Also
     ========
 
-    diop_DN()
+    sympy.solvers.diophantine.diop_DN
 
     References
     ==========
@@ -1351,7 +1356,7 @@ def transformation_to_DN(eq):
     See Also
     ========
 
-    find_DN()
+    sympy.solvers.diophantine.find_DN
 
     References
     ==========
@@ -1460,7 +1465,7 @@ def find_DN(eq):
     See Also
     ========
 
-    transformation_to_DN()
+    sympy.solvers.diophantine.transformation_to_DN
 
     References
     ==========
@@ -2011,7 +2016,8 @@ def pairwise_prime(a, b, c):
     See Also
     ========
 
-    make_prime(), reocnstruct()
+    sympy.solvers.diophantine.make_prime
+    sympy.solvers.diophantine.reconstruct
     """
     a, b, c = make_prime(a, b, c)
     b, c, a = make_prime(b, c, a)
@@ -2038,7 +2044,7 @@ def make_prime(a, b, c):
     See Also
     ========
 
-    pairwaise_prime(), reconstruct()
+    sympy.solvers.diophantine.reconstruct
     """
     g = igcd(a, b)
 

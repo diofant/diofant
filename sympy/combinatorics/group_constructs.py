@@ -12,11 +12,13 @@ def DirectProduct(*groups):
     """
     Returns the direct product of several groups as a permutation group.
 
-    This is implemented much like the __mul__ procedure for taking the direct
-    product of two permutation groups, but the idea of shifting the
-    generators is realized in the case of an arbitrary number of groups.
-    A call to DirectProduct(G1, G2, ..., Gn) is generally expected to be faster
-    than a call to G1*G2*...*Gn (and thus the need for this algorithm).
+    This is implemented much like the
+    :py:meth:`~sympy.combinatorics.perm_groups.PermutationGroup.__mul__`
+    procedure for taking the direct product of two permutation groups, but
+    the idea of shifting the generators is realized in the case of an arbitrary
+    number of groups.  A call to DirectProduct(G1, G2, ..., Gn) is generally
+    expected to be faster than a call to G1*G2*...*Gn (and thus the need
+    for this algorithm).
 
     Examples
     ========
@@ -30,8 +32,8 @@ def DirectProduct(*groups):
 
     See Also
     ========
-    __mul__
 
+    sympy.combinatorics.perm_groups.PermutationGroup.__mul__
     """
     degrees = []
     gens_count = []

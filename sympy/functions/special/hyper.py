@@ -164,7 +164,7 @@ class hyper(TupleParametersBase):
 
     sympy.simplify.hyperexpand
     sympy.functions.special.gamma_functions.gamma
-    meijerg
+    sympy.functions.special.hyper.meijerg
 
     References
     ==========
@@ -426,7 +426,7 @@ class meijerg(TupleParametersBase):
     See Also
     ========
 
-    hyper
+    sympy.functions.special.hyper.hyper
     sympy.simplify.hyperexpand
 
     References

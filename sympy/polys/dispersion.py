@@ -66,7 +66,7 @@ def dispersionset(p, q=None, *gens, **args):
     See Also
     ========
 
-    dispersion
+    sympy.polys.dispersion.dispersion
 
     References
     ==========
@@ -195,7 +195,7 @@ def dispersion(p, q=None, *gens, **args):
     See Also
     ========
 
-    dispersionset
+    sympy.polys.dispersion.dispersionset
 
     References
     ==========

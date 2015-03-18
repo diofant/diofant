@@ -129,8 +129,9 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     See Also
     ========
 
-    summation
-    Product, product
+    sympy.concrete.summations.summation
+    sympy.concrete.products.Product
+    sympy.concrete.products.product
 
     References
     ==========
@@ -392,7 +393,9 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         See Also
         ========
 
-        index, reorder_limit, reorder
+        sympy.concrete.expr_with_intlimits.ExprWithIntLimits.index,
+        sympy.concrete.expr_with_intlimits.ExprWithIntLimits.reorder_limit,
+        sympy.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
 
         References
         ==========
@@ -543,9 +546,9 @@ def summation(f, *symbols, **kwargs):
     See Also
     ========
 
-    Sum
-    Product, product
-
+    sympy.concrete.summations.Sum
+    sympy.concrete.products.Product
+    sympy.concrete.products.product
     """
     return Sum(f, *symbols, **kwargs).doit(deep=False)
 

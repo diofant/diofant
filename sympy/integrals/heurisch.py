@@ -48,7 +48,7 @@ def components(f, x):
     See Also
     ========
 
-    heurisch
+    sympy.integrals.heurisch.heurisch
     """
     result = set()
 
@@ -117,7 +117,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     See Also
     ========
 
-    heurisch
+    sympy.integrals.heurisch.heurisch
     """
     from sympy.solvers.solvers import solve, denoms
     f = sympify(f)
@@ -241,7 +241,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     sympy.integrals.integrals.Integral.doit
     sympy.integrals.integrals.Integral
-    components
+    sympy.integrals.heurisch.components
     """
     f = sympify(f)
     if x not in f.free_symbols:

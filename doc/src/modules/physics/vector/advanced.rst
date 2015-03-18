@@ -8,15 +8,18 @@ the features that will be implemented in the future will also be covered, along
 with unanswered questions about proper functionality. Also, common problems
 will be discussed, along with some solutions.
 
+.. autoclass:: sympy.physics.vector.Vector
+   :members:
+
 Inertia (Dyadics)
 =================
 
 A dyadic tensor is a second order tensor formed by the juxtaposition of a
 pair of vectors. There are various operations defined with respect to dyadics,
-which have been implemented in :mod:`vector` in the form of class
-:mod:`Dyadic`. To know more, refer to the :mod:`Dyadic` and :mod:`Vector`
+which have been implemented in :mod:`~sympy.physics.vector` in the form of class
+:mod:`~sympy.physics.vector.dyadic.Dyadic`. To know more, refer to the :mod:`~sympy.physics.vector.dyadic.Dyadic` and :mod:`~sympy.physics.vector.Vector`
 class APIs.
-Dyadics are used to define the inertia of bodies within :mod:`mechanics`.
+Dyadics are used to define the inertia of bodies within :mod:`~sympy.physics.mechanics`.
 Inertia dyadics can be defined explicitly but the ``inertia`` function is
 typically much more convenient for the user::
 

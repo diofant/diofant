@@ -278,6 +278,7 @@ def dup_spherical_bessel_fn_minus(n, K):
     return seq[n]
 
 
+@public
 def spherical_bessel_fn(n, x=None, **args):
     """
     Coefficients for the spherical Bessel functions.

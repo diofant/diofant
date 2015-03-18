@@ -43,7 +43,7 @@ class re(Function):
        See Also
        ========
 
-       im
+       sympy.functions.elementary.complexes.im
     """
 
     is_real = True
@@ -140,7 +140,7 @@ class im(Function):
     See Also
     ========
 
-    re
+    sympy.functions.elementary.complexes.re
     """
 
     is_real = True
@@ -257,7 +257,8 @@ class sign(Function):
     See Also
     ========
 
-    Abs, conjugate
+    sympy.functions.elementary.complexes.Abs
+    sympy.functions.elementary.complexes.conjugate
     """
 
     is_finite = True
@@ -410,7 +411,8 @@ class Abs(Function):
     See Also
     ========
 
-    sign, conjugate
+    sympy.functions.elementary.complexes.sign
+    sympy.functions.elementary.complexes.conjugate
     """
 
     is_real = True
@@ -614,7 +616,8 @@ class conjugate(Function):
     See Also
     ========
 
-    sign, Abs
+    sympy.functions.elementary.complexes.sign
+    sympy.functions.elementary.complexes.Abs
     """
 
     @classmethod
@@ -736,7 +739,7 @@ class polar_lift(Function):
     ========
 
     sympy.functions.elementary.exponential.exp_polar
-    periodic_argument
+    sympy.functions.elementary.complexes.periodic_argument
     """
 
     is_polar = True
@@ -807,8 +810,8 @@ class periodic_argument(Function):
     ========
 
     sympy.functions.elementary.exponential.exp_polar
-    polar_lift : Lift argument to the Riemann surface of the logarithm
-    principal_branch
+    sympy.functions.elementary.complexes.polar_lift : Lift argument to the Riemann surface of the logarithm
+    sympy.functions.elementary.complexes.principal_branch
     """
 
     @classmethod
@@ -902,8 +905,8 @@ class principal_branch(Function):
     ========
 
     sympy.functions.elementary.exponential.exp_polar
-    polar_lift : Lift argument to the Riemann surface of the logarithm
-    periodic_argument
+    sympy.functions.elementary.complexes.polar_lift : Lift argument to the Riemann surface of the logarithm
+    sympy.functions.elementary.complexes.periodic_argument
     """
 
     is_polar = True

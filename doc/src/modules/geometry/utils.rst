@@ -3,6 +3,8 @@ Utils
 
 .. module:: sympy.geometry.util
 
+.. autofunction:: idiff
+
 .. autofunction:: intersection
 
 .. autofunction:: convex_hull

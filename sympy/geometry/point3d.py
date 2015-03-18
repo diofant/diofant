@@ -2,6 +2,7 @@
 
 Contains
 ========
+
 Point3D
 
 """
@@ -488,7 +489,7 @@ class Point3D(GeometryEntity):
         See Also
         ========
 
-        rotate, scale
+        sympy.geometry.entity.GeometryEntity.rotate, scale
 
         Examples
         ========
@@ -511,9 +512,10 @@ class Point3D(GeometryEntity):
 
         See Also
         ========
-        geometry.entity.rotate
-        geometry.entity.scale
-        geometry.entity.translate
+
+        sympy.geometry.entity.GeometryEntity.rotate
+        sympy.geometry.entity.GeometryEntity.scale
+        sympy.geometry.entity.GeometryEntity.translate
         """
         x, y, z = self.args
         return Point3D(*(Matrix(1, 3, [x, y, z])*matrix).tolist()[0][:2])
@@ -537,7 +539,7 @@ class Point3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.entity.translate
+        sympy.geometry.entity.GeometryEntity.translate
 
         """
 

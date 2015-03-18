@@ -82,7 +82,12 @@ class fibonacci(Function):
     See Also
     ========
 
-    bell, bernoulli, catalan, euler, harmonic, lucas
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.catalan
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.harmonic
+    sympy.functions.combinatorial.numbers.lucas
     """
 
     @staticmethod
@@ -137,7 +142,12 @@ class lucas(Function):
     See Also
     ========
 
-    bell, bernoulli, catalan, euler, fibonacci, harmonic
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.catalan
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.harmonic
     """
 
     @classmethod
@@ -226,7 +236,12 @@ class bernoulli(Function):
     See Also
     ========
 
-    bell, catalan, euler, fibonacci, harmonic, lucas
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.catalan
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.harmonic
+    sympy.functions.combinatorial.numbers.lucas
     """
 
     # Calculates B_n for positive even n
@@ -364,7 +379,12 @@ class bell(Function):
     See Also
     ========
 
-    bernoulli, catalan, euler, fibonacci, harmonic, lucas
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.catalan
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.harmonic
+    sympy.functions.combinatorial.numbers.lucas
     """
 
     @staticmethod
@@ -568,7 +588,12 @@ class harmonic(Function):
     See Also
     ========
 
-    bell, bernoulli, catalan, euler, fibonacci, lucas
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.catalan
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.lucas
     """
 
     # Generate one memoized Harmonic number-generating function for each
@@ -716,7 +741,11 @@ class euler(Function):
     See Also
     ========
 
-    bell, bernoulli, catalan, fibonacci, harmonic, lucas
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.harmonic
+    sympy.functions.combinatorial.numbers.lucas
     """
 
     @classmethod
@@ -835,7 +864,12 @@ class catalan(Function):
     See Also
     ========
 
-    bell, bernoulli, euler, fibonacci, harmonic, lucas
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.harmonic
+    sympy.functions.combinatorial.numbers.lucas
     sympy.functions.combinatorial.factorials.binomial
     """
 
@@ -929,7 +963,13 @@ class genocchi(Function):
     See Also
     ========
 
-    bell, bernoulli, catalan, euler, fibonacci, harmonic, lucas
+    sympy.functions.combinatorial.numbers.bell
+    sympy.functions.combinatorial.numbers.bernoulli
+    sympy.functions.combinatorial.numbers.catalan
+    sympy.functions.combinatorial.numbers.euler
+    sympy.functions.combinatorial.numbers.fibonacci
+    sympy.functions.combinatorial.numbers.harmonic
+    sympy.functions.combinatorial.numbers.lucas
     """
 
     @classmethod
@@ -1263,6 +1303,7 @@ def nC(n, k=None, replacement=False):
 
     See Also
     ========
+
     sympy.utilities.iterables.multiset_combinations
     """
     from sympy.functions.combinatorial.factorials import binomial
@@ -1419,6 +1460,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
 
     See Also
     ========
+
     sympy.utilities.iterables.multiset_partitions
 
     """
@@ -1509,6 +1551,7 @@ def nT(n, k=None):
 
     See Also
     ========
+
     sympy.utilities.iterables.partitions
     sympy.utilities.iterables.multiset_partitions
 

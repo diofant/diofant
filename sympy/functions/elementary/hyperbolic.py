@@ -27,7 +27,10 @@ class HyperbolicFunction(Function):
     See Also
     ========
 
-    sinh, cosh, tanh, coth
+    sympy.functions.elementary.hyperbolic.sinh
+    sympy.functions.elementary.hyperbolic.cosh
+    sympy.functions.elementary.hyperbolic.tanh
+    sympy.functions.elementary.hyperbolic.coth
     """
 
     unbranched = True
@@ -42,7 +45,9 @@ class sinh(HyperbolicFunction):
     See Also
     ========
 
-    cosh, tanh, asinh
+    sympy.functions.elementary.hyperbolic.cosh
+    sympy.functions.elementary.hyperbolic.tanh
+    sympy.functions.elementary.hyperbolic.asinh
     """
 
     def fdiff(self, argindex=1):
@@ -206,7 +211,9 @@ class cosh(HyperbolicFunction):
     See Also
     ========
 
-    sinh, tanh, acosh
+    sympy.functions.elementary.hyperbolic.sinh
+    sympy.functions.elementary.hyperbolic.tanh
+    sympy.functions.elementary.hyperbolic.acosh
     """
 
     def fdiff(self, argindex=1):
@@ -353,7 +360,9 @@ class tanh(HyperbolicFunction):
     See Also
     ========
 
-    sinh, cosh, atanh
+    sympy.functions.elementary.hyperbolic.sinh
+    sympy.functions.elementary.hyperbolic.cosh
+    sympy.functions.elementary.hyperbolic.atanh
     """
 
     def fdiff(self, argindex=1):
@@ -685,7 +694,12 @@ class csch(ReciprocalHyperbolicFunction):
     See Also
     ========
 
-    sinh, cosh, tanh, sech, asinh, acosh
+    sympy.functions.elementary.hyperbolic.sinh
+    sympy.functions.elementary.hyperbolic.cosh
+    sympy.functions.elementary.hyperbolic.tanh
+    sympy.functions.elementary.hyperbolic.sech
+    sympy.functions.elementary.hyperbolic.asinh
+    sympy.functions.elementary.hyperbolic.acosh
     """
 
     _reciprocal_of = sinh
@@ -736,7 +750,13 @@ class sech(ReciprocalHyperbolicFunction):
     See Also
     ========
 
-    sinh, cosh, tanh, coth, csch, asinh, acosh
+    sympy.functions.elementary.hyperbolic.sinh
+    sympy.functions.elementary.hyperbolic.cosh
+    sympy.functions.elementary.hyperbolic.tanh
+    sympy.functions.elementary.hyperbolic.coth
+    sympy.functions.elementary.hyperbolic.csch
+    sympy.functions.elementary.hyperbolic.asinh
+    sympy.functions.elementary.hyperbolic.acosh
     """
 
     _reciprocal_of = cosh
@@ -780,7 +800,9 @@ class asinh(Function):
     See Also
     ========
 
-    acosh, atanh, sinh
+    sympy.functions.elementary.hyperbolic.cosh
+    sympy.functions.elementary.hyperbolic.tanh
+    sympy.functions.elementary.hyperbolic.sinh
     """
 
     def fdiff(self, argindex=1):
@@ -862,7 +884,9 @@ class acosh(Function):
     See Also
     ========
 
-    asinh, atanh, cosh
+    sympy.functions.elementary.hyperbolic.asinh
+    sympy.functions.elementary.hyperbolic.atanh
+    sympy.functions.elementary.hyperbolic.cosh
     """
 
     def fdiff(self, argindex=1):
@@ -975,7 +999,9 @@ class atanh(Function):
     See Also
     ========
 
-    asinh, acosh, tanh
+    sympy.functions.elementary.hyperbolic.asinh
+    sympy.functions.elementary.hyperbolic.acosh
+    sympy.functions.elementary.hyperbolic.tanh
     """
 
     def fdiff(self, argindex=1):
