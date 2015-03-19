@@ -226,13 +226,12 @@ If you want control over the assumptions of the variables, use
 
 Lastly, it is recommended that you not use :class:`I <sympy.core.numbers.ImaginaryUnit>`,
 :class:`E <sympy.core.numbers.Exp1>`, :class:`~sympy.core.singleton.S`,
-:func:`~sympy.core.evalf.N`, :class:`~sympy.core.core.C`, :class:`O <sympy.series.order.Order>`,
+:func:`~sympy.core.evalf.N`, :class:`O <sympy.series.order.Order>`,
 or :obj:`~sympy.assumptions.ask.Q` for variable or symbol names, as those
 are used for the imaginary unit (:math:`i`), the base of the natural
 logarithm (:math:`e`), the :func:`~sympy.core.sympify.sympify` function (see :ref:`Symbolic
 Expressions<symbolic-expressions>` below), numeric evaluation (:func:`~sympy.core.evalf.N`
-is equivalent to :ref:`evalf()<evalf-label>` ), the class registry (for
-things like :func:`C.cos <sympy.functions.elementary.trigonometric.cos>`, to prevent cyclic imports in some code),
+is equivalent to :ref:`evalf()<evalf-label>` ),
 the `big O <http://en.wikipedia.org/wiki/Big_O_notation>`_ order symbol
 (as in :math:`O(n\log{n})`), and the assumptions object that holds a list of
 supported ask keys (such as :ref:`Q.real <new-assumptions-real>`), respectively.  You can use the
