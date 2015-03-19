@@ -167,11 +167,6 @@ latex_elements = {
     'fontenc': r'''
 \usepackage{bm}
 \usepackage{amssymb}
-\usepackage{fontspec}
-\defaultfontfeatures{Mapping=tex-text}
-\setmainfont{DejaVu Serif}
-\setsansfont{DejaVu Sans}
-\setmonofont{DejaVu Sans Mono}
 ''',
     'fontpkg':   '',
     'inputenc':  '',
