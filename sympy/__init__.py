@@ -14,8 +14,8 @@ from __future__ import absolute_import, print_function
 from sympy.release import __version__
 
 import sys
-if sys.version_info[0] == 2 and sys.version_info[1] < 6:
-    raise ImportError("Python Version 2.6 or above is required for SymPy.")
+if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+    raise ImportError("Python Version 2.7 or above is required for SymPy.")
 else:  # Python 3
     pass
     # Here we can also check for specific Python 3 versions, if needed
