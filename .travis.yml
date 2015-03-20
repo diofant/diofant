@@ -25,10 +25,6 @@ matrix:
       env:
         - SPLIT="1/2"
         - FASTCACHE="false"
-    - python: "pypy3"
-      env:
-        - SPLIT="2/2"
-        - FASTCACHE="false"
     - python: 2.7
       env: TEST_SPHINX="true" FASTCACHE="false"
     - python: 2.7
@@ -59,7 +55,8 @@ matrix:
   allow_failures:
     - python: "pypy3"
       env:
-        - SPLIT="4/4"
+        - SPLIT="2/2"
+        - FASTCACHE="false"
 before_install:
   - if [[ "${FASTCACHE}" != "false" ]]; then
       pip install fastcache;
