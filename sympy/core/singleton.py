@@ -10,7 +10,6 @@ from .sympify import sympify
 class SingletonRegistry(Registry):
     """
     A map between singleton classes and the corresponding instances.
-    E.g. S.Exp == C.Exp()
     """
     __slots__ = []
 
