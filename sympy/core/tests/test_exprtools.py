@@ -324,14 +324,6 @@ def test_factor_nc():
     eq = m*sin(n) - sin(n)*m
     assert factor_nc(eq) == eq
 
-    # for coverage:
-    from sympy.physics.secondquant import Commutator
-    from sympy import factor
-    eq = 1 + x*Commutator(m, n)
-    assert factor_nc(eq) == eq
-    eq = x*Commutator(m, n) + x*Commutator(m, o)*Commutator(m, n)
-    assert factor(eq) == x*(1 + Commutator(m, o))*Commutator(m, n)
-
     # issue 6534
     assert (2*n + 2*m).factor() == 2*(n + m)
 

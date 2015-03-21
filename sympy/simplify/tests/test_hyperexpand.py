@@ -888,6 +888,7 @@ def test_prudnikov_12():
     assert can_do([], [2, S(3)/2, S(3)/2])
 
 
+@slow
 def test_prudnikov_2F1():
     h = S.Half
     # Elliptic integrals

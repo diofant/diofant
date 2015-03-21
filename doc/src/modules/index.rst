@@ -51,7 +51,6 @@ access any SymPy module, or use this contens:
    utilities/index.rst
    parsing.rst
    calculus/index.rst
-   physics/index.rst
    categories.rst
    diffgeom.rst
 

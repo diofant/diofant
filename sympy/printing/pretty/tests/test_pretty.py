@@ -16,8 +16,6 @@ from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
 from sympy.printing.pretty import pretty as xpretty
 from sympy.printing.pretty import pprint
 
-from sympy.physics.units import joule
-
 from sympy.utilities.pytest import raises
 from sympy.core.trace import Tr
 
@@ -173,11 +171,6 @@ Limit(x, x, oo)
 Limit(x**2, x, 0)
 Limit(1/x, x, 0)
 Limit(sin(x)/x, x, 0)
-
-
-UNITS:
-
-joule => kg*m**2/s
 
 
 SUBS:
@@ -3893,29 +3886,6 @@ k = ─────                                \n\
 
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
-
-
-def test_units():
-    expr = joule
-    ascii_str = \
-"""\
-    2\n\
-kg*m \n\
------\n\
-   2 \n\
-  s  \
-"""
-
-    unicode_str = \
-u("""\
-    2\n\
-kg⋅m \n\
-─────\n\
-   2 \n\
-  s  \
-""")
-    assert upretty(expr) == unicode_str
-    assert pretty(expr) == ascii_str
 
 
 def test_pretty_Subs():

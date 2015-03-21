@@ -997,6 +997,7 @@ def _mask_nc(eq, name=None):
 
     Notes
     =====
+
     All non-commutative objects other than Symbols are replaced with
     a non-commutative Symbol. Identical objects will be identified
     by identical symbols.
@@ -1010,7 +1011,6 @@ def _mask_nc(eq, name=None):
     Examples
     ========
 
-    >>> from sympy.physics.secondquant import Commutator, NO, F, Fd
     >>> from sympy import symbols, Mul
     >>> from sympy.core.exprtools import _mask_nc
     >>> from sympy.abc import x, y
@@ -1025,25 +1025,6 @@ def _mask_nc(eq, name=None):
 
     >>> _mask_nc(A**2 - B**2, 'd')
     (A**2 - B**2, None, [A, B])
-
-    An nc-object with nc-symbols but no others outside of it:
-
-    >>> _mask_nc(1 + x*Commutator(A, B), 'd')
-    (_d0*x + 1, {_d0: Commutator(A, B)}, [])
-    >>> _mask_nc(NO(Fd(x)*F(y)), 'd')
-    (_d0, {_d0: NO(CreateFermion(x)*AnnihilateFermion(y))}, [])
-
-    Multiple nc-objects:
-
-    >>> eq = x*Commutator(A, B) + x*Commutator(A, C)*Commutator(A, B)
-    >>> _mask_nc(eq, 'd')
-    (x*_d0 + x*_d1*_d0, {_d0: Commutator(A, B), _d1: Commutator(A, C)}, [_d0, _d1])
-
-    Multiple nc-objects and nc-symbols:
-
-    >>> eq = A*Commutator(A, B) + B*Commutator(A, C)
-    >>> _mask_nc(eq, 'd')
-    (A*_d0 + B*_d1, {_d0: Commutator(A, B), _d1: Commutator(A, C)}, [_d0, _d1, A, B])
 
     If there is an object that:
 

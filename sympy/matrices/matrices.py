@@ -429,7 +429,6 @@ class MatrixBase(object):
         conjugate: By-element conjugation
         H: Hermite conjugation
         """
-        from sympy.physics.matrices import mgamma
         if self.rows != 4:
             # In Python 3.2, properties can only return an AttributeError
             # so we can't raise a ShapeError -- see commit which added the
@@ -4167,3 +4166,65 @@ def a2idx(j, n=None):
         if not (j >= 0 and j < n):
             raise IndexError("Index out of range: a[%s]" % (j, ))
     return int(j)
+
+
+def mgamma(mu, lower=False):
+    r"""Returns a Dirac gamma matrix `\gamma^\mu` in the standard
+    (Dirac) representation.
+
+    If you want `\gamma_\mu`, use ``gamma(mu, True)``.
+
+    We use a convention:
+
+    `\gamma^5 = i \cdot \gamma^0 \cdot \gamma^1 \cdot \gamma^2 \cdot \gamma^3`
+
+    `\gamma_5 = i \cdot \gamma_0 \cdot \gamma_1 \cdot \gamma_2 \cdot \gamma_3 = - \gamma^5`
+
+    References
+    ==========
+
+    .. [1] http://en.wikipedia.org/wiki/Gamma_matrices
+    """
+    from sympy import Matrix
+    if not mu in [0, 1, 2, 3, 5]:
+        raise IndexError("Invalid Dirac index")
+    if mu == 0:
+        mat = (
+            (1, 0, 0, 0),
+            (0, 1, 0, 0),
+            (0, 0, -1, 0),
+            (0, 0, 0, -1)
+        )
+    elif mu == 1:
+        mat = (
+            (0, 0, 0, 1),
+            (0, 0, 1, 0),
+            (0, -1, 0, 0),
+            (-1, 0, 0, 0)
+        )
+    elif mu == 2:
+        mat = (
+            (0, 0, 0, -I),
+            (0, 0, I, 0),
+            (0, I, 0, 0),
+            (-I, 0, 0, 0)
+        )
+    elif mu == 3:
+        mat = (
+            (0, 0, 1, 0),
+            (0, 0, 0, -1),
+            (-1, 0, 0, 0),
+            (0, 1, 0, 0)
+        )
+    elif mu == 5:
+        mat = (
+            (0, 0, 1, 0),
+            (0, 0, 0, 1),
+            (1, 0, 0, 0),
+            (0, 1, 0, 0)
+        )
+    m = Matrix(mat)
+    if lower:
+        if mu in [1, 2, 3, 5]:
+            m = -m
+    return m

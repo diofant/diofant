@@ -8,7 +8,6 @@ from sympy import (
 )
 from sympy.functions.elementary.complexes import periodic_argument
 from sympy.integrals.risch import NonElementaryIntegral
-from sympy.physics import units
 from sympy.core.compatibility import range
 from sympy.utilities.pytest import XFAIL, raises, slow
 
@@ -259,11 +258,6 @@ def test_issue_3686():  # remove this when fresnel itegrals are implemented
     from sympy import expand_func, fresnels
     assert expand_func(integrate(sin(x**2), x)) == \
         sqrt(2)*sqrt(pi)*fresnels(sqrt(2)*x/sqrt(pi))/2
-
-def test_integrate_units():
-    m = units.m
-    s = units.s
-    assert integrate(x * m/s, (x, 1*s, 5*s)) == 12*m*s
 
 
 def test_transcendental_functions():

@@ -55,7 +55,6 @@ from .calculus import *
 # Adds about .04-.05 seconds of import time
 # from combinatorics import *
 # This module is slow to import:
-#from physics import units
 from .plotting import plot, textplot, plot_backends, plot_implicit
 from .printing import pretty, pretty_print, pprint, pprint_use_unicode, \
     pprint_try_use_unicode, print_gtk, print_tree, pager_print, TableForm
