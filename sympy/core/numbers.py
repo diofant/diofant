@@ -358,6 +358,8 @@ class Number(AtomicExpr):
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
+        if self is S.Zero:
+            return other
         if isinstance(other, Number):
             if other is S.NaN:
                 return S.NaN
@@ -380,6 +382,8 @@ class Number(AtomicExpr):
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
+        if self is S.One:
+            return other
         if isinstance(other, Number):
             if other is S.NaN:
                 return S.NaN

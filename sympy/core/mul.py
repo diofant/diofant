@@ -168,10 +168,7 @@ class Mul(Expr, AssocOp):
               details of Mul and flatten which may change at any time. Therefore,
               you should only consider them when your code is highly performance
               sensitive.
-
-              Removal of 1 from the sequence is already handled by AssocOp.__new__.
         """
-
         rv = None
         if len(seq) == 2:
             a, b = seq
@@ -182,8 +179,11 @@ class Mul(Expr, AssocOp):
                 r, b = b.as_coeff_Mul()
                 if b.is_Add:
                     if r is not S.One:  # 2-arg hack
-                        # leave the Mul as a Mul
-                        rv = [cls(a*r, b, evaluate=False)], [], None
+                        if a*r is S.One:
+                            rv = [b], [], None
+                        else:
+                            # leave the Mul as a Mul
+                            rv = [cls(a*r, b, evaluate=False)], [], None
                     elif b.is_commutative:
                         if a is S.One:
                             rv = [b], [], None

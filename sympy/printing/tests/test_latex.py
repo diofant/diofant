@@ -1305,6 +1305,13 @@ def test_Mul():
     assert latex(e)  == r'- 2 x - 2'
     e = Mul(2, x + 1)
     assert latex(e)  == r'2 x + 2'
+    e = Mul(1, 1, evaluate=False)
+    assert latex(e)  == r'1 \cdot 1'
+
+
+def test_Add():
+    e = Add(0, 0, evaluate=False)
+    assert latex(e)  == r'0 + 0'
 
 
 def test_Pow():
