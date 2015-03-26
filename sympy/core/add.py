@@ -209,7 +209,7 @@ class Add(Expr, AssocOp):
             newseq = [f for f in newseq if not
                       (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 
-        elif coeff is S.NegativeInfinity:
+        elif coeff == -S.Infinity:
             newseq = [f for f in newseq if not
                       (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 

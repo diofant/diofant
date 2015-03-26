@@ -132,7 +132,6 @@ class Pow(Expr):
     ========
 
     sympy.core.numbers.Infinity
-    sympy.core.numbers.NegativeInfinity
     sympy.core.numbers.NaN
 
     References

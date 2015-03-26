@@ -114,7 +114,7 @@ class Integers(Set, metaclass=Singleton):
 
     def _intersect(self, other):
         from sympy.functions.elementary.integers import floor, ceiling
-        if other is Interval(S.NegativeInfinity, S.Infinity, True, True) or other is S.Reals:
+        if other is Interval(-S.Infinity, S.Infinity, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
@@ -324,7 +324,7 @@ class Range(Set):
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
         try:
-            start, stop, step = [w if w in [S.NegativeInfinity, S.Infinity] else Integer(as_int(w))
+            start, stop, step = [w if w in [-S.Infinity, S.Infinity] else Integer(as_int(w))
                                  for w in (start, stop, step)]
         except ValueError:
             raise ValueError("Inputs to Range must be Integer Valued\n" +
@@ -347,7 +347,7 @@ class Range(Set):
             start, stop = sorted((start, stop - step))
 
         step = abs(step)
-        if (start, stop) == (S.NegativeInfinity, S.Infinity):
+        if (start, stop) == (-S.Infinity, S.Infinity):
             raise ValueError("Both the start and end value of "
                              "Range cannot be unbounded")
         else:
@@ -400,7 +400,7 @@ class Range(Set):
             return S.false
 
     def __iter__(self):
-        if self.start is S.NegativeInfinity:
+        if self.start == -S.Infinity:
             i = self.stop - self.step
             step = -self.step
         else:
@@ -424,7 +424,7 @@ class Range(Set):
     def _last_element(self):
         if self.stop is S.Infinity:
             return S.Infinity
-        elif self.start is S.NegativeInfinity:
+        elif self.start == -S.Infinity:
             return self.stop - self.step
         else:
             return self._ith_element(len(self) - 1)

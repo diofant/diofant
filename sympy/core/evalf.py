@@ -789,13 +789,13 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from sympy.core.numbers import Infinity, NegativeInfinity, Zero
+    from sympy.core.numbers import Infinity, Zero
     x = sympify(x)
     if isinstance(x, Zero) or x == 0:
         return mpf(0)
     if isinstance(x, Infinity):
         return mpf('inf')
-    if isinstance(x, NegativeInfinity):
+    if x == -Infinity:
         return mpf('-inf')
     # XXX
     re, im, _, _ = evalf(x, prec, options)

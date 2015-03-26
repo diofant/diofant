@@ -24,7 +24,6 @@ class AssocOp(Basic):
 
     @cacheit
     def __new__(cls, *args, **options):
-        from sympy import Order
         args = list(map(_sympify, args))
 
         if not options.pop('evaluate', global_evaluate[0]):
@@ -42,6 +41,7 @@ class AssocOp(Basic):
         obj = cls._from_args(c_part + nc_part, is_commutative)
 
         if order_symbols is not None:
+            from sympy import Order
             return Order(obj, *order_symbols)
         return obj
 

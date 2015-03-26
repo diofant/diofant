@@ -98,7 +98,7 @@ class Limit(Expr):
 
         if z0 is S.Infinity:
             dir = "-"
-        elif z0 is S.NegativeInfinity:
+        elif z0 == -S.Infinity:
             dir = "+"
 
         if isinstance(dir, str):

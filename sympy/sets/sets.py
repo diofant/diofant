@@ -855,7 +855,7 @@ class Interval(Set, EvalfMixin):
 
     def _complement(self, other):
         if other is S.Reals:
-            a = Interval(S.NegativeInfinity, self.start,
+            a = Interval(-S.Infinity, self.start,
                          True, not self.left_open)
             b = Interval(self.end, S.Infinity, not self.right_open, True)
             return Union(a, b)
@@ -1003,7 +1003,7 @@ class Interval(Set, EvalfMixin):
     @property
     def is_left_unbounded(self):
         """Return ``True`` if the left endpoint is negative infinity. """
-        return self.left is S.NegativeInfinity or self.left == Float("-inf")
+        return self.left == -S.Infinity or self.left == Float("-inf")
 
     @property
     def is_right_unbounded(self):
@@ -1661,7 +1661,7 @@ class FiniteSet(Set, EvalfMixin):
 
             intervals = []  # Build up a list of intervals between the elements
             if nums != []:
-                intervals += [Interval(S.NegativeInfinity, nums[0], True, True)]
+                intervals += [Interval(-S.Infinity, nums[0], True, True)]
                 for a, b in zip(nums[:-1], nums[1:]):
                     intervals.append(Interval(a, b, True, True))  # both open
                 intervals.append(Interval(nums[-1], S.Infinity, True, True))
