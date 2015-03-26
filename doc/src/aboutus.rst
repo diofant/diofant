@@ -375,20 +375,31 @@ want to be mentioned here, so see our repository history for a full list).
 #. Duane Nykamp: improved function handling in parse_expr
 #. Ted Dokos: implemented interleaving for unions
 #. Sunny Aggarwal: fix Integral.transform method
+#. Victor Brebenar: fix the flickering problem
 #. Akshat Jain: nsimplify returns ints quickly
+#. WANG Longqi: some fixes for code quality, don't assign to self
+#. Lukas Zorich: fix issue #6988
+#. Juan Felipe Osorio: refine support for atan2 function
+#. GitRay: fix incorrect term rewriting using cse
+#. Eric Miller: Changed unicode references from hex to names
 #. Shivam Vats: Added ReciprocalHyperbolicFunction class and misc bug fixes
 #. Cody Herbst: modified Euler-MacLaurin to not exit when term == 0
 #. AMiT Kumar: fix sign error in unrad
 #. Nishith Shah: fix solving of Piecewise functions
+#. Yury G. Kudryashov: Add README to examples/notebooks
 #. Guillaume Gay: bugfix for LagrangesMethod
 #. Ray Cathcart: improve error handling in _random
 #. Mihir Wadwekar: watch for duplicate bases in powsimp
 #. Tuan Manh Lai: correct SparseMatrix.is_Identity property
+#. Asish Panda: implement SymmetricDifference class
 #. Darshan Chaudhary: cross platform support in setup.py options
 #. Alec Kalinin: fixed simplify and expand_log so base of log is not dropped
+#. Ralf Stephan: provide Function._sage_; remove superfluous _sage_ methods
 #. Aaditya Nair: import fix
 #. Jayesh Lahori: remove uses of xrange
 #. harshil goel: simplify roots by removing some powers from radicals
+#. Luv Agarwal: change the return string of str(Eq) and str(Ne)
+#. Jason Ly: fix typo in README.rst
 #. Lokesh Sharma: reorder setup.py file imports to correct NameError
 #. Sartaj Singh: use \left \| instead of \lvert for latex Abs
 #. Chris Swierczewski: RootOf.evalf watches for root on interval boundary
