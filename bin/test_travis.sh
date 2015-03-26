@@ -41,13 +41,8 @@ EOF
         cd ..
         bin/doctest doc/
     elif [[ "${TEST_SLOW}" == "true" ]]; then
-        cat << EOF | python
-import sympy
-if not sympy.test(split='${SPLIT}', slow=True):
-    # Travis times out if no activity is seen for 10 minutes. It also times
-    # out if the whole tests run for more than 50 minutes.
-    raise Exception('Tests failed')
-EOF
+        cd ..
+        py.test -m 'slow' --split="${SPLIT}" sympy/
     elif [[ "${TEST_THEANO}" == "true" ]]; then
         cat << EOF | python
 import sympy
@@ -68,10 +63,7 @@ if not sympy.test('sympy/external/tests/test_autowrap.py'):
     raise Exception('Tests failed')
 EOF
     else
-        cat << EOF | python
-import sympy
-if not sympy.test(split='${SPLIT}'):
-    raise Exception('Tests failed')
-EOF
-        fi
+        cd ..
+        py.test -m 'not slow' --split="${SPLIT}" sympy/
+    fi
 fi
