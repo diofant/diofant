@@ -89,7 +89,7 @@ def test_factorial():
     n = Symbol('n', integer=True)
     k = Symbol('k', integer=True, nonnegative=True)
     r = Symbol('r', integer=False)
-    s = Symbol('s', integer=False, negative=True)
+    s = Symbol('s', integer=False, negative=True, finite=True)
     t = Symbol('t', nonnegative=True)
     u = Symbol('u', noninteger=True)
     v = Symbol('v', integer=True, negative=True)

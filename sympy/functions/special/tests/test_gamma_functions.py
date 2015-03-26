@@ -399,7 +399,7 @@ def test_issue_8657():
     n = Symbol('n', negative=True, integer=True)
     m = Symbol('m', integer=True)
     o = Symbol('o', positive=True)
-    p = Symbol('p', negative=True, integer=False)
+    p = Symbol('p', negative=True, integer=False, finite=True)
     assert gamma(n).is_extended_real is False
     assert gamma(m).is_extended_real is None
     assert gamma(o).is_extended_real is True
