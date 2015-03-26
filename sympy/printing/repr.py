@@ -41,7 +41,7 @@ class ReprPrinter(Printer):
         elif hasattr(expr, "__module__") and hasattr(expr, "__name__"):
             return "<'%s.%s'>" % (expr.__module__, expr.__name__)
         else:
-            return str(expr)
+            return repr(expr)
 
     def _print_Add(self, expr, order=None):
         args = expr.as_ordered_terms(order=order or self.order)

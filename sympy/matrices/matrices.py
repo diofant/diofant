@@ -688,8 +688,8 @@ class MatrixBase(object):
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue 5487.
     def __repr__(self):
-        from sympy.printing import sstr
-        return sstr(self, order=None)
+        from sympy.printing import srepr
+        return srepr(self, order=None)
 
     def __str__(self):
         from sympy.printing import sstr
