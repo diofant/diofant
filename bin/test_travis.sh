@@ -42,7 +42,7 @@ EOF
         bin/doctest doc/
     elif [[ "${TEST_SLOW}" == "true" ]]; then
         cd ..
-        py.test -m 'slow' --split="${SPLIT}" sympy/
+        py.test -m 'slow' --duration=100 --split="${SPLIT}" sympy/
     elif [[ "${TEST_THEANO}" == "true" ]]; then
         cat << EOF | python
 import sympy
@@ -64,6 +64,6 @@ if not sympy.test('sympy/external/tests/test_autowrap.py'):
 EOF
     else
         cd ..
-        py.test -m 'not slow' --split="${SPLIT}" sympy/
+        py.test -m 'not slow' --duration=100 --split="${SPLIT}" sympy/
     fi
 fi
