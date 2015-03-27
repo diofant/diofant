@@ -16,7 +16,7 @@ See:
 from sympy import var, sqrt, integrate, conjugate, seterr, Abs, pprint, I, pi,\
     sin, cos, sign, lambdify, Integral, S
 
-x = var("x", real=True)
+x = var("x", extended_real=True)
 
 
 def l2_norm(f, lim):
@@ -30,7 +30,7 @@ def l2_norm(f, lim):
 
     >>> from sympy import Symbol
     >>> from gibbs_phenomenon import l2_norm
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
     >>> l2_norm(1, (x, -1, 1))
     sqrt(2)
     >>> l2_norm(x, (x, -1, 1))
@@ -66,7 +66,7 @@ def l2_gram_schmidt(list, lim):
     >>> from sympy import Symbol
     >>> from gibbs_phenomenon import l2_gram_schmidt
 
-    >>> x = Symbol('x', real=True)    # perform computations over reals to save time
+    >>> x = Symbol('x', extended_real=True)    # perform computations over reals to save time
     >>> l2_gram_schmidt([1, x, x**2], (x, -1, 1))
     [sqrt(2)/2, sqrt(6)*x/2, 3*sqrt(10)*(x**2 - 1/3)/4]
 

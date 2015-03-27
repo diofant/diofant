@@ -14,7 +14,7 @@ TP = TensorProduct
 
 
 def test_R2():
-    x0, y0, r0, theta0 = symbols('x0, y0, r0, theta0', real=True)
+    x0, y0, r0, theta0 = symbols('x0, y0, r0, theta0', extended_real=True)
     point_r = R2_r.point([x0, y0])
     point_p = R2_p.point([r0, theta0])
 

@@ -323,7 +323,7 @@ def test_inverse_mellin_transform():
     assert IMT(gamma(s) + gamma(s - 1), s, x, (1, oo)) == (x + 1)*exp(-x)/x
 
     # test factorisation of polys
-    r = symbols('r', real=True)
+    r = symbols('r', extended_real=True)
     assert IMT(1/(s**2 + 1), s, exp(-x), (None, oo)
               ).subs(x, r).rewrite(sin).simplify() \
         == sin(r)*Heaviside(1 - exp(-r))
@@ -339,7 +339,7 @@ def test_inverse_mellin_transform():
     # Now test the inverses of all direct transforms tested above
 
     # Section 8.4.2
-    nu = symbols('nu', real=True, finite=True)
+    nu = symbols('nu', extended_real=True, finite=True)
     assert IMT(-1/(nu + s), s, x, (-oo, None)) == x**nu*Heaviside(x - 1)
     assert IMT(1/(nu + s), s, x, (None, oo)) == x**nu*Heaviside(1 - x)
     assert simp_pows(IMT(gamma(beta)*gamma(s)/gamma(s + beta), s, x, (0, oo))) \
@@ -581,7 +581,7 @@ def test_fourier_transform():
 
     def sinc(x):
         return sin(pi*x)/(pi*x)
-    k = symbols('k', real=True)
+    k = symbols('k', extended_real=True)
     f = Function("f")
 
     # TODO for this to work with real a, need to expand abs(a*x) to abs(a)*abs(x)

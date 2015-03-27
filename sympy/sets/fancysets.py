@@ -281,7 +281,7 @@ class ImageSet(Set):
             f = self.lamda.expr
             n = self.lamda.variables[0]
 
-            n_ = Dummy(n.name, real=True)
+            n_ = Dummy(n.name, extended_real=True)
             f_ = f.subs(n, n_)
 
             re, im = f_.as_real_imag()

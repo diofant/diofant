@@ -188,7 +188,7 @@ class Relational(Boolean, Expr, EvalfMixin):
                     elif know == False:
                         dif = dif.evalf()
                 # Can definitively compare a Number to zero, if appropriate.
-                if dif.is_Number and (dif.is_real or r.func in (Eq, Ne)):
+                if dif.is_Number and (dif.is_extended_real or r.func in (Eq, Ne)):
                     # Always T/F (we never return an expression w/ the evalf)
                     r = r.func._eval_relation(dif, S.Zero)
 
@@ -211,7 +211,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         ========
 
         >>> from sympy import Symbol, Eq
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> (x>0).as_set()
         (0, oo)
         >>> Eq(x, 0).as_set()

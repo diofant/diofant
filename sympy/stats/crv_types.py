@@ -173,8 +173,8 @@ def Arcsin(name, a=0, b=1):
     >>> from sympy.stats import Arcsin, density
     >>> from sympy import Symbol, simplify
 
-    >>> a = Symbol("a", real=True)
-    >>> b = Symbol("b", real=True)
+    >>> a = Symbol("a", extended_real=True)
+    >>> b = Symbol("b", extended_real=True)
     >>> z = Symbol("z")
 
     >>> X = Arcsin("x", a, b)
@@ -1046,7 +1046,7 @@ def Frechet(name, a, s=1, m=0):
 
     >>> a = Symbol("a", positive=True)
     >>> s = Symbol("s", positive=True)
-    >>> m = Symbol("m", real=True)
+    >>> m = Symbol("m", extended_real=True)
     >>> z = Symbol("z")
 
     >>> X = Frechet("x", a, s, m)
@@ -1385,7 +1385,7 @@ def Logistic(name, mu, s):
     >>> from sympy.stats import Logistic, density
     >>> from sympy import Symbol
 
-    >>> mu = Symbol("mu", real=True)
+    >>> mu = Symbol("mu", extended_real=True)
     >>> s = Symbol("s", positive=True)
     >>> z = Symbol("z")
 
@@ -1449,7 +1449,7 @@ def LogNormal(name, mean, std):
     >>> from sympy.stats import LogNormal, density
     >>> from sympy import Symbol, simplify, pprint
 
-    >>> mu = Symbol("mu", real=True)
+    >>> mu = Symbol("mu", extended_real=True)
     >>> sigma = Symbol("sigma", positive=True)
     >>> z = Symbol("z")
 
@@ -1825,8 +1825,8 @@ def QuadraticU(name, a, b):
     >>> from sympy.stats import QuadraticU, density, E, variance
     >>> from sympy import Symbol, simplify, factor, pprint
 
-    >>> a = Symbol("a", real=True)
-    >>> b = Symbol("b", real=True)
+    >>> a = Symbol("a", extended_real=True)
+    >>> b = Symbol("b", extended_real=True)
     >>> z = Symbol("z")
 
     >>> X = QuadraticU("x", a, b)
@@ -1899,7 +1899,7 @@ def RaisedCosine(name, mu, s):
     >>> from sympy.stats import RaisedCosine, density, E, variance
     >>> from sympy import Symbol, simplify, pprint
 
-    >>> mu = Symbol("mu", real=True)
+    >>> mu = Symbol("mu", extended_real=True)
     >>> s = Symbol("s", positive=True)
     >>> z = Symbol("z")
 
@@ -2149,7 +2149,7 @@ class UniformDistribution(SingleContinuousDistribution):
 
     def compute_cdf(self, **kwargs):
         from sympy import Lambda, Min
-        z = Dummy('z', real=True, finite=True)
+        z = Dummy('z', extended_real=True, finite=True)
         result = SingleContinuousDistribution.compute_cdf(self, **kwargs)(z)
         reps = {
             Min(z, self.right): z,

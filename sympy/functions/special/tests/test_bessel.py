@@ -140,19 +140,19 @@ def test_expand():
     assert expand_func(besselj(n + S(1)/2, z).rewrite(jn)) == \
         sqrt(2)*sqrt(z)*jn(n, z)/sqrt(pi)
 
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     p = Symbol('p', positive=True)
     i = Symbol('i', integer=True)
 
     for besselx in [besselj, bessely, besseli, besselk]:
-        assert besselx(i, p).is_real
-        assert besselx(i, x).is_real is None
-        assert besselx(x, z).is_real is None
+        assert besselx(i, p).is_extended_real
+        assert besselx(i, x).is_extended_real is None
+        assert besselx(x, z).is_extended_real is None
 
     for besselx in [besselj, besseli]:
-        assert besselx(i, r).is_real
+        assert besselx(i, r).is_extended_real
     for besselx in [bessely, besselk]:
-        assert besselx(i, r).is_real is None
+        assert besselx(i, r).is_extended_real is None
 
 
 def test_fn():
@@ -273,8 +273,8 @@ def test_bessel_eval():
 
 def test_conjugate():
     from sympy import conjugate, I, Symbol
-    n, z, x = Symbol('n'), Symbol('z', real=False), Symbol('x', real=True)
-    y, t = Symbol('y', real=True, positive=True), Symbol('t', negative=True)
+    n, z, x = Symbol('n'), Symbol('z', extended_real=False), Symbol('x', extended_real=True)
+    y, t = Symbol('y', extended_real=True, positive=True), Symbol('t', negative=True)
 
     for f in [besseli, besselj, besselk, bessely, jn, yn, hankel1, hankel2]:
         assert f(n, -1).conjugate() != f(conjugate(n), -1)
@@ -338,11 +338,11 @@ def test_branching():
 
 def test_airy_base():
     z = Symbol('z')
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
 
     assert conjugate(airyai(z)) == airyai(conjugate(z))
-    assert airyai(x).is_real
+    assert airyai(x).is_extended_real
 
     assert airyai(x+I*y).as_real_imag() == (
         airyai(x - I*x*Abs(y)/Abs(x))/2 + airyai(x + I*x*Abs(y)/Abs(x))/2,
@@ -351,7 +351,7 @@ def test_airy_base():
 
 
 def test_airyai():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -387,7 +387,7 @@ def test_airyai():
 
 
 def test_airybi():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -423,7 +423,7 @@ def test_airybi():
 
 
 def test_airyaiprime():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 
@@ -457,7 +457,7 @@ def test_airyaiprime():
 
 
 def test_airybiprime():
-    z = Symbol('z', real=False)
+    z = Symbol('z', extended_real=False)
     t = Symbol('t', negative=True)
     p = Symbol('p', positive=True)
 

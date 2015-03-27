@@ -155,8 +155,8 @@ class erf(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
-    def _eval_is_real(self):
-        return self.args[0].is_real
+    def _eval_is_extended_real(self):
+        return self.args[0].is_extended_real
 
     def _eval_rewrite_as_uppergamma(self, z):
         from sympy import uppergamma
@@ -198,7 +198,7 @@ class erf(Function):
             return self.func(arg)
 
     def as_real_imag(self, deep=True, **hints):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -344,8 +344,8 @@ class erfc(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
-    def _eval_is_real(self):
-        return self.args[0].is_real
+    def _eval_is_extended_real(self):
+        return self.args[0].is_extended_real
 
     def _eval_rewrite_as_tractable(self, z):
         return self.rewrite(erf).rewrite("tractable", deep=True)
@@ -387,7 +387,7 @@ class erfc(Function):
             return self.func(arg)
 
     def as_real_imag(self, deep=True, **hints):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -522,8 +522,8 @@ class erfi(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
-    def _eval_is_real(self):
-        return self.args[0].is_real
+    def _eval_is_extended_real(self):
+        return self.args[0].is_extended_real
 
     def _eval_rewrite_as_tractable(self, z):
         return self.rewrite(erf).rewrite("tractable", deep=True)
@@ -556,7 +556,7 @@ class erfi(Function):
         return sqrt(-z**2)/z - z*expint(S.Half, -z**2)/sqrt(S.Pi)
 
     def as_real_imag(self, deep=True, **hints):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)
@@ -672,8 +672,8 @@ class erf2(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
 
-    def _eval_is_real(self):
-        return self.args[0].is_real and self.args[1].is_real
+    def _eval_is_extended_real(self):
+        return self.args[0].is_extended_real and self.args[1].is_extended_real
 
     def _eval_rewrite_as_erf(self, x, y):
         return erf(y) - erf(x)
@@ -777,12 +777,12 @@ class erfinv(Function):
         elif z is S.One:
             return S.Infinity
 
-        if (z.func is erf) and z.args[0].is_real:
+        if (z.func is erf) and z.args[0].is_extended_real:
             return z.args[0]
 
         # Try to pull out factors of -1
         nz = z.extract_multiplicatively(-1)
-        if nz is not None and ((nz.func is erf) and (nz.args[0]).is_real):
+        if nz is not None and ((nz.func is erf) and (nz.args[0]).is_extended_real):
             return -nz.args[0]
 
     def _eval_rewrite_as_erfcinv(self, z):
@@ -1412,7 +1412,7 @@ class li(Function):
     def _eval_conjugate(self):
         z = self.args[0]
         # Exclude values on the branch cut (-oo, 0)
-        if not (z.is_real and z.is_negative):
+        if not (z.is_extended_real and z.is_negative):
             return self.func(z.conjugate())
 
     def _eval_rewrite_as_Li(self, z):
@@ -2039,14 +2039,14 @@ class FresnelIntegral(Function):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_real(self):
-        return self.args[0].is_real
+    def _eval_is_extended_real(self):
+        return self.args[0].is_extended_real
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
     def _as_real_imag(self, deep=True, **hints):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return (self.expand(deep, **hints), S.Zero)

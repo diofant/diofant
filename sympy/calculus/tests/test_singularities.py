@@ -5,7 +5,7 @@ from sympy.utilities.pytest import XFAIL
 
 
 def test_singularities():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     assert singularities(x**2, x) == ()
     assert singularities(x/(x**2 + 3*x + 2), x) == (-2, -1)
@@ -13,7 +13,7 @@ def test_singularities():
 
 @XFAIL
 def test_singularities_non_rational():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
 
     assert singularities(exp(1/x), x) == (0)
     assert singularities(log((x - 2)**2), x) == (2)

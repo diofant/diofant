@@ -457,7 +457,7 @@ def test_roots0():
     }
 
     r = roots(x**3 + 40*x + 64)
-    real_root = [rx for rx in r if rx.is_real][0]
+    real_root = [rx for rx in r if rx.is_extended_real][0]
     cr = 108 + 6*sqrt(1074)
     assert real_root == -2*root(cr, 3)/3 + 20/root(cr, 3)
 
@@ -568,7 +568,7 @@ def test_roots_mixed():
 
     for _roots in (_nroots, _sroots):
         for i, r in zip(_intervals, _roots):
-            if r.is_real:
+            if r.is_extended_real:
                 assert r in i
             else:
                 assert (re(r), im(r)) in i

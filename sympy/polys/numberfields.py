@@ -918,7 +918,7 @@ def is_isomorphism_possible(a, b):
 
 def field_isomorphism_pslq(a, b):
     """Construct field isomorphism using PSLQ algorithm. """
-    if not a.root.is_real or not b.root.is_real:
+    if not a.root.is_extended_real or not b.root.is_extended_real:
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
@@ -1081,7 +1081,7 @@ def isolate(alg, eps=None, fast=False):
 
     if alg.is_Rational:
         return (alg, alg)
-    elif not alg.is_real:
+    elif not alg.is_extended_real:
         raise NotImplementedError(
             "complex algebraic numbers are not supported")
 

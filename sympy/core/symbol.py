@@ -92,7 +92,7 @@ class Symbol(AtomicExpr, Boolean):
         >>> from sympy import Symbol
         >>> Symbol("x") == Symbol("x")
         True
-        >>> Symbol("x", real=True) == Symbol("x", real=False)
+        >>> Symbol("x", extended_real=True) == Symbol("x", extended_real=False)
         False
 
         """
@@ -430,8 +430,8 @@ def symbols(names, **args):
         >>> a.is_integer
         True
 
-        >>> x, y, z = symbols('x,y,z', real=True)
-        >>> x.is_real and y.is_real and z.is_real
+        >>> x, y, z = symbols('x,y,z', extended_real=True)
+        >>> x.is_extended_real and y.is_extended_real and z.is_extended_real
         True
 
     Despite its name, :func:`symbols` can create symbol-like objects like
@@ -565,9 +565,9 @@ def var(names, **args):
     >>> abc
     abc
 
-    >>> var('x,y', real=True)
+    >>> var('x,y', extended_real=True)
     (x, y)
-    >>> x.is_real and y.is_real
+    >>> x.is_extended_real and y.is_extended_real
     True
 
     See :func:`symbols` documentation for more details on what kinds of

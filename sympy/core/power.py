@@ -217,7 +217,7 @@ class Pow(Expr):
             s = 1
         elif b.is_polar:  # e.g. exp_polar, besselj, var('p', polar=True)...
             s = 1
-        elif e.is_real is not None:
+        elif e.is_extended_real is not None:
             # helper functions ===========================
             def _half(e):
                 """Return True if the exponent has a literal 2 as the
@@ -237,7 +237,7 @@ class Pow(Expr):
                 except PrecisionExhausted:
                     pass
             # ===================================================
-            if e.is_real:
+            if e.is_extended_real:
                 # we need _half(other) with constant floor or
                 # floor(S.Half - e*arg(b)/2/pi) == 0
 
@@ -247,10 +247,10 @@ class Pow(Expr):
                     if _half(other):
                         if b.is_negative is True:
                             return S.NegativeOne**other*Pow(-b, e*other)
-                        if b.is_real is False:
+                        if b.is_extended_real is False:
                             return Pow(b.conjugate()/Abs(b)**2, other)
                 elif e.is_even:
-                    if b.is_real:
+                    if b.is_extended_real:
                         b = abs(b)
                     if b.is_imaginary:
                         b = abs(im(b))*S.ImaginaryUnit
@@ -268,12 +268,12 @@ class Pow(Expr):
                 elif _half(other):
                     s = exp(2*S.Pi*S.ImaginaryUnit*other*floor(
                         S.Half - e*arg(b)/(2*S.Pi)))
-                    if s.is_real and _n2(sign(s) - s) == 0:
+                    if s.is_extended_real and _n2(sign(s) - s) == 0:
                         s = sign(s)
                     else:
                         s = None
             else:
-                # e.is_real is False requires:
+                # e.is_extended_real is False requires:
                 #     _half(other) with constant floor or
                 #     floor(S.Half - im(e*log(b))/2/pi) == 0
                 try:
@@ -281,7 +281,7 @@ class Pow(Expr):
                         floor(S.Half - im(e*log(b))/2/S.Pi))
                     # be careful to test that s is -1 or 1 b/c sign(I) == I:
                     # so check that s is real
-                    if s.is_real and _n2(sign(s) - s) == 0:
+                    if s.is_extended_real and _n2(sign(s) - s) == 0:
                         s = sign(s)
                     else:
                         s = None
@@ -301,7 +301,7 @@ class Pow(Expr):
             if self.base.is_nonnegative:
                 return True
         elif self.base.is_positive:
-            if self.exp.is_real:
+            if self.exp.is_extended_real:
                 return True
         elif self.base.is_negative:
             if self.exp.is_even:
@@ -328,7 +328,7 @@ class Pow(Expr):
             if self.exp.is_even:
                 return False
         elif self.base.is_positive:
-            if self.exp.is_real:
+            if self.exp.is_extended_real:
                 return False
         elif self.base.is_nonnegative:
             if self.exp.is_nonnegative:
@@ -336,7 +336,7 @@ class Pow(Expr):
         elif self.base.is_nonpositive:
             if self.exp.is_even:
                 return False
-        elif self.base.is_real:
+        elif self.base.is_extended_real:
             if self.exp.is_even:
                 return False
 
@@ -372,13 +372,13 @@ class Pow(Expr):
             check = self.func(*self.args)
             return check.is_Integer
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         from sympy import arg, exp, log, Mul
-        real_b = self.base.is_real
+        real_b = self.base.is_extended_real
         if real_b is None:
             if self.base.func == exp and self.base.args[0].is_imaginary:
                 return self.exp.is_imaginary
-        real_e = self.exp.is_real
+        real_e = self.exp.is_extended_real
         if real_e is None:
             return
         if real_b and real_e:
@@ -394,7 +394,7 @@ class Pow(Expr):
                     if self.exp.is_Rational:
                         return False
         if real_e and self.exp.is_negative:
-            return Pow(self.base, -self.exp).is_real
+            return Pow(self.base, -self.exp).is_extended_real
         im_b = self.base.is_imaginary
         im_e = self.exp.is_imaginary
         if im_b:
@@ -409,7 +409,7 @@ class Pow(Expr):
                 c, a = self.exp.as_coeff_Add()
                 if c and c.is_Integer:
                     return Mul(
-                        self.base**c, self.base**a, evaluate=False).is_real
+                        self.base**c, self.base**a, evaluate=False).is_extended_real
             elif self.base in (-S.ImaginaryUnit, S.ImaginaryUnit):
                 if (self.exp/2).is_integer is False:
                     return False
@@ -444,7 +444,7 @@ class Pow(Expr):
             if imlog is not None:
                 return False  # I**i -> real; (2*I)**i -> complex ==> not imaginary
 
-        if self.base.is_real and self.exp.is_real:
+        if self.base.is_extended_real and self.exp.is_extended_real:
             if self.base.is_positive:
                 return False
             else:
@@ -459,7 +459,7 @@ class Pow(Expr):
                         return self.base.is_negative
                     return half
 
-        if self.base.is_real is False:  # we already know it's not imag
+        if self.base.is_extended_real is False:  # we already know it's not imag
             i = arg(self.base)*self.exp/S.Pi
             return (2*i).is_odd
 
@@ -547,7 +547,7 @@ class Pow(Expr):
                     new_l.append(Pow(self.base, Add(*o_al), evaluate=False))
                     return Mul(*new_l)
 
-        if old.func is exp and self.exp.is_real and self.base.is_positive:
+        if old.func is exp and self.exp.is_extended_real and self.base.is_positive:
             ct1 = old.args[0].as_independent(Symbol, as_Add=False)
             ct2 = (self.exp*log(self.base)).as_independent(
                 Symbol, as_Add=False)
@@ -946,7 +946,7 @@ class Pow(Expr):
         base = base._evalf(prec)
         if not exp.is_Integer:
             exp = exp._evalf(prec)
-        if exp.is_negative and base.is_number and base.is_real is False:
+        if exp.is_negative and base.is_number and base.is_extended_real is False:
             base = base.conjugate() / (base * base.conjugate())._evalf(prec)
             exp = -exp
             return self.func(base, exp).expand()
@@ -1027,7 +1027,7 @@ class Pow(Expr):
         # sqrt(a/b) != sqrt(a)/sqrt(b) when a=1 and b=-1. But if the
         # denominator is negative the numerator and denominator can
         # be negated and the denominator (now positive) separated.
-        if not (d.is_real or int_exp):
+        if not (d.is_extended_real or int_exp):
             n = base
             d = S.One
         dnonpos = d.is_nonpositive
@@ -1230,7 +1230,7 @@ class Pow(Expr):
 
             nuse = n - ei
 
-            if e.is_real and e.is_positive:
+            if e.is_extended_real and e.is_positive:
                 lt = b.as_leading_term(x)
 
                 # Try to correct nuse (= m) guess from:

@@ -148,7 +148,7 @@ def _lambert(eq, x):
         l = LambertW(d/(a*b)*exp(c*d/a/b)*exp(-f/a), k)
         # if W's arg is between -1/e and 0 there is
         # a -1 branch real solution, too.
-        if k and not l.is_real:
+        if k and not l.is_extended_real:
             continue
         rhs = -c/b + (a/d)*l
 

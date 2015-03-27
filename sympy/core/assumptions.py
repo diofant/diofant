@@ -43,7 +43,11 @@ Here follows a list of possible assumption names:
 
     real
         object can have only values from the set
-        of real numbers.
+        of real numbers [12]_.
+
+    extended_real
+        object can have only values on the extended
+        real number line [13]_.
 
     integer
         object can have only values from the set
@@ -107,7 +111,7 @@ Examples
     >>> from sympy import Symbol
     >>> x = Symbol('x', real = True); x
     x
-    >>> x.is_real
+    >>> x.is_extended_real
     True
     >>> x.is_complex
     True
@@ -143,6 +147,8 @@ References
 .. [9] http://docs.scipy.org/doc/numpy/reference/generated/numpy.isfinite.html
 .. [10] http://en.wikipedia.org/wiki/Transcendental_number
 .. [11] http://en.wikipedia.org/wiki/Algebraic_number
+.. [12] http://en.wikipedia.org/wiki/Real_number
+.. [13] http://en.wikipedia.org/wiki/Extended_real_number_line
 
 """
 from __future__ import print_function, division
@@ -155,29 +161,27 @@ from random import shuffle
 
 
 _assume_rules = FactRules([
-
     'integer        ->  rational',
     'rational       ->  real',
+    'real           ==  extended_real & finite',
     'rational       ->  algebraic',
     'algebraic      ->  complex',
-    'real           ->  complex',
-    'real           ->  hermitian',
-    'imaginary      ->  complex',
-    'imaginary      ->  antihermitian',
+    'extended_real  ->  complex & hermitian',
+    'imaginary      ->  complex & antihermitian',
     'complex        ->  commutative',
 
     'odd            ==  integer & !even',
     'even           ==  integer & !odd',
 
-    'real           ==  negative | zero | positive',
+    'extended_real  ==  negative | zero | positive',
     'transcendental ==  complex & !algebraic',
 
     'negative       ==  nonpositive & nonzero',
     'positive       ==  nonnegative & nonzero',
     'zero           ==  nonnegative & nonpositive',
 
-    'nonpositive    ==  real & !positive',
-    'nonnegative    ==  real & !negative',
+    'nonpositive    ==  extended_real & !positive',
+    'nonnegative    ==  extended_real & !negative',
 
     'zero           ->  even & finite',
 
@@ -186,7 +190,7 @@ _assume_rules = FactRules([
 
     'irrational     ==  real & !rational',
 
-    'imaginary      ->  !real | zero',
+    'imaginary      ->  !extended_real | zero',
 
     'infinite       ->  !finite',
     'noninteger     ==  real & !integer',

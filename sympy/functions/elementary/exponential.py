@@ -174,8 +174,8 @@ class exp_polar(ExpBase):
     def _eval_power(self, other):
         return self.func(self.args[0]*other)
 
-    def _eval_is_real(self):
-        if self.args[0].is_real:
+    def _eval_is_extended_real(self):
+        if self.args[0].is_extended_real:
             return True
 
     def as_base_exp(self):
@@ -351,8 +351,8 @@ class exp(ExpBase):
             return new**self.exp._subs(old, new)
         return Function._eval_subs(self, old, new)
 
-    def _eval_is_real(self):
-        if self.args[0].is_real:
+    def _eval_is_extended_real(self):
+        if self.args[0].is_extended_real:
             return True
         elif self.args[0].is_imaginary:
             arg2 = -S(2) * S.ImaginaryUnit * self.args[0] / S.Pi
@@ -370,7 +370,7 @@ class exp(ExpBase):
             return s.is_algebraic
 
     def _eval_is_positive(self):
-        if self.args[0].is_real:
+        if self.args[0].is_extended_real:
             return not self.args[0] is S.NegativeInfinity
         elif self.args[0].is_imaginary:
             arg2 = -S.ImaginaryUnit * self.args[0] / S.Pi
@@ -507,7 +507,7 @@ class log(Function):
                 if arg.q != 1:
                     return cls(arg.p) - cls(arg.q)
 
-        if arg.func is exp and arg.args[0].is_real:
+        if arg.func is exp and arg.args[0].is_extended_real:
             return arg.args[0]
         elif arg.func is exp_polar:
             return unpolarify(arg.exp)
@@ -589,7 +589,7 @@ class log(Function):
                     nonpos.append(x)
             return Add(*expr) + log(Mul(*nonpos))
         elif arg.is_Pow or isinstance(arg, exp):
-            if force or (arg.exp.is_real and arg.base.is_positive) or \
+            if force or (arg.exp.is_extended_real and arg.base.is_positive) or \
                     arg.base.is_polar:
                 b = arg.base
                 e = arg.exp
@@ -666,7 +666,7 @@ class log(Function):
         else:
             return s.is_algebraic
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         return self.args[0].is_positive
 
     def _eval_is_finite(self):
@@ -750,7 +750,7 @@ class LambertW(Function):
     0.635564016364870
     >>> LambertW(1.2, -1).n()
     -1.34747534407696 - 4.41624341514535*I
-    >>> LambertW(-1).is_real
+    >>> LambertW(-1).is_extended_real
     False
 
     References
@@ -805,7 +805,7 @@ class LambertW(Function):
 
         raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_real(self):
+    def _eval_is_extended_real(self):
         x = self.args[0]
         if len(self.args) == 1:
             k = S.Zero
@@ -822,7 +822,7 @@ class LambertW(Function):
             elif x.is_nonpositive or (x + 1/S.Exp1).is_nonnegative:
                 return False
         elif k.is_nonzero and (k + 1).is_nonzero:
-            if x.is_real:
+            if x.is_extended_real:
                 return False
 
     def _eval_is_algebraic(self):

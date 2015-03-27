@@ -72,9 +72,9 @@ def ratint(f, x, **flags):
 
         L = ratint_logpart(r, Q, x, t)
 
-        real = flags.get('real')
+        ereal = flags.get('extended_real')
 
-        if real is None:
+        if ereal is None:
             if type(f) is not tuple:
                 atoms = f.atoms()
             else:
@@ -83,15 +83,15 @@ def ratint(f, x, **flags):
                 atoms = p.atoms() | q.atoms()
 
             for elt in atoms - set([x]):
-                if not elt.is_real:
-                    real = False
+                if not elt.is_extended_real:
+                    ereal = False
                     break
             else:
-                real = True
+                ereal = True
 
         eps = S(0)
 
-        if not real:
+        if not ereal:
             for h, q in L:
                 eps += RootSum(
                     q, Lambda(t, t*log(h.as_expr())), quadratic=True)

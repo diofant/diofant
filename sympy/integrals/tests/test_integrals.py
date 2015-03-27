@@ -115,7 +115,7 @@ def test_conjugate_transpose():
     assert p.conjugate().doit() == p.doit().conjugate()
     assert p.transpose().doit() == p.doit().transpose()
 
-    x = Symbol("x", real=True)
+    x = Symbol("x", extended_real=True)
     p = Integral(A*B, (x,))
     assert p.adjoint().doit() == p.doit().adjoint()
     assert p.conjugate().doit() == p.doit().conjugate()
@@ -761,8 +761,8 @@ def test_issue_4403():
     assert integrate(sqrt(x**2 - z**2), x) == \
         -z**2*acosh(x/z)/2 + x*sqrt(x**2 - z**2)/2
 
-    x = Symbol('x', real=True)
-    y = Symbol('y', nonzero=True, real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', nonzero=True, extended_real=True)
     assert integrate(1/(x**2 + y**2)**S('3/2'), x) == \
         1/(y**2*sqrt(1 + y**2/x**2))
 

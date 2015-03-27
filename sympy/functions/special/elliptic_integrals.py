@@ -67,7 +67,7 @@ class elliptic_k(Function):
 
     def _eval_conjugate(self):
         z = self.args[0]
-        if (z.is_real and (z - 1).is_positive) is False:
+        if (z.is_extended_real and (z - 1).is_positive) is False:
             return self.func(z.conjugate())
 
     def _eval_nseries(self, x, n, logx):
@@ -144,7 +144,7 @@ class elliptic_f(Function):
 
     def _eval_conjugate(self):
         z, m = self.args
-        if (m.is_real and (m - 1).is_positive) is False:
+        if (m.is_extended_real and (m - 1).is_positive) is False:
             return self.func(z.conjugate(), m.conjugate())
 
 
@@ -229,11 +229,11 @@ class elliptic_e(Function):
     def _eval_conjugate(self):
         if len(self.args) == 2:
             z, m = self.args
-            if (m.is_real and (m - 1).is_positive) is False:
+            if (m.is_extended_real and (m - 1).is_positive) is False:
                 return self.func(z.conjugate(), m.conjugate())
         else:
             z = self.args[0]
-            if (z.is_real and (z - 1).is_positive) is False:
+            if (z.is_extended_real and (z - 1).is_positive) is False:
                 return self.func(z.conjugate())
 
     def _eval_nseries(self, x, n, logx):
@@ -333,8 +333,8 @@ class elliptic_pi(Function):
     def _eval_conjugate(self):
         if len(self.args) == 3:
             n, z, m = self.args
-            if (n.is_real and (n - 1).is_positive) is False and \
-               (m.is_real and (m - 1).is_positive) is False:
+            if (n.is_extended_real and (n - 1).is_positive) is False and \
+               (m.is_extended_real and (m - 1).is_positive) is False:
                 return self.func(n.conjugate(), z.conjugate(), m.conjugate())
         else:
             n, m = self.args

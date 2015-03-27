@@ -161,7 +161,7 @@ def test_dependent_finite():
 
 def test_normality():
     X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
-    x, z = symbols('x, z', real=True, finite=True)
+    x, z = symbols('x, z', extended_real=True, finite=True)
     dens = density(X - Y, Eq(X + Y, z))
 
     assert integrate(dens(x), (x, -oo, oo)) == 1
@@ -194,4 +194,4 @@ def test_density_constant():
 
 def test_real():
     x = Normal('x', 0, 1)
-    assert x.is_real
+    assert x.is_extended_real

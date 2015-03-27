@@ -354,7 +354,7 @@ class Ellipse(GeometryEntity):
         if self.eccentricity == 1:
             return 2*pi*self.hradius
         else:
-            x = Dummy('x', real=True)
+            x = Dummy('x', extended_real=True)
             return 4*self.major*Integral(
                 sqrt((1 - (self.eccentricity*x)**2)/(1 - x**2)), (x, 0, 1))
 
@@ -851,7 +851,7 @@ class Ellipse(GeometryEntity):
 
         # find the 4 normal points and construct lines through them with
         # the corresponding slope
-        x, y = Dummy('x', real=True), Dummy('y', real=True)
+        x, y = Dummy('x', extended_real=True), Dummy('y', extended_real=True)
         eq = self.equation(x, y)
         dydx = idiff(eq, y, x)
         norm = -1/dydx
@@ -1104,8 +1104,8 @@ class Ellipse(GeometryEntity):
 
         """
 
-        x = Dummy('x', real=True)
-        y = Dummy('y', real=True)
+        x = Dummy('x', extended_real=True)
+        y = Dummy('y', extended_real=True)
         seq = self.equation(x, y)
         oeq = o.equation(x, y)
         result = solve([seq, oeq], [x, y])
@@ -1229,8 +1229,8 @@ class Ellipse(GeometryEntity):
 
     def __contains__(self, o):
         if isinstance(o, Point):
-            x = Dummy('x', real=True)
-            y = Dummy('y', real=True)
+            x = Dummy('x', extended_real=True)
+            y = Dummy('y', extended_real=True)
 
             res = self.equation(x, y).subs({x: o.x, y: o.y})
             return trigsimp(simplify(res)) is S.Zero

@@ -744,7 +744,7 @@ def test_K2():
 
 @XFAIL
 def test_K3():
-    a, b = symbols('a, b', real=True)
+    a, b = symbols('a, b', extended_real=True)
     assert simplify(abs(1/(a + I/a + I*b))) == 1/sqrt(a**2 + (I/a + b)**2)
 
 
@@ -753,7 +753,7 @@ def test_K4():
 
 
 def test_K5():
-    x, y = symbols('x, y', real=True)
+    x, y = symbols('x, y', extended_real=True)
     assert tan(x + I*y).expand(complex=True) == (sin(2*x)/(cos(2*x) +
         cosh(2*y)) + I*sinh(2*y)/(cos(2*x) + cosh(2*y)))
 
@@ -764,7 +764,7 @@ def test_K6():
 
 
 def test_K7():
-    y = symbols('y', real=True, negative=False)
+    y = symbols('y', extended_real=True, negative=False)
     expr = sqrt(x*y*abs(z)**2)/(sqrt(x)*abs(z))
     sexpr = simplify(expr)
     assert sexpr == sqrt(y)
@@ -779,12 +779,12 @@ def test_K8():
 
 
 def test_K9():
-    z = symbols('z', real=True, positive=True)
+    z = symbols('z', extended_real=True, positive=True)
     assert simplify(sqrt(1/z) - 1/sqrt(z)) == 0
 
 
 def test_K10():
-    z = symbols('z', real=True, negative=True)
+    z = symbols('z', extended_real=True, negative=True)
     assert simplify(sqrt(1/z) + 1/sqrt(z)) == 0
 
 # This goes up to K25
@@ -845,7 +845,7 @@ def test_M2():
     # The roots of this equation should all be real. Note that this
     # doesn't test that they are correct.
     sol = solve(3*x**3 - 18*x**2 + 33*x - 19, x)
-    assert all(s.expand(complex=True).is_real for s in sol)
+    assert all(s.expand(complex=True).is_extended_real for s in sol)
 
 
 @XFAIL
@@ -981,8 +981,8 @@ def test_M26():
 
 @XFAIL
 def test_M27():
-    x = symbols('x', real=True)
-    b = symbols('b', real=True)
+    x = symbols('x', extended_real=True)
+    b = symbols('b', extended_real=True)
     with assuming(Q.is_true(sin(cos(1/E**2) + 1) + b > 0)):
         solve(log(acos(asin(x**R(2,3) - b) - 1)) + 2, x) == [-b - sin(1 + cos(1/e**2))**R(3/2), b + sin(1 + cos(1/e**2))**R(3/2)]
 
@@ -993,7 +993,7 @@ def test_M28():
 
 
 def test_M29():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert solve(abs(x - 1) - 2) == [-1, 3]
 
 
@@ -1025,7 +1025,7 @@ def test_M34():
 
 
 def test_M35():
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     assert solve((3*x - 2*y - I*y + 3*I).as_real_imag()) == {y: 3, x: 2}
 
 
@@ -1111,55 +1111,55 @@ def test_N1():
 
 @XFAIL
 def test_N2():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert ask(Q.is_true(x**4 - x + 1 > 0))
     assert ask(Q.is_true(x**4 - x + 1 > 1)) == False
 
 
 @XFAIL
 def test_N3():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert ask(Q.is_true(And(Lt(-1, x), Lt(x, 1))), Q.is_true(abs(x) < 1 ))
 
 @XFAIL
 def test_N4():
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     assert ask(Q.is_true(2*x**2 > 2*y**2), Q.is_true((x > y) & (y > 0)))
 
 
 @XFAIL
 def test_N5():
-    x, y, k = symbols('x y k', real=True)
+    x, y, k = symbols('x y k', extended_real=True)
     assert ask(Q.is_true(k*x**2 > k*y**2), Q.is_true((x > y) & (y > 0) & (k > 0)))
 
 
 @XFAIL
 def test_N6():
-    x, y, k, n = symbols('x y k n', real=True)
+    x, y, k, n = symbols('x y k n', extended_real=True)
     assert ask(Q.is_true(k*x**n > k*y**n), Q.is_true((x > y) & (y > 0) & (k > 0) & (n > 0)))
 
 
 @XFAIL
 def test_N7():
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     assert ask(Q.is_true(y > 0), Q.is_true((x > 1) & (y >= x - 1)))
 
 
 @XFAIL
 def test_N8():
-    x, y, z = symbols('x y z', real=True)
+    x, y, z = symbols('x y z', extended_real=True)
     assert ask(Q.is_true((x == y) & (y == z)),
                Q.is_true((x >= y) & (y >= z) & (z >= x)))
 
 
 def test_N9():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert solve(abs(x - 1) > 2) == Or(And(Lt(-oo, x), Lt(x, -1)),
                                            And(Lt(3, x), Lt(x, oo)))
 
 
 def test_N10():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     p = (x - 1)*(x - 2)*(x - 3)*(x - 4)*(x - 5)
     assert solve(expand(p) < 0) == Or(
         And(Lt(-oo, x), Lt(x, 1)), And(Lt(2, x), Lt(x, 3)),
@@ -1167,41 +1167,41 @@ def test_N10():
 
 
 def test_N11():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert solve(6/(x - 3) <= 3) == \
         Or(And(Le(5, x), Lt(x, oo)), And(Lt(-oo, x), Lt(x, 3)))
 
 
 @XFAIL
 def test_N12():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert solve(sqrt(x) < 2) == And(Le(0, x), Lt(x, 4))
 
 
 @XFAIL
 def test_N13():
     # raises NotImplementedError: can't reduce [sin(x) < 2]
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert solve(sin(x) < 2) == [] # S.Reals not found
 
 
 @XFAIL
 def test_N14():
     # raises NotImplementedError: can't reduce [sin(x) < 1]
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert (solve(sin(x) < 1) == Ne(x, pi/2))
 
 
 @XFAIL
 def test_N15():
-    r, t = symbols('r t', real=True)
+    r, t = symbols('r t', extended_real=True)
     # raises NotImplementedError: only univariate inequalities are supported
     solve(abs(2*r*(cos(t) - 1) + 1) <= 1, r)
 
 
 @XFAIL
 def test_N16():
-    r, t = symbols('r t', real=True)
+    r, t = symbols('r t', extended_real=True)
     solve((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
 
 
@@ -1348,7 +1348,7 @@ def test_P8():
 
 
 def test_P9():
-    a, b, c = symbols('a b c', real=True)
+    a, b, c = symbols('a b c', extended_real=True)
     M = Matrix([[a/(b*c), 1/c, 1/b],
                 [1/c, b/(a*c), 1/a],
                 [1/b, 1/a, c/(a*b)]])
@@ -1422,7 +1422,7 @@ def test_P16():
 
 @XFAIL
 def test_P17():
-    t = symbols('t', real=True)
+    t = symbols('t', extended_real=True)
     M=Matrix([
         [sin(2*t), cos(2*t)],
         [2*(1 - (cos(t)**2))*cos(t), (1 - 2*(sin(t)**2))*sin(t)]])
@@ -1633,7 +1633,7 @@ def test_P33():
 
 @XFAIL
 def test_P34():
-    a, b, c = symbols('a b c', real=True)
+    a, b, c = symbols('a b c', extended_real=True)
     M = Matrix([[a, 1, 0, 0, 0, 0],
                 [0, a, 0, 0, 0, 0],
                 [0, 0, b, 0, 0, 0],
@@ -1699,14 +1699,14 @@ def test_P39():
 
 
 def test_P40():
-    r, t = symbols('r t', real=True)
+    r, t = symbols('r t', extended_real=True)
     M = Matrix([r*cos(t), r*sin(t)])
     assert M.jacobian(Matrix([r, t])) == Matrix([[cos(t), -r*sin(t)],
                                                  [sin(t),  r*cos(t)]])
 
 
 def test_P41():
-    r, t = symbols('r t', real=True)
+    r, t = symbols('r t', extended_real=True)
     assert hessian(r**2*sin(t),(r,t)) == Matrix([[  2*sin(t),   2*r*cos(t)],
                                                  [2*r*cos(t), -r**2*sin(t)]])
 
@@ -1718,7 +1718,7 @@ def test_P42():
 def test_P43():
     def __my_jacobian(M, Y):
         return Matrix([M.diff(v).T for v in Y]).T
-    r, t = symbols('r t', real=True)
+    r, t = symbols('r t', extended_real=True)
     M = Matrix([r*cos(t), r*sin(t)])
     assert __my_jacobian(M,[r,t]) == Matrix([[cos(t), -r*sin(t)],
                                              [sin(t),  r*cos(t)]])
@@ -1728,7 +1728,7 @@ def test_P44():
     def __my_hessian(f, Y):
         V = Matrix([diff(f, v) for v in Y])
         return  Matrix([V.T.diff(v) for v in Y])
-    r, t = symbols('r t', real=True)
+    r, t = symbols('r t', extended_real=True)
     assert __my_hessian(r**2*sin(t), (r, t)) == Matrix([
                                             [  2*sin(t),   2*r*cos(t)],
                                             [2*r*cos(t), -r**2*sin(t)]])
@@ -1754,7 +1754,7 @@ def test_R1():
 
 @XFAIL
 def test_R2():
-    m, b = symbols('m b', real=True)
+    m, b = symbols('m b', extended_real=True)
     i, n = symbols('i n', integer=True, positive=True)
     xn = MatrixSymbol('xn', n, 1)
     yn = MatrixSymbol('yn', n, 1)
@@ -2073,13 +2073,13 @@ def test_T7():
 
 
 def test_T8():
-    a, z = symbols('a z', real=True, positive=True)
+    a, z = symbols('a z', extended_real=True, positive=True)
     assert limit(gamma(z + a)/gamma(z)*exp(-a*log(z)), z, oo) == 1
 
 
 @XFAIL
 def test_T9():
-    z, k = symbols('z k', real=True, positive=True)
+    z, k = symbols('z k', extended_real=True, positive=True)
     # raises NotImplementedError:
     #           Don't know how to calculate the mrv of '(1, k)'
     assert limit(hyper((1, k), (1,), z/k), k, oo) == exp(z)
@@ -2100,7 +2100,7 @@ def test_T11():
 
 @XFAIL
 def test_T12():
-    x, t = symbols('x t', real=True)
+    x, t = symbols('x t', extended_real=True)
     # raises PoleError: Don't know how to calculate the
     #           limit(sqrt(pi)*x*erf(x)/(2*(1 - exp(-x**2))), x, 0, dir=+)
     assert limit(x * integrate(exp(-t**2), (t, 0, x))/(1 - exp(-x**2)),
@@ -2108,18 +2108,18 @@ def test_T12():
 
 
 def test_T13():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert [limit(x/abs(x), x, 0, dir='-'),
             limit(x/abs(x), x, 0, dir='+')] == [-1, 1]
 
 
 def test_T14():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert limit(atan(-log(x)), x, 0, dir='+') == pi/2
 
 
 def test_U1():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert diff(abs(x), x) == sign(x)
 
 
@@ -2138,7 +2138,7 @@ def test_U3():
 @XFAIL
 def test_U4():
     n = symbols('n', integer=True, positive=True)
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     diff(x**n, x, n)
     assert diff(x**n, x, n).rewrite(factorial) == factorial(n)
 
@@ -2162,7 +2162,7 @@ def test_U6():
 
 @XFAIL
 def test_U7():
-    p, t = symbols('p t', real=True)
+    p, t = symbols('p t', extended_real=True)
     # Exact differential => d(V(P, T)) => dV/dP DP + dV/dT DT
     # raises ValueError:  Since there is more than one variable in the
     # expression, the variable(s) of differentiation must be supplied to
@@ -2171,7 +2171,7 @@ def test_U7():
 
 
 def test_U8():
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     eq = cos(x*y) + x
     eq = eq.subs(y, f(x))
     #  If SymPy had implicit_diff() function this hack could be avoided
@@ -2190,7 +2190,7 @@ def test_U9():
     # O30 := factor(subs(f(x, y) = g(x^2 + y^2), %));
     #                                2    2
     #                        2 D(g)(x  + y ) (x + y)
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     su = diff(f(x, y), x) + diff(f(x, y), y)
     s2 = Subs(su, f(x, y), g(x**2 + y**2)).doit()
     s3 = s2.doit().factor()
@@ -2264,7 +2264,7 @@ supported in SymPy")
 
 @XFAIL
 def test_V1():
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     # integral not calculated
     # https://github.com/sympy/sympy/issues/4212
     assert integrate(abs(x), x) == x*abs(x)/2
@@ -2434,7 +2434,7 @@ def test_W6():
 
 
 def test_W7():
-    a = symbols('a', real=True, positive=True)
+    a = symbols('a', extended_real=True, positive=True)
     r1 = integrate(cos(x)/(x**2 + a**2), (x, -oo, oo))
     assert r1.simplify() == pi*exp(-a)/a
 
@@ -2476,8 +2476,8 @@ def test_W11():
 
 
 def test_W12():
-    p = symbols('p', real=True, positive=True)
-    q = symbols('q', real=True)
+    p = symbols('p', extended_real=True, positive=True)
+    q = symbols('q', extended_real=True)
     r1 = integrate(x*exp(-p*x**2 + 2*q*x), (x, -oo, oo))
     assert r1.simplify() == sqrt(pi)*q*exp(q**2/p)/p**Rational(3, 2)
 
@@ -2505,7 +2505,7 @@ def test_W16():
 
 
 def test_W17():
-    a, b = symbols('a b', real=True, positive=True)
+    a, b = symbols('a b', extended_real=True, positive=True)
     assert integrate(exp(-a*x)*besselj(0, b*x),
                  (x, 0, oo)) == 1/(b*sqrt(a**2/b**2 + 1))
 
@@ -2535,7 +2535,7 @@ def test_W21():
 
 
 def test_W22():
-    t, u = symbols('t u', real=True)
+    t, u = symbols('t u', extended_real=True)
     s = Lambda(x, Piecewise((1, And(x >= 1, x <= 2)), (0, True)))
     assert (integrate(s(t)*cos(t), (t, 0, u)) ==
             Piecewise((sin(u) - sin(1), And(u <= 2, u >= 1)),
@@ -2546,7 +2546,7 @@ def test_W22():
 @XFAIL
 @slow
 def test_W23():
-    a, b = symbols('a b', real=True, positive=True)
+    a, b = symbols('a b', extended_real=True, positive=True)
     r1 = integrate(integrate(x/(x**2 + y**2), (x, a, b)), (y, -oo, oo))
     assert r1.simplify() == pi*(-a + b)
 
@@ -2555,7 +2555,7 @@ def test_W23():
 def test_W23b():
     # this used to be test_W23.  Can't really split since r1 is needed
     # in the second assert
-    a, b = symbols('a b', real=True, positive=True)
+    a, b = symbols('a b', extended_real=True, positive=True)
     r1 = integrate(integrate(x/(x**2 + y**2), (x, a, b)), (y, -oo, oo))
     assert r1.simplify() == pi*(-a + b)
     # integrate raises RuntimeError: maximum recursion depth exceeded
@@ -2568,7 +2568,7 @@ def test_W23b():
 def test_W24():
     if ON_TRAVIS:
         skip("Too slow for travis.")
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     r1 = integrate(integrate(sqrt(x**2 + y**2), (x, 0, 1)), (y, 0, 1))
     assert (r1 - (sqrt(2) + asinh(1))/3).simplify() == 0
 
@@ -2578,7 +2578,7 @@ def test_W24():
 def test_W25():
     if ON_TRAVIS:
         skip("Too slow for travis.")
-    a, x, y = symbols('a x y', real=True)
+    a, x, y = symbols('a x y', extended_real=True)
     i1 = integrate(sin(a)*sin(y)/sqrt(1- sin(a)**2*sin(x)**2*sin(y)**2),
                    (x, 0, pi/2))
     i2 = integrate(i1, (y, 0, pi/2))
@@ -2587,7 +2587,7 @@ def test_W25():
 
 @XFAIL
 def test_W26():
-    x, y = symbols('x y', real=True)
+    x, y = symbols('x y', extended_real=True)
     # integrate(abs(y - x**2), (y,0,2)) raises ValueError: gamma function pole
     # https://github.com/sympy/sympy/issues/7165
     assert integrate(integrate(abs(y - x**2), (y, 0, 2)),
@@ -2602,13 +2602,13 @@ def test_W27():
 
 
 def test_X1():
-    v, c = symbols('v c', real=True)
+    v, c = symbols('v c', extended_real=True)
     assert (series(1/sqrt(1 - (v/c)**2), v, x0=0, n=8) ==
             5*v**6/(16*c**6) + 3*v**4/(8*c**4) + v**2/(2*c**2) + 1 + O(v**8))
 
 
 def test_X2():
-    v, c = symbols('v c', real=True)
+    v, c = symbols('v c', extended_real=True)
     s1 = series(1/sqrt(1 - (v/c)**2), v, x0=0, n=8)
     assert (1/s1**2).series(v, x0=0, n=8) == -v**2/c**2 + 1 + O(v**8)
 
@@ -2638,7 +2638,7 @@ def test_X5():
     #                                    2                               2
     #             (h[c d] + b g'[b d] + a  f''[a d]) (-d + x) + O[-d + x]
     h = Function('h')
-    a, b, c, d = symbols('a b c d', real=True)
+    a, b, c, d = symbols('a b c d', extended_real=True)
     # series() raises NotImplementedError:
     # The _eval_nseries method should be added to <class
     # 'sympy.core.function.Subs'> to give terms up to O(x**n) at x=0
@@ -2668,7 +2668,7 @@ def test_X8():
     # => 1/sqrt(x - 3/2 pi) + (x - 3/2 pi)^(3/2) / 12 + O([x - 3/2 pi]^(7/2))
 
     # see issue 7167:
-    x = symbols('x', real=True)
+    x = symbols('x', extended_real=True)
     assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(S(3)/2)/12 +
             (x - 3*pi/2)**(S(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
@@ -2695,7 +2695,7 @@ def test_X11():
 def test_X12():
     # Look at the generalized Taylor series around x = 1
     # Result => (x - 1)^a/e^b [1 - (a + 2 b) (x - 1) / 2 + O((x - 1)^2)]
-    a, b, x = symbols('a b x', real=True)
+    a, b, x = symbols('a b x', extended_real=True)
     # series returns O(log(x)**2)
     # https://github.com/sympy/sympy/issues/7168
     assert (series(log(x)**a*exp(-b*x), x, x0=1, n=2) ==
@@ -2716,7 +2716,7 @@ def test_X14():
 @SKIP("https://github.com/sympy/sympy/issues/7164")
 def test_X15():
     # => 0!/x - 1!/x^2 + 2!/x^3 - 3!/x^4 + O(1/x^5)   [Knopp, p. 544]
-    x, t = symbols('x t', real=True)
+    x, t = symbols('x t', extended_real=True)
     # raises RuntimeError: maximum recursion depth exceeded
     # https://github.com/sympy/sympy/issues/7164
     e1 = integrate(exp(-t)/t, (t, x, oo))
@@ -2855,16 +2855,16 @@ def test_X22():
 
 
 def test_Y1():
-    t = symbols('t', real=True, positive=True)
-    w = symbols('w', real=True)
+    t = symbols('t', extended_real=True, positive=True)
+    w = symbols('w', extended_real=True)
     s = symbols('s')
     F, _, _ = laplace_transform(cos((w - 1)*t), t, s)
     assert F == s/(s**2 + (w - 1)**2)
 
 
 def test_Y2():
-    t = symbols('t', real=True, positive=True)
-    w = symbols('w', real=True)
+    t = symbols('t', extended_real=True, positive=True)
+    w = symbols('w', extended_real=True)
     s = symbols('s')
     f = inverse_laplace_transform(s/(s**2 + (w - 1)**2), s, t)
     assert f == cos(t*w - t)
@@ -2873,15 +2873,15 @@ def test_Y2():
 @slow
 @XFAIL
 def test_Y3():
-    t = symbols('t', real=True, positive=True)
-    w = symbols('w', real=True)
+    t = symbols('t', extended_real=True, positive=True)
+    w = symbols('w', extended_real=True)
     s = symbols('s')
     F, _, _ = laplace_transform(sinh(w*t)*cosh(w*t), t, s)
     assert F == w/(s**2 - 4*w**2)
 
 
 def test_Y4():
-    t = symbols('t', real=True, positive=True)
+    t = symbols('t', extended_real=True, positive=True)
     s = symbols('s')
     F, _, _ = laplace_transform(erf(3/sqrt(t)), t, s)
     assert F == (1 - exp(-6*sqrt(s)))/s
@@ -2896,7 +2896,7 @@ def test_Y5_Y6():
 # Company, 1983, p. 211.  First, take the Laplace transform of the ODE
 # => s^2 Y(s) - s + Y(s) = 4/s [e^(-s) - e^(-2 s)]
 # where Y(s) is the Laplace transform of y(t)
-    t = symbols('t', real=True, positive=True)
+    t = symbols('t', extended_real=True, positive=True)
     s = symbols('s')
     y = Function('y')
     F, _, _ = laplace_transform(diff(y(t), t, 2)
@@ -2918,8 +2918,8 @@ def test_Y7():
     # What is the Laplace transform of an infinite square wave?
     # => 1/s + 2 sum( (-1)^n e^(- s n a)/s, n = 1..infinity )
     #    [Sanchez, Allen and Kyner, p. 213]
-    t = symbols('t', real=True, positive=True)
-    a = symbols('a', real=True)
+    t = symbols('t', extended_real=True, positive=True)
+    a = symbols('a', extended_real=True)
     s = symbols('s')
     F, _, _ = laplace_transform(1 + 2*Sum((-1)**n*Heaviside(t - n*a),
                                           (n, 1, oo)), t, s)
@@ -3041,7 +3041,7 @@ not supported')
 def test_Z6():
     # Second order ODE with initial conditions---solve  using Laplace
     # transform: f(t) = sin(2 t)/8 - t cos(2 t)/4
-    t = symbols('t', real=True, positive=True)
+    t = symbols('t', extended_real=True, positive=True)
     s = symbols('s')
     eq = Derivative(f(t), t, 2) + 4*f(t) - sin(2*t)
     F, _, _ = laplace_transform(eq, t, s)

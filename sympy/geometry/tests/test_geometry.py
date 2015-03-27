@@ -19,20 +19,20 @@ from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
 from sympy.utilities.pytest import raises, slow
 
-x = Symbol('x', real=True)
-y = Symbol('y', real=True)
-z = Symbol('z', real=True)
-t = Symbol('t', real=True)
-k = Symbol('k', real=True)
-x1 = Symbol('x1', real=True)
-x2 = Symbol('x2', real=True)
-x3 = Symbol('x3', real=True)
-y1 = Symbol('y1', real=True)
-y2 = Symbol('y2', real=True)
-y3 = Symbol('y3', real=True)
-z1 = Symbol('z1', real=True)
-z2 = Symbol('z2', real=True)
-z3 = Symbol('z3', real=True)
+x = Symbol('x', extended_real=True)
+y = Symbol('y', extended_real=True)
+z = Symbol('z', extended_real=True)
+t = Symbol('t', extended_real=True)
+k = Symbol('k', extended_real=True)
+x1 = Symbol('x1', extended_real=True)
+x2 = Symbol('x2', extended_real=True)
+x3 = Symbol('x3', extended_real=True)
+y1 = Symbol('y1', extended_real=True)
+y2 = Symbol('y2', extended_real=True)
+y3 = Symbol('y3', extended_real=True)
+z1 = Symbol('z1', extended_real=True)
+z2 = Symbol('z2', extended_real=True)
+z3 = Symbol('z3', extended_real=True)
 half = Rational(1, 2)
 
 
@@ -62,7 +62,7 @@ def test_curve():
     t = Symbol('t')
     # the t returned as assumptions
     assert c.arbitrary_point() != Point(2*t, t**2)
-    t = Symbol('t', real=True)
+    t = Symbol('t', extended_real=True)
     # now t has the same assumptions so the test passes
     assert c.arbitrary_point() == Point(2*t, t**2)
     assert c.arbitrary_point(z) == Point(2*z, z**2)
@@ -127,7 +127,7 @@ def test_point():
     assert p3.intersection(Point(0, 0)) == [p3]
     assert p3.intersection(p4) == []
 
-    x_pos = Symbol('x', real=True, positive=True)
+    x_pos = Symbol('x', extended_real=True, positive=True)
     p2_1 = Point(x_pos, 0)
     p2_2 = Point(0, x_pos)
     p2_3 = Point(-x_pos, 0)
@@ -364,7 +364,7 @@ def test_line_geom():
     assert l1.projection(r1) == Ray(Point(0, 0), Point(2, 2))
     assert l1.projection(r2) == p1
     assert r3 != r1
-    t = Symbol('t', real=True)
+    t = Symbol('t', extended_real=True)
     assert Ray((1, 1), angle=pi/4).arbitrary_point() == \
         Point(t + 1, t + 1)
     r8 = Ray(Point(0, 0), Point(0, 4))
@@ -643,7 +643,7 @@ def test_line3d():
     assert l1.projection(r2) == [
         Ray3D(Point3D(0, 0, 0), Point3D(1/3, 1/3, 1/3))]
     assert r3 != r1
-    t = Symbol('t', real=True)
+    t = Symbol('t', extended_real=True)
     assert Ray3D((1, 1, 1), direction_ratio=[1, 2, 3]).arbitrary_point() == \
         Point3D(t + 1, 2*t + 1, 3*t + 1)
     r6 = Ray3D(Point3D(0, 0, 0), Point3D(0, 4, 0))
@@ -1240,7 +1240,7 @@ def test_polygon():
     assert Polygon(Point(4, 4), Point(0, 4), Point(0, 0)) in p5
     assert p5 != Point(0, 4)
     assert Point(0, 1) in p5
-    assert p5.arbitrary_point('t').subs(Symbol('t', real=True), 0) == \
+    assert p5.arbitrary_point('t').subs(Symbol('t', extended_real=True), 0) == \
         Point(0, 0)
     raises(ValueError, lambda: Polygon(
         Point(x, 0), Point(0, y), Point(x, y)).arbitrary_point('x'))

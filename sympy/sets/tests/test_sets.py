@@ -32,9 +32,9 @@ def test_interval_arguments():
 
 
     assert isinstance(Interval(0, Symbol('a')), Interval)
-    assert Interval(Symbol('a', real=True, positive=True), 0) == S.EmptySet
+    assert Interval(Symbol('a', extended_real=True, positive=True), 0) == S.EmptySet
     raises(ValueError, lambda: Interval(0, S.ImaginaryUnit))
-    raises(ValueError, lambda: Interval(0, Symbol('z', real=False)))
+    raises(ValueError, lambda: Interval(0, Symbol('z', extended_real=False)))
 
     raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
     raises(NotImplementedError, lambda: Interval(0, 1, False, And(x, y)))
@@ -43,7 +43,7 @@ def test_interval_arguments():
 
 
 def test_interval_symbolic_end_points():
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
 
     assert Union(Interval(0, a), Interval(0, 3)).sup == Max(a, 3)
     assert Union(Interval(a, 0), Interval(-3, 0)).inf == Min(-3, a)
@@ -253,7 +253,7 @@ def test_intersection():
     assert set(i) == set([S(2), S(3)])
 
     # challenging intervals
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     i = Intersection(Interval(0, 3), Interval(x, 6))
     assert (5 in i) is False
     raises(TypeError, lambda: 2 in i)
@@ -285,7 +285,7 @@ def test_ProductSet_of_single_arg_is_arg():
 
 
 def test_interval_subs():
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
 
     assert Interval(0, a).subs(a, 2) == Interval(0, 2)
     assert Interval(a, 0).subs(a, 2) == S.EmptySet
@@ -298,7 +298,7 @@ def test_interval_to_mpi():
 
 
 def test_measure():
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
 
     assert Interval(1, 3).measure == 2
     assert Interval(0, a).measure == a
@@ -500,8 +500,8 @@ def test_Interval_as_relational():
     assert Interval(-2, oo, left_open=True).as_relational(x) == And(Lt(-2, x), Lt(x, oo))
 
     assert Interval(-oo, oo).as_relational(x) == And(Lt(-oo, x), Lt(x, oo))
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
     assert Interval(x, y).as_relational(x) == (x <= y)
     assert Interval(y, x).as_relational(x) == (y <= x)
 
@@ -625,7 +625,7 @@ def test_product_basic():
 
 
 def test_real():
-    x = Symbol('x', real=True, finite=True)
+    x = Symbol('x', extended_real=True, finite=True)
 
     I = Interval(0, 5)
     J = Interval(10, 20)
@@ -643,8 +643,8 @@ def test_real():
 
 
 def test_supinf():
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
 
     assert (Interval(0, 1) + FiniteSet(2)).sup == 2
     assert (Interval(0, 1) + FiniteSet(2)).inf == 0
@@ -682,14 +682,14 @@ def test_Union_of_ProductSets_shares():
 def test_Interval_free_symbols():
     # issue 6211
     assert Interval(0, 1).free_symbols == set()
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert Interval(0, x).free_symbols == set([x])
 
 
 def test_image_interval():
     from sympy.core.numbers import Rational
-    x = Symbol('x', real=True)
-    a = Symbol('a', real=True)
+    x = Symbol('x', extended_real=True)
+    a = Symbol('a', extended_real=True)
     assert imageset(x, 2*x, Interval(-2, 1)) == Interval(-4, 2)
     assert imageset(x, 2*x, Interval(-2, 1, True, False)) == \
         Interval(-4, 2, True, False)
@@ -720,24 +720,24 @@ def test_image_interval():
 
 @XFAIL  # See: https://github.com/sympy/sympy/pull/2723#discussion_r8659826
 def test_image_Intersection():
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
     assert imageset(x, x**2, Interval(-2, 0).intersect(Interval(x, y))) == \
            Interval(0, 4).intersect(Interval(Min(x**2, y**2), Max(x**2, y**2)))
 
 
 def test_image_FiniteSet():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert imageset(x, 2*x, FiniteSet(1, 2, 3)) == FiniteSet(2, 4, 6)
 
 def test_image_Union():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert imageset(x, x**2, Interval(-2, 0) + FiniteSet(1, 2, 3)) == \
             (Interval(0, 4) + FiniteSet(9))
 
 
 def test_image_EmptySet():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert imageset(x, 2*x, S.EmptySet) == S.EmptySet
 
 
@@ -747,8 +747,8 @@ def test_issue_5724_7680():
 
 
 def test_boundary():
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
     assert FiniteSet(1).boundary == FiniteSet(1)
     assert all(Interval(0, 1, left_open, right_open).boundary == FiniteSet(0, 1)
             for left_open in (true, false) for right_open in (true, false))

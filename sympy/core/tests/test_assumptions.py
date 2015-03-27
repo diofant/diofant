@@ -8,8 +8,8 @@ from sympy.utilities.pytest import raises, XFAIL
 
 
 def test_symbol_unset():
-    x = Symbol('x', real=True, integer=True)
-    assert x.is_real is True
+    x = Symbol('x', extended_real=True, integer=True)
+    assert x.is_extended_real is True
     assert x.is_integer is True
     assert x.is_imaginary is None
     assert x.is_noninteger is False
@@ -23,7 +23,7 @@ def test_zero():
     assert z.is_rational is True
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -49,7 +49,7 @@ def test_one():
     assert z.is_rational is True
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -75,7 +75,7 @@ def test_negativeone():
     assert z.is_rational is True
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -98,26 +98,26 @@ def test_infinity():
     oo = S.Infinity
 
     assert oo.is_commutative is True
-    assert oo.is_integer is None
-    assert oo.is_rational is None
+    assert oo.is_integer is False
+    assert oo.is_rational is False
     assert oo.is_algebraic is None
     assert oo.is_transcendental is None
-    assert oo.is_real is True
+    assert oo.is_extended_real is True
     assert oo.is_complex is True
-    assert oo.is_noninteger is None
-    assert oo.is_irrational is None
+    assert oo.is_noninteger is False
+    assert oo.is_irrational is False
     assert oo.is_imaginary is False
     assert oo.is_positive is True
     assert oo.is_negative is False
     assert oo.is_nonpositive is False
     assert oo.is_nonnegative is True
-    assert oo.is_even is None
-    assert oo.is_odd is None
+    assert oo.is_even is False
+    assert oo.is_odd is False
     assert oo.is_finite is False
     assert oo.is_infinite is True
     assert oo.is_comparable is True
     assert oo.is_prime is False
-    assert oo.is_composite is None
+    assert oo.is_composite is False
     assert oo.is_number is True
 
 
@@ -125,21 +125,21 @@ def test_neg_infinity():
     mm = S.NegativeInfinity
 
     assert mm.is_commutative is True
-    assert mm.is_integer is None
-    assert mm.is_rational is None
+    assert mm.is_integer is False
+    assert mm.is_rational is False
     assert mm.is_algebraic is None
     assert mm.is_transcendental is None
-    assert mm.is_real is True
+    assert mm.is_extended_real is True
     assert mm.is_complex is True
-    assert mm.is_noninteger is None
-    assert mm.is_irrational is None
+    assert mm.is_noninteger is False
+    assert mm.is_irrational is False
     assert mm.is_imaginary is False
     assert mm.is_positive is False
     assert mm.is_negative is True
     assert mm.is_nonpositive is True
     assert mm.is_nonnegative is False
-    assert mm.is_even is None
-    assert mm.is_odd is None
+    assert mm.is_even is False
+    assert mm.is_odd is False
     assert mm.is_finite is False
     assert mm.is_infinite is True
     assert mm.is_comparable is True
@@ -163,7 +163,7 @@ def test_nan():
     assert nan.is_rational is None
     assert nan.is_algebraic is None
     assert nan.is_transcendental is None
-    assert nan.is_real is None
+    assert nan.is_extended_real is None
     assert nan.is_complex is None
     assert nan.is_noninteger is None
     assert nan.is_irrational is None
@@ -189,7 +189,7 @@ def test_pos_rational():
     assert r.is_rational is True
     assert r.is_algebraic is True
     assert r.is_transcendental is False
-    assert r.is_real is True
+    assert r.is_extended_real is True
     assert r.is_complex is True
     assert r.is_noninteger is True
     assert r.is_irrational is False
@@ -253,7 +253,7 @@ def test_pi():
     assert z.is_rational is False
     assert z.is_algebraic is False
     assert z.is_transcendental is True
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is True
     assert z.is_irrational is True
@@ -278,7 +278,7 @@ def test_E():
     assert z.is_rational is False
     assert z.is_algebraic is False
     assert z.is_transcendental is True
-    assert z.is_real is True
+    assert z.is_extended_real is True
     assert z.is_complex is True
     assert z.is_noninteger is True
     assert z.is_irrational is True
@@ -303,7 +303,7 @@ def test_I():
     assert z.is_rational is False
     assert z.is_algebraic is True
     assert z.is_transcendental is False
-    assert z.is_real is False
+    assert z.is_extended_real is False
     assert z.is_complex is True
     assert z.is_noninteger is False
     assert z.is_irrational is False
@@ -323,9 +323,9 @@ def test_I():
 
 def test_symbol_real():
     # issue 3848
-    a = Symbol('a', real=False)
+    a = Symbol('a', extended_real=False)
 
-    assert a.is_real is False
+    assert a.is_extended_real is False
     assert a.is_integer is False
     assert a.is_negative is False
     assert a.is_positive is False
@@ -406,7 +406,7 @@ def test_neg_symbol_falsepositive():
 
 
 def test_symbol_falsepositive_real():
-    x = Symbol('x', positive=False, real=True)
+    x = Symbol('x', positive=False, extended_real=True)
     assert x.is_positive is False
     assert x.is_nonpositive is True
     assert x.is_negative is None
@@ -416,7 +416,7 @@ def test_symbol_falsepositive_real():
 
 
 def test_neg_symbol_falsepositive_real():
-    x = -Symbol('x', positive=False, real=True)
+    x = -Symbol('x', positive=False, extended_real=True)
     assert x.is_positive is None
     assert x.is_nonpositive is None
     assert x.is_negative is False
@@ -447,7 +447,7 @@ def test_neg_symbol_falsenonnegative():
 
 
 def test_symbol_falsenonnegative_real():
-    x = Symbol('x', nonnegative=False, real=True)
+    x = Symbol('x', nonnegative=False, extended_real=True)
     assert x.is_positive is False
     assert x.is_nonpositive is True
     assert x.is_negative is True
@@ -457,7 +457,7 @@ def test_symbol_falsenonnegative_real():
 
 
 def test_neg_symbol_falsenonnegative_real():
-    x = -Symbol('x', nonnegative=False, real=True)
+    x = -Symbol('x', nonnegative=False, extended_real=True)
     assert x.is_positive is True
     assert x.is_nonpositive is False
     assert x.is_negative is False
@@ -514,14 +514,14 @@ def test_symbol_noncommutative():
     assert x.is_rational is False
     assert x.is_algebraic is False
     assert x.is_irrational is False
-    assert x.is_real is False
+    assert x.is_extended_real is False
     assert x.is_complex is False
 
 
 def test_other_symbol():
     x = Symbol('x', integer=True)
     assert x.is_integer is True
-    assert x.is_real is True
+    assert x.is_extended_real is True
 
     x = Symbol('x', integer=True, nonnegative=True)
     assert x.is_integer is True
@@ -564,7 +564,7 @@ def test_other_symbol():
     assert x.is_nonpositive is True
 
     with raises(AttributeError):
-        x.is_real = False
+        x.is_extended_real = False
 
     x = Symbol('x', algebraic=True)
     assert x.is_transcendental is False
@@ -589,7 +589,7 @@ def test_issue_3825():
 
 def test_issue_4822():
     z = (-1)**Rational(1, 3)*(1 - I*sqrt(3))
-    assert z.is_real in [True, None]
+    assert z.is_extended_real in [True, None]
 
 
 def test_hash_vs_typeinfo():
@@ -638,7 +638,7 @@ def test_Add_is_pos_neg():
     nn = Symbol('n', nonnegative=True, infinite=True)
     np = Symbol('n', nonpositive=True, infinite=True)
     p = Symbol('p', positive=True, infinite=True)
-    r = Dummy(real=True, finite=False)
+    r = Dummy(extended_real=True, finite=False)
     x = Symbol('x')
     xf = Symbol('xb', finite=True)
     assert (n + p).is_positive is None
@@ -800,10 +800,10 @@ def test_issue_6275():
 def test_sanitize_assumptions():
     # issue 6666
     for cls in (Symbol, Dummy, Wild):
-        x = cls('x', real=1, positive=0)
-        assert x.is_real is True
+        x = cls('x', extended_real=1, positive=0)
+        assert x.is_extended_real is True
         assert x.is_positive is False
-        assert cls('', real=True, positive=None).is_positive is None
+        assert cls('', extended_real=True, positive=None).is_positive is None
         raises(ValueError, lambda: cls('', commutative=None))
     raises(ValueError, lambda: Symbol._sanitize(dict(commutative=None)))
 
@@ -818,27 +818,27 @@ def test_special_assumptions():
 
 def test_inconsistent():
     # cf. issues 5795 and 5545
-    raises(InconsistentAssumptions, lambda: Symbol('x', real=True,
+    raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
            commutative=False))
 
 
 def test_issue_6631():
-    assert ((-1)**(I)).is_real is True
-    assert ((-1)**(I*2)).is_real is True
-    assert ((-1)**(I/2)).is_real is True
-    assert ((-1)**(I*S.Pi)).is_real is True
-    assert (I**(I + 2)).is_real is True
+    assert ((-1)**(I)).is_extended_real is True
+    assert ((-1)**(I*2)).is_extended_real is True
+    assert ((-1)**(I/2)).is_extended_real is True
+    assert ((-1)**(I*S.Pi)).is_extended_real is True
+    assert (I**(I + 2)).is_extended_real is True
 
 
 def test_issue_2730():
-    assert (1/(1 + I)).is_real is False
+    assert (1/(1 + I)).is_extended_real is False
 
 
 def test_issue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
     assert (3*I + S.Pi*I).is_imaginary
-    y = Symbol('y', real=True)
+    y = Symbol('y', extended_real=True)
     assert (3*I + S.Pi*I + y*I).is_imaginary is True
     p = Symbol('p', positive=True)
     assert (3*I + S.Pi*I + p*I).is_imaginary
@@ -851,7 +851,7 @@ def test_issue_4149():
 
     # tests from the PR #7887:
     e = S("-sqrt(3)*I/2 + 0.866025403784439*I")
-    assert e.is_real is False
+    assert e.is_extended_real is False
     assert e.is_imaginary
 
 
@@ -861,10 +861,10 @@ def test_issue_2920():
 
 
 def test_issue_7899():
-    x = Symbol('x', real=True)
-    assert (I*x).is_real is None
+    x = Symbol('x', extended_real=True)
+    assert (I*x).is_extended_real is None
     assert ((x - I)*(x - 1)).is_zero is None
-    assert ((x - I)*(x - 1)).is_real is None
+    assert ((x - I)*(x - 1)).is_extended_real is None
 
 
 @XFAIL
@@ -880,5 +880,5 @@ def test_issue_8075():
 
 
 def test_issue_8642():
-    x = Symbol('x', real=True, integer=False)
+    x = Symbol('x', extended_real=True, integer=False)
     assert (x*2).is_integer is None

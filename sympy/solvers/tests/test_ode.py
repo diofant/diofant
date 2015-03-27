@@ -12,7 +12,7 @@ from sympy.solvers.deutils import ode_order
 from sympy.utilities.pytest import XFAIL, skip, raises, slow, ON_TRAVIS
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
-x, y, z = symbols('x:z', real=True)
+x, y, z = symbols('x:z', extended_real=True)
 f = Function('f')
 g = Function('g')
 h = Function('h')
@@ -1251,7 +1251,7 @@ def test_nth_linear_constant_coeff_homogeneous():
     # From Exercise 20, in Ordinary Differential Equations,
     #                      Tenenbaum and Pollard, pg. 220
     a = Symbol('a', positive=True)
-    k = Symbol('k', real=True)
+    k = Symbol('k', extended_real=True)
     eq1 = f(x).diff(x, 2) + 2*f(x).diff(x)
     eq2 = f(x).diff(x, 2) - 3*f(x).diff(x) + 2*f(x)
     eq3 = f(x).diff(x, 2) - f(x)
@@ -1928,7 +1928,7 @@ def test_constant_renumber_order_issue_5308():
 
 
 def test_issue_5770():
-    k = Symbol("k", real=True)
+    k = Symbol("k", extended_real=True)
     t = Symbol('t')
     w = Function('w')
     sol = dsolve(w(t).diff(t, 6) - k**6*w(t), w(t))

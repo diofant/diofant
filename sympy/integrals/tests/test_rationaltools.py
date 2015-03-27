@@ -36,10 +36,10 @@ def test_ratint():
     f = S(1)
     g = x**2 + 1
 
-    assert ratint(f/g, x, real=None) == atan(x)
-    assert ratint(f/g, x, real=True) == atan(x)
+    assert ratint(f/g, x, extended_real=None) == atan(x)
+    assert ratint(f/g, x, extended_real=True) == atan(x)
 
-    assert ratint(f/g, x, real=False) == I*log(x + I)/2 - I*log(x - I)/2
+    assert ratint(f/g, x, extended_real=False) == I*log(x + I)/2 - I*log(x - I)/2
 
     f = S(36)
     g = x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2
@@ -77,11 +77,11 @@ def test_ratint():
         -log(1 - x + x**2)/6 + log(1 + x)/3 + sqrt(3)*atan(-sqrt(3)
              /3 + 2*x*sqrt(3)/3)/3
 
-    assert ratint(1/(x**2 + x + 1), x, real=False) == \
+    assert ratint(1/(x**2 + x + 1), x, extended_real=False) == \
         -I*3**half*log(half + x - half*I*3**half)/3 + \
         I*3**half*log(half + x + half*I*3**half)/3
 
-    assert ratint(1/(x**3 + 1), x, real=False) == log(1 + x)/3 + \
+    assert ratint(1/(x**3 + 1), x, extended_real=False) == log(1 + x)/3 + \
         (-S(1)/6 + I*3**half/6)*log(-half + x + I*3**half/2) + \
         (-S(1)/6 - I*3**half/6)*log(-half + x - I*3**half/2)
 

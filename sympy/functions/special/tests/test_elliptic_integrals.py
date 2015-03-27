@@ -24,9 +24,9 @@ def test_K():
     assert K(z).diff(z) == (E(z) - (1 - z)*K(z))/(2*z*(1 - z))
     assert td(K(z), z)
 
-    zi = Symbol('z', real=False)
+    zi = Symbol('z', extended_real=False)
     assert K(zi).conjugate() == K(zi.conjugate())
-    zr = Symbol('z', real=True, negative=True)
+    zr = Symbol('z', extended_real=True, negative=True)
     assert K(zr).conjugate() == K(zr)
 
     assert K(z).rewrite(hyper) == \
@@ -56,9 +56,9 @@ def test_F():
     assert td(F(z, r), z)
     assert td(F(r, m), m)
 
-    mi = Symbol('m', real=False)
+    mi = Symbol('m', extended_real=False)
     assert F(z, mi).conjugate() == F(z.conjugate(), mi.conjugate())
-    mr = Symbol('m', real=True, negative=True)
+    mr = Symbol('m', extended_real=True, negative=True)
     assert F(z, mr).conjugate() == F(z.conjugate(), mr)
 
     assert F(z, m).series(z) == \
@@ -87,10 +87,10 @@ def test_E():
     assert td(E(z, r), z)
     assert td(E(z), z)
 
-    mi = Symbol('m', real=False)
+    mi = Symbol('m', extended_real=False)
     assert E(z, mi).conjugate() == E(z.conjugate(), mi.conjugate())
     assert E(mi).conjugate() == E(mi.conjugate())
-    mr = Symbol('m', real=True, negative=True)
+    mr = Symbol('m', extended_real=True, negative=True)
     assert E(z, mr).conjugate() == E(z.conjugate(), mr)
     assert E(mr).conjugate() == E(mr)
 
@@ -126,11 +126,11 @@ def test_P():
 
     assert P(n, -z, m) == -P(n, z, m)
 
-    ni, mi = Symbol('n', real=False), Symbol('m', real=False)
+    ni, mi = Symbol('n', extended_real=False), Symbol('m', extended_real=False)
     assert P(ni, z, mi).conjugate() == \
         P(ni.conjugate(), z.conjugate(), mi.conjugate())
-    nr, mr = Symbol('n', real=True, negative=True), \
-        Symbol('m', real=True, negative=True)
+    nr, mr = Symbol('n', extended_real=True, negative=True), \
+        Symbol('m', extended_real=True, negative=True)
     assert P(nr, z, mr).conjugate() == P(nr, z.conjugate(), mr)
     assert P(n, m).conjugate() == P(n.conjugate(), m.conjugate())
 

@@ -243,8 +243,8 @@ class RandomSymbol(Expr):
     def _eval_is_integer(self):
         return self.symbol.is_integer
 
-    def _eval_is_real(self):
-        return self.symbol.is_real or self.pspace.is_real
+    def _eval_is_extended_real(self):
+        return self.symbol.is_extended_real or self.pspace.is_extended_real
 
     @property
     def is_commutative(self):
@@ -990,7 +990,7 @@ def dependent(a, b):
     if pspace_independent(a, b):
         return False
 
-    z = Symbol('z', real=True)
+    z = Symbol('z', extended_real=True)
     # Dependent if density is unchanged when one is given information about
     # the other
     return (density(a, Eq(b, z)) != density(a) or

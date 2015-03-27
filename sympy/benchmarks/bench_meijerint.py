@@ -14,13 +14,13 @@ from sympy.abc import t, x, y
 nu, beta, rho = symbols('nu beta rho')
 
 apos, bpos, cpos, dpos, posk, p = symbols('a b c d k p', positive=True)
-k = Symbol('k', real=True)
+k = Symbol('k', extended_real=True)
 negk = Symbol('k', negative=True)
 
-mu1, mu2 = symbols('mu1 mu2', real=True, nonzero=True, finite=True)
-sigma1, sigma2 = symbols('sigma1 sigma2', real=True, nonzero=True,
+mu1, mu2 = symbols('mu1 mu2', extended_real=True, nonzero=True, finite=True)
+sigma1, sigma2 = symbols('sigma1 sigma2', extended_real=True, nonzero=True,
                          finite=True, positive=True)
-rate = Symbol('lambda', real=True, positive=True, finite=True)
+rate = Symbol('lambda', extended_real=True, positive=True, finite=True)
 
 
 def normal(x, mu, sigma):
@@ -42,7 +42,7 @@ f = sqrt(((d1*x)**d1 * d2**d2)/(d1*x + d2)**(d1 + d2))/x \
 nupos, sigmapos = symbols('nu sigma', positive=True)
 rice = x/sigmapos**2*exp(-(x**2 + nupos**2)/2/sigmapos**2)*besseli(0, x*
                          nupos/sigmapos**2)
-mu = Symbol('mu', real=True)
+mu = Symbol('mu', extended_real=True)
 laplace = exp(-abs(x - mu)/bpos)/2/bpos
 
 u = Symbol('u', polar=True)

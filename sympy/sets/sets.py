@@ -510,11 +510,6 @@ class Set(Basic):
             raise TypeError('contains did not evaluate to a bool: %r' % symb)
         return bool(symb)
 
-    @property
-    @deprecated(useinstead="is_subset(Reals)", issue=6212, deprecated_since_version="0.7.6")
-    def is_real(self):
-        return None
-
 
 class ProductSet(Set):
     """
@@ -646,12 +641,6 @@ class ProductSet(Set):
                                 for j, b in enumerate(self.sets))
                                 for i, a in enumerate(self.sets))
 
-
-    @property
-    @deprecated(useinstead="is_subset(Reals)", issue=6212, deprecated_since_version="0.7.6")
-    def is_real(self):
-        return all(set.is_real for set in self.sets)
-
     @property
     def is_iterable(self):
         return all(set.is_iterable for set in self.sets)
@@ -699,7 +688,7 @@ class Interval(Set, EvalfMixin):
     >>> Interval.open(0, 1)
     (0, 1)
 
-    >>> a = Symbol('a', real=True)
+    >>> a = Symbol('a', extended_real=True)
     >>> Interval(0, a)
     [0, a]
 
@@ -717,11 +706,6 @@ class Interval(Set, EvalfMixin):
     """
     is_Interval = True
 
-    @property
-    @deprecated(useinstead="is_subset(Reals)", issue=6212, deprecated_since_version="0.7.6")
-    def is_real(self):
-        return True
-
     def __new__(cls, start, end, left_open=False, right_open=False):
 
         start = _sympify(start)
@@ -736,8 +720,8 @@ class Interval(Set, EvalfMixin):
                 "got %s and %s" % (left_open, right_open))
 
         inftys = [S.Infinity, S.NegativeInfinity]
-        # Only allow real intervals (use symbols with 'is_real=True').
-        if not all(i.is_real is not False or i in inftys for i in (start, end)):
+        # Only allow real intervals (use symbols with 'is_extended_real=True').
+        if not all(i.is_extended_real is not False or i in inftys for i in (start, end)):
             raise ValueError("Non-real intervals are not supported")
 
         # evaluate if possible
@@ -860,7 +844,7 @@ class Interval(Set, EvalfMixin):
         infty = S.NegativeInfinity, S.Infinity
         if self == Interval(*infty):
             l, r = self.left, self.right
-            if l.is_real or l in infty or r.is_real or r in infty:
+            if l.is_extended_real or r.is_extended_real:
                 return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -953,12 +937,12 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
-        if other.is_real is False:
+        if other.is_extended_real is False:
             return false
 
         if self.start is S.NegativeInfinity and self.end is S.Infinity:
-            if not other.is_real is None:
-                return other.is_real
+            if not other.is_extended_real is None:
+                return other.is_extended_real
 
         if self.left_open:
             expr = other > self.start
@@ -992,7 +976,7 @@ class Interval(Set, EvalfMixin):
 
         try:
             sing = [x for x in singularities(expr, var)
-                if x.is_real and x in self]
+                if x.is_extended_real and x in self]
         except NotImplementedError:
             return
 
@@ -1009,7 +993,7 @@ class Interval(Set, EvalfMixin):
             solns = solve(diff(expr, var), var)
 
             extr = [_start, _end] + [f(x) for x in solns
-                                     if x.is_real and x in self]
+                                     if x.is_extended_real and x in self]
             start, end = Min(*extr), Max(*extr)
 
             left_open, right_open = False, False
@@ -1312,11 +1296,6 @@ class Union(Set, EvalfMixin):
             return roundrobin(*(iter(arg) for arg in self.args))
         else:
             raise TypeError("Not all constituent sets are iterable")
-
-    @property
-    @deprecated(useinstead="is_subset(Reals)", issue=6212, deprecated_since_version="0.7.6")
-    def is_real(self):
-        return all(set.is_real for set in self.args)
 
 
 class Intersection(Set):
@@ -1809,11 +1788,6 @@ class FiniteSet(Set, EvalfMixin):
         """Rewrite a FiniteSet in terms of equalities and logic operators. """
         from sympy.core.relational import Eq
         return Or(*[Eq(symbol, elem) for elem in self])
-
-    @property
-    @deprecated(useinstead="is_subset(Reals)", issue=6212, deprecated_since_version="0.7.6")
-    def is_real(self):
-        return all(el.is_real for el in self)
 
     def compare(self, other):
         return (hash(self) - hash(other))

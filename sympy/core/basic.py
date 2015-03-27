@@ -125,7 +125,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         For example:
 
-          Symbol('x', real=True)
+          Symbol('x', extended_real=True)
           Symbol('x', integer=True)
 
         are different objects. In other words, besides Python type (Symbol in
@@ -140,11 +140,10 @@ class Basic(with_metaclass(ManagedProperties)):
         {'commutative': True}
         >>> x = Symbol("x", positive=True)
         >>> x.assumptions0
-        {'commutative': True, 'complex': True, 'hermitian': True,
-        'imaginary': False, 'negative': False, 'nonnegative': True,
-        'nonpositive': False, 'nonzero': True, 'positive': True, 'real': True,
-        'zero': False}
-
+        {'commutative': True, 'complex': True, 'extended_real': True,
+         'hermitian': True, 'imaginary': False, 'negative': False,
+         'nonnegative': True, 'nonpositive': False, 'nonzero': True,
+         'positive': True, 'zero': False}
         """
         return {}
 
@@ -576,7 +575,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (I*exp_polar(I*pi*2)).is_comparable
         False
         """
-        is_real = self.is_real
+        is_real = self.is_extended_real
         if is_real is False:
             return False
         is_number = self.is_number

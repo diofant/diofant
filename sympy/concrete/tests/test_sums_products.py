@@ -497,7 +497,7 @@ def test_function_subs():
 def test_equality():
     # if this fails remove special handling below
     raises(ValueError, lambda: Sum(x, x))
-    r = symbols('x', real=True)
+    r = symbols('x', extended_real=True)
     for F in (Sum, Product, Integral):
         try:
             assert F(x, x) != F(y, y)

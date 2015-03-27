@@ -86,7 +86,10 @@ def print_tree(node):
     | commutative: True
     | complex: True
     | even: True
+    | extended_real: True
+    | finite: True
     | hermitian: True
+    | infinite: False
     | integer: True
     | irrational: False
     | noninteger: False
@@ -99,8 +102,11 @@ def print_tree(node):
       commutative: True
       complex: True
       even: False
+      extended_real: True
+      finite: True
       hermitian: True
       imaginary: False
+      infinite: False
       integer: True
       irrational: False
       noninteger: False

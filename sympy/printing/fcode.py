@@ -178,7 +178,7 @@ class FCodePrinter(CodePrinter):
         pure_imaginary = []
         mixed = []
         for arg in expr.args:
-            if arg.is_number and arg.is_real:
+            if arg.is_number and arg.is_extended_real:
                 pure_real.append(arg)
             elif arg.is_number and arg.is_imaginary:
                 pure_imaginary.append(arg)

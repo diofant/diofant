@@ -79,7 +79,7 @@ def idiff(eq, y, x, n=1):
 
 
 def _symbol(s, matching_symbol=None):
-    """Return s if s is a Symbol, else return either a new Symbol (real=True)
+    """Return s if s is a Symbol, else return either a new Symbol (extended_real=True)
     with the same name s or the matching_symbol if s is a string and it matches
     the name of the matching_symbol.
 
@@ -88,11 +88,11 @@ def _symbol(s, matching_symbol=None):
     >>> x = Symbol('x')
     >>> _symbol('y')
     y
-    >>> _.is_real
+    >>> _.is_extended_real
     True
     >>> _symbol(x)
     x
-    >>> _.is_real is None
+    >>> _.is_extended_real is None
     True
     >>> arb = Symbol('foo')
     >>> _symbol('arb', arb) # arb's name is foo so foo will not be returned
@@ -112,7 +112,7 @@ def _symbol(s, matching_symbol=None):
     if isinstance(s, string_types):
         if matching_symbol and matching_symbol.name == s:
             return matching_symbol
-        return Symbol(s, real=True)
+        return Symbol(s, extended_real=True)
     elif isinstance(s, Symbol):
         return s
     else:

@@ -212,11 +212,11 @@ class Add(Expr, AssocOp):
         # oo, -oo
         if coeff is S.Infinity:
             newseq = [f for f in newseq if not
-                      (f.is_nonnegative or f.is_real and f.is_finite)]
+                      (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 
         elif coeff is S.NegativeInfinity:
             newseq = [f for f in newseq if not
-                      (f.is_nonpositive or f.is_real and f.is_finite)]
+                      (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 
         if coeff is S.ComplexInfinity:
             # zoo might be
@@ -228,7 +228,7 @@ class Add(Expr, AssocOp):
             # in a NaN condition if it had sign opposite of the infinite
             # portion of zoo, e.g., infinite_real - infinite_real.
             newseq = [c for c in newseq if not (c.is_finite and
-                                                (c.is_real is not None
+                                                (c.is_extended_real is not None
                                                  or c.is_imaginary is not None))]
 
         # process O(x)
@@ -443,8 +443,8 @@ class Add(Expr, AssocOp):
         return all(term._eval_is_algebraic_expr(syms) for term in self.args)
 
     # assumption methods
-    _eval_is_real = lambda self: _fuzzy_group(
-        (a.is_real for a in self.args), quick_exit=True)
+    _eval_is_extended_real = lambda self: _fuzzy_group(
+        (a.is_extended_real for a in self.args), quick_exit=True)
     _eval_is_complex = lambda self: _fuzzy_group(
         (a.is_complex for a in self.args), quick_exit=True)
     _eval_is_antihermitian = lambda self: _fuzzy_group(
@@ -469,7 +469,7 @@ class Add(Expr, AssocOp):
         elif self.is_zero:
             return True
         iargs = [a*S.ImaginaryUnit for a in self.args]
-        r = _fuzzy_group(a.is_real for a in iargs)
+        r = _fuzzy_group(a.is_extended_real for a in iargs)
         if r:
             return True
 

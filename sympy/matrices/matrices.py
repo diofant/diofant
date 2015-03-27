@@ -1770,7 +1770,7 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix, Symbol, trigsimp, cos, sin, oo
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> v = Matrix([cos(x), sin(x)])
         >>> trigsimp( v.norm() )
         1
@@ -2158,7 +2158,7 @@ class MatrixBase(object):
         def cond():
             yield self.is_square
             yield fuzzy_and(
-                    self[i, i].is_real for i in range(self.rows))
+                    self[i, i].is_extended_real for i in range(self.rows))
             yield fuzzy_and(
                     (self[i, j] - self[j, i].conjugate()).is_zero
                     for i in range(self.rows)
@@ -3024,7 +3024,7 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix, Symbol
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> A = Matrix([[0, 1, 0], [0, x, 0], [-1, 0, 0]])
         >>> A.singular_values()
         [sqrt(x**2 + 1), 1, 0]
@@ -3403,7 +3403,7 @@ class MatrixBase(object):
             if len(vects) != multiplicity:
                 all_iscorrect = False
                 break
-            elif reals_only and not eigenval.is_real:
+            elif reals_only and not eigenval.is_extended_real:
                 all_iscorrect = False
                 break
         res = all_iscorrect

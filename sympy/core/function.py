@@ -307,8 +307,8 @@ class Function(Application, Expr):
     ...             elif x is S.Infinity:
     ...                 return S.Zero
     ...
-    ...     def _eval_is_real(self):
-    ...         return self.args[0].is_real
+    ...     def _eval_is_extended_real(self):
+    ...         return self.args[0].is_extended_real
     ...
     >>> x = S('x')
     >>> my_func(0) + sin(0)
@@ -317,7 +317,7 @@ class Function(Application, Expr):
     0
     >>> my_func(3.54).n() # Not yet implemented for my_func.
     my_func(3.54)
-    >>> my_func(I).is_real
+    >>> my_func(I).is_extended_real
     False
 
     In order for ``my_func`` to become useful, several other methods would

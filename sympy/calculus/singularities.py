@@ -13,7 +13,7 @@ def singularities(expr, sym):
 
     >>> from sympy.calculus.singularities import singularities
     >>> from sympy import Symbol
-    >>> x = Symbol('x', real=True)
+    >>> x = Symbol('x', extended_real=True)
     >>> singularities(x**2 + x + 1, x)
     ()
     >>> singularities(1/(x + 1), x)

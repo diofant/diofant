@@ -37,7 +37,7 @@ class SingleDiscreteDistribution(Basic, NamedArgsMixin):
 
         Used by sample
         """
-        x, z = symbols('x, z', real=True, positive=True, cls=Dummy)
+        x, z = symbols('x, z', extended_real=True, positive=True, cls=Dummy)
         # Invert CDF
         try:
             inverse_cdf = solve(self.cdf(x) - z, x)

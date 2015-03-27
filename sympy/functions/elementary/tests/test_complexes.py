@@ -14,9 +14,9 @@ def N_equals(a, b):
 
 def test_re():
     x, y = symbols('x,y')
-    a, b = symbols('a,b', real=True)
+    a, b = symbols('a,b', extended_real=True)
 
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     i = Symbol('i', imaginary=True)
 
     assert re(nan) == nan
@@ -82,9 +82,9 @@ def test_re():
 
 def test_im():
     x, y = symbols('x,y')
-    a, b = symbols('a,b', real=True)
+    a, b = symbols('a,b', extended_real=True)
 
-    r = Symbol('r', real=True)
+    r = Symbol('r', extended_real=True)
     i = Symbol('i', imaginary=True)
 
     assert im(nan) == nan
@@ -167,7 +167,7 @@ def test_sign():
     assert sign(x).is_complex is True
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
-    assert sign(x).is_real is None
+    assert sign(x).is_extended_real is None
     assert sign(x).is_zero is None
     assert sign(x).doit() == sign(x)
     assert sign(1.2*x) == sign(x)
@@ -187,16 +187,16 @@ def test_sign():
     xn = Symbol('xn', imaginary=True, nonzero=True)
     assert sign(x).is_imaginary is True
     assert sign(x).is_integer is None
-    assert sign(x).is_real is None
+    assert sign(x).is_extended_real is None
     assert sign(x).is_zero is None
     assert sign(x).diff(x) == 2*DiracDelta(-I*x)
     assert sign(xn).doit() == xn / Abs(xn)
     assert conjugate(sign(x)) == -sign(x)
 
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is True
-    assert sign(x).is_real is True
+    assert sign(x).is_extended_real is True
     assert sign(x).is_zero is None
     assert sign(x).diff(x) == 2*DiracDelta(x)
     assert sign(x).doit() == sign(x)
@@ -205,7 +205,7 @@ def test_sign():
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
-    assert sign(x).is_real is None
+    assert sign(x).is_extended_real is None
     assert sign(x).is_zero is False
     assert sign(x).doit() == x / Abs(x)
     assert sign(Abs(x)) == 1
@@ -214,7 +214,7 @@ def test_sign():
     x = Symbol('x', positive=True)
     assert sign(x).is_imaginary is False
     assert sign(x).is_integer is True
-    assert sign(x).is_real is True
+    assert sign(x).is_extended_real is True
     assert sign(x).is_zero is False
     assert sign(x).doit() == x / Abs(x)
     assert sign(Abs(x)) == 1
@@ -223,7 +223,7 @@ def test_sign():
     x = 0
     assert sign(x).is_imaginary is True
     assert sign(x).is_integer is True
-    assert sign(x).is_real is True
+    assert sign(x).is_extended_real is True
     assert sign(x).is_zero is True
     assert sign(x).doit() == 0
     assert sign(Abs(x)) == 0
@@ -232,7 +232,7 @@ def test_sign():
     nz = Symbol('nz', nonzero=True, integer=True)
     assert sign(nz).is_imaginary is False
     assert sign(nz).is_integer is True
-    assert sign(nz).is_real is True
+    assert sign(nz).is_extended_real is True
     assert sign(nz).is_zero is False
     assert sign(nz)**2 == 1
     assert (sign(nz)**3).args == (sign(nz), 3)
@@ -241,11 +241,11 @@ def test_sign():
     assert sign(Symbol('x', nonnegative=True)).is_nonpositive is None
     assert sign(Symbol('x', nonpositive=True)).is_nonnegative is None
     assert sign(Symbol('x', nonpositive=True)).is_nonpositive
-    assert sign(Symbol('x', real=True)).is_nonnegative is None
-    assert sign(Symbol('x', real=True)).is_nonpositive is None
-    assert sign(Symbol('x', real=True, zero=False)).is_nonpositive is None
+    assert sign(Symbol('x', extended_real=True)).is_nonnegative is None
+    assert sign(Symbol('x', extended_real=True)).is_nonpositive is None
+    assert sign(Symbol('x', extended_real=True, zero=False)).is_nonpositive is None
 
-    x, y = Symbol('x', real=True), Symbol('y')
+    x, y = Symbol('x', extended_real=True), Symbol('y')
     assert sign(x).rewrite(Piecewise) == \
         Piecewise((1, x > 0), (-1, x < 0), (0, True))
     assert sign(y).rewrite(Piecewise) == sign(y)
@@ -282,7 +282,7 @@ def test_as_real_imag():
      (re(x)**2 + im(x)**2)**(S(1)/4)*sin(atan2(im(x), re(x))/2))
 
     # issue 3853
-    a, b = symbols('a,b', real=True)
+    a, b = symbols('a,b', extended_real=True)
     assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
            (
                (a**2 + b**2)**Rational(
@@ -333,7 +333,7 @@ def test_Abs():
     assert Abs(2*pi*x*a) == 2*pi*a*Abs(x)
     assert Abs(2*pi*I*x*a) == 2*pi*a*Abs(x)
 
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     n = Symbol('n', integer=True)
     assert Abs((-1)**n) == 1
     assert x**(2*n) == Abs(x)**(2*n)
@@ -380,7 +380,7 @@ def test_Abs():
 
 
 def test_Abs_rewrite():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     a = Abs(x).rewrite(Heaviside).expand()
     assert a == x*Heaviside(x) - x*Heaviside(-x)
     for i in [-2, -1, 0, 1, 2]:
@@ -388,7 +388,7 @@ def test_Abs_rewrite():
     y = Symbol('y')
     assert Abs(y).rewrite(Heaviside) == Abs(y)
 
-    x, y = Symbol('x', real=True), Symbol('y')
+    x, y = Symbol('x', extended_real=True), Symbol('y')
     assert Abs(x).rewrite(Piecewise) == Piecewise((x, x >= 0), (-x, True))
     assert Abs(y).rewrite(Piecewise) == Abs(y)
     assert Abs(y).rewrite(sign) == y/sign(y)
@@ -401,32 +401,32 @@ def test_Abs_real():
     assert sqrt(x**2) != Abs(x)
     assert Abs(x**2) != x**2
 
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert sqrt(x**2) == Abs(x)
     assert Abs(x**2) == x**2
 
     # if the symbol is zero, the following will still apply
-    nn = Symbol('nn', nonnegative=True, real=True)
-    np = Symbol('np', nonpositive=True, real=True)
+    nn = Symbol('nn', nonnegative=True, extended_real=True)
+    np = Symbol('np', nonpositive=True, extended_real=True)
     assert Abs(nn) == nn
     assert Abs(np) == -np
 
 
 def test_Abs_properties():
     x = Symbol('x')
-    assert Abs(x).is_real is True
+    assert Abs(x).is_extended_real is True
     assert Abs(x).is_rational is None
     assert Abs(x).is_positive is None
     assert Abs(x).is_nonnegative is True
 
     z = Symbol('z', complex=True, zero=False)
-    assert Abs(z).is_real is True
+    assert Abs(z).is_extended_real is True
     assert Abs(z).is_rational is None
     assert Abs(z).is_positive is True
     assert Abs(z).is_zero is False
 
     p = Symbol('p', positive=True)
-    assert Abs(p).is_real is True
+    assert Abs(p).is_extended_real is True
     assert Abs(p).is_rational is None
     assert Abs(p).is_positive is True
     assert Abs(p).is_zero is False
@@ -443,13 +443,13 @@ def test_Abs_properties():
     assert Abs(i).is_nonnegative is True
 
     e = Symbol('n', even=True)
-    ne = Symbol('ne', real=True, even=False)
+    ne = Symbol('ne', extended_real=True, even=False)
     assert Abs(e).is_even
     assert Abs(ne).is_even is False
     assert Abs(i).is_even is None
 
     o = Symbol('n', odd=True)
-    no = Symbol('no', real=True, odd=False)
+    no = Symbol('no', extended_real=True, odd=False)
     assert Abs(o).is_odd
     assert Abs(no).is_odd is False
     assert Abs(i).is_odd is None
@@ -489,7 +489,7 @@ def test_arg():
     e = -2*p + 4*I*p**2
     assert arg(e) == arg(-1 + 2*p*I)
     # make sure sign isn't lost
-    x = symbols('x', real=True)  # could be zero
+    x = symbols('x', extended_real=True)  # could be zero
     e = x + I*x
     assert arg(e) == arg(x*(1 + I))
     assert arg(e/p) == arg(x*(1 + I))
@@ -503,8 +503,8 @@ def test_arg():
 def test_arg_rewrite():
     assert arg(1 + I) == atan2(1, 1)
 
-    x = Symbol('x', real=True)
-    y = Symbol('y', real=True)
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
     assert arg(x + I*y).rewrite(atan2) == atan2(y, x)
 
 
@@ -536,7 +536,7 @@ def test_adjoint():
 
 
 def test_conjugate():
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
     b = Symbol('b', imaginary=True)
     assert conjugate(a) == a
     assert conjugate(I*a) == -I*a
@@ -618,7 +618,7 @@ def test_issue_3206():
 
 
 def test_issue_4754_derivative_conjugate():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')
     assert (f(x).conjugate()).diff(x) == (f(x).diff(x)).conjugate()
@@ -626,7 +626,7 @@ def test_issue_4754_derivative_conjugate():
 
 
 def test_derivatives_issue_4757():
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')
     assert re(f(x)).diff(x) == re(f(x).diff(x))

@@ -69,7 +69,7 @@ def test_heaviside():
 
 
 def test_rewrite():
-    x, y = Symbol('x', real=True), Symbol('y')
+    x, y = Symbol('x', extended_real=True), Symbol('y')
     assert Heaviside(x).rewrite(Piecewise) == \
         Piecewise((1, x > 0), (S(1)/2, Eq(x, 0)), (0, True))
     assert Heaviside(y).rewrite(Piecewise) == Heaviside(y)

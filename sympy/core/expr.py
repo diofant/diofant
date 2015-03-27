@@ -237,11 +237,11 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s >= %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_real is False:
+            if me.is_complex and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_real and other.is_real:
+        if self.is_extended_real and other.is_extended_real:
             dif = self - other
             if dif.is_nonnegative is not None and \
                     dif.is_nonnegative is not dif.is_negative:
@@ -255,11 +255,11 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s <= %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_real is False:
+            if me.is_complex and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_real and other.is_real:
+        if self.is_extended_real and other.is_extended_real:
             dif = self - other
             if dif.is_nonpositive is not None and \
                     dif.is_nonpositive is not dif.is_positive:
@@ -273,11 +273,11 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s > %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_real is False:
+            if me.is_complex and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_real and other.is_real:
+        if self.is_extended_real and other.is_extended_real:
             dif = self - other
             if dif.is_positive is not None and \
                     dif.is_positive is not dif.is_nonpositive:
@@ -291,11 +291,11 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s < %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_real is False:
+            if me.is_complex and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_real and other.is_real:
+        if self.is_extended_real and other.is_extended_real:
             dif = self - other
             if dif.is_negative is not None and \
                     dif.is_negative is not dif.is_nonnegative:
@@ -700,7 +700,7 @@ class Expr(Basic, EvalfMixin):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
         if self.is_number:
-            if self.is_real is False:
+            if self.is_extended_real is False:
                 return False
             try:
                 # check to see that we can get a value
@@ -730,7 +730,7 @@ class Expr(Basic, EvalfMixin):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
         if self.is_number:
-            if self.is_real is False:
+            if self.is_extended_real is False:
                 return False
             try:
                 # check to see that we can get a value
@@ -800,7 +800,7 @@ class Expr(Basic, EvalfMixin):
         return None
 
     def _eval_conjugate(self):
-        if self.is_real:
+        if self.is_extended_real:
             return self
         elif self.is_imaginary:
             return -self
@@ -1644,7 +1644,7 @@ class Expr(Basic, EvalfMixin):
 
            >>> from sympy import symbols, I
 
-           >>> x, y = symbols('x,y', real=True)
+           >>> x, y = symbols('x,y', extended_real=True)
 
            >>> (x + y*I).as_real_imag()
            (x, y)
@@ -1876,7 +1876,7 @@ class Expr(Basic, EvalfMixin):
 
            >>> from sympy import symbols, Rational
 
-           >>> x, y = symbols('x,y', real=True)
+           >>> x, y = symbols('x,y', extended_real=True)
 
            >>> ((x*y)**3).extract_multiplicatively(x**2 * y)
            x*y**2
@@ -2354,7 +2354,7 @@ class Expr(Basic, EvalfMixin):
         ========
 
         >>> from sympy import Symbol, sqrt
-        >>> x = Symbol('x', real=True)
+        >>> x = Symbol('x', extended_real=True)
         >>> sqrt(1 + x).is_rational_function()
         False
         >>> sqrt(1 + x).is_algebraic_expr()
@@ -3205,7 +3205,7 @@ class Expr(Basic, EvalfMixin):
             raise TypeError('%s is not a number' % type(x))
         if x in (S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
             return x
-        if not x.is_real:
+        if not x.is_extended_real:
             i, r = x.as_real_imag()
             return i.round(p) + S.ImaginaryUnit*r.round(p)
         if not x:

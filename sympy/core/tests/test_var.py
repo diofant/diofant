@@ -68,8 +68,8 @@ def test_var_accepts_comma():
 
 
 def test_var_keywords():
-    var('x y', real=True)
-    assert x.is_real and y.is_real
+    var('x y', extended_real=True)
+    assert x.is_extended_real and y.is_extended_real
 
 
 def test_var_cls():

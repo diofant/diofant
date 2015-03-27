@@ -33,7 +33,7 @@ def test_reduce_poly_inequalities_real_interval():
         [[Lt(x**2, 0)]], x, relational=False) == S.EmptySet
     assert reduce_rational_inequalities(
         [[Ge(x**2, 0)]], x, relational=False) == \
-        S.Reals if x.is_real else Interval(-oo, oo)
+        S.Reals if x.is_extended_real else Interval(-oo, oo)
     assert reduce_rational_inequalities(
         [[Gt(x**2, 0)]], x, relational=False) == \
         FiniteSet(0).complement(S.Reals)
@@ -183,7 +183,7 @@ def test_reduce_abs_inequalities():
     assert reduce_inequalities(abs(x - 4) + abs(3*abs(x) - 5) < 7) == \
         Or(And(S(-2) < x, x < -1), And(S(1)/2 < x, x < 4))
 
-    nr = Symbol('nr', real=False)
+    nr = Symbol('nr', extended_real=False)
     raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
 
 

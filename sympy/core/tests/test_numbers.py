@@ -729,7 +729,7 @@ def test_Infinity_inequations():
     assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
 
     x = Symbol('x')
-    b = Symbol('b', finite=True, real=True)
+    b = Symbol('b', finite=True, extended_real=True)
     assert (x < oo) == Lt(x, oo)  # issue 7775
     assert b < oo and b > -oo and b <= oo and b >= -oo
     assert oo > b and oo >= b and (oo < b) == False and (oo <= b) == False
@@ -1270,7 +1270,7 @@ def test_zoo():
     imb = Symbol('ib', imaginary=True, finite=True)
     for i in [I, S.Infinity, S.NegativeInfinity, S.Zero, S.One, S.Pi, S.Half, S(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
-        if i.is_finite and (i.is_real or i.is_imaginary):
+        if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo
             assert i - zoo is zoo
             assert zoo + i is zoo
@@ -1286,7 +1286,7 @@ def test_zoo():
             assert (zoo + i) is S.NaN
             assert (zoo - i) is S.NaN
 
-        if i.is_nonzero and (i.is_real or i.is_imaginary):
+        if i.is_nonzero and (i.is_extended_real or i.is_imaginary):
             assert i*zoo is zoo
             assert zoo*i is zoo
         elif i.is_zero:
@@ -1296,7 +1296,7 @@ def test_zoo():
             assert (i*zoo).is_Mul
             assert (zoo*i).is_Mul
 
-        if (1/i).is_nonzero and (i.is_real or i.is_imaginary):
+        if (1/i).is_nonzero and (i.is_extended_real or i.is_imaginary):
             assert zoo/i is zoo
         elif (1/i).is_zero:
             assert zoo/i is S.NaN
@@ -1325,7 +1325,7 @@ def test_issue_4122():
     assert (oo + x).is_Add  # x could be imaginary
     x = Symbol('x', nonnegative=True)
     assert oo + x == oo
-    x = Symbol('x', finite=True, real=True)
+    x = Symbol('x', finite=True, extended_real=True)
     assert oo + x == oo
 
     # similarily for negative infinity
@@ -1335,7 +1335,7 @@ def test_issue_4122():
     assert (-oo + x).is_Add
     x = Symbol('x', nonpositive=True)
     assert -oo + x == -oo
-    x = Symbol('x', finite=True, real=True)
+    x = Symbol('x', finite=True, extended_real=True)
     assert -oo + x == -oo
 
 

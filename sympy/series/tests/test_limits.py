@@ -168,7 +168,7 @@ def test_ceiling_requires_robust_assumptions():
 
 
 def test_atan():
-    x = Symbol("x", real=True)
+    x = Symbol("x", extended_real=True)
     assert limit(atan(x)*sin(1/x), x, 0) == 0
     assert limit(atan(x) + sqrt(x + 1) - sqrt(x), x, oo) == pi/2
 
@@ -181,7 +181,7 @@ def test_abs():
 
 
 def test_heuristic():
-    x = Symbol("x", real=True)
+    x = Symbol("x", extended_real=True)
     assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
     assert limit(log(2 + sqrt(atan(x))*sqrt(sin(1/x))), x, 0) == log(2)
 
@@ -195,7 +195,7 @@ def test_issue_3871():
 
 def test_exponential():
     n = Symbol('n')
-    x = Symbol('x', real=True)
+    x = Symbol('x', extended_real=True)
     assert limit((1 + x/n)**n, n, oo) == exp(x)
     assert limit((1 + x/(2*n))**n, n, oo) == exp(x/2)
     assert limit((1 + x/(2*n + 1))**n, n, oo) == exp(x/2)
@@ -280,7 +280,7 @@ def test_issue_5184():
     assert limit(cos(x)/x, x, oo) == 0
     assert limit(gamma(x), x, Rational(1, 2)) == sqrt(pi)
 
-    r = Symbol('r', real=True, finite=True)
+    r = Symbol('r', extended_real=True, finite=True)
     assert limit(r*sin(1/r), r, 0) == 0
 
 

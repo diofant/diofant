@@ -317,8 +317,8 @@ def test_latex_functions():
     assert latex(hermite(n, x)) == r'H_{n}\left(x\right)'
     assert latex(hermite(n, x)**2) == r'\left(H_{n}\left(x\right)\right)^{2}'
 
-    theta = Symbol("theta", real=True)
-    phi = Symbol("phi", real=True)
+    theta = Symbol("theta", extended_real=True)
+    phi = Symbol("phi", extended_real=True)
     assert latex(Ynm(n,m,theta,phi)) == r'Y_{n}^{m}\left(\theta,\phi\right)'
     assert latex(Ynm(n, m, theta, phi)**3) == r'\left(Y_{n}^{m}\left(\theta,\phi\right)\right)^{3}'
     assert latex(Znm(n,m,theta,phi)) == r'Z_{n}^{m}\left(\theta,\phi\right)'
@@ -389,8 +389,8 @@ def test_latex_brackets():
 
 
 def test_latex_indexed():
-    Psi_symbol = Symbol('Psi_0', complex=True, real=False)
-    Psi_indexed = IndexedBase(Symbol('Psi', complex=True, real=False))
+    Psi_symbol = Symbol('Psi_0', complex=True, extended_real=False)
+    Psi_indexed = IndexedBase(Symbol('Psi', complex=True, extended_real=False))
     symbol_latex = latex(Psi_symbol * conjugate(Psi_symbol))
     indexed_latex = latex(Psi_indexed[0] * conjugate(Psi_indexed[0]))
     # \\overline{\\Psi_{0}} \\Psi_{0}   vs.   \\Psi_{0} \\overline{\\Psi_{0}}
@@ -484,7 +484,7 @@ def test_latex_Range():
 
 
 def test_latex_intervals():
-    a = Symbol('a', real=True)
+    a = Symbol('a', extended_real=True)
     assert latex(Interval(0, 0)) == r"\left\{0\right\}"
     assert latex(Interval(0, a)) == r"\left[0, a\right]"
     assert latex(Interval(0, a, False, False)) == r"\left[0, a\right]"

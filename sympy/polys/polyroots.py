@@ -149,7 +149,7 @@ def roots_cubic(f, trig=False):
     if p is S.Zero:
         if q is S.Zero:
             return [-aon3]*3
-        if q.is_real:
+        if q.is_extended_real:
             if q.is_positive:
                 u1 = -root(q, 3)
             elif q.is_negative:
@@ -157,7 +157,7 @@ def roots_cubic(f, trig=False):
     elif q is S.Zero:
         y1, y2 = roots([1, 0, p], multiple=True)
         return [tmp - aon3 for tmp in [y1, S.Zero, y2]]
-    elif q.is_real and q.is_negative:
+    elif q.is_extended_real and q.is_negative:
         u1 = -root(-q/2 + sqrt(q**2/4 + pon3**3), 3)
 
     coeff = I*sqrt(3)/2
@@ -1032,7 +1032,7 @@ def roots(f, *gens, **flags):
         handlers = {
             'Z': lambda r: r.is_Integer,
             'Q': lambda r: r.is_Rational,
-            'R': lambda r: r.is_real,
+            'R': lambda r: r.is_extended_real,
             'I': lambda r: r.is_imaginary,
         }
 
