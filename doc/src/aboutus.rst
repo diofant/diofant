@@ -407,7 +407,41 @@ want to be mentioned here, so see our repository history for a full list).
 Up-to-date list in the order of the first contribution is given in the `AUTHORS
 <https://github.com/sympy/sympy/blob/master/AUTHORS>`_ file.
 
-You can find a brief history of SymPy in the README.
+You can use git to see the biggest developers::
+
+     git shortlog -ns
+
+This will show the top developers from the last year::
+
+     git shortlog -ns --since="1 year"
+
+Brief History
+-------------
+
+SymPy was started by Ondřej Čertík in 2005, he wrote some code during the
+summer, then he wrote some more code during the summer 2006. In February 2007,
+Fabian Pedregosa joined the project and helped fixed many things, contributed
+documentation and made it alive again. 5 students (Mateusz Paprocki, Brian
+Jorgensen, Jason Gedge, Robert Schwarz and Chris Wu) improved SymPy incredibly
+during the summer 2007 as part of the Google Summer of Code (GSoC). Pearu Peterson
+joined the development during the summer 2007 and he has made SymPy much more
+competitive by rewriting the core from scratch, that has made it from 10x to
+100x faster. Jurjen N.E. Bos has contributed pretty printing and other patches.
+Fredrik Johansson has wrote mpmath and contributed a lot of patches.
+
+SymPy has participated in every GSoC since 2007.  Moderate amount
+of SymPy's development has come from GSoC students.
+
+In 2011, Ondřej Čertík stepped down as lead developer, with Aaron Meurer, who
+also started as a GSoC student, taking his place.
+
+Ondřej Čertík is still active in the community, but is too busy with work
+and family to play a lead development role.  Unfortunately, his remaining
+activity neither constructive nor productive anymore and SymPy just
+slowly dying now.
+
+This project is a fork of the SymPy, last SymPy's commit is cbdd072 (22 Feb
+2015).  The git history goes back to 2007, when development was in svn and then in hg.
 
 Financial and Infrastructure Support
 ------------------------------------
