@@ -9,13 +9,13 @@ SPHINXVER    = 0.5
 SPHINXBUILD  = PYTHONPATH=..:$(PYTHONPATH) sphinx-build
 PAPER        =
 
-SVGFILES = $(wildcard src/modules/physics/vector/*.svg) $(wildcard src/modules/physics/mechanics/examples/*.svg)
+SVGFILES =
 PDFFILES = $(SVGFILES:%.svg=%.pdf)
 
-ALLSPHINXOPTS = -d _build/doctrees $(SPHINXOPTS) src
+ALLSPHINXOPTS = -d _build/doctrees $(SPHINXOPTS) .
 ALLSPHINXOPTSapi = -d _build/doctrees-api $(SPHINXOPTS) api
 ALLSPHINXOPTSlatex = -d _build/doctrees-latex -D latex_paper_size=$(PAPER) \
-                $(SPHINXOPTS) src
+                $(SPHINXOPTS) .
 
 .PHONY: changes clean help html html-errors \
         htmlapi htmlhelp info latex linkcheck livehtml \
@@ -45,12 +45,10 @@ clean:
 	-rm -f $(PDFFILES)
 
 html:
-	mkdir -p src/.static
 	mkdir -p _build/html
 	mkdir -p _build/doctrees
-	mkdir -p src/modules
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) _build/html
-	cp -r src/pics _build/html/
+	cp -r pics _build/html/
 	@echo
 	@echo "Build finished. The HTML pages are in _build/html."
 

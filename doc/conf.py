@@ -39,6 +39,9 @@ mathjax_path = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
 
+# A list of glob-style patterns that should be excluded when looking for source files.
+exclude_patterns = ['README.rst']
+
 # The suffix of source filenames.
 source_suffix = '.rst'
 
