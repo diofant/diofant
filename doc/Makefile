@@ -19,7 +19,7 @@ ALLSPHINXOPTSlatex = -d _build/doctrees-latex -D latex_paper_size=$(PAPER) \
 
 .PHONY: changes clean help html html-errors \
         htmlapi htmlhelp info latex linkcheck livehtml \
-        texinfo web logo man
+        texinfo web man
 
 .SUFFIXES: .pdf .svg
 
@@ -37,7 +37,6 @@ help:
 	@echo "  livehtml    to use livereload to view the built html"
 	@echo "  texinfo     to make Texinfo files"
 	@echo "  web         to make files usable by Sphinx.web"
-	@echo "  logo        generate logos from src/logo/sympy.svg"
 	@echo "  man         build manpage"
 
 clean:
@@ -45,7 +44,7 @@ clean:
 	-rm -rf sphinx
 	-rm -f $(PDFFILES)
 
-html: _build/logo/sympy-notailtext-favicon.ico
+html:
 	mkdir -p src/.static
 	mkdir -p _build/html
 	mkdir -p _build/doctrees
@@ -90,9 +89,6 @@ latex: $(PDFFILES)
 	@echo "Build finished; the LaTeX files are in _build/latex."
 	@echo "Run \`make all' in that directory to run these through xelatex."
 
-.svg.pdf:
-	inkscape --file=$< --export-area-drawing --without-gui --export-pdf=$@
-
 changes:
 	mkdir -p _build/changes _build/doctrees
 	$(SPHINXBUILD) -b changes $(ALLSPHINXOPTS) _build/changes
@@ -126,12 +122,3 @@ info:
 
 man: man/isympy.xml
 	docbook2x-man --to-stdout $< > man/isympy.1
-
-_build/logo/sympy-notailtext-favicon.ico: logo
-
-logo: src/logo/sympy.svg
-	rm -rf _build/logo
-	mkdir -p _build/logo
-	$(PYTHON) ./generate_logos.py -d
-	@echo
-	@echo "Logo generated."

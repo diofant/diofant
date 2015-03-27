@@ -81,7 +81,7 @@ before_install:
     fi
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
-      sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern librsvg2-bin imagemagick docbook2x;
+      sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern docbook2x;
       pip install "sphinx==1.2.2";
       pip install "numpydoc==0.5";
     fi
