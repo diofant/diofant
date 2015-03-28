@@ -52,7 +52,6 @@ except ImportError:
         print("Please install the mpmath package with a version >= %s" % mpmath_version)
         sys.exit(-1)
 
-PY3 = sys.version_info[0] > 2
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
@@ -134,11 +133,6 @@ class clean(Command):
             elif os.path.isdir(f):
                 shutil.rmtree(f)
 
-        for name in glob.glob(os.path.join(dir_setup, "doc", "src", "modules", \
-                                           "physics", "vector", "*.pdf")):
-            if os.path.isfile(name):
-                os.remove(name)
-
         os.chdir(curr_dir)
 
 
@@ -191,11 +185,6 @@ class run_benchmarks(Command):
         from sympy.utilities import benchmarking
         benchmarking.main(['sympy'])
 
-
-long_description = '''SymPy is a Python library for symbolic mathematics. It aims
-to become a full-featured computer algebra system (CAS) while keeping the code
-as simple as possible in order to be comprehensible and easily extensible.
-SymPy is written entirely in Python and does not require any external libraries.'''
 
 exec(open('sympy/release.py').read())
 with open('sympy/__init__.py') as f:

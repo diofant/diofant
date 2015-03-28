@@ -39,6 +39,9 @@ mathjax_path = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
 
+# A list of glob-style patterns that should be excluded when looking for source files.
+exclude_patterns = ['README.rst']
+
 # The suffix of source filenames.
 source_suffix = '.rst'
 
@@ -98,8 +101,8 @@ html_static_path = ['_static']
 # using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
 
-html_logo = '_static/sympylogo.png'
-html_favicon = '../_build/logo/sympy-notailtext-favicon.ico'
+#html_logo = '_static/sympylogo.png'
+#html_favicon = '../_build/logo/sympy-notailtext-favicon.ico'
 # See http://sphinx-doc.org/theming.html#builtin-themes.
 html_theme_options = {
     'collapsiblesidebar': True,
@@ -178,8 +181,8 @@ latex_elements = {
 }
 
 # SymPy logo on title page
-html_logo = '_static/sympylogo.png'
-latex_logo = '_static/sympylogo_big.png'
+#html_logo = '_static/sympylogo.png'
+#latex_logo = '_static/sympylogo_big.png'
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []
