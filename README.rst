@@ -14,15 +14,3 @@ For installation instructions and usage information, see the
 `online documentation <http://omg.rtfd.org/en/latest/>`_.
 
 See the AUTHORS file for the list of authors.
-
-Tests
------
-
-To execute all tests, run::
-
-    $./setup.py test
-
-in the project directory.
-
-For more fine-grained running of tests or doctest, use ``bin/test`` or
-respectively ``bin/doctest``.
