@@ -51,7 +51,6 @@ covhtml/
 
 # Built doc files (cd doc; make html)
 doc/_build/
-doc/sphinx/
 
 # pdf files generated from svg files (cd doc; make latex)
 doc/src/modules/physics/mechanics/*.pdf

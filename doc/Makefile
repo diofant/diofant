@@ -1,24 +1,16 @@
 # Makefile for Sphinx documentation
-#
-PYTHON       = python
-RST2HTML     = rst2html
 
 # You can set these variables from the command line.
 SPHINXOPTS   =
-SPHINXVER    = 0.5
 SPHINXBUILD  = PYTHONPATH=..:$(PYTHONPATH) sphinx-build
 PAPER        =
 
-SVGFILES =
-PDFFILES = $(SVGFILES:%.svg=%.pdf)
-
 ALLSPHINXOPTS = -d _build/doctrees $(SPHINXOPTS) .
-ALLSPHINXOPTSapi = -d _build/doctrees-api $(SPHINXOPTS) api
 ALLSPHINXOPTSlatex = -d _build/doctrees-latex -D latex_paper_size=$(PAPER) \
                 $(SPHINXOPTS) .
 
 .PHONY: changes clean help html html-errors \
-        htmlapi htmlhelp info latex linkcheck livehtml \
+        htmlhelp info latex linkcheck livehtml \
         texinfo web man
 
 .SUFFIXES: .pdf .svg
@@ -29,7 +21,6 @@ help:
 	@echo "  clean       to remove generated files"
 	@echo "  html        to make standalone HTML files"
 	@echo "  html-errors to make the standalone HTML files, stopping on any errors or warnings"
-	@echo "  htmlapi     to make HTML API docs"
 	@echo "  htmlhelp    to make HTML files and a HTML help project"
 	@echo "  info        to make Texinfo files and run them through makeinfo"
 	@echo "  latex       to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
@@ -41,8 +32,6 @@ help:
 
 clean:
 	-rm -rf _build
-	-rm -rf sphinx
-	-rm -f $(PDFFILES)
 
 html:
 	mkdir -p _build/html
@@ -54,15 +43,6 @@ html:
 
 html-errors: SPHINXOPTS += -W
 html-errors: html
-
-htmlapi:
-	mkdir -p api/.static
-	mkdir -p api/modules
-	mkdir -p _build/api _build/doctreesapi
-	rm -f api/modules/sympy*.rst
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTSapi) _build/api
-	@echo
-	@echo "Build finished. The API docs pages are in _build/api."
 
 web:
 	mkdir -p _build/web _build/doctrees
@@ -79,13 +59,12 @@ htmlhelp:
 	@echo "Build finished; now you can run HTML Help Workshop with the" \
 	      ".hhp project file in _build/htmlhelp."
 
-latex: $(PDFFILES)
+latex:
 	mkdir -p _build/latex _build/doctrees
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTSlatex) _build/latex
-	sed -i "s/pdflatex/xelatex/g" _build/latex/Makefile
 	@echo
 	@echo "Build finished; the LaTeX files are in _build/latex."
-	@echo "Run \`make all' in that directory to run these through xelatex."
+	@echo "Run \`make all' in that directory to run these through pdflatex."
 
 changes:
 	mkdir -p _build/changes _build/doctrees
