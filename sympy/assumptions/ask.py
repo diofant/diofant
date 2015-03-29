@@ -21,7 +21,7 @@ class Q:
     hermitian = Predicate('hermitian')
     imaginary = Predicate('imaginary')
     infinitesimal = Predicate('infinitesimal')
-    infinity = Predicate('infinity')
+    infinite = Predicate('infinite')
     integer = Predicate('integer')
     irrational = Predicate('irrational')
     rational = Predicate('rational')
@@ -329,14 +329,14 @@ known_facts = And(
     Implies(Q.real, Q.complex),
     Implies(Q.real, Q.hermitian),
     Equivalent(Q.even, Q.integer & ~Q.odd),
-    Equivalent(Q.extended_real, Q.real | Q.infinity),
+    Equivalent(Q.extended_real, Q.real | Q.infinite),
     Equivalent(Q.odd, Q.integer & ~Q.even),
     Equivalent(Q.prime, Q.integer & Q.positive & ~Q.composite),
     Implies(Q.integer, Q.rational),
     Implies(Q.rational, Q.algebraic),
     Implies(Q.algebraic, Q.complex),
     Equivalent(Q.transcendental, Q.complex & ~Q.algebraic),
-    Implies(Q.complex, ~Q.infinity),
+    Implies(Q.complex, ~Q.infinite),
     Implies(Q.imaginary, Q.complex),
     Implies(Q.imaginary, Q.antihermitian),
     Implies(Q.imaginary, ~Q.real | Q.zero),
