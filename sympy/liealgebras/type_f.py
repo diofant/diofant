@@ -17,6 +17,7 @@ class TypeF(Standard_Cartan):
         V underlying the Lie algebra
         Example
         ========
+
         >>> from sympy.liealgebras.cartan_type import CartanType
         >>> c = CartanType("F4")
         >>> c.dimension()
@@ -54,6 +55,7 @@ class TypeF(Standard_Cartan):
         This method returns the ith simple root of F_4
         Example
         =======
+
         >>> from sympy.liealgebras.cartan_type import CartanType
         >>> c = CartanType("F4")
         >>> c.simple_root(3)
@@ -80,6 +82,7 @@ class TypeF(Standard_Cartan):
 
         Example
         ======
+
         >>> from sympy.liealgebras.cartan_type import CartanType
         >>> c = CartanType("A3")
         >>> c.positive_roots()
@@ -138,6 +141,7 @@ class TypeF(Standard_Cartan):
 
         Example
         =======
+
         >>> from sympy.liealgebras.cartan_type import CartanType
         >>> c = CartanType('A4')
         >>> c.cartan_matrix()

@@ -1534,6 +1534,7 @@ def prod(a, start=1):
     True
 
     You can start the product at something other than 1:
+
     >>> prod([1, 2], 3)
     6
 
