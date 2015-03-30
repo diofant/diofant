@@ -12,7 +12,7 @@ from sympy.assumptions.assume import (global_assumptions, Predicate,
 class Q:
     """Supported ask keys."""
     antihermitian = Predicate('antihermitian')
-    bounded = Predicate('bounded')
+    finite = Predicate('finite')
     commutative = Predicate('commutative')
     complex = Predicate('complex')
     composite = Predicate('composite')
@@ -282,7 +282,7 @@ def compute_known_facts(known_facts, known_facts_keys):
 _val_template = 'sympy.assumptions.handlers.%s'
 _handlers = [
     ("antihermitian",     "sets.AskAntiHermitianHandler"),
-    ("bounded",           "calculus.AskBoundedHandler"),
+    ("finite",           "calculus.AskBoundedHandler"),
     ("commutative",       "AskCommutativeHandler"),
     ("complex",           "sets.AskComplexHandler"),
     ("composite",         "ntheory.AskCompositeHandler"),
