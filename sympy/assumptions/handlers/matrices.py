@@ -1,6 +1,6 @@
 """
-This module contains query handlers responsible for calculus queries:
-infinitesimal, bounded, etc.
+This module contains query handlers for matrices (diagonal, invertible
+and so on).
 """
 from __future__ import print_function, division
 

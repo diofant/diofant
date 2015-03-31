@@ -12,7 +12,7 @@ from sympy.assumptions.assume import (global_assumptions, Predicate,
 class Q:
     """Supported ask keys."""
     antihermitian = Predicate('antihermitian')
-    bounded = Predicate('bounded')
+    finite = Predicate('finite')
     commutative = Predicate('commutative')
     complex = Predicate('complex')
     composite = Predicate('composite')
@@ -21,7 +21,7 @@ class Q:
     hermitian = Predicate('hermitian')
     imaginary = Predicate('imaginary')
     infinitesimal = Predicate('infinitesimal')
-    infinity = Predicate('infinity')
+    infinite = Predicate('infinite')
     integer = Predicate('integer')
     irrational = Predicate('irrational')
     rational = Predicate('rational')
@@ -282,7 +282,7 @@ def compute_known_facts(known_facts, known_facts_keys):
 _val_template = 'sympy.assumptions.handlers.%s'
 _handlers = [
     ("antihermitian",     "sets.AskAntiHermitianHandler"),
-    ("bounded",           "calculus.AskBoundedHandler"),
+    ("finite",           "calculus.AskBoundedHandler"),
     ("commutative",       "AskCommutativeHandler"),
     ("complex",           "sets.AskComplexHandler"),
     ("composite",         "ntheory.AskCompositeHandler"),
@@ -329,14 +329,15 @@ known_facts = And(
     Implies(Q.real, Q.complex),
     Implies(Q.real, Q.hermitian),
     Equivalent(Q.even, Q.integer & ~Q.odd),
-    Equivalent(Q.extended_real, Q.real | Q.infinity),
+    Equivalent(Q.real, Q.extended_real & Q.finite),
+    Implies(Q.infinite, ~Q.finite),
     Equivalent(Q.odd, Q.integer & ~Q.even),
     Equivalent(Q.prime, Q.integer & Q.positive & ~Q.composite),
     Implies(Q.integer, Q.rational),
     Implies(Q.rational, Q.algebraic),
     Implies(Q.algebraic, Q.complex),
     Equivalent(Q.transcendental, Q.complex & ~Q.algebraic),
-    Implies(Q.complex, ~Q.infinity),
+    Implies(Q.complex, Q.finite),
     Implies(Q.imaginary, Q.complex),
     Implies(Q.imaginary, Q.antihermitian),
     Implies(Q.imaginary, ~Q.real | Q.zero),
@@ -350,7 +351,7 @@ known_facts = And(
     Equivalent(Q.nonpositive, ~Q.positive & Q.extended_real),
     Equivalent(Q.nonnegative, ~Q.negative & Q.extended_real),
     Equivalent(Q.zero, Q.nonpositive & Q.nonnegative),
-    Implies(Q.zero, Q.even),
+    Implies(Q.zero, Q.even & Q.finite),
     Implies(Q.orthogonal, Q.positive_definite),
     Implies(Q.orthogonal, Q.unitary),
     Implies(Q.unitary & Q.real, Q.orthogonal),
