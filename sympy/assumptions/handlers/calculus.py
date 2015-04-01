@@ -55,7 +55,7 @@ class AskInfinitesimalHandler(CommonHandler):
     ImaginaryUnit = staticmethod(CommonHandler.AlwaysFalse)
 
 
-class AskBoundedHandler(CommonHandler):
+class AskFiniteHandler(CommonHandler):
     """
     Handler for key 'finite'.
 
@@ -64,9 +64,9 @@ class AskBoundedHandler(CommonHandler):
     Examples of usage:
 
     >>> from sympy import Symbol, Q
-    >>> from sympy.assumptions.handlers.calculus import AskBoundedHandler
+    >>> from sympy.assumptions.handlers.calculus import AskFiniteHandler
     >>> from sympy.abc import x
-    >>> a = AskBoundedHandler()
+    >>> a = AskFiniteHandler()
     >>> a.Symbol(x, Q.positive(x)) == None
     True
     >>> a.Symbol(x, Q.finite(x))
@@ -82,9 +82,9 @@ class AskBoundedHandler(CommonHandler):
         Examples:
 
         >>> from sympy import Symbol, Q
-        >>> from sympy.assumptions.handlers.calculus import AskBoundedHandler
+        >>> from sympy.assumptions.handlers.calculus import AskFiniteHandler
         >>> from sympy.abc import x
-        >>> a = AskBoundedHandler()
+        >>> a = AskFiniteHandler()
         >>> a.Symbol(x, Q.positive(x)) == None
         True
         >>> a.Symbol(x, Q.finite(x))
