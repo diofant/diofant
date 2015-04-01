@@ -37,6 +37,7 @@ class Q:
     nonpositive = Predicate('nonpositive')
     nonnegative = Predicate('nonnegative')
     zero = Predicate('zero')
+    noninteger = Predicate('noninteger')
     symmetric = Predicate('symmetric')
     invertible = Predicate('invertible')
     singular = Predicate('singular')
@@ -326,32 +327,34 @@ for name, value in _handlers:
 known_facts_keys = [getattr(Q, attr) for attr in Q.__dict__
                     if not attr.startswith('__')]
 known_facts = And(
-    Implies(Q.real, Q.complex),
-    Implies(Q.real, Q.hermitian),
-    Equivalent(Q.even, Q.integer & ~Q.odd),
-    Equivalent(Q.real, Q.extended_real & Q.finite),
-    Implies(Q.infinite, ~Q.finite),
-    Equivalent(Q.odd, Q.integer & ~Q.even),
-    Equivalent(Q.prime, Q.integer & Q.positive & ~Q.composite),
     Implies(Q.integer, Q.rational),
+    Equivalent(Q.rational, Q.real & ~Q.irrational),
+    Equivalent(Q.real, Q.extended_real & Q.finite),
     Implies(Q.rational, Q.algebraic),
     Implies(Q.algebraic, Q.complex),
-    Equivalent(Q.transcendental, Q.complex & ~Q.algebraic),
+    Implies(Q.real, Q.complex & Q.hermitian),
+    Implies(Q.imaginary, Q.complex & Q.antihermitian),
     Implies(Q.complex, Q.finite),
-    Implies(Q.imaginary, Q.complex),
-    Implies(Q.imaginary, Q.antihermitian),
-    Implies(Q.imaginary, ~Q.real | Q.zero),
-    Implies(Q.antihermitian, ~Q.hermitian | Q.zero),
-    Equivalent(Q.negative, Q.nonzero & ~Q.positive),
-    Equivalent(Q.positive, Q.nonzero & ~Q.negative),
-    Equivalent(Q.rational, Q.real & ~Q.irrational),
-    Equivalent(Q.real, Q.rational | Q.irrational),
-    Implies(Q.nonzero, Q.extended_real),
-    Equivalent(Q.nonzero, Q.positive | Q.negative),
+    Equivalent(Q.odd, Q.integer & ~Q.even),
+    Equivalent(Q.even, Q.integer & ~Q.odd),
+    Equivalent(Q.extended_real, Q.negative | Q.zero | Q.positive),
+    Equivalent(Q.transcendental, Q.complex & ~Q.algebraic),
+    Equivalent(Q.negative, Q.nonzero & Q.nonpositive),
+    Equivalent(Q.positive, Q.nonzero & Q.nonnegative),
+    Equivalent(Q.zero, Q.nonpositive & Q.nonnegative),
     Equivalent(Q.nonpositive, ~Q.positive & Q.extended_real),
     Equivalent(Q.nonnegative, ~Q.negative & Q.extended_real),
-    Equivalent(Q.zero, Q.nonpositive & Q.nonnegative),
     Implies(Q.zero, Q.even & Q.finite),
+    Equivalent(Q.prime, Q.integer & Q.positive & ~Q.composite),
+    Equivalent(Q.real, Q.rational | Q.irrational),
+    Implies(Q.imaginary, ~Q.real | Q.zero),
+    Implies(Q.infinite, ~Q.finite),
+    Equivalent(Q.noninteger, Q.real & ~Q.integer),
+
+    Implies(Q.antihermitian, ~Q.hermitian | Q.zero),
+    Implies(Q.nonzero, Q.extended_real),
+    Equivalent(Q.nonzero, Q.positive | Q.negative),
+    # matrix facts:
     Implies(Q.orthogonal, Q.positive_definite),
     Implies(Q.orthogonal, Q.unitary),
     Implies(Q.unitary & Q.real, Q.orthogonal),
