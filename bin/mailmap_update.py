@@ -4,7 +4,7 @@
 A tool to help keep .mailmap and AUTHORS up-to-date.
 """
 # TODO:
-# - Check doc/src/aboutus.rst
+# - Check doc/aboutus.rst
 # - Make it easier to update .mailmap or AUTHORS with the correct entries.
 
 from __future__ import unicode_literals
@@ -104,7 +104,7 @@ if git_count != adjusted_authors_count:
 else:
     print()
     print(green(filldedent("""Congratulations. The AUTHORS and .mailmap files
-appear to be up to date. You should now verify that doc/src/aboutus has %s
+appear to be up to date. You should now verify that doc/aboutus.rst has %s
 people.""" % authors_count)))
 
 if exit1:
