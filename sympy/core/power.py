@@ -433,10 +433,9 @@ class Pow(Expr):
             return i.is_integer
 
     def _eval_is_complex(self):
-        if all(a.is_complex for a in self.args):
-            return True
-        elif self.base is S.Exp1:
-            return self.exp.is_complex
+        from sympy import log
+        if self.base.is_complex:
+            return (log(self.base)*self.exp).is_complex
 
     def _eval_is_imaginary(self):
         from sympy import arg, log

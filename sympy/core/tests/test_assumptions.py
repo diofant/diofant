@@ -99,10 +99,10 @@ def test_infinity():
     assert oo.is_commutative is True
     assert oo.is_integer is False
     assert oo.is_rational is False
-    assert oo.is_algebraic is None
-    assert oo.is_transcendental is None
+    assert oo.is_algebraic is False
+    assert oo.is_transcendental is False
     assert oo.is_extended_real is True
-    assert oo.is_complex is True
+    assert oo.is_complex is False
     assert oo.is_noninteger is False
     assert oo.is_irrational is False
     assert oo.is_imaginary is False
@@ -126,10 +126,10 @@ def test_neg_infinity():
     assert mm.is_commutative is True
     assert mm.is_integer is False
     assert mm.is_rational is False
-    assert mm.is_algebraic is None
-    assert mm.is_transcendental is None
+    assert mm.is_algebraic is False
+    assert mm.is_transcendental is False
     assert mm.is_extended_real is True
-    assert mm.is_complex is True
+    assert mm.is_complex is False
     assert mm.is_noninteger is False
     assert mm.is_irrational is False
     assert mm.is_imaginary is False
@@ -149,9 +149,10 @@ def test_neg_infinity():
 
 def test_zoo():
     zoo = S.ComplexInfinity
-    assert zoo.is_complex
+    assert zoo.is_complex is False
     assert zoo.is_real is False
     assert zoo.is_prime is False
+    assert zoo.is_infinite
 
 
 def test_nan():
