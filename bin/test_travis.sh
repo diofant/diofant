@@ -50,18 +50,11 @@ if not sympy.test('*theano*'):
     raise Exception('Tests failed')
 EOF
     elif [[ "${TEST_GMPY}" == "true" ]] && [[ "${TEST_MATPLOTLIB}" == "true" ]]; then
-        cat << EOF | python
-import sympy
-if not (sympy.test('sympy/polys/', 'sympy/plotting') and
-        sympy.doctest('sympy/polys/', 'sympy/plotting')):
-    raise Exception('Tests failed')
-EOF
+        cd ..
+        py.test --duration=100 sympy/polys/ sympy/plotting/
     elif [[ "${TEST_AUTOWRAP}" == "true" ]]; then
-        cat << EOF | python
-import sympy
-if not sympy.test('sympy/external/tests/test_autowrap.py'):
-    raise Exception('Tests failed')
-EOF
+        cd ..
+        py.test sympy/external/tests/test_autowrap.py
     else
         cd ..
         py.test -m 'not slow' --duration=100 --split="${SPLIT}" sympy/
