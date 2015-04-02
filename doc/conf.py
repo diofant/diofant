@@ -12,6 +12,7 @@
 # serve to show the default value.
 
 import sys
+import os
 import sympy
 
 # If your extensions are in another directory, add it here.
@@ -90,12 +91,12 @@ pygments_style = 'sphinx'
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
 # given in html_static_path.
-html_style = 'default.css'
+#html_style = 'default.css'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -104,22 +105,22 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_logo = '_static/sympylogo.png'
 #html_favicon = '../_build/logo/sympy-notailtext-favicon.ico'
 # See http://sphinx-doc.org/theming.html#builtin-themes.
-html_theme_options = {
-    'collapsiblesidebar': True,
-    'relbarbgcolor': '#2f441e',
-    'sidebarbgcolor': '#3b5526',
-    'sidebarbtncolor': '#4F663C',
-    'sidebarlinkcolor': '#81B953',
-    'linkcolor': '#29A329',
-    'visitedlinkcolor': '#307748',
-    'headtextcolor': '#2f441e',
-    'footerbgcolor': '#293b1b',
-    'headlinkcolor': '#AAAAAA',
-    'sidebartextcolor': '#DDDDDD',
-    'footertextcolor': '#DDDDDD',
-    'relbartextcolor': '#DDDDDD',
-    'relbarlinkcolor': '#81B953',
-}
+#html_theme_options = {
+#    'collapsiblesidebar': True,
+#   'relbarbgcolor': '#2f441e',
+#    'sidebarbgcolor': '#3b5526',
+#    'sidebarbtncolor': '#4F663C',
+#    'sidebarlinkcolor': '#81B953',
+#    'linkcolor': '#29A329',
+#    'visitedlinkcolor': '#307748',
+#    'headtextcolor': '#2f441e',
+#    'footerbgcolor': '#293b1b',
+#    'headlinkcolor': '#AAAAAA',
+#    'sidebartextcolor': '#DDDDDD',
+#    'footertextcolor': '#DDDDDD',
+#    'relbartextcolor': '#DDDDDD',
+#    'relbarlinkcolor': '#81B953',
+#}
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -211,3 +212,10 @@ texinfo_documents = [
 # Use svg for graphviz
 
 graphviz_output_format = 'svg'
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
