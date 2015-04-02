@@ -4,9 +4,10 @@ Installation
 ------------
 
 The SymPy CAS can be installed on virtually any computer with Python
-2.7 or above. SymPy does require `mpmath`_ Python library to be
-installed first.  The current recommended method of installation is
-directly from the source files.
+2.7 or above. SymPy use `setuptools`_ and does require `mpmath`_ Python library
+to be installed first (`setuptools`_ should handle this dependency
+automatically).  The current recommended method of installation
+is directly from the source files.
 
 SymPy officially supports Python 2.7, 3.4, and PyPy3.
 
@@ -75,4 +76,5 @@ If you think there's a bug or you would like to request a feature, please open
 an `issue ticket`_.
 
 .. _issue ticket: https://github.com/skirpichev/omg/issues
+.. _setuptools: https://packaging.python.org/en/latest/projects.html#setuptools
 .. _mpmath: http://mpmath.org/

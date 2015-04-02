@@ -105,14 +105,7 @@ before_install:
       pip install "pep8==1.6.2";
     fi
 install:
-#The install cycle below is to test installation on systems without setuptools.
-  - if [[ "${TEST_AUTOWRAP}" == "true" ]]; then
-      pip uninstall -y setuptools;
-      python setup.py install;
-      pip uninstall -y sympy;
-      pip install setuptools;
-      python setup.py install;
-    elif [[ "${TEST_SAGE}" != "true" ]]; then
+  - if [[ "${TEST_SAGE}" != "true" ]]; then
       python setup.py install;
     fi
 script:
