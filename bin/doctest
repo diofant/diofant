@@ -49,7 +49,7 @@ parser.epilog = """\
 "options" are any of the options above. "files" are 0 or more glob strings of \
 files to run doctests on. If no file arguments are given, all doctests will be \
 run. This program runs both doctests in the source and doctests in the Sphinx \
-documentation (doc/src/ directory).\
+documentation (doc/ directory).\
 """
 
 options, args = parser.parse_args()

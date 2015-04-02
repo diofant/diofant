@@ -542,7 +542,7 @@ def doctest(*paths, **kwargs):
 
     >>> sympy.doctest("/functions", "basic.py") # doctest: +SKIP
 
-    Run any file having polynomial in its name, doc/src/modules/polynomial.rst,
+    Run any file having polynomial in its name, doc/modules/polynomial.rst,
     sympy/functions/special/polynomials.py, and sympy/polys/polynomial.py:
 
     >>> sympy.doctest("polynomial") # doctest: +SKIP
@@ -602,7 +602,7 @@ def _doctest(*paths, **kwargs):
     blacklist = kwargs.get("blacklist", [])
     split  = kwargs.get('split', None)
     blacklist.extend([
-        "doc/src/modules/plotting.rst",  # generates live plots
+        "doc/modules/plotting.rst",  # generates live plots
         "sympy/utilities/compilef.py",  # needs tcc
     ])
 
@@ -615,7 +615,7 @@ def _doctest(*paths, **kwargs):
             "examples/intermediate/sample.py",
             "examples/intermediate/mplot2d.py",
             "examples/intermediate/mplot3d.py",
-            "doc/src/modules/numeric-computation.rst"
+            "doc/modules/numeric-computation.rst"
         ])
     else:
         if import_module('matplotlib') is None:
@@ -632,7 +632,7 @@ def _doctest(*paths, **kwargs):
         blacklist.extend(["sympy/plotting/pygletplot"])
 
     if import_module('theano') is None:
-        blacklist.extend(["doc/src/modules/numeric-computation.rst"])
+        blacklist.extend(["doc/modules/numeric-computation.rst"])
 
     # disabled because of doctest failures in asmeurer's bot
     blacklist.extend([
@@ -693,13 +693,13 @@ def _doctest(*paths, **kwargs):
 
     # N.B.
     # --------------------------------------------------------------------
-    # Here we test *.rst files at or below doc/src. Code from these must
+    # Here we test *.rst files at or below doc/. Code from these must
     # be self supporting in terms of imports since there is no importing
     # of necessary modules by doctest.testfile. If you try to pass *.py
     # files through this they might fail because they will lack the needed
     # imports and smarter parsing that can be done with source code.
     #
-    test_files = t.get_test_files('doc/src', '*.rst', init_only=False)
+    test_files = t.get_test_files('doc/', '*.rst', init_only=False)
     test_files.sort()
 
     not_blacklisted = [f for f in test_files
