@@ -21,6 +21,5 @@ Contents:
    gotchas.rst
    guide.rst
    modules/index.rst
-   python-comparisons.rst
    aboutus.rst
    special_topics/index.rst
