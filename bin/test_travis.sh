@@ -17,14 +17,8 @@ elif [[ "${TEST_SAGE}" == "true" ]]; then
     sage -v
     sage -python bin/test sympy/external/tests/test_sage.py
 elif [[ "${TEST_ASCII}" == "true" ]]; then
-    export LANG=c
-    mkdir empty
-    cd empty
-    cat <<EOF | python
-import sympy
-sympy.test('print')
-EOF
-    cd ..
+    export LANG=C
+    py.test -k 'print' sympy/
     bin/doctest
 else
     # We change directories to make sure that we test the installed version of
@@ -44,11 +38,8 @@ EOF
         cd ..
         py.test -m 'slow' --duration=100 --split="${SPLIT}" sympy/
     elif [[ "${TEST_THEANO}" == "true" ]]; then
-        cat << EOF | python
-import sympy
-if not sympy.test('*theano*'):
-    raise Exception('Tests failed')
-EOF
+        cd ..
+        py.test sympy/printing/tests/test_theanocode.py
     elif [[ "${TEST_GMPY}" == "true" ]] && [[ "${TEST_MATPLOTLIB}" == "true" ]]; then
         cd ..
         py.test --duration=100 sympy/polys/ sympy/plotting/
