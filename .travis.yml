@@ -104,6 +104,7 @@ before_install:
   - if [[ "${TEST_PEP}" == "true" ]]; then
       pip install "pep8==1.6.2";
     fi
+  - pip install "pytest==2.7.0"
 install:
   - if [[ "${TEST_SAGE}" != "true" ]]; then
       python setup.py install;
