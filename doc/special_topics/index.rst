@@ -1,8 +1,8 @@
 .. _special_topics:
 
-=====================
- SymPy Special Topics
-=====================
+==============
+Special Topics
+==============
 
 .. toctree::
    :maxdepth: 2

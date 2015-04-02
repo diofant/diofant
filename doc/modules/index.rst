@@ -1,7 +1,7 @@
 .. _module-docs:
 
-SymPy Modules Reference
-=======================
+Modules Reference
+=================
 
 .. module:: sympy
 
