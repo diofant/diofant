@@ -11,10 +11,10 @@ matrix:
   include:
     - python: 2.7
       env:
-        - TEST_GMPY="true" TEST_MATPLOTLIB="true"
+        - TEST_EXTRA="true" TEST_PEP="true"
     - python: 3.4
       env:
-        - TEST_GMPY="true" TEST_MATPLOTLIB="true"
+        - TEST_EXTRA="true" TEST_PEP="true"
     - python: "pypy3"
       env:
         - TEST_DOCTESTS="true"
@@ -43,19 +43,6 @@ matrix:
         - SPLIT="2/2"
     - python: 2.7
       env:
-        - TEST_THEANO="true"
-        - TEST_PEP="true"
-    - python: 3.4
-      env:
-        - TEST_THEANO="true"
-        - TEST_PEP="true"
-    - python: 2.7
-      env:
-        - TEST_AUTOWRAP="true"
-      virtualenv:
-        system_site_packages: true
-    - python: 2.7
-      env:
         - TEST_ASCII="true"
     - python: 3.4
       env:
@@ -69,32 +56,20 @@ before_install:
   - if [[ "${FASTCACHE}" != "false" ]]; then
       pip install fastcache;
     fi
-  - if [[ "${TEST_AUTOWRAP}" == "true" ]]; then
-      pip uninstall -y numpy;
-      sudo apt-get update;
-      sudo apt-get install gfortran gcc python-numpy cython;
-    fi
-  - if [[ "${TEST_GMPY}" == "true" ]]; then
-      sudo apt-get update;
-      sudo apt-get install libgmp-dev;
-      pip install "gmpy==1.16";
-    fi
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
       sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern docbook2x;
       pip install "sphinx==1.2.2";
       pip install "numpydoc==0.5";
     fi
-  - if [[ "${TEST_MATPLOTLIB}" == "true" ]]; then
-      pip install "numpy==1.7.1";
-      pip install --allow-external "matplotlib==1.2.1";
-    fi
-  - if [[ "${TEST_THEANO}" == "true" ]]; then
+  - if [[ "${TEST_EXTRA}" == "true" ]]; then
       sudo apt-get update;
-      sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran;
+      sudo apt-get -qq install libgmp-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran;
       pip install "numpy==1.7.1";
       pip install "scipy==0.12.0";
-      pip install --no-deps https://github.com/Theano/Theano/archive/rel-0.6.zip;
+      pip install --allow-external "matplotlib==1.2.1";
+      pip install "gmpy==1.16";
+      pip install "Theano==0.6";
     fi
   - if [[ "${TEST_SAGE}" == "true" ]]; then
       sudo apt-add-repository -y ppa:aims/sagemath;

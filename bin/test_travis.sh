@@ -27,12 +27,10 @@ EOF
         bin/doctest doc/
     elif [[ "${TEST_SLOW}" == "true" ]]; then
         py.test -m 'slow' --duration=100 --split="${SPLIT}" sympy/
-    elif [[ "${TEST_THEANO}" == "true" ]]; then
+    elif [[ "${TEST_EXTRA}" == "true" ]]; then
         py.test sympy/printing/tests/test_theanocode.py
-    elif [[ "${TEST_GMPY}" == "true" ]] && [[ "${TEST_MATPLOTLIB}" == "true" ]]; then
-        py.test --duration=100 sympy/polys/ sympy/plotting/
-    elif [[ "${TEST_AUTOWRAP}" == "true" ]]; then
         py.test sympy/external/tests/test_autowrap.py
+        py.test --duration=100 sympy/polys/ sympy/plotting/
     else
         py.test -m 'not slow' --duration=100 --split="${SPLIT}" sympy/
     fi
