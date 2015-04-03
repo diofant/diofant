@@ -783,7 +783,7 @@ def solve(f, *symbols, **flags):
     bare_f = not iterable(f)
     ordered_symbols = (symbols and
                        symbols[0] and
-                       (isinstance(symbols[0], Symbol) or
+                       (isinstance(symbols[0], (Dummy, Symbol)) or
                         is_sequence(symbols[0],
                         include=GeneratorType)
                        )

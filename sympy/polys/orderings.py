@@ -2,7 +2,7 @@
 
 __all__ = ["lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex"]
 
-from sympy.core import Symbol
+from sympy.core.symbol import Symbol
 from sympy.core.compatibility import iterable
 
 

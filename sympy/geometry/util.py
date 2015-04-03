@@ -10,7 +10,7 @@ are_coplanar
 are_similar
 """
 
-from sympy import Symbol, Function, solve
+from sympy import Dummy, Symbol, Function, solve
 from sympy.core.compatibility import is_sequence
 
 
@@ -57,7 +57,7 @@ def idiff(eq, y, x, n=1):
     if is_sequence(y):
         dep = set(y)
         y = y[0]
-    elif isinstance(y, Symbol):
+    elif isinstance(y, (Dummy, Symbol)):
         dep = {y}
     else:
         raise ValueError("expecting x-dependent symbol(s) but got: %s" % y)
@@ -110,7 +110,7 @@ def _symbol(s, matching_symbol=None):
         if matching_symbol and matching_symbol.name == s:
             return matching_symbol
         return Symbol(s, extended_real=True)
-    elif isinstance(s, Symbol):
+    elif isinstance(s, (Dummy, Symbol)):
         return s
     else:
         raise ValueError('symbol must be string for symbol name or Symbol')

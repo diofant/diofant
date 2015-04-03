@@ -894,7 +894,6 @@ def test_sympy__stats__drv_types__GeometricDistribution():
     assert _test_args(GeometricDistribution(.5))
 
 
-@SKIP("abstract class")
 def test_sympy__core__symbol__BaseSymbol():
     pass
 

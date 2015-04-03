@@ -14,7 +14,7 @@ import re
 import warnings
 
 from sympy.external import import_module
-from sympy import Symbol, NumberSymbol, I, zoo, oo
+from sympy import Dummy, Symbol, NumberSymbol, I, zoo, oo
 from sympy.utilities.iterables import numbered_symbols
 
 #  We parse the expression string into a tree that identifies functions. Then
@@ -254,7 +254,7 @@ class Lambdifier(object):
 
         # Constructing the argument string
         # - check
-        if not all([isinstance(a, Symbol) for a in args]):
+        if not all([isinstance(a, (Dummy, Symbol)) for a in args]):
             raise ValueError('The arguments must be Symbols.')
         # - use numbered symbols
         syms = numbered_symbols(exclude=expr.free_symbols)
@@ -630,7 +630,7 @@ class Lambdifier(object):
             # XXX debug: print funcname
             args_dict = {}
             for a in expr.args:
-                if (isinstance(a, Symbol) or
+                if (isinstance(a, (Dummy, Symbol)) or
                     isinstance(a, NumberSymbol) or
                         a in [I, zoo, oo]):
                     continue
@@ -643,7 +643,7 @@ class Lambdifier(object):
     def sympy_atoms_namespace(expr):
         """For no real reason this function is separated from
         sympy_expression_namespace. It can be moved to it."""
-        atoms = expr.atoms(Symbol, NumberSymbol, I, zoo, oo)
+        atoms = expr.atoms(Dummy, Symbol, NumberSymbol, I, zoo, oo)
         d = {}
         for a in atoms:
             # XXX debug: print 'atom:' + str(a)

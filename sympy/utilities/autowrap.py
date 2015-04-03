@@ -357,7 +357,7 @@ class CythonCodeWrapper(CodeWrapper):
         # locally in the Cython code.
             if isinstance(arg, (InputArgument, InOutArgument)) and arg.dimensions:
                 dims = [d[1] + 1 for d in arg.dimensions]
-                sym_dims = [(i, d) for (i, d) in enumerate(dims) if isinstance(d, Symbol)]
+                sym_dims = [(i, d) for (i, d) in enumerate(dims) if isinstance(d, (Dummy, Symbol))]
                 for (i, d) in sym_dims:
                     py_inferred[d] = (arg.name, i)
         for arg in args:
@@ -863,7 +863,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     array([ 3.])
     """
 
-    if isinstance(args, Symbol):
+    if isinstance(args, (Dummy, Symbol)):
         args = (args,)
     else:
         args = tuple(args)

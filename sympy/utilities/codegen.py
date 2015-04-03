@@ -81,7 +81,7 @@ import os
 import textwrap
 
 from sympy import __version__ as sympy_version
-from sympy.core import Symbol, S, Expr, Tuple, Equality, Function
+from sympy.core import Dummy, Symbol, S, Expr, Tuple, Equality, Function
 from sympy.core.compatibility import is_sequence
 from sympy.printing.codeprinter import AssignmentError
 from sympy.printing.ccode import ccode, CCodePrinter
@@ -263,7 +263,7 @@ class Variable(object):
             Controls the precision of floating point constants.
 
         """
-        if not isinstance(name, (Symbol, MatrixSymbol)):
+        if not isinstance(name, (Dummy, Symbol, MatrixSymbol)):
             raise TypeError("The first argument must be a sympy symbol.")
         if datatype is None:
             datatype = get_default_datatype(name)

@@ -240,11 +240,11 @@ def power_rule(integral):
     integrand, symbol = integral
     base, exp = integrand.as_base_exp()
 
-    if symbol not in exp.free_symbols and isinstance(base, sympy.Symbol):
+    if symbol not in exp.free_symbols and isinstance(base, (sympy.Dummy, sympy.Symbol)):
         if sympy.simplify(exp + 1) == 0:
             return ReciprocalRule(base, integrand, symbol)
         return PowerRule(base, exp, integrand, symbol)
-    elif symbol not in base.free_symbols and isinstance(exp, sympy.Symbol):
+    elif symbol not in base.free_symbols and isinstance(exp, (sympy.Dummy, sympy.Symbol)):
         rule = ExpRule(base, exp, integrand, symbol)
 
         if sympy.log(base).is_nonzero:
@@ -260,7 +260,7 @@ def power_rule(integral):
 
 def exp_rule(integral):
     integrand, symbol = integral
-    if isinstance(integrand.args[0], sympy.Symbol):
+    if isinstance(integrand.args[0], (sympy.Dummy, sympy.Symbol)):
         return ExpRule(sympy.E, integrand.args[0], integrand, symbol)
 
 
@@ -479,7 +479,7 @@ def trig_rule(integral):
     if isinstance(integrand, sympy.sin) or isinstance(integrand, sympy.cos):
         arg = integrand.args[0]
 
-        if not isinstance(arg, sympy.Symbol):
+        if not isinstance(arg, (sympy.Dummy, sympy.Symbol)):
             return  # perhaps a substitution can deal with it
 
         if isinstance(integrand, sympy.sin):
@@ -929,7 +929,7 @@ def integral_steps(integrand, symbol, **options):
         elif symbol not in integrand.free_symbols:
             return sympy.Number
         else:
-            for cls in (sympy.Pow, sympy.Symbol, sympy.log,
+            for cls in (sympy.Pow, sympy.Dummy, sympy.Symbol, sympy.log,
                         sympy.Add, sympy.Mul, sympy.atan, sympy.asin, sympy.acos, sympy.Heaviside):
                 if isinstance(integrand, cls):
                     return cls
@@ -943,6 +943,7 @@ def integral_steps(integrand, symbol, **options):
     result = do_one([
         null_safe(switch(key, {
             sympy.Pow: do_one([null_safe(power_rule), null_safe(inverse_trig_rule)]),
+            sympy.Dummy: power_rule,
             sympy.Symbol: power_rule,
             sympy.Add: add_rule,
             sympy.Mul: do_one([null_safe(mul_rule), null_safe(trig_product_rule),
