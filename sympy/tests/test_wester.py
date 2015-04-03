@@ -31,7 +31,6 @@ from mpmath import mpi, mpc
 from sympy.matrices import Matrix, GramSchmidt, eye
 from sympy.matrices.expressions.blockmatrix import BlockMatrix, block_collapse
 from sympy.matrices.expressions import MatrixSymbol, ZeroMatrix
-from sympy.galgebra.ga import MV
 from sympy.assumptions import assuming
 from sympy.polys.rings import vring
 from sympy.polys.fields import vfield
@@ -1222,29 +1221,7 @@ def test_O2():
                                                                   [4]])
 
 
-@slow
-def test_O3():
-    (va, vb, vc, vd) = MV.setup('va vb vc vd')
-    assert (va ^ vb) | (vc ^ vd) == -(va | vc)*(vb | vd) + (va | vd)*(vb | vc)
-
-
-def test_O4():
-    (ex, ey, ez, grad) = MV.setup('e*x|y|z', metric='[1,1,1]',
-                                  coords=(x, y, z))
-    F = ex*(x*y*z) + ey*((x*y*z)**2) + ez*((y**2)*(z**3))
-    assert (grad^F -(x*z*(2*y**2*z - 1))*ex^ey - x*y*ex^ez +
-            (2*y*z*(-x**2*y + z**2))*ey^ez) == 0
-
-
-@XFAIL
-@slow
-def test_O5():
-    (_, _, _, grad) = MV.setup('e*x|y|z',metric='[1,1,1]',coords=(x, y, z))
-    f = MV('f','vector',fct=True)
-    g = MV('g','vector',fct=True)
-    assert grad|(f^g)-g|(grad^f)+f|(grad^g)  == 0
-
-#testO8-O9 MISSING!!
+#testO3-O9 MISSING!!
 
 
 def test_O10():
@@ -2210,25 +2187,6 @@ def test_U9():
 def test_U10():
     # see issue 2519:
     assert residue((z**3 + 5)/((z**4 - 1)*(z + 1)), z, -1) == Rational(-9, 4)
-
-
-def test_U11():
-    (dx, dy, dz) = MV.setup('dx dy dz')
-    # answer is correct, but SymPy doc does not indicate how/if differential
-    # forms are supported
-    assert (2*dx + dz) ^ (3*dx + dy + dz) ^ (dx + dy + 4*dz) == 8*dx ^ dy ^dz
-
-
-@XFAIL
-def test_U12():
-    # Wester sample case:
-    # (c41) /* d(3 x^5 dy /\ dz + 5 x y^2 dz /\ dx + 8 z dx /\ dy)
-    #    => (15 x^4 + 10 x y + 8) dx /\ dy /\ dz */
-    # factor(ext_diff(3*x^5 * dy ~ dz + 5*x*y^2 * dz ~ dx + 8*z * dx ~ dy));
-    # 				       4
-    # (d41) 			 (10 x y + 15 x  + 8) dx dy dz
-    raise NotImplementedError(
-        "External diff of differential form not supported")
 
 
 @XFAIL
