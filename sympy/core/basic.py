@@ -7,7 +7,6 @@ from .core import BasicType
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import (iterable, Iterator, ordered,
     string_types, with_metaclass, zip_longest, range)
-from .decorators import deprecated
 from .singleton import S
 
 from inspect import getmro
@@ -659,13 +658,6 @@ class Basic(with_metaclass(ManagedProperties)):
         produce the sorted representation.
         """
         return self.args
-
-    @deprecated(useinstead="iter(self.args)", issue=7717, deprecated_since_version="0.7.6")
-    def iter_basic_args(self):
-        """
-        Iterates arguments of ``self``.
-        """
-        return iter(self.args)
 
     def as_poly(self, *gens, **args):
         """Converts ``self`` to a polynomial or returns ``None``.
