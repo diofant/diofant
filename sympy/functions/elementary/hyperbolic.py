@@ -679,10 +679,10 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
 
     def _eval_is_extended_real(self):
-        return self._reciprocal_of(args[0]).is_extended_real
+        return self._reciprocal_of(self.args[0]).is_extended_real
 
     def _eval_is_finite(self):
-        return (1/self._reciprocal_of(args[0])).is_finite
+        return (1/self._reciprocal_of(self.args[0])).is_finite
 
 
 class csch(ReciprocalHyperbolicFunction):
