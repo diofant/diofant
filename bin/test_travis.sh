@@ -13,10 +13,6 @@ if [[ "${TEST_SPHINX}" == "true" ]]; then
 elif [[ "${TEST_SAGE}" == "true" ]]; then
     sage -v
     sage -python bin/test sympy/external/tests/test_sage.py
-elif [[ "${TEST_ASCII}" == "true" ]]; then
-    export LANG=C
-    py.test -k 'print' sympy/
-    bin/doctest
 else
     if [[ "${TEST_DOCTESTS}" == "true" ]]; then
         cat << EOF | python

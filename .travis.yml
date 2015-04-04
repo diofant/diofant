@@ -41,12 +41,6 @@ matrix:
       env:
         - TEST_SLOW="true"
         - SPLIT="2/2"
-    - python: 2.7
-      env:
-        - TEST_ASCII="true"
-    - python: 3.4
-      env:
-        - TEST_ASCII="true"
   allow_failures:
     - python: "pypy3"
       env:
