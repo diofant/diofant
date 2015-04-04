@@ -1268,20 +1268,6 @@ def is_literal(expr):
         return not isinstance(expr, BooleanFunction)
 
 
-@deprecated(
-    useinstead="sympify", issue=6550, deprecated_since_version="0.7.3")
-def compile_rule(s):
-    """
-    Transforms a rule into a SymPy expression
-    A rule is a string of the form "symbol1 & symbol2 | ..."
-
-    Note: This function is deprecated.  Use sympify() instead.
-
-    """
-    import re
-    return sympify(re.sub(r'([a-zA-Z_][a-zA-Z0-9_]*)', r'Symbol("\1")', s))
-
-
 def to_int_repr(clauses, symbols):
     """
     Takes clauses in CNF format and puts them into an integer representation.
