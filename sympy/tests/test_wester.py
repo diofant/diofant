@@ -2440,9 +2440,12 @@ def test_W12():
     assert r1.simplify() == sqrt(pi)*q*exp(q**2/p)/p**Rational(3, 2)
 
 
+@slow
 @XFAIL
 def test_W13():
-    # Integral not calculated. Expected result is 2*(Euler_mascheroni_constant)
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
+    # Integral not calculated.
     r1 = integrate(1/log(x) + 1/(1 - x) - log(log(1/x)), (x, 0, 1))
     assert r1 == 2*EulerGamma
 

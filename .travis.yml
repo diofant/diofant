@@ -4,6 +4,9 @@ env:
   - TEST_DOCTESTS="true" FASTCACHE="false"
   - SPLIT="1/2"
   - SPLIT="2/2"
+  - TEST_EXTRA="true" TEST_PEP="true"
+  - TEST_SLOW="true" SPLIT="1/2"
+  - TEST_SLOW="true" SPLIT="2/2"
 python:
   - 2.7
   - 3.4
@@ -11,90 +14,34 @@ matrix:
   include:
     - python: 2.7
       env:
-        - TEST_GMPY="true" TEST_MATPLOTLIB="true"
-    - python: 3.4
-      env:
-        - TEST_GMPY="true" TEST_MATPLOTLIB="true"
+        - TEST_SPHINX="true" FASTCACHE="false"
     - python: "pypy3"
       env:
-        - TEST_DOCTESTS="true"
-        - FASTCACHE="false"
+        - TEST_DOCTESTS="true" FASTCACHE="false"
     - python: "pypy3"
       env:
-        - SPLIT="1/2"
-        - FASTCACHE="false"
-    - python: 2.7
-      env: TEST_SPHINX="true" FASTCACHE="false"
-    - python: 2.7
+        - SPLIT="1/2" FASTCACHE="false"
+    - python: "pypy3"
       env:
-        - TEST_SLOW="true"
-        - SPLIT="1/2"
-    - python: 2.7
-      env:
-        - TEST_SLOW="true"
-        - SPLIT="2/2"
-    - python: 3.4
-      env:
-        - TEST_SLOW="true"
-        - SPLIT="1/2"
-    - python: 3.4
-      env:
-        - TEST_SLOW="true"
-        - SPLIT="2/2"
-    - python: 2.7
-      env:
-        - TEST_THEANO="true"
-        - TEST_PEP="true"
-    - python: 3.4
-      env:
-        - TEST_THEANO="true"
-        - TEST_PEP="true"
-    - python: 2.7
-      env:
-        - TEST_AUTOWRAP="true"
-      virtualenv:
-        system_site_packages: true
-    - python: 2.7
-      env:
-        - TEST_ASCII="true"
-    - python: 3.4
-      env:
-        - TEST_ASCII="true"
+        - SPLIT="2/2" FASTCACHE="false"
   allow_failures:
     - python: "pypy3"
       env:
-        - SPLIT="2/2"
-        - FASTCACHE="false"
+        - SPLIT="2/2" FASTCACHE="false"
 before_install:
   - if [[ "${FASTCACHE}" != "false" ]]; then
       pip install fastcache;
     fi
-  - if [[ "${TEST_AUTOWRAP}" == "true" ]]; then
-      pip uninstall -y numpy;
-      sudo apt-get update;
-      sudo apt-get install gfortran gcc python-numpy cython;
-    fi
-  - if [[ "${TEST_GMPY}" == "true" ]]; then
-      sudo apt-get update;
-      sudo apt-get install libgmp-dev;
-      pip install "gmpy==1.16";
-    fi
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
       sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern docbook2x;
-      pip install "sphinx==1.2.2";
-      pip install "numpydoc==0.5";
+      pip install sphinx==1.2.2 numpydoc==0.5;
     fi
-  - if [[ "${TEST_MATPLOTLIB}" == "true" ]]; then
-      pip install "numpy==1.7.1";
-      pip install --allow-external "matplotlib==1.2.1";
-    fi
-  - if [[ "${TEST_THEANO}" == "true" ]]; then
+  - if [[ "${TEST_EXTRA}" == "true" ]]; then
       sudo apt-get update;
-      sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran;
-      pip install "numpy==1.7.1";
-      pip install "scipy==0.12.0";
-      pip install --no-deps https://github.com/Theano/Theano/archive/rel-0.6.zip;
+      sudo apt-get -qq install libgmp-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran;
+      pip install numpy==1.7.1 scipy==0.12.0 gmpy==1.16 Theano==0.6;
+      pip install --allow-external matplotlib==1.2.1;
     fi
   - if [[ "${TEST_SAGE}" == "true" ]]; then
       sudo apt-add-repository -y ppa:aims/sagemath;
@@ -102,8 +49,9 @@ before_install:
       sudo apt-get install sagemath-upstream-binary;
     fi
   - if [[ "${TEST_PEP}" == "true" ]]; then
-      pip install "pep8==1.6.2";
+      pip install pep8==1.6.2;
     fi
+  - pip install pytest==2.7.0
 install:
   - if [[ "${TEST_SAGE}" != "true" ]]; then
       python setup.py install;
