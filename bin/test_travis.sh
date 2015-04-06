@@ -7,29 +7,24 @@ if [[ "${TEST_SPHINX}" == "true" ]]; then
     LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
 else
     if [[ "${TEST_DOCTESTS}" == "true" ]]; then
-        cat << EOF | python
-import sympy
-if not sympy.doctest():
-    raise Exception('Tests failed')
-EOF
         bin/doctest doc/
     elif [[ "${TEST_SLOW}" == "true" ]]; then
         py.test -m 'slow' --duration=100 --split="${SPLIT}" sympy/
     elif [[ "${TEST_EXTRA}" == "true" ]]; then
         if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-            py.test --duration=100 --cov sympy \
+            py.test --duration=100 --cov sympy --doctest-modules \
                 sympy/printing/tests/test_theanocode.py \
                 sympy/external/tests/test_autowrap.py \
                 sympy/polys/ sympy/plotting/
         else
-            py.test --duration=100 \
+            py.test --duration=100 --doctest-modules \
                 sympy/printing/tests/test_theanocode.py \
                 sympy/external/tests/test_autowrap.py \
                 sympy/polys/ sympy/plotting/
         fi
     elif [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-        py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" sympy/
+        py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" --doctest-modules sympy/
     else
-        py.test -m 'not slow' --duration=100 --split="${SPLIT}" sympy/
+        py.test -m 'not slow' --duration=100 --split="${SPLIT}" --doctest-modules sympy/
     fi
 fi
