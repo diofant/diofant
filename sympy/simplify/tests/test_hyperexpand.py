@@ -338,6 +338,7 @@ def can_do_meijer(a1, a2, b1, b2, numeric=True):
     return tn(meijerg(a1, a2, b1, b2, z).subs(repl), r.subs(repl), z)
 
 
+@slow
 def test_meijerg_expand():
     from sympy import combsimp, simplify
     # from mpmath docs

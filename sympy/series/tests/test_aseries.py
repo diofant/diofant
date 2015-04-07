@@ -1,8 +1,9 @@
 from sympy import (S, Symbol, symbols, exp, log, sqrt, O, oo, sin, cos, PoleError)
 from sympy.abc import x, y, z
 
-from sympy.utilities.pytest import raises, XFAIL
+from sympy.utilities.pytest import raises, XFAIL, slow
 
+@slow
 def test_simple():
     # Gruntz' theses pp. 91 to 96
     # 6.6

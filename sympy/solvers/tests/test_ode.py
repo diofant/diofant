@@ -1101,6 +1101,7 @@ def test_homogeneous_order():
     raises(ValueError, lambda: homogeneous_order(x*y))
 
 
+@slow
 def test_1st_homogeneous_coeff_ode():
     # Type: First order homogeneous, y'=f(y/x)
     eq1 = f(x)/x*cos(f(x)/x) - (x/f(x)*sin(f(x)/x) + cos(f(x)/x))*f(x).diff(x)
@@ -1428,6 +1429,7 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
     assert dsolve(eq) == sol
 
 
+@slow
 @XFAIL
 def test_nth_linear_constant_coeff_homogeneous_RootOf_sol():
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
