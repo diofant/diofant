@@ -15,7 +15,7 @@ from sympy.polys.rootoftools import RootOf
 
 from sympy.sets import FiniteSet
 
-from sympy.utilities.pytest import XFAIL, raises, skip
+from sympy.utilities.pytest import XFAIL, raises, skip, slow
 from sympy.utilities.randtest import verify_numerically as tn
 
 from sympy.solvers.solveset import (
@@ -366,6 +366,7 @@ def test_solve_sqrt_fail():
     assert solveset_real(eq, x) == FiniteSet(S(1)/3)
 
 
+@slow
 def test_solve_sqrt_3():
     R = Symbol('R')
     eq = sqrt(2)*R*sqrt(1/(R + 1)) + (R + 1)*(sqrt(2)*sqrt(1/(R + 1)) - 1)
