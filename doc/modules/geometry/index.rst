@@ -192,13 +192,6 @@ it certainly would be a good addition. This would probably involve a fair
 amount of work since many of the algorithms used are specific to two
 dimensions.
 
-Geometry Visualization
-~~~~~~~~~~~~~~~~~~~~~~
-
-The plotting module is capable of plotting geometric entities. See
-:ref:`Plotting Geometric Entities <plot_geom>` in
-the plotting module entry.
-
 Submodules
 ~~~~~~~~~~
 

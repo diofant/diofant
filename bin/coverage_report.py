@@ -45,7 +45,7 @@ REPORT_DIR = "covhtml"
 REFRESH = False
 
 omit_dir_patterns = ['.*tests', 'benchmark', 'examples',
-                     'pyglet', 'test_external']
+                     'test_external']
 omit_dir_re = re.compile(r'|'.join(omit_dir_patterns))
 source_re = re.compile(r'.*\.py$')
 

@@ -96,23 +96,6 @@ class Ellipse(GeometryEntity):
     >>> e2 = Ellipse(Point(3, 1), hradius=3, eccentricity=Rational(4, 5))
     >>> e2
     Ellipse(Point(3, 1), 3, 9/5)
-
-    Plotting:
-
-    >>> from sympy.plotting.pygletplot import PygletPlot as Plot
-    >>> from sympy import Circle, Segment
-    >>> c1 = Circle(Point(0,0), 1)
-    >>> Plot(c1)                                # doctest: +SKIP
-    [0]: cos(t), sin(t), 'mode=parametric'
-    >>> p = Plot()                              # doctest: +SKIP
-    >>> p[0] = c1                               # doctest: +SKIP
-    >>> radius = Segment(c1.center, c1.random_point())
-    >>> p[1] = radius                           # doctest: +SKIP
-    >>> p                                       # doctest: +SKIP
-    [0]: cos(t), sin(t), 'mode=parametric'
-    [1]: t*cos(1.546086215036205357975518382),
-    t*sin(1.546086215036205357975518382), 'mode=parametric'
-
     """
 
     def __new__(
@@ -651,7 +634,6 @@ class Ellipse(GeometryEntity):
 
         return fuzzy_bool(test.is_positive)
 
-    @doctest_depends_on(modules=('pyglet',))
     def tangent_lines(self, p):
         """Tangent lines between `p` and the ellipse.
 
@@ -687,16 +669,6 @@ class Ellipse(GeometryEntity):
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.tangent_lines(Point(3, 0))
         [Line(Point(3, 0), Point(3, -12))]
-
-        >>> # This will plot an ellipse together with a tangent line.
-        >>> from sympy.plotting.pygletplot import PygletPlot as Plot
-        >>> from sympy import Point, Ellipse
-        >>> e = Ellipse(Point(0,0), 3, 2)
-        >>> t = e.tangent_lines(e.random_point())
-        >>> p = Plot()
-        >>> p[0] = e # doctest: +SKIP
-        >>> p[1] = t # doctest: +SKIP
-
         """
         p = Point(p)
         if self.encloses_point(p):

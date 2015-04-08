@@ -628,9 +628,6 @@ def _doctest(*paths, **kwargs):
             from sympy.plotting.plot import unset_show
             unset_show()
 
-    if import_module('pyglet') is None:
-        blacklist.extend(["sympy/plotting/pygletplot"])
-
     if import_module('theano') is None:
         blacklist.extend(["doc/modules/numeric-computation.rst"])
 
@@ -1297,7 +1294,6 @@ class SymPyDocTests(object):
         executables = deps.get('exe', None)
         moduledeps = deps.get('modules', None)
         viewers = deps.get('disable_viewers', None)
-        pyglet = deps.get('pyglet', None)
 
         # print deps
 
@@ -1350,29 +1346,6 @@ class SymPyDocTests(object):
                 # make the file executable
                 os.chmod(os.path.join(tempdir, viewer),
                          stat.S_IREAD | stat.S_IWRITE | stat.S_IXUSR)
-        if pyglet:
-            # monkey-patch pyglet s.t. it does not open a window during
-            # doctesting
-            import pyglet
-            class DummyWindow(object):
-                def __init__(self, *args, **kwargs):
-                    self.has_exit=True
-                    self.width = 600
-                    self.height = 400
-
-                def set_vsync(self, x):
-                    pass
-
-                def switch_to(self):
-                    pass
-
-                def push_handlers(self, x):
-                    pass
-
-                def close(self):
-                    pass
-
-            pyglet.window.Window = DummyWindow
 
         return True
 
