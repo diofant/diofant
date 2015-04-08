@@ -222,7 +222,7 @@ def run_all_tests(test_args=(), test_kwargs={}, doctest_args=(),
     """
     Run all tests.
 
-    Right now, this runs the regular tests (bin/test), the doctests
+    Right now, this runs the regular tests (py.test), the doctests
     (bin/doctest), the examples (examples/all.py), and the sage tests (see
     sympy/external/tests/test_sage.py).
 
@@ -243,9 +243,7 @@ def run_all_tests(test_args=(), test_kwargs={}, doctest_args=(),
 
     try:
         # Regular tests
-        if not test(*test_args, **test_kwargs):
-            # some regular test fails, so set the tests_successful
-            # flag to false and continue running the doctests
+        if subprocess.call("py.test --duration=100 sympy", shell=True) != 0:
             tests_successful = False
 
         # Doctests
@@ -266,7 +264,7 @@ def run_all_tests(test_args=(), test_kwargs={}, doctest_args=(),
             dev_null = open(os.devnull, 'w')
             if subprocess.call("sage -v", shell=True, stdout=dev_null,
                                stderr=dev_null) == 0:
-                if subprocess.call("sage -python bin/test "
+                if subprocess.call("sage -python py.test "
                                    "sympy/external/tests/test_sage.py", shell=True) != 0:
                     tests_successful = False
 
