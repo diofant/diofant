@@ -246,7 +246,7 @@ from sympy.functions import (cos, exp, im, log, re, sin, tan, sqrt,
                              atan2, conjugate)
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.integrals.integrals import Integral, integrate
-from sympy.matrices import wronskian, Matrix, eye, zeros
+from sympy.matrices import wronskian, Matrix, BlockDiagMatrix, eye, zeros
 from sympy.polys import Poly, RootOf, terms_gcd, PolynomialError, lcm
 from sympy.polys.polyroots import roots_quartic
 from sympy.polys.polytools import cancel, degree, div
@@ -6287,6 +6287,27 @@ def lie_heuristic_linear(match, comp=False):
             xival = xival.subs(onedict)
             etaval = etaval.subs(onedict)
             return [{xi: xival, eta: etaval}]
+
+
+def sysode_linear_order1_jordan(match_):
+    func = match_['func']
+    fc = match_['func_coeff']
+    eq = match_['eq']
+    n = len(eq)
+    t = func[0].args[0]
+
+    M = Matrix(n, n, lambda i, j: +fc[i, func[j], 1])
+    L = Matrix(n, n, lambda i, j: -fc[i, func[j], 0])
+
+    A = M.inv()*L
+    T, JJ = A.jordan_cells()
+    # FIXME: need special treatment for complex_conj pairs
+    expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
+    q = T*expm*T.inv()
+    Cvec = Matrix(get_numbered_constants(eq, num=n))
+    q = q*Cvec
+
+    return [Eq(func[i], q[i]) for i in range(n)]
 
 
 def sysode_linear_2eq_order1(match_):
