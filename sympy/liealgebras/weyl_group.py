@@ -57,7 +57,7 @@ class WeylGroup(Basic):
 
         >>> from sympy.liealgebras.weyl_group import WeylGroup
         >>> c = WeylGroup("D4")
-        >>> c.group_order()
+        >>> print(c.group_order())
         192.0
         """
         n = self.cartan_type.rank()

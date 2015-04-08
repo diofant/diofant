@@ -2272,8 +2272,9 @@ class Permutation(Basic):
         of the permutation, the -ith element cycling through 0..i.
 
         >>> p = Permutation(2)
+        >>> Permutation.print_cyclic = False
         >>> while p:
-        ...     print('%s %s %s' % (p, p.inversion_vector(), p.rank()))
+        ...     print('%s %s %s' % (repr(p), p.inversion_vector(), p.rank()))
         ...     p = p.next_lex()
         ...
         Permutation([0, 1, 2]) [0, 0] 0
@@ -2441,6 +2442,7 @@ class Permutation(Basic):
 
         >>> from sympy.combinatorics.permutations import Permutation
         >>> p = Permutation.josephus(3,6,1)
+        >>> Permutation.print_cyclic = False
         >>> p
         Permutation([2, 5, 3, 1, 4, 0])
         >>> p.get_precedence_matrix()

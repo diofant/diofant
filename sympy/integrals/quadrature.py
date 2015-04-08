@@ -42,15 +42,16 @@ def gauss_legendre(n, n_digits):
     ========
 
     >>> from sympy.integrals.quadrature import gauss_legendre
+    >>> from sympy.printing import pprint
     >>> x, w = gauss_legendre(3, 5)
-    >>> x
+    >>> pprint(x)
     [-0.7746, 0, 0.7746]
-    >>> w
+    >>> pprint(w)
     [0.55556, 0.88889, 0.55556]
     >>> x, w = gauss_legendre(4, 5)
-    >>> x
+    >>> pprint(x)
     [-0.86114, -0.33998, 0.33998, 0.86114]
-    >>> w
+    >>> pprint(w)
     [0.34786, 0.65215, 0.65215, 0.34786]
 
     See Also
@@ -115,6 +116,7 @@ def gauss_laguerre(n, n_digits):
     ========
 
     >>> from sympy.integrals.quadrature import gauss_laguerre
+    >>> from sympy.printing import pprint
     >>> x, w = gauss_laguerre(3, 5)
     >>> x
     [0.41577, 2.2943, 6.2899]
@@ -123,7 +125,7 @@ def gauss_laguerre(n, n_digits):
     >>> x, w = gauss_laguerre(6, 5)
     >>> x
     [0.22285, 1.1889, 2.9927, 5.7751, 9.8375, 15.983]
-    >>> w
+    >>> pprint(w)
     [0.45896, 0.417, 0.11337, 0.010399, 0.00026102, 8.9855e-7]
 
     See Also
@@ -187,6 +189,7 @@ def gauss_hermite(n, n_digits):
     ========
 
     >>> from sympy.integrals.quadrature import gauss_hermite
+    >>> from sympy.printing import pprint
     >>> x, w = gauss_hermite(3, 5)
     >>> x
     [-1.2247, 0, 1.2247]
@@ -196,7 +199,7 @@ def gauss_hermite(n, n_digits):
     >>> x, w = gauss_hermite(6, 5)
     >>> x
     [-2.3506, -1.3358, -0.43608, 0.43608, 1.3358, 2.3506]
-    >>> w
+    >>> pprint(w)
     [0.00453, 0.15707, 0.72463, 0.72463, 0.15707, 0.00453]
 
     See Also
@@ -262,12 +265,12 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import S, pprint
     >>> from sympy.integrals.quadrature import gauss_gen_laguerre
     >>> x, w = gauss_gen_laguerre(3, -S.Half, 5)
     >>> x
     [0.19016, 1.7845, 5.5253]
-    >>> w
+    >>> pprint(w)
     [1.4493, 0.31413, 0.00906]
 
     >>> x, w = gauss_gen_laguerre(4, 3*S.Half, 5)
@@ -338,7 +341,7 @@ def gauss_chebyshev_t(n, n_digits):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import S, pprint
     >>> from sympy.integrals.quadrature import gauss_chebyshev_t
     >>> x, w = gauss_chebyshev_t(3, 5)
     >>> x
@@ -349,7 +352,7 @@ def gauss_chebyshev_t(n, n_digits):
     >>> x, w = gauss_chebyshev_t(6, 5)
     >>> x
     [0.96593, 0.70711, 0.25882, -0.25882, -0.70711, -0.96593]
-    >>> w
+    >>> pprint(w)
     [0.5236, 0.5236, 0.5236, 0.5236, 0.5236, 0.5236]
 
     See Also
@@ -409,12 +412,12 @@ def gauss_chebyshev_u(n, n_digits):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import S, pprint
     >>> from sympy.integrals.quadrature import gauss_chebyshev_u
     >>> x, w = gauss_chebyshev_u(3, 5)
     >>> x
     [0.70711, 0, -0.70711]
-    >>> w
+    >>> pprint(w)
     [0.3927, 0.7854, 0.3927]
 
     >>> x, w = gauss_chebyshev_u(6, 5)
@@ -485,7 +488,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import S, pprint
     >>> from sympy.integrals.quadrature import gauss_jacobi
     >>> x, w = gauss_jacobi(3, S.Half, -S.Half, 5)
     >>> x
@@ -494,7 +497,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     [1.7063, 1.0973, 0.33795]
 
     >>> x, w = gauss_jacobi(6, 1, 1, 5)
-    >>> x
+    >>> pprint(x)
     [-0.87174, -0.5917, -0.2093, 0.2093, 0.5917, 0.87174]
     >>> w
     [0.050584, 0.22169, 0.39439, 0.39439, 0.22169, 0.050584]
