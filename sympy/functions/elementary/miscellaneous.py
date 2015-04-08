@@ -545,7 +545,7 @@ class Max(MinMaxBase, Application):
     sympy.functions.elementary.miscellaneous.Min : find minimum values
     """
     zero = S.Infinity
-    identity = S.NegativeInfinity
+    identity = -S.Infinity
 
     def fdiff( self, argindex ):
         from sympy import Heaviside
@@ -595,7 +595,7 @@ class Min(MinMaxBase, Application):
 
     sympy.functions.elementary.miscellaneous.Max : find maximum values
     """
-    zero = S.NegativeInfinity
+    zero = -S.Infinity
     identity = S.Infinity
 
     def fdiff( self, argindex ):
