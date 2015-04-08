@@ -167,6 +167,8 @@ class Mul(Expr, AssocOp):
             a, b = seq
             if b.is_Rational:
                 a, b = b, a
+            if a is S.NegativeOne and b is S.Infinity:
+                return [a, b], [], None
             assert a is not S.One
             if not a.is_zero and a.is_Rational:
                 r, b = b.as_coeff_Mul()
