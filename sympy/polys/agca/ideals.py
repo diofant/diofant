@@ -305,7 +305,8 @@ class ModuleImplementedIdeal(Ideal):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x, y
-        >>> list(QQ.old_poly_ring(x, y).ideal(x, y, x**2 + y).gens)
+        >>> from sympy.printing import sstr
+        >>> print(sstr(list(QQ.old_poly_ring(x, y).ideal(x, y, x**2 + y).gens)))
         [x, y, x**2 + y]
         """
         return (x[0] for x in self._module.gens)
@@ -355,8 +356,9 @@ class ModuleImplementedIdeal(Ideal):
 
         >>> from sympy.abc import x
         >>> from sympy import QQ
+        >>> from sympy.printing import sstr
         >>> I = QQ.old_poly_ring(x).ideal(x**2 + 1, x)
-        >>> I.in_terms_of_generators(1)
+        >>> print(sstr(I.in_terms_of_generators(1)))
         [1, -x]
         """
         return self._module.in_terms_of_generators([e])

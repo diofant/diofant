@@ -139,8 +139,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     names that are defined in abc).
 
     >>> from sympy.abc import _clash1
-    >>> _clash1
-    {'E': E, 'I': I, 'N': N, 'O': O, 'Q': Q, 'S': S}
+    >>> _clash1 == {'E': Symbol('E'), 'I': Symbol('I'), 'O': Symbol('O'),
+    ...             'N': Symbol('N'), 'Q': Symbol('Q'), 'S': Symbol('S')}
+    True
     >>> sympify('E & Q', _clash1)
     And(E, Q)
 

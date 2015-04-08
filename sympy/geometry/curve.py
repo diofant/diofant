@@ -96,10 +96,10 @@ class Curve(GeometryEntity):
 
         >>> from sympy.abc import t, a
         >>> from sympy.geometry import Curve
-        >>> Curve((t, t**2), (t, 0, 2)).free_symbols
-        set()
-        >>> Curve((t, t**2), (t, a, 2)).free_symbols
-        set([a])
+        >>> Curve((t, t**2), (t, 0, 2)).free_symbols == set()
+        True
+        >>> Curve((t, t**2), (t, a, 2)).free_symbols == {a}
+        True
         """
         free = set()
         for a in self.functions + self.limits[1:]:

@@ -554,7 +554,7 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     Examples
     ========
 
-    >>> from sympy import Function, dsolve, Eq, Derivative, sin, cos, symbols
+    >>> from sympy import Function, dsolve, Eq, Derivative, sin, cos, symbols, exp
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> dsolve(Derivative(f(x), x, x) + 9*f(x), f(x))
@@ -573,8 +573,9 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     Eq(y(t), C1*y0 + C2(y0*Integral(8*exp(Integral(7*t, t))*exp(Integral(12*t, t))/x0**2, t) +
     exp(Integral(7*t, t))*exp(Integral(12*t, t))/x0))]
     >>> eq = (Eq(Derivative(x(t),t),x(t)*y(t)*sin(t)), Eq(Derivative(y(t),t),y(t)**2*sin(t)))
-    >>> dsolve(eq)
-    set([Eq(x(t), -exp(C1)/(C2*exp(C1) - cos(t))), Eq(y(t), -1/(C1 - cos(t)))])
+    >>> C1, C2 = symbols('C1, C2')
+    >>> dsolve(eq) == {Eq(x(t), -exp(C1)/(C2*exp(C1) - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
+    True
     """
     if iterable(eq):
         match = classify_sysode(eq, func)
@@ -1310,7 +1311,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     Examples
     ========
 
-    >>> from sympy import Function, Eq, symbols, diff
+    >>> from sympy import Function, Eq, symbols, diff, Derivative
     >>> from sympy.solvers.ode import classify_sysode
     >>> from sympy.abc import t
     >>> f, x, y = symbols('f, x, y', function=True)
@@ -1318,18 +1319,11 @@ def classify_sysode(eq, funcs=None, **kwargs):
     >>> x1 = diff(x(t), t) ; y1 = diff(y(t), t)
     >>> x2 = diff(x(t), t, t) ; y2 = diff(y(t), t, t)
     >>> eq = (Eq(5*x1, 12*x(t) - 6*y(t)), Eq(2*y1, 11*x(t) + 3*y(t)))
-    >>> classify_sysode(eq)
-    {'eq': [-12*x(t) + 6*y(t) + 5*Derivative(x(t), t), -11*x(t) - 3*y(t) + 2*Derivative(y(t), t)],
-    'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -12, (0, x(t), 1): 5, (0, y(t), 0): 6,
-    (0, y(t), 1): 0, (1, x(t), 0): -11, (1, x(t), 1): 0, (1, y(t), 0): -3, (1, y(t), 1): 2},
-    'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type1'}
+    >>> classify_sysode(eq) == {'eq': [-12*x(t) + 6*y(t) + 5*Derivative(x(t), t), -11*x(t) - 3*y(t) + 2*Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -12, (0, x(t), 1): 5, (0, y(t), 0): 6, (0, y(t), 1): 0, (1, x(t), 0): -11, (1, x(t), 1): 0, (1, y(t), 0): -3, (1, y(t), 1): 2}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type1'}
+    True
     >>> eq = (Eq(diff(x(t),t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t),t), -t**2*x(t) + 5*t*y(t)))
-    >>> classify_sysode(eq)
-    {'eq': [-t**2*y(t) - 5*t*x(t) + Derivative(x(t), t), t**2*x(t) - 5*t*y(t) + Derivative(y(t), t)],
-    'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -5*t, (0, x(t), 1): 1, (0, y(t), 0): -t**2,
-    (0, y(t), 1): 0, (1, x(t), 0): t**2, (1, x(t), 1): 0, (1, y(t), 0): -5*t, (1, y(t), 1): 1},
-    'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type4'}
-
+    >>> classify_sysode(eq) == {'eq': [-t**2*y(t) - 5*t*x(t) + Derivative(x(t), t), t**2*x(t) - 5*t*y(t) + Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -5*t, (0, x(t), 1): 1, (0, y(t), 0): -t**2, (0, y(t), 1): 0, (1, x(t), 0): t**2, (1, x(t), 1): 0, (1, y(t), 0): -5*t, (1, y(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type4'}
+    True
     """
 
     # Sympify equations and convert iterables of equations into
@@ -1989,7 +1983,7 @@ def odesimp(eq, func, order, constants, hint):
     >>> eq = dsolve(x*f(x).diff(x) - f(x) - x*sin(f(x)/x), f(x),
     ... hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral',
     ... simplify=False)
-    >>> pprint(eq, wrap_line=False)
+    >>> pprint(eq, wrap_line=False, use_unicode=False)
                             x
                            ----
                            f(x)
@@ -2007,7 +2001,7 @@ def odesimp(eq, func, order, constants, hint):
                            /
 
     >>> pprint(odesimp(eq, f(x), 1, {C1},
-    ... hint='1st_homogeneous_coeff_subs_indep_div_dep'
+    ... hint='1st_homogeneous_coeff_subs_indep_div_dep', use_unicode=False
     ... )) #doctest: +SKIP
         x
     --------- = C1
@@ -2711,10 +2705,10 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     C0 + 2*C1 + C2
     >>> constant_renumber(C0 + 2*C1 + C2, 'C', 0, 1)
     C1 + 3*C2
-    >>> pprint(C2 + C1*x + C3*x**2)
+    >>> pprint(C2 + C1*x + C3*x**2, use_unicode=False)
                     2
     C1*x + C2 + C3*x
-    >>> pprint(constant_renumber(C2 + C1*x + C3*x**2, 'C', 1, 3))
+    >>> pprint(constant_renumber(C2 + C1*x + C3*x**2, 'C', 1, 3), use_unicode=False)
                     2
     C1 + C2*x + C3*x
 
@@ -2823,7 +2817,7 @@ def ode_1st_exact(eq, func, order, match):
         >>> x, y, t, x0, y0, C1= symbols('x,y,t,x0,y0,C1')
         >>> P, Q, F= map(Function, ['P', 'Q', 'F'])
         >>> pprint(Eq(Eq(F(x, y), Integral(P(t, y), (t, x0, x)) +
-        ... Integral(Q(x0, t), (t, y0, y))), C1))
+        ... Integral(Q(x0, t), (t, y0, y))), C1), use_unicode=False)
                     x                y
                     /                /
                    |                |
@@ -2897,7 +2891,7 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
-    ... hint='1st_homogeneous_coeff_best', simplify=False))
+    ... hint='1st_homogeneous_coeff_best', simplify=False), use_unicode=False)
                              /    2    \
                              | 3*x     |
                           log|----- + 1|
@@ -2966,12 +2960,12 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
         >>> from sympy.abc import x
         >>> f, g, h = map(Function, ['f', 'g', 'h'])
         >>> genform = g(f(x)/x) + h(f(x)/x)*f(x).diff(x)
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
          /f(x)\    /f(x)\ d
         g|----| + h|----|*--(f(x))
          \ x  /    \ x  / dx
         >>> pprint(dsolve(genform, f(x),
-        ... hint='1st_homogeneous_coeff_subs_dep_div_indep_Integral'))
+        ... hint='1st_homogeneous_coeff_subs_dep_div_indep_Integral'), use_unicode=False)
                        f(x)
                        ----
                         x
@@ -2996,7 +2990,7 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
-    ... hint='1st_homogeneous_coeff_subs_dep_div_indep', simplify=False))
+    ... hint='1st_homogeneous_coeff_subs_dep_div_indep', simplify=False), use_unicode=False)
                           /          3   \
                           |3*f(x)   f (x)|
                        log|------ + -----|
@@ -3059,12 +3053,12 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f, g, h = map(Function, ['f', 'g', 'h'])
     >>> genform = g(x/f(x)) + h(x/f(x))*f(x).diff(x)
-    >>> pprint(genform)
+    >>> pprint(genform, use_unicode=False)
      / x  \    / x  \ d
     g|----| + h|----|*--(f(x))
      \f(x)/    \f(x)/ dx
     >>> pprint(dsolve(genform, f(x),
-    ... hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'))
+    ... hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'), use_unicode=False)
                  x
                 ----
                 f(x)
@@ -3092,7 +3086,7 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
     ... hint='1st_homogeneous_coeff_subs_indep_div_dep',
-    ... simplify=False))
+    ... simplify=False), use_unicode=False)
                              /    2    \
                              | 3*x     |
                           log|----- + 1|
@@ -3237,11 +3231,11 @@ def ode_1st_linear(eq, func, order, match):
         >>> from sympy.abc import x
         >>> f, P, Q = map(Function, ['f', 'P', 'Q'])
         >>> genform = Eq(f(x).diff(x) + P(x)*f(x), Q(x))
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                     d
         P(x)*f(x) + --(f(x)) = Q(x)
                     dx
-        >>> pprint(dsolve(genform, f(x), hint='1st_linear_Integral'))
+        >>> pprint(dsolve(genform, f(x), hint='1st_linear_Integral'), use_unicode=False)
                /       /                   \
                |      |                    |
                |      |         /          |     /
@@ -3259,7 +3253,7 @@ def ode_1st_linear(eq, func, order, match):
 
     >>> f = Function('f')
     >>> pprint(dsolve(Eq(x*diff(f(x), x) - f(x), x**2*sin(x)),
-    ... f(x), '1st_linear'))
+    ... f(x), '1st_linear'), use_unicode=False)
     f(x) = x*(C1 - cos(x))
 
     References
@@ -3298,11 +3292,11 @@ def ode_Bernoulli(eq, func, order, match):
         >>> from sympy.abc import x, n
         >>> f, P, Q = map(Function, ['f', 'P', 'Q'])
         >>> genform = Eq(f(x).diff(x) + P(x)*f(x), Q(x)*f(x)**n)
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                     d                n
         P(x)*f(x) + --(f(x)) = Q(x)*f (x)
                     dx
-        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral')) #doctest: +SKIP
+        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'), use_unicode=False) #doctest: +SKIP
                                                                                        1
                                                                                       ----
                                                                                      1 - n
@@ -3322,7 +3316,7 @@ def ode_Bernoulli(eq, func, order, match):
     :py:meth:`~sympy.solvers.ode.ode_separable`).
 
     >>> pprint(dsolve(Eq(f(x).diff(x) + P(x)*f(x), Q(x)*f(x)), f(x),
-    ... hint='separable_Integral'))
+    ... hint='separable_Integral'), use_unicode=False)
      f(x)
        /
       |                /
@@ -3341,7 +3335,7 @@ def ode_Bernoulli(eq, func, order, match):
     >>> f = Function('f')
 
     >>> pprint(dsolve(Eq(x*f(x).diff(x) + f(x), log(x)*f(x)**2),
-    ... f(x), hint='Bernoulli'))
+    ... f(x), hint='Bernoulli'), use_unicode=False)
                     1
     f(x) = -------------------
              /     log(x)   1\
@@ -3387,7 +3381,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     >>> y = f(x)
     >>> genform = a*y.diff(x) - (b*y**2 + c*y/x + d/x**2)
     >>> sol = dsolve(genform, y)
-    >>> pprint(sol, wrap_line=False)
+    >>> pprint(sol, wrap_line=False, use_unicode=False)
             /                                 /        __________________       \\
             |           __________________    |       /                2        ||
             |          /                2     |     \/  4*b*d - (a + c)  *log(x)||
@@ -3433,13 +3427,13 @@ def ode_Liouville(eq, func, order, match):
         >>> f, g, h = map(Function, ['f', 'g', 'h'])
         >>> genform = Eq(diff(f(x),x,x) + g(f(x))*diff(f(x),x)**2 +
         ... h(x)*diff(f(x),x), 0)
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                           2                    2
                 /d       \         d          d
         g(f(x))*|--(f(x))|  + h(x)*--(f(x)) + ---(f(x)) = 0
                 \dx      /         dx           2
                                               dx
-        >>> pprint(dsolve(genform, f(x), hint='Liouville_Integral'))
+        >>> pprint(dsolve(genform, f(x), hint='Liouville_Integral'), use_unicode=False)
                                           f(x)
                   /                     /
                  |                     |
@@ -3459,7 +3453,7 @@ def ode_Liouville(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(diff(f(x), x, x) + diff(f(x), x)**2/f(x) +
-    ... diff(f(x), x)/x, f(x), hint='Liouville'))
+    ... diff(f(x), x)/x, f(x), hint='Liouville'), use_unicode=False)
                ________________           ________________
     [f(x) = -\/ C1 + C2*log(x) , f(x) = \/ C1 + C2*log(x) ]
 
@@ -3510,7 +3504,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     >>> from sympy.abc import x, y
     >>> f = Function("f")
     >>> eq = f(x).diff(x, 2) + f(x)
-    >>> pprint(dsolve(eq, hint='2nd_power_series_ordinary'))
+    >>> pprint(dsolve(eq, hint='2nd_power_series_ordinary'), use_unicode=False)
               / 4    2    \        /   2    \
               |x    x     |        |  x     |    / 6\
     f(x) = C2*|-- - -- + 1| + C1*x*|- -- + 1| + O\x /
@@ -3674,7 +3668,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     >>> from sympy.abc import x, y
     >>> f = Function("f")
     >>> eq = x*(f(x).diff(x, 2)) + 2*(f(x).diff(x)) + x*f(x)
-    >>> pprint(dsolve(eq))
+    >>> pprint(dsolve(eq), use_unicode=False)
                                   /    6    4    2    \
                                   |   x    x    x     |
               /  4    2    \   C1*|- --- + -- - -- + 1|
@@ -3834,8 +3828,8 @@ def _nth_linear_match(eq, func, order):
     >>> f = Function('f')
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
     ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
-    ... sin(x), f(x), 3)
-    {-1: x - sin(x), 0: -1, 1: cos(x) + 2, 2: x, 3: 1}
+    ... sin(x), f(x), 3) == {-1: x - sin(x), 0: -1, 1: cos(x) + 2, 2: x, 3: 1}
+    True
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
     ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
     ... sin(f(x)), f(x), 3) == None
@@ -3911,7 +3905,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     >>> f = Function('f')
     >>> eq = f(x).diff(x, 2)*x**2 - 4*f(x).diff(x)*x + 6*f(x)
     >>> pprint(dsolve(eq, f(x),
-    ... hint='nth_linear_euler_eq_homogeneous'))
+    ... hint='nth_linear_euler_eq_homogeneous'), use_unicode=False)
             2
     f(x) = x *(C1 + C2*x)
 
@@ -4152,11 +4146,11 @@ def ode_almost_linear(eq, func, order, match):
         >>> from sympy.abc import x, y, n
         >>> f, g, k, l = map(Function, ['f', 'g', 'k', 'l'])
         >>> genform = Eq(f(x)*(l(y).diff(y)) + k(x)*l(y) + g(x))
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
              d
         f(x)*--(l(y)) + g(x) + k(x)*l(y) = 0
              dy
-        >>> pprint(dsolve(genform, hint = 'almost_linear'))
+        >>> pprint(dsolve(genform, hint = 'almost_linear'), use_unicode=False)
                /     //   -y*g(x)                  \\
                |     ||   --------     for k(x) = 0||
                |     ||     f(x)                   ||  -y*k(x)
@@ -4185,7 +4179,7 @@ def ode_almost_linear(eq, func, order, match):
     >>> eq = x*d + x*f(x) + 1
     >>> dsolve(eq, f(x), hint='almost_linear')
     Eq(f(x), (C1 - Ei(x))*exp(-x))
-    >>> pprint(dsolve(eq, f(x), hint='almost_linear'))
+    >>> pprint(dsolve(eq, f(x), hint='almost_linear'), use_unicode=False)
                          -x
     f(x) = (C1 - Ei(x))*e
 
@@ -4321,7 +4315,7 @@ def ode_linear_coefficients(eq, func, order, match):
     >>> eq = (x + f(x) + 1)*df + (f(x) - 6*x + 1)
     >>> dsolve(eq, hint='linear_coefficients')
     [Eq(f(x), -x - sqrt(C1 + 7*x**2) - 1), Eq(f(x), -x + sqrt(C1 + 7*x**2) - 1)]
-    >>> pprint(dsolve(eq, hint='linear_coefficients'))
+    >>> pprint(dsolve(eq, hint='linear_coefficients'), use_unicode=False)
                       ___________                     ___________
                    /         2                     /         2
     [f(x) = -x - \/  C1 + 7*x   - 1, f(x) = -x + \/  C1 + 7*x   - 1]
@@ -4355,12 +4349,12 @@ def ode_separable_reduced(eq, func, order, match):
         >>> from sympy.abc import x, n
         >>> f, g = map(Function, ['f', 'g'])
         >>> genform = f(x).diff(x) + (f(x)/x)*g(x**n*f(x))
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                          / n     \
         d          f(x)*g\x *f(x)/
         --(f(x)) + ---------------
         dx                x
-        >>> pprint(dsolve(genform, hint='separable_reduced'))
+        >>> pprint(dsolve(genform, hint='separable_reduced'), use_unicode=False)
          n
         x *f(x)
           /
@@ -4386,7 +4380,7 @@ def ode_separable_reduced(eq, func, order, match):
     >>> eq = (x - x**2*f(x))*d - f(x)
     >>> dsolve(eq, hint='separable_reduced')
     [Eq(f(x), (-sqrt(C1*x**2 + 1) + 1)/x), Eq(f(x), (sqrt(C1*x**2 + 1) + 1)/x)]
-    >>> pprint(dsolve(eq, hint='separable_reduced'))
+    >>> pprint(dsolve(eq, hint='separable_reduced'), use_unicode=False)
                  ___________                ___________
                 /     2                    /     2
             - \/  C1*x  + 1  + 1         \/  C1*x  + 1  + 1
@@ -4439,7 +4433,7 @@ def ode_1st_power_series(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> eq = exp(x)*(f(x).diff(x)) - f(x)
-    >>> pprint(dsolve(eq, hint='1st_power_series'))
+    >>> pprint(dsolve(eq, hint='1st_power_series'), use_unicode=False)
                            3       4       5
                        C1*x    C1*x    C1*x     / 6\
     f(x) = C1 + C1*x - ----- + ----- + ----- + O\x /
@@ -4551,7 +4545,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 4) + 2*f(x).diff(x, 3) -
     ... 2*f(x).diff(x, 2) - 6*f(x).diff(x) + 5*f(x), f(x),
-    ... hint='nth_linear_constant_coeff_homogeneous'))
+    ... hint='nth_linear_constant_coeff_homogeneous'), use_unicode=False)
                         x                            -2*x
     f(x) = (C1 + C2*x)*e  + (C3*sin(x) + C4*cos(x))*e
 
@@ -4684,7 +4678,7 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 2) + 2*f(x).diff(x) + f(x) -
     ... 4*exp(-x)*x**2 + cos(2*x), f(x),
-    ... hint='nth_linear_constant_coeff_undetermined_coefficients'))
+    ... hint='nth_linear_constant_coeff_undetermined_coefficients'), use_unicode=False)
            /             4\
            |            x |  -x   4*sin(2*x)   3*cos(2*x)
     f(x) = |C1 + C2*x + --|*e   - ---------- + ----------
@@ -4841,8 +4835,8 @@ def _undetermined_coefficients_match(expr, x):
     >>> from sympy import log, exp
     >>> from sympy.solvers.ode import _undetermined_coefficients_match
     >>> from sympy.abc import x
-    >>> _undetermined_coefficients_match(9*x*exp(x) + exp(-x), x)
-    {'test': True, 'trialset': set([x*exp(x), exp(-x), exp(x)])}
+    >>> _undetermined_coefficients_match(9*x*exp(x) + exp(-x), x) == {'test': True, 'trialset': {x*exp(x), exp(-x), exp(x)}}
+    True
     >>> _undetermined_coefficients_match(log(x), x)
     {'test': False}
 
@@ -5007,7 +5001,7 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 3) - 3*f(x).diff(x, 2) +
     ... 3*f(x).diff(x) - f(x) - exp(x)*log(x), f(x),
-    ... hint='nth_linear_constant_coeff_variation_of_parameters'))
+    ... hint='nth_linear_constant_coeff_variation_of_parameters'), use_unicode=False)
            /                     3                \
            |                2   x *(6*log(x) - 11)|  x
     f(x) = |C1 + C2*x + C3*x  + ------------------|*e
@@ -5108,11 +5102,11 @@ def ode_separable(eq, func, order, match):
         >>> from sympy.abc import x
         >>> a, b, c, d, f = map(Function, ['a', 'b', 'c', 'd', 'f'])
         >>> genform = Eq(a(x)*b(f(x))*f(x).diff(x), c(x)*d(f(x)))
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                      d
         a(x)*b(f(x))*--(f(x)) = c(x)*d(f(x))
                      dx
-        >>> pprint(dsolve(genform, f(x), hint='separable_Integral'))
+        >>> pprint(dsolve(genform, f(x), hint='separable_Integral'), use_unicode=False)
              f(x)
            /                  /
           |                  |
@@ -5129,7 +5123,7 @@ def ode_separable(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(Eq(f(x)*f(x).diff(x) + x, 3*x*f(x)**2), f(x),
-    ... hint='separable', simplify=False))
+    ... hint='separable', simplify=False), use_unicode=False)
        /   2       \         2
     log\3*f (x) - 1/        x
     ---------------- = C1 + --
@@ -5265,7 +5259,7 @@ def ode_lie_group(eq, func, order, match):
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x) + 2*x*f(x) - x*exp(-x**2), f(x),
-    ... hint='lie_group'))
+    ... hint='lie_group'), use_unicode=False)
            /      2\    2
            |     x |  -x
     f(x) = |C1 + --|*e
@@ -5477,7 +5471,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
         >>> xi = xi(x, y)
         >>> genform = Eq(eta.diff(x) + (eta.diff(y) - xi.diff(x))*h
         ... - (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)), 0)
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
         /d               d           \                     d              2       d
         |--(eta(x, y)) - --(xi(x, y))|*h(x, y) - eta(x, y)*--(h(x, y)) - h (x, y)*--(x
         \dy              dx          /                     dy                     dy
@@ -5497,13 +5491,13 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
     Examples
     ========
 
-    >>> from sympy import Function, diff
+    >>> from sympy import Function, diff, exp
     >>> from sympy.solvers.ode import infinitesimals
-    >>> from sympy.abc import x
+    >>> from sympy.abc import x, eta, xi
     >>> f = Function('f')
     >>> eq = f(x).diff(x) - x**2*f(x)
-    >>> infinitesimals(eq)
-    [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0}]
+    >>> infinitesimals(eq) == [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0}]
+    True
 
     References
     ==========

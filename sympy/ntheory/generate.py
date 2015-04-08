@@ -507,8 +507,8 @@ def primorial(n, nth=True):
 
     In this case two new primes are the factors:
 
-    >>> factorint(primorial(4) - 1)
-    {11: 1, 19: 1}
+    >>> factorint(primorial(4) - 1) == {11: 1, 19: 1}
+    True
 
     Here, some primes smaller and larger than the primes multiplied together
     are obtained:

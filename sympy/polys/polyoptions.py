@@ -80,16 +80,17 @@ class Options(dict):
     Examples
     ========
 
+    >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.polyoptions import Options
     >>> from sympy.polys.polyoptions import build_options
 
     >>> from sympy.abc import x, y, z
 
-    >>> Options((x, y, z), {'domain': 'ZZ'})
-    {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
+    >>> Options((x, y, z), {'domain': 'ZZ'}) == {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
+    True
 
-    >>> build_options((x, y, z), {'domain': 'ZZ'})
-    {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
+    >>> build_options((x, y, z), {'domain': 'ZZ'}) == {'auto': False, 'domain': ZZ, 'gens': (x, y, z)}
+    True
 
     **Options**
 

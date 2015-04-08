@@ -820,27 +820,26 @@ def roots(f, *gens, **flags):
     Examples
     ========
 
-    >>> from sympy import Poly, roots
+    >>> from sympy import Poly, roots, sqrt
     >>> from sympy.abc import x, y
 
-    >>> roots(x**2 - 1, x)
-    {-1: 1, 1: 1}
+    >>> roots(x**2 - 1, x) == {-1: 1, 1: 1}
+    True
 
     >>> p = Poly(x**2-1, x)
-    >>> roots(p)
-    {-1: 1, 1: 1}
+    >>> roots(p) == {-1: 1, 1: 1}
+    True
 
     >>> p = Poly(x**2-y, x, y)
 
-    >>> roots(Poly(p, x))
-    {-sqrt(y): 1, sqrt(y): 1}
+    >>> roots(Poly(p, x)) == {-sqrt(y): 1, sqrt(y): 1}
+    True
 
-    >>> roots(x**2 - y, x)
-    {-sqrt(y): 1, sqrt(y): 1}
+    >>> roots(x**2 - y, x) == {-sqrt(y): 1, sqrt(y): 1}
+    True
 
-    >>> roots([1, 0, -1])
-    {-1: 1, 1: 1}
-
+    >>> roots([1, 0, -1]) == {-1: 1, 1: 1}
+    True
 
     References
     ==========

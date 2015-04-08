@@ -619,10 +619,10 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     >>> e = 2*x**2*z*sin(y)+2*z*x**2
     >>> separatevars(e)
     2*x**2*z*(sin(y) + 1)
-    >>> separatevars(e, symbols=(x, y), dict=True)
-    {'coeff': 2*z, x: x**2, y: sin(y) + 1}
-    >>> separatevars(e, [x, y, alpha], dict=True)
-    {'coeff': 2*z, alpha: 1, x: x**2, y: sin(y) + 1}
+    >>> separatevars(e, symbols=(x, y), dict=True) == {'coeff': 2*z, x: x**2, y: sin(y) + 1}
+    True
+    >>> separatevars(e, [x, y, alpha], dict=True) == {'coeff': 2*z, alpha: 1, x: x**2, y: sin(y) + 1}
+    True
 
     If the expression is not really separable, or is only partially
     separable, separatevars will do the best it can to separate it
@@ -1838,7 +1838,8 @@ def radsimp(expr, symbolic=True, max_terms=4):
 
     >>> r2 = sqrt(2)
     >>> r5 = sqrt(5)
-    >>> ans = radsimp(1/(y*r2 + x*r2 + a*r5 + b*r5)); pprint(ans)
+    >>> ans = radsimp(1/(y*r2 + x*r2 + a*r5 + b*r5))
+    >>> pprint(ans, use_unicode=False)
         ___       ___       ___       ___
       \/ 5 *a + \/ 5 *b - \/ 2 *x - \/ 2 *y
     ------------------------------------------
@@ -1846,7 +1847,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
     5*a  + 10*a*b + 5*b  - 2*x  - 4*x*y - 2*y
 
     >>> n, d = fraction(ans)
-    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True))
+    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True), use_unicode=False)
             ___             ___
           \/ 5 *(a + b) - \/ 2 *(x + y)
     ------------------------------------------
@@ -2142,13 +2143,15 @@ def polarify(eq, subs=True, lift=False):
     changed to their polar_lift()ed versions.
     Note that lift=True implies subs=False.
 
-    >>> from sympy import polarify, sin, I
+    >>> from sympy import polarify, sin, I, default_sort_key
     >>> from sympy.abc import x, y
     >>> expr = (-x)**y
     >>> expr.expand()
     (-x)**y
-    >>> polarify(expr)
-    ((_x*exp_polar(I*pi))**_y, {_x: x, _y: y})
+    >>> polarify(expr)[0]
+    (_x*exp_polar(I*pi))**_y
+    >>> sorted(polarify(expr)[1].items(), key=default_sort_key)
+    [(_x, x), (_y, y)]
     >>> polarify(expr)[0].expand()
     _x**_y*exp_polar(_y*I*pi)
     >>> polarify(x, lift=True)

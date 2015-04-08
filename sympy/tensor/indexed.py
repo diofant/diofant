@@ -79,10 +79,10 @@
     get_indices() and get_contraction_structure():
 
     >>> from sympy.tensor import get_indices, get_contraction_structure
-    >>> get_indices(A[i, j, j])
-    (set([i]), {})
-    >>> get_contraction_structure(A[i, j, j])
-    {(j,): set([A[i, j, j]])}
+    >>> get_indices(A[i, j, j]) == ({i}, {})
+    True
+    >>> get_contraction_structure(A[i, j, j]) == {(j,): {A[i, j, j]}}
+    True
 
     See the appropriate docstrings for a detailed explanation of the output.
 

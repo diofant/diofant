@@ -1119,10 +1119,11 @@ class _TensorDataLazyEvaluator(CantSympify):
         ========
 
         >>> from sympy.tensor.tensor import _TensorDataLazyEvaluator
-        >>> _TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])
+        >>> from sympy.printing import sstr
+        >>> print(sstr(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
         [1 3 -6 12]
 
-        >>> _TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])
+        >>> print(sstr(_TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])))
         [[1 2]
          [4 7]]
         """
@@ -1379,6 +1380,7 @@ class TensorIndexType(Basic):
     ========
 
     >>> from sympy.tensor.tensor import TensorIndexType
+    >>> from sympy.printing import sstr
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> Lorentz.metric
     metric(Lorentz,Lorentz)
@@ -1387,9 +1389,9 @@ class TensorIndexType(Basic):
     fixed basis:
 
     >>> Lorentz.data = [1, -1, -1, -1]
-    >>> Lorentz
+    >>> print(sstr(Lorentz))
     TensorIndexType(Lorentz, 0)
-    >>> Lorentz.data
+    >>> print(sstr(Lorentz.data))
     [[1 0 0 0]
     [0 -1 0 0]
     [0 0 -1 0]
@@ -2017,6 +2019,7 @@ class TensorHead(Basic):
     examples.
 
     >>> from sympy.tensor.tensor import tensor_indices, tensorhead
+    >>> from sympy.printing import sstr
     >>> Lorentz.data = [1, -1, -1, -1]
     >>> i0, i1 = tensor_indices('i0:2', Lorentz)
     >>> A.data = [[j+2*i for j in range(4)] for i in range(4)]
@@ -2036,7 +2039,7 @@ class TensorHead(Basic):
 
     To view the data, just type:
 
-    >>> A.data
+    >>> print(sstr(A.data))
     [[0 1 2 3]
      [2 3 4 5]
      [4 5 6 7]
@@ -2045,13 +2048,13 @@ class TensorHead(Basic):
     Turning to a tensor expression, covariant indices get the corresponding
     components data corrected by the metric:
 
-    >>> A(i0, -i1).data
+    >>> print(sstr(A(i0, -i1).data))
     [[0 -1 -2 -3]
      [2 -3 -4 -5]
      [4 -5 -6 -7]
      [6 -7 -8 -9]]
 
-    >>> A(-i0, -i1).data
+    >>> print(sstr(A(-i0, -i1).data))
     [[0 -1 -2 -3]
      [-2 3 4 5]
      [-4 5 6 7]
@@ -2059,7 +2062,7 @@ class TensorHead(Basic):
 
     while if all indices are contravariant, the ``ndarray`` remains the same
 
-    >>> A(i0, i1).data
+    >>> print(sstr(A(i0, i1).data))
      [[0 1 2 3]
      [2 3 4 5]
      [4 5 6 7]
@@ -2097,7 +2100,7 @@ class TensorHead(Basic):
     Now it is possible to retrieve the contravariant form of the Electromagnetic
     tensor:
 
-    >>> F(i0, i1).data
+    >>> print(sstr(F(i0, i1).data))
     [[0 -E_x/c -E_y/c -E_z/c]
      [E_x/c 0 -B_z B_y]
      [E_y/c B_z 0 -B_x]
@@ -2105,7 +2108,7 @@ class TensorHead(Basic):
 
     and the mixed contravariant-covariant form:
 
-    >>> F(i0, -i1).data
+    >>> print(sstr(F(i0, -i1).data))
     [[0 E_x/c E_y/c E_z/c]
      [E_x/c 0 B_z -B_y]
      [E_y/c -B_z 0 B_x]
@@ -2135,9 +2138,9 @@ class TensorHead(Basic):
 
     The contravariant and covariant components are, respectively:
 
-    >>> P(i0).data
+    >>> print(sstr(P(i0).data))
     [E p_x p_y p_z]
-    >>> P(-i0).data
+    >>> print(sstr(P(-i0).data))
     [E -p_x -p_y -p_z]
 
     The contraction of a 1-index tensor by itself is usually indicated by a

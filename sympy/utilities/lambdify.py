@@ -228,10 +228,10 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
         >>> f = lambdify((x,y), tan(x*y), "numpy")
         >>> f(1, 2)
-        -2.18503986326
+        -2.1850398632615189
         >>> from numpy import array
         >>> f(array([1, 2, 3]), array([2, 3, 5]))
-        [-2.18503986 -0.29100619 -0.8559934 ]
+        array([-2.18503986, -0.29100619, -0.8559934 ])
 
     (3) Use a dictionary defining custom functions:
 

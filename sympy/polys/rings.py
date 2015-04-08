@@ -449,11 +449,12 @@ class PolyRing(DefaultPrinting, IPolys):
 
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
+        >>> from sympy.printing import pprint
 
         >>> R, x = ring("x", ZZ)
         >>> R.add([ x**2 + 2*i + 3 for i in range(4) ])
         4*x**2 + 24
-        >>> _.factor_list()
+        >>> pprint(_.factor_list())
         (4, [(x**2 + 6, 1)])
 
         """
@@ -476,11 +477,12 @@ class PolyRing(DefaultPrinting, IPolys):
 
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
+        >>> from sympy.printing import pprint
 
         >>> R, x = ring("x", ZZ)
         >>> R.mul([ x**2 + 2*i + 3 for i in range(4) ])
         x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
-        >>> _.factor_list()
+        >>> pprint(_.factor_list())
         (1, [(x**2 + 3, 1), (x**2 + 5, 1), (x**2 + 7, 1), (x**2 + 9, 1)])
 
         """
@@ -1641,11 +1643,11 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> _, x, y, z = ring("x,y,z", ZZ)
         >>> f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
-        >>> f.coeff(x**2*y)
+        >>> print(f.coeff(x**2*y))
         3
-        >>> f.coeff(x*y)
+        >>> print(f.coeff(x*y))
         0
-        >>> f.coeff(1)
+        >>> print(f.coeff(1))
         23
 
         """
@@ -1749,13 +1751,14 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
         >>> from sympy.polys.orderings import lex, grlex
+        >>> from sympy.printing import pprint
 
         >>> _, x, y = ring("x, y", ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
-        >>> f.coeffs()
+        >>> pprint(f.coeffs())
         [2, 1]
-        >>> f.coeffs(grlex)
+        >>> pprint(f.coeffs(grlex))
         [1, 2]
 
         """
@@ -1799,13 +1802,14 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
         >>> from sympy.polys.orderings import lex, grlex
+        >>> from sympy.printing import pprint
 
         >>> _, x, y = ring("x, y", ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
-        >>> f.terms()
+        >>> pprint(f.terms())
         [((2, 3), 2), ((1, 7), 1)]
-        >>> f.terms(grlex)
+        >>> pprint(f.terms(grlex))
         [((1, 7), 1), ((2, 3), 2)]
 
         """

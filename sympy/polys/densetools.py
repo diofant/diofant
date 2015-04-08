@@ -274,7 +274,7 @@ def dup_eval(f, a, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_eval(x**2 + 2*x + 3, 2)
+    >>> print(R.dup_eval(x**2 + 2*x + 3, 2))
     11
 
     """
@@ -380,7 +380,7 @@ def dmp_eval_tail(f, A, u, K):
 
     >>> R.dmp_eval_tail(f, [2])
     7*x + 4
-    >>> R.dmp_eval_tail(f, [2, 2])
+    >>> print(R.dmp_eval_tail(f, [2, 2]))
     18
 
     """
@@ -585,13 +585,13 @@ def dup_content(f, K):
     >>> R, x = ring("x", ZZ)
     >>> f = 6*x**2 + 8*x + 12
 
-    >>> R.dup_content(f)
+    >>> print(R.dup_content(f))
     2
 
     >>> R, x = ring("x", QQ)
     >>> f = 6*x**2 + 8*x + 12
 
-    >>> R.dup_content(f)
+    >>> print(R.dup_content(f))
     2
 
     """
@@ -627,13 +627,13 @@ def dmp_ground_content(f, u, K):
     >>> R, x,y = ring("x,y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_content(f)
+    >>> print(R.dmp_ground_content(f))
     2
 
     >>> R, x,y = ring("x,y", QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_content(f)
+    >>> print(R.dmp_ground_content(f))
     2
 
     """
@@ -668,17 +668,18 @@ def dup_primitive(f, K):
     ========
 
     >>> from sympy.polys import ring, ZZ, QQ
+    >>> from sympy.printing import pprint
 
     >>> R, x = ring("x", ZZ)
     >>> f = 6*x**2 + 8*x + 12
 
-    >>> R.dup_primitive(f)
+    >>> pprint(R.dup_primitive(f))
     (2, 3*x**2 + 4*x + 6)
 
     >>> R, x = ring("x", QQ)
     >>> f = 6*x**2 + 8*x + 12
 
-    >>> R.dup_primitive(f)
+    >>> pprint(R.dup_primitive(f))
     (2, 3*x**2 + 4*x + 6)
 
     """
@@ -701,17 +702,18 @@ def dmp_ground_primitive(f, u, K):
     ========
 
     >>> from sympy.polys import ring, ZZ, QQ
+    >>> from sympy.printing import pprint
 
     >>> R, x,y = ring("x,y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_primitive(f)
+    >>> pprint(R.dmp_ground_primitive(f))
     (2, x*y + 3*x + 2*y + 6)
 
     >>> R, x,y = ring("x,y", QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_primitive(f)
+    >>> pprint(R.dmp_ground_primitive(f))
     (2, x*y + 3*x + 2*y + 6)
 
     """
@@ -737,9 +739,10 @@ def dup_extract(f, g, K):
     ========
 
     >>> from sympy.polys import ring, ZZ
+    >>> from sympy.printing import pprint
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_extract(6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12)
+    >>> pprint(R.dup_extract(6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12))
     (2, 3*x**2 + 6*x + 9, 2*x**2 + 4*x + 6)
 
     """
@@ -763,9 +766,10 @@ def dmp_ground_extract(f, g, u, K):
     ========
 
     >>> from sympy.polys import ring, ZZ
+    >>> from sympy.printing import pprint
     >>> R, x,y = ring("x,y", ZZ)
 
-    >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
+    >>> pprint(R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12))
     (2, 3*x*y + 6*x + 9, 2*x*y + 4*x + 6)
 
     """
@@ -1174,13 +1178,14 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     ========
 
     >>> from sympy.polys import ring, QQ
+    >>> from sympy.printing import pprint
     >>> R, x = ring("x", QQ)
 
     >>> f = QQ(1,2)*x + QQ(1,3)
 
-    >>> R.dup_clear_denoms(f, convert=False)
+    >>> pprint(R.dup_clear_denoms(f, convert=False))
     (6, 3*x + 2)
-    >>> R.dup_clear_denoms(f, convert=True)
+    >>> pprint(R.dup_clear_denoms(f, convert=True))
     (6, 3*x + 2)
 
     """
@@ -1228,13 +1233,14 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     ========
 
     >>> from sympy.polys import ring, QQ
+    >>> from sympy.printing import pprint
     >>> R, x,y = ring("x,y", QQ)
 
     >>> f = QQ(1,2)*x + QQ(1,3)*y + 1
 
-    >>> R.dmp_clear_denoms(f, convert=False)
+    >>> pprint(R.dmp_clear_denoms(f, convert=False))
     (6, 3*x + 2*y + 6)
-    >>> R.dmp_clear_denoms(f, convert=True)
+    >>> pprint(R.dmp_clear_denoms(f, convert=True))
     (6, 3*x + 2*y + 6)
 
     """

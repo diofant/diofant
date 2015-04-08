@@ -630,13 +630,11 @@ class G_Function(Expr):
 
         >>> from sympy.simplify.hyperexpand import G_Function
         >>> from sympy.abc import y
-        >>> from sympy import S, symbols
+        >>> from sympy import S, symbols, Rational
 
         >>> a, b = [1, 3, 2, S(3)/2], [1 + y, y, 2, y + 3]
-        >>> G_Function(a, b, [2], [y]).compute_buckets()
-        ({0: [3, 2, 1], 1/2: [3/2]},
-        {0: [2], y: [y, y + 1, y + 3]}, {0: [2]}, {y: [y]})
-
+        >>> G_Function(a, b, [2], [y]).compute_buckets() == ({0: [3, 2, 1], Rational(1, 2): [Rational(3, 2)]}, {0: [2], y: [y, y + 1, y + 3]}, {0: [2]}, {y: [y]})
+        True
         """
         dicts = pan, pap, pbm, pbq = [defaultdict(list) for i in range(4)]
         for dic, lis in zip(dicts, (self.an, self.ap, self.bm, self.bq)):
@@ -1431,11 +1429,18 @@ def reduce_order(func):
     >>> from sympy.simplify.hyperexpand import reduce_order, Hyper_Function
     >>> reduce_order(Hyper_Function((1, 2), (3, 4)))
     (Hyper_Function((1, 2), (3, 4)), [])
-    >>> reduce_order(Hyper_Function((1,), (1,)))
-    (Hyper_Function((), ()), [<Reduce order by cancelling upper 1 with lower 1.>])
-    >>> reduce_order(Hyper_Function((2, 4), (3, 3)))
-    (Hyper_Function((2,), (3,)), [<Reduce order by cancelling
-    upper 4 with lower 3.>])
+    >>> r = reduce_order(Hyper_Function((1,), (1,)))
+    >>> r[0]
+    Hyper_Function((), ())
+    >>> for i in r[1]:
+    ...     print(i)
+    <Reduce order by cancelling upper 1 with lower 1.>
+    >>> r = reduce_order(Hyper_Function((2, 4), (3, 3)))
+    >>> r[0]
+    Hyper_Function((2,), (3,))
+    >>> for i in r[1]:
+    ...     print(i)
+    <Reduce order by cancelling upper 4 with lower 3.>
     """
     nap, nbq, operators = _reduce_order(func.ap, func.bq, ReduceOrder, default_sort_key)
 
@@ -1510,30 +1515,38 @@ def devise_plan(target, origin, z):
 
     Very simple plans:
 
-    >>> devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z)
-    [<Increment upper 1.>]
-    >>> devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z)
-    [<Increment lower index #0 of [], [1].>]
+    >>> for i in devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z):
+    ...     print(i)
+    <Increment upper 1.>
+    >>> for i in devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z):
+    ...     print(i)
+    <Increment lower index #0 of [], [1].>
 
     Several buckets:
 
     >>> from sympy import S
-    >>> devise_plan(Hyper_Function((1, S.Half), ()),
-    ...             Hyper_Function((2, S('3/2')), ()), z) #doctest: +NORMALIZE_WHITESPACE
-    [<Decrement upper index #0 of [3/2, 1], [].>,
-    <Decrement upper index #0 of [2, 3/2], [].>]
+    >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
+    ...             Hyper_Function((2, S('3/2')), ()), z):
+    ...     print(i)
+    <Decrement upper index #0 of [3/2, 1], [].>
+    <Decrement upper index #0 of [2, 3/2], [].>
 
     A slightly more complicated plan:
 
-    >>> devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z)
-    [<Increment upper 2.>, <Decrement upper index #0 of [2, 2], [].>]
+    >>> for i in devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z):
+    ...     print(i)
+    <Increment upper 2.>
+    <Decrement upper index #0 of [2, 2], [].>
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
-    >>> devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z)
-    [<Decrement lower 3.>, <Decrement lower 4.>,
-    <Decrement upper index #1 of [-1, 2], [4].>,
-    <Decrement upper index #1 of [-1, 3], [4].>, <Increment upper -2.>]
+    >>> for i in devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z):
+    ...     print(i)
+    <Decrement lower 3.>
+    <Decrement lower 4.>
+    <Decrement upper index #1 of [-1, 2], [4].>
+    <Decrement upper index #1 of [-1, 3], [4].>
+    <Increment upper -2.>
     """
     abuckets, bbuckets, nabuckets, nbbuckets = [sift(params, _mod1) for
             params in (target.ap, target.bq, origin.ap, origin.bq)]
@@ -2062,31 +2075,39 @@ def devise_plan_meijer(fro, to, z):
 
     Very simple plans:
 
-    >>> devise_plan_meijer(G_Function([0], [], [], []),
-    ...                    G_Function([1], [], [], []), z)
-    [<Increment upper a index #0 of [0], [], [], [].>]
-    >>> devise_plan_meijer(G_Function([0], [], [], []),
-    ...                    G_Function([-1], [], [], []), z)
-    [<Decrement upper a=0.>]
-    >>> devise_plan_meijer(G_Function([], [1], [], []),
-    ...                    G_Function([], [2], [], []), z)
-    [<Increment lower a index #0 of [], [1], [], [].>]
+    >>> for i in devise_plan_meijer(G_Function([0], [], [], []),
+    ...                             G_Function([1], [], [], []), z):
+    ...     print(i)
+    <Increment upper a index #0 of [0], [], [], [].>
+    >>> for i in devise_plan_meijer(G_Function([0], [], [], []),
+    ...                             G_Function([-1], [], [], []), z):
+    ...     print(i)
+    <Decrement upper a=0.>
+    >>> for i in devise_plan_meijer(G_Function([], [1], [], []),
+    ...                             G_Function([], [2], [], []), z):
+    ...     print(i)
+    <Increment lower a index #0 of [], [1], [], [].>
 
     Slightly more complicated plans:
 
-    >>> devise_plan_meijer(G_Function([0], [], [], []),
-    ...                    G_Function([2], [], [], []), z)
-    [<Increment upper a index #0 of [1], [], [], [].>,
-    <Increment upper a index #0 of [0], [], [], [].>]
-    >>> devise_plan_meijer(G_Function([0], [], [0], []),
-    ...                    G_Function([-1], [], [1], []), z)
-    [<Increment upper b=0.>, <Decrement upper a=0.>]
+    >>> for i in devise_plan_meijer(G_Function([0], [], [], []),
+    ...                             G_Function([2], [], [], []), z):
+    ...     print(i)
+    <Increment upper a index #0 of [1], [], [], [].>
+    <Increment upper a index #0 of [0], [], [], [].>
+    >>> for i in devise_plan_meijer(G_Function([0], [], [0], []),
+    ...                             G_Function([-1], [], [1], []), z):
+    ...     print(i)
+    <Increment upper b=0.>
+    <Decrement upper a=0.>
 
     Order matters:
 
-    >>> devise_plan_meijer(G_Function([0], [], [0], []),
-    ...                    G_Function([1], [], [1], []), z)
-    [<Increment upper a index #0 of [0], [], [1], [].>, <Increment upper b=0.>]
+    >>> for i in devise_plan_meijer(G_Function([0], [], [0], []),
+    ...                             G_Function([1], [], [1], []), z):
+    ...     print(i)
+    <Increment upper a index #0 of [0], [], [1], [].>
+    <Increment upper b=0.>
     """
     # TODO for now, we use the following simple heuristic: inverse-shift
     #      when possible, shift otherwise. Give up if we cannot make progress.

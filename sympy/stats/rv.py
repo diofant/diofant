@@ -708,7 +708,7 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
     ========
 
     >>> from sympy.stats import density, Die, Normal, cdf
-    >>> from sympy import Symbol
+    >>> from sympy import Symbol, Rational
 
     >>> D = Die('D', 6)
     >>> X = Normal('X', 0, 1)
@@ -717,8 +717,9 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
     {1: 1/6, 2: 1/6, 3: 1/6, 4: 1/6, 5: 1/6, 6: 1/6}
     >>> cdf(D)
     {1: 1/6, 2: 1/3, 3: 1/2, 4: 2/3, 5: 5/6, 6: 1}
-    >>> cdf(3*D, D>2)
-    {9: 1/4, 12: 1/2, 15: 3/4, 18: 1}
+    >>> cdf(3*D, D>2) == {9: Rational(1, 4), 12: Rational(1, 2),
+    ...                   15: Rational(3, 4), 18: 1}
+    True
 
     >>> cdf(X)
     Lambda(_z, erf(sqrt(2)*_z/2)/2 + 1/2)

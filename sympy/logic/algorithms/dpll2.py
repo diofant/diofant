@@ -29,11 +29,10 @@ def dpll_satisfiable(expr, all_models=False):
 
     >>> from sympy.abc import A, B
     >>> from sympy.logic.algorithms.dpll2 import dpll_satisfiable
-    >>> dpll_satisfiable(A & ~B)
-    {A: True, B: False}
+    >>> dpll_satisfiable(A & ~B) == {A: True, B: False}
+    True
     >>> dpll_satisfiable(A & ~A)
     False
-
     """
     clauses = conjuncts(to_cnf(expr))
     if False in clauses:
@@ -181,8 +180,9 @@ class SATSolver(object):
         >>> from sympy.abc import A, B, C
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set(), [A, B, C])
-        >>> list(l._find_model())
-        [{A: True, B: False, C: False}, {A: True, B: True, C: True}]
+        >>> list(l._find_model()) == [{A: True, B: False, C: False},
+        ...                           {A: True, B: True, C: True}]
+        True
         """
 
         # We use this variable to keep track of if we should flip a
@@ -274,8 +274,8 @@ class SATSolver(object):
         0
         >>> l._current_level.flipped
         False
-        >>> l._current_level.var_settings
-        set([1, 2])
+        >>> l._current_level.var_settings == {1, 2}
+        True
         """
         return self.levels[-1]
 
@@ -336,8 +336,8 @@ class SATSolver(object):
         ... {3, -2}], {1, 2, 3}, set())
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
-        >>> l.var_settings
-        set([-3, -2, 1])
+        >>> l.var_settings == {-3, -2, 1}
+        True
 
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set())
@@ -346,8 +346,8 @@ class SATSolver(object):
         ...     next(l._find_model())
         ... except StopIteration:
         ...     pass
-        >>> l.var_settings
-        set([-1])
+        >>> l.var_settings == {-1}
+        True
         """
         self.var_settings.add(lit)
         self._current_level.var_settings.add(lit)
@@ -386,12 +386,12 @@ class SATSolver(object):
         >>> next(l._find_model())
         {1: True, 2: False, 3: False}
         >>> level = l._current_level
-        >>> level.decision, level.var_settings, level.flipped
-        (-3, set([-3, -2]), False)
+        >>> (level.decision, level.var_settings, level.flipped) == (-3, {-3, -2}, False)
+        True
         >>> l._undo()
         >>> level = l._current_level
-        >>> level.decision, level.var_settings, level.flipped
-        (0, set([1]), False)
+        >>> (level.decision, level.var_settings, level.flipped) == (0, {1}, False)
+        True
         """
         # Undo the variable settings
         for lit in self._current_level.var_settings:
@@ -416,21 +416,21 @@ class SATSolver(object):
         Examples
         ========
 
+        >>> from collections import defaultdict
         >>> from sympy.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set())
         >>> l.variable_set
         [False, False, False, False]
-        >>> l.sentinels
-        {-3: set([0, 2]), -2: set([3, 4]), 2: set([0, 3]), 3: set([2, 4])}
+        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}})
+        True
 
         >>> l._simplify()
 
         >>> l.variable_set
         [False, True, False, False]
-        >>> l.sentinels
-        {-3: set([0, 2]), -2: set([3, 4]), -1: set(), 2: set([0, 3]),
-        ...3: set([2, 4])}
+        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, -1: set(), 2: {0, 3}, 3: {2, 4}})
+        True
         """
         changed = True
         while changed:
@@ -480,13 +480,13 @@ class SATSolver(object):
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set())
 
-        >>> l.lit_scores
-        {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
+        >>> l.lit_scores == {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
+        True
 
         >>> l._vsids_decay()
 
-        >>> l.lit_scores
-        {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
+        >>> l.lit_scores == {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
+        True
         """
         # We divide every literal score by 2 for a decay factor
         #  Note: This doesn't change the heap property
@@ -562,15 +562,15 @@ class SATSolver(object):
 
         >>> l.num_learned_clauses
         0
-        >>> l.lit_scores
-        {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
+        >>> l.lit_scores == {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
+        True
 
         >>> l._vsids_clause_added({2, -3})
 
         >>> l.num_learned_clauses
         1
-        >>> l.lit_scores
-        {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
+        >>> l.lit_scores == {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
+        True
         """
         self.num_learned_clauses += 1
         for lit in cls:
@@ -585,6 +585,7 @@ class SATSolver(object):
         Examples
         ========
 
+        >>> from collections import defaultdict
         >>> from sympy.logic.algorithms.dpll2 import SATSolver
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
         ... {3, -2}], {1, 2, 3}, set())
@@ -593,15 +594,15 @@ class SATSolver(object):
         0
         >>> l.clauses
         [[2, -3], [1], [3, -3], [2, -2], [3, -2]]
-        >>> l.sentinels
-        {-3: set([0, 2]), -2: set([3, 4]), 2: set([0, 3]), 3: set([2, 4])}
+        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}})
+        True
 
         >>> l._simple_add_learned_clause([3])
 
         >>> l.clauses
         [[2, -3], [1], [3, -3], [2, -2], [3, -2], [3]]
-        >>> l.sentinels
-        {-3: set([0, 2]), -2: set([3, 4]), 2: set([0, 3]), 3: set([2, 4, 5])}
+        >>> l.sentinels == defaultdict(int, {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4, 5}})
+        True
         """
         cls_num = len(self.clauses)
         self.clauses.append(cls)

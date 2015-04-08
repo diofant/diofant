@@ -329,9 +329,10 @@ def dup_inner_subresultants(f, g, K):
     ========
 
     >>> from sympy.polys import ring, ZZ
+    >>> from sympy.printing import pprint
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_inner_subresultants(x**2 + 1, x**2 - 1)
+    >>> pprint(R.dup_inner_subresultants(x**2 + 1, x**2 - 1))
     ([x**2 + 1, x**2 - 1, -2], [1, 1, 4])
 
     References
@@ -418,9 +419,10 @@ def dup_prs_resultant(f, g, K):
     ========
 
     >>> from sympy.polys import ring, ZZ
+    >>> from sympy.printing import pprint
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_prs_resultant(x**2 + 1, x**2 - 1)
+    >>> pprint(R.dup_prs_resultant(x**2 + 1, x**2 - 1))
     (4, [x**2 + 1, x**2 - 1, -2])
 
     """
@@ -445,7 +447,7 @@ def dup_resultant(f, g, K, includePRS=False):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_resultant(x**2 + 1, x**2 - 1)
+    >>> print(R.dup_resultant(x**2 + 1, x**2 - 1))
     4
 
     """
@@ -816,7 +818,7 @@ def dup_discriminant(f, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_discriminant(x**2 + 2*x + 3)
+    >>> print(R.dup_discriminant(x**2 + 2*x + 3))
     -8
 
     """

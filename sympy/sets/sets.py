@@ -515,7 +515,7 @@ class ProductSet(Set):
     Examples
     ========
 
-    >>> from sympy import Interval, FiniteSet, ProductSet
+    >>> from sympy import Interval, FiniteSet, ProductSet, Symbol
     >>> I = Interval(0, 5); S = FiniteSet(1, 2, 3)
     >>> ProductSet(I, S)
     [0, 5] x {1, 2, 3}
@@ -526,10 +526,10 @@ class ProductSet(Set):
     >>> Interval(0, 1) * Interval(0, 1) # The unit square
     [0, 1] x [0, 1]
 
-    >>> coin = FiniteSet('H', 'T')
-    >>> set(coin**2)
-    set([(H, H), (H, T), (T, H), (T, T)])
-
+    >>> H, T = Symbol('H'), Symbol('T')
+    >>> coin = FiniteSet(H, T)
+    >>> set(coin**2) == {(H, H), (H, T), (T, H), (T, T)}
+    True
 
     Notes
     =====

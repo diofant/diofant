@@ -278,13 +278,14 @@ def dup_sqf_list(f, K, all=False):
     ========
 
     >>> from sympy.polys import ring, ZZ
+    >>> from sympy.printing import pprint
     >>> R, x = ring("x", ZZ)
 
     >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
 
-    >>> R.dup_sqf_list(f)
+    >>> pprint(R.dup_sqf_list(f))
     (2, [(x + 1, 2), (x + 2, 3)])
-    >>> R.dup_sqf_list(f, all=True)
+    >>> pprint(R.dup_sqf_list(f, all=True))
     (2, [(1, 1), (x + 1, 2), (x + 2, 3)])
 
     """
@@ -363,13 +364,14 @@ def dmp_sqf_list(f, u, K, all=False):
     ========
 
     >>> from sympy.polys import ring, ZZ
+    >>> from sympy.printing import pprint
     >>> R, x,y = ring("x,y", ZZ)
 
     >>> f = x**5 + 2*x**4*y + x**3*y**2
 
-    >>> R.dmp_sqf_list(f)
+    >>> pprint(R.dmp_sqf_list(f))
     (1, [(x + y, 2), (x, 3)])
-    >>> R.dmp_sqf_list(f, all=True)
+    >>> pprint(R.dmp_sqf_list(f, all=True))
     (1, [(1, 1), (x + y, 2), (x, 3)])
 
     """

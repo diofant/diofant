@@ -277,13 +277,15 @@ class Add(Expr, AssocOp):
         Examples
         ========
 
+        >>> from collections import defaultdict
         >>> from sympy.abc import a, x
-        >>> (3*x + a*x + 4).as_coefficients_dict()
-        {1: 4, x: 3, a*x: 1}
-        >>> _[a]
+        >>> d = (3*x + a*x + 4).as_coefficients_dict()
+        >>> d == defaultdict(int, {1: 4, x: 3, a*x: 1})
+        True
+        >>> d[a]
         0
-        >>> (3*a*x).as_coefficients_dict()
-        {a*x: 3}
+        >>> (3*a*x).as_coefficients_dict() == defaultdict(int, {a*x: 3})
+        True
         """
 
         d = defaultdict(list)

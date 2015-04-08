@@ -25,9 +25,8 @@ def _filtered_gens(poly, symbol):
     >>> from sympy.solvers.bivariate import _filtered_gens
     >>> from sympy import Poly, exp
     >>> from sympy.abc import x
-    >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
-    set([x, exp(x)])
-
+    >>> _filtered_gens(Poly(x + 1/x + exp(x)), x) == {x, exp(x)}
+    True
     """
     gens = {g for g in poly.gens if symbol in g.free_symbols}
     for g in list(gens):

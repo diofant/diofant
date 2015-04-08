@@ -121,9 +121,8 @@ def reshape(seq, how):
     >>> reshape(tuple(seq), ([1], 1, (2,)))
     (([1], 2, (3, 4)), ([5], 6, (7, 8)))
 
-    >>> reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)])
-    [[0, 1, [2, 3, 4], set([5, 6]), (7, (8, 9, 10), 11)]]
-
+    >>> reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)]) == [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
+    True
     """
     m = sum(flatten(how))
     n, rem = divmod(len(seq), m)
@@ -199,8 +198,8 @@ def multiset(seq):
     ========
 
     >>> from sympy.utilities.iterables import multiset
-    >>> multiset('mississippi')
-    {'i': 4, 'm': 1, 'p': 2, 's': 4}
+    >>> multiset('mississippi') == {'i': 4, 'm': 1, 'p': 2, 's': 4}
+    True
 
     See Also
     ========
@@ -596,7 +595,7 @@ def capture(func):
     ...
     >>> 'hello' in capture(foo) # foo, not foo()
     True
-    >>> capture(lambda: pprint(2/x))
+    >>> capture(lambda: pprint(2/x, use_unicode=False))
     '2\\n-\\nx\\n'
 
     """
@@ -622,26 +621,29 @@ def sift(seq, keyfunc):
     Examples
     ========
 
+    >>> from collections import defaultdict
     >>> from sympy.utilities import sift
     >>> from sympy.abc import x, y
-    >>> from sympy import sqrt, exp
+    >>> from sympy import sqrt, exp, E
 
-    >>> sift(range(5), lambda x: x % 2)
-    {0: [0, 2, 4], 1: [1, 3]}
+    >>> sift(range(5), lambda x: x % 2) == defaultdict(int, {0: [0, 2, 4], 1: [1, 3]})
+    True
 
     sift() returns a defaultdict() object, so any key that has no matches will
     give [].
 
-    >>> sift([x], lambda x: x.is_commutative)
-    {True: [x]}
-    >>> _[False]
+    >>> dl = sift([x], lambda x: x.is_commutative)
+    >>> dl == defaultdict(list, {True: [x]})
+    True
+    >>> dl[False]
     []
 
     Sometimes you won't know how many keys you will get:
 
     >>> sift([sqrt(x), exp(x), (y**x)**2],
-    ...      lambda x: x.as_base_exp()[0])
-    {E: [exp(x)], x: [sqrt(x)], y: [y**(2*x)]}
+    ...      lambda x: x.as_base_exp()[0]) == defaultdict(list,
+    ...      {E: [exp(x)], x: [sqrt(x)], y: [y**(2*x)]})
+    True
 
     If you need to sort the sifted items it might be better to use
     ``ordered`` which can economically apply multiple sort keys
@@ -1774,8 +1776,8 @@ def necklaces(n, k, free=False):
 
     >>> B = [show('ABC', i) for i in bracelets(3, 3)]
     >>> N = [show('ABC', i) for i in necklaces(3, 3)]
-    >>> set(N) - set(B)
-    set(['ACB'])
+    >>> set(N) - set(B) == {'ACB'}
+    True
 
     >>> list(necklaces(4, 2))
     [(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 1, 1),

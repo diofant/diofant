@@ -304,12 +304,12 @@ class CoordSysCartesian(Basic):
         ========
 
         >>> from sympy.vector import CoordSysCartesian
-        >>> from sympy import Symbol
+        >>> from sympy import Symbol, cos, sin
         >>> A = CoordSysCartesian('A')
         >>> q = Symbol('q')
         >>> B = A.orient_new_axis('B', q, A.k)
-        >>> A.scalar_map(B)
-        {A.x: B.x*cos(q) - B.y*sin(q), A.y: B.x*sin(q) + B.y*cos(q), A.z: B.z}
+        >>> A.scalar_map(B) == {A.x: B.x*cos(q) - B.y*sin(q), A.y: B.x*sin(q) + B.y*cos(q), A.z: B.z}
+        True
 
         """
 

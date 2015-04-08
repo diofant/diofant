@@ -339,14 +339,14 @@ def _exponents(expr, x):
     >>> from sympy.integrals.meijerint import _exponents
     >>> from sympy.abc import x, y
     >>> from sympy import sin
-    >>> _exponents(x, x)
-    set([1])
-    >>> _exponents(x**2, x)
-    set([2])
-    >>> _exponents(x**2 + x, x)
-    set([1, 2])
-    >>> _exponents(x**3*sin(x + x**y) + 1/x, x)
-    set([-1, 1, 3, y])
+    >>> _exponents(x, x) == {1}
+    True
+    >>> _exponents(x**2, x) == {2}
+    True
+    >>> _exponents(x**2 + x, x) == {1, 2}
+    True
+    >>> _exponents(x**3*sin(x + x**y) + 1/x, x) == {-1, 1, 3, y}
+    True
     """
     def _exponents_(expr, x, res):
         if expr == x:
@@ -376,12 +376,12 @@ def _find_splitting_points(expr, x):
     >>> from sympy.integrals.meijerint import _find_splitting_points as fsp
     >>> from sympy import sin
     >>> from sympy.abc import a, x
-    >>> fsp(x, x)
-    set([0])
-    >>> fsp((x-1)**3, x)
-    set([1])
-    >>> fsp(sin(x+3)*x, x)
-    set([-3, 0])
+    >>> fsp(x, x) == {0}
+    True
+    >>> fsp((x-1)**3, x) == {1}
+    True
+    >>> fsp(sin(x+3)*x, x) == {-3, 0}
+    True
     """
     p, q = [Wild(n, exclude=[x]) for n in 'pq']
 

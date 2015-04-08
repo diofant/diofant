@@ -166,10 +166,10 @@ def with_metaclass(meta, *bases):
     are the base classes. Note that if the base class is just ``object``, you
     may omit it.
 
-    >>> MyClass.__mro__
-    (<class 'MyClass'>, <... 'object'>)
-    >>> type(MyClass)
-    <class 'Meta'>
+    >>> MyClass.__mro__ == (MyClass, object)
+    True
+    >>> type(MyClass) is Meta
+    True
 
     """
     # This requires a bit of explanation: the basic idea is to make a dummy

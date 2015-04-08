@@ -1313,6 +1313,7 @@ class DiagramGrid(object):
 
         >>> from sympy.categories import Object, NamedMorphism
         >>> from sympy.categories import Diagram, DiagramGrid
+        >>> from sympy.sets import EmptySet
         >>> A = Object("A")
         >>> B = Object("B")
         >>> C = Object("C")
@@ -1320,10 +1321,11 @@ class DiagramGrid(object):
         >>> g = NamedMorphism(B, C, "g")
         >>> diagram = Diagram([f, g])
         >>> grid = DiagramGrid(diagram)
-        >>> grid.morphisms
-        {NamedMorphism(Object("A"), Object("B"), "f"): EmptySet(),
-        NamedMorphism(Object("B"), Object("C"), "g"): EmptySet()}
-
+        >>> grid.morphisms == {NamedMorphism(Object("A"),
+        ...                                  Object("B"), "f"): EmptySet(),
+        ...                    NamedMorphism(Object("B"),
+        ...                                  Object("C"), "g"): EmptySet()}
+        True
         """
         return self._morphisms
 

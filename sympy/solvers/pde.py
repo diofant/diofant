@@ -506,12 +506,12 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*ux + b*uy + c*u
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
           d               d
         a*--(f(x, y)) + b*--(f(x, y)) + c*f(x, y)
           dx              dy
 
-        >>> pprint(pdsolve(genform))
+        >>> pprint(pdsolve(genform), use_unicode=False)
                                  -c*(a*x + b*y)
                                  ---------------
                                       2    2
@@ -529,7 +529,7 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     >>> f = Function('f')
     >>> pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y))
     Eq(f(x, y), F(x - y)*exp(-x/2 - y/2))
-    >>> pprint(pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y)))
+    >>> pprint(pdsolve(f(x,y) + f(x,y).diff(x) + f(x,y).diff(y)), use_unicode=False)
                           x   y
                         - - - -
                           2   2
@@ -577,11 +577,11 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*u + b*ux + c*uy - G(x,y)
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                   d               d
         a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
                   dx              dy
-        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'))
+        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'), use_unicode=False)
                   //          b*x + c*y                                             \
                   ||              /                                                 |
                   ||             |                                                  |
@@ -621,7 +621,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     ========
 
     >>> from sympy.solvers.pde import pdsolve
-    >>> from sympy import Function, diff, pprint, exp
+    >>> from sympy import Function, diff, exp
     >>> from sympy.abc import x,y
     >>> f = Function('f')
     >>> eq = -2*f(x,y).diff(x) + 4*f(x,y).diff(y) + 5*f(x,y) - exp(x + 3*y)
@@ -689,7 +689,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a(x, y)*u + b(x, y)*ux + c(x, y)*uy - G(x,y)
-        >>> pprint(genform)
+        >>> pprint(genform, use_unicode=False)
                                              d                     d
         -G(x, y) + a(x, y)*f(x, y) + b(x, y)*--(f(x, y)) + c(x, y)*--(f(x, y))
                                              dx                    dy

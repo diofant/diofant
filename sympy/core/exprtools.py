@@ -94,10 +94,10 @@ class Factors(object):
         >>> Factors(e.as_powers_dict())
         Factors({2: 1, x: 3})
         >>> f = _
-        >>> f.factors  # underlying dictionary
-        {2: 1, x: 3}
-        >>> f.gens  # base of each factor
-        frozenset([2, x])
+        >>> f.factors == {2: 1, x: 3}
+        True
+        >>> f.gens == frozenset([2, x])  # base of each factor
+        True
         >>> Factors(0)
         Factors({0: 1})
         >>> Factors(I)

@@ -1387,12 +1387,12 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from sympy import RegularPolygon, Point
+        >>> from sympy import RegularPolygon, Point, sqrt, pi
         >>> r = RegularPolygon(Point(0, 0), 5, 3)
-        >>> r.angles
-        {Point(-5/2, -5*sqrt(3)/2): pi/3,
-         Point(-5/2, 5*sqrt(3)/2): pi/3,
-         Point(5, 0): pi/3}
+        >>> r.angles == {Point(-5/2, -5*sqrt(3)/2): pi/3,
+        ...              Point(-5/2, 5*sqrt(3)/2): pi/3,
+        ...              Point(5, 0): pi/3}
+        True
         """
         ret = {}
         ang = self.interior_angle

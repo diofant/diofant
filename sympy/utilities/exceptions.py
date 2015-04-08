@@ -37,10 +37,10 @@ class SymPyDeprecationWarning(DeprecationWarning):
     To provide additional information, create an instance of this
     class in this way:
 
-    >>> SymPyDeprecationWarning(
+    >>> print(SymPyDeprecationWarning(
     ...     feature="Such and such",
     ...     last_supported_version="1.2.3",
-    ...     useinstead="this other feature")
+    ...     useinstead="this other feature"))
     Such and such has been deprecated. It will be last supported in SymPy
     version 1.2.3. Use this other feature instead.
 
@@ -51,36 +51,36 @@ class SymPyDeprecationWarning(DeprecationWarning):
     ``useinstead`` can be omitted. In this case the corresponding sentence
     will not be shown:
 
-    >>> SymPyDeprecationWarning(feature="Such and such",
-    ...     useinstead="this other feature")
+    >>> print(SymPyDeprecationWarning(feature="Such and such",
+    ...     useinstead="this other feature"))
     Such and such has been deprecated. Use this other feature instead.
 
     You can still provide the argument value.  If it is a string, it
     will be appended to the end of the message:
 
-    >>> SymPyDeprecationWarning(
+    >>> print(SymPyDeprecationWarning(
     ...     feature="Such and such",
     ...     useinstead="this other feature",
-    ...     value="Contact the developers for further information.")
+    ...     value="Contact the developers for further information."))
     Such and such has been deprecated. Use this other feature instead.
     Contact the developers for further information.
 
     If, however, the argument value does not hold a string, a string
     representation of the object will be appended to the message:
 
-    >>> SymPyDeprecationWarning(
+    >>> print(SymPyDeprecationWarning(
     ...     feature="Such and such",
     ...     useinstead="this other feature",
-    ...     value=[1,2,3])
+    ...     value=[1,2,3]))
     Such and such has been deprecated. Use this other feature instead.
     ([1, 2, 3])
 
     To associate an issue with a deprecation, use the ``issue`` flag.
 
-    >>> SymPyDeprecationWarning(
+    >>> print(SymPyDeprecationWarning(
     ...    feature="Old feature",
     ...    useinstead="new feature",
-    ...    issue=5241)
+    ...    issue=5241))
     Old feature has been deprecated. Use new feature instead. See
     https://github.com/sympy/sympy/issues/5241 for more info.
 
@@ -92,10 +92,10 @@ class SymPyDeprecationWarning(DeprecationWarning):
     which it was deprecated.  Use the ``deprecated_since_version`` flag for
     this.
 
-    >>> SymPyDeprecationWarning(
+    >>> print(SymPyDeprecationWarning(
     ...    feature="Old feature",
     ...    useinstead="new feature",
-    ...    deprecated_since_version="0.7.2")
+    ...    deprecated_since_version="0.7.2"))
     Old feature has been deprecated since SymPy 0.7.2. Use new feature
     instead.
 
