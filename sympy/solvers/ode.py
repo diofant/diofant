@@ -604,7 +604,10 @@ def dsolve(eq, func=None, hint="default", simplify=True,
             raise NotImplementedError
         else:
             if match['is_linear']:
-                if match['no_of_equation'] > 3:
+                # TODO: use 'hint', c.f., scalar case
+                if match['type_of_equation'] == 'linear_order1_jordan':
+                    solvefunc = globals()['sysode_%(type_of_equation)s' % match]
+                elif match['no_of_equation'] > 3:
                     solvefunc = globals()['sysode_linear_neq_order%(order)s' % match]
                 else:
                     solvefunc = globals()['sysode_linear_%(no_of_equation)seq_order%(order)s' % match]
@@ -1441,26 +1444,32 @@ def classify_sysode(eq, funcs=None, **kwargs):
     if len(set(order.values())) == 1:
         order_eq = list(matching_hints['order'].values())[0]
         if matching_hints['is_linear']:
-            if matching_hints['no_of_equation'] == 2:
-                if order_eq == 1:
-                    type_of_equation = check_linear_2eq_order1(eq, funcs, func_coef)
-                elif order_eq == 2:
-                    type_of_equation = check_linear_2eq_order2(eq, funcs, func_coef)
-                else:
-                    type_of_equation = None
+            type_of_equation = None
+            if order_eq == 1:
+                # TODO: seperate hint for real?
+                type_of_equation = check_linear_order1_jordan(eq, funcs, func_coef)
 
-            elif matching_hints['no_of_equation'] == 3:
-                if order_eq == 1:
-                    type_of_equation = check_linear_3eq_order1(eq, funcs, func_coef)
-                    if type_of_equation is None:
+            if type_of_equation is None:
+                if matching_hints['no_of_equation'] == 2:
+                    if order_eq == 1:
+                        type_of_equation = check_linear_2eq_order1(eq, funcs, func_coef)
+                    elif order_eq == 2:
+                        type_of_equation = check_linear_2eq_order2(eq, funcs, func_coef)
+                    else:
+                        type_of_equation = None
+
+                elif matching_hints['no_of_equation'] == 3:
+                    if order_eq == 1:
+                        type_of_equation = check_linear_3eq_order1(eq, funcs, func_coef)
+                        if type_of_equation is None:
+                            type_of_equation = check_linear_neq_order1(eq, funcs, func_coef)
+                    else:
+                        type_of_equation = None
+                else:
+                    if order_eq == 1:
                         type_of_equation = check_linear_neq_order1(eq, funcs, func_coef)
-                else:
-                    type_of_equation = None
-            else:
-                if order_eq == 1:
-                    type_of_equation = check_linear_neq_order1(eq, funcs, func_coef)
-                else:
-                    type_of_equation = None
+                    else:
+                        type_of_equation = None
         else:
             if matching_hints['no_of_equation'] == 2:
                 if order_eq == 1:
@@ -1480,6 +1489,34 @@ def classify_sysode(eq, funcs=None, **kwargs):
     matching_hints['type_of_equation'] = type_of_equation
 
     return matching_hints
+
+
+def check_linear_order1_jordan(eq, func, func_coef):
+    n = len(eq)
+    fc = func_coef
+    t = func[0].args[0]
+
+    M = Matrix(n, n, lambda i, j: +fc[i, func[j], 1])
+    L = Matrix(n, n, lambda i, j: -fc[i, func[j], 0])
+
+    if M.has(t) or L.has(t):
+        return
+
+    r = {'M': M, 'L': L}
+    try:
+        r['Minv'] = M.inv()
+    except ValueError:  # pragma: no cover
+        return
+
+    r['forcing'] = [S.Zero]*n
+    for i in range(n):
+        for j in Add.make_args(eq[i]):
+            if not j.has(*func):
+                r['forcing'][i] += j
+    if any(not f.is_zero for f in r['forcing']):
+        return  # nonhomogeneous systems aren't supported, see sympy/sympy#9244
+
+    return 'linear_order1_jordan'
 
 
 def check_linear_2eq_order1(eq, func, func_coef):
