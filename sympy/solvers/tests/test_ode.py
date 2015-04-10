@@ -1820,6 +1820,7 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
     assert checkodesol(eq12, sol12, order=4, solve_for_func=False)[0]
 
 
+@slow
 def test_nth_linear_constant_coeff_variation_of_parameters_simplify_False():
     # solve_variation_of_parameters shouldn't attempt to simplify the
     # Wronskian if simplify=False.  If wronskian() ever gets good enough
