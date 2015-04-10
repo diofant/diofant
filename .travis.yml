@@ -40,13 +40,13 @@ before_install:
   - if [[ "${TEST_EXTRA}" == "true" ]]; then
       sudo apt-get update;
       sudo apt-get -qq install libgmp-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran;
-      pip install numpy==1.7.1 scipy==0.12.0 gmpy==1.16 Theano==0.6;
-      pip install --allow-external matplotlib==1.2.1;
+      travis_wait 30 pip install numpy==1.7.1 scipy==0.12.0 gmpy==1.16 Theano==0.6;
+      travis_wait 30 pip install --allow-external matplotlib==1.2.1;
     fi
   - if [[ "${TEST_SAGE}" == "true" ]]; then
       sudo apt-add-repository -y ppa:aims/sagemath;
       sudo apt-get update;
-      sudo apt-get install sagemath-upstream-binary;
+      travis_wait 30 sudo apt-get install sagemath-upstream-binary;
     fi
   - if [[ "${TEST_PEP}" == "true" ]]; then
       pip install pep8==1.6.2;
@@ -60,6 +60,6 @@ script:
   - if [[ "${TEST_PEP}" == "true" ]]; then
       pep8;
     fi
-  - bin/test_travis.sh
+  - travis_wait 50 bin/test_travis.sh
 notifications:
   email: false

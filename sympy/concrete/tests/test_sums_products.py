@@ -6,7 +6,7 @@ from sympy import (
 )
 from sympy.abc import a, b, c, d, f, k, m, x, y, z
 from sympy.concrete.summations import telescopic
-from sympy.utilities.pytest import raises
+from sympy.utilities.pytest import raises, slow
 from sympy.core.mod import Mod
 from sympy.core.compatibility import range
 
@@ -768,6 +768,7 @@ def test_reverse_order():
         Sum(x*y, (x, b + 1, a - 1), (y, 6, 1))
 
 
+@slow
 def test_findrecur():
     a, x, y = symbols("a, x, y")
     n, k = symbols("n, k", integer=True)

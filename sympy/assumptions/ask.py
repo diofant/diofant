@@ -328,7 +328,7 @@ known_facts_keys = [getattr(Q, attr) for attr in Q.__dict__
                     if not attr.startswith('__')]
 known_facts = And(
     Implies(Q.integer, Q.rational),
-    Equivalent(Q.rational, Q.real & ~Q.irrational),
+    Implies(Q.rational, Q.real),
     Equivalent(Q.real, Q.extended_real & Q.finite),
     Implies(Q.rational, Q.algebraic),
     Implies(Q.algebraic, Q.complex),
@@ -346,7 +346,7 @@ known_facts = And(
     Equivalent(Q.nonnegative, ~Q.negative & Q.extended_real),
     Implies(Q.zero, Q.even & Q.finite),
     Equivalent(Q.prime, Q.integer & Q.positive & ~Q.composite),
-    Equivalent(Q.real, Q.rational | Q.irrational),
+    Equivalent(Q.irrational, Q.real & ~Q.rational),
     Implies(Q.imaginary, ~Q.real | Q.zero),
     Implies(Q.infinite, ~Q.finite),
     Equivalent(Q.noninteger, Q.real & ~Q.integer),
