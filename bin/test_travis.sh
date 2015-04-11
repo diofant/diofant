@@ -3,12 +3,11 @@
 set -e -x # exit on error and echo each command
 
 if [[ "${TEST_SPHINX}" == "true" ]]; then
+    bin/doctest `find doc/ -name '*.rst'`
     make -C doc html-errors man latex
     LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
 else
-    if [[ "${TEST_DOCTESTS}" == "true" ]]; then
-        bin/doctest doc/
-    elif [[ "${TEST_SLOW}" == "true" ]]; then
+    if [[ "${TEST_SLOW}" == "true" ]]; then
         py.test -m 'slow' --duration=100 --split="${SPLIT}" sympy/
     elif [[ "${TEST_EXTRA}" == "true" ]]; then
         if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
