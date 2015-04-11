@@ -72,7 +72,7 @@ def greedy(tree, objective=identity, **kwargs):
     choices to minimize the objective.  It defaults to the identity.
 
     Examples
-    ========
+    --------
 
     >>> from sympy.strategies.tree import greedy
     >>> inc    = lambda x: x + 1

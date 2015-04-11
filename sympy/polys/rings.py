@@ -37,7 +37,7 @@ def ring(symbols, domain, order=lex):
     order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
-    ========
+    --------
 
     >>> from sympy.polys.rings import ring
     >>> from sympy.polys.domains import ZZ
@@ -66,7 +66,7 @@ def xring(symbols, domain, order=lex):
     order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
-    ========
+    --------
 
     >>> from sympy.polys.rings import xring
     >>> from sympy.polys.domains import ZZ
@@ -95,7 +95,7 @@ def vring(symbols, domain, order=lex):
     order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
 
     Examples
-    ========
+    --------
 
     >>> from sympy.polys.rings import vring
     >>> from sympy.polys.domains import ZZ
@@ -124,7 +124,7 @@ def sring(exprs, *symbols, **options):
     options : keyword arguments understood by :class:`~sympy.polys.polyoptions.Options`
 
     Examples
-    ========
+    --------
 
     >>> from sympy.core import symbols
     >>> from sympy.polys.rings import sring
@@ -1633,7 +1633,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         element : PolyElement (with ``is_monomial = True``) or 1
 
         Examples
-        ========
+        --------
 
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
@@ -1744,7 +1744,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional
 
         Examples
-        ========
+        --------
 
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
@@ -1769,7 +1769,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional
 
         Examples
-        ========
+        --------
 
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
@@ -1794,7 +1794,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         order : :class:`~sympy.polys.polyoptions.Order` or coercible, optional
 
         Examples
-        ========
+        --------
 
         >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
