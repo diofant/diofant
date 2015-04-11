@@ -2,9 +2,30 @@ from __future__ import print_function, division
 
 import string
 
-from .core import Symbol
+from .core import Symbol, symbols
 from .core.alphabets import greeks
 from .core.compatibility import exec_
+
+##### Symbol definitions #####
+
+a, b, c, d, e, f, g, h, i, j, k, l, m = symbols('a:m')
+n, o, p, q, r, s, t, u, v, w, x, y, z = symbols('n:z')
+
+A, B, C, D, E, F, G, H, I, J, K, L, M = symbols('A:M')
+N, O, P, Q, R, S, T, U, V, W, X, Y, Z = symbols('N:Z')
+
+alpha, beta, gamma, delta = symbols('alpha, beta, gamma, delta')
+epsilon, zeta, eta, theta = symbols('epsilon, zeta, eta, theta')
+iota, kappa, lamda, mu = symbols('iota, kappa, lamda, mu')
+nu, xi, omicron, pi = symbols('nu, xi, omicron, pi')
+rho, sigma, tau, upsilon = symbols('rho, sigma, tau, upsilon')
+phi, chi, psi, omega = symbols('phi, chi, psi, omega')
+
+
+##### Clashing-symbols diagnostics #####
+
+# We want to know which names in SymPy collide with those in here.
+# This is mostly for diagnosing SymPy's namespace during SymPy development.
 
 _latin = list(string.ascii_letters)
 # OSINEQ should not be imported as they clash; gamma, pi and zeta clash, too
@@ -12,9 +33,6 @@ _greek = list(greeks) # make a copy, so we can mutate it
 # Note: We import lamda since lambda is a reserved keyword in Python
 _greek.remove("lambda")
 _greek.append("lamda")
-
-for _s in _latin + _greek:
-    exec_("%s = Symbol('%s')" % (_s, _s))
 
 def clashing():
     """Return the clashing-symbols dictionaries.
@@ -62,4 +80,4 @@ def clashing():
 
 _clash1, _clash2, _clash = clashing()
 
-del _latin, _greek, _s, clashing, Symbol
+del _latin, _greek, clashing, Symbol
