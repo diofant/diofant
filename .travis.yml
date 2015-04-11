@@ -24,10 +24,6 @@ matrix:
     - python: "pypy3"
       env:
         - SPLIT="2/2" FASTCACHE="false"
-  allow_failures:
-    - python: "pypy3"
-      env:
-        - SPLIT="2/2" FASTCACHE="false"
 before_install:
   - if [[ "${FASTCACHE}" != "false" ]]; then
       pip install fastcache;
@@ -52,6 +48,9 @@ before_install:
       pip install pep8==1.6.2;
     fi
   - pip install pytest==2.7.0
+  - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
+      pip install pytest-cov coveralls --use-mirrors;
+    fi
 install:
   - if [[ "${TEST_SAGE}" != "true" ]]; then
       python setup.py install;
@@ -61,5 +60,9 @@ script:
       pep8;
     fi
   - travis_wait 50 bin/test_travis.sh
+after_success:
+  - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
+      coveralls;
+    fi
 notifications:
   email: false

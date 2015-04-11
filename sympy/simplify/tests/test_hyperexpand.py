@@ -140,6 +140,7 @@ def randcplx(offset=-1):
     return _randrat() + I*_randrat() + I*(1 + offset)
 
 
+@slow
 def test_formulae():
     from sympy.simplify.hyperexpand import FormulaCollection
     formulae = FormulaCollection().formulae
@@ -432,6 +433,7 @@ def test_meijerg_expand_fail():
     assert can_do_meijer([S.Half], [], [-a, a], [0])
 
 
+@slow
 def test_meijerg():
     # carefully set up the parameters.
     # NOTE: this used to fail sometimes. I believe it is fixed, but if you
@@ -502,6 +504,7 @@ def test_meijerg_shift_operators():
         s.apply(g, op), meijerg([a1], [a3 + 1, a4], [b1], [b3, b4], z), z)
 
 
+@slow
 def test_meijerg_confluence():
     def t(m, a, b):
         from sympy import sympify, Piecewise
