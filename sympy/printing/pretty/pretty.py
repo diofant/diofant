@@ -544,6 +544,8 @@ class PrettyPrinter(Printer):
         e, z, z0, dir = l.args
 
         E = self._print(e)
+        if e.is_Add:
+            E = prettyForm(*E.parens())
         Lim = prettyForm('lim')
 
         LimArg = self._print(z)

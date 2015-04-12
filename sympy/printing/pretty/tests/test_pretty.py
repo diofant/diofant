@@ -3125,6 +3125,22 @@ x─→0  x   \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    expr = Limit(x - 1/y, x, 1)
+    ascii_str = \
+"""\
+     /    1\\\n\
+ lim |x - -|\n\
+x->1+\    y/\
+"""
+    ucode_str = \
+u("""\
+     ⎛    1⎞\n\
+ lim ⎜x - ─⎟\n\
+x─→1⁺⎝    y⎠\
+""")
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
 
 def test_pretty_RootOf():
     expr = RootOf(x**5 + 11*x - 2, 0)
