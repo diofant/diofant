@@ -469,7 +469,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     poly_coeffs = _symbols('A', len(monoms))
 
     poly_part = Add(*[ poly_coeffs[i]*monomial
-        for i, monomial in enumerate(monoms) ])
+        for i, monomial in enumerate(ordered(monoms)) ])
 
     reducibles = set()
 
