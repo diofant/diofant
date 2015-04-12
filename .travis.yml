@@ -31,7 +31,7 @@ before_install:
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
       sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern docbook2x;
-      pip install sphinx==1.2.2 numpydoc==0.5;
+      pip install sphinx==1.2.2 numpydoc==0.5 sphinx_rtd_theme;
     fi
   - if [[ "${TEST_EXTRA}" == "true" ]]; then
       sudo apt-get update;

@@ -1,6 +1,6 @@
-=========
- Gotchas
-=========
+=====================
+ Gotchas and Pitfalls
+=====================
 
 To begin, we should make something about SymPy clear.  SymPy is nothing more
 than a Python library, like ``NumPy``, ``Django``, or even modules in the
@@ -8,15 +8,19 @@ Python standard library ``sys`` or ``re``.  What this means is that SymPy does
 not add anything to the Python language.  Limitations that are inherent in the
 Python language are also inherent in SymPy.  It also means that SymPy tries to
 use Python idioms whenever possible, making programming with SymPy easy for
-those already familiar with programming with Python.  As a simple example,
-SymPy uses Python syntax to build expressions.  Implicit multiplication (like
-``3x`` or ``3 x``) is not allowed in Python, and thus not allowed in SymPy.
-To multiply ``3`` and ``x``, you must type ``3*x`` with the ``*``.
+those already familiar with programming with Python.
+
+For example, implicit multiplication (like ``3x`` or ``3 x``) is not
+allowed in Python, and thus not allowed in SymPy: to multiply ``3``
+and ``x``, you must type ``3*x`` with the ``*``.  Also, to
+raise something to a power, use ``**``, not ``^`` (logical exclusive
+or in Python) as many computer algebra systems use.  Parentheses
+``()`` change operator precedence as you would normally expect.
 
 .. _tutorial-gotchas-symbols:
 
-Symbols
-=======
+Variables and Symbols
+=====================
 
 One consequence of this fact is that SymPy can be used in any environment
 where Python is available.  We just import it, like we would any other
@@ -138,7 +142,72 @@ discussed in more detail later.
     >>> expr.subs(x, 2)
     3
 
-.. TODO: Add link to basic operations section
+If you use :command:`isympy`, it runs the following commands for you,
+giving you some default Symbols and Functions.
+
+    >>> from __future__ import division
+    >>> from sympy import *
+    >>> x, y, z, t = symbols('x y z t')
+    >>> k, m, n = symbols('k m n', integer=True)
+    >>> f, g, h = symbols('f g h', cls=Function)
+
+You can also import common symbol names from ``sympy.abc`` module.
+
+    >>> from sympy.abc import w
+    >>> w
+    w
+    >>> import sympy
+    >>> dir(sympy.abc)  #doctest: +SKIP
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'Symbol', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    '__builtins__', '__doc__', '__file__', '__name__', '__package__', '_greek',
+    '_latin', 'a', 'alpha', 'b', 'beta', 'c', 'chi', 'd', 'delta', 'e',
+    'epsilon', 'eta', 'f', 'g', 'gamma', 'h', 'i', 'iota', 'j', 'k', 'kappa',
+    'l', 'm', 'mu', 'n', 'nu', 'o', 'omega', 'omicron', 'p', 'phi', 'pi',
+    'psi', 'q', 'r', 'rho', 's', 'sigma', 't', 'tau', 'theta', 'u', 'upsilon',
+    'v', 'w', 'x', 'xi', 'y', 'z', 'zeta']
+
+If you want control over the assumptions of the variables, use
+:func:`~sympy.core.symbol.Symbol` and :func:`~sympy.core.symbol.symbols`.
+
+Lastly, it is recommended that you not use :class:`I <sympy.core.numbers.ImaginaryUnit>`,
+:class:`E <sympy.core.numbers.Exp1>`, :class:`~sympy.core.singleton.S`,
+:func:`~sympy.core.evalf.N`, :class:`O <sympy.series.order.Order>`,
+or :obj:`~sympy.assumptions.ask.Q` for variable or symbol names, as those
+are used for the imaginary unit (:math:`i`), the base of the natural
+logarithm (:math:`e`), the :func:`~sympy.core.sympify.sympify` function (see :ref:`Symbolic
+Expressions<symbolic-expressions>` below), numeric evaluation (:func:`~sympy.core.evalf.N`
+is equivalent to :ref:`evalf()<evalf-label>` ),
+the `big O <http://en.wikipedia.org/wiki/Big_O_notation>`_ order symbol
+(as in :math:`O(n\log{n})`), and the assumptions object that holds a list of
+supported ask keys (such as :ref:`Q.real <new-assumptions-real>`), respectively.  You can use the
+mnemonic ``QCOSINE`` to remember what Symbols are defined by default in SymPy.
+Or better yet, always use lowercase letters for Symbol names.  Python will
+not prevent you from overriding default SymPy names or functions, so be
+careful.
+
+    >>> cos(pi)  # cos and pi are a built-in sympy names.
+    -1
+    >>> pi = 3   # Notice that there is no warning for overriding pi.
+    >>> cos(pi)
+    cos(3)
+    >>> def cos(x):  # No warning for overriding built-in functions either.
+    ...     return 5*x
+    ...
+    >>> cos(pi)
+    15
+    >>> from sympy import cos  # reimport to restore normal behavior
+
+To get a full list of all default names in SymPy do:
+
+    >>> import sympy
+    >>> dir(sympy)  #doctest: +SKIP
+    # A big list of all default sympy names and functions follows.
+    # Ignore everything that starts and ends with __.
+
+If you have `IPython <http://ipython.org/>`_ installed and
+use :command:`isympy`, you can also press the TAB key to get a list of
+all built-in names and to autocomplete.
 
 .. _tutorial_gotchas_equals:
 
@@ -212,77 +281,270 @@ equal by evaluating them numerically at random points.
     >>> a.equals(b)
     True
 
-Two Final Notes: ``^`` and ``/``
-================================
 
-You may have noticed that we have been using ``**`` for exponentiation instead
-of the standard ``^``.  That's because SymPy follows Python's conventions.  In
-Python, ``^`` represents logical exclusive or.  SymPy follows this convention:
+.. _symbolic-expressions:
 
-     >>> True ^ False
-     True
-     >>> True ^ True
-     False
-     >>> x^y
-     Xor(x, y)
+Symbolic Expressions
+====================
 
-Finally, a small technical discussion on how SymPy works is in order.  When
-you type something like ``x + 1``, the SymPy Symbol ``x`` is added to the
-Python int ``1``.  Python's operator rules then allow SymPy to tell Python
-that SymPy objects know how to be added to Python ints, and so ``1`` is
-automatically converted to the SymPy Integer object.
+.. _python-vs-sympy-numbers:
 
-This sort of operator magic happens automatically behind the scenes, and you
-rarely need to even know that it is happening.  However, there is one
-exception.  Whenever you combine a SymPy object and a SymPy object, or a SymPy
-object and a Python object, you get a SymPy object, but whenever you combine
-two Python objects, SymPy never comes into play, and so you get a Python
-object.
+Python numbers vs. SymPy Numbers
+--------------------------------
 
-    >>> type(Integer(1) + 1)
-    <class 'sympy.core.numbers.Integer'>
-    >>> type(1 + 1)
-    <... 'int'>
+SymPy uses its own classes for integers, rational numbers, and floating
+point numbers instead of the default Python `int` and `float`
+types because it allows for more control.  But you have to be careful.
+If you type an expression that just has numbers in it, it will default
+to a Python expression.  Use the :func:`sympy.core.sympify.sympify` function, or just
+:func:`S <sympy.core.sympify.sympify>`, to ensure that something is a SymPy expression.
 
-This is usually not a big deal. Python ints work much the same as SymPy
-Integers, but there is one important exception:  division.  In SymPy, the
-division of two Integers gives a Rational:
+    >>> 6.2  # Python float. Notice the floating point accuracy problems.
+    6.2000000000000002
+    >>> type(6.2)  # <type 'float'> in Python 2.x,  <class 'float'> in Py3k
+    <... 'float'>
+    >>> S(6.2)  # SymPy Float has no such problems because of arbitrary precision.
+    6.20000000000000
+    >>> type(S(6.2))
+    <class 'sympy.core.numbers.Float'>
 
-    >>> Integer(1)/Integer(3)
-    1/3
-    >>> type(Integer(1)/Integer(3))
-    <class 'sympy.core.numbers.Rational'>
+If you include numbers in a SymPy expression, they will be sympified
+automatically, but there is one gotcha you should be aware of.  If you
+do ``<number>/<number>`` inside of a SymPy expression, Python will
+evaluate the two numbers before SymPy has a chance to get
+to them.  The solution is to :func:`~sympy.core.sympify.sympify` one of the numbers, or use
+:class:`~sympy.core.numbers.Rational`.
 
-But in Python ``/`` represents either integer division or floating point
-division, depending on whether you are in Python 2 or Python 3, and depending
-on whether or not you have run ``from __future__ import division``:
+    >>> x**(1/2)  # evaluates to x**0 or x**0.5
+    x**0.5
+    >>> x**(S(1)/2)  # sympyify one of the ints
+    sqrt(x)
+    >>> x**Rational(1, 2)  # use the Rational class
+    sqrt(x)
+
+With a power of ``1/2`` you can also use ``sqrt`` shorthand:
+
+    >>> sqrt(x) == x**Rational(1, 2)
+    True
+
+If the two integers are not directly separated by a division sign then
+you don't have to worry about this problem:
+
+    >>> x**(2*x/3)
+    x**(2*x/3)
+
+.. note::
+
+    A common mistake is copying an expression that is printed and
+    reusing it.  If the expression has a :class:`~sympy.core.numbers.Rational` (i.e.,
+    ``<number>/<number>``) in it, you will not get the same result,
+    obtaining the Python result for the division rather than a SymPy
+    Rational.
+
+    >>> x = Symbol('x')
+    >>> print(solve(7*x -22, x))
+    [22/7]
+    >>> 22/7  # If we just copy and paste we get int 3 or a float
+    3.142857142857143
+    >>> # One solution is to just assign the expression to a variable
+    >>> # if we need to use it again.
+    >>> a = solve(7*x - 22, x)
+    >>> a
+    [22/7]
+
+    The other solution is to put quotes around the expression
+    and run it through S() (i.e., sympify it):
+
+    >>> S("22/7")
+    22/7
+
+Also, if you do not use :command:`isympy`, you could use ``from
+__future__ import division`` to prevent the ``/`` sign from performing
+`integer division <http://en.wikipedia.org/wiki/Integer_division>`_.
 
     >>> from __future__ import division
-    >>> 1/2 #doctest: +SKIP
+    >>> 1/2   # With division imported it evaluates to a python float
     0.5
+    >>> 1//2  # You can still achieve integer division with //
+    0
 
-To avoid this, we can construct the rational object explicitly
+    But be careful: you will now receive floats where you might have desired
+    a Rational:
 
-    >>> Rational(1, 2)
-    1/2
+    >>> x**(1/2)
+    x**0.5
 
-This problem also comes up whenever we have a larger symbolic expression with
-``int/int`` in it.  For example:
+:class:`~sympy.core.numbers.Rational` only works for number/number and is only meant for
+rational numbers.  If you want a fraction with symbols or expressions in
+it, just use ``/``.  If you do number/expression or expression/number,
+then the number will automatically be converted into a SymPy Number.
+You only need to be careful with number/number.
 
-    >>> x + 1/2 #doctest: +SKIP
-    x + 0.5
+    >>> Rational(2, x)
+    Traceback (most recent call last):
+    ...
+    TypeError: invalid input: x
+    >>> 2/x
+    2/x
 
-This happens because Python first evaluates ``1/2`` into ``0.5``, and then
-that is cast into a SymPy type when it is added to ``x``.  Again, we can get
-around this by explicitly creating a Rational:
+Evaluating Expressions with Floats and Rationals
+------------------------------------------------
 
-    >>> x + Rational(1, 2)
-    x + 1/2
+SymPy keeps track of the precision of ``Float`` objects. The default precision is
+15 digits. When an expression involving a ``Float`` is evaluated, the result
+will be expressed to 15 digits of precision but those digits (depending
+on the numbers involved with the calculation) may not all be significant.
 
-There are several tips on avoiding this situation in the :ref:`gotchas`
-document.
+The first issue to keep in mind is how the ``Float`` is created: it is created
+with a value and a precision. The precision indicates how precise of a value
+to use when that ``Float`` (or an expression it appears in) is evaluated.
 
-Further Reading
-===============
+The values can be given as strings, integers, floats, or rationals.
 
-For more discussion on the topics covered in this section, see :ref:`gotchas`.
+    - strings and integers are interpreted as exact
+
+    >>> Float(100)
+    100.000000000000
+    >>> Float('100', 5)
+    100.00
+
+    - to have the precision match the number of digits, the null string
+      can be used for the precision
+
+    >>> Float(100, '')
+    100.
+    >>> Float('12.34')
+    12.3400000000000
+    >>> Float('12.34', '')
+    12.34
+
+    >>> s, r = [Float(j, 3) for j in ('0.25', Rational(1, 7))]
+    >>> for f in [s, r]:
+    ...     print(f)
+    0.250
+    0.143
+
+Next, notice that each of those values looks correct to 3 digits. But if we try
+to evaluate them to 20 digits, a difference will become apparent:
+
+    The 0.25 (with precision of 3) represents a number that has a non-repeating
+    binary decimal; 1/7 is repeating in binary and decimal -- it cannot be
+    represented accurately too far past those first 3 digits (the correct
+    decimal is a repeating 142857):
+
+    >>> s.n(20)
+    0.25000000000000000000
+    >>> r.n(20)
+    0.14285278320312500000
+
+    It is important to realize that although a Float is being displayed in
+    decimal at aritrary precision, it is actually stored in binary. Once the
+    Float is created, its binary information is set at the given precision.
+    The accuracy of that value cannot be subsequently changed; so 1/7, at a
+    precision of 3 digits, can be padded with binary zeros, but these will
+    not make it a more accurate value of 1/7.
+
+If inexact, low-precision numbers are involved in a calculation with
+with higher precision values, the evalf engine will increase the precision
+of the low precision values and inexact results will be obtained. This is
+feature of calculations with limited precision:
+
+    >>> Float('0.1', 10) + Float('0.1', 3)
+    0.2000061035
+
+Although the ``evalf`` engine tried to maintain 10 digits of precision (since
+that was the highest precision represented) the 3-digit precision used
+limits the accuracy to about 4 digits -- not all the digits you see
+are significant. evalf doesn't try to keep track of the number of
+significant digits.
+
+That very simple expression involving the addition of two numbers with
+different precisions will hopefully be instructive in helping you
+understand why more complicated expressions (like trig expressions that
+may not be simplified) will not evaluate to an exact zero even though,
+with the right simplification, they should be zero. Consider this
+unsimplified trig identity, multiplied by a big number:
+
+    >>> big = 12345678901234567890
+    >>> big_trig_identity = big*cos(x)**2 + big*sin(x)**2 - big*1
+    >>> abs(big_trig_identity.subs(x, .1).n(2)) > 1000
+    True
+
+When the `\cos` and `\sin` terms were evaluated to 15 digits of precision and
+multiplied by the big number, they gave a large number that was only
+precise to 15 digits (approximately) and when the 20 digit big number
+was subtracted the result was not zero.
+
+There are three things that will help you obtain more precise numerical
+values for expressions:
+
+    1) Pass the desired substitutions with the call to evaluate. By doing
+    the subs first, the ``Float`` values can not be updated as necessary. By
+    passing the desired substitutions with the call to evalf the ability
+    to re-evaluate as necessary is gained and the results are impressively
+    better:
+
+    >>> big_trig_identity.n(2, {x: 0.1})
+    -0.e-91
+
+    2) Use Rationals, not Floats. During the evaluation process, the
+    Rational can be computed to an arbitrary precision while the Float,
+    once created -- at a default of 15 digits -- cannot. Compare the
+    value of ``-1.4e+3`` above with the nearly zero value obtained when
+    replacing x with a Rational representing 1/10 -- before the call
+    to evaluate:
+
+    >>> big_trig_identity.subs(x, S('1/10')).n(2)
+    0.e-91
+
+    3) Try to simplify the expression. In this case, SymPy will recognize
+    the trig identity and simplify it to zero so you don't even have to
+    evaluate it numerically:
+
+    >>> big_trig_identity.simplify()
+    0
+
+
+.. _Immutability-of-Expressions:
+
+Immutability of Expressions
+---------------------------
+
+Expressions in SymPy are immutable, and cannot be modified by an in-place
+operation.  This means that a function will always return an object, and the
+original expression will not be modified. The following example snippet
+demonstrates how this works::
+
+	def main():
+	    var('x y a b')
+	    expr = 3*x + 4*y
+	    print('original =', expr)
+	    expr_modified = expr.subs({x: a, y: b})
+	    print('modified =', expr_modified)
+
+	if __name__ == "__main__":
+	    main()
+
+The output shows that the :func:`~sympy.core.basic.Basic.subs` function has replaced variable
+``x`` with variable ``a``, and variable ``y`` with variable ``b``::
+
+	original = 3*x + 4*y
+	modified = 3*a + 4*b
+
+The :func:`~sympy.core.basic.Basic.subs` function does not modify the original expression `expr``.
+Rather, a modified copy of the expression is returned. This returned object
+is stored in the variable ``expr_modified``. Note that unlike C/C++ and
+other high-level languages, Python does not require you to declare a variable
+before it is used.
+
+Inverse Trig Functions
+----------------------
+
+SymPy uses different names for some functions than most computer algebra
+systems.  In particular, the inverse trig functions use the python names
+of :func:`~sympy.functions.elementary.trigonometric.asin`,
+:func:`~sympy.functions.elementary.trigonometric.acos` and
+so on instead of the usual ``arcsin``
+and ``arccos``.  Use the methods described in the section
+:ref:`Variables and Symbols <tutorial-gotchas-symbols>`
+above to see the names of all SymPy functions.

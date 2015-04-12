@@ -18,8 +18,7 @@ Contents:
 
    install.rst
    tutorial/index.rst
-   gotchas.rst
-   guide.rst
    modules/index.rst
-   aboutus.rst
    special_topics/index.rst
+   guide.rst
+   aboutus.rst

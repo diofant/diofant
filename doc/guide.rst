@@ -1,8 +1,8 @@
 .. _guide:
 
-==================
-SymPy User's Guide
-==================
+============
+User's Guide
+============
 
 .. role:: input(strong)
 

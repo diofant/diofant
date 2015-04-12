@@ -1,8 +1,8 @@
 .. _tutorial:
 
-================
- SymPy Tutorial
-================
+========
+Tutorial
+========
 
 .. toctree::
    :maxdepth: 2
