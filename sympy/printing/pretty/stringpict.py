@@ -13,7 +13,7 @@ TODO:
 """
 
 from .pretty_symbology import hobj, vobj, xsym, xobj, pretty_use_unicode
-from sympy.core.compatibility import u, string_types, range
+from sympy.core.compatibility import string_types, range
 
 
 class stringPict(object):
@@ -347,7 +347,7 @@ class stringPict(object):
         return str.join('\n', self.picture)
 
     def __unicode__(self):
-        return unicode.join(u('\n'), self.picture)
+        return unicode.join('\n', self.picture)
 
     def __repr__(self):
         return "stringPict(%r,%d)" % ('\n'.join(self.picture), self.baseline)

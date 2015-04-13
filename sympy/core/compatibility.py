@@ -17,10 +17,6 @@ Python 2 and Python 3 compatible imports
 String and Unicode compatible changes:
     * `unicode()` removed in Python 3, import `unicode` for Python 2/3
       compatible function
-    * `unichr()` removed in Python 3, import `unichr` for Python 2/3 compatible
-      function
-    * Use `u()` for escaped unicode sequences (e.g. u'\u2020' -> u('\u2020'))
-    * Use `u_decode()` to decode utf-8 formatted unicode strings
     * `string_types` gives str in Python 3, unicode and str in Python 2,
       equivalent to basestring
 
@@ -71,16 +67,6 @@ if PY3:
     string_types = (str,)
     long = int
 
-    # String / unicode compatibility
-    unicode = str
-    unichr = chr
-
-    def u(x):
-        return x
-
-    def u_decode(x):
-        return x
-
     Iterator = object
 
     # Moved definitions
@@ -106,16 +92,6 @@ else:
     integer_types = (int, long)
     string_types = (str, unicode)
     long = long
-
-    # String / unicode compatibility
-    unicode = unicode
-    unichr = unichr
-
-    def u(x):
-        return codecs.unicode_escape_decode(x)[0]
-
-    def u_decode(x):
-        return x.decode('utf-8')
 
     class Iterator(object):
         def next(self):

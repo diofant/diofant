@@ -4,10 +4,9 @@ from sympy.core.expr import AtomicExpr
 from sympy.core.compatibility import range
 from sympy import diff as df, sqrt, ImmutableMatrix as Matrix
 from sympy.vector.coordsysrect import CoordSysCartesian
-from sympy.vector.basisdependent import BasisDependent, \
-    BasisDependentAdd, BasisDependentMul, BasisDependentZero
+from sympy.vector.basisdependent import (BasisDependent, BasisDependentAdd,
+                                         BasisDependentMul, BasisDependentZero)
 from sympy.vector.dyadic import BaseDyadic, Dyadic, DyadicAdd
-from sympy.core.compatibility import u
 
 
 class Vector(BasisDependent):
@@ -331,7 +330,7 @@ class BaseVector(Vector, AtomicExpr):
         obj._components = {obj: S(1)}
         obj._measure_number = S(1)
         obj._name = name
-        obj._pretty_form = u(pretty_str)
+        obj._pretty_form = pretty_str
         obj._latex_form = latex_str
         obj._system = system
 
@@ -410,7 +409,7 @@ class VectorZero(BasisDependentZero, Vector):
     """
 
     _op_priority = 12.1
-    _pretty_form = u('0')
+    _pretty_form = '0'
     _latex_form = '\mathbf{\hat{0}}'
 
     def __new__(cls):

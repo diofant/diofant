@@ -13,7 +13,7 @@ from sympy.matrices import (
     SparseMatrix, casoratian, diag, eye, hessian,
     matrix_multiply_elementwise, ones, randMatrix, rot_axis1, rot_axis2,
     rot_axis3, wronskian, zeros)
-from sympy.core.compatibility import long, iterable, u, range
+from sympy.core.compatibility import long, iterable, range
 from sympy.utilities.iterables import flatten, capture
 from sympy.external import import_module
 from sympy.abc import x, y, z
@@ -2159,7 +2159,7 @@ def test_issue_5964():
 
 
 def test_issue_7604():
-    x, y = symbols(u("x y"))
+    x, y = symbols("x y")
     assert sstr(Matrix([[x, 2*y], [y**2, x + 3]])) == \
         'Matrix([\n[   x,   2*y],\n[y**2, x + 3]])'
 

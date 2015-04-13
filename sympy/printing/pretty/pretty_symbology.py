@@ -3,7 +3,7 @@
 import sys
 import warnings
 
-from sympy.core.compatibility import u, unicode, range
+from sympy.core.compatibility import unicode, range
 from sympy.printing.conventions import split_super_sub
 from sympy.core.alphabets import greeks
 
@@ -133,7 +133,7 @@ greek_unicode.update((L[0].upper() + L[1:], G(L)) for L in greek_letters)
 # aliases
 greek_unicode['lambda'] = greek_unicode['lamda']
 greek_unicode['Lambda'] = greek_unicode['Lamda']
-greek_unicode['varsigma'] = u('\N{GREEK SMALL LETTER FINAL SIGMA}')
+greek_unicode['varsigma'] = '\N{GREEK SMALL LETTER FINAL SIGMA}'
 
 digit_2txt = {
     '0':    'ZERO',
@@ -221,21 +221,21 @@ for s in '+-=()':
 # TODO: Make brackets adjust to height of contents
 modifier_dict = {
     # Accents
-    'mathring': lambda s: s+u('\N{COMBINING RING ABOVE}'),
-    'ddddot': lambda s: s+u('\N{COMBINING DIAERESIS}\N{COMBINING DIAERESIS}'),
-    'dddot': lambda s: s+u('\N{COMBINING DIAERESIS}\N{COMBINING DOT ABOVE}'),
-    'ddot': lambda s: s+u('\N{COMBINING DIAERESIS}'),
-    'dot': lambda s: s+u('\N{COMBINING DOT ABOVE}'),
-    'check': lambda s: s+u('\N{COMBINING CARON}'),
-    'breve': lambda s: s+u('\N{COMBINING BREVE}'),
-    'acute': lambda s: s+u('\N{COMBINING ACUTE ACCENT}'),
-    'grave': lambda s: s+u('\N{COMBINING GRAVE ACCENT}'),
-    'tilde': lambda s: s+u('\N{COMBINING TILDE}'),
-    'hat': lambda s: s+u('\N{COMBINING CIRCUMFLEX ACCENT}'),
-    'bar': lambda s: s+u('\N{COMBINING OVERLINE}'),
-    'vec': lambda s: s+u('\N{COMBINING RIGHT ARROW ABOVE}'),
-    'prime': lambda s: s+u('\N{PRIME}'),
-    'prm': lambda s: s+u('\N{PRIME}'),
+    'mathring': lambda s: s + '\N{COMBINING RING ABOVE}',
+    'ddddot': lambda s: s + '\N{COMBINING DIAERESIS}\N{COMBINING DIAERESIS}',
+    'dddot': lambda s: s + '\N{COMBINING DIAERESIS}\N{COMBINING DOT ABOVE}',
+    'ddot': lambda s: s + '\N{COMBINING DIAERESIS}',
+    'dot': lambda s: s + '\N{COMBINING DOT ABOVE}',
+    'check': lambda s: s + '\N{COMBINING CARON}',
+    'breve': lambda s: s + '\N{COMBINING BREVE}',
+    'acute': lambda s: s + '\N{COMBINING ACUTE ACCENT}',
+    'grave': lambda s: s + '\N{COMBINING GRAVE ACCENT}',
+    'tilde': lambda s: s + '\N{COMBINING TILDE}',
+    'hat': lambda s: s + '\N{COMBINING CIRCUMFLEX ACCENT}',
+    'bar': lambda s: s + '\N{COMBINING OVERLINE}',
+    'vec': lambda s: s + '\N{COMBINING RIGHT ARROW ABOVE}',
+    'prime': lambda s: s + '\N{PRIME}',
+    'prm': lambda s: s + '\N{PRIME}',
     # # Faces -- these are here for some compatibility with latex printing
     # 'bold': lambda s: s,
     # 'bm': lambda s: s,
@@ -243,10 +243,10 @@ modifier_dict = {
     # 'scr': lambda s: s,
     # 'frak': lambda s: s,
     # Brackets
-    'norm': lambda s: u('\N{DOUBLE VERTICAL LINE}')+s+u('\N{DOUBLE VERTICAL LINE}'),
-    'avg': lambda s: u('\N{MATHEMATICAL LEFT ANGLE BRACKET}')+s+u('\N{MATHEMATICAL RIGHT ANGLE BRACKET}'),
-    'abs': lambda s: u('\N{VERTICAL LINE}')+s+u('\N{VERTICAL LINE}'),
-    'mag': lambda s: u('\N{VERTICAL LINE}')+s+u('\N{VERTICAL LINE}'),
+    'norm': lambda s: '\N{DOUBLE VERTICAL LINE}' + s + '\N{DOUBLE VERTICAL LINE}',
+    'avg': lambda s: '\N{MATHEMATICAL LEFT ANGLE BRACKET}' + s + '\N{MATHEMATICAL RIGHT ANGLE BRACKET}',
+    'abs': lambda s: '\N{VERTICAL LINE}' + s + '\N{VERTICAL LINE}',
+    'mag': lambda s: '\N{VERTICAL LINE}' + s + '\N{VERTICAL LINE}',
 }
 
 # VERTICAL OBJECTS
@@ -605,13 +605,13 @@ def annotated(letter):
     information.
     """
     ucode_pics = {
-        'F': (2, 0, 2, 0, u('\N{BOX DRAWINGS LIGHT DOWN AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\n'
-                            '\N{BOX DRAWINGS LIGHT VERTICAL AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\n'
-                            '\N{BOX DRAWINGS LIGHT UP}')),
+        'F': (2, 0, 2, 0, '\N{BOX DRAWINGS LIGHT DOWN AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\n'
+                          '\N{BOX DRAWINGS LIGHT VERTICAL AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\n'
+                          '\N{BOX DRAWINGS LIGHT UP}'),
         'G': (3, 0, 3, 1,
-              u('\N{BOX DRAWINGS LIGHT ARC DOWN AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{BOX DRAWINGS LIGHT ARC DOWN AND LEFT}\n'
-                '\N{BOX DRAWINGS LIGHT VERTICAL}\N{BOX DRAWINGS LIGHT RIGHT}\N{BOX DRAWINGS LIGHT DOWN AND LEFT}\n'
-                '\N{BOX DRAWINGS LIGHT ARC UP AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{BOX DRAWINGS LIGHT ARC UP AND LEFT}'))
+              '\N{BOX DRAWINGS LIGHT ARC DOWN AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{BOX DRAWINGS LIGHT ARC DOWN AND LEFT}\n'
+              '\N{BOX DRAWINGS LIGHT VERTICAL}\N{BOX DRAWINGS LIGHT RIGHT}\N{BOX DRAWINGS LIGHT DOWN AND LEFT}\n'
+              '\N{BOX DRAWINGS LIGHT ARC UP AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{BOX DRAWINGS LIGHT ARC UP AND LEFT}')
     }
     ascii_pics = {
         'F': (3, 0, 3, 0, ' _\n|_\n|\n'),
