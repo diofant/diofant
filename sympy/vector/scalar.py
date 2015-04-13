@@ -1,5 +1,5 @@
 from sympy.core.symbol import Symbol
-from sympy.core.compatibility import u, range
+from sympy.core.compatibility import range
 from sympy.printing.pretty.stringpict import prettyForm
 
 
@@ -21,7 +21,7 @@ class BaseScalar(Symbol):
         # The _id is used for equating purposes, and for hashing
         obj._id = (index, system)
         obj._name = name
-        obj._pretty_form = u(pretty_str)
+        obj._pretty_form = pretty_str
         obj._latex_form = latex_str
         obj._system = system
 

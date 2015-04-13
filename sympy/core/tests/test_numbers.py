@@ -8,7 +8,7 @@ from sympy import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
                    S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
                    Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
                    AlgebraicNumber, simplify)
-from sympy.core.compatibility import long, u
+from sympy.core.compatibility import long
 from sympy.core.power import integer_nthroot
 from sympy.core.numbers import (igcd, ilcm, igcdex, seterr,
                                 mpf_norm, comp)
@@ -219,11 +219,11 @@ def _test_rational_new(cls):
     assert cls(-1) is S.NegativeOne
     # These look odd, but are similar to int():
     assert cls('1') is S.One
-    assert cls(u('-1')) is S.NegativeOne
+    assert cls('-1') is S.NegativeOne
 
     i = Integer(10)
     assert _strictly_equal(i, cls('10'))
-    assert _strictly_equal(i, cls(u('10')))
+    assert _strictly_equal(i, cls('10'))
     assert _strictly_equal(i, cls(long(10)))
     assert _strictly_equal(i, cls(i))
 
