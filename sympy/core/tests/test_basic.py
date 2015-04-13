@@ -101,22 +101,26 @@ def test_Singleton():
     global instantiated
     instantiated = 0
 
-    class MySingleton(with_metaclass(Singleton, Basic)):
+    class MyNewSingleton(with_metaclass(Singleton, Basic)):
         def __new__(cls):
             global instantiated
             instantiated += 1
             return Basic.__new__(cls)
 
+    assert instantiated == 0
+    MyNewSingleton()  # force instantiation
     assert instantiated == 1
-    assert MySingleton() is not Basic()
-    assert MySingleton() is MySingleton()
-    assert S.MySingleton is MySingleton()
+    assert MyNewSingleton() is not Basic()
+    assert MyNewSingleton() is MyNewSingleton()
+    assert S.MyNewSingleton is MyNewSingleton()
     assert instantiated == 1
 
-    class MySingleton_sub(MySingleton):
+    class MySingleton_sub(MyNewSingleton):
         pass
+    assert instantiated == 1
+    MySingleton_sub()
     assert instantiated == 2
-    assert MySingleton_sub() is not MySingleton()
+    assert MySingleton_sub() is not MyNewSingleton()
     assert MySingleton_sub() is MySingleton_sub()
 
 
