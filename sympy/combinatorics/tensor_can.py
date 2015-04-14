@@ -380,14 +380,14 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
     >>> from sympy.combinatorics.permutations import Permutation
     >>> from sympy.combinatorics.perm_groups import PermutationGroup
     >>> from sympy.combinatorics.tensor_can import double_coset_can_rep, get_transversals
-    >>> gens = [Permutation(x) for x in [[2,1,0,3,4,5,7,6], [4,1,2,3,0,5,7,6]]]
+    >>> gens = [Permutation(x) for x in [[2, 1, 0, 3, 4, 5, 7, 6], [4, 1, 2, 3, 0, 5, 7, 6]]]
     >>> base = [0, 2]
-    >>> g = Permutation([4,2,0,1,3,5,6,7])
+    >>> g = Permutation([4, 2, 0, 1, 3, 5, 6, 7])
     >>> transversals = get_transversals(base, gens)
     >>> double_coset_can_rep([list(range(6))], [0], base, gens, transversals, g)
     [0, 1, 2, 3, 4, 5, 7, 6]
 
-    >>> g = Permutation([4,1,3,0,5,2,6,7])
+    >>> g = Permutation([4, 1, 3, 0, 5, 2, 6, 7])
     >>> double_coset_can_rep([list(range(6))], [0], base, gens, transversals, g)
     0
     """
@@ -484,7 +484,7 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
                         s1 = [s[ix] for ix in s1]
                 else:
                     s1 = s
-                #assert s1[b] == j  # invariant
+                assert s1[b] == j
                 # solve d1*g*j = p_i with d1 = dx*d for some element dg
                 # of the stabilizer of ..., p_{i-1}
                 # dx**-1*p_i = d*g*j; dx**-1 = trace_D(d*g*j,...)
@@ -499,10 +499,10 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
                     if p_i != dg[j]:
                         continue
                     d1 = idn
-                assert d1[dg[j]] == p_i  # invariant
+                assert d1[dg[j]] == p_i
                 d1 = [d1[ix] for ix in d]
                 h1 = [d1[g[ix]] for ix in s1]
-                #assert h1[b] == p_i  # invariant
+                assert h1[b] == p_i
                 TAB1.append((s1, d1, h1))
 
         # if TAB contains equal permutations, keep only one of them;
@@ -549,7 +549,7 @@ def canonical_free(base, gens, g, num_free):
 
     >>> from sympy.combinatorics import Permutation
     >>> from sympy.combinatorics.tensor_can import canonical_free
-    >>> gens = [[1,0,2,3,5,4], [2,3,0,1,4,5],[0,1,3,2,5,4]]
+    >>> gens = [[1, 0, 2, 3, 5, 4], [2, 3, 0, 1, 4, 5],[0, 1, 3, 2, 5, 4]]
     >>> gens = [Permutation(h) for h in gens]
     >>> base = [0, 2]
     >>> g = Permutation([2, 1, 0, 3, 4, 5])
@@ -570,8 +570,8 @@ def canonical_free(base, gens, g, num_free):
 
     >>> from sympy.combinatorics.tensor_can import riemann_bsgs, tensor_gens
     >>> base, gens = riemann_bsgs
-    >>> size, sbase, sgens = tensor_gens(base, gens, [[],[]], 0)
-    >>> g = Permutation([0,3,4,6,7,5,2,1,8,9])
+    >>> size, sbase, sgens = tensor_gens(base, gens, [[], []], 0)
+    >>> g = Permutation([0, 3, 4, 6, 7, 5, 2, 1, 8, 9])
     >>> canonical_free(sbase, [Permutation(h) for h in sgens], g, 2)
     [0, 3, 4, 6, 1, 2, 7, 5, 9, 8]
     """
@@ -702,7 +702,7 @@ def canonicalize(g, dummies, msym, *v):
 
     `ord = [d0,-d0,d1,-d1,d2,-d2]` order of the indices
 
-    g = [1,3,0,5,4,2,6,7]
+    g = [1, 3, 0, 5, 4, 2, 6, 7]
 
     `T_c = 0`
 
@@ -711,7 +711,7 @@ def canonicalize(g, dummies, msym, *v):
     >>> base2a, gens2a = get_symmetric_group_sgs(2, 1)
     >>> t0 = (base2a, gens2a, 1, 0)
     >>> t1 = (base2a, gens2a, 2, 0)
-    >>> g = Permutation([1,3,0,5,4,2,6,7])
+    >>> g = Permutation([1, 3, 0, 5, 4, 2, 6, 7])
     >>> canonicalize(g, range(6), 0, t0, t1)
     0
 
@@ -749,7 +749,7 @@ def canonicalize(g, dummies, msym, *v):
     >>> t0 = (base_f, gens_f, 2, 0)
     >>> t1 = (base_A, gens_A, 4, 0)
     >>> dummies = [range(2, 10), range(10, 14)]
-    >>> g = Permutation([0,7,3,1,9,5,11,6,10,4,13,2,12,8,14,15])
+    >>> g = Permutation([0, 7, 3, 1, 9, 5, 11, 6, 10, 4, 13, 2, 12, 8, 14, 15])
     >>> canonicalize(g, dummies, [0, 0], t0, t1)
     [0, 2, 4, 1, 6, 8, 10, 3, 11, 7, 12, 5, 13, 9, 15, 14]
     """
@@ -863,12 +863,12 @@ def perm_af_direct_product(gens1, gens2, signed=True):
     ========
 
     >>> from sympy.combinatorics.tensor_can import perm_af_direct_product
-    >>> gens1 = [[1,0,2,3], [0,1,3,2]]
-    >>> gens2 = [[1,0]]
+    >>> gens1 = [[1, 0, 2, 3], [0, 1, 3, 2]]
+    >>> gens2 = [[1, 0]]
     >>> perm_af_direct_product(gens1, gens2, False)
     [[1, 0, 2, 3, 4, 5], [0, 1, 3, 2, 4, 5], [0, 1, 2, 3, 5, 4]]
-    >>> gens1 = [[1,0,2,3,5,4], [0,1,3,2,4,5]]
-    >>> gens2 = [[1,0,2,3]]
+    >>> gens1 = [[1, 0, 2, 3, 5, 4], [0, 1, 3, 2, 4, 5]]
+    >>> gens2 = [[1, 0, 2, 3]]
     >>> perm_af_direct_product(gens1, gens2, True)
     [[1, 0, 2, 3, 4, 5, 7, 6], [0, 1, 3, 2, 4, 5, 6, 7], [0, 1, 2, 3, 5, 4, 6, 7]]
     """
@@ -988,7 +988,7 @@ def _is_minimal_bsgs(base, gens):
     >>> from sympy.combinatorics.tensor_can import riemann_bsgs, _is_minimal_bsgs
     >>> _is_minimal_bsgs(*riemann_bsgs)
     True
-    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0,1)(4,5), Permutation(5)(0,2)(1,3)]))
+    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
     >>> _is_minimal_bsgs(*riemann_bsgs1)
     False
     """
@@ -1020,7 +1020,7 @@ def get_minimal_bsgs(base, gens):
     >>> from sympy.combinatorics import Permutation
     >>> from sympy.combinatorics.tensor_can import get_minimal_bsgs
     >>> Permutation.print_cyclic = True
-    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0,1)(4,5), Permutation(5)(0,2)(1,3)]))
+    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
     >>> get_minimal_bsgs(*riemann_bsgs1)
     ([0, 2], [Permutation(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3), Permutation(2, 3)(4, 5)])
     """
@@ -1059,7 +1059,7 @@ def tensor_gens(base, gens, list_free_indices, sym=0):
 
     two symmetric tensors with 3 indices with free indices in slot 1 and 0
 
-    >>> tensor_gens(base, gens, [[1],[0]])
+    >>> tensor_gens(base, gens, [[1], [0]])
     (8, [0, 4], [Permutation(7)(0, 2), Permutation(7)(4, 5)])
 
     four symmetric tensors with 3 indices, two of which with free indices
@@ -1168,9 +1168,9 @@ def gens_products(*v):
     >>> from sympy.combinatorics.tensor_can import get_symmetric_group_sgs, gens_products
     >>> Permutation.print_cyclic = True
     >>> base, gens = get_symmetric_group_sgs(2)
-    >>> gens_products((base,gens,[[],[]],0))
+    >>> gens_products((base, gens, [[], []], 0))
     (6, [0, 2], [Permutation(5)(0, 1), Permutation(5)(2, 3), Permutation(5)(0, 2)(1, 3)])
-    >>> gens_products((base,gens,[[1],[]],0))
+    >>> gens_products((base, gens, [[1], []], 0))
     (6, [2], [Permutation(5)(2, 3)])
     """
     res_size, res_base, res_gens = tensor_gens(*v[0])
