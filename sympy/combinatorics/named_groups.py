@@ -292,6 +292,7 @@ def SymmetricGroup(n):
 
 def RubikGroup(n):
     """Return a group of Rubik's cube generators.
+
     >>> from sympy.combinatorics.named_groups import RubikGroup
     >>> RubikGroup(2).is_group()
     False

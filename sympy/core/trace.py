@@ -179,7 +179,7 @@ class Tr(Expr):
         pos : integer, if positive, shift-right, else shift-left
 
         Examples
-        =========
+        ========
 
         >>> from sympy.core.trace import Tr
         >>> from sympy import symbols

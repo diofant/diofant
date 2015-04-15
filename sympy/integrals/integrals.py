@@ -566,6 +566,7 @@ class Integral(AddWithLimits):
         0
 
         The previous must be true since there is no y in the evaluated integral:
+
         >>> i.free_symbols
         set([x])
         >>> i.doit()

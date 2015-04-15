@@ -61,7 +61,8 @@ class AskFiniteHandler(CommonHandler):
 
     Test that an expression is finite respect to all its variables.
 
-    Examples of usage:
+    Examples
+    ========
 
     >>> from sympy import Symbol, Q
     >>> from sympy.assumptions.handlers.calculus import AskFiniteHandler
@@ -79,7 +80,8 @@ class AskFiniteHandler(CommonHandler):
         """
         Handles Symbol.
 
-        Examples:
+        Examples
+        ========
 
         >>> from sympy import Symbol, Q
         >>> from sympy.assumptions.handlers.calculus import AskFiniteHandler

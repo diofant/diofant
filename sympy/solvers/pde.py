@@ -126,6 +126,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
 
     **Tips**
         - You can declare the derivative of an unknown function this way:
+
             >>> from sympy import Function, Derivative
             >>> from sympy.abc import x, y # x and y are the independent variables
             >>> f = Function("f")(x, y) # f is a function of x and y
@@ -445,8 +446,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     # If the given solution is in the form of a list or a set
     # then return a list or set of tuples.
     if is_sequence(sol, set):
-        return type(sol)(map(lambda i: checkpdesol(pde, i,
-            solve_for_func=solve_for_func), sol))
+        return type(sol)([checkpdesol(pde, i, solve_for_func=solve_for_func) for i in sol])
 
     # Convert solution into an equation
     if not isinstance(sol, Equality):

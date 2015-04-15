@@ -882,3 +882,11 @@ def test_issue_8075():
 def test_issue_8642():
     x = Symbol('x', extended_real=True, integer=False)
     assert (x*2).is_integer is None
+
+
+def test_issue_9165():
+    z = Symbol('z', zero=True)
+    f = Symbol('f', finite=False)
+    assert 0/z == S.NaN
+    assert 0*(1/z) == S.NaN
+    assert 0*f == S.NaN

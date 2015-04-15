@@ -1151,7 +1151,7 @@ class Derivative(Expr):
         * Derivatives wrt symbols and non-symbols don't commute.
 
         Examples
-        --------
+        ========
 
         >>> from sympy import Derivative, Function, symbols
         >>> vsort = Derivative._sort_variables
@@ -1301,7 +1301,7 @@ class Derivative(Expr):
                 if match:
                     variables = self_vars_front + self_vars
                     return Derivative(new, *variables)
-        return Derivative(*map(lambda x: x._subs(old, new), self.args))
+        return Derivative(*(x._subs(old, new) for x in self.args))
 
     def _eval_lseries(self, x, logx):
         dx = self.args[1:]
@@ -1937,8 +1937,8 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     kind of 'expansion'.  For hints that simply rewrite an expression, use the
     .rewrite() API.
 
-    Example
-    -------
+    Examples
+    ========
 
     >>> from sympy import Expr, sympify
     >>> class MyClass(Expr):

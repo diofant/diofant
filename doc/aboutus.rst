@@ -403,6 +403,14 @@ want to be mentioned here, so see our repository history for a full list).
 #. Lokesh Sharma: reorder setup.py file imports to correct NameError
 #. Sartaj Singh: use \left \| instead of \lvert for latex Abs
 #. Chris Swierczewski: RootOf.evalf watches for root on interval boundary
+#. vizietto: fixed typo
+#. Juha Remes: typos/pep8 fixes
+#. Peter Schmidt: remove redundant tests
+#. Jiaxing Liang: fix test_f
+#. Lucas Jones: Add test
+#. Greg Ashton - LianLi: Allow use of symbols when solving system of eqns
+#. jennifercw: Added checks into polynomials.py
+#. Michael Boyle: fix formatting for Examples sections of docstrings
 
 Up-to-date list in the order of the first contribution is given in the `AUTHORS
 <https://github.com/sympy/sympy/blob/master/AUTHORS>`_ file.
