@@ -1459,11 +1459,13 @@ class Complement(Set, EvalfMixin):
 
     See Also
     =========
+
     Intersection, Union
 
     References
     ==========
-    http://mathworld.wolfram.com/SetComplement.html
+
+    .. [1] http://mathworld.wolfram.com/ComplementSet.html
     """
 
     is_Complement = True
