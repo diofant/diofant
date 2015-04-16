@@ -2064,8 +2064,7 @@ def test_T9():
 
 @XFAIL
 def test_T10():
-    # raises PoleError should return euler-mascheroni constant
-    limit(zeta(x) - 1/(x - 1), x, 1)
+    limit(zeta(x) - 1/(x - 1), x, 1) == EulerGamma
 
 
 @XFAIL
