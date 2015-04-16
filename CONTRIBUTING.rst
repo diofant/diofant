@@ -52,9 +52,11 @@ All work should be submitted via `Pull Requests (PR)`_.
 License
 -------
 
-By submitting a PR, you agree to license your code under the `LGPL`_.
+By submitting a PR, you agree to license your code under the SymPy's
+`BSD license`_ and `LGPL`_.
 
 
 .. _GitHub issues: https://github.com/skirpichev/omg/issues
 .. _Pull Requests (PR): https://github.com/skirpichev/omg/pulls
+.. _BSD license: LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
