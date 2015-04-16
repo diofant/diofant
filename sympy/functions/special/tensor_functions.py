@@ -5,7 +5,6 @@ from sympy.core import S, Integer
 from sympy.core.mul import prod
 from sympy.utilities.iterables import (has_dups, default_sort_key)
 from sympy.core.compatibility import range
-from sympy.functions.elementary.complexes import Abs
 
 ###############################################################################
 ###################### Kronecker Delta, Levi-Civita etc. ######################
@@ -154,13 +153,10 @@ class KroneckerDelta(Function):
         # indirect doctest
 
         """
-        if (i > j) is True:
-            return cls(j, i)
-
-        diff = Abs(i - j)
+        diff = i - j
         if diff.is_zero:
             return S.One
-        elif diff.is_positive:
+        elif diff.is_nonzero:
             return S.Zero
 
         if i.assumptions0.get("below_fermi") and \
