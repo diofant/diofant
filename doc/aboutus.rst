@@ -22,7 +22,6 @@ want to be mentioned here, so see our repository history for a full list).
 #. `Pearu Peterson <https://github.com/sympy/sympy/wiki/Pearu-Peterson>`_: new core, sympycore project, general advice (issues and mailinglist)
 #. `Fredrik Johansson <https://github.com/sympy/sympy/wiki/Fredrik-Johansson>`_: mpmath project and its integration in SymPy, number theory, combinatorial functions, products & summation, statistics, units, patches, documentation, general advice (issues and mailinglist)
 #. Chris Wu: GSoC 2007, linear algebra module
-#. Kirill Smelkov: everything, reviewing patches, releases, general advice (issues and mailinglist)
 #. Ulrich Hecht: pattern matching and other patches
 #. Goutham Lakshminarayan: number theory functions
 #. David Lawrence: GHOP, Mathematica parser, square root denesting
@@ -436,9 +435,7 @@ during the summer 2007 as part of the Google Summer of Code (GSoC). Pearu Peters
 joined the development during the summer 2007 and he has made SymPy much more
 competitive by rewriting the core from scratch, that has made it from 10x to
 100x faster. Jurjen N.E. Bos has contributed pretty printing and other patches.
-Fredrik Johansson has wrote mpmath and contributed a lot of patches. Kirill
-Smelkov has joined the development in autumn 2007 and has improved the overall
-quality of SymPy, introduced patch review rules.
+Fredrik Johansson has wrote mpmath and contributed a lot of patches.
 
 SymPy has participated in every GSoC since 2007.  Moderate amount
 of SymPy's development has come from GSoC students.
