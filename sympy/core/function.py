@@ -689,7 +689,7 @@ class UndefinedFunction(FunctionClass):
     The (meta)class of undefined functions.
     """
     def __new__(mcl, name, **kwargs):
-        ret = BasicMeta.__new__(mcl, name, (AppliedUndef,), kwargs)
+        ret = BasicMeta.__new__(mcl, str(name), (AppliedUndef,), kwargs)
         ret.__module__ = None
         return ret
 

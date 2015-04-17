@@ -14,6 +14,7 @@ sympy.stats.rv_interface
 
 from __future__ import print_function, division
 
+from sympy.core.compatibility import string_types
 from sympy import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
         Equality, solve, Lambda, DiracDelta)
 from sympy.sets.sets import FiniteSet, ProductSet
@@ -171,7 +172,7 @@ class SinglePSpace(PSpace):
     attributed to a single variable/symbol.
     """
     def __new__(cls, s, distribution):
-        if isinstance(s, str):
+        if isinstance(s, string_types):
             s = Symbol(s)
         if not isinstance(s, Symbol):
             raise TypeError("s should have been string or Symbol")
