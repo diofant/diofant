@@ -352,15 +352,6 @@ tree.
 
 .. autofunction:: print_tree
 
-Preview
--------
-
-A useful function is ``preview``:
-
-.. module:: sympy.printing.preview
-
-.. autofunction:: preview
-
 Implementation - Helper Classes/Functions
 -----------------------------------------
 

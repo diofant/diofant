@@ -11,7 +11,6 @@ from .jscode import jscode, print_jscode
 from .mathematica import mathematica_code
 from .octave import octave_code
 from .gtk import print_gtk
-from .preview import preview
 from .repr import srepr
 from .tree import print_tree
 from .str import StrPrinter, sstr, sstrrepr

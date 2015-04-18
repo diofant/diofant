@@ -22,4 +22,4 @@ from .baseclasses import (Object, Morphism, IdentityMorphism,
                          Diagram)
 
 from .diagram_drawing import (DiagramGrid, XypicDiagramDrawer,
-                             xypic_draw_diagram, preview_diagram)
+                             xypic_draw_diagram)

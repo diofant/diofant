@@ -57,8 +57,5 @@ doc/_build/
 # Backup files
 *~
 
-# Temp output of sympy/printing/preview.py:
-sample.tex
-
 # IPython Notebook Checkpoints
 .ipynb_checkpoints/
