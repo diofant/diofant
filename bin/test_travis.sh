@@ -7,7 +7,7 @@ if [[ "${TEST_SPHINX}" == "true" ]]; then
     LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
 elif [[ "${TEST_SAGE}" == "true" ]]; then
     sage -v
-    sage -python bin/test sympy/external/tests/test_sage.py
+    sage -python py.test sympy/external/tests/test_sage.py
 else
     if [[ "${TEST_DOCTESTS}" == "true" ]]; then
         cat << EOF | python
