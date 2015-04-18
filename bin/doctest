@@ -18,9 +18,6 @@ import os
 from optparse import OptionParser
 import re
 
-from get_sympy import path_hack
-path_hack()
-
 parser = OptionParser()
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
         default=False)

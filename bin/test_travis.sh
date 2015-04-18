@@ -3,16 +3,11 @@
 set -e -x # exit on error and echo each command
 
 if [[ "${TEST_SPHINX}" == "true" ]]; then
-    cd doc
-    make html-errors
-    make man
-    make latex
-    cd _build/latex
-    export LATEXOPTIONS="-interaction=nonstopmode"
-    make all
+    make -C doc html-errors man latex
+    LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
 elif [[ "${TEST_SAGE}" == "true" ]]; then
     sage -v
-    sage -python bin/test sympy/external/tests/test_sage.py
+    sage -python py.test sympy/external/tests/test_sage.py
 else
     if [[ "${TEST_DOCTESTS}" == "true" ]]; then
         cat << EOF | python
