@@ -7,9 +7,7 @@ Introduction
 ------------
 
 The plotting module allows you to make 2-dimensional and 3-dimensional plots.
-Presently the plots are rendered using ``matplotlib`` as a backend. It is
-also possible to plot 2-dimensional plots using a ``TextBackend`` if you don't
-have ``matplotlib``.
+Presently the plots are rendered using ``matplotlib`` as a backend.
 
 The plotting module has the following functions:
 
