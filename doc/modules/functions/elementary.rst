@@ -1,44 +1,35 @@
 Elementary
 ==========
 
-This module implements elementary functions, as well as functions like ``Abs``,
-``Max``, etc.
+This module implements elementary functions such as trigonometric, hyperbolic
+as well as functions like ``Abs``, ``Max``, ``sqrt`` etc.
 
+
+sympy.functions.elementary.complexes
+====================================
+
+re
+--
+
+.. autoclass:: sympy.functions.elementary.complexes.re
+   :members:
+
+im
+--
+
+.. autoclass:: sympy.functions.elementary.complexes.im
+   :members:
+
+sign
+----
+
+.. autoclass:: sympy.functions.elementary.complexes.sign
+   :members:
 
 Abs
 ---
 
 .. autoclass:: sympy.functions.elementary.complexes.Abs
-   :members:
-
-acos
-----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.acos
-   :members:
-
-acosh
------
-
-.. autoclass:: sympy.functions.elementary.hyperbolic.acosh
-   :members:
-
-acot
-----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.acot
-   :members:
-
-acoth
------
-
-.. autoclass:: sympy.functions.elementary.hyperbolic.acoth
-   :members:
-
-acsc
-----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.acsc
    :members:
 
 arg
@@ -47,16 +38,75 @@ arg
 .. autoclass:: sympy.functions.elementary.complexes.arg
    :members:
 
+conjugate
+---------
+
+.. autoclass:: sympy.functions.elementary.complexes.conjugate
+   :members:
+
+polar_lift
+----------
+
+.. autoclass:: sympy.functions.elementary.complexes.polar_lift
+   :members:
+
+periodic_argument
+-----------------
+
+.. autoclass:: sympy.functions.elementary.complexes.periodic_argument
+   :members:
+
+principal_branch
+----------------
+
+.. autoclass:: sympy.functions.elementary.complexes.principal_branch
+   :members:
+
+
+sympy.functions.elementary.trigonometric
+========================================
+
+Trionometric Functions
+======================
+
+sin
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.sin
+   :members:
+
+cos
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.cos
+   :members:
+
+tan
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.tan
+   :members:
+
+cot
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.cot
+   :members:
+
+
+Trigonometric Inverses
+======================
+
 asin
 ----
 
 .. autoclass:: sympy.functions.elementary.trigonometric.asin
    :members:
 
-asinh
------
+acos
+----
 
-.. autoclass:: sympy.functions.elementary.hyperbolic.asinh
+.. autoclass:: sympy.functions.elementary.trigonometric.acos
    :members:
 
 asec
@@ -71,45 +121,48 @@ atan
 .. autoclass:: sympy.functions.elementary.trigonometric.atan
    :members:
 
+acot
+----
+
+.. autoclass:: sympy.functions.elementary.trigonometric.acot
+   :members:
+
 atan2
 -----
 
 .. autoclass:: sympy.functions.elementary.trigonometric.atan2
    :members:
 
-atanh
------
 
-.. autoclass:: sympy.functions.elementary.hyperbolic.atanh
+sympy.functions.elementary.hyperbolic
+======================================
+
+Hyperbolic Functions
+====================
+
+
+HyperbolicFunction
+------------------
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.HyperbolicFunction
    :members:
 
-ceiling
--------
+sinh
+----
 
-.. autoclass:: sympy.functions.elementary.integers.ceiling
-   :members:
-
-conjugate
----------
-
-.. autoclass:: sympy.functions.elementary.complexes.conjugate
-   :members:
-
-cos
----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.cos
+.. autoclass:: sympy.functions.elementary.hyperbolic.sinh
    :members:
 
 cosh
 ----
+
 .. autoclass:: sympy.functions.elementary.hyperbolic.cosh
    :members:
 
-cot
----
+tanh
+----
 
-.. autoclass:: sympy.functions.elementary.trigonometric.cot
+.. autoclass:: sympy.functions.elementary.hyperbolic.tanh
    :members:
 
 coth
@@ -118,31 +171,44 @@ coth
 .. autoclass:: sympy.functions.elementary.hyperbolic.coth
    :members:
 
-csc
----
 
-.. autoclass:: sympy.functions.elementary.trigonometric.csc
+Hyperbolic Inverses
+===================
+
+asinh
+-----
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.asinh
+   :members:
+
+acosh
+-----
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.acosh
+   :members:
+
+atanh
+-----
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.atanh
+   :members:
+
+acoth
+-----
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.acoth
    :members:
 
 
-exp
----
+sympy.functions.elementary.integers
+===================================
 
-.. autoclass:: sympy.functions.elementary.exponential.exp
+ceiling
+-------
+
+.. autoclass:: sympy.functions.elementary.integers.ceiling
    :members:
 
-
-exp_polar
----------
-
-.. autoclass:: sympy.functions.elementary.exponential.exp_polar
-   :members:
-
-ExprCondPair
-------------
-
-.. autoclass:: sympy.functions.elementary.piecewise.ExprCondPair
-   :members:
 
 floor
 -----
@@ -150,22 +216,26 @@ floor
 .. autoclass:: sympy.functions.elementary.integers.floor
    :members:
 
-HyperbolicFunction
-------------------
 
-.. autoclass:: sympy.functions.elementary.hyperbolic.HyperbolicFunction
+RoundFunction
+-------------
+
+.. autoclass:: sympy.functions.elementary.integers.RoundFunction
+
+
+sympy.functions.elementary.exponential
+======================================
+
+exp
+---
+
+.. autoclass:: sympy.functions.elementary.exponential.exp
    :members:
 
-IdentityFunction
-----------------
+exp_polar
+---------
 
-.. autoclass:: sympy.functions.elementary.miscellaneous.IdentityFunction
-   :members:
-
-im
---
-
-.. autoclass:: sympy.functions.elementary.complexes.im
+.. autoclass:: sympy.functions.elementary.exponential.exp_polar
    :members:
 
 LambertW
@@ -180,17 +250,16 @@ log
 .. autoclass:: sympy.functions.elementary.exponential.log
    :members:
 
-Min
----
 
-.. autoclass:: sympy.functions.elementary.miscellaneous.Min
+sympy.functions.elementary.piecewise
+====================================
+
+ExprCondPair
+------------
+
+.. autoclass:: sympy.functions.elementary.piecewise.ExprCondPair
    :members:
 
-Max
----
-
-.. autoclass:: sympy.functions.elementary.miscellaneous.Max
-   :members:
 
 Piecewise
 ---------
@@ -200,80 +269,40 @@ Piecewise
 
 .. autofunction:: sympy.functions.elementary.piecewise.piecewise_fold
 
-re
---
 
-.. autoclass:: sympy.functions.elementary.complexes.re
+sympy.functions.elementary.miscellaneous
+========================================
+
+IdentityFunction
+----------------
+
+.. autoclass:: sympy.functions.elementary.miscellaneous.IdentityFunction
    :members:
 
-real_root
----------
+Min
+---
 
-.. autofunction:: sympy.functions.elementary.miscellaneous.real_root
+.. autoclass:: sympy.functions.elementary.miscellaneous.Min
+   :members:
+
+
+Max
+---
+
+.. autoclass:: sympy.functions.elementary.miscellaneous.Max
+   :members:
 
 root
 ----
 
 .. autofunction:: sympy.functions.elementary.miscellaneous.root
 
-RoundFunction
--------------
+real_root
+---------
 
-.. autoclass:: sympy.functions.elementary.integers.RoundFunction
-
-sin
----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.sin
-   :members:
-
-sinh
-----
-
-.. autoclass:: sympy.functions.elementary.hyperbolic.sinh
-   :members:
-
-sec
----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.sec
-   :members:
+.. autofunction:: sympy.functions.elementary.miscellaneous.real_root
 
 sqrt
 ----
 
 .. autofunction:: sympy.functions.elementary.miscellaneous.sqrt
-
-
-sign
-----
-
-.. autoclass:: sympy.functions.elementary.complexes.sign
-   :members:
-
-tan
----
-
-.. autoclass:: sympy.functions.elementary.trigonometric.tan
-   :members:
-
-tanh
-----
-
-.. autoclass:: sympy.functions.elementary.hyperbolic.tanh
-   :members:
-
-polar_lift
-----------
-
-.. autoclass:: sympy.functions.elementary.complexes.polar_lift
-
-periodic_argument
------------------
-
-.. autoclass:: sympy.functions.elementary.complexes.periodic_argument
-
-principal_branch
-----------------
-
-.. autoclass:: sympy.functions.elementary.complexes.principal_branch
