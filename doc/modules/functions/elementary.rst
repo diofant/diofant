@@ -93,6 +93,18 @@ cot
 .. autoclass:: sympy.functions.elementary.trigonometric.cot
    :members:
 
+sec
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.sec
+   :members:
+
+csc
+---
+
+.. autoclass:: sympy.functions.elementary.trigonometric.csc
+   :members:
+
 
 Trigonometric Inverses
 ======================
@@ -125,6 +137,18 @@ acot
 ----
 
 .. autoclass:: sympy.functions.elementary.trigonometric.acot
+   :members:
+
+asec
+----
+
+.. autoclass:: sympy.functions.elementary.trigonometric.asec
+   :members:
+
+acsc
+----
+
+.. autoclass:: sympy.functions.elementary.trigonometric.acsc
    :members:
 
 atan2
@@ -169,6 +193,18 @@ coth
 ----
 
 .. autoclass:: sympy.functions.elementary.hyperbolic.coth
+   :members:
+
+sech
+----
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.sech
+   :members:
+
+csch
+----
+
+.. autoclass:: sympy.functions.elementary.hyperbolic.csch
    :members:
 
 
