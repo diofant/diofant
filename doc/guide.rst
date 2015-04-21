@@ -208,10 +208,7 @@ Debugging
 ---------
 
 Starting with 0.6.4, you can turn on/off debug messages with the environment
-variable ``SYMPY_DEBUG``, which is expected to have the values True or False. For
-example, to turn on debugging, you would issue::
-
-    [user@localhost]: SYMPY_DEBUG=True ./bin/isympy
+variable ``SYMPY_DEBUG``, which is expected to have the values True or False.
 
 Functionality
 -------------

@@ -23,7 +23,7 @@ matrix:
 before_install:
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
-      sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern docbook2x;
+      sudo apt-get install --no-install-recommends graphviz texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern;
       pip install sphinx==1.2.2 numpydoc==0.5 sphinx_rtd_theme;
     fi
   - if [[ "${TEST_EXTRA}" == "true" ]]; then
