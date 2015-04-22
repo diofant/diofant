@@ -256,6 +256,10 @@ def test_experimental_lambify():
 
 @disable_print
 def test_append_issue_7140():
+    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
+    if not matplotlib:
+        skip("Matplotlib not the default backend")
+
     x = Symbol('x')
     p1 = plot(x)
     p2 = plot(x**2)
