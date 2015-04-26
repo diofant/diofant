@@ -67,7 +67,7 @@ References
 
 from __future__ import print_function, division
 
-from sympy.core import Basic, S, oo, Symbol, I, Dummy, Wild, Mul
+from sympy.core import S, oo, Symbol, I, Dummy, Wild, Mul
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import log, exp
 from sympy.series.order import Order
@@ -86,13 +86,13 @@ def compare(a, b, x):
     """Returns "<" if a<b, "=" for a == b, ">" for a>b"""
     # log(exp(...)) must always be simplified here for termination
     la, lb = log(a), log(b)
-    if isinstance(a, Basic) and a.func is exp:
-        la = a.args[0]
-    if isinstance(b, Basic) and b.func is exp:
-        lb = b.args[0]
+    if a.func is exp:
+        la = a.exp
+    if b.func is exp:
+        lb = b.exp
 
     c = limitinf(la/lb, x)
-    if c == 0:
+    if c.is_zero:
         return "<"
     elif c.is_infinite:
         return ">"
@@ -192,8 +192,6 @@ def mrv(e, x):
     """Returns a SubsSet of most rapidly varying (mrv) subexpressions of 'e',
        and e rewritten in terms of these"""
     e = powsimp(e, deep=True, combine='exp')
-    if not isinstance(e, Basic):
-        raise TypeError("e should be an instance of Basic")
     if not e.has(x):
         return SubsSet(), e
     elif e == x:
@@ -316,8 +314,6 @@ def sign(e, x):
     the same thing as the sign of e.]
     """
     from sympy import sign as _sign
-    if not isinstance(e, Basic):
-        raise TypeError("e should be an instance of Basic")
 
     if e.is_positive:
         return 1
