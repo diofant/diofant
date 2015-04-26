@@ -107,11 +107,6 @@ def test_gruntz_evaluation_slow():
     assert gruntz(gamma(x + 1)/sqrt(2*pi)
                   - exp(-x)*(x**(x + S(1)/2) + x**(x - S(1)/2)/12), x, oo) == oo
     assert gruntz(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x, oo) == 0
-
-
-@XFAIL
-def test_grunts_eval_special_slow_sometimes_fail():
-    # XXX This sometimes fails!!!
     assert gruntz(exp(gamma(x - exp(-x))*exp(1/x)) - exp(gamma(x)), x, oo) == oo
 
 
