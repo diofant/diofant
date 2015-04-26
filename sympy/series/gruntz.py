@@ -75,11 +75,10 @@ from sympy.simplify import powsimp
 from sympy import cacheit
 
 from sympy.core.compatibility import reduce
+from sympy.utilities.misc import debug_decorator as debug
 
 from sympy.utilities.timeutils import timethis
 timeit = timethis('gruntz')
-
-from sympy.utilities.misc import debug_decorator as debug
 
 
 def compare(a, b, x):
@@ -353,7 +352,7 @@ def sign(e, x):
 @cacheit
 def limitinf(e, x):
     """Limit e(x) for x-> oo"""
-    #rewrite e in terms of tractable functions only
+    # rewrite e in terms of tractable functions only
     e = e.rewrite('tractable', deep=True)
 
     if not e.has(x):
@@ -375,7 +374,7 @@ def limitinf(e, x):
         if c0.match(I*Wild("a", exclude=[I])):
             return c0*oo
         s = sign(c0, x)
-        #the leading term shouldn't be 0:
+        # the leading term shouldn't be 0:
         if s == 0:
             raise ValueError("Leading term should not be 0")
         return s*oo
@@ -432,7 +431,7 @@ def mrv_leadterm(e, x):
             raise ValueError("e0 should be 0")
         return c0, e0
     if x in Omega:
-        #move the whole omega up (exponentiate each term):
+        # move the whole omega up (exponentiate each term):
         Omega_up = moveup2(Omega, x)
         e_up = moveup([e], x)[0]
         exps_up = moveup([exps], x)[0]
@@ -505,9 +504,9 @@ def rewrite(e, Omega, x, wsym):
         raise TypeError("Omega should be an instance of SubsSet")
     if len(Omega) == 0:
         raise ValueError("Length can not be 0")
-    #all items in Omega must be exponentials
+    # all items in Omega must be exponentials
     for t in Omega.keys():
-        if not t.func is exp:
+        if t.func is not exp:
             raise ValueError("Value should be exp")
     rewrites = Omega.rewrites
     Omega = sorted(list(Omega.items()), key=default_sort_key)
@@ -523,7 +522,7 @@ def rewrite(e, Omega, x, wsym):
             raise NotImplementedError('Result depends on the sign of %s' % sig)
     if sig == 1:
         wsym = 1/wsym  # if g goes to oo, substitute 1/w
-    #O2 is a list, which results by rewriting each item in Omega using "w"
+    # O2 is a list, which results by rewriting each item in Omega using "w"
     O2 = []
     denominators = []
     for f, var in Omega:
@@ -537,8 +536,8 @@ def rewrite(e, Omega, x, wsym):
             arg = rewrites[var].args[0]
         O2.append((var, exp((arg - c*g.args[0]).expand())*wsym**c))
 
-    #Remember that Omega contains subexpressions of "e". So now we find
-    #them in "e" and substitute them for our rewriting, stored in O2
+    # Remember that Omega contains subexpressions of "e". So now we find
+    # them in "e" and substitute them for our rewriting, stored in O2
 
     # the following powsimp is necessary to automatically combine exponentials,
     # so that the .xreplace() below succeeds:
@@ -550,7 +549,7 @@ def rewrite(e, Omega, x, wsym):
     for _, var in Omega:
         assert not f.has(var)
 
-    #finally compute the logarithm of w (logw).
+    # finally compute the logarithm of w (logw).
     logw = g.args[0]
     if sig == 1:
         logw = -logw  # log(w)->log(1/w)=-log(w)
@@ -581,7 +580,7 @@ def gruntz(e, z, z0, dir="+"):
     if not isinstance(z, Symbol):
         raise NotImplementedError("Second argument must be a Symbol")
 
-    #convert all limits to the limit z->oo; sign of z is handled in limitinf
+    # convert all limits to the limit z->oo; sign of z is handled in limitinf
     r = None
     if z0 == oo:
         r = limitinf(e, z)
