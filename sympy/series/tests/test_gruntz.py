@@ -108,19 +108,17 @@ def test_gruntz_evaluation_slow():
                   - exp(-x)*(x**(x + S(1)/2) + x**(x - S(1)/2)/12), x, oo) == oo
     assert gruntz(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x, oo) == 0
     assert gruntz(exp(gamma(x - exp(-x))*exp(1/x)) - exp(gamma(x)), x, oo) == oo
+    assert gruntz(
+        (Ei(x - exp(-exp(x))) - Ei(x))*exp(-x)*exp(exp(x))*x, x, oo) == -1
+
+    # TODO 8.36 - 8.37 (bessel, max-min)
 
 
 @XFAIL
 def test_gruntz_eval_special_fail():
-    # TODO exponential integral Ei
-    assert gruntz(
-        (Ei(x - exp(-exp(x))) - Ei(x))*exp(-x)*exp(exp(x))*x, x, oo) == -1
-
     # TODO zeta function series
     assert gruntz(
         exp((log(2) + 1)*x) * (zeta(x + exp(-x)) - zeta(x)), x, oo) == -log(2)
-
-    # TODO 8.35 - 8.37 (bessel, max-min)
 
 
 def test_gruntz_hyperbolic():
@@ -210,7 +208,8 @@ def mrv(a, b):
 
 
 def rewrite(e, omega, x, w):
-    return _rewrite(e, _mrv(e, x), x, w)
+    omega, exps = _mrv(e, x)
+    return _rewrite(exps, omega, x, w)
 
 
 def test_mrv():
