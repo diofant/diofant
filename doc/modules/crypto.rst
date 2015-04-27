@@ -1,5 +1,5 @@
-Basic Cryptography Module
-=========================
+Basic Cryptography
+==================
 
 Included in this module are both block ciphers and stream ciphers.
 
