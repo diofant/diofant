@@ -1,8 +1,3 @@
-"""
-This module implements the Residue function and related tools for working
-with residues.
-"""
-
 from __future__ import print_function, division
 
 from sympy import sympify
@@ -12,16 +7,18 @@ from sympy.utilities.timeutils import timethis
 @timethis('residue')
 def residue(expr, x, x0):
     """
-    Finds the residue of ``expr`` at the point x=x0.
+    Finds the residue of ``expr`` at the point ``x=x0``.
 
-    The residue is defined as the coefficient of 1/(x-x0) in the power series
-    expansion about x=x0.
+    The residue is defined [1]_ as the coefficient of `1/(x - x_0)`
+    in the power series expansion around `x=x_0`.
+
+    This notion is essential for the Residue Theorem [2]_
 
     Examples
     ========
 
-    >>> from sympy import Symbol, residue, sin
-    >>> x = Symbol("x")
+    >>> from sympy import residue, sin
+    >>> from sympy.abc import x
     >>> residue(1/x, x, 0)
     1
     >>> residue(1/x**2, x, 0)
@@ -29,12 +26,11 @@ def residue(expr, x, x0):
     >>> residue(2/sin(x), x, 0)
     2
 
-    This function is essential for the Residue Theorem [1].
-
     References
     ==========
 
-    1. http://en.wikipedia.org/wiki/Residue_theorem
+    .. [1] http://en.wikipedia.org/wiki/Residue_%28complex_analysis%29
+    .. [2] http://en.wikipedia.org/wiki/Residue_theorem
     """
     # The current implementation uses series expansion to
     # calculate it. A more general implementation is explained in
