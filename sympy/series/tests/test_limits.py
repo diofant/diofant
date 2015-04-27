@@ -445,3 +445,8 @@ def test_omgissue_55():
 
 def test_issue_8061():
     assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x, 4), x, 0) == oo
+
+
+def test_issue_8229():
+    assert limit((x**Rational(1, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
+                 x, 16) == 0
