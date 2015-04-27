@@ -1,7 +1,7 @@
 from itertools import product as cartes
 
 from sympy import (
-    limit, exp, oo, log, sqrt, Limit, sin, floor, cos, ceiling,
+    limit, exp, oo, log, sqrt, Limit, sin, floor, cos, acos, ceiling,
     atan, gamma, Symbol, S, pi, Integral, cot, Rational, I, zoo,
     tan, cot, integrate, Sum, sign, Function, subfactorial, PoleError)
 
@@ -436,3 +436,17 @@ def test_issue_4503():
 
 def test_issue_8730():
     assert limit(subfactorial(x), x, oo) == oo
+
+
+def test_omgissue_55():
+    assert limit((x + exp(x))/(x - 1), x, -oo) == 1
+    assert limit((x*exp(x))/(exp(x) - 1), x, -oo) == 0  # issue 2929
+
+
+def test_issue_8061():
+    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x, 4), x, 0) == oo
+
+
+def test_issue_8229():
+    assert limit((x**Rational(1, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
+                 x, 16) == 0
