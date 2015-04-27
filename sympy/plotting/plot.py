@@ -39,9 +39,6 @@ from .experimental_lambdify import (vectorized_lambdify, lambdify)
 # When changing the minimum module version for matplotlib, please change
 # the same in the `SymPyDocTestFinder`` in `sympy/utilities/runtests.py`
 
-# Backend specific imports - textplot
-from sympy.plotting.textplot import textplot
-
 # Global variable
 # Set to False when running tests / doctests so that the plots don't show.
 _show = True
@@ -62,7 +59,7 @@ class Plot(object):
     For interactive work the function ``plot`` is better suited.
 
     This class permits the plotting of sympy expressions using numerous
-    backends (matplotlib, textplot, Google charts api, etc).
+    backends (matplotlib, Google charts api, etc).
 
     The figure can contain an arbitrary number of plots of sympy expressions,
     lists of coordinates of points, etc. Plot has a private attribute _series that
@@ -169,7 +166,7 @@ class Plot(object):
         # The backend type. On every show() a new backend instance is created
         # in self._backend which is tightly coupled to the Plot instance
         # (thanks to the parent attribute of the backend).
-        self.backend = DefaultBackend
+        self.backend = MatplotlibBackend
 
         # The keyword arguments should only contain options for the plot.
         for key, val in kwargs.items():
@@ -1029,38 +1026,8 @@ class MatplotlibBackend(BaseBackend):
         self.plt.close(self.fig)
 
 
-class TextBackend(BaseBackend):
-    def __init__(self, parent):
-        super(TextBackend, self).__init__(parent)
-
-    def show(self):
-        if len(self.parent._series) != 1:
-            raise ValueError(
-                'The TextBackend supports only one graph per Plot.')
-        elif not isinstance(self.parent._series[0], LineOver1DRangeSeries):
-            raise ValueError(
-                'The TextBackend supports only expressions over a 1D range')
-        else:
-            ser = self.parent._series[0]
-            textplot(ser.expr, ser.start, ser.end)
-
-    def close(self):
-        pass
-
-
-class DefaultBackend(BaseBackend):
-    def __new__(cls, parent):
-        matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-        if matplotlib:
-            return MatplotlibBackend(parent)
-        else:
-            return TextBackend(parent)
-
-
 plot_backends = {
     'matplotlib': MatplotlibBackend,
-    'text': TextBackend,
-    'default': DefaultBackend
 }
 
 
