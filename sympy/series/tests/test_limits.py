@@ -436,3 +436,8 @@ def test_issue_4503():
 
 def test_issue_8730():
     assert limit(subfactorial(x), x, oo) == oo
+
+
+def test_omgissue_55():
+    assert limit((x + exp(x))/(x - 1), x, -oo) == 1
+    assert limit((x*exp(x))/(exp(x) - 1), x, -oo) == 0  # issue 2929

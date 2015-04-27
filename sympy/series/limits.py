@@ -141,7 +141,7 @@ class Limit(Expr):
             e = e.rewrite(factorial, gamma)
 
         if e.is_Mul:
-            if abs(z0) is S.Infinity:
+            if abs(z0) in (S.Infinity, S.NegativeInfinity):
                 # XXX todo: this should probably be stated in the
                 # negative -- i.e. to exclude expressions that should
                 # not be handled this way but I'm not sure what that
@@ -153,10 +153,12 @@ class Limit(Expr):
                                         for m in Mul.make_args(a))
                                     for a in Add.make_args(w)))
                 if all(ok(w) for w in e.as_numer_denom()):
-                    u = Dummy(positive=(z0 is S.Infinity))
-                    inve = e.subs(z, 1/u)
-                    r = limit(inve.as_leading_term(u), u,
-                              S.Zero, "+" if z0 is S.Infinity else "-")
+                    u = Dummy(positive=True)
+                    if z0 is S.Infinity:
+                        inve = e.subs(z, 1/u)
+                    else:
+                        inve = e.subs(z, -1/u)
+                    r = limit(inve.as_leading_term(u), u, S.Zero)
                     if isinstance(r, Limit):
                         return self
                     else:
