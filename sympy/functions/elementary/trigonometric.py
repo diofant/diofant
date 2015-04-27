@@ -1858,6 +1858,9 @@ class acos(InverseTrigonometricFunction):
             elif arg is S.NegativeOne:
                 return S.Pi
 
+        if arg is S.ComplexInfinity:
+            return S.ComplexInfinity
+
         if arg.is_number:
             cst_table = {
                 S.Half: S.Pi/3,
@@ -2298,6 +2301,8 @@ class asec(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
+        if arg.is_zero:
+            return S.ComplexInfinity
         if arg.is_Number:
             if arg is S.NaN:
                 return S.NaN
