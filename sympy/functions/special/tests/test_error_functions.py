@@ -1,6 +1,6 @@
 from sympy import (
     symbols, expand, expand_func, nan, oo, Float, conjugate, diff,
-    re, im, Abs, O, exp_polar, polar_lift, gruntz, limit,
+    re, im, Abs, O, exp_polar, polar_lift, limit,
     Symbol, I, integrate, S,
     sqrt, sin, cos, sinh, cosh, exp, log, pi, EulerGamma,
     erf, erfc, erfi, erf2, erfinv, erfcinv, erf2inv,
@@ -8,6 +8,7 @@ from sympy import (
     Ei, expint, E1, li, Li, Si, Ci, Shi, Chi,
     fresnels, fresnelc,
     hyper, meijerg)
+from sympy.series.gruntz import gruntz
 
 from sympy.functions.special.error_functions import _erfs, _eis
 

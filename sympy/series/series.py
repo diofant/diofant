@@ -4,9 +4,12 @@ from sympy.core.sympify import sympify
 
 
 def series(expr, x=None, x0=0, n=6, dir="+"):
-    """Series expansion of expr around point `x = x0`.
+    """Series expansion of ``expr`` in ``x`` around point ``x0``.
 
-    See the doctring of Expr.series() for complete details of this wrapper.
+    See Also
+    ========
+
+    sympy.core.expr.Expr.series
     """
     expr = sympify(expr)
     return expr.series(x, x0, n, dir)

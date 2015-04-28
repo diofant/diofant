@@ -99,17 +99,7 @@ def test_issue_3978():
             x*Subs(Derivative(TestF(x), x), (x,), (0,)) + \
             x**2*Subs(Derivative(TestF(x), x, x), (x,), (0,))/2 + O(x**3)
 
-from sympy.series.acceleration import richardson, shanks
 from sympy import Sum, Integer
-
-
-def test_acceleration():
-    e = (1 + 1/n)**n
-    assert round(richardson(e, n, 10, 20).evalf(), 10) == round(E.evalf(), 10)
-
-    A = Sum(Integer(-1)**(k + 1) / k, (k, 1, n))
-    assert round(shanks(A, n, 25).evalf(), 4) == round(log(2).evalf(), 4)
-    assert round(shanks(A, n, 25, 5).evalf(), 10) == round(log(2).evalf(), 10)
 
 
 def test_issue_5852():

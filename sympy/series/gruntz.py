@@ -1,124 +1,73 @@
+r"""
+The Gruntz Algorithm
+====================
+
+This section explains the basics of the algorithm [1]_ used for computing
+limits.  Most of the time the :py:func:`~sympy.series.limits.limit` function
+should just work.  However it is still useful to keep in mind how it is
+implemented in case something does not work as expected.
+
+First we define an ordering on functions of single variable `x` according
+to how rapidly varying they at infinity.  Any two functions `f(x)` and
+`g(x)` can be compared using the properties of:
+
+    .. math::
+        L = \lim\limits_{x\to\infty}\frac{\log|f(x)|}{\log|g(x)|}
+
+We shall say that `f(x)` *dominates* `g(x)`, written `f(x) \succ
+g(x)`, iff `L=\pm\infty`.  We also say that `f(x)` and `g(x)` are *of the
+same comparability class* if neither `f(x) \succ g(x)` nor `g(x) \succ
+f(x)` and shall denote it as `f(x) \asymp g(x)`.
+
+It is easy to show the following examples:
+
+* `e^{e^x} \succ e^{x^2} \succ e^x \succ x \succ 42`
+* `2 \asymp 3 \asymp -5`
+* `x \asymp x^2 \asymp x^3 \asymp -x`
+* `e^x \asymp e^{-x} \asymp e^{2x} \asymp e^{x + e^{-x}}`
+* `f(x) \asymp 1/f(x)`
+
+Using these definitions yields the following strategy for
+computing `\lim_{x \to \infty} f(x)`:
+
+1. Given the function `f(x)`, we find the set of *most rapidly varying
+   subexpressions* (MRV set) of it.  All items of this set belongs to the
+   same comparability class.  Let's say it is `\{e^x, e^{2x}\}`.
+
+2. Choose an expression `\omega` which is positive and tends to zero and
+   which is in the same comparability class as any element of the MRV set.
+   Such element always exists.  Then we rewrite the MRV set using `\omega`,
+   in our case `\{\omega^{-1}, \omega^{-2}\}`, and substitute it into `f(x)`.
+
+3. Let `f(\omega)` be the function which is obtained from `f(x)` after the
+   rewrite step above.  Consider all expressions independent of `\omega` as
+   constants and compute the leading term of the power series of `f(\omega)`
+   around `\omega = 0^+`:
+
+       .. math:: f(\omega) = c_0 \omega^{e_0} + c_1 \omega^{e_1} + \dots
+
+   where `e_0 < e_1 < e_2 \dots`
+
+4. If the leading exponent `e_0 > 0` then the limit is `0`.  If `e_0 < 0`,
+   then the answer is `\pm\infty` (depends on sign of `c_0`).  Finally,
+   if `e_0 = 0`, the limit is the limit of the leading coefficient `c_0`.
+
+Notes
+-----
+
+This exposition glossed over several details.  For example, limits could be
+computed recursively (steps 1 and 4).  Please address to the Gruntz thesis [1]_
+for proof of the termination (pp. 52-60).
+
+References
+----------
+
+.. [1] `Gruntz Thesis <http://www.cybertester.com/data/gruntz.pdf>`_
 """
-Limits
-======
 
-Implemented according to the PhD thesis
-http://www.cybertester.com/data/gruntz.pdf, which contains very thorough
-descriptions of the algorithm including many examples.  We summarize here
-the gist of it.
-
-All functions are sorted according to how rapidly varying they are at
-infinity using the following rules. Any two functions f and g can be
-compared using the properties of L:
-
-L=lim  log|f(x)| / log|g(x)|           (for x -> oo)
-
-We define >, < ~ according to::
-
-    1. f > g .... L=+-oo
-
-        we say that:
-        - f is greater than any power of g
-        - f is more rapidly varying than g
-        - f goes to infinity/zero faster than g
-
-    2. f < g .... L=0
-
-        we say that:
-        - f is lower than any power of g
-
-    3. f ~ g .... L!=0, +-oo
-
-        we say that:
-        - both f and g are bounded from above and below by suitable integral
-          powers of the other
-
-Examples
-========
-::
-    2 < x < exp(x) < exp(x**2) < exp(exp(x))
-    2 ~ 3 ~ -5
-    x ~ x**2 ~ x**3 ~ 1/x ~ x**m ~ -x
-    exp(x) ~ exp(-x) ~ exp(2x) ~ exp(x)**2 ~ exp(x+exp(-x))
-    f ~ 1/f
-
-So we can divide all the functions into comparability classes (x and x^2
-belong to one class, exp(x) and exp(-x) belong to some other class). In
-principle, we could compare any two functions, but in our algorithm, we
-don't compare anything below the class 2~3~-5 (for example log(x) is
-below this), so we set 2~3~-5 as the lowest comparability class.
-
-Given the function f, we find the list of most rapidly varying (mrv set)
-subexpressions of it. This list belongs to the same comparability class.
-Let's say it is {exp(x), exp(2x)}. Using the rule f ~ 1/f we find an
-element "w" (either from the list or a new one) from the same
-comparability class which goes to zero at infinity. In our example we
-set w=exp(-x) (but we could also set w=exp(-2x) or w=exp(-3x) ...). We
-rewrite the mrv set using w, in our case {1/w, 1/w^2}, and substitute it
-into f. Then we expand f into a series in w::
-
-    f = c0*w^e0 + c1*w^e1 + ... + O(w^en),       where e0<e1<...<en, c0!=0
-
-but for x->oo, lim f = lim c0*w^e0, because all the other terms go to zero,
-because w goes to zero faster than the ci and ei. So::
-
-    for e0>0, lim f = 0
-    for e0<0, lim f = +-oo   (the sign depends on the sign of c0)
-    for e0=0, lim f = lim c0
-
-We need to recursively compute limits at several places of the algorithm, but
-as is shown in the PhD thesis, it always finishes.
-
-Important functions from the implementation:
-
-compare(a, b, x) compares "a" and "b" by computing the limit L.
-mrv(e, x) returns list of most rapidly varying (mrv) subexpressions of "e"
-rewrite(e, Omega, x, wsym) rewrites "e" in terms of w
-leadterm(f, x) returns the lowest power term in the series of f
-mrv_leadterm(e, x) returns the lead term (c0, e0) for e
-limitinf(e, x) computes lim e  (for x->oo)
-limit(e, z, z0) computes any limit by converting it to the case x->oo
-
-All the functions are really simple and straightforward except
-rewrite(), which is the most difficult/complex part of the algorithm.
-When the algorithm fails, the bugs are usually in the series expansion
-(i.e. in SymPy) or in rewrite.
-
-This code is almost exact rewrite of the Maple code inside the Gruntz
-thesis.
-
-Debugging
----------
-
-Because the gruntz algorithm is highly recursive, it's difficult to
-figure out what went wrong inside a debugger. Instead, turn on nice
-debug prints by defining the environment variable SYMPY_DEBUG. For
-example:
-
-[user@localhost]: SYMPY_DEBUG=True ./bin/isympy
-
-In [1]: limit(sin(x)/x, x, 0)
-limitinf(_x*sin(1/_x), _x) = 1
-+-mrv_leadterm(_x*sin(1/_x), _x) = (1, 0)
-| +-mrv(_x*sin(1/_x), _x) = set([_x])
-| | +-mrv(_x, _x) = set([_x])
-| | +-mrv(sin(1/_x), _x) = set([_x])
-| |   +-mrv(1/_x, _x) = set([_x])
-| |     +-mrv(_x, _x) = set([_x])
-| +-mrv_leadterm(exp(_x)*sin(exp(-_x)), _x, set([exp(_x)])) = (1, 0)
-|   +-rewrite(exp(_x)*sin(exp(-_x)), set([exp(_x)]), _x, _w) = (1/_w*sin(_w), -_x)
-|     +-sign(_x, _x) = 1
-|     +-mrv_leadterm(1, _x) = (1, 0)
-+-sign(0, _x) = 0
-+-limitinf(1, _x) = 1
-
-And check manually which line is wrong. Then go to the source code and
-debug this function to figure out the exact problem.
-
-"""
 from __future__ import print_function, division
 
-from sympy.core import Basic, S, oo, Symbol, I, Dummy, Wild, Mul
+from sympy.core import S, oo, Symbol, I, Dummy, Wild, Mul
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import log, exp
 from sympy.series.order import Order
@@ -126,24 +75,23 @@ from sympy.simplify import powsimp
 from sympy import cacheit
 
 from sympy.core.compatibility import reduce
+from sympy.utilities.misc import debug_decorator as debug
 
 from sympy.utilities.timeutils import timethis
 timeit = timethis('gruntz')
-
-from sympy.utilities.misc import debug_decorator as debug
 
 
 def compare(a, b, x):
     """Returns "<" if a<b, "=" for a == b, ">" for a>b"""
     # log(exp(...)) must always be simplified here for termination
     la, lb = log(a), log(b)
-    if isinstance(a, Basic) and a.func is exp:
-        la = a.args[0]
-    if isinstance(b, Basic) and b.func is exp:
-        lb = b.args[0]
+    if a.func is exp:
+        la = a.exp
+    if b.func is exp:
+        lb = b.exp
 
     c = limitinf(la/lb, x)
-    if c == 0:
+    if c.is_zero:
         return "<"
     elif c.is_infinite:
         return ">"
@@ -243,8 +191,6 @@ def mrv(e, x):
     """Returns a SubsSet of most rapidly varying (mrv) subexpressions of 'e',
        and e rewritten in terms of these"""
     e = powsimp(e, deep=True, combine='exp')
-    if not isinstance(e, Basic):
-        raise TypeError("e should be an instance of Basic")
     if not e.has(x):
         return SubsSet(), e
     elif e == x:
@@ -367,8 +313,6 @@ def sign(e, x):
     the same thing as the sign of e.]
     """
     from sympy import sign as _sign
-    if not isinstance(e, Basic):
-        raise TypeError("e should be an instance of Basic")
 
     if e.is_positive:
         return 1
@@ -408,7 +352,7 @@ def sign(e, x):
 @cacheit
 def limitinf(e, x):
     """Limit e(x) for x-> oo"""
-    #rewrite e in terms of tractable functions only
+    # rewrite e in terms of tractable functions only
     e = e.rewrite('tractable', deep=True)
 
     if not e.has(x):
@@ -430,7 +374,7 @@ def limitinf(e, x):
         if c0.match(I*Wild("a", exclude=[I])):
             return c0*oo
         s = sign(c0, x)
-        #the leading term shouldn't be 0:
+        # the leading term shouldn't be 0:
         if s == 0:
             raise ValueError("Leading term should not be 0")
         return s*oo
@@ -487,7 +431,7 @@ def mrv_leadterm(e, x):
             raise ValueError("e0 should be 0")
         return c0, e0
     if x in Omega:
-        #move the whole omega up (exponentiate each term):
+        # move the whole omega up (exponentiate each term):
         Omega_up = moveup2(Omega, x)
         e_up = moveup([e], x)[0]
         exps_up = moveup([exps], x)[0]
@@ -560,9 +504,9 @@ def rewrite(e, Omega, x, wsym):
         raise TypeError("Omega should be an instance of SubsSet")
     if len(Omega) == 0:
         raise ValueError("Length can not be 0")
-    #all items in Omega must be exponentials
+    # all items in Omega must be exponentials
     for t in Omega.keys():
-        if not t.func is exp:
+        if t.func is not exp:
             raise ValueError("Value should be exp")
     rewrites = Omega.rewrites
     Omega = sorted(list(Omega.items()), key=default_sort_key)
@@ -578,7 +522,7 @@ def rewrite(e, Omega, x, wsym):
             raise NotImplementedError('Result depends on the sign of %s' % sig)
     if sig == 1:
         wsym = 1/wsym  # if g goes to oo, substitute 1/w
-    #O2 is a list, which results by rewriting each item in Omega using "w"
+    # O2 is a list, which results by rewriting each item in Omega using "w"
     O2 = []
     denominators = []
     for f, var in Omega:
@@ -592,8 +536,8 @@ def rewrite(e, Omega, x, wsym):
             arg = rewrites[var].args[0]
         O2.append((var, exp((arg - c*g.args[0]).expand())*wsym**c))
 
-    #Remember that Omega contains subexpressions of "e". So now we find
-    #them in "e" and substitute them for our rewriting, stored in O2
+    # Remember that Omega contains subexpressions of "e". So now we find
+    # them in "e" and substitute them for our rewriting, stored in O2
 
     # the following powsimp is necessary to automatically combine exponentials,
     # so that the .xreplace() below succeeds:
@@ -605,7 +549,7 @@ def rewrite(e, Omega, x, wsym):
     for _, var in Omega:
         assert not f.has(var)
 
-    #finally compute the logarithm of w (logw).
+    # finally compute the logarithm of w (logw).
     logw = g.args[0]
     if sig == 1:
         logw = -logw  # log(w)->log(1/w)=-log(w)
@@ -636,7 +580,7 @@ def gruntz(e, z, z0, dir="+"):
     if not isinstance(z, Symbol):
         raise NotImplementedError("Second argument must be a Symbol")
 
-    #convert all limits to the limit z->oo; sign of z is handled in limitinf
+    # convert all limits to the limit z->oo; sign of z is handled in limitinf
     r = None
     if z0 == oo:
         r = limitinf(e, z)
