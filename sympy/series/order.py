@@ -9,47 +9,23 @@ from sympy.utilities.iterables import uniq
 
 
 class Order(Expr):
-    r""" Represents the limiting behavior of some function
+    r"""Represents the limiting behavior of function.
 
-    The order of a function characterizes the function based on the limiting
-    behavior of the function as it goes to some limit. Only taking the limit
-    point to be a number is currently supported. This is expressed in
-    big O notation [1]_.
+    The formal definition [1]_ for order symbol `O(f(x))` (Big O) is
+    that `g(x) \in O(f(x))` as `x\to a` iff
 
-    The formal definition for the order of a function `g(x)` about a point `a`
-    is such that `g(x) = O(f(x))` as `x \rightarrow a` if and only if for any
-    `\delta > 0` there exists a `M > 0` such that `|g(x)| \leq M|f(x)|` for
-    `|x-a| < \delta`.  This is equivalent to `\lim_{x \rightarrow a}
-    \sup |g(x)/f(x)| < \infty`.
+    .. math:: \lim\limits_{x \rightarrow a} \sup
+              \left|\frac{g(x)}{f(x)}\right| < \infty
 
-    Let's illustrate it on the following example by taking the expansion of
-    `\sin(x)` about 0:
+    Parameters
+    ==========
 
-    .. math ::
-        \sin(x) = x - x^3/3! + O(x^5)
-
-    where in this case `O(x^5) = x^5/5! - x^7/7! + \cdots`. By the definition
-    of `O`, for any `\delta > 0` there is an `M` such that:
-
-    .. math ::
-        |x^5/5! - x^7/7! + ....| <= M|x^5| \text{ for } |x| < \delta
-
-    or by the alternate definition:
-
-    .. math ::
-        \lim_{x \rightarrow 0} | (x^5/5! - x^7/7! + ....) / x^5| < \infty
-
-    which surely is true, because
-
-    .. math ::
-        \lim_{x \rightarrow 0} | (x^5/5! - x^7/7! + ....) / x^5| = 1/5!
-
-
-    As it is usually used, the order of a function can be intuitively thought
-    of representing all terms of powers greater than the one specified. For
-    example, `O(x^3)` corresponds to any terms proportional to `x^3,
-    x^4,\ldots` and any higher power. For a polynomial, this leaves terms
-    proportional to `x^2`, `x` and constants.
+    expr : Expr
+        an expression
+    args : sequence of Symbol's or pairs (Symbol, Expr), optional
+        If only symbols are provided, i.e. no limit point are
+        passed, then the limit point is assumed to be zero.  If no
+        symbols are passed then all symbols in the expression are used.
 
     Examples
     ========
@@ -57,20 +33,33 @@ class Order(Expr):
     >>> from sympy import O, oo, cos, pi
     >>> from sympy.abc import x, y
 
+    The order of a function can be intuitively thought of representing all
+    terms of powers greater than the one specified.  For example, `O(x^3)`
+    corresponds to any terms proportional to `x^3, x^4,\ldots` and any
+    higher power.  For a polynomial, this leaves terms proportional
+    to `x^2`, `x` and constants.
+
+    >>> 1 + x + x**2 + x**3 + x**4 + O(x**3)
+    1 + x + x**2 + O(x**3)
+
+    ``O(f(x))`` is automatically transformed to ``O(f(x).as_leading_term(x))``:
+
     >>> O(x + x**2)
     O(x)
-    >>> O(x + x**2, (x, 0))
+    >>> O(cos(x))
+    O(1)
+
+    Some arithmetic operations:
+
+    >>> O(x)*x
+    O(x**2)
+    >>> O(x) - O(x)
     O(x)
-    >>> O(x + x**2, (x, oo))
-    O(x**2, (x, oo))
 
-    >>> O(1 + x*y)
-    O(1, x, y)
-    >>> O(1 + x*y, (x, 0), (y, 0))
-    O(1, x, y)
-    >>> O(1 + x*y, (x, oo), (y, oo))
-    O(x*y, (x, oo), (y, oo))
+    The Big O symbol is a set, so we support membership test:
 
+    >>> x in O(x)
+    True
     >>> O(1) in O(1, x)
     True
     >>> O(1, x) in O(1)
@@ -80,44 +69,26 @@ class Order(Expr):
     >>> O(x**2) in O(x)
     True
 
-    >>> O(x)*x
-    O(x**2)
-    >>> O(x) - O(x)
-    O(x)
-    >>> O(cos(x))
-    O(1)
+    Limit points other then zero and multivariate Big O are also supported:
+
+    >>> O(x) == O(x, (x, 0))
+    True
+    >>> O(x + x**2, (x, oo))
+    O(x**2, (x, oo))
     >>> O(cos(x), (x, pi/2))
     O(x - pi/2, (x, pi/2))
+
+    >>> O(1 + x*y)
+    O(1, x, y)
+    >>> O(1 + x*y, (x, 0), (y, 0))
+    O(1, x, y)
+    >>> O(1 + x*y, (x, oo), (y, oo))
+    O(x*y, (x, oo), (y, oo))
 
     References
     ==========
 
-    .. [1] `Big O notation <http://en.wikipedia.org/wiki/Big_O_notation>`_
-
-    Notes
-    =====
-
-    In ``O(f(x), x)`` the expression ``f(x)`` is assumed to have a leading
-    term.  ``O(f(x), x)`` is automatically transformed to
-    ``O(f(x).as_leading_term(x),x)``.
-
-        ``O(expr*f(x), x)`` is ``O(f(x), x)``
-
-        ``O(expr, x)`` is ``O(1)``
-
-        ``O(0, x)`` is 0.
-
-    Multivariate O is also supported:
-
-        ``O(f(x, y), x, y)`` is transformed to
-        ``O(f(x, y).as_leading_term(x,y).as_leading_term(y), x, y)``
-
-    In the multivariate case, it is assumed the limits w.r.t. the various
-    symbols commute.
-
-    If no symbols are passed then all symbols in the expression are used
-    and the limit point is assumed to be zero.
-
+    .. [1] http://en.wikipedia.org/wiki/Big_O_notation
     """
 
     is_Order = True
@@ -322,11 +293,15 @@ class Order(Expr):
 
     @cacheit
     def contains(self, expr):
-        """
-        Return True if expr belongs to Order(self.expr, \*self.variables).
-        Return False if self belongs to expr.
-        Return None if the inclusion relation cannot be determined
-        (e.g. when self and expr have different symbols).
+        """Membership test.
+
+        Returns
+        =======
+
+        Boolean or None
+            Return True if ``expr`` belongs to ``self``.  Return False if
+            ``self`` belongs to ``expr``.  Return None if the inclusion
+            relation cannot be determined.
         """
         from sympy import powsimp
         if expr is S.Zero:
