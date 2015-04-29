@@ -67,10 +67,9 @@ References
 
 from __future__ import print_function, division
 
-from sympy.core import S, oo, Symbol, I, Dummy, Wild, Mul
+from sympy.core import S, oo, Dummy, Mul
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import log, exp
-from sympy.series.order import Order
 from sympy.simplify import powsimp
 from sympy import cacheit
 from sympy.core.compatibility import reduce
@@ -346,30 +345,23 @@ def limitinf(e, x):
     e = e.rewrite('tractable', deep=True)
 
     if not e.has(x):
-        return e  # e is a constant
-    if e.has(Order):
-        e = e.expand().removeO()
-    if not x.is_positive:
-        # We make sure that x.is_positive is True so we
-        # get all the correct mathematical behavior from the expression.
-        # We need a fresh variable.
-        p = Dummy('p', positive=True, finite=True)
-        e = e.subs(x, p)
-        x = p
+        # This is a bit of a heuristic for nice results.  We always rewrite
+        # tractable functions in terms of familiar intractable ones.
+        # TODO: It might be nicer to rewrite the exactly to what they were
+        # initially, but that would take some work to implement.
+        return e.rewrite('intractable', deep=True)
+
     c0, e0 = mrv_leadterm(e, x)
     sig = sign(e0, x)
     if sig == 1:
-        return S.Zero  # e0>0: lim f = 0
-    elif sig == -1:  # e0<0: lim f = +-oo (the sign depends on the sign of c0)
-        if c0.match(I*Wild("a", exclude=[I])):
-            return c0*oo
+        return S.Zero
+    elif sig == -1:
         s = sign(c0, x)
-        # the leading term shouldn't be 0:
         if s == 0:
             raise ValueError("Leading term should not be 0")
         return s*oo
     elif sig == 0:
-        return limitinf(c0, x)  # e0=0: lim f = lim c0
+        return limitinf(c0, x)
 
 
 def moveup2(s, x):
@@ -561,26 +553,19 @@ def gruntz(e, z, z0, dir="+"):
     file. It relies heavily on the series expansion. Most frequently, gruntz()
     is only used if the faster limit() function (which uses heuristics) fails.
     """
-    if not isinstance(z, Symbol):
-        raise NotImplementedError("Second argument must be a Symbol")
+    # Convert all limits to the limit z->oo.
 
-    # convert all limits to the limit z->oo; sign of z is handled in limitinf
-    r = None
-    if z0 == oo:
-        r = limitinf(e, z)
-    elif z0 == -oo:
-        r = limitinf(e.subs(z, -z), z)
-    else:
-        if str(dir) == "-":
-            e0 = e.subs(z, z0 - 1/z)
-        elif str(dir) == "+":
-            e0 = e.subs(z, z0 + 1/z)
+    if z0 == -oo:
+        e = e.subs(z, -z)
+    elif z0 != oo:
+        if str(dir) == "+":
+            e = e.subs(z, z0 + 1/z)
         else:
-            raise NotImplementedError("dir must be '+' or '-'")
-        r = limitinf(e0, z)
+            e = e.subs(z, z0 - 1/z)
 
-    # This is a bit of a heuristic for nice results... we always rewrite
-    # tractable functions in terms of familiar intractable ones.
-    # It might be nicer to rewrite the exactly to what they were initially,
-    # but that would take some work to implement.
-    return r.rewrite('intractable', deep=True)
+    if not z.is_positive or not z.is_finite:
+        # We need a fresh variable here to simplify expression further.
+        newz = Dummy(z.name, positive=True, finite=True)
+        e, z = e.subs(z, newz), newz
+
+    return limitinf(e, z)

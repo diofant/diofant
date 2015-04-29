@@ -147,6 +147,17 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
+        if z0 is S.NaN:
+            return S.NaN
+
+        if e.has(Order):
+            e = e.expand()
+            order = e.getO()
+            if order:
+                if (z, z0) in zip(order.variables, order.point):
+                    order = limit(order.expr, z, z0, dir)
+                    e = e.removeO() + order
+
         # gruntz fails on factorials but works with the gamma function
         # If no factorial term is present, e should remain unchanged.
         # factorial is defined to be zero for negative inputs (which
@@ -177,9 +188,6 @@ class Limit(Expr):
                         return self
                     else:
                         return r
-
-        if e.is_Order:
-            return Order(limit(e.expr, z, z0), *e.args[1:])
 
         try:
             r = gruntz(e, z, z0, dir)
