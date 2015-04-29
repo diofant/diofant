@@ -2064,7 +2064,7 @@ def test_T9():
 
 @XFAIL
 def test_T10():
-    limit(zeta(x) - 1/(x - 1), x, 1) == EulerGamma
+    assert limit(zeta(x) - 1/(x - 1), x, 1) == EulerGamma
 
 
 @XFAIL
