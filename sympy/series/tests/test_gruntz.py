@@ -266,9 +266,7 @@ def test_rewrite():
     assert rewrite(e, mrv(e, x), x, m) == (1/m*log(x), -x)
 
     e = exp(-x + 1/x**2) - exp(x + 1/x)
-    # both of these are correct and should be equivalent:
-    assert rewrite(e, mrv(e, x), x, m) in [(-1/m + m*exp(
-        1/x + 1/x**2), -x - 1/x), (m - 1/m*exp(1/x + x**(-2)), x**(-2) - x)]
+    assert rewrite(e, mrv(e, x), x, m) == (m*exp(1/x + x**(-2)) - 1/m, -x - 1/x)
 
 
 def test_mrv_leadterm():
