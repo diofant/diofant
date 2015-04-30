@@ -1,5 +1,5 @@
 from sympy import Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma, S, \
-    atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, digamma, Integer, Ei, EulerGamma
+    atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, digamma, Integer, Ei, EulerGamma, li, Li
 from sympy.functions.elementary.hyperbolic import cosh, coth, sinh, tanh
 from sympy.series.gruntz import compare, mrv as _mrv, rewrite as _rewrite, mrv_leadterm, gruntz, \
     sign
@@ -315,6 +315,11 @@ def test_limit():
 
     assert gruntz((3**x + 5**x)**(1/x), x, oo) == 5  # issue 3463
     assert gruntz((3**(1/x) + 5**(1/x))**x, x, 0) == 5  # issue 3463
+
+    assert gruntz(Ei(x + exp(-x))*exp(-x)*x, x, oo) == 1
+
+    assert gruntz(1/li(x), x, oo) == 0
+    assert gruntz(1/Li(x), x, oo) == 0
 
 
 @XFAIL
