@@ -1,8 +1,5 @@
 from __future__ import print_function, division
 
-import sys
-sys._running_pytest = True
-
 import pytest
 from sympy.core.cache import clear_cache
 import re
