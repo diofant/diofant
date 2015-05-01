@@ -1,19 +1,17 @@
-from sympy import Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma, S, \
-    atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, digamma, Integer, Ei, EulerGamma, li, Li
-from sympy.functions.elementary.hyperbolic import cosh, coth, sinh, tanh
-from sympy.series.gruntz import compare, mrv as _mrv, rewrite as _rewrite, mrv_leadterm, gruntz, \
-    sign
+"""
+This test suite is testing the Gruntz algorithm implementation using the
+bottom up approach.  See the documentation in the gruntz module.  The
+algorithm itself is highly recursive by nature, so ``compare()`` is
+logically the lowest part of the algorithm, yet in some sense it's the most
+complex part, because it needs to calculate a limit to return the result.
+"""
+
+from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
+                   S, atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, digamma,
+                   Integer, Ei, EulerGamma, li, Li, cosh, coth, sinh, tanh)
+from sympy.series.gruntz import (compare, mrv as _mrv, rewrite as _rewrite,
+                                 mrv_leadterm, gruntz, sign)
 from sympy.utilities.pytest import XFAIL, slow
-
-"""
-This test suite is testing the limit algorithm using the bottom up approach.
-See the documentation in limits2.py. The algorithm itself is highly recursive
-by nature, so "compare" is logically the lowest part of the algorithm, yet in
-some sense it's the most complex part, because it needs to calculate a limit
-to return the result.
-
-Nevertheless, the rest of the algorithm depends on compare working correctly.
-"""
 
 x = Symbol('x', extended_real=True)
 m = Symbol('m', extended_real=True)
