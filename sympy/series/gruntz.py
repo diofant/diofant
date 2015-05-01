@@ -73,9 +73,7 @@ from sympy.functions import log, exp
 from sympy.series.order import Order
 from sympy.simplify import powsimp
 from sympy import cacheit
-
 from sympy.core.compatibility import reduce
-from sympy.utilities.misc import debug_decorator as debug
 
 from sympy.utilities.timeutils import timethis
 timeit = timethis('gruntz')
@@ -186,7 +184,6 @@ class SubsSet(dict):
         return r
 
 
-@debug
 def mrv(e, x):
     """Returns a SubsSet of most rapidly varying (mrv) subexpressions of 'e',
        and e rewritten in terms of these"""
@@ -292,7 +289,6 @@ def mrv_max1(f, g, exps, x):
                     u, b, x)
 
 
-@debug
 @cacheit
 @timeit
 def sign(e, x):
@@ -347,7 +343,6 @@ def sign(e, x):
     return sign(c0, x)
 
 
-@debug
 @timeit
 @cacheit
 def limitinf(e, x):
@@ -395,7 +390,6 @@ def moveup(l, x):
     return [e.xreplace({x: exp(x)}) for e in l]
 
 
-@debug
 @timeit
 def calculate_series(e, x, logx=None):
     """ Calculates at least one term of the series of "e" in "x".
@@ -413,7 +407,6 @@ def calculate_series(e, x, logx=None):
     return t
 
 
-@debug
 @timeit
 @cacheit
 def mrv_leadterm(e, x):
@@ -489,7 +482,6 @@ def build_expression_tree(Omega, rewrites):
     return nodes
 
 
-@debug
 @timeit
 def rewrite(e, Omega, x, wsym):
     """e(x) ... the function
