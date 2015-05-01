@@ -75,9 +75,6 @@ from sympy.simplify import powsimp
 from sympy import cacheit
 from sympy.core.compatibility import reduce
 
-from sympy.utilities.timeutils import timethis
-timeit = timethis('gruntz')
-
 
 def compare(a, b, x):
     """Returns "<" if a<b, "=" for a == b, ">" for a>b"""
@@ -290,7 +287,6 @@ def mrv_max1(f, g, exps, x):
 
 
 @cacheit
-@timeit
 def sign(e, x):
     """
     Returns a sign of an expression e(x) for x->oo.
@@ -343,7 +339,6 @@ def sign(e, x):
     return sign(c0, x)
 
 
-@timeit
 @cacheit
 def limitinf(e, x):
     """Limit e(x) for x-> oo"""
@@ -390,7 +385,6 @@ def moveup(l, x):
     return [e.xreplace({x: exp(x)}) for e in l]
 
 
-@timeit
 def calculate_series(e, x, logx=None):
     """ Calculates at least one term of the series of "e" in "x".
 
@@ -407,7 +401,6 @@ def calculate_series(e, x, logx=None):
     return t
 
 
-@timeit
 @cacheit
 def mrv_leadterm(e, x):
     """Returns (c0, e0) for e."""
@@ -482,7 +475,6 @@ def build_expression_tree(Omega, rewrites):
     return nodes
 
 
-@timeit
 def rewrite(e, Omega, x, wsym):
     """e(x) ... the function
     Omega ... the mrv set
