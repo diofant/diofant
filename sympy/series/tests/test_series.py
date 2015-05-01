@@ -3,7 +3,6 @@ from sympy import sin, cos, exp, E, series, oo, S, Derivative, O, Integral, \
 from sympy.abc import x, y, n, k
 from sympy.utilities.pytest import raises
 from sympy.core.compatibility import range
-from sympy.series.gruntz import calculate_series
 
 
 def test_sin():
@@ -125,7 +124,7 @@ def test_x_is_base_detection():
 
 def test_sin_power():
     e = sin(x)**1.2
-    assert calculate_series(e, x) == x**1.2
+    assert e.compute_leading_term(x) == x**1.2
 
 
 def test_issue_7203():

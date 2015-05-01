@@ -377,22 +377,6 @@ def moveup(l, x):
     return [e.xreplace({x: exp(x)}) for e in l]
 
 
-def calculate_series(e, x, logx=None):
-    """ Calculates at least one term of the series of "e" in "x".
-
-    This is a place that fails most often, so it is in its own function.
-    """
-    from sympy.polys import cancel
-
-    for t in e.lseries(x, logx=logx):
-        t = cancel(t)
-
-        if t.simplify():
-            break
-
-    return t
-
-
 @cacheit
 def mrv_leadterm(e, x):
     """Returns (c0, e0) for e."""
@@ -403,8 +387,8 @@ def mrv_leadterm(e, x):
         Omega, exps = mrv(e, x)
     if not Omega:
         # e really does not depend on x after simplification
-        series = calculate_series(e, x)
-        c0, e0 = series.leadterm(x)
+        series = e.compute_leading_term(x)
+        c0, e0 = series.as_coeff_exponent(x)
         if e0 != 0:
             raise ValueError("e0 should be 0")
         return c0, e0
@@ -426,8 +410,8 @@ def mrv_leadterm(e, x):
     #
     w = Dummy("w", extended_real=True, positive=True, finite=True)
     f, logw = rewrite(exps, Omega, x, w)
-    series = calculate_series(f, w, logx=logw)
-    return series.leadterm(w)
+    series = f.compute_leading_term(w, logx=logw)
+    return series.as_coeff_exponent(w)
 
 
 def build_expression_tree(Omega, rewrites):

@@ -2830,18 +2830,19 @@ class Expr(Basic, EvalfMixin):
         This is a wrapper to compute a series first.
         """
         from sympy import Dummy, log
-        from sympy.series.gruntz import calculate_series
 
-        if self.removeO() == 0:
-            return self
+        d = logx if logx else Dummy('logx')
+
+        for t in self.lseries(x, logx=d):
+            t = t.cancel()
+
+            if t.simplify():
+                break
 
         if logx is None:
-            d = Dummy('logx')
-            s = calculate_series(self, x, d).subs(d, log(x))
-        else:
-            s = calculate_series(self, x, logx)
+            t = t.subs(d, log(x))
 
-        return s.as_leading_term(x)
+        return t.as_leading_term(x)
 
     @cacheit
     def as_leading_term(self, *symbols):

@@ -297,10 +297,10 @@ def test_issue_3934():
     assert limit((5**(1/x) + 3**(1/x))**x, x, 0) == 5
 
 
-def test_calculate_series():
-    # needs gruntz calculate_series to go to n = 32
+def test_compute_leading_term():
+    # needs series to go to n = 32
     assert limit(x**(S(77)/3)/(1 + x**(S(77)/3)), x, oo) == 1
-    # needs gruntz calculate_series to go to n = 128
+    # needs series to go to n = 128
     assert limit(x**101.1/(1 + x**101.1), x, oo) == 1
 
 
