@@ -47,14 +47,14 @@ def test_quadratic_simple_hyperbolic_case():
     # Simple Hyperbolic case: A = C = 0 and B != 0
     assert diop_solve(3*x*y + 34*x - 12*y + 1) == \
         {(-Integer(133), -Integer(11)), (Integer(5), -Integer(57))}
-    assert diop_solve(6*x*y + 2*x + 3*y + 1) == set([])
+    assert diop_solve(6*x*y + 2*x + 3*y + 1) == set()
     assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(Integer(27), Integer(0))}
     assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-Integer(14), -Integer(1))}
     assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-Integer(161), -Integer(3)),\
         (-Integer(47),-Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),\
         (-Integer(27), Integer(64)), (-Integer(21), Integer(7)),(-Integer(9), Integer(1)),\
         (Integer(105), -Integer(2))}
-    assert diop_solve(6*x*y + 9*x + 2*y + 3) == set([])
+    assert diop_solve(6*x*y + 9*x + 2*y + 3) == set()
     assert diop_solve(x*y + x + y + 1) == {(-Integer(1), t), (t, -Integer(1))}
     assert diophantine(48*x*y)
 
@@ -66,7 +66,7 @@ def test_quadratic_elliptical_case():
     # This above method should be replaced by Pernici's square_mod() method when his PR gets merged.
 
     #assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-Integer(11), -Integer(1))}
-    assert diop_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12) == set([])
+    assert diop_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12) == set()
     assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-Integer(1), -Integer(1))}
     #assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
@@ -80,7 +80,7 @@ def test_quadratic_parabolic_case():
         {(-174*t**2 + 17*t - 2, -116*t**2 + 21*t - 2), (-174*t**2 + 41*t - 4, -116*t**2 + 37*t - 4)}
     assert diop_solve(8*x**2 - 24*x*y + 18*y**2 + 6*x + 12*y - 6) == \
         {(-63*t**2 + 12*t, -42*t**2 + 15*t -1), (-63*t**2 + 30*t - 3, -42*t**2 + 27*t - 4)}
-    assert diop_solve(8*x**2 + 24*x*y + 18*y**2 + 4*x + 6*y - 7) == set([])
+    assert diop_solve(8*x**2 + 24*x*y + 18*y**2 + 4*x + 6*y - 7) == set()
     assert diop_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1) == {(t,-t - 1)}
     assert diop_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1) == \
         {(-4*t**2, -4*t**2 + 4*t - 1),(-4*t**2 + 4*t -1, -4*t**2 + 8*t - 4)}

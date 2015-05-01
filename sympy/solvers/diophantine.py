@@ -77,7 +77,7 @@ def diophantine(eq, param=symbols("t", integer=True)):
 
     terms = factor_list(eq)[1]
 
-    sols = set([])
+    sols = set()
 
     for term in terms:
 
@@ -186,7 +186,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
 
     elif eq_type == "univariate":
         l = solve(eq)
-        s = set([])
+        s = set()
 
         for soln in l:
             if isinstance(soln, Integer):
@@ -600,7 +600,7 @@ def _diop_quadratic(var, coeff, t):
     # We consider two cases; DE - BF = 0 and DE - BF != 0
     # More details, http://www.alpertron.com.ar/METHODS.HTM#SHyperb
 
-    l = set([])
+    l = set()
 
     if A == 0 and C == 0 and B != 0:
 
@@ -1021,7 +1021,7 @@ def cornacchia(a, b, m):
         method, [online], Available:
         http://www.numbertheory.org/php/cornacchia.html
     """
-    sols = set([])
+    sols = set()
 
     a1 = igcdex(a, m)[0]
     v = sqrt_mod(-b*a1, m, True)
@@ -2412,10 +2412,10 @@ def _diop_general_sum_of_squares(var, coeff, limit=1):
 
     n = len(var)
     k = -int(coeff[Integer(1)])
-    s = set([])
+    s = set()
 
     if k < 0:
-        return set([])
+        return set()
 
     if n == 3:
         s.add(sum_of_three_squares(k))

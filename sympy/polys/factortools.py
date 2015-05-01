@@ -935,7 +935,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
         else:
             mod = 1
 
-    history, configs, A, r = set([]), [], [K.zero]*u, None
+    history, configs, A, r = set(), [], [K.zero]*u, None
 
     try:
         cs, s, E = dmp_zz_wang_test_points(f, T, ct, A, u, K)

@@ -2690,13 +2690,13 @@ class TensAdd(TensExpr):
             return args
 
         # @type auto_left_types: set
-        auto_left_types = set([])
-        auto_right_types = set([])
+        auto_left_types = set()
+        auto_right_types = set()
         args_auto_left_types = []
         args_auto_right_types = []
         for i, arg in enumerate(args):
-            arg_auto_left_types = set([])
-            arg_auto_right_types = set([])
+            arg_auto_left_types = set()
+            arg_auto_right_types = set()
             for index in get_indices(arg):
                 # @type index: TensorIndex
                 if index in (index._tensortype.auto_left, -index._tensortype.auto_left):

@@ -1263,7 +1263,7 @@ def _solve(f, *symbols, **flags):
             return soln
         # find first successful solution
         failed = []
-        got_s = set([])
+        got_s = set()
         result = []
         for s in symbols:
             n, d = solve_linear(f, symbols=[s])

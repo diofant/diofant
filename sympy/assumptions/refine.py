@@ -123,8 +123,8 @@ def refine_Pow(expr, assumptions):
 
                 coeff, terms = expr.exp.as_coeff_add()
                 terms = set(terms)
-                even_terms = set([])
-                odd_terms = set([])
+                even_terms = set()
+                odd_terms = set()
                 initial_number_of_terms = len(terms)
 
                 for t in terms:

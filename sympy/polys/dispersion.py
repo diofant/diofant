@@ -101,7 +101,7 @@ def dispersionset(p, q=None, *gens, **args):
     fq = q.factor_list() if not same else fp
 
     # Iterate over all pairs of factors
-    J = set([])
+    J = set()
     for s, unused in fp[1]:
         for t, unused in fq[1]:
             m = s.degree()

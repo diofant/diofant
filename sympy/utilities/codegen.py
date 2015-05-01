@@ -150,8 +150,8 @@ class Routine(object):
         """
 
         # extract all input symbols and all symbols appearing in an expression
-        input_symbols = set([])
-        symbols = set([])
+        input_symbols = set()
+        symbols = set()
         for arg in arguments:
             if isinstance(arg, OutputArgument):
                 symbols.update(arg.expr.free_symbols)
@@ -172,7 +172,7 @@ class Routine(object):
         # InputArguments/InOutArguments---subset because user could
         # specify additional (unused) InputArguments or local_vars.
         notcovered = symbols.difference(input_symbols.union(local_vars))
-        if notcovered != set([]):
+        if notcovered != set():
             raise ValueError("Symbols needed for output are not in input " +
                              ", ".join([str(x) for x in notcovered]))
 

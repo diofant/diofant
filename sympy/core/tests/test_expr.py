@@ -309,7 +309,7 @@ def test_atoms():
     assert (2*(x**(y**x))).atoms() == {S(2), x, y}
 
     assert Rational(1, 2).atoms() == {S.Half}
-    assert Rational(1, 2).atoms(Symbol) == set([])
+    assert Rational(1, 2).atoms(Symbol) == set()
 
     assert sin(oo).atoms(oo) == {oo}
 

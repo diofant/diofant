@@ -256,7 +256,7 @@ class BooleanFunction(Application, Boolean):
     @classmethod
     def _to_nnf(cls, *args, **kwargs):
         simplify = kwargs.get('simplify', True)
-        argset = set([])
+        argset = set()
         for arg in args:
             if not is_literal(arg):
                 arg = arg.to_nnf(simplify)
@@ -586,7 +586,7 @@ class Xor(BooleanFunction):
 
     """
     def __new__(cls, *args, **kwargs):
-        argset = set([])
+        argset = set()
         obj = super(Xor, cls).__new__(cls, *args, **kwargs)
         for arg in obj._args:
             if isinstance(arg, Number) or arg in (True, False):

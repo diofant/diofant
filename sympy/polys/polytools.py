@@ -224,7 +224,7 @@ class Poly(Expr):
         set([x, y])
 
         """
-        symbols = set([])
+        symbols = set()
 
         for gen in self.gens:
             symbols |= gen.free_symbols
@@ -612,7 +612,7 @@ class Poly(Expr):
         False
 
         """
-        indices = set([])
+        indices = set()
 
         for gen in gens:
             try:

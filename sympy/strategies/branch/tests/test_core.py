@@ -56,7 +56,7 @@ def test_multiplex():
 def test_condition():
     brl = condition(even, branch5)
     assert set(brl(4)) == set(branch5(4))
-    assert set(brl(5)) == set([])
+    assert set(brl(5)) == set()
 
 def test_sfilter():
     brl = sfilter(even, one_to_n)

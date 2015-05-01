@@ -87,17 +87,17 @@ def test_fcode_NumberSymbol():
     assert fcode(
         pi, precision=5) == '      parameter (pi = 3.1416d0)\n      pi'
     assert fcode(Catalan, human=False) == ({(Catalan, p._print(
-        Catalan.evalf(15)))}, set([]), '      Catalan')
+        Catalan.evalf(15)))}, set(), '      Catalan')
     assert fcode(EulerGamma, human=False) == ({(EulerGamma, p._print(
-        EulerGamma.evalf(15)))}, set([]), '      EulerGamma')
+        EulerGamma.evalf(15)))}, set(), '      EulerGamma')
     assert fcode(E, human=False) == (
-        {(E, p._print(E.evalf(15)))}, set([]), '      E')
+        {(E, p._print(E.evalf(15)))}, set(), '      E')
     assert fcode(GoldenRatio, human=False) == ({(GoldenRatio, p._print(
-        GoldenRatio.evalf(15)))}, set([]), '      GoldenRatio')
+        GoldenRatio.evalf(15)))}, set(), '      GoldenRatio')
     assert fcode(pi, human=False) == (
-        {(pi, p._print(pi.evalf(15)))}, set([]), '      pi')
+        {(pi, p._print(pi.evalf(15)))}, set(), '      pi')
     assert fcode(pi, precision=5, human=False) == (
-        {(pi, p._print(pi.evalf(5)))}, set([]), '      pi')
+        {(pi, p._print(pi.evalf(5)))}, set(), '      pi')
 
 
 def test_fcode_complex():

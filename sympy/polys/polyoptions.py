@@ -183,7 +183,7 @@ class Options(dict):
     def _init_dependencies_order(cls):
         """Resolve the order of options' processing. """
         if cls.__order__ is None:
-            vertices, edges = [], set([])
+            vertices, edges = [], set()
 
             for name, option in cls.__options__.items():
                 vertices.append(name)

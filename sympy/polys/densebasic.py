@@ -322,7 +322,7 @@ def _rec_validate(f, g, i, K):
     elif not g:
         return {i}
     else:
-        j, levels = i + 1, set([])
+        j, levels = i + 1, set()
 
         for c in g:
             levels |= _rec_validate(f, c, i + 1, K)

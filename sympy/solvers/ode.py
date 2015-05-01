@@ -4739,15 +4739,15 @@ def _solve_undetermined_coefficients(eq, func, order, match):
     gensols = r['list']
     gsol = r['sol']
     trialset = r['trialset']
-    notneedset = set([])
-    newtrialset = set([])
+    notneedset = set()
+    newtrialset = set()
     global collectterms
     if len(gensols) != order:
         raise NotImplementedError("Cannot find " + str(order) +
         " solutions to the homogeneous equation necessary to apply" +
         " undetermined coefficients to " + str(eq) +
         " (number of terms != order)")
-    usedsin = set([])
+    usedsin = set()
     mult = 0  # The multiplicity of the root
     getmult = True
     for i, reroot, imroot in collectterms:
@@ -4891,7 +4891,7 @@ def _undetermined_coefficients_match(expr, x):
         else:
             return False
 
-    def _get_trial_set(expr, x, exprs=set([])):
+    def _get_trial_set(expr, x, exprs=set()):
         r"""
         Returns a set of trial terms for undetermined coefficients.
 
@@ -4927,7 +4927,7 @@ def _undetermined_coefficients_match(expr, x):
         else:
             term = _remove_coefficient(expr, x)
             tmpset = exprs.union({term})
-            oldset = set([])
+            oldset = set()
             while tmpset != oldset:
                 # If you get stuck in this loop, then _test_term is probably
                 # broken

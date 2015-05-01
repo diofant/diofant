@@ -9,10 +9,10 @@ from sympy import get_contraction_structure, get_indices
 
 def test_trivial_indices():
     x, y = symbols('x y')
-    assert get_indices(x) == (set([]), {})
-    assert get_indices(x*y) == (set([]), {})
-    assert get_indices(x + y) == (set([]), {})
-    assert get_indices(x**y) == (set([]), {})
+    assert get_indices(x) == (set(), {})
+    assert get_indices(x*y) == (set(), {})
+    assert get_indices(x + y) == (set(), {})
+    assert get_indices(x**y) == (set(), {})
 
 
 def test_get_indices_Indexed():
@@ -84,7 +84,7 @@ def test_get_contraction_structure_basic():
     x = IndexedBase('x')
     y = IndexedBase('y')
     i, j = Idx('i'), Idx('j')
-    assert get_contraction_structure(x[i]*y[j]) == {None: {[x[i]*y[j]}}
+    assert get_contraction_structure(x[i]*y[j]) == {None: {x[i]*y[j]}}
     assert get_contraction_structure(x[i] + y[j]) == {None: {x[i], y[j]}}
     assert get_contraction_structure(x[i]*y[i]) == {(i,): {x[i]*y[i]}}
     assert get_contraction_structure(
@@ -137,7 +137,7 @@ def test_contraction_structure_Mul_and_Pow():
     expected = {
         (i,): {ij_exp_kki},
         ij_exp_kki: [{
-                     None: {exp(y[i]*y[k, k]}),
+                     None: {exp(y[i]*y[k, k])},
                 exp(y[i]*y[k, k]): [{
                     None: {y[i]*y[k, k]},
                     y[i]*y[k, k]: [{(k,): {y[k, k]}}]
