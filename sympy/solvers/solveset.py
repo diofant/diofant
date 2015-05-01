@@ -264,8 +264,8 @@ def _is_finite_with_finite_vars(f):
     Return True if the given expression is finite when all free symbols
     (that are not already specified as finite) are made finite.
     """
-    reps = dict([(s, Dummy(s.name, finite=True, **s.assumptions0))
-                for s in f.free_symbols if s.is_finite is None])
+    reps = {s: Dummy(s.name, finite=True, **s.assumptions0)
+            for s in f.free_symbols if s.is_finite is None}
     return f.xreplace(reps).is_finite
 
 

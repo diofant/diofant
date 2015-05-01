@@ -2498,7 +2498,7 @@ def _get_constant_subexpressions(expr, Cs):
     return Ces
 
 def __remove_linear_redundancies(expr, Cs):
-    cnts = dict([(i, expr.count(i)) for i in Cs])
+    cnts = {i: expr.count(i) for i in Cs}
     Cs = [i for i in Cs if cnts[i] > 0]
 
     def _linear(expr):
@@ -3844,7 +3844,7 @@ def _nth_linear_match(eq, func, order):
     """
     x = func.args[0]
     one_x = {x}
-    terms = dict([(i, S.Zero) for i in range(-1, order + 1)])
+    terms = {i: S.Zero for i in range(-1, order + 1)}
     for i in Add.make_args(eq):
         if not i.has(func):
             terms[-1] += i
@@ -5834,7 +5834,7 @@ def lie_heuristic_bivariate(match, comp=False):
                     etared = etaeq.subs(soldict)
                     # Scaling is done by substituting one for the parameters
                     # This can be any number except zero.
-                    dict_ = dict((sym, 1) for sym in symset)
+                    dict_ = {sym: 1 for sym in symset}
                     inf = {eta: etared.subs(dict_).subs(y, func),
                         xi: xired.subs(dict_).subs(y, func)}
                     return [inf]
@@ -5898,7 +5898,7 @@ def lie_heuristic_chi(match, comp=False):
                         soldict = soldict[0]
                     if any(x for x in soldict.values()):
                         chieq = chieq.subs(soldict)
-                        dict_ = dict((sym, 1) for sym in solsyms)
+                        dict_ = {sym: 1 for sym in solsyms}
                         chieq = chieq.subs(dict_)
                         # After finding chi, the main aim is to find out
                         # eta, xi by the equation eta = xi*h + chi

@@ -18,7 +18,7 @@ from sympy.core.compatibility import exec_, range
 units = ["s", "ms", "us", "ns"]
 scaling = [1, 1e3, 1e6, 1e9]
 
-unitn = dict((s, i) for i, s in enumerate(units))
+unitn = {s: i for i, s in enumerate(units)}
 
 precision = 3
 

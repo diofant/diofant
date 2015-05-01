@@ -571,7 +571,7 @@ class CodeGen(object):
                         ", ".join([str(m.name) for m in missing]), missing)
 
             # create redundant arguments to produce the requested sequence
-            name_arg_dict = dict([(x.name, x) for x in arg_list])
+            name_arg_dict = {x.name: x for x in arg_list}
             new_args = []
             for symbol in argument_sequence:
                 try:
@@ -1167,7 +1167,7 @@ class OctaveCodeGen(CodeGen):
                         ", ".join([str(m.name) for m in missing]), missing)
 
             # create redundant arguments to produce the requested sequence
-            name_arg_dict = dict([(x.name, x) for x in arg_list])
+            name_arg_dict = {x.name: x for x in arg_list}
             new_args = []
             for symbol in argument_sequence:
                 try:

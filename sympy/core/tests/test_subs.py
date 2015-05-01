@@ -128,7 +128,7 @@ def test_dict_ambigous():   # see issue 3566
     assert e.subs({x: y, y: 2}) == 5
     # here, there are no obviously clashing keys or values
     # but the results depend on the order
-    assert exp(x/2 + y).subs(dict([(exp(y + 1), 2), (x, 2)])) == exp(y + 1)
+    assert exp(x/2 + y).subs({exp(y + 1): 2, x: 2}) == exp(y + 1)
 
 
 def test_deriv_sub_bug3():
@@ -461,13 +461,8 @@ def test_subs_dict():
     assert sin(x).subs(reversed(l)) == sin(1)
 
     expr = sin(2*x) + sqrt(sin(2*x))*cos(2*x)*sin(exp(x)*x)
-    reps = dict([
-               (sin(2*x), c),
-               (sqrt(sin(2*x)), a),
-               (cos(2*x), b),
-               (exp(x), e),
-               (x, d),
-    ])
+    reps = {sin(2*x): c, sqrt(sin(2*x)): a, cos(2*x): b,
+            exp(x): e, x: d}
     assert expr.subs(reps) == c + a*b*sin(d*e)
 
     l = [(x, 3), (y, x**2)]

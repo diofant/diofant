@@ -926,7 +926,7 @@ def solve(f, *symbols, **flags):
         swap_sym = list(zip(symbols, symbols_new))
         f = [fi.subs(swap_sym) for fi in f]
         symbols = symbols_new
-        swap_sym = dict([(v, k) for k, v in swap_sym])
+        swap_sym = {v: k for k, v in swap_sym}
     else:
         swap_sym = {}
 
@@ -1038,8 +1038,7 @@ def solve(f, *symbols, **flags):
     if non_inverts:
 
         def _do_dict(solution):
-            return dict([(k, v.subs(non_inverts)) for k, v in
-                         solution.items()])
+            return {k: v.subs(non_inverts) for k, v in solution.items()}
         for i in range(1):
             if type(solution) is dict:
                 solution = _do_dict(solution)
@@ -1073,12 +1072,12 @@ def solve(f, *symbols, **flags):
     if symbol_swapped:
         symbols = [swap_sym[k] for k in symbols]
         if type(solution) is dict:
-            solution = dict([(swap_sym[k], v.subs(swap_sym))
-                             for k, v in solution.items()])
+            solution = {swap_sym[k]: v.subs(swap_sym)
+                        for k, v in solution.items()}
         elif solution and type(solution) is list and type(solution[0]) is dict:
             for i, sol in enumerate(solution):
-                solution[i] = dict([(swap_sym[k], v.subs(swap_sym))
-                              for k, v in sol.items()])
+                solution[i] = {swap_sym[k]: v.subs(swap_sym)
+                               for k, v in sol.items()}
 
     # undo the dictionary solutions returned when the system was only partially
     # solved with poly-system if all symbols are present
@@ -1502,8 +1501,8 @@ def _solve(f, *symbols, **flags):
                 soln = None
                 deg = poly.degree()
                 flags['tsolve'] = True
-                solvers = dict([(k, flags.get(k, True)) for k in
-                    ('cubics', 'quartics', 'quintics')])
+                solvers = {k: flags.get(k, True) for k in
+                           ('cubics', 'quartics', 'quintics')}
                 soln = roots(poly, **solvers)
                 if sum(soln.values()) < deg:
                     # e.g. roots(32*x**5 + 400*x**4 + 2032*x**3 +
@@ -1933,7 +1932,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
         for xi in symbols:
             # if there are derivatives in this var, calculate them now
             if type(derivs[xi]) is list:
-                derivs[xi] = dict([(der, der.doit()) for der in derivs[xi]])
+                derivs[xi] = {der: der.doit() for der in derivs[xi]}
             nn = n.subs(derivs[xi])
             dn = nn.diff(xi)
             if dn:

@@ -580,8 +580,8 @@ def reduce_inequalities(inequalities, symbols=[]):
     symbols = set(symbols) or gens
 
     # make vanilla symbol real
-    recast = dict([(i, Dummy(i.name, extended_real=True))
-        for i in gens if i.is_extended_real is None])
+    recast = {i: Dummy(i.name, extended_real=True)
+              for i in gens if i.is_extended_real is None}
     inequalities = [i.xreplace(recast) for i in inequalities]
     symbols = {i.xreplace(recast) for i in symbols}
 
@@ -589,4 +589,4 @@ def reduce_inequalities(inequalities, symbols=[]):
     rv = _reduce_inequalities(inequalities, symbols)
 
     # restore original symbols and return
-    return rv.xreplace(dict([(v, k) for k, v in recast.items()]))
+    return rv.xreplace({v: k for k, v in recast.items()})

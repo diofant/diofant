@@ -91,8 +91,8 @@ class ConditionalDomain(RandomDomain):
     sympy.stats.frv.ConditionalFiniteDomain
     """
     def __new__(cls, fulldomain, condition):
-        condition = condition.xreplace(dict((rs, rs.symbol)
-            for rs in random_symbols(condition)))
+        condition = condition.xreplace({rs: rs.symbol
+                                        for rs in random_symbols(condition)})
         return Basic.__new__(cls, fulldomain, condition)
 
     @property
@@ -325,8 +325,8 @@ class ProductPSpace(PSpace):
         raise NotImplementedError("Density not available for ProductSpaces")
 
     def sample(self):
-        return dict([(k, v) for space in self.spaces
-            for k, v in space.sample().items()])
+        return {k: v for space in self.spaces
+                for k, v in space.sample().items()}
 
 
 class ProductDomain(RandomDomain):
@@ -363,8 +363,8 @@ class ProductDomain(RandomDomain):
 
     @property
     def sym_domain_dict(self):
-        return dict((symbol, domain) for domain in self.domains
-                                     for symbol in domain.symbols)
+        return {symbol: domain for domain in self.domains
+                for symbol in domain.symbols}
 
     @property
     def symbols(self):
@@ -1055,7 +1055,7 @@ def rv_subs(expr, symbols=None):
         symbols = random_symbols(expr)
     if not symbols:
         return expr
-    swapdict = dict([(rv, rv.symbol) for rv in symbols])
+    swapdict = {rv: rv.symbol for rv in symbols}
     return expr.xreplace(swapdict)
 
 class NamedArgsMixin(object):

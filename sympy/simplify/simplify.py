@@ -529,7 +529,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
             # none of the patterns matched
             disliked += product
     # add terms now for each key
-    collected = dict([(k, Add(*v)) for k, v in collected.items()])
+    collected = {k: Add(*v) for k, v in collected.items()}
 
     if disliked is not S.Zero:
         collected[S.One] = disliked
@@ -714,7 +714,7 @@ def _separatevars_dict(expr, symbols):
         if not symbols:
             return None
 
-    ret = dict(((i, []) for i in symbols + ['coeff']))
+    ret = {i: [] for i in symbols + ['coeff']}
 
     for i in Mul.make_args(expr):
         expsym = i.free_symbols
@@ -2082,15 +2082,15 @@ def posify(eq):
             syms = syms.union(e.atoms(Symbol))
         reps = {}
         for s in syms:
-            reps.update(dict((v, k) for k, v in posify(s)[1].items()))
+            reps.update({v: k for k, v in posify(s)[1].items()})
         for i, e in enumerate(eq):
             eq[i] = e.subs(reps)
-        return f(eq), dict([(r, s) for s, r in reps.items()])
+        return f(eq), {r: s for s, r in reps.items()}
 
-    reps = dict([(s, Dummy(s.name, positive=True))
-                 for s in eq.free_symbols if s.is_positive is None])
+    reps = {s: Dummy(s.name, positive=True)
+            for s in eq.free_symbols if s.is_positive is None}
     eq = eq.subs(reps)
-    return eq, dict([(r, s) for s, r in reps.items()])
+    return eq, {r: s for s, r in reps.items()}
 
 
 def _polarify(eq, lift, pause=False):
@@ -2166,9 +2166,9 @@ def polarify(eq, subs=True, lift=False):
     eq = _polarify(sympify(eq), lift)
     if not subs:
         return eq
-    reps = dict([(s, Dummy(s.name, polar=True)) for s in eq.free_symbols])
+    reps = {s: Dummy(s.name, polar=True) for s in eq.free_symbols}
     eq = eq.subs(reps)
-    return eq, dict([(r, s) for s, r in reps.items()])
+    return eq, {r: s for s, r in reps.items()}
 
 
 def _unpolarify(eq, exponents_only, pause=False):
@@ -3536,7 +3536,7 @@ def signsimp(expr, evaluate=None):
     if e.is_Add:
         return e.func(*[signsimp(a) for a in e.args])
     if evaluate:
-        e = e.xreplace(dict([(m, -(-m)) for m in e.atoms(Mul) if -(-m) != m]))
+        e = e.xreplace({m: -(-m) for m in e.atoms(Mul) if -(-m) != m})
     return e
 
 

@@ -458,9 +458,9 @@ class DifferentialExtension(object):
                     # Example: exp(x + x**2) over QQ(x, exp(x), exp(x**2))
                     self.newf = self.newf.xreplace({exp(arg): exp(const)*Mul(*[
                         u**power for u, power in ans])})
-                    self.newf = self.newf.xreplace(dict([(exp(p*exparg),
-                        exp(const*p) * Mul(*[u**power for u, power in ans]))
-                        for exparg, p in others]))
+                    self.newf = self.newf.xreplace({exp(p*exparg):
+                        exp(const*p) * Mul(*[u**power for u, power in ans])
+                        for exparg, p in others})
                     # TODO: Add something to backsubs to put exp(const*p)
                     # back together.
 
@@ -487,8 +487,8 @@ class DifferentialExtension(object):
 
                     if const or len(ans) > 1:
                         rad = Mul(*[term**(power/n) for term, power in ans])
-                        self.newf = self.newf.xreplace(dict((exp(p*exparg),
-                            exp(const*p)*rad) for exparg, p in others))
+                        self.newf = self.newf.xreplace({exp(p*exparg):
+                            exp(const*p)*rad for exparg, p in others})
                         self.newf = self.newf.xreplace(dict(list(zip(reversed(self.T),
                             reversed([f(self.x) for f in self.Tfuncs])))))
                         restart = True
@@ -517,7 +517,7 @@ class DifferentialExtension(object):
                     i = Symbol('i')
                 self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs(self.x, i)))]
                 self.newf = self.newf.xreplace(
-                        dict((exp(exparg), self.t**p) for exparg, p in others))
+                        {exp(exparg): self.t**p for exparg, p in others})
                 new_extension = True
 
         if restart:

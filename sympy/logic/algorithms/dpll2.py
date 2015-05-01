@@ -213,8 +213,8 @@ class SATSolver(object):
 
                 # Stopping condition for a satisfying theory
                 if 0 == lit:
-                    yield dict((self.symbols[abs(lit) - 1],
-                                lit > 0) for lit in self.var_settings)
+                    yield {self.symbols[abs(lit) - 1]: lit > 0
+                           for lit in self.var_settings}
                     while self._current_level.flipped:
                         self._undo()
                     if len(self.levels) == 1:
