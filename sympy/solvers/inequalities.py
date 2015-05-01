@@ -583,7 +583,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     recast = dict([(i, Dummy(i.name, extended_real=True))
         for i in gens if i.is_extended_real is None])
     inequalities = [i.xreplace(recast) for i in inequalities]
-    symbols = set([i.xreplace(recast) for i in symbols])
+    symbols = {i.xreplace(recast) for i in symbols}
 
     # solve system
     rv = _reduce_inequalities(inequalities, symbols)

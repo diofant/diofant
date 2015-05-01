@@ -240,7 +240,7 @@ def _desolve(eq, func=None, hint="default", ics=None, simplify=True, **kwargs):
     elif hint in ('all', 'all_Integral', 'best'):
         retdict = {}
         failedhints = {}
-        gethints = set(hints) - set(['order', 'default', 'ordered_hints'])
+        gethints = set(hints) - {'order', 'default', 'ordered_hints'}
         if hint == 'all_Integral':
             for i in hints:
                 if i.endswith('_Integral'):

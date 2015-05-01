@@ -235,7 +235,7 @@ def test_symbols():
 
     assert symbols(('x', 'y', 'z')) == (x, y, z)
     assert symbols(['x', 'y', 'z']) == [x, y, z]
-    assert symbols(set(['x', 'y', 'z'])) == set([x, y, z])
+    assert symbols({'x', 'y', 'z'}) == {x, y, z}
 
     raises(ValueError, lambda: symbols(''))
     raises(ValueError, lambda: symbols(','))

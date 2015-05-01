@@ -1201,7 +1201,7 @@ class PermutationGroup(Basic):
         idn = list(range(self.degree))
         order = 0
         element_list = [idn]
-        set_element_list = set([tuple(idn)])
+        set_element_list = {tuple(idn)}
         if af:
             yield idn
         else:
@@ -3263,7 +3263,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
     elif action == 'tuples':
         alpha = tuple(alpha)
         orb = [alpha]
-        used = set([alpha])
+        used = {alpha}
         for b in orb:
             for gen in gens:
                 temp = tuple([gen[x] for x in b])
@@ -3274,14 +3274,14 @@ def _orbit(degree, generators, alpha, action='tuples'):
     elif action == 'sets':
         alpha = frozenset(alpha)
         orb = [alpha]
-        used = set([alpha])
+        used = {alpha}
         for b in orb:
             for gen in gens:
                 temp = frozenset([gen[x] for x in b])
                 if temp not in used:
                     orb.append(temp)
                     used.add(temp)
-        return set([tuple(x) for x in orb])
+        return {tuple(x) for x in orb}
 
 def _orbits(degree, generators):
     """Compute the orbits of G.

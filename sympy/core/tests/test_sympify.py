@@ -151,7 +151,7 @@ def test_sympify_bool():
 def test_sympyify_iterables():
     ans = [Rational(3, 10), Rational(1, 5)]
     assert sympify(['.3', '.2'], rational=True) == ans
-    assert sympify(set(['.3', '.2']), rational=True) == set(ans)
+    assert sympify({'.3', '.2'}, rational=True) == set(ans)
     assert sympify(tuple(['.3', '.2']), rational=True) == Tuple(*ans)
     assert sympify(dict(x=0, y=1)) == {x: 0, y: 1}
     assert sympify(['1', '2', ['3', '4']]) == [S(1), S(2), [S(3), S(4)]]
@@ -412,7 +412,7 @@ def test_issue_3982():
     a = [3, 2.0]
     assert sympify(a) == [Integer(3), Float(2.0)]
     assert sympify(tuple(a)) == Tuple(Integer(3), Float(2.0))
-    assert sympify(set(a)) == set([Integer(3), Float(2.0)])
+    assert sympify(set(a)) == {Integer(3), Float(2.0)}
 
 
 def test_S_sympify():

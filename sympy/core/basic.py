@@ -1696,7 +1696,7 @@ def _atomic(e):
     try:
         free = e.free_symbols
     except AttributeError:
-        return set([e])
+        return {e}
     atoms = set()
     for p in pot:
         if p in seen:

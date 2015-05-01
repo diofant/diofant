@@ -94,7 +94,7 @@ def dispersionset(p, q=None, *gens, **args):
 
     # We define the dispersion of constant polynomials to be zero
     if p.degree() < 1 or q.degree() < 1:
-        return set([0])
+        return {0}
 
     # Factor p and q over the rationals
     fp = p.factor_list()

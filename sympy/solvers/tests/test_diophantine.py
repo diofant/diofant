@@ -17,8 +17,8 @@ def test_input_format():
 
 def test_univariate():
 
-    assert diop_solve((x - 1)*(x - 2)**2) == set([(Integer(1),), (Integer(2),)])
-    assert diop_solve((x - 1)*(x - 2)) == set([(Integer(1),), (Integer(2),)])
+    assert diop_solve((x - 1)*(x - 2)**2) == {(Integer(1),), (Integer(2),)}
+    assert diop_solve((x - 1)*(x - 2)) == {(Integer(1),), (Integer(2),)}
 
 
 def test_linear():
@@ -46,16 +46,16 @@ def test_quadratic_simple_hyperbolic_case():
 
     # Simple Hyperbolic case: A = C = 0 and B != 0
     assert diop_solve(3*x*y + 34*x - 12*y + 1) == \
-        set([(-Integer(133), -Integer(11)), (Integer(5), -Integer(57))])
+        {(-Integer(133), -Integer(11)), (Integer(5), -Integer(57))}
     assert diop_solve(6*x*y + 2*x + 3*y + 1) == set([])
-    assert diop_solve(-13*x*y + 2*x - 4*y - 54) == set([(Integer(27), Integer(0))])
-    assert diop_solve(-27*x*y - 30*x - 12*y - 54) == set([(-Integer(14), -Integer(1))])
-    assert diop_solve(2*x*y + 5*x + 56*y + 7) == set([(-Integer(161), -Integer(3)),\
+    assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(Integer(27), Integer(0))}
+    assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-Integer(14), -Integer(1))}
+    assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-Integer(161), -Integer(3)),\
         (-Integer(47),-Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),\
         (-Integer(27), Integer(64)), (-Integer(21), Integer(7)),(-Integer(9), Integer(1)),\
-        (Integer(105), -Integer(2))])
+        (Integer(105), -Integer(2))}
     assert diop_solve(6*x*y + 9*x + 2*y + 3) == set([])
-    assert diop_solve(x*y + x + y + 1) == set([(-Integer(1), t), (t, -Integer(1))])
+    assert diop_solve(x*y + x + y + 1) == {(-Integer(1), t), (t, -Integer(1))}
     assert diophantine(48*x*y)
 
 
@@ -65,25 +65,25 @@ def test_quadratic_elliptical_case():
     # Two test cases highlighted require lot of memory due to quadratic_congruence() method.
     # This above method should be replaced by Pernici's square_mod() method when his PR gets merged.
 
-    #assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == set([(-Integer(11), -Integer(1))])
+    #assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-Integer(11), -Integer(1))}
     assert diop_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12) == set([])
-    assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == set([(-Integer(1), -Integer(1))])
-    #assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == set([(-Integer(15), Integer(6))])
+    assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-Integer(1), -Integer(1))}
+    #assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
-        set([(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)),(Integer(1), Integer(1)), (-Integer(1), Integer(2))])
+        {(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)),(Integer(1), Integer(1)), (-Integer(1), Integer(2))}
 
 
 def test_quadratic_parabolic_case():
 
     # Parabolic case: B**2 - 4AC = 0
     assert diop_solve(8*x**2 - 24*x*y + 18*y**2 + 5*x + 7*y + 16) == \
-        set([(-174*t**2 + 17*t - 2, -116*t**2 + 21*t - 2), (-174*t**2 + 41*t - 4, -116*t**2 + 37*t - 4)])
+        {(-174*t**2 + 17*t - 2, -116*t**2 + 21*t - 2), (-174*t**2 + 41*t - 4, -116*t**2 + 37*t - 4)}
     assert diop_solve(8*x**2 - 24*x*y + 18*y**2 + 6*x + 12*y - 6) == \
-        set([(-63*t**2 + 12*t, -42*t**2 + 15*t -1), (-63*t**2 + 30*t - 3, -42*t**2 + 27*t - 4)])
+        {(-63*t**2 + 12*t, -42*t**2 + 15*t -1), (-63*t**2 + 30*t - 3, -42*t**2 + 27*t - 4)}
     assert diop_solve(8*x**2 + 24*x*y + 18*y**2 + 4*x + 6*y - 7) == set([])
-    assert diop_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1) == set([(t,-t - 1)])
+    assert diop_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1) == {(t,-t - 1)}
     assert diop_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1) == \
-        set([(-4*t**2, -4*t**2 + 4*t - 1),(-4*t**2 + 4*t -1, -4*t**2 + 8*t - 4)])
+        {(-4*t**2, -4*t**2 + 4*t - 1),(-4*t**2 + 4*t -1, -4*t**2 + 8*t - 4)}
     assert check_solutions(y**2 - 41*x + 40)
 
 
@@ -91,21 +91,21 @@ def test_quadratic_perfect_square():
 
     # B**2 - 4*A*C > 0
     # B**2 - 4*A*C is a perfect square
-    assert diop_solve(48*x*y) == set([(Integer(0), t), (t, Integer(0))])
+    assert diop_solve(48*x*y) == {(Integer(0), t), (t, Integer(0))}
     assert diop_solve(4*x**2 - 5*x*y + y**2 + 2) == \
-        set([(-Integer(1), -Integer(3)),(-Integer(1), -Integer(2)),(Integer(1), Integer(2)),(Integer(1), Integer(3))])
-    assert diop_solve(-2*x**2 - 3*x*y + 2*y**2 -2*x - 17*y + 25) == set([(Integer(4), Integer(15))])
+        {(-Integer(1), -Integer(3)),(-Integer(1), -Integer(2)),(Integer(1), Integer(2)),(Integer(1), Integer(3))}
+    assert diop_solve(-2*x**2 - 3*x*y + 2*y**2 -2*x - 17*y + 25) == {(Integer(4), Integer(15))}
     assert diop_solve(12*x**2 + 13*x*y + 3*y**2 - 2*x + 3*y - 12) == \
-        set([(-Integer(6), Integer(9)), (-Integer(2), Integer(5)), (Integer(4), -Integer(4)), (-Integer(6), Integer(16))])
+        {(-Integer(6), Integer(9)), (-Integer(2), Integer(5)), (Integer(4), -Integer(4)), (-Integer(6), Integer(16))}
     assert diop_solve(8*x**2 + 10*x*y + 2*y**2 - 32*x - 13*y - 23) == \
-        set([(-Integer(44), Integer(47)), (Integer(22), -Integer(85))])
+        {(-Integer(44), Integer(47)), (Integer(22), -Integer(85))}
     assert diop_solve(4*x**2 - 4*x*y - 3*y- 8*x - 3) == \
-        set([(-Integer(1), -Integer(9)), (-Integer(6), -Integer(9)), (Integer(0), -Integer(1)), (Integer(1), -Integer(1))])
+        {(-Integer(1), -Integer(9)), (-Integer(6), -Integer(9)), (Integer(0), -Integer(1)), (Integer(1), -Integer(1))}
     assert diop_solve(- 4*x*y - 4*y**2 - 3*y- 5*x - 10) == \
-        set([(-Integer(2), Integer(0)), (-Integer(11), -Integer(1)), (-Integer(5), Integer(5))])
-    assert diop_solve(x**2 - y**2 - 2*x - 2*y) == set([(t, -t), (-t, -t - 2)])
-    assert diop_solve(x**2 - 9*y**2 - 2*x - 6*y) == set([(-3*t + 2, -t), (3*t, -t)])
-    assert diop_solve(4*x**2 - 9*y**2 - 4*x - 12*y - 3) == set([(-3*t - 3, -2*t - 3), (3*t + 1, -2*t - 1)])
+        {(-Integer(2), Integer(0)), (-Integer(11), -Integer(1)), (-Integer(5), Integer(5))}
+    assert diop_solve(x**2 - y**2 - 2*x - 2*y) == {(t, -t), (-t, -t - 2)}
+    assert diop_solve(x**2 - 9*y**2 - 2*x - 6*y) == {(-3*t + 2, -t), (3*t, -t)}
+    assert diop_solve(4*x**2 - 9*y**2 - 4*x - 12*y - 3) == {(-3*t - 3, -2*t - 3), (3*t + 1, -2*t - 1)}
 
 
 def test_quadratic_non_perfect_square():
@@ -186,8 +186,8 @@ def test_DN():
 
     assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
     assert set(diop_DN(157, 12)) == \
-    set([(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)), \
-        (Integer(483790960),Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))])
+    {(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)), \
+        (Integer(483790960),Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
     assert diop_DN(13, 25) == [(3245, 900)]
     assert diop_DN(192, 18) == []
     assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
@@ -543,11 +543,11 @@ def test_assumptions():
     #http://stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
     m, n = symbols('m n', integer=True, positive=True)
     diof = diophantine(n ** 2 + m * n - 500)
-    assert diof == set([(5, 20), (40, 10), (95, 5), (121, 4), (248, 2), (499, 1)])
+    assert diof == {(5, 20), (40, 10), (95, 5), (121, 4), (248, 2), (499, 1)}
 
     a, b = symbols('a b', integer=True, positive=False)
     diof = diophantine(a*b + 2*a + 3*b - 6)
-    assert diof == set([(-15, -3), (-9, -4), (-7, -5), (-6, -6), (-5, -8), (-4, -14)])
+    assert diof == {(-15, -3), (-9, -4), (-7, -5), (-6, -6), (-5, -8), (-4, -14)}
 
 
 

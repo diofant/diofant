@@ -1276,7 +1276,7 @@ def to_int_repr(clauses, symbols):
 
     >>> from sympy.logic.boolalg import to_int_repr
     >>> from sympy.abc import x, y
-    >>> to_int_repr([x | y, y], [x, y]) == [set([1, 2]), set([2])]
+    >>> to_int_repr([x | y, y], [x, y]) == [{1, 2}, {2}]
     True
 
     """
@@ -1515,7 +1515,7 @@ def _find_predicates(expr):
 
     """
     if not isinstance(expr, BooleanFunction):
-        return set([expr])
+        return {expr}
     return set().union(*(_find_predicates(i) for i in expr.args))
 
 

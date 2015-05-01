@@ -201,10 +201,10 @@ def checksol(f, symbol, sol=None, **flags):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
         return None
 
-    illegal = set([S.NaN,
+    illegal = {S.NaN,
                S.ComplexInfinity,
                S.Infinity,
-               S.NegativeInfinity])
+               S.NegativeInfinity}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
         return False
 
@@ -625,7 +625,7 @@ def solve(f, *symbols, **flags):
 
             >>> solve([x - 2, x**2 + y])
             [{x: 2, y: -4}]
-            >>> solve([x - 2, x**2 + f(x)], set([f(x), x]))
+            >>> solve([x - 2, x**2 + f(x)], {f(x), x})
             [{x: 2, f(x): -4}]
 
         * if any equation doesn't depend on the symbol(s) given it will be
@@ -1211,7 +1211,7 @@ def solve(f, *symbols, **flags):
     if not solution:
         return [], set()
     k = list(ordered(solution[0].keys()))
-    return k, set([tuple([s[ki] for ki in k]) for s in solution])
+    return k, {tuple([s[ki] for ki in k]) for s in solution}
 
 
 def _solve(f, *symbols, **flags):
@@ -1257,7 +1257,7 @@ def _solve(f, *symbols, **flags):
                         raise TypeError('unrecognized args in list')
                 elif type(soln) is tuple:
                     sym, sols = soln
-                    soln = sym, set([tuple(simplify(i) for i in j) for j in sols])
+                    soln = sym, {tuple(simplify(i) for i in j) for j in sols}
                 else:
                     raise TypeError('unrecognized solution type')
             return soln
@@ -1423,8 +1423,8 @@ def _solve(f, *symbols, **flags):
             if len(bases) > 1 or not all(q == 1 for q in qs):
                 funcs = set(b for b in bases if b.is_Function)
 
-                trig = set([_ for _ in funcs if
-                    isinstance(_, TrigonometricFunction)])
+                trig = {_ for _ in funcs if
+                    isinstance(_, TrigonometricFunction)}
                 other = funcs - trig
                 if not other and len(funcs.intersection(trig)) > 1:
                     newf = TR1(f_num).rewrite(tan)
@@ -1534,7 +1534,7 @@ def _solve(f, *symbols, **flags):
                         try:
                             t = Dummy('t')
                             iv = _solve(u - t, symbol, **flags)
-                            soln = list(ordered(set([i.subs(t, s) for i in iv for s in soln])))
+                            soln = list(ordered({i.subs(t, s) for i in iv for s in soln}))
                         except NotImplementedError:
                             # perhaps _tsolve can handle f_num
                             soln = None
@@ -1566,7 +1566,7 @@ def _solve(f, *symbols, **flags):
                 if cov:
                     isym, ieq = cov
                     inv = _solve(ieq, symbol, **flags)[0]
-                    rv = set([inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)])
+                    rv = {inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)}
                 else:
                     try:
                         rv = set(_solve(eq, symbol, **flags))
@@ -2546,8 +2546,8 @@ def _tsolve(eq, sym, **flags):
                         inversion = _tsolve(g - u, sym, **flags)
                         if inversion:
                             sol = _solve(p, u, **flags)
-                            return list(ordered(set([i.subs(u, s)
-                                for i in inversion for s in sol])))
+                            return list(ordered({i.subs(u, s)
+                                for i in inversion for s in sol}))
                     except NotImplementedError:
                         pass
                 else:
@@ -3098,7 +3098,7 @@ def unrad(eq, *syms, **flags):
             b = bases.pop()
             if len(syms) > 1:
                 free = b.free_symbols
-                x = set([g for g in gens if g.is_Symbol]) & free
+                x = {g for g in gens if g.is_Symbol} & free
                 if not x:
                     x = free
                 x = ordered(x)

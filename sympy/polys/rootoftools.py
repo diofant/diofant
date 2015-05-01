@@ -291,7 +291,7 @@ class RootOf(Expr):
             N = len(complexes)//2 - 1
             # check x (real) parts: there must be N + 1 disjoint x ranges, i.e.
             # the first one must be different from N others
-            uu = set([(u.ax, u.bx) for u, _, _ in complexes])
+            uu = {(u.ax, u.bx) for u, _, _ in complexes}
             u = uu.pop()
             if sum([u[1] <= v[0] or v[1] <= u[0] for v in uu]) < N:
                 # refine

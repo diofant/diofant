@@ -60,7 +60,7 @@ def idiff(eq, y, x, n=1):
         dep = set(y)
         y = y[0]
     elif isinstance(y, Symbol):
-        dep = set([y])
+        dep = {y}
     else:
         raise ValueError("expecting x-dependent symbol(s) but got: %s" % y)
 

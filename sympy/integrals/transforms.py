@@ -74,8 +74,8 @@ class IntegralTransform(Function):
         This method returns the symbols that will exist when the transform
         is evaluated.
         """
-        return self.function.free_symbols.union(set([self.transform_variable])) \
-            - set([self.function_variable])
+        return self.function.free_symbols.union({self.transform_variable}) \
+            - {self.function_variable}
 
     def _compute_transform(self, f, x, s, **hints):
         raise NotImplementedError
@@ -794,9 +794,8 @@ class InverseMellinTransform(IntegralTransform):
             from sympy import (
                 exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh,
                 coth, factorial, rf)
-            _allowed = set(
-                [exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh, coth,
-                 factorial, rf])
+            _allowed = {exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh, coth,
+                        factorial, rf}
         for f in postorder_traversal(F):
             if f.is_Function and f.has(s) and f.func not in _allowed:
                 raise IntegralTransformError('Inverse Mellin', F,

@@ -24,7 +24,7 @@ from sympy.utilities.exceptions import SymPyDeprecationWarning
 
 from sympy import symbols, S
 
-excluded_attrs = set(['_assumptions', '_mhash'])
+excluded_attrs = {'_assumptions', '_mhash'}
 
 
 def check(a, exclude=[], check_attr=True):

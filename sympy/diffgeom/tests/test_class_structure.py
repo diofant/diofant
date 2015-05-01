@@ -17,7 +17,7 @@ def test_point():
     assert point == point.func(*point.args)
     assert point != Point(cs, [2, y])
     #TODO assert point.subs(x, 2) == Point(cs, [2, y])
-    #TODO assert point.free_symbols == set([x, y])
+    #TODO assert point.free_symbols == {x, y}
 
 
 def test_rebuild():

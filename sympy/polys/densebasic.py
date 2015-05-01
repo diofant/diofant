@@ -318,9 +318,9 @@ def _rec_validate(f, g, i, K):
         if K is not None and not K.of_type(g):
             raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
 
-        return set([i - 1])
+        return {i - 1}
     elif not g:
-        return set([i])
+        return {i}
     else:
         j, levels = i + 1, set([])
 

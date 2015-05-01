@@ -854,7 +854,7 @@ def test_M5():
 
 def test_M6():
     assert set(solve(x**7 - 1, x)) == \
-        set([cos(n*2*pi/7) + I*sin(n*2*pi/7) for n in range(0, 7)])
+        {cos(n*2*pi/7) + I*sin(n*2*pi/7) for n in range(0, 7)}
     # The paper asks for exp terms, but sin's and cos's may be acceptable;
     # if the results are simplified, exp terms appear for all but
     # -sin(pi/14) - I*cos(pi/14) and -sin(pi/14) + I*cos(pi/14) which
@@ -879,7 +879,7 @@ def test_M7():
 def test_M8():
     z = symbols('z', complex=True)
     assert set(solve(exp(2*x) + 2*exp(x) + 1 - z, x)) == \
-        set([log(1 + z - 2*sqrt(z))/2, log(1 + z + 2*sqrt(z))/2])
+        {log(1 + z - 2*sqrt(z))/2, log(1 + z + 2*sqrt(z))/2}
     # This one could be simplified better (the 1/2 could be pulled into the log
     # as a sqrt, and the function inside the log can be factored as a square,
     # giving [log(sqrt(z) - 1), log(sqrt(z) + 1)]). Also, there should be an
