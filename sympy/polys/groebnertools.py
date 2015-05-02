@@ -247,7 +247,7 @@ def _buchberger(f, ring):
     Gr = set()
 
     for ig in G:
-        ht = normal(f[ig], G - set([ig]))
+        ht = normal(f[ig], G - {ig})
 
         if ht:
             Gr.add(ht[1])

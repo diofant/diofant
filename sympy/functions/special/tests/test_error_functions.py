@@ -8,7 +8,6 @@ from sympy import (
     Ei, expint, E1, li, Li, Si, Ci, Shi, Chi,
     fresnels, fresnelc,
     hyper, meijerg)
-from sympy.series.gruntz import gruntz
 
 from sympy.functions.special.error_functions import _erfs, _eis
 
@@ -334,8 +333,6 @@ def test_ei():
     assert Ei(log(x)).rewrite(li) == li(x)
     assert Ei(2*log(x)).rewrite(li) == li(x**2)
 
-    assert gruntz(Ei(x+exp(-x))*exp(-x)*x, x, oo) == 1
-
     assert Ei(x).series(x) == EulerGamma + log(x) + x + x**2/4 + \
         x**3/18 + x**4/96 + x**5/600 + O(x**6)
 
@@ -460,8 +457,6 @@ def test_li():
     assert li(z).rewrite(meijerg) == (-log(1/log(z))/2 - log(-log(z)) + log(log(z))/2 -
                                       meijerg(((), (1,)), ((0, 0), ()), -log(z)))
 
-    assert gruntz(1/li(z), z, oo) == 0
-
 
 def test_Li():
     assert Li(2) == 0
@@ -471,7 +466,6 @@ def test_Li():
 
     assert diff(Li(z), z) == 1/log(z)
 
-    assert gruntz(1/Li(z), z, oo) == 0
     assert Li(z).rewrite(li) == li(z) - li(2)
 
 

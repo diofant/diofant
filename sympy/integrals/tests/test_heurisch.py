@@ -8,22 +8,22 @@ x, y, z, nu = symbols('x,y,z,nu')
 f = Function('f')
 
 def test_components():
-    assert components(x*y, x) == set([x])
-    assert components(1/(x + y), x) == set([x])
-    assert components(sin(x), x) == set([sin(x), x])
+    assert components(x*y, x) == {x}
+    assert components(1/(x + y), x) == {x}
+    assert components(sin(x), x) == {sin(x), x}
     assert components(sin(x)*sqrt(log(x)), x) == \
-        set([log(x), sin(x), sqrt(log(x)), x])
+        {log(x), sin(x), sqrt(log(x)), x}
     assert components(x*sin(exp(x)*y), x) == \
-        set([sin(y*exp(x)), x, exp(x)])
+        {sin(y*exp(x)), x, exp(x)}
     assert components(x**Rational(17, 54)/sqrt(sin(x)), x) == \
-        set([sin(x), x**Rational(1, 54), sqrt(sin(x)), x])
+        {sin(x), x**Rational(1, 54), sqrt(sin(x)), x}
 
     assert components(f(x), x) == \
-        set([x, f(x)])
+        {x, f(x)}
     assert components(Derivative(f(x), x), x) == \
-        set([x, f(x), Derivative(f(x), x)])
+        {x, f(x), Derivative(f(x), x)}
     assert components(f(x)*diff(f(x), x), x) == \
-        set([x, f(x), Derivative(f(x), x), Derivative(f(x), x)])
+        {x, f(x), Derivative(f(x), x), Derivative(f(x), x)}
 
 
 def test_heurisch_polynomials():
@@ -238,7 +238,6 @@ def test_pmint_logexp():
     assert ratsimp(heurisch(f, x)) == g
 
 @slow # 8 seconds on 3.4 GHz
-@XFAIL  # there's a hash dependent failure lurking here
 def test_pmint_erf():
     f = exp(-x**2)*erf(x)/(erf(x)**3 - erf(x)**2 - erf(x) + 1)
     g = sqrt(pi)*log(erf(x) - 1)/8 - sqrt(pi)*log(erf(x) + 1)/8 - sqrt(pi)/(4*erf(x) - 4)

@@ -709,7 +709,7 @@ class log(Function):
         while s.is_Order:
             n += 1
             s = self.args[0].nseries(x, n=n, logx=logx)
-        a, b = s.leadterm(x)
+        a, b = s.as_leading_term(x).as_coeff_exponent(x)
         p = cancel(s/(a*x**b) - 1)
         g = None
         l = []

@@ -342,8 +342,8 @@ def test_solveset_sqrt_2():
     rb = S(4)/5
     assert all(abs(eq.subs(x, i).n()) < 1e-10 for i in (ra, rb)) and \
         len(ans) == 2 and \
-        set([i.n(chop=True) for i in ans]) == \
-        set([i.n(chop=True) for i in (ra, rb)])
+        {i.n(chop=True) for i in ans} == \
+        {i.n(chop=True) for i in (ra, rb)}
 
     assert solveset_real(sqrt(x) + x**Rational(1, 3) +
                                  x**Rational(1, 4), x) == FiniteSet(0)

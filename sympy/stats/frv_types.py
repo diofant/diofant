@@ -62,7 +62,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
     @property
     @cacheit
     def dict(self):
-        return dict((k, self.p) for k in self.set)
+        return {k: self.p for k in self.set}
 
     @property
     def set(self):
@@ -221,8 +221,8 @@ class BinomialDistribution(SingleFiniteDistribution):
     def dict(self):
         n, p, succ, fail = self.n, self.p, self.succ, self.fail
         n = as_int(n)
-        return dict((k*succ + (n - k)*fail,
-                binomial(n, k) * p**k * (1 - p)**(n - k)) for k in range(0, n + 1))
+        return {k*succ + (n - k)*fail:
+                binomial(n, k) * p**k * (1 - p)**(n - k) for k in range(0, n + 1)}
 
 
 def Binomial(name, n, p, succ=1, fail=0):
@@ -253,10 +253,10 @@ class HypergeometricDistribution(SingleFiniteDistribution):
     def dict(self):
         N, m, n = self.N, self.m, self.n
         N, m, n = list(map(sympify, (N, m, n)))
-        density = dict((sympify(k),
+        density = {sympify(k):
                         Rational(binomial(m, k) * binomial(N - m, n - k),
-                                 binomial(N, n)))
-                        for k in range(max(0, n + m - N), min(m, n) + 1))
+                                 binomial(N, n))
+                        for k in range(max(0, n + m - N), min(m, n) + 1)}
         return density
 
 

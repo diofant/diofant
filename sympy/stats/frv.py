@@ -173,7 +173,7 @@ class SingleFiniteDistribution(Basic, NamedArgsMixin):
     @property
     @cacheit
     def dict(self):
-        return dict((k, self.pdf(k)) for k in self.set)
+        return {k: self.pdf(k) for k in self.set}
 
     @property
     def pdf(self):
@@ -218,8 +218,8 @@ class FinitePSpace(PSpace):
         return self.args[0]
 
     def __new__(cls, domain, density):
-        density = dict((sympify(key), sympify(val))
-                for key, val in density.items())
+        density = {sympify(key): sympify(val)
+                   for key, val in density.items()}
         public_density = Dict(density)
 
         obj = PSpace.__new__(cls, domain, public_density)
@@ -234,7 +234,7 @@ class FinitePSpace(PSpace):
         return ConditionalFiniteDomain(self.domain, condition)
 
     def compute_density(self, expr):
-        expr = expr.xreplace(dict(((rs, rs.symbol) for rs in self.values)))
+        expr = expr.xreplace({rs: rs.symbol for rs in self.values})
         d = FiniteDensity()
         for elem in self.domain:
             val = expr.xreplace(dict(elem))
@@ -266,7 +266,7 @@ class FinitePSpace(PSpace):
 
     def integrate(self, expr, rvs=None):
         rvs = rvs or self.values
-        expr = expr.xreplace(dict((rs, rs.symbol) for rs in rvs))
+        expr = expr.xreplace({rs: rs.symbol for rs in rvs})
         return sum([expr.xreplace(dict(elem)) * self.prob_of(elem)
                 for elem in self.domain])
 
@@ -278,8 +278,8 @@ class FinitePSpace(PSpace):
     def conditional_space(self, condition):
         domain = self.where(condition)
         prob = self.probability(condition)
-        density = dict((key, val / prob)
-                for key, val in self._density.items() if key in domain)
+        density = {key: val / prob
+                   for key, val in self._density.items() if key in domain}
         return FinitePSpace(domain, density)
 
     def sample(self):
@@ -319,8 +319,8 @@ class SingleFinitePSpace(SinglePSpace, FinitePSpace):
     @property
     @cacheit
     def _density(self):
-        return dict((frozenset(((self.symbol, val),)), prob)
-                    for val, prob in self.distribution.dict.items())
+        return {frozenset(((self.symbol, val),)): prob
+                for val, prob in self.distribution.dict.items()}
 
 
 class ProductFinitePSpace(ProductPSpace, FinitePSpace):

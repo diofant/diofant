@@ -210,8 +210,8 @@ def test_orbits():
     a = Permutation([2, 0, 1])
     b = Permutation([2, 1, 0])
     g = PermutationGroup([a, b])
-    assert g.orbit(0) == set([0, 1, 2])
-    assert g.orbits() == [set([0, 1, 2])]
+    assert g.orbit(0) == {0, 1, 2}
+    assert g.orbits() == [{0, 1, 2}]
     assert g.is_transitive() and g.is_transitive(strict=False)
     assert g.orbit_transversal(0) == \
         [Permutation(

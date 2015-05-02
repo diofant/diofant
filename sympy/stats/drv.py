@@ -109,7 +109,7 @@ class SingleDiscretePSpace(SinglePSpace):
         if self.value not in rvs:
             return expr
 
-        expr = expr.xreplace(dict((rv, rv.symbol) for rv in rvs))
+        expr = expr.xreplace({rv: rv.symbol for rv in rvs})
 
         x = self.value.symbol
         try:

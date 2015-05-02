@@ -9,9 +9,9 @@ from sympy.core.compatibility import PY3
 
 # System path separator (usually slash or backslash) to be
 # used with excluded files, e.g.
-#     exclude = set([
+#     exclude = {
 #                    "%(sep)smpmath%(sep)s" % sepd,
-#                   ])
+#                   }
 sepd = {"sep": sep}
 
 # path and sympy_path
@@ -171,7 +171,7 @@ def test_files():
     # Files to exclude from all tests
     exclude = set()
     # Files to exclude from the implicit import test
-    import_exclude = set([
+    import_exclude = {
         # glob imports are allowed in top-level __init__.py:
         "%(sep)ssympy%(sep)s__init__.py" % sepd,
         # these __init__.py should be fixed:
@@ -190,9 +190,9 @@ def test_files():
         "%(sep)sbin%(sep)ssympy_time_cache.py" % sepd,
         # Taken from Python stdlib:
         "%(sep)sparsing%(sep)ssympy_tokenize.py" % sepd,
-    ])
+    }
     check_files(top_level_files, test)
-    check_directory_tree(BIN_PATH, test, set(["~", ".pyc", ".sh"]), "*")
+    check_directory_tree(BIN_PATH, test, {"~", ".pyc", ".sh"}, "*")
     check_directory_tree(SYMPY_PATH, test, exclude)
     check_directory_tree(EXAMPLES_PATH, test, exclude)
 

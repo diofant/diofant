@@ -116,11 +116,11 @@ def unify(x, y, s=None, variables=(), **kwargs):
     """
     decons = lambda x: deconstruct(x, variables)
     s = s or {}
-    s = dict((decons(k), decons(v)) for k, v in s.items())
+    s = {decons(k): decons(v) for k, v in s.items()}
 
     ds = core.unify(decons(x), decons(y), s,
                                      is_associative=is_associative,
                                      is_commutative=is_commutative,
                                      **kwargs)
     for d in ds:
-        yield dict((construct(k), construct(v)) for k, v in d.items())
+        yield {construct(k): construct(v) for k, v in d.items()}

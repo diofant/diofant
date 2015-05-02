@@ -9,13 +9,13 @@ def identity(x):
 def exhaust(brule):
     """ Apply a branching rule repeatedly until it has no effect """
     def exhaust_brl(expr):
-        seen = set([expr])
+        seen = {expr}
         for nexpr in brule(expr):
             if nexpr not in seen:
                 seen.add(nexpr)
                 for nnexpr in exhaust_brl(nexpr):
                     yield nnexpr
-        if seen == set([expr]):
+        if seen == {expr}:
             yield expr
     return exhaust_brl
 
@@ -42,7 +42,7 @@ def debug(brule, file=None):
 def multiplex(*brules):
     """ Multiplex many branching rules into one """
     def multiplex_brl(expr):
-        seen = set([])
+        seen = set()
         for brl in brules:
             for nexpr in brl(expr):
                 if nexpr not in seen:

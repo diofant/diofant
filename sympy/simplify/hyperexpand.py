@@ -752,8 +752,8 @@ class Formula(object):
         base_repl = [dict(list(zip(self.symbols, values)))
                 for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
-        a_inv, b_inv = [dict((a, len(vals)) for a, vals in bucket.items())
-                for bucket in [abuckets, bbuckets]]
+        a_inv, b_inv = [{a: len(vals) for a, vals in bucket.items()}
+                        for bucket in [abuckets, bbuckets]]
         critical_values = [[0] for _ in self.symbols]
         result = []
         _n = Dummy()

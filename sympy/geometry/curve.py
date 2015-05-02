@@ -104,7 +104,7 @@ class Curve(GeometryEntity):
         free = set()
         for a in self.functions + self.limits[1:]:
             free |= a.free_symbols
-        free = free.difference(set([self.parameter]))
+        free = free.difference({self.parameter})
         return free
 
     @property

@@ -565,7 +565,7 @@ def test_issue_4319():
     x, y = symbols('x y')
 
     p = -x*(S(1)/8 - y)
-    ans = set([S.Zero, y - S(1)/8])
+    ans = {S.Zero, y - S(1)/8}
 
     def ok(pat):
         assert set(p.match(pat).values()) == ans
@@ -606,8 +606,8 @@ def test_gh_issue_2711():
     a = Wild('a')
     b = Wild('b')
 
-    assert f.find(a) == set([(S.Zero,), ((), ()), ((S.Zero,), ()), x, S.Zero,
-                             (), meijerg(((), ()), ((S.Zero,), ()), x)])
+    assert f.find(a) == {(S.Zero,), ((), ()), ((S.Zero,), ()), x, S.Zero,
+                             (), meijerg(((), ()), ((S.Zero,), ()), x)}
     assert f.find(a + b) == \
-        set([meijerg(((), ()), ((S.Zero,), ()), x), x, S.Zero])
-    assert f.find(a**2) == set([meijerg(((), ()), ((S.Zero,), ()), x), x])
+        {meijerg(((), ()), ((S.Zero,), ()), x), x, S.Zero}
+    assert f.find(a**2) == {meijerg(((), ()), ((S.Zero,), ()), x), x}

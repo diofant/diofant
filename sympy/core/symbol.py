@@ -126,8 +126,8 @@ class Symbol(AtomicExpr, Boolean):
 
     @property
     def assumptions0(self):
-        return dict((key, value) for key, value
-                in self._assumptions.items() if value is not None)
+        return {key: value for key, value
+                in self._assumptions.items() if value is not None}
 
     @cacheit
     def sort_key(self, order=None):
@@ -159,7 +159,7 @@ class Symbol(AtomicExpr, Boolean):
 
     @property
     def free_symbols(self):
-        return set([self])
+        return {self}
 
 
 class Dummy(Symbol):

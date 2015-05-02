@@ -67,18 +67,12 @@ References
 
 from __future__ import print_function, division
 
-from sympy.core import S, oo, Symbol, I, Dummy, Wild, Mul
+from sympy.core import S, oo, Dummy, Mul
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import log, exp
-from sympy.series.order import Order
 from sympy.simplify import powsimp
 from sympy import cacheit
-
 from sympy.core.compatibility import reduce
-from sympy.utilities.misc import debug_decorator as debug
-
-from sympy.utilities.timeutils import timethis
-timeit = timethis('gruntz')
 
 
 def compare(a, b, x):
@@ -186,7 +180,6 @@ class SubsSet(dict):
         return r
 
 
-@debug
 def mrv(e, x):
     """Returns a SubsSet of most rapidly varying (mrv) subexpressions of 'e',
        and e rewritten in terms of these"""
@@ -292,9 +285,7 @@ def mrv_max1(f, g, exps, x):
                     u, b, x)
 
 
-@debug
 @cacheit
-@timeit
 def sign(e, x):
     """
     Returns a sign of an expression e(x) for x->oo.
@@ -347,8 +338,6 @@ def sign(e, x):
     return sign(c0, x)
 
 
-@debug
-@timeit
 @cacheit
 def limitinf(e, x):
     """Limit e(x) for x-> oo"""
@@ -356,30 +345,23 @@ def limitinf(e, x):
     e = e.rewrite('tractable', deep=True)
 
     if not e.has(x):
-        return e  # e is a constant
-    if e.has(Order):
-        e = e.expand().removeO()
-    if not x.is_positive:
-        # We make sure that x.is_positive is True so we
-        # get all the correct mathematical behavior from the expression.
-        # We need a fresh variable.
-        p = Dummy('p', positive=True, finite=True)
-        e = e.subs(x, p)
-        x = p
+        # This is a bit of a heuristic for nice results.  We always rewrite
+        # tractable functions in terms of familiar intractable ones.
+        # TODO: It might be nicer to rewrite the exactly to what they were
+        # initially, but that would take some work to implement.
+        return e.rewrite('intractable', deep=True)
+
     c0, e0 = mrv_leadterm(e, x)
     sig = sign(e0, x)
     if sig == 1:
-        return S.Zero  # e0>0: lim f = 0
-    elif sig == -1:  # e0<0: lim f = +-oo (the sign depends on the sign of c0)
-        if c0.match(I*Wild("a", exclude=[I])):
-            return c0*oo
+        return S.Zero
+    elif sig == -1:
         s = sign(c0, x)
-        # the leading term shouldn't be 0:
         if s == 0:
             raise ValueError("Leading term should not be 0")
         return s*oo
     elif sig == 0:
-        return limitinf(c0, x)  # e0=0: lim f = lim c0
+        return limitinf(c0, x)
 
 
 def moveup2(s, x):
@@ -395,26 +377,6 @@ def moveup(l, x):
     return [e.xreplace({x: exp(x)}) for e in l]
 
 
-@debug
-@timeit
-def calculate_series(e, x, logx=None):
-    """ Calculates at least one term of the series of "e" in "x".
-
-    This is a place that fails most often, so it is in its own function.
-    """
-    from sympy.polys import cancel
-
-    for t in e.lseries(x, logx=logx):
-        t = cancel(t)
-
-        if t.simplify():
-            break
-
-    return t
-
-
-@debug
-@timeit
 @cacheit
 def mrv_leadterm(e, x):
     """Returns (c0, e0) for e."""
@@ -425,8 +387,8 @@ def mrv_leadterm(e, x):
         Omega, exps = mrv(e, x)
     if not Omega:
         # e really does not depend on x after simplification
-        series = calculate_series(e, x)
-        c0, e0 = series.leadterm(x)
+        series = e.compute_leading_term(x)
+        c0, e0 = series.as_coeff_exponent(x)
         if e0 != 0:
             raise ValueError("e0 should be 0")
         return c0, e0
@@ -448,8 +410,8 @@ def mrv_leadterm(e, x):
     #
     w = Dummy("w", extended_real=True, positive=True, finite=True)
     f, logw = rewrite(exps, Omega, x, w)
-    series = calculate_series(f, w, logx=logw)
-    return series.leadterm(w)
+    series = f.compute_leading_term(w, logx=logw)
+    return series.as_coeff_exponent(w)
 
 
 def build_expression_tree(Omega, rewrites):
@@ -489,8 +451,6 @@ def build_expression_tree(Omega, rewrites):
     return nodes
 
 
-@debug
-@timeit
 def rewrite(e, Omega, x, wsym):
     """e(x) ... the function
     Omega ... the mrv set
@@ -561,42 +521,3 @@ def rewrite(e, Omega, x, wsym):
     logw /= exponent
 
     return f, logw
-
-
-def gruntz(e, z, z0, dir="+"):
-    """
-    Compute the limit of e(z) at the point z0 using the Gruntz algorithm.
-
-    z0 can be any expression, including oo and -oo.
-
-    For dir="+" (default) it calculates the limit from the right
-    (z->z0+) and for dir="-" the limit from the left (z->z0-). For infinite z0
-    (oo or -oo), the dir argument doesn't matter.
-
-    This algorithm is fully described in the module docstring in the gruntz.py
-    file. It relies heavily on the series expansion. Most frequently, gruntz()
-    is only used if the faster limit() function (which uses heuristics) fails.
-    """
-    if not isinstance(z, Symbol):
-        raise NotImplementedError("Second argument must be a Symbol")
-
-    # convert all limits to the limit z->oo; sign of z is handled in limitinf
-    r = None
-    if z0 == oo:
-        r = limitinf(e, z)
-    elif z0 == -oo:
-        r = limitinf(e.subs(z, -z), z)
-    else:
-        if str(dir) == "-":
-            e0 = e.subs(z, z0 - 1/z)
-        elif str(dir) == "+":
-            e0 = e.subs(z, z0 + 1/z)
-        else:
-            raise NotImplementedError("dir must be '+' or '-'")
-        r = limitinf(e0, z)
-
-    # This is a bit of a heuristic for nice results... we always rewrite
-    # tractable functions in terms of familiar intractable ones.
-    # It might be nicer to rewrite the exactly to what they were initially,
-    # but that would take some work to implement.
-    return r.rewrite('intractable', deep=True)

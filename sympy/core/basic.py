@@ -1301,12 +1301,12 @@ class Basic(with_metaclass(ManagedProperties)):
                 # if ``exact`` is True, only accept match if there are no null
                 # values amongst those matched.
                 if exact:
-                    _value = lambda expr, result: (value(**dict([ (
-                        str(key)[:-1], val) for key, val in result.items()]))
+                    _value = lambda expr, result: (value(**{
+                        str(key)[:-1]: val for key, val in result.items()})
                         if all(val for val in result.values()) else expr)
                 else:
-                    _value = lambda expr, result: value(**dict([ (
-                        str(key)[:-1], val) for key, val in result.items()]))
+                    _value = lambda expr, result: value(**{
+                        str(key)[:-1]: val for key, val in result.items()})
             else:
                 raise TypeError(
                     "given an expression, replace() expects "
@@ -1361,8 +1361,8 @@ class Basic(with_metaclass(ManagedProperties)):
                 # restore subexpressions in mapping
                 for o, n in mask:
                     r = {o: n}
-                    mapping = dict([(k.xreplace(r), v.xreplace(r))
-                        for k, v in mapping.items()])
+                    mapping = {k.xreplace(r): v.xreplace(r)
+                               for k, v in mapping.items()}
             return rv, mapping
 
     def find(self, query, group=False):
@@ -1696,7 +1696,7 @@ def _atomic(e):
     try:
         free = e.free_symbols
     except AttributeError:
-        return set([e])
+        return {e}
     atoms = set()
     for p in pot:
         if p in seen:

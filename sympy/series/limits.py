@@ -6,7 +6,7 @@ from sympy.core.symbol import Dummy
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.special.gamma_functions import gamma
 from sympy.series.order import Order
-from .gruntz import gruntz
+from .gruntz import limitinf
 
 
 def limit(expr, z, z0, dir="+"):
@@ -147,6 +147,17 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
+        if z0 is S.NaN:
+            return S.NaN
+
+        if e.has(Order):
+            e = e.expand()
+            order = e.getO()
+            if order:
+                if (z, z0) in zip(order.variables, order.point):
+                    order = limit(order.expr, z, z0, dir)
+                    e = e.removeO() + order
+
         # gruntz fails on factorials but works with the gamma function
         # If no factorial term is present, e should remain unchanged.
         # factorial is defined to be zero for negative inputs (which
@@ -178,11 +189,23 @@ class Limit(Expr):
                     else:
                         return r
 
-        if e.is_Order:
-            return Order(limit(e.expr, z, z0), *e.args[1:])
-
         try:
-            r = gruntz(e, z, z0, dir)
+            # Convert to the limit z->oo and use Gruntz algorithm.
+            newe, newz = e, z
+            if z0 == S.NegativeInfinity:
+                newe = e.subs(z, -z)
+            elif z0 != S.Infinity:
+                if str(dir) == "+":
+                    newe = e.subs(z, z0 + 1/z)
+                else:
+                    newe = e.subs(z, z0 - 1/z)
+
+            if not z.is_positive or not z.is_finite:
+                # We need a fresh variable here to simplify expression further.
+                newz = Dummy(z.name, positive=True, finite=True)
+                newe = newe.subs(z, newz)
+
+            r = limitinf(newe, newz)
             if r is S.NaN:
                 raise PoleError()
         except (PoleError, ValueError):

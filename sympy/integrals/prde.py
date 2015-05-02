@@ -633,7 +633,7 @@ def is_deriv_k(fa, fd, DE):
     # Our assumption here is that each monomial is recursively transcendental
     if len(DE.L_K) + len(DE.E_K) != len(DE.D) - 1:
         if [i for i in DE.cases if i == 'tan'] or \
-                set([i for i in DE.cases if i == 'primitive']) - set(DE.L_K):
+                {i for i in DE.cases if i == 'primitive'} - set(DE.L_K):
             raise NotImplementedError("Real version of the structure "
                 "theorems with hypertangent support is not yet implemented.")
 
@@ -737,7 +737,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
     # Our assumption here is that each monomial is recursively transcendental
     if len(DE.L_K) + len(DE.E_K) != len(DE.D) - 1:
         if [i for i in DE.cases if i == 'tan'] or \
-                set([i for i in DE.cases if i == 'primitive']) - set(DE.L_K):
+                {i for i in DE.cases if i == 'primitive'} - set(DE.L_K):
             raise NotImplementedError("Real version of the structure "
                 "theorems with hypertangent support is not yet implemented.")
 

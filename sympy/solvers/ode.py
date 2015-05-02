@@ -1921,12 +1921,12 @@ def checksysodesol(eqs, sols, func=None):
                 funcs.append(func_)
         funcs = list(set(funcs))
     if not all(isinstance(func, AppliedUndef) and len(func.args) == 1 for func in funcs)\
-    and len(set([func.args for func in funcs]))!=1:
+    and len({func.args for func in funcs})!=1:
         raise ValueError("func must be a function of one variable, not %s" % func)
     for sol in sols:
         if len(sol.atoms(AppliedUndef)) != 1:
             raise ValueError("solutions should have one function only")
-    if len(funcs) != len(set([sol.lhs for sol in sols])):
+    if len(funcs) != len({sol.lhs for sol in sols}):
         raise ValueError("number of solutions provided does not match the number of equations")
     t = funcs[0].args[0]
     dictsol = dict()
@@ -2006,7 +2006,7 @@ def odesimp(eq, func, order, constants, hint):
                             |
                            /
 
-    >>> pprint(odesimp(eq, f(x), 1, set([C1]),
+    >>> pprint(odesimp(eq, f(x), 1, {C1},
     ... hint='1st_homogeneous_coeff_subs_indep_div_dep'
     ... )) #doctest: +SKIP
         x
@@ -2498,7 +2498,7 @@ def _get_constant_subexpressions(expr, Cs):
     return Ces
 
 def __remove_linear_redundancies(expr, Cs):
-    cnts = dict([(i, expr.count(i)) for i in Cs])
+    cnts = {i: expr.count(i) for i in Cs}
     Cs = [i for i in Cs if cnts[i] > 0]
 
     def _linear(expr):
@@ -2607,11 +2607,11 @@ def constantsimp(expr, constants):
     >>> from sympy import symbols
     >>> from sympy.solvers.ode import constantsimp
     >>> C1, C2, C3, x, y = symbols('C1, C2, C3, x, y')
-    >>> constantsimp(2*C1*x, set([C1, C2, C3]))
+    >>> constantsimp(2*C1*x, {C1, C2, C3})
     C1*x
-    >>> constantsimp(C1 + 2 + x, set([C1, C2, C3]))
+    >>> constantsimp(C1 + 2 + x, {C1, C2, C3})
     C1 + x
-    >>> constantsimp(C1*C2 + 2 + C2 + C3*x, set([C1, C2, C3]))
+    >>> constantsimp(C1*C2 + 2 + C2 + C3*x, {C1, C2, C3})
     C1 + C3*x
 
     """
@@ -3843,8 +3843,8 @@ def _nth_linear_match(eq, func, order):
 
     """
     x = func.args[0]
-    one_x = set([x])
-    terms = dict([(i, S.Zero) for i in range(-1, order + 1)])
+    one_x = {x}
+    terms = {i: S.Zero for i in range(-1, order + 1)}
     for i in Add.make_args(eq):
         if not i.has(func):
             terms[-1] += i
@@ -4276,7 +4276,7 @@ def _linear_coeff_match(expr, func):
                     return a1, b1, c1, a2, b2, c2, d
 
     m = [fi.args[0] for fi in expr.atoms(Function) if fi.func != f and
-         len(fi.args) == 1 and not fi.args[0].is_Function] or set([expr])
+         len(fi.args) == 1 and not fi.args[0].is_Function] or {expr}
     m1 = match(m.pop())
     if m1 and all(match(mi) == m1 for mi in m):
         a1, b1, c1, a2, b2, c2, denom = m1
@@ -4739,15 +4739,15 @@ def _solve_undetermined_coefficients(eq, func, order, match):
     gensols = r['list']
     gsol = r['sol']
     trialset = r['trialset']
-    notneedset = set([])
-    newtrialset = set([])
+    notneedset = set()
+    newtrialset = set()
     global collectterms
     if len(gensols) != order:
         raise NotImplementedError("Cannot find " + str(order) +
         " solutions to the homogeneous equation necessary to apply" +
         " undetermined coefficients to " + str(eq) +
         " (number of terms != order)")
-    usedsin = set([])
+    usedsin = set()
     mult = 0  # The multiplicity of the root
     getmult = True
     for i, reroot, imroot in collectterms:
@@ -4891,7 +4891,7 @@ def _undetermined_coefficients_match(expr, x):
         else:
             return False
 
-    def _get_trial_set(expr, x, exprs=set([])):
+    def _get_trial_set(expr, x, exprs=set()):
         r"""
         Returns a set of trial terms for undetermined coefficients.
 
@@ -4926,8 +4926,8 @@ def _undetermined_coefficients_match(expr, x):
                     exprs = exprs.union(_get_trial_set(term, x, exprs))
         else:
             term = _remove_coefficient(expr, x)
-            tmpset = exprs.union(set([term]))
-            oldset = set([])
+            tmpset = exprs.union({term})
+            oldset = set()
             while tmpset != oldset:
                 # If you get stuck in this loop, then _test_term is probably
                 # broken
@@ -5825,7 +5825,7 @@ def lie_heuristic_bivariate(match, comp=False):
             if pden.is_polynomial(x, y) and pden.is_Add:
                 polyy = Poly(pden, x, y).as_dict()
             if polyy:
-                symset = xieq.free_symbols.union(etaeq.free_symbols) - set([x, y])
+                symset = xieq.free_symbols.union(etaeq.free_symbols) - {x, y}
                 soldict = solve(polyy.values(), *symset)
                 if isinstance(soldict, list):
                     soldict = soldict[0]
@@ -5834,7 +5834,7 @@ def lie_heuristic_bivariate(match, comp=False):
                     etared = etaeq.subs(soldict)
                     # Scaling is done by substituting one for the parameters
                     # This can be any number except zero.
-                    dict_ = dict((sym, 1) for sym in symset)
+                    dict_ = {sym: 1 for sym in symset}
                     inf = {eta: etared.subs(dict_).subs(y, func),
                         xi: xired.subs(dict_).subs(y, func)}
                     return [inf]
@@ -5892,13 +5892,13 @@ def lie_heuristic_chi(match, comp=False):
             if cnum.is_polynomial(x, y) and cnum.is_Add:
                 cpoly = Poly(cnum, x, y).as_dict()
                 if cpoly:
-                    solsyms = chieq.free_symbols - set([x, y])
+                    solsyms = chieq.free_symbols - {x, y}
                     soldict = solve(cpoly.values(), *solsyms)
                     if isinstance(soldict, list):
                         soldict = soldict[0]
                     if any(x for x in soldict.values()):
                         chieq = chieq.subs(soldict)
-                        dict_ = dict((sym, 1) for sym in solsyms)
+                        dict_ = {sym: 1 for sym in solsyms}
                         chieq = chieq.subs(dict_)
                         # After finding chi, the main aim is to find out
                         # eta, xi by the equation eta = xi*h + chi
@@ -7952,7 +7952,7 @@ def _nonlinear_2eq_order1_type5(func, t, eq):
                 [r1, r2] = check_type(y, x)
                 x, y = y, x
     x1 = diff(x(t),t); y1 = diff(y(t),t)
-    return set([Eq(x(t), C1*t + r1[f].subs(x1,C1).subs(y1,C2)), Eq(y(t), C2*t + r2[g].subs(x1,C1).subs(y1,C2))])
+    return {Eq(x(t), C1*t + r1[f].subs(x1,C1).subs(y1,C2)), Eq(y(t), C2*t + r2[g].subs(x1,C1).subs(y1,C2))}
 
 def sysode_nonlinear_3eq_order1(match_):
     x = match_['func'][0].func

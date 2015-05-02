@@ -252,22 +252,15 @@ def test_issue_5183():
                         [-1, 1],
                         [2, 3, Rational(1, 2), Rational(2, 3)],
                         ['-', '+']))
-    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*(-1)**Rational(1, 3), oo,
+    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
-               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*(-1)**Rational(1, 3),
+               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)),
                0, 0, 0, 0, 0, 0, 0, 0)
     assert len(tests) == len(results)
     for i, (args, res) in enumerate(zip(tests, results)):
         y, s, e, d = args
         eq = y**(s*e)
-        try:
-            assert limit(eq, x, 0, dir=d) == res
-        except AssertionError:
-            if 0:  # change to 1 if you want to see the failing tests
-                print()
-                print(i, res, eq, d, limit(eq, x, 0, dir=d))
-            else:
-                assert None
+        assert limit(eq, x, 0, dir=d) == res
 
 
 def test_issue_5184():
@@ -296,14 +289,7 @@ def test_issue_4546():
     for i, (args, res) in enumerate(zip(tests, results)):
         f, l, d = args
         eq = f(x)
-        try:
-            assert limit(eq, x, l, dir=d) == res
-        except AssertionError:
-            if 0:  # change to 1 if you want to see the failing tests
-                print()
-                print(i, res, eq, l, d, limit(eq, x, l, dir=d))
-            else:
-                assert None
+        assert limit(eq, x, l, dir=d) == res
 
 
 def test_issue_3934():
@@ -311,10 +297,10 @@ def test_issue_3934():
     assert limit((5**(1/x) + 3**(1/x))**x, x, 0) == 5
 
 
-def test_calculate_series():
-    # needs gruntz calculate_series to go to n = 32
+def test_compute_leading_term():
+    # needs series to go to n = 32
     assert limit(x**(S(77)/3)/(1 + x**(S(77)/3)), x, oo) == 1
-    # needs gruntz calculate_series to go to n = 128
+    # needs series to go to n = 128
     assert limit(x**101.1/(1 + x**101.1), x, oo) == 1
 
 

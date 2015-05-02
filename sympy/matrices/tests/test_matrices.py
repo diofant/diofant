@@ -1585,7 +1585,7 @@ def test_errors():
     raises(ShapeError,
         lambda: Matrix([[1, 2], [3, 4]]).copyin_matrix([1, 0], Matrix([1, 2])))
     raises(TypeError, lambda: Matrix([[1, 2], [3, 4]]).copyin_list([0,
-           1], set([])))
+           1], set()))
     raises(NonSquareMatrixError, lambda: Matrix([[1, 2, 3], [2, 3, 0]]).inv())
     raises(ShapeError,
         lambda: Matrix(1, 2, [1, 2]).row_join(Matrix([[1, 2], [3, 4]])))
@@ -2247,7 +2247,7 @@ def test_cross():
 
 def test_hash():
     for cls in classes[-2:]:
-        s = set([cls.eye(1), cls.eye(1)])
+        s = {cls.eye(1), cls.eye(1)}
         assert len(s) == 1 and s.pop() == cls.eye(1)
     # issue 3979
     for cls in classes[:2]:
@@ -2302,8 +2302,8 @@ def test_replace_map():
 def test_atoms():
     from sympy.abc import x
     m = Matrix([[1, 2], [x, 1 - 1/x]])
-    assert m.atoms() == set([S(1),S(2),S(-1), x])
-    assert m.atoms(Symbol) == set([x])
+    assert m.atoms() == {S(1),S(2),S(-1), x}
+    assert m.atoms(Symbol) == {x}
 
 @slow
 def test_pinv():
@@ -2393,7 +2393,7 @@ def test_issue_7201():
 
 def test_free_symbols():
     for M in ImmutableMatrix, ImmutableSparseMatrix, Matrix, SparseMatrix:
-        assert M([[x], [0]]).free_symbols == set([x])
+        assert M([[x], [0]]).free_symbols == {x}
 
 def test_from_ndarray():
     """See issue 7465."""

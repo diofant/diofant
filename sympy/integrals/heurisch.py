@@ -67,7 +67,7 @@ def components(f, x):
                 if f.exp.is_Rational:
                     result.add(f.base**Rational(1, f.exp.q))
                 else:
-                    result |= components(f.exp, x) | set([f])
+                    result |= components(f.exp, x) | {f}
         else:
             for g in f.args:
                 result |= components(g, x)
@@ -345,7 +345,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     # sort mapping expressions from largest to smallest (last is always x).
     mapping = list(reversed(list(zip(*ordered(                          #
         [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1])) #
-    rev_mapping = dict([(v, k) for k, v in mapping])                    #
+    rev_mapping = {v: k for k, v in mapping}                            #
     if mappings is None:                                                #
         # optimizing the number of permutations of mapping              #
         assert mapping[-1][0] == x  # if not, find it and correct this comment
@@ -522,7 +522,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         # sqrt(y) and similar expressions can appear, leading to non-trivial
         # domains.
         syms = set(poly_coeffs) | set(V)
-        non_syms = set([])
+        non_syms = set()
 
         def find_non_syms(expr):
             if expr.is_Integer or expr.is_Rational:

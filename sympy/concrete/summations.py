@@ -466,7 +466,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
 
         if not n:
             try:
-                n = (self.function.free_symbols - set([k])).pop()
+                n = (self.function.free_symbols - {k}).pop()
             except KeyError:
                 raise ValueError
 

@@ -183,7 +183,7 @@ class Options(dict):
     def _init_dependencies_order(cls):
         """Resolve the order of options' processing. """
         if cls.__order__ is None:
-            vertices, edges = [], set([])
+            vertices, edges = [], set()
 
             for name, option in cls.__options__.items():
                 vertices.append(name)
@@ -519,7 +519,7 @@ class Gaussian(with_metaclass(OptionType, BooleanOption)):
     @classmethod
     def postprocess(cls, options):
         if 'gaussian' in options and options['gaussian'] is True:
-            options['extension'] = set([S.ImaginaryUnit])
+            options['extension'] = {S.ImaginaryUnit}
             Extension.postprocess(options)
 
 
@@ -540,7 +540,7 @@ class Extension(with_metaclass(OptionType, Option)):
             raise OptionError("'False' is an invalid argument for 'extension'")
         else:
             if not hasattr(extension, '__iter__'):
-                extension = set([extension])
+                extension = {extension}
             else:
                 if not extension:
                     extension = None

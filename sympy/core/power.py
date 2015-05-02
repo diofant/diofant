@@ -1120,7 +1120,14 @@ class Pow(Expr):
                 if rest.is_Order:
                     return 1/prefactor + rest/prefactor + O(x**n, x)
 
-                k, l = rest.leadterm(x)
+                lt = rest.as_leading_term(x)
+                d = Dummy('logx')
+                if lt.has(log(x)):
+                    lt = lt.subs(log(x), d)
+
+                k, l = lt.as_coeff_exponent(x)
+                k = k.subs(d, log(x))
+
                 if l.is_Rational and l > 0:
                     pass
                 elif l.is_number and l > 0:

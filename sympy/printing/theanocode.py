@@ -204,8 +204,8 @@ def dim_handling(inputs, dim=None, dims={}, broadcastables={}, keys=(),
         dims = dict(zip(inputs, [dim]*len(inputs)))
     if dims:
         maxdim = max(dims.values())
-        broadcastables = dict((i, (False,)*dims[i] + (True,)*(maxdim-dims[i]))
-                         for i in inputs)
+        broadcastables = {i: (False,)*dims[i] + (True,)*(maxdim-dims[i])
+                          for i in inputs}
     return broadcastables
 
 
@@ -216,8 +216,7 @@ def theano_function(inputs, outputs, dtypes={}, cache=None, **kwargs):
 
     # Remove keyword arguments corresponding to dim_handling
     dim_names = inspect.getargspec(dim_handling)[0]
-    theano_kwargs = dict((k, v) for k, v in kwargs.items()
-                                if k not in dim_names)
+    theano_kwargs = {k: v for k, v in kwargs.items() if k not in dim_names}
 
     code = partial(theano_code, cache=cache, dtypes=dtypes,
                    broadcastables=broadcastables)

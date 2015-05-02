@@ -150,8 +150,8 @@ class Routine(object):
         """
 
         # extract all input symbols and all symbols appearing in an expression
-        input_symbols = set([])
-        symbols = set([])
+        input_symbols = set()
+        symbols = set()
         for arg in arguments:
             if isinstance(arg, OutputArgument):
                 symbols.update(arg.expr.free_symbols)
@@ -172,7 +172,7 @@ class Routine(object):
         # InputArguments/InOutArguments---subset because user could
         # specify additional (unused) InputArguments or local_vars.
         notcovered = symbols.difference(input_symbols.union(local_vars))
-        if notcovered != set([]):
+        if notcovered != set():
             raise ValueError("Symbols needed for output are not in input " +
                              ", ".join([str(x) for x in notcovered]))
 
@@ -488,7 +488,7 @@ class CodeGen(object):
             expressions = Tuple(expr)
 
         # local variables
-        local_vars = set([i.label for i in expressions.atoms(Idx)])
+        local_vars = {i.label for i in expressions.atoms(Idx)}
 
         # symbols that should be arguments
         symbols = expressions.free_symbols - local_vars
@@ -571,7 +571,7 @@ class CodeGen(object):
                         ", ".join([str(m.name) for m in missing]), missing)
 
             # create redundant arguments to produce the requested sequence
-            name_arg_dict = dict([(x.name, x) for x in arg_list])
+            name_arg_dict = {x.name: x for x in arg_list}
             new_args = []
             for symbol in argument_sequence:
                 try:
@@ -1028,8 +1028,8 @@ class FCodeGen(CodeGen):
     def dump_f95(self, routines, f, prefix, header=True, empty=True):
         # check that symbols are unique with ignorecase
         for r in routines:
-            lowercase = set([str(x).lower() for x in r.variables])
-            orig_case = set([str(x) for x in r.variables])
+            lowercase = {str(x).lower() for x in r.variables}
+            orig_case = {str(x) for x in r.variables}
             if len(lowercase) < len(orig_case):
                 raise CodeGenError("Fortran ignores case. Got symbols: %s" %
                         (", ".join([str(var) for var in r.variables])))
@@ -1112,7 +1112,7 @@ class OctaveCodeGen(CodeGen):
             expressions = Tuple(expr)
 
         # local variables
-        local_vars = set([i.label for i in expressions.atoms(Idx)])
+        local_vars = {i.label for i in expressions.atoms(Idx)}
 
         # symbols that should be arguments
         symbols = expressions.free_symbols - local_vars
@@ -1167,7 +1167,7 @@ class OctaveCodeGen(CodeGen):
                         ", ".join([str(m.name) for m in missing]), missing)
 
             # create redundant arguments to produce the requested sequence
-            name_arg_dict = dict([(x.name, x) for x in arg_list])
+            name_arg_dict = {x.name: x for x in arg_list}
             new_args = []
             for symbol in argument_sequence:
                 try:

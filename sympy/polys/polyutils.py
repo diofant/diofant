@@ -236,7 +236,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         def _is_coeff(factor):
             return factor.is_number
 
-    gens, reprs = set([]), []
+    gens, reprs = set(), []
 
     for expr in exprs:
         terms = []

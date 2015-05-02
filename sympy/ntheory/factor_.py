@@ -532,8 +532,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         >>> for i in range(2, 256):
         ...     M = ilcm(M, i)
         ...
-        >>> set([igcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
-        ...      igcd(pow(a, M, n) - 1, n) != n])
+        >>> {igcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
+        ...  igcd(pow(a, M, n) - 1, n) != n}
         set([1009])
 
     But does aM % d for every divisor of n give 1?
@@ -946,8 +946,8 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                                use_rho=use_rho, use_pm1=use_pm1,
                                verbose=verbose, visual=False)
     elif isinstance(n, Mul):
-        factordict = dict([(int(k), int(v)) for k, v in
-                           list(n.as_powers_dict().items())])
+        factordict = {int(k): int(v) for k, v in
+                           list(n.as_powers_dict().items())}
     elif isinstance(n, dict):
         factordict = n
     if factordict and (isinstance(n, Mul) or isinstance(n, dict)):

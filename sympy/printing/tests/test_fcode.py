@@ -86,18 +86,18 @@ def test_fcode_NumberSymbol():
     assert fcode(pi) == '      parameter (pi = 3.14159265358979d0)\n      pi'
     assert fcode(
         pi, precision=5) == '      parameter (pi = 3.1416d0)\n      pi'
-    assert fcode(Catalan, human=False) == (set(
-        [(Catalan, p._print(Catalan.evalf(15)))]), set([]), '      Catalan')
-    assert fcode(EulerGamma, human=False) == (set([(EulerGamma, p._print(
-        EulerGamma.evalf(15)))]), set([]), '      EulerGamma')
+    assert fcode(Catalan, human=False) == ({(Catalan, p._print(
+        Catalan.evalf(15)))}, set(), '      Catalan')
+    assert fcode(EulerGamma, human=False) == ({(EulerGamma, p._print(
+        EulerGamma.evalf(15)))}, set(), '      EulerGamma')
     assert fcode(E, human=False) == (
-        set([(E, p._print(E.evalf(15)))]), set([]), '      E')
-    assert fcode(GoldenRatio, human=False) == (set([(GoldenRatio, p._print(
-        GoldenRatio.evalf(15)))]), set([]), '      GoldenRatio')
+        {(E, p._print(E.evalf(15)))}, set(), '      E')
+    assert fcode(GoldenRatio, human=False) == ({(GoldenRatio, p._print(
+        GoldenRatio.evalf(15)))}, set(), '      GoldenRatio')
     assert fcode(pi, human=False) == (
-        set([(pi, p._print(pi.evalf(15)))]), set([]), '      pi')
+        {(pi, p._print(pi.evalf(15)))}, set(), '      pi')
     assert fcode(pi, precision=5, human=False) == (
-        set([(pi, p._print(pi.evalf(5)))]), set([]), '      pi')
+        {(pi, p._print(pi.evalf(5)))}, set(), '      pi')
 
 
 def test_fcode_complex():

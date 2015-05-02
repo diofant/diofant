@@ -573,11 +573,11 @@ def _sqrt_mod1(a, p, n):
 def is_quad_residue(a, p):
     """
     Returns True if ``a`` (mod ``p``) is in the set of squares mod ``p``,
-    i.e a % p in set([i**2 % p for i in range(p)]). If ``p`` is an odd
+    i.e a % p in {i**2 % p for i in range(p)}. If ``p`` is an odd
     prime, an iterative method is used to make the determination:
 
     >>> from sympy.ntheory import is_quad_residue
-    >>> sorted(set([i**2 % 7 for i in range(7)]))
+    >>> sorted({i**2 % 7 for i in range(7)})
     [0, 1, 2, 4]
     >>> [j for j in range(7) if is_quad_residue(j, 7)]
     [0, 1, 2, 4]
@@ -783,7 +783,7 @@ def legendre_symbol(a, p):
     >>> from sympy.ntheory import legendre_symbol
     >>> [legendre_symbol(i, 7) for i in range(7)]
     [0, 1, 1, -1, 1, -1, -1]
-    >>> sorted(set([i**2 % 7 for i in range(7)]))
+    >>> sorted({i**2 % 7 for i in range(7)})
     [0, 1, 2, 4]
 
     See Also
