@@ -168,6 +168,10 @@ class factorial(CombinatorialFunction):
         from sympy import gamma
         return gamma(n + 1)
 
+    def _eval_rewrite_as_tractable(self, n):
+        from sympy import loggamma, exp
+        return exp(loggamma(n + 1))
+
     def _eval_rewrite_as_Product(self, n):
         from sympy import Product
         if n.is_nonnegative and n.is_integer:
@@ -458,6 +462,9 @@ class RisingFactorial(CombinatorialFunction):
     def _eval_rewrite_as_gamma(self, x, k):
         from sympy import gamma
         return gamma(x + k) / gamma(x)
+
+    def _eval_rewrite_as_tractable(self, x, k):
+        return self._eval_rewrite_as_gamma(x, k).rewrite('tractable')
 
     def _eval_is_integer(self):
         return fuzzy_and((self.args[0].is_integer, self.args[1].is_integer,

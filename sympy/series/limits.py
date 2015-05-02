@@ -141,6 +141,13 @@ class Limit(Expr):
             else:
                 return right
 
+        if z0.has(z):
+            newz = z.as_dummy()
+            r = limit(e.subs(z, newz), newz, z0, dir)
+            if r.func is Limit:
+                r = r.subs(newz, z)
+            return r
+
         if e == z:
             return z0
 
@@ -157,13 +164,6 @@ class Limit(Expr):
                 if (z, z0) in zip(order.variables, order.point):
                     order = limit(order.expr, z, z0, dir)
                     e = e.removeO() + order
-
-        # gruntz fails on factorials but works with the gamma function
-        # If no factorial term is present, e should remain unchanged.
-        # factorial is defined to be zero for negative inputs (which
-        # differs from gamma) so only rewrite for positive z0.
-        if z0.is_positive:
-            e = e.rewrite(factorial, gamma)
 
         if e.is_Mul:
             if abs(z0) in (S.Infinity, S.NegativeInfinity):
