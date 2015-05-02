@@ -521,35 +521,3 @@ def rewrite(e, Omega, x, wsym):
     logw /= exponent
 
     return f, logw
-
-
-def gruntz(e, z, z0, dir="+"):
-    """
-    Compute the limit of e(z) at the point z0 using the Gruntz algorithm.
-
-    z0 can be any expression, including oo and -oo.
-
-    For dir="+" (default) it calculates the limit from the right
-    (z->z0+) and for dir="-" the limit from the left (z->z0-). For infinite z0
-    (oo or -oo), the dir argument doesn't matter.
-
-    This algorithm is fully described in the module docstring in the gruntz.py
-    file. It relies heavily on the series expansion. Most frequently, gruntz()
-    is only used if the faster limit() function (which uses heuristics) fails.
-    """
-    # Convert all limits to the limit z->oo.
-
-    if z0 == -oo:
-        e = e.subs(z, -z)
-    elif z0 != oo:
-        if str(dir) == "+":
-            e = e.subs(z, z0 + 1/z)
-        else:
-            e = e.subs(z, z0 - 1/z)
-
-    if not z.is_positive or not z.is_finite:
-        # We need a fresh variable here to simplify expression further.
-        newz = Dummy(z.name, positive=True, finite=True)
-        e, z = e.subs(z, newz), newz
-
-    return limitinf(e, z)

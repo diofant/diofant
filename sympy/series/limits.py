@@ -6,7 +6,7 @@ from sympy.core.symbol import Dummy
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.special.gamma_functions import gamma
 from sympy.series.order import Order
-from .gruntz import gruntz
+from .gruntz import limitinf
 
 
 def limit(expr, z, z0, dir="+"):
@@ -190,7 +190,22 @@ class Limit(Expr):
                         return r
 
         try:
-            r = gruntz(e, z, z0, dir)
+            # Convert to the limit z->oo and use Gruntz algorithm.
+            newe, newz = e, z
+            if z0 == S.NegativeInfinity:
+                newe = e.subs(z, -z)
+            elif z0 != S.Infinity:
+                if str(dir) == "+":
+                    newe = e.subs(z, z0 + 1/z)
+                else:
+                    newe = e.subs(z, z0 - 1/z)
+
+            if not z.is_positive or not z.is_finite:
+                # We need a fresh variable here to simplify expression further.
+                newz = Dummy(z.name, positive=True, finite=True)
+                newe = newe.subs(z, newz)
+
+            r = limitinf(newe, newz)
             if r is S.NaN:
                 raise PoleError()
         except (PoleError, ValueError):
