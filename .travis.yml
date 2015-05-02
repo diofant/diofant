@@ -1,7 +1,7 @@
 language: python
 env:
   matrix:
-  - TEST_DOCTESTS="true" FASTCACHE="false"
+  - TEST_DOCTESTS="true"
   - SPLIT="1/2"
   - SPLIT="2/2"
   - TEST_EXTRA="true" TEST_PEP="true"
@@ -14,27 +14,24 @@ matrix:
   include:
     - python: 2.7
       env:
-        - TEST_SPHINX="true" FASTCACHE="false"
+        - TEST_SPHINX="true"
     - python: 2.7
       env:
-        - TEST_SAGE="true" FASTCACHE="false"
+        - TEST_SAGE="true"
     - python: "pypy3"
       env:
-        - TEST_DOCTESTS="true" FASTCACHE="false"
+        - TEST_DOCTESTS="true"
     - python: "pypy3"
       env:
-        - SPLIT="1/2" FASTCACHE="false"
+        - SPLIT="1/2"
     - python: "pypy3"
       env:
-        - SPLIT="2/2" FASTCACHE="false"
+        - SPLIT="2/2"
   allow_failures:
     - python: 2.7
       env:
-        - TEST_SAGE="true" FASTCACHE="false"
+        - TEST_SAGE="true"
 before_install:
-  - if [[ "${FASTCACHE}" != "false" ]]; then
-      pip install fastcache;
-    fi
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
       sudo apt-get install --no-install-recommends graphviz inkscape texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern docbook2x;
