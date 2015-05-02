@@ -376,7 +376,7 @@ class MatrixSymbol(MatrixExpr):
 
     @property
     def free_symbols(self):
-        return set((self,))
+        return {self}
 
     def doit(self, **hints):
         if hints.get('deep', True):

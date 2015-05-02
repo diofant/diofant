@@ -454,8 +454,8 @@ def test_solve_for_functions_derivatives():
     assert solve(x.diff(t) - 1, x.diff(t)) == [1]
     assert solve(3*x.diff(t) - 2, x.diff(t)) == [Rational(2, 3)]
 
-    eqns = set((3*x - 1, 2*y - 4))
-    assert solve(eqns, set((x, y))) == { x: Rational(1, 3), y: 2 }
+    eqns = {3*x - 1, 2*y - 4}
+    assert solve(eqns, {x, y}) == {x: Rational(1, 3), y: 2}
     x = Symbol('x')
     f = Function('f')
     F = x**2 + f(x)**2 - 4*x - 1

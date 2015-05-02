@@ -128,8 +128,8 @@ def test_Dict():
     assert d[y] == 2
     raises(KeyError, lambda: d[2])
     assert len(d) == 3
-    assert set(d.keys()) == set((x, y, z))
-    assert set(d.values()) == set((S(1), S(2), S(3)))
+    assert set(d.keys()) == {x, y, z}
+    assert set(d.values()) == {S(1), S(2), S(3)}
     assert d.get(5, 'default') == 'default'
     assert x in d and z in d and not 5 in d
     assert d.has(x) and d.has(1)  # SymPy Basic .has method

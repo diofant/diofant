@@ -719,7 +719,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
 
     # Finally interreduce the standard basis.
     # (TODO again, better data structures)
-    S = set((tuple(f), i) for i, f in enumerate(S))
+    S = {(tuple(f), i) for i, f in enumerate(S)}
     for (a, ai), (b, bi) in permutations(S, 2):
         A = sdm_LM(a)
         B = sdm_LM(b)
