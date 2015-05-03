@@ -7,14 +7,15 @@ complex part, because it needs to calculate a limit to return the result.
 """
 
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                   S, atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, digamma,
-                   Integer, Ei, EulerGamma, li, Li, cosh, coth, sinh, tanh)
-from sympy.series.gruntz import (compare, mrv as _mrv, rewrite as _rewrite,
+                   S, atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, cosh,
+                   coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
+                   Pow, li, Li)
+from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 from sympy.utilities.pytest import XFAIL, slow
 
-x = Symbol('x', extended_real=True)
-m = Symbol('m', extended_real=True)
+x = Symbol('x', real=True, positive=True)
+m = Symbol('m', real=True, positive=True)
 
 
 @slow
@@ -98,10 +99,6 @@ def test_gruntz_eval_special():
     assert gruntz(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)), x) \
         == S(1)/2
     assert gruntz((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x) == 1
-
-
-@XFAIL
-def test_gruntz_evaluation_slow():
     assert gruntz(gamma(x + 1)/sqrt(2*pi)
                   - exp(-x)*(x**(x + S(1)/2) + x**(x - S(1)/2)/12), x) == oo
     assert gruntz(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x) == 0
@@ -201,15 +198,6 @@ def test_sign():
     assert sign(-y*x, x) == -1
 
 
-def mrv(a, b):
-    return set(_mrv(a, b)[0].keys())
-
-
-def rewrite(e, omega, x, w):
-    omega, exps = _mrv(e, x)
-    return _rewrite(exps, omega, x, w)
-
-
 def test_mrv():
     assert mrv(x, x) == {x}
     assert mrv(x + 1/x, x) == {x}
@@ -230,7 +218,7 @@ def test_mrv():
     assert mrv(
         exp(-x + 1/x**2) - exp(x + 1/x), x) == {exp(x + 1/x), exp(1/x**2 - x)}
 
-    assert mrv(exp(x**2) + x*exp(x) + log(x)**x/x, x) == {exp(x**2)}
+    assert mrv(exp(x**2) + x*exp(x) + exp(x*log(log(x)))/x, x) == {exp(x**2)}
     assert mrv(
         exp(x)*(exp(1/x + exp(-x)) - exp(1/x)), x) == {exp(x), exp(-x)}
     assert mrv(log(
@@ -248,23 +236,29 @@ def test_mrv():
     assert mrv(log(log(x*exp(x*exp(x)) + 1)) - exp(exp(log(log(x) + 1/x))), x) == \
         {exp(x*exp(x))}
 
+    # Gruntz: p47, 3.21
+    h = exp(-x/(1 + exp(-x)))
+    e = Mul(exp(h), exp(-x/(1 + h)), exp(exp(-x + h)),
+            Pow(h, -2, evaluate=False), evaluate=False) - exp(x) + x
+    assert mrv(e, x) == {exp(-x + h), exp(-x/(1 + h)), h, exp(x), exp(-x)}
+
 
 def test_rewrite():
     e = exp(x)
-    assert rewrite(e, mrv(e, x), x, m) == (1/m, -x)
+    assert rewrite(e, x, m) == (1/m, -x)
     e = exp(x**2)
-    assert rewrite(e, mrv(e, x), x, m) == (1/m, -x**2)
+    assert rewrite(e, x, m) == (1/m, -x**2)
     e = exp(x + 1/x)
-    assert rewrite(e, mrv(e, x), x, m) == (1/m, -x - 1/x)
+    assert rewrite(e, x, m) == (1/m, -x - 1/x)
     e = 1/exp(-x + exp(-x)) - exp(x)
-    assert rewrite(e, mrv(e, x), x, m) == (1/(m*exp(m)) - 1/m, -x)
+    assert rewrite(e, x, m) == (1/(m*exp(m)) - 1/m, -x)
 
     e = exp(x)*log(log(exp(x)))
     assert mrv(e, x) == {exp(x)}
-    assert rewrite(e, mrv(e, x), x, m) == (1/m*log(x), -x)
+    assert rewrite(e, x, m) == (1/m*log(x), -x)
 
     e = exp(-x + 1/x**2) - exp(x + 1/x)
-    assert rewrite(e, mrv(e, x), x, m) == (m*exp(1/x + x**(-2)) - 1/m, -x - 1/x)
+    assert rewrite(e, x, m) == (m*exp(1/x + x**(-2)) - 1/m, -x - 1/x)
 
 
 def test_mrv_leadterm():
@@ -278,7 +272,7 @@ def test_mrv_leadterm():
         (1, 0)
 
     # Gruntz: p56, 3.27
-    assert mrv(exp(-x + exp(-x)*exp(-x*log(x))), x) == {exp(-x - x*log(x))}
+    assert mrv(exp(-x + exp(-x)*exp(-x*log(x))), x) == {exp(-x*log(x))}
     assert mrv_leadterm(exp(-x + exp(-x)*exp(-x*log(x))), x) == (exp(-x), 0)
 
 
@@ -318,14 +312,8 @@ def test_limit():
     assert gruntz(1/li(x), x) == 0
     assert gruntz(1/Li(x), x) == 0
 
-
-@XFAIL
-def test_MrvTestCase_page47_ex3_21():
-    h = exp(-x/(1 + exp(-x)))
-    expr = exp(h)*exp(-x/(1 + h))*exp(exp(-x + h))/h**2 - exp(x) + x
-    expected = {1/h, exp(x), exp(x - h), exp(x/(1 + h))}
-    # XXX Incorrect result
-    assert mrv(expr, x).difference(expected) == set()
+    # issue skirpichev/omg#56
+    assert gruntz((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x) == oo
 
 
 def test_I():
@@ -378,7 +366,7 @@ def test_issue_4190():
 
 @XFAIL
 def test_issue_5172():
-    n = Symbol('n')
+    n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
     c = Symbol('c')
     p = Symbol('p', positive=True)

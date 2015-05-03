@@ -2771,7 +2771,7 @@ class Expr(Basic, EvalfMixin):
             xpos = Dummy('x', positive=True, finite=True)
             return self.subs(x, xpos).aseries(xpos, n, bound, hir).subs(xpos, x)
 
-        omega, exps = mrv(self, x)
+        omega = mrv(self, x)
         if x in omega:
             s = self.subs(x, exp(x)).aseries(x, n, bound, hir).subs(x, log(x))
             if s.getO():
@@ -2779,7 +2779,7 @@ class Expr(Basic, EvalfMixin):
                 return s + o
             return s
         d = Dummy('d', positive=True)
-        f, logw = rewrite(exps, omega, x, d)
+        f, logw = rewrite(self, x, d)
 
         if self in omega:
             # Need to find a canonical representative
