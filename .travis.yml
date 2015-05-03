@@ -63,7 +63,7 @@ script:
   - if [[ "${TEST_PEP}" == "true" ]]; then
       pep8;
     fi
-  - travis_wait 50 bin/test_travis.sh
+  - bin/test_travis.sh
 after_success:
   - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
       coveralls;
