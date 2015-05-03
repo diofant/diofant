@@ -93,6 +93,11 @@ class Symbol(AtomicExpr, Boolean):
             if not hasattr(Q, str(key)):
                 continue
 
+            if key == 'commutative':
+                if not assumptions[key]:
+                    global_assumptions.add(getattr(Q, str(key))(x))
+                continue
+
             if assumptions[key]:
                 global_assumptions.add(getattr(Q, str(key))(x))
             elif assumptions[key] is False:
