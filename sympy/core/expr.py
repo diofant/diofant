@@ -2399,7 +2399,7 @@ class Expr(Basic, EvalfMixin):
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
 
-    def series(self, x=None, x0=0, n=6, dir="+", logx=None):
+    def series(self, x=None, x0=0, n=6, dir="+"):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
         the series one by one (the lazy series given when n=None), else
         all the terms at once when n != None.
@@ -2478,7 +2478,7 @@ class Expr(Basic, EvalfMixin):
                 rep = x + x0
                 rep2 = x
                 rep2b = -x0
-            s = self.subs(x, rep).series(x, x0=0, n=n, dir='+', logx=logx)
+            s = self.subs(x, rep).series(x, x0=0, n=n, dir='+')
             if n is None:  # lseries...
                 return (si.subs(x, rep2 + rep2b) for si in s)
             return s.subs(x, rep2 + rep2b)
@@ -2488,14 +2488,14 @@ class Expr(Basic, EvalfMixin):
         if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
             # replace x with an x that has a positive assumption
             xpos = Dummy('x', positive=True, finite=True)
-            rv = self.subs(x, xpos).series(xpos, x0, n, dir, logx=logx)
+            rv = self.subs(x, xpos).series(xpos, x0, n, dir)
             if n is None:
                 return (s.subs(xpos, x) for s in rv)
             else:
                 return rv.subs(xpos, x)
 
         if n is not None:  # nseries handling
-            s1 = self._eval_nseries(x, n=n, logx=logx)
+            s1 = self._eval_nseries(x, n=n)
             o = s1.getO() or S.Zero
             if o:
                 # make sure the requested order is returned
@@ -2513,13 +2513,13 @@ class Expr(Basic, EvalfMixin):
                     # is different than the original order and then predict how
                     # many additional terms are needed
                     for more in range(1, 9):
-                        s1 = self._eval_nseries(x, n=n + more, logx=logx)
+                        s1 = self._eval_nseries(x, n=n + more)
                         newn = s1.getn()
                         if newn != ngot:
                             ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
-                            s1 = self._eval_nseries(x, n=ndo, logx=logx)
+                            s1 = self._eval_nseries(x, n=ndo)
                             while ceiling(s1.getn()) < n:
-                                s1 = self._eval_nseries(x, n=ndo, logx=logx)
+                                s1 = self._eval_nseries(x, n=ndo)
                                 ndo += 1
                             break
                     else:
@@ -2566,7 +2566,7 @@ class Expr(Basic, EvalfMixin):
                             break
                         yielded += do
 
-            return yield_lseries(self.removeO()._eval_lseries(x, logx=logx))
+            return yield_lseries(self.removeO()._eval_lseries(x))
 
     def taylor_term(self, n, x, *previous_terms):
         """General method for the taylor term.
@@ -2579,7 +2579,7 @@ class Expr(Basic, EvalfMixin):
         _x = Dummy('x')
         return self.subs(x, _x).diff(_x, n).subs(_x, x).subs(x, 0) * x**n / factorial(n)
 
-    def lseries(self, x=None, x0=0, dir='+', logx=None):
+    def lseries(self, x=None, x0=0, dir='+'):
         """Wrapper for series yielding an iterator of the terms of the series.
 
         Note: an infinite series will yield an infinite iterator. The following,
@@ -2599,16 +2599,16 @@ class Expr(Basic, EvalfMixin):
 
         nseries
         """
-        return self.series(x, x0, n=None, dir=dir, logx=logx)
+        return self.series(x, x0, n=None, dir=dir)
 
-    def _eval_lseries(self, x, logx=None):
+    def _eval_lseries(self, x):
         # default implementation of lseries is using nseries(), and adaptively
         # increasing the "n". As you can see, it is not very efficient, because
         # we are calculating the series over and over again. Subclasses should
         # override this method and implement much more efficient yielding of
         # terms.
         n = 0
-        series = self._eval_nseries(x, n=n, logx=logx)
+        series = self._eval_nseries(x, n=n)
         if not series.is_Order:
             if series.is_Add:
                 yield series.removeO()
@@ -2618,19 +2618,19 @@ class Expr(Basic, EvalfMixin):
 
         while series.is_Order:
             n += 1
-            series = self._eval_nseries(x, n=n, logx=logx)
+            series = self._eval_nseries(x, n=n)
         e = series.removeO()
         yield e
         while 1:
             while 1:
                 n += 1
-                series = self._eval_nseries(x, n=n, logx=logx).removeO()
+                series = self._eval_nseries(x, n=n).removeO()
                 if e != series:
                     break
             yield series - e
             e = series
 
-    def nseries(self, x, n=6, logx=None):
+    def nseries(self, x, n=6):
         """Calculate "n" terms of series in x around 0
 
         This calculates n terms of series in the innermost expressions
@@ -2651,9 +2651,6 @@ class Expr(Basic, EvalfMixin):
             variable for series expansion (positive and finite symbol)
         n : Integer, optional
             number of terms to calculate.  Default is 6.
-        logx : Symbol, optional
-            This can be used to replace any log(x) in the returned series
-            with a symbolic value to avoid evaluating log(x) at 0.
 
         See Also
         ========
@@ -2670,19 +2667,6 @@ class Expr(Basic, EvalfMixin):
         x - x**3/6 + x**5/120 + O(x**6)
         >>> log(x + 1).nseries(x, 5)
         x - x**2/2 + x**3/3 - x**4/4 + O(x**5)
-
-        Handling of the ``logx`` parameter --- in the following example the
-        expansion fails since ``sin`` does not have an asymptotic expansion
-        at -oo (the limit of log(x) as x approaches 0).
-
-        >>> e = sin(log(x))
-        >>> e.nseries(x)
-        Traceback (most recent call last):
-        ...
-        PoleError: ...
-        >>> logx = Symbol('logx')
-        >>> e.nseries(x, logx=logx)
-        sin(logx)
 
         Notes
         =====
@@ -2703,13 +2687,13 @@ class Expr(Basic, EvalfMixin):
         """
         from sympy import Dummy, collect
         if x.is_positive and x.is_finite:
-            series = self._eval_nseries(x, n=n, logx=logx)
+            series = self._eval_nseries(x, n=n)
             order = series.getO() or S.Zero
             return collect(series.removeO(), x) + order
         else:
             p = Dummy('x', positive=True, finite=True)
             e = self.subs(x, p)
-            e = e.nseries(p, n, logx=logx)
+            e = e.nseries(p, n)
             return e.subs(p, x)
 
     def aseries(self, x, n=6, bound=0, hir=False):
@@ -2830,9 +2814,11 @@ class Expr(Basic, EvalfMixin):
         """
         from sympy import Dummy, log
 
-        d = logx if logx else Dummy('logx')
+        for t in self.lseries(x):
+            if logx:
+                t = t.subs(log(x), logx)
+                t = t.subs(log(1/x), -logx)
 
-        for t in self.lseries(x, logx=d):
             t = t.cancel()
 
             is_zero = t.equals(0)
@@ -2842,9 +2828,6 @@ class Expr(Basic, EvalfMixin):
                 break
             else:
                 raise NotImplementedError("Zero-decision problem for %s" % t)
-
-        if logx is None:
-            t = t.subs(d, log(x))
 
         return t.as_leading_term(x)
 
@@ -3239,7 +3222,7 @@ class AtomicExpr(Atom, Expr):
     def _eval_is_algebraic_expr(self, syms):
         return True
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         return self
 
 

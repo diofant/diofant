@@ -353,12 +353,12 @@ class sign(Function):
     def _eval_simplify(self, ratio, measure):
         return self.func(self.args[0].factor())
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
         if direction.is_extended_real:
             return self.func(direction)
         else:
-            return super(sign, self)._eval_nseries(x, n, logx)
+            return super(sign, self)._eval_nseries(x, n)
 
 
 class Abs(Function):
@@ -514,9 +514,9 @@ class Abs(Function):
                 return self.args[0]**(exponent - 1)*self
         return
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
-        s = self.args[0]._eval_nseries(x, n=n, logx=logx)
+        s = self.args[0]._eval_nseries(x, n=n)
         when, lim = Eq(direction, 0), direction.limit(x, 0)
         if lim.equals(0) is False:
             return sign(lim)*s

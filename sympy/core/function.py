@@ -499,7 +499,7 @@ class Function(Application, Expr):
         """
         return self, S.One
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         """
         Compute an asymptotic expansion around args0, in terms of self.args.
         This function is only used internally by _eval_nseries and should not
@@ -511,7 +511,7 @@ class Function(Application, Expr):
             Asymptotic expansion of %s around %s is
             not implemented.''' % (type(self), args0)))
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         """
         This function does compute series for multivariate functions,
         but the expansion is always in terms of *one* variable.
@@ -541,17 +541,17 @@ class Function(Application, Expr):
             from sympy import oo, zoo, nan
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
-            a = [t.compute_leading_term(x, logx=logx) for t in args]
+            a = [t.compute_leading_term(x) for t in args]
             a0 = [t.limit(x, 0) for t in a]
             if any([t.has(oo, -oo, zoo, nan) for t in a0]):
-                return self._eval_aseries(n, args0, x, logx)
+                return self._eval_aseries(n, args0, x)
             # Careful: the argument goes to oo, but only logarithmically so. We
             # are supposed to do a power series expansion "around the
             # logarithmic term". e.g.
             #      f(1+x+log(x))
             #     -> f(1+logx) + x*f'(1+logx) + O(x**2)
             # where 'logx' is given in the argument
-            a = [t._eval_nseries(x, n, logx) for t in args]
+            a = [t._eval_nseries(x, n) for t in args]
             z = [r - r0 for (r, r0) in zip(a, a0)]
             p = [Dummy() for t in z]
             q = []
@@ -567,7 +567,7 @@ class Function(Application, Expr):
             e1 = self.func(*q)
             if v is None:
                 return e1
-            s = e1._eval_nseries(v, n, logx)
+            s = e1._eval_nseries(v, n)
             o = s.getO()
             s = s.removeO()
             s = s.subs(v, zi).expand() + Order(o.expr.subs(v, zi), x)
@@ -601,7 +601,7 @@ class Function(Application, Expr):
                     term = term.expand()
                     series += term
                 return series + Order(x**n, x)
-            return e1.nseries(x, n=n, logx=logx)
+            return e1.nseries(x, n=n)
         arg = self.args[0]
         l = []
         g = None
@@ -612,7 +612,7 @@ class Function(Application, Expr):
             nterms = int(nterms / cf)
         for i in range(nterms):
             g = self.taylor_term(i, arg, g)
-            g = g.nseries(x, n=n, logx=logx)
+            g = g.nseries(x, n=n)
             l.append(g)
         return Add(*l) + Order(x**n, x)
 
@@ -1274,13 +1274,13 @@ class Derivative(Expr):
                     return Derivative(new, *variables)
         return Derivative(*(x._subs(old, new) for x in self.args))
 
-    def _eval_lseries(self, x, logx):
+    def _eval_lseries(self, x):
         dx = self.args[1:]
-        for term in self.args[0].lseries(x, logx=logx):
+        for term in self.args[0].lseries(x):
             yield self.func(term, *dx)
 
-    def _eval_nseries(self, x, n, logx):
-        arg = self.args[0].nseries(x, n=n, logx=logx)
+    def _eval_nseries(self, x, n):
+        arg = self.args[0].nseries(x, n=n)
         o = arg.getO()
         dx = self.args[1:]
         rv = [self.func(a, *dx) for a in Add.make_args(arg.removeO())]

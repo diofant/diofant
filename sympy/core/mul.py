@@ -1461,9 +1461,9 @@ class Mul(Expr, AssocOp):
             margs = [Pow(new, cdid)] + margs
         return co_residual*self2.func(*margs)*self2.func(*nc)
 
-    def _eval_nseries(self, x, n, logx):
-        from sympy import Order, powsimp
-        terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
+    def _eval_nseries(self, x, n):
+        from sympy import powsimp
+        terms = [t.nseries(x, n=n) for t in self.args]
         return powsimp(self.func(*terms).expand(), combine='exp', deep=True)
 
     def _eval_as_leading_term(self, x):

@@ -69,9 +69,9 @@ class elliptic_k(Function):
         if (z.is_extended_real and (z - 1).is_positive) is False:
             return self.func(z.conjugate())
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         from sympy.simplify import hyperexpand
-        return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
+        return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n))
 
     def _eval_rewrite_as_hyper(self, z):
         return (pi/2)*hyper((S.Half, S.Half), (S.One,), z)
@@ -231,11 +231,11 @@ class elliptic_e(Function):
             if (z.is_extended_real and (z - 1).is_positive) is False:
                 return self.func(z.conjugate())
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         from sympy.simplify import hyperexpand
         if len(self.args) == 1:
-            return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
-        return super(elliptic_e, self)._eval_nseries(x, n=n, logx=logx)
+            return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n))
+        return super(elliptic_e, self)._eval_nseries(x, n=n)
 
     def _eval_rewrite_as_hyper(self, *args):
         if len(args) == 1:

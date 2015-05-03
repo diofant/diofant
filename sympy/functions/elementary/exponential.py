@@ -406,22 +406,22 @@ class log(Function):
     def _eval_is_zero(self):
         return (self.args[0] - 1).is_zero
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         from sympy import Order
         if not logx:
             logx = log(x)
-        arg_series = self.args[0].nseries(x, n=n, logx=logx)
+        arg_series = self.args[0].nseries(x, n=n)
         while arg_series.is_Order:
             n += 1
-            arg_series = self.args[0].nseries(x, n=n, logx=logx)
+            arg_series = self.args[0].nseries(x, n=n)
         arg0 = arg_series.as_leading_term(x)
         c, e = arg0.as_coeff_exponent(x)
-        t = (arg_series/arg0 - 1).cancel().nseries(x, n=n, logx=logx)
+        t = (arg_series/arg0 - 1).cancel().nseries(x, n=n)
         # series of log(1 + t) in t
         log_series = term = t
         for i in range(1, n):
             term *= -i*t/(i + 1)
-            term = term.nseries(x, n=n, logx=logx)
+            term = term.nseries(x, n=n)
             log_series += term
         if t != 0:
             log_series += Order(t**n, x)
