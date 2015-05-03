@@ -106,15 +106,10 @@ def test_gruntz_eval_special():
     assert gruntz(exp(gamma(x - exp(-x))*exp(1/x)) - exp(gamma(x)), x) == oo
     assert gruntz(
         (Ei(x - exp(-exp(x))) - Ei(x))*exp(-x)*exp(exp(x))*x, x) == -1
-
-    # TODO 8.36 - 8.37 (bessel, max-min)
-
-
-@XFAIL
-def test_gruntz_eval_special_fail():
-    # TODO zeta function series
     assert gruntz(
         exp((log(2) + 1)*x) * (zeta(x + exp(-x)) - zeta(x)), x) == -log(2)
+
+    # TODO 8.36 - 8.37 (bessel, max-min)
 
 
 def test_gruntz_hyperbolic():
