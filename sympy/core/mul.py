@@ -1130,7 +1130,7 @@ class Mul(Expr, AssocOp):
         """
 
         sign = 1
-        saw_NON = False
+        saw_NON = saw_NOT = False
         for t in self.args:
             if t.is_positive:
                 continue
@@ -1143,9 +1143,18 @@ class Mul(Expr, AssocOp):
                 saw_NON = True
             elif t.is_nonnegative:
                 saw_NON = True
+            elif t.is_positive is False:
+                sign = -sign
+                if saw_NOT:
+                    return
+                saw_NOT = True
+            elif t.is_negative is False:
+                if saw_NOT:
+                    return
+                saw_NOT = True
             else:
                 return
-        if sign == 1 and saw_NON is False:
+        if sign == 1 and saw_NON is False and saw_NOT is False:
             return True
         if sign < 0:
             return False
