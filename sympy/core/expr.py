@@ -2518,7 +2518,7 @@ class Expr(Basic, EvalfMixin):
                         if newn != ngot:
                             ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
                             s1 = self._eval_nseries(x, n=ndo)
-                            while ceiling(s1.getn()) < n:
+                            while ceiling(s1.getn().simplify()) < n:
                                 s1 = self._eval_nseries(x, n=ndo)
                                 ndo += 1
                             break
