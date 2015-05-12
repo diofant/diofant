@@ -9,7 +9,7 @@ complex part, because it needs to calculate a limit to return the result.
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, li, Li)
+                   Pow, Add, li, Li)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 from sympy.utilities.pytest import XFAIL, slow
@@ -259,14 +259,14 @@ def test_rewrite():
     e = exp(x + 1/x)
     assert rewrite(e, x, m) == (1/m, -x - 1/x)
     e = 1/exp(-x + exp(-x)) - exp(x)
-    assert rewrite(e, x, m) == (1/(m*exp(m)) - 1/m, -x)
+    assert rewrite(e, x, m) == (Add(1/(m*exp(m)), -1/m, evaluate=False), -x)
 
     e = exp(x)*log(log(exp(x)))
     assert mrv(e, x) == {exp(x)}
     assert rewrite(e, x, m) == (1/m*log(x), -x)
 
     e = exp(-x + 1/x**2) - exp(x + 1/x)
-    assert rewrite(e, x, m) == (m*exp(1/x + x**(-2)) - 1/m, -x - 1/x)
+    assert rewrite(e, x, m) == (Add(m*exp(1/x + x**(-2)), -1/m, evaluate=False), -x - 1/x)
 
 
 def test_mrv_leadterm():
