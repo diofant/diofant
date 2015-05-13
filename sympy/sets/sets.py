@@ -901,7 +901,7 @@ class Interval(Set, EvalfMixin):
             start = Max(self.start, other.start)
             if (end < start or
                (end == start and (end not in self and end not in other))):
-                return None
+                return
             else:
                 start = Min(self.start, other.start)
                 end = Max(self.end, other.end)
@@ -920,9 +920,7 @@ class Interval(Set, EvalfMixin):
             open_left = self.left_open and self.start not in other
             open_right = self.right_open and self.end not in other
             new_self = Interval(self.start, self.end, open_left, open_right)
-            return set((new_self, other))
-
-        return None
+            return {new_self, other}
 
     @property
     def _boundary(self):
@@ -1154,14 +1152,14 @@ class Union(Set, EvalfMixin):
         while(new_args):
             for s in args:
                 new_args = False
-                for t in args - set((s,)):
+                for t in args - {s}:
                     new_set = s._union(t)
                     # This returns None if s does not know how to intersect
                     # with t. Returns the newly intersected set otherwise
                     if new_set is not None:
                         if not isinstance(new_set, set):
-                            new_set = set((new_set, ))
-                        new_args = (args - set((s, t))).union(new_set)
+                            new_set = {new_set}
+                        new_args = (args - {s, t}).union(new_set)
                         break
                 if new_args:
                     args = new_args
@@ -1368,7 +1366,7 @@ class Intersection(Set):
     def __iter__(self):
         for s in self.args:
             if s.is_iterable:
-                other_sets = set(self.args) - set((s,))
+                other_sets = set(self.args) - {s}
                 other = Intersection(other_sets, evaluate=False)
                 return (x for x in s if x in other)
 
@@ -1401,7 +1399,7 @@ class Intersection(Set):
         # If any of the sets are unions, return a Union of Intersections
         for s in args:
             if s.is_Union:
-                other_sets = set(args) - set((s,))
+                other_sets = set(args) - {s}
                 if len(other_sets) > 0:
                     other = Intersection(other_sets)
                     return Union(Intersection(arg, other) for arg in s.args)
@@ -1424,12 +1422,12 @@ class Intersection(Set):
         while(new_args):
             for s in args:
                 new_args = False
-                for t in args - set((s,)):
+                for t in args - {s}:
                     new_set = s._intersect(t)
                     # This returns None if s does not know how to intersect
                     # with t. Returns the newly intersected set otherwise
                     if new_set is not None:
-                        new_args = (args - set((s, t))).union(set((new_set, )))
+                        new_args = (args - {s, t}).union({new_set})
                         break
                 if new_args:
                     args = new_args
@@ -1717,12 +1715,9 @@ class FiniteSet(Set, EvalfMixin):
 
         # If other set contains one of my elements, remove it from myself
         if any(other.contains(x) is true for x in self):
-            return set((
-                FiniteSet(*[x for x in self if other.contains(x) is not true]),
-                other))
-
-        return None
-
+            return {FiniteSet(*[x for x in self
+                                if other.contains(x) is not true]),
+                    other}
 
     def _contains(self, other):
         """

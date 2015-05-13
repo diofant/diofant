@@ -1,5 +1,5 @@
-Details on the Hypergeometric Function Expansion Module
-#######################################################
+Details on the Hypergeometric Function Expansion
+################################################
 
 This page describes how the function :func:`~sympy.simplify.hyperexpand.hyperexpand` and related code
 work. For usage, see the documentation of the symplify module.

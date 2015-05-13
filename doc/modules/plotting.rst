@@ -1,5 +1,5 @@
-Plotting Module
-===============
+Plotting
+========
 
 .. module:: sympy.plotting.plot
 

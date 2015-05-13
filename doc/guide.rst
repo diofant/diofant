@@ -518,5 +518,7 @@ and how to make your life easier as you get started with SymPy.
 Improving the docs
 ------------------
 
-Please see :ref:`the documentation <module-docs>` how to fix and improve
-SymPy's documentation. All contribution is very welcome.
+All contributions are welcome. If you'd like to improve something, look into
+the sources if they contain the information you need (if not, please fix them),
+otherwise the documentation generation needs to be improved (look in the
+``doc/`` directory).

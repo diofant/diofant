@@ -1,7 +1,7 @@
 .. _functions:
 
-Functions Module
-****************
+Mathematical Functions
+**********************
 
 .. module:: sympy.functions
 
