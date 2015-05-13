@@ -1309,7 +1309,7 @@ def test_expr_sorting():
     exprs = [f(1), f(2), f(3), f(1, 2, 3), g(1), g(2), g(3), g(1, 2, 3)]
     assert sorted(exprs, key=default_sort_key) == exprs
 
-    exprs = [f(x), g(x), exp(x), sin(x), cos(x), factorial(x)]
+    exprs = [exp(x), f(x), g(x), sin(x), cos(x), factorial(x)]
     assert sorted(exprs, key=default_sort_key) == exprs
 
     exprs = [Tuple(x, y), Tuple(x, z), Tuple(x, y, z)]
