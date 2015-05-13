@@ -17,7 +17,7 @@ def test_as_int():
     pytest.raises(ValueError, lambda: as_int([]))
     pytest.raises(ValueError, lambda: as_int(S.NaN))
     pytest.raises(ValueError, lambda: as_int(S.Infinity))
-    pytest.raises(ValueError, lambda: as_int(S.NegativeInfinity))
+    pytest.raises(ValueError, lambda: as_int(-S.Infinity))
     pytest.raises(ValueError, lambda: as_int(S.ComplexInfinity))
 
 

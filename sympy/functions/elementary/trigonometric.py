@@ -232,7 +232,7 @@ class sin(TrigonometricFunction):
                 return S.NaN
             elif arg is S.Zero:
                 return S.Zero
-            elif arg is S.Infinity or arg is S.NegativeInfinity:
+            elif arg is S.Infinity or arg == -S.Infinity:
                 return
 
         if arg.could_extract_minus_sign():
@@ -466,7 +466,7 @@ class cos(TrigonometricFunction):
                 return S.NaN
             elif arg is S.Zero:
                 return S.One
-            elif arg is S.Infinity or arg is S.NegativeInfinity:
+            elif arg is S.Infinity or arg == -S.Infinity:
                 # In this cases, it is unclear if we should
                 # return S.NaN or leave un-evaluated.  One
                 # useful test case is how "limit(sin(x)/x,x,oo)"
@@ -1526,8 +1526,8 @@ class asin(InverseTrigonometricFunction):
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
-                return S.NegativeInfinity * S.ImaginaryUnit
-            elif arg is S.NegativeInfinity:
+                return -S.Infinity * S.ImaginaryUnit
+            elif arg == -S.Infinity:
                 return S.Infinity * S.ImaginaryUnit
             elif arg is S.Zero:
                 return S.Zero
@@ -1697,8 +1697,8 @@ class acos(InverseTrigonometricFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity * S.ImaginaryUnit
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity * S.ImaginaryUnit
+            elif arg == -S.Infinity:
+                return -S.Infinity * S.ImaginaryUnit
             elif arg is S.Zero:
                 return S.Pi / 2
             elif arg is S.One:
@@ -1863,7 +1863,7 @@ class atan(InverseTrigonometricFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Pi / 2
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return -S.Pi / 2
             elif arg is S.Zero:
                 return S.Zero
@@ -1927,7 +1927,7 @@ class atan(InverseTrigonometricFunction):
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == S.Infinity:
             return (S.Pi/2 - atan(1/self.args[0]))._eval_nseries(x, n, logx)
-        elif args0[0] == S.NegativeInfinity:
+        elif args0[0] == -S.Infinity:
             return (-S.Pi/2 - atan(1/self.args[0]))._eval_nseries(x, n, logx)
         else:
             return super(atan, self)._eval_aseries(n, args0, x, logx)
@@ -2008,7 +2008,7 @@ class acot(InverseTrigonometricFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return S.Pi/ 2
@@ -2073,7 +2073,7 @@ class acot(InverseTrigonometricFunction):
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == S.Infinity:
             return (S.Pi/2 - acot(1/self.args[0]))._eval_nseries(x, n, logx)
-        elif args0[0] == S.NegativeInfinity:
+        elif args0[0] == -S.Infinity:
             return (3*S.Pi/2 - acot(1/self.args[0]))._eval_nseries(x, n, logx)
         else:
             return super(atan, self)._eval_aseries(n, args0, x, logx)
@@ -2180,7 +2180,7 @@ class asec(InverseTrigonometricFunction):
                 return S.Zero
             elif arg is S.NegativeOne:
                 return S.Pi
-        if arg in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+        if arg in [S.Infinity, -S.Infinity, S.ComplexInfinity]:
             return S.Pi/2
 
     def fdiff(self, argindex=1):
@@ -2276,7 +2276,7 @@ class acsc(InverseTrigonometricFunction):
                 return S.Pi/2
             elif arg is S.NegativeOne:
                 return -S.Pi/2
-        if arg in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+        if arg in [S.Infinity, -S.Infinity, S.ComplexInfinity]:
             return S.Zero
 
     def fdiff(self, argindex=1):
@@ -2426,7 +2426,7 @@ class atan2(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, y, x):
         from sympy import Heaviside, im, re
-        if x is S.NegativeInfinity:
+        if x == -S.Infinity:
             if y.is_zero:
                 # Special case y = 0 because we define Heaviside(0) = 1/2
                 return S.Pi

@@ -307,11 +307,6 @@ def test_sympy__core__numbers__NaN():
     assert _test_args(NaN())
 
 
-def test_sympy__core__numbers__NegativeInfinity():
-    from sympy.core.numbers import NegativeInfinity
-    assert _test_args(NegativeInfinity())
-
-
 def test_sympy__core__numbers__NegativeOne():
     from sympy.core.numbers import NegativeOne
     assert _test_args(NegativeOne())

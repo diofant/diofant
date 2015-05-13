@@ -140,7 +140,7 @@ def test_Max():
     assert Max(x, Min(y, oo)) == Max(x, y)
     assert Max(n, -oo, n_, p, 2) == Max(p, 2)
     assert Max(n, -oo, n_, p) == p
-    assert Max(2, x, p, n, -oo, S.NegativeInfinity, n_, p, 2) == Max(2, x, p)
+    assert Max(2, x, p, n, -oo, -S.Infinity, n_, p, 2) == Max(2, x, p)
     assert Max(0, x, 1, y) == Max(1, x, y)
     assert Max(r, r + 1, r - 1) == 1 + r
     assert Max(1000, 100, -100, x, p, n) == Max(p, x, 1000)

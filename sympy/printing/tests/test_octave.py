@@ -113,7 +113,7 @@ def test_constants():
     assert mcode(pi) == "pi"
     assert mcode(oo) == "inf"
     assert mcode(-oo) == "-inf"
-    assert mcode(S.NegativeInfinity) == "-inf"
+    assert mcode(-S.Infinity) == "-inf"
     assert mcode(S.NaN) == "NaN"
     assert mcode(S.Exp1) == "exp(1)"
     assert mcode(exp(1)) == "exp(1)"

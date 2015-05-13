@@ -206,7 +206,7 @@ def dispersion(p, q=None, *gens, **args):
     J = dispersionset(p, q, *gens, **args)
     if not J:
         # Definition for maximum of empty set
-        j = S.NegativeInfinity
+        j = -S.Infinity
     else:
         j = max(J)
     return j

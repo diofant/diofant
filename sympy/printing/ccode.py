@@ -171,9 +171,6 @@ class CCodePrinter(CodePrinter):
     def _print_Infinity(self, expr):
         return 'HUGE_VAL'
 
-    def _print_NegativeInfinity(self, expr):
-        return '-HUGE_VAL'
-
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != S.true:
             # We need the last conditional to be a True, otherwise the resulting

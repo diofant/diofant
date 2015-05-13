@@ -238,7 +238,7 @@ def test_bessel_eval():
         assert f(m, 0) != S.One and f(m, 0) != S.Zero
         assert f(k, 0) == S.Zero
 
-    assert bessely(0, 0) == S.NegativeInfinity
+    assert bessely(0, 0) == -S.Infinity
     assert besselk(0, 0) == S.Infinity
     for f in [bessely, besselk]:
         assert f(1 + I, 0) == S.ComplexInfinity
@@ -246,11 +246,11 @@ def test_bessel_eval():
 
     for f in [besselj, bessely]:
         assert f(m, S.Infinity) == S.Zero
-        assert f(m, S.NegativeInfinity) == S.Zero
+        assert f(m, -S.Infinity) == S.Zero
 
     for f in [besseli, besselk]:
         assert f(m, I*S.Infinity) == S.Zero
-        assert f(m, I*S.NegativeInfinity) == S.Zero
+        assert f(m, -I*S.Infinity) == S.Zero
 
     for f in [besseli, besselk]:
         assert f(-4, z) == f(4, z)

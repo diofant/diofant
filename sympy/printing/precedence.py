@@ -34,7 +34,6 @@ PRECEDENCE_VALUES = {
     "Not": PRECEDENCE["Not"],
     "factorial": PRECEDENCE["Pow"],
     "factorial2": PRECEDENCE["Pow"],
-    "NegativeInfinity": PRECEDENCE["Add"],
     "MatAdd": PRECEDENCE["Add"],
     "MatMul": PRECEDENCE["Mul"],
     "MatPow": PRECEDENCE["Pow"],

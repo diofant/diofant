@@ -112,7 +112,7 @@ class erf(Function):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -128,7 +128,7 @@ class erf(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is S.NegativeInfinity:
+        if t is S.Infinity or t == -S.Infinity:
             return arg
 
         # Try to pull out factors of -1
@@ -315,7 +315,7 @@ class erfc(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(S.ImaginaryUnit)
-        if t is S.Infinity or t is S.NegativeInfinity:
+        if t is S.Infinity or t == -S.Infinity:
             return -arg
 
         # Try to pull out factors of -1
@@ -646,7 +646,7 @@ class erf2(Function):
     @classmethod
     def eval(cls, x, y):
         I = S.Infinity
-        N = S.NegativeInfinity
+        N = -S.Infinity
         O = S.Zero
         if x is S.NaN or y is S.NaN:
             return S.NaN
@@ -768,7 +768,7 @@ class erfinv(Function):
         if z is S.NaN:
             return S.NaN
         elif z is S.NegativeOne:
-            return S.NegativeInfinity
+            return -S.Infinity
         elif z is S.Zero:
             return S.Zero
         elif z is S.One:
@@ -850,7 +850,7 @@ class erfcinv (Function):
         elif z is S.One:
             return S.Zero
         elif z == 2:
-            return S.NegativeInfinity
+            return -S.Infinity
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
@@ -1388,7 +1388,7 @@ class li(Function):
         if z is S.Zero:
             return S.Zero
         elif z is S.One:
-            return S.NegativeInfinity
+            return -S.Infinity
         elif z is S.Infinity:
             return S.Infinity
 
@@ -1536,7 +1536,7 @@ class TrigonometricIntegral(Function):
             return cls._atzero
         elif z is S.Infinity:
             return cls._atinf()
-        elif z is S.NegativeInfinity:
+        elif z is -S.Infinity:
             return cls._atneginf()
 
         nz = z.extract_multiplicatively(polar_lift(I))
@@ -1840,7 +1840,7 @@ class Shi(TrigonometricIntegral):
 
     @classmethod
     def _atneginf(cls):
-        return S.NegativeInfinity
+        return -S.Infinity
 
     @classmethod
     def _minusfactor(cls, z):

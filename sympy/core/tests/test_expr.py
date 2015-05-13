@@ -544,7 +544,7 @@ def test_as_numer_denom():
     # this should take no more than a few seconds
     assert int(log(Add(*[Dummy()/i/x for i in range(1, 705)]
                        ).as_numer_denom()[1]/x).n(4)) == 705
-    for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+    for i in [S.Infinity, -S.Infinity, S.ComplexInfinity]:
         assert (i + x/3).as_numer_denom() == \
             (x + i, 3)
     assert (S.Infinity + x/3 + y/4).as_numer_denom() == \
@@ -1414,7 +1414,7 @@ def test_primitive():
     assert (-2*x).primitive() == (2, -x)
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).primitive() == \
         (Rational(1, 14), 7.0*x + 21*y + 10*z)
-    for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
+    for i in [S.Infinity, -S.Infinity, S.ComplexInfinity]:
         assert (i + x/3).primitive() == \
             (Rational(1, 3), i + x)
     assert (S.Infinity + 2*x/3 + 4*y/7).primitive() == \
@@ -1617,7 +1617,7 @@ def test_round():
     # issue 8147
     assert S.NaN.round() == S.NaN
     assert S.Infinity.round() == S.Infinity
-    assert S.NegativeInfinity.round() == S.NegativeInfinity
+    assert (-S.Infinity).round() == -S.Infinity
     assert S.ComplexInfinity.round() == S.ComplexInfinity
 
 

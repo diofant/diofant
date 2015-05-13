@@ -81,7 +81,6 @@ class PrettyPrinter(Printer):
 
     # Infinity inherits from Number, so we have to override _print_XXX order
     _print_Infinity = _print_Atom
-    _print_NegativeInfinity = _print_Atom
     _print_EmptySet = _print_Atom
     _print_Naturals = _print_Atom
     _print_Integers = _print_Atom
@@ -548,7 +547,7 @@ class PrettyPrinter(Printer):
             LimArg = prettyForm(*LimArg.right('->'))
         LimArg = prettyForm(*LimArg.right(self._print(z0)))
 
-        if str(dir) == "real" or z0 in (S.Infinity, S.NegativeInfinity):
+        if str(dir) == "real" or z0 in (S.Infinity, -S.Infinity):
             dir = ""
         else:
             if self._use_unicode:
@@ -1429,7 +1428,7 @@ class PrettyPrinter(Printer):
         else:
             dots = '...'
 
-        if s.start is S.NegativeInfinity:
+        if s.start == -S.Infinity:
             it = iter(s)
             printset = s.start, dots, s._last_element - s.step, s._last_element
         elif s.stop is S.Infinity or len(s) > 4:

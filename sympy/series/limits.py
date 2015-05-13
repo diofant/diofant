@@ -170,7 +170,7 @@ class Limit(Expr):
                     e = e.removeO() + order
 
         if e.is_Mul:
-            if abs(z0) in (S.Infinity, S.NegativeInfinity):
+            if abs(z0) in (S.Infinity, -S.Infinity):
                 # XXX todo: this should probably be stated in the
                 # negative -- i.e. to exclude expressions that should
                 # not be handled this way but I'm not sure what that
@@ -196,7 +196,7 @@ class Limit(Expr):
         try:
             # Convert to the limit z->oo and use Gruntz algorithm.
             newe, newz = e, z
-            if z0 == S.NegativeInfinity:
+            if z0 == -S.Infinity:
                 newe = e.subs(z, -z)
             elif z0 != S.Infinity:
                 if str(dir) == "+":

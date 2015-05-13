@@ -505,7 +505,6 @@ atoms_table = {
     'Exp1':                    U('SCRIPT SMALL E'),
     'Pi':                      U('GREEK SMALL LETTER PI'),
     'Infinity':                U('INFINITY'),
-    'NegativeInfinity':        U('INFINITY') and ('-' + U('INFINITY')),  # XXX what to do here
     # 'ImaginaryUnit':          U('GREEK SMALL LETTER IOTA'),
     # 'ImaginaryUnit':          U('MATHEMATICAL ITALIC SMALL I'),
     'ImaginaryUnit':           U('DOUBLE-STRUCK ITALIC SMALL I'),

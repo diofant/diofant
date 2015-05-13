@@ -172,12 +172,6 @@ Infinity
 .. autoclass:: Infinity
    :members:
 
-NegativeInfinity
-^^^^^^^^^^^^^^^^
-
-.. autoclass:: NegativeInfinity
-   :members:
-
 ComplexInfinity
 ^^^^^^^^^^^^^^^
 

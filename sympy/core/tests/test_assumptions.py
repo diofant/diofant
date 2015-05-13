@@ -121,7 +121,7 @@ def test_infinity():
 
 
 def test_neg_infinity():
-    mm = S.NegativeInfinity
+    mm = -S.Infinity
 
     assert mm.is_commutative is True
     assert mm.is_integer is False

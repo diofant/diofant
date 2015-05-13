@@ -237,9 +237,6 @@ class OctaveCodePrinter(CodePrinter):
     def _print_Infinity(self, expr):
         return 'inf'
 
-    def _print_NegativeInfinity(self, expr):
-        return '-inf'
-
     def _print_NaN(self, expr):
         return 'NaN'
 

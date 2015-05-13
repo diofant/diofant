@@ -110,7 +110,7 @@ class exp_polar(Function):
             return s.is_rational
 
     def _eval_is_zero(self):
-        return (self.args[0] is S.NegativeInfinity)
+        return (self.args[0] == -S.Infinity)
 
     def _eval_expand_power_exp(self, **hints):
         arg = self.args[0]
@@ -235,7 +235,7 @@ class log(Function):
                 return S.Zero
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Infinity
             elif arg is S.NaN:
                 return S.NaN
@@ -263,7 +263,7 @@ class log(Function):
             if coeff is not None:
                 if coeff is S.Infinity:
                     return S.Infinity
-                elif coeff is S.NegativeInfinity:
+                elif coeff == -S.Infinity:
                     return S.Infinity
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
@@ -488,7 +488,7 @@ class LambertW(Function):
 
         if k.is_nonzero:
             if x is S.Zero:
-                return S.NegativeInfinity
+                return -S.Infinity
         if k is S.NegativeOne:
             if x == -S.Pi/2:
                 return -S.ImaginaryUnit*S.Pi/2

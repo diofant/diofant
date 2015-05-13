@@ -3236,7 +3236,7 @@ class Poly(Expr):
         if inf is not None:
             inf = sympify(inf)
 
-            if inf is S.NegativeInfinity:
+            if inf == -S.Infinity:
                 inf = None
             else:
                 re, im = inf.as_real_imag()

@@ -217,7 +217,7 @@ def test_evalf_bugs():
     assert (0+sin(oo)).n() == S.NaN
     assert (0-sin(oo)).n() == S.NaN
     assert (0+E**(oo)).n() == S.Infinity
-    assert (0-E**(oo)).n() == S.NegativeInfinity
+    assert (0-E**(oo)).n() == -S.Infinity
 
     assert (5*sin(oo)).n() == S.NaN
     assert (5/sin(oo)).n() == S.NaN
@@ -227,7 +227,7 @@ def test_evalf_bugs():
     assert (5+sin(oo)).n() == S.NaN
     assert (5-sin(oo)).n() == S.NaN
     assert (5+E**(oo)).n() == S.Infinity
-    assert (5-E**(oo)).n() == S.NegativeInfinity
+    assert (5-E**(oo)).n() == -S.Infinity
 
     # issue 7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0
