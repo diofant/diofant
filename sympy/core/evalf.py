@@ -1117,8 +1117,6 @@ evalf_table = None
 def _create_evalf_table():
     global evalf_table
     from sympy.functions.combinatorial.numbers import bernoulli
-    from sympy.concrete.products import Product
-    from sympy.concrete.summations import Sum
     from sympy.core.add import Add
     from sympy.core.mul import Mul
     from sympy.core.numbers import Exp1, Float, Half, ImaginaryUnit, Integer, NaN, NegativeOne, One, Pi, Rational, Zero
@@ -1129,6 +1127,7 @@ def _create_evalf_table():
     from sympy.functions.elementary.piecewise import Piecewise
     from sympy.functions.elementary.trigonometric import atan, cos, sin
     from sympy.integrals.integrals import Integral
+    import sympy
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
@@ -1159,8 +1158,8 @@ def _create_evalf_table():
         im: evalf_im,
 
         Integral: evalf_integral,
-        Sum: evalf_sum,
-        Product: evalf_prod,
+        sympy.Sum: evalf_sum,
+        sympy.Product: evalf_prod,
         Piecewise: evalf_piecewise,
 
         bernoulli: evalf_bernoulli,
