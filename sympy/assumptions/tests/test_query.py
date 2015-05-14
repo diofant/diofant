@@ -1800,7 +1800,6 @@ def test_real():
 
     assert ask(Q.real(x)) is None
     assert ask(Q.real(x), Q.real(x)) is True
-    assert ask(Q.extended_real(x), Q.nonzero(x)) is True
     assert ask(Q.extended_real(x), Q.positive(x)) is True
     assert ask(Q.extended_real(x), Q.negative(x)) is True
     assert ask(Q.real(x), Q.integer(x)) is True

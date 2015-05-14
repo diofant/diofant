@@ -350,10 +350,9 @@ known_facts = And(
     Implies(Q.imaginary, ~Q.real | Q.zero),
     Implies(Q.infinite, ~Q.finite),
     Equivalent(Q.noninteger, Q.real & ~Q.integer),
+    Equivalent(Q.nonzero, ~Q.zero),
 
     Implies(Q.antihermitian, ~Q.hermitian | Q.zero),
-    Implies(Q.nonzero, Q.extended_real),
-    Equivalent(Q.nonzero, Q.positive | Q.negative),
     # matrix facts:
     Implies(Q.orthogonal, Q.positive_definite),
     Implies(Q.orthogonal, Q.unitary),
