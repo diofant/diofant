@@ -10,7 +10,7 @@ from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.core.expr import Expr
 from sympy.core.relational import Eq
-from sympy.functions.elementary.exponential import exp, exp_polar
+from sympy.functions.elementary.exponential import exp, exp_polar, log
 from sympy.functions.elementary.trigonometric import atan2
 
 ###############################################################################
@@ -357,10 +357,7 @@ class sign(Function):
         return self.func(self.args[0].factor())
 
     def _eval_nseries(self, x, n, logx):
-        from sympy.functions import log
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
-        if logx is not None:
-            direction = direction.subs(log(x), logx)
         if direction.is_extended_real:
             return self.func(direction)
         else:
@@ -523,11 +520,11 @@ class Abs(Function):
     def _eval_nseries(self, x, n, logx):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
         s = self.args[0]._eval_nseries(x, n=n, logx=logx)
-        when = Eq(direction, 0)
-        return Piecewise(
-            ((s.subs(direction, 0)), when),
-            (sign(direction)*s, True),
-        )
+        when, lim = Eq(direction, 0), direction.limit(x, 0)
+        if lim.equals(0) is False:
+            return sign(lim)*s
+        else:
+            return Piecewise((lim, when), (sign(direction)*s, True))
 
     def _eval_derivative(self, x):
         if self.args[0].is_extended_real or self.args[0].is_imaginary:
@@ -827,7 +824,6 @@ class periodic_argument(Function):
 
     @classmethod
     def _getunbranched(cls, ar):
-        from sympy import exp_polar, log, polar_lift
         if ar.is_Mul:
             args = ar.args
         else:

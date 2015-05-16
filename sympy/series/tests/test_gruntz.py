@@ -11,7 +11,7 @@ import pytest
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li)
+                   Pow, Add, li, Li, tan, acosh)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -405,7 +405,7 @@ def test_issue_7096():
 
 
 def test_omgissue_74():
-    from sympy.functions import sign, tan
+    from sympy.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) ==  1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
     assert gruntz(sign(sin( 1/x)), x) ==  1
@@ -414,3 +414,9 @@ def test_omgissue_74():
     assert gruntz(sign(tan(-1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 - 1/x)), x) ==  1
+
+
+def test_omgissue_75():
+    assert gruntz(abs(log(x)), x) == oo
+    assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
+    assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) ==  oo
