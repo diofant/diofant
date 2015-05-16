@@ -1922,3 +1922,14 @@ def test_issue_9324_powsimp_on_matrix_symbol():
     expr = powsimp(M, deep=True)
     assert expr == M
     assert expr.args[0] == 'M'
+
+
+def test_issue_9398():
+    from sympy import Number, cancel
+    assert cancel(1e-14) != 0
+    assert cancel(1e-14*I) != 0
+
+    assert simplify(1e-14) != 0
+    assert simplify(1e-14*I) != 0
+
+    assert (I*Number(1.)*Number(10)**Number(-14)).simplify() != 0
