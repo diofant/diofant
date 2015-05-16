@@ -148,7 +148,7 @@ must pass ``use_unicode=False``.
 ``pprint()`` prints the output to the screen.  If you want the string form,
 use ``pretty()``.
 
-    >>> pretty(Integral(sqrt(1/x), x), use_unicode=False)
+    >>> str(pretty(Integral(sqrt(1/x), x), use_unicode=False))
     '  /          \n |           \n |     ___   \n |    / 1    \n |   /  -  dx\n | \\/   x    \n |           \n/            '
     >>> print(pretty(Integral(sqrt(1/x), x), use_unicode=False))
       /
