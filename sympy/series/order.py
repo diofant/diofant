@@ -413,8 +413,4 @@ class Order(Expr):
         if expr is not None:
             return self.func(expr, *self.args[1:])
 
-    def _sage_(self):
-        #XXX: SAGE doesn't have Order yet. Let's return 0 instead.
-        return Rational(0)._sage_()
-
 O = Order

@@ -725,12 +725,6 @@ class Add(Expr, AssocOp):
     def __neg__(self):
         return self.func(*[-t for t in self.args])
 
-    def _sage_(self):
-        s = 0
-        for x in self.args:
-            s += x._sage_()
-        return s
-
     def primitive(self):
         """
         Return ``(R, self/R)`` where ``R``` is the Rational GCD of ``self```.
