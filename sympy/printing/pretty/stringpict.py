@@ -15,7 +15,7 @@ TODO:
 from __future__ import print_function, division, unicode_literals
 
 from .pretty_symbology import hobj, vobj, xsym, xobj, pretty_use_unicode
-from sympy.core.compatibility import string_types, range
+from sympy.core.compatibility import string_types, range, str, unicode
 
 
 class stringPict(object):
@@ -345,11 +345,9 @@ class stringPict(object):
     def __hash__(self):
         return super(stringPict, self).__hash__()
 
-    def __str__(self):
-        return str.join('\n', self.picture)
-
     def __unicode__(self):
         return unicode.join('\n', self.picture)
+    __str__ = __unicode__
 
     def __repr__(self):
         return "stringPict(%r,%d)" % ('\n'.join(self.picture), self.baseline)
