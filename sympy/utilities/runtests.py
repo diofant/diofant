@@ -590,7 +590,6 @@ def _doctest(*paths, **kwargs):
     split  = kwargs.get('split', None)
     blacklist.extend([
         "doc/modules/plotting.rst",  # generates live plots
-        "sympy/utilities/compilef.py",  # needs tcc
     ])
 
     if import_module('numpy') is None:
@@ -628,7 +627,6 @@ def _doctest(*paths, **kwargs):
     # blacklist these modules until issue 4840 is resolved
     blacklist.extend([
         "sympy/conftest.py",
-        "sympy/utilities/benchmarking.py"
     ])
 
     blacklist = convert_to_native_paths(blacklist)
