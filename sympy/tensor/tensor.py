@@ -2520,6 +2520,8 @@ class TensExpr(Basic):
         [10],
         [14],
         [18]])
+
+        >>> del A.data
         """
         if 0 < self.rank <= 2:
             rows = self.data.shape[0]
