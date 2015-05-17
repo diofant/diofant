@@ -436,8 +436,8 @@ class PicklableWithSlots(object):
 
     To make :mod:`pickle` happy in doctest we have to use this hack::
 
-        >>> from sympy.core.compatibility import builtins
-        >>> builtins.Some = Some
+        >>> import sympy.polys.polyutils
+        >>> sympy.polys.polyutils.Some = Some
 
     Next lets see if we can create an instance, pickle it and unpickle::
 
