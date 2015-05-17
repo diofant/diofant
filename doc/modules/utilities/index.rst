@@ -4,8 +4,6 @@
 Utilities
 =========
 
-.. TODO: add compilef.rst?
-
 .. automodule:: sympy.utilities
 
 Contents:
