@@ -8,7 +8,12 @@ if [[ "${TEST_SPHINX}" == "true" ]]; then
     LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
 else
     if [[ "${TEST_SLOW}" == "true" ]]; then
-        py.test -m 'slow' --duration=100 --split="${SPLIT}" sympy/
+        py.test -m 'slow' --duration=100 --split="${SPLIT}" \
+            --ignore sympy/utilities/autowrap.py \
+            --ignore sympy/utilities/mathml/__init__.py \
+            --ignore sympy/plotting/plot.py \
+            --ignore sympy/plotting/plot_implicit.py \
+            sympy/
     elif [[ "${TEST_EXTRA}" == "true" ]]; then
         if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
             py.test --duration=100 --cov sympy --doctest-modules \
@@ -22,8 +27,18 @@ else
                 sympy/polys/ sympy/plotting/
         fi
     elif [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-        py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" --doctest-modules sympy/
+        py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" \
+            --ignore sympy/utilities/autowrap.py \
+            --ignore sympy/utilities/mathml/__init__.py \
+            --ignore sympy/plotting/plot.py \
+            --ignore sympy/plotting/plot_implicit.py \
+            --doctest-modules sympy/
     else
-        py.test -m 'not slow' --duration=100 --split="${SPLIT}" --doctest-modules sympy/
+        py.test -m 'not slow' --duration=100 --split="${SPLIT}" \
+            --ignore sympy/utilities/autowrap.py \
+            --ignore sympy/utilities/mathml/__init__.py \
+            --ignore sympy/plotting/plot.py \
+            --ignore sympy/plotting/plot_implicit.py \
+            --doctest-modules sympy/
     fi
 fi
