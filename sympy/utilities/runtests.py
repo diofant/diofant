@@ -223,8 +223,7 @@ def run_all_tests(test_args=(), test_kwargs={}, doctest_args=(),
     Run all tests.
 
     Right now, this runs the regular tests (py.test), the doctests
-    (bin/doctest), the examples (examples/all.py), and the sage tests (see
-    sympy/external/tests/test_sage.py).
+    (bin/doctest), the examples (examples/all.py).
 
     This is what ``setup.py test`` uses.
 
@@ -257,16 +256,6 @@ def run_all_tests(test_args=(), test_kwargs={}, doctest_args=(),
         from all import run_examples  # examples/all.py
         if not run_examples(*examples_args, **examples_kwargs):
             tests_successful = False
-
-        # Sage tests
-        if not (sys.platform == "win32" or PY3):
-            # run Sage tests; Sage currently doesn't support Windows or Python 3
-            dev_null = open(os.devnull, 'w')
-            if subprocess.call("sage -v", shell=True, stdout=dev_null,
-                               stderr=dev_null) == 0:
-                if subprocess.call("sage -python py.test "
-                                   "sympy/external/tests/test_sage.py", shell=True) != 0:
-                    tests_successful = False
 
         if tests_successful:
             return

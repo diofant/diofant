@@ -105,10 +105,6 @@ class re(Function):
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.real_part(self.args[0]._sage_())
-
 
 class im(Function):
     """
@@ -201,10 +197,6 @@ class im(Function):
         if x.is_imaginary or self.args[0].is_imaginary:
             return -S.ImaginaryUnit \
                 * re(Derivative(self.args[0], x, evaluate=True))
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.imag_part(self.args[0]._sage_())
 
     def _eval_rewrite_as_re(self, arg):
         return self.args[0] - re(self.args[0])
@@ -356,10 +348,6 @@ class sign(Function):
             other.is_even
         ):
             return S.One
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.sgn(self.args[0]._sage_())
 
     def _eval_rewrite_as_Piecewise(self, arg):
         if arg.is_extended_real:
@@ -538,10 +526,6 @@ class Abs(Function):
             ((s.subs(direction, 0)), when),
             (sign(direction)*s, True),
         )
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.abs_symbolic(self.args[0]._sage_())
 
     def _eval_derivative(self, x):
         if self.args[0].is_extended_real or self.args[0].is_imaginary:

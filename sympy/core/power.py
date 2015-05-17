@@ -1317,9 +1317,6 @@ class Pow(Expr):
         from sympy import binomial
         return binomial(self.exp, n) * self.func(x, n)
 
-    def _sage_(self):
-        return self.args[0]._sage_()**self.args[1]._sage_()
-
     def as_content_primitive(self, radical=False):
         """Return the tuple (R, self/R) where R is the positive Rational
         extracted from self.

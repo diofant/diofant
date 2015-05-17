@@ -1032,10 +1032,6 @@ class Float(Number):
     def epsilon_eq(self, other, epsilon="1e-15"):
         return abs(self - other) < Float(epsilon)
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.RealNumber(str(self))
-
     def __format__(self, format_spec):
         return format(decimal.Decimal(str(self)), format_spec)
 
@@ -1556,10 +1552,6 @@ class Rational(Number):
 
     def as_numer_denom(self):
         return Integer(self.p), Integer(self.q)
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.Integer(self.p)/sage.Integer(self.q)
 
     def as_content_primitive(self, radical=False):
         """Return the tuple (R, self/R) where R is the positive Rational
@@ -2471,10 +2463,6 @@ class Infinity(with_metaclass(Singleton, Number)):
     def _as_mpf_val(self, prec):
         return mlib.finf
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.oo
-
     def __hash__(self):
         return super(Infinity, self).__hash__()
 
@@ -2682,10 +2670,6 @@ class NegativeInfinity(with_metaclass(Singleton, Number)):
     def _as_mpf_val(self, prec):
         return mlib.fninf
 
-    def _sage_(self):
-        import sage.all as sage
-        return -(sage.oo)
-
     def __hash__(self):
         return super(NegativeInfinity, self).__hash__()
 
@@ -2835,10 +2819,6 @@ class NaN(with_metaclass(Singleton, Number)):
     def _as_mpf_val(self, prec):
         return _mpf_nan
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.NaN
-
     def __hash__(self):
         return super(NaN, self).__hash__()
 
@@ -2926,10 +2906,6 @@ class ComplexInfinity(with_metaclass(Singleton, AtomicExpr)):
                     return S.ComplexInfinity
                 else:
                     return S.Zero
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.UnsignedInfinityRing.gen()
 
 
 zoo = S.ComplexInfinity
@@ -3107,9 +3083,6 @@ class Exp1(with_metaclass(Singleton, NumberSymbol)):
         I = S.ImaginaryUnit
         return cos(I) + I*cos(I + S.Pi/2)
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.e
 E = S.Exp1
 
 
@@ -3175,9 +3148,6 @@ class Pi(with_metaclass(Singleton, NumberSymbol)):
         elif issubclass(number_cls, Rational):
             return (Rational(223, 71), Rational(22, 7))
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.pi
 pi = S.Pi
 
 
@@ -3238,10 +3208,6 @@ class GoldenRatio(with_metaclass(Singleton, NumberSymbol)):
         elif issubclass(number_cls, Rational):
             pass
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.golden_ratio
-
 
 class EulerGamma(with_metaclass(Singleton, NumberSymbol)):
     r"""The Euler-Mascheroni constant.
@@ -3298,10 +3264,6 @@ class EulerGamma(with_metaclass(Singleton, NumberSymbol)):
         elif issubclass(number_cls, Rational):
             return (S.Half, Rational(3, 5))
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.euler_gamma
-
 
 class Catalan(with_metaclass(Singleton, NumberSymbol)):
     r"""Catalan's constant.
@@ -3350,10 +3312,6 @@ class Catalan(with_metaclass(Singleton, NumberSymbol)):
             return (S.Zero, S.One)
         elif issubclass(number_cls, Rational):
             return (Rational(9, 10), S.One)
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.catalan
 
 
 class ImaginaryUnit(with_metaclass(Singleton, AtomicExpr)):
@@ -3430,10 +3388,6 @@ class ImaginaryUnit(with_metaclass(Singleton, AtomicExpr)):
 
     def as_base_exp(self):
         return S.NegativeOne, S.Half
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.I
 
 I = S.ImaginaryUnit
 

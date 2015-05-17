@@ -15,9 +15,6 @@ matrix:
     - python: 2.7
       env:
         - TEST_SPHINX="true"
-    - python: 2.7
-      env:
-        - TEST_SAGE="true"
     - python: "pypy3"
       env:
         - TEST_DOCTESTS="true"
@@ -27,10 +24,6 @@ matrix:
     - python: "pypy3"
       env:
         - SPLIT="2/2"
-  allow_failures:
-    - python: 2.7
-      env:
-        - TEST_SAGE="true"
 before_install:
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
       sudo apt-get update;
@@ -43,11 +36,6 @@ before_install:
       travis_wait 30 pip install numpy==1.7.1 scipy==0.12.0 gmpy==1.16 Theano==0.6;
       travis_wait 30 pip install --allow-external matplotlib==1.2.1;
     fi
-  - if [[ "${TEST_SAGE}" == "true" ]]; then
-      sudo apt-add-repository -y ppa:aims/sagemath;
-      sudo apt-get update;
-      travis_wait 30 sudo apt-get install sagemath-upstream-binary;
-    fi
   - if [[ "${TEST_PEP}" == "true" ]]; then
       pip install pep8==1.6.2;
     fi
@@ -56,9 +44,7 @@ before_install:
       pip install pytest-cov coveralls --use-mirrors;
     fi
 install:
-  - if [[ "${TEST_SAGE}" != "true" ]]; then
-      python setup.py install;
-    fi
+  python setup.py install;
 script:
   - if [[ "${TEST_PEP}" == "true" ]]; then
       pep8;

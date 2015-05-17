@@ -736,10 +736,6 @@ class csch(ReciprocalHyperbolicFunction):
     def _eval_rewrite_as_cosh(self, arg):
         return S.ImaginaryUnit / cosh(arg + S.ImaginaryUnit * S.Pi / 2)
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.csch(self.args[0]._sage_())
-
 
 class sech(ReciprocalHyperbolicFunction):
     r"""
@@ -780,11 +776,6 @@ class sech(ReciprocalHyperbolicFunction):
 
     def _eval_rewrite_as_sinh(self, arg):
         return S.ImaginaryUnit / sinh(arg + S.ImaginaryUnit * S.Pi /2)
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.sech(self.args[0]._sage_())
-
 
 
 ###############################################################################

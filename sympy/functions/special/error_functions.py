@@ -1277,10 +1277,6 @@ class expint(Function):
                 return f._eval_nseries(x, n, logx)
         return super(expint, self)._eval_nseries(x, n, logx)
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.exp_integral_e(self.args[0]._sage_(), self.args[1]._sage_())
-
 
 def E1(z):
     """
@@ -1682,9 +1678,6 @@ class Si(TrigonometricIntegral):
         # XXX should we polarify z?
         return pi/2 + (E1(polar_lift(I)*z) - E1(polar_lift(-I)*z))/2/I
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.sin_integral(self.args[0]._sage_())
 
 class Ci(TrigonometricIntegral):
     r"""
@@ -1784,10 +1777,6 @@ class Ci(TrigonometricIntegral):
     def _eval_rewrite_as_expint(self, z):
         return -(E1(polar_lift(I)*z) + E1(polar_lift(-I)*z))/2
 
-    def _sage_(self):
-        import sage.all as sage
-        return sage.cos_integral(self.args[0]._sage_())
-
 
 class Shi(TrigonometricIntegral):
     r"""
@@ -1872,10 +1861,6 @@ class Shi(TrigonometricIntegral):
         from sympy import exp_polar
         # XXX should we polarify z?
         return (E1(z) - E1(exp_polar(I*pi)*z))/2 - I*pi/2
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.sinh_integral(self.args[0]._sage_())
 
 
 class Chi(TrigonometricIntegral):
@@ -1985,10 +1970,6 @@ class Chi(TrigonometricIntegral):
     @staticmethod
     def _latex_no_arg(printer):
         return r'\operatorname{Chi}'
-
-    def _sage_(self):
-        import sage.all as sage
-        return sage.cosh_integral(self.args[0]._sage_())
 
 
 ###############################################################################
