@@ -18,7 +18,6 @@ In addition, there are some other commands:
 
     python setup.py clean -> will clean all trash (*.pyc and stuff)
     python setup.py test  -> will run the complete test suite
-    python setup.py bench -> will run the complete benchmark suite
     python setup.py audit -> will run pyflakes checker on source code
 
 To get a full list of avaiable commands, read the output of:
@@ -131,34 +130,6 @@ class test_sympy(Command):
         runtests.run_all_tests()
 
 
-class run_benchmarks(Command):
-    """Runs all SymPy benchmarks"""
-
-    description = "run all benchmarks"
-    user_options = []  # distutils complains if this is not here.
-
-    def __init__(self, *args):
-        self.args = args[0]  # so we can pass it to other classes
-        Command.__init__(self, *args)
-
-    def initialize_options(self):  # distutils wants this
-        pass
-
-    def finalize_options(self):    # this too
-        pass
-
-    # we use py.test like architecture:
-    #
-    # o collector   -- collects benchmarks
-    # o runner      -- executes benchmarks
-    # o presenter   -- displays benchmarks results
-    #
-    # this is done in sympy.utilities.benchmarking on top of py.test
-    def run(self):
-        from sympy.utilities import benchmarking
-        benchmarking.main(['sympy'])
-
-
 exec(open('sympy/release.py').read())
 with open('sympy/__init__.py') as f:
     long_description = f.read().split('"""')[1]
@@ -181,7 +152,6 @@ setup(name='sympy',
           },
       data_files=[('share/man/man1', ['doc/man/isympy.1'])],
       cmdclass={'test': test_sympy,
-                'bench': run_benchmarks,
                 'clean': clean,
                 'audit': audit},
       classifiers=[

@@ -4,7 +4,7 @@
 Utilities
 =========
 
-.. TODO: add compilef.rst and benchmarking.rst when they're fixed
+.. TODO: add compilef.rst?
 
 .. automodule:: sympy.utilities
 
