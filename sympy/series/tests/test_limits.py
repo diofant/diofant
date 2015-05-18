@@ -102,6 +102,8 @@ def test_basic5():
                 return S.NaN
     assert limit(my(x), x, oo) == Limit(my(x), x, oo)
 
+    assert limit(4/x > 8, x, 0)  # relational test
+
 
 def test_issue_3885():
     assert limit(x*y + x*z, z, 2) == x*y + 2*x

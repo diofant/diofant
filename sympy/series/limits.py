@@ -157,6 +157,15 @@ class Limit(Expr):
         if z0 is S.NaN:
             return S.NaN
 
+        if e.is_Relational:
+            ll = limit(e.lhs, z, z0, dir)
+            rl = limit(e.rhs, z, z0, dir)
+
+            if any(isinstance(a, Limit) for a in [ll, rl]):
+                return self
+            else:
+                return e.func(ll, rl)
+
         if e.has(Order):
             e = e.expand()
             order = e.getO()
