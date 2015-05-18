@@ -242,7 +242,7 @@ for a full list.
 #.  Case Van Horsen: Fixes to gmpy support
 #. Mary Clark: Improvements to the group theory module
 #. Rishabh Dixit: Bug fixes
-#. Acebulf: Typos
+#. Patrick Poitras: Typos
 #. Manoj Kumar: Bug fix
 #. Akshit Agarwal: improvements to range handling in symbols
 #. CJ Carey: Fix for limits of factorials
@@ -303,7 +303,7 @@ for a full list.
 #. James Goppert: correct code in form_lagranges_equations
 #. Avichal Dayal: removed duplicate solutions obtained from solve
 #. Paul Scott: pass along keywords for plots
-#. shiprabanga: code quality fixes
+#. Shipra Banga: code quality fixes
 #. Pramod Ch: fix problem with (I*oo).expand_complex()
 #. Akshay: added normal_lines to Ellipse
 #. Buck Shlegeris: add inverses to error functions
