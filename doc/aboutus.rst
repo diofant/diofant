@@ -6,23 +6,22 @@ SymPy Development Team
 
 SymPy is a team project and it was developed by a lot of people.
 
-Here is a list of contributors together with what they do, (and in some cases links to their
-wiki pages), where they describe in
-more details what they do and what they are interested in (some people didn't
-want to be mentioned here, so see our repository history for a full list).
+Here is a list of contributors together with what they do.  Some
+people didn't want to be mentioned here, so see our repository history
+for a full list.
 
 #. Ondřej Čertík: started the project in 2006, on Jan 4, 2011 passed the project leadership to Aaron Meurer
 #. Fabian Pedregosa: everything, reviewing patches, releases, general advice (issues and mailinglist), GSoC 2009
 #. Jurjen N.E. Bos: pretty printing and other patches
 #. Mateusz Paprocki: GSoC 2007, concrete math module, integration module, new core integration, a lot of patches, general advice, new polynomial module, improvements to solvers, simplifications, patch review
-#. Marc-Etienne M.Leveille: matrix patch
+#.  Marc-Etienne M.Leveille: matrix patch
 #. Brian Jorgensen: GSoC 2007, plotting module and related things, patches
 #. Jason Gedge: GSoC 2007, geometry module, a lot of patches and fixes, new core integration
 #. Robert Schwarz: GSoC 2007, polynomials module, patches
-#. `Pearu Peterson <https://github.com/sympy/sympy/wiki/Pearu-Peterson>`_: new core, sympycore project, general advice (issues and mailinglist)
-#. `Fredrik Johansson <https://github.com/sympy/sympy/wiki/Fredrik-Johansson>`_: mpmath project and its integration in SymPy, number theory, combinatorial functions, products & summation, statistics, units, patches, documentation, general advice (issues and mailinglist)
+#. Pearu Peterson: new core, sympycore project, general advice (issues and mailinglist)
+#. Fredrik Johansson: mpmath project and its integration in SymPy, number theory, combinatorial functions, products & summation, statistics, units, patches, documentation, general advice (issues and mailinglist)
 #. Chris Wu: GSoC 2007, linear algebra module
-#. Ulrich Hecht: pattern matching and other patches
+#.  Ulrich Hecht: pattern matching and other patches
 #. Goutham Lakshminarayan: number theory functions
 #. David Lawrence: GHOP, Mathematica parser, square root denesting
 #. Jaroslaw Tworek: GHOP, sympify AST implementation, sqrt() refactoring, maxima parser and other patches
@@ -54,7 +53,7 @@ want to be mentioned here, so see our repository history for a full list).
 #. Bastian Weber: latex printing patches
 #. Sebastian Krause: match patches
 #. Sebastian Kreft: latex printing patches, Dirac delta function, other fixes
-#. Dan (coolg49964): documentation fixes
+#.  Dan (coolg49964): documentation fixes
 #. Alan Bromborsky: geometric algebra modules
 #. Boris Timokhin: matrix fixes
 #. Robert (average.programmer): initial piecewise function patch
@@ -95,7 +94,7 @@ want to be mentioned here, so see our repository history for a full list).
 #. Øyvind Jensen: implemented coupled cluster expansion and wick theorem, improvements to assumptions, bugfixes
 #. Julio Idichekop Filho: indentation fixes, docstring improvements
 #. Łukasz Pankowski: fix matrix multiplication with numpy scalars
-#. Chu-Ching Huang: fix 3d plotting example
+#.  Chu-Ching Huang: fix 3d plotting example
 #. Fernando Perez: symarray() implemented
 #. Raffaele De Feo: fix non-commutative expansion
 #. Christian Muise: fixes to logic module
@@ -240,7 +239,7 @@ want to be mentioned here, so see our repository history for a full list).
 #. Thomas Hisch: Improvements to the printing module
 #. Matthew Hoff: Addition to quantum module
 #. Madeleine Ball: Bug fix
-#. Case Van Horsen: Fixes to gmpy support
+#.  Case Van Horsen: Fixes to gmpy support
 #. Mary Clark: Improvements to the group theory module
 #. Rishabh Dixit: Bug fixes
 #. Acebulf: Typos
@@ -411,9 +410,6 @@ want to be mentioned here, so see our repository history for a full list).
 #. Greg Ashton - LianLi: Allow use of symbols when solving system of eqns
 #. jennifercw: Added checks into polynomials.py
 #. Michael Boyle: fix formatting for Examples sections of docstrings
-
-Up-to-date list in the order of the first contribution is given in the `AUTHORS
-<https://github.com/sympy/sympy/blob/master/AUTHORS>`_ file.
 
 You can use git to see the biggest developers::
 
