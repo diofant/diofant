@@ -15,5 +15,3 @@ A Python library for symbolic mathematics.
 
 For installation instructions and usage information, see the
 `online documentation <http://omg.rtfd.org/en/latest/>`_.
-
-See the AUTHORS file for the list of authors.
