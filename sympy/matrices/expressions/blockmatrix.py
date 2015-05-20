@@ -1,10 +1,13 @@
 from __future__ import print_function, division
 
+from strategies import exhaust, condition, do_one
+from strategies.core import typed
+from strategies.traverse import bottom_up
+
 from sympy import ask, Q
 from sympy.core import Basic, Add, sympify
 from sympy.core.compatibility import range
-from sympy.strategies import typed, exhaust, condition, do_one, unpack
-from sympy.strategies.traverse import bottom_up
+from sympy.core.strategies import unpack
 from sympy.utilities import sift
 
 from sympy.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
@@ -280,11 +283,11 @@ def block_collapse(expr):
         return isinstance(expr, MatrixExpr) and expr.has(BlockMatrix)
     rule = exhaust(
         bottom_up(exhaust(condition(hasbm, typed(
-            {MatAdd: do_one(bc_matadd, bc_block_plus_ident),
-             MatMul: do_one(bc_matmul, bc_dist),
+            {MatAdd: do_one([bc_matadd, bc_block_plus_ident]),
+             MatMul: do_one([bc_matmul, bc_dist]),
              Transpose: bc_transpose,
              Inverse: bc_inverse,
-             BlockMatrix: do_one(bc_unpack, deblock)})))))
+             BlockMatrix: do_one([bc_unpack, deblock])})))))
     result = rule(expr)
     try:
         return result.doit()

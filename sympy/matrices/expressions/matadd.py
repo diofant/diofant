@@ -1,14 +1,14 @@
 from __future__ import print_function, division
 
-from sympy.core.compatibility import reduce
 from operator import add
+from strategies import condition, exhaust, do_one
 
+from sympy.core.compatibility import reduce
 from sympy.core import Add, Basic, sympify
 from sympy.functions import adjoint
 from sympy.matrices.matrices import MatrixBase
 from sympy.matrices.expressions.transpose import transpose
-from sympy.strategies import (rm_id, unpack, flatten, sort, condition,
-        exhaust, do_one, glom)
+from sympy.core.strategies import rm_id, unpack, flatten, sort, glom
 from sympy.matrices.expressions.matexpr import MatrixExpr, ShapeError, ZeroMatrix
 from sympy.utilities import default_sort_key, sift
 
@@ -120,4 +120,4 @@ rules = (rm_id(lambda x: x == 0 or isinstance(x, ZeroMatrix)),
          sort(default_sort_key))
 
 canonicalize = exhaust(condition(lambda x: isinstance(x, MatAdd),
-                                 do_one(*rules)))
+                                 do_one(rules)))

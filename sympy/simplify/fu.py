@@ -187,6 +187,8 @@ from __future__ import print_function, division
 
 from collections import defaultdict
 from itertools import combinations
+from strategies.tree import greedy
+from strategies.core import identity, debug
 
 from sympy.simplify.simplify import (simplify, powsimp, ratsimp, combsimp,
     _mexpand, bottom_up)
@@ -206,8 +208,6 @@ from sympy.core.exprtools import Factors, gcd_terms, factor_terms
 from sympy.core.rules import Transform
 from sympy.core.basic import S
 from sympy.core.numbers import Integer, pi, I
-from sympy.strategies.tree import greedy
-from sympy.strategies.core import identity, debug
 from sympy.polys.polytools import factor
 from sympy.ntheory.factor_ import perfect_power
 

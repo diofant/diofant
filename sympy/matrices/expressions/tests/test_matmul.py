@@ -1,3 +1,5 @@
+from strategies.core import null_safe
+
 from sympy.core import I, symbols, Basic
 from sympy.functions import adjoint, transpose
 from sympy.matrices import (Identity, Inverse, Matrix, MatrixSymbol, ZeroMatrix,
@@ -5,7 +7,6 @@ from sympy.matrices import (Identity, Inverse, Matrix, MatrixSymbol, ZeroMatrix,
 from sympy.matrices.expressions import Adjoint, Transpose, det, MatPow
 from sympy.matrices.expressions.matmul import (factor_in_front, remove_ids,
         MatMul, xxinv, any_zeros, unpack, only_squares)
-from sympy.strategies import null_safe
 from sympy import refine, Q
 from sympy.utilities.pytest import XFAIL
 

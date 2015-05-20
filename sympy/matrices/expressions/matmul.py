@@ -1,11 +1,13 @@
 from __future__ import print_function, division
 
+from strategies import exhaust, do_one
+from strategies.core import typed
+
 from sympy.core import Mul, Basic, sympify, Add
 from sympy.core.compatibility import range
 from sympy.functions import adjoint
 from sympy.matrices.expressions.transpose import transpose
-from sympy.strategies import (rm_id, unpack, typed, flatten, exhaust,
-        do_one, new)
+from sympy.core.strategies import rm_id, unpack, flatten
 from sympy.matrices.expressions.matexpr import (MatrixExpr, ShapeError,
         Identity, ZeroMatrix)
 from sympy.matrices.matrices import MatrixBase
@@ -125,7 +127,7 @@ def validate(*matrices):
 def newmul(*args):
     if args[0] == 1:
         args = args[1:]
-    return new(MatMul, *args)
+    return MatMul(*args)
 
 
 def any_zeros(mul):
@@ -196,13 +198,14 @@ def xxinv(mul):
 def remove_ids(mul):
     """ Remove Identities from a MatMul
 
-    This is a modified version of sympy.strategies.rm_id.
+    This is a modified version of sympy.core.strategies.rm_id.
     This is necesssary because MatMul may contain both MatrixExprs and Exprs
     as args.
 
     See Also
     --------
-        sympy.strategies.rm_id
+
+    sympy.core.strategies.rm_id
     """
     # Separate Exprs from MatrixExprs in args
     factor, mmul = mul.as_coeff_mmul()
@@ -223,7 +226,7 @@ def factor_in_front(mul):
 rules = (any_zeros, remove_ids, xxinv, unpack, rm_id(lambda x: x == 1),
          merge_explicit, factor_in_front, flatten)
 
-canonicalize = exhaust(typed({MatMul: do_one(*rules)}))
+canonicalize = exhaust(typed({MatMul: do_one(rules)}))
 
 
 def only_squares(*matrices):
