@@ -7,7 +7,7 @@ complex part, because it needs to calculate a limit to return the result.
 """
 
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                   S, atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, cosh,
+                   S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
                    Pow, li, Li)
 from sympy.series.gruntz import (compare, mrv, rewrite,
@@ -337,8 +337,7 @@ def test_intractable():
 
 
 def test_aseries_trig():
-    assert cancel(gruntz(1/log(atan(x)), x)
-                  - 1/(log(pi) + log(S(1)/2))) == 0
+    assert gruntz(1/log(atan(x)), x) == -1/(-log(pi) + log(2))
     assert gruntz(1/acot(-x), x) == -oo
 
 
