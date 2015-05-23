@@ -34,11 +34,16 @@ else
             --ignore sympy/plotting/plot_implicit.py \
             --doctest-modules sympy/
     else
+        if [[ "${TRAVIS_PYTHON_VERSION}" == "pypy3" ]]; then
+            EXTRA_IGNORE="--ignore sympy/matrices/dense.py --ignore sympy/tensor/tensor.py --ignore sympy/utilities/lambdify.py"
+        else
+            EXTRA_IGNORE=""
+        fi
         py.test -m 'not slow' --duration=100 --split="${SPLIT}" \
             --ignore sympy/utilities/autowrap.py \
             --ignore sympy/utilities/mathml/__init__.py \
             --ignore sympy/plotting/plot.py \
             --ignore sympy/plotting/plot_implicit.py \
-            --doctest-modules sympy/
+            ${EXTRA_IGNORE} --doctest-modules sympy/
     fi
 fi
