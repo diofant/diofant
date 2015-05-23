@@ -79,7 +79,7 @@ class ImplicitSeries(BaseSeries):
         yinterval = interval(self.start_y, self.end_y)
         try:
             temp = func(xinterval, yinterval)
-        except AttributeError:
+        except (AttributeError, NameError):
             if self.use_interval_math:
                 warnings.warn("Adaptive meshing could not be applied to the"
                             " expression. Using uniform meshing.")
