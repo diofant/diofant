@@ -3,7 +3,7 @@ from sympy import (plot_implicit, cos, Symbol, symbols, Eq, sin, re, And, Or, ex
                    tan, pi)
 from sympy.plotting.plot import unset_show
 from tempfile import NamedTemporaryFile
-from sympy.utilities.pytest import skip
+from sympy.utilities.pytest import skip, XFAIL
 from sympy.external import import_module
 
 #Set plots not to show
@@ -64,6 +64,7 @@ def test_line_color():
     p = plot_implicit(x**2 + y**2 - 1, line_color='r', show=False)
     assert p._series[0].line_color == "r"
 
+@XFAIL
 def test_matplotlib():
     matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
