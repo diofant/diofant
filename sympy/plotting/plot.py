@@ -35,10 +35,6 @@ from sympy.utilities.decorator import doctest_depends_on
 from sympy.utilities.iterables import is_sequence
 from .experimental_lambdify import (vectorized_lambdify, lambdify)
 
-# N.B.
-# When changing the minimum module version for matplotlib, please change
-# the same in the `SymPyDocTestFinder`` in `sympy/utilities/runtests.py`
-
 # Global variable
 # Set to False when running tests / doctests so that the plots don't show.
 _show = True
