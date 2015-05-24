@@ -183,7 +183,7 @@ library math module, use ``"math"``.
 
     >>> f = lambdify(x, expr, "math")
     >>> f(0.1)
-    0.0998334166468
+    0.09983341664682815
 
 To use lambdify with numerical libraries that it does not know about, pass a
 dictionary of ``sympy_name:numerical_function`` pairs.  For example

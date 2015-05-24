@@ -44,7 +44,7 @@ leveraging a variety of numerical libraries.  It is used as follows:
     >>> expr = sin(x)/x
     >>> f = lambdify(x, expr)
     >>> f(3.14)
-    0.000507214304614
+    0.0005072143046136395
 
 Here lambdify makes a function that computes ``f(x) = sin(x)/x``.  By default
 lambdify relies on implementations in the ``math`` standard library. This
@@ -64,7 +64,7 @@ powerful vectorized ufuncs that are backed by compiled C code.
 
     >>> import numpy
     >>> data = numpy.linspace(1, 10, 10000)
-    >>> f(data)
+    >>> pprint(f(data))
     [ 0.84147098  0.84119981  0.84092844 ..., -0.05426074 -0.05433146
                                -0.05440211]
 

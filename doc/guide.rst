@@ -347,6 +347,9 @@ This is how to create a function with two variables::
 .. note:: the first argument of a @classmethod should be ``cls`` (i.e. not
           ``self``).
 
+    >>> from sympy.interactive import init_printing
+    >>> init_printing(use_unicode=False)
+
 Here it's how to define a derivative of the function::
 
     >>> from sympy import Function, sympify, cos
@@ -430,6 +433,8 @@ Please use the same way as is shown below all across SymPy.
 
     >>> from sympy import sign, sin
     >>> from sympy.abc import x, y, z
+    >>> from sympy.interactive import init_printing
+    >>> init_printing(pretty_print=False)
 
     >>> e = sign(x**2)
     >>> e.args

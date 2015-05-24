@@ -300,7 +300,7 @@ to a Python expression.  Use the :func:`sympy.core.sympify.sympify` function, or
 :func:`S <sympy.core.sympify.sympify>`, to ensure that something is a SymPy expression.
 
     >>> 6.2  # Python float. Notice the floating point accuracy problems.
-    6.2000000000000002
+    6.2
     >>> type(6.2)  # <type 'float'> in Python 2.x,  <class 'float'> in Py3k
     <... 'float'>
     >>> S(6.2)  # SymPy Float has no such problems because of arbitrary precision.
