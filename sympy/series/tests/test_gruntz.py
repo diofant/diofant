@@ -82,6 +82,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
 
+@slow
 def test_gruntz_eval_special():
     # Gruntz, p. 126
     assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x) == 1

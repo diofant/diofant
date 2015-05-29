@@ -1898,6 +1898,8 @@ def test_R18():
 @slow
 @XFAIL
 def test_R19():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     k = symbols('k', integer=True, positive=True)
     Sm = Sum(1/((3*k + 1)*(3*k + 2)*(3*k + 3)), (k, 0, oo))
     T = Sm.doit()
@@ -2298,6 +2300,8 @@ def test_V12():
 @slow
 @XFAIL
 def test_V13():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     r1 = integrate(1/(6 + 3*cos(x) + 4*sin(x)), x)
     # expression not simplified, returns: -sqrt(11)*I*log(tan(x/2) + 4/3
     #   - sqrt(11)*I/3)/11 + sqrt(11)*I*log(tan(x/2) + 4/3 + sqrt(11)*I/3)/11
@@ -2335,6 +2339,8 @@ def test_V16():
 @slow
 @XFAIL
 def test_V17():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     r1 = integrate((diff(f(x), x)*g(x)
                    - f(x)*diff(g(x), x))/(f(x)**2 - g(x)**2), x)
     # integral not calculated
@@ -2383,6 +2389,8 @@ def test_W5():
 @XFAIL
 @slow
 def test_W6():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     # integral is not  calculated
     assert integrate(sqrt(2 - 2*cos(2*x))/2, (x, -3*pi/4, -pi/4)) == sqrt(2)
 
@@ -2830,6 +2838,8 @@ def test_Y2():
 @slow
 @XFAIL
 def test_Y3():
+    if ON_TRAVIS:
+        skip("Too slow.")
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
     s = symbols('s')
