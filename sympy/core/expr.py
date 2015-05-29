@@ -1044,13 +1044,13 @@ class Expr(Basic, EvalfMixin):
         >>> (-2*x*y).args_cnc()
         [[-1, 2, x, y], []]
         >>> (-2.5*x).args_cnc()
-        [[-1, 2.5, x], []]
+        [[-1, 2.50000000000000, x], []]
         >>> (-2*x*A*B*y).args_cnc()
         [[-1, 2, x, y], [A, B]]
         >>> (-2*x*A*B*y).args_cnc(split_1=False)
         [[-2, x, y], [A, B]]
-        >>> (-2*x*y).args_cnc(cset=True)
-        [set([-1, 2, x, y]), []]
+        >>> (-2*x*y).args_cnc(cset=True) == [{-1, 2, x, y}, []]
+        True
 
         The arg is always treated as a Mul:
 
@@ -1682,12 +1682,13 @@ class Expr(Basic, EvalfMixin):
         ========
 
         >>> from sympy.abc import a, x
-        >>> (3*x + a*x + 4).as_coefficients_dict()
-        {1: 4, x: 3, a*x: 1}
-        >>> _[a]
+        >>> d = (3*x + a*x + 4).as_coefficients_dict()
+        >>> d == {1: 4, x: 3, a*x: 1}
+        True
+        >>> d[a]
         0
-        >>> (3*a*x).as_coefficients_dict()
-        {a*x: 3}
+        >>> (3*a*x).as_coefficients_dict() == {a*x: 3}
+        True
 
         """
         c, m = self.as_coeff_Mul()
@@ -3174,14 +3175,14 @@ class Expr(Basic, EvalfMixin):
         >>> pi.round(2)
         3.14
         >>> (2*pi + E*I).round()
-        6. + 3.*I
+        6.0 + 3.0*I
 
         The round method has a chopping effect:
 
         >>> (2*pi + I/10).round()
         6.
         >>> (pi/10 + 2*I).round()
-        2.*I
+        2.0*I
         >>> (pi/10 + E*I).round(2)
         0.31 + 2.72*I
 

@@ -20,16 +20,16 @@ class AssumptionsContext(set):
     ========
 
     >>> from sympy import AppliedPredicate, Q
-    >>> from sympy.assumptions.assume import global_assumptions
-    >>> global_assumptions
-    AssumptionsContext()
+    >>> from sympy.assumptions.assume import global_assumptions, AssumptionsContext
+    >>> global_assumptions == AssumptionsContext([])
+    True
     >>> from sympy.abc import x
     >>> global_assumptions.add(Q.real(x))
-    >>> global_assumptions
-    AssumptionsContext([Q.real(x)])
+    >>> global_assumptions == AssumptionsContext([Q.real(x)])
+    True
     >>> global_assumptions.remove(Q.real(x))
-    >>> global_assumptions
-    AssumptionsContext()
+    >>> global_assumptions == AssumptionsContext([])
+    True
     >>> global_assumptions.clear()
 
     """

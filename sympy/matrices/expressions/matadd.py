@@ -88,11 +88,11 @@ def merge_explicit(matadd):
     >>> B = eye(2)
     >>> C = Matrix([[1, 2], [3, 4]])
     >>> X = MatAdd(A, B, C)
-    >>> pprint(X)
+    >>> pprint(X, use_unicode=False)
     A + [1  0] + [1  2]
         [    ]   [    ]
         [0  1]   [3  4]
-    >>> pprint(merge_explicit(X))
+    >>> pprint(merge_explicit(X), use_unicode=False)
     A + [2  2]
         [    ]
         [3  5]

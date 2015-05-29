@@ -216,13 +216,12 @@ class Poly(Expr):
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
 
-        >>> Poly(x**2 + 1).free_symbols
-        set([x])
-        >>> Poly(x**2 + y).free_symbols
-        set([x, y])
-        >>> Poly(x**2 + y, x).free_symbols
-        set([x, y])
-
+        >>> Poly(x**2 + 1).free_symbols == {x}
+        True
+        >>> Poly(x**2 + y).free_symbols == {x, y}
+        True
+        >>> Poly(x**2 + y, x).free_symbols == {x, y}
+        True
         """
         symbols = set()
 
@@ -242,13 +241,12 @@ class Poly(Expr):
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
 
-        >>> Poly(x**2 + 1).free_symbols_in_domain
-        set()
-        >>> Poly(x**2 + y).free_symbols_in_domain
-        set()
-        >>> Poly(x**2 + y, x).free_symbols_in_domain
-        set([y])
-
+        >>> Poly(x**2 + 1).free_symbols_in_domain == set()
+        True
+        >>> Poly(x**2 + y).free_symbols_in_domain == set()
+        True
+        >>> Poly(x**2 + y, x).free_symbols_in_domain == {y}
+        True
         """
         domain, symbols = self.rep.dom, set()
 
@@ -1967,7 +1965,7 @@ class Poly(Expr):
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM()
+        >>> print(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM())
         x**2*y**0
 
         """
@@ -1983,7 +1981,7 @@ class Poly(Expr):
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM()
+        >>> print(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM())
         x**0*y**1
 
         """
@@ -1998,8 +1996,9 @@ class Poly(Expr):
 
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
+        >>> from sympy.printing import sstr
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()
+        >>> print(sstr(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()))
         (x**2*y**0, 4)
 
         """
@@ -2015,8 +2014,9 @@ class Poly(Expr):
 
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
+        >>> from sympy.printing import sstr
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()
+        >>> print(sstr(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()))
         (x**0*y**1, 3)
 
         """
@@ -4016,13 +4016,12 @@ class PurePoly(Poly):
         >>> from sympy import PurePoly
         >>> from sympy.abc import x, y
 
-        >>> PurePoly(x**2 + 1).free_symbols
-        set()
-        >>> PurePoly(x**2 + y).free_symbols
-        set()
-        >>> PurePoly(x**2 + y, x).free_symbols
-        set([y])
-
+        >>> PurePoly(x**2 + 1).free_symbols == set()
+        True
+        >>> PurePoly(x**2 + y).free_symbols == set()
+        True
+        >>> PurePoly(x**2 + y, x).free_symbols == {y}
+        True
         """
         return self.free_symbols_in_domain
 

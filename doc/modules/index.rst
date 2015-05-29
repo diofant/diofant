@@ -45,7 +45,6 @@ access any SymPy module, or use this contens:
    solvers/solvers.rst
    solvers/diophantine.rst
    solvers/inequalities.rst
-   solvers/solveset.rst
    tensor/index.rst
    utilities/index.rst
    parsing.rst

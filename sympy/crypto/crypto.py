@@ -1305,9 +1305,18 @@ def lfsr_sequence(key, fill, n):
     >>> F = FF(2)
     >>> fill = [F(1), F(1), F(0), F(1)]
     >>> key = [F(1), F(0), F(0), F(1)]
-    >>> lfsr_sequence(key, fill, 10)
-    [1 mod 2, 1 mod 2, 0 mod 2, 1 mod 2, 0 mod 2, 1 mod 2, 1 mod 2, 0 mod 2, 0 mod 2, 1 mod 2]
-
+    >>> for i in lfsr_sequence(key, fill, 10):
+    ...     print(i)
+    1 mod 2
+    1 mod 2
+    0 mod 2
+    1 mod 2
+    0 mod 2
+    1 mod 2
+    1 mod 2
+    0 mod 2
+    0 mod 2
+    1 mod 2
     """
     if not isinstance(key, list):
         raise TypeError("key must be a list")
@@ -1583,9 +1592,8 @@ def decipher_elgamal(ct, prk):
     ========
 
     >>> from sympy.crypto.crypto import decipher_elgamal
-    >>> decipher_elgamal((835, 271), (1031, 14, 636))
-    100
-
+    >>> decipher_elgamal((835, 271), (1031, 14, 636)) == 100
+    True
     """
     u = igcdex(ct[0] ** prk[2], prk[0])[0]
     return u * ct[1] % prk[0]

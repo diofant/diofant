@@ -82,12 +82,13 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     This string can also be generated directly from a factorization dictionary
     and vice versa:
 
-        >>> factorint(17*9)
-        {3: 2, 17: 1}
-        >>> smoothness_p(_)
+        >>> f = factorint(17*9)
+        >>> f == {3: 2, 17: 1}
+        True
+        >>> smoothness_p(f)
         'p**i=3**2 has p-1 B=2, B-pow=2\\np**i=17**1 has p-1 B=2, B-pow=16'
-        >>> smoothness_p(_)
-        {3: 2, 17: 1}
+        >>> smoothness_p(_) == {3: 2, 17: 1}
+        True
 
     The table of the output logic is:
 
@@ -533,8 +534,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         ...     M = ilcm(M, i)
         ...
         >>> {igcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
-        ...  igcd(pow(a, M, n) - 1, n) != n}
-        set([1009])
+        ...  igcd(pow(a, M, n) - 1, n) != n} == {1009}
+        True
 
     But does aM % d for every divisor of n give 1?
 
@@ -576,8 +577,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     The B and B-pow are the same for the p - 1 factorizations of the divisors
     because those factorizations had a very large prime factor:
 
-        >>> factorint(4410317 - 1)
-        {2: 2, 617: 1, 1787: 1}
+        >>> factorint(4410317 - 1) == {2: 2, 617: 1, 1787: 1}
+        True
         >>> factorint(4869863-1)
         {2: 1, 2434931: 1}
 
@@ -854,7 +855,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     factorization of the integer.  For example:
 
     >>> from sympy import pprint
-    >>> pprint(factorint(4200, visual=True))
+    >>> pprint(factorint(4200, visual=True), use_unicode=False)
      3  1  2  1
     2 *3 *5 *7
 
@@ -871,11 +872,11 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     >>> from sympy import Mul, Pow
     >>> regular = factorint(1764); regular
     {2: 2, 3: 2, 7: 2}
-    >>> pprint(factorint(regular))
+    >>> pprint(factorint(regular), use_unicode=False)
      2  2  2
     2 *3 *7
 
-    >>> visual = factorint(1764, visual=True); pprint(visual)
+    >>> visual = factorint(1764, visual=True); pprint(visual, use_unicode=False)
      2  2  2
     2 *3 *7
     >>> print(factorint(visual))

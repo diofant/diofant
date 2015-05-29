@@ -361,8 +361,9 @@ class DMP(PicklableWithSlots, CantSympify):
 
         >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
+        >>> from sympy.printing import sstr
 
-        >>> DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()
+        >>> print(sstr(DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()))
         ([2], DMP([[1], [1, 2]], ZZ, None))
 
         """
@@ -378,11 +379,12 @@ class DMP(PicklableWithSlots, CantSympify):
 
         >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
+        >>> from sympy.printing import sstr
 
-        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
+        >>> print(sstr(DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])))
         DMP([[[2], []], [[1, 0], []]], ZZ, None)
 
-        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
+        >>> print(sstr(DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])))
         DMP([[[1], []], [[2, 0], []]], ZZ, None)
 
         """

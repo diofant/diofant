@@ -538,15 +538,15 @@ class BaseVectorField(Expr):
     Vector field:
 
     >>> v = BaseVectorField(R2_r, 1)
-    >>> pprint(v(s_field))
+    >>> pprint(v(s_field), use_unicode=False)
     /  d              \|
     |-----(g(x, xi_2))||
     \dxi_2            /|xi_2=y
-    >>> pprint(v(s_field).rcall(point_r).doit())
+    >>> pprint(v(s_field).rcall(point_r).doit(), use_unicode=False)
      d
     ---(g(x0, y0))
     dy0
-    >>> pprint(v(s_field).rcall(point_p).doit())
+    >>> pprint(v(s_field).rcall(point_p).doit(), use_unicode=False)
     /  d                           \|
     |-----(g(r0*cos(theta0), xi_2))||
     \dxi_2                         /|xi_2=r0*sin(theta0)
@@ -704,11 +704,11 @@ class Differential(Expr):
     >>> dg = Differential(s_field)
     >>> dg
     d(g(x, y))
-    >>> pprint(dg(e_x))
+    >>> pprint(dg(e_x), use_unicode=False)
     /  d              \|
     |-----(g(xi_1, y))||
     \dxi_1            /|xi_1=x
-    >>> pprint(dg(e_y))
+    >>> pprint(dg(e_y), use_unicode=False)
     /  d              \|
     |-----(g(x, xi_2))||
     \dxi_2            /|xi_2=y

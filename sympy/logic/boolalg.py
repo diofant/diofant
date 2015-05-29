@@ -912,13 +912,12 @@ def conjuncts(expr):
     Examples
     ========
 
-    >>> from sympy.logic.boolalg import conjuncts
+    >>> from sympy.logic.boolalg import conjuncts, Or
     >>> from sympy.abc import A, B
-    >>> conjuncts(A & B)
-    frozenset([A, B])
-    >>> conjuncts(A | B)
-    frozenset([Or(A, B)])
-
+    >>> conjuncts(A & B) == frozenset([A, B])
+    True
+    >>> conjuncts(A | B) == frozenset([Or(A, B)])
+    True
     """
     return And.make_args(expr)
 
@@ -929,13 +928,12 @@ def disjuncts(expr):
     Examples
     ========
 
-    >>> from sympy.logic.boolalg import disjuncts
+    >>> from sympy.logic.boolalg import disjuncts, And
     >>> from sympy.abc import A, B
-    >>> disjuncts(A | B)
-    frozenset([A, B])
-    >>> disjuncts(A & B)
-    frozenset([And(A, B)])
-
+    >>> disjuncts(A | B) == frozenset([A, B])
+    True
+    >>> disjuncts(A & B) == frozenset([And(A, B)])
+    True
     """
     return Or.make_args(expr)
 
@@ -1591,8 +1589,10 @@ def _finger(eq):
     >>> from sympy import And, Or, Not
     >>> from sympy.abc import a, b, x, y
     >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
-    >>> dict(finger(eq))
-    {(0, 0, 1, 0, 2): [x], (0, 0, 1, 0, 3): [a, b], (0, 0, 1, 2, 8): [y]}
+    >>> dict(finger(eq)) == {(0, 0, 1, 0, 2): [x],
+    ...                      (0, 0, 1, 0, 3): [a, b],
+    ...                      (0, 0, 1, 2, 8): [y]}
+    True
 
     So y and x have unique fingerprints, but a and b do not.
     """
@@ -1637,20 +1637,22 @@ def bool_map(bool1, bool2):
     >>> from sympy.abc import w, x, y, z, a, b, c, d
     >>> function1 = SOPform(['x','z','y'],[[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform(['a','b','c'],[[1, 0, 1], [1, 0, 0]])
-    >>> bool_map(function1, function2)
-    (And(Not(z), y), {y: a, z: b})
+    >>> bool_map(function1, function2) == (And(Not(z), y), {y: a, z: b})
+    True
 
     The results are not necessarily unique, but they are canonical. Here,
     ``(w, z)`` could be ``(a, d)`` or ``(d, a)``:
 
     >>> eq =  Or(And(Not(y), w), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
-    >>> bool_map(eq, eq2)
-    (Or(And(Not(y), w), And(Not(y), z), And(x, y)), {w: a, x: b, y: c, z: d})
+    >>> bool_map(eq, eq2) == (Or(And(Not(y), w), And(Not(y), z),
+    ...                          And(x, y)), {w: a, x: b, y: c, z: d})
+    True
     >>> eq = And(Xor(a, b), c, And(c,d))
-    >>> bool_map(eq, eq.subs(c, x))
-    (And(Or(Not(a), Not(b)), Or(a, b), c, d), {a: a, b: b, c: d, d: x})
-
+    >>> bool_map(eq, eq.subs(c, x)) == (And(Or(Not(a), Not(b)),
+    ...                                     Or(a, b), c, d),
+    ...                                 {a: a, b: b, c: d, d: x})
+    True
     """
 
     def match(function1, function2):

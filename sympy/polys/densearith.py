@@ -1709,7 +1709,7 @@ def dup_max_norm(f, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_max_norm(-x**2 + 2*x - 3)
+    >>> print(R.dup_max_norm(-x**2 + 2*x - 3))
     3
 
     """
@@ -1729,7 +1729,7 @@ def dmp_max_norm(f, u, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x,y = ring("x,y", ZZ)
 
-    >>> R.dmp_max_norm(2*x*y - x - 3)
+    >>> print(R.dmp_max_norm(2*x*y - x - 3))
     3
 
     """
@@ -1751,7 +1751,7 @@ def dup_l1_norm(f, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_l1_norm(2*x**3 - 3*x**2 + 1)
+    >>> print(R.dup_l1_norm(2*x**3 - 3*x**2 + 1))
     6
 
     """
@@ -1771,7 +1771,7 @@ def dmp_l1_norm(f, u, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x,y = ring("x,y", ZZ)
 
-    >>> R.dmp_l1_norm(2*x*y - x - 3)
+    >>> print(R.dmp_l1_norm(2*x*y - x - 3))
     6
 
     """

@@ -90,8 +90,8 @@ class Integral(AddWithLimits):
 
         >>> from sympy import Integral
         >>> from sympy.abc import x, y
-        >>> Integral(x, (x, y, 1)).free_symbols
-        set([y])
+        >>> Integral(x, (x, y, 1)).free_symbols == {y}
+        True
 
         See Also
         ========
@@ -567,8 +567,8 @@ class Integral(AddWithLimits):
 
         The previous must be true since there is no y in the evaluated integral:
 
-        >>> i.free_symbols
-        set([x])
+        >>> i.free_symbols == {x}
+        True
         >>> i.doit()
         2*x**3/3 - x/2 - 1/6
 

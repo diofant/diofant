@@ -142,21 +142,21 @@ def merge_explicit(matmul):
     >>> B = Matrix([[1, 1], [1, 1]])
     >>> C = Matrix([[1, 2], [3, 4]])
     >>> X = MatMul(A, B, C)
-    >>> pprint(X)
+    >>> pprint(X, use_unicode=False)
     A*[1  1]*[1  2]
       [    ] [    ]
       [1  1] [3  4]
-    >>> pprint(merge_explicit(X))
+    >>> pprint(merge_explicit(X), use_unicode=False)
     A*[4  6]
       [    ]
       [4  6]
 
     >>> X = MatMul(B, A, C)
-    >>> pprint(X)
+    >>> pprint(X, use_unicode=False)
     [1  1]*A*[1  2]
     [    ]   [    ]
     [1  1]   [3  4]
-    >>> pprint(merge_explicit(X))
+    >>> pprint(merge_explicit(X), use_unicode=False)
     [1  1]*A*[1  2]
     [    ]   [    ]
     [1  1]   [3  4]

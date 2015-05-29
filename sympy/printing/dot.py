@@ -33,12 +33,12 @@ def styleof(expr, styles=default_styles):
     >>> styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
     ...           (Expr,  {'color': 'black'})]
 
-    >>> styleof(Basic(1), styles)
-    {'color': 'blue', 'shape': 'ellipse'}
+    >>> styleof(Basic(1), styles) == {'color': 'blue', 'shape': 'ellipse'}
+    True
 
     >>> x = Symbol('x')
-    >>> styleof(x + 1, styles)  # this is an Expr
-    {'color': 'black', 'shape': 'ellipse'}
+    >>> styleof(x + 1, styles) == {'color': 'black', 'shape': 'ellipse'}  # this is an Expr
+    True
     """
     style = dict()
     for typ, sty in styles:

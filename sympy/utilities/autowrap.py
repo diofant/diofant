@@ -830,8 +830,8 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     >>> from sympy.abc import x, y
     >>> import numpy as np
     >>> f = ufuncify((x, y), y + x**2)
-    >>> type(f)
-    numpy.ufunc
+    >>> type(f) is np.ufunc
+    True
     >>> f([1, 2, 3], 2)
     array([ 3.,  6.,  11.])
     >>> f(np.arange(5), 3)

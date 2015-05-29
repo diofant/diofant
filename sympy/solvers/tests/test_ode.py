@@ -876,6 +876,7 @@ def test_old_ode_tests():
     assert checkodesol(eq11, sol11, order=1, solve_for_func=False)[0]
 
 
+@slow
 def test_1st_linear():
     # Type: first order linear form f'(x)+p(x)f(x)=q(x)
     eq = Eq(f(x).diff(x) + x*f(x), x**2)
@@ -1432,6 +1433,8 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
 @slow
 @XFAIL
 def test_nth_linear_constant_coeff_homogeneous_RootOf_sol():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x),
         C1*exp(x*RootOf(x**5 + 11*x - 2, 0)) +

@@ -33,8 +33,8 @@ class Vector(BasisDependent):
         >>> from sympy.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> v = 3*C.i + 4*C.j + 5*C.k
-        >>> v.components
-        {C.i: 3, C.j: 4, C.k: 5}
+        >>> v.components == {C.i: 3, C.j: 4, C.k: 5}
+        True
 
         """
         #The '_components' attribute is defined according to the

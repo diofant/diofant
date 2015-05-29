@@ -23,11 +23,10 @@ def dpll_satisfiable(expr):
 
     >>> from sympy.abc import A, B
     >>> from sympy.logic.algorithms.dpll import dpll_satisfiable
-    >>> dpll_satisfiable(A & ~B)
-    {A: True, B: False}
+    >>> dpll_satisfiable(A & ~B) == {A: True, B: False}
+    True
     >>> dpll_satisfiable(A & ~A)
     False
-
     """
     clauses = conjuncts(to_cnf(expr))
     if False in clauses:
@@ -208,8 +207,8 @@ def unit_propagate_int_repr(clauses, s):
     representation
 
     >>> from sympy.logic.algorithms.dpll import unit_propagate_int_repr
-    >>> unit_propagate_int_repr([{1, 2}, {3, -2}, {2}], 2)
-    [set([3])]
+    >>> unit_propagate_int_repr([{1, 2}, {3, -2}, {2}], 2) == [{3}]
+    True
 
     """
     negated = {-s}

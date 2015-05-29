@@ -171,9 +171,10 @@ class PolynomialRingBase(Ring, CharacteristicZero, CompositeDomain):
 
         >>> from sympy import QQ, ilex
         >>> from sympy.abc import x, y
+        >>> from sympy.printing import sstr
         >>> R = QQ.old_poly_ring(x, y, order=ilex)
         >>> L = [((1, 1, 1), QQ(1)), ((0, 1, 0), QQ(1)), ((0, 0, 1), QQ(2))]
-        >>> R._sdm_to_vector(L, 2)
+        >>> print(sstr(R._sdm_to_vector(L, 2)))
         [x + 2*y, x*y]
         """
         dics = self._sdm_to_dics(s, n)
@@ -270,10 +271,11 @@ class GlobalPolynomialRing(PolynomialRingBase):
         """
         >>> from sympy import lex, QQ
         >>> from sympy.abc import x, y
+        >>> from sympy.printing import pprint
         >>> R = QQ.old_poly_ring(x, y)
         >>> f = R.convert(x + 2*y)
         >>> g = R.convert(x * y)
-        >>> R._vector_to_sdm([f, g], lex)
+        >>> pprint(R._vector_to_sdm([f, g], lex))
         [((1, 1, 1), 1), ((0, 1, 0), 1), ((0, 0, 1), 2)]
         """
         return _vector_to_sdm_helper(v, order)
@@ -335,10 +337,11 @@ class GeneralizedPolynomialRing(PolynomialRingBase):
 
         >>> from sympy import ilex, QQ
         >>> from sympy.abc import x, y
+        >>> from sympy.printing import pprint
         >>> R = QQ.old_poly_ring(x, y, order=ilex)
         >>> f = R.convert((x + 2*y) / (1 + x))
         >>> g = R.convert(x * y)
-        >>> R._vector_to_sdm([f, g], ilex)
+        >>> pprint(R._vector_to_sdm([f, g], ilex))
         [((0, 0, 1), 2), ((0, 1, 0), 1), ((1, 1, 1), 1), ((1,
           2, 1), 1)]
         """

@@ -50,10 +50,12 @@ def diophantine(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
+    >>> from sympy import Symbol
     >>> from sympy.solvers.diophantine import diophantine
     >>> from sympy.abc import x, y, z
-    >>> diophantine(x**2 - y**2)
-    set([(-t, -t), (t, -t)])
+    >>> t = Symbol('t', integer=True)
+    >>> diophantine(x**2 - y**2, t) == {(-t, -t), (t, -t)}
+    True
 
     See Also
     ========
@@ -62,6 +64,9 @@ def diophantine(eq, param=symbols("t", integer=True)):
     """
     if isinstance(eq, Eq):
         eq = eq.lhs - eq.rhs
+
+    if eq == 0:
+        return set([(param,)])
 
     eq = Poly(eq).as_expr()
     if not eq.is_polynomial() or eq.is_number:
@@ -150,13 +155,14 @@ def diop_solve(eq, param=symbols("t", integer=True)):
 
     >>> from sympy.solvers.diophantine import diop_solve
     >>> from sympy.abc import x, y, z, w
+    >>> from sympy.printing import pprint
     >>> diop_solve(2*x + 3*y - 5)
     (3*t - 5, -2*t + 5)
     >>> diop_solve(4*x + 3*y -4*z + 5)
     (3*t + 4*z - 5, -4*t - 4*z + 5,  z)
     >>> diop_solve(x + 3*y - 4*z + w -6)
     (t, -t - 3*y + 4*z + 6, y, z)
-    >>> diop_solve(x**2 + y**2 - 5)
+    >>> pprint(diop_solve(x**2 + y**2 - 5))
     set([(-2, -1), (-2, 1), (2, -1), (2, 1)])
 
     See Also
@@ -219,12 +225,12 @@ def classify_diop(eq):
 
     >>> from sympy.solvers.diophantine import classify_diop
     >>> from sympy.abc import x, y, z, w, t
-    >>> classify_diop(4*x + 6*y - 4)
-    ([x, y], {1: -4, x: 4, y: 6}, 'linear')
-    >>> classify_diop(x + 3*y -4*z + 5)
-    ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
-    >>> classify_diop(x**2 + y**2 - x*y + x + 5)
-    ([x, y], {1: 5, x: 1, x**2: 1, y: 0, y**2: 1, x*y: -1}, 'binary_quadratic')
+    >>> classify_diop(4*x + 6*y - 4) == ([x, y], {1: -4, x: 4, y: 6}, 'linear')
+    True
+    >>> classify_diop(x + 3*y -4*z + 5) == ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
+    True
+    >>> classify_diop(x**2 + y**2 - x*y + x + 5) == ([x, y], {1: 5, x: 1, x**2: 1, y: 0, y**2: 1, x*y: -1}, 'binary_quadratic')
+    True
     """
     eq = eq.expand(force=True)
     var = list(eq.free_symbols)
@@ -540,7 +546,8 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
 
     >>> from sympy.abc import x, y, t
     >>> from sympy.solvers.diophantine import diop_quadratic
-    >>> diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t)
+    >>> from sympy.printing import pprint
+    >>> pprint(diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t))
     set([(-1, -1)])
 
     References
@@ -1003,10 +1010,10 @@ def cornacchia(a, b, m):
     ========
 
     >>> from sympy.solvers.diophantine import cornacchia
-    >>> cornacchia(2, 3, 35) # equation 2x**2 + 3y**2 = 35
-    set([(2, 3), (4, 1)])
-    >>> cornacchia(1, 1, 25) # equation x**2 + y**2 = 25
-    set([(4, 3)])
+    >>> cornacchia(2, 3, 35) == {(2, 3), (4, 1)} # equation 2x**2 + 3y**2 = 35
+    True
+    >>> cornacchia(1, 1, 25) == {(4, 3)} # equation x**2 + y**2 = 25
+    True
 
     References
     ===========
@@ -2387,8 +2394,8 @@ def diop_general_sum_of_squares(eq, limit=1):
 
     >>> from sympy.solvers.diophantine import diop_general_sum_of_squares
     >>> from sympy.abc import a, b, c, d, e, f
-    >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345)
-    set([(0, 48, 5, 4, 0)])
+    >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345) == {(0, 48, 5, 4, 0)}
+    True
 
     Reference
     =========

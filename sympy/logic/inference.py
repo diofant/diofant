@@ -50,8 +50,8 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
 
     >>> from sympy.abc import A, B
     >>> from sympy.logic.inference import satisfiable
-    >>> satisfiable(A & ~B)
-    {A: True, B: False}
+    >>> satisfiable(A & ~B) == {A: True, B: False}
+    True
     >>> satisfiable(A & ~A)
     False
     >>> satisfiable(True)
@@ -59,10 +59,10 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     >>> next(satisfiable(A & ~A, all_models=True))
     False
     >>> models = satisfiable((A >> B) & B, all_models=True)
-    >>> next(models)
-    {A: False, B: True}
-    >>> next(models)
-    {A: True, B: True}
+    >>> next(models) == {A: False, B: True}
+    True
+    >>> next(models) == {A: True, B: True}
+    True
     >>> def use_models(models):
     ...     for model in models:
     ...         if model:
@@ -75,7 +75,6 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     {A: False}
     >>> use_models(satisfiable(A ^ A, all_models=True))
     UNSAT
-
     """
     expr = to_cnf(expr)
     if algorithm == "dpll":

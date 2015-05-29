@@ -1596,7 +1596,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     First, we try integrating exp(-x**2). Except for a constant factor of
     2/sqrt(pi), this is the famous error function.
 
-    >>> pprint(risch_integrate(exp(-x**2), x))
+    >>> pprint(risch_integrate(exp(-x**2), x), use_unicode=False)
       /
      |
      |    2
@@ -1613,7 +1613,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     For example,
 
     >>> pprint(risch_integrate((2*log(x)**2 - log(x) - x**2)/(log(x)**3 -
-    ... x**2*log(x)), x))
+    ... x**2*log(x)), x), use_unicode=False)
                                              /
                                             |
       log(-x + log(x))   log(x + log(x))    |   1
@@ -1631,11 +1631,11 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     nested exponentials and logarithms, as well as exponentials with bases
     other than E.
 
-    >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x))
+    >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x), use_unicode=False)
      / x\
      \e /
     e
-    >>> pprint(risch_integrate(exp(exp(x)), x))
+    >>> pprint(risch_integrate(exp(exp(x)), x), use_unicode=False)
       /
      |
      |  / x\
@@ -1644,10 +1644,10 @@ def risch_integrate(f, x, extension=None, handle_first='log',
      |
     /
 
-    >>> pprint(risch_integrate(x*x**x*log(x) + x**x + x*x**x, x))
+    >>> pprint(risch_integrate(x*x**x*log(x) + x**x + x*x**x, x), use_unicode=False)
        x
     x*x
-    >>> pprint(risch_integrate(x**x*log(x), x))
+    >>> pprint(risch_integrate(x**x*log(x), x), use_unicode=False)
       /
      |
      |  x
@@ -1655,7 +1655,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
      |
     /
 
-    >>> pprint(risch_integrate(-1/(x*log(x)*log(log(x))**2), x))
+    >>> pprint(risch_integrate(-1/(x*log(x)*log(log(x))**2), x), use_unicode=False)
          1
     -----------
     log(log(x))

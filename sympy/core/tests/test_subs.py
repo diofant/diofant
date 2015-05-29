@@ -635,3 +635,16 @@ def test_issue_5217():
     assert z.subs(sub) == 1 - s
     assert q == 4*x**2*y**2
     assert q.subs(sub) == 2*y**2*s
+
+
+def test_pow_eval_subs_no_cache():
+    from sympy.core.cache import clear_cache
+
+    s = 1/sqrt(x**2)
+    # This bug only appeared when the cache was turned off.
+    clear_cache()
+
+    # This used to fail with a wrong result.
+    # It incorrectly returned 1/sqrt(x**2) before.
+    result = s.subs(sqrt(x**2), y)
+    assert result == 1/y

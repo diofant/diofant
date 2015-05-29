@@ -139,11 +139,11 @@ def scaled_zero(mag, sign=1):
     >>> from sympy.core.evalf import scaled_zero
     >>> from sympy import Float
     >>> z, p = scaled_zero(100)
-    >>> z, p
-    (([0], 1, 100, 1), -1)
+    >>> (z, p) == (([0], 1, 100, 1), -1)
+    True
     >>> ok = scaled_zero(z)
-    >>> ok
-    (0, 1, 100, 1)
+    >>> ok == (0, 1, 100, 1)
+    True
     >>> Float(ok)
     1.26765060022823e+30
     >>> Float(ok, p)

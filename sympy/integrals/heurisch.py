@@ -42,8 +42,8 @@ def components(f, x):
     >>> from sympy.abc import x, y
     >>> from sympy.integrals.heurisch import components
 
-    >>> components(sin(x)*cos(x)**2, x)
-    set([x, sin(x), cos(x)])
+    >>> components(sin(x)*cos(x)**2, x) == {x, sin(x), cos(x)}
+    True
 
     See Also
     ========

@@ -50,7 +50,7 @@ class DeferredVector(Symbol, NotIterable):
 
     >>> from sympy import DeferredVector, lambdify
     >>> X = DeferredVector( 'X' )
-    >>> X
+    >>> print(X)
     X
     >>> expr = (X[0] + 2, X[2] + 3)
     >>> func = lambdify( X, expr)
@@ -1107,8 +1107,8 @@ class MatrixBase(object):
         >>> from sympy.matrices import Matrix
         >>> Matrix([[x]])
         Matrix([[x]])
-        >>> _.atoms()
-        set([x])
+        >>> _.atoms() == {x}
+        True
         """
 
         if types:
@@ -1130,8 +1130,8 @@ class MatrixBase(object):
 
         >>> from sympy.abc import x
         >>> from sympy.matrices import Matrix
-        >>> Matrix([[x], [1]]).free_symbols
-        set([x])
+        >>> Matrix([[x], [1]]).free_symbols == {x}
+        True
         """
 
         return set().union(*[i.free_symbols for i in self])

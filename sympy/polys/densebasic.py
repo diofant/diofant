@@ -21,9 +21,9 @@ def poly_LC(f, K):
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import poly_LC
 
-    >>> poly_LC([], ZZ)
+    >>> print(poly_LC([], ZZ))
     0
-    >>> poly_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> print(poly_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ))
     1
 
     """
@@ -43,9 +43,9 @@ def poly_TC(f, K):
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import poly_TC
 
-    >>> poly_TC([], ZZ)
+    >>> print(poly_TC([], ZZ))
     0
-    >>> poly_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> print(poly_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ))
     3
 
     """
@@ -70,7 +70,7 @@ def dmp_ground_LC(f, u, K):
 
     >>> f = ZZ.map([[[1], [2, 3]]])
 
-    >>> dmp_ground_LC(f, 2, ZZ)
+    >>> print(dmp_ground_LC(f, 2, ZZ))
     1
 
     """
@@ -93,7 +93,7 @@ def dmp_ground_TC(f, u, K):
 
     >>> f = ZZ.map([[[1], [2, 3]]])
 
-    >>> dmp_ground_TC(f, 2, ZZ)
+    >>> print(dmp_ground_TC(f, 2, ZZ))
     3
 
     """
@@ -113,10 +113,11 @@ def dmp_true_LT(f, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_true_LT
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[4], [2, 0], [3, 0, 0]])
 
-    >>> dmp_true_LT(f, 1, ZZ)
+    >>> pprint(dmp_true_LT(f, 1, ZZ))
     ((2, 0), 4)
 
     """
@@ -378,10 +379,11 @@ def dup_reverse(f):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_reverse
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([1, 2, 3, 0])
 
-    >>> dup_reverse(f)
+    >>> pprint(dup_reverse(f))
     [3, 2, 1]
 
     """
@@ -416,10 +418,11 @@ def dmp_copy(f, u):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_copy
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1], [1, 2]])
 
-    >>> dmp_copy(f, 1)
+    >>> pprint(dmp_copy(f, 1))
     [[1], [1, 2]]
 
     """
@@ -463,10 +466,11 @@ def dmp_to_tuple(f, u):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_to_tuple
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1], [1, 2]])
 
-    >>> dmp_to_tuple(f, 1)
+    >>> pprint(dmp_to_tuple(f, 1))
     ((1,), (1, 2))
 
     """
@@ -486,8 +490,9 @@ def dup_normal(f, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_normal
+    >>> from sympy.printing import pprint
 
-    >>> dup_normal([0, 1.5, 2, 3], ZZ)
+    >>> pprint(dup_normal([0, 1.5, 2, 3], ZZ))
     [1, 2, 3]
 
     """
@@ -503,8 +508,9 @@ def dmp_normal(f, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_normal
+    >>> from sympy.printing import pprint
 
-    >>> dmp_normal([[], [0, 1.5, 2]], 1, ZZ)
+    >>> pprint(dmp_normal([[], [0, 1.5, 2]], 1, ZZ))
     [[1, 2]]
 
     """
@@ -526,12 +532,13 @@ def dup_convert(f, K0, K1):
     >>> from sympy.polys.rings import ring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_convert
+    >>> from sympy.printing import pprint
 
     >>> R, x = ring("x", ZZ)
 
-    >>> dup_convert([R(1), R(2)], R.to_domain(), ZZ)
+    >>> pprint(dup_convert([R(1), R(2)], R.to_domain(), ZZ))
     [1, 2]
-    >>> dup_convert([ZZ(1), ZZ(2)], ZZ, R.to_domain())
+    >>> pprint(dup_convert([ZZ(1), ZZ(2)], ZZ, R.to_domain()))
     [1, 2]
 
     """
@@ -551,12 +558,13 @@ def dmp_convert(f, u, K0, K1):
     >>> from sympy.polys.rings import ring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_convert
+    >>> from sympy.printing import pprint
 
     >>> R, x = ring("x", ZZ)
 
-    >>> dmp_convert([[R(1)], [R(2)]], 1, R.to_domain(), ZZ)
+    >>> pprint(dmp_convert([[R(1)], [R(2)]], 1, R.to_domain(), ZZ))
     [[1], [2]]
-    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R.to_domain())
+    >>> pprint(dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R.to_domain()))
     [[1], [2]]
 
     """
@@ -623,9 +631,9 @@ def dup_nth(f, n, K):
 
     >>> f = ZZ.map([1, 2, 3])
 
-    >>> dup_nth(f, 0, ZZ)
+    >>> print(dup_nth(f, 0, ZZ))
     3
-    >>> dup_nth(f, 4, ZZ)
+    >>> print(dup_nth(f, 4, ZZ))
     0
 
     """
@@ -646,10 +654,11 @@ def dmp_nth(f, n, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_nth
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1], [2], [3]])
 
-    >>> dmp_nth(f, 0, 1, ZZ)
+    >>> pprint(dmp_nth(f, 0, 1, ZZ))
     [3]
     >>> dmp_nth(f, 4, 1, ZZ)
     []
@@ -675,7 +684,7 @@ def dmp_ground_nth(f, N, u, K):
 
     >>> f = ZZ.map([[1], [2, 3]])
 
-    >>> dmp_ground_nth(f, (0, 1), 1, ZZ)
+    >>> print(dmp_ground_nth(f, (0, 1), 1, ZZ))
     2
 
     """
@@ -767,8 +776,9 @@ def dmp_one(u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_one
+    >>> from sympy.printing import pprint
 
-    >>> dmp_one(2, ZZ)
+    >>> pprint(dmp_one(2, ZZ))
     [[[1]]]
 
     """
@@ -838,10 +848,11 @@ def dmp_zeros(n, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_zeros
+    >>> from sympy.printing import pprint
 
     >>> dmp_zeros(3, 2, ZZ)
     [[[[]]], [[[]]], [[[]]]]
-    >>> dmp_zeros(3, -1, ZZ)
+    >>> pprint(dmp_zeros(3, -1, ZZ))
     [0, 0, 0]
 
     """
@@ -863,10 +874,11 @@ def dmp_grounds(c, n, u):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_grounds
+    >>> from sympy.printing import pprint
 
-    >>> dmp_grounds(ZZ(4), 3, 2)
+    >>> pprint(dmp_grounds(ZZ(4), 3, 2))
     [[[[4]]], [[[4]]], [[[4]]]]
-    >>> dmp_grounds(ZZ(4), 3, -1)
+    >>> pprint(dmp_grounds(ZZ(4), 3, -1))
     [4, 4, 4]
 
     """
@@ -926,8 +938,9 @@ def dup_from_dict(f, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_from_dict
+    >>> from sympy.printing import pprint
 
-    >>> dup_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, ZZ)
+    >>> pprint(dup_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, ZZ))
     [1, 0, 5, 0, 7]
     >>> dup_from_dict({}, ZZ)
     []
@@ -959,8 +972,9 @@ def dup_from_raw_dict(f, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_from_raw_dict
+    >>> from sympy.printing import pprint
 
-    >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
+    >>> pprint(dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ))
     [1, 0, 5, 0, 7]
 
     """
@@ -984,8 +998,9 @@ def dmp_from_dict(f, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_from_dict
+    >>> from sympy.printing import pprint
 
-    >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
+    >>> pprint(dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ))
     [[1, 0], [], [2, 3]]
     >>> dmp_from_dict({}, 0, ZZ)
     []
@@ -1028,8 +1043,8 @@ def dup_to_dict(f, K=None, zero=False):
 
     >>> from sympy.polys.densebasic import dup_to_dict
 
-    >>> dup_to_dict([1, 0, 5, 0, 7])
-    {(0,): 7, (2,): 5, (4,): 1}
+    >>> dup_to_dict([1, 0, 5, 0, 7]) == {(0,): 7, (2,): 5, (4,): 1}
+    True
     >>> dup_to_dict([])
     {}
 
@@ -1080,8 +1095,8 @@ def dmp_to_dict(f, u, K=None, zero=False):
 
     >>> from sympy.polys.densebasic import dmp_to_dict
 
-    >>> dmp_to_dict([[1, 0], [], [2, 3]], 1)
-    {(0, 0): 3, (0, 1): 2, (2, 1): 1}
+    >>> dmp_to_dict([[1, 0], [], [2, 3]], 1) == {(0, 0): 3, (0, 1): 2, (2, 1): 1}
+    True
     >>> dmp_to_dict([], 0)
     {}
 
@@ -1115,14 +1130,15 @@ def dmp_swap(f, i, j, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_swap
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[[2], [1, 0]], []])
 
-    >>> dmp_swap(f, 0, 1, 2, ZZ)
+    >>> pprint(dmp_swap(f, 0, 1, 2, ZZ))
     [[[2], []], [[1, 0], []]]
-    >>> dmp_swap(f, 1, 2, 2, ZZ)
+    >>> pprint(dmp_swap(f, 1, 2, 2, ZZ))
     [[[1], [2, 0]], [[]]]
-    >>> dmp_swap(f, 0, 2, 2, ZZ)
+    >>> pprint(dmp_swap(f, 0, 2, 2, ZZ))
     [[[1, 0]], [[2, 0], []]]
 
     """
@@ -1150,12 +1166,13 @@ def dmp_permute(f, P, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_permute
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[[2], [1, 0]], []])
 
-    >>> dmp_permute(f, [1, 0, 2], 2, ZZ)
+    >>> pprint(dmp_permute(f, [1, 0, 2], 2, ZZ))
     [[[2], []], [[1, 0], []]]
-    >>> dmp_permute(f, [1, 2, 0], 2, ZZ)
+    >>> pprint(dmp_permute(f, [1, 2, 0], 2, ZZ))
     [[[1], []], [[2, 0], []]]
 
     """
@@ -1181,8 +1198,9 @@ def dmp_nest(f, l, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_nest
+    >>> from sympy.printing import pprint
 
-    >>> dmp_nest([[ZZ(1)]], 2, ZZ)
+    >>> pprint(dmp_nest([[ZZ(1)]], 2, ZZ))
     [[[[1]]]]
 
     """
@@ -1204,10 +1222,11 @@ def dmp_raise(f, l, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_raise
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[], [1, 2]])
 
-    >>> dmp_raise(f, 2, 1, ZZ)
+    >>> pprint(dmp_raise(f, 2, 1, ZZ))
     [[[[]]], [[[1]], [[2]]]]
 
     """
@@ -1236,10 +1255,11 @@ def dup_deflate(f, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_deflate
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([1, 0, 0, 1, 0, 0, 1])
 
-    >>> dup_deflate(f, ZZ)
+    >>> pprint(dup_deflate(f, ZZ))
     (3, [1, 1, 1])
 
     """
@@ -1269,10 +1289,11 @@ def dmp_deflate(f, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_deflate
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
 
-    >>> dmp_deflate(f, 1, ZZ)
+    >>> pprint(dmp_deflate(f, 1, ZZ))
     ((2, 3), [[1, 2], [3, 4]])
 
     """
@@ -1313,11 +1334,12 @@ def dup_multi_deflate(polys, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_multi_deflate
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([1, 0, 2, 0, 3])
     >>> g = ZZ.map([4, 0, 0])
 
-    >>> dup_multi_deflate((f, g), ZZ)
+    >>> pprint(dup_multi_deflate((f, g), ZZ))
     (2, ([1, 2, 3], [4, 0]))
 
     """
@@ -1352,11 +1374,12 @@ def dmp_multi_deflate(polys, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_multi_deflate
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
     >>> g = ZZ.map([[1, 0, 2], [], [3, 0, 4]])
 
-    >>> dmp_multi_deflate((f, g), 1, ZZ)
+    >>> pprint(dmp_multi_deflate((f, g), 1, ZZ))
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
 
     """
@@ -1408,10 +1431,11 @@ def dup_inflate(f, m, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_inflate
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([1, 1, 1])
 
-    >>> dup_inflate(f, 3, ZZ)
+    >>> pprint(dup_inflate(f, 3, ZZ))
     [1, 0, 0, 1, 0, 0, 1]
 
     """
@@ -1460,10 +1484,11 @@ def dmp_inflate(f, M, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_inflate
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1, 2], [3, 4]])
 
-    >>> dmp_inflate(f, (2, 3), 1, ZZ)
+    >>> pprint(dmp_inflate(f, (2, 3), 1, ZZ))
     [[1, 0, 0, 2], [], [3, 0, 0, 4]]
 
     """
@@ -1487,10 +1512,11 @@ def dmp_exclude(f, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_exclude
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[[1]], [[1], [2]]])
 
-    >>> dmp_exclude(f, 2, ZZ)
+    >>> pprint(dmp_exclude(f, 2, ZZ))
     ([2], [[1], [1, 2]], 1)
 
     """
@@ -1533,10 +1559,11 @@ def dmp_include(f, J, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_include
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1], [1, 2]])
 
-    >>> dmp_include(f, [2], 1, ZZ)
+    >>> pprint(dmp_include(f, [2], 1, ZZ))
     [[[1]], [[1], [2]]]
 
     """
@@ -1568,12 +1595,13 @@ def dmp_inject(f, u, K, front=False):
     >>> from sympy.polys.rings import ring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_inject
+    >>> from sympy.printing import pprint
 
     >>> R, x,y = ring("x,y", ZZ)
 
-    >>> dmp_inject([R(1), x + 2], 0, R.to_domain())
+    >>> pprint(dmp_inject([R(1), x + 2], 0, R.to_domain()))
     ([[[1]], [[1], [2]]], 2)
-    >>> dmp_inject([R(1), x + 2], 0, R.to_domain(), front=True)
+    >>> pprint(dmp_inject([R(1), x + 2], 0, R.to_domain(), front=True))
     ([[[1]], [[1, 2]]], 2)
 
     """
@@ -1640,10 +1668,11 @@ def dup_terms_gcd(f, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_terms_gcd
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([1, 0, 1, 0, 0])
 
-    >>> dup_terms_gcd(f, ZZ)
+    >>> pprint(dup_terms_gcd(f, ZZ))
     (2, [1, 0, 1])
 
     """
@@ -1670,10 +1699,11 @@ def dmp_terms_gcd(f, u, K):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_terms_gcd
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1, 0], [1, 0, 0], [], []])
 
-    >>> dmp_terms_gcd(f, 1, ZZ)
+    >>> pprint(dmp_terms_gcd(f, 1, ZZ))
     ((2, 1), [[1], [1, 0]])
 
     """
@@ -1722,12 +1752,13 @@ def dmp_list_terms(f, u, K, order=None):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_list_terms
+    >>> from sympy.printing import pprint
 
     >>> f = ZZ.map([[1, 1], [2, 3]])
 
-    >>> dmp_list_terms(f, 1, ZZ)
+    >>> pprint(dmp_list_terms(f, 1, ZZ))
     [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
-    >>> dmp_list_terms(f, 1, ZZ, order='grevlex')
+    >>> pprint(dmp_list_terms(f, 1, ZZ, order='grevlex'))
     [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
 
     """

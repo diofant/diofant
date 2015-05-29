@@ -44,7 +44,10 @@ def test_issue_4212():
 
 
 @XFAIL
+@slow
 def test_issue_4326():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     assert integrate(((h*(x - R + b))/b)*sqrt(R**2 - x**2), (x, R - b, R)).has(Integral)
 
 
@@ -112,7 +115,10 @@ def test_issue_4891():
 
 
 @XFAIL
+@slow
 def test_issue_1796a():
+    if ON_TRAVIS:
+        skip("Too slow for travis.")
     assert not integrate(exp(2*b*x)*exp(-a*x**2), x).has(Integral)
 
 

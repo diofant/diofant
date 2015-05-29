@@ -47,11 +47,11 @@ class Field(Ring):
         >>> from sympy import S, gcd, primitive
         >>> from sympy.abc import x
 
-        >>> QQ.gcd(QQ(2, 3), QQ(4, 9))
+        >>> print(QQ.gcd(QQ(2, 3), QQ(4, 9)))
         2/9
-        >>> gcd(S(2)/3, S(4)/9)
+        >>> print(gcd(S(2)/3, S(4)/9))
         2/9
-        >>> primitive(2*x/3 + S(4)/9)
+        >>> print(primitive(2*x/3 + S(4)/9))
         (2/9, 3*x + 2)
 
         """
@@ -72,9 +72,9 @@ class Field(Ring):
         >>> from sympy.polys.domains import QQ
         >>> from sympy import S, lcm
 
-        >>> QQ.lcm(QQ(2, 3), QQ(4, 9))
+        >>> print(QQ.lcm(QQ(2, 3), QQ(4, 9)))
         4/3
-        >>> lcm(S(2)/3, S(4)/9)
+        >>> print(lcm(S(2)/3, S(4)/9))
         4/3
 
         """

@@ -2,7 +2,7 @@ from __future__ import print_function, division
 
 from sympy.core.basic import Basic
 from sympy.core.compatibility import as_int, with_metaclass, range
-from sympy.sets.sets import Set, Interval, Intersection, EmptySet
+from sympy.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from sympy.core.singleton import Singleton, S
 from sympy.core.sympify import _sympify
 from sympy.core.function import Lambda
@@ -272,23 +272,31 @@ class ImageSet(Set):
                 return imageset(Lambda(t, f.subs(a, solns[0][0])), S.Integers)
 
         if other == S.Reals:
-            from sympy.solvers.solveset import solveset_real
+            from sympy.solvers.diophantine import diophantine
             from sympy.core.function import expand_complex
-            if len(self.lamda.variables) > 1:
-                return None
+            if len(self.lamda.variables) > 1 or self.base_set is not S.Integers:
+                return
 
             f = self.lamda.expr
             n = self.lamda.variables[0]
 
-            n_ = Dummy(n.name, extended_real=True)
+            n_ = Dummy(n.name, integer=True)
             f_ = f.subs(n, n_)
 
             re, im = f_.as_real_imag()
             im = expand_complex(im)
 
-            return imageset(Lambda(n_, re),
-                            self.base_set.intersect(
-                                solveset_real(im, n_)))
+            sols = list(diophantine(im, n_))
+            if not sols:
+                return S.EmptySet
+            elif all(s[0].has(n_) is False for s in sols):
+                s = FiniteSet(*[s[0] for s in sols])
+            elif len(sols) == 1 and sols[0][0].has(n_):
+                s = imageset(Lambda(n_, sols[0][0]), S.Integers)
+            else:
+                return
+
+            return imageset(Lambda(n_, re), self.base_set.intersect(s))
 
 
 class Range(Set):

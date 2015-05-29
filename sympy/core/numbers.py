@@ -647,8 +647,8 @@ class Float(Number):
     An actual mpf tuple also contains the number of bits in c as the last
     element of the tuple:
 
-    >>> _._mpf_
-    (1, 5, 0, 3)
+    >>> _._mpf_ == (1, 5, 0, 3)
+    True
 
     This is not needed for instantiation and is not the same thing as the
     precision. The mpf tuple and the precision are two separate quantities

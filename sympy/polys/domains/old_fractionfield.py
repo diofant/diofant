@@ -114,15 +114,15 @@ class FractionField(Field, CharacteristicZero, CompositeDomain):
         >>> from sympy.polys.polyclasses import DMF
         >>> from sympy.polys.domains import ZZ, QQ
         >>> from sympy.abc import x
+        >>> from sympy.printing import sstr
 
         >>> f = DMF(([ZZ(1), ZZ(2)], [ZZ(1), ZZ(1)]), ZZ)
 
         >>> QQx = QQ.old_frac_field(x)
         >>> ZZx = ZZ.old_frac_field(x)
 
-        >>> QQx.from_FractionField(f, ZZx)
+        >>> print(sstr(QQx.from_FractionField(f, ZZx)))
         (x + 2)/(x + 1)
-
         """
         if K1.gens == K0.gens:
             if K1.dom == K0.dom:

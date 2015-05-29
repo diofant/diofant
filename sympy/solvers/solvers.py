@@ -87,17 +87,17 @@ def denoms(eq, symbols=None):
     >>> from sympy.abc import x, y, z
     >>> from sympy import sqrt
 
-    >>> denoms(x/y)
-    set([y])
+    >>> denoms(x/y) == {y}
+    True
 
-    >>> denoms(x/(y*z))
-    set([y, z])
+    >>> denoms(x/(y*z)) == {y, z}
+    True
 
-    >>> denoms(3/x + y/z)
-    set([x, z])
+    >>> denoms(3/x + y/z) == {x, z}
+    True
 
-    >>> denoms(x/2 + y/z)
-    set([2, z])
+    >>> denoms(x/2 + y/z) == {2, z}
+    True
     """
 
     pot = preorder_traversal(eq)
@@ -439,7 +439,7 @@ def solve(f, *symbols, **flags):
 
     The output varies according to the input and can be seen by example::
 
-        >>> from sympy import solve, Poly, Eq, Function, exp
+        >>> from sympy import solve, Poly, Eq, Function, exp, I, sqrt
         >>> from sympy.abc import x, y, z, a, b
         >>> f = Function('f')
 
@@ -452,13 +452,13 @@ def solve(f, *symbols, **flags):
 
         >>> solve(x - 3, dict=True)
         [{x: 3}]
-        >>> solve([x - 3, y - 1], dict=True)
-        [{x: 3, y: 1}]
+        >>> solve([x - 3, y - 1], dict=True) == [{x: 3, y: 1}]
+        True
 
     * to get a list of symbols and set of solution(s) use flag set=True
 
-        >>> solve([x**2 - 3, y - 1], set=True)
-        ([x, y], set([(-sqrt(3), 1), (sqrt(3), 1)]))
+        >>> solve([x**2 - 3, y - 1], set=True) == ([x, y], {(-sqrt(3), 1), (sqrt(3), 1)})
+        True
 
     * single expression and single symbol that is in the expression
 
@@ -470,10 +470,10 @@ def solve(f, *symbols, **flags):
         [3]
         >>> solve(Poly(x - 3), x)
         [3]
-        >>> solve(x**2 - y**2, x, set=True)
-        ([x], set([(-y,), (y,)]))
-        >>> solve(x**4 - 1, x, set=True)
-        ([x], set([(-1,), (1,), (-I,), (I,)]))
+        >>> solve(x**2 - y**2, x, set=True) == ([x], {(-y,), (y,)})
+        True
+        >>> solve(x**4 - 1, x, set=True) == ([x], {(-1,), (1,), (-I,), (I,)})
+        True
 
     * single expression with no symbol that is in the expression
 
@@ -491,12 +491,12 @@ def solve(f, *symbols, **flags):
 
             >>> solve(x - 3)
             [3]
-            >>> solve(x**2 - y**2)
-            [{x: -y}, {x: y}]
-            >>> solve(z**2*x**2 - z**2*y**2)
-            [{x: -y}, {x: y}, {z: 0}]
-            >>> solve(z**2*x - z**2*y**2)
-            [{x: y**2}, {z: 0}]
+            >>> solve(x**2 - y**2) == [{x: -y}, {x: y}]
+            True
+            >>> solve(z**2*x**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
+            True
+            >>> solve(z**2*x - z**2*y**2) == [{x: y**2}, {z: 0}]
+            True
 
     * when an object other than a Symbol is given as a symbol, it is
       isolated algebraically and an implicit solution may be obtained.
@@ -511,14 +511,14 @@ def solve(f, *symbols, **flags):
           [x + f(x)]
           >>> solve(f(x).diff(x) - f(x) - x, f(x))
           [-x + Derivative(f(x), x)]
-          >>> solve(x + exp(x)**2, exp(x), set=True)
-          ([exp(x)], set([(-sqrt(-x),), (sqrt(-x),)]))
+          >>> solve(x + exp(x)**2, exp(x), set=True) == ([exp(x)], {(-sqrt(-x),), (sqrt(-x),)})
+          True
 
           >>> from sympy import Indexed, IndexedBase, Tuple, sqrt
           >>> A = IndexedBase('A')
           >>> eqs = Tuple(A[1] + A[2] - 3, A[1] - A[2] + 1)
-          >>> solve(eqs, eqs.atoms(Indexed))
-          {A[1]: 1, A[2]: 2}
+          >>> solve(eqs, eqs.atoms(Indexed)) == {A[1]: 1, A[2]: 2}
+          True
 
         * To solve for a *symbol* implicitly, use 'implicit=True':
 
@@ -532,17 +532,17 @@ def solve(f, *symbols, **flags):
 
             >>> solve(x + 2 + sqrt(3), x + 2)
             [-sqrt(3)]
-            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2)
-            {y: -2 + sqrt(3), x + 2: -sqrt(3)}
+            >>> solve((x + 2 + sqrt(3), x + 4 + y), y, x + 2) == {y: -2 + sqrt(3), x + 2: -sqrt(3)}
+            True
 
         * Nothing heroic is done in this implicit solving so you may end up
           with a symbol still in the solution:
 
             >>> eqs = (x*y + 3*y + sqrt(3), x + 4 + y)
-            >>> solve(eqs, y, x + 2)
-            {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
-            >>> solve(eqs, y*x, x)
-            {x: -y - 4, x*y: -3*y - sqrt(3)}
+            >>> solve(eqs, y, x + 2) == {y: -sqrt(3)/(x + 3), x + 2: (-2*x - 6 + sqrt(3))/(x + 3)}
+            True
+            >>> solve(eqs, y*x, x) == {x: -y - 4, x*y: -3*y - sqrt(3)}
+            True
 
         * if you attempt to solve for a number remember that the number
           you have obtained does not necessarily mean that the value is
@@ -570,23 +570,23 @@ def solve(f, *symbols, **flags):
 
             * that are linear
 
-                >>> solve((a + b)*x - b + 2, a, b)
-                {a: -2, b: 2}
+                >>> solve((a + b)*x - b + 2, a, b) == {a: -2, b: 2}
+                True
 
             * that are nonlinear
 
-                >>> solve((a + b)*x - b**2 + 2, a, b, set=True)
-                ([a, b], set([(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))]))
+                >>> solve((a + b)*x - b**2 + 2, a, b, set=True) == ([a, b], {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))})
+                True
 
         * if there is no linear solution then the first successful
           attempt for a nonlinear solution will be returned
 
-            >>> solve(x**2 - y**2, x, y)
-            [{x: -y}, {x: y}]
+            >>> solve(x**2 - y**2, x, y) == [{x: -y}, {x: y}]
+            True
             >>> solve(x**2 - y**2/exp(x), x, y)
             [{x: 2*LambertW(y/2)}]
-            >>> solve(x**2 - y**2/exp(x), y, x)
-            [{y: -x*sqrt(exp(x))}, {y: x*sqrt(exp(x))}]
+            >>> solve(x**2 - y**2/exp(x), y, x) == [{y: -x*sqrt(exp(x))}, {y: x*sqrt(exp(x))}]
+            True
 
     * iterable of one or more of the above
 
@@ -603,12 +603,12 @@ def solve(f, *symbols, **flags):
 
                 >>> solve([x - 3], x)
                 {x: 3}
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y)
-                {x: -3, y: 1}
-                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z)
-                {x: -3, y: 1}
-                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y)
-                {x: -5*y + 2, z: 21*y - 6}
+                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y) == {x: -3, y: 1}
+                True
+                >>> solve((x + 5*y - 2, -3*x + 6*y - 15), x, y, z) == {x: -3, y: 1}
+                True
+                >>> solve((x + 5*y - 2, -3*x + 6*y - z), z, x, y) == {x: -5*y + 2, z: 21*y - 6}
+                True
 
             * without a solution
 
@@ -617,16 +617,16 @@ def solve(f, *symbols, **flags):
 
         * when the system is not linear
 
-            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True)
-            ([x, y], set([(-2, -2), (0, 2), (2, -2)]))
+            >>> solve([x**2 + y -2, y**2 - 4], x, y, set=True) == ([x, y], {(-2, -2), (0, 2), (2, -2)})
+            True
 
         * if no symbols are given, all free symbols will be selected and a list
           of mappings returned
 
-            >>> solve([x - 2, x**2 + y])
-            [{x: 2, y: -4}]
-            >>> solve([x - 2, x**2 + f(x)], {f(x), x})
-            [{x: 2, f(x): -4}]
+            >>> solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
+            True
+            >>> solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
+            True
 
         * if any equation doesn't depend on the symbol(s) given it will be
           eliminated from the equation set and an answer may be given
@@ -2071,8 +2071,8 @@ def solve_linear_system(system, *symbols, **flags):
         -2 x +   y == 14
 
     >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
-    >>> solve_linear_system(system, x, y)
-    {x: -6, y: 2}
+    >>> solve_linear_system(system, x, y) == {x: -6, y: 2}
+    True
 
     A degenerate system returns an empty dictionary.
 
@@ -2249,15 +2249,15 @@ def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
        SymPy expressions. Specification of parameters and variable is
        obligatory for efficiency and simplicity reason.
 
-       >>> from sympy import Eq
+       >>> from sympy import Eq, Rational
        >>> from sympy.abc import a, b, c, x
        >>> from sympy.solvers import solve_undetermined_coeffs
 
-       >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x)
-       {a: 1/2, b: -1/2}
+       >>> solve_undetermined_coeffs(Eq(2*a*x + a+b, x), [a, b], x) == {a: Rational(1, 2), b: -Rational(1, 2)}
+       True
 
-       >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x)
-       {a: 1/c, b: -1/c}
+       >>> solve_undetermined_coeffs(Eq(a*c*x + a+b, x), [a, b], x) == {a: 1/c, b: -1/c}
+       True
 
     """
     if isinstance(equ, Equality):
@@ -2288,15 +2288,16 @@ def solve_linear_system_LU(matrix, syms):
     Examples
     ========
 
-    >>> from sympy import Matrix
+    >>> from sympy import Matrix, Rational
     >>> from sympy.abc import x, y, z
     >>> from sympy.solvers.solvers import solve_linear_system_LU
 
     >>> solve_linear_system_LU(Matrix([
     ... [1, 2, 0, 1],
     ... [3, 2, 2, 1],
-    ... [2, 0, 0, 1]]), [x, y, z])
-    {x: 1/2, y: 1/4, z: -1/2}
+    ... [2, 0, 0, 1]]), [x, y, z]) == {x: Rational(1, 2),
+    ...                                y: Rational(1, 4), z: -Rational(1, 2)}
+    True
 
     See Also
     ========
