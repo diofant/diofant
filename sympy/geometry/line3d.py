@@ -16,7 +16,7 @@ from sympy.simplify.simplify import simplify
 from sympy.solvers import solve
 from sympy.geometry.exceptions import GeometryError
 from .entity import GeometryEntity
-from .point3d import Point3D
+from .point import Point3D
 from .util import _symbol
 from sympy.core.compatibility import is_sequence, range
 
@@ -1306,7 +1306,7 @@ class Segment3D(LinearEntity3D):
     See Also
     ========
 
-    sympy.geometry.point3d.Point3D, Line3D
+    sympy.geometry.point.Point3D, Line3D
 
     Examples
     ========
@@ -1326,7 +1326,6 @@ class Segment3D(LinearEntity3D):
     sqrt(17)
     >>> s.midpoint
     Point3D(5/2, 2, 8)
-
     """
 
     def __new__(cls, p1, p2, **kwargs):
@@ -1380,7 +1379,7 @@ class Segment3D(LinearEntity3D):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D.distance
+        sympy.geometry.point.Point.distance
 
         Examples
         ========
@@ -1401,7 +1400,7 @@ class Segment3D(LinearEntity3D):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D.midpoint
+        sympy.geometry.point.Point.midpoint
 
         Examples
         ========
