@@ -92,7 +92,9 @@ class stringPict(object):
         Examples
         ========
 
+        >>> from sympy.printing.pretty.pretty_symbology import pretty_use_unicode
         >>> from sympy.printing.pretty.stringpict import stringPict
+        >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict("10").right(" + ",stringPict("1\r-\r2",1))[0])
              1
         10 + -
@@ -154,7 +156,9 @@ class stringPict(object):
         Examples
         ========
 
+        >>> from sympy.printing.pretty.pretty_symbology import pretty_use_unicode
         >>> from sympy.printing.pretty.stringpict import stringPict
+        >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict("x+3").below(
         ...       stringPict.LINE, '3')[0]) #doctest: +NORMALIZE_WHITESPACE
         x+3

@@ -5,7 +5,6 @@ from __future__ import print_function, division
 from io import BytesIO
 
 from sympy import latex as default_latex
-from sympy import preview
 from sympy.core.compatibility import integer_types
 from sympy.utilities.misc import debug
 
@@ -67,19 +66,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
         else:
             p.text(IPython.lib.pretty.pretty(arg))
 
-    def _preview_wrapper(o):
-        exprbuffer = BytesIO()
-        try:
-            preview(o, output='png', viewer='BytesIO',
-                    outputbuffer=exprbuffer, preamble=preamble,
-                    dvioptions=dvioptions)
-        except Exception as e:
-            # IPython swallows exceptions
-            debug("png printing:", "_preview_wrapper exception raised:",
-                  repr(e))
-            raise
-        return exprbuffer.getvalue()
-
     def _matplotlib_wrapper(o):
         # mathtext does not understand certain latex flags, so we try to
         # replace them with suitable subs
@@ -108,20 +94,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
         elif isinstance(o, (float, integer_types)) and print_builtin:
             return True
         return False
-
-    def _print_latex_png(o):
-        """
-        A function that returns a png rendered by an external latex
-        distribution, falling back to matplotlib rendering
-        """
-        if _can_print_latex(o):
-            s = latex(o, mode=latex_mode)
-            try:
-                return _preview_wrapper(s)
-            except RuntimeError:
-                if latex_mode != 'inline':
-                    s = latex(o, mode='inline')
-                return _matplotlib_wrapper(s)
 
     def _print_latex_matplotlib(o):
         """
@@ -177,11 +149,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
             plaintext_formatter.for_type(cls, _print_plain)
 
         png_formatter = ip.display_formatter.formatters['image/png']
-        if use_latex in (True, 'png'):
-            debug("init_printing: using png formatter")
-            for cls in printable_types:
-                png_formatter.for_type(cls, _print_latex_png)
-        elif use_latex == 'matplotlib':
+        if use_latex in (True, 'matplotlib'):
             debug("init_printing: using matplotlib formatter")
             for cls in printable_types:
                 png_formatter.for_type(cls, _print_latex_matplotlib)

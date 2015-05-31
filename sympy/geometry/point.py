@@ -66,7 +66,7 @@ class Point(GeometryEntity):
 
     >>> Point(0.5, 0.25)
     Point(1/2, 1/4)
-    >>> Point(0.5, 0.25, evaluate=False)
+    >>> print(Point(0.5, 0.25, evaluate=False))
     Point(0.5, 0.25)
 
     """
@@ -376,7 +376,7 @@ class Point(GeometryEntity):
         >>> p1 = Point(Rational(1, 2), Rational(3, 2))
         >>> p1
         Point(1/2, 3/2)
-        >>> p1.evalf()
+        >>> print(p1.evalf())
         Point(0.5, 1.5)
 
         """

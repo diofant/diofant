@@ -20,7 +20,6 @@ Contents:
    memoization.rst
    misc.rst
    pkgdata.rst
-   pytest.rst
    randtest.rst
    runtests.rst
    source.rst

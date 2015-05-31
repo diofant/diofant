@@ -999,7 +999,7 @@ def symarray(prefix, shape):  # pragma: no cover
     These doctests require numpy.
 
     >>> from sympy import symarray
-    >>> symarray('', 3)
+    >>> print(symarray('', 3))
     [_0 _1 _2]
 
     If you want multiple symarrays to contain distinct symbols, you *must*
@@ -1016,15 +1016,15 @@ def symarray(prefix, shape):  # pragma: no cover
 
     Creating symarrays with a prefix:
 
-    >>> symarray('a', 3)
+    >>> print(symarray('a', 3))
     [a_0 a_1 a_2]
 
     For more than one dimension, the shape must be given as a tuple:
 
-    >>> symarray('a', (2, 3))
+    >>> print(symarray('a', (2, 3)))
     [[a_0_0 a_0_1 a_0_2]
      [a_1_0 a_1_1 a_1_2]]
-    >>> symarray('a', (2, 3, 2))
+    >>> print(symarray('a', (2, 3, 2)))
     [[[a_0_0_0 a_0_0_1]
       [a_0_1_0 a_0_1_1]
       [a_0_2_0 a_0_2_1]]
@@ -1411,7 +1411,7 @@ def hessian(f, varlist, constraints=[]):
     >>> f = Function('f')(x, y)
     >>> g1 = Function('g')(x, y)
     >>> g2 = x**2 + 3*y
-    >>> pprint(hessian(f, (x, y), [g1, g2]))
+    >>> pprint(hessian(f, (x, y), [g1, g2]), use_unicode=False)
     [                   d               d            ]
     [     0        0    --(g(x, y))     --(g(x, y))  ]
     [                   dx              dy           ]

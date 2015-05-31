@@ -361,7 +361,7 @@ class Polyhedron(Basic):
 
         >>> from sympy.combinatorics.polyhedron import cube
         >>> cube.edges
-        {(0, 1), (0, 3), (0, 4), '...', (4, 7), (5, 6), (6, 7)}
+        {(0, 1), (0, 3), (0, 4), ..., (4, 7), (5, 6), (6, 7)}
 
         If you want to use letters or other names for the corners you
         can still use the pre-calculated faces:
@@ -432,6 +432,7 @@ class Polyhedron(Basic):
         [0, 2, 3, 1]
         >>> tetrahedron.pgroup[0].array_form
         [0, 2, 3, 1]
+        >>> tetrahedron.reset()
 
         See Also
         ========

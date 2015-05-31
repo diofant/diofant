@@ -68,7 +68,7 @@ class Point3D(GeometryEntity):
 
     >>> Point3D(0.5, 0.25, 2)
     Point3D(1/2, 1/4, 2)
-    >>> Point3D(0.5, 0.25, 3, evaluate=False)
+    >>> print(Point3D(0.5, 0.25, 3, evaluate=False))
     Point3D(0.5, 0.25, 3)
 
     """
@@ -410,7 +410,7 @@ class Point3D(GeometryEntity):
         >>> p1 = Point3D(Rational(1, 2), Rational(3, 2), Rational(5, 2))
         >>> p1
         Point3D(1/2, 3/2, 5/2)
-        >>> p1.evalf()
+        >>> print(p1.evalf())
         Point3D(0.5, 1.5, 2.5)
 
         """

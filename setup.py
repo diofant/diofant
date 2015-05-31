@@ -97,7 +97,7 @@ class clean(Command):
                     os.remove(os.path.join(root, file))
 
         os.chdir(dir_setup)
-        names = ["python-build-stamp-2.4", "MANIFEST", "build", "dist", "doc/_build", "sample.tex", ".coverage"]
+        names = ["python-build-stamp-2.4", "MANIFEST", "build", "dist", "doc/_build", ".coverage"]
 
         for f in names:
             if os.path.isfile(f):

@@ -1351,7 +1351,7 @@ class li(Function):
     We can even compute Soldner's constant by the help of mpmath:
 
     >>> from mpmath import findroot
-    >>> findroot(li, 2)
+    >>> print(findroot(li, 2))
     1.45136923488338
 
     Further transformations include rewriting `li` in terms of

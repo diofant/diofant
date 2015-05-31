@@ -754,7 +754,7 @@ def solve(f, *symbols, **flags):
     which numerical roots can be found:
 
         >>> from sympy.solvers.solvers import unrad
-        >>> from sympy import nroots
+        >>> from sympy import nroots, pprint
         >>> e, (p, cov) = unrad(eq)
         >>> pvals = nroots(e)
         >>> inversion = solve(cov, x)[0]
@@ -767,7 +767,7 @@ def solve(f, *symbols, **flags):
         >>> [xi.n(chop=1e-9) for xi in xvals if abs(z.subs(x, xi).n()) < 1e-9]
         []
         >>> z1 = expr1 - v
-        >>> [xi.n(chop=1e-9) for xi in xvals if abs(z1.subs(x, xi).n()) < 1e-9]
+        >>> pprint([xi.n(chop=1e-9) for xi in xvals if abs(z1.subs(x, xi).n()) < 1e-9])
         [-3.0]
 
     See Also
@@ -2610,9 +2610,9 @@ def nsolve(*args, **kwargs):
 
     >>> from sympy import sin, nsolve
     >>> from sympy.abc import x
-    >>> nsolve(sin(x), x, 2)
+    >>> print(nsolve(sin(x), x, 2))
     3.14159265358979
-    >>> nsolve(sin(x), 2)
+    >>> print(nsolve(sin(x), 2))
     3.14159265358979
 
     mpmath.findroot is used, you can find there more extensive documentation,
@@ -2630,7 +2630,7 @@ def nsolve(*args, **kwargs):
     Traceback (most recent call last):
     ...
     ValueError: Could not find root within given tolerance. (1.39267e+230 > 2.1684e-19)
-    >>> ans = nsolve(f, 3.14*100, verify=False); ans
+    >>> ans = nsolve(f, 3.14*100, verify=False); print(ans)
     312.588469032184
     >>> f.subs(x, ans).n(2)
     2.1e+121
@@ -2641,7 +2641,7 @@ def nsolve(*args, **kwargs):
     and a bisection method is used:
 
     >>> bounds = lambda i: (3.14*i, 3.14*(i + 1))
-    >>> nsolve(f, bounds(100), solver='bisect', verify=False)
+    >>> print(nsolve(f, bounds(100), solver='bisect', verify=False))
     315.730061685774
     """
     # there are several other SymPy functions that use method= so

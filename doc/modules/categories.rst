@@ -67,5 +67,3 @@ diagrams.
    :members:
 
 .. autofunction:: xypic_draw_diagram
-
-.. autofunction:: preview_diagram
