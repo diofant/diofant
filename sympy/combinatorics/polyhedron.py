@@ -432,6 +432,7 @@ class Polyhedron(Basic):
         [0, 2, 3, 1]
         >>> tetrahedron.pgroup[0].array_form
         [0, 2, 3, 1]
+        >>> tetrahedron.reset()
 
         See Also
         ========
