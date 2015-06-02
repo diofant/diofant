@@ -82,10 +82,10 @@ def _check_cycles_alt_sym(perm):
 
     >>> from sympy.combinatorics.util import _check_cycles_alt_sym
     >>> from sympy.combinatorics.permutations import Permutation
-    >>> a = Permutation([[0,1,2,3,4,5,6,7,8,9,10], [11, 12]])
+    >>> a = Permutation([[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [11, 12]])
     >>> _check_cycles_alt_sym(a)
     False
-    >>> b = Permutation([[0,1,2,3,4,5,6], [7,8,9,10]])
+    >>> b = Permutation([[0, 1, 2, 3, 4, 5, 6], [7, 8, 9, 10]])
     >>> _check_cycles_alt_sym(b)
     True
 
