@@ -1574,6 +1574,7 @@ def test_undetermined_coefficients_match():
     assert _undetermined_coefficients_match(2**(x**2), x) == {'test': False}
 
 
+@slow
 def test_nth_linear_constant_coeff_undetermined_coefficients():
     hint = 'nth_linear_constant_coeff_undetermined_coefficients'
     g = exp(-x)
@@ -2333,6 +2334,7 @@ def test_heuristic2():
     assert checkinfsol(eq, i)[0]
 
 
+@slow
 def test_heuristic3():
     y = Symbol('y')
     xi = Function('xi')
