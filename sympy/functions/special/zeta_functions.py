@@ -5,7 +5,7 @@ from sympy.core import Function, S, sympify, pi
 from sympy.core.function import ArgumentIndexError
 from sympy.core.compatibility import range
 from sympy.functions.combinatorial.numbers import bernoulli, factorial, harmonic
-from sympy.functions.elementary.exponential import log
+from sympy.functions.elementary.exponential import log, exp
 
 
 ###############################################################################
@@ -472,6 +472,33 @@ class zeta(Function):
             return -s*zeta(s + 1, a)
         else:
             raise ArgumentIndexError
+
+    def _eval_rewrite_as_tractable(self, s, a=1):
+        if len(self.args) == 1:
+            return _zetas(exp(s))
+        else:
+            return self
+
+
+class _zetas(Function):
+    def _eval_rewrite_as_intractable(self, s):
+        return zeta(log(s))
+
+    def _eval_aseries(self, n, args0, x, logx):
+        from sympy import Order, Add
+        point = args0[0]
+
+        # Expansion at oo
+        if point is S.Infinity:
+            if n < 1:
+                return Order(1, x)
+            z = self.args[0]
+            l = [(1/z)**log(p) for p in range(1, n)]
+            o = Order(1/z**log(n), x)
+            return (Add(*l))._eval_nseries(x, n, logx) + o
+
+        # All other points are not handled
+        return super(_zetas, self)._eval_aseries(n, args0, x, logx)
 
 
 class dirichlet_eta(Function):

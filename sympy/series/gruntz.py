@@ -157,7 +157,7 @@ def sign(e, x):
         sign arbitarily often at infinity (e.g. `sin(x)`).
     """
     if not e.has(x):
-        return sgn(e)
+        return sgn(e).simplify()
     elif e == x:
         return 1
     elif e.is_Mul:
