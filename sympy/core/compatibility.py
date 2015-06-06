@@ -195,6 +195,7 @@ class NotIterable:
     """
     pass
 
+
 def iterable(i, exclude=(string_types, dict, NotIterable)):
     """
     Return a boolean indicating whether ``i`` is SymPy iterable.
@@ -206,7 +207,10 @@ def iterable(i, exclude=(string_types, dict, NotIterable)):
     by default. If you want a pure Python definition, make exclude=None. To
     exclude multiple items, pass them as a tuple.
 
-    See also: is_sequence
+    See Also
+    ========
+
+    is_sequence
 
     Examples
     ========
@@ -254,7 +258,10 @@ def is_sequence(i, include=None):
     exhausted, so these are not included by default in the definition of a
     sequence.
 
-    See also: iterable
+    See Also
+    ========
+
+    iterable
 
     Examples
     ========
@@ -274,7 +281,6 @@ def is_sequence(i, include=None):
     False
     >>> is_sequence(generator, include=(str, GeneratorType))
     True
-
     """
     return (hasattr(i, '__getitem__') and
             iterable(i) or

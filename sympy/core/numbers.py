@@ -1564,7 +1564,10 @@ class Rational(Number):
         >>> (S(-3)/2).as_content_primitive()
         (3/2, -1)
 
-        See docstring of Expr.as_content_primitive for more examples.
+        See Also
+        ========
+
+        sympy.core.expr.Expr.as_content_primitive
         """
 
         if self:
