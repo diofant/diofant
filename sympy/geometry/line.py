@@ -1761,5 +1761,4 @@ class Segment(LinearEntity):
                     return 0 <= ti <= 1
                 return
 
-        # No other known entity can be contained in a Ray
         return False
