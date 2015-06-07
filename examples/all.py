@@ -125,48 +125,40 @@ def run_examples(windowed=False, quiet=False, summary=True):
     if windowed:
         examples += WINDOWED_EXAMPLES
 
-    if quiet:
-        from sympy.utilities.runtests import PyTestReporter
-        reporter = PyTestReporter()
-        reporter.write("Testing Examples\n")
-        reporter.write("-" * reporter.terminal_width)
-    else:
-        reporter = None
-
     for example in examples:
-        if run_example(example, reporter=reporter):
+        if run_example(example, quiet):
             successes.append(example)
         else:
             failures.append(example)
 
     if summary:
-        show_summary(successes, failures, reporter=reporter)
+        show_summary(successes, failures, quiet)
 
     return len(failures) == 0
 
 
-def run_example(example, reporter=None):
+def run_example(example, quiet=False):
     """Run a specific example.
 
     Returns a boolean value indicating whether the example was successful.
     """
-    if reporter:
-        reporter.write(example)
+    if quiet:
+        print(example + " " * (72 - len(example)), end='')
     else:
         print("=" * 79)
         print("Running: ", example)
 
     try:
         mod = load_example_module(example)
-        if reporter:
+        if quiet:
             suppress_output(mod.main)
-            reporter.write("[PASS]", "Green", align="right")
+            print("[PASS]")
         else:
             mod.main()
         return True
     except:
-        if reporter:
-            reporter.write("[FAIL]", "Red", align="right")
+        if quiet:
+            print("[FAIL]")
         traceback.print_exc()
         return False
 
@@ -186,16 +178,16 @@ def suppress_output(fn):
         sys.stdout = save_stdout
 
 
-def show_summary(successes, failures, reporter=None):
+def show_summary(successes, failures, quiet=False):
     """Shows a summary detailing which examples were successful and which failed."""
-    if reporter:
-        reporter.write("-" * reporter.terminal_width)
+    if quiet:
+        print("-" * 79)
         if failures:
-            reporter.write("FAILED:\n", "Red")
+            print("FAILED:")
             for example in failures:
-                reporter.write("  %s\n" % example)
+                print("  " + example)
         else:
-            reporter.write("ALL EXAMPLES PASSED\n", "Green")
+            print("ALL EXAMPLES PASSED")
     else:
         if successes:
             print("SUCCESSFUL: ", file=sys.stderr)
