@@ -5,6 +5,7 @@ set -e -x # exit on error and echo each command
 if [[ "${TEST_SPHINX}" == "true" ]]; then
     make -C doc html-errors man latex
     LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
+    python examples/all.py -q
 else
     if [[ "${TEST_SLOW}" == "true" ]]; then
         py.test -m 'slow' --duration=100 --split="${SPLIT}" \
