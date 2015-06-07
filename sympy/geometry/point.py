@@ -517,6 +517,15 @@ class Point(GeometryEntity):
         sympy.geometry.entity.GeometryEntity.scale
         sympy.geometry.entity.GeometryEntity.translate
         """
+        try:
+            col, row = matrix.shape
+            valid_matrix = matrix.is_square and col == 3
+        except AttributeError:
+            # We hit this block if matrix argument is not actually a Matrix.
+            valid_matrix = False
+        if not valid_matrix:
+            raise ValueError("The argument to the transform function must be "
+                             + "a 3x3 matrix")
         x, y = self.args
         return Point(*(Matrix(1, 3, [x, y, 1])*matrix).tolist()[0][:2])
 

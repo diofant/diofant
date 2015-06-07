@@ -515,6 +515,15 @@ class Point3D(GeometryEntity):
         sympy.geometry.entity.GeometryEntity.scale
         sympy.geometry.entity.GeometryEntity.translate
         """
+        try:
+            col, row = matrix.shape
+            valid_matrix = matrix.is_square and col == 4
+        except AttributeError:
+            # We hit this block if matrix argument is not actually a Matrix.
+            valid_matrix = False
+        if not valid_matrix:
+            raise ValueError("The argument to the transform function must be "
+                             + "a 4x4 matrix")
         from sympy.matrices.expressions import Transpose
         x, y, z = self.args
         m = Transpose(matrix)
