@@ -30,7 +30,7 @@ except ImportError:
     # It's html.parser in Python 3
     from html.parser import HTMLParser
 
-# Load color templates, used from sympy/utilities/runtests.py
+# Load color templates
 color_templates = (
     ("Black", "0;30"),
     ("Red", "0;31"),

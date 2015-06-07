@@ -21,7 +21,7 @@ compute square roots. We might do something like this
 the square root of a number that isn't a perfect square
 
    >>> math.sqrt(8)
-   2.82842712475
+   2.8284271247461903
 
 Here we got an approximate result. 2.82842712475 is not the exact square root
 of 8 (indeed, the actual square root of 8 cannot be represented by a finite

@@ -37,8 +37,8 @@ Like most types in SymPy, Boolean expressions inherit from
 
     >>> (y & x).subs({x: True, y: True})
     True
-    >>> (x | y).atoms()
-    set([x, y])
+    >>> (x | y).atoms() == {x, y}
+    True
 
 The logic module also includes the following functions to derive boolean expressions
 from their truth tables-
@@ -114,8 +114,8 @@ values for ``x`` that make this sentence ``True``. On the other hand, ``(x
     >>> y = Symbol('y')
     >>> satisfiable(x & ~x)
     False
-    >>> satisfiable((x | y) & (x | ~y) & (~x | y))
-    {x: True, y: True}
+    >>> satisfiable((x | y) & (x | ~y) & (~x | y)) == {x: True, y: True}
+    True
 
 As you see, when a sentence is satisfiable, it returns a model that makes that
 sentence ``True``. If it is not satisfiable it will return ``False``.

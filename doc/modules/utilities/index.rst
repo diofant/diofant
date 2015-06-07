@@ -21,6 +21,5 @@ Contents:
    misc.rst
    pkgdata.rst
    randtest.rst
-   runtests.rst
    source.rst
    timeutils.rst

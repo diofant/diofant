@@ -138,9 +138,9 @@ cancellation:
 
     >>> a, b = GoldenRatio**1000/sqrt(5), fibonacci(1000)
     >>> float(a)
-    4.34665576869e+208
+    4.3466557686937455e+208
     >>> float(b)
-    4.34665576869e+208
+    4.3466557686937455e+208
     >>> float(a) - float(b)
     0.0
 

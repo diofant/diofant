@@ -396,15 +396,15 @@ Function
    the atoms method:
 
    >>> e = (f(x) + cos(x) + 2)
-   >>> e.atoms(Function)
-   set([f(x), cos(x)])
+   >>> e.atoms(Function) == {f(x), cos(x)}
+   True
 
    If you just want the function you defined, not SymPy functions, the
    thing to search for is AppliedUndef:
 
    >>> from sympy.core.function import AppliedUndef
-   >>> e.atoms(AppliedUndef)
-   set([f(x)])
+   >>> e.atoms(AppliedUndef) == {f(x)}
+   True
 
 Subs
 ^^^^

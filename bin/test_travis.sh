@@ -3,7 +3,6 @@
 set -e -x # exit on error and echo each command
 
 if [[ "${TEST_SPHINX}" == "true" ]]; then
-    bin/doctest `find doc/ -name '*.rst'`
     make -C doc html-errors man latex
     LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
 else
@@ -19,12 +18,13 @@ else
             py.test --duration=100 --cov sympy --doctest-modules \
                 sympy/printing/tests/test_theanocode.py \
                 sympy/external/tests/test_autowrap.py \
-                sympy/polys/ sympy/plotting/
+                sympy/polys/ sympy/plotting/ doc \
+                --ignore doc/tutorial/gotchas.rst # XXX: workaround __future__ imports!
         else
             py.test --duration=100 --doctest-modules \
                 sympy/printing/tests/test_theanocode.py \
                 sympy/external/tests/test_autowrap.py \
-                sympy/polys/ sympy/plotting/
+                sympy/polys/ sympy/plotting/ doc
         fi
     elif [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
         py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" \
