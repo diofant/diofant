@@ -2459,6 +2459,8 @@ class Infinity(with_metaclass(Singleton, Number)):
             return S.Zero
         if expt is S.NaN:
             return S.NaN
+        elif expt is S.ComplexInfinity:
+            return S.NaN
 
         if expt.is_number:
             return self**expt.evalf()

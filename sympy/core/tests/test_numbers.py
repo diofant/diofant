@@ -494,6 +494,7 @@ def test_Infinity():
     assert 3*oo + 2 == oo
     assert S.Half**oo == 0
     assert S.Half**(-oo) == oo
+    assert oo**zoo == nan
     assert -oo*3 == -oo
     assert oo + oo == oo
     assert -oo + oo*(-5) == -oo
