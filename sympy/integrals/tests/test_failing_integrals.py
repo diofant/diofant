@@ -77,18 +77,6 @@ def test_issue_4525():
     assert not integrate((x**m * (1 - x)**n * (a + b*x + c*x**2))/(1 + x**2), (x, 0, 1)).has(Integral)
 
 
-
-@XFAIL
-@slow
-def test_issue_4540():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
-    # Note, this integral is probably nonelementary
-    assert not integrate(
-        (sin(1/x) - x*exp(x)) /
-        ((-sin(1/x) + x*exp(x))*x + x*sin(1/x)), x).has(Integral)
-
-
 @XFAIL
 def test_issue_4551():
     assert integrate(1/(x*sqrt(1 - x**2)), x).has(Integral)
