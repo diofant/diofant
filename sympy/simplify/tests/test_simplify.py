@@ -1111,6 +1111,12 @@ def test_nsimplify():
     assert nsimplify(1e-42, rational=True) != 0
 
 
+def test_issue_9448():
+    expr = (1/(1 - (-1)**Rational(2, 3) - (-1)**Rational(1, 3))
+            + 1/(1 + (-1)**Rational(2, 3) + (-1)**Rational(1, 3)))
+    assert nsimplify(expr) == S.Half
+
+
 def test_extract_minus_sign():
     x = Symbol("x")
     y = Symbol("y")

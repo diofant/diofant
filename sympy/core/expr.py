@@ -650,8 +650,9 @@ class Expr(Basic, EvalfMixin):
                         if sol:
                             if s in sol:
                                 return True
-                            if any(nsimplify(si, [s]) == s and simplify(si) == s
-                                    for si in sol):
+                            if s.is_real and any(nsimplify(si, [s]) == s
+                                                 and simplify(si) == s
+                                                 for si in sol):
                                 return True
                     except NotImplementedError:
                         pass
