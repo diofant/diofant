@@ -768,6 +768,11 @@ def evalf_trig(v, prec, options):
 
 def evalf_log(expr, prec, options):
     from sympy import Abs, Add, log
+
+    if len(expr.args) > 1:
+        expr = expr.doit()
+        return evalf(expr, prec, options)
+
     arg = expr.args[0]
     workprec = prec + 10
     xre, xim, xacc, _ = evalf(arg, workprec, options)
