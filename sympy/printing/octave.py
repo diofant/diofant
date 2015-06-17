@@ -43,8 +43,8 @@ class OctaveCodePrinter(CodePrinter):
     language = "Octave"
 
     _operators = {
-        'and': '&&',
-        'or': '||',
+        'and': '&',
+        'or': '|',
         'not': '~',
     }
 
