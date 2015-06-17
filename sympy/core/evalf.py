@@ -1431,8 +1431,6 @@ def N(x, n=15, **options):
     Calls x.evalf(n, \*\*options).
 
     Both .n() and N() are equivalent to .evalf(); use the one that you like better.
-    See also the docstring of .evalf() for information on the options.
-
     Examples
     ========
 
@@ -1443,5 +1441,9 @@ def N(x, n=15, **options):
     >>> N(_, 4)
     1.291
 
+    See Also
+    ========
+
+    sympy.core.evalf.EvalfMixin.evalf
     """
     return sympify(x).evalf(n, **options)

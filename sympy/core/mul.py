@@ -1476,7 +1476,10 @@ class Mul(Expr, AssocOp):
         >>> (-3*sqrt(2)*(2 - 2*sqrt(2))).as_content_primitive()
         (6, -sqrt(2)*(-sqrt(2) + 1))
 
-        See docstring of Expr.as_content_primitive for more examples.
+        See Also
+        ========
+
+        sympy.core.expr.Expr.as_content_primitive
         """
 
         coef = S.One

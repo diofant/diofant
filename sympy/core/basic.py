@@ -39,7 +39,6 @@ class Basic(with_metaclass(ManagedProperties)):
 
         >>> cot(x)._args    # do not use this, use cot(x).args instead
         (x,)
-
     """
     __slots__ = ['_mhash',              # hash value
                  '_args',               # arguments
@@ -124,7 +123,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         For example:
 
-          Symbol('x', extended_real=True)
+          Symbol('x', real=True)
           Symbol('x', integer=True)
 
         are different objects. In other words, besides Python type (Symbol in
@@ -165,7 +164,6 @@ class Basic(with_metaclass(ManagedProperties)):
         0
         >>> y.compare(x)
         1
-
         """
         # all redefinitions of __cmp__ method should start with the
         # following lines:
@@ -221,32 +219,13 @@ class Basic(with_metaclass(ManagedProperties)):
         return Basic.compare(a, b)
 
     @classmethod
-    def fromiter(cls, args, **assumptions):
-        """
-        Create a new object from an iterable.
-
-        This is a convenience function that allows one to create objects from
-        any iterable, without having to convert to a list or tuple first.
-
-        Examples
-        ========
-
-        >>> from sympy import Tuple
-        >>> Tuple.fromiter(i for i in range(5))
-        (0, 1, 2, 3, 4)
-
-        """
-        return cls(*tuple(args), **assumptions)
-
-    @classmethod
     def class_key(cls):
         """Nice order of classes. """
         return 5, 0, cls.__name__
 
     @cacheit
     def sort_key(self, order=None):
-        """
-        Return a sort key.
+        """Return a sort key.
 
         Examples
         ========
@@ -260,7 +239,6 @@ class Basic(with_metaclass(ManagedProperties)):
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
-
         """
 
         # XXX: remove this when issue 5169 is fixed
@@ -283,7 +261,7 @@ class Basic(with_metaclass(ManagedProperties)):
         Notes
         =====
 
-        If a class that overrides __eq__() needs to retain the
+        See [1]_.  If a class that overrides __eq__() needs to retain the
         implementation of __hash__() from a parent class, the
         interpreter must be told this explicitly by setting __hash__ =
         <ParentClass>.__hash__. Otherwise the inheritance of __hash__()
@@ -293,7 +271,7 @@ class Basic(with_metaclass(ManagedProperties)):
         References
         ==========
 
-        from http://docs.python.org/dev/reference/datamodel.html#object.__hash__
+        .. [1] http://docs.python.org/dev/reference/datamodel.html#object.__hash__
         """
         from sympy import Pow
         if self is other:
@@ -358,7 +336,6 @@ class Basic(with_metaclass(ManagedProperties)):
         True
         >>> (u**2 + y).dummy_eq(x**2 + y, y)
         False
-
         """
         dummy_symbols = [ s for s in self.free_symbols if s.is_Dummy ]
 
@@ -397,73 +374,70 @@ class Basic(with_metaclass(ManagedProperties)):
     def atoms(self, *types):
         """Returns the atoms that form the current object.
 
-           By default, only objects that are truly atomic and can't
-           be divided into smaller pieces are returned: symbols, numbers,
-           and number symbols like I and pi. It is possible to request
-           atoms of any type, however, as demonstrated below.
+        By default, only objects that are truly atomic and can't
+        be divided into smaller pieces are returned: symbols, numbers,
+        and number symbols like I and pi. It is possible to request
+        atoms of any type, however, as demonstrated below.
 
-           Examples
-           ========
+        Examples
+        ========
 
-           >>> from sympy import I, pi, sin
-           >>> from sympy.abc import x, y
-           >>> (1 + x + 2*sin(y + I*pi)).atoms() == {1, 2, I, pi, x, y}
-           True
+        >>> from sympy import I, pi, sin
+        >>> from sympy.abc import x, y
+        >>> (1 + x + 2*sin(y + I*pi)).atoms() == {1, 2, I, pi, x, y}
+        True
 
-           If one or more types are given, the results will contain only
-           those types of atoms.
+        If one or more types are given, the results will contain only
+        those types of atoms.
 
-           Examples
-           ========
+        >>> from sympy import Number, NumberSymbol, Symbol
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol) == {x, y}
+        True
 
-           >>> from sympy import Number, NumberSymbol, Symbol
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol) == {x, y}
-           True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number) == {1, 2}
+        True
 
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(Number) == {1, 2}
-           True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol) == {1, 2, pi}
+        True
 
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol) == {1, 2, pi}
-           True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I) == {1, 2, I, pi}
+        True
 
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I) == {1, 2, I, pi}
-           True
+        Note that I (imaginary unit) and zoo (complex infinity) are special
+        types of number symbols and are not part of the NumberSymbol class.
 
-           Note that I (imaginary unit) and zoo (complex infinity) are special
-           types of number symbols and are not part of the NumberSymbol class.
+        The type can be given implicitly, too:
 
-           The type can be given implicitly, too:
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(x) == {x, y}
+        True
 
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(x) == {x, y}
-           True
+        Be careful to check your assumptions when using the implicit option
+        since ``S(1).is_Integer = True`` but ``type(S(1))`` is ``One``, a special type
+        of sympy atom, while ``type(S(2))`` is type ``Integer`` and will find all
+        integers in an expression:
 
-           Be careful to check your assumptions when using the implicit option
-           since ``S(1).is_Integer = True`` but ``type(S(1))`` is ``One``, a special type
-           of sympy atom, while ``type(S(2))`` is type ``Integer`` and will find all
-           integers in an expression:
+        >>> from sympy import S
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(S(1)) == {1}
+        True
 
-           >>> from sympy import S
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(S(1)) == {1}
-           True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(S(2)) == {1, 2}
+        True
 
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(S(2)) == {1, 2}
-           True
+        Finally, arguments to atoms() can select more than atomic atoms: any
+        sympy type (loaded in core/__init__.py) can be listed as an argument
+        and those types of "atoms" as found in scanning the arguments of the
+        expression recursively:
 
-           Finally, arguments to atoms() can select more than atomic atoms: any
-           sympy type (loaded in core/__init__.py) can be listed as an argument
-           and those types of "atoms" as found in scanning the arguments of the
-           expression recursively:
+        >>> from sympy import Function, Mul
+        >>> from sympy.core.function import AppliedUndef
+        >>> f = Function('f')
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function) == {f(x), sin(y + I*pi)}
+        True
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef) == {f(x)}
+        True
 
-           >>> from sympy import Function, Mul
-           >>> from sympy.core.function import AppliedUndef
-           >>> f = Function('f')
-           >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function) == {f(x), sin(y + I*pi)}
-           True
-           >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef) == {f(x)}
-           True
-
-           >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul) == {I*pi, 2*sin(y + I*pi)}
-           True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul) == {I*pi, 2*sin(y + I*pi)}
+        True
         """
         if types:
             types = tuple(
@@ -488,7 +462,8 @@ class Basic(with_metaclass(ManagedProperties)):
         its own symbols method.
 
         Any other method that uses bound variables should implement a symbols
-        method."""
+        method.
+        """
         return set().union(*[a.free_symbols for a in self.args])
 
     @property
@@ -594,8 +569,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
     @property
     def func(self):
-        """
-        The top-level function in an expression.
+        """The top-level function in an expression.
 
         The following should hold for all objects::
 
@@ -662,18 +636,20 @@ class Basic(with_metaclass(ManagedProperties)):
     def as_poly(self, *gens, **args):
         """Converts ``self`` to a polynomial or returns ``None``.
 
-           >>> from sympy import sin
-           >>> from sympy.abc import x, y
+        Examples
+        ========
 
-           >>> print((x**2 + x*y).as_poly())
-           Poly(x**2 + x*y, x, y, domain='ZZ')
+        >>> from sympy import sin
+        >>> from sympy.abc import x, y
 
-           >>> print((x**2 + x*y).as_poly(x, y))
-           Poly(x**2 + x*y, x, y, domain='ZZ')
+        >>> print((x**2 + x*y).as_poly())
+        Poly(x**2 + x*y, x, y, domain='ZZ')
 
-           >>> print((x**2 + sin(y)).as_poly(x, y))
-           None
+        >>> print((x**2 + x*y).as_poly(x, y))
+        Poly(x**2 + x*y, x, y, domain='ZZ')
 
+        >>> print((x**2 + sin(y)).as_poly(x, y))
+        None
         """
         from sympy.polys import Poly, PolynomialError
 
@@ -691,7 +667,10 @@ class Basic(with_metaclass(ManagedProperties)):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
         the content and primitive components of an expression.
 
-        See docstring of Expr.as_content_primitive
+        See Also
+        ========
+
+        sympy.core.expr.Expr.as_content_primitive
         """
         return S.One, self
 
@@ -801,13 +780,13 @@ class Basic(with_metaclass(ManagedProperties)):
 
         See Also
         ========
+
         replace: replacement capable of doing wildcard-like matching,
                  parsing of match, and conditional replacements
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
         sympy.core.evalf.EvalfMixin.evalf: calculates the given formula to
                                            a desired level of precision
-
         """
         from sympy.core.containers import Dict
         from sympy.utilities import default_sort_key
@@ -1017,11 +996,13 @@ class Basic(with_metaclass(ManagedProperties)):
 
         Parameters
         ==========
+
         rule : dict-like
             Expresses a replacement rule
 
         Returns
         =======
+
         xreplace : the result of the replacement
 
         Examples
@@ -1065,11 +1046,11 @@ class Basic(with_metaclass(ManagedProperties)):
 
         See Also
         ========
+
         replace: replacement capable of doing wildcard-like matching,
                  parsing of match, and conditional replacements
         subs: substitution of subexpressions as defined by the objects
               themselves.
-
         """
         if self in rule:
             return rule[self]
@@ -1087,8 +1068,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
     @cacheit
     def has(self, *patterns):
-        """
-        Test whether any subexpression matches any of the patterns.
+        """Test whether any subexpression matches any of the patterns.
 
         Examples
         ========
@@ -1108,7 +1088,6 @@ class Basic(with_metaclass(ManagedProperties)):
 
         >>> x.has()
         False
-
         """
         return any(self._has(pattern) for pattern in patterns)
 
@@ -1135,8 +1114,7 @@ class Basic(with_metaclass(ManagedProperties)):
         return self.__eq__
 
     def replace(self, query, value, map=False, simultaneous=True, exact=False):
-        """
-        Replace matching subexpressions of ``self`` with ``value``.
+        """Replace matching subexpressions of ``self`` with ``value``.
 
         If ``map = True`` then also return the mapping {old: new} where ``old``
         was a sub-expression found with query and ``new`` is the replacement
@@ -1251,11 +1229,11 @@ class Basic(with_metaclass(ManagedProperties)):
 
         See Also
         ========
+
         subs: substitution of subexpressions as defined by the objects
               themselves.
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
-
         """
         from sympy.core.symbol import Dummy
         from sympy.simplify.simplify import bottom_up
@@ -1389,9 +1367,8 @@ class Basic(with_metaclass(ManagedProperties)):
         return sum(bool(query(sub)) for sub in preorder_traversal(self))
 
     def matches(self, expr, repl_dict={}, old=False):
-        """
-        Helper method for match() that looks for a match between Wild symbols
-        in self and expressions in expr.
+        """Helper method for match() that looks for a match between Wild
+        symbols in self and expressions in expr.
 
         Examples
         ========
@@ -1424,15 +1401,14 @@ class Basic(with_metaclass(ManagedProperties)):
         return d
 
     def match(self, pattern, old=False):
-        """
-        Pattern matching.
+        """Pattern matching.
 
         Wild symbols match all.
 
         Return ``None`` when expression (self) does not match
         with pattern. Otherwise return a dictionary such that::
 
-          pattern.xreplace(self.match(pattern)) == self
+            pattern.xreplace(self.match(pattern)) == self
 
         Examples
         ========
@@ -1461,7 +1437,6 @@ class Basic(with_metaclass(ManagedProperties)):
         {p_: 2*x - 2}
         >>> (2/x).match(p*x, old=True)
         {p_: 2/x**2}
-
         """
         from sympy import signsimp
         pattern = sympify(pattern)
@@ -1481,23 +1456,26 @@ class Basic(with_metaclass(ManagedProperties)):
         return count_ops(self, visual)
 
     def doit(self, **hints):
-        """Evaluate objects that are not evaluated by default like limits,
-           integrals, sums and products. All objects of this kind will be
-           evaluated recursively, unless some species were excluded via 'hints'
-           or unless the 'deep' hint was set to 'False'.
+        """Evaluate objects that are not evaluated by default.
 
-           >>> from sympy import Integral
-           >>> from sympy.abc import x
+        For example, limits, integrals, sums and products.  All objects of this
+        kind will be evaluated recursively, unless some species were excluded
+        via 'hints' or unless the 'deep' hint was set to 'False'.
 
-           >>> 2*Integral(x, x)
-           2*Integral(x, x)
+        Examples
+        ========
 
-           >>> (2*Integral(x, x)).doit()
-           x**2
+        >>> from sympy import Integral
+        >>> from sympy.abc import x
 
-           >>> (2*Integral(x, x)).doit(deep = False)
-           2*Integral(x, x)
+        >>> 2*Integral(x, x)
+        2*Integral(x, x)
 
+        >>> (2*Integral(x, x)).doit()
+        x**2
+
+        >>> (2*Integral(x, x)).doit(deep = False)
+        2*Integral(x, x)
         """
         if hints.get('deep', True):
             terms = [ term.doit(**hints) if isinstance(term, Basic) else term
@@ -1527,7 +1505,7 @@ class Basic(with_metaclass(ManagedProperties)):
         return self.func(*args)
 
     def rewrite(self, *args, **hints):
-        """ Rewrite functions in terms of other functions.
+        """Rewrite functions in terms of other functions.
 
         Rewrites expression containing applications of functions
         of one kind in terms of functions of different kind. For
@@ -1564,7 +1542,6 @@ class Basic(with_metaclass(ManagedProperties)):
 
         >>> sin(x).rewrite([sin, ], exp)
         -I*(exp(I*x) - exp(-I*x))/2
-
         """
         if not args:
             return self
@@ -1590,14 +1567,10 @@ class Basic(with_metaclass(ManagedProperties)):
 
 
 class Atom(Basic):
-    """
-    A parent class for atomic things. An atom is an expression with no subexpressions.
+    """A parent class for atomic things.
 
-    Examples
-    ========
-
-    Symbol, Number, Rational, Integer, ...
-    But not: Add, Mul, Pow, ...
+    An atom is an expression with no subexpressions, for example Symbol,
+    Number, Rational or Integer, but not Add, Mul, Pow.
     """
 
     is_Atom = True
@@ -1654,7 +1627,6 @@ def _aresame(a, b):
     >>> from sympy.core.basic import _aresame
     >>> _aresame(S(2.0), S(2))
     False
-
     """
     from .function import AppliedUndef, UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
@@ -1711,20 +1683,19 @@ def _atomic(e):
 
 
 class preorder_traversal(Iterator):
-    """
-    Do a pre-order traversal of a tree.
+    """Do a pre-order traversal of a tree.
 
     This iterator recursively yields nodes that it has visited in a pre-order
     fashion. That is, it yields the current node then descends through the
     tree breadth-first to yield all of a node's children's pre-order
     traversal.
 
-
     For an expression, the order of the traversal depends on the order of
     .args, which in many cases can be arbitrary.
 
     Parameters
     ==========
+
     node : sympy expression
         The expression to traverse.
     keys : (default None) sort key(s)
@@ -1736,6 +1707,7 @@ class preorder_traversal(Iterator):
 
     Yields
     ======
+
     subtree : sympy expression
         All of the subtrees in the tree.
 
@@ -1754,7 +1726,6 @@ class preorder_traversal(Iterator):
     [z*(x + y), z, x + y, y, x]
     >>> list(preorder_traversal((x + y)*z, keys=True))
     [z*(x + y), z, x + y, x, y]
-
     """
     def __init__(self, node, keys=None):
         self._skip_flag = False
@@ -1786,8 +1757,7 @@ class preorder_traversal(Iterator):
                     yield subtree
 
     def skip(self):
-        """
-        Skip yielding current node's (last yielded node's) subtrees.
+        """Skip yielding current node's (last yielded node's) subtrees.
 
         Examples
         ========

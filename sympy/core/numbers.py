@@ -1564,7 +1564,10 @@ class Rational(Number):
         >>> (S(-3)/2).as_content_primitive()
         (3/2, -1)
 
-        See docstring of Expr.as_content_primitive for more examples.
+        See Also
+        ========
+
+        sympy.core.expr.Expr.as_content_primitive
         """
 
         if self:
@@ -2455,6 +2458,8 @@ class Infinity(with_metaclass(Singleton, Number)):
         if expt.is_negative:
             return S.Zero
         if expt is S.NaN:
+            return S.NaN
+        elif expt is S.ComplexInfinity:
             return S.NaN
 
         if expt.is_number:

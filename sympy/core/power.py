@@ -1357,7 +1357,10 @@ class Pow(Expr):
         >>> s = expand_power_base(_[1]); s.is_Mul, s
         (True, 2**y*(x + 1)**y)
 
-        See docstring of Expr.as_content_primitive for more examples.
+        See Also
+        ========
+
+        sympy.core.expr.Expr.as_content_primitive
         """
 
         b, e = self.as_base_exp()

@@ -512,6 +512,7 @@ def test_checkodesol():
     assert not checkodesol(eq3, sol3)[1].has(f(x))
 
 
+@slow
 def test_dsolve_options():
     eq = x*f(x).diff(x) + f(x)
     a = dsolve(eq, hint='all')
@@ -1250,6 +1251,7 @@ def test_1st_homogeneous_coeff_corner_case():
     assert sid not in c2 and sdi not in c2
 
 
+@slow
 def test_nth_linear_constant_coeff_homogeneous():
     # From Exercise 20, in Ordinary Differential Equations,
     #                      Tenenbaum and Pollard, pg. 220
@@ -1756,6 +1758,7 @@ def test_nth_linear_constant_coeff_undetermined_coefficients_imaginary_exp():
     assert checkodesol(eq26a, sol26, order=5, solve_for_func=False)[0]
 
 
+@slow
 def test_nth_linear_constant_coeff_variation_of_parameters():
     hint = 'nth_linear_constant_coeff_variation_of_parameters'
     g = exp(-x)
@@ -2441,6 +2444,7 @@ def test_series():
     assert dsolve(eq, hint='1st_power_series', ics={f(2): 2}, n=3) == sol
 
 
+@slow
 def test_lie_group():
     C1 = Symbol("C1")
     x = Symbol("x") # assuming x is real generates an error!

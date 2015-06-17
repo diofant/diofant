@@ -758,8 +758,10 @@ class Add(Expr, AssocOp):
         >>> ((2 + 2*x)*x + 2).as_content_primitive()
         (2, x*(x + 1) + 1)
 
-        See also: primitive() function in polytools.py
+        See Also
+        ========
 
+        sympy.polys.polytools.primitive
         """
 
         terms = []
@@ -825,7 +827,10 @@ class Add(Expr, AssocOp):
         >>> (2*sqrt(2) + 4*sqrt(10)).as_content_primitive(radical=True)
         (2, sqrt(2)*(1 + 2*sqrt(5)))
 
-        See docstring of Expr.as_content_primitive for more examples.
+        See Also
+        ========
+
+        sympy.core.expr.Expr.as_content_primitive
         """
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
