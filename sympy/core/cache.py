@@ -1,13 +1,13 @@
 """ Caching facility for SymPy """
 from __future__ import print_function, division
+from decorator import decorator
+
 
 # TODO: refactor CACHE & friends into class?
 
 # global cache registry:
 CACHE = []  # [] of
             #    (item, {} or tuple of {})
-
-from sympy.core.decorators import wraps
 
 def print_cache():
     """print cache content"""
@@ -55,7 +55,7 @@ from sympy.core.evaluate import global_evaluate
 _globals = (global_evaluate,)
 
 
-def __cacheit(func):
+def __cacheit(f):
     """Caching decorator.
 
     Notes
@@ -80,10 +80,9 @@ def __cacheit(func):
     """
 
     func_cache_it_cache = {}
-    CACHE.append((func, func_cache_it_cache))
+    CACHE.append((f, func_cache_it_cache))
 
-    @wraps(func)
-    def wrapper(*args, **kw_args):
+    def wrapper(f, *args, **kw_args):
         """Assemble the args and kw_args to compute the hash."""
         k = [(x, type(x)) for x in args]
         if kw_args:
@@ -97,24 +96,23 @@ def __cacheit(func):
             return func_cache_it_cache[k]
         except (KeyError, TypeError):
             pass
-        r = func(*args, **kw_args)
+        r = f(*args, **kw_args)
         try:
             func_cache_it_cache[k] = r
         except TypeError: # k is unhashable
             # Note, collections.Hashable is not smart enough to be used here.
             pass
         return r
-    return wrapper
+    return decorator(wrapper, f)
 
 
-def __cacheit_debug(func):
+def __cacheit_debug(f):
     """cacheit + code to check cache consistency"""
-    cfunc = __cacheit(func)
+    cfunc = __cacheit(f)
 
-    @wraps(func)
-    def wrapper(*args, **kw_args):
+    def wrapper(f, *args, **kw_args):
         # always call function itself and compare it with cached version
-        r1 = func(*args, **kw_args)
+        r1 = f(*args, **kw_args)
         r2 = cfunc(*args, **kw_args)
 
         # try to see if the result is immutable
@@ -132,7 +130,7 @@ def __cacheit_debug(func):
         if r1 != r2:
             raise RuntimeError("Returned values are not the same")
         return r1
-    return wrapper
+    return decorator(wrapper, f)
 
 
 def _getenv(key, default=None):
