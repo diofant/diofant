@@ -56,35 +56,35 @@ _globals = (global_evaluate,)
 
 
 def __cacheit(func):
-    """caching decorator.
+    """Caching decorator.
 
-       important: the result of cached function must be *immutable*
+    Notes
+    =====
 
+    Important: the result of cached function must be *immutable*!
 
-       Examples
-       ========
+    Examples
+    ========
 
-       >>> from sympy.core.cache import cacheit
-       >>> @cacheit
-       ... def f(a,b):
-       ...    return a+b
+    >>> from sympy.core.cache import cacheit
+    >>> @cacheit
+    ... def f(a, b):
+    ...    return a + b
 
-       >>> @cacheit
-       ... def f(a,b):
-       ...    return [a,b] # <-- WRONG, returns mutable object
+    >>> @cacheit
+    ... def f(a, b):
+    ...    return [a, b]  # <-- WRONG, returns mutable object
 
-       to force cacheit to check returned results mutability and consistency,
-       set environment variable SYMPY_USE_CACHE to 'debug'
+    to force cacheit to check returned results mutability and consistency,
+    set environment variable SYMPY_USE_CACHE to 'debug'.
     """
 
-    func._cache_it_cache = func_cache_it_cache = {}
+    func_cache_it_cache = {}
     CACHE.append((func, func_cache_it_cache))
 
     @wraps(func)
     def wrapper(*args, **kw_args):
-        """
-        Assemble the args and kw_args to compute the hash.
-        """
+        """Assemble the args and kw_args to compute the hash."""
         k = [(x, type(x)) for x in args]
         if kw_args:
             keys = sorted(kw_args)
