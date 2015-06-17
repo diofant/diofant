@@ -652,6 +652,9 @@ class GreaterThan(_Greater):
     point.  For the time being (circa Jan 2012), use And to create chained
     inequalities.
 
+    References
+    ==========
+
     .. [1] This implementation detail is that Python provides no reliable
        method to determine that a chained inequality is being built.  Chained
        comparison operators are evaluated pairwise, using "and" logic (see
@@ -688,7 +691,6 @@ class GreaterThan(_Greater):
 
        "It right 0 < x < 1 ?"
        `Issue 6059 <https://github.com/sympy/sympy/issues/6059>`_
-
     """
     __slots__ = ()
 

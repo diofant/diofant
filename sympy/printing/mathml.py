@@ -18,7 +18,10 @@ class MathMLPrinter(Printer):
 
     Whenever possible tries to use Content markup and not Presentation markup.
 
-    References: http://www.w3.org/TR/MathML2/
+    References
+    ==========
+
+    .. [1] http://www.w3.org/TR/MathML2/
     """
     printmethod = "_mathml"
     _default_settings = {

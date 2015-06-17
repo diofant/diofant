@@ -395,9 +395,10 @@ class LatticeOp(AssocOp):
     >>> my_join(1, 2)
     2
 
-    References:
+    References
+    ==========
 
-    [1] - http://en.wikipedia.org/wiki/Lattice_%28order%29
+    .. [1] http://en.wikipedia.org/wiki/Lattice_%28order%29
     """
 
     is_commutative = True

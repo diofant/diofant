@@ -72,12 +72,14 @@ def dup_sturm(f, K):
     return sturm[:-1]
 
 def dup_root_upper_bound(f, K):
-    """Compute the LMQ upper bound for the positive roots of `f`;
-       LMQ (Local Max Quadratic) was developed by Akritas-Strzebonski-Vigklas.
+    """Compute the LMQ upper bound for the positive roots of `f`.
 
-       Reference:
-       ==========
-       Alkiviadis G. Akritas: "Linear and Quadratic Complexity Bounds on the
+    LMQ (Local Max Quadratic) was developed by Akritas-Strzebonski-Vigklas [1]_.
+
+    References
+    ==========
+
+    .. [1] Alkiviadis G. Akritas: "Linear and Quadratic Complexity Bounds on the
            Values of the Positive Roots of Polynomials"
            Journal of Universal Computer Science, Vol. 15, No. 3, 523-537, 2009.
     """
@@ -116,12 +118,14 @@ def dup_root_upper_bound(f, K):
         return K.get_field()(2)**(max(P) + 1)
 
 def dup_root_lower_bound(f, K):
-    """Compute the LMQ lower bound for the positive roots of `f`;
-       LMQ (Local Max Quadratic) was developed by Akritas-Strzebonski-Vigklas.
+    """Compute the LMQ lower bound for the positive roots of `f`.
 
-       Reference:
-       ==========
-       Alkiviadis G. Akritas: "Linear and Quadratic Complexity Bounds on the
+    LMQ (Local Max Quadratic) was developed by Akritas-Strzebonski-Vigklas [1]_.
+
+    References
+    ==========
+
+    .. [1] Alkiviadis G. Akritas: "Linear and Quadratic Complexity Bounds on the
            Values of the Positive Roots of Polynomials"
            Journal of Universal Computer Science, Vol. 15, No. 3, 523-537, 2009.
     """
@@ -290,11 +294,12 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
 def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
     """Internal function for isolation positive roots up to given precision.
 
-       References:
-       ===========
-           1. Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root
+    References
+    ==========
+
+    .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root
            Isolation Methods . Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
-           2. Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the
+    .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the
            Performance of the Continued Fractions Method Using new Bounds of Positive Roots. Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
@@ -490,13 +495,14 @@ def _isolate_zero(f, K, inf, sup, basis=False, sqf=False):
 def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
     """Isolate real roots of a square-free polynomial using the Vincent-Akritas-Strzebonski (VAS) CF approach.
 
-       References:
-       ===========
-       1. Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root Isolation Methods.
-       Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
-       2. Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the Performance
-       of the Continued Fractions Method Using New Bounds of Positive Roots.
-       Nonlinear Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
+    References
+    ==========
+
+    .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root Isolation Methods.
+           Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
+    .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the Performance
+           of the Continued Fractions Method Using New Bounds of Positive Roots.
+           Nonlinear Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     if K.is_QQ:
         (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
@@ -521,13 +527,13 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
 def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast=False):
     """Isolate real roots using Vincent-Akritas-Strzebonski (VAS) continued fractions approach.
 
-       References:
-       ===========
-       1. Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root Isolation Methods.
-       Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
-       2. Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the Performance
-       of the Continued Fractions Method Using New Bounds of Positive Roots.
-       Nonlinear Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
+    References
+    ==========
+    .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root Isolation Methods.
+           Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
+    .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the Performance
+           of the Continued Fractions Method Using New Bounds of Positive Roots.
+           Nonlinear Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     if K.is_QQ:
         (_, f), K = dup_clear_denoms(f, K, convert=True), K.get_ring()
@@ -558,14 +564,15 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, basis=False, fast
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
     """Isolate real roots of a list of square-free polynomial using Vincent-Akritas-Strzebonski (VAS) CF approach.
 
-       References:
-       ===========
-       1. Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root Isolation Methods.
-       Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
-       2. Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the Performance
-       of the Continued Fractions Method Using New Bounds of Positive Roots.
-       Nonlinear Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
-"""
+    References
+    ==========
+
+    .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root Isolation Methods.
+           Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
+    .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the Performance
+           of the Continued Fractions Method Using New Bounds of Positive Roots.
+           Nonlinear Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
+    """
     if K.is_QQ:
         K, F, polys = K.get_ring(), K, polys[:]
 

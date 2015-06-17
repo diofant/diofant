@@ -2390,8 +2390,8 @@ def diop_general_sum_of_squares(eq, limit=1):
     >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345) == {(0, 48, 5, 4, 0)}
     True
 
-    Reference
-    =========
+    References
+    ==========
 
     .. [1] Representing an Integer as a sum of three squares, [online],
         Available:
@@ -2484,8 +2484,8 @@ def partition(n, k=None, zeros=False):
     >>> next(g)
     (2, 2, 1)
 
-    Reference
-    =========
+    References
+    ==========
 
     .. [1] Generating Integer Partitions, [online],
         Available: http://jeromekelleher.net/partitions.php
@@ -2569,8 +2569,8 @@ def prime_as_sum_of_two_squares(p):
     >>> prime_as_sum_of_two_squares(5)
     (2, 1)
 
-    Reference
-    =========
+    References
+    ==========
 
     .. [1] Representing a number as a sum of four squares, [online],
         Available: http://www.schorn.ch/howto.html
