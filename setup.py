@@ -34,6 +34,7 @@ import os
 import shutil
 import glob
 from setuptools import setup, Command, find_packages
+from setuptools.command.test import test as TestCommand
 
 
 # Make sure I have the right Python version.
@@ -108,26 +109,29 @@ class clean(Command):
         os.chdir(curr_dir)
 
 
-class test_sympy(Command):
-    """Runs all tests under the sympy/ folder
-    """
+class test_sympy(TestCommand):
+    """Runs all tests."""
 
-    description = "run all tests and doctests; also see bin/test and bin/doctest"
-    user_options = []  # distutils complains if this is not here.
+    description = "run all tests and doctests"
 
-    def __init__(self, *args):
-        self.args = args[0]  # so we can pass it to other classes
-        Command.__init__(self, *args)
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        _test_args = [
+            '--ignore=setup.py',
+            '--verbose',
+            '--durations=100',
+            '--doctest-modules',
+        ]
+        extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
+        if extra_args is not None:
+            _test_args.extend(extra_args.split())
+        self.test_args = _test_args
+        self.test_suite = True
 
-    def initialize_options(self):  # distutils wants this
-        pass
-
-    def finalize_options(self):    # this too
-        pass
-
-    def run(self):
-        from sympy.utilities import runtests
-        runtests.run_all_tests()
+    def run_tests(self):
+        import pytest
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
 
 
 exec(open('sympy/release.py').read())
@@ -166,5 +170,6 @@ setup(name='sympy',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         ],
-      install_requires=['mpmath>=0.19']
+      tests_require=['pytest'],
+      install_requires=['mpmath>=0.19'],
       )
