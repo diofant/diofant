@@ -142,7 +142,7 @@ class exp_polar(ExpBase):
     See also
     ========
 
-    sympy.simplify.simplify.powsimp
+    sympy.simplify.powsimp.powsimp
     sympy.functions.elementary.complexes.polar_lift
     sympy.functions.elementary.complexes.periodic_argument
     sympy.functions.elementary.complexes.principal_branch

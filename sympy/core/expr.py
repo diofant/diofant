@@ -2971,7 +2971,7 @@ class Expr(Basic, EvalfMixin):
 
         sympy.core.function.expand
         """
-        from sympy.simplify.simplify import fraction
+        from sympy.simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
            log=log, multinomial=multinomial, basic=basic)
