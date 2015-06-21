@@ -577,6 +577,7 @@ def powdenest(eq, force=False, polar=False):
     (n**i)**x
     """
     from sympy.simplify.simplify import polarify, unpolarify, posify
+
     if force:
         eq, rep = posify(eq)
         return powdenest(eq, force=False).xreplace(rep)
@@ -600,6 +601,7 @@ def _denest_pow(eq):
     transformation.
     """
     from sympy.simplify.simplify import logcombine
+
     b, e = eq.as_base_exp()
     if b.is_Pow or isinstance(b.func, exp) and e != 1:
         new = b._eval_power(e)

@@ -190,9 +190,10 @@ from itertools import combinations
 from strategies.tree import greedy
 from strategies.core import identity, debug
 
-from sympy.simplify.simplify import (simplify, ratsimp, combsimp,
+from sympy.simplify.simplify import (simplify, ratsimp,
     _mexpand, bottom_up)
 from sympy.simplify.powsimp import powsimp
+from sympy.simplify.combsimp import combsimp
 from sympy.core.sympify import sympify
 from sympy.functions.elementary.trigonometric import (
     cos, sin, tan, cot, sec, csc, sqrt, TrigonometricFunction)

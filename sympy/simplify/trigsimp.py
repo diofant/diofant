@@ -1,13 +1,16 @@
 from __future__ import print_function, division
 
+from collections import defaultdict
+
 from sympy.core.cache import cacheit
-from sympy.core import sympify, Basic, S, Expr, expand_mul, factor_terms, Mul, Dummy, igcd, FunctionClass, Add, symbols
+from sympy.core import (sympify, Basic, S, Expr, expand_mul, factor_terms,
+    Mul, Dummy, igcd, FunctionClass, Add, symbols, Wild, expand)
 from sympy.core.compatibility import ordered, reduce, iterable
 from sympy.core.numbers import I, Integer
 from sympy.core.function import count_ops, _mexpand
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.hyperbolic import HyperbolicFunction
-from sympy.functions import sin, cos, exp, cosh, tanh, sinh, tan
+from sympy.functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
 
 from strategies.core import identity
 from strategies.tree import greedy
@@ -63,7 +66,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
 
     >>> from sympy.abc import x, y
     >>> from sympy import sin, tan, cos, sinh, cosh, tanh
-    >>> from sympy.simplify.simplify import trigsimp_groebner
+    >>> from sympy.simplify.trigsimp import trigsimp_groebner
 
     Suppose you want to simplify ``sin(x)*cos(x)``. Naively, nothing happens:
 
@@ -367,7 +370,9 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
 
     # If our fraction is a polynomial in the free generators, simplify all
     # coefficients separately:
+
     from sympy.simplify.simplify import ratsimpmodprime
+
     if freegens and pdenom.has_only_gens(*set(gens).intersection(pdenom.gens)):
         num = Poly(num, gens=gens+freegens).eject(*gens)
         res = []
@@ -1062,7 +1067,7 @@ def futrig(e, **kwargs):
     ========
 
     >>> from sympy import trigsimp, tan, sinh, tanh
-    >>> from sympy.simplify.simplify import futrig
+    >>> from sympy.simplify.trigsimp import futrig
     >>> from sympy.abc import x
     >>> trigsimp(1/tan(x)**2)
     tan(x)**(-2)
