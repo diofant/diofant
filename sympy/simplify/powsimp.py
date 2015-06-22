@@ -8,7 +8,7 @@ from sympy.core.compatibility import ordered, default_sort_key, reduce
 from sympy.core.numbers import Integer, Rational
 from sympy.core.mul import prod, _keep_coeff
 from sympy.core.rules import Transform
-from sympy.functions import exp_polar, exp, log, root
+from sympy.functions import exp_polar, exp, log, root, polarify, unpolarify
 from sympy.polys import lcm, gcd
 from sympy.ntheory.factor_ import multiplicity
 
@@ -576,7 +576,7 @@ def powdenest(eq, force=False, polar=False):
     >>> powdenest((n**i)**x, force=True)
     (n**i)**x
     """
-    from sympy.simplify.simplify import polarify, unpolarify, posify
+    from sympy.simplify.simplify import posify
 
     if force:
         eq, rep = posify(eq)
