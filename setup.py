@@ -171,5 +171,5 @@ setup(name='sympy',
         'Programming Language :: Python :: 3.4',
         ],
       tests_require=['pytest'],
-      install_requires=['mpmath>=0.19'],
+      install_requires=['mpmath>=0.19', 'decorator']
       )
