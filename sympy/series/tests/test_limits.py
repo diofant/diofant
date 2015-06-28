@@ -7,7 +7,7 @@ from sympy import (
 
 from sympy.series.limits import heuristics
 from sympy.series.order import Order
-from sympy.abc import x, y, z
+from sympy.abc import x, y, z, a
 from sympy.utilities.pytest import XFAIL, raises
 
 
@@ -436,3 +436,10 @@ def test_issue_8061():
 def test_issue_8229():
     assert limit((x**Rational(1, 4) - 2)/(sqrt(x) - 4)**Rational(2, 3),
                  x, 16) == 0
+
+
+def test_issue_9205():
+    assert Limit(x, x, a).free_symbols == {a}
+    assert Limit(x, x, a, '-').free_symbols == {a}
+    assert Limit(x + y, x + y, a).free_symbols == {a}
+    assert Limit(-x**2 + y, x**2, a).free_symbols == {y, a}
