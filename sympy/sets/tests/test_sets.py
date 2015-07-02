@@ -5,7 +5,7 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    LessThan, Max, Min, And, Or, Eq, Le,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
                    ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
-                   ImageSet, pi, Pow, Contains, Sum, RootOf,
+                   ImageSet, pi, Pow, Contains, Sum, RootOf, log,
                    SymmetricDifference, Integer, Rational)
 
 from sympy.abc import a, b, x, y, z
@@ -843,3 +843,8 @@ def test_SymmetricDifference():
 def test_issue_9956():
     assert Union(Interval(-oo, oo), FiniteSet(1)) == Interval(-oo, oo)
     assert Interval(-oo, oo).contains(1) is S.true
+
+
+def test_issue_9536():
+    a = Symbol('a', real=True)
+    assert FiniteSet(log(a)).intersect(S.Reals) == Intersection(S.Reals, FiniteSet(log(a)))
