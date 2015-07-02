@@ -21,7 +21,6 @@ access any SymPy module, or use this contens:
    core.rst
    combinatorics/index.rst
    ntheory.rst
-   crypto.rst
    concrete.rst
    evalf.rst
    numeric-computation.rst
