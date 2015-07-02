@@ -46,7 +46,6 @@ def _test(n, base, s, t):
     """Miller-Rabin strong pseudoprime test for one base.
     Return False if n is definitely composite, True if n is
     probably prime, with a probability greater than 3/4.
-
     """
     # do the Fermat test
     b = pow(base, t, n)
@@ -70,11 +69,10 @@ def mr(n, bases):
     References
     ==========
 
-    - Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-      A Computational Perspective", Springer, 2nd edition, 135-138
-
-    A list of thresholds and the bases they require are here:
-    http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
+    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+           A Computational Perspective", Springer, 2nd edition, 135-138
+    .. [2] A list of thresholds and the bases they require are here:
+           http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
 
     Examples
     ========
@@ -84,7 +82,6 @@ def mr(n, bases):
     False
     >>> mr(479001599, [31, 73])
     True
-
     """
     from sympy.ntheory.factor_ import trailing
     from sympy.polys.domains import ZZ
@@ -123,16 +120,14 @@ def _mr_safe(n):
     list the prime factors of the bases being tested as is done below. The
     _mr_safe_helper can be used to generate this info-tag.
 
-    References for the bounds:
-    ==========================
+    References
+    ==========
 
-    1. http://primes.utm.edu/prove/prove2_3.html
-    2. http://www.trnicely.net/misc/mpzspsp.html
-    3. http://en.wikipedia.org/wiki/Miller-Rabin_primality_test#
-        Accuracy_of_the_test
-    4. http://primes.utm.edu/glossary/xpage/Pseudoprime.html
-    5. http://uucode.com/obf/dalbec/alg.html#sprp
-
+    .. [1] http://primes.utm.edu/prove/prove2_3.html
+    .. [2] http://www.trnicely.net/misc/mpzspsp.html
+    .. [3] http://en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
+    .. [4] http://primes.utm.edu/glossary/xpage/Pseudoprime.html
+    .. [5] http://uucode.com/obf/dalbec/alg.html#sprp
     """
 
     if n < 1373653:
@@ -173,8 +168,7 @@ def _mr_safe(n):
 
 
 def isprime(n):
-    """
-    Test if n is a prime number (True) or not (False). For n < 10**16 the
+    """Test if n is a prime number (True) or not (False). For n < 10**16 the
     answer is accurate; greater n values have a small probability of actually
     being pseudoprimes.
 
@@ -202,7 +196,6 @@ def isprime(n):
     sympy.ntheory.generate.primerange : Generates all primes in a given range
     sympy.ntheory.generate.primepi : Return the number of primes less than or equal to n
     sympy.ntheory.generate.prime : Return the nth prime
-
     """
     n = int(n)
     if n < 2:
@@ -232,8 +225,7 @@ def isprime(n):
 
 
 def _mr_safe_helper(_s):
-    """
-    Analyze a (new) mr_safe line for for total number of s's to
+    """Analyze a (new) mr_safe line for for total number of s's to
     be tested in _test along with the primes that must be cleared
     by a previous test.
 
@@ -256,7 +248,6 @@ def _mr_safe_helper(_s):
         This info tag should then be appended to any new mr_safe line
         that is added so someone can easily see whether that line satisfies
         the requirements of mr_safe (see docstring there for details).
-
         """
         from sympy.ntheory.factor_ import factorint, trailing
 

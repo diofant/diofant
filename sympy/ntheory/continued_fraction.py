@@ -2,16 +2,19 @@ from sympy.core.numbers import Integer, Rational
 
 
 def continued_fraction_periodic(p, q, d=0):
-    r"""
-    Find the periodic continued fraction expansion of a quadratic irrational.
+    r"""Find the periodic continued fraction [1]_ expansion.
 
     Compute the continued fraction expansion of a rational or a
-    quadratic irrational number, i.e. `\frac{p + \sqrt{d}}{q}`, where
-    `p`, `q` and `d \ge 0` are integers.
+    quadratic surd, i.e. `\frac{p + \sqrt{d}}{q}`, where `p`, `q`
+    and `d \ge 0` are integers.
 
-    Returns the continued fraction representation (canonical form) as
-    a list of integers, optionally ending (for quadratic irrationals)
-    with repeating block as the last term of this list.
+    Returns
+    =======
+
+    list
+        the continued fraction representation (canonical form) as a list of
+        integers, optionally ending (for quadratic irrationals) with
+        repeating block as the last term of this list.
 
     Parameters
     ==========
@@ -54,7 +57,6 @@ def continued_fraction_periodic(p, q, d=0):
     .. [1] http://en.wikipedia.org/wiki/Periodic_continued_fraction
     .. [2] K. Rosen. Elementary Number theory and its applications.
            Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
-
     """
     from sympy.core.compatibility import as_int
     from sympy.functions import sqrt
@@ -92,8 +94,7 @@ def continued_fraction_periodic(p, q, d=0):
 
 
 def continued_fraction_reduce(cf):
-    """
-    Reduce a continued fraction to a rational or quadratic irrational.
+    """Reduce a continued fraction to a rational or quadratic irrational.
 
     Compute the rational or quadratic irrational number from its
     terminating or periodic continued fraction expansion.  The
@@ -132,7 +133,6 @@ def continued_fraction_reduce(cf):
     ========
 
     continued_fraction_periodic
-
     """
     from sympy.core.symbol import Dummy
     from sympy.solvers import solve
@@ -163,8 +163,7 @@ def continued_fraction_reduce(cf):
 
 
 def continued_fraction_iterator(x):
-    """
-    Return continued fraction expansion of x as iterator.
+    """Return continued fraction expansion of x as iterator.
 
     Examples
     ========
@@ -194,7 +193,6 @@ def continued_fraction_iterator(x):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/Continued_fraction
-
     """
     from sympy.functions import floor
 
@@ -208,8 +206,7 @@ def continued_fraction_iterator(x):
 
 
 def continued_fraction_convergents(cf):
-    """
-    Return an iterator over the convergents of a continued fraction (cf).
+    """Return an iterator over the convergents of a continued fraction.
 
     The parameter should be an iterable returning successive
     partial quotients of the continued fraction, such as might be
@@ -247,7 +244,6 @@ def continued_fraction_convergents(cf):
     ========
 
     continued_fraction_iterator
-
     """
     p_2, q_2 = Integer(0), Integer(1)
     p_1, q_1 = Integer(1), Integer(0)

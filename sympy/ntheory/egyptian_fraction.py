@@ -7,9 +7,14 @@ from fractions import gcd
 
 
 def egyptian_fraction(r, algorithm="Greedy"):
-    """
-    Return the list of denominators of an Egyptian fraction
-    expansion [1]_ of the said rational `r`.
+    """Compute an Egyptian fraction of the rational `r`.
+
+    Returns
+    =======
+
+    list
+        The list of denominators of an Egyptian
+        fraction expansion [1]_.
 
     Parameters
     ==========
@@ -101,7 +106,6 @@ def egyptian_fraction(r, algorithm="Greedy"):
     .. [2] https://en.wikipedia.org/wiki/Greedy_algorithm_for_Egyptian_fractions
     .. [3] http://www.ics.uci.edu/~eppstein/numth/egypt/conflict.html
     .. [4] http://ami.ektf.hu/uploads/papers/finalpdf/AMI_42_from129to134.pdf
-
     """
 
     if r <= 0:

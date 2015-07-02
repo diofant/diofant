@@ -23,8 +23,7 @@ small_trailing = [i and max(int(not i % 2**j) and j for j in range(1, 8))
 
 
 def smoothness(n):
-    """
-    Return the B-smooth and B-power smooth values of n.
+    """Return the B-smooth and B-power smooth values of n.
 
     The smoothness of n is the largest prime factor of n; the power-
     smoothness is the largest divisor raised to its multiplicity.
@@ -192,8 +191,7 @@ def trailing(n):
 
 
 def multiplicity(p, n):
-    """
-    Find the greatest integer m such that p**m divides n.
+    """Find the greatest integer m such that p**m divides n.
 
     Examples
     ========
@@ -204,7 +202,6 @@ def multiplicity(p, n):
     [0, 1, 2, 3, 3]
     >>> multiplicity(3, R(1, 9))
     -2
-
     """
     try:
         p, n = as_int(p), as_int(n)
@@ -447,9 +444,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     References
     ==========
 
-    - Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-      A Computational Perspective", Springer, 2nd edition, 229-231
-
+    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+           A Computational Perspective", Springer, 2nd edition, 229-231
     """
     n = int(n)
     if n < 5:
@@ -604,10 +600,10 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     References
     ==========
 
-    - Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-      A Computational Perspective", Springer, 2nd edition, 236-238
-    - http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
-    - http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+           A Computational Perspective", Springer, 2nd edition, 236-238
+    .. [2] http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
+    .. [3] http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
     """
 
     n = int(n)
@@ -711,7 +707,6 @@ def _factorint_small(factors, n, limit, fail_max):
     If factors of n were found they will be in the factors dictionary as
     {factor: multiplicity} and the returned value of n will have had those
     factors removed. The factors dictionary is modified in-place.
-
     """
 
     def done(n, d):
@@ -905,8 +900,6 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     Notes
     =====
 
-    Algorithm:
-
     The function switches between multiple algorithms. Trial division
     quickly finds small factors (of the order 1-5 digits), and finds
     all large factors if given enough time. The Pollard rho and p-1
@@ -939,7 +932,6 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     ========
 
     smoothness, smoothness_p, divisors
-
     """
     factordict = {}
     if visual and not isinstance(n, Mul) and not isinstance(n, dict):
@@ -1232,9 +1224,10 @@ def _divisors(n):
 
 
 def divisors(n, generator=False):
-    r"""
-    Return all divisors of n sorted from 1..n by default.
-    If generator is True an unordered generator is returned.
+    r"""Return all divisors of n.
+
+    Divisors are sorted from 1..n by default.  If generator is True an
+    unordered generator is returned.
 
     The number of divisors of n can be quite large if there are many
     prime factors (counting repeated factors). If only the number of
@@ -1252,13 +1245,15 @@ def divisors(n, generator=False):
     >>> list(divisors(120, generator=True))
     [1, 2, 4, 8, 3, 6, 12, 24, 5, 10, 20, 40, 15, 30, 60, 120]
 
-    This is a slightly modified version of Tim Peters referenced at:
-    http://stackoverflow.com/questions/1010381/python-factorization
-
     See Also
     ========
 
     primefactors, factorint, divisor_count
+
+    References
+    ==========
+
+    .. [1] http://stackoverflow.com/questions/1010381/python-factorization
     """
 
     n = as_int(abs(n))
@@ -1275,14 +1270,18 @@ def divisors(n, generator=False):
 
 
 def divisor_count(n, modulus=1):
-    """
-    Return the number of divisors of ``n``. If ``modulus`` is not 1 then only
-    those that are divisible by ``modulus`` are counted.
+    """Return the number of divisors of ``n``.
+
+    If ``modulus`` is not 1 then only those that are divisible by
+    ``modulus`` are counted.
 
     References
     ==========
 
-    - http://www.mayer.dial.pipex.com/maths/formulae.htm
+    .. [1] http://www.mayer.dial.pipex.com/maths/formulae.htm
+
+    Examples
+    ========
 
     >>> from sympy import divisor_count
     >>> divisor_count(6)
@@ -1321,8 +1320,7 @@ def _antidivisors(n):
 
 
 def antidivisors(n, generator=False):
-    r"""
-    Return all antidivisors of n sorted from 1..n by default.
+    r"""Return all antidivisors of n sorted from 1..n by default.
 
     Antidivisors [1]_ of n are numbers that do not divide n by the largest
     possible margin.  If generator is True an unordered generator is returned.
@@ -1358,8 +1356,7 @@ def antidivisors(n, generator=False):
 
 
 def antidivisor_count(n):
-    """
-    Return the number of antidivisors [1]_ of ``n``.
+    """Return the number of antidivisors [1]_ of ``n``.
 
     References
     ==========
@@ -1389,8 +1386,7 @@ def antidivisor_count(n):
 
 
 class totient(Function):
-    """
-    Calculate the Euler totient function phi(n)
+    """Calculate the Euler totient function phi(n)
 
     >>> from sympy.ntheory import totient
     >>> totient(1)
@@ -1420,8 +1416,7 @@ class totient(Function):
 
 
 class divisor_sigma(Function):
-    """
-    Calculate the divisor function `\sigma_k(n)` for positive integer n
+    r"""Calculate the divisor function `\sigma_k(n)` for positive integer n.
 
     ``divisor_sigma(n, k)`` is equal to ``sum([x**k for x in divisors(n)])``
 
@@ -1486,8 +1481,7 @@ class divisor_sigma(Function):
 
 
 def core(n, t=2):
-    """
-    Calculate core(n,t) = `core_t(n)` of a positive integer n
+    """Calculate core(n,t) = `core_t(n)` of a positive integer n.
 
     ``core_2(n)`` is equal to the squarefree part of n
 
