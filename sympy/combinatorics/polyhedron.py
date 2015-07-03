@@ -66,7 +66,7 @@ class Polyhedron(Basic):
         Here we construct the Polyhedron object for a tetrahedron.
 
         >>> corners = [w, x, y, z]
-        >>> faces = [(0,1,2), (0,2,3), (0,3,1), (1,2,3)]
+        >>> faces = [(0, 1, 2), (0, 2, 3), (0, 3, 1), (1, 2, 3)]
 
         Next, allowed transformations of the polyhedron must be given. This
         is given as permutations of vertices.
@@ -78,13 +78,13 @@ class Polyhedron(Basic):
         permutation, Permutation(range(4)), is not included since it does
         not change the orientation of the vertices.)
 
-        >>> pgroup = [Permutation([[0,1,2], [3]]), \
-                      Permutation([[0,1,3], [2]]), \
-                      Permutation([[0,2,3], [1]]), \
-                      Permutation([[1,2,3], [0]]), \
-                      Permutation([[0,1], [2,3]]), \
-                      Permutation([[0,2], [1,3]]), \
-                      Permutation([[0,3], [1,2]])]
+        >>> pgroup = [Permutation([[0, 1, 2], [3]]), \
+                      Permutation([[0, 1, 3], [2]]), \
+                      Permutation([[0, 2, 3], [1]]), \
+                      Permutation([[1, 2, 3], [0]]), \
+                      Permutation([[0, 1], [2, 3]]), \
+                      Permutation([[0, 2], [1, 3]]), \
+                      Permutation([[0, 3], [1, 2]])]
 
         The Polyhedron is now constructed and demonstrated:
 
@@ -176,7 +176,7 @@ class Polyhedron(Basic):
         ---------------------------
 
         It is not necessary to enter any permutations, nor is necessary to
-        enter a complete set of transforations. In fact, for a polyhedron,
+        enter a complete set of transformations. In fact, for a polyhedron,
         all configurations can be constructed from just two permutations.
         For example, the orientations of a tetrahedron can be generated from
         an axis passing through a vertex and face and another axis passing
@@ -234,15 +234,17 @@ class Polyhedron(Basic):
 
         To rotate the square with a single permutation we can do:
 
-        >>> square.rotate(square.pgroup[0]); square.corners
+        >>> square.rotate(square.pgroup[0])
+        >>> square.corners
         (1, 3, 2, 4)
 
         To use more than one permutation (or to use one permutation more
         than once) it is more convenient to use the make_perm method:
 
-        >>> p011 = square.pgroup.make_perm([0,1,1]) # diag flip + 2 rotations
-        >>> square.reset() # return to initial orientation
-        >>> square.rotate(p011); square.corners
+        >>> p011 = square.pgroup.make_perm([0, 1, 1])  # diag flip + 2 rotations
+        >>> square.reset()  # return to initial orientation
+        >>> square.rotate(p011)
+        >>> square.corners
         (4, 2, 3, 1)
 
         Thinking outside the box
@@ -539,7 +541,7 @@ class Polyhedron(Basic):
         A non-physical "rotation" that is not prohibited by this method:
 
         >>> cube.reset()
-        >>> cube.rotate(Permutation([[1,2]], size=8))
+        >>> cube.rotate(Permutation([[1, 2]], size=8))
         >>> cube.corners
         (0, 2, 1, 3, 4, 5, 6, 7)
 
@@ -802,8 +804,8 @@ def _pgroup_calcs():
 
     icosahedron_faces = [
         [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 5], [0, 1, 5],
-        [1, 6, 7], [1, 2, 7], [2, 7, 8], [2, 3, 8], [3, 8, 9 ],
-        [3, 4, 9], [4, 9, 10 ], [4, 5, 10], [5, 6, 10], [1, 5, 6 ],
+        [1, 6, 7], [1, 2, 7], [2, 7, 8], [2, 3, 8], [3, 8, 9],
+        [3, 4, 9], [4, 9, 10 ], [4, 5, 10], [5, 6, 10], [1, 5, 6],
         [6, 7, 11], [7, 8, 11], [8, 9, 11], [9, 10, 11], [6, 10, 11]]
 
     icosahedron = Polyhedron(

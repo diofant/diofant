@@ -6,6 +6,7 @@ from sympy import simplify
 a, k, n, m, x = symbols('a,k,n,m,x', integer=True)
 f = Function('f')
 
+
 def test_karr_convention():
     # Test the Karr product convention that we want to hold.
     # See his paper "Summation in Finite Terms" for a detailed
@@ -282,15 +283,15 @@ def test_simplify():
 def test_change_index():
     b, y, c, d, z = symbols('b, y, c, d, z', integer = True)
 
-    assert Product(x, (x, a, b)).change_index( x, x + 1, y) == \
+    assert Product(x, (x, a, b)).change_index(x, x + 1, y) == \
         Product(y - 1, (y, a + 1, b + 1))
-    assert Product(x**2, (x, a, b)).change_index( x, x - 1) == \
+    assert Product(x**2, (x, a, b)).change_index(x, x - 1) == \
         Product((x + 1)**2, (x, a - 1, b - 1))
-    assert Product(x**2, (x, a, b)).change_index( x, -x, y) == \
+    assert Product(x**2, (x, a, b)).change_index(x, -x, y) == \
         Product((-y)**2, (y, -b, -a))
-    assert Product(x, (x, a, b)).change_index( x, -x - 1) == \
+    assert Product(x, (x, a, b)).change_index(x, -x - 1) == \
         Product(-x - 1, (x, - b - 1, -a - 1))
-    assert Product(x*y, (x, a, b), (y, c, d)).change_index( x, x - 1, z) == \
+    assert Product(x*y, (x, a, b), (y, c, d)).change_index(x, x - 1, z) == \
         Product((z + 1)*y, (z, a - 1, b - 1), (y, c, d))
 
 
@@ -340,5 +341,5 @@ def test_reverse_order():
 
 
 def test_rewrite_Sum():
-    assert Product(1 - S.Half**2/k**2,(k,1,oo)).rewrite(Sum) == \
+    assert Product(1 - S.Half**2/k**2, (k, 1, oo)).rewrite(Sum) == \
         exp(Sum(log(1 - 1/(4*k**2)), (k, 1, oo)))

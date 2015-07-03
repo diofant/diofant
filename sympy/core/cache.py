@@ -99,7 +99,7 @@ def __cacheit(f):
         r = f(*args, **kw_args)
         try:
             func_cache_it_cache[k] = r
-        except TypeError: # k is unhashable
+        except TypeError:  # k is unhashable
             # Note, collections.Hashable is not smart enough to be used here.
             pass
         return r
@@ -119,11 +119,11 @@ def __cacheit_debug(f):
         #
         # this works because:
         #
-        # hash([1,2,3])         -> raise TypeError
-        # hash({'a':1, 'b':2})  -> raise TypeError
-        # hash((1,[2,3]))       -> raise TypeError
+        # hash([1, 2, 3])         -> raise TypeError
+        # hash({'a':1, 'b':2})    -> raise TypeError
+        # hash((1, [2, 3]))       -> raise TypeError
         #
-        # hash((1,2,3))         -> just computes the hash
+        # hash((1, 2, 3))         -> just computes the hash
         hash(r1), hash(r2)
 
         # also see if returned values are the same
