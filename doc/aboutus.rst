@@ -410,6 +410,11 @@ for a full list.
 #. Greg Ashton - LianLi: Allow use of symbols when solving system of eqns
 #. jennifercw: Added checks into polynomials.py
 #. Michael Boyle: fix formatting for Examples sections of docstrings
+#. Govind Sahai: Fixed some typos
+#. Adam Bloomston: Improve conversion of Decimal to Float
+#. Kyle McDaniel: Fixes to Point3D
+#. Nguyen Truong Duy: Fix a bug in cancelling MatrixElement expressions
+#. Mathew Chong: Improve Mul handling of positive/negative assumptions.
 
 You can use git to see the biggest developers::
 
