@@ -26,7 +26,7 @@ Documentation can be found at http://docs.sympy.org/%(version)s
 no_ipython = """\
 Couldn't locate IPython. Having IPython installed is greatly recommended.
 See http://ipython.scipy.org for more details. If you use Debian/Ubuntu,
-just install the 'ipython' package and start isympy again.
+just install first the 'ipython' package.
 """
 
 
@@ -92,6 +92,7 @@ def int_to_Integer(s):
     http://docs.python.org/library/tokenize.html.
 
     Only integer literals are converted.  Float literals are left alone.
+
     Examples
     ========
 
@@ -169,7 +170,7 @@ def enable_automatic_int_sympification(app):
 
 
 def enable_automatic_symbols(app):
-    """Allow IPython to automatially create symbols (``isympy -a``). """
+    """Allow IPython to automatially create symbols. """
     # XXX: This should perhaps use tokenize, like int_to_Integer() above.
     # This would avoid re-executing the code, which can lead to subtle
     # issues.  For example:
@@ -353,7 +354,6 @@ def init_session(ipython=None, pretty_print=True, order=None,
         The default is None, which automatically determines whether we are in
         an ipython instance or not.
     argv: list of arguments for IPython
-        See sympy.bin.isympy for options that can be used to initialize IPython.
 
     See Also
     ========

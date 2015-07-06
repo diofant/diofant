@@ -142,15 +142,6 @@ discussed in more detail later.
     >>> expr.subs(x, 2)
     3
 
-If you use :command:`isympy`, it runs the following commands for you,
-giving you some default Symbols and Functions.
-
-    >>> from __future__ import division
-    >>> from sympy import *
-    >>> x, y, z, t = symbols('x y z t')
-    >>> k, m, n = symbols('k m n', integer=True)
-    >>> f, g, h = symbols('f g h', cls=Function)
-
 You can also import common symbol names from ``sympy.abc`` module.
 
     >>> from sympy.abc import w
@@ -206,8 +197,8 @@ To get a full list of all default names in SymPy do:
     # Ignore everything that starts and ends with __.
 
 If you have `IPython <http://ipython.org/>`_ installed and
-use :command:`isympy`, you can also press the TAB key to get a list of
-all built-in names and to autocomplete.
+use :command:`ipython`, instead of bare Python shell, you can also press
+the TAB key to get a list of all built-in names and to autocomplete.
 
 .. _tutorial_gotchas_equals:
 
@@ -358,8 +349,8 @@ you don't have to worry about this problem:
     >>> S("22/7")
     22/7
 
-Also, if you do not use :command:`isympy`, you could use ``from
-__future__ import division`` to prevent the ``/`` sign from performing
+Also, you could use ``from __future__ import division`` to prevent the
+``/`` sign from performing
 `integer division <http://en.wikipedia.org/wiki/Integer_division>`_.
 
     >>> from __future__ import division

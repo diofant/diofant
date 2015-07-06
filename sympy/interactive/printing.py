@@ -32,32 +32,14 @@ def _init_python_printing(stringify_func):
     sys.displayhook = _displayhook
 
 
-def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
-                           backcolor, fontsize, latex_mode, print_builtin,
+def _init_ipython_printing(ip, stringify_func, use_latex,
+                           latex_mode, print_builtin,
                            latex_printer):
     """Setup printing in IPython interactive session. """
     try:
         from IPython.lib.latextools import latex_to_png
     except ImportError:
         pass
-
-    preamble = "\\documentclass[%s]{article}\n" \
-               "\\pagestyle{empty}\n" \
-               "\\usepackage{amsmath,amsfonts}%s\\begin{document}"
-    if euler:
-        addpackages = '\\usepackage{euler}'
-    else:
-        addpackages = ''
-    preamble = preamble % (fontsize, addpackages)
-
-    imagesize = 'tight'
-    offset = "0cm,0cm"
-    resolution = 150
-    dvi = r"-T %s -D %d -bg %s -fg %s -O %s" % (
-        imagesize, resolution, backcolor, forecolor, offset)
-    dvioptions = dvi.split()
-    debug("init_printing: DVIOPTIONS:", dvioptions)
-    debug("init_printing: PREAMBLE:", preamble)
 
     latex = latex_printer or default_latex
 
@@ -67,13 +49,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
             p.text(stringify_func(arg))
         else:
             p.text(IPython.lib.pretty.pretty(arg))
-
-    def _matplotlib_wrapper(o):
-        # mathtext does not understand certain latex flags, so we try to
-        # replace them with suitable subs
-        o = o.replace(r'\operatorname', '')
-        o = o.replace(r'\overline', r'\bar')
-        return latex_to_png(o)
 
     def _can_print_latex(o):
         """Return True if type o can be printed with LaTeX.
@@ -96,19 +71,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
         elif isinstance(o, (float, integer_types)) and print_builtin:
             return True
         return False
-
-    def _print_latex_matplotlib(o):
-        """
-        A function that returns a png rendered by mathtext
-        """
-        if _can_print_latex(o):
-            s = latex(o, mode='inline')
-            try:
-                return _matplotlib_wrapper(s)
-            except Exception:
-                # Matplotlib.mathtext cannot render some things (like
-                # matrices)
-                return None
 
     def _print_latex_text(o):
         """
@@ -150,19 +112,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex, euler, forecolor,
         for cls in printable_types:
             plaintext_formatter.for_type(cls, _print_plain)
 
-        png_formatter = ip.display_formatter.formatters['image/png']
-        if use_latex in (True, 'matplotlib'):
-            debug("init_printing: using matplotlib formatter")
-            for cls in printable_types:
-                png_formatter.for_type(cls, _print_latex_matplotlib)
-        else:
-            debug("init_printing: not using any png formatter")
-            for cls in printable_types:
-                # Better way to set this, but currently does not work in IPython
-                #png_formatter.for_type(cls, None)
-                if cls in png_formatter.type_printers:
-                    png_formatter.type_printers.pop(cls)
-
         latex_formatter = ip.display_formatter.formatters['text/latex']
         if use_latex in (True, 'mathjax'):
             debug("init_printing: using mathjax formatter")
@@ -199,8 +148,7 @@ def _is_ipython(shell):
 
 def init_printing(pretty_print=True, order=None, use_unicode=None,
                   use_latex=None, wrap_line=None, num_columns=None,
-                  no_global=False, ip=None, euler=False, forecolor='Black',
-                  backcolor='Transparent', fontsize='10pt',
+                  no_global=False, ip=None,
                   latex_mode='equation*', print_builtin=True,
                   str_printer=None, pretty_printer=None,
                   latex_printer=None):
@@ -225,14 +173,8 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
         If True, use unicode characters;
         if False, do not use unicode characters.
     use_latex: string, boolean, or None
-        If True, use default latex rendering in GUI interfaces (png and
-        mathjax);
+        If True, use default latex rendering in GUI interfaces;
         if False, do not use latex rendering;
-        if 'png', enable latex rendering with an external latex compiler,
-        falling back to matplotlib if external compilation fails;
-        if 'matplotlib', enable latex rendering with matplotlib;
-        if 'mathjax', enable latex text generation, for example MathJax
-        rendering in IPython notebook or text rendering in LaTeX documents
     wrap_line: boolean
         If True, lines will wrap at the end; if False, they will not wrap
         but continue as one line. This is only relevant if `pretty_print` is
@@ -247,16 +189,6 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
     ip: An interactive console
         This can either be an instance of IPython,
         or a class that derives from code.InteractiveConsole.
-    euler: boolean, optional, default=False
-        Loads the euler package in the LaTeX preamble for handwritten style
-        fonts (http://www.ctan.org/pkg/euler).
-    forecolor: string, optional, default='Black'
-        DVI setting for foreground color.
-    backcolor: string, optional, default='Transparent'
-        DVI setting for background color.
-    fontsize: string, optional, default='10pt'
-        A font size to pass to the LaTeX documentclass function in the
-        preamble.
     latex_mode: string, optional, default='equation*'
         The mode used in the LaTeX printer. Can be one of:
         {'inline'|'plain'|'equation'|'equation*'}.
@@ -375,8 +307,8 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
             stringify_func = lambda expr: _stringify_func(expr, order=order)
 
     if in_ipython:
-        _init_ipython_printing(ip, stringify_func, use_latex, euler,
-                               forecolor, backcolor, fontsize, latex_mode,
+        _init_ipython_printing(ip, stringify_func, use_latex,
+                               latex_mode,
                                print_builtin, latex_printer)
     else:
         _init_python_printing(stringify_func)

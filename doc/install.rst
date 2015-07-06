@@ -26,10 +26,9 @@ execute the following::
     $ python setup.py install
 
 Alternatively, if you don't want to install the package onto your computer, you
-may run SymPy with the "isympy" console (which automatically imports SymPy
-packages and defines common symbols) by executing within that folder::
+may run python interpreter (or ipython) by executing within that folder::
 
-    $ ./bin/isympy
+    $ python
 
 You may now run SymPy statements directly within the Python shell::
 

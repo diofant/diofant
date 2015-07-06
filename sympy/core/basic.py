@@ -370,6 +370,14 @@ class Basic(with_metaclass(ManagedProperties)):
         from sympy.printing import sstr
         return sstr(self, order=None)
 
+    def _repr_pretty_(self, p, cycle):
+        from sympy.printing import pretty
+        p.text(pretty(self, order=None))
+
+    def _repr_latex_(self):
+        from sympy.printing import latex
+        return '$$' + latex(self, order=None) + '$$'
+
     def atoms(self, *types):
         """Returns the atoms that form the current object.
 

@@ -28,7 +28,6 @@ help:
 	@echo "  livehtml    to use livereload to view the built html"
 	@echo "  texinfo     to make Texinfo files"
 	@echo "  web         to make files usable by Sphinx.web"
-	@echo "  man         build manpage"
 
 clean:
 	-rm -rf _build
@@ -96,6 +95,3 @@ info:
 	@echo "Running Texinfo files through makeinfo..."
 	make -C _build/texinfo info
 	@echo "makeinfo finished; the Info files are in _build/texinfo."
-
-man: man/isympy.xml
-	docbook2x-man --to-stdout $< > man/isympy.1
