@@ -18,7 +18,6 @@ from sympy.ntheory.factor_ import smoothness, smoothness_p, \
     antidivisors, antidivisor_count, core
 from sympy.ntheory.generate import cycle_length
 from sympy.ntheory.primetest import _mr_safe_helper, mr
-from sympy.ntheory.bbp_pi import pi_hex_digits
 from sympy.ntheory.modular import crt, crt1, crt2, solve_congruence
 from sympy.ntheory.continued_fraction import \
     (continued_fraction_periodic as cf_p,
@@ -594,12 +593,6 @@ def test_residue():
     assert mobius(p) == -1
     raises(TypeError, lambda: mobius(x))
     raises(ValueError, lambda: mobius(i))
-
-
-def test_hex_pi_nth_digits():
-    assert pi_hex_digits(0) == '3243f6a8885a30'
-    assert pi_hex_digits(1) == '243f6a8885a308'
-    assert pi_hex_digits(10000) == '68ac8fcfb8016c'
 
 
 def test_crt():
