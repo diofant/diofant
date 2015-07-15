@@ -7428,11 +7428,14 @@ def sysode_linear_3eq_order1(match_):
     #   Eq(g1*diff(x(t),t), a1*x(t)+b1*y(t)+c1*z(t)+d1),
     #   Eq(g2*diff(y(t),t), a2*x(t)+b2*y(t)+c2*z(t)+d2), and
     #   Eq(g3*diff(z(t),t), a3*x(t)+b3*y(t)+c3*z(t)+d3)
-    r['a1'] = fc[0,x(t),0]/fc[0,x(t),1]; r['a2'] = fc[1,x(t),0]/fc[1,y(t),1];
+    r['a1'] = fc[0,x(t),0]/fc[0,x(t),1]
+    r['a2'] = fc[1,x(t),0]/fc[1,y(t),1]
     r['a3'] = fc[2,x(t),0]/fc[2,z(t),1]
-    r['b1'] = fc[0,y(t),0]/fc[0,x(t),1]; r['b2'] = fc[1,y(t),0]/fc[1,y(t),1];
+    r['b1'] = fc[0,y(t),0]/fc[0,x(t),1]
+    r['b2'] = fc[1,y(t),0]/fc[1,y(t),1]
     r['b3'] = fc[2,y(t),0]/fc[2,z(t),1]
-    r['c1'] = fc[0,z(t),0]/fc[0,x(t),1]; r['c2'] = fc[1,z(t),0]/fc[1,y(t),1];
+    r['c1'] = fc[0,z(t),0]/fc[0,x(t),1]
+    r['c2'] = fc[1,z(t),0]/fc[1,y(t),1]
     r['c3'] = fc[2,z(t),0]/fc[2,z(t),1]
     forcing = [S(0), S(0), S(0)]
     for i in range(3):
