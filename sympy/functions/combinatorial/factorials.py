@@ -739,4 +739,5 @@ class binomial(CombinatorialFunction):
         return gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
 
     def _eval_is_integer(self):
-        return self.args[0].is_integer and self.args[1].is_integer
+        if self.args[0].is_integer and self.args[1].is_integer:
+            return True
