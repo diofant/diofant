@@ -4219,7 +4219,7 @@ def exptrigsimp(expr, simplify=True):
     for ei in ex:
         e2 = ei**-2
         if e2 in ex:
-            a = e2.args[0]/2 if not e2 is S.Exp1 else S.Half
+            a = e2.args[0]/2 if e2 is not S.Exp1 else S.Half
             newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
             newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
     ## exp ratios to tan and tanh

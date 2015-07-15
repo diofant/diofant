@@ -710,7 +710,7 @@ def eval_sum_symbolic(f, limits):
 
         if None not in (lsum, rsum):
             r = lsum + rsum
-            if not r is S.NaN:
+            if r is not S.NaN:
                 return r
 
     # Polynomial terms with Faulhaber's formula
@@ -722,8 +722,8 @@ def eval_sum_symbolic(f, limits):
 
         if n.is_Integer:
             if n >= 0:
-                if (b is S.Infinity and not a is S.NegativeInfinity) or \
-                   (a is S.NegativeInfinity and not b is S.Infinity):
+                if (b is S.Infinity and a is not S.NegativeInfinity) or \
+                   (a is S.NegativeInfinity and b is not S.Infinity):
                     return S.Infinity
                 return ((bernoulli(n + 1, b + 1) - bernoulli(n + 1, a))/(n + 1)).expand()
             elif a.is_Integer and a >= 1:

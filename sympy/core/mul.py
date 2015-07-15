@@ -174,7 +174,7 @@ class Mul(Expr, AssocOp):
             a, b = seq
             if b.is_Rational:
                 a, b = b, a
-            assert not a is S.One
+            assert a is not S.One
             if not a.is_zero and a.is_Rational:
                 r, b = b.as_coeff_Mul()
                 if b.is_Add:
