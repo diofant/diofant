@@ -103,7 +103,8 @@ class FracField(DefaultPrinting):
     def raw_new(self, numer, denom=None):
         return self.dtype(numer, denom)
     def new(self, numer, denom=None):
-        if denom is None: denom = self.ring.one
+        if denom is None:
+            denom = self.ring.one
         numer, denom = numer.cancel(denom)
         return self.raw_new(numer, denom)
 

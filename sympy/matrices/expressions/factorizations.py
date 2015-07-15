@@ -12,8 +12,10 @@ class LofLU(Factorization):
 class UofLU(Factorization):
     predicates = Q.upper_triangular,
 
-class LofCholesky(LofLU): pass
-class UofCholesky(UofLU): pass
+class LofCholesky(LofLU):
+    pass
+class UofCholesky(UofLU):
+    pass
 
 class QofQR(Factorization):
     predicates = Q.orthogonal,
