@@ -6762,7 +6762,7 @@ def _linear_2eq_order1_type7(x, y, t, r):
         sol2 = dsolve(diff(y(t),t,t) - (m2/r['c'])*diff(y(t),t) - (e2/r['c'])*y(t)).rhs
         sol1 = dsolve(diff(x(t),t) - r['a']*x(t) - r['b']*sol2).rhs
     else:
-        x0, y0 = symbols('x0, y0')              #x0 and y0 being particular solutions
+        x0, y0 = symbols('x0, y0')  # x0 and y0 being particular solutions
         F = exp(Integral(r['a'],t))
         P = exp(Integral(r['d'],t))
         sol1 = C1*x0 + C2*x0*Integral(r['b']*F*P/x0**2, t)

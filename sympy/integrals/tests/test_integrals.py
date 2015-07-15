@@ -84,7 +84,7 @@ def test_basics():
     assert diff_test(Integral(x, (x, 3*y))) == {y}
     assert diff_test(Integral(x, (a, 3*y))) == {x, y}
 
-    assert integrate(x, (x, oo, oo)) == 0 #issue 8171
+    assert integrate(x, (x, oo, oo)) == 0  # issue 8171
     assert integrate(x, (x, -oo, -oo)) == 0
 
     # sum integral of terms

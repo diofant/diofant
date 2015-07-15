@@ -880,7 +880,7 @@ def TR10i(rv):
                 if n1 == n2:
                     return gcd*cos(a - b)
                 return gcd*cos(a + b)
-            else:  #cossin, cossin
+            else:  # cossin, cossin
                 gcd = n1*gcd
                 if n1 == n2:
                     return gcd*sin(a + b)

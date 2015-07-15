@@ -604,10 +604,10 @@ class IPolys(object):
         res = dmp_qq_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self[1:].from_dense(res)
 
-    def dup_resultant(self, f, g): #, includePRS=False):
-        return dup_resultant(self.to_dense(f), self.to_dense(g), self.domain) #, includePRS=includePRS)
-    def dmp_resultant(self, f, g): #, includePRS=False):
-        res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain) #, includePRS=includePRS)
+    def dup_resultant(self, f, g):
+        return dup_resultant(self.to_dense(f), self.to_dense(g), self.domain)
+    def dmp_resultant(self, f, g):
+        res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         if isinstance(res, list):
             return self[1:].from_dense(res)
         else:

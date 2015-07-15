@@ -471,7 +471,7 @@ def test_simplify_expr():
 
     assert simplify(A*B - B*A) == A*B - B*A
     assert simplify(A/(1 + y/x)) == x*A/(x + y)
-    assert simplify(A*(1/x + 1/y)) == A/x + A/y  #(x + y)*A/(x*y)
+    assert simplify(A*(1/x + 1/y)) == A/x + A/y  # (x + y)*A/(x*y)
 
     assert simplify(log(2) + log(3)) == log(6)
     assert simplify(log(2*x) - log(2)) == log(x)
