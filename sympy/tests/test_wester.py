@@ -868,7 +868,7 @@ def test_M7():
         1 - sqrt(-6 - 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 + sqrt(-6 - 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 + 2*I*sqrt(3 + 4*sqrt(3)))/2,
-        1 + sqrt(-6 + 2*I*sqrt(3 + 4*sqrt (3)))/2,
+        1 + sqrt(-6 + 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 + 2*sqrt(-3 + 4*sqrt(3)))/2,
         1 + sqrt(-6 + 2*sqrt(-3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 - 2*sqrt(-3 + 4*sqrt(3)))/2,
