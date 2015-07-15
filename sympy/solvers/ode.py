@@ -381,7 +381,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
 
 
 def dsolve(eq, func=None, hint="default", simplify=True,
-    ics= None, xi=None, eta=None, x0=0, n=6, **kwargs):
+           ics= None, xi=None, eta=None, x0=0, n=6, **kwargs):
     r"""
     Solves any (supported) kind of ordinary differential equation and
     system of ordinary differential equations.
@@ -870,8 +870,9 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 deriv = funcarg.expr
                 old = funcarg.variables[0]
                 new = funcarg.point[0]
-                if isinstance(deriv, Derivative) and isinstance(deriv.args[0],
-                    AppliedUndef) and deriv.args[0].func == f and old == x and not new.has(x):
+                if isinstance(deriv, Derivative) and \
+                   isinstance(deriv.args[0], AppliedUndef) and \
+                   deriv.args[0].func == f and old == x and not new.has(x):
                     dorder = ode_order(deriv, x)
                     temp = 'f' + str(dorder)
                     boundary.update({temp: new, temp + 'val': ics[funcarg]})
@@ -882,7 +883,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
             # Separating functions
             elif isinstance(funcarg, AppliedUndef):
                 if funcarg.func == f and len(funcarg.args) == 1 and \
-                    not funcarg.args[0].has(x):
+                   not funcarg.args[0].has(x):
                     boundary.update({'f0': funcarg.args[0], 'f0val': ics[funcarg]})
                 else:
                     raise ValueError("Enter valid boundary conditions for Function")
@@ -965,10 +966,10 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
             check = cancel(r[d]/r[e])
             check1 = check.subs({x: point, y: value})
             if not check1.has(oo) and not check1.has(zoo) and \
-                not check1.has(NaN) and not check1.has(-oo):
+               not check1.has(NaN) and not check1.has(-oo):
                 check2 = (check1.diff(x)).subs({x: point, y: value})
                 if not check2.has(oo) and not check2.has(zoo) and \
-                    not check2.has(NaN) and not check2.has(-oo):
+                   not check2.has(NaN) and not check2.has(-oo):
                     rseries = r.copy()
                     rseries.update({'terms': terms, 'f0': point, 'f0val': value})
                     matching_hints["1st_power_series"] = rseries
@@ -1177,10 +1178,10 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 point = kwargs.get('x0', 0)
                 check = p.subs(x, point)
                 if not check.has(oo) and not check.has(NaN) and \
-                    not check.has(zoo) and not check.has(-oo):
+                   not check.has(zoo) and not check.has(-oo):
                     check = q.subs(x, point)
                     if not check.has(oo) and not check.has(NaN) and \
-                        not check.has(zoo) and not check.has(-oo):
+                       not check.has(zoo) and not check.has(-oo):
                         ordinary = True
                         r.update({'a3': a3, 'b3': b3, 'c3': c3, 'x0': point, 'terms': terms})
                         matching_hints["2nd_power_series_ordinary"] = r
@@ -1192,11 +1193,11 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                     p = cancel((x - point)*p)
                     check = p.subs(x, point)
                     if not check.has(oo) and not check.has(NaN) and \
-                        not check.has(zoo) and not check.has(-oo):
+                       not check.has(zoo) and not check.has(-oo):
                         q = cancel(((x - point)**2)*q)
                         check = q.subs(x, point)
                         if not check.has(oo) and not check.has(NaN) and \
-                            not check.has(zoo) and not check.has(-oo):
+                           not check.has(zoo) and not check.has(-oo):
                             coeff_dict = {'p': p, 'q': q, 'x0': point, 'terms': terms}
                             matching_hints["2nd_power_series_regular"] = coeff_dict
 
@@ -3732,8 +3733,8 @@ def ode_2nd_power_series_regular(eq, func, order, match):
 
     p0, q0 = indicial
     sollist = solve(m*(m - 1) + m*p0 + q0, m)
-    if sollist and isinstance(sollist, list) and all(
-        [sol.is_extended_real for sol in sollist]):
+    if sollist and isinstance(sollist, list) and \
+       all(sol.is_extended_real for sol in sollist):
         serdict1 = {}
         serdict2 = {}
         if len(sollist) == 1:

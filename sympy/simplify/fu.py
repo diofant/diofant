@@ -605,11 +605,9 @@ def TR8(rv, first=True):
     """
 
     def f(rv):
-        if not (
-            rv.is_Mul or
-            rv.is_Pow and
-            rv.base.func in (cos, sin) and
-            (rv.exp.is_integer or rv.base.is_positive)):
+        if not (rv.is_Mul or rv.is_Pow and
+                rv.base.func in (cos, sin) and
+                (rv.exp.is_integer or rv.base.is_positive)):
             return rv
 
         if first:
@@ -1536,9 +1534,8 @@ def TR111(rv):
     """
 
     def f(rv):
-        if not (
-            isinstance(rv, Pow) and
-            (rv.base.is_positive or rv.exp.is_integer and rv.exp.is_negative)):
+        if not (isinstance(rv, Pow) and
+                (rv.base.is_positive or rv.exp.is_integer and rv.exp.is_negative)):
             return rv
 
         if rv.base.func is tan:
@@ -1941,7 +1938,7 @@ def trig_split(a, b, two=False):
                     return
                 return gcd, n1, n2, ca.args[0], sa.args[0], ca.func is sa.func
         if ca and sa or cb and sb or \
-            two and (ca is None and sa is None or cb is None and sb is None):
+           two and (ca is None and sa is None or cb is None and sb is None):
             return
         c = ca or sa
         s = cb or sb

@@ -1983,7 +1983,7 @@ def _func_field_modgcd_m(f, g, minpoly):
         h = h.primitive()[1]
 
         if not (_trial_division(f.mul_ground(cf), h, minpoly) or
-            _trial_division(g.mul_ground(cg), h, minpoly)):
+                _trial_division(g.mul_ground(cg), h, minpoly)):
             return h
 
 

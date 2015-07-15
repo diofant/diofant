@@ -121,8 +121,9 @@ template = \
 
 graphstyle = {'rankdir': 'TD', 'ordering': 'out'}
 
-def dotprint(expr, styles=default_styles, atom=lambda x: not isinstance(x,
-    Basic), maxdepth=None, repeat=True, labelfunc=str, **kwargs):
+def dotprint(expr, styles=default_styles,
+             atom=lambda x: not isinstance(x, Basic),
+             maxdepth=None, repeat=True, labelfunc=str, **kwargs):
     """
     DOT description of a SymPy expression tree
 
