@@ -1,9 +1,9 @@
 language: python
+sudo: false
 env:
   matrix:
   - SPLIT="1/2"
   - SPLIT="2/2"
-  - TEST_EXTRA="true"
   - TEST_SLOW="true" SPLIT="1/2"
   - TEST_SLOW="true" SPLIT="2/2"
 python:
@@ -13,7 +13,38 @@ matrix:
   include:
     - python: 2.7
       env:
+        - TEST_EXTRA="true"
+      addons:
+        apt:
+          packages:
+            - libgmp-dev
+            - libatlas-dev
+            - libatlas-base-dev
+            - liblapack-dev
+            - gfortran
+    - python: 3.4
+      env:
+        - TEST_EXTRA="true"
+      addons:
+        apt:
+          packages:
+            - libgmp-dev
+            - libatlas-dev
+            - libatlas-base-dev
+            - liblapack-dev
+            - gfortran
+    - python: 2.7
+      env:
         - TEST_SPHINX="true"
+      addons:
+        apt:
+          packages:
+            - graphviz
+            - texlive
+            - texlive-xetex
+            - texlive-fonts-recommended
+            - texlive-latex-extra
+            - lmodern
     - python: "pypy3"
       env:
         - SPLIT="1/2"
@@ -22,13 +53,9 @@ matrix:
         - SPLIT="2/2"
 before_install:
   - if [[ "${TEST_SPHINX}" == "true" ]]; then
-      sudo apt-get update;
-      sudo apt-get install --no-install-recommends graphviz texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra lmodern;
       pip install sphinx==1.2.2 numpydoc==0.5 sphinx_rtd_theme;
     fi
   - if [[ "${TEST_EXTRA}" == "true" ]]; then
-      sudo apt-get update;
-      sudo apt-get -qq install libgmp-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran;
       travis_wait 30 pip install numpy==1.7.1 scipy==0.12.0 gmpy==1.16 Theano==0.6 pep8==1.6.2;
       travis_wait 30 pip install matplotlib==1.3.1;
     fi
