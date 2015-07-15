@@ -1355,7 +1355,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
         for eqs in eq:
             derivs = eqs.atoms(Derivative)
             func = set().union(*[d.atoms(AppliedUndef) for d in derivs])
-            for func_ in  func:
+            for func_ in func:
                 order[func_] = 0
                 funcs.append(func_)
     funcs = list(set(funcs))
@@ -1932,7 +1932,7 @@ def checksysodesol(eqs, sols, func=None):
         for eq in eqs:
             derivs = eq.atoms(Derivative)
             func = set().union(*[d.atoms(AppliedUndef) for d in derivs])
-            for func_ in  func:
+            for func_ in func:
                 funcs.append(func_)
         funcs = list(set(funcs))
     if not all(isinstance(func, AppliedUndef) and len(func.args) == 1 for func in funcs)\

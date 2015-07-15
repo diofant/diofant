@@ -149,4 +149,4 @@ def _gcd_interpolate(h, x, ring):
     if f.LC < 0:
         return -f
     else:
-        return  f
+        return f

@@ -1290,15 +1290,15 @@ def test_P5():
     M = Matrix([[7, 11],
                 [3, 8]])
     # Raises exception % not supported for matrices
-    assert  M % 2 == Matrix([[1, 1],
-                             [1, 0]])
+    assert M % 2 == Matrix([[1, 1],
+                            [1, 0]])
 
 
 def test_P5_workaround():
     M = Matrix([[7, 11],
                 [3, 8]])
-    assert  M.applyfunc(lambda i: i % 2) == Matrix([[1, 1],
-                                                    [1, 0]])
+    assert M.applyfunc(lambda i: i % 2) == Matrix([[1, 1],
+                                                   [1, 0]])
 
 
 def test_P6():
@@ -1704,7 +1704,7 @@ def test_P43():
 def test_P44():
     def __my_hessian(f, Y):
         V = Matrix([diff(f, v) for v in Y])
-        return  Matrix([V.T.diff(v) for v in Y])
+        return Matrix([V.T.diff(v) for v in Y])
     r, t = symbols('r t', extended_real=True)
     assert __my_hessian(r**2*sin(t), (r, t)) == Matrix([
                                             [  2*sin(t),   2*r*cos(t)],
@@ -1714,7 +1714,7 @@ def test_P44():
 def test_P45():
     def __my_wronskian(Y, v):
         M = Matrix([Matrix(Y).T.diff(x, n) for n in range(0, len(Y))])
-        return  M.det()
+        return M.det()
     assert __my_wronskian([cos(x), sin(x)], x).simplify() == 1
 
 # Q1-Q6  Tensor tests missing
@@ -2039,8 +2039,8 @@ def test_T4():
 
 @slow
 def test_T5():
-    assert  limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
-                  + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
+    assert limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
+                 + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
 
 
 def test_T6():

@@ -728,7 +728,7 @@ class TIDS(CantSympify):
                 continue
             shifts[i] = shift
         free = [(ind, p, c - shifts[c]) for (ind, p, c) in free if c not in elim]
-        dum = [(p0, p1, c0 - shifts[c0], c1 - shifts[c1]) for  i, (p0, p1, c0, c1) in enumerate(dum) if c0 not in elim and c1 not in elim]
+        dum = [(p0, p1, c0 - shifts[c0], c1 - shifts[c1]) for i, (p0, p1, c0, c1) in enumerate(dum) if c0 not in elim and c1 not in elim]
         components = [c for i, c in enumerate(components) if i not in elim]
         tids = TIDS(components, free, dum)
         return tids, sign

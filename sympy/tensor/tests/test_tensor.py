@@ -463,7 +463,7 @@ def test_TensorIndexType():
     i0, i1 = tensor_indices('i0 i1', TSpace)
     g = TSpace.metric
     A = tensorhead('A', [TSpace]*2, [[1]*2])
-    assert  str(A(i0,-i0).canon_bp()) == 'A(TSpace_0, -TSpace_0)'
+    assert str(A(i0,-i0).canon_bp()) == 'A(TSpace_0, -TSpace_0)'
 
 def test_indices():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')

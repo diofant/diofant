@@ -1794,7 +1794,7 @@ def _solve_system(exprs, symbols, **flags):
                         result.remove(b)
 
     default_simplify = bool(failed)  # rely on system-solvers to simplify
-    if  flags.get('simplify', default_simplify):
+    if flags.get('simplify', default_simplify):
         for r in result:
             for k in r:
                 r[k] = simplify(r[k])

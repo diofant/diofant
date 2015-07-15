@@ -666,7 +666,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
                 b0, c0 = b0.as_poly(DE.t), c0.as_poly(DE.t)
                 if b0 is None:  # See above comment
                     raise ValueError("b0 should be a non-Null value")
-                if c0 is  None:
+                if c0 is None:
                     raise ValueError("c0 should be a non-Null value")
                 y = solve_poly_rde(b0, c0, n, DE).as_poly(DE.t)
             return h + y
