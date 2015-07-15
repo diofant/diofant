@@ -14,8 +14,8 @@ def test_HadamardProduct():
     assert HadamardProduct(A, B, A).shape == A.shape
 
     raises(ShapeError, lambda: HadamardProduct(A, B.T))
-    raises(TypeError,  lambda: HadamardProduct(A, n))
-    raises(TypeError,  lambda: HadamardProduct(A, 1))
+    raises(TypeError, lambda: HadamardProduct(A, n))
+    raises(TypeError, lambda: HadamardProduct(A, 1))
 
     assert HadamardProduct(A, 2*B, -A)[1, 1] == \
             -2 * A[1, 1] * B[1, 1] * A[1, 1]

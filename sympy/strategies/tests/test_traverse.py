@@ -28,8 +28,10 @@ def _test_global_traversal(trav):
 
 def _test_stop_on_non_basics(trav):
     def add_one_if_can(expr):
-        try:    return expr + 1
-        except: return expr
+        try:
+            return expr + 1
+        except:
+            return expr
 
     expr     = Basic(1, 'a', Basic(2, 'b'))
     expected = Basic(2, 'a', Basic(3, 'b'))

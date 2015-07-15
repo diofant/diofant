@@ -419,9 +419,9 @@ def test_partitions():
     #    (from pkrathmann2)
 
     for n in range(2, 6):
-        i  = 0
-        for m, q  in _set_partitions(n):
-            assert  q == RGS_unrank(i, n)
+        i = 0
+        for m, q in _set_partitions(n):
+            assert q == RGS_unrank(i, n)
             i = i+1
         assert i == RGS_enum(n)
 

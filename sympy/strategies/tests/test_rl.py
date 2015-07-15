@@ -31,8 +31,10 @@ def test_sort():
     assert sort(str)(Basic(3,1,2)) == Basic(1,2,3)
 
 def test_distribute():
-    class T1(Basic):        pass
-    class T2(Basic):        pass
+    class T1(Basic):
+        pass
+    class T2(Basic):
+        pass
 
     distribute_t12 = distribute(T1, T2)
     assert distribute_t12(T1(1, 2, T2(3, 4), 5)) == \

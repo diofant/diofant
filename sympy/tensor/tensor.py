@@ -3884,7 +3884,7 @@ def get_lines(ex, index_type):
         # if p0 == ta0[1] then G in pos c0 is mult on the right by G in c1
         # if p0 == ta0[0] then G in pos c1 is mult on the right by G in c0
         ta0 = dt[components[c0]]
-        b0, b1 = (c0, c1) if p0 == ta0[1]  else (c1, c0)
+        b0, b1 = (c0, c1) if p0 == ta0[1] else (c1, c0)
         lines1 = lines[:]
         for line in lines:
             if line[-1] == b0:
