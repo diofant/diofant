@@ -354,7 +354,7 @@ class LatexPrinter(Printer):
             ldenom = len(sdenom.split())
             ratio = self._settings['long_frac_ratio']
             if self._settings['fold_short_frac'] \
-                    and ldenom <= 2 and not "^" in sdenom:
+                    and ldenom <= 2 and "^" not in sdenom:
                 # handle short fractions
                 if self._needs_mul_brackets(numer, last=False):
                     tex += r"\left(%s\right) / %s" % (snumer, sdenom)

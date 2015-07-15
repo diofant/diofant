@@ -321,7 +321,7 @@ class lowergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if not z in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, S.NegativeInfinity):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_uppergamma(self, s, x):
@@ -461,7 +461,7 @@ class uppergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if not z in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, S.NegativeInfinity):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_lowergamma(self, s, x):
@@ -927,7 +927,7 @@ class loggamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[0]
-        if not z in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, S.NegativeInfinity):
             return self.func(z.conjugate())
 
     def fdiff(self, argindex=1):

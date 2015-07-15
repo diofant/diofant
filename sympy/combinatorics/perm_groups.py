@@ -1114,7 +1114,7 @@ class PermutationGroup(Basic):
                 for k in rng:
                     c[p2[p1[k]]] = p1[p2[k]]
                 ct = tuple(c)
-                if not ct in set_commutators:
+                if ct not in set_commutators:
                     set_commutators.add(ct)
         cms = [_af_new(p) for p in set_commutators]
         G2 = self.normal_closure(cms)

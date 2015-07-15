@@ -4183,7 +4183,7 @@ def mgamma(mu, lower=False):
     .. [1] http://en.wikipedia.org/wiki/Gamma_matrices
     """
     from sympy import Matrix
-    if not mu in [0, 1, 2, 3, 5]:
+    if mu not in [0, 1, 2, 3, 5]:
         raise IndexError("Invalid Dirac index")
     if mu == 0:
         mat = (

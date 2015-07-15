@@ -312,7 +312,7 @@ def process_function(name, c_name, b_obj, mod_path, f_sk, f_md, f_mdt, f_idt,
     else:
         if not obj.__doc__:
             add_md = True
-        elif not '>>>' in obj.__doc__:
+        elif '>>>' not in obj.__doc__:
             add_mdt = True
         elif _is_indirect(name, obj.__doc__):
             add_idt = True
@@ -372,7 +372,7 @@ def process_class(c_name, obj, c_sk, c_md, c_mdt, c_idt, c_has_doctest,
     full_name = "LINE %d: %s" % (line_no, c_name)
     if not obj.__doc__:
         c_md.append(full_name)
-    elif not '>>>' in obj.__doc__:
+    elif '>>>' not in obj.__doc__:
         c_mdt.append(full_name)
     elif _is_indirect(c_name, obj.__doc__):
         c_idt.append(full_name)

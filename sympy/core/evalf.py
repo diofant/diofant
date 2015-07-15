@@ -1166,7 +1166,7 @@ def evalf_symbol(x, prec, options):
             return None, None, None, None
         return val._mpf_, None, prec, None
     else:
-        if not '_cache' in options:
+        if '_cache' not in options:
             options['_cache'] = {}
         cache = options['_cache']
         cached, cached_prec = cache.get(x.name, (None, MINUS_INF))

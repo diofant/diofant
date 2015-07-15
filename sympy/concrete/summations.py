@@ -752,7 +752,7 @@ def eval_sum_symbolic(f, limits):
 
         r = gosper_sum(f, (i, a, b))
 
-        if not r in (None, S.NaN):
+        if r not in (None, S.NaN):
             return r
 
     return eval_sum_hyper(f_orig, (i, a, b))

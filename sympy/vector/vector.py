@@ -317,7 +317,7 @@ class BaseVector(Vector, AtomicExpr):
 
     def __new__(cls, name, index, system, pretty_str, latex_str):
         #Verify arguments
-        if not index in range(0, 3):
+        if index not in range(0, 3):
             raise ValueError("index must be 0, 1 or 2")
         if not isinstance(name, str):
             raise TypeError("name must be a valid string")

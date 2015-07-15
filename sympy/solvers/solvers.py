@@ -990,7 +990,7 @@ def solve(f, *symbols, **flags):
                     p.is_Pow and not implicit or
                     p.is_Function and not implicit) and p.func not in (re, im):
                 continue
-            elif not p in seen:
+            elif p not in seen:
                 seen.add(p)
                 if p.free_symbols & symset:
                     non_inverts.add(p)
@@ -1359,7 +1359,7 @@ def _solve(f, *symbols, **flags):
         # first see if it really depends on symbol and whether there
         # is a linear solution
         f_num, sol = solve_linear(f, symbols=symbols)
-        if not symbol in f_num.free_symbols:
+        if symbol not in f_num.free_symbols:
             return []
         elif f_num.is_Symbol:
             # no need to check but simplify if desired
@@ -1939,7 +1939,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                 all_zero = False
                 if dn is S.NaN:
                     break
-                if not xi in dn.free_symbols:
+                if xi not in dn.free_symbols:
                     vi = -(nn.subs(xi, 0))/dn
                     if dens is None:
                         dens = _simple_dens(eq, symbols)
