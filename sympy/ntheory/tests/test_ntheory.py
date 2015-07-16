@@ -535,8 +535,8 @@ def test_residue():
         assert pow(next(it), 2, p) == a
 
     assert type(next(sqrt_mod_iter(9, 27))) is int
-    assert type(next(sqrt_mod_iter(9, 27, ZZ))) is type(ZZ(1))
-    assert type(next(sqrt_mod_iter(1, 7, ZZ))) is type(ZZ(1))
+    assert isinstance(next(sqrt_mod_iter(9, 27, ZZ)), type(ZZ(1)))
+    assert isinstance(next(sqrt_mod_iter(1, 7, ZZ)), type(ZZ(1)))
 
     assert is_nthpow_residue(2, 1, 5)
     assert not is_nthpow_residue(2, 2, 5)
