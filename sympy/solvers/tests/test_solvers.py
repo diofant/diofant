@@ -248,7 +248,6 @@ def test_quintics_1():
         RootOf(x**5 + 3*x**3 + 7, 0).n()
 
 
-
 def test_highorder_poly():
     # just testing that the uniq generator is unpacked
     sol = solve(x**6 - 2*x + 2)

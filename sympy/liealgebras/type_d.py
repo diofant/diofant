@@ -9,7 +9,6 @@ class TypeD(Standard_Cartan):
             raise ValueError("n cannot be less than 3")
         return Standard_Cartan.__new__(cls, "D", n)
 
-
     def dimension(self):
         """Dmension of the vector space V underlying the Lie algebra.
 
@@ -75,7 +74,6 @@ class TypeD(Standard_Cartan):
             root[n-2] = 1
             root[n-1] = 1
             return root
-
 
     def positive_roots(self):
         """

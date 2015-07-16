@@ -364,7 +364,6 @@ def _parts_rule(integrand, symbol):
                    pull_out_polys, pull_out_u(sympy.sin, sympy.cos),
                    pull_out_u(sympy.exp)]
 
-
     dummy = sympy.Dummy("temporary")
     # we can integrate log(x) and atan(x) by setting dv = 1
     if isinstance(integrand, (sympy.log, sympy.atan, sympy.asin, sympy.acos)):

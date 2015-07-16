@@ -47,7 +47,6 @@ class MatPow(MatrixExpr):
                     + " of matrix power either not defined or not implemented")
         return A._entry(i, j)
 
-
     def doit(self, **kwargs):
         deep = kwargs.get('deep', True)
         if deep:

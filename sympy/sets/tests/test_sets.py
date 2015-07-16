@@ -30,7 +30,6 @@ def test_interval_arguments():
     assert Interval(1, 1, True, False) == S.EmptySet
     assert Interval(1, 1, True, True) == S.EmptySet
 
-
     assert isinstance(Interval(0, Symbol('a')), Interval)
     assert Interval(Symbol('a', extended_real=True, positive=True), 0) == S.EmptySet
     raises(ValueError, lambda: Interval(0, S.ImaginaryUnit))
@@ -39,7 +38,6 @@ def test_interval_arguments():
     raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
     raises(NotImplementedError, lambda: Interval(0, 1, False, And(x, y)))
     raises(NotImplementedError, lambda: Interval(0, 1, z, And(x, y)))
-
 
 
 def test_interval_symbolic_end_points():
@@ -272,7 +270,6 @@ def test_intersection():
     assert Intersection(Intersection(S.Integers, S.Naturals, evaluate=False),
                         S.Reals, evaluate=False) == \
             Intersection(S.Integers, S.Naturals, S.Reals, evaluate=False)
-
 
 
 def test_is_disjoint():

@@ -468,7 +468,6 @@ def test_uniform():
     assert simplify(E(X)) == l + w/2
     assert simplify(variance(X)) == w**2/12
 
-
     # With numbers all is well
     X = Uniform('x', 3, 5)
     assert P(X < 3) == 0 and P(X > 5) == 0

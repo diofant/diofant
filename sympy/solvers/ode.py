@@ -880,7 +880,6 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 else:
                     raise ValueError("Enter valid boundary conditions for Derivatives")
 
-
             # Separating functions
             elif isinstance(funcarg, AppliedUndef):
                 if funcarg.func == f and len(funcarg.args) == 1 and \
@@ -1143,7 +1142,6 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 matching_hints["almost_linear"] = r2
                 matching_hints["almost_linear_Integral"] = r2
 
-
     elif order == 2:
         # Liouville ODE in the form
         # f(x).diff(x, 2) + g(f(x))*(f(x).diff(x))**2 + h(x)*f(x).diff(x)
@@ -1201,7 +1199,6 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                            not check.has(zoo) and not check.has(-oo):
                             coeff_dict = {'p': p, 'q': q, 'x0': point, 'terms': terms}
                             matching_hints["2nd_power_series_regular"] = coeff_dict
-
 
     if order > 0:
         # nth order linear ODE
@@ -1263,7 +1260,6 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 if undetcoeff['test']:
                     r['trialset'] = undetcoeff['trialset']
                     matching_hints["nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients"] = r
-
 
     # Order keys based on allhints.
     retlist = [i for i in allhints if i in matching_hints]
@@ -3671,7 +3667,6 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     return Eq(f(x), series)
 
 
-
 def ode_2nd_power_series_regular(eq, func, order, match):
     r"""
     Gives a power series solution to a second order homogeneous differential
@@ -5411,7 +5406,6 @@ def ode_lie_group(eq, func, order, match):
                                 else:
                                     return [Eq(f(x), sol) for sol in sdeq]
 
-
                     elif denom: # (ds/dr) is zero which means s is constant
                         return Eq(f(x), solve(scoord - C1, y)[0])
 
@@ -5770,7 +5764,6 @@ def lie_heuristic_abaco1_product(match, comp=False):
     x = func.args[0]
     xi = Function('xi')(x, func)
     eta = Function('eta')(x, func)
-
 
     inf = separatevars(((log(h).diff(y)).diff(x))/h**2, dict=True, symbols=[x, y])
     if inf and inf['coeff']:

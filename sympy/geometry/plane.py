@@ -167,7 +167,6 @@ class Plane(GeometryEntity):
             return rv
         return self.intersection(Line3D(rv, rv + Point3D(self.normal_vector)))[0]
 
-
     def projection_line(self, line):
         """Project the given line onto the plane through the normal plane
         containing the line.
@@ -409,7 +408,6 @@ class Plane(GeometryEntity):
             d = sqrt(sum([i**2 for i in self.normal_vector]))
             e = sqrt(sum([i**2 for i in o.normal_vector]))
             return acos(c/(d*e))
-
 
     @staticmethod
     def are_concurrent(*planes):

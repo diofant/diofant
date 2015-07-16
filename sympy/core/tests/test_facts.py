@@ -47,7 +47,6 @@ def test_deduce_alpha_implications():
     'c'}, Not('c'): {Not('a'), 'b'},}
     assert P == {'a': {'b', 'c'}, 'b': {'a', 'c'}, 'c': {'a', 'b'}}
 
-
     # Long deductions
     I, P = D([('a', 'b'), ('b', 'c'), ('c', 'd'), ('d', 'e')])
     assert I == {'a': {'b', 'c', 'd', 'e'}, 'b': {'c', 'd', 'e'},

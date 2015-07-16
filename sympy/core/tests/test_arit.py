@@ -1828,7 +1828,6 @@ def test_mul_zero_detection():
                 else:
                     assert e.is_zero is False
 
-
     for iz, ib in cartes(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz)
         b = Dummy('f', finite=ib)

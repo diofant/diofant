@@ -293,7 +293,6 @@ def test_symbols():
     assert symbols('aa:d,x:z') == (aa, ab, ac, ad, x, y, z)
     assert symbols(('aa:d','x:z')) == ((aa, ab, ac, ad), (x, y, z))
 
-
     # issue 6675
     def sym(s):
         return str(symbols(s))

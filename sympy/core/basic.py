@@ -500,7 +500,6 @@ class Basic(with_metaclass(ManagedProperties)):
         return dict(list(zip(V, [Symbol(name % i, **v.assumptions0)
             for i, v in enumerate(V)])))
 
-
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
 

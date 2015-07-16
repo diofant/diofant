@@ -1029,7 +1029,6 @@ class genocchi(Function):
         return (n - 8).is_zero
 
 
-
 #######################################################################
 ###
 ### Functions for enumerating partitions, permutations and combinations

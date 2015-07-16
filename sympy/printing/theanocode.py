@@ -92,7 +92,6 @@ class TheanoPrinter(Printer):
             self.cache[key] = value
             return value
 
-
     def _print_Basic(self, expr, **kwargs):
         op = mapping[type(expr)]
         children = [self._print(arg, **kwargs) for arg in expr.args]
@@ -141,7 +140,6 @@ class TheanoPrinter(Printer):
                         for c in range(ncols)]
                         for r in range(nrows)]
         return tt.join(0, *[tt.join(1, *row) for row in blocks])
-
 
     def _print_slice(self, expr, **kwargs):
         return slice(*[self._print(i, **kwargs)

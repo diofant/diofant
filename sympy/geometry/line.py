@@ -1360,7 +1360,6 @@ class Ray(LinearEntity):
         else:
             return S.NegativeInfinity
 
-
     def distance(self, o):
         """
         Finds the shortest distance between the ray and a point.
@@ -1395,7 +1394,6 @@ class Ray(LinearEntity):
                 return Line(self).distance(o)  # = s.length but simpler
         # the following applies when neither of the above apply
         return self.source.distance(o)
-
 
     def plot_interval(self, parameter='t'):
         """The plot interval for the default geometric plot of the Ray. Gives

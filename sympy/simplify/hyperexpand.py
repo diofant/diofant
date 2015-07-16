@@ -786,8 +786,6 @@ class Formula(object):
         return result
 
 
-
-
 class FormulaCollection(object):
     """ A collection of formulae to use as origins. """
 

@@ -232,7 +232,6 @@ def test_factorial2():
     assert factorial2(tfo).is_odd is None
 
 
-
 def test_binomial():
     n = Symbol('n', integer=True)
     nz = Symbol('nz', integer=True, nonzero=True)

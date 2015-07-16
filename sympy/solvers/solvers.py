@@ -193,7 +193,6 @@ def checksol(f, symbol, sol=None, **flags):
     elif isinstance(f, Equality):
         f = f.lhs - f.rhs
 
-
     if not f:
         return True
 

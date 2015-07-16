@@ -1470,7 +1470,6 @@ class SineCosineTypeTransform(IntegralTransform):
         raise NotImplementedError(
             "Class %s must implement b(self) but does not" % self.__class__)
 
-
     def _compute_transform(self, f, x, k, **hints):
         return _sine_cosine_transform(f, x, k,
                                       self.a(), self.b(),

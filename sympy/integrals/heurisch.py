@@ -341,7 +341,6 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     # TODO: caching is significant factor for why permutations work at all. Change this.
     V = _symbols('x', len(terms))
 
-
     # sort mapping expressions from largest to smallest (last is always x).
     mapping = list(reversed(list(zip(*ordered(                          #
         [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1])) #

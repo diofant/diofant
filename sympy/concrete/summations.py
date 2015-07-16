@@ -340,7 +340,6 @@ class Sum(AddWithLimits,ExprWithIntLimits):
             g = g.diff(i, 2, simplify=False)
         return s + iterm, abs(term)
 
-
     def reverse_order(self, *indices):
         """
         Reverse the order of a limit in a Sum.

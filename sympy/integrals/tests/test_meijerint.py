@@ -12,7 +12,6 @@ from sympy.utilities.pytest import slow
 from sympy.abc import x, y, a, b, c, d, s, t, z
 
 
-
 def test_rewrite_single():
     def t(expr, c, m):
         e = _rewrite_single(meijerg([a], [b], [c], [d], expr), x)

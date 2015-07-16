@@ -877,7 +877,6 @@ class Interval(Set, EvalfMixin):
 
         return Interval(start, end, left_open, right_open)
 
-
     def _complement(self, other):
         if other is S.Reals:
             a = Interval(S.NegativeInfinity, self.start,
@@ -886,7 +885,6 @@ class Interval(Set, EvalfMixin):
             return Union(a, b)
 
         return Set._complement(self, other)
-
 
     def _union(self, other):
         """
@@ -1704,7 +1702,6 @@ class FiniteSet(Set, EvalfMixin):
                 return Union(intervals, evaluate=False)
 
         return Set._complement(self, other)
-
 
     def _union(self, other):
         """

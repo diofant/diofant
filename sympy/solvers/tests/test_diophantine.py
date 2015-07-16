@@ -550,7 +550,6 @@ def test_assumptions():
     assert diof == {(-15, -3), (-9, -4), (-7, -5), (-6, -6), (-5, -8), (-4, -14)}
 
 
-
 def check_solutions(eq):
     """
     Determines whether solutions returned by diophantine() satisfy the original

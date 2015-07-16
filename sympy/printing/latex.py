@@ -220,7 +220,6 @@ class LatexPrinter(Printer):
 
         return False
 
-
     def _needs_add_brackets(self, expr):
         """
         Returns True if the expression needs to be wrapped in brackets when
@@ -230,7 +229,6 @@ class LatexPrinter(Printer):
         if expr.is_Relational:
             return True
         return False
-
 
     def _mul_is_clean(self, expr):
         for arg in expr.args:
@@ -256,7 +254,6 @@ class LatexPrinter(Printer):
     def _print_NoneType(self, e):
         return r"\mathrm{%s}" % e
 
-
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
             terms = list(expr.args)
@@ -278,7 +275,6 @@ class LatexPrinter(Printer):
             tex += term_tex
 
         return tex
-
 
     def _print_Float(self, expr):
         # Based off of that in StrPrinter
@@ -522,7 +518,6 @@ class LatexPrinter(Printer):
             diff_symbol = r'\partial'
         else:
             diff_symbol = r'd'
-
 
         if dim == 1:
             tex = r"\frac{%s}{%s %s}" % (diff_symbol, diff_symbol,

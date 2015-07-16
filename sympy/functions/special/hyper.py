@@ -176,7 +176,6 @@ class hyper(TupleParametersBase):
     .. [2] http://en.wikipedia.org/wiki/Generalized_hypergeometric_function
     """
 
-
     def __new__(cls, ap, bq, z):
         # TODO should we check convergence conditions?
         return Function.__new__(cls, _prep_tuple(ap), _prep_tuple(bq), z)
@@ -433,7 +432,6 @@ class meijerg(TupleParametersBase):
     .. [2] http://en.wikipedia.org/wiki/Meijer_G-function
 
     """
-
 
     def __new__(cls, *args):
         if len(args) == 5:
@@ -705,7 +703,6 @@ class HyperRep(Function):
     This base class contains the core logic, concrete derived classes only
     supply the actual functions.
     """
-
 
     @classmethod
     def eval(cls, *args):

@@ -252,7 +252,6 @@ class lowergamma(Function):
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     """
 
-
     def fdiff(self, argindex=2):
         from sympy import meijerg, unpolarify
         if argindex == 2:
@@ -396,7 +395,6 @@ class uppergamma(Function):
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     .. [6] http://en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
     """
-
 
     def fdiff(self, argindex=2):
         from sympy import meijerg, unpolarify
@@ -570,7 +568,6 @@ class polygamma(Function):
     .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma/
     .. [4] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
     """
-
 
     def fdiff(self, argindex=2):
         if argindex == 2:

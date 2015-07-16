@@ -402,7 +402,6 @@ def deblock(B):
         return B
 
 
-
 def reblock_2x2(B):
     """ Reblock a BlockMatrix so that it has 2x2 blocks of block matrices """
     if not isinstance(B, BlockMatrix) or not all(d > 2 for d in B.blocks.shape):

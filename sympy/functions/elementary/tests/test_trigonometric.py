@@ -1080,7 +1080,6 @@ def test_inverses():
     assert acot(x).inverse() == cot
 
 
-
 def test_real_imag():
     a, b = symbols('a b', extended_real=True)
     z = a + b*I

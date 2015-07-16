@@ -55,7 +55,6 @@ from sympy.polys.polytools import groebner
 import mpmath
 
 
-
 def fraction(expr, exact=False):
     """Returns a pair with expression's numerator and denominator.
        If the given expression is not a fraction then this function
@@ -3023,7 +3022,6 @@ class _rf(Function):
                         return _rf(_a, b)*_rf(_a + c, -c)/_rf(_a + b + c, -c)
 
 
-
 @timethis('combsimp')
 def combsimp(expr):
     r"""
@@ -3080,7 +3078,6 @@ def combsimp(expr):
     # as a rule of thumb, if the expression contained gammas initially, it
     # probably makes sense to retain them
     as_gamma = not expr.has(factorial, binomial)
-
 
     expr = expr.replace(binomial,
         lambda n, k: _rf((n - k + 1).expand(), k.expand())/_rf(1, k.expand()))

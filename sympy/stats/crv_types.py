@@ -91,7 +91,6 @@ __all__ = ['ContinuousRV',
 ]
 
 
-
 def ContinuousRV(symbol, density, set=Interval(-oo, oo)):
     """
     Create a Continuous Random Variable given the following:
@@ -2244,7 +2243,6 @@ class UniformSumDistribution(SingleContinuousDistribution):
         k = Dummy("k")
         return 1/factorial(
             n - 1)*Sum((-1)**k*binomial(n, k)*(x - k)**(n - 1), (k, 0, floor(x)))
-
 
 
 def UniformSum(name, n):

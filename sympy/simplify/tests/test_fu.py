@@ -178,7 +178,6 @@ def test_TR10i():
     assert TR10i(sqrt(2)*cos(x)*A + sqrt(6)*sin(x)*A) == \
         2*sqrt(2)*sin(x + pi/6)*A
 
-
     c = cos(x)
     s = sin(x)
     h = sin(y)
@@ -243,10 +242,8 @@ def test_L():
 
 
 def test_fu():
-
     assert fu(sin(50)**2 + cos(50)**2 + sin(pi/6)) == S(3)/2
     assert fu(sqrt(6)*cos(x) + sqrt(2)*sin(x)) == 2*sqrt(2)*sin(x + pi/3)
-
 
     eq = sin(x)**4 - cos(y)**2 + sin(y)**2 + 2*cos(x)**2
     assert fu(eq) == cos(x)**4 - 2*cos(y)**2 + 2

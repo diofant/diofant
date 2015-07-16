@@ -715,7 +715,6 @@ class chebyshevu_root(Function):
     sympy.polys.orthopolys.laguerre_poly
     """
 
-
     @classmethod
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):

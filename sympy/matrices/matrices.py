@@ -215,7 +215,6 @@ class MatrixBase(object):
                     raise ValueError('List length should be equal to rows*columns')
                 flat_list = [cls._sympify(i) for i in flat_list]
 
-
         # Matrix()
         elif len(args) == 0:
             # Empty Matrix

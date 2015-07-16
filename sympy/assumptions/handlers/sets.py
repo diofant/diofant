@@ -507,7 +507,6 @@ class AskImaginaryHandler(CommonHandler):
                         return ask(Q.negative(expr.base), assumptions)
                     return half
 
-
     @staticmethod
     def log(expr, assumptions):
         if ask(Q.extended_real(expr.args[0]), assumptions):

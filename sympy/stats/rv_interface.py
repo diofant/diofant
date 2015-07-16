@@ -11,7 +11,6 @@ __all__ = ['P', 'E', 'density', 'where', 'given', 'sample', 'cdf', 'pspace',
         'moment', 'cmoment', 'sampling_density']
 
 
-
 def moment(X, n, c=0, condition=None, **kwargs):
     """
     Return the nth moment of a random expression about c i.e. E((X-c)**n)
