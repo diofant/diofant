@@ -460,7 +460,7 @@ def base_solution_linear(c, a, b, t=None):
     c = c // d
 
     if c == 0:
-        if t != None:
+        if t is not None:
             return (b*t , -a*t)
         else:
             return (S.Zero, S.Zero)
@@ -471,7 +471,7 @@ def base_solution_linear(c, a, b, t=None):
         y0 = y0 * sign(b)
 
         if divisible(c, d):
-            if t != None:
+            if t is not None:
                 return (c*x0 + b*t, c*y0 - a*t)
             else:
                 return (Integer(c*x0), Integer(c*y0))
@@ -1659,7 +1659,7 @@ def _diop_ternary_quadratic(_var, coeff):
 
             X_0, y_0, z_0 = _diop_ternary_quadratic(var, _coeff)
 
-            if X_0 == None:
+            if X_0 is None:
                 return (None, None, None)
 
             l = (S(B*y_0 + C*z_0)/(2*A)).q
@@ -1787,7 +1787,7 @@ def simplified(x, y, z):
     """
     Simplify the solution `(x, y, z)`.
     """
-    if x == None or y == None or z == None:
+    if x is None or y is None or z is None:
         return (x, y, z)
 
     g = igcd(x, igcd(y, z))
@@ -1840,7 +1840,7 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     v = [x]*3
     v[0], v[1], v[2] = _var[0], _var[1], _var[2]
 
-    if x_0 == None:
+    if x_0 is None:
         return (None, None, None)
 
     if x_0 == 0:
@@ -1937,8 +1937,8 @@ def _diop_ternary_quadratic_normal(var, coeff):
     if A < 0 and B < 0:
         return (None, None, None)
 
-    if (sqrt_mod(-b_2*c_2, a_2) == None or sqrt_mod(-c_2*a_2, b_2) == None or
-        sqrt_mod(-a_2*b_2, c_2) == None):
+    if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
+        sqrt_mod(-a_2*b_2, c_2) is None):
         return (None, None, None)
 
     z_0, x_0, y_0 = descent(A, B)
@@ -2139,7 +2139,7 @@ def ldescent(A, B):
                 B_0, d = sign(Q)*i, sqrt(abs(Q) // i)
                 break
 
-    if B_0 != None:
+    if B_0 is not None:
         W, X, Y = ldescent(A, B_0)
         return simplified((-A*X + r*W), (r*X - W), Y*(B_0*d))
     # In this module Descent will always be called with inputs which have solutions.

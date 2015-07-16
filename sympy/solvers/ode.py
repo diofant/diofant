@@ -1452,7 +1452,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
             elif matching_hints['no_of_equation'] == 3:
                 if order_eq == 1:
                     type_of_equation = check_linear_3eq_order1(eq, funcs, func_coef)
-                    if type_of_equation==None:
+                    if type_of_equation is None:
                         type_of_equation = check_linear_neq_order1(eq, funcs, func_coef)
                 else:
                     type_of_equation = None

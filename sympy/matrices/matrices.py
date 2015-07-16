@@ -2003,7 +2003,7 @@ class MatrixBase(object):
         """
         if any(i.is_zero == False for i in self):
             return False
-        if any(i.is_zero == None for i in self):
+        if any(i.is_zero is None for i in self):
             return None
         return True
 
