@@ -999,7 +999,7 @@ def test_zip_row_op():
 
         M = cls.eye(3)*2
         M[0, 1] = -1
-        M.zip_row_op(1, 0, lambda v, u: v + 2*u); M
+        M.zip_row_op(1, 0, lambda v, u: v + 2*u)
         assert M == cls([[2, -1, 0],
                          [4,  0, 0],
                          [0,  0, 2]])

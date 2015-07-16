@@ -684,8 +684,12 @@ def test_classify_sysode():
     P1, P2, P3, Q1, Q2, R1, R2 = symbols('P1, P2, P3, Q1, Q2, R1, R2', function=True)
     x, y, z = symbols('x, y, z', Function=True)
     t = symbols('t')
-    x1 = diff(x(t),t) ; y1 = diff(y(t),t) ; z1 = diff(z(t),t)
-    x2 = diff(x(t),t,t) ; y2 = diff(y(t),t,t) ; z2 = diff(z(t),t,t)
+    x1 = diff(x(t),t)
+    y1 = diff(y(t),t)
+    z1 = diff(z(t),t)
+    x2 = diff(x(t),t,t)
+    y2 = diff(y(t),t,t)
+    z2 = diff(z(t),t,t)
 
     eq1 = (Eq(diff(x(t),t), 5*t*x(t) + 2*y(t)), Eq(diff(y(t),t), 2*x(t) + 5*t*y(t)))
     sol1 = {'no_of_equation': 2, 'func_coeff': {(0, x(t), 0): -5*t, (1, x(t), 1): 0, (0, x(t), 1): 1, \
