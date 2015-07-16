@@ -133,7 +133,7 @@ class Domain(object):
                 return self.from_sympy(element)
             except (TypeError, ValueError):
                 pass
-        else: # TODO: remove this branch
+        else:  # TODO: remove this branch
             if not is_sequence(element):
                 try:
                     element = sympify(element)
@@ -147,7 +147,7 @@ class Domain(object):
 
     def of_type(self, element):
         """Check if ``a`` is of type ``dtype``. """
-        return isinstance(element, self.tp) # XXX: this isn't correct, e.g. PolyElement
+        return isinstance(element, self.tp)  # XXX: this isn't correct, e.g. PolyElement
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain. """

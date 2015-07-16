@@ -2187,7 +2187,7 @@ def test_exact_enhancement():
 
 def test_separable_reduced():
     f = Function('f')
-    x = Symbol('x') # BUG: if x is real, a more complex solution is returned!
+    x = Symbol('x')  # BUG: if x is real, a more complex solution is returned!
     df = f(x).diff(x)
     eq = (x / f(x))*df  + tan(x**2*f(x) / (x**2*f(x) - 1))
     assert classify_ode(eq) == ('separable_reduced', 'lie_group',
@@ -2471,7 +2471,7 @@ def test_series():
 @slow
 def test_lie_group():
     C1 = Symbol("C1")
-    x = Symbol("x") # assuming x is real generates an error!
+    x = Symbol("x")  # assuming x is real generates an error!
     a, b, c = symbols("a b c")
     eq = f(x).diff(x)**2
     sol = dsolve(eq, f(x), hint='lie_group')
@@ -2510,7 +2510,7 @@ def test_lie_group():
 
 def test_user_infinitesimals():
     C2 = Symbol("C2")
-    x = Symbol("x") # assuming x is real generates an error
+    x = Symbol("x")  # assuming x is real generates an error
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
     sol = dsolve(eq, hint='lie_group', xi=sqrt(f(x) - 1)/sqrt(f(x) + 1),
         eta=0)
@@ -2584,7 +2584,7 @@ def test_2nd_power_series_regular():
     assert dsolve(eq) == Eq(f(x), C2*(-x**4/2 + 1) + C1*x**2 + O(x**6))
 
 def test_issue_7093():
-    x = Symbol("x") # assuming x is real leads to an error
+    x = Symbol("x")  # assuming x is real leads to an error
     sol = Eq(f(x), C1 - 2*x*sqrt(x**3)/5)
     eq = Derivative(f(x), x)**2 - x**3
     assert dsolve(eq) == sol and checkodesol(eq, sol) == (True, 0)

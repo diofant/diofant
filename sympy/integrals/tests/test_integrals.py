@@ -738,7 +738,7 @@ def test_is_zero():
     assert i.is_zero is None
     assert Integral(m, (x, 0), (m, 1, exp(x))).is_zero is True
 
-    assert Integral(x, (x, oo, oo)).is_zero # issue 8171
+    assert Integral(x, (x, oo, oo)).is_zero  # issue 8171
     assert Integral(x, (x, -oo, -oo)).is_zero
 
     # this is zero but is beyond the scope of what is_zero

@@ -156,7 +156,7 @@ class sinh(HyperbolicFunction):
         else:
             arg = self.args[0]
         x = None
-        if arg.is_Add: # TODO, implement more if deep stuff here
+        if arg.is_Add:  # TODO, implement more if deep stuff here
             x, y = arg.as_two_terms()
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
@@ -305,7 +305,7 @@ class cosh(HyperbolicFunction):
         else:
             arg = self.args[0]
         x = None
-        if arg.is_Add: # TODO, implement more if deep stuff here
+        if arg.is_Add:  # TODO, implement more if deep stuff here
             x, y = arg.as_two_terms()
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)

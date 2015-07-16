@@ -167,7 +167,7 @@ def test_Matrices_entries_not_hadamard():
     # leave it user's responsibility to put scalar data for x.
     A = Matrix([[1, sin(2/x), 3*pi/x/5], [1, 2, x*y]])
     expected = ("[1 sin(2/x) 3*pi/(5*x);\n"
-                "1        2        x*y]") # <- we give x.*y
+                "1        2        x*y]")  # <- we give x.*y
     assert mcode(A) == expected
 
 

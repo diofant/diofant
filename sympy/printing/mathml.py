@@ -269,7 +269,7 @@ class MathMLPrinter(Printer):
                 return mi
 
         # translate name, supers and subs to unicode characters
-        greek_letters = set(greeks) # make a copy
+        greek_letters = set(greeks)  # make a copy
         def translate(s):
             if s in greek_unicode:
                 return greek_unicode.get(s)
@@ -451,10 +451,9 @@ def print_mathml(expr, **settings):
     Examples
     ========
 
-    >>> ##
     >>> from sympy.printing.mathml import print_mathml
     >>> from sympy.abc import x
-    >>> print_mathml(x+1) #doctest: +NORMALIZE_WHITESPACE
+    >>> print_mathml(x+1)  #doctest: +NORMALIZE_WHITESPACE
     <apply>
         <plus/>
         <ci>x</ci>

@@ -265,7 +265,7 @@ class FindInSphinx(HTMLParser):
             self.is_imported.append(a['id'])
 
 def find_sphinx(name, mod_path, found={}):
-    if mod_path in found: # Cache results
+    if mod_path in found:  # Cache results
         return name in found[mod_path]
 
     doc_path = mod_path.split('.')

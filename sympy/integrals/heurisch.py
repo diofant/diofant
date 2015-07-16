@@ -292,7 +292,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                         if M is not None:
                             if M[a].is_positive:
                                 terms.add(erfi(sqrt(M[a])*x))
-                            else: # M[a].is_negative or unknown
+                            else:  # M[a].is_negative or unknown
                                 terms.add(erf(sqrt(-M[a])*x))
 
                         M = g.args[0].match(a*x**2 + b*x + c)
@@ -342,11 +342,11 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     V = _symbols('x', len(terms))
 
     # sort mapping expressions from largest to smallest (last is always x).
-    mapping = list(reversed(list(zip(*ordered(                          #
-        [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1])) #
-    rev_mapping = {v: k for k, v in mapping}                            #
-    if mappings is None:                                                #
-        # optimizing the number of permutations of mapping              #
+    mapping = list(reversed(list(zip(*ordered(                           #
+        [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1]))  #
+    rev_mapping = {v: k for k, v in mapping}                             #
+    if mappings is None:                                                 #
+        # optimizing the number of permutations of mapping               #
         assert mapping[-1][0] == x  # if not, find it and correct this comment
         unnecessary_permutations = [mapping.pop(-1)]
         mappings = permutations(mapping)
@@ -525,9 +525,9 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         def find_non_syms(expr):
             if expr.is_Integer or expr.is_Rational:
-                pass # ignore trivial numbers
+                pass  # ignore trivial numbers
             elif expr in syms:
-                pass # ignore variables
+                pass  # ignore variables
             elif not expr.has(*syms):
                 non_syms.add(expr)
             elif expr.is_Add or expr.is_Mul or expr.is_Pow:

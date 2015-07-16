@@ -128,7 +128,7 @@ class AskRationalHandler(CommonHandler):
                 return False
 
     Rational, Float = \
-        [staticmethod(CommonHandler.AlwaysTrue)]*2 # Float is finite-precision
+        [staticmethod(CommonHandler.AlwaysTrue)]*2  # Float is finite-precision
 
     ImaginaryUnit, Infinity, NegativeInfinity, Pi, Exp1, GoldenRatio = \
         [staticmethod(CommonHandler.AlwaysFalse)]*6
@@ -386,7 +386,7 @@ class AskComplexHandler(CommonHandler):
     Mul, Pow = [Add]*2
 
     Number, sin, cos, log, exp, re, im, NumberSymbol, Abs, ImaginaryUnit = \
-        [staticmethod(CommonHandler.AlwaysTrue)]*10 # they are all complex functions or expressions
+        [staticmethod(CommonHandler.AlwaysTrue)]*10  # they are all complex functions or expressions
 
     Infinity, NegativeInfinity = [staticmethod(CommonHandler.AlwaysFalse)]*2
 

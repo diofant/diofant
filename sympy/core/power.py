@@ -1313,7 +1313,7 @@ class Pow(Expr):
         return exp(self.exp * log(self.base)).as_leading_term(x)
 
     @cacheit
-    def _taylor_term(self, n, x, *previous_terms): # of (1+x)**e
+    def _taylor_term(self, n, x, *previous_terms):  # of (1+x)**e
         from sympy import binomial
         return binomial(self.exp, n) * self.func(x, n)
 

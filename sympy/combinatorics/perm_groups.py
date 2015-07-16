@@ -61,7 +61,7 @@ class PermutationGroup(Basic):
     >>> P = Polyhedron(list('ABC'), pgroup=G)
     >>> P.corners
     (A, B, C)
-    >>> P.rotate(0) # apply permutation 0
+    >>> P.rotate(0)  # apply permutation 0
     >>> P.corners
     (A, C, B)
     >>> P.reset()
@@ -517,7 +517,7 @@ class PermutationGroup(Basic):
             while len(_orbit(degree, T, base[pos])) != size:
                 gamma = next(iter(Gamma))
                 x = transversals[pos][gamma]
-                temp = x._array_form.index(base[pos + 1]) # (~x)(base[pos + 1])
+                temp = x._array_form.index(base[pos + 1])  # (~x)(base[pos + 1])
                 if temp not in basic_orbits[pos + 1]:
                     Gamma = Gamma - _orbit(degree, T, gamma)
                 else:
@@ -1346,7 +1346,7 @@ class PermutationGroup(Basic):
         >>> a = Permutation(1, 2)
         >>> b = Permutation(2, 3, 1)
         >>> G = PermutationGroup(a, b, degree=5)
-        >>> G.contains(G[0]) # trivial check
+        >>> G.contains(G[0])  # trivial check
         True
         >>> elem = Permutation([[2, 3]], size=5)
         >>> G.contains(elem)
@@ -2104,7 +2104,7 @@ class PermutationGroup(Basic):
         a = []
         while k != -1:
             a.append(gens[k])
-            beta = gens[k].index(beta) # beta = (~gens[k])(beta)
+            beta = gens[k].index(beta)  # beta = (~gens[k])(beta)
             k = schreier_vector[beta]
         if a:
             return _af_new(_af_rmuln(*a))
@@ -2615,7 +2615,7 @@ class PermutationGroup(Basic):
         >>> from sympy.combinatorics.named_groups import SymmetricGroup
         >>> S = SymmetricGroup(5)
         >>> base, strong_gens = S.schreier_sims_random(consec_succ=5)
-        >>> _verify_bsgs(S, base, strong_gens) #doctest: +SKIP
+        >>> _verify_bsgs(S, base, strong_gens)  # doctest: +SKIP
         True
 
         Notes

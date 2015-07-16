@@ -1860,9 +1860,9 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
 
     >>> solve_linear(1/(1/x - 2))
     (0, 0)
-    >>> 1/(1/x) # to SymPy, this looks like x ...
+    >>> 1/(1/x)  # to SymPy, this looks like x ...
     x
-    >>> solve_linear(1/(1/x)) # so a solution is given
+    >>> solve_linear(1/(1/x))  # so a solution is given
     (x, 0)
 
     If x is allowed to cancel, then this appears linear, but this sort of
@@ -2339,7 +2339,7 @@ def det_perm(M):
         for j in perm:
             fac.append(list[idx + j])
             idx += n
-        term = Mul(*fac) # disaster with unevaluated Mul -- takes forever for n=7
+        term = Mul(*fac)  # disaster with unevaluated Mul -- takes forever for n=7
         args.append(term if s else -term)
         s = not s
     return Add(*args)

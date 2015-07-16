@@ -233,7 +233,7 @@ class RootOf(Expr):
                     return True  # both imag
                 elif _ispow2(deg):
                     if f.LC()*f.TC() < 0:
-                        return None # 2 are imag
+                        return None  # 2 are imag
             return False  # none are imag
         # separate according to the function
         sifted = sift(complexes, lambda c: c[1])
@@ -907,7 +907,7 @@ def bisect(f, a, b, tol):
         c = (a + b)/2
         fc = f(c)
         if (fc == 0):
-            return c # We need to make sure f(c) is not zero below
+            return c  # We need to make sure f(c) is not zero below
         if (fa * fc < 0):
             b = c
             fb = fc

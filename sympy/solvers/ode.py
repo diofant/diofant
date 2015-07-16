@@ -502,8 +502,8 @@ def dsolve(eq, func=None, hint="default", simplify=True,
         - You can declare the derivative of an unknown function this way:
 
             >>> from sympy import Function, Derivative
-            >>> from sympy.abc import x # x is the independent variable
-            >>> f = Function("f")(x) # f is a function of x
+            >>> from sympy.abc import x  # x is the independent variable
+            >>> f = Function("f")(x)  # f is a function of x
             >>> # f_ will be the derivative of f with respect to x
             >>> f_ = Derivative(f, x)
 
@@ -2039,7 +2039,7 @@ def odesimp(eq, func, order, constants, hint):
 
     >>> pprint(odesimp(eq, f(x), 1, {C1},
     ... hint='1st_homogeneous_coeff_subs_indep_div_dep', use_unicode=False
-    ... )) #doctest: +SKIP
+    ... ))  # doctest: +SKIP
         x
     --------- = C1
        /f(x)\
@@ -3335,7 +3335,7 @@ def ode_Bernoulli(eq, func, order, match):
                     d                n
         P(x)*f(x) + --(f(x)) = Q(x)*f (x)
                     dx
-        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'), use_unicode=False) #doctest: +SKIP
+        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'), use_unicode=False)  # doctest: +SKIP
                                                                                        1
                                                                                       ----
                                                                                      1 - n
@@ -4628,7 +4628,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     global collectterms
     collectterms = []
     gensols = []
-    conjugate_roots = [] # used to prevent double-use of conjugate roots
+    conjugate_roots = []  # used to prevent double-use of conjugate roots
     for root, multiplicity in charroots.items():
         for i in range(multiplicity):
             if isinstance(root, RootOf):
@@ -5406,10 +5406,10 @@ def ode_lie_group(eq, func, order, match):
                                 else:
                                     return [Eq(f(x), sol) for sol in sdeq]
 
-                    elif denom: # (ds/dr) is zero which means s is constant
+                    elif denom:  # (ds/dr) is zero which means s is constant
                         return Eq(f(x), solve(scoord - C1, y)[0])
 
-                    elif num: # (dr/ds) is zero which means r is constant
+                    elif num:  # (dr/ds) is zero which means r is constant
                         return Eq(f(x), solve(rcoord - C1, y)[0])
 
     # If nothing works, return solution as it is, without solving for y

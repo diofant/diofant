@@ -1181,7 +1181,7 @@ def test_N12():
 def test_N13():
     # raises NotImplementedError: can't reduce [sin(x) < 2]
     x = Symbol('x', extended_real=True)
-    assert solve(sin(x) < 2) == [] # S.Reals not found
+    assert solve(sin(x) < 2) == []  # S.Reals not found
 
 
 @XFAIL

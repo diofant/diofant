@@ -32,7 +32,7 @@ def test_treeapply_strategies():
     assert treeapply(inc, join) == inc
     assert treeapply((inc, dec), join)(5) == minimize(inc, dec)(5)
     assert treeapply([inc, dec], join)(5) == chain(inc, dec)(5)
-    tree = (inc, [dec, double]) # either inc or dec-then-double
+    tree = (inc, [dec, double])  # either inc or dec-then-double
     assert treeapply(tree, join)(5) == 6
     assert treeapply(tree, join)(1) == 0
 
@@ -49,7 +49,7 @@ def test_greedy():
         return x - 1
     def double(x):
         return 2*x
-    tree = [inc, (dec, double)] # either inc or dec-then-double
+    tree = [inc, (dec, double)]  # either inc or dec-then-double
 
     fn = greedy(tree, objective=lambda x: -x)
     assert fn(4) == 6  # highest value comes from the dec then double

@@ -169,7 +169,7 @@ def test_numexpr_printer():
     from sympy import S
 
     blacklist = ('where', 'complex', 'contains')
-    arg_tuple = (x, y, z) # some functions take more than one argument
+    arg_tuple = (x, y, z)  # some functions take more than one argument
     for sym in NumExprPrinter._numexpr_functions.keys():
         if sym in blacklist:
             continue

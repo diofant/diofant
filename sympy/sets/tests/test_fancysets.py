@@ -146,7 +146,7 @@ def test_Range():
     assert Range(-1, 10, 1).intersect(S.Integers) == Range(-1, 10, 1)
     assert Range(-1, 10, 1).intersect(S.Naturals) == Range(1, 10, 1)
 
-    assert Range(1, 10, 1)._ith_element(5) == 6 # the index starts from zero
+    assert Range(1, 10, 1)._ith_element(5) == 6  # the index starts from zero
     assert Range(1, 10, 1)._last_element == 9
 
     assert Range(1, 10, 1).boundary == Range(1, 10, 1)

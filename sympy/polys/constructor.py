@@ -125,7 +125,7 @@ def _construct_composite(coeffs, opt):
 
     if opt.composite is None:
         if any(gen.is_number for gen in gens):
-            return None # generators are number-like so lets better use EX
+            return None  # generators are number-like so lets better use EX
 
         all_symbols = set()
 
@@ -133,7 +133,7 @@ def _construct_composite(coeffs, opt):
             symbols = gen.free_symbols
 
             if all_symbols & symbols:
-                return None # there could be algebraic relations between generators
+                return None  # there could be algebraic relations between generators
             else:
                 all_symbols |= symbols
 

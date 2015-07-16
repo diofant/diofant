@@ -809,7 +809,7 @@ def test_contract_metric1():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)
     g = Lorentz.metric
-    raises(ValueError, lambda: g(a, -a).contract_metric(g)) # no dim
+    raises(ValueError, lambda: g(a, -a).contract_metric(g))  # no dim
 
 def test_contract_metric2():
     D = Symbol('D')

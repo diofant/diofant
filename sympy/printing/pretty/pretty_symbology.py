@@ -118,7 +118,7 @@ def g(l):
 def G(l):
     return U('GREEK CAPITAL LETTER %s' % l.upper())
 
-greek_letters = list(greeks) # make a copy
+greek_letters = list(greeks)  # make a copy
 # deal with Unicode's funny spelling of lambda
 greek_letters[greek_letters.index('lambda')] = 'lamda'
 

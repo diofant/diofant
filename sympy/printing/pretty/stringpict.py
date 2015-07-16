@@ -160,7 +160,7 @@ class stringPict(object):
         >>> from sympy.printing.pretty.stringpict import stringPict
         >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict("x+3").below(
-        ...       stringPict.LINE, '3')[0]) #doctest: +NORMALIZE_WHITESPACE
+        ...       stringPict.LINE, '3')[0])  #doctest: +NORMALIZE_WHITESPACE
         x+3
         ---
          3
@@ -434,7 +434,7 @@ class prettyForm(stringPict):
         Parentheses are needed around +, - and neg.
         """
         if len(others) == 0:
-            return self # We aren't actually multiplying... So nothing to do here.
+            return self  # We aren't actually multiplying... So nothing to do here.
 
         args = self
         if args.binding > prettyForm.MUL:

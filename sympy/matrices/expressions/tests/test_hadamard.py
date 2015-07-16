@@ -40,7 +40,7 @@ def test_canonicalize():
     X = MatrixSymbol('X', 2, 2)
     expr = HadamardProduct(X, check=False)
     assert isinstance(expr, HadamardProduct)
-    expr2 = expr.doit() # unpack is called
+    expr2 = expr.doit()  # unpack is called
     assert isinstance(expr2, MatrixSymbol)
 
 def test_hadamard():

@@ -81,7 +81,7 @@ def test_erf_series():
 
 
 def test_erf_evalf():
-    assert abs( erf(Float(2.0)) - 0.995322265 ) < 1E-8 # XXX
+    assert abs( erf(Float(2.0)) - 0.995322265 ) < 1E-8  # XXX
 
 
 def test__erfs():
@@ -144,7 +144,7 @@ def test_erfc_series():
 
 
 def test_erfc_evalf():
-    assert abs( erfc(Float(2.0)) - 0.00467773 ) < 1E-8 # XXX
+    assert abs( erfc(Float(2.0)) - 0.00467773 ) < 1E-8  # XXX
 
 
 def test_erfi():

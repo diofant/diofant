@@ -82,7 +82,7 @@ class MatrixBase(object):
     _class_priority = 3
     _sympify = staticmethod(sympify)
 
-    __hash__ = None # Mutable
+    __hash__ = None  # Mutable
 
     @classmethod
     def _handle_creation_inputs(cls, *args, **kwargs):
@@ -1776,11 +1776,11 @@ class MatrixBase(object):
         >>> v.norm(10)
         (sin(x)**10 + cos(x)**10)**(1/10)
         >>> A = Matrix([[1, 1], [1, 1]])
-        >>> A.norm(2)# Spectral norm (max of |Ax|/|x| under 2-vector-norm)
+        >>> A.norm(2)  # Spectral norm (max of |Ax|/|x| under 2-vector-norm)
         2
-        >>> A.norm(-2) # Inverse spectral norm (smallest singular value)
+        >>> A.norm(-2)  # Inverse spectral norm (smallest singular value)
         0
-        >>> A.norm() # Frobenius Norm
+        >>> A.norm()  # Frobenius Norm
         2
         >>> Matrix([1, -2]).norm(oo)
         2
@@ -2781,13 +2781,13 @@ class MatrixBase(object):
 
            >>> p, q, r = M.berkowitz()
 
-           >>> p # 1 x 1 M's sub-matrix
+           >>> p  # 1 x 1 M's sub-matrix
            (1, -x)
 
-           >>> q # 2 x 2 M's sub-matrix
+           >>> q  # 2 x 2 M's sub-matrix
            (1, -x, -y)
 
-           >>> r # 3 x 3 M's sub-matrix
+           >>> r  # 3 x 3 M's sub-matrix
            (1, -2*x, x**2 - y*z - y, x*y - z**2)
 
            For more information on the implemented algorithm refer to:
@@ -4127,7 +4127,7 @@ def classof(A, B):
 
     >>> from sympy import Matrix, ImmutableMatrix
     >>> from sympy.matrices.matrices import classof
-    >>> M = Matrix([[1, 2], [3, 4]]) # a Mutable Matrix
+    >>> M = Matrix([[1, 2], [3, 4]])  # a Mutable Matrix
     >>> IM = ImmutableMatrix([[1, 2], [3, 4]])
     >>> classof(M, IM)
     <class 'sympy.matrices.immutable.ImmutableMatrix'>

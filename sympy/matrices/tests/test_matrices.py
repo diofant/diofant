@@ -990,7 +990,7 @@ def test_col_row_op():
 
 
 def test_zip_row_op():
-    for cls in classes[:2]: # XXX: immutable matrices don't support row ops
+    for cls in classes[:2]:  # XXX: immutable matrices don't support row ops
         M = cls.eye(3)
         M.zip_row_op(1, 0, lambda v, u: v + 2*u)
         assert M == cls([[1, 0, 0],

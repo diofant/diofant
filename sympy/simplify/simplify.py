@@ -1198,7 +1198,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         trigdict = {}
         for (coeff, var), fn in trigterms:
             trigdict.setdefault(var, []).append((coeff, fn))
-        res = [] # the ideal
+        res = []  # the ideal
 
         for key, val in trigdict.items():
             # We have now assembeled a dictionary. Its keys are common
@@ -2062,10 +2062,10 @@ def posify(eq):
     >>> posify(x + Symbol('p', positive=True) + Symbol('n', negative=True))
     (_x + n + p, {_x: x})
 
-    >> log(1/x).expand() # should be log(1/x) but it comes back as -log(x)
+    >> log(1/x).expand()  # should be log(1/x) but it comes back as -log(x)
     log(1/x)
 
-    >>> log(posify(1/x)[0]).expand() # take [0] and ignore replacements
+    >>> log(posify(1/x)[0]).expand()  # take [0] and ignore replacements
     -log(_x)
     >>> eq, rep = posify(1/x)
     >>> log(eq).expand().subs(rep)
@@ -2397,7 +2397,7 @@ def powdenest(eq, force=False, polar=False):
     No other expansion is done.
 
     >>> i, j = symbols('i,j', integer=True)
-    >>> powdenest((x**x)**(i + j)) # -X-> (x**x)**i*(x**x)**j
+    >>> powdenest((x**x)**(i + j))  # -X-> (x**x)**i*(x**x)**j
     x**(x*(i + j))
 
     But exp() will be denested by moving all non-log terms outside of
@@ -2523,13 +2523,13 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     But if an integer power of that radical has been
     autoexpanded then Mul does not join the resulting factors:
 
-    >>> a**4 # auto expands to a Mul, no longer a Pow
+    >>> a**4  # auto expands to a Mul, no longer a Pow
     x**2*y
-    >>> _*a # so Mul doesn't combine them
+    >>> _*a  # so Mul doesn't combine them
     x**2*y*sqrt(x*sqrt(y))
-    >>> powsimp(_) # but powsimp will
+    >>> powsimp(_)  # but powsimp will
     (x*sqrt(y))**(5/2)
-    >>> powsimp(x*y*a) # but won't when doing so would violate assumptions
+    >>> powsimp(x*y*a)  # but won't when doing so would violate assumptions
     x*y*sqrt(x*sqrt(y))
 
     """
@@ -3654,7 +3654,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     8
     >>> my_measure(h)
     14
-    >>> 15./8 > 1.7 # 1.7 is the default ratio
+    >>> 15./8 > 1.7  # 1.7 is the default ratio
     True
     >>> simplify(g, measure=my_measure)
     -log(a)*log(b) + log(a) + log(b)
@@ -4346,7 +4346,7 @@ def _futrig(e, **kwargs):
         TR14,  # factored identities
         TR5,  # sin-pow -> cos_pow
         TR10,  # sin-cos of sums -> sin-cos prod
-        TR11, TR6, # reduce double angles and rewrite cos pows
+        TR11, TR6,  # reduce double angles and rewrite cos pows
         lambda x: _eapply(factor, x, trigs),
         TR14,  # factored powers of identities
         [identity, lambda x: _eapply(_mexpand, x, trigs)],
@@ -4357,11 +4357,11 @@ def _futrig(e, **kwargs):
         [
             lambda x: _eapply(expand_mul, TR5(x), trigs),
             lambda x: _eapply(
-                expand_mul, TR15(x), trigs)], # pos/neg powers of sin
+                expand_mul, TR15(x), trigs)],  # pos/neg powers of sin
         [
             lambda x:  _eapply(expand_mul, TR6(x), trigs),
             lambda x:  _eapply(
-                expand_mul, TR16(x), trigs)], # pos/neg powers of cos
+                expand_mul, TR16(x), trigs)],  # pos/neg powers of cos
         TR111,  # tan, sin, cos to neg power -> cot, csc, sec
         [identity, TR2i],  # sin-cos ratio to tan
         [identity, lambda x: _eapply(
@@ -4380,8 +4380,8 @@ def sum_simplify(s):
     from sympy.concrete.summations import Sum
 
     terms = Add.make_args(s)
-    s_t = [] # Sum Terms
-    o_t = [] # Other Terms
+    s_t = []  # Sum Terms
+    o_t = []  # Other Terms
 
     for term in terms:
         if isinstance(term, Mul):
@@ -4463,8 +4463,8 @@ def product_simplify(s):
     from sympy.concrete.products import Product
 
     terms = Mul.make_args(s)
-    p_t = [] # Product Terms
-    o_t = [] # Other Terms
+    p_t = []  # Product Terms
+    o_t = []  # Other Terms
 
     for term in terms:
         if isinstance(term, Product):
