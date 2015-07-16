@@ -11,9 +11,12 @@ def test_rm_id():
 def test_glom():
     from sympy import Add
     from sympy.abc import x
-    key     = lambda x: x.as_coeff_Mul()[1]
-    count   = lambda x: x.as_coeff_Mul()[0]
-    newargs = lambda cnt, arg: cnt * arg
+    def key(x):
+        return x.as_coeff_Mul()[1]
+    def count(x):
+        return x.as_coeff_Mul()[0]
+    def newargs(cnt, arg):
+        return cnt * arg
     rl = glom(key, count, newargs)
 
     result   = rl(Add(x, -x, 3*x, 2, 3, evaluate=False))

@@ -62,7 +62,8 @@ def test_solve_biquadratic():
         [(1 - sqrt(((2*r - 1)*(2*r + 1)))/2, S(3)/2),
          (1 + sqrt(((2*r - 1)*(2*r + 1)))/2, S(3)/2)]
 
-    query = lambda expr: expr.is_Pow and expr.exp is S.Half
+    def query(expr):
+        return expr.is_Pow and expr.exp is S.Half
 
     f_1 = (x - 1 )**2 + (y - 2)**2 - r**2
     f_2 = (x - x1)**2 + (y - 1)**2 - r**2

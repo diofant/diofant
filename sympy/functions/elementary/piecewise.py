@@ -474,28 +474,50 @@ class Piecewise(Function):
                 return when_multiple
         return b
 
-    _eval_is_finite = lambda self: self._eval_template_is_attr(
-        'is_finite', when_multiple=False)
-    _eval_is_complex = lambda self: self._eval_template_is_attr('is_complex')
-    _eval_is_even = lambda self: self._eval_template_is_attr('is_even')
-    _eval_is_imaginary = lambda self: self._eval_template_is_attr(
-        'is_imaginary')
-    _eval_is_integer = lambda self: self._eval_template_is_attr('is_integer')
-    _eval_is_irrational = lambda self: self._eval_template_is_attr(
-        'is_irrational')
-    _eval_is_negative = lambda self: self._eval_template_is_attr('is_negative')
-    _eval_is_nonnegative = lambda self: self._eval_template_is_attr(
-        'is_nonnegative')
-    _eval_is_nonpositive = lambda self: self._eval_template_is_attr(
-        'is_nonpositive')
-    _eval_is_nonzero = lambda self: self._eval_template_is_attr(
-        'is_nonzero', when_multiple=True)
-    _eval_is_odd = lambda self: self._eval_template_is_attr('is_odd')
-    _eval_is_polar = lambda self: self._eval_template_is_attr('is_polar')
-    _eval_is_positive = lambda self: self._eval_template_is_attr('is_positive')
-    _eval_is_extended_real = lambda self: self._eval_template_is_attr('is_extended_real')
-    _eval_is_zero = lambda self: self._eval_template_is_attr(
-        'is_zero', when_multiple=False)
+    def _eval_is_finite(self):
+        return self._eval_template_is_attr('is_finite', when_multiple=False)
+
+    def _eval_is_complex(self):
+        return self._eval_template_is_attr('is_complex')
+
+    def _eval_is_even(self):
+        return self._eval_template_is_attr('is_even')
+
+    def _eval_is_imaginary(self):
+        return self._eval_template_is_attr('is_imaginary')
+
+    def _eval_is_integer(self):
+        return self._eval_template_is_attr('is_integer')
+
+    def _eval_is_irrational(self):
+        return self._eval_template_is_attr('is_irrational')
+
+    def _eval_is_negative(self):
+        return self._eval_template_is_attr('is_negative')
+
+    def _eval_is_nonnegative(self):
+        return self._eval_template_is_attr('is_nonnegative')
+
+    def _eval_is_nonpositive(self):
+        return self._eval_template_is_attr('is_nonpositive')
+
+    def _eval_is_nonzero(self):
+        return self._eval_template_is_attr('is_nonzero', when_multiple=True)
+
+    def _eval_is_odd(self):
+        return self._eval_template_is_attr('is_odd')
+
+    def _eval_is_polar(self):
+        return self._eval_template_is_attr('is_polar')
+
+    def _eval_is_positive(self):
+        return self._eval_template_is_attr('is_positive')
+
+    def _eval_is_extended_real(self):
+        return self._eval_template_is_attr('is_extended_real')
+
+    def _eval_is_zero(self):
+        return self._eval_template_is_attr('is_zero', when_multiple=False)
 
     @classmethod
     def __eval_cond(cls, cond):

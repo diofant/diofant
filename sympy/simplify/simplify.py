@@ -4331,8 +4331,10 @@ def _futrig(e, **kwargs):
     else:
         coeff = S.One
 
-    Lops = lambda x: (L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add)
-    trigs = lambda x: x.has(TrigonometricFunction)
+    def Lops(x):
+        return (L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add)
+    def trigs(x):
+        return x.has(TrigonometricFunction)
 
     tree = [identity,
         (
@@ -4794,9 +4796,12 @@ def _replace_mul_fpowxgpow(expr, f, g, rexp, h, rexph):
     return Mul(*args)
 
 
-_idn = lambda x: x
-_midn = lambda x: -x
-_one = lambda x: S.One
+def _idn(x):
+    return x
+def _midn(x):
+    return -x
+def _one(x):
+    return S.One
 
 def _match_div_rewrite(expr, i):
     """helper for __trigsimp"""

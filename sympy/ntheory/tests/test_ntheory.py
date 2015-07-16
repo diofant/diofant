@@ -201,7 +201,8 @@ def test_generate():
 
     assert mr(1, [2]) is False
 
-    func = lambda i: (i**2 + 1) % 51
+    def func(i):
+        return (i**2 + 1) % 51
     assert next(cycle_length(func, 4)) == (6, 2)
     assert list(cycle_length(func, 4, values=True)) == \
         [17, 35, 2, 5, 26, 14, 44, 50, 2, 5, 26, 14]

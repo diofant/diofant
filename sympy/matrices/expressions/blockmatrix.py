@@ -275,7 +275,8 @@ def block_collapse(expr):
     >>> print(block_collapse(C*B))
     Matrix([[X, Z*Y + Z]])
     """
-    hasbm = lambda expr: isinstance(expr, MatrixExpr) and expr.has(BlockMatrix)
+    def hasbm(expr):
+        return isinstance(expr, MatrixExpr) and expr.has(BlockMatrix)
     rule = exhaust(
         bottom_up(exhaust(condition(hasbm, typed(
             {MatAdd: do_one(bc_matadd, bc_block_plus_ident),
@@ -383,7 +384,8 @@ def deblock(B):
     """ Flatten a BlockMatrix of BlockMatrices """
     if not isinstance(B, BlockMatrix) or not B.blocks.has(BlockMatrix):
         return B
-    wrap = lambda x: x if isinstance(x, BlockMatrix) else BlockMatrix([[x]])
+    def wrap(x):
+        return x if isinstance(x, BlockMatrix) else BlockMatrix([[x]])
     bb = B.blocks.applyfunc(wrap)  # everything is a block
 
     from sympy import Matrix

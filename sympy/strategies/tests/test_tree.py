@@ -6,8 +6,10 @@ def test_treeapply():
     tree = ([3, 3], [4, 1], 2)
     assert treeapply(tree, {list: min, tuple: max}) == 3
 
-    add = lambda *args: sum(args)
-    mul = lambda *args: reduce(lambda a, b: a*b, args, 1)
+    def add(*args):
+        return sum(args)
+    def mul(*args):
+        return reduce(lambda a, b: a*b, args, 1)
     assert treeapply(tree, {list: add, tuple: mul}) == 60
 
 def test_treeapply_leaf():
@@ -20,9 +22,12 @@ def test_treeapply_leaf():
 def test_treeapply_strategies():
     from sympy.strategies import chain, minimize
     join = {list: chain, tuple: minimize}
-    inc = lambda x: x + 1
-    dec = lambda x: x - 1
-    double = lambda x: 2*x
+    def inc(x):
+        return x + 1
+    def dec(x):
+        return x - 1
+    def double(x):
+        return 2*x
 
     assert treeapply(inc, join) == inc
     assert treeapply((inc, dec), join)(5) == minimize(inc, dec)(5)
@@ -38,9 +43,12 @@ def test_treeapply_strategies():
     assert fn(1) == 2  # highest value comes from the inc
 
 def test_greedy():
-    inc = lambda x: x + 1
-    dec = lambda x: x - 1
-    double = lambda x: 2*x
+    def inc(x):
+        return x + 1
+    def dec(x):
+        return x - 1
+    def double(x):
+        return 2*x
     tree = [inc, (dec, double)] # either inc or dec-then-double
 
     fn = greedy(tree, objective=lambda x: -x)
@@ -55,10 +63,14 @@ def test_greedy():
     assert highest(10) == 12
 
 def test_allresults():
-    inc = lambda x: x+1
-    dec = lambda x: x-1
-    double = lambda x: x*2
-    square = lambda x: x**2
+    def inc(x):
+        return x+1
+    def dec(x):
+        return x-1
+    def double(x):
+        return x*2
+    def square(x):
+        return x**2
 
     assert set(allresults(inc)(3)) == {inc(3)}
     assert set(allresults([inc, dec])(3)) == {2, 4}
@@ -66,9 +78,12 @@ def test_allresults():
     assert set(allresults([inc, (dec, double)])(4)) == {5, 6}
 
 def test_brute():
-    inc = lambda x: x+1
-    dec = lambda x: x-1
-    square = lambda x: x**2
+    def inc(x):
+        return x+1
+    def dec(x):
+        return x-1
+    def square(x):
+        return x**2
     tree = ([inc, dec], square)
     fn = brute(tree, lambda x: -x)
 

@@ -455,7 +455,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     for i in range(retries + 1):
         U = V
         if not F:
-            F = lambda x: (pow(x, 2, n) + a) % n
+            def F(x):
+                return (pow(x, 2, n) + a) % n
         j = 0
         while 1:
             if max_steps and (j > max_steps):

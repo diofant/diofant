@@ -534,8 +534,10 @@ def test_simplify_ratio():
 
 
 def test_simplify_measure():
-    measure1 = lambda expr: len(str(expr))
-    measure2 = lambda expr: -count_ops(expr)
+    def measure1(expr):
+        return len(str(expr))
+    def measure2(expr):
+        return -count_ops(expr)
                                        # Return the most complicated result
     expr = (x + 1)/(x + sin(x)**2 + cos(x)**2)
     assert measure1(simplify(expr, measure=measure1)) <= measure1(expr)
@@ -1880,8 +1882,10 @@ def test_exptrigsimp():
 
 
 def test_issue_2827_trigsimp_methods():
-    measure1 = lambda expr: len(str(expr))
-    measure2 = lambda expr: -count_ops(expr)
+    def measure1(expr):
+        return len(str(expr))
+    def measure2(expr):
+        return -count_ops(expr)
                                        # Return the most complicated result
     expr = (x + 1)/(x + sin(x)**2 + cos(x)**2)
     ans = Matrix([1])

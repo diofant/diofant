@@ -3072,7 +3072,8 @@ class MatrixBase(object):
     def __getattr__(self, attr):
         if attr in ('diff', 'integrate', 'limit'):
             def doit(*args):
-                item_doit = lambda item: getattr(item, attr)(*args)
+                def item_doit(item):
+                    return getattr(item, attr)(*args)
                 return self.applyfunc(item_doit)
             return doit
         else:

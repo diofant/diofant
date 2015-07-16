@@ -1528,7 +1528,8 @@ class ANP(PicklableWithSlots, CantSympify):
                 else:
                     mod = g.mod
 
-            per = lambda rep: ANP(rep, mod, dom)
+            def per(rep):
+                return ANP(rep, mod, dom)
 
         return dom, per, F, G, mod
 

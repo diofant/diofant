@@ -677,7 +677,8 @@ def _helper_simplify(eq, hint, match, simplify=True, **kwargs):
         # simplifications
         sols = solvefunc(eq, func, order, match)
         free = eq.free_symbols
-        cons = lambda s: s.free_symbols.difference(free)
+        def cons(s):
+            return s.free_symbols.difference(free)
         if isinstance(sols, Expr):
             return odesimp(sols, func, order, cons(sols), hint)
         return [odesimp(s, func, order, cons(s), hint) for s in sols]
@@ -2541,7 +2542,8 @@ def __remove_linear_redundancies(expr, Cs):
 
     if expr.func is Equality:
         lhs, rhs = [_recursive_walk(i) for i in expr.args]
-        f = lambda i: isinstance(i, Number) or i in Cs
+        def f(i):
+            return isinstance(i, Number) or i in Cs
         if lhs.func is Symbol and lhs in Cs:
             rhs, lhs = lhs, rhs
         if lhs.func in (Add, Symbol) and rhs.func in (Add, Symbol):
@@ -2750,7 +2752,8 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     # that to make sure that term ordering is not dependent on
     # the indexed value of C
     C_1 = [(ci, S.One) for ci in constantsymbols]
-    sort_key=lambda arg: default_sort_key(arg.subs(C_1))
+    def sort_key(arg):
+        return default_sort_key(arg.subs(C_1))
 
     def _constant_renumber(expr):
         r"""

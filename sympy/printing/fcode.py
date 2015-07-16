@@ -296,11 +296,11 @@ class FCodePrinter(CodePrinter):
             if len(line) <= endpos:
                 return len(line)
             pos = endpos
-            split = lambda pos: \
-                (line[pos] in my_alnum and line[pos - 1] not in my_alnum) or \
-                (line[pos] not in my_alnum and line[pos - 1] in my_alnum) or \
-                (line[pos] in my_white and line[pos - 1] not in my_white) or \
-                (line[pos] not in my_white and line[pos - 1] in my_white)
+            def split(pos):
+                return (line[pos] in my_alnum and line[pos - 1] not in my_alnum) or \
+                       (line[pos] not in my_alnum and line[pos - 1] in my_alnum) or \
+                       (line[pos] in my_white and line[pos - 1] not in my_white) or \
+                       (line[pos] not in my_white and line[pos - 1] in my_white)
             while not split(pos):
                 pos -= 1
                 if pos == 0:

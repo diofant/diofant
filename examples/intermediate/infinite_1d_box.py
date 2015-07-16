@@ -60,8 +60,9 @@ def energy_corrections(perturbation, n, a=10, mass=0.5):
     """
     x, _a = var("x _a")
 
-    Vnm = lambda n, m, a: Integral(X_n(n, a, x) * X_n(m, a, x)
-        * perturbation.subs({_a: a}), (x, 0, a)).n()
+    def Vnm(n, m, a):
+        return Integral(X_n(n, a, x) * X_n(m, a, x)
+                        * perturbation.subs({_a: a}), (x, 0, a)).n()
 
     # As we know from theory for V0*r/a we will just V(n, n-1) and V(n, n+1)
     #   wouldn't equals zero

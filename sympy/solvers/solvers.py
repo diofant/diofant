@@ -2391,9 +2391,11 @@ def inv_quick(M):
     from sympy.matrices import zeros
     if any(i.has(Symbol) for i in M):
         if all(i.has(Symbol) for i in M):
-            det = lambda _: det_perm(_)
+            def det(_):
+                return det_perm(_)
         else:
-            det = lambda _: det_minor(_)
+            def det(_):
+                return det_minor(_)
     else:
         return M.inv()
     n = M.rows

@@ -765,7 +765,8 @@ class PermutationGroup(Basic):
                 rep = orbit_reps[j]
                 transversals[j] = dict(
                     other.orbit_transversal(rep, pairs=True))
-            trivial_test = lambda x: True
+            def trivial_test(x):
+                return True
             tests = [None]*base_len
             for l in range(base_len):
                 if base[l] in orbit_reps:
@@ -2923,7 +2924,8 @@ class PermutationGroup(Basic):
         if init_subgroup is None:
             init_subgroup = PermutationGroup([identity])
         if tests is None:
-            trivial_test = lambda x: True
+            def trivial_test(x):
+                return True
             tests = []
             for i in range(base_len):
                 tests.append(trivial_test)

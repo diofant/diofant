@@ -6,7 +6,8 @@ from sympy.abc import x
 
 
 def test_default_sort_key():
-    func = lambda x: x
+    def func(x):
+        return x
     assert sorted([func, x, func], key=default_sort_key) == [func, func, x]
 
 

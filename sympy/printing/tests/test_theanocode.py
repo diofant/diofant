@@ -130,7 +130,8 @@ def test_factorial():
     assert theano_code(sympy.factorial(n))
 
 def test_Derivative():
-    simp = lambda expr: theano_simplify(fgraph_of(expr))
+    def simp(expr):
+        return theano_simplify(fgraph_of(expr))
     assert theq(simp(theano_code(sy.Derivative(sy.sin(x), x, evaluate=False))),
                 simp(theano.grad(tt.sin(xt), xt)))
 

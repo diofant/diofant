@@ -172,11 +172,11 @@ class Limit(Expr):
                 # not be handled this way but I'm not sure what that
                 # condition is; when ok is True it means that the leading
                 # term approach is going to succeed (hopefully)
-                ok = lambda w: (z in w.free_symbols and
-                                any(a.is_polynomial(z) or
-                                    any(z in m.free_symbols and m.is_polynomial(z)
-                                        for m in Mul.make_args(a))
-                                    for a in Add.make_args(w)))
+                def ok(w):
+                    return (z in w.free_symbols and any(a.is_polynomial(z) or
+                            any(z in m.free_symbols and m.is_polynomial(z)
+                                for m in Mul.make_args(a))
+                            for a in Add.make_args(w)))
                 if all(ok(w) for w in e.as_numer_denom()):
                     u = Dummy(positive=True)
                     if z0 is S.Infinity:

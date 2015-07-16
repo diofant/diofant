@@ -2,7 +2,8 @@ from sympy.strategies.traverse import (top_down, bottom_up, sall, top_down_once,
         bottom_up_once, expr_fns, basic_fns)
 from sympy import Basic, symbols, Symbol, S
 
-zero_symbols = lambda x: S.Zero if isinstance(x, Symbol) else x
+def zero_symbols(x):
+    return S.Zero if isinstance(x, Symbol) else x
 x,y,z = symbols('x,y,z')
 
 def test_sall():
@@ -41,7 +42,8 @@ def _test_stop_on_non_basics(trav):
 
 class Basic2(Basic):
     pass
-rl = lambda x: Basic2(*x.args) if isinstance(x, Basic) else x
+def rl(x):
+    return Basic2(*x.args) if isinstance(x, Basic) else x
 
 def test_top_down_once():
     top_rl = top_down_once(rl)

@@ -3,7 +3,8 @@ from __future__ import print_function, division
 
 from sympy.core.compatibility import get_function_name
 
-identity = lambda x: x
+def identity(x):
+    return x
 
 def exhaust(rule):
     """ Apply a rule repeatedly until it has no effect """
@@ -94,8 +95,6 @@ def switch(key, ruledict):
         rl = ruledict.get(key(expr), identity)
         return rl(expr)
     return switch_rl
-
-identity = lambda x: x
 
 def minimize(*rules, **kwargs):
     """ Select result of rules that minimizes objective

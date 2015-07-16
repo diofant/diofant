@@ -665,7 +665,8 @@ def test_dmp_list_terms():
 
 
 def test_dmp_apply_pairs():
-    h = lambda a, b: a*b
+    def h(a, b):
+        return a*b
 
     assert dmp_apply_pairs([1, 2, 3], [4, 5, 6], h, [], 0, ZZ) == [4, 10, 18]
 

@@ -305,7 +305,8 @@ def rsolve_poly(coeffs, f, n, **hints):
 
         C = [ Symbol('C' + str(i)) for i in range(0, A) ]
 
-        g = lambda i: Add(*[ c*_delta(q, i) for c, q in zip(C, Q) ])
+        def g(i):
+            return Add(*[ c*_delta(q, i) for c, q in zip(C, Q) ])
 
         if homogeneous:
             E = [ g(i) for i in range(N + 1, U) ]

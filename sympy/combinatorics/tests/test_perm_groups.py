@@ -517,10 +517,14 @@ def test_schreier_sims_incremental():
 
 
 def _subgroup_search(i, j, k):
-    prop_true = lambda x: True
-    prop_fix_points = lambda x: [x(point) for point in points] == points
-    prop_comm_g = lambda x: rmul(x, g) == rmul(g, x)
-    prop_even = lambda x: x.is_even
+    def prop_true(x):
+        return True
+    def prop_fix_points(x):
+        return [x(point) for point in points] == points
+    def prop_comm_g(x):
+        return rmul(x, g) == rmul(g, x)
+    def prop_even(x):
+        return x.is_even
     for i in range(i, j, k):
         S = SymmetricGroup(i)
         A = AlternatingGroup(i)

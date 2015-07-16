@@ -16,9 +16,11 @@ def _construct_simple(coeffs, opt):
     result, rationals, reals, algebraics = {}, False, False, False
 
     if opt.extension is True:
-        is_algebraic = lambda coeff: coeff.is_number and coeff.is_algebraic
+        def is_algebraic(coeff):
+            return coeff.is_number and coeff.is_algebraic
     else:
-        is_algebraic = lambda coeff: False
+        def is_algebraic(coeff):
+            return False
 
     # XXX: add support for a + b*I coefficients
     for coeff in coeffs:
