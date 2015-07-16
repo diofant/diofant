@@ -1,5 +1,5 @@
 from sympy import (
-    symbols, log, Float, nan, oo, zoo, I, pi, E, exp, Symbol,
+    symbols, log, Float, nan, oo, zoo, I, pi, E, O, exp, Symbol,
     LambertW, sqrt, Rational, expand_log, S, sign, conjugate,
     sin, cos, sinh, cosh, tanh, exp_polar, re, Function, simplify)
 from sympy.abc import x, y, z
@@ -363,6 +363,10 @@ def test_lambertw():
     assert LambertW(0, evaluate=False).is_algebraic
     na = Symbol('na', nonzero=True, algebraic=True)
     assert LambertW(na).is_algebraic is False
+
+    # See sympy/sympy#7259:
+    assert LambertW(x).series(x) == x - x**2 + 3*x**3/2 - 8*x**4/3 + \
+        125*x**5/24 + O(x**6)
 
 
 def test_issue_5673():
