@@ -1457,6 +1457,15 @@ class cot(ReciprocalTrigonometricFunction):
         import sage.all as sage
         return sage.cot(self.args[0]._sage_())
 
+    def _eval_subs(self, old, new):
+        if self == old:
+            return new
+        arg = self.args[0]
+        argnew = arg.subs(old, new)
+        if arg != argnew and (argnew/S.Pi).is_integer:
+            return S.ComplexInfinity
+        return cot(argnew)
+
 
 ###############################################################################
 ########################### TRIGONOMETRIC INVERSES ############################
