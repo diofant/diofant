@@ -227,7 +227,7 @@ class sin(TrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Zero:
@@ -461,7 +461,7 @@ class cos(TrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         from sympy import chebyshevt
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Zero:
@@ -1522,7 +1522,7 @@ class asin(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
@@ -1692,7 +1692,7 @@ class acos(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
@@ -1858,7 +1858,7 @@ class atan(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
@@ -2003,7 +2003,7 @@ class acot(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:

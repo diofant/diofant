@@ -228,7 +228,7 @@ class log(Function):
             else:
                 return cls(arg)
 
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.Zero:
                 return S.ComplexInfinity
             elif arg is S.One:
