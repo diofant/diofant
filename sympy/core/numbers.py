@@ -350,7 +350,7 @@ class Number(AtomicExpr):
     def __add__(self, other):
         if self is S.Zero:
             return other
-        if isinstance(other, Number):
+        if other.is_number:
             if other is S.NaN:
                 return S.NaN
             elif other is S.Infinity:
@@ -374,7 +374,7 @@ class Number(AtomicExpr):
     def __mul__(self, other):
         if self is S.One:
             return other
-        if isinstance(other, Number):
+        if other.is_number:
             if other is S.NaN:
                 return S.NaN
             elif other is S.Infinity:
@@ -397,7 +397,7 @@ class Number(AtomicExpr):
 
     @_sympifyit('other', NotImplemented)
     def __div__(self, other):
-        if isinstance(other, Number):
+        if other.is_number:
             if other is S.NaN:
                 return S.NaN
             elif other is S.Infinity or other == -S.Infinity:
@@ -2179,7 +2179,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
             return S.NegativeOne
         if expt.is_even:
             return S.One
-        if isinstance(expt, Number):
+        if expt.is_number:
             if isinstance(expt, Float):
                 return Float(-1.0)**expt
             if expt is S.NaN:
@@ -2296,7 +2296,7 @@ class Infinity(Number, metaclass=Singleton):
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
-        if isinstance(other, Number):
+        if other.is_number:
             if other == -S.Infinity or other is S.NaN:
                 return S.NaN
             elif other.is_Float:
@@ -2345,7 +2345,7 @@ class Infinity(Number, metaclass=Singleton):
 
     @_sympifyit('other', NotImplemented)
     def __div__(self, other):
-        if isinstance(other, Number):
+        if other.is_number:
             if other is S.Infinity or \
                 other == -S.Infinity or \
                     other is S.NaN:
