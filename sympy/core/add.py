@@ -89,6 +89,8 @@ class Add(Expr, AssocOp):
             if a.is_Rational:
                 if b.is_Mul:
                     rv = [a, b], [], None
+                    if b.is_infinite:
+                        return [b], [], None
             if rv:
                 if all(s.is_commutative for s in rv[0]):
                     return rv
