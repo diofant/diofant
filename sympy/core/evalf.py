@@ -804,7 +804,7 @@ def as_mpmath(x, prec, options):
         return mpf(0)
     if isinstance(x, Infinity):
         return mpf('inf')
-    if x == -Infinity:
+    if x == -S.Infinity:
         return mpf('-inf')
     # XXX
     re, im, _, _ = evalf(x, prec, options)
