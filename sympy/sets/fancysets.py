@@ -170,7 +170,12 @@ class Integers(Set, metaclass=Singleton):
 
 class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
-        return Interval.__new__(cls, -S.Infinity, S.Infinity, True, True)
+        start = -S.Infinity
+        end = S.Infinity
+        left_open = S.true
+        right_open = S.true
+
+        return Basic.__new__(cls, start, end, left_open, right_open)
 
 
 class ImageSet(Set):
