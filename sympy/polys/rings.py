@@ -730,7 +730,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         for monom, coeff in self.iterterms():
             mon = monom[:i] + monom[i+1:]
-            if not mon in poly:
+            if mon not in poly:
                 poly[mon] = (gen**monom[i]).mul_ground(coeff)
             else:
                 poly[mon] += (gen**monom[i]).mul_ground(coeff)
@@ -1134,7 +1134,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return self.square()
         elif n == 3:
             return self*self.square()
-        elif len(self) <= 5: # TODO: use an actuall density measure
+        elif len(self) <= 5:  # TODO: use an actuall density measure
             return self._pow_multinomial(n)
         else:
             return self._pow_generic(n)
@@ -1313,7 +1313,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             def term_div(a_lm_a_lc, b_lm_b_lc):
                 a_lm, a_lc = a_lm_a_lc
                 b_lm, b_lc = b_lm_b_lc
-                if b_lm == zm: # apparently this is a very common case
+                if b_lm == zm:  # apparently this is a very common case
                     monom = a_lm
                 else:
                     monom = monomial_div(a_lm, b_lm)
@@ -1325,7 +1325,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             def term_div(a_lm_a_lc, b_lm_b_lc):
                 a_lm, a_lc = a_lm_a_lc
                 b_lm, b_lc = b_lm_b_lc
-                if b_lm == zm: # apparently this is a very common case
+                if b_lm == zm:  # apparently this is a very common case
                     monom = a_lm
                 else:
                     monom = monomial_div(a_lm, b_lm)
@@ -2110,7 +2110,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return f._gcd_QQ(g)
         elif ring.domain.is_ZZ:
             return f._gcd_ZZ(g)
-        else: # TODO: don't use dense representation (port PRS algorithms)
+        else:  # TODO: don't use dense representation (port PRS algorithms)
             return ring.dmp_inner_gcd(f, g)
 
     def _gcd_ZZ(f, g):

@@ -26,7 +26,8 @@ try:
 
 except ImportError:
     unicode_warnings += 'No unicodedata available\n'
-    U = lambda name: None
+    def U(name):
+        return
 
 from sympy.printing.conventions import split_super_sub
 from sympy.core.alphabets import greeks
@@ -112,10 +113,12 @@ def xstr(*args):
         return str(*args)
 
 # GREEK
-g = lambda l: U('GREEK SMALL LETTER %s' % l.upper())
-G = lambda l: U('GREEK CAPITAL LETTER %s' % l.upper())
+def g(l):
+    return U('GREEK SMALL LETTER %s' % l.upper())
+def G(l):
+    return U('GREEK CAPITAL LETTER %s' % l.upper())
 
-greek_letters = list(greeks) # make a copy
+greek_letters = list(greeks)  # make a copy
 # deal with Unicode's funny spelling of lambda
 greek_letters[greek_letters.index('lambda')] = 'lamda'
 
@@ -160,14 +163,21 @@ symb_2txt = {
 }
 
 # SUBSCRIPT & SUPERSCRIPT
-LSUB = lambda letter: U('LATIN SUBSCRIPT SMALL LETTER %s' % letter.upper())
-GSUB = lambda letter: U('GREEK SUBSCRIPT SMALL LETTER %s' % letter.upper())
-DSUB = lambda digit:  U('SUBSCRIPT %s' % digit_2txt[digit])
-SSUB = lambda symb:   U('SUBSCRIPT %s' % symb_2txt[symb])
+def LSUB(letter):
+    return U('LATIN SUBSCRIPT SMALL LETTER %s' % letter.upper())
+def GSUB(letter):
+    return U('GREEK SUBSCRIPT SMALL LETTER %s' % letter.upper())
+def DSUB(digit):
+    return U('SUBSCRIPT %s' % digit_2txt[digit])
+def SSUB(symb):
+    return U('SUBSCRIPT %s' % symb_2txt[symb])
 
-LSUP = lambda letter: U('SUPERSCRIPT LATIN SMALL LETTER %s' % letter.upper())
-DSUP = lambda digit:  U('SUPERSCRIPT %s' % digit_2txt[digit])
-SSUP = lambda symb:   U('SUPERSCRIPT %s' % symb_2txt[symb])
+def LSUP(letter):
+    return U('SUPERSCRIPT LATIN SMALL LETTER %s' % letter.upper())
+def DSUP(digit):
+    return U('SUPERSCRIPT %s' % digit_2txt[digit])
+def SSUP(symb):
+    return U('SUPERSCRIPT %s' % symb_2txt[symb])
 
 sub = {}    # symb -> subscript symbol
 sup = {}    # symb -> superscript symbol
@@ -224,14 +234,22 @@ modifier_dict = {
 }
 
 # VERTICAL OBJECTS
-HUP = lambda symb: U('%s UPPER HOOK' % symb_2txt[symb])
-CUP = lambda symb: U('%s UPPER CORNER' % symb_2txt[symb])
-MID = lambda symb: U('%s MIDDLE PIECE' % symb_2txt[symb])
-EXT = lambda symb: U('%s EXTENSION' % symb_2txt[symb])
-HLO = lambda symb: U('%s LOWER HOOK' % symb_2txt[symb])
-CLO = lambda symb: U('%s LOWER CORNER' % symb_2txt[symb])
-TOP = lambda symb: U('%s TOP' % symb_2txt[symb])
-BOT = lambda symb: U('%s BOTTOM' % symb_2txt[symb])
+def HUP(symb):
+    return U('%s UPPER HOOK' % symb_2txt[symb])
+def CUP(symb):
+    return U('%s UPPER CORNER' % symb_2txt[symb])
+def MID(symb):
+    return U('%s MIDDLE PIECE' % symb_2txt[symb])
+def EXT(symb):
+    return U('%s EXTENSION' % symb_2txt[symb])
+def HLO(symb):
+    return U('%s LOWER HOOK' % symb_2txt[symb])
+def CLO(symb):
+    return U('%s LOWER CORNER' % symb_2txt[symb])
+def TOP(symb):
+    return U('%s TOP' % symb_2txt[symb])
+def BOT(symb):
+    return U('%s BOTTOM' % symb_2txt[symb])
 
 # {} '('  ->  (extension, start, end, middle) 1-character
 _xobj_unicode = {
@@ -401,7 +419,8 @@ root = {
 
 
 # RATIONAL
-VF = lambda txt: U('VULGAR FRACTION %s' % txt)
+def VF(txt):
+    return U('VULGAR FRACTION %s' % txt)
 
 # (p,q) -> symbol
 frac = {

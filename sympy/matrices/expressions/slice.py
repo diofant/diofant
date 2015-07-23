@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from sympy.matrices.expressions.matexpr  import MatrixExpr
+from sympy.matrices.expressions.matexpr import MatrixExpr
 from sympy import Tuple, Basic
 from sympy.functions.elementary.integers import floor
 
@@ -16,7 +16,7 @@ def normalize(i, parentsize):
         i.append(1)
     start, stop, step = i
     start = start or 0
-    if stop == None:
+    if stop is None:
         stop = parentsize
     if (start < 0) == True:
         start += parentsize

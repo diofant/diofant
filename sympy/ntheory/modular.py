@@ -180,7 +180,6 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
     ========
 
     crt : high level routine implementing the Chinese Remainder Theorem
-
     """
     def combine(c1, c2):
         """Return the tuple (a, m) which satisfies the requirement
@@ -189,7 +188,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         References
         ==========
 
-        - http://en.wikipedia.org/wiki/Method_of_successive_substitution
+        .. [1] http://en.wikipedia.org/wiki/Method_of_successive_substitution
         """
         a1, m1 = c1
         a2, m2 = c2

@@ -644,7 +644,6 @@ class PrettyPrinter(Printer):
     _print_ImmutableMatrix = _print_MatrixBase
     _print_Matrix = _print_MatrixBase
 
-
     def _print_MatrixElement(self, expr):
         from sympy.matrices import MatrixSymbol
         from sympy import Symbol
@@ -664,7 +663,6 @@ class PrettyPrinter(Printer):
             pform.prettyArgs = prettyIndices
 
             return pform
-
 
     def _print_MatrixSlice(self, m):
         # XXX works only for applied functions
@@ -1494,7 +1492,6 @@ class PrettyPrinter(Printer):
         return self._print_seq(u.args, None, None, delimiter,
              parenthesize=lambda set: set.is_ProductSet or set.is_Intersection
                                or set.is_Union)
-
 
     def _print_ImageSet(self, ts):
         if self._use_unicode:

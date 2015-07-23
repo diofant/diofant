@@ -361,7 +361,7 @@ def diop_linear(eq, param=symbols("t", integer=True)):
     >>> from sympy.solvers.diophantine import diop_linear
     >>> from sympy.abc import x, y, z, t
     >>> from sympy import Integer
-    >>> diop_linear(2*x - 3*y - 5) #solves equation 2*x - 3*y -5 = 0
+    >>> diop_linear(2*x - 3*y - 5)  # solves equation 2*x - 3*y -5 = 0
     (-3*t - 5, -2*t - 5)
 
     Here x = -3*t - 5 and y = -2*t - 5
@@ -445,13 +445,13 @@ def base_solution_linear(c, a, b, t=None):
 
     >>> from sympy.solvers.diophantine import base_solution_linear
     >>> from sympy.abc import t
-    >>> base_solution_linear(5, 2, 3) # equation 2*x + 3*y = 5
+    >>> base_solution_linear(5, 2, 3)  # equation 2*x + 3*y = 5
     (-5, 5)
-    >>> base_solution_linear(0, 5, 7) # equation 5*x + 7*y = 0
+    >>> base_solution_linear(0, 5, 7)  # equation 5*x + 7*y = 0
     (0, 0)
-    >>> base_solution_linear(5, 2, 3, t) # equation 2*x + 3*y = 5
+    >>> base_solution_linear(5, 2, 3, t)  # equation 2*x + 3*y = 5
     (3*t - 5, -2*t + 5)
-    >>> base_solution_linear(0, 5, 7, t) # equation 5*x + 7*y = 0
+    >>> base_solution_linear(0, 5, 7, t)  # equation 5*x + 7*y = 0
     (7*t, -5*t)
     """
     d = igcd(a, igcd(b, c))
@@ -460,7 +460,7 @@ def base_solution_linear(c, a, b, t=None):
     c = c // d
 
     if c == 0:
-        if t != None:
+        if t is not None:
             return (b*t , -a*t)
         else:
             return (S.Zero, S.Zero)
@@ -471,7 +471,7 @@ def base_solution_linear(c, a, b, t=None):
         y0 = y0 * sign(b)
 
         if divisible(c, d):
-            if t != None:
+            if t is not None:
                 return (c*x0 + b*t, c*y0 - a*t)
             else:
                 return (Integer(c*x0), Integer(c*y0))
@@ -644,7 +644,6 @@ def _diop_quadratic(var, coeff, t):
             c = C // g
             e = sign(B/A)
 
-
             if e*sqrt(c)*D - sqrt(a)*E == 0:
                 z = symbols("z", extended_real=True)
                 roots = solve(sqrt(a)*g*z**2 + D*z + sqrt(a)*F)
@@ -653,11 +652,13 @@ def _diop_quadratic(var, coeff, t):
                         l.add((diop_solve(sqrt(a)*x + e*sqrt(c)*y - root)[0], diop_solve(sqrt(a)*x + e*sqrt(c)*y - root)[1]))
 
             elif isinstance(e*sqrt(c)*D - sqrt(a)*E, Integer):
-                solve_x = lambda u: e*sqrt(c)*g*(sqrt(a)*E - e*sqrt(c)*D)*t**2 - (E + 2*e*sqrt(c)*g*u)*t\
-                    - (e*sqrt(c)*g*u**2 + E*u + e*sqrt(c)*F) // (e*sqrt(c)*D - sqrt(a)*E)
+                def solve_x(u):
+                    return e*sqrt(c)*g*(sqrt(a)*E - e*sqrt(c)*D)*t**2 - (E + 2*e*sqrt(c)*g*u)*t \
+                        - (e*sqrt(c)*g*u**2 + E*u + e*sqrt(c)*F) // (e*sqrt(c)*D - sqrt(a)*E)
 
-                solve_y = lambda u: sqrt(a)*g*(e*sqrt(c)*D - sqrt(a)*E)*t**2 + (D + 2*sqrt(a)*g*u)*t \
-                    + (sqrt(a)*g*u**2 + D*u + sqrt(a)*F) // (e*sqrt(c)*D - sqrt(a)*E)
+                def solve_y(u):
+                    return sqrt(a)*g*(e*sqrt(c)*D - sqrt(a)*E)*t**2 + (D + 2*sqrt(a)*g*u)*t \
+                        + (sqrt(a)*g*u**2 + D*u + sqrt(a)*F) // (e*sqrt(c)*D - sqrt(a)*E)
 
                 for z0 in range(0, abs(e*sqrt(c)*D - sqrt(a)*E)):
                     if divisible(sqrt(a)*g*z0**2 + D*z0 + sqrt(a)*F, e*sqrt(c)*D - sqrt(a)*E):
@@ -693,18 +694,16 @@ def _diop_quadratic(var, coeff, t):
                             l.add((x_0, y_0))
         else:
             _var = var
-            _var[0], _var[1] = _var[1], _var[0] # Interchange x and y
+            _var[0], _var[1] = _var[1], _var[0]  # Interchange x and y
             s = _diop_quadratic(_var, coeff, t)
 
             while len(s) > 0:
                 sol = s.pop()
                 l.add((sol[1], sol[0]))
 
-
     # (5) B**2 - 4*A*C > 0 and B**2 - 4*A*C not a square or B**2 - 4*A*C < 0
 
     else:
-
         P, Q = _transformation_to_DN(var, coeff)
         D, N = _find_DN(var, coeff)
         solns_pell = diop_DN(D, N)
@@ -775,7 +774,6 @@ def _diop_quadratic(var, coeff, t):
                         if is_solution_quad(var, coeff, x, y):
                             done = True
 
-
                             x_n = S( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ 2
                             y_n = S( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ (2*sqrt(D))
 
@@ -786,7 +784,6 @@ def _diop_quadratic(var, coeff, t):
 
                         if done:
                             break
-
 
     return l
 
@@ -834,7 +831,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     ========
 
     >>> from sympy.solvers.diophantine import diop_DN
-    >>> diop_DN(13, -4) # Solves equation x**2 - 13*y**2 = -4
+    >>> diop_DN(13, -4)  # Solves equation x**2 - 13*y**2 = -4
     [(3, 1), (393, 109), (36, 10)]
 
     The output can be interpreted as follows: There are three fundamental
@@ -842,7 +839,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     and (36, 10). Each tuple is in the form (x, y), i. e solution (3, 1) means
     that `x = 3` and `y = 1`.
 
-    >>> diop_DN(986, 1) # Solves equation x**2 - 986*y**2 = 1
+    >>> diop_DN(986, 1)  # Solves equation x**2 - 986*y**2 = 1
     [(49299, 1570)]
 
     See Also
@@ -883,7 +880,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
         if isinstance(sqrt(N), Integer):
             return [(sqrt(N), t)]
 
-    else: # D > 0
+    else:  # D > 0
         if isinstance(sqrt(D), Integer):
             r = sqrt(D)
 
@@ -961,7 +958,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                     if abs(m) != 2:
                         zs = zs + [-i for i in zs]
                         if S.Zero in zs:
-                            zs.remove(S.Zero) # Remove duplicate zero
+                            zs.remove(S.Zero)  # Remove duplicate zero
 
                     for z in zs:
 
@@ -1010,9 +1007,9 @@ def cornacchia(a, b, m):
     ========
 
     >>> from sympy.solvers.diophantine import cornacchia
-    >>> cornacchia(2, 3, 35) == {(2, 3), (4, 1)} # equation 2x**2 + 3y**2 = 35
+    >>> cornacchia(2, 3, 35) == {(2, 3), (4, 1)}  # equation 2x**2 + 3y**2 = 35
     True
-    >>> cornacchia(1, 1, 25) == {(4, 3)} # equation x**2 + y**2 = 25
+    >>> cornacchia(1, 1, 25) == {(4, 3)}  # equation x**2 + y**2 = 25
     True
 
     References
@@ -1078,10 +1075,10 @@ def PQa(P_0, Q_0, D):
     ========
 
     >>> from sympy.solvers.diophantine import PQa
-    >>> pqa = PQa(13, 4, 5) # (13 + sqrt(5))/4
-    >>> next(pqa) # (P_0, Q_0, a_0, A_0, B_0, G_0)
+    >>> pqa = PQa(13, 4, 5)  # (13 + sqrt(5))/4
+    >>> next(pqa)  # (P_0, Q_0, a_0, A_0, B_0, G_0)
     (13, 4, 3, 3, 1, -1)
-    >>> next(pqa) # (P_1, Q_1, a_1, A_1, B_1, G_1)
+    >>> next(pqa)  # (P_1, Q_1, a_1, A_1, B_1, G_1)
     (-1, 1, 1, 4, 1, 3)
 
     References
@@ -1163,7 +1160,6 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     u = a[0][0]
     v = a[0][1]
 
-
     if abs(N) == 1:
         return diop_DN(D, N)
 
@@ -1185,7 +1181,6 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
                 return [(sqrt(D)*t, t), (-sqrt(D)*t, t)]
             else:
                 return [(S.Zero, S.Zero)]
-
 
     for y in range(L1, L2):
         if isinstance(sqrt(N + D*y**2), Integer):
@@ -1258,9 +1253,9 @@ def length(P, Q, D):
     ========
 
     >>> from sympy.solvers.diophantine import length
-    >>> length(-2 , 4, 5) # (-2 + sqrt(5))/4
+    >>> length(-2 , 4, 5)  # (-2 + sqrt(5))/4
     3
-    >>> length(-5, 4, 17) # (-5 + sqrt(17))/4
+    >>> length(-5, 4, 17)  # (-5 + sqrt(17))/4
     4
     """
     x = P + sqrt(D)
@@ -1333,10 +1328,10 @@ def transformation_to_DN(eq):
 
     >>> from sympy.abc import X, Y
     >>> from sympy import Matrix, simplify, Subs
-    >>> u = (A*Matrix([X, Y]) + B)[0] # Transformation for x
+    >>> u = (A*Matrix([X, Y]) + B)[0]  # Transformation for x
     >>> u
     X/26 + 3*Y/26 - 6/13
-    >>> v = (A*Matrix([X, Y]) + B)[1] # Transformation for y
+    >>> v = (A*Matrix([X, Y]) + B)[1]  # Transformation for y
     >>> v
     Y/13 - 4/13
 
@@ -1367,7 +1362,6 @@ def transformation_to_DN(eq):
            John P.Robertson, May 8, 2003, Page 7 - 11.
            http://www.jpr2718.org/ax2p.pdf
     """
-
 
     var, coeff, diop_type = classify_diop(eq)
     if diop_type == "binary_quadratic":
@@ -1659,7 +1653,7 @@ def _diop_ternary_quadratic(_var, coeff):
 
             X_0, y_0, z_0 = _diop_ternary_quadratic(var, _coeff)
 
-            if X_0 == None:
+            if X_0 is None:
                 return (None, None, None)
 
             l = (S(B*y_0 + C*z_0)/(2*A)).q
@@ -1787,7 +1781,7 @@ def simplified(x, y, z):
     """
     Simplify the solution `(x, y, z)`.
     """
-    if x == None or y == None or z == None:
+    if x is None or y is None or z is None:
         return (x, y, z)
 
     g = igcd(x, igcd(y, z))
@@ -1840,7 +1834,7 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     v = [x]*3
     v[0], v[1], v[2] = _var[0], _var[1], _var[2]
 
-    if x_0 == None:
+    if x_0 is None:
         return (None, None, None)
 
     if x_0 == 0:
@@ -1860,7 +1854,6 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     eq_1 = Subs(eq, (x, y, z), (r*x_0, r*y_0 + p, r*z_0 + q)).doit()
     eq_1 = _mexpand(eq_1)
     A, B = eq_1.as_independent(r, as_Add=True)
-
 
     x = A*x_0
     y = (A*y_0 - _mexpand(B/r*p))
@@ -1937,8 +1930,8 @@ def _diop_ternary_quadratic_normal(var, coeff):
     if A < 0 and B < 0:
         return (None, None, None)
 
-    if (sqrt_mod(-b_2*c_2, a_2) == None or sqrt_mod(-c_2*a_2, b_2) == None or
-        sqrt_mod(-a_2*b_2, c_2) == None):
+    if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
+        sqrt_mod(-a_2*b_2, c_2) is None):
         return (None, None, None)
 
     z_0, x_0, y_0 = descent(A, B)
@@ -2093,15 +2086,15 @@ def ldescent(A, B):
     ========
 
     >>> from sympy.solvers.diophantine import ldescent
-    >>> ldescent(1, 1) # w^2 = x^2 + y^2
+    >>> ldescent(1, 1)  # w^2 = x^2 + y^2
     (1, 1, 0)
-    >>> ldescent(4, -7) # w^2 = 4x^2 - 7y^2
+    >>> ldescent(4, -7)  # w^2 = 4x^2 - 7y^2
     (2, -1, 0)
 
     This means that `x = -1, y = 0` and `w = 2` is a solution to the equation
     `w^2 = 4x^2 - 7y^2`
 
-    >>> ldescent(5, -1) # w^2 = 5x^2 - y^2
+    >>> ldescent(5, -1)  # w^2 = 5x^2 - y^2
     (2, 1, -1)
 
     References
@@ -2139,7 +2132,7 @@ def ldescent(A, B):
                 B_0, d = sign(Q)*i, sqrt(abs(Q) // i)
                 break
 
-    if B_0 != None:
+    if B_0 is not None:
         W, X, Y = ldescent(A, B_0)
         return simplified((-A*X + r*W), (r*X - W), Y*(B_0*d))
     # In this module Descent will always be called with inputs which have solutions.
@@ -2161,7 +2154,7 @@ def descent(A, B):
     ========
 
     >>> from sympy.solvers.diophantine import descent
-    >>> descent(3, 1) # x**2 = 3*y**2 + z**2
+    >>> descent(3, 1)  # x**2 = 3*y**2 + z**2
     (1, 0, 1)
 
     `(x, y, z) = (1, 0, 1)` is a solution to the above equation.
@@ -2746,7 +2739,7 @@ def power_representation(n, p, k, zeros=False):
     ========
 
     >>> from sympy.solvers.diophantine import power_representation
-    >>> f = power_representation(1729, 3, 2) # Represent 1729 as a sum of two cubes
+    >>> f = power_representation(1729, 3, 2)  # Represent 1729 as a sum of two cubes
     >>> next(f)
     (12, 1)
     >>> next(f)

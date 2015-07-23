@@ -516,7 +516,7 @@ def _degree_bound_bivariate(f, g):
     gp = g.trunc_ground(p)
     contfp, fp = _primitive(fp, p)
     contgp, gp = _primitive(gp, p)
-    conthp = _gf_gcd(contfp, contgp, p) # polynomial in Z_p[y]
+    conthp = _gf_gcd(contfp, contgp, p)  # polynomial in Z_p[y]
     ycontbound = conthp.degree()
 
     # polynomial in Z_p[y]
@@ -812,7 +812,7 @@ def modgcd_bivariate(f, g):
         gp = g.trunc_ground(p)
         contfp, fp = _primitive(fp, p)
         contgp, gp = _primitive(gp, p)
-        conthp = _gf_gcd(contfp, contgp, p) # monic polynomial in Z_p[y]
+        conthp = _gf_gcd(contfp, contgp, p)  # monic polynomial in Z_p[y]
         degconthp = conthp.degree()
 
         if degconthp > ycontbound:
@@ -847,7 +847,7 @@ def modgcd_bivariate(f, g):
 
             fpa = fp.evaluate(1, a).trunc_ground(p)
             gpa = gp.evaluate(1, a).trunc_ground(p)
-            hpa = _gf_gcd(fpa, gpa, p) # monic polynomial in Z_p[x]
+            hpa = _gf_gcd(fpa, gpa, p)  # monic polynomial in Z_p[x]
             deghpa = hpa.degree()
 
             if deghpa > xbound:
@@ -978,7 +978,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     contf, f = _primitive(f, p)
     contg, g = _primitive(g, p)
 
-    conth = _gf_gcd(contf, contg, p) # polynomial in Z_p[y]
+    conth = _gf_gcd(contf, contg, p)  # polynomial in Z_p[y]
 
     degcontf = contf.degree()
     degcontg = contg.degree()
@@ -993,7 +993,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     lcf = _LC(f)
     lcg = _LC(g)
 
-    delta = _gf_gcd(lcf, lcg, p) # polynomial in Z_p[y]
+    delta = _gf_gcd(lcf, lcg, p)  # polynomial in Z_p[y]
 
     evaltest = delta
 
@@ -1435,14 +1435,14 @@ def _euclidean_algorithm(f, g, minpoly, p):
 
     while g:
         rem = f
-        deg = g.degree(0) # degree in x
+        deg = g.degree(0)  # degree in x
         lcinv, _, gcd = _gf_gcdex(ring.dmp_LC(g), minpoly, p)
 
         if not gcd == 1:
             return None
 
         while True:
-            degrem = rem.degree(0) # degree in x
+            degrem = rem.degree(0)  # degree in x
             if degrem < deg:
                 break
             quo = (lcinv * ring.dmp_LC(rem)).set_ring(ring)
@@ -1583,7 +1583,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
     """
     ring = f.ring
-    domain = ring.domain # Z[t_1, ..., t_k]
+    domain = ring.domain  # Z[t_1, ..., t_k]
 
     if isinstance(domain, PolynomialRing):
         k = domain.ngens
@@ -1596,7 +1596,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         qdomain = domain.ring.drop_to_ground(k - 1)
         qdomain = qdomain.clone(domain=qdomain.domain.ring.to_field())
 
-    qring = ring.clone(domain=qdomain) # = Z(t_k)[t_1, ..., t_{k-1}][x, z]
+    qring = ring.clone(domain=qdomain)  # = Z(t_k)[t_1, ..., t_{k-1}][x, z]
 
     n = 1
     d = 1
@@ -1748,7 +1748,7 @@ def _integer_rational_reconstruction(c, m, domain):
     r0, s0 = m, domain.zero
     r1, s1 = c, domain.one
 
-    bound = sqrt(m / 2) # still correct if replaced by ZZ.sqrt(m // 2) ?
+    bound = sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
 
     while r1 >= bound:
         quo = r0 // r1
@@ -1983,7 +1983,7 @@ def _func_field_modgcd_m(f, g, minpoly):
         h = h.primitive()[1]
 
         if not (_trial_division(f.mul_ground(cf), h, minpoly) or
-            _trial_division(g.mul_ground(cg), h, minpoly)):
+                _trial_division(g.mul_ground(cg), h, minpoly)):
             return h
 
 

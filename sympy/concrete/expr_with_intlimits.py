@@ -130,7 +130,6 @@ class ExprWithIntLimits(ExprWithLimits):
 
         return self.func(function, *limits)
 
-
     def index(expr, x):
         """
         Return the index of a dummy variable in the list of limits.
@@ -236,7 +235,6 @@ class ExprWithIntLimits(ExprWithLimits):
             new_expr = new_expr.reorder_limit(index1, index2)
 
         return new_expr
-
 
     def reorder_limit(expr, x, y):
         """

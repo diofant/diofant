@@ -180,7 +180,6 @@ class WeylGroup(Basic):
                 order = lcm / m
                 return order
 
-
         if self.cartan_type.series == 'F':
             a = self.matrix_form(weylelt)
             order = 1
@@ -188,7 +187,6 @@ class WeylGroup(Basic):
                 a *= self.matrix_form(weylelt)
                 order += 1
             return order
-
 
         if self.cartan_type.series == "B" or self.cartan_type.series == "C":
             a = self.matrix_form(weylelt)
@@ -213,9 +211,7 @@ class WeylGroup(Basic):
                     del copy[counter]
             counter += 1
 
-
         return copy
-
 
     def matrix_form(self, weylelt):
         """
@@ -347,7 +343,6 @@ class WeylGroup(Basic):
                     matrixform *= mat
             return matrixform
 
-
         if self.cartan_type.series == 'B' or self.cartan_type.series == 'C':
             matrixform = eye(n)
             for elt in reflections:
@@ -363,8 +358,6 @@ class WeylGroup(Basic):
                     mat[a -1, a - 1] = 0
                     matrixform *= mat
             return matrixform
-
-
 
     def coxeter_diagram(self):
         """

@@ -30,7 +30,6 @@ def test_interval_arguments():
     assert Interval(1, 1, True, False) == S.EmptySet
     assert Interval(1, 1, True, True) == S.EmptySet
 
-
     assert isinstance(Interval(0, Symbol('a')), Interval)
     assert Interval(Symbol('a', extended_real=True, positive=True), 0) == S.EmptySet
     raises(ValueError, lambda: Interval(0, S.ImaginaryUnit))
@@ -39,7 +38,6 @@ def test_interval_arguments():
     raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
     raises(NotImplementedError, lambda: Interval(0, 1, False, And(x, y)))
     raises(NotImplementedError, lambda: Interval(0, 1, z, And(x, y)))
-
 
 
 def test_interval_symbolic_end_points():
@@ -143,14 +141,14 @@ def test_Complement():
                             FiniteSet(2, 3, 4)), Interval(1, 3)) == \
         Union(Interval(0, 1, False, True), FiniteSet(4))
 
-    assert not 3 in Complement(Interval(0, 5), Interval(1, 4), evaluate=False)
+    assert 3 not in Complement(Interval(0, 5), Interval(1, 4), evaluate=False)
     assert -1 in Complement(S.Reals, S.Naturals, evaluate=False)
-    assert not 1 in Complement(S.Reals, S.Naturals, evaluate=False)
+    assert 1 not in Complement(S.Reals, S.Naturals, evaluate=False)
 
     assert Complement(S.Integers, S.UniversalSet) == EmptySet()
     assert S.UniversalSet.complement(S.Integers) == EmptySet()
 
-    assert (not 0 in S.Reals.intersect(S.Integers - FiniteSet(0)))
+    assert (0 not in S.Reals.intersect(S.Integers - FiniteSet(0)))
 
     assert S.EmptySet - S.Integers == S.EmptySet
 
@@ -274,7 +272,6 @@ def test_intersection():
             Intersection(S.Integers, S.Naturals, S.Reals, evaluate=False)
 
 
-
 def test_is_disjoint():
     assert Interval(0, 2).is_disjoint(Interval(1, 2)) == False
     assert Interval(0, 2).is_disjoint(Interval(3, 4)) == True
@@ -294,7 +291,7 @@ def test_interval_subs():
 def test_interval_to_mpi():
     assert Interval(0, 1).to_mpi() == mpi(0, 1)
     assert Interval(0, 1, True, False).to_mpi() == mpi(0, 1)
-    assert type(Interval(0, 1).to_mpi()) == type(mpi(0, 1))
+    assert isinstance(Interval(0, 1).to_mpi(), type(mpi(0, 1)))
 
 
 def test_measure():

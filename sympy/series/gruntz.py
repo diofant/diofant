@@ -80,9 +80,9 @@ def compare(a, b, x):
     Returns
     =======
 
-    {">", "=", "<"}
-        ">" if `a(x) \succ b(x)`, "=" if `a(x) \asymp b(x)`
-        and "<" otherwise.
+    {1, 0, -1}
+        Respectively, if `a(x) \succ b(x)`, `a(x) \asymp b(x)`
+        or `b(x) \succ a(x)`.
     """
     # The log(exp(...)) must always be simplified here for termination.
     la = a.exp if a.func is exp else log(a)
@@ -90,11 +90,11 @@ def compare(a, b, x):
 
     c = limitinf(la/lb, x)
     if c.is_zero:
-        return "<"
+        return -1
     elif c.is_infinite:
-        return ">"
+        return 1
     else:
-        return "="
+        return 0
 
 
 def mrv(e, x):
@@ -133,9 +133,9 @@ def mrv_max(f, g, x):
         return f | g
 
     c = compare(list(f)[0], list(g)[0], x)
-    if c == ">":
+    if c > 0:
         return f
-    elif c == "<":
+    elif c < 0:
         return g
     else:
         return f | g

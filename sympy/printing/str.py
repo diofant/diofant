@@ -116,7 +116,6 @@ class StrPrinter(Printer):
     def _print_Dict(self, expr):
         return self._print_dict(expr)
 
-
     def _print_RandomDomain(self, d):
         try:
             return 'Domain: ' + self._print(d.as_boolean())
@@ -665,7 +664,6 @@ class StrPrinter(Printer):
 
     def _print_Complement(self, expr):
         return ' \ '.join(self._print(set) for set in expr.args)
-
 
     def _print_Unit(self, expr):
         return expr.abbrev

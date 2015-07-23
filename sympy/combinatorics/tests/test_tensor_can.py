@@ -309,7 +309,6 @@ def test_canonicalize1():
     can = canonicalize(g, list(range(2,6)), 0, (base3, gens3, 2, 0))
     assert can == [0,2,4,1,3,5,6,7]
 
-
     # A^{d3 d0 d2}*A^a0_{d1 d2}*A^d1_d3^a1*A^{a2 a3}_d0
     # ord = [a0,a1,a2,a3,d0,-d0,d1,-d1,d2,-d2,d3,-d3]
     #        0   1  2  3  4  5  6   7  8   9  10  11
@@ -499,7 +498,6 @@ def test_riemann_products():
     g = Permutation([0,4,3,1,2,5,6,7])
     can = canonicalize(g, dummies, 0, (base, gens, 2, 0))
     assert can == [0, 3, 4, 1, 2, 5, 7, 6]
-
 
     # A^n_{i, j} symmetric in i,j
     # A^m0_a0^d2 * A^n0_d2^d1 * A^n1_d1^d0 * A_{m0 d0}^a1

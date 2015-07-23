@@ -14,8 +14,8 @@ def test_HadamardProduct():
     assert HadamardProduct(A, B, A).shape == A.shape
 
     raises(ShapeError, lambda: HadamardProduct(A, B.T))
-    raises(TypeError,  lambda: HadamardProduct(A, n))
-    raises(TypeError,  lambda: HadamardProduct(A, 1))
+    raises(TypeError, lambda: HadamardProduct(A, n))
+    raises(TypeError, lambda: HadamardProduct(A, 1))
 
     assert HadamardProduct(A, 2*B, -A)[1, 1] == \
             -2 * A[1, 1] * B[1, 1] * A[1, 1]
@@ -40,7 +40,7 @@ def test_canonicalize():
     X = MatrixSymbol('X', 2, 2)
     expr = HadamardProduct(X, check=False)
     assert isinstance(expr, HadamardProduct)
-    expr2 = expr.doit() # unpack is called
+    expr2 = expr.doit()  # unpack is called
     assert isinstance(expr2, MatrixSymbol)
 
 def test_hadamard():

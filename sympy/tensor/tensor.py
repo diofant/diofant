@@ -371,10 +371,12 @@ class TIDS(CantSympify):
         >>> # This raises an exception:
         >>> # tids_1 * tids_4
         """
-        index_up = lambda u: u if u.is_up else -u
+        def index_up(u):
+            return u if u.is_up else -u
 
         # lambda returns True is index is not a matrix index:
-        notmat = lambda i: i not in (i._tensortype.auto_left, -i._tensortype.auto_right)
+        def notmat(i):
+            return i not in (i._tensortype.auto_left, -i._tensortype.auto_right)
         f_free = f.free[:]
         g_free = g.free[:]
         nc1 = len(f.components)
@@ -728,7 +730,7 @@ class TIDS(CantSympify):
                 continue
             shifts[i] = shift
         free = [(ind, p, c - shifts[c]) for (ind, p, c) in free if c not in elim]
-        dum = [(p0, p1, c0 - shifts[c0], c1 - shifts[c1]) for  i, (p0, p1, c0, c1) in enumerate(dum) if c0 not in elim and c1 not in elim]
+        dum = [(p0, p1, c0 - shifts[c0], c1 - shifts[c1]) for i, (p0, p1, c0, c1) in enumerate(dum) if c0 not in elim and c1 not in elim]
         components = [c for i, c in enumerate(components) if i not in elim]
         tids = TIDS(components, free, dum)
         return tids, sign
@@ -3698,7 +3700,8 @@ class TensMul(TensExpr):
 
     def _print(self):
         args = self.args
-        get_str = lambda arg: str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ("(%s)" % str(arg))
+        def get_str(arg):
+            return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ("(%s)" % str(arg))
 
         if not args:
             # no arguments is equivalent to "1", i.e. TensMul().
@@ -3884,7 +3887,7 @@ def get_lines(ex, index_type):
         # if p0 == ta0[1] then G in pos c0 is mult on the right by G in c1
         # if p0 == ta0[0] then G in pos c1 is mult on the right by G in c0
         ta0 = dt[components[c0]]
-        b0, b1 = (c0, c1) if p0 == ta0[1]  else (c1, c0)
+        b0, b1 = (c0, c1) if p0 == ta0[1] else (c1, c0)
         lines1 = lines[:]
         for line in lines:
             if line[-1] == b0:

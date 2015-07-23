@@ -67,32 +67,25 @@ class OctaveCodePrinter(CodePrinter):
         userfuncs = settings.get('user_functions', {})
         self.known_functions.update(userfuncs)
 
-
     def _rate_index_position(self, p):
         return p*5
-
 
     def _get_statement(self, codestring):
         return "%s;" % codestring
 
-
     def _get_comment(self, text):
         return "% {0}".format(text)
-
 
     def _declare_number_const(self, name, value):
         return "{0} = {1};".format(name, value)
 
-
     def _format_code(self, lines):
         return self.indent_code(lines)
-
 
     def _traverse_matrix_indices(self, mat):
         # Octave uses Fortran order (column-major)
         rows, cols = mat.shape
         return ((i, j) for j in range(cols) for i in range(rows))
-
 
     def _get_loop_opening_ending(self, indices):
         open_lines = []
@@ -104,7 +97,6 @@ class OctaveCodePrinter(CodePrinter):
             open_lines.append("for %s = %s:%s" % (var, start, stop))
             close_lines.append("end")
         return open_lines, close_lines
-
 
     def _print_Mul(self, expr):
         # print complex numbers nicely in Octave
@@ -171,7 +163,6 @@ class OctaveCodePrinter(CodePrinter):
             return (sign + multjoin(a, a_str) +
                     divsym + "(%s)" % multjoin(b, b_str))
 
-
     def _print_Pow(self, expr):
         powsymbol = '^' if all([x.is_number for x in expr.args]) else '.^'
 
@@ -191,30 +182,24 @@ class OctaveCodePrinter(CodePrinter):
         return '%s%s%s' % (self.parenthesize(expr.base, PREC), powsymbol,
                            self.parenthesize(expr.exp, PREC))
 
-
     def _print_MatPow(self, expr):
         PREC = precedence(expr)
         return '%s^%s' % (self.parenthesize(expr.base, PREC),
                           self.parenthesize(expr.exp, PREC))
 
-
     def _print_Pi(self, expr):
         return 'pi'
-
 
     def _print_ImaginaryUnit(self, expr):
         return "1i"
 
-
     def _print_Exp1(self, expr):
         return "exp(1)"
-
 
     def _print_GoldenRatio(self, expr):
         # FIXME: how to do better, e.g., for octave_code(2*GoldenRatio)?
         #return self._print((1+sqrt(S(5)))/2)
         return "(1+sqrt(5))/2"
-
 
     def _print_NumberSymbol(self, expr):
         if self._settings["inline"]:
@@ -222,7 +207,6 @@ class OctaveCodePrinter(CodePrinter):
         else:
             # assign to a variable, perhaps more readable for longer program
             return super(OctaveCodePrinter, self)._print_NumberSymbol(expr)
-
 
     def _print_Assignment(self, expr):
         from sympy.functions.elementary.piecewise import Piecewise
@@ -251,40 +235,31 @@ class OctaveCodePrinter(CodePrinter):
             rhs_code = self._print(rhs)
             return self._get_statement("%s = %s" % (lhs_code, rhs_code))
 
-
     def _print_Infinity(self, expr):
         return 'inf'
-
 
     def _print_NegativeInfinity(self, expr):
         return '-inf'
 
-
     def _print_NaN(self, expr):
         return 'NaN'
-
 
     def _print_list(self, expr):
         return '{' + ', '.join(self._print(a) for a in expr) + '}'
     _print_tuple = _print_list
     _print_Tuple = _print_list
 
-
     def _print_BooleanTrue(self, expr):
         return "true"
-
 
     def _print_BooleanFalse(self, expr):
         return "false"
 
-
     def _print_bool(self, expr):
         return str(expr).lower()
 
-
     # Could generate quadrature code for definite Integrals?
     #_print_Integral = _print_not_supported
-
 
     def _print_MatrixBase(self, A):
         # Handle zero dimensions:
@@ -303,17 +278,15 @@ class OctaveCodePrinter(CodePrinter):
         return "[%s]" % A.table(self, rowstart='', rowend='',
                                 rowsep=';\n', colsep=' ')
 
-
     def _print_SparseMatrix(self, A):
         from sympy.matrices import Matrix
-        L = A.col_list();
+        L = A.col_list()
         # make row vectors of the indices and entries
         I = Matrix([[k[0] + 1 for k in L]])
         J = Matrix([[k[1] + 1 for k in L]])
         AIJ = Matrix([[k[2] for k in L]])
         return "sparse(%s, %s, %s, %s, %s)" % (self._print(I), self._print(J),
                                             self._print(AIJ), A.rows, A.cols)
-
 
     # FIXME: Str/CodePrinter could define each of these to call the _print
     # method from higher up the class hierarchy (see _print_NumberSymbol).
@@ -328,10 +301,8 @@ class OctaveCodePrinter(CodePrinter):
         _print_ImmutableSparseMatrix = \
         _print_SparseMatrix
 
-
     def _print_MatrixElement(self, expr):
         return self._print(expr.parent) + '(%s, %s)'%(expr.i+1, expr.j+1)
-
 
     def _print_MatrixSlice(self, expr):
         def strslice(x, lim):
@@ -353,19 +324,15 @@ class OctaveCodePrinter(CodePrinter):
                 strslice(expr.rowslice, expr.parent.shape[0]) + ', ' +
                 strslice(expr.colslice, expr.parent.shape[1]) + ')')
 
-
     def _print_Indexed(self, expr):
         inds = [ self._print(i) for i in expr.indices ]
         return "%s(%s)" % (self._print(expr.base.label), ", ".join(inds))
 
-
     def _print_Idx(self, expr):
         return self._print(expr.label)
 
-
     def _print_Identity(self, expr):
         return "eye(%s)" % self._print(expr.shape[0])
-
 
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != True:
@@ -402,7 +369,6 @@ class OctaveCodePrinter(CodePrinter):
                 if i == len(expr.args) - 1:
                     lines.append("end")
             return "\n".join(lines)
-
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines"""

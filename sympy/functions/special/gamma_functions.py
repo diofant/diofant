@@ -252,7 +252,6 @@ class lowergamma(Function):
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     """
 
-
     def fdiff(self, argindex=2):
         from sympy import meijerg, unpolarify
         if argindex == 2:
@@ -321,7 +320,7 @@ class lowergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if not z in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, S.NegativeInfinity):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_uppergamma(self, s, x):
@@ -397,7 +396,6 @@ class uppergamma(Function):
     .. [6] http://en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
     """
 
-
     def fdiff(self, argindex=2):
         from sympy import meijerg, unpolarify
         if argindex == 2:
@@ -461,7 +459,7 @@ class uppergamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[1]
-        if not z in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, S.NegativeInfinity):
             return self.func(self.args[0].conjugate(), z.conjugate())
 
     def _eval_rewrite_as_lowergamma(self, s, x):
@@ -570,7 +568,6 @@ class polygamma(Function):
     .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma/
     .. [4] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
     """
-
 
     def fdiff(self, argindex=2):
         if argindex == 2:
@@ -927,7 +924,7 @@ class loggamma(Function):
 
     def _eval_conjugate(self):
         z = self.args[0]
-        if not z in (S.Zero, S.NegativeInfinity):
+        if z not in (S.Zero, S.NegativeInfinity):
             return self.func(z.conjugate())
 
     def fdiff(self, argindex=1):

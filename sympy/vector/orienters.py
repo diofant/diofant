@@ -116,7 +116,7 @@ class ThreeAngleOrienter(Orienter):
         rot_order = [i.replace('Y', '2') for i in rot_order]
         rot_order = [i.replace('Z', '3') for i in rot_order]
         rot_order = ''.join(rot_order)
-        if not rot_order in approved_orders:
+        if rot_order not in approved_orders:
             raise TypeError('Invalid rot_type parameter')
         a1 = int(rot_order[0])
         a2 = int(rot_order[1])

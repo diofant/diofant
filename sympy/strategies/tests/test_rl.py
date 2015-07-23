@@ -11,14 +11,17 @@ def test_rm_id():
 def test_glom():
     from sympy import Add
     from sympy.abc import x
-    key     = lambda x: x.as_coeff_Mul()[1]
-    count   = lambda x: x.as_coeff_Mul()[0]
-    newargs = lambda cnt, arg: cnt * arg
+    def key(x):
+        return x.as_coeff_Mul()[1]
+    def count(x):
+        return x.as_coeff_Mul()[0]
+    def newargs(cnt, arg):
+        return cnt * arg
     rl = glom(key, count, newargs)
 
     result   = rl(Add(x, -x, 3*x, 2, 3, evaluate=False))
     expected = Add(3*x, 5)
-    assert  set(result.args) == set(expected.args)
+    assert set(result.args) == set(expected.args)
 
 def test_flatten():
     assert flatten(Basic(1, 2, Basic(3, 4))) == Basic(1, 2, 3, 4)
@@ -31,8 +34,10 @@ def test_sort():
     assert sort(str)(Basic(3,1,2)) == Basic(1,2,3)
 
 def test_distribute():
-    class T1(Basic):        pass
-    class T2(Basic):        pass
+    class T1(Basic):
+        pass
+    class T2(Basic):
+        pass
 
     distribute_t12 = distribute(T1, T2)
     assert distribute_t12(T1(1, 2, T2(3, 4), 5)) == \

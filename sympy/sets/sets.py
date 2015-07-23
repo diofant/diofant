@@ -706,7 +706,7 @@ class Interval(Set, EvalfMixin):
         right_open = _sympify(right_open)
 
         if not all(isinstance(a, (type(true), type(false)))
-            for a in [left_open, right_open]):
+                   for a in [left_open, right_open]):
             raise NotImplementedError(
                 "left_open and right_open can have only true/false values, "
                 "got %s and %s" % (left_open, right_open))
@@ -877,7 +877,6 @@ class Interval(Set, EvalfMixin):
 
         return Interval(start, end, left_open, right_open)
 
-
     def _complement(self, other):
         if other is S.Reals:
             a = Interval(S.NegativeInfinity, self.start,
@@ -886,7 +885,6 @@ class Interval(Set, EvalfMixin):
             return Union(a, b)
 
         return Set._complement(self, other)
-
 
     def _union(self, other):
         """
@@ -931,7 +929,7 @@ class Interval(Set, EvalfMixin):
             return false
 
         if self.start is S.NegativeInfinity and self.end is S.Infinity:
-            if not other.is_extended_real is None:
+            if other.is_extended_real is not None:
                 return other.is_extended_real
 
         if self.left_open:
@@ -1489,7 +1487,7 @@ class Complement(Set, EvalfMixin):
             return Intersection(s.complement(A) for s in B.args)
 
         result = B._complement(A)
-        if result != None:
+        if result is not None:
             return result
         else:
             return Complement(A, B, evaluate=False)
@@ -1704,7 +1702,6 @@ class FiniteSet(Set, EvalfMixin):
                 return Union(intervals, evaluate=False)
 
         return Set._complement(self, other)
-
 
     def _union(self, other):
         """

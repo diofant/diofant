@@ -18,7 +18,6 @@ from sympy.ntheory.factor_ import smoothness, smoothness_p, \
     antidivisors, antidivisor_count, core
 from sympy.ntheory.generate import cycle_length
 from sympy.ntheory.primetest import _mr_safe_helper, mr
-from sympy.ntheory.bbp_pi import pi_hex_digits
 from sympy.ntheory.modular import crt, crt1, crt2, solve_congruence
 from sympy.ntheory.continued_fraction import \
     (continued_fraction_periodic as cf_p,
@@ -202,7 +201,8 @@ def test_generate():
 
     assert mr(1, [2]) is False
 
-    func = lambda i: (i**2 + 1) % 51
+    def func(i):
+        return (i**2 + 1) % 51
     assert next(cycle_length(func, 4)) == (6, 2)
     assert list(cycle_length(func, 4, values=True)) == \
         [17, 35, 2, 5, 26, 14, 44, 50, 2, 5, 26, 14]
@@ -479,7 +479,6 @@ def test_residue():
     raises(ValueError, lambda: is_quad_residue(1.1, 2))
     raises(ValueError, lambda: is_quad_residue(2, 0))
 
-
     assert quadratic_residues(12) == [0, 1, 4, 9]
     assert quadratic_residues(13) == [0, 1, 3, 4, 9, 10, 12]
     assert [len(quadratic_residues(i)) for i in range(1, 20)] == \
@@ -536,8 +535,8 @@ def test_residue():
         assert pow(next(it), 2, p) == a
 
     assert type(next(sqrt_mod_iter(9, 27))) is int
-    assert type(next(sqrt_mod_iter(9, 27, ZZ))) is type(ZZ(1))
-    assert type(next(sqrt_mod_iter(1, 7, ZZ))) is type(ZZ(1))
+    assert isinstance(next(sqrt_mod_iter(9, 27, ZZ)), type(ZZ(1)))
+    assert isinstance(next(sqrt_mod_iter(1, 7, ZZ)), type(ZZ(1)))
 
     assert is_nthpow_residue(2, 1, 5)
     assert not is_nthpow_residue(2, 2, 5)
@@ -594,12 +593,6 @@ def test_residue():
     assert mobius(p) == -1
     raises(TypeError, lambda: mobius(x))
     raises(ValueError, lambda: mobius(i))
-
-
-def test_hex_pi_nth_digits():
-    assert pi_hex_digits(0) == '3243f6a8885a30'
-    assert pi_hex_digits(1) == '243f6a8885a308'
-    assert pi_hex_digits(10000) == '68ac8fcfb8016c'
 
 
 def test_crt():

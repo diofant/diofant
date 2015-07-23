@@ -71,8 +71,8 @@ def test_RandomSymbol():
 
     assert X.name == X.symbol.name
 
-    X = Normal('lambda', 0, 1) # make sure we can use protected terms
-    X = Normal('Lambda', 0, 1) # make sure we can use SymPy terms
+    X = Normal('lambda', 0, 1)  # make sure we can use protected terms
+    X = Normal('Lambda', 0, 1)  # make sure we can use SymPy terms
 
 
 def test_RandomSymbol_diff():
@@ -119,7 +119,6 @@ def test_Sample():
 
     # Make sure this doesn't raise an error
     E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3)
-
 
     assert all(i in range(1, 7) for i in density(X, numsamples=10))
     assert all(i in range(4, 7) for i in density(X, X>3, numsamples=10))

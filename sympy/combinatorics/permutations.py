@@ -850,7 +850,6 @@ class Permutation(Basic):
             raise ValueError("Permutation argument must be a list of ints, "
                              "a list of lists, Permutation or Cycle.")
 
-
         # safe to assume args are valid; this also makes a copy
         # of the args
         args = list(args[0])
@@ -1698,7 +1697,7 @@ class Permutation(Basic):
 
         next_lex, unrank_lex, cardinality, length, order, size
         """
-        if not self._rank is None:
+        if self._rank is not None:
             return self._rank
         rank = 0
         rho = self.array_form[:]

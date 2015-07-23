@@ -20,7 +20,8 @@ def branch5(x):
     else:
         yield x
 
-even = lambda x: x%2 == 0
+def even(x):
+    return x%2 == 0
 
 def inc(x):
     yield x + 1
@@ -91,7 +92,8 @@ def test_onaction():
     assert L == [(2, 3)]
 
 def test_yieldify():
-    inc = lambda x: x + 1
+    def inc(x):
+        return x + 1
     yinc = yieldify(inc)
     assert list(yinc(3)) == [4]
 

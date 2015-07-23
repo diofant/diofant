@@ -5,8 +5,9 @@ from sympy.core.compatibility import range
 
 
 def binomial_coefficients(n):
-    """Return a dictionary containing pairs :math:`{(k1,k2) : C_kn}` where
-    :math:`C_kn` are binomial coefficients and :math:`n=k1+k2`.
+    """Return a dictionary containing pairs `{(k1,k2) : C_{kn}}` where
+    `C_{kn}` are binomial coefficients and :math:`n=k1+k2`.
+
     Examples
     ========
 
@@ -30,8 +31,7 @@ def binomial_coefficients(n):
 
 
 def binomial_coefficients_list(n):
-    """ Return a list of binomial coefficients as rows of the Pascal's
-    triangle.
+    """Return a list of binomial coefficients as rows of the Pascal's triangle.
 
     Examples
     ========
@@ -58,28 +58,32 @@ def multinomial_coefficients0(m, n, _tuple=tuple, _zip=zip):
     where ``C_kn`` are multinomial coefficients such that
     ``n=k1+k2+..+km``.
 
-    For example:
+    Examples
+    ========
 
     >>> from sympy import multinomial_coefficients
     >>> multinomial_coefficients(2, 5) == {(0, 5): 1, (1, 4): 5,
     ... (2, 3): 10, (3, 2): 10, (4, 1): 5, (5, 0): 1}
     True
 
-    The algorithm is based on the following result:
+    Notes
+    =====
 
-       Consider a polynomial and its ``n``-th exponent::
+    The algorithm is based on the following result.
 
-         P(x) = sum_{i=0}^m p_i x^i
-         P(x)^n = sum_{k=0}^{m n} a(n,k) x^k
+    Consider a polynomial and its ``n``-th exponent::
 
-       The coefficients ``a(n,k)`` can be computed using the
-       J.C.P. Miller Pure Recurrence [see D.E.Knuth, Seminumerical
-       Algorithms, The art of Computer Programming v.2, Addison
-       Wesley, Reading, 1981;]::
+        P(x) = sum_{i=0}^m p_i x^i
+        P(x)^n = sum_{k=0}^{m n} a(n,k) x^k
 
-         a(n,k) = 1/(k p_0) sum_{i=1}^m p_i ((n+1)i-k) a(n,k-i),
+    The coefficients ``a(n,k)`` can be computed using the
+    J.C.P. Miller Pure Recurrence [see D.E.Knuth, Seminumerical
+    Algorithms, The art of Computer Programming v.2, Addison
+    Wesley, Reading, 1981;]::
 
-       where ``a(n,0) = p_0^n``.
+        a(n,k) = 1/(k p_0) sum_{i=1}^m p_i ((n+1)i-k) a(n,k-i),
+
+    where ``a(n,0) = p_0^n``.
     """
 
     if not m:
@@ -114,24 +118,24 @@ def multinomial_coefficients0(m, n, _tuple=tuple, _zip=zip):
 
 def multinomial_coefficients(m, n):
     r"""Return a dictionary containing pairs ``{(k1,k2,..,km) : C_kn}``
-    where ``C_kn`` are multinomial coefficients such that
-    ``n=k1+k2+..+km``.
+    where ``C_kn`` are multinomial coefficients such that ``n=k1+k2+..+km``.
 
-    For example:
+    Examples
+    ========
 
     >>> from sympy.ntheory import multinomial_coefficients
     >>> multinomial_coefficients(2, 5) == {(0, 5): 1, (1, 4): 5,
     ...    (2, 3): 10, (3, 2): 10, (4, 1): 5, (5, 0): 1}
     True
 
+    Notes
+    =====
+
     The algorithm is based on the following result:
 
     .. math::
-        \binom{n}{k_1, \ldots, k_m} =
-        \frac{k_1 + 1}{n - k_1} \sum_{i=2}^m \binom{n}{k_1 + 1, \ldots, k_i - 1, \ldots}
-
-    Code contributed to Sage by Yann Laigle-Chapuy, copied with permission
-    of the author.
+        \binom{n}{k_1, \ldots, k_m} = \frac{k_1 + 1}{n - k_1}
+        \sum_{i=2}^m \binom{n}{k_1 + 1, \ldots, k_i - 1, \ldots}
 
     See Also
     ========

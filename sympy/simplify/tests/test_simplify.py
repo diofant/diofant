@@ -471,7 +471,7 @@ def test_simplify_expr():
 
     assert simplify(A*B - B*A) == A*B - B*A
     assert simplify(A/(1 + y/x)) == x*A/(x + y)
-    assert simplify(A*(1/x + 1/y)) == A/x + A/y  #(x + y)*A/(x*y)
+    assert simplify(A*(1/x + 1/y)) == A/x + A/y  # (x + y)*A/(x*y)
 
     assert simplify(log(2) + log(3)) == log(6)
     assert simplify(log(2*x) - log(2)) == log(x)
@@ -534,8 +534,10 @@ def test_simplify_ratio():
 
 
 def test_simplify_measure():
-    measure1 = lambda expr: len(str(expr))
-    measure2 = lambda expr: -count_ops(expr)
+    def measure1(expr):
+        return len(str(expr))
+    def measure2(expr):
+        return -count_ops(expr)
                                        # Return the most complicated result
     expr = (x + 1)/(x + sin(x)**2 + cos(x)**2)
     assert measure1(simplify(expr, measure=measure1)) <= measure1(expr)
@@ -1880,8 +1882,10 @@ def test_exptrigsimp():
 
 
 def test_issue_2827_trigsimp_methods():
-    measure1 = lambda expr: len(str(expr))
-    measure2 = lambda expr: -count_ops(expr)
+    def measure1(expr):
+        return len(str(expr))
+    def measure2(expr):
+        return -count_ops(expr)
                                        # Return the most complicated result
     expr = (x + 1)/(x + sin(x)**2 + cos(x)**2)
     ans = Matrix([1])
@@ -1905,7 +1909,7 @@ def test_powsimp_on_numbers():
 def test_inequality_no_auto_simplify():
     # no simplify on creation but can be simplified
     lhs = cos(x)**2 + sin(x)**2
-    rhs = 2;
+    rhs = 2
     e = Lt(lhs, rhs)
     assert e == Lt(lhs, rhs, evaluate=False)
     assert simplify(e)

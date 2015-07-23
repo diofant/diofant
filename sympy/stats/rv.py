@@ -369,7 +369,7 @@ class ProductDomain(RandomDomain):
     @property
     def symbols(self):
         return FiniteSet(*[sym for domain in self.domains
-                               for sym    in domain.symbols])
+                           for sym in domain.symbols])
 
     @property
     def domains(self):

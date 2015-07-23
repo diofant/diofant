@@ -248,7 +248,6 @@ def test_quintics_1():
         RootOf(x**5 + 3*x**3 + 7, 0).n()
 
 
-
 def test_highorder_poly():
     # just testing that the uniq generator is unpacked
     sol = solve(x**6 - 2*x + 2)
@@ -1039,7 +1038,7 @@ def test_unrad1():
         102*2**(S(2)/3)*3**(S(5)/6)*s**5*I + 1620*s**4 - 1620*sqrt(3)*s**4*I -
         13872*18**(S(1)/3)*s**3 + 471648*s - 471648*sqrt(3)*s*I, [s, s**3 - 306*x
         - sqrt(3)*sqrt(31212*x**2 - 165240*x + 61484) + 810]))
-    assert solve(eq) == [] # not other code errors
+    assert solve(eq) == []  # not other code errors
 
 
 @slow

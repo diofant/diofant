@@ -52,7 +52,8 @@ def test_epath_select():
 
 def test_epath_apply():
     expr = [((x, 1, t), 2), ((3, y, 4), z)]
-    func = lambda expr: expr**2
+    def func(expr):
+        return expr**2
 
     assert epath("/*", expr, list) == [[(x, 1, t), 2], [(3, y, 4), z]]
 

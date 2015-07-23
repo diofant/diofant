@@ -102,7 +102,6 @@ class erf(Function):
         else:
             raise ArgumentIndexError(self, argindex)
 
-
     def inverse(self, argindex=1):
         """
         Returns the inverse of this function.
@@ -636,7 +635,6 @@ class erf2(Function):
     .. [1] http://functions.wolfram.com/GammaBetaErf/Erf2/
     """
 
-
     def fdiff(self, argindex):
         x, y = self.args
         if argindex == 1:
@@ -753,7 +751,6 @@ class erfinv(Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErf/
     """
 
-
     def fdiff(self, argindex =1):
         if argindex == 1:
             return sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
@@ -831,7 +828,6 @@ class erfcinv (Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErfc/
     """
 
-
     def fdiff(self, argindex =1):
         if argindex == 1:
             return -sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
@@ -907,7 +903,6 @@ class erf2inv(Function):
 
     .. [1] http://functions.wolfram.com/GammaBetaErf/InverseErf2/
     """
-
 
     def fdiff(self, argindex):
         x, y = self.args
@@ -1045,7 +1040,6 @@ class Ei(Function):
     .. [3] Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
 
     """
-
 
     @classmethod
     def eval(cls, z):
@@ -1203,7 +1197,6 @@ class expint(Function):
     .. [3] http://en.wikipedia.org/wiki/Exponential_integral
 
     """
-
 
     @classmethod
     def eval(cls, nu, z):
@@ -1388,7 +1381,6 @@ class li(Function):
     .. [4] http://mathworld.wolfram.com/SoldnersConstant.html
     """
 
-
     @classmethod
     def eval(cls, z):
         if z is S.Zero:
@@ -1505,7 +1497,6 @@ class Li(Function):
     .. [3] http://dlmf.nist.gov/6
     """
 
-
     @classmethod
     def eval(cls, z):
         if z is S.Infinity:
@@ -1535,7 +1526,6 @@ class Li(Function):
 
 class TrigonometricIntegral(Function):
     """ Base class for trigonometric integrals. """
-
 
     @classmethod
     def eval(cls, z):
@@ -2330,7 +2320,6 @@ class _erfs(Function):
     tractable for the Gruntz algorithm.
     """
 
-
     def _eval_aseries(self, n, args0, x, logx):
         from sympy import Order
         point = args0[0]
@@ -2375,7 +2364,6 @@ class _eis(Function):
     tractable for the Gruntz algorithm.
     """
 
-
     def _eval_aseries(self, n, args0, x, logx):
         from sympy import Order
         if args0[0] != S.Infinity:
@@ -2386,7 +2374,6 @@ class _eis(Function):
         o = Order(1/z**(n + 1), x)
         # It is very inefficient to first add the order and then do the nseries
         return (Add(*l))._eval_nseries(x, n, logx) + o
-
 
     def fdiff(self, argindex=1):
         if argindex == 1:

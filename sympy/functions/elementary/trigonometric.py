@@ -546,7 +546,7 @@ class cos(TrigonometricFunction):
                 if q in table2:
                     a, b = p*S.Pi/table2[q][0], p*S.Pi/table2[q][1]
                     nvala, nvalb = cls(a), cls(b)
-                    if None == nvala or None == nvalb:
+                    if nvala is None or nvalb is None:
                         return None
                     return nvala*nvalb + cls(S.Pi/2 - a)*cls(S.Pi/2 - b)
 
@@ -560,7 +560,7 @@ class cos(TrigonometricFunction):
                 if 0 == q % 2:
                     narg = (pi_coeff*2)*S.Pi
                     nval = cls(narg)
-                    if None == nval:
+                    if nval is None:
                         return None
                     x = (2*pi_coeff + 1)/2
                     sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
@@ -662,7 +662,7 @@ class cos(TrigonometricFunction):
             if 2 > r.q*r.q:
                 return r.q
 
-            if None == factors:
+            if factors is None:
                 a = [n//x**y for x, y in factorint(r.q).items()]
             else:
                 a = [n//x for x in factors]
@@ -716,7 +716,7 @@ class cos(TrigonometricFunction):
         if 0 == pi_coeff.q % 2:  # recursively remove powers of 2
             narg = (pi_coeff*2)*S.Pi
             nval = cos(narg)
-            if None == nval:
+            if nval is None:
                 return None
             nval = nval.rewrite(sqrt)
             x = (2*pi_coeff + 1)/2
@@ -894,7 +894,7 @@ class tan(TrigonometricFunction):
                 p = pi_coeff.p % q
                 if q in table2:
                     nvala, nvalb = cls(p*S.Pi/table2[q][0]), cls(p*S.Pi/table2[q][1])
-                    if None == nvala or None == nvalb:
+                    if nvala is None or nvalb is None:
                         return None
                     return (nvala - nvalb)/(1 + nvala*nvalb)
                 narg = ((pi_coeff + S.Half) % 1 - S.Half)*S.Pi
@@ -1162,7 +1162,7 @@ class cot(TrigonometricFunction):
                 p = pi_coeff.p % q
                 if q in table2:
                     nvala, nvalb = cls(p*S.Pi/table2[q][0]), cls(p*S.Pi/table2[q][1])
-                    if None == nvala or None == nvalb:
+                    if nvala is None or nvalb is None:
                         return None
                     return (1 + nvala*nvalb)/(nvalb - nvala)
                 narg = (((pi_coeff + S.Half) % 1) - S.Half)*S.Pi
@@ -1372,7 +1372,7 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
         t = cls._reciprocal_of.eval(arg)
         if hasattr(arg, 'inverse') and arg.inverse() == cls:
             return arg.args[0]
-        return 1/t if t != None else t
+        return 1/t if t is not None else t
 
     def _call_reciprocal(self, method_name, *args, **kwargs):
         # Calls method_name on _reciprocal_of
@@ -1383,13 +1383,13 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
         # If calling method_name on _reciprocal_of returns a value != None
         # then return the reciprocal of that value
         t = self._call_reciprocal(method_name, *args, **kwargs)
-        return 1/t if t != None else t
+        return 1/t if t is not None else t
 
     def _rewrite_reciprocal(self, method_name, arg):
         # Special handling for rewrite functions. If reciprocal rewrite returns
         # unmodified expression, then return None
         t = self._call_reciprocal(method_name, arg)
-        if t != None and t != self._reciprocal_of(arg):
+        if t is not None and t != self._reciprocal_of(arg):
             return 1/t
 
     def fdiff(self, argindex=1):

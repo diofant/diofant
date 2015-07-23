@@ -298,13 +298,14 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
         _stringify_func = stringify_func
 
         if pretty_print:
-            stringify_func = lambda expr: \
-                             _stringify_func(expr, order=order,
-                                             use_unicode=use_unicode,
-                                             wrap_line=wrap_line,
-                                             num_columns=num_columns)
+            def stringify_func(expr):
+                return _stringify_func(expr, order=order,
+                                       use_unicode=use_unicode,
+                                       wrap_line=wrap_line,
+                                       num_columns=num_columns)
         else:
-            stringify_func = lambda expr: _stringify_func(expr, order=order)
+            def stringify_func(expr):
+                return _stringify_func(expr, order=order)
 
     if in_ipython:
         _init_ipython_printing(ip, stringify_func, use_latex,

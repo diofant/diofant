@@ -5,7 +5,8 @@ from sympy.strategies import chain, minimize
 import sympy.strategies.branch as branch
 from sympy.strategies.branch import yieldify
 
-identity = lambda x: x
+def identity(x):
+    return x
 
 def treeapply(tree, join, leaf=identity):
     """ Apply functions onto recursive containers (tree)

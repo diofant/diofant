@@ -1166,7 +1166,7 @@ def evalf_symbol(x, prec, options):
             return None, None, None, None
         return val._mpf_, None, prec, None
     else:
-        if not '_cache' in options:
+        if '_cache' not in options:
             options['_cache'] = {}
         cache = options['_cache']
         cached, cached_prec = cache.get(x.name, (None, MINUS_INF))
@@ -1269,7 +1269,7 @@ def evalf(x, prec, options):
     if options.get("verbose"):
         print("### input", x)
         print("### output", to_str(r[0] or fzero, 50))
-        print("### raw", r ) # r[0], r[2]
+        print("### raw", r )  # r[0], r[2]
         print()
     chop = options.get('chop', False)
     if chop:

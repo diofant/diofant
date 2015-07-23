@@ -62,9 +62,11 @@ def flatten(iterable, levels=None, cls=None):
                 "expected non-negative number of levels, got %s" % levels)
 
     if cls is None:
-        reducible = lambda x: is_sequence(x, set)
+        def reducible(x):
+            return is_sequence(x, set)
     else:
-        reducible = lambda x: isinstance(x, cls)
+        def reducible(x):
+            return isinstance(x, cls)
 
     result = []
 
@@ -847,7 +849,8 @@ def topological_sort(graph, key=None):
         S.discard(u)
 
     if key is None:
-        key = lambda value: value
+        def key(value):
+            return value
 
     S = sorted(S, key=key, reverse=True)
 

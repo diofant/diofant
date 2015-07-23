@@ -500,7 +500,6 @@ class Basic(with_metaclass(ManagedProperties)):
         return dict(list(zip(V, [Symbol(name % i, **v.assumptions0)
             for i, v in enumerate(V)])))
 
-
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
 
@@ -1254,18 +1253,19 @@ class Basic(with_metaclass(ManagedProperties)):
         except SympifyError:
             pass
         if isinstance(query, type):
-            _query = lambda expr: isinstance(expr, query)
+            def _query(expr):
+                return isinstance(expr, query)
 
-            if isinstance(value, type):
-                _value = lambda expr, result: value(*expr.args)
-            elif callable(value):
-                _value = lambda expr, result: value(*expr.args)
+            if isinstance(value, type) or callable(value):
+                def _value(expr, result):
+                    return value(*expr.args)
             else:
                 raise TypeError(
                     "given a type, replace() expects another "
                     "type or a callable")
         elif isinstance(query, Basic):
-            _query = lambda expr: expr.match(query)
+            def _query(expr):
+                return expr.match(query)
 
             # XXX remove the exact flag and make multi-symbol
             # patterns use exact=True semantics; to do this the query must
@@ -1276,22 +1276,24 @@ class Basic(with_metaclass(ManagedProperties)):
             # parameters it has.
             if isinstance(value, Basic):
                 if exact:
-                    _value = lambda expr, result: (value.subs(result)
-                        if all(val for val in result.values()) else expr)
+                    def _value(expr, result):
+                        return (value.subs(result) \
+                            if all(val for val in result.values()) else expr)
                 else:
-                    _value = lambda expr, result: value.subs(result)
+                    def _value(expr, result):
+                        return value.subs(result)
             elif callable(value):
                 # match dictionary keys get the trailing underscore stripped
                 # from them and are then passed as keywords to the callable;
                 # if ``exact`` is True, only accept match if there are no null
                 # values amongst those matched.
                 if exact:
-                    _value = lambda expr, result: (value(**{
-                        str(key)[:-1]: val for key, val in result.items()})
-                        if all(val for val in result.values()) else expr)
+                    def _value(expr, result):
+                        return (value(**{str(key)[:-1]: val for key, val in result.items()})
+                                if all(val for val in result.values()) else expr)
                 else:
-                    _value = lambda expr, result: value(**{
-                        str(key)[:-1]: val for key, val in result.items()})
+                    def _value(expr, result):
+                        return value(**{str(key)[:-1]: val for key, val in result.items()})
             else:
                 raise TypeError(
                     "given an expression, replace() expects "
@@ -1300,7 +1302,8 @@ class Basic(with_metaclass(ManagedProperties)):
             _query = query
 
             if callable(value):
-                _value = lambda expr, result: value(expr)
+                def _value(expr, result):
+                    return value(expr)
             else:
                 raise TypeError(
                     "given a callable, replace() expects "

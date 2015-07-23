@@ -128,8 +128,8 @@ def _lambert(eq, x):
             return []  # violated assumptions
         other = -(-other).args[0]
         eq += other
-    if not x in other.free_symbols:
-        return [] # violated assumptions
+    if x not in other.free_symbols:
+        return []  # violated assumptions
     d, f, X2 = _linab(other, x)
     logterm = collect(eq - other, mainlog)
     a = logterm.as_coefficient(mainlog)

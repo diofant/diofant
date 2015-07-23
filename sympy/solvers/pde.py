@@ -724,7 +724,6 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     d = match[match['d']]
     e = -match[match['e']]
 
-
     if not d:
         # To deal with cases like b*ux = e or c*uy = e
         if not (b and c):

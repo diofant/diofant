@@ -193,7 +193,6 @@ def checksol(f, symbol, sol=None, **flags):
     elif isinstance(f, Equality):
         f = f.lhs - f.rhs
 
-
     if not f:
         return True
 
@@ -990,7 +989,7 @@ def solve(f, *symbols, **flags):
                     p.is_Pow and not implicit or
                     p.is_Function and not implicit) and p.func not in (re, im):
                 continue
-            elif not p in seen:
+            elif p not in seen:
                 seen.add(p)
                 if p.free_symbols & symset:
                     non_inverts.add(p)
@@ -1359,7 +1358,7 @@ def _solve(f, *symbols, **flags):
         # first see if it really depends on symbol and whether there
         # is a linear solution
         f_num, sol = solve_linear(f, symbols=symbols)
-        if not symbol in f_num.free_symbols:
+        if symbol not in f_num.free_symbols:
             return []
         elif f_num.is_Symbol:
             # no need to check but simplify if desired
@@ -1794,7 +1793,7 @@ def _solve_system(exprs, symbols, **flags):
                         result.remove(b)
 
     default_simplify = bool(failed)  # rely on system-solvers to simplify
-    if  flags.get('simplify', default_simplify):
+    if flags.get('simplify', default_simplify):
         for r in result:
             for k in r:
                 r[k] = simplify(r[k])
@@ -1861,9 +1860,9 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
 
     >>> solve_linear(1/(1/x - 2))
     (0, 0)
-    >>> 1/(1/x) # to SymPy, this looks like x ...
+    >>> 1/(1/x)  # to SymPy, this looks like x ...
     x
-    >>> solve_linear(1/(1/x)) # so a solution is given
+    >>> solve_linear(1/(1/x))  # so a solution is given
     (x, 0)
 
     If x is allowed to cancel, then this appears linear, but this sort of
@@ -1939,7 +1938,7 @@ def solve_linear(lhs, rhs=0, symbols=[], exclude=[]):
                 all_zero = False
                 if dn is S.NaN:
                     break
-                if not xi in dn.free_symbols:
+                if xi not in dn.free_symbols:
                     vi = -(nn.subs(xi, 0))/dn
                     if dens is None:
                         dens = _simple_dens(eq, symbols)
@@ -2340,7 +2339,7 @@ def det_perm(M):
         for j in perm:
             fac.append(list[idx + j])
             idx += n
-        term = Mul(*fac) # disaster with unevaluated Mul -- takes forever for n=7
+        term = Mul(*fac)  # disaster with unevaluated Mul -- takes forever for n=7
         args.append(term if s else -term)
         s = not s
     return Add(*args)
@@ -2391,9 +2390,11 @@ def inv_quick(M):
     from sympy.matrices import zeros
     if any(i.has(Symbol) for i in M):
         if all(i.has(Symbol) for i in M):
-            det = lambda _: det_perm(_)
+            def det(_):
+                return det_perm(_)
         else:
-            det = lambda _: det_minor(_)
+            def det(_):
+                return det_minor(_)
     else:
         return M.inv()
     n = M.rows

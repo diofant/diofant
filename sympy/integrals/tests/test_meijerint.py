@@ -12,7 +12,6 @@ from sympy.utilities.pytest import slow
 from sympy.abc import x, y, a, b, c, d, s, t, z
 
 
-
 def test_rewrite_single():
     def t(expr, c, m):
         e = _rewrite_single(meijerg([a], [b], [c], [d], expr), x)
@@ -473,7 +472,8 @@ def test_probability():
     # inverse gaussian
     lamda, mu = symbols('lamda mu', positive=True)
     dist = sqrt(lamda/2/pi)*x**(-S(3)/2)*exp(-lamda*(x - mu)**2/x/2/mu**2)
-    mysimp = lambda expr: simplify(expr.rewrite(exp))
+    def mysimp(expr):
+        return simplify(expr.rewrite(exp))
     assert mysimp(integrate(dist, (x, 0, oo))) == 1
     assert mysimp(integrate(x*dist, (x, 0, oo))) == mu
     assert mysimp(integrate((x - mu)**2*dist, (x, 0, oo))) == mu**3/lamda

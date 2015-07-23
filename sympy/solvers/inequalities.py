@@ -463,7 +463,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 def _solve_inequality(ie, s):
     """ A hacky replacement for solve, since the latter only works for
         univariate inequalities. """
-    if not ie.rel_op in ('>', '>=', '<', '<='):
+    if ie.rel_op not in ('>', '>=', '<', '<='):
         raise NotImplementedError
     expr = ie.lhs - ie.rhs
     try:

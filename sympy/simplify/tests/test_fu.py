@@ -69,7 +69,8 @@ def test_TR3():
 
 
 def test__TR56():
-    h = lambda x: 1 - x
+    def h(x):
+        return 1 - x
     assert T(sin(x)**3, sin, cos, h, 4, False) == sin(x)**3
     assert T(sin(x)**10, sin, cos, h, 4, False) == sin(x)**10
     assert T(sin(x)**6, sin, cos, h, 6, False) == (-cos(x)**2 + 1)**3
@@ -177,13 +178,12 @@ def test_TR10i():
     assert TR10i(sqrt(2)*cos(x)*A + sqrt(6)*sin(x)*A) == \
         2*sqrt(2)*sin(x + pi/6)*A
 
-
     c = cos(x)
     s = sin(x)
     h = sin(y)
     r = cos(y)
     for si in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
-        for a in ((c*r, s*h), (c*h, s*r)): # explicit 2-args
+        for a in ((c*r, s*h), (c*h, s*r)):  # explicit 2-args
             args = zip(si, a)
             ex = Add(*[Mul(*ai) for ai in args])
             t = TR10i(ex)
@@ -194,7 +194,7 @@ def test_TR10i():
     h = sin(pi/6)
     r = cos(pi/6)
     for si in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
-        for a in ((c*r, s*h), (c*h, s*r)): # induced
+        for a in ((c*r, s*h), (c*h, s*r)):  # induced
             args = zip(si, a)
             ex = Add(*[Mul(*ai) for ai in args])
             t = TR10i(ex)
@@ -242,10 +242,8 @@ def test_L():
 
 
 def test_fu():
-
     assert fu(sin(50)**2 + cos(50)**2 + sin(pi/6)) == S(3)/2
     assert fu(sqrt(6)*cos(x) + sqrt(2)*sin(x)) == 2*sqrt(2)*sin(x + pi/3)
-
 
     eq = sin(x)**4 - cos(y)**2 + sin(y)**2 + 2*cos(x)**2
     assert fu(eq) == cos(x)**4 - 2*cos(y)**2 + 2
@@ -283,7 +281,8 @@ def test_objective():
 def test_process_common_addends():
     # this tests that the args are not evaluated as they are given to do
     # and that key2 works when key1 is False
-    do = lambda x: Add(*[i**(i%2) for i in x.args])
+    def do(x):
+        return Add(*[i**(i%2) for i in x.args])
     process_common_addends(Add(*[1, 2, 3, 4], evaluate=False), do,
         key2=lambda x: x%2, key1=False) == 1**1 + 3**1 + 2**0 + 4**0
 

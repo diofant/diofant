@@ -289,7 +289,7 @@ def is_sequence(i, include=None):
 
 try:
     from itertools import zip_longest
-except ImportError: # <= Python 2.7
+except ImportError:  # <= Python 2.7
     from itertools import izip_longest as zip_longest
 
 
@@ -307,7 +307,7 @@ def as_int(n):
     >>> from sympy import sqrt
     >>> 3.0
     3.0
-    >>> as_int(3.0) # convert to int and test for equality
+    >>> as_int(3.0)  # convert to int and test for equality
     3
     >>> int(sqrt(10))
     3

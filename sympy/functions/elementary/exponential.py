@@ -343,8 +343,9 @@ class exp(ExpBase):
         elif old is S.Exp1 and new.is_Function:
             old = exp
         if old.func is exp or old is S.Exp1:
-            f = lambda a: Pow(*a.as_base_exp(), evaluate=False) if (
-                a.is_Pow or a.func is exp) else a
+            def f(a):
+                return Pow(*a.as_base_exp(), evaluate=False) \
+                    if (a.is_Pow or a.func is exp) else a
             return Pow._eval_subs(f(self), f(old), new)
 
         if old is exp and not new.is_Function:

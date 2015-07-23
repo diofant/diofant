@@ -10,7 +10,6 @@ class TypeG(Standard_Cartan):
             raise ValueError("n should be 2")
         return Standard_Cartan.__new__(cls, "G", 2)
 
-
     def dimension(self):
         """Dimension of the vector space V underlying the Lie algebra.
 

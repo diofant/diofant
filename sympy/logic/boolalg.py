@@ -827,7 +827,7 @@ class Equivalent(BooleanFunction):
 
         argset = set(args)
         for x in args:
-            if isinstance(x, Number) or x in [True, False]: # Includes 0, 1
+            if isinstance(x, Number) or x in [True, False]:  # Includes 0, 1
                 argset.discard(x)
                 argset.add(True if x else False)
         rel = []

@@ -393,7 +393,8 @@ def _issue_7853_dep_check(namespaces, namespace, expr):
             mat.__name__) == 'numpy.matrixlib.defmatrix.matrix'):
         return
     dicts = [m for m in namespaces if isinstance(m, dict)]
-    test = lambda expr: hasattr(expr, 'is_Matrix') and expr.is_Matrix
+    def test(expr):
+        return hasattr(expr, 'is_Matrix') and expr.is_Matrix
     if test(expr) and not [d for d in dicts if 'ImmutableMatrix' in d]:
         SymPyDeprecationWarning(
                 "Currently, `sympy.Matrix` is replaced with `numpy.matrix` if "
@@ -461,9 +462,11 @@ def lambdastr(args, expr, printer=None, dummify=False):
             lambdarepr = printer
         else:
             if inspect.isclass(printer):
-                lambdarepr = lambda expr: printer().doprint(expr)
+                def lambdarepr(expr):
+                    return printer().doprint(expr)
             else:
-                lambdarepr = lambda expr: printer.doprint(expr)
+                def lambdarepr(expr):
+                    return printer.doprint(expr)
     else:
         #XXX: This has to be done here because of circular imports
         from sympy.printing.lambdarepr import lambdarepr

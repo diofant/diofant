@@ -245,7 +245,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         cls = type(a)
     if cls in sympy_classes:
         return a
-    if cls is type(None):
+    if isinstance(cls, type(None)):
         if strict:
             raise SympifyError(a)
         else:

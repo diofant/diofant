@@ -72,7 +72,6 @@ class RootSystem(Basic):
             roots[i] = root
         return roots
 
-
     def all_roots(self):
         """Generate all the roots of a given root system.
 
@@ -170,7 +169,6 @@ class RootSystem(Basic):
             return newroot
         else:
             return "The sum of these two roots is not a root"
-
 
     def cartan_matrix(self):
         """Cartan matrix of Lie algebra associated with this root system.

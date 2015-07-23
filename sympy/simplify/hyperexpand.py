@@ -558,7 +558,7 @@ class Hyper_Function(Expr):
         diff = 0
         for bucket, obucket in [(abuckets, oabuckets), (bbuckets, obbuckets)]:
             for mod in set(list(bucket.keys()) + list(obucket.keys())):
-                if (not mod in bucket) or (not mod in obucket) \
+                if (mod not in bucket) or (mod not in obucket) \
                         or len(bucket[mod]) != len(obucket[mod]):
                     return -1
                 l1 = list(bucket[mod])
@@ -760,7 +760,7 @@ class Formula(object):
                 for params in [self.func.ap, self.func.bq]]
             for bucket, obucket in [(abuckets, symb_a), (bbuckets, symb_b)]:
                 for mod in set(list(bucket.keys()) + list(obucket.keys())):
-                    if (not mod in bucket) or (not mod in obucket) \
+                    if (mod not in bucket) or (mod not in obucket) \
                             or len(bucket[mod]) != len(obucket[mod]):
                         break
                     for a, vals in zip(self.symbols, critical_values):
@@ -784,8 +784,6 @@ class Formula(object):
                     values.append([a0 + n for n in range(min_, max_ + 1)])
                 result.extend(dict(list(zip(self.symbols, l))) for l in product(*values))
         return result
-
-
 
 
 class FormulaCollection(object):
@@ -835,7 +833,7 @@ class FormulaCollection(object):
             return self.concrete_formulae[sizes][inv]
 
         # We don't have a concrete formula. Try to instantiate.
-        if not sizes in self.symbolic_formulae:
+        if sizes not in self.symbolic_formulae:
             return None  # Too bad...
 
         possible = []
@@ -917,7 +915,7 @@ class MeijerFormulaCollection(object):
 
     def lookup_origin(self, func):
         """ Try to find a formula that matches func. """
-        if not func.signature in self.formulae:
+        if func.signature not in self.formulae:
             return None
         for formula in self.formulae[func.signature]:
             res = formula.try_instantiate(func)
@@ -1738,7 +1736,7 @@ def try_lerchphi(func):
 
     paired = {}
     for key, value in abuckets.items():
-        if key != 0 and not key in bbuckets:
+        if key != 0 and key not in bbuckets:
             return None
         bvalue = bbuckets[key]
         paired[key] = (list(value), list(bvalue))

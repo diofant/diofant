@@ -868,7 +868,7 @@ def test_M7():
         1 - sqrt(-6 - 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 + sqrt(-6 - 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 + 2*I*sqrt(3 + 4*sqrt(3)))/2,
-        1 + sqrt(-6 + 2*I*sqrt(3 + 4*sqrt (3)))/2,
+        1 + sqrt(-6 + 2*I*sqrt(3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 + 2*sqrt(-3 + 4*sqrt(3)))/2,
         1 + sqrt(-6 + 2*sqrt(-3 + 4*sqrt(3)))/2,
         1 - sqrt(-6 - 2*sqrt(-3 + 4*sqrt(3)))/2,
@@ -1181,7 +1181,7 @@ def test_N12():
 def test_N13():
     # raises NotImplementedError: can't reduce [sin(x) < 2]
     x = Symbol('x', extended_real=True)
-    assert solve(sin(x) < 2) == [] # S.Reals not found
+    assert solve(sin(x) < 2) == []  # S.Reals not found
 
 
 @XFAIL
@@ -1290,15 +1290,15 @@ def test_P5():
     M = Matrix([[7, 11],
                 [3, 8]])
     # Raises exception % not supported for matrices
-    assert  M % 2 == Matrix([[1, 1],
-                             [1, 0]])
+    assert M % 2 == Matrix([[1, 1],
+                            [1, 0]])
 
 
 def test_P5_workaround():
     M = Matrix([[7, 11],
                 [3, 8]])
-    assert  M.applyfunc(lambda i: i % 2) == Matrix([[1, 1],
-                                                    [1, 0]])
+    assert M.applyfunc(lambda i: i % 2) == Matrix([[1, 1],
+                                                   [1, 0]])
 
 
 def test_P6():
@@ -1704,7 +1704,7 @@ def test_P43():
 def test_P44():
     def __my_hessian(f, Y):
         V = Matrix([diff(f, v) for v in Y])
-        return  Matrix([V.T.diff(v) for v in Y])
+        return Matrix([V.T.diff(v) for v in Y])
     r, t = symbols('r t', extended_real=True)
     assert __my_hessian(r**2*sin(t), (r, t)) == Matrix([
                                             [  2*sin(t),   2*r*cos(t)],
@@ -1714,7 +1714,7 @@ def test_P44():
 def test_P45():
     def __my_wronskian(Y, v):
         M = Matrix([Matrix(Y).T.diff(x, n) for n in range(0, len(Y))])
-        return  M.det()
+        return M.det()
     assert __my_wronskian([cos(x), sin(x)], x).simplify() == 1
 
 # Q1-Q6  Tensor tests missing
@@ -1804,7 +1804,7 @@ def test_R7():
 def test_R8():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(k**2*binomial(n, k), (k, 1, n))
-    T = Sm.doit() #returns Piecewise function
+    T = Sm.doit()  # returns Piecewise function
     # T.simplify() raisesAttributeError
     assert T.combsimp() == n*(n + 1)*2**(n - 2)
 
@@ -2039,8 +2039,8 @@ def test_T4():
 
 @slow
 def test_T5():
-    assert  limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
-                  + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
+    assert limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
+                 + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
 
 
 def test_T6():

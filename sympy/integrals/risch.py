@@ -1057,7 +1057,7 @@ def laurent_series(a, d, F, n, DE):
         V.append(v)
         DE_D_list.append(Poly(Z[j + 1],Z[j]))
 
-    DE_new = DifferentialExtension(extension = {'D': DE_D_list}) #a differential indeterminate
+    DE_new = DifferentialExtension(extension = {'D': DE_D_list})  # a differential indeterminate
     for j in range(0, n):
         zEha = Poly(z**(n + j), DE.t)*E**(j + 1)*ha
         zEhd = hd

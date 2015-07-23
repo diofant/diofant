@@ -158,7 +158,7 @@ class Subset(Basic):
             else:
                 indices.remove(i)
                 i = i - 1
-                while not i in indices and i >= 0:
+                while i not in indices and i >= 0:
                     i = i - 1
                 if i >= 0:
                     indices.remove(i)

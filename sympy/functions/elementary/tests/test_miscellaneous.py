@@ -242,7 +242,6 @@ def test_rewrite_MaxMin_as_Heaviside():
         2*x*Heaviside(2*x)*Heaviside(x - 2) + \
         (x + 2)*Heaviside(-x + 2)*Heaviside(x + 2)
 
-
     assert Min(0, x).rewrite(Heaviside) == x*Heaviside(-x)
     assert Min(3, x).rewrite(Heaviside) == x*Heaviside(-x + 3) + \
         3*Heaviside(x - 3)

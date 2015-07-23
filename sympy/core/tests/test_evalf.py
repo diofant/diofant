@@ -148,7 +148,8 @@ def test_evalf_trig():
 
 def test_evalf_near_integers():
     # Binet's formula
-    f = lambda n: ((1 + sqrt(5))**n)/(2**n * sqrt(5))
+    def f(n):
+        return ((1 + sqrt(5))**n)/(2**n * sqrt(5))
     assert NS(f(5000) - fibonacci(5000), 10, maxn=1500) == '5.156009964e-1046'
     # Some near-integer identities from
     # http://mathworld.wolfram.com/AlmostInteger.html

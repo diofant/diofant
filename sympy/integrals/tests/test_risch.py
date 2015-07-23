@@ -638,7 +638,6 @@ def test_risch_integrate():
     (x**4*exp(x**2) + 2*x**2*exp(x**2) + exp(x**2)), x) == \
         NonElementaryIntegral(exp(-x**2), x) + exp(x**2)/(1 + x**2)
 
-
     assert risch_integrate(0, x) == 0
 
     # These are tested here in addition to in test_DifferentialExtension above

@@ -37,8 +37,8 @@ def _a(n, j, prec):
 
 
 def _d(n, j, prec, sq23pi, sqrt8):
-    """
-    Compute the sinh term in the outer sum of the HRR formula.
+    """Compute the sinh term in the outer sum of the HRR formula.
+
     The constants sqrt(2/3*pi) and sqrt(8) must be precomputed.
     """
     j = from_int(j)
@@ -53,12 +53,10 @@ def _d(n, j, prec, sq23pi, sqrt8):
 
 
 def npartitions(n, verbose=False):
-    """
-    Calculate the partition function P(n), i.e. the number of ways that
+    """Calculate the partition function P(n), i.e. the number of ways that
     n can be written as a sum of positive integers.
 
-    P(n) is computed using the Hardy-Ramanujan-Rademacher formula,
-    described e.g. at http://mathworld.wolfram.com/PartitionFunctionP.html
+    P(n) is computed using the Hardy-Ramanujan-Rademacher formula [1]_.
 
     The correctness of this implementation has been tested for 10**n
     up to n = 8.
@@ -69,6 +67,11 @@ def npartitions(n, verbose=False):
     >>> from sympy.ntheory import npartitions
     >>> npartitions(25)
     1958
+
+    References
+    ==========
+
+    .. [1] http://mathworld.wolfram.com/PartitionFunctionP.html
     """
     n = int(n)
     if n < 0:

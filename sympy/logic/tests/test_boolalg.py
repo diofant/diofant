@@ -553,9 +553,9 @@ def test_true_false():
         if not (T is True and F is False):
             assert T & F is false
             assert F & T is false
-        if not F is False:
+        if F is not False:
             assert F & F is false
-        if not T is True:
+        if T is not True:
             assert T & T is true
 
         assert Or(T, F) is true
@@ -567,9 +567,9 @@ def test_true_false():
         if not (T is True and F is False):
             assert T | F is true
             assert F | T is true
-        if not F is False:
+        if F is not False:
             assert F | F is false
-        if not T is True:
+        if T is not True:
             assert T | T is true
 
         assert Xor(T, F) is true
@@ -581,9 +581,9 @@ def test_true_false():
         if not (T is True and F is False):
             assert T ^ F is true
             assert F ^ T is true
-        if not F is False:
+        if F is not False:
             assert F ^ F is false
-        if not T is True:
+        if T is not True:
             assert T ^ T is false
 
         assert Nand(T, F) is true
@@ -613,10 +613,10 @@ def test_true_false():
             assert F << T is false
             assert F >> T is true
             assert T << F is true
-        if not F is False:
+        if F is not False:
             assert F >> F is true
             assert F << F is true
-        if not T is True:
+        if T is not True:
             assert T >> T is true
             assert T << T is true
 

@@ -398,7 +398,7 @@ class Range(Set):
             ((self.stop - other)/self.step).is_integer):
             return _sympify(other >= self.inf and other <= self.sup)
         elif (((self.start - other)/self.step).is_integer is False and
-            ((self.stop - other)/self.step).is_integer is False):
+              ((self.stop - other)/self.step).is_integer is False):
             return S.false
 
     def __iter__(self):

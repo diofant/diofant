@@ -990,7 +990,7 @@ def test_col_row_op():
 
 
 def test_zip_row_op():
-    for cls in classes[:2]: # XXX: immutable matrices don't support row ops
+    for cls in classes[:2]:  # XXX: immutable matrices don't support row ops
         M = cls.eye(3)
         M.zip_row_op(1, 0, lambda v, u: v + 2*u)
         assert M == cls([[1, 0, 0],
@@ -999,7 +999,7 @@ def test_zip_row_op():
 
         M = cls.eye(3)*2
         M[0, 1] = -1
-        M.zip_row_op(1, 0, lambda v, u: v + 2*u); M
+        M.zip_row_op(1, 0, lambda v, u: v + 2*u)
         assert M == cls([[2, -1, 0],
                          [4,  0, 0],
                          [0,  0, 2]])
@@ -1541,8 +1541,8 @@ def test_jordan_form_complex_issue_9274():
                 [-4,  2,  0,  1],
                 [ 0,  0,  2,  4],
                 [ 0,  0, -4,  2]])
-    p = 2 - 4*I;
-    q = 2 + 4*I;
+    p = 2 - 4*I
+    q = 2 + 4*I
     Jmust1 = Matrix([[p, 1, 0, 0],
                      [0, p, 0, 0],
                      [0, 0, q, 1],
@@ -2011,10 +2011,10 @@ def test_is_zero():
     assert Matrix([[0, 0], [0, 0]]).is_zero
     assert zeros(3, 4).is_zero
     assert not eye(3).is_zero
-    assert Matrix([[x, 0], [0, 0]]).is_zero == None
-    assert SparseMatrix([[x, 0], [0, 0]]).is_zero == None
-    assert ImmutableMatrix([[x, 0], [0, 0]]).is_zero == None
-    assert ImmutableSparseMatrix([[x, 0], [0, 0]]).is_zero == None
+    assert Matrix([[x, 0], [0, 0]]).is_zero is None
+    assert SparseMatrix([[x, 0], [0, 0]]).is_zero is None
+    assert ImmutableMatrix([[x, 0], [0, 0]]).is_zero is None
+    assert ImmutableSparseMatrix([[x, 0], [0, 0]]).is_zero is None
     assert Matrix([[x, 1], [0, 0]]).is_zero == False
     a = Symbol('a', nonzero=True)
     assert Matrix([[a, 0], [0, 0]]).is_zero == False

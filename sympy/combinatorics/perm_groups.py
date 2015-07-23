@@ -61,7 +61,7 @@ class PermutationGroup(Basic):
     >>> P = Polyhedron(list('ABC'), pgroup=G)
     >>> P.corners
     (A, B, C)
-    >>> P.rotate(0) # apply permutation 0
+    >>> P.rotate(0)  # apply permutation 0
     >>> P.corners
     (A, C, B)
     >>> P.reset()
@@ -517,7 +517,7 @@ class PermutationGroup(Basic):
             while len(_orbit(degree, T, base[pos])) != size:
                 gamma = next(iter(Gamma))
                 x = transversals[pos][gamma]
-                temp = x._array_form.index(base[pos + 1]) # (~x)(base[pos + 1])
+                temp = x._array_form.index(base[pos + 1])  # (~x)(base[pos + 1])
                 if temp not in basic_orbits[pos + 1]:
                     Gamma = Gamma - _orbit(degree, T, gamma)
                 else:
@@ -765,7 +765,8 @@ class PermutationGroup(Basic):
                 rep = orbit_reps[j]
                 transversals[j] = dict(
                     other.orbit_transversal(rep, pairs=True))
-            trivial_test = lambda x: True
+            def trivial_test(x):
+                return True
             tests = [None]*base_len
             for l in range(base_len):
                 if base[l] in orbit_reps:
@@ -1114,7 +1115,7 @@ class PermutationGroup(Basic):
                 for k in rng:
                     c[p2[p1[k]]] = p1[p2[k]]
                 ct = tuple(c)
-                if not ct in set_commutators:
+                if ct not in set_commutators:
                     set_commutators.add(ct)
         cms = [_af_new(p) for p in set_commutators]
         G2 = self.normal_closure(cms)
@@ -1345,7 +1346,7 @@ class PermutationGroup(Basic):
         >>> a = Permutation(1, 2)
         >>> b = Permutation(2, 3, 1)
         >>> G = PermutationGroup(a, b, degree=5)
-        >>> G.contains(G[0]) # trivial check
+        >>> G.contains(G[0])  # trivial check
         True
         >>> elem = Permutation([[2, 3]], size=5)
         >>> G.contains(elem)
@@ -2103,7 +2104,7 @@ class PermutationGroup(Basic):
         a = []
         while k != -1:
             a.append(gens[k])
-            beta = gens[k].index(beta) # beta = (~gens[k])(beta)
+            beta = gens[k].index(beta)  # beta = (~gens[k])(beta)
             k = schreier_vector[beta]
         if a:
             return _af_new(_af_rmuln(*a))
@@ -2197,7 +2198,7 @@ class PermutationGroup(Basic):
 
         degree
         """
-        if self._order != None:
+        if self._order is not None:
             return self._order
         if self._is_sym:
             n = self._degree
@@ -2614,7 +2615,7 @@ class PermutationGroup(Basic):
         >>> from sympy.combinatorics.named_groups import SymmetricGroup
         >>> S = SymmetricGroup(5)
         >>> base, strong_gens = S.schreier_sims_random(consec_succ=5)
-        >>> _verify_bsgs(S, base, strong_gens) #doctest: +SKIP
+        >>> _verify_bsgs(S, base, strong_gens)  # doctest: +SKIP
         True
 
         Notes
@@ -2923,7 +2924,8 @@ class PermutationGroup(Basic):
         if init_subgroup is None:
             init_subgroup = PermutationGroup([identity])
         if tests is None:
-            trivial_test = lambda x: True
+            def trivial_test(x):
+                return True
             tests = []
             for i in range(base_len):
                 tests.append(trivial_test)

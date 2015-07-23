@@ -127,7 +127,8 @@ def _gcd_interpolate(h, x, ring):
     if ring.ngens == 1:
         while h:
             g = h % x
-            if g > x // 2: g -= x
+            if g > x // 2:
+                g -= x
             h = (h - g) // x
 
             # f += X**i*g
@@ -148,4 +149,4 @@ def _gcd_interpolate(h, x, ring):
     if f.LC < 0:
         return -f
     else:
-        return  f
+        return f

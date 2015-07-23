@@ -9,7 +9,6 @@ class TypeC(Standard_Cartan):
             raise ValueError("n can not be less than 3")
         return Standard_Cartan.__new__(cls, "C", n)
 
-
     def dimension(self):
         """Dimension of the vector space V underlying the Lie algebra.
 
@@ -68,7 +67,6 @@ class TypeC(Standard_Cartan):
             root = [0]*self.n
             root[n-1] = 2
             return root
-
 
     def positive_roots(self):
         """Generates all the positive roots of A_n.
@@ -147,7 +145,6 @@ class TypeC(Standard_Cartan):
         m[0,1] = -1
         m[n-1, n-2] = -2
         return m
-
 
     def basis(self):
         """

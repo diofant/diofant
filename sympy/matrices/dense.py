@@ -1565,9 +1565,11 @@ def casoratian(seqs, n, zero=True):
     seqs = list(map(sympify, seqs))
 
     if not zero:
-        f = lambda i, j: seqs[j].subs(n, n + i)
+        def f(i, j):
+            return seqs[j].subs(n, n + i)
     else:
-        f = lambda i, j: seqs[j].subs(n, i)
+        def f(i, j):
+            return seqs[j].subs(n, i)
 
     k = len(seqs)
 

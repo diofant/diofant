@@ -53,13 +53,12 @@ def n_order(a, n):
     return order
 
 def _primitive_root_prime_iter(p):
-    """
-    Generates the primitive roots for a prime ``p``
+    """Generates the primitive roots for a prime ``p``
 
     References
     ==========
 
-    [1] W. Stein "Elementary Number Theory" (2011), page 44
+    .. [1] W. Stein "Elementary Number Theory" (2011), page 44
 
     Examples
     ========
@@ -80,14 +79,13 @@ def _primitive_root_prime_iter(p):
         a += 1
 
 def primitive_root(p):
-    """
-    Returns the smallest primitive root or None
+    """Returns the smallest primitive root or None.
 
     References
     ==========
 
-    [1] W. Stein "Elementary Number Theory" (2011), page 44
-    [2] P. Hackman "Elementary Number Theory" (2009),  Chapter C
+    .. [1] W. Stein "Elementary Number Theory" (2011), page 44
+    .. [2] P. Hackman "Elementary Number Theory" (2009),  Chapter C
 
     Parameters
     ==========
@@ -144,11 +142,10 @@ def primitive_root(p):
     return next(_primitive_root_prime_iter(p))
 
 def is_primitive_root(a, p):
-    """
-    Returns True if ``a`` is a primitive root of ``p``
+    """Returns True if ``a`` is a primitive root of ``p``
 
     ``a`` is said to be the primitive root of ``p`` if gcd(a, p) == 1 and
-    totient(p) is the smallest positive number s.t.
+    totient(p) is the smallest positive number s.t.::
 
         a**totient(p) cong 1 mod(p)
 
@@ -164,7 +161,6 @@ def is_primitive_root(a, p):
     True
     >>> n_order(9, 10) == totient(10)
     False
-
     """
     a, p = as_int(a), as_int(p)
     if igcd(a, p) != 1:
@@ -174,13 +170,12 @@ def is_primitive_root(a, p):
     return n_order(a, p) == totient(p)
 
 def _sqrt_mod_tonelli_shanks(a, p):
-    """
-    Returns the square root in the case of ``p`` prime with ``p == 1 (mod 8)``
+    """Returns the square root in the case of ``p`` prime with ``p == 1 (mod 8)``
 
     References
     ==========
 
-    R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
+    .. [1] R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
     """
     s = trailing(p - 1)
     t = p >> s
@@ -204,8 +199,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
     return x
 
 def sqrt_mod(a, p, all_roots=False):
-    """
-    find a root of ``x**2 = a mod p``
+    """Find a root of ``x**2 = a mod p``.
 
     Parameters
     ==========
@@ -255,17 +249,13 @@ def sqrt_mod(a, p, all_roots=False):
         return None
 
 def _product(*iters):
-    """
-    cartesian product generator
+    """Cartesian product generator.
 
     Notes
     =====
 
     Unlike itertools.product, it works also with iterables which do not fit
-    in memory. See http://bugs.python.org/issue10109
-
-    Author: Fernando Sumudu
-    with small changes
+    in memory.  See http://bugs.python.org/issue10109.
     """
     import itertools
     inf_iters = tuple(itertools.cycle(enumerate(it)) for it in iters)
@@ -289,8 +279,7 @@ def _product(*iters):
 
 
 def sqrt_mod_iter(a, p, domain=int):
-    """
-    iterate over solutions to ``x**2 = a mod p``
+    """Iterate over solutions to ``x**2 = a mod p``.
 
     Parameters
     ==========
@@ -349,8 +338,7 @@ def sqrt_mod_iter(a, p, domain=int):
 
 
 def _sqrt_mod_prime_power(a, p, k):
-    """
-    find the solutions to ``x**2 = a mod p**k`` when ``a % p != 0``
+    """Find the solutions to ``x**2 = a mod p**k`` when ``a % p != 0``.
 
     Parameters
     ==========
@@ -362,9 +350,9 @@ def _sqrt_mod_prime_power(a, p, k):
     References
     ==========
 
-    [1] P. Hackman "Elementary Number Theory" (2009),  page 160
-    [2] http://www.numbertheory.org/php/squareroot.html
-    [3] [Gathen99]_
+    .. [1] P. Hackman "Elementary Number Theory" (2009),  page 160
+    .. [2] http://www.numbertheory.org/php/squareroot.html
+    .. [3] [Gathen99]_
 
     Examples
     ========
@@ -466,10 +454,12 @@ def _sqrt_mod_prime_power(a, p, k):
         return [r, px - r]
 
 def _sqrt_mod1(a, p, n):
-    """
-    find solution to ``x**2 == a mod p**n`` when ``a % p == 0``
+    """Find solution to ``x**2 == a mod p**n`` when ``a % p == 0``
 
-    see http://www.numbertheory.org/php/squareroot.html
+    References
+    ==========
+
+    .. [1] http://www.numbertheory.org/php/squareroot.html
     """
     pn = p**n
     a = a % pn
@@ -607,13 +597,12 @@ def is_quad_residue(a, p):
 
 
 def is_nthpow_residue(a, n, m):
-    """
-    Returns True if ``x**n == a (mod m)`` has solutions.
+    """Returns True if ``x**n == a (mod m)`` has solutions.
 
     References
     ==========
 
-    P. Hackman "Elementary Number Theory" (2009),  page 76
+    .. [1] P. Hackman "Elementary Number Theory" (2009),  page 76
     """
     if n == 1:
         return True
@@ -633,13 +622,12 @@ def _nthroot_mod2(s, q, p):
     return s
 
 def _nthroot_mod1(s, q, p, all_roots):
-    """
-    Root of ``x**q = s mod p``, ``p`` prime and ``q`` divides ``p - 1``
+    """Root of ``x**q = s mod p``, ``p`` prime and ``q`` divides ``p - 1``.
 
     References
     ==========
 
-    [1] A. M. Johnston "A Generalized qth Root Algorithm"
+    .. [1] A. M. Johnston "A Generalized qth Root Algorithm"
     """
     g = primitive_root(p)
     if not isprime(q):
@@ -687,8 +675,7 @@ def _nthroot_mod1(s, q, p, all_roots):
     return min(res)
 
 def nthroot_mod(a, n, p, all_roots=False):
-    """
-    find the solutions to ``x**n = a mod p``
+    """Find the solutions to ``x**n = a mod p``.
 
     Parameters
     ==========
@@ -750,8 +737,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     return res
 
 def quadratic_residues(p):
-    """
-    Returns the list of quadratic residues.
+    """Returns the list of quadratic residues.
 
     Examples
     ========
@@ -767,7 +753,8 @@ def quadratic_residues(p):
 
 
 def legendre_symbol(a, p):
-    """
+    """Legendre symbol function [1]_.
+
     Returns
     =======
 
@@ -791,6 +778,10 @@ def legendre_symbol(a, p):
 
     is_quad_residue, jacobi_symbol
 
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Legendre_symbol
     """
     a, p = as_int(a), as_int(p)
     if not isprime(p) or p == 2:
@@ -804,8 +795,7 @@ def legendre_symbol(a, p):
 
 
 def jacobi_symbol(m, n):
-    """
-    Returns the product of the legendre_symbol(m, p)
+    """Returns the product of the legendre_symbol(m, p)
     for all the prime factors, p, of n.
 
     Returns
@@ -869,8 +859,7 @@ def jacobi_symbol(m, n):
 
 
 class mobius(Function):
-    """
-    Möbius function maps natural number to {-1, 0, 1}
+    """Möbius function maps natural number to {-1, 0, 1}
 
     It is defined as follows:
         1) `1` if `n = 1`.
@@ -906,7 +895,6 @@ class mobius(Function):
 
     .. [1] http://en.wikipedia.org/wiki/M%C3%B6bius_function
     .. [2] Thomas Koshy "Elementary Number Theory with Applications"
-
     """
     @classmethod
     def eval(cls, n):

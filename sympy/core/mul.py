@@ -174,7 +174,7 @@ class Mul(Expr, AssocOp):
             a, b = seq
             if b.is_Rational:
                 a, b = b, a
-            assert not a is S.One
+            assert a is not S.One
             if not a.is_zero and a.is_Rational:
                 r, b = b.as_coeff_Mul()
                 if b.is_Add:
@@ -962,12 +962,14 @@ class Mul(Expr, AssocOp):
     def _eval_is_algebraic_expr(self, syms):
         return all(term._eval_is_algebraic_expr(syms) for term in self.args)
 
-    _eval_is_finite = lambda self: _fuzzy_group(
-        a.is_finite for a in self.args)
-    _eval_is_commutative = lambda self: _fuzzy_group(
-        a.is_commutative for a in self.args)
-    _eval_is_complex = lambda self: _fuzzy_group(
-        (a.is_complex for a in self.args), quick_exit=True)
+    def _eval_is_finite(self):
+        return _fuzzy_group(a.is_finite for a in self.args)
+
+    def _eval_is_commutative(self):
+        return _fuzzy_group(a.is_commutative for a in self.args)
+
+    def _eval_is_complex(self):
+        return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
 
     def _eval_is_infinite(self):
         if any(a.is_infinite for a in self.args):

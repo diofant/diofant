@@ -447,9 +447,8 @@ def _validate_backend_language(backend, language):
 
 @cacheit
 @doctest_depends_on(exe=('f2py', 'gfortran'), modules=('numpy',))
-def autowrap(
-    expr, language=None, backend='f2py', tempdir=None, args=None, flags=None,
-    verbose=False, helpers=None):
+def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
+             flags=None, verbose=False, helpers=None):
     """Generates python callable binaries based on the math expression.
 
     Parameters

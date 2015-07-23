@@ -30,7 +30,8 @@ def Rule(name, props=""):
     # GOTCHA: namedtuple class name not considered!
     def __eq__(self, other):
         return self.__class__ == other.__class__ and tuple.__eq__(self, other)
-    __neq__ = lambda self, other: not __eq__(self, other)
+    def __neq__(self, other):
+        return not __eq__(self, other)
     cls = namedtuple(name, props + " context symbol")
     cls.__eq__ = __eq__
     cls.__ne__ = __neq__
@@ -362,7 +363,6 @@ def _parts_rule(integrand, symbol):
     liate_rules = [pull_out_u(sympy.log), pull_out_u(sympy.atan, sympy.asin, sympy.acos),
                    pull_out_polys, pull_out_u(sympy.sin, sympy.cos),
                    pull_out_u(sympy.exp)]
-
 
     dummy = sympy.Dummy("temporary")
     # we can integrate log(x) and atan(x) by setting dv = 1

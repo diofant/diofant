@@ -128,48 +128,48 @@ def test_gruntz_hyperbolic():
 
 
 def test_compare():
-    assert compare(Integer(2), x, x) == "<"
-    assert compare(x, exp(x), x) == "<"
-    assert compare(exp(x), exp(x**2), x) == "<"
-    assert compare(exp(x**2), exp(exp(x)), x) == "<"
-    assert compare(Integer(1), exp(exp(x)), x) == "<"
+    assert compare(Integer(2), x, x) < 0
+    assert compare(x, exp(x), x) < 0
+    assert compare(exp(x), exp(x**2), x) < 0
+    assert compare(exp(x**2), exp(exp(x)), x) < 0
+    assert compare(Integer(1), exp(exp(x)), x) < 0
 
-    assert compare(x, Integer(2), x) == ">"
-    assert compare(exp(x), x, x) == ">"
-    assert compare(exp(x**2), exp(x), x) == ">"
-    assert compare(exp(exp(x)), exp(x**2), x) == ">"
-    assert compare(exp(exp(x)), Integer(1), x) == ">"
+    assert compare(x, Integer(2), x) > 0
+    assert compare(exp(x), x, x) > 0
+    assert compare(exp(x**2), exp(x), x) > 0
+    assert compare(exp(exp(x)), exp(x**2), x) > 0
+    assert compare(exp(exp(x)), Integer(1), x) > 0
 
-    assert compare(Integer(2), Integer(3), x) == "="
-    assert compare(Integer(3), Integer(-5), x) == "="
-    assert compare(Integer(2), Integer(-5), x) == "="
+    assert compare(Integer(2), Integer(3), x) == 0
+    assert compare(Integer(3), Integer(-5), x) == 0
+    assert compare(Integer(2), Integer(-5), x) == 0
 
-    assert compare(x, x**2, x) == "="
-    assert compare(x**2, x**3, x) == "="
-    assert compare(x**3, 1/x, x) == "="
-    assert compare(1/x, x**m, x) == "="
-    assert compare(x**m, -x, x) == "="
+    assert compare(x, x**2, x) == 0
+    assert compare(x**2, x**3, x) == 0
+    assert compare(x**3, 1/x, x) == 0
+    assert compare(1/x, x**m, x) == 0
+    assert compare(x**m, -x, x) == 0
 
-    assert compare(exp(x), exp(-x), x) == "="
-    assert compare(exp(-x), exp(2*x), x) == "="
-    assert compare(exp(2*x), exp(x)**2, x) == "="
-    assert compare(exp(x)**2, exp(x + exp(-x)), x) == "="
-    assert compare(exp(x), exp(x + exp(-x)), x) == "="
+    assert compare(exp(x), exp(-x), x) == 0
+    assert compare(exp(-x), exp(2*x), x) == 0
+    assert compare(exp(2*x), exp(x)**2, x) == 0
+    assert compare(exp(x)**2, exp(x + exp(-x)), x) == 0
+    assert compare(exp(x), exp(x + exp(-x)), x) == 0
 
-    assert compare(exp(x**2), 1/exp(x**2), x) == "="
+    assert compare(exp(x**2), 1/exp(x**2), x) == 0
 
-    assert compare(exp(x), x**5, x) == ">"
-    assert compare(exp(x**2), exp(x)**2, x) == ">"
-    assert compare(exp(x), exp(x + exp(-x)), x) == "="
-    assert compare(exp(x + exp(-x)), exp(x), x) == "="
-    assert compare(exp(x + exp(-x)), exp(-x), x) == "="
-    assert compare(exp(-x), x, x) == ">"
-    assert compare(x, exp(-x), x) == "<"
-    assert compare(exp(x + 1/x), x, x) == ">"
-    assert compare(exp(-exp(x)), exp(x), x) == ">"
-    assert compare(exp(exp(-exp(x)) + x), exp(-exp(x)), x) == "<"
+    assert compare(exp(x), x**5, x) > 0
+    assert compare(exp(x**2), exp(x)**2, x) > 0
+    assert compare(exp(x), exp(x + exp(-x)), x) == 0
+    assert compare(exp(x + exp(-x)), exp(x), x) == 0
+    assert compare(exp(x + exp(-x)), exp(-x), x) == 0
+    assert compare(exp(-x), x, x) > 0
+    assert compare(x, exp(-x), x) < 0
+    assert compare(exp(x + 1/x), x, x) > 0
+    assert compare(exp(-exp(x)), exp(x), x) > 0
+    assert compare(exp(exp(-exp(x)) + x), exp(-exp(x)), x) < 0
 
-    assert compare(exp(exp(x)), exp(x + exp(-exp(x))), x) == ">"
+    assert compare(exp(exp(x)), exp(x + exp(-exp(x))), x) > 0
 
 
 def test_sign():

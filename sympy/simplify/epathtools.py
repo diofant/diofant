@@ -220,7 +220,8 @@ class EPath(object):
                     return expr.__class__(args)
 
         _args, _kwargs = args or (), kwargs or {}
-        _func = lambda expr: func(expr, *_args, **_kwargs)
+        def _func(expr):
+            return func(expr, *_args, **_kwargs)
 
         return _apply(self._epath, expr, _func)
 

@@ -9,7 +9,7 @@ def test_null_safe():
     safe_rl = null_safe(rl)
     assert rl(1) == safe_rl(1)
 
-    assert      rl(3) == None
+    assert rl(3) == None
     assert safe_rl(3) == 3
 
 def posdec(x):
@@ -48,8 +48,10 @@ def test_do_one():
     rl = do_one(posdec, posdec)
     assert rl(5) == 4
 
-    rl1 = lambda x: 2 if x == 1 else x
-    rl2 = lambda x: 3 if x == 2 else x
+    def rl1(x):
+        return 2 if x == 1 else x
+    def rl2(x):
+        return 3 if x == 2 else x
 
     rule = do_one(rl1, rl2)
     assert rule(1) == 2
@@ -68,9 +70,12 @@ def test_debug():
     assert '4' in log
 
 def test_switch():
-    inc = lambda x: x + 1
-    dec = lambda x: x - 1
-    key = lambda x: x % 3
+    def inc(x):
+        return x + 1
+    def dec(x):
+        return x - 1
+    def key(x):
+        return x % 3
     rl = switch(key, {0: inc, 1: dec})
 
     assert rl(3) == 4
@@ -78,8 +83,10 @@ def test_switch():
     assert rl(5) == 5
 
 def test_minimize():
-    inc = lambda x: x + 1
-    dec = lambda x: x - 1
+    def inc(x):
+        return x + 1
+    def dec(x):
+        return x - 1
     rl = minimize(inc, dec)
     assert rl(4) == 3
 

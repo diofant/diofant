@@ -47,7 +47,8 @@ def test_str_args():
 
 
 def test_own_namespace():
-    myfunc = lambda x: 1
+    def myfunc(x):
+        return 1
     f = lambdify(x, sin(x), {"sin": myfunc})
     assert f(0.1) == 1
     assert f(100) == 1
@@ -168,7 +169,7 @@ def test_numexpr_printer():
     from sympy import S
 
     blacklist = ('where', 'complex', 'contains')
-    arg_tuple = (x, y, z) # some functions take more than one argument
+    arg_tuple = (x, y, z)  # some functions take more than one argument
     for sym in NumExprPrinter._numexpr_functions.keys():
         if sym in blacklist:
             continue

@@ -1080,7 +1080,6 @@ def test_inverses():
     assert acot(x).inverse() == cot
 
 
-
 def test_real_imag():
     a, b = symbols('a b', extended_real=True)
     z = a + b*I
@@ -1134,11 +1133,11 @@ def test_tancot_rewrite_sqrt():
             for i in range(1, (n + 1)//2 + 1):
                 if 1 == gcd(i, n):
                     x = i*pi/n
-                    if  2*i != n and 3*i != 2*n:
+                    if 2*i != n and 3*i != 2*n:
                         t1 = tan(x).rewrite(sqrt)
                         assert not t1.has(cot, tan), "fails for %d*pi/%d" % (i, n)
                         assert 1e-3 > abs( tan(x.evalf(7)) - t1.evalf(4) ), "fails for %d*pi/%d" % (i, n)
-                    if  i != 0 and i != n:
+                    if i != 0 and i != n:
                         c1 = cot(x).rewrite(sqrt)
                         assert not c1.has(cot, tan), "fails for %d*pi/%d" % (i, n)
                         assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), "fails for %d*pi/%d" % (i, n)
@@ -1184,7 +1183,7 @@ def test_sec():
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
 
     assert sec(x).is_extended_real == True
-    assert sec(z).is_extended_real == None
+    assert sec(z).is_extended_real is None
 
     assert sec(a).is_algebraic is None
     assert sec(na).is_algebraic is False
@@ -1192,7 +1191,7 @@ def test_sec():
     assert sec(x).as_leading_term() == sec(x)
 
     assert sec(0).is_finite == True
-    assert sec(x).is_finite == None
+    assert sec(x).is_finite is None
     assert sec(pi/2).is_finite == False
 
     assert series(sec(x), x, x0=0, n=6) == 1 + x**2/2 + 5*x**4/24 + O(x**6)
@@ -1259,7 +1258,7 @@ def test_csc():
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
 
     assert csc(x).is_extended_real == True
-    assert csc(z).is_extended_real == None
+    assert csc(z).is_extended_real is None
 
     assert csc(a).is_algebraic is None
     assert csc(na).is_algebraic is False
@@ -1267,7 +1266,7 @@ def test_csc():
     assert csc(x).as_leading_term() == csc(x)
 
     assert csc(0).is_finite == False
-    assert csc(x).is_finite == None
+    assert csc(x).is_finite is None
     assert csc(pi/2).is_finite == True
 
     assert series(csc(x), x, x0=pi/2, n=6) == \

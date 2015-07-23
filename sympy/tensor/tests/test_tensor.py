@@ -358,7 +358,6 @@ def test_riemann_invariants():
     # T_c = R^{d0 d1 d2 d3} * R_{d0 d1}^{d4 d5} * R_{d2 d3}^{d6 d7} *
     # R_{d4 d5}^{d8 d9} * R_{d6 d7}^{d10 d11} * R_{d8 d9 d10 d11}
 
-
     t = R(-d11,d1,-d0,d5)*R(d6,d4,d0,-d5)*R(-d7,-d2,-d8,-d9)* \
         R(-d10,-d3,-d6,-d4)*R(d2,d7,d11,-d1)*R(d8,d9,d3,d10)
     tc = t.canon_bp()
@@ -463,7 +462,7 @@ def test_TensorIndexType():
     i0, i1 = tensor_indices('i0 i1', TSpace)
     g = TSpace.metric
     A = tensorhead('A', [TSpace]*2, [[1]*2])
-    assert  str(A(i0,-i0).canon_bp()) == 'A(TSpace_0, -TSpace_0)'
+    assert str(A(i0,-i0).canon_bp()) == 'A(TSpace_0, -TSpace_0)'
 
 def test_indices():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
@@ -810,7 +809,7 @@ def test_contract_metric1():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)
     g = Lorentz.metric
-    raises(ValueError, lambda: g(a, -a).contract_metric(g)) # no dim
+    raises(ValueError, lambda: g(a, -a).contract_metric(g))  # no dim
 
 def test_contract_metric2():
     D = Symbol('D')

@@ -84,7 +84,7 @@ def test_basics():
     assert diff_test(Integral(x, (x, 3*y))) == {y}
     assert diff_test(Integral(x, (a, 3*y))) == {x, y}
 
-    assert integrate(x, (x, oo, oo)) == 0 #issue 8171
+    assert integrate(x, (x, oo, oo)) == 0  # issue 8171
     assert integrate(x, (x, -oo, -oo)) == 0
 
     # sum integral of terms
@@ -738,7 +738,7 @@ def test_is_zero():
     assert i.is_zero is None
     assert Integral(m, (x, 0), (m, 1, exp(x))).is_zero is True
 
-    assert Integral(x, (x, oo, oo)).is_zero # issue 8171
+    assert Integral(x, (x, oo, oo)).is_zero  # issue 8171
     assert Integral(x, (x, -oo, -oo)).is_zero
 
     # this is zero but is beyond the scope of what is_zero

@@ -16,7 +16,6 @@ def test_add():
     assert isinstance(x + x, Mul)
 
 
-
 def test_nested():
     with evaluate(False):
         expr = (x + x) + (y + y)

@@ -227,7 +227,7 @@ def test_pmint_trig():
 
     assert heurisch(f, x) == g
 
-@slow # 8 seconds on 3.4 GHz
+@slow  # 8 seconds on 3.4 GHz
 def test_pmint_logexp():
     f = (1 + x + x*exp(x))*(x + log(x) + exp(x) - 1)/(x + log(x) + exp(x))**2/x
     g = log(x**2 + 2*x*exp(x) + 2*x*log(x) + exp(2*x) + 2*exp(x)*log(x) + log(x)**2)/2 + 1/(x + exp(x) + log(x))
@@ -237,7 +237,7 @@ def test_pmint_logexp():
 
     assert ratsimp(heurisch(f, x)) == g
 
-@slow # 8 seconds on 3.4 GHz
+@slow  # 8 seconds on 3.4 GHz
 def test_pmint_erf():
     f = exp(-x**2)*erf(x)/(erf(x)**3 - erf(x)**2 - erf(x) + 1)
     g = sqrt(pi)*log(erf(x) - 1)/8 - sqrt(pi)*log(erf(x) + 1)/8 - sqrt(pi)/(4*erf(x) - 4)
@@ -264,7 +264,7 @@ def test_pmint_besselj():
 
     assert heurisch(f, x) == g
 
-@slow # 110 seconds on 3.4 GHz
+@slow  # 110 seconds on 3.4 GHz
 def test_pmint_WrightOmega():
     if ON_TRAVIS:
         skip("Too slow for travis.")
