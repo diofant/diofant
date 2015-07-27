@@ -4,8 +4,7 @@ env:
   matrix:
   - SPLIT="1/2"
   - SPLIT="2/2"
-  - TEST_SLOW="true" SPLIT="1/2"
-  - TEST_SLOW="true" SPLIT="2/2"
+  - TEST_SLOW="true"
 python:
   - 2.7
   - 3.4
