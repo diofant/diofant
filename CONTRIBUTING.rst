@@ -1,6 +1,8 @@
 Guidelines for contributing
 ===========================
 
+.. _reporting-issues:
+
 Reporting issues
 ----------------
 
