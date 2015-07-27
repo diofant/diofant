@@ -8,6 +8,7 @@ env:
 python:
   - 2.7
   - 3.4
+  - "pypy3"
 matrix:
   include:
     - python: 2.7
@@ -44,12 +45,6 @@ matrix:
             - texlive-fonts-recommended
             - texlive-latex-extra
             - lmodern
-    - python: "pypy3"
-      env:
-        - SPLIT="1/2"
-    - python: "pypy3"
-      env:
-        - SPLIT="2/2"
 before_install:
   - if [[ "${TEST_EXTRA}" == "true" ]]; then
       pip install sphinx==1.2.2 numpydoc==0.5 sphinx_rtd_theme;
