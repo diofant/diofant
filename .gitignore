@@ -48,8 +48,8 @@ tox.ini
 .coverage
 covhtml/
 
-# Built doc files (cd doc; make html)
-doc/_build/
+# Built doc files (cd docs; make html)
+docs/_build/
 
 # Mac OS X Junk
 .DS_Store

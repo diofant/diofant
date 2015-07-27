@@ -10,6 +10,7 @@ Debian/Ubuntu (similarly for other distributions)::
 
 and do::
 
+    cd docs
     make html
 
 and to view it, do::
