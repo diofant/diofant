@@ -9,7 +9,7 @@ if theano:
     tt = theano.tensor
     xt, yt, zt = [tt.scalar(name, 'floatX') for name in 'xyz']
 else:
-    #bin/test will not execute any tests now
+    # py.test will not execute any tests now
     disabled = True
 
 import sympy

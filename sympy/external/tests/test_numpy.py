@@ -13,7 +13,7 @@ numpy = import_module('numpy')
 if numpy:
     array, matrix, ndarray = numpy.array, numpy.matrix, numpy.ndarray
 else:
-    #bin/test will not execute any tests now
+    # py.test will not execute any tests now
     disabled = True
 
 

@@ -9,7 +9,7 @@ from sympy.external import import_module
 
 scipy = import_module('scipy')
 if not scipy:
-    #bin/test will not execute any tests now
+    # py.test will not execute any tests now
     disabled = True
 
 from sympy import jn_zeros

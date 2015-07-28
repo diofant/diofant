@@ -16,7 +16,7 @@ ipython = import_module("IPython", min_module_version="0.11")
 readline = import_module("readline")
 
 if not ipython:
-    #bin/test will not execute any tests now
+    # py.test will not execute any tests now
     disabled = True
 
 

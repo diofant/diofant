@@ -50,9 +50,6 @@ All work should be submitted via `Pull Requests (PR)`_.
        $ ./setup.py test
        $ pep8
 
-   For more fine-grained running of tests or doctest, use ``bin/test``
-   or respectively ``bin/doctest``.
-
 License
 -------
 
