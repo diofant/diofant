@@ -1,4 +1,3 @@
-recursive-include data *
 recursive-include doc *
 recursive-include sympy/logic/benchmarks/input *
 prune doc/_build
