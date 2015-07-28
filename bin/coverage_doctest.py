@@ -3,7 +3,7 @@
 """
 Program to test that all methods/functions have at least one example
 doctest.  Also checks if docstrings are imported into Sphinx. For this to
-work, the Sphinx docs need to be built first.  Use "cd doc; make html" to
+work, the Sphinx docs need to be built first.  Use "cd docs; make html" to
 build the Sphinx docs.
 
 Usage:
@@ -270,7 +270,7 @@ def find_sphinx(name, mod_path, found={}):
 
     doc_path = mod_path.split('.')
     doc_path[-1] += '.html'
-    sphinx_path = os.path.join(sympy_top, 'doc', '_build', 'html', '_modules', *doc_path)
+    sphinx_path = os.path.join(sympy_top, 'docs', '_build', 'html', '_modules', *doc_path)
     if not os.path.exists(sphinx_path):
         return False
     with open(sphinx_path) as f:
@@ -585,7 +585,7 @@ if __name__ == "__main__":
     if args.sphinx and not os.path.exists(os.path.join(sympy_top, 'doc', '_build', 'html')):
         print("""
 Cannot check Sphinx coverage without a documentation build. To build the
-docs, run "cd doc; make html".  To skip checking Sphinx coverage, pass --no-sphinx.
+docs, run "cd docs; make html".  To skip checking Sphinx coverage, pass --no-sphinx.
 """)
         sys.exit(1)
 

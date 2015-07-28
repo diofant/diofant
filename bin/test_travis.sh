@@ -13,16 +13,16 @@ elif [[ "${TEST_EXTRA}" == "true" ]]; then
         py.test --duration=100 --cov sympy --doctest-modules \
             sympy/printing/tests/test_theanocode.py \
             sympy/external/tests/test_autowrap.py \
-            sympy/polys/ sympy/plotting/ doc \
-            --ignore doc/tutorial/gotchas.rst # XXX: workaround __future__ imports!
+            sympy/polys/ sympy/plotting/ docs \
+            --ignore docs/tutorial/gotchas.rst # XXX: workaround __future__ imports!
     else
         py.test --duration=100 --doctest-modules \
             sympy/printing/tests/test_theanocode.py \
             sympy/external/tests/test_autowrap.py \
-            sympy/polys/ sympy/plotting/ doc
+            sympy/polys/ sympy/plotting/ docs
     fi
-    make -C doc html-errors man latex
-    LATEXOPTIONS="-interaction=nonstopmode" make -C doc/_build/latex
+    make -C docs html-errors man latex
+    LATEXOPTIONS="-interaction=nonstopmode" make -C docs/_build/latex
     python examples/all.py -q
 elif [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
     py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" \

@@ -548,9 +548,11 @@ class Integral(AddWithLimits):
         those integrals are performed. All others are returned as Integral
         instances which can be resolved with doit() (provided they are integrable).
 
-        References:
-           [1] http://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
-           [2] http://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
+        References
+        ==========
+
+        .. [1] http://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
+        .. [2] http://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
 
         Examples
         ========

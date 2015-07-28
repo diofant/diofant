@@ -1108,14 +1108,13 @@ def _set_partitions(n):
     This routine was rewritten to use 0-based lists while trying to
     preserve the beauty and efficiency of the original algorithm.
 
-    Reference
-    =========
+    References
+    ==========
 
-    Nijenhuis, Albert and Wilf, Herbert. (1978) Combinatorial Algorithms,
-    2nd Ed, p 91, algorithm "nexequ". Available online from
-    http://www.math.upenn.edu/~wilf/website/CombAlgDownld.html (viewed
-    November 17, 2012).
-
+    .. [1] Nijenhuis, Albert and Wilf, Herbert. (1978) Combinatorial Algorithms,
+           2nd Ed, p 91, algorithm "nexequ". Available online from
+           http://www.math.upenn.edu/~wilf/website/CombAlgDownld.html (viewed
+           November 17, 2012).
     """
     p = [0]*n
     q = [0]*n
@@ -1365,9 +1364,15 @@ def partitions(n, m=None, k=None, size=False):
     >>> [(M, p.copy()) for M, p in partitions(6, k=2, size=True)]  # doctest: +SKIP
     [(3, {2: 3}), (4, {1: 2, 2: 2}), (5, {1: 4, 2: 1}), (6, {1: 6})]
 
-    Reference:
-        modified from Tim Peter's version to allow for k and m values:
-        code.activestate.com/recipes/218332-generator-for-integer-partitions/
+    References
+    ==========
+
+    .. [1] http://code.activestate.com/recipes/218332-generator-for-integer-partitions/
+
+    Notes
+    =====
+
+    Modified from Tim Peter's version [1]_ to allow for k and m values.
 
     See Also
     ========
@@ -1452,7 +1457,10 @@ def binary_partitions(n):
     powers of two. Each step reduces a 2**(k+1) to 2**k and
     2**k. Thus 16 is converted to 8 and 8.
 
-    Reference: TAOCP 4, section 7.2.1.5, problem 64
+    References
+    ==========
+
+    .. [1] TAOCP 4, section 7.2.1.5, problem 64
 
     Examples
     ========
@@ -1700,8 +1708,10 @@ def generate_involutions(n):
     a permutation that does not contain any cycles with
     a length that is greater than two.
 
-    Reference:
-    http://mathworld.wolfram.com/PermutationInvolution.html
+    References
+    ==========
+
+    .. [1] http://mathworld.wolfram.com/PermutationInvolution.html
 
     Examples
     ========
@@ -1813,10 +1823,12 @@ def generate_oriented_forest(n):
     also be described as a disjoint union of trees, which are graphs in which
     any two vertices are connected by exactly one simple path.
 
-    Reference:
-    [1] T. Beyer and S.M. Hedetniemi: constant time generation of \
-        rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
-    [2] http://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
+    References
+    ==========
+
+    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of \
+           rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
+    .. [2] http://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
 
     Examples
     ========

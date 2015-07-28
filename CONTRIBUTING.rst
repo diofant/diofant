@@ -1,6 +1,8 @@
 Guidelines for contributing
 ===========================
 
+.. _reporting-issues:
+
 Reporting issues
 ----------------
 
@@ -44,10 +46,9 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 6. Usually, it's good idea to be sure that all tests
    pass and you don't break anything, so please run::
+
        $ ./setup.py test
        $ pep8
-   For more fine-grained running of tests or doctest, use ``bin/test``
-   or respectively ``bin/doctest``.
 
 License
 -------

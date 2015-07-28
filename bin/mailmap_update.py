@@ -41,7 +41,7 @@ if LooseVersion(git_ver) < LooseVersion('1.8.4.2'):
     print(yellow("Please use a newer git version >= 1.8.4.2"))
 
 with open(os.path.realpath(os.path.join(__file__, os.path.pardir,
-                           os.path.pardir, "doc/aboutus.rst"))) as fd:
+                           os.path.pardir, "docs/aboutus.rst"))) as fd:
     AUTHORS = unicode(fd.read(), 'utf-8')
 
 authors = []
@@ -59,7 +59,7 @@ exit1 = False
 
 print(blue("""All people who contributed by sending at least a
 patch or more (in the order of the date of their first contribution) should
-appear in the doc/aboutus.rst (except those who explicitly didn't want to
+appear in the docs/aboutus.rst (except those who explicitly didn't want to
 be mentioned) with an entry like this:
 
 #. Jonh Smith: did this and that.
