@@ -461,7 +461,7 @@ def base_solution_linear(c, a, b, t=None):
 
     if c == 0:
         if t is not None:
-            return (b*t , -a*t)
+            return (b*t, -a*t)
         else:
             return (S.Zero, S.Zero)
     else:
@@ -1479,7 +1479,7 @@ def _find_DN(var, coeff):
 
     x, y = var[:2]
     X, Y = symbols("X, Y", integer=True)
-    A , B = _transformation_to_DN(var, coeff)
+    A, B = _transformation_to_DN(var, coeff)
 
     u = (A*Matrix([X, Y]) + B)[0]
     v = (A*Matrix([X, Y]) + B)[1]

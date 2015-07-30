@@ -754,7 +754,7 @@ class erfinv(Function):
     def fdiff(self, argindex =1):
         if argindex == 1:
             return sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
-        else :
+        else:
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):

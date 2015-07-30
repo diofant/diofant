@@ -625,7 +625,7 @@ def test_line3d():
     l1_1 = Line3D(p1, p1_1)
     assert Line3D.is_perpendicular(l1, l2) is False
     p = l1.arbitrary_point()
-    raises(NotImplementedError , lambda: l1.perpendicular_segment(p))
+    raises(NotImplementedError, lambda: l1.perpendicular_segment(p))
 
     # Parallelity
     assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),

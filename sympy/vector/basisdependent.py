@@ -276,7 +276,7 @@ class BasisDependentMul(BasisDependent, Mul):
         assumptions = {}
         assumptions['commutative'] = True
         obj._assumptions = StdFactKB(assumptions)
-        obj._components = {expr._base_instance : measure_number}
+        obj._components = {expr._base_instance: measure_number}
         obj._sys = expr._base_instance._sys
 
         return obj

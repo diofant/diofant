@@ -518,11 +518,11 @@ def pretty_symbol(symb_name):
 
     name, sups, subs = split_super_sub(symb_name)
 
-    def translate(s) :
+    def translate(s):
         gG = greek_unicode.get(s)
         if gG is not None:
             return gG
-        for key in sorted(modifier_dict.keys(), key=lambda k:len(k), reverse=True) :
+        for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
             if s.lower().endswith(key) and len(s)>len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s

@@ -606,7 +606,7 @@ def test_dsolve_options():
 def test_classify_ode():
     assert classify_ode(f(x).diff(x, 2), f(x)) == \
         ('nth_linear_constant_coeff_homogeneous', 'Liouville',
-            '2nd_power_series_ordinary' ,'Liouville_Integral')
+         '2nd_power_series_ordinary', 'Liouville_Integral')
     assert classify_ode(f(x), f(x)) == ()
     assert classify_ode(Eq(f(x).diff(x), 0), f(x)) == ('separable',
         '1st_linear', '1st_homogeneous_coeff_best',

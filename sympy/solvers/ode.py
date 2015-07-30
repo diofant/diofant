@@ -2513,7 +2513,7 @@ def _get_constant_subexpressions(expr, Cs):
             if expr.func == exp:
                 expr = expr.expand(mul=True)
             if expr.func in (Add, Mul):
-                d = sift(expr.args, lambda i : i.free_symbols.issubset(Cs))
+                d = sift(expr.args, lambda i: i.free_symbols.issubset(Cs))
                 if len(d[True]) > 1:
                     x = expr.func(*d[True])
                     if not x.is_number:
@@ -5917,7 +5917,7 @@ def lie_heuristic_chi(match, comp=False):
             chieq += Add(*[
                 Symbol("chi_" + str(power) + "_" + str(i - power))*x**power*y**(i - power)
                 for power in range(i + 1)])
-            cnum, cden = cancel(cpde.subs({chi : chieq}).doit()).as_numer_denom()
+            cnum, cden = cancel(cpde.subs({chi: chieq}).doit()).as_numer_denom()
             cnum = expand(cnum)
             if cnum.is_polynomial(x, y) and cnum.is_Add:
                 cpoly = Poly(cnum, x, y).as_dict()
@@ -6022,9 +6022,9 @@ def lie_heuristic_function_sum(match, comp=False):
                     if etaval.is_Mul:
                         etaval = Mul(*[arg for arg in etaval.args if arg.has(x, y)])
                     if odefac == hinv:  # Inverse ODE
-                        inf = {eta: etaval.subs(y, func), xi : S(0)}
+                        inf = {eta: etaval.subs(y, func), xi: S(0)}
                     else:
-                        inf = {xi: etaval.subs(y, func), eta : S(0)}
+                        inf = {xi: etaval.subs(y, func), eta: S(0)}
                     if not comp:
                         return [inf]
                     else:

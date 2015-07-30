@@ -698,7 +698,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     """
     from sympy.core.numbers import igcdex
     if n == 2:
-        return sqrt_mod(a, p , all_roots)
+        return sqrt_mod(a, p, all_roots)
     f = totient(p)
     # see Hackman "Elementary Number Theory" (2009), page 76
     if pow(a, f // igcd(f, n), p) != 1:
@@ -731,7 +731,7 @@ def nthroot_mod(a, n, p, all_roots=False):
         else:
             res = a
     elif pa == 2:
-        return sqrt_mod(a, p , all_roots)
+        return sqrt_mod(a, p, all_roots)
     else:
         res = _nthroot_mod1(a, pa, p, all_roots)
     return res

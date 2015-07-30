@@ -249,7 +249,7 @@ def test_AppliedUndef():
     assert ft.name == 'f_t'
 
 def test_bad_keyword_args_raise_error():
-    raises(Exception, lambda : theano_function([x], [x+1], foobar=3))
+    raises(Exception, lambda: theano_function([x], [x+1], foobar=3))
 
 def test_cache():
     sx = sy.Symbol('x')
