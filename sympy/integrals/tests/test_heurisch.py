@@ -268,6 +268,7 @@ def test_pmint_besselj():
 def test_pmint_WrightOmega():
     if ON_TRAVIS:
         skip("Too slow for travis.")
+
     def omega(x):
         return LambertW(exp(x))
 

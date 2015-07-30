@@ -1977,6 +1977,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We just solve the system and try to heuristically find a nice
         # solution.
         s = solve_linear_system(system, *symbols)
+
         def update(determined, solution):
             delete = []
             for k, v in solution.items():
@@ -1986,6 +1987,7 @@ def minsolve_linear_system(system, *symbols, **flags):
                     determined[k] = solution[k]
             for k in delete:
                 del solution[k]
+
         determined = {}
         update(determined, s)
         while s:
@@ -3206,9 +3208,11 @@ def unrad(eq, *syms, **flags):
                         3*B*b**3*d**6 - c**9 + 9*c**8*d - 36*c**7*d**2 + 84*c**6*d**3 -
                         126*c**5*d**4 + 126*c**4*d**5 - 84*c**3*d**6 + 36*c**2*d**7 -
                         9*c*d**8 + d**9)
+
                     def _t(i):
                         b = Mul(*info[i][RAD])
                         return cancel(rterms[i]/b), Mul(*info[i][BASES])
+
                     aa, AA = _t(0)
                     bb, BB = _t(1)
                     cc = -rterms[2]

@@ -11,12 +11,16 @@ def test_rm_id():
 def test_glom():
     from sympy import Add
     from sympy.abc import x
+
     def key(x):
         return x.as_coeff_Mul()[1]
+
     def count(x):
         return x.as_coeff_Mul()[0]
+
     def newargs(cnt, arg):
         return cnt * arg
+
     rl = glom(key, count, newargs)
 
     result   = rl(Add(x, -x, 3*x, 2, 3, evaluate=False))
@@ -36,6 +40,7 @@ def test_sort():
 def test_distribute():
     class T1(Basic):
         pass
+
     class T2(Basic):
         pass
 

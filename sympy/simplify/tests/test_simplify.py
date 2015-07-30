@@ -536,6 +536,7 @@ def test_simplify_ratio():
 def test_simplify_measure():
     def measure1(expr):
         return len(str(expr))
+
     def measure2(expr):
         return -count_ops(expr)
                                        # Return the most complicated result
@@ -1884,6 +1885,7 @@ def test_exptrigsimp():
 def test_issue_2827_trigsimp_methods():
     def measure1(expr):
         return len(str(expr))
+
     def measure2(expr):
         return -count_ops(expr)
                                        # Return the most complicated result

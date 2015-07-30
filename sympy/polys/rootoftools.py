@@ -221,6 +221,7 @@ class RootOf(Expr):
     @classmethod
     def _separate_imaginary_from_complex(cls, complexes):
         from sympy.utilities.iterables import sift
+
         def is_imag(c):
             '''
             return True if all roots are imaginary (ax**2 + b)
@@ -235,6 +236,7 @@ class RootOf(Expr):
                     if f.LC()*f.TC() < 0:
                         return None  # 2 are imag
             return False  # none are imag
+
         # separate according to the function
         sifted = sift(complexes, lambda c: c[1])
         del complexes

@@ -393,8 +393,10 @@ def _issue_7853_dep_check(namespaces, namespace, expr):
             mat.__name__) == 'numpy.matrixlib.defmatrix.matrix'):
         return
     dicts = [m for m in namespaces if isinstance(m, dict)]
+
     def test(expr):
         return hasattr(expr, 'is_Matrix') and expr.is_Matrix
+
     if test(expr) and not [d for d in dicts if 'ImmutableMatrix' in d]:
         SymPyDeprecationWarning(
                 "Currently, `sympy.Matrix` is replaced with `numpy.matrix` if "

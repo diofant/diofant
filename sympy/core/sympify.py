@@ -440,12 +440,14 @@ def kernS(s):
         return expr
 
     rep = {Symbol(kern): 1}
+
     def _clear(expr):
         if isinstance(expr, (list, tuple, set)):
             return type(expr)([_clear(e) for e in expr])
         if hasattr(expr, 'subs'):
             return expr.subs(rep, hack2=True)
         return expr
+
     expr = _clear(expr)
     # hope that kern is not there anymore
     return expr

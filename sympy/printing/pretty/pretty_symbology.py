@@ -26,6 +26,7 @@ try:
 
 except ImportError:
     unicode_warnings += 'No unicodedata available\n'
+
     def U(name):
         return
 

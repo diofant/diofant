@@ -1874,8 +1874,8 @@ def radsimp(expr, symbolic=True, max_terms=4):
     1/(a + b*sqrt(c))
 
     """
-
     syms = symbols("a:d A:D")
+
     def _num(rterms):
         # return the multiplier that will simplify the expression described
         # by rterms [(sqrt arg, coeff), ... ]
@@ -3200,6 +3200,7 @@ def combsimp(expr):
         denom_gammas = []
         numer_others = []
         denom_others = []
+
         def explicate(p):
             if p is S.One:
                 return None, []
@@ -4330,6 +4331,7 @@ def _futrig(e, **kwargs):
 
     def Lops(x):
         return (L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add)
+
     def trigs(x):
         return x.has(TrigonometricFunction)
 

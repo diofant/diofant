@@ -52,6 +52,7 @@ def test_epath_select():
 
 def test_epath_apply():
     expr = [((x, 1, t), 2), ((3, y, 4), z)]
+
     def func(expr):
         return expr**2
 

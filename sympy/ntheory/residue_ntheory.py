@@ -468,6 +468,7 @@ def _sqrt_mod1(a, p, n):
         m = n // 2
         if n % 2 == 1:
             pm1 = p**(m + 1)
+
             def _iter0a():
                 i = 0
                 while i < pn:
@@ -476,6 +477,7 @@ def _sqrt_mod1(a, p, n):
             return _iter0a()
         else:
             pm = p**m
+
             def _iter0b():
                 i = 0
                 while i < pn:
@@ -494,6 +496,7 @@ def _sqrt_mod1(a, p, n):
         if n - r == 1:
             pnm1 = 1 << (n - m + 1)
             pm1 = 1 << (m + 1)
+
             def _iter1():
                 k = 1 << (m + 2)
                 i = 1 << m
@@ -509,6 +512,7 @@ def _sqrt_mod1(a, p, n):
             if res is None:
                 return None
             pnm = 1 << (n - m)
+
             def _iter2():
                 s = set()
                 for r in res:
@@ -525,6 +529,7 @@ def _sqrt_mod1(a, p, n):
             if res is None:
                 return None
             pnm1 = 1 << (n - m - 1)
+
             def _iter3():
                 s = set()
                 for r in res:
@@ -557,6 +562,7 @@ def _sqrt_mod1(a, p, n):
                         s.add(x)
                         yield x*pm
                     i += pnr
+
         return _iter4()
 
 

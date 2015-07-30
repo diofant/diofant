@@ -82,6 +82,7 @@ def test_chain():
 
 def test_onaction():
     L = []
+
     def record(fn, input, output):
         L.append((input, output))
 
@@ -94,6 +95,7 @@ def test_onaction():
 def test_yieldify():
     def inc(x):
         return x + 1
+
     yinc = yieldify(inc)
     assert list(yinc(3)) == [4]
 

@@ -1300,6 +1300,7 @@ def test_Poly_LM():
 
 def test_Poly_LM_custom_order():
     f = Poly(x**2*y**3*z + x**2*y*z**3 + x*y*z + 1)
+
     def rev_lex(monom):
         return tuple(reversed(monom))
 

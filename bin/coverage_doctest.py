@@ -259,6 +259,7 @@ def get_mod_name(path, base):
 
 class FindInSphinx(HTMLParser):
     is_imported = []
+
     def handle_starttag(self, tag, attr):
         a = dict(attr)
         if tag == "div" and a.get('class', None) == "viewcode-block":

@@ -596,8 +596,10 @@ def dsolve(eq, func=None, hint="default", simplify=True,
         if len(set(order.values()))!=1:
             raise ValueError("It solves only those systems of equations whose orders are equal")
         match['order'] = list(order.values())[0]
+
         def recur_len(l):
             return sum(recur_len(item) if isinstance(item,list) else 1 for item in l)
+
         if recur_len(func) != len(eq):
             raise ValueError("dsolve() and classify_sysode() work with "
             "number of functions being equal to number of equations")
@@ -677,8 +679,10 @@ def _helper_simplify(eq, hint, match, simplify=True, **kwargs):
         # simplifications
         sols = solvefunc(eq, func, order, match)
         free = eq.free_symbols
+
         def cons(s):
             return s.free_symbols.difference(free)
+
         if isinstance(sols, Expr):
             return odesimp(sols, func, order, cons(sols), hint)
         return [odesimp(s, func, order, cons(s), hint) for s in sols]
@@ -1733,6 +1737,7 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
     f = Wild('f')
     g = Wild('g')
     u, v = symbols('u, v', cls=Dummy)
+
     def check_type(x, y):
         r1 = eq[0].match(t*diff(x(t),t) - x(t) + f)
         r2 = eq[1].match(t*diff(y(t),t) - y(t) + g)
@@ -1750,6 +1755,7 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
             return 'type5'
         else:
             return None
+
     for func_ in func:
         if isinstance(func_, list):
             x = func[0][0].func
@@ -2505,6 +2511,7 @@ def ode_sol_simplicity(sol, func, trysolving=True):
 def _get_constant_subexpressions(expr, Cs):
     Cs = set(Cs)
     Ces = []
+
     def _recursive_walk(expr):
         expr_syms = expr.free_symbols
         if len(expr_syms) > 0 and expr_syms.issubset(Cs):
@@ -2525,6 +2532,7 @@ def _get_constant_subexpressions(expr, Cs):
             for i in expr.args:
                 _recursive_walk(i)
         return
+
     _recursive_walk(expr)
     return Ces
 
@@ -2557,8 +2565,10 @@ def __remove_linear_redundancies(expr, Cs):
 
     if expr.func is Equality:
         lhs, rhs = [_recursive_walk(i) for i in expr.args]
+
         def f(i):
             return isinstance(i, Number) or i in Cs
+
         if lhs.func is Symbol and lhs in Cs:
             rhs, lhs = lhs, rhs
         if lhs.func in (Add, Symbol) and rhs.func in (Add, Symbol):
@@ -2767,6 +2777,7 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     # that to make sure that term ordering is not dependent on
     # the indexed value of C
     C_1 = [(ci, S.One) for ci in constantsymbols]
+
     def sort_key(arg):
         return default_sort_key(arg.subs(C_1))
 
@@ -4270,6 +4281,7 @@ def _linear_coeff_match(expr, func):
     """
     f = func.func
     x = func.args[0]
+
     def abc(eq):
         r'''
         Internal function of _linear_coeff_match
@@ -7741,10 +7753,13 @@ def _linear_neq_order1_type1(match_):
     constants = numbered_symbols(prefix='C', cls=Symbol, start=1)
     M = Matrix(n,n,lambda i,j:-fc[i,func[j],0])
     evector = M.eigenvects(simplify=True)
+
     def is_complex(mat, root):
         return Matrix(n, 1, lambda i,j: re(mat[i])*cos(im(root)*t) - im(mat[i])*sin(im(root)*t))
+
     def is_complex_conjugate(mat, root):
         return Matrix(n, 1, lambda i,j: re(mat[i])*sin(abs(im(root))*t) + im(mat[i])*cos(im(root)*t)*abs(im(root))/im(root))
+
     conjugate_root = []
     e_vector = zeros(n,1)
     for evects in evector:
@@ -8002,6 +8017,7 @@ def _nonlinear_2eq_order1_type5(func, t, eq):
     C1, C2 = symbols('C1:3')
     f = Wild('f')
     g = Wild('g')
+
     def check_type(x, y):
         r1 = eq[0].match(t*diff(x(t),t) - x(t) + f)
         r2 = eq[1].match(t*diff(y(t),t) - y(t) + g)
@@ -8015,6 +8031,7 @@ def _nonlinear_2eq_order1_type5(func, t, eq):
             r1 = (-eq[0]).match(diff(x(t),t) - x(t)/t + f/t)
             r2 = (-eq[1]).match(diff(y(t),t) - y(t)/t + g/t)
         return [r1, r2]
+
     for func_ in func:
         if isinstance(func_, list):
             x = func[0][0].func

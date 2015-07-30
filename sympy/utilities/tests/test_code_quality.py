@@ -328,6 +328,7 @@ def test_test_duplicate_defs():
         "def test_1():\ndef  test_1():\n",
     ]
     ok = (None, 'check')
+
     def check(file):
         tests = 0
         test_set = set()
@@ -338,6 +339,7 @@ def test_test_duplicate_defs():
                 if len(test_set) != tests:
                     return False, message_duplicate_test % ('check', idx + 1)
         return None, 'check'
+
     for c in candidates_ok:
         assert check(c) == ok
     for c in candidates_fail:

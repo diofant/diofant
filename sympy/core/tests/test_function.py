@@ -675,8 +675,10 @@ def test_issue_7688():
 
     f = Function('f')  # actually an UndefinedFunction
     clear_cache()
+
     class A(UndefinedFunction):
         pass
+
     a = A('f')
     assert isinstance(a, type(f))
 

@@ -227,6 +227,7 @@ class Pow(Expr):
                 n, d = e.as_numer_denom()
                 if n.is_integer and d == 2:
                     return True
+
             def _n2(e):
                 """Return ``e`` evaluated to a Number with 2 significant
                 digits, else None."""
@@ -236,6 +237,7 @@ class Pow(Expr):
                         return rv
                 except PrecisionExhausted:
                     pass
+
             # ===================================================
             if e.is_extended_real:
                 # we need _half(other) with constant floor or
@@ -493,6 +495,7 @@ class Pow(Expr):
 
     def _eval_subs(self, old, new):
         from sympy import exp, log, Symbol
+
         def _check(ct1, ct2, old):
             """Return bool, pow where, if bool is True, then the exponent of
             Pow `old` will combine with `pow` so the substitution is valid,

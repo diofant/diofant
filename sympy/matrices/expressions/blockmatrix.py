@@ -384,8 +384,10 @@ def deblock(B):
     """ Flatten a BlockMatrix of BlockMatrices """
     if not isinstance(B, BlockMatrix) or not B.blocks.has(BlockMatrix):
         return B
+
     def wrap(x):
         return x if isinstance(x, BlockMatrix) else BlockMatrix([[x]])
+
     bb = B.blocks.applyfunc(wrap)  # everything is a block
 
     from sympy import Matrix

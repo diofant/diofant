@@ -139,9 +139,11 @@ class AskNonZeroHandler(CommonHandler):
         if expr.is_number:
             # if there are no symbols just evalf
             i = expr.evalf(2)
+
             def nonz(i):
                 if i._prec != 1:
                     return i != 0
+
             return fuzzy_or(nonz(i) for i in i.as_real_imag())
 
     @staticmethod

@@ -470,8 +470,10 @@ class Sum(AddWithLimits,ExprWithIntLimits):
                 raise ValueError
 
         a = Function('a')
+
         def f(i, j):
             return self.function.subs([(n, i), (k, j)])
+
         I, J, step = 0, 1, 1
         y, x, sols = S.Zero, [], {}
 

@@ -50,6 +50,7 @@ def test_do_one():
 
     def rl1(x):
         return 2 if x == 1 else x
+
     def rl2(x):
         return 3 if x == 2 else x
 
@@ -72,10 +73,13 @@ def test_debug():
 def test_switch():
     def inc(x):
         return x + 1
+
     def dec(x):
         return x - 1
+
     def key(x):
         return x % 3
+
     rl = switch(key, {0: inc, 1: dec})
 
     assert rl(3) == 4
@@ -85,8 +89,10 @@ def test_switch():
 def test_minimize():
     def inc(x):
         return x + 1
+
     def dec(x):
         return x - 1
+
     rl = minimize(inc, dec)
     assert rl(4) == 3
 

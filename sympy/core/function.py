@@ -460,6 +460,7 @@ class Function(Application, Expr):
         #     we be more intelligent about it?
         try:
             args = [arg._to_mpmath(prec + 5) for arg in self.args]
+
             def bad(m):
                 from mpmath import mpf, mpc
                 # the precision of an mpf value is the last element
@@ -478,6 +479,7 @@ class Function(Application, Expr):
                         n[1] !=1 and n[-1] == 1
                 else:
                     return False
+
             if any(bad(a) for a in args):
                 raise ValueError  # one or more args failed to compute with significance
         except ValueError:
@@ -1486,12 +1488,15 @@ class Subs(Expr):
         pre = "_"
         pts = sorted(set(point), key=default_sort_key)
         from sympy.printing import StrPrinter
+
         class CustomStrPrinter(StrPrinter):
             def _print_Dummy(self, expr):
                 return str(expr) + str(expr.dummy_index)
+
         def mystr(expr, **settings):
             p = CustomStrPrinter(settings)
             return p.doprint(expr)
+
         while 1:
             s_pts = {p: Symbol(pre + mystr(p)) for p in pts}
             reps = [(v, s_pts[p])

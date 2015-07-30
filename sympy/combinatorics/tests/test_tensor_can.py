@@ -534,6 +534,7 @@ def test_graph_certificate():
     # test tensor invariants constructed from random regular graphs;
     # checked graph isomorphism with networkx
     import random
+
     def randomize_graph(size, g):
         p = list(range(size))
         random.shuffle(p)

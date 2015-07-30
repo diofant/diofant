@@ -3700,6 +3700,7 @@ class TensMul(TensExpr):
 
     def _print(self):
         args = self.args
+
         def get_str(arg):
             return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ("(%s)" % str(arg))
 
