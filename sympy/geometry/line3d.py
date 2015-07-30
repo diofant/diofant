@@ -1266,7 +1266,7 @@ class Ray3D(LinearEntity3D):
                     rv = o.z <= self.source.z
                 else:
                     rv = o.z <= self.source.z
-                if rv == True or rv == False:
+                if rv == S.true or rv == S.false:
                     return bool(rv)
                 raise Undecidable(
                     'Cannot determine if %s is in %s' % (o, self))

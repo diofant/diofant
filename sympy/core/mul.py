@@ -552,7 +552,7 @@ class Mul(Expr, AssocOp):
         elif coeff is S.Zero:
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
-            if any(c.is_finite == False for c in c_part):
+            if any(c.is_finite is False for c in c_part):
                 return [S.NaN], [], order_symbols
             return [coeff], [], order_symbols
 

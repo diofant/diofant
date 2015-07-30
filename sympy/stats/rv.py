@@ -852,7 +852,7 @@ def sample_iter_lambdify(expr, condition=None, numsamples=S.Infinity, **kwargs):
 
             if condition:  # Check that these values satisfy the condition
                 gd = given_fn(*args)
-                if gd != True and gd != False:
+                if gd not in (True, False):
                     raise ValueError(
                         "Conditions must not contain free symbols")
                 if not gd:  # If the values don't satisfy then try again
@@ -880,7 +880,7 @@ def sample_iter_subs(expr, condition=None, numsamples=S.Infinity, **kwargs):
 
         if condition is not None:  # Check that these values satisfy the condition
             gd = condition.xreplace(d)
-            if gd != True and gd != False:
+            if gd not in (True, False):
                 raise ValueError("Conditions must not contain free symbols")
             if not gd:  # If the values don't satisfy then try again
                 continue
@@ -908,7 +908,7 @@ def sampling_P(condition, given_condition=None, numsamples=1,
                           numsamples=numsamples, **kwargs)
 
     for x in samples:
-        if x != True and x != False:
+        if x not in (True, False):
             raise ValueError("Conditions must not contain free symbols")
 
         if x:
@@ -1075,5 +1075,5 @@ def _value_check(condition, message):
 
     Raises ValueError with message if condition is not True
     """
-    if condition != True:
+    if condition != S.true:
         raise ValueError(message)

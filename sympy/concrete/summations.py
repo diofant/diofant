@@ -304,9 +304,9 @@ class Sum(AddWithLimits,ExprWithIntLimits):
                 term = f.subs(i, a)
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if test == True:
+                    if test == S.true:
                         return s, abs(term)
-                    elif not (test == False):
+                    elif not (test == S.false):
                         # a symbolic Relational class, can't go further
                         return term, S.Zero
                 s += term
@@ -839,7 +839,7 @@ def eval_sum_hyper(f, i_a_b):
                 return None
             (res1, cond1), (res2, cond2) = res1, res2
             cond = And(cond1, cond2)
-            if cond == False:
+            if cond == S.false:
                 return None
         return Piecewise((res1 - res2, cond), (old_sum, True))
 
@@ -851,7 +851,7 @@ def eval_sum_hyper(f, i_a_b):
         res1, cond1 = res1
         res2, cond2 = res2
         cond = And(cond1, cond2)
-        if cond == False:
+        if cond == S.false:
             return None
         return Piecewise((res1 + res2, cond), (old_sum, True))
 
@@ -859,7 +859,7 @@ def eval_sum_hyper(f, i_a_b):
     res = _eval_sum_hyper(f, i, a)
     if res is not None:
         r, c = res
-        if c == False:
+        if c == S.false:
             if r.is_number:
                 f = f.subs(i, Dummy('i', integer=True, positive=True) + a)
                 if f.is_positive or f.is_zero:

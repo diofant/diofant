@@ -335,7 +335,7 @@ class OctaveCodePrinter(CodePrinter):
         return "eye(%s)" % self._print(expr.shape[0])
 
     def _print_Piecewise(self, expr):
-        if expr.args[-1].cond != True:
+        if expr.args[-1].cond != S.true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
             raise ValueError("All Piecewise expressions must contain an "
@@ -360,7 +360,7 @@ class OctaveCodePrinter(CodePrinter):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
                     lines.append("if (%s)" % self._print(c))
-                elif i == len(expr.args) - 1 and c == True:
+                elif i == len(expr.args) - 1 and c == S.true:
                     lines.append("else")
                 else:
                     lines.append("elseif (%s)" % self._print(c))

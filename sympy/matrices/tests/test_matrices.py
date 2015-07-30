@@ -2015,9 +2015,9 @@ def test_is_zero():
     assert SparseMatrix([[x, 0], [0, 0]]).is_zero is None
     assert ImmutableMatrix([[x, 0], [0, 0]]).is_zero is None
     assert ImmutableSparseMatrix([[x, 0], [0, 0]]).is_zero is None
-    assert Matrix([[x, 1], [0, 0]]).is_zero == False
+    assert Matrix([[x, 1], [0, 0]]).is_zero is False
     a = Symbol('a', nonzero=True)
-    assert Matrix([[a, 0], [0, 0]]).is_zero == False
+    assert Matrix([[a, 0], [0, 0]]).is_zero is False
 
 
 def test_rotation_matrices():

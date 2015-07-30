@@ -127,7 +127,7 @@ class FCodePrinter(CodePrinter):
         return open_lines, close_lines
 
     def _print_Piecewise(self, expr):
-        if expr.args[-1].cond != True:
+        if expr.args[-1].cond != S.true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
             raise ValueError("All Piecewise expressions must contain an "
@@ -140,7 +140,7 @@ class FCodePrinter(CodePrinter):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
                     lines.append("if (%s) then" % self._print(c))
-                elif i == len(expr.args) - 1 and c == True:
+                elif i == len(expr.args) - 1 and c == S.true:
                     lines.append("else")
                 else:
                     lines.append("else if (%s) then" % self._print(c))

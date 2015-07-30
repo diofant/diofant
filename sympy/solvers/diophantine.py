@@ -1519,7 +1519,7 @@ def check_param(x, y, a, t):
             ok = True
             break
 
-    if ok == True:
+    if ok:
 
         x_param = x.match(p*t + q)
         y_param = y.match(p*t + q)

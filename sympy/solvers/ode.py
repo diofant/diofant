@@ -1403,7 +1403,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     def linearity_check(eqs, j, func, is_linear_):
         for k in range(order[func]+1):
             func_coef[j,func,k] = collect(eqs.expand(),[diff(func,t,k)]).coeff(diff(func,t,k))
-            if is_linear_ == True:
+            if is_linear_:
                 if func_coef[j,func,k]==0:
                     if k==0:
                         coef = eqs.as_independent(func)[1]

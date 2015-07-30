@@ -1327,26 +1327,26 @@ def _solve(f, *symbols, **flags):
                 if candidate in result:
                     continue
                 try:
-                    v = (cond == True) or cond.subs(symbol, candidate)
+                    v = (cond == S.true) or cond.subs(symbol, candidate)
                 except:
                     v = False
-                if v != False:
+                if v != S.false:
                     # Only include solutions that do not match the condition
                     # of any previous pieces.
                     matches_other_piece = False
                     for other_n, (other_expr, other_cond) in enumerate(f.args):
                         if other_n == n:
                             break
-                        if other_cond == False:
+                        if other_cond == S.false:
                             continue
                         try:
-                            if other_cond.subs(symbol, candidate) == True:
+                            if other_cond.subs(symbol, candidate) == S.true:
                                 matches_other_piece = True
                                 break
                         except:
                             pass
                     if not matches_other_piece:
-                        v = v == True or v.doit()
+                        v = v == S.true or v.doit()
                         if isinstance(v, Relational):
                             v = v.canonical
                         result.add(Piecewise(

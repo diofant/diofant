@@ -2000,7 +2000,7 @@ class MatrixBase(object):
         True
         >>> e.is_zero
         """
-        if any(i.is_zero == False for i in self):
+        if any(i.is_zero is False for i in self):
             return False
         if any(i.is_zero is None for i in self):
             return None

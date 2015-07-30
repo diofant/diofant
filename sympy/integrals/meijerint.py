@@ -1446,7 +1446,7 @@ def _rewrite_single(f, x, recursive=True):
                 subs = subs_
                 if not isinstance(hint, bool):
                     hint = hint.subs(subs)
-                if hint == False:
+                if hint == S.false:
                     continue
                 if not isinstance(cond, (bool, BooleanAtom)):
                     cond = unpolarify(cond.subs(subs))
@@ -1582,7 +1582,7 @@ def _rewrite2(f, x):
             g2 = _rewrite_single(fac2, x, recursive)
             if g1 and g2:
                 cond = And(g1[1], g2[1])
-                if cond != False:
+                if cond != S.false:
                     return fac, po, g1[0], g2[0], cond
 
 
@@ -1778,7 +1778,7 @@ def meijerint_definite(f, x, a, b):
             res1, cond1 = res1
             res2, cond2 = res2
             cond = _condsimp(And(cond1, cond2))
-            if cond == False:
+            if cond == S.false:
                 _debug('  But combined condition is always false.')
                 continue
             res = res1 + res2
@@ -1917,7 +1917,7 @@ def _meijerint_definite_3(f, x):
                 res += r
                 conds += [c]
             c = And(*conds)
-            if c != False:
+            if c != S.false:
                 return res, c
 
 
@@ -1952,10 +1952,10 @@ def _meijerint_definite_4(f, x, only_double=False):
                 C, f = _rewrite_saxena_1(fac*C, po*x**s, f, x)
                 res += C*_int0oo_1(f, x)
                 cond = And(cond, _check_antecedents_1(f, x))
-                if cond == False:
+                if cond == S.false:
                     break
             cond = _my_unpolarify(cond)
-            if cond == False:
+            if cond == S.false:
                 _debug('But cond is always False.')
             else:
                 _debug('Result before branch substitutions is:', res)
@@ -1978,14 +1978,14 @@ def _meijerint_definite_4(f, x, only_double=False):
                     C, f1_, f2_ = r
                     _debug('Saxena subst for yielded:', C, f1_, f2_)
                     cond = And(cond, _check_antecedents(f1_, f2_, x))
-                    if cond == False:
+                    if cond == S.false:
                         break
                     res += C*_int0oo(f1_, f2_, x)
                 else:
                     continue
                 break
             cond = _my_unpolarify(cond)
-            if cond == False:
+            if cond == S.false:
                 _debug('But cond is always False (full_pb=%s).' % full_pb)
             else:
                 _debug('Result before branch substitutions is:', res)
@@ -2070,10 +2070,10 @@ def meijerint_inversion(f, x, t):
             C, f = _rewrite_inversion(fac*C, po*x**s, f, x)
             res += C*_int_inversion(f, x, t)
             cond = And(cond, _check_antecedents_inversion(f, x))
-            if cond == False:
+            if cond == S.false:
                 break
         cond = _my_unpolarify(cond)
-        if cond == False:
+        if cond == S.false:
             _debug('But cond is always False.')
         else:
             _debug('Result before branch substitution:', res)

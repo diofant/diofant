@@ -4395,7 +4395,7 @@ def sum_simplify(s):
                 if isinstance(term.args[j], Sum):
                     s = term.args[j]
                     n_sum_terms = n_sum_terms + 1
-                elif term.args[j].is_number == True:
+                elif term.args[j].is_number:
                     constant = constant * term.args[j]
                 else:
                     other = other * term.args[j]

@@ -535,9 +535,9 @@ class Factors(object):
             factor, exp = sympify(factor), sympify(exp)
             if factor in other.factors:
                 lt = (exp - other.factors[factor]).is_negative
-                if lt == True:
+                if lt:
                     factors[factor] = exp
-                elif lt == False:
+                elif lt is False:
                     factors[factor] = other.factors[factor]
 
         return Factors(factors)

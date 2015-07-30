@@ -12,9 +12,9 @@ class ExprCondPair(Tuple):
     """Represents an expression, condition pair."""
 
     def __new__(cls, expr, cond):
-        if cond == True:
+        if cond == S.true:
             return Tuple.__new__(cls, expr, true)
-        elif cond == False:
+        elif cond == S.false:
             return Tuple.__new__(cls, expr, false)
         return Tuple.__new__(cls, expr, cond)
 
@@ -103,7 +103,7 @@ class Piecewise(Function):
                     "Cond %s is of type %s, but must be a Relational,"
                     " Boolean, or a built-in bool." % (cond, type(cond)))
             newargs.append(pair)
-            if cond == True:
+            if cond == S.true:
                 break
 
         if options.pop('evaluate', True):
@@ -180,7 +180,7 @@ class Piecewise(Function):
 
     def _eval_as_leading_term(self, x):
         for e, c in self.args:
-            if c == True or c.subs(x, 0) == True:
+            if c == S.true or c.subs(x, 0) == S.true:
                 return e.as_leading_term(x)
 
     def _eval_adjoint(self):
@@ -264,7 +264,7 @@ class Piecewise(Function):
                     newargs.append((e, c))
                 else:
                     for i in range(len(values)):
-                        newargs.append((values[i], (c == True and i == len(values) - 1) or
+                        newargs.append((values[i], (c == S.true and i == len(values) - 1) or
                             And(rep >= intervals[i][0], rep <= intervals[i][1])))
             return self.func(*newargs)
 
@@ -311,10 +311,10 @@ class Piecewise(Function):
                     expr_cond.append((expr, cond2))
             else:
                 expr_cond.append((expr, cond))
-            if cond == True:
+            if cond == S.true:
                 break
         for expr, cond in expr_cond:
-            if cond == True:
+            if cond == S.true:
                 independent_expr_cond.append((expr, cond))
                 default = self.func(*independent_expr_cond)
                 break
@@ -425,7 +425,7 @@ class Piecewise(Function):
 
         if holes and default is not None:
             int_expr.extend(holes)
-            if targetcond == True:
+            if targetcond == S.true:
                 return [(h[0], h[1], None) for h in holes]
         elif holes and default is None:
             raise ValueError("Called interval evaluation over piecewise "
@@ -451,10 +451,10 @@ class Piecewise(Function):
                 pass
             elif isinstance(c, Basic):
                 c = c._subs(old, new)
-            if c != False:
+            if c != S.false:
                 e = e._subs(old, new)
             args[i] = e, c
-            if c == True:
+            if c == S.true:
                 return self.func(*args)
 
         return self.func(*args)
@@ -523,7 +523,7 @@ class Piecewise(Function):
     def __eval_cond(cls, cond):
         """Return the truth value of the condition."""
         from sympy.solvers.solvers import checksol
-        if cond == True:
+        if cond == S.true:
             return True
         if isinstance(cond, Equality):
             if checksol(cond, {}, minimal=True):

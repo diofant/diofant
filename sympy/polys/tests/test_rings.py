@@ -1139,70 +1139,70 @@ def test_PolyElement_compose():
 def test_PolyElement_is_():
     R, x,y,z = ring("x,y,z", QQ)
 
-    assert (x - x).is_generator == False
-    assert (x - x).is_ground == True
-    assert (x - x).is_monomial == True
-    assert (x - x).is_term == True
+    assert (x - x).is_generator is False
+    assert (x - x).is_ground
+    assert (x - x).is_monomial
+    assert (x - x).is_term
 
-    assert (x - x + 1).is_generator == False
-    assert (x - x + 1).is_ground == True
-    assert (x - x + 1).is_monomial == True
-    assert (x - x + 1).is_term == True
+    assert (x - x + 1).is_generator is False
+    assert (x - x + 1).is_ground
+    assert (x - x + 1).is_monomial
+    assert (x - x + 1).is_term
 
-    assert x.is_generator == True
-    assert x.is_ground == False
-    assert x.is_monomial == True
-    assert x.is_term == True
+    assert x.is_generator
+    assert x.is_ground is False
+    assert x.is_monomial
+    assert x.is_term
 
-    assert (x*y).is_generator == False
-    assert (x*y).is_ground == False
-    assert (x*y).is_monomial == True
-    assert (x*y).is_term == True
+    assert (x*y).is_generator is False
+    assert (x*y).is_ground is False
+    assert (x*y).is_monomial
+    assert (x*y).is_term
 
-    assert (3*x).is_generator == False
-    assert (3*x).is_ground == False
-    assert (3*x).is_monomial == False
-    assert (3*x).is_term == True
+    assert (3*x).is_generator is False
+    assert (3*x).is_ground is False
+    assert (3*x).is_monomial is False
+    assert (3*x).is_term
 
-    assert (3*x + 1).is_generator == False
-    assert (3*x + 1).is_ground == False
-    assert (3*x + 1).is_monomial == False
-    assert (3*x + 1).is_term == False
+    assert (3*x + 1).is_generator is False
+    assert (3*x + 1).is_ground is False
+    assert (3*x + 1).is_monomial is False
+    assert (3*x + 1).is_term is False
 
-    assert R(0).is_zero is True
+    assert R(0).is_zero
     assert R(1).is_zero is False
 
     assert R(0).is_one is False
-    assert R(1).is_one is True
+    assert R(1).is_one
 
-    assert (x - 1).is_monic is True
+    assert (x - 1).is_monic
     assert (2*x - 1).is_monic is False
 
-    assert (3*x + 2).is_primitive is True
+    assert (3*x + 2).is_primitive
     assert (4*x + 2).is_primitive is False
 
-    assert (x + y + z + 1).is_linear is True
+    assert (x + y + z + 1).is_linear
     assert (x*y*z + 1).is_linear is False
 
-    assert (x*y + z + 1).is_quadratic is True
+    assert (x*y + z + 1).is_quadratic
     assert (x*y*z + 1).is_quadratic is False
 
-    assert (x - 1).is_squarefree is True
+    assert (x - 1).is_squarefree
     assert ((x - 1)**2).is_squarefree is False
 
-    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + x + 1).is_irreducible
     assert (x**2 + 2*x + 1).is_irreducible is False
 
     _, t = ring("t", FF(11))
 
-    assert (7*t + 3).is_irreducible is True
+    assert (7*t + 3).is_irreducible
     assert (7*t**2 + 3*t + 1).is_irreducible is False
 
     _, u = ring("u", ZZ)
     f = u**16 + u**14 - u**10 - u**8 - u**6 + u**2
 
     assert f.is_cyclotomic is False
-    assert (f + 1).is_cyclotomic is True
+    assert (f + 1).is_cyclotomic
 
     raises(MultivariatePolynomialError, lambda: x.is_cyclotomic)
 
