@@ -1641,8 +1641,8 @@ def _aresame(a, b):
     from .function import AppliedUndef, UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
         if i != j or type(i) != type(j):
-            if ((isinstance(i, UndefFunc) and isinstance(j, UndefFunc)) or
-                (isinstance(i, AppliedUndef) and isinstance(j, AppliedUndef))):
+            if (isinstance(i, (UndefFunc, AppliedUndef)) and
+                    isinstance(j, (UndefFunc, AppliedUndef))):
                 if i.class_key() != j.class_key():
                     return False
             else:

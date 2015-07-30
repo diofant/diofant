@@ -70,5 +70,5 @@ def check_disabled(request):
     elif getattr(request.module, 'ipython', False):
         # need to check version and options for ipython tests
         if (V(pytest.__version__) < '2.6.3' and
-            pytest.config.getvalue('-s') != 'no'):
+                pytest.config.getvalue('-s') != 'no'):
             pytest.skip("run py.test with -s or upgrade to newer version.")

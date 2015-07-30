@@ -207,7 +207,7 @@ def alternatives(*rules):
         for rule in rules:
             result = rule(integral)
             if (result and not isinstance(result, DontKnowRule) and
-                result != integral and result not in alts):
+                    result != integral and result not in alts):
                 alts.append(result)
         if len(alts) == 1:
             return alts[0]

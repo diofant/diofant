@@ -500,7 +500,7 @@ def given(expr, condition=None, **kwargs):
 
     condsymbols = random_symbols(condition)
     if (isinstance(condition, Equality) and len(condsymbols) == 1 and
-        not isinstance(pspace(expr).domain, ConditionalDomain)):
+            not isinstance(pspace(expr).domain, ConditionalDomain)):
         rv = tuple(condsymbols)[0]
         results = solve(condition, rv)
         return sum(expr.subs(rv, res) for res in results)
@@ -638,8 +638,8 @@ class Density(Basic):
         if not random_symbols(expr):
             return Lambda(x, DiracDelta(x - expr))
         if (isinstance(expr, RandomSymbol) and
-            hasattr(expr.pspace, 'distribution') and
-            isinstance(pspace(expr), SinglePSpace)):
+                hasattr(expr.pspace, 'distribution') and
+                isinstance(pspace(expr), SinglePSpace)):
             return expr.pspace.distribution
         result = pspace(expr).compute_density(expr, **kwargs)
 

@@ -725,7 +725,7 @@ def _diop_quadratic(var, coeff, t):
             U = a[0][1]
 
             if (isinstance(P[0], Integer) and isinstance(P[1], Integer) and isinstance(P[2], Integer)
-                and isinstance(P[3], Integer) and isinstance(Q[0], Integer) and isinstance(Q[1], Integer)):
+                    and isinstance(P[3], Integer) and isinstance(Q[0], Integer) and isinstance(Q[1], Integer)):
 
                 for sol in solns_pell:
 
@@ -1515,7 +1515,7 @@ def check_param(x, y, a, t):
         z_y = _mexpand(Subs(y, t, a*k + i).doit()).match(p*k + q)
 
         if (isinstance(z_x[p], Integer) and isinstance(z_x[q], Integer) and
-            isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):
+                isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):
             ok = True
             break
 
@@ -1931,7 +1931,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
         return (None, None, None)
 
     if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
-        sqrt_mod(-a_2*b_2, c_2) is None):
+            sqrt_mod(-a_2*b_2, c_2) is None):
         return (None, None, None)
 
     z_0, x_0, y_0 = descent(A, B)

@@ -280,7 +280,7 @@ def _implicit_application(tokens, local_dict, global_dict):
             # implicit multiplication would have added an extraneous
             # multiplication)
             if (isinstance(tok, AppliedFunction)
-                or (tok[0] == OP and tok[1] == '*')):
+                    or (tok[0] == OP and tok[1] == '*')):
                 # don't add anything if the next token is a multiplication
                 # or if there's already a parenthesis (if parenthesis, still
                 # stop skipping tokens)

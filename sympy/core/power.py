@@ -987,8 +987,7 @@ class Pow(Expr):
             return self.base.is_algebraic
         elif self.base.is_algebraic and self.exp.is_algebraic:
             if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
-                or self.base.is_integer is False
-                or self.base.is_irrational):
+                    or self.base.is_integer is False or self.base.is_irrational):
                 return self.exp.is_rational
 
     def _eval_is_rational_function(self, syms):
