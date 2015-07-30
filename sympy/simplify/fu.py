@@ -381,7 +381,7 @@ def TR2i(rv, half=False):
             elif half and k.is_Add and k.args[0] is S.One and \
                     k.args[1].func is cos:
                 a = sin(k.args[1].args[0], evaluate=False)
-                if a in d and d[a] == n[k] and (d[a].is_integer or \
+                if a in d and d[a] == n[k] and (d[a].is_integer or
                         a.is_positive):
                     t.append(tan(a.args[0]/2)**-n[k])
                     n[k] = d[a] = None
@@ -625,7 +625,7 @@ def TR8(rv, first=True):
         for a in ordered(Mul.make_args(rv)):
             if a.func in (cos, sin):
                 args[a.func].append(a.args[0])
-            elif (a.is_Pow and a.exp.is_Integer and a.exp > 0 and \
+            elif (a.is_Pow and a.exp.is_Integer and a.exp > 0 and
                     a.base.func in (cos, sin)):
                 # XXX this is ok but pathological expression could be handled
                 # more efficiently as in TRmorrie

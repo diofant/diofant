@@ -3408,7 +3408,7 @@ class Poly(Expr):
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
-                raise DomainError("Numerical domain expected, got %s" % \
+                raise DomainError("Numerical domain expected, got %s" %
                         f.rep.dom)
 
         dps = mpmath.mp.dps

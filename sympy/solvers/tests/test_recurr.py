@@ -171,13 +171,13 @@ def test_rsolve():
 
     assert rsolve(Eq(y(n + 1), a*y(n)), y(n), {y(1): a}).simplify() == a**n
 
-    assert rsolve(y(n) - a*y(n-2),y(n), \
+    assert rsolve(y(n) - a*y(n-2),y(n),
             {y(1): sqrt(a)*(a + b), y(2): a*(a - b)}).simplify() == \
             a**(n/2)*(-(-1)**n*b + a)
 
     f = (-16*n**2 + 32*n - 12)*y(n - 1) + (4*n**2 - 12*n + 9)*y(n)
 
-    assert expand_func(rsolve(f, y(n), \
+    assert expand_func(rsolve(f, y(n),
             {y(1): binomial(2*n + 1, 3)}).rewrite(gamma)).simplify() == \
         2**(2*n)*n*(2*n - 1)*(4*n**2 - 1)/12
 

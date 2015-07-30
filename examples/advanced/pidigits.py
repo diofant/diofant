@@ -63,7 +63,7 @@ def calculateit(func, base, n, tofile):
     display_fraction(d, skip, colwidth=10, columns=5)
     if tofile:
         sys.stdout = out_
-    print("\nFinished in %f seconds (%f calc, %f convert)" % \
+    print("\nFinished in %f seconds (%f calc, %f convert)" %
         ((step1_time + step2_time), step1_time, step2_time))
 
 

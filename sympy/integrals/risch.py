@@ -1425,7 +1425,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
 
     i = pp.nth(0, 0)
 
-    ret = ((g1[0].as_expr()/g1[1].as_expr()).subs(s) \
+    ret = ((g1[0].as_expr()/g1[1].as_expr()).subs(s)
         + residue_reduce_to_basic(g2, DE, z))
 
     qas = qa.as_expr().subs(s)

@@ -917,7 +917,7 @@ def integral_steps(integrand, symbol, **options):
             sympy.Symbol: power_rule,
             sympy.exp: exp_rule,
             sympy.Add: add_rule,
-            sympy.Mul: do_one(null_safe(mul_rule), null_safe(trig_product_rule), \
+            sympy.Mul: do_one(null_safe(mul_rule), null_safe(trig_product_rule),
                 null_safe(heaviside_rule)),
             sympy.Derivative: derivative_rule,
             TrigonometricFunction: trig_rule,

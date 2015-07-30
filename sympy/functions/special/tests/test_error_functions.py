@@ -404,7 +404,7 @@ def test__eis():
     assert expand(Ei(z).rewrite('tractable').diff(z).rewrite('intractable')) \
         == Ei(z).diff(z)
 
-    assert _eis(z).series(z, n=3) == EulerGamma + log(z) + z*(-log(z) - \
+    assert _eis(z).series(z, n=3) == EulerGamma + log(z) + z*(-log(z) -
         EulerGamma + 1) + z**2*(log(z)/2 - S(3)/4 + EulerGamma/2) + O(z**3*log(z))
 
 
@@ -629,10 +629,10 @@ def test_fresnel():
         (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + \
         (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + S.Half
     assert fresnels(1/z).series(z) == \
-        (-z**3/pi**2 + O(z**6))*sin(pi/(2*z**2)) + (-z/pi + 3*z**5/pi**3 + \
+        (-z**3/pi**2 + O(z**6))*sin(pi/(2*z**2)) + (-z/pi + 3*z**5/pi**3 +
         O(z**6))*cos(pi/(2*z**2)) + S.Half
     assert fresnelc(1/z).series(z) == \
-        (-z**3/pi**2 + O(z**6))*cos(pi/(2*z**2)) + (z/pi - 3*z**5/pi**3 + \
+        (-z**3/pi**2 + O(z**6))*cos(pi/(2*z**2)) + (z/pi - 3*z**5/pi**3 +
         O(z**6))*sin(pi/(2*z**2)) + S.Half
 
     assert fresnelc(w).is_extended_real is True

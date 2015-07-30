@@ -444,8 +444,8 @@ def test_residue():
     assert is_primitive_root(12, 17) == is_primitive_root(29, 17)
     raises(ValueError, lambda: is_primitive_root(3, 6))
 
-    assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3, \
-       None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5, \
+    assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3,
+       None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
        None, 2, 7, 2, None, 2, None]
 
     for p in primerange(3, 100):
@@ -507,11 +507,11 @@ def test_residue():
     assert sqrt_mod(9, 81, True) == [3, 24, 30, 51, 57, 78]
     assert sqrt_mod(9, 3**5, True) == [3, 78, 84, 159, 165, 240]
     assert sqrt_mod(81, 3**4, True) == [0, 9, 18, 27, 36, 45, 54, 63, 72]
-    assert sqrt_mod(81, 3**5, True) == [9, 18, 36, 45, 63, 72, 90, 99, 117,\
+    assert sqrt_mod(81, 3**5, True) == [9, 18, 36, 45, 63, 72, 90, 99, 117,
             126, 144, 153, 171, 180, 198, 207, 225, 234]
-    assert sqrt_mod(81, 3**6, True) == [9, 72, 90, 153, 171, 234, 252, 315,\
+    assert sqrt_mod(81, 3**6, True) == [9, 72, 90, 153, 171, 234, 252, 315,
             333, 396, 414, 477, 495, 558, 576, 639, 657, 720]
-    assert sqrt_mod(81, 3**7, True) == [9, 234, 252, 477, 495, 720, 738, 963,\
+    assert sqrt_mod(81, 3**7, True) == [9, 234, 252, 477, 495, 720, 738, 963,
             981, 1206, 1224, 1449, 1467, 1692, 1710, 1935, 1953, 2178]
 
     for a, p in [(26214400, 32768000000), (26214400, 16384000000),

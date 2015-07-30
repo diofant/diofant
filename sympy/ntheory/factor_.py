@@ -1003,7 +1003,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     if verbose:
         sn = str(n)
         if len(sn) > 50:
-            print('Factoring %s' % sn[:5] + \
+            print('Factoring %s' % sn[:5] +
                   '..(%i other digits)..' % (len(sn) - 10) + sn[-5:])
         else:
             print('Factoring', n)

@@ -165,7 +165,7 @@ class StopTokenizing(Exception):
 def printtoken(type, token, srow_scol, erow_ecol, line):  # for testing
     srow, scol = srow_scol
     erow, ecol = erow_ecol
-    print("%d,%d-%d,%d:\t%s\t%s" % \
+    print("%d,%d-%d,%d:\t%s\t%s" %
         (srow, scol, erow, ecol, tok_name[type], repr(token)))
 
 

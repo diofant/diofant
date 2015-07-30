@@ -677,7 +677,7 @@ def test_issue_6274():
 def test_simplify():
     y, t, v = symbols('y, t, v')
 
-    assert simplify(Sum(x*y, (x, n, m), (y, a, k)) + \
+    assert simplify(Sum(x*y, (x, n, m), (y, a, k)) +
         Sum(y, (x, n, m), (y, a, k))) == Sum(x*y + y, (x, n, m), (y, a, k))
     assert simplify(Sum(x, (x, n, m)) + Sum(x, (x, m + 1, a))) == \
         Sum(x, (x, n, a))
@@ -685,18 +685,18 @@ def test_simplify():
         Sum(x, (x, n, a))
     assert simplify(Sum(x, (x, k + 1, a)) + Sum(x + 1, (x, n, k))) == \
         Sum(x, (x, k + 1, a)) + Sum(x + 1, (x, n, k))
-    assert simplify(Sum(x, (x, 0, 3)) * 3 + 3 * Sum(x, (x, 4, 6)) + \
+    assert simplify(Sum(x, (x, 0, 3)) * 3 + 3 * Sum(x, (x, 4, 6)) +
         4 * Sum(z, (z, 0, 1))) == Sum(4*z, (z, 0, 1)) + Sum(3*x, (x, 0, 6))
     assert simplify(3*Sum(x**2, (x, a, b)) + Sum(x, (x, a, b))) == \
         Sum(3*x**2 + x, (x, a, b))
-    assert simplify(Sum(x**3, (x, n, k)) * 3 + 3 * Sum(x, (x, n, k)) + \
+    assert simplify(Sum(x**3, (x, n, k)) * 3 + 3 * Sum(x, (x, n, k)) +
         4 * y * Sum(z, (z, n, k))) + 1 == \
             y*Sum(4*z, (z, n, k)) + Sum(3*x**3 + 3*x, (x, n, k)) + 1
     assert simplify(Sum(x, (x, a, b)) + 1 + Sum(x, (x, b + 1, c))) == \
         1 + Sum(x, (x, a, c))
-    assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + \
+    assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) +
         Sum(x, (t, b+1, c))) == Sum(x + y, (t, a, b)) + Sum(x, (t, b+1, c))
-    assert simplify(Sum(x, (t, a, b)) + Sum(x, (t, b+1, c)) + \
+    assert simplify(Sum(x, (t, a, b)) + Sum(x, (t, b+1, c)) +
         Sum(y, (t, a, b))) == Sum(x + y, (t, a, b)) + Sum(x, (t, b+1, c))
     assert simplify(Sum(x, (t, a, b)) + 2 * Sum(x, (t, b+1, c))) == \
         simplify(Sum(x, (t, a, b)) + Sum(x, (t, b+1, c)) + Sum(x, (t, b+1, c)))
@@ -704,7 +704,7 @@ def test_simplify():
         Sum(x, (x, a, b)) * Sum(x**2, (x, a, b))
     assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b))) \
         == Sum(x + y + z, (t, a, b))          # issue 8596
-    assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b)) + \
+    assert simplify(Sum(x, (t, a, b)) + Sum(y, (t, a, b)) + Sum(z, (t, a, b)) +
         Sum(v, (t, a, b))) == Sum(x + y + z + v, (t, a, b))  # issue 8596
 
 
@@ -734,11 +734,11 @@ def test_reorder():
         Sum(x*y, (y, c, d), (x, a, b))
     assert Sum(x, (x, a, b), (x, c, d)).reorder((0, 1)) == \
         Sum(x, (x, c, d), (x, a, b))
-    assert Sum(x*y + z, (x, a, b), (z, m, n), (y, c, d)).reorder(\
+    assert Sum(x*y + z, (x, a, b), (z, m, n), (y, c, d)).reorder(
         (2, 0), (0, 1)) == Sum(x*y + z, (z, m, n), (y, c, d), (x, a, b))
-    assert Sum(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(\
+    assert Sum(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(
         (0, 1), (1, 2), (0, 2)) == Sum(x*y*z, (x, a, b), (z, m, n), (y, c, d))
-    assert Sum(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(\
+    assert Sum(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(
         (x, y), (y, z), (x, z)) == Sum(x*y*z, (x, a, b), (z, m, n), (y, c, d))
     assert Sum(x*y, (x, a, b), (y, c, d)).reorder((x, 1)) == \
         Sum(x*y, (y, c, d), (x, a, b))

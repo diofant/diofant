@@ -870,7 +870,7 @@ class LatexPrinter(Printer):
     def _print_elliptic_pi(self, expr, exp=None):
         if len(expr.args) == 3:
             tex = r"\left(%s; %s\middle| %s\right)" % \
-                (self._print(expr.args[0]), self._print(expr.args[1]), \
+                (self._print(expr.args[0]), self._print(expr.args[1]),
                  self._print(expr.args[2]))
         else:
             tex = r"\left(%s\middle| %s\right)" % \

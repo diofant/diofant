@@ -1277,7 +1277,7 @@ class Basic(with_metaclass(ManagedProperties)):
             if isinstance(value, Basic):
                 if exact:
                     def _value(expr, result):
-                        return (value.subs(result) \
+                        return (value.subs(result)
                             if all(val for val in result.values()) else expr)
                 else:
                     def _value(expr, result):

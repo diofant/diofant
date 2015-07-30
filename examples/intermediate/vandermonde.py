@@ -88,8 +88,8 @@ def gen_poly(points, order, syms):
             "%d polynomial, given %d points" %
             (V.shape[0], order, dim, num_pts))
     elif num_pts > V.shape[0]:
-        print("gen_poly given %d points but only requires %d, "\
-            "continuing using the first %d points" % \
+        print("gen_poly given %d points but only requires %d, "
+            "continuing using the first %d points" %
             (num_pts, V.shape[0], V.shape[0]))
         num_pts = V.shape[0]
 

@@ -616,32 +616,32 @@ docs, run "cd docs; make html".  To skip checking Sphinx coverage, pass --no-sph
         print('='*70)
 
         if args.no_color:
-            print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" %
                 (get_mod_name(file, sympy_top), score, doctests, num_functions))
 
         elif score < 100:
-            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
                 (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
                 score, doctests, num_functions, c_normal))
 
         else:
-            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
                 (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
                 score, doctests, num_functions, c_normal))
 
         if args.sphinx:
             if args.no_color:
-                print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" % \
+                print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" %
                     (get_mod_name(file, sympy_top), sphinx_score,
                      num_functions - total_sphinx, num_functions))
 
             elif sphinx_score < 100:
-                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" % \
+                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
                     (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 
             else:
-                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" % \
+                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
                     (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 

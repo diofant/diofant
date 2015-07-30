@@ -125,7 +125,7 @@ def test_product_rules():
 
     #Second product rule
     lhs = delop(u & v).doit()
-    rhs = ((u ^ (delop ^ v)) + (v ^ (delop ^ u)) + \
+    rhs = ((u ^ (delop ^ v)) + (v ^ (delop ^ u)) +
           ((u & delop)(v)) + ((v & delop)(u))).doit()
     assert simplify(lhs) == simplify(rhs)
 

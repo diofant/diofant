@@ -4638,7 +4638,7 @@ def test_categories():
         "EmptySet(), id:A2-->A2: EmptySet(), id:A3-->A3: " \
         "EmptySet(), f1:A1-->A2: {unique}, f2:A2-->A3: EmptySet()}"
 
-    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, " \
+    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, "
         "id:A₂——▶A₂: ∅, id:A₃——▶A₃: ∅, f₁:A₁——▶A₂: {unique}, f₂:A₂——▶A₃: ∅}")
 
     d = Diagram({f1: "unique", f2: S.EmptySet}, {f2 * f1: "unique"})
@@ -4646,8 +4646,8 @@ def test_categories():
         "EmptySet(), id:A2-->A2: EmptySet(), id:A3-->A3: " \
         "EmptySet(), f1:A1-->A2: {unique}, f2:A2-->A3: EmptySet()}" \
         " ==> {f2*f1:A1-->A3: {unique}}"
-    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, id:A₂——▶A₂: " \
-        "∅, id:A₃——▶A₃: ∅, f₁:A₁——▶A₂: {unique}, f₂:A₂——▶A₃: ∅}" \
+    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, id:A₂——▶A₂: "
+        "∅, id:A₃——▶A₃: ∅, f₁:A₁——▶A₂: {unique}, f₂:A₂——▶A₃: ∅}"
         " ══▶ {f₂∘f₁:A₁——▶A₃: {unique}}")
 
     grid = DiagramGrid(d)
@@ -4884,7 +4884,7 @@ def test_pretty_Complement():
 def test_pretty_SymmetricDifference():
     from sympy import SymmetricDifference, Interval
     from sympy.utilities.pytest import raises
-    assert upretty(SymmetricDifference(Interval(2,3), Interval(3,5), \
+    assert upretty(SymmetricDifference(Interval(2,3), Interval(3,5),
            evaluate = False)) == u('[2, 3] ∆ [3, 5]')
     with raises(NotImplementedError):
         pretty(SymmetricDifference(Interval(2,3), Interval(3,5), evaluate = False))

@@ -242,9 +242,9 @@ def test_mellin_transform_bessel():
         a + s)*gamma(-s + S(1)/2)/(2*sqrt(pi)*gamma(a - s + 1)),
         (Max(-re(a), 0), S(1)/2), True)
     assert MT(besseli(b, sqrt(x))*besselk(a, sqrt(x)), x, s) == \
-        (2**(2*s - 1)*gamma(-2*s + 1)*gamma(-a/2 + b/2 + s)* \
-        gamma(a/2 + b/2 + s)/(gamma(-a/2 + b/2 - s + 1)* \
-        gamma(a/2 + b/2 - s + 1)), (Max(-re(a)/2 - re(b)/2, \
+        (2**(2*s - 1)*gamma(-2*s + 1)*gamma(-a/2 + b/2 + s)*
+        gamma(a/2 + b/2 + s)/(gamma(-a/2 + b/2 - s + 1)*
+        gamma(a/2 + b/2 - s + 1)), (Max(-re(a)/2 - re(b)/2,
         re(a)/2 - re(b)/2), S(1)/2), True)
 
     # TODO products of besselk are a mess
