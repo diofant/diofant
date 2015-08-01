@@ -6,7 +6,7 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
                    ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
                    ImageSet, pi, Pow, Contains, Sum, RootOf, log,
-                   SymmetricDifference, Integer, Rational)
+                   SymmetricDifference, Integer, Rational, Piecewise)
 
 from sympy.abc import a, b, x, y, z
 
@@ -709,6 +709,17 @@ def test_image_interval():
 
     assert (imageset(Lambda(x, sin(cos(x))), Interval(0, 1)) ==
             ImageSet(Lambda(x, sin(cos(x))), Interval(0, 1)))
+
+
+def test_image_piecewise():
+    f = Piecewise((x, x <= -1), (1/x**2, x <= 5), (x**3, True))
+    f1 = Piecewise((0, x <= 1), (1, x <= 2), (2, True))
+    f2 = Piecewise((x, x <= -1), (x**3, True))
+    assert imageset(x, f, Interval(-5, 5)) == Union(Interval(-5, -1),
+                                                    Interval(Rational(1, 25),
+                                                             oo, false, true))
+    assert imageset(x, f1, Interval(1, 2)) == FiniteSet(0, 1)
+    assert imageset(x, f2, Interval(-2, 2)) == Interval(-2, 8)
 
 
 @pytest.mark.xfail  # See: https://github.com/sympy/sympy/pull/2723#discussion_r8659826
