@@ -665,7 +665,7 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
     def _eval_rewrite_as_coth(self, arg):
         return self._rewrite_reciprocal("_eval_rewrite_as_coth", arg)
 
-    def as_real_imag(self, deep = True, **hints):
+    def as_real_imag(self, deep=True, **hints):
         return (1 / self._reciprocal_of(self.args[0])).as_real_imag(deep, **hints)
 
     def _eval_conjugate(self):

@@ -709,7 +709,7 @@ def test_simplify():
 
 
 def test_change_index():
-    b, v = symbols('b, v', integer = True)
+    b, v = symbols('b, v', integer=True)
 
     assert Sum(x, (x, a, b)).change_index(x, x + 1, y) == \
         Sum(y - 1, (y, a + 1, b + 1))
@@ -728,7 +728,7 @@ def test_change_index():
 
 
 def test_reorder():
-    b, y, c, d, z = symbols('b, y, c, d, z', integer = True)
+    b, y, c, d, z = symbols('b, y, c, d, z', integer=True)
 
     assert Sum(x*y, (x, a, b), (y, c, d)).reorder((0, 1)) == \
         Sum(x*y, (y, c, d), (x, a, b))

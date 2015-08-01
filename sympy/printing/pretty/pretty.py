@@ -776,7 +776,7 @@ class PrettyPrinter(Printer):
                     items = [(0, expr)]
                 for system, vect in items:
                     inneritems = list(vect.components.items())
-                    inneritems.sort(key = lambda x: x[0].__str__())
+                    inneritems.sort(key=lambda x: x[0].__str__())
                     for k, v in inneritems:
                         #if the coef of the basis vector is 1
                         #we skip the 1

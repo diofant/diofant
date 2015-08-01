@@ -2137,28 +2137,28 @@ def test_almost_linear():
     f = Function('f')
     d = f(x).diff(x)
     eq = x**2*f(x)**2*d + f(x)**3 + 1
-    sol = dsolve(eq, f(x), hint = 'almost_linear')
+    sol = dsolve(eq, f(x), hint='almost_linear')
     assert sol[0].rhs == (C1*exp(3/x) - 1)**(S(1)/3)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
     eq = x*f(x)*d + 2*x*f(x)**2 + 1
-    sol = dsolve(eq, f(x), hint = 'almost_linear')
+    sol = dsolve(eq, f(x), hint='almost_linear')
     assert sol[0].rhs == -sqrt(C1 - 2*Ei(4*x))*exp(-2*x)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
     eq = x*d + x*f(x) + 1
-    sol = dsolve(eq, f(x), hint = 'almost_linear')
+    sol = dsolve(eq, f(x), hint='almost_linear')
     assert sol.rhs == (C1 - Ei(x))*exp(-x)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
     assert our_hint in classify_ode(eq, f(x))
 
     eq = x*exp(f(x))*d + exp(f(x)) + 3*x
-    sol = dsolve(eq, f(x), hint = 'almost_linear')
+    sol = dsolve(eq, f(x), hint='almost_linear')
     assert sol.rhs == log(C1/x - 3*x/2)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
     eq = x + A*(x + diff(f(x), x) + f(x)) + diff(f(x), x) + f(x) + 2
-    sol = dsolve(eq, f(x), hint = 'almost_linear')
+    sol = dsolve(eq, f(x), hint='almost_linear')
     assert sol.rhs == (C1 + Piecewise(
         (x, Eq(A + 1, 0)), ((-A*x + A - x - 1)*exp(x)/(A + 1), True)))*exp(-x)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
@@ -2196,7 +2196,7 @@ def test_separable_reduced():
     eq = x* df  + f(x)* (1 / (x**2*f(x) - 1))
     assert classify_ode(eq) == ('separable_reduced', 'lie_group',
         'separable_reduced_Integral')
-    sol = dsolve(eq, hint = 'separable_reduced', simplify=False)
+    sol = dsolve(eq, hint='separable_reduced', simplify=False)
     assert sol.lhs ==  log(x**2*f(x))/3 + log(x**2*f(x) - S(3)/2)/6
     assert sol.rhs == C1 + log(x)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
@@ -2206,13 +2206,13 @@ def test_separable_reduced():
     assert classify_ode(eq) == ('separable_reduced', 'lie_group',
         'separable_reduced_Integral')
     # generates PolynomialError in solve attempt
-    sol = dsolve(eq, hint = 'separable_reduced')
+    sol = dsolve(eq, hint='separable_reduced')
     assert sol.lhs - sol.rhs == \
         log(x**3*f(x))/4 + log(x**3*f(x) - S(4)/3)/12 - C1 - log(x)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
     eq = x*df + f(x)*(x**2*f(x))
-    sol = dsolve(eq, hint = 'separable_reduced', simplify=False)
+    sol = dsolve(eq, hint='separable_reduced', simplify=False)
     assert sol == Eq(log(x**2*f(x))/2 - log(x**2*f(x) - 2)/2, C1 + log(x))
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 
@@ -2340,7 +2340,7 @@ def test_heuristic1():
 
 def test_issue_6247():
     eq = x**2*f(x)**2 + x*Derivative(f(x), x)
-    sol = dsolve(eq, hint = 'separable_reduced')
+    sol = dsolve(eq, hint='separable_reduced')
     assert checkodesol(eq, sol, order=1)[0]
     eq = f(x).diff(x, x) + 4*f(x)
     sol = dsolve(eq, f(x), simplify=False)

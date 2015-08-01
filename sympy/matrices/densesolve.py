@@ -75,7 +75,7 @@ def rref(matlist, K):
     return result_matlist
 
 
-def LU(matlist, K, reverse = 0):
+def LU(matlist, K, reverse=0):
     """
     It computes the LU decomposition of a matrix and returns L and U
     matrices.
@@ -225,7 +225,7 @@ def lower_triangle(matlist, K):
     LU
     """
     copy_matlist = copy.deepcopy(matlist)
-    lower_triangle, upper_triangle = LU(copy_matlist, K, reverse = 1)
+    lower_triangle, upper_triangle = LU(copy_matlist, K, reverse=1)
     return lower_triangle
 
 

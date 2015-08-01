@@ -2896,7 +2896,7 @@ class PermutationGroup(Basic):
         # initialize BSGS and basic group properties
         def get_reps(orbits):
             # get the minimal element in the base ordering
-            return [min(orbit, key = lambda x: base_ordering[x])
+            return [min(orbit, key=lambda x: base_ordering[x])
               for orbit in orbits]
 
         def update_nu(l):

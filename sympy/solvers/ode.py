@@ -381,7 +381,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
 
 
 def dsolve(eq, func=None, hint="default", simplify=True,
-           ics= None, xi=None, eta=None, x0=0, n=6, **kwargs):
+           ics=None, xi=None, eta=None, x0=0, n=6, **kwargs):
     r"""
     Solves any (supported) kind of ordinary differential equation and
     system of ordinary differential equations.
@@ -3637,7 +3637,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
         if len(fargs) == 1:
             finaldict[fargs.pop()] = 0
         else:
-            maxf = max(fargs, key = lambda x: x.args[0])
+            maxf = max(fargs, key=lambda x: x.args[0])
             sol = solve(teq, maxf)
             if isinstance(sol, list):
                 sol = sol[0]
@@ -3645,8 +3645,8 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
 
     # Finding the recurrence relation in terms of the largest term.
     fargs = req.atoms(AppliedUndef)
-    maxf = max(fargs, key = lambda x: x.args[0])
-    minf = min(fargs, key = lambda x: x.args[0])
+    maxf = max(fargs, key=lambda x: x.args[0])
+    minf = min(fargs, key=lambda x: x.args[0])
     if minf.args[0].is_Symbol:
         startiter = 0
     else:
@@ -4289,7 +4289,7 @@ def _linear_coeff_match(expr, func):
         if eq is a*x + b*f(x) + c, else None.
         '''
         eq = _mexpand(eq)
-        c = eq.as_independent(x, f(x), as_Add = True)[0]
+        c = eq.as_independent(x, f(x), as_Add=True)[0]
         if not c.is_Rational:
             return
         a = eq.coeff(x)
@@ -5240,8 +5240,8 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
             "only for first order differential equations")
         else:
             df = func.diff(x)
-            a = Wild('a', exclude = [df])
-            b = Wild('b', exclude = [df])
+            a = Wild('a', exclude=[df])
+            b = Wild('b', exclude=[df])
             match = collect(expand(eq), df).match(a*df + b)
 
             if match:
@@ -5331,8 +5331,8 @@ def ode_lie_group(eq, func, order, match):
     df = func.diff(x)
     xi = Function("xi")
     eta = Function("eta")
-    a = Wild('a', exclude = [df])
-    b = Wild('b', exclude = [df])
+    a = Wild('a', exclude=[df])
+    b = Wild('b', exclude=[df])
     xis = match.pop('xi')
     etas = match.pop('eta')
 
@@ -5573,8 +5573,8 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
         else:
             df = func.diff(x)
             # Matching differential equation of the form a*df + b
-            a = Wild('a', exclude = [df])
-            b = Wild('b', exclude = [df])
+            a = Wild('a', exclude=[df])
+            b = Wild('b', exclude=[df])
             if match:  # Used by lie_group hint
                 h = match['h']
                 y = match['y']

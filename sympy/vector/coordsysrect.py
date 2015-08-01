@@ -445,7 +445,7 @@ class CoordSysCartesian(Basic):
         return CoordSysCartesian(name, rotation_matrix=final_matrix,
                                  vector_names=vector_names,
                                  variable_names=variable_names,
-                                 location = location,
+                                 location=location,
                                  parent=self)
 
     def orient_new_axis(self, name, angle, axis, location=None,

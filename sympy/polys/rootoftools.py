@@ -336,8 +336,7 @@ class RootOf(Expr):
         # sort complexes and combine with imag
         if complexes:
             # key is (x1, y1) e.g. (1, 2)x(3, 4) -> (1,3)
-            complexes = sorted(complexes, key=
-                lambda c: c[0].a)
+            complexes = sorted(complexes, key=lambda c: c[0].a)
             # find insertion point for imaginary
             for i, c in enumerate(reversed(complexes)):
                 if c[0].bx <= 0:

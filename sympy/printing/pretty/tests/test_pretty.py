@@ -4885,9 +4885,9 @@ def test_pretty_SymmetricDifference():
     from sympy import SymmetricDifference, Interval
     from sympy.utilities.pytest import raises
     assert upretty(SymmetricDifference(Interval(2,3), Interval(3,5),
-           evaluate = False)) == u('[2, 3] ∆ [3, 5]')
+           evaluate=False)) == u('[2, 3] ∆ [3, 5]')
     with raises(NotImplementedError):
-        pretty(SymmetricDifference(Interval(2,3), Interval(3,5), evaluate = False))
+        pretty(SymmetricDifference(Interval(2,3), Interval(3,5), evaluate=False))
 
 
 def test_pretty_Contains():

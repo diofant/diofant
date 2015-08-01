@@ -109,7 +109,7 @@ class Vector(BasisDependent):
         #Check if the other is a del operator
         if isinstance(other, Del):
             def directional_derivative(field):
-                field = express(field, other.system, variables = True)
+                field = express(field, other.system, variables=True)
                 out = self.dot(other._i) * df(field, other._x)
                 out += self.dot(other._j) * df(field, other._y)
                 out += self.dot(other._k) * df(field, other._z)
@@ -369,7 +369,7 @@ class VectorAdd(BasisDependentAdd, Vector):
     def __str__(self, printer=None):
         ret_str = ''
         items = list(self.separate().items())
-        items.sort(key = lambda x: x[0].__str__())
+        items.sort(key=lambda x: x[0].__str__())
         for system, vect in items:
             base_vects = system.base_vectors()
             for x in base_vects:
