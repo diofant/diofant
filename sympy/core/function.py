@@ -529,9 +529,8 @@ class Function(Application, Expr):
         and possible:
 
         >>> from sympy import loggamma
-        >>> loggamma(1/x)._eval_nseries(x,0,None)
+        >>> loggamma(1/x)._eval_nseries(x,0)
         -1/x - log(x)/x + log(x)/2 + O(1)
-
         """
         from sympy import Order
         from sympy.sets.sets import FiniteSet

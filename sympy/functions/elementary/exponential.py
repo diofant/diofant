@@ -541,7 +541,7 @@ class LambertW(Function):
         else:
             return s.is_algebraic
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         if len(self.args) == 1:
             from sympy import O, Add, Integer, factorial
             x = self.args[0]
@@ -551,7 +551,7 @@ class LambertW(Function):
                 l += Add(*[Integer(-k)**(k - 1)*x**k/factorial(k)
                            for k in range(1, n)])
             return l + o
-        return super(LambertW, self)._eval_nseries(x, n=n, logx=logx)
+        return super(LambertW, self)._eval_nseries(x, n=n)
 
 
 from sympy.core.function import _coeff_isneg

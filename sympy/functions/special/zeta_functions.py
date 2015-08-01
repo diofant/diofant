@@ -495,7 +495,7 @@ class _zetas(Function):
     def _eval_rewrite_as_intractable(self, s):
         return zeta(log(s))
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         from sympy import Order, Add
         point = args0[0]
 
@@ -506,10 +506,10 @@ class _zetas(Function):
             z = self.args[0]
             l = [(1/z)**log(p) for p in range(1, n)]
             o = Order(1/z**log(n), x)
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return (Add(*l))._eval_nseries(x, n) + o
 
         # All other points are not handled
-        return super(_zetas, self)._eval_aseries(n, args0, x, logx)
+        return super(_zetas, self)._eval_aseries(n, args0, x)
 
 
 class dirichlet_eta(Function):
