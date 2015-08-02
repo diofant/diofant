@@ -948,7 +948,7 @@ def test_1st_exact1():
     assert dsolve(eq5, hint='1st_exact', simplify=False) == sol5
     assert checkodesol(eq1, sol1, order=1, solve_for_func=False)[0]
     # issue 5080 blocks the testing of this solution
-    #assert checkodesol(eq2, sol2, order=1, solve_for_func=False)[0]
+    # assert checkodesol(eq2, sol2, order=1, solve_for_func=False)[0]
     assert checkodesol(eq2, sol2b, order=1, solve_for_func=False)[0]
     assert checkodesol(eq3, sol3, order=1, solve_for_func=False)[0]
     assert checkodesol(eq4, sol4, order=1, solve_for_func=False)[0]

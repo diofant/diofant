@@ -122,7 +122,7 @@ def test_isprime():
     assert isprime(2**89 - 1)
     assert isprime(2**607 - 1)
     assert not isprime(2**601 - 1)
-    #Arnault's number
+    # Arnault's number
     assert isprime(int('''
 803837457453639491257079614341942108138837688287558145837488917522297\
 427376533365218650233616396004545791504202360320876656996676098728404\

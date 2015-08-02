@@ -441,7 +441,7 @@ def test_is_algebraic_expr():
 
 
 def test_SAGE1():
-    #see https://github.com/sympy/sympy/issues/3346
+    # see https://github.com/sympy/sympy/issues/3346
     class MyInt:
         def _sympy_(self):
             return Integer(5)

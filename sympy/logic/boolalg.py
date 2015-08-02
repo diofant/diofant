@@ -917,7 +917,7 @@ class ITE(BooleanFunction):
         a, b, c = self.args
         return And._to_nnf(Or(~a, b), Or(a, c), simplify=simplify)
 
-### end class definitions. Some useful methods
+# end class definitions. Some useful methods
 
 
 def conjuncts(expr):

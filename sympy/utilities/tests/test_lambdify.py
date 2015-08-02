@@ -19,7 +19,7 @@ numexpr = import_module('numexpr')
 
 w, x, y, z = symbols('w,x,y,z')
 
-#================== Test different arguments =======================
+# ================= Test different arguments =======================
 
 
 def test_no_args():
@@ -73,7 +73,7 @@ def test_atoms():
     f = lambdify(x, I + x, {"I": 1j})
     assert f(1) == 1 + 1j
 
-#================== Test different modules =========================
+# ================= Test different modules =========================
 
 # high precision output of sin(0.2*pi) is used to detect if precision is lost unwanted
 
@@ -121,7 +121,7 @@ def test_number_precision():
     prec = 1e-49  # mpmath precision is around 50 decimal places
     assert -prec < f(0) - sin02 < prec
 
-#================== Test Translations ==============================
+# ================= Test Translations ==============================
 # We can only check if all translated functions are valid. It has to be checked
 # by hand if they are complete.
 
@@ -195,7 +195,7 @@ def test_issue_9334():
     func_numexpr(foo, bar)
 
 
-#================== Test some functions ============================
+# ================= Test some functions ============================
 
 
 def test_exponentiation():
@@ -228,7 +228,7 @@ def test_trig():
     assert -prec < d[0] + 1 < prec
     assert -prec < d[1] < prec
 
-#================== Test vectors ===================================
+# ================= Test vectors ===================================
 
 
 def test_vector_simple():
@@ -303,10 +303,10 @@ def test_numpy_matrix():
         skip("numpy not installed.")
     A = Matrix([[x, x*y], [sin(z) + 4, x**z]])
     sol_arr = numpy.array([[1, 2], [numpy.sin(3) + 4, 1]])
-    #Lambdify array first, to ensure return to matrix as default
+    # Lambdify array first, to ensure return to matrix as default
     f = lambdify((x, y, z), A, [{'ImmutableMatrix': numpy.array}, 'numpy'])
     numpy.testing.assert_allclose(f(1, 2, 3), sol_arr)
-    #Check that the types are arrays and matrices
+    # Check that the types are arrays and matrices
     assert isinstance(f(1, 2, 3), numpy.ndarray)
 
 
@@ -345,7 +345,7 @@ def test_integral():
     l = lambdify(x, Integral(f(x), (x, -oo, oo)), modules="sympy")
     assert l(x) == Integral(exp(-x**2), (x, -oo, oo))
 
-#================== Test symbolic ==================================
+# ================= Test symbolic ==================================
 
 
 def test_sym_single_arg():
@@ -445,16 +445,16 @@ def test_dummification():
     t = symbols('t')
     F = Function('F')
     G = Function('G')
-    #"\alpha" is not a valid python variable name
-    #lambdify should sub in a dummy for it, and return
-    #without a syntax error
+    # "\alpha" is not a valid python variable name
+    # lambdify should sub in a dummy for it, and return
+    # without a syntax error
     alpha = symbols(r'\alpha')
     some_expr = 2 * F(t)**2 / G(t)
     lam = lambdify((F(t), G(t)), some_expr)
     assert lam(3, 9) == 2
     lam = lambdify(sin(t), 2 * sin(t)**2)
     assert lam(F(t)) == 2 * F(t)**2
-    #Test that \alpha was properly dummified
+    # Test that \alpha was properly dummified
     lam = lambdify((alpha, t), 2*alpha + t)
     assert lam(2, 1) == 5
     raises(SyntaxError, lambda: lambdify(F(t) * G(t), F(t) * G(t) + 5))
@@ -489,7 +489,7 @@ def test_lambdify_docstring():
         "a1 + a10 + a11 + a12 + a13 + a14 + a15 + a16 + a17 + a18 + a19 + a2 + a20 +...")
 
 
-#================== Test special printers ==========================
+# ================= Test special printers ==========================
 
 
 def test_special_printers():

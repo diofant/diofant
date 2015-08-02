@@ -165,8 +165,8 @@ def test_call():
     assert (l + x).rcall(y) == 2*y + x
     assert (x**l).rcall(2) == x**4
     # TODO UndefinedFunction does not subclass Expr
-    #f = Function('f')
-    #assert (2*f)(x) == 2*f(x)
+    # f = Function('f')
+    # assert (2*f)(x) == 2*f(x)
 
     assert (Q.real & Q.positive).rcall(x) == Q.real(x) & Q.positive(x)
 

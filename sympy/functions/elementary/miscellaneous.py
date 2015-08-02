@@ -36,7 +36,7 @@ class IdentityFunction(with_metaclass(Singleton, Lambda)):
     def __new__(cls):
         from sympy.sets.sets import FiniteSet
         x = Dummy('x')
-        #construct "by hand" to avoid infinite loop
+        # construct "by hand" to avoid infinite loop
         obj = Expr.__new__(cls, Tuple(x), x)
         obj.nargs = FiniteSet(1)
         return obj

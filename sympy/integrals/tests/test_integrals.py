@@ -420,7 +420,6 @@ def test_evalf_issue_939():
 
 @XFAIL
 def test_failing_integrals():
-    #---
     # Double integrals not implemented
     assert NS(Integral(
         sqrt(x) + x*y, (x, 1, 2), (y, -1, 1)), 15) == '2.43790283299492'

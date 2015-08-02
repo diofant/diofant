@@ -198,7 +198,7 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_GoldenRatio(self, expr):
         # FIXME: how to do better, e.g., for octave_code(2*GoldenRatio)?
-        #return self._print((1+sqrt(S(5)))/2)
+        # return self._print((1+sqrt(S(5)))/2)
         return "(1+sqrt(5))/2"
 
     def _print_NumberSymbol(self, expr):
@@ -259,7 +259,7 @@ class OctaveCodePrinter(CodePrinter):
         return str(expr).lower()
 
     # Could generate quadrature code for definite Integrals?
-    #_print_Integral = _print_not_supported
+    # _print_Integral = _print_not_supported
 
     def _print_MatrixBase(self, A):
         # Handle zero dimensions:

@@ -351,7 +351,7 @@ def test_division():
     assert (1/x**2).subs(x, -2) == Rational(1, 4)
     assert (-(1/x**2)).subs(x, -2) == -Rational(1, 4)
 
-    #issue 5360
+    # issue 5360
     assert (1/x).subs(x, 0) == 1/S(0)
 
 

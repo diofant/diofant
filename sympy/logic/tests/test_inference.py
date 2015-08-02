@@ -155,7 +155,7 @@ def test_pl_true():
     assert pl_true( A & B, {B: False}) is False
     assert pl_true( A | B, {A: False, B: False}) is False
 
-    #test for None
+    # test for None
     assert pl_true(B, {B: None}) is None
     assert pl_true( A & B, {A: True, B: None}) is None
     assert pl_true( A >> B, {A: True, B: None}) is None

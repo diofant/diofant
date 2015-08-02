@@ -167,7 +167,7 @@ def test_BlockDiagMatrix():
 
     assert bc_matmul(X*X) == BlockDiagMatrix(A*A, B*B, C*C)
     assert block_collapse(X*X) == BlockDiagMatrix(A*A, B*B, C*C)
-    #XXX: should be == ??
+    # XXX: should be == ??
     assert block_collapse(X + X).equals(BlockDiagMatrix(2*A, 2*B, 2*C))
     assert block_collapse(X*Y) == BlockDiagMatrix(A*A, 2*B*B, 3*C*C)
     assert block_collapse(X + Y) == BlockDiagMatrix(2*A, 3*B, 4*C)

@@ -481,7 +481,7 @@ def _rewrite_gamma(f, s, a, b):
             return None
         if a_.free_symbols or b_.free_symbols or c.free_symbols:
             return None  # XXX
-            #raise IntegralTransformError('Inverse Mellin', f,
+            # raise IntegralTransformError('Inverse Mellin', f,
             #                     'Could not determine position of singularity %s'
             #                     ' relative to fundamental strip' % c)
         raise MellinTransformStripError('Pole inside critical strip?')

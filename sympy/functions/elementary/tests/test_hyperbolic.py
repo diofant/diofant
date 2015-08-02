@@ -508,7 +508,7 @@ def test_atanh():
     # at specific points
     x = Symbol('x')
 
-    #at specific points
+    # at specific points
     assert atanh(0) == 0
     assert atanh(I) == I*pi/4
     assert atanh(-I) == -I*pi/4
@@ -521,7 +521,7 @@ def test_atanh():
 
     assert atanh(zoo) == nan
 
-    #properties
+    # properties
     assert atanh(-x) == -atanh(x)
 
     assert atanh(I/sqrt(3)) == I*pi/6
@@ -558,7 +558,7 @@ def test_acoth():
     # at specific points
     x = Symbol('x')
 
-    #at specific points
+    # at specific points
     assert acoth(0) == I*pi/2
     assert acoth(I) == -I*pi/4
     assert acoth(-I) == I*pi/4
@@ -572,7 +572,7 @@ def test_acoth():
     assert acoth(-I*oo) == 0
     assert acoth(zoo) == 0
 
-    #properties
+    # properties
     assert acoth(-x) == -acoth(x)
 
     assert acoth(I/sqrt(3)) == -I*pi/3

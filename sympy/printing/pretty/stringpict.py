@@ -22,16 +22,16 @@ class stringPict(object):
     """An ASCII picture.
     The pictures are represented as a list of equal length strings.
     """
-    #special value for stringPict.below
+    # special value for stringPict.below
     LINE = 'line'
 
     def __init__(self, s, baseline=0):
         """Initialize from string.
         Multiline strings are centered.
         """
-        #picture is a string that just can be printed
+        # picture is a string that just can be printed
         self.picture = stringPict.equalLengths(s.splitlines())
-        #baseline is the line number of the "base line"
+        # baseline is the line number of the "base line"
         self.baseline = baseline
         self.binding = None
 
@@ -57,14 +57,14 @@ class stringPict(object):
         """Put a string of stringPicts next to each other.
         Returns string, baseline arguments for stringPict.
         """
-        #convert everything to stringPicts
+        # convert everything to stringPicts
         objects = []
         for arg in args:
             if isinstance(arg, string_types):
                 arg = stringPict(arg)
             objects.append(arg)
 
-        #make a list of pictures, with equal height and baseline
+        # make a list of pictures, with equal height and baseline
         newBaseline = max(obj.baseline for obj in objects)
         newHeightBelowBaseline = max(
             obj.height() - obj.baseline
@@ -120,14 +120,14 @@ class stringPict(object):
         Strings are allowed.
         The special value stringPict.LINE is a row of '-' extended to the width.
         """
-        #convert everything to stringPicts; keep LINE
+        # convert everything to stringPicts; keep LINE
         objects = []
         for arg in args:
             if arg is not stringPict.LINE and isinstance(arg, string_types):
                 arg = stringPict(arg)
             objects.append(arg)
 
-        #compute new width
+        # compute new width
         newWidth = max(
             obj.width()
             for obj in objects
@@ -135,12 +135,12 @@ class stringPict(object):
 
         lineObj = stringPict(hobj('-', newWidth))
 
-        #replace LINE with proper lines
+        # replace LINE with proper lines
         for i, obj in enumerate(objects):
             if obj is stringPict.LINE:
                 objects[i] = lineObj
 
-        #stack the pictures, and center the result
+        # stack the pictures, and center the result
         newPicture = []
         for obj in objects:
             newPicture.extend(obj.picture)
@@ -223,31 +223,31 @@ class stringPict(object):
         """
         # XXX not used anywhere
         # XXX duplicate of root drawing in pretty.py
-        #put line over expression
+        # put line over expression
         result = self.above('_'*self.width())
-        #construct right half of root symbol
+        # construct right half of root symbol
         height = self.height()
         slash = '\n'.join(
             ' ' * (height - i - 1) + '/' + ' ' * i
             for i in range(height)
         )
         slash = stringPict(slash, height - 1)
-        #left half of root symbol
+        # left half of root symbol
         if height > 2:
             downline = stringPict('\\ \n \\', 1)
         else:
             downline = stringPict('\\')
-        #put n on top, as low as possible
+        # put n on top, as low as possible
         if n is not None and n.width() > downline.width():
             downline = downline.left(' '*(n.width() - downline.width()))
             downline = downline.above(n)
-        #build root symbol
+        # build root symbol
         root = downline.right(slash)
-        #glue it on at the proper height
-        #normally, the root symbel is as high as self
-        #which is one less than result
-        #this moves the root symbol one down
-        #if the root became higher, the baseline has to grow too
+        # glue it on at the proper height
+        # normally, the root symbel is as high as self
+        # which is one less than result
+        # this moves the root symbol one down
+        # if the root became higher, the baseline has to grow too
         root.baseline = result.baseline - result.height() + root.height()
         return result.left(root)
 
@@ -398,10 +398,10 @@ class prettyForm(stringPict):
             arg = stringPict(*arg.parens())
         result = [arg]
         for arg in others:
-            #add parentheses for weak binders
+            # add parentheses for weak binders
             if arg.binding > prettyForm.NEG:
                 arg = stringPict(*arg.parens())
-            #use existing minus sign if available
+            # use existing minus sign if available
             if arg.binding != prettyForm.NEG:
                 result.append(' + ')
             result.append(arg)
@@ -442,7 +442,7 @@ class prettyForm(stringPict):
         result = [args]
         for arg in others:
             result.append(xsym('*'))
-            #add parentheses for weak binders
+            # add parentheses for weak binders
             if arg.binding > prettyForm.MUL:
                 arg = stringPict(*arg.parens())
             result.append(arg)
@@ -508,12 +508,12 @@ class prettyForm(stringPict):
         """Functions of one or more variables.
         """
         if function in prettyForm.simpleFunctions:
-            #simple function: use only space if possible
+            # simple function: use only space if possible
             assert len(
                 args) == 1, "Simple function %s must have 1 argument" % function
             arg = args[0].__pretty__()
             if arg.binding <= prettyForm.DIV:
-                #optimization: no parentheses necessary
+                # optimization: no parentheses necessary
                 return prettyForm(binding=prettyForm.FUNC, *arg.left(function + ' '))
         argumentList = []
         for arg in args:

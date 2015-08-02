@@ -452,7 +452,7 @@ def test_wallis_product():
 
 
 def test_telescopic_sums():
-    #checks also input 2 of comment 1 issue 4127
+    # checks also input 2 of comment 1 issue 4127
     assert Sum(1/k - 1/(k + 1), (k, 1, n)).doit() == 1 - 1/(1 + n)
     f = Function("f")
     assert Sum(

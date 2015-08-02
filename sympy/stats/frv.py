@@ -197,9 +197,9 @@ class SingleFiniteDistribution(Basic, NamedArgsMixin):
         return other in self.set
 
 
-#=============================================
-#=========  Probability Space  ===============
-#=============================================
+#####################
+# Probability Space #
+#####################
 
 
 class FinitePSpace(PSpace):

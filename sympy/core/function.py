@@ -597,8 +597,8 @@ class Function(Application, Expr):
             e = self
             e1 = e.expand()
             if e == e1:
-                #for example when e = sin(x+1) or e = sin(cos(x))
-                #let's try the general algorithm
+                # for example when e = sin(x+1) or e = sin(cos(x))
+                # let's try the general algorithm
                 term = e.subs(x, S.Zero)
                 if term.is_finite is False or term is S.NaN:
                     raise PoleError("Cannot expand %s around 0" % (self))
@@ -1065,7 +1065,7 @@ class Derivative(Expr):
             # order for later comparisons. This is too aggressive if evaluate
             # is False, so we don't do it in that case.
             if evaluate:
-                #TODO: check if assumption of discontinuous derivatives exist
+                # TODO: check if assumption of discontinuous derivatives exist
                 variables = cls._sort_variables(variables)
             # Here we *don't* need to reinject evaluate into assumptions
             # because we are done with it and it is not an assumption that
@@ -1383,7 +1383,7 @@ class Lambda(Expr):
             # for example, https://github.com/numpy/numpy/issues/1697.
             # The ideal solution would be just to attach metadata to
             # the exception and change NumPy to take advantage of this.
-            ## XXX does this apply to Lambda? If not, remove this comment.
+            # XXX does this apply to Lambda? If not, remove this comment.
             temp = ('%(name)s takes exactly %(args)s '
                    'argument%(plural)s (%(given)s given)')
             raise TypeError(temp % {
@@ -2283,7 +2283,7 @@ def count_ops(expr, visual=False):
                 continue
 
             if a.is_Rational:
-                #-1/3 = NEG + DIV
+                # -1/3 = NEG + DIV
                 if a is not S.One:
                     if a.p < 0:
                         ops.append(NEG)

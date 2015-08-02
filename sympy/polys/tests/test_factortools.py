@@ -302,9 +302,9 @@ def test_dmp_zz_wang():
     c_3 = -36*x**4*y**2 - 108*x**4*y - 27*x**3*y**2 - 36*x**3*y - 108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y
 
     # TODO
-    #assert R.dmp_zz_diophantine(H_1, c_1, [], 5, p) == [-3*x, -2, 1]
-    #assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
-    #assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
+    # assert R.dmp_zz_diophantine(H_1, c_1, [], 5, p) == [-3*x, -2, 1]
+    # assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
+    # assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
 
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
     assert R.dmp_expand(factors) == w_1

@@ -9,7 +9,7 @@ from sympy.utilities.codegen import (codegen, make_routine, CCodeGen,
 from sympy.utilities.pytest import raises
 from sympy.utilities.lambdify import implemented_function
 
-#FIXME: Fails due to circular import in with core
+# FIXME: Fails due to circular import in with core
 # from sympy import codegen
 
 

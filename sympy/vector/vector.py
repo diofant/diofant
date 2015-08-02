@@ -37,8 +37,8 @@ class Vector(BasisDependent):
         True
 
         """
-        #The '_components' attribute is defined according to the
-        #subclass of Vector the instance belongs to.
+        # The '_components' attribute is defined according to the
+        # subclass of Vector the instance belongs to.
         return self._components
 
     def magnitude(self):
@@ -92,7 +92,7 @@ class Vector(BasisDependent):
         """
 
         from sympy.vector.functions import express
-        #Check special cases
+        # Check special cases
         if isinstance(other, Dyadic):
             if isinstance(self, VectorZero):
                 return Vector.zero
@@ -106,7 +106,7 @@ class Vector(BasisDependent):
             raise TypeError(str(other) + " is not a vector, dyadic or " +
                             "del operator")
 
-        #Check if the other is a del operator
+        # Check if the other is a del operator
         if isinstance(other, Del):
             def directional_derivative(field):
                 field = express(field, other.system, variables=True)
@@ -165,7 +165,7 @@ class Vector(BasisDependent):
 
         """
 
-        #Check special cases
+        # Check special cases
         if isinstance(other, Dyadic):
             if isinstance(self, VectorZero):
                 return Dyadic.zero
@@ -181,7 +181,7 @@ class Vector(BasisDependent):
               isinstance(other, VectorZero)):
             return Vector.zero
 
-        #Compute cross product
+        # Compute cross product
         def _det(mat):
             """This is needed as a little method for to find the determinant
             of a list in python.
@@ -234,15 +234,15 @@ class Vector(BasisDependent):
 
         """
 
-        #Handle the special cases
+        # Handle the special cases
         if not isinstance(other, Vector):
             raise TypeError("Invalid operand for outer product")
         elif (isinstance(self, VectorZero) or
               isinstance(other, VectorZero)):
             return Dyadic.zero
 
-        #Iterate over components of both the vectors to generate
-        #the required Dyadic instance
+        # Iterate over components of both the vectors to generate
+        # the required Dyadic instance
         args = []
         for k1, v1 in self.components.items():
             for k2, v2 in other.components.items():
@@ -316,17 +316,17 @@ class BaseVector(Vector, AtomicExpr):
     """
 
     def __new__(cls, name, index, system, pretty_str, latex_str):
-        #Verify arguments
+        # Verify arguments
         if index not in range(0, 3):
             raise ValueError("index must be 0, 1 or 2")
         if not isinstance(name, str):
             raise TypeError("name must be a valid string")
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
-        #Initialize an object
+        # Initialize an object
         obj = super(BaseVector, cls).__new__(cls, S(index),
                                              system)
-        #Assign important attributes
+        # Assign important attributes
         obj._base_instance = obj
         obj._components = {obj: S(1)}
         obj._measure_number = S(1)
@@ -339,9 +339,9 @@ class BaseVector(Vector, AtomicExpr):
         assumptions['commutative'] = True
         obj._assumptions = StdFactKB(assumptions)
 
-        #This attr is used for re-expression to one of the systems
-        #involved in the definition of the Vector. Applies to
-        #VectorMul and VectorAdd too.
+        # This attr is used for re-expression to one of the systems
+        # involved in the definition of the Vector. Applies to
+        # VectorMul and VectorAdd too.
         obj._sys = system
 
         return obj

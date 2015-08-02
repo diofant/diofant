@@ -492,14 +492,14 @@ def test_line_geom():
     assert Ray((1, 1), (2, 2)).distance(Point(1.5, 3)) == 3*sqrt(2)/4
     assert r.distance((1, 1)) == 0
 
-    #Line contains
+    # Line contains
     p1, p2 = Point(0, 1), Point(3, 4)
     l = Line(p1, p2)
     assert l.contains(p1) is True
     assert l.contains((0, 1)) is True
     assert l.contains((0, 0)) is False
 
-    #Ray contains
+    # Ray contains
     p1, p2 = Point(0, 0), Point(4, 4)
     r = Ray(p1, p2)
     assert r.contains(p1) is True
@@ -1478,10 +1478,10 @@ def test_convex_hull():
         Point(0, 0), Point(1, 1), Point(2, 2), Point(2, -1), Point(3, 1),
         Point(4, -1), Point(6, 2)]
     ch = Polygon(p[0], p[3], p[9], p[10], p[6], p[1])
-    #test handling of duplicate points
+    # test handling of duplicate points
     p.append(p[3])
 
-    #more than 3 collinear points
+    # more than 3 collinear points
     another_p = [Point(-45, -85), Point(-45, 85), Point(-45, 26),
                  Point(-45, -24)]
     ch2 = Segment(another_p[0], another_p[1])

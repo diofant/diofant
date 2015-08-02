@@ -78,11 +78,11 @@ def test_guess_rational_cv():
 
     # rational functions via the change of variable y -> x**n
     assert guess_solve_strategy( (sqrt(x) + 1)/(x**Rational(1, 3) + sqrt(x) + 1), x ) \
-        #== GS_RATIONAL_CV_1
+        # == GS_RATIONAL_CV_1
 
 
 def test_guess_transcendental():
-    #transcendental functions
+    # transcendental functions
     assert guess_solve_strategy( exp(x) + 1, x )  # == GS_TRANSCENDENTAL
     assert guess_solve_strategy( 2*cos(x) - y, x )  # == GS_TRANSCENDENTAL
     assert guess_solve_strategy(
@@ -406,7 +406,7 @@ def test_solve_transcendental():
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
     assert solve([x*y*(x**2 - y**2)]) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    #issue 4739
+    # issue 4739
     assert solve(exp(log(5)*x) - 2**x, x) == [0]
 
     # misc
@@ -952,7 +952,7 @@ def test_unrad1():
         32*s + 17, [s, s**6 - x]))
 
     # is this needed?
-    #assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
+    # assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
     #    x**15 - x**3*cosh(x)**5 - 3*x**2*cosh(x)**5 - 3*x*cosh(x)**5 - cosh(x)**5, [])
     raises(NotImplementedError, lambda:
         unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))

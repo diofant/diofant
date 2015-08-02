@@ -823,13 +823,13 @@ class Permutation(Basic):
         if size is not None:
             size = int(size)
 
-        #a) ()
-        #b) (1) = identity
-        #c) (1, 2) = cycle
-        #d) ([1, 2, 3]) = array form
-        #e) ([[1, 2]]) = cyclic form
-        #f) (Cycle) = conversion to permutation
-        #g) (Permutation) = adjust size or return copy
+        # a) ()
+        # b) (1) = identity
+        # c) (1, 2) = cycle
+        # d) ([1, 2, 3]) = array form
+        # e) ([[1, 2]]) = cyclic form
+        # f) (Cycle) = conversion to permutation
+        # g) (Permutation) = adjust size or return copy
         ok = True
         if not args:  # a
             return _af_new(list(range(size or 0)))

@@ -262,7 +262,7 @@ def test_D10():
 
 @XFAIL
 def test_D11():
-    #Is there a way to use count_ops?
+    # Is there a way to use count_ops?
     raise NotImplementedError("flops(sum(product(f[i][k], (i,1,k)), (k,1,n)))")
 
 
@@ -1224,7 +1224,7 @@ def test_O2():
                                                                   [4]])
 
 
-#testO3-O9 MISSING!!
+# testO3-O9 MISSING!!
 
 
 def test_O10():
@@ -1654,7 +1654,7 @@ def test_P37():
     M = Matrix([[1, 1, 0],
                 [0, 1, 0],
                 [0, 0, 1]])
-    #raises NotImplementedError: Implemented only for diagonalizable matrices
+    # raises NotImplementedError: Implemented only for diagonalizable matrices
     M**Rational(1, 2)
 
 
@@ -1663,7 +1663,7 @@ def test_P38():
     M=Matrix([[0, 1, 0],
               [0, 0, 0],
               [0, 0, 0]])
-    #raises NotImplementedError: Implemented only for diagonalizable matrices
+    # raises NotImplementedError: Implemented only for diagonalizable matrices
     M**Rational(1,2)
 
 
@@ -1761,22 +1761,22 @@ def test_R3():
 @XFAIL
 def test_R4():
 # Macsyma indefinite sum test case:
-#(c15) /* Check whether the full Gosper algorithm is implemented
-#   => 1/2^(n + 1) binomial(n, k - 1) */
-#closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
-#Time= 2690 msecs
-#                      (- n + k - 1) binomial(n + 1, k)
-#(d15)               - --------------------------------
-#				                       n
-#                                   2 2  (n + 1)
+# (c15) /* Check whether the full Gosper algorithm is implemented
+#    => 1/2^(n + 1) binomial(n, k - 1) */
+# closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
+#  Time= 2690 msecs
+#                       (- n + k - 1) binomial(n + 1, k)
+# (d15)               - --------------------------------
+# 				                       n
+#                                    2 2  (n + 1)
 #
-#(c16) factcomb(makefact(%));
-#Time= 220 msecs
-#                                 n!
-#(d16)                     ----------------
-#                                n
-#                          2 k! 2  (n - k)!
-# Might be possible after fixing https://github.com/sympy/sympy/pull/1879
+# (c16) factcomb(makefact(%));
+#  Time= 220 msecs
+#                                  n!
+# (d16)                     ----------------
+#                                 n
+#                           2 k! 2  (n - k)!
+#  Might be possible after fixing https://github.com/sympy/sympy/pull/1879
     raise NotImplementedError("Indefinite sum not supported")
 
 
@@ -2197,14 +2197,14 @@ def test_U10():
 
 @XFAIL
 def test_U13():
-    #assert minimize(x**4 - x + 1, x)== -3*2**Rational(1,3)/8 + 1
+    # assert minimize(x**4 - x + 1, x)== -3*2**Rational(1,3)/8 + 1
     raise NotImplementedError("minimize() not supported")
 
 
 @XFAIL
 def test_U14():
-    #f = 1/(x**2 + y**2 + 1)
-    #assert [minimize(f), maximize(f)] == [0,1]
+    # f = 1/(x**2 + y**2 + 1)
+    # assert [minimize(f), maximize(f)] == [0,1]
     raise NotImplementedError("minimize(), maximize() not supported")
 
 
@@ -2271,17 +2271,17 @@ def test_V7():
 
 @XFAIL
 def test_V8_V9():
-#Macsyma test case:
-#(c27) /* This example involves several symbolic parameters
-#   => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
-#                            [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
-#      [Gradshteyn and Ryzhik 2.553(3)] */
-#assume(b^2 > a^2)$
-#(c28) integrate(1/(a + b*cos(x)), x);
-#(c29) trigsimp(ratsimp(diff(%, x)));
-#                        1
-#(d29)             ------------
-#                  b cos(x) + a
+# Macsyma test case:
+# (c27) /* This example involves several symbolic parameters
+#    => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
+#                             [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
+#       [Gradshteyn and Ryzhik 2.553(3)] */
+#  assume(b^2 > a^2)$
+# (c28) integrate(1/(a + b*cos(x)), x);
+# (c29) trigsimp(ratsimp(diff(%, x)));
+#                         1
+# (d29)             ------------
+#                   b cos(x) + a
     raise NotImplementedError(
         "Integrate with assumption not supported")
 

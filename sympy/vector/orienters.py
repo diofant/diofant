@@ -62,7 +62,7 @@ class AxisOrienter(Orienter):
         >>> B = N.orient_new('B', (orienter, ))
 
         """
-        #Dummy initializer for docstrings
+        # Dummy initializer for docstrings
         pass
 
     @cacheit
@@ -227,7 +227,7 @@ class BodyOrienter(ThreeAngleOrienter):
         >>> body_orienter3 = BodyOrienter(0, 0, 0, 'XYX')
 
         """
-        #Dummy initializer for docstrings
+        # Dummy initializer for docstrings
         pass
 
 
@@ -290,7 +290,7 @@ class SpaceOrienter(ThreeAngleOrienter):
         >>> D = C.orient_new('C', (axis_orienter3, ))
 
         """
-        #Dummy initializer for docstrings
+        # Dummy initializer for docstrings
         pass
 
 
@@ -357,7 +357,7 @@ class QuaternionOrienter(Orienter):
         >>> B = N.orient_new('B', (q_orienter, ))
 
         """
-        #Dummy initializer for docstrings
+        # Dummy initializer for docstrings
         pass
 
     @property

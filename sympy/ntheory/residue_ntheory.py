@@ -190,7 +190,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
         r = legendre_symbol(d, p)
         if r == -1:
             break
-    #assert legendre_symbol(d, p) == -1
+    # assert legendre_symbol(d, p) == -1
     A = pow(a, t, p)
     D = pow(d, t, p)
     m = 0
@@ -199,7 +199,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
         adm = pow(adm, 2**(s - 1 - i), p)
         if adm % p == p - 1:
             m += 2**i
-    #assert A*pow(D, m, p) % p == 1
+    # assert A*pow(D, m, p) % p == 1
     x = pow(a, (t + 1)//2, p)*pow(D, m//2, p) % p
     return x
 
@@ -425,12 +425,12 @@ def _sqrt_mod_prime_power(a, p, k):
                     r1 = (r**2 - a) >> nx
                     if r1 % 2:
                         r = r + (1 << (nx - 1))
-                    #assert (r**2 - a)% (1 << (nx + 1)) == 0
+                    # assert (r**2 - a)% (1 << (nx + 1)) == 0
                     nx += 1
                 if r not in res:
                     res.append(r)
                 x = r + (1 << (k - 1))
-                #assert (x**2 - a) % pk == 0
+                # assert (x**2 - a) % pk == 0
                 if x < (1 << nx) and x not in res:
                     if (x**2 - a) % pk == 0:
                         res.append(x)
@@ -677,10 +677,10 @@ def _nthroot_mod1(s, q, p, all_roots):
         g2 = pow(g, z*t, p)
         g3 = igcdex(g2, p)[0]
         r = r1*g3 % p
-        #assert pow(r, q, p) == s
+        # assert pow(r, q, p) == s
     res = [r]
     h = pow(g, (p - 1) // q, p)
-    #assert pow(h, q, p) == 1
+    # assert pow(h, q, p) == 1
     hx = r
     for i in range(q - 1):
         hx = (hx*h) % p

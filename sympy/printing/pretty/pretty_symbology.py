@@ -315,7 +315,7 @@ _xobj_unicode = {
     'sum':  (( U('BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT'), '_', U('OVERLINE'), U('BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT')), U('N-ARY SUMMATION')),
 
     # horizontal objects
-    #'-':   '-',
+    # '-':   '-',
     '-':    U('BOX DRAWINGS LIGHT HORIZONTAL'),
     '_':    U('LOW LINE'),
     # We used to use this, but LOW LINE looks better for roots, as it's a
@@ -516,8 +516,8 @@ atoms_table = {
     'Pi':                      U('GREEK SMALL LETTER PI'),
     'Infinity':                U('INFINITY'),
     'NegativeInfinity':        U('INFINITY') and ('-' + U('INFINITY')),  # XXX what to do here
-    #'ImaginaryUnit':          U('GREEK SMALL LETTER IOTA'),
-    #'ImaginaryUnit':          U('MATHEMATICAL ITALIC SMALL I'),
+    # 'ImaginaryUnit':          U('GREEK SMALL LETTER IOTA'),
+    # 'ImaginaryUnit':          U('MATHEMATICAL ITALIC SMALL I'),
     'ImaginaryUnit':           U('DOUBLE-STRUCK ITALIC SMALL I'),
     'EmptySet':                U('EMPTY SET'),
     'Naturals':                U('DOUBLE-STRUCK CAPITAL N'),

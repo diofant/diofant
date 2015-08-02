@@ -67,10 +67,10 @@ def test_quadratic_elliptical_case():
     # Two test cases highlighted require lot of memory due to quadratic_congruence() method.
     # This above method should be replaced by Pernici's square_mod() method when his PR gets merged.
 
-    #assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-Integer(11), -Integer(1))}
+    # assert diop_solve(42*x**2 + 8*x*y + 15*y**2 + 23*x + 17*y - 4915) == {(-Integer(11), -Integer(1))}
     assert diop_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12) == set()
     assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-Integer(1), -Integer(1))}
-    #assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
+    # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
         {(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)),(Integer(1), Integer(1)), (-Integer(1), Integer(2))}
 
@@ -336,7 +336,7 @@ def test_diop_ternary_quadratic():
     assert check_solutions(x**2 - y**2 - z**2 - x*y - y*z)
     assert check_solutions(3*x**2 - x*y - y*z - x*z)
     assert check_solutions(x**2 - y*z - x*z)
-    #assert check_solutions(5*x**2 - 3*x*y - x*z)
+    # assert check_solutions(5*x**2 - 3*x*y - x*z)
     assert check_solutions(4*x**2 - 5*y**2 - x*z)
     assert check_solutions(3*x**2 + 2*y**2 - z**2 - 2*x*y + 5*y*z - 7*y*z)
     assert check_solutions(8*x**2 - 12*y*z)
@@ -395,7 +395,7 @@ def test_no_square_ternary_quadratic():
 
     assert check_solutions(2*x*y + y*z - 3*x*z)
     assert check_solutions(189*x*y - 345*y*z - 12*x*z)
-    #assert check_solutions(23*x*y + 34*y*z)
+    # assert check_solutions(23*x*y + 34*y*z)
     assert check_solutions(x*y + y*z + z*x)
     assert check_solutions(23*x*y + 23*y*z + 23*x*z)
 
@@ -416,17 +416,17 @@ def test_diophantine():
     assert check_solutions((x - y)*(x**2 + y**2 - z**2))
     assert check_solutions((x - 3*y + 7*z)*(x**2 + y**2 - z**2))
     assert check_solutions((x**2 - 3*y**2 - 1))
-    #assert check_solutions(y**2 + 7*x*y)
-    #assert check_solutions(x**2 - 3*x*y + y**2)
-    #assert check_solutions(z*(x**2 - y**2 - 15))
-    #assert check_solutions(x*(2*y - 2*z + 5))
+    # assert check_solutions(y**2 + 7*x*y)
+    # assert check_solutions(x**2 - 3*x*y + y**2)
+    # assert check_solutions(z*(x**2 - y**2 - 15))
+    # assert check_solutions(x*(2*y - 2*z + 5))
     assert check_solutions((x**2 - 3*y**2 - 1)*(x**2 - y**2 - 15))
     assert check_solutions((x**2 - 3*y**2 - 1)*(y - 7*z))
     assert check_solutions((x**2 + y**2 - z**2)*(x - 7*y - 3*z + 4*w))
     # Following test case caused problems in parametric representation
     # But this can be solved by factroing out y.
     # No need to use methods for ternary quadratic equations.
-    #assert check_solutions(y**2 - 7*x*y + 4*y*z)
+    # assert check_solutions(y**2 - 7*x*y + 4*y*z)
     assert check_solutions(x**2 - 2*x + 1)
 
 
@@ -541,8 +541,8 @@ def test_assumptions():
     """
     Test whether diophantine respects the assumptions.
     """
-    #Test case taken from the below so question regarding assumptions in diophantine module
-    #http://stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
+    # Test case taken from the below so question regarding assumptions in diophantine module
+    # http://stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
     m, n = symbols('m n', integer=True, positive=True)
     diof = diophantine(n ** 2 + m * n - 500)
     assert diof == {(5, 20), (40, 10), (95, 5), (121, 4), (248, 2), (499, 1)}

@@ -358,8 +358,8 @@ def test_lognormal():
     std = Symbol('sigma', positive=True, extended_real=True, finite=True)
     X = LogNormal('x', mean, std)
     # The sympy integrator can't do this too well
-    #assert E(X) == exp(mean+std**2/2)
-    #assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
+    # assert E(X) == exp(mean+std**2/2)
+    # assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
 
     # Right now, only density function and sampling works
     # Test sampling: Only e^mean in sample std of 0
@@ -367,7 +367,7 @@ def test_lognormal():
         X = LogNormal('x', i, 0)
         assert S(sample(X)) == N(exp(i))
     # The sympy integrator can't do this too well
-    #assert E(X) ==
+    # assert E(X) ==
 
     mu = Symbol("mu", extended_real=True)
     sigma = Symbol("sigma", positive=True)
@@ -628,7 +628,7 @@ def test_random_parameters():
     meas = Normal('T', mu, 1)
     assert density(meas, evaluate=False)(z)
     assert isinstance(pspace(meas), ProductPSpace)
-    #assert density(meas, evaluate=False)(z) == Integral(mu.pspace.pdf *
+    # assert density(meas, evaluate=False)(z) == Integral(mu.pspace.pdf *
     #        meas.pspace.pdf, (mu.symbol, -oo, oo)).subs(meas.symbol, z)
 
 

@@ -242,7 +242,7 @@ def _solve_lambert(f, symbol, gens):
                         diff = log(lhs - other) - log(rhs - other)
                     soln = _lambert(expand_log(diff), symbol)
                 else:
-                    #it's ready to go
+                    # it's ready to go
                     soln = _lambert(lhs - rhs, symbol)
 
     # For the next two,

@@ -128,7 +128,7 @@ class Tr(Expr):
         if isinstance(expr, Matrix):
             return expr.trace()
         elif hasattr(expr, 'trace') and callable(expr.trace):
-            #for any objects that have trace() defined e.g numpy
+            # for any objects that have trace() defined e.g numpy
             return expr.trace()
         elif isinstance(expr, Add):
             return Add(*[Tr(arg, indices) for arg in expr.args])
@@ -138,8 +138,8 @@ class Tr(Expr):
                 return Mul(*c_part)
             else:
                 obj = Expr.__new__(cls, Mul(*nc_part), indices )
-                #this check is needed to prevent cached instances
-                #being returned even if len(c_part)==0
+                # this check is needed to prevent cached instances
+                # being returned even if len(c_part)==0
                 return Mul(*c_part)*obj if len(c_part) > 0 else obj
         elif isinstance(expr, Pow):
             if (_is_scalar(expr.args[0]) and
@@ -169,7 +169,7 @@ class Tr(Expr):
         # TODO : improve this implementation
         return True
 
-    #TODO: Review if the permute method is needed
+    # TODO: Review if the permute method is needed
     # and if it needs to return a new instance
     def permute(self, pos):
         """ Permute the arguments cyclically.

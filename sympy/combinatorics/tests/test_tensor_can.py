@@ -227,8 +227,8 @@ def test_no_metric_symmetry():
     # T_c = A^d0_d1 * A^d1_d0 * A^d2_d3 * A^d3_d2
     # can = [0,3,2,1,4,7,6,5,8,9]
     g = Permutation([2,5,0,7,4,3,6,1,8,9])
-    #can = canonicalize(g, list(range(8)), 0, [[], [list(range(4))], 4, 0])
-    #assert can == [0, 2, 3, 1, 4, 6, 7, 5, 8, 9]
+    # can = canonicalize(g, list(range(8)), 0, [[], [list(range(4))], 4, 0])
+    # assert can == [0, 2, 3, 1, 4, 6, 7, 5, 8, 9]
     can = canonicalize(g, list(range(8)), None, [[], [Permutation(list(range(4)))], 4, 0])
     assert can == [0, 3, 2, 1, 4, 7, 6, 5, 8, 9]
 
@@ -491,8 +491,8 @@ def test_riemann_products():
     g = Permutation([10,0,2,6,8,11,1,3,4,5,7,9,12,13])
     can = canonicalize(g, list(range(6,12)), 0, (baser, gensr, 3, 0))
     assert can == [0, 6, 2, 8, 1, 3, 7, 10, 4, 5, 9, 11, 12, 13]
-    #can1 = canonicalize_naive(g, list(range(6,12)), 0, (baser, gensr, 3, 0))
-    #assert can == can1
+    # can1 = canonicalize_naive(g, list(range(6,12)), 0, (baser, gensr, 3, 0))
+    # assert can == can1
 
     # A^n_{i, j} antisymmetric in i,j
     # A_m0^d0_a1 * A_m1^a0_d0; ord = [m0,m1,a0,a1,d0,-d0]

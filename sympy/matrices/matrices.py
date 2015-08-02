@@ -1930,7 +1930,7 @@ class MatrixBase(object):
                 from sympy import eye
                 # extract the diagonal part
                 d = b[0, 0]*eye(nr)
-                #and the nilpotent part
+                # and the nilpotent part
                 n = b-d
                 # compute its exponential
                 nex = eye(nr)

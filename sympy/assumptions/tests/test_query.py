@@ -1780,7 +1780,7 @@ def test_positive():
 
     assert ask(Q.positive(x/y), Q.positive(x) & Q.positive(y)) is None
 
-    #exponential
+    # exponential
     assert ask(Q.positive(exp(x)), Q.real(x)) is True
     assert ask(~Q.negative(exp(x)), Q.real(x)) is True
     assert ask(Q.positive(x + exp(x)), Q.real(x)) is None
@@ -1795,7 +1795,7 @@ def test_positive():
     assert ask(Q.positive(factorial(x)), Q.integer(x) & Q.positive(x))
     assert ask(Q.positive(factorial(x)), Q.integer(x)) is None
 
-    #absolute value
+    # absolute value
     assert ask(Q.positive(Abs(x))) is None  # Abs(0) = 0
     assert ask(Q.positive(Abs(x)), Q.positive(x)) is True
 
@@ -2142,8 +2142,8 @@ def test_issue_7246():
 
 @XFAIL
 def test_issue_7246_failing():
-    #Move this test to test_issue_7246 once
-    #the new assumptions module is improved.
+    # Move this test to test_issue_7246 once
+    # the new assumptions module is improved.
     assert ask(Q.positive(acos(x)), Q.zero(x)) is True
 
 

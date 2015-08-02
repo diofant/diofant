@@ -57,7 +57,7 @@ class ImplicitSeries(BaseSeries):
         self.end_y = float(var_start_end_y[2])
         self.get_points = self.get_raster
         self.has_equality = has_equality  # If the expression has equality, i.e.
-                                         #Eq, Greaterthan, LessThan.
+                                         # Eq, Greaterthan, LessThan.
         self.nb_of_points = nb_of_points
         self.use_interval_math = use_interval_math
         self.depth = 4 + depth
@@ -94,14 +94,14 @@ class ImplicitSeries(BaseSeries):
         """ Uses interval math to adaptively mesh and obtain the plot"""
         k = self.depth
         interval_list = []
-        #Create initial 32 divisions
+        # Create initial 32 divisions
         np = import_module('numpy')
         xsample = np.linspace(self.start_x, self.end_x, 33)
         ysample = np.linspace(self.start_y, self.end_y, 33)
 
-        #Add a small jitter so that there are no false positives for equality.
+        # Add a small jitter so that there are no false positives for equality.
         # Ex: y==x becomes True for x interval(1, 2) and y interval(1, 2)
-        #which will draw a rectangle.
+        # which will draw a rectangle.
         jitterx = (np.random.rand(
             len(xsample)) * 2 - 1) * (self.end_x - self.start_x) / 2**20
         jittery = (np.random.rand(
@@ -116,8 +116,8 @@ class ImplicitSeries(BaseSeries):
         interval_list = [[x, y] for x in xinter for y in yinter]
         plot_list = []
 
-        #recursive call refinepixels which subdivides the intervals which are
-        #neither True nor False according to the expression.
+        # recursive call refinepixels which subdivides the intervals which are
+        # neither True nor False according to the expression.
         def refine_pixels(interval_list):
             """ Evaluates the intervals and subdivides the interval if the
             expression is partially satisfied."""
@@ -125,18 +125,18 @@ class ImplicitSeries(BaseSeries):
             plot_list = []
             for intervals in interval_list:
 
-                #Convert the array indices to x and y values
+                # Convert the array indices to x and y values
                 intervalx = intervals[0]
                 intervaly = intervals[1]
                 func_eval = func(intervalx, intervaly)
-                #The expression is valid in the interval. Change the contour
-                #array values to 1.
+                # The expression is valid in the interval. Change the contour
+                # array values to 1.
                 if func_eval[1] is False or func_eval[0] is False:
                     pass
                 elif func_eval == (True, True):
                     plot_list.append([intervalx, intervaly])
                 elif func_eval[1] is None or func_eval[0] is None:
-                    #Subdivide
+                    # Subdivide
                     avgx = intervalx.mid
                     avgy = intervaly.mid
                     a = interval(intervalx.start, avgx)
@@ -153,10 +153,10 @@ class ImplicitSeries(BaseSeries):
             interval_list, plot_list_temp = refine_pixels(interval_list)
             plot_list.extend(plot_list_temp)
             k = k - 1
-        #Check whether the expression represents an equality
-        #If it represents an equality, then none of the intervals
-        #would have satisfied the expression due to floating point
-        #differences. Add all the undecided values to the plot.
+        # Check whether the expression represents an equality
+        # If it represents an equality, then none of the intervals
+        # would have satisfied the expression due to floating point
+        # differences. Add all the undecided values to the plot.
         if self.has_equality:
             for intervals in interval_list:
                 intervalx = intervals[0]
@@ -294,7 +294,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
 
     """
     has_equality = False  # Represents whether the expression contains an Equality,
-                     #GreaterThan or LessThan
+                          # GreaterThan or LessThan
 
     def arg_expand(bool_expr):
         """
@@ -310,7 +310,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     if isinstance(expr, BooleanFunction):
         arg_expand(expr)
 
-    #Check whether there is an equality in the expression provided.
+    # Check whether there is an equality in the expression provided.
         if any(isinstance(e, (Equality, GreaterThan, LessThan))
                for e in arg_list):
             has_equality = True
@@ -329,7 +329,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
         raise NotImplementedError("Implicit plotting is not implemented for "
                                   "more than 2 variables")
 
-    #Create default ranges if the range is not provided.
+    # Create default ranges if the range is not provided.
     default_range = Tuple(-5, 5)
 
     def _range_tuple(s):
@@ -354,7 +354,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     nb_of_points = kwargs.pop('points', 300)
     depth = kwargs.pop('depth', 0)
     line_color = kwargs.pop('line_color', "blue")
-    #Check whether the depth is greater than 4 or less than 0.
+    # Check whether the depth is greater than 4 or less than 0.
     if depth > 4:
         depth = 4
     elif depth < 0:
@@ -365,7 +365,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
                                     nb_of_points, line_color)
     show = kwargs.pop('show', True)
 
-    #set the x and y limits
+    # set the x and y limits
     kwargs['xlim'] = tuple(float(x) for x in var_start_end_x[1:])
     kwargs['ylim'] = tuple(float(y) for y in var_start_end_y[1:])
     # set the x and y labels

@@ -26,7 +26,7 @@ def test_R2():
     # polar->rect->polar == Id
     a, b = symbols('a b', positive=True)
     m = Matrix([[a], [b]])
-    #TODO assert m == R2_r.coord_tuple_transform_to(R2_p, R2_p.coord_tuple_transform_to(R2_r, [a, b])).applyfunc(simplify)
+    # TODO assert m == R2_r.coord_tuple_transform_to(R2_p, R2_p.coord_tuple_transform_to(R2_r, [a, b])).applyfunc(simplify)
     assert m == R2_p.coord_tuple_transform_to(
         R2_r, R2_r.coord_tuple_transform_to(R2_p, m)).applyfunc(simplify)
 
@@ -36,19 +36,19 @@ def test_R3():
     m = Matrix([[a], [b], [c]])
     assert m == R3_c.coord_tuple_transform_to(
         R3_r, R3_r.coord_tuple_transform_to(R3_c, m)).applyfunc(simplify)
-    #TODO assert m == R3_r.coord_tuple_transform_to(R3_c, R3_c.coord_tuple_transform_to(R3_r, m)).applyfunc(simplify)
+    # TODO assert m == R3_r.coord_tuple_transform_to(R3_c, R3_c.coord_tuple_transform_to(R3_r, m)).applyfunc(simplify)
     assert m == R3_s.coord_tuple_transform_to(
         R3_r, R3_r.coord_tuple_transform_to(R3_s, m)).applyfunc(simplify)
-    #TODO assert m == R3_r.coord_tuple_transform_to(R3_s, R3_s.coord_tuple_transform_to(R3_r, m)).applyfunc(simplify)
+    # TODO assert m == R3_r.coord_tuple_transform_to(R3_s, R3_s.coord_tuple_transform_to(R3_r, m)).applyfunc(simplify)
     assert m == R3_s.coord_tuple_transform_to(
         R3_c, R3_c.coord_tuple_transform_to(R3_s, m)).applyfunc(simplify)
-    #TODO assert m == R3_c.coord_tuple_transform_to(R3_s, R3_s.coord_tuple_transform_to(R3_c, m)).applyfunc(simplify)
+    # TODO assert m == R3_c.coord_tuple_transform_to(R3_s, R3_s.coord_tuple_transform_to(R3_c, m)).applyfunc(simplify)
 
 
 def test_point():
     x, y = symbols('x, y')
     p = R2_r.point([x, y])
-    #TODO assert p.free_symbols() == {x, y}
+    # TODO assert p.free_symbols() == {x, y}
     assert p.coords(R2_r) == p.coords() == Matrix([x, y])
     assert p.coords(R2_p) == Matrix([sqrt(x**2 + y**2), atan2(y, x)])
 

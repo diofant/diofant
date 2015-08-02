@@ -347,14 +347,14 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
         r = reduced_eq.match(b*fx + c*fy + d*f(x,y) + e)
         if r:
             if not r[e]:
-                ## Linear first-order homogeneous partial-differential
-                ## equation with constant coefficients
+                # Linear first-order homogeneous partial-differential
+                # equation with constant coefficients
                 r.update({'b': b, 'c': c, 'd': d})
                 matching_hints["1st_linear_constant_coeff_homogeneous"] = r
             else:
                 if r[b]**2 + r[c]**2 != 0:
-                    ## Linear first-order general partial-differential
-                    ## equation with constant coefficients
+                    # Linear first-order general partial-differential
+                    # equation with constant coefficients
                     r.update({'b': b, 'c': c, 'd': d, 'e': e})
                     matching_hints["1st_linear_constant_coeff"] = r
                     matching_hints[

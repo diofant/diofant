@@ -79,10 +79,10 @@ def test_H2():
     assert Ric[1][0] == 0
     assert Ric[0][0] == -y**(-2)
 
-    ## scalar curvature is -2
-    #TODO - it would be nice to have index contraction built-in
+    # scalar curvature is -2
+    # TODO - it would be nice to have index contraction built-in
     R = (Ric[0][0] + Ric[1][1])*y**2
     assert R == -2
 
-    ## Gauss curvature is -1
+    # Gauss curvature is -1
     assert R/2 == -1

@@ -1040,8 +1040,8 @@ class SubModulePolyRing(SubModule):
     - order - monomial order used
     """
 
-    #self._gb - cached groebner basis
-    #self._gbe - cached groebner basis relations
+    # self._gb - cached groebner basis
+    # self._gbe - cached groebner basis relations
 
     def __init__(self, gens, container, order="lex", TOP=True):
         SubModule.__init__(self, gens, container)

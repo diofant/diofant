@@ -16,10 +16,10 @@ def upretty(expr):
     """Unicode pretty-printing"""
     return xpretty(expr, use_unicode=True, wrap_line=False)
 
-#Initialize the basic and tedious vector/dyadic expressions
-#needed for testing.
-#Some of the pretty forms shown denote how the expressions just
-#above them should look with pretty printing.
+# Initialize the basic and tedious vector/dyadic expressions
+# needed for testing.
+# Some of the pretty forms shown denote how the expressions just
+# above them should look with pretty printing.
 N = CoordSysCartesian('N')
 C = N.orient_new_axis('C', a, N.k)
 v = []
@@ -81,7 +81,7 @@ pretty_s = u(
 3*C_y*N_x \
 """)
 
-#This is the pretty form for ((a**2 + b)*N.i + 3*(C.y - c)*N.k) | N.k
+# This is the pretty form for ((a**2 + b)*N.i + 3*(C.y - c)*N.k) | N.k
 upretty_d_7 = u(
 """\
 ⎛ 2    ⎞ (N_i|N_k) + (3⋅C_y - 3⋅c) (N_k|N_k)\n\

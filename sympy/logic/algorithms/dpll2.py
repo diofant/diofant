@@ -55,9 +55,9 @@ def dpll_satisfiable(expr, all_models=False):
         return False
 
     # Uncomment to confirm the solution is valid (hitting set for the clauses)
-    #else:
-        #for cls in clauses_int_repr:
-            #assert solver.var_settings.intersection(cls)
+    # else:
+        # for cls in clauses_int_repr:
+            # assert solver.var_settings.intersection(cls)
 
 
 def _all_models(models):
@@ -104,7 +104,7 @@ class SATSolver(object):
             self.heur_clause_added = self._vsids_clause_added
 
             # Note: Uncomment this if/when clause learning is enabled
-            #self.update_functions.append(self._vsids_decay)
+            # self.update_functions.append(self._vsids_decay)
 
         else:
             raise NotImplementedError

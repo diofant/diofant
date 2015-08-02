@@ -913,7 +913,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
 
     if order == 1:
 
-        ## Linear case: a(x)*y'+b(x)*y+c(x) == 0
+        # Linear case: a(x)*y'+b(x)*y+c(x) == 0
         if eq.is_Add:
             ind, dep = reduced_eq.as_independent(f)
         else:
@@ -932,7 +932,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
             matching_hints["1st_linear"] = r
             matching_hints["1st_linear_Integral"] = r
 
-        ## Bernoulli case: a(x)*y'+b(x)*y+c(x)*y**n == 0
+        # Bernoulli case: a(x)*y'+b(x)*y+c(x)*y**n == 0
         r = collect(
             reduced_eq, f(x), exact=True).match(a*df + b*f(x) + c*f(x)**n)
         if r and r[c] != 0 and r[n] != 1:  # See issue 4676
@@ -943,7 +943,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
             matching_hints["Bernoulli"] = r
             matching_hints["Bernoulli_Integral"] = r
 
-        ## Riccati special n == -2 case: a2*y'+b2*y**2+c2*y/x+d2/x**2 == 0
+        # Riccati special n == -2 case: a2*y'+b2*y**2+c2*y/x+d2/x**2 == 0
         r = collect(reduced_eq,
             f(x), exact=True).match(a2*df + b2*f(x)**2 + c2*f(x)/x + d2/x**2)
         if r and r[b2] != 0 and (r[c2] != 0 or r[d2] != 0):
@@ -981,7 +981,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                     matching_hints["1st_power_series"] = rseries
 
             r3.update(r)
-            ## Exact Differential Equation: P(x, y) + Q(x, y)*y' = 0 where
+            # Exact Differential Equation: P(x, y) + Q(x, y)*y' = 0 where
             # dP/dy == dQ/dx
             try:
                 if r[d] != 0:
@@ -1039,7 +1039,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
             r[d] = num.subs(f(x), y)
             r[e] = den.subs(f(x), y)
 
-            ## Separable Case: y' == P(y)*Q(x)
+            # Separable Case: y' == P(y)*Q(x)
             r[d] = separatevars(r[d])
             r[e] = separatevars(r[e])
             # m1[coeff]*m1[x]*m1[y] + m2[coeff]*m2[x]*m2[y]*y'
@@ -1050,7 +1050,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 matching_hints["separable"] = r1
                 matching_hints["separable_Integral"] = r1
 
-            ## First order equation with homogeneous coefficients:
+            # First order equation with homogeneous coefficients:
             # dy/dx == F(y/x) or dy/dx == F(x/y)
             ordera = homogeneous_order(r[d], x, y)
             if ordera is not None:
@@ -1071,7 +1071,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                     if s1 in matching_hints and s2 in matching_hints:
                         matching_hints["1st_homogeneous_coeff_best"] = r
 
-            ## Linear coefficients of the form
+            # Linear coefficients of the form
             # y'+ F((a*x + b*y + c)/(a'*x + b'y + c')) = 0
             # that can be reduced to homogeneous form.
             F = num/den
@@ -1101,7 +1101,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                             matching_hints["linear_coefficients"] = r2
                             matching_hints["linear_coefficients_Integral"] = r2
 
-            ## Equation of the form y' + (y/x)*H(x^n*y) = 0
+            # Equation of the form y' + (y/x)*H(x^n*y) = 0
             # that can be reduced to separable form
 
             factor = simplify(x/f(x)*num/den)
@@ -1128,7 +1128,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                         matching_hints["separable_reduced"] = r2
                         matching_hints["separable_reduced_Integral"] = r2
 
-        ## Almost-linear equation of the form f(x)*g(y)*y' + k(x)*l(y) + m(x) = 0
+        # Almost-linear equation of the form f(x)*g(y)*y' + k(x)*l(y) + m(x) = 0
         r = collect(eq, [df, f(x)]).match(e*df + d)
         if r:
             r2 = r.copy()
@@ -1229,7 +1229,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 matching_hints["nth_linear_constant_coeff_homogeneous"] = r
 
         # nth order Euler equation a_n*x**n*y^(n) + ... + a_1*x*y' + a_0*y = F(x)
-        #In case of Homogeneous euler equation F(x) = 0
+        # In case of Homogeneous euler equation F(x) = 0
         def _test_term(coeff, order):
             r"""
             Linear Euler ODEs have the form  K*x**order*diff(y(x),x,order) = F(x),
@@ -2375,10 +2375,10 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
                 num = trigsimp((lhs - rhs).as_numer_denom()[0])
                 # since solutions are obtained using force=True we test
                 # using the same level of assumptions
-                ## replace function with dummy so assumptions will work
+                # replace function with dummy so assumptions will work
                 _func = Dummy('func')
                 num = num.subs(func, _func)
-                ## posify the expression
+                # posify the expression
                 num, reps = posify(num)
                 s = simplify(num).xreplace(reps).xreplace({_func: func})
                 testnum += 1
@@ -3672,7 +3672,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     tcounter = len([t for t in finaldict.values() if t])
 
     for count in range(tcounter, terms - 3):  # Assuming c0 and c1 to be arbitrary
-    #while tcounter < terms - 2:  # Assuming c0 and c1 to be arbitrary
+    # while tcounter < terms - 2:  # Assuming c0 and c1 to be arbitrary
         check = rhs.subs(n, startiter)
         nlhs = lhs.subs(n, startiter)
         nrhs = check.subs(finaldict)

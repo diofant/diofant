@@ -610,7 +610,7 @@ class TIDS(CantSympify):
         """
         components = self.components
         antisym = g.index_types[0].metric_antisym
-        #if not any(x == g for x in components):
+        # if not any(x == g for x in components):
         #    return self
         # list of positions of the metric ``g``
         gpos = [i for i, x in enumerate(components) if x == g]

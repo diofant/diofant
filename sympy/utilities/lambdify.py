@@ -50,9 +50,9 @@ MPMATH_TRANSLATIONS = {
     "E": "e",
     "I": "j",
     "ln": "log",
-    #"lowergamma":"lower_gamma",
+    # "lowergamma": "lower_gamma",
     "oo": "inf",
-    #"uppergamma":"upper_gamma",
+    # "uppergamma": "upper_gamma",
     "LambertW": "lambertw",
     "MutableDenseMatrix": "matrix",
     "ImmutableMatrix": "matrix",
@@ -307,7 +307,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         #      might be the reason for irreproducible errors.
         modules = ["math", "mpmath", "sympy"]
 
-        #Attempt to import numpy
+        # Attempt to import numpy
         try:
             _import("numpy")
         except ImportError:
@@ -336,8 +336,8 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     _issue_7853_dep_check(namespaces, namespace, expr)
 
     if hasattr(expr, "atoms"):
-        #Try if you can extract symbols from the expression.
-        #Move on if expr.atoms in not implemented.
+        # Try if you can extract symbols from the expression.
+        # Move on if expr.atoms in not implemented.
         syms = expr.atoms(Symbol)
         for term in syms:
             namespace.update({str(term): term})
@@ -471,7 +471,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
                 def lambdarepr(expr):
                     return printer.doprint(expr)
     else:
-        #XXX: This has to be done here because of circular imports
+        # XXX: This has to be done here because of circular imports
         from sympy.printing.lambdarepr import lambdarepr
 
     def sub_args(args, dummies_dict):
@@ -483,7 +483,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ",".join(str(a) for a in dummies)
         else:
-            #Sub in dummy variables for functions or symbols
+            # Sub in dummy variables for functions or symbols
             if isinstance(args, (Function, Symbol)):
                 dummies = Dummy()
                 dummies_dict.update({args: dummies})

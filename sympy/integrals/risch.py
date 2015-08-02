@@ -225,7 +225,7 @@ class DifferentialExtension(object):
                 (sin, cos, cot, tan, sinh, cosh, coth, tanh): exp,
                 (asin, acos, acot, atan): log,
             }
-        #rewrite the trigonometric components
+        # rewrite the trigonometric components
             for candidates, rule in rewritables.items():
                 self.newf = self.newf.rewrite(candidates, rule)
         else:

@@ -4223,7 +4223,7 @@ def exptrigsimp(expr, simplify=True):
             a = e2.args[0]/2 if e2 is not S.Exp1 else S.Half
             newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
             newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
-    ## exp ratios to tan and tanh
+    # exp ratios to tan and tanh
     for ei in ex:
         n, d = ei - 1, ei + 1
         et = n/d
@@ -4523,7 +4523,7 @@ def product_mul(self, other, method=0):
 
     return Mul(self, other)
 
-#-------------------- the old trigsimp routines ---------------------
+# ------------------- the old trigsimp routines ---------------------
 
 
 def trigsimp_old(expr, **opts):
@@ -4992,4 +4992,4 @@ def __trigsimp(expr, deep=False):
         pass
 
     return expr
-#------------------- end of old trigsimp routines --------------------
+# ------------------ end of old trigsimp routines --------------------

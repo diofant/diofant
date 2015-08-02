@@ -93,7 +93,7 @@ def test_rsolve_bulk():
             if p.is_polynomial(n):
                 assert rsolve_poly(c, q, n) == p
             # See issue 3956:
-            #if p.is_hypergeometric(n):
+            # if p.is_hypergeometric(n):
             #    assert rsolve_hyper(c, q, n) == p
 
 

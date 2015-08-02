@@ -132,12 +132,12 @@ def _mr_safe(n):
 
     if n < 1373653:
         return mr(n, [2, 3])
-        #[2, 3] stot = 1 clear == bases
+        # [2, 3] stot = 1 clear == bases
         # these two (and similar below) are commented out since they are
         # more expensive in terms of stot than a later test.
-        #if n < 9080191: return mr(n, [31, 73]) # ref [3]
+        # if n < 9080191: return mr(n, [31, 73]) # ref [3]
         # [31, 73] stot = 4 clear == bases
-        #if n < 25326001: return mr(n, [2, 3, 5])
+        # if n < 25326001: return mr(n, [2, 3, 5])
         # [2, 3, 5] stot = 3 clear == bases
     if n < 170584961:
         return mr(n, [350, 3958281543])
@@ -148,18 +148,18 @@ def _mr_safe(n):
     if n < 75792980677:
         return mr(n, [2, 379215, 457083754])
         # [2, 379215, 457083754] stot = 1 clear [2, 3, 5, 53, 228541877]
-        #if n < 118670087467: return n is not 3215031751 and mr(n, [2, 3, 5, 7]) # ref [3]
+        # if n < 118670087467: return n is not 3215031751 and mr(n, [2, 3, 5, 7]) # ref [3]
         # [2, 3, 5, 7] stot = 4 clear == bases
     if n < 1000000000000:
         return mr(n, [2, 13, 23, 1662803])
         # [2, 13, 23, 1662803] stot = 4 clear == bases
-        #if n < 2152302898747: return mr(n, [2, 3, 5, 7, 11])
+        # if n < 2152302898747: return mr(n, [2, 3, 5, 7, 11])
         # [2, 3, 5, 7, 11] stot = 5 clear == bases
-        #if n < 3474749660383: return mr(n, [2, 3, 5, 7, 11, 13])
+        # if n < 3474749660383: return mr(n, [2, 3, 5, 7, 11, 13])
         # [2, 3, 5, 7, 11, 13] stot = 7 clear == bases
-        #if n < 21652684502221: return mr(n, [2, 1215, 34862, 574237825])
+        # if n < 21652684502221: return mr(n, [2, 1215, 34862, 574237825])
         # [2, 1215, 34862, 574237825] stot = 8 clear [2, 3, 5, 7, 17431, 3281359]
-        #if n < 341550071728321: return mr(n, [2, 3, 5, 7, 11, 13, 17])
+        # if n < 341550071728321: return mr(n, [2, 3, 5, 7, 11, 13, 17])
         # [2, 3, 5, 7, 11, 13, 17] stot = 11 clear == bases
     if n < 10000000000000000:
         return mr(n, [2, 3, 7, 61, 24251]) and n not in _pseudos

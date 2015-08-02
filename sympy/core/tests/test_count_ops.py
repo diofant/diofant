@@ -109,7 +109,7 @@ def test_count_ops_visual():
     assert count([Or(x,y), And(x,y), Basic(x+y)]) == ADD + AND + BASIC + OR
 
     assert count(Basic(Tuple(x))) == BASIC + TUPLE
-    #It checks that TUPLE is counted as an operation.
+    # It checks that TUPLE is counted as an operation.
 
     assert count(Eq(x + y, S(2))) == ADD
 

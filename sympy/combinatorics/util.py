@@ -9,7 +9,7 @@ _af_new = Permutation._af_new
 
 ############################################
 ###
-### Utilities for computational group theory
+# Utilities for computational group theory
 ###
 ############################################
 

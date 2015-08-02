@@ -661,7 +661,7 @@ class erf2(Function):
         if y.func is erf2inv and y.args[0] == x:
             return y.args[1]
 
-        #Try to pull out -1 factor
+        # Try to pull out -1 factor
         sign_x = x.could_extract_minus_sign()
         sign_y = y.could_extract_minus_sign()
         if (sign_x and sign_y):
