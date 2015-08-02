@@ -61,7 +61,6 @@ def test_issue_5223():
     assert (1 + x).getn() is None
 
     assert ((1/sin(x))**oo).series() == oo
-    assert ((sin(x))**y).nseries(x, n=1) == x**y + O(x**(y + 1), x)
 
     assert sin(1/x).series(x, oo, n=5) == 1/x - 1/(6*x**3) + O(x**(-5), (x, oo))
     assert abs(x).series(x, oo, n=5, dir='+') == x
