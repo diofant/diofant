@@ -1301,7 +1301,7 @@ class Mul(Expr, AssocOp):
         # is 2*(1/7)**2
 
         if co_xmul and co_xmul.is_Rational and abs(co_old) != 1:
-            mult = S(multiplicity(abs(co_old), co_self))
+            mult = Integer(multiplicity(abs(co_old), co_self))
             c.pop(co_self)
             if co_old in c:
                 c[co_old] += mult
@@ -1596,7 +1596,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
         return -factors
     elif factors.is_Add:
         if not clear and coeff.is_Rational and coeff.q != 1:
-            q = S(coeff.q)
+            q = Integer(coeff.q)
             for i in factors.args:
                 c, t = i.as_coeff_Mul()
                 r = c/q

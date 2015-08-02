@@ -243,7 +243,7 @@ def test_linear_2eq_order2():
     5*sqrt(70771857)/36)**(Integer(1)/3))))*exp((-sqrt(-346/(3*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3)) + 4 +
     2*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3))/2 + 1 - sqrt(-284/sqrt(-346/(3*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3)) +
     4 + 2*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3)) - 2*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3) + 8 + 346/(3*(Integer(4333)/4 +
-    5*sqrt(70771857)/36)**(Integer(1)/3)))/2)*log(t)) - C3*t**(1 + sqrt(-346/(3*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(S(1/3))) + 4 +
+    5*sqrt(70771857)/36)**(Integer(1)/3)))/2)*log(t)) - C3*t**(1 + sqrt(-346/(3*(Integer(4333)/4 + 5*sqrt(70771857)/36)**Rational(1, 3)) + 4 +
     2*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3))/2 + sqrt(-2*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3) + 8 + 346/(3*(Integer(4333)/4 +
     5*sqrt(70771857)/36)**(Integer(1)/3)) + 284/sqrt(-346/(3*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3)) + 4 + 2*(Integer(4333)/4 +
     5*sqrt(70771857)/36)**(Integer(1)/3)))/2)*(2*sqrt(-346/(3*(Integer(4333)/4 + 5*sqrt(70771857)/36)**(Integer(1)/3)) + 4 + 2*(Integer(4333)/4 +

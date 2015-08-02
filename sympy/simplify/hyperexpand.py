@@ -829,7 +829,7 @@ class FormulaCollection(object):
         HyperRep_power1(-1, _z)
 
         >>> from sympy import S
-        >>> i = Hyper_Function([Rational(1, 4), S('3/4 + 4')], [S.Half])
+        >>> i = Hyper_Function([Rational(1, 4), Rational(3, 4) + 4], [S.Half])
         >>> f.lookup_origin(i).closed_form
         HyperRep_sqrts1(-1/4, _z)
         """
@@ -2413,8 +2413,8 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
             c0 = 2
         if expr.has(oo, zoo, -oo, nan):
             # XXX this actually should not happen, but consider
-            # S('meijerg(((0, -1/2, 0, -1/2, 1/2), ()), ((0,),
-            #   (-1/2, -1/2, -1/2, -1)), exp_polar(I*pi))/4')
+            # sympify('meijerg(((0, -1/2, 0, -1/2, 1/2), ()), ((0,),
+            #                  (-1/2, -1/2, -1/2, -1)), exp_polar(I*pi))/4')
             c0 = 3
         return (c0, expr.count(hyper), expr.count_ops())
 

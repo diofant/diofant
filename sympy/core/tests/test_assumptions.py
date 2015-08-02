@@ -878,7 +878,7 @@ def test_issue_4149():
             [False, True, False, True])
 
     # tests from the PR #7887:
-    e = S("-sqrt(3)*I/2 + 0.866025403784439*I")
+    e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
     assert e.is_extended_real is False
     assert e.is_imaginary
 

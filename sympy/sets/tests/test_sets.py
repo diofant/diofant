@@ -420,7 +420,7 @@ def test_contains():
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet
 
-    items = [1, 2, S.Infinity, S('ham'), -1.1]
+    items = [1, 2, S.Infinity, Symbol('ham'), -1.1]
     fset = FiniteSet(*items)
     assert all(item in fset for item in items)
     assert all(fset.contains(item) is S.true for item in items)

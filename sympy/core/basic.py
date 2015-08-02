@@ -230,10 +230,11 @@ class Basic(metaclass=ManagedProperties):
 
         >>> from sympy.core import S, I
 
-        >>> sorted([Integer(1)/2, I, -I], key=lambda x: x.sort_key())
+        >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
-        >>> S("[x, 1/x, 1/x**2, x**2, x**(1/2), x**(1/4), x**(3/2)]")
+        >>> x = Symbol('x')
+        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]

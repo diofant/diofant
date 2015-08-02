@@ -210,7 +210,7 @@ def test_polygamma():
     assert polygamma(5, 1) == 8 * pi**6 / 63
 
     def t(m, n):
-        x = S(m)/n
+        x = Integer(m)/n
         r = polygamma(0, x)
         if r.has(polygamma):
             return False

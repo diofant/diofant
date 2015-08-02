@@ -5276,8 +5276,8 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
                 (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)))
             soltup = []
             for sol in infinitesimals:
-                tsol = {xi: S(sol[dxi]).subs(func, y),
-                    eta: S(sol[deta]).subs(func, y)}
+                tsol = {xi: sol[dxi].subs(func, y),
+                    eta: sol[deta].subs(func, y)}
                 sol = simplify(pde.subs(tsol).doit())
                 if sol:
                     soltup.append((False, sol.subs(y, func)))
@@ -5361,7 +5361,7 @@ def ode_lie_group(eq, func, order, match):
             h = sol[0].subs(func, y)
 
     if xis is not None and etas is not None:
-        inf = [{xi(x, f(x)): S(xis), eta(x, f(x)): S(etas)}]
+        inf = [{xi(x, f(x)): sympify(xis), eta(x, f(x)): sympify(etas)}]
 
         if not checkinfsol(eq, inf, func=f(x), order=1)[0][0]:
             raise ValueError("The given infinitesimals xi and eta"

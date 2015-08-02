@@ -1085,7 +1085,7 @@ class Rational(Number):
     the sympify() function, and conversion of floats to expressions
     or simple fractions can be handled with nsimplify:
 
-    >>> S('3**2/10')  # general expressions
+    >>> sympify('3**2/10')  # general expressions
     9/10
     >>> nsimplify(.3)  # numbers that have a simple form
     3/10
@@ -1348,7 +1348,7 @@ class Rational(Number):
                 if self.is_negative:
                     if expt.q != 1:
                         return -(S.NegativeOne)**((expt.p % expt.q) /
-                               S(expt.q))*Rational(self.q, -self.p)**ne
+                               Integer(expt.q))*Rational(self.q, -self.p)**ne
                     else:
                         return S.NegativeOne**ne*Rational(self.q, -self.p)**ne
                 else:
@@ -1803,7 +1803,7 @@ class Integer(Rational):
             if self.is_negative:
                 if expt.q != 1:
                     return -(S.NegativeOne)**((expt.p % expt.q) /
-                            S(expt.q))*Rational(1, -self)**ne
+                            Integer(expt.q))*Rational(1, -self)**ne
                 else:
                     return (S.NegativeOne)**ne*Rational(1, -self)**ne
             else:

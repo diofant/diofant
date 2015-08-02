@@ -462,7 +462,7 @@ def _rewrite_gamma(f, s, a, b):
     # 4) Check that the resulting G function parameters are valid.
     # 5) Combine all the exponentials.
 
-    a_, b_ = S([a, b])
+    a_, b_ = sympify([a, b])
 
     def left(c, is_numer):
         """
@@ -515,14 +515,14 @@ def _rewrite_gamma(f, s, a, b):
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
         raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
-    s_multiplier = common_coefficient/reduce(ilcm, [S(x.q)
+    s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.q)
                                              for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                *reduce(igcd, [S(x.p) for x in s_multipliers])
+                *reduce(igcd, [Integer(x.p) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)
@@ -664,7 +664,7 @@ def _rewrite_gamma(f, s, a, b):
             a, c = gammas.pop()
             if a != -1 and a != +1:
                 # We use the gamma function multiplication theorem.
-                p = abs(S(a))
+                p = abs(sympify(a))
                 newa = a/p
                 newc = c/p
                 if not a.is_Integer:

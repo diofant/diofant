@@ -685,7 +685,7 @@ class meijerg(TupleParametersBase):
     def delta(self):
         """ A quantity related to the convergence region of the integral,
             c.f. references. """
-        return len(self.bm) + len(self.an) - S(len(self.ap) + len(self.bq))/2
+        return len(self.bm) + len(self.an) - Integer(len(self.ap) + len(self.bq))/2
 
 
 class HyperRep(Function):

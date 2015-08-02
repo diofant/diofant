@@ -377,11 +377,11 @@ def test_S_sympify():
 
 
 def test_issue_4788():
-    assert srepr(S(1.0 + 0J)) == srepr(Float(1.0)) == srepr(Float(1.0))
+    assert srepr(sympify(1.0 + 0J)) == srepr(Float(1.0)) == srepr(Float(1.0))
 
 
 def test_issue_4798_None():
-    assert S(None) is None
+    assert sympify(None) is None
 
 
 def test_issue_3218():
@@ -430,19 +430,19 @@ def test_kernS():
 
 
 def test_issue_6540_6552():
-    assert S('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
-    assert S('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
-    assert S('[[[2*(1)]]]') == [[[2]]]
-    assert S('Matrix([2*(1)])') == Matrix([2])
+    assert sympify('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
+    assert sympify('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
+    assert sympify('[[[2*(1)]]]') == [[[2]]]
+    assert sympify('Matrix([2*(1)])') == Matrix([2])
 
 
 def test_issue_6046():
-    assert str(S("Q & C", locals=_clash1)) == 'And(C, Q)'
-    assert str(S('pi(x)', locals=_clash2)) == 'pi(x)'
-    assert str(S('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
+    assert str(sympify("Q & C", locals=_clash1)) == 'And(C, Q)'
+    assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
+    assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
     exec("from sympy.abc import Q, C", locals)
-    assert str(S('C&Q', locals)) == 'And(C, Q)'
+    assert str(sympify('C&Q', locals)) == 'And(C, Q)'
 
 
 def test_issue_8821_highprec_from_str():

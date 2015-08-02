@@ -112,9 +112,9 @@ def gosper_term(f, n):
     A, B, C = gosper_normal(p, q, n)
     B = B.shift(-1)
 
-    N = S(A.degree())
-    M = S(B.degree())
-    K = S(C.degree())
+    N = Integer(A.degree())
+    M = Integer(B.degree())
+    K = Integer(C.degree())
 
     if (N != M) or (A.LC() != B.LC()):
         D = {K - max(N, M)}

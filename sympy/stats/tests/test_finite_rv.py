@@ -34,8 +34,8 @@ def test_discreteuniform():
 
     for x in range(-5, 5):
         assert P(Eq(Y, x)) == Rational(1, 10)
-        assert P(Y <= x) == S(x + 6)/10
-        assert P(Y >= x) == S(5 - x)/10
+        assert P(Y <= x) == Rational(x + 6, 10)
+        assert P(Y >= x) == Rational(5 - x, 10)
 
     assert dict(density(Die('D', 6)).items()) == \
            dict(density(DiscreteUniform('U', range(1, 7))).items())

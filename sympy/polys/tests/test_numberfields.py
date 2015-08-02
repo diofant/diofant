@@ -99,10 +99,9 @@ def test_minimal_polynomial():
         a**Q(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
 
     # issue 5994
-    eq = S('''
-        -1/(800*sqrt(-1/240 + 1/(18000*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)) + 2*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)))''')
+    eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1,17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3))))
     assert minimal_polynomial(eq, x) == 8000*x**2 - 1
 
     ex = 1 + sqrt(2) + sqrt(3)
@@ -120,7 +119,7 @@ def test_minimal_polynomial():
     mp = minimal_polynomial(p, x)
     assert mp == x**8 - 512*x**7 - 118208*x**6 + 31131136*x**5 + 647362560*x**4 - 56026611712*x**3 + 116994310144*x**2 + 404854931456*x - 27216576512
 
-    assert minimal_polynomial(S("-sqrt(5)/2 - 1/2 + (-sqrt(5)/2 - 1/2)**2"), x) == x - 1
+    assert minimal_polynomial(-sqrt(5)/2 - S.Half + (-sqrt(5)/2 - S.Half)**2, x) == x - 1
     a = 1 + sqrt(2)
     assert minimal_polynomial((a*sqrt(2) + a)**3, x) == x**2 - 198*x + 1
 
@@ -158,10 +157,9 @@ def test_minimal_polynomial_sq():
 
 def test_minpoly_compose():
     # issue 6868
-    eq = S('''
-        -1/(800*sqrt(-1/240 + 1/(18000*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)) + 2*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)))''')
+    eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3))))
     mp = minimal_polynomial(eq + 3, x)
     assert mp == 8000*x**2 - 48000*x + 71999
 

@@ -503,7 +503,7 @@ def _inflate_g(g, n):
             for i in range(n):
                 res.append((a + i)/n)
         return res
-    v = S(len(g.ap) - len(g.bq))
+    v = Integer(len(g.ap) - len(g.bq))
     C = n**(1 + g.nu + v/2)
     C /= (2*pi)**((n - 1)*g.delta)
     return C, meijerg(inflate(g.an, n), inflate(g.aother, n),
@@ -533,8 +533,8 @@ def _inflate_fox_h(g, a):
     """
     if a < 0:
         return _inflate_fox_h(_flip_g(g), -a)
-    p = S(a.p)
-    q = S(a.q)
+    p = Integer(a.p)
+    q = Integer(a.q)
     # We use the substitution s->qs, i.e. inflate g by q. We are left with an
     # extra factor of Gamma(p*s), for which we use Gauss' multiplication
     # theorem.
@@ -733,7 +733,7 @@ def _check_antecedents_1(g, x, helper=False):
     from sympy import Eq, Not, ceiling, Ne, re, unbranched_argument as arg
     delta = g.delta
     eta, _ = _get_coeff_exp(g.argument, x)
-    m, n, p, q = S([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
+    m, n, p, q = sympify([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
     xi = m + n - p
 
     if p > q:
@@ -946,8 +946,8 @@ def _check_antecedents(g1, g2, x):
     # Note: k=l=r=alpha=1
     sigma, _ = _get_coeff_exp(g1.argument, x)
     omega, _ = _get_coeff_exp(g2.argument, x)
-    s, t, u, v = S([len(g1.bm), len(g1.an), len(g1.ap), len(g1.bq)])
-    m, n, p, q = S([len(g2.bm), len(g2.an), len(g2.ap), len(g2.bq)])
+    s, t, u, v = sympify([len(g1.bm), len(g1.an), len(g1.ap), len(g1.bq)])
+    m, n, p, q = sympify([len(g2.bm), len(g2.an), len(g2.ap), len(g2.bq)])
     bstar = s + t - (u + v)/2
     cstar = m + n - (p + q)/2
     rho = g1.nu + (u - v)/2 + 1
@@ -1305,7 +1305,7 @@ def _check_antecedents_inversion(g, x):
                    statement_half(a, b, c, z, False))
 
     # Notations from [L], section 5.7-10
-    m, n, p, q = S([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
+    m, n, p, q = sympify([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
     tau = m + n - p
     nu = q - m - n
     rho = (tau - nu)/2

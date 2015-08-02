@@ -305,7 +305,7 @@ class Function(Application, Expr):
     ...     def _eval_is_extended_real(self):
     ...         return self.args[0].is_extended_real
     ...
-    >>> x = S('x')
+    >>> x = Symbol('x')
     >>> my_func(0) + sin(0)
     1
     >>> my_func(oo)
@@ -1338,7 +1338,7 @@ class Lambda(Expr):
         if len(variables) == 1 and variables[0] == expr:
             return S.IdentityFunction
 
-        obj = Expr.__new__(cls, Tuple(*variables), S(expr))
+        obj = Expr.__new__(cls, Tuple(*variables), sympify(expr))
         obj.nargs = FiniteSet(len(variables))
         return obj
 

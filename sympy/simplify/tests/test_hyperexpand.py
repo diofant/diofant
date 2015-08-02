@@ -130,7 +130,7 @@ def test_shifted_sum():
 
 def _randrat():
     """ Steer clear of integers. """
-    return S(randrange(25) + 10)/50
+    return Integer(randrange(25) + 10)/50
 
 
 def randcplx(offset=-1):
@@ -825,9 +825,9 @@ def test_prudnikov_8():
 def test_prudnikov_9():
     # 7.13.1 [we have a general formula ... so this is a bit pointless]
     for i in range(9):
-        assert can_do([], [(S(i) + 1)/2])
+        assert can_do([], [Rational(i + 1, 2)])
     for i in range(5):
-        assert can_do([], [-(2*S(i) + 1)/2])
+        assert can_do([], [Rational(-2*i - 1, 2)])
 
 
 @pytest.mark.slow
@@ -1001,9 +1001,9 @@ def test_prudnikov_fail_other():
     assert can_do([Integer(1)/2, 1], [Integer(7)/4, Integer(5)/4, Integer(3)/2])  # PFDD
 
     # 7.16.1
-    assert can_do([], [Integer(1)/3, S(2/3)])  # PFDD
-    assert can_do([], [Integer(2)/3, S(4/3)])  # PFDD
-    assert can_do([], [Integer(5)/3, S(4/3)])  # PFDD
+    assert can_do([], [Rationa(1, 3), Rational(2, 3)])  # PFDD
+    assert can_do([], [Rational(2, 3), Rational(4, 3)])  # PFDD
+    assert can_do([], [Rational(5, 3), Rational(4, 3)])  # PFDD
 
     # XXX this does not *evaluate* right??
     assert can_do([], [a, a + S.Half, 2*a - 1])

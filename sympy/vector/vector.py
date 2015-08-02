@@ -322,7 +322,7 @@ class BaseVector(Vector, AtomicExpr):
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
         # Initialize an object
-        obj = super(BaseVector, cls).__new__(cls, S(index),
+        obj = super(BaseVector, cls).__new__(cls, Integer(index),
                                              system)
         # Assign important attributes
         obj._base_instance = obj

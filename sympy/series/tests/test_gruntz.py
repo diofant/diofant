@@ -120,7 +120,7 @@ def test_gruntz_other():
     # TODO: p13, 2.7
     n = Symbol('n', integer=True)
     assert gruntz(x**n/exp(x), x) == 0  # p14, 2.9
-    assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S(1)/2  # p15, 2.10
+    assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S.Half  # p15, 2.10
 
 
 def test_gruntz_hyperbolic():

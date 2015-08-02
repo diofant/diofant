@@ -103,7 +103,6 @@ def test_mix_number_pow_symbols():
 
 
 def test_imag():
-    I = S('I')
     assert mcode(I) == "1i"
     assert mcode(5*I) == "5i"
     assert mcode((Integer(3)/2)*I) == "3*1i/2"
@@ -312,8 +311,8 @@ def test_octave_not_supported():
 
 def test_trick_indent_with_end_else_words():
     # words starting with "end" or "else" do not confuse the indenter
-    t1 = S('endless')
-    t2 = S('elsewhere')
+    t1 = sympify('endless')
+    t2 = sympify('elsewhere')
     pw = Piecewise((t1, x < 0), (t2, x <= 1), (1, True))
     assert mcode(pw, inline=False) == (
         "if (x < 0)\n"

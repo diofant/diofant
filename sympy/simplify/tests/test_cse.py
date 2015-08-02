@@ -364,12 +364,10 @@ def test_issue_7840():
     assert ss_answer == cse_answer
 
     # GitRay's example
-    expr = sympify(
-        "Piecewise((Symbol('ON'), Equality(Symbol('mode'), Symbol('ON'))), \
-        (Piecewise((Piecewise((Symbol('OFF'), StrictLessThan(Symbol('x'), \
-        Symbol('threshold'))), (Symbol('ON'), S.true)), Equality(Symbol('mode'), \
-        Symbol('AUTO'))), (Symbol('OFF'), S.true)), S.true))"
-    )
+    expr = Piecewise((Symbol('ON'), Eq(Symbol('mode'), Symbol('ON'))),
+                     (Piecewise((Piecewise((Symbol('OFF'), Symbol('x') < Symbol('threshold')),
+                                           (Symbol('ON'), true)), Eq(Symbol('mode'), Symbol('AUTO'))),
+                                (Symbol('OFF'), true)), true))
     substitutions, new_eqn = cse(expr)
     # this Piecewise should be exactly the same
     assert new_eqn[0] == expr

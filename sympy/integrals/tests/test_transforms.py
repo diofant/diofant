@@ -653,8 +653,8 @@ def test_sine_transform():
 
     assert sine_transform(t**(-a), t, w) == 2**(
         -a + Integer(1)/2)*w**(a - 1)*gamma(-a/2 + 1)/gamma((a + 1)/2)
-    assert inverse_sine_transform(2**(-a + S(
-        1)/2)*w**(a - 1)*gamma(-a/2 + 1)/gamma(a/2 + Integer(1)/2), w, t) == t**(-a)
+    assert inverse_sine_transform(2**(-a +
+        Integer(1)/2)*w**(a - 1)*gamma(-a/2 + 1)/gamma(a/2 + Integer(1)/2), w, t) == t**(-a)
 
     assert sine_transform(
         exp(-a*t), t, w) == sqrt(2)*w/(sqrt(pi)*(a**2 + w**2))
@@ -691,8 +691,8 @@ def test_cosine_transform():
 
     assert cosine_transform(t**(
         -a), t, w) == 2**(-a + Integer(1)/2)*w**(a - 1)*gamma((-a + 1)/2)/gamma(a/2)
-    assert inverse_cosine_transform(2**(-a + S(
-        1)/2)*w**(a - 1)*gamma(-a/2 + Integer(1)/2)/gamma(a/2), w, t) == t**(-a)
+    assert inverse_cosine_transform(2**(-a +
+        Integer(1)/2)*w**(a - 1)*gamma(-a/2 + Integer(1)/2)/gamma(a/2), w, t) == t**(-a)
 
     assert cosine_transform(
         exp(-a*t), t, w) == sqrt(2)*a/(sqrt(pi)*(a**2 + w**2))
@@ -735,8 +735,8 @@ def test_hankel_transform():
         m - 2)*gamma(-m/2 + nu/2 + 1)/gamma(m/2 + nu/2), k, r, nu) == r**(-m)
 
     assert hankel_transform(r**nu*exp(-a*r), r, k, nu) == \
-        2**(nu + 1)*a*k**(-nu - 3)*(a**2/k**2 + 1)**(-nu - S(
-                                                     3)/2)*gamma(nu + Integer(3)/2)/sqrt(pi)
+        2**(nu + 1)*a*k**(-nu - 3)*(a**2/k**2 + 1)**(-nu -
+                                                     Integer(3)/2)*gamma(nu + Integer(3)/2)/sqrt(pi)
     assert inverse_hankel_transform(
         2**(nu + 1)*a*k**(-nu - 3)*(a**2/k**2 + 1)**(-nu - Integer(3)/2)*gamma(
         nu + Integer(3)/2)/sqrt(pi), k, r, nu) == r**nu*exp(-a*r)

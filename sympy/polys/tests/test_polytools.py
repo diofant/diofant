@@ -2087,8 +2087,8 @@ def test_primitive():
     assert f.primitive() == (1, f)
     assert g.primitive() == (1.0, g)
 
-    assert primitive(S('-3*x/4 + y + 11/8')) == \
-        S('(1/8, -6*x + 8*y + 11)')
+    assert primitive(-3*x/4 + y + Rational(11, 8)) == \
+        (Rational(1, 8), -6*x + 8*y + 11)
 
 
 def test_compose():
@@ -2517,8 +2517,7 @@ def test_intervals():
 
     assert intervals([g, h], inf=Integer(7)/4) == []
     assert intervals([g, h], inf=Integer(7)/5) == [((Integer(7)/5, Integer(3)/2), {0: 2})]
-    assert intervals([g, h], sup=S(
-        7)/4) == [((-2, -1), {0: 2}), ((1, 1), {1: 1}), ((1, Integer(3)/2), {0: 2})]
+    assert intervals([g, h], sup=Rational(7, 4)) == [((-2, -1), {0: 2}), ((1, 1), {1: 1}), ((1, Integer(3)/2), {0: 2})]
     assert intervals(
         [g, h], sup=Integer(7)/5) == [((-2, -1), {0: 2}), ((1, 1), {1: 1})]
 

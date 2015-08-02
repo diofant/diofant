@@ -836,7 +836,8 @@ def test_unrad1():
         {S.Zero, Integer(9)/16}
 
     assert check(unrad(sqrt(x) + root(x + 1, 3) + 2*sqrt(y), y),
-        (S('2*sqrt(x)*(x + 1)**(1/3) + x - 4*y + (x + 1)**(2/3)'), []))
+                 (2*sqrt(x)*(x + 1)**Rational(1, 3) + x - 4*y +
+                     (x + 1)**Rational(2, 3), []))
     assert check(unrad(sqrt(x/(1 - x)) + (x + 1)**Rational(1, 3)),
         (x**5 - x**4 - x**3 + 2*x**2 + x - 1, []))
     assert check(unrad(sqrt(x/(1 - x)) + 2*sqrt(y), y),
@@ -925,10 +926,11 @@ def test_unrad1():
     eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
     assert check(unrad(eq),
         ((5*x - 4)*(3125*x**3 + 37100*x**2 + 100800*x - 82944), []))
-    ans = S('''
-        [4/5, -1484/375 + 172564/(140625*(114*sqrt(12657)/78125 +
-        12459439/52734375)**(1/3)) +
-        4*(114*sqrt(12657)/78125 + 12459439/52734375)**(1/3)]''')
+    ans = [Rational(4, 5), Rational(-1484, 375) +
+           172564/(140625*(114*sqrt(12657)/78125 +
+           Rational(12459439, 52734375))**Rational(1, 3)) +
+           4*(114*sqrt(12657)/78125 +
+           Rational(12459439, 52734375))**Rational(1, 3)]
     assert solve(eq) == ans
     # duplicate radical handling
     assert check(unrad(sqrt(x + root(x + 1, 3)) - root(x + 1, 3) - 2),
@@ -956,8 +958,8 @@ def test_unrad1():
     #    x**15 - x**3*cosh(x)**5 - 3*x**2*cosh(x)**5 - 3*x*cosh(x)**5 - cosh(x)**5, [])
     pytest.raises(NotImplementedError, lambda:
                   unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))
-    assert unrad(S('(x+y)**(2*y/3) + (x+y)**(1/3) + 1')) is None
-    assert check(unrad(S('(x+y)**(2*y/3) + (x+y)**(1/3) + 1'), x),
+    assert unrad((x+y)**(2*y/3) + (x+y)**Rational(1, 3) + 1) is None
+    assert check(unrad((x+y)**(2*y/3) + (x+y)**Rational(1, 3) + 1, x),
         (s**(2*y) + s + 1, [s, s**3 - x - y]))
 
     # This tests two things: that if full unrad is attempted and fails
@@ -968,7 +970,7 @@ def test_unrad1():
         1176*(x + 2)**(Integer(2)/3)*y - 169*x + 686, y, _unrad=False)) == 3
 
     # watch out for when the cov doesn't involve the symbol of interest
-    eq = S('-x + (7*y/8 - (27*x/2 + 27*sqrt(x**2)/2)**(1/3)/3)**3 - 1')
+    eq = -x + (7*y/8 - (27*x/2 + 27*sqrt(x**2)/2)**Rational(1, 3)/3)**3 - 1
     assert solve(eq, y) == [
         4*2**(Integer(2)/3)*(27*x + 27*sqrt(x**2))**(Integer(1)/3)/21 - (-Integer(1)/2 -
         sqrt(3)*I/2)*(-6912*x/343 + sqrt((-13824*x/343 - Integer(13824)/343)**2)/2 -
@@ -1016,23 +1018,25 @@ def test_unrad1():
             break
     else:
         assert None  # no answer was found
-    assert solve(sqrt(x + 1) + root(x, 3) - 2) == S('''
-        [(-11/(9*(47/54 + sqrt(93)/6)**(1/3)) + 1/3 + (47/54 +
-        sqrt(93)/6)**(1/3))**3]''')
-    assert solve(sqrt(sqrt(x + 1)) + x**Rational(1, 3) - 2) == S('''
-        [(-sqrt(-2*(-1/16 + sqrt(6913)/16)**(1/3) + 6/(-1/16 +
-        sqrt(6913)/16)**(1/3) + 17/2 + 121/(4*sqrt(-6/(-1/16 +
-        sqrt(6913)/16)**(1/3) + 2*(-1/16 + sqrt(6913)/16)**(1/3) + 17/4)))/2 +
-        sqrt(-6/(-1/16 + sqrt(6913)/16)**(1/3) + 2*(-1/16 +
-        sqrt(6913)/16)**(1/3) + 17/4)/2 + 9/4)**3]''')
-    assert solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) == S('''
-        [(-(81/2 + 3*sqrt(741)/2)**(1/3)/3 + (81/2 + 3*sqrt(741)/2)**(-1/3) +
-        2)**2]''')
-    eq = S('''
-        -x + (1/2 - sqrt(3)*I/2)*(3*x**3/2 - x*(3*x**2 - 34)/2 + sqrt((-3*x**3
-        + x*(3*x**2 - 34) + 90)**2/4 - 39304/27) - 45)**(1/3) + 34/(3*(1/2 -
-        sqrt(3)*I/2)*(3*x**3/2 - x*(3*x**2 - 34)/2 + sqrt((-3*x**3 + x*(3*x**2
-        - 34) + 90)**2/4 - 39304/27) - 45)**(1/3))''')
+    assert solve(sqrt(x + 1) + root(x, 3) - 2) == (
+        [(-11/(9*(Rational(47, 54) + sqrt(93)/6)**Rational(1, 3)) +
+         Rational(1, 3) + (Rational(47, 54) + sqrt(93)/6)**Rational(1, 3))**3])
+    assert solve(sqrt(sqrt(x + 1)) + x**Rational(1, 3) - 2) == (
+        [(-sqrt(-2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+         6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 2) +
+         121/(4*sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+         2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))))/2 +
+            sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+         2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))/2 +
+         Rational(9, 4))**3])
+    assert solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) == (
+        [(-(Rational(81, 2) + 3*sqrt(741)/2)**Rational(1, 3)/3 +
+            (Rational(81, 2) + 3*sqrt(741)/2)**Rational(-1, 3) + 2)**2])
+    eq = (-x + (Rational(1, 2) - sqrt(3)*I/2)*(3*x**3/2 - x*(3*x**2 - 34)/2 +
+          sqrt((-3*x**3 + x*(3*x**2 - 34) + 90)**2/4 - Rational(39304, 27)) -
+          45)**Rational(1, 3) + 34/(3*(Rational(1, 2) - sqrt(3)*I/2)*(3*x**3/2 -
+          x*(3*x**2 - 34)/2 + sqrt((-3*x**3 + x*(3*x**2 - 34) + 90)**2/4 -
+          Rational(39304, 27)) - 45)**Rational(1, 3)))
     assert check(unrad(eq),
         (s**7 - sqrt(3)*s**7*I + 102*12**(Integer(1)/3)*s**5 +
         102*2**(Integer(2)/3)*3**(Integer(5)/6)*s**5*I + 1620*s**4 - 1620*sqrt(3)*s**4*I -
@@ -1697,8 +1701,8 @@ def test_high_order_multivariate():
 def test_base_0_exp_0():
     assert solve(0**x - 1) == [0]
     assert solve(0**(x - 2) - 1) == [2]
-    assert solve(S('x*(1/x**0 - x)', evaluate=False)) == \
-        [0, 1]
+    e = x*(Pow(Pow(x, 0, evaluate=False), -1, evaluate=False) - x)
+    assert solve(e) == [0, 1]
 
 
 def test__simple_dens():

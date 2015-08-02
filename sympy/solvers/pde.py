@@ -555,7 +555,7 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     b = match[match['b']]
     c = match[match['c']]
     d = match[match['d']]
-    return Eq(f(x,y), exp(-S(d)/(b**2 + c**2)*(b*x + c*y))*solvefun(c*x - b*y))
+    return Eq(f(x,y), exp(-d/(b**2 + c**2)*(b*x + c*y))*solvefun(c*x - b*y))
 
 
 def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
@@ -650,12 +650,12 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     c = match[match['c']]
     d = match[match['d']]
     e = -match[match['e']]
-    expterm = exp(-S(d)/(b**2 + c**2)*xi)
+    expterm = exp(-d/(b**2 + c**2)*xi)
     functerm = solvefun(eta)
     solvedict = solve((b*x + c*y - xi, c*x - b*y - eta), x, y)
     # Integral should remain as it is in terms of xi,
     # doit() should be done in _handle_Integral.
-    genterm = (1/S(b**2 + c**2))*Integral(
+    genterm = (1/(b**2 + c**2))*Integral(
         (1/expterm*e).subs(solvedict), (xi, b*x + c*y))
     return Eq(f(x,y), Subs(expterm*(functerm + genterm),
         (eta, xi), (c*x - b*y, b*x + c*y)))

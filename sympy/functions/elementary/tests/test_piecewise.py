@@ -494,7 +494,7 @@ def test_as_expr_set_pairs():
 
 def test_S_srepr_is_identity():
     p = Piecewise((10, Eq(x, 0)), (12, True))
-    q = S(srepr(p))
+    q = sympify(srepr(p))
     assert p == q
 
 

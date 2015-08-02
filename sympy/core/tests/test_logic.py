@@ -123,26 +123,26 @@ def test_logic_expand():
 
 
 def test_logic_fromstring():
-    S = Logic.fromstring
+    s = Logic.fromstring
 
-    assert S('a') == 'a'
-    assert S('~a') == Not('a')
-    assert S('a & b') == And('a', 'b')
-    assert S('a | b') == Or('a', 'b')
-    assert S('a | b & c') == And(Or('a', 'b'), 'c')
-    assert S('a & b | c') == Or(And('a', 'b'), 'c')
-    assert S('a & b & c') == And('a', 'b', 'c')
-    assert S('a | b | c') == Or('a', 'b', 'c')
+    assert s('a') == 'a'
+    assert s('~a') == Not('a')
+    assert s('a & b') == And('a', 'b')
+    assert s('a | b') == Or('a', 'b')
+    assert s('a | b & c') == And(Or('a', 'b'), 'c')
+    assert s('a & b | c') == Or(And('a', 'b'), 'c')
+    assert s('a & b & c') == And('a', 'b', 'c')
+    assert s('a | b | c') == Or('a', 'b', 'c')
 
-    pytest.raises(ValueError, lambda: S('| a'))
-    pytest.raises(ValueError, lambda: S('& a'))
-    pytest.raises(ValueError, lambda: S('a | | b'))
-    pytest.raises(ValueError, lambda: S('a | & b'))
-    pytest.raises(ValueError, lambda: S('a & & b'))
-    pytest.raises(ValueError, lambda: S('a |'))
-    pytest.raises(ValueError, lambda: S('a|b'))
-    pytest.raises(ValueError, lambda: S('~'))
-    pytest.raises(ValueError, lambda: S('~ a'))
+    pytest.raises(ValueError, lambda: s('| a'))
+    pytest.raises(ValueError, lambda: s('& a'))
+    pytest.raises(ValueError, lambda: s('a | | b'))
+    pytest.raises(ValueError, lambda: s('a | & b'))
+    pytest.raises(ValueError, lambda: s('a & & b'))
+    pytest.raises(ValueError, lambda: s('a |'))
+    pytest.raises(ValueError, lambda: s('a|b'))
+    pytest.raises(ValueError, lambda: s('~'))
+    pytest.raises(ValueError, lambda: s('~ a'))
 
 
 def test_logic_not():
@@ -156,7 +156,6 @@ def test_logic_not():
 
 
 def test_formatting():
-    S = Logic.fromstring
-    pytest.raises(ValueError, lambda: S('a&b'))
-    pytest.raises(ValueError, lambda: S('a|b'))
-    pytest.raises(ValueError, lambda: S('~ a'))
+    pytest.raises(ValueError, lambda: Logic.fromstring('a&b'))
+    pytest.raises(ValueError, lambda: Logic.fromstring('a|b'))
+    pytest.raises(ValueError, lambda: Logic.fromstring('~ a'))

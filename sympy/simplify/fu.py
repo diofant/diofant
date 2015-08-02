@@ -1588,7 +1588,7 @@ def L(rv):
     >>> L(cos(x)+sin(x))
     2
     """
-    return S(rv.count(TrigonometricFunction))
+    return Integer(rv.count(TrigonometricFunction))
 
 
 # ============== end of basic Fu-like tools =====================

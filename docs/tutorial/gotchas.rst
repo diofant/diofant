@@ -296,8 +296,6 @@ to a Python expression.  Use the :func:`sympy.core.sympify.sympify` function, or
     <class 'float'>
     >>> Float(6.2)  # SymPy Float has no such problems because of arbitrary precision.
     6.20000000000000
-    >>> type(Float(6.2))
-    <class 'sympy.core.numbers.Float'>
 
 If you include numbers in a SymPy expression, they will be sympified
 automatically, but there is one gotcha you should be aware of.  If you
@@ -308,8 +306,6 @@ numbers, or use :class:`~sympy.core.numbers.Rational`.
 
     >>> x**(1/2)
     x**0.5
-    >>> x**(Integer(1)/2)  # sympyify one of the ints
-    sqrt(x)
     >>> x**Rational(1, 2)  # use the Rational class
     sqrt(x)
 
@@ -343,8 +339,7 @@ you don't have to worry about this problem:
     >>> a
     [22/7]
 
-    The other solution is to put quotes around the expression
-    and run it through S() (i.e., sympify it):
+    The other solution is using the Rational class:
 
     >>> Rational(22, 7)
     22/7

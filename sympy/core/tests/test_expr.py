@@ -990,10 +990,10 @@ def test_extractions():
     assert x.extract_additively(0) == x
     assert Integer(2).extract_additively(x) is None
     assert Float(2.).extract_additively(2) == S.Zero
-    assert S(2*x + 3).extract_additively(x + 1) == x + 2
-    assert S(2*x + 3).extract_additively(y + 1) is None
-    assert S(2*x - 3).extract_additively(x + 1) is None
-    assert S(2*x - 3).extract_additively(y + z) is None
+    assert (2*x + 3).extract_additively(x + 1) == x + 2
+    assert (2*x + 3).extract_additively(y + 1) is None
+    assert (2*x - 3).extract_additively(x + 1) is None
+    assert (2*x - 3).extract_additively(y + z) is None
     assert ((a + 1)*x*4 + y).extract_additively(x).expand() == \
         4*a*x + 3*x + y
     assert ((a + 1)*x*4 + 3*y).extract_additively(x + 2*y).expand() == \
@@ -1534,9 +1534,9 @@ def test_round():
 
     assert Float('0.1249999').round(2) == 0.12
     d20 = 12345678901234567890
-    ans = S(d20).round(2)
+    ans = Integer(d20).round(2)
     assert ans.is_Float and ans == d20
-    ans = S(d20).round(-2)
+    ans = Integer(d20).round(-2)
     assert ans.is_Float and ans == 12345678901234567900
     assert Rational(1, 7).round(4) == 0.1429
     assert Float(.1349).round(2) == 0.13
@@ -1609,7 +1609,7 @@ def test_round():
     assert Float(-123.6).round() == -124.
     assert Float(-1.5).round() == -2.
     assert Float(-100.5).round() == -101.
-    assert S(-1.5 - 10.5*I).round() == -2.0 - 11.0*I
+    assert (Float(-1.5) - Float(10.5)*I).round() == -2.0 - 11.0*I
 
     # issue 7961
     assert str(Float(0.006).round(2)) == '0.01'

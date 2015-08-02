@@ -115,7 +115,7 @@ def dispersionset(p, q=None, *gens, **args):
             # with the description in the book of W. Koepf.
             anm1 = s.coeff_monomial(gen**(m-1))
             bnm1 = t.coeff_monomial(gen**(n-1))
-            alpha = (anm1 - bnm1) / S(n*bn)
+            alpha = (anm1 - bnm1) / sympify(n*bn)
             if not alpha.is_integer:
                 continue
             if alpha < 0 or alpha in J:

@@ -138,7 +138,7 @@ class TableForm(object):
                         lj = pad
                 else:
                     try:
-                        lj = S(lj)
+                        lj = sympify(lj)
                     except SympifyError:
                         lj = Symbol(str(lj))
                 line[j] = lj

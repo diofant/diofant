@@ -132,7 +132,7 @@ def test_simplify_ratio():
              '-(sqrt(21)/2 + 5/2)**(1/3) - 1/(sqrt(21)/2 + 5/2)**(1/3)']
 
     for r in roots:
-        r = S(r)
+        r = sympify(r)
         assert count_ops(simplify(r, ratio=1)) <= count_ops(r)
         # If ratio=oo, simplify() is always applied:
         assert simplify(r, ratio=oo) is not r

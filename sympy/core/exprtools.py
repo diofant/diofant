@@ -109,7 +109,7 @@ class Factors(object):
 
         """
         if isinstance(factors, (SYMPY_INTS, float)):
-            factors = S(factors)
+            factors = sympify(factors)
 
         if isinstance(factors, Factors):
             factors = factors.factors.copy()

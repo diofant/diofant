@@ -674,8 +674,8 @@ class harmonic(Function):
                 if u.is_nonnegative and p.is_positive and q.is_positive and p < q:
                     k = Dummy("k")
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
-                    t2 = 2 * Sum(cos((2 * pi * p * k) / S(q)) *
-                                   log(sin((pi * k) / S(q))),
+                    t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
+                                   log(sin((pi * k) / q)),
                                    (k, 1, floor((q - 1) / Integer(2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3

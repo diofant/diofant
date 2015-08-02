@@ -1556,11 +1556,10 @@ def simplify_logic(expr, form=None, deep=True):
     >>> simplify_logic(b)
     And(Not(x), Not(y))
 
-    >>> S(b)
+    >>> sympify(b)
     Or(And(Not(x), Not(y), Not(z)), And(Not(x), Not(y), z))
     >>> simplify_logic(_)
     And(Not(x), Not(y))
-
     """
 
     if form == 'cnf' or form == 'dnf' or form is None:

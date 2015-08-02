@@ -619,7 +619,8 @@ def test_nfloat():
     assert nfloat(cos(x + sqrt(2))) == cos(x + nfloat(sqrt(2)))
 
     # issue 6342
-    f = S('x*lamda + lamda**3*(x/2 + 1/2) + lamda**2 + 1/4')
+    lamda = Symbol('lamda')
+    f = x*lamda + lamda**3*(x/2 + Rational(1, 2)) + lamda**2 + Rational(1, 4)
     assert not any(a.free_symbols for a in solve(f.subs(x, -0.139)))
 
     # issue 6632

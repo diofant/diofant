@@ -177,7 +177,7 @@ class PolyQuintic(object):
 
     def uv(self, theta, d):
         c = self.c
-        u = S(-25*self.q/2)
+        u = Rational(-25*self.q, 2)
         v = Poly(c, x).eval(theta)/(2*d*self.F)
         return N(u), N(v)
 

@@ -243,7 +243,7 @@ def test_D7():
 def test_D8():
     # One way is to cheat by converting the sum to a string,
     # and replacing the '[' and ']' with ''.
-    # E.g., horner(S(str(_).replace('[','').replace(']','')))
+    # E.g., horner(sympify(str(_).replace('[','').replace(']','')))
     raise NotImplementedError("apply Horner's rule to sum(a[i]*x**i, (i,1,5))")
 
 
@@ -1471,8 +1471,8 @@ def test_P23():
         Integer(1): 1,
         Integer(2): 1,
         Integer(3): 1,
-        S('sqrt(3) + 2'): 1,
-        S('-sqrt(3) + 2'): 1}
+        sqrt(3) + 2: 1,
+        -sqrt(3) + 2: 1}
 
 
 def test_P24():
@@ -1486,11 +1486,11 @@ def test_P24():
                 [  29,  -44,   52,  -23,  208,  208, -911,   99]])
     assert M.eigenvals() == {
         Integer(0): 1,
-        S('10*sqrt(10405)'): 1,
-        S('100*sqrt(26) + 510'): 1,
+        10*sqrt(10405): 1,
+        100*sqrt(26) + 510: 1,
         Integer(1000): 2,
-        S('-100*sqrt(26) + 510'): 1,
-        S('-10*sqrt(10405)'): 1,
+        -100*sqrt(26) + 510: 1,
+        -10*sqrt(10405): 1,
         Integer(1020): 1}
 
 
@@ -1520,8 +1520,8 @@ def test_P26():
                 [  0,   0,   0,   0,   0,  0,  1, -1, -1],
                 [  0,   0,   0,   0,   0,  0,  0,  1,  0]])
     assert M.eigenvals() == {
-        S('-1/2 - sqrt(3)*I/2'): 2,
-        S('-1/2 + sqrt(3)*I/2'): 2}
+        R(-1, 2) - sqrt(3)*I/2: 2,
+        R(-1, 2) + sqrt(3)*I/2: 2}
 
 
 def test_P27():

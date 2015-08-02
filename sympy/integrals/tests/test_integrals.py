@@ -1070,7 +1070,9 @@ def test_issue_8368():
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
                                 (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
-                                (meijerg(((0,), (-S(1)/2, S(1)/2)), ((0, S(1)/2), (-S(1)/2,)), polar_lift(s)**2), True)),
+                                (meijerg(((0,), (-S.Half, S.Half)),
+                                                ((0, S.Half), (-S.Half,)),
+                                         polar_lift(s)**2), True)),
                    And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
                        cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
                   (Integral(E**(-s*x)*sinh(x), (x, 0, oo)), True))

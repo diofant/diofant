@@ -107,7 +107,7 @@ def test_expand():
     rn = randcplx(a=1, b=0, d=0, c=2)
 
     for besselx in [besselj, bessely, besseli, besselk]:
-        ri = S(2*randint(-11, 10) + 1) / 2  # half integer in [-21/2, 21/2]
+        ri = Rational(2*randint(-11, 10) + 1, 2)  # half integer in [-21/2, 21/2]
         assert tn(besselsimp(besselx(ri, z)), besselx(ri, z))
 
     assert check(expand_func(besseli(rn, x)),

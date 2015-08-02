@@ -1247,7 +1247,7 @@ def residue_reduce_derivation(H, DE, z):
     """
     # TODO: verify that this is correct for multiple extensions
     i = Dummy('i')
-    return S(sum((RootSum(a[0].as_poly(z), Lambda(i, i*derivation(a[1],
+    return sympify(sum((RootSum(a[0].as_poly(z), Lambda(i, i*derivation(a[1],
         DE).as_expr().subs(z, i)/a[1].as_expr().subs(z, i))) for a in H)))
 
 
@@ -1661,7 +1661,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     -----------
     log(log(x))
     """
-    f = S(f)
+    f = sympify(f)
 
     DE = extension or DifferentialExtension(f, x, handle_first=handle_first, rewrite_complex=rewrite_complex)
     fa, fd = DE.fa, DE.fd
