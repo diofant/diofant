@@ -3246,10 +3246,8 @@ def unrad(eq, *syms, **flags):
 
     new_depth = sqrt_depth(eq) if ok else depth
     rpt += 1  # XXX how many repeats with others unchanging is enough?
-    if not ok or (
-        nwas is not None and len(rterms) == nwas and
-        new_depth is not None and new_depth == depth and
-        rpt > 3):
+    if not ok or (nwas is not None and len(rterms) == nwas and
+                  new_depth is not None and new_depth == depth and rpt > 3):
         raise NotImplementedError('Cannot remove all radicals')
 
     flags.update(dict(cov=cov, n=len(rterms), rpt=rpt))
