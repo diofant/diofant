@@ -1,7 +1,5 @@
 recursive-include docs *
-recursive-include sympy/logic/benchmarks/input *
 prune docs/_build
 recursive-include examples *.py README.rst
-
 include LICENSE
 include README.rst
