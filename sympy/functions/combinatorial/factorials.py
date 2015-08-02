@@ -64,7 +64,7 @@ class factorial(CombinatorialFunction):
        >>> factorial(2*n)
        factorial(2*n)
 
-       >>> factorial(S(1)/2)
+       >>> factorial(Integer(1)/2)
        factorial(1/2)
 
        See Also

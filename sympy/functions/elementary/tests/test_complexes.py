@@ -280,8 +280,8 @@ def test_as_real_imag():
     # issue 6261
     x = Symbol('x')
     assert sqrt(x).as_real_imag() == \
-        ((re(x)**2 + im(x)**2)**(S(1)/4)*cos(atan2(im(x), re(x))/2),
-     (re(x)**2 + im(x)**2)**(S(1)/4)*sin(atan2(im(x), re(x))/2))
+        ((re(x)**2 + im(x)**2)**(Integer(1)/4)*cos(atan2(im(x), re(x))/2),
+     (re(x)**2 + im(x)**2)**(Integer(1)/4)*sin(atan2(im(x), re(x))/2))
 
     # issue 3853
     a, b = symbols('a,b', extended_real=True)
@@ -798,5 +798,5 @@ def test_issue_6167_6151():
     one = cos(x)**2 + sin(x)**2
     e = big*one - big + eps
     assert sign(simplify(e)) == 1
-    for xi in (111, 11, 1, S(1)/10):
+    for xi in (111, 11, 1, Integer(1)/10):
         assert sign(e.subs(x, xi)) == 1

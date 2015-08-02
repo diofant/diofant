@@ -142,7 +142,7 @@ class erf(Function):
             return S.Zero
         else:
             x = sympify(x)
-            k = floor((n - 1)/S(2))
+            k = floor((n - 1)/Integer(2))
             if len(previous_terms) > 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
@@ -320,7 +320,7 @@ class erfc(Function):
 
         # Try to pull out factors of -1
         if arg.could_extract_minus_sign():
-            return S(2) - cls(-arg)
+            return Integer(2) - cls(-arg)
 
     @staticmethod
     @cacheit
@@ -331,7 +331,7 @@ class erfc(Function):
             return S.Zero
         else:
             x = sympify(x)
-            k = floor((n - 1)/S(2))
+            k = floor((n - 1)/Integer(2))
             if len(previous_terms) > 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
@@ -510,7 +510,7 @@ class erfi(Function):
             return S.Zero
         else:
             x = sympify(x)
-            k = floor((n - 1)/S(2))
+            k = floor((n - 1)/Integer(2))
             if len(previous_terms) > 2:
                 return previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
@@ -1153,7 +1153,7 @@ class expint(Function):
 
     At half-integers it reduces to error functions:
 
-    >>> expint(S(1)/2, z)
+    >>> expint(Integer(1)/2, z)
     -sqrt(pi)*erf(sqrt(z))/sqrt(z) + sqrt(pi)/sqrt(z)
 
     At positive integer orders it can be rewritten in terms of exponentials
@@ -1649,7 +1649,7 @@ class Si(TrigonometricIntegral):
     """
 
     _trigfunc = sin
-    _atzero = S(0)
+    _atzero = Integer(0)
 
     @classmethod
     def _atinf(cls):
@@ -1832,7 +1832,7 @@ class Shi(TrigonometricIntegral):
     """
 
     _trigfunc = sinh
-    _atzero = S(0)
+    _atzero = Integer(0)
 
     @classmethod
     def _atinf(cls):
@@ -1978,7 +1978,7 @@ class FresnelIntegral(Function):
     def eval(cls, z):
         # Value at zero
         if z is S.Zero:
-            return S(0)
+            return Integer(0)
 
         # Try to pull out factors of -1 and I
         prefact = S.One
@@ -2143,17 +2143,17 @@ class fresnels(FresnelIntegral):
                 p = previous_terms[-1]
                 return (-pi**2*x**4*(4*n - 1)/(8*n*(2*n + 1)*(4*n + 3))) * p
             else:
-                return x**3 * (-x**4)**n * (S(2)**(-2*n - 1)*pi**(2*n + 1)) / ((4*n + 3)*factorial(2*n + 1))
+                return x**3 * (-x**4)**n * (Integer(2)**(-2*n - 1)*pi**(2*n + 1)) / ((4*n + 3)*factorial(2*n + 1))
 
     def _eval_rewrite_as_erf(self, z):
         return (S.One + I)/4 * (erf((S.One + I)/2*sqrt(pi)*z) - I*erf((S.One - I)/2*sqrt(pi)*z))
 
     def _eval_rewrite_as_hyper(self, z):
-        return pi*z**3/6 * hyper([S(3)/4], [S(3)/2, S(7)/4], -pi**2*z**4/16)
+        return pi*z**3/6 * hyper([Integer(3)/4], [Integer(3)/2, Integer(7)/4], -pi**2*z**4/16)
 
     def _eval_rewrite_as_meijerg(self, z):
-        return (pi*z**(S(9)/4) / (sqrt(2)*(z**2)**(S(3)/4)*(-z)**(S(3)/4))
-                * meijerg([], [1], [S(3)/4], [S(1)/4, 0], -pi**2*z**4/16))
+        return (pi*z**(Integer(9)/4) / (sqrt(2)*(z**2)**(Integer(3)/4)*(-z)**(Integer(3)/4))
+                * meijerg([], [1], [Integer(3)/4], [Integer(1)/4, 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
         from sympy import Order
@@ -2275,17 +2275,17 @@ class fresnelc(FresnelIntegral):
                 p = previous_terms[-1]
                 return (-pi**2*x**4*(4*n - 3)/(8*n*(2*n - 1)*(4*n + 1))) * p
             else:
-                return x * (-x**4)**n * (S(2)**(-2*n)*pi**(2*n)) / ((4*n + 1)*factorial(2*n))
+                return x * (-x**4)**n * (Integer(2)**(-2*n)*pi**(2*n)) / ((4*n + 1)*factorial(2*n))
 
     def _eval_rewrite_as_erf(self, z):
         return (S.One - I)/4 * (erf((S.One + I)/2*sqrt(pi)*z) + I*erf((S.One - I)/2*sqrt(pi)*z))
 
     def _eval_rewrite_as_hyper(self, z):
-        return z * hyper([S.One/4], [S.One/2, S(5)/4], -pi**2*z**4/16)
+        return z * hyper([S.One/4], [S.One/2, Integer(5)/4], -pi**2*z**4/16)
 
     def _eval_rewrite_as_meijerg(self, z):
-        return (pi*z**(S(3)/4) / (sqrt(2)*root(z**2, 4)*root(-z, 4))
-                * meijerg([], [1], [S(1)/4], [S(3)/4, 0], -pi**2*z**4/16))
+        return (pi*z**(Integer(3)/4) / (sqrt(2)*root(z**2, 4)*root(-z, 4))
+                * meijerg([], [1], [Integer(1)/4], [Integer(3)/4, 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
         from sympy import Order

@@ -2060,7 +2060,7 @@ class Poly(Expr):
         >>> from sympy import Poly, S, QQ
         >>> from sympy.abc import x
 
-        >>> f = Poly(x/2 + S(1)/3, x, domain=QQ)
+        >>> f = Poly(x/2 + Integer(1)/3, x, domain=QQ)
 
         >>> f.clear_denoms()
         (6, Poly(3*x + 2, x, domain='QQ'))

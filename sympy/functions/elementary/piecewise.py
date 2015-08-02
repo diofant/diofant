@@ -560,7 +560,7 @@ def piecewise_fold(expr):
 
     >>> from sympy import Piecewise, piecewise_fold, sympify as S
     >>> from sympy.abc import x
-    >>> p = Piecewise((x, x < 1), (1, S(1) <= x))
+    >>> p = Piecewise((x, x < 1), (1, Integer(1) <= x))
     >>> piecewise_fold(x*p)
     Piecewise((x**2, x < 1), (x, 1 <= x))
 

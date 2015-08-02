@@ -36,7 +36,7 @@ def _unevaluated_Mul(*args):
     >>> from sympy.core.mul import _unevaluated_Mul as uMul
     >>> from sympy import S, sqrt, Mul
     >>> from sympy.abc import x
-    >>> a = uMul(*[S(3.0), x, S(2)])
+    >>> a = uMul(*[S(3.0), x, Integer(2)])
     >>> a.args[0]
     6.00000000000000
     >>> a.args[1]
@@ -1013,7 +1013,7 @@ class Mul(Expr, AssocOp):
             n, d = self.as_numer_denom()
             if d is S.One:
                 return True
-            elif d is S(2):
+            elif d is Integer(2):
                 return n.is_even
         elif is_rational is False:
             return False
@@ -1543,7 +1543,7 @@ def prod(a, start=1):
     0
     >>> type(_) is int
     True
-    >>> prod([S(2), 3])
+    >>> prod([Integer(2), 3])
     6
     >>> _.is_Integer
     True
@@ -1579,9 +1579,9 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     x/2 + 1
     >>> _keep_coeff(S.Half, (x + 2)*y, clear=False)
     y*(x + 2)/2
-    >>> _keep_coeff(S(-1), x + y)
+    >>> _keep_coeff(Integer(-1), x + y)
     -x - y
-    >>> _keep_coeff(S(-1), x + y, sign=True)
+    >>> _keep_coeff(Integer(-1), x + y, sign=True)
     -(x + y)
     """
 

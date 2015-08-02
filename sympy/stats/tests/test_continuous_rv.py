@@ -259,7 +259,7 @@ def test_exponential():
     assert skewness(X) == smoment(X, 3)
     assert smoment(2*X, 4) == smoment(X, 4)
     assert moment(X, 3) == 3*2*1/rate**3
-    assert P(X > 0) == S(1)
+    assert P(X > 0) == Integer(1)
     assert P(X > 1) == exp(-rate)
     assert P(X > 10) == exp(-10*rate)
 
@@ -395,7 +395,7 @@ def test_nakagami():
     assert simplify(E(X, meijerg=True)) == (sqrt(mu)*sqrt(omega)
            *gamma(mu + S.Half)/gamma(mu + 1))
     assert simplify(variance(X, meijerg=True)) == (
-    omega - omega*gamma(mu + S(1)/2)**2/(gamma(mu)*gamma(mu + 1)))
+    omega - omega*gamma(mu + Integer(1)/2)**2/(gamma(mu)*gamma(mu + 1)))
 
 
 def test_pareto():
@@ -529,7 +529,7 @@ def test_weibull():
 def test_weibull_numeric():
     # Test for integers and rationals
     a = 1
-    bvals = [S.Half, 1, S(3)/2, 5]
+    bvals = [S.Half, 1, Integer(3)/2, 5]
     for b in bvals:
         X = Weibull('x', a, b)
         assert simplify(E(X)) == simplify(a * gamma(1 + 1/S(b)))

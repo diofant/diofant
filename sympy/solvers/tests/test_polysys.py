@@ -53,15 +53,15 @@ def test_solve_biquadratic():
     f_2 = (x - 2)**2 + (y - 2)**2 - r**2
 
     assert solve_poly_system([f_1, f_2], x, y) == \
-        [(S(3)/2 - sqrt(-1 + 2*r**2)/2, S(3)/2 + sqrt(-1 + 2*r**2)/2),
-         (S(3)/2 + sqrt(-1 + 2*r**2)/2, S(3)/2 - sqrt(-1 + 2*r**2)/2)]
+        [(Integer(3)/2 - sqrt(-1 + 2*r**2)/2, Integer(3)/2 + sqrt(-1 + 2*r**2)/2),
+         (Integer(3)/2 + sqrt(-1 + 2*r**2)/2, Integer(3)/2 - sqrt(-1 + 2*r**2)/2)]
 
     f_1 = (x - 1)**2 + (y - 2)**2 - r**2
     f_2 = (x - 1)**2 + (y - 1)**2 - r**2
 
     assert solve_poly_system([f_1, f_2], x, y) == \
-        [(1 - sqrt(((2*r - 1)*(2*r + 1)))/2, S(3)/2),
-         (1 + sqrt(((2*r - 1)*(2*r + 1)))/2, S(3)/2)]
+        [(1 - sqrt(((2*r - 1)*(2*r + 1)))/2, Integer(3)/2),
+         (1 + sqrt(((2*r - 1)*(2*r + 1)))/2, Integer(3)/2)]
 
     def query(expr):
         return expr.is_Pow and expr.exp is S.Half
@@ -100,8 +100,8 @@ def test_solve_triangualted():
 
 
 def test_solve_issue_3686():
-    roots = solve_poly_system([((x - 5)**2/250000 + (y - S(5)/10)**2/250000) - 1, x], x, y)
-    assert roots == [(0, S(1)/2 + 15*sqrt(1111)), (0, S(1)/2 - 15*sqrt(1111))]
+    roots = solve_poly_system([((x - 5)**2/250000 + (y - Integer(5)/10)**2/250000) - 1, x], x, y)
+    assert roots == [(0, Integer(1)/2 + 15*sqrt(1111)), (0, Integer(1)/2 - 15*sqrt(1111))]
 
     roots = solve_poly_system([((x - 5)**2/250000 + (y - 5.0/10)**2/250000) - 1, x], x, y)
     # TODO: does this really have to be so complicated?!

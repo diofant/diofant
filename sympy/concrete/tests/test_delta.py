@@ -114,7 +114,7 @@ def test_deltaproduct_add_mul_x_y_mul_x_kd():
     assert dp(x*y + x*KD(i, j), (j, 3, 3)) == x*y + x*KD(i, 3)
     assert dp(x*y + x*KD(i, j), (j, 1, k)) == \
         (x*y)**k + Piecewise(
-            ((x*y)**(i - 1)*x*(x*y)**(k - i), And(S(1) <= i, i <= k)),
+            ((x*y)**(i - 1)*x*(x*y)**(k - i), And(Integer(1) <= i, i <= k)),
             (0, True)
     )
     assert dp(x*y + x*KD(i, j), (j, k, 3)) == \
@@ -137,7 +137,7 @@ def test_deltaproduct_mul_x_add_y_kd():
     assert dp(x*(y + KD(i, j)), (j, 3, 3)) == x*(y + KD(i, 3))
     assert dp(x*(y + KD(i, j)), (j, 1, k)) == \
         (x*y)**k + Piecewise(
-            ((x*y)**(i - 1)*x*(x*y)**(k - i), And(S(1) <= i, i <= k)),
+            ((x*y)**(i - 1)*x*(x*y)**(k - i), And(Integer(1) <= i, i <= k)),
             (0, True)
     )
     assert dp(x*(y + KD(i, j)), (j, k, 3)) == \
@@ -160,7 +160,7 @@ def test_deltaproduct_mul_x_add_y_twokd():
     assert dp(x*(y + 2*KD(i, j)), (j, 3, 3)) == x*(y + 2*KD(i, 3))
     assert dp(x*(y + 2*KD(i, j)), (j, 1, k)) == \
         (x*y)**k + Piecewise(
-            (2*(x*y)**(i - 1)*x*(x*y)**(k - i), And(S(1) <= i, i <= k)),
+            (2*(x*y)**(i - 1)*x*(x*y)**(k - i), And(Integer(1) <= i, i <= k)),
             (0, True)
     )
     assert dp(x*(y + 2*KD(i, j)), (j, k, 3)) == \
@@ -186,7 +186,7 @@ def test_deltaproduct_mul_add_x_y_add_y_kd():
     assert dp((x + y)*(y + KD(i, j)), (j, 1, k)) == \
         ((x + y)*y)**k + Piecewise(
             (((x + y)*y)**(i - 1)*(x + y)*((x + y)*y)**(k - i),
-             And(S(1) <= i, i <= k)),
+             And(Integer(1) <= i, i <= k)),
             (0, True)
     )
     assert dp((x + y)*(y + KD(i, j)), (j, k, 3)) == \
@@ -218,7 +218,7 @@ def test_deltaproduct_mul_add_x_kd_add_y_kd():
     assert dp((x + KD(i, k))*(y + KD(i, j)), (j, 1, k)) == \
         ((x + KD(i, k))*y)**k + Piecewise(
             (((x + KD(i, k))*y)**(i - 1)*(x + KD(i, k))*
-             ((x + KD(i, k))*y)**(-i + k), And(S(1) <= i, i <= k)),
+             ((x + KD(i, k))*y)**(-i + k), And(Integer(1) <= i, i <= k)),
             (0, True)
     )
     assert dp((x + KD(i, k))*(y + KD(i, j)), (j, k, 3)) == \
@@ -253,14 +253,14 @@ def test_deltasummation_basic_numerical():
     assert ds(KD(i**2, j**2), (j, -oo, oo)) == \
         Sum(KD(i**2, j**2), (j, -oo, oo))
 
-    assert Piecewise((KD(i, k), And(S(1) <= i, i <= 3)), (0, True)) == \
+    assert Piecewise((KD(i, k), And(Integer(1) <= i, i <= 3)), (0, True)) == \
         ds(KD(i, j)*KD(j, k), (j, 1, 3)) == \
         ds(KD(j, k)*KD(i, j), (j, 1, 3))
 
     assert ds(KD(i, k), (k, -oo, oo)) == 1
-    assert ds(KD(i, k), (k, 0, oo)) == Piecewise((1, S(0) <= i), (0, True))
+    assert ds(KD(i, k), (k, 0, oo)) == Piecewise((1, Integer(0) <= i), (0, True))
     assert ds(KD(i, k), (k, 1, 3)) == \
-        Piecewise((1, And(S(1) <= i, i <= 3)), (0, True))
+        Piecewise((1, And(Integer(1) <= i, i <= 3)), (0, True))
     assert ds(k*KD(i, j)*KD(j, k), (k, -oo, oo)) == j*KD(i, j)
     assert ds(j*KD(i, j), (j, -oo, oo)) == i
     assert ds(i*KD(i, j), (i, -oo, oo)) == j
@@ -270,12 +270,12 @@ def test_deltasummation_basic_numerical():
 
 def test_deltasummation_basic_symbolic():
     assert ds(KD(i, j), (j, 1, 3)) == \
-        Piecewise((1, And(S(1) <= i, i <= 3)), (0, True))
+        Piecewise((1, And(Integer(1) <= i, i <= 3)), (0, True))
     assert ds(KD(i, j), (j, 1, 1)) == Piecewise((1, Eq(i, 1)), (0, True))
     assert ds(KD(i, j), (j, 2, 2)) == Piecewise((1, Eq(i, 2)), (0, True))
     assert ds(KD(i, j), (j, 3, 3)) == Piecewise((1, Eq(i, 3)), (0, True))
     assert ds(KD(i, j), (j, 1, k)) == \
-        Piecewise((1, And(S(1) <= i, i <= k)), (0, True))
+        Piecewise((1, And(Integer(1) <= i, i <= k)), (0, True))
     assert ds(KD(i, j), (j, k, 3)) == \
         Piecewise((1, And(k <= i, i <= 3)), (0, True))
     assert ds(KD(i, j), (j, k, l)) == \
@@ -284,12 +284,12 @@ def test_deltasummation_basic_symbolic():
 
 def test_deltasummation_mul_x_kd():
     assert ds(x*KD(i, j), (j, 1, 3)) == \
-        Piecewise((x, And(S(1) <= i, i <= 3)), (0, True))
+        Piecewise((x, And(Integer(1) <= i, i <= 3)), (0, True))
     assert ds(x*KD(i, j), (j, 1, 1)) == Piecewise((x, Eq(i, 1)), (0, True))
     assert ds(x*KD(i, j), (j, 2, 2)) == Piecewise((x, Eq(i, 2)), (0, True))
     assert ds(x*KD(i, j), (j, 3, 3)) == Piecewise((x, Eq(i, 3)), (0, True))
     assert ds(x*KD(i, j), (j, 1, k)) == \
-        Piecewise((x, And(S(1) <= i, i <= k)), (0, True))
+        Piecewise((x, And(Integer(1) <= i, i <= k)), (0, True))
     assert ds(x*KD(i, j), (j, k, 3)) == \
         Piecewise((x, And(k <= i, i <= 3)), (0, True))
     assert ds(x*KD(i, j), (j, k, l)) == \
@@ -298,7 +298,7 @@ def test_deltasummation_mul_x_kd():
 
 def test_deltasummation_mul_add_x_y_kd():
     assert ds((x + y)*KD(i, j), (j, 1, 3)) == \
-        Piecewise((x + y, And(S(1) <= i, i <= 3)), (0, True))
+        Piecewise((x + y, And(Integer(1) <= i, i <= 3)), (0, True))
     assert ds((x + y)*KD(i, j), (j, 1, 1)) == \
         Piecewise((x + y, Eq(i, 1)), (0, True))
     assert ds((x + y)*KD(i, j), (j, 2, 2)) == \
@@ -306,7 +306,7 @@ def test_deltasummation_mul_add_x_y_kd():
     assert ds((x + y)*KD(i, j), (j, 3, 3)) == \
         Piecewise((x + y, Eq(i, 3)), (0, True))
     assert ds((x + y)*KD(i, j), (j, 1, k)) == \
-        Piecewise((x + y, And(S(1) <= i, i <= k)), (0, True))
+        Piecewise((x + y, And(Integer(1) <= i, i <= k)), (0, True))
     assert ds((x + y)*KD(i, j), (j, k, 3)) == \
         Piecewise((x + y, And(k <= i, i <= 3)), (0, True))
     assert ds((x + y)*KD(i, j), (j, k, l)) == \
@@ -315,8 +315,8 @@ def test_deltasummation_mul_add_x_y_kd():
 
 def test_deltasummation_add_kd_kd():
     assert ds(KD(i, k) + KD(j, k), (k, 1, 3)) == piecewise_fold(
-        Piecewise((1, And(S(1) <= i, i <= 3)), (0, True)) +
-        Piecewise((1, And(S(1) <= j, j <= 3)), (0, True)))
+        Piecewise((1, And(Integer(1) <= i, i <= 3)), (0, True)) +
+        Piecewise((1, And(Integer(1) <= j, j <= 3)), (0, True)))
     assert ds(KD(i, k) + KD(j, k), (k, 1, 1)) == piecewise_fold(
         Piecewise((1, Eq(i, 1)), (0, True)) +
         Piecewise((1, Eq(j, 1)), (0, True)))
@@ -327,8 +327,8 @@ def test_deltasummation_add_kd_kd():
         Piecewise((1, Eq(i, 3)), (0, True)) +
         Piecewise((1, Eq(j, 3)), (0, True)))
     assert ds(KD(i, k) + KD(j, k), (k, 1, l)) == piecewise_fold(
-        Piecewise((1, And(S(1) <= i, i <= l)), (0, True)) +
-        Piecewise((1, And(S(1) <= j, j <= l)), (0, True)))
+        Piecewise((1, And(Integer(1) <= i, i <= l)), (0, True)) +
+        Piecewise((1, And(Integer(1) <= j, j <= l)), (0, True)))
     assert ds(KD(i, k) + KD(j, k), (k, l, 3)) == piecewise_fold(
         Piecewise((1, And(l <= i, i <= 3)), (0, True)) +
         Piecewise((1, And(l <= j, j <= 3)), (0, True)))
@@ -339,8 +339,8 @@ def test_deltasummation_add_kd_kd():
 
 def test_deltasummation_add_mul_x_kd_kd():
     assert ds(x*KD(i, k) + KD(j, k), (k, 1, 3)) == piecewise_fold(
-        Piecewise((x, And(S(1) <= i, i <= 3)), (0, True)) +
-        Piecewise((1, And(S(1) <= j, j <= 3)), (0, True)))
+        Piecewise((x, And(Integer(1) <= i, i <= 3)), (0, True)) +
+        Piecewise((1, And(Integer(1) <= j, j <= 3)), (0, True)))
     assert ds(x*KD(i, k) + KD(j, k), (k, 1, 1)) == piecewise_fold(
         Piecewise((x, Eq(i, 1)), (0, True)) +
         Piecewise((1, Eq(j, 1)), (0, True)))
@@ -351,8 +351,8 @@ def test_deltasummation_add_mul_x_kd_kd():
         Piecewise((x, Eq(i, 3)), (0, True)) +
         Piecewise((1, Eq(j, 3)), (0, True)))
     assert ds(x*KD(i, k) + KD(j, k), (k, 1, l)) == piecewise_fold(
-        Piecewise((x, And(S(1) <= i, i <= l)), (0, True)) +
-        Piecewise((1, And(S(1) <= j, j <= l)), (0, True)))
+        Piecewise((x, And(Integer(1) <= i, i <= l)), (0, True)) +
+        Piecewise((1, And(Integer(1) <= j, j <= l)), (0, True)))
     assert ds(x*KD(i, k) + KD(j, k), (k, l, 3)) == piecewise_fold(
         Piecewise((x, And(l <= i, i <= 3)), (0, True)) +
         Piecewise((1, And(l <= j, j <= 3)), (0, True)))
@@ -363,8 +363,8 @@ def test_deltasummation_add_mul_x_kd_kd():
 
 def test_deltasummation_mul_x_add_kd_kd():
     assert ds(x*(KD(i, k) + KD(j, k)), (k, 1, 3)) == piecewise_fold(
-        Piecewise((x, And(S(1) <= i, i <= 3)), (0, True)) +
-        Piecewise((x, And(S(1) <= j, j <= 3)), (0, True)))
+        Piecewise((x, And(Integer(1) <= i, i <= 3)), (0, True)) +
+        Piecewise((x, And(Integer(1) <= j, j <= 3)), (0, True)))
     assert ds(x*(KD(i, k) + KD(j, k)), (k, 1, 1)) == piecewise_fold(
         Piecewise((x, Eq(i, 1)), (0, True)) +
         Piecewise((x, Eq(j, 1)), (0, True)))
@@ -375,8 +375,8 @@ def test_deltasummation_mul_x_add_kd_kd():
         Piecewise((x, Eq(i, 3)), (0, True)) +
         Piecewise((x, Eq(j, 3)), (0, True)))
     assert ds(x*(KD(i, k) + KD(j, k)), (k, 1, l)) == piecewise_fold(
-        Piecewise((x, And(S(1) <= i, i <= l)), (0, True)) +
-        Piecewise((x, And(S(1) <= j, j <= l)), (0, True)))
+        Piecewise((x, And(Integer(1) <= i, i <= l)), (0, True)) +
+        Piecewise((x, And(Integer(1) <= j, j <= l)), (0, True)))
     assert ds(x*(KD(i, k) + KD(j, k)), (k, l, 3)) == piecewise_fold(
         Piecewise((x, And(l <= i, i <= 3)), (0, True)) +
         Piecewise((x, And(l <= j, j <= 3)), (0, True)))
@@ -387,8 +387,8 @@ def test_deltasummation_mul_x_add_kd_kd():
 
 def test_deltasummation_mul_add_x_y_add_kd_kd():
     assert ds((x + y)*(KD(i, k) + KD(j, k)), (k, 1, 3)) == piecewise_fold(
-        Piecewise((x + y, And(S(1) <= i, i <= 3)), (0, True)) +
-        Piecewise((x + y, And(S(1) <= j, j <= 3)), (0, True)))
+        Piecewise((x + y, And(Integer(1) <= i, i <= 3)), (0, True)) +
+        Piecewise((x + y, And(Integer(1) <= j, j <= 3)), (0, True)))
     assert ds((x + y)*(KD(i, k) + KD(j, k)), (k, 1, 1)) == piecewise_fold(
         Piecewise((x + y, Eq(i, 1)), (0, True)) +
         Piecewise((x + y, Eq(j, 1)), (0, True)))
@@ -399,8 +399,8 @@ def test_deltasummation_mul_add_x_y_add_kd_kd():
         Piecewise((x + y, Eq(i, 3)), (0, True)) +
         Piecewise((x + y, Eq(j, 3)), (0, True)))
     assert ds((x + y)*(KD(i, k) + KD(j, k)), (k, 1, l)) == piecewise_fold(
-        Piecewise((x + y, And(S(1) <= i, i <= l)), (0, True)) +
-        Piecewise((x + y, And(S(1) <= j, j <= l)), (0, True)))
+        Piecewise((x + y, And(Integer(1) <= i, i <= l)), (0, True)) +
+        Piecewise((x + y, And(Integer(1) <= j, j <= l)), (0, True)))
     assert ds((x + y)*(KD(i, k) + KD(j, k)), (k, l, 3)) == piecewise_fold(
         Piecewise((x + y, And(l <= i, i <= 3)), (0, True)) +
         Piecewise((x + y, And(l <= j, j <= 3)), (0, True)))
@@ -411,7 +411,7 @@ def test_deltasummation_mul_add_x_y_add_kd_kd():
 
 def test_deltasummation_add_mul_x_y_mul_x_kd():
     assert ds(x*y + x*KD(i, j), (j, 1, 3)) == \
-        Piecewise((3*x*y + x, And(S(1) <= i, i <= 3)), (3*x*y, True))
+        Piecewise((3*x*y + x, And(Integer(1) <= i, i <= 3)), (3*x*y, True))
     assert ds(x*y + x*KD(i, j), (j, 1, 1)) == \
         Piecewise((x*y + x, Eq(i, 1)), (x*y, True))
     assert ds(x*y + x*KD(i, j), (j, 2, 2)) == \
@@ -419,7 +419,7 @@ def test_deltasummation_add_mul_x_y_mul_x_kd():
     assert ds(x*y + x*KD(i, j), (j, 3, 3)) == \
         Piecewise((x*y + x, Eq(i, 3)), (x*y, True))
     assert ds(x*y + x*KD(i, j), (j, 1, k)) == \
-        Piecewise((k*x*y + x, And(S(1) <= i, i <= k)), (k*x*y, True))
+        Piecewise((k*x*y + x, And(Integer(1) <= i, i <= k)), (k*x*y, True))
     assert ds(x*y + x*KD(i, j), (j, k, 3)) == \
         Piecewise(((4 - k)*x*y + x, And(k <= i, i <= 3)), ((4 - k)*x*y, True))
     assert ds(x*y + x*KD(i, j), (j, k, l)) == Piecewise(
@@ -428,7 +428,7 @@ def test_deltasummation_add_mul_x_y_mul_x_kd():
 
 def test_deltasummation_mul_x_add_y_kd():
     assert ds(x*(y + KD(i, j)), (j, 1, 3)) == \
-        Piecewise((3*x*y + x, And(S(1) <= i, i <= 3)), (3*x*y, True))
+        Piecewise((3*x*y + x, And(Integer(1) <= i, i <= 3)), (3*x*y, True))
     assert ds(x*(y + KD(i, j)), (j, 1, 1)) == \
         Piecewise((x*y + x, Eq(i, 1)), (x*y, True))
     assert ds(x*(y + KD(i, j)), (j, 2, 2)) == \
@@ -436,7 +436,7 @@ def test_deltasummation_mul_x_add_y_kd():
     assert ds(x*(y + KD(i, j)), (j, 3, 3)) == \
         Piecewise((x*y + x, Eq(i, 3)), (x*y, True))
     assert ds(x*(y + KD(i, j)), (j, 1, k)) == \
-        Piecewise((k*x*y + x, And(S(1) <= i, i <= k)), (k*x*y, True))
+        Piecewise((k*x*y + x, And(Integer(1) <= i, i <= k)), (k*x*y, True))
     assert ds(x*(y + KD(i, j)), (j, k, 3)) == \
         Piecewise(((4 - k)*x*y + x, And(k <= i, i <= 3)), ((4 - k)*x*y, True))
     assert ds(x*(y + KD(i, j)), (j, k, l)) == Piecewise(
@@ -445,7 +445,7 @@ def test_deltasummation_mul_x_add_y_kd():
 
 def test_deltasummation_mul_x_add_y_twokd():
     assert ds(x*(y + 2*KD(i, j)), (j, 1, 3)) == \
-        Piecewise((3*x*y + 2*x, And(S(1) <= i, i <= 3)), (3*x*y, True))
+        Piecewise((3*x*y + 2*x, And(Integer(1) <= i, i <= 3)), (3*x*y, True))
     assert ds(x*(y + 2*KD(i, j)), (j, 1, 1)) == \
         Piecewise((x*y + 2*x, Eq(i, 1)), (x*y, True))
     assert ds(x*(y + 2*KD(i, j)), (j, 2, 2)) == \
@@ -453,7 +453,7 @@ def test_deltasummation_mul_x_add_y_twokd():
     assert ds(x*(y + 2*KD(i, j)), (j, 3, 3)) == \
         Piecewise((x*y + 2*x, Eq(i, 3)), (x*y, True))
     assert ds(x*(y + 2*KD(i, j)), (j, 1, k)) == \
-        Piecewise((k*x*y + 2*x, And(S(1) <= i, i <= k)), (k*x*y, True))
+        Piecewise((k*x*y + 2*x, And(Integer(1) <= i, i <= k)), (k*x*y, True))
     assert ds(x*(y + 2*KD(i, j)), (j, k, 3)) == Piecewise(
         ((4 - k)*x*y + 2*x, And(k <= i, i <= 3)), ((4 - k)*x*y, True))
     assert ds(x*(y + 2*KD(i, j)), (j, k, l)) == Piecewise(
@@ -462,7 +462,7 @@ def test_deltasummation_mul_x_add_y_twokd():
 
 def test_deltasummation_mul_add_x_y_add_y_kd():
     assert ds((x + y)*(y + KD(i, j)), (j, 1, 3)) == Piecewise(
-        (3*(x + y)*y + x + y, And(S(1) <= i, i <= 3)), (3*(x + y)*y, True))
+        (3*(x + y)*y + x + y, And(Integer(1) <= i, i <= 3)), (3*(x + y)*y, True))
     assert ds((x + y)*(y + KD(i, j)), (j, 1, 1)) == \
         Piecewise(((x + y)*y + x + y, Eq(i, 1)), ((x + y)*y, True))
     assert ds((x + y)*(y + KD(i, j)), (j, 2, 2)) == \
@@ -470,7 +470,7 @@ def test_deltasummation_mul_add_x_y_add_y_kd():
     assert ds((x + y)*(y + KD(i, j)), (j, 3, 3)) == \
         Piecewise(((x + y)*y + x + y, Eq(i, 3)), ((x + y)*y, True))
     assert ds((x + y)*(y + KD(i, j)), (j, 1, k)) == Piecewise(
-        (k*(x + y)*y + x + y, And(S(1) <= i, i <= k)), (k*(x + y)*y, True))
+        (k*(x + y)*y + x + y, And(Integer(1) <= i, i <= k)), (k*(x + y)*y, True))
     assert ds((x + y)*(y + KD(i, j)), (j, k, 3)) == Piecewise(
         ((4 - k)*(x + y)*y + x + y, And(k <= i, i <= 3)),
         ((4 - k)*(x + y)*y, True))
@@ -481,7 +481,7 @@ def test_deltasummation_mul_add_x_y_add_y_kd():
 
 def test_deltasummation_mul_add_x_kd_add_y_kd():
     assert ds((x + KD(i, k))*(y + KD(i, j)), (j, 1, 3)) == piecewise_fold(
-        Piecewise((KD(i, k) + x, And(S(1) <= i, i <= 3)), (0, True)) +
+        Piecewise((KD(i, k) + x, And(Integer(1) <= i, i <= 3)), (0, True)) +
         3*(KD(i, k) + x)*y)
     assert ds((x + KD(i, k))*(y + KD(i, j)), (j, 1, 1)) == piecewise_fold(
         Piecewise((KD(i, k) + x, Eq(i, 1)), (0, True)) +
@@ -493,7 +493,7 @@ def test_deltasummation_mul_add_x_kd_add_y_kd():
         Piecewise((KD(i, k) + x, Eq(i, 3)), (0, True)) +
         (KD(i, k) + x)*y)
     assert ds((x + KD(i, k))*(y + KD(i, j)), (j, 1, k)) == piecewise_fold(
-        Piecewise((KD(i, k) + x, And(S(1) <= i, i <= k)), (0, True)) +
+        Piecewise((KD(i, k) + x, And(Integer(1) <= i, i <= k)), (0, True)) +
         k*(KD(i, k) + x)*y)
     assert ds((x + KD(i, k))*(y + KD(i, j)), (j, k, 3)) == piecewise_fold(
         Piecewise((KD(i, k) + x, And(k <= i, i <= 3)), (0, True)) +

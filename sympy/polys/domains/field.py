@@ -48,9 +48,9 @@ class Field(Ring):
 
         >>> print(QQ.gcd(QQ(2, 3), QQ(4, 9)))
         2/9
-        >>> print(gcd(S(2)/3, S(4)/9))
+        >>> print(gcd(Integer(2)/3, Integer(4)/9))
         2/9
-        >>> print(primitive(2*x/3 + S(4)/9))
+        >>> print(primitive(2*x/3 + Integer(4)/9))
         (2/9, 3*x + 2)
 
         """
@@ -73,7 +73,7 @@ class Field(Ring):
 
         >>> print(QQ.lcm(QQ(2, 3), QQ(4, 9)))
         4/3
-        >>> print(lcm(S(2)/3, S(4)/9))
+        >>> print(lcm(Integer(2)/3, Integer(4)/9))
         4/3
 
         """

@@ -253,8 +253,8 @@ def test_RootOf_real_roots():
 def test_RootOf_all_roots():
     assert Poly(x**5 + x + 1).all_roots() == [
         RootOf(x**3 - x**2 + 1, 0),
-        -S(1)/2 - sqrt(3)*I/2,
-        -S(1)/2 + sqrt(3)*I/2,
+        -Integer(1)/2 - sqrt(3)*I/2,
+        -Integer(1)/2 + sqrt(3)*I/2,
         RootOf(x**3 - x**2 + 1, 1),
         RootOf(x**3 - x**2 + 1, 2),
     ]
@@ -270,7 +270,7 @@ def test_RootOf_all_roots():
 
 def test_RootOf_eval_rational():
     p = legendre_poly(4, x, polys=True)
-    roots = [r.eval_rational(S(1)/10**20) for r in p.real_roots()]
+    roots = [r.eval_rational(Integer(1)/10**20) for r in p.real_roots()]
     for r in roots:
         assert isinstance(r, Rational)
     # All we know is that the Rational instance will be at most 1/10^20 from
@@ -315,8 +315,8 @@ def test_RootSum___new__():
 
     assert RootSum(f, auto=False).is_commutative is True
 
-    assert RootSum(f, Lambda(x, 1/(x + x**2))) == S(11)/3
-    assert RootSum(f, Lambda(x, y/(x + x**2))) == S(11)/3*y
+    assert RootSum(f, Lambda(x, 1/(x + x**2))) == Integer(11)/3
+    assert RootSum(f, Lambda(x, y/(x + x**2))) == Integer(11)/3*y
 
     assert RootSum(x**2 - 1, Lambda(x, 3*x**2), x) == 6
     assert RootSum(x**2 - y, Lambda(x, 3*x**2), x) == 6*y

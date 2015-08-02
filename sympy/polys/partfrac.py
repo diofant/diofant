@@ -169,7 +169,7 @@ def apart_undetermined_coeffs(P, Q):
         q = q.set_domain(dom)
         F += h*q
 
-    system, result = [], S(0)
+    system, result = [], Integer(0)
 
     for (k,), coeff in F.terms():
         system.append(coeff - P.nth(k))

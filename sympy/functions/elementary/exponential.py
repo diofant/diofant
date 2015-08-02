@@ -151,7 +151,7 @@ class exp_polar(Function):
     def as_base_exp(self):
         # XXX exp_polar(0) is special!
         if self.args[0] == 0:
-            return self, S(1)
+            return self, Integer(1)
         return self.func(1), Mul(*self.args)
 
 

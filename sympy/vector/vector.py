@@ -117,11 +117,11 @@ class Vector(BasisDependent):
             return directional_derivative
 
         if isinstance(self, VectorZero) or isinstance(other, VectorZero):
-            return S(0)
+            return Integer(0)
 
         v1 = express(self, other._sys)
         v2 = express(other, other._sys)
-        dotproduct = S(0)
+        dotproduct = Integer(0)
         for x in other._sys.base_vectors():
             dotproduct += (v1.components.get(x, 0) *
                            v2.components.get(x, 0))
@@ -326,8 +326,8 @@ class BaseVector(Vector, AtomicExpr):
                                              system)
         # Assign important attributes
         obj._base_instance = obj
-        obj._components = {obj: S(1)}
-        obj._measure_number = S(1)
+        obj._components = {obj: Integer(1)}
+        obj._measure_number = Integer(1)
         obj._name = name
         obj._pretty_form = pretty_str
         obj._latex_form = latex_str

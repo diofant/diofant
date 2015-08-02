@@ -149,9 +149,9 @@ class hyper(TupleParametersBase):
     More examples:
 
     >>> from sympy import S
-    >>> hyperexpand(hyper([], [S(1)/2], -x**2/4))
+    >>> hyperexpand(hyper([], [Integer(1)/2], -x**2/4))
     cos(x)
-    >>> hyperexpand(x*hyper([S(1)/2, S(1)/2], [S(3)/2], x**2))
+    >>> hyperexpand(x*hyper([Integer(1)/2, Integer(1)/2], [Integer(3)/2], x**2))
     asin(x)
 
     We can also sometimes hyperexpand parametric functions:
@@ -259,7 +259,7 @@ class hyper(TupleParametersBase):
             aints = [a for a in self.ap if a.is_Integer and (a <= 0) == True]
             bints = [a for a in self.bq if a.is_Integer and (a <= 0) == True]
             if len(aints) < len(bints):
-                return S(0)
+                return Integer(0)
             popped = False
             for b in bints:
                 cancelled = False
@@ -270,17 +270,17 @@ class hyper(TupleParametersBase):
                         break
                     popped = True
                 if not cancelled:
-                    return S(0)
+                    return Integer(0)
             if aints or popped:
                 # There are still non-positive numerator parameters.
                 # This is a polynomial.
                 return oo
         if len(self.ap) == len(self.bq) + 1:
-            return S(1)
+            return Integer(1)
         elif len(self.ap) <= len(self.bq):
             return oo
         else:
-            return S(0)
+            return Integer(0)
 
     @property
     def convergence_statement(self):
@@ -414,7 +414,7 @@ class meijerg(TupleParametersBase):
     >>> from sympy import expand_func, S
     >>> expand_func(meijerg([[],[]], [[0],[]], -x))
     E**x
-    >>> hyperexpand(meijerg([[],[]], [[S(1)/2],[0]], (x/2)**2))
+    >>> hyperexpand(meijerg([[],[]], [[Integer(1)/2],[0]], (x/2)**2))
     sin(x)/sqrt(pi)
 
     See Also
@@ -563,7 +563,7 @@ class meijerg(TupleParametersBase):
         oo
         >>> meijerg([1, 2], [], [], [], z).get_period()
         oo
-        >>> meijerg([1,1], [2], [1, S(1)/2, S(1)/3], [1], z).get_period()
+        >>> meijerg([1,1], [2], [1, Integer(1)/2, Integer(1)/3], [1], z).get_period()
         12*pi
         """
         # This follows from slater's theorem.
@@ -611,9 +611,9 @@ class meijerg(TupleParametersBase):
                 return
             branch = branch[0].args[0]/I
         else:
-            branch = S(0)
+            branch = Integer(0)
         n = ceiling(abs(branch/S.Pi)) + 1
-        znum = znum**(S(1)/n)*exp(I*branch / n)
+        znum = znum**(Integer(1)/n)*exp(I*branch / n)
 
         # Convert all args to mpf or mpc
         try:
@@ -737,7 +737,7 @@ class HyperRep(Function):
         newargs = self.args[:-1] + (x,)
         if not n.is_Integer:
             minus = True
-            n -= S(1)/2
+            n -= Integer(1)/2
         newerargs = newargs + (n,)
         if minus:
             small = self._expr_small_minus(*newargs)
@@ -863,11 +863,11 @@ class HyperRep_asin1(HyperRep):
 
     @classmethod
     def _expr_big(cls, z, n):
-        return S(-1)**n*((S(1)/2 - n)*pi/sqrt(z) + I*acosh(sqrt(z))/sqrt(z))
+        return Integer(-1)**n*((Integer(1)/2 - n)*pi/sqrt(z) + I*acosh(sqrt(z))/sqrt(z))
 
     @classmethod
     def _expr_big_minus(cls, z, n):
-        return S(-1)**n*(asinh(sqrt(z))/sqrt(z) + n*pi*I/sqrt(z))
+        return Integer(-1)**n*(asinh(sqrt(z))/sqrt(z) + n*pi*I/sqrt(z))
 
 
 class HyperRep_asin2(HyperRep):
@@ -876,22 +876,22 @@ class HyperRep_asin2(HyperRep):
     @classmethod
     def _expr_small(cls, z):
         return HyperRep_asin1._expr_small(z) \
-            /HyperRep_power1._expr_small(S(1)/2, z)
+            /HyperRep_power1._expr_small(Integer(1)/2, z)
 
     @classmethod
     def _expr_small_minus(cls, z):
         return HyperRep_asin1._expr_small_minus(z) \
-            /HyperRep_power1._expr_small_minus(S(1)/2, z)
+            /HyperRep_power1._expr_small_minus(Integer(1)/2, z)
 
     @classmethod
     def _expr_big(cls, z, n):
         return HyperRep_asin1._expr_big(z, n) \
-            /HyperRep_power1._expr_big(S(1)/2, z, n)
+            /HyperRep_power1._expr_big(Integer(1)/2, z, n)
 
     @classmethod
     def _expr_big_minus(cls, z, n):
         return HyperRep_asin1._expr_big_minus(z, n) \
-            /HyperRep_power1._expr_big_minus(S(1)/2, z, n)
+            /HyperRep_power1._expr_big_minus(Integer(1)/2, z, n)
 
 
 class HyperRep_sqrts1(HyperRep):
@@ -959,24 +959,24 @@ class HyperRep_log2(HyperRep):
 
     @classmethod
     def _expr_small(cls, z):
-        return log(S(1)/2 + sqrt(1 - z)/2)
+        return log(Integer(1)/2 + sqrt(1 - z)/2)
 
     @classmethod
     def _expr_small_minus(cls, z):
-        return log(S(1)/2 + sqrt(1 + z)/2)
+        return log(Integer(1)/2 + sqrt(1 + z)/2)
 
     @classmethod
     def _expr_big(cls, z, n):
         if n.is_even:
-            return (n - S(1)/2)*pi*I + log(sqrt(z)/2) + I*asin(1/sqrt(z))
+            return (n - Integer(1)/2)*pi*I + log(sqrt(z)/2) + I*asin(1/sqrt(z))
         else:
-            return (n - S(1)/2)*pi*I + log(sqrt(z)/2) - I*asin(1/sqrt(z))
+            return (n - Integer(1)/2)*pi*I + log(sqrt(z)/2) - I*asin(1/sqrt(z))
 
     def _expr_big_minus(cls, z, n):
         if n.is_even:
-            return pi*I*n + log(S(1)/2 + sqrt(1 + z)/2)
+            return pi*I*n + log(Integer(1)/2 + sqrt(1 + z)/2)
         else:
-            return pi*I*n + log(sqrt(1 + z)/2 - S(1)/2)
+            return pi*I*n + log(sqrt(1 + z)/2 - Integer(1)/2)
 
 
 class HyperRep_cosasin(HyperRep):

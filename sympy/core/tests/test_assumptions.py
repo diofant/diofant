@@ -489,24 +489,24 @@ def test_neg_symbol_falsenonnegative_real():
 
 
 def test_prime():
-    assert S(-1).is_prime is False
-    assert S(-2).is_prime is False
-    assert S(-4).is_prime is False
-    assert S(0).is_prime is False
-    assert S(1).is_prime is False
-    assert S(2).is_prime is True
-    assert S(17).is_prime is True
-    assert S(4).is_prime is False
+    assert Integer(-1).is_prime is False
+    assert Integer(-2).is_prime is False
+    assert Integer(-4).is_prime is False
+    assert Integer(0).is_prime is False
+    assert Integer(1).is_prime is False
+    assert Integer(2).is_prime is True
+    assert Integer(17).is_prime is True
+    assert Integer(4).is_prime is False
 
 
 def test_composite():
-    assert S(-1).is_composite is False
-    assert S(-2).is_composite is False
-    assert S(-4).is_composite is False
-    assert S(0).is_composite is False
-    assert S(2).is_composite is False
-    assert S(17).is_composite is False
-    assert S(4).is_composite is True
+    assert Integer(-1).is_composite is False
+    assert Integer(-2).is_composite is False
+    assert Integer(-4).is_composite is False
+    assert Integer(0).is_composite is False
+    assert Integer(2).is_composite is False
+    assert Integer(17).is_composite is False
+    assert Integer(4).is_composite is True
 
 
 def test_prime_symbol():

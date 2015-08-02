@@ -113,10 +113,10 @@ def test_prde_no_cancel():
     # (c1 = 4), with some of the ci for the original q equal to 0.
     G = [Poly(t**6, t), Poly(x*t**5, t), Poly(t**3, t), Poly(x*t**2, t), Poly(1 + x, t)]
     assert prde_no_cancel_b_small(Poly(x*t, t), G, 4, DE) == \
-        ([Poly(t**4/4 - x/12*t**3 + x**2/24*t**2 + (-S(11)/12 - x**3/24)*t + x/24, t),
-        Poly(x/3*t**3 - x**2/6*t**2 + (-S(1)/3 + x**3/6)*t - x/6, t), Poly(t, t),
+        ([Poly(t**4/4 - x/12*t**3 + x**2/24*t**2 + (-Integer(11)/12 - x**3/24)*t + x/24, t),
+        Poly(x/3*t**3 - x**2/6*t**2 + (-Integer(1)/3 + x**3/6)*t - x/6, t), Poly(t, t),
         Poly(0, t), Poly(0, t)], Matrix([[1, 0,      -1, 0, 0,  0,  0,  0,  0,  0],
-                                         [0, 1, -S(1)/4, 0, 0,  0,  0,  0,  0,  0],
+                                         [0, 1, -Integer(1)/4, 0, 0,  0,  0,  0,  0,  0],
                                          [0, 0,       0, 0, 0,  0,  0,  0,  0,  0],
                                          [0, 0,       0, 1, 0,  0,  0,  0,  0,  0],
                                          [0, 0,       0, 0, 1,  0,  0,  0,  0,  0],
@@ -180,12 +180,12 @@ def test_is_deriv_k():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(2/x, t1)],
         'L_K': [1], 'E_K': [], 'L_args': [x**2], 'E_args': []})
     assert is_deriv_k(Poly(x, t1), Poly(1, t1), DE) == \
-        ([(t1, S(1)/2)], t1/2, 1)
+        ([(t1, Integer(1)/2)], t1/2, 1)
 
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(2/(1 + x), t0)],
         'L_K': [1], 'E_K': [], 'L_args': [x**2 + 2*x + 1], 'E_args': []})
     assert is_deriv_k(Poly(1 + x, t0), Poly(1, t0), DE) == \
-        ([(t0, S(1)/2)], t0/2, 1)
+        ([(t0, Integer(1)/2)], t0/2, 1)
 
 
 def test_is_log_deriv_k_t_radical_in_field():

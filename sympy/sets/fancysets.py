@@ -128,7 +128,7 @@ class Integers(Set, metaclass=Singleton):
 
     def __iter__(self):
         yield S.Zero
-        i = S(1)
+        i = Integer(1)
         while True:
             yield i
             yield -i

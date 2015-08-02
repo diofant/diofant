@@ -868,7 +868,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             return
         # Note: if residueterms = [], returns (1, 1)
         # f had better be 0 in that case.
-        n = reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], S(1))
+        n = reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
         return (n, u)
 
@@ -885,7 +885,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         "'base', 'auto'}, not %s" % case)
 
     common_denom = reduce(ilcm, [i.as_numer_denom()[1] for i in [j for _, j in
-        residueterms]] + [n], S(1))
+        residueterms]] + [n], Integer(1))
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division

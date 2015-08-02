@@ -22,7 +22,7 @@ def _unevaluated_Add(*args):
     >>> from sympy.core.add import _unevaluated_Add as uAdd
     >>> from sympy import S, Add
     >>> from sympy.abc import x, y
-    >>> a = uAdd(*[S(1.0), x, S(2)])
+    >>> a = uAdd(*[S(1.0), x, Integer(2)])
     >>> a.args[0]
     3.00000000000000
     >>> a.args[1]

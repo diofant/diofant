@@ -1818,7 +1818,7 @@ class MatrixBase(object):
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)
             # Note that while useful this is not mathematically a norm
             try:
-                return Pow(Add(*(abs(i)**ord for i in vals)), S(1) / ord)
+                return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
             except (NotImplementedError, TypeError):
                 raise ValueError("Expected order to be Number, Symbol, oo")
 

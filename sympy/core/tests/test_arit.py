@@ -1397,7 +1397,7 @@ def test_Pow_as_coeff_mul_doesnt_expand():
 
 def test_issue_3514():
     assert sqrt(S.Half) * sqrt(6) == 2 * sqrt(3)/2
-    assert S(1)/2*sqrt(6)*sqrt(2) == sqrt(3)
+    assert Integer(1)/2*sqrt(6)*sqrt(2) == sqrt(3)
     assert sqrt(6)/2*sqrt(2) == sqrt(3)
     assert sqrt(6)*sqrt(2)/2 == sqrt(3)
 
@@ -1423,9 +1423,9 @@ def test_issue_5126():
 
 
 def test_Rational_as_content_primitive():
-    c, p = S(1), S(0)
+    c, p = Integer(1), Integer(0)
     assert (c*p).as_content_primitive() == (c, p)
-    c, p = S(1)/2, S(1)
+    c, p = Integer(1)/2, Integer(1)
     assert (c*p).as_content_primitive() == (c, p)
 
 
@@ -1550,7 +1550,7 @@ def test_Mod():
     # handling sums
     assert (x + 3) % 1 == Mod(x, 1)
     assert (x + 3.0) % 1 == Mod(1.*x, 1)
-    assert (x - S(33)/10) % 1 == Mod(x + S(7)/10, 1)
+    assert (x - Integer(33)/10) % 1 == Mod(x + Integer(7)/10, 1)
 
     a = Mod(.6*x + y, .3*y)
     b = Mod(0.1*y + 0.6*x, 0.3*y)
@@ -1638,7 +1638,7 @@ def test_polar():
     x = Symbol('x')
     assert p.is_polar
     assert x.is_polar is None
-    assert S(1).is_polar is None
+    assert Integer(1).is_polar is None
     assert (p**x).is_polar is True
     assert (x**p).is_polar is None
     assert ((2*p)**x).is_polar is True

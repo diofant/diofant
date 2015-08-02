@@ -41,7 +41,7 @@ class BasisDependent(Expr):
         return self._mul_func(other, self)
 
     def __neg__(self):
-        return self._mul_func(S(-1), self)
+        return self._mul_func(Integer(-1), self)
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rdiv__')
@@ -140,7 +140,7 @@ class BasisDependent(Expr):
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product. """
-        return (S(1), self)
+        return (Integer(1), self)
 
     def as_coeff_add(self, *deps):
         """Efficiently extract the coefficient of a summation. """
@@ -229,7 +229,7 @@ class BasisDependentMul(BasisDependent, Mul):
 
     def __new__(cls, *args, **options):
         count = 0
-        measure_number = S(1)
+        measure_number = Integer(1)
         zeroflag = False
 
         # Determine the component and check arguments
@@ -239,7 +239,7 @@ class BasisDependentMul(BasisDependent, Mul):
             if isinstance(arg, cls._zero_func):
                 count += 1
                 zeroflag = True
-            elif arg == S(0):
+            elif arg == Integer(0):
                 zeroflag = True
             elif isinstance(arg, (cls._base_func, cls._mul_func)):
                 count += 1
@@ -304,7 +304,7 @@ class BasisDependentZero(BasisDependent):
         obj = super(BasisDependentZero, cls).__new__(cls)
         # Pre-compute a specific hash value for the zero vector
         # Use the same one always
-        obj._hash = tuple([S(0), cls]).__hash__()
+        obj._hash = tuple([Integer(0), cls]).__hash__()
         return obj
 
     def __hash__(self):

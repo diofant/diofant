@@ -86,9 +86,9 @@ def test_simple_7():
 
 def test_simple_8():
     assert O(sqrt(-x)) == O(sqrt(x))
-    assert O(x**2*sqrt(x)) == O(x**(S(5)/2))
-    assert O(x**3*sqrt(-(-x)**3)) == O(x**(S(9)/2))
-    assert O(x**(S(3)/2)*sqrt((-x)**3)) == O(x**3)
+    assert O(x**2*sqrt(x)) == O(x**(Integer(5)/2))
+    assert O(x**3*sqrt(-(-x)**3)) == O(x**(Integer(9)/2))
+    assert O(x**(Integer(3)/2)*sqrt((-x)**3)) == O(x**3)
     assert O(x*(-2*x)**(I/2)) == O(x*(-x)**(I/2))
 
 
@@ -228,7 +228,7 @@ def test_leading_order():
 
 def test_leading_order2():
     assert set((2 + pi + x**2).extract_leading_order(x)) == {(pi, O(1, x)),
-        (S(2), O(1, x))}
+        (Integer(2), O(1, x))}
     assert set((2*x + pi*x + x**2).extract_leading_order(x)) == {(2*x, O(x)),
         (x*pi, O(x))}
 

@@ -16,7 +16,7 @@ def test_combsimp():
     assert combsimp(binomial(n + 1, k + 1)/binomial(n, k)) == (1 + n)/(1 + k)
 
     assert combsimp(binomial(3*n + 4, n + 1)/binomial(3*n + 1, n)) == \
-        S(3)/2*((3*n + 2)*(3*n + 4)/((n + 1)*(2*n + 3)))
+        Integer(3)/2*((3*n + 2)*(3*n + 4)/((n + 1)*(2*n + 3)))
 
     assert combsimp(factorial(n)**2/factorial(n - 3)) == \
         factorial(n)*n*(-1 + n)*(-2 + n)
@@ -25,8 +25,8 @@ def test_combsimp():
 
     assert combsimp(binomial(n - 1, k)) == -((-n + k)*binomial(n, k))/n
 
-    assert combsimp(binomial(n + 2, k + S(1)/2)) == 4*((n + 1)*(n + 2) *
-        binomial(n, k + S(1)/2))/((2*k - 2*n - 1)*(2*k - 2*n - 3))
+    assert combsimp(binomial(n + 2, k + Integer(1)/2)) == 4*((n + 1)*(n + 2) *
+        binomial(n, k + Integer(1)/2))/((2*k - 2*n - 1)*(2*k - 2*n - 3))
     assert combsimp(binomial(n + 2, k + 2.0)) == \
         -((1.0*n + 2.0)*binomial(n + 1.0, k + 2.0))/(k - n)
 
@@ -39,10 +39,10 @@ def test_combsimp():
     assert combsimp(e) == e
     e = gamma(exp(i))
     assert combsimp(e) == e
-    e = gamma(n + S(1)/3)*gamma(n + S(2)/3)
+    e = gamma(n + Integer(1)/3)*gamma(n + Integer(2)/3)
     assert combsimp(e) == e
-    assert combsimp(gamma(4*n + S(1)/2)/gamma(2*n - S(3)/4)) == \
-        2**(4*n - S(5)/2)*(8*n - 3)*gamma(2*n + S(3)/4)/sqrt(pi)
+    assert combsimp(gamma(4*n + Integer(1)/2)/gamma(2*n - Integer(3)/4)) == \
+        2**(4*n - Integer(5)/2)*(8*n - 3)*gamma(2*n + Integer(3)/4)/sqrt(pi)
 
     assert combsimp(6*FallingFactorial(-4, n)/factorial(n)) == \
         (-1)**n*(n + 1)*(n + 2)*(n + 3)
@@ -79,7 +79,7 @@ def test_combsimp_gamma():
         (x + 2)*gamma(x + 1)
 
     assert combsimp(gamma(2*x)*x) == gamma(2*x + 1)/2
-    assert combsimp(gamma(2*x)/(x - S(1)/2)) == 2*gamma(2*x - 1)
+    assert combsimp(gamma(2*x)/(x - Integer(1)/2)) == 2*gamma(2*x - 1)
 
     assert combsimp(gamma(x)*gamma(1 - x)) == pi/sin(pi*x)
     assert combsimp(gamma(x)*gamma(-x)) == -pi/(x*sin(pi*x))
@@ -87,16 +87,16 @@ def test_combsimp_gamma():
         sin(pi*x)/(pi*x*(x + 1)*(x + 2))
 
     assert powsimp(combsimp(
-        gamma(x)*gamma(x + S(1)/2)*gamma(y)/gamma(x + y))) == \
+        gamma(x)*gamma(x + Integer(1)/2)*gamma(y)/gamma(x + y))) == \
         2**(-2*x + 1)*sqrt(pi)*gamma(2*x)*gamma(y)/gamma(x + y)
-    assert combsimp(1/gamma(x)/gamma(x - S(1)/3)/gamma(x + S(1)/3)) == \
-        3**(3*x - S(3)/2)/(2*pi*gamma(3*x - 1))
+    assert combsimp(1/gamma(x)/gamma(x - Integer(1)/3)/gamma(x + Integer(1)/3)) == \
+        3**(3*x - Integer(3)/2)/(2*pi*gamma(3*x - 1))
     assert simplify(
-        gamma(S(1)/2 + x/2)*gamma(1 + x/2)/gamma(1 + x)/sqrt(pi)*2**x) == 1
-    assert combsimp(gamma(S(-1)/4)*gamma(S(-3)/4)) == 16*sqrt(2)*pi/3
+        gamma(Integer(1)/2 + x/2)*gamma(1 + x/2)/gamma(1 + x)/sqrt(pi)*2**x) == 1
+    assert combsimp(gamma(Integer(-1)/4)*gamma(Integer(-3)/4)) == 16*sqrt(2)*pi/3
 
     assert powsimp(combsimp(gamma(2*x)/gamma(x))) == \
-        2**(2*x - 1)*gamma(x + S(1)/2)/sqrt(pi)
+        2**(2*x - 1)*gamma(x + Integer(1)/2)/sqrt(pi)
 
     # issue 6792
     e = (-gamma(k)*gamma(k + 2) + gamma(k + 1)**2)/gamma(k)**2

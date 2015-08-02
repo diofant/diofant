@@ -83,7 +83,7 @@ def test_sin():
 
     assert sin(pi/8) == sqrt((2 - sqrt(2))/4)
 
-    assert sin(pi/10) == -S(1)/4 + sqrt(5)/4
+    assert sin(pi/10) == -Integer(1)/4 + sqrt(5)/4
 
     assert sin(pi/12) == -sqrt(2)/4 + sqrt(6)/4
     assert sin(5*pi/12) == sqrt(2)/4 + sqrt(6)/4
@@ -815,7 +815,7 @@ def test_atan2():
     assert ex.subs({x:2, y:3}).rewrite(arg) == 0
     assert ex.subs({x:2, y:3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
     assert ex.subs({x:2*I, y:3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
-    assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/S(3)) + atan(3/S(2))
+    assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
     i = symbols('i', imaginary=True)
     r = symbols('r', extended_real=True)
     e = atan2(i, r)
@@ -1206,8 +1206,8 @@ def test_sec():
 
     # https://github.com/sympy/sympy/issues/7167
     assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
-            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(S(3)/2)/12 +
-            (x - 3*pi/2)**(S(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(Integer(3)/2)/12 +
+            (x - 3*pi/2)**(Integer(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
     assert sec(x).diff(x) == tan(x)*sec(x)
 

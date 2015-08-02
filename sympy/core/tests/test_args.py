@@ -1975,7 +1975,7 @@ def test_sympy__matrices__expressions__matexpr__MatrixExpr():
 def test_sympy__matrices__expressions__matexpr__MatrixElement():
     from sympy.matrices.expressions.matexpr import MatrixSymbol, MatrixElement
     from sympy import S
-    assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), S(2), S(3)))
+    assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), Integer(2), Integer(3)))
 
 
 @pytest.mark.xfail
@@ -2060,13 +2060,13 @@ def test_sympy__matrices__expressions__funcmatrix__FunctionMatrix():
 def test_sympy__matrices__expressions__fourier__DFT():
     from sympy.matrices.expressions.fourier import DFT
     from sympy import S
-    assert _test_args(DFT(S(2)))
+    assert _test_args(DFT(Integer(2)))
 
 
 def test_sympy__matrices__expressions__fourier__IDFT():
     from sympy.matrices.expressions.fourier import IDFT
     from sympy import S
-    assert _test_args(IDFT(S(2)))
+    assert _test_args(IDFT(Integer(2)))
 
 from sympy.matrices.expressions import MatrixSymbol
 X = MatrixSymbol('X', 10, 10)

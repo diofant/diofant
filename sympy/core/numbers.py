@@ -1553,7 +1553,7 @@ class Rational(Number):
         ========
 
         >>> from sympy import S
-        >>> (S(-3)/2).as_content_primitive()
+        >>> (Integer(-3)/2).as_content_primitive()
         (3/2, -1)
 
         See Also

@@ -143,7 +143,7 @@ def test_sympyify_iterables():
     assert sympify({'.3', '.2'}, rational=True) == set(ans)
     assert sympify(tuple(['.3', '.2']), rational=True) == Tuple(*ans)
     assert sympify(dict(x=0, y=1)) == {x: 0, y: 1}
-    assert sympify(['1', '2', ['3', '4']]) == [S(1), S(2), [S(3), S(4)]]
+    assert sympify(['1', '2', ['3', '4']]) == [Integer(1), Integer(2), [Integer(3), Integer(4)]]
 
 
 def test_sympify4():
@@ -372,8 +372,8 @@ def test_issue_3982():
 
 
 def test_S_sympify():
-    assert S(1)/2 == sympify(1)/2
-    assert (-2)**(S(1)/2) == sqrt(2)*I
+    assert Integer(1)/2 == sympify(1)/2
+    assert (-2)**(Integer(1)/2) == sqrt(2)*I
 
 
 def test_issue_4788():

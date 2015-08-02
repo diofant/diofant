@@ -104,7 +104,7 @@ def test_addition():
 
     assert A + ZeroMatrix(n, m) - A == ZeroMatrix(n, m)
     with pytest.raises(TypeError):
-        ZeroMatrix(n,m) + S(0)
+        ZeroMatrix(n, m) + Integer(0)
 
 
 def test_multiplication():

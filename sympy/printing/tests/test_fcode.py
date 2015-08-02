@@ -70,11 +70,11 @@ def test_fcode_functions_with_integers():
     x= symbols('x')
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
-    assert fcode(x * log(S(10))) == "      x*2.30258509299405d0"
-    assert fcode(log(S(10))) == "      2.30258509299405d0"
+    assert fcode(x * log(Integer(10))) == "      x*2.30258509299405d0"
+    assert fcode(log(Integer(10))) == "      2.30258509299405d0"
     assert fcode(exp(10)) == "      parameter (E = 2.71828182845905d0)\n      E**10"
     assert fcode(x * log(log(10))) == "      x*0.834032445247956d0"
-    assert fcode(x * log(log(S(10)))) == "      x*0.834032445247956d0"
+    assert fcode(x * log(log(Integer(10)))) == "      x*0.834032445247956d0"
 
 
 def test_fcode_NumberSymbol():
@@ -481,7 +481,7 @@ def test_wrap_fortran_keep_d0():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: fcode(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: fcode(Integer(4), method="garbage"))
 
 
 def test_free_form_code_line():

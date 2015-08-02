@@ -609,7 +609,7 @@ class RootOf(Expr):
         >>> from sympy import S, legendre_poly, Symbol
         >>> x = Symbol("x")
         >>> p = legendre_poly(4, x, polys=True)
-        >>> roots = [r.eval_rational(S(1)/10**7) for r in p.real_roots()]
+        >>> roots = [r.eval_rational(Integer(1)/10**7) for r in p.real_roots()]
         >>> roots = [str(r.n(5)) for r in roots]
         >>> roots
         ['-0.86114', '-0.33998', '0.33998', '0.86114']
@@ -882,9 +882,9 @@ def bisect(f, a, b, tol):
 
     >>> from sympy import S
     >>> from sympy.polys.rootoftools import bisect
-    >>> bisect(lambda x: x**2-1, -10, 0, S(1)/10**2)
+    >>> bisect(lambda x: x**2-1, -10, 0, Integer(1)/10**2)
     -1025/1024
-    >>> bisect(lambda x: x**2-1, -10, 0, S(1)/10**4)
+    >>> bisect(lambda x: x**2-1, -10, 0, Integer(1)/10**4)
     -131075/131072
 
     """

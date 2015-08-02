@@ -444,7 +444,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
         end = x
 
         if end in [S.NegativeInfinity, S.Infinity]:
-            if valid(S(0)):
+            if valid(Integer(0)):
                 sol_sets.append(Interval(start, S.Infinity, True, True))
                 break
 

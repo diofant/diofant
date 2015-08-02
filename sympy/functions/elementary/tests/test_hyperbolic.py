@@ -430,8 +430,8 @@ def test_asinh():
 
     assert asinh(zoo) == zoo
 
-    assert asinh(I *(sqrt(3) - 1)/(2**(S(3)/2))) == pi*I/12
-    assert asinh(-I *(sqrt(3) - 1)/(2**(S(3)/2))) == -pi*I/12
+    assert asinh(I *(sqrt(3) - 1)/(2**(Integer(3)/2))) == pi*I/12
+    assert asinh(-I *(sqrt(3) - 1)/(2**(Integer(3)/2))) == -pi*I/12
 
     assert asinh(I*(sqrt(5) - 1)/4) == pi*I/10
     assert asinh(-I*(sqrt(5) - 1)/4) == -pi*I/10

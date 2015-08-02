@@ -245,7 +245,7 @@ def test_intersection():
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
     assert i.is_iterable
-    assert set(i) == {S(2), S(3)}
+    assert set(i) == {Integer(2), Integer(3)}
 
     # challenging intervals
     x = Symbol('x', extended_real=True)
@@ -414,8 +414,8 @@ def test_contains():
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
-    rad1 = Pow(Pow(2, S(1)/3) - 1, S(1)/3)
-    rad2 = Pow(S(1)/9, S(1)/3) - Pow(S(2)/9, S(1)/3) + Pow(S(4)/9, S(1)/3)
+    rad1 = Pow(Pow(2, Integer(1)/3) - 1, Integer(1)/3)
+    rad2 = Pow(Integer(1)/9, Integer(1)/3) - Pow(Integer(2)/9, Integer(1)/3) + Pow(Integer(4)/9, Integer(1)/3)
     s1 = FiniteSet(rad1)
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet

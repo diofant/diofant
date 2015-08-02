@@ -166,10 +166,10 @@ def _diff_conditional(expr, base_scalar):
     First re-expresses expr in the system that base_scalar belongs to.
     If base_scalar appears in the re-expressed form, differentiates
     it wrt base_scalar.
-    Else, returns S(0)
+    Else, returns Integer(0)
     """
 
     new_expr = express(expr, base_scalar.system, variables=True)
     if base_scalar in new_expr.atoms():
         return Derivative(new_expr, base_scalar)
-    return S(0)
+    return Integer(0)

@@ -300,12 +300,12 @@ def test_as_leading_term_stub():
 
 def test_atoms():
     assert x.atoms() == {x}
-    assert (1 + x).atoms() == {x, S(1)}
+    assert (1 + x).atoms() == {x, Integer(1)}
 
     assert (1 + 2*cos(x)).atoms(Symbol) == {x}
-    assert (1 + 2*cos(x)).atoms(Symbol, Number) == {S(1), S(2), x}
+    assert (1 + 2*cos(x)).atoms(Symbol, Number) == {Integer(1), Integer(2), x}
 
-    assert (2*(x**(y**x))).atoms() == {S(2), x, y}
+    assert (2*(x**(y**x))).atoms() == {Integer(2), x, y}
 
     assert Rational(1, 2).atoms() == {S.Half}
     assert Rational(1, 2).atoms(Symbol) == set()
@@ -339,9 +339,9 @@ def test_atoms():
     assert e.atoms(Function) == \
         {f(x), sin(x)}
     assert e.atoms(AppliedUndef, Number) == \
-        {f(x), S(2)}
+        {f(x), Integer(2)}
     assert e.atoms(Function, Number) == \
-        {S(2), sin(x), f(x)}
+        {Integer(2), sin(x), f(x)}
 
 
 def test_is_polynomial():
@@ -424,13 +424,13 @@ def test_is_algebraic_expr():
     assert sqrt(3).is_algebraic_expr(x) is True
     assert sqrt(3).is_algebraic_expr() is True
 
-    eq = ((1 + x**2)/(1 - y**2))**(S(1)/3)
+    eq = ((1 + x**2)/(1 - y**2))**(Integer(1)/3)
     assert eq.is_algebraic_expr(x) is True
     assert eq.is_algebraic_expr(y) is True
 
-    assert (sqrt(x) + y**(S(2)/3)).is_algebraic_expr(x) is True
-    assert (sqrt(x) + y**(S(2)/3)).is_algebraic_expr(y) is True
-    assert (sqrt(x) + y**(S(2)/3)).is_algebraic_expr() is True
+    assert (sqrt(x) + y**(Integer(2)/3)).is_algebraic_expr(x) is True
+    assert (sqrt(x) + y**(Integer(2)/3)).is_algebraic_expr(y) is True
+    assert (sqrt(x) + y**(Integer(2)/3)).is_algebraic_expr() is True
 
     assert (cos(y)/sqrt(x)).is_algebraic_expr() is False
     assert (cos(y)/sqrt(x)).is_algebraic_expr(x) is True
@@ -677,16 +677,16 @@ def test_replace():
 def test_find():
     expr = (x + y + 2 + sin(3*x))
 
-    assert expr.find(lambda u: u.is_Integer) == {S(2), S(3)}
+    assert expr.find(lambda u: u.is_Integer) == {Integer(2), Integer(3)}
     assert expr.find(lambda u: u.is_Symbol) == {x, y}
 
-    assert expr.find(lambda u: u.is_Integer, group=True) == {S(2): 1, S(3): 1}
+    assert expr.find(lambda u: u.is_Integer, group=True) == {Integer(2): 1, Integer(3): 1}
     assert expr.find(lambda u: u.is_Symbol, group=True) == {x: 2, y: 1}
 
-    assert expr.find(Integer) == {S(2), S(3)}
+    assert expr.find(Integer) == {Integer(2), Integer(3)}
     assert expr.find(Symbol) == {x, y}
 
-    assert expr.find(Integer, group=True) == {S(2): 1, S(3): 1}
+    assert expr.find(Integer, group=True) == {Integer(2): 1, Integer(3): 1}
     assert expr.find(Symbol, group=True) == {x: 2, y: 1}
 
     a = Wild('a')
@@ -909,7 +909,7 @@ def test_is_number():
 
 
 def test_as_coeff_add():
-    assert S(2).as_coeff_add() == (2, ())
+    assert Integer(2).as_coeff_add() == (2, ())
     assert S(3.0).as_coeff_add() == (0, (S(3.0),))
     assert S(-3.0).as_coeff_add() == (0, (S(-3.0),))
     assert x.as_coeff_add() == (0, (x,))
@@ -924,7 +924,7 @@ def test_as_coeff_add():
 
 
 def test_as_coeff_mul():
-    assert S(2).as_coeff_mul() == (2, ())
+    assert Integer(2).as_coeff_mul() == (2, ())
     assert S(3.0).as_coeff_mul() == (1, (S(3.0),))
     assert S(-3.0).as_coeff_mul() == (-1, (S(3.0),))
     assert S(-3.0).as_coeff_mul(rational=False) == (-S(3.0), ())
@@ -988,7 +988,7 @@ def test_extractions():
     assert (2*x + 3).extract_additively(3*x) is None
     assert (2*x + 3).extract_additively(2*x) == 3
     assert x.extract_additively(0) == x
-    assert S(2).extract_additively(x) is None
+    assert Integer(2).extract_additively(x) is None
     assert S(2.).extract_additively(2) == S.Zero
     assert S(2*x + 3).extract_additively(x + 1) == x + 2
     assert S(2*x + 3).extract_additively(y + 1) is None
@@ -1049,8 +1049,8 @@ def test_coeff():
     assert (3 + 2*x + 4*x**2).coeff(x**2) == 4
     assert (3 + 2*x + 4*x**2).coeff(x**3) == 0
 
-    assert (-x/8 + x*y).coeff(x) == -S(1)/8 + y
-    assert (-x/8 + x*y).coeff(-x) == S(1)/8
+    assert (-x/8 + x*y).coeff(x) == -Integer(1)/8 + y
+    assert (-x/8 + x*y).coeff(-x) == Integer(1)/8
     assert (4*x).coeff(2*x) == 0
     assert (2*x).coeff(2*x) == 1
     assert (-oo*x).coeff(x*oo) == -1
@@ -1138,7 +1138,7 @@ def test_coeff_expand():
 
 def test_integrate():
     assert x.integrate(x) == x**2/2
-    assert x.integrate((x, 0, 1)) == S(1)/2
+    assert x.integrate((x, 0, 1)) == Integer(1)/2
 
 
 def test_as_base_exp():
@@ -1179,13 +1179,13 @@ def test_action_verbs():
 def test_as_powers_dict():
     assert x.as_powers_dict() == {x: 1}
     assert (x**y*z).as_powers_dict() == {x: y, z: 1}
-    assert Mul(2, 2, evaluate=False).as_powers_dict() == {S(2): S(2)}
+    assert Mul(2, 2, evaluate=False).as_powers_dict() == {Integer(2): Integer(2)}
     assert (x*y).as_powers_dict()[z] == 0
     assert (x + y).as_powers_dict()[z] == 0
 
 
 def test_as_coefficients_dict():
-    check = [S(1), x, y, x*y, 1]
+    check = [Integer(1), x, y, x*y, 1]
     assert [Add(3*x, 2*x, y, 3).as_coefficients_dict()[i] for i in check] == \
         [3, 5, 1, 0, 3]
     assert [(3*x*y).as_coefficients_dict()[i] for i in check] == \
@@ -1242,7 +1242,7 @@ def test_issue_5226():
 
 def test_free_symbols():
     # free_symbols should return the free symbols of an object
-    assert S(1).free_symbols == set()
+    assert Integer(1).free_symbols == set()
     assert (x).free_symbols == {x}
     assert Integral(x, (x, 1, y)).free_symbols == {y}
     assert (-Integral(x, (x, 1, y))).free_symbols == {y}
@@ -1301,7 +1301,7 @@ def test_expr_sorting():
     exprs = [x + 1, x**2 + x + 1, x**3 + x**2 + x + 1]
     assert sorted(exprs, key=default_sort_key) == exprs
 
-    exprs = [S(4), x - 3*I/2, x + 3*I/2, x - 4*I + 1, x + 4*I + 1]
+    exprs = [Integer(4), x - 3*I/2, x + 3*I/2, x - 4*I + 1, x + 4*I + 1]
     assert sorted(exprs, key=default_sort_key) == exprs
 
     exprs = [f(1), f(2), f(3), f(1, 2, 3), g(1), g(2), g(3), g(1, 2, 3)]
@@ -1405,7 +1405,7 @@ def test_eval_interval_zoo():
 def test_primitive():
     assert (3*(x + 1)**2).primitive() == (3, (x + 1)**2)
     assert (6*x + 2).primitive() == (2, 3*x + 1)
-    assert (x/2 + 3).primitive() == (S(1)/2, x + 6)
+    assert (x/2 + 3).primitive() == (Integer(1)/2, x + 6)
     eq = (6*x + 2)*(x/2 + 3)
     assert eq.primitive()[0] == 1
     eq = (2 + 2*x)**2
@@ -1414,12 +1414,12 @@ def test_primitive():
     assert (4.0*x + y/2).primitive() == (S.Half, 8.0*x + y)
     assert (-2*x).primitive() == (2, -x)
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).primitive() == \
-        (S(1)/14, 7.0*x + 21*y + 10*z)
+        (Integer(1)/14, 7.0*x + 21*y + 10*z)
     for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
         assert (i + x/3).primitive() == \
-            (S(1)/3, i + x)
+            (Integer(1)/3, i + x)
     assert (S.Infinity + 2*x/3 + 4*y/7).primitive() == \
-        (S(1)/21, 14*x + 12*y + oo)
+        (Integer(1)/21, 14*x + 12*y + oo)
     assert S.Zero.primitive() == (S.One, S.Zero)
 
 
@@ -1449,11 +1449,11 @@ def test_is_constant():
     assert checksol(x, x, f(x)) is False
 
     p = symbols('p', positive=True)
-    assert Pow(x, S(0), evaluate=False).is_constant() is True  # == 1
-    assert Pow(S(0), x, evaluate=False).is_constant() is False  # == 0 or 1
-    assert Pow(S(0), p, evaluate=False).is_constant() is True  # == 1
+    assert Pow(x, Integer(0), evaluate=False).is_constant() is True  # == 1
+    assert Pow(Integer(0), x, evaluate=False).is_constant() is False  # == 0 or 1
+    assert Pow(Integer(0), p, evaluate=False).is_constant() is True  # == 1
     assert (2**x).is_constant() is False
-    assert Pow(S(2), S(3), evaluate=False).is_constant() is True
+    assert Pow(Integer(2), Integer(3), evaluate=False).is_constant() is True
 
     z1, z2 = symbols('z1 z2', zero=True)
     assert (z1 + 2*z2).is_constant() is True
@@ -1471,15 +1471,15 @@ def test_equals():
     assert (sqrt(5)*sqrt(3)).equals(sqrt(3)) is False
     assert (sqrt(5) + sqrt(3)).equals(0) is False
     assert (sqrt(5) + pi).equals(0) is False
-    eq = -(-1)**(S(3)/4)*6**(S(1)/4) + (-6)**(S(1)/4)*I
+    eq = -(-1)**(Integer(3)/4)*6**(Integer(1)/4) + (-6)**(Integer(1)/4)*I
     if eq != 0:  # if canonicalization makes this zero, skip the test
         assert eq.equals(0)
     assert sqrt(x).equals(0) is False
 
     # from integrate(x*sqrt(1 + 2*x), x);
     # diff is zero only when assumptions allow
-    i = 2*sqrt(2)*x**(S(5)/2)*(1 + 1/(2*x))**(S(5)/2)/5 + \
-        2*sqrt(2)*x**(S(3)/2)*(1 + 1/(2*x))**(S(5)/2)/(-6 - 3/x)
+    i = 2*sqrt(2)*x**(Integer(5)/2)*(1 + 1/(2*x))**(Integer(5)/2)/5 + \
+        2*sqrt(2)*x**(Integer(3)/2)*(1 + 1/(2*x))**(Integer(5)/2)/(-6 - 3/x)
     ans = sqrt(2*x + 1)*(6*x**2 + x - 1)/15
     diff = i - ans
     assert diff.equals(0) is False
@@ -1498,25 +1498,25 @@ def test_equals():
     assert (p - q).equals(0)
 
     # issue 6829
-    # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - S(1)/3
+    # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Integer(1)/3
     # z = eq.subs(x, solve(eq, x)[0])
     q = symbols('q')
-    z = (q*(-sqrt(-2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/12)/2 - sqrt((2*q - S(7)/4)/sqrt(-2*(-(q - S(7)/8)**S(2)/8 -
-    S(2197)/13824)**(S(1)/3) - S(13)/12) + 2*(-(q - S(7)/8)**S(2)/8 -
-    S(2197)/13824)**(S(1)/3) - S(13)/6)/2 - S(1)/4) + q/4 + (-sqrt(-2*(-(q
-    - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) - S(13)/12)/2 - sqrt((2*q
-    - S(7)/4)/sqrt(-2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/12) + 2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/6)/2 - S(1)/4)**4 + (-sqrt(-2*(-(q - S(7)/8)**S(2)/8 -
-    S(2197)/13824)**(S(1)/3) - S(13)/12)/2 - sqrt((2*q -
-    S(7)/4)/sqrt(-2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/12) + 2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/6)/2 - S(1)/4)**3 + 2*(-sqrt(-2*(-(q - S(7)/8)**S(2)/8 -
-    S(2197)/13824)**(S(1)/3) - S(13)/12)/2 - sqrt((2*q -
-    S(7)/4)/sqrt(-2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/12) + 2*(-(q - S(7)/8)**S(2)/8 - S(2197)/13824)**(S(1)/3) -
-    S(13)/6)/2 - S(1)/4)**2 - S(1)/3)
+    z = (q*(-sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/12)/2 - sqrt((2*q - Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 -
+    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 -
+    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/6)/2 - Integer(1)/4) + q/4 + (-sqrt(-2*(-(q
+    - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12)/2 - sqrt((2*q
+    - Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/6)/2 - Integer(1)/4)**4 + (-sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 -
+    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12)/2 - sqrt((2*q -
+    Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/6)/2 - Integer(1)/4)**3 + 2*(-sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 -
+    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12)/2 - sqrt((2*q -
+    Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
+    Integer(13)/6)/2 - Integer(1)/4)**2 - Integer(1)/3)
     assert z.equals(0)
 
 
@@ -1540,7 +1540,7 @@ def test_round():
     assert ans.is_Float and ans == 12345678901234567900
     assert S('1/7').round(4) == 0.1429
     assert S('.1349').round(2) == 0.13
-    n = S(12345)
+    n = Integer(12345)
     ans = n.round()
     assert ans.is_Float
     assert ans == n
@@ -1586,8 +1586,8 @@ def test_round():
     pytest.raises(TypeError, lambda: x.round())
 
     # exact magnitude of 10
-    assert str(S(1).round()) == '1.'
-    assert str(S(100).round()) == '100.'
+    assert str(Integer(1).round()) == '1.'
+    assert str(Integer(100).round()) == '100.'
 
     # applied to real and imaginary portions
     assert (2*pi + E*I).round() == 6 + 3*I

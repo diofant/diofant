@@ -404,7 +404,7 @@ def test_Pow():
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
     # see issue #2860
-    assert str(S(2)**-1.0) == '2**(-1.0)'
+    assert str(Integer(2)**-1.0) == '2**(-1.0)'
 
 
 def test_sqrt():
@@ -625,7 +625,7 @@ def test_empty_printer():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: sstr(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: sstr(Integer(4), method="garbage"))
 
 
 def test_RandomDomain():

@@ -83,7 +83,7 @@ def _linab(arg, symbol):
     >>> from sympy.solvers.bivariate import _linab
     >>> from sympy.abc import x, y
     >>> from sympy import S
-    >>> _linab(S(2), x)
+    >>> _linab(Integer(2), x)
     (2, 0, 1)
     >>> _linab(2*x, x)
     (2, 0, x)

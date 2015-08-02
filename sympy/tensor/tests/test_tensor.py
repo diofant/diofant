@@ -653,7 +653,7 @@ def test_add2():
     t1 = 2*R(m, n, p, q) - R(m, q, n, p) + R(m, p, n, q)
     t2 = t1*A(-n, -p, -q)
     assert t2 == 0
-    t1 = S(2)/3*R(m,n,p,q) - S(1)/3*R(m,q,n,p) + S(1)/3*R(m,p,n,q)
+    t1 = Integer(2)/3*R(m,n,p,q) - Integer(1)/3*R(m,q,n,p) + Integer(1)/3*R(m,p,n,q)
     t2 = t1*A(-n, -p, -q)
     assert t2 == 0
     t = A(m, -m, n) + A(n, p, -p)
@@ -772,7 +772,7 @@ def test_riemann_cyclic():
     assert t1 == 0
     t = R(i,j,k,l)
     t1 = riemann_cyclic(t)
-    assert t1 == -S(1)/3*R(i, l, j, k) + S(1)/3*R(i, k, j, l) + S(2)/3*R(i, j, k, l)
+    assert t1 == -Integer(1)/3*R(i, l, j, k) + Integer(1)/3*R(i, k, j, l) + Integer(2)/3*R(i, j, k, l)
 
     t = R(i,j,k,l)*R(-k,-l,m,n)*(R(-m,-n,-i,-j) + 2*R(-m,-j,-n,-i))
     t1 = riemann_cyclic(t)
@@ -784,7 +784,7 @@ def test_div():
     m0,m1,m2,m3 = tensor_indices('m0:4', Lorentz)
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0,m1,-m1,m3)
-    t1 = t/S(4)
+    t1 = t/Integer(4)
     assert str(t1) == '1/4*R(m0, L_0, -L_0, m3)'
     t = t.canon_bp()
     assert not t1._is_canon_bp

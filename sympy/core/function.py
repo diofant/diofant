@@ -64,7 +64,7 @@ def _coeff_isneg(a):
     >>> from sympy import S, Symbol, oo, pi
     >>> _coeff_isneg(-3*pi)
     True
-    >>> _coeff_isneg(S(3))
+    >>> _coeff_isneg(Integer(3))
     False
     >>> _coeff_isneg(-oo)
     True

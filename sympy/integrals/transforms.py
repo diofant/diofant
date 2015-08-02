@@ -368,13 +368,13 @@ def _rewrite_sin(m_n, s, a, b):
     (gamma(s - 1), gamma(-s + 2), -pi)
     >>> _rewrite_sin((pi, 0), s, -1, 0)
     (gamma(s + 1), gamma(-s), -pi)
-    >>> _rewrite_sin((pi, pi/2), s, S(1)/2, S(3)/2)
+    >>> _rewrite_sin((pi, pi/2), s, Integer(1)/2, Integer(3)/2)
     (gamma(s - 1/2), gamma(-s + 3/2), -pi)
     >>> _rewrite_sin((pi, pi), s, 0, 1)
     (gamma(s), gamma(-s + 1), -pi)
-    >>> _rewrite_sin((2*pi, 0), s, 0, S(1)/2)
+    >>> _rewrite_sin((2*pi, 0), s, 0, Integer(1)/2)
     (gamma(2*s), gamma(-2*s + 1), pi)
-    >>> _rewrite_sin((2*pi, 0), s, S(1)/2, 1)
+    >>> _rewrite_sin((2*pi, 0), s, Integer(1)/2, 1)
     (gamma(2*s - 1), gamma(-2*s + 2), -pi)
     """
     # (This is a separate function because it is moderately complicated,
@@ -506,7 +506,7 @@ def _rewrite_gamma(f, s, a, b):
         coeff, _ = arg.as_coeff_mul(s)
         s_multipliers += [coeff/pi]
     s_multipliers = [abs(x) if x.is_extended_real else x for x in s_multipliers]
-    common_coefficient = S(1)
+    common_coefficient = Integer(1)
     for x in s_multipliers:
         if not x.is_Rational:
             common_coefficient = x
@@ -516,7 +516,7 @@ def _rewrite_gamma(f, s, a, b):
             not common_coefficient.is_extended_real):
         raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
     s_multiplier = common_coefficient/reduce(ilcm, [S(x.q)
-                                             for x in s_multipliers], S(1))
+                                             for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
@@ -524,8 +524,8 @@ def _rewrite_gamma(f, s, a, b):
             s_multiplier = common_coefficient \
                 *reduce(igcd, [S(x.p) for x in s_multipliers])
 
-    exponent = S(1)
-    fac = S(1)
+    exponent = Integer(1)
+    fac = Integer(1)
     f = f.subs(s, s/s_multiplier)
     fac /= s_multiplier
     exponent = 1/s_multiplier
@@ -612,12 +612,12 @@ def _rewrite_gamma(f, s, a, b):
             c /= -a
             # Now need to convert s - c
             if left(c, is_numer):
-                ugammas += [(S(1), -c + 1)]
-                lgammas += [(S(1), -c)]
+                ugammas += [(Integer(1), -c + 1)]
+                lgammas += [(Integer(1), -c)]
             else:
                 ufacs += [-1]
-                ugammas += [(S(-1), c + 1)]
-                lgammas += [(S(-1), c)]
+                ugammas += [(Integer(-1), c + 1)]
+                lgammas += [(Integer(-1), c)]
         elif isinstance(fact, gamma):
             a, b = linear_arg(fact.args[0])
             if is_numer:
@@ -672,10 +672,10 @@ def _rewrite_gamma(f, s, a, b):
                 for k in range(p):
                     gammas += [(newa, newc + k/p)]
                 if is_numer:
-                    fac *= (2*pi)**((1 - p)/2) * p**(c - S(1)/2)
+                    fac *= (2*pi)**((1 - p)/2) * p**(c - Integer(1)/2)
                     exponentials += [p**a]
                 else:
-                    fac /= (2*pi)**((1 - p)/2) * p**(c - S(1)/2)
+                    fac /= (2*pi)**((1 - p)/2) * p**(c - Integer(1)/2)
                     exponentials += [p**(-a)]
                 continue
             if a == +1:
@@ -880,9 +880,9 @@ def _simplifyconds(expr, s, a):
     Abs(x**2) < 1
     >>> simp(abs(1/x**2) < 1, x, 1)
     True
-    >>> simp(S(1) < abs(x), x, 1)
+    >>> simp(Integer(1) < abs(x), x, 1)
     True
-    >>> simp(S(1) < abs(1/x), x, 1)
+    >>> simp(Integer(1) < abs(1/x), x, 1)
     False
 
     >>> from sympy import Ne

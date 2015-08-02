@@ -31,13 +31,13 @@ def test_mod():
     z = Rational(5, 18043)
 
     assert x % x == 0
-    assert x % y == 1/S(2)
-    assert x % z == 3/S(36086)
-    assert y % x == 1/S(4)
+    assert x % y == 1/Integer(2)
+    assert x % z == 3/Integer(36086)
+    assert y % x == 1/Integer(4)
     assert y % y == 0
-    assert y % z == 9/S(72172)
-    assert z % x == 5/S(18043)
-    assert z % y == 5/S(18043)
+    assert y % z == 9/Integer(72172)
+    assert z % x == 5/Integer(18043)
+    assert z % y == 5/Integer(18043)
     assert z % z == 0
 
     a = Float(2.6)
@@ -95,13 +95,13 @@ def test_mod():
 
 
 def test_divmod():
-    assert divmod(S(12), S(8)) == Tuple(1, 4)
-    assert divmod(-S(12), S(8)) == Tuple(-2, 4)
-    assert divmod(S(0), S(1)) == Tuple(0, 0)
-    pytest.raises(ZeroDivisionError, lambda: divmod(S(0), S(0)))
-    pytest.raises(ZeroDivisionError, lambda: divmod(S(1), S(0)))
-    assert divmod(S(12), 8) == Tuple(1, 4)
-    assert divmod(12, S(8)) == Tuple(1, 4)
+    assert divmod(Integer(12), Integer(8)) == Tuple(1, 4)
+    assert divmod(-Integer(12), Integer(8)) == Tuple(-2, 4)
+    assert divmod(Integer(0), Integer(1)) == Tuple(0, 0)
+    pytest.raises(ZeroDivisionError, lambda: divmod(Integer(0), Integer(0)))
+    pytest.raises(ZeroDivisionError, lambda: divmod(Integer(1), Integer(0)))
+    assert divmod(Integer(12), 8) == Tuple(1, 4)
+    assert divmod(12, Integer(8)) == Tuple(1, 4)
 
     assert divmod(S("2"), S("3/2")) == Tuple(S("1"), S("1/2"))
     assert divmod(S("3/2"), S("2")) == Tuple(S("0"), S("3/2"))
@@ -155,9 +155,9 @@ def test_divmod():
     assert str(divmod(S("1/3"), 0.3)) == '(1, 0.0333333333333333)'
     assert str(divmod(0.3, S("0.1"))) == '(2, 0.1)'
 
-    assert divmod(-3, S(2)) == (-2, 1)
-    assert divmod(S(-3), S(2)) == (-2, 1)
-    assert divmod(S(-3), 2) == (-2, 1)
+    assert divmod(-3, Integer(2)) == (-2, 1)
+    assert divmod(Integer(-3), Integer(2)) == (-2, 1)
+    assert divmod(Integer(-3), 2) == (-2, 1)
 
 
 def test_igcd():
@@ -550,8 +550,8 @@ def test_Infinity():
     assert 2 - -oo == oo
     assert -2 + -oo == -oo
     assert -2 - -oo == oo
-    assert S(2) + oo == oo
-    assert S(2) - oo == -oo
+    assert Integer(2) + oo == oo
+    assert Integer(2) - oo == -oo
     assert oo/I == -oo*I
     assert -oo/I == oo*I
     assert oo*float(1) == Float('inf') and (oo*float(1)).is_Float
@@ -672,13 +672,13 @@ def test_Mul_Infinity_Zero():
 
 
 def test_Div_By_Zero():
-    assert 1/S(0) == zoo
+    assert 1/Integer(0) == zoo
     assert 1/Float(0) == Float('inf')
-    assert 0/S(0) == nan
+    assert 0/Integer(0) == nan
     assert 0/Float(0) == nan
-    assert S(0)/0 == nan
+    assert Integer(0)/0 == nan
     assert Float(0)/0 == nan
-    assert -1/S(0) == zoo
+    assert -1/Integer(0) == zoo
     assert -1/Float(0) == Float('-inf')
 
 
@@ -835,38 +835,38 @@ def test_integer_nthroot_overflow():
 def test_powers_Integer():
     """Test Integer._eval_power"""
     # check infinity
-    assert S(1) ** S.Infinity == S.NaN
-    assert S(-1)** S.Infinity == S.NaN
-    assert S(2) ** S.Infinity == S.Infinity
-    assert S(-2)** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
-    assert S(0) ** S.Infinity == 0
+    assert Integer(1) ** S.Infinity == S.NaN
+    assert Integer(-1)** S.Infinity == S.NaN
+    assert Integer(2) ** S.Infinity == S.Infinity
+    assert Integer(-2)** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
+    assert Integer(0) ** S.Infinity == 0
 
     # check Nan
-    assert S(1) ** S.NaN == S.NaN
-    assert S(-1) ** S.NaN == S.NaN
+    assert Integer(1) ** S.NaN == S.NaN
+    assert Integer(-1) ** S.NaN == S.NaN
 
     # check for exact roots
-    assert S(-1) ** Rational(6, 5) == - (-1)**(S(1)/5)
-    assert sqrt(S(4)) == 2
-    assert sqrt(S(-4)) == I * 2
-    assert S(16) ** Rational(1, 4) == 2
-    assert S(-16) ** Rational(1, 4) == 2 * (-1)**Rational(1, 4)
-    assert S(9) ** Rational(3, 2) == 27
-    assert S(-9) ** Rational(3, 2) == -27*I
-    assert S(27) ** Rational(2, 3) == 9
-    assert S(-27) ** Rational(2, 3) == 9 * (S(-1) ** Rational(2, 3))
+    assert Integer(-1) ** Rational(6, 5) == - (-1)**(Integer(1)/5)
+    assert sqrt(Integer(4)) == 2
+    assert sqrt(Integer(-4)) == I * 2
+    assert Integer(16) ** Rational(1, 4) == 2
+    assert Integer(-16) ** Rational(1, 4) == 2 * (-1)**Rational(1, 4)
+    assert Integer(9) ** Rational(3, 2) == 27
+    assert Integer(-9) ** Rational(3, 2) == -27*I
+    assert Integer(27) ** Rational(2, 3) == 9
+    assert Integer(-27) ** Rational(2, 3) == 9 * (Integer(-1) ** Rational(2, 3))
     assert (-2) ** Rational(-2, 1) == Rational(1, 4)
 
     # not exact roots
     assert sqrt(-3) == I*sqrt(3)
-    assert (3) ** (S(3)/2) == 3 * sqrt(3)
-    assert (-3) ** (S(3)/2) == - 3 * sqrt(-3)
-    assert (-3) ** (S(5)/2) == 9 * I * sqrt(3)
-    assert (-3) ** (S(7)/2) == - I * 27 * sqrt(3)
-    assert (2) ** (S(3)/2) == 2 * sqrt(2)
-    assert (2) ** (S(-3)/2) == sqrt(2) / 4
-    assert (81) ** (S(2)/3) == 9 * (S(3) ** (S(2)/3))
-    assert (-81) ** (S(2)/3) == 9 * (S(-3) ** (S(2)/3))
+    assert (3) ** (Integer(3)/2) == 3 * sqrt(3)
+    assert (-3) ** (Integer(3)/2) == - 3 * sqrt(-3)
+    assert (-3) ** (Integer(5)/2) == 9 * I * sqrt(3)
+    assert (-3) ** (Integer(7)/2) == - I * 27 * sqrt(3)
+    assert (2) ** (Integer(3)/2) == 2 * sqrt(2)
+    assert (2) ** (Integer(-3)/2) == sqrt(2) / 4
+    assert (81) ** (Integer(2)/3) == 9 * (Integer(3) ** (Integer(2)/3))
+    assert (-81) ** (Integer(2)/3) == 9 * (Integer(-3) ** (Integer(2)/3))
     assert (-3) ** Rational(-7, 3) == \
         -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
     assert (-3) ** Rational(-2, 3) == \
@@ -891,7 +891,7 @@ def test_powers_Integer():
     assert (-3) ** Rational(-2, 3) == \
         -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
 
-    assert S(1234).factors() == {617: 1, 2: 1}
+    assert Integer(1234).factors() == {617: 1, 2: 1}
     assert Rational(2*3, 3*5*7).factors() == {2: 1, 5: -1, 7: -1}
 
     # test that eval_power factors numbers bigger than
@@ -917,10 +917,10 @@ def test_powers_Integer():
     assert 2**Rational(2, 3)*6**Rational(1, 3) == 2*3**Rational(1, 3)
     assert 2**Rational(2, 3)*6**Rational(8, 9) == \
         2*2**Rational(5, 9)*3**Rational(8, 9)
-    assert (-2)**Rational(2, S(3))*(-4)**Rational(1, S(3)) == -2*2**Rational(1, 3)
+    assert (-2)**Rational(2, Integer(3))*(-4)**Rational(1, Integer(3)) == -2*2**Rational(1, 3)
     assert 3*Pow(3, 2, evaluate=False) == 3**3
-    assert 3*Pow(3, -1/S(3), evaluate=False) == 3**(2/S(3))
-    assert (-2)**(1/S(3))*(-3)**(1/S(4))*(-5)**(5/S(6)) == \
+    assert 3*Pow(3, -1/Integer(3), evaluate=False) == 3**(2/Integer(3))
+    assert (-2)**(1/Integer(3))*(-3)**(1/Integer(4))*(-5)**(5/Integer(6)) == \
         -(-1)**Rational(5, 12)*2**Rational(1, 3)*3**Rational(1, 4) * \
         5**Rational(5, 6)
 
@@ -1252,7 +1252,7 @@ def test_zoo():
     pb = Symbol('pb', positive=True, finite=True)
     nb = Symbol('nb', negative=True, finite=True)
     imb = Symbol('ib', imaginary=True, finite=True)
-    for i in [I, S.Infinity, S.NegativeInfinity, S.Zero, S.One, S.Pi, S.Half, S(3), log(3),
+    for i in [I, S.Infinity, S.NegativeInfinity, S.Zero, S.One, S.Pi, S.Half, Integer(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
         if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo
@@ -1299,7 +1299,7 @@ def test_zoo():
     assert zoo**2 is zoo
     assert 1/zoo is S.Zero
 
-    assert Mul.flatten([S(-1), oo, S(0)]) == ([S.NaN], [], None)
+    assert Mul.flatten([Integer(-1), oo, Integer(0)]) == ([S.NaN], [], None)
 
 
 def test_issue_4122():
@@ -1331,7 +1331,7 @@ def test_as_content_primitive():
     assert S.Zero.as_content_primitive() == (1, 0)
     assert S.Half.as_content_primitive() == (S.Half, 1)
     assert (-S.Half).as_content_primitive() == (S.Half, -1)
-    assert S(3).as_content_primitive() == (3, 1)
+    assert Integer(3).as_content_primitive() == (3, 1)
     assert S(3.1).as_content_primitive() == (1, 3.1)
 
 
@@ -1431,10 +1431,10 @@ def test_issue_7742():
 
 def test_simplify_AlgebraicNumber():
     A = AlgebraicNumber
-    e = 3**(S(1)/6)*(3 + (135 + 78*sqrt(3))**(S(2)/3))/(45 + 26*sqrt(3))**(S(1)/3)
+    e = 3**(Integer(1)/6)*(3 + (135 + 78*sqrt(3))**(Integer(2)/3))/(45 + 26*sqrt(3))**(Integer(1)/3)
     assert simplify(A(e)) == A(12)  # wester test_C20
 
-    e = (41 + 29*sqrt(2))**(S(1)/5)
+    e = (41 + 29*sqrt(2))**(Integer(1)/5)
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
 
     e = (3 + 4*I)**(Rational(3, 2))

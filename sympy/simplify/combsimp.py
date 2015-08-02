@@ -275,7 +275,7 @@ def combsimp(expr):
                 elif n < 0:
                     for k in range(-n):
                         do.append(2*y - 1 - k)
-                ng.append(y + S(1)/2)
+                ng.append(y + Integer(1)/2)
                 no.append(2**(2*y - 1))
                 do.append(sqrt(S.Pi))
 
@@ -290,9 +290,9 @@ def combsimp(expr):
         #
         # run of 3 args differing by 1/3 (mod 1)
         #
-        # >>> combsimp(gamma(x)*gamma(x+S(1)/3)*gamma(x+S(2)/3))
+        # >>> combsimp(gamma(x)*gamma(x+Integer(1)/3)*gamma(x+Integer(2)/3))
         # 6*3**(-3*x - 1/2)*pi*gamma(3*x)
-        # >>> combsimp(gamma(x)*gamma(x+S(1)/3)*gamma(x+S(5)/3))
+        # >>> combsimp(gamma(x)*gamma(x+Integer(1)/3)*gamma(x+Integer(5)/3))
         # 2*3**(-3*x - 1/2)*pi*(3*x + 2)*gamma(3*x)
         #
         def _run(coeffs):
@@ -359,7 +359,7 @@ def combsimp(expr):
 
                     # (2)
                     numer.append((2*S.Pi)**(S(n - 1)/2)*
-                                 n**(S(1)/2 - con))
+                                 n**(Integer(1)/2 - con))
                     # (3)
                     new.append(con)
 

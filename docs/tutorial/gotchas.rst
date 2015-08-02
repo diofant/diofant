@@ -308,7 +308,7 @@ numbers, or use :class:`~sympy.core.numbers.Rational`.
 
     >>> x**(1/2)
     x**0.5
-    >>> x**(S(1)/2)  # sympyify one of the ints
+    >>> x**(Integer(1)/2)  # sympyify one of the ints
     sqrt(x)
     >>> x**Rational(1, 2)  # use the Rational class
     sqrt(x)

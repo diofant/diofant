@@ -703,7 +703,7 @@ def test_J13():
 
 
 def test_J14():
-    p = hyper([S(1)/2, S(1)/2], [S(3)/2], z**2)
+    p = hyper([Integer(1)/2, Integer(1)/2], [Integer(3)/2], z**2)
     assert hyperexpand(p) == asin(z)/z
 
 
@@ -1231,13 +1231,13 @@ def test_O10():
                               [3],
                               [5]]),
                               Matrix([
-                              [S(23)/19],
-                              [S(63)/19],
-                              [S(-47)/19]]),
+                              [Integer(23)/19],
+                              [Integer(63)/19],
+                              [Integer(-47)/19]]),
                               Matrix([
-                              [S(1692)/353],
-                              [S(-1551)/706],
-                              [S(-423)/706]])]
+                              [Integer(1692)/353],
+                              [Integer(-1551)/706],
+                              [Integer(-423)/706]])]
 
 
 @pytest.mark.xfail
@@ -2369,19 +2369,19 @@ def test_W2():
 def test_W3():
     # integral is not  calculated
     # https://github.com/sympy/sympy/issues/7161
-    assert integrate(sqrt(x + 1/x - 2), (x, 0, 1)) == S(4)/3
+    assert integrate(sqrt(x + 1/x - 2), (x, 0, 1)) == Integer(4)/3
 
 
 @pytest.mark.xfail
 def test_W4():
     # integral is not  calculated
-    assert integrate(sqrt(x + 1/x - 2), (x, 1, 2)) == -2*sqrt(2)/3 + S(4)/3
+    assert integrate(sqrt(x + 1/x - 2), (x, 1, 2)) == -2*sqrt(2)/3 + Integer(4)/3
 
 
 @pytest.mark.xfail
 def test_W5():
     # integral is not  calculated
-    assert integrate(sqrt(x + 1/x - 2), (x, 0, 2)) == -2*sqrt(2)/3 + S(8)/3
+    assert integrate(sqrt(x + 1/x - 2), (x, 0, 2)) == -2*sqrt(2)/3 + Integer(8)/3
 
 
 @pytest.mark.xfail
@@ -2457,12 +2457,12 @@ def test_W14():
 @pytest.mark.xfail
 def test_W15():
     # integral not calculated
-    assert integrate(log(gamma(x))*cos(6*pi*x), (x, 0, 1)) == S(1)/12
+    assert integrate(log(gamma(x))*cos(6*pi*x), (x, 0, 1)) == Integer(1)/12
 
 
 def test_W16():
     assert integrate((1 + x)**3*legendre_poly(1, x)*legendre_poly(2, x),
-                     (x, -1, 1)) == S(36)/35
+                     (x, -1, 1)) == Integer(36)/35
 
 
 def test_W17():
@@ -2486,7 +2486,7 @@ def test_W19():
 def test_W20():
     # integral not calculated
     assert (integrate(x**2*polylog(3, 1/(x + 1)), (x, 0, 1)) ==
-            -pi**2/36 - S(17)/108 + zeta(3)/4 +
+            -pi**2/36 - Integer(17)/108 + zeta(3)/4 +
             (-pi**2/2 - 4*log(2) + log(2)**2 + 35/3)*log(2)/9)
 
 
@@ -2551,7 +2551,7 @@ def test_W26():
     # integrate(abs(y - x**2), (y,0,2)) raises ValueError: gamma function pole
     # https://github.com/sympy/sympy/issues/7165
     assert integrate(integrate(abs(y - x**2), (y, 0, 2)),
-                     (x, -1, 1)) == S(46)/15
+                     (x, -1, 1)) == Integer(46)/15
 
 
 def test_W27():
@@ -2620,7 +2620,7 @@ def test_X7():
     #    = 1/x^2 - 1/(2 x) + 1/12 - x^2/720 + x^4/30240 + O(x^6)
     #    [Levinson and Redheffer, p. 173]
     assert (series(1/(x*(exp(x) - 1)), x, 0, 7) == x**(-2) - 1/(2*x) +
-            S(1)/12 - x**2/720 + x**4/30240 - x**6/1209600 + O(x**7))
+            Integer(1)/12 - x**2/720 + x**4/30240 - x**6/1209600 + O(x**7))
 
 
 def test_X8():
@@ -2630,8 +2630,8 @@ def test_X8():
     # see issue 7167:
     x = symbols('x', extended_real=True)
     assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
-            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(S(3)/2)/12 +
-            (x - 3*pi/2)**(S(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(Integer(3)/2)/12 +
+            (x - 3*pi/2)**(Integer(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
 
 def test_X9():

@@ -97,10 +97,10 @@ class lerchphi(Function):
     to a sum of polylogarithms:
 
     >>> from sympy import S
-    >>> expand_func(lerchphi(z, s, S(1)/2))
+    >>> expand_func(lerchphi(z, s, Integer(1)/2))
     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                 polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))
-    >>> expand_func(lerchphi(z, s, S(3)/2))
+    >>> expand_func(lerchphi(z, s, Integer(3)/2))
     -2**s/z + 2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                           polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))/z
 
@@ -122,7 +122,7 @@ class lerchphi(Function):
             t = Dummy('t')
             p = Poly((t + a)**(-s), t)
             start = 1/(1 - t)
-            res = S(0)
+            res = Integer(0)
             for c in reversed(p.all_coeffs()):
                 res += c*start
                 start = t*start.diff(t)
@@ -134,8 +134,8 @@ class lerchphi(Function):
             #   In: Proceedings of the 1997 International Symposium on Symbolic and
             #   Algebraic Computation, pages 205-211, New York, 1997. ACM.
             # TODO should something be polarified here?
-            add = S(0)
-            mul = S(1)
+            add = Integer(0)
+            mul = Integer(1)
             # First reduce a to the interaval (0, 1]
             if a > 1:
                 n = floor(a)

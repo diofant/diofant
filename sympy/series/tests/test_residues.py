@@ -35,7 +35,7 @@ def test_functions():
     assert residue(1/sin(x), x, 0) == 1
     assert residue(2/sin(x), x, 0) == 2
     assert residue(1/sin(x)**2, x, 0) == 0
-    assert residue(1/sin(x)**5, x, 0) == S(3)/8
+    assert residue(1/sin(x)**5, x, 0) == Integer(3)/8
 
 
 def test_expressions():
@@ -49,7 +49,7 @@ def test_expressions():
 
 @pytest.mark.xfail
 def test_expressions_failing():
-    assert residue(1/(x**4 + 1), x, exp(I*pi/4)) == -(S(1)/4 + I/4)/sqrt(2)
+    assert residue(1/(x**4 + 1), x, exp(I*pi/4)) == -(Integer(1)/4 + I/4)/sqrt(2)
 
     n = Symbol('n', integer=True, positive=True)
     assert residue(exp(z)/(z - pi*I/4*a)**n, z, I*pi*a) == \

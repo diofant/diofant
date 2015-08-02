@@ -613,10 +613,10 @@ class GreaterThan(_Greater):
     "sympify" the literal before comparison, (2) use one of the wrappers, or (3)
     use the less succinct methods described above:
 
-    >>> e1 = S(1) >  x
-    >>> e2 = S(1) >= x
-    >>> e3 = S(1) <  x
-    >>> e4 = S(1) <= x
+    >>> e1 = Integer(1) >  x
+    >>> e2 = Integer(1) >= x
+    >>> e3 = Integer(1) <  x
+    >>> e4 = Integer(1) <= x
     >>> e5 = Gt(1, x)
     >>> e6 = Ge(1, x)
     >>> e7 = Lt(1, x)

@@ -1020,7 +1020,7 @@ def besselsimp(expr):
     E**(I*pi*nu)*besselj(nu, z)
     >>> besselsimp(besseli(nu, z*polar_lift(-I)))
     E**(-I*pi*nu/2)*besselj(nu, z)
-    >>> besselsimp(besseli(S(-1)/2, z))
+    >>> besselsimp(besseli(Integer(-1)/2, z))
     sqrt(2)*cosh(z)/(sqrt(pi)*sqrt(z))
     >>> besselsimp(z*besseli(0, z) + z*(besseli(2, z))/2 + besseli(1, z))
     3*z*besseli(0, z)/2
@@ -1069,7 +1069,7 @@ def besselsimp(expr):
 
     def expander(fro):
         def repl(nu, z):
-            if (nu % 1) == S(1)/2:
+            if (nu % 1) == Integer(1)/2:
                 return exptrigsimp(trigsimp(unpolarify(
                     fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
                         func=True)).subs(z0, z)))

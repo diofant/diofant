@@ -119,7 +119,7 @@ def gosper_term(f, n):
     if (N != M) or (A.LC() != B.LC()):
         D = {K - max(N, M)}
     elif not N:
-        D = {K - N + 1, S(0)}
+        D = {K - N + 1, Integer(0)}
     else:
         D = {K - N + 1, (B.nth(N - 1) - A.nth(N - 1))/A.LC()}
 

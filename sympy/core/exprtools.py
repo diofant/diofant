@@ -378,13 +378,13 @@ class Factors(object):
         of Rational-base terms, for example the following does not become
         2**(2*x)/2.
 
-        >>> Factors(2**(2*x + 2)).div(S(8))
+        >>> Factors(2**(2*x + 2)).div(Integer(8))
         (Factors({2: 2*x + 2}), Factors({8: 1}))
 
         factor_terms can clean up such Rational-bases powers:
 
         >>> from sympy.core.exprtools import factor_terms
-        >>> n, d = Factors(2**(2*x + 2)).div(S(8))
+        >>> n, d = Factors(2**(2*x + 2)).div(Integer(8))
         >>> n.as_expr()/d.as_expr()
         2**(2*x + 2)/8
         >>> factor_terms(_)
@@ -755,7 +755,7 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
                 numers.append(term.coeff*numer.as_expr())
         else:
             numers = [t.as_expr() for t in terms]
-            denom = Term(S(1)).numer
+            denom = Term(Integer(1)).numer
 
         cont = cont.as_expr()
         numer = Add(*numers)

@@ -32,7 +32,7 @@ def test_exp2():
 
 def test_issue_5223():
     assert series(1, x) == 1
-    assert next(S(0).lseries(x)) == 0
+    assert next(Integer(0).lseries(x)) == 0
     assert cos(x).series() == cos(x).series(x)
     pytest.raises(ValueError, lambda: cos(x + y).series())
     pytest.raises(ValueError, lambda: x.series(dir=""))
@@ -115,13 +115,13 @@ def test_issue_4583():
 
 
 def test_issue_6318():
-    eq = (1/x)**(S(2)/3)
+    eq = (1/x)**(Integer(2)/3)
     assert (eq + 1).as_leading_term(x) == eq
 
 
 def test_x_is_base_detection():
-    eq = (x**2)**(S(2)/3)
-    assert eq.series() == x**(S(4)/3)
+    eq = (x**2)**(Integer(2)/3)
+    assert eq.series() == x**(Integer(4)/3)
 
 
 def test_sin_power():

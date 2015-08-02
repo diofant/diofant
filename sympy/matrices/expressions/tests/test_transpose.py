@@ -24,7 +24,7 @@ def test_transpose():
 
     assert Transpose(eye(3)).doit() == eye(3)
 
-    assert Transpose(S(5)).doit() == S(5)
+    assert Transpose(Integer(5)).doit() == Integer(5)
 
     assert Transpose(Matrix([[1, 2], [3, 4]])).doit() == Matrix([[1, 3], [2, 4]])
 

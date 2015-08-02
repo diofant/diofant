@@ -29,7 +29,7 @@ class Inverse(MatPow):
 
     """
     is_Inverse = True
-    exp = S(-1)
+    exp = Integer(-1)
 
     def __new__(cls, mat):
         mat = _sympify(mat)

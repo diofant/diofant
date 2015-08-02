@@ -12,7 +12,7 @@ C = B.orient_new_axis('C', q3, B.j)
 
 def test_express():
     assert express(Vector.zero, N) == Vector.zero
-    assert express(S(0), N) == S(0)
+    assert express(Integer(0), N) == Integer(0)
     assert express(A.i, C) == cos(q3)*C.i + sin(q3)*C.k
     assert express(A.j, C) == sin(q2)*sin(q3)*C.i + cos(q2)*C.j - \
         sin(q2)*cos(q3)*C.k

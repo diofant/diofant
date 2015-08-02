@@ -71,7 +71,7 @@ def test_expand_non_commutative():
         a**-3*(A*B*(A*B**2)*(A*B**2)*A*B*A**(-1))**-1
     assert ((a*b*A*B*A**-1)**i).expand() == a**i*b**i*(A*B/A)**i
     assert ((a*(a*b)**i)**i).expand() == a**i*a**(i**2)*b**(i**2)
-    e = Pow(Mul(a, 1/a, A, B, evaluate=False), S(2), evaluate=False)
+    e = Pow(Mul(a, 1/a, A, B, evaluate=False), Integer(2), evaluate=False)
     assert e.expand() == A*B*A*B
     assert sqrt(a*(A*b)**i).expand() == sqrt(a*b**i*A**i)
     assert (sqrt(-a)**a).expand() == sqrt(-a)**a
@@ -131,7 +131,7 @@ def test_expand_frac():
 
 
 def test_issue_6121():
-    eq = -I*exp(-3*I*pi/4)/(4*pi**(S(3)/2)*sqrt(x))
+    eq = -I*exp(-3*I*pi/4)/(4*pi**(Integer(3)/2)*sqrt(x))
     assert eq.expand(complex=True)  # does not give oo recursion
 
 
@@ -287,7 +287,7 @@ def test_issues_5919_6830():
         return verify_numerically(e, expand_multinomial(e))
 
     for a in [2, S.Half]:
-        for b in [3, S(1)/3]:
+        for b in [3, Integer(1)/3]:
             for n in range(2, 6):
                 assert ok(a, b, n)
 
