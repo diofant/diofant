@@ -3,7 +3,5 @@ recursive-include sympy/logic/benchmarks/input *
 prune docs/_build
 recursive-include examples *.py README.rst
 
-include sympy/utilities/mathml/data/*.xsl
-
 include LICENSE
 include README.rst

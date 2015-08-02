@@ -223,25 +223,6 @@ Mathematica code printing
 
 .. autofunction:: sympy.printing.mathematica.mathematica_code
 
-Gtk
----
-
-.. module:: sympy.printing.gtk
-
-You can print to a grkmathview widget using the function ``print_gtk``
-located in ``sympy.printing.gtk`` (it requires to have installed
-gtkmatmatview and libgtkmathview-bin in some systems).
-
-GtkMathView accepts MathML, so this rendering depends on the MathML
-representation of the expression.
-
-Usage::
-
-    from sympy import *
-    print_gtk(x**2 + 2*exp(x**3))
-
-.. autofunction:: print_gtk
-
 LambdaPrinter
 -------------
 

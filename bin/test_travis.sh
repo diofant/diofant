@@ -5,7 +5,6 @@ set -e -x # exit on error and echo each command
 if [[ "${TEST_SLOW}" == "true" ]]; then
     py.test -m 'slow' --duration=100 --split="${SPLIT}" \
         --ignore sympy/utilities/autowrap.py \
-        --ignore sympy/utilities/mathml/__init__.py \
         --ignore sympy/plotting/plot.py \
         --ignore sympy/plotting/plot_implicit.py sympy/
 elif [[ "${TEST_EXTRA}" == "true" ]]; then
@@ -27,7 +26,6 @@ elif [[ "${TEST_EXTRA}" == "true" ]]; then
 elif [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
     py.test -m 'not slow' --duration=100 --cov sympy --split="${SPLIT}" \
         --ignore sympy/utilities/autowrap.py \
-        --ignore sympy/utilities/mathml/__init__.py \
         --ignore sympy/plotting/plot.py \
         --ignore sympy/plotting/plot_implicit.py \
         --doctest-modules sympy/
@@ -39,7 +37,6 @@ else
     fi
     py.test -m 'not slow' --duration=100 --split="${SPLIT}" \
         --ignore sympy/utilities/autowrap.py \
-        --ignore sympy/utilities/mathml/__init__.py \
         --ignore sympy/plotting/plot.py \
         --ignore sympy/plotting/plot_implicit.py \
         ${EXTRA_IGNORE} --doctest-modules sympy/

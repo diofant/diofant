@@ -57,7 +57,7 @@ from .calculus import *
 # This module is slow to import:
 from .plotting import plot, plot_backends, plot_implicit
 from .printing import pretty, pretty_print, pprint, pprint_use_unicode, \
-    pprint_try_use_unicode, print_gtk, print_tree, pager_print, TableForm
+    pprint_try_use_unicode, print_tree, pager_print, TableForm
 from .printing import ccode, fcode, jscode, mathematica_code, octave_code, \
     latex
 from .printing import python, print_python, srepr, sstr, sstrrepr

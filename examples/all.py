@@ -73,7 +73,6 @@ WINDOWED_EXAMPLES = [
     "beginner.plotting_nice_plot",
     "intermediate.mplot2d",
     "intermediate.mplot3d",
-    "intermediate.print_gtk",
     "advanced.autowrap_ufuncify",
 ]
 
