@@ -31,7 +31,6 @@ class AssumptionsContext(set):
     >>> global_assumptions == AssumptionsContext([])
     True
     >>> global_assumptions.clear()
-
     """
 
     def add(self, *assumptions):
@@ -186,6 +185,7 @@ class Predicate(Boolean):
                         raise ValueError('incompatible resolutors')
                 break
         return res
+
 
 @contextmanager
 def assuming(*assumptions):
