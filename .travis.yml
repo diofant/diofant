@@ -3,75 +3,45 @@ branches:
     - master
 language: python
 sudo: false
-env:
-  matrix:
-  - TEST_SLOW="false"
-  - TEST_SLOW="true"
 python:
   - 2.7
   - 3.4
-  - "pypy3"
+env:
+  - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+      - libatlas-dev
+      - libatlas-base-dev
+      - liblapack-dev
+      - gfortran
 matrix:
   include:
     - python: 2.7
+      script:
+        - python setup.py test --cov -m 'not slow'
+      after_success:
+        - coveralls
+    - python: 2.7
       env:
-        - TEST_EXTRA="true"
-      addons:
-        apt:
-          packages:
-            - libgmp-dev
-            - libatlas-dev
-            - libatlas-base-dev
-            - liblapack-dev
-            - gfortran
-            - graphviz
-            - texlive
-            - texlive-xetex
-            - texlive-fonts-recommended
-            - texlive-latex-extra
-            - lmodern
-    - python: 3.4
-      env:
-        - TEST_EXTRA="true"
-      addons:
-        apt:
-          packages:
-            - libgmp-dev
-            - libatlas-dev
-            - libatlas-base-dev
-            - liblapack-dev
-            - gfortran
-            - graphviz
-            - texlive
-            - texlive-xetex
-            - texlive-fonts-recommended
-            - texlive-latex-extra
-            - lmodern
+        - SYMPY_GROUND_TYPES=gmpy1
+      script:
+        - py.test sympy/polys
+    - python: "pypy3"
+      install:
+        - pip install .
+      script:
+        - py.test --ignore sympy/plotting/plot.py --ignore sympy/plotting/plot_implicit.py --ignore docs/modules/numeric-computation.rst --ignore sympy/matrices/dense.py --ignore sympy/tensor/tensor.py --ignore sympy/utilities/lambdify.py sympy docs
 before_install:
-  - if [[ "${TEST_EXTRA}" == "true" ]]; then
-      pip install sphinx==1.2.2 numpydoc==0.5 sphinx_rtd_theme;
-      travis_wait 30 pip install numpy==1.7.1 scipy==0.12.0 gmpy==1.16 Theano==0.6 pep8==1.6.2;
-      travis_wait 30 pip install matplotlib==1.3.1;
-    fi
-  - pip install pytest==2.7.0
-  - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-      pip install pytest-cov coveralls --use-mirrors;
-    fi
+  - pip install --upgrade pip setuptools pytest
+  - pip install coveralls
 install:
-  python setup.py install;
+  - travis_wait pip install .[exports,plot]
 before_script:
-  - if [[ "${TEST_EXTRA}" == "true" ]]; then
-      sh -e /etc/init.d/xvfb start;
-      export DISPLAY=:99.0;
-    fi
+  - sh -e /etc/init.d/xvfb start
+  - export DISPLAY=:99.0
 script:
-  - if [[ "${TEST_EXTRA}" == "true" ]]; then
-      pep8;
-    fi
-  - bin/test_travis.sh
-after_success:
-  - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-      coveralls;
-    fi
+  - python setup.py test
 notifications:
   email: false
