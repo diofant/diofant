@@ -6298,8 +6298,8 @@ def lie_heuristic_abaco2_unique_general(match, comp=False):
                 4*A**3*D - D**2 + E1*((2*Axx - (hx**2 + 2*C)*A)*A - 3*Ax**2))
             if not E2:
                 E3 = simplify(
-                   -(A*D)*E1.diff(y) + ((E1.diff(x) - hy*D)*A + 3*Ay*D +
-                    (A*hx - 3*Ax)*E1)*E1)
+                    -(A*D)*E1.diff(y) + ((E1.diff(x) - hy*D)*A + 3*Ay*D +
+                                         (A*hx - 3*Ax)*E1)*E1)
                 if not E3:
                     etaval = cancel(((A*hx - Ax)*E1 - (Ay + A*hy)*D)/(S(2)*A*D))
                     if x not in etaval:

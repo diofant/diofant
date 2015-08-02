@@ -115,7 +115,7 @@ class TheanoPrinter(Printer):
             tt.stacklists
         except AttributeError:
             raise NotImplementedError(
-               "Matrix translation not yet supported in this version of Theano")
+                "Matrix translation not yet supported in this version of Theano")
         else:
             return tt.stacklists([[self._print(arg, **kwargs) for arg in L]
                                          for L in X.tolist()])

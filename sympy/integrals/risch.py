@@ -1437,8 +1437,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         # equaling 1?
         ret += Piecewise(
                 (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
-                (qas/qds, True)
-            )
+                (qas/qds, True))
     else:
         ret += qas/qds
 

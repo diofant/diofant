@@ -133,8 +133,8 @@ def test_rotation_matrix():
          cos(q3)], [- sin(q3) * cos(q2), sin(q2), cos(q2) * cos(q3)]])
     test_mat = D.rotation_matrix(C) - Matrix(
         [[cos(q1) * cos(q3) * cos(q4) - sin(q3) * (- sin(q4) * cos(q2) +
-        sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
-            cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) *
+          sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
+          cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) *
           (- sin(q4) * cos(q2) + sin(q1) * sin(q2) * cos(q4))],
          [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), cos(q1) *
           cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * cos(q3)],

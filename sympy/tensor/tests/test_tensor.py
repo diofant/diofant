@@ -1647,11 +1647,10 @@ def test_contract_automatrix_and_data():
     s0, s1, s2 = tensor_indices('s0:3', S)
 
     assert (G(-m0).data == numpy.array([
-       [[1, 4],
-        [3, 8]],
-       [[-5, -12],
-        [-7, -16]]
-    ])).all()
+        [[1, 4],
+         [3, 8]],
+        [[-5, -12],
+         [-7, -16]]])).all()
 
     (G(m0) * G(-m0)).data
     G(m0, s0, -s1).data
