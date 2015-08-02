@@ -1422,8 +1422,7 @@ def trigsimp(expr, **opts):
         'groebner': (lambda x: groebnersimp(x, **opts)),
         'combined': (lambda x: futrig(groebnersimp(x,
                                polynomial=True, hints=[2, tan]))),
-        'old': lambda x: trigsimp_old(x, **opts),
-        }[method]
+        'old': lambda x: trigsimp_old(x, **opts),}[method]
 
     return trigsimpfunc(expr)
 
@@ -4635,8 +4634,7 @@ def trigsimp_old(expr, **opts):
         'groebner': (lambda x, d: groebnersimp(x, d, **opts)),
         'combined': (lambda x, d: _trigsimp(groebnersimp(x,
                                        d, polynomial=True, hints=[2, tan]),
-                                   d))
-        }[method]
+                                   d))}[method]
 
     if recursive:
         w, g = cse(expr)

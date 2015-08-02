@@ -1369,7 +1369,7 @@ def test_valued_tensor_get_matrix():
         [0, -1,  0,  0],
         [0,  0, -1,  0],
         [0,  0,  0, -1],
-        ])
+    ])
     # when alternating contravariant/covariant with [1, -1, -1, -1] metric
     # it becomes the identity matrix:
     assert AB(i0, -i1).get_matrix() == eye(4)
