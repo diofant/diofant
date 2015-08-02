@@ -435,7 +435,7 @@ def test_integrate_DiracDelta():
     assert integrate(DiracDelta(x) * f(x), (x, 0, oo)) == f(0)/2
     assert integrate(DiracDelta(x)**2, (x, -oo, oo)) == DiracDelta(0)
     # issue 4522
-    assert integrate(integrate((4 - 4*x + x*y - 4*y) * \
+    assert integrate(integrate((4 - 4*x + x*y - 4*y) *
         DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
     # issue 5729
     p = exp(-(x**2 + y**2))/pi
@@ -478,7 +478,7 @@ def test_integrate_returns_piecewise():
         (0, Eq(n, 0)), ((n*x/2 - sin(n*x)*cos(n*x)/2)/n, True))
     assert integrate(x*sin(n*x), x) == Piecewise(
         (0, Eq(n, 0)), (-x*cos(n*x)/n + sin(n*x)/n**2, True))
-    assert integrate(exp(x*y),(x,0,z)) == Piecewise( \
+    assert integrate(exp(x*y),(x,0,z)) == Piecewise(
         (z, Eq(y,0)), (exp(y*z)/y - 1/y, True))
 
 

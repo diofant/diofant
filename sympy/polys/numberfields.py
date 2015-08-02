@@ -118,8 +118,10 @@ def _separate_sq(p):
 
     """
     from sympy.utilities.iterables import sift
+
     def is_sqrt(expr):
         return expr.is_Pow and expr.exp is S.Half
+
     # p = c1*sqrt(q1) + ... + cn*sqrt(qn) -> a = [(c1, q1), .., (cn, qn)]
     a = []
     for y in p.args:

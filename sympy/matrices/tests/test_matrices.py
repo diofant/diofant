@@ -2015,9 +2015,9 @@ def test_is_zero():
     assert SparseMatrix([[x, 0], [0, 0]]).is_zero is None
     assert ImmutableMatrix([[x, 0], [0, 0]]).is_zero is None
     assert ImmutableSparseMatrix([[x, 0], [0, 0]]).is_zero is None
-    assert Matrix([[x, 1], [0, 0]]).is_zero == False
+    assert Matrix([[x, 1], [0, 0]]).is_zero is False
     a = Symbol('a', nonzero=True)
-    assert Matrix([[a, 0], [0, 0]]).is_zero == False
+    assert Matrix([[a, 0], [0, 0]]).is_zero is False
 
 
 def test_rotation_matrices():
@@ -2313,8 +2313,8 @@ def test_replace():
 def test_replace_map():
     from sympy import symbols, Function, Matrix
     F, G = symbols('F, G', cls=Function)
-    K = Matrix(2, 2, [(G(0), {F(0): G(0)}), (G(1), {F(1): G(1)}), (G(1), {F(1)\
-    : G(1)}), (G(2), {F(2): G(2)})])
+    K = Matrix(2, 2, [(G(0), {F(0): G(0)}), (G(1), {F(1): G(1)}), (G(1),
+                      {F(1): G(1)}), (G(2), {F(2): G(2)})])
     M = Matrix(2, 2, lambda i, j: F(i+j))
     N = M.replace(F, G, True)
     assert N == K

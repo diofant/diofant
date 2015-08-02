@@ -81,15 +81,15 @@ def test_coordinate_vars():
     assert express(B.x*B.y*B.z, A, variables=True) == \
            A.z*(-A.x*sin(q) + A.y*cos(q))*(A.x*cos(q) + A.y*sin(q))
     assert express(B.x*B.i + B.y*B.j + B.z*B.k, A) == \
-           (B.x*cos(q) - B.y*sin(q))*A.i + (B.x*sin(q) + \
+           (B.x*cos(q) - B.y*sin(q))*A.i + (B.x*sin(q) +
            B.y*cos(q))*A.j + B.z*A.k
-    assert simplify(express(B.x*B.i + B.y*B.j + B.z*B.k, A, \
+    assert simplify(express(B.x*B.i + B.y*B.j + B.z*B.k, A,
                             variables=True)) == \
            A.x*A.i + A.y*A.j + A.z*A.k
     assert express(A.x*A.i + A.y*A.j + A.z*A.k, B) == \
            (A.x*cos(q) + A.y*sin(q))*B.i + \
            (-A.x*sin(q) + A.y*cos(q))*B.j + A.z*B.k
-    assert simplify(express(A.x*A.i + A.y*A.j + A.z*A.k, B, \
+    assert simplify(express(A.x*A.i + A.y*A.j + A.z*A.k, B,
                             variables=True)) == \
            B.x*B.i + B.y*B.j + B.z*B.k
     N = B.orient_new_axis('N', -q, B.k)
@@ -127,29 +127,29 @@ def test_rotation_matrix():
     G = N.orient_new_body('G', q1, q2, q3, '123')
     assert N.rotation_matrix(C) == Matrix([
         [- sin(q1) * sin(q2) * sin(q3) + cos(q1) * cos(q3), - sin(q1) *
-        cos(q2), sin(q1) * sin(q2) * cos(q3) + sin(q3) * cos(q1)], \
-        [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), \
-         cos(q1) * cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * \
+        cos(q2), sin(q1) * sin(q2) * cos(q3) + sin(q3) * cos(q1)],
+        [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1),
+         cos(q1) * cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) *
          cos(q3)], [- sin(q3) * cos(q2), sin(q2), cos(q2) * cos(q3)]])
     test_mat = D.rotation_matrix(C) - Matrix(
         [[cos(q1) * cos(q3) * cos(q4) - sin(q3) * (- sin(q4) * cos(q2) +
         sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
-            cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) * \
-          (- sin(q4) * cos(q2) + sin(q1) * sin(q2) * cos(q4))], \
-         [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), cos(q1) * \
-          cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * cos(q3)], \
-         [sin(q4) * cos(q1) * cos(q3) - sin(q3) * (cos(q2) * cos(q4) + \
-                                                   sin(q1) * sin(q2) * \
+            cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) *
+          (- sin(q4) * cos(q2) + sin(q1) * sin(q2) * cos(q4))],
+         [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), cos(q1) *
+          cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * cos(q3)],
+         [sin(q4) * cos(q1) * cos(q3) - sin(q3) * (cos(q2) * cos(q4) +
+                                                   sin(q1) * sin(q2) *
                                                    sin(q4)), sin(q2) *
-                cos(q4) - sin(q1) * sin(q4) * cos(q2), sin(q3) * \
-          sin(q4) * cos(q1) + cos(q3) * (cos(q2) * cos(q4) + \
+                cos(q4) - sin(q1) * sin(q4) * cos(q2), sin(q3) *
+          sin(q4) * cos(q1) + cos(q3) * (cos(q2) * cos(q4) +
                                          sin(q1) * sin(q2) * sin(q4))]])
     assert test_mat.expand() == zeros(3, 3)
     assert E.rotation_matrix(N) == Matrix(
         [[cos(q2)*cos(q3), sin(q3)*cos(q2), -sin(q2)],
-        [sin(q1)*sin(q2)*cos(q3) - sin(q3)*cos(q1), \
-         sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3), sin(q1)*cos(q2)], \
-         [sin(q1)*sin(q3) + sin(q2)*cos(q1)*cos(q3), - \
+        [sin(q1)*sin(q2)*cos(q3) - sin(q3)*cos(q1),
+         sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3), sin(q1)*cos(q2)],
+         [sin(q1)*sin(q3) + sin(q2)*cos(q1)*cos(q3), -
           sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1), cos(q1)*cos(q2)]])
     assert F.rotation_matrix(N) == Matrix([[
         q1**2 + q2**2 - q3**2 - q4**2,

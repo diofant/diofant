@@ -6,7 +6,7 @@ from itertools import (combinations, permutations, product,
 import random
 from operator import gt
 
-from sympy.core import Basic
+from sympy.core import Basic, S
 
 # this is the logical location of these functions
 from sympy.core.compatibility import (as_int, default_sort_key,
@@ -258,7 +258,7 @@ def postorder_traversal(node, keys=None):
     if isinstance(node, Basic):
         args = node.args
         if keys:
-            if keys != True:
+            if keys != S.true:
                 args = ordered(args, keys, default=False)
             else:
                 args = ordered(args)

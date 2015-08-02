@@ -60,9 +60,9 @@ class MatrixSlice(MatrixExpr):
         if not (len(rowslice) == len(colslice) == 3):
             raise IndexError()
         if ((0 > rowslice[0]) == True or
-            (parent.shape[0] < rowslice[1]) == True or
-            (0 > colslice[0]) == True or
-            (parent.shape[1] < colslice[1]) == True):
+                (parent.shape[0] < rowslice[1]) == True or
+                (0 > colslice[0]) == True or
+                (parent.shape[1] < colslice[1]) == True):
             raise IndexError()
         if isinstance(parent, MatrixSlice):
             return mat_slice_of_slice(parent, rowslice, colslice)

@@ -1355,19 +1355,18 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
 
         pi_coeff = _pi_coeff(arg)
         if (pi_coeff is not None
-            and not (2*pi_coeff).is_integer
-            and pi_coeff.is_Rational):
-                q = pi_coeff.q
-                p = pi_coeff.p % (2*q)
-                if p > q:
-                    narg = (pi_coeff - 1)*S.Pi
+                and not (2*pi_coeff).is_integer and pi_coeff.is_Rational):
+            q = pi_coeff.q
+            p = pi_coeff.p % (2*q)
+            if p > q:
+                narg = (pi_coeff - 1)*S.Pi
+                return -cls(narg)
+            if 2*p > q:
+                narg = (1 - pi_coeff)*S.Pi
+                if cls._is_odd:
+                    return cls(narg)
+                elif cls._is_even:
                     return -cls(narg)
-                if 2*p > q:
-                    narg = (1 - pi_coeff)*S.Pi
-                    if cls._is_odd:
-                        return cls(narg)
-                    elif cls._is_even:
-                        return -cls(narg)
 
         t = cls._reciprocal_of.eval(arg)
         if hasattr(arg, 'inverse') and arg.inverse() == cls:

@@ -812,7 +812,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             if all([i is None for i in data_list]):
                 return None
             if any([i is None for i in data_list]):
-                raise ValueError("Mixing tensors with associated components "\
+                raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
             data_result, tensmul_result = self.data_product_tensors(data_list, tensmul_list)
             return data_result
@@ -823,7 +823,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             if all([i is None for i in data_list]):
                 return None
             if any([i is None for i in data_list]):
-                raise ValueError("Mixing tensors with associated components "\
+                raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
             for i in data_list:
                 sumvar += i
@@ -944,7 +944,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         if isinstance(key, TensorHead):
             for dim, indextype in zip(data.shape, key.index_types):
                 if indextype.data is None:
-                    raise ValueError("index type {} has no components data"\
+                    raise ValueError("index type {} has no components data"
                     " associated (needed to raise/lower index)".format(indextype))
                 if indextype.dim is None:
                     continue
@@ -3268,7 +3268,7 @@ class Tensor(TensExpr):
 
         def _get_compar_comp(self):
             t = self.canon_bp()
-            r = (t.coeff, tuple(t.components), \
+            r = (t.coeff, tuple(t.components),
                     tuple(sorted(t.free)), tuple(sorted(t.dum)))
             return r
 
@@ -3419,7 +3419,7 @@ class TensMul(TensExpr):
 
         def _get_compar_comp(self):
             t = self.canon_bp()
-            r = (get_coeff(t), tuple(t.components), \
+            r = (get_coeff(t), tuple(t.components),
                     tuple(sorted(t.free)), tuple(sorted(t.dum)))
             return r
 
@@ -3700,6 +3700,7 @@ class TensMul(TensExpr):
 
     def _print(self):
         args = self.args
+
         def get_str(arg):
             return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ("(%s)" % str(arg))
 

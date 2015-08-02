@@ -84,6 +84,7 @@ class BooleanAtom(Boolean):
     Base class of BooleanTrue and BooleanFalse.
     """
     is_Boolean = True
+
     @property
     def canonical(self):
         return self
@@ -783,7 +784,7 @@ class Implies(BooleanFunction):
             raise ValueError(
                 "%d operand(s) used for an Implies "
                 "(pairs are required): %s" % (len(args), str(args)))
-        if A == True or A == False or B == True or B == False:
+        if A == S.true or A == S.false or B == S.true or B == S.false:
             return Or(Not(A), B)
         elif A == B:
             return S.true
@@ -904,9 +905,9 @@ class ITE(BooleanFunction):
             a, b, c = args
         except ValueError:
             raise ValueError("ITE expects exactly 3 arguments")
-        if a == True:
+        if a == S.true:
             return b
-        if a == False:
+        if a == S.false:
             return c
         if b == c:
             return b

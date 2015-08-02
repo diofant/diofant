@@ -12,12 +12,12 @@ def test_default_sort_key():
 
 
 def test_as_int():
-    raises(ValueError, lambda : as_int(1.1))
-    raises(ValueError, lambda : as_int([]))
-    raises(ValueError, lambda : as_int(S.NaN))
-    raises(ValueError, lambda : as_int(S.Infinity))
-    raises(ValueError, lambda : as_int(S.NegativeInfinity))
-    raises(ValueError, lambda : as_int(S.ComplexInfinity))
+    raises(ValueError, lambda: as_int(1.1))
+    raises(ValueError, lambda: as_int([]))
+    raises(ValueError, lambda: as_int(S.NaN))
+    raises(ValueError, lambda: as_int(S.Infinity))
+    raises(ValueError, lambda: as_int(S.NegativeInfinity))
+    raises(ValueError, lambda: as_int(S.ComplexInfinity))
 
 
 def test_iterable():
@@ -28,7 +28,7 @@ def test_iterable():
 
 def test_ordered():
     # Issue 7210 - this had been failing with python2/3 problems
-    assert (list(ordered([{1:3, 2:4, 9:10}, {1:3}])) == \
+    assert (list(ordered([{1:3, 2:4, 9:10}, {1:3}])) ==
                [{1: 3}, {1: 3, 2: 4, 9: 10}])
     # warnings should not be raised for identical items
     l = [1, 1]

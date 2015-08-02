@@ -214,8 +214,8 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
-        if (not last and
-            any([expr.has(x) for x in (Integral, Piecewise, Product, Sum)])):
+        if (not last and any([expr.has(x) for
+                              x in (Integral, Piecewise, Product, Sum)])):
             return True
 
         return False
@@ -487,7 +487,7 @@ class LatexPrinter(Printer):
 
         for system, vect in items:
             inneritems = list(vect.components.items())
-            inneritems.sort(key = lambda x:x[0].__str__())
+            inneritems.sort(key=lambda x:x[0].__str__())
             for k, v in inneritems:
                 if v == 1:
                     o1.append(' + ' + k._latex_form)
@@ -870,7 +870,7 @@ class LatexPrinter(Printer):
     def _print_elliptic_pi(self, expr, exp=None):
         if len(expr.args) == 3:
             tex = r"\left(%s; %s\middle| %s\right)" % \
-                (self._print(expr.args[0]), self._print(expr.args[1]), \
+                (self._print(expr.args[0]), self._print(expr.args[1]),
                  self._print(expr.args[2]))
         else:
             tex = r"\left(%s\middle| %s\right)" % \

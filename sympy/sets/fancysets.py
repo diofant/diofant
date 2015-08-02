@@ -395,7 +395,7 @@ class Range(Set):
 
     def _contains(self, other):
         if (((self.start - other)/self.step).is_integer or
-            ((self.stop - other)/self.step).is_integer):
+                ((self.stop - other)/self.step).is_integer):
             return _sympify(other >= self.inf and other <= self.sup)
         elif (((self.start - other)/self.step).is_integer is False and
               ((self.stop - other)/self.step).is_integer is False):

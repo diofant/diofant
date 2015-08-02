@@ -342,11 +342,11 @@ def test_symbols_exhausted_error():
 
 def test_issue_7840():
     # daveknippers' example
-    C393 = sympify( \
+    C393 = sympify(
         'Piecewise((C391 - 1.65, C390 < 0.5), (Piecewise((C391 - 1.65, \
         C391 > 2.35), (C392, True)), True))'
     )
-    C391 = sympify( \
+    C391 = sympify(
         'Piecewise((2.05*C390**(-1.03), C390 < 0.5), (2.5*C390**(-0.625), True))'
     )
     C393 = C393.subs('C391',C391)

@@ -668,6 +668,7 @@ class PrettyPrinter(Printer):
         # XXX works only for applied functions
 
         prettyFunc = self._print(m.parent)
+
         def ppslice(x):
             x = list(x)
             if x[2] == 1:
@@ -677,6 +678,7 @@ class PrettyPrinter(Printer):
             if x[0] == 0:
                 x[0] = ''
             return prettyForm(*self._print_seq(x, delimiter=':'))
+
         prettyArgs = self._print_seq((ppslice(m.rowslice),
             ppslice(m.colslice)), delimiter=', ').parens(left='[', right=']')[0]
 
@@ -758,6 +760,7 @@ class PrettyPrinter(Printer):
 
         if not self._use_unicode:
             raise NotImplementedError("ASCII pretty printing of BasisDependent is not implemented")
+
         class Fake(object):
             baseline = 0
 
@@ -773,7 +776,7 @@ class PrettyPrinter(Printer):
                     items = [(0, expr)]
                 for system, vect in items:
                     inneritems = list(vect.components.items())
-                    inneritems.sort(key = lambda x: x[0].__str__())
+                    inneritems.sort(key=lambda x: x[0].__str__())
                     for k, v in inneritems:
                         #if the coef of the basis vector is 1
                         #we skip the 1
@@ -833,6 +836,7 @@ class PrettyPrinter(Printer):
                             strs[j] += ' '*(lengths[-1]+3)
 
                 return u('\n').join([s[:-3] for s in strs])
+
         return Fake()
 
     def _print_Piecewise(self, pexpr):
@@ -840,7 +844,7 @@ class PrettyPrinter(Printer):
         P = {}
         for n, ec in enumerate(pexpr.args):
             P[n, 0] = self._print(ec.expr)
-            if ec.cond == True:
+            if ec.cond == S.true:
                 P[n, 1] = prettyForm('otherwise')
             else:
                 P[n, 1] = prettyForm(

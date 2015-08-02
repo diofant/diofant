@@ -8,8 +8,10 @@ def test_treeapply():
 
     def add(*args):
         return sum(args)
+
     def mul(*args):
         return reduce(lambda a, b: a*b, args, 1)
+
     assert treeapply(tree, {list: add, tuple: mul}) == 60
 
 def test_treeapply_leaf():
@@ -22,10 +24,13 @@ def test_treeapply_leaf():
 def test_treeapply_strategies():
     from sympy.strategies import chain, minimize
     join = {list: chain, tuple: minimize}
+
     def inc(x):
         return x + 1
+
     def dec(x):
         return x - 1
+
     def double(x):
         return 2*x
 
@@ -45,10 +50,13 @@ def test_treeapply_strategies():
 def test_greedy():
     def inc(x):
         return x + 1
+
     def dec(x):
         return x - 1
+
     def double(x):
         return 2*x
+
     tree = [inc, (dec, double)]  # either inc or dec-then-double
 
     fn = greedy(tree, objective=lambda x: -x)
@@ -65,10 +73,13 @@ def test_greedy():
 def test_allresults():
     def inc(x):
         return x+1
+
     def dec(x):
         return x-1
+
     def double(x):
         return x*2
+
     def square(x):
         return x**2
 
@@ -80,10 +91,13 @@ def test_allresults():
 def test_brute():
     def inc(x):
         return x+1
+
     def dec(x):
         return x-1
+
     def square(x):
         return x**2
+
     tree = ([inc, dec], square)
     fn = brute(tree, lambda x: -x)
 

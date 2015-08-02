@@ -562,7 +562,7 @@ class Max(MinMaxBase, Application):
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from sympy import Heaviside
-        return Add(*[j*Mul(*[Heaviside(j - i) for i in args if i!=j]) \
+        return Add(*[j*Mul(*[Heaviside(j - i) for i in args if i!=j])
                 for j in args])
 
 
@@ -613,5 +613,5 @@ class Min(MinMaxBase, Application):
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from sympy import Heaviside
-        return Add(*[j*Mul(*[Heaviside(i-j) for i in args if i!=j]) \
+        return Add(*[j*Mul(*[Heaviside(i-j) for i in args if i!=j])
                 for j in args])

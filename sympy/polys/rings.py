@@ -673,10 +673,13 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def __lt__(p1, p2):
         return p1._cmp(p2, lt)
+
     def __le__(p1, p2):
         return p1._cmp(p2, le)
+
     def __gt__(p1, p2):
         return p1._cmp(p2, gt)
+
     def __ge__(p1, p2):
         return p1._cmp(p2, ge)
 

@@ -520,6 +520,7 @@ class Basic(with_metaclass(ManagedProperties)):
     @staticmethod
     def _recursive_call(expr_to_call, on_args):
         from sympy import Symbol
+
         def the_call_method_is_overridden(expr):
             for cls in getmro(type(expr)):
                 if '__call__' in cls.__dict__:
@@ -1277,7 +1278,7 @@ class Basic(with_metaclass(ManagedProperties)):
             if isinstance(value, Basic):
                 if exact:
                     def _value(expr, result):
-                        return (value.subs(result) \
+                        return (value.subs(result)
                             if all(val for val in result.values()) else expr)
                 else:
                     def _value(expr, result):
@@ -1315,6 +1316,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         mapping = {}  # changes that took place
         mask = []  # the dummies that were used as change placeholders
+
         def rec_replace(expr):
             result = _query(expr)
             if result or result == {}:
@@ -1641,8 +1643,8 @@ def _aresame(a, b):
     from .function import AppliedUndef, UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
         if i != j or type(i) != type(j):
-            if ((isinstance(i, UndefFunc) and isinstance(j, UndefFunc)) or
-                (isinstance(i, AppliedUndef) and isinstance(j, AppliedUndef))):
+            if (isinstance(i, (UndefFunc, AppliedUndef)) and
+                    isinstance(j, (UndefFunc, AppliedUndef))):
                 if i.class_key() != j.class_key():
                     return False
             else:
@@ -1754,7 +1756,7 @@ class preorder_traversal(Iterator):
             else:
                 args = node.args
             if keys:
-                if keys != True:
+                if not keys:
                     args = ordered(args, keys, default=False)
                 else:
                     args = ordered(args)

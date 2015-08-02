@@ -452,7 +452,7 @@ class Abs(Function):
                     if base.func is cls and exponent is S.NegativeOne:
                         return arg
                     return Abs(base)**exponent
-                if base.is_positive == True:
+                if base.is_positive:
                     return base**re(exponent)
                 return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
         if isinstance(arg, exp):

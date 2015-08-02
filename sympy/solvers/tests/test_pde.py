@@ -170,7 +170,7 @@ def test_pdsolve_all():
     f, F = map(Function, ['f', 'F'])
     u = f(x,y)
     eq = u + u.diff(x) + u.diff(y) + x**2*y
-    sol = pdsolve(eq, hint = 'all')
+    sol = pdsolve(eq, hint='all')
     keys = ['1st_linear_constant_coeff',
         '1st_linear_constant_coeff_Integral', 'default', 'order']
     assert sorted(sol.keys()) == keys

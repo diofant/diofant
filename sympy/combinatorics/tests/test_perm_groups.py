@@ -519,12 +519,16 @@ def test_schreier_sims_incremental():
 def _subgroup_search(i, j, k):
     def prop_true(x):
         return True
+
     def prop_fix_points(x):
         return [x(point) for point in points] == points
+
     def prop_comm_g(x):
         return rmul(x, g) == rmul(g, x)
+
     def prop_even(x):
         return x.is_even
+
     for i in range(i, j, k):
         S = SymmetricGroup(i)
         A = AlternatingGroup(i)

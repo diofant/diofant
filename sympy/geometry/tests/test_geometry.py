@@ -121,7 +121,7 @@ def test_point():
     assert Point.is_collinear(p3, p4, p1_1, p1_2)
     assert Point.is_collinear(p3, p4, p1_1, p1_3) is False
     assert Point.is_collinear(p3, p3, p4, p5) is False
-    line = Line(Point(1,0), slope = 1)
+    line = Line(Point(1,0), slope=1)
     raises(TypeError, lambda: Point.is_collinear(line))
     raises(TypeError, lambda: p1_1.is_collinear(line))
 
@@ -625,7 +625,7 @@ def test_line3d():
     l1_1 = Line3D(p1, p1_1)
     assert Line3D.is_perpendicular(l1, l2) is False
     p = l1.arbitrary_point()
-    raises(NotImplementedError , lambda: l1.perpendicular_segment(p))
+    raises(NotImplementedError, lambda: l1.perpendicular_segment(p))
 
     # Parallelity
     assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),
@@ -878,7 +878,7 @@ def test_plane():
     assert Plane.are_concurrent(pl3, pl4, pl5) is False
     assert Plane.are_concurrent(pl6) is False
 
-    assert pl3.parallel_plane(Point3D(1, 2, 5)) == Plane(Point3D(1, 2, 5), \
+    assert pl3.parallel_plane(Point3D(1, 2, 5)) == Plane(Point3D(1, 2, 5),
                                                       normal_vector=(1, -2, 1))
 
     # perpendicular_plane

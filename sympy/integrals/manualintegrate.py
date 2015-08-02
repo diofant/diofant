@@ -30,8 +30,10 @@ def Rule(name, props=""):
     # GOTCHA: namedtuple class name not considered!
     def __eq__(self, other):
         return self.__class__ == other.__class__ and tuple.__eq__(self, other)
+
     def __neq__(self, other):
         return not __eq__(self, other)
+
     cls = namedtuple(name, props + " context symbol")
     cls.__eq__ = __eq__
     cls.__ne__ = __neq__
@@ -207,7 +209,7 @@ def alternatives(*rules):
         for rule in rules:
             result = rule(integral)
             if (result and not isinstance(result, DontKnowRule) and
-                result != integral and result not in alts):
+                    result != integral and result not in alts):
                 alts.append(result)
         if len(alts) == 1:
             return alts[0]
@@ -917,7 +919,7 @@ def integral_steps(integrand, symbol, **options):
             sympy.Symbol: power_rule,
             sympy.exp: exp_rule,
             sympy.Add: add_rule,
-            sympy.Mul: do_one(null_safe(mul_rule), null_safe(trig_product_rule), \
+            sympy.Mul: do_one(null_safe(mul_rule), null_safe(trig_product_rule),
                 null_safe(heaviside_rule)),
             sympy.Derivative: derivative_rule,
             TrigonometricFunction: trig_rule,

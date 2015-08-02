@@ -628,7 +628,7 @@ def test_kbins():
             print('ordered =', ordered)
             for p in kbins([0, 0, 1], 2, ordered=ordered):
                 print('   ', p)
-    assert capture(lambda : test()) == dedent('''\
+    assert capture(lambda: test()) == dedent('''\
         ordered = None
             [[0], [0, 1]]
             [[0, 0], [1]]
@@ -657,7 +657,7 @@ def test_kbins():
             print('ordered =', ordered)
             for p in kbins(list(range(3)), 2, ordered=ordered):
                 print('   ', p)
-    assert capture(lambda : test()) == dedent('''\
+    assert capture(lambda: test()) == dedent('''\
         ordered = None
             [[0], [1, 2]]
             [[0, 1], [2]]

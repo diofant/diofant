@@ -872,7 +872,7 @@ def solve(f, *symbols, **flags):
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
                 raise NotImplementedError('solving %s when the argument '
                     'is not real or imaginary.' % a)
-            reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else \
+            reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
                 piece(a.args[0]*S.ImaginaryUnit)))
         fi = fi.subs(reps)
 
@@ -1327,26 +1327,26 @@ def _solve(f, *symbols, **flags):
                 if candidate in result:
                     continue
                 try:
-                    v = (cond == True) or cond.subs(symbol, candidate)
+                    v = (cond == S.true) or cond.subs(symbol, candidate)
                 except:
                     v = False
-                if v != False:
+                if v != S.false:
                     # Only include solutions that do not match the condition
                     # of any previous pieces.
                     matches_other_piece = False
                     for other_n, (other_expr, other_cond) in enumerate(f.args):
                         if other_n == n:
                             break
-                        if other_cond == False:
+                        if other_cond == S.false:
                             continue
                         try:
-                            if other_cond.subs(symbol, candidate) == True:
+                            if other_cond.subs(symbol, candidate) == S.true:
                                 matches_other_piece = True
                                 break
                         except:
                             pass
                     if not matches_other_piece:
-                        v = v == True or v.doit()
+                        v = v == S.true or v.doit()
                         if isinstance(v, Relational):
                             v = v.canonical
                         result.add(Piecewise(
@@ -1977,6 +1977,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We just solve the system and try to heuristically find a nice
         # solution.
         s = solve_linear_system(system, *symbols)
+
         def update(determined, solution):
             delete = []
             for k, v in solution.items():
@@ -1986,6 +1987,7 @@ def minsolve_linear_system(system, *symbols, **flags):
                     determined[k] = solution[k]
             for k in delete:
                 del solution[k]
+
         determined = {}
         update(determined, s)
         while s:
@@ -3206,9 +3208,11 @@ def unrad(eq, *syms, **flags):
                         3*B*b**3*d**6 - c**9 + 9*c**8*d - 36*c**7*d**2 + 84*c**6*d**3 -
                         126*c**5*d**4 + 126*c**4*d**5 - 84*c**3*d**6 + 36*c**2*d**7 -
                         9*c*d**8 + d**9)
+
                     def _t(i):
                         b = Mul(*info[i][RAD])
                         return cancel(rterms[i]/b), Mul(*info[i][BASES])
+
                     aa, AA = _t(0)
                     bb, BB = _t(1)
                     cc = -rterms[2]

@@ -265,7 +265,7 @@ class Point3D(GeometryEntity):
         # If the concept needs to extend to more than three
         # dimensions then another method would have to be used
         for i in range(len(points) - 2):
-            pv1 = [j - k for j, k in zip(points[i].args,   \
+            pv1 = [j - k for j, k in zip(points[i].args,
                 points[i + 1].args)]
             pv2 = [j - k for j, k in zip(points[i + 1].args,
                 points[i + 2].args)]

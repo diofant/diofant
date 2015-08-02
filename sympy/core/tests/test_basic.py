@@ -152,7 +152,7 @@ def test_call():
     x, y = symbols('x y')
     # See the long history of this in issues 5026 and 5105.
 
-    raises(TypeError, lambda: sin(x)({ x : 1, sin(x) : 2}))
+    raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
     raises(TypeError, lambda: sin(x)(1))
 
     # No effect as there are no callables

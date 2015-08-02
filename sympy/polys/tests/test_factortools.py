@@ -397,6 +397,7 @@ def test_dmp_zz_factor():
 
 def test_dup_ext_factor():
     R, x = ring("x", QQ.algebraic_field(I))
+
     def anp(element):
         return ANP(element, [QQ(1), QQ(0), QQ(1)], QQ)
 
@@ -436,6 +437,7 @@ def test_dup_ext_factor():
                            (anp([QQ(1, 1)])*x + anp([ QQ(4, 1), QQ(1, 1)]), 1)])
 
     R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+
     def anp(element):
         return ANP(element, [QQ(1), QQ(0), QQ(-2)], QQ)
 
@@ -464,6 +466,7 @@ def test_dup_ext_factor():
 
 def test_dmp_ext_factor():
     R, x,y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+
     def anp(x):
         return ANP(x, [QQ(1), QQ(0), QQ(-2)], QQ)
 
@@ -549,6 +552,7 @@ def test_dup_factor_list():
                     (x + t, 1)])
 
     R, x = ring("x", QQ.algebraic_field(I))
+
     def anp(element):
         return ANP(element, [QQ(1), QQ(0), QQ(1)], QQ)
 

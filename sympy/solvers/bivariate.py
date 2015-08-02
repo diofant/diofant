@@ -269,7 +269,7 @@ def _solve_lambert(f, symbol, gens):
                 mainterm = lhs - other
                 rhs = rhs - other
                 if (mainterm.could_extract_minus_sign() and
-                    rhs.could_extract_minus_sign()):
+                        rhs.could_extract_minus_sign()):
                     mainterm *= -1
                     rhs *= -1
                 diff = log(mainterm) - log(rhs)

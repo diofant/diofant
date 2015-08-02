@@ -468,6 +468,7 @@ def _sqrt_mod1(a, p, n):
         m = n // 2
         if n % 2 == 1:
             pm1 = p**(m + 1)
+
             def _iter0a():
                 i = 0
                 while i < pn:
@@ -476,6 +477,7 @@ def _sqrt_mod1(a, p, n):
             return _iter0a()
         else:
             pm = p**m
+
             def _iter0b():
                 i = 0
                 while i < pn:
@@ -494,6 +496,7 @@ def _sqrt_mod1(a, p, n):
         if n - r == 1:
             pnm1 = 1 << (n - m + 1)
             pm1 = 1 << (m + 1)
+
             def _iter1():
                 k = 1 << (m + 2)
                 i = 1 << m
@@ -509,6 +512,7 @@ def _sqrt_mod1(a, p, n):
             if res is None:
                 return None
             pnm = 1 << (n - m)
+
             def _iter2():
                 s = set()
                 for r in res:
@@ -525,6 +529,7 @@ def _sqrt_mod1(a, p, n):
             if res is None:
                 return None
             pnm1 = 1 << (n - m - 1)
+
             def _iter3():
                 s = set()
                 for r in res:
@@ -557,6 +562,7 @@ def _sqrt_mod1(a, p, n):
                         s.add(x)
                         yield x*pm
                     i += pnr
+
         return _iter4()
 
 
@@ -698,7 +704,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     """
     from sympy.core.numbers import igcdex
     if n == 2:
-        return sqrt_mod(a, p , all_roots)
+        return sqrt_mod(a, p, all_roots)
     f = totient(p)
     # see Hackman "Elementary Number Theory" (2009), page 76
     if pow(a, f // igcd(f, n), p) != 1:
@@ -731,7 +737,7 @@ def nthroot_mod(a, n, p, all_roots=False):
         else:
             res = a
     elif pa == 2:
-        return sqrt_mod(a, p , all_roots)
+        return sqrt_mod(a, p, all_roots)
     else:
         res = _nthroot_mod1(a, pa, p, all_roots)
     return res

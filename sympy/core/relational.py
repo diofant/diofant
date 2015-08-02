@@ -183,9 +183,9 @@ class Relational(Boolean, Expr, EvalfMixin):
                 # approximation.  If .equals(0) gives None, cannot be deduced.
                 if not dif.has(Symbol):
                     know = dif.equals(0)
-                    if know == True:
+                    if know:
                         dif = S.Zero
-                    elif know == False:
+                    elif know is False:
                         dif = dif.evalf()
                 # Can definitively compare a Number to zero, if appropriate.
                 if dif.is_Number and (dif.is_extended_real or r.func in (Eq, Ne)):
@@ -368,7 +368,7 @@ class Unequality(Relational):
 
         if evaluate:
             is_equal = Equality(lhs, rhs)
-            if is_equal == True or is_equal == False:
+            if is_equal == S.true or is_equal == S.false:
                 return ~is_equal
 
         return Relational.__new__(cls, lhs, rhs, **options)

@@ -305,12 +305,12 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
 
     eq = expand(eq)
 
-    a = Wild('a', exclude = [f(x,y)])
-    b = Wild('b', exclude = [f(x,y), fx, fy, x, y])
-    c = Wild('c', exclude = [f(x,y), fx, fy, x, y])
-    d = Wild('d', exclude = [f(x,y), fx, fy, x, y])
-    e = Wild('e', exclude = [f(x,y), fx, fy])
-    n = Wild('n', exclude = [x, y])
+    a = Wild('a', exclude=[f(x,y)])
+    b = Wild('b', exclude=[f(x,y), fx, fy, x, y])
+    c = Wild('c', exclude=[f(x,y), fx, fy, x, y])
+    d = Wild('d', exclude=[f(x,y), fx, fy, x, y])
+    e = Wild('e', exclude=[f(x,y), fx, fy])
+    n = Wild('n', exclude=[x, y])
     # Try removing the smallest power of f(x,y)
     # from the highest partial derivatives of f(x,y)
     reduced_eq = None

@@ -228,7 +228,7 @@ def test_issue_3210():
 
 
 def test_issue_7263():
-    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() - \
+    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() -
             673.447451402970) < 1e-12
 
 
@@ -536,6 +536,7 @@ def test_simplify_ratio():
 def test_simplify_measure():
     def measure1(expr):
         return len(str(expr))
+
     def measure2(expr):
         return -count_ops(expr)
                                        # Return the most complicated result
@@ -1884,6 +1885,7 @@ def test_exptrigsimp():
 def test_issue_2827_trigsimp_methods():
     def measure1(expr):
         return len(str(expr))
+
     def measure2(expr):
         return -count_ops(expr)
                                        # Return the most complicated result

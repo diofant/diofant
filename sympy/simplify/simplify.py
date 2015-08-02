@@ -1319,7 +1319,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
             # sets, of course.)
             ourG = [g.as_expr() for g in G.polys if
                     g.has_only_gens(*ourgens.intersection(g.gens))]
-            res.append(Mul(*[a**b for a, b in zip(freegens, monom)]) * \
+            res.append(Mul(*[a**b for a, b in zip(freegens, monom)]) *
                        ratsimpmodprime(coeff/denom, ourG, order=order,
                                        gens=realgens, quick=quick, domain=ZZ,
                                        polynomial=polynomial).subs(subs))
@@ -1327,7 +1327,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         # NOTE The following is simpler and has less assumptions on the
         #      groebner basis algorithm. If the above turns out to be broken,
         #      use this.
-        return Add(*[Mul(*[a**b for a, b in zip(freegens, monom)]) * \
+        return Add(*[Mul(*[a**b for a, b in zip(freegens, monom)]) *
                      ratsimpmodprime(coeff/denom, list(G), order=order,
                                      gens=gens, quick=quick, domain=ZZ)
                      for monom, coeff in num.terms()])
@@ -1874,8 +1874,8 @@ def radsimp(expr, symbolic=True, max_terms=4):
     1/(a + b*sqrt(c))
 
     """
-
     syms = symbols("a:d A:D")
+
     def _num(rterms):
         # return the multiplier that will simplify the expression described
         # by rterms [(sqrt arg, coeff), ... ]
@@ -2597,7 +2597,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             # allow 2**x/4 -> 2**(x - 2); don't do this when b and e are
             # Numbers since autoevaluation will undo it, e.g.
             # 2**(1/3)/4 -> 2**(1/3 - 2) -> 2**(1/3)/4
-            if (b and b.is_Number and not all(ei.is_Number for ei in e) and \
+            if (b and b.is_Number and not all(ei.is_Number for ei in e) and
                     coeff is not S.One and
                     b not in (S.One, S.NegativeOne)):
                 m = multiplicity(abs(b), abs(coeff))
@@ -3200,6 +3200,7 @@ def combsimp(expr):
         denom_gammas = []
         numer_others = []
         denom_others = []
+
         def explicate(p):
             if p is S.One:
                 return None, []
@@ -4330,6 +4331,7 @@ def _futrig(e, **kwargs):
 
     def Lops(x):
         return (L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add)
+
     def trigs(x):
         return x.has(TrigonometricFunction)
 
@@ -4393,7 +4395,7 @@ def sum_simplify(s):
                 if isinstance(term.args[j], Sum):
                     s = term.args[j]
                     n_sum_terms = n_sum_terms + 1
-                elif term.args[j].is_number == True:
+                elif term.args[j].is_number:
                     constant = constant * term.args[j]
                 else:
                     other = other * term.args[j]

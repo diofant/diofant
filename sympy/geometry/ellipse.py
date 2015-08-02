@@ -245,9 +245,9 @@ class Ellipse(GeometryEntity):
             return ab[0]
         a, b = ab
         o = a - b < 0
-        if o == True:
+        if o == S.true:
             return a
-        elif o == False:
+        elif o == S.false:
             return b
         return self.vradius
 
@@ -292,9 +292,9 @@ class Ellipse(GeometryEntity):
             return ab[0]
         a, b = ab
         o = b - a < 0
-        if o == True:
+        if o == S.true:
             return a
-        elif o == False:
+        elif o == S.false:
             return b
         return self.hradius
 

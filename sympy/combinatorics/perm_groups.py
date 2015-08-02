@@ -765,8 +765,10 @@ class PermutationGroup(Basic):
                 rep = orbit_reps[j]
                 transversals[j] = dict(
                     other.orbit_transversal(rep, pairs=True))
+
             def trivial_test(x):
                 return True
+
             tests = [None]*base_len
             for l in range(base_len):
                 if base[l] in orbit_reps:
@@ -2426,7 +2428,7 @@ class PermutationGroup(Basic):
             return
 
         strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
-        basic_orbits, transversals = _orbits_transversals_from_bsgs(base,\
+        basic_orbits, transversals = _orbits_transversals_from_bsgs(base,
                 strong_gens_distr)
         self._transversals = transversals
         self._basic_orbits = [sorted(x) for x in basic_orbits]
@@ -2894,7 +2896,7 @@ class PermutationGroup(Basic):
         # initialize BSGS and basic group properties
         def get_reps(orbits):
             # get the minimal element in the base ordering
-            return [min(orbit, key = lambda x: base_ordering[x]) \
+            return [min(orbit, key=lambda x: base_ordering[x])
               for orbit in orbits]
 
         def update_nu(l):
@@ -2942,7 +2944,7 @@ class PermutationGroup(Basic):
                                 res_strong_gens)
         res_generators = res.generators
         res_basic_orbits_init_base = \
-        [_orbit(degree, res_strong_gens_distr[i], res_base[i])\
+        [_orbit(degree, res_strong_gens_distr[i], res_base[i])
          for i in range(base_len)]
         # initialize orbit representatives
         orbit_reps = [None]*base_len
@@ -3025,7 +3027,7 @@ class PermutationGroup(Basic):
                 res_strong_gens_distr = _distribute_gens_by_base(res_base,
                                                           res_strong_gens)
                 res_basic_orbits_init_base = \
-                [_orbit(degree, res_strong_gens_distr[i], res_base[i]) \
+                [_orbit(degree, res_strong_gens_distr[i], res_base[i])
                  for i in range(base_len)]
                 # line 21: recalculate orbit representatives
                 # line 22: reset the search depth

@@ -552,7 +552,7 @@ class Mul(Expr, AssocOp):
         elif coeff is S.Zero:
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
-            if any(c.is_finite == False for c in c_part):
+            if any(c.is_finite is False for c in c_part):
                 return [S.NaN], [], order_symbols
             return [coeff], [], order_symbols
 
@@ -1605,12 +1605,14 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
 def expand_2arg(e):
     from sympy.simplify.simplify import bottom_up
+
     def do(e):
         if e.is_Mul:
             c, r = e.as_coeff_Mul()
             if c.is_Number and r.is_Add:
                 return _unevaluated_Add(*[c*ri for ri in r.args])
         return e
+
     return bottom_up(e, do)
 
 

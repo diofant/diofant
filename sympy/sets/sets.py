@@ -1054,7 +1054,7 @@ class Interval(Set, EvalfMixin):
     def _eval_Eq(self, other):
         if not other.is_Interval:
             if (other.is_Union or other.is_Complement or
-                other.is_Intersection or other.is_ProductSet):
+                    other.is_Intersection or other.is_ProductSet):
                 return
 
             return false
@@ -1659,7 +1659,7 @@ class FiniteSet(Set, EvalfMixin):
     def _eval_Eq(self, other):
         if not other.is_FiniteSet:
             if (other.is_Union or other.is_Complement or
-                other.is_Intersection or other.is_ProductSet):
+                    other.is_Intersection or other.is_ProductSet):
                 return
 
             return false

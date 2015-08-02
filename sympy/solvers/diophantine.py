@@ -461,7 +461,7 @@ def base_solution_linear(c, a, b, t=None):
 
     if c == 0:
         if t is not None:
-            return (b*t , -a*t)
+            return (b*t, -a*t)
         else:
             return (S.Zero, S.Zero)
     else:
@@ -725,7 +725,7 @@ def _diop_quadratic(var, coeff, t):
             U = a[0][1]
 
             if (isinstance(P[0], Integer) and isinstance(P[1], Integer) and isinstance(P[2], Integer)
-                and isinstance(P[3], Integer) and isinstance(Q[0], Integer) and isinstance(Q[1], Integer)):
+                    and isinstance(P[3], Integer) and isinstance(Q[0], Integer) and isinstance(Q[1], Integer)):
 
                 for sol in solns_pell:
 
@@ -1479,7 +1479,7 @@ def _find_DN(var, coeff):
 
     x, y = var[:2]
     X, Y = symbols("X, Y", integer=True)
-    A , B = _transformation_to_DN(var, coeff)
+    A, B = _transformation_to_DN(var, coeff)
 
     u = (A*Matrix([X, Y]) + B)[0]
     v = (A*Matrix([X, Y]) + B)[1]
@@ -1515,11 +1515,11 @@ def check_param(x, y, a, t):
         z_y = _mexpand(Subs(y, t, a*k + i).doit()).match(p*k + q)
 
         if (isinstance(z_x[p], Integer) and isinstance(z_x[q], Integer) and
-            isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):
+                isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):
             ok = True
             break
 
-    if ok == True:
+    if ok:
 
         x_param = x.match(p*t + q)
         y_param = y.match(p*t + q)
@@ -1931,7 +1931,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
         return (None, None, None)
 
     if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
-        sqrt_mod(-a_2*b_2, c_2) is None):
+            sqrt_mod(-a_2*b_2, c_2) is None):
         return (None, None, None)
 
     z_0, x_0, y_0 = descent(A, B)

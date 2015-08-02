@@ -18,6 +18,7 @@ def exhaust(rule):
 def memoize(rule):
     """ Memoized version of a rule """
     cache = {}
+
     def memoized_rl(expr):
         if expr in cache:
             return cache[expr]
@@ -25,6 +26,7 @@ def memoize(rule):
             result = rule(expr)
             cache[expr] = result
             return result
+
     return memoized_rl
 
 def condition(cond, rule):
@@ -34,6 +36,7 @@ def condition(cond, rule):
             return rule(expr)
         else:
             return expr
+
     return conditioned_rl
 
 def chain(*rules):
@@ -44,6 +47,7 @@ def chain(*rules):
         for rule in rules:
             expr = rule(expr)
         return expr
+
     return chain_rl
 
 def debug(rule, file=None):
@@ -51,6 +55,7 @@ def debug(rule, file=None):
     if file is None:
         from sys import stdout
         file = stdout
+
     def debug_rl(*args, **kwargs):
         expr = args[0]
         result = rule(*args, **kwargs)
@@ -58,6 +63,7 @@ def debug(rule, file=None):
             file.write("Rule: %s\n" % get_function_name(rule))
             file.write("In:   %s\nOut:  %s\n\n"%(expr, result))
         return result
+
     return debug_rl
 
 def null_safe(rule):
@@ -68,6 +74,7 @@ def null_safe(rule):
             return expr
         else:
             return result
+
     return null_safe_rl
 
 def tryit(rule):
@@ -77,6 +84,7 @@ def tryit(rule):
             return rule(expr)
         except Exception:
             return expr
+
     return try_rl
 
 def do_one(*rules):
@@ -87,6 +95,7 @@ def do_one(*rules):
             if result != expr:
                 return result
         return expr
+
     return do_one_rl
 
 def switch(key, ruledict):
@@ -94,6 +103,7 @@ def switch(key, ruledict):
     def switch_rl(expr):
         rl = ruledict.get(key(expr), identity)
         return rl(expr)
+
     return switch_rl
 
 def minimize(*rules, **kwargs):
@@ -110,8 +120,9 @@ def minimize(*rules, **kwargs):
     >>> rl(4)
     5
     """
-
     objective = kwargs.get('objective', identity)
+
     def minrule(expr):
         return min([rule(expr) for rule in rules], key=objective)
+
     return minrule

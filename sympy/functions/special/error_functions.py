@@ -751,10 +751,10 @@ class erfinv(Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErf/
     """
 
-    def fdiff(self, argindex =1):
+    def fdiff(self, argindex=1):
         if argindex == 1:
             return sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
-        else :
+        else:
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
@@ -828,7 +828,7 @@ class erfcinv (Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErfc/
     """
 
-    def fdiff(self, argindex =1):
+    def fdiff(self, argindex=1):
         if argindex == 1:
             return -sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
         else:

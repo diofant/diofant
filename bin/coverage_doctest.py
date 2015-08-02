@@ -259,6 +259,7 @@ def get_mod_name(path, base):
 
 class FindInSphinx(HTMLParser):
     is_imported = []
+
     def handle_starttag(self, tag, attr):
         a = dict(attr)
         if tag == "div" and a.get('class', None) == "viewcode-block":
@@ -544,9 +545,8 @@ def go(sympy_top, file, verbose=False, no_color=False, exact=True, sphinx=True):
             num_functions += _num_functions
         return doctests, total_sphinx, num_functions
     if (not (file.endswith('.py') or file.endswith('.pyx')) or
-        file.endswith('__init__.py') or
-        not exact and ('test_' in file or 'bench_' in file)):
-
+            file.endswith('__init__.py') or
+            not exact and ('test_' in file or 'bench_' in file)):
         return 0, 0, 0
     if not os.path.exists(file):
         print("File(%s does not exist." % file)
@@ -616,32 +616,32 @@ docs, run "cd docs; make html".  To skip checking Sphinx coverage, pass --no-sph
         print('='*70)
 
         if args.no_color:
-            print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" %
                 (get_mod_name(file, sympy_top), score, doctests, num_functions))
 
         elif score < 100:
-            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
                 (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
                 score, doctests, num_functions, c_normal))
 
         else:
-            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
                 (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
                 score, doctests, num_functions, c_normal))
 
         if args.sphinx:
             if args.no_color:
-                print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" % \
+                print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" %
                     (get_mod_name(file, sympy_top), sphinx_score,
                      num_functions - total_sphinx, num_functions))
 
             elif sphinx_score < 100:
-                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" % \
+                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
                     (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 
             else:
-                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" % \
+                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
                     (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 

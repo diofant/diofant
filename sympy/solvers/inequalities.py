@@ -562,9 +562,9 @@ def reduce_inequalities(inequalities, symbols=[]):
             i = i.func(i.lhs.as_expr() - i.rhs.as_expr(), 0)
         elif i not in (True, False):
             i = Eq(i, 0)
-        if i == True:
+        if i == S.true:
             continue
-        elif i == False:
+        elif i == S.false:
             return S.false
         if i.lhs.is_number:
             raise NotImplementedError(

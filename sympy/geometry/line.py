@@ -1477,7 +1477,7 @@ class Ray(LinearEntity):
                     rv = o.y >= self.source.y
                 else:
                     rv = o.y <= self.source.y
-                if rv == True or rv == False:
+                if rv == S.true or rv == S.false:
                     return bool(rv)
                 raise Undecidable(
                     'Cannot determine if %s is in %s' % (o, self))

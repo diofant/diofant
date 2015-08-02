@@ -42,10 +42,10 @@ def test_gosper_sum():
 
     # issue 6033:
     assert gosper_sum(
-        n*(n + a + b)*a**n*b**n/(factorial(n + a)*factorial(n + b)), \
+        n*(n + a + b)*a**n*b**n/(factorial(n + a)*factorial(n + b)),
         (n, 0, m)).rewrite(factorial) == \
-        -a*b*(exp(m*log(a))*exp(m*log(b))*factorial(a)* \
-        factorial(b) - factorial(a + m)*factorial(b + m))/(factorial(a)* \
+        -a*b*(exp(m*log(a))*exp(m*log(b))*factorial(a)*
+        factorial(b) - factorial(a + m)*factorial(b + m))/(factorial(a)*
         factorial(b)*factorial(a + m)*factorial(b + m))
 
 

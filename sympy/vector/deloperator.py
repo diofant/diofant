@@ -169,7 +169,7 @@ def _diff_conditional(expr, base_scalar):
     Else, returns S(0)
     """
 
-    new_expr = express(expr, base_scalar.system, variables = True)
+    new_expr = express(expr, base_scalar.system, variables=True)
     if base_scalar in new_expr.atoms():
         return Derivative(new_expr, base_scalar)
     return S(0)

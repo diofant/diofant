@@ -16,8 +16,10 @@ def test_subs_empty():
 def test_typed():
     class A(Basic):
         pass
+
     class B(Basic):
         pass
+
     rmzeros = rm_id(lambda x: x == 0)
     rmones  = rm_id(lambda x: x == 1)
     remove_something = typed({A: rmzeros, B: rmones})

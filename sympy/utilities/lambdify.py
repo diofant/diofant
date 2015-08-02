@@ -98,8 +98,8 @@ MODULES = {
         "from sympy.functions import *",
         "from sympy.matrices import *",
         "from sympy import Integral, pi, oo, nan, zoo, E, I",)),
-    "numexpr" : (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
-                 ("import_module('numexpr')", )),
+    "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
+                ("import_module('numexpr')", )),
 }
 
 
@@ -393,8 +393,10 @@ def _issue_7853_dep_check(namespaces, namespace, expr):
             mat.__name__) == 'numpy.matrixlib.defmatrix.matrix'):
         return
     dicts = [m for m in namespaces if isinstance(m, dict)]
+
     def test(expr):
         return hasattr(expr, 'is_Matrix') and expr.is_Matrix
+
     if test(expr) and not [d for d in dicts if 'ImmutableMatrix' in d]:
         SymPyDeprecationWarning(
                 "Currently, `sympy.Matrix` is replaced with `numpy.matrix` if "
@@ -483,7 +485,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             #Sub in dummy variables for functions or symbols
             if isinstance(args, (Function, Symbol)):
                 dummies = Dummy()
-                dummies_dict.update({args : dummies})
+                dummies_dict.update({args: dummies})
                 return str(dummies)
             else:
                 return str(args)

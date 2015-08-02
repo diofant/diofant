@@ -145,7 +145,7 @@ def main():
     print("y-value of the maximum:", max)
     g = max*pi/2
     print("Wilbraham-Gibbs constant        :", g.evalf())
-    print("Wilbraham-Gibbs constant (exact):", \
+    print("Wilbraham-Gibbs constant (exact):",
         Integral(sin(x)/x, (x, 0, pi)).evalf())
 
 if __name__ == "__main__":

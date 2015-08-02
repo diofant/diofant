@@ -1182,7 +1182,7 @@ def test_sec():
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
 
-    assert sec(x).is_extended_real == True
+    assert sec(x).is_extended_real
     assert sec(z).is_extended_real is None
 
     assert sec(a).is_algebraic is None
@@ -1190,9 +1190,9 @@ def test_sec():
 
     assert sec(x).as_leading_term() == sec(x)
 
-    assert sec(0).is_finite == True
+    assert sec(0).is_finite
     assert sec(x).is_finite is None
-    assert sec(pi/2).is_finite == False
+    assert sec(pi/2).is_finite is False
 
     assert series(sec(x), x, x0=0, n=6) == 1 + x**2/2 + 5*x**4/24 + O(x**6)
 
@@ -1257,7 +1257,7 @@ def test_csc():
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
 
-    assert csc(x).is_extended_real == True
+    assert csc(x).is_extended_real
     assert csc(z).is_extended_real is None
 
     assert csc(a).is_algebraic is None
@@ -1265,9 +1265,9 @@ def test_csc():
 
     assert csc(x).as_leading_term() == csc(x)
 
-    assert csc(0).is_finite == False
+    assert csc(0).is_finite is False
     assert csc(x).is_finite is None
-    assert csc(pi/2).is_finite == True
+    assert csc(pi/2).is_finite
 
     assert series(csc(x), x, x0=pi/2, n=6) == \
         1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, (x, pi/2))

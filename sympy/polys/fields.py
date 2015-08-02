@@ -102,6 +102,7 @@ class FracField(DefaultPrinting):
 
     def raw_new(self, numer, denom=None):
         return self.dtype(numer, denom)
+
     def new(self, numer, denom=None):
         if denom is None:
             denom = self.ring.one
@@ -206,6 +207,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
     def raw_new(f, numer, denom):
         return f.__class__(numer, denom)
+
     def new(f, numer, denom):
         return f.raw_new(*numer.cancel(denom))
 
@@ -268,10 +270,13 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
     def __lt__(f1, f2):
         return f1._cmp(f2, lt)
+
     def __le__(f1, f2):
         return f1._cmp(f2, le)
+
     def __gt__(f1, f2):
         return f1._cmp(f2, gt)
+
     def __ge__(f1, f2):
         return f1._cmp(f2, ge)
 

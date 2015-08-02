@@ -275,9 +275,9 @@ class ExprWithIntLimits(ExprWithLimits):
         limit_y = expr.limits[y]
 
         if (len(set(limit_x[1].free_symbols).intersection(var)) == 0 and
-            len(set(limit_x[2].free_symbols).intersection(var)) == 0 and
-            len(set(limit_y[1].free_symbols).intersection(var)) == 0 and
-            len(set(limit_y[2].free_symbols).intersection(var)) == 0):
+                len(set(limit_x[2].free_symbols).intersection(var)) == 0 and
+                len(set(limit_y[1].free_symbols).intersection(var)) == 0 and
+                len(set(limit_y[2].free_symbols).intersection(var)) == 0):
 
             limits = []
             for i, limit in enumerate(expr.limits):

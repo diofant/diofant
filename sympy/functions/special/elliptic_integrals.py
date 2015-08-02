@@ -246,7 +246,7 @@ class elliptic_e(Function):
     def _eval_rewrite_as_meijerg(self, *args):
         if len(args) == 1:
             z = args[0]
-            return -meijerg(((S.Half, S(3)/2), []), \
+            return -meijerg(((S.Half, S(3)/2), []),
                             ((S.Zero,), (S.Zero,)), -z)/4
 
 

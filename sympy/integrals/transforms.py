@@ -85,7 +85,7 @@ class IntegralTransform(Function):
 
     def _collapse_extra(self, extra):
         cond = And(*extra)
-        if cond == False:
+        if cond == S.false:
             raise IntegralTransformError(self.__class__.name, None, '')
 
     def doit(self, **hints):
@@ -512,7 +512,7 @@ def _rewrite_gamma(f, s, a, b):
             break
     s_multipliers = [x/common_coefficient for x in s_multipliers]
     if (any(not x.is_Rational for x in s_multipliers) or
-        not common_coefficient.is_extended_real):
+            not common_coefficient.is_extended_real):
         raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
     s_multiplier = common_coefficient/reduce(ilcm, [S(x.q)
                                              for x in s_multipliers], S(1))
@@ -747,7 +747,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         cond += [And(Or(len(G.ap) != len(G.bq), 0 >= re(G.nu) + 1),
                      abs(arg(G.argument)) == G.delta*pi)]
         cond = Or(*cond)
-        if cond == False:
+        if cond == S.false:
             raise IntegralTransformError(
                 'Inverse Mellin', F, 'does not converge')
         return (h*fac).subs(x, x_), cond
@@ -937,12 +937,12 @@ def _simplifyconds(expr, s, a):
 
     def replue(x, y):
         b = bigger(x, y)
-        if b == True or b == False:
+        if b is not None:
             return True
         return Unequality(x, y)
 
     def repl(ex, *args):
-        if ex == True or ex == False:
+        if ex == S.true or ex == S.false:
             return bool(ex)
         return ex.replace(*args)
     expr = repl(expr, StrictLessThan, replie)
@@ -1030,7 +1030,7 @@ def _laplace_transform(f, t, s_, simplify=True):
     conds = conds2
 
     def cnt(expr):
-        if expr == True or expr == False:
+        if expr == S.true or expr == S.false:
             return 0
         return expr.count_ops()
     conds.sort(key=lambda x: (-x[0], cnt(x[1])))
@@ -1077,7 +1077,7 @@ class LaplaceTransform(IntegralTransform):
             planes.append(plane)
         cond = And(*conds)
         plane = Max(*planes)
-        if cond == False:
+        if cond == S.false:
             raise IntegralTransformError(
                 'Laplace', None, 'No combined convergence.')
         return plane, cond

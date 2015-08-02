@@ -193,8 +193,8 @@ def test_complement():
     assert FiniteSet(x).complement(S.Reals) == Complement(S.Reals, FiniteSet(x))
 
     assert FiniteSet(0, x).complement(S.Reals) == Complement(Interval(-oo, 0, True, True) +
-                                                             Interval(0, oo, True, True)
-                                                             ,FiniteSet(x), evaluate=False)
+                                                             Interval(0, oo, True, True),
+                                                             FiniteSet(x), evaluate=False)
 
     square = Interval(0, 1) * Interval(0, 1)
     notsquare = square.complement(S.Reals*S.Reals)
@@ -832,13 +832,13 @@ def test_Eq():
 
 
 def test_SymmetricDifference():
-    assert SymmetricDifference(FiniteSet(0, 1, 2, 3, 4, 5), \
+    assert SymmetricDifference(FiniteSet(0, 1, 2, 3, 4, 5),
             FiniteSet(2, 4, 6, 8, 10)) == FiniteSet(0, 1, 3, 5, 6, 8, 10)
-    assert SymmetricDifference(FiniteSet(2, 3, 4), FiniteSet(2, 3 ,4 ,5 )) \
+    assert SymmetricDifference(FiniteSet(2, 3, 4), FiniteSet(2, 3, 4, 5)) \
             == FiniteSet(5)
     assert FiniteSet(1, 2, 3, 4, 5) ^ FiniteSet(1, 2, 5, 6) == \
             FiniteSet(3, 4, 6)
-    assert Set(1, 2 ,3) ^ Set(2, 3, 4) == Union(Set(1, 2, 3) - Set(2, 3, 4), \
+    assert Set(1, 2, 3) ^ Set(2, 3, 4) == Union(Set(1, 2, 3) - Set(2, 3, 4),
             Set(2, 3, 4) - Set(1, 2, 3))
-    assert Interval(0, 4) ^ Interval(2, 5) == Union(Interval(0, 4) - \
+    assert Interval(0, 4) ^ Interval(2, 5) == Union(Interval(0, 4) -
             Interval(2, 5), Interval(2, 5) - Interval(0, 4))

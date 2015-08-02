@@ -488,20 +488,20 @@ def test_is_literal():
 
 def test_operators():
     # Mostly test __and__, __rand__, and so on
-    assert True & A == A & True == A
-    assert False & A == A & False == False
+    assert True & A == (A & True) == A
+    assert False & A == (A & False) == False
     assert A & B == And(A, B)
-    assert True | A == A | True == True
-    assert False | A == A | False == A
+    assert True | A == (A | True) == True
+    assert False | A == (A | False) == A
     assert A | B == Or(A, B)
     assert ~A == Not(A)
-    assert True >> A == A << True == A
-    assert False >> A == A << False == True
-    assert A >> True == True << A == True
-    assert A >> False == False << A == ~A
+    assert True >> A == (A << True) == A
+    assert False >> A == (A << False) == S.true
+    assert (A >> True) == True << A == S.true
+    assert (A >> False) == False << A == ~A
     assert A >> B == B << A == Implies(A, B)
     assert True ^ A == A ^ True == ~A
-    assert False ^ A == A ^ False == A
+    assert False ^ A == (A ^ False) == A
     assert A ^ B == Xor(A, B)
 
 
@@ -514,10 +514,10 @@ def test_true_false():
     assert false is not False
     assert true
     assert not false
-    assert true == True
-    assert false == False
-    assert not (true == False)
-    assert not (false == True)
+    assert true == True  # noqa
+    assert false == False  # noqa
+    assert not (true == False)  # noqa
+    assert not (false == True)  # noqa
     assert not (true == false)
 
     assert hash(true) == hash(True)
@@ -665,12 +665,12 @@ def test_all_or_nothing():
     if v.func is And:
         assert len(v.args) == len(args) - args.count(S.true)
     else:
-        assert v == True
+        assert v
     v = Or(*args)
     if v.func is Or:
         assert len(v.args) == 2
     else:
-        assert v == True
+        assert v
 
 
 def test_canonical_atoms():
