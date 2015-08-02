@@ -517,7 +517,7 @@ class DifferentialExtension(object):
                     i = Symbol('i')
                 self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs(self.x, i)))]
                 self.newf = self.newf.xreplace(
-                        {exp(exparg): self.t**p for exparg, p in others})
+                    {exp(exparg): self.t**p for exparg, p in others})
                 new_extension = True
 
         if restart:
@@ -1436,8 +1436,8 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         # XXX: Does qd = 0 always necessarily correspond to the exponential
         # equaling 1?
         ret += Piecewise(
-                (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
-                (qas/qds, True))
+            (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
+            (qas/qds, True))
     else:
         ret += qas/qds
 

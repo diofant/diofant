@@ -118,8 +118,8 @@ class vectorized_lambdify(object):
             temp_args = (np.array(a, dtype=np.complex) for a in args)
             results = self.vector_func(*temp_args)
             results = np.ma.masked_where(
-                                np.abs(results.imag) > 1e-7 * np.abs(results),
-                                results.real, copy=False)
+                np.abs(results.imag) > 1e-7 * np.abs(results),
+                results.real, copy=False)
         except Exception as e:
             #DEBUG: print 'Error', type(e), e
             if ((isinstance(e, TypeError)
@@ -143,8 +143,8 @@ class vectorized_lambdify(object):
                     self.lambda_func, otypes=[np.complex])
                 results = self.vector_func(*args)
                 results = np.ma.masked_where(
-                                np.abs(results.imag) > 1e-7 * np.abs(results),
-                                results.real, copy=False)
+                    np.abs(results.imag) > 1e-7 * np.abs(results),
+                    results.real, copy=False)
             else:
                 # Complete failure. One last try with no translations, only
                 # wrapping in complex((...).evalf()) and returning the real
@@ -160,8 +160,8 @@ class vectorized_lambdify(object):
                         self.lambda_func, otypes=[np.complex])
                     results = self.vector_func(*args)
                     results = np.ma.masked_where(
-                            np.abs(results.imag) > 1e-7 * np.abs(results),
-                            results.real, copy=False)
+                        np.abs(results.imag) > 1e-7 * np.abs(results),
+                        results.real, copy=False)
                     warnings.warn('The evaluation of the expression is'
                             ' problematic. We are trying a failback method'
                             ' that may still work. Please report this as a bug.')

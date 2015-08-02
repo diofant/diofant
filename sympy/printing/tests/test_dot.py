@@ -17,12 +17,12 @@ def test_styleof():
 
 def test_attrprint():
     assert attrprint({'color': 'blue', 'shape': 'ellipse'}) == \
-           '"color"="blue", "shape"="ellipse"'
+        '"color"="blue", "shape"="ellipse"'
 
 def test_dotnode():
 
     assert dotnode(x, repeat=False) ==\
-            '"Symbol(x)" ["color"="black", "label"="x", "shape"="ellipse"];'
+        '"Symbol(x)" ["color"="black", "label"="x", "shape"="ellipse"];'
     assert dotnode(x+2, repeat=False) == \
             '"Add(Integer(2), Symbol(x))" ["color"="black", "label"="Add", "shape"="ellipse"];'
 

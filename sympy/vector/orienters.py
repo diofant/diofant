@@ -86,7 +86,7 @@ class AxisOrienter(Orienter):
                 Matrix([[0, -axis[2], axis[1]],
                         [axis[2], 0, -axis[0]],
                     [-axis[1], axis[0], 0]]) * sin(theta) +
-                         axis * axis.T)
+            axis * axis.T)
         parent_orient = parent_orient.T
         return parent_orient
 

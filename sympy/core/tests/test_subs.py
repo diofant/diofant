@@ -423,11 +423,11 @@ def test_derivative_subs2():
     assert Derivative(f, x, y).subs(Derivative(f, x), g) == Derivative(g, y)
     assert Derivative(f, x, y).subs(Derivative(f, y), g) == Derivative(g, x)
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
+        Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
+        Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), z, y, x), g) == g)
+        Derivative(f(x, y, z), z, y, x), g) == g)
 
 def test_derivative_subs3():
     x = Symbol('x')

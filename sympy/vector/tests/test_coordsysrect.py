@@ -1,7 +1,7 @@
 from sympy.vector.coordsysrect import CoordSysCartesian
 from sympy.vector.scalar import BaseScalar
 from sympy import sin, cos, pi, ImmutableMatrix as Matrix, \
-     symbols, simplify, zeros
+    symbols, simplify, zeros
 from sympy.vector.functions import express
 from sympy.vector.point import Point
 from sympy.vector.vector import Vector
@@ -155,7 +155,7 @@ def test_rotation_matrix():
         q1**2 + q2**2 - q3**2 - q4**2,
         2*q1*q4 + 2*q2*q3, -2*q1*q3 + 2*q2*q4],[ -2*q1*q4 + 2*q2*q3,
             q1**2 - q2**2 + q3**2 - q4**2, 2*q1*q2 + 2*q3*q4],
-                                           [2*q1*q3 + 2*q2*q4,
+        [2*q1*q3 + 2*q2*q4,
                                             -2*q1*q2 + 2*q3*q4,
                                 q1**2 - q2**2 - q3**2 + q4**2]])
     assert G.rotation_matrix(N) == Matrix([[

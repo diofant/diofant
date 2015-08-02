@@ -2901,7 +2901,7 @@ class PermutationGroup(Basic):
 
         def update_nu(l):
             temp_index = len(basic_orbits[l]) + 1 -\
-                         len(res_basic_orbits_init_base[l])
+                len(res_basic_orbits_init_base[l])
             # this corresponds to the element larger than all points
             if temp_index >= len(sorted_orbits[l]):
                 nu[l] = base_ordering[degree]

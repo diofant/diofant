@@ -2157,11 +2157,11 @@ class MatrixBase(object):
         def cond():
             yield self.is_square
             yield fuzzy_and(
-                    self[i, i].is_extended_real for i in range(self.rows))
+                self[i, i].is_extended_real for i in range(self.rows))
             yield fuzzy_and(
-                    (self[i, j] - self[j, i].conjugate()).is_zero
-                    for i in range(self.rows)
-                    for j in range(i + 1, self.cols))
+                (self[i, j] - self[j, i].conjugate()).is_zero
+                for i in range(self.rows)
+                for j in range(i + 1, self.cols))
         return fuzzy_and(i for i in cond())
 
     @property

@@ -98,7 +98,7 @@ class MatMul(MatrixExpr):
         try:
             return MatMul(*[
                 arg.inverse() if isinstance(arg, MatrixExpr) else arg**-1
-                    for arg in self.args[::-1]]).doit()
+                for arg in self.args[::-1]]).doit()
         except ShapeError:
             from sympy.matrices.expressions.inverse import Inverse
             return Inverse(self)

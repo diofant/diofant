@@ -381,7 +381,7 @@ def test_airyai():
 
     assert airyai(z).rewrite(hyper) == (
         -3**(S(2)/3)*z*hyper((), (S(4)/3,), z**S(3)/9)/(3*gamma(S(1)/3)) +
-         3**(S(1)/3)*hyper((), (S(2)/3,), z**S(3)/9)/(3*gamma(S(2)/3)))
+        3**(S(1)/3)*hyper((), (S(2)/3,), z**S(3)/9)/(3*gamma(S(2)/3)))
 
     assert isinstance(airyai(z).rewrite(besselj), airyai)
     assert airyai(t).rewrite(besselj) == (
@@ -389,14 +389,14 @@ def test_airyai():
                   besselj(S(1)/3, 2*(-t)**(S(3)/2)/3))/3)
     assert airyai(z).rewrite(besseli) == (
         -z*besseli(S(1)/3, 2*z**(S(3)/2)/3)/(3*(z**(S(3)/2))**(S(1)/3)) +
-         (z**(S(3)/2))**(S(1)/3)*besseli(-S(1)/3, 2*z**(S(3)/2)/3)/3)
+        (z**(S(3)/2))**(S(1)/3)*besseli(-S(1)/3, 2*z**(S(3)/2)/3)/3)
     assert airyai(p).rewrite(besseli) == (
         sqrt(p)*(besseli(-S(1)/3, 2*p**(S(3)/2)/3) -
                  besseli(S(1)/3, 2*p**(S(3)/2)/3))/3)
 
     assert expand_func(airyai(2*(3*z**5)**(S(1)/3))) == (
         -sqrt(3)*(-1 + (z**5)**(S(1)/3)/z**(S(5)/3))*airybi(2*3**(S(1)/3)*z**(S(5)/3))/6 +
-         (1 + (z**5)**(S(1)/3)/z**(S(5)/3))*airyai(2*3**(S(1)/3)*z**(S(5)/3))/2)
+        (1 + (z**5)**(S(1)/3)/z**(S(5)/3))*airyai(2*3**(S(1)/3)*z**(S(5)/3))/2)
 
 
 def test_airybi():

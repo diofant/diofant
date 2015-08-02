@@ -297,9 +297,9 @@ def test_gamma():
     X = Gamma('x', k, theta)
     assert density(X)(x) == x**(k - 1)*theta**(-k)*exp(-x/theta)/gamma(k)
     assert cdf(X, meijerg=True)(z) == Piecewise(
-            (-k*lowergamma(k, 0)/gamma(k + 1) +
+        (-k*lowergamma(k, 0)/gamma(k + 1) +
                 k*lowergamma(k, z/theta)/gamma(k + 1), z >= 0),
-            (0, True))
+        (0, True))
     # assert simplify(variance(X)) == k*theta**2  # handled numerically below
     assert E(X) == moment(X, 1)
 
@@ -446,10 +446,10 @@ def test_triangular():
 
     X = Triangular('x', a, b, c)
     assert density(X)(x) == Piecewise(
-                 ((2*x - 2*a)/((-a + b)*(-a + c)), And(a <= x, x < c)),
-                 (2/(-a + b), x == c),
-                 ((-2*x + 2*b)/((-a + b)*(b - c)), And(x <= b, c < x)),
-                 (0, True))
+        ((2*x - 2*a)/((-a + b)*(-a + c)), And(a <= x, x < c)),
+        (2/(-a + b), x == c),
+        ((-2*x + 2*b)/((-a + b)*(b - c)), And(x <= b, c < x)),
+        (0, True))
 
 
 def test_quadratic_u():

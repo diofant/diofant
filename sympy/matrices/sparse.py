@@ -586,7 +586,7 @@ class SparseMatrix(MatrixBase):
                 yield fuzzy_and(
                     d[i, i].is_extended_real for i in range(self.rows) if (i, i) in d)
             yield fuzzy_and(
-                    ((self[i, j] - self[j, i].conjugate()).is_zero
+                ((self[i, j] - self[j, i].conjugate()).is_zero
                     if (j, i) in d else False) for (i, j) in d)
         return fuzzy_and(i for i in cond())
 

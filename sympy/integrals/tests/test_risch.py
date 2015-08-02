@@ -109,8 +109,8 @@ def test_hermite_reduce():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(-t**2 - t/x - (1 - nu**2/x**2), t)]})
 
     assert hermite_reduce(
-            Poly(x**2*t**5 + x*t**4 - nu**2*t**3 - x*(x**2 + 1)*t**2 - (x**2 - nu**2)*t - x**5/4, t),
-            Poly(x**2*t**4 + x**2*(x**2 + 2)*t**2 + x**2 + x**4 + x**6/4, t), DE) == \
+        Poly(x**2*t**5 + x*t**4 - nu**2*t**3 - x*(x**2 + 1)*t**2 - (x**2 - nu**2)*t - x**5/4, t),
+        Poly(x**2*t**4 + x**2*(x**2 + 2)*t**2 + x**2 + x**4 + x**6/4, t), DE) == \
         ((Poly(-x**2 - 4, t), Poly(4*t**2 + 2*x**2 + 4, t)),
          (Poly((-2*nu**2 - x**4)*t - (2*x**3 + 2*x), t), Poly(2*x**2*t**2 + x**4 + 2*x**2, t)),
          (Poly(x*t + 1, t), Poly(x, t)))
@@ -126,22 +126,22 @@ def test_hermite_reduce():
          (Poly(0, t), Poly(1, t)))
 
     assert hermite_reduce(
-            Poly(-t**2 + 2*t + 2, t),
-            Poly(-x*t**2 + 2*x*t - x, t), DE) == \
+        Poly(-t**2 + 2*t + 2, t),
+        Poly(-x*t**2 + 2*x*t - x, t), DE) == \
         ((Poly(3, t), Poly(t - 1, t)),
          (Poly(0, t), Poly(1, t)),
          (Poly(1, t), Poly(x, t)))
 
     assert hermite_reduce(
-            Poly(-x**2*t**6 + (-1 - 2*x**3 + x**4)*t**3 + (-3 - 3*x**4)*t**2 - 2*x*t - x - 3*x**2, t),
-            Poly(x**4*t**6 - 2*x**2*t**3 + 1, t), DE) == \
+        Poly(-x**2*t**6 + (-1 - 2*x**3 + x**4)*t**3 + (-3 - 3*x**4)*t**2 - 2*x*t - x - 3*x**2, t),
+        Poly(x**4*t**6 - 2*x**2*t**3 + 1, t), DE) == \
         ((Poly(x**3*t + x**4 + 1, t), Poly(x**3*t**3 - x, t)),
          (Poly(0, t), Poly(1, t)),
          (Poly(-1, t), Poly(x**2, t)))
 
     assert hermite_reduce(
-            Poly((-2 + 3*x)*t**3 + (-1 + x)*t**2 + (-4*x + 2*x**2)*t + x**2, t),
-            Poly(x*t**6 - 4*x**2*t**5 + 6*x**3*t**4 - 4*x**4*t**3 + x**5*t**2, t), DE) == \
+        Poly((-2 + 3*x)*t**3 + (-1 + x)*t**2 + (-4*x + 2*x**2)*t + x**2, t),
+        Poly(x*t**6 - 4*x**2*t**5 + 6*x**3*t**4 - 4*x**4*t**3 + x**5*t**2, t), DE) == \
         ((Poly(3*t**2 + t + 3*x, t), Poly(3*t**4 - 9*x*t**3 + 9*x**2*t**2 - 3*x**3*t, t)),
          (Poly(0, t), Poly(1, t)),
          (Poly(0, t), Poly(1, t)))
@@ -400,8 +400,8 @@ def test_integrate_nonlinear_no_specials():
 
 def test_integer_powers():
     assert integer_powers([x, x/2, x**2 + 1, 2*x/3]) == [
-            (x/6, [(x, 6), (x/2, 3), (2*x/3, 4)]),
-            (1 + x**2, [(1 + x**2, 1)])]
+        (x/6, [(x, 6), (x/2, 3), (2*x/3, 4)]),
+        (1 + x**2, [(1 + x**2, 1)])]
 
 
 def test_DifferentialExtension_exp():

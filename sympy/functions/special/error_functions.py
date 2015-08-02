@@ -2166,7 +2166,7 @@ class fresnels(FresnelIntegral):
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                  (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                 for k in range(1, n)]
+                for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [-sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2298,7 +2298,7 @@ class fresnelc(FresnelIntegral):
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                  (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                 for k in range(1, n)]
+                for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [ sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]

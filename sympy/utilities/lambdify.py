@@ -399,15 +399,15 @@ def _issue_7853_dep_check(namespaces, namespace, expr):
 
     if test(expr) and not [d for d in dicts if 'ImmutableMatrix' in d]:
         SymPyDeprecationWarning(
-                "Currently, `sympy.Matrix` is replaced with `numpy.matrix` if "
-                "the NumPy package is utilized in lambdify. In future versions "
-                "of SymPy (> 0.7.6), we will default to replacing "
-                "`sympy.Matrix` with `numpy.array`. To use the future "
-                "behavior now, supply the kwarg "
-                "`modules=[{'ImmutableMatrix': numpy.array}, 'numpy']`. "
-                "The old behavior can be retained in future versions by "
-                "supplying `modules=[{'ImmutableMatrix': numpy.matrix}, "
-                "'numpy']`.", issue=7853).warn()
+            "Currently, `sympy.Matrix` is replaced with `numpy.matrix` if "
+            "the NumPy package is utilized in lambdify. In future versions "
+            "of SymPy (> 0.7.6), we will default to replacing "
+            "`sympy.Matrix` with `numpy.array`. To use the future "
+            "behavior now, supply the kwarg "
+            "`modules=[{'ImmutableMatrix': numpy.array}, 'numpy']`. "
+            "The old behavior can be retained in future versions by "
+            "supplying `modules=[{'ImmutableMatrix': numpy.matrix}, "
+            "'numpy']`.", issue=7853).warn()
 
 
 def _module_present(modname, modlist):

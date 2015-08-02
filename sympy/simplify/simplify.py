@@ -1423,7 +1423,7 @@ def trigsimp(expr, **opts):
         'combined': (lambda x: futrig(groebnersimp(x,
                                polynomial=True, hints=[2, tan]))),
         'old': lambda x: trigsimp_old(x, **opts),
-                   }[method]
+        }[method]
 
     return trigsimpfunc(expr)
 
@@ -4160,8 +4160,8 @@ def besselsimp(expr):
         def repl(nu, z):
             if (nu % 1) == S(1)/2:
                 return exptrigsimp(trigsimp(unpolarify(
-                        fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
-                            func=True)).subs(z0, z)))
+                    fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
+                        func=True)).subs(z0, z)))
             elif nu.is_Integer and nu > 1:
                 return fro(nu, z).expand(func=True)
             return fro(nu, z)
@@ -4636,7 +4636,7 @@ def trigsimp_old(expr, **opts):
         'combined': (lambda x, d: _trigsimp(groebnersimp(x,
                                        d, polynomial=True, hints=[2, tan]),
                                    d))
-                   }[method]
+        }[method]
 
     if recursive:
         w, g = cse(expr)

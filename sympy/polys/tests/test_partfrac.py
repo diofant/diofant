@@ -125,14 +125,14 @@ def test_apart_list():
 
     assert apart_list(2/(x**2-2), x, dummies=numbered_symbols("w")) == (1,
                                       Poly(0, x, domain='ZZ'),
-                                      [(Poly(w0**2 - 2, w0, domain='ZZ'),
+        [(Poly(w0**2 - 2, w0, domain='ZZ'),
                                         Lambda(_a, _a/2),
                                         Lambda(_a, -_a + x), 1)])
 
     f = 36 / (x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2)
     assert apart_list(f, x, dummies=numbered_symbols("w")) == (1,
                              Poly(0, x, domain='ZZ'),
-                             [(Poly(w0 - 2, w0, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
+        [(Poly(w0 - 2, w0, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
                               (Poly(w1**2 - 1, w1, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, -_a + x), 2),
                               (Poly(w2 + 1, w2, domain='ZZ'), Lambda(_a, -4), Lambda(_a, -_a + x), 1)])
 

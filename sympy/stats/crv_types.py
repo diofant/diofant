@@ -1793,8 +1793,8 @@ class QuadraticUDistribution(SingleContinuousDistribution):
         alpha = 12 / (b-a)**3
         beta = (a+b) / 2
         return Piecewise(
-                  (alpha * (x-beta)**2, And(a<=x, x<=b)),
-                  (S.Zero, True))
+            (alpha * (x-beta)**2, And(a<=x, x<=b)),
+            (S.Zero, True))
 
 def QuadraticU(name, a, b):
     r"""
@@ -1867,8 +1867,8 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         mu, s = self.mu, self.s
         return Piecewise(
-                ((1+cos(pi*(x-mu)/s)) / (2*s), And(mu-s<=x, x<=mu+s)),
-                (S.Zero, True))
+            ((1+cos(pi*(x-mu)/s)) / (2*s), And(mu-s<=x, x<=mu+s)),
+            (S.Zero, True))
 
 def RaisedCosine(name, mu, s):
     r"""

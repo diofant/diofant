@@ -715,4 +715,4 @@ def test_Complement():
 
 def test_SymmetricDifference():
     assert str(SymmetricDifference(Interval(2,3), Interval(3,4),evaluate=False)) == \
-           'SymmetricDifference([2, 3], [3, 4])'
+        'SymmetricDifference([2, 3], [3, 4])'

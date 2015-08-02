@@ -91,7 +91,7 @@ def test_checkpdesol():
     eq6 = f(x,y) + 1*f(x,y).diff(x) + 3*f(x,y).diff(y)
     assert checkpdesol(eq4, [pdsolve(eq5), pdsolve(eq6)]) == [
         (False, (x - 2)*F(3*x - y)*exp(-x/S(5) - 3*y/S(5))),
-         (False, (x - 1)*F(3*x - y)*exp(-x/S(10) - 3*y/S(10)))]
+        (False, (x - 1)*F(3*x - y)*exp(-x/S(10) - 3*y/S(10)))]
     for eq in [eq4, eq5, eq6]:
         assert checkpdesol(eq, pdsolve(eq))[0]
 

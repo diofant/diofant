@@ -544,7 +544,7 @@ def test_residue():
     assert nthroot_mod(1801, 11, 2663) == 44
     for a, q, p in [(51922, 2, 203017), (43, 3, 109), (1801, 11, 2663),
           (26118163, 1303, 33333347), (1499, 7, 2663), (595, 6, 2663),
-          (1714, 12, 2663), (28477, 9, 33343)]:
+        (1714, 12, 2663), (28477, 9, 33343)]:
         r = nthroot_mod(a, q, p)
         assert pow(r, q, p) == a
     assert nthroot_mod(11, 3, 109) is None
@@ -643,7 +643,7 @@ def test_multinomial_coefficients():
     mc = multinomial_coefficients(3, 3)
     assert mc == {(2, 1, 0): 3, (0, 3, 0): 1,
             (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
-            (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
+        (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
     assert dict(multinomial_coefficients_iterator(2, 0)) == {(0, 0): 1}
     assert dict(
         multinomial_coefficients_iterator(2, 1)) == {(0, 1): 1, (1, 0): 1}

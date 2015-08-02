@@ -105,7 +105,7 @@ def main():
             Matrix([a*sinh(tau)/(cosh(tau)-cos(sigma)),
                 a*sin(sigma)/(cosh(tau)-cos(sigma))]),
             [sigma, tau]
-            )
+        )
 
     transform("elliptic",
               Matrix([a*cosh(mu)*cos(nu), a*sinh(mu)*sin(nu)]),

@@ -95,7 +95,7 @@ def compare_multiset_w_baseline(multiplicities):
     aocp_partitions = set()
     for state in multiset_partitions_taocp(multiplicities):
         p1 = tuple(sorted(
-                [tuple(p) for p in list_visitor(state, letters)]))
+            [tuple(p) for p in list_visitor(state, letters)]))
         aocp_partitions.add(p1)
 
     assert bl_partitions == aocp_partitions

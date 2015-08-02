@@ -23,11 +23,11 @@ def test_bc_matmul():
 
 def test_bc_matadd():
     assert bc_matadd(BlockMatrix([[G, H]]) + BlockMatrix([[H, H]])) == \
-            BlockMatrix([[G+H, H+H]])
+        BlockMatrix([[G+H, H+H]])
 
 def test_bc_transpose():
     assert bc_transpose(Transpose(BlockMatrix([[A, B], [C, D]]))) == \
-            BlockMatrix([[A.T, C.T], [B.T, D.T]])
+        BlockMatrix([[A.T, C.T], [B.T, D.T]])
 
 def test_bc_dist_diag():
     A = MatrixSymbol('A', n, n)

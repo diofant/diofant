@@ -606,7 +606,7 @@ def test_product_basic():
     assert square.complement(Interval(-oo, oo)*Interval(-oo, oo)) == Union(
         (Interval(-oo, 0, True, True) +
          Interval(1, oo, True, True))*Interval(-oo, oo),
-         Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
+        Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
                   Interval(1, oo, True, True)))
 
     assert (Interval(-5, 5)**3).is_subset(Interval(-10, 10)**3)
@@ -781,10 +781,10 @@ def test_boundary_ProductSet():
 
     second_square = Interval(1, 2, True, True) * Interval(0, 1, True, True)
     assert (open_square + second_square).boundary == (
-                FiniteSet(0, 1) * Interval(0, 1)
-              + FiniteSet(1, 2) * Interval(0, 1)
-              + Interval(0, 1) * FiniteSet(0, 1)
-              + Interval(1, 2) * FiniteSet(0, 1))
+        FiniteSet(0, 1) * Interval(0, 1)
+        + FiniteSet(1, 2) * Interval(0, 1)
+        + Interval(0, 1) * FiniteSet(0, 1)
+        + Interval(1, 2) * FiniteSet(0, 1))
 
 
 def test_boundary_ProductSet_line():

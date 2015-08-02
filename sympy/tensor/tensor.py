@@ -1033,9 +1033,9 @@ class _TensorDataLazyEvaluator(CantSympify):
         numpy = import_module('numpy')
 
         data = numpy.tensordot(
-                metric,
-                data,
-                (1, pos))
+            metric,
+            data,
+            (1, pos))
         return numpy.rollaxis(data, 0, pos+1)
 
     @staticmethod

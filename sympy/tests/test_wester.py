@@ -907,7 +907,7 @@ def test_M12():
     # TODO: x = [-1, 2*(+/-asinh(1)*I + n*pi}, 3*(pi/6 + n*pi/3)]
     assert solve((x + 1)*(sin(x)**2 + 1)**2*cos(3*x)**3, x) == [
         -1, pi/6, pi/2,
-           - I*log(1 + sqrt(2)),      I*log(1 + sqrt(2)),
+        - I*log(1 + sqrt(2)),      I*log(1 + sqrt(2)),
         pi - I*log(1 + sqrt(2)), pi + I*log(1 + sqrt(2)),
     ]
 
@@ -1532,25 +1532,25 @@ def test_P27():
                 [0, -2, 0, 0, 2]])
     assert M.eigenvects() == [(a, 3, [Matrix([[1],
                                        [0],
-                                       [0],
-                                       [0],
-                                       [0]]),
-                               Matrix([[0],
+        [0],
+        [0],
+        [0]]),
+        Matrix([[0],
                                        [0],
                                        [1],
                                        [0],
                                        [0]]),
-                               Matrix([[0],
+        Matrix([[0],
                                        [0],
                                        [0],
                                        [1],
                                        [0]])]),
-                        (1 - I, 1, [Matrix([[          0],
+        (1 - I, 1, [Matrix([[          0],
                                             [-1/(-1 + I)],
                                             [          0],
                                             [          0],
                                             [          1]])]),
-                        (1 + I, 1, [Matrix([[          0],
+        (1 + I, 1, [Matrix([[          0],
                                             [-1/(-1 - I)],
                                             [          0],
                                             [          0],
@@ -1707,8 +1707,8 @@ def test_P44():
         return Matrix([V.T.diff(v) for v in Y])
     r, t = symbols('r t', extended_real=True)
     assert __my_hessian(r**2*sin(t), (r, t)) == Matrix([
-                                            [  2*sin(t),   2*r*cos(t)],
-                                            [2*r*cos(t), -r**2*sin(t)]])
+        [  2*sin(t),   2*r*cos(t)],
+        [2*r*cos(t), -r**2*sin(t)]])
 
 
 def test_P45():
