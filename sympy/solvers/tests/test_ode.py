@@ -2294,7 +2294,7 @@ def test_issue_6989():
     sol = dsolve(eq, f(x))
     actual_sol = Eq(f(x), Piecewise((C1 + x**2/2, Eq(k**3, 0)),
             (C1 - x*exp(-k*x)/k - exp(-k*x)/k**2, True)
-        ))
+    ))
     errstr = str(eq) + ' : ' + str(sol) + ' == ' + str(actual_sol)
     assert sol == actual_sol, errstr
 

@@ -669,7 +669,7 @@ class MatrixBase(object):
             '<': 'ljust',
             '>': 'rjust',
             '^': 'center',
-            }[align]
+        }[align]
         for i, row in enumerate(res):
             for j, elem in enumerate(row):
                 row[j] = getattr(elem, align)(maxlen[j])

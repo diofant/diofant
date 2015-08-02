@@ -175,7 +175,7 @@ def test_solve_polynomial1():
         {
             x: (a22*b1 - a12*b2)/(a11*a22 - a12*a21),
             y: (a11*b2 - a21*b1)/(a11*a22 - a12*a21),
-        }
+    }
 
     solution = {y: S.Zero, x: S.Zero}
 
@@ -599,7 +599,7 @@ def test_PR1964():
             {log((-sqrt(3) + 2)**2), log((sqrt(3) + 2)**2)},
             {2*log(-sqrt(3) + 2), 2*log(sqrt(3) + 2)},
             {log(-4*sqrt(3) + 7), log(4*sqrt(3) + 7)},
-        ]
+    ]
     assert set(solve(Poly(exp(x) + exp(-x) - 4))) == \
         {log(-sqrt(3) + 2), log(sqrt(3) + 2)}
     assert set(solve(x**y + x**(2*y) - 1, x)) == \
@@ -614,7 +614,7 @@ def test_PR1964():
     assert solve(exp(3*x) - exp(3), x) in [
         [1, log(E*(-S.Half - sqrt(3)*I/2)), log(E*(-S.Half + sqrt(3)*I/2))],
         [1, log(-E/2 - sqrt(3)*E*I/2), log(-E/2 + sqrt(3)*E*I/2)],
-        ]
+    ]
 
     # coverage test
     p = Symbol('p', positive=True)
@@ -1561,7 +1561,7 @@ def test_uselogcombine():
         -sqrt(-12 + exp(3))*exp(S(3)/2)/2 - 3 + exp(3)/2],
         [-3 + sqrt(-36 + (-exp(3) + 6)**2)/2 + exp(3)/2,
         -3 - sqrt(-36 + (-exp(3) + 6)**2)/2 + exp(3)/2],
-        ]
+    ]
     assert solve(log(exp(2*x) + 1) + log(-tanh(x) + 1) - log(2)) == []
 
 

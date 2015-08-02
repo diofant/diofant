@@ -56,7 +56,7 @@ allhints = (
     "1st_linear_constant_coeff",
     "1st_linear_constant_coeff_Integral",
     "1st_linear_variable_coeff"
-    )
+)
 
 def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     """

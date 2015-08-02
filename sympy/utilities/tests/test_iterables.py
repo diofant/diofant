@@ -46,7 +46,7 @@ def test_postorder_traversal():
         keys=default_sort_key)) == [
             2, x, x**2, 0, 1, x, Tuple(x, 0, 1),
             Integral(x**2, Tuple(x, 0, 1))
-        ]
+    ]
     assert list(postorder_traversal(('abc', ('d', 'ef')))) == [
         'abc', 'd', 'ef', ('d', 'ef'), ('abc', ('d', 'ef'))]
 
@@ -503,7 +503,7 @@ def test_bracelets():
         [2, 2],
         [2, 3],
         [3, 3]
-        ])
+    ])
     bc = [i for i in bracelets(4, 2)]
     assert Matrix(bc) == Matrix([
         [0, 0, 0, 0],

@@ -111,7 +111,7 @@ def test_roots_cubic():
         S(2)/3 + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
         -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + S(2)/3,
         -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + S(2)/3,
-        ]
+    ]
 
 
 def test_roots_quartic():

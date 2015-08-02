@@ -1627,7 +1627,7 @@ RL2 = [
     (TR5, TR7, TR11, TR4),
     (CTR3, CTR1, TR9, CTR2, TR4, TR9, TR9, CTR4),
     identity,
-    ]
+]
 
 
 def fu(rv, measure=lambda x: (L(x), x.count_ops())):

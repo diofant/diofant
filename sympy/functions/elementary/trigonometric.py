@@ -542,7 +542,7 @@ class cos(TrigonometricFunction):
                     40: (8, 10),
                     60: (20, 30),
                     120: (40, 60)
-                    }
+                }
                 if q in table2:
                     a, b = p*S.Pi/table2[q][0], p*S.Pi/table2[q][1]
                     nvala, nvalb = cls(a), cls(b)
@@ -889,7 +889,7 @@ class tan(TrigonometricFunction):
                     40: (8, 10),
                     60: (20, 30),
                     120: (40, 60)
-                    }
+                }
                 q = pi_coeff.q
                 p = pi_coeff.p % q
                 if q in table2:
@@ -1157,7 +1157,7 @@ class cot(TrigonometricFunction):
                     40: (8, 10),
                     60: (20, 30),
                     120: (40, 60)
-                    }
+                }
                 q = pi_coeff.q
                 p = pi_coeff.p % q
                 if q in table2:

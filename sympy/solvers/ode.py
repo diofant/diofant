@@ -313,7 +313,7 @@ allhints = (
     "nth_linear_constant_coeff_variation_of_parameters_Integral",
     "nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral",
     "Liouville_Integral",
-    )
+)
 
 lie_heuristics = (
     "abaco1_simple",
@@ -325,7 +325,7 @@ lie_heuristics = (
     "function_sum",
     "bivariate",
     "chi"
-    )
+)
 
 
 def sub_func_doit(eq, func, new):

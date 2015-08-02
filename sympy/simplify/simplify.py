@@ -3175,7 +3175,7 @@ def combsimp(expr):
                     if ni.is_Add:
                         ni, dd = Add(*[
                             rule_gamma(gamma_rat(a/dd), level + 1) for a in ni.args]
-                            ).as_numer_denom()
+                        ).as_numer_denom()
                         args[i] = ni
                         if not dd.has(gamma):
                             break

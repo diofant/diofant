@@ -151,7 +151,7 @@ setup(name='sympy',
       ext_modules=[],
       package_data={
           'sympy.logic.benchmarks': ['input/*.cnf'],
-          },
+      },
       cmdclass={'test': test_sympy,
                 'clean': clean,
                 'audit': audit},
@@ -166,7 +166,7 @@ setup(name='sympy',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
-          ],
+      ],
       tests_require=['pytest'],
       install_requires=['mpmath>=0.19', 'decorator']
       )

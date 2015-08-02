@@ -224,7 +224,7 @@ def test_issue_3210():
         cos(1) + cos(2),
         sinh(5),
         cosh(5),
-        ]
+    ]
 
 
 def test_issue_7263():

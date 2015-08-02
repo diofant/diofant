@@ -3,7 +3,7 @@ from sympy.utilities.enumerative import (
     list_visitor,
     MultisetPartitionTraverser,
     multiset_partitions_taocp
-    )
+)
 from sympy.utilities.iterables import _set_partitions
 from sympy.utilities.pytest import slow
 
