@@ -336,6 +336,7 @@ class lowergamma(Function):
     def _latex_no_arg(printer):
         return r'\gamma'
 
+
 class uppergamma(Function):
     r"""
     The upper incomplete gamma function.

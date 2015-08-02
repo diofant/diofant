@@ -195,6 +195,7 @@ def _verify_normal_closure(group, arg, closure=None):
     naive_closure = PermutationGroup(list(conjugates))
     return closure.is_subgroup(naive_closure)
 
+
 def canonicalize_naive(g, dummies, sym, *v):
     """
     Canonicalize tensor formed by tensors of the different types

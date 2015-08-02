@@ -114,8 +114,12 @@ def xstr(*args):
         return str(*args)
 
 # GREEK
+
+
 def g(l):
     return U('GREEK SMALL LETTER %s' % l.upper())
+
+
 def G(l):
     return U('GREEK CAPITAL LETTER %s' % l.upper())
 
@@ -164,19 +168,32 @@ symb_2txt = {
 }
 
 # SUBSCRIPT & SUPERSCRIPT
+
+
 def LSUB(letter):
     return U('LATIN SUBSCRIPT SMALL LETTER %s' % letter.upper())
+
+
 def GSUB(letter):
     return U('GREEK SUBSCRIPT SMALL LETTER %s' % letter.upper())
+
+
 def DSUB(digit):
     return U('SUBSCRIPT %s' % digit_2txt[digit])
+
+
 def SSUB(symb):
     return U('SUBSCRIPT %s' % symb_2txt[symb])
 
+
 def LSUP(letter):
     return U('SUPERSCRIPT LATIN SMALL LETTER %s' % letter.upper())
+
+
 def DSUP(digit):
     return U('SUPERSCRIPT %s' % digit_2txt[digit])
+
+
 def SSUP(symb):
     return U('SUPERSCRIPT %s' % symb_2txt[symb])
 
@@ -235,20 +252,36 @@ modifier_dict = {
 }
 
 # VERTICAL OBJECTS
+
+
 def HUP(symb):
     return U('%s UPPER HOOK' % symb_2txt[symb])
+
+
 def CUP(symb):
     return U('%s UPPER CORNER' % symb_2txt[symb])
+
+
 def MID(symb):
     return U('%s MIDDLE PIECE' % symb_2txt[symb])
+
+
 def EXT(symb):
     return U('%s EXTENSION' % symb_2txt[symb])
+
+
 def HLO(symb):
     return U('%s LOWER HOOK' % symb_2txt[symb])
+
+
 def CLO(symb):
     return U('%s LOWER CORNER' % symb_2txt[symb])
+
+
 def TOP(symb):
     return U('%s TOP' % symb_2txt[symb])
+
+
 def BOT(symb):
     return U('%s BOTTOM' % symb_2txt[symb])
 

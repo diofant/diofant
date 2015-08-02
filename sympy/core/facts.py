@@ -74,6 +74,7 @@ def _as_pair(atom):
 
 # XXX this prepares forward-chaining rules for alpha-network
 
+
 def transitive_closure(implications):
     """
     Computes the transitive closure of a list of implications
@@ -92,6 +93,7 @@ def transitive_closure(implications):
                         full_implications.add((i, j))
 
     return full_implications
+
 
 def deduce_alpha_implications(implications):
     """deduce all implications

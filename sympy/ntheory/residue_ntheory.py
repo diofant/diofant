@@ -10,6 +10,7 @@ from .primetest import isprime
 from .factor_ import factorint, trailing, totient
 from random import randint
 
+
 def n_order(a, n):
     """Returns the order of ``a`` modulo ``n``.
 
@@ -52,6 +53,7 @@ def n_order(a, n):
             exponent = exponent // p
     return order
 
+
 def _primitive_root_prime_iter(p):
     """Generates the primitive roots for a prime ``p``
 
@@ -77,6 +79,7 @@ def _primitive_root_prime_iter(p):
         else:
             yield a
         a += 1
+
 
 def primitive_root(p):
     """Returns the smallest primitive root or None.
@@ -141,6 +144,7 @@ def primitive_root(p):
 
     return next(_primitive_root_prime_iter(p))
 
+
 def is_primitive_root(a, p):
     """Returns True if ``a`` is a primitive root of ``p``
 
@@ -168,6 +172,7 @@ def is_primitive_root(a, p):
     if a > p:
         a = a % p
     return n_order(a, p) == totient(p)
+
 
 def _sqrt_mod_tonelli_shanks(a, p):
     """Returns the square root in the case of ``p`` prime with ``p == 1 (mod 8)``
@@ -197,6 +202,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
     #assert A*pow(D, m, p) % p == 1
     x = pow(a, (t + 1)//2, p)*pow(D, m//2, p) % p
     return x
+
 
 def sqrt_mod(a, p, all_roots=False):
     """Find a root of ``x**2 = a mod p``.
@@ -247,6 +253,7 @@ def sqrt_mod(a, p, all_roots=False):
             return r
     except StopIteration:
         return None
+
 
 def _product(*iters):
     """Cartesian product generator.
@@ -453,6 +460,7 @@ def _sqrt_mod_prime_power(a, p, k):
             r = (r - fr*frinv) % px
         return [r, px - r]
 
+
 def _sqrt_mod1(a, p, n):
     """Find solution to ``x**2 == a mod p**n`` when ``a % p == 0``
 
@@ -618,6 +626,7 @@ def is_nthpow_residue(a, n, m):
     k = f // igcd(f, n)
     return pow(a, k, m) == 1
 
+
 def _nthroot_mod2(s, q, p):
     f = factorint(q)
     v = []
@@ -626,6 +635,7 @@ def _nthroot_mod2(s, q, p):
     for qx in v:
         s = _nthroot_mod1(s, qx, p, False)
     return s
+
 
 def _nthroot_mod1(s, q, p, all_roots):
     """Root of ``x**q = s mod p``, ``p`` prime and ``q`` divides ``p - 1``.
@@ -679,6 +689,7 @@ def _nthroot_mod1(s, q, p, all_roots):
         res.sort()
         return res
     return min(res)
+
 
 def nthroot_mod(a, n, p, all_roots=False):
     """Find the solutions to ``x**n = a mod p``.
@@ -741,6 +752,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     else:
         res = _nthroot_mod1(a, pa, p, all_roots)
     return res
+
 
 def quadratic_residues(p):
     """Returns the list of quadratic residues.

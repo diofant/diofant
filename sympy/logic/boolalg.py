@@ -251,6 +251,7 @@ S.false = false
 
 converter[bool] = lambda x: S.true if x else S.false
 
+
 class BooleanFunction(Application, Boolean):
     """Boolean function is a function that lives in a boolean space
     It is used as base class for And, Or, Not, etc.

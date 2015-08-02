@@ -221,6 +221,7 @@ from sympy.polys.galoistools import (
 
 from sympy.utilities import public
 
+
 @public
 class IPolys(object):
     symbols = None

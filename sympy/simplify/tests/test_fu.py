@@ -108,6 +108,7 @@ def test_TR8():
         cos(14)/16 + cos(20)/16 + cos(12)/16 + S(1)/16 + cos(6)/8
     assert TR8(sin(3*pi/7)**2*cos(3*pi/7)**2/(16*sin(pi/7)**2)) == S(1)/64
 
+
 def test_TR9():
     a = S(1)/2
     b = 3*a

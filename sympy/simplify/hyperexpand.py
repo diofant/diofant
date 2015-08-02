@@ -80,6 +80,8 @@ from sympy.polys import poly, Poly
 from sympy.series import residue
 
 # function to define "buckets"
+
+
 def _mod1(x):
     # TODO see if this can work as Mod(x, 1); this will require
     # different handling of the "buckets" since these need to
@@ -656,6 +658,7 @@ class G_Function(Expr):
 
 # Dummy variable.
 _x = Dummy('x')
+
 
 class Formula(object):
     """

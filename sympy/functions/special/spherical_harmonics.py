@@ -13,6 +13,7 @@ from sympy.functions.elementary.miscellaneous import sqrt
 
 _x = Dummy("x")
 
+
 class Ynm(Function):
     r"""
     Spherical harmonics defined as

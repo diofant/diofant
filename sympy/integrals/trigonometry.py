@@ -16,8 +16,11 @@ from sympy.functions import binomial, sin, cos, Piecewise
 
 # need to use a function instead of lamda since hash of lambda changes on
 # each call to _pat_sincos
+
+
 def _integer_instance(n):
     return isinstance(n, Integer)
+
 
 @cacheit
 def _pat_sincos(x):

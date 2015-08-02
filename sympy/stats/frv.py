@@ -20,6 +20,7 @@ from sympy.stats.rv import (RandomDomain, ProductDomain, ConditionalDomain,
 from sympy.core.containers import Dict
 import random
 
+
 class FiniteDensity(dict):
     def __call__(self, item):
         item = sympify(item)
@@ -31,6 +32,7 @@ class FiniteDensity(dict):
     @property
     def dict(self):
         return dict(self)
+
 
 class FiniteDomain(RandomDomain):
     """
@@ -162,6 +164,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
 
     def as_boolean(self):
         return FiniteDomain.as_boolean(self)
+
 
 class SingleFiniteDistribution(Basic, NamedArgsMixin):
     def __new__(cls, *args):

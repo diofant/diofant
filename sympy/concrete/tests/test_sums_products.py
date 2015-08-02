@@ -12,6 +12,7 @@ from sympy.core.compatibility import range
 
 n = Symbol('n', integer=True)
 
+
 def test_karr_convention():
     # Test the Karr summation convention that we want to hold.
     # See his paper "Summation in Finite Terms" for a detailed

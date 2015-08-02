@@ -1007,6 +1007,8 @@ class SubQuotientModule(SubModule):
 
 def _subs0(x):
     return x[0]
+
+
 def _subs1(x):
     return x[1:]
 

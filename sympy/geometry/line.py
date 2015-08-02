@@ -947,6 +947,7 @@ class LinearEntity(GeometryEntity):
             None if a determination cannot be made."""
         raise NotImplementedError()
 
+
 class Line(LinearEntity):
     """An infinite line in space.
 
@@ -1172,6 +1173,7 @@ class Line(LinearEntity):
         if not isinstance(other, Line):
             return False
         return Point.is_collinear(self.p1, other.p1, self.p2, other.p2)
+
 
 class Ray(LinearEntity):
     """

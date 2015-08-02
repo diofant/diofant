@@ -61,6 +61,7 @@ if theano:
         sympy.Transpose: tt.DimShuffle((False, False), [1, 0]),
     }
 
+
 class TheanoPrinter(Printer):
     """ Code printer for Theano computations """
     printmethod = "_theano"
@@ -185,6 +186,7 @@ class TheanoPrinter(Printer):
         return self._print(expr, **kwargs)
 
 global_cache = {}
+
 
 def theano_code(expr, cache=global_cache, **kwargs):
     return TheanoPrinter(cache=cache, settings={}).doprint(expr, **kwargs)

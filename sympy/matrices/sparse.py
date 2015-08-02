@@ -1139,6 +1139,7 @@ class SparseMatrix(MatrixBase):
         n = as_int(n)
         return cls(n, n, {(i, i): S.One for i in range(n)})
 
+
 class MutableSparseMatrix(SparseMatrix, MatrixBase):
     @classmethod
     def _new(cls, *args, **kwargs):

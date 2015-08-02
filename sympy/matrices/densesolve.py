@@ -11,6 +11,7 @@ from sympy import sqrt, var
 from sympy.core.compatibility import range
 import copy
 
+
 def row_echelon(matlist, K):
     """
     Returns the row echelon form of a matrix with diagonal elements

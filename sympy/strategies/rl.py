@@ -9,6 +9,7 @@ from .util import new
 
 # Functions that create rules
 
+
 def rm_id(isid, new=new):
     """ Create a rule to remove identities
 
@@ -37,6 +38,7 @@ def rm_id(isid, new=new):
             return new(expr.__class__, expr.args[0])
 
     return ident_remove
+
 
 def glom(key, count, combine):
     """ Create a rule to conglomerate identical args
@@ -74,6 +76,7 @@ def glom(key, count, combine):
 
     return conglomerate
 
+
 def sort(key, new=new):
     """ Create a rule to sort by a key function
 
@@ -87,6 +90,7 @@ def sort(key, new=new):
     def sort_rl(expr):
         return new(expr.__class__, *sorted(expr.args, key=key))
     return sort_rl
+
 
 def distribute(A, B):
     """ Turns an A containing Bs into a B of As
@@ -112,6 +116,7 @@ def distribute(A, B):
         return expr
     return distribute_rl
 
+
 def subs(a, b):
     """ Replace expressions exactly """
     def subs_rl(expr):
@@ -122,6 +127,7 @@ def subs(a, b):
     return subs_rl
 
 # Functions that are rules
+
 
 def unpack(expr):
     """ Rule to unpack singleton args
@@ -136,6 +142,7 @@ def unpack(expr):
     else:
         return expr
 
+
 def flatten(expr, new=new):
     """ Flatten T(a, b, T(c, d), T2(e)) to T(a, b, c, d, T2(e)) """
     cls = expr.__class__
@@ -146,6 +153,7 @@ def flatten(expr, new=new):
         else:
             args.append(arg)
     return new(expr.__class__, *args)
+
 
 def rebuild(expr):
     """ Rebuild a SymPy tree

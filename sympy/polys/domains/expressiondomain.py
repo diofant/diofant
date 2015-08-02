@@ -10,6 +10,7 @@ from sympy.core import sympify, SympifyError
 from sympy.utilities import public
 from sympy.polys.polyutils import PicklableWithSlots
 
+
 @public
 class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     """A class for arbitrary expressions. """

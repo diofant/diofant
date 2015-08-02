@@ -171,6 +171,7 @@ def test_point():
     assert p.translate(y=1) == Point(1, 2)
     assert p.translate(*p.args) == Point(2, 2)
 
+
 def test_point3D():
     p1 = Point3D(x1, x2, x3)
     p2 = Point3D(y1, y2, y3)
@@ -580,6 +581,7 @@ def test_line_geom():
     assert Line(p1, p10).plot_interval() == [t, -5, 5]
     assert Ray((0, 0), angle=pi/4).plot_interval() == \
         [t, 0, 10]
+
 
 def test_line3d():
     p1 = Point3D(0, 0, 0)

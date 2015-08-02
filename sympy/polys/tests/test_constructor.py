@@ -7,6 +7,7 @@ from sympy.polys.domains.realfield import RealField
 from sympy import S, sqrt, sin, Float
 from sympy.abc import x, y
 
+
 def test_construct_domain():
     assert construct_domain([1, 2, 3]) == (ZZ, [ZZ(1), ZZ(2), ZZ(3)])
     assert construct_domain([1, 2, 3], field=True) == (QQ, [QQ(1), QQ(2), QQ(3)])
@@ -92,6 +93,7 @@ def test_construct_domain():
 
     assert construct_domain({}) == (ZZ, {})
 
+
 def test_composite_option():
     assert construct_domain({(1,): sin(y)}, composite=False) == \
         (EX, {(1,): EX(sin(y))})
@@ -104,6 +106,7 @@ def test_composite_option():
 
     assert construct_domain({(1, 0): y}, composite=False) == \
         (EX, {(1, 0): EX(y)})
+
 
 def test_precision():
     f1 = Float("1.01")

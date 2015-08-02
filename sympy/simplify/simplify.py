@@ -1643,12 +1643,14 @@ def _split_gcd(*a):
             b1.append(x)
     return g, b1, b2
 
+
 def _is_sum_surds(p):
     args = p.args if p.is_Add else [p]
     for y in args:
         if not ((y**2).is_Rational and y.is_extended_real):
             return False
     return True
+
 
 def _nthroot_solve(p, n, prec):
     """
@@ -1673,6 +1675,7 @@ def _nthroot_solve(p, n, prec):
             sol = sqrtdenest(sol)
             if _mexpand(sol**n) == p:
                 return sol
+
 
 def nthroot(expr, n, max_len=4, prec=15):
     """
@@ -4176,6 +4179,7 @@ def besselsimp(expr):
 
     return expr
 
+
 def exptrigsimp(expr, simplify=True):
     """
     Simplifies exponential / trigonometric / hyperbolic functions.
@@ -4521,6 +4525,7 @@ def product_mul(self, other, method=0):
 
 #-------------------- the old trigsimp routines ---------------------
 
+
 def trigsimp_old(expr, **opts):
     """
     reduces expression by using known trig identities
@@ -4665,6 +4670,8 @@ def _dotrig(a, b):
 
 
 _trigpat = None
+
+
 def _trigpats():
     global _trigpat
     a, b, c = symbols('a b c', cls=Wild)
@@ -4795,10 +4802,15 @@ def _replace_mul_fpowxgpow(expr, f, g, rexp, h, rexph):
 
 def _idn(x):
     return x
+
+
 def _midn(x):
     return -x
+
+
 def _one(x):
     return S.One
+
 
 def _match_div_rewrite(expr, i):
     """helper for __trigsimp"""

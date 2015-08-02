@@ -10,6 +10,7 @@ from sympy.functions.special.delta_functions import Heaviside
 
 from sympy.utilities.pytest import raises
 
+
 def test_Min():
     from sympy.abc import x, y, z
     n = Symbol('n', negative=True)

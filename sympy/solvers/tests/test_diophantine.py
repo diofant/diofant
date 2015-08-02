@@ -12,8 +12,10 @@ from sympy.utilities import default_sort_key
 
 x, y, z, w, t, X, Y, Z = symbols("x, y, z, w, t, X, Y, Z", integer=True)
 
+
 def test_input_format():
     raises(TypeError, lambda: diophantine(sin(x)))
+
 
 def test_univariate():
 

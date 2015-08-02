@@ -7,6 +7,7 @@ from sympy.polys.ring_series import (_invert_monoms, rs_integrate,
 from sympy.utilities.pytest import raises
 from sympy.core.compatibility import range
 
+
 def test_ring_series1():
     R, x = ring('x', QQ)
     p = x**4 + 2*x**3 + 3*x + 4
@@ -20,11 +21,13 @@ def test_ring_series1():
     assert rs_integrate(p, x) == x**3*y**2/3 + x**2/2 + x
     assert rs_integrate(p, y) == x**2*y**3/3 + x*y + y
 
+
 def test_trunc():
     R, x, y, t = ring('x, y, t', QQ)
     p = (y + t*x)**4
     p1 = rs_trunc(p, x, 3)
     assert p1 == y**4 + 4*y**3*t*x + 6*y**2*t**2*x**2
+
 
 def test_mul_trunc():
     R, x, y, t = ring('x, y, t', QQ)
@@ -47,6 +50,7 @@ def test_mul_trunc():
     p2 = 3 + x**2
     assert rs_mul(p1, p2, x, 4) == 2*x**3 + 11*x**2 + 6*x + 6
 
+
 def test_square_trunc():
     R, x, y, t = ring('x, y, t', QQ)
     p = (1 + t*x + t*y)*2
@@ -55,6 +59,7 @@ def test_square_trunc():
     assert p1 == p2
     p = 1 + x + x**2 + x**3
     assert rs_square(p, x, 4) == 4*x**3 + 3*x**2 + 2*x + 1
+
 
 def test_pow_trunc():
     R, x, y, z = ring('x, y, z', QQ)
@@ -73,6 +78,7 @@ def test_pow_trunc():
     p = x + y
     assert rs_pow(p, 3, y, 3) == x**3 + 3*x**2*y + 3*x*y**2
 
+
 def test_has_constant_term():
     R, x, y, z = ring('x, y, z', QQ)
     p = y + x*z
@@ -82,6 +88,7 @@ def test_has_constant_term():
     p = 1 + x + x**4
     assert _has_constant_term(p, x)
     p = x + y + x*z
+
 
 def test_inversion():
     R, x = ring('x', QQ)
@@ -101,6 +108,7 @@ def test_inversion():
         p1 = rs_series_inversion(p, x, 4)
 
     raises(NotImplementedError, lambda: test2(p))
+
 
 def test_series_from_list():
     R, x = ring('x', QQ)
@@ -125,6 +133,7 @@ def test_series_from_list():
         p2 += cx*rs_pow(p, i, x, h)
     assert p1 == p2
 
+
 def test_log():
     R, x = ring('x', QQ)
     p = 1 + x
@@ -143,6 +152,7 @@ def test_log():
     p1 = rs_log(p, x, 6)
     assert p1 == (4*x**5*y**2 - 2*x**5*y - 2*x**4*y**2 + x**5/5 + 2*x**4*y -
                   x**4/4 - 2*x**3*y + x**3/3 + 2*x**2*y - x**2/2 + x)
+
 
 def test_exp():
     R, x = ring('x', QQ)
@@ -166,6 +176,7 @@ def test_newton():
     r = rs_newton(p, x, 4)
     f = [1, 0, -2]
     assert r == 8*x**4 + 4*x**2 + 2
+
 
 def test_compose_add():
     R, x = ring('x', QQ)

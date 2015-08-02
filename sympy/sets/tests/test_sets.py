@@ -244,6 +244,7 @@ def test_intersect():
     assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2)) == \
         Union(Interval(1, 1), Interval(2, 2))
 
+
 def test_intersection():
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
@@ -389,6 +390,7 @@ def test_is_proper_superset():
     assert FiniteSet(1, 2, 3).is_proper_superset(S.EmptySet) is True
 
     raises(ValueError, lambda: Interval(0, 1).is_proper_superset(0))
+
 
 def test_contains():
     assert Interval(0, 2).contains(1) is S.true
@@ -726,6 +728,7 @@ def test_image_Intersection():
 def test_image_FiniteSet():
     x = Symbol('x', extended_real=True)
     assert imageset(x, 2*x, FiniteSet(1, 2, 3)) == FiniteSet(2, 4, 6)
+
 
 def test_image_Union():
     x = Symbol('x', extended_real=True)

@@ -7,6 +7,7 @@ from sympy.polys.polyerrors import GeneratorsError
 
 from sympy.utilities import public
 
+
 @public
 class CompositeDomain(Domain):
     """Base class for composite domains, e.g. ZZ[x], ZZ(X). """

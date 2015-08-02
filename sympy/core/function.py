@@ -709,6 +709,7 @@ class UndefinedFunction(FunctionClass):
 UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
                                          (s.class_key() == o.class_key()))
 
+
 class WildFunction(Function, AtomicExpr):
     """
     A WildFunction function matches any function (with its arguments).
@@ -1977,6 +1978,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     return sympify(e).expand(deep=deep, modulus=modulus, **hints)
 
 # This is a special application of two hints
+
 
 def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always

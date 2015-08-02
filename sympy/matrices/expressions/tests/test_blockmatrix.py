@@ -18,16 +18,20 @@ H = MatrixSymbol('H', n, n)
 b1 = BlockMatrix([[G, H]])
 b2 = BlockMatrix([[G], [H]])
 
+
 def test_bc_matmul():
     assert bc_matmul(H*b1*b2*G) == BlockMatrix([[(H*G*G + H*H*H)*G]])
+
 
 def test_bc_matadd():
     assert bc_matadd(BlockMatrix([[G, H]]) + BlockMatrix([[H, H]])) == \
         BlockMatrix([[G+H, H+H]])
 
+
 def test_bc_transpose():
     assert bc_transpose(Transpose(BlockMatrix([[A, B], [C, D]]))) == \
         BlockMatrix([[A.T, C.T], [B.T, D.T]])
+
 
 def test_bc_dist_diag():
     A = MatrixSymbol('A', n, n)
@@ -37,6 +41,7 @@ def test_bc_dist_diag():
 
     assert bc_dist(X+X).equals(BlockDiagMatrix(2*A, 2*B, 2*C))
 
+
 def test_block_plus_ident():
     A = MatrixSymbol('A', n, n)
     B = MatrixSymbol('B', n, m)
@@ -45,6 +50,7 @@ def test_block_plus_ident():
     X = BlockMatrix([[A, B], [C, D]])
     assert bc_block_plus_ident(X+Identity(m+n)) == \
             BlockDiagMatrix(Identity(n), Identity(m)) + X
+
 
 def test_BlockMatrix():
     A = MatrixSymbol('A', n, m)
@@ -101,6 +107,7 @@ def test_BlockMatrix_trace():
     X = BlockMatrix([[A, B], [C, D]])
     assert trace(X) == trace(A) + trace(D)
 
+
 def test_BlockMatrix_Determinant():
     A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
     X = BlockMatrix([[A, B], [C, D]])
@@ -109,6 +116,7 @@ def test_BlockMatrix_Determinant():
         assert det(X) == det(A) * det(D - C*A.I*B)
 
     assert isinstance(det(X), Expr)
+
 
 def test_squareBlockMatrix():
     A = MatrixSymbol('A', n, n)
@@ -171,6 +179,7 @@ def test_BlockDiagMatrix():
     assert (X._blockmul(M)).is_MatMul
     assert (X._blockadd(M)).is_MatAdd
 
+
 def test_blockcut():
     A = MatrixSymbol('A', n, m)
     B = blockcut(A, (n/2, n/2), (m/2, m/2))
@@ -185,6 +194,7 @@ def test_blockcut():
     B = blockcut(M, (1, 3), (2, 2))
     assert ImmutableMatrix(B.blocks[0, 1]) == ImmutableMatrix([[2, 3]])
 
+
 def test_reblock_2x2():
     B = BlockMatrix([[MatrixSymbol('A_%d%d'%(i,j), 2, 2)
                             for j in range(3)]
@@ -196,6 +206,7 @@ def test_reblock_2x2():
 
     assert B.shape == BB.shape
     assert B.as_explicit() == BB.as_explicit()
+
 
 def test_deblock():
     B = BlockMatrix([[MatrixSymbol('A_%d%d'%(i,j), n, n)

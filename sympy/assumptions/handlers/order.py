@@ -171,6 +171,7 @@ class AskNonZeroHandler(CommonHandler):
     def Abs(expr, assumptions):
         return ask(Q.nonzero(expr.args[0]), assumptions)
 
+
 class AskZeroHandler(CommonHandler):
     @staticmethod
     def Basic(expr, assumptions):
@@ -182,6 +183,7 @@ class AskZeroHandler(CommonHandler):
         # TODO: This should be deducible from the nonzero handler
         return fuzzy_or(ask(Q.zero(arg), assumptions) for arg in expr.args)
 
+
 class AskNonPositiveHandler(CommonHandler):
     @staticmethod
     def Basic(expr, assumptions):
@@ -191,6 +193,7 @@ class AskNonPositiveHandler(CommonHandler):
                 return ask(Q.extended_real(expr), assumptions)
             else:
                 return notpositive
+
 
 class AskPositiveHandler(CommonHandler):
     """

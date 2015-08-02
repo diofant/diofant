@@ -219,12 +219,14 @@ def test_harmonic_rewrite_polygamma():
 
     assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
 
+
 @XFAIL
 def test_harmonic_limit_fail():
     n = Symbol("n")
     m = Symbol("m")
     # For m > 1:
     assert limit(harmonic(n, m), n, oo) == zeta(m)
+
 
 @XFAIL
 def test_harmonic_rewrite_sum_fail():

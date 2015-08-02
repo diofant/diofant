@@ -65,6 +65,7 @@ _greek = list(greeks)  # make a copy, so we can mutate it
 _greek.remove("lambda")
 _greek.append("lamda")
 
+
 def clashing():
     """Return the clashing-symbols dictionaries.
 

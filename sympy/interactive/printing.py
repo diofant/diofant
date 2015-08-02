@@ -128,6 +128,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
     else:
         ip.set_hook('result_display', _result_display)
 
+
 def _is_ipython(shell):
     """Is a shell instance an IPython shell?"""
     # shortcut, so we don't import IPython if we don't have to

@@ -5,6 +5,7 @@ from sympy.combinatorics.tensor_can import (perm_af_direct_product, dummy_sgs,
 from sympy.combinatorics.testutil import canonicalize_naive, graph_certificate
 from sympy.utilities.pytest import skip, XFAIL
 
+
 def test_perm_af_direct_product():
     gens1 = [[1,0,2,3], [0,1,3,2]]
     gens2 = [[1,0]]
@@ -12,6 +13,7 @@ def test_perm_af_direct_product():
     gens1 = [[1,0,2,3,5,4], [0,1,3,2,4,5]]
     gens2 = [[1,0,2,3]]
     assert [[1, 0, 2, 3, 4, 5, 7, 6], [0, 1, 3, 2, 4, 5, 6, 7], [0, 1, 2, 3, 5, 4, 6, 7]]
+
 
 def test_dummy_sgs():
     a = dummy_sgs([1,2], 0, 4)
@@ -23,6 +25,7 @@ def test_dummy_sgs():
     a = dummy_sgs([2,3,4,5], 1, 8)
     assert a == [x._array_form for x in [Perm(2,3)(8,9), Perm(4,5)(8,9),
         Perm(9)(2,4)(3,5)]]
+
 
 def test_get_symmetric_group_sgs():
     assert get_symmetric_group_sgs(2) == ([0], [Permutation(3)(0,1)])
@@ -208,6 +211,7 @@ def test_canonicalize_no_dummies():
     can = canonicalize(g, [], 0, (base2, gens2, 2, 1))
     assert can == [0,2,1,3,4,5]
 
+
 def test_no_metric_symmetry():
     # no metric symmetry
     # A^d1_d0 * A^d0_d1; ord = [d0,-d0,d1,-d1]; g= [2,1,0,3,4,5]
@@ -240,6 +244,7 @@ def test_no_metric_symmetry():
     can = canonicalize(g, list(range(16)), None, [[], [Permutation(list(range(4)))], 8, 0])
     assert can == [0,3,2,5,4,7,6,1,8,11,10,13,12,15,14,9,16,17]
 
+
 def test_canonical_free():
     # t = A^{d0 a1}*A_d0^a0
     # ord = [a0,a1,d0,-d0];  g = [2,1,3,0,4,5]; dummies = [[2,3]]
@@ -252,6 +257,7 @@ def test_canonical_free():
     dummies = [[2,3]]
     can = canonicalize(g, dummies, [None], ([], [Permutation(3)], 2, 0))
     assert can == [3,0, 2,1, 4,5]
+
 
 def test_canonicalize1():
     base1, gens1 = get_symmetric_group_sgs(1)
@@ -529,6 +535,7 @@ def test_riemann_products():
     sym = [0, 1]
     can = canonicalize(g, dummies, sym, (base, gens, 4, 0))
     assert can == [0, 6, 8, 1, 7, 10, 4, 2, 9, 5, 3, 11, 13, 12]
+
 
 def test_graph_certificate():
     # test tensor invariants constructed from random regular graphs;

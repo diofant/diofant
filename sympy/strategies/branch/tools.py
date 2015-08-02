@@ -3,6 +3,7 @@ from __future__ import print_function, division
 from .core import exhaust, multiplex
 from .traverse import top_down
 
+
 def canon(*rules):
     """ Strategy for canonicalization
 

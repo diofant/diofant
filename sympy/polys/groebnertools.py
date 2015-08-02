@@ -9,6 +9,7 @@ from sympy.polys.polyconfig import query
 from sympy.core.symbol import Dummy
 from sympy.core.compatibility import range
 
+
 def groebner(seq, ring, method=None):
     """
     Computes Groebner basis for a set of polynomials in `K[X]`.
@@ -48,6 +49,7 @@ def groebner(seq, ring, method=None):
         G = [ g.clear_denoms()[1].set_ring(orig) for g in G ]
 
     return G
+
 
 def _buchberger(f, ring):
     """
@@ -258,6 +260,7 @@ def _buchberger(f, ring):
     Gr = sorted(Gr, key=lambda f: order(f.LM), reverse=True)
 
     return Gr
+
 
 def spoly(p1, p2, ring):
     """
@@ -781,6 +784,7 @@ def is_reduced(G, ring):
 
     return True
 
+
 def groebner_lcm(f, g):
     """
     Computes LCM of two polynomials using Groebner bases.
@@ -837,6 +841,7 @@ def groebner_lcm(f, g):
     h = ring.from_terms(h_terms)
 
     return h
+
 
 def groebner_gcd(f, g):
     """Computes GCD of two polynomials using Groebner bases. """

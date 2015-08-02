@@ -19,6 +19,7 @@ class MockPrint(object):
     def write(self, s):
         pass
 
+
 def disable_print(func, *args, **kwargs):
     @wraps(func)
     def wrapper(*args, **kwargs):

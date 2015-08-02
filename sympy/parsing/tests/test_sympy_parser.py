@@ -112,6 +112,7 @@ def test_split_symbols_function():
     assert parse_expr("af(x+1)", transformations=transformations,
                       local_dict={'f':f}) == a*f(x+1)
 
+
 def test_match_parentheses_implicit_multiplication():
     transformations = standard_transformations + \
         (implicit_multiplication,)

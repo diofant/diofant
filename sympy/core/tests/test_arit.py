@@ -845,6 +845,7 @@ def test_Add_is_negative_positive():
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_zero
 
+
 def test_Add_is_nonpositive_nonnegative():
     x = Symbol('x', extended_real=True)
 

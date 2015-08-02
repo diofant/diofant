@@ -2,11 +2,13 @@ from sympy.strategies.rl import (rm_id, glom, flatten, unpack, sort, distribute,
         subs, rebuild)
 from sympy import Basic
 
+
 def test_rm_id():
     rmzeros = rm_id(lambda x: x == 0)
     assert rmzeros(Basic(0, 1)) == Basic(1)
     assert rmzeros(Basic(0, 0)) == Basic(0)
     assert rmzeros(Basic(2, 1)) == Basic(2, 1)
+
 
 def test_glom():
     from sympy import Add
@@ -27,15 +29,19 @@ def test_glom():
     expected = Add(3*x, 5)
     assert set(result.args) == set(expected.args)
 
+
 def test_flatten():
     assert flatten(Basic(1, 2, Basic(3, 4))) == Basic(1, 2, 3, 4)
+
 
 def test_unpack():
     assert unpack(Basic(2)) == 2
     assert unpack(Basic(2, 3)) == Basic(2, 3)
 
+
 def test_sort():
     assert sort(str)(Basic(3,1,2)) == Basic(1,2,3)
+
 
 def test_distribute():
     class T1(Basic):
@@ -50,6 +56,7 @@ def test_distribute():
                T1(1, 2, 4, 5))
     assert distribute_t12(T1(1, 2, 3)) == T1(1, 2, 3)
 
+
 def test_distribute_add_mul():
     from sympy import Add, Mul, symbols
     x, y = symbols('x, y')
@@ -58,10 +65,12 @@ def test_distribute_add_mul():
     distribute_mul = distribute(Mul, Add)
     assert distribute_mul(expr) == expected
 
+
 def test_subs():
     rl = subs(1, 2)
     assert rl(1) == 2
     assert rl(3) == 3
+
 
 def test_rebuild():
     from sympy import Add

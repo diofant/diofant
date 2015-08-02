@@ -35,6 +35,7 @@ from sympy.utilities.iterables import capture
 from sympy.utilities.randtest import random_complex_number
 from sympy.ntheory.multinomial import multinomial_coefficients_iterator
 
+
 def test_trailing():
     assert trailing(0) == 0
     assert trailing(1) == 0
@@ -355,6 +356,7 @@ def test_factorint():
     # Test for non integer input
     raises(ValueError, lambda: factorint(4.5))
 
+
 def test_divisors_and_divisor_count():
     assert divisors(-1) == [1]
     assert divisors(0) == []
@@ -374,6 +376,7 @@ def test_divisors_and_divisor_count():
 
     assert divisor_count(180, 3) == divisor_count(180//3)
     assert divisor_count(2*3*5, 7) == 0
+
 
 def test_issue_6981():
     S = set(divisors(4)).union(set(divisors(Integer(2))))

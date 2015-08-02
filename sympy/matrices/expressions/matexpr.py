@@ -387,6 +387,7 @@ class MatrixSymbol(MatrixExpr):
     def _eval_simplify(self, **kwargs):
         return self
 
+
 class Identity(MatrixExpr):
     """The Matrix Identity I - multiplicative identity
 

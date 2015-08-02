@@ -11,6 +11,7 @@ from sympy.utilities.pytest import raises, XFAIL
 
 from sympy.abc import n, x, y
 
+
 def NS(e, n=15, **options):
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
 

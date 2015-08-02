@@ -4,6 +4,7 @@ from sympy import Basic
 
 new = Basic.__new__
 
+
 def assoc(d, k, v):
     d = d.copy()
     d[k] = v

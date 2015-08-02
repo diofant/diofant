@@ -96,6 +96,7 @@ modifier_dict = {
 
 greek_letters_set = frozenset(greeks)
 
+
 class LatexPrinter(Printer):
     printmethod = "_latex"
 
@@ -1832,6 +1833,7 @@ def translate(s):
             if s.lower().endswith(key) and len(s)>len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
+
 
 def latex(expr, **settings):
     r"""

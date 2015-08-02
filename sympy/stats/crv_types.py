@@ -124,6 +124,7 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo)):
     dist = ContinuousDistributionHandmade(pdf, set)
     return SingleContinuousPSpace(symbol, dist).value
 
+
 def rv(symbol, cls, args):
     args = list(map(sympify, args))
     dist = cls(*args)
@@ -143,6 +144,7 @@ class ArcsinDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         return 1/(pi*sqrt((x - self.a)*(self.b - x)))
+
 
 def Arcsin(name, a=0, b=1):
     r"""
@@ -706,6 +708,7 @@ def Dagum(name, p, a, b):
 #-------------------------------------------------------------------------------
 # Erlang distribution ----------------------------------------------------------
 
+
 def Erlang(name, k, l):
     r"""
     Create a continuous random variable with an Erlang distribution.
@@ -861,6 +864,7 @@ def Exponential(name, rate):
 #-------------------------------------------------------------------------------
 # F distribution ---------------------------------------------------------------
 
+
 class FDistributionDistribution(SingleContinuousDistribution):
     _argnames = ('d1', 'd2')
 
@@ -870,6 +874,7 @@ class FDistributionDistribution(SingleContinuousDistribution):
         d1, d2 = self.d1, self.d2
         return (sqrt((d1*x)**d1*d2**d2 / (d1*x+d2)**(d1+d2))
                / (x * beta_fn(d1/2, d2/2)))
+
 
 def FDistribution(name, d1, d2):
     r"""
@@ -932,6 +937,7 @@ def FDistribution(name, d1, d2):
 #-------------------------------------------------------------------------------
 # Fisher Z distribution --------------------------------------------------------
 
+
 class FisherZDistribution(SingleContinuousDistribution):
     _argnames = ('d1', 'd2')
 
@@ -939,6 +945,7 @@ class FisherZDistribution(SingleContinuousDistribution):
         d1, d2 = self.d1, self.d2
         return (2*d1**(d1/2)*d2**(d2/2) / beta_fn(d1/2, d2/2) *
                exp(d1*x) / (d1*exp(2*x)+d2)**((d1+d2)/2))
+
 
 def FisherZ(name, d1, d2):
     r"""
@@ -1000,6 +1007,7 @@ def FisherZ(name, d1, d2):
 #-------------------------------------------------------------------------------
 # Frechet distribution ---------------------------------------------------------
 
+
 class FrechetDistribution(SingleContinuousDistribution):
     _argnames = ('a', 's', 'm')
 
@@ -1012,6 +1020,7 @@ class FrechetDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         a, s, m = self.a, self.s, self.m
         return a/s * ((x-m)/s)**(-1-a) * exp(-((x-m)/s)**(-a))
+
 
 def Frechet(name, a, s=1, m=0):
     r"""
@@ -1157,6 +1166,7 @@ def Gamma(name, k, theta):
 #-------------------------------------------------------------------------------
 # Inverse Gamma distribution ---------------------------------------------------
 
+
 class GammaInverseDistribution(SingleContinuousDistribution):
     _argnames = ('a', 'b')
 
@@ -1170,6 +1180,7 @@ class GammaInverseDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         a, b = self.a, self.b
         return b**a/gamma(a) * x**(-a-1) * exp(-b/x)
+
 
 def GammaInverse(name, a, b):
     r"""
@@ -1225,6 +1236,7 @@ def GammaInverse(name, a, b):
 
 #-------------------------------------------------------------------------------
 # Kumaraswamy distribution -----------------------------------------------------
+
 
 class KumaraswamyDistribution(SingleContinuousDistribution):
     _argnames = ('a', 'b')
@@ -1781,6 +1793,7 @@ def Pareto(name, xm, alpha):
 #-------------------------------------------------------------------------------
 # QuadraticU distribution ------------------------------------------------------
 
+
 class QuadraticUDistribution(SingleContinuousDistribution):
     _argnames = ('a', 'b')
 
@@ -1795,6 +1808,7 @@ class QuadraticUDistribution(SingleContinuousDistribution):
         return Piecewise(
             (alpha * (x-beta)**2, And(a<=x, x<=b)),
             (S.Zero, True))
+
 
 def QuadraticU(name, a, b):
     r"""
@@ -1853,6 +1867,7 @@ def QuadraticU(name, a, b):
 #-------------------------------------------------------------------------------
 # RaisedCosine distribution ----------------------------------------------------
 
+
 class RaisedCosineDistribution(SingleContinuousDistribution):
     _argnames = ('mu', 's')
 
@@ -1869,6 +1884,7 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
         return Piecewise(
             ((1+cos(pi*(x-mu)/s)) / (2*s), And(mu-s<=x, x<=mu+s)),
             (S.Zero, True))
+
 
 def RaisedCosine(name, mu, s):
     r"""
@@ -2303,6 +2319,7 @@ def UniformSum(name, n):
 
 #-------------------------------------------------------------------------------
 # VonMises distribution --------------------------------------------------------
+
 
 class VonMisesDistribution(SingleContinuousDistribution):
     _argnames = ('mu', 'k')

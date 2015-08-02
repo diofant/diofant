@@ -10,6 +10,7 @@ from .singleton import S
 
 from inspect import getmro
 
+
 class Basic(with_metaclass(ManagedProperties)):
     """
     Base class for all objects in SymPy.

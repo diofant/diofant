@@ -36,12 +36,15 @@ from sympy.utilities import lambdify, public
 from sympy.core.compatibility import range
 
 from math import log as mathlog
+
+
 def _ispow2(i):
     v = mathlog(i, 2)
     return v == int(v)
 
 _reals_cache = {}
 _complexes_cache = {}
+
 
 @public
 class RootOf(Expr):
@@ -881,6 +884,7 @@ class RootSum(Expr):
         var, expr = self.fun.args
         func = Lambda(var, expr.diff(x))
         return self.new(self.poly, func, self.auto)
+
 
 def bisect(f, a, b, tol):
     """

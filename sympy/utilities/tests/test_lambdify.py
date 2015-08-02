@@ -297,6 +297,7 @@ def test_matrix():
     assert lambdify(v, J, modules='sympy')(1, 2) == sol
     assert lambdify(v.T, J, modules='sympy')(1, 2) == sol
 
+
 def test_numpy_matrix():
     if not numpy:
         skip("numpy not installed.")
@@ -307,6 +308,7 @@ def test_numpy_matrix():
     numpy.testing.assert_allclose(f(1, 2, 3), sol_arr)
     #Check that the types are arrays and matrices
     assert isinstance(f(1, 2, 3), numpy.ndarray)
+
 
 def test_numpy_numexpr():
     if not numpy:
@@ -320,6 +322,7 @@ def test_numpy_numexpr():
     npfunc = lambdify((x, y, z), expr, modules='numpy')
     nefunc = lambdify((x, y, z), expr, modules='numexpr')
     assert numpy.allclose(npfunc(a, b, c), nefunc(a, b, c))
+
 
 def test_numexpr_userfunctions():
     if not numpy:
@@ -335,6 +338,7 @@ def test_numexpr_userfunctions():
     uf = implemented_function(Function('uf'), lambda x, y: 2*x*y+1)
     func = lambdify((x, y), uf(x, y), modules='numexpr')
     assert numpy.allclose(func(a, b), 2*a*b+1)
+
 
 def test_integral():
     f = Lambda(x, exp(-x**2))
@@ -436,6 +440,7 @@ def test_lambdify_imps():
     lam = lambdify(x, f(x), d, use_imps=False)
     assert lam(3) == 102
 
+
 def test_dummification():
     t = symbols('t')
     F = Function('F')
@@ -455,6 +460,7 @@ def test_dummification():
     raises(SyntaxError, lambda: lambdify(F(t) * G(t), F(t) * G(t) + 5))
     raises(SyntaxError, lambda: lambdify(2 * F(t), 2 * F(t) + 5))
     raises(SyntaxError, lambda: lambdify(2 * F(t), 4 * F(t) + 5))
+
 
 def test_python_keywords():
     # Test for issue 7452. The automatic dummification should ensure use of
@@ -511,10 +517,12 @@ def test_special_printers():
     assert isinstance(func1(), mpi)
     assert isinstance(func2(), mpi)
 
+
 def test_true_false():
     # We want exact is comparison here, not just ==
     assert lambdify([], true)() is True
     assert lambdify([], false)() is False
+
 
 def test_issue_2790():
     assert lambdify((x, (y, z)), x + y)(1, (2, 4)) == 3

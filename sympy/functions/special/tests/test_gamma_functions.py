@@ -13,6 +13,7 @@ y = Symbol('y')
 n = Symbol('n', integer=True)
 w = Symbol('w', extended_real=True)
 
+
 def test_gamma():
     assert gamma(nan) == nan
     assert gamma(oo) == oo
@@ -137,6 +138,7 @@ def test_lowergamma():
     k = Symbol('k', integer=True, positive=False)
     assert lowergamma(k, y).rewrite(expint) == lowergamma(k, y)
     assert lowergamma(x, y).rewrite(uppergamma) == gamma(x) - uppergamma(x, y)
+
 
 def test_uppergamma():
     from sympy import meijerg, exp_polar, I, expint

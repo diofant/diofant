@@ -21,8 +21,10 @@ from sympy.utilities.pytest import raises
 
 ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
+
 def unify(K0, K1):
     return K0.unify(K1)
+
 
 def test_Domain_unify():
     F3 = GF(3)
@@ -106,6 +108,7 @@ def test_Domain_unify():
     assert unify(EX, ZZ[x]) == EX
     assert unify(EX, ZZ.frac_field(x)) == EX
     assert unify(EX, EX) == EX
+
 
 def test_Domain_unify_composite():
     assert unify(ZZ.poly_ring(x), ZZ) == ZZ.poly_ring(x)
@@ -228,6 +231,7 @@ def test_Domain_unify_composite():
     assert unify(QQ.frac_field(x, y), ZZ.poly_ring(x, z)) == ZZ.frac_field(x, y, z)
     assert unify(QQ.frac_field(x, y), QQ.poly_ring(x, z)) == QQ.frac_field(x, y, z)
 
+
 def test_Domain_unify_algebraic():
     sqrt5 = QQ.algebraic_field(sqrt(5))
     sqrt7 = QQ.algebraic_field(sqrt(7))
@@ -247,9 +251,11 @@ def test_Domain_unify_algebraic():
     assert sqrt5.unify(sqrt7.frac_field(x, y)) == sqrt57.frac_field(x, y)
     assert sqrt5.frac_field(x, y).unify(sqrt7) == sqrt57.frac_field(x, y)
 
+
 def test_Domain_unify_with_symbols():
     raises(UnificationFailed, lambda: ZZ[x, y].unify_with_symbols(ZZ, (y, z)))
     raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ[x, y], (y, z)))
+
 
 def test_Domain__contains__():
     assert (0 in EX) is True
@@ -556,6 +562,7 @@ def test_PolynomialRing_from_FractionField():
     assert R.to_domain().from_FractionField(g, F.to_domain()) == X**2/4 + Y**2/4
     assert R.to_domain().from_FractionField(h, F.to_domain()) == X**2 + Y**2
 
+
 def test_FractionField_from_PolynomialRing():
     R, x,y = ring("x,y", QQ)
     F, X,Y = field("x,y", ZZ)
@@ -565,6 +572,7 @@ def test_FractionField_from_PolynomialRing():
 
     assert F.to_domain().from_PolynomialRing(f, R.to_domain()) == 3*X**2 + 5*Y**2
     assert F.to_domain().from_PolynomialRing(g, R.to_domain()) == (5*X**2 + 3*Y**2)/15
+
 
 def test_FF_of_type():
     assert FF(3).of_type(FF(3)(1)) is True
@@ -730,9 +738,11 @@ def test_ModularInteger():
     raises(ValueError, lambda: FF(0))
     raises(ValueError, lambda: FF(2.1))
 
+
 def test_QQ_int():
     assert int(QQ(2**2000, 3**1250)) == 455431
     assert int(QQ(2**100, 3)) == 422550200076076467165567735125
+
 
 def test_RR_double():
     assert RR(3.14) > 1e-50
@@ -741,6 +751,7 @@ def test_RR_double():
     assert RR(1e-15) > 1e-50
     assert RR(1e-20) > 1e-50
     assert RR(1e-40) > 1e-50
+
 
 def test_RR_Float():
     f1 = Float("1.01")
@@ -753,6 +764,7 @@ def test_RR_Float():
     RR2 = RealField(prec=f2._prec)
     assert RR2(f1)-1 > 1e-50
     assert RR2(f2)-1 > 1e-50  # RR's precision is equal to f2's
+
 
 def test_CC_double():
     assert CC(3.14).real > 1e-50

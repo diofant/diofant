@@ -26,6 +26,7 @@ h = Function('h')
 # constant_renumber because it will normalize it (constant_renumber causes
 # dsolve() to return different results on different machines)
 
+
 def test_linear_2eq_order1():
     x, y, z = symbols('x, y, z', function=True)
     k, l, m, n = symbols('k, l, m, n', Integer=True)
@@ -1940,6 +1941,7 @@ def test_issue_4785():
         '1st_homogeneous_coeff_subs_indep_div_dep_Integral',
         '1st_homogeneous_coeff_subs_dep_div_indep_Integral')
 
+
 def test_issue_4825():
     raises(ValueError, lambda: dsolve(f(x, y).diff(x) - y*f(x, y), f(x)))
     assert classify_ode(f(x, y).diff(x) - y*f(x, y), f(x), dict=True) == \
@@ -2436,6 +2438,7 @@ def test_heuristic_abaco2_unique_unknown():
     i = infinitesimals(eq, hint='abaco2_unique_unknown')
     assert checkinfsol(eq, i)[0]
 
+
 def test_heuristic_linear():
     xi = Function('xi')
     eta = Function('eta')
@@ -2445,6 +2448,7 @@ def test_heuristic_linear():
     eq = x**(n*(m + 1) - m)*(f(x).diff(x)) - a*f(x)**n -b*x**(n*(m + 1))
     i = infinitesimals(eq, hint='linear')
     assert checkinfsol(eq, i)[0]
+
 
 @XFAIL
 def test_kamke():
@@ -2582,6 +2586,7 @@ def test_2nd_power_series_regular():
 
     eq = x*(f(x).diff(x, 2)) - f(x).diff(x) + 4*x**3*f(x)
     assert dsolve(eq) == Eq(f(x), C2*(-x**4/2 + 1) + C1*x**2 + O(x**6))
+
 
 def test_issue_7093():
     x = Symbol("x")  # assuming x is real leads to an error

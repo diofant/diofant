@@ -21,6 +21,7 @@ from .point import Point
 from .line3d import LinearEntity3D, Line3D, Segment3D, Ray3D
 from .line import Line, Segment, Ray
 
+
 class Plane(GeometryEntity):
     """
     A plane is a flat, two-dimensional surface. A plane is the two-dimensional

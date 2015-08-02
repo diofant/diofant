@@ -6,6 +6,7 @@ from sympy.abc import a, b, c
 from sympy.core.compatibility import u_decode as u
 from sympy.utilities.pytest import XFAIL
 
+
 def pretty(expr):
     """ASCII pretty-printing"""
     return xpretty(expr, use_unicode=False, wrap_line=False)
@@ -108,6 +109,7 @@ def test_str_printing():
     assert str(d[8]) == ('(N.j|N.k) + (C.x**2 - ' +
                          'Integral(f(b), b))*(N.k|N.k)')
 
+
 @XFAIL
 def test_pretty_printing_ascii():
     assert pretty(v[0]) == u('0')
@@ -121,6 +123,7 @@ def test_pretty_printing_ascii():
     assert pretty(d[5]) == u('(a) (N_i|N_k) + (-b) (N_j|N_k)')
     assert pretty(d[7]) == pretty_d_7
     assert pretty(d[10]) == u('(cos(a)) (C_i|N_k) + (-sin(a)) (C_j|N_k)')
+
 
 def test_pretty_print_unicode():
     assert upretty(v[0]) == u('0')

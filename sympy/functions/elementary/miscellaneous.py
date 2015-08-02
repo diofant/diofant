@@ -18,6 +18,7 @@ from sympy.core.logic import fuzzy_and
 from sympy.functions.elementary.integers import floor
 from sympy.logic.boolalg import And
 
+
 class IdentityFunction(with_metaclass(Singleton, Lambda)):
     """
     The identity function

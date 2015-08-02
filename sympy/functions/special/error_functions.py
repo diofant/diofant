@@ -403,6 +403,7 @@ class erfc(Function):
                     self.func(x + x*sqrt(sq)))
         return (re, im)
 
+
 class erfi(Function):
     r"""
     Imaginary error function. The function erfi is defined as:
@@ -572,6 +573,7 @@ class erfi(Function):
                     self.func(x + x*sqrt(sq)))
         return (re, im)
 
+
 class erf2(Function):
     r"""
     Two-argument error function. This function is defined as:
@@ -702,6 +704,7 @@ class erf2(Function):
     def _eval_rewrite_as_expint(self, x, y):
         return erf(y).rewrite(expint) - erf(x).rewrite(expint)
 
+
 class erfinv(Function):
     r"""
     Inverse Error Function. The erfinv function is defined as:
@@ -785,6 +788,7 @@ class erfinv(Function):
     def _eval_rewrite_as_erfcinv(self, z):
         return erfcinv(1-z)
 
+
 class erfcinv (Function):
     r"""
     Inverse Complementary Error Function. The erfcinv function is defined as:
@@ -853,6 +857,7 @@ class erfcinv (Function):
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
+
 
 class erf2inv(Function):
     r"""
@@ -1523,6 +1528,7 @@ class Li(Function):
 ###############################################################################
 #################### TRIGONOMETRIC INTEGRALS ##################################
 ###############################################################################
+
 
 class TrigonometricIntegral(Function):
     """ Base class for trigonometric integrals. """

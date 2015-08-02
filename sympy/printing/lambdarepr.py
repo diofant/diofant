@@ -70,6 +70,8 @@ class LambdaPrinter(StrPrinter):
 
 # numexpr works by altering the string passed to numexpr.evaluate
 # rather than by populating a namespace.  Thus a special printer...
+
+
 class NumExprPrinter(LambdaPrinter):
     # key, value pairs correspond to sympy name and numexpr name
     # functions not appearing in this dict will raise a TypeError
@@ -149,6 +151,7 @@ class NumExprPrinter(LambdaPrinter):
     def doprint(self, expr):
         lstr = super(NumExprPrinter, self).doprint(expr)
         return "evaluate('%s')" % lstr
+
 
 def lambdarepr(expr, **settings):
     """

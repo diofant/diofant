@@ -239,6 +239,7 @@ def test_series_expansion_for_uniform_order():
     assert (1/x + y + y*x + x).series(x, 0, 0) == 1/x + O(1, x)
     assert (1/x + y + y*x + x).series(x, 0, 1) == 1/x + y + O(x)
 
+
 def test_leadterm():
     assert (3 + 2*x**(log(3)/log(2) - 1)).leadterm(x) == (3, 0)
 
@@ -437,6 +438,7 @@ def test_is_algebraic_expr():
     assert (cos(y)/sqrt(x)).is_algebraic_expr(x) is True
     assert (cos(y)/sqrt(x)).is_algebraic_expr(y) is False
     assert (cos(y)/sqrt(x)).is_algebraic_expr(x, y) is False
+
 
 def test_SAGE1():
     #see https://github.com/sympy/sympy/issues/3346
@@ -1396,9 +1398,11 @@ def test_issue_4199():
     assert a._eval_interval(x, -oo, oo) == -y
     assert a._eval_interval(x, oo, -oo) == y
 
+
 def test_eval_interval_zoo():
     # Test that limit is used when zoo is returned
     assert Si(1/x)._eval_interval(x, 0, 1) == -pi/2 + Si(1)
+
 
 def test_primitive():
     assert (3*(x + 1)**2).primitive() == (3, (x + 1)**2)
@@ -1620,6 +1624,7 @@ def test_round():
     assert S.NegativeInfinity.round() == S.NegativeInfinity
     assert S.ComplexInfinity.round() == S.ComplexInfinity
 
+
 def test_round_exception_nostr():
     # Don't use the string form of the expression in the round exception, as
     # it's too slow
@@ -1631,6 +1636,7 @@ def test_round_exception_nostr():
     else:
         # Did not raise
         raise AssertionError("Did not raise")
+
 
 def test_extract_branch_factor():
     assert exp_polar(2.0*I*pi).extract_branch_factor() == (1, 1)
@@ -1658,6 +1664,7 @@ def test_issue_6325():
     assert diff(e, t, 2) == ans
     e.diff(t, 2) == ans
     assert diff(e, t, 2, simplify=False) != ans
+
 
 def test_issue_7426():
     f1 = a % c

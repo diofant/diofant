@@ -24,6 +24,7 @@ class SympifyError(ValueError):
 
 converter = {}  # See sympify docstring.
 
+
 class CantSympify(object):
     """
     Mix in this trait to a class to disallow sympification of its instances.

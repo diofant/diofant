@@ -6,6 +6,7 @@ from sympy.core.containers import Tuple
 x, y, z = symbols('x,y,z')
 a, b, c = symbols('a,b,c')
 
+
 def test_count_ops_non_visual():
     def count(val):
         return count_ops(val, visual=False)
