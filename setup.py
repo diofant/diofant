@@ -117,10 +117,15 @@ class test_sympy(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         _test_args = [
-            '--ignore=setup.py',
-            '--verbose',
             '--durations=100',
             '--doctest-modules',
+            '--ignore=setup.py',
+            '--ignore=docs/conf.py',
+            '--ignore=bin/ask_update.py',
+            '--ignore=bin/mailmap_update.py',
+            '--ignore=sympy/utilities/autowrap.py',
+            '--ignore=build/',
+            '--doctest-glob="*.rst"',
         ]
         extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
         if extra_args is not None:
