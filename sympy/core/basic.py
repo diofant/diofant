@@ -1621,7 +1621,7 @@ def _aresame(a, b):
     written to provide that query:
 
     >>> from sympy.core.basic import _aresame
-    >>> _aresame(S(2.0), Integer(2))
+    >>> _aresame(Float(2.0), Integer(2))
     False
     """
     from .function import AppliedUndef, UndefinedFunction as UndefFunc

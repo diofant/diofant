@@ -63,14 +63,14 @@ def test_Factors():
     assert Factors({Integer(-1): Integer(3)/2}) == Factors({I: S.One, Integer(-1): S.One})
     assert Factors({I: Integer(1), Integer(-1): Integer(1)/3}).as_expr() == I*(-1)**(Integer(1)/3)
 
-    assert Factors(-1.) == Factors({Integer(-1): Integer(1), S(1.): 1})
-    assert Factors(-2.) == Factors({Integer(-1): Integer(1), S(2.): 1})
-    assert Factors((-2.)**x) == Factors({S(-2.): x})
+    assert Factors(-1.) == Factors({Integer(-1): Integer(1), Float(1.): 1})
+    assert Factors(-2.) == Factors({Integer(-1): Integer(1), Float(2.): 1})
+    assert Factors((-2.)**x) == Factors({Float(-2.): x})
     assert Factors(Integer(-2)) == Factors({Integer(-1): Integer(1), Integer(2): 1})
     assert Factors(S.Half) == Factors({Integer(2): -S.One})
     assert Factors(Integer(3)/2) == Factors({Integer(3): S.One, Integer(2): Integer(-1)})
     assert Factors({I: Integer(1)}) == Factors(I)
-    assert Factors({-1.0: 2, I: 1}) == Factors({S(1.0): 1, I: 1})
+    assert Factors({-1.0: 2, I: 1}) == Factors({Float(1.0): 1, I: 1})
     assert Factors({S.NegativeOne: -Integer(3)/2}).as_expr() == I
     A = symbols('A', commutative=False)
     assert Factors(2*A**2) == Factors({Integer(2): 1, A**2: 1})

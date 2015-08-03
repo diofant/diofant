@@ -337,7 +337,7 @@ def test_nsimplify():
     assert nsimplify(.2222, tolerance=0) == Integer(1111)/5000
     assert nsimplify(-.2222, tolerance=0) == -Integer(1111)/5000
     # issue 7211, PR 4112
-    assert nsimplify(S(2e-8)) == Integer(1)/50000000
+    assert nsimplify(Float(2e-8)) == Integer(1)/50000000
     # issue 7322 direct test
     assert nsimplify(1e-42, rational=True) != 0
 

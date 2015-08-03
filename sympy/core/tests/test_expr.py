@@ -910,8 +910,8 @@ def test_is_number():
 
 def test_as_coeff_add():
     assert Integer(2).as_coeff_add() == (2, ())
-    assert S(3.0).as_coeff_add() == (0, (S(3.0),))
-    assert S(-3.0).as_coeff_add() == (0, (S(-3.0),))
+    assert Float(3.0).as_coeff_add() == (0, (Float(3.0),))
+    assert Float(-3.0).as_coeff_add() == (0, (Float(-3.0),))
     assert x.as_coeff_add() == (0, (x,))
     assert (x - 1).as_coeff_add() == (-1, (x,))
     assert (x + 1).as_coeff_add() == (1, (x,))
@@ -925,9 +925,9 @@ def test_as_coeff_add():
 
 def test_as_coeff_mul():
     assert Integer(2).as_coeff_mul() == (2, ())
-    assert S(3.0).as_coeff_mul() == (1, (S(3.0),))
-    assert S(-3.0).as_coeff_mul() == (-1, (S(3.0),))
-    assert S(-3.0).as_coeff_mul(rational=False) == (-S(3.0), ())
+    assert Float(3.0).as_coeff_mul() == (1, (Float(3.0),))
+    assert Float(-3.0).as_coeff_mul() == (-1, (Float(3.0),))
+    assert Float(-3.0).as_coeff_mul(rational=False) == (-Float(3.0), ())
     assert x.as_coeff_mul() == (1, (x,))
     assert (-x).as_coeff_mul() == (-1, (x,))
     assert (2*x).as_coeff_mul() == (2, (x,))
@@ -989,7 +989,7 @@ def test_extractions():
     assert (2*x + 3).extract_additively(2*x) == 3
     assert x.extract_additively(0) == x
     assert Integer(2).extract_additively(x) is None
-    assert S(2.).extract_additively(2) == S.Zero
+    assert Float(2.).extract_additively(2) == S.Zero
     assert S(2*x + 3).extract_additively(x + 1) == x + 2
     assert S(2*x + 3).extract_additively(y + 1) is None
     assert S(2*x - 3).extract_additively(x + 1) is None
@@ -1563,8 +1563,8 @@ def test_round():
     assert (pi + sqrt(2)).round(2) == 4.56
     assert (10*(pi + sqrt(2))).round(-1) == 50
     pytest.raises(TypeError, lambda: round(x + 2, 2))
-    assert S(2.3).round(1) == 2.3
-    e = S(12.345).round(2)
+    assert Float(2.3).round(1) == 2.3
+    e = Float(12.345).round(2)
     assert e == round(12.345, 2)
     assert type(e) is Float
 
@@ -1606,14 +1606,14 @@ def test_round():
     assert (I**(I + 3)).round(3) == Float('-0.208', '')*I
 
     # issue 8720
-    assert S(-123.6).round() == -124.
-    assert S(-1.5).round() == -2.
-    assert S(-100.5).round() == -101.
+    assert Float(-123.6).round() == -124.
+    assert Float(-1.5).round() == -2.
+    assert Float(-100.5).round() == -101.
     assert S(-1.5 - 10.5*I).round() == -2.0 - 11.0*I
 
     # issue 7961
-    assert str(S(0.006).round(2)) == '0.01'
-    assert str(S(0.00106).round(4)) == '0.0011'
+    assert str(Float(0.006).round(2)) == '0.01'
+    assert str(Float(0.00106).round(4)) == '0.0011'
 
     # issue 8147
     assert S.NaN.round() == S.NaN

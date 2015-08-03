@@ -3171,7 +3171,7 @@ class Expr(Basic, EvalfMixin):
         ========
 
         >>> from sympy import pi, E, I, S, Add, Mul, Number
-        >>> S(10.5).round()
+        >>> Float(10.5).round()
         11.
         >>> pi.round()
         3.

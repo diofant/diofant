@@ -36,7 +36,7 @@ def _unevaluated_Mul(*args):
     >>> from sympy.core.mul import _unevaluated_Mul as uMul
     >>> from sympy import S, sqrt, Mul
     >>> from sympy.abc import x
-    >>> a = uMul(*[S(3.0), x, Integer(2)])
+    >>> a = uMul(*[Float(3.0), x, Integer(2)])
     >>> a.args[0]
     6.00000000000000
     >>> a.args[1]

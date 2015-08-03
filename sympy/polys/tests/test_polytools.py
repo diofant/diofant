@@ -3127,8 +3127,8 @@ def test_keep_coeff():
     u = Mul(2, x + 1, evaluate=False)
     assert _keep_coeff(Integer(1), x) == x
     assert _keep_coeff(Integer(-1), x) == -x
-    assert _keep_coeff(S(1.0), x) == 1.0*x
-    assert _keep_coeff(S(-1.0), x) == -1.0*x
+    assert _keep_coeff(Float(1.0), x) == 1.0*x
+    assert _keep_coeff(Float(-1.0), x) == -1.0*x
     assert _keep_coeff(Integer(1), 2*x) == 2*x
     assert _keep_coeff(Integer(2), x/2) == x
     assert _keep_coeff(Integer(2), sin(x)) == 2*sin(x)

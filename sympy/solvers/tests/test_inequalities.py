@@ -117,7 +117,7 @@ def test_reduce_poly_inequalities_complex_relational():
         [[Ne(x**2, 0)]], x, relational=True) == \
         And(Or(And(Lt(-oo, x), Lt(x, 0)), And(Lt(0, x), Lt(x, oo))))
 
-    for one in (Integer(1), S(1.0)):
+    for one in (Integer(1), Float(1.0)):
         inf = one*oo
         assert reduce_rational_inequalities(
             [[Eq(x**2, one)]], x, relational=True) == \

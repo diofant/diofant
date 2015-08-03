@@ -583,9 +583,9 @@ def test___eq__():
 
 def test_RealField_from_sympy():
     assert RR.convert(Integer(0)) == RR.dtype(0)
-    assert RR.convert(S(0.0)) == RR.dtype(0.0)
+    assert RR.convert(Float(0.0)) == RR.dtype(0.0)
     assert RR.convert(Integer(1)) == RR.dtype(1)
-    assert RR.convert(S(1.0)) == RR.dtype(1.0)
+    assert RR.convert(Float(1.0)) == RR.dtype(1.0)
     assert RR.convert(sin(1)) == RR.dtype(sin(1).evalf())
     assert RR.convert(oo) == RR("+inf")
     assert RR.convert(-oo) == RR("-inf")

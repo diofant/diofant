@@ -294,9 +294,9 @@ to a Python expression.  Use the :func:`sympy.core.sympify.sympify` function, or
     6.2
     >>> type(6.2)
     <class 'float'>
-    >>> S(6.2)  # SymPy Float has no such problems because of arbitrary precision.
+    >>> Float(6.2)  # SymPy Float has no such problems because of arbitrary precision.
     6.20000000000000
-    >>> type(S(6.2))
+    >>> type(Float(6.2))
     <class 'sympy.core.numbers.Float'>
 
 If you include numbers in a SymPy expression, they will be sympified

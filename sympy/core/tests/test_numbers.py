@@ -341,7 +341,7 @@ def test_Float():
     assert eq((pi ** -1).evalf(), Float("0.31830988618379067"))
     a = Float(2) ** Float(4)
     assert eq(a.evalf(), Float(16))
-    assert (S(.3) == S(.5)) is False
+    assert (Float(.3) == Float(.5)) is False
     x_str = Float((0, '13333333333333', -52, 53))
     x2_str = Float((0, '26666666666666', -53, 53))
     x_hex = Float((0, int(0x13333333333333), -52, 53))
@@ -1214,7 +1214,7 @@ def test_conversion_to_mpmath():
 
 def test_relational():
     # real
-    x = S(.1)
+    x = Float(.1)
     assert (x != cos) is True
     assert (x == cos) is False
 
@@ -1332,7 +1332,7 @@ def test_as_content_primitive():
     assert S.Half.as_content_primitive() == (S.Half, 1)
     assert (-S.Half).as_content_primitive() == (S.Half, -1)
     assert Integer(3).as_content_primitive() == (3, 1)
-    assert S(3.1).as_content_primitive() == (1, 3.1)
+    assert Float(3.1).as_content_primitive() == (1, 3.1)
 
 
 def test_hashing_sympy_integers():
