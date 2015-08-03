@@ -72,9 +72,9 @@ def test_meijerint_indefinite_numerically():
     t(2, x)
     t(1, 2*x)
     t(1, x**2)
-    t(5, x**S('3/2'))
+    t(5, x**Rational(3, 2))
     t(x**3, x)
-    t(3*x**S('3/2'), 4*x**S('7/3'))
+    t(3*x**Rational(3, 2), 4*x**Rational(7, 3))
 
 
 def test_meijerint_definite():
@@ -485,7 +485,7 @@ def test_probability():
 
     # Levi
     c = Symbol('c', positive=True)
-    assert integrate(sqrt(c/2/pi)*exp(-c/2/(x - mu))/(x - mu)**S('3/2'),
+    assert integrate(sqrt(c/2/pi)*exp(-c/2/(x - mu))/(x - mu)**Rational(3, 2),
                     (x, mu, oo)) == 1
     # higher moments oo
 

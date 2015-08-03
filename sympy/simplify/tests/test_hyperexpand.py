@@ -20,11 +20,11 @@ from sympy import (cos, sin, log, exp, asin, lowergamma, atanh, besseli,
 
 def test_branch_bug():
     assert hyperexpand(hyper((-Integer(1)/3, Integer(1)/2), (Integer(2)/3, Integer(3)/2), -z)) == \
-        -z**S('1/3')*lowergamma(exp_polar(I*pi)/3, z)/5 \
+        -z**Rational(1, 3)*lowergamma(exp_polar(I*pi)/3, z)/5 \
         + sqrt(pi)*erf(sqrt(z))/(5*sqrt(z))
     assert hyperexpand(meijerg([Integer(7)/6, 1], [], [Integer(2)/3], [Integer(1)/6, 0], z)) == \
-        2*z**S('2/3')*(2*sqrt(pi)*erf(sqrt(z))/sqrt(z) - 2*lowergamma(
-                       Integer(2)/3, z)/z**S('2/3'))*gamma(Integer(2)/3)/gamma(Integer(5)/3)
+        2*z**Rational(2, 3)*(2*sqrt(pi)*erf(sqrt(z))/sqrt(z) -
+                             2*lowergamma(Integer(2)/3, z)/z**Rational(2, 3))*gamma(Integer(2)/3)/gamma(Integer(5)/3)
 
 
 def test_hyperexpand():
@@ -34,8 +34,8 @@ def test_hyperexpand():
     assert hyperexpand(hyper([], [], z)) == exp(z)
     assert hyperexpand(hyper([1, 1], [2], -z)*z) == log(1 + z)
     assert hyperexpand(hyper([], [S.Half], -z**2/4)) == cos(z)
-    assert hyperexpand(z*hyper([], [S('3/2')], -z**2/4)) == sin(z)
-    assert hyperexpand(hyper([S('1/2'), S('1/2')], [S('3/2')], z**2)*z) \
+    assert hyperexpand(z*hyper([], [Rational(3, 2)], -z**2/4)) == sin(z)
+    assert hyperexpand(hyper([Rational(1, 2), Rational(1, 2)], [Rational(3, 2)], z**2)*z) \
         == asin(z)
 
 
@@ -124,7 +124,7 @@ def test_hyperexpand_parametric():
 
 def test_shifted_sum():
     from sympy import simplify
-    assert simplify(hyperexpand(z**4*hyper([2], [3, S('3/2')], -z**2))) \
+    assert simplify(hyperexpand(z**4*hyper([2], [3, Rational(3, 2)], -z**2))) \
         == z*sin(2*z) + (-z**2 + S.Half)*cos(2*z) - S.Half
 
 
@@ -210,7 +210,7 @@ def test_plan():
     with pytest.raises(ValueError):
         devise_plan(Hyper_Function([2], [1]), Hyper_Function([2], [2]), z)
     with pytest.raises(ValueError):
-        devise_plan(Hyper_Function([2], []), Hyper_Function([S("1/2")], []), z)
+        devise_plan(Hyper_Function([2], []), Hyper_Function([Rational(1, 2)], []), z)
 
     # We cannot use pi/(10000 + n) because polys is insanely slow.
     a1, a2, b1 = (randcplx(n) for n in range(3))
@@ -231,8 +231,8 @@ def test_plan():
 
 
 def test_plan_derivatives():
-    a1, a2, a3 = 1, 2, S('1/2')
-    b1, b2 = 3, S('5/2')
+    a1, a2, a3 = 1, 2, Rational(1, 2)
+    b1, b2 = 3, Rational(5, 2)
     h = Hyper_Function((a1, a2, a3), (b1, b2))
     h2 = Hyper_Function((a1 + 1, a2 + 1, a3 + 2), (b1 + 1, b2 + 1))
     ops = devise_plan(h2, h, z)
@@ -251,7 +251,7 @@ def test_reduction_operators():
 
     assert ReduceOrder(2, 0) is None
     assert ReduceOrder(2, -1) is None
-    assert ReduceOrder(1, S('1/2')) is None
+    assert ReduceOrder(1, Rational(1, 2)) is None
 
     h2 = hyper((a1, a2), (b1, a2), z)
     assert tn(ReduceOrder(a2, a2).apply(h, op), h2, z)

@@ -216,7 +216,7 @@ def test_mellin_transform_bessel():
             (Max(-re(a)/2, re(a)/2), Integer(1)/4), True)
     assert MT(besselj(a, sqrt(x))*bessely(a, sqrt(x)), x, s) == \
         (-cos(pi*s)*gamma(s)*gamma(a + s)*gamma(Integer(1)/2 - s)
-         / (pi**S('3/2')*gamma(1 + a - s)),
+         / (pi**Rational(3, 2)*gamma(1 + a - s)),
             (Max(-re(a), 0), Integer(1)/2), True)
     assert MT(besselj(a, sqrt(x))*bessely(b, sqrt(x)), x, s) == \
         (-4**s*cos(pi*(a/2 - b/2 + s))*gamma(1 - 2*s)

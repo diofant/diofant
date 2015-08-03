@@ -444,8 +444,8 @@ def test_Rational():
     assert str(Rational("-25")) == "-25"
     assert str(Rational("1.25")) == "5/4"
     assert str(Rational("-2.6e-2")) == "-13/500"
-    assert str(S("25/7")) == "25/7"
-    assert str(S("-123/569")) == "-123/569"
+    assert str(Rational(25, 7)) == "25/7"
+    assert str(Rational(-123, 569)) == "-123/569"
 
     assert str(sqrt(Rational(1, 4))) == "1/2"
     assert str(sqrt(Rational(1, 36))) == "1/6"

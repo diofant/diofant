@@ -134,11 +134,11 @@ def add_formulae(formulae):
     addb((1, 1), (2, ),
          Matrix([HyperRep_log1(z), 1]), Matrix([[-1/z, 0]]),
          Matrix([[0, z/(z - 1)], [0, 0]]))
-    addb((S.Half, 1), (S('3/2'), ),
+    addb((S.Half, 1), (Rational(3, 2), ),
          Matrix([HyperRep_atanh(z), 1]),
          Matrix([[1, 0]]),
          Matrix([[-Integer(1)/2, 1/(1 - z)/2], [0, 0]]))
-    addb((S.Half, S.Half), (S('3/2'), ),
+    addb((S.Half, S.Half), (Rational(3, 2), ),
          Matrix([HyperRep_asin1(z), HyperRep_power1(-Integer(1)/2, z)]),
          Matrix([[1, 0]]),
          Matrix([[-Integer(1)/2, Integer(1)/2], [0, z/(1 - z)/2]]))
@@ -829,7 +829,7 @@ class FormulaCollection(object):
         HyperRep_power1(-1, _z)
 
         >>> from sympy import S
-        >>> i = Hyper_Function([S('1/4'), S('3/4 + 4')], [S.Half])
+        >>> i = Hyper_Function([Rational(1, 4), S('3/4 + 4')], [S.Half])
         >>> f.lookup_origin(i).closed_form
         HyperRep_sqrts1(-1/4, _z)
         """
@@ -1531,7 +1531,7 @@ def devise_plan(target, origin, z):
 
     >>> from sympy import S
     >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
-    ...             Hyper_Function((2, S('3/2')), ()), z):
+    ...             Hyper_Function((2, Rational(3, 2)), ()), z):
     ...     print(i)
     <Decrement upper index #0 of [3/2, 1], [].>
     <Decrement upper index #0 of [2, 3/2], [].>

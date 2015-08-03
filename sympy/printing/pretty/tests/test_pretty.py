@@ -4089,7 +4089,7 @@ def test_hyper():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = hyper((pi, S('2/3'), -2*k), (3, 4, 5, -3), x**2)
+    expr = hyper((pi, Rational(2, 3), -2*k), (3, 4, 5, -3), x**2)
     ucode_str = \
 """\
  ┌─  ⎛π, 2/3, -2⋅k │  2⎞\n\

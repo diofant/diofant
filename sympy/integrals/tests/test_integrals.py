@@ -760,7 +760,7 @@ def test_issue_4403():
 
     x = Symbol('x', extended_real=True)
     y = Symbol('y', nonzero=True, extended_real=True)
-    assert integrate(1/(x**2 + y**2)**S('3/2'), x) == \
+    assert integrate(1/(x**2 + y**2)**Rational(3, 2), x) == \
         1/(y**2*sqrt(1 + y**2/x**2))
 
 

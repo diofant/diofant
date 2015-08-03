@@ -24,16 +24,16 @@ def test_discreteuniform():
     assert E(X) == (a + b + c)/3
     assert simplify(variance(X)
                     - ((a**2 + b**2 + c**2)/3 - (a/3 + b/3 + c/3)**2)) == 0
-    assert P(Eq(X, a)) == P(Eq(X, b)) == P(Eq(X, c)) == S('1/3')
+    assert P(Eq(X, a)) == P(Eq(X, b)) == P(Eq(X, c)) == Rational(1, 3)
 
     Y = DiscreteUniform('Y', range(-5, 5))
 
     # Numeric
-    assert E(Y) == S('-1/2')
-    assert variance(Y) == S('33/4')
+    assert E(Y) == -Rational(1, 2)
+    assert variance(Y) == Rational(33, 4)
 
     for x in range(-5, 5):
-        assert P(Eq(Y, x)) == S('1/10')
+        assert P(Eq(Y, x)) == Rational(1, 10)
         assert P(Y <= x) == S(x + 6)/10
         assert P(Y >= x) == S(5 - x)/10
 

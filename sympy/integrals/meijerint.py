@@ -199,7 +199,7 @@ def _create_lookup_table(table):
     add(Shi(t), [Integer(1)/2], [], [0], [Integer(-1)/2, Integer(-1)/2], polar_lift(-1)*t**2/4,
         t*sqrt(pi)/4)
     add(Chi(t), [], [Integer(1)/2, 1], [0, 0], [Integer(1)/2, Integer(1)/2], t**2/4, -
-        pi**S('3/2')/2)
+        pi**Rational(3, 2)/2)
 
     # generalized exponential integral
     add(expint(a, t), [], [a], [a - 1, 0], [], t)

@@ -346,7 +346,7 @@ you don't have to worry about this problem:
     The other solution is to put quotes around the expression
     and run it through S() (i.e., sympify it):
 
-    >>> S("22/7")
+    >>> Rational(22, 7)
     22/7
 
     >>> 1/2   # With division imported it evaluates to a python float
@@ -480,7 +480,7 @@ values for expressions:
     replacing x with a Rational representing 1/10 -- before the call
     to evaluate:
 
-    >>> big_trig_identity.subs(x, S('1/10')).n(2)
+    >>> big_trig_identity.subs(x, Rational(1, 10)).n(2)
     0.e-91
 
     3) Try to simplify the expression. In this case, SymPy will recognize
