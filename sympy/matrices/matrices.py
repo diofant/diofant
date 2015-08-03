@@ -3569,7 +3569,7 @@ class MatrixBase(object):
                     # that we have already computed (if there are any).
                     # (That is why we start with the biggest s).
 
-                    ########   Implementation remark:   ########
+                    # ########   Implementation remark:   ########
 
                     # Doing so for *ALL* already computed chain vectors
                     # we actually exclude some vectors twice because they are already excluded

@@ -4,7 +4,7 @@ from sympy.core.function import Function, ArgumentIndexError
 from sympy.functions.special.gamma_functions import gamma, digamma
 
 ###############################################################################
-############################ COMPLETE BETA  FUNCTION ##########################
+# ########################## COMPLETE BETA  FUNCTION ######################## #
 ###############################################################################
 
 

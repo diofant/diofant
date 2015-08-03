@@ -215,7 +215,7 @@ def _create_lookup_table(table):
     add(fresnels(t), [1], [], [S(3)/4], [0, S(1)/4], pi**2*t**4/16, S(1)/2)
     add(fresnelc(t), [1], [], [S(1)/4], [0, S(3)/4], pi**2*t**4/16, S(1)/2)
 
-    ##### bessel-type functions #####
+    # ##### bessel-type functions #####
     from sympy import besselj, bessely, besseli, besselk
 
     # Section 8.4.19

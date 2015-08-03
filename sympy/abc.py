@@ -37,7 +37,7 @@ from .core import Symbol, symbols
 from .core.alphabets import greeks
 from .core.compatibility import exec_
 
-##### Symbol definitions #####
+# ##### Symbol definitions #####
 
 a, b, c, d, e, f, g, h, i, j, k, l, m = symbols('a:m')
 n, o, p, q, r, s, t, u, v, w, x, y, z = symbols('n:z')
@@ -53,7 +53,7 @@ rho, sigma, tau, upsilon = symbols('rho, sigma, tau, upsilon')
 phi, chi, psi, omega = symbols('phi, chi, psi, omega')
 
 
-##### Clashing-symbols diagnostics #####
+# ##### Clashing-symbols diagnostics #####
 
 # We want to know which names in SymPy collide with those in here.
 # This is mostly for diagnosing SymPy's namespace during SymPy development.

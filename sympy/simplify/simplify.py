@@ -4216,7 +4216,7 @@ def exptrigsimp(expr, simplify=True):
     # conversion from exp to hyperbolic
     ex = newexpr.atoms(exp, S.Exp1)
     ex = [ei for ei in ex if 1/ei not in ex]
-    ## sinh and cosh
+    # sinh and cosh
     for ei in ex:
         e2 = ei**-2
         if e2 in ex:

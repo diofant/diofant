@@ -1070,7 +1070,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 )
 
         if len(dum) > 0:
-            ### perform contractions ###
+            # perform contractions
             axes1 = []
             axes2 = []
             for i, indx1 in enumerate(indices):

@@ -7,7 +7,7 @@ from sympy.utilities.iterables import (has_dups, default_sort_key)
 from sympy.core.compatibility import range
 
 ###############################################################################
-###################### Kronecker Delta, Levi-Civita etc. ######################
+# #################### Kronecker Delta, Levi-Civita etc. #################### #
 ###############################################################################
 
 

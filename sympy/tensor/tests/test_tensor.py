@@ -22,7 +22,7 @@ def _is_equal(arg1, arg2):
     return arg1 == arg2
 
 
-#################### Tests from tensor_can.py #######################
+# ################### Tests from tensor_can.py ##################### #
 def test_canonicalize_no_slot_sym():
     # A_d0 * B^d0; T_c = A^d0*B_d0
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
@@ -1278,7 +1278,7 @@ def test_hidden_indices_for_matrix_multiplication():
     assert S.metric() == S.metric(S.auto_left, -S.auto_right)
 
 
-### TEST VALUED TENSORS ###
+# ### TEST VALUED TENSORS ###
 
 numpy = import_module('numpy')
 
@@ -1325,7 +1325,7 @@ def _get_valued_base_test_variables():
     C = tensorhead('C', [LorentzD], [[1]])
     C.data = [E, px, py, pz]
 
-    ### non-diagonal metric ###
+    # ### non-diagonal metric ###
     ndm_matrix = (
         (1, 1, 0,),
         (1, 0, 1),
