@@ -150,7 +150,6 @@ setup(name='sympy',
       packages=find_packages(),
       ext_modules=[],
       package_data={
-          'sympy.utilities.mathml': ['data/*.xsl'],
           'sympy.logic.benchmarks': ['input/*.cnf'],
           },
       cmdclass={'test': test_sympy,
