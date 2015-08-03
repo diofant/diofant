@@ -1539,7 +1539,7 @@ def test_round():
     ans = S(d20).round(-2)
     assert ans.is_Float and ans == 12345678901234567900
     assert Rational(1, 7).round(4) == 0.1429
-    assert S('.1349').round(2) == 0.13
+    assert Float(.1349).round(2) == 0.13
     n = Integer(12345)
     ans = n.round()
     assert ans.is_Float
