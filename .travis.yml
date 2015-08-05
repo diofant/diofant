@@ -13,22 +13,21 @@ addons:
       - gfortran
 matrix:
   include:
-    - python: "2.7"
+    - python: 2.7
       env:
         - PYTEST_EXTRA_ARGS='--cov sympy -m "not slow"'
 before_install:
-  - pip uninstall -y numpy;
-  - travis_wait 30 pip install numpy==1.7.1 scipy==0.12.0 Theano==0.6;
-  - travis_wait 30 pip install matplotlib==1.3.1;
+  - travis_wait 30 pip install scipy==0.12.0 Theano==0.6
+  - travis_wait 30 pip install matplotlib==1.3.1
   - pip install pytest==2.7.0 pep8==1.6.2
-  - pip install pytest-cov coveralls --use-mirrors;
+  - pip install pytest-cov coveralls --use-mirrors
 install:
   - python setup.py install
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
 script:
-  - python setup.py test;
+  - python setup.py test
   - pep8
 after_success:
   - coveralls
