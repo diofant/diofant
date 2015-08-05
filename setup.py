@@ -129,7 +129,8 @@ class test_sympy(TestCommand):
         ]
         extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
         if extra_args is not None:
-            _test_args.extend(extra_args.split())
+            nargs = extra_args.split(' -')
+            _test_args.extend([nargs[0]] + ['-' + a for a in nargs[1:]])
         self.test_args = _test_args
         self.test_suite = True
 
