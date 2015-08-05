@@ -15,7 +15,7 @@ matrix:
   include:
     - python: "2.7"
       env:
-        - PYTEST_EXTRA_ARGS="--cov sympy"
+        - PYTEST_EXTRA_ARGS='--cov sympy -m "not slow"'
 before_install:
   - pip uninstall -y numpy;
   - travis_wait 30 pip install numpy==1.7.1 scipy==0.12.0 Theano==0.6;
