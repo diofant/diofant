@@ -128,7 +128,7 @@ class test_sympy(TestCommand):
             '--doctest-glob="*.rst"',
         ]
         extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
-        if extra_args is not None:
+        if extra_args is not None and extra_args != "":
             nargs = extra_args.split(' -')
             _test_args.extend([nargs[0]] + ['-' + a for a in nargs[1:]])
         self.test_args = _test_args
@@ -175,7 +175,7 @@ setup(name='sympy',
       ],
       tests_require=['pytest>=2.7.0', 'pep8>=1.6.0'],
       install_requires=['mpmath>=0.19', 'decorator'],
-      extras_require = {
+      extras_require={
           'exports': ["numpy==1.7.1", "scipy==0.12.0", "Theano==0.6"],
           'gmpy': ["gmpy>=1.16"],
           'plot': ["matplotlib==1.3.1"],
