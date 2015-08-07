@@ -136,7 +136,12 @@ class test_sympy(TestCommand):
 
     def run_tests(self):
         import pytest
+        import pep8
         errno = pytest.main(self.test_args)
+        if errno != 0:
+            sys.exit(errno)
+        del sys.argv[:]
+        errno = pep8._main()
         sys.exit(errno)
 
 

@@ -35,7 +35,6 @@ before_script:
   - export DISPLAY=:99.0
 script:
   - python setup.py test
-  - pep8
 after_success:
   - coveralls
 notifications:
