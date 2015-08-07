@@ -2,8 +2,7 @@ language: python
 sudo: false
 env:
   matrix:
-  - SPLIT="1/2"
-  - SPLIT="2/2"
+  - TEST_SLOW="false"
   - TEST_SLOW="true"
 python:
   - 2.7
