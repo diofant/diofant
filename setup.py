@@ -173,6 +173,11 @@ setup(name='sympy',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
       ],
-      tests_require=['pytest'],
-      install_requires=['mpmath>=0.19', 'decorator']
-      )
+      tests_require=['pytest>=2.7.0', 'pep8>=1.6.0'],
+      install_requires=['mpmath>=0.19', 'decorator'],
+      extras_require = {
+          'exports': ["numpy==1.7.1", "scipy==0.12.0", "Theano==0.6"],
+          'plot': ["matplotlib==1.3.1"],
+          'GMPY': ["gmpy>=1.16"]
+      }
+)
