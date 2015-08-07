@@ -17,10 +17,10 @@ matrix:
       env:
         - PYTEST_EXTRA_ARGS='--cov sympy -m "not slow"'
 before_install:
-  - if [[ "${TEST_EXTRA}" == "true" ]]; then
-      pip install sphinx==1.2.2 numpydoc==0.5 sphinx_rtd_theme;
-    fi
-  - pip install pytest==2.7.0 pep8==1.6.2
+  - pip install --upgrade pip
+  - pip uninstall -y pytest
+install:
+  - python setup.py install
   - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
       pip install pytest-cov coveralls --use-mirrors;
     fi
