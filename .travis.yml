@@ -28,11 +28,7 @@ install:
       pip install pytest-cov coveralls --use-mirrors;
     fi
 install:
-  - if [[ "${TEST_EXTRA}" == "true" ]]; then
-      pip install .[extra,plot,gmpy];
-    else
-      pip install .;
-    fi
+  - pip -v install .${EXTRA};
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
