@@ -177,7 +177,7 @@ setup(name='sympy',
       install_requires=['mpmath>=0.19', 'decorator'],
       extras_require = {
           'exports': ["numpy==1.7.1", "scipy==0.12.0", "Theano==0.6"],
+          'gmpy': ["gmpy>=1.16"],
           'plot': ["matplotlib==1.3.1"],
-          'gmpy': ["gmpy>=1.16"]
       }
 )
