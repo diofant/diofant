@@ -17,7 +17,6 @@ matrix:
       env:
         - PYTEST_EXTRA_ARGS='--cov sympy -m "not slow"'
 before_install:
-  - pip install --upgrade pip
   - pip uninstall -y pytest py
 install:
   - python setup.py install
