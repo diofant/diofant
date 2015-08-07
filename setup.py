@@ -178,6 +178,6 @@ setup(name='sympy',
       extras_require = {
           'exports': ["numpy==1.7.1", "scipy==0.12.0", "Theano==0.6"],
           'plot': ["matplotlib==1.3.1"],
-          'GMPY': ["gmpy>=1.16"]
+          'gmpy': ["gmpy>=1.16"]
       }
 )
