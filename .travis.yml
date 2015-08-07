@@ -15,7 +15,8 @@ matrix:
   include:
     - python: 2.7
       env:
-        - PYTEST_EXTRA_ARGS='--cov sympy -m "not slow"'
+        - EXTRA="[exports,plot,gmpy]"
+        - PYTEST_EXTRA_ARGS='--cov=sympy -m="not slow"'
 before_install:
   - pip install --upgrade pip setuptools
   - pip uninstall -y pytest py
