@@ -24,8 +24,8 @@ before_install:
   - pip uninstall -y pytest py
 install:
   - python setup.py install
-  - if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-      pip install pytest-cov coveralls --use-mirrors;
+  - if [[ "${PYTEST_EXTRA_ARGS}" != "" ]]; then
+      pip install pytest-cov coveralls;
     fi
 install:
   - pip -v install .${EXTRA};
@@ -35,6 +35,8 @@ before_script:
 script:
   - python setup.py test
 after_success:
-  - coveralls
+  - if [[ "${PYTEST_EXTRA_ARGS}" != "" ]]; then
+      coveralls;
+    fi
 notifications:
   email: false
