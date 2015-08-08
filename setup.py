@@ -125,6 +125,7 @@ class test_sympy(TestCommand):
             '--ignore=bin/mailmap_update.py',
             '--ignore=sympy/utilities/autowrap.py',
             '--ignore=build/',
+            '--ignore=.eggs/',
             '--doctest-glob="*.rst"',
         ]
         extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
