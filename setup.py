@@ -181,8 +181,8 @@ setup(name='sympy',
       tests_require=['pytest>=2.7.0', 'pep8>=1.6.0'],
       install_requires=['mpmath>=0.19', 'decorator'],
       extras_require={
-          'exports': ["numpy==1.7.1", "scipy==0.12.0", "Theano==0.6"],
+          'exports': ["numpy", "scipy", "Theano"],
           'gmpy': ["gmpy>=1.16"],
-          'plot': ["matplotlib==1.3.1"],
+          'plot': ["matplotlib"],
       }
 )
