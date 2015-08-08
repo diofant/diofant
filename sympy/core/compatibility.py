@@ -95,6 +95,8 @@ if PY3:
     exec_=getattr(builtins, "exec")
 
     range=range
+
+    from tokenize import tokenize
 else:
     import codecs
     import types
@@ -140,6 +142,8 @@ else:
             _locs_ = _globs_
         exec("exec _code_ in _globs_, _locs_")
     range=xrange
+
+    from tokenize import generate_tokens as tokenize
 
 
 def with_metaclass(meta, *bases):

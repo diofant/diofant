@@ -2,9 +2,9 @@
 
 from __future__ import print_function, division
 
-from .sympy_tokenize import \
-    generate_tokens, untokenize, TokenError, \
-    NUMBER, STRING, NAME, OP, ENDMARKER
+from sympy.core.compatibility import tokenize
+from tokenize import (untokenize, TokenError,
+                      NUMBER, STRING, NAME, OP, ENDMARKER)
 
 from keyword import iskeyword
 
@@ -13,6 +13,7 @@ import re
 import unicodedata
 
 import sympy
+from io import BytesIO
 from sympy.core.compatibility import exec_, StringIO
 from sympy.core.basic import Basic
 
@@ -720,8 +721,8 @@ def stringify_expr(s, local_dict, global_dict, transformations):
     """
 
     tokens = []
-    input_code = StringIO(s.strip())
-    for toknum, tokval, _, _, _ in generate_tokens(input_code.readline):
+    input_code = BytesIO(s.encode('utf-8').strip())
+    for toknum, tokval, _, _, _ in tokenize(input_code.readline):
         tokens.append((toknum, tokval))
 
     for transform in transformations:
