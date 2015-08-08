@@ -48,7 +48,6 @@ sys.path.insert(0, sympy_dir)
 import sympy
 
 TERMINAL_EXAMPLES = [
-    "beginner.precision",
     "intermediate.infinite_1d_box",
     "intermediate.partial_differential_eqs",
     "intermediate.trees",

@@ -7,8 +7,30 @@
 To make this document easier to read, we are going to enable pretty printing.
 
     >>> from sympy import *
-    >>> x, y, z = symbols('x y z')
+    >>> from sympy.abc import x, y, z
     >>> init_printing(use_unicode=True)
+
+Automatic simplification
+========================
+
+Whenever you construct an expression, usually some evaluation and simplification
+rules happen automatically.  For example:
+
+    >>> Add(x, x)
+    2⋅x
+    >>> Pow(2, 50)
+    1125899906842624
+
+Use keyword argument ``evaluate`` to prevent this:
+
+    >>> a = Add(x, x, evaluate=False)
+    >>> a
+    x + x
+    >>> a.doit()
+    2⋅x
+    >>> Pow(2, 50, evaluate=False)
+     50
+    2
 
 ``simplify``
 ============
