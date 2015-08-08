@@ -23,12 +23,10 @@ before_install:
   - pip install --upgrade pip setuptools
   - pip uninstall -y pytest py
 install:
-  - python setup.py install
+  - pip -v install .${EXTRA};
   - if [[ "${PYTEST_EXTRA_ARGS}" != "" ]]; then
       pip install pytest-cov coveralls;
     fi
-install:
-  - pip -v install .${EXTRA};
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
