@@ -1,5 +1,5 @@
 from sympy import sin, cos, symbols, pi, ImmutableMatrix as Matrix, \
-     simplify
+    simplify
 from sympy.vector import (CoordSysCartesian, Vector, Dyadic,
                           DyadicAdd, DyadicMul, DyadicZero,
                           BaseDyadic, express)

@@ -34,6 +34,7 @@ def pytest_terminal_summary(terminalreporter):
 def file_clear_cache():
     clear_cache()
 
+
 @pytest.fixture(autouse=True, scope='module')
 def check_disabled(request):
     if getattr(request.module, 'disabled', False):

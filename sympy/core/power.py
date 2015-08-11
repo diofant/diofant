@@ -1206,7 +1206,7 @@ class Pow(Expr):
                 try:
                     n = int(n)
                 except TypeError:
-                    #well, the n is something more complicated (like 1+log(2))
+                    # well, the n is something more complicated (like 1+log(2))
                     try:
                         n = int(n.evalf()) + 1  # XXX why is 1 being added?
                     except TypeError:
@@ -1369,16 +1369,16 @@ class Pow(Expr):
         b = _keep_coeff(*b.as_content_primitive(radical=radical))
         ce, pe = e.as_content_primitive(radical=radical)
         if b.is_Rational:
-            #e
-            #= ce*pe
-            #= ce*(h + t)
-            #= ce*h + ce*t
-            #=> self
-            #= b**(ce*h)*b**(ce*t)
-            #= b**(cehp/cehq)*b**(ce*t)
-            #= b**(iceh+r/cehq)*b**(ce*t)
-            #= b**(iceh)*b**(r/cehq)*b**(ce*t)
-            #= b**(iceh)*b**(ce*t + r/cehq)
+            # e
+            # = ce*pe
+            # = ce*(h + t)
+            # = ce*h + ce*t
+            # => self
+            # = b**(ce*h)*b**(ce*t)
+            # = b**(cehp/cehq)*b**(ce*t)
+            # = b**(iceh+r/cehq)*b**(ce*t)
+            # = b**(iceh)*b**(r/cehq)*b**(ce*t)
+            # = b**(iceh)*b**(ce*t + r/cehq)
             h, t = pe.as_coeff_Add()
             if h.is_Rational:
                 ceh = ce*h

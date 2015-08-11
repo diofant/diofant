@@ -420,7 +420,6 @@ def test_evalf_issue_939():
 
 @XFAIL
 def test_failing_integrals():
-    #---
     # Double integrals not implemented
     assert NS(Integral(
         sqrt(x) + x*y, (x, 1, 2), (y, -1, 1)), 15) == '2.43790283299492'
@@ -558,9 +557,11 @@ def test_subs7():
     assert e.subs(sin(x), 1) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
                                          (y, 1, 2))
 
+
 def test_expand():
     e = Integral(f(x)+f(x**2), (x, 1, y))
     assert e.expand() == Integral(f(x), (x, 1, y)) + Integral(f(x**2), (x, 1, y))
+
 
 def test_integration_variable():
     raises(ValueError, lambda: Integral(exp(-x**2), 3))
@@ -837,6 +838,7 @@ def test_issue_4527():
         (m*sin(k*x)*cos(m*x)/(k**2 - m**2) -
          k*sin(m*x)*cos(k*x)/(k**2 - m**2), True))
 
+
 def test_issue_4199():
     ypos = Symbol('y', positive=True)
     # TODO: Remove conds='none' below, let the assumption take care of it.
@@ -1020,10 +1022,12 @@ def test_risch_option():
     assert integrate(erf(x), x, risch=True) == Integral(erf(x), x)
     # TODO: How to test risch=False?
 
+
 def test_issue_6828():
     f = 1/(1.08*x**2 - 4.3)
     g = integrate(f, x).diff(x)
     assert verify_numerically(f, g, tol=1e-12)
+
 
 @XFAIL
 def test_integrate_Piecewise_rational_over_reals():

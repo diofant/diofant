@@ -124,6 +124,7 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo)):
     dist = ContinuousDistributionHandmade(pdf, set)
     return SingleContinuousPSpace(symbol, dist).value
 
+
 def rv(symbol, cls, args):
     args = list(map(sympify, args))
     dist = cls(*args)
@@ -134,7 +135,7 @@ def rv(symbol, cls, args):
 # Continuous Probability Distributions #
 ########################################
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Arcsin distribution ----------------------------------------------------------
 
 
@@ -143,6 +144,7 @@ class ArcsinDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         return 1/(pi*sqrt((x - self.a)*(self.b - x)))
+
 
 def Arcsin(name, a=0, b=1):
     r"""
@@ -189,7 +191,7 @@ def Arcsin(name, a=0, b=1):
 
     return rv(name, ArcsinDistribution, (a, b))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Benini distribution ----------------------------------------------------------
 
 
@@ -262,7 +264,7 @@ def Benini(name, alpha, beta, sigma):
 
     return rv(name, BeniniDistribution, (alpha, beta, sigma))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Beta distribution ------------------------------------------------------------
 
 
@@ -340,7 +342,7 @@ def Beta(name, alpha, beta):
 
     return rv(name, BetaDistribution, (alpha, beta))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Beta prime distribution ------------------------------------------------------
 
 
@@ -404,7 +406,7 @@ def BetaPrime(name, alpha, beta):
 
     return rv(name, BetaPrimeDistribution, (alpha, beta))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Cauchy distribution ----------------------------------------------------------
 
 
@@ -460,7 +462,7 @@ def Cauchy(name, x0, gamma):
 
     return rv(name, CauchyDistribution, (x0, gamma))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Chi distribution -------------------------------------------------------------
 
 
@@ -517,7 +519,7 @@ def Chi(name, k):
 
     return rv(name, ChiDistribution, (k,))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Non-central Chi distribution -------------------------------------------------
 
 
@@ -578,7 +580,7 @@ def ChiNoncentral(name, k, l):
 
     return rv(name, ChiNoncentralDistribution, (k, l))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Chi squared distribution -----------------------------------------------------
 
 
@@ -643,7 +645,7 @@ def ChiSquared(name, k):
 
     return rv(name, ChiSquaredDistribution, (k, ))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Dagum distribution -----------------------------------------------------------
 
 
@@ -703,8 +705,9 @@ def Dagum(name, p, a, b):
 
     return rv(name, DagumDistribution, (p, a, b))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Erlang distribution ----------------------------------------------------------
+
 
 def Erlang(name, k, l):
     r"""
@@ -770,7 +773,7 @@ def Erlang(name, k, l):
 
     return rv(name, GammaDistribution, (k, 1/l))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Exponential distribution -----------------------------------------------------
 
 
@@ -858,8 +861,9 @@ def Exponential(name, rate):
 
     return rv(name, ExponentialDistribution, (rate, ))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # F distribution ---------------------------------------------------------------
+
 
 class FDistributionDistribution(SingleContinuousDistribution):
     _argnames = ('d1', 'd2')
@@ -870,6 +874,7 @@ class FDistributionDistribution(SingleContinuousDistribution):
         d1, d2 = self.d1, self.d2
         return (sqrt((d1*x)**d1*d2**d2 / (d1*x+d2)**(d1+d2))
                / (x * beta_fn(d1/2, d2/2)))
+
 
 def FDistribution(name, d1, d2):
     r"""
@@ -929,8 +934,9 @@ def FDistribution(name, d1, d2):
 
     return rv(name, FDistributionDistribution, (d1, d2))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Fisher Z distribution --------------------------------------------------------
+
 
 class FisherZDistribution(SingleContinuousDistribution):
     _argnames = ('d1', 'd2')
@@ -939,6 +945,7 @@ class FisherZDistribution(SingleContinuousDistribution):
         d1, d2 = self.d1, self.d2
         return (2*d1**(d1/2)*d2**(d2/2) / beta_fn(d1/2, d2/2) *
                exp(d1*x) / (d1*exp(2*x)+d2)**((d1+d2)/2))
+
 
 def FisherZ(name, d1, d2):
     r"""
@@ -997,8 +1004,9 @@ def FisherZ(name, d1, d2):
 
     return rv(name, FisherZDistribution, (d1, d2))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Frechet distribution ---------------------------------------------------------
+
 
 class FrechetDistribution(SingleContinuousDistribution):
     _argnames = ('a', 's', 'm')
@@ -1012,6 +1020,7 @@ class FrechetDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         a, s, m = self.a, self.s, self.m
         return a/s * ((x-m)/s)**(-1-a) * exp(-((x-m)/s)**(-a))
+
 
 def Frechet(name, a, s=1, m=0):
     r"""
@@ -1061,7 +1070,7 @@ def Frechet(name, a, s=1, m=0):
 
     return rv(name, FrechetDistribution, (a, s, m))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Gamma distribution -----------------------------------------------------------
 
 
@@ -1154,8 +1163,9 @@ def Gamma(name, k, theta):
 
     return rv(name, GammaDistribution, (k, theta))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Inverse Gamma distribution ---------------------------------------------------
+
 
 class GammaInverseDistribution(SingleContinuousDistribution):
     _argnames = ('a', 'b')
@@ -1170,6 +1180,7 @@ class GammaInverseDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         a, b = self.a, self.b
         return b**a/gamma(a) * x**(-a-1) * exp(-b/x)
+
 
 def GammaInverse(name, a, b):
     r"""
@@ -1223,8 +1234,9 @@ def GammaInverse(name, a, b):
 
     return rv(name, GammaInverseDistribution, (a, b))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Kumaraswamy distribution -----------------------------------------------------
+
 
 class KumaraswamyDistribution(SingleContinuousDistribution):
     _argnames = ('a', 'b')
@@ -1290,7 +1302,7 @@ def Kumaraswamy(name, a, b):
 
     return rv(name, KumaraswamyDistribution, (a, b))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Laplace distribution ---------------------------------------------------------
 
 
@@ -1346,7 +1358,7 @@ def Laplace(name, mu, b):
 
     return rv(name, LaplaceDistribution, (mu, b))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Logistic distribution --------------------------------------------------------
 
 
@@ -1402,7 +1414,7 @@ def Logistic(name, mu, s):
 
     return rv(name, LogisticDistribution, (mu, s))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Log Normal distribution ------------------------------------------------------
 
 
@@ -1481,7 +1493,7 @@ def LogNormal(name, mean, std):
 
     return rv(name, LogNormalDistribution, (mean, std))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Maxwell distribution ---------------------------------------------------------
 
 
@@ -1547,7 +1559,7 @@ def Maxwell(name, a):
 
     return rv(name, MaxwellDistribution, (a, ))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Nakagami distribution --------------------------------------------------------
 
 
@@ -1624,7 +1636,7 @@ def Nakagami(name, mu, omega):
 
     return rv(name, NakagamiDistribution, (mu, omega))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Normal distribution ----------------------------------------------------------
 
 
@@ -1708,7 +1720,7 @@ def Normal(name, mean, std):
 
     return rv(name, NormalDistribution, (mean, std))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Pareto distribution ----------------------------------------------------------
 
 
@@ -1778,8 +1790,9 @@ def Pareto(name, xm, alpha):
 
     return rv(name, ParetoDistribution, (xm, alpha))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # QuadraticU distribution ------------------------------------------------------
+
 
 class QuadraticUDistribution(SingleContinuousDistribution):
     _argnames = ('a', 'b')
@@ -1793,8 +1806,9 @@ class QuadraticUDistribution(SingleContinuousDistribution):
         alpha = 12 / (b-a)**3
         beta = (a+b) / 2
         return Piecewise(
-                  (alpha * (x-beta)**2, And(a<=x, x<=b)),
-                  (S.Zero, True))
+            (alpha * (x-beta)**2, And(a<=x, x<=b)),
+            (S.Zero, True))
+
 
 def QuadraticU(name, a, b):
     r"""
@@ -1850,8 +1864,9 @@ def QuadraticU(name, a, b):
 
     return rv(name, QuadraticUDistribution, (a, b))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # RaisedCosine distribution ----------------------------------------------------
+
 
 class RaisedCosineDistribution(SingleContinuousDistribution):
     _argnames = ('mu', 's')
@@ -1867,8 +1882,9 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         mu, s = self.mu, self.s
         return Piecewise(
-                ((1+cos(pi*(x-mu)/s)) / (2*s), And(mu-s<=x, x<=mu+s)),
-                (S.Zero, True))
+            ((1+cos(pi*(x-mu)/s)) / (2*s), And(mu-s<=x, x<=mu+s)),
+            (S.Zero, True))
+
 
 def RaisedCosine(name, mu, s):
     r"""
@@ -1922,7 +1938,7 @@ def RaisedCosine(name, mu, s):
 
     return rv(name, RaisedCosineDistribution, (mu, s))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Rayleigh distribution --------------------------------------------------------
 
 
@@ -1986,7 +2002,7 @@ def Rayleigh(name, sigma):
 
     return rv(name, RayleighDistribution, (sigma, ))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # StudentT distribution --------------------------------------------------------
 
 
@@ -2053,7 +2069,7 @@ def StudentT(name, nu):
 
     return rv(name, StudentTDistribution, (nu, ))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Triangular distribution ------------------------------------------------------
 
 
@@ -2133,7 +2149,7 @@ def Triangular(name, a, b, c):
 
     return rv(name, TriangularDistribution, (a, b, c))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Uniform distribution ---------------------------------------------------------
 
 
@@ -2227,7 +2243,7 @@ def Uniform(name, left, right):
 
     return rv(name, UniformDistribution, (left, right))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # UniformSum distribution ------------------------------------------------------
 
 
@@ -2301,8 +2317,9 @@ def UniformSum(name, n):
 
     return rv(name, UniformSumDistribution, (n, ))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # VonMises distribution --------------------------------------------------------
+
 
 class VonMisesDistribution(SingleContinuousDistribution):
     _argnames = ('mu', 'k')
@@ -2369,7 +2386,7 @@ def VonMises(name, mu, k):
 
     return rv(name, VonMisesDistribution, (mu, k))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Weibull distribution ---------------------------------------------------------
 
 
@@ -2446,7 +2463,7 @@ def Weibull(name, alpha, beta):
 
     return rv(name, WeibullDistribution, (alpha, beta))
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Wigner semicircle distribution -----------------------------------------------
 
 

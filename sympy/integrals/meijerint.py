@@ -208,47 +208,47 @@ def _create_lookup_table(table):
     # TODO exp(-x)*erf(I*x) does not work
     add(erfc(t), [], [1], [0, S(1)/2], [], t**2, 1/sqrt(pi))
     # This formula for erfi(z) yields a wrong(?) minus sign
-    #add(erfi(t), [1], [], [S(1)/2], [0], -t**2, I/sqrt(pi))
+    # add(erfi(t), [1], [], [S(1)/2], [0], -t**2, I/sqrt(pi))
     add(erfi(t), [S(1)/2], [], [0], [-S(1)/2], -t**2, t/sqrt(pi))
 
     # Fresnel Integrals
     add(fresnels(t), [1], [], [S(3)/4], [0, S(1)/4], pi**2*t**4/16, S(1)/2)
     add(fresnelc(t), [1], [], [S(1)/4], [0, S(3)/4], pi**2*t**4/16, S(1)/2)
 
-    ##### bessel-type functions #####
+    # ##### bessel-type functions #####
     from sympy import besselj, bessely, besseli, besselk
 
     # Section 8.4.19
     add(besselj(a, t), [], [], [a/2], [-a/2], t**2/4)
 
     # all of the following are derivable
-    #add(sin(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [(1+a)/2],
+    # add(sin(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [(1+a)/2],
     #    [-a/2, a/2, (1-a)/2], t**2, 1/sqrt(2))
-    #add(cos(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [a/2],
+    # add(cos(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [a/2],
     #    [-a/2, (1+a)/2, (1-a)/2], t**2, 1/sqrt(2))
-    #add(besselj(a, t)**2, [S(1)/2], [], [a], [-a, 0], t**2, 1/sqrt(pi))
-    #add(besselj(a, t)*besselj(b, t), [0, S(1)/2], [], [(a + b)/2],
+    # add(besselj(a, t)**2, [S(1)/2], [], [a], [-a, 0], t**2, 1/sqrt(pi))
+    # add(besselj(a, t)*besselj(b, t), [0, S(1)/2], [], [(a + b)/2],
     #    [-(a+b)/2, (a - b)/2, (b - a)/2], t**2, 1/sqrt(pi))
 
     # Section 8.4.20
     add(bessely(a, t), [], [-(a + 1)/2], [a/2, -a/2], [-(a + 1)/2], t**2/4)
 
     # TODO all of the following should be derivable
-    #add(sin(t)*bessely(a, t), [S(1)/4, S(3)/4], [(1 - a - 1)/2],
+    # add(sin(t)*bessely(a, t), [S(1)/4, S(3)/4], [(1 - a - 1)/2],
     #    [(1 + a)/2, (1 - a)/2], [(1 - a - 1)/2, (1 - 1 - a)/2, (1 - 1 + a)/2],
     #    t**2, 1/sqrt(2))
-    #add(cos(t)*bessely(a, t), [S(1)/4, S(3)/4], [(0 - a - 1)/2],
+    # add(cos(t)*bessely(a, t), [S(1)/4, S(3)/4], [(0 - a - 1)/2],
     #    [(0 + a)/2, (0 - a)/2], [(0 - a - 1)/2, (1 - 0 - a)/2, (1 - 0 + a)/2],
     #    t**2, 1/sqrt(2))
-    #add(besselj(a, t)*bessely(b, t), [0, S(1)/2], [(a - b - 1)/2],
+    # add(besselj(a, t)*bessely(b, t), [0, S(1)/2], [(a - b - 1)/2],
     #    [(a + b)/2, (a - b)/2], [(a - b - 1)/2, -(a + b)/2, (b - a)/2],
     #    t**2, 1/sqrt(pi))
-    #addi(bessely(a, t)**2,
+    # addi(bessely(a, t)**2,
     #     [(2/sqrt(pi), meijerg([], [S(1)/2, S(1)/2 - a], [0, a, -a],
     #                           [S(1)/2 - a], t**2)),
     #      (1/sqrt(pi), meijerg([S(1)/2], [], [a], [-a, 0], t**2))],
     #     True)
-    #addi(bessely(a, t)*bessely(b, t),
+    # addi(bessely(a, t)*bessely(b, t),
     #     [(2/sqrt(pi), meijerg([], [0, S(1)/2, (1 - a - b)/2],
     #                           [(a + b)/2, (a - b)/2, (b - a)/2, -(a + b)/2],
     #                           [(1 - a - b)/2], t**2)),
@@ -1186,9 +1186,9 @@ def _check_antecedents(g1, g2, x):
     pr(28)
     conds += [And(
         p > q + 1, Eq(s, 0), Eq(phi, 0), t.is_positive is True, bstar.is_positive is True, cstar >= 0,
-                  cstar*pi < abs(arg(omega)),
-                  abs(arg(omega)) < (m + n - q + 1)*pi,
-                  c1, c3, c10, c14, c15)]  # 29
+        cstar*pi < abs(arg(omega)),
+        abs(arg(omega)) < (m + n - q + 1)*pi,
+        c1, c3, c10, c14, c15)]  # 29
     pr(29)
     conds += [And(Eq(n, 0), Eq(phi, 0), s + t > 0, m.is_positive is True, cstar.is_positive is True, bstar.is_negative is True,
                   abs(arg(sigma)) < (s + t - u + 1)*pi,

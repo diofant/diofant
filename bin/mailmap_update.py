@@ -92,7 +92,7 @@ adjusted_authors_count = (
     authors_count
     - predate_git
     + len(authors_skip)
-    )
+)
 git_count = len(git_people)
 
 print()

@@ -56,7 +56,8 @@ allhints = (
     "1st_linear_constant_coeff",
     "1st_linear_constant_coeff_Integral",
     "1st_linear_variable_coeff"
-    )
+)
+
 
 def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     """
@@ -194,6 +195,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         return _helper_simplify(eq, hints['hint'],
             hints['func'], hints['order'], hints[hints['hint']], solvefun)
 
+
 def _helper_simplify(eq, hint, func, order, match, solvefun):
     """Helper function of pdsolve that calls the respective
     pde functions to solve for the partial differential
@@ -208,6 +210,7 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
         solvefunc = globals()["pde_" + hint]
     return _handle_Integral(solvefunc(eq, func, order,
         match, solvefun), func, order, hint)
+
 
 def _handle_Integral(expr, func, order, hint):
     r"""
@@ -344,14 +347,14 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
         r = reduced_eq.match(b*fx + c*fy + d*f(x,y) + e)
         if r:
             if not r[e]:
-                ## Linear first-order homogeneous partial-differential
-                ## equation with constant coefficients
+                # Linear first-order homogeneous partial-differential
+                # equation with constant coefficients
                 r.update({'b': b, 'c': c, 'd': d})
                 matching_hints["1st_linear_constant_coeff_homogeneous"] = r
             else:
                 if r[b]**2 + r[c]**2 != 0:
-                    ## Linear first-order general partial-differential
-                    ## equation with constant coefficients
+                    # Linear first-order general partial-differential
+                    # equation with constant coefficients
                     r.update({'b': b, 'c': c, 'd': d, 'e': e})
                     matching_hints["1st_linear_constant_coeff"] = r
                     matching_hints[
@@ -384,6 +387,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
         return matching_hints
     else:
         return tuple(retlist)
+
 
 def checkpdesol(pde, sol, func=None, solve_for_func=True):
     """
@@ -485,6 +489,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     else:
         return True, 0
 
+
 def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     r"""
     Solves a first order linear homogeneous
@@ -553,6 +558,7 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
     c = match[match['c']]
     d = match[match['d']]
     return Eq(f(x,y), exp(-S(d)/(b**2 + c**2)*(b*x + c*y))*solvefun(c*x - b*y))
+
 
 def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     r"""
@@ -656,6 +662,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
         (1/expterm*e).subs(solvedict), (xi, b*x + c*y))
     return Eq(f(x,y), Subs(expterm*(functerm + genterm),
         (eta, xi), (c*x - b*y, b*x + c*y)))
+
 
 def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     r"""
@@ -784,6 +791,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         raise NotImplementedError("Cannot solve the partial differential equation due"
             " to inability of constantsimp")
 
+
 def _simplify_variable_coeff(sol, syms, func, funcarg):
     r"""
     Helper function to replace constants by functions in 1st_linear_variable_coeff
@@ -800,6 +808,7 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
             final = sol.subs(sym, func(funcarg))
 
     return simplify(final.subs(eta, funcarg))
+
 
 def pde_separate(eq, fun, sep, strategy='mul'):
     """Separate variables in partial differential equation either by additive

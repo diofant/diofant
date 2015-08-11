@@ -16,7 +16,7 @@ def _rewrite_hyperbolics_as_exp(expr):
 
 
 ###############################################################################
-########################### HYPERBOLIC FUNCTIONS ##############################
+# ######################### HYPERBOLIC FUNCTIONS ############################ #
 ###############################################################################
 
 
@@ -617,7 +617,7 @@ class coth(HyperbolicFunction):
 class ReciprocalHyperbolicFunction(HyperbolicFunction):
     """Base class for reciprocal functions of hyperbolic functions. """
 
-    #To be defined in class
+    # To be defined in class
     _reciprocal_of = None
     _is_even = None
     _is_odd = None
@@ -779,7 +779,7 @@ class sech(ReciprocalHyperbolicFunction):
 
 
 ###############################################################################
-############################# HYPERBOLIC INVERSES #############################
+# ########################### HYPERBOLIC INVERSES ########################### #
 ###############################################################################
 
 class asinh(Function):

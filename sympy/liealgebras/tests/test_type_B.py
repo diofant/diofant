@@ -1,6 +1,7 @@
 from sympy.liealgebras.cartan_type import CartanType
 from sympy.matrices import Matrix
 
+
 def test_type_B():
     c = CartanType("B3")
     m = Matrix(3, 3, [2, -1, 0, -1, 2, -2, 0, -1, 2])
@@ -14,4 +15,4 @@ def test_type_B():
     assert c.dynkin_diagram() == diag
     assert c.positive_roots() ==  {1: [1, -1, 0], 2: [1, 1, 0], 3: [1, 0, -1],
             4: [1, 0, 1], 5: [0, 1, -1], 6: [0, 1, 1], 7: [1, 0, 0],
-            8: [0, 1, 0], 9: [0, 0, 1]}
+        8: [0, 1, 0], 9: [0, 0, 1]}

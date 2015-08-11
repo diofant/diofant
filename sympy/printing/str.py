@@ -726,7 +726,7 @@ class StrPrinter(Printer):
             return 'd(%s)' % self._print(field)
 
     def _print_Tr(self, expr):
-        #TODO : Handle indices
+        # TODO : Handle indices
         return "%s(%s)" % ("Tr", self._print(expr.args[0]))
 
 

@@ -80,6 +80,8 @@ from sympy.polys import poly, Poly
 from sympy.series import residue
 
 # function to define "buckets"
+
+
 def _mod1(x):
     # TODO see if this can work as Mod(x, 1); this will require
     # different handling of the "buckets" since these need to
@@ -199,7 +201,7 @@ def add_formulae(formulae):
     # Added to get nice results for Laplace transform of Fresnel functions
     # http://functions.wolfram.com/07.22.03.6437.01
     # Basic rule
-    #add([1], [S(3)/4, S(5)/4],
+    # add([1], [S(3)/4, S(5)/4],
     #    sqrt(pi) * (cos(2*sqrt(polar_lift(-1)*z))*fresnelc(2*root(polar_lift(-1)*z,4)/sqrt(pi)) +
     #                sin(2*sqrt(polar_lift(-1)*z))*fresnels(2*root(polar_lift(-1)*z,4)/sqrt(pi)))
     #    / (2*root(polar_lift(-1)*z,4)))
@@ -303,7 +305,7 @@ def add_formulae(formulae):
 
     # FresnelS
     # Basic rule
-    #add([S(3)/4], [S(3)/2,S(7)/4], 6*fresnels( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3 ) )
+    # add([S(3)/4], [S(3)/2,S(7)/4], 6*fresnels( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3 ) )
     # Manually tuned rule
     addb([S(3)/4], [S(3)/2, S(7)/4],
          Matrix(
@@ -322,7 +324,7 @@ def add_formulae(formulae):
 
     # FresnelC
     # Basic rule
-    #add([S(1)/4], [S(1)/2,S(5)/4], fresnelc( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) )
+    # add([S(1)/4], [S(1)/2,S(5)/4], fresnelc( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) )
     # Manually tuned rule
     addb([S(1)/4], [S(1)/2, S(5)/4],
          Matrix(
@@ -656,6 +658,7 @@ class G_Function(Expr):
 
 # Dummy variable.
 _x = Dummy('x')
+
 
 class Formula(object):
     """

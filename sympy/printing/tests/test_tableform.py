@@ -93,7 +93,7 @@ def test_TableForm():
 
     raises(ValueError, lambda: TableForm(d, alignments='clr'))
 
-    #pad
+    # pad
     s = str(TableForm([[None, "-", 2], [1]], pad='?'))
     assert s == dedent('''\
         ? - 2

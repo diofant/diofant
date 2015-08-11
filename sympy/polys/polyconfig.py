@@ -25,6 +25,7 @@ _default_config = {
 
 _current_config = {}
 
+
 @contextmanager
 def using(**kwargs):
     for k, v in kwargs.items():
@@ -34,6 +35,7 @@ def using(**kwargs):
 
     for k in kwargs.keys():
         setup(k)
+
 
 def setup(key, value=None):
     """Assign a value to (or reset) a configuration item. """

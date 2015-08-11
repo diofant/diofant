@@ -1,5 +1,5 @@
 from sympy.vector.basisdependent import BasisDependent, \
-     BasisDependentAdd, BasisDependentMul, BasisDependentZero
+    BasisDependentAdd, BasisDependentMul, BasisDependentZero
 from sympy.core import S, Pow
 from sympy.core.expr import AtomicExpr
 from sympy import ImmutableMatrix as Matrix
@@ -29,8 +29,8 @@ class Dyadic(BasisDependent):
         corresponding measure numbers.
 
         """
-        #The '_components' attribute is defined according to the
-        #subclass of Dyadic the instance belongs to.
+        # The '_components' attribute is defined according to the
+        # subclass of Dyadic the instance belongs to.
         return self._components
 
     def dot(self, other):
@@ -179,15 +179,15 @@ class BaseDyadic(Dyadic, AtomicExpr):
         Vector = sympy.vector.Vector
         BaseVector = sympy.vector.BaseVector
         VectorZero = sympy.vector.VectorZero
-        #Verify arguments
+        # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \
                not isinstance(vector2, (BaseVector, VectorZero)):
             raise TypeError("BaseDyadic cannot be composed of non-base "+
                             "vectors")
-        #Handle special case of zero vector
+        # Handle special case of zero vector
         elif vector1 == Vector.zero or vector2 == Vector.zero:
             return Dyadic.zero
-        #Initialize instance
+        # Initialize instance
         obj = super(BaseDyadic, cls).__new__(cls, vector1, vector2)
         obj._base_instance = obj
         obj._measure_number = 1

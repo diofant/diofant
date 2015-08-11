@@ -141,6 +141,7 @@ else:
         exec("exec _code_ in _globs_, _locs_")
     range=xrange
 
+
 def with_metaclass(meta, *bases):
     """
     Create a base class with a metaclass.
@@ -631,6 +632,7 @@ def ordered(seq, keys=None, default=True, warn=False):
 
 # Minimum version of gmpy changed to 1.13 to allow a single code base to also
 # work with gmpy2.
+
 
 def _getenv(key, default=None):
     from os import getenv

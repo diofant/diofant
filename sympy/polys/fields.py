@@ -18,17 +18,20 @@ from sympy.printing.defaults import DefaultPrinting
 from sympy.utilities import public
 from sympy.utilities.magic import pollute
 
+
 @public
 def field(symbols, domain, order=lex):
     """Construct new rational function field returning (field, x1, ..., xn). """
     _field = FracField(symbols, domain, order)
     return (_field,) + _field.gens
 
+
 @public
 def xfield(symbols, domain, order=lex):
     """Construct new rational function field returning (field, (x1, ..., xn)). """
     _field = FracField(symbols, domain, order)
     return (_field, _field.gens)
+
 
 @public
 def vfield(symbols, domain, order=lex):
@@ -37,12 +40,14 @@ def vfield(symbols, domain, order=lex):
     pollute([ sym.name for sym in _field.symbols ], _field.gens)
     return _field
 
+
 @public
 def sfield(exprs, *symbols, **options):
     """Construct a field deriving generators and domain from options and input expressions. """
     raise NotImplementedError
 
 _field_cache = {}
+
 
 class FracField(DefaultPrinting):
     """Multivariate distributed rational function field. """
@@ -192,6 +197,7 @@ class FracField(DefaultPrinting):
     def to_ring(self):
         from sympy.polys.rings import PolyRing
         return PolyRing(self.symbols, self.domain, self.order)
+
 
 class FracElement(DomainElement, DefaultPrinting, CantSympify):
     """Element of multivariate distributed rational function field. """

@@ -42,7 +42,7 @@ def test_as_immutable():
     assert sympify(X) == X.as_immutable() == ImmutableMatrix([[1, 2], [3, 4]])
     X = SparseMatrix(5, 5, {})
     assert sympify(X) == X.as_immutable() == ImmutableSparseMatrix(
-            [[0 for i in range(5)] for i in range(5)])
+        [[0 for i in range(5)] for i in range(5)])
 
 
 def test_function_return_types():

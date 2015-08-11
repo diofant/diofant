@@ -1422,8 +1422,7 @@ def trigsimp(expr, **opts):
         'groebner': (lambda x: groebnersimp(x, **opts)),
         'combined': (lambda x: futrig(groebnersimp(x,
                                polynomial=True, hints=[2, tan]))),
-        'old': lambda x: trigsimp_old(x, **opts),
-                   }[method]
+        'old': lambda x: trigsimp_old(x, **opts),}[method]
 
     return trigsimpfunc(expr)
 
@@ -1644,12 +1643,14 @@ def _split_gcd(*a):
             b1.append(x)
     return g, b1, b2
 
+
 def _is_sum_surds(p):
     args = p.args if p.is_Add else [p]
     for y in args:
         if not ((y**2).is_Rational and y.is_extended_real):
             return False
     return True
+
 
 def _nthroot_solve(p, n, prec):
     """
@@ -1674,6 +1675,7 @@ def _nthroot_solve(p, n, prec):
             sol = sqrtdenest(sol)
             if _mexpand(sol**n) == p:
                 return sol
+
 
 def nthroot(expr, n, max_len=4, prec=15):
     """
@@ -3175,7 +3177,7 @@ def combsimp(expr):
                     if ni.is_Add:
                         ni, dd = Add(*[
                             rule_gamma(gamma_rat(a/dd), level + 1) for a in ni.args]
-                            ).as_numer_denom()
+                        ).as_numer_denom()
                         args[i] = ni
                         if not dd.has(gamma):
                             break
@@ -4160,8 +4162,8 @@ def besselsimp(expr):
         def repl(nu, z):
             if (nu % 1) == S(1)/2:
                 return exptrigsimp(trigsimp(unpolarify(
-                        fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
-                            func=True)).subs(z0, z)))
+                    fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
+                        func=True)).subs(z0, z)))
             elif nu.is_Integer and nu > 1:
                 return fro(nu, z).expand(func=True)
             return fro(nu, z)
@@ -4176,6 +4178,7 @@ def besselsimp(expr):
         expr = expr.factor()
 
     return expr
+
 
 def exptrigsimp(expr, simplify=True):
     """
@@ -4213,14 +4216,14 @@ def exptrigsimp(expr, simplify=True):
     # conversion from exp to hyperbolic
     ex = newexpr.atoms(exp, S.Exp1)
     ex = [ei for ei in ex if 1/ei not in ex]
-    ## sinh and cosh
+    # sinh and cosh
     for ei in ex:
         e2 = ei**-2
         if e2 in ex:
             a = e2.args[0]/2 if e2 is not S.Exp1 else S.Half
             newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
             newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
-    ## exp ratios to tan and tanh
+    # exp ratios to tan and tanh
     for ei in ex:
         n, d = ei - 1, ei + 1
         et = n/d
@@ -4520,7 +4523,8 @@ def product_mul(self, other, method=0):
 
     return Mul(self, other)
 
-#-------------------- the old trigsimp routines ---------------------
+# ------------------- the old trigsimp routines ---------------------
+
 
 def trigsimp_old(expr, **opts):
     """
@@ -4635,8 +4639,7 @@ def trigsimp_old(expr, **opts):
         'groebner': (lambda x, d: groebnersimp(x, d, **opts)),
         'combined': (lambda x, d: _trigsimp(groebnersimp(x,
                                        d, polynomial=True, hints=[2, tan]),
-                                   d))
-                   }[method]
+                                   d))}[method]
 
     if recursive:
         w, g = cse(expr)
@@ -4667,6 +4670,8 @@ def _dotrig(a, b):
 
 
 _trigpat = None
+
+
 def _trigpats():
     global _trigpat
     a, b, c = symbols('a b c', cls=Wild)
@@ -4797,10 +4802,15 @@ def _replace_mul_fpowxgpow(expr, f, g, rexp, h, rexph):
 
 def _idn(x):
     return x
+
+
 def _midn(x):
     return -x
+
+
 def _one(x):
     return S.One
+
 
 def _match_div_rewrite(expr, i):
     """helper for __trigsimp"""
@@ -4982,4 +4992,4 @@ def __trigsimp(expr, deep=False):
         pass
 
     return expr
-#------------------- end of old trigsimp routines --------------------
+# ------------------ end of old trigsimp routines --------------------

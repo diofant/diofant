@@ -1,6 +1,6 @@
 from __future__ import division
 
-#this module tests that sympy works with true division turned on
+# this module tests that sympy works with true division turned on
 
 from sympy import Rational, Symbol, Float
 

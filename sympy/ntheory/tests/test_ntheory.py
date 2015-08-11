@@ -35,6 +35,7 @@ from sympy.utilities.iterables import capture
 from sympy.utilities.randtest import random_complex_number
 from sympy.ntheory.multinomial import multinomial_coefficients_iterator
 
+
 def test_trailing():
     assert trailing(0) == 0
     assert trailing(1) == 0
@@ -121,7 +122,7 @@ def test_isprime():
     assert isprime(2**89 - 1)
     assert isprime(2**607 - 1)
     assert not isprime(2**601 - 1)
-    #Arnault's number
+    # Arnault's number
     assert isprime(int('''
 803837457453639491257079614341942108138837688287558145837488917522297\
 427376533365218650233616396004545791504202360320876656996676098728404\
@@ -355,6 +356,7 @@ def test_factorint():
     # Test for non integer input
     raises(ValueError, lambda: factorint(4.5))
 
+
 def test_divisors_and_divisor_count():
     assert divisors(-1) == [1]
     assert divisors(0) == []
@@ -374,6 +376,7 @@ def test_divisors_and_divisor_count():
 
     assert divisor_count(180, 3) == divisor_count(180//3)
     assert divisor_count(2*3*5, 7) == 0
+
 
 def test_issue_6981():
     S = set(divisors(4)).union(set(divisors(Integer(2))))
@@ -543,8 +546,8 @@ def test_residue():
     assert is_nthpow_residue(8547, 12, 10007)
     assert nthroot_mod(1801, 11, 2663) == 44
     for a, q, p in [(51922, 2, 203017), (43, 3, 109), (1801, 11, 2663),
-          (26118163, 1303, 33333347), (1499, 7, 2663), (595, 6, 2663),
-          (1714, 12, 2663), (28477, 9, 33343)]:
+                    (26118163, 1303, 33333347), (1499, 7, 2663), (595, 6, 2663),
+                    (1714, 12, 2663), (28477, 9, 33343)]:
         r = nthroot_mod(a, q, p)
         assert pow(r, q, p) == a
     assert nthroot_mod(11, 3, 109) is None
@@ -643,7 +646,7 @@ def test_multinomial_coefficients():
     mc = multinomial_coefficients(3, 3)
     assert mc == {(2, 1, 0): 3, (0, 3, 0): 1,
             (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
-            (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
+        (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
     assert dict(multinomial_coefficients_iterator(2, 0)) == {(0, 0): 1}
     assert dict(
         multinomial_coefficients_iterator(2, 1)) == {(0, 1): 1, (1, 0): 1}

@@ -71,7 +71,7 @@ def check(a, exclude=[], check_attr=True):
     warnings.simplefilter("default", category=DeprecationWarning)
     warnings.simplefilter("error", category=SymPyDeprecationWarning)
 
-#================== core =========================
+# ================= core =========================
 
 
 def test_core_basic():
@@ -164,7 +164,7 @@ def test_Singletons():
             assert func(obj) is obj
 
 
-#================== functions ===================
+# ================= functions ===================
 from sympy.functions import (Piecewise, lowergamma, acosh,
         chebyshevu, chebyshevt, ln, chebyshevt_root, binomial, legendre,
         Heaviside, factorial, bernoulli, coth, tanh, assoc_legendre, sign,
@@ -200,7 +200,7 @@ def test_functions():
     for cls in others:
         check(cls)
 
-#================== geometry ====================
+# ================= geometry ====================
 from sympy.geometry.entity import GeometryEntity
 from sympy.geometry.point import Point
 from sympy.geometry.ellipse import Circle, Ellipse
@@ -221,7 +221,7 @@ def test_geometry():
             RegularPolygon(p1, 4, 5), Triangle, Triangle(p1, p2, p3)):
         check(c, check_attr=False)
 
-#================== integrals ====================
+# ================= integrals ====================
 from sympy.integrals.integrals import Integral
 
 
@@ -230,7 +230,7 @@ def test_integrals():
     for c in (Integral, Integral(x)):
         check(c)
 
-#==================== logic =====================
+# =================== logic =====================
 from sympy.core.logic import Logic
 
 
@@ -238,7 +238,7 @@ def test_logic():
     for c in (Logic, Logic(1)):
         check(c)
 
-#================== matrices ====================
+# ================= matrices ====================
 from sympy.matrices import Matrix, SparseMatrix
 
 
@@ -246,7 +246,7 @@ def test_matrices():
     for c in (Matrix, Matrix([1, 2, 3]), SparseMatrix, SparseMatrix([[1, 2], [3, 4]])):
         check(c)
 
-#================== ntheory =====================
+# ================= ntheory =====================
 from sympy.ntheory.generate import Sieve
 
 
@@ -255,7 +255,7 @@ def test_ntheory():
         check(c)
 
 
-#================== plotting ====================
+# ================= plotting ====================
 # XXX: These tests are not complete, so XFAIL them
 
 
@@ -306,8 +306,9 @@ def test_plotting2():
     check(Plot(1, visible=False))
     check(PlotAxes())
 
-#================== polys =======================
+# ================= polys =======================
 from sympy import Poly, ZZ, QQ, lex
+
 
 def test_pickling_polys_polytools():
     from sympy.polys.polytools import Poly, PurePoly, GroebnerBasis
@@ -323,6 +324,7 @@ def test_pickling_polys_polytools():
     # for c in (GroebnerBasis, GroebnerBasis([x**2 - 1], x, order=lex)):
     #     check(c)
 
+
 def test_pickling_polys_polyclasses():
     from sympy.polys.polyclasses import DMP, DMF, ANP
 
@@ -332,6 +334,7 @@ def test_pickling_polys_polyclasses():
         check(c)
     for c in (ANP, ANP([QQ(1), QQ(2)], [QQ(1), QQ(2), QQ(3)], QQ)):
         check(c)
+
 
 @XFAIL
 def test_pickling_polys_rings():
@@ -348,6 +351,7 @@ def test_pickling_polys_rings():
     for c in (ring.dtype, ring.one):
         check(c, exclude=[0, 1], check_attr=False)  # TODO: Py3k
 
+
 def test_pickling_polys_fields():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of fields works properly.
@@ -363,6 +367,7 @@ def test_pickling_polys_fields():
     # TODO: AssertionError: assert id(obj) not in self.memo
     # for c in (field.dtype, field.one):
     #     check(c, exclude=[0, 1])
+
 
 def test_pickling_polys_elements():
     from sympy.polys.domains.pythonrational import PythonRational
@@ -387,6 +392,7 @@ def test_pickling_polys_elements():
     # TODO: fix pickling of ComplexElement
     # for c in (mp.mpc, mp.mpc(1.0, -1.5)):
     #     check(c)
+
 
 def test_pickling_polys_domains():
     from sympy.polys.domains.pythonfinitefield import PythonFiniteField
@@ -447,11 +453,13 @@ def test_pickling_polys_domains():
     for c in (ExpressionDomain, ExpressionDomain()):
         check(c)
 
+
 def test_pickling_polys_numberfields():
     from sympy.polys.numberfields import AlgebraicNumber
 
     for c in (AlgebraicNumber, AlgebraicNumber(sqrt(3))):
         check(c)
+
 
 def test_pickling_polys_orderings():
     from sympy.polys.orderings import (LexOrder, GradedLexOrder,
@@ -476,6 +484,7 @@ def test_pickling_polys_orderings():
     for c in (InverseOrder, InverseOrder(LexOrder())):
         check(c)
 
+
 def test_pickling_polys_monomials():
     from sympy.polys.monomials import MonomialOps, Monomial
     x, y, z = symbols("x,y,z")
@@ -485,6 +494,7 @@ def test_pickling_polys_monomials():
 
     for c in (Monomial, Monomial((1, 2, 3), (x, y, z))):
         check(c)
+
 
 def test_pickling_polys_errors():
     from sympy.polys.polyerrors import (ExactQuotientFailed, OperationNotSupported,
@@ -569,6 +579,7 @@ def test_pickling_polys_errors():
     for c in (FlagError, FlagError()):
         check(c)
 
+
 def test_pickling_polys_options():
     from sympy.polys.polyoptions import Options
 
@@ -579,6 +590,7 @@ def test_pickling_polys_options():
 # TODO: def test_pickling_polys_rootisolation():
 #    RealInterval
 #    ComplexInterval
+
 
 def test_pickling_polys_rootoftools():
     from sympy.polys.rootoftools import RootOf, RootSum
@@ -592,7 +604,7 @@ def test_pickling_polys_rootoftools():
     for c in (RootSum, RootSum(f, exp)):
         check(c)
 
-#================== printing ====================
+# ================= printing ====================
 from sympy.printing.latex import LatexPrinter
 from sympy.printing.mathml import MathMLPrinter
 from sympy.printing.pretty.pretty import PrettyPrinter
@@ -617,7 +629,7 @@ def test_printing1():
 def test_printing2():
     check(PrettyPrinter())
 
-#================== series ======================
+# ================= series ======================
 from sympy.series.limits import Limit
 from sympy.series.order import Order
 
@@ -628,7 +640,7 @@ def test_series():
     for c in (Limit, Limit(e, x, 1), Order, Order(e)):
         check(c)
 
-#================== concrete ==================
+# ================= concrete ==================
 from sympy.concrete.products import Product
 from sympy.concrete.summations import Sum
 

@@ -76,7 +76,7 @@ from sympy.utilities.iterables import numbered_symbols
 from sympy.external import import_module
 import warnings
 
-#TODO debuging output
+# TODO debuging output
 
 
 class vectorized_lambdify(object):
@@ -118,10 +118,10 @@ class vectorized_lambdify(object):
             temp_args = (np.array(a, dtype=np.complex) for a in args)
             results = self.vector_func(*temp_args)
             results = np.ma.masked_where(
-                                np.abs(results.imag) > 1e-7 * np.abs(results),
-                                results.real, copy=False)
+                np.abs(results.imag) > 1e-7 * np.abs(results),
+                results.real, copy=False)
         except Exception as e:
-            #DEBUG: print 'Error', type(e), e
+            # DEBUG: print 'Error', type(e), e
             if ((isinstance(e, TypeError)
                  and 'unhashable type: \'numpy.ndarray\'' in str(e))
                 or
@@ -143,8 +143,8 @@ class vectorized_lambdify(object):
                     self.lambda_func, otypes=[np.complex])
                 results = self.vector_func(*args)
                 results = np.ma.masked_where(
-                                np.abs(results.imag) > 1e-7 * np.abs(results),
-                                results.real, copy=False)
+                    np.abs(results.imag) > 1e-7 * np.abs(results),
+                    results.real, copy=False)
             else:
                 # Complete failure. One last try with no translations, only
                 # wrapping in complex((...).evalf()) and returning the real
@@ -160,8 +160,8 @@ class vectorized_lambdify(object):
                         self.lambda_func, otypes=[np.complex])
                     results = self.vector_func(*args)
                     results = np.ma.masked_where(
-                            np.abs(results.imag) > 1e-7 * np.abs(results),
-                            results.real, copy=False)
+                        np.abs(results.imag) > 1e-7 * np.abs(results),
+                        results.real, copy=False)
                     warnings.warn('The evaluation of the expression is'
                             ' problematic. We are trying a failback method'
                             ' that may still work. Please report this as a bug.')
@@ -190,7 +190,7 @@ class lambdify(object):
     def __call__(self, args):
         args = complex(args)
         try:
-            #The result can be sympy.Float. Hence wrap it with complex type.
+            # The result can be sympy.Float. Hence wrap it with complex type.
             result = complex(self.lambda_func(args))
             if abs(result.imag) > 1e-7 * abs(result):
                 return None
@@ -219,8 +219,8 @@ class lambdify(object):
             else:
                 if self.failure:
                     raise e
-                #Failure
-                #Try wrapping it with complex(..).evalf()
+                # Failure
+                # Try wrapping it with complex(..).evalf()
                 self.failure = True
                 self.lambda_func = experimental_lambdify(self.args, self.expr,
                                                     use_evalf=True,
@@ -432,7 +432,7 @@ class Lambdifier(object):
     ###
     # mpmath, etc
     ###
-    #TODO
+    # TODO
 
     ###
     # Create the final ordered tuples of dictionaries
@@ -504,7 +504,7 @@ class Lambdifier(object):
         >>> str2tree('sin(y*(y + 1.1) + (sin(y)))')
         ('', ('sin(', ('y*(y + 1.1) + (', ('sin(', 'y'), '))')), ')')
         """
-        #matches the first 'function_name('
+        # matches the first 'function_name('
         first_par = re.search(r'(\w+\()', exprstr)
         if first_par is None:
             return exprstr

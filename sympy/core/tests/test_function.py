@@ -113,6 +113,7 @@ def test_Function():
     assert myfunc.nargs == S.Naturals0
     assert myfunc(x).nargs == S.Naturals0
 
+
 def test_nargs():
     f = Function('f')
     assert f.nargs == S.Naturals0

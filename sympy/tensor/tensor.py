@@ -610,7 +610,7 @@ class TIDS(CantSympify):
         """
         components = self.components
         antisym = g.index_types[0].metric_antisym
-        #if not any(x == g for x in components):
+        # if not any(x == g for x in components):
         #    return self
         # list of positions of the metric ``g``
         gpos = [i for i, x in enumerate(components) if x == g]
@@ -1033,9 +1033,9 @@ class _TensorDataLazyEvaluator(CantSympify):
         numpy = import_module('numpy')
 
         data = numpy.tensordot(
-                metric,
-                data,
-                (1, pos))
+            metric,
+            data,
+            (1, pos))
         return numpy.rollaxis(data, 0, pos+1)
 
     @staticmethod
@@ -1070,7 +1070,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 )
 
         if len(dum) > 0:
-            ### perform contractions ###
+            # perform contractions
             axes1 = []
             axes2 = []
             for i, indx1 in enumerate(indices):
@@ -3744,6 +3744,7 @@ def canon_bp(p):
         return p.canon_bp()
     return p
 
+
 def tensor_mul(*a):
     """
     product of tensors
@@ -3770,6 +3771,7 @@ def riemann_cyclic_replace(t_r):
     t2 = S(1)/3*t_r.substitute_indices((m,m),(n,p),(p,n),(q,q))
     t3 = t0 + t1 + t2
     return t3
+
 
 def riemann_cyclic(t2):
     """
@@ -3801,6 +3803,7 @@ def riemann_cyclic(t2):
         return t3
     else:
         return canon_bp(t3)
+
 
 def get_lines(ex, index_type):
     """
@@ -3918,15 +3921,18 @@ def get_lines(ex, index_type):
 
     return lines, traces, rest
 
+
 def get_indices(t):
     if not isinstance(t, TensExpr):
         return ()
     return t.get_indices()
 
+
 def get_tids(t):
     if isinstance(t, TensExpr):
         return t._tids
     return TIDS([], [], [])
+
 
 def get_coeff(t):
     if isinstance(t, Tensor):
@@ -3937,10 +3943,12 @@ def get_coeff(t):
         raise ValueError("no coefficient associated to this tensor expression")
     return t
 
+
 def contract_metric(t, g):
     if isinstance(t, TensExpr):
         return t.contract_metric(g)
     return t
+
 
 def perm2tensor(t, g, canon_bp=False):
     """
@@ -3956,6 +3964,7 @@ def perm2tensor(t, g, canon_bp=False):
         coeff = -coeff
     res = TensMul.from_TIDS(coeff, new_tids, is_canon_bp=canon_bp)
     return res
+
 
 def substitute_indices(t, *index_tuples):
     """

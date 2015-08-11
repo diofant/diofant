@@ -718,7 +718,7 @@ def _diop_quadratic(var, coeff, t):
 
         else:
             # In this case equation can be transformed into a Pell equation
-            #n = symbols("n", integer=True)
+            # n = symbols("n", integer=True)
 
             a = diop_DN(D, 1)
             T = a[0][0]
@@ -2440,8 +2440,8 @@ def _diop_general_sum_of_squares(var, coeff, limit=1):
     return s
 
 
-## Functions below this comment can be more suitably grouped under an Additive number theory module
-## rather than the Diophantine equation module.
+# Functions below this comment can be more suitably grouped under an Additive number theory module
+# rather than the Diophantine equation module.
 
 
 def partition(n, k=None, zeros=False):

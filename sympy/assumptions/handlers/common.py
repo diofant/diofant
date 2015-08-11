@@ -108,7 +108,7 @@ class TautologicalHandler(AskHandler):
         return pt == qt
 
 
-#### Helper methods
+# Helper methods
 def test_closed_group(expr, assumptions, key):
     """
     Test for membership in a group with respect

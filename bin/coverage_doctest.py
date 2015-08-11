@@ -257,6 +257,7 @@ def get_mod_name(path, base):
 
     return file_module[:-1]
 
+
 class FindInSphinx(HTMLParser):
     is_imported = []
 
@@ -264,6 +265,7 @@ class FindInSphinx(HTMLParser):
         a = dict(attr)
         if tag == "div" and a.get('class', None) == "viewcode-block":
             self.is_imported.append(a['id'])
+
 
 def find_sphinx(name, mod_path, found={}):
     if mod_path in found:  # Cache results
@@ -280,6 +282,7 @@ def find_sphinx(name, mod_path, found={}):
     p.feed(html_txt)
     found[mod_path] = p.is_imported
     return name in p.is_imported
+
 
 def process_function(name, c_name, b_obj, mod_path, f_sk, f_md, f_mdt, f_idt,
                      f_has_doctest, sk_list, sph, sphinx=True):

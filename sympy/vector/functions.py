@@ -64,10 +64,10 @@ def express(expr, system, system2=None, variables=False):
         if system2 is not None:
             raise ValueError("system2 should not be provided for \
                                 Vectors")
-        #Given expr is a Vector
+        # Given expr is a Vector
         if variables:
-            #If variables attribute is True, substitute
-            #the coordinate variables in the Vector
+            # If variables attribute is True, substitute
+            # the coordinate variables in the Vector
             system_list = []
             for x in expr.atoms():
                 if (isinstance(x, (BaseScalar, BaseVector))
@@ -78,7 +78,7 @@ def express(expr, system, system2=None, variables=False):
             for f in system_list:
                 subs_dict.update(f.scalar_map(system))
             expr = expr.subs(subs_dict)
-        #Re-express in this coordinate system
+        # Re-express in this coordinate system
         outvec = Vector.zero
         parts = expr.separate()
         for x in parts:
@@ -109,10 +109,10 @@ def express(expr, system, system2=None, variables=False):
             raise ValueError("system2 should not be provided for \
                                 Vectors")
         if variables:
-            #Given expr is a scalar field
+            # Given expr is a scalar field
             system_set = set()
             expr = sympify(expr)
-            #Subsitute all the coordinate variables
+            # Subsitute all the coordinate variables
             for x in expr.atoms():
                 if isinstance(x, BaseScalar)and x.system != system:
                     system_set.add(x.system)
@@ -239,9 +239,9 @@ def is_conservative(field):
 
     """
 
-    #Field is conservative irrespective of system
-    #Take the first coordinate system in the result of the
-    #separate method of Vector
+    # Field is conservative irrespective of system
+    # Take the first coordinate system in the result of the
+    # separate method of Vector
     if not isinstance(field, Vector):
         raise TypeError("field should be a Vector")
     if field == Vector.zero:
@@ -273,9 +273,9 @@ def is_solenoidal(field):
 
     """
 
-    #Field is solenoidal irrespective of system
-    #Take the first coordinate system in the result of the
-    #separate method in Vector
+    # Field is solenoidal irrespective of system
+    # Take the first coordinate system in the result of the
+    # separate method in Vector
     if not isinstance(field, Vector):
         raise TypeError("field should be a Vector")
     if field == Vector.zero:
@@ -314,19 +314,19 @@ def scalar_potential(field, coord_sys):
 
     """
 
-    #Check whether field is conservative
+    # Check whether field is conservative
     if not is_conservative(field):
         raise ValueError("Field is not conservative")
     if field == Vector.zero:
         return S(0)
-    #Express the field exntirely in coord_sys
-    #Subsitute coordinate variables also
+    # Express the field exntirely in coord_sys
+    # Subsitute coordinate variables also
     if not isinstance(coord_sys, CoordSysCartesian):
         raise TypeError("coord_sys must be a CoordSysCartesian")
     field = express(field, coord_sys, variables=True)
     dimensions = coord_sys.base_vectors()
     scalars = coord_sys.base_scalars()
-    #Calculate scalar potential function
+    # Calculate scalar potential function
     temp_function = integrate(field.dot(dimensions[0]), scalars[0])
     for i, dim in enumerate(dimensions[1:]):
         partial_diff = diff(temp_function, scalars[i + 1])
@@ -383,18 +383,18 @@ def scalar_potential_difference(field, coord_sys, point1, point2):
     if not isinstance(coord_sys, CoordSysCartesian):
         raise TypeError("coord_sys must be a CoordSysCartesian")
     if isinstance(field, Vector):
-        #Get the scalar potential function
+        # Get the scalar potential function
         scalar_fn = scalar_potential(field, coord_sys)
     else:
-        #Field is a scalar
+        # Field is a scalar
         scalar_fn = field
-    #Express positions in required coordinate system
+    # Express positions in required coordinate system
     origin = coord_sys.origin
     position1 = express(point1.position_wrt(origin), coord_sys,
                         variables=True)
     position2 = express(point2.position_wrt(origin), coord_sys,
                         variables=True)
-    #Get the two positions as substitution dicts for coordinate variables
+    # Get the two positions as substitution dicts for coordinate variables
     subs_dict1 = {}
     subs_dict2 = {}
     scalars = coord_sys.base_scalars()

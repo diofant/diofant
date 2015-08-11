@@ -224,7 +224,7 @@ def test_issue_3210():
         cos(1) + cos(2),
         sinh(5),
         cosh(5),
-        ]
+    ]
 
 
 def test_issue_7263():
@@ -688,6 +688,7 @@ def test_powsimp():
 
     # issue 8836
     assert str( powsimp(exp(I*pi/3)*root(-1,3)) ) == '(-1)**(2/3)'
+
 
 def test_issue_6367():
     z = -5*sqrt(2)/(2*sqrt(2*sqrt(29) + 29)) + sqrt(-sqrt(29)/29 + S(1)/2)
@@ -1160,7 +1161,7 @@ def test_logcombine_1():
         log(z*y**log(x**2))
     assert logcombine((x*y + sqrt(x**4 + y**4) + log(x) - log(y))/(pi*x**Rational(2, 3)*
             sqrt(y)**3), force=True) == (
-            x*y + sqrt(x**4 + y**4) + log(x/y))/(pi*x**(S(2)/3)*y**(S(3)/2))
+        x*y + sqrt(x**4 + y**4) + log(x/y))/(pi*x**(S(2)/3)*y**(S(3)/2))
     assert logcombine(gamma(-log(x/y))*acos(-log(x/y)), force=True) == \
         acos(-log(x/y))*gamma(-log(x/y))
 

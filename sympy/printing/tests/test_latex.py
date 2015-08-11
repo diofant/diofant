@@ -123,6 +123,7 @@ def test_latex_builtins():
     assert latex(true) == r"\mathrm{True}"
     assert latex(false) == r'\mathrm{False}'
 
+
 def test_latex_Float():
     assert latex(Float(1.0e100)) == r"1.0 \cdot 10^{100}"
     assert latex(Float(1.0e-100)) == r"1.0 \cdot 10^{-100}"
@@ -342,6 +343,7 @@ def test_latex_functions():
     assert latex(fjlkd(x)) == r'\operatorname{fjlkd}{\left (x \right )}'
     # even when it is referred to without an argument
     assert latex(fjlkd) == r'\operatorname{fjlkd}'
+
 
 def test_hyper_printing():
     from sympy import pi
@@ -598,7 +600,7 @@ def test_latex_list():
 
 
 def test_latex_rational():
-    #tests issue 3973
+    # tests issue 3973
     assert latex(-Rational(1, 2)) == "- \\frac{1}{2}"
     assert latex(Rational(-1, 2)) == "- \\frac{1}{2}"
     assert latex(Rational(1, -2)) == "- \\frac{1}{2}"
@@ -609,7 +611,7 @@ def test_latex_rational():
 
 
 def test_latex_inverse():
-    #tests issue 4129
+    # tests issue 4129
     assert latex(1/x) == "\\frac{1}{x}"
     assert latex(1/(x + y)) == "\\frac{1}{x + y}"
 
@@ -1052,7 +1054,7 @@ def test_QuotientRing():
 
 
 def test_Tr():
-    #TODO: Handle indices
+    # TODO: Handle indices
     A, B = symbols('A B', commutative=False)
     t = Tr(A*B)
     assert latex(t) == r'\mbox{Tr}\left(A B\right)'

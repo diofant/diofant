@@ -273,7 +273,7 @@ def test_octave_matrix_1x1():
     C = MatrixSymbol('C', 1, 2)
     assert mcode(A, assign_to=B) == "B = 3;"
     # FIXME?
-    #assert mcode(A, assign_to=x) == "x = 3;"
+    # assert mcode(A, assign_to=x) == "x = 3;"
     raises(ValueError, lambda: mcode(A, assign_to=C))
 
 

@@ -244,6 +244,7 @@ def test_intersect():
     assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2)) == \
         Union(Interval(1, 1), Interval(2, 2))
 
+
 def test_intersection():
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
@@ -389,6 +390,7 @@ def test_is_proper_superset():
     assert FiniteSet(1, 2, 3).is_proper_superset(S.EmptySet) is True
 
     raises(ValueError, lambda: Interval(0, 1).is_proper_superset(0))
+
 
 def test_contains():
     assert Interval(0, 2).contains(1) is S.true
@@ -606,7 +608,7 @@ def test_product_basic():
     assert square.complement(Interval(-oo, oo)*Interval(-oo, oo)) == Union(
         (Interval(-oo, 0, True, True) +
          Interval(1, oo, True, True))*Interval(-oo, oo),
-         Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
+        Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
                   Interval(1, oo, True, True)))
 
     assert (Interval(-5, 5)**3).is_subset(Interval(-10, 10)**3)
@@ -727,6 +729,7 @@ def test_image_FiniteSet():
     x = Symbol('x', extended_real=True)
     assert imageset(x, 2*x, FiniteSet(1, 2, 3)) == FiniteSet(2, 4, 6)
 
+
 def test_image_Union():
     x = Symbol('x', extended_real=True)
     assert imageset(x, x**2, Interval(-2, 0) + FiniteSet(1, 2, 3)) == \
@@ -781,10 +784,10 @@ def test_boundary_ProductSet():
 
     second_square = Interval(1, 2, True, True) * Interval(0, 1, True, True)
     assert (open_square + second_square).boundary == (
-                FiniteSet(0, 1) * Interval(0, 1)
-              + FiniteSet(1, 2) * Interval(0, 1)
-              + Interval(0, 1) * FiniteSet(0, 1)
-              + Interval(1, 2) * FiniteSet(0, 1))
+        FiniteSet(0, 1) * Interval(0, 1)
+        + FiniteSet(1, 2) * Interval(0, 1)
+        + Interval(0, 1) * FiniteSet(0, 1)
+        + Interval(1, 2) * FiniteSet(0, 1))
 
 
 def test_boundary_ProductSet_line():

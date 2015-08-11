@@ -737,7 +737,7 @@ def _pgroup_calcs():
         [5, 1, 0, 4, 6, 2, 3, 7],  # cw through UFR vertex
         [5, 6, 2, 1, 4, 7, 3, 0],  # cw through UBR vertex
         [7, 4, 0, 3, 6, 5, 1, 2],  # cw through UBL
-        ]]
+    ]]
 
     cube = Polyhedron(
         range(8),

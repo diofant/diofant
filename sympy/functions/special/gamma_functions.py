@@ -15,7 +15,7 @@ from sympy.functions.combinatorial.factorials import factorial, rf, RisingFactor
 
 
 ###############################################################################
-############################ COMPLETE GAMMA FUNCTION ##########################
+# ########################## COMPLETE GAMMA FUNCTION ######################## #
 ###############################################################################
 
 class gamma(Function):
@@ -199,7 +199,7 @@ class gamma(Function):
 
 
 ###############################################################################
-################## LOWER and UPPER INCOMPLETE GAMMA FUNCTIONS #################
+# ################ LOWER and UPPER INCOMPLETE GAMMA FUNCTIONS ############### #
 ###############################################################################
 
 class lowergamma(Function):
@@ -336,6 +336,7 @@ class lowergamma(Function):
     def _latex_no_arg(printer):
         return r'\gamma'
 
+
 class uppergamma(Function):
     r"""
     The upper incomplete gamma function.
@@ -471,7 +472,7 @@ class uppergamma(Function):
 
 
 ###############################################################################
-###################### POLYGAMMA and LOGGAMMA FUNCTIONS #######################
+# #################### POLYGAMMA and LOGGAMMA FUNCTIONS ##################### #
 ###############################################################################
 
 class polygamma(Function):

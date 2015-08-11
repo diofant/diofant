@@ -46,6 +46,7 @@ known_functions = {
     "conjugate": "conjg"
 }
 
+
 class FCodePrinter(CodePrinter):
     """A printer to convert sympy expressions to strings of Fortran code"""
     printmethod = "_fcode"

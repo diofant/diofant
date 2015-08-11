@@ -47,6 +47,7 @@ from sympy.polys import gcd, cancel, PolynomialError, Poly, reduced, RootSum, Do
 
 from sympy.utilities.iterables import numbered_symbols
 
+
 def integer_powers(exprs):
     """
     Rewrites a list of expressions as integer multiples of each other.
@@ -224,7 +225,7 @@ class DifferentialExtension(object):
                 (sin, cos, cot, tan, sinh, cosh, coth, tanh): exp,
                 (asin, acos, acot, atan): log,
             }
-        #rewrite the trigonometric components
+        # rewrite the trigonometric components
             for candidates, rule in rewritables.items():
                 self.newf = self.newf.rewrite(candidates, rule)
         else:
@@ -517,7 +518,7 @@ class DifferentialExtension(object):
                     i = Symbol('i')
                 self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs(self.x, i)))]
                 self.newf = self.newf.xreplace(
-                        {exp(exparg): self.t**p for exparg, p in others})
+                    {exp(exparg): self.t**p for exparg, p in others})
                 new_extension = True
 
         if restart:
@@ -1109,6 +1110,7 @@ def recognize_derivative(a, d, DE, z=None):
         j = j + 1
     return flag
 
+
 def recognize_log_derivative(a, d, DE, z=None):
     """
     There exists a v in K(x)* such that f = dv/v
@@ -1138,6 +1140,7 @@ def recognize_log_derivative(a, d, DE, z=None):
         if any(not j.is_Integer for j in a):
             return False
     return True
+
 
 def residue_reduce(a, d, DE, z=None, invert=True):
     """
@@ -1436,9 +1439,8 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         # XXX: Does qd = 0 always necessarily correspond to the exponential
         # equaling 1?
         ret += Piecewise(
-                (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
-                (qas/qds, True)
-            )
+            (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
+            (qas/qds, True))
     else:
         ret += qas/qds
 

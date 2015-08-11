@@ -351,7 +351,7 @@ def test_division():
     assert (1/x**2).subs(x, -2) == Rational(1, 4)
     assert (-(1/x**2)).subs(x, -2) == -Rational(1, 4)
 
-    #issue 5360
+    # issue 5360
     assert (1/x).subs(x, 0) == 1/S(0)
 
 
@@ -415,6 +415,7 @@ def test_derivative_subs():
     assert cse(Derivative(f(x, y), x) +
                Derivative(f(x, y), y))[1][0].has(Derivative)
 
+
 def test_derivative_subs2():
     x, y, z = symbols('x y z')
     f, g = symbols('f g', cls=Function)
@@ -423,17 +424,19 @@ def test_derivative_subs2():
     assert Derivative(f, x, y).subs(Derivative(f, x), g) == Derivative(g, y)
     assert Derivative(f, x, y).subs(Derivative(f, y), g) == Derivative(g, x)
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
+        Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
+        Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), z, y, x), g) == g)
+        Derivative(f(x, y, z), z, y, x), g) == g)
+
 
 def test_derivative_subs3():
     x = Symbol('x')
     dex = Derivative(exp(x), x)
     assert Derivative(dex, x).subs(dex, exp(x)) == dex
     assert dex.subs(exp(x), dex) == Derivative(exp(x), x, x)
+
 
 def test_issue_5284():
     A, B = symbols('A B', commutative=False)

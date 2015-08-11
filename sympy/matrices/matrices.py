@@ -669,7 +669,7 @@ class MatrixBase(object):
             '<': 'ljust',
             '>': 'rjust',
             '^': 'center',
-            }[align]
+        }[align]
         for i, row in enumerate(res):
             for j, elem in enumerate(row):
                 row[j] = getattr(elem, align)(maxlen[j])
@@ -1930,7 +1930,7 @@ class MatrixBase(object):
                 from sympy import eye
                 # extract the diagonal part
                 d = b[0, 0]*eye(nr)
-                #and the nilpotent part
+                # and the nilpotent part
                 n = b-d
                 # compute its exponential
                 nex = eye(nr)
@@ -2157,11 +2157,11 @@ class MatrixBase(object):
         def cond():
             yield self.is_square
             yield fuzzy_and(
-                    self[i, i].is_extended_real for i in range(self.rows))
+                self[i, i].is_extended_real for i in range(self.rows))
             yield fuzzy_and(
-                    (self[i, j] - self[j, i].conjugate()).is_zero
-                    for i in range(self.rows)
-                    for j in range(i + 1, self.cols))
+                (self[i, j] - self[j, i].conjugate()).is_zero
+                for i in range(self.rows)
+                for j in range(i + 1, self.cols))
         return fuzzy_and(i for i in cond())
 
     @property
@@ -3569,7 +3569,7 @@ class MatrixBase(object):
                     # that we have already computed (if there are any).
                     # (That is why we start with the biggest s).
 
-                    ########   Implementation remark:   ########
+                    # ########   Implementation remark:   ########
 
                     # Doing so for *ALL* already computed chain vectors
                     # we actually exclude some vectors twice because they are already excluded
@@ -4115,6 +4115,7 @@ class MatrixBase(object):
             w = symbols('w:{0}_:{1}'.format(rows, cols), cls=Dummy)
             arbitrary_matrix = self.__class__(cols, rows, w).T
         return A_pinv * B + (eye(A.cols) - A_pinv*A) * arbitrary_matrix
+
 
 def classof(A, B):
     """

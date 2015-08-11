@@ -2,6 +2,7 @@ from .cartan_type import Standard_Cartan
 from sympy.matrices import eye
 from sympy.core.compatibility import range
 
+
 class TypeD(Standard_Cartan):
 
     def __new__(cls, n):

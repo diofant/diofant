@@ -3,6 +3,7 @@ from sympy.abc import x, y, z
 
 from sympy.utilities.pytest import raises, XFAIL, slow
 
+
 @slow
 def test_simple():
     # Gruntz' theses pp. 91 to 96

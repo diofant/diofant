@@ -944,6 +944,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
     else:
         return result
 
+
 def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     """
     Sampling version of density
@@ -1059,6 +1060,7 @@ def rv_subs(expr, symbols=None):
     swapdict = {rv: rv.symbol for rv in symbols}
     return expr.xreplace(swapdict)
 
+
 class NamedArgsMixin(object):
     _argnames = ()
 
@@ -1068,6 +1070,7 @@ class NamedArgsMixin(object):
         except ValueError:
             raise AttributeError("'%s' object has not attribute '%s'" % (
                 type(self).__name__, attr))
+
 
 def _value_check(condition, message):
     """

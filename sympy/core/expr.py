@@ -2384,7 +2384,7 @@ class Expr(Basic, EvalfMixin):
             return self._eval_is_algebraic_expr(syms)
 
     ###################################################################################
-    ##################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ##################
+    # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
 
     def series(self, x=None, x0=0, n=6, dir="+", logx=None):
@@ -2912,7 +2912,7 @@ class Expr(Basic, EvalfMixin):
         return S.Zero, self
 
     ###################################################################################
-    ##################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ####################
+    # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
     ###################################################################################
 
     def diff(self, *symbols, **assumptions):
@@ -2921,7 +2921,7 @@ class Expr(Basic, EvalfMixin):
         return Derivative(self, *new_symbols, **assumptions)
 
     ###########################################################################
-    ###################### EXPRESSION EXPANSION METHODS #######################
+    # #################### EXPRESSION EXPANSION METHODS ##################### #
     ###########################################################################
 
     # Relevant subclasses should override _eval_expand_hint() methods.  See
@@ -3051,7 +3051,7 @@ class Expr(Basic, EvalfMixin):
         return expr
 
     ###########################################################################
-    ################### GLOBAL ACTION VERB WRAPPER METHODS ####################
+    # ################# GLOBAL ACTION VERB WRAPPER METHODS ################## #
     ###########################################################################
 
     def integrate(self, *args, **kwargs):

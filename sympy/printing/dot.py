@@ -12,6 +12,8 @@ default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
 sort_classes = (Add, Mul)
 slotClasses = (Symbol, Integer, Rational, Float)
 # XXX: Why not just use srepr()?
+
+
 def purestr(x):
     """ A string that follows obj = type(obj)(*obj.args) exactly """
     if not isinstance(x, Basic):
@@ -46,6 +48,7 @@ def styleof(expr, styles=default_styles):
             style.update(sty)
     return style
 
+
 def attrprint(d, delimiter=', '):
     """ Print a dictionary of attributes
 
@@ -54,6 +57,7 @@ def attrprint(d, delimiter=', '):
     "color"="blue", "shape"="ellipse"
     """
     return delimiter.join('"%s"="%s"'%item for item in sorted(d.items()))
+
 
 def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     """ String defining a node
@@ -120,6 +124,7 @@ template = \
 }"""
 
 graphstyle = {'rankdir': 'TD', 'ordering': 'out'}
+
 
 def dotprint(expr, styles=default_styles,
              atom=lambda x: not isinstance(x, Basic),

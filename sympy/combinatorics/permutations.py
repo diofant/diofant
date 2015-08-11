@@ -166,6 +166,7 @@ def _af_invert(a):
         inv_form[ai] = i
     return inv_form
 
+
 def _af_pow(a, n):
     """
     Routine for finding powers of a permutation.
@@ -209,6 +210,7 @@ def _af_pow(a, n):
                 a = [a[i] for i in a]
                 n = n // 2
     return b
+
 
 def _af_commutes_with(a, b):
     """
@@ -432,6 +434,7 @@ class Cycle(dict):
 
     def copy(self):
         return Cycle(self)
+
 
 class Permutation(Basic):
     """
@@ -820,13 +823,13 @@ class Permutation(Basic):
         if size is not None:
             size = int(size)
 
-        #a) ()
-        #b) (1) = identity
-        #c) (1, 2) = cycle
-        #d) ([1, 2, 3]) = array form
-        #e) ([[1, 2]]) = cyclic form
-        #f) (Cycle) = conversion to permutation
-        #g) (Permutation) = adjust size or return copy
+        # a) ()
+        # b) (1) = identity
+        # c) (1, 2) = cycle
+        # d) ([1, 2, 3]) = array form
+        # e) ([[1, 2]]) = cyclic form
+        # f) (Cycle) = conversion to permutation
+        # g) (Permutation) = adjust size or return copy
         ok = True
         if not args:  # a
             return _af_new(list(range(size or 0)))

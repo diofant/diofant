@@ -87,8 +87,7 @@ def main():
               Matrix([rho*sin(theta)*cos(phi), rho*sin(theta)*sin(phi),
                       rho*cos(theta)]),
               [rho, theta, phi],
-              recursive=True
-              )
+              recursive=True)
 
     transform("rotating disk",
               Matrix([t,
@@ -104,13 +103,11 @@ def main():
     transform("bipolar",
             Matrix([a*sinh(tau)/(cosh(tau)-cos(sigma)),
                 a*sin(sigma)/(cosh(tau)-cos(sigma))]),
-            [sigma, tau]
-            )
+            [sigma, tau])
 
     transform("elliptic",
               Matrix([a*cosh(mu)*cos(nu), a*sinh(mu)*sin(nu)]),
-              [mu, nu]
-              )
+              [mu, nu])
 
 if __name__ == "__main__":
     main()

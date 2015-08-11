@@ -262,7 +262,7 @@ def test_D10():
 
 @XFAIL
 def test_D11():
-    #Is there a way to use count_ops?
+    # Is there a way to use count_ops?
     raise NotImplementedError("flops(sum(product(f[i][k], (i,1,k)), (k,1,n)))")
 
 
@@ -338,6 +338,7 @@ def test_G3():
     raise NotImplementedError("(a+b)**p mod p == a**p + b**p mod p; p prime")
 
 # ... G14 Modular equations are not implemented.
+
 
 def test_G15():
     assert Rational(sqrt(3).evalf()).limit_denominator(15) == Rational(26, 15)
@@ -907,7 +908,7 @@ def test_M12():
     # TODO: x = [-1, 2*(+/-asinh(1)*I + n*pi}, 3*(pi/6 + n*pi/3)]
     assert solve((x + 1)*(sin(x)**2 + 1)**2*cos(3*x)**3, x) == [
         -1, pi/6, pi/2,
-           - I*log(1 + sqrt(2)),      I*log(1 + sqrt(2)),
+        - I*log(1 + sqrt(2)),      I*log(1 + sqrt(2)),
         pi - I*log(1 + sqrt(2)), pi + I*log(1 + sqrt(2)),
     ]
 
@@ -1080,7 +1081,7 @@ def test_M38():
         -k44, k45, -k26 + k34 + a*k42/c - b*k42/c, k44, k45, -2*k46, -b*k47/a + c*k47/a,
         -a*k48/b + c*k48/b, a*k49/c - b*k49/c, k33, -k45, k46, a*k48/b - c*k48/b,
         -a*k49/c + b*k49/c
-        ]
+    ]
     solution = {
         k49: 0, k48: 0, k47: 0, k46: 0, k45: 0, k44: 0, k41: 0, k40: 0,
         k38: 0, k37: 0, k36: 0, k35: 0, k33: 0, k32: 0, k30: 0, k29: 0,
@@ -1091,6 +1092,7 @@ def test_M38():
         k34: b/c*k42, k31: k39, k26: a/c*k42, k23: k39
     }
     assert solve_lin_sys(system, variabes) == solution
+
 
 def test_M39():
     x, y, z = symbols('x y z', complex=True)
@@ -1119,6 +1121,7 @@ def test_N2():
 def test_N3():
     x = symbols('x', extended_real=True)
     assert ask(Q.is_true(And(Lt(-1, x), Lt(x, 1))), Q.is_true(abs(x) < 1 ))
+
 
 @XFAIL
 def test_N4():
@@ -1221,7 +1224,7 @@ def test_O2():
                                                                   [4]])
 
 
-#testO3-O9 MISSING!!
+# testO3-O9 MISSING!!
 
 
 def test_O10():
@@ -1397,6 +1400,7 @@ def test_P16():
                 [6*sqrt(6), 24*sqrt(3)]])
     assert M.rank() == 1
 
+
 @XFAIL
 def test_P17():
     t = symbols('t', extended_real=True)
@@ -1532,25 +1536,25 @@ def test_P27():
                 [0, -2, 0, 0, 2]])
     assert M.eigenvects() == [(a, 3, [Matrix([[1],
                                        [0],
-                                       [0],
-                                       [0],
-                                       [0]]),
-                               Matrix([[0],
+        [0],
+        [0],
+        [0]]),
+        Matrix([[0],
                                        [0],
                                        [1],
                                        [0],
                                        [0]]),
-                               Matrix([[0],
+        Matrix([[0],
                                        [0],
                                        [0],
                                        [1],
                                        [0]])]),
-                        (1 - I, 1, [Matrix([[          0],
+        (1 - I, 1, [Matrix([[          0],
                                             [-1/(-1 + I)],
                                             [          0],
                                             [          0],
                                             [          1]])]),
-                        (1 + I, 1, [Matrix([[          0],
+        (1 + I, 1, [Matrix([[          0],
                                             [-1/(-1 - I)],
                                             [          0],
                                             [          0],
@@ -1650,7 +1654,7 @@ def test_P37():
     M = Matrix([[1, 1, 0],
                 [0, 1, 0],
                 [0, 0, 1]])
-    #raises NotImplementedError: Implemented only for diagonalizable matrices
+    # raises NotImplementedError: Implemented only for diagonalizable matrices
     M**Rational(1, 2)
 
 
@@ -1659,7 +1663,7 @@ def test_P38():
     M=Matrix([[0, 1, 0],
               [0, 0, 0],
               [0, 0, 0]])
-    #raises NotImplementedError: Implemented only for diagonalizable matrices
+    # raises NotImplementedError: Implemented only for diagonalizable matrices
     M**Rational(1,2)
 
 
@@ -1707,8 +1711,8 @@ def test_P44():
         return Matrix([V.T.diff(v) for v in Y])
     r, t = symbols('r t', extended_real=True)
     assert __my_hessian(r**2*sin(t), (r, t)) == Matrix([
-                                            [  2*sin(t),   2*r*cos(t)],
-                                            [2*r*cos(t), -r**2*sin(t)]])
+        [  2*sin(t),   2*r*cos(t)],
+        [2*r*cos(t), -r**2*sin(t)]])
 
 
 def test_P45():
@@ -1757,22 +1761,22 @@ def test_R3():
 @XFAIL
 def test_R4():
 # Macsyma indefinite sum test case:
-#(c15) /* Check whether the full Gosper algorithm is implemented
-#   => 1/2^(n + 1) binomial(n, k - 1) */
-#closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
-#Time= 2690 msecs
-#                      (- n + k - 1) binomial(n + 1, k)
-#(d15)               - --------------------------------
-#				                       n
-#                                   2 2  (n + 1)
+# (c15) /* Check whether the full Gosper algorithm is implemented
+#    => 1/2^(n + 1) binomial(n, k - 1) */
+# closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
+#  Time= 2690 msecs
+#                       (- n + k - 1) binomial(n + 1, k)
+# (d15)               - --------------------------------
+# 				                       n
+#                                    2 2  (n + 1)
 #
-#(c16) factcomb(makefact(%));
-#Time= 220 msecs
-#                                 n!
-#(d16)                     ----------------
-#                                n
-#                          2 k! 2  (n - k)!
-# Might be possible after fixing https://github.com/sympy/sympy/pull/1879
+# (c16) factcomb(makefact(%));
+#  Time= 220 msecs
+#                                  n!
+# (d16)                     ----------------
+#                                 n
+#                           2 k! 2  (n - k)!
+#  Might be possible after fixing https://github.com/sympy/sympy/pull/1879
     raise NotImplementedError("Indefinite sum not supported")
 
 
@@ -1799,6 +1803,7 @@ def test_R7():
     n, k = symbols('n k', integer=True, positive=True)
     T = Sum(k**3,(k,1,n)).doit()
     assert T.factor() == n**2*(n + 1)**2/4
+
 
 @XFAIL
 def test_R8():
@@ -2192,14 +2197,14 @@ def test_U10():
 
 @XFAIL
 def test_U13():
-    #assert minimize(x**4 - x + 1, x)== -3*2**Rational(1,3)/8 + 1
+    # assert minimize(x**4 - x + 1, x)== -3*2**Rational(1,3)/8 + 1
     raise NotImplementedError("minimize() not supported")
 
 
 @XFAIL
 def test_U14():
-    #f = 1/(x**2 + y**2 + 1)
-    #assert [minimize(f), maximize(f)] == [0,1]
+    # f = 1/(x**2 + y**2 + 1)
+    # assert [minimize(f), maximize(f)] == [0,1]
     raise NotImplementedError("minimize(), maximize() not supported")
 
 
@@ -2266,17 +2271,17 @@ def test_V7():
 
 @XFAIL
 def test_V8_V9():
-#Macsyma test case:
-#(c27) /* This example involves several symbolic parameters
-#   => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
-#                            [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
-#      [Gradshteyn and Ryzhik 2.553(3)] */
-#assume(b^2 > a^2)$
-#(c28) integrate(1/(a + b*cos(x)), x);
-#(c29) trigsimp(ratsimp(diff(%, x)));
-#                        1
-#(d29)             ------------
-#                  b cos(x) + a
+# Macsyma test case:
+# (c27) /* This example involves several symbolic parameters
+#    => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
+#                             [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
+#       [Gradshteyn and Ryzhik 2.553(3)] */
+#  assume(b^2 > a^2)$
+# (c28) integrate(1/(a + b*cos(x)), x);
+# (c29) trigsimp(ratsimp(diff(%, x)));
+#                         1
+# (d29)             ------------
+#                   b cos(x) + a
     raise NotImplementedError(
         "Integrate with assumption not supported")
 
@@ -2514,6 +2519,7 @@ def test_W23():
     a, b = symbols('a b', extended_real=True, positive=True)
     r1 = integrate(integrate(x/(x**2 + y**2), (x, a, b)), (y, -oo, oo))
     assert r1.simplify() == pi*(-a + b)
+
 
 @SKIP("integrate raises RuntimeError: maximum recursion depth exceeded")
 @slow

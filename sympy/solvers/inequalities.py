@@ -15,6 +15,7 @@ from sympy.polys import Poly, PolynomialError, parallel_poly_from_expr
 from sympy.polys.polyutils import _nsort
 from sympy.utilities.misc import filldedent
 
+
 def solve_poly_inequality(poly, rel):
     """Solve a polynomial inequality with rational coefficients.
 

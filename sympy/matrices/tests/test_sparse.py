@@ -2,6 +2,7 @@ from sympy import S, Symbol, I, Rational, PurePoly
 from sympy.matrices import Matrix, SparseMatrix, eye, zeros, ShapeError
 from sympy.utilities.pytest import raises
 
+
 def test_sparse_matrix():
     def sparse_eye(n):
         return SparseMatrix.eye(n)
@@ -81,7 +82,7 @@ def test_sparse_matrix():
     assert c[1, 0] == 3*5
     assert c[1, 1] == 0
 
-    #test_power
+    # test_power
     A = SparseMatrix([[2, 3], [4, 5]])
     assert (A**5)[:] == [6140, 8097, 10796, 14237]
     A = SparseMatrix([[2, 1, 3], [4, 2, 4], [6, 12, 1]])
@@ -551,6 +552,7 @@ def test_sparse_solve():
     assert A*s == A[:, 0]
     s = A.solve_least_squares(A[:, 0], 'LDL')
     assert A*s == A[:, 0]
+
 
 def test_hermitian():
     x = Symbol('x')

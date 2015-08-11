@@ -185,6 +185,7 @@ class BlockMatrix(MatrixExpr):
             return True
         return super(BlockMatrix, self).equals(other)
 
+
 class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
@@ -290,10 +291,12 @@ def block_collapse(expr):
     except AttributeError:
         return result
 
+
 def bc_unpack(expr):
     if expr.blockshape == (1, 1):
         return expr.blocks[0, 0]
     return expr
+
 
 def bc_matadd(expr):
     args = sift(expr.args, lambda M: isinstance(M, BlockMatrix))
@@ -310,6 +313,7 @@ def bc_matadd(expr):
     else:
         return block
 
+
 def bc_block_plus_ident(expr):
     idents = [arg for arg in expr.args if arg.is_Identity]
     if not idents:
@@ -323,6 +327,7 @@ def bc_block_plus_ident(expr):
         return MatAdd(block_id * len(idents), *blocks).doit()
 
     return expr
+
 
 def bc_dist(expr):
     """ Turn  a*[X, Y] into [a*X, a*Y] """
@@ -353,6 +358,7 @@ def bc_matmul(expr):
             i+=1
     return MatMul(factor, *matrices).doit()
 
+
 def bc_transpose(expr):
     return BlockMatrix(block_collapse(expr.arg).blocks.applyfunc(transpose).T)
 
@@ -363,11 +369,13 @@ def bc_inverse(expr):
         return expr2
     return blockinverse_2x2(Inverse(reblock_2x2(expr.arg)))
 
+
 def blockinverse_1x1(expr):
     if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (1, 1):
         mat = Matrix([[expr.arg.blocks[0].inverse()]])
         return BlockMatrix(mat)
     return expr
+
 
 def blockinverse_2x2(expr):
     if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (2, 2):
@@ -379,6 +387,7 @@ def blockinverse_2x2(expr):
                             [-(D - C*A.I*B).I*C*A.I,     (D - C*A.I*B).I]])
     else:
         return expr
+
 
 def deblock(B):
     """ Flatten a BlockMatrix of BlockMatrices """
@@ -427,6 +436,7 @@ def bounds(sizes):
         rv.append((low, low + size))
         low += size
     return rv
+
 
 def blockcut(expr, rowsizes, colsizes):
     """ Cut a matrix expression into Blocks

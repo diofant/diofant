@@ -650,7 +650,7 @@ class PrettyPrinter(Printer):
         if (isinstance(expr.parent, MatrixSymbol)
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
-                    Symbol(expr.parent.name + '_%d%d'%(expr.i, expr.j)))
+                Symbol(expr.parent.name + '_%d%d'%(expr.i, expr.j)))
         else:
             prettyFunc = self._print(expr.parent)
             prettyIndices = self._print_seq((expr.i, expr.j), delimiter=', '
@@ -778,31 +778,31 @@ class PrettyPrinter(Printer):
                     inneritems = list(vect.components.items())
                     inneritems.sort(key=lambda x: x[0].__str__())
                     for k, v in inneritems:
-                        #if the coef of the basis vector is 1
-                        #we skip the 1
+                        # if the coef of the basis vector is 1
+                        # we skip the 1
                         if v == 1:
                             o1.append(u("") +
                                       k._pretty_form)
-                        #Same for -1
+                        # Same for -1
                         elif v == -1:
                             o1.append(u("(-1) ") +
                                       k._pretty_form)
-                        #For a general expr
+                        # For a general expr
                         else:
-                            #We always wrap the measure numbers in
-                            #parentheses
+                            # We always wrap the measure numbers in
+                            # parentheses
                             arg_str = self._print(
                                 v).parens()[0]
 
                             o1.append(arg_str + ' ' + k._pretty_form)
                         vectstrs.append(k._pretty_form)
 
-                #outstr = u("").join(o1)
+                # outstr = u("").join(o1)
                 if o1[0].startswith(u(" + ")):
                     o1[0] = o1[0][3:]
                 elif o1[0].startswith(" "):
                     o1[0] = o1[0][1:]
-                #Fixing the newlines
+                # Fixing the newlines
                 lengths = []
                 strs = ['']
                 for i, partstr in enumerate(o1):
@@ -1211,7 +1211,7 @@ class PrettyPrinter(Printer):
 
         def pretty_negative(pform, index):
             """Prepend a minus sign to a pretty form. """
-            #TODO: Move this code to prettyForm
+            # TODO: Move this code to prettyForm
             if index == 0:
                 if pform.height() > 1:
                     pform_neg = '- '
@@ -1359,7 +1359,7 @@ class PrettyPrinter(Printer):
         # Det the baseline to match contents to fix the height
         # but if the height of bpretty is one, the rootsign must be one higher
         rootsign.baseline = max(1, bpretty.baseline)
-        #build result
+        # build result
         s = prettyForm(hobj('_', 2 + bpretty.width()))
         s = prettyForm(*bpretty.above(s))
         s = prettyForm(*s.left(rootsign))
@@ -1396,8 +1396,8 @@ class PrettyPrinter(Printer):
             if p < 0:
                 return prettyForm(str(p), binding=prettyForm.NEG)/prettyForm(str(q))
                 # Old printing method:
-                #pform = prettyForm(str(-p))/prettyForm(str(q))
-                #return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
+                # pform = prettyForm(str(-p))/prettyForm(str(q))
+                # return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
             else:
                 return prettyForm(str(p))/prettyForm(str(q))
         else:
@@ -1910,7 +1910,7 @@ class PrettyPrinter(Printer):
             return prettyForm(*pform.left(u("\N{DOUBLE-STRUCK ITALIC SMALL D}")))
 
     def _print_Tr(self, p):
-        #TODO: Handle indices
+        # TODO: Handle indices
         pform = self._print(p.args[0])
         pform = prettyForm(*pform.left('%s(' % (p.__class__.__name__)))
         pform = prettyForm(*pform.right(')'))

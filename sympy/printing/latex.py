@@ -11,7 +11,7 @@ from sympy.core.alphabets import greeks
 from sympy.core.operations import AssocOp
 from sympy.logic.boolalg import true
 
-## sympy.printing imports
+# sympy.printing imports
 from .printer import Printer
 from .conventions import split_super_sub, requires_partial
 from .precedence import precedence, PRECEDENCE
@@ -95,6 +95,7 @@ modifier_dict = {
 }
 
 greek_letters_set = frozenset(greeks)
+
 
 class LatexPrinter(Printer):
     printmethod = "_latex"
@@ -419,13 +420,13 @@ class LatexPrinter(Printer):
                 return self._print(expr.base, self._print(expr.exp))
             else:
                 if expr.is_commutative and expr.exp == -1:
-                    #solves issue 4129
-                    #As Mul always simplify 1/x to x**-1
-                    #The objective is achieved with this hack
-                    #first we get the latex for -1 * expr,
-                    #which is a Mul expression
+                    # solves issue 4129
+                    # As Mul always simplify 1/x to x**-1
+                    # The objective is achieved with this hack
+                    # first we get the latex for -1 * expr,
+                    # which is a Mul expression
                     tex = self._print(S.NegativeOne * expr).strip()
-                    #the result comes with a minus and a space, so we remove
+                    # the result comes with a minus and a space, so we remove
                     if tex[:1] == "-":
                         return tex[1:].strip()
                 if self._needs_brackets(expr.base):
@@ -1788,7 +1789,7 @@ class LatexPrinter(Printer):
             return r'\mathrm{d}\left(%s\right)' % string
 
     def _print_Tr(self, p):
-        #Todo: Handle indices
+        # Todo: Handle indices
         contents = self._print(p.args[0])
         return r'\mbox{Tr}\left(%s\right)' % (contents)
 
@@ -1832,6 +1833,7 @@ def translate(s):
             if s.lower().endswith(key) and len(s)>len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
+
 
 def latex(expr, **settings):
     r"""

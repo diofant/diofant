@@ -8,7 +8,7 @@ from sympy.functions.elementary.complexes import im, sign
 from sympy.functions.elementary.piecewise import Piecewise
 
 ###############################################################################
-################################ DELTA FUNCTION ###############################
+# ############################## DELTA FUNCTION ############################# #
 ###############################################################################
 
 
@@ -47,7 +47,7 @@ class DiracDelta(Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            #I didn't know if there is a better way to handle default arguments
+            # I didn't know if there is a better way to handle default arguments
             k = 0
             if len(self.args) > 1:
                 k = self.args[1]
@@ -166,7 +166,7 @@ class DiracDelta(Function):
 
 
 ###############################################################################
-############################## HEAVISIDE FUNCTION #############################
+# ############################ HEAVISIDE FUNCTION ########################### #
 ###############################################################################
 
 

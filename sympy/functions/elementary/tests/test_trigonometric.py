@@ -1142,6 +1142,7 @@ def test_tancot_rewrite_sqrt():
                         assert not c1.has(cot, tan), "fails for %d*pi/%d" % (i, n)
                         assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), "fails for %d*pi/%d" % (i, n)
 
+
 def test_sec():
     x = symbols('x', extended_real=True)
     z = symbols('z')

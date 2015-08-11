@@ -3,8 +3,10 @@ from __future__ import print_function, division
 
 from sympy.core.compatibility import get_function_name
 
+
 def identity(x):
     return x
+
 
 def exhaust(rule):
     """ Apply a rule repeatedly until it has no effect """
@@ -14,6 +16,7 @@ def exhaust(rule):
             new, old = rule(new), new
         return new
     return exhaustive_rl
+
 
 def memoize(rule):
     """ Memoized version of a rule """
@@ -29,6 +32,7 @@ def memoize(rule):
 
     return memoized_rl
 
+
 def condition(cond, rule):
     """ Only apply rule if condition is true """
     def conditioned_rl(expr):
@@ -38,6 +42,7 @@ def condition(cond, rule):
             return expr
 
     return conditioned_rl
+
 
 def chain(*rules):
     """
@@ -49,6 +54,7 @@ def chain(*rules):
         return expr
 
     return chain_rl
+
 
 def debug(rule, file=None):
     """ Print out before and after expressions each time rule is used """
@@ -66,6 +72,7 @@ def debug(rule, file=None):
 
     return debug_rl
 
+
 def null_safe(rule):
     """ Return original expr if rule returns None """
     def null_safe_rl(expr):
@@ -77,6 +84,7 @@ def null_safe(rule):
 
     return null_safe_rl
 
+
 def tryit(rule):
     """ Return original expr if rule raises exception """
     def try_rl(expr):
@@ -86,6 +94,7 @@ def tryit(rule):
             return expr
 
     return try_rl
+
 
 def do_one(*rules):
     """ Try each of the rules until one works. Then stop. """
@@ -98,6 +107,7 @@ def do_one(*rules):
 
     return do_one_rl
 
+
 def switch(key, ruledict):
     """ Select a rule based on the result of key called on the function """
     def switch_rl(expr):
@@ -105,6 +115,7 @@ def switch(key, ruledict):
         return rl(expr)
 
     return switch_rl
+
 
 def minimize(*rules, **kwargs):
     """ Select result of rules that minimizes objective

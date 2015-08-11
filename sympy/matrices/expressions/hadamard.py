@@ -5,6 +5,7 @@ from sympy.strategies import unpack, flatten, condition, exhaust, do_one
 
 from sympy.matrices.expressions.matexpr import MatrixExpr, ShapeError
 
+
 def hadamard_product(*matrices):
     """
     Return the elementwise (aka Hadamard) product of matrices.
@@ -67,6 +68,7 @@ class HadamardProduct(MatrixExpr):
 
     def doit(self, **ignored):
         return canonicalize(self)
+
 
 def validate(*args):
     if not all(arg.is_Matrix for arg in args):

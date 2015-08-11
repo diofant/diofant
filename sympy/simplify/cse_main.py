@@ -206,7 +206,7 @@ def opt_cse(exprs, order='canonical'):
         if isinstance(e, Basic):
             _find_opts(e)
 
-    ## Process Adds and commutative Muls
+    # Process Adds and commutative Muls
 
     def _match_common_args(Func, funcs):
         if order != 'none':
@@ -279,7 +279,7 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
     if opt_subs is None:
         opt_subs = dict()
 
-    ## Find repeated sub-expressions
+    # Find repeated sub-expressions
 
     to_eliminate = set()
 
@@ -310,7 +310,7 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
         if isinstance(e, Basic):
             _find_repeated(e)
 
-    ## Rebuild tree
+    # Rebuild tree
 
     replacements = []
 

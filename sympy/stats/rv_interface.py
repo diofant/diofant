@@ -183,6 +183,7 @@ def smoment(X, n, condition=None, **kwargs):
     sigma = std(X, condition, **kwargs)
     return (1/sigma)**n*cmoment(X, n, condition, **kwargs)
 
+
 def skewness(X, condition=None, **kwargs):
     """
     Measure of the asymmetry of the probability distribution

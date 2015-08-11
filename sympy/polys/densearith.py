@@ -14,6 +14,7 @@ from sympy.polys.densebasic import (
 from sympy.polys.polyerrors import (ExactQuotientFailed, PolynomialDivisionFailed)
 from sympy.core.compatibility import range
 
+
 def dup_add_term(f, c, i, K):
     """
     Add ``c*x**i`` to ``f`` in ``K[x]``.

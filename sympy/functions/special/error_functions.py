@@ -19,7 +19,7 @@ from sympy.core.compatibility import range
 # TODO see the "Note:" in Ei
 
 ###############################################################################
-################################ ERROR FUNCTION ###############################
+# ############################## ERROR FUNCTION ############################# #
 ###############################################################################
 
 
@@ -403,6 +403,7 @@ class erfc(Function):
                     self.func(x + x*sqrt(sq)))
         return (re, im)
 
+
 class erfi(Function):
     r"""
     Imaginary error function. The function erfi is defined as:
@@ -572,6 +573,7 @@ class erfi(Function):
                     self.func(x + x*sqrt(sq)))
         return (re, im)
 
+
 class erf2(Function):
     r"""
     Two-argument error function. This function is defined as:
@@ -659,7 +661,7 @@ class erf2(Function):
         if y.func is erf2inv and y.args[0] == x:
             return y.args[1]
 
-        #Try to pull out -1 factor
+        # Try to pull out -1 factor
         sign_x = x.could_extract_minus_sign()
         sign_y = y.could_extract_minus_sign()
         if (sign_x and sign_y):
@@ -701,6 +703,7 @@ class erf2(Function):
 
     def _eval_rewrite_as_expint(self, x, y):
         return erf(y).rewrite(expint) - erf(x).rewrite(expint)
+
 
 class erfinv(Function):
     r"""
@@ -785,6 +788,7 @@ class erfinv(Function):
     def _eval_rewrite_as_erfcinv(self, z):
         return erfcinv(1-z)
 
+
 class erfcinv (Function):
     r"""
     Inverse Complementary Error Function. The erfcinv function is defined as:
@@ -853,6 +857,7 @@ class erfcinv (Function):
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
+
 
 class erf2inv(Function):
     r"""
@@ -934,7 +939,7 @@ class erf2inv(Function):
 
 
 ###############################################################################
-#################### EXPONENTIAL INTEGRALS ####################################
+# ################## EXPONENTIAL INTEGRALS ################################## #
 ###############################################################################
 
 class Ei(Function):
@@ -1521,8 +1526,9 @@ class Li(Function):
         return self.rewrite(li).rewrite("tractable", deep=True)
 
 ###############################################################################
-#################### TRIGONOMETRIC INTEGRALS ##################################
+# ################## TRIGONOMETRIC INTEGRALS ################################ #
 ###############################################################################
+
 
 class TrigonometricIntegral(Function):
     """ Base class for trigonometric integrals. """
@@ -1963,7 +1969,7 @@ class Chi(TrigonometricIntegral):
 
 
 ###############################################################################
-#################### FRESNEL INTEGRALS ########################################
+# ################## FRESNEL INTEGRALS ###################################### #
 ###############################################################################
 
 class FresnelIntegral(Function):
@@ -2166,7 +2172,7 @@ class fresnels(FresnelIntegral):
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                  (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                 for k in range(1, n)]
+                for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [-sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2298,7 +2304,7 @@ class fresnelc(FresnelIntegral):
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                  (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                 for k in range(1, n)]
+                for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [ sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2310,7 +2316,7 @@ class fresnelc(FresnelIntegral):
 
 
 ###############################################################################
-#################### HELPER FUNCTIONS #########################################
+# ################## HELPER FUNCTIONS ####################################### #
 ###############################################################################
 
 

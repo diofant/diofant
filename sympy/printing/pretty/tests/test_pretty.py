@@ -879,6 +879,7 @@ u("""\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+
 def test_issue_5524():
     assert pretty(-(-x + 5)*(-x - 2*sqrt(2) + 5) - (-y + 5)*(-y + 5)) == \
 """\
@@ -2796,6 +2797,7 @@ u("""\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+
 def test_pretty_seq():
     expr = ()
     ascii_str = \
@@ -4575,6 +4577,7 @@ u("""\
 ⎜──(f(x))⎟ \n\
 ⎝dx      ⎠ \
 """)
+
 
 def test_issue_6739():
     ascii_str = \

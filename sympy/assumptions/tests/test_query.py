@@ -1636,10 +1636,12 @@ def test_zero():
     assert ask(Q.zero(x), Q.even(x)) is None
     assert ask(Q.zero(x), Q.odd(x)) is False
 
+
 @XFAIL
 def test_zero_doesnt_work():
     # This requires moving logic from the handler to the deduction system
     assert ask(Q.zero(x*y), Q.zero(x) | Q.zero(y)) is True
+
 
 def test_odd():
     assert ask(Q.odd(x)) is None
@@ -1778,7 +1780,7 @@ def test_positive():
 
     assert ask(Q.positive(x/y), Q.positive(x) & Q.positive(y)) is None
 
-    #exponential
+    # exponential
     assert ask(Q.positive(exp(x)), Q.real(x)) is True
     assert ask(~Q.negative(exp(x)), Q.real(x)) is True
     assert ask(Q.positive(x + exp(x)), Q.real(x)) is None
@@ -1793,7 +1795,7 @@ def test_positive():
     assert ask(Q.positive(factorial(x)), Q.integer(x) & Q.positive(x))
     assert ask(Q.positive(factorial(x)), Q.integer(x)) is None
 
-    #absolute value
+    # absolute value
     assert ask(Q.positive(Abs(x))) is None  # Abs(0) = 0
     assert ask(Q.positive(Abs(x)), Q.positive(x)) is True
 
@@ -1807,6 +1809,7 @@ def test_nonpositive():
     assert ask(Q.nonpositive(sqrt(-1))) is False
     assert ask(Q.nonpositive(x), Q.imaginary(x) & ~Q.zero(x) & ~Q.infinite(x)) is False
 
+
 def test_nonnegative():
     assert ask(Q.nonnegative(-1)) is False
     assert ask(Q.nonnegative(0))
@@ -1815,6 +1818,7 @@ def test_nonnegative():
     assert ask(Q.nonnegative(x), Q.negative(x)) is False
     assert ask(Q.nonnegative(sqrt(-1))) is False
     assert ask(Q.nonnegative(x), Q.imaginary(x) & ~Q.zero(x) & ~Q.infinite(x)) is False
+
 
 def test_real():
     assert ask(Q.real(0**I)) is False
@@ -2138,8 +2142,8 @@ def test_issue_7246():
 
 @XFAIL
 def test_issue_7246_failing():
-    #Move this test to test_issue_7246 once
-    #the new assumptions module is improved.
+    # Move this test to test_issue_7246 once
+    # the new assumptions module is improved.
     assert ask(Q.positive(acos(x)), Q.zero(x)) is True
 
 

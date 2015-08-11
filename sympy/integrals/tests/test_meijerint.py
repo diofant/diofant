@@ -39,14 +39,14 @@ def test_rewrite_single():
 
     # The following has stopped working because hyperexpand changed slightly.
     # It is probably not worth fixing
-    #u(exp(-x)*sin(x)*cos(x), x)
+    # u(exp(-x)*sin(x)*cos(x), x)
 
     # This one cannot be done numerically, since it comes out as a g-function
     # of argument 4*pi
     # NOTE This also tests a bug in inverse mellin transform (which used to
     #      turn exp(4*pi*I*t) into a factor of exp(4*pi*I)**t instead of
     #      exp_polar).
-    #u(exp(x)*sin(x), x)
+    # u(exp(x)*sin(x), x)
     assert _rewrite_single(exp(x)*sin(x), x) == \
         ([(-sqrt(2)/(2*sqrt(pi)), 0,
            meijerg(((-S(1)/2, 0, S(1)/4, S(1)/2, S(3)/4), (1,)),
@@ -451,10 +451,10 @@ def test_probability():
     arg = x*dagum
     assert simplify(integrate(arg, (x, 0, oo), meijerg=True, conds='none')
                     ) == a*b*gamma(1 - 1/a)*gamma(p + 1 + 1/a)/(
-                    (a*p + 1)*gamma(p))
+        (a*p + 1)*gamma(p))
     assert simplify(integrate(x*arg, (x, 0, oo), meijerg=True, conds='none')
                     ) == a*b**2*gamma(1 - 2/a)*gamma(p + 1 + 2/a)/(
-                    (a*p + 2)*gamma(p))
+        (a*p + 2)*gamma(p))
 
     # F-distribution
     d1, d2 = symbols('d1 d2', positive=True)

@@ -5,6 +5,7 @@ from sympy.functions import adjoint, conjugate
 
 from sympy.matrices.expressions.matexpr import MatrixExpr
 
+
 class Transpose(MatrixExpr):
     """
     The transpose of a matrix expression.
@@ -69,6 +70,7 @@ class Transpose(MatrixExpr):
     def _eval_determinant(self):
         from sympy.matrices.expressions.determinant import det
         return det(self.arg)
+
 
 def transpose(expr):
     """ Matrix transpose """

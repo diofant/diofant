@@ -2901,7 +2901,7 @@ class PermutationGroup(Basic):
 
         def update_nu(l):
             temp_index = len(basic_orbits[l]) + 1 -\
-                         len(res_basic_orbits_init_base[l])
+                len(res_basic_orbits_init_base[l])
             # this corresponds to the element larger than all points
             if temp_index >= len(sorted_orbits[l]):
                 nu[l] = base_ordering[degree]
@@ -3214,6 +3214,7 @@ class PermutationGroup(Basic):
                     return False
         return True
 
+
 def _orbit(degree, generators, alpha, action='tuples'):
     r"""Compute the orbit of alpha ``\{g(\alpha) | g \in G\}`` as a set.
 
@@ -3287,6 +3288,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
                     used.add(temp)
         return {tuple(x) for x in orb}
 
+
 def _orbits(degree, generators):
     """Compute the orbits of G.
 
@@ -3316,6 +3318,7 @@ def _orbits(degree, generators):
         I -= orb
         sorted_I = [i for i in sorted_I if i not in orb]
     return orbs
+
 
 def _orbit_transversal(degree, generators, alpha, pairs, af=False):
     r"""Computes a transversal for the orbit of ``alpha`` as a set.
@@ -3367,6 +3370,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
         return [y for _, y in tr]
 
     return [_af_new(y) for _, y in tr]
+
 
 def _stabilizer(degree, generators, alpha):
     r"""Return the stabilizer subgroup of ``alpha``.

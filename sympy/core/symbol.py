@@ -311,6 +311,7 @@ class Wild(Symbol):
 
 _range = _re.compile('([0-9]*:[0-9]+|[a-zA-Z]?:[a-zA-Z])')
 
+
 def symbols(names, **args):
     """
     Transform strings into instances of :class:`Symbol` class.

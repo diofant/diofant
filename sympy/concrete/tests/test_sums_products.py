@@ -12,6 +12,7 @@ from sympy.core.compatibility import range
 
 n = Symbol('n', integer=True)
 
+
 def test_karr_convention():
     # Test the Karr summation convention that we want to hold.
     # See his paper "Summation in Finite Terms" for a detailed
@@ -451,7 +452,7 @@ def test_wallis_product():
 
 
 def test_telescopic_sums():
-    #checks also input 2 of comment 1 issue 4127
+    # checks also input 2 of comment 1 issue 4127
     assert Sum(1/k - 1/(k + 1), (k, 1, n)).doit() == 1 - 1/(1 + n)
     f = Function("f")
     assert Sum(

@@ -9,6 +9,7 @@ from sympy.core.sympify import sympify, SympifyError
 from sympy.external import import_module
 np = import_module('numpy')
 
+
 def sample2d(f, x_args):
     """
     Samples a 2d function f over specified intervals and returns two

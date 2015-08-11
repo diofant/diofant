@@ -46,7 +46,7 @@ class OrthogonalPolynomial(Function):
     def _eval_conjugate(self):
         return self.func(self.args[0], self.args[1].conjugate())
 
-#----------------------------------------------------------------------------
+############################################################################
 # Jacobi polynomials
 #
 
@@ -271,7 +271,7 @@ def jacobi_normalized(n, a, b, x):
     return jacobi(n, a, b, x) / sqrt(nfactor)
 
 
-#----------------------------------------------------------------------------
+############################################################################
 # Gegenbauer polynomials
 #
 
@@ -362,7 +362,7 @@ class gegenbauer(OrthogonalPolynomial):
                     return S.ComplexInfinity
                 else:
                     # No sec function available yet
-                    #return (cos(S.Pi*(a+n)) * sec(S.Pi*a) * gamma(2*a+n) /
+                    # return (cos(S.Pi*(a+n)) * sec(S.Pi*a) * gamma(2*a+n) /
                     #            (gamma(2*a) * gamma(n+1)))
                     return None
 
@@ -416,7 +416,7 @@ class gegenbauer(OrthogonalPolynomial):
         n, a, x = self.args
         return self.func(n, a.conjugate(), x.conjugate())
 
-#----------------------------------------------------------------------------
+############################################################################
 # Chebyshev polynomials of first and second kind
 #
 
@@ -722,7 +722,7 @@ class chebyshevu_root(Function):
                 "got k = %s and n = %s" % (k, n))
         return cos(S.Pi*(k + 1)/(n + 1))
 
-#----------------------------------------------------------------------------
+############################################################################
 # Legendre polynomials and Associated Legendre polynomials
 #
 
@@ -924,7 +924,7 @@ class assoc_legendre(Function):
         n, m, x = self.args
         return self.func(n, m.conjugate(), x.conjugate())
 
-#----------------------------------------------------------------------------
+############################################################################
 # Hermite polynomials
 #
 
@@ -1018,7 +1018,7 @@ class hermite(OrthogonalPolynomial):
         kern = (-1)**k / (factorial(k)*factorial(n - 2*k)) * (2*x)**(n - 2*k)
         return factorial(n)*Sum(kern, (k, 0, floor(n/2)))
 
-#----------------------------------------------------------------------------
+############################################################################
 # Laguerre polynomials
 #
 

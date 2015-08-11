@@ -9,7 +9,7 @@ from sympy.utilities.codegen import (codegen, make_routine, CCodeGen,
 from sympy.utilities.pytest import raises
 from sympy.utilities.lambdify import implemented_function
 
-#FIXME: Fails due to circular import in with core
+# FIXME: Fails due to circular import in with core
 # from sympy import codegen
 
 
@@ -619,6 +619,7 @@ def test_numbersymbol_f_code():
     )
     assert source == expected
 
+
 def test_erf_f_code():
     x = symbols('x')
     routine = make_routine("test", erf(x) - erf(-2 * x))
@@ -632,6 +633,7 @@ def test_erf_f_code():
         "end function\n"
     )
     assert source == expected, source
+
 
 def test_f_code_argument_order():
     x, y, z = symbols('x,y,z')

@@ -9,6 +9,7 @@ from decorator import decorator
 CACHE = []  # [] of
             #    (item, {} or tuple of {})
 
+
 def print_cache():
     """print cache content"""
 

@@ -7,6 +7,7 @@ from .cartan_type import CartanType
 from mpmath import fac
 from sympy.matrices import Matrix, eye
 
+
 class WeylGroup(Basic):
 
     """

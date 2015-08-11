@@ -333,6 +333,7 @@ def test_call():
     assert f(2)
     raises(TypeError, lambda: Wild('x')(1))
 
+
 def test_unicode():
     xu = Symbol(u('x'))
     x = Symbol('x')
