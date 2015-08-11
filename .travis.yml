@@ -20,7 +20,7 @@ matrix:
   include:
     - python: 2.7
       env:
-        - EXTRA="[exports,plot,gmpy]"
+        - EXTRA="[exports,plot]"
         - PYTEST_EXTRA_ARGS='--cov=sympy -m="not slow"'
 before_install:
   - pip install --upgrade pip setuptools
