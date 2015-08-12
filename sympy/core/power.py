@@ -1101,13 +1101,13 @@ class Pow(Expr):
             return sb.matches(expr**(1/se), repl_dict)
 
         d = repl_dict.copy()
-        d = self.base.matches(b, d)
+        d = self.base.matches(b, d, old=old)
         if d is None:
             return
 
-        d = self.exp.xreplace(d).matches(e, d)
+        d = self.exp.xreplace(d).matches(e, d, old=old)
         if d is None:
-            return Expr.matches(self, expr, repl_dict)
+            return Expr.matches(self, expr, repl_dict, old=old)
         return d
 
     def _eval_nseries(self, x, n, logx):
