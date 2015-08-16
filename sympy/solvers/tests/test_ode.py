@@ -2637,6 +2637,15 @@ def test_dsolve_linsystem_symbol():
     assert [a.rewrite(Pow, cos).simplify() for a in s] == sol1
 
 
+def test_C1_function_9239():
+    c1, c2 = symbols('C1, C2', cls=Function)
+    t = Symbol('t')
+    eq = (Eq(diff(c1(t), t), 9*c2(t)), Eq(diff(c2(t), t), 12*c1(t)))
+    sol = [Eq(c1(t), C1*(E**(6*sqrt(3)*t)/2 + E**(-6*sqrt(3)*t)/2) + C2*(sqrt(3)*E**(6*sqrt(3)*t)/4 - sqrt(3)*E**(-6*sqrt(3)*t)/4)),
+           Eq(c2(t), C1*(sqrt(3)*E**(6*sqrt(3)*t)/3 - sqrt(3)*E**(-6*sqrt(3)*t)/3) + C2*(E**(6*sqrt(3)*t)/2 + E**(-6*sqrt(3)*t)/2))]
+    assert dsolve(eq) == sol
+
+
 def test_diofantissue_293():
     eqs = (-f(x) + Derivative(f(x), x) + Derivative(g(x), x),
            g(x) + Derivative(f(x), x) - Derivative(g(x), x))
