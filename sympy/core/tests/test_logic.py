@@ -125,7 +125,7 @@ def test_logic_fromstring():
     S = Logic.fromstring
 
     assert S('a') == 'a'
-    assert S('!a') == Not('a')
+    assert S('~a') == Not('a')
     assert S('a & b') == And('a', 'b')
     assert S('a | b') == Or('a', 'b')
     assert S('a | b & c') == And(Or('a', 'b'), 'c')
@@ -140,13 +140,13 @@ def test_logic_fromstring():
     raises(ValueError, lambda: S('a & & b'))
     raises(ValueError, lambda: S('a |'))
     raises(ValueError, lambda: S('a|b'))
-    raises(ValueError, lambda: S('!'))
-    raises(ValueError, lambda: S('! a'))
+    raises(ValueError, lambda: S('~'))
+    raises(ValueError, lambda: S('~ a'))
 
 
 def test_logic_not():
-    assert Not('a') != '!a'
-    assert Not('!a') != 'a'
+    assert Not('a') != '~a'
+    assert Not('~a') != 'a'
 
     # NOTE: we may want to change default Not behaviour and put this
     # functionality into some method.
@@ -158,4 +158,4 @@ def test_formatting():
     S = Logic.fromstring
     raises(ValueError, lambda: S('a&b'))
     raises(ValueError, lambda: S('a|b'))
-    raises(ValueError, lambda: S('! a'))
+    raises(ValueError, lambda: S('~ a'))
