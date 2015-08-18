@@ -640,7 +640,7 @@ def test_Add_is_pos_neg():
     p = Symbol('p', positive=True, infinite=True)
     r = Dummy(extended_real=True, finite=False)
     x = Symbol('x')
-    xf = Symbol('xb', finite=True)
+    xf = Symbol('xb', finite=True, real=True)
     assert (n + p).is_positive is None
     assert (n + x).is_positive is None
     assert (p + x).is_positive is None

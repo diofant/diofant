@@ -1874,3 +1874,8 @@ def test_issue_8247_8354():
         1566)*((3*sqrt(93) + 29)**(1/3)*(-2**(2/3)*(3*sqrt(93) + 29)**(1/3) -
         2) - 2*2**(1/3))**2''')
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)
+
+
+def test_issue_9832():
+    x = Symbol('x', extended_real=True)
+    assert (x**2 - oo).is_negative is None
