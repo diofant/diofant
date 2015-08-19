@@ -651,3 +651,8 @@ def test_pow_eval_subs_no_cache():
     # It incorrectly returned 1/sqrt(x**2) before.
     result = s.subs(sqrt(x**2), y)
     assert result == 1/y
+
+
+def test_omgissue_124():
+    n = Symbol('n', integer=True)
+    assert exp(n*x).subs({exp(x): x}) == x**n
