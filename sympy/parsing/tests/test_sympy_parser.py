@@ -18,7 +18,6 @@ def test_sympy_parser():
         '22/7': Rational(22, 7),
         '2+3j': 2 + 3*I,
         'exp(x)': exp(x),
-        '3.[3]': Rational(10, 3),
         '-(2)': -Integer(2),
         '[-1, -2, 3]': [Integer(-1), Integer(-2), Integer(3)],
         'Symbol("x").free_symbols': x.free_symbols,

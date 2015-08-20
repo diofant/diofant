@@ -135,10 +135,6 @@ def test_C10():
     assert x == R(4861, 2520)
 
 
-def test_C11():
-    assert R(1, 7) == S('0.[142857]')
-
-
 def test_C12():
     assert R(7, 11) * R(22, 7) == 2
 
