@@ -2,9 +2,9 @@
 
 from __future__ import print_function, division
 
-from .sympy_tokenize import \
-    generate_tokens, untokenize, TokenError, \
-    NUMBER, STRING, NAME, OP, ENDMARKER
+from sympy.core.compatibility import tokenize
+from tokenize import (untokenize, TokenError,
+                      NUMBER, STRING, NAME, OP, ENDMARKER)
 
 from keyword import iskeyword
 
@@ -13,10 +13,9 @@ import re
 import unicodedata
 
 import sympy
+from io import BytesIO
 from sympy.core.compatibility import exec_, StringIO
 from sympy.core.basic import Basic
-
-_re_repeated = re.compile(r"^(\d*)\.(\d*)\[(\d+)\]$")
 
 
 def _token_splittable(token):
@@ -50,34 +49,6 @@ def _token_callable(token, local_dict, global_dict, nextToken=None):
     if not func:
         func = global_dict.get(token[1])
     return callable(func) and not isinstance(func, sympy.Symbol)
-
-
-def _add_factorial_tokens(name, result):
-    if result == [] or result[-1][1] == '(':
-        raise TokenError()
-
-    beginning = [(NAME, name), (OP, '(')]
-    end = [(OP, ')')]
-
-    diff = 0
-    length = len(result)
-
-    for index, token in enumerate(result[::-1]):
-        toknum, tokval = token
-        i = length - index - 1
-
-        if tokval == ')':
-            diff += 1
-        elif tokval == '(':
-            diff -= 1
-
-        if diff == 0:
-            if i - 1 >= 0 and result[i - 1][0] == NAME:
-                return result[:i - 1] + beginning + result[i - 1:] + end
-            else:
-                return result[:i] + beginning + result[i:] + end
-
-    return result
 
 
 class AppliedFunction(object):
@@ -558,6 +529,9 @@ def lambda_notation(tokens, local_dict, global_dict):
     """
     result = []
     flag = False
+    if len(tokens) > 1:
+        if tokens[0][1] == 'utf-8' and tokens[1] == (NAME, 'lambda'):
+            tokens = tokens[1:]
     toknum, tokval = tokens[0]
     tokLen = len(tokens)
     if toknum == NAME and tokval == 'lambda':
@@ -581,32 +555,6 @@ def lambda_notation(tokens, local_dict, global_dict):
                     result.insert(-2, (tokNum, tokVal))
     else:
         result.extend(tokens)
-
-    return result
-
-
-def factorial_notation(tokens, local_dict, global_dict):
-    """Allows standard notation for factorial."""
-    result = []
-    prevtoken = ''
-    for toknum, tokval in tokens:
-        if toknum == OP:
-            op = tokval
-
-            if op == '!!':
-                if prevtoken == '!' or prevtoken == '!!':
-                    raise TokenError
-                result = _add_factorial_tokens('factorial2', result)
-            elif op == '!':
-                if prevtoken == '!' or prevtoken == '!!':
-                    raise TokenError
-                result = _add_factorial_tokens('factorial', result)
-            else:
-                result.append((OP, op))
-        else:
-            result.append((toknum, tokval))
-
-        prevtoken = tokval
 
     return result
 
@@ -647,35 +595,8 @@ def auto_number(tokens, local_dict, global_dict):
 
             if '.' in number or (('e' in number or 'E' in number) and
                     not (number.startswith('0x') or number.startswith('0X'))):
-                match = _re_repeated.match(number)
-
-                if match is not None:
-                    # Clear repeating decimals, e.g. 3.4[31] -> (3 + 4/10 + 31/990)
-                    pre, post, repetend = match.groups()
-
-                    zeros = '0'*len(post)
-                    post, repetends = [w.lstrip('0') for w in [post, repetend]]
-                                                # or else interpreted as octal
-
-                    a = pre or '0'
-                    b, c = post or '0', '1' + zeros
-                    d, e = repetends, ('9'*len(repetend)) + zeros
-
-                    seq = [
-                        (OP, '('),
-                        (NAME,
-                         'Integer'), (OP, '('), (NUMBER, a), (OP, ')'),
-                        (OP, '+'),
-                        (NAME, 'Rational'), (OP, '('), (
-                            NUMBER, b), (OP, ','), (NUMBER, c), (OP, ')'),
-                        (OP, '+'),
-                        (NAME, 'Rational'), (OP, '('), (
-                            NUMBER, d), (OP, ','), (NUMBER, e), (OP, ')'),
-                        (OP, ')'),
-                    ]
-                else:
-                    seq = [(NAME, 'Float'), (OP, '('),
-                           (NUMBER, repr(str(number))), (OP, ')')]
+                seq = [(NAME, 'Float'), (OP, '('),
+                       (NUMBER, repr(str(number))), (OP, ')')]
             else:
                 seq = [(NAME, 'Integer'), (OP, '('), (
                     NUMBER, number), (OP, ')')]
@@ -707,9 +628,8 @@ def rationalize(tokens, local_dict, global_dict):
 
 
 #: Standard transformations for :func:`~sympy.parsing.sympy_parser.parse_expr`.
-#: Inserts calls to :class:`~sympy.core.symbol.Symbol`, :class:`~sympy.core.numbers.Integer`, and other SymPy
-#: datatypes and allows the use of standard factorial notation (e.g. ``x!``).
-standard_transformations = (lambda_notation, auto_symbol, auto_number, factorial_notation)
+#: Inserts calls to :class:`~sympy.core.symbol.Symbol`, :class:`~sympy.core.numbers.Integer`, and other SymPy datatypes.
+standard_transformations = (lambda_notation, auto_symbol, auto_number)
 
 
 def stringify_expr(s, local_dict, global_dict, transformations):
@@ -720,8 +640,8 @@ def stringify_expr(s, local_dict, global_dict, transformations):
     """
 
     tokens = []
-    input_code = StringIO(s.strip())
-    for toknum, tokval, _, _, _ in generate_tokens(input_code.readline):
+    input_code = BytesIO(s.encode('utf-8').strip())
+    for toknum, tokval, _, _, _ in tokenize(input_code.readline):
         tokens.append((toknum, tokval))
 
     for transform in transformations:
@@ -764,8 +684,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
         A tuple of transformation functions used to modify the tokens of the
         parsed expression before evaluation. The default transformations
         convert numeric literals into their SymPy equivalents, convert
-        undefined variables into SymPy symbols, and allow the use of standard
-        mathematical factorial notation (e.g. ``x!``).
+        undefined variables into SymPy symbols.
 
     evaluate : bool, optional
         When False, the order of the arguments will remain as they were in the

@@ -30,16 +30,7 @@ def test_sympify1():
     assert sympify('--.5') == n1
     assert sympify('-1/2') == -n1
     assert sympify('-+--.5') == -n1
-    assert sympify('-.[3]') == Rational(-1, 3)
-    assert sympify('.[3]') == Rational(1, 3)
-    assert sympify('+.[3]') == Rational(1, 3)
-    assert sympify('+0.[3]*10**-2') == Rational(1, 300)
-    assert sympify('.[052631578947368421]') == Rational(1, 19)
-    assert sympify('.0[526315789473684210]') == Rational(1, 19)
-    assert sympify('.034[56]') == Rational(1711, 49500)
     # options to make reals into rationals
-    assert sympify('1.22[345]', rational=True) == \
-        1 + Rational(22, 100) + Rational(345, 99900)
     assert sympify('2/2.6', rational=True) == Rational(10, 13)
     assert sympify('2.6/2', rational=True) == Rational(13, 10)
     assert sympify('2.6e2/17', rational=True) == Rational(260, 17)
@@ -59,8 +50,6 @@ def test_sympify1():
     # make sure longs in fractions work
     assert sympify('222222222222/11111111111') == \
         Rational(222222222222, 11111111111)
-    # ... even if they come from repetend notation
-    assert sympify('1/.2[123456789012]') == Rational(333333333333, 70781892967)
     # ... or from high precision reals
     assert sympify('.1234567890123456', rational=True) == \
         Rational(19290123283179, 156250000000000)
@@ -190,26 +179,6 @@ def test_sympify_poly():
 
     assert _sympify(p) is p
     assert sympify(p) is p
-
-
-def test_sympify_factorial():
-    assert sympify('x!') == factorial(x)
-    assert sympify('(x+1)!') == factorial(x + 1)
-    assert sympify('(1 + y*(x + 1))!') == factorial(1 + y*(x + 1))
-    assert sympify('(1 + y*(x + 1)!)^2') == (1 + y*factorial(x + 1))**2
-    assert sympify('y*x!') == y*factorial(x)
-    assert sympify('x!!') == factorial2(x)
-    assert sympify('(x+1)!!') == factorial2(x + 1)
-    assert sympify('(1 + y*(x + 1))!!') == factorial2(1 + y*(x + 1))
-    assert sympify('(1 + y*(x + 1)!!)^2') == (1 + y*factorial2(x + 1))**2
-    assert sympify('y*x!!') == y*factorial2(x)
-    assert sympify('factorial2(x)!') == factorial(factorial2(x))
-
-    raises(SympifyError, lambda: sympify("+!!"))
-    raises(SympifyError, lambda: sympify(")!!"))
-    raises(SympifyError, lambda: sympify("!"))
-    raises(SympifyError, lambda: sympify("(!)"))
-    raises(SympifyError, lambda: sympify("x!!!"))
 
 
 def test_issue_3595():

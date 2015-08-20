@@ -1099,8 +1099,6 @@ class Rational(Number):
     the sympify() function, and conversion of floats to expressions
     or simple fractions can be handled with nsimplify:
 
-    >>> S('.[3]')  # repeating digits in brackets
-    1/3
     >>> S('3**2/10')  # general expressions
     9/10
     >>> nsimplify(.3)  # numbers that have a simple form

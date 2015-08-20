@@ -450,11 +450,6 @@ def test_Rational():
     assert str(Rational("-2.6e-2")) == "-13/500"
     assert str(S("25/7")) == "25/7"
     assert str(S("-123/569")) == "-123/569"
-    assert str(S("0.1[23]", rational=1)) == "61/495"
-    assert str(S("5.1[666]", rational=1)) == "31/6"
-    assert str(S("-5.1[666]", rational=1)) == "-31/6"
-    assert str(S("0.[9]", rational=1)) == "1"
-    assert str(S("-0.[9]", rational=1)) == "-1"
 
     assert str(sqrt(Rational(1, 4))) == "1/2"
     assert str(sqrt(Rational(1, 36))) == "1/6"

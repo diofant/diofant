@@ -186,8 +186,6 @@ def test_files():
         # these two are import timing tests:
         "%(sep)sbin%(sep)ssympy_time.py" % sepd,
         "%(sep)sbin%(sep)ssympy_time_cache.py" % sepd,
-        # Taken from Python stdlib:
-        "%(sep)sparsing%(sep)ssympy_tokenize.py" % sepd,
     }
     check_files(top_level_files, test)
     check_directory_tree(BIN_PATH, test, {"~", ".pyc", ".sh"}, "*")
