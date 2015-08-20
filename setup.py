@@ -65,7 +65,7 @@ class audit(Command):
         except ImportError:
             print("In order to run the audit, you need to have PyFlakes installed.")
             sys.exit(-1)
-        dirs = (os.path.join(*d) for d in (m.split('.') for m in modules))
+        dirs = (os.path.join(*d) for d in (m.split('.') for m in find_packages()))
         warns = 0
         for dir in dirs:
             for filename in os.listdir(dir):
