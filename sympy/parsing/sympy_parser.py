@@ -529,6 +529,9 @@ def lambda_notation(tokens, local_dict, global_dict):
     """
     result = []
     flag = False
+    if len(tokens) > 1:
+        if tokens[0][1] == 'utf-8' and tokens[1] == (NAME, 'lambda'):
+            tokens = tokens[1:]
     toknum, tokval = tokens[0]
     tokLen = len(tokens)
     if toknum == NAME and tokval == 'lambda':
