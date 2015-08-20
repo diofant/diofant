@@ -53,34 +53,6 @@ def _token_callable(token, local_dict, global_dict, nextToken=None):
     return callable(func) and not isinstance(func, sympy.Symbol)
 
 
-def _add_factorial_tokens(name, result):
-    if result == [] or result[-1][1] == '(':
-        raise TokenError()
-
-    beginning = [(NAME, name), (OP, '(')]
-    end = [(OP, ')')]
-
-    diff = 0
-    length = len(result)
-
-    for index, token in enumerate(result[::-1]):
-        toknum, tokval = token
-        i = length - index - 1
-
-        if tokval == ')':
-            diff += 1
-        elif tokval == '(':
-            diff -= 1
-
-        if diff == 0:
-            if i - 1 >= 0 and result[i - 1][0] == NAME:
-                return result[:i - 1] + beginning + result[i - 1:] + end
-            else:
-                return result[:i] + beginning + result[i:] + end
-
-    return result
-
-
 class AppliedFunction(object):
     """
     A group of tokens representing a function and its arguments.
@@ -586,32 +558,6 @@ def lambda_notation(tokens, local_dict, global_dict):
     return result
 
 
-def factorial_notation(tokens, local_dict, global_dict):
-    """Allows standard notation for factorial."""
-    result = []
-    prevtoken = ''
-    for toknum, tokval in tokens:
-        if toknum == OP:
-            op = tokval
-
-            if op == '!!':
-                if prevtoken == '!' or prevtoken == '!!':
-                    raise TokenError
-                result = _add_factorial_tokens('factorial2', result)
-            elif op == '!':
-                if prevtoken == '!' or prevtoken == '!!':
-                    raise TokenError
-                result = _add_factorial_tokens('factorial', result)
-            else:
-                result.append((OP, op))
-        else:
-            result.append((toknum, tokval))
-
-        prevtoken = tokval
-
-    return result
-
-
 def convert_xor(tokens, local_dict, global_dict):
     """Treats XOR, ``^``, as exponentiation, ``**``."""
     result = []
@@ -708,9 +654,8 @@ def rationalize(tokens, local_dict, global_dict):
 
 
 #: Standard transformations for :func:`~sympy.parsing.sympy_parser.parse_expr`.
-#: Inserts calls to :class:`~sympy.core.symbol.Symbol`, :class:`~sympy.core.numbers.Integer`, and other SymPy
-#: datatypes and allows the use of standard factorial notation (e.g. ``x!``).
-standard_transformations = (lambda_notation, auto_symbol, auto_number, factorial_notation)
+#: Inserts calls to :class:`~sympy.core.symbol.Symbol`, :class:`~sympy.core.numbers.Integer`, and other SymPy datatypes.
+standard_transformations = (lambda_notation, auto_symbol, auto_number)
 
 
 def stringify_expr(s, local_dict, global_dict, transformations):
@@ -765,8 +710,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
         A tuple of transformation functions used to modify the tokens of the
         parsed expression before evaluation. The default transformations
         convert numeric literals into their SymPy equivalents, convert
-        undefined variables into SymPy symbols, and allow the use of standard
-        mathematical factorial notation (e.g. ``x!``).
+        undefined variables into SymPy symbols.
 
     evaluate : bool, optional
         When False, the order of the arguments will remain as they were in the

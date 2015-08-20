@@ -153,8 +153,6 @@ def test_all_implicit_steps():
         '(x + 2) sin(x)': '(x + 2) * sin(x)',
         '(x + 2) sin x': '(x + 2) * sin(x)',
         'sin(sin x)': 'sin(sin(x))',
-        'sin x!': 'sin(factorial(x))',
-        'sin x!!': 'sin(factorial2(x))',
         'factorial': 'factorial',  # don't apply a bare function
         'x sin x': 'x * sin(x)',  # both application and multiplication
         'xy sin x': 'x * y * sin(x)',
