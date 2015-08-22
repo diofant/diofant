@@ -117,20 +117,32 @@ class test_sympy(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         _test_args = [
-            '--ignore=setup.py',
-            '--verbose',
             '--durations=100',
             '--doctest-modules',
+            '--ignore=setup.py',
+            '--ignore=docs/conf.py',
+            '--ignore=bin/ask_update.py',
+            '--ignore=bin/mailmap_update.py',
+            '--ignore=sympy/utilities/autowrap.py',
+            '--ignore=build/',
+            '--ignore=.eggs/',
+            '--doctest-glob="*.rst"',
         ]
         extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
-        if extra_args is not None:
-            _test_args.extend(extra_args.split())
+        if extra_args is not None and extra_args != "":
+            nargs = extra_args.split(' -')
+            _test_args.extend([nargs[0]] + ['-' + a for a in nargs[1:]])
         self.test_args = _test_args
         self.test_suite = True
 
     def run_tests(self):
         import pytest
+        import pep8
         errno = pytest.main(self.test_args)
+        if errno != 0:
+            sys.exit(errno)
+        del sys.argv[:]
+        errno = pep8._main()
         sys.exit(errno)
 
 
@@ -167,6 +179,11 @@ setup(name='sympy',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
       ],
-      tests_require=['pytest'],
-      install_requires=['mpmath>=0.19', 'decorator']
-      )
+      tests_require=['pytest>=2.7.0', 'pep8>=1.6.0'],
+      install_requires=['mpmath>=0.19', 'decorator'],
+      extras_require={
+          'exports': ["numpy", "scipy", "Theano"],
+          'gmpy': ["gmpy>=1.16"],
+          'plot': ["matplotlib"],
+      }
+)
