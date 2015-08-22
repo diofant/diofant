@@ -48,16 +48,6 @@ sys.path.insert(0, sympy_dir)
 import sympy
 
 TERMINAL_EXAMPLES = [
-    "beginner.basic",
-    "beginner.differentiation",
-    "beginner.expansion",
-    "beginner.functions",
-    "beginner.limits_examples",
-    "beginner.precision",
-    "beginner.print_pretty",
-    "beginner.series",
-    "beginner.substitution",
-    "intermediate.differential_equations",
     "intermediate.infinite_1d_box",
     "intermediate.partial_differential_eqs",
     "intermediate.trees",
