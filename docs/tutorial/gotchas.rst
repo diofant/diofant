@@ -306,7 +306,7 @@ evaluate the two numbers before SymPy has a chance to get
 to them.  The solution is to :func:`~sympy.core.sympify.sympify` one of the numbers, or use
 :class:`~sympy.core.numbers.Rational`.
 
-    >>> x**(1/2)  # evaluates to x**0 or x**0.5
+    >>> x**(1/2)  # evaluates to x**0 or x**0.5 # doctest: +SKIP
     x**0.5
     >>> x**(S(1)/2)  # sympyify one of the ints
     sqrt(x)
@@ -335,7 +335,7 @@ you don't have to worry about this problem:
     >>> x = Symbol('x')
     >>> print(solve(7*x -22, x))
     [22/7]
-    >>> 22/7  # If we just copy and paste we get int 3 or a float
+    >>> 22/7  # After copy and paste we get int 3 or a float # doctest: +SKIP
     3.142857142857143
     >>> # One solution is to just assign the expression to a variable
     >>> # if we need to use it again.
@@ -354,7 +354,7 @@ Also, you could use ``from __future__ import division`` to prevent the
 `integer division <http://en.wikipedia.org/wiki/Integer_division>`_.
 
     >>> from __future__ import division
-    >>> 1/2   # With division imported it evaluates to a python float
+    >>> 1/2   # With division imported it evaluates to a python float # doctest: +SKIP
     0.5
     >>> 1//2  # You can still achieve integer division with //
     0
@@ -362,7 +362,7 @@ Also, you could use ``from __future__ import division`` to prevent the
     But be careful: you will now receive floats where you might have desired
     a Rational:
 
-    >>> x**(1/2)
+    >>> x**(1/2)  # doctest: +SKIP
     x**0.5
 
 :class:`~sympy.core.numbers.Rational` only works for number/number and is only meant for
