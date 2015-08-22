@@ -4,11 +4,11 @@ import pytest
 
 from sympy import (
     Abs, And, Derivative, Dummy, Eq, Float, Function, Gt, I, Integral,
-    LambertW, Lt, Matrix, Or, Piecewise, Poly, Q, Rational, S, Symbol,
+    LambertW, Lt, Matrix, Or, Piecewise, Poly, Rational, S, Symbol,
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, Mul, SparseMatrix, ask, Tuple, nsolve, oo)
+    root, simplify, atan2, arg, Mul, SparseMatrix, Tuple, nsolve, oo)
 from sympy.core.function import nfloat
 from sympy.solvers import (solve_linear_system, solve_linear_system_LU,
                            solve_undetermined_coeffs)
@@ -1635,7 +1635,7 @@ def test_real_imag_splitting():
 
 def test_issue_7110():
     y = -2*x**3 + 4*x**2 - 2*x + 5
-    assert any(ask(Q.real(i)) for i in solve(y))
+    assert any(i.is_real for i in solve(y))
 
 
 def test_issue_7547():

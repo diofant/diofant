@@ -1,7 +1,7 @@
 import pytest
 
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
-                   oo, EmptySet, Q, Integer)
+                   oo, EmptySet, Integer)
 from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                  Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                  conjuncts, disjuncts, distribute_or_over_and,
@@ -481,10 +481,7 @@ def test_is_literal():
     assert is_literal(A) is True
     assert is_literal(~A) is True
     assert is_literal(Or(A, B)) is False
-    assert is_literal(Q.zero(A)) is True
-    assert is_literal(Not(Q.zero(A))) is True
     assert is_literal(Or(A, B)) is False
-    assert is_literal(And(Q.zero(A), Q.zero(B))) is False
 
 
 def test_operators():

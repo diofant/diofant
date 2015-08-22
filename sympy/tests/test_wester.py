@@ -21,8 +21,8 @@ from sympy import (
     im, DiracDelta, chebyshevt, legendre_poly, polylog, series, O,
     atan, sinh, cosh, tanh, floor, ceiling, solve, asinh, acot, csc, sec,
     LambertW, N, apart, sqrtdenest, factorial2, powdenest, Mul, S, ZZ,
-    Poly, expand_func, E, Q, And, Or, Ne, Eq, Le, Lt,
-    ask, refine, AlgebraicNumber, continued_fraction_iterator as cf_i,
+    Poly, expand_func, E, And, Or, Ne, Eq, Le, Lt,
+    AlgebraicNumber, continued_fraction_iterator as cf_i,
     continued_fraction_periodic as cf_p, continued_fraction_convergents as cf_c,
     continued_fraction_reduce as cf_r, FiniteSet, elliptic_e, elliptic_f,
     powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
@@ -34,7 +34,6 @@ from sympy.utilities.iterables import partitions
 from sympy.matrices import Matrix, GramSchmidt, eye
 from sympy.matrices.expressions.blockmatrix import BlockMatrix, block_collapse
 from sympy.matrices.expressions import MatrixSymbol, ZeroMatrix
-from sympy.assumptions import assuming
 from sympy.polys.rings import vring
 from sympy.polys.fields import vfield
 from sympy.polys.solvers import solve_lin_sys
@@ -592,7 +591,7 @@ def test_I3():
 
 
 def test_I4():
-    assert refine(cos(pi*cos(n*pi)) + sin(pi/2*cos(n*pi)), Q.integer(n)) == (-1)**n - 1
+    assert cos(pi*cos(n*pi)) + sin(pi/2*cos(n*pi)) == (-1)**n - 1
 
 
 @pytest.mark.xfail
@@ -1104,7 +1103,7 @@ def test_M39():
 
 
 def test_N1():
-    assert ask(Q.is_true(E**pi > pi**E))
+    assert E**pi > pi**E
 
 
 @pytest.mark.xfail

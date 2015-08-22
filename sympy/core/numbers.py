@@ -2194,7 +2194,23 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
                 i, r = divmod(expt.p, expt.q)
                 if i:
                     return self**i*self**Rational(r, expt.q)
-        return
+        if isinstance(expt, Add):
+            # Handle (-1)**((-1)**n/2 + m/2)
+            e2 = 2*expt
+            if e2.is_even:
+                if e2.could_extract_minus_sign():
+                    e2 *= self
+            if e2.is_Add:
+                i, p = e2.as_two_terms()
+                if p.is_Pow and p.base is S.NegativeOne:
+                    if p.exp.is_integer:
+                        i = (i + 1)/2
+                        if i.is_even:
+                            return self**p.exp
+                        elif i.is_odd:
+                            return self**(p.exp + 1)
+                        else:
+                            return self**(p.exp + i)
 
 
 class Half(RationalConstant, metaclass=Singleton):

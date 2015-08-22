@@ -21,7 +21,6 @@ SYMPY_DEBUG = __sympy_debug()
 
 from .core import *
 from .logic import *
-from .assumptions import *
 from .polys import *
 from .series import *
 from .functions import *

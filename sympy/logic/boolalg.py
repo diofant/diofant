@@ -1254,14 +1254,12 @@ def is_literal(expr):
     Examples
     ========
 
-    >>> from sympy import Or, Q
+    >>> from sympy import Or
     >>> from sympy.abc import A, B
     >>> from sympy.logic.boolalg import is_literal
     >>> is_literal(A)
     True
     >>> is_literal(~A)
-    True
-    >>> is_literal(Q.zero(A))
     True
     >>> is_literal(A + B)
     True

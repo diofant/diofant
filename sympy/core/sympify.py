@@ -137,10 +137,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> from sympy.abc import _clash1
     >>> _clash1 == {'E': Symbol('E'), 'I': Symbol('I'), 'O': Symbol('O'),
-    ...             'N': Symbol('N'), 'Q': Symbol('Q'), 'S': Symbol('S')}
+    ...             'N': Symbol('N'), 'S': Symbol('S')}
     True
-    >>> sympify('E & Q', _clash1)
-    And(E, Q)
+    >>> sympify('E & O', _clash1)
+    And(E, O)
 
     Strict
     ------
