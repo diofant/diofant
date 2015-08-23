@@ -2,6 +2,10 @@ from __future__ import print_function, division
 
 from collections import defaultdict
 from itertools import combinations_with_replacement
+from strategies.core import identity
+from strategies.tree import greedy
+
+import mpmath
 
 from sympy import SYMPY_DEBUG
 
@@ -32,9 +36,6 @@ from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.special.bessel import (
     besselj, bessely, besseli, besselk, jn)
 
-from sympy.strategies.core import identity
-from sympy.strategies.tree import greedy
-
 from sympy.utilities.iterables import has_variety, sift, uniq
 
 from sympy.utilities.misc import debug
@@ -51,8 +52,6 @@ from sympy.polys.domains import ZZ
 from sympy.polys.monomials import Monomial, monomial_div
 from sympy.polys.polyerrors import PolificationFailed, DomainError
 from sympy.polys.polytools import groebner
-
-import mpmath
 
 
 def fraction(expr, exact=False):

@@ -1,7 +1,9 @@
 from __future__ import print_function, division
 
+from strategies import condition, exhaust, do_one
+
 from sympy.core import Mul, sympify
-from sympy.strategies import unpack, flatten, condition, exhaust, do_one
+from sympy.core.strategies import unpack, flatten
 
 from sympy.matrices.expressions.matexpr import MatrixExpr, ShapeError
 
@@ -82,4 +84,4 @@ rules = (unpack,
          flatten)
 
 canonicalize = exhaust(condition(lambda x: isinstance(x, HadamardProduct),
-                                 do_one(*rules)))
+                                 do_one(rules)))

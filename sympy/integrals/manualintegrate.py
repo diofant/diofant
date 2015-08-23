@@ -19,12 +19,12 @@ To enable simple substitutions, add the match to find_substitutions.
 from __future__ import print_function, division
 
 from collections import namedtuple
+from strategies.core import switch, do_one, null_safe, condition
 
 import sympy
 
 from sympy.core.compatibility import reduce
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
-from sympy.strategies.core import switch, do_one, null_safe, condition
 
 
 def Rule(name, props=""):
@@ -703,9 +703,9 @@ def trig_cotcsc_rule(integral):
 
 
 def trig_powers_products_rule(integral):
-    return do_one(null_safe(trig_sincos_rule),
-                  null_safe(trig_tansec_rule),
-                  null_safe(trig_cotcsc_rule))(integral)
+    return do_one([null_safe(trig_sincos_rule),
+                   null_safe(trig_tansec_rule),
+                   null_safe(trig_cotcsc_rule)])(integral)
 
 
 def trig_substitution_rule(integral):
@@ -950,20 +950,20 @@ def integral_steps(integrand, symbol, **options):
             return k and issubclass(k, klasses)
         return _integral_is_subclass
 
-    result = do_one(
+    result = do_one([
         null_safe(switch(key, {
-            sympy.Pow: do_one(null_safe(power_rule), null_safe(inverse_trig_rule)),
+            sympy.Pow: do_one([null_safe(power_rule), null_safe(inverse_trig_rule)]),
             sympy.Symbol: power_rule,
             sympy.exp: exp_rule,
             sympy.Add: add_rule,
-            sympy.Mul: do_one(null_safe(mul_rule), null_safe(trig_product_rule),
-                null_safe(heaviside_rule)),
+            sympy.Mul: do_one([null_safe(mul_rule), null_safe(trig_product_rule),
+                               null_safe(heaviside_rule)]),
             sympy.Derivative: derivative_rule,
             TrigonometricFunction: trig_rule,
             sympy.Heaviside: heaviside_rule,
             sympy.Number: constant_rule
         })),
-        do_one(
+        do_one([
             null_safe(trig_rule),
             null_safe(alternatives(
                 rewrites_rule,
@@ -979,9 +979,9 @@ def integral_steps(integrand, symbol, **options):
                     distribute_expand_rule),
                 trig_powers_products_rule
             )),
-            null_safe(trig_substitution_rule)
+            null_safe(trig_substitution_rule)]
         ),
-        fallback_rule)(integral)
+        fallback_rule])(integral)
     del _integral_cache[cachekey]
     return result
 
