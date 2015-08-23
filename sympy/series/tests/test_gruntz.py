@@ -112,6 +112,16 @@ def test_gruntz_eval_special():
     # TODO 8.36 - 8.37 (bessel, max-min)
 
 
+def test_gruntz_other():
+    assert gruntz(sqrt(log(x + 1)) - sqrt(log(x)), x) == 0  # p12, 2.5
+    y = Symbol('y')
+    assert gruntz(((1 + 1/x)**y - 1)*x, x) == y  # p12, 2.6
+    # TODO: p13, 2.7
+    n = Symbol('n', integer=True)
+    assert gruntz(x**n/exp(x), x) == 0  # p14, 2.9
+    assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S(1)/2  # p15, 2.10
+
+
 def test_gruntz_hyperbolic():
     assert gruntz(cosh(x), x) == oo
     assert gruntz(cosh(-x), x) == oo
@@ -278,7 +288,7 @@ def test_limit():
     assert gruntz(-x, x) == -oo
     assert gruntz((-x)**2, x) == oo
     assert gruntz(-x**2, x) == -oo
-    assert gruntz((1/x)*log(1/x), x) == 0
+    assert gruntz((1/x)*log(1/x), x) == 0  # Gruntz: p15, 2.11
     assert gruntz(1/x, x) == 0
     assert gruntz(exp(x), x) == oo
     assert gruntz(-exp(x), x) == -oo
@@ -286,7 +296,7 @@ def test_limit():
     assert gruntz(1/x - exp(-x), x) == 0
     assert gruntz(x + 1/x, x) == oo
 
-    assert gruntz((1/x)**(1/x), x) == 1
+    assert gruntz((1/x)**(1/x), x) == 1  # Gruntz: p15, 2.11
     assert gruntz((exp(1/x) - 1)*x, x) == 1
     assert gruntz(1 + 1/x, x) == 1
     assert gruntz(-exp(1/x), x) == -1
