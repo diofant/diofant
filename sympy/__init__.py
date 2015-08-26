@@ -3,10 +3,6 @@ full-featured computer algebra system (CAS) while keeping the code as
 simple as possible in order to be comprehensible and easily extensible.
 SymPy is written entirely in Python and does not require any external
 libraries, except optionally for plotting support.
-
-See the webpage for more information and documentation:
-
-    http://sympy.org
 """
 
 from __future__ import absolute_import, print_function
@@ -52,18 +48,9 @@ from .integrals import *
 from .tensor import *
 from .parsing import *
 from .calculus import *
-# Adds about .04-.05 seconds of import time
-# from combinatorics import *
-# This module is slow to import:
-from .plotting import plot, plot_backends, plot_implicit
-from .printing import pretty, pretty_print, pprint, pprint_use_unicode, \
-    pprint_try_use_unicode, print_tree, pager_print, TableForm
-from .printing import ccode, fcode, jscode, mathematica_code, octave_code, \
-    latex
-from .printing import python, print_python, srepr, sstr, sstrrepr
-from .interactive import init_session, init_printing
+from .combinatorics import *
+from .plotting import *
+from .printing import *
+from .interactive import *
 
 evalf._create_evalf_table()
-
-# This is slow to import:
-# import abc

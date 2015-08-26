@@ -233,9 +233,6 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         from sympy.simplify.simplify import sum_simplify
         return sum_simplify(self)
 
-    def _eval_summation(self, f, x):
-        return None
-
     def euler_maclaurin(self, m=0, n=0, eps=0, eval_integral=True):
         """
         Return an Euler-Maclaurin approximation of self, where m is the

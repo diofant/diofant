@@ -65,7 +65,7 @@ class audit(Command):
         except ImportError:
             print("In order to run the audit, you need to have PyFlakes installed.")
             sys.exit(-1)
-        dirs = (os.path.join(*d) for d in (m.split('.') for m in modules))
+        dirs = (os.path.join(*d) for d in (m.split('.') for m in find_packages()))
         warns = 0
         for dir in dirs:
             for filename in os.listdir(dir):
@@ -142,11 +142,11 @@ setup(name='sympy',
       version=__version__,
       description='Computer algebra system (CAS) in Python',
       long_description=long_description,
-      author='SymPy development team',
-      author_email='sympy@googlegroups.com',
+      maintainer='Sergey B Kirpichev',
+      maintainer_email='skirpichev@gmail.com',
       license='BSD',
       keywords="Math CAS",
-      url='http://sympy.org',
+      url='http://omg.rtfd.org',
       packages=find_packages(),
       ext_modules=[],
       package_data={
