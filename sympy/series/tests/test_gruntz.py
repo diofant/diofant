@@ -250,6 +250,8 @@ def test_mrv():
 
 
 def test_rewrite():
+    assert rewrite(S.One, x, m) == (1, None)
+
     e = exp(x)
     assert rewrite(e, x, m) == (1/m, -x)
     e = exp(x**2)
@@ -268,6 +270,8 @@ def test_rewrite():
 
 
 def test_mrv_leadterm():
+    assert mrv_leadterm(S.One, x) == (1, 0)
+
     assert mrv_leadterm(-exp(1/x), x) == (-1, 0)
     assert mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x) == (-1, 0)
     assert mrv_leadterm(
