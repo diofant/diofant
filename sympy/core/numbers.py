@@ -335,11 +335,6 @@ class Number(AtomicExpr):
     def _eval_conjugate(self):
         return self
 
-    def _eval_order(self, *symbols):
-        from sympy import Order
-        # Order(5, x, y) -> Order(1,x,y)
-        return Order(S.One, *symbols)
-
     def _eval_subs(self, old, new):
         if old == -self:
             return -new
@@ -2110,10 +2105,6 @@ class Zero(with_metaclass(Singleton, IntegerConstant)):
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
-    def _eval_order(self, *symbols):
-        # Order(0,x) -> 0
-        return self
-
     def __nonzero__(self):
         return False
 
@@ -2154,9 +2145,6 @@ class One(with_metaclass(Singleton, IntegerConstant)):
 
     def _eval_power(self, expt):
         return self
-
-    def _eval_order(self, *symbols):
-        return
 
     @staticmethod
     def factors(limit=None, use_trial=True, use_rho=False, use_pm1=False,
