@@ -1411,7 +1411,8 @@ def stirling(n, k, d=None, kind=2, signed=False):
 
     >>> from sympy.functions.combinatorial.numbers import stirling, bell
     >>> from sympy.combinatorics import Permutation
-    >>> from sympy.utilities.iterables import multiset_partitions, permutations
+    >>> from sympy.utilities.iterables import (multiset_partitions,
+    ...                                        permutations, subsets)
 
     First kind (unsigned by default):
 
@@ -1439,7 +1440,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
 
     Reduced second kind:
 
-    >>> from sympy import subsets, oo
+    >>> from sympy import oo
     >>> def delta(p):
     ...    if len(p) == 1:
     ...        return oo
