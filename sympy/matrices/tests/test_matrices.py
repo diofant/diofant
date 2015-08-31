@@ -2452,7 +2452,7 @@ def test_hermitian():
     assert a.is_hermitian is False
 
 
-def test_issue_9457_9467():
+def test_issue_9457_9467_9876():
     # for row_del(index)
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     M.row_del(1)
@@ -2460,6 +2460,9 @@ def test_issue_9457_9467():
     N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     N.row_del(-2)
     assert N == Matrix([[1, 2, 3], [3, 4, 5]])
+    O = Matrix([[1, 2, 3], [5, 6, 7], [9, 10, 11]])
+    O.row_del(-1)
+    assert O == Matrix([[1, 2, 3], [5, 6, 7]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     pytest.raises(IndexError, lambda: P.row_del(10))
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
