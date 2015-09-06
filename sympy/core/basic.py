@@ -1654,47 +1654,6 @@ def _aresame(a, b):
         return True
 
 
-def _atomic(e):
-    """Return atom-like quantities as far as substitution is
-    concerned: Derivatives, Functions and Symbols. Don't
-    return any 'atoms' that are inside such quantities unless
-    they also appear outside, too.
-
-    Examples
-    ========
-
-    >>> from sympy import Derivative, Function, cos
-    >>> from sympy.abc import x, y
-    >>> from sympy.core.basic import _atomic
-    >>> f = Function('f')
-    >>> _atomic(x + y) == {x, y}
-    True
-    >>> _atomic(x + f(y)) == {x, f(y)}
-    True
-    >>> _atomic(Derivative(f(x), x) + cos(x) + y) == {y, cos(x), Derivative(f(x), x)}
-    True
-    """
-    from sympy import Derivative, Function, Symbol
-    pot = preorder_traversal(e)
-    seen = set()
-    try:
-        free = e.free_symbols
-    except AttributeError:
-        return {e}
-    atoms = set()
-    for p in pot:
-        if p in seen:
-            pot.skip()
-            continue
-        seen.add(p)
-        if isinstance(p, Symbol) and p in free:
-            atoms.add(p)
-        elif isinstance(p, (Derivative, Function)):
-            pot.skip()
-            atoms.add(p)
-    return atoms
-
-
 class preorder_traversal(Iterator):
     """Do a pre-order traversal of a tree.
 
