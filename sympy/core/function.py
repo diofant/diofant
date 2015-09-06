@@ -775,9 +775,9 @@ class WildFunction(Function, AtomicExpr):
 
     def matches(self, expr, repl_dict={}, old=False):
         if not isinstance(expr, (AppliedUndef, Function)):
-            return None
+            return
         if len(expr.args) not in self.nargs:
-            return None
+            return
 
         repl_dict = repl_dict.copy()
         repl_dict[self] = expr
@@ -1419,7 +1419,7 @@ class Lambda(Expr):
         if len(self.args) == 2:
             return self.args[0] == self.args[1]
         else:
-            return None
+            return
 
 
 class Subs(Expr):

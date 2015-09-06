@@ -66,7 +66,7 @@ class AskSymmetricHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.symmetric(expr.parent), assumptions)
 
@@ -89,7 +89,7 @@ class AskInvertibleHandler(CommonHandler):
 
     @staticmethod
     def MatAdd(expr, assumptions):
-        return None
+        return
 
     @staticmethod
     def MatrixSymbol(expr, assumptions):
@@ -109,7 +109,7 @@ class AskInvertibleHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.invertible(expr.parent), assumptions)
 
@@ -156,7 +156,7 @@ class AskOrthogonalHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.orthogonal(expr.parent), assumptions)
 
@@ -195,7 +195,7 @@ class AskUnitaryHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.unitary(expr.parent), assumptions)
 
@@ -279,7 +279,7 @@ class AskPositiveDefiniteHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.positive_definite(expr.parent), assumptions)
 
@@ -318,7 +318,7 @@ class AskUpperTriangularHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.upper_triangular(expr.parent), assumptions)
 
@@ -359,7 +359,7 @@ class AskLowerTriangularHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.lower_triangular(expr.parent), assumptions)
 
@@ -400,7 +400,7 @@ class AskDiagonalHandler(CommonHandler):
     @staticmethod
     def MatrixSlice(expr, assumptions):
         if not expr.on_diag:
-            return None
+            return
         else:
             return ask(Q.diagonal(expr.parent), assumptions)
 

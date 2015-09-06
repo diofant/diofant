@@ -389,14 +389,14 @@ class Expr(Basic, EvalfMixin):
                 # select a good random number for a given expression?
                 # e.g. when calculating n! negative values for n should not
                 # be used
-                return None
+                return
         else:
             reps = {}
             nmag = abs(self.evalf(2))
 
         if not hasattr(nmag, '_prec'):
             # e.g. exp_polar(2*I*pi) doesn't evaluate but is_number is True
-            return None
+            return
 
         if nmag._prec == 1:
             # increase the precision up to the default maximum
@@ -417,7 +417,7 @@ class Expr(Basic, EvalfMixin):
             return self.evalf(n, subs=reps)
 
         # never got any significance
-        return None
+        return
 
     def is_constant(self, *wrt, **flags):
         """Return True if self is constant, False if not, or None if
@@ -570,7 +570,7 @@ class Expr(Basic, EvalfMixin):
                         return failing_number
                     elif deriv.free_symbols:
                         # dead line provided _random returns None in such cases
-                        return None
+                        return
                 return False
         return True
 
@@ -675,7 +675,7 @@ class Expr(Basic, EvalfMixin):
 
         if failing_expression:
             return diff
-        return None
+        return
 
     def _eval_is_zero(self):
         if self.is_number:
@@ -711,7 +711,7 @@ class Expr(Basic, EvalfMixin):
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
-                return None
+                return
             n, i = self.evalf(2).as_real_imag()
             if not i.is_Number or not n.is_Number:
                 return False
@@ -741,7 +741,7 @@ class Expr(Basic, EvalfMixin):
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
-                return None
+                return
             n, i = self.evalf(2).as_real_imag()
             if not i.is_Number or not n.is_Number:
                 return False
@@ -793,7 +793,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_power(self, other):
         # subclass to compute self**other for cases when
         # other is not NaN, 0, or 1
-        return None
+        return
 
     def _eval_conjugate(self):
         if self.is_extended_real:
@@ -971,7 +971,7 @@ class Expr(Basic, EvalfMixin):
 
     def getO(self):
         """Returns the additive O(..) symbol if there is one, else None."""
-        return None
+        return
 
     def getn(self):
         """Returns the order of the expression.
@@ -991,7 +991,7 @@ class Expr(Basic, EvalfMixin):
         from sympy import Dummy, Symbol
         o = self.getO()
         if o is None:
-            return None
+            return
         elif o.is_Order:
             o = o.expr
             if o is S.One:
@@ -1243,7 +1243,7 @@ class Expr(Basic, EvalfMixin):
             None
             """
             if not sub or not l or len(sub) > len(l):
-                return None
+                return
             n = len(sub)
             if not first:
                 l.reverse()
@@ -1647,7 +1647,7 @@ class Expr(Basic, EvalfMixin):
         """
         from sympy import im, re
         if hints.get('ignore') == self:
-            return None
+            return
         else:
             return (re(self), im(self))
 
@@ -1881,7 +1881,7 @@ class Expr(Basic, EvalfMixin):
         """
         c = sympify(c)
         if self is S.NaN:
-            return None
+            return
         if c is S.One:
             return self
         elif c == self:
@@ -1910,23 +1910,23 @@ class Expr(Basic, EvalfMixin):
                     return S.ComplexInfinity
             elif self.is_Integer:
                 if not quotient.is_Integer:
-                    return None
+                    return
                 elif self.is_positive and quotient.is_negative:
-                    return None
+                    return
                 else:
                     return quotient
             elif self.is_Rational:
                 if not quotient.is_Rational:
-                    return None
+                    return
                 elif self.is_positive and quotient.is_negative:
-                    return None
+                    return
                 else:
                     return quotient
             elif self.is_Float:
                 if not quotient.is_Float:
-                    return None
+                    return
                 elif self.is_positive and quotient.is_negative:
-                    return None
+                    return
                 else:
                     return quotient
         elif self.is_NumberSymbol or self.is_Symbol or self is S.ImaginaryUnit:
@@ -1945,7 +1945,7 @@ class Expr(Basic, EvalfMixin):
                 if newarg is not None:
                     newargs.append(newarg)
                 else:
-                    return None
+                    return
             return Add(*newargs)
         elif self.is_Mul:
             args = list(self.args)
@@ -2000,30 +2000,30 @@ class Expr(Basic, EvalfMixin):
 
         c = sympify(c)
         if self is S.NaN:
-            return None
+            return
         if c is S.Zero:
             return self
         elif c == self:
             return S.Zero
         elif self is S.Zero:
-            return None
+            return
 
         if self.is_Number:
             if not c.is_Number:
-                return None
+                return
             co = self
             diff = co - c
             # XXX should we match types? i.e should 3 - .1 succeed?
             if (co > 0 and diff > 0 and diff < co or
                     co < 0 and diff < 0 and diff > co):
                 return diff
-            return None
+            return
 
         if c.is_Number:
             co, t = self.as_coeff_Add()
             xa = co.extract_additively(c)
             if xa is None:
-                return None
+                return
             return xa + t
 
         # handle the args[0].is_Number case separately
@@ -2041,10 +2041,10 @@ class Expr(Basic, EvalfMixin):
             sh, st = self.as_coeff_Add()
             xa = sh.extract_additively(h)
             if xa is None:
-                return None
+                return
             xa2 = st.extract_additively(t)
             if xa2 is None:
-                return None
+                return
             return xa + xa2
 
         # whole term as a term factor
@@ -2059,11 +2059,11 @@ class Expr(Basic, EvalfMixin):
             ac, at = a.as_coeff_Mul()
             co = self.coeff(at)
             if not co:
-                return None
+                return
             coc, cot = co.as_coeff_Add()
             xa = coc.extract_additively(ac)
             if xa is None:
-                return None
+                return
             self -= co*at
             coeffs.append((cot + xa)*at)
         coeffs.append(self)

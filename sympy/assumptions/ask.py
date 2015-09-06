@@ -184,7 +184,7 @@ def ask_full_inference(proposition, assumptions, known_facts_cnf):
         return False
     if not satisfiable(And(known_facts_cnf, assumptions, Not(proposition))):
         return True
-    return None
+    return
 
 
 def register_handler(key, handler):

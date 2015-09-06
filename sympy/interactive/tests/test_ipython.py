@@ -23,7 +23,7 @@ if not ipython:
 def test_automatic_symbols():
     # this implicitly requires readline
     if not readline:
-        return None
+        return
     # NOTE: Because of the way the hook works, you have to use run_cell(code,
     # True).  This means that the code must have no Out, or it will be printed
     # during the tests.

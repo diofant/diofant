@@ -1685,9 +1685,9 @@ def bool_map(bool1, bool2):
 
         # do some quick checks
         if function1.__class__ != function2.__class__:
-            return None
+            return
         if len(function1.args) != len(function2.args):
-            return None
+            return
         if function1.is_Symbol:
             return {function1: function2}
 

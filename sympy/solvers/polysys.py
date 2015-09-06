@@ -74,7 +74,7 @@ def solve_biquadratic(f, g, opt):
     G = groebner([f, g])
 
     if len(G) == 1 and G[0].is_ground:
-        return None
+        return
 
     if len(G) != 2:
         raise SolveFailed
@@ -187,7 +187,7 @@ def solve_generic(polys, opt):
             if not entry:
                 return []
             else:
-                return None
+                return
 
         univariate = list(filter(_is_univariate, basis))
 
@@ -232,7 +232,7 @@ def solve_generic(polys, opt):
     if result is not None:
         return sorted(result, key=default_sort_key)
     else:
-        return None
+        return
 
 
 def solve_triangulated(polys, *gens, **args):

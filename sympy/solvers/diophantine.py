@@ -1026,7 +1026,7 @@ def cornacchia(a, b, m):
     v = sqrt_mod(-b*a1, m, True)
 
     if v is None:
-        return None
+        return
 
     if not isinstance(v, list):
         v = [v]

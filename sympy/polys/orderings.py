@@ -137,7 +137,7 @@ class ProductOrder(MonomialOrder):
             return True
         if all(o.is_global is False for o, _ in self.args):
             return False
-        return None
+        return
 
 
 class InverseOrder(MonomialOrder):
@@ -178,7 +178,7 @@ class InverseOrder(MonomialOrder):
             return False
         if self.O.is_global is False:
             return True
-        return None
+        return
 
     def __eq__(self, other):
         return isinstance(other, InverseOrder) and other.O == self.O

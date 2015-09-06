@@ -932,7 +932,7 @@ class Pow(Expr):
 
                 expanded = self.expand(deep, **hints)
                 if hints.get('ignore') == expanded:
-                    return None
+                    return
                 else:
                     return (re(expanded), im(expanded))
             else:
@@ -1055,7 +1055,7 @@ class Pow(Expr):
 
         # make sure the expression to be matched is an Expr
         if not isinstance(expr, Expr):
-            return None
+            return
 
         b, e = expr.as_base_exp()
 
@@ -1069,7 +1069,7 @@ class Pow(Expr):
         d = repl_dict.copy()
         d = self.base.matches(b, d)
         if d is None:
-            return None
+            return
 
         d = self.exp.xreplace(d).matches(e, d)
         if d is None:
@@ -1422,7 +1422,7 @@ class Pow(Expr):
             if bz is False:
                 return False
         elif bcon is None:
-            return None
+            return
 
         return e.equals(0)
 

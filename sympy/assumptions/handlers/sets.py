@@ -55,7 +55,7 @@ class AskIntegerHandler(CommonHandler):
                     if arg.q == 2:
                         return ask(Q.even(2*expr), assumptions)
                     if ~(arg.q & 1):
-                        return None
+                        return
                 elif ask(Q.irrational(arg), assumptions):
                     if _output:
                         _output = False
@@ -163,7 +163,7 @@ class AskIrrationalHandler(CommonHandler):
         if _real:
             _rational = ask(Q.rational(expr), assumptions)
             if _rational is None:
-                return None
+                return
             return not _rational
         else:
             return _real

@@ -351,7 +351,7 @@ def log_to_real(h, q, x, t):
     R_u = roots(R, filter='R')
 
     if len(R_u) != R.count_roots():
-        return None
+        return
 
     result = S(0)
 
@@ -360,7 +360,7 @@ def log_to_real(h, q, x, t):
         R_v = roots(C, filter='R')
 
         if len(R_v) != C.count_roots():
-            return None
+            return
 
         for r_v in R_v:
             if not r_v.is_positive:
@@ -381,7 +381,7 @@ def log_to_real(h, q, x, t):
     R_q = roots(q, filter='R')
 
     if len(R_q) != q.count_roots():
-        return None
+        return
 
     for r in R_q.keys():
         result += r*log(h.as_expr().subs(t, r))

@@ -573,7 +573,7 @@ def pretty_symbol(symb_name):
                 try:  # match by separate characters
                     pretty = ''.join([mapping[c] for c in s])
                 except (TypeError, KeyError):
-                    return None
+                    return
             result.append(pretty)
         return result
 

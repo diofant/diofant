@@ -114,7 +114,7 @@ def dup_root_upper_bound(f, K):
         P.append(q[0])
 
     if not P:
-        return None
+        return
     else:
         return K.get_field()(2)**(max(P) + 1)
 
@@ -136,7 +136,7 @@ def dup_root_lower_bound(f, K):
     if bound is not None:
         return 1/bound
     else:
-        return None
+        return
 
 
 def _mobius_from_interval(I, field):
@@ -432,7 +432,7 @@ def _discard_if_outside_interval(f, M, inf, sup, K, negative, fast, mobius):
             else:
                 return f, M
         elif (sup is not None and u > sup) or (inf is not None and v < inf):
-            return None
+            return
         else:
             f, M = dup_step_refine_real_root(f, M, K, fast=fast)
 

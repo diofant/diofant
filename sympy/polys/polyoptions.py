@@ -30,11 +30,11 @@ class Option(object):
 
     @classmethod
     def default(cls):
-        return None
+        return
 
     @classmethod
     def preprocess(cls, option):
-        return None
+        return
 
     @classmethod
     def postprocess(cls, options):
@@ -387,7 +387,7 @@ class Composite(with_metaclass(OptionType, BooleanOption)):
 
     @classmethod
     def default(cls):
-        return None
+        return
 
     requires = []
     excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus', 'symmetric']

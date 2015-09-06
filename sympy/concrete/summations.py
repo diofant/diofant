@@ -220,7 +220,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         if len(limit) == 3:
             _, a, b = limit
             if x in a.free_symbols or x in b.free_symbols:
-                return None
+                return
             df = Derivative(f, x, evaluate=True)
             rv = self.func(df, limit)
             if limit[0] not in df.free_symbols:
@@ -580,7 +580,7 @@ def telescopic(L, R, limits):
     '''
     (i, a, b) = limits
     if L.is_Add or R.is_Add:
-        return None
+        return
 
     # We want to solve(L.subs(i, i + m) + R, m)
     # First we try a simple match since this does things that
@@ -603,11 +603,11 @@ def telescopic(L, R, limits):
         try:
             sol = solve(L.subs(i, i + m) + R, m) or []
         except NotImplementedError:
-            return None
+            return
         sol = [si for si in sol if si.is_Integer and
                (L.subs(i, i + si) + R).expand().is_zero]
         if len(sol) != 1:
-            return None
+            return
         s = sol[0]
 
     if s < 0:
@@ -636,7 +636,7 @@ def eval_sum(f, limits):
             for arg in f.args:
                 newexpr = eval_sum(arg.expr, limits)
                 if newexpr is None:
-                    return None
+                    return
                 newargs.append((newexpr, arg.cond))
             return f.func(*newargs)
 
@@ -649,7 +649,7 @@ def eval_sum(f, limits):
     if definite and (dif < 100):
         return eval_sum_direct(f, (i, a, b))
     if isinstance(f, Piecewise):
-        return None
+        return
     # Try to do it symbolically. Even when the number of terms is known,
     # this can save time when b-a is big.
     # We should try to transform to partial fractions
@@ -772,7 +772,7 @@ def _eval_sum_hyper(f, i, a):
 
     hs = hypersimp(f, i)
     if hs is None:
-        return None
+        return
 
     numer, denom = fraction(factor(hs))
     top, topl = numer.as_coeff_mul(i)
@@ -787,10 +787,10 @@ def _eval_sum_hyper(f, i, a):
                 mul = fac.exp
                 fac = fac.base
                 if not mul.is_Integer:
-                    return None
+                    return
             p = Poly(fac, i)
             if p.degree() != 1:
-                return None
+                return
             m, n = p.all_coeffs()
             ab[k] *= m**mul
             params[k] += [n/m]*mul
@@ -820,7 +820,7 @@ def eval_sum_hyper(f, i_a_b):
 
     if (b - a).is_Integer:
         # We are never going to do better than doing the sum in the obvious way
-        return None
+        return
 
     old_sum = Sum(f, (i, a, b))
 
@@ -833,23 +833,23 @@ def eval_sum_hyper(f, i_a_b):
             res1 = _eval_sum_hyper(f, i, a)
             res2 = _eval_sum_hyper(f, i, b + 1)
             if res1 is None or res2 is None:
-                return None
+                return
             (res1, cond1), (res2, cond2) = res1, res2
             cond = And(cond1, cond2)
             if cond == S.false:
-                return None
+                return
         return Piecewise((res1 - res2, cond), (old_sum, True))
 
     if a == S.NegativeInfinity:
         res1 = _eval_sum_hyper(f.subs(i, -i), i, 1)
         res2 = _eval_sum_hyper(f, i, 0)
         if res1 is None or res2 is None:
-            return None
+            return
         res1, cond1 = res1
         res2, cond2 = res2
         cond = And(cond1, cond2)
         if cond == S.false:
-            return None
+            return
         return Piecewise((res1 + res2, cond), (old_sum, True))
 
     # Now b == oo, a != -oo
@@ -863,5 +863,5 @@ def eval_sum_hyper(f, i_a_b):
                     return S.Infinity
                 elif f.is_negative:
                     return S.NegativeInfinity
-            return None
+            return
         return Piecewise(res, (old_sum, True))

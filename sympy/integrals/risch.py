@@ -401,7 +401,7 @@ class DifferentialExtension(object):
         # Avoid AttributeErrors when debugging
         if attr not in self.__slots__:
             raise AttributeError("%s has no attribute %s" % (repr(self), repr(attr)))
-        return None
+        return
 
     def _auto_attrs(self):
         """
@@ -522,7 +522,7 @@ class DifferentialExtension(object):
                 new_extension = True
 
         if restart:
-            return None
+            return
         return new_extension
 
     def _log_part(self, logs, dummy=True):
@@ -632,7 +632,7 @@ class DifferentialExtension(object):
         self.t = self.T[self.level]
         self.d = self.D[self.level]
         self.case = self.cases[self.level]
-        return None
+        return
 
     def decrement_level(self):
         """
@@ -650,7 +650,7 @@ class DifferentialExtension(object):
         self.t = self.T[self.level]
         self.d = self.D[self.level]
         self.case = self.cases[self.level]
-        return None
+        return
 
 
 class DecrementLevel(object):

@@ -571,10 +571,10 @@ def test_conjugate_transpose():
 
     class Symmetric(Expr):
         def _eval_adjoint(self):
-            return None
+            return
 
         def _eval_conjugate(self):
-            return None
+            return
 
         def _eval_transpose(self):
             return self

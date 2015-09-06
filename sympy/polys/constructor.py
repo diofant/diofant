@@ -41,7 +41,7 @@ def _construct_simple(coeffs, opt):
                 return False
         else:
             # this is a composite domain, e.g. ZZ[X], EX
-            return None
+            return
 
     if algebraics:
         domain, result = _construct_algebraic(coeffs, opt)
@@ -121,11 +121,11 @@ def _construct_composite(coeffs, opt):
     try:
         polys, gens = parallel_dict_from_basic(numers + denoms)  # XXX: sorting
     except GeneratorsNeeded:
-        return None
+        return
 
     if opt.composite is None:
         if any(gen.is_number for gen in gens):
-            return None  # generators are number-like so lets better use EX
+            return  # generators are number-like so lets better use EX
 
         all_symbols = set()
 
@@ -133,7 +133,7 @@ def _construct_composite(coeffs, opt):
             symbols = gen.free_symbols
 
             if all_symbols & symbols:
-                return None  # there could be algebraic relations between generators
+                return  # there could be algebraic relations between generators
             else:
                 all_symbols |= symbols
 

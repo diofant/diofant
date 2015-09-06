@@ -177,7 +177,7 @@ def pl_true(expr, model={}, deep=False):
         else:
             if not satisfiable(result):
                 return False
-    return None
+    return
 
 
 def entails(expr, formula_set={}):

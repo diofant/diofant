@@ -198,7 +198,7 @@ def checksol(f, symbol, sol=None, **flags):
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
-        return None
+        return
 
     illegal = {S.NaN,
                S.ComplexInfinity,
@@ -282,7 +282,7 @@ def checksol(f, symbol, sol=None, **flags):
                 if val.is_number and val.has(LambertW):
                     # don't eval this to verify solution since if we got here,
                     # numerical must be False
-                    return None
+                    return
 
                 # add other HACKs here if necessary, otherwise we assume
                 # the nz value is correct
@@ -2107,7 +2107,7 @@ def solve_linear_system(system, *symbols, **flags):
         if i == m:
             # an overdetermined system
             if any(matrix[i:, m]):
-                return None   # no solutions
+                return   # no solutions
             else:
                 # remove trailing rows
                 matrix = matrix[:i, :]
@@ -2130,7 +2130,7 @@ def solve_linear_system(system, *symbols, **flags):
                     # The .equals(0) method could be used but that can be
                     # slow; numerical testing is prone to errors of scaling.
                     if not matrix[i, m].free_symbols:
-                        return None  # no solution
+                        return  # no solution
 
                     # A row of zeros with a non-zero rhs can only be accepted
                     # if there is another equivalent row. Any such rows will
@@ -2156,7 +2156,7 @@ def solve_linear_system(system, *symbols, **flags):
 
                     if nrows == matrix.rows:
                         # no solution
-                        return None
+                        return
                 # zero row or was a linear combination of
                 # other rows or was a row with a symbolic
                 # expression that matched other rows, e.g. [0, 0, x - y]
@@ -2276,7 +2276,7 @@ def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
         # system using Gaussian elimination algorithm
         return solve(system, *coeffs, **flags)
     else:
-        return None  # no solutions
+        return  # no solutions
 
 
 def solve_linear_system_LU(matrix, syms):
@@ -2452,7 +2452,7 @@ def _tsolve(eq, sym, **flags):
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []
     if eq in flags['tsolve_saw']:
-        return None
+        return
     else:
         flags['tsolve_saw'].append(eq)
 

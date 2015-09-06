@@ -305,7 +305,7 @@ def _ask(fact, obj):
                 return ret_val
 
     # Note: the result has already been cached
-    return None
+    return
 
 
 class ManagedProperties(BasicMeta):

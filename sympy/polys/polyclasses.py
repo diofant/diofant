@@ -542,7 +542,7 @@ class DMP(PicklableWithSlots, CantSympify):
             _tdeg = sum(monom)
 
             if _tdeg != tdeg:
-                return None
+                return
 
         return tdeg
 

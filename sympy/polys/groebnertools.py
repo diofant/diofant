@@ -106,7 +106,7 @@ def _buchberger(f, ring):
         h = g.rem([ f[j] for j in J ])
 
         if not h:
-            return None
+            return
         else:
             h = h.monic()
 

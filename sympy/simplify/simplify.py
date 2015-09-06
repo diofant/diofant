@@ -399,7 +399,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         if len(terms) < len(pattern):
             # pattern is longer than matched product
             # so no chance for positive parsing result
-            return None
+            return
         else:
             pattern = [parse_term(elem) for elem in pattern]
 
@@ -457,7 +457,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
 
                 else:
                     # pattern element not found
-                    return None
+                    return
 
             return [_f for _f in terms if _f], elems, common_expo, has_deriv
 
@@ -710,7 +710,7 @@ def _separatevars_dict(expr, symbols):
     else:
         symbols = list(expr.free_symbols)
         if not symbols:
-            return None
+            return
 
     ret = {i: [] for i in symbols + ['coeff']}
 
@@ -718,7 +718,7 @@ def _separatevars_dict(expr, symbols):
         expsym = i.free_symbols
         intersection = set(symbols).intersection(expsym)
         if len(intersection) > 1:
-            return None
+            return
         if len(intersection) == 0:
             # There are no symbols, so it is part of the coefficient
             ret['coeff'].append(i)
@@ -1667,7 +1667,7 @@ def _nthroot_solve(p, n, prec):
     x = Symbol('x')
     f = _minimal_polynomial_sq(p, n, x)
     if f is None:
-        return None
+        return
     sols = solve(f, x)
     for sol in sols:
         if abs(sol - pn).n() < 1./10**prec:
@@ -2963,7 +2963,7 @@ def hypersimp(f, k):
     if g.is_rational_function(k):
         return simplify(g, ratio=S.Infinity)
     else:
-        return None
+        return
 
 
 def hypersimilar(f, g, k):
@@ -4851,7 +4851,7 @@ def _match_div_rewrite(expr, i):
         expr = _replace_mul_fpowxgpow(expr, coth, tanh,
                                       _idn, _one, _idn)
     else:
-        return None
+        return
     return expr
 
 

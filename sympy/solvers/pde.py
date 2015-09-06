@@ -969,7 +969,7 @@ def _separate(eq, dep, others):
         ext, sep = term.expand().as_independent(dep)
         # Failed?
         if sep.has(*others):
-            return None
+            return
         div.add(ext)
     # FIXME: Find lcm() of all the divisors and divide with it, instead of
     # current hack :(
@@ -995,7 +995,7 @@ def _separate(eq, dep, others):
         temp, sep = term.expand().as_independent(dep)
         # Failed?
         if sep.has(*others):
-            return None
+            return
         # Extract the divisors
         div.add(sep)
         rhs -= term.expand()
@@ -1005,5 +1005,5 @@ def _separate(eq, dep, others):
     rhs = simplify(rhs/fulldiv).expand()
     # ...and check whether we were successful :)
     if lhs.has(*others) or rhs.has(dep):
-        return None
+        return
     return [lhs, rhs]

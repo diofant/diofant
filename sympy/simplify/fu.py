@@ -1868,7 +1868,7 @@ def trig_split(a, b, two=False):
         if a.is_Mul:
             co, a = a.as_coeff_Mul()
             if len(a.args) > 2 or not two:
-                return None
+                return
             if a.is_Mul:
                 args = list(a.args)
             else:
@@ -1881,7 +1881,7 @@ def trig_split(a, b, two=False):
             elif a.is_Pow and a.exp is S.Half:  # autoeval doesn't allow -1/2
                 co *= a
             else:
-                return None
+                return
             if args:
                 b = args[0]
                 if b.func is cos:
@@ -1897,7 +1897,7 @@ def trig_split(a, b, two=False):
                 elif b.is_Pow and b.exp is S.Half:
                     co *= b
                 else:
-                    return None
+                    return
             return co if co is not S.One else None, c, s
         elif a.func is cos:
             c = a
@@ -1926,7 +1926,7 @@ def trig_split(a, b, two=False):
         c = ca or sa
         s = cb or sb
         if c.func is not s.func:
-            return None
+            return
         return gcd, n1, n2, c.args[0], s.args[0], c.func is cos
     else:
         if not coa and not cob:

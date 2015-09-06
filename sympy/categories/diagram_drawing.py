@@ -341,7 +341,7 @@ class DiagramGrid(object):
         intersection = edge1 & edge2
         if len(intersection) != 1:
             # The edges either have no common points or are equal.
-            return None
+            return
 
         # The edges have a common endpoint.  Extract the different
         # endpoints and set up the new edge.
@@ -552,7 +552,7 @@ class DiagramGrid(object):
         elif pt2_empty:
             return pt2
         else:
-            return None
+            return
 
     @staticmethod
     def _find_triangle_to_weld(triangles, fringe, grid):
@@ -569,7 +569,7 @@ class DiagramGrid(object):
             for (a, b) in fringe:
                 if frozenset([grid[a], grid[b]]) in triangle:
                     return (triangle, (a, b))
-        return None
+        return
 
     @staticmethod
     def _weld_triangle(tri, welding_edge, fringe, grid, skeleton):
@@ -780,7 +780,7 @@ class DiagramGrid(object):
                         return other_obj
 
         # This diagram is actually cooler that I can handle.  Fail cowardly.
-        return None
+        return
 
     @staticmethod
     def _handle_groups(diagram, groups, merged_morphisms, hints):

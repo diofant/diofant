@@ -665,11 +665,11 @@ class Basic(with_metaclass(ManagedProperties)):
             poly = Poly(self, *gens, **args)
 
             if not poly.is_Poly:
-                return None
+                return
             else:
                 return poly
         except PolynomialError:
-            return None
+            return
 
     def as_content_primitive(self, radical=False):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
@@ -996,7 +996,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         See also: _subs
         """
-        return None
+        return
 
     def xreplace(self, rule):
         """
@@ -1396,13 +1396,13 @@ class Basic(with_metaclass(ManagedProperties)):
         """
         expr = sympify(expr)
         if not isinstance(expr, self.__class__):
-            return None
+            return
 
         if self == expr:
             return repl_dict
 
         if len(self.args) != len(expr.args):
-            return None
+            return
 
         d = repl_dict.copy()
         for arg, other_arg in zip(self.args, expr.args):
@@ -1410,7 +1410,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 continue
             d = arg.xreplace(d).matches(other_arg, d, old=old)
             if d is None:
-                return None
+                return
         return d
 
     def match(self, pattern, old=False):

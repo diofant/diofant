@@ -245,7 +245,7 @@ class exp(ExpBase):
 
             # but it can't be multiplied by oo
             if coeff in [S.NegativeInfinity, S.Infinity]:
-                return None
+                return
 
             coeffs, log_term = [coeff], None
             for term in Mul.make_args(terms):
@@ -253,11 +253,11 @@ class exp(ExpBase):
                     if log_term is None:
                         log_term = term.args[0]
                     else:
-                        return None
+                        return
                 elif term.is_comparable:
                     coeffs.append(term)
                 else:
-                    return None
+                    return
 
             return log_term**Mul(*coeffs) if log_term else None
 

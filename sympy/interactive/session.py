@@ -228,7 +228,7 @@ def enable_automatic_symbols(app):
                     pass
                 else:
                     self.run_cell(code, store_history=False)
-                    return None
+                    return
                 finally:
                     self.run_cell("del %s" % match.group("symbol"),
                                   store_history=False)

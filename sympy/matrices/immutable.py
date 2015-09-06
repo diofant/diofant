@@ -78,7 +78,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
             return S.false
         if isinstance(other, MatrixExpr) and not isinstance(
                 other, ImmutableMatrix):
-            return None
+            return
         diff = self - other
         return sympify(diff.is_zero)
 

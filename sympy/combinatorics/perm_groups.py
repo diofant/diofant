@@ -961,7 +961,7 @@ class PermutationGroup(Basic):
         """
         factors = self.coset_factor(g, True)
         if not factors:
-            return None
+            return
         rank = 0
         b = 1
         transversals = self._transversals
@@ -982,7 +982,7 @@ class PermutationGroup(Basic):
 
         """
         if rank < 0 or rank >= self.order():
-            return None
+            return
         base = self._base
         transversals = self._transversals
         basic_orbits = self._basic_orbits

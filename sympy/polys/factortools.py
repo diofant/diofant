@@ -500,13 +500,13 @@ def dup_zz_cyclotomic_factor(f, K):
     lc_f, tc_f = dup_LC(f, K), dup_TC(f, K)
 
     if dup_degree(f) <= 0:
-        return None
+        return
 
     if lc_f != 1 or tc_f not in [-1, 1]:
-        return None
+        return
 
     if any(bool(cf) for cf in f[1:-1]):
-        return None
+        return
 
     n = dup_degree(f)
     F = _dup_cyclotomic_decompose(n, K)
@@ -638,7 +638,7 @@ def dmp_zz_wang_non_divisors(E, cs, ct, K):
                 q = q // r
 
             if K.is_one(q):
-                return None
+                return
 
         result.append(q)
 

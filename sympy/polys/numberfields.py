@@ -188,7 +188,7 @@ def _minimal_polynomial_sq(p, n, x):
     n = sympify(n)
     r = _is_sum_surds(p)
     if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
-        return None
+        return
     pn = p**Rational(1, n)
     # eliminate the square roots
     p -= x
@@ -972,7 +972,7 @@ def field_isomorphism_pslq(a, b):
         else:
             n *= 2
 
-    return None
+    return
 
 
 def field_isomorphism_factor(a, b):
@@ -995,7 +995,7 @@ def field_isomorphism_factor(a, b):
             if (a.root + root).evalf(chop=True) == 0:
                 return [ -c for c in coeffs ]
     else:
-        return None
+        return
 
 
 @public
@@ -1019,7 +1019,7 @@ def field_isomorphism(a, b, **args):
         return [a.root]
 
     if m % n != 0:
-        return None
+        return
 
     if args.get('fast', True):
         try:

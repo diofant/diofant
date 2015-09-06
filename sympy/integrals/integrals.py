@@ -719,7 +719,7 @@ class Integral(AddWithLimits):
             try:
                 return risch_integrate(f, x, conds=conds)
             except NotImplementedError:
-                return None
+                return
 
         if manual:
             try:
@@ -798,7 +798,7 @@ class Integral(AddWithLimits):
 
                 # NOTE: if there is O(x**n) and we fail to integrate then there is
                 # no point in trying other methods because they will fail anyway.
-                return None
+                return
 
             #               c
             # g(x) = (a*x+b)
@@ -923,7 +923,7 @@ class Integral(AddWithLimits):
             if h is not None:
                 parts.append(coeff * h)
             else:
-                return None
+                return
 
         return Add(*parts)
 

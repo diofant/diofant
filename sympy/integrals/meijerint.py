@@ -480,7 +480,7 @@ def _mul_as_two_parts(f):
 
     gs = _mul_args(f)
     if len(gs) < 2:
-        return None
+        return
     if len(gs) == 2:
         return [tuple(gs)]
     return [(Mul(*x), Mul(*y)) for (x, y) in multiset_partitions(gs, 2)]
@@ -1422,13 +1422,13 @@ def _rewrite_single(f, x, recursive=True):
         from sympy import factor
         coeff, m = factor(f.argument, x).as_coeff_mul(x)
         if len(m) > 1:
-            return None
+            return
         m = m[0]
         if m.is_Pow:
             if m.base != x or not m.exp.is_Rational:
-                return None
+                return
         elif m != x:
-            return None
+            return
         return [(1, 0, meijerg(f.an, f.aother, f.bm, f.bother, coeff*m))], True
 
     f_ = f
@@ -1472,7 +1472,7 @@ def _rewrite_single(f, x, recursive=True):
 
     # try recursive mellin transform
     if not recursive:
-        return None
+        return
     _debug('Trying recursive Mellin transform method.')
     from sympy.integrals.transforms import (mellin_transform,
                                     inverse_mellin_transform, IntegralTransformError,
@@ -1525,7 +1525,7 @@ def _rewrite_single(f, x, recursive=True):
                 g = None
     if g is None or g.has(oo, nan, zoo):
         _debug('Recursive Mellin transform failed.')
-        return None
+        return
     args = Add.make_args(g)
     res = []
     for f in args:
@@ -1566,10 +1566,10 @@ def _rewrite2(f, x):
     """
     fac, po, g = _split_mul(f, x)
     if any(_rewrite_single(expr, x, False) is None for expr in _mul_args(g)):
-        return None
+        return
     l = _mul_as_two_parts(g)
     if not l:
-        return None
+        return
     l = list(ordered(l, [
         lambda p: max(len(_exponents(p[0], x)), len(_exponents(p[1], x))),
         lambda p: max(len(_functions(p[0], x)), len(_functions(p[1], x))),
@@ -1631,7 +1631,7 @@ def _meijerint_indefinite_1(f, x):
     gs = _rewrite1(f, x)
     if gs is None:
         # Note: the code that calls us will do expand() and try again
-        return None
+        return
 
     fac, po, gl, cond = gs
     _debug(' could rewrite:', gs)
@@ -1741,7 +1741,7 @@ def meijerint_definite(f, x, a, b):
 
     if f.has(DiracDelta):
         _debug('Integrand has DiracDelta terms - giving up.')
-        return None
+        return
 
     f_, x_, a_, b_ = f, x, a, b
 
@@ -2020,7 +2020,7 @@ def meijerint_inversion(f, x, t):
     _debug('Laplace-inverting', f)
     if not _is_analytic(f, x):
         _debug('But expression is not analytic.')
-        return None
+        return
     # We filter out exponentials here. If we are given an Add this will not
     # work, but the calling code will take care of that.
     shift = 0

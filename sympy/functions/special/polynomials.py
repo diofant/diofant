@@ -364,7 +364,7 @@ class gegenbauer(OrthogonalPolynomial):
                     # No sec function available yet
                     # return (cos(S.Pi*(a+n)) * sec(S.Pi*a) * gamma(2*a+n) /
                     #            (gamma(2*a) * gamma(n+1)))
-                    return None
+                    return
 
             # Symbolic result C^a_n(x)
             # C^a_n(-x)  --->  (-1)**n * C^a_n(x)

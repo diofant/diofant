@@ -144,7 +144,7 @@ class Symbol(AtomicExpr, Boolean):
     def as_real_imag(self, deep=True, **hints):
         from sympy import im, re
         if hints.get('ignore') == self:
-            return None
+            return
         else:
             return (re(self), im(self))
 
@@ -298,9 +298,9 @@ class Wild(Symbol):
     # TODO add check against another Wild
     def matches(self, expr, repl_dict={}, old=False):
         if any(expr.has(x) for x in self.exclude):
-            return None
+            return
         if any(not f(expr) for f in self.properties):
-            return None
+            return
         repl_dict = repl_dict.copy()
         repl_dict[self] = expr
         return repl_dict

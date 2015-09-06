@@ -478,9 +478,9 @@ def _rewrite_gamma(f, s, a, b):
         if (c <= a_) == True:
             return True
         if is_numer:
-            return None
+            return
         if a_.free_symbols or b_.free_symbols or c.free_symbols:
-            return None  # XXX
+            return  # XXX
             # raise IntegralTransformError('Inverse Mellin', f,
             #                     'Could not determine position of singularity %s'
             #                     ' relative to fundamental strip' % c)
@@ -901,13 +901,13 @@ def _simplifyconds(expr, s, a):
             return 1
         if ex.is_Pow and ex.base == s:
             return ex.exp
-        return None
+        return
 
     def bigger(ex1, ex2):
         """ Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
             Else return None. """
         if ex1.has(s) and ex2.has(s):
-            return None
+            return
         if ex1.func is Abs:
             ex1 = ex1.args[0]
         if ex2.func is Abs:
@@ -916,7 +916,7 @@ def _simplifyconds(expr, s, a):
             return bigger(1/ex2, 1/ex1)
         n = power(ex2)
         if n is None:
-            return None
+            return
         try:
             if n > 0 and (abs(ex1) <= abs(a)**n) == True:
                 return False

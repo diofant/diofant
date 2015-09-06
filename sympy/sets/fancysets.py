@@ -44,7 +44,7 @@ class Naturals(with_metaclass(Singleton, Set)):
         if other.is_Interval:
             return Intersection(
                 S.Integers, other, Interval(self._inf, S.Infinity))
-        return None
+        return
 
     def _contains(self, other):
         if other.is_positive and other.is_integer:
@@ -120,7 +120,7 @@ class Integers(with_metaclass(Singleton, Set)):
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
             return s.intersect(other)  # take out endpoints if open interval
-        return None
+        return
 
     def _contains(self, other):
         if other.is_integer:
@@ -266,7 +266,7 @@ class ImageSet(Set):
                 if len(solns) == 1:
                     t = list(solns[0][0].free_symbols)[0]
                 else:
-                    return None
+                    return
 
                 # since 'a' < 'b'
                 return imageset(Lambda(t, f.subs(a, solns[0][0])), S.Integers)
@@ -391,7 +391,7 @@ class Range(Set):
         if other == S.Integers:
             return self
 
-        return None
+        return
 
     def _contains(self, other):
         if (((self.start - other)/self.step).is_integer or

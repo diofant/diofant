@@ -516,7 +516,7 @@ class Polygon(GeometryEntity):
         for v in self.vertices:
             lit.append(v - p)  # the difference is simplified
             if lit[-1].free_symbols:
-                return None
+                return
 
         poly = Polygon(*lit)
 
@@ -2244,7 +2244,7 @@ def _sss(l1, l2, l3):
     c2 = Circle((l1, 0), l2)
     inter = [a for a in c1.intersection(c2) if a.y.is_nonnegative]
     if not inter:
-        return None
+        return
     pt = inter[0]
     return Triangle((0, 0), (l1, 0), pt)
 

@@ -1401,7 +1401,7 @@ class PrettyPrinter(Printer):
             else:
                 return prettyForm(str(p))/prettyForm(str(q))
         else:
-            return None
+            return
 
     def _print_Rational(self, expr):
         result = self.__print_numer_denom(expr.p, expr.q)

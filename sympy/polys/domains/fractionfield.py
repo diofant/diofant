@@ -101,14 +101,14 @@ class FractionField(Field, CompositeDomain):
         try:
             return K1.new(a)
         except (CoercionFailed, GeneratorsError):
-            return None
+            return
 
     def from_FractionField(K1, a, K0):
         """Convert a rational function to ``dtype``. """
         try:
             return a.set_field(K1.field)
         except (CoercionFailed, GeneratorsError):
-            return None
+            return
 
     def get_ring(self):
         """Returns a field associated with `self`. """

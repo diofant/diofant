@@ -423,7 +423,7 @@ def pspace(expr):
 
     rvs = random_symbols(expr)
     if not rvs:
-        return None
+        return
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -628,7 +628,7 @@ class Density(Basic):
         if len(self.args) > 1:
             return self.args[1]
         else:
-            return None
+            return
 
     def doit(self, evaluate=True, **kwargs):
         expr, condition = self.expr, self.condition
@@ -1044,7 +1044,7 @@ def pspace_independent(a, b):
     b_symbols = pspace(a).symbols
     if len(a_symbols.intersect(b_symbols)) == 0:
         return True
-    return None
+    return
 
 
 def rv_subs(expr, symbols=None):

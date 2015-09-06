@@ -921,7 +921,7 @@ def integral_steps(integrand, symbol, **options):
     if cachekey in _integral_cache:
         if _integral_cache[cachekey] is None:
             # cyclic integral! null_safe will eliminate that path
-            return None
+            return
         else:
             return _integral_cache[cachekey]
     else:

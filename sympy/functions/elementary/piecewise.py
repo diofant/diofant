@@ -162,7 +162,7 @@ class Piecewise(Function):
         if len(non_false_ecpairs) != len(args) or piecewise_again:
             return cls(*non_false_ecpairs)
 
-        return None
+        return
 
     def doit(self, **hints):
         """
@@ -467,7 +467,7 @@ class Piecewise(Function):
         for expr, _ in self.args:
             a = getattr(expr, is_attr)
             if a is None:
-                return None
+                return
             if b is None:
                 b = a
             elif b is not a:
@@ -532,7 +532,7 @@ class Piecewise(Function):
             diff = cond.lhs - cond.rhs
             if diff.is_commutative:
                 return diff.is_zero
-        return None
+        return
 
     def as_expr_set_pairs(self):
         exp_sets = []

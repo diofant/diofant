@@ -132,7 +132,7 @@ def deltaintegrate(f, x):
     sympy.integrals.integrals.Integral
     """
     if not f.has(DiracDelta):
-        return None
+        return
 
     from sympy.integrals import Integral, integrate
     from sympy.solvers import solve
@@ -173,4 +173,4 @@ def deltaintegrate(f, x):
                     rest_mult = rest_mult*rest_mult_2
                 point = solve(dg.args[0], x)[0]
                 return (rest_mult.subs(x, point)*Heaviside(x - point))
-    return None
+    return

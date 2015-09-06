@@ -59,7 +59,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
             try:
                 return f.__class__(g)
             except SympifyError:
-                return None
+                return
 
         def __add__(f, g):
             g = f._to_ex(g)
