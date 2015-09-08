@@ -1025,7 +1025,7 @@ class genocchi(Function):
     def _eval_is_prime(self):
         n = self.args[0]
         if (not n.is_integer) or (not n.is_positive):
-            return None
+            return
         return (n - 8).is_zero
 
 

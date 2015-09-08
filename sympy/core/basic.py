@@ -665,11 +665,11 @@ class Basic(with_metaclass(ManagedProperties)):
             poly = Poly(self, *gens, **args)
 
             if not poly.is_Poly:
-                return None
+                return
             else:
                 return poly
         except PolynomialError:
-            return None
+            return
 
     def as_content_primitive(self, radical=False):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
@@ -996,7 +996,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         See also: _subs
         """
-        return None
+        return
 
     def xreplace(self, rule):
         """
@@ -1396,13 +1396,13 @@ class Basic(with_metaclass(ManagedProperties)):
         """
         expr = sympify(expr)
         if not isinstance(expr, self.__class__):
-            return None
+            return
 
         if self == expr:
             return repl_dict
 
         if len(self.args) != len(expr.args):
-            return None
+            return
 
         d = repl_dict.copy()
         for arg, other_arg in zip(self.args, expr.args):
@@ -1410,7 +1410,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 continue
             d = arg.xreplace(d).matches(other_arg, d, old=old)
             if d is None:
-                return None
+                return
         return d
 
     def match(self, pattern, old=False):
@@ -1652,47 +1652,6 @@ def _aresame(a, b):
                 return False
     else:
         return True
-
-
-def _atomic(e):
-    """Return atom-like quantities as far as substitution is
-    concerned: Derivatives, Functions and Symbols. Don't
-    return any 'atoms' that are inside such quantities unless
-    they also appear outside, too.
-
-    Examples
-    ========
-
-    >>> from sympy import Derivative, Function, cos
-    >>> from sympy.abc import x, y
-    >>> from sympy.core.basic import _atomic
-    >>> f = Function('f')
-    >>> _atomic(x + y) == {x, y}
-    True
-    >>> _atomic(x + f(y)) == {x, f(y)}
-    True
-    >>> _atomic(Derivative(f(x), x) + cos(x) + y) == {y, cos(x), Derivative(f(x), x)}
-    True
-    """
-    from sympy import Derivative, Function, Symbol
-    pot = preorder_traversal(e)
-    seen = set()
-    try:
-        free = e.free_symbols
-    except AttributeError:
-        return {e}
-    atoms = set()
-    for p in pot:
-        if p in seen:
-            pot.skip()
-            continue
-        seen.add(p)
-        if isinstance(p, Symbol) and p in free:
-            atoms.add(p)
-        elif isinstance(p, (Derivative, Function)):
-            pot.skip()
-            atoms.add(p)
-    return atoms
 
 
 class preorder_traversal(Iterator):

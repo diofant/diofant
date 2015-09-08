@@ -109,10 +109,10 @@ def primitive_root(p):
         return 1
     f = factorint(p)
     if len(f) > 2:
-        return None
+        return
     if len(f) == 2:
         if 2 not in f or f[2] > 1:
-            return None
+            return
 
         # case p = 2*p1**k, p1 prime
         for p1, e1 in f.items():
@@ -130,7 +130,7 @@ def primitive_root(p):
         if 2 in f:
             if p == 4:
                 return 3
-            return None
+            return
         p1, n = list(f.items())[0]
         if n > 1:
             # see Ref [2], page 81
@@ -252,7 +252,7 @@ def sqrt_mod(a, p, all_roots=False):
                 pass
             return r
     except StopIteration:
-        return None
+        return
 
 
 def _product(*iters):
@@ -378,7 +378,7 @@ def _sqrt_mod_prime_power(a, p, k):
         if p == 2:
             return [ZZ(a)]
         if not is_quad_residue(a, p):
-            return None
+            return
 
         if p % 4 == 3:
             res = pow(a, (p + 1) // 4, p)
@@ -403,7 +403,7 @@ def _sqrt_mod_prime_power(a, p, k):
         # see Ref.[2]
         if p == 2:
             if a % 8 != 1:
-                return None
+                return
             if k <= 3:
                 s = set()
                 for i in range(0, pk, 4):
@@ -437,7 +437,7 @@ def _sqrt_mod_prime_power(a, p, k):
             return res
         rv = _sqrt_mod_prime_power(a, p, 1)
         if not rv:
-            return None
+            return
         r = rv[0]
         fr = r**2 - a
         # hensel lifting with Newton iteration, see Ref.[3] chapter 9
@@ -497,7 +497,7 @@ def _sqrt_mod1(a, p, n):
     f = factorint(a)
     r = f[p]
     if r % 2 == 1:
-        return None
+        return
     m = r // 2
     a1 = a >> r
     if p == 2:
@@ -518,7 +518,7 @@ def _sqrt_mod1(a, p, n):
         if n - r == 2:
             res = _sqrt_mod_prime_power(a1, p, n - r)
             if res is None:
-                return None
+                return
             pnm = 1 << (n - m)
 
             def _iter2():
@@ -535,7 +535,7 @@ def _sqrt_mod1(a, p, n):
         if n - r > 2:
             res = _sqrt_mod_prime_power(a1, p, n - r)
             if res is None:
-                return None
+                return
             pnm1 = 1 << (n - m - 1)
 
             def _iter3():
@@ -554,7 +554,7 @@ def _sqrt_mod1(a, p, n):
         a1 = a // p**r
         res1 = _sqrt_mod_prime_power(a1, p, n - r)
         if res1 is None:
-            return None
+            return
         pm = p**m
         pnr = p**(n-r)
         pnm = p**(n-m)
@@ -719,7 +719,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     f = totient(p)
     # see Hackman "Elementary Number Theory" (2009), page 76
     if pow(a, f // igcd(f, n), p) != 1:
-        return None
+        return
     if not isprime(p):
         raise NotImplementedError
 

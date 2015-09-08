@@ -67,7 +67,7 @@ class TautologicalHandler(AskHandler):
         if value in (True, False):
             return not value
         else:
-            return None
+            return
 
     @staticmethod
     def Or(expr, assumptions):
@@ -101,10 +101,10 @@ class TautologicalHandler(AskHandler):
         p, q = expr.args
         pt = ask(p, assumptions=assumptions)
         if pt is None:
-            return None
+            return
         qt = ask(q, assumptions=assumptions)
         if qt is None:
-            return None
+            return
         return pt == qt
 
 

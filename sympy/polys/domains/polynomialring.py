@@ -101,7 +101,7 @@ class PolynomialRing(Ring, CompositeDomain):
         try:
             return a.set_ring(K1.ring)
         except (CoercionFailed, GeneratorsError):
-            return None
+            return
 
     def from_FractionField(K1, a, K0):
         """Convert a rational function to ``dtype``. """
@@ -110,7 +110,7 @@ class PolynomialRing(Ring, CompositeDomain):
         if denom.is_ground:
             return K1.from_PolynomialRing(K0.numer(a)/denom, K0.field.ring.to_domain())
         else:
-            return None
+            return
 
     def get_field(self):
         """Returns a field associated with `self`. """

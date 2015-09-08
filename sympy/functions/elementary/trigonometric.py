@@ -260,7 +260,7 @@ class sin(TrigonometricFunction):
                 narg = pi_coeff*S.Pi
                 if narg != arg:
                     return cls(narg)
-                return None
+                return
 
             # https://github.com/sympy/sympy/issues/6048
             # transform a sine to a cosine, to avoid redundant code
@@ -276,7 +276,7 @@ class sin(TrigonometricFunction):
                     return result
                 if pi_coeff*S.Pi != arg:
                     return cls(pi_coeff*S.Pi)
-                return None
+                return
 
         if arg.is_Add:
             x, m = _peeloff_pi(arg)
@@ -506,7 +506,7 @@ class cos(TrigonometricFunction):
                 narg = pi_coeff*S.Pi
                 if narg != arg:
                     return cls(narg)
-                return None
+                return
 
             # cosine formula #####################
             # https://github.com/sympy/sympy/issues/6048
@@ -547,11 +547,11 @@ class cos(TrigonometricFunction):
                     a, b = p*S.Pi/table2[q][0], p*S.Pi/table2[q][1]
                     nvala, nvalb = cls(a), cls(b)
                     if nvala is None or nvalb is None:
-                        return None
+                        return
                     return nvala*nvalb + cls(S.Pi/2 - a)*cls(S.Pi/2 - b)
 
                 if q > 12:
-                    return None
+                    return
 
                 if q in cst_table_some:
                     cts = cst_table_some[pi_coeff.q]
@@ -561,11 +561,11 @@ class cos(TrigonometricFunction):
                     narg = (pi_coeff*2)*S.Pi
                     nval = cls(narg)
                     if nval is None:
-                        return None
+                        return
                     x = (2*pi_coeff + 1)/2
                     sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
                     return sign_cos*sqrt( (1 + nval)/2 )
-            return None
+            return
 
         if arg.is_Add:
             x, m = _peeloff_pi(arg)
@@ -674,12 +674,12 @@ class cos(TrigonometricFunction):
             return ans
         pi_coeff = _pi_coeff(arg)
         if pi_coeff is None:
-            return None
+            return
 
         assert not pi_coeff.is_integer, "should have been simplified already"
 
         if not pi_coeff.is_Rational:
-            return None
+            return
 
         cst_table_some = {
             3: S.Half,
@@ -717,7 +717,7 @@ class cos(TrigonometricFunction):
             narg = (pi_coeff*2)*S.Pi
             nval = cos(narg)
             if nval is None:
-                return None
+                return
             nval = nval.rewrite(sqrt)
             x = (2*pi_coeff + 1)/2
             sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
@@ -869,7 +869,7 @@ class tan(TrigonometricFunction):
                 narg = pi_coeff*S.Pi
                 if narg != arg:
                     return cls(narg)
-                return None
+                return
 
             if pi_coeff.is_Rational:
                 if not pi_coeff.q % 2:
@@ -895,7 +895,7 @@ class tan(TrigonometricFunction):
                 if q in table2:
                     nvala, nvalb = cls(p*S.Pi/table2[q][0]), cls(p*S.Pi/table2[q][1])
                     if nvala is None or nvalb is None:
-                        return None
+                        return
                     return (nvala - nvalb)/(1 + nvala*nvalb)
                 narg = ((pi_coeff + S.Half) % 1 - S.Half)*S.Pi
                 # see cos() to specify which expressions should  be
@@ -1027,13 +1027,13 @@ class tan(TrigonometricFunction):
     def _eval_rewrite_as_pow(self, arg):
         y = self.rewrite(cos).rewrite(pow)
         if y.has(cos):
-            return None
+            return
         return y
 
     def _eval_rewrite_as_sqrt(self, arg):
         y = self.rewrite(cos).rewrite(sqrt)
         if y.has(cos):
-            return None
+            return
         return y
 
     def _eval_as_leading_term(self, x):
@@ -1139,7 +1139,7 @@ class cot(TrigonometricFunction):
                 narg = pi_coeff*S.Pi
                 if narg != arg:
                     return cls(narg)
-                return None
+                return
 
             if pi_coeff.is_Rational:
                 if pi_coeff.q > 2 and not pi_coeff.q % 2:
@@ -1163,7 +1163,7 @@ class cot(TrigonometricFunction):
                 if q in table2:
                     nvala, nvalb = cls(p*S.Pi/table2[q][0]), cls(p*S.Pi/table2[q][1])
                     if nvala is None or nvalb is None:
-                        return None
+                        return
                     return (1 + nvala*nvalb)/(nvalb - nvala)
                 narg = (((pi_coeff + S.Half) % 1) - S.Half)*S.Pi
                 # see cos() to specify which expressions should be
@@ -1188,7 +1188,7 @@ class cot(TrigonometricFunction):
                     return cotx
                 if cotm.is_Rational:
                     return (cotm*cotx - 1) / (cotm + cotx)
-            return None
+            return
 
         if arg.func is acot:
             return arg.args[0]
@@ -1270,13 +1270,13 @@ class cot(TrigonometricFunction):
     def _eval_rewrite_as_pow(self, arg):
         y = self.rewrite(cos).rewrite(pow)
         if y.has(cos):
-            return None
+            return
         return y
 
     def _eval_rewrite_as_sqrt(self, arg):
         y = self.rewrite(cos).rewrite(sqrt)
         if y.has(cos):
-            return None
+            return
         return y
 
     def _eval_as_leading_term(self, x):

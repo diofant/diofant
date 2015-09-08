@@ -341,7 +341,7 @@ class Order(Expr):
             else:
                 common_symbols = expr.variables
             if not common_symbols:
-                return None
+                return
             r = None
             ratio = self.expr/expr.expr
             ratio = powsimp(ratio, deep=True, combine='exp')

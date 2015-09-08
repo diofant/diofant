@@ -134,7 +134,7 @@ def monomial_div(A, B):
     if all(c >= 0 for c in C):
         return tuple(C)
     else:
-        return None
+        return
 
 
 def monomial_ldiv(A, B):
@@ -281,12 +281,12 @@ def term_div(a, b, domain):
         if monom is not None:
             return monom, domain.quo(a_lc, b_lc)
         else:
-            return None
+            return
     else:
         if not (monom is None or a_lc % b_lc):
             return monom, domain.quo(a_lc, b_lc)
         else:
-            return None
+            return
 
 
 class MonomialOps(object):

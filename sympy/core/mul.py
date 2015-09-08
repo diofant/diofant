@@ -817,7 +817,7 @@ class Mul(Expr, AssocOp):
         if self.is_commutative and expr.is_commutative:
             return AssocOp._matches_commutative(self, expr, repl_dict, old)
         elif self.is_commutative is not expr.is_commutative:
-            return None
+            return
         c1, nc1 = self.args_cnc()
         c2, nc2 = expr.args_cnc()
         repl_dict = repl_dict.copy()
@@ -862,10 +862,10 @@ class Mul(Expr, AssocOp):
                 # do more expensive match
                 dd = b.matches(expr, repl_dict)
                 if dd is None:
-                    return None
+                    return
                 dd = a.matches(Rational(sign), dd)
                 return dd
-            return None
+            return
 
         d = repl_dict.copy()
 
@@ -886,12 +886,12 @@ class Mul(Expr, AssocOp):
             return d
 
         if len(ee) != len(pp):
-            return None
+            return
 
         for p, e in zip(pp, ee):
             d = p.xreplace(d).matches(e, d)
             if d is None:
-                return None
+                return
         return d
 
     @staticmethod
@@ -978,7 +978,7 @@ class Mul(Expr, AssocOp):
             if any(a.is_zero for a in self.args):
                 return S.NaN.is_infinite
             if any(a.is_zero is None for a in self.args):
-                return None
+                return
             return True
 
     def _eval_is_rational(self):
@@ -1160,7 +1160,7 @@ class Mul(Expr, AssocOp):
             r, acc = True, 1
             for t in self.args:
                 if not t.is_integer:
-                    return None
+                    return
                 elif t.is_even:
                     r = False
                 elif t.is_integer:
@@ -1192,14 +1192,14 @@ class Mul(Expr, AssocOp):
         from sympy.simplify.simplify import powdenest, fraction
 
         if not old.is_Mul:
-            return None
+            return
 
         # try keep replacement literal so -2*x doesn't replace 4*x
         if old.args[0].is_Number and old.args[0] < 0:
             if self.args[0].is_Number:
                 if self.args[0] < 0:
                     return self._subs(-old, -new)
-                return None
+                return
 
         def base_exp(a):
             # if I and -1 are in a Mul, they get both end up with

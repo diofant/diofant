@@ -500,7 +500,7 @@ class Add(Expr, AssocOp):
                 others.remove(t)
                 if all(x.is_rational is True for x in others):
                     return True
-                return None
+                return
             if a is None:
                 return
         return False
@@ -591,7 +591,7 @@ class Add(Expr, AssocOp):
 
     def _eval_subs(self, old, new):
         if not old.is_Add:
-            return None
+            return
 
         coeff_self, terms_self = self.as_coeff_Add()
         coeff_old, terms_old = old.as_coeff_Add()

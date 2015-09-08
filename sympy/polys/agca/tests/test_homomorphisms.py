@@ -86,7 +86,7 @@ def test_creation():
         container = conv()
 
         def submodule(*args):
-            return None
+            return
     raises(TypeError, lambda: homomorphism(dummy(), G, matrix))
     raises(TypeError, lambda: homomorphism(F, dummy(), matrix))
     raises(

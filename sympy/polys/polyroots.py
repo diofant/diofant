@@ -232,7 +232,7 @@ def _roots_quartic_euler(p, q, r, a):
     xsols = list(roots(Poly(eq, x), cubics=False).keys())
     xsols = [sol for sol in xsols if sol.is_rational]
     if not xsols:
-        return None
+        return
     R = max(xsols)
     c1 = sqrt(R)
     B = -q*c1/(4*R)
@@ -693,7 +693,7 @@ def _integer_basis(poly):
         n = monoms[0]
         monoms = [n - i for i in reversed(monoms)]
     else:
-        return None
+        return
 
     monoms = monoms[:-1]
     coeffs = coeffs[:-1]
@@ -703,7 +703,7 @@ def _integer_basis(poly):
     try:
         div = next(divs)
     except StopIteration:
-        return None
+        return
 
     while True:
         for monom, coeff in zip(monoms, coeffs):
@@ -711,7 +711,7 @@ def _integer_basis(poly):
                 try:
                     div = next(divs)
                 except StopIteration:
-                    return None
+                    return
                 else:
                     break
         else:

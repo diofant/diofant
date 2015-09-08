@@ -881,7 +881,7 @@ def _dup_rr_trivial_gcd(f, g, K):
         else:
             return dup_neg(f, K), [-K.one], []
 
-    return None
+    return
 
 
 def _dup_ff_trivial_gcd(f, g, K):
@@ -893,7 +893,7 @@ def _dup_ff_trivial_gcd(f, g, K):
     elif not g:
         return dup_monic(f, K), [dup_LC(f, K)], []
     else:
-        return None
+        return
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
@@ -916,7 +916,7 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
     else:
-        return None
+        return
 
 
 def _dmp_ff_trivial_gcd(f, g, u, K):
@@ -937,7 +937,7 @@ def _dmp_ff_trivial_gcd(f, g, u, K):
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
     else:
-        return None
+        return
 
 
 def _dmp_simplify_gcd(f, g, u, K):
@@ -946,7 +946,7 @@ def _dmp_simplify_gcd(f, g, u, K):
     dg = dmp_degree(g, u)
 
     if df > 0 and dg > 0:
-        return None
+        return
 
     if not (df or dg):
         F = dmp_LC(f, K)

@@ -123,7 +123,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     f = sympify(f)
 
     if not f.is_polynomial(n):
-        return None
+        return
 
     homogeneous = f.is_zero
 
@@ -183,7 +183,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             else:
                 return S.Zero
         else:
-            return None
+            return
 
     if N <= r:
         C = []
@@ -202,7 +202,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             C = [ c for c in C if (c not in solutions) ]
             result = y.subs(solutions)
         else:
-            return None  # TBD
+            return  # TBD
     else:
         A = r
         U = N + A + b + 1
@@ -323,7 +323,7 @@ def rsolve_poly(coeffs, f, n, **hints):
                     else:
                         return S.Zero
                 else:
-                    return None
+                    return
         else:
             solutions = {}
 
@@ -403,7 +403,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     f = sympify(f)
 
     if not f.is_polynomial(n):
-        return None
+        return
 
     coeffs = list(map(sympify, coeffs))
 
@@ -455,7 +455,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
             else:
                 return simplify(result / C)
         else:
-            return None
+            return
 
 
 def rsolve_hyper(coeffs, f, n, **hints):
@@ -525,7 +525,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
             for g in f.expand().args:
                 if not g.is_hypergeometric(n):
-                    return None
+                    return
 
                 for h in similar.keys():
                     if hypersimilar(g, h, n):
@@ -541,7 +541,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
         elif f.is_hypergeometric(n):
             inhomogeneous = [f]
         else:
-            return None
+            return
 
         for i, g in enumerate(inhomogeneous):
             coeff, polys = S.One, coeffs[:]
@@ -565,7 +565,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             if not (R is None or R is S.Zero):
                 inhomogeneous[i] *= R
             else:
-                return None
+                return
 
             result = Add(*inhomogeneous)
     else:
@@ -646,7 +646,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
         for C, ker in sk:
             result += C * ker
     else:
-        return None
+        return
 
     if hints.get('symbols', False):
         symbols |= {s for s, k in sk}
@@ -788,7 +788,7 @@ def rsolve(f, y, init=None):
     result = rsolve_hyper(coeffs, -i_part, n, symbols=True)
 
     if result is None:
-        return None
+        return
 
     solution, symbols = result
 
@@ -818,7 +818,7 @@ def rsolve(f, y, init=None):
         result = solve(equations, *symbols)
 
         if not result:
-            return None
+            return
         else:
             solution = solution.subs(result)
 

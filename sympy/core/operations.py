@@ -167,7 +167,7 @@ class AssocOp(Basic):
         from .expr import Add, Expr
         from sympy import Mul
         if isinstance(self, Expr) and not isinstance(expr, Expr):
-            return None
+            return
 
         # handle simple patterns
         if self == expr:
@@ -197,12 +197,12 @@ class AssocOp(Basic):
                 # there are symbols in the exact part that are not
                 # in the expr; but if there are no free symbols, let
                 # the matching continue
-                return None
+                return
             newpattern = self.func(*wild_part)
             newexpr = self._combine_inverse(expr, exact)
             if not old and (expr.is_Add or expr.is_Mul):
                 if newexpr.count_ops() > expr.count_ops():
-                    return None
+                    return
             return newpattern.matches(newexpr, repl_dict)
 
         # now to real work ;)

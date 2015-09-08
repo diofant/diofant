@@ -406,14 +406,14 @@ def _sqrt_symbolic_denest(a, b, r):
     a, b, r = map(sympify, (a, b, r))
     rval = _sqrt_match(r)
     if not rval:
-        return None
+        return
     ra, rb, rr = rval
     if rb:
         y = Dummy('y', positive=True)
         try:
             newa = Poly(a.subs(sqrt(rr), (y**2 - ra)/rb), y)
         except PolynomialError:
-            return None
+            return
         if newa.degree() == 2:
             ca, cb, cc = newa.all_coeffs()
             cb += b
@@ -489,15 +489,15 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     """
     from sympy.simplify.simplify import radsimp, rad_rationalize
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
-        return None
+        return
     for x in (a, b, r):
         for y in x.args:
             y2 = y**2
             if not y2.is_Integer or not y2.is_positive:
-                return None
+                return
     sqd = _mexpand(sqrtdenest(sqrt(radsimp(d2))))
     if sqrt_depth(sqd) > 1:
-        return None
+        return
     x1, x2 = [a/2 + sqd/2, a/2 - sqd/2]
     # look for a solution A with depth 1
     for x in (x1, x2):
@@ -510,7 +510,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
         if z < 0:
             z = -z
         return _mexpand(z)
-    return None
+    return
 
 
 def _denester(nested, av0, h, max_depth_level):

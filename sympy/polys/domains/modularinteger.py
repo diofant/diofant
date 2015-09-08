@@ -63,7 +63,7 @@ class ModularInteger(PicklableWithSlots, DomainElement):
             try:
                 return cls.dom.convert(other)
             except CoercionFailed:
-                return None
+                return
 
     def __add__(self, other):
         val = self._get_val(other)

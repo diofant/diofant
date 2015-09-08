@@ -757,7 +757,7 @@ class _TensorDataLazyEvaluator(CantSympify):
     def __getitem__(self, key):
         dat = self._get(key)
         if dat is None:
-            return None
+            return
 
         numpy = import_module("numpy")
         if not isinstance(dat, numpy.ndarray):
@@ -786,7 +786,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             return self._substitutions_dict[key]
 
         if isinstance(key, TensorHead):
-            return None
+            return
 
         if isinstance(key, Tensor):
             # special case to handle metrics. Metric tensors cannot be
@@ -810,7 +810,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                     return self._substitutions_dict_tensmul[srch]
             data_list = [self.data_tensmul_from_tensorhead(i, i.components[0]) for i in tensmul_list]
             if all([i is None for i in data_list]):
-                return None
+                return
             if any([i is None for i in data_list]):
                 raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
@@ -821,7 +821,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             sumvar = S.Zero
             data_list = [i.data for i in key.args]
             if all([i is None for i in data_list]):
-                return None
+                return
             if any([i is None for i in data_list]):
                 raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
@@ -829,7 +829,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 sumvar += i
             return sumvar
 
-        return None
+        return
 
     def data_tensorhead_from_tensmul(self, data, tensmul, tensorhead):
         """
@@ -838,7 +838,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         which is then stored according to the ``TensorHead`` key.
         """
         if data is None:
-            return None
+            return
 
         return self._correct_signature_from_indices(
             data,
@@ -854,7 +854,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         ``TensorIndexType``.
         """
         if tensorhead.data is None:
-            return None
+            return
 
         return self._correct_signature_from_indices(
             tensorhead.data,
@@ -1528,7 +1528,7 @@ class TensorIndexType(Basic):
 
     def get_epsilon(self):
         if not isinstance(self._eps_dim, int):
-            return None
+            return
         sym = TensorSymmetry(get_symmetric_group_sgs(self._eps_dim, 1))
         Sdim = TensorType([self]*self._eps_dim, sym)
         epsilon = Sdim('Eps')
@@ -3719,7 +3719,7 @@ class TensMul(TensExpr):
     def data(self):
         dat = _tensor_data_substitution_dict[self]
         if dat is None:
-            return None
+            return
         return self.coeff * dat
 
     @data.setter

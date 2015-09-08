@@ -95,7 +95,7 @@ class AskFiniteHandler(CommonHandler):
         """
         if Q.finite(expr) in conjuncts(assumptions):
             return True
-        return None
+        return
 
     @staticmethod
     def Add(expr, assumptions):
@@ -175,7 +175,7 @@ class AskFiniteHandler(CommonHandler):
             # an unknown sign, return None
             if sign != -1 and s != sign or \
                     s is None and (s == _finite or s == sign):
-                return None
+                return
             else:
                 sign = s
             # once False, do not change
@@ -230,9 +230,9 @@ class AskFiniteHandler(CommonHandler):
                 continue
             elif _finite is None:
                 if result is None:
-                    return None
+                    return
                 if ask(Q.nonzero(arg), assumptions) is None:
-                    return None
+                    return
                 if result is not False:
                     result = None
             else:
@@ -251,7 +251,7 @@ class AskFiniteHandler(CommonHandler):
         base_finite = ask(Q.finite(expr.base), assumptions)
         exp_finite = ask(Q.finite(expr.exp), assumptions)
         if base_finite is None and exp_finite is None:  # Common Case
-            return None
+            return
         if base_finite is False and ask(Q.nonzero(expr.exp), assumptions):
             return False
         if base_finite and exp_finite:
@@ -262,7 +262,7 @@ class AskFiniteHandler(CommonHandler):
             return True
         if (abs(expr.base) >= 1) == True and exp_finite is False:
             return False
-        return None
+        return
 
     @staticmethod
     def log(expr, assumptions):

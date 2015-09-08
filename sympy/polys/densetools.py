@@ -1025,7 +1025,7 @@ def _dup_left_decompose(f, h, K):
         q, r = dup_div(f, h, K)
 
         if dup_degree(r) > 0:
-            return None
+            return
         else:
             g[i] = dup_LC(r, K)
             f, i = q, i + 1
@@ -1049,7 +1049,7 @@ def _dup_decompose(f, K):
             if g is not None:
                 return g, h
 
-    return None
+    return
 
 
 def dup_decompose(f, K):

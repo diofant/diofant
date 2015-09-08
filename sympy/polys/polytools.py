@@ -4936,7 +4936,7 @@ def gcd_list(seq, *gens, **args):
 
                 return domain.to_sympy(result)
 
-        return None
+        return
 
     result = try_non_polynomial_gcd(seq)
 
@@ -5049,7 +5049,7 @@ def lcm_list(seq, *gens, **args):
 
                 return domain.to_sympy(result)
 
-        return None
+        return
 
     result = try_non_polynomial_lcm(seq)
 
@@ -5777,7 +5777,7 @@ def to_rational_coeffs(f):
                 f = Add(*v)
                 f = Poly(f)
                 return lc, rescale_x, f
-        return None
+        return
 
     def _try_translate(f, f1=None):
         """
@@ -5806,7 +5806,7 @@ def to_rational_coeffs(f):
             alpha = -func(*c2)/n
             f2 = f1.shift(alpha)
             return alpha, f2
-        return None
+        return
 
     def _has_square_roots(p):
         """
@@ -5837,7 +5837,7 @@ def to_rational_coeffs(f):
             r = _try_translate(f, f1)
             if r:
                 return None, None, r[0], r[1]
-    return None
+    return
 
 
 def _torational_factor_list(p, x):
@@ -5867,7 +5867,7 @@ def _torational_factor_list(p, x):
     n = p1.degree()
     res = to_rational_coeffs(p1)
     if not res:
-        return None
+        return
     lc, r, t, g = res
     factors = factor_list(g.as_expr())
     if lc:

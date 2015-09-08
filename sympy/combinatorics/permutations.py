@@ -1571,7 +1571,7 @@ class Permutation(Basic):
         while perm[i + 1] < perm[i]:
             i -= 1
         if i == -1:
-            return None
+            return
         else:
             j = n - 1
             while perm[j] < perm[i]:
@@ -1677,7 +1677,7 @@ class Permutation(Basic):
         """
         r = self.rank_nonlex()
         if r == ifac(self.size) - 1:
-            return None
+            return
         return Perm.unrank_nonlex(self.size, r + 1)
 
     def rank(self):
@@ -2431,7 +2431,7 @@ class Permutation(Basic):
                     pi[st + d], pi[st + d - 1] = pi[st + d - 1], pi[st + d]
                     done = True
         if m == 0:
-            return None
+            return
         return _af_new(pi)
 
     def get_precedence_matrix(self):

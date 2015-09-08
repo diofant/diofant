@@ -371,7 +371,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
             if result is not None:
                 return indep*result
-        return None
+        return
 
     numers = [ cancel(denom*g) for g in diffs ]
 
@@ -438,7 +438,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     polified = [ p.as_poly(*V) for p in [s, P, Q] ]
 
     if None in polified:
-        return None
+        return
 
     # --- definitions for _integrate ---
     a, b, c = [ p.total_degree() for p in polified ]
@@ -541,7 +541,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         try:
             find_non_syms(raw_numer)
         except PolynomialError:
-            return None
+            return
         else:
             ground, _ = construct_domain(non_syms, field=True)
 
@@ -553,7 +553,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         solution = solve_lin_sys(numer.coeffs(), coeff_ring, _raw=False)
 
         if solution is None:
-            return None
+            return
         else:
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [S.Zero]*len(poly_coeffs))))
@@ -581,4 +581,4 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if result is not None:
                 return indep*result
 
-        return None
+        return

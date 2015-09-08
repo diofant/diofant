@@ -134,7 +134,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
     """Compute the integer ``n`` that has the residual ``ai`` when it is
     divided by ``mi`` where the ``ai`` and ``mi`` are given as pairs to
     this function: ((a1, m1), (a2, m2), ...). If there is no solution,
-    return None. Otherwise return ``n`` and its modulus.
+    return. Otherwise return ``n`` and its modulus.
 
     The ``mi`` values need not be co-prime. If it is known that the moduli are
     not co-prime then the hint ``check`` can be set to False (default=True) and
@@ -198,7 +198,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         if a != 1:
             inv_a, _, g = igcdex(a, c)
             if g != 1:
-                return None
+                return
             b *= inv_a
         a, m = a1 + m1*b, m1*c
         return a, m
@@ -225,7 +225,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
             r %= m
             if m in uniq:
                 if r != uniq[m]:
-                    return None
+                    return
                 continue
             uniq[m] = r
         rm = [(r, m) for m, r in uniq.items()]

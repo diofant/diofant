@@ -2012,7 +2012,7 @@ def test_incompatible_resolutors():
     class InconclusiveHandler(AskHandler):
         @staticmethod
         def Number(expr, assumptions):
-            return None
+            return
     register_handler('prime', InconclusiveHandler)
     assert ask(Q.prime(3)) is True
 

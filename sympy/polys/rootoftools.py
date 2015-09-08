@@ -237,7 +237,7 @@ class RootOf(Expr):
                     return True  # both imag
                 elif _ispow2(deg):
                     if f.LC()*f.TC() < 0:
-                        return None  # 2 are imag
+                        return  # 2 are imag
             return False  # none are imag
 
         # separate according to the function
@@ -467,14 +467,14 @@ class RootOf(Expr):
             return roots_linear(poly)
 
         if not radicals:
-            return None
+            return
 
         if poly.degree() == 2:
             return roots_quadratic(poly)
         elif poly.length() == 2 and poly.TC():
             return roots_binomial(poly)
         else:
-            return None
+            return
 
     @classmethod
     def _preprocess_roots(cls, poly):

@@ -1511,7 +1511,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
         r['d2'] = forcing[1]
     else:
         # Issue #9244: nonhomogeneous linear systems are not supported
-        return None
+        return
 
     # Conditions to check for type 6 whose equations are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and
     # Eq(diff(y(t),t), a*[f(t) + a*h(t)]x(t) + a*[g(t) - h(t)]*y(t))
@@ -1537,7 +1537,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
                 # Equations for type 2 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)+d1) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t)+d2)
                 return "type2"
         else:
-            return None
+            return
     else:
         if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
              # Equations for type 1 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t))
@@ -1620,9 +1620,9 @@ def check_linear_2eq_order2(eq, func, func_coef):
             if p[0]==1 and p[1]==1 and q[0]==0 and q[1]==0:
                     return "type4"
             else:
-                return None
+                return
         else:
-            return None
+            return
     else:
         if r['b1']==r['b2']==r['c1']==r['c2']==0 and all(not r[k].has(t)
         for k in 'a1 a2 d1 d2 e1 e2'.split()):
@@ -1666,7 +1666,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
             return "type11"
 
         else:
-            return None
+            return
 
 
 def check_linear_3eq_order1(eq, func, func_coef):
@@ -1696,7 +1696,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
     if forcing[0].has(t) or forcing[1].has(t) or forcing[2].has(t):
         # We can handle homogeneous case and simple constant forcings.
         # Issue #9244: nonhomogeneous linear systems are not supported
-        return None
+        return
 
     if all(not r[k].has(t) for k in 'a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3'.split()):
         if r['c1']==r['d1']==r['d2']==0:
@@ -1708,7 +1708,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
         and r['d2']/r['a2'] == -r['b2']/r['a2'] and r['b3']/r['a3'] == -r['c3']/r['a3']:
             return 'type3'
         else:
-            return None
+            return
     else:
         for k1 in 'c1 d1 b2 d2 b3 c3'.split():
             if r[k1] == 0:
@@ -1719,7 +1719,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
                     return 'type4'
                 else:
                     break
-    return None
+    return
 
 
 def check_linear_neq_order1(eq, func, func_coef):
@@ -1733,7 +1733,7 @@ def check_linear_neq_order1(eq, func, func_coef):
     for i in range(n):
         for j in range(n):
             if (fc[i,func[j],0]/fc[i,func[i],1]).has(t):
-                return None
+                return
     if len(eq)==3:
         return 'type6'
     return 'type1'
@@ -1761,7 +1761,7 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
         or r2[g].subs(diff(x(t),t),u).subs(diff(y(t),t),v).has(t)):
             return 'type5'
         else:
-            return None
+            return
 
     for func_ in func:
         if isinstance(func_, list):
@@ -1808,11 +1808,11 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
     phi = (r1[f].subs(x(t),u).subs(y(t),v))/num
     if R1 and R2:
         return 'type4'
-    return None
+    return
 
 
 def check_nonlinear_2eq_order2(eq, func, func_coef):
-    return None
+    return
 
 
 def check_nonlinear_3eq_order1(eq, func, func_coef):
@@ -1893,11 +1893,11 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
             r3 = (diff(z(t),t) - eq[2] == z(t)*(r1[b]*r2[F1] - r2[a]*r1[F2]))
         if r1 and r2 and r3:
             return 'type5'
-    return None
+    return
 
 
 def check_nonlinear_3eq_order2(eq, func, func_coef):
-    return None
+    return
 
 
 def checksysodesol(eqs, sols, func=None):
@@ -3235,7 +3235,7 @@ def homogeneous_order(eq, *symbols):
 
     # The following are not supported
     if eq.has(Order, Derivative):
-        return None
+        return
 
     # These are all constants
     if (eq.is_Number or
@@ -3250,7 +3250,7 @@ def homogeneous_order(eq, *symbols):
     for i in [j for j in symset if getattr(j, 'is_Function')]:
         iargs = set(i.args)
         if iargs.difference(symset):
-            return None
+            return
         else:
             dummyvar = next(dum)
             eq = eq.subs(i, dummyvar)
@@ -3259,7 +3259,7 @@ def homogeneous_order(eq, *symbols):
     symset.update(newsyms)
 
     if not eq.free_symbols & symset:
-        return None
+        return
 
     # assuming order of a nested function can only be equal to zero
     if isinstance(eq, Function):
@@ -3909,7 +3909,7 @@ def _nth_linear_match(eq, func, order):
             c, f = i.as_independent(func)
             if not ((isinstance(f, Derivative) and set(f.variables) == one_x)
                     or f == func):
-                return None
+                return
             else:
                 terms[len(f.args[1:])] += c
     return terms

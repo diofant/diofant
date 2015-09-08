@@ -277,7 +277,7 @@ class sign(Function):
                     else:
                         unk.append(a)
             if c is S.One and len(unk) == len(args):
-                return None
+                return
             return s * cls(arg._new_rawargs(*unk))
         if arg is S.NaN:
             return S.NaN
@@ -837,7 +837,7 @@ class periodic_argument(Function):
             elif a.func is polar_lift:
                 unbranched += arg(a.args[0])
             else:
-                return None
+                return
         return unbranched
 
     @classmethod
@@ -848,7 +848,7 @@ class periodic_argument(Function):
         # period != 2*pi and non-polar numbers.
         from sympy import ceiling, oo, atan2, atan, polar_lift, pi, Mul
         if not period.is_positive:
-            return None
+            return
         if period == oo and isinstance(ar, principal_branch):
             return periodic_argument(*ar.args)
         if ar.func is polar_lift and period >= 2*pi:
@@ -859,9 +859,9 @@ class periodic_argument(Function):
                 return periodic_argument(Mul(*newargs), period)
         unbranched = cls._getunbranched(ar)
         if unbranched is None:
-            return None
+            return
         if unbranched.has(periodic_argument, atan2, arg, atan):
-            return None
+            return
         if period == oo:
             return unbranched
         if period != oo:
@@ -952,7 +952,7 @@ class principal_branch(Function):
         m = tuple(others)
         arg = periodic_argument(c, period)
         if arg.has(periodic_argument):
-            return None
+            return
         if arg.is_number and (unbranched_argument(c) != arg or
                               (arg == 0 and m != () and c != 1)):
             if arg == 0:

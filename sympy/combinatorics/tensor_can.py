@@ -113,7 +113,7 @@ def _trace_S(s, j, b, S_cosets):
     for h in S_cosets[b]:
         if s[h[b]] == j:
             return h
-    return None
+    return
 
 
 def _trace_D(gj, p_i, Dxtrav):
@@ -125,7 +125,7 @@ def _trace_D(gj, p_i, Dxtrav):
     for h in Dxtrav:
         if h[gj] == p_i:
             return h
-    return None
+    return
 
 
 def _dumx_remove(dumx, dumx_flat, p0):
@@ -1027,7 +1027,7 @@ def get_minimal_bsgs(base, gens):
     G = PermutationGroup(gens)
     base, gens = G.schreier_sims_incremental()
     if not _is_minimal_bsgs(base, gens):
-        return None
+        return
     return base, gens
 
 

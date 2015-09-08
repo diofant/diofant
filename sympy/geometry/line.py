@@ -1730,7 +1730,7 @@ class Segment(LinearEntity):
                     ti = solve(y - other.y, t)[0]
                 if ti.is_number:
                     return 0 <= ti <= 1
-                return None
+                return
 
         # No other known entity can be contained in a Ray
         return False

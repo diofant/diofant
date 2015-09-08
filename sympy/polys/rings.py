@@ -1329,7 +1329,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 if monom is not None:
                     return monom, domain_quo(a_lc, b_lc)
                 else:
-                    return None
+                    return
         else:
             def term_div(a_lm_a_lc, b_lm_b_lc):
                 a_lm, a_lc = a_lm_a_lc
@@ -1341,7 +1341,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 if not (monom is None or a_lc % b_lc):
                     return monom, domain_quo(a_lc, b_lc)
                 else:
-                    return None
+                    return
 
         return term_div
 
@@ -1630,7 +1630,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if self:
             return self.ring.leading_expv(self)
         else:
-            return None
+            return
 
     def _get_coeff(self, expv):
         return self.get(expv, self.ring.domain.zero)

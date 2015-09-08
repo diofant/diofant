@@ -214,4 +214,4 @@ def find_executable(executable, path=None):
                 if os.path.isfile(f):
                     return f
     else:
-        return None
+        return

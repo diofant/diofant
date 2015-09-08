@@ -193,7 +193,7 @@ class lambdify(object):
             # The result can be sympy.Float. Hence wrap it with complex type.
             result = complex(self.lambda_func(args))
             if abs(result.imag) > 1e-7 * abs(result):
-                return None
+                return
             else:
                 return result.real
         except Exception as e:
@@ -207,7 +207,7 @@ class lambdify(object):
             # XXX: Remove catching all exceptions once the plotting module
             # is heavily tested.
             if isinstance(e, ZeroDivisionError):
-                return None
+                return
             elif isinstance(e, TypeError) and ('no ordering relation is'
                                                ' defined for complex numbers'
                                                in str(e)):
@@ -230,7 +230,7 @@ class lambdify(object):
                         ' problematic. We are trying a failback method'
                         ' that may still work. Please report this as a bug.')
                 if abs(result.imag) > 1e-7 * abs(result):
-                    return None
+                    return
                 else:
                     return result.real
 

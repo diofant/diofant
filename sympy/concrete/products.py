@@ -228,7 +228,7 @@ class Product(ExprWithIntLimits):
     def _eval_adjoint(self):
         if self.is_commutative:
             return self.func(self.function.adjoint(), *self.limits)
-        return None
+        return
 
     def _eval_conjugate(self):
         return self.func(self.function.conjugate(), *self.limits)
@@ -294,7 +294,7 @@ class Product(ExprWithIntLimits):
                     include.append(t)
 
             if not exclude:
-                return None
+                return
             else:
                 arg = term._new_rawargs(*include)
                 A = Mul(*exclude)
@@ -327,7 +327,7 @@ class Product(ExprWithIntLimits):
     def _eval_transpose(self):
         if self.is_commutative:
             return self.func(self.function.transpose(), *self.limits)
-        return None
+        return
 
     def reverse_order(expr, *indices):
         """
