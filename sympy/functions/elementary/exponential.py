@@ -165,7 +165,7 @@ class exp_polar(ExpBase):
             bad = True
         if bad:
             return self  # cannot evalf for this argument
-        res = exp(self.args[0])._eval_evalf(prec)
+        res = exp(self.args[0]).evalf(prec)
         if i > 0 and im(res) < 0:
             # i ~ pi, but exp(I*i) evaluated to argument slightly bigger than pi
             return re(res)

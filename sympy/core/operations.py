@@ -333,7 +333,7 @@ class AssocOp(Basic):
         # deal with
         args = []
         for a in self.args:
-            newa = a._eval_evalf(prec)
+            newa = a.evalf(prec)
             if newa is None:
                 args.append(a)
             else:
