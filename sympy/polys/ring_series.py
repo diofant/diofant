@@ -577,10 +577,10 @@ def rs_compose_add(p1, p2):
     References
     ==========
 
-    A. Bostan, P. Flajolet, B. Salvy and E. Schost
-    "Fast Computation with Two Algebraic Numbers",
-    (2002) Research Report 4579, Institut
-    National de Recherche en Informatique et en Automatique
+    .. [1] A. Bostan, P. Flajolet, B. Salvy and E. Schost "Fast
+           Computation with Two Algebraic Numbers", (2002) Research
+           Report 4579, Institut National de Recherche en
+           Informatique et en Automatique.
     """
     R = p1.ring
     x = R.gens[0]

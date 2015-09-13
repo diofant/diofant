@@ -119,8 +119,9 @@ def roots_cubic(f, trig=False):
 
     References
     ==========
-    [1] https://en.wikipedia.org/wiki/Cubic_function, General formula for roots,
-    (accessed November 17, 2014).
+
+    .. [1] https://en.wikipedia.org/wiki/Cubic_function, General
+           formula for roots, (accessed November 17, 2014).
     """
     if trig:
         a, b, c, d = f.all_coeffs()
@@ -281,13 +282,13 @@ def roots_quartic(f):
     References
     ==========
 
-    1. http://mathforum.org/dr.math/faq/faq.cubic.equations.html
-    2. http://en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
-    3. http://planetmath.org/encyclopedia/GaloisTheoreticDerivationOfTheQuarticFormula.html
-    4. http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
-    5. http://www.albmath.org/files/Math_5713.pdf
-    6. http://www.statemaster.com/encyclopedia/Quartic-equation
-    7. eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
+    .. [1] http://mathforum.org/dr.math/faq/faq.cubic.equations.html
+    .. [2] http://en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
+    .. [3] http://planetmath.org/encyclopedia/GaloisTheoreticDerivationOfTheQuarticFormula.html
+    .. [4] http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
+    .. [5] http://www.albmath.org/files/Math_5713.pdf
+    .. [6] http://www.statemaster.com/encyclopedia/Quartic-equation
+    .. [7] eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
     """
     _, a, b, c, d = f.monic().all_coeffs()
 
@@ -845,8 +846,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    1. http://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
-
+    .. [1] http://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
     """
     from sympy.polys.polytools import to_rational_coeffs
     flags = dict(flags)

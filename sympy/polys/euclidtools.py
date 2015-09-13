@@ -338,9 +338,8 @@ def dup_inner_subresultants(f, g, K):
     References
     ==========
 
-    [1] W.S. Brown, The Subresultant PRS Algorithm.
-    ACM Transaction of Mathematical Software 4 (1978) 237-249
-
+    .. [1] W.S. Brown, The Subresultant PRS Algorithm.
+           ACM Transaction of Mathematical Software 4 (1978) 237-249
     """
     n = dup_degree(f)
     m = dup_degree(g)
@@ -1180,8 +1179,7 @@ def dup_zz_heu_gcd(f, g, K):
     References
     ==========
 
-    1. [Liao95]_
-
+    .. [1] [Liao95]_
     """
     result = _dup_rr_trivial_gcd(f, g, K)
 
@@ -1308,8 +1306,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
     References
     ==========
 
-    1. [Liao95]_
-
+    .. [1] [Liao95]_
     """
     if not u:
         return dup_zz_heu_gcd(f, g, K)

@@ -52,8 +52,7 @@ def heugcd(f, g):
     References
     ==========
 
-    1. [Liao95]_
-
+    .. [1] [Liao95]_
     """
     assert f.ring == g.ring and f.ring.domain.is_ZZ
 
