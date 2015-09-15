@@ -139,3 +139,15 @@ class PolynomialRing(Ring, CompositeDomain):
     def factorial(self, a):
         """Returns factorial of `a`. """
         return self.dtype(self.domain.factorial(a))
+
+    def free_module(self, rank):
+        """
+        Generate a free module of rank ``rank`` over ``self``.
+
+        >>> from diofant.abc import x
+        >>> from diofant import QQ
+        >>> QQ.poly_ring(x).free_module(2)
+        QQ[x]**2
+        """
+        from diofant.polys.agca.modules import FreeModulePolyRing
+        return FreeModulePolyRing(self, rank)

@@ -10,13 +10,13 @@ from diofant.abc import x, y
 
 
 def test_build_order():
-    R = QQ.old_poly_ring(x, y, order=(("lex", x), ("ilex", y)))
+    R = QQ.poly_ring(x, y, order=(("lex", x), ("ilex", y)))
     assert R.order((1, 5)) == ((1,), (-5,))
 
 
 def test_globalring():
-    Qxy = QQ.old_frac_field(x, y)
-    R = QQ.old_poly_ring(x, y)
+    Qxy = QQ.frac_field(x, y)
+    R = QQ.poly_ring(x, y)
     X = R.convert(x)
     Y = R.convert(y)
 
@@ -35,7 +35,7 @@ def test_globalring():
     pytest.raises(ExactQuotientFailed, lambda: X/y)
     assert X**2 / X == X
 
-    assert R.from_GlobalPolynomialRing(ZZ.old_poly_ring(x, y).convert(x), ZZ.old_poly_ring(x, y)) == X
+    assert R.from_GlobalPolynomialRing(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
     assert R.from_FractionField(Qxy.convert(x), Qxy) == X
     assert R.from_FractionField(Qxy.convert(x)/y, Qxy) is None
 
@@ -43,8 +43,8 @@ def test_globalring():
 
 
 def test_localring():
-    Qxy = QQ.old_frac_field(x, y)
-    R = QQ.old_poly_ring(x, y, order="ilex")
+    Qxy = QQ.frac_field(x, y)
+    R = QQ.poly_ring(x, y, order="ilex")
     X = R.convert(x)
     Y = R.convert(y)
 
@@ -63,7 +63,7 @@ def test_localring():
     assert X + 1 == R.convert(x + 1)
     assert X**2 / X == X
 
-    assert R.from_GlobalPolynomialRing(ZZ.old_poly_ring(x, y).convert(x), ZZ.old_poly_ring(x, y)) == X
+    assert R.from_GlobalPolynomialRing(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
     assert R.from_FractionField(Qxy.convert(x), Qxy) == X
     pytest.raises(CoercionFailed, lambda: R.from_FractionField(Qxy.convert(x)/y, Qxy))
     pytest.raises(ExactQuotientFailed, lambda: X/Y)
@@ -75,8 +75,8 @@ def test_localring():
 
 
 def test_conversion():
-    L = QQ.old_poly_ring(x, y, order="ilex")
-    G = QQ.old_poly_ring(x, y)
+    L = QQ.poly_ring(x, y, order="ilex")
+    G = QQ.poly_ring(x, y)
 
     assert L.convert(x) == L.convert(G.convert(x), G)
     assert G.convert(x) == G.convert(L.convert(x), L)
@@ -84,25 +84,25 @@ def test_conversion():
 
 
 def test_units():
-    R = QQ.old_poly_ring(x)
+    R = QQ.poly_ring(x)
     assert R.is_unit(R.convert(1))
     assert R.is_unit(R.convert(2))
     assert not R.is_unit(R.convert(x))
     assert not R.is_unit(R.convert(1 + x))
 
-    R = QQ.old_poly_ring(x, order='ilex')
+    R = QQ.poly_ring(x, order='ilex')
     assert R.is_unit(R.convert(1))
     assert R.is_unit(R.convert(2))
     assert not R.is_unit(R.convert(x))
     assert R.is_unit(R.convert(1 + x))
 
-    R = ZZ.old_poly_ring(x)
+    R = ZZ.poly_ring(x)
     assert R.is_unit(R.convert(1))
     assert not R.is_unit(R.convert(2))
     assert not R.is_unit(R.convert(x))
     assert not R.is_unit(R.convert(1 + x))
 
 
-def test_old_poly_frac():
-    pytest.raises(GeneratorsNeeded, lambda: QQ.old_poly_ring())
-    pytest.raises(GeneratorsNeeded, lambda: QQ.old_frac_field())
+def test_poly_frac():
+    pytest.raises(GeneratorsNeeded, lambda: QQ.poly_ring())
+    pytest.raises(GeneratorsNeeded, lambda: QQ.frac_field())

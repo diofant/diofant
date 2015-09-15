@@ -72,7 +72,7 @@ class Ring(Domain):
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x).free_module(2)
+        >>> QQ.poly_ring(x).free_module(2)
         QQ[x]**2
         """
         raise NotImplementedError
@@ -83,7 +83,7 @@ class Ring(Domain):
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x).ideal(x**2)
+        >>> QQ.poly_ring(x).ideal(x**2)
         <x**2>
         """
         from diofant.polys.agca.ideals import ModuleImplementedIdeal
@@ -98,14 +98,14 @@ class Ring(Domain):
 
         >>> from diofant.abc import x
         >>> from diofant import QQ
-        >>> QQ.old_poly_ring(x).quotient_ring(QQ.old_poly_ring(x).ideal(x**2))
+        >>> QQ.poly_ring(x).quotient_ring(QQ.poly_ring(x).ideal(x**2))
         QQ[x]/<x**2>
-        >>> QQ.old_poly_ring(x).quotient_ring([x**2])
+        >>> QQ.poly_ring(x).quotient_ring([x**2])
         QQ[x]/<x**2>
 
         The division operator has been overloaded for this:
 
-        >>> QQ.old_poly_ring(x)/[x**2]
+        >>> QQ.poly_ring(x)/[x**2]
         QQ[x]/<x**2>
         """
         from diofant.polys.agca.ideals import Ideal
