@@ -834,7 +834,7 @@ def eval_sum_hyper(f, i_a_b):
             cond = And(cond1, cond2)
             if cond == S.false:
                 return
-        return Piecewise((res1 - res2, cond), (old_sum, True))
+            return Piecewise((res1 - res2, cond), (old_sum, True))
 
     if a == S.NegativeInfinity:
         res1 = _eval_sum_hyper(f.subs(i, -i), i, 1)
