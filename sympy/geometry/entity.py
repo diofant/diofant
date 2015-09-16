@@ -60,7 +60,9 @@ class GeometryEntity(Basic):
     """
 
     def __new__(cls, *args, **kwargs):
-        args = [Tuple(*a) if is_sequence(a) else sympify(a) for a in args]
+        from sympy.geometry.point import Point
+        args = [Tuple(*a) if is_sequence(a)
+                and not isinstance(a, Point) else sympify(a) for a in args]
         return Basic.__new__(cls, *args)
 
     def _sympy_(self):
