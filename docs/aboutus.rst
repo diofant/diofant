@@ -415,6 +415,14 @@ for a full list.
 #. Kyle McDaniel: Fixes to Point3D
 #. Nguyen Truong Duy: Fix a bug in cancelling MatrixElement expressions
 #. Mathew Chong: Improve Mul handling of positive/negative assumptions.
+#. Gaurav Dhingra: fix M.row_del/col_del, raise IndexError for out of bound Index
+#. mao8: Correction in desc of Implicit Plotting Module
+#. Kevin Ventullo: Fix some problems with matrix expressions
+#. Rich LaSota: Removed redundant doctest in polys
+#. Anton Akhmerov: fixed the zero matrix printing
+#. Richard Otis: Improved lambdify support for numpy
+#. Jason Siefken: GeometricEntity now inherits from Set
+#. David T: Update finite_diff.py, added extensive examples
 
 You can use git to see the biggest developers::
 
