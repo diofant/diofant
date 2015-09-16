@@ -3,10 +3,6 @@ branches:
     - master
 language: python
 sudo: false
-env:
-  matrix:
-  - TEST_SLOW="false"
-  - TEST_SLOW="true"
 python:
   - 2.7
   - 3.4
