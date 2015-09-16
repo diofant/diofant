@@ -2,12 +2,7 @@
 
 set -e -x # exit on error and echo each command
 
-if [[ "${TEST_SLOW}" == "true" ]]; then
-    py.test -m 'slow' --duration=100 \
-        --ignore sympy/utilities/autowrap.py \
-        --ignore sympy/plotting/plot.py \
-        --ignore sympy/plotting/plot_implicit.py sympy/
-elif [[ "${TEST_EXTRA}" == "true" ]]; then
+if [[ "${TEST_EXTRA}" == "true" ]]; then
     if [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
         py.test --duration=100 --cov sympy --doctest-modules \
             sympy/printing/tests/test_theanocode.py \
@@ -24,7 +19,7 @@ elif [[ "${TEST_EXTRA}" == "true" ]]; then
     LATEXOPTIONS="-interaction=nonstopmode" make -C docs/_build/latex
     python examples/all.py -q
 elif [[ "${TRAVIS_PYTHON_VERSION}" == "2.7" ]]; then
-    py.test -m 'not slow' --duration=100 --cov sympy \
+    py.test --duration=100 --cov sympy \
         --ignore sympy/utilities/autowrap.py \
         --ignore sympy/plotting/plot.py \
         --ignore sympy/plotting/plot_implicit.py \
@@ -35,7 +30,7 @@ else
     else
         EXTRA_IGNORE=""
     fi
-    py.test -m 'not slow' --duration=100 \
+    py.test --duration=100 \
         --ignore sympy/utilities/autowrap.py \
         --ignore sympy/plotting/plot.py \
         --ignore sympy/plotting/plot_implicit.py \
