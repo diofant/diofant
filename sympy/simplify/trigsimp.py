@@ -546,14 +546,23 @@ def exptrigsimp(expr, simplify=True):
 
     # conversion from exp to hyperbolic
     ex = set(a for a in newexpr.atoms(Pow) if a.base is S.Exp1) | newexpr.atoms(S.Exp1)
-    ex = [ei for ei in ex if 1/ei not in ex]
+    if ex:
+        ex0 = set([list(ex)[0]])
+        ex = [ei for ei in ex if 1/ei not in ex]
+        if not ex:
+            ex = ex0
+
     # sinh and cosh
     for ei in ex:
+        a = ei.exp if ei is not S.Exp1 else S.One
+        newexpr = newexpr.subs(ei + 1/ei, 2*cosh(a))
+        newexpr = newexpr.subs(ei - 1/ei, 2*sinh(a))
         e2 = ei**-2
         if e2 in ex:
             a = e2.exp/2 if e2 is not S.Exp1 else S.Half
             newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
             newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
+
     # exp ratios to tan and tanh
     for ei in ex:
         n, d = ei - 1, ei + 1
