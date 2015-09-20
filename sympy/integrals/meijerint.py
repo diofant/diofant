@@ -483,6 +483,9 @@ def _mul_as_two_parts(f):
     if len(gs) < 2:
         return
     if len(gs) == 2:
+        if ((gs[0].is_Pow and gs[0].base is S.Exp1) and
+                (not gs[1].is_Pow or gs[1].base is not S.Exp1)):
+            gs = [gs[1], gs[0]]
         return [tuple(gs)]
     return [(Mul(*x), Mul(*y)) for (x, y) in multiset_partitions(gs, 2)]
 
