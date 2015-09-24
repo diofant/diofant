@@ -696,9 +696,8 @@ def gf_div(f, g, p, K):
     References
     ==========
 
-    1. [Monagan93]_
-    2. [Gathen99]_
-
+    .. [1] [Monagan93]_
+    .. [2] [Gathen99]_
     """
     df = gf_degree(f)
     dg = gf_degree(g)
@@ -1003,8 +1002,7 @@ def gf_pow_mod(f, n, g, p, K):
     References
     ==========
 
-    1. [Gathen99]_
-
+    .. [1] [Gathen99]_
     """
     if not n:
         return [K.one]
@@ -1132,8 +1130,7 @@ def gf_gcdex(f, g, p, K):
     References
     ==========
 
-    1. [Gathen99]_
-
+    .. [1] [Gathen99]_
     """
     if not (f or g):
         return [K.one], [], []
@@ -1354,8 +1351,7 @@ def gf_trace_map(a, b, c, n, f, p, K):
     References
     ==========
 
-    1. [Gathen92]_
-
+    .. [1] [Gathen92]_
     """
     u = gf_compose_mod(a, b, f, p, K)
     v = b
@@ -1639,8 +1635,7 @@ def gf_sqf_list(f, p, K, all=False):
     References
     ==========
 
-    1. [Geddes92]_
-
+    .. [1] [Geddes92]_
     """
     n, sqf, factors, r = 1, False, [], int(p)
 
@@ -1869,9 +1864,8 @@ def gf_ddf_zassenhaus(f, p, K):
     References
     ==========
 
-    1. [Gathen99]_
-    2. [Geddes92]_
-
+    .. [1] [Gathen99]_
+    .. [2] [Geddes92]_
     """
     i, g, factors = 1, [K.one, K.zero], []
 
@@ -1917,9 +1911,8 @@ def gf_edf_zassenhaus(f, n, p, K):
     References
     ==========
 
-    1. [Gathen99]_
-    2. [Geddes92]_
-
+    .. [1] [Gathen99]_
+    .. [2] [Geddes92]_
     """
     factors, q = [f], int(p)
 
@@ -1980,10 +1973,9 @@ def gf_ddf_shoup(f, p, K):
     References
     ==========
 
-    1. [Kaltofen98]_
-    2. [Shoup95]_
-    3. [Gathen92]_
-
+    .. [1] [Kaltofen98]_
+    .. [2] [Shoup95]_
+    .. [3] [Gathen92]_
     """
     n = gf_degree(f)
     k = int(_ceil(_sqrt(n//2)))
@@ -2055,9 +2047,8 @@ def gf_edf_shoup(f, n, p, K):
     References
     ==========
 
-    1. [Shoup91]_
-    2. [Gathen92]_
-
+    .. [1] [Shoup91]_
+    .. [2] [Gathen92]_
     """
     N, q = gf_degree(f), int(p)
 
@@ -2224,8 +2215,7 @@ def gf_factor(f, p, K):
     References
     ==========
 
-    1. [Gathen99]_
-
+    .. [1] [Gathen99]_
     """
     lc, f = gf_monic(f, p, K)
 
@@ -2278,9 +2268,10 @@ def linear_congruence(a, b, m):
 
     There are 3 solutions distinct mod(15) since gcd(a, m) = gcd(3, 15) = 3.
 
-    **Reference**
-    1) Wikipedia http://en.wikipedia.org/wiki/Linear_congruence_theorem
+    References
+    ==========
 
+    .. [1] http://en.wikipedia.org/wiki/Linear_congruence_theorem
     """
     from sympy.polys.polytools import gcdex
     if a % m == 0:
@@ -2389,9 +2380,8 @@ def gf_csolve(f, n):
     References
     ==========
 
-    [1] 'An introduction to the Theory of Numbers' 5th Edition by Ivan Niven,
-        Zuckerman and Montgomery.
-
+    .. [1] 'An introduction to the Theory of Numbers' 5th Edition by
+           Ivan Niven, Zuckerman and Montgomery.
     """
     from sympy.polys.domains import ZZ
     P = factorint(n)

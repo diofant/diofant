@@ -2569,10 +2569,10 @@ class Poly(Expr):
         References
         ==========
 
-        1. [ManWright94]_
-        2. [Koepf98]_
-        3. [Abramov71]_
-        4. [Man93]_
+        .. [1] [ManWright94]_
+        .. [2] [Koepf98]_
+        .. [3] [Abramov71]_
+        .. [4] [Man93]_
         """
         from sympy.polys.dispersion import dispersionset
         return dispersionset(f, g)
@@ -2644,10 +2644,10 @@ class Poly(Expr):
         References
         ==========
 
-        1. [ManWright94]_
-        2. [Koepf98]_
-        3. [Abramov71]_
-        4. [Man93]_
+        .. [1] [ManWright94]_
+        .. [2] [Koepf98]_
+        .. [3] [Abramov71]_
+        .. [4] [Man93]_
         """
         from sympy.polys.dispersion import dispersion
         return dispersion(f, g)
@@ -3115,11 +3115,15 @@ class Poly(Expr):
         References
         ==========
 
-        .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root
-               Isolation Methods . Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
-        .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the
-               Performance of the Continued Fractions Method Using new Bounds of Positive Roots. Nonlinear
-               Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
+        .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A
+               Comparative Study of Two Real Root Isolation Methods.
+               Nonlinear Analysis: Modelling and Control, Vol. 10,
+               No. 4, 297-304, 2005.
+        .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis
+               S. Vigklas: Improving the Performance of the Continued
+               Fractions Method Using new Bounds of Positive Roots.
+               Nonlinear Analysis: Modelling and Control, Vol. 13,
+               No. 3, 265-279, 2008.
 
         Examples
         ========
@@ -6425,9 +6429,8 @@ def groebner(F, *gens, **args):
     References
     ==========
 
-    1. [Buchberger01]_
-    2. [Cox97]_
-
+    .. [1] [Buchberger01]_
+    .. [2] [Cox97]_
     """
     return GroebnerBasis(F, *gens, **args)
 
@@ -6443,9 +6446,8 @@ def is_zero_dimensional(F, *gens, **args):
     References
     ==========
 
-    David A. Cox, John B. Little, Donal O'Shea. Ideals, Varieties and
-    Algorithms, 3rd edition, p. 230
-
+    .. [1] David A. Cox, John B. Little, Donal O'Shea. Ideals,
+           Varieties and Algorithms, 3rd edition, p. 230.
     """
     return GroebnerBasis(F, *gens, **args).is_zero_dimensional
 
@@ -6549,9 +6551,8 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        David A. Cox, John B. Little, Donal O'Shea. Ideals, Varieties and
-        Algorithms, 3rd edition, p. 230
-
+        .. [1] David A. Cox, John B. Little, Donal O'Shea. Ideals,
+               Varieties and Algorithms, 3rd edition, p. 230.
         """
         def single_var(monomial):
             return sum(map(bool, monomial)) == 1
@@ -6596,10 +6597,9 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994). Efficient
-        Computation of Zero-dimensional Groebner Bases by Change of
-        Ordering
-
+        .. [1] J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994).
+               Efficient Computation of Zero-dimensional Groebner
+               Bases by Change of Ordering.
         """
         opt = self._options
 

@@ -78,16 +78,15 @@ def _buchberger(f, ring):
     References
     ==========
 
-    1. [Bose03]_
-    2. [Giovini91]_
-    3. [Ajwa95]_
-    4. [Cox97]_
+    .. [1] [Bose03]_
+    .. [2] [Giovini91]_
+    .. [3] [Ajwa95]_
+    .. [4] [Cox97]_
 
     Algorithm used: an improved version of Buchberger's algorithm
     as presented in T. Becker, V. Weispfenning, Groebner Bases: A
     Computational Approach to Commutative Algebra, Springer, 1993,
     page 232.
-
     """
     order = ring.order
     domain = ring.domain
@@ -595,10 +594,12 @@ def _f5b(F, ring):
 
     Once a Groebner basis has been found, it gets reduced.
 
-    ** References **
-    Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
-    (F5-Like) Algorithm", http://arxiv.org/abs/1004.0084 (specifically
-    v4)
+    References
+    ==========
+
+    .. [1] Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
+           (F5-Like) Algorithm", http://arxiv.org/abs/1004.0084
+           (specifically v4).
 
     Thomas Becker, Volker Weispfenning, Groebner bases: A computational
     approach to commutative algebra, 1993, p. 203, 216
@@ -798,8 +799,7 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    1. [Cox97]_
-
+    .. [1] [Cox97]_
     """
     if f.ring != g.ring:
         raise ValueError("Values should be equal")

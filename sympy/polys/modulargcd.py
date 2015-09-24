@@ -219,8 +219,7 @@ def modgcd_univariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-
+    .. [1] [Monagan00]_
     """
     assert f.ring == g.ring and f.ring.domain.is_ZZ
 
@@ -498,8 +497,7 @@ def _degree_bound_bivariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-
+    .. [1] [Monagan00]_
     """
     ring = f.ring
 
@@ -767,8 +765,7 @@ def modgcd_bivariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-
+    .. [1] [Monagan00]_
     """
     assert f.ring == g.ring and f.ring.domain.is_ZZ
 
@@ -953,9 +950,8 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     References
     ==========
 
-    1. [Monagan00]_
-    2. [Brown71]_
-
+    .. [1] [Monagan00]_
+    .. [2] [Brown71]_
     """
     ring = f.ring
     k = ring.ngens
@@ -1131,8 +1127,8 @@ def modgcd_multivariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-    2. [Brown71]_
+    .. [1] [Monagan00]_
+    .. [2] [Brown71]_
 
     See also
     ========
@@ -1253,8 +1249,7 @@ def _rational_function_reconstruction(c, p, m):
     References
     ==========
 
-    1. [Hoeij04]_
-
+    .. [1] [Hoeij04]_
     """
     ring = c.ring
     domain = ring.domain
@@ -1486,8 +1481,7 @@ def _trial_division(f, h, minpoly, p=None):
     References
     ==========
 
-    1. [Hoeij02]_
-
+    .. [1] [Hoeij02]_
     """
     ring = f.ring
     domain = ring.domain
@@ -1579,8 +1573,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     References
     ==========
 
-    1. [Hoeij04]_
-
+    .. [1] [Hoeij04]_
     """
     ring = f.ring
     domain = ring.domain  # Z[t_1, ..., t_k]
@@ -1739,8 +1732,7 @@ def _integer_rational_reconstruction(c, m, domain):
     References
     ==========
 
-    1. [Wang81]_
-
+    .. [1] [Wang81]_
     """
     if c < 0:
         c += m
@@ -1889,7 +1881,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     References
     ==========
 
-    1. [Hoeij04]_
+    .. [1] [Hoeij04]_
 
     See also
     ========
@@ -2231,8 +2223,7 @@ def func_field_modgcd(f, g):
     References
     ==========
 
-    1. [Hoeij04]_
-
+    .. [1] [Hoeij04]_
     """
     ring = f.ring
     domain = ring.domain
