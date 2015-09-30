@@ -72,6 +72,7 @@ if PY3:
     # String / unicode compatibility
     unicode = str
     unichr = chr
+    str = str
 
     Iterator = object
 
@@ -101,6 +102,7 @@ else:
 
     # String / unicode compatibility
     unicode = unicode
+    str = unicode
     unichr = unichr
 
     class Iterator(object):
