@@ -368,7 +368,7 @@ to accept this type (and return True)
 .. parsed-literal::
 
     >>> from sympy.core import Basic
-    >>> from sympy.assumptions import register_handler
+    >>> from sympy.assumptions import register_handler, remove_handler
     >>> from sympy.assumptions.handlers import AskHandler
     >>> class MyType(Basic):
     ...     pass
@@ -380,6 +380,7 @@ to accept this type (and return True)
     >>> register_handler('prime', MyAskHandler)
     >>> ask(Q.prime(a))
     True
+    >>> remove_handler('prime', MyAskHandler)
 
 
 Performance improvements
