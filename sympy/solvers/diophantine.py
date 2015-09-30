@@ -66,7 +66,7 @@ def diophantine(eq, param=symbols("t", integer=True)):
         eq = eq.lhs - eq.rhs
 
     if eq == 0:
-        return set([(param,)])
+        return {(param,)}
 
     eq = Poly(eq).as_expr()
     if not eq.is_polynomial() or eq.is_number:
