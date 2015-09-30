@@ -768,6 +768,11 @@ def evalf_trig(v, prec, options):
 
 def evalf_log(expr, prec, options):
     from sympy import Abs, Add, log
+
+    if len(expr.args) > 1:
+        expr = expr.doit()
+        return evalf(expr, prec, options)
+
     arg = expr.args[0]
     workprec = prec + 10
     xre, xim, xacc, _ = evalf(arg, workprec, options)
@@ -1170,11 +1175,11 @@ def evalf_symbol(x, prec, options):
         if '_cache' not in options:
             options['_cache'] = {}
         cache = options['_cache']
-        cached, cached_prec = cache.get(x.name, (None, MINUS_INF))
+        cached, cached_prec = cache.get(x, (None, MINUS_INF))
         if cached_prec >= prec:
             return cached
         v = evalf(sympify(val), prec, options)
-        cache[x.name] = (v, prec)
+        cache[x] = (v, prec)
         return v
 
 evalf_table = None
@@ -1270,7 +1275,7 @@ def evalf(x, prec, options):
     if options.get("verbose"):
         print("### input", x)
         print("### output", to_str(r[0] or fzero, 50))
-        print("### raw", r )  # r[0], r[2]
+        print("### raw", r)  # r[0], r[2]
         print()
     chop = options.get('chop', False)
     if chop:

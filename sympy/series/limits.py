@@ -116,6 +116,11 @@ class Limit(Expr):
         obj._args = (e, z, z0, dir)
         return obj
 
+    @property
+    def free_symbols(self):
+        e, z, z0 = self.args[:3]
+        return (e.free_symbols - z.free_symbols) | z0.free_symbols
+
     def doit(self, **hints):
         """Evaluates limit.
 

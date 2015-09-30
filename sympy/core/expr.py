@@ -471,7 +471,7 @@ class Expr(Basic, EvalfMixin):
         >>> eq = a*cos(x)**2 + a*sin(x)**2 - a
         >>> eq.is_constant()
         True
-        >>> eq.subs({x:pi, a:2}) == eq.subs({x:pi, a:3}) == 0
+        >>> eq.subs({x: pi, a: 2}) == eq.subs({x: pi, a: 3}) == 0
         True
 
         >>> (0**x).is_constant()
@@ -650,8 +650,9 @@ class Expr(Basic, EvalfMixin):
                         if sol:
                             if s in sol:
                                 return True
-                            if any(nsimplify(si, [s]) == s and simplify(si) == s
-                                    for si in sol):
+                            if s.is_real and any(nsimplify(si, [s]) == s
+                                                 and simplify(si) == s
+                                                 for si in sol):
                                 return True
                     except NotImplementedError:
                         pass
@@ -865,7 +866,7 @@ class Expr(Basic, EvalfMixin):
             _, ((re, im), monom, ncpart) = term
 
             monom = neg(monom_key(monom))
-            ncpart = tuple([ e.sort_key(order=order) for e in ncpart ])
+            ncpart = tuple([e.sort_key(order=order) for e in ncpart])
             coeff = ((bool(im), im), (re, im))
 
             return monom, ncpart, coeff
@@ -908,7 +909,7 @@ class Expr(Basic, EvalfMixin):
         if data:
             return ordered, gens
         else:
-            return [ term for term, _ in ordered ]
+            return [term for term, _ in ordered]
 
     def as_terms(self):
         """Transform an expression to a list of terms. """
@@ -1407,7 +1408,7 @@ class Expr(Basic, EvalfMixin):
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
         2
-        >>> p.nth(0,1)
+        >>> p.nth(0, 1)
         2
 
         Since the following cannot be written as a product containing
@@ -1557,7 +1558,7 @@ class Expr(Basic, EvalfMixin):
         (x, y + 1)
         >>> (x*(1 + y)).expand(mul=True).as_independent(y)
         (x, x*y)
-        >>> a, b=symbols('a b',positive=True)
+        >>> a, b=symbols('a b', positive=True)
         >>> (log(a*b).expand(log=True)).as_independent(b)
         (log(a), log(b))
 
@@ -1876,7 +1877,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> (2*x).extract_multiplicatively(3)
 
-        >>> (Rational(1,2)*x).extract_multiplicatively(3)
+        >>> (Rational(1, 2)*x).extract_multiplicatively(3)
         x/6
         """
         c = sympify(c)
@@ -2970,7 +2971,7 @@ class Expr(Basic, EvalfMixin):
 
         sympy.core.function.expand
         """
-        from sympy.simplify.simplify import fraction
+        from sympy.simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
            log=log, multinomial=multinomial, basic=basic)

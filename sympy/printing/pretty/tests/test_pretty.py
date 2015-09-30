@@ -6,7 +6,9 @@ from sympy import (
     Lambda, Le, Limit, Lt, Matrix, Mul, Nand, Ne, Nor, Not, O, Or,
     Pow, Product, QQ, RR, Rational, Ray, RootOf, RootSum, S,
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
-    groebner, oo, pi, symbols, ilex, grlex, Range, Contains)
+    groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
+    Interval, Union)
+
 from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
     euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
@@ -3071,6 +3073,14 @@ def test_pretty_sets():
     assert upretty(Range(-2, -oo, -1)) == ucode_str
 
 
+def test_ProductSet_paranthesis():
+    from sympy import Interval, Union, FiniteSet
+    ucode_str = u('([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])')
+
+    a, b, c = Interval(2, 3), Interval(4, 7), Interval(1, 9)
+    assert upretty(Union(a*b, b*FiniteSet(1, 2))) == ucode_str
+
+
 def test_pretty_limits():
     expr = Limit(x, x, oo)
     ascii_str = \
@@ -4340,9 +4350,9 @@ atan2⎜───────, ╲╱ x ⎟\n\
 
 def test_pretty_geometry():
     e = Segment((0, 1), (0, 2))
-    assert pretty(e) == 'Segment(Point(0, 1), Point(0, 2))'
+    assert pretty(e) == 'Segment(Point2D(0, 1), Point2D(0, 2))'
     e = Ray((1, 1), angle=4.02*pi)
-    assert pretty(e) == 'Ray(Point(1, 1), Point(2, tan(pi/50) + 1))'
+    assert pretty(e) == 'Ray(Point2D(1, 1), Point2D(2, tan(pi/50) + 1))'
 
 
 def test_expint():

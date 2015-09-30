@@ -10,9 +10,9 @@ from sympy.integrals.transforms import (mellin_transform,
 from sympy import (
     gamma, exp, oo, Heaviside, symbols, Symbol, re, factorial, pi,
     cos, S, Abs, And, Or, sin, sqrt, I, log, tan, hyperexpand, meijerg,
-    EulerGamma, erf, besselj, bessely, besseli, besselk,
+    EulerGamma, erf, besselj, bessely, besseli, besselk, simplify,
     exp_polar, polar_lift, unpolarify, Function, expint, expand_mul,
-    combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument)
+    combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument, atan2, Abs)
 from sympy.utilities.pytest import XFAIL, slow, skip, raises
 from sympy.matrices import Matrix, eye
 from sympy.abc import x, s, a, b, c, d
@@ -319,7 +319,7 @@ def test_inverse_mellin_transform():
     assert IMT(1/(s**2 - 1), s, x, (-1, None)) == \
         -x*Heaviside(-x + 1)/2 - Heaviside(x - 1)/(2*x)
     assert IMT(1/(s**2 - 1), s, x, (None, 1)) == \
-        -x*Heaviside(-x + 1)/2 - Heaviside(x - 1)/(2*x)
+        (-x/2 + 1/(2*x))*Heaviside(-x + 1)
 
     # test expansion of sums
     assert IMT(gamma(s) + gamma(s - 1), s, x, (1, oo)) == (x + 1)*exp(-x)/x
@@ -768,3 +768,16 @@ def test_issue_7173():
         pi/2, Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
         pi/2), Or(Abs(periodic_argument(a, oo)) < pi/2,
         Abs(periodic_argument(a, oo)) <= pi/2)))
+
+
+def test_issue_8514():
+    a, b, c, = symbols('a b c', positive=True)
+    t = symbols('t', positive=True)
+    ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
+    assert ft == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -
+                          exp(-I*atan2(0, -4*a*c + b**2)/2))*
+                   sqrt(Abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))

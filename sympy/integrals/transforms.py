@@ -441,7 +441,7 @@ def _rewrite_gamma(f, s, a, b):
     >>> _rewrite_gamma(1/s, s, -oo, 0)
     (([], [1]), ([0], []), 1, 1, -1)
     >>> _rewrite_gamma(1/s, s, None, 0)
-    (([], [1]), ([0], []), 1, 1, -1)
+    (([1], []), ([], [0]), 1, 1, 1)
     >>> _rewrite_gamma(1/s, s, -oo, None)
     (([], [1]), ([0], []), 1, 1, -1)
 
@@ -470,9 +470,9 @@ def _rewrite_gamma(f, s, a, b):
         # heuristically, this is the best chance for us to solve the inequalities
         c = expand(re(c))
         if a_ is None:
-            return c < b_
+            return b_ >= c
         if b_ is None:
-            return c <= a_
+            return a_ >= c
         if (c >= b_) == True:
             return False
         if (c <= a_) == True:

@@ -109,7 +109,7 @@ Examples
 ========
 
     >>> from sympy import Symbol
-    >>> x = Symbol('x', real = True); x
+    >>> x = Symbol('x', real=True); x
     x
     >>> x.is_extended_real
     True

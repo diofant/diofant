@@ -16,7 +16,7 @@ from sympy.simplify.simplify import simplify
 from sympy.solvers import solve
 from sympy.geometry.exceptions import GeometryError
 from .entity import GeometryEntity
-from .point3d import Point3D
+from .point import Point3D
 from .util import _symbol
 from sympy.core.compatibility import is_sequence, range
 
@@ -57,7 +57,7 @@ class LinearEntity3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D
+        sympy.geometry.point.Point3D
 
         Examples
         ========
@@ -78,7 +78,7 @@ class LinearEntity3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D
+        sympy.geometry.point.Point3D
 
         Examples
         ========
@@ -164,7 +164,7 @@ class LinearEntity3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D
+        sympy.geometry.point.Point3D
 
         Examples
         ========
@@ -543,7 +543,7 @@ class LinearEntity3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D, perpendicular_line
+        sympy.geometry.point.Point3D, perpendicular_line
 
         Examples
         ========
@@ -605,7 +605,7 @@ class LinearEntity3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D
+        sympy.geometry.point.Point3D
 
         Examples
         ========
@@ -742,7 +742,7 @@ class LinearEntity3D(GeometryEntity):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D
+        sympy.geometry.point.Point3D
 
         Examples
         ========
@@ -819,7 +819,7 @@ class Line3D(LinearEntity3D):
     See Also
     ========
 
-    sympy.geometry.point3d.Point3D
+    sympy.geometry.point.Point3D
 
     Examples
     ========
@@ -841,12 +841,7 @@ class Line3D(LinearEntity3D):
         else:
             p1 = Point3D(p1)
         if pt is not None and len(direction_ratio) == 0:
-            try:
-                pt = Point3D(pt)
-            except NotImplementedError:
-                raise ValueError('The 2nd argument was not a valid Point. '
-                'If it was the direction_ratio of the desired line, enter it '
-                'with keyword "direction_ratio".')
+            pt = Point3D(pt)
         elif len(direction_ratio) == 3 and pt is None:
             pt = Point3D(p1.x + direction_ratio[0], p1.y + direction_ratio[1],
                          p1.z + direction_ratio[2])
@@ -1016,7 +1011,7 @@ class Ray3D(LinearEntity3D):
     See Also
     ========
 
-    sympy.geometry.point3d.Point3D, Line3D
+    sympy.geometry.point.Point3D, Line3D
 
 
     Examples
@@ -1048,12 +1043,7 @@ class Ray3D(LinearEntity3D):
         else:
             p1 = Point3D(p1)
         if pt is not None and len(direction_ratio) == 0:
-            try:
-                pt = Point3D(pt)
-            except NotImplementedError:
-                raise ValueError('The 2nd argument was not a valid Point. '
-                'If it was the direction_ratio of the desired line, enter it '
-                'with keyword "direction_ratio".')
+            pt = Point3D(pt)
         elif len(direction_ratio) == 3 and pt is None:
             pt = Point3D(p1.x + direction_ratio[0], p1.y + direction_ratio[1],
                          p1.z + direction_ratio[2])
@@ -1070,7 +1060,7 @@ class Ray3D(LinearEntity3D):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D
+        sympy.geometry.point.Point3D
 
         Examples
         ========
@@ -1306,7 +1296,7 @@ class Segment3D(LinearEntity3D):
     See Also
     ========
 
-    sympy.geometry.point3d.Point3D, Line3D
+    sympy.geometry.point.Point3D, Line3D
 
     Examples
     ========
@@ -1326,7 +1316,6 @@ class Segment3D(LinearEntity3D):
     sqrt(17)
     >>> s.midpoint
     Point3D(5/2, 2, 8)
-
     """
 
     def __new__(cls, p1, p2, **kwargs):
@@ -1380,7 +1369,7 @@ class Segment3D(LinearEntity3D):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D.distance
+        sympy.geometry.point.Point.distance
 
         Examples
         ========
@@ -1401,7 +1390,7 @@ class Segment3D(LinearEntity3D):
         See Also
         ========
 
-        sympy.geometry.point3d.Point3D.midpoint
+        sympy.geometry.point.Point.midpoint
 
         Examples
         ========

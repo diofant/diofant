@@ -148,7 +148,11 @@ class CodeWrapper(object):
             CodeWrapper._module_counter += 1
             os.chdir(oldwork)
             if not self.filepath:
-                shutil.rmtree(workdir)
+                try:
+                    shutil.rmtree(workdir)
+                except OSError:
+                    # Could be some issues on Windows
+                    pass
 
         return self._get_wrapped_function(mod, routine.name)
 
@@ -442,7 +446,7 @@ def _validate_backend_language(backend, language):
     if not langs:
         raise ValueError("Unrecognized backend: " + backend)
     if language.upper() not in langs:
-        raise ValueError(("Backend {0} and language {1} are"
+        raise ValueError(("Backend {0} and language {1} are "
                           "incompatible").format(backend, language))
 
 

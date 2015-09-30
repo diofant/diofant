@@ -1433,10 +1433,12 @@ def SOPform(variables, minterms, dontcares=None):
     ========
 
     >>> from sympy.logic import SOPform
+    >>> from sympy import symbols
+    >>> w, x, y, z = symbols('w x y z')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> SOPform(['w','x','y','z'], minterms, dontcares)
+    >>> SOPform([w, x, y, z], minterms, dontcares)
     Or(And(Not(w), z), And(y, z))
 
     References
@@ -1483,10 +1485,12 @@ def POSform(variables, minterms, dontcares=None):
     ========
 
     >>> from sympy.logic import POSform
+    >>> from sympy import symbols
+    >>> w, x, y, z = symbols('w x y z')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> POSform(['w','x','y','z'], minterms, dontcares)
+    >>> POSform([w, x, y, z], minterms, dontcares)
     And(Or(Not(w), y), z)
 
     References
@@ -1554,7 +1558,7 @@ def simplify_logic(expr, form=None, deep=True):
     >>> from sympy.logic import simplify_logic
     >>> from sympy.abc import x, y, z
     >>> from sympy import S
-    >>> b = '(~x & ~y & ~z) | ( ~x & ~y & z)'
+    >>> b = (~x & ~y & ~z) | ( ~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))
 
@@ -1649,8 +1653,8 @@ def bool_map(bool1, bool2):
 
     >>> from sympy import SOPform, bool_map, Or, And, Not, Xor
     >>> from sympy.abc import w, x, y, z, a, b, c, d
-    >>> function1 = SOPform(['x','z','y'],[[1, 0, 1], [0, 0, 1]])
-    >>> function2 = SOPform(['a','b','c'],[[1, 0, 1], [1, 0, 0]])
+    >>> function1 = SOPform([x, z, y],[[1, 0, 1], [0, 0, 1]])
+    >>> function2 = SOPform([a, b, c],[[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2) == (And(Not(z), y), {y: a, z: b})
     True
 

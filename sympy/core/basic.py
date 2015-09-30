@@ -249,7 +249,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 return arg
 
         args = self._sorted_args
-        args = len(args), tuple([ inner_key(arg) for arg in args ])
+        args = len(args), tuple([inner_key(arg) for arg in args])
         return self.class_key(), args, S.One.sort_key(), S.One
 
     def __eq__(self, other):
@@ -337,7 +337,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (u**2 + y).dummy_eq(x**2 + y, y)
         False
         """
-        dummy_symbols = [ s for s in self.free_symbols if s.is_Dummy ]
+        dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
 
         if not dummy_symbols:
             return self == other
@@ -512,7 +512,7 @@ class Basic(with_metaclass(ManagedProperties)):
         however you can use
 
         >>> from sympy import Lambda
-        >>> from sympy.abc import x,y,z
+        >>> from sympy.abc import x, y, z
         >>> (x + Lambda(y, 2*y)).rcall(z)
         x + 2*z
         """
@@ -758,7 +758,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
-        >>> expr.subs(dict([A,B,C,D,E]))
+        >>> expr.subs(dict([A, B, C, D, E]))
         a*c*sin(d*e) + b
 
         The resulting expression represents a literal replacement of the
@@ -1020,7 +1020,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> x, y, z = symbols('x y z')
         >>> (1 + x*y).xreplace({x: pi})
         pi*y + 1
-        >>> (1 + x*y).xreplace({x:pi, y:2})
+        >>> (1 + x*y).xreplace({x: pi, y: 2})
         1 + 2*pi
 
         Replacements occur only if an entire node in the expression tree is
@@ -1049,7 +1049,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         Trying to replace x with an expression raises an error:
 
-        >>> Integral(x, (x, 1, 2*x)).xreplace({x: 2*y}) #doctest: +SKIP
+        >>> Integral(x, (x, 1, 2*x)).xreplace({x: 2*y}) # doctest: +SKIP
         ValueError: Invalid limits given: ((2*y, 1, 4*y),)
 
         See Also
@@ -1487,12 +1487,12 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (2*Integral(x, x)).doit()
         x**2
 
-        >>> (2*Integral(x, x)).doit(deep = False)
+        >>> (2*Integral(x, x)).doit(deep=False)
         2*Integral(x, x)
         """
         if hints.get('deep', True):
-            terms = [ term.doit(**hints) if isinstance(term, Basic) else term
-                                         for term in self.args ]
+            terms = [term.doit(**hints) if isinstance(term, Basic) else term
+                                         for term in self.args]
             return self.func(*terms)
         else:
             return self
@@ -1504,9 +1504,9 @@ class Basic(with_metaclass(ManagedProperties)):
             return self
 
         if hints.get('deep', True):
-            args = [ a._eval_rewrite(pattern, rule, **hints)
+            args = [a._eval_rewrite(pattern, rule, **hints)
                         if isinstance(a, Basic) else a
-                        for a in self.args ]
+                        for a in self.args]
         else:
             args = self.args
 
@@ -1571,7 +1571,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 if iterable(pattern[0]):
                     pattern = pattern[0]
 
-                pattern = [ p.__class__ for p in pattern if self.has(p) ]
+                pattern = [p.__class__ for p in pattern if self.has(p)]
 
                 if pattern:
                     return self._eval_rewrite(tuple(pattern), rule, **hints)

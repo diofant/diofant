@@ -193,6 +193,7 @@ def test_log_symbolic():
 
     assert log(x, 2) == log(x)/log(2)
     assert log(E, 2) == 1/log(2)
+    assert log(x, y) == log(x)/log(y)
 
     p, q = symbols('p,q', positive=True)
     r = Symbol('r', extended_real=True)

@@ -49,6 +49,8 @@ if theano:
         sympy.StrictLessThan: tt.lt,
         sympy.LessThan: tt.le,
         sympy.GreaterThan: tt.ge,
+        sympy.And: tt.and_,
+        sympy.Or: tt.or_,
         sympy.Max: tt.maximum,  # Sympy accept >2 inputs, Theano only 2
         sympy.Min: tt.minimum,  # Sympy accept >2 inputs, Theano only 2
 

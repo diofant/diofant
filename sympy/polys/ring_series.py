@@ -451,7 +451,7 @@ def rs_log(p, x, prec):
     """
     ring = p.ring
     if p == 1:
-        return 0
+        return ring.zero
     if _has_constant_term(p - 1, x):
         raise NotImplementedError('p - 1 must not have a constant term in the series variables')
     dlog = p.diff(x)

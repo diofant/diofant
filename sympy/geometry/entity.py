@@ -3,7 +3,20 @@ all derived geometrical entities.
 
 Contains
 ========
+
 GeometryEntity
+GeometricSet
+
+Notes
+=====
+
+A GeometryEntity is any object that has special geometric properties.
+A GeometrySet is a superclass of any GeometryEntity that can also
+be viewed as a sympy.sets.Set.  In particular, points are the only
+GeometryEntity not considered a Set.
+
+Rn is a GeometrySet representing n-dimensional Euclidean space. R2 and
+R3 are currently the only ambient spaces implemented.
 
 """
 
@@ -15,11 +28,13 @@ from sympy.core.basic import Basic
 from sympy.core.sympify import sympify
 from sympy.functions import cos, sin
 from sympy.matrices import eye
+from sympy.sets import Set
 
 # How entities are ordered; used by __cmp__ in GeometryEntity
 ordering_of_classes = [
-    "Point",
+    "Point2D",
     "Point3D",
+    "Point",
     "Segment",
     "Ray",
     "Line",
@@ -45,7 +60,9 @@ class GeometryEntity(Basic):
     """
 
     def __new__(cls, *args, **kwargs):
-        args = [Tuple(*a) if is_sequence(a) else sympify(a) for a in args]
+        from sympy.geometry.point import Point
+        args = [Tuple(*a) if is_sequence(a)
+                and not isinstance(a, Point) else sympify(a) for a in args]
         return Basic.__new__(cls, *args)
 
     def _sympy_(self):
@@ -91,9 +108,9 @@ class GeometryEntity(Basic):
         >>> from sympy import Point, RegularPolygon, Polygon, pi
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t # vertex on x axis
-        Triangle(Point(1, 0), Point(-1/2, sqrt(3)/2), Point(-1/2, -sqrt(3)/2))
+        Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
         >>> t.rotate(pi/2) # vertex on y axis now
-        Triangle(Point(0, 1), Point(-sqrt(3)/2, -1/2), Point(sqrt(3)/2, -1/2))
+        Triangle(Point2D(0, 1), Point2D(-sqrt(3)/2, -1/2), Point2D(sqrt(3)/2, -1/2))
 
         """
         newargs = []
@@ -121,11 +138,11 @@ class GeometryEntity(Basic):
         >>> from sympy import RegularPolygon, Point, Polygon
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t
-        Triangle(Point(1, 0), Point(-1/2, sqrt(3)/2), Point(-1/2, -sqrt(3)/2))
+        Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
         >>> t.scale(2)
-        Triangle(Point(2, 0), Point(-1, sqrt(3)/2), Point(-1, -sqrt(3)/2))
+        Triangle(Point2D(2, 0), Point2D(-1, sqrt(3)/2), Point2D(-1, -sqrt(3)/2))
         >>> t.scale(2,2)
-        Triangle(Point(2, 0), Point(-1, sqrt(3)), Point(-1, -sqrt(3)))
+        Triangle(Point2D(2, 0), Point2D(-1, sqrt(3)), Point2D(-1, -sqrt(3)))
 
         """
         from sympy.geometry.point import Point
@@ -148,12 +165,12 @@ class GeometryEntity(Basic):
         >>> from sympy import RegularPolygon, Point, Polygon
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t
-        Triangle(Point(1, 0), Point(-1/2, sqrt(3)/2), Point(-1/2, -sqrt(3)/2))
+        Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
         >>> t.translate(2)
-        Triangle(Point(3, 0), Point(3/2, sqrt(3)/2), Point(3/2, -sqrt(3)/2))
+        Triangle(Point2D(3, 0), Point2D(3/2, sqrt(3)/2), Point2D(3/2, -sqrt(3)/2))
         >>> t.translate(2, 2)
-        Triangle(Point(3, 2), Point(3/2, sqrt(3)/2 + 2),
-            Point(3/2, -sqrt(3)/2 + 2))
+        Triangle(Point2D(3, 2), Point2D(3/2, sqrt(3)/2 + 2),
+            Point2D(3/2, -sqrt(3)/2 + 2))
 
         """
         newargs = []
@@ -220,7 +237,9 @@ class GeometryEntity(Basic):
         True
         >>> t.encloses(t2)
         False
+
         """
+
         from sympy.geometry.point import Point
         from sympy.geometry.line import Segment, Ray, Line
         from sympy.geometry.ellipse import Ellipse
@@ -239,6 +258,11 @@ class GeometryEntity(Basic):
                 if not self.encloses_point(o.center):
                     return False
             return all(self.encloses_point(v) for v in o.vertices)
+        raise NotImplementedError()
+
+    @property
+    def ambient_dimension(self):
+        """What is the dimension of the space that the object is contained in?"""
         raise NotImplementedError()
 
     def is_similar(self, other):
@@ -330,8 +354,7 @@ class GeometryEntity(Basic):
         raise NotImplementedError()
 
     def _eval_subs(self, old, new):
-        from sympy.geometry.point import Point
-        from sympy.geometry.point3d import Point3D
+        from sympy.geometry.point import Point, Point3D
         if is_sequence(old) or is_sequence(new):
             if isinstance(self, Point3D):
                 old = Point3D(old)
@@ -340,6 +363,55 @@ class GeometryEntity(Basic):
                 old = Point(old)
                 new = Point(new)
             return self._subs(old, new)
+
+
+class GeometrySet(GeometryEntity, Set):
+    """Parent class of all GeometryEntity that are also Sets
+    (compatible with sympy.sets)
+    """
+    def _contains(self, other):
+        """sympy.sets uses the _contains method, so include it for compatibility."""
+
+        if isinstance(other, Set) and other.is_FiniteSet:
+            return all(self.__contains__(i) for i in other)
+
+        return self.__contains__(other)
+
+    def _union(self, o):
+        """ Returns the union of self and o
+        for use with sympy.sets.Set, if possible. """
+
+        from sympy.sets import Union, FiniteSet
+
+        # if its a FiniteSet, merge any points
+        # we contain and return a union with the rest
+        if o.is_FiniteSet:
+            other_points = [p for p in o if not self._contains(p)]
+            if len(other_points) == len(o):
+                return
+            return Union(self, FiniteSet(*other_points))
+        if self._contains(o):
+            return self
+
+    def _intersect(self, o):
+        """ Returns a sympy.sets.Set of intersection objects,
+        if possible. """
+
+        from sympy.sets import Set, FiniteSet, Union
+        from sympy.geometry import Point
+
+        try:
+            inter = self.intersection(o)
+        except NotImplementedError:
+            # sympy.sets.Set.reduce expects None if an object
+            # doesn't know how to simplify
+            return
+
+        # put the points in a FiniteSet
+        points = FiniteSet(*[p for p in inter if isinstance(p, Point)])
+        non_points = [p for p in inter if not isinstance(p, Point)]
+
+        return Union(*(non_points + [points]))
 
 
 def translate(x, y):
@@ -377,9 +449,9 @@ def rotate(th):
     >>> from sympy import Point, pi
     >>> rot_about_11 = translate(-1, -1)*rotate(pi/2)*translate(1, 1)
     >>> Point(1, 1).transform(rot_about_11)
-    Point(1, 1)
+    Point2D(1, 1)
     >>> Point(0, 0).transform(rot_about_11)
-    Point(2, 0)
+    Point2D(2, 0)
     """
     s = sin(th)
     rv = eye(3)*cos(th)
