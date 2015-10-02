@@ -1063,7 +1063,11 @@ class Mul(Expr, AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
-        return (S.ImaginaryUnit*self).is_extended_real
+        obj = S.ImaginaryUnit*self
+        if obj.is_Mul:
+            return obj._eval_is_extended_real()
+        else:
+            return obj.is_extended_real
 
     def _eval_is_hermitian(self):
         real = True
@@ -1160,7 +1164,11 @@ class Mul(Expr, AssocOp):
             return False
 
     def _eval_is_negative(self):
-        return (-self).is_positive
+        obj = -self
+        if obj.is_Mul:
+            return obj._eval_is_positive()
+        else:
+            return obj.is_positive
 
     def _eval_is_odd(self):
         is_integer = self.is_integer
