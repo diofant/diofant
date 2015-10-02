@@ -231,10 +231,6 @@ def test_matplotlib_advanced():
         y = Symbol('y')
         z = Symbol('z')
 
-        i = Integral(log((sin(x)**2 + 1)*sqrt(x**2 + 1)), (x, 0, y))
-        p = plot(i, (y, 1, 5))
-        p.save(tmp_file('%s_advanced_integral' % name))
-
         s = summation(1/x**y, (x, 1, oo))
         p = plot(s, (y, 2, 10))
         p.save(tmp_file('%s_advanced_inf_sum' % name))
@@ -258,6 +254,25 @@ def test_matplotlib_advanced():
               5 * x**2 * exp_polar(-I*pi)/2)
               + meijerg(((1/2,), ()), ((5, 0, 1/2), ()),
               5*x**2 * exp_polar(I*pi)/2)) / (48 * pi), (x, 1e-6, 1e-2)).save(tmp_file())
+    finally:
+        TmpFileManager.cleanup()
+
+
+def test_matplotlib_advanced_2():
+    """More examples from the 'advanced' notebook."""
+    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
+    if not matplotlib:
+        skip("Matplotlib not the default backend")
+    try:
+        name = 'test'
+        tmp_file = TmpFileManager.tmp_file
+
+        x = Symbol('x')
+        y = Symbol('y')
+
+        i = Integral(log((sin(x)**2 + 1)*sqrt(x**2 + 1)), (x, 0, y))
+        p = plot(i, (y, 1, 5))
+        p.save(tmp_file('%s_advanced_integral' % name))
     finally:
         TmpFileManager.cleanup()
 
