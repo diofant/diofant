@@ -213,6 +213,7 @@ def iterable(i, exclude=(string_types, dict, NotIterable)):
     Examples
     ========
 
+    >>> from sympy.core.compatibility import string_types
     >>> from sympy.utilities.iterables import iterable
     >>> from sympy import Tuple
     >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1:2}, '1', 1]
@@ -229,9 +230,9 @@ def iterable(i, exclude=(string_types, dict, NotIterable)):
 
     >>> iterable({}, exclude=None)
     True
-    >>> iterable({}, exclude=str)
+    >>> iterable({}, exclude=string_types)
     True
-    >>> iterable("no", exclude=str)
+    >>> iterable("no", exclude=string_types)
     False
 
     """
@@ -264,6 +265,7 @@ def is_sequence(i, include=None):
     Examples
     ========
 
+    >>> from sympy.core.compatibility import string_types
     >>> from sympy.utilities.iterables import is_sequence
     >>> from types import GeneratorType
     >>> is_sequence([])
@@ -272,12 +274,12 @@ def is_sequence(i, include=None):
     False
     >>> is_sequence('abc')
     False
-    >>> is_sequence('abc', include=str)
+    >>> is_sequence('abc', include=string_types)
     True
     >>> generator = (c for c in 'abc')
     >>> is_sequence(generator)
     False
-    >>> is_sequence(generator, include=(str, GeneratorType))
+    >>> is_sequence(generator, include=string_types + (GeneratorType,))
     True
     """
     return (hasattr(i, '__getitem__') and
