@@ -136,7 +136,7 @@ def find_substitutions(integrand, symbol, u_var):
     def possible_subterms(term):
         if isinstance(term, (TrigonometricFunction,
                              sympy.asin, sympy.acos, sympy.atan,
-                             sympy.exp, sympy.log, sympy.Heaviside)):
+                             sympy.log, sympy.Heaviside)):
             return [term.args[0]]
         elif isinstance(term, sympy.Mul):
             r = []
@@ -379,9 +379,16 @@ def _parts_rule(integrand, symbol):
 
         return pull_out_u_rl
 
+    def pull_out_pow(integrand):
+        pows = [arg for arg in integrand.args if arg.is_Pow and arg.base is sympy.E]
+        if pows:
+            u = sympy.Mul(*pows)
+            dv = integrand/u
+            return u, dv
+
     liate_rules = [pull_out_u(sympy.log), pull_out_u(sympy.atan, sympy.asin, sympy.acos),
                    pull_out_polys, pull_out_u(sympy.sin, sympy.cos),
-                   pull_out_u(sympy.exp)]
+                   pull_out_pow]
 
     dummy = sympy.Dummy("temporary")
     # we can integrate log(x) and atan(x) by setting dv = 1
@@ -826,16 +833,6 @@ def substitution_rule(integral):
         elif ways:
             return ways[0]
 
-    elif integrand.has(sympy.exp):
-        u_func = sympy.exp(symbol)
-        c = 1
-        substituted = integrand / u_func.diff(symbol)
-        substituted = substituted.subs(u_func, u_var)
-
-        if symbol not in substituted.free_symbols:
-            return URule(u_var, u_func, c,
-                         integral_steps(substituted, u_var),
-                         integrand, symbol)
 
 partial_fractions_rule = rewriter(
     lambda integrand, symbol: integrand.is_rational_function(),
@@ -892,9 +889,9 @@ def integral_steps(integrand, symbol, **options):
     >>> from sympy.abc import x
     >>> print(repr(integral_steps(exp(x) / (1 + exp(2 * x)), x))) \
     # doctest: +NORMALIZE_WHITESPACE
-    URule(u_var=_u, u_func=exp(x), constant=1,
+    URule(u_var=_u, u_func=E**x, constant=1,
         substep=ArctanRule(context=1/(_u**2 + 1), symbol=_u),
-        context=exp(x)/(exp(2*x) + 1), symbol=x)
+        context=E**x/(E**(2*x) + 1), symbol=x)
     >>> print(repr(integral_steps(sin(x), x))) \
     # doctest: +NORMALIZE_WHITESPACE
     TrigRule(func='sin', arg=x, context=sin(x), symbol=x)
@@ -908,14 +905,13 @@ def integral_steps(integrand, symbol, **options):
         ConstantRule(constant=9, context=9, symbol=x)],
     context=x**4 + 6*x**2 + 9, symbol=x), context=(x**2 + 3)**2, symbol=x)
 
-
     Returns
     =======
+
     rule : namedtuple
         The first step; most rules have substeps that must also be
         considered. These substeps can be evaluated using ``manualintegrate``
         to obtain a result.
-
     """
     cachekey = (integrand, symbol)
     if cachekey in _integral_cache:
@@ -939,7 +935,7 @@ def integral_steps(integrand, symbol, **options):
         elif symbol not in integrand.free_symbols:
             return sympy.Number
         else:
-            for cls in (sympy.Pow, sympy.Symbol, sympy.exp, sympy.log,
+            for cls in (sympy.Pow, sympy.Symbol, sympy.log,
                         sympy.Add, sympy.Mul, sympy.atan, sympy.asin, sympy.acos, sympy.Heaviside):
                 if isinstance(integrand, cls):
                     return cls
@@ -954,7 +950,6 @@ def integral_steps(integrand, symbol, **options):
         null_safe(switch(key, {
             sympy.Pow: do_one([null_safe(power_rule), null_safe(inverse_trig_rule)]),
             sympy.Symbol: power_rule,
-            sympy.exp: exp_rule,
             sympy.Add: add_rule,
             sympy.Mul: do_one([null_safe(mul_rule), null_safe(trig_product_rule),
                                null_safe(heaviside_rule)]),
@@ -1179,9 +1174,9 @@ def manualintegrate(f, var):
     >>> integrate(log(x))
     x*log(x) - x
     >>> manualintegrate(exp(x) / (1 + exp(2 * x)), x)
-    atan(exp(x))
+    atan(E**x)
     >>> integrate(exp(x) / (1 + exp(2 * x)))
-    RootSum(4*_z**2 + 1, Lambda(_i, _i*log(2*_i + exp(x))))
+    RootSum(4*_z**2 + 1, Lambda(_i, _i*log(2*_i + E**x)))
     >>> manualintegrate(cos(x)**4 * sin(x), x)
     -cos(x)**5/5
     >>> integrate(cos(x)**4 * sin(x), x)

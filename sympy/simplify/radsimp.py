@@ -106,7 +106,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
 
         >>> from sympy import exp
         >>> collect(a*exp(2*x) + b*exp(2*x), exp(x))
-        (a + b)*exp(2*x)
+        E**(2*x)*(a + b)
 
     If you are interested only in collecting specific powers of some symbols
     then set ``exact`` flag in arguments::
@@ -238,13 +238,6 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
                     rat_expo, sym_expo = coeff, tail
                 else:
                     sym_expo = expr.exp
-        elif expr.func is exp:
-            arg = expr.args[0]
-            if arg.is_Rational:
-                sexpr, rat_expo = S.Exp1, arg
-            elif arg.is_Mul:
-                coeff, tail = arg.as_coeff_Mul(rational=True)
-                sexpr, rat_expo = exp(tail), coeff
         elif isinstance(expr, Derivative):
             sexpr, deriv = parse_derivative(expr)
 
@@ -945,10 +938,10 @@ def fraction(expr, exact=False):
        (2, x**y)
 
        >>> fraction(exp(-x))
-       (1, exp(x))
+       (1, E**x)
 
        >>> fraction(exp(-x), exact=True)
-       (exp(-x), 1)
+       (E**(-x), 1)
 
     """
     expr = sympify(expr)
@@ -956,7 +949,7 @@ def fraction(expr, exact=False):
     numer, denom = [], []
 
     for term in Mul.make_args(expr):
-        if term.is_commutative and (term.is_Pow or term.func is exp):
+        if term.is_commutative and term.is_Pow:
             b, ex = term.as_base_exp()
             if ex.is_negative:
                 if ex is S.NegativeOne:

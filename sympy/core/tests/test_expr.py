@@ -327,7 +327,7 @@ def test_atoms():
     assert (I*pi).atoms(NumberSymbol, I) == \
         (I*pi).atoms(I, NumberSymbol) == {pi, I}
 
-    assert exp(exp(x)).atoms(exp) == {exp(exp(x)), exp(x)}
+    assert exp(exp(x)).atoms(Pow) == {exp(exp(x)), exp(x)}
     assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == \
         {1 + x*(2 + y) + exp(3 + z), 2 + y, 3 + z}
 
@@ -1309,7 +1309,7 @@ def test_expr_sorting():
     exprs = [f(1), f(2), f(3), f(1, 2, 3), g(1), g(2), g(3), g(1, 2, 3)]
     assert sorted(exprs, key=default_sort_key) == exprs
 
-    exprs = [f(x), g(x), exp(x), sin(x), cos(x), factorial(x)]
+    exprs = [exp(x), f(x), g(x), sin(x), cos(x), factorial(x)]
     assert sorted(exprs, key=default_sort_key) == exprs
 
     exprs = [Tuple(x, y), Tuple(x, z), Tuple(x, y, z)]

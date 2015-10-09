@@ -46,7 +46,6 @@ def test_exp_log():
     assert log(exp(x)) == x
     assert exp(log(x)) == x
     assert log(x).inverse() == exp
-    assert exp(x).inverse() == log
 
     y = Symbol("y", polar=True)
     assert log(exp_polar(z)) == z
@@ -95,10 +94,6 @@ def test_exp_subs():
     assert exp(2*x + 7).subs(exp(3*x), y) == y**Rational(2, 3) * exp(7)
     x = symbols('x', positive=True)
     assert exp(3*log(x)).subs(x**2, y) == y**Rational(3, 2)
-    # differentiate between E and exp
-    assert exp(exp(x + E)).subs(exp, 3) == 3**(3**(x + E))
-    assert exp(exp(x + E)).subs(E, 3) == 3**(3**(x + 3))
-    assert exp(3).subs(E, sin) == sin(3)
 
 
 def test_exp_conjugate():

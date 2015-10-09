@@ -50,16 +50,15 @@ def together(expr, deep=False):
     (x*(y + 1) + y*(x + 1))/((x + 1)*(y + 1))
 
     >>> together(exp(1/x + 1/y))
-    exp(1/y + 1/x)
+    E**(1/y + 1/x)
     >>> together(exp(1/x + 1/y), deep=True)
-    exp((x + y)/(x*y))
+    E**((x + y)/(x*y))
 
     >>> together(1/exp(x) + 1/(x*exp(x)))
-    (x + 1)*exp(-x)/x
+    E**(-x)*(x + 1)/x
 
     >>> together(1/exp(2*x) + 1/(x*exp(3*x)))
-    (x*exp(x) + 1)*exp(-3*x)/x
-
+    E**(-3*x)*(E**x*x + 1)/x
     """
     def _together(expr):
         if isinstance(expr, Basic):

@@ -54,7 +54,7 @@ def test_hierarchical():
 
 
 def test_issue_7872():
-    a, b = symbols('a b', integer=True)
+    a, b = symbols('a b', integer=True, nonzero=True)
     e = exp(1/x + exp(-x**2) * (exp(a*x) - exp(b*x))) - exp(1/x)
     assert e.aseries(x, n=3, hir=True) == (exp(2*a*x + 1/x)/2 + exp(2*b*x + 1/x)/2 -
             exp(a*x + b*x + 1/x))*exp(-2*x**2) + (exp(a*x + 1/x) -

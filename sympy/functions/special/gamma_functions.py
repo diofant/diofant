@@ -226,9 +226,9 @@ class lowergamma(Function):
     >>> lowergamma(s, x)
     lowergamma(s, x)
     >>> lowergamma(3, x)
-    -x**2*exp(-x) - 2*x*exp(-x) + 2 - 2*exp(-x)
+    2 - E**(-x)*x**2 - 2*E**(-x)*x - 2*E**(-x)
     >>> lowergamma(-S(1)/2, x)
-    -2*sqrt(pi)*erf(sqrt(x)) - 2*exp(-x)/sqrt(x)
+    -2*sqrt(pi)*erf(sqrt(x)) - 2*E**(-x)/sqrt(x)
 
     See Also
     ========
@@ -368,9 +368,9 @@ class uppergamma(Function):
     >>> uppergamma(s, x)
     uppergamma(s, x)
     >>> uppergamma(3, x)
-    x**2*exp(-x) + 2*x*exp(-x) + 2*exp(-x)
+    E**(-x)*x**2 + 2*E**(-x)*x + 2*E**(-x)
     >>> uppergamma(-S(1)/2, x)
-    -2*sqrt(pi)*(-erf(sqrt(x)) + 1) + 2*exp(-x)/sqrt(x)
+    -2*sqrt(pi)*(-erf(sqrt(x)) + 1) + 2*E**(-x)/sqrt(x)
     >>> uppergamma(-2, x)
     expint(3, x)/x**2
 

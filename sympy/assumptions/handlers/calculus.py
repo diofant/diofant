@@ -268,8 +268,6 @@ class AskFiniteHandler(CommonHandler):
     def log(expr, assumptions):
         return ask(Q.finite(expr.args[0]), assumptions)
 
-    exp = log
-
     cos, sin, Number, Pi, Exp1, GoldenRatio, ImaginaryUnit, sign = \
         [staticmethod(CommonHandler.AlwaysTrue)]*8
 

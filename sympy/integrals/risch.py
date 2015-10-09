@@ -271,8 +271,8 @@ class DifferentialExtension(object):
             # _exp_part code can generate terms of this form, so we do need to
             # do this at each pass (or else modify it to not do that).
 
-            ratpows = [i for i in self.newf.atoms(Pow).union(self.newf.atoms(exp))
-                if (i.base.is_Pow or i.base.func is exp and i.exp.is_Rational)]
+            ratpows = [i for i in self.newf.atoms(Pow)
+                       if (i.base.is_Pow and i.exp.is_Rational)]
 
             ratpows_repl = [
                 (i, i.base.base**(i.exp*i.base.exp)) for i in ratpows]
@@ -292,10 +292,10 @@ class DifferentialExtension(object):
 
             # TODO: This probably doesn't need to be completely recomputed at
             # each pass.
-            exps = update(exps, self.newf.atoms(exp),
+            exps = update(exps, set(a for a in self.newf.atoms(Pow) if a.base is S.Exp1),
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
-            pows = update(pows, self.newf.atoms(Pow),
+            pows = update(pows, set(a for a in self.newf.atoms(Pow) if a.base is not S.Exp1),
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
             numpows = update(numpows, set(pows),
@@ -1538,7 +1538,7 @@ class NonElementaryIntegral(Integral):
 
     >>> a = integrate(exp(-x**2), x, risch=True)
     >>> print(a)
-    Integral(exp(-x**2), x)
+    Integral(E**(-x**2), x)
     >>> type(a)
     <class 'sympy.integrals.risch.NonElementaryIntegral'>
 
@@ -1603,7 +1603,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
      |
      |    2
      |  -x
-     | e    dx
+     | E    dx
      |
     /
 
@@ -1635,14 +1635,14 @@ def risch_integrate(f, x, extension=None, handle_first='log',
 
     >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x), use_unicode=False)
      / x\
-     \e /
-    e
+     \E /
+    E
     >>> pprint(risch_integrate(exp(exp(x)), x), use_unicode=False)
       /
      |
      |  / x\
-     |  \e /
-     | e     dx
+     |  \E /
+     | E     dx
      |
     /
 
@@ -1661,7 +1661,6 @@ def risch_integrate(f, x, extension=None, handle_first='log',
          1
     -----------
     log(log(x))
-
     """
     f = S(f)
 

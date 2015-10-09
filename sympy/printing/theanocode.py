@@ -152,6 +152,9 @@ class TheanoPrinter(Printer):
     def _print_Pi(self, expr, **kwargs):
         return 3.141592653589793
 
+    def _print_Exp1(self, expr, **kwargs):
+        return 2.718281828459045
+
     def _print_Piecewise(self, expr, **kwargs):
         import numpy as np
         e, cond = expr.args[0].args

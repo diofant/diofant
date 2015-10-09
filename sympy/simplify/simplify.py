@@ -442,7 +442,7 @@ def signsimp(expr, evaluate=None):
     >>> signsimp(e) == e
     True
     >>> signsimp(e, evaluate=False)
-    exp(-(x - y))
+    E**(-(x - y))
 
     """
     if evaluate is None:
@@ -655,7 +655,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
-    if short.has(TrigonometricFunction, HyperbolicFunction, ExpBase):
+    if (short.has(TrigonometricFunction, HyperbolicFunction, ExpBase) or
+            any(a.base is S.Exp1 for a in short.atoms(Pow))):
         short = exptrigsimp(short, simplify=False)
 
     # get rid of hollow 2-arg Mul factorization
@@ -760,7 +761,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     >>> nsimplify((1/(exp(3*pi*I/5)+1)))
     1/2 - I*sqrt(sqrt(5)/10 + 1/4)
     >>> nsimplify(I**I, [pi])
-    exp(-pi/2)
+    E**(-pi/2)
     >>> nsimplify(pi, tolerance=0.01)
     22/7
 
@@ -1024,9 +1025,9 @@ def besselsimp(expr):
     >>> from sympy import besselj, besseli, besselsimp, polar_lift, I, S
     >>> from sympy.abc import z, nu
     >>> besselsimp(besselj(nu, z*polar_lift(-1)))
-    exp(I*pi*nu)*besselj(nu, z)
+    E**(I*pi*nu)*besselj(nu, z)
     >>> besselsimp(besseli(nu, z*polar_lift(-I)))
-    exp(-I*pi*nu/2)*besselj(nu, z)
+    E**(-I*pi*nu/2)*besselj(nu, z)
     >>> besselsimp(besseli(S(-1)/2, z))
     sqrt(2)*cosh(z)/(sqrt(pi)*sqrt(z))
     >>> besselsimp(z*besseli(0, z) + z*(besseli(2, z))/2 + besseli(1, z))

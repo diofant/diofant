@@ -555,7 +555,7 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     Examples
     ========
 
-    >>> from sympy import Function, dsolve, Eq, Derivative, sin, cos, symbols, exp
+    >>> from sympy import Function, dsolve, Eq, Derivative, sin, cos, symbols, exp, E
     >>> from sympy.abc import x
     >>> f = Function('f')
     >>> dsolve(Derivative(f(x), x, x) + 9*f(x), f(x))
@@ -570,12 +570,12 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     >>> x, y = symbols('x, y', function=True)
     >>> eq = (Eq(Derivative(x(t),t), 12*t*x(t) + 8*y(t)), Eq(Derivative(y(t),t), 21*x(t) + 7*t*y(t)))
     >>> dsolve(eq)
-    [Eq(x(t), C1*x0 + C2*x0*Integral(8*exp(Integral(7*t, t))*exp(Integral(12*t, t))/x0**2, t)),
-    Eq(y(t), C1*y0 + C2(y0*Integral(8*exp(Integral(7*t, t))*exp(Integral(12*t, t))/x0**2, t) +
-    exp(Integral(7*t, t))*exp(Integral(12*t, t))/x0))]
+    [Eq(x(t), C1*x0 + C2*x0*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0**2, t)),
+    Eq(y(t), C1*y0 + C2(E**Integral(7*t, t)*E**Integral(12*t, t)/x0 +
+    y0*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0**2, t)))]
     >>> eq = (Eq(Derivative(x(t),t),x(t)*y(t)*sin(t)), Eq(Derivative(y(t),t),y(t)**2*sin(t)))
     >>> C1, C2 = symbols('C1, C2')
-    >>> dsolve(eq) == {Eq(x(t), -exp(C1)/(C2*exp(C1) - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
+    >>> dsolve(eq) == {Eq(x(t), -E**C1/(C2*E**C1 - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
     True
     """
     if iterable(eq):
@@ -1605,7 +1605,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
                 if e.has(t):
                     tpart = e.as_independent(t, Mul)[1]
                     for i in Mul.make_args(tpart):
-                        if i.has(exp):
+                        if i.is_Pow and i.base is S.Exp1:
                             b, e = i.as_base_exp()
                             co = e.coeff(t)
                             if co and not co.has(t) and co.has(I):
@@ -2295,7 +2295,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
             if ss:
                 # with the new numer_denom in power.py, if we do a simple
                 # expansion then testnum == 0 verifies all solutions.
-                s = ss.expand(force=True)
+                s = s.expand(force=True).simplify()
             else:
                 s = 0
             testnum += 1
@@ -2527,7 +2527,7 @@ def _get_constant_subexpressions(expr, Cs):
         if len(expr_syms) > 0 and expr_syms.issubset(Cs):
             Ces.append(expr)
         else:
-            if expr.func == exp:
+            if expr.is_Pow and expr.base is S.Exp1:
                 expr = expr.expand(mul=True)
             if expr.func in (Add, Mul):
                 d = sift(expr.args, lambda i: i.free_symbols.issubset(Cs))
@@ -2712,10 +2712,10 @@ def constantsimp(expr, constants):
             infac = False
             asfac = False
             for m in new_expr.args:
-                if m.func is exp:
+                if m.is_Pow and m.base is S.Exp1:
                     asfac = True
                 elif m.is_Add:
-                    infac = any(fi.func is exp for t in m.args
+                    infac = any(fi.is_Pow and fi.base is S.Exp1 for t in m.args
                         for fi in Mul.make_args(t))
                 if asfac and infac:
                     new_expr = expr
@@ -3121,18 +3121,18 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
      \f(x)/    \f(x)/ dx
     >>> pprint(dsolve(genform, f(x),
     ... hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'), use_unicode=False)
-                 x
-                ----
-                f(x)
-                  /
-                 |
-                 |       -g(u2)
-                 |  ---------------- d(u2)
-                 |  u2*g(u2) + h(u2)
-                 |
-                /
+              x
+             ----
+             f(x)
+               /
+              |
+              |      -g(u2)
+              |  ---------------- d(u2)
+              |  u2*g(u2) + h(u2)
+              |
+             /
     <BLANKLINE>
-    f(x) = C1*e
+    f(x) = E                           *C1
 
     Where `u_2 g(u_2) + h(u_2) \ne 0` and `f(x) \ne 0`.
 
@@ -3298,17 +3298,16 @@ def ode_1st_linear(eq, func, order, match):
         P(x)*f(x) + --(f(x)) = Q(x)
                     dx
         >>> pprint(dsolve(genform, f(x), hint='1st_linear_Integral'), use_unicode=False)
-               /       /                   \
-               |      |                    |
-               |      |         /          |     /
-               |      |        |           |    |
-               |      |        | P(x) dx   |  - | P(x) dx
-               |      |        |           |    |
-               |      |       /            |   /
-        f(x) = |C1 +  | Q(x)*e           dx|*e
-               |      |                    |
-               \     /                     /
-
+                            /       /                   \
+                            |      |                    |
+                   /        |      |    /               |
+                  |         |      |   |                |
+                - | P(x) dx |      |   | P(x) dx        |
+                  |         |      |   |                |
+                 /          |      |  /                 |
+        f(x) = E           *|C1 +  | E          *Q(x) dx|
+                            |      |                    |
+                            \     /                     /
 
     Examples
     ========
@@ -3496,7 +3495,7 @@ def ode_Liouville(eq, func, order, match):
                 \dx      /         dx           2
                                               dx
         >>> pprint(dsolve(genform, f(x), hint='Liouville_Integral'), use_unicode=False)
-                                          f(x)
+                                      f(x)
                   /                     /
                  |                     |
                  |     /               |     /
@@ -3504,9 +3503,10 @@ def ode_Liouville(eq, func, order, match):
                  |  - | h(x) dx        |    | g(y) dy
                  |    |                |    |
                  |   /                 |   /
-        C1 + C2* | e            dx +   |  e           dy = 0
+        C1 + C2* | E            dx +   |  E           dy = 0
                  |                     |
                 /                     /
+        <BLANKLINE>
 
     Examples
     ========
@@ -4214,18 +4214,17 @@ def ode_almost_linear(eq, func, order, match):
         f(x)*--(l(y)) + g(x) + k(x)*l(y) = 0
              dy
         >>> pprint(dsolve(genform, hint = 'almost_linear'), use_unicode=False)
-               /     //   -y*g(x)                  \\
-               |     ||   --------     for k(x) = 0||
-               |     ||     f(x)                   ||  -y*k(x)
-               |     ||                            ||  --------
-               |     ||       y*k(x)               ||    f(x)
-        l(y) = |C1 + |<       ------               ||*e
-               |     ||        f(x)                ||
-               |     ||-g(x)*e                     ||
-               |     ||--------------   otherwise  ||
-               |     ||     k(x)                   ||
-               \     \\                            //
-
+                         /     //   -y*g(x)                  \\
+                         |     ||   --------     for k(x) = 0||
+                -y*k(x)  |     ||     f(x)                   ||
+                -------- |     ||                            ||
+                  f(x)   |     ||  y*k(x)                    ||
+        l(y) = E        *|C1 + |<  ------                    ||
+                         |     ||   f(x)                     ||
+                         |     ||-E      *g(x)               ||
+                         |     ||--------------   otherwise  ||
+                         |     ||     k(x)                   ||
+                         \     \\                            //
 
     See Also
     ========
@@ -4241,10 +4240,10 @@ def ode_almost_linear(eq, func, order, match):
     >>> d = f(x).diff(x)
     >>> eq = x*d + x*f(x) + 1
     >>> dsolve(eq, f(x), hint='almost_linear')
-    Eq(f(x), (C1 - Ei(x))*exp(-x))
+    Eq(f(x), E**(-x)*(C1 - Ei(x)))
     >>> pprint(dsolve(eq, f(x), hint='almost_linear'), use_unicode=False)
-                         -x
-    f(x) = (C1 - Ei(x))*e
+            -x
+    f(x) = E  *(C1 - Ei(x))
 
     References
     ==========
@@ -4581,11 +4580,11 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     >>> dsolve(f(x).diff(x, 5) + 10*f(x).diff(x) - 2*f(x), f(x),
     ... hint='nth_linear_constant_coeff_homogeneous')
     ... # doctest: +NORMALIZE_WHITESPACE
-    Eq(f(x), C1*exp(x*RootOf(_x**5 + 10*_x - 2, 0)) +
-    C2*exp(x*RootOf(_x**5 + 10*_x - 2, 1)) +
-    C3*exp(x*RootOf(_x**5 + 10*_x - 2, 2)) +
-    C4*exp(x*RootOf(_x**5 + 10*_x - 2, 3)) +
-    C5*exp(x*RootOf(_x**5 + 10*_x - 2, 4)))
+    Eq(f(x), E**(x*RootOf(_x**5 + 10*_x - 2, 0))*C1 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 1))*C2 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 2))*C3 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 3))*C4 +
+    E**(x*RootOf(_x**5 + 10*_x - 2, 4))*C5)
 
     Note that because this method does not involve integration, there is no
     ``nth_linear_constant_coeff_homogeneous_Integral`` hint.
@@ -4612,8 +4611,8 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     >>> pprint(dsolve(f(x).diff(x, 4) + 2*f(x).diff(x, 3) -
     ... 2*f(x).diff(x, 2) - 6*f(x).diff(x) + 5*f(x), f(x),
     ... hint='nth_linear_constant_coeff_homogeneous'), use_unicode=False)
-                        x                            -2*x
-    f(x) = (C1 + C2*x)*e  + (C3*sin(x) + C4*cos(x))*e
+            x                -2*x
+    f(x) = E *(C3 + C4*x) + E    *(C1*sin(x) + C2*cos(x))
 
     References
     ==========
@@ -4745,10 +4744,10 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     >>> pprint(dsolve(f(x).diff(x, 2) + 2*f(x).diff(x) + f(x) -
     ... 4*exp(-x)*x**2 + cos(2*x), f(x),
     ... hint='nth_linear_constant_coeff_undetermined_coefficients'), use_unicode=False)
-           /             4\
-           |            x |  -x   4*sin(2*x)   3*cos(2*x)
-    f(x) = |C1 + C2*x + --|*e   - ---------- + ----------
-           \            3 /           25           25
+                                           /             4\
+             4*sin(2*x)   3*cos(2*x)    -x |            x |
+    f(x) = - ---------- + ---------- + E  *|C1 + C2*x + --|
+                 25           25           \            3 /
 
     References
     ==========
@@ -5068,10 +5067,10 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     >>> pprint(dsolve(f(x).diff(x, 3) - 3*f(x).diff(x, 2) +
     ... 3*f(x).diff(x) - f(x) - exp(x)*log(x), f(x),
     ... hint='nth_linear_constant_coeff_variation_of_parameters'), use_unicode=False)
-           /                     3                \
-           |                2   x *(6*log(x) - 11)|  x
-    f(x) = |C1 + C2*x + C3*x  + ------------------|*e
-           \                            36        /
+              /                     3                \
+            x |                2   x *(6*log(x) - 11)|
+    f(x) = E *|C1 + C2*x + C3*x  + ------------------|
+              \                            36        /
 
     References
     ==========
@@ -5327,11 +5326,10 @@ def ode_lie_group(eq, func, order, match):
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x) + 2*x*f(x) - x*exp(-x**2), f(x),
     ... hint='lie_group'), use_unicode=False)
-           /      2\    2
-           |     x |  -x
-    f(x) = |C1 + --|*e
-           \     2 /
-
+              2 /      2\
+            -x  |     x |
+    f(x) = E   *|C1 + --|
+                \     2 /
 
     References
     ==========

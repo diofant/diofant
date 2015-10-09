@@ -140,7 +140,7 @@ class hyper(TupleParametersBase):
 
     >>> from sympy import hyperexpand
     >>> hyperexpand(hyper([], [], x))
-    exp(x)
+    E**x
 
     You can also use expand_func:
 
@@ -415,7 +415,7 @@ class meijerg(TupleParametersBase):
 
     >>> from sympy import expand_func, S
     >>> expand_func(meijerg([[],[]], [[0],[]], -x))
-    exp(x)
+    E**x
     >>> hyperexpand(meijerg([[],[]], [[S(1)/2],[0]], (x/2)**2))
     sin(x)/sqrt(pi)
 

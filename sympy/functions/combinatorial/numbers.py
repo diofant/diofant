@@ -851,7 +851,7 @@ class catalan(Function):
     and evaluated with arbitrary precision:
 
     >>> catalan(I).evalf(20)
-    0.39764993382373624267 - 0.020884341620842555704*I
+    0.39764993382373624267 - 0.020884341620842555705*I
 
     References
     ==========

@@ -688,10 +688,8 @@ information).
     │╶┐     ⎜     │ -z⎟
     ╰─╯2, 1 ⎝1    │   ⎠
     >>> hyperexpand(expr)
-     1
-     ─
-     z
-    ℯ
+    z ___
+    ╲╱ ℯ
 
 combsimp
 --------

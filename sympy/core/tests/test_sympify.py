@@ -17,7 +17,7 @@ import mpmath
 def test_issue_3538():
     v = sympify("exp(x)")
     assert v == exp(x)
-    assert isinstance(v, exp)
+    assert isinstance(v, Pow)
     assert str(type(v)) == str(type(exp(x)))
 
 

@@ -1216,9 +1216,6 @@ def _create_evalf_table():
         NegativeOne: lambda x, prec, options: (fnone, None, prec, None),
         NaN: lambda x, prec, options: (fnan, None, prec, None),
 
-        exp: lambda x, prec, options: evalf_pow(
-            Pow(S.Exp1, x.args[0], evaluate=False), prec, options),
-
         cos: evalf_trig,
         sin: evalf_trig,
 

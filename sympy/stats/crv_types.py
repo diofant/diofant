@@ -249,11 +249,11 @@ def Benini(name, alpha, beta, sigma):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-    /                  /  z  \\             /  z  \            2/  z  \
-    |        2*beta*log|-----||  - alpha*log|-----| - beta*log  |-----|
-    |alpha             \sigma/|             \sigma/             \sigma/
-    |----- + -----------------|*e
-    \  z             z        /
+                /  z  \           2/  z  \ /                  /  z  \\
+     - alpha*log|-----| - beta*log |-----| |        2*beta*log|-----||
+                \sigma/            \sigma/ |alpha             \sigma/|
+    E                                     *|----- + -----------------|
+                                           \  z             z        /
 
     References
     ==========
@@ -508,7 +508,7 @@ def Chi(name, k):
     >>> X = Chi("x", k)
 
     >>> density(X)(z)
-    2**(-k/2 + 1)*z**(k - 1)*exp(-z**2/2)/gamma(k/2)
+    2**(-k/2 + 1)*E**(-z**2/2)*z**(k - 1)/gamma(k/2)
 
     References
     ==========
@@ -570,7 +570,7 @@ def ChiNoncentral(name, k, l):
     >>> X = ChiNoncentral("x", k, l)
 
     >>> density(X)(z)
-    l*z**k*(l*z)**(-k/2)*exp(-l**2/2 - z**2/2)*besseli(k/2 - 1, l*z)
+    E**(-l**2/2 - z**2/2)*l*z**k*(l*z)**(-k/2)*besseli(k/2 - 1, l*z)
 
     References
     ==========
@@ -628,7 +628,7 @@ def ChiSquared(name, k):
     >>> X = ChiSquared("x", k)
 
     >>> density(X)(z)
-    2**(-k/2)*z**(k/2 - 1)*exp(-z/2)/gamma(k/2)
+    2**(-k/2)*E**(-z/2)*z**(k/2 - 1)/gamma(k/2)
 
     >>> combsimp(E(X))
     k
@@ -745,8 +745,8 @@ def Erlang(name, k, l):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-     k  k - 1  -l*z
-    l *z     *e
+     -l*z  k  k - 1
+    E    *l *z
     ---------------
         gamma(k)
 
@@ -827,10 +827,10 @@ def Exponential(name, rate):
     >>> X = Exponential("x", l)
 
     >>> density(X)(z)
-    lambda*exp(-lambda*z)
+    E**(-lambda*z)*lambda
 
     >>> cdf(X)(z)
-    Piecewise((1 - exp(-lambda*z), z >= 0), (0, True))
+    Piecewise((1 - E**(-lambda*z), z >= 0), (0, True))
 
     >>> E(X)
     1/lambda
@@ -844,7 +844,7 @@ def Exponential(name, rate):
     >>> X = Exponential('x', 10)
 
     >>> density(X)(z)
-    10*exp(-10*z)
+    10*E**(-10*z)
 
     >>> E(X)
     1/10
@@ -985,11 +985,11 @@ def FisherZ(name, d1, d2):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-                                d1   d2
-        d1   d2               - -- - --
-        --   --                 2    2
-        2    2  /    2*z     \           d1*z
-    2*d1  *d2  *\d1*e    + d2/         *e
+                                      d1   d2
+              d1   d2               - -- - --
+              --   --                 2    2
+       d1*z   2    2  / 2*z        \
+    2*E    *d1  *d2  *\E   *d1 + d2/
     -----------------------------------------
                        /d1  d2\
                    beta|--, --|
@@ -1060,7 +1060,7 @@ def Frechet(name, a, s=1, m=0):
     >>> X = Frechet("x", a, s, m)
 
     >>> density(X)(z)
-    a*((-m + z)/s)**(-a - 1)*exp(-((-m + z)/s)**(-a))/s
+    E**(-((-m + z)/s)**(-a))*a*((-m + z)/s)**(-a - 1)/s
 
     References
     ==========
@@ -1128,10 +1128,10 @@ def Gamma(name, k, theta):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-                      -z
-                    -----
-         -k  k - 1  theta
-    theta  *z     *e
+      -z
+     -----
+     theta      -k  k - 1
+    E     *theta  *z
     ---------------------
            gamma(k)
 
@@ -1152,7 +1152,6 @@ def Gamma(name, k, theta):
     >>> pprint(V, use_unicode=False)
            2
     k*theta
-
 
     References
     ==========
@@ -1219,12 +1218,12 @@ def GammaInverse(name, a, b):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-                -b
-                ---
-     a  -a - 1   z
-    b *z      *e
+     -b
+     ---
+      z   a  -a - 1
+    E   *b *z
     ---------------
-       gamma(a)
+        gamma(a)
 
     References
     ==========
@@ -1347,7 +1346,7 @@ def Laplace(name, mu, b):
     >>> X = Laplace("x", mu, b)
 
     >>> density(X)(z)
-    exp(-Abs(mu - z)/b)/(2*b)
+    E**(-Abs(mu - z)/b)/(2*b)
 
     References
     ==========
@@ -1403,7 +1402,7 @@ def Logistic(name, mu, s):
     >>> X = Logistic("x", mu, s)
 
     >>> density(X)(z)
-    exp((mu - z)/s)/(s*(exp((mu - z)/s) + 1)**2)
+    E**((mu - z)/s)/(s*(E**((mu - z)/s) + 1)**2)
 
     References
     ==========
@@ -1471,18 +1470,17 @@ def LogNormal(name, mean, std):
                           2
            -(-mu + log(z))
            -----------------
-                      2
-      ___      2*sigma
-    \/ 2 *e
+                       2
+      ___       2*sigma
+    \/ 2 *E
     ------------------------
             ____
         2*\/ pi *sigma*z
 
-
     >>> X = LogNormal('x', 0, 1) # Mean 0, standard deviation 1
 
     >>> density(X)(z)
-    sqrt(2)*exp(-log(z)**2/2)/(2*sqrt(pi)*z)
+    sqrt(2)*E**(-log(z)**2/2)/(2*sqrt(pi)*z)
 
     References
     ==========
@@ -1542,7 +1540,7 @@ def Maxwell(name, a):
     >>> X = Maxwell("x", a)
 
     >>> density(X)(z)
-    sqrt(2)*z**2*exp(-z**2/(2*a**2))/(sqrt(pi)*a**3)
+    sqrt(2)*E**(-z**2/(2*a**2))*z**2/(sqrt(pi)*a**3)
 
     >>> E(X)
     2*sqrt(2)*a/sqrt(pi)
@@ -1610,11 +1608,11 @@ def Nakagami(name, mu, omega):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-                                    2
-                               -mu*z
-                               -------
-        mu      -mu  2*mu - 1  omega
-    2*mu  *omega   *z        *e
+            2
+       -mu*z
+       -------
+        omega    mu      -mu  2*mu - 1
+    2*E       *mu  *omega   *z
     ----------------------------------
                 gamma(mu)
 
@@ -1687,7 +1685,7 @@ def Normal(name, mean, std):
     >>> X = Normal("x", mu, sigma)
 
     >>> density(X)(z)
-    sqrt(2)*exp(-(-mu + z)**2/(2*sigma**2))/(2*sqrt(pi)*sigma)
+    sqrt(2)*E**(-(-mu + z)**2/(2*sigma**2))/(2*sqrt(pi)*sigma)
 
     >>> C = simplify(cdf(X))(z) # it needs a little more help...
     >>> pprint(C, use_unicode=False)
@@ -1703,7 +1701,7 @@ def Normal(name, mean, std):
 
     >>> X = Normal("x", 0, 1) # Mean 0, standard deviation 1
     >>> density(X)(z)
-    sqrt(2)*exp(-z**2/2)/(2*sqrt(pi))
+    sqrt(2)*E**(-z**2/2)/(2*sqrt(pi))
 
     >>> E(2*X + 1)
     1
@@ -1985,7 +1983,7 @@ def Rayleigh(name, sigma):
     >>> X = Rayleigh("x", sigma)
 
     >>> density(X)(z)
-    z*exp(-z**2/(2*sigma**2))/sigma**2
+    E**(-z**2/(2*sigma**2))*z/sigma**2
 
     >>> E(X)
     sqrt(2)*sqrt(pi)*sigma/2
@@ -2371,11 +2369,10 @@ def VonMises(name, mu, k):
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
-         k*cos(mu - z)
-        e
+       k*cos(mu - z)
+      E
     ------------------
     2*pi*besseli(0, k)
-
 
     References
     ==========
@@ -2445,7 +2442,7 @@ def Weibull(name, alpha, beta):
     >>> X = Weibull("x", l, k)
 
     >>> density(X)(z)
-    k*(z/lambda)**(k - 1)*exp(-(z/lambda)**k)/lambda
+    E**(-(z/lambda)**k)*k*(z/lambda)**(k - 1)/lambda
 
     >>> simplify(E(X))
     lambda*gamma(1 + 1/k)

@@ -85,8 +85,8 @@ def compare(a, b, x):
         or `b(x) \succ a(x)`.
     """
     # The log(exp(...)) must always be simplified here for termination.
-    la = a.exp if a.func is exp else log(a)
-    lb = b.exp if b.func is exp else log(b)
+    la = a.exp if a.is_Pow and a.base is S.Exp1 else log(a)
+    lb = b.exp if b.is_Pow and b.base is S.Exp1 else log(b)
 
     c = limitinf(la/lb, x)
     if c.is_zero:
@@ -107,17 +107,18 @@ def mrv(e, x):
         a, b = e.as_two_terms()
         return mrv_max(mrv(a, x), mrv(b, x), x)
     elif e.is_Pow:
-        assert not e.exp.has(x)
-        return mrv(e.base, x)
+        if e.base is S.Exp1:
+            if e.exp == x:
+                return {e}
+            elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
+                return mrv_max({e}, mrv(e.exp, x), x)
+            else:
+                return mrv(e.exp, x)
+        else:
+            assert not e.exp.has(x)
+            return mrv(e.base, x)
     elif e.func is log:
         return mrv(e.args[0], x)
-    elif e.func is exp:
-        if e.exp == x:
-            return {e}
-        elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
-            return mrv_max({e}, mrv(e.exp, x), x)
-        else:
-            return mrv(e.exp, x)
     elif e.is_Function:
         return reduce(lambda a, b: mrv_max(a, b, x), [mrv(a, x) for a in e.args])
     raise NotImplementedError("Don't know how to calculate the mrv of '%s'" % e)
@@ -163,8 +164,6 @@ def sign(e, x):
     elif e.is_Mul:
         a, b = e.as_two_terms()
         return sign(a, x)*sign(b, x)
-    elif e.func is exp:
-        return 1
     elif e.is_Pow:
         s = sign(e.base, x)
         if s == 1:
@@ -216,11 +215,11 @@ def mrv_leadterm(e, x):
     if not e.has(x):
         return (e, S.Zero)
 
-    e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
+    e = e.replace(lambda f: f.is_Pow and f.base != S.Exp1 and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))
-    e = e.replace(lambda f: f.is_Mul and sum(a.func is exp for a in f.args) > 1,
-                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.func is exp])),
-                                *[a for a in f.args if a.func is not exp]))
+    e = e.replace(lambda f: f.is_Mul and sum(a.is_Pow for a in f.args) > 1,
+                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Pow and a.base is S.Exp1])),
+                                *[a for a in f.args if not a.is_Pow or a.base is not S.Exp1]))
 
     # The positive dummy, w, is used here so log(w*2) etc. will expand.
     # TODO: For limits of complex functions, the algorithm would have to

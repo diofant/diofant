@@ -414,7 +414,7 @@ Here are several more advanced examples:
      -pi
      ----
       2
-    e
+    E
     >>> n = Symbol('n')
     >>> nsimplify(Sum(1/n**2, (n, 1, oo)), [pi])
       2

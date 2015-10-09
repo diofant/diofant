@@ -1222,9 +1222,8 @@ class Mul(Expr, AssocOp):
         def base_exp(a):
             # if I and -1 are in a Mul, they get both end up with
             # a -1 base (see issue 6421); all we want here are the
-            # true Pow or exp separated into base and exponent
-            from sympy import exp
-            if a.is_Pow or a.func is exp:
+            # true Pow separated into base and exponent
+            if a.is_Pow:
                 return a.as_base_exp()
             return a, S.One
 

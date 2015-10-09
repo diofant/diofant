@@ -70,7 +70,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
     >>> x, y = symbols('x y', positive=True)
     >>> powsimp(log(exp(x)*exp(y)))
-    log(exp(x)*exp(y))
+    log(E**x*E**y)
     >>> powsimp(log(exp(x)*exp(y)), deep=True)
     x + y
 
@@ -140,7 +140,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 b, e = term.as_base_exp()
                 if deep:
                     b, e = [recurse(i) for i in [b, e]]
-                if b.is_Pow or b.func is exp:
+                if b.is_Pow:
                     # don't let smthg like sqrt(x**a) split into x**a, 1/2
                     # or else it will be joined as x**(a/2) later
                     b, e = b**e, S.One
@@ -348,8 +348,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         # there may be terms still in common_b that were bases that were
         # identified as needing processing, so remove those, too
         for (b, q), e in common_b.items():
-            if (b.is_Pow or b.func is exp) and \
-                    q is not S.One and not b.exp.is_Rational:
+            if b.is_Pow and q is not S.One and not b.exp.is_Rational:
                 b, be = b.as_base_exp()
                 b = b**(be/q)
             else:
@@ -587,8 +586,7 @@ def powdenest(eq, force=False, polar=False):
         return unpolarify(powdenest(unpolarify(eq, exponents_only=True)), rep)
 
     new = powsimp(sympify(eq))
-    return new.xreplace(Transform(
-        _denest_pow, filter=lambda m: m.is_Pow or m.func is exp))
+    return new.xreplace(Transform(_denest_pow, filter=lambda m: m.is_Pow))
 
 _y = Dummy('y')
 
@@ -603,7 +601,7 @@ def _denest_pow(eq):
     from sympy.simplify.simplify import logcombine
 
     b, e = eq.as_base_exp()
-    if b.is_Pow or isinstance(b.func, exp) and e != 1:
+    if b.is_Pow and e != 1:
         new = b._eval_power(e)
         if new is not None:
             eq = new
@@ -680,7 +678,7 @@ def _denest_pow(eq):
 
     # now put the log back together again
     if glogb.func is log or not glogb.is_Mul:
-        if glogb.args[0].is_Pow or glogb.args[0].func is exp:
+        if glogb.args[0].is_Pow:
             glogb = _denest_pow(glogb.args[0])
             if (abs(glogb.exp) < 1) == True:
                 return Pow(glogb.base, glogb.exp*e)

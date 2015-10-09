@@ -260,7 +260,7 @@ class Equality(Relational):
     >>> _.doit()
     False
     >>> Eq(exp(x), exp(x).rewrite(cos))
-    Eq(exp(x), sinh(x) + cosh(x))
+    Eq(E**x, sinh(x) + cosh(x))
     >>> simplify(_)
     True
 

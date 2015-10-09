@@ -36,11 +36,10 @@ Exponential-polynomial functions. These multiplicative combinations of polynomia
 ::
 
     >>> integrate(x**2 * exp(x) * cos(x), x)
-     2  x           2  x                         x           x
-    x *e *sin(x)   x *e *cos(x)      x          e *sin(x)   e *cos(x)
-    ------------ + ------------ - x*e *sin(x) + --------- - ---------
+     x  2           x  2                         x           x
+    E *x *sin(x)   E *x *cos(x)    x            E *sin(x)   E *cos(x)
+    ------------ + ------------ - E *x*sin(x) + --------- - ---------
          2              2                           2           2
-
 
 
 even a few nonelementary integrals (in particular, some integrals involving the error function) can be evaluated::

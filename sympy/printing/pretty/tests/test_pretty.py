@@ -1142,12 +1142,12 @@ def test_pretty_functions():
     ascii_str_1 = \
 """\
        x\n\
-2*x + e \
+2*x + E \
 """
     ascii_str_2 = \
 """\
  x      \n\
-e  + 2*x\
+E  + 2*x\
 """
     ucode_str_1 = \
 u("""\
@@ -1156,8 +1156,8 @@ u("""\
 """)
     ucode_str_2 = \
 u("""\
- x     \n\
-ℯ + 2⋅x\
+ x      \n\
+ℯ  + 2⋅x\
 """)
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
@@ -1575,7 +1575,7 @@ a - ⅈ⋅b\
 """\
  _     _\n\
  a - I*b\n\
-e       \
+E       \
 """
     ucode_str = \
 u("""\
@@ -2528,7 +2528,7 @@ u("""\
 [y                 ]
 [                  ]
 [    I*k*phi       ]
-[0  e           1  ]\
+[0  E           1  ]\
 """
     ucode_str = \
 u("""\
@@ -3230,7 +3230,7 @@ RootSum⎝x  + 11⋅x - 2⎠\
     ascii_str = \
 """\
        / 5                   z\\\n\
-RootSum\\x  + 11*x - 2, z -> e /\
+RootSum\\x  + 11*x - 2, z -> E /\
 """
     ucode_str = \
 u("""\

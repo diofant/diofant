@@ -1890,18 +1890,18 @@ class Poly(Expr):
         >>> p.coeff_monomial(y)
         0
         >>> p.coeff_monomial(x*y)
-        24*exp(8)
+        24*E**8
 
         Note that ``Expr.coeff()`` behaves differently, collecting terms
         if possible; the Poly must be converted to an Expr to use that
         method, however:
 
         >>> p.as_expr().coeff(x)
-        24*y*exp(8) + 23
+        24*E**8*y + 23
         >>> p.as_expr().coeff(y)
-        24*x*exp(8)
+        24*E**8*x
         >>> p.as_expr().coeff(x*y)
-        24*exp(8)
+        24*E**8
 
         See Also
         ========
@@ -5610,7 +5610,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Number:
             coeff *= arg
             continue
-        elif arg.is_Pow:
+        elif arg.is_Pow and arg.base is not S.Exp1:
             base, exp = arg.args
             if base.is_Number:
                 factors.append((base, exp))

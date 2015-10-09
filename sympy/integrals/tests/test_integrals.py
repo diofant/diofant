@@ -1070,14 +1070,16 @@ def test_issue_8368():
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
         (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((S(1)/2,), (0, 0)),
         ((0, S(1)/2), (0,)), polar_lift(s)**2), True)),
-        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi,
+        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
         cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
-        1 > 0, Ne(s**2, 1))), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
+        1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
-        Piecewise((-1/(s + 1)/2 - 1/(-s + 1)/2, And(Ne(1/s, 1),
-        Abs(periodic_argument(s, oo)) < pi/2, Abs(periodic_argument(s, oo)) <=
-        pi/2, cos(Abs(periodic_argument(s, oo)))*Abs(s) - 1 > 0)),
-        (Integral(exp(-s*x)*sinh(x), (x, 0, oo)), True))
+        Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
+                                (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
+                                (meijerg(((0,), (-S(1)/2, S(1)/2)), ((0, S(1)/2), (-S(1)/2,)), polar_lift(s)**2), True)),
+                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
+                  (Integral(E**(-s*x)*sinh(x), (x, 0, oo)), True))
 
 
 def test_issue_8901():

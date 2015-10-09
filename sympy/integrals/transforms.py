@@ -449,7 +449,7 @@ def _rewrite_gamma(f, s, a, b):
     (([], []), ([], []), 1/2, 1, 8)
     """
     from itertools import repeat
-    from sympy import (Poly, gamma, Mul, re, RootOf, exp as exp_, expand,
+    from sympy import (Poly, gamma, Mul, re, RootOf, expand,
                        roots, ilcm, pi, sin, cos, tan, cot, igcd, exp_polar)
     # Our strategy will be as follows:
     # 1) Guess a constant c such that the inversion integral should be
@@ -571,13 +571,13 @@ def _rewrite_gamma(f, s, a, b):
         if not fact.has(s):
             ufacs += [fact]
         # exponentials
-        elif fact.is_Pow or isinstance(fact, exp_):
-            if fact.is_Pow:
+        elif fact.is_Pow:
+            if fact.is_Pow and fact.base is not S.Exp1:
                 base = fact.base
                 exp = fact.exp
             else:
                 base = exp_polar(1)
-                exp = fact.args[0]
+                exp = fact.exp
             if exp.is_Integer:
                 cond = is_numer
                 if exp < 0:
@@ -839,7 +839,7 @@ def inverse_mellin_transform(F, s, x, strip, **hints):
     >>> from sympy import oo, gamma
     >>> from sympy.abc import x, s
     >>> inverse_mellin_transform(gamma(s), s, x, (0, oo))
-    exp(-x)
+    E**(-x)
 
     The fundamental strip matters:
 
@@ -1179,10 +1179,8 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
             k = log(rel.lts)
             return Heaviside(-(t + k))
     f = f.replace(Heaviside, simp_heaviside)
-
-    def simp_exp(arg):
-        return expand_complex(exp(arg))
-    f = f.replace(exp, simp_exp)
+    f = f.replace(lambda expr: expr.is_Pow and expr.base is S.Exp1,
+                  lambda expr: expand_complex(exp(expr.exp)))
 
     # TODO it would be nice to fix cosh and sinh ... simplify messes these
     #      exponentials up
@@ -1356,9 +1354,9 @@ def fourier_transform(f, x, k, **hints):
     >>> from sympy import fourier_transform, exp
     >>> from sympy.abc import x, k
     >>> fourier_transform(exp(-x**2), x, k)
-    sqrt(pi)*exp(-pi**2*k**2)
+    E**(-pi**2*k**2)*sqrt(pi)
     >>> fourier_transform(exp(-x**2), x, k, noconds=False)
-    (sqrt(pi)*exp(-pi**2*k**2), True)
+    (E**(-pi**2*k**2)*sqrt(pi), True)
 
     See Also
     ========
@@ -1408,9 +1406,9 @@ def inverse_fourier_transform(F, k, x, **hints):
     >>> from sympy import inverse_fourier_transform, exp, sqrt, pi
     >>> from sympy.abc import x, k
     >>> inverse_fourier_transform(sqrt(pi)*exp(-(pi*k)**2), k, x)
-    exp(-x**2)
+    E**(-x**2)
     >>> inverse_fourier_transform(sqrt(pi)*exp(-(pi*k)**2), k, x, noconds=False)
-    (exp(-x**2), True)
+    (E**(-x**2), True)
 
     See Also
     ========
@@ -1520,7 +1518,7 @@ def sine_transform(f, x, k, **hints):
     >>> from sympy import sine_transform, exp
     >>> from sympy.abc import x, k, a
     >>> sine_transform(x*exp(-a*x**2), x, k)
-    sqrt(2)*k*exp(-k**2/(4*a))/(4*a**(3/2))
+    sqrt(2)*E**(-k**2/(4*a))*k/(4*a**(3/2))
     >>> sine_transform(x**(-a), x, k)
     2**(-a + 1/2)*k**(a - 1)*gamma(-a/2 + 1)/gamma(a/2 + 1/2)
 
@@ -1576,7 +1574,7 @@ def inverse_sine_transform(F, k, x, **hints):
     ...     gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
     x**(-a)
     >>> inverse_sine_transform(sqrt(2)*k*exp(-k**2/(4*a))/(4*sqrt(a)**3), k, x)
-    x*exp(-a*x**2)
+    E**(-a*x**2)*x
 
     See Also
     ========
@@ -1629,7 +1627,7 @@ def cosine_transform(f, x, k, **hints):
     >>> cosine_transform(exp(-a*x), x, k)
     sqrt(2)*a/(sqrt(pi)*(a**2 + k**2))
     >>> cosine_transform(exp(-a*sqrt(x))*cos(a*sqrt(x)), x, k)
-    a*exp(-a**2/(2*k))/(2*k**(3/2))
+    E**(-a**2/(2*k))*a/(2*k**(3/2))
 
     See Also
     ========
@@ -1680,7 +1678,7 @@ def inverse_cosine_transform(F, k, x, **hints):
     >>> from sympy import inverse_cosine_transform, exp, sqrt, pi
     >>> from sympy.abc import x, k, a
     >>> inverse_cosine_transform(sqrt(2)*a/(sqrt(pi)*(a**2 + k**2)), k, x)
-    exp(-a*x)
+    E**(-a*x)
     >>> inverse_cosine_transform(1/sqrt(k), k, x)
     1/sqrt(x)
 
@@ -1792,7 +1790,7 @@ def hankel_transform(f, r, k, nu, **hints):
     a/(k**3*(a**2/k**2 + 1)**(3/2))
 
     >>> inverse_hankel_transform(ht, k, r, 0)
-    exp(-a*r)
+    E**(-a*r)
 
     See Also
     ========
@@ -1848,7 +1846,7 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
     a/(k**3*(a**2/k**2 + 1)**(3/2))
 
     >>> inverse_hankel_transform(ht, k, r, 0)
-    exp(-a*r)
+    E**(-a*r)
 
     See Also
     ========
