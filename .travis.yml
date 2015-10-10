@@ -37,7 +37,7 @@ before_install:
   - pip install --upgrade pip setuptools pytest
   - pip install coveralls
 install:
-  - travis_wait pip install .[exports,plot]
+  - travis_wait pip install .[exports,plot,interactive]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
