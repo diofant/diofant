@@ -178,6 +178,19 @@ def test_power():
     A = Matrix([[0, 4], [-1, 5]])
     assert (A**Rational(1, 2))**2 == A
 
+    assert Matrix([[1, 0], [1, 1]])**S.Half == Matrix([[1, 0], [S.Half, 1]])
+    from sympy.abc import a, b, n
+    assert Matrix([[1, a], [0, 1]])**n == Matrix([[1, a*n], [0, 1]])
+    assert Matrix([[b, a], [0, b]])**n == Matrix([[b**n, a*b**(n - 1)*n], [0, b**n]])
+    assert Matrix([[a, 1, 0], [0, a, 1], [0, 0, a]])**n == Matrix([
+        [a**n, a**(n - 1)*n, a**(n - 2)*(n - 1)*n/2],
+        [0, a**n, a**(n - 1)*n],
+        [0, 0, a**n]])
+    assert Matrix([[a, 1, 0], [0, a, 0], [0, 0, b]])**n == Matrix([
+        [a**n, a**(n - 1)*n, 0],
+        [0, a**n, 0],
+        [0, 0, b**n]])
+
 
 def test_creation():
     pytest.raises(ValueError, lambda: Matrix(5, 5, range(20)))
@@ -1659,8 +1672,7 @@ def test_errors():
     pytest.raises(ValueError,
         lambda: Matrix([[5, 10, 7], [0, -1, 2], [8, 3, 4]]
         ).LUdecomposition_Simple(iszerofunc=lambda x: abs(x) <= 4))
-    pytest.raises(NotImplementedError, lambda: Matrix([[1, 0], [1, 1]])**Rational(1, 2))
-    pytest.raises(NotImplementedError,
+    pytest.raises(TypeError,
         lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])**(0.5))
     pytest.raises(IndexError, lambda: eye(3)[5, 2])
     pytest.raises(IndexError, lambda: eye(3)[2, 5])
