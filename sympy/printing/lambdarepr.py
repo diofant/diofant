@@ -100,6 +100,18 @@ class NumPyPrinter(LambdaPrinter):
         # If this is not the case, it may be triggered prematurely.
         return 'select({0}, {1}, default=nan)'.format(conds, exprs)
 
+    def _print_Relational(self, expr):
+        "Relational printer"
+        op = {'==': 'equal',
+              '!=': 'not_equal',
+              '<': 'less',
+              '<=': 'less_equal',
+              '>': 'greater',
+              '>=': 'greater_equal'}
+        return '{op}({lhs}, {rhs})'.format(op=op[expr.rel_op],
+                                           lhs=self._print(expr.lhs),
+                                           rhs=self._print(expr.rhs))
+
     def _print_And(self, expr):
         "Logical And printer"
         # We have to override LambdaPrinter because it uses Python 'and' keyword.
