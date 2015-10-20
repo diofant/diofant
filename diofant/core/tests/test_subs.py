@@ -420,16 +420,14 @@ def test_derivative_subs():
 
 def test_derivative_subs2():
     f, g = symbols('f g', cls=Function)
+    f, g = f(x, y, z), g(x, y, z)
     assert Derivative(f, x, y).subs(Derivative(f, x, y), g) == g
     assert Derivative(f, y, x).subs(Derivative(f, x, y), g) == g
     assert Derivative(f, x, y).subs(Derivative(f, x), g) == Derivative(g, y)
     assert Derivative(f, x, y).subs(Derivative(f, y), g) == Derivative(g, x)
-    assert (Derivative(f(x, y, z), x, y, z).subs(
-        Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
-    assert (Derivative(f(x, y, z), x, y, z).subs(
-        Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
-    assert (Derivative(f(x, y, z), x, y, z).subs(
-        Derivative(f(x, y, z), z, y, x), g) == g)
+    assert (Derivative(f, x, y, z).subs(Derivative(f, x, z), g) == Derivative(g, y))
+    assert (Derivative(f, x, y, z).subs(Derivative(f, z, y), g) == Derivative(g, x))
+    assert (Derivative(f, x, y, z).subs(Derivative(f, z, y, x), g) == g)
     assert (Derivative(sin(x), x, 2).subs(Derivative(sin(x), f(x)), g) ==
             Derivative(sin(x), x, 2))
 
