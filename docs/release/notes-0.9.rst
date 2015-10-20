@@ -212,3 +212,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`2799` S.UniversalSet + Interval(0, oo) takes forever
 * :sympyissue:`11090` ImmutableMatrix * MatrixSymbol raises AttributeError
 * :sympyissue:`11207` floor(ceiling(x)) doesn't simplify
+* :sympyissue:`9135` Incorrect subsitution of partial derivatives by .subs()
