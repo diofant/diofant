@@ -1,7 +1,7 @@
-from sympy import Piecewise, MatrixSymbol, Equality, Unequality
+from sympy import Piecewise, MatrixSymbol, Equality, Unequality, Mod
 from sympy.printing.lambdarepr import NumPyPrinter
 
-from sympy.abc import x
+from sympy.abc import x, a, b
 
 
 def test_numpy_piecewise_regression():
@@ -39,3 +39,10 @@ def test_relational():
 
     e = (x >= 1)
     assert p.doprint(e) == 'greater_equal(x, 1)'
+
+
+def test_mod():
+    p = NumPyPrinter()
+
+    e = Mod(a, b)
+    assert p.doprint(e) == 'a%b'
