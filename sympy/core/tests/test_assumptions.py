@@ -1,7 +1,8 @@
 import pytest
 
 from sympy import I, sqrt, log, exp, sin, asin
-from sympy.core import Symbol, S, Rational, Integer, Dummy, Wild, Pow, Float
+from sympy.core import (Symbol, S, Rational, Integer, Dummy,
+                        Wild, Pow, Float, Mod, pi)
 from sympy.core.facts import InconsistentAssumptions
 from sympy import simplify
 
@@ -918,3 +919,8 @@ def test_issue_9165():
     assert 0/z == S.NaN
     assert 0*(1/z) == S.NaN
     assert 0*f == S.NaN
+
+
+def test_issue_10024():
+    x = Dummy('x')
+    assert Mod(x, 2*pi).is_zero is None
