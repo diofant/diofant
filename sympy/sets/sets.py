@@ -930,7 +930,7 @@ class Interval(Set, EvalfMixin):
 
         if self.start is S.NegativeInfinity and self.end is S.Infinity:
             if other.is_extended_real is not None:
-                return other.is_extended_real
+                return _sympify(other.is_extended_real)
 
         if self.left_open:
             expr = other > self.start

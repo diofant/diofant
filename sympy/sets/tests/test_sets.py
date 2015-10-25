@@ -845,3 +845,8 @@ def test_SymmetricDifference():
             Set(2, 3, 4) - Set(1, 2, 3))
     assert Interval(0, 4) ^ Interval(2, 5) == Union(Interval(0, 4) -
             Interval(2, 5), Interval(2, 5) - Interval(0, 4))
+
+
+def test_issue_9956():
+    assert Union(Interval(-oo, oo), FiniteSet(1)) == Interval(-oo, oo)
+    assert Interval(-oo, oo).contains(1) is S.true
