@@ -384,7 +384,7 @@ x    \
     assert upretty(expr) == ucode_str
 
     # see issue #2860
-    expr = Integer(2)**-1.0
+    expr = Pow(Integer(2), -1.0, evaluate=False)
     ascii_str = \
 """\
  -1.0\n\
