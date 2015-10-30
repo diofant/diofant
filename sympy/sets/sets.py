@@ -264,8 +264,6 @@ class Set(Basic):
         other = sympify(other, strict=True)
         ret = self._contains(other)
         if ret is None:
-            if self.is_iterable and all(Eq(i, other) is S.false for i in self):
-                return False
             ret = Contains(other, self, evaluate=False)
         return ret
 
