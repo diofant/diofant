@@ -15,8 +15,9 @@ Hypergeometric
 from sympy.core.compatibility import as_int
 from sympy.core.logic import fuzzy_not, fuzzy_and
 from sympy.stats.frv import (SingleFinitePSpace, SingleFiniteDistribution)
+from sympy.concrete.summations import Sum
 from sympy import (S, sympify, Rational, binomial, cacheit, Integer,
-                   Dict, Basic)
+                   Dict, Basic, KroneckerDelta, Dummy)
 
 __all__ = ['FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
         'Binomial', 'Hypergeometric']
@@ -50,7 +51,7 @@ def FiniteRV(name, density):
 
     >>> E(X)
     2.00000000000000
-    >>> P(X>=2)
+    >>> P(X >= 2)
     0.700000000000000
     """
     return rv(name, FiniteDistributionHandmade, density)
@@ -125,10 +126,15 @@ class DieDistribution(SingleFiniteDistribution):
 
     def pdf(self, x):
         x = sympify(x)
-        if x.is_Integer and x >= 1 and x <= self.sides:
-            return Rational(1, self.sides)
-        else:
-            return 0
+        if x.is_number:
+            if x.is_Integer and x >= 1 and x <= self.sides:
+                return Rational(1, self.sides)
+            return S.Zero
+        if x.is_Symbol:
+            i = Dummy('i', integer=True, positive=True)
+            return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
+        raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
+                        "not %s" % (type(x)))
 
 
 def Die(name, sides=6):
