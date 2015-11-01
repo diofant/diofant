@@ -3,7 +3,7 @@ import pytest
 from sympy import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
                    abc, Integer, Eq, symbols, Add, I, Float, log, Rational, Lambda,
                    atan2, cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
-                   factor, nsimplify, zoo, Subs, E)
+                   factor, nsimplify, zoo, Subs, E, RootOf)
 from sympy.core.basic import _aresame
 
 from sympy.abc import x, y, z
@@ -660,3 +660,10 @@ def test_issue_11159():
     exp1 = E
     exp0 = exp1*exp1
     assert exp0.subs(exp1, exp0) == E**4
+
+
+def test_RootOf_issue_10092():
+    x = Symbol('x', real=True)
+    eq = x**3 - 17*x**2 + 81*x - 118
+    r = RootOf(eq, 0)
+    assert (x < r).subs(x, r) is S.false
