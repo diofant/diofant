@@ -304,7 +304,6 @@ def test_solve_univariate_inequality():
         Or(And(-oo < x, x < 1), And(Integer(1) < x, x < 2))
 
 
-@pytest.mark.slow
 def test_slow_general_univariate():
     r = RootOf(x**5 - x**2 + 1, 0)
     assert solve(sqrt(x) + 1/root(x, 3) > 1) == \
