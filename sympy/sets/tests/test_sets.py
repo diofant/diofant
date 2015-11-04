@@ -862,3 +862,13 @@ def test_issue_9637():
                              Interval(2, 3, left_open=True)), a, evaluate=False))
     assert Complement(a, S.Reals) == Complement(a, S.Reals, evaluate=False)
     assert Complement(a, Interval(1, 3)) == Complement(a, Interval(1, 3), evaluate=False)
+
+
+def test_issue_10113():
+    f = x**2/(x**2 - 4)
+    assert imageset(x, f, S.Reals) == Union(Interval(-oo, 0, True),
+                                            Interval(1, oo, True, True))
+    assert imageset(x, f, Interval(-2, 2)) == Interval(-oo, 0, True)
+    assert imageset(x, f, Interval(-2, 3)) == Union(Interval(-oo, 0, True),
+                                                    Interval(Rational(9, 5),
+                                                             oo, False, True))
