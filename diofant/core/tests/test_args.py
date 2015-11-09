@@ -13,7 +13,7 @@ import pytest
 from diofant import Basic, S, symbols, sqrt, sin, oo, Interval, exp, Integer
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
-x, y, z = symbols('x,y,z')
+from diofant.abc import x, y, z
 
 
 def test_all_classes_are_tested():
@@ -77,7 +77,13 @@ def test_all_classes_are_tested():
 
 
 def _test_args(obj):
-    res = all(isinstance(arg, Basic) for arg in obj.args)
+    all_basic = all(isinstance(arg, Basic) for arg in obj.args)
+
+    # Ideally obj.func(*obj.args) would always recreate the object, but for
+    # now, we only require it for objects with non-empty .args
+    recreatable = not obj.args or obj.func(*obj.args) == obj
+
+    res = all_basic and recreatable
 
     if hasattr(obj, 'doit'):
         doit = obj.doit
@@ -442,8 +448,7 @@ def test_diofant__sets__sets__Set():
 
 def test_diofant__sets__sets__Intersection():
     from diofant.sets.sets import Intersection, Interval
-    assert _test_args(Intersection(Interval(0, 3), Interval(2, 4),
-        evaluate=False))
+    assert _test_args(Intersection(Interval(0, 3), Interval(2, x)))
 
 
 def test_diofant__sets__sets__Union():
