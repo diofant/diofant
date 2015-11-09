@@ -2958,7 +2958,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         except AttributeError:
             return {}
         u = "_"
-        while any(s.name.endswith(u) for s in V):
+        while any(str(s).endswith(u) for s in V):
             u += "_"
         name = '%%i%s' % u
         return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}

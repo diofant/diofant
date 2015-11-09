@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
-                     EulerGamma, Function, I, Integral, Interval, Lambda,
+                     EulerGamma, Expr, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
                      asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
@@ -101,6 +101,19 @@ def test_basics():
     assert Integral(x).is_commutative
     n = Symbol('n', commutative=False)
     assert Integral(n + x, x).is_commutative is False
+
+
+def test_diff_wrt():
+    class Test(Expr):
+        _diff_wrt = True
+        is_commutative = True
+
+    t = Test()
+    assert integrate(t + 1, t) == t**2/2 + t
+    assert integrate(t + 1, (t, 0, 1)) == Rational(3, 2)
+
+    pytest.raises(ValueError, lambda: integrate(x + 1, x + 1))
+    pytest.raises(ValueError, lambda: integrate(x + 1, (x + 1, 0, 1)))
 
 
 def test_basics_multiple():

@@ -113,8 +113,6 @@ class Vector(BasisDependent):
                 out = self.dot(other._i) * diff(field, other._x)
                 out += self.dot(other._j) * diff(field, other._y)
                 out += self.dot(other._k) * diff(field, other._z)
-                if out == 0 and isinstance(field, Vector):
-                    out = Vector.zero
                 return out
             return directional_derivative
 

@@ -1,6 +1,7 @@
 from ..core import Basic, Derivative, Integer
 from .coordsysrect import CoordSysCartesian
 from .functions import express
+from .scalar import BaseScalar
 from .vector import Vector
 
 
@@ -162,6 +163,6 @@ def _diff_conditional(expr, base_scalar):
     """
 
     new_expr = express(expr, base_scalar.system, variables=True)
-    if base_scalar in new_expr.atoms():
+    if base_scalar in new_expr.atoms(BaseScalar):
         return Derivative(new_expr, base_scalar)
     return Integer(0)
