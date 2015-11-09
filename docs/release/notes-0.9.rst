@@ -218,3 +218,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10886` No solution by nthroot_mod
 * :sympyissue:`10157` Replace needs_brackets with parenthesize in the latex printer
 * :sympyissue:`10972` [tensor module] incorrect evaluation of TensMul.data
+* :sympyissue:`10044` Error pretty printing a tuple with a sympy.vector basis vector
