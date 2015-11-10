@@ -1,9 +1,9 @@
 from sympy.core.symbol import Symbol
-from sympy.core import Basic, Integer
+from sympy.core.numbers import Integer
 from sympy.printing.pretty.stringpict import prettyForm
 
 
-class BaseScalar(Basic, Symbol):
+class BaseScalar(Symbol):
     """
     A coordinate symbol/base scalar.
 
@@ -16,9 +16,7 @@ class BaseScalar(Basic, Symbol):
         pretty_str = str(pretty_str)
         latex_str = str(latex_str)
         from sympy.vector.coordsysrect import CoordSysCartesian
-        obj = super(BaseScalar, cls).__new__(cls, Symbol(name), Integer(index),
-                                             system, Symbol(pretty_str),
-                                             Symbol(latex_str))
+        obj = super(BaseScalar, cls).__new__(cls, name)
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
         if index not in range(0, 3):
@@ -29,6 +27,10 @@ class BaseScalar(Basic, Symbol):
         obj._pretty_form = pretty_str
         obj._latex_form = latex_str
         obj._system = system
+
+        # Change the args for the object
+        obj._args = tuple([Symbol(name), Integer(index), system,
+                           Symbol(pretty_str), Symbol(latex_str)])
 
         return obj
 
@@ -55,6 +57,10 @@ class BaseScalar(Basic, Symbol):
 
     def __str__(self, printer=None):
         return self._name
+
+    @property
+    def free_symbols(self):
+        return {self}
 
     __repr__ = __str__
     _sympystr = __str__

@@ -1,5 +1,5 @@
 from sympy.core.assumptions import StdFactKB
-from sympy.core import S, Pow, Symbol, Integer
+from sympy.core import S, Pow, Symbol, Basic
 from sympy.core.numbers import Integer
 from sympy.core.expr import AtomicExpr
 from sympy import diff as df, sqrt, ImmutableMatrix as Matrix
@@ -321,8 +321,6 @@ class BaseVector(Vector, AtomicExpr):
         # Verify arguments
         if index not in range(0, 3):
             raise ValueError("index must be 0, 1 or 2")
-        if not isinstance(name, str):
-            raise TypeError("name must be a valid string")
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
         # Initialize an object
@@ -355,6 +353,10 @@ class BaseVector(Vector, AtomicExpr):
 
     def __str__(self, printer=None):
         return self._name
+
+    @property
+    def free_symbols(self):
+        return {self}
 
     __repr__ = __str__
     _sympystr = __str__
