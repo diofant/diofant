@@ -6,6 +6,7 @@ here for easy import.
 from __future__ import print_function, division
 
 import operator
+import os
 from collections import defaultdict
 from sympy.external import import_module
 
@@ -637,13 +638,7 @@ def ordered(seq, keys=None, default=True, warn=False):
 # Minimum version of gmpy changed to 1.13 to allow a single code base to also
 # work with gmpy2.
 
-
-def _getenv(key, default=None):
-    from os import getenv
-    return getenv(key, default)
-
-GROUND_TYPES = _getenv('SYMPY_GROUND_TYPES', 'auto').lower()
-
+GROUND_TYPES = os.getenv('SYMPY_GROUND_TYPES', 'auto').lower()
 HAS_GMPY = 0
 
 if GROUND_TYPES != 'python':
@@ -683,8 +678,6 @@ if GROUND_TYPES == 'gmpy':
     SYMPY_INTS += (type(gmpy.mpz(0)),)
 
 # check_output() is new in Python 2.7
-import os
-
 try:
     from subprocess import check_output
 except ImportError:
