@@ -83,7 +83,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     >>> Sum(x**k, (k, 0, oo)).doit()
     Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), True))
     >>> Sum(x**k/factorial(k), (k, 0, oo)).doit()
-    exp(x)
+    E**x
 
     Here are examples to do summation with symbolic indices.  You
     can use either Function of IndexedBase classes:
@@ -220,7 +220,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         if len(limit) == 3:
             _, a, b = limit
             if x in a.free_symbols or x in b.free_symbols:
-                return None
+                return
             df = Derivative(f, x, evaluate=True)
             rv = self.func(df, limit)
             if limit[0] not in df.free_symbols:
@@ -232,9 +232,6 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     def _eval_simplify(self, ratio, measure):
         from sympy.simplify.simplify import sum_simplify
         return sum_simplify(self)
-
-    def _eval_summation(self, f, x):
-        return None
 
     def euler_maclaurin(self, m=0, n=0, eps=0, eval_integral=True):
         """
@@ -304,9 +301,9 @@ class Sum(AddWithLimits,ExprWithIntLimits):
                 term = f.subs(i, a)
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if test == True:
+                    if test == S.true:
                         return s, abs(term)
-                    elif not (test == False):
+                    elif not (test == S.false):
                         # a symbolic Relational class, can't go further
                         return term, S.Zero
                 s += term
@@ -470,8 +467,10 @@ class Sum(AddWithLimits,ExprWithIntLimits):
                 raise ValueError
 
         a = Function('a')
+
         def f(i, j):
             return self.function.subs([(n, i), (k, j)])
+
         I, J, step = 0, 1, 1
         y, x, sols = S.Zero, [], {}
 
@@ -540,7 +539,7 @@ def summation(f, *symbols, **kwargs):
     >>> from sympy.abc import x
     >>> from sympy import factorial
     >>> summation(x**n/factorial(n), (n, 0, oo))
-    exp(x)
+    E**x
 
     See Also
     ========
@@ -581,7 +580,7 @@ def telescopic(L, R, limits):
     '''
     (i, a, b) = limits
     if L.is_Add or R.is_Add:
-        return None
+        return
 
     # We want to solve(L.subs(i, i + m) + R, m)
     # First we try a simple match since this does things that
@@ -604,11 +603,11 @@ def telescopic(L, R, limits):
         try:
             sol = solve(L.subs(i, i + m) + R, m) or []
         except NotImplementedError:
-            return None
+            return
         sol = [si for si in sol if si.is_Integer and
                (L.subs(i, i + si) + R).expand().is_zero]
         if len(sol) != 1:
-            return None
+            return
         s = sol[0]
 
     if s < 0:
@@ -637,7 +636,7 @@ def eval_sum(f, limits):
             for arg in f.args:
                 newexpr = eval_sum(arg.expr, limits)
                 if newexpr is None:
-                    return None
+                    return
                 newargs.append((newexpr, arg.cond))
             return f.func(*newargs)
 
@@ -650,7 +649,7 @@ def eval_sum(f, limits):
     if definite and (dif < 100):
         return eval_sum_direct(f, (i, a, b))
     if isinstance(f, Piecewise):
-        return None
+        return
     # Try to do it symbolically. Even when the number of terms is known,
     # this can save time when b-a is big.
     # We should try to transform to partial fractions
@@ -773,7 +772,7 @@ def _eval_sum_hyper(f, i, a):
 
     hs = hypersimp(f, i)
     if hs is None:
-        return None
+        return
 
     numer, denom = fraction(factor(hs))
     top, topl = numer.as_coeff_mul(i)
@@ -788,10 +787,10 @@ def _eval_sum_hyper(f, i, a):
                 mul = fac.exp
                 fac = fac.base
                 if not mul.is_Integer:
-                    return None
+                    return
             p = Poly(fac, i)
             if p.degree() != 1:
-                return None
+                return
             m, n = p.all_coeffs()
             ab[k] *= m**mul
             params[k] += [n/m]*mul
@@ -821,7 +820,7 @@ def eval_sum_hyper(f, i_a_b):
 
     if (b - a).is_Integer:
         # We are never going to do better than doing the sum in the obvious way
-        return None
+        return
 
     old_sum = Sum(f, (i, a, b))
 
@@ -834,35 +833,35 @@ def eval_sum_hyper(f, i_a_b):
             res1 = _eval_sum_hyper(f, i, a)
             res2 = _eval_sum_hyper(f, i, b + 1)
             if res1 is None or res2 is None:
-                return None
+                return
             (res1, cond1), (res2, cond2) = res1, res2
             cond = And(cond1, cond2)
-            if cond == False:
-                return None
+            if cond == S.false:
+                return
         return Piecewise((res1 - res2, cond), (old_sum, True))
 
     if a == S.NegativeInfinity:
         res1 = _eval_sum_hyper(f.subs(i, -i), i, 1)
         res2 = _eval_sum_hyper(f, i, 0)
         if res1 is None or res2 is None:
-            return None
+            return
         res1, cond1 = res1
         res2, cond2 = res2
         cond = And(cond1, cond2)
-        if cond == False:
-            return None
+        if cond == S.false:
+            return
         return Piecewise((res1 + res2, cond), (old_sum, True))
 
     # Now b == oo, a != -oo
     res = _eval_sum_hyper(f, i, a)
     if res is not None:
         r, c = res
-        if c == False:
+        if c == S.false:
             if r.is_number:
                 f = f.subs(i, Dummy('i', integer=True, positive=True) + a)
                 if f.is_positive or f.is_zero:
                     return S.Infinity
                 elif f.is_negative:
                     return S.NegativeInfinity
-            return None
+            return
         return Piecewise(res, (old_sum, True))

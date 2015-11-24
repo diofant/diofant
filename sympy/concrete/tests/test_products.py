@@ -261,9 +261,9 @@ def test_conjugate_transpose():
 
 
 def test_simplify():
-    y, t, b, c = symbols('y, t, b, c', integer = True)
+    y, t, b, c = symbols('y, t, b, c', integer=True)
 
-    assert simplify(Product(x*y, (x, n, m), (y, a, k)) * \
+    assert simplify(Product(x*y, (x, n, m), (y, a, k)) *
         Product(y, (x, n, m), (y, a, k))) == \
             Product(x*y**2, (x, n, m), (y, a, k))
     assert simplify(3 * y* Product(x, (x, n, m)) * Product(x, (x, m + 1, a))) \
@@ -272,16 +272,16 @@ def test_simplify():
         Product(x, (x, n, a))
     assert simplify(Product(x, (x, k + 1, a)) * Product(x + 1, (x, n, k))) == \
         Product(x, (x, k + 1, a)) * Product(x + 1, (x, n, k))
-    assert simplify(Product(x, (t, a, b)) * Product(y, (t, a, b)) * \
+    assert simplify(Product(x, (t, a, b)) * Product(y, (t, a, b)) *
         Product(x, (t, b+1, c))) == Product(x*y, (t, a, b)) * \
             Product(x, (t, b+1, c))
-    assert simplify(Product(x, (t, a, b)) * Product(x, (t, b+1, c)) * \
+    assert simplify(Product(x, (t, a, b)) * Product(x, (t, b+1, c)) *
         Product(y, (t, a, b))) == Product(x*y, (t, a, b)) * \
             Product(x, (t, b+1, c))
 
 
 def test_change_index():
-    b, y, c, d, z = symbols('b, y, c, d, z', integer = True)
+    b, y, c, d, z = symbols('b, y, c, d, z', integer=True)
 
     assert Product(x, (x, a, b)).change_index(x, x + 1, y) == \
         Product(y - 1, (y, a + 1, b + 1))
@@ -296,18 +296,18 @@ def test_change_index():
 
 
 def test_reorder():
-    b, y, c, d, z = symbols('b, y, c, d, z', integer = True)
+    b, y, c, d, z = symbols('b, y, c, d, z', integer=True)
 
     assert Product(x*y, (x, a, b), (y, c, d)).reorder((0, 1)) == \
         Product(x*y, (y, c, d), (x, a, b))
     assert Product(x, (x, a, b), (x, c, d)).reorder((0, 1)) == \
         Product(x, (x, c, d), (x, a, b))
-    assert Product(x*y + z, (x, a, b), (z, m, n), (y, c, d)).reorder(\
+    assert Product(x*y + z, (x, a, b), (z, m, n), (y, c, d)).reorder(
         (2, 0), (0, 1)) == Product(x*y + z, (z, m, n), (y, c, d), (x, a, b))
-    assert Product(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(\
+    assert Product(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(
         (0, 1), (1, 2), (0, 2)) == \
         Product(x*y*z, (x, a, b), (z, m, n), (y, c, d))
-    assert Product(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(\
+    assert Product(x*y*z, (x, a, b), (y, c, d), (z, m, n)).reorder(
         (x, y), (y, z), (x, z)) == \
         Product(x*y*z, (x, a, b), (z, m, n), (y, c, d))
     assert Product(x*y, (x, a, b), (y, c, d)).reorder((x, 1)) == \
@@ -317,7 +317,7 @@ def test_reorder():
 
 
 def test_reverse_order():
-    x, y, a, b, c, d= symbols('x, y, a, b, c, d', integer = True)
+    x, y, a, b, c, d= symbols('x, y, a, b, c, d', integer=True)
 
     assert Product(x, (x, 0, 3)).reverse_order(0) == Product(1/x, (x, 4, -1))
     assert Product(x*y, (x, 1, 5), (y, 0, 6)).reverse_order(0, 1) == \

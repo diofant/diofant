@@ -262,9 +262,9 @@ class Plot(object):
 ##############################################################################
 # Data Series
 ##############################################################################
-#TODO more general way to calculate aesthetics (see get_color_array)
+# TODO more general way to calculate aesthetics (see get_color_array)
 
-### The base class for all series
+# The base class for all series
 class BaseSeries(object):
     """Base class for the data objects containing stuff to be plotted.
 
@@ -313,8 +313,8 @@ class BaseSeries(object):
     #   - get_meshes returning mesh_x (1D array), mesh_y(1D array,
     #     mesh_z (2D np.arrays)
     #   - get_points an alias for get_meshes
-    #Different from is_contour as the colormap in backend will be
-    #different
+    # Different from is_contour as the colormap in backend will be
+    # different
 
     is_parametric = False
     # The calculation of aesthetics expects:
@@ -341,7 +341,7 @@ class BaseSeries(object):
         return any(flagslines)
 
 
-### 2D lines
+# 2D lines
 class Line2DBaseSeries(BaseSeries):
     """A base class for 2D lines.
 
@@ -455,25 +455,25 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 allowed is 12.
                 """
                 np = import_module('numpy')
-                #Randomly sample to avoid aliasing.
+                # Randomly sample to avoid aliasing.
                 random = 0.45 + np.random.rand() * 0.1
                 xnew = p[0] + random * (q[0] - p[0])
                 ynew = f(xnew)
                 new_point = np.array([xnew, ynew])
 
-                #Maximum depth
+                # Maximum depth
                 if depth > self.depth:
                     list_segments.append([p, q])
 
-                #Sample irrespective of whether the line is flat till the
-                #depth of 6. We are not using linspace to avoid aliasing.
+                # Sample irrespective of whether the line is flat till the
+                # depth of 6. We are not using linspace to avoid aliasing.
                 elif depth < 6:
                     sample(p, new_point, depth + 1)
                     sample(new_point, q, depth + 1)
 
-                #Sample ten points if complex values are encountered
-                #at both ends. If there is a real value in between, then
-                #sample those points further.
+                # Sample ten points if complex values are encountered
+                # at both ends. If there is a real value in between, then
+                # sample those points further.
                 elif p[1] is None and q[1] is None:
                     xarray = np.linspace(p[0], q[0], 10)
                     yarray = list(map(f, xarray))
@@ -483,8 +483,8 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                                 sample([xarray[i], yarray[i]],
                                     [xarray[i + 1], yarray[i + 1]], depth + 1)
 
-                #Sample further if one of the end points in None( i.e. a complex
-                #value) or the three points are not almost collinear.
+                # Sample further if one of the end points in None( i.e. a complex
+                # value) or the three points are not almost collinear.
                 elif (p[1] is None or q[1] is None or new_point[1] is None
                         or not flat(p, new_point, q)):
                     sample(p, new_point, depth + 1)
@@ -572,7 +572,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
             satisfy the collinearity condition or not. The maximum depth
             allowed is 12.
             """
-            #Randomly sample to avoid aliasing.
+            # Randomly sample to avoid aliasing.
             np = import_module('numpy')
             random = 0.45 + np.random.rand() * 0.1
             param_new = param_p + random * (param_q - param_p)
@@ -580,19 +580,19 @@ class Parametric2DLineSeries(Line2DBaseSeries):
             ynew = f_y(param_new)
             new_point = np.array([xnew, ynew])
 
-            #Maximum depth
+            # Maximum depth
             if depth > self.depth:
                 list_segments.append([p, q])
 
-            #Sample irrespective of whether the line is flat till the
-            #depth of 6. We are not using linspace to avoid aliasing.
+            # Sample irrespective of whether the line is flat till the
+            # depth of 6. We are not using linspace to avoid aliasing.
             elif depth < 6:
                 sample(param_p, param_new, p, new_point, depth + 1)
                 sample(param_new, param_q, new_point, q, depth + 1)
 
-            #Sample ten points if complex values are encountered
-            #at both ends. If there is a real value in between, then
-            #sample those points further.
+            # Sample ten points if complex values are encountered
+            # at both ends. If there is a real value in between, then
+            # sample those points further.
             elif ((p[0] is None and q[1] is None) or
                     (p[1] is None and q[1] is None)):
                 param_array = np.linspace(param_p, param_q, 10)
@@ -608,8 +608,8 @@ class Parametric2DLineSeries(Line2DBaseSeries):
                             sample(param_array[i], param_array[i], point_a,
                                    point_b, depth + 1)
 
-            #Sample further if one of the end points in None( ie a complex
-            #value) or the three points are not almost collinear.
+            # Sample further if one of the end points in None( ie a complex
+            # value) or the three points are not almost collinear.
             elif (p[0] is None or p[1] is None
                     or q[1] is None or q[0] is None
                     or not flat(p, new_point, q)):
@@ -628,7 +628,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         return list_segments
 
 
-### 3D lines
+# 3D lines
 class Line3DBaseSeries(Line2DBaseSeries):
     """A base class for 3D lines.
 
@@ -678,7 +678,7 @@ class Parametric3DLineSeries(Line3DBaseSeries):
         return (list_x, list_y, list_z)
 
 
-### Surfaces
+# Surfaces
 class SurfaceBaseSeries(BaseSeries):
     """A base class for 3D surfaces."""
 
@@ -795,12 +795,12 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
         return (fx(mesh_u, mesh_v), fy(mesh_u, mesh_v), fz(mesh_u, mesh_v))
 
 
-### Contours
+# Contours
 class ContourSeries(BaseSeries):
     """Representation for a contour plot."""
-    #The code is mostly repetition of SurfaceOver2DRange.
-    #XXX: Presently not used in any of those functions.
-    #XXX: Add contour plot and use this seties.
+    # The code is mostly repetition of SurfaceOver2DRange.
+    # XXX: Presently not used in any of those functions.
+    # XXX: Add contour plot and use this seties.
 
     is_contour = True
 
@@ -847,8 +847,8 @@ class BaseBackend(object):
         self.parent = parent
 
 
-## don't have to check for the success of importing matplotlib in each case;
-## we will only be using this backend if we can successfully import matploblib
+# don't have to check for the success of importing matplotlib in each case;
+# we will only be using this backend if we can successfully import matploblib
 class MatplotlibBackend(BaseBackend):
     def __init__(self, parent):
         super(MatplotlibBackend, self).__init__(parent)
@@ -873,8 +873,8 @@ class MatplotlibBackend(BaseBackend):
             self.ax.xaxis.set_ticks_position('bottom')
             self.ax.yaxis.set_ticks_position('left')
         elif all(are_3D):
-            ## mpl_toolkits.mplot3d is necessary for
-            ##      projection='3d'
+            # mpl_toolkits.mplot3d is necessary for
+            # projection='3d'
             mpl_toolkits = import_module('mpl_toolkits',
                                      __import__kwargs={'fromlist': ['mplot3d']})
             self.fig = self.plt.figure()
@@ -907,18 +907,18 @@ class MatplotlibBackend(BaseBackend):
                                                   rstride=1, cstride=1,
                                                   linewidth=0.1)
             elif s.is_implicit:
-                #Smart bounds have to be set to False for implicit plots.
+                # Smart bounds have to be set to False for implicit plots.
                 self.ax.spines['left'].set_smart_bounds(False)
                 self.ax.spines['bottom'].set_smart_bounds(False)
                 points = s.get_raster()
                 if len(points) == 2:
-                    #interval math plotting
+                    # interval math plotting
                     x, y = _matplotlib_list(points[0])
                     self.ax.fill(x, y, facecolor=s.line_color, edgecolor='None')
                 else:
                     # use contourf or contour depending on whether it is
                     # an inequality or equality.
-                    #XXX: ``contour`` plots multiple lines. Should be fixed.
+                    # XXX: ``contour`` plots multiple lines. Should be fixed.
                     ListedColormap = self.matplotlib.colors.ListedColormap
                     colormap = ListedColormap(["white", s.line_color])
                     xarray, yarray, zarray, plot_type = points
@@ -1008,9 +1008,9 @@ class MatplotlibBackend(BaseBackend):
 
     def show(self):
         self.process_series()
-        #TODO after fixing https://github.com/ipython/ipython/issues/1255
+        # TODO after fixing https://github.com/ipython/ipython/issues/1255
         # you can uncomment the next line and remove the pyplot.show() call
-        #self.fig.show()
+        # self.fig.show()
         if _show:
             self.plt.show()
 
@@ -1073,13 +1073,14 @@ def _matplotlib_list(interval_list):
             ylist.extend([intervaly.start, intervaly.end,
                           intervaly.end, intervaly.start, None])
     else:
-        #XXX Ugly hack. Matplotlib does not accept empty lists for ``fill``
+        # XXX Ugly hack. Matplotlib does not accept empty lists for ``fill``
         xlist.extend([None, None, None, None])
         ylist.extend([None, None, None, None])
     return xlist, ylist
 
 
-####New API for plotting module ####
+###########################################################################
+# New API for plotting module
 
 # TODO: Add color arrays for plots.
 # TODO: Add more plotting options for 3d plots.
@@ -1710,7 +1711,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
         exprs = Tuple(*args[:i])
         free_symbols = list(set().union(*[e.free_symbols for e in exprs]))
         if len(args) == expr_len + nb_of_free_symbols:
-            #Ranges given
+            # Ranges given
             plots = [exprs + Tuple(*args[expr_len:])]
         else:
             default_range = Tuple(-10, 10)
@@ -1728,7 +1729,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
                                      expr_len != 3):
         # Cannot handle expressions with number of expression = 3. It is
         # not possible to differentiate between expressions and ranges.
-        #Series of plots with same range
+        # Series of plots with same range
         for i in range(len(args)):
             if isinstance(args[i], Tuple) and len(args[i]) != expr_len:
                 break
@@ -1751,7 +1752,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
             plots = [expr + ranges for expr in exprs]
             return plots
         else:
-            #Use default ranges.
+            # Use default ranges.
             default_range = Tuple(-10, 10)
             ranges = []
             for symbol in free_symbols:
@@ -1764,7 +1765,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
             return plots
 
     elif isinstance(args[0], Tuple) and len(args[0]) == expr_len + nb_of_free_symbols:
-        #Multiple plots with different ranges.
+        # Multiple plots with different ranges.
         for arg in args:
             for i in range(expr_len):
                 if not isinstance(arg[i], Expr):

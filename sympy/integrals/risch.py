@@ -47,6 +47,7 @@ from sympy.polys import gcd, cancel, PolynomialError, Poly, reduced, RootSum, Do
 
 from sympy.utilities.iterables import numbered_symbols
 
+
 def integer_powers(exprs):
     """
     Rewrites a list of expressions as integer multiples of each other.
@@ -224,7 +225,7 @@ class DifferentialExtension(object):
                 (sin, cos, cot, tan, sinh, cosh, coth, tanh): exp,
                 (asin, acos, acot, atan): log,
             }
-        #rewrite the trigonometric components
+        # rewrite the trigonometric components
             for candidates, rule in rewritables.items():
                 self.newf = self.newf.rewrite(candidates, rule)
         else:
@@ -270,8 +271,8 @@ class DifferentialExtension(object):
             # _exp_part code can generate terms of this form, so we do need to
             # do this at each pass (or else modify it to not do that).
 
-            ratpows = [i for i in self.newf.atoms(Pow).union(self.newf.atoms(exp))
-                if (i.base.is_Pow or i.base.func is exp and i.exp.is_Rational)]
+            ratpows = [i for i in self.newf.atoms(Pow)
+                       if (i.base.is_Pow and i.exp.is_Rational)]
 
             ratpows_repl = [
                 (i, i.base.base**(i.exp*i.base.exp)) for i in ratpows]
@@ -291,10 +292,10 @@ class DifferentialExtension(object):
 
             # TODO: This probably doesn't need to be completely recomputed at
             # each pass.
-            exps = update(exps, self.newf.atoms(exp),
+            exps = update(exps, set(a for a in self.newf.atoms(Pow) if a.base is S.Exp1),
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
-            pows = update(pows, self.newf.atoms(Pow),
+            pows = update(pows, set(a for a in self.newf.atoms(Pow) if a.base is not S.Exp1),
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
             numpows = update(numpows, set(pows),
@@ -400,7 +401,7 @@ class DifferentialExtension(object):
         # Avoid AttributeErrors when debugging
         if attr not in self.__slots__:
             raise AttributeError("%s has no attribute %s" % (repr(self), repr(attr)))
-        return None
+        return
 
     def _auto_attrs(self):
         """
@@ -517,11 +518,11 @@ class DifferentialExtension(object):
                     i = Symbol('i')
                 self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs(self.x, i)))]
                 self.newf = self.newf.xreplace(
-                        {exp(exparg): self.t**p for exparg, p in others})
+                    {exp(exparg): self.t**p for exparg, p in others})
                 new_extension = True
 
         if restart:
-            return None
+            return
         return new_extension
 
     def _log_part(self, logs, dummy=True):
@@ -631,7 +632,7 @@ class DifferentialExtension(object):
         self.t = self.T[self.level]
         self.d = self.D[self.level]
         self.case = self.cases[self.level]
-        return None
+        return
 
     def decrement_level(self):
         """
@@ -649,7 +650,7 @@ class DifferentialExtension(object):
         self.t = self.T[self.level]
         self.d = self.D[self.level]
         self.case = self.cases[self.level]
-        return None
+        return
 
 
 class DecrementLevel(object):
@@ -1057,7 +1058,7 @@ def laurent_series(a, d, F, n, DE):
         V.append(v)
         DE_D_list.append(Poly(Z[j + 1],Z[j]))
 
-    DE_new = DifferentialExtension(extension = {'D': DE_D_list})  # a differential indeterminate
+    DE_new = DifferentialExtension(extension={'D': DE_D_list})  # a differential indeterminate
     for j in range(0, n):
         zEha = Poly(z**(n + j), DE.t)*E**(j + 1)*ha
         zEhd = hd
@@ -1109,6 +1110,7 @@ def recognize_derivative(a, d, DE, z=None):
         j = j + 1
     return flag
 
+
 def recognize_log_derivative(a, d, DE, z=None):
     """
     There exists a v in K(x)* such that f = dv/v
@@ -1138,6 +1140,7 @@ def recognize_log_derivative(a, d, DE, z=None):
         if any(not j.is_Integer for j in a):
             return False
     return True
+
 
 def residue_reduce(a, d, DE, z=None, invert=True):
     """
@@ -1425,7 +1428,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
 
     i = pp.nth(0, 0)
 
-    ret = ((g1[0].as_expr()/g1[1].as_expr()).subs(s) \
+    ret = ((g1[0].as_expr()/g1[1].as_expr()).subs(s)
         + residue_reduce_to_basic(g2, DE, z))
 
     qas = qa.as_expr().subs(s)
@@ -1436,9 +1439,8 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         # XXX: Does qd = 0 always necessarily correspond to the exponential
         # equaling 1?
         ret += Piecewise(
-                (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
-                (qas/qds, True)
-            )
+            (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
+            (qas/qds, True))
     else:
         ret += qas/qds
 
@@ -1536,7 +1538,7 @@ class NonElementaryIntegral(Integral):
 
     >>> a = integrate(exp(-x**2), x, risch=True)
     >>> print(a)
-    Integral(exp(-x**2), x)
+    Integral(E**(-x**2), x)
     >>> type(a)
     <class 'sympy.integrals.risch.NonElementaryIntegral'>
 
@@ -1601,7 +1603,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
      |
      |    2
      |  -x
-     | e    dx
+     | E    dx
      |
     /
 
@@ -1633,14 +1635,14 @@ def risch_integrate(f, x, extension=None, handle_first='log',
 
     >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x), use_unicode=False)
      / x\
-     \e /
-    e
+     \E /
+    E
     >>> pprint(risch_integrate(exp(exp(x)), x), use_unicode=False)
       /
      |
      |  / x\
-     |  \e /
-     | e     dx
+     |  \E /
+     | E     dx
      |
     /
 
@@ -1659,7 +1661,6 @@ def risch_integrate(f, x, extension=None, handle_first='log',
          1
     -----------
     log(log(x))
-
     """
     f = S(f)
 

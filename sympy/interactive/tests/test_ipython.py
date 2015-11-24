@@ -16,14 +16,14 @@ ipython = import_module("IPython", min_module_version="0.11")
 readline = import_module("readline")
 
 if not ipython:
-    #bin/test will not execute any tests now
+    # py.test will not execute any tests now
     disabled = True
 
 
 def test_automatic_symbols():
     # this implicitly requires readline
     if not readline:
-        return None
+        return
     # NOTE: Because of the way the hook works, you have to use run_cell(code,
     # True).  This means that the code must have no Out, or it will be printed
     # during the tests.

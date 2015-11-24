@@ -10,6 +10,7 @@ from sympy.core import sympify, SympifyError
 from sympy.utilities import public
 from sympy.polys.polyutils import PicklableWithSlots
 
+
 @public
 class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     """A class for arbitrary expressions. """
@@ -58,7 +59,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
             try:
                 return f.__class__(g)
             except SympifyError:
-                return None
+                return
 
         def __add__(f, g):
             g = f._to_ex(g)

@@ -239,6 +239,7 @@ def test_series_expansion_for_uniform_order():
     assert (1/x + y + y*x + x).series(x, 0, 0) == 1/x + O(1, x)
     assert (1/x + y + y*x + x).series(x, 0, 1) == 1/x + y + O(x)
 
+
 def test_leadterm():
     assert (3 + 2*x**(log(3)/log(2) - 1)).leadterm(x) == (3, 0)
 
@@ -326,7 +327,7 @@ def test_atoms():
     assert (I*pi).atoms(NumberSymbol, I) == \
         (I*pi).atoms(I, NumberSymbol) == {pi, I}
 
-    assert exp(exp(x)).atoms(exp) == {exp(exp(x)), exp(x)}
+    assert exp(exp(x)).atoms(Pow) == {exp(exp(x)), exp(x)}
     assert (1 + x*(2 + y) + exp(3 + z)).atoms(Add) == \
         {1 + x*(2 + y) + exp(3 + z), 2 + y, 3 + z}
 
@@ -438,8 +439,9 @@ def test_is_algebraic_expr():
     assert (cos(y)/sqrt(x)).is_algebraic_expr(y) is False
     assert (cos(y)/sqrt(x)).is_algebraic_expr(x, y) is False
 
+
 def test_SAGE1():
-    #see https://github.com/sympy/sympy/issues/3346
+    # see https://github.com/sympy/sympy/issues/3346
     class MyInt:
         def _sympy_(self):
             return Integer(5)
@@ -1307,7 +1309,7 @@ def test_expr_sorting():
     exprs = [f(1), f(2), f(3), f(1, 2, 3), g(1), g(2), g(3), g(1, 2, 3)]
     assert sorted(exprs, key=default_sort_key) == exprs
 
-    exprs = [f(x), g(x), exp(x), sin(x), cos(x), factorial(x)]
+    exprs = [exp(x), f(x), g(x), sin(x), cos(x), factorial(x)]
     assert sorted(exprs, key=default_sort_key) == exprs
 
     exprs = [Tuple(x, y), Tuple(x, z), Tuple(x, y, z)]
@@ -1396,9 +1398,11 @@ def test_issue_4199():
     assert a._eval_interval(x, -oo, oo) == -y
     assert a._eval_interval(x, oo, -oo) == y
 
+
 def test_eval_interval_zoo():
     # Test that limit is used when zoo is returned
     assert Si(1/x)._eval_interval(x, 0, 1) == -pi/2 + Si(1)
+
 
 def test_primitive():
     assert (3*(x + 1)**2).primitive() == (3, (x + 1)**2)
@@ -1537,7 +1541,6 @@ def test_round():
     ans = S(d20).round(-2)
     assert ans.is_Float and ans == 12345678901234567900
     assert S('1/7').round(4) == 0.1429
-    assert S('.[12345]').round(4) == 0.1235
     assert S('.1349').round(2) == 0.13
     n = S(12345)
     ans = n.round()
@@ -1620,6 +1623,7 @@ def test_round():
     assert S.NegativeInfinity.round() == S.NegativeInfinity
     assert S.ComplexInfinity.round() == S.ComplexInfinity
 
+
 def test_round_exception_nostr():
     # Don't use the string form of the expression in the round exception, as
     # it's too slow
@@ -1631,6 +1635,7 @@ def test_round_exception_nostr():
     else:
         # Did not raise
         raise AssertionError("Did not raise")
+
 
 def test_extract_branch_factor():
     assert exp_polar(2.0*I*pi).extract_branch_factor() == (1, 1)
@@ -1658,6 +1663,7 @@ def test_issue_6325():
     assert diff(e, t, 2) == ans
     e.diff(t, 2) == ans
     assert diff(e, t, 2, simplify=False) != ans
+
 
 def test_issue_7426():
     f1 = a % c

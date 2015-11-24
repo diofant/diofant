@@ -1,11 +1,13 @@
 from __future__ import print_function, division
 
-from sympy.core import Mul, Basic, sympify, Add
+from strategies import exhaust, do_one
+from strategies.core import typed
+
+from sympy.core import Mul, Basic, sympify, Add, Number
 from sympy.core.compatibility import range
 from sympy.functions import adjoint
 from sympy.matrices.expressions.transpose import transpose
-from sympy.strategies import (rm_id, unpack, typed, flatten, exhaust,
-        do_one, new)
+from sympy.core.strategies import rm_id, unpack, flatten
 from sympy.matrices.expressions.matexpr import (MatrixExpr, ShapeError,
         Identity, ZeroMatrix)
 from sympy.matrices.matrices import MatrixBase
@@ -83,8 +85,8 @@ class MatMul(MatrixExpr):
     def _eval_trace(self):
         factor, mmul = self.as_coeff_mmul()
         if factor != 1:
-            from .trace import Trace
-            return factor * Trace(mmul)
+            from .trace import trace
+            return factor * trace(mmul.doit())
         else:
             raise NotImplementedError("Can't simplify any further")
 
@@ -98,7 +100,7 @@ class MatMul(MatrixExpr):
         try:
             return MatMul(*[
                 arg.inverse() if isinstance(arg, MatrixExpr) else arg**-1
-                    for arg in self.args[::-1]]).doit()
+                for arg in self.args[::-1]]).doit()
         except ShapeError:
             from sympy.matrices.expressions.inverse import Inverse
             return Inverse(self)
@@ -110,6 +112,7 @@ class MatMul(MatrixExpr):
         else:
             args = self.args
         return canonicalize(MatMul(*args))
+
 
 def validate(*matrices):
     """ Checks for valid shapes for args of MatMul """
@@ -124,7 +127,8 @@ def validate(*matrices):
 def newmul(*args):
     if args[0] == 1:
         args = args[1:]
-    return new(MatMul, *args)
+    return MatMul(*args)
+
 
 def any_zeros(mul):
     if any([arg.is_zero or (arg.is_Matrix and arg.is_ZeroMatrix)
@@ -132,6 +136,7 @@ def any_zeros(mul):
         matrices = [arg for arg in mul.args if arg.is_Matrix]
         return ZeroMatrix(matrices[0].rows, matrices[-1].cols)
     return mul
+
 
 def merge_explicit(matmul):
     """ Merge explicit MatrixBase arguments
@@ -166,7 +171,7 @@ def merge_explicit(matmul):
     newargs = []
     last = matmul.args[0]
     for arg in matmul.args[1:]:
-        if isinstance(arg, MatrixBase) and isinstance(last, MatrixBase):
+        if isinstance(arg, (MatrixBase, Number)) and isinstance(last, (MatrixBase, Number)):
             last = last * arg
         else:
             newargs.append(last)
@@ -174,6 +179,7 @@ def merge_explicit(matmul):
     newargs.append(last)
 
     return MatMul(*newargs)
+
 
 def xxinv(mul):
     """ Y * X * X.I -> Y """
@@ -188,16 +194,18 @@ def xxinv(mul):
 
     return mul
 
+
 def remove_ids(mul):
     """ Remove Identities from a MatMul
 
-    This is a modified version of sympy.strategies.rm_id.
+    This is a modified version of sympy.core.strategies.rm_id.
     This is necesssary because MatMul may contain both MatrixExprs and Exprs
     as args.
 
     See Also
     --------
-        sympy.strategies.rm_id
+
+    sympy.core.strategies.rm_id
     """
     # Separate Exprs from MatrixExprs in args
     factor, mmul = mul.as_coeff_mmul()
@@ -208,6 +216,7 @@ def remove_ids(mul):
     else:
         return mul
 
+
 def factor_in_front(mul):
     factor, matrices = mul.as_coeff_matrices()
     if factor != 1:
@@ -217,7 +226,8 @@ def factor_in_front(mul):
 rules = (any_zeros, remove_ids, xxinv, unpack, rm_id(lambda x: x == 1),
          merge_explicit, factor_in_front, flatten)
 
-canonicalize = exhaust(typed({MatMul: do_one(*rules)}))
+canonicalize = exhaust(typed({MatMul: do_one(rules)}))
+
 
 def only_squares(*matrices):
     """ factor matrices only if they are square """

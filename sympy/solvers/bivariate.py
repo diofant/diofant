@@ -10,7 +10,8 @@ from sympy.functions.elementary.exponential import (LambertW, exp, log)
 from sympy.functions.elementary.miscellaneous import root
 from sympy.polys.polytools import Poly, factor
 from sympy.core.function import _mexpand
-from sympy.simplify.simplify import (collect, separatevars)
+from sympy.simplify.simplify import separatevars
+from sympy.simplify.radsimp import collect
 from sympy.solvers.solvers import solve, _invert
 
 
@@ -52,16 +53,16 @@ def _mostfunc(lhs, func, X=None):
     >>> from sympy.functions.elementary.exponential import exp
     >>> from sympy.utilities.pytest import raises
     >>> from sympy.abc import x, y
-    >>> _mostfunc(exp(x) + exp(exp(x) + 2), exp)
-    exp(exp(x) + 2)
-    >>> _mostfunc(exp(x) + exp(exp(y) + 2), exp, x)
-    exp(x)
-    >>> _mostfunc(exp(x) + exp(exp(y) + 2), exp, x)
-    exp(x)
+    >>> _mostfunc(exp(x) + exp(exp(x) + 2), Pow)
+    E**(E**x + 2)
+    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
+    E**x
+    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
+    E**x
     >>> _mostfunc(x, exp, x) is None
     True
-    >>> _mostfunc(exp(x) + exp(x*y), exp, x)
-    exp(x)
+    >>> _mostfunc(exp(x) + exp(x*y), Pow, x)
+    E**x
     """
     fterms = [tmp for tmp in lhs.atoms(func) if (not X or
         X.is_Symbol and X in tmp.free_symbols or
@@ -70,7 +71,7 @@ def _mostfunc(lhs, func, X=None):
         return fterms[0]
     elif fterms:
         return max(list(ordered(fterms)), key=lambda x: x.count(func))
-    return None
+    return
 
 
 def _linab(arg, symbol):
@@ -92,7 +93,7 @@ def _linab(arg, symbol):
     >>> _linab(y + y*x + 2*x, x)
     (y + 2, y, x)
     >>> _linab(3 + 2*exp(x), x)
-    (2, 3, exp(x))
+    (2, 3, E**x)
     """
 
     arg = arg.expand()
@@ -242,7 +243,7 @@ def _solve_lambert(f, symbol, gens):
                         diff = log(lhs - other) - log(rhs - other)
                     soln = _lambert(expand_log(diff), symbol)
                 else:
-                    #it's ready to go
+                    # it's ready to go
                     soln = _lambert(lhs - rhs, symbol)
 
     # For the next two,
@@ -269,7 +270,7 @@ def _solve_lambert(f, symbol, gens):
                 mainterm = lhs - other
                 rhs = rhs - other
                 if (mainterm.could_extract_minus_sign() and
-                    rhs.could_extract_minus_sign()):
+                        rhs.could_extract_minus_sign()):
                     mainterm *= -1
                     rhs *= -1
                 diff = log(mainterm) - log(rhs)

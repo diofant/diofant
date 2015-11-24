@@ -167,7 +167,7 @@ class AssocOp(Basic):
         from .expr import Add, Expr
         from sympy import Mul
         if isinstance(self, Expr) and not isinstance(expr, Expr):
-            return None
+            return
 
         # handle simple patterns
         if self == expr:
@@ -197,12 +197,12 @@ class AssocOp(Basic):
                 # there are symbols in the exact part that are not
                 # in the expr; but if there are no free symbols, let
                 # the matching continue
-                return None
+                return
             newpattern = self.func(*wild_part)
             newexpr = self._combine_inverse(expr, exact)
             if not old and (expr.is_Add or expr.is_Mul):
                 if newexpr.count_ops() > expr.count_ops():
-                    return None
+                    return
             return newpattern.matches(newexpr, repl_dict)
 
         # now to real work ;)
@@ -242,7 +242,7 @@ class AssocOp(Basic):
                         continue
 
                     # try collection on non-Wild symbols
-                    from sympy.simplify.simplify import collect
+                    from sympy.simplify.radsimp import collect
                     was = expr
                     did = set()
                     for w in reversed(wild_part):
@@ -333,7 +333,7 @@ class AssocOp(Basic):
         # deal with
         args = []
         for a in self.args:
-            newa = a._eval_evalf(prec)
+            newa = a.evalf(prec)
             if newa is None:
                 args.append(a)
             else:
@@ -395,9 +395,10 @@ class LatticeOp(AssocOp):
     >>> my_join(1, 2)
     2
 
-    References:
+    References
+    ==========
 
-    [1] - http://en.wikipedia.org/wiki/Lattice_%28order%29
+    .. [1] http://en.wikipedia.org/wiki/Lattice_%28order%29
     """
 
     is_commutative = True

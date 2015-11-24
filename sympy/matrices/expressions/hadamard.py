@@ -1,9 +1,12 @@
 from __future__ import print_function, division
 
+from strategies import condition, exhaust, do_one
+
 from sympy.core import Mul, sympify
-from sympy.strategies import unpack, flatten, condition, exhaust, do_one
+from sympy.core.strategies import unpack, flatten
 
 from sympy.matrices.expressions.matexpr import MatrixExpr, ShapeError
+
 
 def hadamard_product(*matrices):
     """
@@ -49,7 +52,7 @@ class HadamardProduct(MatrixExpr):
 
     def __new__(cls, *args, **kwargs):
         args = list(map(sympify, args))
-        check = kwargs.get('check'   , True)
+        check = kwargs.get('check', True)
         if check:
             validate(*args)
         return super(HadamardProduct, cls).__new__(cls, *args)
@@ -68,6 +71,7 @@ class HadamardProduct(MatrixExpr):
     def doit(self, **ignored):
         return canonicalize(self)
 
+
 def validate(*args):
     if not all(arg.is_Matrix for arg in args):
         raise TypeError("Mix of Matrix and Scalar symbols")
@@ -80,4 +84,4 @@ rules = (unpack,
          flatten)
 
 canonicalize = exhaust(condition(lambda x: isinstance(x, HadamardProduct),
-                                 do_one(*rules)))
+                                 do_one(rules)))

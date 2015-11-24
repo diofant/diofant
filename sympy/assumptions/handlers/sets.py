@@ -7,7 +7,7 @@ from sympy.assumptions import Q, ask
 from sympy.assumptions.handlers import CommonHandler, test_closed_group
 from sympy.core.numbers import pi
 from sympy.functions.elementary.exponential import exp, log
-from sympy import I
+from sympy import I, S
 
 
 class AskIntegerHandler(CommonHandler):
@@ -55,7 +55,7 @@ class AskIntegerHandler(CommonHandler):
                     if arg.q == 2:
                         return ask(Q.even(2*expr), assumptions)
                     if ~(arg.q & 1):
-                        return None
+                        return
                 elif ask(Q.irrational(arg), assumptions):
                     if _output:
                         _output = False
@@ -121,6 +121,10 @@ class AskRationalHandler(CommonHandler):
         Irrational ** Rational   -> Irrational
         Rational ** Irrational   -> ?
         """
+        if expr.base is S.Exp1:
+            x = expr.exp
+            if ask(Q.rational(x), assumptions):
+                return ask(~Q.nonzero(x), assumptions)
         if ask(Q.integer(expr.exp), assumptions):
             return ask(Q.rational(expr.base), assumptions)
         elif ask(Q.rational(expr.exp), assumptions):
@@ -134,12 +138,6 @@ class AskRationalHandler(CommonHandler):
         [staticmethod(CommonHandler.AlwaysFalse)]*6
 
     @staticmethod
-    def exp(expr, assumptions):
-        x = expr.args[0]
-        if ask(Q.rational(x), assumptions):
-            return ask(~Q.nonzero(x), assumptions)
-
-    @staticmethod
     def cot(expr, assumptions):
         x = expr.args[0]
         if ask(Q.rational(x), assumptions):
@@ -151,7 +149,13 @@ class AskRationalHandler(CommonHandler):
         if ask(Q.rational(x), assumptions):
             return ask(~Q.nonzero(x - 1), assumptions)
 
-    sin, cos, tan, asin, atan = [exp]*5
+    @staticmethod
+    def sin(expr, assumptions):
+        x = expr.args[0]
+        if ask(Q.rational(x), assumptions):
+            return ask(~Q.nonzero(x), assumptions)
+
+    cos, tan, asin, atan = [sin]*4
     acos, acot = log, cot
 
 
@@ -163,7 +167,7 @@ class AskIrrationalHandler(CommonHandler):
         if _real:
             _rational = ask(Q.rational(expr), assumptions)
             if _rational is None:
-                return None
+                return
             return not _rational
         else:
             return _real
@@ -231,18 +235,21 @@ class AskRealHandler(CommonHandler):
         if expr.is_number:
             return AskRealHandler._number(expr, assumptions)
 
-        if expr.base.func == exp:
-            if ask(Q.imaginary(expr.base.args[0]), assumptions):
+        if expr.base.is_Pow and expr.base.base is S.Exp1:
+            if ask(Q.imaginary(expr.base.exp), assumptions):
                 if ask(Q.imaginary(expr.exp), assumptions):
                     return True
             # If the i = (exp's arg)/(I*pi) is an integer or half-integer
             # multiple of I*pi then 2*i will be an integer. In addition,
             # exp(i*I*pi) = (-1)**i so the overall realness of the expr
             # can be determined by replacing exp(i*I*pi) with (-1)**i.
-            i = expr.base.args[0]/I/pi
+            i = expr.base.exp/I/pi
             if ask(Q.integer(2*i), assumptions):
                 return ask(Q.real(((-1)**i)**expr.exp), assumptions)
             return
+
+        if expr.base is S.Exp1:
+            return ask(Q.integer(expr.exp/I/pi) | Q.real(expr.exp), assumptions)
 
         if ask(Q.imaginary(expr.base), assumptions):
             if ask(Q.integer(expr.exp), assumptions):
@@ -282,10 +289,6 @@ class AskRealHandler(CommonHandler):
             return True
 
     cos = sin
-
-    @staticmethod
-    def exp(expr, assumptions):
-        return ask(Q.integer(expr.args[0]/I/pi) | Q.real(expr.args[0]), assumptions)
 
     @staticmethod
     def log(expr, assumptions):
@@ -370,7 +373,7 @@ class AskHermitianHandler(AskRealHandler):
         if ask(Q.hermitian(expr.args[0]), assumptions):
             return True
 
-    cos, exp = [sin]*2
+    cos = sin
 
 
 class AskComplexHandler(CommonHandler):
@@ -383,10 +386,16 @@ class AskComplexHandler(CommonHandler):
     def Add(expr, assumptions):
         return test_closed_group(expr, assumptions, Q.complex)
 
-    Mul, Pow = [Add]*2
+    Mul = Add
 
-    Number, sin, cos, log, exp, re, im, NumberSymbol, Abs, ImaginaryUnit = \
-        [staticmethod(CommonHandler.AlwaysTrue)]*10  # they are all complex functions or expressions
+    @staticmethod
+    def Pow(expr, assumptions):
+        if expr.base is S.Exp1:
+            return True
+        return test_closed_group(expr, assumptions, Q.complex)
+
+    Number, sin, cos, log, re, im, NumberSymbol, Abs, ImaginaryUnit = \
+        [staticmethod(CommonHandler.AlwaysTrue)]*9  # they are all complex functions or expressions
 
     Infinity, NegativeInfinity = [staticmethod(CommonHandler.AlwaysFalse)]*2
 
@@ -473,13 +482,17 @@ class AskImaginaryHandler(CommonHandler):
         if expr.is_number:
             return AskImaginaryHandler._number(expr, assumptions)
 
-        if expr.base.func == exp:
-            if ask(Q.imaginary(expr.base.args[0]), assumptions):
+        if expr.base.is_Pow and expr.base.base is S.Exp1:
+            if ask(Q.imaginary(expr.base.exp), assumptions):
                 if ask(Q.imaginary(expr.exp), assumptions):
                     return False
-                i = expr.base.args[0]/I/pi
+                i = expr.base.exp/I/pi
                 if ask(Q.integer(2*i), assumptions):
                     return ask(Q.imaginary(((-1)**i)**expr.exp), assumptions)
+
+        if expr.base is S.Exp1:
+            a = expr.exp/I/pi
+            return ask(Q.integer(2*a) & ~Q.integer(a), assumptions)
 
         if ask(Q.imaginary(expr.base) & ~Q.zero(expr.base), assumptions):
             if ask(Q.integer(expr.exp), assumptions):
@@ -517,17 +530,12 @@ class AskImaginaryHandler(CommonHandler):
         # return ask(Q.nonpositive(expr.args[0]), assumptions)
         # but ask(Q.nonpositive(exp(x)), Q.imaginary(x)) -> None;
         # it should return True since exp(x) will be either 0 or complex
-        if expr.args[0].func == exp:
-            if expr.args[0].args[0] in [I, -I]:
+        if expr.args[0].is_Pow and expr.args[0].base is S.Exp1:
+            if expr.args[0].exp in [I, -I]:
                 return True
         im = ask(Q.imaginary(expr.args[0]), assumptions)
         if im is False:
             return False
-
-    @staticmethod
-    def exp(expr, assumptions):
-        a = expr.args[0]/I/pi
-        return ask(Q.integer(2*a) & ~Q.integer(a), assumptions)
 
     @staticmethod
     def Number(expr, assumptions):
@@ -611,6 +619,10 @@ class AskAlgebraicHandler(CommonHandler):
 
     @staticmethod
     def Pow(expr, assumptions):
+        if expr.base is S.Exp1:
+            x = expr.exp
+            if ask(Q.algebraic(x), assumptions):
+                return ask(~Q.nonzero(x), assumptions)
         return expr.exp.is_Rational and ask(
             Q.algebraic(expr.base), assumptions)
 
@@ -625,12 +637,6 @@ class AskAlgebraicHandler(CommonHandler):
         [staticmethod(CommonHandler.AlwaysFalse)]*5
 
     @staticmethod
-    def exp(expr, assumptions):
-        x = expr.args[0]
-        if ask(Q.algebraic(x), assumptions):
-            return ask(~Q.nonzero(x), assumptions)
-
-    @staticmethod
     def cot(expr, assumptions):
         x = expr.args[0]
         if ask(Q.algebraic(x), assumptions):
@@ -642,5 +648,11 @@ class AskAlgebraicHandler(CommonHandler):
         if ask(Q.algebraic(x), assumptions):
             return ask(~Q.nonzero(x - 1), assumptions)
 
-    sin, cos, tan, asin, atan = [exp]*5
+    @staticmethod
+    def sin(expr, assumptions):
+        x = expr.args[0]
+        if ask(Q.algebraic(x), assumptions):
+            return ask(~Q.nonzero(x), assumptions)
+
+    cos, tan, asin, atan = [sin]*4
     acos, acot = log, cot

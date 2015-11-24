@@ -179,7 +179,7 @@ class BasisDependentAdd(BasisDependent, Add):
     def __new__(cls, *args, **options):
         components = {}
 
-        #Check each arg and simultaneously learn the components
+        # Check each arg and simultaneously learn the components
         for i, arg in enumerate(args):
             if not isinstance(arg, cls._expr_type):
                 if isinstance(arg, Mul):
@@ -189,10 +189,10 @@ class BasisDependentAdd(BasisDependent, Add):
                 else:
                     raise TypeError(str(arg) +
                                     " cannot be interpreted correctly")
-            #If argument is zero, ignore
+            # If argument is zero, ignore
             if arg == cls.zero:
                 continue
-            #Else, update components accordingly
+            # Else, update components accordingly
             for x in arg.components:
                 components[x] = components.get(x, 0) + arg.components[x]
 
@@ -201,11 +201,11 @@ class BasisDependentAdd(BasisDependent, Add):
             if components[x] == 0:
                 del components[x]
 
-        #Handle case of zero vector
+        # Handle case of zero vector
         if len(components) == 0:
             return cls.zero
 
-        #Build object
+        # Build object
         newargs = [x*components[x] for x in components]
         obj = super(BasisDependentAdd, cls).__new__(cls,
                                                     *newargs, **options)
@@ -232,9 +232,9 @@ class BasisDependentMul(BasisDependent, Mul):
         measure_number = S(1)
         zeroflag = False
 
-        #Determine the component and check arguments
-        #Also keep a count to ensure two vectors aren't
-        #being multipled
+        # Determine the component and check arguments
+        # Also keep a count to ensure two vectors aren't
+        # being multipled
         for arg in args:
             if isinstance(arg, cls._zero_func):
                 count += 1
@@ -250,17 +250,17 @@ class BasisDependentMul(BasisDependent, Mul):
                 expr = arg
             else:
                 measure_number *= arg
-        #Make sure incompatible types weren't multipled
+        # Make sure incompatible types weren't multipled
         if count > 1:
             raise ValueError("Invalid multiplication")
         elif count == 0:
             return Mul(*args, **options)
-        #Handle zero vector case
+        # Handle zero vector case
         if zeroflag:
             return cls.zero
 
-        #If one of the args was a VectorAdd, return an
-        #appropriate VectorAdd instance
+        # If one of the args was a VectorAdd, return an
+        # appropriate VectorAdd instance
         if isinstance(expr, cls._add_func):
             newargs = [cls._mul_func(measure_number, x) for
                        x in expr.args]
@@ -276,7 +276,7 @@ class BasisDependentMul(BasisDependent, Mul):
         assumptions = {}
         assumptions['commutative'] = True
         obj._assumptions = StdFactKB(assumptions)
-        obj._components = {expr._base_instance : measure_number}
+        obj._components = {expr._base_instance: measure_number}
         obj._sys = expr._base_instance._sys
 
         return obj
@@ -302,8 +302,8 @@ class BasisDependentZero(BasisDependent):
 
     def __new__(cls):
         obj = super(BasisDependentZero, cls).__new__(cls)
-        #Pre-compute a specific hash value for the zero vector
-        #Use the same one always
+        # Pre-compute a specific hash value for the zero vector
+        # Use the same one always
         obj._hash = tuple([S(0), cls]).__hash__()
         return obj
 

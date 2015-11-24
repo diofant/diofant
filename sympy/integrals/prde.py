@@ -61,6 +61,7 @@ def prde_normal_denom(fa, fd, G, DE):
 
     return (a, (ba, bd), G, h)
 
+
 def real_imag(ba, bd, gen):
     """
     Helper function, to get the real and imaginary part of a rational function
@@ -502,7 +503,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
         s = solve(eqs, c1)
         if not s or not s[c1].is_Rational:
             # deg(q) > B, no solution for c.
-            return None
+            return
 
         N, M = s[c1].as_numer_denom()  # N and M are integers
         N, M = Poly(N, DE.t), Poly(M, DE.t)
@@ -513,19 +514,19 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
             'auto')
         if Qv is None:
             # (N*f - M*w) is not the logarithmic derivative of a k(t)-radical.
-            return None
+            return
 
         Q, e, v = Qv
         if e != 1:
-            return None
+            return
 
         if Q.is_zero or v.is_zero:
-            return None
+            return
 
         return (Q*N, Q*M, v)
 
     if p.degree(DE.t) > B:
-        return None
+        return
 
     c = lcm(fd.as_poly(DE.t).LC(), wd.as_poly(DE.t).LC())
     l = fd.monic().lcm(wd.monic())*Poly(c, DE.t)
@@ -543,7 +544,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     s = solve(eqs, c1)
     if not s or not s[c1].is_Rational:
         # deg(q) <= B, no solution for c.
-        return None
+        return
 
     M, N = s[c1].as_numer_denom()
 
@@ -552,12 +553,12 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     Qv = is_log_deriv_k_t_radical_in_field(nfmwa, nfmwd, DE)
     if Qv is None:
         # (N*f - M*w) is not the logarithmic derivative of a k(t)-radical.
-        return None
+        return
 
     Q, v = Qv
 
     if Q.is_zero or v.is_zero:
-        return None
+        return
 
     return (Q*N, Q*M, v)
 
@@ -654,7 +655,7 @@ def is_deriv_k(fa, fd, DE):
         # Note: See comment in constant_system
 
         # Also note: derivation(basic=True) calls cancel()
-        return None
+        return
     else:
         if not all(i.is_Rational for i in u):
             raise NotImplementedError("Cannot work with non-rational "
@@ -757,7 +758,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
         # Note: See comment in constant_system
 
         # Also note: derivation(basic=True) calls cancel()
-        return None
+        return
     else:
         if not all(i.is_Rational for i in u):
             # TODO: But maybe we can tell if they're not rational, like
@@ -809,14 +810,14 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         # functions given when solving the parametric logarithmic
         # derivative problem when integration elementary functions (see
         # Bronstein's book, page 255), so most likely this indicates a bug.
-        return None
+        return
 
     roots = [(i, i.real_roots()) for i, _ in H]
     if not all(len(j) == i.degree() and all(k.is_Rational for k in j) for
                i, j in roots):
         # If f is the logarithmic derivative of a k(t)-radical, then all the
         # roots of the resultant must be rational numbers.
-        return None
+        return
 
     # [(a, i), ...], where i*log(a) is a term in the log-part of the integral
     # of f
@@ -833,10 +834,10 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
     p = p.as_poly(DE.t)
     if p is None:
         # f - Dg will be in k[t] if f is the logarithmic derivative of a k(t)-radical
-        return None
+        return
 
     if p.degree(DE.t) >= max(1, DE.d.degree(DE.t)):
-        return None
+        return
 
     if case == 'auto':
         case = DE.case
@@ -848,7 +849,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             wa, wd = frac_in((wa, wd), DE.t)
             A = parametric_log_deriv(pa, pd, wa, wd, DE)
         if A is None:
-            return None
+            return
         n, e, u = A
         u *= DE.t**e
 
@@ -857,7 +858,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             pa, pd = frac_in(p, DE.t)
             A = is_log_deriv_k_t_radical_in_field(pa, pd, DE, case='auto')
         if A is None:
-            return None
+            return
         n, u = A
 
     elif case == 'base':
@@ -866,7 +867,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             # f is the logarithmic derivative in the base case if and only if
             # f = fa/fd, fd is square-free, deg(fa) < deg(fd), and
             # gcd(fa, fd) == 1.  The last condition is handled by cancel() above.
-            return None
+            return
         # Note: if residueterms = [], returns (1, 1)
         # f had better be 0 in that case.
         n = reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], S(1))

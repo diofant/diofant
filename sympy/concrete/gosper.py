@@ -106,7 +106,7 @@ def gosper_term(f, n):
     r = hypersimp(f, n)
 
     if r is None:
-        return None    # 'f' is *not* a hypergeometric term
+        return    # 'f' is *not* a hypergeometric term
 
     p, q = r.as_numer_denom()
 
@@ -129,7 +129,7 @@ def gosper_term(f, n):
             D.remove(d)
 
     if not D:
-        return None    # 'f(n)' is *not* Gosper-summable
+        return    # 'f(n)' is *not* Gosper-summable
 
     d = max(D)
 
@@ -142,7 +142,7 @@ def gosper_term(f, n):
     solution = solve(H.coeffs(), coeffs)
 
     if solution is None:
-        return None    # 'f(n)' is *not* Gosper-summable
+        return    # 'f(n)' is *not* Gosper-summable
 
     x = x.as_expr().subs(solution)
 
@@ -151,7 +151,7 @@ def gosper_term(f, n):
             x = x.subs(coeff, 0)
 
     if x is S.Zero:
-        return None    # 'f(n)' is *not* Gosper-summable
+        return    # 'f(n)' is *not* Gosper-summable
     else:
         return B.as_expr()*x/C.as_expr()
 
@@ -203,7 +203,7 @@ def gosper_sum(f, k):
     g = gosper_term(f, k)
 
     if g is None:
-        return None
+        return
 
     if indefinite:
         result = f*g

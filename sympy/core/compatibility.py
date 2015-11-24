@@ -73,8 +73,10 @@ if PY3:
     # String / unicode compatibility
     unicode = str
     unichr = chr
+
     def u(x):
         return x
+
     def u_decode(x):
         return x
 
@@ -93,6 +95,8 @@ if PY3:
     exec_=getattr(builtins, "exec")
 
     range=range
+
+    from tokenize import tokenize
 else:
     import codecs
     import types
@@ -105,8 +109,10 @@ else:
     # String / unicode compatibility
     unicode = unicode
     unichr = unichr
+
     def u(x):
         return codecs.unicode_escape_decode(x)[0]
+
     def u_decode(x):
         return x.decode('utf-8')
 
@@ -136,6 +142,9 @@ else:
             _locs_ = _globs_
         exec("exec _code_ in _globs_, _locs_")
     range=xrange
+
+    from tokenize import generate_tokens as tokenize
+
 
 def with_metaclass(meta, *bases):
     """
@@ -627,6 +636,7 @@ def ordered(seq, keys=None, default=True, warn=False):
 
 # Minimum version of gmpy changed to 1.13 to allow a single code base to also
 # work with gmpy2.
+
 
 def _getenv(key, default=None):
     from os import getenv

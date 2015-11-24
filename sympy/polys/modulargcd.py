@@ -31,7 +31,7 @@ def _trivial_gcd(f, g):
             return -f, -ring.one, ring.zero
         else:
             return f, ring.one, ring.zero
-    return None
+    return
 
 
 def _gf_gcd(fp, gp, p):
@@ -219,8 +219,7 @@ def modgcd_univariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-
+    .. [1] [Monagan00]_
     """
     assert f.ring == g.ring and f.ring.domain.is_ZZ
 
@@ -498,8 +497,7 @@ def _degree_bound_bivariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-
+    .. [1] [Monagan00]_
     """
     ring = f.ring
 
@@ -767,8 +765,7 @@ def modgcd_bivariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-
+    .. [1] [Monagan00]_
     """
     assert f.ring == g.ring and f.ring.domain.is_ZZ
 
@@ -953,9 +950,8 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     References
     ==========
 
-    1. [Monagan00]_
-    2. [Brown71]_
-
+    .. [1] [Monagan00]_
+    .. [2] [Brown71]_
     """
     ring = f.ring
     k = ring.ngens
@@ -965,7 +961,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
         degh = h.degree()
 
         if degh > degbound[0]:
-            return None
+            return
         if degh < degbound[0]:
             degbound[0] = degh
             raise ModularGCDFailed
@@ -985,7 +981,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     degconth = conth.degree()
 
     if degconth > contbound[k-1]:
-        return None
+        return
     if degconth < contbound[k-1]:
         contbound[k-1] = degconth
         raise ModularGCDFailed
@@ -1006,7 +1002,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
             degbound[k-1] - contbound[k-1] + degdelta) + 1
 
     if p < N:
-        return None
+        return
 
     n = 0
     d = 0
@@ -1032,7 +1028,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
         if ha is None:
             d += 1
             if d > n:
-                return None
+                return
             continue
 
         if ha.is_ground:
@@ -1052,14 +1048,14 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
             degyh = h.degree(k-1)
 
             if degyh > degbound[k-1]:
-                return None
+                return
             if degyh < degbound[k-1]:
                 degbound[k-1] = degyh
                 raise ModularGCDFailed
 
             return h
 
-    return None
+    return
 
 
 def modgcd_multivariate(f, g):
@@ -1131,8 +1127,8 @@ def modgcd_multivariate(f, g):
     References
     ==========
 
-    1. [Monagan00]_
-    2. [Brown71]_
+    .. [1] [Monagan00]_
+    .. [2] [Brown71]_
 
     See also
     ========
@@ -1253,8 +1249,7 @@ def _rational_function_reconstruction(c, p, m):
     References
     ==========
 
-    1. [Hoeij04]_
-
+    .. [1] [Hoeij04]_
     """
     ring = c.ring
     domain = ring.domain
@@ -1272,7 +1267,7 @@ def _rational_function_reconstruction(c, p, m):
 
     a, b = r1, s1
     if b.degree() > D or _gf_gcd(b, m, p) != 1:
-        return None
+        return
 
     lc = b.LC
     if lc != 1:
@@ -1338,7 +1333,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
             coeffh = _rational_function_reconstruction(coeff, p, m)
 
             if not coeffh:
-                return None
+                return
 
         else:
             coeffh = ring.domain.zero
@@ -1346,7 +1341,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
                 ch = _rational_function_reconstruction(c, p, m)
 
                 if not ch:
-                    return None
+                    return
 
                 coeffh[mon] = ch
 
@@ -1439,7 +1434,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
         lcinv, _, gcd = _gf_gcdex(ring.dmp_LC(g), minpoly, p)
 
         if not gcd == 1:
-            return None
+            return
 
         while True:
             degrem = rem.degree(0)  # degree in x
@@ -1486,8 +1481,7 @@ def _trial_division(f, h, minpoly, p=None):
     References
     ==========
 
-    1. [Hoeij02]_
-
+    .. [1] [Hoeij02]_
     """
     ring = f.ring
     domain = ring.domain
@@ -1579,8 +1573,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     References
     ==========
 
-    1. [Hoeij04]_
-
+    .. [1] [Hoeij04]_
     """
     ring = f.ring
     domain = ring.domain  # Z[t_1, ..., t_k]
@@ -1638,7 +1631,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         if ha is None:
             d += 1
             if d > n:
-                return None
+                return
             continue
 
         if ha == 1:
@@ -1703,7 +1696,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         if not _trial_division(f, h, minpoly, p) and not _trial_division(g, h, minpoly, p):
             return h
 
-    return None
+    return
 
 
 def _integer_rational_reconstruction(c, m, domain):
@@ -1739,8 +1732,7 @@ def _integer_rational_reconstruction(c, m, domain):
     References
     ==========
 
-    1. [Wang81]_
-
+    .. [1] [Wang81]_
     """
     if c < 0:
         c += m
@@ -1756,14 +1748,14 @@ def _integer_rational_reconstruction(c, m, domain):
         s0, s1 = s1, s0 - quo*s1
 
     if abs(s1) >= bound:
-        return None
+        return
 
     if s1 < 0:
         a, b = -r1, -s1
     elif s1 > 0:
         a, b = r1, s1
     else:
-        return None
+        return
 
     field = domain.get_field()
 
@@ -1824,7 +1816,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
         coeffh = reconstruction(coeff, m, domain)
 
         if not coeffh:
-            return None
+            return
 
         h[monom] = coeffh
 
@@ -1889,7 +1881,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     References
     ==========
 
-    1. [Hoeij04]_
+    .. [1] [Hoeij04]_
 
     See also
     ========
@@ -2231,8 +2223,7 @@ def func_field_modgcd(f, g):
     References
     ==========
 
-    1. [Hoeij04]_
-
+    .. [1] [Hoeij04]_
     """
     ring = f.ring
     domain = ring.domain

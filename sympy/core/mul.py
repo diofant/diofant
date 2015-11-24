@@ -28,6 +28,8 @@ class NC_Marker:
 
 # Key for sorting commutative args in canonical order
 _args_sortkey = cmp_to_key(Basic.compare)
+
+
 def _mulsort(args):
     # in-place sorting of args
     args.sort(key=_args_sortkey)
@@ -552,7 +554,7 @@ class Mul(Expr, AssocOp):
         elif coeff is S.Zero:
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
-            if any(c.is_finite == False for c in c_part):
+            if any(c.is_finite is False for c in c_part):
                 return [S.NaN], [], order_symbols
             return [coeff], [], order_symbols
 
@@ -815,7 +817,7 @@ class Mul(Expr, AssocOp):
         if self.is_commutative and expr.is_commutative:
             return AssocOp._matches_commutative(self, expr, repl_dict, old)
         elif self.is_commutative is not expr.is_commutative:
-            return None
+            return
         c1, nc1 = self.args_cnc()
         c2, nc2 = expr.args_cnc()
         repl_dict = repl_dict.copy()
@@ -860,10 +862,10 @@ class Mul(Expr, AssocOp):
                 # do more expensive match
                 dd = b.matches(expr, repl_dict)
                 if dd is None:
-                    return None
+                    return
                 dd = a.matches(Rational(sign), dd)
                 return dd
-            return None
+            return
 
         d = repl_dict.copy()
 
@@ -884,12 +886,12 @@ class Mul(Expr, AssocOp):
             return d
 
         if len(ee) != len(pp):
-            return None
+            return
 
         for p, e in zip(pp, ee):
             d = p.xreplace(d).matches(e, d)
             if d is None:
-                return None
+                return
         return d
 
     @staticmethod
@@ -976,7 +978,7 @@ class Mul(Expr, AssocOp):
             if any(a.is_zero for a in self.args):
                 return S.NaN.is_infinite
             if any(a.is_zero is None for a in self.args):
-                return None
+                return
             return True
 
     def _eval_is_rational(self):
@@ -1061,7 +1063,11 @@ class Mul(Expr, AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
-        return (S.ImaginaryUnit*self).is_extended_real
+        obj = S.ImaginaryUnit*self
+        if obj.is_Mul:
+            return obj._eval_is_extended_real()
+        else:
+            return obj.is_extended_real
 
     def _eval_is_hermitian(self):
         real = True
@@ -1128,7 +1134,7 @@ class Mul(Expr, AssocOp):
         """
 
         sign = 1
-        saw_NON = False
+        saw_NON = saw_NOT = False
         for t in self.args:
             if t.is_positive:
                 continue
@@ -1141,15 +1147,28 @@ class Mul(Expr, AssocOp):
                 saw_NON = True
             elif t.is_nonnegative:
                 saw_NON = True
+            elif t.is_positive is False:
+                sign = -sign
+                if saw_NOT:
+                    return
+                saw_NOT = True
+            elif t.is_negative is False:
+                if saw_NOT:
+                    return
+                saw_NOT = True
             else:
                 return
-        if sign == 1 and saw_NON is False:
+        if sign == 1 and saw_NON is False and saw_NOT is False:
             return True
         if sign < 0:
             return False
 
     def _eval_is_negative(self):
-        return (-self).is_positive
+        obj = -self
+        if obj.is_Mul:
+            return obj._eval_is_positive()
+        else:
+            return obj.is_positive
 
     def _eval_is_odd(self):
         is_integer = self.is_integer
@@ -1158,7 +1177,7 @@ class Mul(Expr, AssocOp):
             r, acc = True, 1
             for t in self.args:
                 if not t.is_integer:
-                    return None
+                    return
                 elif t.is_even:
                     r = False
                 elif t.is_integer:
@@ -1187,24 +1206,24 @@ class Mul(Expr, AssocOp):
     def _eval_subs(self, old, new):
         from sympy.functions.elementary.complexes import sign
         from sympy.ntheory.factor_ import multiplicity
-        from sympy.simplify.simplify import powdenest, fraction
+        from sympy.simplify.powsimp import powdenest
+        from sympy.simplify.radsimp import fraction
 
         if not old.is_Mul:
-            return None
+            return
 
         # try keep replacement literal so -2*x doesn't replace 4*x
         if old.args[0].is_Number and old.args[0] < 0:
             if self.args[0].is_Number:
                 if self.args[0] < 0:
                     return self._subs(-old, -new)
-                return None
+                return
 
         def base_exp(a):
             # if I and -1 are in a Mul, they get both end up with
             # a -1 base (see issue 6421); all we want here are the
-            # true Pow or exp separated into base and exponent
-            from sympy import exp
-            if a.is_Pow or a.func is exp:
+            # true Pow separated into base and exponent
+            if a.is_Pow:
                 return a.as_base_exp()
             return a, S.One
 
@@ -1605,12 +1624,14 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
 def expand_2arg(e):
     from sympy.simplify.simplify import bottom_up
+
     def do(e):
         if e.is_Mul:
             c, r = e.as_coeff_Mul()
             if c.is_Number and r.is_Add:
                 return _unevaluated_Add(*[c*ri for ri in r.args])
         return e
+
     return bottom_up(e, do)
 
 

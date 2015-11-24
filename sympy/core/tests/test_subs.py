@@ -32,9 +32,6 @@ def test_trigonometric():
     e = e.subs(sin(x), cos(x))
     assert e == 2*cos(x)**2
 
-    assert exp(pi).subs(exp, sin) == 0
-    assert cos(exp(pi)).subs(exp, sin) == 1
-
     i = Symbol('i', integer=True)
     zoo = S.ComplexInfinity
     assert tan(x).subs(x, pi/2) is zoo
@@ -351,7 +348,7 @@ def test_division():
     assert (1/x**2).subs(x, -2) == Rational(1, 4)
     assert (-(1/x**2)).subs(x, -2) == -Rational(1, 4)
 
-    #issue 5360
+    # issue 5360
     assert (1/x).subs(x, 0) == 1/S(0)
 
 
@@ -401,7 +398,7 @@ def test_functions_subs():
     assert (f(x, y)).subs(f, sin) == f(x, y)
     assert (sin(x) + atan2(x, y)).subs([[atan2, f], [sin, g]]) == \
         f(x, y) + g(x)
-    assert (g(f(x + y, x))).subs([[f, l], [g, exp]]) == exp(x + sin(x + y))
+    assert (g(f(x + y, x))).subs([[f, l], [g, Lambda(x, exp(x))]]) == exp(x + sin(x + y))
 
 
 def test_derivative_subs():
@@ -415,6 +412,7 @@ def test_derivative_subs():
     assert cse(Derivative(f(x, y), x) +
                Derivative(f(x, y), y))[1][0].has(Derivative)
 
+
 def test_derivative_subs2():
     x, y, z = symbols('x y z')
     f, g = symbols('f g', cls=Function)
@@ -423,17 +421,19 @@ def test_derivative_subs2():
     assert Derivative(f, x, y).subs(Derivative(f, x), g) == Derivative(g, y)
     assert Derivative(f, x, y).subs(Derivative(f, y), g) == Derivative(g, x)
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
+        Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
+        Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
     assert (Derivative(f(x, y, z), x, y, z).subs(
-                Derivative(f(x, y, z), z, y, x), g) == g)
+        Derivative(f(x, y, z), z, y, x), g) == g)
+
 
 def test_derivative_subs3():
     x = Symbol('x')
     dex = Derivative(exp(x), x)
     assert Derivative(dex, x).subs(dex, exp(x)) == dex
     assert dex.subs(exp(x), dex) == Derivative(exp(x), x, x)
+
 
 def test_issue_5284():
     A, B = symbols('A B', commutative=False)
@@ -648,3 +648,8 @@ def test_pow_eval_subs_no_cache():
     # It incorrectly returned 1/sqrt(x**2) before.
     result = s.subs(sqrt(x**2), y)
     assert result == 1/y
+
+
+def test_omgissue_124():
+    n = Symbol('n', integer=True)
+    assert exp(n*x).subs({exp(x): x}) == x**n

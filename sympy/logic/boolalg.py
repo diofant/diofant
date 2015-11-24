@@ -84,6 +84,7 @@ class BooleanAtom(Boolean):
     Base class of BooleanTrue and BooleanFalse.
     """
     is_Boolean = True
+
     @property
     def canonical(self):
         return self
@@ -249,6 +250,7 @@ S.true = true
 S.false = false
 
 converter[bool] = lambda x: S.true if x else S.false
+
 
 class BooleanFunction(Application, Boolean):
     """Boolean function is a function that lives in a boolean space
@@ -783,7 +785,7 @@ class Implies(BooleanFunction):
             raise ValueError(
                 "%d operand(s) used for an Implies "
                 "(pairs are required): %s" % (len(args), str(args)))
-        if A == True or A == False or B == True or B == False:
+        if A == S.true or A == S.false or B == S.true or B == S.false:
             return Or(Not(A), B)
         elif A == B:
             return S.true
@@ -904,9 +906,9 @@ class ITE(BooleanFunction):
             a, b, c = args
         except ValueError:
             raise ValueError("ITE expects exactly 3 arguments")
-        if a == True:
+        if a == S.true:
             return b
-        if a == False:
+        if a == S.false:
             return c
         if b == c:
             return b
@@ -915,7 +917,7 @@ class ITE(BooleanFunction):
         a, b, c = self.args
         return And._to_nnf(Or(~a, b), Or(a, c), simplify=simplify)
 
-### end class definitions. Some useful methods
+# end class definitions. Some useful methods
 
 
 def conjuncts(expr):
@@ -1431,10 +1433,12 @@ def SOPform(variables, minterms, dontcares=None):
     ========
 
     >>> from sympy.logic import SOPform
+    >>> from sympy import symbols
+    >>> w, x, y, z = symbols('w x y z')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> SOPform(['w','x','y','z'], minterms, dontcares)
+    >>> SOPform([w, x, y, z], minterms, dontcares)
     Or(And(Not(w), z), And(y, z))
 
     References
@@ -1481,10 +1485,12 @@ def POSform(variables, minterms, dontcares=None):
     ========
 
     >>> from sympy.logic import POSform
+    >>> from sympy import symbols
+    >>> w, x, y, z = symbols('w x y z')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> POSform(['w','x','y','z'], minterms, dontcares)
+    >>> POSform([w, x, y, z], minterms, dontcares)
     And(Or(Not(w), y), z)
 
     References
@@ -1552,7 +1558,7 @@ def simplify_logic(expr, form=None, deep=True):
     >>> from sympy.logic import simplify_logic
     >>> from sympy.abc import x, y, z
     >>> from sympy import S
-    >>> b = '(~x & ~y & ~z) | ( ~x & ~y & z)'
+    >>> b = (~x & ~y & ~z) | ( ~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))
 
@@ -1647,8 +1653,8 @@ def bool_map(bool1, bool2):
 
     >>> from sympy import SOPform, bool_map, Or, And, Not, Xor
     >>> from sympy.abc import w, x, y, z, a, b, c, d
-    >>> function1 = SOPform(['x','z','y'],[[1, 0, 1], [0, 0, 1]])
-    >>> function2 = SOPform(['a','b','c'],[[1, 0, 1], [1, 0, 0]])
+    >>> function1 = SOPform([x, z, y],[[1, 0, 1], [0, 0, 1]])
+    >>> function2 = SOPform([a, b, c],[[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2) == (And(Not(z), y), {y: a, z: b})
     True
 
@@ -1683,9 +1689,9 @@ def bool_map(bool1, bool2):
 
         # do some quick checks
         if function1.__class__ != function2.__class__:
-            return None
+            return
         if len(function1.args) != len(function2.args):
-            return None
+            return
         if function1.is_Symbol:
             return {function1: function2}
 

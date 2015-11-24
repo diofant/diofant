@@ -228,7 +228,7 @@ def enable_automatic_symbols(app):
                     pass
                 else:
                     self.run_cell(code, store_history=False)
-                    return None
+                    return
                 finally:
                     self.run_cell("del %s" % match.group("symbol"),
                                   store_history=False)
@@ -433,7 +433,7 @@ def init_session(ipython=None, pretty_print=True, order=None,
             # and False means don't add the line to IPython's history.
             ip.runsource = lambda src, symbol='exec': ip.run_cell(src, False)
 
-            #Enable interactive plotting using pylab.
+            # Enable interactive plotting using pylab.
             try:
                 ip.enable_pylab(import_all=False)
             except Exception:

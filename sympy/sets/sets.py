@@ -112,7 +112,7 @@ class Set(Basic):
 
         Used within the :class:`Intersection` class
         """
-        return None
+        return
 
     def is_disjoint(self, other):
         """
@@ -152,7 +152,7 @@ class Set(Basic):
 
         Used within the :class:`Union` class
         """
-        return None
+        return
 
     def complement(self, universe):
         """
@@ -447,7 +447,7 @@ class Set(Basic):
         if not Intersection(self, self.boundary):
             return True
         # We can't confidently claim that an intersection exists
-        return None
+        return
 
     @property
     def is_closed(self):
@@ -604,7 +604,7 @@ class ProductSet(Set):
         See Set._intersect for docstring
         """
         if not other.is_ProductSet:
-            return None
+            return
         if len(other.args) != len(self.args):
             return S.EmptySet
         return ProductSet(a.intersect(b)
@@ -612,16 +612,16 @@ class ProductSet(Set):
 
     def _union(self, other):
         if not other.is_ProductSet:
-            return None
+            return
         if len(other.args) != len(self.args):
-            return None
+            return
         if self.args[0] == other.args[0]:
             return self.args[0] * Union(ProductSet(self.args[1:]),
                                         ProductSet(other.args[1:]))
         if self.args[-1] == other.args[-1]:
             return Union(ProductSet(self.args[:-1]),
                          ProductSet(other.args[:-1])) * self.args[-1]
-        return None
+        return
 
     @property
     def sets(self):
@@ -830,7 +830,7 @@ class Interval(Set, EvalfMixin):
         """
         # We only know how to intersect with other intervals
         if not other.is_Interval:
-            return None
+            return
 
         # handle (-oo, oo)
         infty = S.NegativeInfinity, S.Infinity
@@ -841,7 +841,7 @@ class Interval(Set, EvalfMixin):
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
         if not self._is_comparable(other):
-            return None
+            return
 
         empty = False
 
@@ -930,7 +930,7 @@ class Interval(Set, EvalfMixin):
 
         if self.start is S.NegativeInfinity and self.end is S.Infinity:
             if other.is_extended_real is not None:
-                return other.is_extended_real
+                return _sympify(other.is_extended_real)
 
         if self.left_open:
             expr = other > self.start
@@ -1054,7 +1054,7 @@ class Interval(Set, EvalfMixin):
     def _eval_Eq(self, other):
         if not other.is_Interval:
             if (other.is_Union or other.is_Complement or
-                other.is_Intersection or other.is_ProductSet):
+                    other.is_Intersection or other.is_ProductSet):
                 return
 
             return false
@@ -1659,7 +1659,7 @@ class FiniteSet(Set, EvalfMixin):
     def _eval_Eq(self, other):
         if not other.is_FiniteSet:
             if (other.is_Union or other.is_Complement or
-                other.is_Intersection or other.is_ProductSet):
+                    other.is_Intersection or other.is_ProductSet):
                 return
 
             return false

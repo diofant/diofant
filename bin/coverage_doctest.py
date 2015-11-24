@@ -3,7 +3,7 @@
 """
 Program to test that all methods/functions have at least one example
 doctest.  Also checks if docstrings are imported into Sphinx. For this to
-work, the Sphinx docs need to be built first.  Use "cd doc; make html" to
+work, the Sphinx docs need to be built first.  Use "cd docs; make html" to
 build the Sphinx docs.
 
 Usage:
@@ -257,12 +257,15 @@ def get_mod_name(path, base):
 
     return file_module[:-1]
 
+
 class FindInSphinx(HTMLParser):
     is_imported = []
+
     def handle_starttag(self, tag, attr):
         a = dict(attr)
         if tag == "div" and a.get('class', None) == "viewcode-block":
             self.is_imported.append(a['id'])
+
 
 def find_sphinx(name, mod_path, found={}):
     if mod_path in found:  # Cache results
@@ -270,7 +273,7 @@ def find_sphinx(name, mod_path, found={}):
 
     doc_path = mod_path.split('.')
     doc_path[-1] += '.html'
-    sphinx_path = os.path.join(sympy_top, 'doc', '_build', 'html', '_modules', *doc_path)
+    sphinx_path = os.path.join(sympy_top, 'docs', '_build', 'html', '_modules', *doc_path)
     if not os.path.exists(sphinx_path):
         return False
     with open(sphinx_path) as f:
@@ -279,6 +282,7 @@ def find_sphinx(name, mod_path, found={}):
     p.feed(html_txt)
     found[mod_path] = p.is_imported
     return name in p.is_imported
+
 
 def process_function(name, c_name, b_obj, mod_path, f_sk, f_md, f_mdt, f_idt,
                      f_has_doctest, sk_list, sph, sphinx=True):
@@ -544,9 +548,8 @@ def go(sympy_top, file, verbose=False, no_color=False, exact=True, sphinx=True):
             num_functions += _num_functions
         return doctests, total_sphinx, num_functions
     if (not (file.endswith('.py') or file.endswith('.pyx')) or
-        file.endswith('__init__.py') or
-        not exact and ('test_' in file or 'bench_' in file)):
-
+            file.endswith('__init__.py') or
+            not exact and ('test_' in file or 'bench_' in file)):
         return 0, 0, 0
     if not os.path.exists(file):
         print("File(%s does not exist." % file)
@@ -585,7 +588,7 @@ if __name__ == "__main__":
     if args.sphinx and not os.path.exists(os.path.join(sympy_top, 'doc', '_build', 'html')):
         print("""
 Cannot check Sphinx coverage without a documentation build. To build the
-docs, run "cd doc; make html".  To skip checking Sphinx coverage, pass --no-sphinx.
+docs, run "cd docs; make html".  To skip checking Sphinx coverage, pass --no-sphinx.
 """)
         sys.exit(1)
 
@@ -616,32 +619,32 @@ docs, run "cd doc; make html".  To skip checking Sphinx coverage, pass --no-sphi
         print('='*70)
 
         if args.no_color:
-            print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" %
                 (get_mod_name(file, sympy_top), score, doctests, num_functions))
 
         elif score < 100:
-            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
                 (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
                 score, doctests, num_functions, c_normal))
 
         else:
-            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" % \
+            print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
                 (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
                 score, doctests, num_functions, c_normal))
 
         if args.sphinx:
             if args.no_color:
-                print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" % \
+                print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" %
                     (get_mod_name(file, sympy_top), sphinx_score,
                      num_functions - total_sphinx, num_functions))
 
             elif sphinx_score < 100:
-                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" % \
+                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
                     (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 
             else:
-                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" % \
+                print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
                     (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 

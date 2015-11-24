@@ -225,6 +225,6 @@ class AskOddHandler(CommonHandler):
         if _integer:
             _even = ask(Q.even(expr), assumptions)
             if _even is None:
-                return None
+                return
             return not _even
         return _integer

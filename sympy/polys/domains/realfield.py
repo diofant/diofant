@@ -11,6 +11,7 @@ from sympy.polys.polyerrors import DomainError, CoercionFailed
 from sympy.core.numbers import Float
 from sympy.utilities import public
 
+
 @public
 class RealField(Field, CharacteristicZero, SimpleDomain):
     """Real numbers up to the given precision. """

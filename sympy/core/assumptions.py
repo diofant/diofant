@@ -109,7 +109,7 @@ Examples
 ========
 
     >>> from sympy import Symbol
-    >>> x = Symbol('x', real = True); x
+    >>> x = Symbol('x', real=True); x
     x
     >>> x.is_extended_real
     True
@@ -170,31 +170,31 @@ _assume_rules = FactRules([
     'imaginary      ->  complex & antihermitian',
     'complex        ->  commutative',
 
-    'odd            ==  integer & !even',
-    'even           ==  integer & !odd',
+    'odd            ==  integer & ~even',
+    'even           ==  integer & ~odd',
 
     'extended_real  ==  negative | zero | positive',
-    'transcendental ==  complex & !algebraic',
+    'transcendental ==  complex & ~algebraic',
 
     'negative       ==  nonpositive & nonzero',
     'positive       ==  nonnegative & nonzero',
     'zero           ==  nonnegative & nonpositive',
 
-    'nonpositive    ==  extended_real & !positive',
-    'nonnegative    ==  extended_real & !negative',
+    'nonpositive    ==  extended_real & ~positive',
+    'nonnegative    ==  extended_real & ~negative',
 
     'zero           ->  even & finite',
 
     'prime          ->  integer & positive',
-    'composite      ->  integer & positive & !prime',
+    'composite      ->  integer & positive & ~prime',
 
-    'irrational     ==  real & !rational',
+    'irrational     ==  real & ~rational',
 
-    'imaginary      ->  !extended_real | zero',
+    'imaginary      ->  ~extended_real | zero',
 
-    'infinite       ->  !finite',
-    'noninteger     ==  real & !integer',
-    'nonzero        ==  !zero',
+    'infinite       ->  ~finite',
+    'noninteger     ==  real & ~integer',
+    'nonzero        ==  ~zero',
 ])
 
 _assume_defined = _assume_rules.defined_facts.copy()
@@ -264,7 +264,7 @@ def _ask(fact, obj):
 
     another example is joined rule:
 
-        integer & !odd  --> even
+        integer & ~odd  --> even
 
     so in the latter case if we are looking at what 'even' value is,
     'integer' and 'odd' facts will be asked.
@@ -305,7 +305,7 @@ def _ask(fact, obj):
                 return ret_val
 
     # Note: the result has already been cached
-    return None
+    return
 
 
 class ManagedProperties(BasicMeta):

@@ -12,7 +12,7 @@ from sympy.core.operations import AssocOp
 from sympy.core.relational import Relational
 from sympy.logic.boolalg import true
 
-## sympy.printing imports
+# sympy.printing imports
 from .printer import Printer
 from .conventions import split_super_sub, requires_partial
 from .precedence import precedence, PRECEDENCE
@@ -96,6 +96,7 @@ modifier_dict = {
 }
 
 greek_letters_set = frozenset(greeks)
+
 
 class LatexPrinter(Printer):
     printmethod = "_latex"
@@ -215,8 +216,8 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
-        if (not last and
-            any([expr.has(x) for x in (Integral, Piecewise, Product, Sum)])):
+        if (not last and any([expr.has(x) for
+                              x in (Integral, Piecewise, Product, Sum)])):
             return True
 
         return False
@@ -420,13 +421,13 @@ class LatexPrinter(Printer):
                 return self._print(expr.base, self._print(expr.exp))
             else:
                 if expr.is_commutative and expr.exp == -1:
-                    #solves issue 4129
-                    #As Mul always simplify 1/x to x**-1
-                    #The objective is achieved with this hack
-                    #first we get the latex for -1 * expr,
-                    #which is a Mul expression
+                    # solves issue 4129
+                    # As Mul always simplify 1/x to x**-1
+                    # The objective is achieved with this hack
+                    # first we get the latex for -1 * expr,
+                    # which is a Mul expression
                     tex = self._print(S.NegativeOne * expr).strip()
-                    #the result comes with a minus and a space, so we remove
+                    # the result comes with a minus and a space, so we remove
                     if tex[:1] == "-":
                         return tex[1:].strip()
                 if self._needs_brackets(expr.base):
@@ -488,7 +489,7 @@ class LatexPrinter(Printer):
 
         for system, vect in items:
             inneritems = list(vect.components.items())
-            inneritems.sort(key = lambda x:x[0].__str__())
+            inneritems.sort(key=lambda x:x[0].__str__())
             for k, v in inneritems:
                 if v == 1:
                     o1.append(' + ' + k._latex_form)
@@ -871,7 +872,7 @@ class LatexPrinter(Printer):
     def _print_elliptic_pi(self, expr, exp=None):
         if len(expr.args) == 3:
             tex = r"\left(%s; %s\middle| %s\right)" % \
-                (self._print(expr.args[0]), self._print(expr.args[1]), \
+                (self._print(expr.args[0]), self._print(expr.args[1]),
                  self._print(expr.args[2]))
         else:
             tex = r"\left(%s\middle| %s\right)" % \
@@ -1389,7 +1390,7 @@ class LatexPrinter(Printer):
             return "%s^{%s}" % (self._print(base), self._print(exp))
 
     def _print_ZeroMatrix(self, Z):
-        return r"\bold{0}"
+        return r"\mathbb{0}"
 
     def _print_Identity(self, I):
         return r"\mathbb{I}"
@@ -1789,7 +1790,7 @@ class LatexPrinter(Printer):
             return r'\mathrm{d}\left(%s\right)' % string
 
     def _print_Tr(self, p):
-        #Todo: Handle indices
+        # Todo: Handle indices
         contents = self._print(p.args[0])
         return r'\mbox{Tr}\left(%s\right)' % (contents)
 
@@ -1833,6 +1834,7 @@ def translate(s):
             if s.lower().endswith(key) and len(s)>len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
+
 
 def latex(expr, **settings):
     r"""

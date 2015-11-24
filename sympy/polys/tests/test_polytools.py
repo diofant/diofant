@@ -51,8 +51,8 @@ from sympy.polys.domains.realfield import RealField
 from sympy.polys.orderings import lex, grlex, grevlex
 
 from sympy import (
-    S, Integer, Rational, Float, Mul, Symbol, sqrt, Piecewise,
-    exp, sin, tanh, expand, oo, I, pi, re, im, RootOf, Eq, Tuple, Expr)
+    S, Integer, Rational, Float, Mul, Symbol, sqrt, Piecewise, Derivative,
+    exp, sin, tanh, expand, oo, I, pi, re, im, RootOf, Eq, Tuple, Expr, diff)
 
 from sympy.core.basic import _aresame
 from sympy.core.compatibility import iterable
@@ -510,6 +510,7 @@ def test_Poly__eq__():
     g =  Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='ZZ(x,t0)')
 
     assert (f == g) is True
+
 
 def test_PurePoly__eq__():
     assert (PurePoly(x, x) == PurePoly(x, x)) is True
@@ -1300,6 +1301,7 @@ def test_Poly_LM():
 
 def test_Poly_LM_custom_order():
     f = Poly(x**2*y**3*z + x**2*y*z**3 + x*y*z + 1)
+
     def rev_lex(monom):
         return tuple(reversed(monom))
 
@@ -1425,6 +1427,13 @@ def test_Poly_diff():
     assert Poly(x**2*y**2 + x*y).diff(y, x) == Poly(4*x*y + 1)
 
 
+def test_issue_9585():
+    assert diff(Poly(x**2 + x)) == Poly(2*x + 1)
+    assert diff(Poly(x**2 + x), x, evaluate=False) == \
+        Derivative(Poly(x**2 + x), x)
+    assert Derivative(Poly(x**2 + x), x).doit() == Poly(2*x + 1)
+
+
 def test_Poly_eval():
     assert Poly(0, x).eval(7) == 0
     assert Poly(1, x).eval(7) == 1
@@ -1482,6 +1491,7 @@ def test_Poly_eval():
 
     g = Poly(x**2 + (alpha - 1)*x - alpha + 1, x, y, domain='ZZ[alpha]')
     assert g.eval((z + 1)/(z - 1)) == Poly(result, y, domain='ZZ(alpha,z)')
+
 
 def test_Poly___call__():
     f = Poly(2*x*y + 3*x + y + 2*z)
@@ -2757,6 +2767,7 @@ def test_nth_power_roots_poly():
     raises(MultivariatePolynomialError, lambda: nth_power_roots_poly(
         x + y, 2, x, y))
 
+
 def test_torational_factor_list():
     p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}))
     assert _torational_factor_list(p, x) == (-2, [
@@ -2766,6 +2777,7 @@ def test_torational_factor_list():
 
     p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + 2**Rational(1, 4))}))
     assert _torational_factor_list(p, x) is None
+
 
 def test_cancel():
     assert cancel(0) == 0
@@ -2846,13 +2858,13 @@ def test_cancel():
         Poly(5*y + 1, y, domain='ZZ(x)'), Poly(2*x*y, y, domain='ZZ(x)'))
 
     f = -(-2*x - 4*y + 0.005*(z - y)**2)/((z - y)*(-z + y + 2))
-    assert cancel(f).is_Mul == True
+    assert cancel(f).is_Mul
 
     P = tanh(x - 3.0)
     Q = tanh(x + 3.0)
     f = ((-2*P**2 + 2)*(-P**2 + 1)*Q**2/2 + (-2*P**2 + 2)*(-2*Q**2 + 2)*P*Q - (-2*P**2 + 2)*P**2*Q**2 + (-2*Q**2 + 2)*(-Q**2 + 1)*P**2/2 - (-2*Q**2 + 2)*P**2*Q**2)/(2*sqrt(P**2*Q**2 + 0.0001)) \
       + (-(-2*P**2 + 2)*P*Q**2/2 - (-2*Q**2 + 2)*P**2*Q/2)*((-2*P**2 + 2)*P*Q**2/2 + (-2*Q**2 + 2)*P**2*Q/2)/(2*(P**2*Q**2 + 0.0001)**(S(3)/2))
-    assert cancel(f).is_Mul == True
+    assert cancel(f).is_Mul
 
     # issue 7022
     A = Symbol('A', commutative=False)
@@ -2985,13 +2997,13 @@ def test_fglm():
     assert G.fglm(lex) == B
 
     F = [9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9,
-        -72*t*x**7 - 252*t*x**6 + 192*t*x**5 + 1260*t*x**4 + 312*t*x**3 - 404*t*x**2 - 576*t*x + \
+        -72*t*x**7 - 252*t*x**6 + 192*t*x**5 + 1260*t*x**4 + 312*t*x**3 - 404*t*x**2 - 576*t*x +
         108*t - 72*x**7 - 256*x**6 + 192*x**5 + 1280*x**4 + 312*x**3 - 576*x + 96]
     G = groebner(F, t, x, order=grlex)
 
     B = [
-        203577793572507451707*t + 627982239411707112*x**7 - 666924143779443762*x**6 - \
-        10874593056632447619*x**5 + 5119998792707079562*x**4 + 72917161949456066376*x**3 + \
+        203577793572507451707*t + 627982239411707112*x**7 - 666924143779443762*x**6 -
+        10874593056632447619*x**5 + 5119998792707079562*x**4 + 72917161949456066376*x**3 +
         20362663855832380362*x**2 - 142079311455258371571*x + 183756699868981873194,
         9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9,
     ]

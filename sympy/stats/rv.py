@@ -423,7 +423,7 @@ def pspace(expr):
 
     rvs = random_symbols(expr)
     if not rvs:
-        return None
+        return
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -486,7 +486,7 @@ def given(expr, condition=None, **kwargs):
            -(-Y + z)
            -----------
       ___       2
-    \/ 2 *e
+    \/ 2 *E
     ------------------
              ____
          2*\/ pi
@@ -500,7 +500,7 @@ def given(expr, condition=None, **kwargs):
 
     condsymbols = random_symbols(condition)
     if (isinstance(condition, Equality) and len(condsymbols) == 1 and
-        not isinstance(pspace(expr).domain, ConditionalDomain)):
+            not isinstance(pspace(expr).domain, ConditionalDomain)):
         rv = tuple(condsymbols)[0]
         results = solve(condition, rv)
         return sum(expr.subs(rv, res) for res in results)
@@ -628,7 +628,7 @@ class Density(Basic):
         if len(self.args) > 1:
             return self.args[1]
         else:
-            return None
+            return
 
     def doit(self, evaluate=True, **kwargs):
         expr, condition = self.expr, self.condition
@@ -638,8 +638,8 @@ class Density(Basic):
         if not random_symbols(expr):
             return Lambda(x, DiracDelta(x - expr))
         if (isinstance(expr, RandomSymbol) and
-            hasattr(expr.pspace, 'distribution') and
-            isinstance(pspace(expr), SinglePSpace)):
+                hasattr(expr.pspace, 'distribution') and
+                isinstance(pspace(expr), SinglePSpace)):
             return expr.pspace.distribution
         result = pspace(expr).compute_density(expr, **kwargs)
 
@@ -683,7 +683,7 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     >>> density(2*D).dict
     {2: 1/6, 4: 1/6, 6: 1/6, 8: 1/6, 10: 1/6, 12: 1/6}
     >>> density(X)(x)
-    sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))
+    sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
     """
 
     if numsamples:
@@ -852,7 +852,7 @@ def sample_iter_lambdify(expr, condition=None, numsamples=S.Infinity, **kwargs):
 
             if condition:  # Check that these values satisfy the condition
                 gd = given_fn(*args)
-                if gd != True and gd != False:
+                if gd not in (True, False):
                     raise ValueError(
                         "Conditions must not contain free symbols")
                 if not gd:  # If the values don't satisfy then try again
@@ -880,7 +880,7 @@ def sample_iter_subs(expr, condition=None, numsamples=S.Infinity, **kwargs):
 
         if condition is not None:  # Check that these values satisfy the condition
             gd = condition.xreplace(d)
-            if gd != True and gd != False:
+            if gd not in (True, False):
                 raise ValueError("Conditions must not contain free symbols")
             if not gd:  # If the values don't satisfy then try again
                 continue
@@ -908,7 +908,7 @@ def sampling_P(condition, given_condition=None, numsamples=1,
                           numsamples=numsamples, **kwargs)
 
     for x in samples:
-        if x != True and x != False:
+        if x not in (True, False):
             raise ValueError("Conditions must not contain free symbols")
 
         if x:
@@ -943,6 +943,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
         return result.evalf()
     else:
         return result
+
 
 def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     """
@@ -1043,7 +1044,7 @@ def pspace_independent(a, b):
     b_symbols = pspace(a).symbols
     if len(a_symbols.intersect(b_symbols)) == 0:
         return True
-    return None
+    return
 
 
 def rv_subs(expr, symbols=None):
@@ -1059,6 +1060,7 @@ def rv_subs(expr, symbols=None):
     swapdict = {rv: rv.symbol for rv in symbols}
     return expr.xreplace(swapdict)
 
+
 class NamedArgsMixin(object):
     _argnames = ()
 
@@ -1069,11 +1071,12 @@ class NamedArgsMixin(object):
             raise AttributeError("'%s' object has not attribute '%s'" % (
                 type(self).__name__, attr))
 
+
 def _value_check(condition, message):
     """
     Check a condition on input value.
 
     Raises ValueError with message if condition is not True
     """
-    if condition != True:
+    if condition != S.true:
         raise ValueError(message)

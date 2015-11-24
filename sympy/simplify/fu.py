@@ -187,9 +187,14 @@ from __future__ import print_function, division
 
 from collections import defaultdict
 from itertools import combinations
+from strategies.tree import greedy
+from strategies.core import identity, debug
 
-from sympy.simplify.simplify import (simplify, powsimp, ratsimp, combsimp,
+from sympy.simplify.simplify import (simplify,
     _mexpand, bottom_up)
+from sympy.simplify.powsimp import powsimp
+from sympy.simplify.combsimp import combsimp
+from sympy.simplify.ratsimp import ratsimp
 from sympy.core.sympify import sympify
 from sympy.functions.elementary.trigonometric import (
     cos, sin, tan, cot, sec, csc, sqrt, TrigonometricFunction)
@@ -206,8 +211,6 @@ from sympy.core.exprtools import Factors, gcd_terms, factor_terms
 from sympy.core.rules import Transform
 from sympy.core.basic import S
 from sympy.core.numbers import Integer, pi, I
-from sympy.strategies.tree import greedy
-from sympy.strategies.core import identity, debug
 from sympy.polys.polytools import factor
 from sympy.ntheory.factor_ import perfect_power
 
@@ -381,7 +384,7 @@ def TR2i(rv, half=False):
             elif half and k.is_Add and k.args[0] is S.One and \
                     k.args[1].func is cos:
                 a = sin(k.args[1].args[0], evaluate=False)
-                if a in d and d[a] == n[k] and (d[a].is_integer or \
+                if a in d and d[a] == n[k] and (d[a].is_integer or
                         a.is_positive):
                     t.append(tan(a.args[0]/2)**-n[k])
                     n[k] = d[a] = None
@@ -625,7 +628,7 @@ def TR8(rv, first=True):
         for a in ordered(Mul.make_args(rv)):
             if a.func in (cos, sin):
                 args[a.func].append(a.args[0])
-            elif (a.is_Pow and a.exp.is_Integer and a.exp > 0 and \
+            elif (a.is_Pow and a.exp.is_Integer and a.exp > 0 and
                     a.base.func in (cos, sin)):
                 # XXX this is ok but pathological expression could be handled
                 # more efficiently as in TRmorrie
@@ -1627,7 +1630,7 @@ RL2 = [
     (TR5, TR7, TR11, TR4),
     (CTR3, CTR1, TR9, CTR2, TR4, TR9, TR9, CTR4),
     identity,
-    ]
+]
 
 
 def fu(rv, measure=lambda x: (L(x), x.count_ops())):
@@ -1868,7 +1871,7 @@ def trig_split(a, b, two=False):
         if a.is_Mul:
             co, a = a.as_coeff_Mul()
             if len(a.args) > 2 or not two:
-                return None
+                return
             if a.is_Mul:
                 args = list(a.args)
             else:
@@ -1881,7 +1884,7 @@ def trig_split(a, b, two=False):
             elif a.is_Pow and a.exp is S.Half:  # autoeval doesn't allow -1/2
                 co *= a
             else:
-                return None
+                return
             if args:
                 b = args[0]
                 if b.func is cos:
@@ -1897,7 +1900,7 @@ def trig_split(a, b, two=False):
                 elif b.is_Pow and b.exp is S.Half:
                     co *= b
                 else:
-                    return None
+                    return
             return co if co is not S.One else None, c, s
         elif a.func is cos:
             c = a
@@ -1926,7 +1929,7 @@ def trig_split(a, b, two=False):
         c = ca or sa
         s = cb or sb
         if c.func is not s.func:
-            return None
+            return
         return gcd, n1, n2, c.args[0], s.args[0], c.func is cos
     else:
         if not coa and not cob:
@@ -2116,7 +2119,8 @@ def hyper_as_trig(rv):
 
     http://en.wikipedia.org/wiki/Hyperbolic_function
     """
-    from sympy.simplify.simplify import signsimp, collect
+    from sympy.simplify.simplify import signsimp
+    from sympy.simplify.radsimp import collect
 
     # mask off trig functions
     trigs = rv.atoms(TrigonometricFunction)

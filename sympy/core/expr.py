@@ -389,14 +389,14 @@ class Expr(Basic, EvalfMixin):
                 # select a good random number for a given expression?
                 # e.g. when calculating n! negative values for n should not
                 # be used
-                return None
+                return
         else:
             reps = {}
             nmag = abs(self.evalf(2))
 
         if not hasattr(nmag, '_prec'):
             # e.g. exp_polar(2*I*pi) doesn't evaluate but is_number is True
-            return None
+            return
 
         if nmag._prec == 1:
             # increase the precision up to the default maximum
@@ -417,7 +417,7 @@ class Expr(Basic, EvalfMixin):
             return self.evalf(n, subs=reps)
 
         # never got any significance
-        return None
+        return
 
     def is_constant(self, *wrt, **flags):
         """Return True if self is constant, False if not, or None if
@@ -471,7 +471,7 @@ class Expr(Basic, EvalfMixin):
         >>> eq = a*cos(x)**2 + a*sin(x)**2 - a
         >>> eq.is_constant()
         True
-        >>> eq.subs({x:pi, a:2}) == eq.subs({x:pi, a:3}) == 0
+        >>> eq.subs({x: pi, a: 2}) == eq.subs({x: pi, a: 3}) == 0
         True
 
         >>> (0**x).is_constant()
@@ -570,7 +570,7 @@ class Expr(Basic, EvalfMixin):
                         return failing_number
                     elif deriv.free_symbols:
                         # dead line provided _random returns None in such cases
-                        return None
+                        return
                 return False
         return True
 
@@ -650,8 +650,9 @@ class Expr(Basic, EvalfMixin):
                         if sol:
                             if s in sol:
                                 return True
-                            if any(nsimplify(si, [s]) == s and simplify(si) == s
-                                    for si in sol):
+                            if s.is_real and any(nsimplify(si, [s]) == s
+                                                 and simplify(si) == s
+                                                 for si in sol):
                                 return True
                     except NotImplementedError:
                         pass
@@ -675,7 +676,7 @@ class Expr(Basic, EvalfMixin):
 
         if failing_expression:
             return diff
-        return None
+        return
 
     def _eval_is_zero(self):
         if self.is_number:
@@ -711,7 +712,7 @@ class Expr(Basic, EvalfMixin):
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
-                return None
+                return
             n, i = self.evalf(2).as_real_imag()
             if not i.is_Number or not n.is_Number:
                 return False
@@ -741,7 +742,7 @@ class Expr(Basic, EvalfMixin):
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
-                return None
+                return
             n, i = self.evalf(2).as_real_imag()
             if not i.is_Number or not n.is_Number:
                 return False
@@ -793,7 +794,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_power(self, other):
         # subclass to compute self**other for cases when
         # other is not NaN, 0, or 1
-        return None
+        return
 
     def _eval_conjugate(self):
         if self.is_extended_real:
@@ -865,7 +866,7 @@ class Expr(Basic, EvalfMixin):
             _, ((re, im), monom, ncpart) = term
 
             monom = neg(monom_key(monom))
-            ncpart = tuple([ e.sort_key(order=order) for e in ncpart ])
+            ncpart = tuple([e.sort_key(order=order) for e in ncpart])
             coeff = ((bool(im), im), (re, im))
 
             return monom, ncpart, coeff
@@ -908,7 +909,7 @@ class Expr(Basic, EvalfMixin):
         if data:
             return ordered, gens
         else:
-            return [ term for term, _ in ordered ]
+            return [term for term, _ in ordered]
 
     def as_terms(self):
         """Transform an expression to a list of terms. """
@@ -971,7 +972,7 @@ class Expr(Basic, EvalfMixin):
 
     def getO(self):
         """Returns the additive O(..) symbol if there is one, else None."""
-        return None
+        return
 
     def getn(self):
         """Returns the order of the expression.
@@ -991,7 +992,7 @@ class Expr(Basic, EvalfMixin):
         from sympy import Dummy, Symbol
         o = self.getO()
         if o is None:
-            return None
+            return
         elif o.is_Order:
             o = o.expr
             if o is S.One:
@@ -1243,7 +1244,7 @@ class Expr(Basic, EvalfMixin):
             None
             """
             if not sub or not l or len(sub) > len(l):
-                return None
+                return
             n = len(sub)
             if not first:
                 l.reverse()
@@ -1407,7 +1408,7 @@ class Expr(Basic, EvalfMixin):
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
         2
-        >>> p.nth(0,1)
+        >>> p.nth(0, 1)
         2
 
         Since the following cannot be written as a product containing
@@ -1506,7 +1507,7 @@ class Expr(Basic, EvalfMixin):
         >>> (sin(x)).as_independent(y)
         (sin(x), 1)
         >>> exp(x+y).as_independent(x)
-        (1, exp(x + y))
+        (1, E**(x + y))
 
         -- force self to be treated as an Add:
 
@@ -1548,7 +1549,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import separatevars, log
         >>> separatevars(exp(x+y)).as_independent(x)
-        (exp(y), exp(x))
+        (E**y, E**x)
         >>> (x + x*y).as_independent(y)
         (x, x*y)
         >>> separatevars(x + x*y).as_independent(y)
@@ -1557,7 +1558,7 @@ class Expr(Basic, EvalfMixin):
         (x, y + 1)
         >>> (x*(1 + y)).expand(mul=True).as_independent(y)
         (x, x*y)
-        >>> a, b=symbols('a b',positive=True)
+        >>> a, b=symbols('a b', positive=True)
         >>> (log(a*b).expand(log=True)).as_independent(b)
         (log(a), log(b))
 
@@ -1647,7 +1648,7 @@ class Expr(Basic, EvalfMixin):
         """
         from sympy import im, re
         if hints.get('ignore') == self:
-            return None
+            return
         else:
             return (re(self), im(self))
 
@@ -1876,12 +1877,12 @@ class Expr(Basic, EvalfMixin):
 
         >>> (2*x).extract_multiplicatively(3)
 
-        >>> (Rational(1,2)*x).extract_multiplicatively(3)
+        >>> (Rational(1, 2)*x).extract_multiplicatively(3)
         x/6
         """
         c = sympify(c)
         if self is S.NaN:
-            return None
+            return
         if c is S.One:
             return self
         elif c == self:
@@ -1910,23 +1911,23 @@ class Expr(Basic, EvalfMixin):
                     return S.ComplexInfinity
             elif self.is_Integer:
                 if not quotient.is_Integer:
-                    return None
+                    return
                 elif self.is_positive and quotient.is_negative:
-                    return None
+                    return
                 else:
                     return quotient
             elif self.is_Rational:
                 if not quotient.is_Rational:
-                    return None
+                    return
                 elif self.is_positive and quotient.is_negative:
-                    return None
+                    return
                 else:
                     return quotient
             elif self.is_Float:
                 if not quotient.is_Float:
-                    return None
+                    return
                 elif self.is_positive and quotient.is_negative:
-                    return None
+                    return
                 else:
                     return quotient
         elif self.is_NumberSymbol or self.is_Symbol or self is S.ImaginaryUnit:
@@ -1945,7 +1946,7 @@ class Expr(Basic, EvalfMixin):
                 if newarg is not None:
                     newargs.append(newarg)
                 else:
-                    return None
+                    return
             return Add(*newargs)
         elif self.is_Mul:
             args = list(self.args)
@@ -2000,30 +2001,30 @@ class Expr(Basic, EvalfMixin):
 
         c = sympify(c)
         if self is S.NaN:
-            return None
+            return
         if c is S.Zero:
             return self
         elif c == self:
             return S.Zero
         elif self is S.Zero:
-            return None
+            return
 
         if self.is_Number:
             if not c.is_Number:
-                return None
+                return
             co = self
             diff = co - c
             # XXX should we match types? i.e should 3 - .1 succeed?
             if (co > 0 and diff > 0 and diff < co or
                     co < 0 and diff < 0 and diff > co):
                 return diff
-            return None
+            return
 
         if c.is_Number:
             co, t = self.as_coeff_Add()
             xa = co.extract_additively(c)
             if xa is None:
-                return None
+                return
             return xa + t
 
         # handle the args[0].is_Number case separately
@@ -2041,10 +2042,10 @@ class Expr(Basic, EvalfMixin):
             sh, st = self.as_coeff_Add()
             xa = sh.extract_additively(h)
             if xa is None:
-                return None
+                return
             xa2 = st.extract_additively(t)
             if xa2 is None:
-                return None
+                return
             return xa + xa2
 
         # whole term as a term factor
@@ -2059,11 +2060,11 @@ class Expr(Basic, EvalfMixin):
             ac, at = a.as_coeff_Mul()
             co = self.coeff(at)
             if not co:
-                return None
+                return
             coc, cot = co.as_coeff_Add()
             xa = coc.extract_additively(ac)
             if xa is None:
-                return None
+                return
             self -= co*at
             coeffs.append((cot + xa)*at)
         coeffs.append(self)
@@ -2384,7 +2385,7 @@ class Expr(Basic, EvalfMixin):
             return self._eval_is_algebraic_expr(syms)
 
     ###################################################################################
-    ##################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ##################
+    # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
 
     def series(self, x=None, x0=0, n=6, dir="+", logx=None):
@@ -2410,7 +2411,7 @@ class Expr(Basic, EvalfMixin):
         >>> e.series(y, n=2)
         cos(x + 1) - y*sin(x + 1) + O(y**2)
         >>> e.series(x, n=2)
-        cos(exp(y)) - x*sin(exp(y)) + O(x**2)
+        cos(E**y) - x*sin(E**y) + O(x**2)
 
         If ``n=None`` then a generator of the series terms will be returned.
 
@@ -2673,7 +2674,7 @@ class Expr(Basic, EvalfMixin):
         >>> e.nseries(x, 0, 2)
         O(log(x)**2)
         >>> e.nseries(x, 0, 2, logx=logx)
-        exp(logx*y)
+        E**(logx*y)
         """
         if x and x not in self.free_symbols:
             return self
@@ -2721,15 +2722,15 @@ class Expr(Basic, EvalfMixin):
         >>> from sympy.abc import x, y
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
         >>> e.aseries(x)
-        (1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))*exp(-x)
+        E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
         >>> e.aseries(x, n=3, hir=True)
-        -exp(-2*x)*sin(1/x)/2 + exp(-x)*cos(1/x) + O(exp(-3*x), (x, oo))
+        -E**(-2*x)*sin(1/x)/2 + E**(-x)*cos(1/x) + O(E**(-3*x), (x, oo))
 
         >>> e = exp(exp(x)/(1 - 1/x))
         >>> e.aseries(x, bound=3)
-        exp(exp(x)/x**2)*exp(exp(x)/x)*exp(-exp(x) + exp(x)/(1 - 1/x) - exp(x)/x - exp(x)/x**2)*exp(exp(x))
+        E**(E**x)*E**(E**x/x**2)*E**(E**x/x)*E**(-E**x + E**x/(1 - 1/x) - E**x/x - E**x/x**2)
         >>> e.aseries(x)
-        exp(exp(x)/(1 - 1/x))
+        E**(E**x/(1 - 1/x))
 
         Notes
         =====
@@ -2775,7 +2776,7 @@ class Expr(Basic, EvalfMixin):
             s = a.aseries(x, n, bound=bound)
             s = s.func(*[t.removeO() for t in s.args])
             rep = exp(s.subs(x, 1/x).as_leading_term(x).subs(x, 1/x))
-            f = exp(self.args[0] - rep.args[0]) / d
+            f = exp(self.exp - rep.exp)/d
             logw = log(1/rep)
 
         s = f.series(d, 0, n)
@@ -2912,7 +2913,7 @@ class Expr(Basic, EvalfMixin):
         return S.Zero, self
 
     ###################################################################################
-    ##################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ####################
+    # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
     ###################################################################################
 
     def diff(self, *symbols, **assumptions):
@@ -2921,7 +2922,7 @@ class Expr(Basic, EvalfMixin):
         return Derivative(self, *new_symbols, **assumptions)
 
     ###########################################################################
-    ###################### EXPRESSION EXPANSION METHODS #######################
+    # #################### EXPRESSION EXPANSION METHODS ##################### #
     ###########################################################################
 
     # Relevant subclasses should override _eval_expand_hint() methods.  See
@@ -2970,7 +2971,7 @@ class Expr(Basic, EvalfMixin):
 
         sympy.core.function.expand
         """
-        from sympy.simplify.simplify import fraction
+        from sympy.simplify.radsimp import fraction
 
         hints.update(power_base=power_base, power_exp=power_exp, mul=mul,
            log=log, multinomial=multinomial, basic=basic)
@@ -3051,7 +3052,7 @@ class Expr(Basic, EvalfMixin):
         return expr
 
     ###########################################################################
-    ################### GLOBAL ACTION VERB WRAPPER METHODS ####################
+    # ################# GLOBAL ACTION VERB WRAPPER METHODS ################## #
     ###########################################################################
 
     def integrate(self, *args, **kwargs):

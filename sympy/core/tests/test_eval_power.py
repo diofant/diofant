@@ -42,8 +42,8 @@ def test_expand():
 
 
 def test_issue_3449():
-    #test if powers are simplified correctly
-    #see also issue 3995
+    # test if powers are simplified correctly
+    # see also issue 3995
     x = Symbol('x')
     assert ((x**Rational(1, 3))**Rational(2)) == x**Rational(2, 3)
     assert (
@@ -235,7 +235,7 @@ def test_issue_6100():
     y = Symbol('y')
     assert x**1.0 == x
     assert x == x**1.0
-    assert True != x**1.0
+    assert S.true != x**1.0
     assert x**1.0 is not True
     assert x is not True
     assert x*y == (x*y)**1.0
@@ -266,7 +266,7 @@ def test_issue_6990():
     a = Symbol('a')
     b = Symbol('b')
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
-        b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) - \
+        b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
         b**2/(8*a**(S(3)/2))) + sqrt(a)
 
 

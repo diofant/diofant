@@ -164,7 +164,7 @@ def test_exp2():
     e = w**(1 - log(x)/(log(2) + log(x)))
     logw = Symbol("logw")
     assert e.nseries(
-        w, 0, 1, logx=logw) == exp(logw - logw*log(x)/(log(2) + log(x)))
+        w, 0, 1, logx=logw) == exp(logw)*x**(-logw/(log(x) + log(2)))
 
 
 def test_bug3():
@@ -202,7 +202,7 @@ def test_genexp_x2():
 
 def test_seriesbug2():
     w = Symbol("w")
-    #simple case (1):
+    # simple case (1):
     e = ((2*w)/w)**(1 + w)
     assert e.nseries(w, 0, 1) == 2 + O(w, w)
     assert e.nseries(w, 0, 1).subs(w, 0) == 2
@@ -210,7 +210,7 @@ def test_seriesbug2():
 
 def test_seriesbug2b():
     w = Symbol("w")
-    #test sin
+    # test sin
     e = sin(2*w)/w
     assert e.nseries(w, 0, 3) == 2 + O(w**2, w)
 
@@ -223,7 +223,7 @@ def test_seriesbug2d():
 
 def test_seriesbug2c():
     w = Symbol("w", extended_real=True)
-    #more complicated case, but sin(x)~x, so the result is the same as in (1)
+    # more complicated case, but sin(x)~x, so the result is the same as in (1)
     e = (sin(2*w)/w)**(1 + w)
     assert e.series(w, 0, 1) == 2 + O(w)
     assert e.series(w, 0, 3) == 2 + 2*w*log(2) + \

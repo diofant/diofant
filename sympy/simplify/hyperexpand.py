@@ -75,11 +75,15 @@ from sympy.functions.special.hyper import (hyper, HyperRep_atanh,
         HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
         HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
         HyperRep_cosasin, HyperRep_sinasin, meijerg)
-from sympy.simplify import powdenest, simplify, polarify, unpolarify
+from sympy.simplify import simplify
+from sympy.functions.elementary.complexes import polarify, unpolarify
+from sympy.simplify.powsimp import powdenest
 from sympy.polys import poly, Poly
 from sympy.series import residue
 
 # function to define "buckets"
+
+
 def _mod1(x):
     # TODO see if this can work as Mod(x, 1); this will require
     # different handling of the "buckets" since these need to
@@ -199,7 +203,7 @@ def add_formulae(formulae):
     # Added to get nice results for Laplace transform of Fresnel functions
     # http://functions.wolfram.com/07.22.03.6437.01
     # Basic rule
-    #add([1], [S(3)/4, S(5)/4],
+    # add([1], [S(3)/4, S(5)/4],
     #    sqrt(pi) * (cos(2*sqrt(polar_lift(-1)*z))*fresnelc(2*root(polar_lift(-1)*z,4)/sqrt(pi)) +
     #                sin(2*sqrt(polar_lift(-1)*z))*fresnels(2*root(polar_lift(-1)*z,4)/sqrt(pi)))
     #    / (2*root(polar_lift(-1)*z,4)))
@@ -303,7 +307,7 @@ def add_formulae(formulae):
 
     # FresnelS
     # Basic rule
-    #add([S(3)/4], [S(3)/2,S(7)/4], 6*fresnels( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3 ) )
+    # add([S(3)/4], [S(3)/2,S(7)/4], 6*fresnels( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3 ) )
     # Manually tuned rule
     addb([S(3)/4], [S(3)/2, S(7)/4],
          Matrix(
@@ -322,7 +326,7 @@ def add_formulae(formulae):
 
     # FresnelC
     # Basic rule
-    #add([S(1)/4], [S(1)/2,S(5)/4], fresnelc( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) )
+    # add([S(1)/4], [S(1)/2,S(5)/4], fresnelc( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) )
     # Manually tuned rule
     addb([S(1)/4], [S(1)/2, S(5)/4],
          Matrix(
@@ -403,7 +407,7 @@ def add_meijerg_formulae(formulae):
             swapped = True
             (y, z) = (z, y)
         if _mod1((x - z).simplify()) or x - z > 0:
-            return None
+            return
         l = [y, x]
         if swapped:
             l = [x, y]
@@ -657,6 +661,7 @@ class G_Function(Expr):
 # Dummy variable.
 _x = Dummy('x')
 
+
 class Formula(object):
     """
     This class represents hypergeometric formulae.
@@ -817,7 +822,7 @@ class FormulaCollection(object):
         ...     Hyper_Function)
         >>> f = FormulaCollection()
         >>> f.lookup_origin(Hyper_Function((), ())).closed_form
-        exp(_z)
+        E**_z
         >>> f.lookup_origin(Hyper_Function([1], ())).closed_form
         HyperRep_power1(-1, _z)
 
@@ -834,7 +839,7 @@ class FormulaCollection(object):
 
         # We don't have a concrete formula. Try to instantiate.
         if sizes not in self.symbolic_formulae:
-            return None  # Too bad...
+            return  # Too bad...
 
         possible = []
         for f in self.symbolic_formulae[sizes]:
@@ -856,7 +861,7 @@ class FormulaCollection(object):
             if not any(e.has(S.NaN, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
                 return f2
         else:
-            return None
+            return
 
 
 class MeijerFormula(object):
@@ -890,7 +895,7 @@ class MeijerFormula(object):
         This uses the _matcher passed on init.
         """
         if func.signature != self.func.signature:
-            return None
+            return
         res = self._matcher(func)
         if res is not None:
             subs, newfunc = res
@@ -916,7 +921,7 @@ class MeijerFormulaCollection(object):
     def lookup_origin(self, func):
         """ Try to find a formula that matches func. """
         if func.signature not in self.formulae:
-            return None
+            return
         for formula in self.formulae[func.signature]:
             res = formula.try_instantiate(func)
             if res is not None:
@@ -1332,9 +1337,9 @@ class ReduceOrder(Operator):
         bj = sympify(bj)
         n = ai - bj
         if not n.is_Integer or n < 0:
-            return None
+            return
         if bj.is_integer and bj <= 0 and bj + n - 1 >= 0:
-            return None
+            return
 
         expr = Operator.__new__(cls)
 
@@ -1356,7 +1361,7 @@ class ReduceOrder(Operator):
         a = sympify(a)
         n = b - a
         if n.is_negative or not n.is_Integer:
-            return None
+            return
 
         expr = Operator.__new__(cls)
 
@@ -1641,17 +1646,17 @@ def try_shifted_sum(func, z):
     """ Try to recognise a hypergeometric sum that starts from k > 0. """
     abuckets, bbuckets = sift(func.ap, _mod1), sift(func.bq, _mod1)
     if len(abuckets[S(0)]) != 1:
-        return None
+        return
     r = abuckets[S(0)][0]
     if r <= 0:
-        return None
+        return
     if not S(0) in bbuckets:
-        return None
+        return
     l = list(bbuckets[S(0)])
     l.sort()
     k = l[0]
     if k <= 0:
-        return None
+        return
 
     nap = list(func.ap)
     nap.remove(r)
@@ -1700,7 +1705,7 @@ def try_polynomial(func, z):
     if bl0:
         return oo
     if not al0:
-        return None
+        return
 
     a = al0[-1]
     fac = 1
@@ -1737,14 +1742,14 @@ def try_lerchphi(func):
     paired = {}
     for key, value in abuckets.items():
         if key != 0 and key not in bbuckets:
-            return None
+            return
         bvalue = bbuckets[key]
         paired[key] = (list(value), list(bvalue))
         bbuckets.pop(key, None)
     if bbuckets != {}:
-        return None
+        return
     if not S(0) in abuckets:
-        return None
+        return
     aints, bints = paired[S(0)]
     # Account for the additional n! in denominator
     paired[S(0)] = (aints, bints + [1])
@@ -1754,7 +1759,7 @@ def try_lerchphi(func):
     denom = S(1)
     for key, (avalue, bvalue) in paired.items():
         if len(avalue) != len(bvalue):
-            return None
+            return
         # Note that since order has been reduced fully, all the b are
         # bigger than all the a they differ from by an integer. In particular
         # if there are any negative b left, this function is not well-defined.
@@ -2447,7 +2452,7 @@ def hyperexpand(f, allow_hyper=False, rewrite='default'):
     >>> from sympy.functions import hyper
     >>> from sympy.abc import z
     >>> hyperexpand(hyper([], [], z))
-    exp(z)
+    E**z
 
     Non-hyperegeometric parts of the expression and hypergeometric expressions
     that are not recognised are left unchanged:

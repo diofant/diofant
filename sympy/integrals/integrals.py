@@ -66,8 +66,8 @@ class Integral(AddWithLimits):
 
         """
 
-        #This will help other classes define their own definitions
-        #of behaviour with Integral.
+        # This will help other classes define their own definitions
+        # of behaviour with Integral.
         if hasattr(function, '_eval_Integral'):
             return function._eval_Integral(*symbols, **assumptions)
 
@@ -548,9 +548,11 @@ class Integral(AddWithLimits):
         those integrals are performed. All others are returned as Integral
         instances which can be resolved with doit() (provided they are integrable).
 
-        References:
-           [1] http://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
-           [2] http://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
+        References
+        ==========
+
+        .. [1] http://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
+        .. [2] http://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
 
         Examples
         ========
@@ -717,7 +719,7 @@ class Integral(AddWithLimits):
             try:
                 return risch_integrate(f, x, conds=conds)
             except NotImplementedError:
-                return None
+                return
 
         if manual:
             try:
@@ -796,7 +798,7 @@ class Integral(AddWithLimits):
 
                 # NOTE: if there is O(x**n) and we fail to integrate then there is
                 # no point in trying other methods because they will fail anyway.
-                return None
+                return
 
             #               c
             # g(x) = (a*x+b)
@@ -921,7 +923,7 @@ class Integral(AddWithLimits):
             if h is not None:
                 parts.append(coeff * h)
             else:
-                return None
+                return
 
         return Add(*parts)
 
@@ -1203,7 +1205,7 @@ def integrate(*args, **kwargs):
 
     >>> integrate(x**a*exp(-x), (x, 0, oo)) # same as conds='piecewise'
     Piecewise((gamma(a + 1), -re(a) < 1),
-        (Integral(x**a*exp(-x), (x, 0, oo)), True))
+        (Integral(E**(-x)*x**a, (x, 0, oo)), True))
 
     >>> integrate(x**a*exp(-x), (x, 0, oo), conds='none')
     gamma(a + 1)

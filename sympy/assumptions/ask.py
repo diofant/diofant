@@ -1,7 +1,7 @@
 """Module for querying SymPy objects about assumptions."""
 from __future__ import print_function, division
 
-from sympy.core import sympify
+from sympy.core import sympify, S
 from sympy.logic.boolalg import (to_cnf, And, Not, Or, Implies, Equivalent,
     BooleanFunction, BooleanAtom)
 from sympy.logic.inference import satisfiable
@@ -142,7 +142,7 @@ def ask(proposition, assumptions=True, context=global_assumptions):
     if res is not None:
         return bool(res)
 
-    if assumptions == True:
+    if assumptions == S.true:
         return
 
     if local_facts is None:
@@ -184,7 +184,7 @@ def ask_full_inference(proposition, assumptions, known_facts_cnf):
         return False
     if not satisfiable(And(known_facts_cnf, assumptions, Not(proposition))):
         return True
-    return None
+    return
 
 
 def register_handler(key, handler):

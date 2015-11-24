@@ -1,10 +1,13 @@
 from __future__ import print_function, division
 
+from strategies import exhaust, condition, do_one
+from strategies.core import typed
+from strategies.traverse import bottom_up
+
 from sympy import ask, Q
 from sympy.core import Basic, Add, sympify
 from sympy.core.compatibility import range
-from sympy.strategies import typed, exhaust, condition, do_one, unpack
-from sympy.strategies.traverse import bottom_up
+from sympy.core.strategies import unpack
 from sympy.utilities import sift
 
 from sympy.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
@@ -185,6 +188,7 @@ class BlockMatrix(MatrixExpr):
             return True
         return super(BlockMatrix, self).equals(other)
 
+
 class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
@@ -279,21 +283,23 @@ def block_collapse(expr):
         return isinstance(expr, MatrixExpr) and expr.has(BlockMatrix)
     rule = exhaust(
         bottom_up(exhaust(condition(hasbm, typed(
-            {MatAdd: do_one(bc_matadd, bc_block_plus_ident),
-             MatMul: do_one(bc_matmul, bc_dist),
+            {MatAdd: do_one([bc_matadd, bc_block_plus_ident]),
+             MatMul: do_one([bc_matmul, bc_dist]),
              Transpose: bc_transpose,
              Inverse: bc_inverse,
-             BlockMatrix: do_one(bc_unpack, deblock)})))))
+             BlockMatrix: do_one([bc_unpack, deblock])})))))
     result = rule(expr)
     try:
         return result.doit()
     except AttributeError:
         return result
 
+
 def bc_unpack(expr):
     if expr.blockshape == (1, 1):
         return expr.blocks[0, 0]
     return expr
+
 
 def bc_matadd(expr):
     args = sift(expr.args, lambda M: isinstance(M, BlockMatrix))
@@ -310,6 +316,7 @@ def bc_matadd(expr):
     else:
         return block
 
+
 def bc_block_plus_ident(expr):
     idents = [arg for arg in expr.args if arg.is_Identity]
     if not idents:
@@ -323,6 +330,7 @@ def bc_block_plus_ident(expr):
         return MatAdd(block_id * len(idents), *blocks).doit()
 
     return expr
+
 
 def bc_dist(expr):
     """ Turn  a*[X, Y] into [a*X, a*Y] """
@@ -353,6 +361,7 @@ def bc_matmul(expr):
             i+=1
     return MatMul(factor, *matrices).doit()
 
+
 def bc_transpose(expr):
     return BlockMatrix(block_collapse(expr.arg).blocks.applyfunc(transpose).T)
 
@@ -363,11 +372,13 @@ def bc_inverse(expr):
         return expr2
     return blockinverse_2x2(Inverse(reblock_2x2(expr.arg)))
 
+
 def blockinverse_1x1(expr):
     if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (1, 1):
         mat = Matrix([[expr.arg.blocks[0].inverse()]])
         return BlockMatrix(mat)
     return expr
+
 
 def blockinverse_2x2(expr):
     if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (2, 2):
@@ -380,12 +391,15 @@ def blockinverse_2x2(expr):
     else:
         return expr
 
+
 def deblock(B):
     """ Flatten a BlockMatrix of BlockMatrices """
     if not isinstance(B, BlockMatrix) or not B.blocks.has(BlockMatrix):
         return B
+
     def wrap(x):
         return x if isinstance(x, BlockMatrix) else BlockMatrix([[x]])
+
     bb = B.blocks.applyfunc(wrap)  # everything is a block
 
     from sympy import Matrix
@@ -425,6 +439,7 @@ def bounds(sizes):
         rv.append((low, low + size))
         low += size
     return rv
+
 
 def blockcut(expr, rowsizes, colsizes):
     """ Cut a matrix expression into Blocks

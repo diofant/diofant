@@ -9,6 +9,7 @@ from sympy.polys.polyconfig import query
 from sympy.core.symbol import Dummy
 from sympy.core.compatibility import range
 
+
 def groebner(seq, ring, method=None):
     """
     Computes Groebner basis for a set of polynomials in `K[X]`.
@@ -49,6 +50,7 @@ def groebner(seq, ring, method=None):
 
     return G
 
+
 def _buchberger(f, ring):
     """
     Computes Groebner basis for a set of polynomials in `K[X]`.
@@ -76,16 +78,15 @@ def _buchberger(f, ring):
     References
     ==========
 
-    1. [Bose03]_
-    2. [Giovini91]_
-    3. [Ajwa95]_
-    4. [Cox97]_
+    .. [1] [Bose03]_
+    .. [2] [Giovini91]_
+    .. [3] [Ajwa95]_
+    .. [4] [Cox97]_
 
     Algorithm used: an improved version of Buchberger's algorithm
     as presented in T. Becker, V. Weispfenning, Groebner Bases: A
     Computational Approach to Commutative Algebra, Springer, 1993,
     page 232.
-
     """
     order = ring.order
     domain = ring.domain
@@ -104,7 +105,7 @@ def _buchberger(f, ring):
         h = g.rem([ f[j] for j in J ])
 
         if not h:
-            return None
+            return
         else:
             h = h.monic()
 
@@ -259,6 +260,7 @@ def _buchberger(f, ring):
 
     return Gr
 
+
 def spoly(p1, p2, ring):
     """
     Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2
@@ -315,7 +317,7 @@ def sig_cmp(u, v, order):
     if u[1] > v[1]:
         return -1
     if u[1] == v[1]:
-        #if u[0] == v[0]:
+        # if u[0] == v[0]:
         #    return 0
         if order(u[0]) < order(v[0]):
             return -1
@@ -389,7 +391,7 @@ def lbp_cmp(f, g):
     if Sign(f) == Sign(g):
         if Num(f) > Num(g):
             return -1
-        #if Num(f) == Num(g):
+        # if Num(f) == Num(g):
         #    return 0
     return 1
 
@@ -469,7 +471,7 @@ def cp_cmp(c, d):
 
         if r == -1:
             return -1
-        #if r == 0:
+        # if r == 0:
         #    return 0
     return 1
 
@@ -559,7 +561,7 @@ def f5_reduce(f, B):
                     t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
                     if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                         # The following check need not be done and is in general slower than without.
-                        #if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
+                        # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
                         hp = lbp_mul_term(h, t)
                         f = lbp_sub(f, hp)
                         break
@@ -592,10 +594,12 @@ def _f5b(F, ring):
 
     Once a Groebner basis has been found, it gets reduced.
 
-    ** References **
-    Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
-    (F5-Like) Algorithm", http://arxiv.org/abs/1004.0084 (specifically
-    v4)
+    References
+    ==========
+
+    .. [1] Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
+           (F5-Like) Algorithm", http://arxiv.org/abs/1004.0084
+           (specifically v4).
 
     Thomas Becker, Volker Weispfenning, Groebner bases: A computational
     approach to commutative algebra, 1993, p. 203, 216
@@ -684,7 +688,7 @@ def _f5b(F, ring):
 
             k += 1
 
-            #print(len(B), len(CP), "%d critical pairs removed" % len(indices))
+            # print(len(B), len(CP), "%d critical pairs removed" % len(indices))
         else:
             reductions_to_zero += 1
 
@@ -781,6 +785,7 @@ def is_reduced(G, ring):
 
     return True
 
+
 def groebner_lcm(f, g):
     """
     Computes LCM of two polynomials using Groebner bases.
@@ -794,8 +799,7 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    1. [Cox97]_
-
+    .. [1] [Cox97]_
     """
     if f.ring != g.ring:
         raise ValueError("Values should be equal")
@@ -837,6 +841,7 @@ def groebner_lcm(f, g):
     h = ring.from_terms(h_terms)
 
     return h
+
 
 def groebner_gcd(f, g):
     """Computes GCD of two polynomials using Groebner bases. """

@@ -7,9 +7,9 @@ complex part, because it needs to calculate a limit to return the result.
 """
 
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                   S, atan, acot, pi, cancel, E, erf, sqrt, zeta, cos, cosh,
+                   S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, li, Li)
+                   Pow, Add, li, Li)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 from sympy.utilities.pytest import XFAIL, slow
@@ -110,6 +110,16 @@ def test_gruntz_eval_special():
         exp((log(2) + 1)*x) * (zeta(x + exp(-x)) - zeta(x)), x) == -log(2)
 
     # TODO 8.36 - 8.37 (bessel, max-min)
+
+
+def test_gruntz_other():
+    assert gruntz(sqrt(log(x + 1)) - sqrt(log(x)), x) == 0  # p12, 2.5
+    y = Symbol('y')
+    assert gruntz(((1 + 1/x)**y - 1)*x, x) == y  # p12, 2.6
+    # TODO: p13, 2.7
+    n = Symbol('n', integer=True)
+    assert gruntz(x**n/exp(x), x) == 0  # p14, 2.9
+    assert gruntz((1 + 1/x)*x - 1/log(1 + 1/x), x) == S(1)/2  # p15, 2.10
 
 
 def test_gruntz_hyperbolic():
@@ -240,6 +250,8 @@ def test_mrv():
 
 
 def test_rewrite():
+    assert rewrite(S.One, x, m) == (1, None)
+
     e = exp(x)
     assert rewrite(e, x, m) == (1/m, -x)
     e = exp(x**2)
@@ -247,17 +259,19 @@ def test_rewrite():
     e = exp(x + 1/x)
     assert rewrite(e, x, m) == (1/m, -x - 1/x)
     e = 1/exp(-x + exp(-x)) - exp(x)
-    assert rewrite(e, x, m) == (1/(m*exp(m)) - 1/m, -x)
+    assert rewrite(e, x, m) == (Add(1/(m*exp(m)), -1/m, evaluate=False), -x)
 
     e = exp(x)*log(log(exp(x)))
     assert mrv(e, x) == {exp(x)}
     assert rewrite(e, x, m) == (1/m*log(x), -x)
 
     e = exp(-x + 1/x**2) - exp(x + 1/x)
-    assert rewrite(e, x, m) == (m*exp(1/x + x**(-2)) - 1/m, -x - 1/x)
+    assert rewrite(e, x, m) == (Add(m*exp(1/x + x**(-2)), -1/m, evaluate=False), -x - 1/x)
 
 
 def test_mrv_leadterm():
+    assert mrv_leadterm(S.One, x) == (1, 0)
+
     assert mrv_leadterm(-exp(1/x), x) == (-1, 0)
     assert mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x) == (-1, 0)
     assert mrv_leadterm(
@@ -278,7 +292,7 @@ def test_limit():
     assert gruntz(-x, x) == -oo
     assert gruntz((-x)**2, x) == oo
     assert gruntz(-x**2, x) == -oo
-    assert gruntz((1/x)*log(1/x), x) == 0
+    assert gruntz((1/x)*log(1/x), x) == 0  # Gruntz: p15, 2.11
     assert gruntz(1/x, x) == 0
     assert gruntz(exp(x), x) == oo
     assert gruntz(-exp(x), x) == -oo
@@ -286,7 +300,7 @@ def test_limit():
     assert gruntz(1/x - exp(-x), x) == 0
     assert gruntz(x + 1/x, x) == oo
 
-    assert gruntz((1/x)**(1/x), x) == 1
+    assert gruntz((1/x)**(1/x), x) == 1  # Gruntz: p15, 2.11
     assert gruntz((exp(1/x) - 1)*x, x) == 1
     assert gruntz(1 + 1/x, x) == 1
     assert gruntz(-exp(1/x), x) == -1
@@ -337,8 +351,7 @@ def test_intractable():
 
 
 def test_aseries_trig():
-    assert cancel(gruntz(1/log(atan(x)), x)
-                  - 1/(log(pi) + log(S(1)/2))) == 0
+    assert gruntz(1/log(atan(x)), x) == -1/(-log(pi) + log(2))
     assert gruntz(1/acot(-x), x) == -oo
 
 

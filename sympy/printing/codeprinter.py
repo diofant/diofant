@@ -128,7 +128,7 @@ class CodePrinter(StrPrinter):
                 assign_to = Symbol(assign_to)
         elif not isinstance(assign_to, (Basic, type(None))):
             raise TypeError("{0} cannot assign to object of type {1}".format(
-                    type(self).__name__, type(assign_to)))
+                type(self).__name__, type(assign_to)))
 
         if assign_to:
             expr = Assignment(assign_to, expr)
@@ -148,7 +148,7 @@ class CodePrinter(StrPrinter):
             frontlines = []
             if len(self._not_supported) > 0:
                 frontlines.append(self._get_comment(
-                        "Not supported in {0}:".format(self.language)))
+                    "Not supported in {0}:".format(self.language)))
                 for expr in sorted(self._not_supported, key=str):
                     frontlines.append(self._get_comment(type(expr).__name__))
             for name, value in sorted(self._number_symbols, key=str):
@@ -397,12 +397,16 @@ class CodePrinter(StrPrinter):
 
     def _print_Catalan(self, expr):
         return self._print_NumberSymbol(expr)
+
     def _print_EulerGamma(self, expr):
         return self._print_NumberSymbol(expr)
+
     def _print_GoldenRatio(self, expr):
         return self._print_NumberSymbol(expr)
+
     def _print_Exp1(self, expr):
         return self._print_NumberSymbol(expr)
+
     def _print_Pi(self, expr):
         return self._print_NumberSymbol(expr)
 

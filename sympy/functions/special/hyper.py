@@ -12,6 +12,7 @@ from sympy.core.symbol import Dummy
 from sympy.functions import (sqrt, exp, log, sin, cos, asin, atan,
         sinh, cosh, asinh, acosh, atanh, acoth)
 
+
 class TupleArg(Tuple):
     def limit(self, x, xlim, dir='+'):
         """ Compute limit x->xlim.
@@ -40,7 +41,7 @@ def _prep_tuple(v):
     >>> _prep_tuple((7, 8, 9))
     (7, 8, 9)
     """
-    from sympy.simplify.simplify import unpolarify
+    from sympy import unpolarify
     return TupleArg(*[unpolarify(x) for x in v])
 
 
@@ -139,7 +140,7 @@ class hyper(TupleParametersBase):
 
     >>> from sympy import hyperexpand
     >>> hyperexpand(hyper([], [], x))
-    exp(x)
+    E**x
 
     You can also use expand_func:
 
@@ -414,7 +415,7 @@ class meijerg(TupleParametersBase):
 
     >>> from sympy import expand_func, S
     >>> expand_func(meijerg([[],[]], [[0],[]], -x))
-    exp(x)
+    E**x
     >>> hyperexpand(meijerg([[],[]], [[S(1)/2],[0]], (x/2)**2))
     sin(x)/sqrt(pi)
 

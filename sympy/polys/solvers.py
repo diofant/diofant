@@ -4,8 +4,10 @@ from __future__ import print_function, division
 
 from sympy.matrices import Matrix, zeros
 
+
 class RawMatrix(Matrix):
     _sympify = staticmethod(lambda x: x)
+
 
 def eqs_to_matrix(eqs, ring):
     """Transform from equations to matrix form. """
@@ -18,6 +20,7 @@ def eqs_to_matrix(eqs, ring):
         M[j, -1] = -e_j.coeff(1)
 
     return M
+
 
 def solve_lin_sys(eqs, ring, _raw=True):
     """Solve a system of linear equations.
@@ -41,7 +44,7 @@ def solve_lin_sys(eqs, ring, _raw=True):
     keys = ring.symbols if as_expr else ring.gens
 
     if pivots[-1] == len(keys):
-        return None
+        return
 
     if len(pivots) == len(keys):
         sol = []

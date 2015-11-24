@@ -478,6 +478,7 @@ def test_expand():
         [0, 0, 1]]
     )
 
+
 def test_random():
     M = randMatrix(3, 3)
     M = randMatrix(3, 3, seed=3)
@@ -1003,6 +1004,7 @@ def test_zip_row_op():
         assert M == cls([[2, -1, 0],
                          [4,  0, 0],
                          [0,  0, 2]])
+
 
 def test_issue_3950():
     m = Matrix([1, 2, 3])
@@ -2015,9 +2017,9 @@ def test_is_zero():
     assert SparseMatrix([[x, 0], [0, 0]]).is_zero is None
     assert ImmutableMatrix([[x, 0], [0, 0]]).is_zero is None
     assert ImmutableSparseMatrix([[x, 0], [0, 0]]).is_zero is None
-    assert Matrix([[x, 1], [0, 0]]).is_zero == False
+    assert Matrix([[x, 1], [0, 0]]).is_zero is False
     a = Symbol('a', nonzero=True)
-    assert Matrix([[a, 0], [0, 0]]).is_zero == False
+    assert Matrix([[a, 0], [0, 0]]).is_zero is False
 
 
 def test_rotation_matrices():
@@ -2048,11 +2050,14 @@ def test_DeferredVector():
     assert str(DeferredVector("vector")[4]) == "vector[4]"
     assert sympify(DeferredVector("d")) == DeferredVector("d")
 
+
 def test_DeferredVector_not_iterable():
     assert not iterable(DeferredVector('X'))
 
+
 def test_DeferredVector_Matrix():
     raises(TypeError, lambda: Matrix(DeferredVector("V")))
+
 
 def test_GramSchmidt():
     R = Rational
@@ -2288,10 +2293,12 @@ def test_adjoint():
     for cls in classes:
         assert ans == cls(dat).adjoint()
 
+
 def test_simplify_immutable():
     from sympy import simplify, sin, cos
     assert simplify(ImmutableMatrix([[sin(x)**2 + cos(x)**2]])) == \
                     ImmutableMatrix([[1]])
+
 
 def test_rank():
     from sympy.abc import x
@@ -2302,6 +2309,7 @@ def test_rank():
     p = zeros(3)
     assert p.rank() == 0
 
+
 def test_replace():
     from sympy import symbols, Function, Matrix
     F, G = symbols('F, G', cls=Function)
@@ -2310,20 +2318,23 @@ def test_replace():
     N = M.replace(F, G)
     assert N == K
 
+
 def test_replace_map():
     from sympy import symbols, Function, Matrix
     F, G = symbols('F, G', cls=Function)
-    K = Matrix(2, 2, [(G(0), {F(0): G(0)}), (G(1), {F(1): G(1)}), (G(1), {F(1)\
-    : G(1)}), (G(2), {F(2): G(2)})])
+    K = Matrix(2, 2, [(G(0), {F(0): G(0)}), (G(1), {F(1): G(1)}), (G(1),
+                      {F(1): G(1)}), (G(2), {F(2): G(2)})])
     M = Matrix(2, 2, lambda i, j: F(i+j))
     N = M.replace(F, G, True)
     assert N == K
+
 
 def test_atoms():
     from sympy.abc import x
     m = Matrix([[1, 2], [x, 1 - 1/x]])
     assert m.atoms() == {S(1),S(2),S(-1), x}
     assert m.atoms(Symbol) == {x}
+
 
 @slow
 def test_pinv():
@@ -2343,6 +2354,7 @@ def test_pinv():
         assert simplify(ApA * A_pinv) == A_pinv
         assert AAp.H == AAp
         assert ApA.H == ApA
+
 
 def test_pinv_solve():
     # Fully determined system (unique result, identical to other solvers).
@@ -2377,6 +2389,7 @@ def test_pinv_solve():
     # Proof the solution is not exact.
     assert A * A.pinv() * B != B
 
+
 @XFAIL
 def test_pinv_rank_deficient():
     # Test the four properties of the pseudoinverse for various matrices.
@@ -2407,13 +2420,16 @@ def test_pinv_rank_deficient():
     assert solution == Matrix([3, w1])
     assert A * A.pinv() * B != B
 
+
 def test_issue_7201():
     assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
     assert ones(1, 0) + ones(1, 0) == Matrix(1, 0, [])
 
+
 def test_free_symbols():
     for M in ImmutableMatrix, ImmutableSparseMatrix, Matrix, SparseMatrix:
         assert M([[x], [0]]).free_symbols == {x}
+
 
 def test_from_ndarray():
     """See issue 7465."""
@@ -2430,6 +2446,7 @@ def test_from_ndarray():
     raises(NotImplementedError, lambda: Matrix(array([[
         [1, 2], [3, 4]], [[5, 6], [7, 8]]])))
 
+
 def test_hermitian():
     a = Matrix([[1, I], [-I, 1]])
     assert a.is_hermitian
@@ -2439,3 +2456,41 @@ def test_hermitian():
     assert a.is_hermitian is None
     a[0, 1] = a[1, 0]*I
     assert a.is_hermitian is False
+
+
+def test_issue_9457_9467():
+    # for row_del(index)
+    M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    M.row_del(1)
+    assert M == Matrix([[1, 2, 3], [3, 4, 5]])
+    N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    N.row_del(-2)
+    assert N == Matrix([[1, 2, 3], [3, 4, 5]])
+    P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    raises(IndexError, lambda: P.row_del(10))
+    Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    raises(IndexError, lambda: Q.row_del(-10))
+
+    # for col_del(index)
+    M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    M.col_del(1)
+    assert M == Matrix([[1, 3], [2, 4], [3, 5]])
+    N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    N.col_del(-2)
+    assert N == Matrix([[1, 3], [2, 4], [3, 5]])
+    P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    raises(IndexError, lambda: P.col_del(10))
+    Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
+    raises(IndexError, lambda: Q.col_del(-10))
+
+
+def test_issue_9422():
+    x, y = symbols('x y', commutative=False)
+    a, b = symbols('a b')
+    M = eye(2)
+    M1 = Matrix(2, 2, [x, y, y, z])
+    assert y*x*M != x*y*M
+    assert b*a*M == a*b*M
+    assert x*M1 != M1*x
+    assert a*M1 == M1*a
+    assert y*x*M == Matrix([[y*x, 0], [0, y*x]])

@@ -26,6 +26,7 @@ try:
 
 except ImportError:
     unicode_warnings += 'No unicodedata available\n'
+
     def U(name):
         return
 
@@ -113,8 +114,12 @@ def xstr(*args):
         return str(*args)
 
 # GREEK
+
+
 def g(l):
     return U('GREEK SMALL LETTER %s' % l.upper())
+
+
 def G(l):
     return U('GREEK CAPITAL LETTER %s' % l.upper())
 
@@ -163,19 +168,32 @@ symb_2txt = {
 }
 
 # SUBSCRIPT & SUPERSCRIPT
+
+
 def LSUB(letter):
     return U('LATIN SUBSCRIPT SMALL LETTER %s' % letter.upper())
+
+
 def GSUB(letter):
     return U('GREEK SUBSCRIPT SMALL LETTER %s' % letter.upper())
+
+
 def DSUB(digit):
     return U('SUBSCRIPT %s' % digit_2txt[digit])
+
+
 def SSUB(symb):
     return U('SUBSCRIPT %s' % symb_2txt[symb])
 
+
 def LSUP(letter):
     return U('SUPERSCRIPT LATIN SMALL LETTER %s' % letter.upper())
+
+
 def DSUP(digit):
     return U('SUPERSCRIPT %s' % digit_2txt[digit])
+
+
 def SSUP(symb):
     return U('SUPERSCRIPT %s' % symb_2txt[symb])
 
@@ -234,20 +252,36 @@ modifier_dict = {
 }
 
 # VERTICAL OBJECTS
+
+
 def HUP(symb):
     return U('%s UPPER HOOK' % symb_2txt[symb])
+
+
 def CUP(symb):
     return U('%s UPPER CORNER' % symb_2txt[symb])
+
+
 def MID(symb):
     return U('%s MIDDLE PIECE' % symb_2txt[symb])
+
+
 def EXT(symb):
     return U('%s EXTENSION' % symb_2txt[symb])
+
+
 def HLO(symb):
     return U('%s LOWER HOOK' % symb_2txt[symb])
+
+
 def CLO(symb):
     return U('%s LOWER CORNER' % symb_2txt[symb])
+
+
 def TOP(symb):
     return U('%s TOP' % symb_2txt[symb])
+
+
 def BOT(symb):
     return U('%s BOTTOM' % symb_2txt[symb])
 
@@ -281,7 +315,7 @@ _xobj_unicode = {
     'sum':  (( U('BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT'), '_', U('OVERLINE'), U('BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT')), U('N-ARY SUMMATION')),
 
     # horizontal objects
-    #'-':   '-',
+    # '-':   '-',
     '-':    U('BOX DRAWINGS LIGHT HORIZONTAL'),
     '_':    U('LOW LINE'),
     # We used to use this, but LOW LINE looks better for roots, as it's a
@@ -482,8 +516,8 @@ atoms_table = {
     'Pi':                      U('GREEK SMALL LETTER PI'),
     'Infinity':                U('INFINITY'),
     'NegativeInfinity':        U('INFINITY') and ('-' + U('INFINITY')),  # XXX what to do here
-    #'ImaginaryUnit':          U('GREEK SMALL LETTER IOTA'),
-    #'ImaginaryUnit':          U('MATHEMATICAL ITALIC SMALL I'),
+    # 'ImaginaryUnit':          U('GREEK SMALL LETTER IOTA'),
+    # 'ImaginaryUnit':          U('MATHEMATICAL ITALIC SMALL I'),
     'ImaginaryUnit':           U('DOUBLE-STRUCK ITALIC SMALL I'),
     'EmptySet':                U('EMPTY SET'),
     'Naturals':                U('DOUBLE-STRUCK CAPITAL N'),
@@ -518,11 +552,11 @@ def pretty_symbol(symb_name):
 
     name, sups, subs = split_super_sub(symb_name)
 
-    def translate(s) :
+    def translate(s):
         gG = greek_unicode.get(s)
         if gG is not None:
             return gG
-        for key in sorted(modifier_dict.keys(), key=lambda k:len(k), reverse=True) :
+        for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
             if s.lower().endswith(key) and len(s)>len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
@@ -539,7 +573,7 @@ def pretty_symbol(symb_name):
                 try:  # match by separate characters
                     pretty = ''.join([mapping[c] for c in s])
                 except (TypeError, KeyError):
-                    return None
+                    return
             result.append(pretty)
         return result
 

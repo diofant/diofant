@@ -16,8 +16,11 @@ from sympy.functions import binomial, sin, cos, Piecewise
 
 # need to use a function instead of lamda since hash of lambda changes on
 # each call to _pat_sincos
+
+
 def _integer_instance(n):
-    return isinstance(n , Integer)
+    return isinstance(n, Integer)
+
 
 @cacheit
 def _pat_sincos(x):
@@ -131,21 +134,21 @@ def trigintegrate(f, x, conds='piecewise'):
             res = _sin_pow_integrate(n, x)
         else:
 
-            # m < 0 , |n| > |m|
-            #  /
-            # |
-            # |    m       n
-            # | cos (x) sin (x) dx =
-            # |
-            # |
-            #/
-            #                                      /
-            #                                     |
-            #   -1        m+1     n-1     n - 1   |     m+2     n-2
-            # ________ cos (x) sin (x) + _______  |  cos (x) sin (x) dx
-            #                                     |
-            #   m + 1                     m + 1   |
-            #                                    /
+            #  m < 0 , |n| > |m|
+            #   /
+            #  |
+            #  |    m       n
+            #  | cos (x) sin (x) dx =
+            #  |
+            #  |
+            # /
+            #                                       /
+            #                                      |
+            #    -1        m+1     n-1     n - 1   |     m+2     n-2
+            #  ________ cos (x) sin (x) + _______  |  cos (x) sin (x) dx
+            #                                      |
+            #    m + 1                     m + 1   |
+            #                                     /
 
             res = (Rational(-1, m + 1) * cos(x)**(m + 1) * sin(x)**(n - 1) +
                    Rational(n - 1, m + 1) *
@@ -187,14 +190,14 @@ def trigintegrate(f, x, conds='piecewise'):
             res = _cos_pow_integrate(m, x)
         else:
 
-            # n < 0 , |m| > |n|
-            #  /
-            # |
-            # |    m       n
-            # | cos (x) sin (x) dx =
-            # |
-            # |
-            #/
+            #  n < 0 , |m| > |n|
+            #   /
+            #  |
+            #  |    m       n
+            #  | cos (x) sin (x) dx =
+            #  |
+            #  |
+            # /
             #                                      /
             #                                     |
             #    1        m-1     n+1     m - 1   |     m-2     n+2
@@ -209,7 +212,7 @@ def trigintegrate(f, x, conds='piecewise'):
 
     else:
         if m == n:
-            ##Substitute sin(2x)/2 for sin(x)cos(x) and then Integrate.
+            # Substitute sin(2x)/2 for sin(x)cos(x) and then Integrate.
             res = integrate((Rational(1, 2)*sin(2*x))**m, x)
         elif (m == -n):
             if n < 0:
@@ -232,18 +235,17 @@ def trigintegrate(f, x, conds='piecewise'):
 def _sin_pow_integrate(n, x):
     if n > 0:
         if n == 1:
-            #Recursion break
+            # Recursion break
             return -cos(x)
 
-        # n > 0
-        #  /                                                 /
-        # |                                                 |
-        # |    n           -1               n-1     n - 1   |     n-2
-        # | sin (x) dx =  ______ cos (x) sin (x) + _______  |  sin (x) dx
-        # |                                                 |
-        # |                 n                         n     |
-        #/                                                 /
-        #
+        #  n > 0
+        #   /                                                 /
+        #  |                                                 |
+        #  |    n           -1               n-1     n - 1   |     n-2
+        #  | sin (x) dx =  ______ cos (x) sin (x) + _______  |  sin (x) dx
+        #  |                                                 |
+        #  |                 n                         n     |
+        # /                                                 /
         #
 
         return (Rational(-1, n) * cos(x) * sin(x)**(n - 1) +
@@ -251,43 +253,43 @@ def _sin_pow_integrate(n, x):
 
     if n < 0:
         if n == -1:
-            ##Make sure this does not come back here again.
-            ##Recursion breaks here or at n==0.
+            # Make sure this does not come back here again.
+            # Recursion breaks here or at n==0.
             return trigintegrate(1/sin(x), x)
 
-        # n < 0
-        #  /                                                 /
-        # |                                                 |
-        # |    n            1               n+1     n + 2   |     n+2
-        # | sin (x) dx = _______ cos (x) sin (x) + _______  |  sin (x) dx
-        # |                                                 |
-        # |               n + 1                     n + 1   |
-        #/                                                 /
+        #  n < 0
+        #   /                                                 /
+        #  |                                                 |
+        #  |    n            1               n+1     n + 2   |     n+2
+        #  | sin (x) dx = _______ cos (x) sin (x) + _______  |  sin (x) dx
+        #  |                                                 |
+        #  |               n + 1                     n + 1   |
+        # /                                                 /
         #
 
         return (Rational(1, n + 1) * cos(x) * sin(x)**(n + 1) +
                 Rational(n + 2, n + 1) * _sin_pow_integrate(n + 2, x))
 
     else:
-        #n == 0
-        #Recursion break.
+        # n == 0
+        # Recursion break.
         return x
 
 
 def _cos_pow_integrate(n, x):
     if n > 0:
         if n == 1:
-            #Recursion break.
+            # Recursion break.
             return sin(x)
 
-        # n > 0
-        #  /                                                 /
-        # |                                                 |
-        # |    n            1               n-1     n - 1   |     n-2
-        # | sin (x) dx =  ______ sin (x) cos (x) + _______  |  cos (x) dx
-        # |                                                 |
-        # |                 n                         n     |
-        #/                                                 /
+        #  n > 0
+        #   /                                                 /
+        #  |                                                 |
+        #  |    n            1               n-1     n - 1   |     n-2
+        #  | sin (x) dx =  ______ sin (x) cos (x) + _______  |  cos (x) dx
+        #  |                                                 |
+        #  |                 n                         n     |
+        # /                                                 /
         #
 
         return (Rational(1, n) * sin(x) * cos(x)**(n - 1) +
@@ -295,22 +297,22 @@ def _cos_pow_integrate(n, x):
 
     if n < 0:
         if n == -1:
-            ##Recursion break
+            # Recursion break
             return trigintegrate(1/cos(x), x)
 
-        # n < 0
-        #  /                                                 /
-        # |                                                 |
-        # |    n            -1              n+1     n + 2   |     n+2
-        # | cos (x) dx = _______ sin (x) cos (x) + _______  |  cos (x) dx
-        # |                                                 |
-        # |               n + 1                     n + 1   |
-        #/                                                 /
+        #  n < 0
+        #   /                                                 /
+        #  |                                                 |
+        #  |    n            -1              n+1     n + 2   |     n+2
+        #  | cos (x) dx = _______ sin (x) cos (x) + _______  |  cos (x) dx
+        #  |                                                 |
+        #  |               n + 1                     n + 1   |
+        # /                                                 /
         #
 
         return (Rational(-1, n + 1) * sin(x) * cos(x)**(n + 1) +
                 Rational(n + 2, n + 1) * _cos_pow_integrate(n + 2, x))
     else:
         # n == 0
-        #Recursion Break.
+        # Recursion Break.
         return x

@@ -46,8 +46,8 @@ def change_mul(node, x):
     new_args = []
     dirac = None
 
-    #Sorting is needed so that we consistently collapse the same delta;
-    #However, we must preserve the ordering of non-commutative terms
+    # Sorting is needed so that we consistently collapse the same delta;
+    # However, we must preserve the ordering of non-commutative terms
     c, nc = node.args_cnc()
     sorted_args = sorted(c, key=default_sort_key)
     sorted_args.extend(nc)
@@ -132,7 +132,7 @@ def deltaintegrate(f, x):
     sympy.integrals.integrals.Integral
     """
     if not f.has(DiracDelta):
-        return None
+        return
 
     from sympy.integrals import Integral, integrate
     from sympy.solvers import solve
@@ -141,8 +141,8 @@ def deltaintegrate(f, x):
     if f.func == DiracDelta:
         h = f.simplify(x)
         if h == f:  # can't simplify the expression
-            #FIXME: the second term tells whether is DeltaDirac or Derivative
-            #For integrating derivatives of DiracDelta we need the chain rule
+            # FIXME: the second term tells whether is DeltaDirac or Derivative
+            # For integrating derivatives of DiracDelta we need the chain rule
             if f.is_simple(x):
                 if (len(f.args) <= 1 or f.args[1] == 0):
                     return Heaviside(f.args[0])
@@ -173,4 +173,4 @@ def deltaintegrate(f, x):
                     rest_mult = rest_mult*rest_mult_2
                 point = solve(dg.args[0], x)[0]
                 return (rest_mult.subs(x, point)*Heaviside(x - point))
-    return None
+    return

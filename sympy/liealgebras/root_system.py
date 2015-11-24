@@ -3,6 +3,7 @@ from .cartan_type import CartanType
 from sympy.core import Basic
 from sympy.core.compatibility import range
 
+
 class RootSystem(Basic):
     """Represent the root system of a simple Lie algebra.
 
@@ -28,9 +29,11 @@ class RootSystem(Basic):
     Therefore, we see that the simple roots span the root space of a given
     simple Lie algebra.
 
-    References: https://en.wikipedia.org/wiki/Root_system
-                Lie Algebras and Representation Theory - Humphreys
+    References
+    ==========
 
+    .. [1] https://en.wikipedia.org/wiki/Root_system
+    .. [2] Lie Algebras and Representation Theory - Humphreys
     """
 
     def __new__(cls, cartantype):

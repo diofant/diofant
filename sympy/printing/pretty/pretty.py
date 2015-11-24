@@ -650,7 +650,7 @@ class PrettyPrinter(Printer):
         if (isinstance(expr.parent, MatrixSymbol)
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
-                    Symbol(expr.parent.name + '_%d%d'%(expr.i, expr.j)))
+                Symbol(expr.parent.name + '_%d%d'%(expr.i, expr.j)))
         else:
             prettyFunc = self._print(expr.parent)
             prettyIndices = self._print_seq((expr.i, expr.j), delimiter=', '
@@ -668,6 +668,7 @@ class PrettyPrinter(Printer):
         # XXX works only for applied functions
 
         prettyFunc = self._print(m.parent)
+
         def ppslice(x):
             x = list(x)
             if x[2] == 1:
@@ -677,6 +678,7 @@ class PrettyPrinter(Printer):
             if x[0] == 0:
                 x[0] = ''
             return prettyForm(*self._print_seq(x, delimiter=':'))
+
         prettyArgs = self._print_seq((ppslice(m.rowslice),
             ppslice(m.colslice)), delimiter=', ').parens(left='[', right=']')[0]
 
@@ -758,6 +760,7 @@ class PrettyPrinter(Printer):
 
         if not self._use_unicode:
             raise NotImplementedError("ASCII pretty printing of BasisDependent is not implemented")
+
         class Fake(object):
             baseline = 0
 
@@ -773,33 +776,33 @@ class PrettyPrinter(Printer):
                     items = [(0, expr)]
                 for system, vect in items:
                     inneritems = list(vect.components.items())
-                    inneritems.sort(key = lambda x: x[0].__str__())
+                    inneritems.sort(key=lambda x: x[0].__str__())
                     for k, v in inneritems:
-                        #if the coef of the basis vector is 1
-                        #we skip the 1
+                        # if the coef of the basis vector is 1
+                        # we skip the 1
                         if v == 1:
                             o1.append(u("") +
                                       k._pretty_form)
-                        #Same for -1
+                        # Same for -1
                         elif v == -1:
                             o1.append(u("(-1) ") +
                                       k._pretty_form)
-                        #For a general expr
+                        # For a general expr
                         else:
-                            #We always wrap the measure numbers in
-                            #parentheses
+                            # We always wrap the measure numbers in
+                            # parentheses
                             arg_str = self._print(
                                 v).parens()[0]
 
                             o1.append(arg_str + ' ' + k._pretty_form)
                         vectstrs.append(k._pretty_form)
 
-                #outstr = u("").join(o1)
+                # outstr = u("").join(o1)
                 if o1[0].startswith(u(" + ")):
                     o1[0] = o1[0][3:]
                 elif o1[0].startswith(" "):
                     o1[0] = o1[0][1:]
-                #Fixing the newlines
+                # Fixing the newlines
                 lengths = []
                 strs = ['']
                 for i, partstr in enumerate(o1):
@@ -833,6 +836,7 @@ class PrettyPrinter(Printer):
                             strs[j] += ' '*(lengths[-1]+3)
 
                 return u('\n').join([s[:-3] for s in strs])
+
         return Fake()
 
     def _print_Piecewise(self, pexpr):
@@ -840,7 +844,7 @@ class PrettyPrinter(Printer):
         P = {}
         for n, ec in enumerate(pexpr.args):
             P[n, 0] = self._print(ec.expr)
-            if ec.cond == True:
+            if ec.cond == S.true:
                 P[n, 1] = prettyForm('otherwise')
             else:
                 P[n, 1] = prettyForm(
@@ -1207,7 +1211,7 @@ class PrettyPrinter(Printer):
 
         def pretty_negative(pform, index):
             """Prepend a minus sign to a pretty form. """
-            #TODO: Move this code to prettyForm
+            # TODO: Move this code to prettyForm
             if index == 0:
                 if pform.height() > 1:
                     pform_neg = '- '
@@ -1355,7 +1359,7 @@ class PrettyPrinter(Printer):
         # Det the baseline to match contents to fix the height
         # but if the height of bpretty is one, the rootsign must be one higher
         rootsign.baseline = max(1, bpretty.baseline)
-        #build result
+        # build result
         s = prettyForm(hobj('_', 2 + bpretty.width()))
         s = prettyForm(*bpretty.above(s))
         s = prettyForm(*s.left(rootsign))
@@ -1392,12 +1396,12 @@ class PrettyPrinter(Printer):
             if p < 0:
                 return prettyForm(str(p), binding=prettyForm.NEG)/prettyForm(str(q))
                 # Old printing method:
-                #pform = prettyForm(str(-p))/prettyForm(str(q))
-                #return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
+                # pform = prettyForm(str(-p))/prettyForm(str(q))
+                # return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
             else:
                 return prettyForm(str(p))/prettyForm(str(q))
         else:
-            return None
+            return
 
     def _print_Rational(self, expr):
         result = self.__print_numer_denom(expr.p, expr.q)
@@ -1422,7 +1426,8 @@ class PrettyPrinter(Printer):
         else:
             prod_char = u('\xd7')
             return self._print_seq(p.sets, None, None, ' %s ' % prod_char,
-                parenthesize=lambda set: set.is_Union or set.is_Intersection)
+                                   parenthesize=lambda set: set.is_Union or
+                                   set.is_Intersection or set.is_ProductSet)
 
     def _print_FiniteSet(self, s):
         items = sorted(s.args, key=default_sort_key)
@@ -1906,7 +1911,7 @@ class PrettyPrinter(Printer):
             return prettyForm(*pform.left(u("\N{DOUBLE-STRUCK ITALIC SMALL D}")))
 
     def _print_Tr(self, p):
-        #TODO: Handle indices
+        # TODO: Handle indices
         pform = self._print(p.args[0])
         pform = prettyForm(*pform.left('%s(' % (p.__class__.__name__)))
         pform = prettyForm(*pform.right(')'))

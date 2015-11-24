@@ -228,6 +228,8 @@ def multiplicity(p, n):
                 pass
         raise ValueError('expecting ints or fractions, got %s and %s' % (p, n))
 
+    if n == 0:
+        raise ValueError('multiplicity of 0 is not defined')
     if p == 2:
         return trailing(n)
     if p < 2:
@@ -473,7 +475,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
         V = prng.randint(0, n - 1)
         a = prng.randint(1, n - 3)  # for x**2 + a, a%n should not be 0 or -2
         F = None
-    return None
+    return
 
 
 def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
@@ -1003,7 +1005,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     if verbose:
         sn = str(n)
         if len(sn) > 50:
-            print('Factoring %s' % sn[:5] + \
+            print('Factoring %s' % sn[:5] +
                   '..(%i other digits)..' % (len(sn) - 10) + sn[-5:])
         else:
             print('Factoring', n)

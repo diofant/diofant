@@ -15,7 +15,7 @@ from sympy.functions.combinatorial.factorials import factorial, rf, RisingFactor
 
 
 ###############################################################################
-############################ COMPLETE GAMMA FUNCTION ##########################
+# ########################## COMPLETE GAMMA FUNCTION ######################## #
 ###############################################################################
 
 class gamma(Function):
@@ -199,7 +199,7 @@ class gamma(Function):
 
 
 ###############################################################################
-################## LOWER and UPPER INCOMPLETE GAMMA FUNCTIONS #################
+# ################ LOWER and UPPER INCOMPLETE GAMMA FUNCTIONS ############### #
 ###############################################################################
 
 class lowergamma(Function):
@@ -226,9 +226,9 @@ class lowergamma(Function):
     >>> lowergamma(s, x)
     lowergamma(s, x)
     >>> lowergamma(3, x)
-    -x**2*exp(-x) - 2*x*exp(-x) + 2 - 2*exp(-x)
+    2 - E**(-x)*x**2 - 2*E**(-x)*x - 2*E**(-x)
     >>> lowergamma(-S(1)/2, x)
-    -2*sqrt(pi)*erf(sqrt(x)) - 2*exp(-x)/sqrt(x)
+    -2*sqrt(pi)*erf(sqrt(x)) - 2*E**(-x)/sqrt(x)
 
     See Also
     ========
@@ -336,6 +336,7 @@ class lowergamma(Function):
     def _latex_no_arg(printer):
         return r'\gamma'
 
+
 class uppergamma(Function):
     r"""
     The upper incomplete gamma function.
@@ -367,9 +368,9 @@ class uppergamma(Function):
     >>> uppergamma(s, x)
     uppergamma(s, x)
     >>> uppergamma(3, x)
-    x**2*exp(-x) + 2*x*exp(-x) + 2*exp(-x)
+    E**(-x)*x**2 + 2*E**(-x)*x + 2*E**(-x)
     >>> uppergamma(-S(1)/2, x)
-    -2*sqrt(pi)*(-erf(sqrt(x)) + 1) + 2*exp(-x)/sqrt(x)
+    -2*sqrt(pi)*(-erf(sqrt(x)) + 1) + 2*E**(-x)/sqrt(x)
     >>> uppergamma(-2, x)
     expint(3, x)/x**2
 
@@ -471,7 +472,7 @@ class uppergamma(Function):
 
 
 ###############################################################################
-###################### POLYGAMMA and LOGGAMMA FUNCTIONS #######################
+# #################### POLYGAMMA and LOGGAMMA FUNCTIONS ##################### #
 ###############################################################################
 
 class polygamma(Function):

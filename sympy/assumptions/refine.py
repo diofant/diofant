@@ -101,6 +101,8 @@ def refine_Pow(expr, assumptions):
                 ask(Q.even(expr.exp), assumptions):
             return expr.base.args[0] ** expr.exp
     if ask(Q.extended_real(expr.base), assumptions):
+        if expr.base is S.Exp1:
+            return refine_exp(expr, assumptions)
         if expr.base.is_number:
             if ask(Q.even(expr.exp), assumptions):
                 return abs(expr.base) ** expr.exp
@@ -178,7 +180,7 @@ def refine_exp(expr, assumptions):
     1
 
     """
-    arg = expr.args[0]
+    arg = expr.exp
     if arg.is_Mul:
         coeff = arg.as_coefficient(S.Pi*S.ImaginaryUnit)
         if coeff:
@@ -209,6 +211,14 @@ def refine_atan2(expr, assumptions):
     atan(y/x) - pi
     >>> refine_atan2(atan2(y,x), Q.positive(y) & Q.negative(x))
     atan(y/x) + pi
+    >>> refine_atan2(atan2(y,x), Q.zero(y) & Q.negative(x))
+    pi
+    >>> refine_atan2(atan2(y,x), Q.positive(y) & Q.zero(x))
+    pi/2
+    >>> refine_atan2(atan2(y,x), Q.negative(y) & Q.zero(x))
+    -pi/2
+    >>> refine_atan2(atan2(y,x), Q.zero(y) & Q.zero(x))
+    nan
     """
     from sympy.functions.elementary.trigonometric import atan
     from sympy.core import S
@@ -219,6 +229,14 @@ def refine_atan2(expr, assumptions):
         return atan(y / x) - S.Pi
     elif ask(Q.positive(y) & Q.negative(x), assumptions):
         return atan(y / x) + S.Pi
+    elif ask(Q.zero(y) & Q.negative(x), assumptions):
+        return S.Pi
+    elif ask(Q.positive(y) & Q.zero(x), assumptions):
+        return S.Pi/2
+    elif ask(Q.negative(y) & Q.zero(x), assumptions):
+        return -S.Pi/2
+    elif ask(Q.zero(y) & Q.zero(x), assumptions):
+        return S.NaN
     else:
         return expr
 
@@ -239,7 +257,6 @@ def refine_Relational(expr, assumptions):
 handlers_dict = {
     'Abs': refine_abs,
     'Pow': refine_Pow,
-    'exp': refine_exp,
     'atan2': refine_atan2,
     'Equality': refine_Relational,
     'Unequality': refine_Relational,

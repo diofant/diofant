@@ -166,6 +166,7 @@ def _af_invert(a):
         inv_form[ai] = i
     return inv_form
 
+
 def _af_pow(a, n):
     """
     Routine for finding powers of a permutation.
@@ -209,6 +210,7 @@ def _af_pow(a, n):
                 a = [a[i] for i in a]
                 n = n // 2
     return b
+
 
 def _af_commutes_with(a, b):
     """
@@ -432,6 +434,7 @@ class Cycle(dict):
 
     def copy(self):
         return Cycle(self)
+
 
 class Permutation(Basic):
     """
@@ -820,13 +823,13 @@ class Permutation(Basic):
         if size is not None:
             size = int(size)
 
-        #a) ()
-        #b) (1) = identity
-        #c) (1, 2) = cycle
-        #d) ([1, 2, 3]) = array form
-        #e) ([[1, 2]]) = cyclic form
-        #f) (Cycle) = conversion to permutation
-        #g) (Permutation) = adjust size or return copy
+        # a) ()
+        # b) (1) = identity
+        # c) (1, 2) = cycle
+        # d) ([1, 2, 3]) = array form
+        # e) ([[1, 2]]) = cyclic form
+        # f) (Cycle) = conversion to permutation
+        # g) (Permutation) = adjust size or return copy
         ok = True
         if not args:  # a
             return _af_new(list(range(size or 0)))
@@ -1568,7 +1571,7 @@ class Permutation(Basic):
         while perm[i + 1] < perm[i]:
             i -= 1
         if i == -1:
-            return None
+            return
         else:
             j = n - 1
             while perm[j] < perm[i]:
@@ -1674,7 +1677,7 @@ class Permutation(Basic):
         """
         r = self.rank_nonlex()
         if r == ifac(self.size) - 1:
-            return None
+            return
         return Perm.unrank_nonlex(self.size, r + 1)
 
     def rank(self):
@@ -2428,7 +2431,7 @@ class Permutation(Basic):
                     pi[st + d], pi[st + d - 1] = pi[st + d - 1], pi[st + d]
                     done = True
         if m == 0:
-            return None
+            return
         return _af_new(pi)
 
     def get_precedence_matrix(self):

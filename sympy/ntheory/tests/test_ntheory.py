@@ -35,6 +35,7 @@ from sympy.utilities.iterables import capture
 from sympy.utilities.randtest import random_complex_number
 from sympy.ntheory.multinomial import multinomial_coefficients_iterator
 
+
 def test_trailing():
     assert trailing(0) == 0
     assert trailing(1) == 0
@@ -63,6 +64,8 @@ def test_multiplicity():
     raises(ValueError, lambda: multiplicity(1, 1))
     raises(ValueError, lambda: multiplicity(1, 2))
     raises(ValueError, lambda: multiplicity(1.3, 2))
+    raises(ValueError, lambda: multiplicity(2, 0))
+    raises(ValueError, lambda: multiplicity(1.3, 0))
 
     # handles Rationals
     assert multiplicity(10, Rational(30, 7)) == 0
@@ -121,7 +124,7 @@ def test_isprime():
     assert isprime(2**89 - 1)
     assert isprime(2**607 - 1)
     assert not isprime(2**601 - 1)
-    #Arnault's number
+    # Arnault's number
     assert isprime(int('''
 803837457453639491257079614341942108138837688287558145837488917522297\
 427376533365218650233616396004545791504202360320876656996676098728404\
@@ -355,6 +358,7 @@ def test_factorint():
     # Test for non integer input
     raises(ValueError, lambda: factorint(4.5))
 
+
 def test_divisors_and_divisor_count():
     assert divisors(-1) == [1]
     assert divisors(0) == []
@@ -374,6 +378,7 @@ def test_divisors_and_divisor_count():
 
     assert divisor_count(180, 3) == divisor_count(180//3)
     assert divisor_count(2*3*5, 7) == 0
+
 
 def test_issue_6981():
     S = set(divisors(4)).union(set(divisors(Integer(2))))
@@ -444,8 +449,8 @@ def test_residue():
     assert is_primitive_root(12, 17) == is_primitive_root(29, 17)
     raises(ValueError, lambda: is_primitive_root(3, 6))
 
-    assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3, \
-       None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5, \
+    assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3,
+       None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
        None, 2, 7, 2, None, 2, None]
 
     for p in primerange(3, 100):
@@ -507,16 +512,16 @@ def test_residue():
     assert sqrt_mod(9, 81, True) == [3, 24, 30, 51, 57, 78]
     assert sqrt_mod(9, 3**5, True) == [3, 78, 84, 159, 165, 240]
     assert sqrt_mod(81, 3**4, True) == [0, 9, 18, 27, 36, 45, 54, 63, 72]
-    assert sqrt_mod(81, 3**5, True) == [9, 18, 36, 45, 63, 72, 90, 99, 117,\
+    assert sqrt_mod(81, 3**5, True) == [9, 18, 36, 45, 63, 72, 90, 99, 117,
             126, 144, 153, 171, 180, 198, 207, 225, 234]
-    assert sqrt_mod(81, 3**6, True) == [9, 72, 90, 153, 171, 234, 252, 315,\
+    assert sqrt_mod(81, 3**6, True) == [9, 72, 90, 153, 171, 234, 252, 315,
             333, 396, 414, 477, 495, 558, 576, 639, 657, 720]
-    assert sqrt_mod(81, 3**7, True) == [9, 234, 252, 477, 495, 720, 738, 963,\
+    assert sqrt_mod(81, 3**7, True) == [9, 234, 252, 477, 495, 720, 738, 963,
             981, 1206, 1224, 1449, 1467, 1692, 1710, 1935, 1953, 2178]
 
     for a, p in [(26214400, 32768000000), (26214400, 16384000000),
-        (262144, 1048576), (87169610025, 163443018796875),
-        (22315420166400, 167365651248000000)]:
+                 (262144, 1048576), (87169610025, 163443018796875),
+                 (22315420166400, 167365651248000000)]:
         assert pow(sqrt_mod(a, p), 2, p) == a
 
     n = 70
@@ -543,8 +548,8 @@ def test_residue():
     assert is_nthpow_residue(8547, 12, 10007)
     assert nthroot_mod(1801, 11, 2663) == 44
     for a, q, p in [(51922, 2, 203017), (43, 3, 109), (1801, 11, 2663),
-          (26118163, 1303, 33333347), (1499, 7, 2663), (595, 6, 2663),
-          (1714, 12, 2663), (28477, 9, 33343)]:
+                    (26118163, 1303, 33333347), (1499, 7, 2663), (595, 6, 2663),
+                    (1714, 12, 2663), (28477, 9, 33343)]:
         r = nthroot_mod(a, q, p)
         assert pow(r, q, p) == a
     assert nthroot_mod(11, 3, 109) is None
@@ -643,7 +648,7 @@ def test_multinomial_coefficients():
     mc = multinomial_coefficients(3, 3)
     assert mc == {(2, 1, 0): 3, (0, 3, 0): 1,
             (1, 0, 2): 3, (0, 2, 1): 3, (0, 1, 2): 3, (3, 0, 0): 1,
-            (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
+        (2, 0, 1): 3, (1, 2, 0): 3, (1, 1, 1): 6, (0, 0, 3): 1}
     assert dict(multinomial_coefficients_iterator(2, 0)) == {(0, 0): 1}
     assert dict(
         multinomial_coefficients_iterator(2, 1)) == {(0, 1): 1, (1, 0): 1}

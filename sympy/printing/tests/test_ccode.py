@@ -120,40 +120,40 @@ def test_ccode_boolean():
 def test_ccode_Piecewise():
     expr = Piecewise((x, x < 1), (x**2, True))
     assert ccode(expr) == (
-            "((x < 1) ? (\n"
-            "   x\n"
-            ")\n"
-            ": (\n"
-            "   pow(x, 2)\n"
-            "))")
+        "((x < 1) ? (\n"
+        "   x\n"
+        ")\n"
+        ": (\n"
+        "   pow(x, 2)\n"
+        "))")
     assert ccode(expr, assign_to="c") == (
-            "if (x < 1) {\n"
-            "   c = x;\n"
-            "}\n"
-            "else {\n"
-            "   c = pow(x, 2);\n"
-            "}")
+        "if (x < 1) {\n"
+        "   c = x;\n"
+        "}\n"
+        "else {\n"
+        "   c = pow(x, 2);\n"
+        "}")
     expr = Piecewise((x, x < 1), (x + 1, x < 2), (x**2, True))
     assert ccode(expr) == (
-            "((x < 1) ? (\n"
-            "   x\n"
-            ")\n"
-            ": ((x < 2) ? (\n"
-            "   x + 1\n"
-            ")\n"
-            ": (\n"
-            "   pow(x, 2)\n"
-            ")))")
+        "((x < 1) ? (\n"
+        "   x\n"
+        ")\n"
+        ": ((x < 2) ? (\n"
+        "   x + 1\n"
+        ")\n"
+        ": (\n"
+        "   pow(x, 2)\n"
+        ")))")
     assert ccode(expr, assign_to='c') == (
-            "if (x < 1) {\n"
-            "   c = x;\n"
-            "}\n"
-            "else if (x < 2) {\n"
-            "   c = x + 1;\n"
-            "}\n"
-            "else {\n"
-            "   c = pow(x, 2);\n"
-            "}")
+        "if (x < 1) {\n"
+        "   c = x;\n"
+        "}\n"
+        "else if (x < 2) {\n"
+        "   c = x + 1;\n"
+        "}\n"
+        "else {\n"
+        "   c = pow(x, 2);\n"
+        "}")
     # Check that Piecewise without a True (default) condition error
     expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
     raises(ValueError, lambda: ccode(expr))
@@ -162,30 +162,30 @@ def test_ccode_Piecewise():
 def test_ccode_Piecewise_deep():
     p = ccode(2*Piecewise((x, x < 1), (x + 1, x < 2), (x**2, True)))
     assert p == (
-            "2*((x < 1) ? (\n"
-            "   x\n"
-            ")\n"
-            ": ((x < 2) ? (\n"
-            "   x + 1\n"
-            ")\n"
-            ": (\n"
-            "   pow(x, 2)\n"
-            ")))")
+        "2*((x < 1) ? (\n"
+        "   x\n"
+        ")\n"
+        ": ((x < 2) ? (\n"
+        "   x + 1\n"
+        ")\n"
+        ": (\n"
+        "   pow(x, 2)\n"
+        ")))")
     expr = x*y*z + x**2 + y**2 + Piecewise((0, x < 0.5), (1, True)) + cos(z) - 1
     assert ccode(expr) == (
-            "pow(x, 2) + x*y*z + pow(y, 2) + ((x < 0.5) ? (\n"
-            "   0\n"
-            ")\n"
-            ": (\n"
-            "   1\n"
-            ")) + cos(z) - 1")
+        "pow(x, 2) + x*y*z + pow(y, 2) + ((x < 0.5) ? (\n"
+        "   0\n"
+        ")\n"
+        ": (\n"
+        "   1\n"
+        ")) + cos(z) - 1")
     assert ccode(expr, assign_to='c') == (
-            "c = pow(x, 2) + x*y*z + pow(y, 2) + ((x < 0.5) ? (\n"
-            "   0\n"
-            ")\n"
-            ": (\n"
-            "   1\n"
-            ")) + cos(z) - 1;")
+        "c = pow(x, 2) + x*y*z + pow(y, 2) + ((x < 0.5) ? (\n"
+        "   0\n"
+        ")\n"
+        ": (\n"
+        "   1\n"
+        ")) + cos(z) - 1;")
 
 
 def test_ccode_settings():
@@ -235,7 +235,7 @@ def test_ccode_loops_matrix_vector():
         '}\n'
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
-        '      y[i] = x[j]*A[%s] + y[i];\n' % (i*n + j) +\
+        '      y[i] = x[j]*A[%s] + y[i];\n' % (i*n + j) +
         '   }\n'
         '}'
     )
@@ -275,7 +275,7 @@ def test_ccode_loops_add():
         '}\n'
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
-        '      y[i] = x[j]*A[%s] + y[i];\n' % (i*n + j) +\
+        '      y[i] = x[j]*A[%s] + y[i];\n' % (i*n + j) +
         '   }\n'
         '}'
     )
@@ -303,7 +303,7 @@ def test_ccode_loops_multiple_contractions():
         '   for (int j=0; j<n; j++){\n'
         '      for (int k=0; k<o; k++){\n'
         '         for (int l=0; l<p; l++){\n'
-        '            y[i] = y[i] + b[%s]*a[%s];\n' % (j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l) +\
+        '            y[i] = y[i] + b[%s]*a[%s];\n' % (j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l) +
         '         }\n'
         '      }\n'
         '   }\n'
@@ -334,7 +334,7 @@ def test_ccode_loops_addfactor():
         '   for (int j=0; j<n; j++){\n'
         '      for (int k=0; k<o; k++){\n'
         '         for (int l=0; l<p; l++){\n'
-        '            y[i] = (a[%s] + b[%s])*c[%s] + y[i];\n' % (i*n*o*p + j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l, j*o*p + k*p + l) +\
+        '            y[i] = (a[%s] + b[%s])*c[%s] + y[i];\n' % (i*n*o*p + j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l, j*o*p + k*p + l) +
         '         }\n'
         '      }\n'
         '   }\n'
@@ -365,7 +365,7 @@ def test_ccode_loops_multiple_terms():
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
         '      for (int k=0; k<o; k++){\n'
-        '         y[i] = b[j]*b[k]*c[%s] + y[i];\n' % (i*n*o + j*o + k) +\
+        '         y[i] = b[j]*b[k]*c[%s] + y[i];\n' % (i*n*o + j*o + k) +
         '      }\n'
         '   }\n'
         '}\n'
@@ -373,14 +373,14 @@ def test_ccode_loops_multiple_terms():
     s2 = (
         'for (int i=0; i<m; i++){\n'
         '   for (int k=0; k<o; k++){\n'
-        '      y[i] = b[k]*a[%s] + y[i];\n' % (i*o + k) +\
+        '      y[i] = b[k]*a[%s] + y[i];\n' % (i*o + k) +
         '   }\n'
         '}\n'
     )
     s3 = (
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
-        '      y[i] = b[j]*a[%s] + y[i];\n' % (i*n + j) +\
+        '      y[i] = b[j]*a[%s] + y[i];\n' % (i*n + j) +
         '   }\n'
         '}\n'
     )

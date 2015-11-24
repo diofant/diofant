@@ -508,7 +508,7 @@ def test_atanh():
     # at specific points
     x = Symbol('x')
 
-    #at specific points
+    # at specific points
     assert atanh(0) == 0
     assert atanh(I) == I*pi/4
     assert atanh(-I) == -I*pi/4
@@ -521,7 +521,7 @@ def test_atanh():
 
     assert atanh(zoo) == nan
 
-    #properties
+    # properties
     assert atanh(-x) == -atanh(x)
 
     assert atanh(I/sqrt(3)) == I*pi/6
@@ -558,7 +558,7 @@ def test_acoth():
     # at specific points
     x = Symbol('x')
 
-    #at specific points
+    # at specific points
     assert acoth(0) == I*pi/2
     assert acoth(I) == -I*pi/4
     assert acoth(-I) == I*pi/4
@@ -572,7 +572,7 @@ def test_acoth():
     assert acoth(-I*oo) == 0
     assert acoth(zoo) == 0
 
-    #properties
+    # properties
     assert acoth(-x) == -acoth(x)
 
     assert acoth(I/sqrt(3)) == -I*pi/3
@@ -640,11 +640,11 @@ def test_complex():
             a)/(cos(b)**2 + sinh(a)**2) + I*sin(b)*cos(b)/(cos(b)**2 + sinh(a)**2)
         assert coth(z).expand(complex=True, deep=deep) == sinh(a)*cosh(
             a)/(sin(b)**2 + sinh(a)**2) - I*sin(b)*cos(b)/(sin(b)**2 + sinh(a)**2)
-        assert csch(z).expand(complex=True, deep=deep) == cos(b) * sinh(a) / (sin(b)**2\
-            *cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2\
+        assert csch(z).expand(complex=True, deep=deep) == cos(b) * sinh(a) / (sin(b)**2
+            *cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
             *cosh(a)**2 + cos(b)**2 * sinh(a)**2)
-        assert sech(z).expand(complex=True, deep=deep) == cos(b) * cosh(a) / (sin(b)**2\
-            *sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2\
+        assert sech(z).expand(complex=True, deep=deep) == cos(b) * cosh(a) / (sin(b)**2
+            *sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
             *sinh(a)**2 + cos(b)**2 * cosh(a)**2)
 
 
@@ -767,12 +767,14 @@ def test_derivs():
     assert acosh(x).diff(x) == 1/sqrt(x**2 - 1)
     assert atanh(x).diff(x) == 1/(-x**2 + 1)
 
+
 def test_sinh_expansion():
     x,y = symbols('x,y')
     assert sinh(x+y).expand(trig=True) == sinh(x)*cosh(y) + cosh(x)*sinh(y)
     assert sinh(2*x).expand(trig=True) == 2*sinh(x)*cosh(x)
     assert sinh(3*x).expand(trig=True).expand() == \
         sinh(x)**3 + 3*sinh(x)*cosh(x)**2
+
 
 def test_cosh_expansion():
     x,y = symbols('x,y')

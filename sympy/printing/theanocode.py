@@ -15,51 +15,54 @@ if theano:
     from theano.sandbox import linalg as tlinalg
 
     mapping = {
-            sympy.Add: tt.add,
-            sympy.Mul: tt.mul,
-            sympy.Abs: tt.abs_,
-            sympy.sign: tt.sgn,
-            sympy.ceiling: tt.ceil,
-            sympy.floor: tt.floor,
-            sympy.log: tt.log,
-            sympy.exp: tt.exp,
-            sympy.sqrt: tt.sqrt,
-            sympy.cos: tt.cos,
-            sympy.acos: tt.arccos,
-            sympy.sin: tt.sin,
-            sympy.asin: tt.arcsin,
-            sympy.tan: tt.tan,
-            sympy.atan: tt.arctan,
-            sympy.atan2: tt.arctan2,
-            sympy.cosh: tt.cosh,
-            sympy.acosh: tt.arccosh,
-            sympy.sinh: tt.sinh,
-            sympy.asinh: tt.arcsinh,
-            sympy.tanh: tt.tanh,
-            sympy.atanh: tt.arctanh,
-            sympy.re: tt.real,
-            sympy.im: tt.imag,
-            sympy.arg: tt.angle,
-            sympy.erf: tt.erf,
-            sympy.gamma: tt.gamma,
-            sympy.loggamma: tt.gammaln,
-            sympy.Pow: tt.pow,
-            sympy.Eq: tt.eq,
-            sympy.StrictGreaterThan: tt.gt,
-            sympy.StrictLessThan: tt.lt,
-            sympy.LessThan: tt.le,
-            sympy.GreaterThan: tt.ge,
-            sympy.Max: tt.maximum,  # Sympy accept >2 inputs, Theano only 2
-            sympy.Min: tt.minimum,  # Sympy accept >2 inputs, Theano only 2
+        sympy.Add: tt.add,
+        sympy.Mul: tt.mul,
+        sympy.Abs: tt.abs_,
+        sympy.sign: tt.sgn,
+        sympy.ceiling: tt.ceil,
+        sympy.floor: tt.floor,
+        sympy.log: tt.log,
+        sympy.exp: tt.exp,
+        sympy.sqrt: tt.sqrt,
+        sympy.cos: tt.cos,
+        sympy.acos: tt.arccos,
+        sympy.sin: tt.sin,
+        sympy.asin: tt.arcsin,
+        sympy.tan: tt.tan,
+        sympy.atan: tt.arctan,
+        sympy.atan2: tt.arctan2,
+        sympy.cosh: tt.cosh,
+        sympy.acosh: tt.arccosh,
+        sympy.sinh: tt.sinh,
+        sympy.asinh: tt.arcsinh,
+        sympy.tanh: tt.tanh,
+        sympy.atanh: tt.arctanh,
+        sympy.re: tt.real,
+        sympy.im: tt.imag,
+        sympy.arg: tt.angle,
+        sympy.erf: tt.erf,
+        sympy.gamma: tt.gamma,
+        sympy.loggamma: tt.gammaln,
+        sympy.Pow: tt.pow,
+        sympy.Eq: tt.eq,
+        sympy.StrictGreaterThan: tt.gt,
+        sympy.StrictLessThan: tt.lt,
+        sympy.LessThan: tt.le,
+        sympy.GreaterThan: tt.ge,
+        sympy.And: tt.and_,
+        sympy.Or: tt.or_,
+        sympy.Max: tt.maximum,  # Sympy accept >2 inputs, Theano only 2
+        sympy.Min: tt.minimum,  # Sympy accept >2 inputs, Theano only 2
 
-            # Matrices
-            sympy.MatAdd: tt.Elemwise(ts.add),
-            sympy.HadamardProduct: tt.Elemwise(ts.mul),
-            sympy.Trace: tlinalg.trace,
-            sympy.Determinant : tlinalg.det,
-            sympy.Inverse: tlinalg.matrix_inverse,
-            sympy.Transpose: tt.DimShuffle((False, False), [1, 0]),
+        # Matrices
+        sympy.MatAdd: tt.Elemwise(ts.add),
+        sympy.HadamardProduct: tt.Elemwise(ts.mul),
+        sympy.Trace: tlinalg.trace,
+        sympy.Determinant: tlinalg.det,
+        sympy.Inverse: tlinalg.matrix_inverse,
+        sympy.Transpose: tt.DimShuffle((False, False), [1, 0]),
     }
+
 
 class TheanoPrinter(Printer):
     """ Code printer for Theano computations """
@@ -115,7 +118,7 @@ class TheanoPrinter(Printer):
             tt.stacklists
         except AttributeError:
             raise NotImplementedError(
-               "Matrix translation not yet supported in this version of Theano")
+                "Matrix translation not yet supported in this version of Theano")
         else:
             return tt.stacklists([[self._print(arg, **kwargs) for arg in L]
                                          for L in X.tolist()])
@@ -148,6 +151,9 @@ class TheanoPrinter(Printer):
 
     def _print_Pi(self, expr, **kwargs):
         return 3.141592653589793
+
+    def _print_Exp1(self, expr, **kwargs):
+        return 2.718281828459045
 
     def _print_Piecewise(self, expr, **kwargs):
         import numpy as np
@@ -185,6 +191,7 @@ class TheanoPrinter(Printer):
         return self._print(expr, **kwargs)
 
 global_cache = {}
+
 
 def theano_code(expr, cache=global_cache, **kwargs):
     return TheanoPrinter(cache=cache, settings={}).doprint(expr, **kwargs)

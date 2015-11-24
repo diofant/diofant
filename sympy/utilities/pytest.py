@@ -16,6 +16,7 @@ ON_TRAVIS = os.getenv('TRAVIS_BUILD_NUMBER', None)
 XFAIL = py.test.mark.xfail
 slow = py.test.mark.slow
 
+
 def SKIP(reason):
     def skipping(func):
         @functools.wraps(func)

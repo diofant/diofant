@@ -9,7 +9,7 @@ from sympy.functions.elementary.exponential import log, exp
 
 
 ###############################################################################
-###################### LERCH TRANSCENDENT #####################################
+# #################### LERCH TRANSCENDENT ################################### #
 ###############################################################################
 
 
@@ -160,7 +160,7 @@ class lerchphi(Function):
                   / (unpolarify(zet)**k*root)**m for k in range(n)])
 
         # TODO use minpoly instead of ad-hoc methods when issue 5888 is fixed
-        if z.func is exp and (z.args[0]/(pi*I)).is_Rational or z in [-1, I, -I]:
+        if z.is_Pow and z.base is S.Exp1 and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
             # TODO reference?
             if z == -1:
                 p, q = S([1, 2])
@@ -169,7 +169,7 @@ class lerchphi(Function):
             elif z == -I:
                 p, q = S([-1, 4])
             else:
-                arg = z.args[0]/(2*pi*I)
+                arg = z.exp/(2*pi*I)
                 p, q = S([arg.p, arg.q])
             return Add(*[exp(2*pi*I*k*p/q)/q**s*zeta(s, (k + a)/q)
                          for k in range(q)])
@@ -199,7 +199,7 @@ class lerchphi(Function):
         return self._eval_rewrite_helper(z, s, a, polylog)
 
 ###############################################################################
-###################### POLYLOGARITHM ##########################################
+# #################### POLYLOGARITHM ######################################## #
 ###############################################################################
 
 
@@ -301,7 +301,7 @@ class polylog(Function):
         return polylog(s, z)
 
 ###############################################################################
-###################### HURWITZ GENERALIZED ZETA FUNCTION ######################
+# #################### HURWITZ GENERALIZED ZETA FUNCTION #################### #
 ###############################################################################
 
 

@@ -1,0 +1,133 @@
+# -*- coding: utf-8 -*-
+#
+# SymPy documentation build configuration file.
+#
+# This file is execfile()d with the current directory set to its containing dir.
+#
+# The contents of this file are pickled, so don't put values in the namespace
+# that aren't pickleable (module imports are okay, they're removed automatically).
+#
+# All configuration values have a default value; values that are commented out
+# serve to show the default value.
+
+import sys
+import os
+import sympy
+
+# General configuration
+# ---------------------
+
+# Add any Sphinx extension module names here, as strings. They can be extensions
+# coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
+              'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary', ]
+
+numpydoc_show_class_members = False
+numpydoc_class_members_toctree = False
+
+# If true, Sphinx will warn about all references where the target cannot be found.
+nitpicky = True
+
+# MathJax file, which is free to use.  See http://www.mathjax.org/docs/2.0/start.html
+mathjax_path = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full'
+
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ['.templates']
+
+# A list of glob-style patterns that should be excluded when looking for source files.
+exclude_patterns = ['README.rst']
+
+# The suffix of source filenames.
+source_suffix = '.rst'
+
+# The master toctree document.
+master_doc = 'index'
+
+# General substitutions.
+project = 'SymPy'
+copyright = '2015 SymPy Development Team, Sergey B Kirpichev'
+
+# The default replacements for |version| and |release|, also used in various
+# other places throughout the built documents.
+#
+# The short X.Y version.
+version = sympy.__version__
+# The full version, including alpha/beta/rc tags.
+release = version
+
+# Today_fmt is used as the format for a strftime call.
+today_fmt = '%B %d, %Y'
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
+
+# The name of a reST role (builtin or Sphinx extension) to use as the
+# default role, that is, for text marked up `like this`.
+default_role = 'math'
+
+# Options for HTML output
+# -----------------------
+
+# If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
+# using the given strftime format.
+html_last_updated_fmt = '%b %d, %Y'
+
+# If true, generate domain-specific indices in addition to the general
+# index. For e.g. the Python domain, this is the global module index. Default
+# is True.  This value can be a bool or a list of index names that
+# should be generated.
+html_domain_indices = ['py-modindex']
+
+# Output file base name for HTML help builder.
+htmlhelp_basename = 'SymPydoc'
+
+# Options for LaTeX output
+# ------------------------
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title, author, document class [howto/manual], toctree_only).
+# toctree_only is set to True so that the start file document itself is not included in the
+# output, only the documents referenced by it via TOC trees.  The extra stuff in the master
+# document is intended to show up in the HTML, but doesn't really belong in the LaTeX output.
+latex_documents = [('index', 'omg.tex', 'SymPy Documentation',
+                    'SymPy Development Team', 'manual', True)]
+
+# Additional stuff for the LaTeX preamble.
+latex_elements = {
+    'babel':     '',
+    'fontenc': r'''
+\usepackage{bm}
+\usepackage{amssymb}
+''',
+    'fontpkg':   '',
+    'inputenc':  '',
+    'utf8extra': '',
+    'preamble':  r'''
+% redefine \LaTeX to be usable in math mode
+\expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
+'''
+}
+
+# Show page numbers next to internal references
+latex_show_pagerefs = True
+
+# We use False otherwise the module index gets generated twice.
+latex_use_modindex = False
+
+# Options for extensions
+# ----------------------
+
+texinfo_documents = [
+    (master_doc, 'sympy', 'SymPy Documentation', 'SymPy Development Team',
+   'SymPy', 'Computer algebra system (CAS) in Python', 'Programming', 1),
+]
+
+# Use svg for graphviz
+graphviz_output_format = 'svg'
+
+# RTD theme support:
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]

@@ -36,7 +36,7 @@ class MatPow(MatrixExpr):
                 raise ShapeError("Power of non-square matrix %s" % A.base)
             elif A.exp.is_Integer and A.exp.is_positive:
                 A = MatMul(*[A.base for k in range(A.exp)])
-            #elif A.exp.is_Integer and self.exp.is_negative:
+            # elif A.exp.is_Integer and self.exp.is_negative:
             # Note: possible future improvement: in principle we can take
             # positive powers of the inverse, but carefully avoid recursion,
             # perhaps by adding `_entry` to Inverse (as it is our subclass).

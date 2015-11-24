@@ -69,7 +69,7 @@ class ExprWithLimits(Expr):
         if hasattr(function, 'func') and function.func is Equality:
             lhs = function.lhs
             rhs = function.rhs
-            return Equality(cls(lhs, *symbols, **assumptions), \
+            return Equality(cls(lhs, *symbols, **assumptions),
                 cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
@@ -347,7 +347,7 @@ class AddWithLimits(ExprWithLimits):
         if hasattr(function, 'func') and function.func is Equality:
             lhs = function.lhs
             rhs = function.rhs
-            return Equality(cls(lhs, *symbols, **assumptions), \
+            return Equality(cls(lhs, *symbols, **assumptions),
                 cls(rhs, *symbols, **assumptions))
         function = piecewise_fold(function)
 
@@ -383,25 +383,25 @@ class AddWithLimits(ExprWithLimits):
     def _eval_adjoint(self):
         if all([x.is_extended_real for x in flatten(self.limits)]):
             return self.func(self.function.adjoint(), *self.limits)
-        return None
+        return
 
     def _eval_conjugate(self):
         if all([x.is_extended_real for x in flatten(self.limits)]):
             return self.func(self.function.conjugate(), *self.limits)
-        return None
+        return
 
     def _eval_transpose(self):
         if all([x.is_extended_real for x in flatten(self.limits)]):
             return self.func(self.function.transpose(), *self.limits)
-        return None
+        return
 
     def _eval_factor(self, **hints):
         if 1 == len(self.limits):
             summand = self.function.factor(**hints)
             if summand.is_Mul:
-                out = sift(summand.args, lambda w: w.is_commutative \
+                out = sift(summand.args, lambda w: w.is_commutative
                     and not w.has(*self.variables))
-                return Mul(*out[True])*self.func(Mul(*out[False]), \
+                return Mul(*out[True])*self.func(Mul(*out[False]),
                     *self.limits)
         else:
             summand = self.func(self.function, self.limits[0:-1]).factor()

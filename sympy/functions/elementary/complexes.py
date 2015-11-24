@@ -1,20 +1,20 @@
 from __future__ import print_function, division
 
-from sympy.core import S
+from sympy.core import S, Add, Mul, sympify, Symbol, Dummy
 from sympy.core.compatibility import u
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import (Function, Derivative, ArgumentIndexError,
     AppliedUndef)
+from sympy.core.numbers import pi
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.core.expr import Expr
-from sympy.core import Add, Mul
 from sympy.core.relational import Eq
-from sympy.functions.elementary.exponential import exp
+from sympy.functions.elementary.exponential import exp, exp_polar
 from sympy.functions.elementary.trigonometric import atan2
 
 ###############################################################################
-######################### REAL and IMAGINARY PARTS ############################
+# ####################### REAL and IMAGINARY PARTS ########################## #
 ###############################################################################
 
 
@@ -88,7 +88,7 @@ class re(Function):
 
     def as_real_imag(self, deep=True, **hints):
         """
-        Returns the real number with a zero complex part.
+        Returns the real number with a zero imaginary part.
         """
         return (self, S.Zero)
 
@@ -202,7 +202,7 @@ class im(Function):
 
 
 ###############################################################################
-############### SIGN, ABSOLUTE VALUE, ARGUMENT and CONJUGATION ################
+# ############# SIGN, ABSOLUTE VALUE, ARGUMENT and CONJUGATION ############## #
 ###############################################################################
 
 class sign(Function):
@@ -277,7 +277,7 @@ class sign(Function):
                     else:
                         unk.append(a)
             if c is S.One and len(unk) == len(args):
-                return None
+                return
             return s * cls(arg._new_rawargs(*unk))
         if arg is S.NaN:
             return S.NaN
@@ -452,11 +452,9 @@ class Abs(Function):
                     if base.func is cls and exponent is S.NegativeOne:
                         return arg
                     return Abs(base)**exponent
-                if base.is_positive == True:
+                if base.is_positive:
                     return base**re(exponent)
                 return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
-        if isinstance(arg, exp):
-            return exp(re(arg.args[0]))
         if arg.is_zero:  # it may be an Expr that is zero
             return S.Zero
         if arg.is_nonnegative:
@@ -712,7 +710,7 @@ class adjoint(Function):
         return pform
 
 ###############################################################################
-############### HANDLING OF POLAR NUMBERS #####################################
+# ############# HANDLING OF POLAR NUMBERS ################################### #
 ###############################################################################
 
 
@@ -837,7 +835,7 @@ class periodic_argument(Function):
             elif a.func is polar_lift:
                 unbranched += arg(a.args[0])
             else:
-                return None
+                return
         return unbranched
 
     @classmethod
@@ -848,7 +846,7 @@ class periodic_argument(Function):
         # period != 2*pi and non-polar numbers.
         from sympy import ceiling, oo, atan2, atan, polar_lift, pi, Mul
         if not period.is_positive:
-            return None
+            return
         if period == oo and isinstance(ar, principal_branch):
             return periodic_argument(*ar.args)
         if ar.func is polar_lift and period >= 2*pi:
@@ -859,9 +857,9 @@ class periodic_argument(Function):
                 return periodic_argument(Mul(*newargs), period)
         unbranched = cls._getunbranched(ar)
         if unbranched is None:
-            return None
+            return
         if unbranched.has(periodic_argument, atan2, arg, atan):
-            return None
+            return
         if period == oo:
             return unbranched
         if period != oo:
@@ -952,7 +950,7 @@ class principal_branch(Function):
         m = tuple(others)
         arg = periodic_argument(c, period)
         if arg.has(periodic_argument):
-            return None
+            return
         if arg.is_number and (unbranched_argument(c) != arg or
                               (arg == 0 and m != () and c != 1)):
             if arg == 0:
@@ -970,7 +968,155 @@ class principal_branch(Function):
             return self  # Cannot evalf for this argument.
         return (abs(z)*exp(I*p))._eval_evalf(prec)
 
-# /cyclic/
-from sympy.core import basic as _
-_.abs_ = Abs
-del _
+
+def _polarify(eq, lift, pause=False):
+    from sympy import Integral
+    if eq.is_polar:
+        return eq
+    if eq.is_number and not pause:
+        return polar_lift(eq)
+    if isinstance(eq, Symbol) and not pause and lift:
+        return polar_lift(eq)
+    elif eq.is_Atom:
+        return eq
+    elif eq.is_Add:
+        r = eq.func(*[_polarify(arg, lift, pause=True) for arg in eq.args])
+        if lift:
+            return polar_lift(r)
+        return r
+    elif eq.is_Function:
+        return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
+    elif eq.is_Pow and eq.base is S.Exp1:
+        return eq.func(eq.base, _polarify(eq.exp, lift, pause=False))
+    elif isinstance(eq, Integral):
+        # Don't lift the integration variable
+        func = _polarify(eq.function, lift, pause=pause)
+        limits = []
+        for limit in eq.args[1:]:
+            var = _polarify(limit[0], lift=False, pause=pause)
+            rest = _polarify(limit[1:], lift=lift, pause=pause)
+            limits.append((var,) + rest)
+        return Integral(*((func,) + tuple(limits)))
+    else:
+        return eq.func(*[_polarify(arg, lift, pause=pause)
+                         if isinstance(arg, Expr) else arg for arg in eq.args])
+
+
+def polarify(eq, subs=True, lift=False):
+    """
+    Turn all numbers in eq into their polar equivalents (under the standard
+    choice of argument).
+
+    Note that no attempt is made to guess a formal convention of adding
+    polar numbers, expressions like 1 + x will generally not be altered.
+
+    Note also that this function does not promote exp(x) to exp_polar(x).
+
+    If ``subs`` is True, all symbols which are not already polar will be
+    substituted for polar dummies; in this case the function behaves much
+    like posify.
+
+    If ``lift`` is True, both addition statements and non-polar symbols are
+    changed to their polar_lift()ed versions.
+    Note that lift=True implies subs=False.
+
+    >>> from sympy import polarify, sin, I, default_sort_key
+    >>> from sympy.abc import x, y
+    >>> expr = (-x)**y
+    >>> expr.expand()
+    (-x)**y
+    >>> polarify(expr)[0]
+    (_x*exp_polar(I*pi))**_y
+    >>> sorted(polarify(expr)[1].items(), key=default_sort_key)
+    [(_x, x), (_y, y)]
+    >>> polarify(expr)[0].expand()
+    _x**_y*exp_polar(_y*I*pi)
+    >>> polarify(x, lift=True)
+    polar_lift(x)
+    >>> polarify(x*(1+y), lift=True)
+    polar_lift(x)*polar_lift(y + 1)
+
+    Adds are treated carefully:
+
+    >>> polarify(1 + sin((1 + I)*x))
+    (sin(_x*polar_lift(1 + I)) + 1, {_x: x})
+    """
+    if lift:
+        subs = False
+    eq = _polarify(sympify(eq), lift)
+    if not subs:
+        return eq
+    reps = {s: Dummy(s.name, polar=True) for s in eq.free_symbols}
+    eq = eq.subs(reps)
+    return eq, {r: s for s, r in reps.items()}
+
+
+def _unpolarify(eq, exponents_only, pause=False):
+    if isinstance(eq, bool) or eq.is_Atom:
+        return eq
+
+    if not pause:
+        if eq.func is exp_polar:
+            return exp(_unpolarify(eq.exp, exponents_only))
+        if eq.func is principal_branch and eq.args[1] == 2*pi:
+            return _unpolarify(eq.args[0], exponents_only)
+        if (
+            eq.is_Add or eq.is_Mul or eq.is_Boolean or
+            eq.is_Relational and (
+                eq.rel_op in ('==', '!=') and 0 in eq.args or
+                eq.rel_op not in ('==', '!='))
+        ):
+            return eq.func(*[_unpolarify(x, exponents_only) for x in eq.args])
+        if eq.func is polar_lift:
+            return _unpolarify(eq.args[0], exponents_only)
+
+    if eq.is_Pow and eq.base is not S.Exp1:
+        expo = _unpolarify(eq.exp, exponents_only)
+        base = _unpolarify(eq.base, exponents_only,
+            not (expo.is_integer and not pause))
+        return base**expo
+    elif eq.is_Pow and eq.base is S.Exp1:
+        return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
+
+    if eq.is_Function and getattr(eq.func, 'unbranched', False):
+        return eq.func(*[_unpolarify(x, exponents_only, exponents_only)
+            for x in eq.args])
+
+    return eq.func(*[_unpolarify(x, exponents_only, True) for x in eq.args])
+
+
+def unpolarify(eq, subs={}, exponents_only=False):
+    """
+    If p denotes the projection from the Riemann surface of the logarithm to
+    the complex line, return a simplified version eq' of `eq` such that
+    p(eq') == p(eq).
+    Also apply the substitution subs in the end. (This is a convenience, since
+    ``unpolarify``, in a certain sense, undoes polarify.)
+
+    >>> from sympy import unpolarify, polar_lift, sin, I
+    >>> unpolarify(polar_lift(I + 2))
+    2 + I
+    >>> unpolarify(sin(polar_lift(I + 7)))
+    sin(7 + I)
+    """
+    if isinstance(eq, bool):
+        return eq
+
+    eq = sympify(eq)
+    if subs != {}:
+        return unpolarify(eq.subs(subs))
+    changed = True
+    pause = False
+    if exponents_only:
+        pause = True
+    while changed:
+        changed = False
+        res = _unpolarify(eq, exponents_only, pause)
+        if res != eq:
+            changed = True
+            eq = res
+        if isinstance(res, bool):
+            return res
+    # Finally, replacing Exp(0) by 1 is always correct.
+    # So is polar_lift(0) -> 0.
+    return res.subs({exp_polar(0): 1, polar_lift(0): 0})

@@ -65,7 +65,7 @@ class audit(Command):
         except ImportError:
             print("In order to run the audit, you need to have PyFlakes installed.")
             sys.exit(-1)
-        dirs = (os.path.join(*d) for d in (m.split('.') for m in modules))
+        dirs = (os.path.join(*d) for d in (m.split('.') for m in find_packages()))
         warns = 0
         for dir in dirs:
             for filename in os.listdir(dir):
@@ -142,32 +142,28 @@ setup(name='sympy',
       version=__version__,
       description='Computer algebra system (CAS) in Python',
       long_description=long_description,
-      author='SymPy development team',
-      author_email='sympy@googlegroups.com',
+      maintainer='Sergey B Kirpichev',
+      maintainer_email='skirpichev@gmail.com',
       license='BSD',
       keywords="Math CAS",
-      url='http://sympy.org',
+      url='http://omg.rtfd.org',
       packages=find_packages(),
       ext_modules=[],
-      package_data={
-          'sympy.utilities.mathml': ['data/*.xsl'],
-          'sympy.logic.benchmarks': ['input/*.cnf'],
-          },
       cmdclass={'test': test_sympy,
                 'clean': clean,
                 'audit': audit},
       classifiers=[
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Scientific/Engineering :: Mathematics',
-        'Topic :: Scientific/Engineering :: Physics',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        ],
+          'License :: OSI Approved :: BSD License',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python',
+          'Topic :: Scientific/Engineering',
+          'Topic :: Scientific/Engineering :: Mathematics',
+          'Topic :: Scientific/Engineering :: Physics',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.4',
+      ],
       tests_require=['pytest'],
-      install_requires=['mpmath>=0.19', 'decorator']
+      install_requires=['mpmath>=0.19', 'decorator', 'strategies>=0.2.3']
       )

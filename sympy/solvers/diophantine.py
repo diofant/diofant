@@ -5,7 +5,7 @@ from sympy import (Poly, igcd, divisors, sign, symbols, S, Integer, Wild, Symbol
     isprime, nextprime, integer_nthroot)
 
 from sympy.core.function import _mexpand
-from sympy.simplify.simplify import rad_rationalize
+from sympy.simplify.radsimp import rad_rationalize
 from sympy.utilities import default_sort_key, numbered_symbols
 from sympy.core.numbers import igcdex
 from sympy.ntheory.residue_ntheory import sqrt_mod
@@ -66,7 +66,7 @@ def diophantine(eq, param=symbols("t", integer=True)):
         eq = eq.lhs - eq.rhs
 
     if eq == 0:
-        return set([(param,)])
+        return {(param,)}
 
     eq = Poly(eq).as_expr()
     if not eq.is_polynomial() or eq.is_number:
@@ -461,7 +461,7 @@ def base_solution_linear(c, a, b, t=None):
 
     if c == 0:
         if t is not None:
-            return (b*t , -a*t)
+            return (b*t, -a*t)
         else:
             return (S.Zero, S.Zero)
     else:
@@ -718,14 +718,14 @@ def _diop_quadratic(var, coeff, t):
 
         else:
             # In this case equation can be transformed into a Pell equation
-            #n = symbols("n", integer=True)
+            # n = symbols("n", integer=True)
 
             a = diop_DN(D, 1)
             T = a[0][0]
             U = a[0][1]
 
             if (isinstance(P[0], Integer) and isinstance(P[1], Integer) and isinstance(P[2], Integer)
-                and isinstance(P[3], Integer) and isinstance(Q[0], Integer) and isinstance(Q[1], Integer)):
+                    and isinstance(P[3], Integer) and isinstance(Q[0], Integer) and isinstance(Q[1], Integer)):
 
                 for sol in solns_pell:
 
@@ -1026,7 +1026,7 @@ def cornacchia(a, b, m):
     v = sqrt_mod(-b*a1, m, True)
 
     if v is None:
-        return None
+        return
 
     if not isinstance(v, list):
         v = [v]
@@ -1479,7 +1479,7 @@ def _find_DN(var, coeff):
 
     x, y = var[:2]
     X, Y = symbols("X, Y", integer=True)
-    A , B = _transformation_to_DN(var, coeff)
+    A, B = _transformation_to_DN(var, coeff)
 
     u = (A*Matrix([X, Y]) + B)[0]
     v = (A*Matrix([X, Y]) + B)[1]
@@ -1515,11 +1515,11 @@ def check_param(x, y, a, t):
         z_y = _mexpand(Subs(y, t, a*k + i).doit()).match(p*k + q)
 
         if (isinstance(z_x[p], Integer) and isinstance(z_x[q], Integer) and
-            isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):
+                isinstance(z_y[p], Integer) and isinstance(z_y[q], Integer)):
             ok = True
             break
 
-    if ok == True:
+    if ok:
 
         x_param = x.match(p*t + q)
         y_param = y.match(p*t + q)
@@ -1931,7 +1931,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
         return (None, None, None)
 
     if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
-        sqrt_mod(-a_2*b_2, c_2) is None):
+            sqrt_mod(-a_2*b_2, c_2) is None):
         return (None, None, None)
 
     z_0, x_0, y_0 = descent(A, B)
@@ -2390,8 +2390,8 @@ def diop_general_sum_of_squares(eq, limit=1):
     >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345) == {(0, 48, 5, 4, 0)}
     True
 
-    Reference
-    =========
+    References
+    ==========
 
     .. [1] Representing an Integer as a sum of three squares, [online],
         Available:
@@ -2440,8 +2440,8 @@ def _diop_general_sum_of_squares(var, coeff, limit=1):
     return s
 
 
-## Functions below this comment can be more suitably grouped under an Additive number theory module
-## rather than the Diophantine equation module.
+# Functions below this comment can be more suitably grouped under an Additive number theory module
+# rather than the Diophantine equation module.
 
 
 def partition(n, k=None, zeros=False):
@@ -2484,8 +2484,8 @@ def partition(n, k=None, zeros=False):
     >>> next(g)
     (2, 2, 1)
 
-    Reference
-    =========
+    References
+    ==========
 
     .. [1] Generating Integer Partitions, [online],
         Available: http://jeromekelleher.net/partitions.php
@@ -2569,8 +2569,8 @@ def prime_as_sum_of_two_squares(p):
     >>> prime_as_sum_of_two_squares(5)
     (2, 1)
 
-    Reference
-    =========
+    References
+    ==========
 
     .. [1] Representing a number as a sum of four squares, [online],
         Available: http://www.schorn.ch/howto.html

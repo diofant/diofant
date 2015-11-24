@@ -41,6 +41,7 @@ from sympy.utilities import variations
 from math import ceil as _ceil, log as _log
 from sympy.core.compatibility import range
 
+
 def dup_integrate(f, m, K):
     """
     Computes the indefinite integral of ``f`` in ``K[x]``.
@@ -1024,7 +1025,7 @@ def _dup_left_decompose(f, h, K):
         q, r = dup_div(f, h, K)
 
         if dup_degree(r) > 0:
-            return None
+            return
         else:
             g[i] = dup_LC(r, K)
             f, i = q, i + 1
@@ -1048,7 +1049,7 @@ def _dup_decompose(f, K):
             if g is not None:
                 return g, h
 
-    return None
+    return
 
 
 def dup_decompose(f, K):
@@ -1084,8 +1085,7 @@ def dup_decompose(f, K):
     References
     ==========
 
-    1. [Kozen89]_
-
+    .. [1] [Kozen89]_
     """
     F = []
 

@@ -221,6 +221,7 @@ def test_chi():
     X = Chi('x', k)
     assert density(X)(x) == 2**(-k/2 + 1)*x**(k - 1)*exp(-x**2/2)/gamma(k/2)
 
+
 def test_chi_noncentral():
     k = Symbol("k", integer=True)
     l = Symbol("l")
@@ -229,11 +230,13 @@ def test_chi_noncentral():
     assert density(X)(x) == (x**k*l*(x*l)**(-k/2)*
                           exp(-x**2/2 - l**2/2)*besseli(k/2 - 1, x*l))
 
+
 def test_chi_squared():
     k = Symbol("k", integer=True)
 
     X = ChiSquared('x', k)
     assert density(X)(x) == 2**(-k/2)*x**(k/2 - 1)*exp(-x/2)/gamma(k/2)
+
 
 def test_dagum():
     p = Symbol("p", positive=True)
@@ -243,12 +246,14 @@ def test_dagum():
     X = Dagum('x', p, a, b)
     assert density(X)(x) == a*p*(x/b)**(a*p)*((x/b)**a + 1)**(-p - 1)/x
 
+
 def test_erlang():
     k = Symbol("k", integer=True, positive=True)
     l = Symbol("l", positive=True)
 
     X = Erlang("x", k, l)
     assert density(X)(x) == x**(k - 1)*l**k*exp(-x*l)/gamma(k)
+
 
 def test_exponential():
     rate = Symbol('lambda', positive=True, extended_real=True, finite=True)
@@ -266,6 +271,7 @@ def test_exponential():
 
     assert where(X <= 1).set == Interval(0, 1)
 
+
 def test_f_distribution():
     d1 = Symbol("d1", positive=True)
     d2 = Symbol("d2", positive=True)
@@ -273,6 +279,7 @@ def test_f_distribution():
     X = FDistribution("x", d1, d2)
     assert density(X)(x) == (d2**(d2/2)*sqrt((d1*x)**d1*(d1*x + d2)**(-d1 - d2))
                              /(x*beta(d1/2, d2/2)))
+
 
 def test_fisher_z():
     d1 = Symbol("d1", positive=True)
@@ -282,6 +289,7 @@ def test_fisher_z():
     assert density(X)(x) == (2*d1**(d1/2)*d2**(d2/2)*(d1*exp(2*x) + d2)
                              **(-d1/2 - d2/2)*exp(d1*x)/beta(d1/2, d2/2))
 
+
 def test_frechet():
     a = Symbol("a", positive=True)
     s = Symbol("s", positive=True)
@@ -290,6 +298,7 @@ def test_frechet():
     X = Frechet("x", a, s=s, m=m)
     assert density(X)(x) == a*((x - m)/s)**(-a - 1)*exp(-((x - m)/s)**(-a))/s
 
+
 def test_gamma():
     k = Symbol("k", positive=True)
     theta = Symbol("theta", positive=True)
@@ -297,9 +306,9 @@ def test_gamma():
     X = Gamma('x', k, theta)
     assert density(X)(x) == x**(k - 1)*theta**(-k)*exp(-x/theta)/gamma(k)
     assert cdf(X, meijerg=True)(z) == Piecewise(
-            (-k*lowergamma(k, 0)/gamma(k + 1) +
+        (-k*lowergamma(k, 0)/gamma(k + 1) +
                 k*lowergamma(k, z/theta)/gamma(k + 1), z >= 0),
-            (0, True))
+        (0, True))
     # assert simplify(variance(X)) == k*theta**2  # handled numerically below
     assert E(X) == moment(X, 1)
 
@@ -311,12 +320,14 @@ def test_gamma():
     # The following is too slow
     # assert simplify(skewness(X)).subs(k, 5) == (2/sqrt(k)).subs(k, 5)
 
+
 def test_gamma_inverse():
     a = Symbol("a", positive=True)
     b = Symbol("b", positive=True)
 
     X = GammaInverse("x", a, b)
     assert density(X)(x) == x**(-a - 1)*b**a*exp(-b/x)/gamma(a)
+
 
 def test_kumaraswamy():
     a = Symbol("a", positive=True)
@@ -325,12 +336,14 @@ def test_kumaraswamy():
     X = Kumaraswamy("x", a, b)
     assert density(X)(x) == x**(a - 1)*a*b*(-x**a + 1)**(b - 1)
 
+
 def test_laplace():
     mu = Symbol("mu")
     b = Symbol("b", positive=True)
 
     X = Laplace('x', mu, b)
     assert density(X)(x) == exp(-Abs(x - mu)/b)/(2*b)
+
 
 def test_logistic():
     mu = Symbol("mu", extended_real=True)
@@ -339,13 +352,14 @@ def test_logistic():
     X = Logistic('x', mu, s)
     assert density(X)(x) == exp((-x + mu)/s)/(s*(exp((-x + mu)/s) + 1)**2)
 
+
 def test_lognormal():
     mean = Symbol('mu', extended_real=True, finite=True)
     std = Symbol('sigma', positive=True, extended_real=True, finite=True)
     X = LogNormal('x', mean, std)
     # The sympy integrator can't do this too well
-    #assert E(X) == exp(mean+std**2/2)
-    #assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
+    # assert E(X) == exp(mean+std**2/2)
+    # assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
 
     # Right now, only density function and sampling works
     # Test sampling: Only e^mean in sample std of 0
@@ -353,7 +367,7 @@ def test_lognormal():
         X = LogNormal('x', i, 0)
         assert S(sample(X)) == N(exp(i))
     # The sympy integrator can't do this too well
-    #assert E(X) ==
+    # assert E(X) ==
 
     mu = Symbol("mu", extended_real=True)
     sigma = Symbol("sigma", positive=True)
@@ -364,6 +378,7 @@ def test_lognormal():
 
     X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
     assert density(X)(x) == sqrt(2)*exp(-log(x)**2/2)/(2*x*sqrt(pi))
+
 
 def test_maxwell():
     a = Symbol("a", positive=True)
@@ -446,10 +461,10 @@ def test_triangular():
 
     X = Triangular('x', a, b, c)
     assert density(X)(x) == Piecewise(
-                 ((2*x - 2*a)/((-a + b)*(-a + c)), And(a <= x, x < c)),
-                 (2/(-a + b), x == c),
-                 ((-2*x + 2*b)/((-a + b)*(b - c)), And(x <= b, c < x)),
-                 (0, True))
+        ((2*x - 2*a)/((-a + b)*(-a + c)), And(a <= x, x < c)),
+        (2/(-a + b), x == c),
+        ((-2*x + 2*b)/((-a + b)*(b - c)), And(x <= b, c < x)),
+        (0, True))
 
 
 def test_quadratic_u():
@@ -459,6 +474,7 @@ def test_quadratic_u():
     X = QuadraticU("x", a, b)
     assert density(X)(x) == (Piecewise((12*(x - a/2 - b/2)**2/(-a + b)**3,
                           And(x <= b, a <= x)), (0, True)))
+
 
 def test_uniform():
     l = Symbol('l', extended_real=True, finite=True)
@@ -590,6 +606,7 @@ def test_probability_unevaluated():
     T = Normal('T', 30, 3)
     assert type(P(T > 33, evaluate=False)) == Integral
 
+
 def test_density_unevaluated():
     X = Normal('X', 0, 1)
     Y = Normal('Y', 0, 2)
@@ -605,24 +622,28 @@ def test_NormalDistribution():
     assert nd.expectation(x, x) == 0
     assert nd.expectation(x**2, x) == 1
 
+
 def test_random_parameters():
     mu = Normal('mu', 2, 3)
     meas = Normal('T', mu, 1)
     assert density(meas, evaluate=False)(z)
     assert isinstance(pspace(meas), ProductPSpace)
-    #assert density(meas, evaluate=False)(z) == Integral(mu.pspace.pdf *
+    # assert density(meas, evaluate=False)(z) == Integral(mu.pspace.pdf *
     #        meas.pspace.pdf, (mu.symbol, -oo, oo)).subs(meas.symbol, z)
+
 
 def test_random_parameters_given():
     mu = Normal('mu', 2, 3)
     meas = Normal('T', mu, 1)
     assert given(meas, Eq(mu, 5)) == Normal('T', 5, 1)
 
+
 def test_conjugate_priors():
     mu = Normal('mu', 2, 3)
     x = Normal('x', mu, 1)
     assert isinstance(simplify(density(mu, Eq(x, y), evaluate=False)(z)),
             Integral)
+
 
 def test_difficult_univariate():
     """ Since using solve in place of deltaintegrate we're able to perform

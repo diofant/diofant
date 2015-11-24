@@ -338,9 +338,8 @@ def dup_inner_subresultants(f, g, K):
     References
     ==========
 
-    [1] W.S. Brown, The Subresultant PRS Algorithm.
-    ACM Transaction of Mathematical Software 4 (1978) 237-249
-
+    .. [1] W.S. Brown, The Subresultant PRS Algorithm.
+           ACM Transaction of Mathematical Software 4 (1978) 237-249
     """
     n = dup_degree(f)
     m = dup_degree(g)
@@ -881,7 +880,7 @@ def _dup_rr_trivial_gcd(f, g, K):
         else:
             return dup_neg(f, K), [-K.one], []
 
-    return None
+    return
 
 
 def _dup_ff_trivial_gcd(f, g, K):
@@ -893,7 +892,7 @@ def _dup_ff_trivial_gcd(f, g, K):
     elif not g:
         return dup_monic(f, K), [dup_LC(f, K)], []
     else:
-        return None
+        return
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
@@ -916,7 +915,7 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
     else:
-        return None
+        return
 
 
 def _dmp_ff_trivial_gcd(f, g, u, K):
@@ -937,7 +936,7 @@ def _dmp_ff_trivial_gcd(f, g, u, K):
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
     else:
-        return None
+        return
 
 
 def _dmp_simplify_gcd(f, g, u, K):
@@ -946,7 +945,7 @@ def _dmp_simplify_gcd(f, g, u, K):
     dg = dmp_degree(g, u)
 
     if df > 0 and dg > 0:
-        return None
+        return
 
     if not (df or dg):
         F = dmp_LC(f, K)
@@ -1180,8 +1179,7 @@ def dup_zz_heu_gcd(f, g, K):
     References
     ==========
 
-    1. [Liao95]_
-
+    .. [1] [Liao95]_
     """
     result = _dup_rr_trivial_gcd(f, g, K)
 
@@ -1308,8 +1306,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
     References
     ==========
 
-    1. [Liao95]_
-
+    .. [1] [Liao95]_
     """
     if not u:
         return dup_zz_heu_gcd(f, g, K)

@@ -420,7 +420,6 @@ def test_evalf_issue_939():
 
 @XFAIL
 def test_failing_integrals():
-    #---
     # Double integrals not implemented
     assert NS(Integral(
         sqrt(x) + x*y, (x, 1, 2), (y, -1, 1)), 15) == '2.43790283299492'
@@ -435,7 +434,7 @@ def test_integrate_DiracDelta():
     assert integrate(DiracDelta(x) * f(x), (x, 0, oo)) == f(0)/2
     assert integrate(DiracDelta(x)**2, (x, -oo, oo)) == DiracDelta(0)
     # issue 4522
-    assert integrate(integrate((4 - 4*x + x*y - 4*y) * \
+    assert integrate(integrate((4 - 4*x + x*y - 4*y) *
         DiracDelta(x)*DiracDelta(y - 1), (x, 0, 1)), (y, 0, 1)) == 0
     # issue 5729
     p = exp(-(x**2 + y**2))/pi
@@ -478,7 +477,7 @@ def test_integrate_returns_piecewise():
         (0, Eq(n, 0)), ((n*x/2 - sin(n*x)*cos(n*x)/2)/n, True))
     assert integrate(x*sin(n*x), x) == Piecewise(
         (0, Eq(n, 0)), (-x*cos(n*x)/n + sin(n*x)/n**2, True))
-    assert integrate(exp(x*y),(x,0,z)) == Piecewise( \
+    assert integrate(exp(x*y),(x,0,z)) == Piecewise(
         (z, Eq(y,0)), (exp(y*z)/y - 1/y, True))
 
 
@@ -558,9 +557,11 @@ def test_subs7():
     assert e.subs(sin(x), 1) == Integral(sin(x) + sin(y), (x, 1, sin(y)),
                                          (y, 1, 2))
 
+
 def test_expand():
     e = Integral(f(x)+f(x**2), (x, 1, y))
     assert e.expand() == Integral(f(x), (x, 1, y)) + Integral(f(x**2), (x, 1, y))
+
 
 def test_integration_variable():
     raises(ValueError, lambda: Integral(exp(-x**2), 3))
@@ -837,6 +838,7 @@ def test_issue_4527():
         (m*sin(k*x)*cos(m*x)/(k**2 - m**2) -
          k*sin(m*x)*cos(k*x)/(k**2 - m**2), True))
 
+
 def test_issue_4199():
     ypos = Symbol('y', positive=True)
     # TODO: Remove conds='none' below, let the assumption take care of it.
@@ -1020,10 +1022,12 @@ def test_risch_option():
     assert integrate(erf(x), x, risch=True) == Integral(erf(x), x)
     # TODO: How to test risch=False?
 
+
 def test_issue_6828():
     f = 1/(1.08*x**2 - 4.3)
     g = integrate(f, x).diff(x)
     assert verify_numerically(f, g, tol=1e-12)
+
 
 @XFAIL
 def test_integrate_Piecewise_rational_over_reals():
@@ -1066,14 +1070,16 @@ def test_issue_8368():
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
         (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((S(1)/2,), (0, 0)),
         ((0, S(1)/2), (0,)), polar_lift(s)**2), True)),
-        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi,
+        And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
         cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
-        1 > 0, Ne(s**2, 1))), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
+        1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
-        Piecewise((-1/(s + 1)/2 - 1/(-s + 1)/2, And(Ne(1/s, 1),
-        Abs(periodic_argument(s, oo)) < pi/2, Abs(periodic_argument(s, oo)) <=
-        pi/2, cos(Abs(periodic_argument(s, oo)))*Abs(s) - 1 > 0)),
-        (Integral(exp(-s*x)*sinh(x), (x, 0, oo)), True))
+        Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
+                                (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
+                                (meijerg(((0,), (-S(1)/2, S(1)/2)), ((0, S(1)/2), (-S(1)/2,)), polar_lift(s)**2), True)),
+                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
+                  (Integral(E**(-s*x)*sinh(x), (x, 0, oo)), True))
 
 
 def test_issue_8901():
@@ -1086,3 +1092,12 @@ def test_issue_7130():
     i, L, a, b = symbols('i L a b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
     assert x not in integrate(integrand, (x, 0, L)).free_symbols
+
+
+def test_issue_4950():
+    assert integrate((-60*exp(x) - 19.2*exp(4*x))*exp(4*x), x) ==\
+        -2.4*exp(8*x) - 12.0*exp(5*x)
+
+
+def test_issue_4968():
+    assert integrate(sin(log(x**2))) == x*sin(2*log(x))/5 - 2*x*cos(2*log(x))/5

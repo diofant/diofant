@@ -610,7 +610,7 @@ class TIDS(CantSympify):
         """
         components = self.components
         antisym = g.index_types[0].metric_antisym
-        #if not any(x == g for x in components):
+        # if not any(x == g for x in components):
         #    return self
         # list of positions of the metric ``g``
         gpos = [i for i, x in enumerate(components) if x == g]
@@ -757,7 +757,7 @@ class _TensorDataLazyEvaluator(CantSympify):
     def __getitem__(self, key):
         dat = self._get(key)
         if dat is None:
-            return None
+            return
 
         numpy = import_module("numpy")
         if not isinstance(dat, numpy.ndarray):
@@ -786,7 +786,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             return self._substitutions_dict[key]
 
         if isinstance(key, TensorHead):
-            return None
+            return
 
         if isinstance(key, Tensor):
             # special case to handle metrics. Metric tensors cannot be
@@ -810,9 +810,9 @@ class _TensorDataLazyEvaluator(CantSympify):
                     return self._substitutions_dict_tensmul[srch]
             data_list = [self.data_tensmul_from_tensorhead(i, i.components[0]) for i in tensmul_list]
             if all([i is None for i in data_list]):
-                return None
+                return
             if any([i is None for i in data_list]):
-                raise ValueError("Mixing tensors with associated components "\
+                raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
             data_result, tensmul_result = self.data_product_tensors(data_list, tensmul_list)
             return data_result
@@ -821,15 +821,15 @@ class _TensorDataLazyEvaluator(CantSympify):
             sumvar = S.Zero
             data_list = [i.data for i in key.args]
             if all([i is None for i in data_list]):
-                return None
+                return
             if any([i is None for i in data_list]):
-                raise ValueError("Mixing tensors with associated components "\
+                raise ValueError("Mixing tensors with associated components "
                                  "data with tensors without components data")
             for i in data_list:
                 sumvar += i
             return sumvar
 
-        return None
+        return
 
     def data_tensorhead_from_tensmul(self, data, tensmul, tensorhead):
         """
@@ -838,7 +838,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         which is then stored according to the ``TensorHead`` key.
         """
         if data is None:
-            return None
+            return
 
         return self._correct_signature_from_indices(
             data,
@@ -854,7 +854,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         ``TensorIndexType``.
         """
         if tensorhead.data is None:
-            return None
+            return
 
         return self._correct_signature_from_indices(
             tensorhead.data,
@@ -944,7 +944,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         if isinstance(key, TensorHead):
             for dim, indextype in zip(data.shape, key.index_types):
                 if indextype.data is None:
-                    raise ValueError("index type {} has no components data"\
+                    raise ValueError("index type {} has no components data"
                     " associated (needed to raise/lower index)".format(indextype))
                 if indextype.dim is None:
                     continue
@@ -1033,9 +1033,9 @@ class _TensorDataLazyEvaluator(CantSympify):
         numpy = import_module('numpy')
 
         data = numpy.tensordot(
-                metric,
-                data,
-                (1, pos))
+            metric,
+            data,
+            (1, pos))
         return numpy.rollaxis(data, 0, pos+1)
 
     @staticmethod
@@ -1070,7 +1070,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 )
 
         if len(dum) > 0:
-            ### perform contractions ###
+            # perform contractions
             axes1 = []
             axes2 = []
             for i, indx1 in enumerate(indices):
@@ -1528,7 +1528,7 @@ class TensorIndexType(Basic):
 
     def get_epsilon(self):
         if not isinstance(self._eps_dim, int):
-            return None
+            return
         sym = TensorSymmetry(get_symmetric_group_sgs(self._eps_dim, 1))
         Sdim = TensorType([self]*self._eps_dim, sym)
         epsilon = Sdim('Eps')
@@ -3268,7 +3268,7 @@ class Tensor(TensExpr):
 
         def _get_compar_comp(self):
             t = self.canon_bp()
-            r = (t.coeff, tuple(t.components), \
+            r = (t.coeff, tuple(t.components),
                     tuple(sorted(t.free)), tuple(sorted(t.dum)))
             return r
 
@@ -3419,7 +3419,7 @@ class TensMul(TensExpr):
 
         def _get_compar_comp(self):
             t = self.canon_bp()
-            r = (get_coeff(t), tuple(t.components), \
+            r = (get_coeff(t), tuple(t.components),
                     tuple(sorted(t.free)), tuple(sorted(t.dum)))
             return r
 
@@ -3700,6 +3700,7 @@ class TensMul(TensExpr):
 
     def _print(self):
         args = self.args
+
         def get_str(arg):
             return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ("(%s)" % str(arg))
 
@@ -3718,7 +3719,7 @@ class TensMul(TensExpr):
     def data(self):
         dat = _tensor_data_substitution_dict[self]
         if dat is None:
-            return None
+            return
         return self.coeff * dat
 
     @data.setter
@@ -3742,6 +3743,7 @@ def canon_bp(p):
     if isinstance(p, TensExpr):
         return p.canon_bp()
     return p
+
 
 def tensor_mul(*a):
     """
@@ -3769,6 +3771,7 @@ def riemann_cyclic_replace(t_r):
     t2 = S(1)/3*t_r.substitute_indices((m,m),(n,p),(p,n),(q,q))
     t3 = t0 + t1 + t2
     return t3
+
 
 def riemann_cyclic(t2):
     """
@@ -3800,6 +3803,7 @@ def riemann_cyclic(t2):
         return t3
     else:
         return canon_bp(t3)
+
 
 def get_lines(ex, index_type):
     """
@@ -3917,15 +3921,18 @@ def get_lines(ex, index_type):
 
     return lines, traces, rest
 
+
 def get_indices(t):
     if not isinstance(t, TensExpr):
         return ()
     return t.get_indices()
 
+
 def get_tids(t):
     if isinstance(t, TensExpr):
         return t._tids
     return TIDS([], [], [])
+
 
 def get_coeff(t):
     if isinstance(t, Tensor):
@@ -3936,10 +3943,12 @@ def get_coeff(t):
         raise ValueError("no coefficient associated to this tensor expression")
     return t
 
+
 def contract_metric(t, g):
     if isinstance(t, TensExpr):
         return t.contract_metric(g)
     return t
+
 
 def perm2tensor(t, g, canon_bp=False):
     """
@@ -3955,6 +3964,7 @@ def perm2tensor(t, g, canon_bp=False):
         coeff = -coeff
     res = TensMul.from_TIDS(coeff, new_tids, is_canon_bp=canon_bp)
     return res
+
 
 def substitute_indices(t, *index_tuples):
     """

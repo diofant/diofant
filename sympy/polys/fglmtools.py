@@ -5,6 +5,7 @@ from __future__ import print_function, division
 from sympy.polys.monomials import monomial_mul, monomial_div
 from sympy.core.compatibility import range
 
+
 def matrix_fglm(F, ring, O_to):
     """
     Converts the reduced Groebner basis ``F`` of a zero-dimensional
@@ -14,9 +15,9 @@ def matrix_fglm(F, ring, O_to):
     References
     ==========
 
-    J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994). Efficient
-    Computation of Zero-dimensional Groebner Bases by Change of
-    Ordering
+    .. [1] J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994). Efficient
+           Computation of Zero-dimensional Groebner Bases by Change
+           of Ordering.
     """
     domain = ring.domain
     ngens = ring.ngens

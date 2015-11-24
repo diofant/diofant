@@ -8,6 +8,7 @@ from sympy.polys.domains.compositedomain import CompositeDomain
 from sympy.polys.polyerrors import CoercionFailed, GeneratorsError
 from sympy.utilities import public
 
+
 @public
 class FractionField(Field, CompositeDomain):
     """A class for representing multivariate rational function fields. """
@@ -100,14 +101,14 @@ class FractionField(Field, CompositeDomain):
         try:
             return K1.new(a)
         except (CoercionFailed, GeneratorsError):
-            return None
+            return
 
     def from_FractionField(K1, a, K0):
         """Convert a rational function to ``dtype``. """
         try:
             return a.set_field(K1.field)
         except (CoercionFailed, GeneratorsError):
-            return None
+            return
 
     def get_ring(self):
         """Returns a field associated with `self`. """

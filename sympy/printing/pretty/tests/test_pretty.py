@@ -6,7 +6,9 @@ from sympy import (
     Lambda, Le, Limit, Lt, Matrix, Mul, Nand, Ne, Nor, Not, O, Or,
     Pow, Product, QQ, RR, Rational, Ray, RootOf, RootSum, S,
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
-    groebner, oo, pi, symbols, ilex, grlex, Range, Contains)
+    groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
+    Interval, Union)
+
 from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
     euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
@@ -879,6 +881,7 @@ u("""\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+
 def test_issue_5524():
     assert pretty(-(-x + 5)*(-x - 2*sqrt(2) + 5) - (-y + 5)*(-y + 5)) == \
 """\
@@ -1139,12 +1142,12 @@ def test_pretty_functions():
     ascii_str_1 = \
 """\
        x\n\
-2*x + e \
+2*x + E \
 """
     ascii_str_2 = \
 """\
  x      \n\
-e  + 2*x\
+E  + 2*x\
 """
     ucode_str_1 = \
 u("""\
@@ -1153,8 +1156,8 @@ u("""\
 """)
     ucode_str_2 = \
 u("""\
- x     \n\
-ℯ + 2⋅x\
+ x      \n\
+ℯ  + 2⋅x\
 """)
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
@@ -1572,7 +1575,7 @@ a - ⅈ⋅b\
 """\
  _     _\n\
  a - I*b\n\
-e       \
+E       \
 """
     ucode_str = \
 u("""\
@@ -2525,7 +2528,7 @@ u("""\
 [y                 ]
 [                  ]
 [    I*k*phi       ]
-[0  e           1  ]\
+[0  E           1  ]\
 """
     ucode_str = \
 u("""\
@@ -2795,6 +2798,7 @@ u("""\
 """)
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
+
 
 def test_pretty_seq():
     expr = ()
@@ -3069,6 +3073,14 @@ def test_pretty_sets():
     assert upretty(Range(-2, -oo, -1)) == ucode_str
 
 
+def test_ProductSet_paranthesis():
+    from sympy import Interval, Union, FiniteSet
+    ucode_str = u('([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])')
+
+    a, b, c = Interval(2, 3), Interval(4, 7), Interval(1, 9)
+    assert upretty(Union(a*b, b*FiniteSet(1, 2))) == ucode_str
+
+
 def test_pretty_limits():
     expr = Limit(x, x, oo)
     ascii_str = \
@@ -3218,7 +3230,7 @@ RootSum⎝x  + 11⋅x - 2⎠\
     ascii_str = \
 """\
        / 5                   z\\\n\
-RootSum\\x  + 11*x - 2, z -> e /\
+RootSum\\x  + 11*x - 2, z -> E /\
 """
     ucode_str = \
 u("""\
@@ -4338,9 +4350,9 @@ atan2⎜───────, ╲╱ x ⎟\n\
 
 def test_pretty_geometry():
     e = Segment((0, 1), (0, 2))
-    assert pretty(e) == 'Segment(Point(0, 1), Point(0, 2))'
+    assert pretty(e) == 'Segment(Point2D(0, 1), Point2D(0, 2))'
     e = Ray((1, 1), angle=4.02*pi)
-    assert pretty(e) == 'Ray(Point(1, 1), Point(2, tan(pi/50) + 1))'
+    assert pretty(e) == 'Ray(Point2D(1, 1), Point2D(2, tan(pi/50) + 1))'
 
 
 def test_expint():
@@ -4576,6 +4588,7 @@ u("""\
 ⎝dx      ⎠ \
 """)
 
+
 def test_issue_6739():
     ascii_str = \
 """\
@@ -4638,7 +4651,7 @@ def test_categories():
         "EmptySet(), id:A2-->A2: EmptySet(), id:A3-->A3: " \
         "EmptySet(), f1:A1-->A2: {unique}, f2:A2-->A3: EmptySet()}"
 
-    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, " \
+    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, "
         "id:A₂——▶A₂: ∅, id:A₃——▶A₃: ∅, f₁:A₁——▶A₂: {unique}, f₂:A₂——▶A₃: ∅}")
 
     d = Diagram({f1: "unique", f2: S.EmptySet}, {f2 * f1: "unique"})
@@ -4646,8 +4659,8 @@ def test_categories():
         "EmptySet(), id:A2-->A2: EmptySet(), id:A3-->A3: " \
         "EmptySet(), f1:A1-->A2: {unique}, f2:A2-->A3: EmptySet()}" \
         " ==> {f2*f1:A1-->A3: {unique}}"
-    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, id:A₂——▶A₂: " \
-        "∅, id:A₃——▶A₃: ∅, f₁:A₁——▶A₂: {unique}, f₂:A₂——▶A₃: ∅}" \
+    assert upretty(d) == u("{f₂∘f₁:A₁——▶A₃: ∅, id:A₁——▶A₁: ∅, id:A₂——▶A₂: "
+        "∅, id:A₃——▶A₃: ∅, f₁:A₁——▶A₂: {unique}, f₂:A₂——▶A₃: ∅}"
         " ══▶ {f₂∘f₁:A₁——▶A₃: {unique}}")
 
     grid = DiagramGrid(d)
@@ -4884,10 +4897,10 @@ def test_pretty_Complement():
 def test_pretty_SymmetricDifference():
     from sympy import SymmetricDifference, Interval
     from sympy.utilities.pytest import raises
-    assert upretty(SymmetricDifference(Interval(2,3), Interval(3,5), \
-           evaluate = False)) == u('[2, 3] ∆ [3, 5]')
+    assert upretty(SymmetricDifference(Interval(2,3), Interval(3,5),
+           evaluate=False)) == u('[2, 3] ∆ [3, 5]')
     with raises(NotImplementedError):
-        pretty(SymmetricDifference(Interval(2,3), Interval(3,5), evaluate = False))
+        pretty(SymmetricDifference(Interval(2,3), Interval(3,5), evaluate=False))
 
 
 def test_pretty_Contains():

@@ -219,12 +219,14 @@ def test_harmonic_rewrite_polygamma():
 
     assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
 
+
 @XFAIL
 def test_harmonic_limit_fail():
     n = Symbol("n")
     m = Symbol("m")
     # For m > 1:
     assert limit(harmonic(n, m), n, oo) == zeta(m)
+
 
 @XFAIL
 def test_harmonic_rewrite_sum_fail():
@@ -418,7 +420,7 @@ def test_nC_nP_nT():
     perms = list(permutations(range(4)))
     assert [sum(1 for p in perms if Permutation(p).cycles == i)
             for i in range(5)] == [0, 6, 11, 6, 1] == [
-            stirling(4, i, kind=1) for i in range(5)]
+        stirling(4, i, kind=1) for i in range(5)]
     # http://oeis.org/A008275
     assert [stirling(n, k, signed=1)
         for n in range(10) for k in range(1, n + 1)] == [

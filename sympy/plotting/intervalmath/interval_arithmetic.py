@@ -377,7 +377,7 @@ class interval(object):
     def __rpow__(self, other):
         if isinstance(other, (float, int)):
             if not self.is_valid:
-                #Don't do anything
+                # Don't do anything
                 return self
             elif other < 0:
                 if self.width > 0:

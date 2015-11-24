@@ -10,6 +10,7 @@ from .singleton import S
 
 from inspect import getmro
 
+
 class Basic(with_metaclass(ManagedProperties)):
     """
     Base class for all objects in SymPy.
@@ -248,7 +249,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 return arg
 
         args = self._sorted_args
-        args = len(args), tuple([ inner_key(arg) for arg in args ])
+        args = len(args), tuple([inner_key(arg) for arg in args])
         return self.class_key(), args, S.One.sort_key(), S.One
 
     def __eq__(self, other):
@@ -336,7 +337,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (u**2 + y).dummy_eq(x**2 + y, y)
         False
         """
-        dummy_symbols = [ s for s in self.free_symbols if s.is_Dummy ]
+        dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
 
         if not dummy_symbols:
             return self == other
@@ -511,7 +512,7 @@ class Basic(with_metaclass(ManagedProperties)):
         however you can use
 
         >>> from sympy import Lambda
-        >>> from sympy.abc import x,y,z
+        >>> from sympy.abc import x, y, z
         >>> (x + Lambda(y, 2*y)).rcall(z)
         x + 2*z
         """
@@ -520,6 +521,7 @@ class Basic(with_metaclass(ManagedProperties)):
     @staticmethod
     def _recursive_call(expr_to_call, on_args):
         from sympy import Symbol
+
         def the_call_method_is_overridden(expr):
             for cls in getmro(type(expr)):
                 if '__call__' in cls.__dict__:
@@ -663,11 +665,11 @@ class Basic(with_metaclass(ManagedProperties)):
             poly = Poly(self, *gens, **args)
 
             if not poly.is_Poly:
-                return None
+                return
             else:
                 return poly
         except PolynomialError:
-            return None
+            return
 
     def as_content_primitive(self, radical=False):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
@@ -756,7 +758,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
-        >>> expr.subs(dict([A,B,C,D,E]))
+        >>> expr.subs(dict([A, B, C, D, E]))
         a*c*sin(d*e) + b
 
         The resulting expression represents a literal replacement of the
@@ -994,7 +996,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         See also: _subs
         """
-        return None
+        return
 
     def xreplace(self, rule):
         """
@@ -1018,7 +1020,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> x, y, z = symbols('x y z')
         >>> (1 + x*y).xreplace({x: pi})
         pi*y + 1
-        >>> (1 + x*y).xreplace({x:pi, y:2})
+        >>> (1 + x*y).xreplace({x: pi, y: 2})
         1 + 2*pi
 
         Replacements occur only if an entire node in the expression tree is
@@ -1035,7 +1037,7 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (x + y + 2).xreplace({x + y: 2})
         x + y + 2
         >>> (x + 2 + exp(x + 2)).xreplace({x + 2: y})
-        x + exp(y) + 2
+        E**y + x + 2
 
         xreplace doesn't differentiate between free and bound symbols. In the
         following, subs(x, y) would not change x since it is a bound symbol,
@@ -1047,7 +1049,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         Trying to replace x with an expression raises an error:
 
-        >>> Integral(x, (x, 1, 2*x)).xreplace({x: 2*y}) #doctest: +SKIP
+        >>> Integral(x, (x, 1, 2*x)).xreplace({x: 2*y}) # doctest: +SKIP
         ValueError: Invalid limits given: ((2*y, 1, 4*y),)
 
         See Also
@@ -1277,7 +1279,7 @@ class Basic(with_metaclass(ManagedProperties)):
             if isinstance(value, Basic):
                 if exact:
                     def _value(expr, result):
-                        return (value.subs(result) \
+                        return (value.subs(result)
                             if all(val for val in result.values()) else expr)
                 else:
                     def _value(expr, result):
@@ -1315,6 +1317,7 @@ class Basic(with_metaclass(ManagedProperties)):
 
         mapping = {}  # changes that took place
         mask = []  # the dummies that were used as change placeholders
+
         def rec_replace(expr):
             result = _query(expr)
             if result or result == {}:
@@ -1393,13 +1396,13 @@ class Basic(with_metaclass(ManagedProperties)):
         """
         expr = sympify(expr)
         if not isinstance(expr, self.__class__):
-            return None
+            return
 
         if self == expr:
             return repl_dict
 
         if len(self.args) != len(expr.args):
-            return None
+            return
 
         d = repl_dict.copy()
         for arg, other_arg in zip(self.args, expr.args):
@@ -1407,7 +1410,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 continue
             d = arg.xreplace(d).matches(other_arg, d, old=old)
             if d is None:
-                return None
+                return
         return d
 
     def match(self, pattern, old=False):
@@ -1484,12 +1487,12 @@ class Basic(with_metaclass(ManagedProperties)):
         >>> (2*Integral(x, x)).doit()
         x**2
 
-        >>> (2*Integral(x, x)).doit(deep = False)
+        >>> (2*Integral(x, x)).doit(deep=False)
         2*Integral(x, x)
         """
         if hints.get('deep', True):
-            terms = [ term.doit(**hints) if isinstance(term, Basic) else term
-                                         for term in self.args ]
+            terms = [term.doit(**hints) if isinstance(term, Basic) else term
+                                         for term in self.args]
             return self.func(*terms)
         else:
             return self
@@ -1501,9 +1504,9 @@ class Basic(with_metaclass(ManagedProperties)):
             return self
 
         if hints.get('deep', True):
-            args = [ a._eval_rewrite(pattern, rule, **hints)
+            args = [a._eval_rewrite(pattern, rule, **hints)
                         if isinstance(a, Basic) else a
-                        for a in self.args ]
+                        for a in self.args]
         else:
             args = self.args
 
@@ -1541,17 +1544,17 @@ class Basic(with_metaclass(ManagedProperties)):
         Unspecified pattern:
 
         >>> sin(x).rewrite(exp)
-        -I*(exp(I*x) - exp(-I*x))/2
+        -I*(E**(I*x) - E**(-I*x))/2
 
         Pattern as a single function:
 
         >>> sin(x).rewrite(sin, exp)
-        -I*(exp(I*x) - exp(-I*x))/2
+        -I*(E**(I*x) - E**(-I*x))/2
 
         Pattern as a list of functions:
 
         >>> sin(x).rewrite([sin, ], exp)
-        -I*(exp(I*x) - exp(-I*x))/2
+        -I*(E**(I*x) - E**(-I*x))/2
         """
         if not args:
             return self
@@ -1568,7 +1571,7 @@ class Basic(with_metaclass(ManagedProperties)):
                 if iterable(pattern[0]):
                     pattern = pattern[0]
 
-                pattern = [ p.__class__ for p in pattern if self.has(p) ]
+                pattern = [p.__class__ for p in pattern if self.has(p)]
 
                 if pattern:
                     return self._eval_rewrite(tuple(pattern), rule, **hints)
@@ -1641,55 +1644,14 @@ def _aresame(a, b):
     from .function import AppliedUndef, UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
         if i != j or type(i) != type(j):
-            if ((isinstance(i, UndefFunc) and isinstance(j, UndefFunc)) or
-                (isinstance(i, AppliedUndef) and isinstance(j, AppliedUndef))):
+            if (isinstance(i, (UndefFunc, AppliedUndef)) and
+                    isinstance(j, (UndefFunc, AppliedUndef))):
                 if i.class_key() != j.class_key():
                     return False
             else:
                 return False
     else:
         return True
-
-
-def _atomic(e):
-    """Return atom-like quantities as far as substitution is
-    concerned: Derivatives, Functions and Symbols. Don't
-    return any 'atoms' that are inside such quantities unless
-    they also appear outside, too.
-
-    Examples
-    ========
-
-    >>> from sympy import Derivative, Function, cos
-    >>> from sympy.abc import x, y
-    >>> from sympy.core.basic import _atomic
-    >>> f = Function('f')
-    >>> _atomic(x + y) == {x, y}
-    True
-    >>> _atomic(x + f(y)) == {x, f(y)}
-    True
-    >>> _atomic(Derivative(f(x), x) + cos(x) + y) == {y, cos(x), Derivative(f(x), x)}
-    True
-    """
-    from sympy import Derivative, Function, Symbol
-    pot = preorder_traversal(e)
-    seen = set()
-    try:
-        free = e.free_symbols
-    except AttributeError:
-        return {e}
-    atoms = set()
-    for p in pot:
-        if p in seen:
-            pot.skip()
-            continue
-        seen.add(p)
-        if isinstance(p, Symbol) and p in free:
-            atoms.add(p)
-        elif isinstance(p, (Derivative, Function)):
-            pot.skip()
-            atoms.add(p)
-    return atoms
 
 
 class preorder_traversal(Iterator):
@@ -1754,7 +1716,7 @@ class preorder_traversal(Iterator):
             else:
                 args = node.args
             if keys:
-                if keys != True:
+                if not keys:
                     args = ordered(args, keys, default=False)
                 else:
                     args = ordered(args)

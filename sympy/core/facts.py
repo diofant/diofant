@@ -74,6 +74,7 @@ def _as_pair(atom):
 
 # XXX this prepares forward-chaining rules for alpha-network
 
+
 def transitive_closure(implications):
     """
     Computes the transitive closure of a list of implications
@@ -92,6 +93,7 @@ def transitive_closure(implications):
                         full_implications.add((i, j))
 
     return full_implications
+
 
 def deduce_alpha_implications(implications):
     """deduce all implications
@@ -146,7 +148,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
 
        alpha_implications:
 
-       a  ->  [b, !c, d]
+       a  ->  [b, ~c, d]
        b  ->  [d]
        ...
 
@@ -158,7 +160,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
 
        then we'll extend a's rule to the following
 
-       a  ->  [b, !c, d, e]
+       a  ->  [b, ~c, d, e]
     """
     x_impl = {}
     for x in alpha_implications.keys():
@@ -200,8 +202,8 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
             # A: ... -> a   B: &(...) -> a      (non-informative)
             if bimpl in x_all:
                 continue
-            # A: x -> a...  B: &(!a,...) -> ... (will never trigger)
-            # A: x -> a...  B: &(...) -> !a     (will never trigger)
+            # A: x -> a...  B: &(~a,...) -> ... (will never trigger)
+            # A: x -> a...  B: &(...) -> ~a     (will never trigger)
             if any(Not(xi) in bargs or Not(xi) == bimpl for xi in x_all):
                 continue
 
@@ -332,9 +334,9 @@ class Prover(object):
             for barg in b.args:
                 self.process_rule(a, barg)
 
-        # a -> b | c    -->  !b & !c -> !a
-        #               -->   a & !b -> c
-        #               -->   a & !c -> b
+        # a -> b | c    -->  ~b & ~c -> ~a
+        #               -->   a & ~b -> c
+        #               -->   a & ~c -> b
         elif isinstance(b, Or):
             # detect tautology first
             if not isinstance(a, Logic):    # Atom
@@ -356,7 +358,7 @@ class Prover(object):
             if b in a.args:
                 raise TautologyDetected(a, b, 'a & b -> a')
             self.proved_rules.append((a, b))
-            # XXX NOTE at present we ignore  !c -> !a | !b
+            # XXX NOTE at present we ignore  ~c -> ~a | ~b
 
         elif isinstance(a, Or):
             if b in a.args:
@@ -367,7 +369,7 @@ class Prover(object):
         else:
             # both `a` and `b` are atoms
             self.proved_rules.append((a, b))             # a  -> b
-            self.proved_rules.append((Not(b), Not(a)))   # !b -> !a
+            self.proved_rules.append((Not(b), Not(a)))   # ~b -> ~a
 
 ########################################
 
@@ -387,7 +389,7 @@ class FactRules(object):
        -----------------
 
        a -> b       -- a=T -> b=T  (and automatically b=F -> a=F)
-       a -> !b      -- a=T -> b=F
+       a -> ~b      -- a=T -> b=F
        a == b       -- a -> b & b -> a
        a -> b & c   -- a=T -> b=T & c=T
        # TODO b | c

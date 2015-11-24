@@ -220,6 +220,7 @@ class EPath(object):
                     return expr.__class__(args)
 
         _args, _kwargs = args or (), kwargs or {}
+
         def _func(expr):
             return func(expr, *_args, **_kwargs)
 

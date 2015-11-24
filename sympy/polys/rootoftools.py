@@ -36,12 +36,15 @@ from sympy.utilities import lambdify, public
 from sympy.core.compatibility import range
 
 from math import log as mathlog
+
+
 def _ispow2(i):
     v = mathlog(i, 2)
     return v == int(v)
 
 _reals_cache = {}
 _complexes_cache = {}
+
 
 @public
 class RootOf(Expr):
@@ -221,6 +224,7 @@ class RootOf(Expr):
     @classmethod
     def _separate_imaginary_from_complex(cls, complexes):
         from sympy.utilities.iterables import sift
+
         def is_imag(c):
             '''
             return True if all roots are imaginary (ax**2 + b)
@@ -233,8 +237,9 @@ class RootOf(Expr):
                     return True  # both imag
                 elif _ispow2(deg):
                     if f.LC()*f.TC() < 0:
-                        return None  # 2 are imag
+                        return  # 2 are imag
             return False  # none are imag
+
         # separate according to the function
         sifted = sift(complexes, lambda c: c[1])
         del complexes
@@ -334,8 +339,7 @@ class RootOf(Expr):
         # sort complexes and combine with imag
         if complexes:
             # key is (x1, y1) e.g. (1, 2)x(3, 4) -> (1,3)
-            complexes = sorted(complexes, key=
-                lambda c: c[0].a)
+            complexes = sorted(complexes, key=lambda c: c[0].a)
             # find insertion point for imaginary
             for i, c in enumerate(reversed(complexes)):
                 if c[0].bx <= 0:
@@ -463,14 +467,14 @@ class RootOf(Expr):
             return roots_linear(poly)
 
         if not radicals:
-            return None
+            return
 
         if poly.degree() == 2:
             return roots_quadratic(poly)
         elif poly.length() == 2 and poly.TC():
             return roots_binomial(poly)
         else:
-            return None
+            return
 
     @classmethod
     def _preprocess_roots(cls, poly):
@@ -880,6 +884,7 @@ class RootSum(Expr):
         var, expr = self.fun.args
         func = Lambda(var, expr.diff(x))
         return self.new(self.poly, func, self.auto)
+
 
 def bisect(f, a, b, tol):
     """

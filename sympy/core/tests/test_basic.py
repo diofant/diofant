@@ -101,22 +101,26 @@ def test_Singleton():
     global instantiated
     instantiated = 0
 
-    class MySingleton(with_metaclass(Singleton, Basic)):
+    class MyNewSingleton(with_metaclass(Singleton, Basic)):
         def __new__(cls):
             global instantiated
             instantiated += 1
             return Basic.__new__(cls)
 
+    assert instantiated == 0
+    MyNewSingleton()  # force instantiation
     assert instantiated == 1
-    assert MySingleton() is not Basic()
-    assert MySingleton() is MySingleton()
-    assert S.MySingleton is MySingleton()
+    assert MyNewSingleton() is not Basic()
+    assert MyNewSingleton() is MyNewSingleton()
+    assert S.MyNewSingleton is MyNewSingleton()
     assert instantiated == 1
 
-    class MySingleton_sub(MySingleton):
+    class MySingleton_sub(MyNewSingleton):
         pass
+    assert instantiated == 1
+    MySingleton_sub()
     assert instantiated == 2
-    assert MySingleton_sub() is not MySingleton()
+    assert MySingleton_sub() is not MyNewSingleton()
     assert MySingleton_sub() is MySingleton_sub()
 
 
@@ -148,11 +152,12 @@ def test_sorted_args():
     assert b21._sorted_args == b21.args
     raises(AttributeError, lambda: x._sorted_args)
 
+
 def test_call():
     x, y = symbols('x y')
     # See the long history of this in issues 5026 and 5105.
 
-    raises(TypeError, lambda: sin(x)({ x : 1, sin(x) : 2}))
+    raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
     raises(TypeError, lambda: sin(x)(1))
 
     # No effect as there are no callables
@@ -164,10 +169,11 @@ def test_call():
     assert (l + x).rcall(y) == 2*y + x
     assert (x**l).rcall(2) == x**4
     # TODO UndefinedFunction does not subclass Expr
-    #f = Function('f')
-    #assert (2*f)(x) == 2*f(x)
+    # f = Function('f')
+    # assert (2*f)(x) == 2*f(x)
 
     assert (Q.real & Q.positive).rcall(x) == Q.real(x) & Q.positive(x)
+
 
 def test_literal_evalf_is_number_is_zero_is_comparable():
     from sympy.integrals.integrals import Integral

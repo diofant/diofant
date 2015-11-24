@@ -282,12 +282,13 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
                         if M is not None:
                             terms.add( x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
-                            #terms.add( x*(li(M[a]*x**M[b]) - (x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
-                            #terms.add( x*(li(M[a]*x**M[b]) - x*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
-                            #terms.add( li(M[a]*x**M[b]) - Ei((M[b]+1)*log(M[a]*x**M[b])/M[b]) )
+                            # terms.add( x*(li(M[a]*x**M[b]) - (x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
+                            # terms.add( x*(li(M[a]*x**M[b]) - x*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
+                            # terms.add( li(M[a]*x**M[b]) - Ei((M[b]+1)*log(M[a]*x**M[b])/M[b]) )
 
-                    elif g.func is exp:
-                        M = g.args[0].match(a*x**2)
+                elif g.is_Pow:
+                    if g.base is S.Exp1:
+                        M = g.exp.match(a*x**2)
 
                         if M is not None:
                             if M[a].is_positive:
@@ -295,7 +296,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                             else:  # M[a].is_negative or unknown
                                 terms.add(erf(sqrt(-M[a])*x))
 
-                        M = g.args[0].match(a*x**2 + b*x + c)
+                        M = g.exp.match(a*x**2 + b*x + c)
 
                         if M is not None:
                             if M[a].is_positive:
@@ -305,7 +306,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                                 terms.add(sqrt(pi/4*(-M[a]))*exp(M[c] - M[b]**2/(4*M[a]))*
                                           erf(sqrt(-M[a])*x - M[b]/(2*sqrt(-M[a]))))
 
-                        M = g.args[0].match(a*log(x)**2)
+                        M = g.exp.match(a*log(x)**2)
 
                         if M is not None:
                             if M[a].is_positive:
@@ -313,8 +314,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                             if M[a].is_negative:
                                 terms.add(erf(sqrt(-M[a])*log(x) - 1/(2*sqrt(-M[a]))))
 
-                elif g.is_Pow:
-                    if g.exp.is_Rational and g.exp.q == 2:
+                    elif g.exp.is_Rational and g.exp.q == 2:
                         M = g.base.match(a*x**2 + b)
 
                         if M is not None and M[b].is_positive:
@@ -371,9 +371,10 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
             if result is not None:
                 return indep*result
-        return None
+        return
 
     numers = [ cancel(denom*g) for g in diffs ]
+
     def _derivation(h):
         return Add(*[ d * h.diff(v) for d, v in zip(numers, V) ])
 
@@ -437,9 +438,9 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     polified = [ p.as_poly(*V) for p in [s, P, Q] ]
 
     if None in polified:
-        return None
+        return
 
-    #--- definitions for _integrate
+    # --- definitions for _integrate ---
     a, b, c = [ p.total_degree() for p in polified ]
 
     poly_denom = (s * v_split[0] * _deflation(v_split[1])).as_expr()
@@ -540,7 +541,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         try:
             find_non_syms(raw_numer)
         except PolynomialError:
-            return None
+            return
         else:
             ground, _ = construct_domain(non_syms, field=True)
 
@@ -552,7 +553,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         solution = solve_lin_sys(numer.coeffs(), coeff_ring, _raw=False)
 
         if solution is None:
-            return None
+            return
         else:
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [S.Zero]*len(poly_coeffs))))
@@ -580,4 +581,4 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if result is not None:
                 return indep*result
 
-        return None
+        return

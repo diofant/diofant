@@ -45,6 +45,14 @@ def test_mod():
     assert (a % 2).round(15) == 0.6
     assert (a % 0.5).round(15) == 0.1
 
+    p = Symbol('p', infinite=True)
+
+    assert zoo % 0 == nan
+    assert oo % oo == nan
+    assert zoo % oo == nan
+    assert 5 % oo == nan
+    assert p % 5 == nan
+
     # In these two tests, if the precision of m does
     # not match the precision of the ans, then it is
     # likely that the change made now gives an answer
@@ -993,6 +1001,7 @@ def test_int():
     assert int(E) == 2
     assert int(GoldenRatio) == 1
 
+
 def test_long():
     a = Rational(5)
     assert long(a) == 5
@@ -1003,6 +1012,7 @@ def test_long():
     assert long(pi) == 3
     assert long(E) == 2
     assert long(GoldenRatio) == 1
+
 
 def test_real_bug():
     x = Symbol("x")
@@ -1405,9 +1415,11 @@ def test_issue_6349():
     assert Float('23000', '')._prec == 20
     assert Float('-23000', '')._prec == 20
 
+
 def test_mpf_norm():
     assert mpf_norm((1, 0, 1, 0), 10) == mpf('0')._mpf_
     assert Float._new((1, 0, 1, 0), 10)._mpf_ == mpf('0')._mpf_
+
 
 def test_latex():
     assert latex(pi) == r"\pi"

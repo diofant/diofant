@@ -883,7 +883,9 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         sympy.matrices.dense.DenseMatrix.row
         sympy.matrices.dense.MutableDenseMatrix.col_del
         """
-        self._mat = self._mat[:i*self.cols] + self._mat[(i + 1)*self.cols:]
+        if i < -self.rows or i >= self.rows:
+            raise IndexError("Index out of range: 'i = %s', valid -%s <= i < %s" % (i, self.rows, self.rows))
+        del self._mat[i*self.cols:(i + 1)*self.cols]
         self.rows -= 1
 
     def col_del(self, i):
@@ -907,6 +909,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         sympy.matrices.dense.DenseMatrix.col
         sympy.matrices.dense.MutableDenseMatrix.row_del
         """
+        if i < -self.cols or i >= self.cols:
+            raise IndexError("Index out of range: 'i=%s', valid -%s <= i < %s" % (i, self.cols, self.cols))
         for j in range(self.rows - 1, -1, -1):
             del self._mat[i + j*self.cols]
         self.cols -= 1
@@ -974,6 +978,7 @@ def matrix2numpy(m, dtype=object):  # pragma: no cover
         for j in range(m.cols):
             a[i, j] = m[i, j]
     return a
+
 
 @doctest_depends_on(modules=('numpy',))
 def symarray(prefix, shape):  # pragma: no cover
@@ -1247,6 +1252,7 @@ def eye(n, cls=None):
         from sympy.matrices import Matrix as cls
     return cls.eye(n)
 
+
 def diag(*values, **kwargs):
     """Create a sparse, diagonal matrix from a list of diagonal values.
 
@@ -1475,7 +1481,7 @@ def hessian(f, varlist, constraints=[]):
     return out
 
 
-def GramSchmidt(vlist, orthog=False):
+def GramSchmidt(vlist, orthonormal=False):
     """
     Apply the Gram-Schmidt process to a set of vectors.
 
@@ -1491,7 +1497,7 @@ def GramSchmidt(vlist, orthog=False):
             raise ValueError(
                 "GramSchmidt: vector set not linearly independent")
         out.append(tmp)
-    if orthog:
+    if orthonormal:
         for i in range(len(out)):
             out[i] = out[i].normalized()
     return out

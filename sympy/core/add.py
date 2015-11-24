@@ -15,6 +15,8 @@ from .expr import Expr
 
 # Key for sorting commutative args in canonical order
 _args_sortkey = cmp_to_key(Basic.compare)
+
+
 def _addsort(args):
     # in-place sorting of args
     args.sort(key=_args_sortkey)
@@ -498,7 +500,7 @@ class Add(Expr, AssocOp):
                 others.remove(t)
                 if all(x.is_rational is True for x in others):
                     return True
-                return None
+                return
             if a is None:
                 return
         return False
@@ -506,90 +508,60 @@ class Add(Expr, AssocOp):
     def _eval_is_positive(self):
         if self.is_number:
             return super(Add, self)._eval_is_positive()
-        pos = nonneg = nonpos = unknown_sign = False
-        saw_INF = set()
-        args = [a for a in self.args if not a.is_zero]
-        if not args:
-            return False
+
+        if any(a.is_infinite for a in self.args):
+            args = [a for a in self.args if not a.is_finite]
+        else:
+            args = self.args
+
+        nonpos = nonneg = 0
         for a in args:
-            ispos = a.is_positive
-            infinite = a.is_infinite
-            if infinite:
-                saw_INF.add(fuzzy_or((ispos, a.is_nonnegative)))
-                if True in saw_INF and False in saw_INF:
-                    return
-            if ispos:
-                pos = True
+            if a.is_positive:
                 continue
             elif a.is_nonnegative:
-                nonneg = True
-                continue
+                nonneg += 1
+                if a.is_zero:
+                    nonpos += 1
             elif a.is_nonpositive:
-                nonpos = True
-                continue
-
-            if infinite is None:
-                return
-            unknown_sign = True
-
-        if saw_INF:
-            if len(saw_INF) > 1:
-                return
-            return saw_INF.pop()
-        elif unknown_sign:
-            return
-        elif not nonpos and not nonneg and pos:
-            return True
-        elif not nonpos and pos:
-            return True
-        elif not pos and not nonneg:
-            return False
+                nonpos += 1
+            else:
+                break
+        else:
+            if not nonpos and nonneg < len(args):
+                return True
+            elif nonpos == len(args):
+                return False
 
     def _eval_is_negative(self):
         if self.is_number:
             return super(Add, self)._eval_is_negative()
-        neg = nonpos = nonneg = unknown_sign = False
-        saw_INF = set()
-        args = [a for a in self.args if not a.is_zero]
-        if not args:
-            return False
+
+        if any(a.is_infinite for a in self.args):
+            args = [a for a in self.args if not a.is_finite]
+        else:
+            args = self.args
+
+        nonneg = nonpos = 0
         for a in args:
-            isneg = a.is_negative
-            infinite = a.is_infinite
-            if infinite:
-                saw_INF.add(fuzzy_or((isneg, a.is_nonpositive)))
-                if True in saw_INF and False in saw_INF:
-                    return
-            if isneg:
-                neg = True
+            if a.is_negative:
                 continue
             elif a.is_nonpositive:
-                nonpos = True
-                continue
+                nonpos += 1
+                if a.is_zero:
+                    nonneg += 1
             elif a.is_nonnegative:
-                nonneg = True
-                continue
-
-            if infinite is None:
-                return
-            unknown_sign = True
-
-        if saw_INF:
-            if len(saw_INF) > 1:
-                return
-            return saw_INF.pop()
-        elif unknown_sign:
-            return
-        elif not nonneg and not nonpos and neg:
-            return True
-        elif not nonneg and neg:
-            return True
-        elif not neg and not nonpos:
-            return False
+                nonneg += 1
+            else:
+                break
+        else:
+            if not nonneg and nonpos < len(args):
+                return True
+            elif nonneg == len(args):
+                return False
 
     def _eval_subs(self, old, new):
         if not old.is_Add:
-            return None
+            return
 
         coeff_self, terms_self = self.as_coeff_Add()
         coeff_old, terms_old = old.as_coeff_Add()

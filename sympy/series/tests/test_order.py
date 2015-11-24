@@ -6,10 +6,10 @@ from sympy.abc import w, x, y, z
 
 
 def test_caching_bug():
-    #needs to be a first test, so that all caches are clean
-    #cache it
+    # needs to be a first test, so that all caches are clean
+    # cache it
     e = O(w)
-    #and test that this won't raise an exception
+    # and test that this won't raise an exception
     O(w**(-1/x/log(3)*log(5)), w)
 
 
@@ -379,7 +379,7 @@ def test_order_at_infinity():
 
     # issue 7207
     assert Order(exp(x), (x, oo)).expr == Order(2*exp(x), (x, oo)).expr == exp(x)
-    assert Order(y**x, (x, oo)).expr == Order(2*y**x, (x, oo)).expr == exp(log(y)*x)
+    assert Order(y**x, (x, oo)).expr == Order(2*y**x, (x, oo)).expr == y**x
 
 
 def test_mixing_order_at_zero_and_infinity():

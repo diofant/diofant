@@ -19,7 +19,7 @@ from sympy.core.compatibility import range
 # TODO see the "Note:" in Ei
 
 ###############################################################################
-################################ ERROR FUNCTION ###############################
+# ############################## ERROR FUNCTION ############################# #
 ###############################################################################
 
 
@@ -64,7 +64,7 @@ class erf(Function):
 
     >>> from sympy import diff
     >>> diff(erf(z), z)
-    2*exp(-z**2)/sqrt(pi)
+    2*E**(-z**2)/sqrt(pi)
 
     We can numerically evaluate the error function to arbitrary precision
     on the whole complex plane:
@@ -251,7 +251,7 @@ class erfc(Function):
 
     >>> from sympy import diff
     >>> diff(erfc(z), z)
-    -2*exp(-z**2)/sqrt(pi)
+    -2*E**(-z**2)/sqrt(pi)
 
     It also follows
 
@@ -403,6 +403,7 @@ class erfc(Function):
                     self.func(x + x*sqrt(sq)))
         return (re, im)
 
+
 class erfi(Function):
     r"""
     Imaginary error function. The function erfi is defined as:
@@ -442,7 +443,7 @@ class erfi(Function):
 
     >>> from sympy import diff
     >>> diff(erfi(z), z)
-    2*exp(z**2)/sqrt(pi)
+    2*E**(z**2)/sqrt(pi)
 
     We can numerically evaluate the imaginary error function to arbitrary precision
     on the whole complex plane:
@@ -572,6 +573,7 @@ class erfi(Function):
                     self.func(x + x*sqrt(sq)))
         return (re, im)
 
+
 class erf2(Function):
     r"""
     Two-argument error function. This function is defined as:
@@ -615,9 +617,9 @@ class erf2(Function):
 
     >>> from sympy import diff
     >>> diff(erf2(x, y), x)
-    -2*exp(-x**2)/sqrt(pi)
+    -2*E**(-x**2)/sqrt(pi)
     >>> diff(erf2(x, y), y)
-    2*exp(-y**2)/sqrt(pi)
+    2*E**(-y**2)/sqrt(pi)
 
     See Also
     ========
@@ -659,7 +661,7 @@ class erf2(Function):
         if y.func is erf2inv and y.args[0] == x:
             return y.args[1]
 
-        #Try to pull out -1 factor
+        # Try to pull out -1 factor
         sign_x = x.could_extract_minus_sign()
         sign_y = y.could_extract_minus_sign()
         if (sign_x and sign_y):
@@ -702,6 +704,7 @@ class erf2(Function):
     def _eval_rewrite_as_expint(self, x, y):
         return erf(y).rewrite(expint) - erf(x).rewrite(expint)
 
+
 class erfinv(Function):
     r"""
     Inverse Error Function. The erfinv function is defined as:
@@ -726,7 +729,7 @@ class erfinv(Function):
 
     >>> from sympy import diff
     >>> diff(erfinv(x), x)
-    sqrt(pi)*exp(erfinv(x)**2)/2
+    E**(erfinv(x)**2)*sqrt(pi)/2
 
     We can numerically evaluate the inverse error function to arbitrary precision
     on [-1, 1]:
@@ -751,10 +754,10 @@ class erfinv(Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErf/
     """
 
-    def fdiff(self, argindex =1):
+    def fdiff(self, argindex=1):
         if argindex == 1:
             return sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
-        else :
+        else:
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
@@ -785,6 +788,7 @@ class erfinv(Function):
     def _eval_rewrite_as_erfcinv(self, z):
         return erfcinv(1-z)
 
+
 class erfcinv (Function):
     r"""
     Inverse Complementary Error Function. The erfcinv function is defined as:
@@ -809,7 +813,7 @@ class erfcinv (Function):
 
     >>> from sympy import diff
     >>> diff(erfcinv(x), x)
-    -sqrt(pi)*exp(erfcinv(x)**2)/2
+    -E**(erfcinv(x)**2)*sqrt(pi)/2
 
     See Also
     ========
@@ -828,7 +832,7 @@ class erfcinv (Function):
     .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErfc/
     """
 
-    def fdiff(self, argindex =1):
+    def fdiff(self, argindex=1):
         if argindex == 1:
             return -sqrt(S.Pi)*exp(self.func(self.args[0])**2)*S.Half
         else:
@@ -853,6 +857,7 @@ class erfcinv (Function):
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
+
 
 class erf2inv(Function):
     r"""
@@ -884,9 +889,9 @@ class erf2inv(Function):
 
     >>> from sympy import diff
     >>> diff(erf2inv(x, y), x)
-    exp(-x**2 + erf2inv(x, y)**2)
+    E**(-x**2 + erf2inv(x, y)**2)
     >>> diff(erf2inv(x, y), y)
-    sqrt(pi)*exp(erf2inv(x, y)**2)/2
+    E**(erf2inv(x, y)**2)*sqrt(pi)/2
 
     See Also
     ========
@@ -934,7 +939,7 @@ class erf2inv(Function):
 
 
 ###############################################################################
-#################### EXPONENTIAL INTEGRALS ####################################
+# ################## EXPONENTIAL INTEGRALS ################################## #
 ###############################################################################
 
 class Ei(Function):
@@ -1008,7 +1013,7 @@ class Ei(Function):
     Differentiation is supported:
 
     >>> Ei(x).diff(x)
-    exp(x)/x
+    E**x/x
 
     The exponential integral is related to many other special functions.
     For example:
@@ -1145,9 +1150,9 @@ class expint(Function):
     exponential function:
 
     >>> expint(0, z)
-    exp(-z)/z
+    E**(-z)/z
     >>> expint(-1, z)
-    exp(-z)/z + exp(-z)/z**2
+    E**(-z)/z + E**(-z)/z**2
 
     At half-integers it reduces to error functions:
 
@@ -1159,7 +1164,7 @@ class expint(Function):
 
     >>> from sympy import expand_func
     >>> expand_func(expint(5, z))
-    z**4*expint(1, z)/24 + (-z**3 + z**2 - 2*z + 6)*exp(-z)/24
+    z**4*expint(1, z)/24 + E**(-z)*(-z**3 + z**2 - 2*z + 6)/24
 
     The generalised exponential integral is essentially equivalent to the
     incomplete gamma function:
@@ -1174,7 +1179,7 @@ class expint(Function):
     >>> expint(4, z*exp_polar(2*pi*I))
     I*pi*z**3/3 + expint(4, z)
     >>> expint(nu, z*exp_polar(2*pi*I))
-    z**(nu - 1)*(exp(2*I*pi*nu) - 1)*gamma(-nu + 1) + expint(nu, z)
+    z**(nu - 1)*(E**(2*I*pi*nu) - 1)*gamma(-nu + 1) + expint(nu, z)
 
     See Also
     ========
@@ -1521,8 +1526,9 @@ class Li(Function):
         return self.rewrite(li).rewrite("tractable", deep=True)
 
 ###############################################################################
-#################### TRIGONOMETRIC INTEGRALS ##################################
+# ################## TRIGONOMETRIC INTEGRALS ################################ #
 ###############################################################################
+
 
 class TrigonometricIntegral(Function):
     """ Base class for trigonometric integrals. """
@@ -1963,7 +1969,7 @@ class Chi(TrigonometricIntegral):
 
 
 ###############################################################################
-#################### FRESNEL INTEGRALS ########################################
+# ################## FRESNEL INTEGRALS ###################################### #
 ###############################################################################
 
 class FresnelIntegral(Function):
@@ -2166,7 +2172,7 @@ class fresnels(FresnelIntegral):
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                  (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                 for k in range(1, n)]
+                for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [-sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2298,7 +2304,7 @@ class fresnelc(FresnelIntegral):
                  for k in range(0, n)]
             q = [1/(2*z)] + [(-1)**k * factorial(4*k - 1) /
                  (2**(2*k + 1) * z**(4*k + 1) * 2**(2*k - 1)*factorial(2*k - 1))
-                 for k in range(1, n)]
+                for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
             q = [ sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
@@ -2310,7 +2316,7 @@ class fresnelc(FresnelIntegral):
 
 
 ###############################################################################
-#################### HELPER FUNCTIONS #########################################
+# ################## HELPER FUNCTIONS ####################################### #
 ###############################################################################
 
 

@@ -2,6 +2,7 @@ from sympy.matrices.densetools import trace, transpose
 from sympy.matrices.densetools import eye
 from sympy import ZZ
 
+
 def test_trace():
     a = [[ZZ(3), ZZ(7), ZZ(4)], [ZZ(2), ZZ(4), ZZ(5)], [ZZ(6), ZZ(2), ZZ(3)]]
     b = eye(2, ZZ)

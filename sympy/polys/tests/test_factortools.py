@@ -16,6 +16,7 @@ from sympy.core.compatibility import range
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 w_1, w_2 = w_polys()
 
+
 def test_dup_trial_division():
     R, x = ring("x", ZZ)
     assert R.dup_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x + 8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
@@ -250,6 +251,7 @@ def test_dup_zz_factor():
 
     config.setup('USE_CYCLOTOMIC_FACTOR')
 
+
 def test_dmp_zz_wang():
     R, x,y,z = ring("x,y,z", ZZ)
     UV, _x = ring("x", ZZ)
@@ -300,9 +302,9 @@ def test_dmp_zz_wang():
     c_3 = -36*x**4*y**2 - 108*x**4*y - 27*x**3*y**2 - 36*x**3*y - 108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y
 
     # TODO
-    #assert R.dmp_zz_diophantine(H_1, c_1, [], 5, p) == [-3*x, -2, 1]
-    #assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
-    #assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
+    # assert R.dmp_zz_diophantine(H_1, c_1, [], 5, p) == [-3*x, -2, 1]
+    # assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
+    # assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
 
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
     assert R.dmp_expand(factors) == w_1
@@ -397,6 +399,7 @@ def test_dmp_zz_factor():
 
 def test_dup_ext_factor():
     R, x = ring("x", QQ.algebraic_field(I))
+
     def anp(element):
         return ANP(element, [QQ(1), QQ(0), QQ(1)], QQ)
 
@@ -436,6 +439,7 @@ def test_dup_ext_factor():
                            (anp([QQ(1, 1)])*x + anp([ QQ(4, 1), QQ(1, 1)]), 1)])
 
     R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+
     def anp(element):
         return ANP(element, [QQ(1), QQ(0), QQ(-2)], QQ)
 
@@ -464,6 +468,7 @@ def test_dup_ext_factor():
 
 def test_dmp_ext_factor():
     R, x,y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+
     def anp(x):
         return ANP(x, [QQ(1), QQ(0), QQ(-2)], QQ)
 
@@ -549,6 +554,7 @@ def test_dup_factor_list():
                     (x + t, 1)])
 
     R, x = ring("x", QQ.algebraic_field(I))
+
     def anp(element):
         return ANP(element, [QQ(1), QQ(0), QQ(1)], QQ)
 

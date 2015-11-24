@@ -765,8 +765,10 @@ class PermutationGroup(Basic):
                 rep = orbit_reps[j]
                 transversals[j] = dict(
                     other.orbit_transversal(rep, pairs=True))
+
             def trivial_test(x):
                 return True
+
             tests = [None]*base_len
             for l in range(base_len):
                 if base[l] in orbit_reps:
@@ -959,7 +961,7 @@ class PermutationGroup(Basic):
         """
         factors = self.coset_factor(g, True)
         if not factors:
-            return None
+            return
         rank = 0
         b = 1
         transversals = self._transversals
@@ -980,7 +982,7 @@ class PermutationGroup(Basic):
 
         """
         if rank < 0 or rank >= self.order():
-            return None
+            return
         base = self._base
         transversals = self._transversals
         basic_orbits = self._basic_orbits
@@ -2426,7 +2428,7 @@ class PermutationGroup(Basic):
             return
 
         strong_gens_distr = _distribute_gens_by_base(base, strong_gens)
-        basic_orbits, transversals = _orbits_transversals_from_bsgs(base,\
+        basic_orbits, transversals = _orbits_transversals_from_bsgs(base,
                 strong_gens_distr)
         self._transversals = transversals
         self._basic_orbits = [sorted(x) for x in basic_orbits]
@@ -2894,12 +2896,12 @@ class PermutationGroup(Basic):
         # initialize BSGS and basic group properties
         def get_reps(orbits):
             # get the minimal element in the base ordering
-            return [min(orbit, key = lambda x: base_ordering[x]) \
+            return [min(orbit, key=lambda x: base_ordering[x])
               for orbit in orbits]
 
         def update_nu(l):
             temp_index = len(basic_orbits[l]) + 1 -\
-                         len(res_basic_orbits_init_base[l])
+                len(res_basic_orbits_init_base[l])
             # this corresponds to the element larger than all points
             if temp_index >= len(sorted_orbits[l]):
                 nu[l] = base_ordering[degree]
@@ -2942,7 +2944,7 @@ class PermutationGroup(Basic):
                                 res_strong_gens)
         res_generators = res.generators
         res_basic_orbits_init_base = \
-        [_orbit(degree, res_strong_gens_distr[i], res_base[i])\
+        [_orbit(degree, res_strong_gens_distr[i], res_base[i])
          for i in range(base_len)]
         # initialize orbit representatives
         orbit_reps = [None]*base_len
@@ -3025,7 +3027,7 @@ class PermutationGroup(Basic):
                 res_strong_gens_distr = _distribute_gens_by_base(res_base,
                                                           res_strong_gens)
                 res_basic_orbits_init_base = \
-                [_orbit(degree, res_strong_gens_distr[i], res_base[i]) \
+                [_orbit(degree, res_strong_gens_distr[i], res_base[i])
                  for i in range(base_len)]
                 # line 21: recalculate orbit representatives
                 # line 22: reset the search depth
@@ -3212,6 +3214,7 @@ class PermutationGroup(Basic):
                     return False
         return True
 
+
 def _orbit(degree, generators, alpha, action='tuples'):
     r"""Compute the orbit of alpha ``\{g(\alpha) | g \in G\}`` as a set.
 
@@ -3285,6 +3288,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
                     used.add(temp)
         return {tuple(x) for x in orb}
 
+
 def _orbits(degree, generators):
     """Compute the orbits of G.
 
@@ -3314,6 +3318,7 @@ def _orbits(degree, generators):
         I -= orb
         sorted_I = [i for i in sorted_I if i not in orb]
     return orbs
+
 
 def _orbit_transversal(degree, generators, alpha, pairs, af=False):
     r"""Computes a transversal for the orbit of ``alpha`` as a set.
@@ -3365,6 +3370,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
         return [y for _, y in tr]
 
     return [_af_new(y) for _, y in tr]
+
 
 def _stabilizer(degree, generators, alpha):
     r"""Return the stabilizer subgroup of ``alpha``.

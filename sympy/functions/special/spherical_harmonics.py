@@ -13,6 +13,7 @@ from sympy.functions.elementary.miscellaneous import sqrt
 
 _x = Dummy("x")
 
+
 class Ynm(Function):
     r"""
     Spherical harmonics defined as
@@ -47,7 +48,7 @@ class Ynm(Function):
     >>> phi = Symbol("phi")
 
     >>> Ynm(n, -m, theta, phi)
-    (-1)**m*exp(-2*I*m*phi)*Ynm(n, m, theta, phi)
+    (-1)**m*E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
 
     as well as for the angles
 
@@ -60,7 +61,7 @@ class Ynm(Function):
     Ynm(n, m, theta, phi)
 
     >>> Ynm(n, m, theta, -phi)
-    exp(-2*I*m*phi)*Ynm(n, m, theta, phi)
+    E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
 
     For specific integers n and m we can evalute the harmonics
     to more useful expressions
@@ -69,28 +70,28 @@ class Ynm(Function):
     1/(2*sqrt(pi))
 
     >>> simplify(Ynm(1, -1, theta, phi).expand(func=True))
-    sqrt(6)*exp(-I*phi)*sin(theta)/(4*sqrt(pi))
+    sqrt(6)*E**(-I*phi)*sin(theta)/(4*sqrt(pi))
 
     >>> simplify(Ynm(1, 0, theta, phi).expand(func=True))
     sqrt(3)*cos(theta)/(2*sqrt(pi))
 
     >>> simplify(Ynm(1, 1, theta, phi).expand(func=True))
-    -sqrt(6)*exp(I*phi)*sin(theta)/(4*sqrt(pi))
+    -sqrt(6)*E**(I*phi)*sin(theta)/(4*sqrt(pi))
 
     >>> simplify(Ynm(2, -2, theta, phi).expand(func=True))
-    sqrt(30)*exp(-2*I*phi)*sin(theta)**2/(8*sqrt(pi))
+    sqrt(30)*E**(-2*I*phi)*sin(theta)**2/(8*sqrt(pi))
 
     >>> simplify(Ynm(2, -1, theta, phi).expand(func=True))
-    sqrt(30)*exp(-I*phi)*sin(2*theta)/(8*sqrt(pi))
+    sqrt(30)*E**(-I*phi)*sin(2*theta)/(8*sqrt(pi))
 
     >>> simplify(Ynm(2, 0, theta, phi).expand(func=True))
     sqrt(5)*(3*cos(theta)**2 - 1)/(4*sqrt(pi))
 
     >>> simplify(Ynm(2, 1, theta, phi).expand(func=True))
-    -sqrt(30)*exp(I*phi)*sin(2*theta)/(8*sqrt(pi))
+    -sqrt(30)*E**(I*phi)*sin(2*theta)/(8*sqrt(pi))
 
     >>> simplify(Ynm(2, 2, theta, phi).expand(func=True))
-    sqrt(30)*exp(2*I*phi)*sin(theta)**2/(8*sqrt(pi))
+    sqrt(30)*E**(2*I*phi)*sin(theta)**2/(8*sqrt(pi))
 
     We can differentiate the functions with respect
     to both angles
@@ -101,7 +102,7 @@ class Ynm(Function):
     >>> phi = Symbol("phi")
 
     >>> diff(Ynm(n, m, theta, phi), theta)
-    m*cot(theta)*Ynm(n, m, theta, phi) + sqrt((-m + n)*(m + n + 1))*exp(-I*phi)*Ynm(n, m + 1, theta, phi)
+    m*cot(theta)*Ynm(n, m, theta, phi) + E**(-I*phi)*sqrt((-m + n)*(m + n + 1))*Ynm(n, m + 1, theta, phi)
 
     >>> diff(Ynm(n, m, theta, phi), phi)
     I*m*Ynm(n, m, theta, phi)
@@ -114,7 +115,7 @@ class Ynm(Function):
     >>> phi = Symbol("phi")
 
     >>> conjugate(Ynm(n, m, theta, phi))
-    (-1)**(2*m)*exp(-2*I*m*phi)*Ynm(n, m, theta, phi)
+    (-1)**(2*m)*E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
 
     To get back the well known expressions in spherical
     coordinates we use full expansion
@@ -125,7 +126,7 @@ class Ynm(Function):
     >>> phi = Symbol("phi")
 
     >>> expand_func(Ynm(n, m, theta, phi))
-    sqrt((2*n + 1)*factorial(-m + n)/factorial(m + n))*exp(I*m*phi)*assoc_legendre(n, m, cos(theta))/(2*sqrt(pi))
+    E**(I*m*phi)*sqrt((2*n + 1)*factorial(-m + n)/factorial(m + n))*assoc_legendre(n, m, cos(theta))/(2*sqrt(pi))
 
     See Also
     ========

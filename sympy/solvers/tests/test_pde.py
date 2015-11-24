@@ -6,6 +6,8 @@ from sympy.solvers.pde import (pde_separate_add, pde_separate_mul,
 from sympy.utilities.pytest import raises
 
 a, b, c, x, y = symbols('a b c x y')
+
+
 def test_pde_separate_add():
     x, y, z, t = symbols("x,y,z,t")
     F, T, X, Y, Z, u = map(Function, 'FTXYZu')
@@ -64,6 +66,7 @@ def test_pde_separate_mul():
     assert res == [r*D(R(r), r)/R(r) + r**2*D(R(r), r, r)/R(r) + c*r**2,
             -D(T(theta), theta, theta)/T(theta)]
 
+
 def test_pde_classify():
     # When more number of hints are added, add tests for classifying here.
     f = Function('f')
@@ -91,9 +94,10 @@ def test_checkpdesol():
     eq6 = f(x,y) + 1*f(x,y).diff(x) + 3*f(x,y).diff(y)
     assert checkpdesol(eq4, [pdsolve(eq5), pdsolve(eq6)]) == [
         (False, (x - 2)*F(3*x - y)*exp(-x/S(5) - 3*y/S(5))),
-         (False, (x - 1)*F(3*x - y)*exp(-x/S(10) - 3*y/S(10)))]
+        (False, (x - 1)*F(3*x - y)*exp(-x/S(10) - 3*y/S(10)))]
     for eq in [eq4, eq5, eq6]:
         assert checkpdesol(eq, pdsolve(eq))[0]
+
 
 def test_solvefun():
     f, F, G, H = map(Function, ['f', 'F', 'G', 'H'])
@@ -127,6 +131,7 @@ def test_pde_1st_linear_constant_coeff_homogeneous():
     eq = a*u + b*u.diff(x) + c*u.diff(y)
     sol = pdsolve(eq)
     assert checkpdesol(eq, sol)[0]
+
 
 def test_pde_1st_linear_constant_coeff():
     f, F = map(Function, ['f', 'F'])
@@ -166,11 +171,12 @@ def test_pde_1st_linear_constant_coeff():
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
     '1st_linear_constant_coeff_Integral')
 
+
 def test_pdsolve_all():
     f, F = map(Function, ['f', 'F'])
     u = f(x,y)
     eq = u + u.diff(x) + u.diff(y) + x**2*y
-    sol = pdsolve(eq, hint = 'all')
+    sol = pdsolve(eq, hint='all')
     keys = ['1st_linear_constant_coeff',
         '1st_linear_constant_coeff_Integral', 'default', 'order']
     assert sorted(sol.keys()) == keys
@@ -178,6 +184,7 @@ def test_pdsolve_all():
     assert sol['default'] == '1st_linear_constant_coeff'
     assert sol['1st_linear_constant_coeff'] == Eq(f(x, y),
         -x**2*y + x**2 + 2*x*y - 4*x - 2*y + F(x - y)*exp(-x/S(2) - y/S(2)) + 6)
+
 
 def test_pdsolve_variable_coeff():
     f, F = map(Function, ['f', 'F'])

@@ -1,3 +1,5 @@
+from strategies.core import null_safe
+
 from sympy.core import I, symbols, Basic
 from sympy.functions import adjoint, transpose
 from sympy.matrices import (Identity, Inverse, Matrix, MatrixSymbol, ZeroMatrix,
@@ -5,9 +7,7 @@ from sympy.matrices import (Identity, Inverse, Matrix, MatrixSymbol, ZeroMatrix,
 from sympy.matrices.expressions import Adjoint, Transpose, det, MatPow
 from sympy.matrices.expressions.matmul import (factor_in_front, remove_ids,
         MatMul, xxinv, any_zeros, unpack, only_squares)
-from sympy.strategies import null_safe
 from sympy import refine, Q
-from sympy.utilities.pytest import XFAIL
 
 n, m, l, k = symbols('n m l k', integer=True)
 A = MatrixSymbol('A', n, m)
@@ -26,7 +26,7 @@ def test_adjoint():
     MA = Matrix(2, 2, [1, 3, 2 - I, 4])
     assert adjoint(M) == MA
     assert adjoint(2*M) == 2*MA
-    assert adjoint(MatMul(2, M)) == MatMul(2, MA)
+    assert adjoint(MatMul(2, M)) == MatMul(2, MA).doit()
 
 
 def test_transpose():
@@ -38,29 +38,29 @@ def test_transpose():
     MT = Matrix(2, 2, [1, 3, 2 + I, 4])
     assert transpose(M) == MT
     assert transpose(2*M) == 2*MT
-    assert transpose(MatMul(2, M)) == MatMul(2, MT)
+    assert transpose(MatMul(2, M)) == MatMul(2, MT).doit()
 
 
 def test_factor_in_front():
     assert factor_in_front(MatMul(A, 2, B, evaluate=False)) ==\
-                           MatMul(2, A, B, evaluate=False)
+        MatMul(2, A, B, evaluate=False)
 
 
 def test_remove_ids():
     assert remove_ids(MatMul(A, Identity(m), B, evaluate=False)) == \
-                      MatMul(A, B, evaluate=False)
+        MatMul(A, B, evaluate=False)
     assert null_safe(remove_ids)(MatMul(Identity(n), evaluate=False)) == \
                                  MatMul(Identity(n), evaluate=False)
 
 
 def test_xxinv():
     assert xxinv(MatMul(D, Inverse(D), D, evaluate=False)) == \
-                 MatMul(Identity(n), D, evaluate=False)
+        MatMul(Identity(n), D, evaluate=False)
 
 
 def test_any_zeros():
     assert any_zeros(MatMul(A, ZeroMatrix(m, k), evaluate=False)) == \
-                     ZeroMatrix(n, k)
+        ZeroMatrix(n, k)
 
 
 def test_unpack():
@@ -100,7 +100,6 @@ def test_doit_deep_false_still_canonical():
             (2, C, Transpose(D*C)))
 
 
-@XFAIL
 def test_matmul_scalar_Matrix_doit():
     # Issue 9053
     X = Matrix([[1, 2], [3, 4]])

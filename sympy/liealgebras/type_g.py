@@ -3,6 +3,7 @@
 from .cartan_type import Standard_Cartan
 from sympy.matrices import Matrix
 
+
 class TypeG(Standard_Cartan):
 
     def __new__(cls, n):

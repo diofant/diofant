@@ -6,6 +6,7 @@ from sympy.core.containers import Tuple
 x, y, z = symbols('x,y,z')
 a, b, c = symbols('a,b,c')
 
+
 def test_count_ops_non_visual():
     def count(val):
         return count_ops(val, visual=False)
@@ -79,7 +80,7 @@ def test_count_ops_visual():
     assert count(2*z + y**17 + x + sin(x)) == 3*ADD + POW + MUL + SIN
     assert count(2*z + y**17 + x + sin(x**2)) == 3*ADD + MUL + 2*POW + SIN
     assert count(2*z + y**17 + x + sin(
-        x**2) + exp(cos(x))) == 4*ADD + MUL + 2*POW + EXP + COS + SIN
+        x**2) + exp(cos(x))) == 4*ADD + MUL + 3*POW + COS + SIN
 
     assert count(Derivative(x, x)) == D
     assert count(Integral(x, x) + 2*x/(1 + x)) == G + DIV + MUL + 2*ADD
@@ -108,7 +109,7 @@ def test_count_ops_visual():
     assert count([Or(x,y), And(x,y), Basic(x+y)]) == ADD + AND + BASIC + OR
 
     assert count(Basic(Tuple(x))) == BASIC + TUPLE
-    #It checks that TUPLE is counted as an operation.
+    # It checks that TUPLE is counted as an operation.
 
     assert count(Eq(x + y, S(2))) == ADD
 

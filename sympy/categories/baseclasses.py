@@ -723,7 +723,7 @@ class Diagram(Basic):
                 for morphism in conclusions_arg:
                     # Check that no new objects appear in conclusions.
                     if ((objects.contains(morphism.domain) == S.true) and
-                        (objects.contains(morphism.codomain) == S.true)):
+                            (objects.contains(morphism.codomain) == S.true)):
                         # No need to add identities and recurse
                         # composites this time.
                         Diagram._add_morphism_closure(
@@ -921,13 +921,13 @@ class Diagram(Basic):
         new_premises = {}
         for morphism, props in self.premises.items():
             if ((objects.contains(morphism.domain) == S.true) and
-                (objects.contains(morphism.codomain) == S.true)):
+                    (objects.contains(morphism.codomain) == S.true)):
                 new_premises[morphism] = props
 
         new_conclusions = {}
         for morphism, props in self.conclusions.items():
             if ((objects.contains(morphism.domain) == S.true) and
-                (objects.contains(morphism.codomain) == S.true)):
+                    (objects.contains(morphism.codomain) == S.true)):
                 new_conclusions[morphism] = props
 
         return Diagram(new_premises, new_conclusions)

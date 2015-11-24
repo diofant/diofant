@@ -12,7 +12,7 @@ if not np:
     disabled = True
 
 
-#requires Numpy. Hence included in interval_functions
+# requires Numpy. Hence included in interval_functions
 
 
 def test_interval_pow():
@@ -173,7 +173,7 @@ def test_tan():
     assert a.end == np.tan(np.pi / 4)
 
     a = tan(interval(np.pi / 4, 3 * np.pi / 4))
-    #discontinuity
+    # discontinuity
     assert a.is_valid is None
 
 

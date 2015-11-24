@@ -44,7 +44,8 @@ from sympy.utilities import (
 
 from sympy.core.exprtools import Factors
 from sympy.core.function import _mexpand
-from sympy.simplify.simplify import _is_sum_surds, _split_gcd
+from sympy.simplify.radsimp import _split_gcd
+from sympy.simplify.simplify import _is_sum_surds
 from sympy.ntheory import sieve
 from sympy.ntheory.factor_ import divisors
 from mpmath import pslq, mp
@@ -118,8 +119,10 @@ def _separate_sq(p):
 
     """
     from sympy.utilities.iterables import sift
+
     def is_sqrt(expr):
         return expr.is_Pow and expr.exp is S.Half
+
     # p = c1*sqrt(q1) + ... + cn*sqrt(qn) -> a = [(c1, q1), .., (cn, qn)]
     a = []
     for y in p.args:
@@ -156,6 +159,7 @@ def _separate_sq(p):
     p = _mexpand(p1**2) - _mexpand(p2**2)
     return p
 
+
 def _minimal_polynomial_sq(p, n, x):
     """
     Returns the minimal polynomial for the ``nth-root`` of a sum of surds
@@ -185,7 +189,7 @@ def _minimal_polynomial_sq(p, n, x):
     n = sympify(n)
     r = _is_sum_surds(p)
     if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
-        return None
+        return
     pn = p**Rational(1, n)
     # eliminate the square roots
     p -= x
@@ -212,6 +216,7 @@ def _minimal_polynomial_sq(p, n, x):
 
     result = _choose_factor(factors, x, pn)
     return result
+
 
 def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     """
@@ -244,9 +249,9 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     References
     ==========
 
-    [1] http://en.wikipedia.org/wiki/Resultant
-    [2] I.M. Isaacs, Proc. Amer. Math. Soc. 25 (1970), 638
-    "Degrees of sums in a separable field extension".
+    .. [1] http://en.wikipedia.org/wiki/Resultant
+    .. [2] I.M. Isaacs, Proc. Amer. Math. Soc. 25 (1970), 638
+           "Degrees of sums in a separable field extension".
     """
     y = Dummy(str(x))
     if mp1 is None:
@@ -464,7 +469,7 @@ def _minpoly_exp(ex, x):
     """
     Returns the minimal polynomial of ``exp(ex)``
     """
-    c, a = ex.args[0].as_coeff_Mul()
+    c, a = ex.exp.as_coeff_Mul()
     p = sympify(c.p)
     q = sympify(c.q)
     if a == I*pi:
@@ -564,13 +569,14 @@ def _minpoly_compose(ex, x, dom):
         else:
             res = _minpoly_mul(x, dom, *ex.args)
     elif ex.is_Pow:
-        res = _minpoly_pow(ex.base, ex.exp, x, dom)
+        if ex.base is S.Exp1:
+            res = _minpoly_exp(ex, x)
+        else:
+            res = _minpoly_pow(ex.base, ex.exp, x, dom)
     elif ex.__class__ is sin:
         res = _minpoly_sin(ex, x)
     elif ex.__class__ is cos:
         res = _minpoly_cos(ex, x)
-    elif ex.__class__ is exp:
-        res = _minpoly_exp(ex, x)
     elif ex.__class__ is RootOf:
         res = _minpoly_rootof(ex, x)
     else:
@@ -810,6 +816,7 @@ def _minpoly_groebner(ex, x, cls):
 minpoly = minimal_polynomial
 __all__.append('minpoly')
 
+
 def _coeffs_generator(n):
     """Generate coefficients for `primitive_element()`. """
     for coeffs in variations([1, -1], n, repetition=True):
@@ -967,7 +974,7 @@ def field_isomorphism_pslq(a, b):
         else:
             n *= 2
 
-    return None
+    return
 
 
 def field_isomorphism_factor(a, b):
@@ -990,7 +997,7 @@ def field_isomorphism_factor(a, b):
             if (a.root + root).evalf(chop=True) == 0:
                 return [ -c for c in coeffs ]
     else:
-        return None
+        return
 
 
 @public
@@ -1014,7 +1021,7 @@ def field_isomorphism(a, b, **args):
         return [a.root]
 
     if m % n != 0:
-        return None
+        return
 
     if args.get('fast', True):
         try:

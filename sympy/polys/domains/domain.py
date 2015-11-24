@@ -13,6 +13,7 @@ from sympy.polys.polyutils import _unify_gens
 
 from sympy.utilities import default_sort_key, public
 
+
 @public
 class Domain(object):
     """Represents an abstract domain. """
@@ -168,39 +169,39 @@ class Domain(object):
 
     def from_FF_python(K1, a, K0):
         """Convert ``ModularInteger(int)`` to ``dtype``. """
-        return None
+        return
 
     def from_ZZ_python(K1, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
-        return None
+        return
 
     def from_QQ_python(K1, a, K0):
         """Convert a Python ``Fraction`` object to ``dtype``. """
-        return None
+        return
 
     def from_FF_gmpy(K1, a, K0):
         """Convert ``ModularInteger(mpz)`` to ``dtype``. """
-        return None
+        return
 
     def from_ZZ_gmpy(K1, a, K0):
         """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return None
+        return
 
     def from_QQ_gmpy(K1, a, K0):
         """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return None
+        return
 
     def from_RealField(K1, a, K0):
         """Convert a real element object to ``dtype``. """
-        return None
+        return
 
     def from_ComplexField(K1, a, K0):
         """Convert a complex element to ``dtype``. """
-        return None
+        return
 
     def from_AlgebraicField(K1, a, K0):
         """Convert an algebraic number to ``dtype``. """
-        return None
+        return
 
     def from_PolynomialRing(K1, a, K0):
         """Convert a polynomial to ``dtype``. """
@@ -209,7 +210,7 @@ class Domain(object):
 
     def from_FractionField(K1, a, K0):
         """Convert a rational function to ``dtype``. """
-        return None
+        return
 
     def from_ExpressionDomain(K1, a, K0):
         """Convert a ``EX`` object to ``dtype``. """

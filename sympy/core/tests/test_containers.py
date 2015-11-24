@@ -39,7 +39,7 @@ def test_Tuple_concatenation():
     raises(TypeError, lambda: Tuple(1, 2) + 3)
     raises(TypeError, lambda: 1 + Tuple(2, 3))
 
-    #the Tuple case in __radd__ is only reached when a subclass is involved
+    # the Tuple case in __radd__ is only reached when a subclass is involved
     class Tuple2(Tuple):
         def __radd__(self, other):
             return Tuple.__radd__(self, other + other)

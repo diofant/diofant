@@ -12,6 +12,7 @@ from sympy.core.basic import preorder_traversal
 from sympy.core.relational import Relational
 from sympy.core.sympify import sympify
 from sympy.core.decorators import _sympifyit
+from sympy.core.function import Derivative
 
 from sympy.logic.boolalg import BooleanAtom
 
@@ -1889,18 +1890,18 @@ class Poly(Expr):
         >>> p.coeff_monomial(y)
         0
         >>> p.coeff_monomial(x*y)
-        24*exp(8)
+        24*E**8
 
         Note that ``Expr.coeff()`` behaves differently, collecting terms
         if possible; the Poly must be converted to an Expr to use that
         method, however:
 
         >>> p.as_expr().coeff(x)
-        24*y*exp(8) + 23
+        24*E**8*y + 23
         >>> p.as_expr().coeff(y)
-        24*x*exp(8)
+        24*E**8*x
         >>> p.as_expr().coeff(x*y)
-        24*exp(8)
+        24*E**8
 
         See Also
         ========
@@ -2183,7 +2184,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'integrate')
 
-    def diff(f, *specs):
+    def diff(f, *specs, **kwargs):
         """
         Computes partial derivative of ``f``.
 
@@ -2200,6 +2201,9 @@ class Poly(Expr):
         Poly(2*x*y, x, y, domain='ZZ')
 
         """
+        if not kwargs.get('evaluate', True):
+            return Derivative(f, *specs, **kwargs)
+
         if hasattr(f.rep, 'diff'):
             if not specs:
                 return f.per(f.rep.diff(m=1))
@@ -2217,6 +2221,9 @@ class Poly(Expr):
             return f.per(rep)
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'diff')
+
+    _eval_derivative = diff
+    _eval_diff = diff
 
     def eval(self, x, a=None, auto=True):
         """
@@ -2569,10 +2576,10 @@ class Poly(Expr):
         References
         ==========
 
-        1. [ManWright94]_
-        2. [Koepf98]_
-        3. [Abramov71]_
-        4. [Man93]_
+        .. [1] [ManWright94]_
+        .. [2] [Koepf98]_
+        .. [3] [Abramov71]_
+        .. [4] [Man93]_
         """
         from sympy.polys.dispersion import dispersionset
         return dispersionset(f, g)
@@ -2644,10 +2651,10 @@ class Poly(Expr):
         References
         ==========
 
-        1. [ManWright94]_
-        2. [Koepf98]_
-        3. [Abramov71]_
-        4. [Man93]_
+        .. [1] [ManWright94]_
+        .. [2] [Koepf98]_
+        .. [3] [Abramov71]_
+        .. [4] [Man93]_
         """
         from sympy.polys.dispersion import dispersion
         return dispersion(f, g)
@@ -3112,13 +3119,18 @@ class Poly(Expr):
 
         For real roots the Vincent-Akritas-Strzebonski (VAS) continued fractions method is used.
 
-        References:
-        ===========
-           1. Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative Study of Two Real Root
-           Isolation Methods . Nonlinear Analysis: Modelling and Control, Vol. 10, No. 4, 297-304, 2005.
-           2. Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis S. Vigklas: Improving the
-           Performance of the Continued Fractions Method Using new Bounds of Positive Roots. Nonlinear
-           Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
+        References
+        ==========
+
+        .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A
+               Comparative Study of Two Real Root Isolation Methods.
+               Nonlinear Analysis: Modelling and Control, Vol. 10,
+               No. 4, 297-304, 2005.
+        .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis
+               S. Vigklas: Improving the Performance of the Continued
+               Fractions Method Using new Bounds of Positive Roots.
+               Nonlinear Analysis: Modelling and Control, Vol. 13,
+               No. 3, 265-279, 2008.
 
         Examples
         ========
@@ -3407,7 +3419,7 @@ class Poly(Expr):
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
-                raise DomainError("Numerical domain expected, got %s" % \
+                raise DomainError("Numerical domain expected, got %s" %
                         f.rep.dom)
 
         dps = mpmath.mp.dps
@@ -4935,7 +4947,7 @@ def gcd_list(seq, *gens, **args):
 
                 return domain.to_sympy(result)
 
-        return None
+        return
 
     result = try_non_polynomial_gcd(seq)
 
@@ -5048,7 +5060,7 @@ def lcm_list(seq, *gens, **args):
 
                 return domain.to_sympy(result)
 
-        return None
+        return
 
     result = try_non_polynomial_lcm(seq)
 
@@ -5598,7 +5610,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Number:
             coeff *= arg
             continue
-        elif arg.is_Pow:
+        elif arg.is_Pow and arg.base is not S.Exp1:
             base, exp = arg.args
             if base.is_Number:
                 factors.append((base, exp))
@@ -5776,7 +5788,7 @@ def to_rational_coeffs(f):
                 f = Add(*v)
                 f = Poly(f)
                 return lc, rescale_x, f
-        return None
+        return
 
     def _try_translate(f, f1=None):
         """
@@ -5805,7 +5817,7 @@ def to_rational_coeffs(f):
             alpha = -func(*c2)/n
             f2 = f1.shift(alpha)
             return alpha, f2
-        return None
+        return
 
     def _has_square_roots(p):
         """
@@ -5836,7 +5848,7 @@ def to_rational_coeffs(f):
             r = _try_translate(f, f1)
             if r:
                 return None, None, r[0], r[1]
-    return None
+    return
 
 
 def _torational_factor_list(p, x):
@@ -5866,7 +5878,7 @@ def _torational_factor_list(p, x):
     n = p1.degree()
     res = to_rational_coeffs(p1)
     if not res:
-        return None
+        return
     lc, r, t, g = res
     factors = factor_list(g.as_expr())
     if lc:
@@ -6424,9 +6436,8 @@ def groebner(F, *gens, **args):
     References
     ==========
 
-    1. [Buchberger01]_
-    2. [Cox97]_
-
+    .. [1] [Buchberger01]_
+    .. [2] [Cox97]_
     """
     return GroebnerBasis(F, *gens, **args)
 
@@ -6442,9 +6453,8 @@ def is_zero_dimensional(F, *gens, **args):
     References
     ==========
 
-    David A. Cox, John B. Little, Donal O'Shea. Ideals, Varieties and
-    Algorithms, 3rd edition, p. 230
-
+    .. [1] David A. Cox, John B. Little, Donal O'Shea. Ideals,
+           Varieties and Algorithms, 3rd edition, p. 230.
     """
     return GroebnerBasis(F, *gens, **args).is_zero_dimensional
 
@@ -6548,9 +6558,8 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        David A. Cox, John B. Little, Donal O'Shea. Ideals, Varieties and
-        Algorithms, 3rd edition, p. 230
-
+        .. [1] David A. Cox, John B. Little, Donal O'Shea. Ideals,
+               Varieties and Algorithms, 3rd edition, p. 230.
         """
         def single_var(monomial):
             return sum(map(bool, monomial)) == 1
@@ -6595,10 +6604,9 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994). Efficient
-        Computation of Zero-dimensional Groebner Bases by Change of
-        Ordering
-
+        .. [1] J.C. Faugere, P. Gianni, D. Lazard, T. Mora (1994).
+               Efficient Computation of Zero-dimensional Groebner
+               Bases by Change of Ordering.
         """
         opt = self._options
 

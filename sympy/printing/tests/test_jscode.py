@@ -235,7 +235,7 @@ def test_jscode_loops_multiple_contractions():
         '   for (var j=0; j<n; j++){\n'
         '      for (var k=0; k<o; k++){\n'
         '         for (var l=0; l<p; l++){\n'
-        '            y[i] = y[i] + b[%s]*a[%s];\n' % (j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l) +\
+        '            y[i] = y[i] + b[%s]*a[%s];\n' % (j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l) +
         '         }\n'
         '      }\n'
         '   }\n'
@@ -266,7 +266,7 @@ def test_jscode_loops_addfactor():
         '   for (var j=0; j<n; j++){\n'
         '      for (var k=0; k<o; k++){\n'
         '         for (var l=0; l<p; l++){\n'
-        '            y[i] = (a[%s] + b[%s])*c[%s] + y[i];\n' % (i*n*o*p + j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l, j*o*p + k*p + l) +\
+        '            y[i] = (a[%s] + b[%s])*c[%s] + y[i];\n' % (i*n*o*p + j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l, j*o*p + k*p + l) +
         '         }\n'
         '      }\n'
         '   }\n'
@@ -297,7 +297,7 @@ def test_jscode_loops_multiple_terms():
         'for (var i=0; i<m; i++){\n'
         '   for (var j=0; j<n; j++){\n'
         '      for (var k=0; k<o; k++){\n'
-        '         y[i] = b[j]*b[k]*c[%s] + y[i];\n' % (i*n*o + j*o + k) +\
+        '         y[i] = b[j]*b[k]*c[%s] + y[i];\n' % (i*n*o + j*o + k) +
         '      }\n'
         '   }\n'
         '}\n'
@@ -305,14 +305,14 @@ def test_jscode_loops_multiple_terms():
     s2 = (
         'for (var i=0; i<m; i++){\n'
         '   for (var k=0; k<o; k++){\n'
-        '      y[i] = b[k]*a[%s] + y[i];\n' % (i*o + k) +\
+        '      y[i] = b[k]*a[%s] + y[i];\n' % (i*o + k) +
         '   }\n'
         '}\n'
     )
     s3 = (
         'for (var i=0; i<m; i++){\n'
         '   for (var j=0; j<n; j++){\n'
-        '      y[i] = b[j]*a[%s] + y[i];\n' % (i*n + j) +\
+        '      y[i] = b[j]*a[%s] + y[i];\n' % (i*n + j) +
         '   }\n'
         '}\n'
     )

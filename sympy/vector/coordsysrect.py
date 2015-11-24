@@ -51,8 +51,8 @@ class CoordSysCartesian(Basic):
         if not isinstance(name, string_types):
             raise TypeError("name should be a string")
 
-        #If orientation information has been provided, store
-        #the rotation matrix accordingly
+        # If orientation information has been provided, store
+        # the rotation matrix accordingly
         if rotation_matrix is None:
             parent_orient = Matrix(eye(3))
         else:
@@ -61,8 +61,8 @@ class CoordSysCartesian(Basic):
                                 "Matrix instance")
             parent_orient = rotation_matrix
 
-        #If location information is not given, adjust the default
-        #location as Vector.zero
+        # If location information is not given, adjust the default
+        # location as Vector.zero
         if parent is not None:
             if not isinstance(parent, CoordSysCartesian):
                 raise TypeError("parent should be a " +
@@ -70,8 +70,8 @@ class CoordSysCartesian(Basic):
             if location is None:
                 location = Vector.zero
             else:
-                #Check that location does not contain base
-                #scalars
+                # Check that location does not contain base
+                # scalars
                 for x in location.free_symbols:
                     if isinstance(x, BaseScalar):
                         raise ValueError("location should not contain" +
@@ -85,20 +85,20 @@ class CoordSysCartesian(Basic):
             arg_parent = Symbol('default')
             arg_self = Symbol(name)
 
-        #All systems that are defined as 'roots' are unequal, unless
-        #they have the same name.
-        #Systems defined at same orientation/position wrt the same
-        #'parent' are equal, irrespective of the name.
-        #This is true even if the same orientation is provided via
-        #different methods like Axis/Body/Space/Quaternion.
-        #However, coincident systems may be seen as unequal if
-        #positioned/oriented wrt different parents, even though
-        #they may actually be 'coincident' wrt the root system.
+        # All systems that are defined as 'roots' are unequal, unless
+        # they have the same name.
+        # Systems defined at same orientation/position wrt the same
+        # 'parent' are equal, irrespective of the name.
+        # This is true even if the same orientation is provided via
+        # different methods like Axis/Body/Space/Quaternion.
+        # However, coincident systems may be seen as unequal if
+        # positioned/oriented wrt different parents, even though
+        # they may actually be 'coincident' wrt the root system.
         obj = super(CoordSysCartesian, cls).__new__(
             cls, arg_self, parent_orient, origin, arg_parent)
         obj._name = name
 
-        #Initialize the base vectors
+        # Initialize the base vectors
         if vector_names is None:
             vector_names = (name + '.i', name + '.j', name + '.k')
             latex_vects = [(r'\mathbf{\hat{i}_{%s}}' % name),
@@ -119,7 +119,7 @@ class CoordSysCartesian(Basic):
         obj._k = BaseVector(vector_names[2], 2, obj,
                             pretty_vects[2], latex_vects[2])
 
-        #Initialize the base scalars
+        # Initialize the base scalars
         if variable_names is None:
             variable_names = (name + '.x', name + '.y', name + '.z')
             latex_scalars = [(r"\mathbf{{x}_{%s}}" % name),
@@ -140,11 +140,11 @@ class CoordSysCartesian(Basic):
         obj._z = BaseScalar(variable_names[2], 2, obj,
                             pretty_scalars[2], latex_scalars[2])
 
-        #Assign a Del operator instance
+        # Assign a Del operator instance
         from sympy.vector.deloperator import Del
         obj._del = Del(obj)
 
-        #Assign params
+        # Assign params
         obj._parent = parent
         if obj._parent is not None:
             obj._root = obj._parent._root
@@ -154,7 +154,7 @@ class CoordSysCartesian(Basic):
         obj._parent_rotation_matrix = parent_orient
         obj._origin = origin
 
-        #Return the instance
+        # Return the instance
         return obj
 
     def __str__(self, printer=None):
@@ -243,14 +243,14 @@ class CoordSysCartesian(Basic):
         if not isinstance(other, CoordSysCartesian):
             raise TypeError(str(other) +
                             " is not a CoordSysCartesian")
-        #Handle special cases
+        # Handle special cases
         if other == self:
             return eye(3)
         elif other == self._parent:
             return self._parent_rotation_matrix
         elif other._parent == self:
             return other._parent_rotation_matrix.T
-        #Else, use tree to calculate position
+        # Else, use tree to calculate position
         rootindex, path = _path(self, other)
         result = eye(3)
         i = -1
@@ -445,7 +445,7 @@ class CoordSysCartesian(Basic):
         return CoordSysCartesian(name, rotation_matrix=final_matrix,
                                  vector_names=vector_names,
                                  variable_names=variable_names,
-                                 location = location,
+                                 location=location,
                                  parent=self)
 
     def orient_new_axis(self, name, angle, axis, location=None,
@@ -597,8 +597,8 @@ class CoordSysCartesian(Basic):
         See Also
         ========
 
-        CoordSysCartesian.orient_new_body : method to orient via Euler
-            angles
+        sympy.vector.coordsysrect.CoordSysCartesian.orient_new_body :
+            method to orient via Euler angles
 
         Examples
         ========
@@ -636,11 +636,17 @@ class CoordSysCartesian(Basic):
         Quaternion orientation orients the new CoordSysCartesian with
         Quaternions, defined as a finite rotation about lambda, a unit
         vector, by some amount theta.
+
         This orientation is described by four parameters:
+
         q0 = cos(theta/2)
+
         q1 = lambda_x sin(theta/2)
+
         q2 = lambda_y sin(theta/2)
+
         q3 = lambda_z sin(theta/2)
+
         Quaternion does not take in a rotation order.
 
         Parameters
@@ -683,7 +689,7 @@ class CoordSysCartesian(Basic):
                  parent=None, vector_names=None, variable_names=None,
                  latex_vects=None, pretty_vects=None, latex_scalars=None,
                  pretty_scalars=None):
-        #Dummy initializer for setting docstring
+        # Dummy initializer for setting docstring
         pass
     __init__.__doc__ = __new__.__doc__
 

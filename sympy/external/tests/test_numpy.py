@@ -13,7 +13,7 @@ numpy = import_module('numpy')
 if numpy:
     array, matrix, ndarray = numpy.array, numpy.matrix, numpy.ndarray
 else:
-    #bin/test will not execute any tests now
+    # py.test will not execute any tests now
     disabled = True
 
 
@@ -97,12 +97,12 @@ def test_arrays():
 
 def test_conversion1():
     a = list2numpy([x**2, x])
-    #looks like an array?
+    # looks like an array?
     assert isinstance(a, ndarray)
     assert a[0] == x**2
     assert a[1] == x
     assert len(a) == 2
-    #yes, it's the array
+    # yes, it's the array
 
 
 def test_conversion2():

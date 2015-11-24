@@ -186,8 +186,6 @@ def test_files():
         # these two are import timing tests:
         "%(sep)sbin%(sep)ssympy_time.py" % sepd,
         "%(sep)sbin%(sep)ssympy_time_cache.py" % sepd,
-        # Taken from Python stdlib:
-        "%(sep)sparsing%(sep)ssympy_tokenize.py" % sepd,
     }
     check_files(top_level_files, test)
     check_directory_tree(BIN_PATH, test, {"~", ".pyc", ".sh"}, "*")
@@ -328,6 +326,7 @@ def test_test_duplicate_defs():
         "def test_1():\ndef  test_1():\n",
     ]
     ok = (None, 'check')
+
     def check(file):
         tests = 0
         test_set = set()
@@ -338,6 +337,7 @@ def test_test_duplicate_defs():
                 if len(test_set) != tests:
                     return False, message_duplicate_test % ('check', idx + 1)
         return None, 'check'
+
     for c in candidates_ok:
         assert check(c) == ok
     for c in candidates_fail:

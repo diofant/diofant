@@ -65,14 +65,14 @@ def test_fcode_functions():
     assert fcode(sin(x) ** cos(y)) == "      sin(x)**cos(y)"
 
 
-#issue 6814
+# issue 6814
 def test_fcode_functions_with_integers():
     x= symbols('x')
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(S(10))) == "      x*2.30258509299405d0"
     assert fcode(log(S(10))) == "      2.30258509299405d0"
-    assert fcode(exp(10)) == "      22026.4657948067d0"
+    assert fcode(exp(10)) == "      parameter (E = 2.71828182845905d0)\n      E**10"
     assert fcode(x * log(log(10))) == "      x*0.834032445247956d0"
     assert fcode(x * log(log(S(10)))) == "      x*0.834032445247956d0"
 
@@ -549,6 +549,7 @@ def test_dummy_loops():
     code = fcode(x[i], assign_to=y[i], source_format='free')
     assert code == expected
 
+
 def test_fcode_Indexed_without_looking_for_contraction():
     len_y = 5
     y = IndexedBase('y', shape=(len_y,))
@@ -631,6 +632,7 @@ def test_indent():
     p = FCodePrinter({'source_format': 'free'})
     result = p.indent_code(codelines)
     assert result == expected
+
 
 def test_Matrix_printing():
     x, y, z = symbols('x,y,z')

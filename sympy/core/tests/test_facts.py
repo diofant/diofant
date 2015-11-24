@@ -79,7 +79,7 @@ def test_apply_beta_to_alpha_route():
     B = [(And('a', 'b'), 'x')]
     assert APPLY(A, B) == {'x': ({'a'}, []), 'a': Q(0), 'b': Q(0)}
 
-    # x -> a        &(a,!x) -> b    --  x -> a
+    # x -> a        &(a,~x) -> b    --  x -> a
     A = {'x': {'a'}}
     B = [(And('a', Not('x')), 'b')]
     assert APPLY(A, B) == {'x': ({'a'}, []), Not('x'): Q(0), 'a': Q(0)}
@@ -128,19 +128,19 @@ def test_apply_beta_to_alpha_route():
     assert APPLY(A, B) == {'x': ({'a', 'b', 'y', 'z'}, []),
         'a': (set(), [0, 1]), 'y': Q(0), 'b': Q(1)}
 
-    # x -> a b      &(a,!b) -> c    --  x -> a b
+    # x -> a b      &(a,~b) -> c    --  x -> a b
     A = {'x': {'a', 'b'}}
     B = [(And('a', Not('b')), 'c')]
     assert APPLY(A, B) == \
         {'x': ({'a', 'b'}, []), 'a': Q(0), Not('b'): Q(0)}
 
-    # !x -> !a !b   &(!a,b) -> c    --  !x -> !a !b
+    # ~x -> ~a ~b   &(~a,b) -> c    --  ~x -> ~a ~b
     A = {Not('x'): {Not('a'), Not('b')}}
     B = [(And(Not('a'), 'b'), 'c')]
     assert APPLY(A, B) == \
         {Not('x'): ({Not('a'), Not('b')}, []), Not('a'): Q(0), 'b': Q(0)}
 
-    # x -> a b      &(b,c) -> !a    --  x -> a b
+    # x -> a b      &(b,c) -> ~a    --  x -> a b
     A = {'x': {'a', 'b'}}
     B = [(And('b', 'c'), Not('a'))]
     assert APPLY(A, B) == {'x': ({'a', 'b'}, []), 'b': Q(0), 'c': Q(0)}
@@ -157,21 +157,21 @@ def test_FactRules_parse():
     f = FactRules('a -> b')
     assert f.prereq == {'b': {'a'}, 'a': {'b'}}
 
-    f = FactRules('a -> !b')
+    f = FactRules('a -> ~b')
     assert f.prereq == {'b': {'a'}, 'a': {'b'}}
 
-    f = FactRules('!a -> b')
+    f = FactRules('~a -> b')
     assert f.prereq == {'b': {'a'}, 'a': {'b'}}
 
-    f = FactRules('!a -> !b')
+    f = FactRules('~a -> ~b')
     assert f.prereq == {'b': {'a'}, 'a': {'b'}}
 
-    f = FactRules('!z == nz')
+    f = FactRules('~z == nz')
     assert f.prereq == {'z': {'nz'}, 'nz': {'z'}}
 
 
 def test_FactRules_parse2():
-    raises(ValueError, lambda: FactRules('a -> !a'))
+    raises(ValueError, lambda: FactRules('a -> ~a'))
 
 
 def test_FactRules_deduce():
@@ -198,7 +198,7 @@ def test_FactRules_deduce():
 
 def test_FactRules_deduce2():
     # pos/neg/zero, but the rules are not sufficient to derive all relations
-    f = FactRules(['pos -> !neg', 'pos -> !z'])
+    f = FactRules(['pos -> ~neg', 'pos -> ~z'])
 
     def D(facts):
         kb = FactKB(f)
@@ -213,7 +213,7 @@ def test_FactRules_deduce2():
     assert D({'z': F}) == {                    'z': F}
 
     # pos/neg/zero. rules are sufficient to derive all relations
-    f = FactRules(['pos -> !neg', 'neg -> !pos', 'pos -> !z', 'neg -> !z'])
+    f = FactRules(['pos -> ~neg', 'neg -> ~pos', 'pos -> ~z', 'neg -> ~z'])
 
     assert D({'pos': T}) == {'pos': T, 'neg': F, 'z': F}
     assert D({'pos': F}) == {'pos': F                  }
@@ -286,8 +286,8 @@ def test_FactRules_deduce_base():
     # deduction that starts from base
 
     f = FactRules(['real  == neg | zero | pos',
-                   'neg   -> real & !zero & !pos',
-                   'pos   -> real & !zero & !neg'])
+                   'neg   -> real & ~zero & ~pos',
+                   'pos   -> real & ~zero & ~neg'])
     base = FactKB(f)
 
     base.deduce_all_facts({'real': T, 'neg': F})
@@ -300,10 +300,10 @@ def test_FactRules_deduce_base():
 def test_FactRules_deduce_staticext():
     # verify that static beta-extensions deduction takes place
     f = FactRules(['real  == neg | zero | pos',
-                   'neg   -> real & !zero & !pos',
-                   'pos   -> real & !zero & !neg',
-                   'nneg  == real & !neg',
-                   'npos  == real & !pos'])
+                   'neg   -> real & ~zero & ~pos',
+                   'pos   -> real & ~zero & ~neg',
+                   'nneg  == real & ~neg',
+                   'npos  == real & ~pos'])
 
     assert ('npos', True) in f.full_implications[('neg', True)]
     assert ('nneg', True) in f.full_implications[('pos', True)]

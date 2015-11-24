@@ -10,9 +10,9 @@ from sympy.integrals.transforms import (mellin_transform,
 from sympy import (
     gamma, exp, oo, Heaviside, symbols, Symbol, re, factorial, pi,
     cos, S, Abs, And, Or, sin, sqrt, I, log, tan, hyperexpand, meijerg,
-    EulerGamma, erf, besselj, bessely, besseli, besselk,
+    EulerGamma, erf, besselj, bessely, besseli, besselk, simplify,
     exp_polar, polar_lift, unpolarify, Function, expint, expand_mul,
-    combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument)
+    combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument, atan2, Abs)
 from sympy.utilities.pytest import XFAIL, slow, skip, raises
 from sympy.matrices import Matrix, eye
 from sympy.abc import x, s, a, b, c, d
@@ -49,7 +49,7 @@ def test_as_integral():
     assert str(inverse_mellin_transform(f(s), s, x, (a, b)).rewrite('Integral')) \
         == "Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))"
     assert str(inverse_laplace_transform(f(s), s, x).rewrite('Integral')) == \
-        "Integral(f(s)*exp(s*x), (s, _c - oo*I, _c + oo*I))"
+        "Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))"
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 
@@ -242,9 +242,9 @@ def test_mellin_transform_bessel():
         a + s)*gamma(-s + S(1)/2)/(2*sqrt(pi)*gamma(a - s + 1)),
         (Max(-re(a), 0), S(1)/2), True)
     assert MT(besseli(b, sqrt(x))*besselk(a, sqrt(x)), x, s) == \
-        (2**(2*s - 1)*gamma(-2*s + 1)*gamma(-a/2 + b/2 + s)* \
-        gamma(a/2 + b/2 + s)/(gamma(-a/2 + b/2 - s + 1)* \
-        gamma(a/2 + b/2 - s + 1)), (Max(-re(a)/2 - re(b)/2, \
+        (2**(2*s - 1)*gamma(-2*s + 1)*gamma(-a/2 + b/2 + s)*
+        gamma(a/2 + b/2 + s)/(gamma(-a/2 + b/2 - s + 1)*
+        gamma(a/2 + b/2 - s + 1)), (Max(-re(a)/2 - re(b)/2,
         re(a)/2 - re(b)/2), S(1)/2), True)
 
     # TODO products of besselk are a mess
@@ -319,7 +319,7 @@ def test_inverse_mellin_transform():
     assert IMT(1/(s**2 - 1), s, x, (-1, None)) == \
         -x*Heaviside(-x + 1)/2 - Heaviside(x - 1)/(2*x)
     assert IMT(1/(s**2 - 1), s, x, (None, 1)) == \
-        -x*Heaviside(-x + 1)/2 - Heaviside(x - 1)/(2*x)
+        (-x/2 + 1/(2*x))*Heaviside(-x + 1)
 
     # test expansion of sums
     assert IMT(gamma(s) + gamma(s - 1), s, x, (1, oo)) == (x + 1)*exp(-x)/x
@@ -519,7 +519,7 @@ def test_issue_8368_7173():
     assert LT(sinh(x), x, s) == (1/(s**2 - 1), 1, True)
     assert LT(cosh(x), x, s) == (s/(s**2 - 1), 1, True)
     assert LT(sinh(x + 3), x, s) == (
-        (-s + (s + 1)*exp(6) + 1)*exp(-3)/(s - 1)/(s + 1)/2, 1, True)
+        (s*sinh(3) + cosh(3))/(s**2 - 1), 1, True)
     assert LT(sinh(x)*cosh(x), x, s) == (1/(s**2 - 4), 2, Ne(s/2, 1))
 
     # trig (make sure they are not being rewritten in terms of exp)
@@ -768,3 +768,16 @@ def test_issue_7173():
         pi/2, Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
         pi/2), Or(Abs(periodic_argument(a, oo)) < pi/2,
         Abs(periodic_argument(a, oo)) <= pi/2)))
+
+
+def test_issue_8514():
+    a, b, c, = symbols('a b c', positive=True)
+    t = symbols('t', positive=True)
+    ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
+    assert ft == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -
+                          exp(-I*atan2(0, -4*a*c + b**2)/2))*
+                   sqrt(Abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
+                  *sqrt(Abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))

@@ -148,7 +148,7 @@ def _sqrt_match(p):
     >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
     """
-    from sympy.simplify.simplify import split_surds
+    from sympy.simplify.radsimp import split_surds
 
     p = _mexpand(p)
     if p.is_Number:
@@ -266,7 +266,7 @@ def _sqrtdenest_rec(expr):
     >>> _sqrtdenest_rec(sqrt(w))
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
     """
-    from sympy.simplify.simplify import radsimp, split_surds, rad_rationalize
+    from sympy.simplify.radsimp import radsimp, rad_rationalize, split_surds
     if not expr.is_Pow:
         return sqrtdenest(expr)
     if expr.base < 0:
@@ -406,14 +406,14 @@ def _sqrt_symbolic_denest(a, b, r):
     a, b, r = map(sympify, (a, b, r))
     rval = _sqrt_match(r)
     if not rval:
-        return None
+        return
     ra, rb, rr = rval
     if rb:
         y = Dummy('y', positive=True)
         try:
             newa = Poly(a.subs(sqrt(rr), (y**2 - ra)/rb), y)
         except PolynomialError:
-            return None
+            return
         if newa.degree() == 2:
             ca, cb, cc = newa.all_coeffs()
             cb += b
@@ -487,17 +487,17 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     >>> sqrt_biquadratic_denest(z, a, b, r, d2)
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
     """
-    from sympy.simplify.simplify import radsimp, rad_rationalize
+    from sympy.simplify.radsimp import radsimp, rad_rationalize
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
-        return None
+        return
     for x in (a, b, r):
         for y in x.args:
             y2 = y**2
             if not y2.is_Integer or not y2.is_positive:
-                return None
+                return
     sqd = _mexpand(sqrtdenest(sqrt(radsimp(d2))))
     if sqrt_depth(sqd) > 1:
-        return None
+        return
     x1, x2 = [a/2 + sqd/2, a/2 - sqd/2]
     # look for a solution A with depth 1
     for x in (x1, x2):
@@ -510,7 +510,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
         if z < 0:
             z = -z
         return _mexpand(z)
-    return None
+    return
 
 
 def _denester(nested, av0, h, max_depth_level):

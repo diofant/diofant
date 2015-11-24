@@ -122,8 +122,8 @@ def test_Function():
 
 
 def test_Geometry():
-    assert sstr(Point(0, 0)) == 'Point(0, 0)'
-    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point(0, 0), 3)'
+    assert sstr(Point(0, 0)) == 'Point2D(0, 0)'
+    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point2D(0, 0), 3)'
     # TODO test other Geometry entities
 
 
@@ -228,6 +228,7 @@ def test_NaN():
 
 def test_NegativeInfinity():
     assert str(-oo) == "-oo"
+
 
 def test_Order():
     assert str(O(x)) == "O(x)"
@@ -449,11 +450,6 @@ def test_Rational():
     assert str(Rational("-2.6e-2")) == "-13/500"
     assert str(S("25/7")) == "25/7"
     assert str(S("-123/569")) == "-123/569"
-    assert str(S("0.1[23]", rational=1)) == "61/495"
-    assert str(S("5.1[666]", rational=1)) == "31/6"
-    assert str(S("-5.1[666]", rational=1)) == "-31/6"
-    assert str(S("0.[9]", rational=1)) == "1"
-    assert str(S("-0.[9]", rational=1)) == "-1"
 
     assert str(sqrt(Rational(1, 4))) == "1/2"
     assert str(sqrt(Rational(1, 36))) == "1/6"
@@ -514,6 +510,7 @@ def test_GroebnerBasis():
     assert str(groebner(F, order='lex')) == \
         "GroebnerBasis([2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7], x, y, domain='ZZ', order='lex')"
 
+
 def test_set():
     assert sstr(set()) == 'set()'
     assert sstr(frozenset()) == 'frozenset()'
@@ -553,7 +550,7 @@ def test_wild_str():
     # Check expressions containing Wild not causing infinite recursion
     w = Wild('x')
     assert str(w + 1) == 'x_ + 1'
-    assert str(exp(2**w) + 5) == 'exp(2**x_) + 5'
+    assert str(exp(2**w) + 5) == 'E**(2**x_) + 5'
     assert str(3*w + 1) == '3*x_ + 1'
     assert str(1/w + 1) == '1 + 1/x_'
     assert str(w**2 + 1) == 'x_**2 + 1'
@@ -695,24 +692,30 @@ def test_MatMul_MatAdd():
     assert str(2*(MatrixSymbol("X", 2, 2) + MatrixSymbol("Y", 2, 2))) == \
         "2*(X + Y)"
 
+
 def test_MatrixSlice():
     from sympy.matrices.expressions import MatrixSymbol
     assert str(MatrixSymbol('X', 10, 10)[:5, 1:9:2]) == 'X[:5, 1:9:2]'
     assert str(MatrixSymbol('X', 10, 10)[5, :5:2]) == 'X[5, :5:2]'
 
+
 def test_true_false():
     assert str(true) == repr(true) == sstr(true) == "True"
     assert str(false) == repr(false) == sstr(false) == "False"
 
+
 def test_Equivalent():
     assert str(Equivalent(y, x)) == "Equivalent(x, y)"
+
 
 def test_Xor():
     assert str(Xor(y, x, evaluate=False)) == "Xor(x, y)"
 
+
 def test_Complement():
     assert str(Complement(S.Reals, S.Naturals)) == '(-oo, oo) \ Naturals()'
 
+
 def test_SymmetricDifference():
     assert str(SymmetricDifference(Interval(2,3), Interval(3,4),evaluate=False)) == \
-           'SymmetricDifference([2, 3], [3, 4])'
+        'SymmetricDifference([2, 3], [3, 4])'

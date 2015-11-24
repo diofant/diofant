@@ -1,5 +1,5 @@
 from sympy import sin, cos, symbols, pi, ImmutableMatrix as Matrix, \
-     simplify
+    simplify
 from sympy.vector import (CoordSysCartesian, Vector, Dyadic,
                           DyadicAdd, DyadicMul, DyadicZero,
                           BaseDyadic, express)
@@ -81,7 +81,7 @@ def test_dyadic():
                                       [c * d, c * e, c * f]])
     d5 = v1.outer(v1)
     C = A.orient_new_axis('C', q, A.i)
-    for expected, actual in zip(C.rotation_matrix(A) * d5.to_matrix(A) * \
+    for expected, actual in zip(C.rotation_matrix(A) * d5.to_matrix(A) *
                                C.rotation_matrix(A).T, d5.to_matrix(C)):
         assert (expected - actual).simplify() == 0
 

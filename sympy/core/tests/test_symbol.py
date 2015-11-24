@@ -170,10 +170,13 @@ def test_Wild_properties():
 
     def integerp(k):
         return k.is_integer
+
     def positivep(k):
         return k.is_positive
+
     def symbolp(k):
         return k.is_Symbol
+
     def realp(k):
         return k.is_extended_real
 
@@ -329,6 +332,7 @@ def test_call():
     f = Symbol('f')
     assert f(2)
     raises(TypeError, lambda: Wild('x')(1))
+
 
 def test_unicode():
     xu = Symbol(u('x'))

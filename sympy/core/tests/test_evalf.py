@@ -11,6 +11,7 @@ from sympy.utilities.pytest import raises, XFAIL
 
 from sympy.abc import n, x, y
 
+
 def NS(e, n=15, **options):
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
@@ -71,7 +72,7 @@ def test_evalf_complex_powers():
     assert NS('(E+pi*I)**100000000000000000') == \
         '-3.58896782867793e+61850354284995199 + 4.58581754997159e+61850354284995199*I'
     # XXX: rewrite if a+a*I simplification introduced in sympy
-    #assert NS('(pi + pi*I)**2') in ('0.e-15 + 19.7392088021787*I', '0.e-16 + 19.7392088021787*I')
+    # assert NS('(pi + pi*I)**2') in ('0.e-15 + 19.7392088021787*I', '0.e-16 + 19.7392088021787*I')
     assert NS('(pi + pi*I)**2', chop=True) == '19.7392088021787*I'
     assert NS(
         '(pi + 1/10**8 + pi*I)**2') == '6.2831853e-8 + 19.7392088650106*I'
@@ -128,6 +129,7 @@ def test_evalf_logs():
     assert NS("log(3+pi*I)", 15) == '1.46877619736226 + 0.808448792630022*I'
     assert NS("log(pi*I)", 15) == '1.14472988584940 + 1.57079632679490*I'
     assert NS('log(-1 + 0.00001)', 2) == '-1.0e-5 + 3.1*I'
+    assert NS('log(100, 10, evaluate=False)', 15) == '2.00000000000000'
 
 
 def test_evalf_trig():
@@ -227,7 +229,7 @@ def test_evalf_bugs():
     assert (5+E**(oo)).n() == S.Infinity
     assert (5-E**(oo)).n() == S.NegativeInfinity
 
-    #issue 7416
+    # issue 7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0
 
 
@@ -464,12 +466,20 @@ def test_issue_8821_highprec_from_str():
 
 def test_issue_8853():
     p = Symbol('x', even=True, positive=True)
-    assert floor(-p - S.Half).is_even == False
-    assert floor(-p + S.Half).is_even == True
-    assert ceiling(p - S.Half).is_even == True
-    assert ceiling(p + S.Half).is_even == False
+    assert floor(-p - S.Half).is_even is False
+    assert floor(-p + S.Half).is_even
+    assert ceiling(p - S.Half).is_even
+    assert ceiling(p + S.Half).is_even is False
 
     assert get_integer_part(S.Half, -1, {}, True) == (0, 0)
     assert get_integer_part(S.Half, 1, {}, True) == (1, 0)
     assert get_integer_part(-S.Half, -1, {}, True) == (-1, 0)
     assert get_integer_part(-S.Half, 1, {}, True) == (0, 0)
+
+
+def test_issue_9326():
+    from sympy import Dummy
+    d1 = Dummy('d')
+    d2 = Dummy('d')
+    e = d1 + d2
+    assert e.evalf(subs={d1: 1, d2: 2}) == 3

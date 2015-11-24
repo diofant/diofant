@@ -193,8 +193,8 @@ def test_complement():
     assert FiniteSet(x).complement(S.Reals) == Complement(S.Reals, FiniteSet(x))
 
     assert FiniteSet(0, x).complement(S.Reals) == Complement(Interval(-oo, 0, True, True) +
-                                                             Interval(0, oo, True, True)
-                                                             ,FiniteSet(x), evaluate=False)
+                                                             Interval(0, oo, True, True),
+                                                             FiniteSet(x), evaluate=False)
 
     square = Interval(0, 1) * Interval(0, 1)
     notsquare = square.complement(S.Reals*S.Reals)
@@ -243,6 +243,7 @@ def test_intersect():
 
     assert Union(Interval(0, 1), Interval(2, 3)).intersection(Interval(1, 2)) == \
         Union(Interval(1, 1), Interval(2, 2))
+
 
 def test_intersection():
     # iterable
@@ -389,6 +390,7 @@ def test_is_proper_superset():
     assert FiniteSet(1, 2, 3).is_proper_superset(S.EmptySet) is True
 
     raises(ValueError, lambda: Interval(0, 1).is_proper_superset(0))
+
 
 def test_contains():
     assert Interval(0, 2).contains(1) is S.true
@@ -606,7 +608,7 @@ def test_product_basic():
     assert square.complement(Interval(-oo, oo)*Interval(-oo, oo)) == Union(
         (Interval(-oo, 0, True, True) +
          Interval(1, oo, True, True))*Interval(-oo, oo),
-         Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
+        Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
                   Interval(1, oo, True, True)))
 
     assert (Interval(-5, 5)**3).is_subset(Interval(-10, 10)**3)
@@ -727,6 +729,7 @@ def test_image_FiniteSet():
     x = Symbol('x', extended_real=True)
     assert imageset(x, 2*x, FiniteSet(1, 2, 3)) == FiniteSet(2, 4, 6)
 
+
 def test_image_Union():
     x = Symbol('x', extended_real=True)
     assert imageset(x, x**2, Interval(-2, 0) + FiniteSet(1, 2, 3)) == \
@@ -781,10 +784,10 @@ def test_boundary_ProductSet():
 
     second_square = Interval(1, 2, True, True) * Interval(0, 1, True, True)
     assert (open_square + second_square).boundary == (
-                FiniteSet(0, 1) * Interval(0, 1)
-              + FiniteSet(1, 2) * Interval(0, 1)
-              + Interval(0, 1) * FiniteSet(0, 1)
-              + Interval(1, 2) * FiniteSet(0, 1))
+        FiniteSet(0, 1) * Interval(0, 1)
+        + FiniteSet(1, 2) * Interval(0, 1)
+        + Interval(0, 1) * FiniteSet(0, 1)
+        + Interval(1, 2) * FiniteSet(0, 1))
 
 
 def test_boundary_ProductSet_line():
@@ -832,13 +835,18 @@ def test_Eq():
 
 
 def test_SymmetricDifference():
-    assert SymmetricDifference(FiniteSet(0, 1, 2, 3, 4, 5), \
+    assert SymmetricDifference(FiniteSet(0, 1, 2, 3, 4, 5),
             FiniteSet(2, 4, 6, 8, 10)) == FiniteSet(0, 1, 3, 5, 6, 8, 10)
-    assert SymmetricDifference(FiniteSet(2, 3, 4), FiniteSet(2, 3 ,4 ,5 )) \
+    assert SymmetricDifference(FiniteSet(2, 3, 4), FiniteSet(2, 3, 4, 5)) \
             == FiniteSet(5)
     assert FiniteSet(1, 2, 3, 4, 5) ^ FiniteSet(1, 2, 5, 6) == \
             FiniteSet(3, 4, 6)
-    assert Set(1, 2 ,3) ^ Set(2, 3, 4) == Union(Set(1, 2, 3) - Set(2, 3, 4), \
+    assert Set(1, 2, 3) ^ Set(2, 3, 4) == Union(Set(1, 2, 3) - Set(2, 3, 4),
             Set(2, 3, 4) - Set(1, 2, 3))
-    assert Interval(0, 4) ^ Interval(2, 5) == Union(Interval(0, 4) - \
+    assert Interval(0, 4) ^ Interval(2, 5) == Union(Interval(0, 4) -
             Interval(2, 5), Interval(2, 5) - Interval(0, 4))
+
+
+def test_issue_9956():
+    assert Union(Interval(-oo, oo), FiniteSet(1)) == Interval(-oo, oo)
+    assert Interval(-oo, oo).contains(1) is S.true

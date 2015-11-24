@@ -722,6 +722,7 @@ def jn_zeros(n, k, method="sympy", dps=15):
     elif method == "scipy":
         from scipy.special import sph_jn
         from scipy.optimize import newton
+
         def f(x):
             return sph_jn(n, x)[0][-1]
     else:

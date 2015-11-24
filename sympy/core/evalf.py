@@ -30,6 +30,7 @@ from sympy.utilities.iterables import is_sequence
 LG10 = math.log(10, 2)
 rnd = round_nearest
 
+
 def bitcount(n):
     return mpmath_bitcount(int(n))
 
@@ -46,11 +47,11 @@ DEFAULT_MAXPREC = 333
 class PrecisionExhausted(ArithmeticError):
     pass
 
-#----------------------------------------------------------------------------#
-#                                                                            #
-#              Helper functions for arithmetic and complex parts             #
-#                                                                            #
-#----------------------------------------------------------------------------#
+############################################################################
+#                                                                          #
+#              Helper functions for arithmetic and complex parts           #
+#                                                                          #
+############################################################################
 
 """
 An mpf value tuple is a tuple of integers (sign, man, exp, bc)
@@ -352,11 +353,11 @@ def evalf_ceiling(expr, prec, options):
 def evalf_floor(expr, prec, options):
     return get_integer_part(expr.args[0], -1, options)
 
-#----------------------------------------------------------------------------#
-#                                                                            #
-#                            Arithmetic operations                           #
-#                                                                            #
-#----------------------------------------------------------------------------#
+############################################################################
+#                                                                          #
+#                            Arithmetic operations                         #
+#                                                                          #
+############################################################################
 
 
 def add_terms(terms, prec, target_prec):
@@ -699,11 +700,11 @@ def evalf_pow(v, prec, options):
         return mpf_pow(xre, yre, target_prec), None, target_prec, None
 
 
-#----------------------------------------------------------------------------#
-#                                                                            #
-#                            Special functions                               #
-#                                                                            #
-#----------------------------------------------------------------------------#
+############################################################################
+#                                                                          #
+#                            Special functions                             #
+#                                                                          #
+############################################################################
 def evalf_trig(v, prec, options):
     """
     This function handles sin and cos of complex arguments.
@@ -767,6 +768,11 @@ def evalf_trig(v, prec, options):
 
 def evalf_log(expr, prec, options):
     from sympy import Abs, Add, log
+
+    if len(expr.args) > 1:
+        expr = expr.doit()
+        return evalf(expr, prec, options)
+
     arg = expr.args[0]
     workprec = prec + 10
     xre, xim, xacc, _ = evalf(arg, workprec, options)
@@ -846,11 +852,11 @@ def evalf_bernoulli(expr, prec, options):
         return None, None, None, None
     return b, None, prec, None
 
-#----------------------------------------------------------------------------#
-#                                                                            #
-#                            High-level operations                           #
-#                                                                            #
-#----------------------------------------------------------------------------#
+############################################################################
+#                                                                          #
+#                            High-level operations                         #
+#                                                                          #
+############################################################################
 
 
 def as_mpmath(x, prec, options):
@@ -1153,11 +1159,11 @@ def evalf_sum(expr, prec, options):
         return re, im, re_acc, im_acc
 
 
-#----------------------------------------------------------------------------#
-#                                                                            #
-#                            Symbolic interface                              #
-#                                                                            #
-#----------------------------------------------------------------------------#
+############################################################################
+#                                                                          #
+#                            Symbolic interface                            #
+#                                                                          #
+############################################################################
 
 def evalf_symbol(x, prec, options):
     val = options['subs'][x]
@@ -1169,11 +1175,11 @@ def evalf_symbol(x, prec, options):
         if '_cache' not in options:
             options['_cache'] = {}
         cache = options['_cache']
-        cached, cached_prec = cache.get(x.name, (None, MINUS_INF))
+        cached, cached_prec = cache.get(x, (None, MINUS_INF))
         if cached_prec >= prec:
             return cached
         v = evalf(sympify(val), prec, options)
-        cache[x.name] = (v, prec)
+        cache[x] = (v, prec)
         return v
 
 evalf_table = None
@@ -1208,10 +1214,7 @@ def _create_evalf_table():
         Exp1: lambda x, prec, options: (mpf_e(prec), None, prec, None),
         ImaginaryUnit: lambda x, prec, options: (None, fone, None, prec),
         NegativeOne: lambda x, prec, options: (fnone, None, prec, None),
-        NaN : lambda x, prec, options: (fnan, None, prec, None),
-
-        exp: lambda x, prec, options: evalf_pow(
-            Pow(S.Exp1, x.args[0], evaluate=False), prec, options),
+        NaN: lambda x, prec, options: (fnan, None, prec, None),
 
         cos: evalf_trig,
         sin: evalf_trig,
@@ -1269,7 +1272,7 @@ def evalf(x, prec, options):
     if options.get("verbose"):
         print("### input", x)
         print("### output", to_str(r[0] or fzero, 50))
-        print("### raw", r )  # r[0], r[2]
+        print("### raw", r)  # r[0], r[2]
         print()
     chop = options.get('chop', False)
     if chop:

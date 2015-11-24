@@ -6,6 +6,7 @@ from __future__ import print_function, division
 from sympy.assumptions import Q, ask
 from sympy.assumptions.handlers import CommonHandler
 from sympy.core.logic import fuzzy_not, fuzzy_and, fuzzy_or
+from sympy.core import S
 
 
 class AskNegativeHandler(CommonHandler):
@@ -99,6 +100,9 @@ class AskNegativeHandler(CommonHandler):
         """
         if expr.is_number:
             return AskNegativeHandler._number(expr, assumptions)
+        if expr.base is S.Exp1:
+            if ask(Q.real(expr.exp), assumptions):
+                return False
         if ask(Q.extended_real(expr.base), assumptions):
             if ask(Q.positive(expr.base), assumptions):
                 if ask(Q.real(expr.exp), assumptions):
@@ -110,11 +114,6 @@ class AskNegativeHandler(CommonHandler):
                     return ask(Q.negative(expr.base), assumptions)
 
     ImaginaryUnit, Abs = [staticmethod(CommonHandler.AlwaysFalse)]*2
-
-    @staticmethod
-    def exp(expr, assumptions):
-        if ask(Q.real(expr.args[0]), assumptions):
-            return False
 
 
 class AskNonNegativeHandler(CommonHandler):
@@ -139,9 +138,11 @@ class AskNonZeroHandler(CommonHandler):
         if expr.is_number:
             # if there are no symbols just evalf
             i = expr.evalf(2)
+
             def nonz(i):
                 if i._prec != 1:
                     return i != 0
+
             return fuzzy_or(nonz(i) for i in i.as_real_imag())
 
     @staticmethod
@@ -169,6 +170,7 @@ class AskNonZeroHandler(CommonHandler):
     def Abs(expr, assumptions):
         return ask(Q.nonzero(expr.args[0]), assumptions)
 
+
 class AskZeroHandler(CommonHandler):
     @staticmethod
     def Basic(expr, assumptions):
@@ -180,6 +182,7 @@ class AskZeroHandler(CommonHandler):
         # TODO: This should be deducible from the nonzero handler
         return fuzzy_or(ask(Q.zero(arg), assumptions) for arg in expr.args)
 
+
 class AskNonPositiveHandler(CommonHandler):
     @staticmethod
     def Basic(expr, assumptions):
@@ -189,6 +192,7 @@ class AskNonPositiveHandler(CommonHandler):
                 return ask(Q.extended_real(expr), assumptions)
             else:
                 return notpositive
+
 
 class AskPositiveHandler(CommonHandler):
     """
@@ -259,6 +263,11 @@ class AskPositiveHandler(CommonHandler):
     def Pow(expr, assumptions):
         if expr.is_number:
             return AskPositiveHandler._number(expr, assumptions)
+        if expr.base is S.Exp1:
+            if ask(Q.real(expr.exp), assumptions):
+                return True
+            if ask(Q.imaginary(expr.exp), assumptions):
+                return False
         if ask(Q.positive(expr.base), assumptions):
             if ask(Q.real(expr.base) & Q.real(expr.exp), assumptions):
                 return True
@@ -269,13 +278,6 @@ class AskPositiveHandler(CommonHandler):
                 return True
             if ask(Q.odd(expr.exp), assumptions):
                 return False
-
-    @staticmethod
-    def exp(expr, assumptions):
-        if ask(Q.real(expr.args[0]), assumptions):
-            return True
-        if ask(Q.imaginary(expr.args[0]), assumptions):
-            return False
 
     @staticmethod
     def log(expr, assumptions):

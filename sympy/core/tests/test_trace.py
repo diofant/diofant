@@ -10,7 +10,7 @@ def test_trace_new():
     assert Tr(a + b) == a + b
     assert Tr(A + B) == Tr(A) + Tr(B)
 
-    #check trace args not implicitly permuted
+    # check trace args not implicitly permuted
     assert Tr(C*D*A*B).args[0].args == (C, D, A, B)
 
     # check for mul and adds
@@ -22,52 +22,52 @@ def test_trace_new():
     # since A is symbol and not commutative
     assert isinstance(Tr(A), Tr)
 
-    #POW
+    # POW
     assert Tr(pow(a, b)) == a**b
     assert isinstance(Tr(pow(A, a)), Tr)
 
-    #Matrix
+    # Matrix
     M = Matrix([[1, 1], [2, 2]])
     assert Tr(M) == 3
 
-    ##test indices in different forms
-    #no index
+    # test indices in different forms
+    # no index
     t = Tr(A)
     assert t.args[1] == Tuple()
 
-    #single index
+    # single index
     t = Tr(A, 0)
     assert t.args[1] == Tuple(0)
 
-    #index in a list
+    # index in a list
     t = Tr(A, [0])
     assert t.args[1] == Tuple(0)
 
     t = Tr(A, [0, 1, 2])
     assert t.args[1] == Tuple(0, 1, 2)
 
-    #index is tuple
+    # index is tuple
     t = Tr(A, (0))
     assert t.args[1] == Tuple(0)
 
     t = Tr(A, (1, 2))
     assert t.args[1] == Tuple(1, 2)
 
-    #trace indices test
+    # trace indices test
     t = Tr((A + B), [2])
     assert t.args[0].args[1] == Tuple(2) and t.args[1].args[1] == Tuple(2)
 
     t = Tr(a*A, [2, 3])
     assert t.args[1].args[1] == Tuple(2, 3)
 
-    #class with trace method defined
-    #to simulate numpy objects
+    # class with trace method defined
+    # to simulate numpy objects
     class Foo:
         def trace(self):
             return 1
     assert Tr(Foo()) == 1
 
-    #argument test
+    # argument test
     # check for value error, when either/both arguments are not provided
     raises(ValueError, lambda: Tr())
     raises(ValueError, lambda: Tr(A, 1, 2))
@@ -77,7 +77,7 @@ def test_trace_doit():
     a, b, c, d = symbols('a b c d')
     A, B, C, D = symbols('A B C D', commutative=False)
 
-    #TODO: needed while testing reduced density operations, etc.
+    # TODO: needed while testing reduced density operations, etc.
 
 
 def test_permute():

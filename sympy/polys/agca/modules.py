@@ -36,7 +36,7 @@ from sympy.core.compatibility import iterable, reduce, range
 # - ...
 
 ##########################################################################
-## Abstract base classes #################################################
+# Abstract base classes ##################################################
 ##########################################################################
 
 
@@ -253,7 +253,7 @@ class ModuleElement(object):
         return not self.__eq__(om)
 
 ##########################################################################
-## Free Modules ##########################################################
+# Free Modules ###########################################################
 ##########################################################################
 
 
@@ -557,7 +557,7 @@ class FreeModuleQuotientRing(FreeModule):
         return self.convert(elem.data)
 
 ##########################################################################
-## Submodules and subquotients ###########################################
+# Submodules and subquotients ############################################
 ##########################################################################
 
 
@@ -1007,6 +1007,8 @@ class SubQuotientModule(SubModule):
 
 def _subs0(x):
     return x[0]
+
+
 def _subs1(x):
     return x[1:]
 
@@ -1038,8 +1040,8 @@ class SubModulePolyRing(SubModule):
     - order - monomial order used
     """
 
-    #self._gb - cached groebner basis
-    #self._gbe - cached groebner basis relations
+    # self._gb - cached groebner basis
+    # self._gbe - cached groebner basis relations
 
     def __init__(self, gens, container, order="lex", TOP=True):
         SubModule.__init__(self, gens, container)
@@ -1238,7 +1240,7 @@ class SubModuleQuotientRing(SubModule):
             self.quot._in_terms_of_generators(self.container.lift(elem))]
 
 ##########################################################################
-## Quotient Modules ######################################################
+# Quotient Modules #######################################################
 ##########################################################################
 
 

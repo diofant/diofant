@@ -845,6 +845,7 @@ def test_Add_is_negative_positive():
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_zero
 
+
 def test_Add_is_nonpositive_nonnegative():
     x = Symbol('x', extended_real=True)
 
@@ -1665,7 +1666,7 @@ def test_issue_6040():
 def test_issue_6082():
     # Comparison is symmetric
     assert Basic.compare(Max(x, 1), Max(x, 2)) == \
-      - Basic.compare(Max(x, 2), Max(x, 1))
+        - Basic.compare(Max(x, 2), Max(x, 1))
     # Equal expressions compare equal
     assert Basic.compare(Max(x, 1), Max(x, 1)) == 0
     # Basic subtypes (such as Max) compare different than standard types
@@ -1873,3 +1874,8 @@ def test_issue_8247_8354():
         1566)*((3*sqrt(93) + 29)**(1/3)*(-2**(2/3)*(3*sqrt(93) + 29)**(1/3) -
         2) - 2*2**(1/3))**2''')
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)
+
+
+def test_issue_9832():
+    x = Symbol('x', extended_real=True)
+    assert (x**2 - oo).is_negative is None

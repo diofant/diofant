@@ -39,14 +39,14 @@ def test_rewrite_single():
 
     # The following has stopped working because hyperexpand changed slightly.
     # It is probably not worth fixing
-    #u(exp(-x)*sin(x)*cos(x), x)
+    # u(exp(-x)*sin(x)*cos(x), x)
 
     # This one cannot be done numerically, since it comes out as a g-function
     # of argument 4*pi
     # NOTE This also tests a bug in inverse mellin transform (which used to
     #      turn exp(4*pi*I*t) into a factor of exp(4*pi*I)**t instead of
     #      exp_polar).
-    #u(exp(x)*sin(x), x)
+    # u(exp(x)*sin(x), x)
     assert _rewrite_single(exp(x)*sin(x), x) == \
         ([(-sqrt(2)/(2*sqrt(pi)), 0,
            meijerg(((-S(1)/2, 0, S(1)/4, S(1)/2, S(3)/4), (1,)),
@@ -146,7 +146,7 @@ def test_meijerint():
     sigma, mu = symbols('sigma mu', positive=True)
     i, c = meijerint_definite(exp(-((x - mu)/(2*sigma))**2), x, 0, oo)
     assert simplify(i) == sqrt(pi)*sigma*(erf(mu/(2*sigma)) + 1)
-    assert c == True
+    assert c
 
     i, _ = meijerint_definite(exp(-mu*x)*exp(sigma*x), x, 0, oo)
     # TODO it would be nice to test the condition
@@ -451,10 +451,10 @@ def test_probability():
     arg = x*dagum
     assert simplify(integrate(arg, (x, 0, oo), meijerg=True, conds='none')
                     ) == a*b*gamma(1 - 1/a)*gamma(p + 1 + 1/a)/(
-                    (a*p + 1)*gamma(p))
+        (a*p + 1)*gamma(p))
     assert simplify(integrate(x*arg, (x, 0, oo), meijerg=True, conds='none')
                     ) == a*b**2*gamma(1 - 2/a)*gamma(p + 1 + 2/a)/(
-                    (a*p + 2)*gamma(p))
+        (a*p + 2)*gamma(p))
 
     # F-distribution
     d1, d2 = symbols('d1 d2', positive=True)
@@ -472,8 +472,10 @@ def test_probability():
     # inverse gaussian
     lamda, mu = symbols('lamda mu', positive=True)
     dist = sqrt(lamda/2/pi)*x**(-S(3)/2)*exp(-lamda*(x - mu)**2/x/2/mu**2)
+
     def mysimp(expr):
         return simplify(expr.rewrite(exp))
+
     assert mysimp(integrate(dist, (x, 0, oo))) == 1
     assert mysimp(integrate(x*dist, (x, 0, oo))) == mu
     assert mysimp(integrate((x - mu)**2*dist, (x, 0, oo))) == mu**3/lamda

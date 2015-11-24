@@ -61,8 +61,10 @@ def _naive_list_centralizer(self, other, af=False):
     if hasattr(other, 'generators'):
         elements = list(self.generate_dimino(af=True))
         gens = [x._array_form for x in other.generators]
+
         def commutes_with_gens(x):
             return all(_af_commutes_with(x, gen) for gen in gens)
+
         centralizer_list = []
         if not af:
             for element in elements:
@@ -192,6 +194,7 @@ def _verify_normal_closure(group, arg, closure=None):
             conjugates.add(gen^el)
     naive_closure = PermutationGroup(list(conjugates))
     return closure.is_subgroup(naive_closure)
+
 
 def canonicalize_naive(g, dummies, sym, *v):
     """

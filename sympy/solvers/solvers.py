@@ -57,7 +57,7 @@ import warnings
 
 def _ispow(e):
     """Return True if e is a Pow or is exp."""
-    return isinstance(e, Expr) and (e.is_Pow or e.func is exp)
+    return isinstance(e, Expr) and e.is_Pow
 
 
 def _simple_dens(f, symbols):
@@ -198,7 +198,7 @@ def checksol(f, symbol, sol=None, **flags):
 
     if sol and not f.has(*list(sol.keys())):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
-        return None
+        return
 
     illegal = {S.NaN,
                S.ComplexInfinity,
@@ -282,7 +282,7 @@ def checksol(f, symbol, sol=None, **flags):
                 if val.is_number and val.has(LambertW):
                     # don't eval this to verify solution since if we got here,
                     # numerical must be False
-                    return None
+                    return
 
                 # add other HACKs here if necessary, otherwise we assume
                 # the nz value is correct
@@ -524,7 +524,7 @@ def solve(f, *symbols, **flags):
             >>> solve(x + exp(x), x)
             [-LambertW(1)]
             >>> solve(x + exp(x), x, implicit=True)
-            [-exp(x)]
+            [-E**x]
 
         * It is possible to solve for anything that can be targeted with
           subs:
@@ -872,7 +872,7 @@ def solve(f, *symbols, **flags):
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
                 raise NotImplementedError('solving %s when the argument '
                     'is not real or imaginary.' % a)
-            reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else \
+            reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
                 piece(a.args[0]*S.ImaginaryUnit)))
         fi = fi.subs(reps)
 
@@ -1327,26 +1327,26 @@ def _solve(f, *symbols, **flags):
                 if candidate in result:
                     continue
                 try:
-                    v = (cond == True) or cond.subs(symbol, candidate)
+                    v = (cond == S.true) or cond.subs(symbol, candidate)
                 except:
                     v = False
-                if v != False:
+                if v != S.false:
                     # Only include solutions that do not match the condition
                     # of any previous pieces.
                     matches_other_piece = False
                     for other_n, (other_expr, other_cond) in enumerate(f.args):
                         if other_n == n:
                             break
-                        if other_cond == False:
+                        if other_cond == S.false:
                             continue
                         try:
-                            if other_cond.subs(symbol, candidate) == True:
+                            if other_cond.subs(symbol, candidate) == S.true:
                                 matches_other_piece = True
                                 break
                         except:
                             pass
                     if not matches_other_piece:
-                        v = v == True or v.doit()
+                        v = v == S.true or v.doit()
                         if isinstance(v, Relational):
                             v = v.canonical
                         result.add(Piecewise(
@@ -1458,7 +1458,7 @@ def _solve(f, *symbols, **flags):
                 u = bases.pop()
                 t = Dummy('t')
                 inv = _solve(u - t, symbol, **flags)
-                if isinstance(u, (Pow, exp)):
+                if isinstance(u, Pow):
                     # this will be resolved by factor in _tsolve but we might
                     # as well try a simple expansion here to get things in
                     # order so something like the following will work now without
@@ -1474,7 +1474,7 @@ def _solve(f, *symbols, **flags):
                         e = expand_mul(e)
                         return expand_power_exp(b**e)
                     ftry = f_num.replace(
-                        lambda w: w.is_Pow or isinstance(w, exp),
+                        lambda w: w.is_Pow,
                         _expand).subs(u, t)
                     if not ftry.has(symbol):
                         soln = _solve(ftry, t, **flags)
@@ -1977,6 +1977,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We just solve the system and try to heuristically find a nice
         # solution.
         s = solve_linear_system(system, *symbols)
+
         def update(determined, solution):
             delete = []
             for k, v in solution.items():
@@ -1986,6 +1987,7 @@ def minsolve_linear_system(system, *symbols, **flags):
                     determined[k] = solution[k]
             for k in delete:
                 del solution[k]
+
         determined = {}
         update(determined, s)
         while s:
@@ -2105,7 +2107,7 @@ def solve_linear_system(system, *symbols, **flags):
         if i == m:
             # an overdetermined system
             if any(matrix[i:, m]):
-                return None   # no solutions
+                return   # no solutions
             else:
                 # remove trailing rows
                 matrix = matrix[:i, :]
@@ -2128,7 +2130,7 @@ def solve_linear_system(system, *symbols, **flags):
                     # The .equals(0) method could be used but that can be
                     # slow; numerical testing is prone to errors of scaling.
                     if not matrix[i, m].free_symbols:
-                        return None  # no solution
+                        return  # no solution
 
                     # A row of zeros with a non-zero rhs can only be accepted
                     # if there is another equivalent row. Any such rows will
@@ -2154,7 +2156,7 @@ def solve_linear_system(system, *symbols, **flags):
 
                     if nrows == matrix.rows:
                         # no solution
-                        return None
+                        return
                 # zero row or was a linear combination of
                 # other rows or was a row with a symbolic
                 # expression that matched other rows, e.g. [0, 0, x - y]
@@ -2274,7 +2276,7 @@ def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
         # system using Gaussian elimination algorithm
         return solve(system, *coeffs, **flags)
     else:
-        return None  # no solutions
+        return  # no solutions
 
 
 def solve_linear_system_LU(matrix, syms):
@@ -2450,7 +2452,7 @@ def _tsolve(eq, sym, **flags):
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []
     if eq in flags['tsolve_saw']:
-        return None
+        return
     else:
         flags['tsolve_saw'].append(eq)
 
@@ -2519,7 +2521,7 @@ def _tsolve(eq, sym, **flags):
         g = _filtered_gens(eq.as_poly(), sym)
         up_or_log = set()
         for gi in g:
-            if gi.func is exp or gi.func is log:
+            if gi.is_Pow and gi.base is S.Exp1 or gi.func is log:
                 up_or_log.add(gi)
             elif gi.is_Pow:
                 gisimp = powdenest(expand_power_exp(gi))
@@ -2856,6 +2858,11 @@ def _invert(eq, *symbols, **kwargs):
             elif lhs.func is atan2:
                 y, x = lhs.args
                 lhs = 2*atan(y/(sqrt(x**2 + y**2) + x))
+
+        if lhs.is_Pow and lhs.base is S.Exp1:
+            rhs = log(rhs)
+            lhs = lhs.exp
+
         if rhs and lhs.is_Pow and lhs.exp.is_Integer and lhs.exp < 0:
             lhs = 1/lhs
             rhs = 1/rhs
@@ -3206,9 +3213,11 @@ def unrad(eq, *syms, **flags):
                         3*B*b**3*d**6 - c**9 + 9*c**8*d - 36*c**7*d**2 + 84*c**6*d**3 -
                         126*c**5*d**4 + 126*c**4*d**5 - 84*c**3*d**6 + 36*c**2*d**7 -
                         9*c*d**8 + d**9)
+
                     def _t(i):
                         b = Mul(*info[i][RAD])
                         return cancel(rterms[i]/b), Mul(*info[i][BASES])
+
                     aa, AA = _t(0)
                     bb, BB = _t(1)
                     cc = -rterms[2]
@@ -3242,10 +3251,8 @@ def unrad(eq, *syms, **flags):
 
     new_depth = sqrt_depth(eq) if ok else depth
     rpt += 1  # XXX how many repeats with others unchanging is enough?
-    if not ok or (
-                nwas is not None and len(rterms) == nwas and
-                new_depth is not None and new_depth == depth and
-                rpt > 3):
+    if not ok or (nwas is not None and len(rterms) == nwas and
+                  new_depth is not None and new_depth == depth and rpt > 3):
         raise NotImplementedError('Cannot remove all radicals')
 
     flags.update(dict(cov=cov, n=len(rterms), rpt=rpt))

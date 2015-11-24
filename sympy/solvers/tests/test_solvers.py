@@ -78,11 +78,11 @@ def test_guess_rational_cv():
 
     # rational functions via the change of variable y -> x**n
     assert guess_solve_strategy( (sqrt(x) + 1)/(x**Rational(1, 3) + sqrt(x) + 1), x ) \
-        #== GS_RATIONAL_CV_1
+        # == GS_RATIONAL_CV_1
 
 
 def test_guess_transcendental():
-    #transcendental functions
+    # transcendental functions
     assert guess_solve_strategy( exp(x) + 1, x )  # == GS_TRANSCENDENTAL
     assert guess_solve_strategy( 2*cos(x) - y, x )  # == GS_TRANSCENDENTAL
     assert guess_solve_strategy(
@@ -175,7 +175,7 @@ def test_solve_polynomial1():
         {
             x: (a22*b1 - a12*b2)/(a11*a22 - a12*a21),
             y: (a11*b2 - a21*b1)/(a11*a22 - a12*a21),
-        }
+    }
 
     solution = {y: S.Zero, x: S.Zero}
 
@@ -406,7 +406,7 @@ def test_solve_transcendental():
     assert solve([x**y - 1]) == [{x: 1}, {y: 0}]
     assert solve(x*y*(x**2 - y**2)) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
     assert solve([x*y*(x**2 - y**2)]) == [{x: 0}, {x: -y}, {x: y}, {y: 0}]
-    #issue 4739
+    # issue 4739
     assert solve(exp(log(5)*x) - 2**x, x) == [0]
 
     # misc
@@ -599,7 +599,7 @@ def test_PR1964():
             {log((-sqrt(3) + 2)**2), log((sqrt(3) + 2)**2)},
             {2*log(-sqrt(3) + 2), 2*log(sqrt(3) + 2)},
             {log(-4*sqrt(3) + 7), log(4*sqrt(3) + 7)},
-        ]
+    ]
     assert set(solve(Poly(exp(x) + exp(-x) - 4))) == \
         {log(-sqrt(3) + 2), log(sqrt(3) + 2)}
     assert set(solve(x**y + x**(2*y) - 1, x)) == \
@@ -614,7 +614,7 @@ def test_PR1964():
     assert solve(exp(3*x) - exp(3), x) in [
         [1, log(E*(-S.Half - sqrt(3)*I/2)), log(E*(-S.Half + sqrt(3)*I/2))],
         [1, log(-E/2 - sqrt(3)*E*I/2), log(-E/2 + sqrt(3)*E*I/2)],
-        ]
+    ]
 
     # coverage test
     p = Symbol('p', positive=True)
@@ -713,13 +713,13 @@ def test_issue_5132():
     eqs = [exp(x)**2 - sin(y) + z, 1/exp(y) - 3]
     assert solve(eqs, set=True) == ([x, y], {
         (log(-sqrt(-z - sin(log(3)))), -log(3)),
-            (log(sqrt(-z - sin(log(3)))), -log(3))})
+        (log(sqrt(-z - sin(log(3)))), -log(3))})
     assert solve(eqs, x, z, set=True) == ([x], {
         (log(-sqrt(-z + sin(y))),),
-            (log(sqrt(-z + sin(y))),)})
+        (log(sqrt(-z + sin(y))),)})
     assert set(solve(eqs, x, y)) == {
-            (log(-sqrt(-z - sin(log(3)))), -log(3)),
-            (log(sqrt(-z - sin(log(3)))), -log(3))}
+        (log(-sqrt(-z - sin(log(3)))), -log(3)),
+        (log(sqrt(-z - sin(log(3)))), -log(3))}
     assert solve(eqs, z, y) == \
         [(-exp(2*x) - sin(log(3)), -log(3))]
     assert solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), set=True) == (
@@ -952,7 +952,7 @@ def test_unrad1():
         32*s + 17, [s, s**6 - x]))
 
     # is this needed?
-    #assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
+    # assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
     #    x**15 - x**3*cosh(x)**5 - 3*x**2*cosh(x)**5 - 3*x*cosh(x)**5 - cosh(x)**5, [])
     raises(NotImplementedError, lambda:
         unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))
@@ -1394,6 +1394,7 @@ def test_issue_6644():
     sol = solve(eq, q, simplify=False, check=False)
     assert len(sol) == 5
 
+
 def test_issue_6752():
     assert solve([a**2 + a, a - b], [a, b]) == [(-1, -1), (0, 0)]
     assert solve([a**2 + a*c, a - b], [a, b]) == [(0, 0), (-c, -c)]
@@ -1555,13 +1556,13 @@ def test_rewrite_trigh():
 
 def test_uselogcombine():
     eq = z - log(x) + log(y/(x*(-1 + y**2/x**2)))
-    assert solve(eq, x, force=True) == [-sqrt(y*(y - exp(z))), sqrt(y*(y - exp(z)))]
+    assert solve(eq, x, force=True) == [sqrt(y*(-exp(z) + y)), -sqrt(-y*(exp(z) - y))]
     assert solve(log(x + 3) + log(1 + 3/x) - 3) in [
         [-3 + sqrt(-12 + exp(3))*exp(S(3)/2)/2 + exp(3)/2,
         -sqrt(-12 + exp(3))*exp(S(3)/2)/2 - 3 + exp(3)/2],
         [-3 + sqrt(-36 + (-exp(3) + 6)**2)/2 + exp(3)/2,
         -3 - sqrt(-36 + (-exp(3) + 6)**2)/2 + exp(3)/2],
-        ]
+    ]
     assert solve(log(exp(2*x) + 1) + log(-tanh(x) + 1) - log(2)) == []
 
 
@@ -1671,6 +1672,7 @@ def test_issue_7322():
 
 def test_nsolve():
     raises(ValueError, lambda: nsolve(x, (-1, 1), method='bisect'))
+
 
 def test_issue_8587():
     f = Piecewise((2*x**2, And(S(0) < x, x < 1)), (2, True))

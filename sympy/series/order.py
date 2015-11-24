@@ -279,7 +279,7 @@ class Order(Expr):
                     'or oo not supported, got %s as a point.' % point)
             if order_symbols and order_symbols[0][1] != self.point[0]:
                 raise NotImplementedError(
-                        "Multiplying Order at different points is not supported.")
+                    "Multiplying Order at different points is not supported.")
             order_symbols = dict(order_symbols)
             for s, p in dict(self.args[1:]).items():
                 if s not in order_symbols.keys():
@@ -341,7 +341,7 @@ class Order(Expr):
             else:
                 common_symbols = expr.variables
             if not common_symbols:
-                return None
+                return
             r = None
             ratio = self.expr/expr.expr
             ratio = powsimp(ratio, deep=True, combine='exp')

@@ -22,7 +22,7 @@ class CombinatorialFunction(Function):
         return self
 
 ###############################################################################
-######################## FACTORIAL and MULTI-FACTORIAL ########################
+# ###################### FACTORIAL and MULTI-FACTORIAL ###################### #
 ###############################################################################
 
 
@@ -395,7 +395,7 @@ class factorial2(CombinatorialFunction):
 
 
 ###############################################################################
-######################## RISING and FALLING FACTORIALS ########################
+# ###################### RISING and FALLING FACTORIALS ###################### #
 ###############################################################################
 
 
@@ -553,7 +553,7 @@ rf = RisingFactorial
 ff = FallingFactorial
 
 ###############################################################################
-########################### BINOMIAL COEFFICIENTS #############################
+# ######################### BINOMIAL COEFFICIENTS ########################### #
 ###############################################################################
 
 
@@ -634,12 +634,12 @@ class binomial(CombinatorialFunction):
         if argindex == 1:
             # http://functions.wolfram.com/GammaBetaErf/Binomial/20/01/01/
             n, k = self.args
-            return binomial(n, k)*(polygamma(0, n + 1) - \
+            return binomial(n, k)*(polygamma(0, n + 1) -
                 polygamma(0, n - k + 1))
         elif argindex == 2:
             # http://functions.wolfram.com/GammaBetaErf/Binomial/20/01/02/
             n, k = self.args
-            return binomial(n, k)*(polygamma(0, n - k + 1) - \
+            return binomial(n, k)*(polygamma(0, n - k + 1) -
                 polygamma(0, k + 1))
         else:
             raise ArgumentIndexError(self, argindex)

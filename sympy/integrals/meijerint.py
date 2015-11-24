@@ -27,7 +27,7 @@ The main references for this are:
 """
 from __future__ import print_function, division
 
-from sympy.core import oo, S, pi, Expr
+from sympy.core import oo, S, pi, Expr, Pow
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import expand, expand_mul, expand_power_base
 from sympy.core.add import Add
@@ -208,47 +208,47 @@ def _create_lookup_table(table):
     # TODO exp(-x)*erf(I*x) does not work
     add(erfc(t), [], [1], [0, S(1)/2], [], t**2, 1/sqrt(pi))
     # This formula for erfi(z) yields a wrong(?) minus sign
-    #add(erfi(t), [1], [], [S(1)/2], [0], -t**2, I/sqrt(pi))
+    # add(erfi(t), [1], [], [S(1)/2], [0], -t**2, I/sqrt(pi))
     add(erfi(t), [S(1)/2], [], [0], [-S(1)/2], -t**2, t/sqrt(pi))
 
     # Fresnel Integrals
     add(fresnels(t), [1], [], [S(3)/4], [0, S(1)/4], pi**2*t**4/16, S(1)/2)
     add(fresnelc(t), [1], [], [S(1)/4], [0, S(3)/4], pi**2*t**4/16, S(1)/2)
 
-    ##### bessel-type functions #####
+    # ##### bessel-type functions #####
     from sympy import besselj, bessely, besseli, besselk
 
     # Section 8.4.19
     add(besselj(a, t), [], [], [a/2], [-a/2], t**2/4)
 
     # all of the following are derivable
-    #add(sin(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [(1+a)/2],
+    # add(sin(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [(1+a)/2],
     #    [-a/2, a/2, (1-a)/2], t**2, 1/sqrt(2))
-    #add(cos(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [a/2],
+    # add(cos(t)*besselj(a, t), [S(1)/4, S(3)/4], [], [a/2],
     #    [-a/2, (1+a)/2, (1-a)/2], t**2, 1/sqrt(2))
-    #add(besselj(a, t)**2, [S(1)/2], [], [a], [-a, 0], t**2, 1/sqrt(pi))
-    #add(besselj(a, t)*besselj(b, t), [0, S(1)/2], [], [(a + b)/2],
+    # add(besselj(a, t)**2, [S(1)/2], [], [a], [-a, 0], t**2, 1/sqrt(pi))
+    # add(besselj(a, t)*besselj(b, t), [0, S(1)/2], [], [(a + b)/2],
     #    [-(a+b)/2, (a - b)/2, (b - a)/2], t**2, 1/sqrt(pi))
 
     # Section 8.4.20
     add(bessely(a, t), [], [-(a + 1)/2], [a/2, -a/2], [-(a + 1)/2], t**2/4)
 
     # TODO all of the following should be derivable
-    #add(sin(t)*bessely(a, t), [S(1)/4, S(3)/4], [(1 - a - 1)/2],
+    # add(sin(t)*bessely(a, t), [S(1)/4, S(3)/4], [(1 - a - 1)/2],
     #    [(1 + a)/2, (1 - a)/2], [(1 - a - 1)/2, (1 - 1 - a)/2, (1 - 1 + a)/2],
     #    t**2, 1/sqrt(2))
-    #add(cos(t)*bessely(a, t), [S(1)/4, S(3)/4], [(0 - a - 1)/2],
+    # add(cos(t)*bessely(a, t), [S(1)/4, S(3)/4], [(0 - a - 1)/2],
     #    [(0 + a)/2, (0 - a)/2], [(0 - a - 1)/2, (1 - 0 - a)/2, (1 - 0 + a)/2],
     #    t**2, 1/sqrt(2))
-    #add(besselj(a, t)*bessely(b, t), [0, S(1)/2], [(a - b - 1)/2],
+    # add(besselj(a, t)*bessely(b, t), [0, S(1)/2], [(a - b - 1)/2],
     #    [(a + b)/2, (a - b)/2], [(a - b - 1)/2, -(a + b)/2, (b - a)/2],
     #    t**2, 1/sqrt(pi))
-    #addi(bessely(a, t)**2,
+    # addi(bessely(a, t)**2,
     #     [(2/sqrt(pi), meijerg([], [S(1)/2, S(1)/2 - a], [0, a, -a],
     #                           [S(1)/2 - a], t**2)),
     #      (1/sqrt(pi), meijerg([S(1)/2], [], [a], [-a, 0], t**2))],
     #     True)
-    #addi(bessely(a, t)*bessely(b, t),
+    # addi(bessely(a, t)*bessely(b, t),
     #     [(2/sqrt(pi), meijerg([], [0, S(1)/2, (1 - a - b)/2],
     #                           [(a + b)/2, (a - b)/2, (b - a)/2, -(a + b)/2],
     #                           [(1 - a - b)/2], t**2)),
@@ -365,7 +365,8 @@ def _exponents(expr, x):
 def _functions(expr, x):
     """ Find the types of functions in expr, to estimate the complexity. """
     from sympy import Function
-    return set(e.func for e in expr.atoms(Function) if x in e.free_symbols)
+    return (set(e.func for e in expr.atoms(Function) if x in e.free_symbols) |
+            set(e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols))
 
 
 def _find_splitting_points(expr, x):
@@ -475,13 +476,16 @@ def _mul_as_two_parts(f):
     >>> from sympy import sin, exp, ordered
     >>> from sympy.abc import x
     >>> list(ordered(_mul_as_two_parts(x*sin(x)*exp(x))))
-    [(x, exp(x)*sin(x)), (x*exp(x), sin(x)), (x*sin(x), exp(x))]
+    [(x, E**x*sin(x)), (E**x*x, sin(x)), (x*sin(x), E**x)]
     """
 
     gs = _mul_args(f)
     if len(gs) < 2:
-        return None
+        return
     if len(gs) == 2:
+        if ((gs[0].is_Pow and gs[0].base is S.Exp1) and
+                (not gs[1].is_Pow or gs[1].base is not S.Exp1)):
+            gs = [gs[1], gs[0]]
         return [tuple(gs)]
     return [(Mul(*x), Mul(*y)) for (x, y) in multiset_partitions(gs, 2)]
 
@@ -1186,9 +1190,9 @@ def _check_antecedents(g1, g2, x):
     pr(28)
     conds += [And(
         p > q + 1, Eq(s, 0), Eq(phi, 0), t.is_positive is True, bstar.is_positive is True, cstar >= 0,
-                  cstar*pi < abs(arg(omega)),
-                  abs(arg(omega)) < (m + n - q + 1)*pi,
-                  c1, c3, c10, c14, c15)]  # 29
+        cstar*pi < abs(arg(omega)),
+        abs(arg(omega)) < (m + n - q + 1)*pi,
+        c1, c3, c10, c14, c15)]  # 29
     pr(29)
     conds += [And(Eq(n, 0), Eq(phi, 0), s + t > 0, m.is_positive is True, cstar.is_positive is True, bstar.is_negative is True,
                   abs(arg(sigma)) < (s + t - u + 1)*pi,
@@ -1422,13 +1426,13 @@ def _rewrite_single(f, x, recursive=True):
         from sympy import factor
         coeff, m = factor(f.argument, x).as_coeff_mul(x)
         if len(m) > 1:
-            return None
+            return
         m = m[0]
         if m.is_Pow:
             if m.base != x or not m.exp.is_Rational:
-                return None
+                return
         elif m != x:
-            return None
+            return
         return [(1, 0, meijerg(f.an, f.aother, f.bm, f.bother, coeff*m))], True
 
     f_ = f
@@ -1446,7 +1450,7 @@ def _rewrite_single(f, x, recursive=True):
                 subs = subs_
                 if not isinstance(hint, bool):
                     hint = hint.subs(subs)
-                if hint == False:
+                if hint == S.false:
                     continue
                 if not isinstance(cond, (bool, BooleanAtom)):
                     cond = unpolarify(cond.subs(subs))
@@ -1472,7 +1476,7 @@ def _rewrite_single(f, x, recursive=True):
 
     # try recursive mellin transform
     if not recursive:
-        return None
+        return
     _debug('Trying recursive Mellin transform method.')
     from sympy.integrals.transforms import (mellin_transform,
                                     inverse_mellin_transform, IntegralTransformError,
@@ -1525,7 +1529,7 @@ def _rewrite_single(f, x, recursive=True):
                 g = None
     if g is None or g.has(oo, nan, zoo):
         _debug('Recursive Mellin transform failed.')
-        return None
+        return
     args = Add.make_args(g)
     res = []
     for f in args:
@@ -1566,10 +1570,10 @@ def _rewrite2(f, x):
     """
     fac, po, g = _split_mul(f, x)
     if any(_rewrite_single(expr, x, False) is None for expr in _mul_args(g)):
-        return None
+        return
     l = _mul_as_two_parts(g)
     if not l:
-        return None
+        return
     l = list(ordered(l, [
         lambda p: max(len(_exponents(p[0], x)), len(_exponents(p[1], x))),
         lambda p: max(len(_functions(p[0], x)), len(_functions(p[1], x))),
@@ -1582,7 +1586,7 @@ def _rewrite2(f, x):
             g2 = _rewrite_single(fac2, x, recursive)
             if g1 and g2:
                 cond = And(g1[1], g2[1])
-                if cond != False:
+                if cond != S.false:
                     return fac, po, g1[0], g2[0], cond
 
 
@@ -1617,7 +1621,8 @@ def meijerint_indefinite(f, x):
             _rewrite_hyperbolics_as_exp(f), x)
         if rv:
             if not type(rv) is list:
-                return collect(factor_terms(rv), rv.atoms(exp))
+                return collect(factor_terms(rv),
+                               set(a for a in rv.atoms(Pow) if a.base is S.Exp1))
             results.extend(rv)
     if results:
         return next(ordered(results))
@@ -1631,7 +1636,7 @@ def _meijerint_indefinite_1(f, x):
     gs = _rewrite1(f, x)
     if gs is None:
         # Note: the code that calls us will do expand() and try again
-        return None
+        return
 
     fac, po, gl, cond = gs
     _debug(' could rewrite:', gs)
@@ -1741,7 +1746,7 @@ def meijerint_definite(f, x, a, b):
 
     if f.has(DiracDelta):
         _debug('Integrand has DiracDelta terms - giving up.')
-        return None
+        return
 
     f_, x_, a_, b_ = f, x, a, b
 
@@ -1778,7 +1783,7 @@ def meijerint_definite(f, x, a, b):
             res1, cond1 = res1
             res2, cond2 = res2
             cond = _condsimp(And(cond1, cond2))
-            if cond == False:
+            if cond == S.false:
                 _debug('  But combined condition is always false.')
                 continue
             res = res1 + res2
@@ -1833,7 +1838,8 @@ def meijerint_definite(f, x, a, b):
             _rewrite_hyperbolics_as_exp(f_), x_, a_, b_)
         if rv:
             if not type(rv) is list:
-                rv = (collect(factor_terms(rv[0]), rv[0].atoms(exp)),) + rv[1:]
+                rv = (collect(factor_terms(rv[0]),
+                              set(a for a in rv[0].atoms(Pow) if a.base is S.Exp1)),) + rv[1:]
                 return rv
             results.extend(rv)
     if results:
@@ -1917,7 +1923,7 @@ def _meijerint_definite_3(f, x):
                 res += r
                 conds += [c]
             c = And(*conds)
-            if c != False:
+            if c != S.false:
                 return res, c
 
 
@@ -1952,10 +1958,10 @@ def _meijerint_definite_4(f, x, only_double=False):
                 C, f = _rewrite_saxena_1(fac*C, po*x**s, f, x)
                 res += C*_int0oo_1(f, x)
                 cond = And(cond, _check_antecedents_1(f, x))
-                if cond == False:
+                if cond == S.false:
                     break
             cond = _my_unpolarify(cond)
-            if cond == False:
+            if cond == S.false:
                 _debug('But cond is always False.')
             else:
                 _debug('Result before branch substitutions is:', res)
@@ -1978,14 +1984,14 @@ def _meijerint_definite_4(f, x, only_double=False):
                     C, f1_, f2_ = r
                     _debug('Saxena subst for yielded:', C, f1_, f2_)
                     cond = And(cond, _check_antecedents(f1_, f2_, x))
-                    if cond == False:
+                    if cond == S.false:
                         break
                     res += C*_int0oo(f1_, f2_, x)
                 else:
                     continue
                 break
             cond = _my_unpolarify(cond)
-            if cond == False:
+            if cond == S.false:
                 _debug('But cond is always False (full_pb=%s).' % full_pb)
             else:
                 _debug('Result before branch substitutions is:', res)
@@ -2020,7 +2026,7 @@ def meijerint_inversion(f, x, t):
     _debug('Laplace-inverting', f)
     if not _is_analytic(f, x):
         _debug('But expression is not analytic.')
-        return None
+        return
     # We filter out exponentials here. If we are given an Add this will not
     # work, but the calling code will take care of that.
     shift = 0
@@ -2030,13 +2036,13 @@ def meijerint_inversion(f, x, t):
         exponentials = []
         while args:
             arg = args.pop()
-            if isinstance(arg, exp):
+            if arg.is_Pow and arg.base is S.Exp1:
                 arg2 = expand(arg)
                 if arg2.is_Mul:
                     args += arg2.args
                     continue
                 try:
-                    a, b = _get_coeff_exp(arg.args[0], x)
+                    a, b = _get_coeff_exp(arg.exp, x)
                 except _CoeffExpValueError:
                     b = 0
                 if b == 1:
@@ -2070,10 +2076,10 @@ def meijerint_inversion(f, x, t):
             C, f = _rewrite_inversion(fac*C, po*x**s, f, x)
             res += C*_int_inversion(f, x, t)
             cond = And(cond, _check_antecedents_inversion(f, x))
-            if cond == False:
+            if cond == S.false:
                 break
         cond = _my_unpolarify(cond)
-        if cond == False:
+        if cond == S.false:
             _debug('But cond is always False.')
         else:
             _debug('Result before branch substitution:', res)

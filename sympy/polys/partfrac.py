@@ -12,6 +12,7 @@ from sympy.core.basic import preorder_traversal
 from sympy.utilities import numbered_symbols, take, xthreaded, public
 from sympy.core.compatibility import range
 
+
 @xthreaded
 @public
 def apart(f, x=None, full=False, **options):
@@ -204,8 +205,7 @@ def apart_full_decomposition(P, Q):
     References
     ==========
 
-    1. [Bronstein93]_
-
+    .. [1] [Bronstein93]_
     """
     return assemble_partfrac_list(apart_list(P/Q, P.gens[0]))
 
@@ -312,8 +312,7 @@ def apart_list(f, x=None, dummies=None, **options):
     References
     ==========
 
-    1. [Bronstein93]_
-
+    .. [1] [Bronstein93]_
     """
     allowed_flags(options, [])
 
@@ -367,8 +366,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
     References
     ==========
 
-    1. [Bronstein93]_
-
+    .. [1] [Bronstein93]_
     """
     f, x, U = P/Q, P.gen, []
 

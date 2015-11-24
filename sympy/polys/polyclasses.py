@@ -9,6 +9,7 @@ from sympy.polys.polyerrors import CoercionFailed, NotReversible
 
 from sympy import oo
 
+
 class GenericPoly(PicklableWithSlots):
     """Base class for low-level polynomial representations. """
 
@@ -541,7 +542,7 @@ class DMP(PicklableWithSlots, CantSympify):
             _tdeg = sum(monom)
 
             if _tdeg != tdeg:
-                return None
+                return
 
         return tdeg
 

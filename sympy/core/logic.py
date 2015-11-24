@@ -67,7 +67,7 @@ def fuzzy_bool(x):
     for the None value.
     """
     if x is None:
-        return None
+        return
     return bool(x)
 
 
@@ -200,11 +200,11 @@ class Logic(object):
 
     @staticmethod
     def fromstring(text):
-        """Logic from string with space around & and | but none after !.
+        """Logic from string with space around & and | but none after ~.
 
            e.g.
 
-           !a & b | c
+           ~a & b | c
         """
         lexpr = None  # current logical expression
         schedop = None  # scheduled operation
@@ -221,9 +221,9 @@ class Logic(object):
                 continue
             if '&' in term or '|' in term:
                 raise ValueError('& and | must have space around them')
-            if term[0] == '!':
+            if term[0] == '~':
                 if len(term) == 1:
-                    raise ValueError('do not include space after "!"')
+                    raise ValueError('do not include space after "~"')
                 term = Not(term[1:])
 
             # already scheduled operation, e.g. '&'
@@ -298,7 +298,7 @@ class And(AndOr_Base):
     op_x_notx = False
 
     def _eval_propagate_not(self):
-        # !(a&b&c ...) == !a | !b | !c ...
+        # ~(a&b&c ...) == ~a | ~b | ~c ...
         return Or( *[Not(a) for a in self.args] )
 
     # (a|b|...) & c == (a&c) | (b&c) | ...
@@ -326,7 +326,7 @@ class Or(AndOr_Base):
     op_x_notx = True
 
     def _eval_propagate_not(self):
-        # !(a|b|c ...) == !a & !b & !c ...
+        # ~(a|b|c ...) == ~a & ~b & ~c ...
         return And( *[Not(a) for a in self.args] )
 
 
@@ -356,4 +356,4 @@ class Not(Logic):
 
 Logic.op_2class['&'] = And
 Logic.op_2class['|'] = Or
-Logic.op_2class['!'] = Not
+Logic.op_2class['~'] = Not

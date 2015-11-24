@@ -121,12 +121,13 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
             debug("init_printing: not using text/latex formatter")
             for cls in printable_types:
                 # Better way to set this, but currently does not work in IPython
-                #latex_formatter.for_type(cls, None)
+                # latex_formatter.for_type(cls, None)
                 if cls in latex_formatter.type_printers:
                     latex_formatter.type_printers.pop(cls)
 
     else:
         ip.set_hook('result_display', _result_display)
+
 
 def _is_ipython(shell):
     """Is a shell instance an IPython shell?"""

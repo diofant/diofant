@@ -259,7 +259,7 @@ class Application(with_metaclass(FunctionClass, Basic)):
 
     def _eval_subs(self, old, new):
         if (old.is_Function and new.is_Function and old == self.func and
-            len(self.args) in new.nargs):
+                len(self.args) in new.nargs):
             return new(*self.args)
 
 
@@ -460,6 +460,7 @@ class Function(Application, Expr):
         #     we be more intelligent about it?
         try:
             args = [arg._to_mpmath(prec + 5) for arg in self.args]
+
             def bad(m):
                 from mpmath import mpf, mpc
                 # the precision of an mpf value is the last element
@@ -478,6 +479,7 @@ class Function(Application, Expr):
                         n[1] !=1 and n[-1] == 1
                 else:
                     return False
+
             if any(bad(a) for a in args):
                 raise ValueError  # one or more args failed to compute with significance
         except ValueError:
@@ -595,8 +597,8 @@ class Function(Application, Expr):
             e = self
             e1 = e.expand()
             if e == e1:
-                #for example when e = sin(x+1) or e = sin(cos(x))
-                #let's try the general algorithm
+                # for example when e = sin(x+1) or e = sin(cos(x))
+                # let's try the general algorithm
                 term = e.subs(x, S.Zero)
                 if term.is_finite is False or term is S.NaN:
                     raise PoleError("Cannot expand %s around 0" % (self))
@@ -707,6 +709,7 @@ class UndefinedFunction(FunctionClass):
 UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
                                          (s.class_key() == o.class_key()))
 
+
 class WildFunction(Function, AtomicExpr):
     """
     A WildFunction function matches any function (with its arguments).
@@ -772,9 +775,9 @@ class WildFunction(Function, AtomicExpr):
 
     def matches(self, expr, repl_dict={}, old=False):
         if not isinstance(expr, (AppliedUndef, Function)):
-            return None
+            return
         if len(expr.args) not in self.nargs:
-            return None
+            return
 
         repl_dict = repl_dict.copy()
         repl_dict[self] = expr
@@ -1062,7 +1065,7 @@ class Derivative(Expr):
             # order for later comparisons. This is too aggressive if evaluate
             # is False, so we don't do it in that case.
             if evaluate:
-                #TODO: check if assumption of discontinuous derivatives exist
+                # TODO: check if assumption of discontinuous derivatives exist
                 variables = cls._sort_variables(variables)
             # Here we *don't* need to reinject evaluate into assumptions
             # because we are done with it and it is not an assumption that
@@ -1380,7 +1383,7 @@ class Lambda(Expr):
             # for example, https://github.com/numpy/numpy/issues/1697.
             # The ideal solution would be just to attach metadata to
             # the exception and change NumPy to take advantage of this.
-            ## XXX does this apply to Lambda? If not, remove this comment.
+            # XXX does this apply to Lambda? If not, remove this comment.
             temp = ('%(name)s takes exactly %(args)s '
                    'argument%(plural)s (%(given)s given)')
             raise TypeError(temp % {
@@ -1416,7 +1419,7 @@ class Lambda(Expr):
         if len(self.args) == 2:
             return self.args[0] == self.args[1]
         else:
-            return None
+            return
 
 
 class Subs(Expr):
@@ -1486,12 +1489,15 @@ class Subs(Expr):
         pre = "_"
         pts = sorted(set(point), key=default_sort_key)
         from sympy.printing import StrPrinter
+
         class CustomStrPrinter(StrPrinter):
             def _print_Dummy(self, expr):
                 return str(expr) + str(expr.dummy_index)
+
         def mystr(expr, **settings):
             p = CustomStrPrinter(settings)
             return p.doprint(expr)
+
         while 1:
             s_pts = {p: Symbol(pre + mystr(p)) for p in pts}
             reps = [(v, s_pts[p])
@@ -1624,7 +1630,7 @@ def diff(f, *symbols, **kwargs):
     References
     ==========
 
-    http://reference.wolfram.com/legacy/v5_2/Built-inFunctions/AlgebraicComputation/Calculus/D.html
+    .. [1] http://reference.wolfram.com/legacy/v5_2/Built-inFunctions/AlgebraicComputation/Calculus/D.html
 
     See Also
     ========
@@ -1699,7 +1705,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     Expand addition in exponents into multiplied bases.
 
     >>> exp(x + y).expand(power_exp=True)
-    exp(x)*exp(y)
+    E**x*E**y
     >>> (2**(x + y)).expand(power_exp=True)
     2**x*2**y
 
@@ -1798,18 +1804,18 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     - You can shut off unwanted methods::
 
         >>> (exp(x + y)*(x + y)).expand()
-        x*exp(x)*exp(y) + y*exp(x)*exp(y)
+        E**x*E**y*x + E**x*E**y*y
         >>> (exp(x + y)*(x + y)).expand(power_exp=False)
-        x*exp(x + y) + y*exp(x + y)
+        E**(x + y)*x + E**(x + y)*y
         >>> (exp(x + y)*(x + y)).expand(mul=False)
-        (x + y)*exp(x)*exp(y)
+        E**x*E**y*(x + y)
 
     - Use deep=False to only expand on the top level::
 
         >>> exp(x + exp(x + y)).expand()
-        exp(x)*exp(exp(x)*exp(y))
+        E**x*E**(E**x*E**y)
         >>> exp(x + exp(x + y)).expand(deep=False)
-        exp(x)*exp(exp(x + y))
+        E**(E**(x + y))*E**x
 
     - Hints are applied in an arbitrary, but consistent order (in the current
       implementation, they are applied in alphabetical order, except
@@ -1973,6 +1979,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
 
 # This is a special application of two hints
 
+
 def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always
     # be sufficient to give a fully expanded expression (see
@@ -2001,8 +2008,7 @@ def expand_mul(expr, deep=True):
     >>> from sympy import symbols, expand_mul, exp, log
     >>> x, y = symbols('x,y', positive=True)
     >>> expand_mul(exp(x+y)*(x+y)*log(x*y**2))
-    x*exp(x + y)*log(x*y**2) + y*exp(x + y)*log(x*y**2)
-
+    E**(x + y)*x*log(x*y**2) + E**(x + y)*y*log(x*y**2)
     """
     return sympify(expr).expand(deep=deep, mul=True, power_exp=False,
     power_base=False, basic=False, multinomial=False, log=False)
@@ -2019,8 +2025,7 @@ def expand_multinomial(expr, deep=True):
     >>> from sympy import symbols, expand_multinomial, exp
     >>> x, y = symbols('x y', positive=True)
     >>> expand_multinomial((x + exp(x + 1))**2)
-    x**2 + 2*x*exp(x + 1) + exp(2*x + 2)
-
+    2*E**(x + 1)*x + E**(2*x + 2) + x**2
     """
     return sympify(expr).expand(deep=deep, mul=False, power_exp=False,
     power_base=False, basic=False, multinomial=True, log=False)
@@ -2037,8 +2042,7 @@ def expand_log(expr, deep=True, force=False):
     >>> from sympy import symbols, expand_log, exp, log
     >>> x, y = symbols('x,y', positive=True)
     >>> expand_log(exp(x+y)*(x+y)*log(x*y**2))
-    (x + y)*(log(x) + 2*log(y))*exp(x + y)
-
+    E**(x + y)*(x + y)*(log(x) + 2*log(y))
     """
     return sympify(expr).expand(deep=deep, log=True, mul=False,
         power_exp=False, power_base=False, multinomial=False,
@@ -2057,7 +2061,6 @@ def expand_func(expr, deep=True):
     >>> from sympy.abc import x
     >>> expand_func(gamma(x + 2))
     x*(x + 1)*gamma(x)
-
     """
     return sympify(expr).expand(deep=deep, func=True, basic=False,
     log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
@@ -2092,7 +2095,7 @@ def expand_complex(expr, deep=True):
     >>> from sympy import expand_complex, exp, sqrt, I
     >>> from sympy.abc import z
     >>> expand_complex(exp(z))
-    I*exp(re(z))*sin(im(z)) + exp(re(z))*cos(im(z))
+    E**re(z)*I*sin(im(z)) + E**re(z)*cos(im(z))
     >>> expand_complex(sqrt(I))
     sqrt(2)/2 + sqrt(2)*I/2
 
@@ -2146,7 +2149,7 @@ def expand_power_base(expr, deep=True, force=False):
     2**y*sin(x)**y + 2**y*cos(x)**y
 
     >>> expand_power_base((2*exp(y))**x)
-    2**x*exp(y)**x
+    2**x*(E**y)**x
 
     >>> expand_power_base((2*cos(x))**y)
     2**y*cos(x)**y
@@ -2163,7 +2166,6 @@ def expand_power_base(expr, deep=True, force=False):
     2**(z + 1)*y**(z + 1)
     >>> ((2*y)**(1+z)).expand()
     2*2**z*y*y**z
-
     """
     return sympify(expr).expand(deep=deep, log=False, mul=False,
         power_exp=False, power_base=True, multinomial=False,
@@ -2257,7 +2259,7 @@ def count_ops(expr, visual=False):
 
     """
     from sympy import Integral, Symbol
-    from sympy.simplify.simplify import fraction
+    from sympy.simplify.radsimp import fraction
     from sympy.logic.boolalg import BooleanFunction
 
     expr = sympify(expr)
@@ -2276,7 +2278,7 @@ def count_ops(expr, visual=False):
                 continue
 
             if a.is_Rational:
-                #-1/3 = NEG + DIV
+                # -1/3 = NEG + DIV
                 if a is not S.One:
                     if a.p < 0:
                         ops.append(NEG)

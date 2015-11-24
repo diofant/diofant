@@ -11,7 +11,6 @@ import textwrap
 from sympy.external import import_module
 from sympy.core.compatibility import exec_, is_sequence, iterable, string_types, range
 from sympy.utilities.decorator import doctest_depends_on
-from sympy.utilities.exceptions import SymPyDeprecationWarning
 
 # These are the namespaces the lambda functions will use.
 MATH = {}
@@ -50,9 +49,9 @@ MPMATH_TRANSLATIONS = {
     "E": "e",
     "I": "j",
     "ln": "log",
-    #"lowergamma":"lower_gamma",
+    # "lowergamma": "lower_gamma",
     "oo": "inf",
-    #"uppergamma":"upper_gamma",
+    # "uppergamma": "upper_gamma",
     "LambertW": "lambertw",
     "MutableDenseMatrix": "matrix",
     "ImmutableMatrix": "matrix",
@@ -79,12 +78,16 @@ NUMPY_TRANSLATIONS = {
     "E": "e",
     "im": "imag",
     "ln": "log",
-    "MutableDenseMatrix": "matrix",
-    "ImmutableMatrix": "matrix",
     "Max": "amax",
     "Min": "amin",
     "oo": "inf",
     "re": "real",
+    "SparseMatrix": "array",
+    "ImmutableSparseMatrix": "array",
+    "Matrix": "array",
+    "MutableDenseMatrix": "array",
+    "ImmutableMatrix": "array",
+    "ImmutableDenseMatrix": "array",
 }
 
 NUMEXPR_TRANSLATIONS = {}
@@ -98,8 +101,8 @@ MODULES = {
         "from sympy.functions import *",
         "from sympy.matrices import *",
         "from sympy import Integral, pi, oo, nan, zoo, E, I",)),
-    "numexpr" : (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
-                 ("import_module('numexpr')", )),
+    "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
+                ("import_module('numexpr')", )),
 }
 
 
@@ -182,23 +185,19 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     functions can be found at:
     https://github.com/pydata/numexpr#supported-functions
 
-    Deprecation Warnings
-    ====================
-
     In previous releases ``lambdify`` replaced ``Matrix`` with ``numpy.matrix``
-    by default. As of release 0.7.6 ``numpy.array`` is being transitioned to
-    the default. In release 0.7.7 this transition will be complete. For now, to
-    use the new default behavior you must pass in ``[{'ImmutableMatrix':
-    numpy.array}, 'numpy']`` to the ``modules`` kwarg.
+    by default. As of release 0.7.7 ``numpy.array`` is the default.
+    To get the old default behavior you must pass in ``[{'ImmutableMatrix':
+    numpy.matrix}, 'numpy']`` to the ``modules`` kwarg.
 
     >>> from sympy import lambdify, Matrix
     >>> from sympy.abc import x, y
     >>> import numpy
-    >>> mat2array = [{'ImmutableMatrix': numpy.array}, 'numpy']
-    >>> f = lambdify((x, y), Matrix([x, y]), modules=mat2array)
+    >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
+    >>> f = lambdify((x, y), Matrix([x, y]), modules=array2mat)
     >>> f(1, 2)
-    array([[1],
-           [2]])
+    matrix([[1],
+            [2]])
 
     Usage
     =====
@@ -307,7 +306,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         #      might be the reason for irreproducible errors.
         modules = ["math", "mpmath", "sympy"]
 
-        #Attempt to import numpy
+        # Attempt to import numpy
         try:
             _import("numpy")
         except ImportError:
@@ -333,14 +332,17 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     for m in namespaces[::-1]:
         buf = _get_namespace(m)
         namespace.update(buf)
-    _issue_7853_dep_check(namespaces, namespace, expr)
 
     if hasattr(expr, "atoms"):
-        #Try if you can extract symbols from the expression.
-        #Move on if expr.atoms in not implemented.
+        # Try if you can extract symbols from the expression.
+        # Move on if expr.atoms in not implemented.
         syms = expr.atoms(Symbol)
         for term in syms:
             namespace.update({str(term): term})
+
+    if _module_present('numpy', namespaces) and printer is None:
+        # XXX: This has to be done here because of circular imports
+        from sympy.printing.lambdarepr import NumPyPrinter as printer
 
     if _module_present('numexpr', namespaces) and printer is None:
         # XXX: This has to be done here because of circular imports
@@ -381,31 +383,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     func.__doc__ = ("Created with lambdify. Signature:\n\n{sig}\n\n"
                     "Expression:\n\n{expr}").format(sig=sig, expr=expr_str)
     return func
-
-def _issue_7853_dep_check(namespaces, namespace, expr):
-    """Used for checking things passed into modules kwarg for deprecation
-    issue #7853. This function and the call to it in lambdify should be
-    deleted once the cycle has ended."""
-
-    # If some module changed `ImmutableMatrix` to be something else
-    mat = namespace.get('ImmutableMatrix', False)
-    if not mat or 'numpy' not in namespaces or ('%s.%s' % (mat.__module__,
-            mat.__name__) == 'numpy.matrixlib.defmatrix.matrix'):
-        return
-    dicts = [m for m in namespaces if isinstance(m, dict)]
-    def test(expr):
-        return hasattr(expr, 'is_Matrix') and expr.is_Matrix
-    if test(expr) and not [d for d in dicts if 'ImmutableMatrix' in d]:
-        SymPyDeprecationWarning(
-                "Currently, `sympy.Matrix` is replaced with `numpy.matrix` if "
-                "the NumPy package is utilized in lambdify. In future versions "
-                "of SymPy (> 0.7.6), we will default to replacing "
-                "`sympy.Matrix` with `numpy.array`. To use the future "
-                "behavior now, supply the kwarg "
-                "`modules=[{'ImmutableMatrix': numpy.array}, 'numpy']`. "
-                "The old behavior can be retained in future versions by "
-                "supplying `modules=[{'ImmutableMatrix': numpy.matrix}, "
-                "'numpy']`.", issue=7853).warn()
 
 
 def _module_present(modname, modlist):
@@ -468,7 +445,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
                 def lambdarepr(expr):
                     return printer.doprint(expr)
     else:
-        #XXX: This has to be done here because of circular imports
+        # XXX: This has to be done here because of circular imports
         from sympy.printing.lambdarepr import lambdarepr
 
     def sub_args(args, dummies_dict):
@@ -480,10 +457,10 @@ def lambdastr(args, expr, printer=None, dummify=False):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ",".join(str(a) for a in dummies)
         else:
-            #Sub in dummy variables for functions or symbols
+            # Sub in dummy variables for functions or symbols
             if isinstance(args, (Function, Symbol)):
                 dummies = Dummy()
-                dummies_dict.update({args : dummies})
+                dummies_dict.update({args: dummies})
                 return str(dummies)
             else:
                 return str(args)

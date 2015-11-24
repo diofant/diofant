@@ -335,11 +335,6 @@ class Number(AtomicExpr):
     def _eval_conjugate(self):
         return self
 
-    def _eval_order(self, *symbols):
-        from sympy import Order
-        # Order(5, x, y) -> Order(1,x,y)
-        return Order(S.One, *symbols)
-
     def _eval_subs(self, old, new):
         if old == -self:
             return -new
@@ -1099,8 +1094,6 @@ class Rational(Number):
     the sympify() function, and conversion of floats to expressions
     or simple fractions can be handled with nsimplify:
 
-    >>> S('.[3]')  # repeating digits in brackets
-    1/3
     >>> S('3**2/10')  # general expressions
     9/10
     >>> nsimplify(.3)  # numbers that have a simple form
@@ -2112,10 +2105,6 @@ class Zero(with_metaclass(Singleton, IntegerConstant)):
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
-    def _eval_order(self, *symbols):
-        # Order(0,x) -> 0
-        return self
-
     def __nonzero__(self):
         return False
 
@@ -2156,9 +2145,6 @@ class One(with_metaclass(Singleton, IntegerConstant)):
 
     def _eval_power(self, expt):
         return self
-
-    def _eval_order(self, *symbols):
-        return
 
     @staticmethod
     def factors(limit=None, use_trial=True, use_rho=False, use_pm1=False,
@@ -3028,9 +3014,80 @@ class Exp1(with_metaclass(Singleton, NumberSymbol)):
         elif issubclass(number_cls, Rational):
             pass
 
-    def _eval_power(self, expt):
-        from sympy import exp
-        return exp(expt)
+    def _eval_power(self, arg):
+        from sympy.functions.elementary.exponential import log
+        from sympy import Add, Mul, Pow
+        if arg.is_Number:
+            if arg is S.NaN:
+                return S.NaN
+            elif arg is S.Zero:
+                return S.One
+            elif arg is S.One:
+                return S.Exp1
+            elif arg is S.Infinity:
+                return S.Infinity
+            elif arg is S.NegativeInfinity:
+                return S.Zero
+        elif arg.func is log:
+            return arg.args[0]
+        elif arg.is_Mul:
+            Ioo = S.ImaginaryUnit*S.Infinity
+            if arg in [Ioo, -Ioo]:
+                return S.NaN
+
+            coeff = arg.coeff(S.Pi*S.ImaginaryUnit)
+            if coeff:
+                if (2*coeff).is_integer:
+                    if coeff.is_even:
+                        return S.One
+                    elif coeff.is_odd:
+                        return S.NegativeOne
+                    elif (coeff + S.Half).is_even:
+                        return -S.ImaginaryUnit
+                    elif (coeff + S.Half).is_odd:
+                        return S.ImaginaryUnit
+
+            # Warning: code in risch.py will be very sensitive to changes
+            # in this (see DifferentialExtension).
+
+            # look for a single log factor
+
+            coeff, terms = arg.as_coeff_Mul()
+
+            # but it can't be multiplied by oo
+            if coeff in [S.NegativeInfinity, S.Infinity]:
+                return None
+
+            coeffs, log_term = [coeff], None
+            for term in Mul.make_args(terms):
+                if term.func is log:
+                    if log_term is None:
+                        log_term = term.args[0]
+                    else:
+                        return None
+                elif term.is_comparable:
+                    coeffs.append(term)
+                else:
+                    return None
+
+            return log_term**Mul(*coeffs) if log_term else None
+        elif arg.is_Add:
+            out = []
+            add = []
+            for a in arg.args:
+                if a is S.One:
+                    add.append(a)
+                    continue
+                newa = self**a
+                if newa.is_Pow and newa.base is self:
+                    add.append(a)
+                else:
+                    out.append(newa)
+            if out:
+                return Mul(*out)*Pow(self, Add(*add), evaluate=False)
+        elif arg.is_Matrix:
+            from sympy import Matrix
+            return arg.exp()
 
     def _eval_rewrite_as_sin(self):
         from sympy import sin

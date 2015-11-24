@@ -4,7 +4,7 @@ from sympy import symbols, Q
 from sympy.core.compatibility import range
 from sympy.logic.boolalg import And, Implies, Equivalent, true, false
 from sympy.logic.inference import literal_symbol, \
-     pl_true, satisfiable, valid, entails, PropKB
+    pl_true, satisfiable, valid, entails, PropKB
 from sympy.logic.algorithms.dpll import dpll, dpll_satisfiable, \
     find_pure_symbol, find_unit_clause, unit_propagate, \
     find_pure_symbol_int_repr, find_unit_clause_int_repr, \
@@ -155,7 +155,7 @@ def test_pl_true():
     assert pl_true( A & B, {B: False}) is False
     assert pl_true( A | B, {A: False, B: False}) is False
 
-    #test for None
+    # test for None
     assert pl_true(B, {B: None}) is None
     assert pl_true( A & B, {A: True, B: None}) is None
     assert pl_true( A >> B, {A: True, B: None}) is None
@@ -214,6 +214,7 @@ def test_propKB_tolerant():
     A, B, C = symbols('A,B,C')
     assert kb.ask(B) is False
 
+
 def test_satisfiable_non_symbols():
     x, y = symbols('x y')
     assumptions = Q.zero(x*y)
@@ -230,6 +231,7 @@ def test_satisfiable_non_symbols():
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll2')
     assert satisfiable(And(assumptions, facts, ~query), algorithm='dpll2') in refutations
 
+
 def test_satisfiable_bool():
     from sympy.core.singleton import S
     assert satisfiable(true) == {true: true}
@@ -241,7 +243,7 @@ def test_satisfiable_bool():
 def test_satisfiable_all_models():
     from sympy.abc import A, B
     assert next(satisfiable(False, all_models=True)) is False
-    assert list(satisfiable((A >> ~A) & A , all_models=True)) == [False]
+    assert list(satisfiable((A >> ~A) & A, all_models=True)) == [False]
     assert list(satisfiable(True, all_models=True)) == [{true: true}]
 
     models = [{A: True, B: False}, {A: False, B: True}]

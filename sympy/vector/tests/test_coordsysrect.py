@@ -1,7 +1,7 @@
 from sympy.vector.coordsysrect import CoordSysCartesian
 from sympy.vector.scalar import BaseScalar
 from sympy import sin, cos, pi, ImmutableMatrix as Matrix, \
-     symbols, simplify, zeros
+    symbols, simplify, zeros
 from sympy.vector.functions import express
 from sympy.vector.point import Point
 from sympy.vector.vector import Vector
@@ -81,15 +81,15 @@ def test_coordinate_vars():
     assert express(B.x*B.y*B.z, A, variables=True) == \
            A.z*(-A.x*sin(q) + A.y*cos(q))*(A.x*cos(q) + A.y*sin(q))
     assert express(B.x*B.i + B.y*B.j + B.z*B.k, A) == \
-           (B.x*cos(q) - B.y*sin(q))*A.i + (B.x*sin(q) + \
+           (B.x*cos(q) - B.y*sin(q))*A.i + (B.x*sin(q) +
            B.y*cos(q))*A.j + B.z*A.k
-    assert simplify(express(B.x*B.i + B.y*B.j + B.z*B.k, A, \
+    assert simplify(express(B.x*B.i + B.y*B.j + B.z*B.k, A,
                             variables=True)) == \
            A.x*A.i + A.y*A.j + A.z*A.k
     assert express(A.x*A.i + A.y*A.j + A.z*A.k, B) == \
            (A.x*cos(q) + A.y*sin(q))*B.i + \
            (-A.x*sin(q) + A.y*cos(q))*B.j + A.z*B.k
-    assert simplify(express(A.x*A.i + A.y*A.j + A.z*A.k, B, \
+    assert simplify(express(A.x*A.i + A.y*A.j + A.z*A.k, B,
                             variables=True)) == \
            B.x*B.i + B.y*B.j + B.z*B.k
     N = B.orient_new_axis('N', -q, B.k)
@@ -127,35 +127,35 @@ def test_rotation_matrix():
     G = N.orient_new_body('G', q1, q2, q3, '123')
     assert N.rotation_matrix(C) == Matrix([
         [- sin(q1) * sin(q2) * sin(q3) + cos(q1) * cos(q3), - sin(q1) *
-        cos(q2), sin(q1) * sin(q2) * cos(q3) + sin(q3) * cos(q1)], \
-        [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), \
-         cos(q1) * cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * \
+        cos(q2), sin(q1) * sin(q2) * cos(q3) + sin(q3) * cos(q1)],
+        [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1),
+         cos(q1) * cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) *
          cos(q3)], [- sin(q3) * cos(q2), sin(q2), cos(q2) * cos(q3)]])
     test_mat = D.rotation_matrix(C) - Matrix(
         [[cos(q1) * cos(q3) * cos(q4) - sin(q3) * (- sin(q4) * cos(q2) +
-        sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
-            cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) * \
-          (- sin(q4) * cos(q2) + sin(q1) * sin(q2) * cos(q4))], \
-         [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), cos(q1) * \
-          cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * cos(q3)], \
-         [sin(q4) * cos(q1) * cos(q3) - sin(q3) * (cos(q2) * cos(q4) + \
-                                                   sin(q1) * sin(q2) * \
+          sin(q1) * sin(q2) * cos(q4)), - sin(q2) * sin(q4) - sin(q1) *
+          cos(q2) * cos(q4), sin(q3) * cos(q1) * cos(q4) + cos(q3) *
+          (- sin(q4) * cos(q2) + sin(q1) * sin(q2) * cos(q4))],
+         [sin(q1) * cos(q3) + sin(q2) * sin(q3) * cos(q1), cos(q1) *
+          cos(q2), sin(q1) * sin(q3) - sin(q2) * cos(q1) * cos(q3)],
+         [sin(q4) * cos(q1) * cos(q3) - sin(q3) * (cos(q2) * cos(q4) +
+                                                   sin(q1) * sin(q2) *
                                                    sin(q4)), sin(q2) *
-                cos(q4) - sin(q1) * sin(q4) * cos(q2), sin(q3) * \
-          sin(q4) * cos(q1) + cos(q3) * (cos(q2) * cos(q4) + \
+                cos(q4) - sin(q1) * sin(q4) * cos(q2), sin(q3) *
+          sin(q4) * cos(q1) + cos(q3) * (cos(q2) * cos(q4) +
                                          sin(q1) * sin(q2) * sin(q4))]])
     assert test_mat.expand() == zeros(3, 3)
     assert E.rotation_matrix(N) == Matrix(
         [[cos(q2)*cos(q3), sin(q3)*cos(q2), -sin(q2)],
-        [sin(q1)*sin(q2)*cos(q3) - sin(q3)*cos(q1), \
-         sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3), sin(q1)*cos(q2)], \
-         [sin(q1)*sin(q3) + sin(q2)*cos(q1)*cos(q3), - \
+        [sin(q1)*sin(q2)*cos(q3) - sin(q3)*cos(q1),
+         sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3), sin(q1)*cos(q2)],
+         [sin(q1)*sin(q3) + sin(q2)*cos(q1)*cos(q3), -
           sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1), cos(q1)*cos(q2)]])
     assert F.rotation_matrix(N) == Matrix([[
         q1**2 + q2**2 - q3**2 - q4**2,
         2*q1*q4 + 2*q2*q3, -2*q1*q3 + 2*q2*q4],[ -2*q1*q4 + 2*q2*q3,
             q1**2 - q2**2 + q3**2 - q4**2, 2*q1*q2 + 2*q3*q4],
-                                           [2*q1*q3 + 2*q2*q4,
+        [2*q1*q3 + 2*q2*q4,
                                             -2*q1*q2 + 2*q3*q4,
                                 q1**2 - q2**2 - q3**2 + q4**2]])
     assert G.rotation_matrix(N) == Matrix([[
@@ -176,13 +176,13 @@ def test_vector():
     B = A.orient_new_axis('B', q2, A.i)
     C = B.orient_new_axis('C', q3, B.j)
 
-    #Test to_matrix
+    # Test to_matrix
     v1 = a*N.i + b*N.j + c*N.k
     assert v1.to_matrix(A) == Matrix([[ a*cos(q1) + b*sin(q1)],
                                       [-a*sin(q1) + b*cos(q1)],
                                       [                     c]])
 
-    #Test dot
+    # Test dot
     assert N.i.dot(A.i) == cos(q1)
     assert N.i.dot(A.j) == -sin(q1)
     assert N.i.dot(A.k) == 0
@@ -206,7 +206,7 @@ def test_vector():
     assert A.k.dot(C.j) == sin(q2)
     assert A.k.dot(C.k) == cos(q2)*cos(q3)
 
-    #Test cross
+    # Test cross
     assert N.i.cross(A.i) == sin(q1)*A.k
     assert N.i.cross(A.j) == cos(q1)*A.k
     assert N.i.cross(A.k) == -sin(q1)*A.i - cos(q1)*A.j
@@ -229,6 +229,7 @@ def test_vector():
            (-sin(q2)*sin(q3))*A.k
     assert C.j.cross(A.i) == (sin(q2))*A.j + (-cos(q2))*A.k
     assert express(C.k.cross(A.i), C).trigsimp() == cos(q3)*C.j
+
 
 def test_orient_new_methods():
     N = CoordSysCartesian('N')

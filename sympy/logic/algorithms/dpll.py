@@ -137,7 +137,7 @@ def dpll_int_repr(clauses, symbols, model):
     return (dpll_int_repr(unit_propagate_int_repr(unknown_clauses, P), symbols, model) or
             dpll_int_repr(unit_propagate_int_repr(unknown_clauses, -P), symbols_copy, model_copy))
 
-### helper methods for DPLL
+# helper methods for DPLL
 
 
 def pl_true_int_repr(clause, model={}):

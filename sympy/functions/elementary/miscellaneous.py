@@ -18,6 +18,7 @@ from sympy.core.logic import fuzzy_and
 from sympy.functions.elementary.integers import floor
 from sympy.logic.boolalg import And
 
+
 class IdentityFunction(with_metaclass(Singleton, Lambda)):
     """
     The identity function
@@ -35,7 +36,7 @@ class IdentityFunction(with_metaclass(Singleton, Lambda)):
     def __new__(cls):
         from sympy.sets.sets import FiniteSet
         x = Dummy('x')
-        #construct "by hand" to avoid infinite loop
+        # construct "by hand" to avoid infinite loop
         obj = Expr.__new__(cls, Tuple(x), x)
         obj.nargs = FiniteSet(1)
         return obj
@@ -43,7 +44,7 @@ class IdentityFunction(with_metaclass(Singleton, Lambda)):
 Id = S.IdentityFunction
 
 ###############################################################################
-############################# ROOT and SQUARE ROOT FUNCTION ###################
+# ########################### ROOT and SQUARE ROOT FUNCTION ################# #
 ###############################################################################
 
 
@@ -323,7 +324,7 @@ def real_root(arg, n=None):
     return rv.xreplace(n1pow)
 
 ###############################################################################
-############################# MINIMUM and MAXIMUM #############################
+# ########################### MINIMUM and MAXIMUM ########################### #
 ###############################################################################
 
 
@@ -562,7 +563,7 @@ class Max(MinMaxBase, Application):
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from sympy import Heaviside
-        return Add(*[j*Mul(*[Heaviside(j - i) for i in args if i!=j]) \
+        return Add(*[j*Mul(*[Heaviside(j - i) for i in args if i!=j])
                 for j in args])
 
 
@@ -613,5 +614,5 @@ class Min(MinMaxBase, Application):
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from sympy import Heaviside
-        return Add(*[j*Mul(*[Heaviside(i-j) for i in args if i!=j]) \
+        return Add(*[j*Mul(*[Heaviside(i-j) for i in args if i!=j])
                 for j in args])

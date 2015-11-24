@@ -81,19 +81,19 @@ def test_reduce_poly_inequalities_real_interval():
         x**2 - 1, 0)]], x, relational=False) == FiniteSet(-1, 1)
     assert reduce_rational_inequalities(
         [[Le(x**2 - 2, 0), Ge(x**2 - 1, 0)]], x, relational=False
-        ) == Union(Interval(-s, -1, False, False), Interval(1, s, False, False))
+    ) == Union(Interval(-s, -1, False, False), Interval(1, s, False, False))
     assert reduce_rational_inequalities(
         [[Le(x**2 - 2, 0), Gt(x**2 - 1, 0)]], x, relational=False
-        ) == Union(Interval(-s, -1, False, True), Interval(1, s, True, False))
+    ) == Union(Interval(-s, -1, False, True), Interval(1, s, True, False))
     assert reduce_rational_inequalities(
         [[Lt(x**2 - 2, 0), Ge(x**2 - 1, 0)]], x, relational=False
-        ) == Union(Interval(-s, -1, True, False), Interval(1, s, False, True))
+    ) == Union(Interval(-s, -1, True, False), Interval(1, s, False, True))
     assert reduce_rational_inequalities(
         [[Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]], x, relational=False
-        ) == Union(Interval(-s, -1, True, True), Interval(1, s, True, True))
+    ) == Union(Interval(-s, -1, True, True), Interval(1, s, True, True))
     assert reduce_rational_inequalities(
         [[Lt(x**2 - 2, 0), Ne(x**2 - 1, 0)]], x, relational=False
-        ) == Union(Interval(-s, -1, True, True), Interval(-1, 1, True, True),
+    ) == Union(Interval(-s, -1, True, True), Interval(-1, 1, True, True),
         Interval(1, s, True, True))
 
 

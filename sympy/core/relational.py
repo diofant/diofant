@@ -183,9 +183,9 @@ class Relational(Boolean, Expr, EvalfMixin):
                 # approximation.  If .equals(0) gives None, cannot be deduced.
                 if not dif.has(Symbol):
                     know = dif.equals(0)
-                    if know == True:
+                    if know:
                         dif = S.Zero
-                    elif know == False:
+                    elif know is False:
                         dif = dif.evalf()
                 # Can definitively compare a Number to zero, if appropriate.
                 if dif.is_Number and (dif.is_extended_real or r.func in (Eq, Ne)):
@@ -260,7 +260,7 @@ class Equality(Relational):
     >>> _.doit()
     False
     >>> Eq(exp(x), exp(x).rewrite(cos))
-    Eq(exp(x), sinh(x) + cosh(x))
+    Eq(E**x, sinh(x) + cosh(x))
     >>> simplify(_)
     True
 
@@ -368,7 +368,7 @@ class Unequality(Relational):
 
         if evaluate:
             is_equal = Equality(lhs, rhs)
-            if is_equal == True or is_equal == False:
+            if is_equal == S.true or is_equal == S.false:
                 return ~is_equal
 
         return Relational.__new__(cls, lhs, rhs, **options)
@@ -652,6 +652,9 @@ class GreaterThan(_Greater):
     point.  For the time being (circa Jan 2012), use And to create chained
     inequalities.
 
+    References
+    ==========
+
     .. [1] This implementation detail is that Python provides no reliable
        method to determine that a chained inequality is being built.  Chained
        comparison operators are evaluated pairwise, using "and" logic (see
@@ -688,7 +691,6 @@ class GreaterThan(_Greater):
 
        "It right 0 < x < 1 ?"
        `Issue 6059 <https://github.com/sympy/sympy/issues/6059>`_
-
     """
     __slots__ = ()
 

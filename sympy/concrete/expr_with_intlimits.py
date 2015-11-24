@@ -3,6 +3,7 @@ from __future__ import print_function, division
 from sympy.concrete.expr_with_limits import ExprWithLimits
 from sympy.core.singleton import S
 
+
 class ReorderError(NotImplementedError):
     """
     Exception raised when trying to reorder dependent limits.
@@ -10,6 +11,7 @@ class ReorderError(NotImplementedError):
     def __init__(self, expr, msg):
         super(ReorderError, self).__init__(
             "%s could not be reordered: %s." % (expr, msg))
+
 
 class ExprWithIntLimits(ExprWithLimits):
     def change_index(self, var, trafo, newvar=None):
@@ -275,9 +277,9 @@ class ExprWithIntLimits(ExprWithLimits):
         limit_y = expr.limits[y]
 
         if (len(set(limit_x[1].free_symbols).intersection(var)) == 0 and
-            len(set(limit_x[2].free_symbols).intersection(var)) == 0 and
-            len(set(limit_y[1].free_symbols).intersection(var)) == 0 and
-            len(set(limit_y[2].free_symbols).intersection(var)) == 0):
+                len(set(limit_x[2].free_symbols).intersection(var)) == 0 and
+                len(set(limit_y[1].free_symbols).intersection(var)) == 0 and
+                len(set(limit_y[2].free_symbols).intersection(var)) == 0):
 
             limits = []
             for i, limit in enumerate(expr.limits):

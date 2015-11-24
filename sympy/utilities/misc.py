@@ -111,6 +111,7 @@ HASH_RANDOMIZATION = getattr(sys.flags, 'hash_randomization', False)
 _debug_tmp = []
 _debug_iter = 0
 
+
 def debug_decorator(func):
     """If SYMPY_DEBUG is True, it will print a nice execution tree with
     arguments and results of all decorated functions, else do nothing.
@@ -150,8 +151,8 @@ def debug_decorator(func):
         # If there is a bug and the algorithm enters an infinite loop, enable the
         # following lines. It will print the names and parameters of all major functions
         # that are called, *before* they are called
-        #from sympy.core.compatibility import reduce
-        #print("%s%s %s%s" % (_debug_iter, reduce(lambda x, y: x + y, \
+        # from sympy.core.compatibility import reduce
+        # print("%s%s %s%s" % (_debug_iter, reduce(lambda x, y: x + y, \
         #    map(lambda x: '-', range(1, 2 + _debug_iter))), get_function_name(f), args))
 
         r = f(*args, **kw)
@@ -213,4 +214,4 @@ def find_executable(executable, path=None):
                 if os.path.isfile(f):
                     return f
     else:
-        return None
+        return

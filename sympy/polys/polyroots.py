@@ -119,8 +119,9 @@ def roots_cubic(f, trig=False):
 
     References
     ==========
-    [1] https://en.wikipedia.org/wiki/Cubic_function, General formula for roots,
-    (accessed November 17, 2014).
+
+    .. [1] https://en.wikipedia.org/wiki/Cubic_function, General
+           formula for roots, (accessed November 17, 2014).
     """
     if trig:
         a, b, c, d = f.all_coeffs()
@@ -185,6 +186,7 @@ def roots_cubic(f, trig=False):
 
     return soln
 
+
 def _roots_quartic_euler(p, q, r, a):
     """
     Descartes-Euler solution of the quartic equation
@@ -231,7 +233,7 @@ def _roots_quartic_euler(p, q, r, a):
     xsols = list(roots(Poly(eq, x), cubics=False).keys())
     xsols = [sol for sol in xsols if sol.is_rational]
     if not xsols:
-        return None
+        return
     R = max(xsols)
     c1 = sqrt(R)
     B = -q*c1/(4*R)
@@ -280,13 +282,13 @@ def roots_quartic(f):
     References
     ==========
 
-    1. http://mathforum.org/dr.math/faq/faq.cubic.equations.html
-    2. http://en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
-    3. http://planetmath.org/encyclopedia/GaloisTheoreticDerivationOfTheQuarticFormula.html
-    4. http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
-    5. http://www.albmath.org/files/Math_5713.pdf
-    6. http://www.statemaster.com/encyclopedia/Quartic-equation
-    7. eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
+    .. [1] http://mathforum.org/dr.math/faq/faq.cubic.equations.html
+    .. [2] http://en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
+    .. [3] http://planetmath.org/encyclopedia/GaloisTheoreticDerivationOfTheQuarticFormula.html
+    .. [4] http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
+    .. [5] http://www.albmath.org/files/Math_5713.pdf
+    .. [6] http://www.statemaster.com/encyclopedia/Quartic-equation
+    .. [7] eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
     """
     _, a, b, c, d = f.monic().all_coeffs()
 
@@ -386,7 +388,7 @@ def roots_binomial(f):
     neg = base.is_negative
     even = n % 2 == 0
     if neg:
-        if even == True and (base + 1).is_positive:
+        if even and (base + 1).is_positive:
             big = True
         else:
             big = False
@@ -625,8 +627,8 @@ def roots_quintic(f):
             # evaluated numbers in computations
             r3temp_n = Res_n[3][j]
 
-            if( comp( r1_n*r2temp_n**2 + r4_n*r3temp_n**2 - testplus, 0, tol) and
-                comp( r3temp_n*r1_n**2 + r2temp_n*r4_n**2 - testminus, 0, tol ) ):
+            if (comp(r1_n*r2temp_n**2 + r4_n*r3temp_n**2 - testplus, 0, tol) and
+                    comp(r3temp_n*r1_n**2 + r2temp_n*r4_n**2 - testminus, 0, tol)):
                 r2 = Res[2][i]
                 r3 = Res[3][j]
                 break
@@ -692,7 +694,7 @@ def _integer_basis(poly):
         n = monoms[0]
         monoms = [n - i for i in reversed(monoms)]
     else:
-        return None
+        return
 
     monoms = monoms[:-1]
     coeffs = coeffs[:-1]
@@ -702,7 +704,7 @@ def _integer_basis(poly):
     try:
         div = next(divs)
     except StopIteration:
-        return None
+        return
 
     while True:
         for monom, coeff in zip(monoms, coeffs):
@@ -710,7 +712,7 @@ def _integer_basis(poly):
                 try:
                     div = next(divs)
                 except StopIteration:
-                    return None
+                    return
                 else:
                     break
         else:
@@ -844,8 +846,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    1. http://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
-
+    .. [1] http://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
     """
     from sympy.polys.polytools import to_rational_coeffs
     flags = dict(flags)

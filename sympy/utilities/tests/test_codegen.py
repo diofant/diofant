@@ -9,7 +9,7 @@ from sympy.utilities.codegen import (codegen, make_routine, CCodeGen,
 from sympy.utilities.pytest import raises
 from sympy.utilities.lambdify import implemented_function
 
-#FIXME: Fails due to circular import in with core
+# FIXME: Fails due to circular import in with core
 # from sympy import codegen
 
 
@@ -619,6 +619,7 @@ def test_numbersymbol_f_code():
     )
     assert source == expected
 
+
 def test_erf_f_code():
     x = symbols('x')
     routine = make_routine("test", erf(x) - erf(-2 * x))
@@ -632,6 +633,7 @@ def test_erf_f_code():
         "end function\n"
     )
     assert source == expected, source
+
 
 def test_f_code_argument_order():
     x, y, z = symbols('x,y,z')
@@ -1398,4 +1400,33 @@ def test_fcode_matrixsymbol_slice_autoname():
     b = a.split('_')
     out = b[1]
     expected = expected % {'hash': out}
+    assert source == expected
+
+
+def test_global_vars():
+    x, y, z, t = symbols("x y z t")
+    result = codegen(('f', x*y), "F95", header=False, empty=False,
+                     global_vars=(y,))
+    source = result[0][1]
+    expected = (
+        "REAL*8 function f(x)\n"
+        "implicit none\n"
+        "REAL*8, intent(in) :: x\n"
+        "f = x*y\n"
+        "end function\n"
+    )
+    assert source == expected
+
+    result = codegen(('f', x*y+z), "C", header=False, empty=False,
+                     global_vars=(z, t))
+    source = result[0][1]
+    expected = (
+        '#include "f.h"\n'
+        '#include <math.h>\n'
+        'double f(double x, double y) {\n'
+        '   double f_result;\n'
+        '   f_result = x*y + z;\n'
+        '   return f_result;\n'
+        '}\n'
+    )
     assert source == expected
