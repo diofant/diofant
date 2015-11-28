@@ -7,7 +7,7 @@ from sympy import (
     Pow, Product, QQ, RR, Rational, Ray, RootOf, RootSum, S,
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
-    Interval, Union, Integer, Float)
+    Interval, Union, Integer, Float, Complement, Intersection)
 from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
     euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
@@ -5002,3 +5002,13 @@ def test_issue_6134():
      0                              0                   \
 """
     assert upretty(e) == ucode_str
+
+
+def test_issue_9877():
+    ucode_str1 = '(2, 3) ∪ ([1, 2] \ {x})'
+    a, b, c = Interval(2, 3, True, True), Interval(1, 2), FiniteSet(x)
+    assert upretty(Union(a, Complement(b, c))) == ucode_str1
+
+    ucode_str2 = '{x} ∩ {y} ∩ ({z} \ [1, 2])'
+    d, e, f, g = FiniteSet(x), FiniteSet(y), FiniteSet(z), Interval(1, 2)
+    assert upretty(Intersection(d, e, Complement(f, g))) == ucode_str2
