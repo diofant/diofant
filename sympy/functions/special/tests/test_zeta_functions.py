@@ -124,11 +124,15 @@ def myexpand(func, target):
                - expanded.replace(exp_polar, exp).subs(subs).n()) < 1e-10
 
 
-def test_polylog_expansion():
+def test_polylog_eval():
     assert polylog(s, 0) == 0
     assert polylog(s, 1) == zeta(s)
     assert polylog(s, -1) == -dirichlet_eta(s)
+    assert polylog(s, exp_polar(I*pi)) == polylog(s, -1)
+    assert polylog(s, 2*exp_polar(2*I*pi)) == polylog(s, 2*exp_polar(2*I*pi), evaluate=False)
 
+
+def test_polylog_expansion():
     assert myexpand(polylog(1, z), -log(1 + exp_polar(-I*pi)*z))
     assert myexpand(polylog(0, z), z/(1 - z))
     assert myexpand(polylog(-1, z), z**2/(1 - z)**2 + z/(1 - z))

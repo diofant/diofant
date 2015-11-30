@@ -277,12 +277,19 @@ class polylog(Function):
 
     @classmethod
     def eval(cls, s, z):
+        from sympy import unpolarify
         if z == 1:
             return zeta(s)
         elif z == -1:
             return -dirichlet_eta(s)
         elif z == 0:
             return S.Zero
+
+        # branch handling
+        if (1 - abs(z)).is_nonnegative:
+            newz = unpolarify(z)
+            if newz != z:
+                return cls(s, newz)
 
     def fdiff(self, argindex=1):
         s, z = self.args
