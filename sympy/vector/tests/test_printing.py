@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import pytest
+
 from sympy import Integral, latex, Function
 from sympy import pretty as xpretty
 from sympy.vector import CoordSysCartesian, Vector, express
 from sympy.abc import a, b, c
 from sympy.core.compatibility import u_decode as u
-from sympy.utilities.pytest import XFAIL
 
 
 def pretty(expr):
@@ -110,7 +111,7 @@ def test_str_printing():
                          'Integral(f(b), b))*(N.k|N.k)')
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_pretty_printing_ascii():
     assert pretty(v[0]) == u('0')
     assert pretty(v[1]) == u('N_i')

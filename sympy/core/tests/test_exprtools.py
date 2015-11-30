@@ -1,5 +1,7 @@
 """Tests for tools for manipulating of large commutative expressions. """
 
+import pytest
+
 from sympy import (S, Add, sin, Mul, Symbol, oo, Integral, sqrt, Tuple, I,
                    Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
                    root, exp, cos)
@@ -8,8 +10,6 @@ from sympy.core.exprtools import (decompose_power, Factors, Term, _gcd_terms,
                                   gcd_terms, factor_terms, factor_nc)
 from sympy.core.mul import _keep_coeff as _keep_coeff
 from sympy.simplify.cse_opts import sub_pre
-
-from sympy.utilities.pytest import raises
 
 
 def test_decompose_power():
@@ -77,7 +77,7 @@ def test_Factors():
     assert Factors(I) == Factors({I: S.One})
     assert Factors(x).normal(S(2)) == (Factors(x), Factors(S(2)))
     assert Factors(x).normal(S(0)) == (Factors(), Factors(S(0)))
-    raises(ZeroDivisionError, lambda: Factors(x).div(S(0)))
+    pytest.raises(ZeroDivisionError, lambda: Factors(x).div(S(0)))
     assert Factors(x).mul(S(2)) == Factors(2*x)
     assert Factors(x).mul(S(0)).is_zero
     assert Factors(x).mul(1/x).is_one

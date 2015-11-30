@@ -1,9 +1,9 @@
-from sympy import (
-    symbols, sin, simplify, cos, trigsimp, rad, tan, exptrigsimp,sinh,
-    cosh, diff, cot, Subs, exp, tanh, exp, S, integrate, I,Matrix,
-    Symbol, coth, pi, log, count_ops, sqrt, E, expand, Piecewise)
+import pytest
 
-from sympy.utilities.pytest import XFAIL
+from sympy import (symbols, sin, simplify, cos, trigsimp, rad, tan,
+                   exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
+                   exp, S, integrate, I, Matrix, Symbol, coth, pi, log,
+                   count_ops, sqrt, E, expand, Piecewise)
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
 
@@ -400,7 +400,7 @@ def test_exptrigsimp():
         assert valid(s, 2*sinh(a))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_6811_fail():
     xp, y, x, z = symbols('xp, y, x, z')
     eq = 4*(-19*sin(x)*y + 5*sin(3*x)*y + 15*cos(2*x)*z - 21*z)*xp/(9*cos(x) - 5*cos(3*x))

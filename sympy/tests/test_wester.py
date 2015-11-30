@@ -5,6 +5,12 @@ http://www.math.unm.edu/~wester/cas/book/Wester.pdf
 See also http://math.unm.edu/~wester/cas_review.html for detailed output of
 each tested system.
 """
+import os
+from itertools import islice, takewhile
+
+import mpmath
+from mpmath import mpi, mpc
+import pytest
 
 from sympy import (Rational, symbols, factorial, sqrt, log, exp, oo, zoo,
     product, binomial, rf, pi, gamma, igcd, factorint, radsimp, combsimp,
@@ -21,13 +27,10 @@ from sympy import (Rational, symbols, factorial, sqrt, log, exp, oo, zoo,
     powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
     residue, Derivative, logcombine, Symbol)
 
-import mpmath
 from sympy.functions.combinatorial.numbers import stirling
 from sympy.functions.special.zeta_functions import zeta
 from sympy.integrals.deltafunctions import deltaintegrate
-from sympy.utilities.pytest import XFAIL, slow, SKIP, skip, ON_TRAVIS
 from sympy.utilities.iterables import partitions
-from mpmath import mpi, mpc
 from sympy.matrices import Matrix, GramSchmidt, eye
 from sympy.matrices.expressions.blockmatrix import BlockMatrix, block_collapse
 from sympy.matrices.expressions import MatrixSymbol, ZeroMatrix
@@ -38,16 +41,15 @@ from sympy.polys.solvers import solve_lin_sys
 from sympy.concrete import Sum
 from sympy.concrete.products import Product
 from sympy.integrals import integrate
-from sympy.integrals.transforms import laplace_transform,\
-    inverse_laplace_transform, LaplaceTransform, fourier_transform,\
-    mellin_transform
+from sympy.integrals.transforms import (
+    laplace_transform, inverse_laplace_transform, LaplaceTransform,
+    fourier_transform, mellin_transform)
 from sympy.functions.special.error_functions import erf
 from sympy.functions.special.delta_functions import Heaviside
 from sympy.solvers.recurr import rsolve
 from sympy.solvers.ode import dsolve
 from sympy.core.relational import Equality
 from sympy.core.compatibility import range
-from itertools import islice, takewhile
 
 
 R = Rational
@@ -171,7 +173,7 @@ def test_C18():
     assert simplify((sqrt(-2 + sqrt(-5)) * sqrt(-2 - sqrt(-5))).expand(complex=True)) == 3
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_C19():
     assert radsimp(simplify((90 + 35*sqrt(7)) ** R(1, 3))) == 3 + sqrt(7)
 
@@ -187,7 +189,7 @@ def test_C21():
         AlgebraicNumber(1 + sqrt(2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_C22():
     test = simplify(((6 - 4*sqrt(2))*log(3 - 2*sqrt(2)) + (3 - 2*sqrt(2))*log(17
         - 12*sqrt(2)) + 32 - 24*sqrt(2)) / (48*sqrt(2) - 72))
@@ -199,7 +201,7 @@ def test_C23():
     assert 2 * oo - 3 == oo
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_C24():
     raise NotImplementedError("2**aleph_null == aleph_1")
 
@@ -223,22 +225,22 @@ def test_D4():
     assert ceiling(R(-5, 3)) == -1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D5():
     raise NotImplementedError("cubic_spline([1, 2, 4, 5], [1, 4, 2, 3], x)(3) == 27/8")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D6():
     raise NotImplementedError("translate sum(a[i]*x**i, (i,1,n)) to FORTRAN")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D7():
     raise NotImplementedError("translate sum(a[i]*x**i, (i,1,n)) to C")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D8():
     # One way is to cheat by converting the sum to a string,
     # and replacing the '[' and ']' with ''.
@@ -246,28 +248,28 @@ def test_D8():
     raise NotImplementedError("apply Horner's rule to sum(a[i]*x**i, (i,1,5))")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D9():
     raise NotImplementedError("translate D8 to FORTRAN")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D10():
     raise NotImplementedError("translate D8 to C")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D11():
     # Is there a way to use count_ops?
     raise NotImplementedError("flops(sum(product(f[i][k], (i,1,k)), (k,1,n)))")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D12():
     assert (mpi(-4, 2) * x + mpi(1, 3)) ** 2 == mpi(-8, 16)*x**2 + mpi(-24, 12)*x + mpi(1, 9)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_D13():
     raise NotImplementedError("discretize a PDE: diff(f(x,t),t) == diff(diff(f(x,t),x),x)")
 
@@ -285,17 +287,17 @@ def test_F2():
     assert expand_func(binomial(n, 3)) == n*(n - 1)*(n - 2)/6
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_F3():
     assert combsimp(2**n * factorial(n) * factorial2(2*n - 1)) == factorial(2*n)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_F4():
     assert combsimp((2**n * factorial(n) * product(2*k - 1, (k, 1, n)))) == factorial(2*n)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_F5():
     assert gamma(n + R(1, 2)) / sqrt(pi) / factorial(n) == factorial(2*n)/2**(2*n)/factorial(n)**2
 
@@ -324,12 +326,12 @@ def test_G1():
     assert list(primerange(999983, 1000004)) == [999983, 1000003]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_G2():
     raise NotImplementedError("find the primitive root of 191 == 19")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_G3():
     raise NotImplementedError("(a+b)**p mod p == a**p + b**p mod p; p prime")
 
@@ -355,7 +357,7 @@ def test_G18():
     assert cf_r([[1]]) == S.Half + sqrt(5)/2
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_G19():
     s = symbols('s', integer=True, positive=True)
     it = cf_i((exp(1/s) - 1)/(exp(1/s) + 1))
@@ -368,7 +370,7 @@ def test_G20():
     assert cf_r([[2*s]]) == s + sqrt(s**2 + 1)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_G20b():
     s = symbols('s', integer=True, positive=True)
     assert cf_p(s, 1, s**2 + 1) == [[2*s]]
@@ -444,7 +446,7 @@ def test_H12():
     assert simplify(num/den) == (x - 2)/(x + 2)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H13():
     assert simplify((exp(x) - 1) / (exp(x/2) + 1)) == exp(x/2) - 1
 
@@ -476,12 +478,12 @@ def test_H16():
         + x**5 + 1)*(x**40 - x**30 + x**20 - x**10 + 1))
 
 
-@slow
+@pytest.mark.slow
 def test_H17():
     assert simplify(factor(expand(p1 * p2)) - p1*p2) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H18():
     # Factor over complex rationals.
     test = factor(4*x**4 + 8*x**3 + 77*x**2 + 18*x + 53)
@@ -495,13 +497,13 @@ def test_H19():
     assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H20():
     raise NotImplementedError("let a**2==2; (x**3 + (a-2)*x**2 - "
         + "(2*a+3)*x - 3*a) / (x**2-2) = (x**2 - 2*x - 3) / (x-a)")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H21():
     raise NotImplementedError("evaluate (b+c)**4 assuming b**3==2, c**2==3. \
                               Answer is 2*b + 8*c + 18*b**2 + 12*b*c + 9")
@@ -523,19 +525,19 @@ def test_H24():
         (x - phi)*(x + 1 - phi)*(x - 1 + phi)*(x + phi)
 
 
-@slow
+@pytest.mark.slow
 def test_H25():
     e = (x - 2*y**2 + 3*z**3) ** 20
     assert factor(expand(e)) == e
 
 
-@slow
+@pytest.mark.slow
 def test_H26():
     g = expand((sin(x) - 2*cos(y)**2 + 3*tan(z)**3)**20)
     assert factor(g, expand=False) == (-sin(x) + 2*cos(y)**2 - 3*tan(z)**3)**20
 
 
-@slow
+@pytest.mark.slow
 def test_H27():
     f = 24*x*y**19*z**8 - 47*x**17*y**5*z**8 + 6*x**15*y**9*z**2 - 3*x**22 + 5
     g = 34*x**5*y**8*z**13 + 20*x**7*y**7*z**7 + 12*x**9*y**16*z**4 + 80*y**14*z
@@ -545,13 +547,13 @@ def test_H27():
     assert factor(expand(f*g)) == h
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H28():
     raise NotImplementedError("expand ((1 - c**2)**5 * (1 - s**2)**5 * "
         + "(c**2 + s**2)**10) with c**2 + s**2 = 1. Answer is c**10*s**10.")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H29():
     assert factor(4*x**2 - 21*x*y + 20*y**2, modulus=3) == (x + y)*(x - y)
 
@@ -568,7 +570,7 @@ def test_H31():
     assert apart(f) == g
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_H32():  # issue 6558
     raise NotImplementedError("[A*B*C - (A*B*C)**(-1)]*A*C*B (product \
                               of a non-commuting product and its inverse)")
@@ -576,12 +578,12 @@ def test_H32():  # issue 6558
 
 # I. Trigonometry
 
-@XFAIL
+@pytest.mark.xfail
 def test_I1():
     assert tan(7*pi/10) == -sqrt(1 + 2/sqrt(5))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I2():
     assert sqrt((1 + cos(6))/2) == -cos(3)
 
@@ -594,27 +596,27 @@ def test_I4():
     assert refine(cos(pi*cos(n*pi)) + sin(pi/2*cos(n*pi)), Q.integer(n)) == (-1)**n - 1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I5():
     assert sin((n**5/5 + n**4/2 + n**3/3 - n/30) * pi) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I6():
     raise NotImplementedError("assuming -3*pi<x<-5*pi/2, abs(cos(x)) == -cos(x), abs(sin(x)) == -sin(x)")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I7():
     assert cos(3*x)/cos(x) == cos(x)**2 - 3*sin(x)**2
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I8():
     assert cos(3*x)/cos(x) == 2*cos(2*x) - 1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I9():
     # Supposed to do this with rewrite rules.
     assert cos(3*x)/cos(x) == cos(x)**2 - 3*sin(x)**2
@@ -624,13 +626,13 @@ def test_I10():
     assert trigsimp((tan(x)**2 + 1 - cos(x)**-2) / (sin(x)**2 + cos(x)**2 - 1)) == nan
 
 
-@SKIP("hangs")
-@XFAIL
+@pytest.mark.xfail
+@pytest.mark.skipif(True, reason="Hangs")
 def test_I11():
     assert limit((tan(x)**2 + 1 - cos(x)**-2) / (sin(x)**2 + cos(x)**2 - 1), x, 0) != 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_I12():
     try:
         # This should fail or return nan or something.
@@ -651,7 +653,7 @@ def test_J2():
     assert diff(elliptic_e(x, y**2), y) == (elliptic_e(x, y**2) - elliptic_f(x, y**2))/y
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_J3():
     raise NotImplementedError("Jacobi elliptic functions: diff(dn(u,k), u) == -k**2*sn(u,k)*cn(u,k)")
 
@@ -691,7 +693,7 @@ def test_J11():
     assert simplify(assoc_legendre(3, 1, x)) == simplify(-R(3, 2)*sqrt(1 - x**2)*(5*x**2 - 1))
 
 
-@slow
+@pytest.mark.slow
 def test_J12():
     assert simplify(chebyshevt(1008, x) - 2*x*chebyshevt(1007, x) + chebyshevt(1006, x)) == 0
 
@@ -706,22 +708,22 @@ def test_J14():
     assert hyperexpand(p) == asin(z)/z
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_J15():
     raise NotImplementedError("F((n+2)/2,-(n-2)/2,R(3,2),sin(z)**2) == sin(n*z)/(n*sin(z)*cos(z)); F(.) is hypergeometric function")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_J16():
     raise NotImplementedError("diff(zeta(x), x) @ x=0 == -log(2*pi)/2")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_J17():
     assert deltaintegrate(f((x + 2)/5)*DiracDelta((x - 2)/3) - g(x)*diff(DiracDelta(x - 1), x), (x, 0, 3))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_J18():
     raise NotImplementedError("define an antisymmetric function")
 
@@ -738,7 +740,7 @@ def test_K2():
     assert abs(3 - sqrt(7) + I*sqrt(6*sqrt(7) - 15)) == 1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_K3():
     a, b = symbols('a, b', extended_real=True)
     assert simplify(abs(1/(a + I/a + I*b))) == 1/sqrt(a**2 + (I/a + b)**2)
@@ -766,7 +768,7 @@ def test_K7():
     assert sexpr == sqrt(y)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_K8():
     z = symbols('z', complex=True)
     assert simplify(sqrt(1/z) - 1/sqrt(z)) != 0  # Passes
@@ -804,7 +806,7 @@ def test_L4():
     assert trigsimp(cos(x)**3 + cos(x)*sin(x)**2 - cos(x)) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_L5():
     assert log(tan(R(1, 2)*x + pi/4)) - asinh(tan(x)) == 0
 
@@ -813,18 +815,18 @@ def test_L6():
     assert (log(tan(x/2 + pi/4)) - asinh(tan(x))).diff(x).subs({x: 0}) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_L7():
     assert simplify(log((2*sqrt(x) + 1)/(sqrt(4*x + 4*sqrt(x) + 1)))) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_L8():
     assert simplify((4*x + 4*sqrt(x) + 1)**(sqrt(x)/(2*sqrt(x) + 1))
         *(2*sqrt(x) + 1)**(1/(2*sqrt(x) + 1)) - 2*sqrt(x) - 1) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_L9():
     z = symbols('z', complex=True)
     assert simplify(2**(1 - z)*gamma(z)*zeta(z)*cos(z*pi/2) - pi**2*zeta(1 - z)) == 0
@@ -832,7 +834,7 @@ def test_L9():
 # M. Equations
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M1():
     assert Equality(x, 2)/2 + Equality(1, 1) == Equality(x/2 + 1, 2)
 
@@ -844,7 +846,7 @@ def test_M2():
     assert all(s.expand(complex=True).is_extended_real for s in sol)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M5():
     assert solve(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, x) == [2**(1/3) + sqrt(3), 2**(1/3) - sqrt(3), +sqrt(3) - 1/2**(2/3) + I*sqrt(3)/2**(2/3), +sqrt(3) - 1/2**(2/3) - I*sqrt(3)/2**(2/3), -sqrt(3) - 1/2**(2/3) + I*sqrt(3)/2**(2/3), -sqrt(3) - 1/2**(2/3) - I*sqrt(3)/2**(2/3)]
 
@@ -872,7 +874,7 @@ def test_M7():
         1 + sqrt(-6 - 2*sqrt(-3 + 4*sqrt(3)))/2]
 
 
-@XFAIL  # There are an infinite number of solutions.
+@pytest.mark.xfail  # There are an infinite number of solutions.
 def test_M8():
     z = symbols('z', complex=True)
     assert set(solve(exp(2*x) + 2*exp(x) + 1 - z, x)) == \
@@ -885,7 +887,7 @@ def test_M8():
     # where n is an arbitrary integer.  See url of detailed output above.
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M9():
     x = symbols('x', complex=True)
     raise NotImplementedError("solve(exp(2-x**2)-exp(-x),x) has complex solutions.")
@@ -895,7 +897,7 @@ def test_M10():
     assert solve(exp(x) - x, x) == [-LambertW(-1)]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M11():
     assert solve(x**x - x, x) == [-1, 1]
 
@@ -925,12 +927,12 @@ def test_M16():
     assert solve(sin(x) - tan(x), x) == [0, -pi, pi, 2*pi]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M17():
     assert solve(asin(x) - atan(x),x) == [0]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M18():
     assert solve(acos(x) - atan(x), x) == [sqrt((sqrt(5) - 1)/2)]
 
@@ -947,7 +949,7 @@ def test_M21():
     assert solve(x + sqrt(x) - 2) == [1]
 
 
-@slow
+@pytest.mark.slow
 def test_M22():
     assert solve(2*sqrt(x) + 3*x**R(1, 4) - 2) == [R(1, 16)]
 
@@ -975,7 +977,7 @@ def test_M26():
     assert solve(sqrt(log(x)) - log(sqrt(x))) == [1, exp(4)]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M27():
     x = symbols('x', extended_real=True)
     b = symbols('b', extended_real=True)
@@ -983,7 +985,7 @@ def test_M27():
         solve(log(acos(asin(x**R(2,3) - b) - 1)) + 2, x) == [-b - sin(1 + cos(1/e**2))**R(3/2), b + sin(1 + cos(1/e**2))**R(3/2)]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M28():
     assert solve(5*x + exp((x - 5)/2) - 8*x**3, x, assume=Q.real(x)) == [-0.784966, -0.016291, 0.802557]
 
@@ -993,28 +995,28 @@ def test_M29():
     assert solve(abs(x - 1) - 2) == [-1, 3]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M30():
     assert solve(abs(2*x + 5) - abs(x - 2),x, assume=Q.real(x)) == [-1, -7]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M31():
     assert solve(1 - abs(x) - max(-x - 2, x - 2),x, assume=Q.real(x)) == [-3/2, 3/2]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M32():
     assert solve(max(2 - x**2, x)- max(-x, (x**3)/9), assume=Q.real(x)) == [-1, 3]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M33():
     # Second answer can be written in another form. The second answer is the root of x**3 + 9*x**2 - 18 = 0 in the interval (-2, -1).
     assert solve(max(2 - x**2, x) - x**3/9, assume=Q.real(x)) == [-3, -1.554894, 3]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M34():
     z = symbols('z', complex=True)
     assert solve((1 + I) * z + (2 - I) * conjugate(z) + 3*I, z) == [2 + 3*I]
@@ -1025,7 +1027,7 @@ def test_M35():
     assert solve((3*x - 2*y - I*y + 3*I).as_real_imag()) == {y: 3, x: 2}
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_M36():
     assert solve(f**2 + f - 2, x) == [Eq(f(x), 1), Eq(f(x), -2)]
 
@@ -1034,7 +1036,7 @@ def test_M37():
     assert solve([x + y + z - 6, 2*x + y + 2*z - 10, x + 3*y + z - 10 ]) == {x: -z + 4, y: 2}
 
 
-@slow
+@pytest.mark.slow
 def test_M38():
     variabes = vring("k1:50", vfield("a,b,c", ZZ).to_domain())
     system = [
@@ -1106,44 +1108,44 @@ def test_N1():
     assert ask(Q.is_true(E**pi > pi**E))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N2():
     x = symbols('x', extended_real=True)
     assert ask(Q.is_true(x**4 - x + 1 > 0))
     assert ask(Q.is_true(x**4 - x + 1 > 1)) == False
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N3():
     x = symbols('x', extended_real=True)
     assert ask(Q.is_true(And(Lt(-1, x), Lt(x, 1))), Q.is_true(abs(x) < 1 ))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N4():
     x, y = symbols('x y', extended_real=True)
     assert ask(Q.is_true(2*x**2 > 2*y**2), Q.is_true((x > y) & (y > 0)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N5():
     x, y, k = symbols('x y k', extended_real=True)
     assert ask(Q.is_true(k*x**2 > k*y**2), Q.is_true((x > y) & (y > 0) & (k > 0)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N6():
     x, y, k, n = symbols('x y k n', extended_real=True)
     assert ask(Q.is_true(k*x**n > k*y**n), Q.is_true((x > y) & (y > 0) & (k > 0) & (n > 0)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N7():
     x, y = symbols('x y', extended_real=True)
     assert ask(Q.is_true(y > 0), Q.is_true((x > 1) & (y >= x - 1)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N8():
     x, y, z = symbols('x y z', extended_real=True)
     assert ask(Q.is_true((x == y) & (y == z)),
@@ -1170,40 +1172,40 @@ def test_N11():
         Or(And(Le(5, x), Lt(x, oo)), And(Lt(-oo, x), Lt(x, 3)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N12():
     x = Symbol('x', extended_real=True)
     assert solve(sqrt(x) < 2) == And(Le(0, x), Lt(x, 4))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N13():
     # raises NotImplementedError: can't reduce [sin(x) < 2]
     x = Symbol('x', extended_real=True)
     assert solve(sin(x) < 2) == []  # S.Reals not found
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N14():
     # raises NotImplementedError: can't reduce [sin(x) < 1]
     x = Symbol('x', extended_real=True)
     assert (solve(sin(x) < 1) == Ne(x, pi/2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N15():
     r, t = symbols('r t', extended_real=True)
     # raises NotImplementedError: only univariate inequalities are supported
     solve(abs(2*r*(cos(t) - 1) + 1) <= 1, r)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N16():
     r, t = symbols('r t', extended_real=True)
     solve((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_N17():
     # raises NotImplementedError: only univariate inequalities are supported
     assert solve((x + y > 0, x - y < 0)) == (abs(x) < y)
@@ -1239,7 +1241,7 @@ def test_O10():
                               [S(-423)/706]])]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P1():
     raise NotImplementedError("Matrix property/function to extract Nth \
 diagonal not implemented. See Matlab diag(A,k) \
@@ -1254,7 +1256,7 @@ def test_P2():
                         [7, 8]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P3():
     A = Matrix([
         [11, 12, 13, 14],
@@ -1279,12 +1281,12 @@ def test_P3():
                         [41, 42, 43, 44, 13, 12]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P4():
     raise NotImplementedError("Block matrix diagonalization not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P5():
     M = Matrix([[7, 11],
                 [3, 8]])
@@ -1316,7 +1318,7 @@ def test_P7():
                          x*(5*z + 11) + y*(6*z - 12)]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P8():
     M = Matrix([[1, -2*I],
                 [-3*I, 4]])
@@ -1331,7 +1333,7 @@ def test_P9():
     assert factor(M.norm('fro')) == (a**2 + b**2 + c**2)/(abs(a)*abs(b)*abs(c))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P10():
     M = Matrix([[1, 2 + 3*I],
                 [f(4 - 5*i), 6]])
@@ -1340,7 +1342,7 @@ def test_P10():
                           [2 + 3*I, 6]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P11():
     # raises NotImplementedError("Matrix([[x,y],[1,x*y]]).inv()
     #   not simplifying to extract common factor")
@@ -1397,7 +1399,7 @@ def test_P16():
     assert M.rank() == 1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P17():
     t = symbols('t', extended_real=True)
     M=Matrix([
@@ -1435,7 +1437,7 @@ def test_P19():
                        )
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P20():
     raise NotImplementedError("Matrix minimal polynomial not supported")
 
@@ -1447,7 +1449,7 @@ def test_P21():
     assert M.charpoly(x).as_expr() == x**3 - 2*x**2 - 5*x + 6
 
 
-@slow
+@pytest.mark.slow
 def test_P22():
     # Wester test calculates eigenvalues for a diagonal matrix of dimension 100
     # This currently takes forever with sympy:
@@ -1557,13 +1559,13 @@ def test_P27():
                                             [          1]])])]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P28():
     raise NotImplementedError("Generalized eigenvectors not supported \
 https://github.com/sympy/sympy/issues/5293")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P29():
     raise NotImplementedError("Generalized eigenvectors not supported \
 https://github.com/sympy/sympy/issues/5293")
@@ -1583,7 +1585,7 @@ def test_P30():
                         [0,  0, 0, 0, 1]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P31():
     raise NotImplementedError("Smith normal form not implemented")
 
@@ -1608,7 +1610,7 @@ def test_P33():
         [0,         -2*sin(t*w),        3*w*sin(t*w),            cos(t*w)]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P34():
     a, b, c = symbols('a b c', extended_real=True)
     M = Matrix([[a, 1, 0, 0, 0, 0],
@@ -1627,7 +1629,7 @@ def test_P34():
                              [0, 0, 0, 0, 0, sin(c)]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P35():
     M = pi/2*Matrix([[2, 1, 1],
                      [2, 3, 2],
@@ -1637,7 +1639,7 @@ def test_P35():
     assert sin(M) == eye(3)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P36():
     M = Matrix([[10, 7],
                 [7, 17]])
@@ -1645,7 +1647,7 @@ def test_P36():
                               [1, 4]])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P37():
     M = Matrix([[1, 1, 0],
                 [0, 1, 0],
@@ -1654,7 +1656,7 @@ def test_P37():
     M**Rational(1, 2)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P38():
     M=Matrix([[0, 1, 0],
               [0, 0, 0],
@@ -1663,7 +1665,7 @@ def test_P38():
     M**Rational(1,2)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_P39():
     '''
     M=Matrix([
@@ -1720,7 +1722,7 @@ def test_P45():
 # Q1-Q6  Tensor tests missing
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R1():
     i, n = symbols('i n', integer=True, positive=True)
     xn = MatrixSymbol('xn', n, 1)
@@ -1729,7 +1731,7 @@ def test_R1():
     Sm.doit()
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R2():
     m, b = symbols('m b', extended_real=True)
     i, n = symbols('i n', integer=True, positive=True)
@@ -1742,7 +1744,7 @@ def test_R2():
     solve((f1, f2), m, b)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R3():
     n, k = symbols('n k', integer=True, positive=True)
     sk = ((-1)**k) * (binomial(2*n, k))**2
@@ -1754,7 +1756,7 @@ def test_R3():
     assert T2 == (-1)**n*binomial(2*n, n)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R4():
 # Macsyma indefinite sum test case:
 # (c15) /* Check whether the full Gosper algorithm is implemented
@@ -1776,7 +1778,7 @@ def test_R4():
     raise NotImplementedError("Indefinite sum not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R5():
     a, b, c, n, k = symbols('a b c n k', integer=True, positive=True)
     sk = ((-1)**k)*(binomial(a + b, a + k)
@@ -1786,7 +1788,7 @@ def test_R5():
     assert T == factorial(a+b+c)/(factorial(a)*factorial(b)*factorial(c))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R6():
     n, k = symbols('n k', integer=True, positive=True)
     gn = MatrixSymbol('gn', n + 1, 1)
@@ -1801,7 +1803,7 @@ def test_R7():
     assert T.factor() == n**2*(n + 1)**2/4
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R8():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(k**2*binomial(n, k), (k, 1, n))
@@ -1816,7 +1818,7 @@ def test_R9():
     assert Sm.doit().simplify() == (2**(n + 1) - 1)/(n + 1)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R10():
     n, m, r, k = symbols('n m r k', integer=True, positive=True)
     Sm = Sum(binomial(n, k)*binomial(m, r - k), (k, 0, r))
@@ -1830,7 +1832,7 @@ def test_R10():
     assert T3 == binomial(m + n, r)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R11():
     n, k = symbols('n k', integer=True, positive=True)
     sk = binomial(n, k)*fibonacci(k)
@@ -1841,7 +1843,7 @@ def test_R11():
     assert T == fibonacci(2*n)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R12():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(fibonacci(k)**2, (k, 0, n))
@@ -1849,7 +1851,7 @@ def test_R12():
     assert T == fibonacci(n)*fibonacci(n + 1)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R13():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(sin(k*x), (k, 1, n))
@@ -1857,7 +1859,7 @@ def test_R13():
     assert T.simplify() == cot(x/2)/2 - cos(x*(2*n + 1)/2)/(2*sin(x/2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R14():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(sin((2*k - 1)*x), (k, 1, n))
@@ -1865,8 +1867,8 @@ def test_R14():
     assert T.simplify() == sin(n*x)**2/sin(x)
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
 def test_R15():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(binomial(n - k, k), (k, 0, floor(n/2)))
@@ -1886,7 +1888,7 @@ def test_R17():
                - 2.8469909700078206) < 1e-15
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R18():
     k = symbols('k', integer=True, positive=True)
     Sm = Sum(1/(2**k*k**2), (k, 1, oo))
@@ -1896,11 +1898,10 @@ def test_R18():
     assert T.simplify() == -log(2)**2/2 + pi**2/12
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_R19():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     k = symbols('k', integer=True, positive=True)
     Sm = Sum(1/((3*k + 1)*(3*k + 2)*(3*k + 3)), (k, 0, oo))
     T = Sm.doit()
@@ -1908,7 +1909,7 @@ def test_R19():
     assert T.simplify() == -log(3)/4 + sqrt(3)*pi/12
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R20():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(binomial(n, 4*k), (k, 0, oo))
@@ -1917,7 +1918,7 @@ def test_R20():
     assert T.simplify() == 2**(n/2)*cos(pi*n/4)/2 + 2**(n - 1)/2
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R21():
     k = symbols('k', integer=True, positive=True)
     Sm = Sum(1/(sqrt(k*(k + 1)) * (sqrt(k) + sqrt(k + 1))), (k, 1, oo))
@@ -1930,7 +1931,7 @@ def test_R21():
 #                 (k, 0, floor(n/2))), (n, 0, oo)) with abs(x*y)<1?
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_R23():
     n, k = symbols('n k', integer=True, positive=True)
     Sm = Sum(Sum((factorial(n)/(factorial(k)**2*factorial(n - 2*k)))*
@@ -1973,7 +1974,7 @@ def test_S5():
             factorial(n - Rational(1, 2))/(sqrt(pi)*factorial(n)))
 
 
-@SKIP("https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
 def test_S6():
     n, k = symbols('n k', integer=True, positive=True)
     # Product raises Infinite recursion error.
@@ -1982,7 +1983,7 @@ def test_S6():
             == (x**(2*n) - 1)/(x**2 - 1))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_S7():
     k = symbols('k', integer=True, positive=True)
     Pr = Product((k**3 - 1)/(k**3 + 1), (k, 2, oo))
@@ -1990,7 +1991,7 @@ def test_S7():
     assert T.simplify() == Rational(2, 3)  # T simplifies incorrectly to 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_S8():
     k = symbols('k', integer=True, positive=True)
     Pr = Product(1 - 1/(2*k)**2, (k, 1, oo))
@@ -1999,7 +2000,7 @@ def test_S8():
     assert T.simplify() == 2/pi
 
 
-@SKIP("https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
 def test_S9():
     k = symbols('k', integer=True, positive=True)
     Pr = Product(1 + (-1)**(k + 1)/(2*k - 1), (k, 1, oo))
@@ -2009,7 +2010,7 @@ def test_S9():
     assert T.simplify() == sqrt(2)
 
 
-@SKIP("https://github.com/sympy/sympy/issues/7137")
+@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7137")
 def test_S10():
     k = symbols('k', integer=True, positive=True)
     Pr = Product((k*(k + 1) + 1 + I)/(k*(k + 1) + 1 - I), (k, 0, oo))
@@ -2028,7 +2029,7 @@ def test_T2():
     assert limit((3**x + 5**x)**(1/x), x, oo) == 5
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_T3():
     assert limit(log(x)/(log(x) + sin(x)), x, oo) == 1  # raises PoleError
 
@@ -2038,7 +2039,7 @@ def test_T4():
                  - exp(x))/x, x, oo) == -exp(2)
 
 
-@slow
+@pytest.mark.slow
 def test_T5():
     assert limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
                  + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
@@ -2057,7 +2058,7 @@ def test_T8():
     assert limit(gamma(z + a)/gamma(z)*exp(-a*log(z)), z, oo) == 1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_T9():
     z, k = symbols('z k', extended_real=True, positive=True)
     # raises NotImplementedError:
@@ -2065,19 +2066,19 @@ def test_T9():
     assert limit(hyper((1, k), (1,), z/k), k, oo) == exp(z)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_T10():
     assert limit(zeta(x) - 1/(x - 1), x, 1) == EulerGamma
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_T11():
     n, k = symbols('n k', integer=True, positive=True)
     # raises NotImplementedError
     assert limit(n**x/(x*product((1 + x/k), (k, 1, n))), n, oo) == gamma(x)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_T12():
     x, t = symbols('x t', extended_real=True)
     # raises PoleError: Don't know how to calculate the
@@ -2114,7 +2115,7 @@ def test_U3():
     assert f1(1) == 3
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U4():
     n = symbols('n', integer=True, positive=True)
     x = symbols('x', extended_real=True)
@@ -2122,7 +2123,7 @@ def test_U4():
     assert diff(x**n, x, n).rewrite(factorial) == factorial(n)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U5():
     # https://github.com/sympy/sympy/issues/6681
     # f(g(x)).diff(x,2) returns Derivative(g(x), x)**2*Subs(Derivative(
@@ -2131,7 +2132,7 @@ def test_U5():
     raise NotImplementedError("f(g(t)).diff(t,2) Subs not performed")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U6():
     h = Function('h')
     # raises ValueError: Invalid limits given: (y, h(x), g(x))
@@ -2139,7 +2140,7 @@ def test_U6():
     T.diff(x)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U7():
     p, t = symbols('p t', extended_real=True)
     # Exact differential => d(V(P, T)) => dV/dP DP + dV/dT DT
@@ -2158,7 +2159,7 @@ def test_U8():
             (-y*sin(x*y) + 1)/(x*sin(x*y) + 1))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U9():
     # Wester sample case for Maple:
     # O29 := diff(f(x, y), x) + diff(f(x, y), y);
@@ -2191,38 +2192,38 @@ def test_U10():
     assert residue((z**3 + 5)/((z**4 - 1)*(z + 1)), z, -1) == Rational(-9, 4)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U13():
     # assert minimize(x**4 - x + 1, x)== -3*2**Rational(1,3)/8 + 1
     raise NotImplementedError("minimize() not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U14():
     # f = 1/(x**2 + y**2 + 1)
     # assert [minimize(f), maximize(f)] == [0,1]
     raise NotImplementedError("minimize(), maximize() not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U15():
     raise NotImplementedError("minimize() not supported and also solve does \
 not support multivariate inequalities")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U16():
     raise NotImplementedError("minimize() not supported in SymPy and also \
 solve does not support multivariate inequalities")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_U17():
     raise NotImplementedError("Linear programming, symbolic simplex not \
 supported in SymPy")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_V1():
     x = symbols('x', extended_real=True)
     # integral not calculated
@@ -2239,13 +2240,13 @@ def test_V3():
     assert integrate(1/(x**3 + 2),x).diff().simplify() == 1/(x**3 + 2)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_V4():
     assert integrate(2**x/sqrt(1 + 4**x), x) == asinh(2**x)/log(2)
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
 def test_V5():
     # Takes extremely long time
     # https://github.com/sympy/sympy/issues/7149
@@ -2253,7 +2254,7 @@ def test_V5():
             (-41 + 80*x - 45*x**2)/(5*(2*x - 1)**Rational(5, 2)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_V6():
     # returns RootSum(40*_z**2 - 1, Lambda(_i, _i*log(-4*_i + exp(-m*x))))/m
     assert (integrate(1/(2*exp(m*x) - 5*exp(-m*x)), x) == sqrt(10)*(
@@ -2265,7 +2266,7 @@ def test_V7():
     assert r1.simplify() == -3*x/2 + sinh(x)**3/(2*cosh(x)) + 3*tanh(x)/2
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_V8_V9():
 # Macsyma test case:
 # (c27) /* This example involves several symbolic parameters
@@ -2298,22 +2299,20 @@ def test_V12():
     assert r1 == -1/(tan(x/2) + 2)
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_V13():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     r1 = integrate(1/(6 + 3*cos(x) + 4*sin(x)), x)
     # expression not simplified, returns: -sqrt(11)*I*log(tan(x/2) + 4/3
     #   - sqrt(11)*I/3)/11 + sqrt(11)*I*log(tan(x/2) + 4/3 + sqrt(11)*I/3)/11
     assert r1.simplify() == 2*sqrt(11)*atan(sqrt(11)*(3*tan(x/2) + 4)/11)/11
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_V14():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     r1 = integrate(log(abs(x**2 - y**2)), x)
     # Piecewise result does not simplify to the desired result.
     assert (r1.simplify() == x*log(abs(x**2  - y**2))
@@ -2325,7 +2324,7 @@ def test_V15():
     assert simplify(r1 - (x*y + (x**2 + y**2)*acot(x/y))/2) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_V16():
 # test case in Mathematica syntax:
 # In[53]:= Integrate[Cos[5*x]*CosIntegral[2*x], x]
@@ -2337,18 +2336,17 @@ def test_V16():
     raise NotImplementedError("cosine integral function not supported")
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_V17():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     r1 = integrate((diff(f(x), x)*g(x)
                    - f(x)*diff(g(x), x))/(f(x)**2 - g(x)**2), x)
     # integral not calculated
     assert simplify(r1 - (f(x) - g(x))/(f(x) + g(x))/2) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W1():
     # The function has a pole at y.
     # The integral has a Cauchy principal value of zero but SymPy returns -I*pi
@@ -2356,7 +2354,7 @@ def test_W1():
     assert integrate(1/(x - y), (x, y - 1, y + 1)) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W2():
     # The function has a pole at y.
     # The integral is divergent but SymPy returns -2
@@ -2367,31 +2365,30 @@ def test_W2():
     assert integrate(1/(x - y)**2, (x, y - 1, y + 1)) == zoo
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
 def test_W3():
     # integral is not  calculated
     # https://github.com/sympy/sympy/issues/7161
     assert integrate(sqrt(x + 1/x - 2), (x, 0, 1)) == S(4)/3
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W4():
     # integral is not  calculated
     assert integrate(sqrt(x + 1/x - 2), (x, 1, 2)) == -2*sqrt(2)/3 + S(4)/3
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W5():
     # integral is not  calculated
     assert integrate(sqrt(x + 1/x - 2), (x, 0, 2)) == -2*sqrt(2)/3 + S(8)/3
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_W6():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     # integral is not  calculated
     assert integrate(sqrt(2 - 2*cos(2*x))/2, (x, -3*pi/4, -pi/4)) == sqrt(2)
 
@@ -2402,7 +2399,7 @@ def test_W7():
     assert r1.simplify() == pi*exp(-a)/a
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W8():
     # Test case in Mathematica:
     # In[19]:= Integrate[t^(a - 1)/(1 + t), {t, 0, Infinity},
@@ -2412,7 +2409,7 @@ def test_W8():
         "Integrate with assumption 0 < a < 1 not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W9():
     # Integrand with a residue at infinity => -2 pi [sin(pi/5) + sin(2pi/5)]
     # (principal value)   [Levinson and Redheffer, p. 234] *)
@@ -2421,7 +2418,7 @@ def test_W9():
     assert r2 == -2*pi*(sqrt(-sqrt(5)/8 + 5/8) + sqrt(sqrt(5)/8 + 5/8))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W10():
     # integrate(1/[1 + x + x^2 + ... + x^(2 n)], x = -infinity..infinity) =
     #        2 pi/(2 n + 1) [1 + cos(pi/[2 n + 1])] csc(2 pi/[2 n + 1])
@@ -2431,7 +2428,7 @@ def test_W10():
     assert r2 == 2*pi*(sqrt(5)/4 + 5/4)*csc(2*pi/5)/5
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W11():
     # integral not calculated
     assert (integrate(sqrt(1 - x**2)/(1 + x**2), (x, -1, 1)) ==
@@ -2445,11 +2442,10 @@ def test_W12():
     assert r1.simplify() == sqrt(pi)*q*exp(q**2/p)/p**Rational(3, 2)
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_W13():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     # Integral not calculated.
     r1 = integrate(1/log(x) + 1/(1 - x) - log(log(1/x)), (x, 0, 1))
     assert r1 == 2*EulerGamma
@@ -2459,7 +2455,7 @@ def test_W14():
     assert integrate(sin(x)/x*exp(2*I*x), (x, -oo, oo)) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W15():
     # integral not calculated
     assert integrate(log(gamma(x))*cos(6*pi*x), (x, 0, 1)) == S(1)/12
@@ -2480,14 +2476,14 @@ def test_W18():
     assert integrate((besselj(1, x)/x)**2, (x, 0, oo)) == 4/(3*pi)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W19():
     # integrate(cos_int(x)*bessel_j[0](2*sqrt(7*x)), x, 0, inf);
     # Expected result is cos 7 - 1)/7   [Gradshteyn and Ryzhik 6.782(3)]
     raise NotImplementedError("cosine integral function not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W20():
     # integral not calculated
     assert (integrate(x**2*polylog(3, 1/(x + 1)), (x, 0, 1)) ==
@@ -2509,16 +2505,16 @@ def test_W22():
                       (-sin(1) + sin(2), True)))
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
 def test_W23():
     a, b = symbols('a b', extended_real=True, positive=True)
     r1 = integrate(integrate(x/(x**2 + y**2), (x, a, b)), (y, -oo, oo))
     assert r1.simplify() == pi*(-a + b)
 
 
-@SKIP("integrate raises RuntimeError: maximum recursion depth exceeded")
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
 def test_W23b():
     # this used to be test_W23.  Can't really split since r1 is needed
     # in the second assert
@@ -2530,21 +2526,19 @@ def test_W23b():
     assert r1 == r2
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_W24():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     x, y = symbols('x y', extended_real=True)
     r1 = integrate(integrate(sqrt(x**2 + y**2), (x, 0, 1)), (y, 0, 1))
     assert (r1 - (sqrt(2) + asinh(1))/3).simplify() == 0
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_W25():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     a, x, y = symbols('a x y', extended_real=True)
     i1 = integrate(sin(a)*sin(y)/sqrt(1- sin(a)**2*sin(x)**2*sin(y)**2),
                    (x, 0, pi/2))
@@ -2552,7 +2546,7 @@ def test_W25():
     assert (i2 - pi*a/2).simplify() == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_W26():
     x, y = symbols('x y', extended_real=True)
     # integrate(abs(y - x**2), (y,0,2)) raises ValueError: gamma function pole
@@ -2593,7 +2587,7 @@ def test_X4():
     assert log(series(sin(x)/x)).series() == s1
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X5():
     # test case in Mathematica syntax:
     # In[21]:= (* => [a f'(a d) + g(b d) + integrate(h(c y), y = 0..d)]
@@ -2658,7 +2652,7 @@ def test_X11():
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X12():
     # Look at the generalized Taylor series around x = 1
     # Result => (x - 1)^a/e^b [1 - (a + 2 b) (x - 1) / 2 + O((x - 1)^2)]
@@ -2673,14 +2667,14 @@ def test_X13():
     assert series(sqrt(2*x**2 + 1), x, x0=oo, n=1) == sqrt(2)*x + O(1/x, (x, oo))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X14():
     # Wallis' product => 1/sqrt(pi n) + ...   [Knopp, p. 385]
     assert series(1/2**(2*n)*binomial(2*n, n),
                   n, x==oo, n=1) == 1/(sqrt(pi)*sqrt(n)) + O(1/x, (x, oo))
 
 
-@SKIP("https://github.com/sympy/sympy/issues/7164")
+@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
 def test_X15():
     # => 0!/x - 1!/x^2 + 2!/x^3 - 3!/x^4 + O(1/x^5)   [Knopp, p. 544]
     x, t = symbols('x t', extended_real=True)
@@ -2697,7 +2691,7 @@ def test_X16():
             O(x**4 + x**3*y + x**2*y**2 + x*y**3 + y**4, x, y))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X17():
     # Power series (compute the general formula)
     # (c41) powerseries(log(sin(x)/x), x, 0);
@@ -2712,7 +2706,7 @@ def test_X17():
     raise NotImplementedError("Formal power series not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X18():
     # Power series (compute the general formula). Maple FPS:
     # > FormalPowerSeries(exp(-x)*sin(x), x = 0);
@@ -2725,7 +2719,7 @@ def test_X18():
     raise NotImplementedError("Formal power series not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X19():
     # (c45) /* Derive an explicit Taylor series solution of y as a function of
     # x from the following implicit relation:
@@ -2741,7 +2735,7 @@ def test_X19():
 Inverse Taylor series expansion also not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X20():
     # Pade (rational function) approximation => (2 - x)/(2 + x)
     # > numapprox[pade](exp(-x), x = 0, [1, 1]);
@@ -2755,7 +2749,7 @@ def test_X20():
     raise NotImplementedError("Symbolic Pade approximant not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X21():
     # (c48) /* Fourier series of f(x) of period 2 p over the interval [-p, p]
     #    => - (2 p / pi) sum( (-1)^n sin(n pi x / p) / n, n = 1..infinity ) */
@@ -2788,7 +2782,7 @@ def test_X21():
     raise NotImplementedError("Fourier series not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_X22():
     # (c52) /* => p / 2
     #    - (2 p / pi^2) sum( [1 - (-1)^n] cos(n pi x / p) / n^2,
@@ -2837,11 +2831,10 @@ def test_Y2():
     assert f == cos(t*w - t)
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_Y3():
-    if ON_TRAVIS:
-        skip("Too slow.")
     t = symbols('t', extended_real=True, positive=True)
     w = symbols('w', extended_real=True)
     s = symbols('s')
@@ -2856,7 +2849,7 @@ def test_Y4():
     assert F == (1 - exp(-6*sqrt(s)))/s
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Y5_Y6():
 # Solve y'' + y = 4 [H(t - 1) - H(t - 2)], y(0) = 1, y'(0) = 0 where H is the
 # Heaviside (unit step) function (the RHS describes a pulse of magnitude 4 and
@@ -2882,7 +2875,7 @@ def test_Y5_Y6():
 #   => y(t) = cos t + 4 {[1 - cos(t - 1)] H(t - 1) - [1 - cos(t - 2)] H(t - 2)}
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Y7():
     # What is the Laplace transform of an infinite square wave?
     # => 1/s + 2 sum( (-1)^n e^(- s n a)/s, n = 1..infinity )
@@ -2898,7 +2891,7 @@ def test_Y7():
     assert F == 2*Sum((-1)**n*exp(-a*n*s)/s, (n, 1, oo)) + 1/s
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Y8():
     assert fourier_transform(1, x, z) == DiracDelta(z)
 
@@ -2913,8 +2906,8 @@ def test_Y10():
             (-8*pi**2*z**2 + 18)/(16*pi**4*z**4 + 72*pi**2*z**2 + 81))
 
 
-@SKIP("https://github.com/sympy/sympy/issues/7181")
-@slow
+@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7181")
+@pytest.mark.slow
 def test_Y11():
     # => pi cot(pi s)   (0 < Re s < 1)   [Gradshteyn and Ryzhik 17.43(5)]
     x, s = symbols('x s')
@@ -2924,7 +2917,7 @@ def test_Y11():
     assert F == pi*cot(pi*s)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Y12():
     # => 2^(s - 4) gamma(s/2)/gamma(4 - s/2)   (0 < Re s < 1)
     # [Gradshteyn and Ryzhik 17.43(16)]
@@ -2935,13 +2928,13 @@ def test_Y12():
     assert F == -2**(s - 4)*gamma(s/2)/gamma(-s/2 + 4)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Y13():
 # Z[H(t - m T)] => z/[z^m (z - 1)]   (H is the Heaviside (unit step) function)                                                 z
     raise NotImplementedError("z-transform not supported")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Y14():
 # Z[H(t - m T)] => z/[z^m (z - 1)]   (H is the Heaviside (unit step) function)
     raise NotImplementedError("z-transform not supported")
@@ -2970,7 +2963,7 @@ def test_Z3():
                         (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Z4():
 # => [c^(n+1) [c^(n+1) - 2 c - 2] + (n+1) c^2 + 2 c - n] / [(c-1)^3 (c+1)]
 #    [Joan Z. Yu and Robert Israel in sci.math.symbolic]
@@ -2985,7 +2978,7 @@ def test_Z4():
              (n + 1)*c**2 + 2*c - n)/((c-1)**3*(c+1)) == 0)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Z5():
     # Second order ODE with initial conditions---solve directly
     # transform: f(t) = sin(2 t)/8 - t cos(2 t)/4
@@ -3006,7 +2999,7 @@ def test_Z5():
 not supported')
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Z6():
     # Second order ODE with initial conditions---solve  using Laplace
     # transform: f(t) = sin(2 t)/8 - t cos(2 t)/4

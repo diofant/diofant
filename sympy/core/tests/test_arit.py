@@ -1,12 +1,12 @@
 from __future__ import division
 
+import pytest
+
 from sympy import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
-        sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo, Integer,
-        sign, im, nan, Dummy, factorial, comp, O
-)
+                   sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
+                   Integer, sign, im, nan, Dummy, factorial, comp, O)
 from sympy.core.compatibility import long, range
 from sympy.utilities.iterables import cartes
-from sympy.utilities.pytest import XFAIL, raises
 from sympy.utilities.randtest import verify_numerically
 
 
@@ -442,7 +442,7 @@ def test_Mul_is_even_odd():
     assert (x*(x + m)).is_odd is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_evenness_in_ternary_integer_product_with_odd():
     # Tests that oddness inference is independent of term ordering.
     # Term ordering at the point of testing depends on SymPy's symbol order, so
@@ -461,7 +461,7 @@ def test_evenness_in_ternary_integer_product_with_even():
     assert (x*y*(y + m)).is_even is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_oddness_in_ternary_integer_product_with_odd():
     # Tests that oddness inference is independent of term ordering.
     # Term ordering at the point of testing depends on SymPy's symbol order, so
@@ -1324,7 +1324,7 @@ def test_Add_is_irrational():
     assert (i + 1).is_rational is False
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_3531():
     class MightyNumeric(tuple):
         def __rdiv__(self, other):
@@ -1755,8 +1755,8 @@ def test_float_int():
     assert int(Add(1.2, -2, evaluate=False)) == int(1.2 - 2)
     assert int(Add(1.2, +2, evaluate=False)) == int(1.2 + 2)
     assert int(Add(1 + Float('.99999999999999999', ''), evaluate=False)) == 1
-    raises(TypeError, lambda: float(x))
-    raises(TypeError, lambda: float(sqrt(-1)))
+    pytest.raises(TypeError, lambda: float(x))
+    pytest.raises(TypeError, lambda: float(sqrt(-1)))
 
     assert int(12345678901234567890 + cos(1)**2 + sin(1)**2) == \
         12345678901234567891

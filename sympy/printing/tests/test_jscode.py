@@ -1,6 +1,8 @@
-from sympy.core import pi, oo, symbols, Rational, Integer, GoldenRatio, EulerGamma, Catalan, Lambda, Dummy
+import pytest
+
+from sympy.core import (pi, oo, symbols, Rational, Integer, GoldenRatio,
+                        EulerGamma, Catalan, Lambda, Dummy)
 from sympy.functions import Piecewise, sin, cos, Abs, exp, ceiling, sqrt
-from sympy.utilities.pytest import raises
 from sympy.printing.jscode import JavascriptCodePrinter
 from sympy.utilities.lambdify import implemented_function
 from sympy.tensor import IndexedBase, Idx
@@ -114,7 +116,7 @@ def test_jscode_Piecewise():
     "}")
     # Check that Piecewise without a True (default) condition error
     expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    raises(ValueError, lambda: jscode(expr))
+    pytest.raises(ValueError, lambda: jscode(expr))
 
 
 def test_jscode_Piecewise_deep():
@@ -132,7 +134,7 @@ def test_jscode_Piecewise_deep():
 
 
 def test_jscode_settings():
-    raises(TypeError, lambda: jscode(sin(x), method="garbage"))
+    pytest.raises(TypeError, lambda: jscode(sin(x), method="garbage"))
 
 
 def test_jscode_Indexed():

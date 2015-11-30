@@ -1,9 +1,10 @@
+import pytest
+
 from sympy import (S, Symbol, symbols, factorial, factorial2, binomial,
                    rf, ff, gamma, polygamma, EulerGamma, O, pi, nan, exp,
                    oo, zoo, simplify, expand_func, Product, loggamma)
 from sympy.functions.combinatorial.factorials import subfactorial
 from sympy.functions.special.gamma_functions import uppergamma
-from sympy.utilities.pytest import XFAIL
 
 
 def test_rf_eval_apply():
@@ -304,7 +305,7 @@ def test_binomial_rewrite():
         n, k).rewrite(gamma) == gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_factorial_simplify_fail():
     # simplify(factorial(x + 1).diff(x) - ((x + 1)*factorial(x)).diff(x))) == 0
     from sympy.abc import x

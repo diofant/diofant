@@ -1,9 +1,11 @@
 import warnings
-from sympy import (plot_implicit, cos, Symbol, symbols, Eq, sin, re, And, Or, exp, I,
-                   tan, pi)
+
+import pytest
+
+from sympy import (plot_implicit, cos, Symbol, symbols, Eq, sin, re, And,
+                   Or, exp, I, tan, pi)
 from sympy.plotting.plot import unset_show
 from tempfile import NamedTemporaryFile
-from sympy.utilities.pytest import skip, XFAIL
 from sympy.external import import_module
 
 # Set plots not to show
@@ -66,7 +68,7 @@ def test_line_color():
     assert p._series[0].line_color == "r"
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_matplotlib():
     matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:

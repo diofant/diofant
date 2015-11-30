@@ -1,20 +1,25 @@
-from sympy.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length, transformation_to_DN, find_DN, equivalent,
-    square_factor, pairwise_prime, descent,
-    ldescent, diophantine, transformation_to_normal, sum_of_four_squares, sum_of_three_squares,
-    prime_as_sum_of_two_squares, partition, power_representation)
+import pytest
+
+from sympy.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length,
+                                       transformation_to_DN, find_DN, equivalent,
+                                       square_factor, pairwise_prime, descent,
+                                       ldescent, diophantine,
+                                       transformation_to_normal, sum_of_four_squares,
+                                       sum_of_three_squares,
+                                       prime_as_sum_of_two_squares, partition,
+                                       power_representation)
 
 from sympy import symbols, Integer, Matrix, simplify, Subs, S, factor_list
 from sympy.core.function import _mexpand
 from sympy.core.compatibility import range
 from sympy.functions.elementary.trigonometric import sin
-from sympy.utilities.pytest import slow, raises
 from sympy.utilities import default_sort_key
 
 x, y, z, w, t, X, Y, Z = symbols("x, y, z, w, t, X, Y, Z", integer=True)
 
 
 def test_input_format():
-    raises(TypeError, lambda: diophantine(sin(x)))
+    pytest.raises(TypeError, lambda: diophantine(sin(x)))
 
 
 def test_univariate():
@@ -121,7 +126,7 @@ def test_quadratic_non_perfect_square():
     assert check_solutions(x**2 - 9*y**2 - 2*x - 6*y)
 
 
-@slow
+@pytest.mark.slow
 def test_quadratic_non_perfect_slow():
 
     assert check_solutions(8*x**2 + 10*x*y - 2*y**2 - 32*x - 13*y - 23)

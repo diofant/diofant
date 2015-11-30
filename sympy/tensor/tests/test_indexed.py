@@ -1,7 +1,8 @@
+import pytest
+
 from sympy.core import symbols, Symbol, Tuple, oo
 from sympy.core.compatibility import iterable, range
 from sympy.tensor.indexed import IndexException
-from sympy.utilities.pytest import raises
 
 # import test:
 from sympy import IndexedBase, Idx, Indexed
@@ -14,13 +15,13 @@ def test_Idx_construction():
     assert Idx(i, oo) == Idx(i, (0, oo))
 
     x = symbols('x')
-    raises(TypeError, lambda: Idx(x))
-    raises(TypeError, lambda: Idx(0.5))
-    raises(TypeError, lambda: Idx(i, x))
-    raises(TypeError, lambda: Idx(i, 0.5))
-    raises(TypeError, lambda: Idx(i, (x, 5)))
-    raises(TypeError, lambda: Idx(i, (2, x)))
-    raises(TypeError, lambda: Idx(i, (2, 3.5)))
+    pytest.raises(TypeError, lambda: Idx(x))
+    pytest.raises(TypeError, lambda: Idx(0.5))
+    pytest.raises(TypeError, lambda: Idx(i, x))
+    pytest.raises(TypeError, lambda: Idx(i, 0.5))
+    pytest.raises(TypeError, lambda: Idx(i, (x, 5)))
+    pytest.raises(TypeError, lambda: Idx(i, (2, x)))
+    pytest.raises(TypeError, lambda: Idx(i, (2, 3.5)))
 
 
 def test_Idx_properties():
@@ -113,8 +114,8 @@ def test_IndexedBase_shape():
     assert a[i, j] == b[i, j].subs(n, m)
     assert b.func(*b.args) == b
     assert b[i, j].func(*b[i, j].args) == b[i, j]
-    raises(IndexException, lambda: b[i])
-    raises(IndexException, lambda: b[i, i, j])
+    pytest.raises(IndexException, lambda: b[i])
+    pytest.raises(IndexException, lambda: b[i, i, j])
 
 
 def test_Indexed_constructor():
@@ -122,8 +123,8 @@ def test_Indexed_constructor():
     A = Indexed('A', i, j)
     assert A == Indexed(Symbol('A'), i, j)
     assert A == Indexed(IndexedBase('A'), i, j)
-    raises(TypeError, lambda: Indexed(A, i, j))
-    raises(IndexException, lambda: Indexed("A"))
+    pytest.raises(TypeError, lambda: Indexed(A, i, j))
+    pytest.raises(IndexException, lambda: Indexed("A"))
 
 
 def test_Indexed_func_args():
@@ -149,13 +150,13 @@ def test_Indexed_properties():
     assert A.indices == (i, j)
     assert A.base == IndexedBase('A')
     assert A.ranges == [None, None]
-    raises(IndexException, lambda: A.shape)
+    pytest.raises(IndexException, lambda: A.shape)
 
     n, m = symbols('n m', integer=True)
     assert Indexed('A', Idx(
         i, m), Idx(j, n)).ranges == [Tuple(0, m - 1), Tuple(0, n - 1)]
     assert Indexed('A', Idx(i, m), Idx(j, n)).shape == Tuple(m, n)
-    raises(IndexException, lambda: Indexed("A", Idx(i, m), Idx(j)).shape)
+    pytest.raises(IndexException, lambda: Indexed("A", Idx(i, m), Idx(j)).shape)
 
 
 def test_Indexed_shape_precedence():

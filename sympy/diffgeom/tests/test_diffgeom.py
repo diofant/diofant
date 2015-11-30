@@ -1,14 +1,17 @@
+import pytest
+
 from sympy.diffgeom.rn import R2, R2_p, R2_r, R3_r, R3_c, R3_s
 from sympy.diffgeom import (Commutator, Differential, TensorProduct,
-        WedgeProduct, BaseCovarDerivativeOp, CovarDerivativeOp, LieDerivative,
-        covariant_order, contravariant_order, twoform_to_matrix, metric_to_Christoffel_1st,
-        metric_to_Christoffel_2nd, metric_to_Riemann_components,
-        metric_to_Ricci_components, intcurve_diffequ, intcurve_series)
+                            WedgeProduct, BaseCovarDerivativeOp, CovarDerivativeOp,
+                            LieDerivative, covariant_order, contravariant_order,
+                            twoform_to_matrix, metric_to_Christoffel_1st,
+                            metric_to_Christoffel_2nd, metric_to_Riemann_components,
+                            metric_to_Ricci_components, intcurve_diffequ,
+                            intcurve_series)
 from sympy.core import Symbol, symbols
 from sympy.simplify import trigsimp, simplify
 from sympy.functions import sqrt, atan2, sin
 from sympy.matrices import Matrix
-from sympy.utilities.pytest import raises
 
 TP = TensorProduct
 
@@ -134,55 +137,55 @@ def test_helpers_and_coordinate_dependent():
     assert covariant_order(two_form + twoform_not_sym) == 2
     assert covariant_order(two_form + twoform_not_TP) == 2
 
-    raises(ValueError, lambda: covariant_order(misform_a))
-    raises(ValueError, lambda: covariant_order(misform_b))
-    raises(ValueError, lambda: covariant_order(misform_c))
+    pytest.raises(ValueError, lambda: covariant_order(misform_a))
+    pytest.raises(ValueError, lambda: covariant_order(misform_b))
+    pytest.raises(ValueError, lambda: covariant_order(misform_c))
 
     assert twoform_to_matrix(metric) == Matrix([[1, 0], [0, 1]])
     assert twoform_to_matrix(twoform_not_sym) == Matrix([[1, 0], [1, 0]])
     assert twoform_to_matrix(twoform_not_TP) == Matrix([[0, -1], [1, 0]])
 
-    raises(ValueError, lambda: twoform_to_matrix(one_form))
-    raises(ValueError, lambda: twoform_to_matrix(three_form))
-    raises(ValueError, lambda: twoform_to_matrix(metric_ambig))
+    pytest.raises(ValueError, lambda: twoform_to_matrix(one_form))
+    pytest.raises(ValueError, lambda: twoform_to_matrix(three_form))
+    pytest.raises(ValueError, lambda: twoform_to_matrix(metric_ambig))
 
-    raises(ValueError, lambda: metric_to_Christoffel_1st(twoform_not_sym))
-    raises(ValueError, lambda: metric_to_Christoffel_2nd(twoform_not_sym))
-    raises(ValueError, lambda: metric_to_Riemann_components(twoform_not_sym))
-    raises(ValueError, lambda: metric_to_Ricci_components(twoform_not_sym))
+    pytest.raises(ValueError, lambda: metric_to_Christoffel_1st(twoform_not_sym))
+    pytest.raises(ValueError, lambda: metric_to_Christoffel_2nd(twoform_not_sym))
+    pytest.raises(ValueError, lambda: metric_to_Riemann_components(twoform_not_sym))
+    pytest.raises(ValueError, lambda: metric_to_Ricci_components(twoform_not_sym))
 
 
 def test_correct_arguments():
-    raises(ValueError, lambda: R2.e_x(R2.e_x))
-    raises(ValueError, lambda: R2.e_x(R2.dx))
+    pytest.raises(ValueError, lambda: R2.e_x(R2.e_x))
+    pytest.raises(ValueError, lambda: R2.e_x(R2.dx))
 
-    raises(ValueError, lambda: Commutator(R2.e_x, R2.x))
-    raises(ValueError, lambda: Commutator(R2.dx, R2.e_x))
+    pytest.raises(ValueError, lambda: Commutator(R2.e_x, R2.x))
+    pytest.raises(ValueError, lambda: Commutator(R2.dx, R2.e_x))
 
-    raises(ValueError, lambda: Differential(Differential(R2.e_x)))
+    pytest.raises(ValueError, lambda: Differential(Differential(R2.e_x)))
 
-    raises(ValueError, lambda: R2.dx(R2.x))
+    pytest.raises(ValueError, lambda: R2.dx(R2.x))
 
-    raises(ValueError, lambda: TensorProduct(R2.e_x, R2.dx))
+    pytest.raises(ValueError, lambda: TensorProduct(R2.e_x, R2.dx))
 
-    raises(ValueError, lambda: LieDerivative(R2.dx, R2.dx))
-    raises(ValueError, lambda: LieDerivative(R2.x, R2.dx))
+    pytest.raises(ValueError, lambda: LieDerivative(R2.dx, R2.dx))
+    pytest.raises(ValueError, lambda: LieDerivative(R2.x, R2.dx))
 
-    raises(ValueError, lambda: CovarDerivativeOp(R2.dx, []))
-    raises(ValueError, lambda: CovarDerivativeOp(R2.x, []))
+    pytest.raises(ValueError, lambda: CovarDerivativeOp(R2.dx, []))
+    pytest.raises(ValueError, lambda: CovarDerivativeOp(R2.x, []))
 
     a = Symbol('a')
-    raises(ValueError, lambda: intcurve_series(R2.dx, a, R2_r.point([1, 2])))
-    raises(ValueError, lambda: intcurve_series(R2.x, a, R2_r.point([1, 2])))
+    pytest.raises(ValueError, lambda: intcurve_series(R2.dx, a, R2_r.point([1, 2])))
+    pytest.raises(ValueError, lambda: intcurve_series(R2.x, a, R2_r.point([1, 2])))
 
-    raises(ValueError, lambda: intcurve_diffequ(R2.dx, a, R2_r.point([1, 2])))
-    raises(ValueError, lambda: intcurve_diffequ(R2.x, a, R2_r.point([1, 2])))
+    pytest.raises(ValueError, lambda: intcurve_diffequ(R2.dx, a, R2_r.point([1, 2])))
+    pytest.raises(ValueError, lambda: intcurve_diffequ(R2.x, a, R2_r.point([1, 2])))
 
-    raises(ValueError, lambda: contravariant_order(R2.e_x + R2.dx))
-    raises(ValueError, lambda: covariant_order(R2.e_x + R2.dx))
+    pytest.raises(ValueError, lambda: contravariant_order(R2.e_x + R2.dx))
+    pytest.raises(ValueError, lambda: covariant_order(R2.e_x + R2.dx))
 
-    raises(ValueError, lambda: contravariant_order(R2.e_x*R2.e_y))
-    raises(ValueError, lambda: covariant_order(R2.dx*R2.dy))
+    pytest.raises(ValueError, lambda: contravariant_order(R2.e_x*R2.e_y))
+    pytest.raises(ValueError, lambda: covariant_order(R2.dx*R2.dy))
 
 
 def test_simplify():

@@ -1,6 +1,7 @@
+import pytest
+
 from sympy import (symbols, MatrixSymbol, MatPow, BlockMatrix,
-        Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
-from sympy.utilities.pytest import raises
+                   Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
 
 k, l, m, n = symbols('k l m n', integer=True)
 i, j = symbols('i j', integer=True)
@@ -52,7 +53,7 @@ def test_Identity_index():
     I = Identity(3)
     assert I[0, 0] == I[1, 1] == I[2, 2] == 1
     assert I[1, 0] == I[0, 1] == I[2, 1] == 0
-    raises(IndexError, lambda: I[3, 3])
+    pytest.raises(IndexError, lambda: I[3, 3])
 
 
 def test_block_index():
@@ -77,5 +78,5 @@ def test_slicing():
 
 
 def test_errors():
-    raises(IndexError, lambda: Identity(2)[1, 2, 3, 4, 5])
-    raises(IndexError, lambda: Identity(2)[[1, 2, 3, 4, 5]])
+    pytest.raises(IndexError, lambda: Identity(2)[1, 2, 3, 4, 5])
+    pytest.raises(IndexError, lambda: Identity(2)[[1, 2, 3, 4, 5]])

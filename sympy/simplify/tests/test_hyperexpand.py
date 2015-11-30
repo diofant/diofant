@@ -1,5 +1,7 @@
 from random import randrange
 
+import pytest
+
 from sympy.simplify.hyperexpand import (ShiftA, ShiftB, UnShiftA, UnShiftB,
                        MeijerShiftA, MeijerShiftB, MeijerShiftC, MeijerShiftD,
                        MeijerUnShiftA, MeijerUnShiftB, MeijerUnShiftC,
@@ -10,10 +12,8 @@ from sympy.simplify.hyperexpand import (ShiftA, ShiftB, UnShiftA, UnShiftB,
                        reduce_order_meijer,
                        build_hypergeometric_formula)
 from sympy import hyper, I, S, meijerg, Piecewise
-from sympy.utilities.pytest import raises
 from sympy.abc import z, a, b, c
 from sympy.utilities.randtest import verify_numerically as tn
-from sympy.utilities.pytest import XFAIL, slow
 from sympy.core.compatibility import range
 
 from sympy import (cos, sin, log, exp, asin, lowergamma, atanh, besseli,
@@ -72,7 +72,7 @@ def test_roach():
     assert can_do([-S(3)/2, -S(1)/2], [2])  # elliptic integrals
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_roach_fail():
     assert can_do([-S(1)/2, 1], [S(1)/4, S(1)/2, S(3)/4])  # PFDD
     assert can_do([S(3)/2], [S(5)/2, 5])  # struve function
@@ -140,7 +140,7 @@ def randcplx(offset=-1):
     return _randrat() + I*_randrat() + I*(1 + offset)
 
 
-@slow
+@pytest.mark.slow
 def test_formulae():
     from sympy.simplify.hyperexpand import FormulaCollection
     formulae = FormulaCollection().formulae
@@ -207,11 +207,11 @@ def op(f):
 def test_plan():
     assert devise_plan(Hyper_Function([0], ()),
             Hyper_Function([0], ()), z) == []
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         devise_plan(Hyper_Function([1], ()), Hyper_Function((), ()), z)
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         devise_plan(Hyper_Function([2], [1]), Hyper_Function([2], [2]), z)
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         devise_plan(Hyper_Function([2], []), Hyper_Function([S("1/2")], []), z)
 
     # We cannot use pi/(10000 + n) because polys is insanely slow.
@@ -277,8 +277,8 @@ def test_shift_operators():
     a1, a2, b1, b2, b3 = (randcplx(n) for n in range(5))
     h = hyper((a1, a2), (b1, b2, b3), z)
 
-    raises(ValueError, lambda: ShiftA(0))
-    raises(ValueError, lambda: ShiftB(1))
+    pytest.raises(ValueError, lambda: ShiftA(0))
+    pytest.raises(ValueError, lambda: ShiftB(1))
 
     assert tn(ShiftA(a1).apply(h, op), hyper((a1 + 1, a2), (b1, b2, b3), z), z)
     assert tn(ShiftA(a2).apply(h, op), hyper((a1, a2 + 1), (b1, b2, b3), z), z)
@@ -291,10 +291,10 @@ def test_ushift_operators():
     a1, a2, b1, b2, b3 = (randcplx(n) for n in range(5))
     h = hyper((a1, a2), (b1, b2, b3), z)
 
-    raises(ValueError, lambda: UnShiftA((1,), (), 0, z))
-    raises(ValueError, lambda: UnShiftB((), (-1,), 0, z))
-    raises(ValueError, lambda: UnShiftA((1,), (0, -1, 1), 0, z))
-    raises(ValueError, lambda: UnShiftB((0, 1), (1,), 0, z))
+    pytest.raises(ValueError, lambda: UnShiftA((1,), (), 0, z))
+    pytest.raises(ValueError, lambda: UnShiftB((), (-1,), 0, z))
+    pytest.raises(ValueError, lambda: UnShiftA((1,), (0, -1, 1), 0, z))
+    pytest.raises(ValueError, lambda: UnShiftB((0, 1), (1,), 0, z))
 
     s = UnShiftA((a1, a2), (b1, b2, b3), 0, z)
     assert tn(s.apply(h, op), hyper((a1 - 1, a2), (b1, b2, b3), z), z)
@@ -339,7 +339,7 @@ def can_do_meijer(a1, a2, b1, b2, numeric=True):
     return tn(meijerg(a1, a2, b1, b2, z).subs(repl), r.subs(repl), z)
 
 
-@slow
+@pytest.mark.slow
 def test_meijerg_expand():
     from sympy import combsimp, simplify
     # from mpmath docs
@@ -418,7 +418,7 @@ def test_meijerg_lookup():
     assert can_do_meijer([a - 1], [], [a + 2, a - S(3)/2, a + 1], [])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_meijerg_expand_fail():
     # These basically test hyper([], [1/2 - a, 1/2 + 1, 1/2], z),
     # which is *very* messy. But since the meijer g actually yields a
@@ -433,7 +433,7 @@ def test_meijerg_expand_fail():
     assert can_do_meijer([S.Half], [], [-a, a], [0])
 
 
-@slow
+@pytest.mark.slow
 def test_meijerg():
     # carefully set up the parameters.
     # NOTE: this used to fail sometimes. I believe it is fixed, but if you
@@ -503,7 +503,7 @@ def test_meijerg_shift_operators():
         s.apply(g, op), meijerg([a1], [a3 + 1, a4], [b1], [b3, b4], z), z)
 
 
-@slow
+@pytest.mark.slow
 def test_meijerg_confluence():
     def t(m, a, b):
         from sympy import sympify, Piecewise
@@ -639,7 +639,7 @@ def test_Mod1_behavior():
         lowergamma(n + 1, z)
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_misc():
     assert can_do([1, (3 + I)/2, (3 - I)/2], [S(3)/2, 2])
     assert can_do([S.Half, a - 1], [S(3)/2, a + 1], lowerplane=True)
@@ -661,7 +661,7 @@ def test_prudnikov_misc():
     assert can_do([a], [a + 1], lowerplane=True)  # lowergamma
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_1():
     # A. P. Prudnikov, Yu. A. Brychkov and O. I. Marichev (1990).
     # Integrals and Series: More Special Functions, Vol. 3,.
@@ -689,7 +689,7 @@ def test_prudnikov_1():
     assert can_do([a], [2*a - 1])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_2():
     h = S.Half
     assert can_do([-h, -h], [h])
@@ -707,7 +707,7 @@ def test_prudnikov_2():
                 assert can_do([p, n], [m])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_3():
     h = S.Half
     assert can_do([S(1)/4, S(3)/4], [h])
@@ -722,7 +722,7 @@ def test_prudnikov_3():
                 assert can_do([p, m], [n])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_4():
     h = S.Half
     for p in [3*h, 5*h, 7*h]:
@@ -734,7 +734,7 @@ def test_prudnikov_4():
                 assert can_do([p, m], [n])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_5():
     h = S.Half
 
@@ -758,7 +758,7 @@ def test_prudnikov_5():
                     assert can_do([-h, p, q], [r, s])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_6():
     h = S.Half
 
@@ -784,7 +784,7 @@ def test_prudnikov_6():
     # pages 435 to 457 contain more PFDD and stuff like this
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_7():
     assert can_do([3], [6])
 
@@ -796,7 +796,7 @@ def test_prudnikov_7():
             assert can_do([m], [n])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_8():
     h = S.Half
 
@@ -823,7 +823,7 @@ def test_prudnikov_8():
                         assert can_do([a, b], [c, d])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_9():
     # 7.13.1 [we have a general formula ... so this is a bit pointless]
     for i in range(9):
@@ -832,7 +832,7 @@ def test_prudnikov_9():
         assert can_do([], [-(2*S(i) + 1)/2])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_10():
     # 7.14.2
     h = S.Half
@@ -857,7 +857,7 @@ def test_prudnikov_10():
     assert can_do([-S(1)/2], [S(1)/2, S(1)/2])  # shine-integral shi
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_11():
     # 7.15
     assert can_do([a, a + S.Half], [2*a, b, 2*a - b])
@@ -871,7 +871,7 @@ def test_prudnikov_11():
     assert can_do([1, 1], [S(3)/2, 2, 2])  # cosh-integral chi
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_12():
     # 7.16
     assert can_do(
@@ -891,7 +891,7 @@ def test_prudnikov_12():
     assert can_do([], [2, S(3)/2, S(3)/2])
 
 
-@slow
+@pytest.mark.slow
 def test_prudnikov_2F1():
     h = S.Half
     # Elliptic integrals
@@ -901,7 +901,7 @@ def test_prudnikov_2F1():
                 assert can_do([p, m], [n])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_prudnikov_fail_2F1():
     assert can_do([a, b], [b + 1])  # incomplete beta function
     assert can_do([-1, b], [c])    # Poly. also -2, -3 etc
@@ -956,7 +956,7 @@ def test_prudnikov_fail_2F1():
     assert can_do([o/8*7, 1], [o/8*15])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_prudnikov_fail_3F2():
     assert can_do([a, a + S(1)/3, a + S(2)/3], [S(1)/3, S(2)/3])
     assert can_do([a, a + S(1)/3, a + S(2)/3], [S(2)/3, S(4)/3])
@@ -981,7 +981,7 @@ def test_prudnikov_fail_3F2():
     # LOTS more
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_prudnikov_fail_other():
     # 7.11.2
 

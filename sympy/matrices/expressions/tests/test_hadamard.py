@@ -1,6 +1,6 @@
-from sympy.core import symbols
-from sympy.utilities.pytest import raises
+import pytest
 
+from sympy.core import symbols
 from sympy.matrices import ShapeError, MatrixSymbol
 from sympy.matrices.expressions import HadamardProduct, hadamard_product
 
@@ -14,9 +14,9 @@ C = MatrixSymbol('C', m, k)
 def test_HadamardProduct():
     assert HadamardProduct(A, B, A).shape == A.shape
 
-    raises(ShapeError, lambda: HadamardProduct(A, B.T))
-    raises(TypeError, lambda: HadamardProduct(A, n))
-    raises(TypeError, lambda: HadamardProduct(A, 1))
+    pytest.raises(ShapeError, lambda: HadamardProduct(A, B.T))
+    pytest.raises(TypeError, lambda: HadamardProduct(A, n))
+    pytest.raises(TypeError, lambda: HadamardProduct(A, 1))
 
     assert HadamardProduct(A, 2*B, -A)[1, 1] == \
             -2 * A[1, 1] * B[1, 1] * A[1, 1]
@@ -53,10 +53,10 @@ def test_hadamard():
     A = MatrixSymbol('A', m, n)
     B = MatrixSymbol('B', m, n)
     C = MatrixSymbol('C', m, p)
-    with raises(TypeError):
+    with pytest.raises(TypeError):
         hadamard_product()
     assert hadamard_product(A) == A
     assert isinstance(hadamard_product(A, B), HadamardProduct)
     assert hadamard_product(A, B).doit() == hadamard_product(A, B)
-    with raises(ShapeError):
+    with pytest.raises(ShapeError):
         hadamard_product(A, C)

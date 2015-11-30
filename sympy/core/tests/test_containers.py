@@ -1,6 +1,7 @@
+import pytest
+
 from sympy import Matrix, Tuple, symbols, sympify, Basic, Dict, S, FiniteSet, Integer
 from sympy.core.containers import tuple_wrapper
-from sympy.utilities.pytest import raises
 from sympy.core.compatibility import is_sequence, iterable, u, range
 
 
@@ -36,8 +37,8 @@ def test_Tuple_concatenation():
     assert Tuple(1, 2) + Tuple(3, 4) == Tuple(1, 2, 3, 4)
     assert (1, 2) + Tuple(3, 4) == Tuple(1, 2, 3, 4)
     assert Tuple(1, 2) + (3, 4) == Tuple(1, 2, 3, 4)
-    raises(TypeError, lambda: Tuple(1, 2) + 3)
-    raises(TypeError, lambda: 1 + Tuple(2, 3))
+    pytest.raises(TypeError, lambda: Tuple(1, 2) + 3)
+    pytest.raises(TypeError, lambda: 1 + Tuple(2, 3))
 
     # the Tuple case in __radd__ is only reached when a subclass is involved
     class Tuple2(Tuple):
@@ -80,9 +81,9 @@ def test_Tuple_index():
     assert Tuple(0, 1, 2, 4, 3).index(4) == 3
     assert Tuple(0, 1, 2, 3, 4).index(4) == 4
 
-    raises(ValueError, lambda: Tuple(0, 1, 2, 3).index(4))
-    raises(ValueError, lambda: Tuple(4, 0, 1, 2, 3).index(4, 1))
-    raises(ValueError, lambda: Tuple(0, 1, 2, 3, 4).index(4, 1, 4))
+    pytest.raises(ValueError, lambda: Tuple(0, 1, 2, 3).index(4))
+    pytest.raises(ValueError, lambda: Tuple(4, 0, 1, 2, 3).index(4, 1))
+    pytest.raises(ValueError, lambda: Tuple(0, 1, 2, 3, 4).index(4, 1, 4))
 
 
 def test_Tuple_mul():
@@ -91,8 +92,8 @@ def test_Tuple_mul():
     assert Tuple(1, 2, 3)*Integer(2) == Tuple(1, 2, 3, 1, 2, 3)
     assert Integer(2)*Tuple(1, 2, 3) == Tuple(1, 2, 3, 1, 2, 3)
 
-    raises(TypeError, lambda: Tuple(1, 2, 3)*S.Half)
-    raises(TypeError, lambda: S.Half*Tuple(1, 2, 3))
+    pytest.raises(TypeError, lambda: Tuple(1, 2, 3)*S.Half)
+    pytest.raises(TypeError, lambda: S.Half*Tuple(1, 2, 3))
 
 
 def test_tuple_wrapper():
@@ -123,7 +124,7 @@ def test_Dict():
     d = Dict({x: 1, y: 2, z: 3})
     assert d[x] == 1
     assert d[y] == 2
-    raises(KeyError, lambda: d[2])
+    pytest.raises(KeyError, lambda: d[2])
     assert len(d) == 3
     assert set(d.keys()) == {x, y, z}
     assert set(d.values()) == {S(1), S(2), S(3)}
@@ -137,8 +138,8 @@ def test_Dict():
     assert (Dict({x: 1, y: 2, z: 3}) ==
             Dict((x, 1), (y, 2), (z, 3)))
 
-    raises(TypeError, lambda: Dict(((x, 1), (y, 2), (z, 3))))
-    with raises(NotImplementedError):
+    pytest.raises(TypeError, lambda: Dict(((x, 1), (y, 2), (z, 3))))
+    with pytest.raises(NotImplementedError):
         d[5] = 6  # assert immutability
 
     assert set(d.items()) == {Tuple(x, S(1)), Tuple(y, S(2)), Tuple(z, S(3))}

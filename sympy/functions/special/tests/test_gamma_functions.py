@@ -1,12 +1,13 @@
-from sympy import (
-    Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational, log,
-    polygamma, EulerGamma, pi, uppergamma, S, expand_func, loggamma, sin,
-    cos, O, lowergamma, exp, erf, exp_polar, harmonic, zeta,conjugate)
+import pytest
+
+from sympy import (Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational,
+                   log, polygamma, EulerGamma, pi, uppergamma, S, expand_func,
+                   loggamma, sin, cos, O, lowergamma, exp, erf, exp_polar,
+                   harmonic, zeta, conjugate)
 from sympy.core.function import ArgumentIndexError
 from sympy.utilities.randtest import (test_derivative_numerically as td,
                                       random_complex_number as randcplx,
                                       verify_numerically as tn)
-from sympy.utilities.pytest import raises
 
 x = Symbol('x')
 y = Symbol('y')
@@ -301,8 +302,8 @@ def test_polygamma_expand_func():
 
 
 def test_loggamma():
-    raises(TypeError, lambda: loggamma(2, 3))
-    raises(ArgumentIndexError, lambda: loggamma(x).fdiff(2))
+    pytest.raises(TypeError, lambda: loggamma(2, 3))
+    pytest.raises(ArgumentIndexError, lambda: loggamma(x).fdiff(2))
 
     assert loggamma(-1) == oo
     assert loggamma(-2) == oo

@@ -1,5 +1,7 @@
 from __future__ import division
 
+import pytest
+
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
 from sympy.core.compatibility import range
@@ -11,7 +13,6 @@ from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
 from sympy.geometry.line import Undecidable
 from sympy.geometry.polygon import _asa as asa
 from sympy.utilities.iterables import cartes
-from sympy.utilities.pytest import raises
 
 x = Symbol('x', extended_real=True)
 y = Symbol('y', extended_real=True)
@@ -54,13 +55,13 @@ def test_line_geom():
     l5 = Line(p1, p7)
     l6 = Line(p8, p9)
     l7 = Line(p2, p9)
-    raises(ValueError, lambda: Line(Point(0, 0), Point(0, 0)))
+    pytest.raises(ValueError, lambda: Line(Point(0, 0), Point(0, 0)))
 
     # Basic stuff
     assert Line((1, 1), slope=1) == Line((1, 1), (2, 2))
     assert Line((1, 1), slope=oo) == Line((1, 1), (1, 2))
     assert Line((1, 1), slope=-oo) == Line((1, 1), (1, 2))
-    raises(ValueError, lambda: Line((1, 1), 1))
+    pytest.raises(ValueError, lambda: Line((1, 1), 1))
     assert Line(p1, p2) == Line(p1, p2)
     assert Line(p1, p2) != Line(p2, p1)
     assert l1 != l2
@@ -126,7 +127,7 @@ def test_line_geom():
     assert l2.projection(p4) == p4
     assert l1.projection(p1_1) == p1
     assert l3.projection(p2) == Point(x1, 1)
-    raises(GeometryError, lambda: Line(Point(0, 0), Point(1, 0))
+    pytest.raises(GeometryError, lambda: Line(Point(0, 0), Point(1, 0))
            .projection(Circle(Point(0, 0), 1)))
 
     # Finding angles
@@ -149,7 +150,7 @@ def test_line_geom():
     assert Ray((1, 1), angle=4.02*pi) == Ray(Point(1, 1),
                Point(2, 1 + tan(4.02*pi)))
     assert Ray((1, 1), angle=5) == Ray((1, 1), (2, 1 + tan(5)))
-    raises(ValueError, lambda: Ray((1, 1), 1))
+    pytest.raises(ValueError, lambda: Ray((1, 1), 1))
 
     # issue 7963
     r = Ray((0, 0), angle=x)
@@ -211,7 +212,7 @@ def test_line_geom():
     s = Segment((a, 0), (b, 0))
     assert Point((a + b)/2, 0) in s
 
-    raises(Undecidable, lambda: Point(2*a, 0) in s)
+    pytest.raises(Undecidable, lambda: Point(2*a, 0) in s)
 
     # Testing distance from a Segment to an object
     s1 = Segment(Point(0, 0), Point(1, 1))
@@ -354,7 +355,7 @@ def test_line3d():
     l5 = Line3D(p1, p7)
     l6 = Line3D(p8, p9)
     l7 = Line3D(p2, p9)
-    raises(ValueError, lambda: Line3D(Point3D(0, 0, 0), Point3D(0, 0, 0)))
+    pytest.raises(ValueError, lambda: Line3D(Point3D(0, 0, 0), Point3D(0, 0, 0)))
 
     assert Line3D((1, 1, 1), direction_ratio=[2, 3, 4]) == \
         Line3D(Point3D(1, 1, 1), Point3D(3, 4, 5))
@@ -362,7 +363,7 @@ def test_line3d():
         Line3D(Point3D(1, 1, 1), Point3D(2, 6, 8))
     assert Line3D((1, 1, 1), direction_ratio=[1, 2, 3]) == \
         Line3D(Point3D(1, 1, 1), Point3D(2, 3, 4))
-    raises(TypeError, lambda: Line3D((1, 1), 1))
+    pytest.raises(TypeError, lambda: Line3D((1, 1), 1))
     assert Line3D(p1, p2) != Line3D(p2, p1)
     assert l1 != l3
     assert l1.is_parallel(l1)  # same as in 2D
@@ -380,7 +381,7 @@ def test_line3d():
     l1_1 = Line3D(p1, p1_1)
     assert Line3D.is_perpendicular(l1, l2) is False
     p = l1.arbitrary_point()
-    raises(NotImplementedError, lambda: l1.perpendicular_segment(p))
+    pytest.raises(NotImplementedError, lambda: l1.perpendicular_segment(p))
 
     # Parallelity
     assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),
@@ -548,11 +549,11 @@ def test_line3d():
     # Test projection
     assert parallel_1.projection(Point3D(5, 5, 0)) == Point3D(5, 0, 0)
     assert parallel_1.projection(parallel_2) == [parallel_1]
-    raises(GeometryError, lambda: parallel_1.projection(Plane(p1, p2, p6)))
+    pytest.raises(GeometryError, lambda: parallel_1.projection(Plane(p1, p2, p6)))
 
     # Test __new__
     assert Line3D(perp_1) == perp_1
-    raises(ValueError, lambda: Line3D(p1))
+    pytest.raises(ValueError, lambda: Line3D(p1))
 
     # Test contains
     pt2d = Point(1.0, 1.0)
@@ -568,7 +569,7 @@ def test_line3d():
     # Begin ray
     # Test __new__
     assert Ray3D(col1) == Ray3D(p1, Point3D(1, 0, 0))
-    raises(ValueError, lambda: Ray3D(pt2d))
+    pytest.raises(ValueError, lambda: Ray3D(pt2d))
 
     # Test zdirection
     negz = Ray3D(p1, Point3D(0, 0, -1))
@@ -583,7 +584,7 @@ def test_line3d():
     assert posz.contains(p1) is True
     assert posz.contains(pt2d) is False
     ray1 = Ray3D(Point3D(1, 1, 1), Point3D(1, 0, 0))
-    raises(TypeError, lambda: ray1.contains([]))
+    pytest.raises(TypeError, lambda: ray1.contains([]))
 
     # Test equals
     assert negz.equals(pt2d) is False
@@ -591,11 +592,11 @@ def test_line3d():
 
     assert ray1.is_similar(Line3D(Point3D(1, 1, 1), Point3D(1, 0, 0))) is True
     assert ray1.is_similar(perp_1) is False
-    raises(NotImplementedError, lambda: ray1.is_similar(ray1))
+    pytest.raises(NotImplementedError, lambda: ray1.is_similar(ray1))
 
     # Begin Segment
     seg1 = Segment3D(p1, Point3D(1, 0, 0))
-    raises(TypeError, lambda: seg1.contains([]))
+    pytest.raises(TypeError, lambda: seg1.contains([]))
     seg2= Segment3D(Point3D(2, 2, 2), Point3D(3, 2, 2))
     assert seg1.contains(seg2) is False
 

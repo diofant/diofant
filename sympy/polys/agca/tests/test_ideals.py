@@ -1,8 +1,9 @@
 """Test ideals.py code."""
 
+import pytest
+
 from sympy.polys import QQ, ilex
 from sympy.abc import x, y, z
-from sympy.utilities.pytest import raises
 
 
 def test_ideal_operations():
@@ -50,10 +51,10 @@ def test_ideal_operations():
 def test_exceptions():
     I = QQ.old_poly_ring(x).ideal(x)
     J = QQ.old_poly_ring(y).ideal(1)
-    raises(ValueError, lambda: I.union(x))
-    raises(ValueError, lambda: I + J)
-    raises(ValueError, lambda: I * J)
-    raises(ValueError, lambda: I.union(J))
+    pytest.raises(ValueError, lambda: I.union(x))
+    pytest.raises(ValueError, lambda: I + J)
+    pytest.raises(ValueError, lambda: I * J)
+    pytest.raises(ValueError, lambda: I.union(J))
     assert (I == J) is False
     assert I != J
 

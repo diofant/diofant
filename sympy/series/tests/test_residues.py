@@ -1,5 +1,6 @@
+import pytest
+
 from sympy import residue, Symbol, Function, sin, S, I, exp, log, pi, factorial
-from sympy.utilities.pytest import XFAIL, raises
 from sympy.abc import x, z, a, s
 
 
@@ -46,7 +47,7 @@ def test_expressions():
     assert residue(1/(x**4 + 1), x, 0) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_expressions_failing():
     assert residue(1/(x**4 + 1), x, exp(I*pi/4)) == -(S(1)/4 + I/4)/sqrt(2)
 
@@ -57,7 +58,7 @@ def test_expressions_failing():
 
 
 def test_NotImplemented():
-    raises(NotImplementedError, lambda: residue(exp(1/z), z, 0))
+    pytest.raises(NotImplementedError, lambda: residue(exp(1/z), z, 0))
 
 
 def test_bug():

@@ -1,17 +1,22 @@
+from tempfile import NamedTemporaryFile
+import os
+import errno
+import sys
+
+import pytest
+
 from sympy import (pi, sin, cos, Symbol, Integral, summation, sqrt, log,
                    oo, LambertW, I, meijerg, exp_polar, Max)
 from sympy.plotting import (plot, plot_parametric, plot3d_parametric_line,
                             plot3d, plot3d_parametric_surface)
 from sympy.plotting.plot import unset_show
-from sympy.utilities.pytest import skip, raises
 from sympy.plotting.experimental_lambdify import lambdify
 from sympy.external import import_module
 from sympy.core.decorators import wraps
 
-from tempfile import NamedTemporaryFile
-import os
-import errno
-import sys
+
+matplotlib = import_module('matplotlib', min_module_version='1.1.0',
+                           catch=(RuntimeError,))
 
 
 class MockPrint(object):
@@ -51,11 +56,9 @@ class TmpFileManager:
                     raise
 
 
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib_intro():
     """Examples from the 'introduction' notebook."""
-    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-    if not matplotlib:
-        skip("Matplotlib not the default backend")
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
@@ -93,7 +96,7 @@ def test_matplotlib_intro():
         p = plot((x**2, (x, -5, 5)), (x**3, (x, -3, 3)))
         p.save(tmp_file('%s_line_multiple_range' % name))
 
-        raises(ValueError, lambda: plot(x, y))
+        pytest.raises(ValueError, lambda: plot(x, y))
 
         # parametric 2d plots.
 
@@ -157,11 +160,9 @@ def test_matplotlib_intro():
         TmpFileManager.cleanup()
 
 
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib_colors():
     """Examples from the 'colors' notebook."""
-    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-    if not matplotlib:
-        skip("Matplotlib not the default backend")
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
@@ -218,11 +219,9 @@ def test_matplotlib_colors():
         TmpFileManager.cleanup()
 
 
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib_advanced():
     """Examples from the 'advanced' notebook."""
-    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-    if not matplotlib:
-        skip("Matplotlib not the default backend")
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
@@ -258,11 +257,9 @@ def test_matplotlib_advanced():
         TmpFileManager.cleanup()
 
 
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib_advanced_2():
     """More examples from the 'advanced' notebook."""
-    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-    if not matplotlib:
-        skip("Matplotlib not the default backend")
     try:
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
@@ -293,11 +290,8 @@ def test_experimental_lambify():
 
 
 @disable_print
+@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_append_issue_7140():
-    matplotlib = import_module('matplotlib', min_module_version='1.1.0', catch=(RuntimeError,))
-    if not matplotlib:
-        skip("Matplotlib not the default backend")
-
     x = Symbol('x')
     p1 = plot(x)
     p2 = plot(x**2)
@@ -307,8 +301,8 @@ def test_append_issue_7140():
     p2.append(p1[0])
     assert len(p2._series) == 2
 
-    with raises(TypeError):
+    with pytest.raises(TypeError):
         p1.append(p2)
 
-    with raises(TypeError):
+    with pytest.raises(TypeError):
         p1.append(p2._series)

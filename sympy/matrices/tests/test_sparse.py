@@ -1,6 +1,7 @@
+import pytest
+
 from sympy import S, Symbol, I, Rational, PurePoly
 from sympy.matrices import Matrix, SparseMatrix, eye, zeros, ShapeError
-from sympy.utilities.pytest import raises
 
 
 def test_sparse_matrix():
@@ -11,7 +12,7 @@ def test_sparse_matrix():
         return SparseMatrix.zeros(n)
 
     # creation args
-    raises(TypeError, lambda: SparseMatrix(1, 2))
+    pytest.raises(TypeError, lambda: SparseMatrix(1, 2))
 
     a = SparseMatrix((
         (1, 0),
@@ -453,18 +454,18 @@ def test_add():
 
 
 def test_errors():
-    raises(ValueError, lambda: SparseMatrix(1.4, 2, lambda i, j: 0))
-    raises(TypeError, lambda: SparseMatrix([1, 2, 3], [1, 2]))
-    raises(ValueError, lambda: SparseMatrix([[1, 2], [3, 4]])[(1, 2, 3)])
-    raises(IndexError, lambda: SparseMatrix([[1, 2], [3, 4]])[5])
-    raises(ValueError, lambda: SparseMatrix([[1, 2], [3, 4]])[1, 2, 3])
-    raises(TypeError,
+    pytest.raises(ValueError, lambda: SparseMatrix(1.4, 2, lambda i, j: 0))
+    pytest.raises(TypeError, lambda: SparseMatrix([1, 2, 3], [1, 2]))
+    pytest.raises(ValueError, lambda: SparseMatrix([[1, 2], [3, 4]])[(1, 2, 3)])
+    pytest.raises(IndexError, lambda: SparseMatrix([[1, 2], [3, 4]])[5])
+    pytest.raises(ValueError, lambda: SparseMatrix([[1, 2], [3, 4]])[1, 2, 3])
+    pytest.raises(TypeError,
         lambda: SparseMatrix([[1, 2], [3, 4]]).copyin_list([0, 1], set()))
-    raises(
+    pytest.raises(
         IndexError, lambda: SparseMatrix([[1, 2], [3, 4]])[1, 2])
-    raises(TypeError, lambda: SparseMatrix([1, 2, 3]).cross(1))
-    raises(IndexError, lambda: SparseMatrix(1, 2, [1, 2])[3])
-    raises(ShapeError,
+    pytest.raises(TypeError, lambda: SparseMatrix([1, 2, 3]).cross(1))
+    pytest.raises(IndexError, lambda: SparseMatrix(1, 2, [1, 2])[3])
+    pytest.raises(ShapeError,
         lambda: SparseMatrix(1, 2, [1, 2]) + SparseMatrix(2, 1, [2, 1]))
 
 

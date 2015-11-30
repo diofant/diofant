@@ -1,5 +1,7 @@
 """Tests for options manager for :class:`Poly` and public API functions. """
 
+import pytest
+
 from sympy.polys.polyoptions import (
     Options, Expand, Gens, Wrt, Sort, Order, Field, Greedy, Domain,
     Split, Gaussian, Extension, Modulus, Symmetric, Strict, Auto,
@@ -11,7 +13,6 @@ from sympy.polys.domains import FF, GF, ZZ, QQ, EX
 from sympy.polys.polyerrors import OptionError, GeneratorsError
 
 from sympy import Integer, Symbol, I, sqrt
-from sympy.utilities.pytest import raises
 from sympy.abc import x, y, z
 
 
@@ -40,7 +41,7 @@ def test_Expand_preprocess():
     assert Expand.preprocess(0) is False
     assert Expand.preprocess(1) is True
 
-    raises(OptionError, lambda: Expand.preprocess(x))
+    pytest.raises(OptionError, lambda: Expand.preprocess(x))
 
 
 def test_Expand_postprocess():
@@ -57,8 +58,8 @@ def test_Gens_preprocess():
 
     a = Symbol('a', commutative=False)
 
-    raises(GeneratorsError, lambda: Gens.preprocess((x, x, y)))
-    raises(GeneratorsError, lambda: Gens.preprocess((x, y, a)))
+    pytest.raises(GeneratorsError, lambda: Gens.preprocess((x, x, y)))
+    pytest.raises(GeneratorsError, lambda: Gens.preprocess((x, y, a)))
 
 
 def test_Gens_postprocess():
@@ -80,8 +81,8 @@ def test_Wrt_preprocess():
     assert Wrt.preprocess(' x,  y') == ['x', 'y']
     assert Wrt.preprocess([x, y]) == ['x', 'y']
 
-    raises(OptionError, lambda: Wrt.preprocess(','))
-    raises(OptionError, lambda: Wrt.preprocess(0))
+    pytest.raises(OptionError, lambda: Wrt.preprocess(','))
+    pytest.raises(OptionError, lambda: Wrt.preprocess(0))
 
 
 def test_Wrt_postprocess():
@@ -98,8 +99,8 @@ def test_Sort_preprocess():
     assert Sort.preprocess('x > y > z') == ['x', 'y', 'z']
     assert Sort.preprocess('x>y>z') == ['x', 'y', 'z']
 
-    raises(OptionError, lambda: Sort.preprocess(0))
-    raises(OptionError, lambda: Sort.preprocess({x, y, z}))
+    pytest.raises(OptionError, lambda: Sort.preprocess(0))
+    pytest.raises(OptionError, lambda: Sort.preprocess({x, y, z}))
 
 
 def test_Sort_postprocess():
@@ -127,7 +128,7 @@ def test_Field_preprocess():
     assert Field.preprocess(0) is False
     assert Field.preprocess(1) is True
 
-    raises(OptionError, lambda: Field.preprocess(x))
+    pytest.raises(OptionError, lambda: Field.preprocess(x))
 
 
 def test_Field_postprocess():
@@ -144,7 +145,7 @@ def test_Greedy_preprocess():
     assert Greedy.preprocess(0) is False
     assert Greedy.preprocess(1) is True
 
-    raises(OptionError, lambda: Greedy.preprocess(x))
+    pytest.raises(OptionError, lambda: Greedy.preprocess(x))
 
 
 def test_Greedy_postprocess():
@@ -172,7 +173,7 @@ def test_Domain_preprocess():
     assert Domain.preprocess('FF(23)') == FF(23)
     assert Domain.preprocess('GF(23)') == GF(23)
 
-    raises(OptionError, lambda: Domain.preprocess('Z[]'))
+    pytest.raises(OptionError, lambda: Domain.preprocess('Z[]'))
 
     assert Domain.preprocess('Z[x]') == ZZ[x]
     assert Domain.preprocess('Q[x]') == QQ[x]
@@ -186,7 +187,7 @@ def test_Domain_preprocess():
     assert Domain.preprocess('ZZ[x,y]') == ZZ[x, y]
     assert Domain.preprocess('QQ[x,y]') == QQ[x, y]
 
-    raises(OptionError, lambda: Domain.preprocess('Z()'))
+    pytest.raises(OptionError, lambda: Domain.preprocess('Z()'))
 
     assert Domain.preprocess('Z(x)') == ZZ.frac_field(x)
     assert Domain.preprocess('Q(x)') == QQ.frac_field(x)
@@ -207,16 +208,16 @@ def test_Domain_preprocess():
     assert Domain.preprocess(
         'QQ<sqrt(2), I>') == QQ.algebraic_field(sqrt(2), I)
 
-    raises(OptionError, lambda: Domain.preprocess('abc'))
+    pytest.raises(OptionError, lambda: Domain.preprocess('abc'))
 
 
 def test_Domain_postprocess():
-    raises(GeneratorsError, lambda: Domain.postprocess({'gens': (x, y),
+    pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (x, y),
            'domain': ZZ[y, z]}))
 
-    raises(GeneratorsError, lambda: Domain.postprocess({'gens': (),
+    pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (),
            'domain': EX}))
-    raises(GeneratorsError, lambda: Domain.postprocess({'domain': EX}))
+    pytest.raises(GeneratorsError, lambda: Domain.postprocess({'domain': EX}))
 
 
 def test_Split_preprocess():
@@ -226,11 +227,11 @@ def test_Split_preprocess():
     assert Split.preprocess(0) is False
     assert Split.preprocess(1) is True
 
-    raises(OptionError, lambda: Split.preprocess(x))
+    pytest.raises(OptionError, lambda: Split.preprocess(x))
 
 
 def test_Split_postprocess():
-    raises(NotImplementedError, lambda: Split.postprocess({'split': True}))
+    pytest.raises(NotImplementedError, lambda: Split.postprocess({'split': True}))
 
 
 def test_Gaussian_preprocess():
@@ -240,7 +241,7 @@ def test_Gaussian_preprocess():
     assert Gaussian.preprocess(0) is False
     assert Gaussian.preprocess(1) is True
 
-    raises(OptionError, lambda: Gaussian.preprocess(x))
+    pytest.raises(OptionError, lambda: Gaussian.preprocess(x))
 
 
 def test_Gaussian_postprocess():
@@ -265,8 +266,8 @@ def test_Extension_preprocess():
 
     assert Extension.preprocess([sqrt(2), I]) == {sqrt(2), I}
 
-    raises(OptionError, lambda: Extension.preprocess(False))
-    raises(OptionError, lambda: Extension.preprocess(0))
+    pytest.raises(OptionError, lambda: Extension.preprocess(False))
+    pytest.raises(OptionError, lambda: Extension.preprocess(0))
 
 
 def test_Extension_postprocess():
@@ -288,8 +289,8 @@ def test_Modulus_preprocess():
     assert Modulus.preprocess(23) == 23
     assert Modulus.preprocess(Integer(23)) == 23
 
-    raises(OptionError, lambda: Modulus.preprocess(0))
-    raises(OptionError, lambda: Modulus.preprocess(x))
+    pytest.raises(OptionError, lambda: Modulus.preprocess(0))
+    pytest.raises(OptionError, lambda: Modulus.preprocess(x))
 
 
 def test_Modulus_postprocess():
@@ -318,7 +319,7 @@ def test_Symmetric_preprocess():
     assert Symmetric.preprocess(0) is False
     assert Symmetric.preprocess(1) is True
 
-    raises(OptionError, lambda: Symmetric.preprocess(x))
+    pytest.raises(OptionError, lambda: Symmetric.preprocess(x))
 
 
 def test_Symmetric_postprocess():
@@ -335,7 +336,7 @@ def test_Strict_preprocess():
     assert Strict.preprocess(0) is False
     assert Strict.preprocess(1) is True
 
-    raises(OptionError, lambda: Strict.preprocess(x))
+    pytest.raises(OptionError, lambda: Strict.preprocess(x))
 
 
 def test_Strict_postprocess():
@@ -352,7 +353,7 @@ def test_Auto_preprocess():
     assert Auto.preprocess(0) is False
     assert Auto.preprocess(1) is True
 
-    raises(OptionError, lambda: Auto.preprocess(x))
+    pytest.raises(OptionError, lambda: Auto.preprocess(x))
 
 
 def test_Auto_postprocess():
@@ -369,7 +370,7 @@ def test_Frac_preprocess():
     assert Frac.preprocess(0) is False
     assert Frac.preprocess(1) is True
 
-    raises(OptionError, lambda: Frac.preprocess(x))
+    pytest.raises(OptionError, lambda: Frac.preprocess(x))
 
 
 def test_Frac_postprocess():
@@ -386,7 +387,7 @@ def test_Formal_preprocess():
     assert Formal.preprocess(0) is False
     assert Formal.preprocess(1) is True
 
-    raises(OptionError, lambda: Formal.preprocess(x))
+    pytest.raises(OptionError, lambda: Formal.preprocess(x))
 
 
 def test_Formal_postprocess():
@@ -403,7 +404,7 @@ def test_Polys_preprocess():
     assert Polys.preprocess(0) is False
     assert Polys.preprocess(1) is True
 
-    raises(OptionError, lambda: Polys.preprocess(x))
+    pytest.raises(OptionError, lambda: Polys.preprocess(x))
 
 
 def test_Polys_postprocess():
@@ -420,7 +421,7 @@ def test_Include_preprocess():
     assert Include.preprocess(0) is False
     assert Include.preprocess(1) is True
 
-    raises(OptionError, lambda: Include.preprocess(x))
+    pytest.raises(OptionError, lambda: Include.preprocess(x))
 
 
 def test_Include_postprocess():
@@ -437,7 +438,7 @@ def test_All_preprocess():
     assert All.preprocess(0) is False
     assert All.preprocess(1) is True
 
-    raises(OptionError, lambda: All.preprocess(x))
+    pytest.raises(OptionError, lambda: All.preprocess(x))
 
 
 def test_All_postprocess():
@@ -455,7 +456,7 @@ def test_Gen_postprocess():
 
 
 def test_Symbols_preprocess():
-    raises(OptionError, lambda: Symbols.preprocess(x))
+    pytest.raises(OptionError, lambda: Symbols.preprocess(x))
 
 
 def test_Symbols_postprocess():
@@ -466,7 +467,7 @@ def test_Symbols_postprocess():
 
 
 def test_Method_preprocess():
-    raises(OptionError, lambda: Method.preprocess(10))
+    pytest.raises(OptionError, lambda: Method.preprocess(10))
 
 
 def test_Method_postprocess():

@@ -1,16 +1,18 @@
 """For more tests on satisfiability, see test_dimacs"""
 
+import pytest
+
 from sympy import symbols, Q
 from sympy.core.compatibility import range
 from sympy.logic.boolalg import And, Implies, Equivalent, true, false
-from sympy.logic.inference import literal_symbol, \
-    pl_true, satisfiable, valid, entails, PropKB
-from sympy.logic.algorithms.dpll import dpll, dpll_satisfiable, \
-    find_pure_symbol, find_unit_clause, unit_propagate, \
-    find_pure_symbol_int_repr, find_unit_clause_int_repr, \
-    unit_propagate_int_repr
+from sympy.logic.inference import (literal_symbol, pl_true, satisfiable, valid,
+                                   entails, PropKB)
+from sympy.logic.algorithms.dpll import (dpll, dpll_satisfiable,
+                                         find_pure_symbol, find_unit_clause,
+                                         unit_propagate, find_pure_symbol_int_repr,
+                                         find_unit_clause_int_repr,
+                                         unit_propagate_int_repr)
 from sympy.logic.algorithms.dpll2 import dpll_satisfiable as dpll2_satisfiable
-from sympy.utilities.pytest import raises
 
 
 def test_literal():
@@ -172,9 +174,9 @@ def test_pl_true():
 
 def test_pl_true_wrong_input():
     from sympy import pi
-    raises(ValueError, lambda: pl_true('John Cleese'))
-    raises(ValueError, lambda: pl_true(42 + pi + pi ** 2))
-    raises(ValueError, lambda: pl_true(42))
+    pytest.raises(ValueError, lambda: pl_true('John Cleese'))
+    pytest.raises(ValueError, lambda: pl_true(42 + pi + pi ** 2))
+    pytest.raises(ValueError, lambda: pl_true(42))
 
 
 def test_entails():
@@ -250,7 +252,7 @@ def test_satisfiable_all_models():
     result = satisfiable(A ^ B, all_models=True)
     models.remove(next(result))
     models.remove(next(result))
-    raises(StopIteration, lambda: next(result))
+    pytest.raises(StopIteration, lambda: next(result))
     assert not models
 
     assert list(satisfiable(Equivalent(A, B), all_models=True)) == \

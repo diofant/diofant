@@ -1,5 +1,8 @@
 from __future__ import division
+
 import warnings
+
+import pytest
 
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
@@ -18,7 +21,6 @@ from sympy.matrices import Matrix
 from sympy.solvers.solvers import solve
 from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
-from sympy.utilities.pytest import raises, slow
 
 x = Symbol('x', extended_real=True)
 y = Symbol('y', extended_real=True)
@@ -78,11 +80,11 @@ def test_curve():
             1, 3).arbitrary_point(s) == \
         Point(-2*s + 7, 3*s + 6)
 
-    raises(ValueError, lambda: Curve((s), (s, 1, 2)))
-    raises(ValueError, lambda: Curve((x, x * 2), (1, x)))
+    pytest.raises(ValueError, lambda: Curve((s), (s, 1, 2)))
+    pytest.raises(ValueError, lambda: Curve((x, x * 2), (1, x)))
 
-    raises(ValueError, lambda: Curve((s, s + t), (s, 1, 2)).arbitrary_point())
-    raises(ValueError, lambda: Curve((s, s + t), (t, 1, 2)).arbitrary_point(s))
+    pytest.raises(ValueError, lambda: Curve((s, s + t), (s, 1, 2)).arbitrary_point())
+    pytest.raises(ValueError, lambda: Curve((s, s + t), (t, 1, 2)).arbitrary_point(s))
 
 
 def test_ellipse_geom():
@@ -100,11 +102,11 @@ def test_ellipse_geom():
     # Test creation with three points
     cen, rad = Point(3*half, 2), 5*half
     assert Circle(Point(0, 0), Point(3, 0), Point(0, 4)) == Circle(cen, rad)
-    raises(
+    pytest.raises(
         GeometryError, lambda: Circle(Point(0, 0), Point(1, 1), Point(2, 2)))
 
-    raises(ValueError, lambda: Ellipse(None, None, None, 1))
-    raises(GeometryError, lambda: Circle(Point(0, 0)))
+    pytest.raises(ValueError, lambda: Ellipse(None, None, None, 1))
+    pytest.raises(GeometryError, lambda: Circle(Point(0, 0)))
 
     # Basic Stuff
     assert Ellipse(None, 1, 1).center == Point(0, 0)
@@ -216,7 +218,7 @@ def test_ellipse_geom():
     # general ellipse fails except under certain conditions
     e = Ellipse((0, 0), x, 1)
     assert e.normal_lines((x + 1, 0)) == [Line(Point(0, 0), Point(1, 0))]
-    raises(NotImplementedError, lambda: e.normal_lines((x + 1, 1)))
+    pytest.raises(NotImplementedError, lambda: e.normal_lines((x + 1, 1)))
 
     # Properties
     major = 3
@@ -328,7 +330,7 @@ def test_ellipse_geom():
     assert e.scale(3, 6) == Ellipse((0, 0), 6, 6)
     assert e.rotate(pi) == e
     assert e.rotate(pi, (1, 2)) == Ellipse(Point(2, 4), 2, 1)
-    raises(NotImplementedError, lambda: e.rotate(pi/3))
+    pytest.raises(NotImplementedError, lambda: e.rotate(pi/3))
 
     # transformations
     c = Circle((1, 1), 2)
@@ -355,7 +357,7 @@ def test_polygon():
     # 2 "remove folded" tests
     assert Polygon(a, Point(3, 0), b, c) == t
     assert Polygon(a, b, Point(3, -1), b, c) == t
-    raises(GeometryError, lambda: Polygon((0, 0), (1, 0), (0, 1), (1, 1)))
+    pytest.raises(GeometryError, lambda: Polygon((0, 0), (1, 0), (0, 1), (1, 1)))
     # remove multiple collinear points
     assert Polygon(Point(-4, 15), Point(-11, 15), Point(-15, 15),
         Point(-15, 33/5), Point(-15, -87/10), Point(-15, -15),
@@ -410,7 +412,7 @@ def test_polygon():
         Polygon(Point(1, 8), Point(5, 8), Point(8, 12), Point(1, 12))) == 4
     warnings.filterwarnings(
         "error", message="Polygons may intersect producing erroneous output")
-    raises(UserWarning,
+    pytest.raises(UserWarning,
            lambda: Polygon(Point(0, 0), Point(1, 0),
            Point(1, 1)).distance(
            Polygon(Point(0, 0), Point(0, 1), Point(1, 1))))
@@ -423,7 +425,7 @@ def test_polygon():
     assert Point(0, 1) in p5
     assert p5.arbitrary_point('t').subs(Symbol('t', extended_real=True), 0) == \
         Point(0, 0)
-    raises(ValueError, lambda: Polygon(
+    pytest.raises(ValueError, lambda: Polygon(
         Point(x, 0), Point(0, y), Point(x, y)).arbitrary_point('x'))
     assert p6.intersection(r) == [Point(-9, 33/5), Point(-9, -84/13)]
     #
@@ -431,10 +433,10 @@ def test_polygon():
     #
     p1 = RegularPolygon(Point(0, 0), 10, 5)
     p2 = RegularPolygon(Point(0, 0), 5, 5)
-    raises(GeometryError, lambda: RegularPolygon(Point(0, 0), Point(0,
+    pytest.raises(GeometryError, lambda: RegularPolygon(Point(0, 0), Point(0,
            1), Point(1, 1)))
-    raises(GeometryError, lambda: RegularPolygon(Point(0, 0), 1, 2))
-    raises(ValueError, lambda: RegularPolygon(Point(0, 0), 1, 2.5))
+    pytest.raises(GeometryError, lambda: RegularPolygon(Point(0, 0), 1, 2))
+    pytest.raises(ValueError, lambda: RegularPolygon(Point(0, 0), 1, 2.5))
 
     assert p1 != p2
     assert p1.interior_angle == 3*pi/5
@@ -505,7 +507,7 @@ def test_polygon():
     t3 = Triangle(p1, Point(x1, 0), Point(0, x1))
     s1 = t1.sides
     assert Triangle(p1, p2, p1) == Polygon(p1, p2, p1) == Segment(p1, p2)
-    raises(GeometryError, lambda: Triangle(Point(0, 0)))
+    pytest.raises(GeometryError, lambda: Triangle(Point(0, 0)))
 
     # Basic stuff
     assert Triangle(p1, p1, p1) == p1
@@ -598,7 +600,7 @@ def test_polygon():
     # First, test the warning
     warnings.filterwarnings("error",
         message="Polygons may intersect producing erroneous output")
-    raises(UserWarning, lambda: p1.distance(p2))
+    pytest.raises(UserWarning, lambda: p1.distance(p2))
     # now test the actual output
     warnings.filterwarnings("ignore",
         message="Polygons may intersect producing erroneous output")
@@ -662,8 +664,8 @@ def test_subs():
     assert Point(1, 2).subs((1, 2), Point(3, 4)) == Point(3, 4)
     assert Point(1, 2).subs(Point(1, 2), Point(3, 4)) == Point(3, 4)
     assert Point(1, 2).subs({(1, 2)}) == Point(2, 2)
-    raises(ValueError, lambda: Point(1, 2).subs(1))
-    raises(ValueError, lambda: Point(1, 1).subs((Point(1, 1), Point(1,
+    pytest.raises(ValueError, lambda: Point(1, 2).subs(1))
+    pytest.raises(ValueError, lambda: Point(1, 1).subs((Point(1, 1), Point(1,
            2)), 1, 2))
 
 
@@ -713,8 +715,8 @@ def test_util_centroid():
 def test_util():
     # coverage for some leftover functions in sympy.geometry.util
     assert intersection(Point(0, 0)) == []
-    raises(ValueError, lambda: intersection(Point(0, 0), 3))
-    raises(ValueError, lambda: convex_hull(Point(0, 0), 3))
+    pytest.raises(ValueError, lambda: intersection(Point(0, 0), 3))
+    pytest.raises(ValueError, lambda: convex_hull(Point(0, 0), 3))
 
 
 def test_repr():
@@ -792,7 +794,7 @@ def test_reflect():
     e = Ellipse((1, 0), 1, 2)
     assert e.area == -e.reflect(Line((1, 0), slope=0)).area
     assert e.area == -e.reflect(Line((1, 0), slope=oo)).area
-    raises(NotImplementedError, lambda: e.reflect(Line((1, 0), slope=m)))
+    pytest.raises(NotImplementedError, lambda: e.reflect(Line((1, 0), slope=m)))
     assert Polygon((1, 0), (2, 0), (2, 2)).reflect(Line((3, 0), slope=oo)) \
         == Triangle(Point(5, 0), Point(4, 0), Point(4, 2))
     assert Polygon((1, 0), (2, 0), (2, 2)).reflect(Line((0, 3), slope=oo)) \

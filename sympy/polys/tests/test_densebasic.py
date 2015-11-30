@@ -1,5 +1,7 @@
 """Tests for dense recursive polynomials' basic tools. """
 
+import pytest
+
 from sympy.polys.densebasic import (
     dup_LC, dmp_LC,
     dup_TC, dmp_TC,
@@ -33,15 +35,13 @@ from sympy.polys.densebasic import (
     dup_terms_gcd, dmp_terms_gcd,
     dmp_list_terms, dmp_apply_pairs,
     dup_slice,
-    dup_random,
-)
+    dup_random)
 
 from sympy.polys.specialpolys import f_polys
 from sympy.polys.domains import ZZ, QQ
 from sympy.polys.rings import ring
 
 from sympy.core.singleton import S
-from sympy.utilities.pytest import raises
 
 from sympy import oo
 
@@ -128,7 +128,7 @@ def test_dmp_degree_in():
     assert dmp_degree_in(f_6, 2, 2) == 6
     assert dmp_degree_in(f_6, 3, 3) == 3
 
-    raises(IndexError, lambda: dmp_degree_in([[1]], -5, 1))
+    pytest.raises(IndexError, lambda: dmp_degree_in([[1]], -5, 1))
 
 
 def test_dmp_degree_list():
@@ -181,7 +181,7 @@ def test_dmp_validate():
     assert dmp_validate([[[]]]) == ([[[]]], 2)
     assert dmp_validate([[0], [], [0], [1], [0]]) == ([[1], []], 1)
 
-    raises(ValueError, lambda: dmp_validate([[0], 0, [0], [1], [0]]))
+    pytest.raises(ValueError, lambda: dmp_validate([[0], 0, [0], [1], [0]]))
 
 
 def test_dup_reverse():
@@ -256,7 +256,7 @@ def test_dup_nth():
 
     assert dup_nth([1, 2, 3], 9, ZZ) == 0
 
-    raises(IndexError, lambda: dup_nth([3, 4, 5], -1, ZZ))
+    pytest.raises(IndexError, lambda: dup_nth([3, 4, 5], -1, ZZ))
 
 
 def test_dmp_nth():
@@ -266,7 +266,7 @@ def test_dmp_nth():
 
     assert dmp_nth([[1], [2], [3]], 9, 1, ZZ) == []
 
-    raises(IndexError, lambda: dmp_nth([[3], [4], [5]], -1, 1, ZZ))
+    pytest.raises(IndexError, lambda: dmp_nth([[3], [4], [5]], -1, 1, ZZ))
 
 
 def test_dmp_ground_nth():
@@ -278,7 +278,7 @@ def test_dmp_ground_nth():
     assert dmp_ground_nth([[1], [2], [3]], (2, 1), 1, ZZ) == 0
     assert dmp_ground_nth([[1], [2], [3]], (3, 0), 1, ZZ) == 0
 
-    raises(IndexError, lambda: dmp_ground_nth([[3], [4], [5]], (2, -1), 1, ZZ))
+    pytest.raises(IndexError, lambda: dmp_ground_nth([[3], [4], [5]], (2, -1), 1, ZZ))
 
 
 def test_dmp_zero_p():
@@ -424,7 +424,7 @@ def test_dmp_swap():
     assert dmp_swap(f, 0, 1, 1, ZZ) == g
     assert dmp_swap(g, 0, 1, 1, ZZ) == f
 
-    raises(IndexError, lambda: dmp_swap(f, -1, -7, 1, ZZ))
+    pytest.raises(IndexError, lambda: dmp_swap(f, -1, -7, 1, ZZ))
 
 
 def test_dmp_permute():
@@ -545,7 +545,7 @@ def test_dup_inflate():
     assert dup_inflate([1, 2, 3], 3, ZZ) == [1, 0, 0, 2, 0, 0, 3]
     assert dup_inflate([1, 2, 3], 4, ZZ) == [1, 0, 0, 0, 2, 0, 0, 0, 3]
 
-    raises(IndexError, lambda: dup_inflate([1, 2, 3], 0, ZZ))
+    pytest.raises(IndexError, lambda: dup_inflate([1, 2, 3], 0, ZZ))
 
 
 def test_dmp_inflate():
@@ -561,7 +561,7 @@ def test_dmp_inflate():
     assert dmp_inflate([[1, 0, 0], [1], [1, 0]], (2, 1), 1, ZZ) == \
         [[1, 0, 0], [], [1], [], [1, 0]]
 
-    raises(IndexError, lambda: dmp_inflate([[]], (-3, 7), 1, ZZ))
+    pytest.raises(IndexError, lambda: dmp_inflate([[]], (-3, 7), 1, ZZ))
 
 
 def test_dmp_exclude():

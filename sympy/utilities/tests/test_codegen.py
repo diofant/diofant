@@ -1,12 +1,14 @@
+import pytest
+
 from sympy.core import symbols, Eq, pi, Catalan, Lambda, Dummy
 from sympy.core.compatibility import StringIO
 from sympy import erf, Integral
 from sympy import Equality
 from sympy.matrices import Matrix, MatrixSymbol
 from sympy.utilities.codegen import (codegen, make_routine, CCodeGen,
-            InputArgument, CodeGenError, FCodeGen, CodeGenArgumentListError,
-            OutputArgument, InOutArgument)
-from sympy.utilities.pytest import raises
+                                     InputArgument, CodeGenError, FCodeGen,
+                                     CodeGenArgumentListError,
+                                     OutputArgument, InOutArgument)
 from sympy.utilities.lambdify import implemented_function
 
 # FIXME: Fails due to circular import in with core
@@ -31,9 +33,9 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
 def test_Routine_argument_order():
     a, x, y, z = symbols('a x y z')
     expr = (x + y)*z
-    raises(CodeGenArgumentListError, lambda: make_routine("test", expr,
+    pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", expr,
            argument_sequence=[z, x]))
-    raises(CodeGenArgumentListError, lambda: make_routine("test", Eq(a,
+    pytest.raises(CodeGenArgumentListError, lambda: make_routine("test", Eq(a,
            expr), argument_sequence=[z, x, y]))
     r = make_routine('test', Eq(a, expr), argument_sequence=[z, x, a, y])
     assert [ arg.name for arg in r.arguments ] == [z, x, a, y]
@@ -202,11 +204,11 @@ def test_multiple_results_c():
         [expr1, expr2]
     )
     code_gen = CCodeGen()
-    raises(CodeGenError, lambda: get_string(code_gen.dump_h, [routine]))
+    pytest.raises(CodeGenError, lambda: get_string(code_gen.dump_h, [routine]))
 
 
 def test_no_results_c():
-    raises(ValueError, lambda: make_routine("test", []))
+    pytest.raises(ValueError, lambda: make_routine("test", []))
 
 
 def test_ansi_math1_codegen():
@@ -708,11 +710,11 @@ def test_multiple_results_f():
         [expr1, expr2]
     )
     code_gen = FCodeGen()
-    raises(CodeGenError, lambda: get_string(code_gen.dump_h, [routine]))
+    pytest.raises(CodeGenError, lambda: get_string(code_gen.dump_h, [routine]))
 
 
 def test_no_results_f():
-    raises(ValueError, lambda: make_routine("test", []))
+    pytest.raises(ValueError, lambda: make_routine("test", []))
 
 
 def test_intrinsic_math_codegen():
@@ -1256,7 +1258,7 @@ end function
 
 def test_check_case():
     x, X = symbols('x,X')
-    raises(CodeGenError, lambda: codegen(('test', x*X), 'f95', 'prefix'))
+    pytest.raises(CodeGenError, lambda: codegen(('test', x*X), 'f95', 'prefix'))
 
 
 def test_check_case_false_positive():

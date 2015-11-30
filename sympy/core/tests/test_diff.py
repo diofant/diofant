@@ -1,6 +1,7 @@
-from sympy import Symbol, Rational, cos, sin, tan, cot, exp, log, Function, \
-    Derivative, Expr, symbols, pi, I, S
-from sympy.utilities.pytest import raises
+import pytest
+
+from sympy import (Symbol, Rational, cos, sin, tan, cot, exp, log, Function,
+                   Derivative, Expr, symbols, pi, I, S)
 
 
 def test_diff():
@@ -12,7 +13,7 @@ def test_diff():
     assert (x**2).diff(x, 2, x) == 0
     assert (x**2).diff(x, y, 0) == 2*x
     assert (x**2).diff(x, y) == 0
-    raises(ValueError, lambda: x.diff(1, x))
+    pytest.raises(ValueError, lambda: x.diff(1, x))
 
     a = Symbol("a")
     b = Symbol("b")

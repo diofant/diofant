@@ -1,4 +1,5 @@
-from sympy.utilities.pytest import XFAIL, raises
+import pytest
+
 from sympy import (S, Symbol, symbols, nan, oo, I, pi, Float, And, Or, Not,
                    Implies, Xor, zoo, sqrt, Rational, simplify, Function)
 from sympy.core.compatibility import range
@@ -136,10 +137,10 @@ def test_bool():
     assert Ge(1, 1) is S.true
     assert Eq(I, 2) is S.false
     assert Ne(I, 2) is S.true
-    raises(TypeError, lambda: Gt(I, 2))
-    raises(TypeError, lambda: Ge(I, 2))
-    raises(TypeError, lambda: Lt(I, 2))
-    raises(TypeError, lambda: Le(I, 2))
+    pytest.raises(TypeError, lambda: Gt(I, 2))
+    pytest.raises(TypeError, lambda: Ge(I, 2))
+    pytest.raises(TypeError, lambda: Lt(I, 2))
+    pytest.raises(TypeError, lambda: Le(I, 2))
     a = Float('.000000000000000000001', '')
     b = Float('.0000000000000000000001', '')
     assert Eq(pi + a, pi + b) is S.false
@@ -265,17 +266,17 @@ def test_new_relational():
                                      '<=', 'le', '>', 'gt', '<', 'lt'):
                 break
 
-        raises(ValueError, lambda: Relational(x, 1, relation_type))
+        pytest.raises(ValueError, lambda: Relational(x, 1, relation_type))
 
 
 def test_relational_bool_output():
     # https://github.com/sympy/sympy/issues/5931
-    raises(TypeError, lambda: bool(x > 3))
-    raises(TypeError, lambda: bool(x >= 3))
-    raises(TypeError, lambda: bool(x < 3))
-    raises(TypeError, lambda: bool(x <= 3))
-    raises(TypeError, lambda: bool(Eq(x, 3)))
-    raises(TypeError, lambda: bool(Ne(x, 3)))
+    pytest.raises(TypeError, lambda: bool(x > 3))
+    pytest.raises(TypeError, lambda: bool(x >= 3))
+    pytest.raises(TypeError, lambda: bool(x < 3))
+    pytest.raises(TypeError, lambda: bool(x <= 3))
+    pytest.raises(TypeError, lambda: bool(Eq(x, 3)))
+    pytest.raises(TypeError, lambda: bool(Ne(x, 3)))
 
 
 def test_relational_logic_symbols():
@@ -307,7 +308,7 @@ def test_univariate_relational_as_set():
     assert (x**2 >= 4).as_set() == Interval(-oo, -2) + Interval(2, oo)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_multivariate_relational_as_set():
     assert (x*y >= 0).as_set() == Interval(0, oo)*Interval(0, oo) + \
         Interval(-oo, 0)*Interval(-oo, 0)
@@ -335,14 +336,14 @@ def test_evaluate():
 
 
 def assert_all_ineq_raise_TypeError(a, b):
-    raises(TypeError, lambda: a > b)
-    raises(TypeError, lambda: a >= b)
-    raises(TypeError, lambda: a < b)
-    raises(TypeError, lambda: a <= b)
-    raises(TypeError, lambda: b > a)
-    raises(TypeError, lambda: b >= a)
-    raises(TypeError, lambda: b < a)
-    raises(TypeError, lambda: b <= a)
+    pytest.raises(TypeError, lambda: a > b)
+    pytest.raises(TypeError, lambda: a >= b)
+    pytest.raises(TypeError, lambda: a < b)
+    pytest.raises(TypeError, lambda: a <= b)
+    pytest.raises(TypeError, lambda: b > a)
+    pytest.raises(TypeError, lambda: b >= a)
+    pytest.raises(TypeError, lambda: b < a)
+    pytest.raises(TypeError, lambda: b <= a)
 
 
 def assert_all_ineq_give_class_Inequality(a, b):
@@ -385,7 +386,7 @@ def test_imaginary_and_inf_compare_raises_TypeError():
 
 
 def test_complex_pure_imag_not_ordered():
-    raises(TypeError, lambda: 2*I < 3*I)
+    pytest.raises(TypeError, lambda: 2*I < 3*I)
 
     # more generally
     x = Symbol('x', extended_real=True, nonzero=True)
@@ -410,25 +411,25 @@ def test_x_minus_y_not_same_as_x_lt_y():
     """
     x = I + 2
     y = I + 3
-    raises(TypeError, lambda: x < y)
+    pytest.raises(TypeError, lambda: x < y)
     assert x - y < 0
 
     ineq = Lt(x, y, evaluate=False)
-    raises(TypeError, lambda: ineq.doit())
+    pytest.raises(TypeError, lambda: ineq.doit())
     assert ineq.lhs - ineq.rhs < 0
 
     t = Symbol('t', imaginary=True, nonzero=True)
     x = 2 + t
     y = 3 + t
     ineq = Lt(x, y, evaluate=False)
-    raises(TypeError, lambda: ineq.doit())
+    pytest.raises(TypeError, lambda: ineq.doit())
     assert ineq.lhs - ineq.rhs < 0
 
     # this one should give error either way
     x = I + 2
     y = 2*I + 3
-    raises(TypeError, lambda: x < y)
-    raises(TypeError, lambda: x - y < 0)
+    pytest.raises(TypeError, lambda: x < y)
+    pytest.raises(TypeError, lambda: x - y < 0)
 
 
 def test_nan_equality_exceptions():
@@ -460,10 +461,10 @@ def test_nan_complex_inequalities():
 
 
 def test_complex_infinity_inequalities():
-    raises(TypeError, lambda: zoo > 0)
-    raises(TypeError, lambda: zoo >= 0)
-    raises(TypeError, lambda: zoo < 0)
-    raises(TypeError, lambda: zoo <= 0)
+    pytest.raises(TypeError, lambda: zoo > 0)
+    pytest.raises(TypeError, lambda: zoo >= 0)
+    pytest.raises(TypeError, lambda: zoo < 0)
+    pytest.raises(TypeError, lambda: zoo <= 0)
 
 
 def test_inequalities_symbol_name_same():
@@ -497,14 +498,14 @@ def test_inequalities_symbol_name_same_complex():
     """
     # FIXME: could replace with random selection after test passes
     for a in (x, S(0), S(1)/3, pi, oo):
-        raises(TypeError, lambda: Gt(a, I))
-        raises(TypeError, lambda: a > I)
-        raises(TypeError, lambda: Lt(a, I))
-        raises(TypeError, lambda: a < I)
-        raises(TypeError, lambda: Ge(a, I))
-        raises(TypeError, lambda: a >= I)
-        raises(TypeError, lambda: Le(a, I))
-        raises(TypeError, lambda: a <= I)
+        pytest.raises(TypeError, lambda: Gt(a, I))
+        pytest.raises(TypeError, lambda: a > I)
+        pytest.raises(TypeError, lambda: Lt(a, I))
+        pytest.raises(TypeError, lambda: a < I)
+        pytest.raises(TypeError, lambda: Ge(a, I))
+        pytest.raises(TypeError, lambda: a >= I)
+        pytest.raises(TypeError, lambda: Le(a, I))
+        pytest.raises(TypeError, lambda: a <= I)
 
 
 def test_inequalities_cant_sympify_other():
@@ -515,7 +516,7 @@ def test_inequalities_cant_sympify_other():
 
     for a in (x, S(0), S(1)/3, pi, I, zoo, oo, -oo, nan):
         for op in (lt, gt, le, ge):
-            raises(TypeError, lambda: op(a, bar))
+            pytest.raises(TypeError, lambda: op(a, bar))
 
 
 def test_ineq_avoid_wild_symbol_flip():
@@ -633,7 +634,7 @@ def test_canonical():
     assert isreversed(-x > y)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_8444():
     x = symbols('x', extended_real=True)
     assert (x <= oo) == (x >= -oo) == True

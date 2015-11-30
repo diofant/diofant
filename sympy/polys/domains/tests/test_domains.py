@@ -1,5 +1,7 @@
 """Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x] ... """
 
+import pytest
+
 from sympy import S, sqrt, sin, oo, Poly, Float
 from sympy.abc import x, y, z
 
@@ -9,15 +11,9 @@ from sympy.polys.domains.realfield import RealField
 from sympy.polys.rings import ring
 from sympy.polys.fields import field
 
-from sympy.polys.polyerrors import (
-    UnificationFailed,
-    GeneratorsNeeded,
-    GeneratorsError,
-    CoercionFailed,
-    NotInvertible,
-    DomainError)
-
-from sympy.utilities.pytest import raises
+from sympy.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
+                                    GeneratorsError, CoercionFailed,
+                                    NotInvertible, DomainError)
 
 ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
@@ -253,8 +249,8 @@ def test_Domain_unify_algebraic():
 
 
 def test_Domain_unify_with_symbols():
-    raises(UnificationFailed, lambda: ZZ[x, y].unify_with_symbols(ZZ, (y, z)))
-    raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ[x, y], (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ[x, y].unify_with_symbols(ZZ, (y, z)))
+    pytest.raises(UnificationFailed, lambda: ZZ.unify_with_symbols(ZZ[x, y], (y, z)))
 
 
 def test_Domain__contains__():
@@ -436,8 +432,8 @@ def test_Domain_get_ring():
 
     assert EX.get_ring() == EX
 
-    raises(DomainError, lambda: RR.get_ring())
-    raises(DomainError, lambda: ALG.get_ring())
+    pytest.raises(DomainError, lambda: RR.get_ring())
+    pytest.raises(DomainError, lambda: ALG.get_ring())
 
 
 def test_Domain_get_field():
@@ -487,18 +483,18 @@ def test_Domain_convert():
 
 
 def test_PolynomialRing__init():
-    raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
+    pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
 
 
 def test_FractionField__init():
-    raises(GeneratorsNeeded, lambda: ZZ.frac_field())
+    pytest.raises(GeneratorsNeeded, lambda: ZZ.frac_field())
 
 
 def test_inject():
     assert ZZ.inject(x, y, z) == ZZ[x, y, z]
     assert ZZ[x].inject(y, z) == ZZ[x, y, z]
     assert ZZ.frac_field(x).inject(y, z) == ZZ.frac_field(x, y, z)
-    raises(GeneratorsError, lambda: ZZ[x].inject(x))
+    pytest.raises(GeneratorsError, lambda: ZZ[x].inject(x))
 
 
 def test_Domain_map():
@@ -593,7 +589,7 @@ def test_RealField_from_sympy():
     assert RR.convert(sin(1)) == RR.dtype(sin(1).evalf())
     assert RR.convert(oo) == RR("+inf")
     assert RR.convert(-oo) == RR("-inf")
-    raises(CoercionFailed, lambda: RR.convert(x))
+    pytest.raises(CoercionFailed, lambda: RR.convert(x))
 
 
 def test_ModularInteger():
@@ -732,11 +728,11 @@ def test_ModularInteger():
     assert (F5(3) > 7) is True
     assert (F5(3) >= 7) is True
 
-    raises(NotInvertible, lambda: F5(0)**(-1))
-    raises(NotInvertible, lambda: F5(5)**(-1))
+    pytest.raises(NotInvertible, lambda: F5(0)**(-1))
+    pytest.raises(NotInvertible, lambda: F5(5)**(-1))
 
-    raises(ValueError, lambda: FF(0))
-    raises(ValueError, lambda: FF(2.1))
+    pytest.raises(ValueError, lambda: FF(0))
+    pytest.raises(ValueError, lambda: FF(2.1))
 
 
 def test_QQ_int():

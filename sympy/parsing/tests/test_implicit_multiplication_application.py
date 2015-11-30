@@ -1,17 +1,11 @@
+import pytest
+
 import sympy
-from sympy.parsing.sympy_parser import (
-    parse_expr,
-    standard_transformations,
-    convert_xor,
-    implicit_multiplication_application,
-    implicit_multiplication,
-    implicit_application,
-    function_exponentiation,
-    split_symbols,
-    split_symbols_custom,
-    _token_splittable
-)
-from sympy.utilities.pytest import raises
+from sympy.parsing.sympy_parser import (parse_expr, standard_transformations,
+                                        convert_xor, implicit_multiplication_application,
+                                        implicit_multiplication, implicit_application,
+                                        function_exponentiation, split_symbols,
+                                        split_symbols_custom, _token_splittable)
 
 
 def test_implicit_multiplication():
@@ -41,9 +35,9 @@ def test_implicit_multiplication():
 
     application = ['sin x', 'cos 2*x', 'sin cos x']
     for case in application:
-        raises(SyntaxError,
+        pytest.raises(SyntaxError,
                lambda: parse_expr(case, transformations=transformations2))
-    raises(TypeError,
+    pytest.raises(TypeError,
            lambda: parse_expr('sin**2(x)', transformations=transformations2))
 
 
@@ -65,9 +59,9 @@ def test_implicit_application():
 
     multiplication = ['x y', 'x sin x', '2x']
     for case in multiplication:
-        raises(SyntaxError,
+        pytest.raises(SyntaxError,
                lambda: parse_expr(case, transformations=transformations2))
-    raises(TypeError,
+    pytest.raises(TypeError,
            lambda: parse_expr('sin**2(x)', transformations=transformations2))
 
 
@@ -87,7 +81,7 @@ def test_function_exponentiation():
     other_implicit = ['x y', 'x sin x', '2x', 'sin x',
                       'cos 2*x', 'sin cos x']
     for case in other_implicit:
-        raises(SyntaxError,
+        pytest.raises(SyntaxError,
                lambda: parse_expr(case, transformations=transformations2))
 
     assert parse_expr('x**2', local_dict={ 'x': sympy.Symbol('x') },

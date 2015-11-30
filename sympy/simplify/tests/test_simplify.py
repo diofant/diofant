@@ -1,5 +1,7 @@
+import pytest
+
 from sympy import (
-    Abs, acos, Add, atan, Basic, binomial, besselsimp, collect,cos, cosh, cot,
+    Abs, acos, Add, atan, Basic, binomial, besselsimp, collect, cos, cosh, cot,
     coth, count_ops, Derivative, diff, E, Eq, erf, exp, exp_polar, expand,
     expand_multinomial, factor, factorial, Float, fraction, Function,
     gamma, GoldenRatio, hyper, hypersimp, I, Integral, integrate, log,
@@ -8,7 +10,6 @@ from sympy import (
     sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan, tanh, zoo, Sum, Lt)
 from sympy.core.mul import _keep_coeff
 from sympy.simplify.simplify import nthroot
-from sympy.utilities.pytest import XFAIL, slow
 from sympy.core.compatibility import range
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
@@ -19,7 +20,7 @@ def test_issue_7263():
             673.447451402970) < 1e-12
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_factorial_simplify():
     # There are more tests in test_factorials.py. These are just to
     # ensure that simplify() calls factorial_simplify correctly
@@ -189,7 +190,7 @@ def test_nthroot():
     assert nthroot(expand_multinomial(q**6), 6) == q
 
 
-@slow
+@pytest.mark.slow
 def test_nthroot1():
     q = 1 + sqrt(2) + sqrt(3) + S(1)/10**20
     p = expand_multinomial(q**5)
@@ -452,7 +453,7 @@ def test_issue_4194():
     assert simplify((4*x + 6*f(y))/(2*x + 3*f(y))) == 2
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_simplify_float_vs_integer():
     # Test for issue 4473:
     # https://github.com/sympy/sympy/issues/4473

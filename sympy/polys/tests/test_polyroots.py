@@ -1,12 +1,17 @@
 """Tests for algorithms for computing symbolic roots of polynomials. """
 
-from sympy import (S, symbols, Symbol, Wild, Rational, sqrt,
+import mpmath
+import pytest
+
+from sympy import (
+    S, symbols, Symbol, Wild, Rational, sqrt,
     powsimp, sin, cos, pi, I, Interval, re, im, exp, ZZ, Piecewise,
     acos, root)
 
 from sympy.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
 
-from sympy.polys.polyroots import (root_factors, roots_linear,
+from sympy.polys.polyroots import (
+    root_factors, roots_linear,
     roots_quadratic, roots_cubic, roots_quartic, roots_cyclotomic,
     roots_binomial, preprocess_roots, roots)
 
@@ -14,10 +19,8 @@ from sympy.polys.orthopolys import legendre_poly
 from sympy.polys.polyutils import _nsort
 
 from sympy.utilities.iterables import cartes
-from sympy.utilities.pytest import raises
 from sympy.utilities.randtest import verify_numerically
 from sympy.core.compatibility import range
-import mpmath
 
 
 a, b, c, d, e, q, t, x, y, z = symbols('a,b,c,d,e,q,t,x,y,z')
@@ -596,7 +599,7 @@ def test_nroots1():
     n = 64
     p = legendre_poly(n, x, polys=True)
 
-    raises(mpmath.mp.NoConvergence, lambda: p.nroots(n=3, maxsteps=5))
+    pytest.raises(mpmath.mp.NoConvergence, lambda: p.nroots(n=3, maxsteps=5))
 
     roots = p.nroots(n=3)
     # The order of roots matters. They are ordered from smallest to the

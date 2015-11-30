@@ -1,6 +1,6 @@
-from sympy import symbols, sin, Matrix, Interval, Piecewise
-from sympy.utilities.pytest import raises
+import pytest
 
+from sympy import symbols, sin, Matrix, Interval, Piecewise
 from sympy.printing.lambdarepr import lambdarepr
 
 x, y, z = symbols("x,y,z")
@@ -146,4 +146,4 @@ def test_piecewise():
 
 
 def test_settings():
-    raises(TypeError, lambda: lambdarepr(sin(x), method="garbage"))
+    pytest.raises(TypeError, lambda: lambdarepr(sin(x), method="garbage"))

@@ -1,12 +1,12 @@
+import pytest
+
 from sympy.core.compatibility import range
-from sympy import (FiniteSet, S, Symbol, sqrt,
-        symbols, simplify, Eq, cos, And, Tuple, Or, Dict, sympify, binomial,
-        cancel)
+from sympy import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
+                   And, Tuple, Or, Dict, sympify, binomial, cancel)
 from sympy.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
-    Hypergeometric, Rademacher, P, E, variance, covariance, skewness, sample,
-    density, where, FiniteRV, pspace, cdf,
-    correlation, moment, cmoment, smoment)
-from sympy.utilities.pytest import raises, slow
+                         Hypergeometric, Rademacher, P, E, variance, covariance,
+                         skewness, sample, density, where, FiniteRV, pspace, cdf,
+                         correlation, moment, cmoment, smoment)
 from sympy.abc import p
 
 oo = S.Infinity
@@ -111,7 +111,7 @@ def test_domains():
 
     Z = Die('x', 4)
 
-    raises(ValueError, lambda: P(X > Z))  # Two domains with same internal symbol
+    pytest.raises(ValueError, lambda: P(X > Z))  # Two domains with same internal symbol
 
     assert pspace(X + Y).domain.set == FiniteSet(1, 2, 3, 4, 5, 6)**2
 
@@ -132,13 +132,13 @@ def test_dice_bayes():
 
 
 def test_die_args():
-    raises(ValueError, lambda: Die('X', -1))  # issue 8105: negative sides.
-    raises(ValueError, lambda: Die('X', 0))
-    raises(ValueError, lambda: Die('X', 1.5))  # issue 8103: non integer sides.
+    pytest.raises(ValueError, lambda: Die('X', -1))  # issue 8105: negative sides.
+    pytest.raises(ValueError, lambda: Die('X', 0))
+    pytest.raises(ValueError, lambda: Die('X', 1.5))  # issue 8103: non integer sides.
 
     k = Symbol('k')
     sym_die = Die('X', k)
-    raises(ValueError, lambda: density(sym_die).dict)
+    pytest.raises(ValueError, lambda: density(sym_die).dict)
 
 
 def test_bernoulli():
@@ -180,12 +180,12 @@ def test_coins():
 
     assert d.as_boolean() == Or(Eq(C.symbol, H), Eq(C.symbol, T))
 
-    raises(ValueError, lambda: P(C > D))  # Can't intelligently compare H to T
+    pytest.raises(ValueError, lambda: P(C > D))  # Can't intelligently compare H to T
 
 
 def test_binomial_verify_parameters():
-    raises(ValueError, lambda: Binomial('b', .2, .5))
-    raises(ValueError, lambda: Binomial('b', 3, 1.5))
+    pytest.raises(ValueError, lambda: Binomial('b', .2, .5))
+    pytest.raises(ValueError, lambda: Binomial('b', 3, 1.5))
 
 
 def test_binomial_numeric():
@@ -203,7 +203,7 @@ def test_binomial_numeric():
                 assert P(Eq(X, k)) == binomial(n, k)*p**k*(1 - p)**(n - k)
 
 
-@slow
+@pytest.mark.slow
 def test_binomial_symbolic():
     n = 10  # Because we're using for loops, can't do symbolic n
     p = symbols('p', positive=True)

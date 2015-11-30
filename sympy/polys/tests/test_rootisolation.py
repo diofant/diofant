@@ -1,9 +1,10 @@
 """Tests for real and complex root isolation and refinement algorithms. """
 
+import pytest
+
 from sympy.polys.rings import ring
 from sympy.polys.domains import ZZ, QQ, EX
 from sympy.polys.polyerrors import DomainError, RefinementFailed
-from sympy.utilities.pytest import raises
 
 
 def test_dup_sturm():
@@ -23,7 +24,7 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, QQ(1), QQ(1), steps=1) == (QQ(1), QQ(1))
     assert R.dup_refine_real_root(f, QQ(1), QQ(1), steps=9) == (QQ(1), QQ(1))
 
-    raises(ValueError, lambda: R.dup_refine_real_root(f, QQ(-2), QQ(2)))
+    pytest.raises(ValueError, lambda: R.dup_refine_real_root(f, QQ(-2), QQ(2)))
 
     s, t = QQ(1, 1), QQ(2, 1)
 
@@ -57,7 +58,7 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, steps=3) == (-QQ(3, 2), -QQ(7, 5))
     assert R.dup_refine_real_root(f, s, t, steps=4) == (-QQ(10, 7), -QQ(7, 5))
 
-    raises(RefinementFailed, lambda: R.dup_refine_real_root(f, QQ(0), QQ(1)))
+    pytest.raises(RefinementFailed, lambda: R.dup_refine_real_root(f, QQ(0), QQ(1)))
 
     s, t, u, v, w = QQ(1), QQ(2), QQ(24, 17), QQ(17, 12), QQ(7, 5)
 
@@ -256,7 +257,7 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(f) == [(-1, 0), (14, 15)]
 
     R, x = ring("x", EX)
-    raises(DomainError, lambda: R.dup_isolate_real_roots_sqf(x + 3))
+    pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_sqf(x + 3))
 
 
 def test_dup_isolate_real_roots():
@@ -335,7 +336,7 @@ def test_dup_isolate_real_roots():
         [((0, QQ(1, 2)), 1), ((QQ(2, 3), QQ(3, 4)), 1), ((QQ(3, 4), 1), 1), ((6, 7), 1), ((24, 25), 1)]
 
     R, x = ring("x", EX)
-    raises(DomainError, lambda: R.dup_isolate_real_roots(x + 3))
+    pytest.raises(DomainError, lambda: R.dup_isolate_real_roots(x + 3))
 
 
 def test_dup_isolate_real_roots_list():
@@ -398,7 +399,7 @@ def test_dup_isolate_real_roots_list():
          ((1, 1), {0: 3, 1: 2}, [1, -1]), ((1, 2), {0: 2}, [1, 0, -2])]
 
     R, x = ring("x", EX)
-    raises(DomainError, lambda: R.dup_isolate_real_roots_list([x + 3]))
+    pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_list([x + 3]))
 
 
 def test_dup_isolate_real_roots_list_QQ():
@@ -794,4 +795,4 @@ def test_dup_isolate_all_roots():
           (((QQ(35, 64), QQ(65, 64)), (QQ(5, 8), QQ(35, 32))), 1)])
 
     f = x**5 + x**4 - 2*x**3 - 2*x**2 + x + 1
-    raises(NotImplementedError, lambda: R.dup_isolate_all_roots(f))
+    pytest.raises(NotImplementedError, lambda: R.dup_isolate_all_roots(f))

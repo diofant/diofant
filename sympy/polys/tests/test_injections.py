@@ -1,9 +1,10 @@
 """Tests for functions that inject symbols into the global namespace. """
 
+import pytest
+
 from sympy.polys.rings import vring
 from sympy.polys.fields import vfield
 from sympy.polys.domains import QQ
-from sympy.utilities.pytest import raises
 
 # make r1 with call-depth = 1
 
@@ -39,11 +40,11 @@ def test_vring():
     assert rfg == R.gens[2]
 
     # see if vring() really injects into global namespace
-    raises(NameError, lambda: r1)
+    pytest.raises(NameError, lambda: r1)
     R = _make_r1()
     assert r1 == R.gens[0]
 
-    raises(NameError, lambda: r2)
+    pytest.raises(NameError, lambda: r2)
     R = _make_r2()
     assert r2 == R.gens[0]
 
@@ -81,10 +82,10 @@ def test_vfield():
     assert ffg == F.gens[2]
 
     # see if vfield() really injects into global namespace
-    raises(NameError, lambda: f1)
+    pytest.raises(NameError, lambda: f1)
     F = _make_f1()
     assert f1 == F.gens[0]
 
-    raises(NameError, lambda: f2)
+    pytest.raises(NameError, lambda: f2)
     F = _make_f2()
     assert f2 == F.gens[0]

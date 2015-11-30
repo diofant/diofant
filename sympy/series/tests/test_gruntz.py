@@ -6,19 +6,20 @@ logically the lowest part of the algorithm, yet in some sense it's the most
 complex part, because it needs to calculate a limit to return the result.
 """
 
+import pytest
+
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
                    Pow, Add, li, Li)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
-from sympy.utilities.pytest import XFAIL, slow
 
 x = Symbol('x', real=True, positive=True)
 m = Symbol('m', real=True, positive=True)
 
 
-@slow
+@pytest.mark.slow
 def test_gruntz_evaluation():
     # Gruntz' thesis pp. 122 to 123
     # 8.1
@@ -82,7 +83,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
 
-@slow
+@pytest.mark.slow
 def test_gruntz_eval_special():
     # Gruntz, p. 126
     assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x) == 1
@@ -373,7 +374,7 @@ def test_issue_4190():
     assert gruntz(x - gamma(1/x), x) == S.EulerGamma
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)

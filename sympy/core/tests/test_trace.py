@@ -1,6 +1,7 @@
+import pytest
+
 from sympy import symbols, Matrix, Tuple
 from sympy.core.trace import Tr
-from sympy.utilities.pytest import raises
 
 
 def test_trace_new():
@@ -69,8 +70,8 @@ def test_trace_new():
 
     # argument test
     # check for value error, when either/both arguments are not provided
-    raises(ValueError, lambda: Tr())
-    raises(ValueError, lambda: Tr(A, 1, 2))
+    pytest.raises(ValueError, lambda: Tr())
+    pytest.raises(ValueError, lambda: Tr(A, 1, 2))
 
 
 def test_trace_doit():

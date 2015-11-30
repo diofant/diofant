@@ -1,11 +1,11 @@
+import pytest
+
 from sympy import (log, sqrt, Rational as R, Symbol, I, exp, pi, S,
-    cos, sin, Mul, Pow, O)
+                   cos, sin, Mul, Pow, O)
 from sympy.simplify.radsimp import expand_numer
 from sympy.simplify.simplify import expand
 from sympy.core.function import expand_multinomial, expand_power_base
 from sympy.core.compatibility import range
-
-from sympy.utilities.pytest import raises
 from sympy.utilities.randtest import verify_numerically
 
 from sympy.abc import x, y, z
@@ -109,8 +109,8 @@ def test_expand_modulus():
     assert ((x + sqrt(2)*y)**11).expand(modulus=11) == x**11 + 10*sqrt(2)*y**11
     assert (x + y/2).expand(modulus=1) == y/2
 
-    raises(ValueError, lambda: ((x + y)**11).expand(modulus=0))
-    raises(ValueError, lambda: ((x + y)**11).expand(modulus=x))
+    pytest.raises(ValueError, lambda: ((x + y)**11).expand(modulus=0))
+    pytest.raises(ValueError, lambda: ((x + y)**11).expand(modulus=x))
 
 
 def test_issue_5743():

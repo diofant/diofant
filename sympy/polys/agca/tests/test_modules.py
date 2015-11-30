@@ -1,9 +1,10 @@
 """Test modules.py code."""
 
+import pytest
+
 from sympy.polys.agca.modules import FreeModule, ModuleOrder, FreeModulePolyRing
 from sympy.polys import CoercionFailed, QQ, lex, grlex, ilex, ZZ
 from sympy.abc import x, y, z
-from sympy.utilities.pytest import raises
 from sympy import S
 
 
@@ -15,7 +16,7 @@ def test_FreeModuleElement():
     assert f[0] == e[0]
     assert f[1] == e[1]
     assert f[2] == e[2]
-    raises(IndexError, lambda: e[3])
+    pytest.raises(IndexError, lambda: e[3])
 
     g = M.convert([x, 0, 0])
     assert e + g == M.convert([x + 1, x, x**2])
@@ -77,11 +78,11 @@ def test_FreeModule():
     assert not M3.is_submodule(0)
     assert not M3.is_zero()
 
-    raises(NotImplementedError, lambda: ZZ.old_poly_ring(x).free_module(2))
-    raises(NotImplementedError, lambda: FreeModulePolyRing(ZZ, 2))
-    raises(CoercionFailed, lambda: M1.convert(QQ.old_poly_ring(x).free_module(3)
+    pytest.raises(NotImplementedError, lambda: ZZ.old_poly_ring(x).free_module(2))
+    pytest.raises(NotImplementedError, lambda: FreeModulePolyRing(ZZ, 2))
+    pytest.raises(CoercionFailed, lambda: M1.convert(QQ.old_poly_ring(x).free_module(3)
            .convert([1, 2, 3])))
-    raises(CoercionFailed, lambda: M3.convert(1))
+    pytest.raises(CoercionFailed, lambda: M3.convert(1))
 
 
 def test_ModuleOrder():
@@ -129,9 +130,9 @@ def test_SubModulePolyRing_global():
     assert m.module is F
     assert n.module is M
 
-    raises(ValueError, lambda: M.submodule([1, 0, 0]))
-    raises(TypeError, lambda: M.union(1))
-    raises(ValueError, lambda: M.union(R.free_module(1).submodule([x])))
+    pytest.raises(ValueError, lambda: M.submodule([1, 0, 0]))
+    pytest.raises(TypeError, lambda: M.union(1))
+    pytest.raises(ValueError, lambda: M.union(R.free_module(1).submodule([x])))
 
     assert F.submodule([x, x, x]) != F.submodule([x, x, x], order="ilex")
 
@@ -164,7 +165,7 @@ def test_SubModulePolyRing_local():
     assert F.submodule(
         [1, 0, 0], [0, 1, 0]).union(F.submodule([0, 0, 1 + x*y])) == F
 
-    raises(ValueError, lambda: M.submodule([1, 0, 0]))
+    pytest.raises(ValueError, lambda: M.submodule([1, 0, 0]))
 
 
 def test_SubModulePolyRing_nontriv_global():
@@ -239,7 +240,7 @@ def test_in_terms_of_generators():
     M = R.free_module(2).submodule([2*x, 0], [1, 2])
     assert M.in_terms_of_generators(
         [x, x]) == [R.convert(S(1)/4), R.convert(x/2)]
-    raises(ValueError, lambda: M.in_terms_of_generators([1, 0]))
+    pytest.raises(ValueError, lambda: M.in_terms_of_generators([1, 0]))
 
     M = R.free_module(2) / ([x, 0], [1, 1])
     SM = M.submodule([1, x])
@@ -280,9 +281,9 @@ def test_QuotientModuleElement():
     G = R.free_module(2)
     M3 = G/[[1, x]]
     M4 = F.submodule([1, x, x**2], [1, 0, 0]) / N
-    raises(CoercionFailed, lambda: M.convert(G.convert([1, x])))
-    raises(CoercionFailed, lambda: M.convert(M3.convert([1, x])))
-    raises(CoercionFailed, lambda: M.convert(M2.convert([1, x, x])))
+    pytest.raises(CoercionFailed, lambda: M.convert(G.convert([1, x])))
+    pytest.raises(CoercionFailed, lambda: M.convert(M3.convert([1, x])))
+    pytest.raises(CoercionFailed, lambda: M.convert(M2.convert([1, x, x])))
     assert M2.convert(M.convert([2, x, x**2])) == [2, x, 0]
     assert M.convert(M4.convert([2, 0, 0])) == [2, 0, 0]
 
@@ -306,10 +307,10 @@ def test_QuotientModule():
     assert M.is_submodule(SQ)
     assert not SQ.is_full_module()
 
-    raises(ValueError, lambda: N/F)
-    raises(ValueError, lambda: F.submodule([2, 0, 0]) / N)
-    raises(ValueError, lambda: R.free_module(2)/F)
-    raises(CoercionFailed, lambda: F.convert(M.convert([1, x, x**2])))
+    pytest.raises(ValueError, lambda: N/F)
+    pytest.raises(ValueError, lambda: F.submodule([2, 0, 0]) / N)
+    pytest.raises(ValueError, lambda: R.free_module(2)/F)
+    pytest.raises(CoercionFailed, lambda: F.convert(M.convert([1, x, x**2])))
 
     M1 = F / [[1, 1, 1]]
     M2 = M1.submodule([1, 0, 0], [0, 1, 0])

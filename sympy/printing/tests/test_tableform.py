@@ -1,12 +1,12 @@
+from textwrap import dedent
+
+import pytest
 
 from sympy import TableForm, S
 from sympy.printing.latex import latex
 from sympy.abc import x
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.trigonometric import sin
-from sympy.utilities.pytest import raises
-
-from textwrap import dedent
 
 
 def test_TableForm():
@@ -51,7 +51,7 @@ def test_TableForm():
         'Group B | 4  2 \n'
         'Group C | 10 3 '
     )
-    raises(
+    pytest.raises(
         ValueError,
         lambda:
         TableForm(
@@ -91,7 +91,7 @@ def test_TableForm():
         '  x | 100 1  '
     )
 
-    raises(ValueError, lambda: TableForm(d, alignments='clr'))
+    pytest.raises(ValueError, lambda: TableForm(d, alignments='clr'))
 
     # pad
     s = str(TableForm([[None, "-", 2], [1]], pad='?'))

@@ -1,11 +1,10 @@
-from sympy import (
-    adjoint, And, Basic, conjugate, diff, expand, Eq, Function, I,
-    Integral, integrate, Interval, lambdify, log, Max, Min, oo, Or, pi,
-    Piecewise, piecewise_fold, Rational, solve, symbols, transpose,
-    cos, exp, Abs, Not, Symbol, S
-)
+import pytest
+
+from sympy import (adjoint, And, Basic, conjugate, diff, expand, Eq, Function,
+                   I, Integral, integrate, Interval, lambdify, log, Max, Min,
+                   oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
+                   symbols, transpose, cos, exp, Abs, Not, Symbol, S)
 from sympy.printing import srepr
-from sympy.utilities.pytest import XFAIL, raises
 
 x, y = symbols('x y')
 z = symbols('z', nonzero=True)
@@ -27,8 +26,8 @@ def test_piecewise():
         Piecewise((x, Or(x < 1, x < 2)), (0, True))
     assert Piecewise((x, x < 1), (x, x < 2), (x, True)) == x
     assert Piecewise((x, True)) == x
-    raises(TypeError, lambda: Piecewise(x))
-    raises(TypeError, lambda: Piecewise((x, x**2)))
+    pytest.raises(TypeError, lambda: Piecewise(x))
+    pytest.raises(TypeError, lambda: Piecewise((x, x**2)))
 
     # Test subs
     p = Piecewise((-1, x < -1), (x**2, x < 0), (log(x), x >= 0))
@@ -118,7 +117,7 @@ def test_piecewise():
     p = Piecewise((0, x < 0), (1, x < 1), (0, x < 2), (1, x < 3), (0, True))
     assert integrate(p, (x, -oo, oo)) == 2
     p = Piecewise((x, x < -10), (x**2, x <= -1), (x, 1 < x))
-    raises(ValueError, lambda: integrate(p, (x, -2, 2)))
+    pytest.raises(ValueError, lambda: integrate(p, (x, -2, 2)))
 
     # Test commutativity
     assert p.is_commutative is True
@@ -306,7 +305,7 @@ def test_piecewise_solve():
 # See issue 4352 (enhance the solver to handle inequalities).
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_piecewise_solve2():
     f = Piecewise(((x - 2)**2, x >= 0), (0, True))
     assert solve(f, x) == [2, Interval(0, oo, True, True)]
@@ -350,7 +349,7 @@ def test_piecewise_fold_piecewise_in_cond():
     assert(Piecewise((1, And(Not(x < 1), x < 0)), (0, True)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_piecewise_fold_piecewise_in_cond_2():
     p1 = Piecewise((cos(x), x < 0), (0, True))
     p2 = Piecewise((0, Eq(p1, 0)), (1 / p1, True))

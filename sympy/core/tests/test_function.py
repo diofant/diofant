@@ -1,8 +1,9 @@
+import pytest
+
 from sympy import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
-        log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
-        E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
-        Tuple, Dummy, Eq, Expr, symbols, nfloat)
-from sympy.utilities.pytest import XFAIL, raises
+                   log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
+                   E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
+                   Tuple, Dummy, Eq, Expr, symbols, nfloat)
 from sympy.abc import t, w, x, y, z
 from sympy.core.function import PoleError, _mexpand
 from sympy.sets.sets import FiniteSet
@@ -103,7 +104,7 @@ def test_Function():
 
     assert myfunc.nargs == FiniteSet(1)
     assert myfunc(x).nargs == FiniteSet(1)
-    raises(TypeError, lambda: myfunc(x, y).nargs)
+    pytest.raises(TypeError, lambda: myfunc(x, y).nargs)
 
     class myfunc(Function):
         @classmethod
@@ -154,7 +155,7 @@ def test_Lambda():
 
     assert Lambda(x, 2*x) + Lambda(y, 2*y) == 2*Lambda(x, 2*x)
     assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
-    raises(ValueError, lambda: Lambda(1, x))
+    pytest.raises(ValueError, lambda: Lambda(1, x))
     assert Lambda(x, 1)(1) is S.One
 
 
@@ -170,8 +171,8 @@ def test_Lambda_symbols():
 
 
 def test_Lambda_arguments():
-    raises(TypeError, lambda: Lambda(x, 2*x)(x, y))
-    raises(TypeError, lambda: Lambda((x, y), x + y)(x))
+    pytest.raises(TypeError, lambda: Lambda(x, 2*x)(x, y))
+    pytest.raises(TypeError, lambda: Lambda((x, y), x + y)(x))
 
 
 def test_Lambda_equality():
@@ -197,8 +198,8 @@ def test_Subs():
         Subs(f(x, y) + z, (x, y, z), (0, 1, 0))
     assert Subs(f(x, y), (x, y), (0, 1)).doit() == f(0, 1)
     assert Subs(Subs(f(x, y), x, 0), y, 1).doit() == f(0, 1)
-    raises(ValueError, lambda: Subs(f(x, y), (x, y), (0, 0, 1)))
-    raises(ValueError, lambda: Subs(f(x, y), (x, x, y), (0, 0, 1)))
+    pytest.raises(ValueError, lambda: Subs(f(x, y), (x, y), (0, 0, 1)))
+    pytest.raises(ValueError, lambda: Subs(f(x, y), (x, x, y), (0, 0, 1)))
 
     assert len(Subs(f(x, y), (x, y), (0, 1)).variables) == 2
     assert Subs(f(x, y), (x, y), (0, 1)).point == Tuple(0, 1)
@@ -241,7 +242,7 @@ def test_Subs():
     assert (x*f(x).diff(x).subs(x, 0)).subs(x, y) == y*f(x).diff(x).subs(x, 0)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Subs2():
     # this reflects a limitation of subs(), probably won't fix
     assert Subs(f(x), x**2, x).doit() == f(sqrt(x))
@@ -267,7 +268,7 @@ def test_function_comparable():
     assert cos(Rational(1, 3)).is_comparable is True
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_function_comparable_infinities():
     assert sin(oo).is_comparable is False
     assert sin(-oo).is_comparable is False
@@ -375,7 +376,7 @@ def test_function__eval_nseries():
     assert acos(1 - x**2)._eval_nseries(x, 2, None) == sqrt(2)*sqrt(x**2) + O(x**2)
     assert polygamma(n, x + 1)._eval_nseries(x, 2, None) == \
         polygamma(n, 1) + polygamma(n + 1, 1)*x + O(x**2)
-    raises(PoleError, lambda: sin(1/x)._eval_nseries(x, 2, None))
+    pytest.raises(PoleError, lambda: sin(1/x)._eval_nseries(x, 2, None))
     assert acos(1 - x)._eval_nseries(x, 2, None) == sqrt(2)*sqrt(x) + O(x)
     assert acos(1 + x)._eval_nseries(x, 2, None) == sqrt(2)*sqrt(-x) + O(x)  # XXX: wrong, branch cuts
     assert loggamma(1/x)._eval_nseries(x, 0, None) == \
@@ -430,7 +431,7 @@ def test_issue_5399():
             if ok(v):
                 noraise = eq.diff(*v)
             else:
-                raises(ValueError, lambda: eq.diff(*v))
+                pytest.raises(ValueError, lambda: eq.diff(*v))
 
 
 def test_derivative_numerically():
@@ -449,7 +450,7 @@ def test_fdiff_argument_index_error():
             raise ArgumentIndexError
     mf = myfunc(x)
     assert mf.diff(x) == Derivative(mf, x)
-    raises(TypeError, lambda: myfunc(x, x))
+    pytest.raises(TypeError, lambda: myfunc(x, x))
 
 
 def test_deriv_wrt_function():
@@ -523,9 +524,9 @@ def test_diff_wrt_func_subs():
 
 
 def test_diff_wrt_not_allowed():
-    raises(ValueError, lambda: diff(sin(x**2), x**2))
-    raises(ValueError, lambda: diff(exp(x*y), x*y))
-    raises(ValueError, lambda: diff(1 + x, 1 + x))
+    pytest.raises(ValueError, lambda: diff(sin(x**2), x**2))
+    pytest.raises(ValueError, lambda: diff(exp(x*y), x*y))
+    pytest.raises(ValueError, lambda: diff(1 + x, 1 + x))
 
 
 def test_klein_gordon_lagrangian():

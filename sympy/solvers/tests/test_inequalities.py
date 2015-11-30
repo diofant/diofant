@@ -1,5 +1,7 @@
 """Tests for tools for solving inequalities and systems of inequalities. """
 
+import pytest
+
 from sympy import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
                    Or, S, sin, sqrt, Symbol, Union, Integral, Sum,
                    Function, Poly, PurePoly, pi, root)
@@ -11,8 +13,6 @@ from sympy.solvers.inequalities import (reduce_inequalities,
 from sympy.polys.rootoftools import RootOf
 from sympy.solvers.solvers import solve
 from sympy.abc import x, y
-
-from sympy.utilities.pytest import raises, slow
 
 
 inf = oo.evalf()
@@ -184,7 +184,7 @@ def test_reduce_abs_inequalities():
         Or(And(S(-2) < x, x < -1), And(S(1)/2 < x, x < 4))
 
     nr = Symbol('nr', extended_real=False)
-    raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
+    pytest.raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
 
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
@@ -209,8 +209,8 @@ def test_reduce_inequalities_multivariate():
 
 
 def test_reduce_inequalities_errors():
-    raises(NotImplementedError, lambda: reduce_inequalities(Ge(sin(x) + x, 1)))
-    raises(NotImplementedError, lambda: reduce_inequalities(Ge(x**2*y + y, 1)))
+    pytest.raises(NotImplementedError, lambda: reduce_inequalities(Ge(sin(x) + x, 1)))
+    pytest.raises(NotImplementedError, lambda: reduce_inequalities(Ge(x**2*y + y, 1)))
 
 
 def test_hacky_inequalities():
@@ -288,7 +288,7 @@ def test_solve_univariate_inequality():
         Or(And(-oo < x, x < 1), And(S(1) < x, x < 2))
 
 
-@slow
+@pytest.mark.slow
 def test_slow_general_univariate():
     r = RootOf(x**5 - x**2 + 1, 0)
     assert solve(sqrt(x) + 1/root(x, 3) > 1) == \

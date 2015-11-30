@@ -1,7 +1,7 @@
+import pytest
+
 from sympy import (symbols, Symbol, product, factorial, rf, sqrt, cos,
-                   Function, Product, Rational, Sum, oo, exp, log, S)
-from sympy.utilities.pytest import raises
-from sympy import simplify
+                   Function, Product, Rational, Sum, oo, exp, log, S, simplify)
 
 a, k, n, m, x = symbols('a,k,n,m,x', integer=True)
 f = Function('f')
@@ -187,11 +187,11 @@ def test_simple_products():
 
     assert Product(x**k, (k, 1, n)).variables == [k]
 
-    raises(ValueError, lambda: Product(n))
-    raises(ValueError, lambda: Product(n, k))
-    raises(ValueError, lambda: Product(n, k, 1))
-    raises(ValueError, lambda: Product(n, k, 1, 10))
-    raises(ValueError, lambda: Product(n, (k, 1)))
+    pytest.raises(ValueError, lambda: Product(n))
+    pytest.raises(ValueError, lambda: Product(n, k))
+    pytest.raises(ValueError, lambda: Product(n, k, 1))
+    pytest.raises(ValueError, lambda: Product(n, k, 1, 10))
+    pytest.raises(ValueError, lambda: Product(n, (k, 1)))
 
     assert product(1, (n, 1, oo)) == 1  # issue 8301
     assert product(2, (n, 1, oo)) == oo

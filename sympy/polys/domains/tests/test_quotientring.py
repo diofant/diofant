@@ -1,11 +1,12 @@
 """Tests for quotient rings."""
 
+import pytest
+
 from sympy import QQ, ZZ
 from sympy.abc import x, y
 
 from sympy.polys.polyerrors import NotReversible
 
-from sympy.utilities.pytest import raises
 from sympy.core.compatibility import range
 
 
@@ -23,7 +24,7 @@ def test_QuotientRingElement():
     assert X**10 == R.zero
     assert X != x
 
-    raises(NotReversible, lambda: 1/X)
+    pytest.raises(NotReversible, lambda: 1/X)
 
 
 def test_QuotientRing():
@@ -45,7 +46,7 @@ def test_QuotientRing():
     assert -1 + I == Y**2 + I
     assert R.to_sympy(X) == x
 
-    raises(ValueError, lambda: QQ.old_poly_ring(x)/QQ.old_poly_ring(x, y).ideal(x))
+    pytest.raises(ValueError, lambda: QQ.old_poly_ring(x)/QQ.old_poly_ring(x, y).ideal(x))
 
     R = QQ.old_poly_ring(x, order="ilex")
     I = R.ideal(x)

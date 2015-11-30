@@ -1,5 +1,7 @@
 from __future__ import division
 
+import pytest
+
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
@@ -7,7 +9,6 @@ from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             are_similar, convex_hull, intersection,
                             Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
 from sympy.matrices import Matrix
-from sympy.utilities.pytest import raises
 
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)
@@ -46,9 +47,9 @@ def test_point():
     assert (p2 - p1) == Point(y1 - x1, y2 - x2)
     assert p4*5 == Point(5, 5)
     assert -p2 == Point(-y1, -y2)
-    raises(ValueError, lambda: Point(3, I))
-    raises(ValueError, lambda: Point(2*I, I))
-    raises(ValueError, lambda: Point(3 + I, I))
+    pytest.raises(ValueError, lambda: Point(3, I))
+    pytest.raises(ValueError, lambda: Point(2*I, I))
+    pytest.raises(ValueError, lambda: Point(3 + I, I))
 
     assert Point(34.05, sqrt(3)) == Point(Rational(681, 20), sqrt(3))
     assert Point.midpoint(p3, p4) == Point(half, half)
@@ -69,8 +70,8 @@ def test_point():
     assert Point.is_collinear(p3, p4, p1_1, p1_3) is False
     assert Point.is_collinear(p3, p3, p4, p5) is False
     line = Line(Point(1, 0), slope=1)
-    raises(TypeError, lambda: Point.is_collinear(line))
-    raises(TypeError, lambda: p1_1.is_collinear(line))
+    pytest.raises(TypeError, lambda: Point.is_collinear(line))
+    pytest.raises(TypeError, lambda: p1_1.is_collinear(line))
 
     assert p3.intersection(Point(0, 0)) == [p3]
     assert p3.intersection(p4) == []
@@ -97,7 +98,7 @@ def test_point():
     assert p4 * 5 == Point(5, 5)
     assert p4 / 5 == Point(0.2, 0.2)
 
-    raises(ValueError, lambda: Point(0, 0) + 10)
+    pytest.raises(ValueError, lambda: Point(0, 0) + 10)
 
     # Point differences should be simplified
     assert Point(x*(x - 1), y) - Point(x**2 - x, y + 1) == Point(0, -1)
@@ -105,7 +106,7 @@ def test_point():
     a, b = Rational(1, 2), Rational(1, 3)
     assert Point(a, b).evalf(2) == \
         Point(a.n(2), b.n(2))
-    raises(ValueError, lambda: Point(1, 2) + 1)
+    pytest.raises(ValueError, lambda: Point(1, 2) + 1)
 
     # test transformations
     p = Point(1, 0)
@@ -119,8 +120,8 @@ def test_point():
     assert p.translate(*p.args) == Point(2, 2)
 
     # Check invalid input for transform
-    raises(ValueError, lambda: p3.transform(p3))
-    raises(ValueError, lambda: p.transform(Matrix([[1, 0], [0, 1]])))
+    pytest.raises(ValueError, lambda: p3.transform(p3))
+    pytest.raises(ValueError, lambda: p.transform(Matrix([[1, 0], [0, 1]])))
 
 
 def test_point3D():
@@ -167,7 +168,7 @@ def test_point3D():
     assert p4 * 5 == Point3D(5, 5, 5)
     assert p4 / 5 == Point3D(0.2, 0.2, 0.2)
 
-    raises(ValueError, lambda: Point3D(0, 0, 0) + 10)
+    pytest.raises(ValueError, lambda: Point3D(0, 0, 0) + 10)
 
     # Point differences should be simplified
     assert Point3D(x*(x - 1), y, 2) - Point3D(x**2 - x, y + 1, 1) == \
@@ -176,7 +177,7 @@ def test_point3D():
     a, b = Rational(1, 2), Rational(1, 3)
     assert Point(a, b).evalf(2) == \
         Point(a.n(2), b.n(2))
-    raises(ValueError, lambda: Point(1, 2) + 1)
+    pytest.raises(ValueError, lambda: Point(1, 2) + 1)
 
     # test transformations
     p = Point3D(1, 1, 1)
@@ -195,17 +196,17 @@ def test_point3D():
     assert p1_2.length == 0
 
     # Test are_colinear type error
-    raises(TypeError, lambda: Point3D.are_collinear(p, x))
+    pytest.raises(TypeError, lambda: Point3D.are_collinear(p, x))
 
     # Test are_coplanar
     planar2 = Point3D(1, -1, 1)
     planar3 = Point3D(-1, 1, 1)
     assert Point3D.are_coplanar(p, planar2, planar3) == True
     assert Point3D.are_coplanar(p, planar2, planar3, p3) == False
-    raises(ValueError, lambda: Point3D.are_coplanar(p, planar2))
+    pytest.raises(ValueError, lambda: Point3D.are_coplanar(p, planar2))
     planar2 = Point3D(1, 1, 2)
     planar3 = Point3D(1, 1, 3)
-    raises(ValueError, lambda: Point3D.are_coplanar(p, planar2, planar3))
+    pytest.raises(ValueError, lambda: Point3D.are_coplanar(p, planar2, planar3))
 
     # Test Intersection
     assert planar2.intersection(Line3D(p, planar3)) == [Point3D(1, 1, 2)]
@@ -220,15 +221,15 @@ def test_point3D():
     assert p.transform(identity) == p
     trans = Matrix([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1], [0, 0, 0, 1]])
     assert p.transform(trans) == Point3D(2, 2, 2)
-    raises(ValueError, lambda: p.transform(p))
-    raises(ValueError, lambda: p.transform(Matrix([[1, 0], [0, 1]])))
+    pytest.raises(ValueError, lambda: p.transform(p))
+    pytest.raises(ValueError, lambda: p.transform(Matrix([[1, 0], [0, 1]])))
 
     # Test Equals
     assert p.equals(x1) == False
 
     # Test __sub__
     p_2d = Point(0, 0)
-    raises(ValueError, lambda: (p - p_2d))
+    pytest.raises(ValueError, lambda: (p - p_2d))
 
 
 def test_issue_9214():

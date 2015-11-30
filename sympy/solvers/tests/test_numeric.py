@@ -1,8 +1,9 @@
-from sympy import Eq, Matrix, pi, sin, sqrt, Symbol, Integral, Piecewise, symbols
 from mpmath import mnorm, mpf
+import pytest
+
+from sympy import Eq, Matrix, pi, sin, sqrt, Symbol, Integral, Piecewise, symbols
 from sympy.solvers import nsolve
 from sympy.utilities.lambdify import lambdify
-from sympy.utilities.pytest import raises, XFAIL
 
 
 def test_nsolve():
@@ -11,8 +12,8 @@ def test_nsolve():
     assert nsolve(sin(x), 2) - pi.evalf() < 1e-15
     assert nsolve(Eq(2*x, 2), x, -10) == nsolve(2*x - 2, -10)
     # Testing checks on number of inputs
-    raises(TypeError, lambda: nsolve(Eq(2*x, 2)))
-    raises(TypeError, lambda: nsolve(Eq(2*x, 2), x, 1, 2))
+    pytest.raises(TypeError, lambda: nsolve(Eq(2*x, 2)))
+    pytest.raises(TypeError, lambda: nsolve(Eq(2*x, 2), x, 1, 2))
     # issue 4829
     assert nsolve(x**2/(1 - x)/(1 - 2*x)**2 - 100, x, 0)  # doesn't fail
     # multidimensional
@@ -53,7 +54,7 @@ def test_issue_6408():
     assert nsolve(Piecewise((x, x < 1), (x**2, True)), x, 2) == 0.0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_6408_fail():
     x, y = symbols('x y')
     assert nsolve(Integral(x*y, (x, 0, 5)), y, 2) == 0.0

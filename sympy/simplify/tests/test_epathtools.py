@@ -1,8 +1,8 @@
 """Tests for tools for manipulation of expressions using paths. """
 
-from sympy.simplify.epathtools import epath, EPath
-from sympy.utilities.pytest import raises
+import pytest
 
+from sympy.simplify.epathtools import epath, EPath
 from sympy import sin, cos, E
 from sympy.abc import x, y, z, t
 
@@ -82,10 +82,10 @@ def test_EPath():
 
     assert repr(EPath("/*/[0]")) == "EPath('/*/[0]')"
 
-    raises(ValueError, lambda: EPath(""))
-    raises(ValueError, lambda: EPath("/"))
-    raises(ValueError, lambda: EPath("/|x"))
-    raises(ValueError, lambda: EPath("/["))
-    raises(ValueError, lambda: EPath("/[0]%"))
+    pytest.raises(ValueError, lambda: EPath(""))
+    pytest.raises(ValueError, lambda: EPath("/"))
+    pytest.raises(ValueError, lambda: EPath("/|x"))
+    pytest.raises(ValueError, lambda: EPath("/["))
+    pytest.raises(ValueError, lambda: EPath("/[0]%"))
 
-    raises(NotImplementedError, lambda: EPath("Symbol"))
+    pytest.raises(NotImplementedError, lambda: EPath("Symbol"))
