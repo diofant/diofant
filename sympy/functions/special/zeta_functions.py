@@ -276,7 +276,7 @@ class polylog(Function):
         elif z == -1:
             return dirichlet_eta(s)
         elif z == 0:
-            return 0
+            return S.Zero
 
     def fdiff(self, argindex=1):
         s, z = self.args
