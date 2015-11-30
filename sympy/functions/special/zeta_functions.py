@@ -244,7 +244,7 @@ class polylog(Function):
     >>> polylog(s, 1)
     zeta(s)
     >>> polylog(s, -1)
-    dirichlet_eta(s)
+    -dirichlet_eta(s)
 
     If :math:`s` is a negative integer, :math:`0` or :math:`1`, the
     polylogarithm can be expressed using elementary functions. This can be
@@ -267,6 +267,12 @@ class polylog(Function):
     >>> from sympy import lerchphi
     >>> polylog(s, z).rewrite(lerchphi)
     z*lerchphi(z, s, 1)
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Polylogarithm
+    .. [2] http://mathworld.wolfram.com/Polylogarithm.html
     """
 
     @classmethod
@@ -274,7 +280,7 @@ class polylog(Function):
         if z == 1:
             return zeta(s)
         elif z == -1:
-            return dirichlet_eta(s)
+            return -dirichlet_eta(s)
         elif z == 0:
             return S.Zero
 
@@ -507,7 +513,7 @@ class dirichlet_eta(Function):
 
     For `\operatorname{Re}(s) > 0`, this function is defined as
 
-    .. math:: \eta(s) = \sum_{n=1}^\infty \frac{(-1)^n}{n^s}.
+    .. math:: \eta(s) = \sum_{n=1}^\infty \frac{(-1)^{n-1}}{n^s}.
 
     It admits a unique analytic continuation to all of :math:`\mathbb{C}`.
     It is an entire, unbranched function.
@@ -521,6 +527,7 @@ class dirichlet_eta(Function):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/Dirichlet_eta_function
+    .. [2] http://mathworld.wolfram.com/DirichletEtaFunction.html
 
     Examples
     ========
@@ -531,7 +538,6 @@ class dirichlet_eta(Function):
     >>> from sympy.abc import s
     >>> dirichlet_eta(s).rewrite(zeta)
     (-2**(-s + 1) + 1)*zeta(s)
-
     """
 
     @classmethod

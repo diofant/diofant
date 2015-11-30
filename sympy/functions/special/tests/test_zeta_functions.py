@@ -127,7 +127,7 @@ def myexpand(func, target):
 def test_polylog_expansion():
     assert polylog(s, 0) == 0
     assert polylog(s, 1) == zeta(s)
-    assert polylog(s, -1) == dirichlet_eta(s)
+    assert polylog(s, -1) == -dirichlet_eta(s)
 
     assert myexpand(polylog(1, z), -log(1 + exp_polar(-I*pi)*z))
     assert myexpand(polylog(0, z), z/(1 - z))
