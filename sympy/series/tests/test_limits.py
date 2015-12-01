@@ -31,9 +31,8 @@ def test_basic1():
     assert limit((1 + x + y)**oo, x, 0, dir='-') == (1 + y)**(oo)
     assert limit(y/x/log(x), x, 0) == -oo*sign(y)
     assert limit(cos(x + y)/x, x, 0) == sign(cos(y))*oo
-    raises(NotImplementedError, lambda: limit(Sum(1/x, (x, 1, y)) -
-           log(y), y, oo))
-    raises(NotImplementedError, lambda: limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo))
+    limit(Sum(1/x, (x, 1, y)) - log(y), y, oo)
+    limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
     assert limit(gamma(1/x + 3), x, oo) == 2
     assert limit(S.NaN, x, -oo) == S.NaN
     assert limit(Order(2)*x, x, S.NaN) == S.NaN
@@ -212,7 +211,6 @@ def test_doit():
     assert l.doit() == oo
 
 
-@XFAIL
 def test_doit2():
     f = Integral(2 * x, x)
     l = Limit(f, x, oo)
@@ -333,8 +331,8 @@ def test_order_oo():
 
 
 def test_issue_5436():
-    raises(NotImplementedError, lambda: limit(exp(x*y), x, oo))
-    raises(NotImplementedError, lambda: limit(exp(-x*y), x, oo))
+    limit(exp(x*y), x, oo)
+    limit(exp(-x*y), x, oo)
 
 
 def test_Limit_dir():
