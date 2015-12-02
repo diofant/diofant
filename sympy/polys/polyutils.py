@@ -256,7 +256,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
                     if exp < 0:
                         exp, base = -exp, Pow(base, -S.One)
 
-                    elements[base] = exp
+                    elements[base] = elements.setdefault(base, 0) + exp
                     gens.add(base)
 
             terms.append((coeff, elements))
