@@ -870,7 +870,6 @@ class airyai(AiryBase):
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
-    nargs = 1
     unbranched = True
 
     @classmethod
@@ -1038,7 +1037,6 @@ class airybi(AiryBase):
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
-    nargs = 1
     unbranched = True
 
     @classmethod
@@ -1197,7 +1195,6 @@ class airyaiprime(AiryBase):
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
-    nargs = 1
     unbranched = True
 
     @classmethod
@@ -1351,7 +1348,6 @@ class airybiprime(AiryBase):
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
 
-    nargs = 1
     unbranched = True
 
     @classmethod
