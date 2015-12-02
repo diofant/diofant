@@ -2812,10 +2812,11 @@ class Expr(Basic, EvalfMixin):
         """as_leading_term is only allowed for results of .series()
         This is a wrapper to compute a series first.
         """
-        from sympy import Dummy, log
+        from sympy import Dummy, log, expand_log
 
         for t in self.lseries(x):
             if logx:
+                t = expand_log(t)
                 t = t.subs(log(x), logx)
                 t = t.subs(log(1/x), -logx)
 
