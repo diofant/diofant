@@ -28,7 +28,8 @@ if not np:
 import mpmath
 from sympy.utilities.autowrap import ufuncify
 from sympy.utilities.lambdify import implemented_function
-from sympy import symbols, legendre, Plot, pprint
+from sympy import symbols, legendre, pprint
+from sympy.plotting.plot import Plot
 
 
 def main():
