@@ -213,7 +213,7 @@ class Limit(Expr):
             r = limitinf(newe, newz)
             if r is S.NaN:
                 raise PoleError()
-        except (PoleError, ValueError):
+        except (PoleError, ValueError, NotImplementedError):
             r = heuristics(e, z, z0, dir)
             if r is None:
                 return self
