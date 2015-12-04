@@ -363,8 +363,8 @@ class Add(Expr, AssocOp):
             return terms[0].matches(expr - coeff, repl_dict)
         return
 
-    def matches(self, expr, repl_dict={}, old=False):
-        return AssocOp._matches_commutative(self, expr, repl_dict, old)
+    def matches(self, expr, repl_dict={}):
+        return AssocOp._matches_commutative(self, expr, repl_dict)
 
     @staticmethod
     def _combine_inverse(lhs, rhs):

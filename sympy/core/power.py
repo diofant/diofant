@@ -1077,7 +1077,7 @@ class Pow(Expr):
             exp = -exp
         return self.func(n, exp), self.func(d, exp)
 
-    def matches(self, expr, repl_dict={}, old=False):
+    def matches(self, expr, repl_dict={}):
         expr = _sympify(expr)
 
         # special case, pattern = 1 and expr.exp can match to 0
@@ -1101,13 +1101,13 @@ class Pow(Expr):
             return sb.matches(expr**(1/se), repl_dict)
 
         d = repl_dict.copy()
-        d = self.base.matches(b, d, old=old)
+        d = self.base.matches(b, d)
         if d is None:
             return
 
-        d = self.exp.xreplace(d).matches(e, d, old=old)
+        d = self.exp.xreplace(d).matches(e, d)
         if d is None:
-            return Expr.matches(self, expr, repl_dict, old=old)
+            return Expr.matches(self, expr, repl_dict)
         return d
 
     def _eval_nseries(self, x, n, logx):

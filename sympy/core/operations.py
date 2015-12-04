@@ -125,7 +125,7 @@ class AssocOp(Basic):
         # c_part, nc_part, order_symbols
         return [], new_seq, None
 
-    def _matches_commutative(self, expr, repl_dict={}, old=False):
+    def _matches_commutative(self, expr, repl_dict={}):
         """
         Matches Add/Mul "pattern" to an expression "expr".
 
@@ -200,7 +200,7 @@ class AssocOp(Basic):
                 return
             newpattern = self.func(*wild_part)
             newexpr = self._combine_inverse(expr, exact)
-            if not old and (expr.is_Add or expr.is_Mul):
+            if expr.is_Add or expr.is_Mul:
                 if newexpr.count_ops() > expr.count_ops():
                     return
             return newpattern.matches(newexpr, repl_dict)

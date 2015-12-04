@@ -812,10 +812,10 @@ class Mul(Expr, AssocOp):
             return terms[0].matches(newexpr, repl_dict)
         return
 
-    def matches(self, expr, repl_dict={}, old=False):
+    def matches(self, expr, repl_dict={}):
         expr = sympify(expr)
         if self.is_commutative and expr.is_commutative:
-            return AssocOp._matches_commutative(self, expr, repl_dict, old)
+            return AssocOp._matches_commutative(self, expr, repl_dict)
         elif self.is_commutative is not expr.is_commutative:
             return
         c1, nc1 = self.args_cnc()
@@ -826,7 +826,7 @@ class Mul(Expr, AssocOp):
                 c2 = [1]
             a = self.func(*c1)
             if isinstance(a, AssocOp):
-                repl_dict = a._matches_commutative(self.func(*c2), repl_dict, old)
+                repl_dict = a._matches_commutative(self.func(*c2), repl_dict)
             else:
                 repl_dict = a.matches(self.func(*c2), repl_dict)
         if repl_dict:

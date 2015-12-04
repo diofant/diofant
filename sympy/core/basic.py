@@ -1379,7 +1379,7 @@ class Basic(with_metaclass(ManagedProperties)):
         query = _make_find_query(query)
         return sum(bool(query(sub)) for sub in preorder_traversal(self))
 
-    def matches(self, expr, repl_dict={}, old=False):
+    def matches(self, expr, repl_dict={}):
         """Helper method for match() that looks for a match between Wild
         symbols in self and expressions in expr.
 
@@ -1408,12 +1408,12 @@ class Basic(with_metaclass(ManagedProperties)):
         for arg, other_arg in zip(self.args, expr.args):
             if arg == other_arg:
                 continue
-            d = arg.xreplace(d).matches(other_arg, d, old=old)
+            d = arg.xreplace(d).matches(other_arg, d)
             if d is None:
                 return
         return d
 
-    def match(self, pattern, old=False):
+    def match(self, pattern):
         """Pattern matching.
 
         Wild symbols match all.
@@ -1441,15 +1441,6 @@ class Basic(with_metaclass(ManagedProperties)):
         True
         >>> (p*q**r).xreplace(e.match(p*q**r))
         4*x**2
-
-        The ``old`` flag will give the old-style pattern matching where
-        expressions and patterns are essentially solved to give the
-        match. Both of the following give None unless ``old=True``:
-
-        >>> (x - 2).match(p - x, old=True)
-        {p_: 2*x - 2}
-        >>> (2/x).match(p*x, old=True)
-        {p_: 2/x**2}
         """
         from sympy import signsimp
         pattern = sympify(pattern)
@@ -1458,9 +1449,9 @@ class Basic(with_metaclass(ManagedProperties)):
         # if we still have the same relationship between the types of
         # input, then use the sign simplified forms
         if (pattern.func == self.func) and (s.func == p.func):
-            rv = p.matches(s, old=old)
+            rv = p.matches(s)
         else:
-            rv = pattern.matches(self, old=old)
+            rv = pattern.matches(self)
         return rv
 
     def count_ops(self, visual=None):
@@ -1590,7 +1581,7 @@ class Atom(Basic):
 
     __slots__ = []
 
-    def matches(self, expr, repl_dict={}, old=False):
+    def matches(self, expr, repl_dict={}):
         if self == expr:
             return repl_dict
 
