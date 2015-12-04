@@ -113,24 +113,36 @@ class test_sympy(TestCommand):
     """Runs all tests."""
 
     description = "run all tests and doctests"
+    user_options = [('cov', None, "gatter coverage information"),
+                    ('mark=', "m", "run tests matching given mark expression")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.cov = None
+        self.mark = None
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        _test_args = [
-            '--ignore=setup.py',
-            '--verbose',
-            '--durations=100',
-            '--doctest-modules',
-        ]
-        extra_args = os.environ.get('PYTEST_EXTRA_ARGS')
-        if extra_args is not None:
-            _test_args.extend(extra_args.split())
-        self.test_args = _test_args
-        self.test_suite = True
+        try:
+            # New setuptools don't need this anymore
+            self.test_args = []
+            self.test_suite = True
+        except AttributeError:
+            pass
+        self.pytest_args = []
+        if self.cov is not None:
+            self.pytest_args.extend(["--cov", "sympy"])
+        if self.mark is not None:
+            self.pytest_args.extend(["-m", self.mark])
 
     def run_tests(self):
         import pytest
-        errno = pytest.main(self.test_args)
+        import pep8
+        errno = pytest.main(self.pytest_args)
+        if errno != 0:
+            sys.exit(errno)
+        del sys.argv[:]
+        errno = pep8._main()
         sys.exit(errno)
 
 
@@ -164,6 +176,13 @@ setup(name='sympy',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
       ],
-      tests_require=['pytest'],
-      install_requires=['mpmath>=0.19', 'decorator', 'strategies>=0.2.3']
-      )
+      tests_require=['pytest>=2.7.0', 'pep8>=1.6.0', 'pytest-cov'],
+      install_requires=['mpmath>=0.19', 'decorator', 'strategies>=0.2.3'],
+      setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
+      extras_require={
+          'exports': ["numpy", "scipy", "Theano"],
+          'gmpy': ["gmpy>=1.16"],
+          'plot': ["matplotlib"],
+          'interactive': ["ipython>=1.0.0"],
+      }
+)
