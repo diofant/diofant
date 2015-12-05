@@ -1,6 +1,7 @@
 from sympy import (
     symbols, powsimp, symbols, MatrixSymbol, sqrt, pi, Mul, gamma, Function,
-    S, I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest, root)
+    S, I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest,
+    root, Rational)
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
 
@@ -286,3 +287,10 @@ def test_issue_from_PR1599():
 
 def test_powsimp_on_numbers():
     assert 2**(S(1)/3 - 2) == 2**(S(1)/3)/4
+
+
+def test_omgissue_124():
+    n = Symbol('n', odd=True)
+    assert powsimp((-1)**(n/2)) in ((-1)**(n/2), I**n)
+    assert powsimp((-1)**(n/2 - Rational(1,2)) -
+                   (-1)**(3*n/2 - Rational(1,2))) != 2  # sympy/sympy#10195
