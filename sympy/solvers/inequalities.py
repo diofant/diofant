@@ -493,6 +493,10 @@ def _reduce_inequalities(inequalities, symbols):
     other = []
 
     for inequality in inequalities:
+        if inequality is S.true:
+            continue
+        elif inequality is S.false:
+            return S.false
 
         expr, rel = inequality.lhs, inequality.rel_op  # rhs is 0
 
