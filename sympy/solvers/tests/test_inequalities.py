@@ -302,3 +302,8 @@ def test_issue_8545():
 def test_issue_8974():
     assert isolve(-oo < x, x) == And(-oo < x, x < oo)
     assert isolve(oo > x, x) == And(-oo < x, x < oo)
+
+
+def test_issue_10196():
+    assert reduce_inequalities(x**2 >= 0)
+    assert reduce_inequalities(x**2 < 0) is S.false
