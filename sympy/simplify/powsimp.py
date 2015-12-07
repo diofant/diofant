@@ -240,7 +240,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                     return (b, Integer(e.q)), Integer(e.p)
                 else:
                     c, m = e.as_coeff_Mul(rational=True)
-                    if c is not S.One:
+                    if c is not S.One and b.is_positive:
                         return (b**m, Integer(c.q)), Integer(c.p)
                     else:
                         return (b**e, S.One), S.One
