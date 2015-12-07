@@ -395,7 +395,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
     (-oo, -2] U [2, oo)
 
     """
-
+    from sympy.simplify.simplify import simplify
     from sympy.solvers.solvers import solve, denoms
 
     e = expr.lhs - expr.rhs
@@ -417,6 +417,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
             r = expr.func(v, 0)
         except TypeError:
             r = S.false
+        r = simplify(r)
         if r in (S.true, S.false):
             return r
         if v.is_extended_real is False:
@@ -460,31 +461,6 @@ def solve_univariate_inequality(expr, gen, relational=True):
     return rv if not relational else rv.as_relational(gen)
 
 
-def _solve_inequality(ie, s):
-    """ A hacky replacement for solve, since the latter only works for
-        univariate inequalities. """
-    if ie.rel_op not in ('>', '>=', '<', '<='):
-        raise NotImplementedError
-    expr = ie.lhs - ie.rhs
-    try:
-        p = Poly(expr, s)
-        if p.degree() != 1:
-            raise NotImplementedError
-    except (PolynomialError, NotImplementedError):
-        try:
-            n, d = expr.as_numer_denom()
-            return reduce_rational_inequalities([[ie]], s)
-        except PolynomialError:
-            return solve_univariate_inequality(ie, s)
-    a, b = p.all_coeffs()
-    if a.is_positive:
-        return ie.func(s, -b/a)
-    elif a.is_negative:
-        return ie.func(-b/a, s)
-    else:
-        raise NotImplementedError
-
-
 def _reduce_inequalities(inequalities, symbols):
     # helper for reduce_inequalities
 
@@ -510,7 +486,7 @@ def _reduce_inequalities(inequalities, symbols):
             common = expr.free_symbols & symbols
             if len(common) == 1:
                 gen = common.pop()
-                other.append(_solve_inequality(Relational(expr, 0, rel), gen))
+                other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
                 continue
             else:
                 raise NotImplementedError(filldedent('''
@@ -526,7 +502,7 @@ def _reduce_inequalities(inequalities, symbols):
             if components and all(isinstance(i, Abs) for i in components):
                 abs_part.setdefault(gen, []).append((expr, rel))
             else:
-                other.append(_solve_inequality(Relational(expr, 0, rel), gen))
+                other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
 
     poly_reduced = []
     abs_reduced = []
@@ -547,14 +523,15 @@ def reduce_inequalities(inequalities, symbols=[]):
     ========
 
     >>> from sympy import sympify as S, Symbol
-    >>> from sympy.abc import x, y
+    >>> from sympy.abc import x
     >>> from sympy.solvers.inequalities import reduce_inequalities
 
     >>> reduce_inequalities(0 <= x + 3, [])
     And(-3 <= x, x < oo)
 
+    >>> y = Symbol('y', real=True)
     >>> reduce_inequalities(0 <= x + y*2 - 1, [x])
-    x >= -2*y + 1
+    And(-2*y + 1 <= x, x < oo)
     """
     if not iterable(inequalities):
         inequalities = [inequalities]

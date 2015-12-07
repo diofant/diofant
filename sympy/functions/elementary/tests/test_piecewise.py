@@ -207,6 +207,7 @@ def test_piecewise_integrate():
 
 
 def test_piecewise_integrate_inequality_conditions():
+    x, y = symbols("x y", real=True)
     c1, c2 = symbols("c1 c2", positive=True)
     g = Piecewise((0, c1*x > 1), (1, c1*x > 0), (0, True))
     assert integrate(g, (x, -oo, 0)) == 0

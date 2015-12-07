@@ -214,8 +214,16 @@ def test_reduce_inequalities_errors():
 
 
 def test_hacky_inequalities():
-    assert reduce_inequalities(x + y < 1, symbols=[x]) == (x < 1 - y)
-    assert reduce_inequalities(x + y >= 1, symbols=[x]) == (x >= 1 - y)
+    y = Symbol('y', real=True)
+    assert reduce_inequalities(x + y < 1, symbols=[x]) == And(-oo < x, x < -y + 1)
+    assert reduce_inequalities(x + y >= 1, symbols=[x]) == And(-y + 1 <= x, x < oo)
+
+
+def test_issue_10203():
+    y = Symbol('y', extended_real=True)
+    assert reduce_inequalities(Eq(0, x - y), symbols=[x]) == Eq(x, y)
+    assert reduce_inequalities(Ne(0, x - y), symbols=[x]) == \
+        Or(And(-oo < x, x < y), And(x < oo, x > y))
 
 
 def test_issue_6343():
@@ -246,11 +254,7 @@ def test_issue_8235():
 def test_issue_5526():
     assert reduce_inequalities(S(0) <=
         x + Integral(y**2, (y, 1, 3)) - 1, [x]) == \
-        (-Integral(y**2, (y, 1, 3)) + 1 <= x)
-    f = Function('f')
-    e = Sum(f(x), (x, 1, 3))
-    assert reduce_inequalities(S(0) <= x + e + y**2, [x]) == \
-        (-y**2 - Sum(f(x), (x, 1, 3)) <= x)
+        And(-Integral(y**2, (y, 1, 3)) + 1 <= x, x < oo)
 
 
 def test_solve_univariate_inequality():
