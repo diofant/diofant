@@ -4,6 +4,7 @@ from sympy.core import (pi, oo, symbols, Rational, Integer,
                         GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
 from sympy.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
                              gamma, sign)
+from sympy.logic import ITE
 from sympy.printing.ccode import CCodePrinter
 from sympy.utilities.lambdify import implemented_function
 from sympy.tensor import IndexedBase, Idx
@@ -187,6 +188,16 @@ def test_ccode_Piecewise_deep():
         ": (\n"
         "   1\n"
         ")) + cos(z) - 1;")
+
+
+def test_ccode_ITE():
+    expr = ITE(x < 1, x, x**2)
+    assert ccode(expr) == ("((x < 1) ? (\n"
+                           "   x\n"
+                           ")\n"
+                           ": (\n"
+                           "   pow(x, 2)\n"
+                           "))")
 
 
 def test_ccode_settings():
