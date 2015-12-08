@@ -185,8 +185,6 @@ class sin(TrigonometricFunction):
     >>> from sympy.abc import x
     >>> sin(x**2).diff(x)
     2*x*cos(x**2)
-    >>> sin(1).diff(x)
-    0
     >>> sin(pi)
     0
     >>> sin(pi/2)
@@ -424,8 +422,6 @@ class cos(TrigonometricFunction):
     >>> from sympy.abc import x
     >>> cos(x**2).diff(x)
     -2*x*sin(x**2)
-    >>> cos(1).diff(x)
-    0
     >>> cos(pi)
     -1
     >>> cos(pi/2)
@@ -804,8 +800,6 @@ class tan(TrigonometricFunction):
     >>> from sympy.abc import x
     >>> tan(x**2).diff(x)
     2*x*(tan(x**2)**2 + 1)
-    >>> tan(1).diff(x)
-    0
     >>> tan(pi/8).expand()
     -1 + sqrt(2)
 
@@ -1189,8 +1183,6 @@ class sec(ReciprocalTrigonometricFunction):
     >>> from sympy.abc import x
     >>> sec(x**2).diff(x)
     2*x*tan(x**2)*sec(x**2)
-    >>> sec(1).diff(x)
-    0
 
     See Also
     ========
@@ -1268,8 +1260,6 @@ class csc(ReciprocalTrigonometricFunction):
     >>> from sympy.abc import x
     >>> csc(x**2).diff(x)
     -2*x*cot(x**2)*csc(x**2)
-    >>> csc(1).diff(x)
-    0
 
     See Also
     ========
@@ -1348,8 +1338,6 @@ class cot(ReciprocalTrigonometricFunction):
     >>> from sympy.abc import x
     >>> cot(x**2).diff(x)
     2*x*(-cot(x**2)**2 - 1)
-    >>> cot(1).diff(x)
-    0
 
     See Also
     ========
