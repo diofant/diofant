@@ -122,15 +122,18 @@ class Pow(Expr):
     | (-oo)**oo    | nan     |                                               |
     | (-oo)**-oo   |         |                                               |
     +--------------+---------+-----------------------------------------------+
-    | oo**I        | nan     |                                               |
-    | (-oo)**I     |         |                                               |
-    +------------------------------------------------------------------------+
-    | oo**(1+I)    | zoo     |                                               |
-    | (-oo)**(1+I) |         |                                               |
-    +------------------------------------------------------------------------+
-    | oo**(-1+I)   | 0       |                                               |
-    | (-oo)**(-1+I)|         |                                               |
-    +------------------------------------------------------------------------+
+    | oo**I        | nan     | oo**e could probably be best thought of as    |
+    | (-oo)**I     |         | the limit of x**e for real x as x tends to    |
+    |              |         | oo. If e is I, then the limit does not exist  |
+    |              |         | and nan is used to indicate that.             |
+    +--------------+---------+-----------------------------------------------+
+    | oo**(1+I)    | zoo     | If the real part of e is positive, then the   |
+    | (-oo)**(1+I) |         | limit of abs(x**e) is oo. So the limit value  |
+    |              |         | is zoo.                                       |
+    +--------------+---------+-----------------------------------------------+
+    | oo**(-1+I)   | 0       | If the real part of e is negative, then the   |
+    | -oo**(-1+I)  |         | limit is 0.                                   |
+    +--------------+---------+-----------------------------------------------+
 
     Because symbolic computations are more flexible that floating point
     calculations and we prefer to never return an incorrect answer,
