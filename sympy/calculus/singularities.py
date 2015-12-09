@@ -1,33 +1,67 @@
+from sympy.core import sympify, Add, Mul, Pow, PoleError
+from sympy.series.limits import Limit
+from sympy.functions import exp, log, sign
 from sympy.solvers import solve
-from sympy.simplify import simplify
 
 
-def singularities(expr, sym):
-    """
-    Finds singularities for a function.
-    Currently supported functions are:
-    - univariate real rational functions
+def singularities(f, x):
+    """Find singularities of real-valued function `f` with respect to `x`.
 
     Examples
     ========
 
-    >>> from sympy.calculus.singularities import singularities
-    >>> from sympy import Symbol
-    >>> x = Symbol('x', extended_real=True)
-    >>> singularities(x**2 + x + 1, x)
-    ()
-    >>> singularities(1/(x + 1), x)
-    (-1,)
+    >>> from sympy import Symbol, exp, log
+    >>> from sympy.calculus import singularities
+    >>> from sympy.abc import x
+    >>> singularities(1/(1 + x), x) == {-1}
+    True
+
+    >>> singularities(exp(1/x) + log(x + 1), x) == {-1, 0}
+    True
+
+    >>> singularities(exp(1/log(x + 1)), x) == {0}
+    True
+
+    Notes
+    =====
+
+    Removable singularities are not supported now.
 
     References
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/Mathematical_singularity
-
     """
-    if not expr.is_rational_function(sym):
-        raise NotImplementedError("Algorithms finding singularities for"
-                                  " non rational functions are not yet"
-                                  " implemented")
+    f, x = sympify(f), sympify(x)
+    guess, res = set(), set()
+
+    assert x.is_Symbol
+
+    if f.is_number:
+        return set()
+    elif f.is_polynomial(x):
+        return set()
+    elif f.func in (Add, Mul, exp):
+        guess = guess.union(*[singularities(a, x) for a in f.args])
+    elif f.func is Pow:
+        guess |= singularities(log(f.base)*f.exp, x)
+    elif f.func in (log, sign) and len(f.args) == 1:
+        guess |= singularities(f.args[0], x)
+        guess |= set([v for v in solve(f.args[0], x) if v.is_real])
     else:
-        return tuple(sorted(solve(simplify(1/expr), sym)))
+        raise NotImplementedError
+
+    for s in guess:
+        l = Limit(f, x, s, dir="real")
+        try:
+            r = l.doit()
+            if r == l:
+                raise NotImplementedError
+            elif r.is_infinite:
+                res.add(s)
+            elif f.subs(x, s) != r:
+                raise NotImplementedError
+        except PoleError:
+            res.add(s)
+
+    return res
