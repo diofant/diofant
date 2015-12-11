@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
-                   oo, EmptySet, Integer, Unequality)
+                   oo, EmptySet, Integer, Unequality, Union)
 from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                  Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                  conjuncts, disjuncts, distribute_or_over_and,
@@ -657,6 +657,9 @@ def test_bool_as_set():
     assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2, True) +
                                             Interval(2, oo, False, True))
     assert Not(x > 2, evaluate=False).as_set() == Interval(-oo, 2, True)
+    # issue sympy/sympy#10240
+    assert Not(And(x > 2, x < 3)).as_set() == \
+        Union(Interval(-oo, 2, True), Interval(3, oo, False, True))
     assert true.as_set() == S.UniversalSet
     assert false.as_set() == EmptySet()
 
