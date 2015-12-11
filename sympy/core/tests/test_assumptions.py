@@ -725,7 +725,7 @@ def test_Pow_is_algebraic():
     na = Symbol('na', algebraic=False)
     ia = Symbol('ia', algebraic=True, irrational=True)
     ib = Symbol('ib', algebraic=True, irrational=True)
-    r = Symbol('r', rational=True)
+    r = Symbol('r', rational=True, nonzero=True)
     x = Symbol('x')
     assert (a**r).is_algebraic
     assert (a**x).is_algebraic is None
@@ -739,6 +739,12 @@ def test_Pow_is_algebraic():
     assert Pow(2, sqrt(2), evaluate=False).is_algebraic is False
 
     assert Pow(S.GoldenRatio, sqrt(3), evaluate=False).is_algebraic is False
+
+    # sympy/sympy#8649
+    t = Symbol('t', real=True, transcendental=True)
+    n = Symbol('n', integer=True)
+    assert (t**n).is_algebraic is None
+    assert (t**n).is_integer is None
 
 
 def test_Mul_is_infinite():

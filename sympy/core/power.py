@@ -1020,7 +1020,7 @@ class Pow(Expr):
                         return False
             else:
                 return s.is_algebraic
-        elif self.exp.is_rational:
+        elif self.exp.is_rational and self.exp.is_nonzero:
             return self.base.is_algebraic
         elif self.base.is_algebraic and self.exp.is_algebraic:
             if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
