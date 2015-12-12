@@ -96,6 +96,10 @@ def test_reduce_poly_inequalities_real_interval():
     ) == Union(Interval(-s, -1, True, True), Interval(-1, 1, True, True),
         Interval(1, s, True, True))
 
+    # issue sympy/sympy#10237
+    assert reduce_rational_inequalities(
+        [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo)
+
 
 def test_reduce_poly_inequalities_complex_relational():
     assert reduce_rational_inequalities(

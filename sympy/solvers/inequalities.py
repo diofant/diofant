@@ -6,7 +6,7 @@ from sympy.core import Symbol, Dummy
 from sympy.core.compatibility import iterable, reduce
 from sympy.sets import Interval
 from sympy.core.relational import Relational, Eq, Ge, Lt
-from sympy.sets.sets import FiniteSet, Union
+from sympy.sets.sets import FiniteSet, Union, Intersection
 from sympy.core.singleton import S
 
 from sympy.functions import Abs
@@ -216,7 +216,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     """
     exact = True
     eqs = []
-    solution = S.EmptySet
+    solution = S.Reals if exprs else S.EmptySet
     for _exprs in exprs:
         _eqs = []
 
@@ -252,13 +252,15 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
             if not (domain.is_ZZ or domain.is_QQ):
                 expr = numer/denom
                 expr = Relational(expr, 0, rel)
-                solution = Union(solution, solve_univariate_inequality(expr, gen, relational=False))
+                solution &= solve_univariate_inequality(expr, gen, relational=False)
             else:
                 _eqs.append(((numer, denom), rel))
 
-        eqs.append(_eqs)
+        if _eqs:
+            eqs.append(_eqs)
 
-    solution = Union(solution, solve_rational_inequalities(eqs))
+    if eqs:
+        solution &= solve_rational_inequalities(eqs)
 
     if not exact:
         solution = solution.evalf()
