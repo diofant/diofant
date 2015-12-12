@@ -205,7 +205,6 @@ from sympy.core.function import expand_mul, count_ops
 from sympy.core.add import Add
 from sympy.core.symbol import Dummy
 from sympy.core.exprtools import Factors, gcd_terms, factor_terms
-from sympy.core.rules import Transform
 from sympy.core.basic import S
 from sympy.core.numbers import Integer, pi, I
 from sympy.polys.polytools import factor
