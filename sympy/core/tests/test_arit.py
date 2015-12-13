@@ -2,7 +2,7 @@ from __future__ import division
 
 from sympy import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
         sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo, Integer,
-        sign, im, nan, Dummy, factorial, comp
+        sign, im, nan, Dummy, factorial, comp, O
 )
 from sympy.core.compatibility import long, range
 from sympy.utilities.iterables import cartes
@@ -1702,6 +1702,12 @@ def test_add_flatten():
     assert a + b == nan
     assert a - b == nan
     assert (1/a).simplify() == (1/b).simplify() == 0
+
+
+def test_omgissue_31():
+    assert sin(x + O(x**2)) - sin(x + O(x**2)) == \
+        Add(-sin(x + O(x**2)), sin(x + O(x**2)), evaluate=False)
+    assert sin(O(x))/sin(O(x)) == Mul(sin(O(x)), 1/sin(O(x)), evaluate=False)
 
 
 def test_issue_5160_6087_6089_6090():
