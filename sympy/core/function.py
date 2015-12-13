@@ -604,7 +604,7 @@ class Function(Application, Expr):
                     raise PoleError("Cannot expand %s around 0" % (self))
                 series = term
                 fact = S.One
-                _x = Dummy('x')
+                _x = Dummy('x', real=True, positive=True)
                 e = e.subs(x, _x)
                 for i in range(n - 1):
                     i += 1

@@ -201,6 +201,8 @@ def test_sign():
     assert sign(x).doit() == sign(x)
     assert conjugate(sign(x)) == sign(x)
 
+    assert sign(sin(x)).nseries(x) == 1
+
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
