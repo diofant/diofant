@@ -91,6 +91,8 @@ class Add(Expr, AssocOp):
         sympy.core.mul.Mul.flatten
 
         """
+        from sympy.series.order import Order
+
         rv = None
         if len(seq) == 2:
             a, b = seq
@@ -150,6 +152,9 @@ class Add(Expr, AssocOp):
                 # NB: here we assume Add is always commutative
                 seq.extend(o.args)  # TODO zerocopy?
                 continue
+
+            elif o.has(Order):
+                c, s = S.One, o
 
             # Mul([...])
             elif o.is_Mul:
