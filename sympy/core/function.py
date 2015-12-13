@@ -429,16 +429,6 @@ class Function(Application, Expr):
 
         return 4, i, name
 
-    @property
-    def is_commutative(self):
-        """
-        Returns whether the functon is commutative.
-        """
-        if all(getattr(t, 'is_commutative') for t in self.args):
-            return True
-        else:
-            return False
-
     def _eval_evalf(self, prec):
         # Lookup mpmath function based on name
         fname = self.func.__name__
