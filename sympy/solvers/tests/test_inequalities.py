@@ -186,6 +186,10 @@ def test_reduce_abs_inequalities():
     nr = Symbol('nr', extended_real=False)
     raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
 
+    # sympy/sympy#10198
+    assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
+        Or(And(S.Zero < x, x < S.Half), And(-oo < x, x < S.Zero))
+
 
 def test_reduce_inequalities_general():
     assert reduce_inequalities(Ge(sqrt(2)*x, 1)) == And(sqrt(2)/2 <= x, x < oo)
@@ -302,3 +306,8 @@ def test_issue_8545():
 def test_issue_8974():
     assert isolve(-oo < x, x) == And(-oo < x, x < oo)
     assert isolve(oo > x, x) == And(-oo < x, x < oo)
+
+
+def test_issue_10196():
+    assert reduce_inequalities(x**2 >= 0)
+    assert reduce_inequalities(x**2 < 0) is S.false
