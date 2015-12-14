@@ -401,3 +401,15 @@ def test_issue_6682():
 def test_issue_7096():
     from sympy.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
+
+
+def test_omgissue_74():
+    from sympy.functions import sign, tan
+    assert gruntz(sign(log(1 + 1/x)), x) ==  1
+    assert gruntz(sign(log(1 - 1/x)), x) == -1
+    assert gruntz(sign(sin( 1/x)), x) ==  1
+    assert gruntz(sign(sin(-1/x)), x) == -1
+    assert gruntz(sign(tan( 1/x)), x) ==  1
+    assert gruntz(sign(tan(-1/x)), x) == -1
+    assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
+    assert gruntz(sign(cos(pi/2 - 1/x)), x) ==  1

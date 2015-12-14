@@ -356,6 +356,16 @@ class sign(Function):
     def _eval_simplify(self, ratio, measure):
         return self.func(self.args[0].factor())
 
+    def _eval_nseries(self, x, n, logx):
+        from sympy.functions import log
+        direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
+        if logx is not None:
+            direction = direction.subs(log(x), logx)
+        if direction.is_extended_real:
+            return self.func(direction)
+        else:
+            return super(sign, self)._eval_nseries(x, n, logx)
+
 
 class Abs(Function):
     """Return the absolute value of the argument.
