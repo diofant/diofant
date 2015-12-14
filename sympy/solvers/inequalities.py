@@ -9,7 +9,7 @@ from sympy.core.relational import Relational, Eq, Ge, Lt
 from sympy.sets.sets import FiniteSet, Union, Intersection
 from sympy.core.singleton import S
 
-from sympy.functions import Abs
+from sympy.functions import Abs, Piecewise
 from sympy.logic import And
 from sympy.polys import Poly, PolynomialError, parallel_poly_from_expr
 from sympy.polys.polyutils import _nsort
@@ -258,32 +258,36 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     return solution
 
 
-def reduce_abs_inequality(expr, rel, gen):
+def reduce_piecewise_inequality(expr, rel, gen):
     """
-    Reduce an inequality with nested absolute values.
+    Reduce an inequality with nested piecewise functions.
 
     Examples
     ========
 
-    >>> from sympy import Abs, Symbol
-    >>> from sympy.solvers.inequalities import reduce_abs_inequality
+    >>> from sympy import Abs, Symbol, Piecewise
+    >>> from sympy.solvers.inequalities import reduce_piecewise_inequality
 
     >>> x = Symbol('x', real=True)
 
-    >>> reduce_abs_inequality(Abs(x - 5) - 3, '<', x)
+    >>> reduce_piecewise_inequality(Abs(x - 5) - 3, '<', x)
     And(2 < x, x < 8)
-    >>> reduce_abs_inequality(Abs(x + 2)*3 - 13, '<', x)
+    >>> reduce_piecewise_inequality(Abs(x + 2)*3 - 13, '<', x)
     And(-19/3 < x, x < 7/3)
+
+    >>> reduce_piecewise_inequality(Piecewise((1, x < 1),
+    ...                                       (3, True)) - 1, '>', x)
+    1 <= x
 
     See Also
     ========
 
-    reduce_abs_inequalities
+    reduce_piecewise_inequalities
     """
     if gen.is_extended_real is False:
         raise TypeError(filldedent('''
-            can't solve inequalities with absolute
-            values containing non-real variables'''))
+            can't solve inequalities with piecewise
+            functions containing non-real variables'''))
 
     def _bottom_up_scan(expr):
         exprs = []
@@ -320,6 +324,16 @@ def reduce_abs_inequality(expr, rel, gen):
             for expr, conds in _exprs:
                 exprs.append(( expr, conds + [Ge(expr, 0)]))
                 exprs.append((-expr, conds + [Lt(expr, 0)]))
+        elif isinstance(expr, Piecewise):
+            for a in expr.args:
+                _exprs = _bottom_up_scan(a.expr)
+
+                for ex, conds in _exprs:
+                    if a.cond is not S.true:
+                        exprs.append((ex, conds + [a.cond]))
+                    else:
+                        oconds = [c[1] for c in expr.args if c[1] is not S.true]
+                        exprs.append((ex, conds + [And(*[~c for c in oconds])]))
         else:
             exprs = [(expr, [])]
 
@@ -341,30 +355,31 @@ def reduce_abs_inequality(expr, rel, gen):
     return reduce_rational_inequalities(inequalities, gen)
 
 
-def reduce_abs_inequalities(exprs, gen):
+def reduce_piecewise_inequalities(exprs, gen):
     """
-    Reduce a system of inequalities with nested absolute values.
+    Reduce a system of inequalities with nested piecewise functions.
 
     Examples
     ========
 
     >>> from sympy import Abs, Symbol
-    >>> from sympy.solvers.inequalities import reduce_abs_inequalities
+    >>> from sympy.solvers.inequalities import reduce_piecewise_inequalities
 
     >>> x = Symbol('x', real=True)
 
-    >>> reduce_abs_inequalities([(Abs(3*x - 5) - 7, '<'),
-    ...                          (Abs(x + 25) - 13, '>')], x)
+    >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
+    ...                                (Abs(x + 25) - 13, '>')], x)
     And(-2/3 < x, Or(-12 < x, x < -38), x < 4)
-    >>> reduce_abs_inequalities([(Abs(x - 4) + Abs(3*x - 5) - 7, '<')], x)
+    >>> reduce_piecewise_inequalities([(Abs(x - 4) + Abs(3*x - 5) - 7, '<')], x)
     And(1/2 < x, x < 4)
 
     See Also
     ========
 
-    reduce_abs_inequality
+    reduce_piecewise_inequality
     """
-    return And(*[reduce_abs_inequality(expr, rel, gen) for expr, rel in exprs])
+    return And(*[reduce_piecewise_inequality(expr, rel, gen)
+                 for expr, rel in exprs])
 
 
 def solve_univariate_inequality(expr, gen, relational=True):
@@ -456,7 +471,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 def _reduce_inequalities(inequalities, symbols):
     # helper for reduce_inequalities
 
-    poly_part, abs_part = {}, {}
+    poly_part, pw_part = {}, {}
     other = []
 
     for inequality in inequalities:
@@ -491,21 +506,21 @@ def _reduce_inequalities(inequalities, symbols):
             components = expr.find(lambda u:
                 u.has(gen) and (
                 u.is_Function or u.is_Pow and not u.exp.is_Integer))
-            if components and all(isinstance(i, Abs) for i in components):
-                abs_part.setdefault(gen, []).append((expr, rel))
+            if components and all(isinstance(i, Abs) or isinstance(i, Piecewise) for i in components):
+                pw_part.setdefault(gen, []).append((expr, rel))
             else:
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
 
     poly_reduced = []
-    abs_reduced = []
+    pw_reduced = []
 
     for gen, exprs in poly_part.items():
         poly_reduced.append(reduce_rational_inequalities([exprs], gen))
 
-    for gen, exprs in abs_part.items():
-        abs_reduced.append(reduce_abs_inequalities(exprs, gen))
+    for gen, exprs in pw_part.items():
+        pw_reduced.append(reduce_piecewise_inequalities(exprs, gen))
 
-    return And(*(poly_reduced + abs_reduced + other))
+    return And(*(poly_reduced + pw_reduced + other))
 
 
 def reduce_inequalities(inequalities, symbols=[]):

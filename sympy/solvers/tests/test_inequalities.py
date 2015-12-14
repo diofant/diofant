@@ -4,12 +4,12 @@ import pytest
 
 from sympy import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
                    Or, S, sin, sqrt, Symbol, Union, Integral, Sum,
-                   Function, Poly, PurePoly, pi, root, log, E)
+                   Function, Poly, PurePoly, pi, root, log, E, Piecewise)
 from sympy.solvers.inequalities import (reduce_inequalities,
                                         solve_poly_inequality as psolve,
                                         reduce_rational_inequalities,
                                         solve_univariate_inequality as isolve,
-                                        reduce_abs_inequality)
+                                        reduce_piecewise_inequality)
 from sympy.polys.rootoftools import RootOf
 from sympy.solvers.solvers import solve
 from sympy.abc import x, y
@@ -173,7 +173,7 @@ def test_reduce_rational_inequalities_real_relational():
         Union(Interval.Lopen(-oo, -2), Interval.Lopen(0, 4))
 
 
-def test_reduce_abs_inequalities():
+def test_reduce_piecewise_inequalities():
     e = abs(x - 5) < 3
     ans = And(Lt(2, x), Lt(x, 8))
     assert reduce_inequalities(e) == ans
@@ -193,6 +193,12 @@ def test_reduce_abs_inequalities():
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
         Or(And(S.Zero < x, x < S.Half), And(-oo < x, x < S.Zero))
+
+    # sympy/sympy#10255
+    assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
+        And(S.One <= x, x < oo)
+    assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, x >= 0)) < 1) == \
+        And(-S.One < x, x < S.Half)
 
 
 def test_reduce_inequalities_general():
@@ -306,7 +312,7 @@ def test_slow_general_univariate():
 def test_issue_8545():
     eq = 1 - x - abs(1 - x)
     ans = And(Lt(1, x), Lt(x, oo))
-    assert reduce_abs_inequality(eq, '<', x) == ans
+    assert reduce_piecewise_inequality(eq, '<', x) == ans
     eq = 1 - x - sqrt((1 - x)**2)
     assert reduce_inequalities(eq < 0) == ans
 
