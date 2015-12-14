@@ -528,16 +528,18 @@ class Expr(Basic, EvalfMixin):
             # try 0 (for a) and 1 (for b)
             try:
                 a = expr.subs(list(zip(free, [0]*len(free))),
-                    simultaneous=True)
+                              simultaneous=True)
                 if a is S.NaN:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
+                    if a is None:
+                        a = expr._random(None, -1, 0, 1, 0)
             except ZeroDivisionError:
                 a = None
             if a is not None and a is not S.NaN:
                 try:
                     b = expr.subs(list(zip(free, [1]*len(free))),
-                        simultaneous=True)
+                                  simultaneous=True)
                     if b is S.NaN:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
