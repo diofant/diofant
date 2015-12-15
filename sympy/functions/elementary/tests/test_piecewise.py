@@ -3,7 +3,7 @@ import pytest
 from sympy import (adjoint, And, Basic, conjugate, diff, expand, Eq, Function,
                    I, Integral, integrate, Interval, lambdify, log, Max, Min,
                    oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
-                   symbols, transpose, cos, exp, Abs, Not, Symbol, S)
+                   symbols, transpose, cos, exp, Abs, Not, Symbol, S, Gt)
 from sympy.printing import srepr
 
 x, y = symbols('x y')
@@ -494,3 +494,8 @@ def test_S_srepr_is_identity():
     p = Piecewise((10, Eq(x, 0)), (12, True))
     q = S(srepr(p))
     assert p == q
+
+
+def test_issue_10258():
+    p = Piecewise((1, x < 0), (0, True))
+    assert (p > 0) == Gt(p, 0, evaluate=False)
