@@ -475,7 +475,7 @@ class Piecewise(Function):
         return b
 
     def _eval_is_finite(self):
-        return self._eval_template_is_attr('is_finite', when_multiple=False)
+        return self._eval_template_is_attr('is_finite')
 
     def _eval_is_complex(self):
         return self._eval_template_is_attr('is_complex')
@@ -502,7 +502,7 @@ class Piecewise(Function):
         return self._eval_template_is_attr('is_nonpositive')
 
     def _eval_is_nonzero(self):
-        return self._eval_template_is_attr('is_nonzero', when_multiple=True)
+        return self._eval_template_is_attr('is_nonzero')
 
     def _eval_is_odd(self):
         return self._eval_template_is_attr('is_odd')
@@ -517,7 +517,7 @@ class Piecewise(Function):
         return self._eval_template_is_attr('is_extended_real')
 
     def _eval_is_zero(self):
-        return self._eval_template_is_attr('is_zero', when_multiple=False)
+        return self._eval_template_is_attr('is_zero')
 
     @classmethod
     def __eval_cond(cls, cond):
