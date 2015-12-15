@@ -1,6 +1,7 @@
+import pytest
+
 from sympy import Integer, S
 from sympy.core.operations import LatticeOp
-from sympy.utilities.pytest import raises
 from sympy.core.sympify import SympifyError
 
 # create the simplest possible Lattice class
@@ -25,7 +26,7 @@ def test_lattice_simple():
 
 
 def test_lattice_shortcircuit():
-    raises(SympifyError, lambda: join(object))
+    pytest.raises(SympifyError, lambda: join(object))
     assert join(0, object) == 0
 
 

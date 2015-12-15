@@ -1,13 +1,13 @@
+import pytest
+
 from sympy import (
     Abs, And, binomial, Catalan, cos, Derivative, E, Eq, exp, EulerGamma,
     factorial, Function, harmonic, I, Integral, KroneckerDelta, log,
     nan, Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify,
-    sqrt, Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le
+    sqrt, Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod
 )
 from sympy.abc import a, b, c, d, f, k, m, x, y, z
 from sympy.concrete.summations import telescopic
-from sympy.utilities.pytest import raises, slow
-from sympy.core.mod import Mod
 from sympy.core.compatibility import range
 
 n = Symbol('n', integer=True)
@@ -470,8 +470,8 @@ def test_telescopic_sums():
 def test_sum_reconstruct():
     s = Sum(n**2, (n, -1, 1))
     assert s == Sum(*s.args)
-    raises(ValueError, lambda: Sum(x, x))
-    raises(ValueError, lambda: Sum(x, (x, 1)))
+    pytest.raises(ValueError, lambda: Sum(x, x))
+    pytest.raises(ValueError, lambda: Sum(x, (x, 1)))
 
 
 def test_limit_subs():
@@ -487,7 +487,7 @@ def test_function_subs():
     S = Sum(x*f(y),(x,0,oo),(y,0,oo))
     assert S.subs(f(y),y) == Sum(x*y,(x,0,oo),(y,0,oo))
     assert S.subs(f(x),x) == S
-    raises(ValueError, lambda: S.subs(f(y),x+y) )
+    pytest.raises(ValueError, lambda: S.subs(f(y),x+y) )
     S = Sum(x*log(y),(x,0,oo),(y,0,oo))
     assert S.subs(log(y),y) == S
     f = Symbol('f')
@@ -497,7 +497,7 @@ def test_function_subs():
 
 def test_equality():
     # if this fails remove special handling below
-    raises(ValueError, lambda: Sum(x, x))
+    pytest.raises(ValueError, lambda: Sum(x, x))
     r = symbols('x', extended_real=True)
     for F in (Sum, Product, Integral):
         try:
@@ -558,8 +558,8 @@ def test_Sum_interface():
     assert Sum(0, (n, 0, 2)).doit() == 0
     assert isinstance(Sum(0, (n, 0, oo)), Sum)
     assert Sum(0, (n, 0, oo)).doit() == 0
-    raises(ValueError, lambda: Sum(1))
-    raises(ValueError, lambda: summation(1))
+    pytest.raises(ValueError, lambda: Sum(1))
+    pytest.raises(ValueError, lambda: summation(1))
 
 
 def test_eval_diff():
@@ -769,7 +769,7 @@ def test_reverse_order():
         Sum(x*y, (x, b + 1, a - 1), (y, 6, 1))
 
 
-@slow
+@pytest.mark.slow
 def test_findrecur():
     a, x, y = symbols("a, x, y")
     n, k = symbols("n, k", integer=True)

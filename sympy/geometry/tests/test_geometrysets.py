@@ -1,4 +1,5 @@
 from __future__ import division
+
 import warnings
 
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
@@ -19,7 +20,6 @@ from sympy.matrices import Matrix
 from sympy.solvers.solvers import solve
 from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
-from sympy.utilities.pytest import raises, slow
 
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)

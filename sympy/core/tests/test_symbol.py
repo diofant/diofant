@@ -1,9 +1,8 @@
-from sympy import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
-    StrictLessThan, pi, I, Rational, sympify, symbols, Dummy
-)
+import pytest
 
+from sympy import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
+                   StrictLessThan, pi, I, Rational, sympify, symbols, Dummy)
 from sympy.core.compatibility import u
-from sympy.utilities.pytest import raises
 
 
 def test_Symbol():
@@ -26,7 +25,7 @@ def test_Symbol():
     c, d = symbols('c,d', cls=Dummy)
     assert isinstance(c, Dummy)
     assert isinstance(d, Dummy)
-    raises(TypeError, lambda: Symbol())
+    pytest.raises(TypeError, lambda: Symbol())
 
 
 def test_Dummy():
@@ -93,7 +92,7 @@ def test_lt_gt():
 def test_no_len():
     # there should be no len for numbers
     x = Symbol('x')
-    raises(TypeError, lambda: len(x))
+    pytest.raises(TypeError, lambda: len(x))
 
 
 def test_ineq_unequal():
@@ -244,10 +243,10 @@ def test_symbols():
     assert symbols(['x', 'y', 'z']) == [x, y, z]
     assert symbols({'x', 'y', 'z'}) == {x, y, z}
 
-    raises(ValueError, lambda: symbols(''))
-    raises(ValueError, lambda: symbols(','))
-    raises(ValueError, lambda: symbols('x,,y,,z'))
-    raises(ValueError, lambda: symbols(('x', '', 'y', '', 'z')))
+    pytest.raises(ValueError, lambda: symbols(''))
+    pytest.raises(ValueError, lambda: symbols(','))
+    pytest.raises(ValueError, lambda: symbols('x,,y,,z'))
+    pytest.raises(ValueError, lambda: symbols(('x', '', 'y', '', 'z')))
 
     a, b = symbols('x,y', extended_real=True)
     assert a.is_extended_real and b.is_extended_real
@@ -320,18 +319,18 @@ def test_symbols():
     assert sym(':2:2') == '(00, 01, 10, 11)'
     assert sym(':b:b') == '(aa, ab, ba, bb)'
 
-    raises(ValueError, lambda: symbols(':'))
-    raises(ValueError, lambda: symbols('a:'))
-    raises(ValueError, lambda: symbols('::'))
-    raises(ValueError, lambda: symbols('a::'))
-    raises(ValueError, lambda: symbols(':a:'))
-    raises(ValueError, lambda: symbols('::a'))
+    pytest.raises(ValueError, lambda: symbols(':'))
+    pytest.raises(ValueError, lambda: symbols('a:'))
+    pytest.raises(ValueError, lambda: symbols('::'))
+    pytest.raises(ValueError, lambda: symbols('a::'))
+    pytest.raises(ValueError, lambda: symbols(':a:'))
+    pytest.raises(ValueError, lambda: symbols('::a'))
 
 
 def test_call():
     f = Symbol('f')
     assert f(2)
-    raises(TypeError, lambda: Wild('x')(1))
+    pytest.raises(TypeError, lambda: Wild('x')(1))
 
 
 def test_unicode():
@@ -339,4 +338,4 @@ def test_unicode():
     x = Symbol('x')
     assert x == xu
 
-    raises(TypeError, lambda: Symbol(1))
+    pytest.raises(TypeError, lambda: Symbol(1))

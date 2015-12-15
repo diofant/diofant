@@ -1,8 +1,13 @@
-from sympy import Rational, sqrt, symbols, sin, exp, log, sinh, cosh, cos, pi, \
-    I, erf, tan, asin, asinh, acos, Function, Derivative, diff, simplify, \
-    LambertW, Eq, Piecewise, Symbol, Add, ratsimp, Integral, Sum
+import os
+
+import pytest
+
+from sympy import (Rational, sqrt, symbols, sin, exp, log,
+                   sinh, cosh, cos, pi, I, erf, tan, asin, asinh,
+                   acos, Function, Derivative, diff, simplify,
+                   LambertW, Eq, Piecewise, Symbol, Add, ratsimp,
+                   Integral, Sum)
 from sympy.integrals.heurisch import components, heurisch, heurisch_wrapper
-from sympy.utilities.pytest import XFAIL, skip, slow, ON_TRAVIS
 
 x, y, z, nu = symbols('x,y,z,nu')
 f = Function('f')
@@ -177,7 +182,7 @@ def test_heurisch_function():
     assert heurisch(f(x), x) is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_heurisch_function_derivative():
     # TODO: it looks like this used to work just by coincindence and
     # thanks to sloppy implementation. Investigate why this used to
@@ -235,7 +240,7 @@ def test_pmint_trig():
     assert heurisch(f, x) == g
 
 
-@slow  # 8 seconds on 3.4 GHz
+@pytest.mark.slow  # 8 seconds on 3.4 GHz
 def test_pmint_logexp():
     f = (1 + x + x*exp(x))*(x + log(x) + exp(x) - 1)/(x + log(x) + exp(x))**2/x
     g = log(x**2 + 2*x*exp(x) + 2*x*log(x) + exp(2*x) + 2*exp(x)*log(x) + log(x)**2)/2 + 1/(x + exp(x) + log(x))
@@ -246,7 +251,7 @@ def test_pmint_logexp():
     assert ratsimp(heurisch(f, x)) == g
 
 
-@slow  # 8 seconds on 3.4 GHz
+@pytest.mark.slow  # 8 seconds on 3.4 GHz
 def test_pmint_erf():
     f = exp(-x**2)*erf(x)/(erf(x)**3 - erf(x)**2 - erf(x) + 1)
     g = sqrt(pi)*log(erf(x) - 1)/8 - sqrt(pi)*log(erf(x) + 1)/8 - sqrt(pi)/(4*erf(x) - 4)
@@ -261,7 +266,7 @@ def test_pmint_LambertW():
     assert heurisch(f, x) == g
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_pmint_besselj():
     # TODO: in both cases heurisch() gives None. Wrong besselj() derivative?
 
@@ -276,11 +281,9 @@ def test_pmint_besselj():
     assert heurisch(f, x) == g
 
 
-@slow  # 110 seconds on 3.4 GHz
+@pytest.mark.slow  # 110 seconds on 3.4 GHz
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_pmint_WrightOmega():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
-
     def omega(x):
         return LambertW(exp(x))
 

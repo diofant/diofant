@@ -1,16 +1,17 @@
 from itertools import permutations
 
+import pytest
+
 from sympy.core.compatibility import range
 from sympy.combinatorics.permutations import (Permutation, _af_parity,
-    _af_rmul, _af_rmuln, Cycle)
-from sympy.utilities.pytest import raises
+                                              _af_rmul, _af_rmuln, Cycle)
 
 rmul = Permutation.rmul
 
 
 def test_Permutation():
     # don't auto fill 0
-    raises(ValueError, lambda: Permutation([1]))
+    pytest.raises(ValueError, lambda: Permutation([1]))
     p = Permutation([0, 1, 2, 3])
     # call as bijective
     assert [p(i) for i in range(p.size)] == list(p)
@@ -81,7 +82,7 @@ def test_Permutation():
     assert (p + q.rank()).rank() == ans.rank()
     assert (p + q.rank())._rank == ans.rank()
     assert (q + p.rank()).rank() == ans.rank()
-    raises(TypeError, lambda: p + Permutation(list(range(10))))
+    pytest.raises(TypeError, lambda: p + Permutation(list(range(10))))
 
     assert (p - q.rank()).rank() == Permutation(0, 6, 3, 1, 2, 5, 4).rank()
     assert p.rank() - q.rank() < 0  # for coverage: make sure mod is used
@@ -99,12 +100,12 @@ def test_Permutation():
     qp = q ^ p
     assert qp == Permutation([4, 3, 6, 2, 1, 5, 0])
     assert qp == rmul(p, q, ~p)
-    raises(ValueError, lambda: p ^ Permutation([]))
+    pytest.raises(ValueError, lambda: p ^ Permutation([]))
 
     assert p.commutator(q) == Permutation(0, 1, 3, 4, 6, 5, 2)
     assert q.commutator(p) == Permutation(0, 2, 5, 6, 4, 3, 1)
     assert p.commutator(q) == ~q.commutator(p)
-    raises(ValueError, lambda: p.commutator(Permutation([])))
+    pytest.raises(ValueError, lambda: p.commutator(Permutation([])))
 
     assert len(p.atoms()) == 7
     assert q.atoms() == {0, 1, 2, 3, 4, 5, 6}
@@ -115,7 +116,7 @@ def test_Permutation():
     assert Permutation.from_inversion_vector(p.inversion_vector()) == p
     assert Permutation.from_inversion_vector(q.inversion_vector()).array_form\
         == q.array_form
-    raises(ValueError, lambda: Permutation.from_inversion_vector([0, 2]))
+    pytest.raises(ValueError, lambda: Permutation.from_inversion_vector([0, 2]))
     assert Permutation([i for i in range(500, -1, -1)]).inversions() == 125250
 
     s = Permutation([0, 4, 1, 3, 2])
@@ -195,9 +196,9 @@ def test_Permutation():
     p = Permutation([0, 3, 1, 2, 4])
     q = Permutation.josephus(4, 5, 2)
     assert p.get_adjacency_distance(q) == 3
-    raises(ValueError, lambda: p.get_adjacency_distance(Permutation([])))
-    raises(ValueError, lambda: p.get_positional_distance(Permutation([])))
-    raises(ValueError, lambda: p.get_precedence_distance(Permutation([])))
+    pytest.raises(ValueError, lambda: p.get_adjacency_distance(Permutation([])))
+    pytest.raises(ValueError, lambda: p.get_positional_distance(Permutation([])))
+    pytest.raises(ValueError, lambda: p.get_precedence_distance(Permutation([])))
 
     a = [Permutation.unrank_nonlex(4, i) for i in range(5)]
     iden = Permutation([0, 1, 2, 3])
@@ -308,7 +309,7 @@ def test_mul():
     c = (3, 1, 2, 0)
     assert Permutation.rmul(a, b, c) == Permutation([1, 2, 3, 0])
     assert Permutation.rmul(a, c) == Permutation([3, 2, 1, 0])
-    raises(TypeError, lambda: Permutation.rmul(b, c))
+    pytest.raises(TypeError, lambda: Permutation.rmul(b, c))
 
     n = 6
     m = 8
@@ -342,13 +343,13 @@ def test_args():
     assert Permutation(3).list(-1) == []
     assert Permutation(5)(1, 2).list(-1) == [0, 2, 1]
     assert Permutation(5)(1, 2).list() == [0, 2, 1, 3, 4, 5]
-    raises(TypeError, lambda: Permutation([1, 2], [0]))
+    pytest.raises(TypeError, lambda: Permutation([1, 2], [0]))
            # enclosing brackets needed
-    raises(ValueError, lambda: Permutation([[1, 2], 0]))
+    pytest.raises(ValueError, lambda: Permutation([[1, 2], 0]))
            # enclosing brackets needed on 0
-    raises(ValueError, lambda: Permutation([1, 1, 0]))
-    raises(ValueError, lambda: Permutation([[1], [1, 2]]))
-    raises(ValueError, lambda: Permutation([4, 5], size=10))  # where are 0-3?
+    pytest.raises(ValueError, lambda: Permutation([1, 1, 0]))
+    pytest.raises(ValueError, lambda: Permutation([[1], [1, 2]]))
+    pytest.raises(ValueError, lambda: Permutation([4, 5], size=10))  # where are 0-3?
     # but this is ok because cycles imply that only those listed moved
     assert Permutation(4, 5) == Permutation([0, 1, 2, 3, 5, 4])
 
@@ -361,7 +362,7 @@ def test_Cycle():
     assert Cycle(1, 2)(2, 3) == Cycle(1, 3, 2)
     assert Cycle(1, 2)(2, 3)(4, 5) == Cycle(1, 3, 2)(4, 5)
     assert Permutation(Cycle(1, 2)(2, 1, 0, 3)).cyclic_form, Cycle(0, 2, 1)
-    raises(ValueError, lambda: Cycle().list())
+    pytest.raises(ValueError, lambda: Cycle().list())
     assert Cycle(1, 2).list() == [0, 2, 1]
     assert Cycle(1, 2).list(4) == [0, 2, 1, 3]
     assert Permutation(Cycle(1, 2), size=4) == \
@@ -371,9 +372,9 @@ def test_Cycle():
     assert Cycle(Permutation(list(range(3)))) == Cycle()
     assert Cycle(1, 2).list() == [0, 2, 1]
     assert Cycle(1, 2).list(4) == [0, 2, 1, 3]
-    raises(TypeError, lambda: Cycle((1, 2)))
-    raises(ValueError, lambda: Cycle(1, 2, 1))
-    raises(TypeError, lambda: Cycle(1, 2)*{})
+    pytest.raises(TypeError, lambda: Cycle((1, 2)))
+    pytest.raises(ValueError, lambda: Cycle(1, 2, 1))
+    pytest.raises(TypeError, lambda: Cycle(1, 2)*{})
 
     # check round-trip
     p = Permutation([[1, 2], [4, 3]], size=5)

@@ -1,11 +1,12 @@
 """Test sparse rational functions. """
 
+import pytest
+
 from sympy.polys.fields import field, FracField
 from sympy.polys.rings import ring
 from sympy.polys.domains import ZZ, QQ
 from sympy.polys.orderings import lex
 
-from sympy.utilities.pytest import raises, XFAIL
 from sympy.core import symbols
 from sympy import sqrt, Rational
 
@@ -77,7 +78,7 @@ def test_FracElement_as_expr():
     assert f != g
     assert f.as_expr(X, Y, Z) == g
 
-    raises(ValueError, lambda: f.as_expr(X))
+    pytest.raises(ValueError, lambda: f.as_expr(X))
 
 
 def test_FracElement_from_expr():
@@ -114,8 +115,8 @@ def test_FracElement_from_expr():
     f = F.from_expr(x**3*y*z + x**2*y**7 + 1)
     assert f == X**3*Y*Z + X**2*Y**7 + 1 and isinstance(f, F.dtype)
 
-    raises(ValueError, lambda: F.from_expr(2**x))
-    raises(ValueError, lambda: F.from_expr(7*x + sqrt(2)))
+    pytest.raises(ValueError, lambda: F.from_expr(2**x))
+    pytest.raises(ValueError, lambda: F.from_expr(7*x + sqrt(2)))
 
 
 def test_FracElement__lt_le_gt_ge__():
@@ -237,9 +238,9 @@ def test_FracElement___div__():
     assert x*3 == 3*x
     assert x/QQ(3,7) == (QQ(3,7)/x)**-1 == 7*x/3
 
-    raises(ZeroDivisionError, lambda: x/0)
-    raises(ZeroDivisionError, lambda: 1/(x - x))
-    raises(ZeroDivisionError, lambda: x/(x - x))
+    pytest.raises(ZeroDivisionError, lambda: x/0)
+    pytest.raises(ZeroDivisionError, lambda: 1/(x - x))
+    pytest.raises(ZeroDivisionError, lambda: x/(x - x))
 
     Fuv, u,v = field("u,v", ZZ)
     Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
@@ -275,7 +276,7 @@ def test_FracElement___pow__():
     assert (f*g)**3 == 1/(x**3*y**3)
     assert (f*g)**-3 == (x*y)**3
 
-    raises(ZeroDivisionError, lambda: (x - x)**-3)
+    pytest.raises(ZeroDivisionError, lambda: (x - x)**-3)
 
 
 def test_FracElement_diff():
@@ -284,14 +285,14 @@ def test_FracElement_diff():
     assert ((x**2 + y)/(z + 1)).diff(x) == 2*x/(z + 1)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_FracElement___call__():
     F, x,y,z = field("x,y,z", ZZ)
     f = (x**2 + 3*y)/z
 
     r = f(1, 1, 1)
     assert r == 4 and not isinstance(r, FracElement)
-    raises(ZeroDivisionError, lambda: f(1, 1, 0))
+    pytest.raises(ZeroDivisionError, lambda: f(1, 1, 0))
 
 
 def test_FracElement_evaluate():
@@ -300,7 +301,7 @@ def test_FracElement_evaluate():
     f = (x**2 + 3*y)/z
 
     assert f.evaluate(x, 0) == 3*Fyz.y/Fyz.z
-    raises(ZeroDivisionError, lambda: f.evaluate(z, 0))
+    pytest.raises(ZeroDivisionError, lambda: f.evaluate(z, 0))
 
 
 def test_FracElement_subs():
@@ -308,7 +309,7 @@ def test_FracElement_subs():
     f = (x**2 + 3*y)/z
 
     assert f.subs(x, 0) == 3*y/z
-    raises(ZeroDivisionError, lambda: f.subs(z, 0))
+    pytest.raises(ZeroDivisionError, lambda: f.subs(z, 0))
 
 
 def test_FracElement_compose():

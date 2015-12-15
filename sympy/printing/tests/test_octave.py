@@ -1,15 +1,15 @@
+import pytest
+
 from sympy.core import (S, pi, oo, symbols, Function, Rational, Integer,
                         Tuple, Symbol)
 from sympy.core import EulerGamma, GoldenRatio, Catalan, Lambda
 from sympy.functions import Piecewise, sqrt, ceiling, exp, sin, cos
-from sympy.utilities.pytest import raises
 from sympy.utilities.lambdify import implemented_function
 from sympy.matrices import (eye, Matrix, MatrixSymbol, Identity,
                             HadamardProduct, SparseMatrix)
 from sympy.functions.special.bessel import (jn, yn, besselj, bessely, besseli,
                                             besselk, hankel1, hankel2, airyai,
                                             airybi, airyaiprime, airybiprime)
-from sympy.utilities.pytest import XFAIL
 from sympy.core.compatibility import range
 
 from sympy import octave_code
@@ -164,7 +164,7 @@ def test_vector_entries_hadamard():
     assert mcode(A.T) == "[1; sin(2./x); 3*pi./(5*x)]"
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_Matrices_entries_not_hadamard():
     # For Matrix with col >= 2, row >= 2, they need to be scalars
     # FIXME: is it worth worrying about this?  Its not wrong, just
@@ -243,7 +243,7 @@ def test_octave_piecewise():
         "end")
     # Check that Piecewise without a True (default) condition error
     expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    raises(ValueError, lambda: mcode(expr))
+    pytest.raises(ValueError, lambda: mcode(expr))
 
 
 def test_octave_piecewise_times_const():
@@ -267,8 +267,8 @@ def test_octave_matrix_assign_to_more():
     B = MatrixSymbol('B', 1, 3)
     C = MatrixSymbol('C', 2, 3)
     assert mcode(A, assign_to=B) == "B = [1 2 3];"
-    raises(ValueError, lambda: mcode(A, assign_to=x))
-    raises(ValueError, lambda: mcode(A, assign_to=C))
+    pytest.raises(ValueError, lambda: mcode(A, assign_to=x))
+    pytest.raises(ValueError, lambda: mcode(A, assign_to=C))
 
 
 def test_octave_matrix_1x1():
@@ -278,7 +278,7 @@ def test_octave_matrix_1x1():
     assert mcode(A, assign_to=B) == "B = 3;"
     # FIXME?
     # assert mcode(A, assign_to=x) == "x = 3;"
-    raises(ValueError, lambda: mcode(A, assign_to=C))
+    pytest.raises(ValueError, lambda: mcode(A, assign_to=C))
 
 
 def test_octave_matrix_elements():

@@ -1,14 +1,14 @@
 """This tests sympy/core/basic.py with (ideally) no reference to subclasses
 of Basic or Atom."""
 
+import pytest
+
 from sympy.core.basic import Basic, Atom, preorder_traversal
 from sympy.core.singleton import S, Singleton
 from sympy.core.symbol import symbols
 from sympy.core.compatibility import default_sort_key, with_metaclass
 
 from sympy import sin, Lambda, Q
-
-from sympy.utilities.pytest import raises
 
 
 b1 = Basic()
@@ -65,8 +65,8 @@ def test_subs():
 
     assert b21.subs({b1: b2, b2: b1}) == Basic(b2, b2)
 
-    raises(ValueError, lambda: b21.subs('bad arg'))
-    raises(ValueError, lambda: b21.subs(b1, b2, b3))
+    pytest.raises(ValueError, lambda: b21.subs('bad arg'))
+    pytest.raises(ValueError, lambda: b21.subs(b1, b2, b3))
 
 
 def test_atoms():
@@ -93,8 +93,8 @@ def test_xreplace():
     assert Basic(b1, b2).xreplace({b1: b2, b2: b1}) == Basic(b2, b1)
     assert Atom(b1).xreplace({b1: b2}) == Atom(b1)
     assert Atom(b1).xreplace({Atom(b1): b2}) == b2
-    raises(TypeError, lambda: b1.xreplace())
-    raises(TypeError, lambda: b1.xreplace([b1, b2]))
+    pytest.raises(TypeError, lambda: b1.xreplace())
+    pytest.raises(TypeError, lambda: b1.xreplace([b1, b2]))
 
 
 def test_Singleton():
@@ -150,15 +150,15 @@ def test_preorder_traversal():
 def test_sorted_args():
     x = symbols('x')
     assert b21._sorted_args == b21.args
-    raises(AttributeError, lambda: x._sorted_args)
+    pytest.raises(AttributeError, lambda: x._sorted_args)
 
 
 def test_call():
     x, y = symbols('x y')
     # See the long history of this in issues 5026 and 5105.
 
-    raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
-    raises(TypeError, lambda: sin(x)(1))
+    pytest.raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
+    pytest.raises(TypeError, lambda: sin(x)(1))
 
     # No effect as there are no callables
     assert sin(x).rcall(1) == sin(x)

@@ -1,13 +1,14 @@
+import pytest
+
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
                    oo, EmptySet, Q)
-from sympy.logic.boolalg import (
-    And, Boolean, Equivalent, ITE, Implies, Nand, Nor, Not, Or, POSform,
-    SOPform, Xor, conjuncts, disjuncts, distribute_or_over_and,
-    distribute_and_over_or, eliminate_implications, is_nnf, is_cnf, is_dnf,
-    simplify_logic, to_nnf, to_cnf, to_dnf, to_int_repr, bool_map, true, false,
-    BooleanAtom, is_literal
-)
-from sympy.utilities.pytest import raises, XFAIL
+from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
+                                 Nand, Nor, Not, Or, POSform, SOPform, Xor,
+                                 conjuncts, disjuncts, distribute_or_over_and,
+                                 distribute_and_over_or, eliminate_implications,
+                                 is_nnf, is_cnf, is_dnf, simplify_logic, to_nnf,
+                                 to_cnf, to_dnf, to_int_repr, bool_map, true,
+                                 false, BooleanAtom, is_literal)
 from sympy.utilities import cartes
 
 
@@ -99,7 +100,7 @@ def test_Xor():
 
 def test_Not():
 
-    raises(TypeError, lambda: Not(True, False))
+    pytest.raises(TypeError, lambda: Not(True, False))
     assert Not(True) is false
     assert Not(False) is true
     assert Not(0) is true
@@ -141,7 +142,7 @@ def test_Nor():
 
 def test_Implies():
 
-    raises(ValueError, lambda: Implies(A, B, C))
+    pytest.raises(ValueError, lambda: Implies(A, B, C))
     assert Implies(True, True) is true
     assert Implies(True, False) is false
     assert Implies(False, True) is true
@@ -181,7 +182,7 @@ def test_equals():
     assert ((A | ~B) & (~A | B)).equals((~A & ~B) | (A & B)) is True
     assert (A >> B).equals(~A >> ~B) is False
     assert (A >> (B >> A)).equals(A >> (C >> A)) is False
-    raises(NotImplementedError, lambda: And(A, A < B).equals(And(A, B > A)))
+    pytest.raises(NotImplementedError, lambda: And(A, A < B).equals(And(A, B > A)))
 
 
 def test_simplification():
@@ -226,12 +227,12 @@ def test_simplification():
     assert SOPform([x, y], [[1, 0]]) == ans
     assert POSform([x, y], [[1, 0]]) == ans
 
-    raises(ValueError, lambda: SOPform([x], [[1]], [[1]]))
+    pytest.raises(ValueError, lambda: SOPform([x], [[1]], [[1]]))
     assert SOPform([x], [[1]], [[0]]) is true
     assert SOPform([x], [[0]], [[1]]) is true
     assert SOPform([x], [], []) is false
 
-    raises(ValueError, lambda: POSform([x], [[1]], [[1]]))
+    pytest.raises(ValueError, lambda: POSform([x], [[1]], [[1]]))
     assert POSform([x], [[1]], [[0]]) is true
     assert POSform([x], [[0]], [[1]]) is true
     assert POSform([x], [], []) is false
@@ -649,7 +650,7 @@ def test_bool_as_set():
     assert false.as_set() == EmptySet()
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_multivariate_bool_as_set():
     x, y = symbols('x,y')
 

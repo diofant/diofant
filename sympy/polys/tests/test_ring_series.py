@@ -1,10 +1,12 @@
+import pytest
+
 from sympy.polys.domains import QQ
 from sympy.polys.rings import ring
-from sympy.polys.ring_series import (_invert_monoms, rs_integrate,
-  rs_trunc, rs_mul, rs_square, rs_pow, _has_constant_term,
-  rs_series_inversion, rs_series_from_list, rs_exp, rs_log, rs_newton,
-  rs_hadamard_exp, rs_compose_add)
-from sympy.utilities.pytest import raises
+from sympy.polys.ring_series import (
+    _invert_monoms, rs_integrate,
+    rs_trunc, rs_mul, rs_square, rs_pow, _has_constant_term,
+    rs_series_inversion, rs_series_from_list, rs_exp, rs_log, rs_newton,
+    rs_hadamard_exp, rs_compose_add)
 from sympy.core.compatibility import range
 
 
@@ -44,7 +46,7 @@ def test_mul_trunc():
     def test1(p):
         p2 = rs_mul(p, z, x, 2)
 
-    raises(ValueError, lambda: test1(p))
+    pytest.raises(ValueError, lambda: test1(p))
 
     p1 = 2 + 2*x + 3*x**2
     p2 = 3 + x**2
@@ -107,7 +109,7 @@ def test_inversion():
     def test2(p):
         p1 = rs_series_inversion(p, x, 4)
 
-    raises(NotImplementedError, lambda: test2(p))
+    pytest.raises(NotImplementedError, lambda: test2(p))
 
 
 def test_series_from_list():

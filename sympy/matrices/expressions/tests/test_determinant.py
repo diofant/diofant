@@ -1,10 +1,10 @@
+import pytest
+
 from sympy.core import S, symbols
 from sympy.matrices import eye, Matrix, ShapeError
-from sympy.matrices.expressions import (
-    Identity, MatrixExpr, MatrixSymbol, Determinant,
-    det, ZeroMatrix, Transpose
-)
-from sympy.utilities.pytest import raises
+from sympy.matrices.expressions import (Identity, MatrixExpr, MatrixSymbol,
+                                        Determinant, det, ZeroMatrix,
+                                        Transpose)
 from sympy import refine, Q
 
 n = symbols('n', integer=True)
@@ -16,12 +16,12 @@ C = MatrixSymbol('C', 3, 4)
 def test_det():
     assert isinstance(Determinant(A), Determinant)
     assert not isinstance(Determinant(A), MatrixExpr)
-    raises(ShapeError, lambda: Determinant(C))
+    pytest.raises(ShapeError, lambda: Determinant(C))
     assert det(eye(3)) == 1
     assert det(Matrix(3, 3, [1, 3, 2, 4, 1, 3, 2, 5, 2])) == 17
     A / det(A)  # Make sure this is possible
 
-    raises(TypeError, lambda: Determinant(S.One))
+    pytest.raises(TypeError, lambda: Determinant(S.One))
 
     assert Determinant(A).arg is A
 

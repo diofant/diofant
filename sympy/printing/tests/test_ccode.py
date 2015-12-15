@@ -1,8 +1,9 @@
+import pytest
+
 from sympy.core import (pi, oo, symbols, Rational, Integer,
                         GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
 from sympy.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
                              gamma, sign)
-from sympy.utilities.pytest import raises
 from sympy.printing.ccode import CCodePrinter
 from sympy.utilities.lambdify import implemented_function
 from sympy.tensor import IndexedBase, Idx
@@ -156,7 +157,7 @@ def test_ccode_Piecewise():
         "}")
     # Check that Piecewise without a True (default) condition error
     expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    raises(ValueError, lambda: ccode(expr))
+    pytest.raises(ValueError, lambda: ccode(expr))
 
 
 def test_ccode_Piecewise_deep():
@@ -189,7 +190,7 @@ def test_ccode_Piecewise_deep():
 
 
 def test_ccode_settings():
-    raises(TypeError, lambda: ccode(sin(x), method="garbage"))
+    pytest.raises(TypeError, lambda: ccode(sin(x), method="garbage"))
 
 
 def test_ccode_Indexed():
@@ -449,7 +450,7 @@ def test_ccode_reserved_words():
     expected = 'pow(if_unreserved, 2)'
     assert ccode(y**2, reserved_word_suffix='_unreserved') == expected
 
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         ccode(y**2, error_on_reserved=True)
 
 

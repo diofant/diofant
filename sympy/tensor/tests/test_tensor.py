@@ -1,3 +1,5 @@
+import pytest
+
 from sympy import Matrix, eye
 from sympy.combinatorics import Permutation
 from sympy.core import S, Rational, Symbol, Basic
@@ -6,12 +8,14 @@ from sympy.core.symbol import symbols
 from sympy.external import import_module
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.printing.pretty.pretty import pretty
-from sympy.tensor.tensor import TensorIndexType, tensor_indices, TensorSymmetry, \
-    get_symmetric_group_sgs, TensorType, TensorIndex, tensor_mul, TensAdd, \
-    riemann_cyclic_replace, riemann_cyclic, TensMul, tensorsymmetry, tensorhead, \
-    TensorManager, TensExpr, TIDS
-from sympy.utilities.pytest import raises, skip
+from sympy.tensor.tensor import (TensorIndexType, tensor_indices, TensorSymmetry,
+                                 get_symmetric_group_sgs, TensorType, TensorIndex,
+                                 tensor_mul, TensAdd, riemann_cyclic_replace,
+                                 riemann_cyclic, TensMul, tensorsymmetry,
+                                 tensorhead, TensorManager, TensExpr, TIDS)
 from sympy.core.compatibility import range
+
+numpy = import_module("numpy")
 
 
 def _is_equal(arg1, arg2):
@@ -486,8 +490,8 @@ def test_indices():
     indices = t.get_indices()
     L_0 = TensorIndex('L_0', Lorentz)
     assert indices == [a, L_0, -L_0, c]
-    raises(ValueError, lambda: tensor_indices(3, Lorentz))
-    raises(ValueError, lambda: A(a,b,c))
+    pytest.raises(ValueError, lambda: tensor_indices(3, Lorentz))
+    pytest.raises(ValueError, lambda: A(a,b,c))
 
 
 def test_tensorsymmetry():
@@ -500,7 +504,7 @@ def test_tensorsymmetry():
     assert sym == sym1
     sym2 = tensorsymmetry()
     assert sym2.base == Tuple() and sym2.generators == Tuple(Permutation(1))
-    raises(NotImplementedError, lambda: tensorsymmetry([2, 1]))
+    pytest.raises(NotImplementedError, lambda: tensorsymmetry([2, 1]))
 
 
 def test_TensorType():
@@ -511,7 +515,7 @@ def test_TensorType():
     assert A.types == [Lorentz]
     typ = TensorType([Lorentz]*2, sym)
     assert str(typ) == "TensorType(['Lorentz', 'Lorentz'])"
-    raises(ValueError, lambda: typ(2))
+    pytest.raises(ValueError, lambda: typ(2))
 
 
 def test_TensExpr():
@@ -519,22 +523,22 @@ def test_TensExpr():
     a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
     g = Lorentz.metric
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-    raises(ValueError, lambda: g(c, d)/g(a, b))
-    raises(ValueError, lambda: S.One/g(a, b))
-    raises(ValueError, lambda: (A(c, d) + g(c, d))/g(a, b))
-    raises(ValueError, lambda: S.One/(A(c, d) + g(c, d)))
-    raises(ValueError, lambda: A(a, b) + A(a, c))
+    pytest.raises(ValueError, lambda: g(c, d)/g(a, b))
+    pytest.raises(ValueError, lambda: S.One/g(a, b))
+    pytest.raises(ValueError, lambda: (A(c, d) + g(c, d))/g(a, b))
+    pytest.raises(ValueError, lambda: S.One/(A(c, d) + g(c, d)))
+    pytest.raises(ValueError, lambda: A(a, b) + A(a, c))
     t = A(a, b) + B(a, b)
-    raises(NotImplementedError, lambda: TensExpr.__mul__(t, 'a'))
-    raises(NotImplementedError, lambda: TensExpr.__add__(t, 'a'))
-    raises(NotImplementedError, lambda: TensExpr.__radd__(t, 'a'))
-    raises(NotImplementedError, lambda: TensExpr.__sub__(t, 'a'))
-    raises(NotImplementedError, lambda: TensExpr.__rsub__(t, 'a'))
-    raises(NotImplementedError, lambda: TensExpr.__div__(t, 'a'))
-    raises(NotImplementedError, lambda: TensExpr.__rdiv__(t, 'a'))
-    raises(ValueError, lambda: A(a, b)**2)
-    raises(NotImplementedError, lambda: 2**A(a, b))
-    raises(NotImplementedError, lambda: abs(A(a, b)))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__mul__(t, 'a'))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__add__(t, 'a'))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__radd__(t, 'a'))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__sub__(t, 'a'))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__rsub__(t, 'a'))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__div__(t, 'a'))
+    pytest.raises(NotImplementedError, lambda: TensExpr.__rdiv__(t, 'a'))
+    pytest.raises(ValueError, lambda: A(a, b)**2)
+    pytest.raises(NotImplementedError, lambda: 2**A(a, b))
+    pytest.raises(NotImplementedError, lambda: abs(A(a, b)))
 
 
 def test_TensorHead():
@@ -611,7 +615,7 @@ def test_add1():
     assert t1 != t2
     assert t2 != TensMul.from_data(0, [], [], [])
     t = p(i) + q(i)
-    raises(ValueError, lambda: t(i, j))
+    pytest.raises(ValueError, lambda: t(i, j))
 
 
 def test_special_eq_ne():
@@ -696,11 +700,11 @@ def test_mul():
     assert str(C()) == 'C'
     assert str(t) == '1'
     assert t.split()[0] == t
-    raises(ValueError, lambda: TIDS.free_dum_from_indices(a, a))
-    raises(ValueError, lambda: TIDS.free_dum_from_indices(-a, -a))
-    raises(ValueError, lambda: A(a, b)*A(a, c))
+    pytest.raises(ValueError, lambda: TIDS.free_dum_from_indices(a, a))
+    pytest.raises(ValueError, lambda: TIDS.free_dum_from_indices(-a, -a))
+    pytest.raises(ValueError, lambda: A(a, b)*A(a, c))
     t = A(a, b)*A(-a, c)
-    raises(ValueError, lambda: t(a, b, c))
+    pytest.raises(ValueError, lambda: t(a, b, c))
 
 
 def test_substitute_indices():
@@ -741,7 +745,7 @@ def test_substitute_indices():
     assert A(i, -i) == A(i, -i)()
     assert A(i, -i) + B(-j, j) == ((A(i, -i) + B(i, -i)))()
     assert _is_equal(A(i, j)*B(-j, k), (A(m, -j)*B(j, n))(i, k))
-    raises(ValueError, lambda: A(i, -i)(j, k))
+    pytest.raises(ValueError, lambda: A(i, -i)(j, k))
 
 
 def test_riemann_cyclic_replace():
@@ -833,7 +837,7 @@ def test_contract_metric1():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)
     g = Lorentz.metric
-    raises(ValueError, lambda: g(a, -a).contract_metric(g))  # no dim
+    pytest.raises(ValueError, lambda: g(a, -a).contract_metric(g))  # no dim
 
 
 def test_contract_metric2():
@@ -1137,7 +1141,7 @@ def test_TensorManager():
     assert TensorManager.comm_i2symbol(n) == Gsymbol
 
     assert GHsymbol in TensorManager._comm_symbols2i
-    raises(ValueError, lambda: TensorManager.set_comm(GHsymbol, 1, 2))
+    pytest.raises(ValueError, lambda: TensorManager.set_comm(GHsymbol, 1, 2))
     TensorManager.set_comms((Gsymbol,GHsymbol,0),(Gsymbol,1,1))
     assert TensorManager.get_comm(n, 1) == TensorManager.get_comm(1, n) == 1
     TensorManager.clear()
@@ -1257,10 +1261,10 @@ def test_hidden_indices_for_matrix_multiplication():
     assert _is_equal(D0 * Aa, D(L.auto_left, m0, S.auto_left, s0)*A(-m0, -s0, -S.auto_right))
     assert D(m0, m1) == D(m0, m1, S.auto_left, -S.auto_right)
 
-    raises(ValueError, lambda: C(True))
-    raises(ValueError, lambda: C())
+    pytest.raises(ValueError, lambda: C(True))
+    pytest.raises(ValueError, lambda: C())
 
-    raises(ValueError, lambda: E(True, True, True, True))
+    pytest.raises(ValueError, lambda: E(True, True, True, True))
 
     # test that a delta is automatically added on missing auto-matrix indices in TensAdd
     assert F(m2)*F(m3)*F(m4)*A(m1) + E(m1, m2, m3, m4) == \
@@ -1283,10 +1287,8 @@ def test_hidden_indices_for_matrix_multiplication():
 numpy = import_module('numpy')
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def _get_valued_base_test_variables():
-    if numpy is None:
-        return
-
     minkowski = Matrix((
         (1, 0, 0, 0),
         (0, -1, 0, 0),
@@ -1345,11 +1347,8 @@ def _get_valued_base_test_variables():
             n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4)
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_iter():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1370,11 +1369,8 @@ def test_valued_tensor_iter():
     assert list(BA(i1, i2) - 2 * BA(i1, i2)) == [-i for i in list(ba_matrix)]
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_covariant_contravariant_elements():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1387,11 +1383,8 @@ def test_valued_tensor_covariant_contravariant_elements():
     assert AB(-i0, i1)[1, 1] == 1
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_get_matrix():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1411,11 +1404,8 @@ def test_valued_tensor_get_matrix():
     assert A(-i0).get_matrix() == Matrix([E, -px, -py, -pz])
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_contraction():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1439,11 +1429,8 @@ def test_valued_tensor_contraction():
         assert contrexp[i] == [E, px, py, pz][i]
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_self_contraction():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1451,11 +1438,8 @@ def test_valued_tensor_self_contraction():
     assert BA(i0, -i0).data == 2
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_pow():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1465,11 +1449,8 @@ def test_valued_tensor_pow():
     assert C(mu0)**1 == C**1
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_tensor_expressions():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1509,11 +1490,8 @@ def test_valued_tensor_expressions():
     assert expr5.data.expand() == 28*E*x1 + 12*px*x1 + 20*py*x1 + 28*pz*x1 + 136*x2 + 3*x3
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_noncommuting_components():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1536,11 +1514,8 @@ def test_noncommuting_components():
     assert Vc.expand() == b * a + b * d
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_non_diagonal_metric():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1548,11 +1523,8 @@ def test_valued_non_diagonal_metric():
     assert (NA(n0)*NA(-n0)).data == (NA(n0).get_matrix().T * mmatrix * NA(n0).get_matrix())[0, 0]
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_assign_numpy_ndarray():
-    numpy = import_module("numpy")
-    if numpy is None:
-        skip("numpy not installed.")
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1588,11 +1560,8 @@ def test_valued_assign_numpy_ndarray():
             assert AB(-i0, -i1).data[i, j] == random_4x4_data[i][j]*(-1 if j else 1)
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_metric_inverse():
-    numpy = import_module("numpy")
-    if numpy is None:
-        return
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1624,11 +1593,8 @@ def test_valued_metric_inverse():
             assert KD(i0, -i1)[i, j] == meye[i, j]
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_canon_bp_swapaxes():
-    numpy = import_module("numpy")
-    if numpy is None:
-        return
-
     (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
      n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
@@ -1656,20 +1622,17 @@ def test_pprint():
     assert pretty(A(i0)) == "A(i0)"
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_contract_automatrix_and_data():
-    numpy = import_module('numpy')
-    if numpy is None:
-        return
-
     L = TensorIndexType('L')
     S = TensorIndexType('S')
     G = tensorhead('G', [L, S, S], [[1]]*3, matrix_behavior=True)
 
     def G_data():
         G.data = [[[1]]]
-    raises(ValueError, G_data)
+    pytest.raises(ValueError, G_data)
     L.data = [1, -1]
-    raises(ValueError, G_data)
+    pytest.raises(ValueError, G_data)
     S.data = [[1, 0], [0, 2]]
     G.data = [
         [[1, 2],
@@ -1702,11 +1665,8 @@ def test_contract_automatrix_and_data():
     assert G.data is None
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_valued_components_with_wrong_symmetry():
-    numpy = import_module("numpy")
-    if numpy is None:
-        return
-
     IT = TensorIndexType('IT', dim=3)
     i0, i1, i2, i3 = tensor_indices('i0:4', IT)
     IT.data = [1, 1, 1]
@@ -1726,12 +1686,12 @@ def test_valued_components_with_wrong_symmetry():
         A.data = dat
 
     A_sym.data = mat_sym
-    raises(ValueError, lambda: assign(A_sym, mat_nosym))
-    raises(ValueError, lambda: assign(A_sym, mat_antisym))
+    pytest.raises(ValueError, lambda: assign(A_sym, mat_nosym))
+    pytest.raises(ValueError, lambda: assign(A_sym, mat_antisym))
 
     A_antisym.data = mat_antisym
-    raises(ValueError, lambda: assign(A_antisym, mat_sym))
-    raises(ValueError, lambda: assign(A_antisym, mat_nosym))
+    pytest.raises(ValueError, lambda: assign(A_antisym, mat_sym))
+    pytest.raises(ValueError, lambda: assign(A_antisym, mat_nosym))
 
     A_sym.data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     A_antisym.data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]

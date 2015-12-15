@@ -1,14 +1,13 @@
-from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
-    GreaterThan, LessThan, Max, Min, And, Or, Eq, Ge, Le, Gt, Lt, Float,
-    FiniteSet, Intersection, imageset, I, true, false, ProductSet, E,
-    sqrt, Complement, EmptySet, sin, cos, Lambda, ImageSet, pi,
-    Eq, Pow, Contains, Sum, RootOf, SymmetricDifference)
 from mpmath import mpi
+import pytest
 
+from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
+                   GreaterThan, LessThan, Max, Min, And, Or, Eq, Ge, Le, Gt,
+                   Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
+                   ProductSet, E, sqrt, Complement, EmptySet, sin, cos, Lambda,
+                   ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
+                   SymmetricDifference)
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import raises
-from sympy.utilities.pytest import raises, XFAIL
-
 from sympy.abc import x, y, z
 
 
@@ -32,12 +31,12 @@ def test_interval_arguments():
 
     assert isinstance(Interval(0, Symbol('a')), Interval)
     assert Interval(Symbol('a', extended_real=True, positive=True), 0) == S.EmptySet
-    raises(ValueError, lambda: Interval(0, S.ImaginaryUnit))
-    raises(ValueError, lambda: Interval(0, Symbol('z', extended_real=False)))
+    pytest.raises(ValueError, lambda: Interval(0, S.ImaginaryUnit))
+    pytest.raises(ValueError, lambda: Interval(0, Symbol('z', extended_real=False)))
 
-    raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
-    raises(NotImplementedError, lambda: Interval(0, 1, False, And(x, y)))
-    raises(NotImplementedError, lambda: Interval(0, 1, z, And(x, y)))
+    pytest.raises(NotImplementedError, lambda: Interval(0, 1, And(x, y)))
+    pytest.raises(NotImplementedError, lambda: Interval(0, 1, False, And(x, y)))
+    pytest.raises(NotImplementedError, lambda: Interval(0, 1, z, And(x, y)))
 
 
 def test_interval_symbolic_end_points():
@@ -106,7 +105,7 @@ def test_union():
     assert 2 in X and 3 in X and 3 in XandY
     assert XandY.is_subset(X) and XandY.is_subset(Y)
 
-    raises(TypeError, lambda: Union(1, 2, 3))
+    pytest.raises(TypeError, lambda: Union(1, 2, 3))
 
     assert X.is_iterable is False
 
@@ -255,7 +254,7 @@ def test_intersection():
     x = Symbol('x', extended_real=True)
     i = Intersection(Interval(0, 3), Interval(x, 6))
     assert (5 in i) is False
-    raises(TypeError, lambda: 2 in i)
+    pytest.raises(TypeError, lambda: 2 in i)
 
     # Singleton special cases
     assert Intersection(Interval(0, 1), S.EmptySet) == S.EmptySet
@@ -266,7 +265,7 @@ def test_intersection():
     i = Intersection(line**2, line**3, evaluate=False)
     assert (2, 2) not in i
     assert (2, 2, 2) not in i
-    raises(ValueError, lambda: list(i))
+    pytest.raises(ValueError, lambda: list(i))
 
     assert Intersection(Intersection(S.Integers, S.Naturals, evaluate=False),
                         S.Reals, evaluate=False) == \
@@ -343,7 +342,7 @@ def test_is_subset():
     assert Interval(0, 1).is_subset(S.EmptySet) is False
     assert S.EmptySet.is_subset(S.EmptySet) is True
 
-    raises(ValueError, lambda: S.EmptySet.is_subset(1))
+    pytest.raises(ValueError, lambda: S.EmptySet.is_subset(1))
 
     # tests for the issubset alias
     assert FiniteSet(1, 2, 3, 4).issubset(Interval(0, 5)) is True
@@ -355,7 +354,7 @@ def test_is_proper_subset():
     assert Interval(0, 3).is_proper_subset(Interval(0, 2)) is False
     assert S.EmptySet.is_proper_subset(FiniteSet(1, 2, 3)) is True
 
-    raises(ValueError, lambda: Interval(0, 1).is_proper_subset(0))
+    pytest.raises(ValueError, lambda: Interval(0, 1).is_proper_subset(0))
 
 
 def test_is_superset():
@@ -377,7 +376,7 @@ def test_is_superset():
     assert Interval(0, 1).is_superset(S.EmptySet) == True
     assert S.EmptySet.is_superset(S.EmptySet) == True
 
-    raises(ValueError, lambda: S.EmptySet.is_superset(1))
+    pytest.raises(ValueError, lambda: S.EmptySet.is_superset(1))
 
     # tests for the issuperset alias
     assert Interval(0, 1).issuperset(S.EmptySet) == True
@@ -389,7 +388,7 @@ def test_is_proper_superset():
     assert Interval(0, 3).is_proper_superset(Interval(0, 2)) is True
     assert FiniteSet(1, 2, 3).is_proper_superset(S.EmptySet) is True
 
-    raises(ValueError, lambda: Interval(0, 1).is_proper_superset(0))
+    pytest.raises(ValueError, lambda: Interval(0, 1).is_proper_superset(0))
 
 
 def test_contains():
@@ -410,7 +409,7 @@ def test_contains():
     assert isinstance(FiniteSet(b).contains(-a), Contains)
     assert isinstance(FiniteSet(b).contains(a), Contains)
     assert isinstance(FiniteSet(a).contains(1), Contains)
-    raises(TypeError, lambda: 1 in FiniteSet(a))
+    pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
     rad1 = Pow(Pow(2, S(1)/3) - 1, S(1)/3)
@@ -439,7 +438,7 @@ def test_interval_symbolic():
     x = Symbol('x')
     e = Interval(0, 1)
     assert e.contains(x) == And(0 <= x, x <= 1)
-    raises(TypeError, lambda: x in e)
+    pytest.raises(TypeError, lambda: x in e)
     e = Interval(0, 1, True, True)
     assert e.contains(x) == And(0 < x, x < 1)
 
@@ -449,7 +448,7 @@ def test_union_contains():
     i1 = Interval(0, 1)
     i2 = Interval(2, 3)
     i3 = Union(i1, i2)
-    raises(TypeError, lambda: x in i3)
+    pytest.raises(TypeError, lambda: x in i3)
     e = i3.contains(x)
     assert e == Or(And(0 <= x, x <= 1), And(2 <= x, x <= 3))
     assert e.subs(x, -0.5) is false
@@ -583,7 +582,7 @@ def test_powerset():
                              FiniteSet(2), A)
     # Not finite sets
     I = Interval(0, 1)
-    raises(NotImplementedError, I.powerset)
+    pytest.raises(NotImplementedError, I.powerset)
 
 
 def test_product_basic():
@@ -620,7 +619,7 @@ def test_product_basic():
     assert len(coin*coin*coin) == 8
     assert len(S.EmptySet*S.EmptySet) == 0
     assert len(S.EmptySet*coin) == 0
-    raises(TypeError, lambda: len(coin*Interval(0, 2)))
+    pytest.raises(TypeError, lambda: len(coin*Interval(0, 2)))
 
 
 def test_real():
@@ -717,7 +716,7 @@ def test_image_interval():
             ImageSet(Lambda(x, sin(cos(x))), Interval(0, 1))
 
 
-@XFAIL  # See: https://github.com/sympy/sympy/pull/2723#discussion_r8659826
+@pytest.mark.xfail  # See: https://github.com/sympy/sympy/pull/2723#discussion_r8659826
 def test_image_Intersection():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
@@ -770,7 +769,7 @@ def test_boundary_Union():
             == FiniteSet(0, 10, 15)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_union_boundary_of_joining_sets():
     """ Testing the boundary of unions is a hard problem """
     assert Union(Interval(0, 10), Interval(10, 15), evaluate=False).boundary \
@@ -817,7 +816,7 @@ def test_interior():
 
 
 def test_issue_7841():
-    raises(TypeError, lambda: x in S.Reals)
+    pytest.raises(TypeError, lambda: x in S.Reals)
 
 
 def test_Eq():

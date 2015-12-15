@@ -1,13 +1,13 @@
+import pytest
+
 from sympy.core import Symbol, Function, Float, Rational, Integer, I, Mul, Pow
 from sympy.functions import exp, factorial, sin
 from sympy.logic import And
 from sympy.series import Limit
-from sympy.utilities.pytest import raises
 
-from sympy.parsing.sympy_parser import (
-    parse_expr, standard_transformations, rationalize, TokenError,
-    split_symbols, implicit_multiplication,
-)
+from sympy.parsing.sympy_parser import (parse_expr, standard_transformations,
+                                        rationalize, TokenError, split_symbols,
+                                        implicit_multiplication)
 
 
 def test_sympy_parser():
@@ -65,8 +65,8 @@ def test_global_dict():
 
 
 def test_issue_2515():
-    raises(TokenError, lambda: parse_expr('(()'))
-    raises(TokenError, lambda: parse_expr('"""'))
+    pytest.raises(TokenError, lambda: parse_expr('(()'))
+    pytest.raises(TokenError, lambda: parse_expr('"""'))
 
 
 def test_issue_7663():
@@ -102,4 +102,4 @@ def test_split_symbols_function():
 def test_match_parentheses_implicit_multiplication():
     transformations = standard_transformations + \
         (implicit_multiplication,)
-    raises(TokenError, lambda: parse_expr('(1,2),(3,4]',transformations=transformations))
+    pytest.raises(TokenError, lambda: parse_expr('(1,2),(3,4]',transformations=transformations))

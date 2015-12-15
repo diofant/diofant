@@ -1,15 +1,15 @@
-from sympy.utilities.pytest import XFAIL, raises
-from sympy import (
-    symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh, Rational,
-    Float, Matrix, Lambda, Piecewise, exp, Integral, oo, I, Abs, Function,
-    true, false, And, Or, Not)
-from sympy.printing.lambdarepr import LambdaPrinter
+import math
+
 import mpmath
+import pytest
+
+from sympy import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
+                   Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
+                   oo, I, Abs, Function, true, false, And, Or, Not)
+from sympy.printing.lambdarepr import LambdaPrinter
 from sympy.utilities.lambdify import implemented_function
-from sympy.utilities.pytest import skip
 from sympy.utilities.decorator import conserve_mpmath_dps
 from sympy.external import import_module
-import math
 import sympy
 
 
@@ -25,7 +25,7 @@ w, x, y, z = symbols('w,x,y,z')
 
 def test_no_args():
     f = lambdify([], 1)
-    raises(TypeError, lambda: f(-1))
+    pytest.raises(TypeError, lambda: f(-1))
     assert f() == 1
 
 
@@ -44,7 +44,7 @@ def test_str_args():
     assert f(3, 2, 1) == (1, 2, 3)
     assert f(1.0, 2.0, 3.0) == (3.0, 2.0, 1.0)
     # make sure correct number of args required
-    raises(TypeError, lambda: f(0))
+    pytest.raises(TypeError, lambda: f(0))
 
 
 def test_own_namespace():
@@ -62,9 +62,9 @@ def test_own_module():
 
 def test_bad_args():
     # no vargs given
-    raises(TypeError, lambda: lambdify(1))
+    pytest.raises(TypeError, lambda: lambdify(1))
     # same with vector exprs
-    raises(TypeError, lambda: lambdify([1, 2]))
+    pytest.raises(TypeError, lambda: lambdify([1, 2]))
 
 
 def test_atoms():
@@ -88,7 +88,7 @@ def test_sympy_lambda():
     prec = 1e-15
     assert -prec < f(Rational(1, 5)).evalf() - Float(str(sin02)) < prec
     # arctan is in numpy module and should not be available
-    raises(NameError, lambda: lambdify(x, arctan(x), "sympy"))
+    pytest.raises(NameError, lambda: lambdify(x, arctan(x), "sympy"))
 
 
 @conserve_mpmath_dps
@@ -98,7 +98,7 @@ def test_math_lambda():
     f = lambdify(x, sin(x), "math")
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
-    raises(TypeError, lambda: f(x))
+    pytest.raises(TypeError, lambda: f(x))
            # if this succeeds, it can't be a python math function
 
 
@@ -109,12 +109,12 @@ def test_mpmath_lambda():
     f = lambdify(x, sin(x), "mpmath")
     prec = 1e-49  # mpmath precision is around 50 decimal places
     assert -prec < f(mpmath.mpf("0.2")) - sin02 < prec
-    raises(TypeError, lambda: f(x))
+    pytest.raises(TypeError, lambda: f(x))
            # if this succeeds, it can't be a mpmath function
 
 
 @conserve_mpmath_dps
-@XFAIL
+@pytest.mark.xfail
 def test_number_precision():
     mpmath.mp.dps = 50
     sin02 = mpmath.mpf("0.19866933079506121545941262711838975037020672954020")
@@ -141,29 +141,23 @@ def test_mpmath_transl():
         assert mat in mpmath.__dict__
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_transl():
-    if not numpy:
-        skip("numpy not installed.")
-
     from sympy.utilities.lambdify import NUMPY_TRANSLATIONS
     for sym, nump in NUMPY_TRANSLATIONS.items():
         assert sym in sympy.__dict__
         assert nump in numpy.__dict__
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_translation_abs():
-    if not numpy:
-        skip("numpy not installed.")
-
     f = lambdify(x, Abs(x), "numpy")
     assert f(-1) == 1
     assert f(1) == 1
 
 
+@pytest.mark.skipif(numexpr is None, reason="no numpy")
 def test_numexpr_printer():
-    if not numexpr:
-        skip("numexpr not installed.")
-
     # if translation/printing is done incorrectly then evaluating
     # a lambdified numexpr expression will throw an exception
     from sympy.printing.lambdarepr import NumExprPrinter
@@ -184,11 +178,9 @@ def test_numexpr_printer():
         assert f(*(1, )*nargs) is not None
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
+@pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_issue_9334():
-    if not numexpr:
-        skip("numexpr not installed.")
-    if not numpy:
-        skip("numpy not installed.")
     expr = sympy.S('b*a - sqrt(a**2)')
     a, b = sorted(expr.free_symbols, key=lambda s: s.name)
     func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)
@@ -237,12 +229,12 @@ def test_vector_simple():
     assert f(3, 2, 1) == (1, 2, 3)
     assert f(1.0, 2.0, 3.0) == (3.0, 2.0, 1.0)
     # make sure correct number of args required
-    raises(TypeError, lambda: f(0))
+    pytest.raises(TypeError, lambda: f(0))
 
 
 def test_vector_discontinuous():
     f = lambdify(x, (-1/x, 1/x))
-    raises(ZeroDivisionError, lambda: f(0))
+    pytest.raises(ZeroDivisionError, lambda: f(0))
     assert f(1) == (-1.0, 1.0)
     assert f(2) == (-0.5, 0.5)
     assert f(-2) == (0.5, -0.5)
@@ -299,9 +291,8 @@ def test_matrix():
     assert lambdify(v.T, J, modules='sympy')(1, 2) == sol
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_matrix():
-    if not numpy:
-        skip("numpy not installed.")
     A = Matrix([[x, x*y], [sin(z) + 4, x**z]])
     sol_arr = numpy.array([[1, 2], [numpy.sin(3) + 4, 1]])
     # Lambdify array first, to ensure return to array as default
@@ -311,25 +302,22 @@ def test_numpy_matrix():
     assert isinstance(f(1, 2, 3), numpy.ndarray)
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_transpose():
-    if not numpy:
-        skip("numpy not installed.")
     A = Matrix([[1, x], [0, 1]])
     f = lambdify((x), A.T, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, 0], [2, 1]]))
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_inverse():
-    if not numpy:
-        skip("numpy not installed.")
     A = Matrix([[1, x], [0, 1]])
     f = lambdify((x), A**-1, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, -2], [0,  1]]))
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_old_matrix():
-    if not numpy:
-        skip("numpy not installed.")
     A = Matrix([[x, x*y], [sin(z) + 4, x**z]])
     sol_arr = numpy.array([[1, 2], [numpy.sin(3) + 4, 1]])
     f = lambdify((x, y, z), A, [{'ImmutableMatrix': numpy.matrix}, 'numpy'])
@@ -337,9 +325,8 @@ def test_numpy_old_matrix():
     assert isinstance(f(1, 2, 3), numpy.matrix)
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_piecewise():
-    if not numpy:
-        skip("numpy not installed.")
     pieces = Piecewise((x, x < 3), (x**2, x > 5), (0, True))
     f = lambdify(x, pieces, modules="numpy")
     numpy.testing.assert_array_equal(f(numpy.arange(10)),
@@ -350,9 +337,8 @@ def test_numpy_piecewise():
                                      numpy.array([1, numpy.nan, 1]))
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_logical_ops():
-    if not numpy:
-        skip("numpy not installed.")
     and_func = lambdify((x, y), And(x, y), modules="numpy")
     or_func = lambdify((x, y), Or(x, y), modules="numpy")
     not_func = lambdify((x), Not(x), modules="numpy")
@@ -363,9 +349,8 @@ def test_numpy_logical_ops():
     numpy.testing.assert_array_equal(not_func(arr2), numpy.array([True, False]))
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_matmul():
-    if not numpy:
-        skip("numpy not installed.")
     xmat = Matrix([[x, y], [z, 1+z]])
     ymat = Matrix([[x**2], [Abs(x)]])
     mat_func = lambdify((x, y, z), xmat*ymat, modules="numpy")
@@ -377,11 +362,9 @@ def test_numpy_matmul():
                                                                 [159, 251]]))
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
+@pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_numpy_numexpr():
-    if not numpy:
-        skip("numpy not installed.")
-    if not numexpr:
-        skip("numexpr not installed.")
     a, b, c = numpy.random.randn(3, 128, 128)
     # ensure that numpy and numexpr return same value for complicated expression
     expr = sin(x) + cos(y) + tan(z)**2 + Abs(z-y)*acos(sin(y*z)) + \
@@ -391,11 +374,9 @@ def test_numpy_numexpr():
     assert numpy.allclose(npfunc(a, b, c), nefunc(a, b, c))
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
+@pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_numexpr_userfunctions():
-    if not numpy:
-        skip("numpy not installed.")
-    if not numexpr:
-        skip("numexpr not installed.")
     a, b = numpy.random.randn(2, 10)
     uf = type('uf', (Function, ),
               {'eval': classmethod(lambda x, y: y**2+1)})
@@ -467,11 +448,11 @@ def test_imps():
     assert hasattr(func, '_imp_')
     # Error for functions with same name and different implementation
     f2 = implemented_function("f", lambda x: x + 101)
-    raises(ValueError, lambda: lambdify(x, f(f2(x))))
+    pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))
 
 
 def test_imps_wrong_args():
-    raises(ValueError, lambda: implemented_function(sin, lambda x: x))
+    pytest.raises(ValueError, lambda: implemented_function(sin, lambda x: x))
 
 
 def test_lambdify_imps():
@@ -524,9 +505,9 @@ def test_dummification():
     # Test that \alpha was properly dummified
     lam = lambdify((alpha, t), 2*alpha + t)
     assert lam(2, 1) == 5
-    raises(SyntaxError, lambda: lambdify(F(t) * G(t), F(t) * G(t) + 5))
-    raises(SyntaxError, lambda: lambdify(2 * F(t), 2 * F(t) + 5))
-    raises(SyntaxError, lambda: lambdify(2 * F(t), 4 * F(t) + 5))
+    pytest.raises(SyntaxError, lambda: lambdify(F(t) * G(t), F(t) * G(t) + 5))
+    pytest.raises(SyntaxError, lambda: lambdify(2 * F(t), 2 * F(t) + 5))
+    pytest.raises(SyntaxError, lambda: lambdify(2 * F(t), 4 * F(t) + 5))
 
 
 def test_python_keywords():

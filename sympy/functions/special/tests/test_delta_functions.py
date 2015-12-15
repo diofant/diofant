@@ -1,10 +1,8 @@
-from sympy import (
-    adjoint, conjugate, DiracDelta, Heaviside, nan, pi, sign, sqrt,
-    symbols, transpose, Symbol, Piecewise, I, S, Eq
-)
+import pytest
 
-from sympy.utilities.pytest import raises
-
+from sympy import (adjoint, conjugate, DiracDelta, Heaviside, nan, pi,
+                   sign, sqrt, symbols, transpose, Symbol, Piecewise,
+                   I, S, Eq)
 from sympy.core.function import ArgumentIndexError
 
 x, y = symbols('x y')
@@ -42,8 +40,8 @@ def test_DiracDelta():
     assert DiracDelta((x - 1)*(x - 2)*(x - 3)).simplify(x) == \
         DiracDelta(x - 3)/2 + DiracDelta(x - 2) + DiracDelta(x - 1)/2
 
-    raises(ArgumentIndexError, lambda: DiracDelta(x).fdiff(2))
-    raises(ValueError, lambda: DiracDelta(x, -1))
+    pytest.raises(ArgumentIndexError, lambda: DiracDelta(x).fdiff(2))
+    pytest.raises(ValueError, lambda: DiracDelta(x, -1))
 
 
 def test_heaviside():
@@ -63,9 +61,9 @@ def test_heaviside():
     assert Heaviside(x + I).is_Function is True
     assert Heaviside(I*x).is_Function is True
 
-    raises(ArgumentIndexError, lambda: Heaviside(x).fdiff(2))
-    raises(ValueError, lambda: Heaviside(I))
-    raises(ValueError, lambda: Heaviside(2 + 3*I))
+    pytest.raises(ArgumentIndexError, lambda: Heaviside(x).fdiff(2))
+    pytest.raises(ValueError, lambda: Heaviside(I))
+    pytest.raises(ValueError, lambda: Heaviside(2 + 3*I))
 
 
 def test_rewrite():

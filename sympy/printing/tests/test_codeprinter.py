@@ -1,9 +1,10 @@
+import pytest
+
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.core import symbols
 from sympy.core.symbol import Dummy
 from sympy.matrices import MatrixSymbol, Matrix
 from sympy.tensor import IndexedBase, Idx
-from sympy.utilities.pytest import raises
 
 
 def setup_test_printer(**kwargs):
@@ -36,20 +37,20 @@ def test_Assignment():
     Assignment(B[i], 0)
     # Here we test things to show that they error
     # Matrix to scalar
-    raises(ValueError, lambda: Assignment(B[i], A))
-    raises(ValueError, lambda: Assignment(B[i], mat))
-    raises(ValueError, lambda: Assignment(x, mat))
-    raises(ValueError, lambda: Assignment(x, A))
-    raises(ValueError, lambda: Assignment(A[1,0], mat))
+    pytest.raises(ValueError, lambda: Assignment(B[i], A))
+    pytest.raises(ValueError, lambda: Assignment(B[i], mat))
+    pytest.raises(ValueError, lambda: Assignment(x, mat))
+    pytest.raises(ValueError, lambda: Assignment(x, A))
+    pytest.raises(ValueError, lambda: Assignment(A[1,0], mat))
     # Scalar to matrix
-    raises(ValueError, lambda: Assignment(A, x))
-    raises(ValueError, lambda: Assignment(A, 0))
+    pytest.raises(ValueError, lambda: Assignment(A, x))
+    pytest.raises(ValueError, lambda: Assignment(A, 0))
     # Non-atomic lhs
-    raises(TypeError, lambda: Assignment(mat, A))
-    raises(TypeError, lambda: Assignment(0, x))
-    raises(TypeError, lambda: Assignment(x*x, 1))
-    raises(TypeError, lambda: Assignment(A + A, mat))
-    raises(TypeError, lambda: Assignment(B, 0))
+    pytest.raises(TypeError, lambda: Assignment(mat, A))
+    pytest.raises(TypeError, lambda: Assignment(0, x))
+    pytest.raises(TypeError, lambda: Assignment(x*x, 1))
+    pytest.raises(TypeError, lambda: Assignment(A + A, mat))
+    pytest.raises(TypeError, lambda: Assignment(B, 0))
 
 
 def test_print_Symbol():
@@ -65,7 +66,7 @@ def test_print_Symbol():
 
     p = setup_test_printer(error_on_reserved=True)
     p.reserved_words.update(['if'])
-    with raises(ValueError):
+    with pytest.raises(ValueError):
         p._print(y)
 
     p = setup_test_printer(reserved_word_suffix='_He_Man')

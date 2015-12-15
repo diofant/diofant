@@ -1,17 +1,17 @@
+import mpmath
+import pytest
+
 from sympy import (Symbol, exp, Integer, Float, sin, cos, log, Poly, Lambda,
-    Function, I, S, sqrt, srepr, Rational, Tuple, Matrix, Interval, Add, Mul,
-    Pow, Or, true, false, Abs, pi)
+                   Function, I, S, sqrt, srepr, Rational, Tuple, Matrix, Interval,
+                   Add, Mul, Pow, Or, true, false, Abs, pi)
 from sympy.abc import x, y
 from sympy.core.sympify import sympify, _sympify, SympifyError, kernS
 from sympy.core.decorators import _sympifyit
-from sympy.utilities.pytest import raises
 from sympy.utilities.decorator import conserve_mpmath_dps
 from sympy.geometry import Point, Line
 from sympy.functions.combinatorial.factorials import factorial, factorial2
 from sympy.abc import _clash, _clash1, _clash2
 from sympy.core.compatibility import exec_, HAS_GMPY
-
-import mpmath
 
 
 def test_issue_3538():
@@ -116,15 +116,15 @@ def test_sympify3():
     assert sympify("x^3") == x**3
     assert sympify("1/2") == Integer(1)/2
 
-    raises(SympifyError, lambda: _sympify('x**3'))
-    raises(SympifyError, lambda: _sympify('1/2'))
+    pytest.raises(SympifyError, lambda: _sympify('x**3'))
+    pytest.raises(SympifyError, lambda: _sympify('1/2'))
 
 
 def test_sympify_keywords():
-    raises(SympifyError, lambda: sympify('if'))
-    raises(SympifyError, lambda: sympify('for'))
-    raises(SympifyError, lambda: sympify('while'))
-    raises(SympifyError, lambda: sympify('lambda'))
+    pytest.raises(SympifyError, lambda: sympify('if'))
+    pytest.raises(SympifyError, lambda: sympify('for'))
+    pytest.raises(SympifyError, lambda: sympify('while'))
+    pytest.raises(SympifyError, lambda: sympify('lambda'))
 
 
 def test_sympify_float():
@@ -195,15 +195,15 @@ def test_lambda():
 
 
 def test_lambda_raises():
-    raises(SympifyError, lambda: sympify("lambda *args: args"))  # args argument error
-    raises(SympifyError, lambda: sympify("lambda **kwargs: kwargs[0]"))  # kwargs argument error
-    raises(SympifyError, lambda: sympify("lambda x = 1: x"))    # Keyword argument error
-    with raises(SympifyError):
+    pytest.raises(SympifyError, lambda: sympify("lambda *args: args"))  # args argument error
+    pytest.raises(SympifyError, lambda: sympify("lambda **kwargs: kwargs[0]"))  # kwargs argument error
+    pytest.raises(SympifyError, lambda: sympify("lambda x = 1: x"))    # Keyword argument error
+    with pytest.raises(SympifyError):
         _sympify('lambda: 1')
 
 
 def test_sympify_raises():
-    raises(SympifyError, lambda: sympify("fx)"))
+    pytest.raises(SympifyError, lambda: sympify("fx)"))
 
 
 def test__sympify():
@@ -225,8 +225,8 @@ def test__sympify():
     assert _sympify(a) == Integer(5)
 
     # negative _sympify
-    raises(SympifyError, lambda: _sympify('1'))
-    raises(SympifyError, lambda: _sympify([1, 2, 3]))
+    pytest.raises(SympifyError, lambda: _sympify('1'))
+    pytest.raises(SympifyError, lambda: _sympify([1, 2, 3]))
 
 
 def test_sympifyit():
@@ -251,7 +251,7 @@ def test_sympifyit():
     assert add_raises(x, 0.5) == x + Float('0.5')
     assert add_raises(x, y) == x + y
 
-    raises(SympifyError, lambda: add_raises(x, '1'))
+    pytest.raises(SympifyError, lambda: add_raises(x, '1'))
 
 
 def test_int_float():

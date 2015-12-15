@@ -1,17 +1,17 @@
-from sympy import (
-    Abs, acos, acosh, Add, asin, asinh, atan, Ci, cos, sinh, cosh, tanh,
-    Derivative, diff, DiracDelta, E, exp, erf, erfi, EulerGamma, factor, Function,
-    I, Integral, integrate, Interval, Lambda, LambertW, log,
-    Matrix, O, oo, pi, Piecewise, Poly, Rational, S, simplify, sin, tan, sqrt,
-    sstr, Sum, Symbol, symbols, sympify, trigsimp,
-    Tuple, nan, And, Eq, Ne, re, im, polar_lift, meijerg
-)
+import pytest
+
+from sympy import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
+                   cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
+                   exp, erf, erfi, EulerGamma, factor, Function, I,
+                   Integral, integrate, Interval, Lambda, LambertW, log,
+                   Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
+                   simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
+                   sympify, trigsimp, Tuple, nan, And, Eq, Ne, re,
+                   im, polar_lift, meijerg)
 from sympy.functions.elementary.complexes import periodic_argument
 from sympy.integrals.risch import NonElementaryIntegral
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import XFAIL, raises, slow
 from sympy.utilities.randtest import verify_numerically
-
 
 x, y, a, t, x_1, x_2, z, s = symbols('x y a t x_1 x_2 z s')
 n = Symbol('n', integer=True)
@@ -195,8 +195,8 @@ def test_integrate_omit_var():
 
     assert integrate(x) == x**2/2
 
-    raises(ValueError, lambda: integrate(2))
-    raises(ValueError, lambda: integrate(x*y))
+    pytest.raises(ValueError, lambda: integrate(2))
+    pytest.raises(ValueError, lambda: integrate(x*y))
 
 
 def test_integrate_poly_accurately():
@@ -278,7 +278,7 @@ def test_issue_3788():
 def test_issue_3952():
     f = sin(x)
     assert integrate(f, x) == -cos(x)
-    raises(ValueError, lambda: integrate(f, 2*x))
+    pytest.raises(ValueError, lambda: integrate(f, 2*x))
 
 
 def test_issue_4516():
@@ -351,7 +351,7 @@ def NS(e, n=15, **options):
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
-@slow
+@pytest.mark.slow
 def test_evalf_integrals():
     assert NS(Integral(x, (x, 2, 5)), 15) == '10.5000000000000'
     gauss = Integral(exp(-x**2), (x, -oo, oo))
@@ -418,7 +418,7 @@ def test_evalf_issue_939():
         integrate(1/(x**5 + 1), (x, 2, 4)), chop=True) == '0.0144361088886740'
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_failing_integrals():
     # Double integrals not implemented
     assert NS(Integral(
@@ -445,7 +445,7 @@ def test_integrate_DiracDelta():
         1/sqrt(101*pi)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_integrate_DiracDelta_fails():
     # issue 6427
     assert integrate(integrate(integrate(
@@ -564,8 +564,8 @@ def test_expand():
 
 
 def test_integration_variable():
-    raises(ValueError, lambda: Integral(exp(-x**2), 3))
-    raises(ValueError, lambda: Integral(exp(-x**2), (3, -oo, oo)))
+    pytest.raises(ValueError, lambda: Integral(exp(-x**2), 3))
+    pytest.raises(ValueError, lambda: Integral(exp(-x**2), (3, -oo, oo)))
 
 
 def test_expand_integral():
@@ -588,7 +588,7 @@ def test_as_sum_midpoint1():
     assert abs(e.as_sum(4, method="midpoint").n() - e.n()) < 0.5
 
     e = Integral(sqrt(x**3 + y**3), (x, 2, 10), (y, 0, 10))
-    raises(NotImplementedError, lambda: e.as_sum(4))
+    pytest.raises(NotImplementedError, lambda: e.as_sum(4))
 
 
 def test_as_sum_midpoint2():
@@ -617,11 +617,11 @@ def test_as_sum_right():
 
 def test_as_sum_raises():
     e = Integral((x + y)**2, (x, 0, 1))
-    raises(ValueError, lambda: e.as_sum(-1))
-    raises(ValueError, lambda: e.as_sum(0))
-    raises(ValueError, lambda: Integral(x).as_sum(3))
-    raises(NotImplementedError, lambda: e.as_sum(oo))
-    raises(NotImplementedError, lambda: e.as_sum(3, method='xxxx2'))
+    pytest.raises(ValueError, lambda: e.as_sum(-1))
+    pytest.raises(ValueError, lambda: e.as_sum(0))
+    pytest.raises(ValueError, lambda: Integral(x).as_sum(3))
+    pytest.raises(NotImplementedError, lambda: e.as_sum(oo))
+    pytest.raises(NotImplementedError, lambda: e.as_sum(3, method='xxxx2'))
 
 
 def test_nested_doit():
@@ -818,7 +818,7 @@ def test_issue_4376():
                 (n**2 - 2**(1/n)*n**2 - n*2**(1/n))/(2**(1 + 1/n) + n*2**(1 + 1/n))) == 0
 
 
-@slow
+@pytest.mark.slow
 def test_issue_4517():
     assert integrate((sqrt(x) - x**3)/x**Rational(1, 3), x) == \
         6*x**Rational(7, 6)/7 - 3*x**Rational(11, 3)/11
@@ -846,7 +846,7 @@ def test_issue_4199():
         Integral(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo))
 
 
-@slow
+@pytest.mark.slow
 def test_issue_3940():
     a, b, c, d = symbols('a:d', positive=True, finite=True)
     assert integrate(exp(-x**2 + I*c*x), x) == \
@@ -976,7 +976,7 @@ def test_issue_4487():
     assert simplify(integrate(exp(-x)*x**y, x)) == lowergamma(y + 1, x)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_4215():
     x = Symbol("x")
     assert integrate(1/(x**2), (x, -1, 1)) == oo
@@ -1016,7 +1016,7 @@ def test_powers():
 
 def test_risch_option():
     # risch=True only allowed on indefinite integrals
-    raises(ValueError, lambda: integrate(1/log(x), (x, 0, oo), risch=True))
+    pytest.raises(ValueError, lambda: integrate(1/log(x), (x, 0, oo), risch=True))
     assert integrate(exp(-x**2), x, risch=True) == NonElementaryIntegral(exp(-x**2), x)
     assert integrate(log(1/x)*y, x, y, risch=True) == y**2*(x*log(1/x)/2 + x/2)
     assert integrate(erf(x), x, risch=True) == Integral(erf(x), x)
@@ -1029,7 +1029,7 @@ def test_issue_6828():
     assert verify_numerically(f, g, tol=1e-12)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_integrate_Piecewise_rational_over_reals():
     f = Piecewise(
         (0,                                              t - 478.515625*pi <  0),

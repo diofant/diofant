@@ -1,12 +1,12 @@
+import pytest
+
 from sympy import (hyper, meijerg, S, Tuple, pi, I, exp, log,
                    cos, sqrt, symbols, oo, Derivative, gamma, O)
 from sympy.series.limits import limit
 from sympy.abc import x, z, k
-from sympy.utilities.pytest import raises, slow
-from sympy.utilities.randtest import (
-    random_complex_number as randcplx,
-    verify_numerically as tn,
-    test_derivative_numerically as td)
+from sympy.utilities.randtest import (random_complex_number as randcplx,
+                                      verify_numerically as tn,
+                                      test_derivative_numerically as td)
 
 
 def test_TupleParametersBase():
@@ -16,7 +16,7 @@ def test_TupleParametersBase():
 
 
 def test_hyper():
-    raises(TypeError, lambda: hyper(1, 2, z))
+    pytest.raises(TypeError, lambda: hyper(1, 2, z))
 
     assert hyper((1, 2), (1,), z) == hyper(Tuple(1, 2), Tuple(1), z)
 
@@ -106,8 +106,8 @@ def test_radius_of_convergence():
 
 
 def test_meijer():
-    raises(TypeError, lambda: meijerg(1, z))
-    raises(TypeError, lambda: meijerg(((1,), (2,)), (3,), (4,), z))
+    pytest.raises(TypeError, lambda: meijerg(1, z))
+    pytest.raises(TypeError, lambda: meijerg(((1,), (2,)), (3,), (4,), z))
 
     assert meijerg(((1, 2), (3,)), ((4,), (5,)), z) == \
         meijerg(Tuple(1, 2), Tuple(3), Tuple(4), Tuple(5), z)
@@ -206,7 +206,7 @@ def test_hyper_unpolarify():
     assert hyper([0, 1], [0], a).argument == a
 
 
-@slow
+@pytest.mark.slow
 def test_hyperrep():
     from sympy.functions.special.hyper import (HyperRep, HyperRep_atanh,
         HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,

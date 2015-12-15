@@ -1,5 +1,7 @@
 from __future__ import division
 
+import pytest
+
 from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
     factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
     Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Rational, Float, Rel,
@@ -9,10 +11,7 @@ from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
 from sympy.core import Expr
 from sympy.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
 from sympy.geometry import Point, Circle
-
-from sympy.utilities.pytest import raises
 from sympy.core.compatibility import range
-
 from sympy.printing import sstr, sstrrepr, StrPrinter
 from sympy.core.trace import Tr
 
@@ -629,7 +628,7 @@ def test_empty_printer():
 
 
 def test_settings():
-    raises(TypeError, lambda: sstr(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: sstr(S(4), method="garbage"))
 
 
 def test_RandomDomain():

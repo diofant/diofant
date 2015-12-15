@@ -1,10 +1,12 @@
+import pytest
+
 from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
-        acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh, cos,
-        cosh, atan2, exp, log, asinh, acoth, atanh, O, cancel, Matrix, re, im,
-        Float, Pow, gcd, sec, csc, cot, diff, simplify, Heaviside, arg,
-        conjugate, series, FiniteSet, asec, acsc, sech, csch)
+                   acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh,
+                   cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
+                   cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
+                   diff, simplify, Heaviside, arg, conjugate, series,
+                   FiniteSet, asec, acsc, sech, csch)
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import XFAIL, slow, raises
 
 x, y, z = symbols('x y z')
 r = Symbol('r', extended_real=True)
@@ -1068,12 +1070,12 @@ def test_issue_4420():
 
 
 def test_inverses():
-    raises(AttributeError, lambda: sin(x).inverse())
-    raises(AttributeError, lambda: cos(x).inverse())
+    pytest.raises(AttributeError, lambda: sin(x).inverse())
+    pytest.raises(AttributeError, lambda: cos(x).inverse())
     assert tan(x).inverse() == atan
     assert cot(x).inverse() == acot
-    raises(AttributeError, lambda: csc(x).inverse())
-    raises(AttributeError, lambda: sec(x).inverse())
+    pytest.raises(AttributeError, lambda: csc(x).inverse())
+    pytest.raises(AttributeError, lambda: sec(x).inverse())
     assert asin(x).inverse() == sin
     assert acos(x).inverse() == cos
     assert atan(x).inverse() == tan
@@ -1098,7 +1100,7 @@ def test_real_imag():
         assert cot(a).as_real_imag(deep=deep) == (cot(a), 0)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sin_cos_with_infinity():
     # Test for issue 5196
     # https://github.com/sympy/sympy/issues/5196
@@ -1106,7 +1108,7 @@ def test_sin_cos_with_infinity():
     assert cos(oo) == S.NaN
 
 
-@slow
+@pytest.mark.slow
 def test_sincos_rewrite_sqrt():
     # equivalent to testing rewrite(pow)
     for p in [1, 3, 5, 17]:
@@ -1124,7 +1126,7 @@ def test_sincos_rewrite_sqrt():
     assert cos(pi/14).rewrite(sqrt) == sqrt(cos(pi/7)/2 + S.Half)
 
 
-@slow
+@pytest.mark.slow
 def test_tancot_rewrite_sqrt():
     # equivalent to testing rewrite(pow)
     for p in [1, 3, 5, 17]:
@@ -1322,8 +1324,8 @@ def test_acsc():
     assert acsc(x).rewrite(asec) == -asec(x) + pi/2
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
 def test_csc_rewrite_failing():
     # Move these 2 tests to test_csc() once bugs fixed
     # sin(x).rewrite(pow) raises RuntimeError: maximum recursion depth

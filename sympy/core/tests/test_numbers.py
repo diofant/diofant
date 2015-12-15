@@ -1,4 +1,9 @@
 import decimal
+
+import mpmath
+from mpmath import mpf
+import pytest
+
 from sympy import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
                    S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
                    Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
@@ -6,10 +11,7 @@ from sympy import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
 from sympy.core.compatibility import long, u
 from sympy.core.power import integer_nthroot
 from sympy.core.numbers import (igcd, ilcm, igcdex, seterr,
-    mpf_norm, comp)
-from mpmath import mpf
-from sympy.utilities.pytest import XFAIL, raises
-import mpmath
+                                mpf_norm, comp)
 
 
 def same_and_same_prec(a, b):
@@ -19,7 +21,7 @@ def same_and_same_prec(a, b):
 
 def test_seterr():
     seterr(divide=True)
-    raises(ValueError, lambda: S.Zero/S.Zero)
+    pytest.raises(ValueError, lambda: S.Zero/S.Zero)
     seterr(divide=False)
     assert S.Zero / S.Zero == S.NaN
 
@@ -97,8 +99,8 @@ def test_divmod():
     assert divmod(S(12), S(8)) == Tuple(1, 4)
     assert divmod(-S(12), S(8)) == Tuple(-2, 4)
     assert divmod(S(0), S(1)) == Tuple(0, 0)
-    raises(ZeroDivisionError, lambda: divmod(S(0), S(0)))
-    raises(ZeroDivisionError, lambda: divmod(S(1), S(0)))
+    pytest.raises(ZeroDivisionError, lambda: divmod(S(0), S(0)))
+    pytest.raises(ZeroDivisionError, lambda: divmod(S(1), S(0)))
     assert divmod(S(12), 8) == Tuple(1, 4)
     assert divmod(12, S(8)) == Tuple(1, 4)
 
@@ -179,8 +181,8 @@ def test_igcd():
     assert igcd(-7, 3) == 1
     assert igcd(-7, -3) == 1
     assert igcd(*[10, 20, 30]) == 10
-    raises(ValueError, lambda: igcd(45.1, 30))
-    raises(ValueError, lambda: igcd(45, 30.1))
+    pytest.raises(ValueError, lambda: igcd(45.1, 30))
+    pytest.raises(ValueError, lambda: igcd(45, 30.1))
 
 
 def test_ilcm():
@@ -193,8 +195,8 @@ def test_ilcm():
     assert ilcm(8, 6) == 24
     assert ilcm(8, 7) == 56
     assert ilcm(*[10, 20, 30]) == 60
-    raises(ValueError, lambda: ilcm(8.1, 7))
-    raises(ValueError, lambda: ilcm(8, 7.1))
+    pytest.raises(ValueError, lambda: ilcm(8.1, 7))
+    pytest.raises(ValueError, lambda: ilcm(8, 7.1))
 
 
 def test_igcdex():
@@ -225,7 +227,7 @@ def _test_rational_new(cls):
     assert _strictly_equal(i, cls(long(10)))
     assert _strictly_equal(i, cls(i))
 
-    raises(TypeError, lambda: cls(Symbol('x')))
+    pytest.raises(TypeError, lambda: cls(Symbol('x')))
 
 
 def test_Integer_new():
@@ -236,7 +238,7 @@ def test_Integer_new():
 
     assert _strictly_equal(Integer(0.9), S.Zero)
     assert _strictly_equal(Integer(10.5), Integer(10))
-    raises(ValueError, lambda: Integer("10.5"))
+    pytest.raises(ValueError, lambda: Integer("10.5"))
     assert Integer(Rational('1.' + '9'*20)) == 1
 
 
@@ -266,8 +268,8 @@ def test_Rational_new():
     assert Rational('1e2/1e-2') == Rational(10000)
     assert Rational(-1, 0) == S.NegativeInfinity
     assert Rational(1, 0) == S.Infinity
-    raises(TypeError, lambda: Rational('3**3'))
-    raises(TypeError, lambda: Rational('1/2 + 2/3'))
+    pytest.raises(TypeError, lambda: Rational('3**3'))
+    pytest.raises(TypeError, lambda: Rational('1/2 + 2/3'))
 
     # handle fractions.Fraction instances
     try:
@@ -292,8 +294,8 @@ def test_Number_new():
     assert Number('-622').__class__ is Integer
     assert Number('5/3').__class__ is Rational
     assert Number('5.3').__class__ is Float
-    raises(ValueError, lambda: Number('cos'))
-    raises(TypeError, lambda: Number(cos))
+    pytest.raises(ValueError, lambda: Number('cos'))
+    pytest.raises(TypeError, lambda: Number(cos))
     a = Rational(3, 5)
     assert Number(a) is a  # Check idempotence on Numbers
 
@@ -324,10 +326,10 @@ def test_Rational_cmp():
     assert not (Rational(-1) > 0)
     assert Rational(-1) < 0
 
-    raises(TypeError, lambda: n1 < S.NaN)
-    raises(TypeError, lambda: n1 <= S.NaN)
-    raises(TypeError, lambda: n1 > S.NaN)
-    raises(TypeError, lambda: n1 >= S.NaN)
+    pytest.raises(TypeError, lambda: n1 < S.NaN)
+    pytest.raises(TypeError, lambda: n1 <= S.NaN)
+    pytest.raises(TypeError, lambda: n1 > S.NaN)
+    pytest.raises(TypeError, lambda: n1 >= S.NaN)
 
 
 def test_Float():
@@ -357,7 +359,7 @@ def test_Float():
     assert Float((0, long(0), -456, -2)) == Float('inf') == Float('+inf')
     assert Float((1, long(0), -789, -3)) == Float('-inf')
 
-    raises(ValueError, lambda: Float((0, 7, 1, 3), ''))
+    pytest.raises(ValueError, lambda: Float((0, 7, 1, 3), ''))
 
     assert Float('+inf').is_finite is False
     assert Float('+inf').is_negative is False
@@ -407,7 +409,7 @@ def test_Float():
     assert Float(.125, 22) == .125
     assert Float(2.0, 22) == 2
     assert float(Float('.12500000000000001', '')) == .125
-    raises(ValueError, lambda: Float(.12500000000000001, ''))
+    pytest.raises(ValueError, lambda: Float(.12500000000000001, ''))
 
     # allow spaces
     Float('123 456.123 456') == Float('123456.123456')
@@ -421,10 +423,10 @@ def test_Float():
     assert Float('.100', '') == Float(.1, 3)
     assert Float('2.0', '') == Float('2', 2)
 
-    raises(ValueError, lambda: Float("12.3d-4", ""))
-    raises(ValueError, lambda: Float(12.3, ""))
-    raises(ValueError, lambda: Float('.'))
-    raises(ValueError, lambda: Float('-.'))
+    pytest.raises(ValueError, lambda: Float("12.3d-4", ""))
+    pytest.raises(ValueError, lambda: Float(12.3, ""))
+    pytest.raises(ValueError, lambda: Float('.'))
+    pytest.raises(ValueError, lambda: Float('-.'))
 
     zero = Float('0.0')
     assert Float('-0') == zero
@@ -690,23 +692,23 @@ def test_Infinity_inequations():
     assert not (Float('+inf') < pi)
     assert exp(-3) < Float('+inf')
 
-    raises(TypeError, lambda: oo < I)
-    raises(TypeError, lambda: oo <= I)
-    raises(TypeError, lambda: oo > I)
-    raises(TypeError, lambda: oo >= I)
-    raises(TypeError, lambda: -oo < I)
-    raises(TypeError, lambda: -oo <= I)
-    raises(TypeError, lambda: -oo > I)
-    raises(TypeError, lambda: -oo >= I)
+    pytest.raises(TypeError, lambda: oo < I)
+    pytest.raises(TypeError, lambda: oo <= I)
+    pytest.raises(TypeError, lambda: oo > I)
+    pytest.raises(TypeError, lambda: oo >= I)
+    pytest.raises(TypeError, lambda: -oo < I)
+    pytest.raises(TypeError, lambda: -oo <= I)
+    pytest.raises(TypeError, lambda: -oo > I)
+    pytest.raises(TypeError, lambda: -oo >= I)
 
-    raises(TypeError, lambda: I < oo)
-    raises(TypeError, lambda: I <= oo)
-    raises(TypeError, lambda: I > oo)
-    raises(TypeError, lambda: I >= oo)
-    raises(TypeError, lambda: I < -oo)
-    raises(TypeError, lambda: I <= -oo)
-    raises(TypeError, lambda: I > -oo)
-    raises(TypeError, lambda: I >= -oo)
+    pytest.raises(TypeError, lambda: I < oo)
+    pytest.raises(TypeError, lambda: I <= oo)
+    pytest.raises(TypeError, lambda: I > oo)
+    pytest.raises(TypeError, lambda: I >= oo)
+    pytest.raises(TypeError, lambda: I < -oo)
+    pytest.raises(TypeError, lambda: I <= -oo)
+    pytest.raises(TypeError, lambda: I > -oo)
+    pytest.raises(TypeError, lambda: I >= -oo)
 
     assert oo > -oo and oo >= -oo
     assert (oo < -oo) == False and (oo <= -oo) == False
@@ -746,14 +748,14 @@ def test_NaN():
     assert 1/nan == nan
     assert 1/(-nan) == nan
     assert 8/nan == nan
-    raises(TypeError, lambda: nan > 0)
-    raises(TypeError, lambda: nan < 0)
-    raises(TypeError, lambda: nan >= 0)
-    raises(TypeError, lambda: nan <= 0)
-    raises(TypeError, lambda: 0 < nan)
-    raises(TypeError, lambda: 0 > nan)
-    raises(TypeError, lambda: 0 <= nan)
-    raises(TypeError, lambda: 0 >= nan)
+    pytest.raises(TypeError, lambda: nan > 0)
+    pytest.raises(TypeError, lambda: nan < 0)
+    pytest.raises(TypeError, lambda: nan >= 0)
+    pytest.raises(TypeError, lambda: nan <= 0)
+    pytest.raises(TypeError, lambda: 0 < nan)
+    pytest.raises(TypeError, lambda: 0 > nan)
+    pytest.raises(TypeError, lambda: 0 <= nan)
+    pytest.raises(TypeError, lambda: 0 >= nan)
     assert S.One + nan == nan
     assert S.One - nan == nan
     assert S.One*nan == nan
@@ -1027,15 +1029,15 @@ def test_bug_sqrt():
 def test_pi_Pi():
     "Test that pi (instance) is imported, but Pi (class) is not"
     from sympy import pi
-    with raises(ImportError):
+    with pytest.raises(ImportError):
         from sympy import Pi
 
 
 def test_no_len():
     # there should be no len for numbers
-    raises(TypeError, lambda: len(Rational(2)))
-    raises(TypeError, lambda: len(Rational(2, 3)))
-    raises(TypeError, lambda: len(Integer(2)))
+    pytest.raises(TypeError, lambda: len(Rational(2)))
+    pytest.raises(TypeError, lambda: len(Rational(2, 3)))
+    pytest.raises(TypeError, lambda: len(Integer(2)))
 
 
 def test_issue_3321():
@@ -1358,7 +1360,7 @@ def test_issue_4172():
         734833795660954410469466
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_mpmath_issues():
     from mpmath.libmp.libmpf import _normalize
     import mpmath.libmp as mlib
@@ -1471,5 +1473,5 @@ def test_comp():
     assert comp(a, 1.41421367) is False
     assert comp(sqrt(2).n(2), '1.4')
     assert comp(sqrt(2).n(2), Float(1.4, 2), '')
-    raises(ValueError, lambda: comp(sqrt(2).n(2), 1.4, ''))
+    pytest.raises(ValueError, lambda: comp(sqrt(2).n(2), 1.4, ''))
     assert comp(sqrt(2).n(2), Float(1.4, 3), '') is False

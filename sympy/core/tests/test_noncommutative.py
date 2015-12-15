@@ -1,27 +1,11 @@
 """Tests for noncommutative symbols and expressions."""
 
-from sympy import (
-    adjoint,
-    cancel,
-    collect,
-    combsimp,
-    conjugate,
-    cos,
-    expand,
-    factor,
-    posify,
-    radsimp,
-    ratsimp,
-    rcollect,
-    sin,
-    simplify,
-    symbols,
-    transpose,
-    trigsimp,
-    I,
-)
+import pytest
+
+from sympy import (adjoint, cancel, collect, combsimp, conjugate, cos, expand,
+                   factor, posify, radsimp, ratsimp, rcollect, sin, simplify,
+                   symbols, transpose, trigsimp, I)
 from sympy.abc import x, y, z
-from sympy.utilities.pytest import XFAIL
 
 A, B, C = symbols("A B C", commutative=False)
 X = symbols("X", commutative=False, hermitian=True)
@@ -54,7 +38,7 @@ def test_cancel():
     assert cancel(A*B*(x**2 - 1)/(x + 1) - B*A*(x - 1)) == A*B*(x - 1) + (1 - x)*B*A
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_collect():
     assert collect(A*B - B*A, A) == A*B - B*A
     assert collect(A*B - B*A, B) == A*B - B*A
@@ -100,12 +84,12 @@ def test_radsimp():
     assert radsimp(A*B - B*A) == A*B - B*A
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_ratsimp():
     assert ratsimp(A*B - B*A) == A*B - B*A
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_rcollect():
     assert rcollect(A*B - B*A, A) == A*B - B*A
     assert rcollect(A*B - B*A, B) == A*B - B*A

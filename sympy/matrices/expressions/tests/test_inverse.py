@@ -1,7 +1,8 @@
+import pytest
+
 from sympy.core import symbols
 from sympy.matrices.expressions import MatrixSymbol, Inverse
 from sympy.matrices import eye, Identity, ShapeError
-from sympy.utilities.pytest import raises
 from sympy import refine, Q
 
 n, m, l = symbols('n m l', integer=True)
@@ -13,8 +14,8 @@ E = MatrixSymbol('E', m, n)
 
 
 def test_inverse():
-    raises(ShapeError, lambda: Inverse(A))
-    raises(ShapeError, lambda: Inverse(A*B))
+    pytest.raises(ShapeError, lambda: Inverse(A))
+    pytest.raises(ShapeError, lambda: Inverse(A*B))
 
     assert Inverse(C).shape == (n, n)
     assert Inverse(A*E).shape == (n, n)

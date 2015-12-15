@@ -1,8 +1,8 @@
+import pytest
+
 from sympy import (abc, Add, cos, Derivative, diff, exp, Float, Function,
-    I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt, Symbol, symbols,
-    Wild, pi, meijerg
-)
-from sympy.utilities.pytest import XFAIL
+                   I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt, Symbol,
+                   symbols, Wild, pi, meijerg)
 
 
 def test_symbol():
@@ -198,7 +198,7 @@ def test_functions():
     assert notf.match(g) is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_functions_X1():
     from sympy.core.function import WildFunction
     x = Symbol('x')

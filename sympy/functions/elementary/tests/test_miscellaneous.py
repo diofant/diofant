@@ -1,14 +1,14 @@
+import pytest
+
 from sympy.core.function import Function
 from sympy.core.numbers import I, oo, Rational
 from sympy.core.singleton import S
 from sympy.core.symbol import Symbol
 from sympy.functions.elementary.miscellaneous import (sqrt, cbrt, root,
-    Min, Max, real_root)
+                                                      Min, Max, real_root)
 from sympy.functions.elementary.trigonometric import cos, sin
 from sympy.functions.elementary.integers import floor, ceiling
 from sympy.functions.special.delta_functions import Heaviside
-
-from sympy.utilities.pytest import raises
 
 
 def test_Min():
@@ -79,7 +79,7 @@ def test_Min():
     assert Min(p, p_).func is Min
 
     # lists
-    raises(ValueError, lambda: Min())
+    pytest.raises(ValueError, lambda: Min())
     assert Min(x, y) == Min(y, x)
     assert Min(x, y, z) == Min(z, y, x)
     assert Min(x, Min(y, z)) == Min(z, y, x)
@@ -93,10 +93,10 @@ def test_Min():
     assert Min(cos(x), sin(x)) == Min(cos(x), sin(x))
     assert Min(cos(x), sin(x)).subs(x, 1) == cos(1)
     assert Min(cos(x), sin(x)).subs(x, S(1)/2) == sin(S(1)/2)
-    raises(ValueError, lambda: Min(cos(x), sin(x)).subs(x, I))
-    raises(ValueError, lambda: Min(I))
-    raises(ValueError, lambda: Min(I, x))
-    raises(ValueError, lambda: Min(S.ComplexInfinity, x))
+    pytest.raises(ValueError, lambda: Min(cos(x), sin(x)).subs(x, I))
+    pytest.raises(ValueError, lambda: Min(I))
+    pytest.raises(ValueError, lambda: Min(I, x))
+    pytest.raises(ValueError, lambda: Min(S.ComplexInfinity, x))
 
     assert Min(1, x).diff(x) == Heaviside(1 - x)
     assert Min(x, 1).diff(x) == Heaviside(1 - x)
@@ -133,7 +133,7 @@ def test_Max():
 
     # lists
 
-    raises(ValueError, lambda: Max())
+    pytest.raises(ValueError, lambda: Max())
     assert Max(x, y) == Max(y, x)
     assert Max(x, y, z) == Max(z, y, x)
     assert Max(x, Max(y, z)) == Max(z, y, x)
@@ -147,10 +147,10 @@ def test_Max():
     assert Max(cos(x), sin(x)) == Max(sin(x), cos(x))
     assert Max(cos(x), sin(x)).subs(x, 1) == sin(1)
     assert Max(cos(x), sin(x)).subs(x, S(1)/2) == cos(S(1)/2)
-    raises(ValueError, lambda: Max(cos(x), sin(x)).subs(x, I))
-    raises(ValueError, lambda: Max(I))
-    raises(ValueError, lambda: Max(I, x))
-    raises(ValueError, lambda: Max(S.ComplexInfinity, 1))
+    pytest.raises(ValueError, lambda: Max(cos(x), sin(x)).subs(x, I))
+    pytest.raises(ValueError, lambda: Max(I))
+    pytest.raises(ValueError, lambda: Max(I, x))
+    pytest.raises(ValueError, lambda: Max(S.ComplexInfinity, 1))
     # interesting:
     # Max(n, -oo, n_,  p, 2) == Max(p, 2)
     # True

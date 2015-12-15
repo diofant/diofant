@@ -1,6 +1,8 @@
 from __future__ import division
+
+import pytest
+
 from sympy.plotting.intervalmath import interval
-from sympy.utilities.pytest import raises
 
 
 def test_interval():
@@ -38,7 +40,7 @@ def test_interval():
     assert interval(-1e50, 1e50) in interb
     assert (
         -interval(-1, -2, is_valid=False) == interval(1, 2)) == (True, False)
-    raises(ValueError, lambda: interval(1, 2, 3))
+    pytest.raises(ValueError, lambda: interval(1, 2, 3))
 
 
 def test_interval_add():

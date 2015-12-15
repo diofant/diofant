@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from sympy import (
     Add, And, Basic, Derivative, Dict, Eq, Equivalent, FF,
     FiniteSet, Function, Ge, Gt, I, Implies, Integral,
@@ -15,14 +17,9 @@ from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     lowergamma, meijerg, sin, sqrt, subfactorial, tan, uppergamma,
     elliptic_k, elliptic_f, elliptic_e, elliptic_pi)
 
-from sympy.printing.pretty import pretty as xpretty
-from sympy.printing.pretty import pprint
-
-from sympy.utilities.pytest import raises, XFAIL
+from sympy.printing.pretty import pretty as xpretty, pprint
 from sympy.core.trace import Tr
-
-from sympy.core.compatibility import u_decode as u
-from sympy.core.compatibility import range
+from sympy.core.compatibility import u_decode as u, range
 
 a, b, x, y, z, k = symbols('a,b,x,y,z,k')
 th = Symbol('theta')
@@ -271,7 +268,7 @@ def test_upretty_subs_missing_in_24():
     assert upretty( Symbol('F_x') ) == u('Fₓ')
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_missing_in_2X_issue_9047():
     import warnings
     with warnings.catch_warnings():
@@ -3459,7 +3456,7 @@ def test_pretty_no_wrap_line():
 
 
 def test_settings():
-    raises(TypeError, lambda: pretty(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: pretty(S(4), method="garbage"))
 
 
 def test_pretty_sum():
@@ -4896,10 +4893,9 @@ def test_pretty_Complement():
 
 def test_pretty_SymmetricDifference():
     from sympy import SymmetricDifference, Interval
-    from sympy.utilities.pytest import raises
     assert upretty(SymmetricDifference(Interval(2,3), Interval(3,5),
            evaluate=False)) == u('[2, 3] ∆ [3, 5]')
-    with raises(NotImplementedError):
+    with pytest.raises(NotImplementedError):
         pretty(SymmetricDifference(Interval(2,3), Interval(3,5), evaluate=False))
 
 
