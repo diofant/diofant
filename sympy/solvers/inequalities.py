@@ -423,10 +423,13 @@ def solve_univariate_inequality(expr, gen, relational=True):
         if v.is_extended_real is False:
             return S.false
         else:
-            v = v.n(2)
             if v.is_comparable:
-                return expr.func(v, 0)
-            return S.false
+                v = v.n(2)
+                if v._prec > 1:
+                    return expr.func(v, 0)
+            elif v.is_comparable is False:
+                return False
+            raise NotImplementedError
 
     start = S.NegativeInfinity
     sol_sets = [S.EmptySet]
