@@ -50,7 +50,6 @@ def test_constructor():
 
 
 def test_basics():
-
     assert Integral(0, x) != 0
     assert Integral(x, (x, 1, 1)) != 0
     assert Integral(oo, x) != oo
@@ -96,7 +95,6 @@ def test_basics():
 
 
 def test_basics_multiple():
-
     assert diff_test(Integral(x, (x, 3*x, 5*y), (y, x, 2*x))) == {x}
     assert diff_test(Integral(x, (x, 5*y), (y, x, 2*x))) == {x}
     assert diff_test(Integral(x, (x, 5*y), (y, y, 2*x))) == {x, y}
@@ -191,8 +189,6 @@ def test_integrate_poly_defined():
 
 
 def test_integrate_omit_var():
-    y = Symbol('y')
-
     assert integrate(x) == x**2/2
 
     pytest.raises(ValueError, lambda: integrate(2))
@@ -200,7 +196,6 @@ def test_integrate_omit_var():
 
 
 def test_integrate_poly_accurately():
-    y = Symbol('y')
     assert integrate(x*sin(y), x) == x**2*sin(y)/2
 
     # when passed to risch_norman, this will be a CPU hog, so this really
@@ -209,7 +204,6 @@ def test_integrate_poly_accurately():
 
 
 def test_issue_3635():
-    y = Symbol('y')
     assert integrate(x**2, y) == x**2*y
     assert integrate(x**2, (y, -1, 1)) == 2*x**2
 
@@ -359,7 +353,6 @@ def test_evalf_integrals():
     assert NS(gauss**2 - pi + E*Rational(
         1, 10**20), 15) in ('2.71828182845904e-20', '2.71828182845905e-20')
     # A monster of an integral from http://mathworld.wolfram.com/DefiniteIntegral.html
-    t = Symbol('t')
     a = 8*sqrt(3)/(1 + 3*t**2)
     b = 16*sqrt(2)*(3*t + 1)*sqrt(4*t**2 + t + 1)**3
     c = (3*t**2 + 1)*(11*t**2 + 2*t + 3)**2
@@ -537,7 +530,7 @@ def test_subs5():
 
 
 def test_subs6():
-    a, b = symbols('a b')
+    b = symbols('b')
     e = Integral(x*y, (x, f(x), f(y)))
     assert e.subs(x, 1) == Integral(x*y, (x, f(1), f(y)))
     assert e.subs(y, 1) == Integral(x, (x, f(x), f(1)))
@@ -707,7 +700,6 @@ def test_is_number():
 
 
 def test_symbols():
-    from sympy.abc import x, y, z
     assert Integral(0, x).free_symbols == {x}
     assert Integral(x).free_symbols == {x}
     assert Integral(x, (x, None, y)).free_symbols == {y}
@@ -747,6 +739,11 @@ def test_is_zero():
     assert Integral(sin(x), (x, 0, 2*pi)).is_zero is None
 
 
+def test_is_real():
+    assert Integral(x**3, (x, 1, 3)).is_real
+    assert Integral(1/(x - 1), (x, -1, 1)).is_real is not True
+
+
 def test_series():
     from sympy.abc import x
     i = Integral(cos(x), (x, x))
@@ -756,7 +753,6 @@ def test_series():
 
 def test_issue_4403():
     x = Symbol('x')
-    y = Symbol('y')
     z = Symbol('z', positive=True)
     assert integrate(sqrt(x**2 + z**2), x) == \
         z**2*asinh(x/z)/2 + x*sqrt(x**2 + z**2)/2
@@ -870,7 +866,7 @@ def test_issue_5413():
 
 
 def test_issue_4892a():
-    A, z = symbols('A z')
+    A = symbols('A')
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -978,7 +974,6 @@ def test_issue_4487():
 
 @pytest.mark.xfail
 def test_issue_4215():
-    x = Symbol("x")
     assert integrate(1/(x**2), (x, -1, 1)) == oo
 
 
@@ -1089,7 +1084,7 @@ def test_issue_8901():
 
 
 def test_issue_7130():
-    i, L, a, b = symbols('i L a b')
+    i, L, b = symbols('i L b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
     assert x not in integrate(integrand, (x, 0, L)).free_symbols
 
