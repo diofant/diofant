@@ -568,12 +568,11 @@ class Basic(with_metaclass(ManagedProperties)):
         n, i = [p.evalf(2) for p in self.as_real_imag()]
         if not i.is_Number or not n.is_Number:
             return False
-        if i:
-            # if _prec = 1 we can't decide and if not,
-            # the answer is False so return False
+        if i and i._prec > 1:
             return False
-        else:
-            return n._prec != 1
+        if not i and i._prec == -1:
+            if n._prec > 1:
+                return True
 
     @property
     def func(self):
