@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
                    Or, S, sin, sqrt, Symbol, Union, Integral, Sum,
-                   Function, Poly, PurePoly, pi, root)
+                   Function, Poly, PurePoly, pi, root, log, E)
 from sympy.solvers.inequalities import (reduce_inequalities,
                                         solve_poly_inequality as psolve,
                                         reduce_rational_inequalities,
@@ -315,3 +315,7 @@ def test_issue_8974():
 def test_issue_10196():
     assert reduce_inequalities(x**2 >= 0)
     assert reduce_inequalities(x**2 < 0) is S.false
+
+
+def test_issue_10268():
+    assert reduce_inequalities(log(x) < 300) == And(-oo < x, x < E**300)
