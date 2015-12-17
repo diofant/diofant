@@ -603,7 +603,10 @@ class Expr(Basic, EvalfMixin):
         # don't worry about doing simplification steps one at a time
         # because if the expression ever goes to 0 then the subsequent
         # simplification steps that are done will be very fast.
-        diff = factor_terms((self - other).simplify(), radical=True)
+        try:
+            diff = factor_terms((self - other).simplify(), radical=True)
+        except ZeroDivisionError:
+            return
 
         if not diff:
             return True
