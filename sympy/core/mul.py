@@ -162,6 +162,8 @@ class Mul(Expr, AssocOp):
               you should only consider them when your code is highly performance
               sensitive.
         """
+        from sympy.series.order import Order
+
         rv = None
         if len(seq) == 2:
             a, b = seq
@@ -280,9 +282,12 @@ class Mul(Expr, AssocOp):
                 # o = b
                 b, e = o.as_base_exp()
 
+                if o.has(Order):
+                    b, e = o, S.One
+
                 #  y
                 # 3
-                if o.is_Pow:
+                elif o.is_Pow:
                     if b.is_Number:
 
                         # get all the factors with numeric base so they can be
@@ -334,7 +339,7 @@ class Mul(Expr, AssocOp):
                     # not an Add. This allow things like a**2*b**3 == a**5
                     # if a.is_commutative == False, but prohibits
                     # a**x*a**y and x**a*x**b from combining (x,y commute).
-                    if b1 == b2 and (not new_exp.is_Add):
+                    if b1 == b2 and (not new_exp.is_Add) and not (o.has(Order) or o1.has(Order)):
                         o12 = b1 ** new_exp
 
                         # now o12 could be a commutative object

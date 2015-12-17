@@ -1,11 +1,12 @@
+import pytest
+
 from sympy import (EmptySet, FiniteSet, S, Symbol, Interval, exp, erf, sqrt,
-        symbols, simplify, Eq, cos, And, Tuple, integrate, oo, sin, Sum, Basic,
-        DiracDelta)
+                   symbols, simplify, Eq, cos, And, Tuple, integrate, oo, sin,
+                   Sum, Basic, DiracDelta)
 from sympy.stats import (Die, Normal, Exponential, P, E, variance, covariance,
-        skewness, density, given, independent, dependent, where, pspace,
-        random_symbols, sample)
+                         skewness, density, given, independent, dependent, where,
+                         pspace, random_symbols, sample)
 from sympy.stats.rv import ProductPSpace, rs_swap, Density, NamedArgsMixin
-from sympy.utilities.pytest import raises, XFAIL
 from sympy.core.compatibility import range
 
 
@@ -29,7 +30,7 @@ def test_where():
     assert XX.pspace.domain.as_boolean() == \
         And(0 <= X.symbol, X.symbol**2 <= 1, -oo < X.symbol, X.symbol < oo)
 
-    with raises(TypeError):
+    with pytest.raises(TypeError):
         XX = given(X, X + 3)
 
 
@@ -84,7 +85,7 @@ def test_overlap():
     X = Normal('x', 0, 1)
     Y = Normal('x', 0, 2)
 
-    raises(ValueError, lambda: P(X > Y))
+    pytest.raises(ValueError, lambda: P(X > Y))
 
 
 def test_ProductPSpace():
@@ -112,7 +113,7 @@ def test_Sample():
     assert E(X + Y, numsamples=10).is_number
     assert variance(X + Y, numsamples=10).is_number
 
-    raises(ValueError, lambda: P(Y > z, numsamples=5))
+    pytest.raises(ValueError, lambda: P(Y > z, numsamples=5))
 
     assert P(sin(Y) <= 1, numsamples=10) == 1
     assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10) == 1
@@ -147,7 +148,7 @@ def test_dependence():
     assert dependent(XX, YY)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_dependent_finite():
     X, Y = Die('X'), Die('Y')
     # Dependence testing requires symbolic conditions which currently break
@@ -181,12 +182,12 @@ def test_NamedArgsMixin():
     assert a.foo == 1
     assert a.bar == 2
 
-    raises(AttributeError, lambda: a.baz)
+    pytest.raises(AttributeError, lambda: a.baz)
 
     class Bar(Basic, NamedArgsMixin):
         pass
 
-    raises(AttributeError, lambda: Bar(1, 2).foo)
+    pytest.raises(AttributeError, lambda: Bar(1, 2).foo)
 
 
 def test_density_constant():

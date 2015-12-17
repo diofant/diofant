@@ -1,10 +1,10 @@
-from sympy import (Symbol, Rational, ln, exp, log, sqrt, E, O, pi, I, sinh,
-    sin, cosh, cos, tanh, coth, asinh, acosh, atanh, acoth, tan, cot, Integer,
-    PoleError, floor, ceiling, asin, symbols, limit, Piecewise, Eq, sign,
-    Derivative)
-from sympy.abc import x, y, z
+import pytest
 
-from sympy.utilities.pytest import raises, XFAIL
+from sympy import (Symbol, Rational, ln, exp, log, sqrt, E, O, pi, I, sinh,
+                   sin, cosh, cos, tanh, coth, asinh, acosh, atanh, acoth, tan,
+                   cot, Integer, PoleError, floor, ceiling, asin, symbols, limit,
+                   Piecewise, Eq, sign, Derivative)
+from sympy.abc import x, y, z
 
 
 def test_simple_1():
@@ -118,7 +118,7 @@ def test_series1():
     assert x.nseries(x, 0, 2) == x
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_series1_failing():
     assert x.nseries(x, 0, 0) == O(1, x)
     assert x.nseries(x, 0, 1) == O(x, x)
@@ -400,9 +400,9 @@ def test_issue_4115():
 
 
 def test_pole():
-    raises(PoleError, lambda: sin(1/x).series(x, 0, 5))
-    raises(PoleError, lambda: sin(1 + 1/x).series(x, 0, 5))
-    raises(PoleError, lambda: (x*sin(1/x)).series(x, 0, 5))
+    pytest.raises(PoleError, lambda: sin(1/x).series(x, 0, 5))
+    pytest.raises(PoleError, lambda: sin(1 + 1/x).series(x, 0, 5))
+    pytest.raises(PoleError, lambda: (x*sin(1/x)).series(x, 0, 5))
 
 
 def test_expsinbug():
@@ -452,8 +452,7 @@ def test_abs():
     assert abs(x + 1).nseries(x, n=4) == x + 1
     assert abs(sin(x)).nseries(x, n=4) == x - Rational(1, 6)*x**3 + O(x**4)
     assert abs(sin(-x)).nseries(x, n=4) == x - Rational(1, 6)*x**3 + O(x**4)
-    assert abs(x - a).nseries(x, 1) == Piecewise((x - 1, Eq(1 - a, 0)),
-                                                ((x - a)*sign(1 - a), True))
+    assert abs(x - a).nseries(x, 1) == (x - a)*sign(1 - a)
 
 
 def test_dir():

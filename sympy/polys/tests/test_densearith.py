@@ -1,9 +1,8 @@
 """Tests for dense recursive polynomials' arithmetics. """
 
-from sympy.polys.densebasic import (
-    dup_normal, dmp_normal,
-)
+import pytest
 
+from sympy.polys.densebasic import dup_normal, dmp_normal
 from sympy.polys.densearith import (
     dup_add_term, dmp_add_term,
     dup_sub_term, dmp_sub_term,
@@ -31,17 +30,11 @@ from sympy.polys.densearith import (
     dmp_div, dmp_rem, dmp_quo, dmp_exquo,
     dup_max_norm, dmp_max_norm,
     dup_l1_norm, dmp_l1_norm,
-    dup_expand, dmp_expand,
-)
+    dup_expand, dmp_expand)
 
-from sympy.polys.polyerrors import (
-    ExactQuotientFailed,
-)
-
+from sympy.polys.polyerrors import ExactQuotientFailed
 from sympy.polys.specialpolys import f_polys
 from sympy.polys.domains import FF, ZZ, QQ
-
-from sympy.utilities.pytest import raises
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 F_0 = dmp_mul_ground(dmp_normal(f_0, 2, QQ), QQ(1, 7), 2, QQ)
@@ -198,7 +191,7 @@ def test_dmp_mul_ground():
 
 
 def test_dup_quo_ground():
-    raises(ZeroDivisionError, lambda: dup_quo_ground(dup_normal([1, 2,
+    pytest.raises(ZeroDivisionError, lambda: dup_quo_ground(dup_normal([1, 2,
            3], ZZ), ZZ(0), ZZ))
 
     f = dup_normal([], ZZ)
@@ -220,9 +213,9 @@ def test_dup_quo_ground():
 
 
 def test_dup_exquo_ground():
-    raises(ZeroDivisionError, lambda: dup_exquo_ground(dup_normal([1,
+    pytest.raises(ZeroDivisionError, lambda: dup_exquo_ground(dup_normal([1,
            2, 3], ZZ), ZZ(0), ZZ))
-    raises(ExactQuotientFailed, lambda: dup_exquo_ground(dup_normal([1,
+    pytest.raises(ExactQuotientFailed, lambda: dup_exquo_ground(dup_normal([1,
            2, 3], ZZ), ZZ(3), ZZ))
 
     f = dup_normal([], ZZ)
@@ -773,7 +766,7 @@ def test_dup_pdiv():
     assert dup_pquo(f, g, ZZ) == q
     assert dup_prem(f, g, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, ZZ))
 
     f = dup_normal([3, 1, 1, 5], QQ)
     g = dup_normal([5, -3, 1], QQ)
@@ -785,7 +778,7 @@ def test_dup_pdiv():
     assert dup_pquo(f, g, QQ) == q
     assert dup_prem(f, g, QQ) == r
 
-    raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, QQ))
+    pytest.raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, QQ))
 
 
 def test_dmp_pdiv():
@@ -799,7 +792,7 @@ def test_dmp_pdiv():
     assert dmp_pquo(f, g, 1, ZZ) == q
     assert dmp_prem(f, g, 1, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dmp_pexquo(f, g, 1, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_pexquo(f, g, 1, ZZ))
 
     f = dmp_normal([[1], [], [1, 0, 0]], 1, ZZ)
     g = dmp_normal([[2], [-2, 0]], 1, ZZ)
@@ -811,11 +804,11 @@ def test_dmp_pdiv():
     assert dmp_pquo(f, g, 1, ZZ) == q
     assert dmp_prem(f, g, 1, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dmp_pexquo(f, g, 1, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_pexquo(f, g, 1, ZZ))
 
 
 def test_dup_rr_div():
-    raises(ZeroDivisionError, lambda: dup_rr_div([1, 2, 3], [], ZZ))
+    pytest.raises(ZeroDivisionError, lambda: dup_rr_div([1, 2, 3], [], ZZ))
 
     f = dup_normal([3, 1, 1, 5], ZZ)
     g = dup_normal([5, -3, 1], ZZ)
@@ -826,7 +819,7 @@ def test_dup_rr_div():
 
 
 def test_dmp_rr_div():
-    raises(ZeroDivisionError, lambda: dmp_rr_div([[1, 2], [3]], [[]], 1, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: dmp_rr_div([[1, 2], [3]], [[]], 1, ZZ))
 
     f = dmp_normal([[1], [], [1, 0, 0]], 1, ZZ)
     g = dmp_normal([[1], [-1, 0]], 1, ZZ)
@@ -853,7 +846,7 @@ def test_dmp_rr_div():
 
 
 def test_dup_ff_div():
-    raises(ZeroDivisionError, lambda: dup_ff_div([1, 2, 3], [], QQ))
+    pytest.raises(ZeroDivisionError, lambda: dup_ff_div([1, 2, 3], [], QQ))
 
     f = dup_normal([3, 1, 1, 5], QQ)
     g = dup_normal([5, -3, 1], QQ)
@@ -865,7 +858,7 @@ def test_dup_ff_div():
 
 
 def test_dmp_ff_div():
-    raises(ZeroDivisionError, lambda: dmp_ff_div([[1, 2], [3]], [[]], 1, QQ))
+    pytest.raises(ZeroDivisionError, lambda: dmp_ff_div([[1, 2], [3]], [[]], 1, QQ))
 
     f = dmp_normal([[1], [], [1, 0, 0]], 1, QQ)
     g = dmp_normal([[1], [-1, 0]], 1, QQ)
@@ -899,7 +892,7 @@ def test_dup_div():
     assert dup_quo(f, g, ZZ) == q
     assert dup_rem(f, g, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dup_exquo(f, g, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dup_exquo(f, g, ZZ))
 
     f, g, q, r = [5, 4, 3, 2, 1, 0], [1, 2, 0, 0, 9], [5, -6], [15, 2, -44, 54]
 
@@ -907,7 +900,7 @@ def test_dup_div():
     assert dup_quo(f, g, ZZ) == q
     assert dup_rem(f, g, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dup_exquo(f, g, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dup_exquo(f, g, ZZ))
 
 
 def test_dmp_div():
@@ -917,7 +910,7 @@ def test_dmp_div():
     assert dmp_quo(f, g, 0, ZZ) == q
     assert dmp_rem(f, g, 0, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 0, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 0, ZZ))
 
     f, g, q, r = [[[1]]], [[[2]], [1]], [[[]]], [[[1]]]
 
@@ -925,7 +918,7 @@ def test_dmp_div():
     assert dmp_quo(f, g, 2, ZZ) == q
     assert dmp_rem(f, g, 2, ZZ) == r
 
-    raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 2, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 2, ZZ))
 
 
 def test_dup_max_norm():

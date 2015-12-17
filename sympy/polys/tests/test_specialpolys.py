@@ -1,7 +1,8 @@
 """Tests for functions for generating interesting polynomials. """
 
+import pytest
+
 from sympy import Poly, ZZ, symbols
-from sympy.utilities.pytest import raises
 
 from sympy.polys.specialpolys import (
     swinnerton_dyer_poly,
@@ -14,14 +15,13 @@ from sympy.polys.specialpolys import (
     fateman_poly_F_2,
     dmp_fateman_poly_F_2,
     fateman_poly_F_3,
-    dmp_fateman_poly_F_3,
-)
+    dmp_fateman_poly_F_3)
 
 from sympy.abc import x, y, z
 
 
 def test_swinnerton_dyer_poly():
-    raises(ValueError, lambda: swinnerton_dyer_poly(0, x))
+    pytest.raises(ValueError, lambda: swinnerton_dyer_poly(0, x))
 
     assert swinnerton_dyer_poly(1, x, polys=True) == Poly(x**2 - 2)
 
@@ -32,7 +32,7 @@ def test_swinnerton_dyer_poly():
 
 
 def test_cyclotomic_poly():
-    raises(ValueError, lambda: cyclotomic_poly(0, x))
+    pytest.raises(ValueError, lambda: cyclotomic_poly(0, x))
 
     assert cyclotomic_poly(1, x, polys=True) == Poly(x - 1)
 
@@ -45,8 +45,8 @@ def test_cyclotomic_poly():
 
 
 def test_symmetric_poly():
-    raises(ValueError, lambda: symmetric_poly(-1, x, y, z))
-    raises(ValueError, lambda: symmetric_poly(5, x, y, z))
+    pytest.raises(ValueError, lambda: symmetric_poly(-1, x, y, z))
+    pytest.raises(ValueError, lambda: symmetric_poly(5, x, y, z))
 
     assert symmetric_poly(1, x, y, z, polys=True) == Poly(x + y + z)
     assert symmetric_poly(1, (x, y, z), polys=True) == Poly(x + y + z)

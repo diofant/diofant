@@ -161,7 +161,7 @@ class IntegralTransform(Function):
     def _eval_rewrite_as_Integral(self, *args):
         return self.as_integral
 
-from sympy.solvers.inequalities import _solve_inequality
+from sympy.solvers.inequalities import solve_univariate_inequality
 
 
 def _simplify(expr, doit):
@@ -250,7 +250,9 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
                         or d_.has(s) or not d_.has(t):
                     aux_ += [d]
                     continue
-                soln = _solve_inequality(d_, t)
+                soln = solve_univariate_inequality(d_, t)
+                t_ = Dummy("t", real=True)
+                soln = soln.subs(t, t_).subs(t_, t)
                 if not soln.is_Relational or \
                         soln.rel_op not in ('>', '>=', '<', '<='):
                     aux_ += [d]
@@ -1007,7 +1009,9 @@ def _laplace_transform(f, t, s_, simplify=True):
                         or d_.has(s) or not d_.has(t):
                     aux_ += [d]
                     continue
-                soln = _solve_inequality(d_, t)
+                soln = solve_univariate_inequality(d_, t)
+                t_ = Dummy("t", real=True)
+                soln = soln.subs(t, t_).subs(t_, t)
                 if not soln.is_Relational or \
                         soln.rel_op not in ('>', '>=', '<', '<='):
                     aux_ += [d]
@@ -1171,7 +1175,9 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
         a = arg.subs(exp(-t), u)
         if a.has(t):
             return Heaviside(arg)
-        rel = _solve_inequality(a > 0, u)
+        rel = solve_univariate_inequality(a > 0, u)
+        u_ = Dummy('u', real=True)
+        rel = rel.subs(u, u_).subs(u_, u)
         if rel.lts == u:
             k = log(rel.gts)
             return Heaviside(t + k)

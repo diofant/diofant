@@ -1,5 +1,7 @@
 from __future__ import division
 
+import pytest
+
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
@@ -7,7 +9,6 @@ from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             are_similar, convex_hull, intersection,
                             Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
 from sympy.geometry.util import are_coplanar
-from sympy.utilities.pytest import raises, slow
 
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)
@@ -32,7 +33,7 @@ def feq(a, b):
     return -t < a - b < t
 
 
-@slow
+@pytest.mark.slow
 def test_plane():
     p1 = Point3D(0, 0, 0)
     p2 = Point3D(1, 1, 1)
@@ -128,7 +129,7 @@ def test_plane():
     assert are_coplanar(Plane(p1, p2, p3), Plane(p1, p3, p2))
     assert Plane.are_concurrent(pl3, pl4, pl5) is False
     assert Plane.are_concurrent(pl6) is False
-    raises(ValueError, lambda: Plane.are_concurrent(Point3D(0, 0, 0)))
+    pytest.raises(ValueError, lambda: Plane.are_concurrent(Point3D(0, 0, 0)))
 
     assert pl3.parallel_plane(Point3D(1, 2, 5)) == Plane(Point3D(1, 2, 5),
                                                          normal_vector=(1, -2, 1))

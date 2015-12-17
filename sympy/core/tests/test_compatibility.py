@@ -1,6 +1,7 @@
+import pytest
+
 from sympy.core.compatibility import default_sort_key, as_int, ordered, iterable
 from sympy.core.singleton import S
-from sympy.utilities.pytest import raises
 
 from sympy.abc import x
 
@@ -12,12 +13,12 @@ def test_default_sort_key():
 
 
 def test_as_int():
-    raises(ValueError, lambda: as_int(1.1))
-    raises(ValueError, lambda: as_int([]))
-    raises(ValueError, lambda: as_int(S.NaN))
-    raises(ValueError, lambda: as_int(S.Infinity))
-    raises(ValueError, lambda: as_int(S.NegativeInfinity))
-    raises(ValueError, lambda: as_int(S.ComplexInfinity))
+    pytest.raises(ValueError, lambda: as_int(1.1))
+    pytest.raises(ValueError, lambda: as_int([]))
+    pytest.raises(ValueError, lambda: as_int(S.NaN))
+    pytest.raises(ValueError, lambda: as_int(S.Infinity))
+    pytest.raises(ValueError, lambda: as_int(S.NegativeInfinity))
+    pytest.raises(ValueError, lambda: as_int(S.ComplexInfinity))
 
 
 def test_iterable():
@@ -35,5 +36,5 @@ def test_ordered():
     assert list(ordered(l, warn=True)) == l
     l = [[1], [2], [1]]
     assert list(ordered(l, warn=True)) == [[1], [1], [2]]
-    raises(ValueError, lambda: list(ordered(['a', 'ab'], keys=[lambda x: x[0]],
+    pytest.raises(ValueError, lambda: list(ordered(['a', 'ab'], keys=[lambda x: x[0]],
         default=False, warn=True)))

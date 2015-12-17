@@ -1,3 +1,7 @@
+import os
+
+import pytest
+
 from sympy import (
     Abs, And, Derivative, Dummy, Eq, Float, Function, Gt, I, Integral,
     LambertW, Lt, Matrix, Or, Piecewise, Poly, Q, Rational, S, Symbol,
@@ -8,14 +12,12 @@ from sympy import (
 
 from sympy.core.compatibility import range
 from sympy.core.function import nfloat
-from sympy.solvers import solve_linear_system, solve_linear_system_LU, \
-    solve_undetermined_coeffs
-from sympy.solvers.solvers import _invert, unrad, checksol, posify, _ispow, \
-    det_quick, det_perm, det_minor, _simple_dens
-
+from sympy.solvers import (solve_linear_system, solve_linear_system_LU,
+                           solve_undetermined_coeffs)
+from sympy.solvers.solvers import (_invert, unrad, checksol, posify,
+                                   _ispow, det_quick, det_perm, det_minor,
+                                   _simple_dens)
 from sympy.polys.rootoftools import RootOf
-
-from sympy.utilities.pytest import slow, XFAIL, SKIP, raises, skip, ON_TRAVIS
 from sympy.utilities.randtest import verify_numerically as tn
 
 from sympy.abc import a, b, c, d, k, h, p, x, y, z, t, q, m
@@ -137,8 +139,8 @@ def test_solve_args():
         [{a: (-b**2*x + 3*x**3 + 12*x**2 + 4*x + 16)/(x**2*(x + 4))}]
     # failed single equation
     assert solve(1/(1/x - y + exp(y))) == []
-    raises(
-        NotImplementedError, lambda: solve(exp(x) + sin(x) + exp(y) + sin(y)))
+    pytest.raises(NotImplementedError,
+                  lambda: solve(exp(x) + sin(x) + exp(y) + sin(y)))
     # failed system
     # --  when no symbols given, 1 fails
     assert solve([y, exp(x) + x]) == [{x: -LambertW(1), y: 0}]
@@ -254,7 +256,7 @@ def test_highorder_poly():
     assert all(isinstance(i, RootOf) for i in sol) and len(sol) == 6
 
 
-@slow
+@pytest.mark.slow
 def test_quintics_2():
     f = x**5 + 15*x + 12
     s = solve(f, check=False)
@@ -411,15 +413,15 @@ def test_solve_transcendental():
 
     # misc
     # make sure that the right variables is picked up in tsolve
-    raises(NotImplementedError, lambda: solve((exp(x) + 1)**x - 2))
+    pytest.raises(NotImplementedError, lambda: solve((exp(x) + 1)**x - 2))
 
     # shouldn't generate a GeneratorsNeeded error in _tsolve when the NaN is generated
     # for eq_down. Actual answers, as determined numerically are approx. +/- 0.83
-    raises(NotImplementedError, lambda:
-        solve(sinh(x)*sinh(sinh(x)) + cosh(x)*cosh(sinh(x)) - 3))
+    pytest.raises(NotImplementedError, lambda:
+                  solve(sinh(x)*sinh(sinh(x)) + cosh(x)*cosh(sinh(x)) - 3))
 
     # watch out for recursive loop in tsolve
-    raises(NotImplementedError, lambda: solve((x + 2)**y*x - 3, x))
+    pytest.raises(NotImplementedError, lambda: solve((x + 2)**y*x - 3, x))
 
     # issue 7245
     assert solve(sin(sqrt(x))) == [0, pi**2]
@@ -515,7 +517,7 @@ def test_solve_linear():
     assert solve_linear((x + 1)*exp(x), symbols=[x]) == ((x + 1)*exp(x), 1)
     assert solve_linear(x*exp(-x**2), symbols=[x]) == (0, 0)
     assert solve_linear(0**x - 1) == (0**x - 1, 1)
-    raises(ValueError, lambda: solve_linear(Eq(x, 3), 3))
+    pytest.raises(ValueError, lambda: solve_linear(Eq(x, 3), 3))
 
 
 def test_solve_undetermined_coeffs():
@@ -572,8 +574,8 @@ def test_issue_4793():
     assert solve(x**2*z**2 - z**2*y**2) == [{x: -y}, {x: y}, {z: 0}]
     assert solve((x - 1)/(1 + 1/(x - 1))) == []
     assert solve(x**(y*z) - x, x) == [1]
-    raises(NotImplementedError, lambda: solve(log(x) - exp(x), x))
-    raises(NotImplementedError, lambda: solve(2**x - exp(x) - 3))
+    pytest.raises(NotImplementedError, lambda: solve(log(x) - exp(x), x))
+    pytest.raises(NotImplementedError, lambda: solve(2**x - exp(x) - 3))
 
 
 def test_PR1964():
@@ -738,7 +740,7 @@ def test_issue_5335():
     assert len(solve(eqs, sym, manual=True, minimal=True, simplify=False)) == 2
 
 
-@SKIP("Hangs")
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def _test_issue_5335_float():
     # gives ZeroDivisionError: polynomial division
     lam, a0, conc = symbols('lam a0 conc')
@@ -765,12 +767,12 @@ def test_polysys():
                  y - 3, x - y - 4], (y, x))
 
 
-@slow
+@pytest.mark.slow
 def test_unrad1():
-    raises(NotImplementedError, lambda:
-        unrad(sqrt(x) + sqrt(x + 1) + sqrt(1 - sqrt(x)) + 3))
-    raises(NotImplementedError, lambda:
-        unrad(sqrt(x) + (x + 1)**Rational(1, 3) + 2*sqrt(y)))
+    pytest.raises(NotImplementedError, lambda:
+                  unrad(sqrt(x) + sqrt(x + 1) + sqrt(1 - sqrt(x)) + 3))
+    pytest.raises(NotImplementedError, lambda:
+                  unrad(sqrt(x) + (x + 1)**Rational(1, 3) + 2*sqrt(y)))
 
     s = symbols('s', cls=Dummy)
 
@@ -887,10 +889,10 @@ def test_unrad1():
     assert check(unrad(sqrt(x) + root(x, 3) + y),
         (s**3 + s**2 + y, [s, s**6 - x]))
     assert solve(sqrt(x) + root(x, 3) - 2) == [1]
-    raises(NotImplementedError, lambda:
-        solve(sqrt(x) + root(x, 3) + root(x + 1, 5) - 2))
+    pytest.raises(NotImplementedError, lambda:
+                  solve(sqrt(x) + root(x, 3) + root(x + 1, 5) - 2))
     # fails through a different code path
-    raises(NotImplementedError, lambda: solve(-sqrt(2) + cosh(x)/x))
+    pytest.raises(NotImplementedError, lambda: solve(-sqrt(2) + cosh(x)/x))
     # unrad some
     assert solve(sqrt(x + root(x, 3))+root(x - y, 5), y) == [
         x + (x**(S(1)/3) + x)**(S(5)/2)]
@@ -916,8 +918,8 @@ def test_unrad1():
     assert check(unrad(root(x - 1, 3) + root(x + 1, 5) + root(2, 5)),
         (s**5 + 5*2**(S(1)/5)*s**4 + s**3 + 10*2**(S(2)/5)*s**3 +
         10*2**(S(3)/5)*s**2 + 5*2**(S(4)/5)*s + 4, [s, s**3 - x + 1]))
-    raises(NotImplementedError, lambda:
-        unrad((root(x, 2) + root(x, 3) + root(x, 4)).subs(x, x**5 - x + 1)))
+    pytest.raises(NotImplementedError, lambda:
+                  unrad((root(x, 2) + root(x, 3) + root(x, 4)).subs(x, x**5 - x + 1)))
 
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
@@ -954,8 +956,8 @@ def test_unrad1():
     # is this needed?
     # assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
     #    x**15 - x**3*cosh(x)**5 - 3*x**2*cosh(x)**5 - 3*x*cosh(x)**5 - cosh(x)**5, [])
-    raises(NotImplementedError, lambda:
-        unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))
+    pytest.raises(NotImplementedError, lambda:
+                  unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))
     assert unrad(S('(x+y)**(2*y/3) + (x+y)**(1/3) + 1')) is None
     assert check(unrad(S('(x+y)**(2*y/3) + (x+y)**(1/3) + 1'), x),
         (s**(2*y) + s + 1, [s, s**3 - x - y]))
@@ -1041,7 +1043,7 @@ def test_unrad1():
     assert solve(eq) == []  # not other code errors
 
 
-@slow
+@pytest.mark.slow
 def test_unrad_slow():
     # this has roots with multiplicity > 1; there should be no
     # repeats in roots obtained, however
@@ -1049,7 +1051,7 @@ def test_unrad_slow():
     assert solve(eq) == [S.Half]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_unrad_fail():
     # this only works if we check real_root(eq.subs(x, S(1)/3))
     # but checksol doesn't work like that
@@ -1185,8 +1187,8 @@ def test_issue_5901():
     # anything but a Mul or Add; it now raises an error if it gets anything
     # but a symbol and solve handles the substitutions necessary so solve_linear
     # won't make this error
-    raises(
-        ValueError, lambda: solve_linear(f(x) + f(x).diff(x), symbols=[f(x)]))
+    pytest.raises(ValueError,
+                  lambda: solve_linear(f(x) + f(x).diff(x), symbols=[f(x)]))
     assert solve_linear(f(x) + f(x).diff(x), symbols=[x]) == \
         (f(x) + Derivative(f(x), x), 1)
     assert solve_linear(f(x) + Integral(x, (x, y)), symbols=[x]) == \
@@ -1431,7 +1433,7 @@ def test_issues_6819_6820_6821_6248_8692():
 
     i = symbols('i', imaginary=True)
     assert solve(abs(i) - 3) == [-3*I, 3*I]
-    raises(NotImplementedError, lambda: solve(abs(x) - 3))
+    pytest.raises(NotImplementedError, lambda: solve(abs(x) - 3))
 
     w = symbols('w', integer=True)
     assert solve(2*x**w - 4*y**w, w) == solve((x/y)**w - 2, w)
@@ -1477,7 +1479,7 @@ def test_lambert_multivariate():
     eq = (x*exp(x) - 3).subs(x, x*exp(x))
     assert solve(eq) == [LambertW(3*exp(-LambertW(3)))]
     # coverage test
-    raises(NotImplementedError, lambda: solve(x - sin(x)*log(y - x), x))
+    pytest.raises(NotImplementedError, lambda: solve(x - sin(x)*log(y - x), x))
 
     # if sign is unknown then only this one solution is obtained
     assert solve(3*log(a**(3*x + 5)) + a**(3*x + 5), x) == [
@@ -1517,7 +1519,7 @@ def test_lambert_multivariate():
         acos(-3*LambertW(-log(3)/3, -1)/log(3))]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_other_lambert():
     from sympy.abc import x
     assert solve(3*sin(x) - x*sin(3), x) == [3]
@@ -1543,7 +1545,7 @@ def test_rewrite_trig():
                                            -2*atan(-sqrt(5) + 2)]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_rewrite_trigh():
     # if this import passes then the test below should also pass
     from sympy import sech
@@ -1671,7 +1673,7 @@ def test_issue_7322():
 
 
 def test_nsolve():
-    raises(ValueError, lambda: nsolve(x, (-1, 1), method='bisect'))
+    pytest.raises(ValueError, lambda: nsolve(x, (-1, 1), method='bisect'))
 
 
 def test_issue_8587():
@@ -1683,8 +1685,8 @@ def test_high_order_multivariate():
     assert len(solve(a*x**3 - x + 1, x)) == 3
     assert len(solve(a*x**4 - x + 1, x)) == 4
     assert solve(a*x**5 - x + 1, x) == []  # incomplete solution allowed
-    raises(NotImplementedError, lambda:
-        solve(a*x**5 - x + 1, x, incomplete=False))
+    pytest.raises(NotImplementedError, lambda:
+                  solve(a*x**5 - x + 1, x, incomplete=False))
 
     # result checking must always consider the denominator and RootOf
     # must be checked, too
@@ -1716,7 +1718,7 @@ def test_issue_8755():
         1176*(x + 2)**(S(2)/3)*y - 169*x + 686, y, _unrad=False)) == 3
 
 
-@slow
+@pytest.mark.slow
 def test_issue_8828():
     x1 = 0
     y1 = -620

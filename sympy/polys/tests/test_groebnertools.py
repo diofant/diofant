@@ -1,5 +1,7 @@
 """Tests for Groebner bases. """
 
+import pytest
+
 from sympy.polys.groebnertools import (
     groebner, sig, sig_key,
     lbp, lbp_key, critical_pair,
@@ -14,7 +16,6 @@ from sympy.polys.orderings import lex, grlex
 from sympy.polys.rings import ring, xring
 from sympy.polys.domains import ZZ, QQ
 
-from sympy.utilities.pytest import slow
 from sympy.polys import polyconfig as config
 from sympy.core.compatibility import range
 
@@ -157,7 +158,7 @@ def test_benchmark_minpoly_f5b():
         _do_test_benchmark_minpoly()
 
 
-@slow
+@pytest.mark.slow
 def test_benchmark_coloring():
     V = range(1, 12 + 1)
     E = [(1, 2), (2, 3), (1, 4), (1, 6), (1, 12), (2, 5), (2, 7), (3, 8), (3, 10),
@@ -336,13 +337,13 @@ def _do_test_benchmark_czichowski():
 # NOTE: This is very slow (> 2 minutes on 3.4 GHz) without GMPY
 
 
-@slow
+@pytest.mark.slow
 def test_benchmark_czichowski_buchberger():
     with config.using(groebner='buchberger'):
         _do_test_benchmark_czichowski()
 
 
-@slow
+@pytest.mark.slow
 def test_benchmark_czichowski_f5b():
     with config.using(groebner='f5b'):
         _do_test_benchmark_czichowski()

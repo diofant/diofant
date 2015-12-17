@@ -1,9 +1,9 @@
 """Tests for computational algebraic number field theory. """
 
-from sympy import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-    pi, cos, sin, exp)
+import pytest
 
-from sympy.utilities.pytest import raises, slow
+from sympy import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
+                   pi, cos, sin, exp)
 from sympy.core.compatibility import range
 
 from sympy.polys.numberfields import (
@@ -14,14 +14,12 @@ from sympy.polys.numberfields import (
     field_isomorphism,
     to_number_field,
     AlgebraicNumber,
-    isolate, IntervalPrinter,
-)
+    isolate, IntervalPrinter)
 
 from sympy.polys.polyerrors import (
     IsomorphismFailed,
     NotAlgebraic,
-    GeneratorsError,
-)
+    GeneratorsError)
 
 from sympy.polys.polyclasses import DMP
 from sympy.polys.domains import QQ
@@ -72,9 +70,9 @@ def test_minimal_polynomial():
     assert minimal_polynomial(
         1/sqrt(a), x) == 392*x**8 - 1232*x**6 + 612*x**4 + 4*x**2 - 1
 
-    raises(NotAlgebraic, lambda: minimal_polynomial(oo, x))
-    raises(NotAlgebraic, lambda: minimal_polynomial(2**y, x))
-    raises(NotAlgebraic, lambda: minimal_polynomial(sin(1), x))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(oo, x))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(2**y, x))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(sin(1), x))
 
     assert minimal_polynomial(sqrt(2)).dummy_eq(x**2 - 2)
     assert minimal_polynomial(sqrt(2), x) == x**2 - 2
@@ -227,14 +225,14 @@ def test_minpoly_compose():
     ex = 2**Rational(1, 3)*exp(Rational(2, 3)*I*pi)
     assert minimal_polynomial(ex, x) == x**3 - 2
 
-    raises(NotAlgebraic, lambda: minimal_polynomial(cos(pi*sqrt(2)), x))
-    raises(NotAlgebraic, lambda: minimal_polynomial(sin(pi*sqrt(2)), x))
-    raises(NotAlgebraic, lambda: minimal_polynomial(exp(I*pi*sqrt(2)), x))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(cos(pi*sqrt(2)), x))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(sin(pi*sqrt(2)), x))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(exp(I*pi*sqrt(2)), x))
 
     # issue 5934
     ex = 1/(-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
         24*sqrt(10)*sqrt(-sqrt(5) + 5))**2) + 1
-    raises(ZeroDivisionError, lambda: minimal_polynomial(ex, x))
+    pytest.raises(ZeroDivisionError, lambda: minimal_polynomial(ex, x))
 
     ex = sqrt(1 + 2**Rational(1,3)) + sqrt(1 + 2**Rational(1,4)) + sqrt(2)
     mp = minimal_polynomial(ex, x)
@@ -278,15 +276,15 @@ def test_primitive_element():
 
     assert primitive_element([sqrt(2)], polys=True) == (Poly(x**2 - 2), [1])
 
-    raises(ValueError, lambda: primitive_element([], x, ex=False))
-    raises(ValueError, lambda: primitive_element([], x, ex=True))
+    pytest.raises(ValueError, lambda: primitive_element([], x, ex=False))
+    pytest.raises(ValueError, lambda: primitive_element([], x, ex=True))
 
 
 def test_field_isomorphism_pslq():
     a = AlgebraicNumber(I)
     b = AlgebraicNumber(I*sqrt(3))
 
-    raises(NotImplementedError, lambda: field_isomorphism_pslq(a, b))
+    pytest.raises(NotImplementedError, lambda: field_isomorphism_pslq(a, b))
 
     a = AlgebraicNumber(sqrt(2))
     b = AlgebraicNumber(sqrt(3))
@@ -506,7 +504,7 @@ def test_to_number_field():
     assert to_number_field(sqrt(2), sqrt(2) + sqrt(3)) == a
     assert to_number_field(sqrt(2), AlgebraicNumber(sqrt(2) + sqrt(3))) == a
 
-    raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), sqrt(3)))
+    pytest.raises(IsomorphismFailed, lambda: to_number_field(sqrt(2), sqrt(3)))
 
 
 def test_AlgebraicNumber():
@@ -687,7 +685,7 @@ def test_isolate():
     assert isolate(sqrt(2), eps=S(1)/100) == (S(24)/17, S(17)/12)
     assert isolate(-sqrt(2), eps=S(1)/100) == (-S(17)/12, -S(24)/17)
 
-    raises(NotImplementedError, lambda: isolate(I))
+    pytest.raises(NotImplementedError, lambda: isolate(I))
 
 
 def test_minpoly_fraction_field():
@@ -721,13 +719,13 @@ def test_minpoly_fraction_field():
 
     assert minimal_polynomial(a, y) == y
 
-    raises(NotAlgebraic, lambda: minimal_polynomial(exp(x), y))
-    raises(GeneratorsError, lambda: minimal_polynomial(sqrt(x), x))
-    raises(GeneratorsError, lambda: minimal_polynomial(sqrt(x) - y, x))
-    raises(NotImplementedError, lambda: minimal_polynomial(sqrt(x), y, compose=False))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(exp(x), y))
+    pytest.raises(GeneratorsError, lambda: minimal_polynomial(sqrt(x), x))
+    pytest.raises(GeneratorsError, lambda: minimal_polynomial(sqrt(x) - y, x))
+    pytest.raises(NotImplementedError, lambda: minimal_polynomial(sqrt(x), y, compose=False))
 
 
-@slow
+@pytest.mark.slow
 def test_minpoly_fraction_field_slow():
     assert minimal_polynomial(minimal_polynomial(sqrt(x**Rational(1,5) - 1),
         y).subs(y, sqrt(x**Rational(1,5) - 1)), z) == z
@@ -741,4 +739,4 @@ def test_minpoly_domain():
     assert minimal_polynomial(sqrt(Rational(3,2)), x,
         domain=QQ.algebraic_field(sqrt(2))) == 2*x**2 - 3
 
-    raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))

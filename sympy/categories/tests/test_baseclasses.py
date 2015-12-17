@@ -1,8 +1,9 @@
+import pytest
+
 from sympy.categories import (Object, Morphism, IdentityMorphism,
                               NamedMorphism, CompositeMorphism,
                               Diagram, Category)
 from sympy.categories.baseclasses import Class
-from sympy.utilities.pytest import raises
 from sympy import FiniteSet, EmptySet, Dict, Tuple
 
 
@@ -69,17 +70,17 @@ def test_morphisms():
     assert CompositeMorphism(id_A) == id_A
 
     # Test bad compositions.
-    raises(ValueError, lambda: f * g)
+    pytest.raises(ValueError, lambda: f * g)
 
-    raises(TypeError, lambda: f.compose(None))
-    raises(TypeError, lambda: id_A.compose(None))
-    raises(TypeError, lambda: f * None)
-    raises(TypeError, lambda: id_A * None)
+    pytest.raises(TypeError, lambda: f.compose(None))
+    pytest.raises(TypeError, lambda: id_A.compose(None))
+    pytest.raises(TypeError, lambda: f * None)
+    pytest.raises(TypeError, lambda: id_A * None)
 
-    raises(TypeError, lambda: CompositeMorphism(f, None, 1))
+    pytest.raises(TypeError, lambda: CompositeMorphism(f, None, 1))
 
-    raises(ValueError, lambda: NamedMorphism(A, B, ""))
-    raises(NotImplementedError, lambda: Morphism(A, B))
+    pytest.raises(ValueError, lambda: NamedMorphism(A, B, ""))
+    pytest.raises(NotImplementedError, lambda: Morphism(A, B))
 
 
 def test_diagram():
@@ -179,10 +180,10 @@ def test_diagram():
     d = Diagram([f, g], {f: "unique", g * f: "veryunique"})
     d1 = d.subdiagram_from_objects(FiniteSet(A, B))
     assert d1 == Diagram([f], {f: "unique"})
-    raises(ValueError, lambda: d.subdiagram_from_objects(FiniteSet(A,
+    pytest.raises(ValueError, lambda: d.subdiagram_from_objects(FiniteSet(A,
            Object("D"))))
 
-    raises(ValueError, lambda: Diagram({IdentityMorphism(A): "unique"}))
+    pytest.raises(ValueError, lambda: Diagram({IdentityMorphism(A): "unique"}))
 
 
 def test_category():
@@ -204,4 +205,4 @@ def test_category():
     assert K.objects == Class(objects)
     assert K.commutative_diagrams == FiniteSet(d1, d2)
 
-    raises(ValueError, lambda: Category(""))
+    pytest.raises(ValueError, lambda: Category(""))

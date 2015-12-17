@@ -1,6 +1,7 @@
+import pytest
+
 from sympy.core.logic import (fuzzy_not, Logic, And, Or, Not, fuzzy_and,
-    fuzzy_or, _fuzzy_group)
-from sympy.utilities.pytest import raises
+                              fuzzy_or, _fuzzy_group)
 
 T = True
 F = False
@@ -34,7 +35,7 @@ def test_fuzzy_and():
     assert [fuzzy_and([w]) for w in [U, T, F]] == [U, T, F]
     assert fuzzy_and([T, F, U]) == F
     assert fuzzy_and([]) == T
-    raises(TypeError, lambda: fuzzy_and())
+    pytest.raises(TypeError, lambda: fuzzy_and())
 
 
 def test_fuzzy_or():
@@ -47,7 +48,7 @@ def test_fuzzy_or():
     assert [fuzzy_or([w]) for w in [U, T, F]] == [U, T, F]
     assert fuzzy_or([T, F, U]) == T
     assert fuzzy_or([]) == F
-    raises(TypeError, lambda: fuzzy_or())
+    pytest.raises(TypeError, lambda: fuzzy_or())
 
 
 def test_logic_cmp():
@@ -133,15 +134,15 @@ def test_logic_fromstring():
     assert S('a & b & c') == And('a', 'b', 'c')
     assert S('a | b | c') == Or('a', 'b', 'c')
 
-    raises(ValueError, lambda: S('| a'))
-    raises(ValueError, lambda: S('& a'))
-    raises(ValueError, lambda: S('a | | b'))
-    raises(ValueError, lambda: S('a | & b'))
-    raises(ValueError, lambda: S('a & & b'))
-    raises(ValueError, lambda: S('a |'))
-    raises(ValueError, lambda: S('a|b'))
-    raises(ValueError, lambda: S('~'))
-    raises(ValueError, lambda: S('~ a'))
+    pytest.raises(ValueError, lambda: S('| a'))
+    pytest.raises(ValueError, lambda: S('& a'))
+    pytest.raises(ValueError, lambda: S('a | | b'))
+    pytest.raises(ValueError, lambda: S('a | & b'))
+    pytest.raises(ValueError, lambda: S('a & & b'))
+    pytest.raises(ValueError, lambda: S('a |'))
+    pytest.raises(ValueError, lambda: S('a|b'))
+    pytest.raises(ValueError, lambda: S('~'))
+    pytest.raises(ValueError, lambda: S('~ a'))
 
 
 def test_logic_not():
@@ -156,6 +157,6 @@ def test_logic_not():
 
 def test_formatting():
     S = Logic.fromstring
-    raises(ValueError, lambda: S('a&b'))
-    raises(ValueError, lambda: S('a|b'))
-    raises(ValueError, lambda: S('~ a'))
+    pytest.raises(ValueError, lambda: S('a&b'))
+    pytest.raises(ValueError, lambda: S('a|b'))
+    pytest.raises(ValueError, lambda: S('~ a'))

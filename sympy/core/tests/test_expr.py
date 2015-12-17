@@ -1,16 +1,17 @@
 from __future__ import division
 
+import pytest
+
 from sympy import (Add, Basic, S, Symbol, Wild, Float, Integer, Rational, I,
-    sin, cos, tan, exp, log, nan, oo, sqrt, symbols, Integral, sympify,
-    WildFunction, Poly, Function, Derivative, Number, pi, NumberSymbol, zoo,
-    Piecewise, Mul, Pow, nsimplify, ratsimp, trigsimp, radsimp, powsimp,
-    simplify, together, collect, factorial, apart, combsimp, factor, refine,
-    cancel, Tuple, default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
-    exp_polar, expand, diff, O, Heaviside, Si, Max)
+                   sin, cos, tan, exp, log, nan, oo, sqrt, symbols, Integral,
+                   sympify, WildFunction, Poly, Function, Derivative, Number,
+                   pi, NumberSymbol, zoo, Piecewise, Mul, Pow, nsimplify, ratsimp,
+                   trigsimp, radsimp, powsimp, simplify, together, collect,
+                   factorial, apart, combsimp, factor, refine, cancel, Tuple,
+                   default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
+                   exp_polar, expand, diff, O, Heaviside, Si, Max)
 from sympy.core.function import AppliedUndef
 from sympy.core.compatibility import range
-
-from sympy.utilities.pytest import raises, XFAIL
 
 from sympy.abc import a, b, c, n, t, u, x, y, z
 
@@ -220,14 +221,14 @@ def test_relational_noncommutative():
 
 def test_basic_nostr():
     for obj in basic_objs:
-        raises(TypeError, lambda: obj + '1')
-        raises(TypeError, lambda: obj - '1')
+        pytest.raises(TypeError, lambda: obj + '1')
+        pytest.raises(TypeError, lambda: obj - '1')
         if obj == 2:
             assert obj * '1' == '11'
         else:
-            raises(TypeError, lambda: obj * '1')
-        raises(TypeError, lambda: obj / '1')
-        raises(TypeError, lambda: obj ** '1')
+            pytest.raises(TypeError, lambda: obj * '1')
+        pytest.raises(TypeError, lambda: obj / '1')
+        pytest.raises(TypeError, lambda: obj ** '1')
 
 
 def test_series_expansion_for_uniform_order():
@@ -297,7 +298,7 @@ def test_as_leading_term_stub():
         pass
     assert foo(1/x).as_leading_term(x) == foo(1/x)
     assert foo(1).as_leading_term(x) == foo(1)
-    raises(NotImplementedError, lambda: foo(x).as_leading_term(x))
+    pytest.raises(NotImplementedError, lambda: foo(x).as_leading_term(x))
 
 
 def test_atoms():
@@ -449,7 +450,7 @@ def test_SAGE1():
     e = Rational(2)*m
     assert e == 10
 
-    raises(TypeError, lambda: Rational(2)*MyInt)
+    pytest.raises(TypeError, lambda: Rational(2)*MyInt)
 
 
 def test_SAGE2():
@@ -460,7 +461,7 @@ def test_SAGE2():
     e = Rational(2)*MyInt()
     assert e == 10
 
-    raises(TypeError, lambda: Rational(2)*MyInt)
+    pytest.raises(TypeError, lambda: Rational(2)*MyInt)
 
 
 def test_SAGE3():
@@ -493,9 +494,9 @@ def test_doit():
 
 
 def test_attribute_error():
-    raises(AttributeError, lambda: x.cos())
-    raises(AttributeError, lambda: x.sin())
-    raises(AttributeError, lambda: x.exp())
+    pytest.raises(AttributeError, lambda: x.cos())
+    pytest.raises(AttributeError, lambda: x.sin())
+    pytest.raises(AttributeError, lambda: x.exp())
 
 
 def test_args():
@@ -613,7 +614,7 @@ def test_as_independent():
            (Integral(x, (x, 1, 2)), x)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_call_2():
     # TODO UndefinedFunction does not subclass Expr
     f = Function('f')
@@ -1209,7 +1210,7 @@ def test_args_cnc():
         [{x}, []]
     assert Mul(x, x**2, evaluate=False).args_cnc(cset=True, warn=False) == \
         [{x, x**2}, []]
-    raises(ValueError, lambda: Mul(x, x, evaluate=False).args_cnc(cset=True))
+    pytest.raises(ValueError, lambda: Mul(x, x, evaluate=False).args_cnc(cset=True))
     assert Mul(x, y, x, evaluate=False).args_cnc() == \
         [[x, y, x], []]
     # always split -1 from leading number
@@ -1393,7 +1394,7 @@ def test_issue_4199():
     # difference gives S.NaN
     a = x - y
     assert a._eval_interval(x, 1, oo)._eval_interval(y, oo, 1) is S.NaN
-    raises(ValueError, lambda: x._eval_interval(x, None, None))
+    pytest.raises(ValueError, lambda: x._eval_interval(x, None, None))
     a = -y*Heaviside(x - y)
     assert a._eval_interval(x, -oo, oo) == -y
     assert a._eval_interval(x, oo, -oo) == y
@@ -1564,7 +1565,7 @@ def test_round():
 
     assert (pi + sqrt(2)).round(2) == 4.56
     assert (10*(pi + sqrt(2))).round(-1) == 50
-    raises(TypeError, lambda: round(x + 2, 2))
+    pytest.raises(TypeError, lambda: round(x + 2, 2))
     assert S(2.3).round(1) == 2.3
     e = S(12.345).round(2)
     assert e == round(12.345, 2)
@@ -1585,7 +1586,7 @@ def test_round():
     assert a.round(27) == Float('2.999999999999999999999999999', '')
     assert a.round(30) == Float('2.999999999999999999999999999', '')
 
-    raises(TypeError, lambda: x.round())
+    pytest.raises(TypeError, lambda: x.round())
 
     # exact magnitude of 10
     assert str(S(1).round()) == '1.'
@@ -1650,7 +1651,7 @@ def test_float_0():
     assert Float(0.0) + 1 == Float(1.0)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_float_0_fail():
     assert Float(0.0)*x == Float(0.0)
     assert (x + Float(0.0)).is_Add

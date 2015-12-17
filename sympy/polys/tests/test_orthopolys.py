@@ -1,7 +1,8 @@
 """Tests for efficient functions for generating orthogonal polynomials. """
 
+import pytest
+
 from sympy import Poly, S, Rational as Q
-from sympy.utilities.pytest import raises
 
 from sympy.polys.orthopolys import (
     jacobi_poly,
@@ -17,7 +18,7 @@ from sympy.abc import x, a, b
 
 
 def test_jacobi_poly():
-    raises(ValueError, lambda: jacobi_poly(-1, a, b, x))
+    pytest.raises(ValueError, lambda: jacobi_poly(-1, a, b, x))
 
     assert jacobi_poly(1, a, b, x, polys=True) == Poly(
         (a/2 + b/2 + 1)*x + a/2 - b/2, x, domain='ZZ(a,b)')
@@ -32,7 +33,7 @@ def test_jacobi_poly():
 
 
 def test_gegenbauer_poly():
-    raises(ValueError, lambda: gegenbauer_poly(-1, a, x))
+    pytest.raises(ValueError, lambda: gegenbauer_poly(-1, a, x))
 
     assert gegenbauer_poly(
         1, a, x, polys=True) == Poly(2*a*x, x, domain='ZZ(a)')
@@ -48,7 +49,7 @@ def test_gegenbauer_poly():
 
 
 def test_chebyshevt_poly():
-    raises(ValueError, lambda: chebyshevt_poly(-1, x))
+    pytest.raises(ValueError, lambda: chebyshevt_poly(-1, x))
 
     assert chebyshevt_poly(1, x, polys=True) == Poly(x)
 
@@ -65,7 +66,7 @@ def test_chebyshevt_poly():
 
 
 def test_chebyshevu_poly():
-    raises(ValueError, lambda: chebyshevu_poly(-1, x))
+    pytest.raises(ValueError, lambda: chebyshevu_poly(-1, x))
 
     assert chebyshevu_poly(1, x, polys=True) == Poly(2*x)
 
@@ -82,7 +83,7 @@ def test_chebyshevu_poly():
 
 
 def test_hermite_poly():
-    raises(ValueError, lambda: hermite_poly(-1, x))
+    pytest.raises(ValueError, lambda: hermite_poly(-1, x))
 
     assert hermite_poly(1, x, polys=True) == Poly(2*x)
 
@@ -99,7 +100,7 @@ def test_hermite_poly():
 
 
 def test_legendre_poly():
-    raises(ValueError, lambda: legendre_poly(-1, x))
+    pytest.raises(ValueError, lambda: legendre_poly(-1, x))
 
     assert legendre_poly(1, x, polys=True) == Poly(x)
 
@@ -117,7 +118,7 @@ def test_legendre_poly():
 
 
 def test_laguerre_poly():
-    raises(ValueError, lambda: laguerre_poly(-1, x))
+    pytest.raises(ValueError, lambda: laguerre_poly(-1, x))
 
     assert laguerre_poly(1, x, polys=True) == Poly(-x + 1)
 

@@ -1,5 +1,7 @@
 """Tests for OO layer of several polynomial representations. """
 
+import pytest
+
 from sympy.polys.polyclasses import DMP, DMF, ANP
 
 from sympy.polys.domains import ZZ, QQ
@@ -8,7 +10,6 @@ from sympy.polys.specialpolys import f_polys
 from sympy.polys.polyerrors import ExactQuotientFailed
 
 from sympy.core.compatibility import long
-from sympy.utilities.pytest import raises
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
@@ -87,7 +88,7 @@ def test_DMP_arithmetics():
     assert f.mul_ground(2) == DMP([[4], [4, 0]], ZZ)
     assert f.quo_ground(2) == DMP([[1], [1, 0]], ZZ)
 
-    raises(ExactQuotientFailed, lambda: f.exquo_ground(3))
+    pytest.raises(ExactQuotientFailed, lambda: f.exquo_ground(3))
 
     f = DMP([[-5]], ZZ)
     g = DMP([[5]], ZZ)
@@ -128,7 +129,7 @@ def test_DMP_arithmetics():
     assert f.pow(2) == h
     assert f**2 == h
 
-    raises(TypeError, lambda: f.pow('x'))
+    pytest.raises(TypeError, lambda: f.pow('x'))
 
     f = DMP([[1], [], [1, 0, 0]], ZZ)
     g = DMP([[2], [-2, 0]], ZZ)
@@ -140,7 +141,7 @@ def test_DMP_arithmetics():
     assert f.pquo(g) == q
     assert f.prem(g) == r
 
-    raises(ExactQuotientFailed, lambda: f.pexquo(g))
+    pytest.raises(ExactQuotientFailed, lambda: f.pexquo(g))
 
     f = DMP([[1], [], [1, 0, 0]], ZZ)
     g = DMP([[1], [-1, 0]], ZZ)
@@ -156,7 +157,7 @@ def test_DMP_arithmetics():
     assert f // g == q
     assert f % g == r
 
-    raises(ExactQuotientFailed, lambda: f.exquo(g))
+    pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
 
 def test_DMP_functionality():
@@ -172,7 +173,7 @@ def test_DMP_functionality():
     assert f.TC() == ZZ(0)
     assert f.nth(1, 1) == ZZ(2)
 
-    raises(TypeError, lambda: f.nth(0, 'x'))
+    pytest.raises(TypeError, lambda: f.nth(0, 'x'))
 
     assert f.max_norm() == 2
     assert f.l1_norm() == 4
@@ -182,7 +183,7 @@ def test_DMP_functionality():
     assert f.diff(m=1, j=0) == u
     assert f.diff(m=1, j=1) == u
 
-    raises(TypeError, lambda: f.diff(m='x', j=0))
+    pytest.raises(TypeError, lambda: f.diff(m='x', j=0))
 
     u = DMP([1, 2, 1], ZZ)
     v = DMP([1, 2, 1], ZZ)
@@ -240,10 +241,10 @@ def test_DMP_functionality():
 
     f = DMP([[1], [2], [3]], QQ)
 
-    raises(ValueError, lambda: f.half_gcdex(f))
-    raises(ValueError, lambda: f.gcdex(f))
+    pytest.raises(ValueError, lambda: f.half_gcdex(f))
+    pytest.raises(ValueError, lambda: f.gcdex(f))
 
-    raises(ValueError, lambda: f.invert(f))
+    pytest.raises(ValueError, lambda: f.invert(f))
 
     f = DMP([1, 0, 20, 0, 150, 0, 500, 0, 625, -2, 0, -10, 9], ZZ)
     g = DMP([1, 0, 0, -2, 9], ZZ)
@@ -254,8 +255,8 @@ def test_DMP_functionality():
 
     f = DMP([[1], [2], [3]], QQ)
 
-    raises(ValueError, lambda: f.decompose())
-    raises(ValueError, lambda: f.sturm())
+    pytest.raises(ValueError, lambda: f.decompose())
+    pytest.raises(ValueError, lambda: f.sturm())
 
 
 def test_DMP_exclude():
@@ -352,8 +353,8 @@ def test_DMF__init__():
     assert f.lev == 1
     assert f.dom == QQ
 
-    raises(ValueError, lambda: DMF(([1], [[1]]), ZZ))
-    raises(ZeroDivisionError, lambda: DMF(([1], []), ZZ))
+    pytest.raises(ValueError, lambda: DMF(([1], [[1]]), ZZ))
+    pytest.raises(ZeroDivisionError, lambda: DMF(([1], []), ZZ))
 
 
 def test_DMF__bool__():

@@ -1,17 +1,19 @@
+import pytest
+
 from sympy.core.compatibility import range
 from sympy import symbols, FiniteSet
-from sympy.combinatorics.polyhedron import (Polyhedron,
-    tetrahedron, cube as square, octahedron, dodecahedron, icosahedron,
-    cube_faces)
+from sympy.combinatorics.polyhedron import (Polyhedron, tetrahedron,
+                                            cube as square, octahedron,
+                                            dodecahedron, icosahedron,
+                                            cube_faces)
 from sympy.combinatorics.permutations import Permutation
 from sympy.combinatorics.perm_groups import PermutationGroup
-from sympy.utilities.pytest import raises
 
 rmul = Permutation.rmul
 
 
 def test_polyhedron():
-    raises(ValueError, lambda: Polyhedron(list('ab'),
+    pytest.raises(ValueError, lambda: Polyhedron(list('ab'),
         pgroup=[Permutation([0])]))
     pgroup = [Permutation([[0, 7, 2, 5], [6, 1, 4, 3]]),
               Permutation([[0, 7, 1, 6], [5, 2, 4, 3]]),
@@ -45,7 +47,7 @@ def test_polyhedron():
 
     assert cube.corners == corners
     cube.rotate(1)
-    raises(ValueError, lambda: cube.rotate(Permutation([0, 1])))
+    pytest.raises(ValueError, lambda: cube.rotate(Permutation([0, 1])))
     assert cube.corners != corners
     assert cube.array_form == [7, 6, 4, 5, 3, 2, 0, 1]
     assert cube.cyclic_form == [[0, 7, 1, 6], [2, 4, 3, 5]]

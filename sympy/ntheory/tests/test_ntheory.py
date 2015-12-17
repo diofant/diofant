@@ -1,36 +1,39 @@
 from collections import defaultdict
-from sympy import Sieve, binomial_coefficients, binomial_coefficients_list, \
-    multinomial_coefficients, Mul, S, Pow, sieve, Symbol, summation, \
-    factorial as fac, pi, GoldenRatio as phi, sqrt
+
+import pytest
+
+from sympy import (Sieve, binomial_coefficients, binomial_coefficients_list,
+                   multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
+                   summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
 from sympy.core.numbers import Integer, Rational
 from sympy.core.compatibility import long, range
 
-from sympy.ntheory import isprime, n_order, is_primitive_root, \
-    is_quad_residue, legendre_symbol, jacobi_symbol, npartitions, totient, \
-    factorint, primefactors, divisors, randprime, nextprime, prevprime, \
-    primerange, primepi, prime, pollard_rho, perfect_power, multiplicity, \
-    trailing, divisor_count, primorial, pollard_pm1, \
-    sqrt_mod, primitive_root, quadratic_residues, is_nthpow_residue, \
-    nthroot_mod, sqrt_mod_iter, mobius, divisor_sigma
+from sympy.ntheory import (isprime, n_order, is_primitive_root,
+                           is_quad_residue, legendre_symbol, jacobi_symbol,
+                           npartitions, totient, factorint, primefactors, divisors,
+                           randprime, nextprime, prevprime, primerange, primepi,
+                           prime, pollard_rho, perfect_power, multiplicity,
+                           trailing, divisor_count, primorial, pollard_pm1,
+                           sqrt_mod, primitive_root, quadratic_residues,
+                           is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
+                           divisor_sigma)
 
 from sympy.ntheory.residue_ntheory import _primitive_root_prime_iter
-from sympy.ntheory.factor_ import smoothness, smoothness_p, \
-    antidivisors, antidivisor_count, core
+from sympy.ntheory.factor_ import (smoothness, smoothness_p,
+                                   antidivisors, antidivisor_count, core)
 from sympy.ntheory.generate import cycle_length
 from sympy.ntheory.primetest import _mr_safe_helper, mr
 from sympy.ntheory.modular import crt, crt1, crt2, solve_congruence
-from sympy.ntheory.continued_fraction import \
-    (continued_fraction_periodic as cf_p,
-     continued_fraction_iterator as cf_i,
-     continued_fraction_convergents as cf_c,
-     continued_fraction_reduce as cf_r)
+from sympy.ntheory.continued_fraction import (continued_fraction_periodic as cf_p,
+                                              continued_fraction_iterator as cf_i,
+                                              continued_fraction_convergents as cf_c,
+                                              continued_fraction_reduce as cf_r)
 from sympy.ntheory.egyptian_fraction import egyptian_fraction
 
 from sympy.core.add import Add
 
 from sympy.polys.domains import ZZ
 
-from sympy.utilities.pytest import raises
 from sympy.utilities.iterables import capture
 from sympy.utilities.randtest import random_complex_number
 from sympy.ntheory.multinomial import multinomial_coefficients_iterator
@@ -61,11 +64,11 @@ def test_multiplicity():
     # Should exit quickly
     assert multiplicity(10**10, 10**10) == 1
     # Should raise errors for bad input
-    raises(ValueError, lambda: multiplicity(1, 1))
-    raises(ValueError, lambda: multiplicity(1, 2))
-    raises(ValueError, lambda: multiplicity(1.3, 2))
-    raises(ValueError, lambda: multiplicity(2, 0))
-    raises(ValueError, lambda: multiplicity(1.3, 0))
+    pytest.raises(ValueError, lambda: multiplicity(1, 1))
+    pytest.raises(ValueError, lambda: multiplicity(1, 2))
+    pytest.raises(ValueError, lambda: multiplicity(1.3, 2))
+    pytest.raises(ValueError, lambda: multiplicity(2, 0))
+    pytest.raises(ValueError, lambda: multiplicity(1.3, 0))
 
     # handles Rationals
     assert multiplicity(10, Rational(30, 7)) == 0
@@ -154,7 +157,7 @@ def test_prime():
     assert prime(4096) == 38873
     assert prime(9096) == 94321
     assert prime(25023) == 287341
-    raises(ValueError, lambda: prime(0))
+    pytest.raises(ValueError, lambda: prime(0))
 
 
 def test_primepi():
@@ -198,9 +201,9 @@ def test_generate():
 
     assert nextprime(2, 2) == 5
 
-    raises(ValueError, lambda: totient(0))
+    pytest.raises(ValueError, lambda: totient(0))
 
-    raises(ValueError, lambda: primorial(0))
+    pytest.raises(ValueError, lambda: primorial(0))
 
     assert mr(1, [2]) is False
 
@@ -220,7 +223,7 @@ def test_randprime():
     assert randprime(2, 3) == 2
     assert randprime(1, 3) == 2
     assert randprime(3, 5) == 3
-    raises(ValueError, lambda: randprime(20, 22))
+    pytest.raises(ValueError, lambda: randprime(20, 22))
     for a in [100, 300, 500, 250000]:
         for b in [100, 300, 500, 250000]:
             p = randprime(a, a + b)
@@ -323,9 +326,9 @@ def test_factorint():
     b = nextprime(a + 2**2**4)
     assert 'Fermat' in capture(lambda: factorint(a*b, verbose=1))
 
-    raises(ValueError, lambda: pollard_rho(4))
-    raises(ValueError, lambda: pollard_pm1(3))
-    raises(ValueError, lambda: pollard_pm1(10, B=2))
+    pytest.raises(ValueError, lambda: pollard_rho(4))
+    pytest.raises(ValueError, lambda: pollard_pm1(3))
+    pytest.raises(ValueError, lambda: pollard_pm1(10, B=2))
     # verbose coverage
     n = nextprime(2**16)*nextprime(2**17)*nextprime(1901)
     assert 'with primes' in capture(lambda: factorint(n, verbose=1))
@@ -356,7 +359,7 @@ def test_factorint():
     p2 = nextprime(2*p1)
     assert factorint((p1*p2**2)**3) == {p1: 3, p2: 6}
     # Test for non integer input
-    raises(ValueError, lambda: factorint(4.5))
+    pytest.raises(ValueError, lambda: factorint(4.5))
 
 
 def test_divisors_and_divisor_count():
@@ -441,13 +444,13 @@ def test_residue():
     assert n_order(17, 11) == n_order(6, 11)
     assert n_order(101, 119) == 6
     assert n_order(11, (10**50 + 151)**2) == 10000000000000000000000000000000000000000000000030100000000000000000000000000000000000000000000022650
-    raises(ValueError, lambda: n_order(6, 9))
+    pytest.raises(ValueError, lambda: n_order(6, 9))
 
     assert is_primitive_root(2, 7) is False
     assert is_primitive_root(3, 8) is False
     assert is_primitive_root(11, 14) is False
     assert is_primitive_root(12, 17) == is_primitive_root(29, 17)
-    raises(ValueError, lambda: is_primitive_root(3, 6))
+    pytest.raises(ValueError, lambda: is_primitive_root(3, 6))
 
     assert [primitive_root(i) for i in range(2, 31)] == [1, 2, 3, 2, 5, 3,
        None, 2, 3, 2, None, 2, 3, None, None, 3, 5, 2, None, None, 7, 5,
@@ -467,7 +470,7 @@ def test_residue():
     assert primitive_root(p) == 11
     assert primitive_root(2*p) == 11
     assert primitive_root(p**2) == 11
-    raises(ValueError, lambda: primitive_root(-3))
+    pytest.raises(ValueError, lambda: primitive_root(-3))
 
     assert is_quad_residue(3, 7) is False
     assert is_quad_residue(10, 13) is True
@@ -481,8 +484,8 @@ def test_residue():
     assert is_quad_residue(13122380800, 13604889600) is True
     assert [j for j in range(14) if is_quad_residue(j, 14)] == \
            [0, 1, 2, 4, 7, 8, 9, 11]
-    raises(ValueError, lambda: is_quad_residue(1.1, 2))
-    raises(ValueError, lambda: is_quad_residue(2, 0))
+    pytest.raises(ValueError, lambda: is_quad_residue(1.1, 2))
+    pytest.raises(ValueError, lambda: is_quad_residue(2, 0))
 
     assert quadratic_residues(12) == [0, 1, 4, 9]
     assert quadratic_residues(13) == [0, 1, 3, 4, 9, 10, 12]
@@ -572,7 +575,7 @@ def test_residue():
     assert legendre_symbol(67, 101) == -1
     assert legendre_symbol(0, 13) == 0
     assert legendre_symbol(9, 3) == 0
-    raises(ValueError, lambda: legendre_symbol(2, 4))
+    pytest.raises(ValueError, lambda: legendre_symbol(2, 4))
 
     assert jacobi_symbol(25, 41) == 1
     assert jacobi_symbol(-23, 83) == -1
@@ -584,20 +587,20 @@ def test_residue():
     assert jacobi_symbol(0, 1) == 1
     assert jacobi_symbol(2, 1) == 1
     assert jacobi_symbol(1, 3) == 1
-    raises(ValueError, lambda: jacobi_symbol(3, 8))
+    pytest.raises(ValueError, lambda: jacobi_symbol(3, 8))
 
     assert mobius(13*7) == 1
     assert mobius(1) == 1
     assert mobius(13*7*5) == -1
     assert mobius(13**2) == 0
-    raises(ValueError, lambda: mobius(-3))
+    pytest.raises(ValueError, lambda: mobius(-3))
 
     p = Symbol('p', integer=True, positive=True, prime=True)
     x = Symbol('x', positive=True)
     i = Symbol('i', integer=True)
     assert mobius(p) == -1
-    raises(TypeError, lambda: mobius(x))
-    raises(ValueError, lambda: mobius(i))
+    pytest.raises(TypeError, lambda: mobius(x))
+    pytest.raises(ValueError, lambda: mobius(i))
 
 
 def test_crt():
@@ -785,7 +788,7 @@ def test_modular():
     assert solve_congruence(
         *list(zip([-10, 2, 2, -15], [13, 7, 14, 17]))) == (2382, 3094)
     assert solve_congruence(*list(zip((1, 1, 2), (3, 2, 4)))) is None
-    raises(
+    pytest.raises(
         ValueError, lambda: solve_congruence(*list(zip([3, 4, 2], [12.1, 35, 17]))))
 
 
@@ -794,7 +797,7 @@ def test_search():
     assert 2.1 not in sieve
     assert 1 not in sieve
     assert 2**1000 not in sieve
-    raises(ValueError, lambda: sieve.search(1))
+    pytest.raises(ValueError, lambda: sieve.search(1))
 
 
 def test_sieve_slice():
@@ -804,8 +807,8 @@ def test_sieve_slice():
 
 
 def test_continued_fraction():
-    raises(ValueError, lambda: cf_p(1, 0, 0))
-    raises(ValueError, lambda: cf_p(1, 1, -1))
+    pytest.raises(ValueError, lambda: cf_p(1, 0, 0))
+    pytest.raises(ValueError, lambda: cf_p(1, 1, -1))
     assert cf_p(4, 3, 0) == [1, 3]
     assert cf_p(0, 3, 5) == [0, 1, [2, 1, 12, 1, 2, 2]]
     assert cf_p(1, 1, 0) == [1]
@@ -870,7 +873,7 @@ def test_egyptian_fraction():
          3267056, 3581556, 10192056, 10650056950806]
     assert egyptian_fraction(Rational(5, 6), "Golomb") == [2, 6, 12, 20, 30]
     assert egyptian_fraction(Rational(5, 121), "Golomb") == [25, 1225, 3577, 7081, 11737]
-    raises(ValueError, lambda: egyptian_fraction(Rational(-4, 9)))
+    pytest.raises(ValueError, lambda: egyptian_fraction(Rational(-4, 9)))
     assert egyptian_fraction(Rational(8, 3), "Golomb") == [1, 2, 3, 4, 5, 6, 7,
                                                            14, 574, 2788, 6460,
                                                            11590, 33062, 113820]

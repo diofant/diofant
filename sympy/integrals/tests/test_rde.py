@@ -1,12 +1,14 @@
 """Most of these tests come from the examples in Bronstein's book."""
+
+import pytest
+
 from sympy import Poly, S, symbols, oo, I
 from sympy.integrals.risch import (DifferentialExtension,
-    NonElementaryIntegralException)
+                                   NonElementaryIntegralException)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-    normal_denom, special_denom, bound_degree, spde, solve_poly_rde,
-    no_cancel_equal, cancel_primitive, cancel_exp, rischDE)
-
-from sympy.utilities.pytest import raises, XFAIL
+                                 normal_denom, special_denom, bound_degree, spde,
+                                 solve_poly_rde, no_cancel_equal, cancel_primitive,
+                                 cancel_exp, rischDE)
 from sympy.abc import x, t, z, n
 
 t0, t1, t2, k = symbols('t:3 k')
@@ -55,7 +57,7 @@ def test_weak_normalizer():
 
 def test_normal_denom():
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
-    raises(NonElementaryIntegralException, lambda: normal_denom(Poly(1, x), Poly(1, x),
+    pytest.raises(NonElementaryIntegralException, lambda: normal_denom(Poly(1, x), Poly(1, x),
     Poly(1, x), Poly(x, x), DE))
     fa, fd = Poly(t**2 + 1, t), Poly(1, t)
     ga, gd = Poly(1, t), Poly(t**2, t)
@@ -84,7 +86,7 @@ def test_special_denom():
         (Poly(1, t0), Poly(I*k, t0), Poly(t0, t0), Poly(1, t0))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_bound_degree_fail():
     # Primitive
     DE = DifferentialExtension(extension={'D': [Poly(1, x),
@@ -114,7 +116,7 @@ def test_bound_degree():
 
 def test_spde():
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t**2 + 1, t)]})
-    raises(NonElementaryIntegralException, lambda: spde(Poly(t, t), Poly((t - 1)*(t**2 + 1), t), Poly(1, t), 0, DE))
+    pytest.raises(NonElementaryIntegralException, lambda: spde(Poly(t, t), Poly((t - 1)*(t**2 + 1), t), Poly(1, t), 0, DE))
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t, t)]})
     assert spde(Poly(t**2 + x*t*2 + x**2, t), Poly(t**2/x**2 + (2/x - 1)*t, t),
     Poly(t**2/x**2 + (2/x - 1)*t, t), 0, DE) == \
@@ -132,7 +134,7 @@ def test_spde():
     3*x**4/4 + x**3 - x**2 + 1, x), n, DE) == \
         (Poly(0, x), Poly(x/2 - S(1)/4, x), -2 + n, Poly(x**2 + x + 1, x), Poly(5*x/4, x))
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1, t)]})
-    raises(NonElementaryIntegralException, lambda: spde(Poly((t - 1)*(t**2 + 1)**2, t), Poly((t - 1)*(t**2 + 1), t), Poly(1, t), 0, DE))
+    pytest.raises(NonElementaryIntegralException, lambda: spde(Poly((t - 1)*(t**2 + 1)**2, t), Poly((t - 1)*(t**2 + 1), t), Poly(1, t), 0, DE))
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
     assert spde(Poly(x**2 - x, x), Poly(1, x), Poly(9*x**4 - 10*x**3 + 2*x**2, x), 4, DE) == (Poly(0, x), Poly(0, x), 0, Poly(0, x), Poly(3*x**3 - 2*x**2, x))
     assert spde(Poly(x**2 - x, x), Poly(x**2 - 5*x + 3, x), Poly(x**7 - x**6 - 2*x**4 + 3*x**3 - x**2, x), 5, DE) == \
@@ -172,7 +174,7 @@ def test_solve_poly_rde_cancel():
 
     # If the DecrementLevel context manager is working correctly, this shouldn't
     # cause any problems with the further tests.
-    raises(NonElementaryIntegralException, lambda: cancel_primitive(Poly(1, t), Poly(t, t), oo, DE))
+    pytest.raises(NonElementaryIntegralException, lambda: cancel_primitive(Poly(1, t), Poly(t, t), oo, DE))
 
     assert cancel_primitive(Poly(1, t), Poly(t + 1/x, t), 2, DE) == \
         Poly(t, t)

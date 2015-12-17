@@ -1,10 +1,11 @@
 """Tests for dense recursive polynomials' tools. """
 
+import pytest
+
 from sympy.polys.densebasic import (
     dup_normal, dmp_normal,
     dup_from_raw_dict,
-    dmp_convert, dmp_swap,
-)
+    dmp_convert, dmp_swap)
 
 from sympy.polys.densearith import dmp_mul_ground
 
@@ -26,8 +27,7 @@ from sympy.polys.densetools import (
     dup_decompose,
     dmp_lift,
     dup_sign_variations,
-    dup_revert, dmp_revert,
-)
+    dup_revert, dmp_revert)
 
 from sympy.polys.polyclasses import ANP
 
@@ -35,8 +35,7 @@ from sympy.polys.polyerrors import (
     MultivariatePolynomialError,
     ExactQuotientFailed,
     NotReversible,
-    DomainError,
-)
+    DomainError)
 
 from sympy.polys.specialpolys import f_polys
 
@@ -47,8 +46,6 @@ from sympy import S, I, sin
 from sympy.core.compatibility import long
 
 from sympy.abc import x
-
-from sympy.utilities.pytest import raises
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
@@ -255,7 +252,7 @@ def test_dup_revert():
 
     assert dup_revert(f, 8, QQ) == g
 
-    raises(NotReversible, lambda: dup_revert([QQ(1), QQ(0)], 3, QQ))
+    pytest.raises(NotReversible, lambda: dup_revert([QQ(1), QQ(0)], 3, QQ))
 
 
 def test_dmp_revert():
@@ -264,7 +261,7 @@ def test_dmp_revert():
 
     assert dmp_revert(f, 8, 0, QQ) == g
 
-    raises(MultivariatePolynomialError, lambda: dmp_revert([[1]], 2, 1, QQ))
+    pytest.raises(MultivariatePolynomialError, lambda: dmp_revert([[1]], 2, 1, QQ))
 
 
 def test_dup_trunc():
@@ -286,7 +283,7 @@ def test_dmp_ground_trunc():
 def test_dup_monic():
     assert dup_monic([3, 6, 9], ZZ) == [1, 2, 3]
 
-    raises(ExactQuotientFailed, lambda: dup_monic([3, 4, 5], ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dup_monic([3, 4, 5], ZZ))
 
     assert dup_monic([], QQ) == []
     assert dup_monic([QQ(1)], QQ) == [QQ(1)]
@@ -296,7 +293,7 @@ def test_dup_monic():
 def test_dmp_ground_monic():
     assert dmp_ground_monic([[3], [6], [9]], 1, ZZ) == [[1], [2], [3]]
 
-    raises(
+    pytest.raises(
         ExactQuotientFailed, lambda: dmp_ground_monic([[3], [4], [5]], 1, ZZ))
 
     assert dmp_ground_monic([[]], 1, QQ) == [[]]
@@ -456,7 +453,7 @@ def test_dup_real_imag():
     assert dup_real_imag(
         [1, 2, 3], ZZ) == ([[1], [2], [-1, 0, 3]], [[2, 0], [2, 0]])
 
-    raises(DomainError, lambda: dup_real_imag([EX(1), EX(2)], EX))
+    pytest.raises(DomainError, lambda: dup_real_imag([EX(1), EX(2)], EX))
 
 
 def test_dup_mirror():
@@ -577,7 +574,7 @@ def test_dmp_lift():
         [QQ(1), QQ(0), QQ(0), QQ(0), QQ(0), QQ(0), QQ(2), QQ(0), QQ(578),
          QQ(0), QQ(0), QQ(0), QQ(1), QQ(0), QQ(-578), QQ(0), QQ(83521)]
 
-    raises(DomainError, lambda: dmp_lift([EX(1), EX(2)], 0, EX))
+    pytest.raises(DomainError, lambda: dmp_lift([EX(1), EX(2)], 0, EX))
 
 
 def test_dup_sign_variations():

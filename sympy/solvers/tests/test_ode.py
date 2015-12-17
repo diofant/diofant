@@ -1,5 +1,8 @@
 from __future__ import division
 
+import os
+
+import pytest
 
 from sympy import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
     Dummy, Eq, erf, erfi, exp, Function, I, Integral, LambertW, log, O, pi,
@@ -9,7 +12,6 @@ from sympy.solvers.ode import (_undetermined_coefficients_match, checkodesol,
     classify_ode, classify_sysode, constant_renumber, constantsimp,
     homogeneous_order, infinitesimals, checkinfsol, checksysodesol)
 from sympy.solvers.deutils import ode_order
-from sympy.utilities.pytest import XFAIL, skip, raises, slow, ON_TRAVIS
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
 x, y, z = symbols('x:z', extended_real=True)
@@ -85,14 +87,14 @@ def test_linear_2eq_order1():
 def test_linear_2eq_order1_nonhomog_linear():
     e = [Eq(diff(f(x), x), f(x) + g(x) + 5*x),
          Eq(diff(g(x), x), f(x) - g(x))]
-    raises(NotImplementedError, lambda: dsolve(e))
+    pytest.raises(NotImplementedError, lambda: dsolve(e))
 
 
 def test_linear_2eq_order1_nonhomog():
     # Note: once implemented, add some tests esp. with resonance
     e = [Eq(diff(f(x), x), f(x) + exp(x)),
          Eq(diff(g(x), x), f(x) + g(x) + x*exp(x))]
-    raises(NotImplementedError, lambda: dsolve(e))
+    pytest.raises(NotImplementedError, lambda: dsolve(e))
 
 
 def test_linear_2eq_order1_type2_degen():
@@ -127,7 +129,7 @@ def test_dsolve_linear_2eq_order1_diag_triangular():
     assert e[1].subs(s).doit()
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sysode_linear_2eq_order1_type1_D_lt_0():
     e = [Eq(diff(f(x), x), -9*I*f(x) - 4*g(x)),
          Eq(diff(g(x), x), -4*I*g(x))]
@@ -138,7 +140,7 @@ def test_sysode_linear_2eq_order1_type1_D_lt_0():
     assert (e[1].lhs - e[1].rhs).subs(s).doit().simplify().doit() == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sysode_linear_2eq_order1_type1_D_lt_0_b_eq_0():
     e = [Eq(diff(f(x), x), -9*I*f(x)),
          Eq(diff(g(x), x), -4*I*g(x))]
@@ -342,10 +344,10 @@ def test_linear_3eq_order1_nonhomog():
     e = [Eq(diff(f(x), x), -9*f(x) - 4*g(x)),
          Eq(diff(g(x), x), -4*g(x)),
          Eq(diff(h(x), x), h(x) + exp(x))]
-    raises(NotImplementedError, lambda: dsolve(e))
+    pytest.raises(NotImplementedError, lambda: dsolve(e))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_linear_3eq_order1_diagonal():
     # code makes assumptions about coefficients being nonzero, breaks when assumptions are not true
     e = [Eq(diff(f(x), x), f(x)),
@@ -540,7 +542,7 @@ def test_checksysodesol():
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
 
-@slow
+@pytest.mark.slow
 def test_nonlinear_3eq_order1():
     x, y, z = symbols('x, y, z', function=True)
     t = Symbol('t')
@@ -562,9 +564,9 @@ def test_nonlinear_3eq_order1():
 def test_checkodesol():
     # For the most part, checkodesol is well tested in the tests below.
     # These tests only handle cases not checked below.
-    raises(ValueError, lambda: checkodesol(f(x, y).diff(x), Eq(f(x, y), x)))
-    raises(ValueError, lambda: checkodesol(f(x).diff(x), Eq(f(x, y),
-           x), f(x, y)))
+    pytest.raises(ValueError, lambda: checkodesol(f(x, y).diff(x), Eq(f(x, y), x)))
+    pytest.raises(ValueError, lambda: checkodesol(f(x).diff(x), Eq(f(x, y),
+                                                                   x), f(x, y)))
     assert checkodesol(f(x).diff(x), Eq(f(x, y), x)) == \
         (False, -f(x).diff(x) + f(x, y).diff(x) - 1)
     assert checkodesol(f(x).diff(x), Eq(f(x), x)) is not True
@@ -599,7 +601,7 @@ def test_checkodesol():
     assert not checkodesol(eq3, sol3)[1].has(f(x))
 
 
-@slow
+@pytest.mark.slow
 def test_dsolve_options():
     eq = x*f(x).diff(x) + f(x)
     a = dsolve(eq, hint='all')
@@ -660,8 +662,8 @@ def test_dsolve_options():
     assert b['1st_homogeneous_coeff_subs_indep_div_dep_Integral'].has(Integral)
     assert b['separable_Integral'].has(Integral)
     assert sorted(c.keys()) == Integral_keys
-    raises(ValueError, lambda: dsolve(eq, hint='notarealhint'))
-    raises(ValueError, lambda: dsolve(eq, hint='Liouville'))
+    pytest.raises(ValueError, lambda: dsolve(eq, hint='notarealhint'))
+    pytest.raises(ValueError, lambda: dsolve(eq, hint='Liouville'))
     assert dsolve(f(x).diff(x) - 1/f(x)**2, hint='all')['best'] == \
         dsolve(f(x).diff(x) - 1/f(x)**2, hint='best')
     assert dsolve(f(x) + f(x).diff(x) + sin(x).diff(x) + 1, f(x),
@@ -707,8 +709,8 @@ def test_classify_ode():
         'Bernoulli_Integral', 'almost_linear_Integral')
     assert 'Riccati_special_minus2' in \
         classify_ode(2*f(x).diff(x) + f(x)**2 - f(x)/x + 3*x**(-2), f(x))
-    raises(ValueError, lambda: classify_ode(x + f(x, y).diff(x).diff(
-        y), f(x, y)))
+    pytest.raises(ValueError,
+                  lambda: classify_ode(x + f(x, y).diff(x).diff(y), f(x, y)))
     # issue 5176
     k = Symbol('k')
     assert classify_ode(f(x).diff(x)/(k*f(x) + k*x*f(x)) + 2*f(x)/(k*f(x) +
@@ -968,7 +970,7 @@ def test_old_ode_tests():
     assert checkodesol(eq11, sol11, order=1, solve_for_func=False)[0]
 
 
-@slow
+@pytest.mark.slow
 def test_1st_linear():
     # Type: first order linear form f'(x)+p(x)f(x)=q(x)
     eq = Eq(f(x).diff(x) + x*f(x), x**2)
@@ -1021,8 +1023,9 @@ def test_1st_exact1():
     assert checkodesol(eq5, sol5, order=1, solve_for_func=False)[0]
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_1st_exact2():
     """
     This is an exact equation that fails under the exact engine. It is caught
@@ -1033,8 +1036,6 @@ def test_1st_exact2():
     equivalent, but it is so complex that checkodesol fails, and takes a long
     time to do so.
     """
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     eq = (x*sqrt(x**2 + f(x)**2) - (x**2*f(x)/(f(x) -
           sqrt(x**2 + f(x)**2)))*f(x).diff(x))
     sol = dsolve(eq)
@@ -1191,10 +1192,10 @@ def test_homogeneous_order():
     assert homogeneous_order(x + O(x**2), x, y) is None
     assert homogeneous_order(x**pi, x) == pi
     assert homogeneous_order(x**x, x) is None
-    raises(ValueError, lambda: homogeneous_order(x*y))
+    pytest.raises(ValueError, lambda: homogeneous_order(x*y))
 
 
-@slow
+@pytest.mark.slow
 def test_1st_homogeneous_coeff_ode():
     # Type: First order homogeneous, y'=f(y/x)
     eq1 = f(x)/x*cos(f(x)/x) - (x/f(x)*sin(f(x)/x) + cos(f(x)/x))*f(x).diff(x)
@@ -1230,7 +1231,7 @@ def test_1st_homogeneous_coeff_ode():
     # checks are below
 
 
-@slow
+@pytest.mark.slow
 def test_1st_homogeneous_coeff_ode_check134568():
     # These are the checkodesols from test_homogeneous_coeff_ode().
     eq1 = f(x)/x*cos(f(x)/x) - (x/f(x)*sin(f(x)/x) + cos(f(x)/x))*f(x).diff(x)
@@ -1260,9 +1261,8 @@ def test_1st_homogeneous_coeff_ode_check2():
     assert checkodesol(eq2, sol2, order=1, solve_for_func=False)[0]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_1st_homogeneous_coeff_ode_check3():
-    skip('This is a known issue.')
     # checker cannot determine that the following expression is zero:
     # (False,
     #   x*(log(exp(-LambertW(C1*x))) +
@@ -1342,7 +1342,7 @@ def test_1st_homogeneous_coeff_corner_case():
     assert sid not in c2 and sdi not in c2
 
 
-@slow
+@pytest.mark.slow
 def test_nth_linear_constant_coeff_homogeneous():
     # From Exercise 20, in Ordinary Differential Equations,
     #                      Tenenbaum and Pollard, pg. 220
@@ -1523,11 +1523,10 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
     assert dsolve(eq) == sol
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_nth_linear_constant_coeff_homogeneous_RootOf_sol():
-    if ON_TRAVIS:
-        skip("Too slow for travis.")
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x),
         C1*exp(x*RootOf(x**5 + 11*x - 2, 0)) +
@@ -1538,7 +1537,7 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf_sol():
     assert checkodesol(eq, sol, order=5, solve_for_func=False)[0]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_noncircularized_real_imaginary_parts():
     # If this passes, lines numbered 3878-3882 (at the time of this commit)
     # of sympy/solvers/ode.py for nth_linear_constant_coeff_homogeneous
@@ -1548,7 +1547,7 @@ def test_noncircularized_real_imaginary_parts():
     assert not (i.has(atan2) and r.has(atan2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_collect_respecting_exponentials():
     # If this test passes, lines 1306-1311 (at the time of this commit)
     # of sympy/solvers/ode.py should be removed.
@@ -1667,7 +1666,7 @@ def test_undetermined_coefficients_match():
     assert _undetermined_coefficients_match(2**(x**2), x) == {'test': False}
 
 
-@slow
+@pytest.mark.slow
 def test_nth_linear_constant_coeff_undetermined_coefficients():
     hint = 'nth_linear_constant_coeff_undetermined_coefficients'
     g = exp(-x)
@@ -1834,7 +1833,7 @@ def test_issue_5787():
     assert out_hint in classify_ode(eq)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_nth_linear_constant_coeff_undetermined_coefficients_imaginary_exp():
     # Equivalent to eq26 in
     # test_nth_linear_constant_coeff_undetermined_coefficients above.
@@ -1849,7 +1848,7 @@ def test_nth_linear_constant_coeff_undetermined_coefficients_imaginary_exp():
     assert checkodesol(eq26a, sol26, order=5, solve_for_func=False)[0]
 
 
-@slow
+@pytest.mark.slow
 def test_nth_linear_constant_coeff_variation_of_parameters():
     hint = 'nth_linear_constant_coeff_variation_of_parameters'
     g = exp(-x)
@@ -1918,7 +1917,7 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
     assert checkodesol(eq12, sol12, order=4, solve_for_func=False)[0]
 
 
-@slow
+@pytest.mark.slow
 def test_nth_linear_constant_coeff_variation_of_parameters_simplify_False():
     # solve_variation_of_parameters shouldn't attempt to simplify the
     # Wronskian if simplify=False.  If wronskian() ever gets good enough
@@ -2009,11 +2008,11 @@ def test_issue_4785():
 
 
 def test_issue_4825():
-    raises(ValueError, lambda: dsolve(f(x, y).diff(x) - y*f(x, y), f(x)))
+    pytest.raises(ValueError, lambda: dsolve(f(x, y).diff(x) - y*f(x, y), f(x)))
     assert classify_ode(f(x, y).diff(x) - y*f(x, y), f(x), dict=True) == \
         {'default': None, 'order': 0}
     # See also issue 3793, test Z13.
-    raises(ValueError, lambda: dsolve(f(x).diff(x), f(y)))
+    pytest.raises(ValueError, lambda: dsolve(f(x).diff(x), f(y)))
     assert classify_ode(f(x).diff(x), f(y), dict=True) == \
         {'default': None, 'order': 0}
 
@@ -2194,8 +2193,8 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
 
 def test_issue_5095():
     f = Function('f')
-    raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'separable'))
-    raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'fdsjf'))
+    pytest.raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'separable'))
+    pytest.raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'fdsjf'))
 
 
 def test_almost_linear():
@@ -2429,7 +2428,7 @@ def test_heuristic2():
     assert checkinfsol(eq, i)[0]
 
 
-@slow
+@pytest.mark.slow
 def test_heuristic3():
     y = Symbol('y')
     xi = Function('xi')
@@ -2516,7 +2515,7 @@ def test_heuristic_linear():
     assert checkinfsol(eq, i)[0]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_kamke():
     a, b, alpha, c = symbols("a b alpha c")
     eq = x**2*(a*f(x)**2+(f(x).diff(x))) + b*x**alpha + c
@@ -2538,7 +2537,7 @@ def test_series():
     assert dsolve(eq, hint='1st_power_series', ics={f(2): 2}, n=3) == sol
 
 
-@slow
+@pytest.mark.slow
 def test_lie_group():
     C1 = Symbol("C1")
     x = Symbol("x")  # assuming x is real generates an error!
@@ -2587,7 +2586,7 @@ def test_user_infinitesimals():
     actual_sol = Eq(f(x), (C1 + x**2)/(C1 - x**2))
     errstr = str(eq)+' : '+str(sol)+' == '+str(actual_sol)
     assert sol == actual_sol, errstr
-    raises(ValueError, lambda: dsolve(eq, hint='lie_group', xi=0, eta=f(x)))
+    pytest.raises(ValueError, lambda: dsolve(eq, hint='lie_group', xi=0, eta=f(x)))
 
 
 def test_issue_7081():

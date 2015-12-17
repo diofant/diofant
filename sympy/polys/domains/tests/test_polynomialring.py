@@ -1,11 +1,11 @@
 """Tests for the PolynomialRing classes. """
 
+import pytest
+
 from sympy.polys.domains import QQ, ZZ
 from sympy.polys.polyerrors import ExactQuotientFailed, CoercionFailed, NotReversible
 
 from sympy.abc import x, y
-
-from sympy.utilities.pytest import raises
 
 
 def test_build_order():
@@ -29,9 +29,9 @@ def test_globalring():
     assert X + y == X + Y == R.convert(x + y) == x + Y
     assert X - y == X - Y == R.convert(x - y) == x - Y
     assert X + 1 == R.convert(x + 1)
-    raises(ExactQuotientFailed, lambda: X/Y)
-    raises(ExactQuotientFailed, lambda: x/Y)
-    raises(ExactQuotientFailed, lambda: X/y)
+    pytest.raises(ExactQuotientFailed, lambda: X/Y)
+    pytest.raises(ExactQuotientFailed, lambda: x/Y)
+    pytest.raises(ExactQuotientFailed, lambda: X/y)
     assert X**2 / X == X
 
     assert R.from_GlobalPolynomialRing(ZZ.old_poly_ring(x, y).convert(x), ZZ.old_poly_ring(x, y)) == X
@@ -54,9 +54,9 @@ def test_localring():
     assert X.ring == R
     assert X*(Y**2 + 1)/(1 + X) == R.convert(x*(y**2 + 1)/(1 + x))
     assert X*y == X*Y
-    raises(ExactQuotientFailed, lambda: X/Y)
-    raises(ExactQuotientFailed, lambda: x/Y)
-    raises(ExactQuotientFailed, lambda: X/y)
+    pytest.raises(ExactQuotientFailed, lambda: X/Y)
+    pytest.raises(ExactQuotientFailed, lambda: x/Y)
+    pytest.raises(ExactQuotientFailed, lambda: X/y)
     assert X + y == X + Y == R.convert(x + y) == x + Y
     assert X - y == X - Y == R.convert(x - y) == x - Y
     assert X + 1 == R.convert(x + 1)
@@ -64,9 +64,9 @@ def test_localring():
 
     assert R.from_GlobalPolynomialRing(ZZ.old_poly_ring(x, y).convert(x), ZZ.old_poly_ring(x, y)) == X
     assert R.from_FractionField(Qxy.convert(x), Qxy) == X
-    raises(CoercionFailed, lambda: R.from_FractionField(Qxy.convert(x)/y, Qxy))
-    raises(ExactQuotientFailed, lambda: X/Y)
-    raises(NotReversible, lambda: X.invert())
+    pytest.raises(CoercionFailed, lambda: R.from_FractionField(Qxy.convert(x)/y, Qxy))
+    pytest.raises(ExactQuotientFailed, lambda: X/Y)
+    pytest.raises(NotReversible, lambda: X.invert())
 
     assert R._sdm_to_vector(
         R._vector_to_sdm([X/(X + 1), Y/(1 + X*Y)], R.order), 2) == \
@@ -79,7 +79,7 @@ def test_conversion():
 
     assert L.convert(x) == L.convert(G.convert(x), G)
     assert G.convert(x) == G.convert(L.convert(x), L)
-    raises(CoercionFailed, lambda: G.convert(L.convert(1/(1 + x)), L))
+    pytest.raises(CoercionFailed, lambda: G.convert(L.convert(1/(1 + x)), L))
 
 
 def test_units():

@@ -1,7 +1,7 @@
-from sympy import Symbol, floor, nan, oo, E, symbols, ceiling, pi, Rational, \
-    Float, I, sin, exp, log, factorial
+import pytest
 
-from sympy.utilities.pytest import XFAIL
+from sympy import (Symbol, floor, nan, oo, E, symbols, ceiling, pi, Rational,
+                   Float, I, sin, exp, log, factorial)
 
 
 def test_floor():
@@ -232,7 +232,7 @@ def test_series():
     assert ceiling(-x).nseries(x, 0, 100) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_4149():
     assert floor(3 + pi*I + y*I) == 3 + floor(pi + y)*I
     assert floor(3*I + pi*I + y*I) == floor(3 + pi + y)*I

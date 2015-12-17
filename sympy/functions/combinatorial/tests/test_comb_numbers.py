@@ -1,15 +1,14 @@
 import string
 
-from sympy import (
-    Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
-    expand_func, diff, EulerGamma, cancel, re, im, Product)
-from sympy.functions import (
-    bernoulli, harmonic, bell, fibonacci, lucas, euler, catalan, genocchi,
-    binomial, gamma, sqrt, hyper, log, digamma, trigamma, polygamma, factorial,
-    sin, cos, cot, zeta)
+import pytest
 
+from sympy import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
+                   expand_func, diff, EulerGamma, cancel, re, im, Product)
+from sympy.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
+                             catalan, genocchi, binomial, gamma, sqrt, hyper, log,
+                             digamma, trigamma, polygamma, factorial, sin,
+                             cos, cot, zeta)
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import XFAIL, raises
 
 x = Symbol('x')
 
@@ -220,7 +219,7 @@ def test_harmonic_rewrite_polygamma():
     assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_harmonic_limit_fail():
     n = Symbol("n")
     m = Symbol("m")
@@ -228,7 +227,7 @@ def test_harmonic_limit_fail():
     assert limit(harmonic(n, m), n, oo) == zeta(m)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_harmonic_rewrite_sum_fail():
     n = Symbol("n")
     m = Symbol("m")
@@ -278,7 +277,7 @@ def test_euler():
     assert euler(2*n + 1).rewrite(Sum) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_euler_failing():
     # depends on dummy variables being implemented https://github.com/sympy/sympy/issues/5665
     assert euler(2*n).rewrite(Sum) == I*Sum(Sum((-1)**_j*2**(-_k)*I**(-_k)*(-2*_j + _k)**(2*n + 1)*binomial(_k, _j)/_k, (_j, 0, _k)), (_k, 1, 2*n + 1))
@@ -459,7 +458,7 @@ def test_nC_nP_nT():
             0, 1, 127, 966, 1701, 1050, 266, 28, 1,
             0, 1, 255, 3025, 7770, 6951, 2646, 462, 36, 1]
     assert stirling(3, 4, kind=1) == stirling(3, 4, kind=1) == 0
-    raises(ValueError, lambda: stirling(-2, 2))
+    pytest.raises(ValueError, lambda: stirling(-2, 2))
 
     def delta(p):
         if len(p) == 1:
@@ -488,15 +487,15 @@ def test_nC_nP_nT():
     # the function, so it's not as random as it may appear
     t = (3, 9, 4, 6, 6, 5, 5, 2, 10, 4)
     assert sum(_AOP_product(t)[i] for i in range(55)) == 58212000
-    raises(ValueError, lambda: _multiset_histogram({1:'a'}))
+    pytest.raises(ValueError, lambda: _multiset_histogram({1:'a'}))
 
 
 def test_issue_8496():
     n = Symbol("n")
     k = Symbol("k")
 
-    raises(TypeError, lambda: catalan(n, k))
-    raises(TypeError, lambda: euler(n, k))
+    pytest.raises(TypeError, lambda: catalan(n, k))
+    pytest.raises(TypeError, lambda: euler(n, k))
 
 
 def test_issue_8601():

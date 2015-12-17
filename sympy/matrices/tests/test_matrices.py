@@ -1,11 +1,13 @@
 import collections
 
+import pytest
+
 from sympy import (
     Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow, PurePoly, Rational,
     S, Symbol, cos, exp, oo, pi, signsimp, simplify, sin, sqrt, symbols,
     sympify, trigsimp, sstr)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
-    NonSquareMatrixError, DeferredVector)
+                                     NonSquareMatrixError, DeferredVector)
 from sympy.matrices import (
     GramSchmidt, ImmutableMatrix, ImmutableSparseMatrix, Matrix,
     SparseMatrix, casoratian, diag, eye, hessian,
@@ -13,12 +15,13 @@ from sympy.matrices import (
     rot_axis3, wronskian, zeros)
 from sympy.core.compatibility import long, iterable, u, range
 from sympy.utilities.iterables import flatten, capture
-from sympy.utilities.pytest import raises, XFAIL, slow, skip
-
+from sympy.external import import_module
 from sympy.abc import x, y, z
 
 # don't re-order this list
 classes = (Matrix, SparseMatrix, ImmutableMatrix, ImmutableSparseMatrix)
+
+numpy = import_module('numpy')
 
 
 def test_args():
@@ -45,7 +48,7 @@ def test_sum():
     m = Matrix([[1, 2, 3], [x, y, x], [2*y, -50, z*x]])
     assert m + m == Matrix([[2, 4, 6], [2*x, 2*y, 2*x], [4*y, -100, 2*z*x]])
     n = Matrix(1, 2, [1, 2])
-    raises(ShapeError, lambda: m + n)
+    pytest.raises(ShapeError, lambda: m + n)
 
 
 def test_addition():
@@ -134,7 +137,7 @@ def test_multiplication():
     assert h[1, 1] == 6
     assert h[2, 0] == 0
     assert h[2, 1] == 0
-    raises(ShapeError, lambda: matrix_multiply_elementwise(a, b))
+    pytest.raises(ShapeError, lambda: matrix_multiply_elementwise(a, b))
 
     c = b * Symbol("x")
     assert isinstance(c, Matrix)
@@ -155,7 +158,7 @@ def test_multiplication():
 
 
 def test_power():
-    raises(NonSquareMatrixError, lambda: Matrix((1, 2))**2)
+    pytest.raises(NonSquareMatrixError, lambda: Matrix((1, 2))**2)
 
     R = Rational
     A = Matrix([[2, 3], [4, 5]])
@@ -176,11 +179,11 @@ def test_power():
 
 
 def test_creation():
-    raises(ValueError, lambda: Matrix(5, 5, range(20)))
-    raises(IndexError, lambda: Matrix((1, 2))[2])
-    with raises(IndexError):
+    pytest.raises(ValueError, lambda: Matrix(5, 5, range(20)))
+    pytest.raises(IndexError, lambda: Matrix((1, 2))[2])
+    with pytest.raises(IndexError):
         Matrix((1, 2))[1:2] = 5
-    with raises(IndexError):
+    with pytest.raises(IndexError):
         Matrix((1, 2))[3] = 5
 
     assert Matrix() == Matrix([]) == Matrix([[]]) == Matrix(0, 0, [])
@@ -441,8 +444,8 @@ def test_extract():
     assert m.extract([0, 1, 3], [0, 1]) == Matrix(3, 2, [0, 1, 3, 4, 9, 10])
     assert m.extract([0, 3], [0, 0, 2]) == Matrix(2, 3, [0, 0, 2, 9, 9, 11])
     assert m.extract(range(4), range(3)) == m
-    raises(IndexError, lambda: m.extract([4], [0]))
-    raises(IndexError, lambda: m.extract([0], [3]))
+    pytest.raises(IndexError, lambda: m.extract([4], [0]))
+    pytest.raises(IndexError, lambda: m.extract([0], [3]))
 
 
 def test_reshape():
@@ -619,9 +622,9 @@ def test_inverse():
 
 def test_matrix_inverse_mod():
     A = Matrix(2, 1, [1, 0])
-    raises(NonSquareMatrixError, lambda: A.inv_mod(2))
+    pytest.raises(NonSquareMatrixError, lambda: A.inv_mod(2))
     A = Matrix(2, 2, [1, 0, 0, 0])
-    raises(ValueError, lambda: A.inv_mod(2))
+    pytest.raises(ValueError, lambda: A.inv_mod(2))
     A = Matrix(2, 2, [1, 2, 3, 4])
     Ai = Matrix(2, 2, [1, 1, 0, 1])
     assert A.inv_mod(3) == Ai
@@ -935,7 +938,7 @@ def test_conjugate():
 
 
 def test_conj_dirac():
-    raises(AttributeError, lambda: eye(3).D)
+    pytest.raises(AttributeError, lambda: eye(3).D)
 
     M = Matrix([[1, I, I, I],
                 [0, 1, I, I],
@@ -1188,11 +1191,11 @@ def test_issue_4564():
 def test_nonvectorJacobian():
     X = Matrix([[exp(x + y + z), exp(x + y + z)],
                 [exp(x + y + z), exp(x + y + z)]])
-    raises(TypeError, lambda: X.jacobian(Matrix([x, y, z])))
+    pytest.raises(TypeError, lambda: X.jacobian(Matrix([x, y, z])))
     X = X[0, :]
     Y = Matrix([[x, y], [x, z]])
-    raises(TypeError, lambda: X.jacobian(Y))
-    raises(TypeError, lambda: X.jacobian(Matrix([ [x, y], [x, z] ])))
+    pytest.raises(TypeError, lambda: X.jacobian(Y))
+    pytest.raises(TypeError, lambda: X.jacobian(Matrix([ [x, y], [x, z] ])))
 
 
 def test_vec():
@@ -1223,11 +1226,11 @@ def test_vech():
 
 def test_vech_errors():
     m = Matrix([[1, 3]])
-    raises(ShapeError, lambda: m.vech())
+    pytest.raises(ShapeError, lambda: m.vech())
     m = Matrix([[1, 3], [2, 4]])
-    raises(ValueError, lambda: m.vech())
-    raises(ShapeError, lambda: Matrix([ [1, 3] ]).vech())
-    raises(ValueError, lambda: Matrix([ [1, 3], [2, 4] ]).vech())
+    pytest.raises(ValueError, lambda: m.vech())
+    pytest.raises(ShapeError, lambda: Matrix([ [1, 3] ]).vech())
+    pytest.raises(ValueError, lambda: Matrix([ [1, 3], [2, 4] ]).vech())
 
 
 def test_diag():
@@ -1321,8 +1324,8 @@ def test_creation_args():
     Check that matrix dimensions can be specified using any reasonable type
     (see issue 4614).
     """
-    raises(ValueError, lambda: zeros(3, -1))
-    raises(TypeError, lambda: zeros(1, 2, 3, 4))
+    pytest.raises(ValueError, lambda: zeros(3, -1))
+    pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))
     assert zeros(long(3)) == zeros(3)
     assert zeros(Integer(3)) == zeros(3)
     assert zeros(3.) == zeros(3)
@@ -1330,8 +1333,8 @@ def test_creation_args():
     assert eye(Integer(3)) == eye(3)
     assert eye(3.) == eye(3)
     assert ones(long(3), Integer(4)) == ones(3, 4)
-    raises(TypeError, lambda: Matrix(5))
-    raises(TypeError, lambda: Matrix(1, 2))
+    pytest.raises(TypeError, lambda: Matrix(5))
+    pytest.raises(TypeError, lambda: Matrix(1, 2))
 
 
 def test_diagonal_symmetrical():
@@ -1370,7 +1373,7 @@ def test_diagonalization():
     m = Matrix(3, 2, [-3, 1, -3, 20, 3, 10])
     assert not m.is_diagonalizable()
     assert not m.is_symmetric()
-    raises(NonSquareMatrixError, lambda: m.diagonalize())
+    pytest.raises(NonSquareMatrixError, lambda: m.diagonalize())
 
     # diagonalizable
     m = diag(1, 2, 3)
@@ -1414,7 +1417,7 @@ def test_diagonalization():
     # diagonalizable, complex only
     m = Matrix(2, 2, [0, 1, -1, 0])
     assert not m.is_diagonalizable(True)
-    raises(MatrixError, lambda: m.diagonalize(True))
+    pytest.raises(MatrixError, lambda: m.diagonalize(True))
     assert m.is_diagonalizable()
     (P, D) = m.diagonalize()
     assert P.inv() * m * P == D
@@ -1422,11 +1425,11 @@ def test_diagonalization():
     # not diagonalizable
     m = Matrix(2, 2, [0, 1, 0, 0])
     assert not m.is_diagonalizable()
-    raises(MatrixError, lambda: m.diagonalize())
+    pytest.raises(MatrixError, lambda: m.diagonalize())
 
     m = Matrix(3, 3, [-3, 1, -3, 20, 3, 10, 2, -2, 4])
     assert not m.is_diagonalizable()
-    raises(MatrixError, lambda: m.diagonalize())
+    pytest.raises(MatrixError, lambda: m.diagonalize())
 
     # symbolic
     a, b, c, d = symbols('a b c d')
@@ -1435,21 +1438,21 @@ def test_diagonalization():
     assert m.is_diagonalizable()
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_eigen_vects():
     m = Matrix(2, 2, [1, 0, 0, I])
-    raises(NotImplementedError, lambda: m.is_diagonalizable(True))
+    pytest.raises(NotImplementedError, lambda: m.is_diagonalizable(True))
     # !!! bug because of eigenvects() or roots(x**2 + (-1 - I)*x + I, x)
     # see issue 5292
     assert not m.is_diagonalizable(True)
-    raises(MatrixError, lambda: m.diagonalize(True))
+    pytest.raises(MatrixError, lambda: m.diagonalize(True))
     (P, D) = m.diagonalize(True)
 
 
 def test_jordan_form():
 
     m = Matrix(3, 2, [-3, 1, -3, 20, 3, 10])
-    raises(NonSquareMatrixError, lambda: m.jordan_form())
+    pytest.raises(NonSquareMatrixError, lambda: m.jordan_form())
 
     # diagonalizable
     m = Matrix(3, 3, [7, -12, 6, 10, -19, 10, 12, -24, 13])
@@ -1599,68 +1602,68 @@ def test_has():
 
 
 def test_errors():
-    raises(ValueError, lambda: Matrix([[1, 2], [1]]))
-    raises(IndexError, lambda: Matrix([[1, 2]])[1.2, 5])
-    raises(IndexError, lambda: Matrix([[1, 2]])[1, 5.2])
-    raises(ValueError, lambda: randMatrix(3, c=4, symmetric=True))
-    raises(ValueError, lambda: Matrix([1, 2]).reshape(4, 6))
-    raises(ShapeError,
+    pytest.raises(ValueError, lambda: Matrix([[1, 2], [1]]))
+    pytest.raises(IndexError, lambda: Matrix([[1, 2]])[1.2, 5])
+    pytest.raises(IndexError, lambda: Matrix([[1, 2]])[1, 5.2])
+    pytest.raises(ValueError, lambda: randMatrix(3, c=4, symmetric=True))
+    pytest.raises(ValueError, lambda: Matrix([1, 2]).reshape(4, 6))
+    pytest.raises(ShapeError,
         lambda: Matrix([[1, 2], [3, 4]]).copyin_matrix([1, 0], Matrix([1, 2])))
-    raises(TypeError, lambda: Matrix([[1, 2], [3, 4]]).copyin_list([0,
+    pytest.raises(TypeError, lambda: Matrix([[1, 2], [3, 4]]).copyin_list([0,
            1], set()))
-    raises(NonSquareMatrixError, lambda: Matrix([[1, 2, 3], [2, 3, 0]]).inv())
-    raises(ShapeError,
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([[1, 2, 3], [2, 3, 0]]).inv())
+    pytest.raises(ShapeError,
         lambda: Matrix(1, 2, [1, 2]).row_join(Matrix([[1, 2], [3, 4]])))
-    raises(
+    pytest.raises(
         ShapeError, lambda: Matrix([1, 2]).col_join(Matrix([[1, 2], [3, 4]])))
-    raises(ShapeError, lambda: Matrix([1]).row_insert(1, Matrix([[1,
+    pytest.raises(ShapeError, lambda: Matrix([1]).row_insert(1, Matrix([[1,
            2], [3, 4]])))
-    raises(ShapeError, lambda: Matrix([1]).col_insert(1, Matrix([[1,
+    pytest.raises(ShapeError, lambda: Matrix([1]).col_insert(1, Matrix([[1,
            2], [3, 4]])))
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).trace())
-    raises(TypeError, lambda: Matrix([1]).applyfunc(1))
-    raises(ShapeError, lambda: Matrix([1]).LUsolve(Matrix([[1, 2], [3, 4]])))
-    raises(MatrixError, lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).trace())
+    pytest.raises(TypeError, lambda: Matrix([1]).applyfunc(1))
+    pytest.raises(ShapeError, lambda: Matrix([1]).LUsolve(Matrix([[1, 2], [3, 4]])))
+    pytest.raises(MatrixError, lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]
            ]).QRdecomposition())
-    raises(MatrixError, lambda: Matrix(1, 2, [1, 2]).QRdecomposition())
-    raises(
+    pytest.raises(MatrixError, lambda: Matrix(1, 2, [1, 2]).QRdecomposition())
+    pytest.raises(
         NonSquareMatrixError, lambda: Matrix([1, 2]).LUdecomposition_Simple())
-    raises(ValueError, lambda: Matrix([[1, 2], [3, 4]]).minorEntry(4, 5))
-    raises(ValueError, lambda: Matrix([[1, 2], [3, 4]]).minorMatrix(4, 5))
-    raises(TypeError, lambda: Matrix([1, 2, 3]).cross(1))
-    raises(TypeError, lambda: Matrix([1, 2, 3]).dot(1))
-    raises(ShapeError, lambda: Matrix([1, 2, 3]).dot(Matrix([1, 2])))
-    raises(ShapeError, lambda: Matrix([1, 2]).dot([]))
-    raises(TypeError, lambda: Matrix([1, 2]).dot('a'))
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2, 3]).exp())
-    raises(ShapeError, lambda: Matrix([[1, 2], [3, 4]]).normalized())
-    raises(ValueError, lambda: Matrix([1, 2]).inv(method='not a method'))
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).inverse_GE())
-    raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inverse_GE())
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).inverse_ADJ())
-    raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inverse_ADJ())
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).inverse_LU())
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).is_nilpotent())
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det())
-    raises(ValueError,
+    pytest.raises(ValueError, lambda: Matrix([[1, 2], [3, 4]]).minorEntry(4, 5))
+    pytest.raises(ValueError, lambda: Matrix([[1, 2], [3, 4]]).minorMatrix(4, 5))
+    pytest.raises(TypeError, lambda: Matrix([1, 2, 3]).cross(1))
+    pytest.raises(TypeError, lambda: Matrix([1, 2, 3]).dot(1))
+    pytest.raises(ShapeError, lambda: Matrix([1, 2, 3]).dot(Matrix([1, 2])))
+    pytest.raises(ShapeError, lambda: Matrix([1, 2]).dot([]))
+    pytest.raises(TypeError, lambda: Matrix([1, 2]).dot('a'))
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2, 3]).exp())
+    pytest.raises(ShapeError, lambda: Matrix([[1, 2], [3, 4]]).normalized())
+    pytest.raises(ValueError, lambda: Matrix([1, 2]).inv(method='not a method'))
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).inverse_GE())
+    pytest.raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inverse_GE())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).inverse_ADJ())
+    pytest.raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inverse_ADJ())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).inverse_LU())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).is_nilpotent())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det())
+    pytest.raises(ValueError,
         lambda: Matrix([[1, 2], [3, 4]]).det(method='Not a real method'))
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det_bareis())
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz())
-    raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz_det())
-    raises(ValueError,
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det_bareis())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz_det())
+    pytest.raises(ValueError,
         lambda: hessian(Matrix([[1, 2], [3, 4]]), Matrix([[1, 2], [2, 1]])))
-    raises(ValueError, lambda: hessian(Matrix([[1, 2], [3, 4]]), []))
-    raises(ValueError, lambda: hessian(Symbol('x')**2, 'a'))
-    raises(ValueError,
+    pytest.raises(ValueError, lambda: hessian(Matrix([[1, 2], [3, 4]]), []))
+    pytest.raises(ValueError, lambda: hessian(Symbol('x')**2, 'a'))
+    pytest.raises(ValueError,
         lambda: Matrix([[5, 10, 7], [0, -1, 2], [8, 3, 4]]
         ).LUdecomposition_Simple(iszerofunc=lambda x: abs(x) <= 4))
-    raises(NotImplementedError, lambda: Matrix([[1, 0], [1, 1]])**(S(1)/2))
-    raises(NotImplementedError,
+    pytest.raises(NotImplementedError, lambda: Matrix([[1, 0], [1, 1]])**(S(1)/2))
+    pytest.raises(NotImplementedError,
         lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])**(0.5))
-    raises(IndexError, lambda: eye(3)[5, 2])
-    raises(IndexError, lambda: eye(3)[2, 5])
+    pytest.raises(IndexError, lambda: eye(3)[5, 2])
+    pytest.raises(IndexError, lambda: eye(3)[2, 5])
     M = Matrix(((1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16)))
-    raises(ValueError, lambda: M.det('method=LU_decomposition()'))
+    pytest.raises(ValueError, lambda: M.det('method=LU_decomposition()'))
 
 
 def test_len():
@@ -1695,7 +1698,7 @@ def test_diff():
 
 def test_getattr():
     A = Matrix(((1, 4, x), (y, 2, 4), (10, 5, x**2 + 1)))
-    raises(AttributeError, lambda: A.nonexistantattribute)
+    pytest.raises(AttributeError, lambda: A.nonexistantattribute)
     assert getattr(A, 'diff')(x) == Matrix(((0, 0, 1), (0, 0, 0), (0, 0, 2*x)))
 
 
@@ -1712,8 +1715,8 @@ def test_hessenberg():
 
 
 def test_cholesky():
-    raises(NonSquareMatrixError, lambda: Matrix((1, 2)).cholesky())
-    raises(ValueError, lambda: Matrix(((1, 2), (3, 4))).cholesky())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix((1, 2)).cholesky())
+    pytest.raises(ValueError, lambda: Matrix(((1, 2), (3, 4))).cholesky())
     A = Matrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
     assert A.cholesky() * A.cholesky().T == A
     assert A.cholesky().is_lower
@@ -1721,8 +1724,8 @@ def test_cholesky():
 
 
 def test_LDLdecomposition():
-    raises(NonSquareMatrixError, lambda: Matrix((1, 2)).LDLdecomposition())
-    raises(ValueError, lambda: Matrix(((1, 2), (3, 4))).LDLdecomposition())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix((1, 2)).LDLdecomposition())
+    pytest.raises(ValueError, lambda: Matrix(((1, 2), (3, 4))).LDLdecomposition())
     A = Matrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
     L, D = A.LDLdecomposition()
     assert L * D * L.T == A
@@ -1768,11 +1771,11 @@ def test_LDLsolve():
 
 def test_lower_triangular_solve():
 
-    raises(NonSquareMatrixError,
+    pytest.raises(NonSquareMatrixError,
         lambda: Matrix([1, 0]).lower_triangular_solve(Matrix([0, 1])))
-    raises(ShapeError,
+    pytest.raises(ShapeError,
         lambda: Matrix([[1, 0], [0, 1]]).lower_triangular_solve(Matrix([1])))
-    raises(ValueError,
+    pytest.raises(ValueError,
         lambda: Matrix([[2, 1], [1, 2]]).lower_triangular_solve(
             Matrix([[1, 0], [0, 1]])))
 
@@ -1786,11 +1789,11 @@ def test_lower_triangular_solve():
 
 def test_upper_triangular_solve():
 
-    raises(NonSquareMatrixError,
+    pytest.raises(NonSquareMatrixError,
         lambda: Matrix([1, 0]).upper_triangular_solve(Matrix([0, 1])))
-    raises(TypeError,
+    pytest.raises(TypeError,
         lambda: Matrix([[1, 0], [0, 1]]).upper_triangular_solve(Matrix([1])))
-    raises(TypeError,
+    pytest.raises(TypeError,
         lambda: Matrix([[2, 1], [1, 2]]).upper_triangular_solve(
             Matrix([[1, 0], [0, 1]])))
 
@@ -1803,7 +1806,7 @@ def test_upper_triangular_solve():
 
 
 def test_diagonal_solve():
-    raises(TypeError, lambda: Matrix([1, 1]).diagonal_solve(Matrix([1])))
+    pytest.raises(TypeError, lambda: Matrix([1, 1]).diagonal_solve(Matrix([1])))
     A = Matrix([[1, 0], [0, 1]])*2
     B = Matrix([[x, y], [y, x]])
     assert A.diagonal_solve(B) == B/2
@@ -2056,7 +2059,7 @@ def test_DeferredVector_not_iterable():
 
 
 def test_DeferredVector_Matrix():
-    raises(TypeError, lambda: Matrix(DeferredVector("V")))
+    pytest.raises(TypeError, lambda: Matrix(DeferredVector("V")))
 
 
 def test_GramSchmidt():
@@ -2090,8 +2093,8 @@ def test_slice_issue_2884():
     assert m[-1, :] == Matrix([[2, 3]])
     assert m[:, 1] == Matrix([[1, 3]]).T
     assert m[:, -1] == Matrix([[1, 3]]).T
-    raises(IndexError, lambda: m[2, :])
-    raises(IndexError, lambda: m[2, 2])
+    pytest.raises(IndexError, lambda: m[2, :])
+    pytest.raises(IndexError, lambda: m[2, 2])
 
 
 def test_slice_issue_3401():
@@ -2126,7 +2129,7 @@ def test_invertible_check():
     # sometimes a singular matrix will have a pivot vector shorter than
     # the number of rows in a matrix...
     assert Matrix([[1, 2], [1, 2]]).rref() == (Matrix([[1, 2], [0, 0]]), [0])
-    raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inv())
+    pytest.raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inv())
     # ... but sometimes it won't, so that is an insufficient test of
     # whether something is invertible.
     m = Matrix([
@@ -2139,12 +2142,12 @@ def test_invertible_check():
     # matrix will be returned even though m is not invertible
     assert m.rref()[0] == eye(3)
     assert m.rref(simplify=signsimp)[0] != eye(3)
-    raises(ValueError, lambda: m.inv(method="ADJ"))
-    raises(ValueError, lambda: m.inv(method="GE"))
-    raises(ValueError, lambda: m.inv(method="LU"))
+    pytest.raises(ValueError, lambda: m.inv(method="ADJ"))
+    pytest.raises(ValueError, lambda: m.inv(method="GE"))
+    pytest.raises(ValueError, lambda: m.inv(method="LU"))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_3959():
     x, y = symbols('x, y')
     e = x*y
@@ -2229,7 +2232,7 @@ def test_normalize_sort_diogonalization():
 
 
 def test_issue_5321():
-    raises(ValueError, lambda: Matrix([[1, 2, 3], Matrix(0, 1, [])]))
+    pytest.raises(ValueError, lambda: Matrix([[1, 2, 3], Matrix(0, 1, [])]))
 
 
 def test_issue_5320():
@@ -2266,7 +2269,7 @@ def test_cross():
         test(A.cross(B.T), col)
         test(A.T.cross(B.T), row)
         test(A.T.cross(B), row)
-    raises(ShapeError, lambda:
+    pytest.raises(ShapeError, lambda:
         Matrix(1, 2, [1, 1]).cross(Matrix(1, 2, [1, 1])))
 
 
@@ -2279,12 +2282,12 @@ def test_hash():
         assert not isinstance(cls.eye(1), collections.Hashable)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_3979():
     # when this passes, delete this and change the [1:2]
     # to [:2] in the test_hash above for issue 3979
     cls = classes[0]
-    raises(AttributeError, lambda: hash(cls.eye(1)))
+    pytest.raises(AttributeError, lambda: hash(cls.eye(1)))
 
 
 def test_adjoint():
@@ -2336,7 +2339,7 @@ def test_atoms():
     assert m.atoms(Symbol) == {x}
 
 
-@slow
+@pytest.mark.slow
 def test_pinv():
     from sympy.abc import a, b, c, d
     # Pseudoinverse of an invertible matrix is the inverse.
@@ -2390,7 +2393,7 @@ def test_pinv_solve():
     assert A * A.pinv() * B != B
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_pinv_rank_deficient():
     # Test the four properties of the pseudoinverse for various matrices.
     As = [Matrix([[1, 1, 1], [2, 2, 2]]),
@@ -2431,19 +2434,15 @@ def test_free_symbols():
         assert M([[x], [0]]).free_symbols == {x}
 
 
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_from_ndarray():
     """See issue 7465."""
-    try:
-        from numpy import array
-    except ImportError:
-        skip('NumPy must be available to test creating matrices from ndarrays')
-
-    assert Matrix(array([1, 2, 3])) == Matrix([1, 2, 3])
-    assert Matrix(array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
-    assert Matrix(array([[1, 2, 3], [4, 5, 6]])) == \
+    assert Matrix(numpy.array([1, 2, 3])) == Matrix([1, 2, 3])
+    assert Matrix(numpy.array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
+    assert Matrix(numpy.array([[1, 2, 3], [4, 5, 6]])) == \
         Matrix([[1, 2, 3], [4, 5, 6]])
-    assert Matrix(array([x, y, z])) == Matrix([x, y, z])
-    raises(NotImplementedError, lambda: Matrix(array([[
+    assert Matrix(numpy.array([x, y, z])) == Matrix([x, y, z])
+    pytest.raises(NotImplementedError, lambda: Matrix(numpy.array([[
         [1, 2], [3, 4]], [[5, 6], [7, 8]]])))
 
 
@@ -2467,9 +2466,9 @@ def test_issue_9457_9467():
     N.row_del(-2)
     assert N == Matrix([[1, 2, 3], [3, 4, 5]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    raises(IndexError, lambda: P.row_del(10))
+    pytest.raises(IndexError, lambda: P.row_del(10))
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    raises(IndexError, lambda: Q.row_del(-10))
+    pytest.raises(IndexError, lambda: Q.row_del(-10))
 
     # for col_del(index)
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
@@ -2479,9 +2478,9 @@ def test_issue_9457_9467():
     N.col_del(-2)
     assert N == Matrix([[1, 3], [2, 4], [3, 5]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    raises(IndexError, lambda: P.col_del(10))
+    pytest.raises(IndexError, lambda: P.col_del(10))
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    raises(IndexError, lambda: Q.col_del(-10))
+    pytest.raises(IndexError, lambda: Q.col_del(-10))
 
 
 def test_issue_9422():

@@ -1,13 +1,14 @@
+from mpmath import inf, ninf
+from mpmath.libmp.libmpf import from_float
+import pytest
+
 from sympy import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
                    fibonacci, floor, Function, GoldenRatio, I, Integral,
                    integrate, log, Mul, N, oo, pi, Pow, product, Product,
                    Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol)
 from sympy.core.evalf import (complex_accuracy, PrecisionExhausted,
     scaled_zero, get_integer_part, as_mpmath)
-from mpmath import inf, ninf
-from mpmath.libmp.libmpf import from_float
 from sympy.core.compatibility import long, range
-from sympy.utilities.pytest import raises, XFAIL
 
 from sympy.abc import n, x, y
 
@@ -62,7 +63,7 @@ def test_evalf_complex():
     assert NS('I*(2+I)', 15) == '-1.00000000000000 + 2.00000000000000*I'
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_evalf_complex_bug():
     assert NS('(pi+E*I)*(E+pi*I)', 15) in ('0.e-15 + 17.25866050002*I',
               '0.e-17 + 17.25866050002*I', '-0.e-17 + 17.25866050002*I')
@@ -85,7 +86,7 @@ def test_evalf_complex_powers():
         '(10000*pi + 10000*pi*I)**4', chop=True) == '-3.89636364136010e+18'
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_evalf_complex_powers_bug():
     assert NS('(pi + pi*I)**4') == '-389.63636413601 + 0.e-14*I'
 
@@ -261,7 +262,7 @@ def test_evalf_trig_zero_detection():
     assert abs(t) < 1e-100
     assert t._prec < 2
     assert a.evalf(chop=True) == 0
-    raises(PrecisionExhausted, lambda: a.evalf(strict=True))
+    pytest.raises(PrecisionExhausted, lambda: a.evalf(strict=True))
 
 
 def test_evalf_sum():
@@ -280,15 +281,15 @@ def test_evalf_sum():
 
 
 def test_evalf_divergent_series():
-    raises(ValueError, lambda: Sum(1/n, (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum(n/(n**2 + 1), (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum((-1)**n, (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum((-1)**n, (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum(n**2, (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum(2**n, (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum((-2)**n, (n, 1, oo)).evalf())
-    raises(ValueError, lambda: Sum((2*n + 3)/(3*n**2 + 4), (n, 0, oo)).evalf())
-    raises(ValueError, lambda: Sum((0.5*n**3)/(n**4 + 1), (n, 0, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum(1/n, (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum(n/(n**2 + 1), (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum((-1)**n, (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum((-1)**n, (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum(n**2, (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum(2**n, (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum((-2)**n, (n, 1, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum((2*n + 3)/(3*n**2 + 4), (n, 0, oo)).evalf())
+    pytest.raises(ValueError, lambda: Sum((0.5*n**3)/(n**4 + 1), (n, 0, oo)).evalf())
 
 
 def test_evalf_product():
@@ -302,7 +303,7 @@ def test_evalf_py_methods():
     assert abs(complex(pi + 1) - 4.1415926535897932) < 1e-10
     assert abs(
         complex(pi + E*I) - (3.1415926535897931 + 2.7182818284590451j)) < 1e-10
-    raises(TypeError, lambda: float(pi + x))
+    pytest.raises(TypeError, lambda: float(pi + x))
 
 
 def test_evalf_power_subs_bugs():
@@ -317,7 +318,7 @@ def test_evalf_power_subs_bugs():
 
 
 def test_evalf_arguments():
-    raises(TypeError, lambda: pi.evalf(method="garbage"))
+    pytest.raises(TypeError, lambda: pi.evalf(method="garbage"))
 
 
 def test_implemented_function_evalf():
@@ -366,7 +367,7 @@ def test_subs():
         '-4.92535585957223e-10'
     assert NS('Piecewise((x, x>0)) + Piecewise((1-x, x>0))', subs={x: 0.1}) == \
         '1.00000000000000'
-    raises(TypeError, lambda: x.evalf(subs=(x, 1)))
+    pytest.raises(TypeError, lambda: x.evalf(subs=(x, 1)))
 
 
 def test_issue_4956_5204():
@@ -417,10 +418,10 @@ def test_scaled_zero():
     a, b = (([1], 1, 100, 1), -1)
     assert scaled_zero(100, -1) == (a, b)
     assert scaled_zero(a) == (1, 1, 100, 1)
-    raises(ValueError, lambda: scaled_zero(scaled_zero(100)))
-    raises(ValueError, lambda: scaled_zero(100, 2))
-    raises(ValueError, lambda: scaled_zero(100, 0))
-    raises(ValueError, lambda: scaled_zero((1, 5, 1, 3)))
+    pytest.raises(ValueError, lambda: scaled_zero(scaled_zero(100)))
+    pytest.raises(ValueError, lambda: scaled_zero(100, 2))
+    pytest.raises(ValueError, lambda: scaled_zero(100, 0))
+    pytest.raises(ValueError, lambda: scaled_zero((1, 5, 1, 3)))
 
 
 def test_chop_value():

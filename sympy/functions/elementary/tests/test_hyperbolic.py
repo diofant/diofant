@@ -1,8 +1,9 @@
-from sympy import symbols, Symbol, sinh, nan, oo, zoo, pi, asinh, acosh, log, sqrt, \
-    coth, I, cot, E, tanh, tan, cosh, cos, S, sin, Rational, atanh, acoth, \
-    Integer, O, exp, sech, sec, csch
+import pytest
 
-from sympy.utilities.pytest import raises
+from sympy import (symbols, Symbol, sinh, nan, oo, zoo, pi,
+                   asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
+                   tan, cosh, cos, S, sin, Rational, atanh, acoth,
+                   Integer, O, exp, sech, sec, csch)
 
 
 def test_sinh():
@@ -600,7 +601,7 @@ def test_acoth_series():
 def test_inverses():
     x = Symbol('x')
     assert sinh(x).inverse() == asinh
-    raises(AttributeError, lambda: cosh(x).inverse())
+    pytest.raises(AttributeError, lambda: cosh(x).inverse())
     assert tanh(x).inverse() == atanh
     assert coth(x).inverse() == acoth
     assert asinh(x).inverse() == sinh

@@ -1,10 +1,10 @@
-from sympy import (S, Symbol, symbols, exp, log, sqrt, O, oo, sin, cos, PoleError)
+import pytest
+
+from sympy import S, Symbol, symbols, exp, log, sqrt, O, oo, sin, cos, PoleError
 from sympy.abc import x, y, z
 
-from sympy.utilities.pytest import raises, XFAIL, slow
 
-
-@slow
+@pytest.mark.slow
 def test_simple():
     # Gruntz' theses pp. 91 to 96
     # 6.6
@@ -50,7 +50,7 @@ def test_hierarchical():
     e = sin(x) * cos(exp(-x))
     assert e.aseries(x, hir=True) == exp(-4*x)*sin(x)/24 - \
             exp(-2*x)*sin(x)/2 + sin(x) + O(exp(-6*x), (x, oo))
-    raises(PoleError, lambda: e.aseries(x))
+    pytest.raises(PoleError, lambda: e.aseries(x))
 
 
 def test_issue_7872():

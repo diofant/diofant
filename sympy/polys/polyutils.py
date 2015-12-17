@@ -36,6 +36,12 @@ def _nsort(roots, separated=False):
     and imaginary parts before evaluation. In addition, the sorting will raise
     an error if any computation cannot be done with precision.
     """
+    if len(roots) == 1:
+        if not separated:
+            return list(roots)
+        r = list(roots)[0]
+        if r.is_complex and r.is_extended_real is not None:
+            return [[r], []] if r.is_extended_real else [[], [r]]
     if not all(r.is_number for r in roots):
         raise NotImplementedError
     # see issue 6137:

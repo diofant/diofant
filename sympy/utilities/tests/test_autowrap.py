@@ -5,11 +5,13 @@ import os
 import tempfile
 import shutil
 
+import pytest
+
 from sympy.utilities.autowrap import (autowrap, binary_function,
-            CythonCodeWrapper, ufuncify, UfuncifyCodeWrapper, CodeWrapper)
+                                      CythonCodeWrapper, ufuncify,
+                                      UfuncifyCodeWrapper, CodeWrapper)
 from sympy.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                      make_routine)
-from sympy.utilities.pytest import raises
 from sympy.core import symbols, Eq
 from sympy.core.compatibility import StringIO
 
@@ -103,15 +105,15 @@ def test_autowrap_dummy():
 def test_autowrap_args():
     x, y, z = symbols('x y z')
 
-    raises(CodeGenArgumentListError, lambda: autowrap(Eq(z, x + y),
-           backend='dummy', args=[x]))
+    pytest.raises(CodeGenArgumentListError,
+                  lambda: autowrap(Eq(z, x + y), backend='dummy', args=[x]))
     f = autowrap(Eq(z, x + y), backend='dummy', args=[y, x])
     assert f() == str(x + y)
     assert f.args == "y, x"
     assert f.returns == "z"
 
-    raises(CodeGenArgumentListError, lambda: autowrap(Eq(z, x + y + z),
-           backend='dummy', args=[x, y]))
+    pytest.raises(CodeGenArgumentListError,
+                  lambda: autowrap(Eq(z, x + y + z), backend='dummy', args=[x, y]))
     f = autowrap(Eq(z, x + y + z), backend='dummy', args=[y, x, z])
     assert f() == str(x + y + z)
     assert f.args == "y, x, z"

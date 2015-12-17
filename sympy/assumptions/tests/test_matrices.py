@@ -1,8 +1,9 @@
+import pytest
+
 from sympy import Q, ask, Symbol
 from sympy.matrices.expressions import (MatrixSymbol, Identity, ZeroMatrix,
-        Trace, MatrixSlice, Determinant)
+                                        Trace, MatrixSlice, Determinant)
 from sympy.matrices.expressions.factorizations import LofLU
-from sympy.utilities.pytest import XFAIL
 
 X = MatrixSymbol('X', 2, 2)
 Y = MatrixSymbol('Y', 2, 3)
@@ -35,7 +36,7 @@ def test_singular():
     assert ask(Q.singular(X), ~Q.invertible(X)) is True
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_invertible_fullrank():
     assert ask(Q.invertible(X), Q.fullrank(X))
 
@@ -129,7 +130,7 @@ def test_non_atoms():
     assert ask(Q.extended_real(Trace(X)), Q.positive(Trace(X)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_non_trivial_implies():
     X = MatrixSymbol('X', 3, 3)
     Y = MatrixSymbol('Y', 3, 3)

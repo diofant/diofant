@@ -1,9 +1,10 @@
 from __future__ import print_function
 from textwrap import dedent
 
-from sympy import (
-    symbols, Integral, Tuple, Dummy, Basic, default_sort_key, Matrix,
-    factorial, true)
+import pytest
+
+from sympy import (symbols, Integral, Tuple, Dummy, Basic, default_sort_key,
+                   Matrix, factorial, true)
 from sympy.combinatorics import RGS_enum, RGS_unrank, Permutation
 from sympy.core.compatibility import range
 from sympy.utilities.iterables import (
@@ -16,12 +17,11 @@ from sympy.utilities.iterables import (
     permutations, postfixes, postorder_traversal, prefixes, reshape,
     rotate_left, rotate_right, runs, sift, subsets, take, topological_sort,
     unflatten, uniq, variations)
-from sympy.utilities.enumerative import (
-    factoring_visitor, multiset_partitions_taocp )
+from sympy.utilities.enumerative import (factoring_visitor,
+                                         multiset_partitions_taocp)
 
 from sympy.core.singleton import S
 from sympy.functions.elementary.piecewise import Piecewise, ExprCondPair
-from sympy.utilities.pytest import raises
 
 w, x, y, z = symbols('w,x,y,z')
 
@@ -62,7 +62,7 @@ def test_flatten():
     assert flatten(ls, levels=2) == [-2, -1, 1, 2, 0, 0]
     assert flatten(ls, levels=3) == [-2, -1, 1, 2, 0, 0]
 
-    raises(ValueError, lambda: flatten(ls, levels=-1))
+    pytest.raises(ValueError, lambda: flatten(ls, levels=-1))
 
     class MyOp(Basic):
         pass
@@ -234,7 +234,7 @@ def test_topological_sort():
     assert topological_sort((V, E), key=lambda v: -v) == \
         [7, 5, 11, 3, 10, 8, 9, 2]
 
-    raises(ValueError, lambda: topological_sort((V, E + [(10, 7)])))
+    pytest.raises(ValueError, lambda: topological_sort((V, E + [(10, 7)])))
 
 
 def test_rotate():
@@ -414,7 +414,7 @@ def test_partitions():
         {1: 1, 3: 1}, {2: 2}, {1: 2, 2: 1}, {1: 4}] == [
         i.copy() for i in partitions(4) if all(k <= 3 for k in i)]
 
-    raises(ValueError, lambda: list(partitions(3, 0)))
+    pytest.raises(ValueError, lambda: list(partitions(3, 0)))
 
     # Consistency check on output of _partitions and RGS_unrank.
     # This provides a sanity test on both routines.  Also verifies that
@@ -453,7 +453,7 @@ def test_bell_perm():
         for bi in b:
             assert bi == tuple(p.array_form)
             p = p.next_trotterjohnson()
-    raises(ValueError, lambda: list(generate_bell(0)))  # XXX is this consistent with other permutation algorithms?
+    pytest.raises(ValueError, lambda: list(generate_bell(0)))  # XXX is this consistent with other permutation algorithms?
 
 
 def test_involutions():
@@ -534,8 +534,8 @@ def test_unflatten():
     r = list(range(10))
     assert unflatten(r) == list(zip(r[::2], r[1::2]))
     assert unflatten(r, 5) == [tuple(r[:5]), tuple(r[5:])]
-    raises(ValueError, lambda: unflatten(list(range(10)), 3))
-    raises(ValueError, lambda: unflatten(list(range(10)), -2))
+    pytest.raises(ValueError, lambda: unflatten(list(range(10)), 3))
+    pytest.raises(ValueError, lambda: unflatten(list(range(10)), -2))
 
 
 def test_common_prefix_suffix():
@@ -571,7 +571,7 @@ def test_ordered():
                  (lambda x: len(x), lambda x: sum(x))]
     assert list(ordered(seq, keys, default=False, warn=False)) == \
         [[1], [2], [1, 2, 1], [0, 3, 1], [1, 1, 3]]
-    raises(ValueError, lambda:
+    pytest.raises(ValueError, lambda:
            list(ordered(seq, keys, default=False, warn=True)))
 
 

@@ -1,6 +1,9 @@
-from sympy import Eq, factorial, Function, Lambda, rf, S, sqrt, symbols, I, expand_func, binomial, gamma
-from sympy.solvers.recurr import rsolve, rsolve_hyper, rsolve_poly, rsolve_ratio
-from sympy.utilities.pytest import raises, slow
+import pytest
+
+from sympy import (Eq, factorial, Function, Lambda, rf, S, sqrt, symbols,
+                   I, expand_func, binomial, gamma)
+from sympy.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
+                                  rsolve_ratio)
 from sympy.core.compatibility import range
 from sympy.abc import a, b, c
 
@@ -97,7 +100,7 @@ def test_rsolve_bulk():
             #    assert rsolve_hyper(c, q, n) == p
 
 
-@slow
+@pytest.mark.slow
 def test_rsolve():
     f = y(n + 2) - y(n + 1) - y(n)
     h = sqrt(5)*(S.Half + S.Half*sqrt(5))**n \
@@ -188,11 +191,11 @@ def test_rsolve():
 
 def test_rsolve_raises():
     x = Function('x')
-    raises(ValueError, lambda: rsolve(y(n) - y(k + 1), y(n)))
-    raises(ValueError, lambda: rsolve(y(n) - y(n + 1), x(n)))
-    raises(ValueError, lambda: rsolve(y(n) - x(n + 1), y(n)))
-    raises(ValueError, lambda: rsolve(y(n) - sqrt(n)*y(n + 1), y(n)))
-    raises(ValueError, lambda: rsolve(y(n) - y(n + 1), y(n), {x(0): 0}))
+    pytest.raises(ValueError, lambda: rsolve(y(n) - y(k + 1), y(n)))
+    pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1), x(n)))
+    pytest.raises(ValueError, lambda: rsolve(y(n) - x(n + 1), y(n)))
+    pytest.raises(ValueError, lambda: rsolve(y(n) - sqrt(n)*y(n + 1), y(n)))
+    pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1), y(n), {x(0): 0}))
 
 
 def test_issue_6844():

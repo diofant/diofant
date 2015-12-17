@@ -1,4 +1,7 @@
 from __future__ import division
+
+import pytest
+
 from sympy.stats import (P, E, where, density, variance, covariance, skewness,
                          given, pspace, cdf, ContinuousRV, sample,
                          Arcsin, Benini, Beta, BetaPrime, Cauchy,
@@ -20,8 +23,6 @@ from sympy import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf,
 
 from sympy.stats.crv_types import NormalDistribution
 from sympy.stats.rv import ProductPSpace
-
-from sympy.utilities.pytest import raises, XFAIL, slow
 
 from sympy.core.compatibility import range
 
@@ -48,7 +49,7 @@ def test_single_normal():
     assert E(X, Eq(X, mu)) == mu
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_conditional_1d():
     X = Normal('x', 0, 1)
     Y = given(X, X >= 0)
@@ -66,14 +67,14 @@ def test_ContinuousDomain():
     assert where(X**2 <= 1).set == Interval(-1, 1)
     assert where(X**2 <= 1).symbol == X.symbol
     where(And(X**2 <= 1, X >= 0)).set == Interval(0, 1)
-    raises(ValueError, lambda: where(sin(X) > 1))
+    pytest.raises(ValueError, lambda: where(sin(X) > 1))
 
     Y = given(X, X >= 0)
 
     assert Y.pspace.domain.set == Interval(0, oo)
 
 
-@slow
+@pytest.mark.slow
 def test_multiple_normal():
     X, Y = Normal('x', 0, 1), Normal('y', 0, 1)
 
@@ -96,7 +97,7 @@ def test_multiple_normal():
     assert variance(X, Eq(X + Y, 0)) == S.Half
 
 
-@slow
+@pytest.mark.slow
 def test_symbolic():
     mu1, mu2 = symbols('mu1 mu2', extended_real=True, finite=True)
     s1, s2 = symbols('sigma1 sigma2', extended_real=True, finite=True, positive=True)
@@ -132,7 +133,7 @@ def test_cdf():
     assert d(-5) == 0
     assert P(Y > 3) == 1 - d(3)
 
-    raises(ValueError, lambda: cdf(X + Y))
+    pytest.raises(ValueError, lambda: cdf(X + Y))
 
     Z = Exponential('z', 1)
     f = cdf(Z)
@@ -453,7 +454,7 @@ def test_studentt():
     assert density(X)(x) == (1 + x**2/nu)**(-nu/2 - 1/2)/(sqrt(nu)*beta(1/2, nu/2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_triangular():
     a = Symbol("a")
     b = Symbol("b")
@@ -505,7 +506,7 @@ def test_uniform_P():
     assert P(X < l) == 0 and P(X > l + w) == 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_uniformsum():
     n = Symbol("n", integer=True)
     _k = Symbol("k")
@@ -573,18 +574,18 @@ def test_input_value_assertions():
     a, b = symbols('a b')
     p, q = symbols('p q', positive=True)
 
-    raises(ValueError, lambda: Normal('x', 3, 0))
-    raises(ValueError, lambda: Normal('x', a, b))
+    pytest.raises(ValueError, lambda: Normal('x', 3, 0))
+    pytest.raises(ValueError, lambda: Normal('x', a, b))
     Normal('X', a, p)  # No error raised
-    raises(ValueError, lambda: Exponential('x', a))
+    pytest.raises(ValueError, lambda: Exponential('x', a))
     Exponential('Ex', p)  # No error raised
     for fn in [Pareto, Weibull, Beta, Gamma]:
-        raises(ValueError, lambda: fn('x', a, p))
-        raises(ValueError, lambda: fn('x', p, a))
+        pytest.raises(ValueError, lambda: fn('x', a, p))
+        pytest.raises(ValueError, lambda: fn('x', p, a))
         fn('x', p, q)  # No error raised
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_unevaluated():
     X = Normal('x', 0, 1)
     assert E(X, evaluate=False) == (

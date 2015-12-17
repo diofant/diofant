@@ -1,5 +1,8 @@
-from sympy.integrals.transforms import (mellin_transform,
-    inverse_mellin_transform, laplace_transform, inverse_laplace_transform,
+import pytest
+
+from sympy.integrals.transforms import (
+    mellin_transform, inverse_mellin_transform,
+    laplace_transform, inverse_laplace_transform,
     fourier_transform, inverse_fourier_transform,
     sine_transform, inverse_sine_transform,
     cosine_transform, inverse_cosine_transform,
@@ -13,8 +16,8 @@ from sympy import (
     EulerGamma, erf, besselj, bessely, besseli, besselk, simplify,
     exp_polar, polar_lift, unpolarify, Function, expint, expand_mul,
     combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument, atan2, Abs)
-from sympy.utilities.pytest import XFAIL, slow, skip, raises
 from sympy.matrices import Matrix, eye
+
 from sympy.abc import x, s, a, b, c, d
 nu, beta, rho = symbols('nu beta rho')
 
@@ -56,11 +59,10 @@ def test_as_integral():
 # NOTE this is stuck in risch because meijerint cannot handle it
 
 
-@slow
-@XFAIL
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(True, reason="Risch takes forever.")
 def test_mellin_transform_fail():
-    skip("Risch takes forever.")
-
     MT = mellin_transform
 
     bpos = symbols('b', positive=True)
@@ -161,7 +163,7 @@ def test_mellin_transform():
         (-gamma(s + S(1)/2)/(sqrt(pi)*s), (-S(1)/2, 0), True)
 
 
-@slow
+@pytest.mark.slow
 def test_mellin_transform_bessel():
     from sympy import Max
     MT = mellin_transform
@@ -304,7 +306,7 @@ def test_expint():
         (expint(2, x)*Heaviside(x)).rewrite(Ei).rewrite(expint).expand()
 
 
-@slow
+@pytest.mark.slow
 def test_inverse_mellin_transform():
     from sympy import (sin, simplify, Max, Min, expand,
                        powsimp, exp_polar, cos, cot)
@@ -440,7 +442,7 @@ def test_inverse_mellin_transform():
     assert IMT(pi/cos(pi*s), s, x, (0, S(1)/2)) == sqrt(x)/(x + 1)
 
 
-@slow
+@pytest.mark.slow
 def test_laplace_transform():
     from sympy import fresnels, fresnelc
     LT = laplace_transform
@@ -757,7 +759,7 @@ def test_issue_8882():
     # To save time, only the critical part is included.
     F = -a**(-s + 1)*(4 + 1/a**2)**(-s/2)*sqrt(1/a**2)*exp(-s*I*pi)* \
         sin(s*atan(sqrt(1/a**2)/2))*gamma(s)
-    raises(IntegralTransformError, lambda:
+    pytest.raises(IntegralTransformError, lambda:
         inverse_mellin_transform(F, s, x, (-1, oo),
         **{'as_meijerg': True, 'needeval': True}))
 

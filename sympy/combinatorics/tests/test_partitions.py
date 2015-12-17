@@ -1,16 +1,17 @@
+import pytest
+
 from sympy.core.compatibility import range
 from sympy.combinatorics.partitions import (Partition, IntegerPartition,
                                             RGS_enum, RGS_unrank, RGS_rank,
                                             random_integer_partition)
-from sympy.utilities.pytest import raises
 from sympy.utilities.iterables import default_sort_key, partitions
 
 
 def test_partition():
     from sympy.abc import x
 
-    raises(ValueError, lambda: Partition(*list(range(3))))
-    raises(ValueError, lambda: Partition([1, 1, 2]))
+    pytest.raises(ValueError, lambda: Partition(*list(range(3))))
+    pytest.raises(ValueError, lambda: Partition([1, 1, 2]))
 
     a = Partition([1, 2, 3], [4])
     b = Partition([1, 2], [3, 4])
@@ -42,9 +43,9 @@ def test_partition():
 
 def test_integer_partition():
     # no zeros in partition
-    raises(ValueError, lambda: IntegerPartition(list(range(3))))
+    pytest.raises(ValueError, lambda: IntegerPartition(list(range(3))))
     # check fails since 1 + 2 != 100
-    raises(ValueError, lambda: IntegerPartition(100, list(range(1, 3))))
+    pytest.raises(ValueError, lambda: IntegerPartition(100, list(range(1, 3))))
     a = IntegerPartition(8, [1, 3, 4])
     b = a.next_lex()
     c = IntegerPartition([1, 3, 4])
@@ -79,19 +80,19 @@ def test_integer_partition():
     assert str(IntegerPartition([1, 1, 3])) == '[3, 1, 1]'
     assert IntegerPartition([1, 1, 3]).partition == [3, 1, 1]
 
-    raises(ValueError, lambda: random_integer_partition(-1))
+    pytest.raises(ValueError, lambda: random_integer_partition(-1))
     assert random_integer_partition(1) == [1]
     assert random_integer_partition(10, seed=[1, 3, 2, 1, 5, 1]
             ) == [5, 2, 1, 1, 1]
 
 
 def test_rgs():
-    raises(ValueError, lambda: RGS_unrank(-1, 3))
-    raises(ValueError, lambda: RGS_unrank(3, 0))
-    raises(ValueError, lambda: RGS_unrank(10, 1))
+    pytest.raises(ValueError, lambda: RGS_unrank(-1, 3))
+    pytest.raises(ValueError, lambda: RGS_unrank(3, 0))
+    pytest.raises(ValueError, lambda: RGS_unrank(10, 1))
 
-    raises(ValueError, lambda: Partition.from_rgs(list(range(3)), list(range(2))))
-    raises(ValueError, lambda: Partition.from_rgs(list(range(1, 3)), list(range(2))))
+    pytest.raises(ValueError, lambda: Partition.from_rgs(list(range(3)), list(range(2))))
+    pytest.raises(ValueError, lambda: Partition.from_rgs(list(range(1, 3)), list(range(2))))
     assert RGS_enum(-1) == 0
     assert RGS_enum(1) == 1
     assert RGS_unrank(7, 5) == [0, 0, 1, 0, 2]

@@ -1,5 +1,6 @@
+import pytest
+
 from sympy.external import import_module
-from sympy.utilities.pytest import raises, SKIP, XFAIL
 from sympy.core.compatibility import range
 
 theano = import_module('theano')
@@ -207,7 +208,7 @@ def test_MatrixSlice():
     # assert Yt.owner.op.idx_list[0].stop == kt
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_MatrixSlice_2():
     n = sympy.Symbol('n', integer=True)
     X = sympy.MatrixSymbol('X', n, n)
@@ -231,7 +232,7 @@ def test_BlockMatrix():
     assert any(theq(Blockt, solution) for solution in solutions)
 
 
-@SKIP("bug")
+@pytest.mark.xfail
 def test_BlockMatrix_Inverse_execution():
     k, n = 2, 4
     dtype = 'float32'
@@ -276,7 +277,7 @@ def test_AppliedUndef():
 
 
 def test_bad_keyword_args_raise_error():
-    raises(Exception, lambda: theano_function([x], [x+1], foobar=3))
+    pytest.raises(Exception, lambda: theano_function([x], [x+1], foobar=3))
 
 
 def test_cache():

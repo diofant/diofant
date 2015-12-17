@@ -1,7 +1,8 @@
+import pytest
+
 from sympy.matrices.expressions.slice import MatrixSlice
 from sympy.matrices.expressions import MatrixSymbol
 from sympy.abc import a, b, c, d, k, l, m, n
-from sympy.utilities.pytest import raises, XFAIL
 from sympy.functions.elementary.integers import floor
 from sympy.assumptions import assuming, Q
 
@@ -19,7 +20,7 @@ def test_entry():
     B = MatrixSlice(X, (a, b), (c, d))
     assert B[0,0] == X[a, c]
     assert B[k,l] == X[a+k, c+l]
-    raises(IndexError, lambda: MatrixSlice(X, 1, (2, 5))[1, 0])
+    pytest.raises(IndexError, lambda: MatrixSlice(X, 1, (2, 5))[1, 0])
 
     assert X[1::2, :][1, 3] == X[1+2, 3]
     assert X[:, 1::2][3, 1] == X[3, 1+2]
@@ -48,12 +49,12 @@ def test_slicing():
 
 def test_exceptions():
     X = MatrixSymbol('x', 10, 20)
-    raises(IndexError, lambda: X[0:12, 2])
-    raises(IndexError, lambda: X[0:9, 22])
-    raises(IndexError, lambda: X[-1:5, 2])
+    pytest.raises(IndexError, lambda: X[0:12, 2])
+    pytest.raises(IndexError, lambda: X[0:9, 22])
+    pytest.raises(IndexError, lambda: X[-1:5, 2])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_symmetry():
     X = MatrixSymbol('x', 10, 10)
     Y = X[:5, 5:]

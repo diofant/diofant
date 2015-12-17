@@ -6,19 +6,20 @@ logically the lowest part of the algorithm, yet in some sense it's the most
 complex part, because it needs to calculate a limit to return the result.
 """
 
+import pytest
+
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li)
+                   Pow, Add, li, Li, tan, acosh)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
-from sympy.utilities.pytest import XFAIL, slow
 
 x = Symbol('x', real=True, positive=True)
 m = Symbol('m', real=True, positive=True)
 
 
-@slow
+@pytest.mark.slow
 def test_gruntz_evaluation():
     # Gruntz' thesis pp. 122 to 123
     # 8.1
@@ -82,7 +83,7 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
 
-@slow
+@pytest.mark.slow
 def test_gruntz_eval_special():
     # Gruntz, p. 126
     assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x) == 1
@@ -373,7 +374,7 @@ def test_issue_4190():
     assert gruntz(x - gamma(1/x), x) == S.EulerGamma
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
@@ -401,3 +402,21 @@ def test_issue_6682():
 def test_issue_7096():
     from sympy.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
+
+
+def test_omgissue_74():
+    from sympy.functions import sign
+    assert gruntz(sign(log(1 + 1/x)), x) ==  1
+    assert gruntz(sign(log(1 - 1/x)), x) == -1
+    assert gruntz(sign(sin( 1/x)), x) ==  1
+    assert gruntz(sign(sin(-1/x)), x) == -1
+    assert gruntz(sign(tan( 1/x)), x) ==  1
+    assert gruntz(sign(tan(-1/x)), x) == -1
+    assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
+    assert gruntz(sign(cos(pi/2 - 1/x)), x) ==  1
+
+
+def test_omgissue_75():
+    assert gruntz(abs(log(x)), x) == oo
+    assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
+    assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) ==  oo

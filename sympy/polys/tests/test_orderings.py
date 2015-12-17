@@ -1,13 +1,13 @@
 """Tests of monomial orderings. """
 
+import pytest
+
 from sympy.polys.orderings import (
     monomial_key, lex, grlex, grevlex, ilex, igrlex,
-    LexOrder, InverseOrder, ProductOrder, build_product_order,
-)
+    LexOrder, InverseOrder, ProductOrder, build_product_order)
 
 from sympy.abc import x, y, z, t
 from sympy.core import S
-from sympy.utilities.pytest import raises
 
 
 def test_lex_order():
@@ -111,8 +111,8 @@ def test_monomial_key():
     assert monomial_key('grlex') == grlex
     assert monomial_key('grevlex') == grevlex
 
-    raises(ValueError, lambda: monomial_key('foo'))
-    raises(ValueError, lambda: monomial_key(1))
+    pytest.raises(ValueError, lambda: monomial_key('foo'))
+    pytest.raises(ValueError, lambda: monomial_key(1))
 
     M = [x, x**2*z**2, x*y, x**2, S(1), y**2, x**3, y, z, x*y**2*z, x**2*y**2]
     assert sorted(M, key=monomial_key('lex', [z, y, x])) == \

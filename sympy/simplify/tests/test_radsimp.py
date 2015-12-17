@@ -1,11 +1,13 @@
-from sympy import (
-    sqrt, Derivative, symbols, collect, Function, factor, Wild, S,
-    collect_const, log, fraction, I, cos, Add, O,sin, rcollect,
-    Mul, radsimp, diff, root, Symbol, Rational, exp)
+import pytest
+
+from sympy import (sqrt, Derivative, symbols, collect, Function, factor,
+                   Wild, S, collect_const, log, fraction, I, cos, Add, O,
+                   sin, rcollect, Mul, radsimp, diff, root, Symbol,
+                   Rational, exp)
 
 from sympy.core.mul import _unevaluated_Mul as umul
-from sympy.simplify.radsimp import _unevaluated_Add, collect_sqrt, fraction_expand
-from sympy.utilities.pytest import XFAIL
+from sympy.simplify.radsimp import (_unevaluated_Add, collect_sqrt,
+                                    fraction_expand)
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
 
@@ -281,14 +283,14 @@ def test_rcollect():
     assert rcollect(sqrt(-((x + 1)*(y + 1))), z) == sqrt(-((x + 1)*(y + 1)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_collect_func_xfail():
     # XXX: this test will pass when automatic constant distribution is removed (issue 4596)
     assert collect(f, x, factor, evaluate=False) == {S.One: (a + 1)**3,
                    x: 3*(a + 1)**2, x**2: 3*(a + 1), x**3: 1}
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_collect_issues():
     D = Derivative
     f = Function('f')

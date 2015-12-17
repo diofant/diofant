@@ -1,12 +1,13 @@
+import pytest
+
 from sympy.core import Lambda, S, symbols
 from sympy.concrete import Sum
 from sympy.functions import adjoint, conjugate, transpose
 from sympy.matrices import eye, Matrix, ShapeError, ImmutableMatrix
-from sympy.matrices.expressions import (
-    Adjoint, Identity, FunctionMatrix, MatrixExpr, MatrixSymbol, Trace,
-    ZeroMatrix, trace, MatPow, MatAdd, MatMul
-)
-from sympy.utilities.pytest import raises, XFAIL
+from sympy.matrices.expressions import (Adjoint, Identity, FunctionMatrix,
+                                        MatrixExpr, MatrixSymbol, Trace,
+                                        ZeroMatrix, trace, MatPow, MatAdd,
+                                        MatMul)
 
 n = symbols('n', integer=True)
 A = MatrixSymbol('A', n, n)
@@ -17,7 +18,7 @@ C = MatrixSymbol('C', 3, 4)
 def test_Trace():
     assert isinstance(Trace(A), Trace)
     assert not isinstance(Trace(A), MatrixExpr)
-    raises(ShapeError, lambda: Trace(C))
+    pytest.raises(ShapeError, lambda: Trace(C))
     assert trace(eye(3)) == 3
     assert trace(Matrix(3, 3, [1, 2, 3, 4, 5, 6, 7, 8, 9])) == 15
 
@@ -37,7 +38,7 @@ def test_Trace():
     F = FunctionMatrix(3, 3, Lambda((i, j), i + j))
     assert trace(F) == (0 + 0) + (1 + 1) + (2 + 2)
 
-    raises(TypeError, lambda: Trace(S.One))
+    pytest.raises(TypeError, lambda: Trace(S.One))
 
     assert Trace(A).arg is A
 
@@ -84,6 +85,6 @@ def test_trace_constant_factor():
     assert trace(MatMul(2, X)) == 10
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_rewrite():
     assert isinstance(trace(A).rewrite(Sum), Sum)

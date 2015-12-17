@@ -1,11 +1,12 @@
-from sympy import (
-    Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt, hyper,
-    cos, gamma, conjugate, factorial, pi, oo, zoo, binomial, RisingFactorial,
-    legendre, assoc_legendre, chebyshevu, chebyshevt, chebyshevt_root, chebyshevu_root,
-    laguerre, assoc_laguerre, laguerre_poly, hermite, gegenbauer, jacobi, jacobi_normalized)
+import pytest
 
+from sympy import (Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt,
+                   hyper, cos, gamma, conjugate, factorial, pi, oo, zoo,
+                   binomial, RisingFactorial, legendre, assoc_legendre,
+                   chebyshevu, chebyshevt, chebyshevt_root, chebyshevu_root,
+                   laguerre, assoc_laguerre, laguerre_poly, hermite,
+                   gegenbauer, jacobi, jacobi_normalized)
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import raises, XFAIL
 
 x = Symbol('x')
 
@@ -52,8 +53,8 @@ def test_jacobi():
            (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
                                     /((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1))))
 
-    raises(ValueError, lambda: jacobi(-2.1, a, b, x))
-    raises(ValueError, lambda: jacobi(Dummy(positive=True, integer=True), 1, 2, oo))
+    pytest.raises(ValueError, lambda: jacobi(-2.1, a, b, x))
+    pytest.raises(ValueError, lambda: jacobi(Dummy(positive=True, integer=True), 1, 2, oo))
 
 
 def test_gegenbauer():
@@ -91,7 +92,7 @@ def test_gegenbauer():
 
 
 def test_legendre():
-    raises(ValueError, lambda: legendre(-1, x))
+    pytest.raises(ValueError, lambda: legendre(-1, x))
     assert legendre(0, x) == 1
     assert legendre(1, x) == x
     assert legendre(2, x) == ((3*x**2 - 1)/2).expand()
@@ -160,8 +161,8 @@ def test_assoc_legendre():
 
     assert Plm(n, 0, x) == legendre(n, x)
 
-    raises(ValueError, lambda: Plm(-1, 0, x))
-    raises(ValueError, lambda: Plm(0, 1, x))
+    pytest.raises(ValueError, lambda: Plm(-1, 0, x))
+    pytest.raises(ValueError, lambda: Plm(0, 1, x))
 
     assert conjugate(assoc_legendre(n, m, x)) == \
         assoc_legendre(n, conjugate(m), conjugate(x))
@@ -178,13 +179,13 @@ def test_chebyshev():
         for k in range(n):
             z = chebyshevt_root(n, k)
             assert chebyshevt(n, z) == 0
-        raises(ValueError, lambda: chebyshevt_root(n, n))
+        pytest.raises(ValueError, lambda: chebyshevt_root(n, n))
 
     for n in range(1, 4):
         for k in range(n):
             z = chebyshevu_root(n, k)
             assert chebyshevu(n, z) == 0
-        raises(ValueError, lambda: chebyshevu_root(n, n))
+        pytest.raises(ValueError, lambda: chebyshevu_root(n, n))
 
     n = Symbol("n")
     X = chebyshevt(n, x)
@@ -251,7 +252,7 @@ def test_laguerre():
 
     assert diff(laguerre(n, x), x) == -assoc_laguerre(n - 1, 1, x)
 
-    raises(ValueError, lambda: laguerre(-2.1, x))
+    pytest.raises(ValueError, lambda: laguerre(-2.1, x))
 
 
 def test_assoc_laguerre():
@@ -284,10 +285,10 @@ def test_assoc_laguerre():
     assert conjugate(assoc_laguerre(n, alpha, x)) == \
         assoc_laguerre(n, conjugate(alpha), conjugate(x))
 
-    raises(ValueError, lambda: assoc_laguerre(-2.1, alpha, x))
+    pytest.raises(ValueError, lambda: assoc_laguerre(-2.1, alpha, x))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_laguerre_2():
     # This fails due to issue for Sum, like issue 2440
     alpha, k = Symbol("alpha"), Dummy("k")

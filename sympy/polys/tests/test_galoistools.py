@@ -1,3 +1,4 @@
+import pytest
 
 from sympy.polys.galoistools import (
     gf_crt, gf_crt1, gf_crt2, gf_int,
@@ -24,18 +25,14 @@ from sympy.polys.galoistools import (
     gf_berlekamp,
     gf_factor_sqf, gf_factor,
     gf_value, linear_congruence, csolve_prime, gf_csolve,
-    gf_frobenius_map, gf_frobenius_monomial_base
-)
+    gf_frobenius_map, gf_frobenius_monomial_base)
 
-from sympy.polys.polyerrors import (
-    ExactQuotientFailed,
-)
+from sympy.polys.polyerrors import ExactQuotientFailed
 
 from sympy.polys import polyconfig as config
 
 from sympy.polys.domains import ZZ
 from sympy import pi, nextprime
-from sympy.utilities.pytest import raises
 
 
 def test_gf_crt():
@@ -226,10 +223,10 @@ def test_gf_arith():
 
 
 def test_gf_division():
-    raises(ZeroDivisionError, lambda: gf_div([1, 2, 3], [], 11, ZZ))
-    raises(ZeroDivisionError, lambda: gf_rem([1, 2, 3], [], 11, ZZ))
-    raises(ZeroDivisionError, lambda: gf_quo([1, 2, 3], [], 11, ZZ))
-    raises(ZeroDivisionError, lambda: gf_quo([1, 2, 3], [], 11, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: gf_div([1, 2, 3], [], 11, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: gf_rem([1, 2, 3], [], 11, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: gf_quo([1, 2, 3], [], 11, ZZ))
+    pytest.raises(ZeroDivisionError, lambda: gf_quo([1, 2, 3], [], 11, ZZ))
 
     assert gf_div([1], [1, 2, 3], 7, ZZ) == ([], [1])
     assert gf_rem([1], [1, 2, 3], 7, ZZ) == [1]
@@ -244,7 +241,7 @@ def test_gf_division():
     assert gf_rem(f, g, 7, ZZ) == r
     assert gf_quo(f, g, 7, ZZ) == q
 
-    raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
     f = ZZ.map([5, 4, 3, 2, 1, 0])
     g = ZZ.map([1, 2, 3, 0])
@@ -255,7 +252,7 @@ def test_gf_division():
     assert gf_rem(f, g, 7, ZZ) == r
     assert gf_quo(f, g, 7, ZZ) == q
 
-    raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
     assert gf_quo(ZZ.map([1, 2, 1]), ZZ.map([1, 1]), 11, ZZ) == [1, 1]
 
@@ -465,7 +462,7 @@ def test_gf_irreducible_p():
     assert gf_irreducible_p(ZZ.map([7, 3, 1]), 11, ZZ) is False
 
     config.setup('GF_IRRED_METHOD', 'other')
-    raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
+    pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
     config.setup('GF_IRRED_METHOD')
 
     f = ZZ.map([1, 9, 9, 13, 16, 15, 6, 7, 7, 7, 10])
@@ -834,7 +831,7 @@ def test_gf_factor():
     assert gf_factor_sqf(f, p, ZZ) == g
 
     config.setup('GF_FACTOR_METHOD', 'other')
-    raises(KeyError, lambda: gf_factor([1, 1], 11, ZZ))
+    pytest.raises(KeyError, lambda: gf_factor([1, 1], 11, ZZ))
     config.setup('GF_FACTOR_METHOD')
 
 
