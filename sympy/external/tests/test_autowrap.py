@@ -1,5 +1,9 @@
+import tempfile
+import os
+
 import pytest
 
+import sympy
 from sympy import symbols, Eq
 from sympy.external import import_module
 from sympy.tensor import IndexedBase, Idx
@@ -25,10 +29,10 @@ i = Idx('i', m)
 j = Idx('j', n)
 k = Idx('k', d)
 
+
 #
 # test runners used by several language-backend combinations
 #
-
 
 def runtest_autowrap_twice(language, backend):
     f = autowrap((((a + b)/c)**5).expand(), language, backend)
@@ -81,6 +85,42 @@ def runtest_ufuncify(language, backend):
     expected = grid*b + c
     numpy.testing.assert_allclose(fabc(grid, b, c), expected)
     numpy.testing.assert_allclose(facb(grid, c, b), expected)
+
+
+def runtest_issue_10274(language, backend):
+    expr = (a - b + c)**(13)
+    tmp = tempfile.mkdtemp()
+    f = autowrap(expr, language, backend, tempdir=tmp, helpers=('helper', a - b + c, (a, b, c)))
+    assert f(1, 1, 1) == 1
+
+    for file in os.listdir(tmp):
+        if file.startswith("wrapped_code_") and file.endswith(".c"):
+            fil = open(tmp + '/' + file)
+            assert fil.read() == ("/******************************************************************************\n"
+                         " *                    Code generated with sympy " + sympy.__version__+"                     *\n"
+                         " *                                                                            *\n"
+                         " *              See http://www.sympy.org/ for more information.               *\n"
+                         " *                                                                            *\n"
+                         " *                      This file is part of 'autowrap'                       *\n"
+                         " ******************************************************************************/\n"
+                         "#include " + '"' + file[:-1] + 'h"' + "\n"
+                         "#include <math.h>\n"
+                         "\n"
+                         "double helper(double a, double b, double c) {\n"
+                         "\n"
+                         "   double helper_result;\n"
+                         "   helper_result = a - b + c;\n"
+                         "   return helper_result;\n"
+                         "\n"
+                         "}\n"
+                         "\n"
+                         "double autofunc(double a, double b, double c) {\n"
+                         "\n"
+                         "   double autofunc_result;\n"
+                         "   autofunc_result = pow(helper(a, b, c), 13);\n"
+                         "   return autofunc_result;\n"
+                         "\n"
+                         "}\n")
 
 #
 # tests of language-backend combinations
@@ -139,6 +179,12 @@ def test_autowrap_matrix_matrix_C_cython():
 @pytest.mark.skipif(Cython is None, reason="Couldn't import Cython.")
 def test_ufuncify_C_Cython():
     runtest_ufuncify('C', 'cython')
+
+
+@pytest.mark.skipif(Cython is None, reason="Couldn't import Cython.")
+def test_issue_10274_C_cython():
+    has_module('Cython')
+    runtest_issue_10274('C', 'cython')
 
 
 # Numpy
