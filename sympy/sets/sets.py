@@ -834,7 +834,7 @@ class Interval(Set, EvalfMixin):
 
         # handle (-oo, oo)
         infty = S.NegativeInfinity, S.Infinity
-        if self == Interval(*infty):
+        if Eq(self, Interval(*infty)) is S.true:
             l, r = self.left, self.right
             if l.is_extended_real or r.is_extended_real:
                 return other
