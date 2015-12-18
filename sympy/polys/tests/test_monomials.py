@@ -1,5 +1,7 @@
 """Tests for tools and arithmetics for monomials of distributed polynomials. """
 
+import pytest
+
 from sympy.polys.monomials import (
     itermonomials, monomial_count,
     monomial_mul, monomial_div,
@@ -13,7 +15,6 @@ from sympy.polys.polyerrors import ExactQuotientFailed
 
 from sympy.abc import a, b, c, x, y, z
 from sympy.core import S
-from sympy.utilities.pytest import raises
 
 
 def test_monomials():
@@ -117,4 +118,4 @@ def test_Monomial():
     assert m**2 == Monomial((6, 8, 2))
     assert m**3 == Monomial((9, 12, 3))
 
-    raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))
+    pytest.raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))

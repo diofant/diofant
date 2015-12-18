@@ -1,24 +1,26 @@
+import pytest
+
 from sympy.abc import t, w, x, y, z, n, k, m, p, i
 from sympy.assumptions import (ask, AssumptionsContext, Q, register_handler,
-        remove_handler)
+                               remove_handler)
 from sympy.assumptions.assume import global_assumptions
 from sympy.assumptions.ask import (compute_known_facts, known_facts_cnf,
                                    known_facts_dict, single_fact_lookup)
 from sympy.assumptions.handlers import AskHandler
 from sympy.core.add import Add
 from sympy.core.compatibility import exec_
-from sympy.core.numbers import (I, Integer, Rational, oo, pi)
+from sympy.core.numbers import I, Integer, Rational, oo, pi
 from sympy.core.singleton import S
 from sympy.core.power import Pow
 from sympy.core.symbol import symbols
 from sympy.functions.combinatorial.factorials import factorial
-from sympy.functions.elementary.complexes import (Abs, im, re, sign)
-from sympy.functions.elementary.exponential import (exp, log)
+from sympy.functions.elementary.complexes import Abs, im, re, sign
+from sympy.functions.elementary.exponential import exp, log
 from sympy.functions.elementary.miscellaneous import sqrt
-from sympy.functions.elementary.trigonometric import (
-    acos, acot, asin, atan, cos, cot, sin, tan)
+from sympy.functions.elementary.trigonometric import (acos, acot, asin,
+                                                      atan, cos, cot,
+                                                      sin, tan)
 from sympy.logic.boolalg import Equivalent, Implies, Xor, And, to_cnf
-from sympy.utilities.pytest import raises, XFAIL, slow
 from sympy.assumptions.assume import assuming
 
 
@@ -565,7 +567,7 @@ def test_I():
     assert ask(Q.real(z)) is True
 
 
-@slow
+@pytest.mark.slow
 def test_finite():
     x, y, z = symbols('x,y,z')
     assert ask(Q.finite(x)) is None
@@ -1055,7 +1057,7 @@ def test_finite():
     assert ask(Q.finite(cos(x) + sin(x))) is True
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_finite_xfail():
     """We need to support relations in ask for this to work"""
     assert ask(Q.finite(sin(x)**x)) is True
@@ -1230,7 +1232,7 @@ def test_even():
     assert ask(Q.even(x*(x + y)), Q.integer(x) & Q.even(y)) is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_evenness_in_ternary_integer_product_with_odd():
     # Tests that oddness inference is independent of term ordering.
     # Term ordering at the point of testing depends on SymPy's symbol order, so
@@ -1637,7 +1639,7 @@ def test_zero():
     assert ask(Q.zero(x), Q.odd(x)) is False
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_zero_doesnt_work():
     # This requires moving logic from the handler to the deduction system
     assert ask(Q.zero(x*y), Q.zero(x) | Q.zero(y)) is True
@@ -1717,7 +1719,7 @@ def test_odd():
     assert ask(Q.odd(x*(x + y)), Q.integer(x) & Q.even(y)) is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_oddness_in_ternary_integer_product_with_odd():
     # Tests that oddness inference is independent of term ordering.
     # Term ordering at the point of testing depends on SymPy's symbol order, so
@@ -2006,7 +2008,7 @@ def test_incompatible_resolutors():
         def Number(expr, assumptions):
             return True
     register_handler('prime', Prime2AskHandler)
-    raises(ValueError, lambda: ask(Q.prime(4)))
+    pytest.raises(ValueError, lambda: ask(Q.prime(4)))
     remove_handler('prime', Prime2AskHandler)
 
     class InconclusiveHandler(AskHandler):
@@ -2020,7 +2022,7 @@ def test_incompatible_resolutors():
 def test_key_extensibility():
     """test that you can add keys to the ask system at runtime"""
     # make sure the key is not defined
-    raises(AttributeError, lambda: ask(Q.my_key(x)))
+    pytest.raises(AttributeError, lambda: ask(Q.my_key(x)))
 
     class MyAskHandler(AskHandler):
         @staticmethod
@@ -2031,7 +2033,7 @@ def test_key_extensibility():
     assert ask(Q.my_key(x + 1)) is None
     remove_handler('my_key', MyAskHandler)
     del Q.my_key
-    raises(AttributeError, lambda: ask(Q.my_key(x)))
+    pytest.raises(AttributeError, lambda: ask(Q.my_key(x)))
 
 
 def test_type_extensibility():
@@ -2077,7 +2079,7 @@ def test_compute_known_facts():
     s = compute_known_facts(known_facts, known_facts_keys)
 
 
-@slow
+@pytest.mark.slow
 def test_known_facts_consistent():
     from sympy.assumptions.ask import known_facts, known_facts_keys
     ns = {}
@@ -2100,11 +2102,11 @@ def test_positive_assuming():
 
 
 def test_issue_5421():
-    raises(TypeError, lambda: ask(pi/log(x), Q.real))
+    pytest.raises(TypeError, lambda: ask(pi/log(x), Q.real))
 
 
 def test_issue_3906():
-    raises(TypeError, lambda: ask(Q.positive))
+    pytest.raises(TypeError, lambda: ask(Q.positive))
 
 
 def test_issue_5833():
@@ -2113,8 +2115,8 @@ def test_issue_5833():
 
 
 def test_issue_6732():
-    raises(ValueError, lambda: ask(Q.positive(x), Q.positive(x) & Q.negative(x)))
-    raises(ValueError, lambda: ask(Q.negative(x), Q.positive(x) & Q.negative(x)))
+    pytest.raises(ValueError, lambda: ask(Q.positive(x), Q.positive(x) & Q.negative(x)))
+    pytest.raises(ValueError, lambda: ask(Q.negative(x), Q.positive(x) & Q.negative(x)))
 
 
 def test_issue_7246():
@@ -2140,7 +2142,7 @@ def test_issue_7246():
     assert ask(Q.positive(acot(x))) is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_7246_failing():
     # Move this test to test_issue_7246 once
     # the new assumptions module is improved.

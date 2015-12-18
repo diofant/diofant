@@ -5,13 +5,14 @@ Matrix, ImmutableMatrix, MatrixExpr
 Here we test the extent to which they cooperate
 """
 
+import pytest
+
 from sympy import symbols
 from sympy.matrices import (Matrix, MatrixSymbol, eye, Identity,
-        ImmutableMatrix)
+                            ImmutableMatrix)
 from sympy.core.compatibility import range
 from sympy.matrices.expressions import MatrixExpr, MatAdd
 from sympy.matrices.matrices import classof
-from sympy.utilities.pytest import raises
 
 SM = MatrixSymbol('X', 3, 3)
 MM = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
@@ -64,4 +65,4 @@ def test_classof():
     assert classof(B, B) == ImmutableMatrix
     assert classof(A, B) == ImmutableMatrix
     assert classof(B, A) == ImmutableMatrix
-    raises(TypeError, lambda: classof(A, C))
+    pytest.raises(TypeError, lambda: classof(A, C))

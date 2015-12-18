@@ -1,19 +1,13 @@
-from sympy import (
-    symbols, expand, expand_func, nan, oo, Float, conjugate, diff,
-    re, im, Abs, O, exp_polar, polar_lift, limit,
-    Symbol, I, integrate, S,
-    sqrt, sin, cos, sinh, cosh, exp, log, pi, EulerGamma,
-    erf, erfc, erfi, erf2, erfinv, erfcinv, erf2inv,
-    gamma, uppergamma,
-    Ei, expint, E1, li, Li, Si, Ci, Shi, Chi,
-    fresnels, fresnelc,
-    hyper, meijerg)
+import pytest
 
+from sympy import (symbols, expand, expand_func, nan, oo, Float, conjugate,
+                   diff, re, im, Abs, O, exp_polar, polar_lift, limit,
+                   Symbol, I, integrate, S, sqrt, sin, cos, sinh, cosh,
+                   exp, log, pi, EulerGamma, erf, erfc, erfi, erf2, erfinv,
+                   erfcinv, erf2inv, gamma, uppergamma, Ei, expint, E1, li,
+                   Li, Si, Ci, Shi, Chi, fresnels, fresnelc, hyper, meijerg)
 from sympy.functions.special.error_functions import _erfs, _eis
-
 from sympy.core.function import ArgumentIndexError
-
-from sympy.utilities.pytest import raises
 
 x, y, z = symbols('x,y,z')
 w = Symbol("w", extended_real=True)
@@ -72,7 +66,7 @@ def test_erf():
          erf(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))) *
          re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
 
-    raises(ArgumentIndexError, lambda: erf(x).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: erf(x).fdiff(2))
 
 
 def test_erf_series():
@@ -135,7 +129,7 @@ def test_erfc():
          erfc(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))) *
          re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
 
-    raises(ArgumentIndexError, lambda: erfc(x).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: erfc(x).fdiff(2))
 
 
 def test_erfc_series():
@@ -188,7 +182,7 @@ def test_erfi():
          erfi(re(x) + I*re(x)*Abs(im(x))/Abs(re(x)))) *
          re(x)*Abs(im(x))/(2*im(x)*Abs(re(x)))))
 
-    raises(ArgumentIndexError, lambda: erfi(x).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(2))
 
 
 def test_erfi_series():
@@ -231,7 +225,7 @@ def test_erf2():
     assert erf2(x, y).rewrite('erfc') == erfc(x) - erfc(y)
     assert erf2(x, y).rewrite('erfi') == I*(erfi(I*x) - erfi(I*y))
 
-    raises(ArgumentIndexError, lambda: erfi(x).fdiff(3))
+    pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(3))
 
 
 def test_erfinv():

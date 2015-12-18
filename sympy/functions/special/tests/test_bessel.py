@@ -1,3 +1,5 @@
+import pytest
+
 from sympy import (jn, yn, symbols, Symbol, sin, cos, pi, S, jn_zeros, besselj,
                    bessely, besseli, besselk, hankel1, hankel2, expand_func,
                    sqrt, sinh, cosh, diff, series, gamma, hyper, Abs, I, O, oo,
@@ -9,8 +11,6 @@ from sympy.utilities.randtest import (random_complex_number as randcplx,
                                       verify_numerically as tn,
                                       test_derivative_numerically as td,
                                       _randint)
-from sympy.utilities.pytest import raises
-
 from sympy.abc import z, n, k, x
 
 randint = _randint()
@@ -23,8 +23,8 @@ def test_bessel_rand():
 
 def test_bessel_twoinputs():
     for f in [besselj, bessely, besseli, besselk, hankel1, hankel2, jn, yn]:
-        raises(TypeError, lambda: f(1))
-        raises(TypeError, lambda: f(1, 2, 3))
+        pytest.raises(TypeError, lambda: f(1))
+        pytest.raises(TypeError, lambda: f(1, 2, 3))
 
 
 def test_diff():

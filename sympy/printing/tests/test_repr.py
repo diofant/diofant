@@ -1,7 +1,8 @@
-from sympy.utilities.pytest import raises
-from sympy import (symbols, Function, Integer, Matrix, Abs,
-    Rational, Float, S, WildFunction, ImmutableMatrix, sin, true, false, ones,
-    Symbol, Dummy, Wild)
+import pytest
+
+from sympy import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
+                   S, WildFunction, ImmutableMatrix, sin, true, false, ones,
+                   Symbol, Dummy, Wild)
 from sympy.core.compatibility import exec_
 from sympy.geometry import Point, Ellipse
 from sympy.printing import srepr
@@ -160,7 +161,7 @@ def test_WildFunction():
 
 
 def test_settins():
-    raises(TypeError, lambda: srepr(x, method="garbage"))
+    pytest.raises(TypeError, lambda: srepr(x, method="garbage"))
 
 
 def test_Mul():

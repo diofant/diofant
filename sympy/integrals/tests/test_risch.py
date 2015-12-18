@@ -1,16 +1,21 @@
 """Most of these tests come from the examples in Bronstein's book."""
-from sympy import (Poly, I, S, Function, log, symbols, exp, tan, sqrt,
-    Symbol, Lambda, sin, Eq, Piecewise, factor)
-from sympy.integrals.risch import (gcdex_diophantine, frac_in, as_poly_1t,
-    derivation, splitfactor, splitfactor_sqf, canonical_representation,
-    hermite_reduce, polynomial_reduce, residue_reduce, residue_reduce_to_basic,
-    integrate_primitive, integrate_hyperexponential_polynomial,
-    integrate_hyperexponential, integrate_hypertangent_polynomial,
-    integrate_nonlinear_no_specials, integer_powers, DifferentialExtension,
-    risch_integrate, DecrementLevel, NonElementaryIntegral, recognize_log_derivative,
-    recognize_derivative, laurent_series)
-from sympy.utilities.pytest import raises
+import pytest
 
+from sympy import (Poly, I, S, Function, log, symbols, exp, tan, sqrt,
+                   Symbol, Lambda, sin, Eq, Piecewise, factor)
+from sympy.integrals.risch import (gcdex_diophantine, frac_in, as_poly_1t,
+                                   derivation, splitfactor, splitfactor_sqf,
+                                   canonical_representation, hermite_reduce,
+                                   polynomial_reduce, residue_reduce,
+                                   residue_reduce_to_basic, integrate_primitive,
+                                   integrate_hyperexponential_polynomial,
+                                   integrate_hyperexponential,
+                                   integrate_hypertangent_polynomial,
+                                   integrate_nonlinear_no_specials, integer_powers,
+                                   DifferentialExtension, risch_integrate,
+                                   DecrementLevel, NonElementaryIntegral,
+                                   recognize_log_derivative, recognize_derivative,
+                                   laurent_series)
 from sympy.abc import x, t, nu, z, a, y
 t0, t1, t2 = symbols('t:3')
 i = Symbol('i')
@@ -29,7 +34,7 @@ def test_frac_in():
         (Poly(t*x + t, x), Poly(x, x))
     assert frac_in((Poly((x + 1)/x*t, t), Poly(t + 1, t)), x) == \
         (Poly(t*x + t, x), Poly((1 + t)*x, x))
-    raises(ValueError, lambda: frac_in((x + 1)/log(x)*t, x))
+    pytest.raises(ValueError, lambda: frac_in((x + 1)/log(x)*t, x))
     assert frac_in(Poly((2 + 2*x + x*(1 + x))/(1 + x)**2, t), x, cancel=True) == \
         (Poly(x + 2, x), Poly(x + 1, x))
 
@@ -512,7 +517,7 @@ def test_DifferentialExtension_all_attrs():
     assert DE.level == -1
     assert DE.t == t1 == DE.T[DE.level]
     assert DE.d == Poly(1/x, t1) == DE.D[DE.level]
-    raises(ValueError, lambda: DE.increment_level())
+    pytest.raises(ValueError, lambda: DE.increment_level())
     DE.decrement_level()
     assert DE.level == -2
     assert DE.t == t0 == DE.T[DE.level]
@@ -523,7 +528,7 @@ def test_DifferentialExtension_all_attrs():
     assert DE.t == x == DE.T[DE.level] == DE.x
     assert DE.d == Poly(1, x) == DE.D[DE.level]
     assert DE.case == 'base'
-    raises(ValueError, lambda: DE.decrement_level())
+    pytest.raises(ValueError, lambda: DE.decrement_level())
     DE.increment_level()
     DE.increment_level()
     assert DE.level == -1
@@ -533,7 +538,7 @@ def test_DifferentialExtension_all_attrs():
 
 
 def test_DifferentialExtension_extension_flag():
-    raises(ValueError, lambda: DifferentialExtension(extension={'T': [x, t]}))
+    pytest.raises(ValueError, lambda: DifferentialExtension(extension={'T': [x, t]}))
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t, t)]})
     assert DE._important_attrs == (None, None, [Poly(1, x), Poly(t, t)], [x, t],
         None, None, None, None, None, None)
@@ -548,7 +553,7 @@ def test_DifferentialExtension_extension_flag():
         'E_K': [1], 'E_args': [x], 'L_K': [], 'L_args': []})
     assert DE._important_attrs == (None, None, [Poly(1, x), Poly(t, t)], [x, t],
         None, None, [1], [x], [], [])
-    raises(ValueError, lambda: DifferentialExtension())
+    pytest.raises(ValueError, lambda: DifferentialExtension())
 
 
 def test_DifferentialExtension_misc():
@@ -557,7 +562,7 @@ def test_DifferentialExtension_misc():
         (Poly(sin(y)*t0, t0, domain='ZZ[sin(y)]'), Poly(1, t0, domain='ZZ'),
         [Poly(1, x, domain='ZZ'), Poly(t0, t0, domain='ZZ')], [x, t0],
         [Lambda(i, exp(i))], [], [1], [x], [], [])
-    raises(NotImplementedError, lambda: DifferentialExtension(sin(x), x))
+    pytest.raises(NotImplementedError, lambda: DifferentialExtension(sin(x), x))
     assert DifferentialExtension(10**x, x, dummy=False)._important_attrs == \
         (Poly(t0, t0), Poly(1, t0), [Poly(1, x), Poly(log(10)*t0, t0)], [x, t0],
         [Lambda(i, exp(i*log(10)))], [(exp(x*log(10)), 10**x)], [1], [x*log(10)],

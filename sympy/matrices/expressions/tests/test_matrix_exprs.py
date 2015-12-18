@@ -1,10 +1,11 @@
+import pytest
+
 from sympy.core import S, symbols, Add, Mul
 from sympy.functions import transpose, sin, cos, sqrt
 from sympy.simplify import simplify
 from sympy.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd, MatMul,
-        MatPow, Matrix, MatrixExpr, MatrixSymbol, ShapeError, ZeroMatrix,
-        Transpose, Adjoint)
-from sympy.utilities.pytest import raises
+                            MatPow, Matrix, MatrixExpr, MatrixSymbol, ShapeError,
+                            ZeroMatrix, Transpose, Adjoint)
 
 n, m, l, k, p = symbols('n m l k p', integer=True)
 x = symbols('x')
@@ -18,7 +19,7 @@ E = MatrixSymbol('E', m, n)
 def test_shape():
     assert A.shape == (n, m)
     assert (A*B).shape == (n, l)
-    raises(ShapeError, lambda: B*A)
+    pytest.raises(ShapeError, lambda: B*A)
 
 
 def test_matexpr():
@@ -55,9 +56,9 @@ def test_ZeroMatrix():
     assert Z.conjugate() == Z
 
     assert ZeroMatrix(n, n)**0 == Identity(n)
-    with raises(ShapeError):
+    with pytest.raises(ShapeError):
         Z**0
-    with raises(ShapeError):
+    with pytest.raises(ShapeError):
         Z**2
 
 
@@ -96,13 +97,13 @@ def test_addition():
     assert (A + B).shape == A.shape
     assert isinstance(A - A + 2*B, MatMul)
 
-    raises(ShapeError, lambda: A + B.T)
-    raises(TypeError, lambda: A + 1)
-    raises(TypeError, lambda: 5 + A)
-    raises(TypeError, lambda: 5 - A)
+    pytest.raises(ShapeError, lambda: A + B.T)
+    pytest.raises(TypeError, lambda: A + 1)
+    pytest.raises(TypeError, lambda: 5 + A)
+    pytest.raises(TypeError, lambda: 5 - A)
 
     assert A + ZeroMatrix(n, m) - A == ZeroMatrix(n, m)
-    with raises(TypeError):
+    with pytest.raises(TypeError):
         ZeroMatrix(n,m) + S(0)
 
 
@@ -115,7 +116,7 @@ def test_multiplication():
 
     assert (A*0*B) == ZeroMatrix(n, l)
 
-    raises(ShapeError, lambda: B*A)
+    pytest.raises(ShapeError, lambda: B*A)
     assert (2*A).shape == A.shape
 
     assert A * ZeroMatrix(m, m) * B == ZeroMatrix(n, l)
@@ -123,7 +124,7 @@ def test_multiplication():
     assert C * Identity(n) * C.I == Identity(n)
 
     assert B/2 == S.Half*B
-    raises(NotImplementedError, lambda: 2/B)
+    pytest.raises(NotImplementedError, lambda: 2/B)
 
     A = MatrixSymbol('A', n, n)
     B = MatrixSymbol('B', n, n)
@@ -143,14 +144,14 @@ def test_MatPow():
     assert A**2 == AA
     assert A**-1 == Inverse(A)
     assert A**S.Half == sqrt(A)
-    raises(ShapeError, lambda: MatrixSymbol('B', 3, 2)**2)
+    pytest.raises(ShapeError, lambda: MatrixSymbol('B', 3, 2)**2)
 
 
 def test_MatrixSymbol():
     n, m, t = symbols('n,m,t')
     X = MatrixSymbol('X', n, m)
     assert X.shape == (n, m)
-    raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue 5855
+    pytest.raises(TypeError, lambda: MatrixSymbol('X', n, m)(t))  # issue 5855
     assert X.doit() == X
 
 
@@ -203,10 +204,10 @@ def test_single_indexing():
     assert A[1] == A[0, 1]
     assert A[3] == A[1, 0]
     assert list(A[:2, :2]) == [A[0, 0], A[0, 1], A[1, 0], A[1, 1]]
-    raises(IndexError, lambda: A[6])
-    raises(IndexError, lambda: A[n])
+    pytest.raises(IndexError, lambda: A[6])
+    pytest.raises(IndexError, lambda: A[n])
     B = MatrixSymbol('B', n, m)
-    raises(IndexError, lambda: B[1])
+    pytest.raises(IndexError, lambda: B[1])
 
 
 def test_MatrixElement_diff():

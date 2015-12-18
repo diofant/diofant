@@ -1,6 +1,6 @@
-from sympy.core.rules import Transform
+import pytest
 
-from sympy.utilities.pytest import raises
+from sympy.core.rules import Transform
 
 
 def test_Transform():
@@ -9,6 +9,6 @@ def test_Transform():
     assert (1 in add1) is True
     assert add1.get(1) == 2
 
-    raises(KeyError, lambda: add1[2])
+    pytest.raises(KeyError, lambda: add1[2])
     assert (2 in add1) is False
     assert add1.get(2) is None

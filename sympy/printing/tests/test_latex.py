@@ -1,3 +1,5 @@
+import pytest
+
 from sympy import (
     Add, Abs, Chi, Ci, CosineTransform, Dict, Ei, Eq, FallingFactorial,
     FiniteSet, Float, FourierTransform, Function, IndexedBase, Integral,
@@ -18,7 +20,6 @@ from sympy import (
 
 from sympy.abc import mu, tau
 from sympy.printing.latex import latex, translate
-from sympy.utilities.pytest import XFAIL, raises
 from sympy.functions import DiracDelta, Heaviside, KroneckerDelta, LeviCivita
 from sympy.logic import Implies
 from sympy.logic.boolalg import And, Or, Xor
@@ -151,7 +152,7 @@ def test_latex_symbols():
     assert latex(Symbol('omega') ** Symbol('beta')) == r"\omega^{\beta}"
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_latex_symbols_failing():
     rho, mass, volume = symbols('rho, mass, volume')
     assert latex(
@@ -848,7 +849,7 @@ def test_latex_RootSum():
 
 
 def test_settings():
-    raises(TypeError, lambda: latex(x*y, method="garbage"))
+    pytest.raises(TypeError, lambda: latex(x*y, method="garbage"))
 
 
 def test_latex_numbers():
@@ -1279,7 +1280,7 @@ def test_greek_symbols():
     assert latex(Symbol('vartheta')) == r'\vartheta'
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_builtin_without_args_mismatched_names():
     assert latex(CosineTransform) == r'\mathcal{COS}'
 

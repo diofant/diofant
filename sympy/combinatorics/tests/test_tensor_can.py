@@ -3,7 +3,6 @@ from sympy.combinatorics.permutations import Permutation, Perm
 from sympy.combinatorics.tensor_can import (perm_af_direct_product, dummy_sgs,
     riemann_bsgs, get_symmetric_group_sgs, canonicalize, bsgs_direct_product)
 from sympy.combinatorics.testutil import canonicalize_naive, graph_certificate
-from sympy.utilities.pytest import skip, XFAIL
 
 
 def test_perm_af_direct_product():
@@ -434,9 +433,7 @@ def test_riemann_invariants():
     assert can == [0,2,4,6,1,3,8,10,5,7,12,14,9,11,16,18,13,15,20,22,17,19,24,26,21,23,28,30,25,27,32,34,29,31,36,38,33,35,37,39,40,41]
 
 
-@XFAIL
 def test_riemann_invariants1():
-    skip('takes too much time')
     baser, gensr = riemann_bsgs
     g = Permutation([17, 44, 11, 3, 0, 19, 23, 15, 38, 4, 25, 27, 43, 36, 22, 14, 8, 30, 41, 20, 2, 10, 12, 28, 18, 1, 29, 13, 37, 42, 33, 7, 9, 31, 24, 26, 39, 5, 34, 47, 32, 6, 21, 40, 35, 46, 45, 16, 48, 49])
     can = canonicalize(g, list(range(48)), 0, (baser, gensr, 12, 0))

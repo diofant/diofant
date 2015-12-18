@@ -1,21 +1,22 @@
 import copy
 import pickle
 import warnings
-from sympy.utilities.pytest import XFAIL
+
+import pytest
 
 from sympy.core.basic import Atom, Basic
 from sympy.core.core import BasicMeta
 from sympy.core.singleton import SingletonRegistry
 from sympy.core.symbol import Dummy, Symbol, Wild
 from sympy.core.numbers import (E, I, pi, oo, zoo, nan, Integer,
-        Rational, Float)
+                                Rational, Float)
 from sympy.core.relational import (Equality, GreaterThan, LessThan, Relational,
-        StrictGreaterThan, StrictLessThan, Unequality)
+                                   StrictGreaterThan, StrictLessThan, Unequality)
 from sympy.core.add import Add
 from sympy.core.mul import Mul
 from sympy.core.power import Pow
-from sympy.core.function import Derivative, Function, FunctionClass, Lambda, \
-    WildFunction
+from sympy.core.function import (Derivative, Function, FunctionClass, Lambda,
+                                 WildFunction)
 from sympy.sets.sets import Interval
 from sympy.core.multidimensional import vectorize
 
@@ -132,7 +133,7 @@ def test_core_function():
         check(f)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_core_dynamicfunctions():
     # This fails because f is assumed to be a class at sympy.basic.function.f
     f = Function("f")
@@ -259,7 +260,7 @@ def test_ntheory():
 # XXX: These tests are not complete, so XFAIL them
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_plotting():
     from sympy.plotting.color_scheme import ColorGradient, ColorScheme
     from sympy.plotting.managed_window import ManagedWindow
@@ -286,7 +287,7 @@ def test_plotting():
         check(c)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_plotting2():
     from sympy.plotting.color_scheme import ColorGradient, ColorScheme
     from sympy.plotting.managed_window import ManagedWindow
@@ -336,7 +337,7 @@ def test_pickling_polys_polyclasses():
         check(c)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
@@ -620,12 +621,12 @@ def test_printing():
         check(c)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_printing1():
     check(MathMLPrinter())
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_printing2():
     check(PrettyPrinter())
 

@@ -1,3 +1,5 @@
+import pytest
+
 from sympy.core.function import Derivative
 from sympy.vector.vector import Vector
 from sympy.vector.coordsysrect import CoordSysCartesian
@@ -9,7 +11,6 @@ from sympy.vector.functions import (curl, divergence, gradient,
                                     is_conservative, is_solenoidal,
                                     scalar_potential,
                                     scalar_potential_difference)
-from sympy.utilities.pytest import raises
 
 C = CoordSysCartesian('C')
 i, j, k = C.base_vectors()
@@ -196,7 +197,7 @@ def test_scalar_potential():
     assert scalar_potential(grad_field, C) == scalar_field
     assert scalar_potential(z*P.i + P.x*k, C) == x*z*cos(q) + y*z*sin(q)
     assert scalar_potential(z*P.i + P.x*k, P) == P.x*P.z
-    raises(ValueError, lambda: scalar_potential(x*j, C))
+    pytest.raises(ValueError, lambda: scalar_potential(x*j, C))
 
 
 def test_scalar_potential_difference():

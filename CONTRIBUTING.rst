@@ -48,7 +48,6 @@ All work should be submitted via `Pull Requests (PR)`_.
    pass and you don't break anything, so please run::
 
        $ ./setup.py test
-       $ pep8
 
 License
 -------

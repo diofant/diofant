@@ -91,6 +91,8 @@ class Add(Expr, AssocOp):
         sympy.core.mul.Mul.flatten
 
         """
+        from sympy.series.order import Order
+
         rv = None
         if len(seq) == 2:
             a, b = seq
@@ -150,6 +152,9 @@ class Add(Expr, AssocOp):
                 # NB: here we assume Add is always commutative
                 seq.extend(o.args)  # TODO zerocopy?
                 continue
+
+            elif o.has(Order):
+                c, s = S.One, o
 
             # Mul([...])
             elif o.is_Mul:
@@ -363,8 +368,8 @@ class Add(Expr, AssocOp):
             return terms[0].matches(expr - coeff, repl_dict)
         return
 
-    def matches(self, expr, repl_dict={}, old=False):
-        return AssocOp._matches_commutative(self, expr, repl_dict, old)
+    def matches(self, expr, repl_dict={}):
+        return AssocOp._matches_commutative(self, expr, repl_dict)
 
     @staticmethod
     def _combine_inverse(lhs, rhs):

@@ -23,13 +23,15 @@
 
 from __future__ import print_function
 
-from sympy.abc import x, y, z
-from sympy.utilities.pytest import skip
-from sympy.utilities.codegen import codegen, make_routine, get_code_generator
 import sys
 import os
 import tempfile
 import subprocess
+
+import pytest
+
+from sympy.abc import x, y, z
+from sympy.utilities.codegen import codegen, make_routine, get_code_generator
 
 
 # templates for the main program that will test the generated code.
@@ -266,24 +268,29 @@ for lang, compiler in combinations_lang_compiler:
 # We test all language-compiler combinations, just to report what is skipped
 
 
+@pytest.mark.skipif(("C", 'cc') in invalid_lang_compilers,
+                    reason="`cc' command didn't work as expected")
 def test_C_cc():
-    if ("C", 'cc') in invalid_lang_compilers:
-        skip("`cc' command didn't work as expected")
+    pass
 
 
+@pytest.mark.skipif(("F95", 'ifort') in invalid_lang_compilers,
+                    reason="`ifort' command didn't work as expected")
 def test_F95_ifort():
-    if ("F95", 'ifort') in invalid_lang_compilers:
-        skip("`ifort' command didn't work as expected")
+    pass
 
 
+@pytest.mark.skipif(("F95", 'gfortran') in invalid_lang_compilers,
+                    reason="`gfortran' command didn't work as expected")
 def test_F95_gfortran():
-    if ("F95", 'gfortran') in invalid_lang_compilers:
-        skip("`gfortran' command didn't work as expected")
+    pass
 
 
+@pytest.mark.skipif(("F95", 'g95') in invalid_lang_compilers,
+                    reason="`g95' command didn't work as expected")
 def test_F95_g95():
-    if ("F95", 'g95') in invalid_lang_compilers:
-        skip("`g95' command didn't work as expected")
+    pass
+
 
 # Here comes the actual tests
 

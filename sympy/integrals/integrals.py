@@ -102,6 +102,16 @@ class Integral(AddWithLimits):
         """
         return AddWithLimits.free_symbols.fget(self)
 
+    def _eval_is_real(self):
+        for l in self.limits:
+            if len(l) != 3:
+                return
+            if not l[1].is_real or not l[2].is_real:
+                return
+        f = self.function.subs({v: Dummy("d", real=True) for v in self.variables})
+        if f.is_real:
+            return True
+
     def _eval_is_zero(self):
         # This is a very naive and quick test, not intended to do the integral to
         # answer whether it is zero or not, e.g. Integral(sin(x), (x, 0, 2*pi))

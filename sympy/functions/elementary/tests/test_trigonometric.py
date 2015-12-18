@@ -1,10 +1,12 @@
+import pytest
+
 from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
-        acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh, cos,
-        cosh, atan2, exp, log, asinh, acoth, atanh, O, cancel, Matrix, re, im,
-        Float, Pow, gcd, sec, csc, cot, diff, simplify, Heaviside, arg,
-        conjugate, series, FiniteSet, asec, acsc)
+                   acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh,
+                   cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
+                   cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
+                   diff, simplify, Heaviside, arg, conjugate, series,
+                   FiniteSet, asec, acsc, sech, csch)
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import XFAIL, slow, raises
 
 x, y, z = symbols('x y z')
 r = Symbol('r', extended_real=True)
@@ -531,15 +533,15 @@ def test_cot():
     assert cot(7*pi/6) == sqrt(3)
     assert cot(-5*pi/6) == sqrt(3)
 
-    assert cot(pi/8).expand() == 1 + sqrt(2)
-    assert cot(3*pi/8).expand() == -1 + sqrt(2)
-    assert cot(5*pi/8).expand() == 1 - sqrt(2)
-    assert cot(7*pi/8).expand() == -1 - sqrt(2)
+    assert cot(pi/8).simplify() == 1 + sqrt(2)
+    assert cot(3*pi/8).simplify() == -1 + sqrt(2)
+    assert cot(5*pi/8).simplify() == 1 - sqrt(2)
+    assert cot(7*pi/8).simplify() == -1 - sqrt(2)
 
-    assert cot(pi/12) == sqrt(3) + 2
-    assert cot(5*pi/12) == -sqrt(3) + 2
-    assert cot(7*pi/12) == sqrt(3) - 2
-    assert cot(11*pi/12) == -sqrt(3) - 2
+    assert cot(pi/12).simplify() == sqrt(3) + 2
+    assert cot(5*pi/12).simplify() == -sqrt(3) + 2
+    assert cot(7*pi/12).simplify() == sqrt(3) - 2
+    assert cot(11*pi/12).simplify() == -sqrt(3) - 2
 
     assert cot(pi/24).radsimp() == sqrt(2) + sqrt(3) + 2 + sqrt(6)
     assert cot(5*pi/24).radsimp() == -sqrt(2) - sqrt(3) + 2 + sqrt(6)
@@ -569,7 +571,7 @@ def test_cot():
 
     assert cot(x).is_finite is None
     assert cot(r).is_finite is None
-    i = Symbol('i', imaginary=True)
+    i = Symbol('i', imaginary=True, nonzero=True)
     assert cot(i).is_finite is True
 
     assert cot(x).subs(x, 3*pi) == zoo
@@ -1068,12 +1070,12 @@ def test_issue_4420():
 
 
 def test_inverses():
-    raises(AttributeError, lambda: sin(x).inverse())
-    raises(AttributeError, lambda: cos(x).inverse())
+    pytest.raises(AttributeError, lambda: sin(x).inverse())
+    pytest.raises(AttributeError, lambda: cos(x).inverse())
     assert tan(x).inverse() == atan
     assert cot(x).inverse() == acot
-    raises(AttributeError, lambda: csc(x).inverse())
-    raises(AttributeError, lambda: sec(x).inverse())
+    pytest.raises(AttributeError, lambda: csc(x).inverse())
+    pytest.raises(AttributeError, lambda: sec(x).inverse())
     assert asin(x).inverse() == sin
     assert acos(x).inverse() == cos
     assert atan(x).inverse() == tan
@@ -1098,7 +1100,7 @@ def test_real_imag():
         assert cot(a).as_real_imag(deep=deep) == (cot(a), 0)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sin_cos_with_infinity():
     # Test for issue 5196
     # https://github.com/sympy/sympy/issues/5196
@@ -1106,7 +1108,7 @@ def test_sin_cos_with_infinity():
     assert cos(oo) == S.NaN
 
 
-@slow
+@pytest.mark.slow
 def test_sincos_rewrite_sqrt():
     # equivalent to testing rewrite(pow)
     for p in [1, 3, 5, 17]:
@@ -1124,7 +1126,7 @@ def test_sincos_rewrite_sqrt():
     assert cos(pi/14).rewrite(sqrt) == sqrt(cos(pi/7)/2 + S.Half)
 
 
-@slow
+@pytest.mark.slow
 def test_tancot_rewrite_sqrt():
     # equivalent to testing rewrite(pow)
     for p in [1, 3, 5, 17]:
@@ -1158,8 +1160,8 @@ def test_sec():
     assert sec(5*pi/2) == zoo
     assert sec(9*pi/7) == -sec(2*pi/7)
     assert sec(3*pi/4) == -sqrt(2)  # issue 8421
-    assert sec(I) == 1/cosh(1)
-    assert sec(x*I) == 1/cosh(x)
+    assert sec(I) == sech(1)
+    assert sec(x*I) == sech(x)
     assert sec(-x) == sec(x)
 
     assert sec(asec(x)) == x
@@ -1235,8 +1237,8 @@ def test_csc():
     assert csc(5*pi/2) == 1
     assert csc(9*pi/7) == -csc(2*pi/7)
     assert csc(3*pi/4) == sqrt(2)  # issue 8421
-    assert csc(I) == -I/sinh(1)
-    assert csc(x*I) == -I/sinh(x)
+    assert csc(I) == -I*csch(1)
+    assert csc(x*I) == -I*csch(x)
     assert csc(-x) == -csc(x)
 
     assert csc(acsc(x)) == x
@@ -1322,8 +1324,8 @@ def test_acsc():
     assert acsc(x).rewrite(asec) == -asec(x) + pi/2
 
 
-@XFAIL
-@slow
+@pytest.mark.xfail
+@pytest.mark.slow
 def test_csc_rewrite_failing():
     # Move these 2 tests to test_csc() once bugs fixed
     # sin(x).rewrite(pow) raises RuntimeError: maximum recursion depth

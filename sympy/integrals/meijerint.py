@@ -112,6 +112,9 @@ def _create_lookup_table(table):
     add((t**a - b**a)/(t - b), [0, a], [], [0, a], [], t/b,
         b**(a - 1)*sin(a*pi)/pi)
 
+    add((z**a - b**a)/(z - b), [0, a], [], [0, a], [], z/b,
+        b**(a - 1)*sin(a*pi)/pi)
+
     # 12
     def A1(r, sign, nu):
         return pi**(-S(1)/2)*(-sign*nu/2)**(1 - 2*r)
@@ -139,7 +142,7 @@ def _create_lookup_table(table):
     # (those after look obscure)
 
     # Section 8.4.3
-    add(exp(polar_lift(-1)*t), [], [], [0], [])
+    add(exp(t), [], [], [0], [], t/polar_lift(-1))
 
     # TODO can do sin^n, sinh^n by expansion ... where?
     # 8.4.4 (hyperbolic functions)
@@ -1441,7 +1444,7 @@ def _rewrite_single(f, x, recursive=True):
     if t in _lookup_table:
         l = _lookup_table[t]
         for formula, terms, cond, hint in l:
-            subs = f.match(formula, old=True)
+            subs = f.match(formula)
             if subs:
                 subs_ = {}
                 for fro, to in subs.items():

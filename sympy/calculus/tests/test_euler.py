@@ -1,5 +1,6 @@
+import pytest
+
 from sympy import Symbol, Function, Derivative as D, Eq, cos, sin
-from sympy.utilities.pytest import raises
 from sympy.calculus.euler import euler_equations as euler
 
 
@@ -7,10 +8,10 @@ def test_euler_interface():
     x = Function('x')
     y = Symbol('y')
     t = Symbol('t')
-    raises(TypeError, lambda: euler())
-    raises(TypeError, lambda: euler(D(x(t), t)*y(t), [x(t), y]))
-    raises(ValueError, lambda: euler(D(x(t), t)*x(y), [x(t), x(y)]))
-    raises(TypeError, lambda: euler(D(x(t), t)**2, x(0)))
+    pytest.raises(TypeError, lambda: euler())
+    pytest.raises(TypeError, lambda: euler(D(x(t), t)*y(t), [x(t), y]))
+    pytest.raises(ValueError, lambda: euler(D(x(t), t)*x(y), [x(t), x(y)]))
+    pytest.raises(TypeError, lambda: euler(D(x(t), t)**2, x(0)))
     assert euler(D(x(t), t)**2/2, {x(t)}) == [Eq(-D(x(t), t, t))]
     assert euler(D(x(t), t)**2/2, x(t), {t}) == [Eq(-D(x(t), t, t))]
 

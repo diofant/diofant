@@ -9,7 +9,7 @@ from sympy.core.symbol import Symbol
 from sympy.functions.combinatorial.factorials import factorial, RisingFactorial
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.exponential import log, exp
-from sympy.functions.elementary.hyperbolic import acoth, asinh, atanh, cosh, coth, HyperbolicFunction, sinh, tanh
+from sympy.functions.elementary.hyperbolic import acoth, asinh, atanh, cosh, coth, HyperbolicFunction, sinh, tanh, csch, sech
 from sympy.utilities.iterables import numbered_symbols
 from sympy.core.compatibility import range
 
@@ -185,8 +185,6 @@ class sin(TrigonometricFunction):
     >>> from sympy.abc import x
     >>> sin(x**2).diff(x)
     2*x*cos(x**2)
-    >>> sin(1).diff(x)
-    0
     >>> sin(pi)
     0
     >>> sin(pi/2)
@@ -424,8 +422,6 @@ class cos(TrigonometricFunction):
     >>> from sympy.abc import x
     >>> cos(x**2).diff(x)
     -2*x*sin(x**2)
-    >>> cos(1).diff(x)
-    0
     >>> cos(pi)
     -1
     >>> cos(pi/2)
@@ -804,8 +800,6 @@ class tan(TrigonometricFunction):
     >>> from sympy.abc import x
     >>> tan(x**2).diff(x)
     2*x*(tan(x**2)**2 + 1)
-    >>> tan(1).diff(x)
-    0
     >>> tan(pi/8).expand()
     -1 + sqrt(2)
 
@@ -1055,285 +1049,6 @@ class tan(TrigonometricFunction):
             return True
 
 
-class cot(TrigonometricFunction):
-    """
-    The cotangent function.
-
-    Returns the cotangent of x (measured in radians).
-
-    Notes
-    =====
-
-    See :func:`~sympy.functions.elementary.trigonometric.sin`
-    for notes about automatic evaluation.
-
-    Examples
-    ========
-
-    >>> from sympy import cot, pi
-    >>> from sympy.abc import x
-    >>> cot(x**2).diff(x)
-    2*x*(-cot(x**2)**2 - 1)
-    >>> cot(1).diff(x)
-    0
-    >>> cot(pi/12)
-    sqrt(3) + 2
-
-    See Also
-    ========
-
-    sympy.functions.elementary.trigonometric.sin
-    sympy.functions.elementary.trigonometric.csc
-    sympy.functions.elementary.trigonometric.cos
-    sympy.functions.elementary.trigonometric.sec
-    sympy.functions.elementary.trigonometric.tan
-    sympy.functions.elementary.trigonometric.asin
-    sympy.functions.elementary.trigonometric.acsc
-    sympy.functions.elementary.trigonometric.acos
-    sympy.functions.elementary.trigonometric.asec
-    sympy.functions.elementary.trigonometric.atan
-    sympy.functions.elementary.trigonometric.acot
-    sympy.functions.elementary.trigonometric.atan2
-
-    References
-    ==========
-
-    .. [1] http://en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.14
-    .. [3] http://functions.wolfram.com/ElementaryFunctions/Cot
-    """
-
-    def fdiff(self, argindex=1):
-        if argindex == 1:
-            return S.NegativeOne - self**2
-        else:
-            raise ArgumentIndexError(self, argindex)
-
-    def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
-        return acot
-
-    @classmethod
-    def eval(cls, arg):
-        if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            if arg is S.Zero:
-                return S.ComplexInfinity
-
-        if arg.could_extract_minus_sign():
-            return -cls(-arg)
-
-        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
-        if i_coeff is not None:
-            return -S.ImaginaryUnit * coth(i_coeff)
-
-        pi_coeff = _pi_coeff(arg, 2)
-        if pi_coeff is not None:
-            if pi_coeff.is_integer:
-                return S.ComplexInfinity
-
-            if not pi_coeff.is_Rational:
-                narg = pi_coeff*S.Pi
-                if narg != arg:
-                    return cls(narg)
-                return
-
-            if pi_coeff.is_Rational:
-                if pi_coeff.q > 2 and not pi_coeff.q % 2:
-                    narg = pi_coeff*S.Pi*2
-                    cresult, sresult = cos(narg), cos(narg - S.Pi/2)
-                    if not isinstance(cresult, cos) \
-                            and not isinstance(sresult, cos):
-                        return (1 + cresult)/sresult
-                table2 = {
-                    12: (3, 4),
-                    20: (4, 5),
-                    30: (5, 6),
-                    15: (6, 10),
-                    24: (6, 8),
-                    40: (8, 10),
-                    60: (20, 30),
-                    120: (40, 60)
-                }
-                q = pi_coeff.q
-                p = pi_coeff.p % q
-                if q in table2:
-                    nvala, nvalb = cls(p*S.Pi/table2[q][0]), cls(p*S.Pi/table2[q][1])
-                    if nvala is None or nvalb is None:
-                        return
-                    return (1 + nvala*nvalb)/(nvalb - nvala)
-                narg = (((pi_coeff + S.Half) % 1) - S.Half)*S.Pi
-                # see cos() to specify which expressions should be
-                # expanded automatically in terms of radicals
-                cresult, sresult = cos(narg), cos(narg - S.Pi/2)
-                if not isinstance(cresult, cos) \
-                        and not isinstance(sresult, cos):
-                    if sresult == 0:
-                        return S.ComplexInfinity
-                    return cresult / sresult
-                if narg != arg:
-                    return cls(narg)
-
-        if arg.is_Add:
-            x, m = _peeloff_pi(arg)
-            if m:
-                cotm = cot(m)
-                if cotm == 0:
-                    return -tan(x)
-                cotx = cot(x)
-                if cotm is S.ComplexInfinity:
-                    return cotx
-                if cotm.is_Rational:
-                    return (cotm*cotx - 1) / (cotm + cotx)
-            return
-
-        if arg.func is acot:
-            return arg.args[0]
-
-        if arg.func is atan:
-            x = arg.args[0]
-            return 1 / x
-
-        if arg.func is atan2:
-            y, x = arg.args
-            return x/y
-
-        if arg.func is asin:
-            x = arg.args[0]
-            return sqrt(1 - x**2) / x
-
-        if arg.func is acos:
-            x = arg.args[0]
-            return x / sqrt(1 - x**2)
-
-    @staticmethod
-    @cacheit
-    def taylor_term(n, x, *previous_terms):
-        from sympy import bernoulli
-        if n == 0:
-            return 1 / sympify(x)
-        elif n < 0 or n % 2 == 0:
-            return S.Zero
-        else:
-            x = sympify(x)
-
-            B = bernoulli(n + 1)
-            F = factorial(n + 1)
-
-            return (-1)**((n + 1)//2) * 2**(n + 1) * B/F * x**n
-
-    def _eval_nseries(self, x, n, logx):
-        i = self.args[0].limit(x, 0)/S.Pi
-        if i and i.is_Integer:
-            return self.rewrite(cos)._eval_nseries(x, n=n, logx=logx)
-        return self.rewrite(tan)._eval_nseries(x, n=n, logx=logx)
-
-    def _eval_conjugate(self):
-        return self.func(self.args[0].conjugate())
-
-    def as_real_imag(self, deep=True, **hints):
-        re, im = self._as_real_imag(deep=deep, **hints)
-        if im:
-            denom = cos(2*re) - cosh(2*im)
-            return (-sin(2*re)/denom, -sinh(2*im)/denom)
-        else:
-            return (self.func(re), S.Zero)
-
-    def _eval_rewrite_as_exp(self, arg):
-        I = S.ImaginaryUnit
-        if isinstance(arg, TrigonometricFunction) or isinstance(arg, HyperbolicFunction):
-            arg = arg.func(arg.args[0]).rewrite(exp)
-        neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
-        return I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
-
-    def _eval_rewrite_as_Pow(self, arg):
-        if arg.func is log:
-            I = S.ImaginaryUnit
-            x = arg.args[0]
-            return -I*(x**-I + x**I)/(x**-I - x**I)
-
-    def _eval_rewrite_as_sin(self, x):
-        return 2*sin(2*x)/sin(x)**2
-
-    def _eval_rewrite_as_cos(self, x):
-        return -cos(x)/cos(x + S.Pi/2)
-
-    def _eval_rewrite_as_sincos(self, arg):
-        return cos(arg)/sin(arg)
-
-    def _eval_rewrite_as_tan(self, arg):
-        return 1/tan(arg)
-
-    def _eval_rewrite_as_pow(self, arg):
-        y = self.rewrite(cos).rewrite(pow)
-        if y.has(cos):
-            return
-        return y
-
-    def _eval_rewrite_as_sqrt(self, arg):
-        y = self.rewrite(cos).rewrite(sqrt)
-        if y.has(cos):
-            return
-        return y
-
-    def _eval_as_leading_term(self, x):
-        from sympy import Order
-        arg = self.args[0].as_leading_term(x)
-
-        if x in arg.free_symbols and Order(1, x).contains(arg):
-            return 1/arg
-        else:
-            return self.func(arg)
-
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
-
-    def _eval_expand_trig(self, **hints):
-        from sympy import im, re
-        arg = self.args[0]
-        x = None
-        if arg.is_Add:
-            from sympy import symmetric_poly
-            n = len(arg.args)
-            CX = []
-            for x in arg.args:
-                cx = cot(x, evaluate=False)._eval_expand_trig()
-                CX.append(cx)
-
-            Yg = numbered_symbols('Y')
-            Y = [ next(Yg) for i in range(n) ]
-
-            p = [0, 0]
-            for i in range(n, -1, -1):
-                p[(n - i) % 2] += symmetric_poly(i, Y)*(-1)**(((n - i) % 4)//2)
-            return (p[0]/p[1]).subs(list(zip(Y, CX)))
-        else:
-            coeff, terms = arg.as_coeff_Mul(rational=True)
-            if coeff.is_Integer and coeff > 1:
-                I = S.ImaginaryUnit
-                z = Symbol('dummy', extended_real=True)
-                P = ((z + I)**coeff).expand()
-                return (re(P)/im(P)).subs([(z, cot(terms))])
-        return cot(arg)
-
-    def _eval_is_finite(self):
-        arg = self.args[0]
-        if arg.is_imaginary:
-            return True
-
-    def _eval_subs(self, old, new):
-        if self == old:
-            return new
-        arg = self.args[0]
-        argnew = arg.subs(old, new)
-        if arg != argnew and (argnew/S.Pi).is_integer:
-            return S.ComplexInfinity
-        return cot(argnew)
-
-
 class ReciprocalTrigonometricFunction(TrigonometricFunction):
     """Base class for reciprocal functions of trigonometric functions. """
 
@@ -1353,25 +1068,36 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
             if cls._is_odd:
                 return -cls(-arg)
 
+        i_coeff = arg.as_coefficient(S.ImaginaryUnit)
+        if i_coeff is not None:
+            c, n = S.One, sech
+            if cls._reciprocal_of == sin:
+                c, n = -S.ImaginaryUnit, csch
+            elif cls._reciprocal_of == tan:
+                c, n = -S.ImaginaryUnit, coth
+            return c*n(i_coeff)
+
         pi_coeff = _pi_coeff(arg)
-        if (pi_coeff is not None
-                and not (2*pi_coeff).is_integer and pi_coeff.is_Rational):
-            q = pi_coeff.q
-            p = pi_coeff.p % (2*q)
-            if p > q:
-                narg = (pi_coeff - 1)*S.Pi
-                return -cls(narg)
-            if 2*p > q:
-                narg = (1 - pi_coeff)*S.Pi
-                if cls._is_odd:
-                    return cls(narg)
-                elif cls._is_even:
-                    return -cls(narg)
+        if pi_coeff is not None:
+            narg = pi_coeff*S.Pi
+            if narg != arg:
+                return cls(narg)
+            elif pi_coeff.is_Number and pi_coeff > 1:
+                s = S.One if cls is cot else S.NegativeOne
+                return s*cls((pi_coeff - 1)*S.Pi)
 
         t = cls._reciprocal_of.eval(arg)
         if hasattr(arg, 'inverse') and arg.inverse() == cls:
             return arg.args[0]
-        return 1/t if t is not None else t
+
+        if t is not None:
+            t = 1/t
+            if cls is cot:
+                if cls in ((1/t).func, (-1/t).func):
+                    t = t.rewrite(cls._reciprocal_of)
+                elif cls._reciprocal_of in ((1/t).func, (-1/t).func):
+                    t = t.rewrite(cls)
+            return t
 
     def _call_reciprocal(self, method_name, *args, **kwargs):
         # Calls method_name on _reciprocal_of
@@ -1457,8 +1183,6 @@ class sec(ReciprocalTrigonometricFunction):
     >>> from sympy.abc import x
     >>> sec(x**2).diff(x)
     2*x*tan(x**2)*sec(x**2)
-    >>> sec(1).diff(x)
-    0
 
     See Also
     ========
@@ -1536,8 +1260,6 @@ class csc(ReciprocalTrigonometricFunction):
     >>> from sympy.abc import x
     >>> csc(x**2).diff(x)
     -2*x*cot(x**2)*csc(x**2)
-    >>> csc(1).diff(x)
-    0
 
     See Also
     ========
@@ -1595,6 +1317,136 @@ class csc(ReciprocalTrigonometricFunction):
             k = n//2 + 1
             return ((-1)**(k - 1)*2*(2**(2*k - 1) - 1)*
                     bernoulli(2*k)*x**(2*k - 1)/factorial(2*k))
+
+
+class cot(ReciprocalTrigonometricFunction):
+    """
+    The cotangent function.
+
+    Returns the cotangent of x (measured in radians).
+
+    Notes
+    =====
+
+    See :func:`~sympy.functions.elementary.trigonometric.sin`
+    for notes about automatic evaluation.
+
+    Examples
+    ========
+
+    >>> from sympy import cot
+    >>> from sympy.abc import x
+    >>> cot(x**2).diff(x)
+    2*x*(-cot(x**2)**2 - 1)
+
+    See Also
+    ========
+
+    sympy.functions.elementary.trigonometric.sin
+    sympy.functions.elementary.trigonometric.csc
+    sympy.functions.elementary.trigonometric.cos
+    sympy.functions.elementary.trigonometric.sec
+    sympy.functions.elementary.trigonometric.tan
+    sympy.functions.elementary.trigonometric.asin
+    sympy.functions.elementary.trigonometric.acsc
+    sympy.functions.elementary.trigonometric.acos
+    sympy.functions.elementary.trigonometric.asec
+    sympy.functions.elementary.trigonometric.atan
+    sympy.functions.elementary.trigonometric.acot
+    sympy.functions.elementary.trigonometric.atan2
+
+    References
+    ==========
+
+    .. [1] http://en.wikipedia.org/wiki/Trigonometric_functions
+    .. [2] http://dlmf.nist.gov/4.14
+    .. [3] http://functions.wolfram.com/ElementaryFunctions/Cot
+    """
+
+    _reciprocal_of = tan
+    _is_odd = True
+
+    def fdiff(self, argindex=1):
+        if argindex == 1:
+            return S.NegativeOne - self**2
+        else:
+            raise ArgumentIndexError(self, argindex)
+
+    def inverse(self, argindex=1):
+        """
+        Returns the inverse of this function.
+        """
+        return acot
+
+    def _eval_rewrite_as_tan(self, arg):
+        return 1/tan(arg)
+
+    def _eval_rewrite_as_sincos(self, arg):
+        return cos(arg)/sin(arg)
+
+    def _eval_rewrite_as_exp(self, arg):
+        I = S.ImaginaryUnit
+        if isinstance(arg, TrigonometricFunction) or isinstance(arg, HyperbolicFunction):
+            arg = arg.func(arg.args[0]).rewrite(exp)
+        neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
+        return I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
+
+    def _eval_rewrite_as_sin(self, x):
+        return 2*sin(2*x)/sin(x)**2
+
+    def as_real_imag(self, deep=True, **hints):
+        re, im = self._as_real_imag(deep=deep, **hints)
+        if im:
+            denom = cos(2*re) - cosh(2*im)
+            return (-sin(2*re)/denom, -sinh(2*im)/denom)
+        else:
+            return (self.func(re), S.Zero)
+
+    def _eval_expand_trig(self, **hints):
+        from sympy import im, re
+        arg = self.args[0]
+        x = None
+        if arg.is_Add:
+            from sympy import symmetric_poly
+            n = len(arg.args)
+            CX = []
+            for x in arg.args:
+                cx = cot(x, evaluate=False)._eval_expand_trig()
+                CX.append(cx)
+
+            Yg = numbered_symbols('Y')
+            Y = [ next(Yg) for i in range(n) ]
+
+            p = [0, 0]
+            for i in range(n, -1, -1):
+                p[(n - i) % 2] += symmetric_poly(i, Y)*(-1)**(((n - i) % 4)//2)
+            return (p[0]/p[1]).subs(list(zip(Y, CX)))
+        else:
+            coeff, terms = arg.as_coeff_Mul(rational=True)
+            if coeff.is_Integer and coeff > 1:
+                I = S.ImaginaryUnit
+                z = Symbol('dummy', real=True)
+                P = ((z + I)**coeff).expand()
+                return (re(P)/im(P)).subs([(z, cot(terms))])
+        return cot(arg)
+
+    def _eval_as_leading_term(self, x):
+        from sympy import Order
+        arg = self.args[0].as_leading_term(x)
+
+        if x in arg.free_symbols and Order(1, x).contains(arg):
+            return 1/arg
+        else:
+            return self.func(arg)
+
+    def _eval_subs(self, old, new):
+        if self == old:
+            return new
+        arg = self.args[0]
+        argnew = arg.subs(old, new)
+        if arg != argnew and (argnew/S.Pi).is_integer:
+            return S.ComplexInfinity
+        return cot(argnew)
 
 
 ###############################################################################
@@ -1908,6 +1760,9 @@ class acos(InverseTrigonometricFunction):
     def _eval_is_extended_real(self):
         x = self.args[0]
         return x.is_extended_real and (1 - abs(x)).is_nonnegative
+
+    def _eval_nseries(self, x, n, logx):
+        return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
 
     def _eval_rewrite_as_log(self, x):
         return S.Pi/2 + S.ImaginaryUnit * \

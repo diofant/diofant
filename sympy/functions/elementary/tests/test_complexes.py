@@ -1,9 +1,10 @@
+import pytest
+
 from sympy import (
     Abs, adjoint, arg, atan2, conjugate, cos, DiracDelta, E, exp, expand,
     Expr, Function, Heaviside, I, im, log, nan, oo, pi, Rational, re, S,
     sign, sin, sqrt, Symbol, symbols, transpose, zoo, exp_polar, Piecewise,
     Interval, comp, Integral)
-from sympy.utilities.pytest import XFAIL, raises
 
 
 def N_equals(a, b):
@@ -201,6 +202,8 @@ def test_sign():
     assert sign(x).doit() == sign(x)
     assert conjugate(sign(x)) == sign(x)
 
+    assert sign(sin(x)).nseries(x) == 1
+
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
@@ -293,7 +296,7 @@ def test_as_real_imag():
     assert sqrt(i**2).as_real_imag() == (0, abs(i))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sign_issue_3068():
     n = pi**1000
     i = int(n)
@@ -307,7 +310,7 @@ def test_sign_issue_3068():
 
 
 def test_Abs():
-    raises(TypeError, lambda: Abs(Interval(2, 3)))  # issue 8717
+    pytest.raises(TypeError, lambda: Abs(Interval(2, 3)))  # issue 8717
 
     x, y = symbols('x,y')
     assert sign(sign(x)) == sign(x)
@@ -749,7 +752,7 @@ def test_periodic_argument():
     assert Abs(polar_lift(1 + I)) == Abs(1 + I)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_principal_branch_fail():
     # TODO XXX why does abs(x)._eval_evalf() not fall back to global evalf?
     assert N_equals(principal_branch((1 + I)**2, pi/2), 0)
@@ -782,7 +785,7 @@ def test_principal_branch():
     assert principal_branch(x, zoo).func is principal_branch
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_6167_6151():
     n = pi**1000
     i = int(n)

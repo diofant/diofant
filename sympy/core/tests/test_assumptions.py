@@ -1,10 +1,10 @@
+import pytest
+
 from sympy import I, sqrt, log, exp, sin, asin
 from sympy.core import Symbol, S, Rational, Integer, Dummy, Wild, Pow
 from sympy.core.facts import InconsistentAssumptions
 from sympy import simplify
 from sympy.core.compatibility import range
-
-from sympy.utilities.pytest import raises, XFAIL
 
 
 def test_symbol_unset():
@@ -457,7 +457,7 @@ def test_symbol_falsenonnegative():
     assert x.is_nonzero is True
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_neg_symbol_falsenonnegative():
     x = -Symbol('x', nonnegative=False)
     assert x.is_positive is None
@@ -585,7 +585,7 @@ def test_other_symbol():
     assert x.is_integer is True
     assert x.is_nonpositive is True
 
-    with raises(AttributeError):
+    with pytest.raises(AttributeError):
         x.is_extended_real = False
 
     x = Symbol('x', algebraic=True)
@@ -725,7 +725,7 @@ def test_Pow_is_algebraic():
     na = Symbol('na', algebraic=False)
     ia = Symbol('ia', algebraic=True, irrational=True)
     ib = Symbol('ib', algebraic=True, irrational=True)
-    r = Symbol('r', rational=True)
+    r = Symbol('r', rational=True, nonzero=True)
     x = Symbol('x')
     assert (a**r).is_algebraic
     assert (a**x).is_algebraic is None
@@ -739,6 +739,12 @@ def test_Pow_is_algebraic():
     assert Pow(2, sqrt(2), evaluate=False).is_algebraic is False
 
     assert Pow(S.GoldenRatio, sqrt(3), evaluate=False).is_algebraic is False
+
+    # sympy/sympy#8649
+    t = Symbol('t', real=True, transcendental=True)
+    n = Symbol('n', integer=True)
+    assert (t**n).is_algebraic is None
+    assert (t**n).is_integer is None
 
 
 def test_Mul_is_infinite():
@@ -808,7 +814,7 @@ def test_special_is_rational():
     assert sin(asin(3), evaluate=False).is_rational is True
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_6275():
     x = Symbol('x')
     # both zero or both Muls...but neither "change would be very appreciated.
@@ -826,8 +832,8 @@ def test_sanitize_assumptions():
         assert x.is_extended_real is True
         assert x.is_positive is False
         assert cls('', extended_real=True, positive=None).is_positive is None
-        raises(ValueError, lambda: cls('', commutative=None))
-    raises(ValueError, lambda: Symbol._sanitize(dict(commutative=None)))
+        pytest.raises(ValueError, lambda: cls('', commutative=None))
+    pytest.raises(ValueError, lambda: Symbol._sanitize(dict(commutative=None)))
 
 
 def test_special_assumptions():
@@ -840,7 +846,7 @@ def test_special_assumptions():
 
 def test_inconsistent():
     # cf. issues 5795 and 5545
-    raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
+    pytest.raises(InconsistentAssumptions, lambda: Symbol('x', extended_real=True,
            commutative=False))
 
 
@@ -889,7 +895,7 @@ def test_issue_7899():
     assert ((x - I)*(x - 1)).is_extended_real is None
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_issue_7993():
     x = Dummy(integer=True)
     y = Dummy(noninteger=True)
@@ -897,8 +903,8 @@ def test_issue_7993():
 
 
 def test_issue_8075():
-    raises(InconsistentAssumptions, lambda: Dummy(zero=True, finite=False))
-    raises(InconsistentAssumptions, lambda: Dummy(zero=True, infinite=True))
+    pytest.raises(InconsistentAssumptions, lambda: Dummy(zero=True, finite=False))
+    pytest.raises(InconsistentAssumptions, lambda: Dummy(zero=True, infinite=True))
 
 
 def test_issue_8642():

@@ -1,9 +1,10 @@
 """Tests for homomorphisms."""
 
+import pytest
+
 from sympy import QQ, S
 from sympy.abc import x, y
 from sympy.polys.agca import homomorphism
-from sympy.utilities.pytest import raises
 
 
 def test_printing():
@@ -46,11 +47,11 @@ def test_operations():
     assert h1([1, 0]) == h([1, 0])
     assert h1.restrict_domain(h1.domain.submodule([x, 0]))([x, 0]) == h([x, 0])
 
-    raises(TypeError, lambda: f/g)
-    raises(TypeError, lambda: f + 1)
-    raises(TypeError, lambda: f + i)
-    raises(TypeError, lambda: f - 1)
-    raises(TypeError, lambda: f*i)
+    pytest.raises(TypeError, lambda: f/g)
+    pytest.raises(TypeError, lambda: f + 1)
+    pytest.raises(TypeError, lambda: f + i)
+    pytest.raises(TypeError, lambda: f - 1)
+    pytest.raises(TypeError, lambda: f*i)
 
 
 def test_creation():
@@ -64,11 +65,11 @@ def test_creation():
     h = homomorphism(F, G, matrix)
     h2 = homomorphism(Q, G, matrix)
     assert h.quotient_domain(SM) == h2
-    raises(ValueError, lambda: h.quotient_domain(F.submodule([1, 0, 0])))
+    pytest.raises(ValueError, lambda: h.quotient_domain(F.submodule([1, 0, 0])))
     assert h2.restrict_domain(SQ) == homomorphism(SQ, G, matrix)
-    raises(ValueError, lambda: h.restrict_domain(G))
-    raises(ValueError, lambda: h.restrict_codomain(G.submodule([1, 0])))
-    raises(ValueError, lambda: h.quotient_codomain(F))
+    pytest.raises(ValueError, lambda: h.restrict_domain(G))
+    pytest.raises(ValueError, lambda: h.restrict_codomain(G.submodule([1, 0])))
+    pytest.raises(ValueError, lambda: h.quotient_codomain(F))
 
     im = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
     for M in [F, SM, Q, SQ]:
@@ -87,11 +88,11 @@ def test_creation():
 
         def submodule(*args):
             return
-    raises(TypeError, lambda: homomorphism(dummy(), G, matrix))
-    raises(TypeError, lambda: homomorphism(F, dummy(), matrix))
-    raises(
+    pytest.raises(TypeError, lambda: homomorphism(dummy(), G, matrix))
+    pytest.raises(TypeError, lambda: homomorphism(F, dummy(), matrix))
+    pytest.raises(
         ValueError, lambda: homomorphism(QQ.old_poly_ring(x, y).free_module(3), G, matrix))
-    raises(ValueError, lambda: homomorphism(F, G, [0, 0]))
+    pytest.raises(ValueError, lambda: homomorphism(F, G, [0, 0]))
 
 
 def test_properties():

@@ -1,5 +1,8 @@
-from sympy import sin, cos, atan2, log, exp, gamma, conjugate, sqrt, \
-    factorial, Integral, Piecewise, Add, diff, symbols, S, Float, Dummy, Eq
+import pytest
+
+from sympy import (sin, cos, atan2, log, exp, gamma, conjugate, sqrt,
+                   factorial, Integral, Piecewise, Add, diff, symbols,
+                   S, Float, Dummy, Eq)
 from sympy import Catalan, EulerGamma, E, GoldenRatio, I, pi
 from sympy import Function, Rational, Integer, Lambda
 
@@ -8,7 +11,6 @@ from sympy.logic.boolalg import And, Or, Not, Equivalent, Xor
 from sympy.printing.fcode import fcode, FCodePrinter
 from sympy.tensor import IndexedBase, Idx
 from sympy.utilities.lambdify import implemented_function
-from sympy.utilities.pytest import raises
 from sympy.core.compatibility import range
 from sympy.matrices import Matrix, MatrixSymbol
 
@@ -355,7 +357,7 @@ def test_fcode_Piecewise():
     x = symbols('x')
     expr = Piecewise((x, x < 1), (x**2, True))
     # Check that inline conditional (merge) fails if standard isn't 95+
-    raises(NotImplementedError, lambda: fcode(expr))
+    pytest.raises(NotImplementedError, lambda: fcode(expr))
     code = fcode(expr, standard=95)
     expected = "      merge(x, x**2, x < 1)"
     assert code == expected
@@ -391,7 +393,7 @@ def test_fcode_Piecewise():
     assert code == expected
     # Check that Piecewise without a True (default) condition error
     expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    raises(ValueError, lambda: fcode(expr))
+    pytest.raises(ValueError, lambda: fcode(expr))
 
 
 def test_wrap_fortran():
@@ -481,7 +483,7 @@ def test_wrap_fortran_keep_d0():
 
 
 def test_settings():
-    raises(TypeError, lambda: fcode(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: fcode(S(4), method="garbage"))
 
 
 def test_free_form_code_line():

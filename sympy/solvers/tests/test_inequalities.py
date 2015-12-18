@@ -1,18 +1,18 @@
 """Tests for tools for solving inequalities and systems of inequalities. """
 
+import pytest
+
 from sympy import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
                    Or, S, sin, sqrt, Symbol, Union, Integral, Sum,
-                   Function, Poly, PurePoly, pi, root)
+                   Function, Poly, PurePoly, pi, root, log, E, Piecewise)
 from sympy.solvers.inequalities import (reduce_inequalities,
                                         solve_poly_inequality as psolve,
                                         reduce_rational_inequalities,
                                         solve_univariate_inequality as isolve,
-                                        reduce_abs_inequality)
+                                        reduce_piecewise_inequality)
 from sympy.polys.rootoftools import RootOf
 from sympy.solvers.solvers import solve
 from sympy.abc import x, y
-
-from sympy.utilities.pytest import raises, slow
 
 
 inf = oo.evalf()
@@ -96,6 +96,10 @@ def test_reduce_poly_inequalities_real_interval():
     ) == Union(Interval(-s, -1, True, True), Interval(-1, 1, True, True),
         Interval(1, s, True, True))
 
+    # issue sympy/sympy#10237
+    assert reduce_rational_inequalities(
+        [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo)
+
 
 def test_reduce_poly_inequalities_complex_relational():
     assert reduce_rational_inequalities(
@@ -169,7 +173,7 @@ def test_reduce_rational_inequalities_real_relational():
         Union(Interval.Lopen(-oo, -2), Interval.Lopen(0, 4))
 
 
-def test_reduce_abs_inequalities():
+def test_reduce_piecewise_inequalities():
     e = abs(x - 5) < 3
     ans = And(Lt(2, x), Lt(x, 8))
     assert reduce_inequalities(e) == ans
@@ -184,7 +188,17 @@ def test_reduce_abs_inequalities():
         Or(And(S(-2) < x, x < -1), And(S(1)/2 < x, x < 4))
 
     nr = Symbol('nr', extended_real=False)
-    raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
+    pytest.raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
+
+    # sympy/sympy#10198
+    assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
+        Or(And(S.Zero < x, x < S.Half), And(-oo < x, x < S.Zero))
+
+    # sympy/sympy#10255
+    assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
+        And(S.One <= x, x < oo)
+    assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, x >= 0)) < 1) == \
+        And(-S.One < x, x < S.Half)
 
 
 def test_reduce_inequalities_general():
@@ -205,13 +219,21 @@ def test_reduce_inequalities_multivariate():
 
 
 def test_reduce_inequalities_errors():
-    raises(NotImplementedError, lambda: reduce_inequalities(Ge(sin(x) + x, 1)))
-    raises(NotImplementedError, lambda: reduce_inequalities(Ge(x**2*y + y, 1)))
+    pytest.raises(NotImplementedError, lambda: reduce_inequalities(Ge(sin(x) + x, 1)))
+    pytest.raises(NotImplementedError, lambda: reduce_inequalities(Ge(x**2*y + y, 1)))
 
 
 def test_hacky_inequalities():
-    assert reduce_inequalities(x + y < 1, symbols=[x]) == (x < 1 - y)
-    assert reduce_inequalities(x + y >= 1, symbols=[x]) == (x >= 1 - y)
+    y = Symbol('y', real=True)
+    assert reduce_inequalities(x + y < 1, symbols=[x]) == And(-oo < x, x < -y + 1)
+    assert reduce_inequalities(x + y >= 1, symbols=[x]) == And(-y + 1 <= x, x < oo)
+
+
+def test_issue_10203():
+    y = Symbol('y', extended_real=True)
+    assert reduce_inequalities(Eq(0, x - y), symbols=[x]) == Eq(x, y)
+    assert reduce_inequalities(Ne(0, x - y), symbols=[x]) == \
+        Or(And(-oo < x, x < y), And(x < oo, x > y))
 
 
 def test_issue_6343():
@@ -242,11 +264,7 @@ def test_issue_8235():
 def test_issue_5526():
     assert reduce_inequalities(S(0) <=
         x + Integral(y**2, (y, 1, 3)) - 1, [x]) == \
-        (-Integral(y**2, (y, 1, 3)) + 1 <= x)
-    f = Function('f')
-    e = Sum(f(x), (x, 1, 3))
-    assert reduce_inequalities(S(0) <= x + e + y**2, [x]) == \
-        (-y**2 - Sum(f(x), (x, 1, 3)) <= x)
+        And(-Integral(y**2, (y, 1, 3)) + 1 <= x, x < oo)
 
 
 def test_solve_univariate_inequality():
@@ -284,7 +302,7 @@ def test_solve_univariate_inequality():
         Or(And(-oo < x, x < 1), And(S(1) < x, x < 2))
 
 
-@slow
+@pytest.mark.slow
 def test_slow_general_univariate():
     r = RootOf(x**5 - x**2 + 1, 0)
     assert solve(sqrt(x) + 1/root(x, 3) > 1) == \
@@ -294,7 +312,7 @@ def test_slow_general_univariate():
 def test_issue_8545():
     eq = 1 - x - abs(1 - x)
     ans = And(Lt(1, x), Lt(x, oo))
-    assert reduce_abs_inequality(eq, '<', x) == ans
+    assert reduce_piecewise_inequality(eq, '<', x) == ans
     eq = 1 - x - sqrt((1 - x)**2)
     assert reduce_inequalities(eq < 0) == ans
 
@@ -302,3 +320,12 @@ def test_issue_8545():
 def test_issue_8974():
     assert isolve(-oo < x, x) == And(-oo < x, x < oo)
     assert isolve(oo > x, x) == And(-oo < x, x < oo)
+
+
+def test_issue_10196():
+    assert reduce_inequalities(x**2 >= 0)
+    assert reduce_inequalities(x**2 < 0) is S.false
+
+
+def test_issue_10268():
+    assert reduce_inequalities(log(x) < 300) == And(-oo < x, x < E**300)

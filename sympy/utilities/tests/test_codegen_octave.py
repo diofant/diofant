@@ -1,3 +1,5 @@
+import pytest
+
 from sympy.core import (S, symbols, Eq, pi, Catalan, EulerGamma, Lambda,
                         Dummy, Function)
 from sympy.core.compatibility import StringIO
@@ -6,9 +8,7 @@ from sympy import Equality
 from sympy.matrices import Matrix, MatrixSymbol
 from sympy.printing.codeprinter import Assignment
 from sympy.utilities.codegen import OctaveCodeGen, codegen, make_routine
-from sympy.utilities.pytest import raises
 from sympy.utilities.lambdify import implemented_function
-from sympy.utilities.pytest import XFAIL
 import sympy
 
 
@@ -80,7 +80,7 @@ def test_m_numbersymbol():
     assert source == expected
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_m_numbersymbol_no_inline():
     # FIXME: how to pass inline=False to the OctaveCodePrinter?
     name_expr = ("test", [pi**Catalan, EulerGamma])
@@ -222,7 +222,7 @@ def test_m_piecewise_():
     assert source == expected
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_m_piecewise_no_inline():
     # FIXME: how to pass inline=False to the OctaveCodePrinter?
     pw = Piecewise((0, x < -1), (x**2, x <= 1), (-x+2, x > 1), (1, True))
@@ -290,8 +290,9 @@ def test_m_multifcns_per_file_w_header():
 
 def test_m_filename_match_first_fcn():
     name_expr = [ ("foo", [2*x, 3*y]), ("bar", [y**2, 4*y]) ]
-    raises(ValueError, lambda: codegen(name_expr,
-                        "Octave", prefix="bar", header=False, empty=False))
+    pytest.raises(ValueError,
+                  lambda: codegen(name_expr,
+                                "Octave", prefix="bar", header=False, empty=False))
 
 
 def test_m_matrix_named():

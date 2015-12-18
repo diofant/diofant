@@ -3,7 +3,6 @@ from sympy.combinatorics.perm_groups import PermutationGroup
 from sympy.combinatorics.named_groups import SymmetricGroup, CyclicGroup,\
     DihedralGroup, AlternatingGroup, AbelianGroup, RubikGroup
 from sympy.combinatorics.permutations import Permutation
-from sympy.utilities.pytest import skip, XFAIL
 from sympy.combinatorics.generators import rubik_cube_generators
 from sympy.combinatorics.polyhedron import tetrahedron as Tetra, cube
 from sympy.combinatorics.testutil import _verify_bsgs, _verify_centralizer,\
@@ -323,9 +322,7 @@ def test_rubik1():
     assert G.order() == 3674160
 
 
-@XFAIL
 def test_rubik():
-    skip('takes too much time')
     G = PermutationGroup(rubik_cube_generators())
     assert G.order() == 43252003274489856000
     G1 = PermutationGroup(G[:3])
@@ -562,9 +559,7 @@ def test_subgroup_search():
     _subgroup_search(10, 15, 2)
 
 
-@XFAIL
 def test_subgroup_search2():
-    skip('takes too much time')
     _subgroup_search(16, 17, 1)
 
 

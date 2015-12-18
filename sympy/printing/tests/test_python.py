@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from sympy import (Symbol, symbols, oo, limit, Rational, Integral, Derivative,
-    log, exp, sqrt, pi, Function, sin, Eq, Ge, Le, Gt, Lt, Ne, Abs, conjugate,
-    I, Matrix)
+                   log, exp, sqrt, pi, Function, sin, Eq, Ge, Le, Gt, Lt, Ne,
+                   Abs, conjugate, I, Matrix)
 
 from sympy.printing.python import python
-
-from sympy.utilities.pytest import raises, XFAIL
 
 x, y = symbols('x,y')
 th = Symbol('theta')
@@ -123,7 +123,7 @@ def test_python_functions():
     assert python(sin(x)**2) == "x = Symbol('x')\ne = sin(x)**2"
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_python_functions_conjugates():
     a, b = map(Symbol, 'ab')
     assert python( conjugate(a + b*I) ) == '_     _\na - I*b'
@@ -186,4 +186,4 @@ def test_python_limits():
 
 
 def test_settings():
-    raises(TypeError, lambda: python(x, method="garbage"))
+    pytest.raises(TypeError, lambda: python(x, method="garbage"))

@@ -1,7 +1,9 @@
+import pytest
+
 from sympy.core.facts import (deduce_alpha_implications,
-        apply_beta_to_alpha_route, rules_2prereq, FactRules, FactKB)
+                              apply_beta_to_alpha_route, rules_2prereq,
+                              FactRules, FactKB)
 from sympy.core.logic import And, Not
-from sympy.utilities.pytest import raises
 
 T = True
 F = False
@@ -33,9 +35,9 @@ def test_deduce_alpha_implications():
         {'a': {'b'}, 'b': {'a'}})
 
     # see if it catches inconsistency
-    raises(ValueError, lambda: D([('a', Not('a'))]))
-    raises(ValueError, lambda: D([('a', 'b'), ('b', Not('a'))]))
-    raises(ValueError, lambda: D([('a', 'b'), ('b', 'c'), ('b', 'na'),
+    pytest.raises(ValueError, lambda: D([('a', Not('a'))]))
+    pytest.raises(ValueError, lambda: D([('a', 'b'), ('b', Not('a'))]))
+    pytest.raises(ValueError, lambda: D([('a', 'b'), ('b', 'c'), ('b', 'na'),
            ('na', Not('a'))]))
 
     # see if it handles implications with negations
@@ -171,7 +173,7 @@ def test_FactRules_parse():
 
 
 def test_FactRules_parse2():
-    raises(ValueError, lambda: FactRules('a -> ~a'))
+    pytest.raises(ValueError, lambda: FactRules('a -> ~a'))
 
 
 def test_FactRules_deduce():

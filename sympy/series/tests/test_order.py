@@ -1,7 +1,8 @@
+import pytest
+
 from sympy import (Symbol, Rational, Order, exp, ln, log, nan, oo, O, pi, I,
-    S, Integral, sin, cos, sqrt, conjugate, expand, transpose, symbols,
-    Function, Derivative)
-from sympy.utilities.pytest import raises
+                   S, Integral, sin, cos, sqrt, conjugate, expand, transpose,
+                   symbols, Function, Derivative)
 from sympy.abc import w, x, y, z
 
 
@@ -36,8 +37,8 @@ def test_simple_1():
     assert Order(x**(5*o/3)).expr == x**(5*o/3)
     assert Order(x**2 + x + y, x) == O(1, x)
     assert Order(x**2 + x + y, y) == O(1, y)
-    raises(ValueError, lambda: Order(exp(x), x, x))
-    raises(TypeError, lambda: Order(x, 2 - x))
+    pytest.raises(ValueError, lambda: Order(exp(x), x, x))
+    pytest.raises(TypeError, lambda: Order(x, 2 - x))
 
 
 def test_simple_2():
@@ -140,7 +141,7 @@ def test_contains_4():
 def test_contains():
     assert Order(1, x) not in Order(1)
     assert Order(1) in Order(1, x)
-    raises(TypeError, lambda: Order(x*y**2) in Order(x**2*y))
+    pytest.raises(TypeError, lambda: Order(x*y**2) in Order(x**2*y))
 
 
 def test_add_1():
@@ -258,7 +259,7 @@ def test_getn():
     assert O(x/log(x)).getn() == 1
     assert O(x**2/log(x)**2).getn() == 2
     assert O(x*log(x)).getn() == 1
-    raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
+    pytest.raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
 
 
 def test_diff():
@@ -274,7 +275,7 @@ def test_getO():
     assert (O(x)).removeO() == 0
     assert (z + O(x) + O(y)).getO() == O(x) + O(y)
     assert (z + O(x) + O(y)).removeO() == z
-    raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
+    pytest.raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
 
 
 def test_leading_term():
@@ -388,10 +389,10 @@ def test_mixing_order_at_zero_and_infinity():
     assert Order(Order(x, (x, oo))) == Order(x, (x, oo))
 
     # not supported (yet)
-    raises(NotImplementedError, lambda: Order(x, (x, 0))*Order(x, (x, oo)))
-    raises(NotImplementedError, lambda: Order(x, (x, oo))*Order(x, (x, 0)))
-    raises(NotImplementedError, lambda: Order(Order(x, (x, oo)), y))
-    raises(NotImplementedError, lambda: Order(Order(x), (x, oo)))
+    pytest.raises(NotImplementedError, lambda: Order(x, (x, 0))*Order(x, (x, oo)))
+    pytest.raises(NotImplementedError, lambda: Order(x, (x, oo))*Order(x, (x, 0)))
+    pytest.raises(NotImplementedError, lambda: Order(Order(x, (x, oo)), y))
+    pytest.raises(NotImplementedError, lambda: Order(Order(x), (x, oo)))
 
 
 def test_order_at_some_point():

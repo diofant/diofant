@@ -1,15 +1,15 @@
 """Tests for algorithms for partial fraction decomposition of rational
 functions. """
 
+import pytest
+
 from sympy.polys.partfrac import (
     apart_undetermined_coeffs,
     apart,
-    apart_list, assemble_partfrac_list
-)
+    apart_list, assemble_partfrac_list)
 
 from sympy import (S, Poly, E, pi, I, Matrix, Eq, RootSum, Lambda,
                    Symbol, Dummy, factor, together, sqrt, Expr)
-from sympy.utilities.pytest import raises
 from sympy.abc import x, y, a, b, c
 
 
@@ -37,7 +37,7 @@ def test_apart():
 
     assert apart(Eq((x**2 + 1)/(x + 1), x), x) == Eq(x - 1 + 2/(x + 1), x)
 
-    raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
+    pytest.raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
 
 
 def test_apart_matrix():

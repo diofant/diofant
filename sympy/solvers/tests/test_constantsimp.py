@@ -3,10 +3,11 @@ If the arbitrary constant class from issue 4435 is ever implemented, this
 should serve as a set of test cases.
 """
 
+import pytest
+
 from sympy import (acos, cos, cosh, Eq, exp, Function, I, Integral, log, Pow,
                    S, sin, sinh, sqrt, Symbol)
 from sympy.solvers.ode import constant_renumber, constantsimp
-from sympy.utilities.pytest import XFAIL
 
 
 x = Symbol('x')
@@ -165,7 +166,7 @@ def test_ode_solutions():
         [Eq(f(x), sqrt(x*(C1 + x))), Eq(f(x), -sqrt(x*(C1 + x)))]
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_nonlocal_simplification():
     assert constantsimp(C1 + C2+x*C2, [C1, C2]) == C1 + C2*x
 

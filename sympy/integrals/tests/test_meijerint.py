@@ -1,14 +1,16 @@
+import pytest
+
 from sympy import (meijerg, I, S, integrate, Integral, oo, gamma, cosh,
                    hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
                    exp_polar, polygamma, hyper, log, expand_func)
 from sympy.integrals.meijerint import (_rewrite_single, _rewrite1,
-        meijerint_indefinite, _inflate_g, _create_lookup_table,
-        meijerint_definite, meijerint_inversion)
+                                       meijerint_indefinite, _inflate_g,
+                                       _create_lookup_table, meijerint_definite,
+                                       meijerint_inversion)
 from sympy.utilities import default_sort_key
 from sympy.utilities.randtest import (verify_numerically,
-        random_complex_number as randcplx)
+                                      random_complex_number as randcplx)
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import slow
 from sympy.abc import x, y, a, b, c, d, s, t, z
 
 
@@ -284,7 +286,7 @@ def test_inversion():
     assert meijerint_inversion(exp(-s**2), s, t) is None
 
 
-@slow
+@pytest.mark.slow
 def test_lookup_table():
     from random import uniform, randrange
     from sympy import Add
@@ -333,7 +335,7 @@ def test_linear_subs():
     assert integrate(besselj(1, x - 1), x, meijerg=True) == -besselj(0, 1 - x)
 
 
-@slow
+@pytest.mark.slow
 def test_probability():
     # various integrals from probability theory
     from sympy.abc import x, y
@@ -530,7 +532,7 @@ def test_probability():
                               (x, 0, oo)))) == polygamma(0, k)
 
 
-@slow
+@pytest.mark.slow
 def test_expint():
     """ Test various exponential integrals. """
     from sympy import (expint, unpolarify, Symbol, Ci, Si, Shi, Chi,

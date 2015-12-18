@@ -1,10 +1,12 @@
 from __future__ import division
+
+import pytest
+
 from sympy import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
-        abc, Integer, Eq, symbols, Add, I, Float, log, Rational, Lambda, atan2,
-        cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
-        factor, nsimplify, zoo, Subs)
+                   abc, Integer, Eq, symbols, Add, I, Float, log, Rational, Lambda,
+                   atan2, cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
+                   factor, nsimplify, zoo, Subs)
 from sympy.core.basic import _aresame
-from sympy.utilities.pytest import XFAIL
 from sympy.abc import x, y, z
 
 
@@ -591,7 +593,7 @@ def test_2arg_hack():
     assert (2*(y + 1 + N)).subs(N, 0, hack2=True) == ans
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_mul2():
     """When this fails, remove things labelled "2-arg hack"
     1) remove special handling in the fallback of subs that

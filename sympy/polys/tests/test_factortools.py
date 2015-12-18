@@ -1,5 +1,7 @@
 """Tools for polynomial factorization routines in characteristic zero. """
 
+import pytest
+
 from sympy.polys.rings import ring, xring
 from sympy.polys.domains import FF, ZZ, QQ, RR, EX
 
@@ -9,7 +11,6 @@ from sympy.polys.polyclasses import ANP
 from sympy.polys.specialpolys import f_polys, w_polys
 
 from sympy import nextprime, sin, sqrt, I
-from sympy.utilities.pytest import raises
 
 from sympy.core.compatibility import range
 
@@ -565,7 +566,7 @@ def test_dup_factor_list():
                            (anp([QQ(1, 1)])*x**2 + anp([])*x + anp([QQ(2, 1)]), 1)])
 
     R, x = ring("x", EX)
-    raises(DomainError, lambda: R.dup_factor_list(EX(sin(1))))
+    pytest.raises(DomainError, lambda: R.dup_factor_list(EX(sin(1))))
 
 
 def test_dmp_factor_list():
@@ -658,10 +659,10 @@ def test_dmp_factor_list():
                     (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
-    raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))
+    pytest.raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))
 
     R, x, y = ring("x,y", EX)
-    raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
+    pytest.raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
 
 
 def test_dup_irreducible_p():

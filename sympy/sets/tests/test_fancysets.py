@@ -1,10 +1,12 @@
+import itertools
+
+import pytest
+
 from sympy.core.compatibility import range
 from sympy.sets.fancysets import ImageSet, Range
 from sympy.sets.sets import FiniteSet, Interval, imageset, EmptySet
 from sympy import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
-        Rational, sqrt, tan, log, Abs)
-from sympy.utilities.pytest import XFAIL, raises
-import itertools
+                   Rational, sqrt, tan, log, Abs)
 
 x = Symbol('x')
 
@@ -79,7 +81,7 @@ def test_image_is_ImageSet():
     assert isinstance(imageset(x, sqrt(sin(x)), Range(5)), ImageSet)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_halfcircle():
     # This test sometimes works and sometimes doesn't.
     # It may be an issue with solve? Maybe with using Lambdas/dummys?
@@ -128,10 +130,10 @@ def test_Range():
     assert Range(0, 0, 5) == S.EmptySet
 
     assert Range(1, 1) == S.EmptySet
-    raises(ValueError, lambda: Range(0, oo, oo))
-    raises(ValueError, lambda: Range(-oo, oo))
-    raises(ValueError, lambda: Range(-oo, oo, 2))
-    raises(ValueError, lambda: Range(0, pi, 1))
+    pytest.raises(ValueError, lambda: Range(0, oo, oo))
+    pytest.raises(ValueError, lambda: Range(-oo, oo))
+    pytest.raises(ValueError, lambda: Range(-oo, oo, 2))
+    pytest.raises(ValueError, lambda: Range(0, pi, 1))
 
     assert 5 in Range(0, oo, 5)
     assert -5 in Range(-oo, 0, 5)
@@ -241,14 +243,14 @@ def test_imageset_intersect_real():
     assert s.intersect(S.Reals) == imageset(Lambda(n, 2*n*pi - pi/4), S.Integers)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_infinitely_indexed_failed_diophantine():
     from sympy.abc import n, m, t
     assert imageset(Lambda(m, 2*pi*m), S.Integers).intersect(imageset(Lambda(n, 3*pi*n), S.Integers)) == \
             ImageSet(Lambda(t, -6*pi*t), S.Integers)
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_infinitely_indexed_set_3():
     from sympy.abc import n
     assert imageset(Lambda(n, 2*n + 1), S.Integers) == imageset(Lambda(n, 2*n - 1), S.Integers)

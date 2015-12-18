@@ -1,10 +1,11 @@
-from sympy import diff, Integral, Limit, sin, Symbol, Integer, Rational, cos, \
-    tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh, E, I, oo, \
-    pi, GoldenRatio, EulerGamma, Sum, Eq, Ne, Ge, Lt, Float
+import pytest
+
+from sympy import (diff, Integral, Limit, sin, Symbol, Integer, Rational, cos,
+                   tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh,
+                   atanh, E, I, oo, pi, GoldenRatio, EulerGamma, Sum,
+                   Eq, Ne, Ge, Lt, Float)
 from sympy.core.compatibility import u
 from sympy.printing.mathml import mathml, MathMLPrinter
-
-from sympy.utilities.pytest import raises
 
 x = Symbol('x')
 y = Symbol('y')
@@ -414,7 +415,7 @@ def test_mathml_order():
 
 
 def test_settings():
-    raises(TypeError, lambda: mathml(Symbol("x"), method="garbage"))
+    pytest.raises(TypeError, lambda: mathml(Symbol("x"), method="garbage"))
 
 
 def test_toprettyxml_hooking():

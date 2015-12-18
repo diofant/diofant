@@ -1,4 +1,5 @@
-from sympy.utilities.pytest import raises
+import pytest
+
 from sympy.core import symbols, pi, S
 from sympy.matrices import Identity, MatrixSymbol, ImmutableMatrix
 from sympy.matrices.expressions import MatPow, MatAdd, MatMul
@@ -31,7 +32,7 @@ def test_as_explicit_nonsquare_symbol():
     X = MatrixSymbol('X', 2, 3)
     assert MatPow(X, 1).as_explicit() == X.as_explicit()
     for r in [0, 2, S.Half, S.Pi]:
-        raises(ShapeError, lambda: MatPow(X, r).as_explicit())
+        pytest.raises(ShapeError, lambda: MatPow(X, r).as_explicit())
 
 
 def test_as_explicit():
@@ -49,10 +50,10 @@ def test_as_explicit():
 def test_as_explicit_nonsquare():
     A = ImmutableMatrix([[1, 2, 3], [4, 5, 6]])
     assert MatPow(A, 1).as_explicit() == A
-    raises(ShapeError, lambda: MatPow(A, 0).as_explicit())
-    raises(ShapeError, lambda: MatPow(A, 2).as_explicit())
-    raises(ShapeError, lambda: MatPow(A, -1).as_explicit())
-    raises(ValueError, lambda: MatPow(A, pi).as_explicit())
+    pytest.raises(ShapeError, lambda: MatPow(A, 0).as_explicit())
+    pytest.raises(ShapeError, lambda: MatPow(A, 2).as_explicit())
+    pytest.raises(ShapeError, lambda: MatPow(A, -1).as_explicit())
+    pytest.raises(ValueError, lambda: MatPow(A, pi).as_explicit())
 
 
 def test_doit_nonsquare_MatrixSymbol():
@@ -82,10 +83,10 @@ def test_doit_with_MatrixBase():
 def test_doit_nonsquare():
     X = ImmutableMatrix([[1, 2, 3], [4, 5, 6]])
     assert MatPow(X, 1).doit() == X
-    raises(ShapeError, lambda: MatPow(X, 0).doit())
-    raises(ShapeError, lambda: MatPow(X, 2).doit())
-    raises(ShapeError, lambda: MatPow(X, -1).doit())
-    raises(ShapeError, lambda: MatPow(X, pi).doit())
+    pytest.raises(ShapeError, lambda: MatPow(X, 0).doit())
+    pytest.raises(ShapeError, lambda: MatPow(X, 2).doit())
+    pytest.raises(ShapeError, lambda: MatPow(X, -1).doit())
+    pytest.raises(ShapeError, lambda: MatPow(X, pi).doit())
 
 
 def test_doit_nested_MatrixExpr():

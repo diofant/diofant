@@ -1,7 +1,8 @@
+import pytest
+
 from sympy import (ImmutableMatrix, Matrix, eye, zeros, S, Equality,
-        Unequality, ImmutableSparseMatrix, SparseMatrix, sympify)
+                   Unequality, ImmutableSparseMatrix, SparseMatrix, sympify)
 from sympy.abc import x, y
-from sympy.utilities.pytest import raises
 
 IM = ImmutableMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 ieye = ImmutableMatrix(eye(3))
@@ -14,7 +15,7 @@ def test_immutable_creation():
 
 
 def test_immutability():
-    with raises(TypeError):
+    with pytest.raises(TypeError):
         IM[2, 2] = 5
 
 

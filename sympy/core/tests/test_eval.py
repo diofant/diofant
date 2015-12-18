@@ -1,5 +1,6 @@
+import pytest
+
 from sympy import Symbol, Function, exp, sqrt, Rational, I, cos, tan
-from sympy.utilities.pytest import XFAIL
 
 
 def test_add_eval():
@@ -51,7 +52,7 @@ def test_pow_eval():
     assert (cos(2) / tan(2))**2 == (cos(2) / tan(2))**2
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_pow_eval_X1():
     assert (-1)**Rational(1, 3) == Rational(1, 2) + Rational(1, 2)*I*sqrt(3)
 

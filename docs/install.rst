@@ -7,7 +7,7 @@ The SymPy CAS can be installed on virtually any computer with Python
 2.7 or above.  SymPy requires `setuptools`_.  The current recommended
 method of installation is directly from the source files.
 
-SymPy officially supports Python 2.7, 3.4, and PyPy3.
+SymPy officially supports Python 2.7, 3.4.
 
 Source
 ======

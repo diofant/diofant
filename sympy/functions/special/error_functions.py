@@ -2363,6 +2363,9 @@ class _erfs(Function):
     def _eval_rewrite_as_intractable(self, z):
         return (S.One - erf(z))*exp(z**2)
 
+    def _eval_evalf(self, prec):
+        return self.rewrite('intractable').evalf(prec)
+
 
 class _eis(Function):
     """

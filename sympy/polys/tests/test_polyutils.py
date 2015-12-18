@@ -1,7 +1,8 @@
 """Tests for useful utilities for higher level polynomial classes. """
 
+import pytest
+
 from sympy import S, Integer, sin, cos, sqrt, symbols, pi, Eq, Integral, exp
-from sympy.utilities.pytest import raises
 
 from sympy.polys.polyutils import (
     _nsort,
@@ -10,13 +11,11 @@ from sympy.polys.polyutils import (
     _analyze_gens,
     _sort_factors,
     parallel_dict_from_expr,
-    dict_from_expr,
-)
+    dict_from_expr)
 
 from sympy.polys.polyerrors import (
     GeneratorsNeeded,
-    PolynomialError,
-)
+    PolynomialError)
 
 from sympy.polys.domains import ZZ
 
@@ -47,6 +46,9 @@ def test__nsort():
     assert len(_nsort(r, separated=True)[0]) == 0
     b, c, a = exp(-1000), exp(-999), exp(-1001)
     assert _nsort((b, c, a)) == [a, b, c]
+    d = symbols("d", extended_real=True)
+    assert _nsort((d,)) == [d]
+    assert _nsort((d,), separated=True) == [[d], []]
 
 
 def test__sort_gens():
@@ -225,11 +227,11 @@ def test__dict_from_expr_if_gens():
     assert dict_from_expr(2**y*x, gens=(x,)) == ({(1,): 2**y}, (x,))
     assert dict_from_expr(Integral(x, (x, 1, 2)) + x) == (
         {(0, 1): 1, (1, 0): 1}, (x, Integral(x, (x, 1, 2))))
-    raises(PolynomialError, lambda: dict_from_expr(2**y*x, gens=(x, y)))
+    pytest.raises(PolynomialError, lambda: dict_from_expr(2**y*x, gens=(x, y)))
 
 
 def test__dict_from_expr_no_gens():
-    raises(GeneratorsNeeded, lambda: dict_from_expr(Integer(17)))
+    pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(Integer(17)))
 
     assert dict_from_expr(x) == ({(1,): Integer(1)}, (x,))
     assert dict_from_expr(y) == ({(1,): Integer(1)}, (y,))
@@ -239,7 +241,7 @@ def test__dict_from_expr_no_gens():
         x + y) == ({(1, 0): Integer(1), (0, 1): Integer(1)}, (x, y))
 
     assert dict_from_expr(sqrt(2)) == ({(1,): Integer(1)}, (sqrt(2),))
-    raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
+    pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
 
     assert dict_from_expr(x*y, domain=ZZ[x]) == ({(1,): x}, (y,))
     assert dict_from_expr(x*y, domain=ZZ[y]) == ({(1,): y}, (x,))
@@ -275,10 +277,10 @@ def test_parallel_dict_from_expr():
     assert parallel_dict_from_expr([Eq(x, 1), Eq(
         x**2, 2)]) == ([{(0,): -Integer(1), (1,): Integer(1)},
                         {(0,): -Integer(2), (2,): Integer(1)}], (x,))
-    raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
+    pytest.raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
 
 
 def test_dict_from_expr():
     assert dict_from_expr(Eq(x, 1)) == \
         ({(0,): -Integer(1), (1,): Integer(1)}, (x,))
-    raises(PolynomialError, lambda: dict_from_expr(A*B - B*A))
+    pytest.raises(PolynomialError, lambda: dict_from_expr(A*B - B*A))

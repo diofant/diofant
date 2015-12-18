@@ -1,17 +1,16 @@
 """Test whether all elements of cls.args are instances of Basic. """
 
-# NOTE: keep tests sorted by (module, class name) key. If a class can't
-# be instantiated, add it here anyway with @SKIP("abstract class) (see
-# e.g. Function).
+# NOTE: keep tests sorted by (module, class name) key.
 
 import os
 import re
 import warnings
 import io
 
+import pytest
+
 from sympy import Basic, S, symbols, sqrt, sin, oo, Interval, exp
 from sympy.core.compatibility import range
-from sympy.utilities.pytest import XFAIL, SKIP
 from sympy.utilities.exceptions import SymPyDeprecationWarning
 
 x, y, z = symbols('x,y,z')
@@ -91,7 +90,7 @@ def test_sympy__assumptions__assume__Predicate():
     assert _test_args(Predicate("test"))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__combinatorics__graycode__GrayCode():
     from sympy.combinatorics.graycode import GrayCode
     # an integer is given and returned from GrayCode as the arg
@@ -105,7 +104,7 @@ def test_sympy__combinatorics__subsets__Subset():
     assert _test_args(Subset(['c', 'd'], ['a', 'b', 'c', 'd']))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__combinatorics__permutations__Permutation():
     from sympy.combinatorics.permutations import Permutation
     assert _test_args(Permutation([0, 1, 2, 3]))
@@ -134,7 +133,7 @@ def test_sympy__combinatorics__polyhedron__Polyhedron():
     assert _test_args(Polyhedron(corners, faces, pgroup))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__combinatorics__prufer__Prufer():
     from sympy.combinatorics.prufer import Prufer
     assert _test_args(Prufer([[0, 1], [0, 2], [0, 3]], 4))
@@ -145,7 +144,7 @@ def test_sympy__combinatorics__partitions__Partition():
     assert _test_args(Partition([1]))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__combinatorics__partitions__IntegerPartition():
     from sympy.combinatorics.partitions import IntegerPartition
     assert _test_args(IntegerPartition([1]))
@@ -157,21 +156,18 @@ def test_sympy__concrete__products__Product():
     assert _test_args(Product(x, (x, 0, y), (y, 0, 10)))
 
 
-@SKIP("abstract Class")
 def test_sympy__concrete__expr_with_limits__ExprWithLimits():
     from sympy.concrete.expr_with_limits import ExprWithLimits
     assert _test_args(ExprWithLimits(x, (x, 0, 10)))
     assert _test_args(ExprWithLimits(x*y, (x, 0, 10.),(y,1.,3)))
 
 
-@SKIP("abstract Class")
 def test_sympy__concrete__expr_with_limits__AddWithLimits():
     from sympy.concrete.expr_with_limits import AddWithLimits
     assert _test_args(AddWithLimits(x, (x, 0, 10)))
     assert _test_args(AddWithLimits(x*y, (x, 0, 10),(y,1,3)))
 
 
-@SKIP("abstract Class")
 def test_sympy__concrete__expr_with_intlimits__ExprWithIntLimits():
     from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
     assert _test_args(ExprWithIntLimits(x, (x, 0, 10)))
@@ -234,7 +230,6 @@ def test_sympy__core__function__Derivative():
     assert _test_args(Derivative(2, x, y, 3))
 
 
-@SKIP("abstract class")
 def test_sympy__core__function__Function():
     pass
 
@@ -314,7 +309,6 @@ def test_sympy__core__numbers__Integer():
     assert _test_args(Integer(7))
 
 
-@SKIP("abstract class")
 def test_sympy__core__numbers__IntegerConstant():
     pass
 
@@ -359,7 +353,6 @@ def test_sympy__core__numbers__Rational():
     assert _test_args(Rational(1, 7))
 
 
-@SKIP("abstract class")
 def test_sympy__core__numbers__RationalConstant():
     pass
 
@@ -369,12 +362,10 @@ def test_sympy__core__numbers__Zero():
     assert _test_args(Zero())
 
 
-@SKIP("abstract class")
 def test_sympy__core__operations__AssocOp():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__core__operations__LatticeOp():
     pass
 
@@ -399,7 +390,6 @@ def test_sympy__core__relational__LessThan():
     assert _test_args(LessThan(x, 2))
 
 
-@SKIP("abstract class")
 def test_sympy__core__relational__Relational():
     pass
 
@@ -444,7 +434,6 @@ def test_sympy__sets__sets__ProductSet():
     assert _test_args(ProductSet(Interval(0, 1), Interval(0, 1)))
 
 
-@SKIP("does it make sense to test this?")
 def test_sympy__sets__sets__Set():
     from sympy.sets.sets import Set
     assert _test_args(Set())
@@ -567,7 +556,6 @@ def test_sympy__stats__crv__ProductContinuousPSpace():
     assert _test_args(ProductContinuousPSpace(A, B))
 
 
-@SKIP("abstract class")
 def test_sympy__stats__crv__SingleContinuousDistribution():
     pass
 
@@ -583,7 +571,6 @@ def test_sympy__stats__drv__SingleDiscretePSpace():
     assert _test_args(SingleDiscretePSpace(x, PoissonDistribution(1)))
 
 
-@SKIP("abstract class")
 def test_sympy__stats__drv__SingleDiscreteDistribution():
     pass
 
@@ -614,7 +601,6 @@ def test_sympy__stats__rv__PSpace():
     assert _test_args(PSpace(D, die))
 
 
-@SKIP("abstract Class")
 def test_sympy__stats__rv__SinglePSpace():
     pass
 
@@ -718,12 +704,10 @@ def test_sympy__stats__frv__ProductFinitePSpace():
     assert _test_args(ProductFinitePSpace(xp, yp))
 
 
-@SKIP("abstract class")
 def test_sympy__stats__frv__SingleFiniteDistribution():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__stats__crv__ContinuousDistribution():
     pass
 
@@ -936,7 +920,6 @@ def test_sympy__core__symbol__Wild():
     assert _test_args(Wild('x', exclude=[x]))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__combinatorial__factorials__CombinatorialFunction():
     pass
 
@@ -1076,7 +1059,6 @@ def test_sympy__functions__elementary__exponential__LambertW():
     assert _test_args(LambertW(2))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__exponential__ExpBase():
     pass
 
@@ -1096,12 +1078,10 @@ def test_sympy__functions__elementary__exponential__log():
     assert _test_args(log(2))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__hyperbolic__HyperbolicFunction():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__hyperbolic__ReciprocalHyperbolicFunction():
     pass
 
@@ -1156,7 +1136,7 @@ def test_sympy__functions__elementary__hyperbolic__tanh():
     assert _test_args(tanh(2))
 
 
-@SKIP("does this work at all?")
+@pytest.mark.xfail
 def test_sympy__functions__elementary__integers__RoundFunction():
     from sympy.functions.elementary.integers import RoundFunction
     assert _test_args(RoundFunction())
@@ -1187,7 +1167,6 @@ def test_sympy__functions__elementary__miscellaneous__Min():
     assert _test_args(Min(x, 2))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__miscellaneous__MinMaxBase():
     pass
 
@@ -1202,17 +1181,14 @@ def test_sympy__functions__elementary__piecewise__Piecewise():
     assert _test_args(Piecewise((1, x >= 0), (0, True)))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__trigonometric__TrigonometricFunction():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__trigonometric__ReciprocalTrigonometricFunction():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__functions__elementary__trigonometric__InverseTrigonometricFunction():
     pass
 
@@ -1281,12 +1257,10 @@ def test_sympy__functions__elementary__trigonometric__tan():
     assert _test_args(tan(2))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__bessel__BesselBase():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__bessel__SphericalBesselBase():
     pass
 
@@ -1422,7 +1396,6 @@ def test_sympy__functions__special__error_functions__erf2inv():
     assert _test_args(erf2inv(2, 3))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__error_functions__FresnelIntegral():
     pass
 
@@ -1457,7 +1430,6 @@ def test_sympy__functions__special__error_functions__Li():
     assert _test_args(Li(2))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__error_functions__TrigonometricIntegral():
     pass
 
@@ -1517,12 +1489,10 @@ def test_sympy__functions__special__beta_functions__beta():
     assert _test_args(beta(x, x))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__hyper__TupleParametersBase():
     pass
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__hyper__TupleArg():
     pass
 
@@ -1537,7 +1507,6 @@ def test_sympy__functions__special__hyper__meijerg():
     assert _test_args(meijerg([1, 2, 3], [4, 5], [6], [], x))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__hyper__HyperRep():
     pass
 
@@ -1597,7 +1566,6 @@ def test_sympy__functions__special__hyper__HyperRep_sinasin():
     assert _test_args(HyperRep_sinasin(x, y))
 
 
-@SKIP("abstract class")
 def test_sympy__functions__special__polynomials__OrthogonalPolynomial():
     pass
 
@@ -1707,7 +1675,6 @@ def test_sympy__integrals__risch__NonElementaryIntegral():
     assert _test_args(NonElementaryIntegral(exp(-x**2), x))
 
 
-@SKIP("abstract class")
 def test_sympy__integrals__transforms__IntegralTransform():
     pass
 
@@ -1732,7 +1699,6 @@ def test_sympy__integrals__transforms__InverseLaplaceTransform():
     assert _test_args(InverseLaplaceTransform(2, x, y, 0))
 
 
-@SKIP("abstract class")
 def test_sympy__integrals__transforms__FourierTypeTransform():
     pass
 
@@ -1747,7 +1713,6 @@ def test_sympy__integrals__transforms__FourierTransform():
     assert _test_args(FourierTransform(2, x, y))
 
 
-@SKIP("abstract class")
 def test_sympy__integrals__transforms__SineCosineTypeTransform():
     pass
 
@@ -1772,7 +1737,6 @@ def test_sympy__integrals__transforms__CosineTransform():
     assert _test_args(CosineTransform(2, x, y))
 
 
-@SKIP("abstract class")
 def test_sympy__integrals__transforms__HankelTypeTransform():
     pass
 
@@ -1787,67 +1751,67 @@ def test_sympy__integrals__transforms__HankelTransform():
     assert _test_args(HankelTransform(2, x, y, 0))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__cartan_type__CartanType_generator():
     from sympy.liealgebras.cartan_type import CartanType_generator
     assert _test_args(CartanType_generator("A2"))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__cartan_type__Standard_Cartan():
     from sympy.liealgebras.cartan_type import Standard_Cartan
     assert _test_args(Standard_Cartan("A", 2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__weyl_group__WeylGroup():
     from sympy.liealgebras.weyl_group import WeylGroup
     assert _test_args(WeylGroup("B4"))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__root_system__RootSystem():
     from sympy.liealgebras.root_system import RootSystem
     assert _test_args(RootSystem("A2"))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_a__TypeA():
     from sympy.liealgebras.type_a import TypeA
     assert _test_args(TypeA(2))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_b__TypeB():
     from sympy.liealgebras.type_b import TypeB
     assert _test_args(TypeB(4))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_c__TypeC():
     from sympy.liealgebras.type_c import TypeC
     assert _test_args(TypeC(4))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_d__TypeD():
     from sympy.liealgebras.type_d import TypeD
     assert _test_args(TypeD(4))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_e__TypeE():
     from sympy.liealgebras.type_e import TypeE
     assert _test_args(TypeE(6))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_f__TypeF():
     from sympy.liealgebras.type_f import TypeF
     assert _test_args(TypeF(4))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__liealgebras__type_g__TypeG():
     from sympy.liealgebras.type_g import TypeG
     assert _test_args(TypeG(2))
@@ -1858,7 +1822,6 @@ def test_sympy__logic__boolalg__And():
     assert _test_args(And(x, y, 2))
 
 
-@SKIP("abstract class")
 def test_sympy__logic__boolalg__Boolean():
     pass
 
@@ -1868,7 +1831,6 @@ def test_sympy__logic__boolalg__BooleanFunction():
     assert _test_args(BooleanFunction(1, 2, 3))
 
 
-@SKIP("abstract class")
 def test_sympy__logic__boolalg__BooleanAtom():
     pass
 
@@ -1928,7 +1890,6 @@ def test_sympy__matrices__matrices__DeferredVector():
     assert _test_args(DeferredVector("X"))
 
 
-@SKIP("abstract class")
 def test_sympy__matrices__expressions__matexpr__MatrixBase():
     pass
 
@@ -2012,7 +1973,6 @@ def test_sympy__matrices__expressions__matexpr__Identity():
     assert _test_args(Identity(3))
 
 
-@SKIP("abstract class")
 def test_sympy__matrices__expressions__matexpr__MatrixExpr():
     pass
 
@@ -2023,7 +1983,7 @@ def test_sympy__matrices__expressions__matexpr__MatrixElement():
     assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), S(2), S(3)))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__matrices__expressions__matexpr__MatrixSymbol():
     from sympy.matrices.expressions.matexpr import MatrixSymbol
     assert _test_args(MatrixSymbol('A', 3, 5))
@@ -2172,7 +2132,6 @@ def test_sympy__matrices__expressions__factorizations__SofSVD():
     assert _test_args(SofSVD(X))
 
 
-@SKIP("abstract class")
 def test_sympy__matrices__expressions__factorizations__Factorization():
     pass
 
@@ -2276,7 +2235,6 @@ def test_sympy__tensor__tensor__TensorIndex():
     assert _test_args(TensorIndex('i', Lorentz))
 
 
-@SKIP("abstract class")
 def test_sympy__tensor__tensor__TensExpr():
     pass
 
@@ -2350,7 +2308,6 @@ def test_sympy__geometry__ellipse__Circle():
     assert _test_args(Circle((0, 1), 2))
 
 
-@SKIP("abstract class")
 def test_sympy__geometry__line__LinearEntity():
     pass
 
@@ -2370,7 +2327,6 @@ def test_sympy__geometry__line__Segment():
     assert _test_args(Segment((0, 1), (2, 3)))
 
 
-@SKIP("abstract class")
 def test_sympy__geometry__line3d__LinearEntity3D():
     pass
 
@@ -2416,7 +2372,6 @@ def test_sympy__geometry__entity__GeometryEntity():
     assert _test_args(GeometryEntity(Point(1, 0), 1, [1, 2]))
 
 
-@SKIP("abstract class")
 def test_sympy__geometry__entity__GeometrySet():
     pass
 
@@ -2436,7 +2391,7 @@ def test_sympy__diffgeom__diffgeom__CoordSystem():
     assert _test_args(CoordSystem('name', Patch('name', Manifold('name', 3))))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__diffgeom__diffgeom__Point():
     from sympy.diffgeom import Manifold, Patch, CoordSystem, Point
     assert _test_args(Point(
@@ -2493,7 +2448,7 @@ def test_sympy__diffgeom__diffgeom__LieDerivative():
     assert _test_args(LieDerivative(v, d))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__diffgeom__diffgeom__BaseCovarDerivativeOp():
     from sympy.diffgeom import Manifold, Patch, CoordSystem, BaseCovarDerivativeOp
     cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
@@ -2517,7 +2472,7 @@ def test_sympy__categories__baseclasses__Object():
     assert _test_args(Object("A"))
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_sympy__categories__baseclasses__Morphism():
     from sympy.categories import Object, Morphism
     assert _test_args(Morphism(Object("A"), Object("B")))

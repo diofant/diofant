@@ -186,7 +186,14 @@ class Relational(Boolean, Expr, EvalfMixin):
                     if know:
                         dif = S.Zero
                     elif know is False:
-                        dif = dif.evalf()
+                        from mpmath.libmp.libintmath import giant_steps
+                        from sympy.core.evalf import DEFAULT_MAXPREC as target
+                        for prec in giant_steps(2, target):
+                            ndif = dif.evalf(prec)
+                            if ndif._prec != 1:
+                                break
+                        if ndif._prec > 1:
+                            dif = ndif
                 # Can definitively compare a Number to zero, if appropriate.
                 if dif.is_Number and (dif.is_extended_real or r.func in (Eq, Ne)):
                     # Always T/F (we never return an expression w/ the evalf)

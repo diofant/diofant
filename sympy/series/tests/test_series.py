@@ -1,7 +1,8 @@
-from sympy import sin, cos, exp, E, series, oo, S, Derivative, O, Integral, \
-    Function, log, sqrt, Symbol, Subs, pi, symbols
+import pytest
+
+from sympy import (sin, cos, exp, E, series, oo, S, Derivative, O, Integral,
+                   Function, log, sqrt, Symbol, Subs, pi, symbols)
 from sympy.abc import x, y, n, k
-from sympy.utilities.pytest import raises
 from sympy.core.compatibility import range
 
 
@@ -33,8 +34,8 @@ def test_issue_5223():
     assert series(1, x) == 1
     assert next(S(0).lseries(x)) == 0
     assert cos(x).series() == cos(x).series(x)
-    raises(ValueError, lambda: cos(x + y).series())
-    raises(ValueError, lambda: x.series(dir=""))
+    pytest.raises(ValueError, lambda: cos(x + y).series())
+    pytest.raises(ValueError, lambda: x.series(dir=""))
 
     assert (cos(x).series(x, 1) -
             cos(x + 1).series(x).subs(x, x - 1)).removeO() == 0

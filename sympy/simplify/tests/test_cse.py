@@ -1,14 +1,16 @@
 import itertools
 
+import pytest
+
 from sympy import (Add, Pow, Symbol, exp, sqrt, symbols, sympify, cse,
                    Matrix, S, cos, sin, Eq, Function, Tuple, RootOf,
                    IndexedBase, Idx, Piecewise, O)
 from sympy.simplify.cse_opts import sub_pre, sub_post
 from sympy.functions.special.hyper import meijerg
 from sympy.simplify import cse_main, cse_opts
-from sympy.utilities.pytest import XFAIL, raises
 from sympy.matrices import (eye, SparseMatrix, MutableDenseMatrix,
-    MutableSparseMatrix, ImmutableDenseMatrix, ImmutableSparseMatrix)
+                            MutableSparseMatrix, ImmutableDenseMatrix,
+                            ImmutableSparseMatrix)
 
 from sympy.core.compatibility import range
 
@@ -145,7 +147,7 @@ def test_multiple_expressions():
         ([(x0, x*y)], [x0, z + x0, 3 + x0*z])
 
 
-@XFAIL  # CSE of non-commutative Mul terms is disabled
+@pytest.mark.xfail  # CSE of non-commutative Mul terms is disabled
 def test_non_commutative_cse():
     A, B, C = symbols('A B C', commutative=False)
     l = [A*B*C, A*C]
@@ -165,7 +167,7 @@ def test_bypass_non_commutatives():
     assert cse(l) == ([], l)
 
 
-@XFAIL  # CSE fails when replacing non-commutative sub-expressions
+@pytest.mark.xfail  # CSE fails when replacing non-commutative sub-expressions
 def test_non_commutative_order():
     A, B, C = symbols('A B C', commutative=False)
     x0 = symbols('x0', commutative=False)
@@ -173,7 +175,7 @@ def test_non_commutative_order():
     assert cse(l) == ([(x0, B+C)], [x0, A*x0])
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_powers():
     assert cse(x*y**2 + x*y) == ([(x0, x*y)], [x0*y + x0])
 
@@ -293,7 +295,7 @@ def test_cse_Indexed():
     assert len(replacements) > 0
 
 
-@XFAIL
+@pytest.mark.xfail
 def test_cse_MatrixSymbol():
     from sympy import MatrixSymbol
     A = MatrixSymbol('A', 3, 3)
@@ -336,7 +338,7 @@ def test_name_conflict_cust_symbols():
 def test_symbols_exhausted_error():
     l = cos(x+y)+x+y+cos(w+y)+sin(w+y)
     sym = [x, y, z]
-    with raises(ValueError) as excinfo:
+    with pytest.raises(ValueError) as excinfo:
         cse(l, symbols=sym)
 
 

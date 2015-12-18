@@ -83,7 +83,7 @@ class beta(Function):
     .. [2] http://mathworld.wolfram.com/BetaFunction.html
     .. [3] http://dlmf.nist.gov/5.12
     """
-    nargs = 2
+
     unbranched = True
 
     def fdiff(self, argindex):

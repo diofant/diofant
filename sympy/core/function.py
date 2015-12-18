@@ -429,16 +429,6 @@ class Function(Application, Expr):
 
         return 4, i, name
 
-    @property
-    def is_commutative(self):
-        """
-        Returns whether the functon is commutative.
-        """
-        if all(getattr(t, 'is_commutative') for t in self.args):
-            return True
-        else:
-            return False
-
     def _eval_evalf(self, prec):
         # Lookup mpmath function based on name
         fname = self.func.__name__
@@ -604,7 +594,7 @@ class Function(Application, Expr):
                     raise PoleError("Cannot expand %s around 0" % (self))
                 series = term
                 fact = S.One
-                _x = Dummy('x')
+                _x = Dummy('x', real=True, positive=True)
                 e = e.subs(x, _x)
                 for i in range(n - 1):
                     i += 1
@@ -773,7 +763,7 @@ class WildFunction(Function, AtomicExpr):
             nargs = FiniteSet(*nargs)
         cls.nargs = nargs
 
-    def matches(self, expr, repl_dict={}, old=False):
+    def matches(self, expr, repl_dict={}):
         if not isinstance(expr, (AppliedUndef, Function)):
             return
         if len(expr.args) not in self.nargs:
