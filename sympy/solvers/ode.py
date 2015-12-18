@@ -1086,7 +1086,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 reps = ((x, x + xarg), (u, u + yarg), (t, df), (u, f(x)))
                 dummy_eq = simplify(dummy_eq.subs(reps))
                 # get the re-cast values for e and d
-                r2 = collect(expand(dummy_eq), [df, f(x)]).match(e*df + d)
+                r2 = collect(expand(dummy_eq), [df, f(x)], exact=True).match(e*df + d)
                 if r2:
                     orderd = homogeneous_order(r2[d], x, f(x))
                     if orderd is not None:

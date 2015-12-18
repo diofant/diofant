@@ -166,7 +166,7 @@ def test_settins():
 
 def test_Mul():
     sT(3*x**3*y, "Mul(Integer(3), Pow(Symbol('x'), Integer(3)), Symbol('y'))")
-    assert srepr(3*x**3*y, order='old') == "Mul(Integer(3), Symbol('y'), Pow(Symbol('x'), Integer(3)))"
+    assert srepr(3*x**3*y, order='old') == "Mul(Integer(3), Pow(Symbol('x'), Integer(3)), Symbol('y'))"
 
 
 def test_PolyRing():
