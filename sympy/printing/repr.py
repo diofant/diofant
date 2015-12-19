@@ -5,13 +5,13 @@ The most important function here is srepr that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 
-from __future__ import print_function, division
+from __future__ import print_function, division, unicode_literals
 
 from sympy.core.function import AppliedUndef
 from .printer import Printer
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps, repr_dps
-from sympy.core.compatibility import range
+from sympy.core.compatibility import range, string_types
 
 
 class ReprPrinter(Printer):
@@ -31,7 +31,7 @@ class ReprPrinter(Printer):
         """
         The fallback printer.
         """
-        if isinstance(expr, str):
+        if isinstance(expr, string_types):
             return expr
         elif hasattr(expr, "__srepr__"):
             return expr.__srepr__()
@@ -157,6 +157,9 @@ class ReprPrinter(Printer):
 
     def _print_str(self, expr):
         return repr(expr)
+
+    def _print_unicode(self, expr):
+        return repr(expr)[1:]
 
     def _print_tuple(self, expr):
         if len(expr) == 1:

@@ -598,9 +598,8 @@ def capture(func):
     ...
     >>> 'hello' in capture(foo) # foo, not foo()
     True
-    >>> capture(lambda: pprint(2/x, use_unicode=False))
-    '2\\n-\\nx\\n'
-
+    >>> '2\\n-\\nx\\n' == capture(lambda: pprint(2/x, use_unicode=False))
+    True
     """
     from sympy.core.compatibility import StringIO
     import sys
