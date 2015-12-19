@@ -1816,7 +1816,7 @@ def test_diagonal_solve():
 def test_matrix_norm():
     # Vector Tests
     # Test columns and symbols
-    x = Symbol('x', extended_real=True)
+    x = Symbol('x', real=True)
     v = Matrix([cos(x), sin(x)])
     assert trigsimp(v.norm(2)) == 1
     assert v.norm(10) == Pow(cos(x)**10 + sin(x)**10, S(1)/10)

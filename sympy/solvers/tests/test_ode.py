@@ -13,7 +13,7 @@ from sympy.solvers.ode import (_undetermined_coefficients_match, checkodesol,
 from sympy.solvers.deutils import ode_order
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
-x, y, z = symbols('x:z', extended_real=True)
+x, y, z = symbols('x:z', real=True)
 f = Function('f')
 g = Function('g')
 h = Function('h')

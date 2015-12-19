@@ -33,7 +33,7 @@ def test_Symbol():
     assert x.is_imaginary is None  # could be I or 1 + I
     x = Symbol('x', complex=True, imaginary=False)
     assert x.is_extended_real is None  # could be 1 or 1 + I
-    x = Symbol('x', extended_real=True)
+    x = Symbol('x', real=True)
     assert x.is_complex
     x = Symbol('x', imaginary=True)
     assert x.is_complex
@@ -490,12 +490,9 @@ def test_Mul_is_rational():
     r = Symbol('r', rational=True)
     assert (pi*r).is_rational is None
 
-    # issue 8008
     z = Symbol('z', zero=True)
     i = Symbol('i', imaginary=True)
-    assert (z*i).is_rational is None
-    bi = Symbol('i', imaginary=True, finite=True)
-    assert (z*bi).is_zero is True
+    assert (z*i).is_rational
 
 
 def test_Add_is_rational():
@@ -1208,7 +1205,7 @@ def test_Pow_is_nonpositive_nonnegative():
 
 def test_Mul_is_imaginary_real():
     r = Symbol('r', extended_real=True)
-    p = Symbol('p', positive=True)
+    p = Symbol('p', positive=True, real=True)
     i = Symbol('i', imaginary=True)
     ii = Symbol('ii', imaginary=True)
     x = Symbol('x')

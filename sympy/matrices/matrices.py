@@ -1777,9 +1777,9 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix, Symbol, trigsimp, cos, sin, oo
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> v = Matrix([cos(x), sin(x)])
-        >>> trigsimp( v.norm() )
+        >>> trigsimp(v.norm())
         1
         >>> v.norm(10)
         (sin(x)**10 + cos(x)**10)**(1/10)
