@@ -14,14 +14,6 @@ from sympy.external import import_module
 """
 Python 2 and Python 3 compatible imports
 
-Renamed function attributes:
-    * Python 2 `.func_code`, Python 3 `.__func__`, access with
-      `get_function_code()`
-    * Python 2 `.func_globals`, Python 3 `.__globals__`, access with
-      `get_function_globals()`
-    * Python 2 `.func_name`, Python 3 `.__name__`, access with
-      `get_function_name()`
-
 Metaclasses:
     * Use `with_metaclass()`, examples below
         * Define class `Foo` with metaclass `Meta`, and no parent:
@@ -33,20 +25,6 @@ Metaclasses:
 """
 
 PY3 = sys.version_info[0] > 2
-
-if PY3:
-    # Moved definitions
-    get_function_code = operator.attrgetter("__code__")
-    get_function_globals = operator.attrgetter("__globals__")
-    get_function_name = operator.attrgetter("__name__")
-else:
-    import codecs
-    import types
-
-    # Moved definitions
-    get_function_code = operator.attrgetter("func_code")
-    get_function_globals = operator.attrgetter("func_globals")
-    get_function_name = operator.attrgetter("func_name")
 
 
 def with_metaclass(meta, *bases):
