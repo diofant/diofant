@@ -9,8 +9,8 @@ from sympy.utilities.misc import debug
 
 def _init_python_printing(stringify_func):
     """Setup printing in Python interactive session. """
+    import builtins
     import sys
-    from sympy.core.compatibility import builtins
 
     def _displayhook(arg):
         """Python's pretty-printer display hook.

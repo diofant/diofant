@@ -22,9 +22,6 @@ Renamed function attributes:
     * Python 2 `.func_name`, Python 3 `.__name__`, access with
       `get_function_name()`
 
-Moved modules:
-    * Python 2 `__builtins__`, access with Python 3 name, `builtins`
-
 Metaclasses:
     * Use `with_metaclass()`, examples below
         * Define class `Foo` with metaclass `Meta`, and no parent:
@@ -42,8 +39,6 @@ if PY3:
     get_function_code = operator.attrgetter("__code__")
     get_function_globals = operator.attrgetter("__globals__")
     get_function_name = operator.attrgetter("__name__")
-
-    import builtins
 else:
     import codecs
     import types
@@ -52,8 +47,6 @@ else:
     get_function_code = operator.attrgetter("func_code")
     get_function_globals = operator.attrgetter("func_globals")
     get_function_name = operator.attrgetter("func_name")
-
-    import __builtin__ as builtins
 
 
 def with_metaclass(meta, *bases):

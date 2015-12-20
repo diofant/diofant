@@ -2,9 +2,11 @@
 
 __all__ = []
 
+import builtins
+
 import mpmath.libmp as mlib
 
-from sympy.core.compatibility import builtins, HAS_GMPY
+from sympy.core.compatibility import HAS_GMPY
 
 PythonInteger = builtins.int
 PythonReal = builtins.float
