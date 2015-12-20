@@ -10,7 +10,6 @@ from sympy import (
     sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan, tanh, zoo, Sum, Lt)
 from sympy.core.mul import _keep_coeff
 from sympy.simplify.simplify import nthroot
-from sympy.core.compatibility import range
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
 

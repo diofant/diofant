@@ -10,8 +10,6 @@ from sympy.matrices import (eye, Matrix, MatrixSymbol, Identity,
 from sympy.functions.special.bessel import (jn, yn, besselj, bessely, besseli,
                                             besselk, hankel1, hankel2, airyai,
                                             airybi, airyaiprime, airybiprime)
-from sympy.core.compatibility import range
-
 from sympy import octave_code
 from sympy import octave_code as mcode
 

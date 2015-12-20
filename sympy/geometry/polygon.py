@@ -1,7 +1,7 @@
 import warnings
 
 from sympy.core import Expr, S, sympify, oo, pi, Symbol
-from sympy.core.compatibility import as_int, range
+from sympy.core.compatibility import as_int
 from sympy.functions.elementary.complexes import sign
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.functions.elementary.trigonometric import cos, sin, tan

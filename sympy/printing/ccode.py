@@ -10,7 +10,6 @@ source code files that are compilable without further modifications.
 """
 
 from sympy.core import S
-from sympy.core.compatibility import range
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence
 

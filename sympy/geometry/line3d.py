@@ -6,7 +6,6 @@ LinearEntity3D
 Line3D
 Ray3D
 Segment3D
-
 """
 
 from sympy.core import S, Dummy, nan
@@ -17,7 +16,7 @@ from sympy.geometry.exceptions import GeometryError
 from .entity import GeometryEntity
 from .point import Point3D
 from .util import _symbol
-from sympy.core.compatibility import is_sequence, range
+from sympy.core.compatibility import is_sequence
 
 
 class LinearEntity3D(GeometryEntity):

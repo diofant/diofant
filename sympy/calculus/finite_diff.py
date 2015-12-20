@@ -18,7 +18,7 @@ for:
 """
 
 from sympy import S
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 
 
 def finite_diff_weights(order, x_list, x0=S(0)):

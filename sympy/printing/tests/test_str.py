@@ -9,7 +9,6 @@ from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
 from sympy.core import Expr
 from sympy.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
 from sympy.geometry import Point, Circle
-from sympy.core.compatibility import range
 from sympy.printing import sstr, sstrrepr, StrPrinter
 from sympy.core.trace import Tr
 

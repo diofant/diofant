@@ -1,6 +1,5 @@
 """Heuristic polynomial GCD algorithm (HEUGCD). """
 
-from sympy.core.compatibility import range
 from .polyerrors import HeuristicGCDFailed
 
 HEU_GCD_MAX = 6

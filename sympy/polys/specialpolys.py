@@ -13,7 +13,6 @@ from sympy.polys.factortools import dup_zz_cyclotomic_poly
 from sympy.polys.domains import ZZ
 from sympy.ntheory import nextprime
 from sympy.utilities import subsets, public
-from sympy.core.compatibility import range
 
 
 @public

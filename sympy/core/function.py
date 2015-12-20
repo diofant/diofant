@@ -50,7 +50,7 @@ from .singleton import S
 from .sympify import sympify
 from sympy.core.containers import Tuple, Dict
 from sympy.core.logic import fuzzy_and
-from sympy.core.compatibility import with_metaclass, range
+from sympy.core.compatibility import with_metaclass
 from sympy.utilities import default_sort_key
 from sympy.utilities.iterables import uniq
 from sympy.core.evaluate import global_evaluate

@@ -1,5 +1,4 @@
 from sympy import Expr, Add, Mul, Pow, sympify, Matrix, Tuple
-from sympy.core.compatibility import range
 from sympy.utilities import default_sort_key
 
 

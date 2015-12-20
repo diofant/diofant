@@ -10,7 +10,6 @@ from mpmath.libmp import prec_to_dps, repr_dps
 
 from sympy.core.function import AppliedUndef
 from .printer import Printer
-from sympy.core.compatibility import range
 
 
 class ReprPrinter(Printer):

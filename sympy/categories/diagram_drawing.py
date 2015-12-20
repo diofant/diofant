@@ -89,7 +89,7 @@ from sympy.categories import (CompositeMorphism, IdentityMorphism,
                               NamedMorphism, Diagram)
 from sympy.utilities import default_sort_key
 from itertools import chain
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 from sympy.printing import latex
 from sympy.utilities.decorator import doctest_depends_on
 

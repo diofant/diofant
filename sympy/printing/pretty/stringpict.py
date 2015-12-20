@@ -13,7 +13,6 @@ TODO:
 """
 
 from .pretty_symbology import hobj, vobj, xsym, xobj, pretty_use_unicode
-from sympy.core.compatibility import range
 
 
 class stringPict(object):

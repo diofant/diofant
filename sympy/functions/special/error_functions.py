@@ -11,7 +11,6 @@ from sympy.functions.elementary.complexes import polar_lift
 from sympy.functions.elementary.hyperbolic import cosh, sinh
 from sympy.functions.elementary.trigonometric import cos, sin
 from sympy.functions.special.hyper import hyper, meijerg
-from sympy.core.compatibility import range
 
 # TODO series expansions
 # TODO see the "Note:" in Ei

@@ -6,7 +6,7 @@ from .assumptions import BasicMeta, ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import (iterable, Iterator, ordered,
-                            with_metaclass, zip_longest, range)
+                            with_metaclass, zip_longest)
 from .singleton import S
 
 

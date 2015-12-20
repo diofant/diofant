@@ -6,7 +6,7 @@ from sympy.sets.sets import Interval
 from sympy.core.singleton import S
 from sympy.core.symbol import Symbol
 from sympy.core.sympify import sympify
-from sympy.core.compatibility import is_sequence, range
+from sympy.core.compatibility import is_sequence
 from sympy.core.containers import Tuple
 from sympy.functions.elementary.piecewise import piecewise_fold
 from sympy.utilities import flatten

@@ -2,7 +2,6 @@ from fractions import gcd
 
 import sympy.polys
 from sympy import Integer
-from sympy.core.compatibility import range
 
 
 def egyptian_fraction(r, algorithm="Greedy"):

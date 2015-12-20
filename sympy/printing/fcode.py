@@ -20,7 +20,6 @@ the responsibility for generating properly cased Fortran code to the user.
 import string
 
 from sympy.core import S, Add, N
-from sympy.core.compatibility import range
 from sympy.core.function import Function
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence

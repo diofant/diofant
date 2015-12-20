@@ -2,7 +2,6 @@ from sympy.core import Add, S, sympify, oo, pi, Dummy
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.numbers import Rational
 from sympy.core.power import Pow
-from sympy.core.compatibility import range
 from .zeta_functions import zeta
 from .error_functions import erf
 from sympy.functions.elementary.exponential import exp, log

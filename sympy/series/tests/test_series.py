@@ -2,8 +2,8 @@ import pytest
 
 from sympy import (sin, cos, exp, E, series, oo, S, Derivative, O, Integral,
                    Function, log, sqrt, Symbol, Subs, pi, symbols)
+
 from sympy.abc import x, y, n, k
-from sympy.core.compatibility import range
 
 
 def test_sin():

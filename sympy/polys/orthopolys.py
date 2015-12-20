@@ -8,7 +8,6 @@ from sympy.polys.polyclasses import DMP
 from sympy.polys.densearith import (dup_mul, dup_mul_ground, dup_lshift,
                                     dup_sub, dup_add)
 from sympy.polys.domains import ZZ, QQ
-from sympy.core.compatibility import range
 
 
 def dup_jacobi(n, a, b, K):

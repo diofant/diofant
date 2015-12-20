@@ -65,7 +65,6 @@ from sympy.polys.polyerrors import (
     ExtraneousFactors, DomainError, CoercionFailed, EvaluationFailed)
 from sympy.ntheory import nextprime, isprime, factorint
 from sympy.utilities import subsets
-from sympy.core.compatibility import range
 
 
 def dup_trial_division(f, factors, K):

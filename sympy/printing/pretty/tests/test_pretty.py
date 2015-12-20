@@ -17,7 +17,6 @@ from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     elliptic_k, elliptic_f, elliptic_e, elliptic_pi)
 from sympy.printing.pretty import pretty as xpretty, pprint
 from sympy.core.trace import Tr
-from sympy.core.compatibility import range
 
 a, b, x, y, z, k = symbols('a,b,x,y,z,k')
 th = Symbol('theta')

@@ -2,7 +2,6 @@
 
 from sympy.core import Function, S, sympify, pi
 from sympy.core.function import ArgumentIndexError
-from sympy.core.compatibility import range
 from sympy.functions.combinatorial.numbers import bernoulli, factorial, harmonic
 from sympy.functions.elementary.exponential import log, exp
 

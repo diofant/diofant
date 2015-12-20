@@ -7,7 +7,7 @@ import inspect
 import textwrap
 
 from sympy.external import import_module
-from sympy.core.compatibility import exec_, is_sequence, iterable, range
+from sympy.core.compatibility import exec_, is_sequence, iterable
 from sympy.utilities.decorator import doctest_depends_on
 
 # These are the namespaces the lambda functions will use.

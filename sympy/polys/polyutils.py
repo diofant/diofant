@@ -6,7 +6,6 @@ from sympy.polys.polyerrors import PolynomialError, GeneratorsNeeded, Generators
 from sympy.polys.polyoptions import build_options
 from sympy.core.exprtools import decompose_power
 from sympy.core import S, Add, Mul, Pow, expand_mul, expand_multinomial
-from sympy.core.compatibility import range
 
 _gens_order = {
     'a': 301, 'b': 302, 'c': 303, 'd': 304,

@@ -3,8 +3,6 @@
 import timeit
 import math
 
-from sympy.core.compatibility import range
-
 _scales = [1e0, 1e3, 1e6, 1e9]
 _units = ['s', 'ms', '\N{GREEK SMALL LETTER MU}s', 'ns']
 

@@ -1,7 +1,6 @@
 """Implementation of matrix FGLM Groebner basis conversion algorithm. """
 
 from sympy.polys.monomials import monomial_mul, monomial_div
-from sympy.core.compatibility import range
 
 
 def matrix_fglm(F, ring, O_to):

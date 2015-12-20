@@ -7,8 +7,6 @@ at present this is mainly needed for facts.py , feel free however to improve
 this stuff for general purpose.
 """
 
-from sympy.core.compatibility import range
-
 
 def _fuzzy_group(args, quick_exit=False):
     """Return True if all args are True, None if there is any None else False

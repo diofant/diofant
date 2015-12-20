@@ -4,15 +4,11 @@ import pytest
 
 from sympy.polys.rings import ring, xring
 from sympy.polys.domains import FF, ZZ, QQ, RR, EX
-
 from sympy.polys import polyconfig as config
 from sympy.polys.polyerrors import DomainError
 from sympy.polys.polyclasses import ANP
 from sympy.polys.specialpolys import f_polys, w_polys
-
 from sympy import nextprime, sin, sqrt, I
-
-from sympy.core.compatibility import range
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 w_1, w_2 = w_polys()

@@ -3,7 +3,7 @@
 from inspect import getmro
 
 from .core import all_classes as sympy_classes
-from .compatibility import iterable, range
+from .compatibility import iterable
 from .evaluate import global_evaluate
 
 

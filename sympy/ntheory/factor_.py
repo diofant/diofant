@@ -13,7 +13,7 @@ from sympy.core.logic import fuzzy_and
 from sympy.core.numbers import igcd, Rational
 from sympy.core.power import integer_nthroot, Pow
 from sympy.core.mul import Mul
-from sympy.core.compatibility import as_int, SYMPY_INTS, range
+from sympy.core.compatibility import as_int, SYMPY_INTS
 from sympy.core.singleton import S
 from sympy.core.function import Function
 

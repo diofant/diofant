@@ -1,16 +1,12 @@
 """High-level polynomials manipulation functions. """
 
-from sympy.polys.polytools import (
-    poly_from_expr, parallel_poly_from_expr, Poly)
+from sympy.polys.polytools import poly_from_expr, parallel_poly_from_expr, Poly
 from sympy.polys.polyoptions import allowed_flags
-from sympy.polys.specialpolys import (
-    symmetric_poly, interpolating_poly)
-from sympy.polys.polyerrors import (
-    PolificationFailed, ComputationFailed,
-    MultivariatePolynomialError)
+from sympy.polys.specialpolys import symmetric_poly, interpolating_poly
+from sympy.polys.polyerrors import (PolificationFailed, ComputationFailed,
+                                    MultivariatePolynomialError)
 from sympy.utilities import numbered_symbols, take, public
 from sympy.core import S, Basic, Add, Mul
-from sympy.core.compatibility import range
 
 
 @public

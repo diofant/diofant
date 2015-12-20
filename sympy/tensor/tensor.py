@@ -36,7 +36,7 @@ from sympy.combinatorics.tensor_can import (get_symmetric_group_sgs,
                                             bsgs_direct_product, canonicalize,
                                             riemann_bsgs)
 from sympy.core import Basic, sympify, Add, S
-from sympy.core.compatibility import reduce, range
+from sympy.core.compatibility import reduce
 from sympy.core.containers import Tuple
 from sympy.core.symbol import Symbol, symbols
 from sympy.core.sympify import CantSympify

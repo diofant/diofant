@@ -1,5 +1,4 @@
 from sympy.core.symbol import Symbol
-from sympy.core.compatibility import range
 from sympy.printing.pretty.stringpict import prettyForm
 
 

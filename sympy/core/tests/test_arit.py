@@ -3,7 +3,6 @@ import pytest
 from sympy import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
                    sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
                    Integer, sign, im, nan, Dummy, factorial, comp, O)
-from sympy.core.compatibility import range
 from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
 

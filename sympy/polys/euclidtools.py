@@ -43,7 +43,6 @@ from sympy.polys.polyerrors import (
     DomainError)
 from sympy.polys.polyconfig import query
 from sympy.ntheory import nextprime
-from sympy.core.compatibility import range
 
 
 def dup_half_gcdex(f, g, K):

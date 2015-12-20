@@ -29,7 +29,6 @@ from sympy.polys.densearith import (
     dup_exquo_ground, dmp_exquo_ground)
 from sympy.polys.polyerrors import MultivariatePolynomialError, DomainError
 from sympy.utilities import variations
-from sympy.core.compatibility import range
 
 
 def dup_integrate(f, m, K):

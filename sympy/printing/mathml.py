@@ -5,7 +5,6 @@ A MathML printer.
 from sympy import sympify, S, Mul
 from sympy.core.function import _coeff_isneg
 from sympy.core.alphabets import greeks
-from sympy.core.compatibility import range
 from .printer import Printer
 from .pretty.pretty_symbology import greek_unicode
 from .conventions import split_super_sub, requires_partial

@@ -3,7 +3,7 @@
 from sympy.core import S, I, pi, oo, ilcm, Mod
 from sympy.core.function import Function, Derivative, ArgumentIndexError
 from sympy.core.containers import Tuple
-from sympy.core.compatibility import reduce, range
+from sympy.core.compatibility import reduce
 from sympy.core.mul import Mul
 from sympy.core.symbol import Dummy
 from sympy.functions import (sqrt, exp, log, sin, cos, asin, atan,

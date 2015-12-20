@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from sympy.core import Basic
-from sympy.core.compatibility import iterable, as_int, range
+from sympy.core.compatibility import iterable, as_int
 from sympy.utilities.iterables import flatten
 
 

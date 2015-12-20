@@ -26,7 +26,7 @@ from sympy.integrals.risch import (gcdex_diophantine, frac_in, derivation,
                                    recognize_log_derivative)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,
                                  bound_degree, spde, solve_poly_rde)
-from sympy.core.compatibility import reduce, range
+from sympy.core.compatibility import reduce
 from sympy.utilities.misc import debug
 
 

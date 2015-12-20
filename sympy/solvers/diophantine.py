@@ -7,7 +7,6 @@ from sympy.simplify.radsimp import rad_rationalize
 from sympy.utilities import default_sort_key, numbered_symbols
 from sympy.core.numbers import igcdex
 from sympy.ntheory.residue_ntheory import sqrt_mod
-from sympy.core.compatibility import range
 from sympy.core.relational import Eq
 from sympy.solvers.solvers import check_assumptions
 

@@ -22,7 +22,6 @@ from sympy.polys.polyerrors import (MultivariatePolynomialError,
                                     DomainError)
 from sympy.polys.domains import QQ
 from sympy.utilities import lambdify, public
-from sympy.core.compatibility import range
 
 
 def _ispow2(i):

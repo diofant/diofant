@@ -14,8 +14,6 @@ from sympy.simplify.hyperexpand import (ShiftA, ShiftB, UnShiftA, UnShiftB,
 from sympy import hyper, I, S, meijerg, Piecewise
 from sympy.abc import z, a, b, c
 from sympy.utilities.randtest import verify_numerically as tn
-from sympy.core.compatibility import range
-
 from sympy import (cos, sin, log, exp, asin, lowergamma, atanh, besseli,
                    gamma, sqrt, pi, erf, exp_polar)
 

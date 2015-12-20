@@ -6,7 +6,6 @@ from sympy.core import igcd
 from sympy import oo
 from sympy.polys.monomials import monomial_min, monomial_div
 from sympy.polys.orderings import monomial_key
-from sympy.core.compatibility import range
 
 
 def poly_LC(f, K):

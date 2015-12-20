@@ -51,7 +51,6 @@ http://en.wikipedia.org/wiki/List_of_rules_of_inference
 from collections import defaultdict
 
 from .logic import Logic, And, Or, Not
-from sympy.core.compatibility import range
 
 
 def _base_fact(atom):

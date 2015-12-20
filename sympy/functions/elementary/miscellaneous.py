@@ -11,7 +11,7 @@ from sympy.core.relational import Equality
 from sympy.core.singleton import Singleton
 from sympy.core.symbol import Dummy
 from sympy.core.rules import Transform
-from sympy.core.compatibility import as_int, with_metaclass, range
+from sympy.core.compatibility import as_int, with_metaclass
 from sympy.core.logic import fuzzy_and
 from sympy.functions.elementary.integers import floor
 from sympy.logic.boolalg import And

@@ -7,7 +7,6 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    ProductSet, E, sqrt, Complement, EmptySet, sin, cos, Lambda,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
                    SymmetricDifference)
-from sympy.core.compatibility import range
 from sympy.abc import x, y, z
 
 

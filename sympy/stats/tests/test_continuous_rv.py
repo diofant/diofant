@@ -18,7 +18,6 @@ from sympy import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf,
                    floor, expand_func)
 from sympy.stats.crv_types import NormalDistribution
 from sympy.stats.rv import ProductPSpace
-from sympy.core.compatibility import range
 
 oo = S.Infinity
 

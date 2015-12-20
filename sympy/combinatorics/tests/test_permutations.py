@@ -2,7 +2,6 @@ from itertools import permutations
 
 import pytest
 
-from sympy.core.compatibility import range
 from sympy.combinatorics.permutations import (Permutation, _af_parity,
                                               _af_rmul, _af_rmuln, Cycle)
 

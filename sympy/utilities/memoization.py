@@ -1,5 +1,4 @@
 from sympy.core.decorators import wraps
-from sympy.core.compatibility import range
 
 
 def recurrence_memo(initial):

@@ -9,7 +9,6 @@ from sympy.polys.densebasic import (
     dmp_one_p, dmp_one,
     dmp_ground, dmp_zeros)
 from sympy.polys.polyerrors import (ExactQuotientFailed, PolynomialDivisionFailed)
-from sympy.core.compatibility import range
 
 
 def dup_add_term(f, c, i, K):

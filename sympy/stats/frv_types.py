@@ -12,7 +12,7 @@ Binomial
 Hypergeometric
 """
 
-from sympy.core.compatibility import as_int, range
+from sympy.core.compatibility import as_int
 from sympy.core.logic import fuzzy_not, fuzzy_and
 from sympy.stats.frv import (SingleFinitePSpace, SingleFiniteDistribution)
 from sympy import (S, sympify, Rational, binomial, cacheit, Integer,

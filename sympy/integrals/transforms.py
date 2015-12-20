@@ -1,7 +1,7 @@
 """ Integral Transforms """
 
 from sympy.core import S
-from sympy.core.compatibility import reduce, range
+from sympy.core.compatibility import reduce
 from sympy.core.function import Function
 from sympy.core.numbers import oo
 from sympy.core.symbol import Dummy

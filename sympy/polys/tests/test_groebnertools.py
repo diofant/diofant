@@ -7,17 +7,12 @@ from sympy.polys.groebnertools import (
     lbp, lbp_key, critical_pair,
     cp_key, is_rewritable_or_comparable,
     Sign, Polyn, Num, s_poly, f5_reduce,
-    groebner_lcm, groebner_gcd,
-)
-
+    groebner_lcm, groebner_gcd)
 from sympy.polys.fglmtools import _representing_matrices
 from sympy.polys.orderings import lex, grlex
-
 from sympy.polys.rings import ring, xring
 from sympy.polys.domains import ZZ, QQ
-
 from sympy.polys import polyconfig as config
-from sympy.core.compatibility import range
 
 
 def _do_test_groebner():

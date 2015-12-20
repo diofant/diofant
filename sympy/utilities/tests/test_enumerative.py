@@ -1,6 +1,6 @@
 import pytest
 
-from sympy.core.compatibility import range, zip_longest
+from sympy.core.compatibility import zip_longest
 from sympy.utilities.enumerative import (list_visitor,
                                          MultisetPartitionTraverser,
                                          multiset_partitions_taocp)

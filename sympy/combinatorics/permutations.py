@@ -4,9 +4,9 @@ from collections import defaultdict
 from mpmath.libmp.libintmath import ifac
 
 from sympy.core import Basic
-from sympy.core.compatibility import is_sequence, reduce, range
+from sympy.core.compatibility import is_sequence, reduce
 from sympy.utilities.iterables import (flatten, has_variety, minlex,
-    has_dups, runs)
+                                       has_dups, runs)
 from sympy.polys.polytools import lcm
 from sympy.matrices import zeros
 

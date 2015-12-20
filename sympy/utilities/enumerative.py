@@ -1,5 +1,3 @@
-from sympy.core.compatibility import range
-
 """
 Algorithms and classes to support enumerative combinatorics.
 

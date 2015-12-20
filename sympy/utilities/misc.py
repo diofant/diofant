@@ -4,7 +4,7 @@ import sys
 import os
 from textwrap import fill, dedent
 
-from sympy.core.compatibility import get_function_name, range
+from sympy.core.compatibility import get_function_name
 
 
 def filldedent(s, w=70):

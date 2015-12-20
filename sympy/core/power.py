@@ -10,7 +10,7 @@ from .evalf import PrecisionExhausted
 from .function import (_coeff_isneg, expand_complex, expand_multinomial,
                        expand_mul)
 from .logic import fuzzy_bool
-from .compatibility import as_int, range
+from .compatibility import as_int
 from .evaluate import global_evaluate
 from sympy.utilities.iterables import sift
 

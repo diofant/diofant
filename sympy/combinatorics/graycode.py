@@ -1,7 +1,6 @@
-from sympy.core import Basic
-from sympy.core.compatibility import range
-
 import random
+
+from sympy.core import Basic
 
 
 class GrayCode(Basic):

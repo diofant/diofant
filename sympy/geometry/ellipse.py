@@ -3,7 +3,6 @@
 Contains
 * Ellipse
 * Circle
-
 """
 
 import random
@@ -11,7 +10,6 @@ import random
 from sympy.core import S, sympify, pi
 from sympy.core.logic import fuzzy_bool
 from sympy.core.numbers import oo, Rational
-from sympy.core.compatibility import range
 from sympy.core.symbol import Dummy
 from sympy.simplify import simplify, trigsimp
 from sympy.functions.elementary.miscellaneous import sqrt

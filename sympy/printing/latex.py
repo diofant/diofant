@@ -17,7 +17,7 @@ from sympy.logic.boolalg import true
 from .printer import Printer
 from .conventions import split_super_sub, requires_partial
 from .precedence import precedence, PRECEDENCE
-from sympy.core.compatibility import default_sort_key, range
+from sympy.core.compatibility import default_sort_key
 from sympy.utilities.iterables import has_variety
 
 # Hand-picked functions which can be used directly in both LaTeX and MathJax

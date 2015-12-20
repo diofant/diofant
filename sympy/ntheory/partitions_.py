@@ -6,7 +6,6 @@ from mpmath.libmp import (fzero, from_man_exp, from_int, from_rational,
                           mpf_cosh_sinh, pi_fixed, mpf_cos)
 
 from sympy.core.numbers import igcd
-from sympy.core.compatibility import range
 
 
 def _a(n, j, prec):

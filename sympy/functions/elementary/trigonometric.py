@@ -11,7 +11,6 @@ from sympy.functions.elementary.hyperbolic import (acoth, asinh, atanh, cosh,
                                                    coth, HyperbolicFunction,
                                                    sinh, tanh, csch, sech)
 from sympy.utilities.iterables import numbered_symbols
-from sympy.core.compatibility import range
 
 ###############################################################################
 # ######################## TRIGONOMETRIC FUNCTIONS ########################## #

@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-from sympy.core.compatibility import range
-
 
 def binomial_coefficients(n):
     """Return a dictionary containing pairs `{(k1,k2) : C_{kn}}` where

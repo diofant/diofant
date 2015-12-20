@@ -1,28 +1,15 @@
 """Real and complex root isolation and refinement algorithms. """
 
-from sympy.polys.densebasic import (
-    dup_LC, dup_TC, dup_degree,
-    dup_strip, dup_reverse,
-    dup_convert,
-    dup_terms_gcd)
-from sympy.polys.densearith import (
-    dup_neg, dup_rshift, dup_rem)
-from sympy.polys.densetools import (
-    dup_clear_denoms,
-    dup_mirror, dup_scale, dup_shift,
-    dup_transform,
-    dup_diff,
-    dup_eval, dmp_eval_in,
-    dup_sign_variations,
-    dup_real_imag)
-from sympy.polys.sqfreetools import (
-    dup_sqf_part, dup_sqf_list)
-from sympy.polys.factortools import (
-    dup_factor_list)
-from sympy.polys.polyerrors import (
-    RefinementFailed,
-    DomainError)
-from sympy.core.compatibility import range
+from sympy.polys.densebasic import (dup_LC, dup_TC, dup_degree, dup_strip,
+                                    dup_reverse, dup_convert, dup_terms_gcd)
+from sympy.polys.densearith import dup_neg, dup_rshift, dup_rem
+from sympy.polys.densetools import (dup_clear_denoms, dup_mirror, dup_scale,
+                                    dup_shift, dup_transform, dup_diff,
+                                    dup_eval, dmp_eval_in, dup_sign_variations,
+                                    dup_real_imag)
+from sympy.polys.sqfreetools import dup_sqf_part, dup_sqf_list
+from sympy.polys.factortools import dup_factor_list
+from sympy.polys.polyerrors import RefinementFailed, DomainError
 
 
 def dup_sturm(f, K):

@@ -7,7 +7,7 @@ from operator import gt
 from sympy.core import Basic, S
 # this is the logical location of these functions
 from sympy.core.compatibility import (as_int, default_sort_key,
-                                      is_sequence, iterable, ordered, range)
+                                      is_sequence, iterable, ordered)
 from sympy.utilities.enumerative import (multiset_partitions_taocp,
                                          list_visitor, MultisetPartitionTraverser)
 

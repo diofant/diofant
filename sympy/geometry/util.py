@@ -11,7 +11,7 @@ are_similar
 """
 
 from sympy import Symbol, Function, solve
-from sympy.core.compatibility import is_sequence, range
+from sympy.core.compatibility import is_sequence
 
 
 def idiff(eq, y, x, n=1):

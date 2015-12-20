@@ -12,7 +12,7 @@ from sympy.polys.polyutils import (dict_from_basic, basic_from_dict,
                                    _dict_reorder)
 from sympy.polys.orderings import monomial_key, build_product_order
 from sympy.polys.agca.modules import FreeModulePolyRing
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 from sympy.utilities import public
 
 # XXX why does this derive from CharacteristicZero???

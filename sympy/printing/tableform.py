@@ -1,7 +1,6 @@
 from types import FunctionType
 
 from sympy.core.containers import Tuple
-from sympy.core.compatibility import range
 
 
 class TableForm(object):

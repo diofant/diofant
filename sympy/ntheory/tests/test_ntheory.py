@@ -6,8 +6,6 @@ from sympy import (Sieve, binomial_coefficients, binomial_coefficients_list,
                    multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
                    summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
 from sympy.core.numbers import Integer, Rational
-from sympy.core.compatibility import range
-
 from sympy.ntheory import (isprime, n_order, is_primitive_root,
                            is_quad_residue, legendre_symbol, jacobi_symbol,
                            npartitions, totient, factorint, primefactors, divisors,
@@ -17,7 +15,6 @@ from sympy.ntheory import (isprime, n_order, is_primitive_root,
                            sqrt_mod, primitive_root, quadratic_residues,
                            is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
                            divisor_sigma)
-
 from sympy.ntheory.residue_ntheory import _primitive_root_prime_iter
 from sympy.ntheory.factor_ import (smoothness, smoothness_p,
                                    antidivisors, antidivisor_count, core)
@@ -29,11 +26,8 @@ from sympy.ntheory.continued_fraction import (continued_fraction_periodic as cf_
                                               continued_fraction_convergents as cf_c,
                                               continued_fraction_reduce as cf_r)
 from sympy.ntheory.egyptian_fraction import egyptian_fraction
-
 from sympy.core.add import Add
-
 from sympy.polys.domains import ZZ
-
 from sympy.utilities.iterables import capture
 from sympy.utilities.randtest import random_complex_number
 from sympy.ntheory.multinomial import multinomial_coefficients_iterator

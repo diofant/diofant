@@ -33,7 +33,6 @@ from sympy.polys.monomials import (monomial_mul, monomial_lcm, monomial_div,
 from sympy.polys.polytools import Poly
 from sympy.polys.polyutils import parallel_dict_from_expr
 from sympy import S, sympify
-from sympy.core.compatibility import range
 
 # Additional monomial tools.
 

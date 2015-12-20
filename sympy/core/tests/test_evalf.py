@@ -7,8 +7,7 @@ from sympy import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
                    integrate, log, Mul, N, oo, pi, Pow, product, Product,
                    Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol)
 from sympy.core.evalf import (complex_accuracy, PrecisionExhausted,
-    scaled_zero, get_integer_part, as_mpmath)
-from sympy.core.compatibility import range
+                              scaled_zero, get_integer_part, as_mpmath)
 
 from sympy.abc import n, x, y
 

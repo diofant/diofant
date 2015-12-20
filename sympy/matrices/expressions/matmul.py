@@ -2,7 +2,6 @@ from strategies import exhaust, do_one
 from strategies.core import typed
 
 from sympy.core import Mul, Basic, sympify, Add, Number
-from sympy.core.compatibility import range
 from sympy.functions import adjoint
 from sympy.matrices.expressions.transpose import transpose
 from sympy.core.strategies import rm_id, unpack, flatten

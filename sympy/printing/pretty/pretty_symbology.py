@@ -3,7 +3,6 @@
 import sys
 import warnings
 
-from sympy.core.compatibility import range
 from sympy.printing.conventions import split_super_sub
 from sympy.core.alphabets import greeks
 

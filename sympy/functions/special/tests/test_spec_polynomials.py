@@ -6,7 +6,6 @@ from sympy import (Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt,
                    chebyshevu, chebyshevt, chebyshevt_root, chebyshevu_root,
                    laguerre, assoc_laguerre, laguerre_poly, hermite,
                    gegenbauer, jacobi, jacobi_normalized)
-from sympy.core.compatibility import range
 
 x = Symbol('x')
 

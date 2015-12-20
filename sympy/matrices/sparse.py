@@ -3,7 +3,7 @@ from collections import defaultdict
 import collections
 
 from sympy.core.containers import Dict
-from sympy.core.compatibility import is_sequence, as_int, range
+from sympy.core.compatibility import is_sequence, as_int
 from sympy.core.logic import fuzzy_and
 from sympy.core.singleton import S
 from sympy.functions.elementary.miscellaneous import sqrt

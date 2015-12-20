@@ -40,7 +40,7 @@ import sympy.polys
 from sympy.polys.domains import FF, QQ, ZZ
 from sympy.polys.constructor import construct_domain
 from sympy.polys import polyoptions as options
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 
 
 @public

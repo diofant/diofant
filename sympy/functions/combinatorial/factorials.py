@@ -5,7 +5,7 @@ from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.logic import fuzzy_and
 from sympy.core.numbers import Integer
 from sympy.ntheory import sieve
-from sympy.core.compatibility import reduce, range
+from sympy.core.compatibility import reduce
 from sympy.core.cache import cacheit
 
 

@@ -4,7 +4,6 @@ from strategies.traverse import bottom_up
 
 from sympy import ask, Q
 from sympy.core import Basic, Add, sympify
-from sympy.core.compatibility import range
 from sympy.core.strategies import unpack
 from sympy.utilities import sift
 from sympy.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity

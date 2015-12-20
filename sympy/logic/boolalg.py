@@ -10,7 +10,7 @@ from sympy.core.cache import cacheit
 from sympy.core.numbers import Number
 from sympy.core.operations import LatticeOp
 from sympy.core.function import Application
-from sympy.core.compatibility import ordered, range, with_metaclass
+from sympy.core.compatibility import ordered, with_metaclass
 from sympy.core.sympify import converter, _sympify, sympify
 from sympy.core.singleton import Singleton, S
 

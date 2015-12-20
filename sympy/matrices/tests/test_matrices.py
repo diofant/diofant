@@ -2,10 +2,10 @@ import collections
 
 import pytest
 
-from sympy import (
-    Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow, PurePoly, Rational,
-    S, Symbol, cos, exp, oo, pi, signsimp, simplify, sin, sqrt, symbols,
-    sympify, trigsimp, sstr)
+from sympy import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
+                   PurePoly, Rational, S, Symbol, cos, exp, oo, pi,
+                   signsimp, simplify, sin, sqrt, symbols, sympify,
+                   trigsimp, sstr)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
                                      NonSquareMatrixError, DeferredVector)
 from sympy.matrices import (
@@ -13,9 +13,10 @@ from sympy.matrices import (
     SparseMatrix, casoratian, diag, eye, hessian,
     matrix_multiply_elementwise, ones, randMatrix, rot_axis1, rot_axis2,
     rot_axis3, wronskian, zeros)
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 from sympy.utilities.iterables import flatten, capture
 from sympy.external import import_module
+
 from sympy.abc import x, y, z
 
 # don't re-order this list

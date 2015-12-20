@@ -10,7 +10,6 @@ import io
 import pytest
 
 from sympy import Basic, S, symbols, sqrt, sin, oo, Interval, exp
-from sympy.core.compatibility import range
 from sympy.utilities.exceptions import SymPyDeprecationWarning
 
 x, y, z = symbols('x,y,z')

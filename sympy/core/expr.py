@@ -8,7 +8,7 @@ from .singleton import S
 from .evalf import EvalfMixin, pure_complex
 from .decorators import _sympifyit, call_highest_priority
 from .cache import cacheit
-from .compatibility import reduce, as_int, default_sort_key, range
+from .compatibility import reduce, as_int, default_sort_key
 
 
 class Expr(Basic, EvalfMixin):

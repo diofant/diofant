@@ -9,7 +9,6 @@ Math object where possible.
 from sympy.core import S
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence
-from sympy.core.compatibility import range
 
 
 # dictionary mapping sympy function to (argument_conditions, Javascript_function).

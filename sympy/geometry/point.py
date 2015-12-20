@@ -5,11 +5,10 @@ Contains
 Point
 Point2D
 Point3D
-
 """
 
 from sympy.core import S, sympify
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 from sympy.core.containers import Tuple
 from sympy.simplify import simplify, nsimplify
 from sympy.geometry.exceptions import GeometryError

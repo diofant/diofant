@@ -9,7 +9,6 @@ from sympy import (Add, Basic, S, Symbol, Wild, Float, Integer, Rational, I,
                    default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
                    exp_polar, expand, diff, O, Heaviside, Si, Max)
 from sympy.core.function import AppliedUndef
-from sympy.core.compatibility import range
 
 from sympy.abc import a, b, c, n, t, u, x, y, z
 

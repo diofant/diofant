@@ -2,7 +2,6 @@ import string
 import re as _re
 
 from sympy.core.assumptions import StdFactKB
-from sympy.core.compatibility import range
 from .basic import Basic
 from .sympify import sympify
 from .singleton import S

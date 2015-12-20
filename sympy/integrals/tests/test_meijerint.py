@@ -10,7 +10,7 @@ from sympy.integrals.meijerint import (_rewrite_single, _rewrite1,
 from sympy.utilities import default_sort_key
 from sympy.utilities.randtest import (verify_numerically,
                                       random_complex_number as randcplx)
-from sympy.core.compatibility import range
+
 from sympy.abc import x, y, a, b, c, d, s, t, z
 
 

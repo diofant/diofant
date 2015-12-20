@@ -31,10 +31,6 @@ Moved modules:
     * `cStringIO()` (same as `StingIO()` in Python 3)
     * Python 2 `__builtins__`, access with Python 3 name, `builtins`
 
-Iterator/list changes:
-    * `xrange` removed in Python 3, import `xrange` for Python 2/3 compatible
-      iterator version of range
-
 exec:
     * Use `exec_()`, with parameters `exec_(code, globs=None, locs=None)`
 
@@ -66,8 +62,6 @@ if PY3:
     cStringIO = StringIO
 
     exec_=getattr(builtins, "exec")
-
-    range=range
 
     from tokenize import tokenize
 else:
@@ -101,7 +95,6 @@ else:
         elif _locs_ is None:
             _locs_ = _globs_
         exec("exec _code_ in _globs_, _locs_")
-    range=xrange
 
     from tokenize import generate_tokens as tokenize
 

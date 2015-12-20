@@ -1,6 +1,5 @@
 """Tools for manipulation of expressions using paths. """
 
-from sympy.core.compatibility import range
 from sympy.core import Basic
 
 
