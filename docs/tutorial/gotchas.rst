@@ -349,11 +349,6 @@ you don't have to worry about this problem:
     >>> S("22/7")
     22/7
 
-Also, you could use ``from __future__ import division`` to prevent the
-``/`` sign from performing
-`integer division <http://en.wikipedia.org/wiki/Integer_division>`_.
-
-    >>> from __future__ import division
     >>> 1/2   # With division imported it evaluates to a python float # doctest: +SKIP
     0.5
     >>> 1//2  # You can still achieve integer division with //

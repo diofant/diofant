@@ -7,11 +7,7 @@ using the functions defined in math.h where possible.
 A complete code generator, which uses ccode extensively, can be found in
 sympy.utilities.codegen. The codegen module can be used to generate complete
 source code files that are compilable without further modifications.
-
-
 """
-
-from __future__ import print_function, division
 
 from sympy.core import S
 from sympy.core.compatibility import string_types, range

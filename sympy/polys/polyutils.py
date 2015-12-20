@@ -1,17 +1,12 @@
 """Useful utilities for higher level polynomial classes. """
 
-from __future__ import print_function, division
+import re
 
 from sympy.polys.polyerrors import PolynomialError, GeneratorsNeeded, GeneratorsError
 from sympy.polys.polyoptions import build_options
-
 from sympy.core.exprtools import decompose_power
-
 from sympy.core import S, Add, Mul, Pow, expand_mul, expand_multinomial
-
 from sympy.core.compatibility import range
-
-import re
 
 _gens_order = {
     'a': 301, 'b': 302, 'c': 303, 'd': 304,

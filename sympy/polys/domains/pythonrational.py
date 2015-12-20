@@ -1,12 +1,9 @@
 """Rational number type based on Python integers. """
 
-from __future__ import print_function, division
-
 import operator
 
 from sympy.polys.polyutils import PicklableWithSlots
 from sympy.polys.domains.domainelement import DomainElement
-
 from sympy.core.compatibility import integer_types
 from sympy.printing.defaults import DefaultPrinting
 from sympy.utilities import public

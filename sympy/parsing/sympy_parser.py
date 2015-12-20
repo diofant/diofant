@@ -1,19 +1,16 @@
 """Transform a string with Python-like source code into SymPy expression. """
 
-from __future__ import print_function, division
-
 from sympy.core.compatibility import tokenize
-from tokenize import (untokenize, TokenError,
-                      NUMBER, STRING, NAME, OP, ENDMARKER)
-
-from keyword import iskeyword
 
 import ast
 import re
 import unicodedata
+from tokenize import (untokenize, TokenError,
+                      NUMBER, STRING, NAME, OP, ENDMARKER)
+from keyword import iskeyword
+from io import BytesIO
 
 import sympy
-from io import BytesIO
 from sympy.core.compatibility import exec_, StringIO
 from sympy.core.basic import Basic
 

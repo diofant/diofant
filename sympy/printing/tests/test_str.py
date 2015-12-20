@@ -1,5 +1,3 @@
-from __future__ import division
-
 import pytest
 
 from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,

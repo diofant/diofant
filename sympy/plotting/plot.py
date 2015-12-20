@@ -22,8 +22,6 @@ if you care at all about performance. A new backend instance is initialized
 every time you call ``show()`` and the old one is left to the garbage collector.
 """
 
-from __future__ import print_function, division
-
 from inspect import getargspec
 from collections import Callable
 import warnings

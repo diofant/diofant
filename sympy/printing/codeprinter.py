@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.core import Add, Mul, Pow, S
 from sympy.core.basic import Basic
 from sympy.core.compatibility import default_sort_key, string_types

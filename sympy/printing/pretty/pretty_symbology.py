@@ -1,12 +1,13 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
-from __future__ import print_function, division
-
 import sys
 import warnings
-unicode_warnings = ''
 
 from sympy.core.compatibility import u, unicode, range
+from sympy.printing.conventions import split_super_sub
+from sympy.core.alphabets import greeks
+
+unicode_warnings = ''
 
 # first, setup unicodedate environment
 try:
@@ -29,9 +30,6 @@ except ImportError:
 
     def U(name):
         return
-
-from sympy.printing.conventions import split_super_sub
-from sympy.core.alphabets import greeks
 
 
 # prefix conventions when constructing tables

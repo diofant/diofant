@@ -1,13 +1,10 @@
 """Implementation of :class:`ModularInteger` class. """
 
-from __future__ import print_function, division
-
 import operator
 
 from sympy.polys.polyutils import PicklableWithSlots
 from sympy.polys.polyerrors import CoercionFailed
 from sympy.polys.domains.domainelement import DomainElement
-
 from sympy.utilities import public
 
 

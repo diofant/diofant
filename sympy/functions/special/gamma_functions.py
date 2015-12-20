@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.core import Add, S, sympify, oo, pi, Dummy
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.numbers import Rational

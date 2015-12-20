@@ -1,7 +1,6 @@
-from __future__ import print_function, division
-
 import copy
 from collections import defaultdict
+import collections
 
 from sympy.core.containers import Dict
 from sympy.core.compatibility import is_sequence, as_int, range
@@ -9,10 +8,8 @@ from sympy.core.logic import fuzzy_and
 from sympy.core.singleton import S
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.utilities.iterables import uniq
-
 from .matrices import MatrixBase, ShapeError, a2idx
 from .dense import Matrix
-import collections
 
 
 class SparseMatrix(MatrixBase):

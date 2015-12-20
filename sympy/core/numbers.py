@@ -1,10 +1,16 @@
-from __future__ import print_function, division
-
 import decimal
 import fractions
 import math
 import re as regex
 from collections import defaultdict
+
+import mpmath
+import mpmath.libmp as mlib
+from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
+from mpmath.ctx_mp import mpnumeric
+from mpmath.libmp.libmpf import (finf as _mpf_inf, fninf as _mpf_ninf,
+                                 fnan as _mpf_nan, fzero as _mpf_zero,
+                                 _normalize as mpf_normalize, prec_to_dps)
 
 from .containers import Tuple
 from .sympify import converter, sympify, _sympify, SympifyError
@@ -13,17 +19,9 @@ from .expr import Expr, AtomicExpr
 from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
-from sympy.core.compatibility import (
-    as_int, integer_types, long, string_types, with_metaclass, HAS_GMPY,
-    SYMPY_INTS)
-import mpmath
-import mpmath.libmp as mlib
-from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
-from mpmath.ctx_mp import mpnumeric
-from mpmath.libmp.libmpf import (
-    finf as _mpf_inf, fninf as _mpf_ninf,
-    fnan as _mpf_nan, fzero as _mpf_zero, _normalize as mpf_normalize,
-    prec_to_dps)
+from sympy.core.compatibility import (as_int, integer_types, long,
+                                      string_types, with_metaclass,
+                                      HAS_GMPY, SYMPY_INTS)
 from sympy.utilities.misc import debug
 
 rnd = mlib.round_nearest

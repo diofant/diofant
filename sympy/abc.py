@@ -29,8 +29,6 @@ Caveats
    code more readable.
 """
 
-from __future__ import print_function, division
-
 import string
 
 from .core import Symbol, symbols

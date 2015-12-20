@@ -82,7 +82,6 @@ References
 [Xypic] http://xy-pic.sourceforge.net/
 
 """
-from __future__ import print_function, division
 
 from sympy.core import Dict, Symbol
 from sympy.sets import FiniteSet

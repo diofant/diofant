@@ -3,11 +3,12 @@ Reimplementations of constructs introduced in later versions of Python than
 we support. Also some functions that are needed SymPy-wide and are located
 here for easy import.
 """
-from __future__ import print_function, division
 
 import operator
 import os
+import sys
 from collections import defaultdict
+
 from sympy.external import import_module
 
 """
@@ -62,7 +63,6 @@ Metaclasses:
                 pass
 """
 
-import sys
 PY3 = sys.version_info[0] > 2
 
 if PY3:

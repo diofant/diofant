@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
 from itertools import combinations_with_replacement
 from strategies.core import identity
@@ -8,18 +6,16 @@ from strategies.tree import greedy
 import mpmath
 
 from sympy.core import (Basic, S, Add, Mul, Pow,
-    Symbol, sympify, expand, expand_mul, expand_func,
-    Function, Dummy, Expr, factor_terms,
-    FunctionClass, symbols, expand_power_exp)
-from sympy.core.compatibility import (iterable,
-    ordered, range, as_int)
+                        Symbol, sympify, expand, expand_mul, expand_func,
+                        Function, Dummy, Expr, factor_terms,
+                        FunctionClass, symbols, expand_power_exp)
+from sympy.core.compatibility import iterable, ordered, range, as_int
 from sympy.core.numbers import Float, I, pi, Rational, Integer
 from sympy.core.function import expand_log, count_ops, _mexpand
 from sympy.core.rules import Transform
 from sympy.core.evaluate import global_evaluate
-from sympy.functions import (
-    gamma, exp, sqrt, log, root, exp_polar,
-    sin, piecewise_fold)
+from sympy.functions import (gamma, exp, sqrt, log, root, exp_polar,
+                             sin, piecewise_fold)
 from sympy.functions.elementary.exponential import ExpBase
 from sympy.functions.elementary.hyperbolic import HyperbolicFunction
 from sympy.functions.elementary.integers import ceiling
@@ -27,16 +23,13 @@ from sympy.functions.elementary.complexes import unpolarify
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.combinatorial.factorials import CombinatorialFunction
 from sympy.functions.special.bessel import besselj, besseli, besselk, jn, bessely
-
 from sympy.utilities.iterables import has_variety
-
 from sympy.simplify.radsimp import radsimp, collect_sqrt, fraction
 from sympy.simplify.trigsimp import trigsimp, exptrigsimp
 from sympy.simplify.powsimp import powsimp
 from sympy.simplify.cse_opts import sub_pre, sub_post
 from sympy.simplify.sqrtdenest import sqrtdenest
 from sympy.simplify.combsimp import combsimp
-
 from sympy.polys import (together, cancel, factor)
 
 

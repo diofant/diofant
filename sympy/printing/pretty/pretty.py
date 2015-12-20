@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.core import S
 from sympy.core.function import _coeff_isneg
 from sympy.core.mul import Mul
@@ -11,16 +9,14 @@ from sympy.utilities import group
 from sympy.utilities.iterables import has_variety
 from sympy.core.sympify import SympifyError
 from sympy.core.compatibility import u, range
-
 from sympy.printing.printer import Printer
 from sympy.printing.str import sstr
 from sympy.printing.conventions import requires_partial
-
 from .stringpict import prettyForm, stringPict
-from .pretty_symbology import xstr, hobj, vobj, xobj, xsym, pretty_symbol, \
-    pretty_atom, pretty_use_unicode, pretty_try_use_unicode, greek_unicode, U, \
-    annotated
-
+from .pretty_symbology import (xstr, hobj, vobj, xobj, xsym, pretty_symbol,
+                               pretty_atom, pretty_use_unicode,
+                               pretty_try_use_unicode, greek_unicode, U,
+                               annotated)
 from sympy.utilities import default_sort_key
 
 # rename for usage from outside

@@ -1,18 +1,15 @@
 """Options manager for :class:`~sympy.polys.polytools.Poly` and public API functions. """
 
-from __future__ import print_function, division
-
-__all__ = ["Options"]
+import re
 
 from sympy.core import S, Basic, sympify
 from sympy.core.compatibility import string_types, with_metaclass
 from sympy.utilities import numbered_symbols, topological_sort, public
 from sympy.utilities.iterables import has_dups
 from sympy.polys.polyerrors import GeneratorsError, OptionError, FlagError
-
 import sympy.polys
 
-import re
+__all__ = ["Options"]
 
 
 class Option(object):

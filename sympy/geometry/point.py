@@ -8,8 +8,6 @@ Point3D
 
 """
 
-from __future__ import print_function, division
-
 from sympy.core import S, sympify
 from sympy.core.compatibility import iterable, range
 from sympy.core.containers import Tuple

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import random
 
 from sympy.core.basic import Basic
@@ -14,9 +12,7 @@ from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.simplify import simplify as _simplify
 from sympy.utilities.misc import filldedent
 from sympy.utilities.decorator import doctest_depends_on
-
-from sympy.matrices.matrices import (MatrixBase,
-    ShapeError, a2idx, classof)
+from sympy.matrices.matrices import MatrixBase, ShapeError, a2idx, classof
 
 
 def _iszero(x):

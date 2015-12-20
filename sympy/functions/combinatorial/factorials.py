@@ -1,12 +1,10 @@
-from __future__ import print_function, division
+from math import sqrt as _sqrt
 
 from sympy.core import S, sympify, Dummy
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.logic import fuzzy_and
 from sympy.core.numbers import Integer
 from sympy.ntheory import sieve
-from math import sqrt as _sqrt
-
 from sympy.core.compatibility import reduce, range
 from sympy.core.cache import cacheit
 

@@ -85,7 +85,6 @@
     True
 
     See the appropriate docstrings for a detailed explanation of the output.
-
 """
 
 #   TODO:  (some ideas for improvement)
@@ -105,8 +104,6 @@
 #      - Idx with range smaller than dimension of Indexed
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
-
-from __future__ import print_function, division
 
 from sympy.core import Expr, Tuple, Symbol, sympify, S
 from sympy.core.compatibility import is_sequence, string_types, NotIterable, range

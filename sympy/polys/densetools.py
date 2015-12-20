@@ -1,6 +1,6 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from __future__ import print_function, division
+from math import ceil as _ceil, log as _log
 
 from sympy.polys.densebasic import (
     dup_strip, dmp_strip,
@@ -13,9 +13,7 @@ from sympy.polys.densebasic import (
     dmp_zero, dmp_ground,
     dmp_zero_p,
     dup_to_raw_dict, dup_from_raw_dict,
-    dmp_zeros
-)
-
+    dmp_zeros)
 from sympy.polys.densearith import (
     dup_add_term, dmp_add_term,
     dup_lshift,
@@ -28,17 +26,9 @@ from sympy.polys.densearith import (
     dmp_expand,
     dup_mul_ground, dmp_mul_ground,
     dup_quo_ground, dmp_quo_ground,
-    dup_exquo_ground, dmp_exquo_ground,
-)
-
-from sympy.polys.polyerrors import (
-    MultivariatePolynomialError,
-    DomainError
-)
-
+    dup_exquo_ground, dmp_exquo_ground)
+from sympy.polys.polyerrors import MultivariatePolynomialError, DomainError
 from sympy.utilities import variations
-
-from math import ceil as _ceil, log as _log
 from sympy.core.compatibility import range
 
 

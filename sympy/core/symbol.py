@@ -1,4 +1,5 @@
-from __future__ import print_function, division
+import string
+import re as _re
 
 from sympy.core.assumptions import StdFactKB
 from sympy.core.compatibility import string_types, range
@@ -11,9 +12,6 @@ from .function import FunctionClass
 from sympy.core.logic import fuzzy_bool
 from sympy.logic.boolalg import Boolean
 from sympy.utilities.iterables import cartes
-
-import string
-import re as _re
 
 
 class Symbol(AtomicExpr, Boolean):

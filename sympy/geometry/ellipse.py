@@ -6,7 +6,7 @@ Contains
 
 """
 
-from __future__ import print_function, division
+import random
 
 from sympy.core import S, sympify, pi
 from sympy.core.logic import fuzzy_bool
@@ -26,11 +26,6 @@ from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .line import LinearEntity, Line
 from .util import _symbol, idiff
-
-
-import random
-
-from sympy.utilities.decorator import doctest_depends_on
 
 
 class Ellipse(GeometrySet):

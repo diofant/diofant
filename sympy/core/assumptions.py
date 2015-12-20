@@ -151,7 +151,6 @@ References
 .. [13] http://en.wikipedia.org/wiki/Extended_real_number_line
 
 """
-from __future__ import print_function, division
 
 from sympy.core.facts import FactRules, FactKB
 from sympy.core.core import BasicMeta

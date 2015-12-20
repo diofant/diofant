@@ -1,9 +1,8 @@
-from __future__ import print_function, division
-
 from itertools import permutations
 
 from sympy.matrices import Matrix
-from sympy.core import Basic, Expr, Dummy, Function, sympify, diff, Pow, Mul, Add, symbols, Tuple
+from sympy.core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
+                        Mul, Add, symbols, Tuple)
 from sympy.core.compatibility import range
 from sympy.core.numbers import Zero
 from sympy.solvers import solve

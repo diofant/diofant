@@ -1,4 +1,4 @@
-from __future__ import print_function, division
+import warnings
 
 from sympy.core import Expr, S, sympify, oo, pi, Symbol
 from sympy.core.compatibility import as_int, range
@@ -11,14 +11,11 @@ from sympy.matrices import Matrix
 from sympy.simplify import simplify
 from sympy.utilities import default_sort_key
 from sympy.utilities.iterables import has_variety, has_dups, uniq
-
 from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .ellipse import Circle
 from .line import Line, Segment
 from .util import _symbol
-
-import warnings
 
 
 class Polygon(GeometrySet):

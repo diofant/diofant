@@ -1,12 +1,10 @@
-from __future__ import print_function, division
-
 from sympy.core.compatibility import range
-from sympy.combinatorics.permutations import Permutation, _af_rmul, \
-    _af_invert, _af_new
-from sympy.combinatorics.perm_groups import PermutationGroup, _orbit, \
-    _orbit_transversal
-from sympy.combinatorics.util import _distribute_gens_by_base, \
-    _orbits_transversals_from_bsgs
+from sympy.combinatorics.permutations import (Permutation, _af_rmul,
+                                              _af_invert, _af_new)
+from sympy.combinatorics.perm_groups import (PermutationGroup, _orbit,
+                                             _orbit_transversal)
+from sympy.combinatorics.util import (_distribute_gens_by_base,
+                                      _orbits_transversals_from_bsgs)
 
 """
     References for tensor canonicalization:

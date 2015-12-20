@@ -10,9 +10,10 @@ ever support anything else than sympy expressions (no Matrices, dictionaries
 and so on).
 """
 
-from __future__ import print_function, division
-
 import re
+import warnings
+
+from sympy.external import import_module
 from sympy import Symbol, NumberSymbol, I, zoo, oo
 from sympy.core.compatibility import exec_
 from sympy.utilities.iterables import numbered_symbols
@@ -72,9 +73,6 @@ from sympy.utilities.iterables import numbered_symbols
 # A: Probably by constructing our strings ourself by traversing the (func,
 # args) tree and creating the namespace at the same time. That actually sounds
 # good.
-
-from sympy.external import import_module
-import warnings
 
 # TODO debuging output
 
@@ -302,7 +300,7 @@ class Lambdifier(object):
         if self.print_lambda:
             print(newexpr)
         eval_str = 'lambda %s : ( %s )' % (argstr, newexpr)
-        exec_("from __future__ import division; MYNEWLAMBDA = %s" % eval_str, namespace)
+        exec_("MYNEWLAMBDA = %s" % eval_str, namespace)
         self.lambda_func = namespace['MYNEWLAMBDA']
 
     ##############################################################################

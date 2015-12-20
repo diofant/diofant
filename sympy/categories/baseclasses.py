@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.core import S, Basic, Dict, Symbol, Tuple
 from sympy.core.compatibility import range, iterable
 from sympy.sets import Set, FiniteSet, EmptySet

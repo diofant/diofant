@@ -1,13 +1,12 @@
 """Useful utility decorators. """
 
-from __future__ import print_function, division
-
 import sys
 import types
 import inspect
 
 from sympy.core.decorators import wraps
-from sympy.core.compatibility import class_types, get_function_globals, get_function_name, iterable
+from sympy.core.compatibility import (class_types, get_function_globals,
+                                      get_function_name, iterable)
 
 
 def threaded_factory(func, use_add):

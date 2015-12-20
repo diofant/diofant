@@ -1,6 +1,6 @@
-from __future__ import print_function, division
-
 from itertools import product
+
+from mpmath import mpi, mpf
 
 from sympy.core.sympify import _sympify, sympify
 from sympy.core.basic import Basic
@@ -12,8 +12,6 @@ from sympy.core.evaluate import global_evaluate
 from sympy.core.mul import Mul
 from sympy.core.relational import Eq
 from sympy.sets.contains import Contains
-
-from mpmath import mpi, mpf
 from sympy.logic.boolalg import And, Or, Not, true, false
 from sympy.utilities import subsets
 

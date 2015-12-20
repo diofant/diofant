@@ -4,10 +4,7 @@ Javascript code printer
 The JavascriptCodePrinter converts single sympy expressions into single
 Javascript expressions, using the functions defined in the Javascript
 Math object where possible.
-
 """
-
-from __future__ import print_function, division
 
 from sympy.core import S
 from sympy.printing.codeprinter import CodePrinter, Assignment

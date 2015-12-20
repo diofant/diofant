@@ -3,8 +3,6 @@ This module provides convenient functions to transform sympy expressions to
 lambda functions which can be used to calculate numerical values very fast.
 """
 
-from __future__ import print_function, division
-
 import inspect
 import textwrap
 

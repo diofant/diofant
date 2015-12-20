@@ -1,9 +1,8 @@
-from __future__ import print_function, division
+from fractions import gcd
 
 import sympy.polys
 from sympy import Integer
 from sympy.core.compatibility import range
-from fractions import gcd
 
 
 def egyptian_fraction(r, algorithm="Greedy"):

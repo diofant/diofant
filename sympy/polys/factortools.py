@@ -1,6 +1,6 @@
 """Polynomial factorization routines in characteristic zero. """
 
-from __future__ import print_function, division
+from math import ceil as _ceil, log as _log
 
 from sympy.polys.galoistools import (
     gf_from_int_poly, gf_to_int_poly,
@@ -9,7 +9,6 @@ from sympy.polys.galoistools import (
     gf_gcdex,
     gf_sqf_p,
     gf_factor_sqf, gf_factor)
-
 from sympy.polys.densebasic import (
     dup_LC, dmp_LC, dmp_ground_LC,
     dup_TC,
@@ -26,7 +25,6 @@ from sympy.polys.densebasic import (
     dmp_exclude, dmp_include,
     dmp_inject, dmp_eject,
     dup_terms_gcd, dmp_terms_gcd)
-
 from sympy.polys.densearith import (
     dup_neg, dmp_neg,
     dup_add, dmp_add,
@@ -44,7 +42,6 @@ from sympy.polys.densearith import (
     dup_l1_norm,
     dup_mul_ground, dmp_mul_ground,
     dup_quo_ground, dmp_quo_ground)
-
 from sympy.polys.densetools import (
     dup_clear_denoms, dmp_clear_denoms,
     dup_trunc, dmp_ground_trunc,
@@ -55,27 +52,19 @@ from sympy.polys.densetools import (
     dmp_eval_in, dmp_diff_eval_in,
     dmp_compose,
     dup_shift, dup_mirror)
-
 from sympy.polys.euclidtools import (
     dmp_primitive,
     dup_inner_gcd, dmp_inner_gcd)
-
 from sympy.polys.sqfreetools import (
     dup_sqf_p,
     dup_sqf_norm, dmp_sqf_norm,
     dup_sqf_part, dmp_sqf_part)
-
 from sympy.polys.polyutils import _sort_factors
 from sympy.polys.polyconfig import query
-
 from sympy.polys.polyerrors import (
     ExtraneousFactors, DomainError, CoercionFailed, EvaluationFailed)
-
 from sympy.ntheory import nextprime, isprime, factorint
 from sympy.utilities import subsets
-
-from math import ceil as _ceil, log as _log
-
 from sympy.core.compatibility import range
 
 

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
 import operator
 from functools import cmp_to_key

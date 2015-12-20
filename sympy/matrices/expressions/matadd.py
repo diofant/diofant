@@ -1,6 +1,5 @@
-from __future__ import print_function, division
-
 from operator import add
+
 from strategies import condition, exhaust, do_one
 
 from sympy.core.compatibility import reduce

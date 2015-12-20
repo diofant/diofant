@@ -7,18 +7,17 @@ sympy.stats.frv_types
 sympy.stats.rv
 sympy.stats.crv
 """
-from __future__ import print_function, division
 
 from itertools import product
+import random
 
 from sympy import (Basic, Symbol, cacheit, sympify, Mul,
-        And, Or, Tuple, Piecewise, Eq, Lambda)
+                   And, Or, Tuple, Piecewise, Eq, Lambda)
 from sympy.sets.sets import FiniteSet
 from sympy.stats.rv import (RandomDomain, ProductDomain, ConditionalDomain,
-        PSpace, ProductPSpace, SinglePSpace, random_symbols, sumsets, rv_subs,
-        NamedArgsMixin)
+                            PSpace, ProductPSpace, SinglePSpace, random_symbols,
+                            sumsets, rv_subs, NamedArgsMixin)
 from sympy.core.containers import Dict
-import random
 
 
 class FiniteDensity(dict):

@@ -1,10 +1,7 @@
 """Implementation of :class:`ComplexField` class. """
 
-from __future__ import print_function, division
-
 from sympy.core.numbers import Float, I
 from sympy.utilities import public
-
 from sympy.polys.domains.field import Field
 from sympy.polys.domains.simpledomain import SimpleDomain
 from sympy.polys.domains.characteristiczero import CharacteristicZero

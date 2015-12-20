@@ -4,8 +4,6 @@
 A tool to help keep .mailmap and aboutus.rst up-to-date.
 """
 
-from __future__ import unicode_literals, print_function
-
 import os
 import re
 import sys

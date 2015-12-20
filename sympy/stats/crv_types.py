@@ -39,7 +39,7 @@ Weibull
 WignerSemicircle
 """
 
-from __future__ import print_function, division
+import random
 
 from sympy import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
                    Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
@@ -47,9 +47,8 @@ from sympy import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
 from sympy import beta as beta_fn
 from sympy import cos, exp, besseli
 from sympy.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribution,
-        ContinuousDistributionHandmade)
+                             ContinuousDistributionHandmade)
 from sympy.stats.rv import _value_check
-import random
 
 oo = S.Infinity
 

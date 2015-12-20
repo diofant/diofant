@@ -5,8 +5,13 @@
 # Python (without numpy). Here we test everything, that a user may need when
 # using SymPy with NumPy
 
-from __future__ import division
+import mpmath
 
+from sympy import (Rational, Symbol, list2numpy, matrix2numpy, sin, Float,
+                   Matrix, lambdify, symarray, symbols, Integer)
+import sympy
+from sympy.abc import x, y, z
+from sympy.utilities.decorator import conserve_mpmath_dps
 from sympy.external import import_module
 
 numpy = import_module('numpy')
@@ -15,15 +20,6 @@ if numpy:
 else:
     # py.test will not execute any tests now
     disabled = True
-
-
-from sympy import (Rational, Symbol, list2numpy, matrix2numpy, sin, Float,
-        Matrix, lambdify, symarray, symbols, Integer)
-import sympy
-
-import mpmath
-from sympy.abc import x, y, z
-from sympy.utilities.decorator import conserve_mpmath_dps
 
 
 # first, systematically check, that all operations are implemented and don't

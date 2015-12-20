@@ -1,21 +1,13 @@
 """Efficient functions for generating orthogonal polynomials. """
 
-from __future__ import print_function, division
-
 from sympy import Dummy
-
 from sympy.utilities import public
-
 from sympy.polys.constructor import construct_domain
 from sympy.polys.polytools import Poly, PurePoly
 from sympy.polys.polyclasses import DMP
-
-from sympy.polys.densearith import (
-    dup_mul, dup_mul_ground, dup_lshift, dup_sub, dup_add
-)
-
+from sympy.polys.densearith import (dup_mul, dup_mul_ground, dup_lshift,
+                                    dup_sub, dup_add)
 from sympy.polys.domains import ZZ, QQ
-
 from sympy.core.compatibility import range
 
 

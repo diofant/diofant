@@ -1,14 +1,11 @@
 """Tools for solving inequalities and systems of inequalities. """
 
-from __future__ import print_function, division
-
 from sympy.core import Symbol, Dummy
 from sympy.core.compatibility import iterable, reduce
 from sympy.sets import Interval
 from sympy.core.relational import Relational, Eq, Ge, Lt
 from sympy.sets.sets import FiniteSet, Union, Intersection
 from sympy.core.singleton import S
-
 from sympy.functions import Abs, Piecewise
 from sympy.logic import And
 from sympy.polys import Poly, PolynomialError, parallel_poly_from_expr

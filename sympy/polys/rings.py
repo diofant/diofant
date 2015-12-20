@@ -1,7 +1,5 @@
 """Sparse polynomial rings. """
 
-from __future__ import print_function, division
-
 from operator import add, mul, lt, le, gt, ge
 from types import GeneratorType
 

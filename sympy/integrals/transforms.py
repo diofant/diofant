@@ -1,7 +1,5 @@
 """ Integral Transforms """
 
-from __future__ import print_function, division
-
 from sympy.core import S
 from sympy.core.compatibility import reduce, range
 from sympy.core.function import Function

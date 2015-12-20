@@ -2,7 +2,10 @@
 A Printer which converts an expression into its LaTeX equivalent.
 """
 
-from __future__ import print_function, division
+import re
+
+import mpmath.libmp as mlib
+from mpmath.libmp import prec_to_dps
 
 from sympy.core import S, Add, Symbol
 from sympy.core.function import _coeff_isneg
@@ -10,27 +13,20 @@ from sympy.core.sympify import SympifyError
 from sympy.core.alphabets import greeks
 from sympy.core.operations import AssocOp
 from sympy.logic.boolalg import true
-
 # sympy.printing imports
 from .printer import Printer
 from .conventions import split_super_sub, requires_partial
 from .precedence import precedence, PRECEDENCE
-
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps
-
 from sympy.core.compatibility import default_sort_key, range
 from sympy.utilities.iterables import has_variety
-
-import re
 
 # Hand-picked functions which can be used directly in both LaTeX and MathJax
 # Complete list at http://www.mathjax.org/docs/1.1/tex.html#supported-latex-commands
 # This variable only contains those functions which sympy uses.
 accepted_latex_functions = ['arcsin', 'arccos', 'arctan', 'sin', 'cos', 'tan',
-                    'sinh', 'cosh', 'tanh', 'sqrt', 'ln', 'log', 'sec', 'csc',
-                    'cot', 'coth', 're', 'im', 'frac', 'root', 'arg',
-                    ]
+                            'sinh', 'cosh', 'tanh', 'sqrt', 'ln', 'log', 'sec',
+                            'csc',  'cot', 'coth', 're', 'im', 'frac', 'root',
+                            'arg']
 
 tex_greek_dictionary = {
     'Alpha': 'A',
@@ -61,7 +57,7 @@ tex_greek_dictionary = {
 }
 
 other_symbols = {'aleph', 'beth', 'daleth', 'gimel', 'ell', 'eth', 'hbar',
-                     'hslash', 'mho', 'wp', }
+                 'hslash', 'mho', 'wp', }
 
 # Variable name modifiers
 modifier_dict = {

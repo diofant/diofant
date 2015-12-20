@@ -1,15 +1,12 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from __future__ import print_function, division
+import random
 
 from sympy.core import igcd
 from sympy import oo
-
 from sympy.polys.monomials import monomial_min, monomial_div
 from sympy.polys.orderings import monomial_key
 from sympy.core.compatibility import range
-
-import random
 
 
 def poly_LC(f, K):

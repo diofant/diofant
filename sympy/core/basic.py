@@ -1,5 +1,4 @@
 """Base class for all the objects in SymPy"""
-from __future__ import print_function, division
 
 from .assumptions import BasicMeta, ManagedProperties
 from .cache import cacheit

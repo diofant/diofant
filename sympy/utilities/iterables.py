@@ -1,19 +1,15 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
 from itertools import (combinations, permutations, product,
-    combinations_with_replacement, product as cartes)
+                       combinations_with_replacement, product as cartes)
 import random
 from operator import gt
 
 from sympy.core import Basic, S
-
 # this is the logical location of these functions
 from sympy.core.compatibility import (as_int, default_sort_key,
-    is_sequence, iterable, ordered, range)
-
-from sympy.utilities.enumerative import (
-    multiset_partitions_taocp, list_visitor, MultisetPartitionTraverser)
+                                      is_sequence, iterable, ordered, range)
+from sympy.utilities.enumerative import (multiset_partitions_taocp,
+                                         list_visitor, MultisetPartitionTraverser)
 
 
 def flatten(iterable, levels=None, cls=None):
@@ -1983,7 +1979,6 @@ def kbins(l, k, ordered=None):
     The default is to give the items in the same order, but grouped
     into k partitions without any reordering:
 
-    >>> from __future__ import print_function
     >>> for p in kbins(list(range(5)), 2):
     ...     print(p)
     ...

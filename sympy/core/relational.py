@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
@@ -8,7 +6,6 @@ from .function import _coeff_isneg
 from .symbol import Symbol
 from .sympify import _sympify
 from .evaluate import global_evaluate
-
 from sympy.logic.boolalg import Boolean
 
 __all__ = (

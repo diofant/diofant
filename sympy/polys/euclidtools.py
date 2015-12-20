@@ -1,7 +1,5 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
 
-from __future__ import print_function, division
-
 from sympy.polys.densebasic import (
     dup_strip, dmp_raise,
     dmp_zero, dmp_one, dmp_ground,
@@ -12,7 +10,6 @@ from sympy.polys.densebasic import (
     dmp_multi_deflate, dmp_inflate,
     dup_convert, dmp_convert,
     dmp_apply_pairs)
-
 from sympy.polys.densearith import (
     dup_sub_mul,
     dup_neg, dmp_neg,
@@ -28,7 +25,6 @@ from sympy.polys.densearith import (
     dmp_mul_term,
     dup_quo_ground, dmp_quo_ground,
     dup_max_norm, dmp_max_norm)
-
 from sympy.polys.densetools import (
     dup_clear_denoms, dmp_clear_denoms,
     dup_diff, dmp_diff,
@@ -37,21 +33,16 @@ from sympy.polys.densetools import (
     dup_monic, dmp_ground_monic,
     dup_primitive, dmp_ground_primitive,
     dup_extract, dmp_ground_extract)
-
 from sympy.polys.galoistools import (
     gf_int, gf_crt)
-
 from sympy.polys.polyerrors import (
     MultivariatePolynomialError,
     HeuristicGCDFailed,
     HomomorphismFailed,
     NotInvertible,
     DomainError)
-
 from sympy.polys.polyconfig import query
-
 from sympy.ntheory import nextprime
-
 from sympy.core.compatibility import range
 
 

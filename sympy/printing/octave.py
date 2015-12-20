@@ -7,16 +7,15 @@ It uses a subset of the Octave language for Matlab compatibility.
 A complete code generator, which uses `octave_code` extensively, can be found
 in `sympy.utilities.codegen`.  The `codegen` module can be used to generate
 complete source code files.
-
 """
 
-from __future__ import print_function, division
+from re import search
+
 from sympy.core import Mul, Pow, S, Rational
 from sympy.core.compatibility import string_types, range
 from sympy.core.mul import _keep_coeff
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence
-from re import search
 
 # List of known functions.  First, those that have the same name in
 # SymPy and Octave.   This is almost certainly incomplete!

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.combinatorics.permutations import Permutation
 from sympy.utilities.iterables import variations, rotate_left
 from sympy.core.symbol import symbols

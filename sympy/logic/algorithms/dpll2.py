@@ -8,7 +8,6 @@ Features:
 References:
   - http://en.wikipedia.org/wiki/DPLL_algorithm
 """
-from __future__ import print_function, division
 
 from collections import defaultdict
 from heapq import heappush, heappop

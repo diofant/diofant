@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.core.mul import Mul
 from sympy.core.singleton import S
 from sympy.concrete.expr_with_intlimits import ExprWithIntLimits

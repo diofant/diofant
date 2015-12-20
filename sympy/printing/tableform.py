@@ -1,9 +1,7 @@
-from __future__ import print_function, division
+from types import FunctionType
 
 from sympy.core.containers import Tuple
 from sympy.core.compatibility import range
-
-from types import FunctionType
 
 
 class TableForm(object):

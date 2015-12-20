@@ -12,8 +12,6 @@ TODO:
       top/center/bottom alignment options for left/right
 """
 
-from __future__ import print_function, division
-
 from .pretty_symbology import hobj, vobj, xsym, xobj, pretty_use_unicode
 from sympy.core.compatibility import u, string_types, range
 

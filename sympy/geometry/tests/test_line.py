@@ -1,5 +1,3 @@
-from __future__ import division
-
 import pytest
 
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,

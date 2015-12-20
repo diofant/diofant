@@ -1,7 +1,5 @@
 """Singleton mechanism"""
 
-from __future__ import print_function, division
-
 from .core import Registry
 from .assumptions import ManagedProperties
 from .sympify import sympify

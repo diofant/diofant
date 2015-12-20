@@ -1,7 +1,5 @@
 """Compatibility interface between dense and sparse polys. """
 
-from __future__ import print_function, division
-
 from sympy.polys.densearith import dup_add_term
 from sympy.polys.densearith import dmp_add_term
 from sympy.polys.densearith import dup_sub_term
@@ -202,12 +200,10 @@ from sympy.polys.rootisolation import dup_count_complex_roots
 from sympy.polys.rootisolation import dup_isolate_complex_roots_sqf
 from sympy.polys.rootisolation import dup_isolate_all_roots_sqf
 from sympy.polys.rootisolation import dup_isolate_all_roots
-
 from sympy.polys.sqfreetools import (
     dup_sqf_p, dmp_sqf_p, dup_sqf_norm, dmp_sqf_norm, dup_gf_sqf_part, dmp_gf_sqf_part,
     dup_sqf_part, dmp_sqf_part, dup_gf_sqf_list, dmp_gf_sqf_list, dup_sqf_list,
     dup_sqf_list_include, dmp_sqf_list, dmp_sqf_list_include, dup_gff_list, dmp_gff_list)
-
 from sympy.polys.galoistools import (
     gf_degree, gf_LC, gf_TC, gf_strip, gf_from_dict,
     gf_to_dict, gf_from_int_poly, gf_to_int_poly, gf_neg, gf_add_ground, gf_sub_ground,
@@ -218,7 +214,6 @@ from sympy.polys.galoistools import (
     gf_irred_p_rabin, gf_irreducible_p, gf_sqf_p, gf_sqf_part, gf_Qmatrix,
     gf_berlekamp, gf_ddf_zassenhaus, gf_edf_zassenhaus, gf_ddf_shoup, gf_edf_shoup,
     gf_zassenhaus, gf_shoup, gf_factor_sqf, gf_factor)
-
 from sympy.utilities import public
 
 
