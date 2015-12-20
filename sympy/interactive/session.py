@@ -104,7 +104,7 @@ def int_to_Integer(s):
     1/2
     """
     from tokenize import generate_tokens, untokenize, NUMBER, NAME, OP
-    from sympy.core.compatibility import StringIO
+    from io import StringIO
 
     def _is_int(num):
         """

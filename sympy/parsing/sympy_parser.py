@@ -3,15 +3,14 @@
 from sympy.core.compatibility import tokenize
 
 import ast
+from io import BytesIO, StringIO
 import re
 import unicodedata
 from tokenize import (untokenize, TokenError,
                       NUMBER, STRING, NAME, OP, ENDMARKER)
 from keyword import iskeyword
-from io import BytesIO
 
 import sympy
-from sympy.core.compatibility import StringIO
 from sympy.core.basic import Basic
 
 

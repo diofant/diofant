@@ -76,12 +76,13 @@ unsurmountable issues that can only be tackled with dedicated code generator:
 
 """
 
+from io import StringIO
 import os
 import textwrap
 
 from sympy import __version__ as sympy_version
 from sympy.core import Symbol, S, Expr, Tuple, Equality, Function
-from sympy.core.compatibility import is_sequence, StringIO
+from sympy.core.compatibility import is_sequence
 from sympy.printing.codeprinter import AssignmentError
 from sympy.printing.ccode import ccode, CCodePrinter
 from sympy.printing.fcode import fcode, FCodePrinter
