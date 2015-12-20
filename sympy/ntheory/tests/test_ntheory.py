@@ -6,7 +6,7 @@ from sympy import (Sieve, binomial_coefficients, binomial_coefficients_list,
                    multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
                    summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
 from sympy.core.numbers import Integer, Rational
-from sympy.core.compatibility import long, range
+from sympy.core.compatibility import range
 
 from sympy.ntheory import (isprime, n_order, is_primitive_root,
                            is_quad_residue, legendre_symbol, jacobi_symbol,
@@ -319,7 +319,7 @@ def test_factorint():
     assert factorint(13*17*19, limit=15) == {13: 1, 17*19: 1}
     assert factorint(1951*15013*15053, limit=2000) == {225990689: 1, 1951: 1}
     assert factorint(primorial(17) + 1, use_pm1=0) == \
-        {long(19026377261): 1, 3467: 1, 277: 1, 105229: 1}
+        {int(19026377261): 1, 3467: 1, 277: 1, 105229: 1}
     # when prime b is closer than approx sqrt(8*p) to prime p then they are
     # "close" and have a trivial factorization
     a = nextprime(2**2**8)  # 78 digits

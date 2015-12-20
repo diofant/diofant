@@ -8,7 +8,6 @@ from sympy import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
                    S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
                    Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
                    AlgebraicNumber, simplify)
-from sympy.core.compatibility import long
 from sympy.core.power import integer_nthroot
 from sympy.core.numbers import (igcd, ilcm, igcdex, seterr,
                                 mpf_norm, comp)
@@ -224,7 +223,7 @@ def _test_rational_new(cls):
     i = Integer(10)
     assert _strictly_equal(i, cls('10'))
     assert _strictly_equal(i, cls('10'))
-    assert _strictly_equal(i, cls(long(10)))
+    assert _strictly_equal(i, cls(int(10)))
     assert _strictly_equal(i, cls(i))
 
     pytest.raises(TypeError, lambda: cls(Symbol('x')))
@@ -345,19 +344,19 @@ def test_Float():
     assert (S(.3) == S(.5)) is False
     x_str = Float((0, '13333333333333', -52, 53))
     x2_str = Float((0, '26666666666666', -53, 53))
-    x_hex = Float((0, long(0x13333333333333), -52, 53))
+    x_hex = Float((0, int(0x13333333333333), -52, 53))
     x_dec = Float((0, 5404319552844595, -52, 53))
-    x2_hex = Float((0, long(0x13333333333333)*2, -53, 53))
+    x2_hex = Float((0, int(0x13333333333333)*2, -53, 53))
     assert x_str == x_hex == x_dec == x2_hex == Float(1.2)
     # x2_str and 1.2 are superficially the same
     assert str(x2_str) == str(Float(1.2))
     # but are different at the mpf level
-    assert Float(1.2)._mpf_ == (0, long(5404319552844595), -52, 53)
-    assert x2_str._mpf_ == (0, long(10808639105689190), -53, 53)
+    assert Float(1.2)._mpf_ == (0, int(5404319552844595), -52, 53)
+    assert x2_str._mpf_ == (0, int(10808639105689190), -53, 53)
 
-    assert Float((0, long(0), -123, -1)) == Float('nan')
-    assert Float((0, long(0), -456, -2)) == Float('inf') == Float('+inf')
-    assert Float((1, long(0), -789, -3)) == Float('-inf')
+    assert Float((0, int(0), -123, -1)) == Float('nan')
+    assert Float((0, int(0), -456, -2)) == Float('inf') == Float('+inf')
+    assert Float((1, int(0), -789, -3)) == Float('-inf')
 
     pytest.raises(ValueError, lambda: Float((0, 7, 1, 3), ''))
 
@@ -396,7 +395,7 @@ def test_Float():
     teq(2*pi)
     teq(cos(0.1, evaluate=False))
 
-    # long integer
+    # integer
     i = 12345678901234567890
     assert same_and_same_prec(Float(12, ''), Float('12', ''))
     assert same_and_same_prec(Float(Integer(i), ''), Float(i, ''))
@@ -1003,17 +1002,8 @@ def test_int():
     assert int(E) == 2
     assert int(GoldenRatio) == 1
 
-
-def test_long():
-    a = Rational(5)
-    assert long(a) == 5
-    a = Rational(9, 10)
-    assert long(a) == long(-a) == 0
     a = Integer(2**100)
-    assert long(a) == a
-    assert long(pi) == 3
-    assert long(E) == 2
-    assert long(GoldenRatio) == 1
+    assert int(a) == a
 
 
 def test_real_bug():
@@ -1365,12 +1355,12 @@ def test_mpmath_issues():
     from mpmath.libmp.libmpf import _normalize
     import mpmath.libmp as mlib
     rnd = mlib.round_nearest
-    mpf = (0, long(0), -123, -1, 53, rnd)  # nan
-    assert _normalize(mpf, 53) != (0, long(0), 0, 0)
-    mpf = (0, long(0), -456, -2, 53, rnd)  # +inf
-    assert _normalize(mpf, 53) != (0, long(0), 0, 0)
-    mpf = (1, long(0), -789, -3, 53, rnd)  # -inf
-    assert _normalize(mpf, 53) != (0, long(0), 0, 0)
+    mpf = (0, int(0), -123, -1, 53, rnd)  # nan
+    assert _normalize(mpf, 53) != (0, int(0), 0, 0)
+    mpf = (0, int(0), -456, -2, 53, rnd)  # +inf
+    assert _normalize(mpf, 53) != (0, int(0), 0, 0)
+    mpf = (1, int(0), -789, -3, 53, rnd)  # -inf
+    assert _normalize(mpf, 53) != (0, int(0), 0, 0)
 
     from mpmath.libmp.libmpf import fnan
     assert mlib.mpf_eq(fnan, fnan)
@@ -1379,13 +1369,13 @@ def test_mpmath_issues():
 def test_Catalan_EulerGamma_prec():
     n = GoldenRatio
     f = Float(n.n(), 5)
-    assert f._mpf_ == (0, long(212079), -17, 18)
+    assert f._mpf_ == (0, int(212079), -17, 18)
     assert f._prec == 20
     assert n._as_mpf_val(20) == f._mpf_
 
     n = EulerGamma
     f = Float(n.n(), 5)
-    assert f._mpf_ == (0, long(302627), -19, 19)
+    assert f._mpf_ == (0, int(302627), -19, 19)
     assert f._prec == 20
     assert n._as_mpf_val(20) == f._mpf_
 

@@ -4,7 +4,6 @@ import sys
 from io import BytesIO
 
 from sympy import latex as default_latex
-from sympy.core.compatibility import integer_types
 from sympy.utilities.misc import debug
 
 
@@ -65,7 +64,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
         # to use here, than these explicit imports.
         elif isinstance(o, (Basic, MatrixBase)):
             return True
-        elif isinstance(o, (float, integer_types)) and print_builtin:
+        elif isinstance(o, (float, int)) and print_builtin:
             return True
         return False
 
@@ -101,7 +100,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
     from sympy.core.basic import Basic
     from sympy.matrices.matrices import MatrixBase
     printable_types = [Basic, MatrixBase, float, tuple, list, set,
-                       frozenset, dict] + list(integer_types)
+                       frozenset, dict, int]
 
     plaintext_formatter = ip.display_formatter.formatters['text/plain']
 

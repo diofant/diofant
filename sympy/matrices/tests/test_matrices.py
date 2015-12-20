@@ -13,7 +13,7 @@ from sympy.matrices import (
     SparseMatrix, casoratian, diag, eye, hessian,
     matrix_multiply_elementwise, ones, randMatrix, rot_axis1, rot_axis2,
     rot_axis3, wronskian, zeros)
-from sympy.core.compatibility import long, iterable, range
+from sympy.core.compatibility import iterable, range
 from sympy.utilities.iterables import flatten, capture
 from sympy.external import import_module
 from sympy.abc import x, y, z
@@ -1326,13 +1326,13 @@ def test_creation_args():
     """
     pytest.raises(ValueError, lambda: zeros(3, -1))
     pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))
-    assert zeros(long(3)) == zeros(3)
+    assert zeros(int(3)) == zeros(3)
     assert zeros(Integer(3)) == zeros(3)
     assert zeros(3.) == zeros(3)
-    assert eye(long(3)) == eye(3)
+    assert eye(int(3)) == eye(3)
     assert eye(Integer(3)) == eye(3)
     assert eye(3.) == eye(3)
-    assert ones(long(3), Integer(4)) == ones(3, 4)
+    assert ones(int(3), Integer(4)) == ones(3, 4)
     pytest.raises(TypeError, lambda: Matrix(5))
     pytest.raises(TypeError, lambda: Matrix(1, 2))
 

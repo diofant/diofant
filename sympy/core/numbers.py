@@ -19,7 +19,7 @@ from .expr import Expr, AtomicExpr
 from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
-from sympy.core.compatibility import (as_int, integer_types, long,
+from sympy.core.compatibility import (as_int,
                                       with_metaclass, HAS_GMPY, SYMPY_INTS)
 from sympy.utilities.misc import debug
 
@@ -281,7 +281,7 @@ class Number(AtomicExpr):
                 raise ValueError('String "%s" does not denote a Number' % obj)
             if isinstance(obj, Number):
                 return obj
-        msg = "expected str|int|long|float|Decimal|Number object but got %r"
+        msg = "expected str|int|float|Decimal|Number object but got %r"
         raise TypeError(msg % type(obj).__name__)
 
     def __divmod__(self, other):
@@ -504,10 +504,9 @@ class Float(Number):
     >>> Float(3)
     3.00000000000000
 
-    Creating Floats from strings (and Python ``int`` and ``long``
-    types) will give a minimum precision of 15 digits, but the
-    precision will automatically increase to capture all digits
-    entered.
+    Creating Floats from strings (and Python ``int`` type) will
+    give a minimum precision of 15 digits, but the precision
+    will automatically increase to capture all digits entered.
 
     >>> Float(1)
     1.00000000000000
@@ -539,7 +538,7 @@ class Float(Number):
 
     Float can automatically count significant figures if a null string
     is sent for the precision; space are also allowed in the string. (Auto-
-    counting is only allowed for strings, ints and longs).
+    counting is only allowed for strings and ints).
 
     >>> Float('123 456 789 . 123 456', '')
     123456789.123456
@@ -733,7 +732,7 @@ class Float(Number):
                 # it's a hexadecimal (coming from a pickled object)
                 # assume that it is in standard form
                 num = list(num)
-                num[1] = long(num[1], 16)
+                num[1] = int(num[1], 16)
                 _mpf_ = tuple(num)
             else:
                 if not num[1] and len(num) == 4:
@@ -937,8 +936,6 @@ class Float(Number):
         if self._mpf_ == _mpf_zero:
             return 0
         return int(mlib.to_int(self._mpf_))  # uses round_fast = round_down
-
-    __long__ = __int__
 
     def __eq__(self, other):
         if isinstance(other, float):
@@ -1399,8 +1396,6 @@ class Rational(Number):
             return -(-p//q)
         return p//q
 
-    __long__ = __int__
-
     def __eq__(self, other):
         try:
             other = _sympify(other)
@@ -1630,8 +1625,6 @@ class Integer(Rational):
     def __int__(self):
         return self.p
 
-    __long__ = __int__
-
     def __neg__(self):
         return Integer(-self.p)
 
@@ -1650,7 +1643,7 @@ class Integer(Rational):
 
     def __rdivmod__(self, other):
         from .containers import Tuple
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Tuple(*(divmod(other, self.p)))
         else:
             try:
@@ -1664,57 +1657,57 @@ class Integer(Rational):
 
     # TODO make it decorator + bytecodehacks?
     def __add__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p + other)
         elif isinstance(other, Integer):
             return Integer(self.p + other.p)
         return Rational.__add__(self, other)
 
     def __radd__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other + self.p)
         return Rational.__add__(self, other)
 
     def __sub__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p - other)
         elif isinstance(other, Integer):
             return Integer(self.p - other.p)
         return Rational.__sub__(self, other)
 
     def __rsub__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other - self.p)
         return Rational.__rsub__(self, other)
 
     def __mul__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p*other)
         elif isinstance(other, Integer):
             return Integer(self.p*other.p)
         return Rational.__mul__(self, other)
 
     def __rmul__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other*self.p)
         return Rational.__mul__(self, other)
 
     def __mod__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p % other)
         elif isinstance(other, Integer):
             return Integer(self.p % other.p)
         return Rational.__mod__(self, other)
 
     def __rmod__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other % self.p)
         elif isinstance(other, Integer):
             return Integer(other.p % self.p)
         return Rational.__rmod__(self, other)
 
     def __eq__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return (self.p == other)
         elif isinstance(other, Integer):
             return (self.p == other.p)
@@ -1897,8 +1890,7 @@ class Integer(Rational):
         return Integer(Integer(other).p // self.p)
 
 # Add sympify converters
-for i_type in integer_types:
-    converter[i_type] = Integer
+converter[int] = Integer
 
 
 class AlgebraicNumber(Expr):
@@ -2950,9 +2942,6 @@ class NumberSymbol(AtomicExpr):
         # subclass with appropriate return value
         raise NotImplementedError
 
-    def __long__(self):
-        return self.__int__()
-
     def __hash__(self):
         return super(NumberSymbol, self).__hash__()
 
@@ -3420,10 +3409,10 @@ try:
         raise ImportError
 
     def sympify_mpz(x):
-        return Integer(long(x))
+        return Integer(int(x))
 
     def sympify_mpq(x):
-        return Rational(long(x.numerator), long(x.denominator))
+        return Rational(int(x.numerator), int(x.denominator))
 
     converter[type(gmpy.mpz(1))] = sympify_mpz
     converter[type(gmpy.mpq(1, 2))] = sympify_mpq

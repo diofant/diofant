@@ -7,7 +7,7 @@ from sympy.core.basic import Basic
 from sympy.core.singleton import Singleton, S
 from sympy.core.evalf import EvalfMixin
 from sympy.core.numbers import Float
-from sympy.core.compatibility import iterable, with_metaclass, ordered, range, long
+from sympy.core.compatibility import iterable, with_metaclass, ordered, range
 from sympy.core.evaluate import global_evaluate
 from sympy.core.mul import Mul
 from sympy.core.relational import Eq
@@ -649,7 +649,7 @@ class ProductSet(Set):
         return measure
 
     def __len__(self):
-        return long(Mul(*[len(s) for s in self.args]))
+        return int(Mul(*[len(s) for s in self.args]))
 
 
 class Interval(Set, EvalfMixin):
