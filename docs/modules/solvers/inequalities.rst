@@ -13,9 +13,9 @@ Inequality Solvers
 
 .. autofunction:: reduce_rational_inequalities
 
-.. autofunction:: reduce_abs_inequality
+.. autofunction:: reduce_piecewise_inequality
 
-.. autofunction:: reduce_abs_inequalities
+.. autofunction:: reduce_piecewise_inequalities
 
 .. autofunction:: reduce_inequalities
 

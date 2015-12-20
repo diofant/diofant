@@ -183,6 +183,6 @@ setup(name='sympy',
           'exports': ["numpy", "scipy", "Theano"],
           'gmpy': ["gmpy>=1.16"],
           'plot': ["matplotlib"],
-          'interactive': ["ipython>=1.0.0"],
+          'interactive': ["ipython>=2.3.0"],
       }
 )
