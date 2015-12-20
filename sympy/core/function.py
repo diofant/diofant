@@ -50,7 +50,7 @@ from .singleton import S
 from .sympify import sympify
 from sympy.core.containers import Tuple, Dict
 from sympy.core.logic import fuzzy_and
-from sympy.core.compatibility import string_types, with_metaclass, range
+from sympy.core.compatibility import with_metaclass, range
 from sympy.utilities import default_sort_key
 from sympy.utilities.iterables import uniq
 from sympy.core.evaluate import global_evaluate
@@ -2394,7 +2394,7 @@ def nfloat(expr, n=15, exponent=False):
     from sympy.core.power import Pow
     from sympy.polys.rootoftools import RootOf
 
-    if iterable(expr, exclude=string_types):
+    if iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):
             return type(expr)([(k, nfloat(v, n, exponent)) for k, v in
                                list(expr.items())])

@@ -20,7 +20,7 @@ the responsibility for generating properly cased Fortran code to the user.
 import string
 
 from sympy.core import S, Add, N
-from sympy.core.compatibility import string_types, range
+from sympy.core.compatibility import range
 from sympy.core.function import Function
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence
@@ -353,7 +353,7 @@ class FCodePrinter(CodePrinter):
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines"""
-        if isinstance(code, string_types):
+        if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
 

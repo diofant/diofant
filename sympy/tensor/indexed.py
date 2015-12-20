@@ -106,7 +106,7 @@
 #      - Idx with step determined by function call
 
 from sympy.core import Expr, Tuple, Symbol, sympify, S
-from sympy.core.compatibility import is_sequence, string_types, NotIterable, range
+from sympy.core.compatibility import is_sequence, NotIterable, range
 
 
 class IndexException(Exception):
@@ -136,7 +136,7 @@ class Indexed(Expr):
 
         if not args:
             raise IndexException("Indexed needs at least one index.")
-        if isinstance(base, (string_types, Symbol)):
+        if isinstance(base, (str, Symbol)):
             base = IndexedBase(base)
         elif not isinstance(base, IndexedBase):
             raise TypeError(filldedent("""
@@ -323,7 +323,7 @@ class IndexedBase(Expr, NotIterable):
     is_commutative = True
 
     def __new__(cls, label, shape=None, **kw_args):
-        if isinstance(label, string_types):
+        if isinstance(label, str):
             label = Symbol(label)
         elif isinstance(label, Symbol):
             pass
@@ -487,7 +487,7 @@ class Idx(Expr):
     def __new__(cls, label, range=None, **kw_args):
         from sympy.utilities.misc import filldedent
 
-        if isinstance(label, string_types):
+        if isinstance(label, str):
             label = Symbol(label, integer=True)
         label, range = list(map(sympify, (label, range)))
 

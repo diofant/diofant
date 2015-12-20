@@ -1,7 +1,7 @@
 from sympy.core.basic import Basic
 from sympy.vector.scalar import BaseScalar
 from sympy import eye, trigsimp, ImmutableMatrix as Matrix, Symbol
-from sympy.core.compatibility import string_types, range
+from sympy.core.compatibility import range
 from sympy.core.cache import cacheit
 from sympy.vector.orienters import (Orienter, AxisOrienter, BodyOrienter,
                                     SpaceOrienter, QuaternionOrienter)
@@ -48,7 +48,7 @@ class CoordSysCartesian(Basic):
         Vector = sympy.vector.Vector
         BaseVector = sympy.vector.BaseVector
         Point = sympy.vector.Point
-        if not isinstance(name, string_types):
+        if not isinstance(name, str):
             raise TypeError("name should be a string")
 
         # If orientation information has been provided, store
@@ -700,7 +700,7 @@ def _check_strings(arg_name, arg):
         raise ValueError(errorstr)
     try:
         for s in arg:
-            if not isinstance(s, string_types):
+            if not isinstance(s, str):
                 raise TypeError(errorstr)
     except:
         raise TypeError(errorstr)

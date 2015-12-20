@@ -10,7 +10,7 @@ source code files that are compilable without further modifications.
 """
 
 from sympy.core import S
-from sympy.core.compatibility import string_types, range
+from sympy.core.compatibility import range
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence
 
@@ -226,7 +226,7 @@ class CCodePrinter(CodePrinter):
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines"""
 
-        if isinstance(code, string_types):
+        if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
 

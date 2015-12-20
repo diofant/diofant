@@ -2,7 +2,7 @@ import string
 import re as _re
 
 from sympy.core.assumptions import StdFactKB
-from sympy.core.compatibility import string_types, range
+from sympy.core.compatibility import range
 from .basic import Basic
 from .sympify import sympify
 from .singleton import S
@@ -84,7 +84,7 @@ class Symbol(AtomicExpr, Boolean):
         return Symbol.__xnew_cached_(cls, name, **assumptions)
 
     def __new_stage2__(cls, name, **assumptions):
-        if not isinstance(name, string_types):
+        if not isinstance(name, str):
             raise TypeError("name should be a string, not %s" % repr(type(name)))
 
         obj = Expr.__new__(cls)
@@ -428,7 +428,7 @@ def symbols(names, **args):
     """
     result = []
 
-    if isinstance(names, string_types):
+    if isinstance(names, str):
         marker = 0
         literals = ['\,', '\:', '\ ']
         for i in range(len(literals)):

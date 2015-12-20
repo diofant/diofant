@@ -18,7 +18,7 @@ from sympy.utilities.iterables import flatten
 from sympy.functions.elementary.miscellaneous import sqrt, Max, Min
 from sympy.functions import exp, factorial
 from sympy.printing import sstr
-from sympy.core.compatibility import reduce, as_int, string_types
+from sympy.core.compatibility import reduce, as_int
 
 
 def _iszero(x):
@@ -1821,7 +1821,7 @@ class MatrixBase(object):
                 # Minimum singular value
                 return Min(*self.singular_values())
 
-            elif (ord is None or isinstance(ord, string_types) and ord.lower() in
+            elif (ord is None or isinstance(ord, str) and ord.lower() in
                     ['f', 'fro', 'frobenius', 'vector']):
                 # Reshape as vector and send back to norm function
                 return self.vec().norm(ord=2)

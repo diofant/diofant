@@ -13,7 +13,7 @@ TODO:
 """
 
 from .pretty_symbology import hobj, vobj, xsym, xobj, pretty_use_unicode
-from sympy.core.compatibility import string_types, range
+from sympy.core.compatibility import range
 
 
 class stringPict(object):
@@ -58,7 +58,7 @@ class stringPict(object):
         # convert everything to stringPicts
         objects = []
         for arg in args:
-            if isinstance(arg, string_types):
+            if isinstance(arg, str):
                 arg = stringPict(arg)
             objects.append(arg)
 
@@ -121,7 +121,7 @@ class stringPict(object):
         # convert everything to stringPicts; keep LINE
         objects = []
         for arg in args:
-            if arg is not stringPict.LINE and isinstance(arg, string_types):
+            if arg is not stringPict.LINE and isinstance(arg, str):
                 arg = stringPict(arg)
             objects.append(arg)
 

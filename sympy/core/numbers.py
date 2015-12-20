@@ -20,8 +20,7 @@ from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
 from sympy.core.compatibility import (as_int, integer_types, long,
-                                      string_types, with_metaclass,
-                                      HAS_GMPY, SYMPY_INTS)
+                                      with_metaclass, HAS_GMPY, SYMPY_INTS)
 from sympy.utilities.misc import debug
 
 rnd = mlib.round_nearest
@@ -274,7 +273,7 @@ class Number(AtomicExpr):
             return Rational(*obj)
         if isinstance(obj, (float, mpmath.mpf, decimal.Decimal)):
             return Float(obj)
-        if isinstance(obj, string_types):
+        if isinstance(obj, str):
             val = sympify(obj)
             if isinstance(val, Number):
                 return val
@@ -661,7 +660,7 @@ class Float(Number):
     is_Float = True
 
     def __new__(cls, num, prec=None):
-        if isinstance(num, string_types):
+        if isinstance(num, str):
             num = num.replace(' ', '')
             if num.startswith('.') and len(num) > 1:
                 num = '0' + num
@@ -678,7 +677,7 @@ class Float(Number):
             dps = 15
             if isinstance(num, Float):
                 return num
-            if isinstance(num, string_types) and _literal_float(num):
+            if isinstance(num, str) and _literal_float(num):
                 try:
                     Num = decimal.Decimal(num)
                 except decimal.InvalidOperation:
@@ -690,7 +689,7 @@ class Float(Number):
                         dps = max(dps, len(str(num).lstrip('-')))
                     dps = max(15, dps)
         elif prec == '':
-            if not isinstance(num, string_types):
+            if not isinstance(num, str):
                 raise ValueError('The null string can only be used when '
                 'the number to Float is passed as a string or an integer.')
             ok = None
@@ -1146,7 +1145,7 @@ class Rational(Number):
             if isinstance(p, Rational):
                 return p
 
-            if isinstance(p, string_types):
+            if isinstance(p, str):
                 p = p.replace(' ', '')
                 try:
                     # we might have a Float
@@ -1596,7 +1595,7 @@ class Integer(Rational):
 
     @cacheit
     def __new__(cls, i):
-        if isinstance(i, string_types):
+        if isinstance(i, str):
             i = i.replace(' ', '')
         # whereas we cannot, in general, make a Rational from an
         # arbitrary expression, we can make an Integer unambiguously

@@ -1,6 +1,6 @@
 from sympy.core import Add, Mul, Pow, S
 from sympy.core.basic import Basic
-from sympy.core.compatibility import default_sort_key, string_types
+from sympy.core.compatibility import default_sort_key
 from sympy.core.function import Lambda
 from sympy.core.mul import _keep_coeff
 from sympy.core.relational import Relational
@@ -119,7 +119,7 @@ class CodePrinter(StrPrinter):
         """
         from sympy.matrices.expressions.matexpr import MatrixSymbol
 
-        if isinstance(assign_to, string_types):
+        if isinstance(assign_to, str):
             if expr.is_Matrix:
                 assign_to = MatrixSymbol(assign_to, *expr.shape)
             else:

@@ -3,7 +3,7 @@
 from inspect import getmro
 
 from .core import all_classes as sympy_classes
-from .compatibility import iterable, string_types, range
+from .compatibility import iterable, range
 from .evaluate import global_evaluate
 
 
@@ -267,7 +267,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except AttributeError:
         pass
 
-    if not isinstance(a, string_types):
+    if not isinstance(a, str):
         for coerce in (float, int):
             try:
                 return sympify(coerce(a))

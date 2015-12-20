@@ -7,7 +7,7 @@ import inspect
 import textwrap
 
 from sympy.external import import_module
-from sympy.core.compatibility import exec_, is_sequence, iterable, string_types, range
+from sympy.core.compatibility import exec_, is_sequence, iterable, range
 from sympy.utilities.decorator import doctest_depends_on
 
 # These are the namespaces the lambda functions will use.
@@ -624,7 +624,7 @@ def implemented_function(symfunc, implementation):
     # Delayed import to avoid circular imports
     from sympy.core.function import UndefinedFunction
     # if name, create function to hold implementation
-    if isinstance(symfunc, string_types):
+    if isinstance(symfunc, str):
         symfunc = UndefinedFunction(symfunc)
     elif not isinstance(symfunc, UndefinedFunction):
         raise ValueError('symfunc should be either a string or'

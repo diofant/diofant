@@ -2,7 +2,7 @@
 
 from operator import add, mul, lt, le, gt, ge
 
-from sympy.core.compatibility import reduce, string_types
+from sympy.core.compatibility import reduce
 from sympy.core.expr import Expr
 from sympy.core.symbol import Symbol
 from sympy.core.sympify import CantSympify, sympify
@@ -145,7 +145,7 @@ class FracField(DefaultPrinting):
         elif isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.ring_new, element))
             return self.new(numer, denom)
-        elif isinstance(element, string_types):
+        elif isinstance(element, str):
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
             return self.from_expr(element)

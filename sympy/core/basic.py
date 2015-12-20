@@ -1,13 +1,13 @@
 """Base class for all the objects in SymPy"""
 
+from inspect import getmro
+
 from .assumptions import BasicMeta, ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import (iterable, Iterator, ordered,
-    string_types, with_metaclass, zip_longest, range)
+                            with_metaclass, zip_longest, range)
 from .singleton import S
-
-from inspect import getmro
 
 
 class Basic(with_metaclass(ManagedProperties)):
@@ -1549,7 +1549,7 @@ class Basic(with_metaclass(ManagedProperties)):
             return self
         else:
             pattern = args[:-1]
-            if isinstance(args[-1], string_types):
+            if isinstance(args[-1], str):
                 rule = '_eval_rewrite_as_' + args[-1]
             else:
                 rule = '_eval_rewrite_as_' + args[-1].__name__

@@ -3,7 +3,7 @@
 import re
 
 from sympy.core import S, Basic, sympify
-from sympy.core.compatibility import string_types, with_metaclass
+from sympy.core.compatibility import with_metaclass
 from sympy.utilities import numbered_symbols, topological_sort, public
 from sympy.utilities.iterables import has_dups
 from sympy.polys.polyerrors import GeneratorsError, OptionError, FlagError
@@ -413,7 +413,7 @@ class Domain(with_metaclass(OptionType, Option)):
             return domain
         elif hasattr(domain, 'to_domain'):
             return domain.to_domain()
-        elif isinstance(domain, string_types):
+        elif isinstance(domain, str):
             if domain in ['Z', 'ZZ']:
                 return sympy.polys.domains.ZZ
 

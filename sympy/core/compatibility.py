@@ -17,8 +17,6 @@ Python 2 and Python 3 compatible imports
 String and Unicode compatible changes:
     * `unicode()` removed in Python 3, import `unicode` for Python 2/3
       compatible function
-    * `string_types` gives str in Python 3, unicode and str in Python 2,
-      equivalent to basestring
 
 Integer related changes:
     * `long()` removed in Python 3, import `long` for Python 2/3 compatible
@@ -64,7 +62,6 @@ PY3 = sys.version_info[0] > 2
 if PY3:
     class_types = type,
     integer_types = (int,)
-    string_types = (str,)
     long = int
 
     Iterator = object
@@ -90,7 +87,6 @@ else:
 
     class_types = (type, types.ClassType)
     integer_types = (int, long)
-    string_types = (str, unicode)
     long = long
 
     class Iterator(object):
@@ -182,7 +178,7 @@ class NotIterable:
     pass
 
 
-def iterable(i, exclude=(string_types, dict, NotIterable)):
+def iterable(i, exclude=(str, dict, NotIterable)):
     """
     Return a boolean indicating whether ``i`` is SymPy iterable.
     True also indicates that the iterator is finite, i.e. you e.g.
@@ -435,7 +431,7 @@ def default_sort_key(item, order=None):
     if isinstance(item, Basic):
         return item.sort_key(order=order)
 
-    if iterable(item, exclude=string_types):
+    if iterable(item, exclude=(str,)):
         if isinstance(item, dict):
             args = item.items()
             unordered = True
@@ -455,7 +451,7 @@ def default_sort_key(item, order=None):
 
         cls_index, args = 10, (len(args), tuple(args))
     else:
-        if not isinstance(item, string_types):
+        if not isinstance(item, str):
             try:
                 item = sympify(item)
             except SympifyError:
