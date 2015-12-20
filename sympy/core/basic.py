@@ -1,12 +1,12 @@
 """Base class for all the objects in SymPy"""
 
 from inspect import getmro
+from itertools import zip_longest
 
 from .assumptions import BasicMeta, ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
-from .compatibility import (iterable, ordered,
-                            with_metaclass, zip_longest)
+from .compatibility import (iterable, ordered, with_metaclass)
 from .singleton import S
 
 

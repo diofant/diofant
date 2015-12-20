@@ -206,11 +206,6 @@ def is_sequence(i, include=None):
             bool(include) and
             isinstance(i, include))
 
-try:
-    from itertools import zip_longest
-except ImportError:  # <= Python 2.7
-    from itertools import izip_longest as zip_longest
-
 
 def as_int(n):
     """

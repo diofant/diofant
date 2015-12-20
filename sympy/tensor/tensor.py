@@ -464,8 +464,8 @@ class TIDS(CantSympify):
         """
         # to be called after sorted_components
         from sympy.combinatorics.permutations import _af_new
-#         types = list(set(self._types))
-#         types.sort(key = lambda x: x._name)
+#       types = list(set(self._types))
+#       types.sort(key = lambda x: x._name)
         n = self._ext_rank
         g = [None]*n + [n, n+1]
         pos = 0
