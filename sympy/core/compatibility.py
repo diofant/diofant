@@ -30,9 +30,6 @@ Moved modules:
     * `cStringIO()` (same as `StingIO()` in Python 3)
     * Python 2 `__builtins__`, access with Python 3 name, `builtins`
 
-exec:
-    * Use `exec_()`, with parameters `exec_(code, globs=None, locs=None)`
-
 Metaclasses:
     * Use `with_metaclass()`, examples below
         * Define class `Foo` with metaclass `Meta`, and no parent:
@@ -59,8 +56,6 @@ if PY3:
     from io import StringIO
     cStringIO = StringIO
 
-    exec_=getattr(builtins, "exec")
-
     from tokenize import tokenize
 else:
     import codecs
@@ -80,19 +75,6 @@ else:
     import __builtin__ as builtins
     from StringIO import StringIO
     from cStringIO import StringIO as cStringIO
-
-    def exec_(_code_, _globs_=None, _locs_=None):
-        """Execute code in a namespace."""
-        if _globs_ is None:
-            frame = sys._getframe(1)
-            _globs_ = frame.f_globals
-            if _locs_ is None:
-                _locs_ = frame.f_locals
-            del frame
-        elif _locs_ is None:
-            _locs_ = _globs_
-        exec("exec _code_ in _globs_, _locs_")
-
     from tokenize import generate_tokens as tokenize
 
 

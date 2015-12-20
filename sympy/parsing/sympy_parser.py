@@ -11,7 +11,7 @@ from keyword import iskeyword
 from io import BytesIO
 
 import sympy
-from sympy.core.compatibility import exec_, StringIO
+from sympy.core.compatibility import StringIO
 from sympy.core.basic import Basic
 
 
@@ -734,7 +734,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
 
     if global_dict is None:
         global_dict = {}
-        exec_('from sympy import *', global_dict)
+        exec('from sympy import *', global_dict)
 
     code = stringify_expr(s, local_dict, global_dict, transformations)
 

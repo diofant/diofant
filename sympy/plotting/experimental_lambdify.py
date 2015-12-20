@@ -15,7 +15,6 @@ import warnings
 
 from sympy.external import import_module
 from sympy import Symbol, NumberSymbol, I, zoo, oo
-from sympy.core.compatibility import exec_
 from sympy.utilities.iterables import numbered_symbols
 
 #  We parse the expression string into a tree that identifies functions. Then
@@ -300,7 +299,7 @@ class Lambdifier(object):
         if self.print_lambda:
             print(newexpr)
         eval_str = 'lambda %s : ( %s )' % (argstr, newexpr)
-        exec_("MYNEWLAMBDA = %s" % eval_str, namespace)
+        exec("MYNEWLAMBDA = %s" % eval_str, namespace)
         self.lambda_func = namespace['MYNEWLAMBDA']
 
     ##############################################################################

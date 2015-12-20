@@ -33,7 +33,6 @@ import string
 
 from .core import Symbol, symbols
 from .core.alphabets import greeks
-from .core.compatibility import exec_
 
 # ##### Symbol definitions #####
 
@@ -92,7 +91,7 @@ def clashing():
     """
 
     ns = {}
-    exec_('from sympy import *', ns)
+    exec('from sympy import *', ns)
     clash1 = {}
     clash2 = {}
     while ns:
