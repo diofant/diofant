@@ -6,13 +6,7 @@ from sympy.interactive.session import (init_ipython_session,
 from sympy.core import Symbol, Rational, Integer
 from sympy.external import import_module
 
-# TODO: The code below could be made more granular with something like:
-#
-# @requires('IPython', version=">=0.11")
-# def test_automatic_symbols(ipython):
-
-# run_cell was added in IPython 0.11
-ipython = import_module("IPython", min_module_version="0.11")
+ipython = import_module("IPython", min_module_version="2.3.0")
 readline = import_module("readline")
 
 if not ipython:
