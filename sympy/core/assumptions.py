@@ -152,11 +152,10 @@ References
 
 """
 
+from random import shuffle
+
 from sympy.core.facts import FactRules, FactKB
 from sympy.core.core import BasicMeta
-from sympy.core.compatibility import with_metaclass
-
-from random import shuffle
 
 
 _assume_rules = FactRules([

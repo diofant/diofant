@@ -7,7 +7,7 @@ from sympy.core.basic import Basic
 from sympy.core.singleton import Singleton, S
 from sympy.core.evalf import EvalfMixin
 from sympy.core.numbers import Float
-from sympy.core.compatibility import iterable, with_metaclass, ordered
+from sympy.core.compatibility import iterable, ordered
 from sympy.core.evaluate import global_evaluate
 from sympy.core.mul import Mul
 from sympy.core.relational import Eq
@@ -1496,7 +1496,7 @@ class Complement(Set, EvalfMixin):
         return And(A.contains(other), Not(B.contains(other)))
 
 
-class EmptySet(with_metaclass(Singleton, Set)):
+class EmptySet(Set, metaclass=Singleton):
     """
     Represents the empty set. The empty set is available as a singleton
     as S.EmptySet.
@@ -1563,7 +1563,7 @@ class EmptySet(with_metaclass(Singleton, Set)):
         return other
 
 
-class UniversalSet(with_metaclass(Singleton, Set)):
+class UniversalSet(Set, metaclass=Singleton):
     """
     Represents the set of all things.
     The universal set is available as a singleton as S.UniversalSet

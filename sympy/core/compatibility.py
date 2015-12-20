@@ -11,64 +11,6 @@ from collections import defaultdict
 
 from sympy.external import import_module
 
-"""
-Python 2 and Python 3 compatible imports
-
-Metaclasses:
-    * Use `with_metaclass()`, examples below
-        * Define class `Foo` with metaclass `Meta`, and no parent:
-            class Foo(with_metaclass(Meta)):
-                pass
-        * Define class `Foo` with metaclass `Meta` and parent class `Bar`:
-            class Foo(with_metaclass(Meta, Bar)):
-                pass
-"""
-
-
-def with_metaclass(meta, *bases):
-    """
-    Create a base class with a metaclass.
-
-    For example, if you have the metaclass
-
-    >>> class Meta(type):
-    ...     pass
-
-    Use this as the metaclass by doing
-
-    >>> from sympy.core.compatibility import with_metaclass
-    >>> class MyClass(with_metaclass(Meta, object)):
-    ...     pass
-
-    This is equivalent to the Python 2::
-
-        class MyClass(object):
-            __metaclass__ = Meta
-
-    or Python 3::
-
-        class MyClass(object, metaclass=Meta):
-            pass
-
-    That is, the first argument is the metaclass, and the remaining arguments
-    are the base classes. Note that if the base class is just ``object``, you
-    may omit it.
-
-    >>> MyClass.__mro__ == (MyClass, object)
-    True
-    >>> type(MyClass) is Meta
-    True
-
-    """
-    # This requires a bit of explanation: the basic idea is to make a dummy
-    # metaclass for one level of class instantiation that replaces itself with
-    # the actual metaclass.
-    # Code copied from the 'six' library.
-    class metaclass(meta):
-        def __new__(cls, name, this_bases, d):
-            return meta(name, bases, d)
-    return type.__new__(metaclass, "NewBase", (), {})
-
 
 # These are in here because telling if something is an iterable just by calling
 # hasattr(obj, "__iter__") behaves differently in Python 2 and Python 3.  In

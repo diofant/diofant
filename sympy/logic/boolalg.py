@@ -10,7 +10,7 @@ from sympy.core.cache import cacheit
 from sympy.core.numbers import Number
 from sympy.core.operations import LatticeOp
 from sympy.core.function import Application
-from sympy.core.compatibility import ordered, with_metaclass
+from sympy.core.compatibility import ordered
 from sympy.core.sympify import converter, _sympify, sympify
 from sympy.core.singleton import Singleton, S
 
@@ -89,7 +89,7 @@ class BooleanAtom(Boolean):
         return self
 
 
-class BooleanTrue(with_metaclass(Singleton, BooleanAtom)):
+class BooleanTrue(BooleanAtom, metaclass=Singleton):
     """SymPy version of True, a singleton that can be accessed via S.true.
 
     This is the SymPy version of True, for use in the logic module. The
@@ -185,7 +185,7 @@ class BooleanTrue(with_metaclass(Singleton, BooleanAtom)):
         return S.UniversalSet
 
 
-class BooleanFalse(with_metaclass(Singleton, BooleanAtom)):
+class BooleanFalse(BooleanAtom, metaclass=Singleton):
     """SymPy version of False, a singleton that can be accessed via S.false.
 
     This is the SymPy version of False, for use in the logic module. The

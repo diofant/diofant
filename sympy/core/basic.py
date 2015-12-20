@@ -6,11 +6,11 @@ from itertools import zip_longest
 from .assumptions import BasicMeta, ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
-from .compatibility import (iterable, ordered, with_metaclass)
+from .compatibility import iterable, ordered
 from .singleton import S
 
 
-class Basic(with_metaclass(ManagedProperties)):
+class Basic(metaclass=ManagedProperties):
     """
     Base class for all objects in SymPy.
 
