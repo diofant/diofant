@@ -30,7 +30,7 @@ except AttributeError:
 
 git_command = 'git log --format="%aN" | sort -u'
 
-git_people = unicode(local(git_command, capture=True), 'utf-8').strip().split("\n")
+git_people = str(local(git_command, capture=True), 'utf-8').strip().split("\n")
 
 from distutils.version import LooseVersion
 
@@ -40,7 +40,7 @@ if LooseVersion(git_ver) < LooseVersion('1.8.4.2'):
 
 with open(os.path.realpath(os.path.join(__file__, os.path.pardir,
                            os.path.pardir, "docs/aboutus.rst"))) as fd:
-    AUTHORS = unicode(fd.read(), 'utf-8')
+    AUTHORS = str(fd.read(), 'utf-8')
 
 authors = []
 

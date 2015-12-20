@@ -13,7 +13,7 @@ from sympy.printing.printer import Printer
 from sympy.printing.str import sstr
 from sympy.printing.conventions import requires_partial
 from .stringpict import prettyForm, stringPict
-from .pretty_symbology import (xstr, hobj, vobj, xobj, xsym, pretty_symbol,
+from .pretty_symbology import (hobj, vobj, xobj, xsym, pretty_symbol,
                                pretty_atom, pretty_use_unicode,
                                pretty_try_use_unicode, greek_unicode, U,
                                annotated)
@@ -38,7 +38,7 @@ class PrettyPrinter(Printer):
 
     def __init__(self, settings=None):
         Printer.__init__(self, settings)
-        self.emptyPrinter = lambda x: prettyForm(xstr(x))
+        self.emptyPrinter = lambda x: prettyForm(str(x))
 
     @property
     def _use_unicode(self):

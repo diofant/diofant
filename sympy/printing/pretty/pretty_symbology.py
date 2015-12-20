@@ -3,7 +3,7 @@
 import sys
 import warnings
 
-from sympy.core.compatibility import unicode, range
+from sympy.core.compatibility import range
 from sympy.printing.conventions import split_super_sub
 from sympy.core.alphabets import greeks
 
@@ -39,8 +39,8 @@ except ImportError:
 # S   - SYMBOL    +
 
 
-__all__ = ['greek_unicode', 'sub', 'sup', 'xsym', 'vobj', 'hobj', 'pretty_symbol',
-           'annotated']
+__all__ = ['greek_unicode', 'sub', 'sup', 'xsym', 'vobj', 'hobj',
+           'pretty_symbol', 'annotated']
 
 
 _use_unicode = False
@@ -103,13 +103,6 @@ def pretty_try_use_unicode():
     else:
         pretty_use_unicode(True)
 
-
-def xstr(*args):
-    """call str or unicode depending on current mode"""
-    if _use_unicode:
-        return unicode(*args)
-    else:
-        return str(*args)
 
 # GREEK
 

@@ -14,10 +14,6 @@ from sympy.external import import_module
 """
 Python 2 and Python 3 compatible imports
 
-String and Unicode compatible changes:
-    * `unicode()` removed in Python 3, import `unicode` for Python 2/3
-      compatible function
-
 Integer related changes:
     * `long()` removed in Python 3, import `long` for Python 2/3 compatible
       function
