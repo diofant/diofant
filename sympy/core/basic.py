@@ -5,7 +5,7 @@ from inspect import getmro
 from .assumptions import BasicMeta, ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
-from .compatibility import (iterable, Iterator, ordered,
+from .compatibility import (iterable, ordered,
                             with_metaclass, zip_longest)
 from .singleton import S
 
@@ -1643,7 +1643,7 @@ def _aresame(a, b):
         return True
 
 
-class preorder_traversal(Iterator):
+class preorder_traversal(object):
     """Do a pre-order traversal of a tree.
 
     This iterator recursively yields nodes that it has visited in a pre-order

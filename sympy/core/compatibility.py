@@ -43,8 +43,6 @@ PY3 = sys.version_info[0] > 2
 if PY3:
     class_types = type,
 
-    Iterator = object
-
     # Moved definitions
     get_function_code = operator.attrgetter("__code__")
     get_function_globals = operator.attrgetter("__globals__")
@@ -57,10 +55,6 @@ else:
     import types
 
     class_types = (type, types.ClassType)
-
-    class Iterator(object):
-        def next(self):
-            return type(self).__next__(self)
 
     # Moved definitions
     get_function_code = operator.attrgetter("func_code")
