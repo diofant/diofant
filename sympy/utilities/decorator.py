@@ -5,7 +5,7 @@ import types
 import inspect
 
 from sympy.core.decorators import wraps
-from sympy.core.compatibility import (class_types, get_function_globals,
+from sympy.core.compatibility import (get_function_globals,
                                       get_function_name, iterable)
 
 
@@ -176,7 +176,7 @@ def public(obj):
     if isinstance(obj, types.FunctionType):
         ns = get_function_globals(obj)
         name = get_function_name(obj)
-    elif isinstance(obj, (type(type), class_types)):
+    elif isinstance(obj, type):
         ns = sys.modules[obj.__module__].__dict__
         name = obj.__name__
     else:

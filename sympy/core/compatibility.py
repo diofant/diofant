@@ -14,9 +14,6 @@ from sympy.external import import_module
 """
 Python 2 and Python 3 compatible imports
 
-Types related changes:
-    * `class_types` gives type in Python 3, type and ClassType in Python 2
-
 Renamed function attributes:
     * Python 2 `.func_code`, Python 3 `.__func__`, access with
       `get_function_code()`
@@ -41,8 +38,6 @@ Metaclasses:
 PY3 = sys.version_info[0] > 2
 
 if PY3:
-    class_types = type,
-
     # Moved definitions
     get_function_code = operator.attrgetter("__code__")
     get_function_globals = operator.attrgetter("__globals__")
@@ -52,8 +47,6 @@ if PY3:
 else:
     import codecs
     import types
-
-    class_types = (type, types.ClassType)
 
     # Moved definitions
     get_function_code = operator.attrgetter("func_code")
