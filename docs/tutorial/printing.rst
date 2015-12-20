@@ -28,69 +28,23 @@ discussed in this tutorial.
 Setting up Pretty Printing
 ==========================
 
-If all you want is the best pretty printing, use the ``init_printing()``
-function.  This will automatically enable the best printer available in your
-environment.
+Pretty printing is enabled automatically for IPython's sessions, best
+printer is used by default (i.e. `\LaTeX` in the IPython QTConsole or
+notebooks and Unicode pretty printer in the IPython console).
 
-    >>> from sympy import init_printing
-    >>> init_printing() # doctest: +SKIP
+  .. image:: ../pics/ipythonconsole.png
 
-If you plan to work in an interactive calculator-type session, the
-``init_session()`` function will automatically import everything in SymPy,
-create some common Symbols, setup plotting, and run ``init_printing()``.
+If you want manually configure pretty printing, please use the
+``init_printing()`` function.  Without arguments it will just automatically
+enable the best printer available in your environment.
 
-    >>> from sympy import init_session
-    >>> init_session() # doctest: +SKIP
+To explicitly not use `\LaTeX`, pass ``use_latex=False`` to
+``init_printing()`` or ``init_session()``.  To explicitly not use Unicode,
+pass ``use_unicode=False``.
 
-    ::
-
-       Python console for SymPy 0.7.3 (Python 2.7.5-64-bit) (ground types: gmpy)
-
-       These commands were executed:
-       >>> from __future__ import division
-       >>> from sympy import *
-       >>> x, y, z, t = symbols('x y z t')
-       >>> k, m, n = symbols('k m n', integer=True)
-       >>> f, g, h = symbols('f g h', cls=Function)
-       >>> init_printing() # doctest: +SKIP
-
-       Documentation can be found at http://www.sympy.org
-
-    >>>
-
-In any case, this is what will happen:
-
-- In the IPython QTConsole, if `\LaTeX` is installed, it will enable a printer
-  that uses `\LaTeX`.
-
-  .. image:: ../pics/ipythonqtconsole.png
-     :height: 500
-
-  If `\LaTeX` is not installed, but Matplotlib is installed, it will use the
-  Matplotlib rendering engine. If Matplotlib is not installed, it uses the
-  Unicode pretty printer.
-
-- In the IPython notebook, it will use MathJax to render `\LaTeX`.
-
-  .. image:: ../pics/ipythonnotebook.png
-     :height: 250
-
-- In an IPython console session, or a regular Python session, it will use the
-  Unicode pretty printer if the terminal supports Unicode.
-
-  .. image:: ../pics/consoleunicode.png
-     :width: 700
-
-- In a terminal that does not support Unicode, the ASCII pretty printer is
-  used.
-
-  .. image:: ../pics/consoleascii.png
-     :width: 700
-
-To explicitly not use `\LaTeX`, pass ``use_latex=False`` to ``init_printing()``
-or ``init_session()``.  To explicitly not use Unicode, pass
-``use_unicode=False``.
-
+For convinience, the ``init_session()`` function is available, it will
+automatically import everything in SymPy, create some common Symbols, setup
+plotting, and run ``init_printing()``.
 
 Printing Functions
 ==================
@@ -148,8 +102,8 @@ must pass ``use_unicode=False``.
 ``pprint()`` prints the output to the screen.  If you want the string form,
 use ``pretty()``.
 
-    >>> pretty(Integral(sqrt(1/x), x), use_unicode=False)
-    '  /          \n |           \n |     ___   \n |    / 1    \n |   /  -  dx\n | \\/   x    \n |           \n/            '
+    >>> pretty(sqrt(1/x), use_unicode=False)
+    '    ___\n   / 1 \n  /  - \n\\/   x '
     >>> print(pretty(Integral(sqrt(1/x), x), use_unicode=False))
       /
      |
