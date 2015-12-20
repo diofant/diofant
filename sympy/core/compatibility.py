@@ -49,7 +49,6 @@ if PY3:
     get_function_name = operator.attrgetter("__name__")
 
     import builtins
-    from tokenize import tokenize
 else:
     import codecs
     import types
@@ -62,7 +61,6 @@ else:
     get_function_name = operator.attrgetter("func_name")
 
     import __builtin__ as builtins
-    from tokenize import generate_tokens as tokenize
 
 
 def with_metaclass(meta, *bases):
