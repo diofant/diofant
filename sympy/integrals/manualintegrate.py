@@ -18,10 +18,11 @@ To enable simple substitutions, add the match to find_substitutions.
 """
 
 from collections import namedtuple
+from functools import reduce
+
 from strategies.core import switch, do_one, null_safe, condition
 
 import sympy
-from sympy.core.compatibility import reduce
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 
 

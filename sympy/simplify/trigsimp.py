@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import reduce
 
 from strategies.core import identity
 from strategies.tree import greedy
@@ -7,7 +8,7 @@ from sympy.core.cache import cacheit
 from sympy.core import (sympify, Basic, S, Expr, expand_mul, factor_terms,
                         Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols,
                         Wild, expand)
-from sympy.core.compatibility import ordered, reduce, iterable
+from sympy.core.compatibility import ordered, iterable
 from sympy.core.numbers import I, Integer
 from sympy.core.function import count_ops, _mexpand
 from sympy.functions.elementary.trigonometric import TrigonometricFunction

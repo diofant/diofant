@@ -1,10 +1,11 @@
 import random
 from collections import defaultdict
+from functools import reduce
 
 from mpmath.libmp.libintmath import ifac
 
 from sympy.core import Basic
-from sympy.core.compatibility import is_sequence, reduce
+from sympy.core.compatibility import is_sequence
 from sympy.utilities.iterables import (flatten, has_variety, minlex,
                                        has_dups, runs)
 from sympy.polys.polytools import lcm

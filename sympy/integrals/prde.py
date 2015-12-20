@@ -15,6 +15,8 @@ the right hand side of the equation (i.e., qi in k[t]).  See the docstring of
 each function for more information.
 """
 
+from functools import reduce
+
 from sympy.core import Dummy, ilcm, Add, Mul, Pow, S
 from sympy.matrices import Matrix, zeros, eye
 from sympy.solvers import solve
@@ -26,7 +28,6 @@ from sympy.integrals.risch import (gcdex_diophantine, frac_in, derivation,
                                    recognize_log_derivative)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,
                                  bound_degree, spde, solve_poly_rde)
-from sympy.core.compatibility import reduce
 from sympy.utilities.misc import debug
 
 

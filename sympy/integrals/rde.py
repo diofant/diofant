@@ -21,10 +21,10 @@ See Chapter 6 of "Symbolic Integration I: Transcendental Functions" by
 Manuel Bronstein.  See also the docstring of risch.py.
 """
 
+from functools import reduce
 from operator import mul
 
 from sympy.core import oo
-from sympy.core.compatibility import reduce
 from sympy.core.symbol import Dummy
 from sympy.polys import Poly, gcd, ZZ, cancel
 from sympy.integrals.risch import (gcdex_diophantine, frac_in, derivation,

@@ -1,7 +1,9 @@
 """Tools for solving inequalities and systems of inequalities. """
 
+from functools import reduce
+
 from sympy.core import Symbol, Dummy
-from sympy.core.compatibility import iterable, reduce
+from sympy.core.compatibility import iterable
 from sympy.sets import Interval
 from sympy.core.relational import Relational, Eq, Ge, Lt
 from sympy.sets.sets import FiniteSet, Union, Intersection

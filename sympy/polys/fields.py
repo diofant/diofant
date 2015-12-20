@@ -1,8 +1,8 @@
 """Sparse rational function fields. """
 
+from functools import reduce
 from operator import add, mul, lt, le, gt, ge
 
-from sympy.core.compatibility import reduce
 from sympy.core.expr import Expr
 from sympy.core.symbol import Symbol
 from sympy.core.sympify import CantSympify, sympify

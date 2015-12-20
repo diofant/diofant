@@ -1,5 +1,6 @@
 """Algorithms for computing symbolic roots of polynomials. """
 
+from functools import reduce
 import math
 
 from sympy.core.symbol import Dummy, Symbol, symbols
@@ -22,7 +23,6 @@ from sympy.polys.polyquinticconst import PolyQuintic
 from sympy.polys.rationaltools import together
 from sympy.simplify import simplify, powsimp
 from sympy.utilities import public
-from sympy.core.compatibility import reduce
 
 
 def roots_linear(f):

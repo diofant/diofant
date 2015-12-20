@@ -1,5 +1,7 @@
 """Computational algebraic field theory. """
 
+from functools import reduce
+
 from mpmath import pslq, mp
 
 from sympy import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
@@ -27,7 +29,6 @@ from sympy.simplify.radsimp import _split_gcd
 from sympy.simplify.simplify import _is_sum_surds
 from sympy.ntheory import sieve
 from sympy.ntheory.factor_ import divisors
-from sympy.core.compatibility import reduce
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):

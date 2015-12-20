@@ -1,4 +1,5 @@
 import collections
+from functools import reduce
 from types import FunctionType
 
 from sympy.core.add import Add
@@ -11,14 +12,14 @@ from sympy.core.symbol import Symbol, Dummy, symbols
 from sympy.core.numbers import Integer, ilcm, Rational, Float
 from sympy.core.singleton import S
 from sympy.core.sympify import sympify
-from sympy.core.compatibility import is_sequence, default_sort_key, NotIterable
+from sympy.core.compatibility import (is_sequence, default_sort_key,
+                                      NotIterable, as_int)
 from sympy.polys import PurePoly, roots, cancel, gcd
 from sympy.simplify import simplify as _simplify, signsimp, nsimplify
 from sympy.utilities.iterables import flatten
 from sympy.functions.elementary.miscellaneous import sqrt, Max, Min
 from sympy.functions import exp, factorial
 from sympy.printing import sstr
-from sympy.core.compatibility import reduce, as_int
 
 
 def _iszero(x):

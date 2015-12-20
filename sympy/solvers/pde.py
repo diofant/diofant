@@ -33,12 +33,13 @@ more information on each (run help(pde)):
 
 """
 
+from functools import reduce
 from itertools import combinations_with_replacement
 import operator
 
 from sympy.simplify import simplify
 from sympy.core import Add, S
-from sympy.core.compatibility import reduce, is_sequence
+from sympy.core.compatibility import is_sequence
 from sympy.core.function import Function, expand, AppliedUndef, Subs
 from sympy.core.relational import Equality, Eq
 from sympy.core.symbol import Symbol, Wild, symbols

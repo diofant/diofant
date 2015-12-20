@@ -26,7 +26,6 @@ Renamed function attributes:
       `get_function_name()`
 
 Moved modules:
-    * `reduce()`
     * `StringIO()`
     * `cStringIO()` (same as `StingIO()` in Python 3)
     * Python 2 `__builtins__`, access with Python 3 name, `builtins`
@@ -57,7 +56,6 @@ if PY3:
     get_function_name = operator.attrgetter("__name__")
 
     import builtins
-    from functools import reduce
     from io import StringIO
     cStringIO = StringIO
 
@@ -80,7 +78,6 @@ else:
     get_function_name = operator.attrgetter("func_name")
 
     import __builtin__ as builtins
-    reduce = reduce
     from StringIO import StringIO
     from cStringIO import StringIO as cStringIO
 
