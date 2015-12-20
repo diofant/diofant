@@ -24,8 +24,6 @@ Metaclasses:
                 pass
 """
 
-PY3 = sys.version_info[0] > 2
-
 
 def with_metaclass(meta, *bases):
     """
