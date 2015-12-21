@@ -544,8 +544,8 @@ class Basic(metaclass=ManagedProperties):
 
     @property
     def is_comparable(self):
-        """Return True if self can be computed to a real number
-        with precision, else False.
+        """
+        Test if self can be computed to a real number with precision.
 
         Examples
         ========
@@ -562,15 +562,15 @@ class Basic(metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        if is_real and is_number:
-            return True
-        n, i = [p.evalf(2) for p in self.as_real_imag()]
+        n, i = self.as_real_imag()
+        if not self.is_Float:  # workaround for skirpichev/omg#161
+            n, i = n.evalf(2), i.evalf(2)
         if not i.is_Number or not n.is_Number:
             return False
-        if i and i._prec > 1:
+        if i and (i._prec > 1 or i._prec == -1):
             return False
-        if not i and i._prec == -1:
-            if n._prec > 1:
+        if not i and (i._prec > 1 or i._prec == -1):
+            if n._prec > 1 or n._prec == -1:
                 return True
 
     @property
