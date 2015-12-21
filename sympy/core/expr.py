@@ -2434,6 +2434,7 @@ class Expr(Basic, EvalfMixin):
         -x
         """
         from sympy import collect, Dummy, Order, Rational, Symbol
+
         if x is None:
             syms = self.atoms(Symbol)
             if not syms:
@@ -2441,6 +2442,9 @@ class Expr(Basic, EvalfMixin):
             elif len(syms) > 1:
                 raise ValueError('x must be given for multivariate functions.')
             x = syms.pop()
+
+        if not x.is_Symbol:
+            raise NotImplementedError("x is not a symbol")
 
         if not self.has(x):
             if n is None:

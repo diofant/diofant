@@ -3837,7 +3837,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
             dict_ = Poly(ser, x).as_dict()
         # Order term present
         else:
-            tseries = series(ser, x=x0, n=n+1)
+            tseries = series(ser, x=x, x0=x0, n=n + 1)
             # Removing order
             dict_ = Poly(list(ordered(tseries.args))[: -1], x).as_dict()
         # Fill in with zeros, if coefficients are zero.
