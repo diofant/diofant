@@ -195,10 +195,8 @@ class PythonRational(DefaultPrinting, PicklableWithSlots, DomainElement):
 
         return self.new(p**exp, q**exp)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.p != 0
-
-    __bool__ = __nonzero__
 
     def __eq__(self, other):
         if isinstance(other, PythonRational):

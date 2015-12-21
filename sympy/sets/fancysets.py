@@ -413,10 +413,8 @@ class Range(Set):
     def __len__(self):
         return int((self.stop - self.start)//self.step)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True
-
-    __bool__ = __nonzero__
 
     def _ith_element(self, i):
         return self.start + i*self.step

@@ -478,10 +478,8 @@ class ZeroMatrix(MatrixExpr):
     def _entry(self, i, j):
         return S.Zero
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
-
-    __bool__ = __nonzero__
 
 
 def matrix_symbols(expr):

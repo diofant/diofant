@@ -832,10 +832,8 @@ class Float(Number):
     def _eval_is_zero(self):
         return self._mpf_ == _mpf_zero
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self._mpf_ != _mpf_zero
-
-    __bool__ = __nonzero__
 
     def __neg__(self):
         return Float._new(mlib.mpf_neg(self._mpf_), self._prec)
@@ -2093,10 +2091,8 @@ class Zero(IntegerConstant, metaclass=Singleton):
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
-
-    __bool__ = __nonzero__
 
 
 class One(IntegerConstant, metaclass=Singleton):
