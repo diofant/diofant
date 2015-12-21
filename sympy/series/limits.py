@@ -104,7 +104,7 @@ class Limit(Expr):
         if isinstance(dir, str):
             dir = Symbol(dir)
         elif not isinstance(dir, Symbol):
-            raise TypeError("direction must be of type basestring or Symbol, not %s" % type(dir))
+            raise TypeError("direction must be of type str or Symbol, not %s" % type(dir))
         if str(dir) not in ('+', '-', 'real'):
             raise ValueError(
                 "direction must be either '+' or '-' or 'real', not %s" % dir)

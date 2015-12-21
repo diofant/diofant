@@ -53,9 +53,6 @@ class PrettyPrinter(Printer):
     def _print_stringPict(self, e):
         return e
 
-    def _print_basestring(self, e):
-        return prettyForm(e)
-
     def _print_atan2(self, e):
         pform = prettyForm(*self._print_seq(e.args).parens())
         pform = prettyForm(*pform.left('atan2'))
