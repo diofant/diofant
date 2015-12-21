@@ -71,11 +71,10 @@ import sys
 import os
 import shutil
 import tempfile
-from subprocess import STDOUT, CalledProcessError
+from subprocess import STDOUT, CalledProcessError, check_output
 from string import Template
 
 from sympy.core.cache import cacheit
-from sympy.core.compatibility import check_output
 from sympy.core.function import Lambda
 from sympy.core.relational import Eq
 from sympy.core.symbol import Dummy, Symbol

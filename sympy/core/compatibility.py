@@ -4,9 +4,7 @@ we support. Also some functions that are needed SymPy-wide and are located
 here for easy import.
 """
 
-import operator
 import os
-import sys
 from collections import defaultdict
 
 from sympy.external import import_module
@@ -65,7 +63,6 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     True
     >>> iterable("no", exclude=str)
     False
-
     """
     try:
         iter(i)
@@ -140,7 +137,6 @@ def as_int(n):
     Traceback (most recent call last):
     ...
     ValueError: ... is not an integer
-
     """
     try:
         result = int(n)
@@ -152,7 +148,8 @@ def as_int(n):
 
 
 def default_sort_key(item, order=None):
-    """Return a key that can be used for sorting.
+    """
+    Return a key that can be used for sorting.
 
     The key has the structure:
 
@@ -193,7 +190,6 @@ def default_sort_key(item, order=None):
     >>> default_sort_key(2)
     ((1, 0, 'Number'), (0, ()), (), 2)
 
-
     While sort_key is a method only defined for SymPy objects,
     default_sort_key will accept anything as an argument so it is
     more robust as a sorting key. For the following, using key=
@@ -213,8 +209,8 @@ def default_sort_key(item, order=None):
     >>> min(a, key=default_sort_key)
     2
 
-    Note
-    ----
+    Notes
+    =====
 
     The key returned is useful for getting items into a canonical order
     that will be the same across platforms. It is not directly useful for
@@ -266,7 +262,6 @@ def default_sort_key(item, order=None):
     sympy.core.expr.Expr.as_ordered_factors
     sympy.core.expr.Expr.as_ordered_terms
     """
-
     from sympy.core import S, Basic
     from sympy.core.sympify import sympify, SympifyError
     from sympy.core.compatibility import iterable
@@ -288,8 +283,7 @@ def default_sort_key(item, order=None):
 
         args = [default_sort_key(arg, order=order) for arg in args]
 
-        if unordered:
-            # e.g. dict, set
+        if unordered:  # e.g. dict, set
             args = sorted(args)
 
         cls_index, args = 10, (len(args), tuple(args))
@@ -358,22 +352,18 @@ def ordered(seq, keys=None, default=True, warn=False):
     two items appear in their original order (i.e. the sorting is stable):
 
     >>> list(ordered([y + 2, x + 2, x**2 + y + 3],
-    ...    count_ops, default=False, warn=False))
-    ...
+    ...              count_ops, default=False, warn=False))
     [y + 2, x + 2, x**2 + y + 3]
 
     The default_sort_key allows the tie to be broken:
 
     >>> list(ordered([y + 2, x + 2, x**2 + y + 3]))
-    ...
     [x + 2, y + 2, x**2 + y + 3]
 
     Here, sequences are sorted by length, then sum:
 
-    >>> seq, keys = [[[1, 2, 1], [0, 3, 1], [1, 1, 3], [2], [1]], [
-    ...    lambda x: len(x),
-    ...    lambda x: sum(x)]]
-    ...
+    >>> seq, keys = [[[1, 2, 1], [0, 3, 1], [1, 1, 3], [2], [1]],
+    ...              [lambda x: len(x), lambda x: sum(x)]]
     >>> list(ordered(seq, keys, default=False, warn=False))
     [[1], [2], [1, 2, 1], [0, 3, 1], [1, 1, 3]]
 
@@ -384,7 +374,6 @@ def ordered(seq, keys=None, default=True, warn=False):
     Traceback (most recent call last):
     ...
     ValueError: not enough keys to break ties
-
 
     Notes
     =====
@@ -410,7 +399,6 @@ def ordered(seq, keys=None, default=True, warn=False):
     there were several criteria used to define the sort order, then this
     function would be good at returning that quickly if the first group
     of candidates is small relative to the number of items being processed.
-
     """
     d = defaultdict(list)
     if keys:
@@ -436,8 +424,7 @@ def ordered(seq, keys=None, default=True, warn=False):
                 from sympy.utilities.iterables import uniq
                 u = list(uniq(d[k]))
                 if len(u) > 1:
-                    raise ValueError(
-                        'not enough keys to break ties: %s' % u)
+                    raise ValueError('not enough keys to break ties: %s' % u)
         for v in d[k]:
             yield v
         d.pop(k)
@@ -491,10 +478,3 @@ SYMPY_INTS = (int,)
 
 if GROUND_TYPES == 'gmpy':
     SYMPY_INTS += (type(gmpy.mpz(0)),)
-
-# check_output() is new in Python 2.7
-try:
-    from subprocess import check_output
-except ImportError:
-    # running on platform like App Engine, no subprocess at all
-    pass
