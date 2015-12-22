@@ -26,10 +26,3 @@ all_classes = set()
 class BasicMeta(type):
     def __init__(cls, *args, **kwargs):
         all_classes.add(cls)
-
-    def __lt__(cls, other):
-        return cls.__name__ < other.__name__
-
-
-    def __gt__(cls, other):
-        return cls.__name__ > other.__name__

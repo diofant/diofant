@@ -168,8 +168,8 @@ class Basic(metaclass=ManagedProperties):
         # following lines:
         if self is other:
             return 0
-        n1 = self.__class__
-        n2 = other.__class__
+        n1 = self.__class__.__name__
+        n2 = other.__class__.__name__
         c = (n1 > n2) - (n1 < n2)
         if c:
             return c
