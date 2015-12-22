@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from mpmath import fac
 
 from sympy.core import Basic, Rational

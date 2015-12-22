@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from random import randint
 
 from sympy.core.singleton import S

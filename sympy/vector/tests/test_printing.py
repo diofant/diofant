@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from sympy import Integral, latex, Function
 from sympy import pretty as xpretty
 from sympy.vector import CoordSysCartesian, Vector, express
+
 from sympy.abc import a, b, c
 
 
