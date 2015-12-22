@@ -1718,7 +1718,8 @@ class preorder_traversal(object):
                     yield subtree
 
     def skip(self):
-        """Skip yielding current node's (last yielded node's) subtrees.
+        """
+        Skip yielding current node's (last yielded node's) subtrees.
 
         Examples
         ========
