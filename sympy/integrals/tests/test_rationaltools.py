@@ -4,7 +4,7 @@ from sympy.integrals.rationaltools import ratint, ratint_logpart, log_to_atan
 
 from sympy.abc import a, b, x, t
 
-half = Integer(1)/2
+half = Rational(1, 2)
 
 
 def test_ratint():
@@ -51,7 +51,7 @@ def test_ratint():
     g = x**6 - 5*x**4 + 5*x**2 + 4
 
     assert ratint(f/g, x) == \
-        atan(x) + atan(x**3) + atan(x/2 - 3*x**Integer(3)/2 + Integer(1)/2*x**5)
+        atan(x) + atan(x**3) + atan(x/2 - 3*x**3/2 + Rational(1, 2)*x**5)
 
     f = x**7 - 24*x**4 - 4*x**2 + 8*x - 8
     g = x**8 + 6*x**6 + 12*x**4 + 8*x**2
@@ -61,14 +61,14 @@ def test_ratint():
 
     assert ratint((x**3*f)/(x*g), x) == \
         -(12 - 16*x + 6*x**2 - 14*x**3)/(4 + 4*x**2 + x**4) - \
-        5*sqrt(2)*atan(x*sqrt(2)/2) + Integer(1)/2*x**2 - 3*log(2 + x**2)
+        5*sqrt(2)*atan(x*sqrt(2)/2) + Rational(1, 2)*x**2 - 3*log(2 + x**2)
 
     f = x**5 - x**4 + 4*x**3 + x**2 - x + 5
     g = x**4 - 2*x**3 + 5*x**2 - 4*x + 4
 
     assert ratint(f/g, x) == \
-        x + Integer(1)/2*x**2 + Integer(1)/2*log(2 - x + x**2) - (4*x - 9)/(14 - 7*x + 7*x**2) + \
-        13*sqrt(7)*atan(-Integer(1)/7*sqrt(7) + 2*x*sqrt(7)/7)/49
+        x + Rational(1, 2)*x**2 + Rational(1, 2)*log(2 - x + x**2) - (4*x - 9)/(14 - 7*x + 7*x**2) + \
+        13*sqrt(7)*atan(-Rational(1, 7)*sqrt(7) + 2*x*sqrt(7)/7)/49
 
     assert ratint(1/(x**2 + x + 1), x) == \
         2*sqrt(3)*atan(sqrt(3)/3 + 2*x*sqrt(3)/3)/3
@@ -82,8 +82,8 @@ def test_ratint():
         I*3**half*log(half + x + half*I*3**half)/3
 
     assert ratint(1/(x**3 + 1), x, extended_real=False) == log(1 + x)/3 + \
-        (-Integer(1)/6 + I*3**half/6)*log(-half + x + I*3**half/2) + \
-        (-Integer(1)/6 - I*3**half/6)*log(-half + x - I*3**half/2)
+        (-Rational(1, 6) + I*3**half/6)*log(-half + x + I*3**half/2) + \
+        (-Rational(1, 6) - I*3**half/6)*log(-half + x - I*3**half/2)
 
     # issue 4991
     assert ratint(1/(x*(a + b*x)**3), x) == \
@@ -131,7 +131,7 @@ def test_issue_5981():
 
 
 def test_log_to_atan():
-    f, g = (Poly(x + Integer(1)/2, x, domain='QQ'), Poly(sqrt(3)/2, x, domain='EX'))
+    f, g = (Poly(x + Rational(1, 2), x, domain='QQ'), Poly(sqrt(3)/2, x, domain='EX'))
     fg_ans = 2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
     assert log_to_atan(f, g) == fg_ans
     assert log_to_atan(g, f) == -fg_ans

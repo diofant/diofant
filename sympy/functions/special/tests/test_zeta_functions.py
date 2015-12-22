@@ -148,14 +148,14 @@ def test_lerchphi_expansion():
     assert myexpand(lerchphi(z, -3, a), None)
 
     # polylog reduction
-    assert myexpand(lerchphi(z, s, Integer(1)/2),
+    assert myexpand(lerchphi(z, s, Rational(1, 2)),
                     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z)
                                 - polylog(s, polar_lift(-1)*sqrt(z))/sqrt(z)))
     assert myexpand(lerchphi(z, s, 2), -1/z + polylog(s, z)/z**2)
-    assert myexpand(lerchphi(z, s, Integer(3)/2), None)
-    assert myexpand(lerchphi(z, s, Integer(7)/3), None)
-    assert myexpand(lerchphi(z, s, -Integer(1)/3), None)
-    assert myexpand(lerchphi(z, s, -Integer(5)/2), None)
+    assert myexpand(lerchphi(z, s, Rational(3, 2)), None)
+    assert myexpand(lerchphi(z, s, Rational(7, 3)), None)
+    assert myexpand(lerchphi(z, s, -Rational(1, 3)), None)
+    assert myexpand(lerchphi(z, s, -Rational(5, 2)), None)
 
     # hurwitz zeta reduction
     assert myexpand(lerchphi(-1, s, a),

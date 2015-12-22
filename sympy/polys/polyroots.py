@@ -217,7 +217,7 @@ def _roots_quartic_euler(p, q, r, a):
 
     >>> from sympy import S
     >>> from sympy.polys.polyroots import _roots_quartic_euler
-    >>> p, q, r = -Integer(64)/5, -Integer(512)/125, -Integer(1024)/3125
+    >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
     >>> _roots_quartic_euler(p, q, r, Integer(0))[0]
     -sqrt(32*sqrt(5)/125 + 16/5) + 4*sqrt(5)/5
     """

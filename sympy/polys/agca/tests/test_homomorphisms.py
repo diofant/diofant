@@ -32,7 +32,7 @@ def test_operations():
     assert f != i
     assert (f != F.identity_hom()) is False
     assert 2*f == f*2 == homomorphism(F, F, [[2, 0], [0, 2]])
-    assert f/2 == homomorphism(F, F, [[Integer(1)/2, 0], [0, Integer(1)/2]])
+    assert f/2 == homomorphism(F, F, [[Rational(1, 2), 0], [0, Rational(1, 2)]])
     assert f + g == homomorphism(F, F, [[1, 0], [1, x + 1]])
     assert f - g == homomorphism(F, F, [[1, 0], [-1, 1 - x]])
     assert f*g == g == g*f

@@ -284,25 +284,25 @@ def test_Domain__contains__():
     assert (17 in QQ[x, y]) is True
     assert (17 in RR[x, y]) is True
 
-    assert (-Integer(1)/7 in EX) is True
-    assert (-Integer(1)/7 in ZZ) is False
-    assert (-Integer(1)/7 in QQ) is True
-    assert (-Integer(1)/7 in RR) is True
-    assert (-Integer(1)/7 in CC) is True
-    assert (-Integer(1)/7 in ALG) is True
-    assert (-Integer(1)/7 in ZZ[x, y]) is False
-    assert (-Integer(1)/7 in QQ[x, y]) is True
-    assert (-Integer(1)/7 in RR[x, y]) is True
+    assert (-Rational(1, 7) in EX) is True
+    assert (-Rational(1, 7) in ZZ) is False
+    assert (-Rational(1, 7) in QQ) is True
+    assert (-Rational(1, 7) in RR) is True
+    assert (-Rational(1, 7) in CC) is True
+    assert (-Rational(1, 7) in ALG) is True
+    assert (-Rational(1, 7) in ZZ[x, y]) is False
+    assert (-Rational(1, 7) in QQ[x, y]) is True
+    assert (-Rational(1, 7) in RR[x, y]) is True
 
-    assert (Integer(3)/5 in EX) is True
-    assert (Integer(3)/5 in ZZ) is False
-    assert (Integer(3)/5 in QQ) is True
-    assert (Integer(3)/5 in RR) is True
-    assert (Integer(3)/5 in CC) is True
-    assert (Integer(3)/5 in ALG) is True
-    assert (Integer(3)/5 in ZZ[x, y]) is False
-    assert (Integer(3)/5 in QQ[x, y]) is True
-    assert (Integer(3)/5 in RR[x, y]) is True
+    assert (Rational(3, 5) in EX) is True
+    assert (Rational(3, 5) in ZZ) is False
+    assert (Rational(3, 5) in QQ) is True
+    assert (Rational(3, 5) in RR) is True
+    assert (Rational(3, 5) in CC) is True
+    assert (Rational(3, 5) in ALG) is True
+    assert (Rational(3, 5) in ZZ[x, y]) is False
+    assert (Rational(3, 5) in QQ[x, y]) is True
+    assert (Rational(3, 5) in RR[x, y]) is True
 
     assert (3.0 in EX) is True
     assert (3.0 in ZZ) is True
@@ -400,7 +400,7 @@ def test_Domain__contains__():
     assert (x**2 + y**2 in QQ[x, y]) is True
     assert (x**2 + y**2 in RR[x, y]) is True
 
-    assert (Integer(3)/2*x/(y + 1) - z in QQ[x, y, z]) is False
+    assert (Rational(3, 2)*x/(y + 1) - z in QQ[x, y, z]) is False
 
 
 def test_Domain_get_ring():

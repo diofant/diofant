@@ -13,9 +13,9 @@ j = Symbol('k', integer=True, positive=True)
 
 def test_K():
     assert K(0) == pi/2
-    assert K(Integer(1)/2) == 8*pi**(Integer(3)/2)/gamma(-Integer(1)/4)**2
+    assert K(Rational(1, 2)) == 8*pi**Rational(3, 2)/gamma(-Rational(1, 4))**2
     assert K(1) == zoo
-    assert K(-1) == gamma(Integer(1)/4)**2/(4*sqrt(2*pi))
+    assert K(-1) == gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
     assert K(oo) == 0
     assert K(-oo) == 0
     assert K(I*oo) == 0
@@ -98,8 +98,8 @@ def test_E():
     assert E(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (S.One,), z)
     assert tn(E(z), (pi/2)*hyper((-S.Half, S.Half), (S.One,), z))
     assert E(z).rewrite(meijerg) == \
-        -meijerg(((S.Half, Integer(3)/2), []), ((S.Zero,), (S.Zero,)), -z)/4
-    assert tn(E(z), -meijerg(((S.Half, Integer(3)/2), []), ((S.Zero,), (S.Zero,)), -z)/4)
+        -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4
+    assert tn(E(z), -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4)
 
     assert E(z, m).series(z) == \
         z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)

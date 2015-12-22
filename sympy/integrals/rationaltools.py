@@ -273,7 +273,7 @@ def log_to_atan(f, g):
         >>> from sympy import Poly, sqrt, S
         >>> log_to_atan(Poly(x, x, domain='ZZ'), Poly(1, x, domain='ZZ'))
         2*atan(x)
-        >>> log_to_atan(Poly(x + Integer(1)/2, x, domain='QQ'),
+        >>> log_to_atan(Poly(x + Rational(1, 2), x, domain='QQ'),
         ... Poly(sqrt(3)/2, x, domain='EX'))
         2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
 
@@ -318,7 +318,7 @@ def log_to_real(h, q, x, t):
         >>> from sympy.integrals.rationaltools import log_to_real
         >>> from sympy.abc import x, y
         >>> from sympy import Poly, sqrt, S
-        >>> log_to_real(Poly(x + 3*y/2 + Integer(1)/2, x, domain='QQ[y]'),
+        >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x, domain='QQ[y]'),
         ... Poly(3*y**2 + 1, y, domain='ZZ'), x, y)
         2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3
         >>> log_to_real(Poly(x**2 - 1, x, domain='ZZ'),

@@ -43,7 +43,7 @@ def test_count_ops_visual():
     assert count(Integer(7)) is S.Zero
     assert count(-1) == NEG
     assert count(-2) == NEG
-    assert count(Integer(2)/3) == DIV
+    assert count(Rational(2, 3)) == DIV
     assert count(pi/3) == DIV
     assert count(-pi/3) == DIV + NEG
     assert count(I - 1) == SUB
@@ -65,7 +65,7 @@ def test_count_ops_visual():
     assert count(-2*x**2) == POW + MUL + NEG
 
     assert count(x + pi/3) == ADD + DIV
-    assert count(x + Integer(1)/3) == ADD + DIV
+    assert count(x + Rational(1, 3)) == ADD + DIV
     assert count(x + y) == ADD
     assert count(x - y) == SUB
     assert count(y - x) == SUB

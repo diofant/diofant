@@ -223,7 +223,7 @@ def test_mul():
     assert (-2*x**3/9).subs(-x/3, z) == -2*x*z**2
     assert (-2*x**3/9).subs(-2*x, z) == z*x**2/9
     assert (-2*x**3/9).subs(2*x, z) == -z*x**2/9
-    assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*(Integer(1)/7)**2*z**2
+    assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*(Rational(1, 7))**2*z**2
     assert (4*x).subs(-2*x, z) == 4*x  # try keep subs literal
 
 

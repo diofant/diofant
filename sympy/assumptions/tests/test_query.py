@@ -1916,7 +1916,7 @@ def test_algebraic():
     assert ask(Q.algebraic(I*sqrt(3))) is True
     assert ask(Q.algebraic(sqrt(1 + I*sqrt(3)))) is True
 
-    assert ask(Q.algebraic((1 + I*sqrt(3)**(Integer(17)/31)))) is True
+    assert ask(Q.algebraic((1 + I*sqrt(3)**Rational(17, 31)))) is True
     assert ask(Q.algebraic((1 + I*sqrt(3)**(Integer(17)/pi)))) is False
 
     for f in [exp, sin, tan, asin, atan, cos]:

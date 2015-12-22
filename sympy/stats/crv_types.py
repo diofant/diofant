@@ -2008,7 +2008,7 @@ class StudentTDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         nu = self.nu
-        return 1/(sqrt(nu)*beta_fn(Integer(1)/2, nu/2))*(1 + x**2/nu)**(-(nu + 1)/2)
+        return 1/(sqrt(nu)*beta_fn(Rational(1, 2), nu/2))*(1 + x**2/nu)**(-(nu + 1)/2)
 
 
 def StudentT(name, nu):

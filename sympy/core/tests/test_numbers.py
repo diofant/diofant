@@ -676,7 +676,7 @@ def test_Div_By_Zero():
     assert 1/Float(0) == Float('inf')
     assert 0/Integer(0) == nan
     assert 0/Float(0) == nan
-    assert Integer(0)/0 == nan
+    assert Rational(0, 0) == nan
     assert Float(0)/0 == nan
     assert -1/Integer(0) == zoo
     assert -1/Float(0) == Float('-inf')
@@ -846,7 +846,7 @@ def test_powers_Integer():
     assert Integer(-1) ** S.NaN == S.NaN
 
     # check for exact roots
-    assert Integer(-1) ** Rational(6, 5) == - (-1)**(Integer(1)/5)
+    assert Integer(-1) ** Rational(6, 5) == - (-1)**Rational(1, 5)
     assert sqrt(Integer(4)) == 2
     assert sqrt(Integer(-4)) == I * 2
     assert Integer(16) ** Rational(1, 4) == 2
@@ -859,14 +859,14 @@ def test_powers_Integer():
 
     # not exact roots
     assert sqrt(-3) == I*sqrt(3)
-    assert (3) ** (Integer(3)/2) == 3 * sqrt(3)
-    assert (-3) ** (Integer(3)/2) == - 3 * sqrt(-3)
-    assert (-3) ** (Integer(5)/2) == 9 * I * sqrt(3)
-    assert (-3) ** (Integer(7)/2) == - I * 27 * sqrt(3)
-    assert (2) ** (Integer(3)/2) == 2 * sqrt(2)
-    assert (2) ** (Integer(-3)/2) == sqrt(2) / 4
-    assert (81) ** (Integer(2)/3) == 9 * (Integer(3) ** (Integer(2)/3))
-    assert (-81) ** (Integer(2)/3) == 9 * (Integer(-3) ** (Integer(2)/3))
+    assert (3) ** (Rational(3, 2)) == 3 * sqrt(3)
+    assert (-3) ** (Rational(3, 2)) == - 3 * sqrt(-3)
+    assert (-3) ** (Rational(5, 2)) == 9 * I * sqrt(3)
+    assert (-3) ** (Rational(7, 2)) == - I * 27 * sqrt(3)
+    assert (2) ** (Rational(3, 2)) == 2 * sqrt(2)
+    assert (2) ** (Rational(-3, 2)) == sqrt(2) / 4
+    assert (81) ** (Rational(2, 3)) == 9 * (Integer(3) ** (Rational(2, 3)))
+    assert (-81) ** (Rational(2, 3)) == 9 * (Integer(-3) ** (Rational(2, 3)))
     assert (-3) ** Rational(-7, 3) == \
         -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
     assert (-3) ** Rational(-2, 3) == \
@@ -1431,13 +1431,13 @@ def test_issue_7742():
 
 def test_simplify_AlgebraicNumber():
     A = AlgebraicNumber
-    e = 3**(Integer(1)/6)*(3 + (135 + 78*sqrt(3))**(Integer(2)/3))/(45 + 26*sqrt(3))**(Integer(1)/3)
+    e = 3**Rational(1, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/(45 + 26*sqrt(3))**Rational(1, 3)
     assert simplify(A(e)) == A(12)  # wester test_C20
 
-    e = (41 + 29*sqrt(2))**(Integer(1)/5)
+    e = (41 + 29*sqrt(2))**Rational(1, 5)
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
 
-    e = (3 + 4*I)**(Rational(3, 2))
+    e = (3 + 4*I)**Rational(3, 2)
     assert simplify(A(e)) == A(2 + 11*I)  # issue 4401
 
 

@@ -1557,8 +1557,8 @@ class asin(InverseTrigonometricFunction):
                 (1 - sqrt(5))/4: -10,
                 (sqrt(3) - 1)/sqrt(2**3): 12,
                 (1 - sqrt(3))/sqrt(2**3): -12,
-                (sqrt(5) + 1)/4: Integer(10)/3,
-                -(sqrt(5) + 1)/4: -Integer(10)/3
+                (sqrt(5) + 1)/4: Rational(10, 3),
+                -(sqrt(5) + 1)/4: -Rational(10, 3)
             }
 
             if arg in cst_table:
@@ -1882,12 +1882,12 @@ class atan(InverseTrigonometricFunction):
                 -1/sqrt(3): -6,
                 sqrt(3): 3,
                 -sqrt(3): -3,
-                (1 + sqrt(2)): Integer(8)/3,
-                -(1 + sqrt(2)): Integer(8)/3,
+                (1 + sqrt(2)): Rational(8, 3),
+                -(1 + sqrt(2)): Rational(8, 3),
                 (sqrt(2) - 1): 8,
                 (1 - sqrt(2)): -8,
-                sqrt((5 + 2*sqrt(5))): Integer(5)/2,
-                -sqrt((5 + 2*sqrt(5))): -Integer(5)/2,
+                sqrt((5 + 2*sqrt(5))): Rational(5, 2),
+                -sqrt((5 + 2*sqrt(5))): -Rational(5, 2),
                 (2 - sqrt(3)): 12,
                 -(2 - sqrt(3)): -12
             }
@@ -2030,14 +2030,14 @@ class acot(InverseTrigonometricFunction):
                 -sqrt(3): -6,
                 (1 + sqrt(2)): 8,
                 -(1 + sqrt(2)): -8,
-                (1 - sqrt(2)): -Integer(8)/3,
-                (sqrt(2) - 1): Integer(8)/3,
+                (1 - sqrt(2)): -Rational(8, 3),
+                (sqrt(2) - 1): Rational(8, 3),
                 sqrt(5 + 2*sqrt(5)): 10,
                 -sqrt(5 + 2*sqrt(5)): -10,
                 (2 + sqrt(3)): 12,
                 -(2 + sqrt(3)): -12,
-                (2 - sqrt(3)): Integer(12)/5,
-                -(2 - sqrt(3)): -Integer(12)/5,
+                (2 - sqrt(3)): Rational(12, 5),
+                -(2 - sqrt(3)): -Rational(12, 5),
             }
 
             if arg in cst_table:

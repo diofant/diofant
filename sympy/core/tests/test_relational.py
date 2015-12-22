@@ -438,7 +438,7 @@ def test_nan_equality_exceptions():
     assert Unequality(nan, nan) is S.true
 
     # See issue #7773
-    A = (x, Integer(0), Integer(1)/3, pi, oo, -oo)
+    A = (x, Integer(0), Rational(1, 3), pi, oo, -oo)
     assert Equality(nan, random.choice(A)) is S.false
     assert Equality(random.choice(A), nan) is S.false
     assert Unequality(nan, random.choice(A)) is S.true
@@ -448,7 +448,7 @@ def test_nan_equality_exceptions():
 def test_nan_inequality_raise_errors():
     # See discussion in pull request #7776.  We test inequalities with
     # a set including examples of various classes.
-    for q in (x, Integer(0), Integer(10), Integer(1)/3, pi, Float(1.3), oo, -oo, nan):
+    for q in (x, Integer(0), Integer(10), Rational(1, 3), pi, Float(1.3), oo, -oo, nan):
         assert_all_ineq_raise_TypeError(q, nan)
 
 
@@ -470,7 +470,7 @@ def test_inequalities_symbol_name_same():
     """Using the operator and functional forms should give same results."""
     # We test all combinations from a set
     # FIXME: could replace with random selection after test passes
-    A = (x, y, Integer(0), Integer(1)/3, pi, oo, -oo)
+    A = (x, y, Integer(0), Rational(1, 3), pi, oo, -oo)
     for a in A:
         for b in A:
             assert Gt(a, b) == (a > b)
@@ -478,13 +478,13 @@ def test_inequalities_symbol_name_same():
             assert Ge(a, b) == (a >= b)
             assert Le(a, b) == (a <= b)
 
-    for b in (y, Integer(0), Integer(1)/3, pi, oo, -oo):
+    for b in (y, Integer(0), Rational(1, 3), pi, oo, -oo):
         assert Gt(x, b, evaluate=False) == (x > b)
         assert Lt(x, b, evaluate=False) == (x < b)
         assert Ge(x, b, evaluate=False) == (x >= b)
         assert Le(x, b, evaluate=False) == (x <= b)
 
-    for b in (y, Integer(0), Integer(1)/3, pi, oo, -oo):
+    for b in (y, Integer(0), Rational(1, 3), pi, oo, -oo):
         assert Gt(b, x, evaluate=False) == (b > x)
         assert Lt(b, x, evaluate=False) == (b < x)
         assert Ge(b, x, evaluate=False) == (b >= x)
@@ -496,7 +496,7 @@ def test_inequalities_symbol_name_same_complex():
     With complex non-real numbers, both should raise errors.
     """
     # FIXME: could replace with random selection after test passes
-    for a in (x, Integer(0), Integer(1)/3, pi, oo):
+    for a in (x, Integer(0), Rational(1, 3), pi, oo):
         pytest.raises(TypeError, lambda: Gt(a, I))
         pytest.raises(TypeError, lambda: a > I)
         pytest.raises(TypeError, lambda: Lt(a, I))
@@ -513,7 +513,7 @@ def test_inequalities_cant_sympify_other():
 
     bar = "foo"
 
-    for a in (x, Integer(0), Integer(1)/3, pi, I, zoo, oo, -oo, nan):
+    for a in (x, Integer(0), Rational(1, 3), pi, I, zoo, oo, -oo, nan):
         for op in (lt, gt, le, ge):
             pytest.raises(TypeError, lambda: op(a, bar))
 

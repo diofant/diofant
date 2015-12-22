@@ -48,13 +48,13 @@ def test_gamma():
 
 
 def test_suitable_origin():
-    assert Hyper_Function((Integer(1)/2,), (Integer(3)/2,))._is_suitable_origin() is True
-    assert Hyper_Function((Integer(1)/2,), (Integer(1)/2,))._is_suitable_origin() is False
-    assert Hyper_Function((Integer(1)/2,), (-Integer(1)/2,))._is_suitable_origin() is False
-    assert Hyper_Function((Integer(1)/2,), (0,))._is_suitable_origin() is False
-    assert Hyper_Function((Integer(1)/2,), (-1, 1,))._is_suitable_origin() is False
-    assert Hyper_Function((Integer(1)/2, 0), (1,))._is_suitable_origin() is False
-    assert Hyper_Function((Integer(1)/2, 1),
-            (2, -Integer(2)/3))._is_suitable_origin() is True
-    assert Hyper_Function((Integer(1)/2, 1),
-            (2, -Integer(2)/3, Integer(3)/2))._is_suitable_origin() is True
+    assert Hyper_Function((Rational(1, 2),), (Rational(3, 2),))._is_suitable_origin() is True
+    assert Hyper_Function((Rational(1, 2),), (Rational(1, 2),))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2),), (-Rational(1, 2),))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2),), (0,))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2),), (-1, 1,))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2), 0), (1,))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2), 1),
+            (2, -Rational(2, 3)))._is_suitable_origin() is True
+    assert Hyper_Function((Rational(1, 2), 1),
+            (2, -Rational(2, 3), Rational(3, 2)))._is_suitable_origin() is True

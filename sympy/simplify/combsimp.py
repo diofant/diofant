@@ -1,6 +1,6 @@
 from sympy.core import Function, S, Mul, Pow, Add
 from sympy.core.compatibility import ordered, default_sort_key
-from sympy.functions.combinatorial.factorials import binomial, CombinatorialFunction, factorial
+from sympy.functions.combinatorial.factorials import (binomial, CombinatorialFunction, factorial)
 from sympy.functions import gamma, sqrt, sin
 from sympy.polys import factor, cancel
 from sympy.utilities.timeutils import timethis
@@ -275,7 +275,7 @@ def combsimp(expr):
                 elif n < 0:
                     for k in range(-n):
                         do.append(2*y - 1 - k)
-                ng.append(y + Integer(1)/2)
+                ng.append(y + Rational(1, 2))
                 no.append(2**(2*y - 1))
                 do.append(sqrt(S.Pi))
 
@@ -290,9 +290,9 @@ def combsimp(expr):
         #
         # run of 3 args differing by 1/3 (mod 1)
         #
-        # >>> combsimp(gamma(x)*gamma(x+Integer(1)/3)*gamma(x+Integer(2)/3))
+        # >>> combsimp(gamma(x)*gamma(x+Rational(1, 3))*gamma(x+Rational(2, 3)))
         # 6*3**(-3*x - 1/2)*pi*gamma(3*x)
-        # >>> combsimp(gamma(x)*gamma(x+Integer(1)/3)*gamma(x+Integer(5)/3))
+        # >>> combsimp(gamma(x)*gamma(x+Rational(1, 3))*gamma(x+Rational(5, 3)))
         # 2*3**(-3*x - 1/2)*pi*(3*x + 2)*gamma(3*x)
         #
         def _run(coeffs):
@@ -359,7 +359,7 @@ def combsimp(expr):
 
                     # (2)
                     numer.append((2*S.Pi)**(Integer(n - 1)/2)*
-                                 n**(Integer(1)/2 - con))
+                                 n**(Rational(1, 2) - con))
                     # (3)
                     new.append(con)
 

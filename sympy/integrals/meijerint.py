@@ -115,7 +115,7 @@ def _create_lookup_table(table):
 
     # 12
     def A1(r, sign, nu):
-        return pi**(-Integer(1)/2)*(-sign*nu/2)**(1 - 2*r)
+        return pi**(-Rational(1, 2))*(-sign*nu/2)**(1 - 2*r)
 
     def tmpadd(r, sgn):
         # XXX the a**2 is bad for matching
@@ -125,18 +125,18 @@ def _create_lookup_table(table):
             a**(b - 2*r)*A1(r, sgn, b))
     tmpadd(0, 1)
     tmpadd(0, -1)
-    tmpadd(Integer(1)/2, 1)
-    tmpadd(Integer(1)/2, -1)
+    tmpadd(Rational(1, 2), 1)
+    tmpadd(Rational(1, 2), -1)
 
     # 13
     def tmpadd(r, sgn):
         add((sqrt(a + p*z**q) + sgn*sqrt(p)*z**(q/2))**b/(a + p*z**q)**r,
-            [1 - r + sgn*b/2], [1 - r - sgn*b/2], [0, Integer(1)/2], [],
+            [1 - r + sgn*b/2], [1 - r - sgn*b/2], [0, Rational(1, 2)], [],
             p*z**q/a, a**(b/2 - r)*A1(r, sgn, b))
     tmpadd(0, 1)
     tmpadd(0, -1)
-    tmpadd(Integer(1)/2, 1)
-    tmpadd(Integer(1)/2, -1)
+    tmpadd(Rational(1, 2), 1)
+    tmpadd(Rational(1, 2), -1)
     # (those after look obscure)
 
     # Section 8.4.3
@@ -144,13 +144,13 @@ def _create_lookup_table(table):
 
     # TODO can do sin^n, sinh^n by expansion ... where?
     # 8.4.4 (hyperbolic functions)
-    add(sinh(t), [], [1], [Integer(1)/2], [1, 0], t**2/4, pi**(Integer(3)/2))
-    add(cosh(t), [], [Integer(1)/2], [0], [Integer(1)/2, Integer(1)/2], t**2/4, pi**(Integer(3)/2))
+    add(sinh(t), [], [1], [Rational(1, 2)], [1, 0], t**2/4, pi**Rational(3, 2))
+    add(cosh(t), [], [Rational(1, 2)], [0], [Rational(1, 2), Rational(1, 2)], t**2/4, pi**Rational(3, 2))
 
     # Section 8.4.5
     # TODO can do t + a. but can also do by expansion... (XXX not really)
-    add(sin(t), [], [], [Integer(1)/2], [0], t**2/4, sqrt(pi))
-    add(cos(t), [], [], [0], [Integer(1)/2], t**2/4, sqrt(pi))
+    add(sin(t), [], [], [Rational(1, 2)], [0], t**2/4, sqrt(pi))
+    add(cos(t), [], [], [0], [Rational(1, 2)], t**2/4, sqrt(pi))
 
     # Section 8.5.5
     def make_log1(subs):
@@ -175,7 +175,7 @@ def _create_lookup_table(table):
          constant(log(a)) + [(Integer(1), meijerg([1, 1], [], [1], [0], t/a))],
          True)
     addi(log(abs(t - a)), constant(log(abs(a))) +
-         [(pi, meijerg([1, 1], [Integer(1)/2], [1], [0, Integer(1)/2], t/a))],
+         [(pi, meijerg([1, 1], [Rational(1, 2)], [1], [0, Rational(1, 2)], t/a))],
          True)
     # TODO log(x)/(x+a) and log(x)/(x-1) can also be done. should they
     #      be derivable?
@@ -192,29 +192,29 @@ def _create_lookup_table(table):
          True)
 
     # Section 8.4.12
-    add(Si(t), [1], [], [Integer(1)/2], [0, 0], t**2/4, sqrt(pi)/2)
-    add(Ci(t), [], [1], [0, 0], [Integer(1)/2], t**2/4, -sqrt(pi)/2)
+    add(Si(t), [1], [], [Rational(1, 2)], [0, 0], t**2/4, sqrt(pi)/2)
+    add(Ci(t), [], [1], [0, 0], [Rational(1, 2)], t**2/4, -sqrt(pi)/2)
 
     # Section 8.4.13
-    add(Shi(t), [Integer(1)/2], [], [0], [Integer(-1)/2, Integer(-1)/2], polar_lift(-1)*t**2/4,
+    add(Shi(t), [Rational(1, 2)], [], [0], [Rational(-1, 2), Rational(-1, 2)], polar_lift(-1)*t**2/4,
         t*sqrt(pi)/4)
-    add(Chi(t), [], [Integer(1)/2, 1], [0, 0], [Integer(1)/2, Integer(1)/2], t**2/4, -
+    add(Chi(t), [], [Rational(1, 2), 1], [0, 0], [Rational(1, 2), Rational(1, 2)], t**2/4, -
         pi**Rational(3, 2)/2)
 
     # generalized exponential integral
     add(expint(a, t), [], [a], [a - 1, 0], [], t)
 
     # Section 8.4.14
-    add(erf(t), [1], [], [Integer(1)/2], [0], t**2, 1/sqrt(pi))
+    add(erf(t), [1], [], [Rational(1, 2)], [0], t**2, 1/sqrt(pi))
     # TODO exp(-x)*erf(I*x) does not work
-    add(erfc(t), [], [1], [0, Integer(1)/2], [], t**2, 1/sqrt(pi))
+    add(erfc(t), [], [1], [0, Rational(1, 2)], [], t**2, 1/sqrt(pi))
     # This formula for erfi(z) yields a wrong(?) minus sign
-    # add(erfi(t), [1], [], [Integer(1)/2], [0], -t**2, I/sqrt(pi))
-    add(erfi(t), [Integer(1)/2], [], [0], [-Integer(1)/2], -t**2, t/sqrt(pi))
+    # add(erfi(t), [1], [], [Rational(1, 2)], [0], -t**2, I/sqrt(pi))
+    add(erfi(t), [Rational(1, 2)], [], [0], [-Rational(1, 2)], -t**2, t/sqrt(pi))
 
     # Fresnel Integrals
-    add(fresnels(t), [1], [], [Integer(3)/4], [0, Integer(1)/4], pi**2*t**4/16, Integer(1)/2)
-    add(fresnelc(t), [1], [], [Integer(1)/4], [0, Integer(3)/4], pi**2*t**4/16, Integer(1)/2)
+    add(fresnels(t), [1], [], [Rational(3, 4)], [0, Rational(1, 4)], pi**2*t**4/16, Rational(1, 2))
+    add(fresnelc(t), [1], [], [Rational(1, 4)], [0, Rational(3, 4)], pi**2*t**4/16, Rational(1, 2))
 
     # ##### bessel-type functions #####
     from sympy import besselj, bessely, besseli, besselk
@@ -223,37 +223,37 @@ def _create_lookup_table(table):
     add(besselj(a, t), [], [], [a/2], [-a/2], t**2/4)
 
     # all of the following are derivable
-    # add(sin(t)*besselj(a, t), [Integer(1)/4, Integer(3)/4], [], [(1+a)/2],
+    # add(sin(t)*besselj(a, t), [Rational(1, 4), Rational(3, 4)], [], [(1+a)/2],
     #     [-a/2, a/2, (1-a)/2], t**2, 1/sqrt(2))
-    # add(cos(t)*besselj(a, t), [Integer(1)/4, Integer(3)/4], [], [a/2],
+    # add(cos(t)*besselj(a, t), [Rational(1, 4), Rational(3, 4)], [], [a/2],
     #     [-a/2, (1+a)/2, (1-a)/2], t**2, 1/sqrt(2))
-    # add(besselj(a, t)**2, [Integer(1)/2], [], [a], [-a, 0], t**2, 1/sqrt(pi))
-    # add(besselj(a, t)*besselj(b, t), [0, Integer(1)/2], [], [(a + b)/2],
+    # add(besselj(a, t)**2, [Rational(1, 2)], [], [a], [-a, 0], t**2, 1/sqrt(pi))
+    # add(besselj(a, t)*besselj(b, t), [0, Rational(1, 2)], [], [(a + b)/2],
     #    [-(a+b)/2, (a - b)/2, (b - a)/2], t**2, 1/sqrt(pi))
 
     # Section 8.4.20
     add(bessely(a, t), [], [-(a + 1)/2], [a/2, -a/2], [-(a + 1)/2], t**2/4)
 
     # TODO all of the following should be derivable
-    # add(sin(t)*bessely(a, t), [Integer(1)/4, Integer(3)/4], [(1 - a - 1)/2],
+    # add(sin(t)*bessely(a, t), [Rational(1, 4), Rational(3, 4)], [(1 - a - 1)/2],
     #     [(1 + a)/2, (1 - a)/2], [(1 - a - 1)/2, (1 - 1 - a)/2, (1 - 1 + a)/2],
     #     t**2, 1/sqrt(2))
-    # add(cos(t)*bessely(a, t), [Integer(1)/4, Integer(3)/4], [(0 - a - 1)/2],
+    # add(cos(t)*bessely(a, t), [Rational(1, 4), Rational(3, 4)], [(0 - a - 1)/2],
     #     [(0 + a)/2, (0 - a)/2], [(0 - a - 1)/2, (1 - 0 - a)/2, (1 - 0 + a)/2],
     #     t**2, 1/sqrt(2))
-    # add(besselj(a, t)*bessely(b, t), [0, Integer(1)/2], [(a - b - 1)/2],
+    # add(besselj(a, t)*bessely(b, t), [0, Rational(1, 2)], [(a - b - 1)/2],
     #     [(a + b)/2, (a - b)/2], [(a - b - 1)/2, -(a + b)/2, (b - a)/2],
     #     t**2, 1/sqrt(pi))
     # addi(bessely(a, t)**2,
-    #      [(2/sqrt(pi), meijerg([], [Integer(1)/2, Integer(1)/2 - a], [0, a, -a],
-    #                            [Integer(1)/2 - a], t**2)),
-    #       (1/sqrt(pi), meijerg([Integer(1)/2], [], [a], [-a, 0], t**2))],
+    #      [(2/sqrt(pi), meijerg([], [Rational(1, 2), Rational(1, 2) - a], [0, a, -a],
+    #                            [Rational(1, 2) - a], t**2)),
+    #       (1/sqrt(pi), meijerg([Rational(1, 2)], [], [a], [-a, 0], t**2))],
     #      True)
     # addi(bessely(a, t)*bessely(b, t),
-    #      [(2/sqrt(pi), meijerg([], [0, Integer(1)/2, (1 - a - b)/2],
+    #      [(2/sqrt(pi), meijerg([], [0, Rational(1, 2), (1 - a - b)/2],
     #                            [(a + b)/2, (a - b)/2, (b - a)/2, -(a + b)/2],
     #                            [(1 - a - b)/2], t**2)),
-    #       (1/sqrt(pi), meijerg([0, Integer(1)/2], [], [(a + b)/2],
+    #       (1/sqrt(pi), meijerg([0, Rational(1, 2)], [], [(a + b)/2],
     #                            [-(a + b)/2, (a - b)/2, (b - a)/2], t**2))],
     #      True)
 
@@ -263,7 +263,7 @@ def _create_lookup_table(table):
     # TODO many more formulas. should all be derivable
 
     # Section 8.4.23
-    add(besselk(a, t), [], [], [a/2, -a/2], [], t**2/4, Integer(1)/2)
+    add(besselk(a, t), [], [], [a/2, -a/2], [], t**2/4, Rational(1, 2))
     # TODO many more formulas. should all be derivable
 
     # Complete elliptic integrals K(z) and E(z)
@@ -540,7 +540,7 @@ def _inflate_fox_h(g, a):
     # theorem.
     D, g = _inflate_g(g, q)
     z = g.argument
-    D /= (2*pi)**((1 - p)/2)*p**(-Integer(1)/2)
+    D /= (2*pi)**((1 - p)/2)*p**(-Rational(1, 2))
     z /= p**p
     bs = [(n + 1)/p for n in range(p)]
     return D, meijerg(g.an, g.aother, g.bm, list(g.bother) + bs, z)
@@ -975,10 +975,10 @@ def _check_antecedents(g1, g2, x):
     c1 = _c1()
     c2 = And(*[re(1 + i + j) > 0 for i in g1.bm for j in g2.bm])
     c3 = And(*[re(1 + i + j) < 1 + 1 for i in g1.an for j in g2.an])
-    c4 = And(*[(p - q)*re(1 + i - 1) - re(mu) > -Integer(3)/2 for i in g1.an])
-    c5 = And(*[(p - q)*re(1 + i) - re(mu) > -Integer(3)/2 for i in g1.bm])
-    c6 = And(*[(u - v)*re(1 + i - 1) - re(rho) > -Integer(3)/2 for i in g2.an])
-    c7 = And(*[(u - v)*re(1 + i) - re(rho) > -Integer(3)/2 for i in g2.bm])
+    c4 = And(*[(p - q)*re(1 + i - 1) - re(mu) > -Rational(3, 2) for i in g1.an])
+    c5 = And(*[(p - q)*re(1 + i) - re(mu) > -Rational(3, 2) for i in g1.bm])
+    c6 = And(*[(u - v)*re(1 + i - 1) - re(rho) > -Rational(3, 2) for i in g2.an])
+    c7 = And(*[(u - v)*re(1 + i) - re(rho) > -Rational(3, 2) for i in g2.bm])
     c8 = (abs(phi) + 2*re((rho - 1)*(q - p) + (v - u)*(q - p) + (mu -
           1)*(v - u)) > 0)
     c9 = (abs(phi) - 2*re((rho - 1)*(q - p) + (v - u)*(q - p) + (mu -
@@ -1240,7 +1240,7 @@ def _int0oo(g1, g2, x):
     >>> from sympy.integrals.meijerint import _int0oo
     >>> from sympy.abc import s, t, m
     >>> from sympy import meijerg, S
-    >>> g1 = meijerg([], [], [-Integer(1)/2, 0], [], s**2*t/4)
+    >>> g1 = meijerg([], [], [-Rational(1, 2), 0], [], s**2*t/4)
     >>> g2 = meijerg([], [], [m/2], [-m/2], t/4)
     >>> _int0oo(g1, g2, t)
     4*meijerg(((1/2, 0), ()), ((m/2,), (-m/2,)), s**(-2))/s**2
@@ -1311,7 +1311,7 @@ def _check_antecedents_inversion(g, x):
     rho = (tau - nu)/2
     sigma = q - p
     if sigma == 1:
-        epsilon = Integer(1)/2
+        epsilon = Rational(1, 2)
     elif sigma > 1:
         epsilon = 1
     else:

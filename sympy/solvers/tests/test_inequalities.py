@@ -166,7 +166,7 @@ def test_reduce_rational_inequalities_real_relational():
 
     assert reduce_rational_inequalities([[(3*x + 1)/(x + 4) >= 1]], x,
         relational=False) == \
-        Union(Interval.open(-oo, -4), Interval.Ropen(Integer(3)/2, oo))
+        Union(Interval.open(-oo, -4), Interval.Ropen(Rational(3, 2), oo))
 
     assert reduce_rational_inequalities([[(x - 8)/x <= 3 - x]], x,
         relational=False) == \
@@ -180,12 +180,12 @@ def test_reduce_piecewise_inequalities():
     assert reduce_inequalities(e, x) == ans
     assert reduce_inequalities(abs(x - 5)) == Eq(x, 5)
     assert reduce_inequalities(
-        abs(2*x + 3) >= 8) == Or(And(Le(Integer(5)/2, x), Lt(x, oo)),
-        And(Le(x, -Integer(11)/2), Lt(-oo, x)))
+        abs(2*x + 3) >= 8) == Or(And(Le(Rational(5, 2), x), Lt(x, oo)),
+        And(Le(x, -Rational(11, 2)), Lt(-oo, x)))
     assert reduce_inequalities(abs(x - 4) + abs(
-        3*x - 5) < 7) == And(Lt(Integer(1)/2, x), Lt(x, 4))
+        3*x - 5) < 7) == And(Lt(Rational(1, 2), x), Lt(x, 4))
     assert reduce_inequalities(abs(x - 4) + abs(3*abs(x) - 5) < 7) == \
-        Or(And(Integer(-2) < x, x < -1), And(Integer(1)/2 < x, x < 4))
+        Or(And(Integer(-2) < x, x < -1), And(Rational(1, 2) < x, x < 4))
 
     nr = Symbol('nr', extended_real=False)
     pytest.raises(TypeError, lambda: reduce_inequalities(abs(nr - 5) < 3))
@@ -237,9 +237,9 @@ def test_issue_10203():
 
 
 def test_issue_6343():
-    eq = -3*x**2/2 - 45*x/4 + Integer(33)/2 > 0
+    eq = -3*x**2/2 - 45*x/4 + Rational(33, 2) > 0
     assert reduce_inequalities(eq) == \
-        And(x < -Integer(15)/4 + sqrt(401)/4, -sqrt(401)/4 - Integer(15)/4 < x)
+        And(x < -Rational(15, 4) + sqrt(401)/4, -sqrt(401)/4 - Rational(15, 4) < x)
 
 
 def test_issue_8235():
@@ -278,8 +278,8 @@ def test_solve_univariate_inequality():
         Or(And(Le(1, x), Le(x, 2)), And(Le(3, x), Lt(x, oo)))
     # issue 2785:
     assert isolve(x**3 - 2*x - 1 > 0, x, relational=False) == \
-        Union(Interval(-1, -sqrt(5)/2 + Integer(1)/2, True, True),
-              Interval(Integer(1)/2 + sqrt(5)/2, oo, True, True))
+        Union(Interval(-1, -sqrt(5)/2 + Rational(1, 2), True, True),
+              Interval(Rational(1, 2) + sqrt(5)/2, oo, True, True))
     # issue 2794:
     assert isolve(x**3 - x**2 + x - 1 > 0, x, relational=False) == \
         Interval(1, oo, True, True)

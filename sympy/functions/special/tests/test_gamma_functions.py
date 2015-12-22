@@ -119,7 +119,7 @@ def test_lowergamma():
 
     assert tn_branch(-3, lowergamma)
     assert tn_branch(-4, lowergamma)
-    assert tn_branch(Integer(1)/3, lowergamma)
+    assert tn_branch(Rational(1, 3), lowergamma)
     assert tn_branch(pi, lowergamma)
     assert lowergamma(3, exp_polar(4*pi*I)*x) == lowergamma(3, x)
     assert lowergamma(y, exp_polar(5*pi*I)*x) == \
@@ -161,7 +161,7 @@ def test_uppergamma():
 
     assert tn_branch(-3, uppergamma)
     assert tn_branch(-4, uppergamma)
-    assert tn_branch(Integer(1)/3, uppergamma)
+    assert tn_branch(Rational(1, 3), uppergamma)
     assert tn_branch(pi, uppergamma)
     assert uppergamma(3, exp_polar(4*pi*I)*x) == uppergamma(3, x)
     assert uppergamma(y, exp_polar(5*pi*I)*x) == \
@@ -295,9 +295,9 @@ def test_polygamma_expand_func():
         6/(1 + y + 4*x)**4 - 6/(2 + y + 4*x)**4
     assert polygamma(3, 4*x + y + 1).expand(func=True, multinomial=False) == \
         polygamma(3, y + 4*x) - 6/(y + 4*x)**4
-    e = polygamma(3, 4*x + y + Integer(3)/2)
+    e = polygamma(3, 4*x + y + Rational(3, 2))
     assert e.expand(func=True) == e
-    e = polygamma(3, x + y + Integer(3)/4)
+    e = polygamma(3, x + y + Rational(3, 4))
     assert e.expand(func=True, basic=False) == e
 
 
@@ -327,28 +327,28 @@ def test_loggamma():
     assert loggamma(zoo) == zoo
     assert loggamma(nan) == nan
 
-    L = loggamma(Integer(16)/3)
-    E = -5*log(3) + loggamma(Integer(1)/3) + log(4) + log(7) + log(10) + log(13)
+    L = loggamma(Rational(16, 3))
+    E = -5*log(3) + loggamma(Rational(1, 3)) + log(4) + log(7) + log(10) + log(13)
     assert expand_func(L).doit() == E
     assert L.n() == E.n()
 
     L = loggamma(19/Integer(4))
-    E = -4*log(4) + loggamma(Integer(3)/4) + log(3) + log(7) + log(11) + log(15)
+    E = -4*log(4) + loggamma(Rational(3, 4)) + log(3) + log(7) + log(11) + log(15)
     assert expand_func(L).doit() == E
     assert L.n() == E.n()
 
-    L = loggamma(Integer(23)/7)
-    E = -3*log(7) + log(2) + loggamma(Integer(2)/7) + log(9) + log(16)
+    L = loggamma(Rational(23, 7))
+    E = -3*log(7) + log(2) + loggamma(Rational(2, 7)) + log(9) + log(16)
     assert expand_func(L).doit() == E
     assert L.n() == E.n()
 
     L = loggamma(19/Integer(4)-7)
-    E = -log(9) - log(5) + loggamma(Integer(3)/4) + 3*log(4) - 3*I*pi
+    E = -log(9) - log(5) + loggamma(Rational(3, 4)) + 3*log(4) - 3*I*pi
     assert expand_func(L).doit() == E
     assert L.n() == E.n()
 
     L = loggamma(23/Integer(7)-6)
-    E = -log(19) - log(12) - log(5) + loggamma(Integer(2)/7) + 3*log(7) - 3*I*pi
+    E = -log(19) - log(12) - log(5) + loggamma(Rational(2, 7)) + 3*log(7) - 3*I*pi
     assert expand_func(L).doit() == E
     assert L.n() == E.n()
 
@@ -358,7 +358,7 @@ def test_loggamma():
         log(x)*x**2/2
     assert (s1 - s2).expand(force=True).removeO() == 0
     s1 = loggamma(1/x).series(x)
-    s2 = (1/x - Integer(1)/2)*log(1/x) - 1/x + log(2*pi)/2 + \
+    s2 = (1/x - Rational(1, 2))*log(1/x) - 1/x + log(2*pi)/2 + \
         x/12 - x**3/360 + x**5/1260 + O(x**7)
     assert ((s1 - s2).expand(force=True)).removeO() == 0
 

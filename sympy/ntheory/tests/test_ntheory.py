@@ -831,20 +831,20 @@ def test_continued_fraction():
     assert take(phi) == [1, 1, 1, 1, 1, 1, 1]
     assert take(pi) == [3, 7, 15, 1, 292, 1, 1]
 
-    assert list(cf_i(Integer(17)/12)) == [1, 2, 2, 2]
-    assert list(cf_i(Integer(-17)/12)) == [-2, 1, 1, 2, 2]
+    assert list(cf_i(Rational(17, 12))) == [1, 2, 2, 2]
+    assert list(cf_i(Rational(-17, 12))) == [-2, 1, 1, 2, 2]
 
-    assert list(cf_c([1, 6, 1, 8])) == [Integer(1), Integer(7)/6, Integer(8)/7, Integer(71)/62]
+    assert list(cf_c([1, 6, 1, 8])) == [Integer(1), Rational(7, 6), Rational(8, 7), Rational(71, 62)]
     assert list(cf_c([2])) == [Integer(2)]
-    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [S.One, Integer(2), Integer(3)/2, Integer(5)/3,
-                                                 Integer(8)/5, Integer(13)/8, Integer(21)/13]
-    assert list(cf_c([1, 6, Integer(-1)/2, 4])) == [S.One, Integer(7)/6, Integer(5)/4, Integer(3)/2]
+    assert list(cf_c([1, 1, 1, 1, 1, 1, 1])) == [S.One, Integer(2), Rational(3, 2), Rational(5, 3),
+                                                 Rational(8, 5), Rational(13, 8), Rational(21, 13)]
+    assert list(cf_c([1, 6, Rational(-1, 2), 4])) == [S.One, Rational(7, 6), Rational(5, 4), Rational(3, 2)]
 
-    assert cf_r([1, 6, 1, 8]) == Integer(71)/62
+    assert cf_r([1, 6, 1, 8]) == Rational(71, 62)
     assert cf_r([3]) == Integer(3)
-    assert cf_r([-1, 5, 1, 4]) == Integer(-24)/29
+    assert cf_r([-1, 5, 1, 4]) == Rational(-24, 29)
     assert (cf_r([0, 1, 1, 7, [24, 8]]) - (sqrt(3) + 2)/7).expand() == 0
-    assert cf_r([1, 5, 9]) == Integer(55)/46
+    assert cf_r([1, 5, 9]) == Rational(55, 46)
     assert (cf_r([[1]]) - (sqrt(5) + 1)/2).expand() == 0
 
 

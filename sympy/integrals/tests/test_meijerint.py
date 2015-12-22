@@ -51,8 +51,8 @@ def test_rewrite_single():
     # u(exp(x)*sin(x), x)
     assert _rewrite_single(exp(x)*sin(x), x) == \
         ([(-sqrt(2)/(2*sqrt(pi)), 0,
-           meijerg(((-Integer(1)/2, 0, Integer(1)/4, Integer(1)/2, Integer(3)/4), (1,)),
-                   ((), (-Integer(1)/2, 0)), 64*exp_polar(-4*I*pi)/x**4))], True)
+           meijerg(((-Rational(1, 2), 0, Rational(1, 4), Rational(1, 2), Rational(3, 4)), (1,)),
+                   ((), (-Rational(1, 2), 0)), 64*exp_polar(-4*I*pi)/x**4))], True)
 
 
 def test_rewrite1():
@@ -171,7 +171,7 @@ def test_meijerint():
                               x, -oo, oo) == (1, True)
 
     # Test one of the extra conditions for 2 g-functinos
-    assert meijerint_definite(exp(-x)*sin(x), x, 0, oo) == (Integer(1)/2, True)
+    assert meijerint_definite(exp(-x)*sin(x), x, 0, oo) == (Rational(1, 2), True)
 
     # Test a bug
     def res(n):
@@ -202,7 +202,7 @@ def test_meijerint():
 
     # test better hyperexpand
     assert integrate(exp(-x**2)*log(x), (x, 0, oo), meijerg=True) == \
-        (sqrt(pi)*polygamma(0, Integer(1)/2)/4).expand()
+        (sqrt(pi)*polygamma(0, Rational(1, 2))/4).expand()
 
     # Test hyperexpand bug.
     from sympy import lowergamma
@@ -213,13 +213,13 @@ def test_meijerint():
     # Test a bug with argument 1/x
     alpha = symbols('alpha', positive=True)
     assert meijerint_definite((2 - x)**alpha*sin(alpha/x), x, 0, 2) == \
-        (sqrt(pi)*alpha*gamma(alpha + 1)*meijerg(((), (alpha/2 + Integer(1)/2,
-        alpha/2 + 1)), ((0, 0, Integer(1)/2), (-Integer(1)/2,)), alpha**Integer(2)/16)/4, True)
+        (sqrt(pi)*alpha*gamma(alpha + 1)*meijerg(((), (alpha/2 + Rational(1, 2),
+        alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**Integer(2)/16)/4, True)
 
     # test a bug related to 3016
     a, s = symbols('a s', positive=True)
     assert simplify(integrate(x**s*exp(-a*x**2), (x, -oo, oo))) == \
-        a**(-s/2 - Integer(1)/2)*((-1)**s + 1)*gamma(s/2 + Integer(1)/2)/2
+        a**(-s/2 - Rational(1, 2))*((-1)**s + 1)*gamma(s/2 + Rational(1, 2))/2
 
 
 def test_bessel():
@@ -232,9 +232,9 @@ def test_bessel():
 
     # TODO more orthogonality integrals
 
-    assert simplify(integrate(sin(z*x)*(x**2 - 1)**(-(y + Integer(1)/2)),
+    assert simplify(integrate(sin(z*x)*(x**2 - 1)**(-(y + Rational(1, 2))),
                               (x, 1, oo), meijerg=True, conds='none')
-                    *2/((z/2)**y*sqrt(pi)*gamma(Integer(1)/2 - y))) == \
+                    *2/((z/2)**y*sqrt(pi)*gamma(Rational(1, 2) - y))) == \
         besselj(y, z)
 
     # Werner Rosenheinrich
@@ -323,10 +323,10 @@ def test_branch_bug():
     from sympy import powdenest, lowergamma
     # TODO combsimp cannot prove that the factor is unity
     assert powdenest(integrate(erf(x**3), x, meijerg=True).diff(x),
-           polar=True) == 2*erf(x**3)*gamma(Integer(2)/3)/3/gamma(Integer(5)/3)
+           polar=True) == 2*erf(x**3)*gamma(Rational(2, 3))/3/gamma(Rational(5, 3))
     assert integrate(erf(x**3), x, meijerg=True) == \
-        2*x*erf(x**3)*gamma(Integer(2)/3)/(3*gamma(Integer(5)/3)) \
-        - 2*gamma(Integer(2)/3)*lowergamma(Integer(2)/3, x**6)/(3*sqrt(pi)*gamma(Integer(5)/3))
+        2*x*erf(x**3)*gamma(Rational(2, 3))/(3*gamma(Rational(5, 3))) \
+        - 2*gamma(Rational(2, 3))*lowergamma(Rational(2, 3), x**6)/(3*sqrt(pi)*gamma(Rational(5, 3)))
 
 
 def test_linear_subs():
@@ -473,7 +473,7 @@ def test_probability():
 
     # inverse gaussian
     lamda, mu = symbols('lamda mu', positive=True)
-    dist = sqrt(lamda/2/pi)*x**(-Integer(3)/2)*exp(-lamda*(x - mu)**2/x/2/mu**2)
+    dist = sqrt(lamda/2/pi)*x**(-Rational(3, 2))*exp(-lamda*(x - mu)**2/x/2/mu**2)
 
     def mysimp(expr):
         return simplify(expr.rewrite(exp))
@@ -600,7 +600,7 @@ def test_messy():
 
     # TODO maybe simplify the inequalities?
     assert laplace_transform(besselj(a, x), x, s)[1:] == \
-        (0, And(Integer(0) < re(a/2) + Integer(1)/2, Integer(0) < re(a/2) + 1))
+        (0, And(Integer(0) < re(a/2) + Rational(1, 2), Integer(0) < re(a/2) + 1))
 
     # NOTE s < 0 can be done, but argument reduction is not good enough yet
     assert fourier_transform(besselj(1, x)/x, x, s, noconds=False) == \
@@ -612,7 +612,7 @@ def test_messy():
     assert integrate(E1(x)*besselj(0, x), (x, 0, oo), meijerg=True) == \
         log(1 + sqrt(2))
     assert integrate(E1(x)*besselj(1, x), (x, 0, oo), meijerg=True) == \
-        log(Integer(1)/2 + sqrt(2)/2)
+        log(Rational(1, 2) + sqrt(2)/2)
 
     assert integrate(1/x/sqrt(1 - x**2), x, meijerg=True) == \
         Piecewise((-acosh(1/x), 1 < abs(x**(-2))), (I*asin(1/x), True))
@@ -624,7 +624,7 @@ def test_issue_6122():
 
 
 def test_issue_6252():
-    expr = 1/x/(a + b*x)**(Integer(1)/3)
+    expr = 1/x/(a + b*x)**Rational(1, 3)
     anti = integrate(expr, x, meijerg=True)
     assert not expr.has(hyper)
     # XXX the expression is a mess, but actually upon differentiation and

@@ -97,10 +97,10 @@ class lerchphi(Function):
     to a sum of polylogarithms:
 
     >>> from sympy import S
-    >>> expand_func(lerchphi(z, s, Integer(1)/2))
+    >>> expand_func(lerchphi(z, s, Rational(1, 2)))
     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                 polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))
-    >>> expand_func(lerchphi(z, s, Integer(3)/2))
+    >>> expand_func(lerchphi(z, s, Rational(3, 2)))
     -2**s/z + 2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                           polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))/z
 

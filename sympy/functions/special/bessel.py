@@ -896,10 +896,10 @@ class airyai(AiryBase):
             x = sympify(x)
             if len(previous_terms) > 1:
                 p = previous_terms[-1]
-                return ((3**(Integer(1)/3)*x)**(-n)*(3**(Integer(1)/3)*x)**(n + 1)*sin(pi*(2*n/3 + Integer(4)/3))*factorial(n) *
-                        gamma(n/3 + Integer(2)/3)/(sin(pi*(2*n/3 + Integer(2)/3))*factorial(n + 1)*gamma(n/3 + Integer(1)/3)) * p)
+                return ((3**Rational(1, 3)*x)**(-n)*(3**Rational(1, 3)*x)**(n + 1)*sin(pi*(2*n/3 + Rational(4, 3)))*factorial(n) *
+                        gamma(n/3 + Rational(2, 3))/(sin(pi*(2*n/3 + Rational(2, 3)))*factorial(n + 1)*gamma(n/3 + Rational(1, 3))) * p)
             else:
-                return (S.One/(3**(Integer(2)/3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) /
+                return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) /
                         factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
@@ -919,9 +919,9 @@ class airyai(AiryBase):
             return ot*(Pow(a, ot)*besseli(-ot, tt*a) - z*Pow(a, -ot)*besseli(ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = S.One / (3**(Integer(2)/3)*gamma(Integer(2)/3))
-        pf2 = z / (root(3, 3)*gamma(Integer(1)/3))
-        return pf1 * hyper([], [Integer(2)/3], z**3/9) - pf2 * hyper([], [Integer(4)/3], z**3/9)
+        pf1 = S.One / (3**Rational(2, 3)*gamma(Rational(2, 3)))
+        pf2 = z / (root(3, 3)*gamma(Rational(1, 3)))
+        return pf1 * hyper([], [Rational(2, 3)], z**3/9) - pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -1063,7 +1063,7 @@ class airybi(AiryBase):
             x = sympify(x)
             if len(previous_terms) > 1:
                 p = previous_terms[-1]
-                return (3**(Integer(1)/3)*x * Abs(sin(2*pi*(n + S.One)/Integer(3))) * factorial((n - S.One)/Integer(3)) /
+                return (3**Rational(1, 3)*x * Abs(sin(2*pi*(n + S.One)/Integer(3))) * factorial((n - S.One)/Integer(3)) /
                         ((n + S.One) * Abs(cos(2*pi*(n + S.Half)/Integer(3))) * factorial((n - 2)/Integer(3))) * p)
             else:
                 return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) /
@@ -1088,9 +1088,9 @@ class airybi(AiryBase):
             return sqrt(ot)*(b*besseli(-ot, tt*a) + z*c*besseli(ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = S.One / (root(3, 6)*gamma(Integer(2)/3))
-        pf2 = z*root(3, 6) / gamma(Integer(1)/3)
-        return pf1 * hyper([], [Integer(2)/3], z**3/9) + pf2 * hyper([], [Integer(4)/3], z**3/9)
+        pf1 = S.One / (root(3, 6)*gamma(Rational(2, 3)))
+        pf2 = z*root(3, 6) / gamma(Rational(1, 3))
+        return pf1 * hyper([], [Rational(2, 3)], z**3/9) + pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -1237,9 +1237,9 @@ class airyaiprime(AiryBase):
             return ot * (z**2*c*besseli(tt, tt*a) - b*besseli(-ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = z**2 / (2*3**(Integer(2)/3)*gamma(Integer(2)/3))
-        pf2 = 1 / (root(3, 3)*gamma(Integer(1)/3))
-        return pf1 * hyper([], [Integer(5)/3], z**3/9) - pf2 * hyper([], [Integer(1)/3], z**3/9)
+        pf1 = z**2 / (2*3**Rational(2, 3)*gamma(Rational(2, 3)))
+        pf2 = 1 / (root(3, 3)*gamma(Rational(1, 3)))
+        return pf1 * hyper([], [Rational(5, 3)], z**3/9) - pf2 * hyper([], [Rational(1, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -1392,9 +1392,9 @@ class airybiprime(AiryBase):
             return sqrt(ot) * (b*besseli(-tt, tt*a) + z**2*c*besseli(tt, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = z**2 / (2*root(3, 6)*gamma(Integer(2)/3))
-        pf2 = root(3, 6) / gamma(Integer(1)/3)
-        return pf1 * hyper([], [Integer(5)/3], z**3/9) + pf2 * hyper([], [Integer(1)/3], z**3/9)
+        pf1 = z**2 / (2*root(3, 6)*gamma(Rational(2, 3)))
+        pf2 = root(3, 6) / gamma(Rational(1, 3))
+        return pf1 * hyper([], [Rational(5, 3)], z**3/9) + pf2 * hyper([], [Rational(1, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]

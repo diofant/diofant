@@ -25,7 +25,7 @@ def test_rational():
 
 def test_large_rational():
     e = (Rational(123712**12 - 1, 7) + Rational(1, 7))**Rational(1, 3)
-    assert e == 234232585392159195136 * (Rational(1, 7)**Rational(1, 3))
+    assert e == 234232585392159195136*Rational(1, 7)**Rational(1, 3)
 
 
 def test_negative_real():
@@ -266,27 +266,27 @@ def test_issue_6990():
     b = Symbol('b')
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
         b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
-        b**2/(8*a**(Integer(3)/2))) + sqrt(a)
+        b**2/(8*a**Rational(3, 2))) + sqrt(a)
 
 
 def test_issue_6068():
     x = Symbol('x')
     assert sqrt(sin(x)).series(x, 0, 7) == \
-        sqrt(x) - x**(Integer(5)/2)/12 + x**(Integer(9)/2)/1440 - \
-        x**(Integer(13)/2)/24192 + O(x**7)
+        sqrt(x) - x**Rational(5, 2)/12 + x**Rational(9, 2)/1440 - \
+        x**Rational(13, 2)/24192 + O(x**7)
     assert sqrt(sin(x)).series(x, 0, 9) == \
-        sqrt(x) - x**(Integer(5)/2)/12 + x**(Integer(9)/2)/1440 - \
-        x**(Integer(13)/2)/24192 - 67*x**(Integer(17)/2)/29030400 + O(x**9)
+        sqrt(x) - x**Rational(5, 2)/12 + x**Rational(9, 2)/1440 - \
+        x**Rational(13, 2)/24192 - 67*x**Rational(17, 2)/29030400 + O(x**9)
     assert sqrt(sin(x**3)).series(x, 0, 19) == \
-        x**(Integer(3)/2) - x**(Integer(15)/2)/12 + x**(Integer(27)/2)/1440 + O(x**19)
+        x**Rational(3, 2) - x**Rational(15, 2)/12 + x**Rational(27, 2)/1440 + O(x**19)
     assert sqrt(sin(x**3)).series(x, 0, 20) == \
-        x**(Integer(3)/2) - x**(Integer(15)/2)/12 + x**(Integer(27)/2)/1440 - \
-        x**(Integer(39)/2)/24192 + O(x**20)
+        x**Rational(3, 2) - x**Rational(15, 2)/12 + x**Rational(27, 2)/1440 - \
+        x**Rational(39, 2)/24192 + O(x**20)
 
 
 def test_issue_6782():
     x = Symbol('x')
-    assert sqrt(sin(x**3)).series(x, 0, 7) == x**(Integer(3)/2) + O(x**7)
+    assert sqrt(sin(x**3)).series(x, 0, 7) == x**Rational(3, 2) + O(x**7)
     assert sqrt(sin(x**4)).series(x, 0, 3) == x**2 + O(x**3)
 
 
@@ -311,9 +311,9 @@ def test_issue_7638():
     # if 1/3 -> 1.0/3 this should fail since it cannot be shown that the
     # sign will be +/-1; for the previous "small arg" case, it didn't matter
     # that this could not be proved
-    assert (1 + I)**(4*I*f) == ((1 + I)**(12*I*f))**(Integer(1)/3)
+    assert (1 + I)**(4*I*f) == ((1 + I)**(12*I*f))**Rational(1, 3)
 
-    assert (((1 + I)**(I*(1 + 7*f)))**(Integer(1)/3)).exp == Integer(1)/3
+    assert (((1 + I)**(I*(1 + 7*f)))**Rational(1, 3)).exp == Rational(1, 3)
     r = symbols('r', extended_real=True)
     assert sqrt(r**2) == abs(r)
     assert cbrt(r**3) != r

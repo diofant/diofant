@@ -650,7 +650,7 @@ x + 10\
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
-    expr = -Integer(1)/2 - 3*x
+    expr = -Rational(1, 2) - 3*x
     ascii_str = \
 """\
 -3*x - 1/2\
@@ -662,7 +662,7 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Integer(1)/2 - 3*x
+    expr = Rational(1, 2) - 3*x
     ascii_str = \
 """\
 -3*x + 1/2\
@@ -674,7 +674,7 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = -Integer(1)/2 - 3*x/2
+    expr = -Rational(1, 2) - 3*x/2
     ascii_str = \
 """\
   3*x   1\n\
@@ -690,7 +690,7 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Integer(1)/2 - 3*x/2
+    expr = Rational(1, 2) - 3*x/2
     ascii_str = \
 """\
   3*x   1\n\
@@ -4988,7 +4988,7 @@ def test_issue_7927():
 ⎝   ⎝2⎠⎠      \
 """
     assert upretty(e) == ucode_str
-    e = sin(x)**(Integer(11)/13)
+    e = sin(x)**Rational(11, 13)
     ucode_str = \
 """\
         11\n\

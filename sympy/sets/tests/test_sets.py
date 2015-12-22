@@ -414,8 +414,8 @@ def test_contains():
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
-    rad1 = Pow(Pow(2, Integer(1)/3) - 1, Integer(1)/3)
-    rad2 = Pow(Integer(1)/9, Integer(1)/3) - Pow(Integer(2)/9, Integer(1)/3) + Pow(Integer(4)/9, Integer(1)/3)
+    rad1 = Pow(Pow(2, Rational(1, 3)) - 1, Rational(1, 3))
+    rad2 = Pow(Rational(1, 9), Rational(1, 3)) - Pow(Rational(2, 9), Rational(1, 3)) + Pow(Rational(4, 9), Rational(1, 3))
     s1 = FiniteSet(rad1)
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet

@@ -30,10 +30,10 @@ def test_rsolve_ratio():
 
     assert solution in [
         C1*((-2*n + 3)/(n**2 - 1))/3,
-        (Integer(1)/2)*(C1*(-3 + 2*n)/(-1 + n**2)),
-        (Integer(1)/2)*(C1*( 3 - 2*n)/( 1 - n**2)),
-        (Integer(1)/2)*(C2*(-3 + 2*n)/(-1 + n**2)),
-        (Integer(1)/2)*(C2*( 3 - 2*n)/( 1 - n**2)),
+        (Rational(1, 2))*(C1*(-3 + 2*n)/(-1 + n**2)),
+        (Rational(1, 2))*(C1*( 3 - 2*n)/( 1 - n**2)),
+        (Rational(1, 2))*(C2*(-3 + 2*n)/(-1 + n**2)),
+        (Rational(1, 2))*(C2*( 3 - 2*n)/( 1 - n**2)),
     ]
 
 
@@ -72,7 +72,7 @@ def test_rsolve_hyper():
     assert rsolve_hyper([-a, 0, 1], 0, n).expand() == (-1)**n*C1*a**(n/2) + C0*a**(n/2)
 
     assert rsolve_hyper([1, 1, 1], 0, n).expand() == \
-        C0*(-Integer(1)/2 - sqrt(3)*I/2)**n + C1*(-Integer(1)/2 + sqrt(3)*I/2)**n
+        C0*(-Rational(1, 2) - sqrt(3)*I/2)**n + C1*(-Rational(1, 2) + sqrt(3)*I/2)**n
 
     assert rsolve_hyper([1, -2*n/a - 2/a, 1], 0, n) == None
 

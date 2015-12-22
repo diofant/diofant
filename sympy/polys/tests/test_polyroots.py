@@ -59,7 +59,7 @@ def test_roots_quadratic():
 def test_issue_8438():
     p = Poly([1, y, -2, -3], x).as_expr()
     roots = roots_cubic(Poly(p, x), x)
-    z = -Integer(3)/2 - 7*I/2  # this will fail in code given in commit msg
+    z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
     post = [r.subs(y, z) for r in roots]
     assert set(post) == \
     set(roots_cubic(Poly(p.subs(y, z), x)))
@@ -105,9 +105,9 @@ def test_roots_cubic():
     eq = -x**3 + 2*x**2 + 3*x - 2
     assert roots(eq, trig=True, multiple=True) == \
            roots_cubic(Poly(eq, x), trig=True) == [
-        Integer(2)/3 + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
-        -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + Integer(2)/3,
-        -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Integer(2)/3,
+        Rational(2, 3) + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
+        -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + Rational(2, 3),
+        -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Rational(2, 3),
     ]
 
 
@@ -173,10 +173,10 @@ def test_roots_cyclotomic():
     assert roots_cyclotomic(cyclotomic_poly(1, x, polys=True)) == [1]
     assert roots_cyclotomic(cyclotomic_poly(2, x, polys=True)) == [-1]
     assert roots_cyclotomic(cyclotomic_poly(
-        3, x, polys=True)) == [-Integer(1)/2 - I*sqrt(3)/2, -Integer(1)/2 + I*sqrt(3)/2]
+        3, x, polys=True)) == [-Rational(1, 2) - I*sqrt(3)/2, -Rational(1, 2) + I*sqrt(3)/2]
     assert roots_cyclotomic(cyclotomic_poly(4, x, polys=True)) == [-I, I]
     assert roots_cyclotomic(cyclotomic_poly(
-        6, x, polys=True)) == [Integer(1)/2 - I*sqrt(3)/2, Integer(1)/2 + I*sqrt(3)/2]
+        6, x, polys=True)) == [Rational(1, 2) - I*sqrt(3)/2, Rational(1, 2) + I*sqrt(3)/2]
 
     assert roots_cyclotomic(cyclotomic_poly(7, x, polys=True)) == [
         -cos(pi/7) - I*sin(pi/7),
@@ -244,9 +244,9 @@ def test_roots_binomial():
 
     # issue 8813
     assert roots(Poly(2*x**3 - 16*y**3, x)) == {
-        2*y*(-Integer(1)/2 - sqrt(3)*I/2): 1,
+        2*y*(-Rational(1, 2) - sqrt(3)*I/2): 1,
         2*y: 1,
-        2*y*(-Integer(1)/2 + sqrt(3)*I/2): 1}
+        2*y*(-Rational(1, 2) + sqrt(3)*I/2): 1}
 
 
 def test_roots_preprocessing():
@@ -353,7 +353,7 @@ def test_roots0():
     f = -2016*x**2 - 5616*x**3 - 2056*x**4 + 3324*x**5 + 2176*x**6 - \
         224*x**7 - 384*x**8 - 64*x**9
 
-    assert roots(f) == {Integer(0): 2, -Integer(2): 2, Integer(2): 1, -Integer(7)/2: 1, -Integer(3)/2: 1, -Integer(1)/2: 1, Integer(3)/2: 1}
+    assert roots(f) == {Integer(0): 2, -Integer(2): 2, Integer(2): 1, -Rational(7, 2): 1, -Rational(3, 2): 1, -Rational(1, 2): 1, Rational(3, 2): 1}
 
     assert roots((a + b + c)*x - (a + b + c + d), x) == {(a + b + c + d)/(a + b + c): 1}
 

@@ -115,13 +115,13 @@ def test_issue_4583():
 
 
 def test_issue_6318():
-    eq = (1/x)**(Integer(2)/3)
+    eq = (1/x)**Rational(2, 3)
     assert (eq + 1).as_leading_term(x) == eq
 
 
 def test_x_is_base_detection():
-    eq = (x**2)**(Integer(2)/3)
-    assert eq.series() == x**(Integer(4)/3)
+    eq = (x**2)**Rational(2, 3)
+    assert eq.series() == x**Rational(4, 3)
 
 
 def test_sin_power():

@@ -1397,7 +1397,7 @@ def test_Pow_as_coeff_mul_doesnt_expand():
 
 def test_issue_3514():
     assert sqrt(S.Half) * sqrt(6) == 2 * sqrt(3)/2
-    assert Integer(1)/2*sqrt(6)*sqrt(2) == sqrt(3)
+    assert Rational(1, 2)*sqrt(6)*sqrt(2) == sqrt(3)
     assert sqrt(6)/2*sqrt(2) == sqrt(3)
     assert sqrt(6)*sqrt(2)/2 == sqrt(3)
 
@@ -1425,7 +1425,7 @@ def test_issue_5126():
 def test_Rational_as_content_primitive():
     c, p = Integer(1), Integer(0)
     assert (c*p).as_content_primitive() == (c, p)
-    c, p = Integer(1)/2, Integer(1)
+    c, p = Rational(1, 2), Integer(1)
     assert (c*p).as_content_primitive() == (c, p)
 
 
@@ -1550,7 +1550,7 @@ def test_Mod():
     # handling sums
     assert (x + 3) % 1 == Mod(x, 1)
     assert (x + 3.0) % 1 == Mod(1.*x, 1)
-    assert (x - Integer(33)/10) % 1 == Mod(x + Integer(7)/10, 1)
+    assert (x - Rational(33, 10)) % 1 == Mod(x + Rational(7, 10), 1)
 
     a = Mod(.6*x + y, .3*y)
     b = Mod(0.1*y + 0.6*x, 0.3*y)

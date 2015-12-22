@@ -424,13 +424,13 @@ def test_is_algebraic_expr():
     assert sqrt(3).is_algebraic_expr(x) is True
     assert sqrt(3).is_algebraic_expr() is True
 
-    eq = ((1 + x**2)/(1 - y**2))**(Integer(1)/3)
+    eq = ((1 + x**2)/(1 - y**2))**Rational(1, 3)
     assert eq.is_algebraic_expr(x) is True
     assert eq.is_algebraic_expr(y) is True
 
-    assert (sqrt(x) + y**(Integer(2)/3)).is_algebraic_expr(x) is True
-    assert (sqrt(x) + y**(Integer(2)/3)).is_algebraic_expr(y) is True
-    assert (sqrt(x) + y**(Integer(2)/3)).is_algebraic_expr() is True
+    assert (sqrt(x) + y**Rational(2, 3)).is_algebraic_expr(x) is True
+    assert (sqrt(x) + y**Rational(2, 3)).is_algebraic_expr(y) is True
+    assert (sqrt(x) + y**Rational(2, 3)).is_algebraic_expr() is True
 
     assert (cos(y)/sqrt(x)).is_algebraic_expr() is False
     assert (cos(y)/sqrt(x)).is_algebraic_expr(x) is True
@@ -1049,8 +1049,8 @@ def test_coeff():
     assert (3 + 2*x + 4*x**2).coeff(x**2) == 4
     assert (3 + 2*x + 4*x**2).coeff(x**3) == 0
 
-    assert (-x/8 + x*y).coeff(x) == -Integer(1)/8 + y
-    assert (-x/8 + x*y).coeff(-x) == Integer(1)/8
+    assert (-x/8 + x*y).coeff(x) == -Rational(1, 8) + y
+    assert (-x/8 + x*y).coeff(-x) == Rational(1, 8)
     assert (4*x).coeff(2*x) == 0
     assert (2*x).coeff(2*x) == 1
     assert (-oo*x).coeff(x*oo) == -1
@@ -1138,7 +1138,7 @@ def test_coeff_expand():
 
 def test_integrate():
     assert x.integrate(x) == x**2/2
-    assert x.integrate((x, 0, 1)) == Integer(1)/2
+    assert x.integrate((x, 0, 1)) == Rational(1, 2)
 
 
 def test_as_base_exp():
@@ -1405,7 +1405,7 @@ def test_eval_interval_zoo():
 def test_primitive():
     assert (3*(x + 1)**2).primitive() == (3, (x + 1)**2)
     assert (6*x + 2).primitive() == (2, 3*x + 1)
-    assert (x/2 + 3).primitive() == (Integer(1)/2, x + 6)
+    assert (x/2 + 3).primitive() == (Rational(1, 2), x + 6)
     eq = (6*x + 2)*(x/2 + 3)
     assert eq.primitive()[0] == 1
     eq = (2 + 2*x)**2
@@ -1414,12 +1414,12 @@ def test_primitive():
     assert (4.0*x + y/2).primitive() == (S.Half, 8.0*x + y)
     assert (-2*x).primitive() == (2, -x)
     assert Add(5*z/7, 0.5*x, 3*y/2, evaluate=False).primitive() == \
-        (Integer(1)/14, 7.0*x + 21*y + 10*z)
+        (Rational(1, 14), 7.0*x + 21*y + 10*z)
     for i in [S.Infinity, S.NegativeInfinity, S.ComplexInfinity]:
         assert (i + x/3).primitive() == \
-            (Integer(1)/3, i + x)
+            (Rational(1, 3), i + x)
     assert (S.Infinity + 2*x/3 + 4*y/7).primitive() == \
-        (Integer(1)/21, 14*x + 12*y + oo)
+        (Rational(1, 21), 14*x + 12*y + oo)
     assert S.Zero.primitive() == (S.One, S.Zero)
 
 
@@ -1471,15 +1471,15 @@ def test_equals():
     assert (sqrt(5)*sqrt(3)).equals(sqrt(3)) is False
     assert (sqrt(5) + sqrt(3)).equals(0) is False
     assert (sqrt(5) + pi).equals(0) is False
-    eq = -(-1)**(Integer(3)/4)*6**(Integer(1)/4) + (-6)**(Integer(1)/4)*I
+    eq = -(-1)**Rational(3, 4)*6**Rational(1, 4) + (-6)**Rational(1, 4)*I
     if eq != 0:  # if canonicalization makes this zero, skip the test
         assert eq.equals(0)
     assert sqrt(x).equals(0) is False
 
     # from integrate(x*sqrt(1 + 2*x), x);
     # diff is zero only when assumptions allow
-    i = 2*sqrt(2)*x**(Integer(5)/2)*(1 + 1/(2*x))**(Integer(5)/2)/5 + \
-        2*sqrt(2)*x**(Integer(3)/2)*(1 + 1/(2*x))**(Integer(5)/2)/(-6 - 3/x)
+    i = 2*sqrt(2)*x**Rational(5, 2)*(1 + 1/(2*x))**Rational(5, 2)/5 + \
+        2*sqrt(2)*x**Rational(3, 2)*(1 + 1/(2*x))**Rational(5, 2)/(-6 - 3/x)
     ans = sqrt(2*x + 1)*(6*x**2 + x - 1)/15
     diff = i - ans
     assert diff.equals(0) is False
@@ -1498,25 +1498,25 @@ def test_equals():
     assert (p - q).equals(0)
 
     # issue 6829
-    # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Integer(1)/3
+    # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
     # z = eq.subs(x, solve(eq, x)[0])
     q = symbols('q')
-    z = (q*(-sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/12)/2 - sqrt((2*q - Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 -
-    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 -
-    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/6)/2 - Integer(1)/4) + q/4 + (-sqrt(-2*(-(q
-    - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12)/2 - sqrt((2*q
-    - Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/6)/2 - Integer(1)/4)**4 + (-sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 -
-    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12)/2 - sqrt((2*q -
-    Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/6)/2 - Integer(1)/4)**3 + 2*(-sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 -
-    Integer(2197)/13824)**(Integer(1)/3) - Integer(13)/12)/2 - sqrt((2*q -
-    Integer(7)/4)/sqrt(-2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/12) + 2*(-(q - Integer(7)/8)**Integer(2)/8 - Integer(2197)/13824)**(Integer(1)/3) -
-    Integer(13)/6)/2 - Integer(1)/4)**2 - Integer(1)/3)
+    z = (q*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 12))/2 - sqrt((2*q - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
+    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 -
+    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 6))/2 - Rational(1, 4)) + q/4 + (-sqrt(-2*(-(q
+    - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q
+    - Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 6))/2 - Rational(1, 4))**4 + (-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
+    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
+    Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 6))/2 - Rational(1, 4))**3 + 2*(-sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 -
+    Rational(2197, 13824))**Rational(1, 3) - Rational(13, 12))/2 - sqrt((2*q -
+    Rational(7, 4))/sqrt(-2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 12)) + 2*(-(q - Rational(7, 8))**Integer(2)/8 - Rational(2197, 13824))**Rational(1, 3) -
+    Rational(13, 6))/2 - Rational(1, 4))**2 - Rational(1, 3))
     assert z.equals(0)
 
 

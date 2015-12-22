@@ -54,7 +54,7 @@ geometry module.
     1/2
     >>> t.medians[x]
     Segment(Point2D(0, 0), Point2D(1, 1/2))
-    >>> Segment(Point(1, Integer(1)/2), Point(0, 0))
+    >>> Segment(Point(1, Rational(1, 2)), Point(0, 0))
     Segment(Point2D(0, 0), Point2D(1, 1/2))
     >>> m = t.medians
     >>> intersection(m[x], m[y], m[zp])

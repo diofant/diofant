@@ -619,7 +619,7 @@ def test_dup_clear_denoms():
         1, 2), QQ(0)], QQ, ZZ, convert=True) == (ZZ(2), [ZZ(2), ZZ(1), ZZ(0)])
 
     assert dup_clear_denoms(
-        [EX(Integer(3)/2), EX(Integer(9)/4)], EX) == (EX(4), [EX(6), EX(9)])
+        [EX(Rational(3, 2)), EX(Rational(9, 4))], EX) == (EX(4), [EX(6), EX(9)])
 
     assert dup_clear_denoms([EX(7)], EX) == (EX(1), [EX(7)])
     assert dup_clear_denoms([EX(sin(x)/x), EX(0)], EX) == (EX(x), [EX(sin(x)), EX(0)])
@@ -650,6 +650,6 @@ def test_dmp_clear_denoms():
                             convert=True) == (ZZ(2), [[QQ(2)], [QQ(1)], []])
 
     assert dmp_clear_denoms(
-        [[EX(Integer(3)/2)], [EX(Integer(9)/4)]], 1, EX) == (EX(4), [[EX(6)], [EX(9)]])
+        [[EX(Rational(3, 2))], [EX(Rational(9, 4))]], 1, EX) == (EX(4), [[EX(6)], [EX(9)]])
     assert dmp_clear_denoms([[EX(7)]], 1, EX) == (EX(1), [[EX(7)]])
     assert dmp_clear_denoms([[EX(sin(x)/x), EX(0)]], 1, EX) == (EX(x), [[EX(sin(x)), EX(0)]])

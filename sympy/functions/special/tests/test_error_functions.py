@@ -342,7 +342,7 @@ def test_expint():
 
     assert expint(-4, x) == exp(-x)/x + 4*exp(-x)/x**2 + 12*exp(-x)/x**3 \
         + 24*exp(-x)/x**4 + 24*exp(-x)/x**5
-    assert expint(-Integer(3)/2, x) == \
+    assert expint(-Rational(3, 2), x) == \
         exp(-x)/x + 3*exp(-x)/(2*x**2) - 3*sqrt(pi)*erf(sqrt(x))/(4*x**Rational(5, 2)) \
         + 3*sqrt(pi)/(4*x**Rational(5, 2))
 
@@ -369,15 +369,15 @@ def test_expint():
     assert mytn(expint(3, x), expint(3, x).rewrite(Ei).rewrite(expint),
                 x**2*E1(x)/2 + (1 - x)*exp(-x)/2, x)
 
-    assert expint(Integer(3)/2, z).nseries(z) == \
+    assert expint(Rational(3, 2), z).nseries(z) == \
         2 + 2*z - z**2/3 + z**3/15 - z**4/84 + z**5/540 - \
         2*sqrt(pi)*sqrt(z) + O(z**6)
 
     assert E1(z).series(z) == -EulerGamma - log(z) + z - \
         z**2/4 + z**3/18 - z**4/96 + z**5/600 + O(z**6)
 
-    assert expint(4, z).series(z) == Integer(1)/3 - z/2 + z**2/2 + \
-        z**3*(log(z)/6 - Integer(11)/36 + EulerGamma/6) - z**4/24 + \
+    assert expint(4, z).series(z) == Rational(1, 3) - z/2 + z**2/2 + \
+        z**3*(log(z)/6 - Rational(11, 36) + EulerGamma/6) - z**4/24 + \
         z**5/240 + O(z**6)
 
 
@@ -399,7 +399,7 @@ def test__eis():
         == Ei(z).diff(z)
 
     assert _eis(z).series(z, n=3) == EulerGamma + log(z) + z*(-log(z) -
-        EulerGamma + 1) + z**2*(log(z)/2 - Integer(3)/4 + EulerGamma/2) + O(z**3*log(z))
+        EulerGamma + 1) + z**2*(log(z)/2 - Rational(3, 4) + EulerGamma/2) + O(z**3*log(z))
 
 
 def tn_arg(func):
@@ -567,7 +567,7 @@ def test_fresnel():
         erf((S.One + I)/2*sqrt(pi)*z) - I*erf((S.One - I)/2*sqrt(pi)*z))
 
     assert fresnels(z).rewrite(hyper) == \
-        pi*z**3/6 * hyper([Integer(3)/4], [Integer(3)/2, Integer(7)/4], -pi**2*z**4/16)
+        pi*z**3/6 * hyper([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)], -pi**2*z**4/16)
 
     assert fresnels(z).series(z, n=15) == \
         pi*z**3/6 - pi**3*z**7/336 + pi**5*z**11/42240 + O(z**15)
@@ -589,9 +589,9 @@ def test_fresnel():
     assert expand_func(integrate(fresnels(z), z)) == \
         z*fresnels(z) + cos(pi*z**2/2)/pi
 
-    assert fresnels(z).rewrite(meijerg) == sqrt(2)*pi*z**(Integer(9)/4) * \
-        meijerg(((), (1,)), ((Integer(3)/4,),
-        (Integer(1)/4, 0)), -pi**2*z**4/16)/(2*(-z)**(Integer(3)/4)*(z**2)**(Integer(3)/4))
+    assert fresnels(z).rewrite(meijerg) == sqrt(2)*pi*z**Rational(9, 4) * \
+        meijerg(((), (1,)), ((Rational(3, 4),),
+        (Rational(1, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(3, 4)*(z**2)**Rational(3, 4))
 
     assert fresnelc(0) == 0
     assert fresnelc(oo) == S.Half
@@ -610,7 +610,7 @@ def test_fresnel():
         erf((S.One + I)/2*sqrt(pi)*z) + I*erf((S.One - I)/2*sqrt(pi)*z))
 
     assert fresnelc(z).rewrite(hyper) == \
-        z * hyper([S.One/4], [S.One/2, Integer(5)/4], -pi**2*z**4/16)
+        z * hyper([S.One/4], [S.One/2, Rational(5, 4)], -pi**2*z**4/16)
 
     assert fresnelc(z).series(z, n=15) == \
         z - pi**2*z**5/40 + pi**4*z**9/3456 - pi**6*z**13/599040 + O(z**15)
@@ -646,9 +646,9 @@ def test_fresnel():
     assert expand_func(integrate(fresnelc(z), z)) == \
         z*fresnelc(z) - sin(pi*z**2/2)/pi
 
-    assert fresnelc(z).rewrite(meijerg) == sqrt(2)*pi*z**(Integer(3)/4) * \
-        meijerg(((), (1,)), ((Integer(1)/4,),
-        (Integer(3)/4, 0)), -pi**2*z**4/16)/(2*(-z)**(Integer(1)/4)*(z**2)**(Integer(1)/4))
+    assert fresnelc(z).rewrite(meijerg) == sqrt(2)*pi*z**Rational(3, 4) * \
+        meijerg(((), (1,)), ((Rational(1, 4),),
+        (Rational(3, 4), 0)), -pi**2*z**4/16)/(2*(-z)**Rational(1, 4)*(z**2)**Rational(1, 4))
 
     from sympy.utilities.randtest import verify_numerically
 

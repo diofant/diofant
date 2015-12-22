@@ -12,9 +12,9 @@ def test_sqrtdenest():
         sqrt(r2): sqrt(r2),
         sqrt(5 + r7): sqrt(5 + r7),
         sqrt(3 + sqrt(5 + 2*r7)):
-         3*r2*(5 + 2*r7)**(Integer(1)/4)/(2*sqrt(6 + 3*r7)) +
-         r2*sqrt(6 + 3*r7)/(2*(5 + 2*r7)**(Integer(1)/4)),
-        sqrt(3 + 2*r3): 3**(Integer(3)/4)*(r6/2 + 3*r2/2)/3}
+         3*r2*(5 + 2*r7)**Rational(1, 4)/(2*sqrt(6 + 3*r7)) +
+         r2*sqrt(6 + 3*r7)/(2*(5 + 2*r7)**Rational(1, 4)),
+        sqrt(3 + 2*r3): 3**Rational(3, 4)*(r6/2 + 3*r2/2)/3}
     for i in d:
         assert sqrtdenest(i) == d[i]
 
@@ -70,7 +70,7 @@ def test_sqrtdenest_rec():
     assert sqrtdenest(sqrt(-8*r2 - 2*r5 + 18)) == -r10 + 1 + r2 + r5
     assert sqrtdenest(sqrt(8*r2 + 2*r5 - 18)) == \
         sqrt(-1)*(-r10 + 1 + r2 + r5)
-    assert sqrtdenest(sqrt(8*r2/3 + 14*r5/3 + Integer(154)/9)) == \
+    assert sqrtdenest(sqrt(8*r2/3 + 14*r5/3 + Rational(154, 9))) == \
         -r10/3 + r2 + r5 + 3
     assert sqrtdenest(sqrt(sqrt(2*r6 + 5) + sqrt(2*r7 + 8))) == \
         sqrt(1 + r2 + r3 + r7)

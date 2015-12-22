@@ -39,7 +39,7 @@ class gamma(Function):
     1
     >>> gamma(4)
     6
-    >>> gamma(Integer(3)/2)
+    >>> gamma(Rational(3, 2))
     sqrt(pi)/2
 
     The Gamma function obeys the mirror symmetry:
@@ -224,7 +224,7 @@ class lowergamma(Function):
     lowergamma(s, x)
     >>> lowergamma(3, x)
     2 - E**(-x)*x**2 - 2*E**(-x)*x - 2*E**(-x)
-    >>> lowergamma(-Integer(1)/2, x)
+    >>> lowergamma(-Rational(1, 2), x)
     -2*sqrt(pi)*erf(sqrt(x)) - 2*E**(-x)/sqrt(x)
 
     See Also
@@ -366,7 +366,7 @@ class uppergamma(Function):
     uppergamma(s, x)
     >>> uppergamma(3, x)
     E**(-x)*x**2 + 2*E**(-x)*x + 2*E**(-x)
-    >>> uppergamma(-Integer(1)/2, x)
+    >>> uppergamma(-Rational(1, 2), x)
     -2*sqrt(pi)*(-erf(sqrt(x)) + 1) + 2*E**(-x)/sqrt(x)
     >>> uppergamma(-2, x)
     expint(3, x)/x**2
@@ -663,11 +663,11 @@ class polygamma(Function):
                 return S.NaN
             elif z.is_Rational:
                 # TODO actually *any* n/m can be done, but that is messy
-                lookup = {Integer(1)/2: -2*log(2) - S.EulerGamma,
-                          Integer(1)/3: -S.Pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
-                          Integer(1)/4: -S.Pi/2 - 3*log(2) - S.EulerGamma,
-                          Integer(3)/4: -3*log(2) - S.EulerGamma + S.Pi/2,
-                          Integer(2)/3: -3*log(3)/2 + S.Pi/2/sqrt(3) - S.EulerGamma}
+                lookup = {Rational(1, 2): -2*log(2) - S.EulerGamma,
+                          Rational(1, 3): -S.Pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
+                          Rational(1, 4): -S.Pi/2 - 3*log(2) - S.EulerGamma,
+                          Rational(3, 4): -3*log(2) - S.EulerGamma + S.Pi/2,
+                          Rational(2, 3): -3*log(3)/2 + S.Pi/2/sqrt(3) - S.EulerGamma}
                 if z > 0:
                     n = floor(z)
                     z0 = z - n
@@ -773,8 +773,8 @@ class loggamma(Function):
 
     for half-integral values:
 
-    >>> from sympy import S, pi
-    >>> loggamma(Integer(5)/2)
+    >>> from sympy import pi, Integer
+    >>> loggamma(Rational(5, 2))
     log(3*sqrt(pi)/4)
     >>> loggamma(n/2)
     log(2**(-n + 1)*sqrt(pi)*gamma(n)/gamma(n/2 + 1/2))
@@ -782,13 +782,13 @@ class loggamma(Function):
     and general rational arguments:
 
     >>> from sympy import expand_func
-    >>> L = loggamma(Integer(16)/3)
+    >>> L = loggamma(Rational(16, 3))
     >>> expand_func(L).doit()
     -5*log(3) + loggamma(1/3) + log(4) + log(7) + log(10) + log(13)
-    >>> L = loggamma(Integer(19)/4)
+    >>> L = loggamma(Rational(19, 4))
     >>> expand_func(L).doit()
     -4*log(4) + loggamma(3/4) + log(3) + log(7) + log(11) + log(15)
-    >>> L = loggamma(Integer(23)/7)
+    >>> L = loggamma(Rational(23, 7))
     >>> expand_func(L).doit()
     -3*log(7) + log(2) + loggamma(2/7) + log(9) + log(16)
 
@@ -904,7 +904,7 @@ class loggamma(Function):
             return super(loggamma, self)._eval_aseries(n, args0, x, logx)
         z = self.args[0]
         m = min(n, ceiling((n + Integer(1))/2))
-        r = log(z)*(z - Integer(1)/2) - z + log(2*pi)/2
+        r = log(z)*(z - Rational(1, 2)) - z + log(2*pi)/2
         l = [bernoulli(2*k) / (2*k*(2*k - 1)*z**(2*k - 1)) for k in range(1, m)]
         o = None
         if m == 0:

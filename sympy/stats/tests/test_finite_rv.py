@@ -47,7 +47,7 @@ def test_dice():
     a, b = symbols('a b')
 
     assert E(X) == 3 + S.Half
-    assert variance(X) == Integer(35)/12
+    assert variance(X) == Rational(35, 12)
     assert E(X + Y) == 7
     assert E(X + X) == 7
     assert E(a*X + b) == a*E(X) + b
@@ -64,7 +64,7 @@ def test_dice():
     assert smoment(X, 0) == 1
     assert P(X > 3) == S.Half
     assert P(2*X > 6) == S.Half
-    assert P(X > Y) == Integer(5)/12
+    assert P(X > Y) == Rational(5, 12)
     assert P(Eq(X, Y)) == P(Eq(X, 1))
 
     assert E(X, X > 3) == 5 == moment(X, 1, 0, X > 3)
@@ -173,7 +173,7 @@ def test_coins():
     assert dict(density(C).items()) == {H: S.Half, T: S.Half}
 
     F = Coin('F', S.One/10)
-    assert P(Eq(F, H)) == Integer(1)/10
+    assert P(Eq(F, H)) == Rational(1, 10)
 
     d = pspace(C).domain
 
@@ -189,7 +189,7 @@ def test_binomial_verify_parameters():
 
 def test_binomial_numeric():
     nvals = range(5)
-    pvals = [0, Integer(1)/4, S.Half, Integer(3)/4, 1]
+    pvals = [0, Rational(1, 4), S.Half, Rational(3, 4), 1]
 
     for n in nvals:
         for p in pvals:

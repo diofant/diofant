@@ -395,7 +395,7 @@ def test_nakagami():
     assert simplify(E(X, meijerg=True)) == (sqrt(mu)*sqrt(omega)
            *gamma(mu + S.Half)/gamma(mu + 1))
     assert simplify(variance(X, meijerg=True)) == (
-    omega - omega*gamma(mu + Integer(1)/2)**2/(gamma(mu)*gamma(mu + 1)))
+    omega - omega*gamma(mu + Rational(1, 2))**2/(gamma(mu)*gamma(mu + 1)))
 
 
 def test_pareto():
@@ -529,7 +529,7 @@ def test_weibull():
 def test_weibull_numeric():
     # Test for integers and rationals
     a = 1
-    bvals = [S.Half, S.One, Integer(3)/2, Integer(5)]
+    bvals = [S.Half, S.One, Rational(3, 2), Integer(5)]
     for b in bvals:
         X = Weibull('x', a, b)
         assert simplify(E(X)) == simplify(a * gamma(1 + 1/b))

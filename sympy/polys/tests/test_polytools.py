@@ -322,7 +322,7 @@ def test_Poly__new__():
 
     pytest.raises(CoercionFailed, lambda: Poly(3*x**2/5 + 2*x/5 + 1, domain='ZZ'))
     assert Poly(
-        3*x**2/5 + 2*x/5 + 1, domain='QQ').all_coeffs() == [Integer(3)/5, Integer(2)/5, 1]
+        3*x**2/5 + 2*x/5 + 1, domain='QQ').all_coeffs() == [Rational(3, 5), Rational(2, 5), 1]
     assert _epsilon_eq(
         Poly(3*x**2/5 + 2*x/5 + 1, domain='RR').all_coeffs(), [0.6, 0.4, 1.0])
 
@@ -332,7 +332,7 @@ def test_Poly__new__():
         3.0*x**2 + 2.0*x + 1, domain='RR').all_coeffs() == [3.0, 2.0, 1.0]
 
     pytest.raises(CoercionFailed, lambda: Poly(3.1*x**2 + 2.1*x + 1, domain='ZZ'))
-    assert Poly(3.1*x**2 + 2.1*x + 1, domain='QQ').all_coeffs() == [Integer(31)/10, Integer(21)/10, 1]
+    assert Poly(3.1*x**2 + 2.1*x + 1, domain='QQ').all_coeffs() == [Rational(31, 10), Rational(21, 10), 1]
     assert Poly(3.1*x**2 + 2.1*x + 1, domain='RR').all_coeffs() == [3.1, 2.1, 1.0]
 
     assert Poly({(2, 1): 1, (1, 2): 2, (1, 1): 3}, x, y) == \
@@ -574,8 +574,8 @@ def test_Poly_set_domain():
     assert Poly(2*x + 1).set_domain(QQ) == Poly(2*x + 1, domain='QQ')
     assert Poly(2*x + 1).set_domain('QQ') == Poly(2*x + 1, domain='QQ')
 
-    assert Poly(Integer(2)/10*x + Integer(1)/10).set_domain('RR') == Poly(0.2*x + 0.1)
-    assert Poly(0.2*x + 0.1).set_domain('QQ') == Poly(Integer(2)/10*x + Integer(1)/10)
+    assert Poly(Rational(2, 10)*x + Rational(1, 10)).set_domain('RR') == Poly(0.2*x + 0.1)
+    assert Poly(0.2*x + 0.1).set_domain('QQ') == Poly(Rational(2, 10)*x + Rational(1, 10))
 
     pytest.raises(CoercionFailed, lambda: Poly(x/2 + 1).set_domain(ZZ))
     pytest.raises(CoercionFailed, lambda: Poly(x + 1, modulus=2).set_domain(QQ))
@@ -1477,11 +1477,11 @@ def test_Poly_eval():
     assert Poly(x*y + y, x, y).eval((6, 7)) == 49
     assert Poly(x*y + y, x, y).eval([6, 7]) == 49
 
-    assert Poly(x + 1, domain='ZZ').eval(Integer(1)/2) == Integer(3)/2
+    assert Poly(x + 1, domain='ZZ').eval(Rational(1, 2)) == Rational(3, 2)
     assert Poly(x + 1, domain='ZZ').eval(sqrt(2)) == sqrt(2) + 1
 
     pytest.raises(ValueError, lambda: Poly(x*y + y, x, y).eval((6, 7, 8)))
-    pytest.raises(DomainError, lambda: Poly(x + 1, domain='ZZ').eval(Integer(1)/2, auto=False))
+    pytest.raises(DomainError, lambda: Poly(x + 1, domain='ZZ').eval(Rational(1, 2), auto=False))
 
     # issue 6344
     alpha = Symbol('alpha')
@@ -1959,11 +1959,11 @@ def test_gcd_numbers_vs_polys():
     assert gcd(3, 9) == 3
     assert gcd(3*x, 9) == 3
 
-    assert isinstance(gcd(Integer(3)/2, Integer(9)/4), Rational)
-    assert isinstance(gcd(Integer(3)/2*x, Integer(9)/4), Rational)
+    assert isinstance(gcd(Rational(3, 2), Rational(9, 4)), Rational)
+    assert isinstance(gcd(Rational(3, 2)*x, Rational(9, 4)), Rational)
 
-    assert gcd(Integer(3)/2, Integer(9)/4) == Integer(3)/4
-    assert gcd(Integer(3)/2*x, Integer(9)/4) == 1
+    assert gcd(Rational(3, 2), Rational(9, 4)) == Rational(3, 4)
+    assert gcd(Rational(3, 2)*x, Rational(9, 4)) == 1
 
     assert isinstance(gcd(3.0, 9.0), Float)
     assert isinstance(gcd(3.0*x, 9.0), Float)
@@ -2034,7 +2034,7 @@ def test_trunc():
 
 
 def test_monic():
-    f, g = 2*x - 1, x - Integer(1)/2
+    f, g = 2*x - 1, x - Rational(1, 2)
     F, G = Poly(f, domain='QQ'), Poly(g)
 
     assert F.monic() == G
@@ -2144,13 +2144,13 @@ def test_sturm():
            - Integer(4096)/(625*pi**8)*x**4
            + Integer(32)/(15625*pi**4)*x**3
            - Integer(128)/(625*pi**4)*x**2
-           + Integer(1)/62500*x
-           - Integer(1)/625, x, domain='ZZ(pi)')
+           + Rational(1, 62500)*x
+           - Rational(1, 625), x, domain='ZZ(pi)')
 
     assert sturm(f) == \
         [Poly(x**3 - 100*x**2 + pi**4/64*x - 25*pi**4/16, x, domain='ZZ(pi)'),
          Poly(3*x**2 - 200*x + pi**4/64, x, domain='ZZ(pi)'),
-         Poly((Integer(20000)/9 - pi**4/96)*x + 25*pi**4/18, x, domain='ZZ(pi)'),
+         Poly((Rational(20000, 9) - pi**4/96)*x + 25*pi**4/18, x, domain='ZZ(pi)'),
          Poly((-3686400000000*pi**4 - 11520000*pi**8 - 9*pi**12)/(26214400000000 - 245760000*pi**4 + 576*pi**8), x, domain='ZZ(pi)')]
 
 
@@ -2236,7 +2236,7 @@ def test_sqf():
     assert sqf(x - 1) == x - 1
     assert sqf(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
 
-    assert sqf((6*x - 10)/(3*x - 6)) == Integer(2)/3*((3*x - 5)/(x - 2))
+    assert sqf((6*x - 10)/(3*x - 6)) == Rational(2, 3)*((3*x - 5)/(x - 2))
     assert sqf(Poly(x**2 - 2*x + 1)) == (x - 1)**2
 
     f = 3 + x - x*(1 + x) + x**2
@@ -2438,7 +2438,7 @@ def test_factor_large():
 @pytest.mark.xfail
 def test_factor_noeval():
     assert factor(6*x - 10) == 2*(3*x - 5)
-    assert factor((6*x - 10)/(3*x - 6)) == Integer(2)/3*((3*x - 5)/(x - 2))
+    assert factor((6*x - 10)/(3*x - 6)) == Rational(2, 3)*((3*x - 5)/(x - 2))
 
 
 def test_intervals():
@@ -2451,7 +2451,7 @@ def test_intervals():
     assert intervals(x**128) == [((0, 0), 128)]
     assert intervals([x**2, x**4]) == [((0, 0), {0: 2, 1: 4})]
 
-    f = Poly((2*x/5 - Integer(17)/3)*(4*x + Integer(1)/257))
+    f = Poly((2*x/5 - Rational(17, 3))*(4*x + Rational(1, 257)))
 
     assert f.intervals(sqf=True) == [(-1, 0), (14, 15)]
     assert f.intervals() == [((-1, 0), 1), ((14, 15), 1)]
@@ -2459,45 +2459,45 @@ def test_intervals():
     assert f.intervals(fast=True, sqf=True) == [(-1, 0), (14, 15)]
     assert f.intervals(fast=True) == [((-1, 0), 1), ((14, 15), 1)]
 
-    assert f.intervals(eps=Integer(1)/10) == f.intervals(eps=0.1) == \
-        [((-Integer(1)/258, 0), 1), ((Integer(85)/6, Integer(85)/6), 1)]
-    assert f.intervals(eps=Integer(1)/100) == f.intervals(eps=0.01) == \
-        [((-Integer(1)/258, 0), 1), ((Integer(85)/6, Integer(85)/6), 1)]
-    assert f.intervals(eps=Integer(1)/1000) == f.intervals(eps=0.001) == \
-        [((-Integer(1)/1002, 0), 1), ((Integer(85)/6, Integer(85)/6), 1)]
-    assert f.intervals(eps=Integer(1)/10000) == f.intervals(eps=0.0001) == \
-        [((-Integer(1)/1028, -Integer(1)/1028), 1), ((Integer(85)/6, Integer(85)/6), 1)]
+    assert f.intervals(eps=Rational(1, 10)) == f.intervals(eps=0.1) == \
+        [((-Rational(1, 258), 0), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
+    assert f.intervals(eps=Rational(1, 100)) == f.intervals(eps=0.01) == \
+        [((-Rational(1, 258), 0), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
+    assert f.intervals(eps=Rational(1, 1000)) == f.intervals(eps=0.001) == \
+        [((-Rational(1, 1002), 0), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
+    assert f.intervals(eps=Rational(1, 10000)) == f.intervals(eps=0.0001) == \
+        [((-Rational(1, 1028), -Rational(1, 1028)), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
 
-    f = (2*x/5 - Integer(17)/3)*(4*x + Integer(1)/257)
+    f = (2*x/5 - Rational(17, 3))*(4*x + Rational(1, 257))
 
     assert intervals(f, sqf=True) == [(-1, 0), (14, 15)]
     assert intervals(f) == [((-1, 0), 1), ((14, 15), 1)]
 
-    assert intervals(f, eps=Integer(1)/10) == intervals(f, eps=0.1) == \
-        [((-Integer(1)/258, 0), 1), ((Integer(85)/6, Integer(85)/6), 1)]
-    assert intervals(f, eps=Integer(1)/100) == intervals(f, eps=0.01) == \
-        [((-Integer(1)/258, 0), 1), ((Integer(85)/6, Integer(85)/6), 1)]
-    assert intervals(f, eps=Integer(1)/1000) == intervals(f, eps=0.001) == \
-        [((-Integer(1)/1002, 0), 1), ((Integer(85)/6, Integer(85)/6), 1)]
-    assert intervals(f, eps=Integer(1)/10000) == intervals(f, eps=0.0001) == \
-        [((-Integer(1)/1028, -Integer(1)/1028), 1), ((Integer(85)/6, Integer(85)/6), 1)]
+    assert intervals(f, eps=Rational(1, 10)) == intervals(f, eps=0.1) == \
+        [((-Rational(1, 258), 0), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
+    assert intervals(f, eps=Rational(1, 100)) == intervals(f, eps=0.01) == \
+        [((-Rational(1, 258), 0), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
+    assert intervals(f, eps=Rational(1, 1000)) == intervals(f, eps=0.001) == \
+        [((-Rational(1, 1002), 0), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
+    assert intervals(f, eps=Rational(1, 10000)) == intervals(f, eps=0.0001) == \
+        [((-Rational(1, 1028), -Rational(1, 1028)), 1), ((Rational(85, 6), Rational(85, 6)), 1)]
 
     f = Poly((x**2 - 2)*(x**2 - 3)**7*(x + 1)*(7*x + 3)**3)
 
     assert f.intervals() == \
-        [((-2, -Integer(3)/2), 7), ((-Integer(3)/2, -1), 1),
+        [((-2, -Rational(3, 2)), 7), ((-Rational(3, 2), -1), 1),
          ((-1, -1), 1), ((-1, 0), 3),
-         ((1, Integer(3)/2), 1), ((Integer(3)/2, 2), 7)]
+         ((1, Rational(3, 2)), 1), ((Rational(3, 2), 2), 7)]
 
     assert intervals([x**5 - 200, x**5 - 201]) == \
-        [((Integer(75)/26, Integer(101)/35), {0: 1}), ((Integer(309)/107, Integer(26)/9), {1: 1})]
+        [((Rational(75, 26), Rational(101, 35)), {0: 1}), ((Rational(309, 107), Rational(26, 9)), {1: 1})]
 
     assert intervals([x**5 - 200, x**5 - 201], fast=True) == \
-        [((Integer(75)/26, Integer(101)/35), {0: 1}), ((Integer(309)/107, Integer(26)/9), {1: 1})]
+        [((Rational(75, 26), Rational(101, 35)), {0: 1}), ((Rational(309, 107), Rational(26, 9)), {1: 1})]
 
     assert intervals([x**2 - 200, x**2 - 201]) == \
-        [((-Integer(71)/5, -Integer(85)/6), {1: 1}), ((-Integer(85)/6, -14), {0: 1}),
-         ((14, Integer(85)/6), {0: 1}), ((Integer(85)/6, Integer(71)/5), {1: 1})]
+        [((-Rational(71, 5), -Rational(85, 6)), {1: 1}), ((-Rational(85, 6), -14), {0: 1}),
+         ((14, Rational(85, 6)), {0: 1}), ((Rational(85, 6), Rational(71, 5)), {1: 1})]
 
     assert intervals([x + 1, x + 2, x - 1, x + 1, 1, x - 1, x - 1, (x - 2)**2]) == \
         [((-2, -2), {1: 1}), ((-1, -1), {0: 1, 3: 1}), ((1, 1), {2:
@@ -2505,26 +2505,26 @@ def test_intervals():
 
     f, g, h = x**2 - 2, x**4 - 4*x**2 + 4, x - 1
 
-    assert intervals(f, inf=Integer(7)/4, sqf=True) == []
-    assert intervals(f, inf=Integer(7)/5, sqf=True) == [(Integer(7)/5, Integer(3)/2)]
-    assert intervals(f, sup=Integer(7)/4, sqf=True) == [(-2, -1), (1, Integer(3)/2)]
-    assert intervals(f, sup=Integer(7)/5, sqf=True) == [(-2, -1)]
+    assert intervals(f, inf=Rational(7, 4), sqf=True) == []
+    assert intervals(f, inf=Rational(7, 5), sqf=True) == [(Rational(7, 5), Rational(3, 2))]
+    assert intervals(f, sup=Rational(7, 4), sqf=True) == [(-2, -1), (1, Rational(3, 2))]
+    assert intervals(f, sup=Rational(7, 5), sqf=True) == [(-2, -1)]
 
-    assert intervals(g, inf=Integer(7)/4) == []
-    assert intervals(g, inf=Integer(7)/5) == [((Integer(7)/5, Integer(3)/2), 2)]
-    assert intervals(g, sup=Integer(7)/4) == [((-2, -1), 2), ((1, Integer(3)/2), 2)]
-    assert intervals(g, sup=Integer(7)/5) == [((-2, -1), 2)]
+    assert intervals(g, inf=Rational(7, 4)) == []
+    assert intervals(g, inf=Rational(7, 5)) == [((Rational(7, 5), Rational(3, 2)), 2)]
+    assert intervals(g, sup=Rational(7, 4)) == [((-2, -1), 2), ((1, Rational(3, 2)), 2)]
+    assert intervals(g, sup=Rational(7, 5)) == [((-2, -1), 2)]
 
-    assert intervals([g, h], inf=Integer(7)/4) == []
-    assert intervals([g, h], inf=Integer(7)/5) == [((Integer(7)/5, Integer(3)/2), {0: 2})]
-    assert intervals([g, h], sup=Rational(7, 4)) == [((-2, -1), {0: 2}), ((1, 1), {1: 1}), ((1, Integer(3)/2), {0: 2})]
+    assert intervals([g, h], inf=Rational(7, 4)) == []
+    assert intervals([g, h], inf=Rational(7, 5)) == [((Rational(7, 5), Rational(3, 2)), {0: 2})]
+    assert intervals([g, h], sup=Rational(7, 4)) == [((-2, -1), {0: 2}), ((1, 1), {1: 1}), ((1, Rational(3, 2)), {0: 2})]
     assert intervals(
-        [g, h], sup=Integer(7)/5) == [((-2, -1), {0: 2}), ((1, 1), {1: 1})]
+        [g, h], sup=Rational(7, 5)) == [((-2, -1), {0: 2}), ((1, 1), {1: 1})]
 
     assert intervals([x + 2, x**2 - 2]) == \
         [((-2, -2), {0: 1}), ((-2, -1), {1: 1}), ((1, 2), {1: 1})]
     assert intervals([x + 2, x**2 - 2], strict=True) == \
-        [((-2, -2), {0: 1}), ((-Integer(3)/2, -1), {1: 1}), ((1, 2), {1: 1})]
+        [((-2, -2), {0: 1}), ((-Rational(3, 2), -1), {1: 1}), ((1, 2), {1: 1})]
 
     f = 7*z**4 - 19*z**3 + 20*z**2 + 17*z + 20
 
@@ -2536,10 +2536,10 @@ def test_intervals():
     assert all(re(a) < re(r) < re(b) and im(
         a) < im(r) < im(b) for (a, b), r in zip(complex_part, nroots(f)))
 
-    assert complex_part == [(-Integer(40)/7 - 40*I/7, 0), (-Integer(40)/7, 40*I/7),
-                            (-40*I/7, Integer(40)/7), (0, Integer(40)/7 + 40*I/7)]
+    assert complex_part == [(-Rational(40, 7) - 40*I/7, 0), (-Rational(40, 7), 40*I/7),
+                            (-40*I/7, Rational(40, 7)), (0, Rational(40, 7) + 40*I/7)]
 
-    real_part, complex_part = intervals(f, all=True, sqf=True, eps=Integer(1)/10)
+    real_part, complex_part = intervals(f, all=True, sqf=True, eps=Rational(1, 10))
 
     assert real_part == []
     assert all(re(a) < re(r) < re(b) and im(
@@ -2557,17 +2557,17 @@ def test_refine_root():
     assert f.refine_root(1, 2, steps=0) == (1, 2)
     assert f.refine_root(-2, -1, steps=0) == (-2, -1)
 
-    assert f.refine_root(1, 2, steps=None) == (1, Integer(3)/2)
-    assert f.refine_root(-2, -1, steps=None) == (-Integer(3)/2, -1)
+    assert f.refine_root(1, 2, steps=None) == (1, Rational(3, 2))
+    assert f.refine_root(-2, -1, steps=None) == (-Rational(3, 2), -1)
 
-    assert f.refine_root(1, 2, steps=1) == (1, Integer(3)/2)
-    assert f.refine_root(-2, -1, steps=1) == (-Integer(3)/2, -1)
+    assert f.refine_root(1, 2, steps=1) == (1, Rational(3, 2))
+    assert f.refine_root(-2, -1, steps=1) == (-Rational(3, 2), -1)
 
-    assert f.refine_root(1, 2, steps=1, fast=True) == (1, Integer(3)/2)
-    assert f.refine_root(-2, -1, steps=1, fast=True) == (-Integer(3)/2, -1)
+    assert f.refine_root(1, 2, steps=1, fast=True) == (1, Rational(3, 2))
+    assert f.refine_root(-2, -1, steps=1, fast=True) == (-Rational(3, 2), -1)
 
-    assert f.refine_root(1, 2, eps=Integer(1)/100) == (Integer(24)/17, Integer(17)/12)
-    assert f.refine_root(1, 2, eps=1e-2) == (Integer(24)/17, Integer(17)/12)
+    assert f.refine_root(1, 2, eps=Rational(1, 100)) == (Rational(24, 17), Rational(17, 12))
+    assert f.refine_root(1, 2, eps=1e-2) == (Rational(24, 17), Rational(17, 12))
 
     pytest.raises(PolynomialError, lambda: (f**2).refine_root(1, 2, check_sqf=True))
 
@@ -2576,16 +2576,16 @@ def test_refine_root():
 
     f = x**2 - 2
 
-    assert refine_root(f, 1, 2, steps=1) == (1, Integer(3)/2)
-    assert refine_root(f, -2, -1, steps=1) == (-Integer(3)/2, -1)
+    assert refine_root(f, 1, 2, steps=1) == (1, Rational(3, 2))
+    assert refine_root(f, -2, -1, steps=1) == (-Rational(3, 2), -1)
 
-    assert refine_root(f, 1, 2, steps=1, fast=True) == (1, Integer(3)/2)
-    assert refine_root(f, -2, -1, steps=1, fast=True) == (-Integer(3)/2, -1)
+    assert refine_root(f, 1, 2, steps=1, fast=True) == (1, Rational(3, 2))
+    assert refine_root(f, -2, -1, steps=1, fast=True) == (-Rational(3, 2), -1)
 
-    assert refine_root(f, 1, 2, eps=Integer(1)/100) == (Integer(24)/17, Integer(17)/12)
-    assert refine_root(f, 1, 2, eps=1e-2) == (Integer(24)/17, Integer(17)/12)
+    assert refine_root(f, 1, 2, eps=Rational(1, 100)) == (Rational(24, 17), Rational(17, 12))
+    assert refine_root(f, 1, 2, eps=1e-2) == (Rational(24, 17), Rational(17, 12))
 
-    pytest.raises(PolynomialError, lambda: refine_root(1, 7, 8, eps=Integer(1)/100))
+    pytest.raises(PolynomialError, lambda: refine_root(1, 7, 8, eps=Rational(1, 100)))
 
     pytest.raises(ValueError, lambda: Poly(f).refine_root(1, 2, eps=10**-100000))
     pytest.raises(ValueError, lambda: refine_root(f, 1, 2, eps=10**-100000))
@@ -2630,7 +2630,7 @@ def test_count_roots():
 def test_Poly_root():
     f = Poly(2*x**3 - 7*x**2 + 4*x + 4)
 
-    assert f.root(0) == -Integer(1)/2
+    assert f.root(0) == -Rational(1, 2)
     assert f.root(1) == 2
     assert f.root(2) == 2
     pytest.raises(IndexError, lambda: f.root(3))
@@ -2657,7 +2657,7 @@ def test_real_roots():
     f = 2*x**3 - 7*x**2 + 4*x + 4
     g = x**3 + x + 1
 
-    assert Poly(f).real_roots() == [-Integer(1)/2, 2, 2]
+    assert Poly(f).real_roots() == [-Rational(1, 2), 2, 2]
     assert Poly(g).real_roots() == [RootOf(g, 0)]
 
 
@@ -2665,7 +2665,7 @@ def test_all_roots():
     f = 2*x**3 - 7*x**2 + 4*x + 4
     g = x**3 + x + 1
 
-    assert Poly(f).all_roots() == [-Integer(1)/2, 2, 2]
+    assert Poly(f).all_roots() == [-Rational(1, 2), 2, 2]
     assert Poly(g).all_roots() == [RootOf(g, 0), RootOf(g, 1), RootOf(g, 2)]
 
 
@@ -2682,10 +2682,10 @@ def test_nroots():
     roots = Poly(x**2 + 1, x).nroots()
     assert roots == [-1.0*I, 1.0*I]
 
-    roots = Poly(x**2/3 - Integer(1)/3, x).nroots()
+    roots = Poly(x**2/3 - Rational(1, 3), x).nroots()
     assert roots == [-1.0, 1.0]
 
-    roots = Poly(x**2/3 + Integer(1)/3, x).nroots()
+    roots = Poly(x**2/3 + Rational(1, 3), x).nroots()
     assert roots == [-1.0*I, 1.0*I]
 
     assert Poly(x**2 + 2*I, x).nroots() == [-1.0 + 1.0*I, 1.0 - 1.0*I]
@@ -2812,7 +2812,7 @@ def test_cancel():
     assert cancel(f) == f
     assert cancel(f, greedy=False) == x + sqrt(2)
 
-    assert cancel((x**2/4 - 1, x/2 - 1)) == (Integer(1)/2, x + 2, 1)
+    assert cancel((x**2/4 - 1, x/2 - 1)) == (Rational(1, 2), x + 2, 1)
 
     assert cancel((x**2 - y)/(x - y)) == 1/(x - y)*(x**2 - y)
 
@@ -2821,7 +2821,7 @@ def test_cancel():
     assert cancel((x**2 - y**2)/(x - y)) == x + y
 
     assert cancel((x**3 - 1)/(x**2 - 1)) == (x**2 + x + 1)/(x + 1)
-    assert cancel((x**3/2 - Integer(1)/2)/(x**2 - 1)) == (x**2 + x + 1)/(2*x + 2)
+    assert cancel((x**3/2 - Rational(1, 2))/(x**2 - 1)) == (x**2 + x + 1)/(2*x + 2)
 
     assert cancel((exp(2*x) + 2*exp(x) + 1)/(exp(x) + 1)) == exp(x) + 1
 
@@ -2863,7 +2863,7 @@ def test_cancel():
     P = tanh(x - 3.0)
     Q = tanh(x + 3.0)
     f = ((-2*P**2 + 2)*(-P**2 + 1)*Q**2/2 + (-2*P**2 + 2)*(-2*Q**2 + 2)*P*Q - (-2*P**2 + 2)*P**2*Q**2 + (-2*Q**2 + 2)*(-Q**2 + 1)*P**2/2 - (-2*Q**2 + 2)*P**2*Q**2)/(2*sqrt(P**2*Q**2 + 0.0001)) \
-      + (-(-2*P**2 + 2)*P*Q**2/2 - (-2*Q**2 + 2)*P**2*Q/2)*((-2*P**2 + 2)*P*Q**2/2 + (-2*Q**2 + 2)*P**2*Q/2)/(2*(P**2*Q**2 + 0.0001)**(Integer(3)/2))
+      + (-(-2*P**2 + 2)*P*Q**2/2 - (-2*Q**2 + 2)*P**2*Q/2)*((-2*P**2 + 2)*P*Q**2/2 + (-2*Q**2 + 2)*P**2*Q/2)/(2*(P**2*Q**2 + 0.0001)**Rational(3, 2))
     assert cancel(f).is_Mul
 
     # issue 7022

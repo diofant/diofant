@@ -387,10 +387,10 @@ def test_function__eval_nseries():
     assert loggamma(log(1/x)).nseries(x, n=1, logx=y) == loggamma(-y)
 
     # issue 6725:
-    assert expint(Integer(3)/2, -x)._eval_nseries(x, 5, None) == \
+    assert expint(Rational(3, 2), -x)._eval_nseries(x, 5, None) == \
         2 - 2*sqrt(pi)*sqrt(-x) - 2*x - x**2/3 - x**3/15 - x**4/84 + O(x**5)
     assert sin(sqrt(x))._eval_nseries(x, 3, None) == \
-        sqrt(x) - x**(Integer(3)/2)/6 + x**(Integer(5)/2)/120 + O(x**3)
+        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**3)
 
 
 def test_doit():
@@ -603,11 +603,11 @@ def test_nfloat():
     from sympy.polys.rootoftools import RootOf
 
     x = Symbol("x")
-    eq = x**(Integer(4)/3) + 4*x**(Integer(1)/3)/3
-    assert _aresame(nfloat(eq), x**(Integer(4)/3) + (4.0/3)*x**(Integer(1)/3))
+    eq = x**Rational(4, 3) + 4*x**Rational(1, 3)/3
+    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**Rational(1, 3))
     assert _aresame(nfloat(eq, exponent=True), x**(4.0/3) + (4.0/3)*x**(1.0/3))
-    eq = x**(Integer(4)/3) + 4*x**(x/3)/3
-    assert _aresame(nfloat(eq), x**(Integer(4)/3) + (4.0/3)*x**(x/3))
+    eq = x**Rational(4, 3) + 4*x**(x/3)/3
+    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**(x/3))
     big = 12345678901234567890
     # specify precision to match value used in nfloat
     Float_big = Float(big, 15)

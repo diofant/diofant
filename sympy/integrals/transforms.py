@@ -368,13 +368,13 @@ def _rewrite_sin(m_n, s, a, b):
     (gamma(s - 1), gamma(-s + 2), -pi)
     >>> _rewrite_sin((pi, 0), s, -1, 0)
     (gamma(s + 1), gamma(-s), -pi)
-    >>> _rewrite_sin((pi, pi/2), s, Integer(1)/2, Integer(3)/2)
+    >>> _rewrite_sin((pi, pi/2), s, Rational(1, 2), Rational(3, 2))
     (gamma(s - 1/2), gamma(-s + 3/2), -pi)
     >>> _rewrite_sin((pi, pi), s, 0, 1)
     (gamma(s), gamma(-s + 1), -pi)
-    >>> _rewrite_sin((2*pi, 0), s, 0, Integer(1)/2)
+    >>> _rewrite_sin((2*pi, 0), s, 0, Rational(1, 2))
     (gamma(2*s), gamma(-2*s + 1), pi)
-    >>> _rewrite_sin((2*pi, 0), s, Integer(1)/2, 1)
+    >>> _rewrite_sin((2*pi, 0), s, Rational(1, 2), 1)
     (gamma(2*s - 1), gamma(-2*s + 2), -pi)
     """
     # (This is a separate function because it is moderately complicated,
@@ -672,10 +672,10 @@ def _rewrite_gamma(f, s, a, b):
                 for k in range(p):
                     gammas += [(newa, newc + k/p)]
                 if is_numer:
-                    fac *= (2*pi)**((1 - p)/2) * p**(c - Integer(1)/2)
+                    fac *= (2*pi)**((1 - p)/2) * p**(c - Rational(1, 2))
                     exponentials += [p**a]
                 else:
-                    fac /= (2*pi)**((1 - p)/2) * p**(c - Integer(1)/2)
+                    fac /= (2*pi)**((1 - p)/2) * p**(c - Rational(1, 2))
                     exponentials += [p**(-a)]
                 continue
             if a == +1:

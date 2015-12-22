@@ -434,14 +434,14 @@ def test_issue_3883():
     a, b, c = symbols('a b c', cls=Wild, exclude=(gamma,))
 
     assert f.match(a * log(gamma) + b * gamma + c) == \
-        {a: -Integer(1)/2, b: -(mu - x)**2/2, c: log(2*pi)/2}
+        {a: -Rational(1, 2), b: -(mu - x)**2/2, c: log(2*pi)/2}
     assert f.expand().collect(gamma).match(a * log(gamma) + b * gamma + c) == \
-        {a: -Integer(1)/2, b: (-(x - mu)**2/2).expand(), c: (log(2*pi)/2).expand()}
+        {a: -Rational(1, 2), b: (-(x - mu)**2/2).expand(), c: (log(2*pi)/2).expand()}
     g1 = Wild('g1', exclude=[gamma])
     g2 = Wild('g2', exclude=[gamma])
     g3 = Wild('g3', exclude=[gamma])
     assert f.expand().match(g1 * log(gamma) + g2 * gamma + g3) == \
-    {g3: log(2)/2 + log(pi)/2, g1: -Integer(1)/2, g2: -mu**2/2 + mu*x - x**2/2}
+    {g3: log(2)/2 + log(pi)/2, g1: -Rational(1, 2), g2: -mu**2/2 + mu*x - x**2/2}
 
 
 def test_issue_4418():
@@ -511,11 +511,11 @@ def test_issue_4559():
     assert (3/x).match(w/y) == {w: 3, y: x}
     assert (3*x).match(w*y) == {w: 3, y: x}
     assert (x/3).match(y/w) == {w: 3, y: x}
-    assert (3*x).match(y/w) == {w: Integer(1)/3, y: x}
+    assert (3*x).match(y/w) == {w: Rational(1, 3), y: x}
 
     # these could be allowed to fail
 
-    assert (x/3).match(w/y) == {w: Integer(1)/3, y: 1/x}
+    assert (x/3).match(w/y) == {w: Rational(1, 3), y: 1/x}
     assert (3*x).match(w/y) == {w: 3, y: 1/x}
     assert (3/x).match(w*y) == {w: 3, y: 1/x}
 
@@ -564,8 +564,8 @@ def test_issue_4883():
 def test_issue_4319():
     x, y = symbols('x y')
 
-    p = -x*(Integer(1)/8 - y)
-    ans = {S.Zero, y - Integer(1)/8}
+    p = -x*(Rational(1, 8) - y)
+    ans = {S.Zero, y - Rational(1, 8)}
 
     def ok(pat):
         assert set(p.match(pat).values()) == ans

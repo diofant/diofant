@@ -48,7 +48,7 @@ def test_gruntz_evaluation():
                   x) == 0
     # 8.10
     assert gruntz((x*log(x)*(log(x*exp(x) - x**2))**2)
-                  / (log(log(x**2 + 2*exp(exp(3*x**3*log(x)))))), x) == Integer(1)/3
+                  / (log(log(x**2 + 2*exp(exp(3*x**3*log(x)))))), x) == Rational(1, 3)
     # 8.11
     assert gruntz((exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1)))) - exp(x))/x,
                   x) == -exp(2)
@@ -60,9 +60,9 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(2*log(x**5 + x)*log(log(x))))
                   / exp(exp(10*log(x)*log(log(x)))), x) == oo
     # 8.15
-    assert gruntz(exp(exp(Integer(5)/2*x**(-Integer(5)/7) + Integer(21)/8*x**(Integer(6)/11)
-                          + 2*x**(-8) + Integer(54)/17*x**(Integer(49)/45)))**8
-                  / log(log(-log(Integer(4)/3*x**(-Integer(5)/14))))**(Integer(7)/6), x) == oo
+    assert gruntz(exp(exp(Rational(5, 2)*x**(-Rational(5, 7)) + Rational(21, 8)*x**Rational(6, 11)
+                          + 2*x**(-8) + Rational(54, 17)*x**Rational(49, 45)))**8
+                  / log(log(-log(Rational(4, 3)*x**(-Rational(5, 14)))))**Rational(7, 6), x) == oo
     # 8.16
     assert gruntz((exp(4*x*exp(-x)/(1/exp(x) + 1/exp(2*x**2/(x + 1)))) - exp(x))
                   / exp(x)**4, x) == 1
@@ -92,17 +92,17 @@ def test_gruntz_eval_special():
     assert gruntz(exp(exp(x)) * (exp(sin(1/x + exp(-exp(x)))) - exp(sin(1/x))),
                   x) == 1
     assert gruntz(exp(x)*(gamma(x + exp(-x)) - gamma(x)), x) == oo
-    assert gruntz(exp(exp(digamma(digamma(x))))/x, x) == exp(-Integer(1)/2)
-    assert gruntz(exp(exp(digamma(log(x))))/x, x) == exp(-Integer(1)/2)
+    assert gruntz(exp(exp(digamma(digamma(x))))/x, x) == exp(-Rational(1, 2))
+    assert gruntz(exp(exp(digamma(log(x))))/x, x) == exp(-Rational(1, 2))
     assert gruntz(digamma(digamma(digamma(x))), x) == oo
     assert gruntz(loggamma(loggamma(x)), x) == oo
     assert gruntz(((gamma(x + 1/gamma(x)) - gamma(x))/log(x) - cos(1/x))
-                  * x*log(x), x) == -Integer(1)/2
+                  * x*log(x), x) == -Rational(1, 2)
     assert gruntz(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)), x) \
-        == Integer(1)/2
+        == Rational(1, 2)
     assert gruntz((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x) == 1
     assert gruntz(gamma(x + 1)/sqrt(2*pi)
-                  - exp(-x)*(x**(x + Integer(1)/2) + x**(x - Integer(1)/2)/12), x) == oo
+                  - exp(-x)*(x**(x + Rational(1, 2)) + x**(x - Rational(1, 2))/12), x) == oo
     assert gruntz(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x) == 0
     assert gruntz(exp(gamma(x - exp(-x))*exp(1/x)) - exp(gamma(x)), x) == oo
     assert gruntz(
@@ -363,7 +363,7 @@ def test_intractable():
     assert gruntz(gamma(x)/loggamma(x), x) == oo
     assert gruntz(exp(gamma(x))/gamma(x), x) == oo
     assert gruntz(gamma(3 + 1/x), x) == 2
-    assert gruntz(gamma(Integer(1)/7 + 1/x), x) == gamma(Integer(1)/7)
+    assert gruntz(gamma(Rational(1, 7) + 1/x), x) == gamma(Rational(1, 7))
     assert gruntz(log(x**x)/log(gamma(x)), x) == 1
     assert gruntz(log(gamma(gamma(x)))/exp(x), x) == oo
 

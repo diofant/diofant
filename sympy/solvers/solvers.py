@@ -713,7 +713,7 @@ def solve(f, *symbols, **flags):
     special checking:
 
         >>> from sympy import real_root, S
-        >>> eq = root(x, 3) - root(x, 5) + Integer(1)/7
+        >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
         >>> solve(eq)  # this gives 2 solutions but misses a 3rd
         [RootOf(7*_p**5 - 7*_p**3 + 1, 1)**15,
         RootOf(7*_p**5 - 7*_p**3 + 1, 2)**15]

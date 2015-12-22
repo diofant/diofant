@@ -169,12 +169,12 @@ def Bernoulli(name, p, succ=1, fail=0):
     >>> from sympy.stats import Bernoulli, density
     >>> from sympy import S, Symbol
 
-    >>> X = Bernoulli('X', Integer(3)/4) # 1-0 Bernoulli variable, probability = 3/4
-    >>> density(X).dict == {0: Integer(1)/4, 1: Integer(3)/4}
+    >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
+    >>> density(X).dict == {0: Rational(1, 4), 1: Rational(3, 4)}
     True
 
     >>> X = Bernoulli('X', S.Half, 'Heads', 'Tails') # A fair coin toss
-    >>> density(X).dict == {Symbol('Heads'): Integer(1)/2, Symbol('Tails'): Integer(1)/2}
+    >>> density(X).dict == {Symbol('Heads'): Rational(1, 2), Symbol('Tails'): Rational(1, 2)}
     True
     """
 

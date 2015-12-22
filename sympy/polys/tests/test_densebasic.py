@@ -238,14 +238,14 @@ def test_dmp_convert():
 def test_dup_from_sympy():
     assert dup_from_sympy([Integer(1), Integer(2)], ZZ) == \
         [ZZ(1), ZZ(2)]
-    assert dup_from_sympy([Integer(1)/2, Integer(3)], QQ) == \
+    assert dup_from_sympy([Rational(1, 2), Integer(3)], QQ) == \
         [QQ(1, 2), QQ(3, 1)]
 
 
 def test_dmp_from_sympy():
     assert dmp_from_sympy([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == \
         [[ZZ(1), ZZ(2)], []]
-    assert dmp_from_sympy([[Integer(1)/2, Integer(2)]], 1, QQ) == \
+    assert dmp_from_sympy([[Rational(1, 2), Integer(2)]], 1, QQ) == \
         [[QQ(1, 2), QQ(2, 1)]]
 
 

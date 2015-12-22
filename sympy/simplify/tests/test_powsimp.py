@@ -183,7 +183,7 @@ def test_powdenest():
     x, y = symbols('x,y', positive=True)
     assert powdenest((x**2*y**6)**i) == (x*y**3)**(2*i)
 
-    assert powdenest((x**(2*i/3)*y**(i/2))**(2*i)) == (x**(Integer(4)/3)*y)**(i**2)
+    assert powdenest((x**(2*i/3)*y**(i/2))**(2*i)) == (x**Rational(4, 3)*y)**(i**2)
     assert powdenest(sqrt(x**(2*i)*y**(6*i))) == (x*y**3)**i
 
     assert powdenest(4**x) == 2**(2*x)
@@ -213,7 +213,7 @@ def test_issue_9324_powsimp_on_matrix_symbol():
 
 
 def test_issue_6367():
-    z = -5*sqrt(2)/(2*sqrt(2*sqrt(29) + 29)) + sqrt(-sqrt(29)/29 + Integer(1)/2)
+    z = -5*sqrt(2)/(2*sqrt(2*sqrt(29) + 29)) + sqrt(-sqrt(29)/29 + Rational(1, 2))
     assert Mul(*[powsimp(a) for a in Mul.make_args(z.normal())]) == 0
     assert powsimp(z.normal()) == 0
     assert simplify(z) == 0
@@ -281,16 +281,16 @@ def test_issue_from_PR1599():
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
         -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
     assert (powsimp(root(n1, 3)*root(n2, 3)*root(n3, 3)*root(n4, 3)) ==
-        -(-1)**(Integer(1)/3)*
-        (-n1)**(Integer(1)/3)*(-n2)**(Integer(1)/3)*(-n3)**(Integer(1)/3)*(-n4)**(Integer(1)/3))
+        -(-1)**Rational(1, 3)*
+        (-n1)**Rational(1, 3)*(-n2)**Rational(1, 3)*(-n3)**Rational(1, 3)*(-n4)**Rational(1, 3))
 
 
 def test_powsimp_on_numbers():
-    assert 2**(Integer(1)/3 - 2) == 2**(Integer(1)/3)/4
+    assert 2**(Rational(1, 3) - 2) == 2**Rational(1, 3)/4
 
 
 def test_omgissue_124():
     n = Symbol('n', odd=True)
     assert powsimp((-1)**(n/2)) in ((-1)**(n/2), I**n)
-    assert powsimp((-1)**(n/2 - Rational(1,2)) -
-                   (-1)**(3*n/2 - Rational(1,2))) != 2  # sympy/sympy#10195
+    assert powsimp((-1)**(n/2 - Rational(1, 2)) -
+                   (-1)**(3*n/2 - Rational(1, 2))) != 2  # sympy/sympy#10195

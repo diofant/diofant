@@ -142,7 +142,7 @@ def test_multiple_integration():
     assert integrate((x**2)*(y**2), (x, 0, 1), (y, -1, 2)) == Rational(1)
     assert integrate((y**2)*(x**2), x, y) == Rational(1, 9)*(x**3)*(y**3)
     assert integrate(1/(x + 3)/(1 + x)**3, x) == \
-        -Integer(1)/8*log(3 + x) + Integer(1)/8*log(1 + x) + x/(4 + 8*x + 4*x**2)
+        -Rational(1, 8)*log(3 + x) + Rational(1, 8)*log(1 + x) + x/(4 + 8*x + 4*x**2)
 
 
 def test_issue_3532():
@@ -334,7 +334,7 @@ def test_transform():
 
 
 def test_issue_4052():
-    f = Integer(1)/2*asin(x) + x*sqrt(1 - x**2)/2
+    f = Rational(1, 2)*asin(x) + x*sqrt(1 - x**2)/2
 
     assert integrate(cos(asin(x)), x) == f
     assert integrate(sin(acos(x)), x) == f
@@ -441,7 +441,7 @@ def test_integrate_DiracDelta():
 def test_integrate_DiracDelta_fails():
     # issue 6427
     assert integrate(integrate(integrate(
-        DiracDelta(x - y - z), (z, 0, oo)), (y, 0, 1)), (x, 0, 1)) == Integer(1)/2
+        DiracDelta(x - y - z), (z, 0, oo)), (y, 0, 1)), (x, 0, 1)) == Rational(1, 2)
 
 
 def test_integrate_returns_piecewise():
@@ -585,26 +585,26 @@ def test_as_sum_midpoint1():
 
 def test_as_sum_midpoint2():
     e = Integral((x + y)**2, (x, 0, 1))
-    assert e.as_sum(1, method="midpoint").expand() == Integer(1)/4 + y + y**2
-    assert e.as_sum(2, method="midpoint").expand() == Integer(5)/16 + y + y**2
-    assert e.as_sum(3, method="midpoint").expand() == Integer(35)/108 + y + y**2
-    assert e.as_sum(4, method="midpoint").expand() == Integer(21)/64 + y + y**2
+    assert e.as_sum(1, method="midpoint").expand() == Rational(1, 4) + y + y**2
+    assert e.as_sum(2, method="midpoint").expand() == Rational(5, 16) + y + y**2
+    assert e.as_sum(3, method="midpoint").expand() == Rational(35, 108) + y + y**2
+    assert e.as_sum(4, method="midpoint").expand() == Rational(21, 64) + y + y**2
 
 
 def test_as_sum_left():
     e = Integral((x + y)**2, (x, 0, 1))
     assert e.as_sum(1, method="left").expand() == y**2
-    assert e.as_sum(2, method="left").expand() == Integer(1)/8 + y/2 + y**2
-    assert e.as_sum(3, method="left").expand() == Integer(5)/27 + 2*y/3 + y**2
-    assert e.as_sum(4, method="left").expand() == Integer(7)/32 + 3*y/4 + y**2
+    assert e.as_sum(2, method="left").expand() == Rational(1, 8) + y/2 + y**2
+    assert e.as_sum(3, method="left").expand() == Rational(5, 27) + 2*y/3 + y**2
+    assert e.as_sum(4, method="left").expand() == Rational(7, 32) + 3*y/4 + y**2
 
 
 def test_as_sum_right():
     e = Integral((x + y)**2, (x, 0, 1))
     assert e.as_sum(1, method="right").expand() == 1 + 2*y + y**2
-    assert e.as_sum(2, method="right").expand() == Integer(5)/8 + 3*y/2 + y**2
-    assert e.as_sum(3, method="right").expand() == Integer(14)/27 + 4*y/3 + y**2
-    assert e.as_sum(4, method="right").expand() == Integer(15)/32 + 5*y/4 + y**2
+    assert e.as_sum(2, method="right").expand() == Rational(5, 8) + 3*y/2 + y**2
+    assert e.as_sum(3, method="right").expand() == Rational(14, 27) + 4*y/3 + y**2
+    assert e.as_sum(4, method="right").expand() == Rational(15, 32) + 5*y/4 + y**2
 
 
 def test_as_sum_raises():
@@ -651,7 +651,7 @@ def test_doit_integrals():
     assert Integral(0, (x, 1, Integral(f(x), x))).doit() == 0
     assert Integral(x, (a, 0)).doit() == 0
     limits = ((a, 1, exp(x)), (x, 0))
-    assert Integral(a, *limits).doit() == Integer(1)/4
+    assert Integral(a, *limits).doit() == Rational(1, 4)
     assert Integral(a, *list(reversed(limits))).doit() == 0
 
 
@@ -800,9 +800,9 @@ def test_issue_5167():
 def test_issue_4890():
     z = Symbol('z', positive=True)
     assert integrate(exp(-log(x)**2), x) == \
-        sqrt(pi)*exp(Integer(1)/4)*erf(log(x)-Integer(1)/2)/2
+        sqrt(pi)*exp(Rational(1, 4))*erf(log(x)-Rational(1, 2))/2
     assert integrate(exp(log(x)**2), x) == \
-        sqrt(pi)*exp(-Integer(1)/4)*erfi(log(x)+Integer(1)/2)/2
+        sqrt(pi)*exp(-Rational(1, 4))*erfi(log(x)+Rational(1, 2))/2
     assert integrate(exp(-z*log(x)**2), x) == \
         sqrt(pi)*exp(1/(4*z))*erf(sqrt(z)*log(x) - 1/(2*sqrt(z)))/(2*sqrt(z))
 
@@ -1062,8 +1062,8 @@ def test_issue_2708():
 def test_issue_8368():
     assert integrate(exp(-s*x)*cosh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
-        (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Integer(1)/2,), (0, 0)),
-        ((0, Integer(1)/2), (0,)), polar_lift(s)**2), True)),
+        (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
+        ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
         And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
         cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
         1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))

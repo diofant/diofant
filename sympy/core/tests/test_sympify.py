@@ -114,7 +114,7 @@ def test_sympify2():
 def test_sympify3():
     assert sympify("x**3") == x**3
     assert sympify("x^3") == x**3
-    assert sympify("1/2") == Integer(1)/2
+    assert sympify("1/2") == Rational(1, 2)
 
     pytest.raises(SympifyError, lambda: _sympify('x**3'))
     pytest.raises(SympifyError, lambda: _sympify('1/2'))
@@ -372,8 +372,8 @@ def test_issue_3982():
 
 
 def test_S_sympify():
-    assert Integer(1)/2 == sympify(1)/2
-    assert (-2)**(Integer(1)/2) == sqrt(2)*I
+    assert Rational(1, 2) == sympify(1)/2
+    assert (-2)**Rational(1, 2) == sqrt(2)*I
 
 
 def test_issue_4788():
