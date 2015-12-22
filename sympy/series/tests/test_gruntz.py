@@ -260,7 +260,7 @@ def test_rewrite():
     e = exp(x + 1/x)
     assert rewrite(e, x, m) == (1/m, -x - 1/x)
     e = 1/exp(-x + exp(-x)) - exp(x)
-    assert rewrite(e, x, m) == (Add(1/(m*exp(m)), -1/m, evaluate=False), -x)
+    assert rewrite(e, x, m) == (Add(-1/m, 1/(m*exp(m)), evaluate=False), -x)
 
     e = exp(x)*log(log(exp(x)))
     assert mrv(e, x) == {exp(x)}
