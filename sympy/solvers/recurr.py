@@ -46,7 +46,6 @@ For the sake of completeness, `f(n)` can be:
     [2] a rational function       -> rsolve_ratio
     [3] a hypergeometric function  -> rsolve_hyper
 """
-from __future__ import print_function, division
 
 from collections import defaultdict
 
@@ -57,14 +56,13 @@ from sympy.core.relational import Equality
 from sympy.core.add import Add
 from sympy.core.mul import Mul
 from sympy.core import sympify
-
 from sympy.simplify import simplify, hypersimp, hypersimilar
 from sympy.solvers import solve, solve_undetermined_coeffs
 from sympy.polys import Poly, quo, gcd, lcm, roots, resultant
 from sympy.functions import binomial, factorial, FallingFactorial, RisingFactorial
 from sympy.matrices import Matrix, casoratian
 from sympy.concrete import product
-from sympy.core.compatibility import default_sort_key, range
+from sympy.core.compatibility import default_sort_key
 from sympy.utilities.iterables import numbered_symbols
 
 

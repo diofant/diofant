@@ -5,18 +5,7 @@ SymPy is written entirely in Python and does not require any external
 libraries, except optionally for plotting support.
 """
 
-from __future__ import absolute_import, print_function
-
 from sympy.release import __version__
-
-import sys
-if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-    raise ImportError("Python Version 2.7 or above is required for SymPy.")
-else:  # Python 3
-    pass
-    # Here we can also check for specific Python 3 versions, if needed
-
-del sys
 
 
 def __sympy_debug():

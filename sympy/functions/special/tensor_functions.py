@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 from sympy.core.function import Function
 from sympy.core import S, Integer
 from sympy.core.mul import prod
-from sympy.utilities.iterables import (has_dups, default_sort_key)
-from sympy.core.compatibility import range
+from sympy.utilities.iterables import has_dups, default_sort_key
 
 ###############################################################################
 # #################### Kronecker Delta, Levi-Civita etc. #################### #

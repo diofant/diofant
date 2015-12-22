@@ -1,4 +1,7 @@
-from __future__ import print_function, division
+from collections import defaultdict
+from functools import reduce
+
+from mpmath.libmp import mpf_log, prec_to_dps
 
 from .sympify import sympify, _sympify, SympifyError
 from .basic import Basic, Atom
@@ -6,10 +9,7 @@ from .singleton import S
 from .evalf import EvalfMixin, pure_complex
 from .decorators import _sympifyit, call_highest_priority
 from .cache import cacheit
-from .compatibility import reduce, as_int, default_sort_key, range
-from mpmath.libmp import mpf_log, prec_to_dps
-
-from collections import defaultdict
+from .compatibility import as_int, default_sort_key
 
 
 class Expr(Basic, EvalfMixin):
@@ -212,7 +212,6 @@ class Expr(Basic, EvalfMixin):
             if diff_sign != isign:
                 i -= isign
         return i
-    __long__ = __int__
 
     def __float__(self):
         # Don't bother testing if it's a number; if it's not this is going
@@ -2434,6 +2433,7 @@ class Expr(Basic, EvalfMixin):
         -x
         """
         from sympy import collect, Dummy, Order, Rational, Symbol
+
         if x is None:
             syms = self.atoms(Symbol)
             if not syms:
@@ -2441,6 +2441,9 @@ class Expr(Basic, EvalfMixin):
             elif len(syms) > 1:
                 raise ValueError('x must be given for multivariate functions.')
             x = syms.pop()
+
+        if not x.is_Symbol:
+            raise NotImplementedError("x is not a symbol")
 
         if not self.has(x):
             if n is None:

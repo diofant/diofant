@@ -1,10 +1,16 @@
-from __future__ import print_function, division
-
 import decimal
 import fractions
 import math
 import re as regex
 from collections import defaultdict
+
+import mpmath
+import mpmath.libmp as mlib
+from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
+from mpmath.ctx_mp import mpnumeric
+from mpmath.libmp.libmpf import (finf as _mpf_inf, fninf as _mpf_ninf,
+                                 fnan as _mpf_nan, fzero as _mpf_zero,
+                                 _normalize as mpf_normalize, prec_to_dps)
 
 from .containers import Tuple
 from .sympify import converter, sympify, _sympify, SympifyError
@@ -13,17 +19,7 @@ from .expr import Expr, AtomicExpr
 from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
-from sympy.core.compatibility import (
-    as_int, integer_types, long, string_types, with_metaclass, HAS_GMPY,
-    SYMPY_INTS)
-import mpmath
-import mpmath.libmp as mlib
-from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
-from mpmath.ctx_mp import mpnumeric
-from mpmath.libmp.libmpf import (
-    finf as _mpf_inf, fninf as _mpf_ninf,
-    fnan as _mpf_nan, fzero as _mpf_zero, _normalize as mpf_normalize,
-    prec_to_dps)
+from sympy.core.compatibility import as_int, HAS_GMPY, SYMPY_INTS
 from sympy.utilities.misc import debug
 
 rnd = mlib.round_nearest
@@ -276,7 +272,7 @@ class Number(AtomicExpr):
             return Rational(*obj)
         if isinstance(obj, (float, mpmath.mpf, decimal.Decimal)):
             return Float(obj)
-        if isinstance(obj, string_types):
+        if isinstance(obj, str):
             val = sympify(obj)
             if isinstance(val, Number):
                 return val
@@ -284,7 +280,7 @@ class Number(AtomicExpr):
                 raise ValueError('String "%s" does not denote a Number' % obj)
             if isinstance(obj, Number):
                 return obj
-        msg = "expected str|int|long|float|Decimal|Number object but got %r"
+        msg = "expected str|int|float|Decimal|Number object but got %r"
         raise TypeError(msg % type(obj).__name__)
 
     def __divmod__(self, other):
@@ -507,10 +503,9 @@ class Float(Number):
     >>> Float(3)
     3.00000000000000
 
-    Creating Floats from strings (and Python ``int`` and ``long``
-    types) will give a minimum precision of 15 digits, but the
-    precision will automatically increase to capture all digits
-    entered.
+    Creating Floats from strings (and Python ``int`` type) will
+    give a minimum precision of 15 digits, but the precision
+    will automatically increase to capture all digits entered.
 
     >>> Float(1)
     1.00000000000000
@@ -542,7 +537,7 @@ class Float(Number):
 
     Float can automatically count significant figures if a null string
     is sent for the precision; space are also allowed in the string. (Auto-
-    counting is only allowed for strings, ints and longs).
+    counting is only allowed for strings and ints).
 
     >>> Float('123 456 789 . 123 456', '')
     123456789.123456
@@ -663,7 +658,7 @@ class Float(Number):
     is_Float = True
 
     def __new__(cls, num, prec=None):
-        if isinstance(num, string_types):
+        if isinstance(num, str):
             num = num.replace(' ', '')
             if num.startswith('.') and len(num) > 1:
                 num = '0' + num
@@ -680,7 +675,7 @@ class Float(Number):
             dps = 15
             if isinstance(num, Float):
                 return num
-            if isinstance(num, string_types) and _literal_float(num):
+            if isinstance(num, str) and _literal_float(num):
                 try:
                     Num = decimal.Decimal(num)
                 except decimal.InvalidOperation:
@@ -692,7 +687,7 @@ class Float(Number):
                         dps = max(dps, len(str(num).lstrip('-')))
                     dps = max(15, dps)
         elif prec == '':
-            if not isinstance(num, string_types):
+            if not isinstance(num, str):
                 raise ValueError('The null string can only be used when '
                 'the number to Float is passed as a string or an integer.')
             ok = None
@@ -736,7 +731,7 @@ class Float(Number):
                 # it's a hexadecimal (coming from a pickled object)
                 # assume that it is in standard form
                 num = list(num)
-                num[1] = long(num[1], 16)
+                num[1] = int(num[1], 16)
                 _mpf_ = tuple(num)
             else:
                 if not num[1] and len(num) == 4:
@@ -837,10 +832,8 @@ class Float(Number):
     def _eval_is_zero(self):
         return self._mpf_ == _mpf_zero
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self._mpf_ != _mpf_zero
-
-    __bool__ = __nonzero__
 
     def __neg__(self):
         return Float._new(mlib.mpf_neg(self._mpf_), self._prec)
@@ -940,8 +933,6 @@ class Float(Number):
         if self._mpf_ == _mpf_zero:
             return 0
         return int(mlib.to_int(self._mpf_))  # uses round_fast = round_down
-
-    __long__ = __int__
 
     def __eq__(self, other):
         if isinstance(other, float):
@@ -1148,7 +1139,7 @@ class Rational(Number):
             if isinstance(p, Rational):
                 return p
 
-            if isinstance(p, string_types):
+            if isinstance(p, str):
                 p = p.replace(' ', '')
                 try:
                     # we might have a Float
@@ -1402,8 +1393,6 @@ class Rational(Number):
             return -(-p//q)
         return p//q
 
-    __long__ = __int__
-
     def __eq__(self, other):
         try:
             other = _sympify(other)
@@ -1598,7 +1587,7 @@ class Integer(Rational):
 
     @cacheit
     def __new__(cls, i):
-        if isinstance(i, string_types):
+        if isinstance(i, str):
             i = i.replace(' ', '')
         # whereas we cannot, in general, make a Rational from an
         # arbitrary expression, we can make an Integer unambiguously
@@ -1633,8 +1622,6 @@ class Integer(Rational):
     def __int__(self):
         return self.p
 
-    __long__ = __int__
-
     def __neg__(self):
         return Integer(-self.p)
 
@@ -1653,7 +1640,7 @@ class Integer(Rational):
 
     def __rdivmod__(self, other):
         from .containers import Tuple
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Tuple(*(divmod(other, self.p)))
         else:
             try:
@@ -1667,57 +1654,57 @@ class Integer(Rational):
 
     # TODO make it decorator + bytecodehacks?
     def __add__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p + other)
         elif isinstance(other, Integer):
             return Integer(self.p + other.p)
         return Rational.__add__(self, other)
 
     def __radd__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other + self.p)
         return Rational.__add__(self, other)
 
     def __sub__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p - other)
         elif isinstance(other, Integer):
             return Integer(self.p - other.p)
         return Rational.__sub__(self, other)
 
     def __rsub__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other - self.p)
         return Rational.__rsub__(self, other)
 
     def __mul__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p*other)
         elif isinstance(other, Integer):
             return Integer(self.p*other.p)
         return Rational.__mul__(self, other)
 
     def __rmul__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other*self.p)
         return Rational.__mul__(self, other)
 
     def __mod__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(self.p % other)
         elif isinstance(other, Integer):
             return Integer(self.p % other.p)
         return Rational.__mod__(self, other)
 
     def __rmod__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return Integer(other % self.p)
         elif isinstance(other, Integer):
             return Integer(other.p % self.p)
         return Rational.__rmod__(self, other)
 
     def __eq__(self, other):
-        if isinstance(other, integer_types):
+        if isinstance(other, int):
             return (self.p == other)
         elif isinstance(other, Integer):
             return (self.p == other.p)
@@ -1900,8 +1887,7 @@ class Integer(Rational):
         return Integer(Integer(other).p // self.p)
 
 # Add sympify converters
-for i_type in integer_types:
-    converter[i_type] = Integer
+converter[int] = Integer
 
 
 class AlgebraicNumber(Expr):
@@ -2051,7 +2037,7 @@ class IntegerConstant(Integer):
         return AtomicExpr.__new__(cls)
 
 
-class Zero(with_metaclass(Singleton, IntegerConstant)):
+class Zero(IntegerConstant, metaclass=Singleton):
     """The number zero.
 
     Zero is a singleton, and can be accessed by ``S.Zero``
@@ -2105,13 +2091,11 @@ class Zero(with_metaclass(Singleton, IntegerConstant)):
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
 
-    __bool__ = __nonzero__
 
-
-class One(with_metaclass(Singleton, IntegerConstant)):
+class One(IntegerConstant, metaclass=Singleton):
     """The number one.
 
     One is a singleton, and can be accessed by ``S.One``.
@@ -2154,7 +2138,7 @@ class One(with_metaclass(Singleton, IntegerConstant)):
         return {1: 1}
 
 
-class NegativeOne(with_metaclass(Singleton, IntegerConstant)):
+class NegativeOne(IntegerConstant, metaclass=Singleton):
     """The number negative one.
 
     NegativeOne is a singleton, and can be accessed by ``S.NegativeOne``.
@@ -2215,7 +2199,7 @@ class NegativeOne(with_metaclass(Singleton, IntegerConstant)):
         return
 
 
-class Half(with_metaclass(Singleton, RationalConstant)):
+class Half(RationalConstant, metaclass=Singleton):
     """The rational number 1/2.
 
     Half is a singleton, and can be accessed by ``S.Half``.
@@ -2244,7 +2228,7 @@ class Half(with_metaclass(Singleton, RationalConstant)):
         return S.Half
 
 
-class Infinity(with_metaclass(Singleton, Number)):
+class Infinity(Number, metaclass=Singleton):
     r"""Positive infinite quantity.
 
     In real analysis the symbol `\infty` denotes an unbounded
@@ -2471,7 +2455,7 @@ class Infinity(with_metaclass(Singleton, Number)):
 oo = S.Infinity
 
 
-class NegativeInfinity(with_metaclass(Singleton, Number)):
+class NegativeInfinity(Number, metaclass=Singleton):
     """Negative infinite quantity.
 
     NegativeInfinity is a singleton, and can be accessed
@@ -2676,7 +2660,7 @@ class NegativeInfinity(with_metaclass(Singleton, Number)):
     __rmod__ = __mod__
 
 
-class NaN(with_metaclass(Singleton, Number)):
+class NaN(Number, metaclass=Singleton):
     """
     Not a Number.
 
@@ -2787,7 +2771,7 @@ class NaN(with_metaclass(Singleton, Number)):
 nan = S.NaN
 
 
-class ComplexInfinity(with_metaclass(Singleton, AtomicExpr)):
+class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     r"""Complex infinity.
 
     In complex analysis the symbol `\tilde\infty`, called "complex
@@ -2953,14 +2937,11 @@ class NumberSymbol(AtomicExpr):
         # subclass with appropriate return value
         raise NotImplementedError
 
-    def __long__(self):
-        return self.__int__()
-
     def __hash__(self):
         return super(NumberSymbol, self).__hash__()
 
 
-class Exp1(with_metaclass(Singleton, NumberSymbol)):
+class Exp1(NumberSymbol, metaclass=Singleton):
     r"""The `e` constant.
 
     The transcendental number `e = 2.718281828\dots` is the base of the
@@ -3102,7 +3083,7 @@ class Exp1(with_metaclass(Singleton, NumberSymbol)):
 E = S.Exp1
 
 
-class Pi(with_metaclass(Singleton, NumberSymbol)):
+class Pi(NumberSymbol, metaclass=Singleton):
     r"""The `\pi` constant.
 
     The transcendental number `\pi = 3.141592654\dots` represents the ratio
@@ -3167,7 +3148,7 @@ class Pi(with_metaclass(Singleton, NumberSymbol)):
 pi = S.Pi
 
 
-class GoldenRatio(with_metaclass(Singleton, NumberSymbol)):
+class GoldenRatio(NumberSymbol, metaclass=Singleton):
     r"""The golden ratio, `\phi`.
 
     `\phi = \frac{1 + \sqrt{5}}{2}` is algebraic number.  Two quantities
@@ -3225,7 +3206,7 @@ class GoldenRatio(with_metaclass(Singleton, NumberSymbol)):
             pass
 
 
-class EulerGamma(with_metaclass(Singleton, NumberSymbol)):
+class EulerGamma(NumberSymbol, metaclass=Singleton):
     r"""The Euler-Mascheroni constant.
 
     `\gamma = 0.5772157\dots` (also called Euler's constant) is a mathematical
@@ -3281,7 +3262,7 @@ class EulerGamma(with_metaclass(Singleton, NumberSymbol)):
             return (S.Half, Rational(3, 5))
 
 
-class Catalan(with_metaclass(Singleton, NumberSymbol)):
+class Catalan(NumberSymbol, metaclass=Singleton):
     r"""Catalan's constant.
 
     `K = 0.91596559\dots` is given by the infinite series
@@ -3330,7 +3311,7 @@ class Catalan(with_metaclass(Singleton, NumberSymbol)):
             return (Rational(9, 10), S.One)
 
 
-class ImaginaryUnit(with_metaclass(Singleton, AtomicExpr)):
+class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     r"""The imaginary unit, `i = \sqrt{-1}`.
 
     I is a singleton, and can be accessed by ``S.I``, or can be
@@ -3423,10 +3404,10 @@ try:
         raise ImportError
 
     def sympify_mpz(x):
-        return Integer(long(x))
+        return Integer(int(x))
 
     def sympify_mpq(x):
-        return Rational(long(x.numerator), long(x.denominator))
+        return Rational(int(x.numerator), int(x.denominator))
 
     converter[type(gmpy.mpz(1))] = sympify_mpz
     converter[type(gmpy.mpq(1, 2))] = sympify_mpq

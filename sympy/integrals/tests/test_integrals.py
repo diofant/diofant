@@ -10,7 +10,6 @@ from sympy import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
                    im, polar_lift, meijerg)
 from sympy.functions.elementary.complexes import periodic_argument
 from sympy.integrals.risch import NonElementaryIntegral
-from sympy.core.compatibility import range
 from sympy.utilities.randtest import verify_numerically
 
 x, y, a, t, x_1, x_2, z, s = symbols('x y a t x_1 x_2 z s')

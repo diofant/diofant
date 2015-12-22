@@ -1,7 +1,7 @@
 import pytest
 
 from sympy.core import symbols, Symbol, Tuple, oo
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 from sympy.tensor.indexed import IndexException
 
 # import test:

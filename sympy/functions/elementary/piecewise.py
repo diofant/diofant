@@ -1,11 +1,9 @@
-from __future__ import print_function, division
-
 from sympy.core import Basic, S, Function, diff, Tuple
 from sympy.core.relational import Equality, Relational
 from sympy.functions.elementary.miscellaneous import Max, Min
 from sympy.logic.boolalg import (And, Boolean, distribute_and_over_or, Not, Or,
-    true, false)
-from sympy.core.compatibility import default_sort_key, range
+                                 true, false)
+from sympy.core.compatibility import default_sort_key
 
 
 class ExprCondPair(Tuple):

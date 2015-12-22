@@ -1,13 +1,14 @@
 """Power series manipulating functions acting on polys.ring.PolyElement()"""
 
+import math
+
+from mpmath.libmp.libintmath import ifac, giant_steps
+
 from sympy.polys.domains import QQ
 from sympy.polys.rings import PolyElement
 from sympy.polys.monomials import monomial_min, monomial_mul
-from mpmath.libmp.libintmath import ifac
 from sympy.core.numbers import Rational
-from sympy.core.compatibility import as_int, range
-from mpmath.libmp.libintmath import giant_steps
-import math
+from sympy.core.compatibility import as_int
 
 
 def _invert_monoms(p1):

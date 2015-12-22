@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 from functools import wraps
 
 from sympy.core import S, Symbol, Tuple, Integer, Basic, Expr
 from sympy.core.decorators import call_highest_priority
-from sympy.core.compatibility import range
 from sympy.core.sympify import SympifyError, sympify
 from sympy.functions import conjugate, adjoint
 from sympy.matrices import ShapeError
@@ -481,10 +478,8 @@ class ZeroMatrix(MatrixExpr):
     def _entry(self, i, j):
         return S.Zero
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
-
-    __bool__ = __nonzero__
 
 
 def matrix_symbols(expr):

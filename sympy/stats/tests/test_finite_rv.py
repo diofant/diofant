@@ -1,6 +1,5 @@
 import pytest
 
-from sympy.core.compatibility import range
 from sympy import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
                    And, Tuple, Or, Dict, sympify, binomial, cancel)
 from sympy.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,

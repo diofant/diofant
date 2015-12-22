@@ -5,8 +5,6 @@ import re
 import random
 import ast
 
-from sympy.core.compatibility import PY3
-
 # System path separator (usually slash or backslash) to be
 # used with excluded files, e.g.
 #     exclude = {
@@ -62,10 +60,7 @@ def find_self_assignments(s):
                 continue
             if not n.args.args:
                 continue
-            if PY3:
-                first_arg = n.args.args[0].arg
-            else:
-                first_arg = n.args.args[0].id
+            first_arg = n.args.args[0].arg
             for m in ast.walk(n):
                 if isinstance(m, ast.Assign):
                     for a in m.targets:
@@ -119,19 +114,8 @@ def test_files():
     """
 
     def test(fname):
-        if PY3:
-            with open(fname, "rt", encoding="utf8") as test_file:
-                test_this_file(fname, test_file)
-        else:
-            with open(fname, "rt") as test_file:
-                test_this_file(fname, test_file)
-
-            with open(fname, "rt") as test_file:
-                source = test_file.read()
-            result = find_self_assignments(source)
-            if result:
-                assert False, message_self_assignments % (fname,
-                                                          result[0].lineno)
+        with open(fname, "rt", encoding="utf8") as test_file:
+            test_this_file(fname, test_file)
 
     def test_this_file(fname, test_file):
         line = None  # to flag the case where there were no lines in file

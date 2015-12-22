@@ -6,7 +6,6 @@ from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
                    cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
                    diff, simplify, Heaviside, arg, conjugate, series,
                    FiniteSet, asec, acsc, sech, csch)
-from sympy.core.compatibility import range
 
 x, y, z = symbols('x y z')
 r = Symbol('r', extended_real=True)

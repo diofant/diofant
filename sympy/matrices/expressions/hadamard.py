@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 from strategies import condition, exhaust, do_one
 
 from sympy.core import Mul, sympify
 from sympy.core.strategies import unpack, flatten
-
 from sympy.matrices.expressions.matexpr import MatrixExpr, ShapeError
 
 

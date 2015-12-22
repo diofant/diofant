@@ -1,8 +1,9 @@
+from io import StringIO
+
 import pytest
 
 from sympy.core import (S, symbols, Eq, pi, Catalan, EulerGamma, Lambda,
                         Dummy, Function)
-from sympy.core.compatibility import StringIO
 from sympy import erf, Integral, Piecewise
 from sympy import Equality
 from sympy.matrices import Matrix, MatrixSymbol

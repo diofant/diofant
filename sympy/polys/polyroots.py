@@ -1,7 +1,6 @@
 """Algorithms for computing symbolic roots of polynomials. """
 
-from __future__ import print_function, division
-
+from functools import reduce
 import math
 
 from sympy.core.symbol import Dummy, Symbol, symbols
@@ -13,22 +12,17 @@ from sympy.core.relational import Eq
 from sympy.core.sympify import sympify
 from sympy.core.numbers import Rational, igcd, comp
 from sympy.core.exprtools import factor_terms
-
 from sympy.ntheory import divisors, isprime, nextprime
 from sympy.functions import exp, sqrt, im, cos, acos, Piecewise
 from sympy.functions.elementary.miscellaneous import root
-
 from sympy.polys.polytools import Poly, cancel, factor, gcd_list, discriminant
 from sympy.polys.specialpolys import cyclotomic_poly
 from sympy.polys.polyerrors import (PolynomialError, GeneratorsNeeded,
-    DomainError)
+                                    DomainError)
 from sympy.polys.polyquinticconst import PolyQuintic
 from sympy.polys.rationaltools import together
-
 from sympy.simplify import simplify, powsimp
 from sympy.utilities import public
-
-from sympy.core.compatibility import reduce, range
 
 
 def roots_linear(f):

@@ -1,12 +1,11 @@
-from __future__ import print_function, division
-
-from mpmath.libmp import (fzero,
-    from_man_exp, from_int, from_rational,
-    fone, fhalf, bitcount, to_int, to_str, mpf_mul, mpf_div, mpf_sub,
-    mpf_add, mpf_sqrt, mpf_pi, mpf_cosh_sinh, pi_fixed, mpf_cos)
-from sympy.core.numbers import igcd
 import math
-from sympy.core.compatibility import range
+
+from mpmath.libmp import (fzero, from_man_exp, from_int, from_rational,
+                          fone, fhalf, bitcount, to_int, to_str, mpf_mul,
+                          mpf_div, mpf_sub, mpf_add, mpf_sqrt, mpf_pi,
+                          mpf_cosh_sinh, pi_fixed, mpf_cos)
+
+from sympy.core.numbers import igcd
 
 
 def _a(n, j, prec):

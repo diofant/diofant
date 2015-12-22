@@ -25,14 +25,12 @@ The main references for this are:
     Integrals and Series: More Special Functions, Vol. 3,.
     Gordon and Breach Science Publisher
 """
-from __future__ import print_function, division
 
 from sympy.core import oo, S, pi, Expr, Pow
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import expand, expand_mul, expand_power_base
 from sympy.core.add import Add
 from sympy.core.mul import Mul
-from sympy.core.compatibility import range
 from sympy.core.cache import cacheit
 from sympy.core.symbol import Dummy, Wild
 from sympy.simplify import hyperexpand, powdenest, collect
@@ -40,8 +38,8 @@ from sympy.logic.boolalg import And, Or, BooleanAtom
 from sympy.functions.special.delta_functions import Heaviside
 from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.piecewise import Piecewise, piecewise_fold
-from sympy.functions.elementary.hyperbolic import \
-    _rewrite_hyperbolics_as_exp, HyperbolicFunction
+from sympy.functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
+                                                   HyperbolicFunction)
 from sympy.functions.special.hyper import meijerg
 from sympy.utilities.iterables import multiset_partitions, ordered
 from sympy.utilities.misc import debug as _debug

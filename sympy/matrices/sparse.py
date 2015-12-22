@@ -1,18 +1,15 @@
-from __future__ import print_function, division
-
 import copy
 from collections import defaultdict
+import collections
 
 from sympy.core.containers import Dict
-from sympy.core.compatibility import is_sequence, as_int, range
+from sympy.core.compatibility import is_sequence, as_int
 from sympy.core.logic import fuzzy_and
 from sympy.core.singleton import S
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.utilities.iterables import uniq
-
 from .matrices import MatrixBase, ShapeError, a2idx
 from .dense import Matrix
-import collections
 
 
 class SparseMatrix(MatrixBase):
@@ -97,8 +94,7 @@ class SparseMatrix(MatrixBase):
                 return self._smat.get((i, j), S.Zero)
             except (TypeError, IndexError):
                 if isinstance(i, slice):
-                    # XXX remove list() when PY2 support is dropped
-                    i = list(range(self.rows))[i]
+                    i = range(self.rows)[i]
                 elif is_sequence(i):
                     pass
                 else:
@@ -106,8 +102,7 @@ class SparseMatrix(MatrixBase):
                         raise IndexError('Row index out of bounds')
                     i = [i]
                 if isinstance(j, slice):
-                    # XXX remove list() when PY2 support is dropped
-                    j = list(range(self.cols))[j]
+                    j = range(self.cols)[j]
                 elif is_sequence(j):
                     pass
                 else:

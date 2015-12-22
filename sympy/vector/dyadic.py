@@ -3,7 +3,6 @@ from sympy.vector.basisdependent import BasisDependent, \
 from sympy.core import S, Pow
 from sympy.core.expr import AtomicExpr
 from sympy import ImmutableMatrix as Matrix
-from sympy.core.compatibility import u
 import sympy.vector
 
 
@@ -193,7 +192,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
         obj._measure_number = 1
         obj._components = {obj: S(1)}
         obj._sys = vector1._sys
-        obj._pretty_form = u('(' + vector1._pretty_form + '|' +
+        obj._pretty_form = ('(' + vector1._pretty_form + '|' +
                              vector2._pretty_form + ')')
         obj._latex_form = ('(' + vector1._latex_form + "{|}" +
                            vector2._latex_form + ')')
@@ -253,7 +252,7 @@ class DyadicZero(BasisDependentZero, Dyadic):
     """
 
     _op_priority = 13.1
-    _pretty_form = u('(0|0)')
+    _pretty_form = '(0|0)'
     _latex_form = '(\mathbf{\hat{0}}|\mathbf{\hat{0}})'
 
     def __new__(cls):

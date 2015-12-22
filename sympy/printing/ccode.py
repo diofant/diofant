@@ -7,14 +7,9 @@ using the functions defined in math.h where possible.
 A complete code generator, which uses ccode extensively, can be found in
 sympy.utilities.codegen. The codegen module can be used to generate complete
 source code files that are compilable without further modifications.
-
-
 """
 
-from __future__ import print_function, division
-
 from sympy.core import S
-from sympy.core.compatibility import string_types, range
 from sympy.printing.codeprinter import CodePrinter, Assignment
 from sympy.printing.precedence import precedence
 
@@ -230,7 +225,7 @@ class CCodePrinter(CodePrinter):
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines"""
 
-        if isinstance(code, string_types):
+        if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
 

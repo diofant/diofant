@@ -1,4 +1,3 @@
-from __future__ import print_function
 from textwrap import dedent
 
 import pytest
@@ -6,7 +5,6 @@ import pytest
 from sympy import (symbols, Integral, Tuple, Dummy, Basic, default_sort_key,
                    Matrix, factorial, true)
 from sympy.combinatorics import RGS_enum, RGS_unrank, Permutation
-from sympy.core.compatibility import range
 from sympy.utilities.iterables import (
     _partition, _set_partitions, binary_partitions, bracelets, capture,
     cartes, common_prefix, common_suffix, dict_merge, filter_symbols,
@@ -19,7 +17,6 @@ from sympy.utilities.iterables import (
     unflatten, uniq, variations)
 from sympy.utilities.enumerative import (factoring_visitor,
                                          multiset_partitions_taocp)
-
 from sympy.core.singleton import S
 from sympy.functions.elementary.piecewise import Piecewise, ExprCondPair
 

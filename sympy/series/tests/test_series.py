@@ -2,8 +2,8 @@ import pytest
 
 from sympy import (sin, cos, exp, E, series, oo, S, Derivative, O, Integral,
                    Function, log, sqrt, Symbol, Subs, pi, symbols)
+
 from sympy.abc import x, y, n, k
-from sympy.core.compatibility import range
 
 
 def test_sin():
@@ -134,6 +134,7 @@ def test_issue_7203():
         -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
 
 
+@pytest.mark.xfail(reason="https://github.com/skirpichev/omg/pull/158")
 def test_exp_product_positive_factors():
     a, b = symbols('a, b', positive=True)
     x = a * b

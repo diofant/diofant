@@ -8,18 +8,17 @@ sympy.stats.rv
 sympy.stats.frv
 """
 
-from __future__ import print_function, division
+import random
 
 from sympy.stats.rv import (RandomDomain, SingleDomain, ConditionalDomain,
-        ProductDomain, PSpace, SinglePSpace, random_symbols, ProductPSpace,
-        NamedArgsMixin)
+                            ProductDomain, PSpace, SinglePSpace, random_symbols,
+                            ProductPSpace, NamedArgsMixin)
 from sympy.functions.special.delta_functions import DiracDelta
 from sympy import (Interval, symbols, sympify, Dummy, Mul,
-        Integral, And, Or, Piecewise, solve, cacheit, integrate, oo, Lambda,
-        Basic)
+                   Integral, And, Or, Piecewise, solve, cacheit, integrate,
+                   oo, Lambda, Basic)
 from sympy.solvers.inequalities import reduce_rational_inequalities
 from sympy.polys.polyerrors import PolynomialError
-import random
 
 
 class ContinuousDomain(RandomDomain):

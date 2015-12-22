@@ -3,7 +3,6 @@ import pytest
 from sympy import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
                    S, WildFunction, ImmutableMatrix, sin, true, false, ones,
                    Symbol, Dummy, Wild)
-from sympy.core.compatibility import exec_
 from sympy.geometry import Point, Ellipse
 from sympy.printing import srepr
 from sympy.polys import ring, field, ZZ, QQ, lex, grlex
@@ -13,7 +12,7 @@ x, y = symbols('x,y')
 # eval(srepr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from sympy import *" for most cases.
 ENV = {}
-exec_("from sympy import *", ENV)
+exec("from sympy import *", ENV)
 
 
 def sT(expr, string):

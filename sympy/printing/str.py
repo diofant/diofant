@@ -2,16 +2,13 @@
 A Printer for generating readable representation of most sympy classes.
 """
 
-from __future__ import print_function, division
+import mpmath.libmp as mlib
+from mpmath.libmp import prec_to_dps
 
 from sympy.core import S, Rational, Pow, Basic, Mul
 from sympy.core.mul import _keep_coeff
 from .printer import Printer
 from sympy.printing.precedence import precedence, PRECEDENCE
-
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps
-
 from sympy.utilities import default_sort_key
 
 

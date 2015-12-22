@@ -1,8 +1,5 @@
-from __future__ import print_function, division
-
 from sympy import Basic
 from sympy.functions import adjoint, conjugate
-
 from sympy.matrices.expressions.matexpr import MatrixExpr
 
 

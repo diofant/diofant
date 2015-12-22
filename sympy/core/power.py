@@ -1,6 +1,6 @@
-from __future__ import print_function, division
-
 from math import log as _log
+
+from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 
 from .sympify import _sympify
 from .cache import cacheit
@@ -8,12 +8,10 @@ from .singleton import S
 from .expr import Expr
 from .evalf import PrecisionExhausted
 from .function import (_coeff_isneg, expand_complex, expand_multinomial,
-    expand_mul)
+                       expand_mul)
 from .logic import fuzzy_bool
-from .compatibility import as_int, range
+from .compatibility import as_int
 from .evaluate import global_evaluate
-
-from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 from sympy.utilities.iterables import sift
 
 

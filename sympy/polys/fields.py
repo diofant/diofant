@@ -1,10 +1,8 @@
 """Sparse rational function fields. """
 
-from __future__ import print_function, division
-
+from functools import reduce
 from operator import add, mul, lt, le, gt, ge
 
-from sympy.core.compatibility import reduce, string_types
 from sympy.core.expr import Expr
 from sympy.core.symbol import Symbol
 from sympy.core.sympify import CantSympify, sympify
@@ -147,7 +145,7 @@ class FracField(DefaultPrinting):
         elif isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.ring_new, element))
             return self.new(numer, denom)
-        elif isinstance(element, string_types):
+        elif isinstance(element, str):
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
             return self.from_expr(element)
@@ -260,10 +258,8 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
     def __ne__(f, g):
         return not f.__eq__(g)
 
-    def __nonzero__(f):
+    def __bool__(f):
         return bool(f.numer)
-
-    __bool__ = __nonzero__
 
     def sort_key(self):
         return (self.denom.sort_key(), self.numer.sort_key())

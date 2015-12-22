@@ -5,13 +5,11 @@ from sympy import (sin, cos, atan2, log, exp, gamma, conjugate, sqrt,
                    S, Float, Dummy, Eq)
 from sympy import Catalan, EulerGamma, E, GoldenRatio, I, pi
 from sympy import Function, Rational, Integer, Lambda
-
 from sympy.core.relational import Relational
 from sympy.logic.boolalg import And, Or, Not, Equivalent, Xor
 from sympy.printing.fcode import fcode, FCodePrinter
 from sympy.tensor import IndexedBase, Idx
 from sympy.utilities.lambdify import implemented_function
-from sympy.core.compatibility import range
 from sympy.matrices import Matrix, MatrixSymbol
 
 

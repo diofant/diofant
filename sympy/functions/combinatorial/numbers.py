@@ -7,10 +7,11 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
-from __future__ import print_function, division
+from mpmath import bernfrac, workprec
+from mpmath.libmp import ifib as _ifib
 
 from sympy.core import S, Symbol, Rational, Integer, Add, Dummy
-from sympy.core.compatibility import as_int, SYMPY_INTS, range
+from sympy.core.compatibility import as_int, SYMPY_INTS
 from sympy.core.cache import cacheit
 from sympy.core.function import Function, expand_mul
 from sympy.core.numbers import E, pi
@@ -19,9 +20,6 @@ from sympy.functions.combinatorial.factorials import binomial, factorial
 from sympy.functions.elementary.exponential import log
 from sympy.functions.elementary.integers import floor
 from sympy.functions.elementary.trigonometric import sin, cos, cot
-
-from mpmath import bernfrac, workprec
-from mpmath.libmp import ifib as _ifib
 
 
 def _product(a, b):

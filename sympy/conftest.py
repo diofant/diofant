@@ -1,9 +1,9 @@
-from __future__ import print_function, division
+from distutils.version import LooseVersion as V
+import re
 
 import pytest
+
 from sympy.core.cache import clear_cache
-import re
-from distutils.version import LooseVersion as V
 
 
 def pytest_report_header(config):

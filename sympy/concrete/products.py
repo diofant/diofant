@@ -1,12 +1,9 @@
-from __future__ import print_function, division
-
 from sympy.core.mul import Mul
 from sympy.core.singleton import S
 from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
 from sympy.functions.elementary.exponential import exp, log
 from sympy.polys import quo, roots
 from sympy.simplify import powsimp
-from sympy.core.compatibility import range
 
 
 class Product(ExprWithIntLimits):

@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 from .cartan_type import CartanType
 from sympy.core import Basic
-from sympy.core.compatibility import range
 
 
 class RootSystem(Basic):

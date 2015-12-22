@@ -1,18 +1,14 @@
 """Options manager for :class:`~sympy.polys.polytools.Poly` and public API functions. """
 
-from __future__ import print_function, division
-
-__all__ = ["Options"]
+import re
 
 from sympy.core import S, Basic, sympify
-from sympy.core.compatibility import string_types, with_metaclass
 from sympy.utilities import numbered_symbols, topological_sort, public
 from sympy.utilities.iterables import has_dups
 from sympy.polys.polyerrors import GeneratorsError, OptionError, FlagError
-
 import sympy.polys
 
-import re
+__all__ = ["Options"]
 
 
 class Option(object):
@@ -254,7 +250,7 @@ class Options(dict):
         return flags
 
 
-class Expand(with_metaclass(OptionType, BooleanOption)):
+class Expand(BooleanOption, metaclass=OptionType):
     """``expand`` option to polynomial manipulation functions. """
 
     option = 'expand'
@@ -267,7 +263,7 @@ class Expand(with_metaclass(OptionType, BooleanOption)):
         return True
 
 
-class Gens(with_metaclass(OptionType, Option)):
+class Gens(Option, metaclass=OptionType):
     """``gens`` option to polynomial manipulation functions. """
 
     option = 'gens'
@@ -296,7 +292,7 @@ class Gens(with_metaclass(OptionType, Option)):
         return tuple(gens)
 
 
-class Wrt(with_metaclass(OptionType, Option)):
+class Wrt(Option, metaclass=OptionType):
     """``wrt`` option to polynomial manipulation functions. """
 
     option = 'wrt'
@@ -323,7 +319,7 @@ class Wrt(with_metaclass(OptionType, Option)):
             raise OptionError("invalid argument for 'wrt' option")
 
 
-class Sort(with_metaclass(OptionType, Option)):
+class Sort(Option, metaclass=OptionType):
     """``sort`` option to polynomial manipulation functions. """
 
     option = 'sort'
@@ -345,7 +341,7 @@ class Sort(with_metaclass(OptionType, Option)):
             raise OptionError("invalid argument for 'sort' option")
 
 
-class Order(with_metaclass(OptionType, Option)):
+class Order(Option, metaclass=OptionType):
     """``order`` option to polynomial manipulation functions. """
 
     option = 'order'
@@ -362,7 +358,7 @@ class Order(with_metaclass(OptionType, Option)):
         return sympy.polys.orderings.monomial_key(order)
 
 
-class Field(with_metaclass(OptionType, BooleanOption)):
+class Field(BooleanOption, metaclass=OptionType):
     """``field`` option to polynomial manipulation functions. """
 
     option = 'field'
@@ -371,7 +367,7 @@ class Field(with_metaclass(OptionType, BooleanOption)):
     excludes = ['domain', 'split', 'gaussian']
 
 
-class Greedy(with_metaclass(OptionType, BooleanOption)):
+class Greedy(BooleanOption, metaclass=OptionType):
     """``greedy`` option to polynomial manipulation functions. """
 
     option = 'greedy'
@@ -380,7 +376,7 @@ class Greedy(with_metaclass(OptionType, BooleanOption)):
     excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus', 'symmetric']
 
 
-class Composite(with_metaclass(OptionType, BooleanOption)):
+class Composite(BooleanOption, metaclass=OptionType):
     """``composite`` option to polynomial manipulation functions. """
 
     option = 'composite'
@@ -393,7 +389,7 @@ class Composite(with_metaclass(OptionType, BooleanOption)):
     excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus', 'symmetric']
 
 
-class Domain(with_metaclass(OptionType, Option)):
+class Domain(Option, metaclass=OptionType):
     """``domain`` option to polynomial manipulation functions. """
 
     option = 'domain'
@@ -416,7 +412,7 @@ class Domain(with_metaclass(OptionType, Option)):
             return domain
         elif hasattr(domain, 'to_domain'):
             return domain.to_domain()
-        elif isinstance(domain, string_types):
+        elif isinstance(domain, str):
             if domain in ['Z', 'ZZ']:
                 return sympy.polys.domains.ZZ
 
@@ -494,7 +490,7 @@ class Domain(with_metaclass(OptionType, Option)):
             raise GeneratorsError("you have to provide generators because EX domain was requested")
 
 
-class Split(with_metaclass(OptionType, BooleanOption)):
+class Split(BooleanOption, metaclass=OptionType):
     """``split`` option to polynomial manipulation functions. """
 
     option = 'split'
@@ -509,7 +505,7 @@ class Split(with_metaclass(OptionType, BooleanOption)):
             raise NotImplementedError("'split' option is not implemented yet")
 
 
-class Gaussian(with_metaclass(OptionType, BooleanOption)):
+class Gaussian(BooleanOption, metaclass=OptionType):
     """``gaussian`` option to polynomial manipulation functions. """
 
     option = 'gaussian'
@@ -525,7 +521,7 @@ class Gaussian(with_metaclass(OptionType, BooleanOption)):
             Extension.postprocess(options)
 
 
-class Extension(with_metaclass(OptionType, Option)):
+class Extension(Option, metaclass=OptionType):
     """``extension`` option to polynomial manipulation functions. """
 
     option = 'extension'
@@ -558,7 +554,7 @@ class Extension(with_metaclass(OptionType, Option)):
                 *options['extension'])
 
 
-class Modulus(with_metaclass(OptionType, Option)):
+class Modulus(Option, metaclass=OptionType):
     """``modulus`` option to polynomial manipulation functions. """
 
     option = 'modulus'
@@ -584,7 +580,7 @@ class Modulus(with_metaclass(OptionType, Option)):
             options['domain'] = sympy.polys.domains.FF(modulus, symmetric)
 
 
-class Symmetric(with_metaclass(OptionType, BooleanOption)):
+class Symmetric(BooleanOption, metaclass=OptionType):
     """``symmetric`` option to polynomial manipulation functions. """
 
     option = 'symmetric'
@@ -593,7 +589,7 @@ class Symmetric(with_metaclass(OptionType, BooleanOption)):
     excludes = ['greedy', 'domain', 'split', 'gaussian', 'extension']
 
 
-class Strict(with_metaclass(OptionType, BooleanOption)):
+class Strict(BooleanOption, metaclass=OptionType):
     """``strict`` option to polynomial manipulation functions. """
 
     option = 'strict'
@@ -603,7 +599,7 @@ class Strict(with_metaclass(OptionType, BooleanOption)):
         return True
 
 
-class Auto(with_metaclass(OptionType, BooleanOption, Flag)):
+class Auto(BooleanOption, Flag, metaclass=OptionType):
     """``auto`` flag to polynomial manipulation functions. """
 
     option = 'auto'
@@ -620,7 +616,7 @@ class Auto(with_metaclass(OptionType, BooleanOption, Flag)):
             options['auto'] = False
 
 
-class Frac(with_metaclass(OptionType, BooleanOption, Flag)):
+class Frac(BooleanOption, Flag, metaclass=OptionType):
     """``auto`` option to polynomial manipulation functions. """
 
     option = 'frac'
@@ -630,7 +626,7 @@ class Frac(with_metaclass(OptionType, BooleanOption, Flag)):
         return False
 
 
-class Formal(with_metaclass(OptionType, BooleanOption, Flag)):
+class Formal(BooleanOption, Flag, metaclass=OptionType):
     """``formal`` flag to polynomial manipulation functions. """
 
     option = 'formal'
@@ -640,13 +636,13 @@ class Formal(with_metaclass(OptionType, BooleanOption, Flag)):
         return False
 
 
-class Polys(with_metaclass(OptionType, BooleanOption, Flag)):
+class Polys(BooleanOption, Flag, metaclass=OptionType):
     """``polys`` flag to polynomial manipulation functions. """
 
     option = 'polys'
 
 
-class Include(with_metaclass(OptionType, BooleanOption, Flag)):
+class Include(BooleanOption, Flag, metaclass=OptionType):
     """``include`` flag to polynomial manipulation functions. """
 
     option = 'include'
@@ -656,7 +652,7 @@ class Include(with_metaclass(OptionType, BooleanOption, Flag)):
         return False
 
 
-class All(with_metaclass(OptionType, BooleanOption, Flag)):
+class All(BooleanOption, Flag, metaclass=OptionType):
     """``all`` flag to polynomial manipulation functions. """
 
     option = 'all'
@@ -666,7 +662,7 @@ class All(with_metaclass(OptionType, BooleanOption, Flag)):
         return False
 
 
-class Gen(with_metaclass(OptionType, Flag)):
+class Gen(Flag, metaclass=OptionType):
     """``gen`` flag to polynomial manipulation functions. """
 
     option = 'gen'
@@ -683,7 +679,7 @@ class Gen(with_metaclass(OptionType, Flag)):
             raise OptionError("invalid argument for 'gen' option")
 
 
-class Symbols(with_metaclass(OptionType, Flag)):
+class Symbols(Flag, metaclass=OptionType):
     """``symbols`` flag to polynomial manipulation functions. """
 
     option = 'symbols'
@@ -700,7 +696,7 @@ class Symbols(with_metaclass(OptionType, Flag)):
             raise OptionError("expected an iterator or iterable container, got %s" % symbols)
 
 
-class Method(with_metaclass(OptionType, Flag)):
+class Method(Flag, metaclass=OptionType):
     """``method`` flag to polynomial manipulation functions. """
 
     option = 'method'

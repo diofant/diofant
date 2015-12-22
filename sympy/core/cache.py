@@ -1,5 +1,5 @@
 """ Caching facility for SymPy """
-from __future__ import print_function, division
+
 from decorator import decorator
 
 

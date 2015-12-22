@@ -1,20 +1,14 @@
 """Transform a string with Python-like source code into SymPy expression. """
 
-from __future__ import print_function, division
-
-from sympy.core.compatibility import tokenize
-from tokenize import (untokenize, TokenError,
-                      NUMBER, STRING, NAME, OP, ENDMARKER)
-
-from keyword import iskeyword
-
 import ast
+from io import BytesIO, StringIO
 import re
 import unicodedata
+from tokenize import (tokenize, untokenize, TokenError,
+                      NUMBER, STRING, NAME, OP, ENDMARKER)
+from keyword import iskeyword
 
 import sympy
-from io import BytesIO
-from sympy.core.compatibility import exec_, StringIO
 from sympy.core.basic import Basic
 
 
@@ -737,7 +731,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
 
     if global_dict is None:
         global_dict = {}
-        exec_('from sympy import *', global_dict)
+        exec('from sympy import *', global_dict)
 
     code = stringify_expr(s, local_dict, global_dict, transformations)
 

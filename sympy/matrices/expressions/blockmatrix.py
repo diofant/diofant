@@ -1,15 +1,11 @@
-from __future__ import print_function, division
-
 from strategies import exhaust, condition, do_one
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
 from sympy import ask, Q
 from sympy.core import Basic, Add, sympify
-from sympy.core.compatibility import range
 from sympy.core.strategies import unpack
 from sympy.utilities import sift
-
 from sympy.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
 from sympy.matrices.expressions.matmul import MatMul
 from sympy.matrices.expressions.matadd import MatAdd

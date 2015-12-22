@@ -1,5 +1,3 @@
-from __future__ import division
-
 import pytest
 
 from sympy.plotting.intervalmath import interval

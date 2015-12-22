@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy import S, pi, I, Rational, Wild, cacheit, sympify
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.power import Pow
@@ -10,7 +8,6 @@ from sympy.functions.elementary.miscellaneous import sqrt, root
 from sympy.functions.elementary.complexes import re, im
 from sympy.functions.special.gamma_functions import gamma
 from sympy.functions.special.hyper import hyper
-from sympy.core.compatibility import range
 
 # TODO
 # o Scorer functions G1 and G2

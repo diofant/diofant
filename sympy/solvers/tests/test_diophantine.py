@@ -11,7 +11,6 @@ from sympy.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length,
 
 from sympy import symbols, Integer, Matrix, simplify, Subs, S, factor_list
 from sympy.core.function import _mexpand
-from sympy.core.compatibility import range
 from sympy.functions.elementary.trigonometric import sin
 from sympy.utilities import default_sort_key
 

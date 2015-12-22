@@ -14,22 +14,20 @@ right hand side of the equation (i.e., gi in k(t)), and Q is a list of terms on
 the right hand side of the equation (i.e., qi in k[t]).  See the docstring of
 each function for more information.
 """
-from __future__ import print_function, division
+
+from functools import reduce
 
 from sympy.core import Dummy, ilcm, Add, Mul, Pow, S
-
 from sympy.matrices import Matrix, zeros, eye
-
 from sympy.solvers import solve
-
 from sympy.polys import Poly, lcm, cancel, sqf_list
-
 from sympy.integrals.risch import (gcdex_diophantine, frac_in, derivation,
-    NonElementaryIntegralException, residue_reduce, splitfactor,
-    residue_reduce_derivation, DecrementLevel, recognize_log_derivative)
+                                   NonElementaryIntegralException,
+                                   residue_reduce, splitfactor,
+                                   residue_reduce_derivation, DecrementLevel,
+                                   recognize_log_derivative)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-    bound_degree, spde, solve_poly_rde)
-from sympy.core.compatibility import reduce, range
+                                 bound_degree, spde, solve_poly_rde)
 from sympy.utilities.misc import debug
 
 

@@ -1,11 +1,9 @@
 """Tools and arithmetics for monomials of distributed polynomials. """
 
-from __future__ import print_function, division
-
 from textwrap import dedent
 
 from sympy.core import S, Mul, Tuple, sympify
-from sympy.core.compatibility import exec_, iterable, range
+from sympy.core.compatibility import iterable
 from sympy.polys.polyutils import PicklableWithSlots, dict_from_expr
 from sympy.polys.polyerrors import ExactQuotientFailed
 from sympy.utilities import public
@@ -297,7 +295,7 @@ class MonomialOps(object):
 
     def _build(self, code, name):
         ns = {}
-        exec_(code, ns)
+        exec(code, ns)
         return ns[name]
 
     def _vars(self, name):

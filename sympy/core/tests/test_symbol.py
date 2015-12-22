@@ -2,7 +2,6 @@ import pytest
 
 from sympy import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
                    StrictLessThan, pi, I, Rational, sympify, symbols, Dummy)
-from sympy.core.compatibility import u
 
 
 def test_Symbol():
@@ -26,6 +25,7 @@ def test_Symbol():
     assert isinstance(c, Dummy)
     assert isinstance(d, Dummy)
     pytest.raises(TypeError, lambda: Symbol())
+    pytest.raises(TypeError, lambda: Symbol(1))
 
 
 def test_Dummy():
@@ -331,11 +331,3 @@ def test_call():
     f = Symbol('f')
     assert f(2)
     pytest.raises(TypeError, lambda: Wild('x')(1))
-
-
-def test_unicode():
-    xu = Symbol(u('x'))
-    x = Symbol('x')
-    assert x == xu
-
-    pytest.raises(TypeError, lambda: Symbol(1))

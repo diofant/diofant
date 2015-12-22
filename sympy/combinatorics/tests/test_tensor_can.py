@@ -1,7 +1,7 @@
-from sympy.core.compatibility import range
 from sympy.combinatorics.permutations import Permutation, Perm
 from sympy.combinatorics.tensor_can import (perm_af_direct_product, dummy_sgs,
-    riemann_bsgs, get_symmetric_group_sgs, canonicalize, bsgs_direct_product)
+                                            riemann_bsgs, get_symmetric_group_sgs,
+                                            canonicalize, bsgs_direct_product)
 from sympy.combinatorics.testutil import canonicalize_naive, graph_certificate
 
 

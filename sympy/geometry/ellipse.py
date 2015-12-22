@@ -3,15 +3,13 @@
 Contains
 * Ellipse
 * Circle
-
 """
 
-from __future__ import print_function, division
+import random
 
 from sympy.core import S, sympify, pi
 from sympy.core.logic import fuzzy_bool
 from sympy.core.numbers import oo, Rational
-from sympy.core.compatibility import range
 from sympy.core.symbol import Dummy
 from sympy.simplify import simplify, trigsimp
 from sympy.functions.elementary.miscellaneous import sqrt
@@ -26,11 +24,6 @@ from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .line import LinearEntity, Line
 from .util import _symbol, idiff
-
-
-import random
-
-from sympy.utilities.decorator import doctest_depends_on
 
 
 class Ellipse(GeometrySet):

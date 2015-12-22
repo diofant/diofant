@@ -1,13 +1,10 @@
 """Implementation of :class:`ModularInteger` class. """
 
-from __future__ import print_function, division
-
 import operator
 
 from sympy.polys.polyutils import PicklableWithSlots
 from sympy.polys.polyerrors import CoercionFailed
 from sympy.polys.domains.domainelement import DomainElement
-
 from sympy.utilities import public
 
 
@@ -165,10 +162,8 @@ class ModularInteger(PicklableWithSlots, DomainElement):
     def __ge__(self, other):
         return self._compare(other, operator.ge)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.val)
-
-    __bool__ = __nonzero__
 
     @classmethod
     def _invert(cls, value):

@@ -1,20 +1,16 @@
 """Tools for setting up printing in interactive sessions. """
 
-from __future__ import print_function, division
-
 import sys
-from distutils.version import LooseVersion as V
 from io import BytesIO
 
 from sympy import latex as default_latex
-from sympy.core.compatibility import integer_types
 from sympy.utilities.misc import debug
 
 
 def _init_python_printing(stringify_func):
     """Setup printing in Python interactive session. """
+    import builtins
     import sys
-    from sympy.core.compatibility import builtins
 
     def _displayhook(arg):
         """Python's pretty-printer display hook.
@@ -44,7 +40,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
     latex = latex_printer or default_latex
 
     def _print_plain(arg, p, cycle):
-        """caller for pretty, for use in IPython 0.11"""
+        """caller for pretty, for use in IPython"""
         if _can_print_latex(arg):
             p.text(stringify_func(arg))
         else:
@@ -68,7 +64,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
         # to use here, than these explicit imports.
         elif isinstance(o, (Basic, MatrixBase)):
             return True
-        elif isinstance(o, (float, integer_types)) and print_builtin:
+        elif isinstance(o, (float, int)) and print_builtin:
             return True
         return False
 
@@ -101,32 +97,28 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
             print(repr(arg))
 
     import IPython
-    if V(IPython.__version__) >= '0.11':
-        from sympy.core.basic import Basic
-        from sympy.matrices.matrices import MatrixBase
-        printable_types = [Basic, MatrixBase, float, tuple, list, set,
-                frozenset, dict] + list(integer_types)
+    from sympy.core.basic import Basic
+    from sympy.matrices.matrices import MatrixBase
+    printable_types = [Basic, MatrixBase, float, tuple, list, set,
+                       frozenset, dict, int]
 
-        plaintext_formatter = ip.display_formatter.formatters['text/plain']
+    plaintext_formatter = ip.display_formatter.formatters['text/plain']
 
+    for cls in printable_types:
+        plaintext_formatter.for_type(cls, _print_plain)
+
+    latex_formatter = ip.display_formatter.formatters['text/latex']
+    if use_latex in (True, 'mathjax'):
+        debug("init_printing: using mathjax formatter")
         for cls in printable_types:
-            plaintext_formatter.for_type(cls, _print_plain)
-
-        latex_formatter = ip.display_formatter.formatters['text/latex']
-        if use_latex in (True, 'mathjax'):
-            debug("init_printing: using mathjax formatter")
-            for cls in printable_types:
-                latex_formatter.for_type(cls, _print_latex_text)
-        else:
-            debug("init_printing: not using text/latex formatter")
-            for cls in printable_types:
-                # Better way to set this, but currently does not work in IPython
-                # latex_formatter.for_type(cls, None)
-                if cls in latex_formatter.type_printers:
-                    latex_formatter.type_printers.pop(cls)
-
+            latex_formatter.for_type(cls, _print_latex_text)
     else:
-        ip.set_hook('result_display', _result_display)
+        debug("init_printing: not using text/latex formatter")
+        for cls in printable_types:
+            # Better way to set this, but currently does not work in IPython
+            # latex_formatter.for_type(cls, None)
+            if cls in latex_formatter.type_printers:
+                latex_formatter.type_printers.pop(cls)
 
 
 def _is_ipython(shell):
@@ -134,16 +126,7 @@ def _is_ipython(shell):
     # shortcut, so we don't import IPython if we don't have to
     if 'IPython' not in sys.modules:
         return False
-    try:
-        from IPython.core.interactiveshell import InteractiveShell
-    except ImportError:
-        # IPython < 0.11
-        try:
-            from IPython.iplib import InteractiveShell
-        except ImportError:
-            # Reaching this points means IPython has changed in a backward-incompatible way
-            # that we don't know about. Warn?
-            return False
+    from IPython.core.interactiveshell import InteractiveShell
     return isinstance(shell, InteractiveShell)
 
 
@@ -271,13 +254,7 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
     if in_ipython and pretty_print:
         try:
             import IPython
-            # IPython 1.0 deprecates the frontend module, so we import directly
-            # from the terminal module to prevent a deprecation message from being
-            # shown.
-            if V(IPython.__version__) >= '1.0':
-                from IPython.terminal.interactiveshell import TerminalInteractiveShell
-            else:
-                from IPython.frontend.terminal.interactiveshell import TerminalInteractiveShell
+            from IPython.terminal.interactiveshell import TerminalInteractiveShell
             from code import InteractiveConsole
         except ImportError:
             pass

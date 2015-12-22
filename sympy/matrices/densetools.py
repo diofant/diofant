@@ -1,10 +1,7 @@
 """
 Fundamental operations of dense matrices.
 The dense matrix is stored as a list of lists
-
 """
-
-from sympy.core.compatibility import range
 
 
 def trace(matlist, K):
