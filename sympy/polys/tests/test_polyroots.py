@@ -3,24 +3,17 @@
 import mpmath
 import pytest
 
-from sympy import (
-    S, symbols, Symbol, Wild, Rational, sqrt,
-    powsimp, sin, cos, pi, I, Interval, re, im, exp, ZZ, Piecewise,
-    acos, root)
-
+from sympy import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp,sin, cos,
+                   pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root)
 from sympy.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
-
 from sympy.polys.polyroots import (
     root_factors, roots_linear,
     roots_quadratic, roots_cubic, roots_quartic, roots_cyclotomic,
     roots_binomial, preprocess_roots, roots)
-
 from sympy.polys.orthopolys import legendre_poly
 from sympy.polys.polyutils import _nsort
-
 from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
-from sympy.core.compatibility import range
 
 
 a, b, c, d, e, q, t, x, y, z = symbols('a,b,c,d,e,q,t,x,y,z')

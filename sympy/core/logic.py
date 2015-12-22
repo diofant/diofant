@@ -6,9 +6,6 @@ NOTE
 at present this is mainly needed for facts.py , feel free however to improve
 this stuff for general purpose.
 """
-from __future__ import print_function, division
-
-from sympy.core.compatibility import range
 
 
 def _fuzzy_group(args, quick_exit=False):

@@ -6,12 +6,9 @@ their modules. Instead of instantiating the classes directly, you should use
 the function ``homomorphism(from, to, matrix)`` to create homomorphism objects.
 """
 
-from __future__ import print_function, division
-
 from sympy.polys.agca.modules import (Module, FreeModule, QuotientModule,
-    SubModule, SubQuotientModule)
+                                      SubModule, SubQuotientModule)
 from sympy.polys.polyerrors import CoercionFailed
-from sympy.core.compatibility import range
 
 # The main computational task for module homomorphisms is kernels.
 # For this reason, the concrete classes are organised by domain module type.

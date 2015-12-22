@@ -8,12 +8,10 @@ intersection
 convex_hull
 are_coplanar
 are_similar
-
 """
-from __future__ import print_function, division
 
 from sympy import Symbol, Function, solve
-from sympy.core.compatibility import string_types, is_sequence, range
+from sympy.core.compatibility import is_sequence
 
 
 def idiff(eq, y, x, n=1):
@@ -108,7 +106,7 @@ def _symbol(s, matching_symbol=None):
     sympy.core.symbol.Symbol
 
     """
-    if isinstance(s, string_types):
+    if isinstance(s, str):
         if matching_symbol and matching_symbol.name == s:
             return matching_symbol
         return Symbol(s, extended_real=True)

@@ -1,7 +1,5 @@
 # A collection of failing integrals from the issues.
 
-from __future__ import division
-
 import os
 import signal
 

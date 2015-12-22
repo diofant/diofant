@@ -1,11 +1,9 @@
-from __future__ import print_function, division
-
 from sympy.core import Basic, Tuple
 from sympy.sets import FiniteSet
-from sympy.core.compatibility import as_int, range
+from sympy.core.compatibility import as_int
 from sympy.combinatorics import Permutation as Perm
 from sympy.combinatorics.perm_groups import PermutationGroup
-from sympy.utilities.iterables import (minlex, unflatten, flatten)
+from sympy.utilities.iterables import minlex, unflatten, flatten
 
 rmul = Perm.rmul
 

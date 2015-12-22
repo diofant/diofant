@@ -1,25 +1,23 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
+from functools import reduce
+
+from strategies.core import identity
+from strategies.tree import greedy
 
 from sympy.core.cache import cacheit
 from sympy.core import (sympify, Basic, S, Expr, expand_mul, factor_terms,
-    Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols, Wild, expand)
-from sympy.core.compatibility import ordered, reduce, iterable
+                        Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols,
+                        Wild, expand)
+from sympy.core.compatibility import ordered, iterable
 from sympy.core.numbers import I, Integer
 from sympy.core.function import count_ops, _mexpand
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 from sympy.functions.elementary.hyperbolic import HyperbolicFunction
 from sympy.functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
-
-from strategies.core import identity
-from strategies.tree import greedy
-
 from sympy.polys.polyerrors import PolificationFailed
 from sympy.polys.polytools import groebner
 from sympy.polys.domains import ZZ
 from sympy.polys import factor, cancel, parallel_poly_from_expr
-
 from sympy.utilities.misc import debug
 
 

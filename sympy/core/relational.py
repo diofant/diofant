@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
@@ -8,7 +6,6 @@ from .function import _coeff_isneg
 from .symbol import Symbol
 from .sympify import _sympify
 from .evaluate import global_evaluate
-
 from sympy.logic.boolalg import Boolean
 
 __all__ = (
@@ -205,10 +202,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         else:
             return self
 
-    def __nonzero__(self):
+    def __bool__(self):
         raise TypeError("cannot determine truth value of Relational")
-
-    __bool__ = __nonzero__
 
     def as_set(self):
         """
@@ -679,11 +674,11 @@ class GreaterThan(_Greater):
         (1) x > y > z
         (2) (x > y) and (y > z)
         (3) (GreaterThanObject) and (y > z)
-        (4) (GreaterThanObject.__nonzero__()) and (y > z)
+        (4) (GreaterThanObject.__bool__()) and (y > z)
         (5) TypeError
 
        Because of the "and" added at step 2, the statement gets turned into a
-       weak ternary statement, and the first object's __nonzero__ method will
+       weak ternary statement, and the first object's __bool__ method will
        raise TypeError.  Thus, creating a chained inequality is not possible.
 
            In Python, there is no way to override the ``and`` operator, or to

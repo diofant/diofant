@@ -1,9 +1,8 @@
-from __future__ import print_function, division
+import random
 
 from sympy import (Basic, sympify, symbols, Dummy, Lambda, summation,
-        Piecewise, S, cacheit, solve, Sum)
+                   Piecewise, S, cacheit, solve, Sum)
 from sympy.stats.rv import NamedArgsMixin, SinglePSpace, SingleDomain
-import random
 
 
 class SingleDiscreteDistribution(Basic, NamedArgsMixin):

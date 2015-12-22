@@ -1,7 +1,6 @@
 import pytest
 
 from sympy.external import import_module
-from sympy.core.compatibility import range
 
 theano = import_module('theano')
 if theano:

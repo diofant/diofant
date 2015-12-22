@@ -1,16 +1,15 @@
-from __future__ import division
-
 import os
 
 import pytest
 
 from sympy import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
-    Dummy, Eq, erf, erfi, exp, Function, I, Integral, LambertW, log, O, pi,
-    Rational, RootOf, S, simplify, sin, sqrt, Symbol, tan, asin, sinh,
-    Piecewise, symbols, Poly)
+                   Dummy, Eq, erf, erfi, exp, Function, I, Integral, LambertW,
+                   log, O, pi, Rational, RootOf, S, simplify, sin, sqrt,
+                   Symbol, tan, asin, sinh, Piecewise, symbols, Poly)
 from sympy.solvers.ode import (_undetermined_coefficients_match, checkodesol,
-    classify_ode, classify_sysode, constant_renumber, constantsimp,
-    homogeneous_order, infinitesimals, checkinfsol, checksysodesol)
+                               classify_ode, classify_sysode, constant_renumber,
+                               constantsimp, homogeneous_order, infinitesimals,
+                               checkinfsol, checksysodesol)
 from sympy.solvers.deutils import ode_order
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')

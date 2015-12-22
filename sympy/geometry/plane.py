@@ -5,7 +5,6 @@ Contains
 Plane
 
 """
-from __future__ import print_function, division
 
 from sympy.core import S, Dummy, Symbol, Rational
 from sympy.core.compatibility import is_sequence
@@ -14,7 +13,6 @@ from sympy.matrices import Matrix
 from sympy.polys.polytools import cancel
 from sympy.solvers import solve
 from sympy.utilities.misc import filldedent
-
 from .entity import GeometryEntity
 from .point import Point, Point3D
 from .line3d import LinearEntity3D, Line3D, Segment3D, Ray3D

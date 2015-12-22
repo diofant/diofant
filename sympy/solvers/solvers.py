@@ -12,24 +12,28 @@ This module contain solvers for all kinds of equations:
 
 """
 
-from __future__ import print_function, division
+from types import GeneratorType
+from collections import defaultdict
+import warnings
+
+from mpmath import findroot
 
 from sympy.core.compatibility import (iterable, is_sequence, ordered,
-    default_sort_key, range)
+                                      default_sort_key)
 from sympy.core.sympify import sympify
 from sympy.core import S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import (expand_mul, expand_multinomial, expand_log,
-                          Derivative, AppliedUndef, UndefinedFunction, nfloat,
-                          Function, expand_power_exp, Lambda, _mexpand)
+                                 Derivative, AppliedUndef, UndefinedFunction,
+                                 nfloat, Function, expand_power_exp, Lambda,
+                                 _mexpand)
 from sympy.integrals.integrals import Integral
 from sympy.core.numbers import ilcm, Float
 from sympy.core.relational import Relational, Ge
 from sympy.logic.boolalg import And, Or, BooleanAtom
 from sympy.core.basic import preorder_traversal
-
-from sympy.functions import (log, exp, LambertW, cos, sin, tan, acos, asin, atan,
-                             Abs, re, im, arg, sqrt, atan2)
+from sympy.functions import (log, exp, LambertW, cos, sin, tan, acos, asin,
+                             atan, Abs, re, im, arg, sqrt, atan2)
 from sympy.functions.elementary.trigonometric import (TrigonometricFunction,
                                                       HyperbolicFunction)
 from sympy.simplify import (simplify, collect, powsimp, posify, powdenest,
@@ -40,19 +44,11 @@ from sympy.matrices import Matrix, zeros
 from sympy.polys import roots, cancel, factor, Poly, together, degree
 from sympy.polys.polyerrors import GeneratorsNeeded, PolynomialError
 from sympy.functions.elementary.piecewise import piecewise_fold, Piecewise
-
 from sympy.utilities.lambdify import lambdify
 from sympy.utilities.misc import filldedent
 from sympy.utilities.iterables import uniq, generate_bell, flatten
-
-from mpmath import findroot
-
 from sympy.solvers.polysys import solve_poly_system
 from sympy.solvers.inequalities import reduce_inequalities
-
-from types import GeneratorType
-from collections import defaultdict
-import warnings
 
 
 def _ispow(e):

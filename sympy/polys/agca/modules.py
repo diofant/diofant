@@ -17,16 +17,14 @@ non-implemented methods. They may also supply new implementations of the
 convenience methods, for example if there are faster algorithms available.
 """
 
-from __future__ import print_function, division
-
 from copy import copy
+from functools import reduce
 
 from sympy.polys.polyerrors import CoercionFailed
 from sympy.polys.orderings import ProductOrder, monomial_key
 from sympy.polys.domains.field import Field
 from sympy.polys.agca.ideals import Ideal
-
-from sympy.core.compatibility import iterable, reduce, range
+from sympy.core.compatibility import iterable
 
 # TODO
 # - module saturation

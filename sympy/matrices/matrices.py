@@ -1,6 +1,7 @@
-from __future__ import print_function, division
-
 import collections
+from functools import reduce
+from types import FunctionType
+
 from sympy.core.add import Add
 from sympy.core.basic import Basic, Atom
 from sympy.core.expr import Expr
@@ -11,17 +12,14 @@ from sympy.core.symbol import Symbol, Dummy, symbols
 from sympy.core.numbers import Integer, ilcm, Rational, Float
 from sympy.core.singleton import S
 from sympy.core.sympify import sympify
-from sympy.core.compatibility import is_sequence, default_sort_key, range, NotIterable
-
+from sympy.core.compatibility import (is_sequence, default_sort_key,
+                                      NotIterable, as_int)
 from sympy.polys import PurePoly, roots, cancel, gcd
 from sympy.simplify import simplify as _simplify, signsimp, nsimplify
 from sympy.utilities.iterables import flatten
 from sympy.functions.elementary.miscellaneous import sqrt, Max, Min
 from sympy.functions import exp, factorial
 from sympy.printing import sstr
-from sympy.core.compatibility import reduce, as_int, string_types
-
-from types import FunctionType
 
 
 def _iszero(x):
@@ -1824,7 +1822,7 @@ class MatrixBase(object):
                 # Minimum singular value
                 return Min(*self.singular_values())
 
-            elif (ord is None or isinstance(ord, string_types) and ord.lower() in
+            elif (ord is None or isinstance(ord, str) and ord.lower() in
                     ['f', 'fro', 'frobenius', 'vector']):
                 # Reshape as vector and send back to norm function
                 return self.vec().norm(ord=2)

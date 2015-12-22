@@ -3,193 +3,11 @@ Reimplementations of constructs introduced in later versions of Python than
 we support. Also some functions that are needed SymPy-wide and are located
 here for easy import.
 """
-from __future__ import print_function, division
 
-import operator
 import os
 from collections import defaultdict
+
 from sympy.external import import_module
-
-"""
-Python 2 and Python 3 compatible imports
-
-String and Unicode compatible changes:
-    * `unicode()` removed in Python 3, import `unicode` for Python 2/3
-      compatible function
-    * `unichr()` removed in Python 3, import `unichr` for Python 2/3 compatible
-      function
-    * Use `u()` for escaped unicode sequences (e.g. u'\u2020' -> u('\u2020'))
-    * Use `u_decode()` to decode utf-8 formatted unicode strings
-    * `string_types` gives str in Python 3, unicode and str in Python 2,
-      equivalent to basestring
-
-Integer related changes:
-    * `long()` removed in Python 3, import `long` for Python 2/3 compatible
-      function
-    * `integer_types` gives int in Python 3, int and long in Python 2
-
-Types related changes:
-    * `class_types` gives type in Python 3, type and ClassType in Python 2
-
-Renamed function attributes:
-    * Python 2 `.func_code`, Python 3 `.__func__`, access with
-      `get_function_code()`
-    * Python 2 `.func_globals`, Python 3 `.__globals__`, access with
-      `get_function_globals()`
-    * Python 2 `.func_name`, Python 3 `.__name__`, access with
-      `get_function_name()`
-
-Moved modules:
-    * `reduce()`
-    * `StringIO()`
-    * `cStringIO()` (same as `StingIO()` in Python 3)
-    * Python 2 `__builtins__`, access with Python 3 name, `builtins`
-
-Iterator/list changes:
-    * `xrange` removed in Python 3, import `xrange` for Python 2/3 compatible
-      iterator version of range
-
-exec:
-    * Use `exec_()`, with parameters `exec_(code, globs=None, locs=None)`
-
-Metaclasses:
-    * Use `with_metaclass()`, examples below
-        * Define class `Foo` with metaclass `Meta`, and no parent:
-            class Foo(with_metaclass(Meta)):
-                pass
-        * Define class `Foo` with metaclass `Meta` and parent class `Bar`:
-            class Foo(with_metaclass(Meta, Bar)):
-                pass
-"""
-
-import sys
-PY3 = sys.version_info[0] > 2
-
-if PY3:
-    class_types = type,
-    integer_types = (int,)
-    string_types = (str,)
-    long = int
-
-    # String / unicode compatibility
-    unicode = str
-    unichr = chr
-
-    def u(x):
-        return x
-
-    def u_decode(x):
-        return x
-
-    Iterator = object
-
-    # Moved definitions
-    get_function_code = operator.attrgetter("__code__")
-    get_function_globals = operator.attrgetter("__globals__")
-    get_function_name = operator.attrgetter("__name__")
-
-    import builtins
-    from functools import reduce
-    from io import StringIO
-    cStringIO = StringIO
-
-    exec_=getattr(builtins, "exec")
-
-    range=range
-
-    from tokenize import tokenize
-else:
-    import codecs
-    import types
-
-    class_types = (type, types.ClassType)
-    integer_types = (int, long)
-    string_types = (str, unicode)
-    long = long
-
-    # String / unicode compatibility
-    unicode = unicode
-    unichr = unichr
-
-    def u(x):
-        return codecs.unicode_escape_decode(x)[0]
-
-    def u_decode(x):
-        return x.decode('utf-8')
-
-    class Iterator(object):
-        def next(self):
-            return type(self).__next__(self)
-
-    # Moved definitions
-    get_function_code = operator.attrgetter("func_code")
-    get_function_globals = operator.attrgetter("func_globals")
-    get_function_name = operator.attrgetter("func_name")
-
-    import __builtin__ as builtins
-    reduce = reduce
-    from StringIO import StringIO
-    from cStringIO import StringIO as cStringIO
-
-    def exec_(_code_, _globs_=None, _locs_=None):
-        """Execute code in a namespace."""
-        if _globs_ is None:
-            frame = sys._getframe(1)
-            _globs_ = frame.f_globals
-            if _locs_ is None:
-                _locs_ = frame.f_locals
-            del frame
-        elif _locs_ is None:
-            _locs_ = _globs_
-        exec("exec _code_ in _globs_, _locs_")
-    range=xrange
-
-    from tokenize import generate_tokens as tokenize
-
-
-def with_metaclass(meta, *bases):
-    """
-    Create a base class with a metaclass.
-
-    For example, if you have the metaclass
-
-    >>> class Meta(type):
-    ...     pass
-
-    Use this as the metaclass by doing
-
-    >>> from sympy.core.compatibility import with_metaclass
-    >>> class MyClass(with_metaclass(Meta, object)):
-    ...     pass
-
-    This is equivalent to the Python 2::
-
-        class MyClass(object):
-            __metaclass__ = Meta
-
-    or Python 3::
-
-        class MyClass(object, metaclass=Meta):
-            pass
-
-    That is, the first argument is the metaclass, and the remaining arguments
-    are the base classes. Note that if the base class is just ``object``, you
-    may omit it.
-
-    >>> MyClass.__mro__ == (MyClass, object)
-    True
-    >>> type(MyClass) is Meta
-    True
-
-    """
-    # This requires a bit of explanation: the basic idea is to make a dummy
-    # metaclass for one level of class instantiation that replaces itself with
-    # the actual metaclass.
-    # Code copied from the 'six' library.
-    class metaclass(meta):
-        def __new__(cls, name, this_bases, d):
-            return meta(name, bases, d)
-    return type.__new__(metaclass, "NewBase", (), {})
 
 
 # These are in here because telling if something is an iterable just by calling
@@ -206,7 +24,7 @@ class NotIterable:
     pass
 
 
-def iterable(i, exclude=(string_types, dict, NotIterable)):
+def iterable(i, exclude=(str, dict, NotIterable)):
     """
     Return a boolean indicating whether ``i`` is SymPy iterable.
     True also indicates that the iterator is finite, i.e. you e.g.
@@ -245,7 +63,6 @@ def iterable(i, exclude=(string_types, dict, NotIterable)):
     True
     >>> iterable("no", exclude=str)
     False
-
     """
     try:
         iter(i)
@@ -297,11 +114,6 @@ def is_sequence(i, include=None):
             bool(include) and
             isinstance(i, include))
 
-try:
-    from itertools import zip_longest
-except ImportError:  # <= Python 2.7
-    from itertools import izip_longest as zip_longest
-
 
 def as_int(n):
     """
@@ -325,7 +137,6 @@ def as_int(n):
     Traceback (most recent call last):
     ...
     ValueError: ... is not an integer
-
     """
     try:
         result = int(n)
@@ -337,7 +148,8 @@ def as_int(n):
 
 
 def default_sort_key(item, order=None):
-    """Return a key that can be used for sorting.
+    """
+    Return a key that can be used for sorting.
 
     The key has the structure:
 
@@ -378,7 +190,6 @@ def default_sort_key(item, order=None):
     >>> default_sort_key(2)
     ((1, 0, 'Number'), (0, ()), (), 2)
 
-
     While sort_key is a method only defined for SymPy objects,
     default_sort_key will accept anything as an argument so it is
     more robust as a sorting key. For the following, using key=
@@ -398,8 +209,8 @@ def default_sort_key(item, order=None):
     >>> min(a, key=default_sort_key)
     2
 
-    Note
-    ----
+    Notes
+    =====
 
     The key returned is useful for getting items into a canonical order
     that will be the same across platforms. It is not directly useful for
@@ -451,7 +262,6 @@ def default_sort_key(item, order=None):
     sympy.core.expr.Expr.as_ordered_factors
     sympy.core.expr.Expr.as_ordered_terms
     """
-
     from sympy.core import S, Basic
     from sympy.core.sympify import sympify, SympifyError
     from sympy.core.compatibility import iterable
@@ -459,7 +269,7 @@ def default_sort_key(item, order=None):
     if isinstance(item, Basic):
         return item.sort_key(order=order)
 
-    if iterable(item, exclude=string_types):
+    if iterable(item, exclude=(str,)):
         if isinstance(item, dict):
             args = item.items()
             unordered = True
@@ -473,13 +283,12 @@ def default_sort_key(item, order=None):
 
         args = [default_sort_key(arg, order=order) for arg in args]
 
-        if unordered:
-            # e.g. dict, set
+        if unordered:  # e.g. dict, set
             args = sorted(args)
 
         cls_index, args = 10, (len(args), tuple(args))
     else:
-        if not isinstance(item, string_types):
+        if not isinstance(item, str):
             try:
                 item = sympify(item)
             except SympifyError:
@@ -543,22 +352,18 @@ def ordered(seq, keys=None, default=True, warn=False):
     two items appear in their original order (i.e. the sorting is stable):
 
     >>> list(ordered([y + 2, x + 2, x**2 + y + 3],
-    ...    count_ops, default=False, warn=False))
-    ...
+    ...              count_ops, default=False, warn=False))
     [y + 2, x + 2, x**2 + y + 3]
 
     The default_sort_key allows the tie to be broken:
 
     >>> list(ordered([y + 2, x + 2, x**2 + y + 3]))
-    ...
     [x + 2, y + 2, x**2 + y + 3]
 
     Here, sequences are sorted by length, then sum:
 
-    >>> seq, keys = [[[1, 2, 1], [0, 3, 1], [1, 1, 3], [2], [1]], [
-    ...    lambda x: len(x),
-    ...    lambda x: sum(x)]]
-    ...
+    >>> seq, keys = [[[1, 2, 1], [0, 3, 1], [1, 1, 3], [2], [1]],
+    ...              [lambda x: len(x), lambda x: sum(x)]]
     >>> list(ordered(seq, keys, default=False, warn=False))
     [[1], [2], [1, 2, 1], [0, 3, 1], [1, 1, 3]]
 
@@ -569,7 +374,6 @@ def ordered(seq, keys=None, default=True, warn=False):
     Traceback (most recent call last):
     ...
     ValueError: not enough keys to break ties
-
 
     Notes
     =====
@@ -595,7 +399,6 @@ def ordered(seq, keys=None, default=True, warn=False):
     there were several criteria used to define the sort order, then this
     function would be good at returning that quickly if the first group
     of candidates is small relative to the number of items being processed.
-
     """
     d = defaultdict(list)
     if keys:
@@ -621,8 +424,7 @@ def ordered(seq, keys=None, default=True, warn=False):
                 from sympy.utilities.iterables import uniq
                 u = list(uniq(d[k]))
                 if len(u) > 1:
-                    raise ValueError(
-                        'not enough keys to break ties: %s' % u)
+                    raise ValueError('not enough keys to break ties: %s' % u)
         for v in d[k]:
             yield v
         d.pop(k)
@@ -672,14 +474,7 @@ if GROUND_TYPES == 'gmpy' and not HAS_GMPY:
     GROUND_TYPES = 'python'
 
 # SYMPY_INTS is a tuple containing the base types for valid integer types.
-SYMPY_INTS = integer_types
+SYMPY_INTS = (int,)
 
 if GROUND_TYPES == 'gmpy':
     SYMPY_INTS += (type(gmpy.mpz(0)),)
-
-# check_output() is new in Python 2.7
-try:
-    from subprocess import check_output
-except ImportError:
-    # running on platform like App Engine, no subprocess at all
-    pass

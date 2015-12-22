@@ -1,7 +1,7 @@
-from __future__ import print_function, division
+import string
+import re as _re
 
 from sympy.core.assumptions import StdFactKB
-from sympy.core.compatibility import string_types, range
 from .basic import Basic
 from .sympify import sympify
 from .singleton import S
@@ -11,9 +11,6 @@ from .function import FunctionClass
 from sympy.core.logic import fuzzy_bool
 from sympy.logic.boolalg import Boolean
 from sympy.utilities.iterables import cartes
-
-import string
-import re as _re
 
 
 class Symbol(AtomicExpr, Boolean):
@@ -86,7 +83,7 @@ class Symbol(AtomicExpr, Boolean):
         return Symbol.__xnew_cached_(cls, name, **assumptions)
 
     def __new_stage2__(cls, name, **assumptions):
-        if not isinstance(name, string_types):
+        if not isinstance(name, str):
             raise TypeError("name should be a string, not %s" % repr(type(name)))
 
         obj = Expr.__new__(cls)
@@ -430,7 +427,7 @@ def symbols(names, **args):
     """
     result = []
 
-    if isinstance(names, string_types):
+    if isinstance(names, str):
         marker = 0
         literals = ['\,', '\:', '\ ']
         for i in range(len(literals)):

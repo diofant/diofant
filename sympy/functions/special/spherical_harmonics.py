@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy import pi, I
 from sympy.core.singleton import S
 from sympy.core import Dummy, sympify

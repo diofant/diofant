@@ -23,7 +23,7 @@ Arithmetic. Master's thesis. University of Toronto, 1996
 
 """
 
-from __future__ import print_function, division
+import warnings
 
 from .plot import BaseSeries, Plot
 from .experimental_lambdify import experimental_lambdify, vectorized_lambdify
@@ -36,7 +36,6 @@ from sympy.logic.boolalg import BooleanFunction
 from sympy.polys.polyutils import _sort_gens
 from sympy.utilities.decorator import doctest_depends_on
 from sympy.utilities.iterables import flatten
-import warnings
 
 
 class ImplicitSeries(BaseSeries):

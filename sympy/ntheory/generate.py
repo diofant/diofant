@@ -2,7 +2,6 @@
 Generating and counting primes.
 
 """
-from __future__ import print_function, division
 
 import random
 from bisect import bisect
@@ -11,7 +10,7 @@ from bisect import bisect
 from array import array as _array
 
 from .primetest import isprime
-from sympy.core.compatibility import as_int, range
+from sympy.core.compatibility import as_int
 
 
 def _arange(a, b):

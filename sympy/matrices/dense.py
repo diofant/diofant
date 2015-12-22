@@ -1,9 +1,7 @@
-from __future__ import print_function, division
-
 import random
 
 from sympy.core.basic import Basic
-from sympy.core.compatibility import is_sequence, as_int, range
+from sympy.core.compatibility import is_sequence, as_int
 from sympy.core.function import count_ops
 from sympy.core.decorators import call_highest_priority
 from sympy.core.singleton import S
@@ -14,9 +12,7 @@ from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.simplify import simplify as _simplify
 from sympy.utilities.misc import filldedent
 from sympy.utilities.decorator import doctest_depends_on
-
-from sympy.matrices.matrices import (MatrixBase,
-    ShapeError, a2idx, classof)
+from sympy.matrices.matrices import MatrixBase, ShapeError, a2idx, classof
 
 
 def _iszero(x):
@@ -74,15 +70,13 @@ class DenseMatrix(MatrixBase):
                 return self._mat[i*self.cols + j]
             except (TypeError, IndexError):
                 if isinstance(i, slice):
-                    # XXX remove list() when PY2 support is dropped
-                    i = list(range(self.rows))[i]
+                    i = range(self.rows)[i]
                 elif is_sequence(i):
                     pass
                 else:
                     i = [i]
                 if isinstance(j, slice):
-                    # XXX remove list() when PY2 support is dropped
-                    j = list(range(self.cols))[j]
+                    j = range(self.cols)[j]
                 elif is_sequence(j):
                     pass
                 else:

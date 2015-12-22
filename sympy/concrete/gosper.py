@@ -1,8 +1,7 @@
 """Gosper's algorithm for hypergeometric summation. """
-from __future__ import print_function, division
 
 from sympy.core import S, Dummy, symbols
-from sympy.core.compatibility import is_sequence, range
+from sympy.core.compatibility import is_sequence
 from sympy.polys import Poly, parallel_poly_from_expr, factor
 from sympy.solvers import solve
 from sympy.simplify import hypersimp

@@ -65,9 +65,8 @@ References
 .. [1] `Gruntz Thesis <http://www.cybertester.com/data/gruntz.pdf>`_
 """
 
-from __future__ import print_function, division
-
 from functools import reduce
+
 from sympy.core import S, oo, Dummy, Mul, Add, evaluate
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import log, exp, sign as sgn

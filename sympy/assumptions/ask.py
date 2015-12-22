@@ -1,5 +1,4 @@
 """Module for querying SymPy objects about assumptions."""
-from __future__ import print_function, division
 
 from sympy.core import sympify, S
 from sympy.logic.boolalg import (to_cnf, And, Not, Or, Implies, Equivalent,

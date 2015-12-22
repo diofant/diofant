@@ -1,7 +1,6 @@
 """Sparse polynomial rings. """
 
-from __future__ import print_function, division
-
+from functools import reduce
 from operator import add, mul, lt, le, gt, ge
 from types import GeneratorType
 
@@ -9,7 +8,7 @@ from sympy.core.expr import Expr
 from sympy.core.symbol import Symbol, symbols as _symbols
 from sympy.core.numbers import igcd, oo
 from sympy.core.sympify import CantSympify, sympify
-from sympy.core.compatibility import is_sequence, reduce, string_types, range
+from sympy.core.compatibility import is_sequence
 from sympy.ntheory.multinomial import multinomial_coefficients
 from sympy.polys.monomials import MonomialOps
 from sympy.polys.orderings import lex
@@ -175,12 +174,12 @@ def _parse_symbols(symbols):
     if not symbols:
         raise GeneratorsNeeded("generators weren't specified")
 
-    if isinstance(symbols, string_types):
+    if isinstance(symbols, str):
         return _symbols(symbols, seq=True)
     elif isinstance(symbols, Expr):
         return (symbols,)
     elif is_sequence(symbols):
-        if all(isinstance(s, string_types) for s in symbols):
+        if all(isinstance(s, str) for s in symbols):
             return _symbols(symbols)
         elif all(isinstance(s, Expr) for s in symbols):
             return symbols
@@ -316,7 +315,7 @@ class PolyRing(DefaultPrinting, IPolys):
                 return self.ground_new(element)
             else:
                 raise NotImplementedError("conversion")
-        elif isinstance(element, string_types):
+        elif isinstance(element, str):
             raise NotImplementedError("parsing")
         elif isinstance(element, dict):
             return self.from_dict(element)
@@ -396,7 +395,7 @@ class PolyRing(DefaultPrinting, IPolys):
                 i = self.gens.index(gen)
             except ValueError:
                 raise ValueError("invalid generator: %s" % gen)
-        elif isinstance(gen, string_types):
+        elif isinstance(gen, str):
             try:
                 i = self.symbols.index(gen)
             except ValueError:

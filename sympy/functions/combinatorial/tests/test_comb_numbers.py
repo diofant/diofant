@@ -8,7 +8,6 @@ from sympy.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
                              catalan, genocchi, binomial, gamma, sqrt, hyper, log,
                              digamma, trigamma, polygamma, factorial, sin,
                              cos, cot, zeta)
-from sympy.core.compatibility import range
 
 x = Symbol('x')
 

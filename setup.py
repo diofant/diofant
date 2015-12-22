@@ -38,8 +38,8 @@ from setuptools.command.test import test as TestCommand
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 7):
-    print("SymPy requires Python 2.7 or newer. Python %d.%d detected" % sys.version_info[:2])
+if sys.version_info[:2] < (3, 2):
+    print("SymPy requires Python 3.2 or newer. Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
 
 
@@ -171,9 +171,8 @@ setup(name='sympy',
           'Topic :: Scientific/Engineering',
           'Topic :: Scientific/Engineering :: Mathematics',
           'Topic :: Scientific/Engineering :: Physics',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.4',
       ],
       tests_require=['pytest>=2.7.0', 'pep8>=1.6.0', 'pytest-cov'],

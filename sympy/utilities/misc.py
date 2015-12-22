@@ -1,11 +1,8 @@
 """Miscellaneous stuff that doesn't really fit anywhere else."""
 
-from __future__ import print_function, division
-
 import sys
 import os
 from textwrap import fill, dedent
-from sympy.core.compatibility import get_function_name, range
 
 
 def filldedent(s, w=70):
@@ -151,14 +148,14 @@ def debug_decorator(func):
         # If there is a bug and the algorithm enters an infinite loop, enable the
         # following lines. It will print the names and parameters of all major functions
         # that are called, *before* they are called
-        # from sympy.core.compatibility import reduce
+        # from functools import reduce
         # print("%s%s %s%s" % (_debug_iter, reduce(lambda x, y: x + y, \
-        #    map(lambda x: '-', range(1, 2 + _debug_iter))), get_function_name(f), args))
+        #    map(lambda x: '-', range(1, 2 + _debug_iter))), f.__name__, args))
 
         r = f(*args, **kw)
 
         _debug_iter -= 1
-        s = "%s%s = %s\n" % (get_function_name(f), args, r)
+        s = "%s%s = %s\n" % (f.__name__, args, r)
         if _debug_tmp != []:
             s += tree(_debug_tmp)
         _debug_tmp = oldtmp

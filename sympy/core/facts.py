@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """This is rule-based deduction system for SymPy
 
 The whole thing is split into two parts
@@ -47,12 +45,10 @@ http://en.wikipedia.org/wiki/Propositional_formula
 http://en.wikipedia.org/wiki/Inference_rule
 http://en.wikipedia.org/wiki/List_of_rules_of_inference
 """
-from __future__ import print_function, division
 
 from collections import defaultdict
 
 from .logic import Logic, And, Or, Not
-from sympy.core.compatibility import string_types, range
 
 
 def _base_fact(atom):
@@ -408,7 +404,7 @@ class FactRules(object):
     def __init__(self, rules):
         """Compile rules into internal lookup tables"""
 
-        if isinstance(rules, string_types):
+        if isinstance(rules, str):
             rules = rules.splitlines()
 
         # --- parse and process rules ---

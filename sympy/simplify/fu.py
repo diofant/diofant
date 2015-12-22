@@ -180,18 +180,15 @@ http://rfdz.ph-noe.ac.at/fileadmin/Mathematik_Uploads/ACDCA/
 DESTIME2006/DES_contribs/Fu/simplification.pdf
 
 http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
-
 """
-
-from __future__ import print_function, division
 
 from collections import defaultdict
 from itertools import combinations
+
 from strategies.tree import greedy
 from strategies.core import identity, debug
 
-from sympy.simplify.simplify import (simplify,
-    _mexpand, bottom_up)
+from sympy.simplify.simplify import simplify, _mexpand, bottom_up
 from sympy.simplify.powsimp import powsimp
 from sympy.simplify.combsimp import combsimp
 from sympy.simplify.ratsimp import ratsimp
@@ -200,7 +197,7 @@ from sympy.functions.elementary.trigonometric import (
     cos, sin, tan, cot, sec, csc, sqrt, TrigonometricFunction)
 from sympy.functions.elementary.hyperbolic import (
     cosh, sinh, tanh, coth, HyperbolicFunction)
-from sympy.core.compatibility import ordered, range
+from sympy.core.compatibility import ordered
 from sympy.core.expr import Expr
 from sympy.core.mul import Mul
 from sympy.core.power import Pow
@@ -213,7 +210,6 @@ from sympy.core.basic import S
 from sympy.core.numbers import Integer, pi, I
 from sympy.polys.polytools import factor
 from sympy.ntheory.factor_ import perfect_power
-
 from sympy import SYMPY_DEBUG
 
 

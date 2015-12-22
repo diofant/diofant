@@ -1,6 +1,5 @@
 import pytest
 
-from sympy.abc import t, w, x, y, z, n, k, m, p, i
 from sympy.assumptions import (ask, AssumptionsContext, Q, register_handler,
                                remove_handler)
 from sympy.assumptions.assume import global_assumptions
@@ -8,7 +7,6 @@ from sympy.assumptions.ask import (compute_known_facts, known_facts_cnf,
                                    known_facts_dict, single_fact_lookup)
 from sympy.assumptions.handlers import AskHandler
 from sympy.core.add import Add
-from sympy.core.compatibility import exec_
 from sympy.core.numbers import I, Integer, Rational, oo, pi
 from sympy.core.singleton import S
 from sympy.core.power import Pow
@@ -22,6 +20,8 @@ from sympy.functions.elementary.trigonometric import (acos, acot, asin,
                                                       sin, tan)
 from sympy.logic.boolalg import Equivalent, Implies, Xor, And, to_cnf
 from sympy.assumptions.assume import assuming
+
+from sympy.abc import t, w, x, y, z, n, k, m, p, i
 
 
 def test_int_1():
@@ -2083,8 +2083,8 @@ def test_compute_known_facts():
 def test_known_facts_consistent():
     from sympy.assumptions.ask import known_facts, known_facts_keys
     ns = {}
-    exec_('from sympy.logic.boolalg import And, Or, Not', globals(), ns)
-    exec_(compute_known_facts(known_facts, known_facts_keys), globals(), ns)
+    exec('from sympy.logic.boolalg import And, Or, Not', globals(), ns)
+    exec(compute_known_facts(known_facts, known_facts_keys), globals(), ns)
     assert ns['known_facts_cnf'] == known_facts_cnf
     assert ns['known_facts_dict'] == known_facts_dict
 

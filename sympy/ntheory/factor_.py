@@ -1,7 +1,6 @@
 """
 Integer factorization
 """
-from __future__ import print_function, division
 
 import random
 import math
@@ -14,7 +13,7 @@ from sympy.core.logic import fuzzy_and
 from sympy.core.numbers import igcd, Rational
 from sympy.core.power import integer_nthroot, Pow
 from sympy.core.mul import Mul
-from sympy.core.compatibility import as_int, SYMPY_INTS, range
+from sympy.core.compatibility import as_int, SYMPY_INTS
 from sympy.core.singleton import S
 from sympy.core.function import Function
 
@@ -833,10 +832,9 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     semi-prime factor that cannot be reduced easily:
 
     >>> from sympy.ntheory import isprime
-    >>> from sympy.core.compatibility import long
     >>> a = 1407633717262338957430697921446883
     >>> f = factorint(a, limit=10000)
-    >>> f == {991: 1, long(202916782076162456022877024859): 1, 7: 1}
+    >>> f == {991: 1, int(202916782076162456022877024859): 1, 7: 1}
     True
     >>> isprime(max(f))
     False

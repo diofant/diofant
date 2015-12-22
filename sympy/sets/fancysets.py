@@ -1,14 +1,12 @@
-from __future__ import print_function, division
-
 from sympy.core.basic import Basic
-from sympy.core.compatibility import as_int, with_metaclass, range
+from sympy.core.compatibility import as_int
 from sympy.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from sympy.core.singleton import Singleton, S
 from sympy.core.sympify import _sympify
 from sympy.core.function import Lambda
 
 
-class Naturals(with_metaclass(Singleton, Set)):
+class Naturals(Set, metaclass=Singleton):
     """
     Represents the natural numbers (or counting numbers) which are all
     positive integers starting from 1. This set is also available as
@@ -81,7 +79,7 @@ class Naturals0(Naturals):
             return S.false
 
 
-class Integers(with_metaclass(Singleton, Set)):
+class Integers(Set, metaclass=Singleton):
     """
     Represents all integers: positive, negative and zero. This set is also
     available as the Singleton, S.Integers.
@@ -169,8 +167,7 @@ class Integers(with_metaclass(Singleton, Set)):
         return ImageSet(Lambda(n, expr), S.Integers)
 
 
-class Reals(with_metaclass(Singleton, Interval)):
-
+class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
         return Interval.__new__(cls, -S.Infinity, S.Infinity)
 
@@ -416,10 +413,8 @@ class Range(Set):
     def __len__(self):
         return int((self.stop - self.start)//self.step)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True
-
-    __bool__ = __nonzero__
 
     def _ith_element(self, i):
         return self.start + i*self.step

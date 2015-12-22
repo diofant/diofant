@@ -1,28 +1,26 @@
 """Ground types for various mathematical domains in SymPy. """
 
-from __future__ import print_function, division
-
 __all__ = []
 
-from sympy.core.compatibility import builtins, HAS_GMPY
+import builtins
+
+import mpmath.libmp as mlib
+
+from sympy.core.compatibility import HAS_GMPY
 
 PythonInteger = builtins.int
 PythonReal = builtins.float
 PythonComplex = builtins.complex
 
 from .pythonrational import PythonRational
-
 from sympy.core.numbers import (
     igcdex as python_gcdex,
     igcd as python_gcd,
-    ilcm as python_lcm,
-)
-
+    ilcm as python_lcm)
 from sympy import (
     Float as SymPyReal,
     Integer as SymPyInteger,
-    Rational as SymPyRational,
-)
+    Rational as SymPyRational)
 
 if HAS_GMPY == 1:
     from gmpy import (
@@ -35,8 +33,7 @@ if HAS_GMPY == 1:
         gcd as gmpy_gcd,
         lcm as gmpy_lcm,
         sqrt as gmpy_sqrt,
-        qdiv as gmpy_qdiv,
-    )
+        qdiv as gmpy_qdiv)
 elif HAS_GMPY == 2:
     from gmpy2 import (
         mpz as GMPYInteger,
@@ -48,8 +45,7 @@ elif HAS_GMPY == 2:
         gcd as gmpy_gcd,
         lcm as gmpy_lcm,
         isqrt as gmpy_sqrt,
-        qdiv as gmpy_qdiv,
-    )
+        qdiv as gmpy_qdiv)
 else:
     class GMPYInteger(object):
         def __init__(self, obj):
@@ -67,9 +63,6 @@ else:
     gmpy_lcm = None
     gmpy_sqrt = None
     gmpy_qdiv = None
-
-
-import mpmath.libmp as mlib
 
 
 def python_sqrt(n):

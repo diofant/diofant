@@ -224,29 +224,26 @@ existing method, including in the simplicity and speed of obtaining the
 solutions, then you can remove the old, less general method.  The existing
 code is tested extensively in ``test_ode.py``, so if anything is broken, one
 of those tests will surely fail.
-
 """
-from __future__ import print_function, division
 
 from collections import defaultdict
 from itertools import islice
 
 from sympy.core import Add, S, Mul, Pow, oo
-from sympy.core.compatibility import ordered, iterable, is_sequence, range
+from sympy.core.compatibility import ordered, iterable, is_sequence
 from sympy.core.containers import Tuple
 from sympy.core.exprtools import factor_terms
 from sympy.core.expr import AtomicExpr, Expr
 from sympy.core.function import (Function, Derivative, AppliedUndef, diff,
-    expand, expand_mul, Subs, _mexpand)
+                                 expand, expand_mul, Subs, _mexpand)
 from sympy.core.multidimensional import vectorize
 from sympy.core.numbers import NaN, zoo, I, Number
 from sympy.core.relational import Equality, Eq
 from sympy.core.symbol import Symbol, Wild, Dummy, symbols
 from sympy.core.sympify import sympify
-
 from sympy.logic.boolalg import BooleanAtom
-from sympy.functions import cos, exp, im, log, re, sin, tan, sqrt, \
-    atan2, conjugate
+from sympy.functions import (cos, exp, im, log, re, sin, tan, sqrt,
+                             atan2, conjugate)
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.integrals.integrals import Integral, integrate
 from sympy.matrices import wronskian, Matrix, eye, zeros
@@ -255,13 +252,12 @@ from sympy.polys.polyroots import roots_quartic
 from sympy.polys.polytools import cancel, degree, div
 from sympy.series import Order
 from sympy.series.series import series
-from sympy.simplify import collect, logcombine, powsimp, separatevars, \
-    simplify, trigsimp, denom, posify, cse
+from sympy.simplify import (collect, logcombine, powsimp, separatevars,
+                            simplify, trigsimp, denom, posify, cse)
 from sympy.simplify.powsimp import powdenest
 from sympy.simplify.radsimp import collect_const
 from sympy.solvers import solve
 from sympy.solvers.pde import pdsolve
-
 from sympy.utilities import numbered_symbols, default_sort_key, sift
 from sympy.solvers.deutils import _preprocess, ode_order, _desolve
 

@@ -4,8 +4,6 @@ import pytest
 
 from sympy import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
                    pi, cos, sin, exp)
-from sympy.core.compatibility import range
-
 from sympy.polys.numberfields import (
     minimal_polynomial,
     primitive_element,
@@ -15,12 +13,8 @@ from sympy.polys.numberfields import (
     to_number_field,
     AlgebraicNumber,
     isolate, IntervalPrinter)
-
-from sympy.polys.polyerrors import (
-    IsomorphismFailed,
-    NotAlgebraic,
-    GeneratorsError)
-
+from sympy.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
+                                    GeneratorsError)
 from sympy.polys.polyclasses import DMP
 from sympy.polys.domains import QQ
 from sympy.polys.rootoftools import RootOf

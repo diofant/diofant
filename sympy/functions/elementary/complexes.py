@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 from sympy.core import S, Add, Mul, sympify, Symbol, Dummy
-from sympy.core.compatibility import u
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import (Function, Derivative, ArgumentIndexError,
-    AppliedUndef)
+                                 AppliedUndef)
 from sympy.core.numbers import pi
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.piecewise import Piecewise
@@ -711,7 +708,7 @@ class adjoint(Function):
         from sympy.printing.pretty.stringpict import prettyForm
         pform = printer._print(self.args[0], *args)
         if printer._use_unicode:
-            pform = pform**prettyForm(u('\N{DAGGER}'))
+            pform = pform**prettyForm('\N{DAGGER}')
         else:
             pform = pform**prettyForm('+')
         return pform

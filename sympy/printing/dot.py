@@ -1,12 +1,10 @@
-from __future__ import print_function, division
-
 from sympy import (Basic, Expr, Symbol, Integer, Rational, Float,
-    default_sort_key, Add, Mul)
+                   default_sort_key, Add, Mul)
 
 __all__ = ['dotprint']
 
 default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
-          (Expr,  {'color': 'black'})]
+                  (Expr,  {'color': 'black'})]
 
 
 sort_classes = (Add, Mul)

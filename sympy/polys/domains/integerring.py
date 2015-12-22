@@ -1,14 +1,11 @@
 """Implementation of :class:`IntegerRing` class. """
 
-from __future__ import print_function, division
+import math
 
 from sympy.polys.domains.ring import Ring
 from sympy.polys.domains.simpledomain import SimpleDomain
 from sympy.polys.domains.characteristiczero import CharacteristicZero
-
 from sympy.utilities import public
-
-import math
 
 
 @public

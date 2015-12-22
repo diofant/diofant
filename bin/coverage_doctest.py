@@ -17,8 +17,6 @@ or
 If no arguments are given, all files in sympy/ are checked.
 """
 
-from __future__ import print_function
-
 import os
 import sys
 import inspect

@@ -1,13 +1,9 @@
 """Tools for setting up interactive sessions. """
 
-from __future__ import print_function, division
-
-from sympy.core.compatibility import range
 from sympy.external import import_module
 from sympy.interactive.printing import init_printing
 
 preexec_source = """\
-from __future__ import division
 from sympy import *
 x, y, z, t = symbols('x y z t')
 k, m, n = symbols('k m n', integer=True)
@@ -94,7 +90,6 @@ def int_to_Integer(s):
     Examples
     ========
 
-    >>> from __future__ import division
     >>> from sympy.interactive.session import int_to_Integer
     >>> from sympy import Integer
     >>> s = '1.2 + 1/2 - 0x12 + a1'
@@ -109,7 +104,7 @@ def int_to_Integer(s):
     1/2
     """
     from tokenize import generate_tokens, untokenize, NUMBER, NAME, OP
-    from sympy.core.compatibility import StringIO
+    from io import StringIO
 
     def _is_int(num):
         """

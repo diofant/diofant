@@ -7,7 +7,6 @@ from sympy.simplify.fu import (
     hyper_as_trig, csc, fu, process_common_addends, sec, trig_split,
     as_f_sign_1)
 from sympy.utilities.randtest import verify_numerically
-from sympy.core.compatibility import range
 from sympy.abc import a, b, c, x, y, z
 
 

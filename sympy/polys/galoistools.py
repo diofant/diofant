@@ -1,16 +1,13 @@
 """Dense univariate polynomials with coefficients in Galois fields. """
 
-from __future__ import print_function, division
-
 from random import uniform
 from math import ceil as _ceil, sqrt as _sqrt
 
-from sympy.core.compatibility import SYMPY_INTS, range
+from sympy.core.compatibility import SYMPY_INTS
 from sympy.core.mul import prod
 from sympy.polys.polyutils import _sort_factors
 from sympy.polys.polyconfig import query
 from sympy.polys.polyerrors import ExactQuotientFailed
-
 from sympy.ntheory import factorint
 
 

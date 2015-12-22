@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.concrete.expr_with_limits import AddWithLimits
 from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
 from sympy.core.function import Derivative
@@ -10,7 +8,6 @@ from sympy.concrete.gosper import gosper_sum
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.polys import apart, PolynomialError
 from sympy.solvers import solve
-from sympy.core.compatibility import range
 
 
 class Sum(AddWithLimits,ExprWithIntLimits):

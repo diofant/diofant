@@ -2,7 +2,6 @@ import pytest
 
 from sympy import (S, Symbol, symbols, nan, oo, I, pi, Float, And, Or, Not,
                    Implies, Xor, zoo, sqrt, Rational, simplify, Function)
-from sympy.core.compatibility import range
 from sympy.core.relational import (Relational, Equality, Unequality,
                                    GreaterThan, LessThan, StrictGreaterThan,
                                    StrictLessThan, Rel, Eq, Lt, Le,
@@ -255,10 +254,9 @@ def test_new_relational():
 
     # finally, some fuzz testing
     from random import randint
-    from sympy.core.compatibility import unichr
     for i in range(100):
         while 1:
-            strtype, length = (unichr, 65535) if randint(0, 1) else (chr, 255)
+            strtype, length = (chr, 65535) if randint(0, 1) else (chr, 255)
             relation_type = strtype(randint(0, length))
             if randint(0, 1):
                 relation_type += strtype(randint(0, length))

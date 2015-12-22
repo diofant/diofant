@@ -151,13 +151,11 @@ References
 .. [13] http://en.wikipedia.org/wiki/Extended_real_number_line
 
 """
-from __future__ import print_function, division
+
+from random import shuffle
 
 from sympy.core.facts import FactRules, FactKB
 from sympy.core.core import BasicMeta
-from sympy.core.compatibility import integer_types, with_metaclass
-
-from random import shuffle
 
 
 _assume_rules = FactRules([
@@ -317,7 +315,7 @@ class ManagedProperties(BasicMeta):
         for k in _assume_defined:
             attrname = as_property(k)
             v = cls.__dict__.get(attrname, '')
-            if isinstance(v, (bool, integer_types, type(None))):
+            if isinstance(v, (bool, int, type(None))):
                 if v is not None:
                     v = bool(v)
                 local_defs[k] = v
