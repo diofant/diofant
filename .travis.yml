@@ -5,6 +5,7 @@ language: python
 sudo: false
 python:
   - 3.4
+  - 3.5
 env:
   - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y
 addons:
@@ -27,11 +28,6 @@ matrix:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
         - py.test sympy/polys
-    - python: "pypy3"
-      install:
-        - pip install .
-      script:
-        - py.test --ignore sympy/plotting/plot.py --ignore sympy/plotting/plot_implicit.py --ignore docs/modules/numeric-computation.rst --ignore sympy/matrices/dense.py --ignore sympy/tensor/tensor.py --ignore sympy/utilities/lambdify.py sympy docs
 before_install:
   - pip install --upgrade pip setuptools pytest
   - pip install coveralls
