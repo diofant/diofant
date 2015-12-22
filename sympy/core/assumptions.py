@@ -192,11 +192,11 @@ _assume_rules = FactRules([
     'infinite       ->  ~finite',
     'noninteger     ==  real & ~integer',
     'nonzero        ==  ~zero',
+
+    'polar          -> commutative',
 ])
 
-_assume_defined = _assume_rules.defined_facts.copy()
-_assume_defined.add('polar')
-_assume_defined = frozenset(_assume_defined)
+_assume_defined = frozenset(_assume_rules.defined_facts.copy())
 
 
 class StdFactKB(FactKB):
