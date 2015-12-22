@@ -3,7 +3,7 @@
 from inspect import getmro
 from itertools import zip_longest
 
-from .assumptions import BasicMeta, ManagedProperties
+from .assumptions import ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
@@ -1105,7 +1105,7 @@ class Basic(metaclass=ManagedProperties):
             for f in self.atoms(Function, UndefinedFunction))
 
         pattern = sympify(pattern)
-        if isinstance(pattern, BasicMeta):
+        if isinstance(pattern, type):
             return any(isinstance(arg, pattern)
             for arg in preorder_traversal(self))
 

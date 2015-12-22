@@ -2,7 +2,6 @@
 
 from inspect import getmro
 
-from .core import all_classes as sympy_classes
 from .compatibility import iterable
 from .evaluate import global_evaluate
 
@@ -230,10 +229,12 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
 
     """
+    from .basic import Basic
+
     if evaluate is None:
         evaluate = global_evaluate[0]
     try:
-        if a in sympy_classes:
+        if issubclass(a, Basic):
             return a
     except TypeError:  # Type of a is unhashable
         pass
@@ -241,7 +242,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         cls = a.__class__
     except AttributeError:  # a is probably an old-style class object
         cls = type(a)
-    if cls in sympy_classes:
+    if issubclass(cls, Basic):
         return a
     if isinstance(cls, type(None)):
         if strict:

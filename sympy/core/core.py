@@ -18,11 +18,3 @@ class Registry(object):
 
     def __delattr__(self, name):
         delattr(self.__class__, name)
-
-#: A set containing all sympy class objects
-all_classes = set()
-
-
-class BasicMeta(type):
-    def __init__(cls, *args, **kwargs):
-        all_classes.add(cls)

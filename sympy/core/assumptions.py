@@ -155,7 +155,6 @@ References
 from random import shuffle
 
 from sympy.core.facts import FactRules, FactKB
-from sympy.core.core import BasicMeta
 
 
 _assume_rules = FactRules([
@@ -306,11 +305,9 @@ def _ask(fact, obj):
     return
 
 
-class ManagedProperties(BasicMeta):
+class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions"""
     def __init__(cls, *args, **kws):
-        BasicMeta.__init__(cls, *args, **kws)
-
         local_defs = {}
         for k in _assume_defined:
             attrname = as_property(k)
