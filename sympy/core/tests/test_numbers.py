@@ -265,8 +265,8 @@ def test_Rational_new():
     assert Rational(1, 3.0) == Rational(1, 3)
     assert Rational(Float(0.5)) == Rational(1, 2)
     assert Rational('1e2/1e-2') == Rational(10000)
-    assert Rational(-1, 0) == S.NegativeInfinity
-    assert Rational(1, 0) == S.Infinity
+    assert Rational(-1, 0) == S.ComplexInfinity
+    assert Rational(1, 0) == S.ComplexInfinity
     pytest.raises(TypeError, lambda: Rational('3**3'))
     pytest.raises(TypeError, lambda: Rational('1/2 + 2/3'))
 
