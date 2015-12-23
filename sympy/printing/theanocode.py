@@ -217,7 +217,7 @@ def theano_function(inputs, outputs, dtypes={}, cache=None, **kwargs):
     broadcastables = dim_handling(inputs, **kwargs)
 
     # Remove keyword arguments corresponding to dim_handling
-    dim_names = inspect.getargspec(dim_handling)[0]
+    dim_names = inspect.getfullargspec(dim_handling)[0]
     theano_kwargs = {k: v for k, v in kwargs.items() if k not in dim_names}
 
     code = partial(theano_code, cache=cache, dtypes=dtypes,
