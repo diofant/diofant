@@ -220,6 +220,7 @@ def test_matplotlib_colors():
 
 
 @pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
+@pytest.mark.slow
 def test_matplotlib_advanced():
     """Examples from the 'advanced' notebook."""
     try:
@@ -258,6 +259,7 @@ def test_matplotlib_advanced():
 
 
 @pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
+@pytest.mark.slow
 def test_matplotlib_advanced_2():
     """More examples from the 'advanced' notebook."""
     try:
