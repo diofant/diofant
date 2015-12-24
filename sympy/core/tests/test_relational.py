@@ -572,6 +572,11 @@ def test_simplify():
     assert simplify(x*(y + 1) - x*y - x + 1 < x) == (x > 1)
     assert simplify(S(1) < -x) == (x < -1)
 
+    # issue sympy/sympy#10304
+    d = -(3*2**pi)**(1/pi) + 2*3**(1/pi)
+    assert d.is_real
+    assert simplify(Eq(1 + I*d, 0)) is False
+
 
 def test_equals():
     w, x, y, z = symbols('w:z')
