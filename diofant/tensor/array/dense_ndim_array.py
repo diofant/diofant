@@ -124,7 +124,7 @@ class ImmutableDenseNDimArray(DenseNDimArray, Basic):
         flat_list = Tuple(*flat_list)
         self = Basic.__new__(cls, flat_list, shape, **kwargs)
         self._shape = shape
-        self._array = tuple(flat_list)
+        self._array = list(flat_list)
         self._rank = len(shape)
         self._loop_size = functools.reduce(lambda x, y: x*y, shape) if shape else 0
         return self
@@ -133,7 +133,7 @@ class ImmutableDenseNDimArray(DenseNDimArray, Basic):
         raise TypeError('immutable N-dim array')
 
     def __hash__(self):
-        return super(Basic, self).__hash__()
+        return Basic.__hash__(self)
 
 
 class MutableDenseNDimArray(DenseNDimArray, MutableNDimArray):
