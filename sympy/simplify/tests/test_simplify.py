@@ -422,7 +422,7 @@ def test_posify():
     assert str(posify(
         x +
         Symbol('p', positive=True) +
-        Symbol('n', negative=True))) == '(_x + n + p, {_x: x})'
+        Symbol('n', negative=True))) == '(n + p + _x, {_x: x})'
 
     # log(1/x).expand() should be log(1/x) but it comes back as -log(x)
     # when it is corrected, posify will allow the change to be made. The

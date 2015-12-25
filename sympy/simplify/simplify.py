@@ -297,7 +297,7 @@ def posify(eq):
     >>> from sympy import posify, Symbol, log
     >>> from sympy.abc import x
     >>> posify(x + Symbol('p', positive=True) + Symbol('n', negative=True))
-    (_x + n + p, {_x: x})
+    (n + p + _x, {_x: x})
 
     >> log(1/x).expand()  # should be log(1/x) but it comes back as -log(x)
     log(1/x)

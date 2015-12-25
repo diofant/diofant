@@ -595,7 +595,7 @@ class Mul(Expr, AssocOp):
 
     @classmethod
     def class_key(cls):
-        return 3, 0, cls.__name__
+        return 4, 0, cls.__name__
 
     def _eval_evalf(self, prec):
         c, m = self.as_coeff_Mul()

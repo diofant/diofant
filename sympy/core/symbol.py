@@ -126,6 +126,10 @@ class Symbol(AtomicExpr, Boolean):
         return {key: value for key, value
                 in self._assumptions.items() if value is not None}
 
+    @classmethod
+    def class_key(cls):
+        return 2, 0, cls.__name__
+
     @cacheit
     def sort_key(self, order=None):
         return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
@@ -190,6 +194,10 @@ class Dummy(Symbol):
 
     def __getstate__(self):
         return {'_assumptions': self._assumptions, 'dummy_index': self.dummy_index}
+
+    @classmethod
+    def class_key(cls):
+        return 3, 0, cls.__name__
 
     @cacheit
     def sort_key(self, order=None):

@@ -1033,7 +1033,7 @@ def polarify(eq, subs=True, lift=False):
     >>> sorted(polarify(expr)[1].items(), key=default_sort_key)
     [(_x, x), (_y, y)]
     >>> polarify(expr)[0].expand()
-    _x**_y*exp_polar(_y*I*pi)
+    _x**_y*exp_polar(I*pi*_y)
     >>> polarify(x, lift=True)
     polar_lift(x)
     >>> polarify(x*(1+y), lift=True)

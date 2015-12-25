@@ -5533,13 +5533,13 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
         >>> genform = Eq(eta.diff(x) + (eta.diff(y) - xi.diff(x))*h
         ... - (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)), 0)
         >>> pprint(genform, use_unicode=False)
-        /d               d           \                     d              2       d
-        |--(eta(x, y)) - --(xi(x, y))|*h(x, y) - eta(x, y)*--(h(x, y)) - h (x, y)*--(x
-        \dy              dx          /                     dy                     dy
+                    d              2       d                      /d               d
+        - eta(x, y)*--(h(x, y)) - h (x, y)*--(xi(x, y)) + h(x, y)*|--(eta(x, y)) - --(
+                    dy                     dy                     \dy              dx
         <BLANKLINE>
-                            d             d
-        i(x, y)) - xi(x, y)*--(h(x, y)) + --(eta(x, y)) = 0
-                            dx            dx
+                 \            d             d
+        xi(x, y))| - xi(x, y)*--(h(x, y)) + --(eta(x, y)) = 0
+                 /            dx            dx
 
     Solving the above mentioned PDE is not trivial, and can be solved only by
     making intelligent assumptions for `\xi` and `\eta` (heuristics). Once an

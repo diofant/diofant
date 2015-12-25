@@ -1017,7 +1017,7 @@ def _mask_nc(eq, name=None):
     One nc-symbol:
 
     >>> _mask_nc(A**2 - x**2, 'd')
-    (_d0**2 - x**2, {_d0: A}, [])
+    (-x**2 + _d0**2, {_d0: A}, [])
 
     Multiple nc-symbols:
 

@@ -2912,7 +2912,7 @@ class MatrixBase(object):
 
         >>> A = Matrix([[1, 2], [x, 0]])
         >>> A.charpoly().as_expr()
-        _lambda**2 - _lambda - 2*x
+        -2*x + _lambda**2 - _lambda
         >>> A.charpoly(x).as_expr()
         x**2 - 3*x
 

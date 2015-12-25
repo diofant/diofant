@@ -262,7 +262,7 @@ class Add(Expr, AssocOp):
     @classmethod
     def class_key(cls):
         """Nice order of classes"""
-        return 3, 1, cls.__name__
+        return 4, 1, cls.__name__
 
     def as_coefficients_dict(a):
         """Return a dictionary mapping terms to their Rational coefficient.
