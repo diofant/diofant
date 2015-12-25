@@ -219,7 +219,7 @@ def get_complex_part(expr, no, prec, options):
         res = evalf(expr, workprec, options)
         value, accuracy = res[no::2]
         # XXX is the last one correct? Consider re((1+I)**2).n()
-        if (not value) or accuracy >= prec or -value[2] > prec:
+        if (not value) or accuracy >= prec or -value[2] > prec or expr.is_Float:
             return value, None, accuracy, None
         workprec += max(30, 2**i)
         i += 1
@@ -1204,7 +1204,7 @@ def _create_evalf_table():
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
-        Float: lambda x, prec, options: (x._mpf_, None, prec, None),
+        Float: lambda x, prec, options: (x._mpf_, None, prec if prec <= x._prec else x._prec, None),
         Rational: lambda x, prec, options: (from_rational(x.p, x.q, prec), None, prec, None),
         Integer: lambda x, prec, options: (from_int(x.p, prec), None, prec, None),
         Zero: lambda x, prec, options: (None, None, prec, None),
