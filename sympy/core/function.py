@@ -100,7 +100,7 @@ class FunctionClass(ManagedProperties):
 
     def __init__(cls, *args, **kwargs):
         if hasattr(cls, 'eval'):
-            evalargspec = inspect.getargspec(cls.eval)
+            evalargspec = inspect.getfullargspec(cls.eval)
             if evalargspec.varargs:
                 evalargs = None
             else:
