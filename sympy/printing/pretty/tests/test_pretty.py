@@ -262,7 +262,6 @@ def test_upretty_subs_missing_in_24():
     assert upretty( Symbol('F_x') ) == 'Fₓ'
 
 
-@pytest.mark.xfail
 def test_missing_in_2X_issue_9047():
     import warnings
     with warnings.catch_warnings():
