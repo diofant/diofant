@@ -382,6 +382,9 @@ def test_order_at_infinity():
     assert Order(exp(x), (x, oo)).expr == Order(2*exp(x), (x, oo)).expr == exp(x)
     assert Order(y**x, (x, oo)).expr == Order(2*y**x, (x, oo)).expr == y**x
 
+    # issue sympy/sympy#9917
+    assert Order(x*sin(x) + 1, (x, oo)) != Order(x*sin(x), (x, oo))
+
 
 def test_mixing_order_at_zero_and_infinity():
     assert (Order(x, (x, 0)) + Order(x, (x, oo))).is_Add
