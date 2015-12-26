@@ -11,7 +11,7 @@ import pytest
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li, tan, acosh)
+                   Pow, Add, li, Li, tan, acosh, factorial)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -335,6 +335,9 @@ def test_limit():
     # issue sympy/sympy#9449
     y = Symbol('y')
     assert gruntz(x*(abs(1/x + y) - abs(y - 1/x))/2, x) == sign(y)
+
+    # issue sympy/sympy#8481
+    assert gruntz(m**x * exp(-m) / factorial(x), x) == 0
 
 
 def test_I():
