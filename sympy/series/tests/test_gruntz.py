@@ -288,6 +288,8 @@ def test_mrv_leadterm():
 
 
 def test_limit():
+    from sympy.functions import sign
+
     assert gruntz(x, x) == oo
     assert gruntz(-x, x) == -oo
     assert gruntz(-x, x) == -oo
@@ -325,6 +327,14 @@ def test_limit():
 
     # issue skirpichev/omg#56
     assert gruntz((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x) == oo
+
+    # issue sympy/sympy#9471
+    assert gruntz((((27**(log(x, 3))))/x**3), x) == 1
+    assert gruntz((((27**(log(x, 3) + 1)))/x**3), x) == 27
+
+    # issue sympy/sympy#9449
+    y = Symbol('y')
+    assert gruntz(x*(abs(1/x + y) - abs(y - 1/x))/2, x) == sign(y)
 
 
 def test_I():
