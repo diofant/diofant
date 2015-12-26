@@ -202,7 +202,7 @@ def _get_arg_list(name, fobj):
 
     trunc = 20  # Sometimes argument length can be huge
 
-    argspec = inspect.getargspec(fobj)
+    argspec = inspect.getfullargspec(fobj)
 
     arg_list = []
 
@@ -223,8 +223,8 @@ def _get_arg_list(name, fobj):
     # Add var args
     if argspec.varargs:
         arg_list.append(argspec.varargs)
-    if argspec.keywords:
-        arg_list.append(argspec.keywords)
+    if argspec.varkw:
+        arg_list.append(argspec.varkw)
 
     # Truncate long arguments
     arg_list = [x[:trunc] for x in arg_list]

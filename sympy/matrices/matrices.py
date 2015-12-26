@@ -685,13 +685,23 @@ class MatrixBase(object):
             return "Matrix([%s])" % self.table(printer, rowsep=',\n')
         return "Matrix([\n%s])" % self.table(printer, rowsep=',\n')
 
-    def __str__(self):
-        if self.rows == 0 or self.cols == 0:
-            return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
-        return "Matrix(%s)" % str(self.tolist())
-
+    # Note, we always use the default ordering (lex) in __str__ and __repr__,
+    # regardless of the global setting.  See issue 5487.
     def __repr__(self):
-        return sstr(self)
+        from sympy.printing import sstr
+        return sstr(self, order=None)
+
+    def __str__(self):
+        from sympy.printing import sstr
+        return sstr(self, order=None)
+
+    def _repr_pretty_(self, p, cycle):
+        from sympy.printing import pretty
+        p.text(pretty(self, order=None))
+
+    def _repr_latex_(self):
+        from sympy.printing import latex
+        return '$$' + latex(self, order=None) + '$$'
 
     def cholesky(self):
         """Returns the Cholesky decomposition L of a matrix A
