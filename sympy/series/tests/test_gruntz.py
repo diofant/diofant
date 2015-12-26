@@ -11,7 +11,7 @@ import pytest
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li, tan, acosh, factorial)
+                   Pow, Add, li, Li, tan, acosh, factorial, binomial)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -415,6 +415,10 @@ def test_issue_6682():
 def test_issue_7096():
     from sympy.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
+
+
+def test_issue_8462():
+    assert gruntz(binomial(x, x/2), x) == oo
 
 
 def test_omgissue_74():
