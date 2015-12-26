@@ -81,7 +81,7 @@ def test_Dict():
 
 def test_Dummy():
     assert str(d) == "_d"
-    assert str(d + x) == "_d + x"
+    assert str(d + x) == "x + _d"
 
 
 def test_EulerGamma():

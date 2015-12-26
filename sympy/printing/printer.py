@@ -70,7 +70,6 @@ Some more information how the single concepts work and who should use which:
 from functools import cmp_to_key
 
 from sympy import Basic, Add
-from sympy.core.core import BasicMeta
 
 
 class Printer(object):
@@ -243,7 +242,7 @@ class Printer(object):
             # (Printer.printmethod) and the object knows for itself how it
             # should be printed, use that method.
             if (self.printmethod and hasattr(expr, self.printmethod)
-                    and not isinstance(expr, BasicMeta)):
+                    and not isinstance(expr, type)):
                 return getattr(expr, self.printmethod)(self, *args, **kwargs)
 
             # See if the class of expr is known, or if one of its super

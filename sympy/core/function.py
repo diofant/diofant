@@ -40,7 +40,6 @@ from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
 from .compatibility import iterable, is_sequence, as_int, ordered
-from .core import BasicMeta
 from .decorators import _sympifyit
 from .expr import Expr, AtomicExpr
 from .numbers import Rational, Float
@@ -686,7 +685,7 @@ class UndefinedFunction(FunctionClass):
     The (meta)class of undefined functions.
     """
     def __new__(mcl, name, **kwargs):
-        ret = BasicMeta.__new__(mcl, name, (AppliedUndef,), kwargs)
+        ret = type.__new__(mcl, name, (AppliedUndef,), kwargs)
         ret.__module__ = None
         return ret
 

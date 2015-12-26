@@ -753,7 +753,7 @@ class polar_lift(Function):
     @classmethod
     def eval(cls, arg):
         from sympy import exp_polar, pi, I, arg as argument
-        if arg.is_number:
+        if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
             # e.g. `not ar.has(argument) and not ar.has(atan)`
@@ -1033,7 +1033,7 @@ def polarify(eq, subs=True, lift=False):
     >>> sorted(polarify(expr)[1].items(), key=default_sort_key)
     [(_x, x), (_y, y)]
     >>> polarify(expr)[0].expand()
-    _x**_y*exp_polar(_y*I*pi)
+    _x**_y*exp_polar(I*pi*_y)
     >>> polarify(x, lift=True)
     polar_lift(x)
     >>> polarify(x*(1+y), lift=True)

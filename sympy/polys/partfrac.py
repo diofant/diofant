@@ -51,14 +51,13 @@ def apart(f, x=None, full=False, **options):
     You can choose Bronstein's algorithm by setting ``full=True``:
 
     >>> apart(y/(x**2 + x + 1), x, full=True)
-    RootSum(_w**2 + _w + 1, Lambda(_a, (-2*_a*y/3 - y/3)/(-_a + x)))
+    RootSum(_w**2 + _w + 1, Lambda(_a, (-2*y*_a/3 - y/3)/(x - _a)))
 
     Calling ``doit()`` yields a human-readable result:
 
     >>> apart(y/(x**2 + x + 1), x, full=True).doit()
     (-y/3 - 2*y*(-1/2 - sqrt(3)*I/2)/3)/(x + 1/2 + sqrt(3)*I/2) + (-y/3 -
         2*y*(-1/2 + sqrt(3)*I/2)/3)/(x + 1/2 - sqrt(3)*I/2)
-
 
     See Also
     ========
@@ -255,7 +254,7 @@ def apart_list(f, x=None, dummies=None, **options):
     >>> pfd
     (1,
     Poly(2*x + 4, x, domain='ZZ'),
-    [(Poly(_w - 1, _w, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1)])
+    [(Poly(_w - 1, _w, domain='ZZ'), Lambda(_a, 4), Lambda(_a, x - _a), 1)])
 
     >>> assemble_partfrac_list(pfd)
     2*x + 4 + 4/(x - 1)
@@ -267,7 +266,7 @@ def apart_list(f, x=None, dummies=None, **options):
     >>> pfd
     (-1,
     Poly(2/3, x, domain='QQ'),
-    [(Poly(_w - 2, _w, domain='ZZ'), Lambda(_a, 2), Lambda(_a, -_a + x), 1)])
+    [(Poly(_w - 2, _w, domain='ZZ'), Lambda(_a, 2), Lambda(_a, x - _a), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -2/3 - 2/(x - 2)
@@ -279,12 +278,11 @@ def apart_list(f, x=None, dummies=None, **options):
     (1,
     Poly(0, x, domain='ZZ[t]'),
     [(Poly(_w**2 + _w + t, _w, domain='ZZ[t]'),
-    Lambda(_a, -2*_a*t/(4*t - 1) - t/(4*t - 1)),
-    Lambda(_a, -_a + x),
-    1)])
+    Lambda(_a, -2*t*_a/(4*t - 1) - t/(4*t - 1)),
+    Lambda(_a, x - _a), 1)])
 
     >>> assemble_partfrac_list(pfd)
-    RootSum(_w**2 + _w + t, Lambda(_a, (-2*_a*t/(4*t - 1) - t/(4*t - 1))/(-_a + x)))
+    RootSum(t + _w**2 + _w, Lambda(_a, (-2*t*_a/(4*t - 1) - t/(4*t - 1))/(x - _a)))
 
     This example is taken from Bronstein's original paper:
 
@@ -293,9 +291,9 @@ def apart_list(f, x=None, dummies=None, **options):
     >>> pfd
     (1,
     Poly(0, x, domain='ZZ'),
-    [(Poly(_w - 2, _w, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
-    (Poly(_w**2 - 1, _w, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, -_a + x), 2),
-    (Poly(_w + 1, _w, domain='ZZ'), Lambda(_a, -4), Lambda(_a, -_a + x), 1)])
+    [(Poly(_w - 2, _w, domain='ZZ'), Lambda(_a, 4), Lambda(_a, x - _a), 1),
+    (Poly(_w**2 - 1, _w, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, x - _a), 2),
+    (Poly(_w + 1, _w, domain='ZZ'), Lambda(_a, -4), Lambda(_a, x - _a), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -4/(x + 1) - 3/(x + 1)**2 - 9/(x - 1)**2 + 4/(x - 2)
@@ -430,9 +428,9 @@ def assemble_partfrac_list(partial_list):
     >>> pfd
     (1,
     Poly(0, x, domain='ZZ'),
-    [(Poly(_w - 2, _w, domain='ZZ'), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
-    (Poly(_w**2 - 1, _w, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, -_a + x), 2),
-    (Poly(_w + 1, _w, domain='ZZ'), Lambda(_a, -4), Lambda(_a, -_a + x), 1)])
+    [(Poly(_w - 2, _w, domain='ZZ'), Lambda(_a, 4), Lambda(_a, x - _a), 1),
+    (Poly(_w**2 - 1, _w, domain='ZZ'), Lambda(_a, -3*_a - 6), Lambda(_a, x - _a), 2),
+    (Poly(_w + 1, _w, domain='ZZ'), Lambda(_a, -4), Lambda(_a, x - _a), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -4/(x + 1) - 3/(x + 1)**2 - 9/(x - 1)**2 + 4/(x - 2)
@@ -444,13 +442,12 @@ def assemble_partfrac_list(partial_list):
     (1,
     Poly(0, x, domain='ZZ'),
     [(Poly(_w**2 - 2, _w, domain='ZZ'),
-    Lambda(_a, _a/2),
-    Lambda(_a, -_a + x),
+    Lambda(_a, _a/2), Lambda(_a, x - _a),
     1)])
 
     >>> pfda = assemble_partfrac_list(pfd)
     >>> pfda
-    RootSum(_w**2 - 2, Lambda(_a, _a/(-_a + x)))/2
+    RootSum(_w**2 - 2, Lambda(_a, _a/(x - _a)))/2
 
     >>> pfda.doit()
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))

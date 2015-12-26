@@ -291,7 +291,7 @@ def _mytype(f, x):
         res = []
         for t in types:
             res += list(t)
-        res.sort()
+        res.sort(key=default_sort_key)
         return tuple(res)
 
 

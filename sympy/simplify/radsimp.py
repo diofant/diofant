@@ -132,7 +132,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         a*Derivative(f(x), x, x) + b*Derivative(f(x), x, x)
 
         >>> collect(a*D(f,x) + b*D(f,x) + a*f + b*f, f)
-        (a + b)*f(x) + (a + b)*Derivative(f(x), x)
+        f(x)*(a + b) + (a + b)*Derivative(f(x), x)
 
     Or you can even match both derivative order and exponent at the same time::
 

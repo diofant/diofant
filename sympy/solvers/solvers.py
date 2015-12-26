@@ -2941,8 +2941,7 @@ def unrad(eq, *syms, **flags):
     (x**3 - x**2 - 2*x - 1, [])
     >>> eq = sqrt(x) + root(x, 3) - 2
     >>> unrad(eq)
-    (_p**3 + _p**2 - 2, [_p, _p**6 - x])
-
+    (_p**3 + _p**2 - 2, [_p, -x + _p**6])
     """
     _inv_error = 'cannot get an analytical solution for the inversion'
 

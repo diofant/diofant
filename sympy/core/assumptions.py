@@ -155,7 +155,6 @@ References
 from random import shuffle
 
 from sympy.core.facts import FactRules, FactKB
-from sympy.core.core import BasicMeta
 
 
 _assume_rules = FactRules([
@@ -193,11 +192,11 @@ _assume_rules = FactRules([
     'infinite       ->  ~finite',
     'noninteger     ==  real & ~integer',
     'nonzero        ==  ~zero',
+
+    'polar          -> commutative',
 ])
 
-_assume_defined = _assume_rules.defined_facts.copy()
-_assume_defined.add('polar')
-_assume_defined = frozenset(_assume_defined)
+_assume_defined = frozenset(_assume_rules.defined_facts.copy())
 
 
 class StdFactKB(FactKB):
@@ -306,11 +305,9 @@ def _ask(fact, obj):
     return
 
 
-class ManagedProperties(BasicMeta):
+class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions"""
     def __init__(cls, *args, **kws):
-        BasicMeta.__init__(cls, *args, **kws)
-
         local_defs = {}
         for k in _assume_defined:
             attrname = as_property(k)
