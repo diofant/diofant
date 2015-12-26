@@ -753,7 +753,7 @@ class polar_lift(Function):
     @classmethod
     def eval(cls, arg):
         from sympy import exp_polar, pi, I, arg as argument
-        if arg.is_number:
+        if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
             # e.g. `not ar.has(argument) and not ar.has(atan)`
