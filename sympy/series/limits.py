@@ -143,6 +143,8 @@ class Limit(Expr):
             else:
                 return right
 
+        use_heuristics = hints.get('heuristics', True)
+
         if z0.has(z):
             newz = z.as_dummy()
             r = limit(e.subs(z, newz), newz, z0, dir)
@@ -211,7 +213,9 @@ class Limit(Expr):
             if r is S.NaN:
                 raise PoleError()
         except (PoleError, ValueError, NotImplementedError):
-            r = heuristics(e, z, z0, dir)
+            r = None
+            if use_heuristics:
+                r = heuristics(e, z, z0, dir)
             if r is None:
                 return self
 
