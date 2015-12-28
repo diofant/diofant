@@ -1,5 +1,6 @@
 """Useful utilities for higher level polynomial classes. """
 
+from collections import defaultdict
 import re
 
 from sympy.polys.polyerrors import PolynomialError, GeneratorsNeeded, GeneratorsError
@@ -245,7 +246,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
             expr = expr.lhs - expr.rhs
 
         for term in Add.make_args(expr):
-            coeff, elements = [], {}
+            coeff, elements = [], defaultdict(int)
 
             for factor in Mul.make_args(term):
                 if not _not_a_coeff(factor) and (factor.is_Number or _is_coeff(factor)):
@@ -256,7 +257,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
                     if exp < 0:
                         exp, base = -exp, Pow(base, -S.One)
 
-                    elements[base] = elements.setdefault(base, 0) + exp
+                    elements[base] += exp
                     gens.add(base)
 
             terms.append((coeff, elements))
