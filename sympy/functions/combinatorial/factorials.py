@@ -736,6 +736,9 @@ class binomial(CombinatorialFunction):
         from sympy import gamma
         return gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
 
+    def _eval_rewrite_as_tractable(self, n, k):
+        return self._eval_rewrite_as_gamma(n, k).rewrite('tractable')
+
     def _eval_is_integer(self):
         if self.args[0].is_integer and self.args[1].is_integer:
             return True
