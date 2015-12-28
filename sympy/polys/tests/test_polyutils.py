@@ -287,3 +287,13 @@ def test_dict_from_expr():
     assert dict_from_expr(Eq(x, 1)) == \
         ({(0,): -Integer(1), (1,): Integer(1)}, (x,))
     pytest.raises(PolynomialError, lambda: dict_from_expr(A*B - B*A))
+
+
+def test_issue_7383():
+    from sympy import erf, integrate
+    x, z, R, a = symbols('x z R a')
+    r = sqrt(x**2 + z**2)
+    u = erf(a*r/sqrt(2))/r
+    Ec = u.diff(z, z).subs([(x, sqrt(R*R - z*z))])
+    assert integrate(Ec, (z, -R, R)).simplify() == \
+        -2*sqrt(2)*R*a**3*exp(-R**2*a**2/2)/(3*sqrt(pi))
