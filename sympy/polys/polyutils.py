@@ -202,7 +202,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         if exp < 0:
                             exp, base = -exp, Pow(base, -S.One)
 
-                        monom[indices[base]] = exp
+                        monom[indices[base]] += exp
                     except KeyError:
                         if not factor.free_symbols.intersection(opt.gens):
                             coeff.append(factor)
