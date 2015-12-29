@@ -2397,3 +2397,6 @@ class _eis(Function):
             f = self._eval_rewrite_as_intractable(*self.args)
             return f._eval_nseries(x, n, logx)
         return super(_eis, self)._eval_nseries(x, n, logx)
+
+    def _eval_evalf(self, prec):
+        return self.rewrite('intractable').evalf(prec)
