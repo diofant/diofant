@@ -1099,3 +1099,8 @@ def test_issue_4968():
 
 def test_issue_7098():
     assert integrate(1/sqrt(x) * 1/sqrt(1 - x), (x, 0, 1)) == pi
+
+
+def test_issue_4187():
+    assert integrate(log(x)*exp(-x), (x, 0, oo)) == -EulerGamma
+    assert integrate(log(x)*exp(x), (x, 0, oo)) == oo
