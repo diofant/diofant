@@ -700,6 +700,7 @@ def _real_to_rational(expr, tolerance=None):
     sqrt(x)/10 + 19/25
 
     """
+    inf = Float('inf')
     p = expr
     reps = {}
     reduce_num = None
@@ -776,6 +777,10 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     except (TypeError, ValueError):
         pass
     expr = sympify(expr)
+    expr = sympify(expr).xreplace({Float('inf'): S.Infinity,
+                                   Float('-inf'): S.NegativeInfinity})
+    if expr is S.Infinity or expr is S.NegativeInfinity:
+        return expr
     if rational or expr.free_symbols:
         return _real_to_rational(expr, tolerance)
 
