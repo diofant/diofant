@@ -2,8 +2,8 @@
 
 import pytest
 
-from sympy import S, Integer, sin, cos, sqrt, symbols, pi, Eq, Integral, exp
-
+from sympy import (S, Integer, sin, cos, sqrt, symbols, pi, Eq,
+                   Integral, exp, Mul)
 from sympy.polys.polyutils import (
     _nsort,
     _sort_gens,
@@ -12,7 +12,6 @@ from sympy.polys.polyutils import (
     _sort_factors,
     parallel_dict_from_expr,
     dict_from_expr)
-
 from sympy.polys.polyerrors import (
     GeneratorsNeeded,
     PolynomialError)
@@ -263,6 +262,8 @@ def test__dict_from_expr_no_gens():
 def test__parallel_dict_from_expr_if_gens():
     assert parallel_dict_from_expr([x + 2*y + 3*z, Integer(7)], gens=(x,)) == \
         ([{(1,): Integer(1), (0,): 2*y + 3*z}, {(0,): Integer(7)}], (x,))
+    assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),), gens=(x,)) == \
+        ([{(3,): 1}], (x,))
 
 
 def test__parallel_dict_from_expr_no_gens():
@@ -271,6 +272,8 @@ def test__parallel_dict_from_expr_no_gens():
     assert parallel_dict_from_expr([x*y, 2*z, Integer(3)]) == \
         ([{(1, 1, 0): Integer(
             1)}, {(0, 0, 1): Integer(2)}, {(0, 0, 0): Integer(3)}], (x, y, z))
+    assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),)) == \
+        ([{(3,): 1}], (x,))
 
 
 def test_parallel_dict_from_expr():
@@ -284,3 +287,13 @@ def test_dict_from_expr():
     assert dict_from_expr(Eq(x, 1)) == \
         ({(0,): -Integer(1), (1,): Integer(1)}, (x,))
     pytest.raises(PolynomialError, lambda: dict_from_expr(A*B - B*A))
+
+
+def test_issue_7383():
+    from sympy import erf, integrate
+    x, z, R, a = symbols('x z R a')
+    r = sqrt(x**2 + z**2)
+    u = erf(a*r/sqrt(2))/r
+    Ec = u.diff(z, z).subs([(x, sqrt(R*R - z*z))])
+    assert integrate(Ec, (z, -R, R)).simplify() == \
+        -2*sqrt(2)*R*a**3*exp(-R**2*a**2/2)/(3*sqrt(pi))
