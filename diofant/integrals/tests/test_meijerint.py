@@ -651,3 +651,8 @@ def test_issue_6860():
 def test_issue_8368():
     assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
         (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
+
+
+def test_issue_4311():
+    assert meijerint_indefinite(x*abs(9 - x**2), x) == \
+        -81*meijerg(((3, 1), (2,)), ((1,), (2, 0)), x**2/9)
