@@ -293,10 +293,10 @@ def test_latex_functions():
     assert latex(re(x)) == r"\Re{x}"
     assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"
-    assert latex(re(1/x, evaluate=False)) == r'\Re {\left (\frac{1}{x} \right )}'
+    assert latex(re(1/x, evaluate=False)) == r'\Re{\left(\frac{1}{x}\right)}'
     assert latex(im(x)) == r"\Im{x}"
     assert latex(im(x)**3) == r"\left(\Im{x}\right)^{3}"
-    assert latex(im(1/x, evaluate=False)) == r'\Im {\left ( \frac{1}{x} \right )}'
+    assert latex(im(1/x, evaluate=False)) == r'\Im{\left(\frac{1}{x}\right)}'
     assert latex(conjugate(x)) == r"\overline{x}"
     assert latex(conjugate(x)**3) == r'\overline{x}^{3}'
     assert latex(gamma(x)) == r"\Gamma{\left(x \right)}"

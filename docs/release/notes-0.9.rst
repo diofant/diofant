@@ -216,3 +216,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10829` subs method gives wrong result for powers
 * :sympyissue:`10816` is_nthpow_residue(a,n,m) gives NotImplemented error when m don't have primitive root
 * :sympyissue:`10886` No solution by nthroot_mod
+* :sympyissue:`10157` Replace needs_brackets with parenthesize in the latex printer
