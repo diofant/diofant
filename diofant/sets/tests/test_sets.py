@@ -979,3 +979,14 @@ def test_sympyissue_10337():
     pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
     pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
     pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
+
+
+def test_sympyissue_9447():
+    a = Interval(0, 1) + Interval(2, 3)
+    assert (Complement(S.UniversalSet, a) ==
+            Complement(S.UniversalSet,
+                       Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
+    # issue sympy/sympy#10305:
+    assert (Complement(S.Naturals, a) ==
+            Complement(S.Naturals,
+                       Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
