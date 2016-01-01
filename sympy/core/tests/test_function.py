@@ -4,13 +4,13 @@ from sympy import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
                    log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
                    E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
                    Tuple, Dummy, Eq, Expr, symbols, nfloat)
-from sympy.abc import t, w, x, y, z
 from sympy.core.function import PoleError, _mexpand
 from sympy.sets.sets import FiniteSet
 from sympy.solvers import solve
 from sympy.utilities.iterables import subsets, variations
 from sympy.core.cache import clear_cache
-from sympy.core.compatibility import range
+
+from sympy.abc import t, w, x, y, z
 
 f, g, h = symbols('f g h', cls=Function)
 

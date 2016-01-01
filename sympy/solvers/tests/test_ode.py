@@ -1,16 +1,15 @@
-from __future__ import division
-
 import os
 
 import pytest
 
 from sympy import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
-    Dummy, Eq, erf, erfi, exp, Function, I, Integral, LambertW, log, O, pi,
-    Rational, RootOf, S, simplify, sin, sqrt, Symbol, tan, asin, sinh,
-    Piecewise, symbols, Poly)
+                   Dummy, Eq, erf, erfi, exp, Function, I, Integral, LambertW,
+                   log, O, pi, Rational, RootOf, S, simplify, sin, sqrt,
+                   Symbol, tan, asin, sinh, Piecewise, symbols, Poly)
 from sympy.solvers.ode import (_undetermined_coefficients_match, checkodesol,
-    classify_ode, classify_sysode, constant_renumber, constantsimp,
-    homogeneous_order, infinitesimals, checkinfsol, checksysodesol)
+                               classify_ode, classify_sysode, constant_renumber,
+                               constantsimp, homogeneous_order, infinitesimals,
+                               checkinfsol, checksysodesol)
 from sympy.solvers.deutils import ode_order
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
@@ -547,17 +546,17 @@ def test_nonlinear_3eq_order1():
     x, y, z = symbols('x, y, z', function=True)
     t = Symbol('t')
     eq1 = (4*diff(x(t),t) + 2*y(t)*z(t), 3*diff(y(t),t) - z(t)*x(t), 5*diff(z(t),t) - x(t)*y(t))
-    sol1 = "[Eq(x(t), Eq(Integral(4/(sqrt(-4*_y**2 - 3*C1 + C2)*sqrt(-4*_y**2 + 5*C1 - C2)), (_y, x(t))), "\
-    "C3 + Integral(-sqrt(15)/15, t))), Eq(y(t), Eq(Integral(3/(sqrt(-6*_y**2 - C1 + 5*C2)*sqrt(3*_y**2 + C1 - 4*C2)), "\
-    "(_y, y(t))), C3 + Integral(sqrt(5)/10, t))), Eq(z(t), Eq(Integral(5/(sqrt(-10*_y**2 - 3*C1 + C2)*"\
-    "sqrt(5*_y**2 + 4*C1 - C2)), (_y, z(t))), C3 + Integral(sqrt(3)/6, t)))]"
+    sol1 = "[Eq(x(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), (_y, x(t))), "\
+    "C3 + Integral(-sqrt(15)/15, t))), Eq(y(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), "\
+    "(_y, y(t))), C3 + Integral(sqrt(5)/10, t))), Eq(z(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*"\
+    "sqrt(4*C1 - C2 + 5*_y**2)), (_y, z(t))), C3 + Integral(sqrt(3)/6, t)))]"
     assert str(dsolve(eq1)) == sol1
 
     eq2 = (4*diff(x(t),t) + 2*y(t)*z(t)*sin(t), 3*diff(y(t),t) - z(t)*x(t)*sin(t), 5*diff(z(t),t) - x(t)*y(t)*sin(t))
-    sol2 = "[Eq(x(t), Eq(Integral(3/(sqrt(-6*_y**2 - C1 + 5*C2)*sqrt(3*_y**2 + C1 - 4*C2)), (_y, x(t))), C3 + "\
-    "Integral(-sqrt(5)*sin(t)/10, t))), Eq(y(t), Eq(Integral(4/(sqrt(-4*_y**2 - 3*C1 + C2)*sqrt(-4*_y**2 + 5*C1 - C2)), "\
-    "(_y, y(t))), C3 + Integral(sqrt(15)*sin(t)/15, t))), Eq(z(t), Eq(Integral(5/(sqrt(-10*_y**2 - 3*C1 + C2)*"\
-    "sqrt(5*_y**2 + 4*C1 - C2)), (_y, z(t))), C3 + Integral(-sqrt(3)*sin(t)/6, t)))]"
+    sol2 = "[Eq(x(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), (_y, x(t))), C3 + "\
+    "Integral(-sqrt(5)*sin(t)/10, t))), Eq(y(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), "\
+    "(_y, y(t))), C3 + Integral(sqrt(15)*sin(t)/15, t))), Eq(z(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*"\
+    "sqrt(4*C1 - C2 + 5*_y**2)), (_y, z(t))), C3 + Integral(-sqrt(3)*sin(t)/6, t)))]"
     assert str(dsolve(eq2)) == sol2
 
 

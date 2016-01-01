@@ -12,7 +12,8 @@ import mpmath
 from mpmath import mpi, mpc
 import pytest
 
-from sympy import (Rational, symbols, factorial, sqrt, log, exp, oo, zoo,
+from sympy import (
+    Rational, symbols, factorial, sqrt, log, exp, oo, zoo,
     product, binomial, rf, pi, gamma, igcd, factorint, radsimp, combsimp,
     npartitions, totient, primerange, factor, simplify, gcd, resultant, expand,
     I, trigsimp, tan, sin, cos, cot, diff, nan, limit, EulerGamma, polygamma,
@@ -26,7 +27,6 @@ from sympy import (Rational, symbols, factorial, sqrt, log, exp, oo, zoo,
     continued_fraction_reduce as cf_r, FiniteSet, elliptic_e, elliptic_f,
     powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
     residue, Derivative, logcombine, Symbol)
-
 from sympy.functions.combinatorial.numbers import stirling
 from sympy.functions.special.zeta_functions import zeta
 from sympy.integrals.deltafunctions import deltaintegrate
@@ -49,7 +49,6 @@ from sympy.functions.special.delta_functions import Heaviside
 from sympy.solvers.recurr import rsolve
 from sympy.solvers.ode import dsolve
 from sympy.core.relational import Equality
-from sympy.core.compatibility import range
 
 
 R = Rational

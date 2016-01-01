@@ -13,7 +13,6 @@ from sympy.tensor.tensor import (TensorIndexType, tensor_indices, TensorSymmetry
                                  tensor_mul, TensAdd, riemann_cyclic_replace,
                                  riemann_cyclic, TensMul, tensorsymmetry,
                                  tensorhead, TensorManager, TensExpr, TIDS)
-from sympy.core.compatibility import range
 
 numpy = import_module("numpy")
 

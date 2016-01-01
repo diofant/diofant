@@ -1,8 +1,6 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
 import operator
-from functools import cmp_to_key
+from functools import cmp_to_key, reduce
 
 from .sympify import sympify
 from .basic import Basic
@@ -10,7 +8,7 @@ from .singleton import S
 from .operations import AssocOp
 from .cache import cacheit
 from .logic import fuzzy_not, _fuzzy_group
-from .compatibility import reduce, range
+from .compatibility import default_sort_key
 from .expr import Expr
 
 # internal marker to indicate:
@@ -24,15 +22,6 @@ class NC_Marker:
     is_Poly = False
 
     is_commutative = False
-
-
-# Key for sorting commutative args in canonical order
-_args_sortkey = cmp_to_key(Basic.compare)
-
-
-def _mulsort(args):
-    # in-place sorting of args
-    args.sort(key=_args_sortkey)
 
 
 def _unevaluated_Mul(*args):
@@ -81,7 +70,7 @@ def _unevaluated_Mul(*args):
             co *= a
         else:
             newargs.append(a)
-    _mulsort(newargs)
+    newargs.sort(key=default_sort_key)
     if co is not S.One:
         newargs.insert(0, co)
     if ncargs:
@@ -194,7 +183,7 @@ class Mul(Expr, AssocOp):
                         else:
                             r, b = b.as_coeff_Add()
                             bargs = [_keep_coeff(a, bi) for bi in Add.make_args(b)]
-                            _addsort(bargs)
+                            bargs.sort(key=default_sort_key)
                             ar = a*r
                             if ar:
                                 bargs.insert(0, ar)
@@ -573,7 +562,7 @@ class Mul(Expr, AssocOp):
         c_part = _new
 
         # order commutative part canonically
-        _mulsort(c_part)
+        c_part.sort(key=default_sort_key)
 
         # current code expects coeff to be always in slot-0
         if coeff is not S.One:
@@ -606,7 +595,7 @@ class Mul(Expr, AssocOp):
 
     @classmethod
     def class_key(cls):
-        return 3, 0, cls.__name__
+        return 4, 0, cls.__name__
 
     def _eval_evalf(self, prec):
         c, m = self.as_coeff_Mul()
@@ -1642,4 +1631,4 @@ def expand_2arg(e):
 
 from .numbers import Rational
 from .power import Pow
-from .add import Add, _addsort, _unevaluated_Add
+from .add import Add, _unevaluated_Add

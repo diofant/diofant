@@ -1,6 +1,7 @@
-from __future__ import print_function, division
-
 import collections
+from functools import reduce
+from types import FunctionType
+
 from sympy.core.add import Add
 from sympy.core.basic import Basic, Atom
 from sympy.core.expr import Expr
@@ -11,17 +12,14 @@ from sympy.core.symbol import Symbol, Dummy, symbols
 from sympy.core.numbers import Integer, ilcm, Rational, Float
 from sympy.core.singleton import S
 from sympy.core.sympify import sympify
-from sympy.core.compatibility import is_sequence, default_sort_key, range, NotIterable
-
+from sympy.core.compatibility import (is_sequence, default_sort_key,
+                                      NotIterable, as_int)
 from sympy.polys import PurePoly, roots, cancel, gcd
 from sympy.simplify import simplify as _simplify, signsimp, nsimplify
 from sympy.utilities.iterables import flatten
 from sympy.functions.elementary.miscellaneous import sqrt, Max, Min
 from sympy.functions import exp, factorial
 from sympy.printing import sstr
-from sympy.core.compatibility import reduce, as_int, string_types
-
-from types import FunctionType
 
 
 def _iszero(x):
@@ -687,13 +685,23 @@ class MatrixBase(object):
             return "Matrix([%s])" % self.table(printer, rowsep=',\n')
         return "Matrix([\n%s])" % self.table(printer, rowsep=',\n')
 
-    def __str__(self):
-        if self.rows == 0 or self.cols == 0:
-            return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
-        return "Matrix(%s)" % str(self.tolist())
-
+    # Note, we always use the default ordering (lex) in __str__ and __repr__,
+    # regardless of the global setting.  See issue 5487.
     def __repr__(self):
-        return sstr(self)
+        from sympy.printing import sstr
+        return sstr(self, order=None)
+
+    def __str__(self):
+        from sympy.printing import sstr
+        return sstr(self, order=None)
+
+    def _repr_pretty_(self, p, cycle):
+        from sympy.printing import pretty
+        p.text(pretty(self, order=None))
+
+    def _repr_latex_(self):
+        from sympy.printing import latex
+        return '$$' + latex(self, order=None) + '$$'
 
     def cholesky(self):
         """Returns the Cholesky decomposition L of a matrix A
@@ -1824,7 +1832,7 @@ class MatrixBase(object):
                 # Minimum singular value
                 return Min(*self.singular_values())
 
-            elif (ord is None or isinstance(ord, string_types) and ord.lower() in
+            elif (ord is None or isinstance(ord, str) and ord.lower() in
                     ['f', 'fro', 'frobenius', 'vector']):
                 # Reshape as vector and send back to norm function
                 return self.vec().norm(ord=2)
@@ -2904,7 +2912,7 @@ class MatrixBase(object):
 
         >>> A = Matrix([[1, 2], [x, 0]])
         >>> A.charpoly().as_expr()
-        _lambda**2 - _lambda - 2*x
+        -2*x + _lambda**2 - _lambda
         >>> A.charpoly(x).as_expr()
         x**2 - 3*x
 

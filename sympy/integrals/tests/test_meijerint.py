@@ -10,7 +10,7 @@ from sympy.integrals.meijerint import (_rewrite_single, _rewrite1,
 from sympy.utilities import default_sort_key
 from sympy.utilities.randtest import (verify_numerically,
                                       random_complex_number as randcplx)
-from sympy.core.compatibility import range
+
 from sympy.abc import x, y, a, b, c, d, s, t, z
 
 
@@ -293,7 +293,7 @@ def test_lookup_table():
     from sympy.integrals.meijerint import z as z_dummy
     table = {}
     _create_lookup_table(table)
-    for _, l in sorted(table.items()):
+    for _, l in sorted(table.items(), key=default_sort_key):
         for formula, terms, cond, hint in sorted(l, key=default_sort_key):
             subs = {}
             for a in list(formula.free_symbols) + [z_dummy]:

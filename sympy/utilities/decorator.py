@@ -1,13 +1,11 @@
 """Useful utility decorators. """
 
-from __future__ import print_function, division
-
 import sys
 import types
 import inspect
 
 from sympy.core.decorators import wraps
-from sympy.core.compatibility import class_types, get_function_globals, get_function_name, iterable
+from sympy.core.compatibility import iterable
 
 
 def threaded_factory(func, use_add):
@@ -175,9 +173,9 @@ def public(obj):
 
     """
     if isinstance(obj, types.FunctionType):
-        ns = get_function_globals(obj)
-        name = get_function_name(obj)
-    elif isinstance(obj, (type(type), class_types)):
+        ns = obj.__globals__
+        name = obj.__name__
+    elif isinstance(obj, type):
         ns = sys.modules[obj.__module__].__dict__
         name = obj.__name__
     else:

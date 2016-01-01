@@ -1,17 +1,15 @@
 """ This module cooks up a docstring when imported. Its only purpose is to
     be displayed in the sphinx documentation. """
 
-from __future__ import print_function, division
-
 from sympy.integrals.meijerint import _create_lookup_table
-from sympy import latex, Eq, Add, Symbol
+from sympy import latex, Eq, Add, Symbol, default_sort_key
 
 t = {}
 _create_lookup_table(t)
 
 doc = ""
 
-for about, category in sorted(t.items()):
+for about, category in sorted(t.items(), key=default_sort_key):
     if about == ():
         doc += 'Elementary functions:\n\n'
     else:

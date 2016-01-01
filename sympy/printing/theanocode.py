@@ -1,12 +1,9 @@
-from __future__ import print_function, division
 import inspect
+from functools import partial
 
 from sympy.external import import_module
-
 from sympy.printing.printer import Printer
-from sympy.core.compatibility import range
 import sympy
-from functools import partial
 
 theano = import_module('theano')
 if theano:
@@ -220,7 +217,7 @@ def theano_function(inputs, outputs, dtypes={}, cache=None, **kwargs):
     broadcastables = dim_handling(inputs, **kwargs)
 
     # Remove keyword arguments corresponding to dim_handling
-    dim_names = inspect.getargspec(dim_handling)[0]
+    dim_names = inspect.getfullargspec(dim_handling)[0]
     theano_kwargs = {k: v for k, v in kwargs.items() if k not in dim_names}
 
     code = partial(theano_code, cache=cache, dtypes=dtypes,

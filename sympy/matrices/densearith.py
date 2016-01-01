@@ -1,10 +1,7 @@
 """
 Fundamental arithmetic of dense matrices. The dense matrix is stored
 as a list of lists.
-
 """
-
-from sympy.core.compatibility import range
 
 
 def add(matlist1, matlist2, K):

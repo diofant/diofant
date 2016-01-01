@@ -1,57 +1,34 @@
 """Computational algebraic field theory. """
 
-from __future__ import print_function, division
+from functools import reduce
 
-from sympy import (
-    S, Rational, AlgebraicNumber,
-    Add, Mul, sympify, Dummy, expand_mul, I, pi
-)
+from mpmath import pslq, mp
 
+from sympy import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
+                   Dummy, expand_mul, I, pi)
 from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.trigonometric import cos, sin
-
-from sympy.polys.polytools import (
-    Poly, PurePoly, sqf_norm, invert, factor_list, groebner, resultant,
-    degree, poly_from_expr, parallel_poly_from_expr, lcm
-)
-
-from sympy.polys.polyerrors import (
-    IsomorphismFailed,
-    CoercionFailed,
-    NotAlgebraic,
-    GeneratorsError,
-)
-
+from sympy.polys.polytools import (Poly, PurePoly, sqf_norm, invert,
+                                   factor_list, groebner, resultant,
+                                   degree, poly_from_expr,
+                                   parallel_poly_from_expr, lcm)
+from sympy.polys.polyerrors import (IsomorphismFailed, CoercionFailed,
+                                    NotAlgebraic, GeneratorsError)
 from sympy.polys.rootoftools import RootOf
-
 from sympy.polys.specialpolys import cyclotomic_poly
-
 from sympy.polys.polyutils import dict_from_expr, expr_from_dict
-
 from sympy.polys.domains import ZZ, QQ
-
 from sympy.polys.orthopolys import dup_chebyshevt
-
 from sympy.polys.rings import ring
-
 from sympy.polys.ring_series import rs_compose_add
-
 from sympy.printing.lambdarepr import LambdaPrinter
-
-from sympy.utilities import (
-    numbered_symbols, variations, lambdify, public, sift
-)
-
+from sympy.utilities import numbered_symbols, variations, lambdify, public, sift
 from sympy.core.exprtools import Factors
 from sympy.core.function import _mexpand
 from sympy.simplify.radsimp import _split_gcd
 from sympy.simplify.simplify import _is_sum_surds
 from sympy.ntheory import sieve
 from sympy.ntheory.factor_ import divisors
-from mpmath import pslq, mp
-
-from sympy.core.compatibility import reduce
-from sympy.core.compatibility import range
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):

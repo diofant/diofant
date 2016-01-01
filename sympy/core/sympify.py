@@ -1,11 +1,8 @@
 """sympify -- convert objects SymPy internal format"""
 
-from __future__ import print_function, division
-
 from inspect import getmro
 
-from .core import all_classes as sympy_classes
-from .compatibility import iterable, string_types, range
+from .compatibility import iterable
 from .evaluate import global_evaluate
 
 
@@ -116,9 +113,8 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     In order to have ``bitcount`` be recognized it can be imported into a
     namespace dictionary and passed as locals:
 
-    >>> from sympy.core.compatibility import exec_
     >>> ns = {}
-    >>> exec_('from sympy.core.evalf import bitcount', ns)
+    >>> exec('from sympy.core.evalf import bitcount', ns)
     >>> sympify(s, locals=ns)
     6
 
@@ -128,7 +124,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> from sympy import Symbol
     >>> ns["O"] = Symbol("O")  # method 1
-    >>> exec_('from sympy.abc import O', ns)  # method 2
+    >>> exec('from sympy.abc import O', ns)  # method 2
     >>> ns.update(dict(O=Symbol("O")))  # method 3
     >>> sympify("O + 1", locals=ns)
     O + 1
@@ -233,10 +229,12 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
 
     """
+    from .basic import Basic
+
     if evaluate is None:
         evaluate = global_evaluate[0]
     try:
-        if a in sympy_classes:
+        if issubclass(a, Basic):
             return a
     except TypeError:  # Type of a is unhashable
         pass
@@ -244,7 +242,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         cls = a.__class__
     except AttributeError:  # a is probably an old-style class object
         cls = type(a)
-    if cls in sympy_classes:
+    if issubclass(cls, Basic):
         return a
     if isinstance(cls, type(None)):
         if strict:
@@ -269,7 +267,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except AttributeError:
         pass
 
-    if not isinstance(a, string_types):
+    if not isinstance(a, str):
         for coerce in (float, int):
             try:
                 return sympify(coerce(a))
@@ -299,12 +297,11 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     # _sympy_ (which is a canonical and robust way to convert
     # anything to SymPy expression).
     #
-    # As a last chance, we try to take "a"'s normal form via unicode()
+    # As a last chance, we try to take "a"'s normal form via str()
     # and try to parse it. If it fails, then we have no luck and
     # return an exception
     try:
-        from .compatibility import unicode
-        a = unicode(a)
+        a = str(a)
     except Exception as exc:
         raise SympifyError(a, exc)
 

@@ -1,13 +1,11 @@
 """Tools for setting up interactive sessions. """
 
-from __future__ import print_function, division
+import ast
 
-from sympy.core.compatibility import range
 from sympy.external import import_module
 from sympy.interactive.printing import init_printing
 
 preexec_source = """\
-from __future__ import division
 from sympy import *
 x, y, z, t = symbols('x y z t')
 k, m, n = symbols('k m n', integer=True)
@@ -82,94 +80,24 @@ def _make_message(ipython=True, quiet=False, source=None):
     return message
 
 
-def int_to_Integer(s):
-    """
-    Wrap integer literals with Integer.
+class IntegerWrapper(ast.NodeTransformer):
+    """Wraps all integers in a call to Integer()"""
+    def visit_Num(self, node):
+        if isinstance(node.n, int):
+            return ast.Call(func=ast.Name(id='Integer', ctx=ast.Load()),
+                            args=[node], keywords=[],
+                            starargs=None, kwargs=None)
+        return node
 
-    This is based on the decistmt example from
-    http://docs.python.org/library/tokenize.html.
-
-    Only integer literals are converted.  Float literals are left alone.
-
-    Examples
-    ========
-
-    >>> from __future__ import division
-    >>> from sympy.interactive.session import int_to_Integer
-    >>> from sympy import Integer
-    >>> s = '1.2 + 1/2 - 0x12 + a1'
-    >>> int_to_Integer(s)
-    '1.2 +Integer (1 )/Integer (2 )-Integer (0x12 )+a1 '
-    >>> s = 'print (1/2)'
-    >>> int_to_Integer(s)
-    'print (Integer (1 )/Integer (2 ))'
-    >>> exec(s)
-    0.5
-    >>> exec(int_to_Integer(s))
-    1/2
-    """
-    from tokenize import generate_tokens, untokenize, NUMBER, NAME, OP
-    from sympy.core.compatibility import StringIO
-
-    def _is_int(num):
-        """
-        Returns true if string value num (with token NUMBER) represents an integer.
-        """
-        # XXX: Is there something in the standard library that will do this?
-        if '.' in num or 'j' in num.lower() or 'e' in num.lower():
-            return False
-        return True
-
-    result = []
-    g = generate_tokens(StringIO(s).readline)   # tokenize the string
-    for toknum, tokval, _, _, _ in g:
-        if toknum == NUMBER and _is_int(tokval):  # replace NUMBER tokens
-            result.extend([
-                (NAME, 'Integer'),
-                (OP, '('),
-                (NUMBER, tokval),
-                (OP, ')')
-            ])
-        else:
-            result.append((toknum, tokval))
-    return untokenize(result)
-
-
-def enable_automatic_int_sympification(app):
-    """
-    Allow IPython to automatically convert integer literals to Integer.
-    """
-    hasshell = hasattr(app, 'shell')
-
-    import ast
-    if hasshell:
-        old_run_cell = app.shell.run_cell
-    else:
-        old_run_cell = app.run_cell
-
-    def my_run_cell(cell, *args, **kwargs):
-        try:
-            # Check the cell for syntax errors.  This way, the syntax error
-            # will show the original input, not the transformed input.  The
-            # downside here is that IPython magic like %timeit will not work
-            # with transformed input (but on the other hand, IPython magic
-            # that doesn't expect transformed input will continue to work).
-            ast.parse(cell)
-        except SyntaxError:
-            pass
-        else:
-            cell = int_to_Integer(cell)
-        old_run_cell(cell, *args, **kwargs)
-
-    if hasshell:
-        app.shell.run_cell = my_run_cell
-    else:
-        app.run_cell = my_run_cell
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id != "Integer":
+            node = self.generic_visit(node)
+        return node
 
 
 def enable_automatic_symbols(app):
     """Allow IPython to automatially create symbols. """
-    # XXX: This should perhaps use tokenize, like int_to_Integer() above.
+    # XXX: This should perhaps use ast, like IntegerWrapper above.
     # This would avoid re-executing the code, which can lead to subtle
     # issues.  For example:
     #
@@ -242,12 +170,12 @@ def enable_automatic_symbols(app):
         app.set_custom_exc((NameError,), _handler)
 
 
-def init_ipython_session(argv=[], auto_symbols=False, auto_int_to_Integer=False):
+def init_ipython_session(argv=[], auto_symbols=False,
+                         auto_int_to_Integer=False):
     """Construct new IPython session. """
     import IPython
-    from IPython.terminal import ipapp
 
-    app = ipapp.TerminalIPythonApp()
+    app = IPython.terminal.ipapp.TerminalIPythonApp()
 
     # don't draw IPython banner during initialization:
     app.display_banner = False
@@ -258,7 +186,7 @@ def init_ipython_session(argv=[], auto_symbols=False, auto_int_to_Integer=False)
         if readline:
             enable_automatic_symbols(app)
     if auto_int_to_Integer:
-        enable_automatic_int_sympification(app)
+        app.ast_transformers.append(IntegerWrapper())
 
     return app.shell
 
@@ -297,12 +225,13 @@ def init_python_session():
 
 
 def init_session(ipython=None, pretty_print=True, order=None,
-        use_unicode=None, use_latex=None, quiet=False, auto_symbols=False,
-        auto_int_to_Integer=False, argv=[]):
+                 use_unicode=None, use_latex=None, quiet=False,
+                 auto_symbols=False, auto_int_to_Integer=False, argv=[]):
     """
-    Initialize an embedded IPython or Python session. The IPython session is
-    initiated with the --pylab option, without the numpy imports, so that
-    matplotlib plotting can be interactive.
+    Initialize an embedded IPython or Python session.
+
+    The IPython session is initiated with the --pylab option, without the
+    numpy imports, so that matplotlib plotting can be interactive.
 
     Parameters
     ==========
@@ -371,9 +300,6 @@ def init_session(ipython=None, pretty_print=True, order=None,
     >>> init_session(order='grevlex') #doctest: +SKIP
     >>> y * x**2 + x * y**2 #doctest: +SKIP
     x**2*y + x*y**2
-    >>> init_session(order='old') #doctest: +SKIP
-    >>> x**2 + y**2 + x + y #doctest: +SKIP
-    x + y + x**2 + y**2
     >>> theta = Symbol('theta') #doctest: +SKIP
     >>> theta #doctest: +SKIP
     theta
@@ -407,7 +333,7 @@ def init_session(ipython=None, pretty_print=True, order=None,
     else:
         if ip is None:
             ip = init_ipython_session(argv=argv, auto_symbols=auto_symbols,
-                auto_int_to_Integer=auto_int_to_Integer)
+                                      auto_int_to_Integer=auto_int_to_Integer)
 
         # runsource is gone, use run_cell instead, which doesn't
         # take a symbol arg.  The second arg is `store_history`,

@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
-
-"""This is rule-based deduction system for SymPy
+"""
+This is rule-based deduction system for SymPy
 
 The whole thing is split into two parts
 
  - rules compilation and preparation of tables
  - runtime inference
 
-For rule-based inference engines, the classical work is RETE algorithm [1],
-[2] Although we are not implementing it in full (or even significantly)
+For rule-based inference engines, the classical work is RETE algorithm [1]_,
+[2]_.  Although we are not implementing it in full (or even significantly)
 it's still still worth a read to understand the underlying ideas.
 
 In short, every rule in a system of rules is one of two forms:
@@ -16,10 +15,8 @@ In short, every rule in a system of rules is one of two forms:
  - atom                     -> ...      (alpha rule)
  - And(atom1, atom2, ...)   -> ...      (beta rule)
 
-
 The major complexity is in efficient beta-rules processing and usually for an
 expert system a lot of effort goes into code that operates on beta-rules.
-
 
 Here we take minimalistic approach to get something usable first.
 
@@ -36,27 +33,24 @@ Here we take minimalistic approach to get something usable first.
                             ||----w |
                             ||     ||
 
+References
+==========
 
-Some references on the topic
-----------------------------
-
-[1] http://en.wikipedia.org/wiki/Rete_algorithm
-[2] http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
-
-http://en.wikipedia.org/wiki/Propositional_formula
-http://en.wikipedia.org/wiki/Inference_rule
-http://en.wikipedia.org/wiki/List_of_rules_of_inference
+.. [1] http://en.wikipedia.org/wiki/Rete_algorithm
+.. [2] http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
+.. [3] http://en.wikipedia.org/wiki/Propositional_formula
+.. [4] http://en.wikipedia.org/wiki/Inference_rule
+.. [5] http://en.wikipedia.org/wiki/List_of_rules_of_inference
 """
-from __future__ import print_function, division
 
 from collections import defaultdict
 
 from .logic import Logic, And, Or, Not
-from sympy.core.compatibility import string_types, range
 
 
 def _base_fact(atom):
-    """Return the literal fact of an atom.
+    """
+    Return the literal fact of an atom.
 
     Effectively, this merely strips the Not around a fact.
     """
@@ -79,8 +73,15 @@ def transitive_closure(implications):
     """
     Computes the transitive closure of a list of implications
 
-    Uses Warshall's algorithm, as described at
-    http://www.cs.hope.edu/~cusack/Notes/Notes/DiscreteMath/Warshall.pdf.
+    Notes
+    =====
+
+    Uses Warshall's algorithm [1]_.
+
+    References
+    ==========
+
+    .. [1] http://www.cs.hope.edu/~cusack/Notes/Notes/DiscreteMath/Warshall.pdf
     """
     full_implications = set(implications)
     literals = set().union(*map(set, full_implications))
@@ -96,24 +97,24 @@ def transitive_closure(implications):
 
 
 def deduce_alpha_implications(implications):
-    """deduce all implications
+    """
+    deduce all implications
 
-       Description by example
-       ----------------------
+    Description by example
+    ----------------------
 
-       given set of logic rules:
+    given set of logic rules:
 
-         a -> b
-         b -> c
+      a -> b
+      b -> c
 
-       we deduce all possible rules:
+    we deduce all possible rules:
 
-         a -> b, c
-         b -> c
+      a -> b, c
+      b -> c
 
-
-       implications: [] of (a,b)
-       return:       {} of a -> {b, c, ...}
+    implications: [] of (a,b)
+    return:       {} of a -> {b, c, ...}
     """
     implications = implications + [(Not(j), Not(i)) for (i, j) in implications]
     res = defaultdict(set)
@@ -136,31 +137,31 @@ def deduce_alpha_implications(implications):
 
 
 def apply_beta_to_alpha_route(alpha_implications, beta_rules):
-    """apply additional beta-rules (And conditions) to already-built alpha implication tables
+    """
+    apply additional beta-rules (And conditions) to already-built alpha implication tables
 
-       TODO: write about
+    TODO: write about
 
-       - static extension of alpha-chains
-       - attaching refs to beta-nodes to alpha chains
-
-
-       e.g.
-
-       alpha_implications:
-
-       a  ->  [b, ~c, d]
-       b  ->  [d]
-       ...
+    - static extension of alpha-chains
+    - attaching refs to beta-nodes to alpha chains
 
 
-       beta_rules:
+    e.g.
 
-       &(b,d) -> e
+    alpha_implications:
+
+    a  ->  [b, ~c, d]
+    b  ->  [d]
+    ...
 
 
-       then we'll extend a's rule to the following
+    beta_rules:
 
-       a  ->  [b, ~c, d, e]
+    &(b,d) -> e
+
+    then we'll extend a's rule to the following
+
+    a  ->  [b, ~c, d, e]
     """
     x_impl = {}
     for x in alpha_implications.keys():
@@ -214,27 +215,28 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
 
 
 def rules_2prereq(rules):
-    """build prerequisites table from rules
+    """
+    build prerequisites table from rules
 
-       Description by example
-       ----------------------
+    Description by example
+    ----------------------
 
-       given set of logic rules:
+    given set of logic rules:
 
-         a -> b, c
-         b -> c
+      a -> b, c
+      b -> c
 
-       we build prerequisites (from what points something can be deduced):
+    we build prerequisites (from what points something can be deduced):
 
-         b <- a
-         c <- a, b
+      b <- a
+      c <- a, b
 
-       rules:   {} of a -> [b, c, ...]
-       return:  {} of c <- [a, b, ...]
+    rules:   {} of a -> [b, c, ...]
+    return:  {} of c <- [a, b, ...]
 
-       Note however, that this prerequisites may be *not* enough to prove a
-       fact. An example is 'a -> b' rule, where prereq(a) is b, and prereq(b)
-       is a. That's because a=T -> b=T, and b=F -> a=F, but a=F -> b=?
+    Note however, that this prerequisites may be *not* enough to prove a
+    fact. An example is 'a -> b' rule, where prereq(a) is b, and prereq(b)
+    is a. That's because a=T -> b=T, and b=F -> a=F, but a=F -> b=?
     """
     prereq = defaultdict(set)
     for (a, _), impl in rules.items():
@@ -257,32 +259,33 @@ class TautologyDetected(Exception):
 
 
 class Prover(object):
-    """ai - prover of logic rules
+    """
+    ai - prover of logic rules
 
-       given a set of initial rules, Prover tries to prove all possible rules
-       which follow from given premises.
+    given a set of initial rules, Prover tries to prove all possible rules
+    which follow from given premises.
 
-       As a result proved_rules are always either in one of two forms: alpha or
-       beta:
+    As a result proved_rules are always either in one of two forms: alpha or
+    beta:
 
-       Alpha rules
-       -----------
+    Alpha rules
+    -----------
 
-       This are rules of the form::
+    This are rules of the form::
 
-         a -> b & c & d & ...
-
-
-       Beta rules
-       ----------
-
-       This are rules of the form::
-
-         &(a,b,...) -> c & d & ...
+      a -> b & c & d & ...
 
 
-       i.e. beta rules are join conditions that say that something follows when
-       *several* facts are true at the same time.
+    Beta rules
+    ----------
+
+    This are rules of the form::
+
+      &(a,b,...) -> c & d & ...
+
+
+    i.e. beta rules are join conditions that say that something follows when
+    *several* facts are true at the same time.
     """
 
     def __init__(self):
@@ -375,40 +378,41 @@ class Prover(object):
 
 
 class FactRules(object):
-    """Rules that describe how to deduce facts in logic space
+    """
+    Rules that describe how to deduce facts in logic space
 
-       When defined, these rules allow implications to quickly be determined for a
-       set of facts. For this precomputed deduction tables are used. see
-       `deduce_all_facts`   (forward-chaining)
+    When defined, these rules allow implications to quickly be determined for a
+    set of facts. For this precomputed deduction tables are used. see
+    `deduce_all_facts`   (forward-chaining)
 
-       Also it is possible to gather prerequisites for a fact, which is tried
-       to be proven.    (backward-chaining)
-
-
-       Definition Syntax
-       -----------------
-
-       a -> b       -- a=T -> b=T  (and automatically b=F -> a=F)
-       a -> ~b      -- a=T -> b=F
-       a == b       -- a -> b & b -> a
-       a -> b & c   -- a=T -> b=T & c=T
-       # TODO b | c
+    Also it is possible to gather prerequisites for a fact, which is tried
+    to be proven.    (backward-chaining)
 
 
-       Internals
-       ---------
+    Definition Syntax
+    -----------------
 
-       .full_implications[k, v]: all the implications of fact k=v
-       .beta_triggers[k, v]: beta rules that might be triggered when k=v
-       .prereq  -- {} k <- [] of k's prerequisites
+    a -> b       -- a=T -> b=T  (and automatically b=F -> a=F)
+    a -> ~b      -- a=T -> b=F
+    a == b       -- a -> b & b -> a
+    a -> b & c   -- a=T -> b=T & c=T
+    # TODO b | c
 
-       .defined_facts -- set of defined fact names
+
+    Internals
+    ---------
+
+    .full_implications[k, v]: all the implications of fact k=v
+    .beta_triggers[k, v]: beta rules that might be triggered when k=v
+    .prereq  -- {} k <- [] of k's prerequisites
+
+    .defined_facts -- set of defined fact names
     """
 
     def __init__(self, rules):
         """Compile rules into internal lookup tables"""
 
-        if isinstance(rules, string_types):
+        if isinstance(rules, str):
             rules = rules.splitlines()
 
         # --- parse and process rules ---
@@ -482,7 +486,8 @@ class FactKB(dict):
         self.rules = rules
 
     def _tell(self, k, v):
-        """Add fact k=v to the knowledge base.
+        """
+        Add fact k=v to the knowledge base.
 
         Returns True if the KB has actually been updated, False otherwise.
         """

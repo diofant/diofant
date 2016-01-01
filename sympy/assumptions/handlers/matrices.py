@@ -2,7 +2,6 @@
 This module contains query handlers for matrices (diagonal, invertible
 and so on).
 """
-from __future__ import print_function, division
 
 from sympy.logic.boolalg import conjuncts
 from sympy.assumptions import Q, ask

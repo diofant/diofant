@@ -1,7 +1,4 @@
-from __future__ import print_function, division
-
 from sympy.core import S, Symbol, Add, sympify, Expr, PoleError, Mul
-from sympy.core.compatibility import string_types
 from sympy.core.symbol import Dummy
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.special.gamma_functions import gamma
@@ -104,10 +101,10 @@ class Limit(Expr):
         elif z0 is S.NegativeInfinity:
             dir = "+"
 
-        if isinstance(dir, string_types):
+        if isinstance(dir, str):
             dir = Symbol(dir)
         elif not isinstance(dir, Symbol):
-            raise TypeError("direction must be of type basestring or Symbol, not %s" % type(dir))
+            raise TypeError("direction must be of type str or Symbol, not %s" % type(dir))
         if str(dir) not in ('+', '-', 'real'):
             raise ValueError(
                 "direction must be either '+' or '-' or 'real', not %s" % dir)
@@ -145,6 +142,8 @@ class Limit(Expr):
                                 "point %s=%s seems to be not equal" % (e, z, z0))
             else:
                 return right
+
+        use_heuristics = hints.get('heuristics', True)
 
         if z0.has(z):
             newz = z.as_dummy()
@@ -214,7 +213,9 @@ class Limit(Expr):
             if r is S.NaN:
                 raise PoleError()
         except (PoleError, ValueError, NotImplementedError):
-            r = heuristics(e, z, z0, dir)
+            r = None
+            if use_heuristics:
+                r = heuristics(e, z, z0, dir)
             if r is None:
                 return self
 

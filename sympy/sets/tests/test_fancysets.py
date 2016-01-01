@@ -2,7 +2,6 @@ import itertools
 
 import pytest
 
-from sympy.core.compatibility import range
 from sympy.sets.fancysets import ImageSet, Range
 from sympy.sets.sets import FiniteSet, Interval, imageset, EmptySet
 from sympy import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,

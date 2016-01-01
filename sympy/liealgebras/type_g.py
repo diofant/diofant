@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .cartan_type import Standard_Cartan
 from sympy.matrices import Matrix
 

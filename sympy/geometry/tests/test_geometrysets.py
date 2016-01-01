@@ -1,10 +1,7 @@
-from __future__ import division
-
 import warnings
 
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
-from sympy.core.compatibility import range
 from sympy.functions.elementary.trigonometric import tan
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             Polygon, Ray, RegularPolygon, Segment, Triangle,

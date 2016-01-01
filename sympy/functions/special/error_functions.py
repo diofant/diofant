@@ -1,8 +1,6 @@
 """ This module contains various functions that are special cases
     of incomplete gamma functions. It should probably be renamed. """
 
-from __future__ import print_function, division
-
 from sympy.core import Add, S, sympify, cacheit, pi, I
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.functions.combinatorial.factorials import factorial
@@ -13,7 +11,6 @@ from sympy.functions.elementary.complexes import polar_lift
 from sympy.functions.elementary.hyperbolic import cosh, sinh
 from sympy.functions.elementary.trigonometric import cos, sin
 from sympy.functions.special.hyper import hyper, meijerg
-from sympy.core.compatibility import range
 
 # TODO series expansions
 # TODO see the "Note:" in Ei

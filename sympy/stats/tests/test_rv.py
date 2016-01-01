@@ -7,7 +7,6 @@ from sympy.stats import (Die, Normal, Exponential, P, E, variance, covariance,
                          skewness, density, given, independent, dependent, where,
                          pspace, random_symbols, sample)
 from sympy.stats.rv import ProductPSpace, rs_swap, Density, NamedArgsMixin
-from sympy.core.compatibility import range
 
 
 def test_where():

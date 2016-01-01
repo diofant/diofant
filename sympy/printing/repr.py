@@ -5,13 +5,11 @@ The most important function here is srepr that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 
-from __future__ import print_function, division
+import mpmath.libmp as mlib
+from mpmath.libmp import prec_to_dps, repr_dps
 
 from sympy.core.function import AppliedUndef
 from .printer import Printer
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps, repr_dps
-from sympy.core.compatibility import range
 
 
 class ReprPrinter(Printer):
@@ -114,11 +112,7 @@ class ReprPrinter(Printer):
 
     def _print_Mul(self, expr, order=None):
         terms = expr.args
-        if self.order != 'old':
-            args = expr._new_rawargs(*terms).as_ordered_factors()
-        else:
-            args = terms
-
+        args = expr._new_rawargs(*terms).as_ordered_factors()
         args = map(self._print, args)
         return "Mul(%s)" % ", ".join(args)
 

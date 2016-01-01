@@ -2,7 +2,6 @@
 
 This file assumes knowledge of Basic and little else.
 """
-from __future__ import print_function, division, absolute_import
 
 from strategies.dispatch import dispatch
 

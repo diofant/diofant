@@ -1,4 +1,7 @@
-from __future__ import print_function, division
+from collections import defaultdict
+from functools import reduce
+
+from mpmath.libmp import mpf_log, prec_to_dps
 
 from .sympify import sympify, _sympify, SympifyError
 from .basic import Basic, Atom
@@ -6,10 +9,7 @@ from .singleton import S
 from .evalf import EvalfMixin, pure_complex
 from .decorators import _sympifyit, call_highest_priority
 from .cache import cacheit
-from .compatibility import reduce, as_int, default_sort_key, range
-from mpmath.libmp import mpf_log, prec_to_dps
-
-from collections import defaultdict
+from .compatibility import as_int, default_sort_key
 
 
 class Expr(Basic, EvalfMixin):
@@ -212,7 +212,6 @@ class Expr(Basic, EvalfMixin):
             if diff_sign != isign:
                 i -= isign
         return i
-    __long__ = __int__
 
     def __float__(self):
         # Don't bother testing if it's a number; if it's not this is going

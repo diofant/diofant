@@ -1,5 +1,6 @@
 """Test sparse polynomials. """
 
+from functools import reduce
 from operator import add, mul
 
 import pytest
@@ -11,9 +12,7 @@ from sympy.polys.orderings import lex, grlex
 from sympy.polys.polyerrors import (GeneratorsError, GeneratorsNeeded,
                                     ExactQuotientFailed,
                                     MultivariatePolynomialError, CoercionFailed)
-
 from sympy.core import Symbol, symbols
-from sympy.core.compatibility import reduce, range
 from sympy import sqrt, pi, oo
 
 

@@ -3,9 +3,6 @@ Primality testing
 
 """
 
-from __future__ import print_function, division
-from sympy.core.compatibility import range
-
 # pseudoprimes that will pass through last mr_safe test
 _pseudos = {
     669094855201,

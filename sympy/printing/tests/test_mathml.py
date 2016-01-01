@@ -4,7 +4,6 @@ from sympy import (diff, Integral, Limit, sin, Symbol, Integer, Rational, cos,
                    tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh,
                    atanh, E, I, oo, pi, GoldenRatio, EulerGamma, Sum,
                    Eq, Ne, Ge, Lt, Float)
-from sympy.core.compatibility import u
 from sympy.printing.mathml import mathml, MathMLPrinter
 
 x = Symbol('x')
@@ -334,7 +333,7 @@ def test_symbol():
 def test_mathml_greek():
     mml = mp._print(Symbol('alpha'))
     assert mml.nodeName == 'ci'
-    assert mml.childNodes[0].nodeValue == u('\N{GREEK SMALL LETTER ALPHA}')
+    assert mml.childNodes[0].nodeValue == '\N{GREEK SMALL LETTER ALPHA}'
 
     assert mp.doprint(Symbol('alpha')) == '<ci>&#945;</ci>'
     assert mp.doprint(Symbol('beta')) == '<ci>&#946;</ci>'

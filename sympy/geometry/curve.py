@@ -6,8 +6,6 @@ Curve
 
 """
 
-from __future__ import print_function, division
-
 from sympy.core import sympify
 from sympy.core.compatibility import is_sequence
 from sympy.core.containers import Tuple

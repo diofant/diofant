@@ -1,5 +1,3 @@
-from __future__ import division
-
 import pytest
 
 from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
@@ -11,7 +9,6 @@ from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
 from sympy.core import Expr
 from sympy.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
 from sympy.geometry import Point, Circle
-from sympy.core.compatibility import range
 from sympy.printing import sstr, sstrrepr, StrPrinter
 from sympy.core.trace import Tr
 
@@ -84,7 +81,7 @@ def test_Dict():
 
 def test_Dummy():
     assert str(d) == "_d"
-    assert str(d + x) == "_d + x"
+    assert str(d + x) == "x + _d"
 
 
 def test_EulerGamma():
@@ -183,7 +180,7 @@ def test_list():
 
 def test_Matrix_str():
     M = Matrix([[x**+1, 1], [y, x + y]])
-    assert str(M) == "Matrix([[x, 1], [y, x + y]])"
+    assert str(M)  == "Matrix([\n[x,     1],\n[y, x + y]])"
     assert sstr(M) == "Matrix([\n[x,     1],\n[y, x + y]])"
     M = Matrix([[1]])
     assert str(M) == sstr(M) == "Matrix([[1]])"
@@ -521,7 +518,7 @@ def test_set():
 
 def test_SparseMatrix():
     M = SparseMatrix([[x**+1, 1], [y, x + y]])
-    assert str(M) == "Matrix([[x, 1], [y, x + y]])"
+    assert str(M) ==  "Matrix([\n[x,     1],\n[y, x + y]])"
     assert sstr(M) == "Matrix([\n[x,     1],\n[y, x + y]])"
 
 

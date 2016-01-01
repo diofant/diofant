@@ -4,7 +4,6 @@ branches:
 language: python
 sudo: false
 python:
-  - 2.7
   - 3.4
 env:
   - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y
@@ -18,12 +17,12 @@ addons:
       - gfortran
 matrix:
   include:
-    - python: 2.7
+    - python: 3.4
       script:
-        - python setup.py test --cov -m 'not slow'
+        - python setup.py test --cov -m 'not slow and not xfail'
       after_success:
         - coveralls
-    - python: 2.7
+    - python: 3.4
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
@@ -37,7 +36,7 @@ before_install:
   - pip install --upgrade pip setuptools pytest
   - pip install coveralls
 install:
-  - travis_wait pip install .[exports,plot,interactive]
+  - travis_wait pip install .[exports,plot,interactive,gmpy]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0

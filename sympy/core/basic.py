@@ -1,17 +1,16 @@
 """Base class for all the objects in SymPy"""
-from __future__ import print_function, division
-
-from .assumptions import BasicMeta, ManagedProperties
-from .cache import cacheit
-from .sympify import _sympify, sympify, SympifyError
-from .compatibility import (iterable, Iterator, ordered,
-    string_types, with_metaclass, zip_longest, range)
-from .singleton import S
 
 from inspect import getmro
+from itertools import zip_longest
+
+from .assumptions import ManagedProperties
+from .cache import cacheit
+from .sympify import _sympify, sympify, SympifyError
+from .compatibility import iterable, ordered
+from .singleton import S
 
 
-class Basic(with_metaclass(ManagedProperties)):
+class Basic(metaclass=ManagedProperties):
     """
     Base class for all objects in SymPy.
 
@@ -169,8 +168,8 @@ class Basic(with_metaclass(ManagedProperties)):
         # following lines:
         if self is other:
             return 0
-        n1 = self.__class__
-        n2 = other.__class__
+        n1 = self.__class__.__name__
+        n2 = other.__class__.__name__
         c = (n1 > n2) - (n1 < n2)
         if c:
             return c
@@ -1106,7 +1105,7 @@ class Basic(with_metaclass(ManagedProperties)):
             for f in self.atoms(Function, UndefinedFunction))
 
         pattern = sympify(pattern)
-        if isinstance(pattern, BasicMeta):
+        if isinstance(pattern, type):
             return any(isinstance(arg, pattern)
             for arg in preorder_traversal(self))
 
@@ -1550,7 +1549,7 @@ class Basic(with_metaclass(ManagedProperties)):
             return self
         else:
             pattern = args[:-1]
-            if isinstance(args[-1], string_types):
+            if isinstance(args[-1], str):
                 rule = '_eval_rewrite_as_' + args[-1]
             else:
                 rule = '_eval_rewrite_as_' + args[-1].__name__
@@ -1644,7 +1643,7 @@ def _aresame(a, b):
         return True
 
 
-class preorder_traversal(Iterator):
+class preorder_traversal(object):
     """Do a pre-order traversal of a tree.
 
     This iterator recursively yields nodes that it has visited in a pre-order
@@ -1719,7 +1718,8 @@ class preorder_traversal(Iterator):
                     yield subtree
 
     def skip(self):
-        """Skip yielding current node's (last yielded node's) subtrees.
+        """
+        Skip yielding current node's (last yielded node's) subtrees.
 
         Examples
         ========

@@ -39,7 +39,7 @@ Weibull
 WignerSemicircle
 """
 
-from __future__ import print_function, division
+import random
 
 from sympy import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
                    Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
@@ -47,9 +47,8 @@ from sympy import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
 from sympy import beta as beta_fn
 from sympy import cos, exp, besseli
 from sympy.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribution,
-        ContinuousDistributionHandmade)
+                             ContinuousDistributionHandmade)
 from sympy.stats.rv import _value_check
-import random
 
 oo = S.Infinity
 
@@ -1689,12 +1688,12 @@ def Normal(name, mean, std):
 
     >>> C = simplify(cdf(X))(z) # it needs a little more help...
     >>> pprint(C, use_unicode=False)
-       /  ___          \
-       |\/ 2 *(-mu + z)|
-    erf|---------------|
-       \    2*sigma    /   1
-    -------------------- + -
-             2             2
+         /  ___         \
+         |\/ 2 *(mu - z)|
+      erf|--------------|
+         \    2*sigma   /   1
+    - ------------------- + -
+               2            2
 
     >>> simplify(skewness(X))
     0
@@ -2298,12 +2297,12 @@ def UniformSum(name, n):
     floor(z)
       ___
       \  `
-       \         k         n - 1 /n\
-        )    (-1) *(-k + z)     *| |
-       /                         \k/
+       \         k        n - 1 /n\
+        )    (-1) *(z - k)     *| |
+       /                        \k/
       /__,
      k = 0
-    --------------------------------
+    -------------------------------
                 (n - 1)!
 
     References

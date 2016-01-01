@@ -8,13 +8,13 @@ Ray
 Segment
 
 """
-from __future__ import print_function, division
 
 from sympy.core import S, sympify, Dummy
 from sympy.core.exprtools import factor_terms
 from sympy.core.relational import Eq
 from sympy.functions.elementary.trigonometric import (acos,
-     _pi_coeff as pi_coeff, sqrt, tan)
+                                                      _pi_coeff as pi_coeff,
+                                                      sqrt, tan)
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.logic.boolalg import And
 from sympy.simplify.simplify import simplify

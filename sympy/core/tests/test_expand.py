@@ -5,7 +5,6 @@ from sympy import (log, sqrt, Rational as R, Symbol, I, exp, pi, S,
 from sympy.simplify.radsimp import expand_numer
 from sympy.simplify.simplify import expand
 from sympy.core.function import expand_multinomial, expand_power_base
-from sympy.core.compatibility import range
 from sympy.utilities.randtest import verify_numerically
 
 from sympy.abc import x, y, z

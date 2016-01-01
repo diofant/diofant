@@ -1,15 +1,13 @@
 """Real and complex elements. """
 
-from __future__ import print_function, division
-
-from sympy.polys.domains.domainelement import DomainElement
-
 from mpmath.ctx_mp_python import PythonMPContext, _mpf, _mpc, _constant
 from mpmath.libmp import (MPZ_ONE, fzero, fone, finf, fninf, fnan,
-    round_nearest, mpf_mul, mpf_abs, mpf_lt, mpc_abs, repr_dps, int_types,
-    from_int, from_float, from_str, to_rational)
+                          round_nearest, mpf_mul, mpf_abs, mpf_lt, mpc_abs,
+                          repr_dps, int_types, from_int, from_float,
+                          from_str, to_rational)
 from mpmath.rational import mpq
 
+from sympy.polys.domains.domainelement import DomainElement
 from sympy.utilities import public
 
 
@@ -107,7 +105,7 @@ class MPContext(PythonMPContext):
         if hasattr(tol, "_mpf_"):
             return tol._mpf_
         prec, rounding = ctx._prec_rounding
-        if isinstance(tol, basestring):
+        if isinstance(tol, str):
             return from_str(tol, prec, rounding)
         raise ValueError("expected a real number, got %s" % tol)
 

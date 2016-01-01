@@ -4,11 +4,10 @@ from sympy import (
     Abs, And, binomial, Catalan, cos, Derivative, E, Eq, exp, EulerGamma,
     factorial, Function, harmonic, I, Integral, KroneckerDelta, log,
     nan, Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify,
-    sqrt, Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod
-)
-from sympy.abc import a, b, c, d, f, k, m, x, y, z
+    sqrt, Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod)
 from sympy.concrete.summations import telescopic
-from sympy.core.compatibility import range
+
+from sympy.abc import a, b, c, d, f, k, m, x, y, z
 
 n = Symbol('n', integer=True)
 
@@ -850,3 +849,11 @@ def test_issue_4668():
 
 def test_issue_8822():
     assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
+
+
+def test_issue_8016():
+    n, m = symbols('n, m', integer=True, positive=True)
+    k = symbols('k', integer=True)
+    s = Sum(binomial(m, k)*binomial(m, n-k)*(-1)**k, (k, 0, n))
+    assert s.doit().simplify() == \
+        cos(pi*n/2)*gamma(m + 1)/gamma(n/2 + 1)/gamma(m - n/2 +1)

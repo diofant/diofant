@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import print_function, division
-
 import keyword as kw
+
 import sympy
 from .repr import ReprPrinter
 from .str import StrPrinter

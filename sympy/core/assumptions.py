@@ -151,13 +151,10 @@ References
 .. [13] http://en.wikipedia.org/wiki/Extended_real_number_line
 
 """
-from __future__ import print_function, division
-
-from sympy.core.facts import FactRules, FactKB
-from sympy.core.core import BasicMeta
-from sympy.core.compatibility import integer_types, with_metaclass
 
 from random import shuffle
+
+from sympy.core.facts import FactRules, FactKB
 
 
 _assume_rules = FactRules([
@@ -195,11 +192,11 @@ _assume_rules = FactRules([
     'infinite       ->  ~finite',
     'noninteger     ==  real & ~integer',
     'nonzero        ==  ~zero',
+
+    'polar          -> commutative',
 ])
 
-_assume_defined = _assume_rules.defined_facts.copy()
-_assume_defined.add('polar')
-_assume_defined = frozenset(_assume_defined)
+_assume_defined = frozenset(_assume_rules.defined_facts.copy())
 
 
 class StdFactKB(FactKB):
@@ -308,16 +305,14 @@ def _ask(fact, obj):
     return
 
 
-class ManagedProperties(BasicMeta):
+class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions"""
     def __init__(cls, *args, **kws):
-        BasicMeta.__init__(cls, *args, **kws)
-
         local_defs = {}
         for k in _assume_defined:
             attrname = as_property(k)
             v = cls.__dict__.get(attrname, '')
-            if isinstance(v, (bool, integer_types, type(None))):
+            if isinstance(v, (bool, int, type(None))):
                 if v is not None:
                     v = bool(v)
                 local_defs[k] = v

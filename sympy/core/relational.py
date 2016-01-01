@@ -1,4 +1,5 @@
-from __future__ import print_function, division
+from mpmath.libmp.libintmath import giant_steps
+from sympy.core.evalf import DEFAULT_MAXPREC as target
 
 from .basic import S
 from .compatibility import ordered
@@ -8,7 +9,6 @@ from .function import _coeff_isneg
 from .symbol import Symbol
 from .sympify import _sympify
 from .evaluate import global_evaluate
-
 from sympy.logic.boolalg import Boolean
 
 __all__ = (
@@ -186,16 +186,19 @@ class Relational(Boolean, Expr, EvalfMixin):
                     if know:
                         dif = S.Zero
                     elif know is False:
-                        from mpmath.libmp.libintmath import giant_steps
-                        from sympy.core.evalf import DEFAULT_MAXPREC as target
-                        for prec in giant_steps(2, target):
-                            ndif = dif.evalf(prec)
-                            if ndif._prec != 1:
-                                break
-                        if ndif._prec > 1:
-                            dif = ndif
+                        if r.func is Eq:
+                            return False
+                        elif r.func is Ne:
+                            return True
+                        else:
+                            for prec in giant_steps(2, target):
+                                ndif = dif.evalf(prec)
+                                if ndif._prec != 1:
+                                    break
+                            if ndif._prec > 1:
+                                dif = ndif
                 # Can definitively compare a Number to zero, if appropriate.
-                if dif.is_Number and (dif.is_extended_real or r.func in (Eq, Ne)):
+                if dif.is_Number and dif.is_extended_real:
                     # Always T/F (we never return an expression w/ the evalf)
                     r = r.func._eval_relation(dif, S.Zero)
 
@@ -205,10 +208,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         else:
             return self
 
-    def __nonzero__(self):
+    def __bool__(self):
         raise TypeError("cannot determine truth value of Relational")
-
-    __bool__ = __nonzero__
 
     def as_set(self):
         """
@@ -679,11 +680,11 @@ class GreaterThan(_Greater):
         (1) x > y > z
         (2) (x > y) and (y > z)
         (3) (GreaterThanObject) and (y > z)
-        (4) (GreaterThanObject.__nonzero__()) and (y > z)
+        (4) (GreaterThanObject.__bool__()) and (y > z)
         (5) TypeError
 
        Because of the "and" added at step 2, the statement gets turned into a
-       weak ternary statement, and the first object's __nonzero__ method will
+       weak ternary statement, and the first object's __bool__ method will
        raise TypeError.  Thus, creating a chained inequality is not possible.
 
            In Python, there is no way to override the ``and`` operator, or to

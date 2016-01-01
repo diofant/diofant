@@ -1,10 +1,8 @@
 """Computations with ideals of polynomial rings."""
 
-from __future__ import print_function, division
+from functools import reduce
 
 from sympy.polys.polyerrors import CoercionFailed
-
-from sympy.core.compatibility import reduce
 
 
 class Ideal(object):

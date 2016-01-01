@@ -1,13 +1,11 @@
-from __future__ import print_function, division
+from math import sqrt as _sqrt
+from functools import reduce
 
 from sympy.core import S, sympify, Dummy
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.logic import fuzzy_and
 from sympy.core.numbers import Integer
 from sympy.ntheory import sieve
-from math import sqrt as _sqrt
-
-from sympy.core.compatibility import reduce, range
 from sympy.core.cache import cacheit
 
 
@@ -737,6 +735,9 @@ class binomial(CombinatorialFunction):
     def _eval_rewrite_as_gamma(self, n, k):
         from sympy import gamma
         return gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
+
+    def _eval_rewrite_as_tractable(self, n, k):
+        return self._eval_rewrite_as_gamma(n, k).rewrite('tractable')
 
     def _eval_is_integer(self):
         if self.args[0].is_integer and self.args[1].is_integer:

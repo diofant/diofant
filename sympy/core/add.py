@@ -1,25 +1,14 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
-from functools import cmp_to_key
+from functools import cmp_to_key, reduce
 
 from .basic import Basic
-from .compatibility import reduce, is_sequence, range
+from .compatibility import is_sequence, default_sort_key
 from .logic import _fuzzy_group, fuzzy_or, fuzzy_not
 from .singleton import S
 from .operations import AssocOp
 from .cache import cacheit
 from .numbers import ilcm, igcd
 from .expr import Expr
-
-
-# Key for sorting commutative args in canonical order
-_args_sortkey = cmp_to_key(Basic.compare)
-
-
-def _addsort(args):
-    # in-place sorting of args
-    args.sort(key=_args_sortkey)
 
 
 def _unevaluated_Add(*args):
@@ -63,7 +52,7 @@ def _unevaluated_Add(*args):
             co += a
         else:
             newargs.append(a)
-    _addsort(newargs)
+    newargs.sort(key=default_sort_key)
     if co:
         newargs.insert(0, co)
     return Add._from_args(newargs)
@@ -258,7 +247,7 @@ class Add(Expr, AssocOp):
                     break
 
         # order args canonically
-        _addsort(newseq)
+        newseq.sort(key=default_sort_key)
 
         # current code expects coeff to be first
         if coeff is not S.Zero:
@@ -273,7 +262,7 @@ class Add(Expr, AssocOp):
     @classmethod
     def class_key(cls):
         """Nice order of classes"""
-        return 3, 1, cls.__name__
+        return 4, 1, cls.__name__
 
     def as_coefficients_dict(a):
         """Return a dictionary mapping terms to their Rational coefficient.
@@ -789,7 +778,7 @@ class Add(Expr, AssocOp):
             c = terms.pop(0)
         else:
             c = None
-        _addsort(terms)
+        terms.sort(key=default_sort_key)
         if c:
             terms.insert(0, c)
         return Rational(ngcd, dlcm), self._new_rawargs(*terms)

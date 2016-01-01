@@ -1,14 +1,10 @@
 """Implementaton of :class:`GMPYIntegerRing` class. """
 
-from __future__ import print_function, division
-
 from sympy.polys.domains.integerring import IntegerRing
 from sympy.polys.domains.groundtypes import (
     GMPYInteger, SymPyInteger,
     gmpy_factorial,
-    gmpy_gcdex, gmpy_gcd, gmpy_lcm, gmpy_sqrt,
-)
-
+    gmpy_gcdex, gmpy_gcd, gmpy_lcm, gmpy_sqrt)
 from sympy.polys.polyerrors import CoercionFailed
 from sympy.utilities import public
 

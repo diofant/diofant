@@ -4,7 +4,6 @@ from sympy import (Eq, factorial, Function, Lambda, rf, S, sqrt, symbols,
                    I, expand_func, binomial, gamma)
 from sympy.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
                                   rsolve_ratio)
-from sympy.core.compatibility import range
 from sympy.abc import a, b, c
 
 y = Function('y')

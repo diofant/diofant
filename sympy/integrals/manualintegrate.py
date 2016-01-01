@@ -16,14 +16,13 @@ match, add the key and call to the antiderivative function to integral_steps.
 To enable simple substitutions, add the match to find_substitutions.
 
 """
-from __future__ import print_function, division
 
 from collections import namedtuple
+from functools import reduce
+
 from strategies.core import switch, do_one, null_safe, condition
 
 import sympy
-
-from sympy.core.compatibility import reduce
 from sympy.functions.elementary.trigonometric import TrigonometricFunction
 
 
@@ -1176,7 +1175,7 @@ def manualintegrate(f, var):
     >>> manualintegrate(exp(x) / (1 + exp(2 * x)), x)
     atan(E**x)
     >>> integrate(exp(x) / (1 + exp(2 * x)))
-    RootSum(4*_z**2 + 1, Lambda(_i, _i*log(2*_i + E**x)))
+    RootSum(4*_z**2 + 1, Lambda(_i, _i*log(E**x + 2*_i)))
     >>> manualintegrate(cos(x)**4 * sin(x), x)
     -cos(x)**5/5
     >>> integrate(cos(x)**4 * sin(x), x)

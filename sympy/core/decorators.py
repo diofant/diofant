@@ -5,11 +5,9 @@ The purpose of this module is to expose decorators without any other
 dependencies, so that they can be easily imported anywhere in sympy/core.
 """
 
-from __future__ import print_function, division
-
 from functools import wraps
+
 from .sympify import SympifyError, sympify
-from sympy.core.compatibility import get_function_code
 
 
 def deprecated(**decorator_kwargs):
@@ -57,10 +55,10 @@ def __sympifyit(func, arg, retval=None):
     """
 
     # we support f(a,b) only
-    if not get_function_code(func).co_argcount:
+    if not func.__code__.co_argcount:
         raise LookupError("func not found")
     # only b is _sympified
-    assert get_function_code(func).co_varnames[1] == arg
+    assert func.__code__.co_varnames[1] == arg
     if retval is None:
         @wraps(func)
         def __sympifyit_wrapper(a, b):

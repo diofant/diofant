@@ -8,7 +8,6 @@ ode_order
 _desolve
 
 """
-from __future__ import print_function, division
 
 from sympy.core.function import Derivative, AppliedUndef
 from sympy.core.relational import Equality
@@ -57,7 +56,7 @@ def _preprocess(expr, func=None, hint='_Integral'):
 
     >>> eq = Derivative(f(x) + 1, x) + Derivative(f(x), y)
     >>> _preprocess(eq, f(x), hint=None)
-    (Derivative(f(x) + 1, x) + Derivative(f(x), y), f(x))
+    (Derivative(f(x), y) + Derivative(f(x) + 1, x), f(x))
 
     If it's not clear what the function of interest is, it must be given:
 

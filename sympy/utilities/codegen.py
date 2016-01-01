@@ -76,14 +76,13 @@ unsurmountable issues that can only be tackled with dedicated code generator:
 
 """
 
-from __future__ import print_function, division
-
+from io import StringIO
 import os
 import textwrap
 
 from sympy import __version__ as sympy_version
 from sympy.core import Symbol, S, Expr, Tuple, Equality, Function
-from sympy.core.compatibility import is_sequence, StringIO, string_types
+from sympy.core.compatibility import is_sequence
 from sympy.printing.codeprinter import AssignmentError
 from sympy.printing.ccode import ccode, CCodePrinter
 from sympy.printing.fcode import fcode, FCodePrinter
@@ -439,7 +438,7 @@ class Result(Variable, ResultBase):
         if name is None:
             name = 'result_%d' % abs(hash(expr))
 
-        if isinstance(name, string_types):
+        if isinstance(name, str):
             if isinstance(expr, (MatrixBase, MatrixExpr)):
                 name = MatrixSymbol(name, *expr.shape)
             else:
@@ -1475,7 +1474,7 @@ def codegen(name_expr, language, prefix=None, project="project",
     # Initialize the code generator.
     code_gen = get_code_generator(language, project)
 
-    if isinstance(name_expr[0], string_types):
+    if isinstance(name_expr[0], str):
         # single tuple is given, turn it into a singleton list with a tuple.
         name_expr = [name_expr]
 

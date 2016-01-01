@@ -1,19 +1,17 @@
-from __future__ import print_function, division
-
 from itertools import product
+
+from mpmath import mpi, mpf
 
 from sympy.core.sympify import _sympify, sympify
 from sympy.core.basic import Basic
 from sympy.core.singleton import Singleton, S
 from sympy.core.evalf import EvalfMixin
 from sympy.core.numbers import Float
-from sympy.core.compatibility import iterable, with_metaclass, ordered, range, long
+from sympy.core.compatibility import iterable, ordered
 from sympy.core.evaluate import global_evaluate
 from sympy.core.mul import Mul
 from sympy.core.relational import Eq
 from sympy.sets.contains import Contains
-
-from mpmath import mpi, mpf
 from sympy.logic.boolalg import And, Or, Not, true, false
 from sympy.utilities import subsets
 
@@ -651,7 +649,7 @@ class ProductSet(Set):
         return measure
 
     def __len__(self):
-        return long(Mul(*[len(s) for s in self.args]))
+        return int(Mul(*[len(s) for s in self.args]))
 
 
 class Interval(Set, EvalfMixin):
@@ -1498,7 +1496,7 @@ class Complement(Set, EvalfMixin):
         return And(A.contains(other), Not(B.contains(other)))
 
 
-class EmptySet(with_metaclass(Singleton, Set)):
+class EmptySet(Set, metaclass=Singleton):
     """
     Represents the empty set. The empty set is available as a singleton
     as S.EmptySet.
@@ -1565,7 +1563,7 @@ class EmptySet(with_metaclass(Singleton, Set)):
         return other
 
 
-class UniversalSet(with_metaclass(Singleton, Set)):
+class UniversalSet(Set, metaclass=Singleton):
     """
     Represents the set of all things.
     The universal set is available as a singleton as S.UniversalSet

@@ -1,18 +1,17 @@
-"""Logic expressions handling
+"""
+Logic expressions handling
 
-NOTE
-----
+Notes
+-----
 
-at present this is mainly needed for facts.py , feel free however to improve
+At present this is mainly needed for facts.py, feel free however to improve
 this stuff for general purpose.
 """
-from __future__ import print_function, division
-
-from sympy.core.compatibility import range
 
 
 def _fuzzy_group(args, quick_exit=False):
-    """Return True if all args are True, None if there is any None else False
+    """
+    Return True if all args are True, None if there is any None else False
     unless ``quick_exit`` is True (then return None as soon as a second False
     is seen.
 
@@ -24,7 +23,6 @@ def _fuzzy_group(args, quick_exit=False):
     single transcendental amongst rationals would indicate that the group is
     no longer rational; but a second transcendental in the group would make the
     determination impossible.
-
 
     Examples
     ========
@@ -46,7 +44,6 @@ def _fuzzy_group(args, quick_exit=False):
 
     >>> _fuzzy_group([False, True, True], quick_exit=True)
     False
-
     """
     saw_other = False
     for a in args:
@@ -61,7 +58,8 @@ def _fuzzy_group(args, quick_exit=False):
 
 
 def fuzzy_bool(x):
-    """Return True, False or None according to x.
+    """
+    Return True, False or None according to x.
 
     Whereas bool(x) returns True or False, fuzzy_bool allows
     for the None value.
@@ -72,7 +70,8 @@ def fuzzy_bool(x):
 
 
 def fuzzy_and(args):
-    """Return True (all True), False (any False) or None.
+    """
+    Return True (all True), False (any False) or None.
 
     Examples
     ========
@@ -122,7 +121,6 @@ def fuzzy_not(v):
     >>> fuzzy_not(None)
     >>> fuzzy_not(False)
     True
-
     """
     if v is None:
         return v
@@ -146,7 +144,6 @@ def fuzzy_or(args):
     False
     >>> print(fuzzy_or([False, None]))
     None
-
     """
     return fuzzy_not(fuzzy_and(fuzzy_not(i) for i in args))
 
@@ -200,11 +197,12 @@ class Logic(object):
 
     @staticmethod
     def fromstring(text):
-        """Logic from string with space around & and | but none after ~.
+        """
+        Logic from string with space around & and | but none after ~.
 
-           e.g.
+        e.g.
 
-           ~a & b | c
+        ~a & b | c
         """
         lexpr = None  # current logical expression
         schedop = None  # scheduled operation
@@ -250,7 +248,6 @@ class Logic(object):
 
 
 class AndOr_Base(Logic):
-
     def __new__(cls, *args):
         bargs = []
         for a in args:
@@ -331,7 +328,6 @@ class Or(AndOr_Base):
 
 
 class Not(Logic):
-
     def __new__(cls, arg):
         if isinstance(arg, str):
             return Logic.__new__(cls, arg)

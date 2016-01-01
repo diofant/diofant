@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 
 from sympy import (Symbol, symbols, oo, limit, Rational, Integral, Derivative,

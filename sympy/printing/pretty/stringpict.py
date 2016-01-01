@@ -12,10 +12,7 @@ TODO:
       top/center/bottom alignment options for left/right
 """
 
-from __future__ import print_function, division
-
 from .pretty_symbology import hobj, vobj, xsym, xobj, pretty_use_unicode
-from sympy.core.compatibility import u, string_types, range
 
 
 class stringPict(object):
@@ -60,7 +57,7 @@ class stringPict(object):
         # convert everything to stringPicts
         objects = []
         for arg in args:
-            if isinstance(arg, string_types):
+            if isinstance(arg, str):
                 arg = stringPict(arg)
             objects.append(arg)
 
@@ -123,7 +120,7 @@ class stringPict(object):
         # convert everything to stringPicts; keep LINE
         objects = []
         for arg in args:
-            if arg is not stringPict.LINE and isinstance(arg, string_types):
+            if arg is not stringPict.LINE and isinstance(arg, str):
                 arg = stringPict(arg)
             objects.append(arg)
 
@@ -349,7 +346,7 @@ class stringPict(object):
         return str.join('\n', self.picture)
 
     def __unicode__(self):
-        return unicode.join(u('\n'), self.picture)
+        return unicode.join('\n', self.picture)
 
     def __repr__(self):
         return "stringPict(%r,%d)" % ('\n'.join(self.picture), self.baseline)

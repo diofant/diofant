@@ -56,25 +56,27 @@ It is described in great(er) detail in the Sphinx documentation.
 # o Deciding if one index quadruple is reachable from another is tricky. For
 #   this reason, we use hand-built routines to match and instantiate formulas.
 #
-from __future__ import print_function, division
 
 from collections import defaultdict
 from itertools import product
 
 from sympy import SYMPY_DEBUG
 from sympy.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
-    EulerGamma, oo, zoo, expand_func, Add, nan, Expr)
+                        EulerGamma, oo, zoo, expand_func, Add, nan, Expr)
 from sympy.core.mod import Mod
-from sympy.core.compatibility import default_sort_key, range
+from sympy.core.compatibility import default_sort_key
 from sympy.utilities.iterables import sift
-from sympy.functions import (exp, sqrt, root, log, lowergamma, cos,
-        besseli, gamma, uppergamma, expint, erf, sin, besselj, Ei, Ci, Si, Shi,
-        sinh, cosh, Chi, fresnels, fresnelc, polar_lift, exp_polar, floor, ceiling,
-        rf, factorial, lerchphi, Piecewise, re, elliptic_k, elliptic_e)
-from sympy.functions.special.hyper import (hyper, HyperRep_atanh,
-        HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
-        HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
-        HyperRep_cosasin, HyperRep_sinasin, meijerg)
+from sympy.functions import (exp, sqrt, root, log, lowergamma, cos, besseli,
+                             gamma, uppergamma, expint, erf, sin, besselj, Ei,
+                             Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
+                             polar_lift, exp_polar, floor, ceiling, rf,
+                             factorial, lerchphi, Piecewise, re, elliptic_k,
+                             elliptic_e)
+from sympy.functions.special.hyper import (
+    hyper, HyperRep_atanh,
+    HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
+    HyperRep_asin2, HyperRep_sqrts1, HyperRep_sqrts2, HyperRep_log2,
+    HyperRep_cosasin, HyperRep_sinasin, meijerg)
 from sympy.simplify import simplify
 from sympy.functions.elementary.complexes import polarify, unpolarify
 from sympy.simplify.powsimp import powdenest

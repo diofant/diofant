@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.core import S, sympify, Expr, Rational, Symbol, Dummy
 from sympy.core import Add, Mul, expand_power_base, expand_log
 from sympy.core.cache import cacheit
@@ -306,6 +304,7 @@ class Order(Expr):
             relation cannot be determined.
         """
         from sympy import powsimp
+        from sympy.series.limits import Limit
         if expr is S.Zero:
             return True
         if expr is S.NaN:
@@ -347,10 +346,9 @@ class Order(Expr):
             ratio = powsimp(ratio, deep=True, combine='exp')
             for s in common_symbols:
                 try:
-                    l = ratio.limit(s, point)
+                    l = Limit(ratio, s, point).doit(heuristics=False)
                 except NotImplementedError:
                     l = None
-                from sympy.series.limits import Limit
                 if not isinstance(l, Limit):
                     l = l != 0
                 else:

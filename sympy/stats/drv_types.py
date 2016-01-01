@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from sympy.stats.drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from sympy import factorial, exp, S, sympify
 from sympy.stats.rv import _value_check

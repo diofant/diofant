@@ -18,7 +18,7 @@ for:
 """
 
 from sympy import S
-from sympy.core.compatibility import iterable, range
+from sympy.core.compatibility import iterable
 
 
 def finite_diff_weights(order, x_list, x0=S(0)):
@@ -343,10 +343,11 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
     >>> e, sq2 = exp(1), sqrt(2)
     >>> xl = [x-h, x+h, x+e*h]
     >>> as_finite_diff(f(x).diff(x, 1), xl, x+h*sq2)
-    2*h*((h + sqrt(2)*h)/(2*h) - (-sqrt(2)*h + h)/(2*h))*f(E*h + x)/\
-((-h + E*h)*(h + E*h)) + (-(-sqrt(2)*h + h)/(2*h) - \
-(-sqrt(2)*h + E*h)/(2*h))*f(-h + x)/(h + E*h) + \
-(-(h + sqrt(2)*h)/(2*h) + (-sqrt(2)*h + E*h)/(2*h))*f(h + x)/(-h + E*h)
+    2*h*f(E*h + x)*((h + sqrt(2)*h)/(2*h) -\
+    (-sqrt(2)*h + h)/(2*h))/((-h + E*h)*(h + E*h)) +\
+    f(-h + x)*(-(-sqrt(2)*h + h)/(2*h) - (-sqrt(2)*h + E*h)/(2*h))/(h +\
+    E*h) + f(h + x)*(-(h + sqrt(2)*h)/(2*h) + (-sqrt(2)*h +\
+    E*h)/(2*h))/(-h + E*h)
 
     Partial derivatives are also supported:
 

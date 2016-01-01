@@ -1,9 +1,8 @@
-from __future__ import print_function, division
-
 from collections import defaultdict
 
-from sympy import SYMPY_DEBUG
+import mpmath
 
+from sympy import SYMPY_DEBUG
 from sympy.core.evaluate import global_evaluate
 from sympy.core.compatibility import iterable, ordered, as_int, default_sort_key
 from sympy.core import expand_power_base, sympify, Add, S, Mul, Derivative, Pow, symbols, expand_mul
@@ -15,8 +14,6 @@ from sympy.core.add import _unevaluated_Add
 from sympy.functions import exp, sqrt, log
 from sympy.polys import gcd
 from sympy.simplify.sqrtdenest import sqrtdenest
-
-import mpmath
 
 
 def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_term=True):
@@ -135,7 +132,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         a*Derivative(f(x), x, x) + b*Derivative(f(x), x, x)
 
         >>> collect(a*D(f,x) + b*D(f,x) + a*f + b*f, f)
-        (a + b)*f(x) + (a + b)*Derivative(f(x), x)
+        f(x)*(a + b) + (a + b)*Derivative(f(x), x)
 
     Or you can even match both derivative order and exponent at the same time::
 

@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import print_function, division
+from random import randint
 
 from sympy.core.singleton import S
 from sympy.core.numbers import igcd, igcdex
-from sympy.core.compatibility import as_int, range
+from sympy.core.compatibility import as_int
 from sympy.core.function import Function
 from .primetest import isprime
 from .factor_ import factorint, trailing, totient
-from random import randint
 
 
 def n_order(a, n):

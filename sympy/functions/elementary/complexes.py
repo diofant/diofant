@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 from sympy.core import S, Add, Mul, sympify, Symbol, Dummy
-from sympy.core.compatibility import u
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import (Function, Derivative, ArgumentIndexError,
-    AppliedUndef)
+                                 AppliedUndef)
 from sympy.core.numbers import pi
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.piecewise import Piecewise
@@ -711,7 +708,7 @@ class adjoint(Function):
         from sympy.printing.pretty.stringpict import prettyForm
         pform = printer._print(self.args[0], *args)
         if printer._use_unicode:
-            pform = pform**prettyForm(u('\N{DAGGER}'))
+            pform = pform**prettyForm('\N{DAGGER}')
         else:
             pform = pform**prettyForm('+')
         return pform
@@ -756,7 +753,7 @@ class polar_lift(Function):
     @classmethod
     def eval(cls, arg):
         from sympy import exp_polar, pi, I, arg as argument
-        if arg.is_number:
+        if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
             # e.g. `not ar.has(argument) and not ar.has(atan)`
@@ -1036,7 +1033,7 @@ def polarify(eq, subs=True, lift=False):
     >>> sorted(polarify(expr)[1].items(), key=default_sort_key)
     [(_x, x), (_y, y)]
     >>> polarify(expr)[0].expand()
-    _x**_y*exp_polar(_y*I*pi)
+    _x**_y*exp_polar(I*pi*_y)
     >>> polarify(x, lift=True)
     polar_lift(x)
     >>> polarify(x*(1+y), lift=True)

@@ -29,14 +29,17 @@ There are three types of functions implemented in SymPy:
     (x,)
 
 """
-from __future__ import print_function, division
+
+import inspect
+
+import mpmath
+import mpmath.libmp as mlib
 
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
 from .compatibility import iterable, is_sequence, as_int, ordered
-from .core import BasicMeta
 from .decorators import _sympifyit
 from .expr import Expr, AtomicExpr
 from .numbers import Rational, Float
@@ -44,18 +47,11 @@ from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
 from .sympify import sympify
-
 from sympy.core.containers import Tuple, Dict
 from sympy.core.logic import fuzzy_and
-from sympy.core.compatibility import string_types, with_metaclass, range
 from sympy.utilities import default_sort_key
 from sympy.utilities.iterables import uniq
 from sympy.core.evaluate import global_evaluate
-
-import mpmath
-import mpmath.libmp as mlib
-
-import inspect
 
 
 def _coeff_isneg(a):
@@ -103,7 +99,7 @@ class FunctionClass(ManagedProperties):
 
     def __init__(cls, *args, **kwargs):
         if hasattr(cls, 'eval'):
-            evalargspec = inspect.getargspec(cls.eval)
+            evalargspec = inspect.getfullargspec(cls.eval)
             if evalargspec.varargs:
                 evalargs = None
             else:
@@ -172,7 +168,7 @@ class FunctionClass(ManagedProperties):
         return cls.__name__
 
 
-class Application(with_metaclass(FunctionClass, Basic)):
+class Application(Basic, metaclass=FunctionClass):
     """
     Base class for applied functions.
 
@@ -689,7 +685,7 @@ class UndefinedFunction(FunctionClass):
     The (meta)class of undefined functions.
     """
     def __new__(mcl, name, **kwargs):
-        ret = BasicMeta.__new__(mcl, name, (AppliedUndef,), kwargs)
+        ret = type.__new__(mcl, name, (AppliedUndef,), kwargs)
         ret.__module__ = None
         return ret
 
@@ -2396,7 +2392,7 @@ def nfloat(expr, n=15, exponent=False):
     from sympy.core.power import Pow
     from sympy.polys.rootoftools import RootOf
 
-    if iterable(expr, exclude=string_types):
+    if iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):
             return type(expr)([(k, nfloat(v, n, exponent)) for k, v in
                                list(expr.items())])

@@ -3,7 +3,6 @@ import pytest
 from sympy import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
                    S, WildFunction, ImmutableMatrix, sin, true, false, ones,
                    Symbol, Dummy, Wild)
-from sympy.core.compatibility import exec_
 from sympy.geometry import Point, Ellipse
 from sympy.printing import srepr
 from sympy.polys import ring, field, ZZ, QQ, lex, grlex
@@ -13,7 +12,7 @@ x, y = symbols('x,y')
 # eval(srepr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from sympy import *" for most cases.
 ENV = {}
-exec_("from sympy import *", ENV)
+exec("from sympy import *", ENV)
 
 
 def sT(expr, string):
@@ -37,7 +36,6 @@ def test_printmethod():
 def test_Add():
     sT(x + y, "Add(Symbol('x'), Symbol('y'))")
     assert srepr(x**2 + 1, order='lex') == "Add(Pow(Symbol('x'), Integer(2)), Integer(1))"
-    assert srepr(x**2 + 1, order='old') == "Add(Integer(1), Pow(Symbol('x'), Integer(2)))"
 
 
 def test_Function():
@@ -166,7 +164,6 @@ def test_settins():
 
 def test_Mul():
     sT(3*x**3*y, "Mul(Integer(3), Pow(Symbol('x'), Integer(3)), Symbol('y'))")
-    assert srepr(3*x**3*y, order='old') == "Mul(Integer(3), Symbol('y'), Pow(Symbol('x'), Integer(3)))"
 
 
 def test_PolyRing():

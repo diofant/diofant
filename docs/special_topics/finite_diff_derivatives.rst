@@ -66,8 +66,6 @@ Then we have two equations:
 If we again want to find the first derivative (`c_{1}`), we can do that by eliminating the term involving `c_{2}` from
 the two equations.  We show how to do it using SymPy.
 
-
-	>>> from __future__ import print_function
 	>>> from sympy import *
 	>>> x, x0, h = symbols('x, x_0, h')
 	>>> Fi, Fip1, Fip2 = symbols('F_{i}, F_{i+1}, F_{i+2}')
@@ -119,8 +117,6 @@ Note that all three coefficients make up the solution. The desired first derivat
 It is instructive to compute another three-point approximation to the first derivative,  except centering the approximation
 at `x_i` and thus using points at `x_{i-1}`,  `x_{i}`,  and `x_{i+1}`. So here is how this can be done using the 'brute force' method:
 
-
-	>>> from __future__ import print_function
 	>>> from sympy import *
 	>>> x, x0, h = symbols('x, x_i, h')
 	>>> Fi, Fim1, Fip1 = symbols('F_{i}, F_{i-1}, F_{i+1}')
@@ -173,7 +169,6 @@ really second order.  To do this we take the result for `dF/dx` and substitute i
 order polynomial and see what we get. To this end,  we make a set of eight coefficients d and use them to perform the
 check:
 
-
     >>> d = symbols('c:8')
     >>> dfdxcheck = (P(x0+h, x0, d, 8) - P(x0-h, x0, d, 8))/(2*h)
     >>> print(simplify(dfdxcheck)) # so the appropriate cancellation of terms involving `h` happens
@@ -193,8 +188,6 @@ for this last point which uses points for which we do have values. This is the s
 To obtain it,  we can use the same direct approach,  except now us the three points `(x_{N},F_{N})`,  `(x_{N-1},F_{N-1})`,
 and `(x_{N-2},F_{N-2})` and center the approximation at `(x_{N},F_{N})`. Here is how it can be done using SymPy:
 
-
-	>>> from __future__ import print_function
 	>>> from sympy import *
 	>>> x, xN, h = symbols('x, x_N, h')
 	>>> FN, FNm1, FNm2 = symbols('F_{N}, F_{N-1}, F_{N-2}')
@@ -218,7 +211,7 @@ degree polynomial P coefficients of `c_i` evaluated at `x_i, x_{i-1},` and `x_{i
     >>> m31 = P(xN-2*h, xN, c, n).diff(c[0])
     >>> m32 = P(xN-2*h, xN, c, n).diff(c[1])
     >>> m33 = P(xN-2*h, xN, c, n).diff(c[2])
-	
+
 Next we construct the `3 \times 3` matrix of the coeffcients:
 
     >>> M = Matrix([[m11, m12, m13], [m21, m22, m23], [m31, m32, m33]])

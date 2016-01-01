@@ -1,15 +1,13 @@
-from __future__ import print_function, division
-
 from itertools import permutations
+from functools import reduce
 
 from sympy.matrices import Matrix
-from sympy.core import Basic, Expr, Dummy, Function, sympify, diff, Pow, Mul, Add, symbols, Tuple
-from sympy.core.compatibility import range
+from sympy.core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
+                        Mul, Add, symbols, Tuple)
 from sympy.core.numbers import Zero
 from sympy.solvers import solve
 from sympy.functions import factorial
 from sympy.simplify import simplify
-from sympy.core.compatibility import reduce
 from sympy.combinatorics import Permutation
 
 # TODO you are a bit excessive in the use of Dummies

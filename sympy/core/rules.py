@@ -2,8 +2,6 @@
 Replacement rules.
 """
 
-from __future__ import print_function, division
-
 
 class Transform(object):
     """

@@ -6,9 +6,7 @@ from sympy.polys.densebasic import (
     dup_normal, dmp_normal,
     dup_from_raw_dict,
     dmp_convert, dmp_swap)
-
 from sympy.polys.densearith import dmp_mul_ground
-
 from sympy.polys.densetools import (
     dup_clear_denoms, dmp_clear_denoms,
     dup_integrate, dmp_integrate, dmp_integrate_in,
@@ -28,23 +26,16 @@ from sympy.polys.densetools import (
     dmp_lift,
     dup_sign_variations,
     dup_revert, dmp_revert)
-
 from sympy.polys.polyclasses import ANP
-
 from sympy.polys.polyerrors import (
     MultivariatePolynomialError,
     ExactQuotientFailed,
     NotReversible,
     DomainError)
-
 from sympy.polys.specialpolys import f_polys
-
 from sympy.polys.domains import FF, ZZ, QQ, EX
 from sympy.polys.rings import ring
-
 from sympy import S, I, sin
-from sympy.core.compatibility import long
-
 from sympy.abc import x
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
@@ -209,7 +200,8 @@ def test_dmp_eval_in():
     assert dmp_eval_in(f_6, 7, 2, 3, ZZ) == dmp_swap(
         dmp_eval(dmp_swap(f_6, 0, 2, 3, ZZ), 7, 3, ZZ), 0, 1, 2, ZZ)
 
-    f = [[[long(45)]], [[]], [[]], [[long(-9)], [-1], [], [long(3), long(0), long(10), long(0)]]]
+    f = [[[int(45)]], [[]], [[]], [[int(-9)], [-1], [],
+         [int(3), int(0), int(10), int(0)]]]
 
     assert dmp_eval_in(f, -2, 2, 2, ZZ) == \
         [[45], [], [], [-9, -1, 0, -44]]
