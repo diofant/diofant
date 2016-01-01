@@ -1,7 +1,7 @@
 from sympy.core.singleton import S
 from sympy.core.function import Function
 from sympy.core import Add
-from sympy.core.evalf import get_integer_part, PrecisionExhausted
+from sympy.core.evalf import PrecisionExhausted
 from sympy.core.numbers import Integer
 from sympy.core.relational import Gt, Lt, Ge, Le
 from sympy.core.symbol import Symbol
@@ -53,8 +53,16 @@ class RoundFunction(Function):
             npart.is_extended_real and (spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real) or
                 npart.is_imaginary and spart.is_extended_real):
             try:
-                r, i = get_integer_part(
-                    npart, cls._dir, {}, return_ints=True)
+                from sympy.core.evalf import DEFAULT_MAXPREC as target
+                prec = 10
+                while True:
+                    r, i = cls(npart, evaluate=False).evalf(prec).as_real_imag()
+                    if 2**prec > max(abs(int(r)), abs(int(i))) + 10:
+                        break
+                    else:
+                        if prec >= target:
+                            raise PrecisionExhausted
+                        prec += 10
                 ipart += Integer(r) + Integer(i)*S.ImaginaryUnit
                 npart = S.Zero
             except (PrecisionExhausted, NotImplementedError):
