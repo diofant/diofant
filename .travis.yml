@@ -2,6 +2,9 @@ branches:
   only:
     - master
 language: python
+cache:
+  directories:
+    - $HOME/.cache/pip
 sudo: false
 python:
   - 3.4
