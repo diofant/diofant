@@ -23,7 +23,40 @@ from sympy.ntheory import multiplicity, perfect_power
 # p.is_positive.]
 
 
-class ExpBase(Function):
+class exp_polar(Function):
+    r"""
+    Represent a 'polar number' (see g-function Sphinx documentation).
+
+    ``exp_polar`` represents the function
+    `Exp: \mathbb{C} \rightarrow \mathcal{S}`, sending the complex number
+    `z = a + bi` to the polar number `r = exp(a), \theta = b`. It is one of
+    the main functions to construct polar numbers.
+
+    >>> from sympy import exp_polar, pi, I, exp
+
+    The main difference is that polar numbers don't "wrap around" at `2 \pi`:
+
+    >>> exp(2*pi*I)
+    1
+    >>> exp_polar(2*pi*I)
+    exp_polar(2*I*pi)
+
+    apart from that they behave mostly like classical complex numbers:
+
+    >>> exp_polar(2)*exp_polar(3)
+    exp_polar(5)
+
+    See also
+    ========
+
+    sympy.simplify.powsimp.powsimp
+    sympy.functions.elementary.complexes.polar_lift
+    sympy.functions.elementary.complexes.periodic_argument
+    sympy.functions.elementary.complexes.principal_branch
+    """
+
+    is_polar = True
+    is_comparable = False  # cannot be evalf'd
 
     unbranched = True
 
@@ -64,12 +97,6 @@ class ExpBase(Function):
         """
         return self.args[0]
 
-    def as_base_exp(self):
-        """
-        Returns the 2-tuple (base, exponent).
-        """
-        return self.func(1), Mul(*self.args)
-
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
@@ -96,12 +123,6 @@ class ExpBase(Function):
     def _eval_is_zero(self):
         return (self.args[0] is S.NegativeInfinity)
 
-    def _eval_power(self, other):
-        """exp(arg)**e -> exp(arg*e) if assumptions allow it.
-        """
-        b, e = self.as_base_exp()
-        return Pow._eval_power(Pow(b, e, evaluate=False), other)
-
     def _eval_expand_power_exp(self, **hints):
         arg = self.args[0]
         if arg.is_Add and arg.is_commutative:
@@ -111,45 +132,9 @@ class ExpBase(Function):
             return expr
         return self.func(arg)
 
-
-class exp_polar(ExpBase):
-    r"""
-    Represent a 'polar number' (see g-function Sphinx documentation).
-
-    ``exp_polar`` represents the function
-    `Exp: \mathbb{C} \rightarrow \mathcal{S}`, sending the complex number
-    `z = a + bi` to the polar number `r = exp(a), \theta = b`. It is one of
-    the main functions to construct polar numbers.
-
-    >>> from sympy import exp_polar, pi, I, exp
-
-    The main difference is that polar numbers don't "wrap around" at `2 \pi`:
-
-    >>> exp(2*pi*I)
-    1
-    >>> exp_polar(2*pi*I)
-    exp_polar(2*I*pi)
-
-    apart from that they behave mostly like classical complex numbers:
-
-    >>> exp_polar(2)*exp_polar(3)
-    exp_polar(5)
-
-    See also
-    ========
-
-    sympy.simplify.powsimp.powsimp
-    sympy.functions.elementary.complexes.polar_lift
-    sympy.functions.elementary.complexes.periodic_argument
-    sympy.functions.elementary.complexes.principal_branch
-    """
-
-    is_polar = True
-    is_comparable = False  # cannot be evalf'd
-
     def _eval_Abs(self):
         from sympy import expand_mul
-        return sqrt( expand_mul(self * self.conjugate()) )
+        return sqrt(expand_mul(self * self.conjugate()))
 
     def _eval_evalf(self, prec):
         """ Careful! any evalf of polar numbers is flaky """
@@ -178,7 +163,7 @@ class exp_polar(ExpBase):
         # XXX exp_polar(0) is special!
         if self.args[0] == 0:
             return self, S(1)
-        return ExpBase.as_base_exp(self)
+        return self.func(1), Mul(*self.args)
 
 
 def exp(arg, **kwargs):
