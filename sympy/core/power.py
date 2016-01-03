@@ -1050,8 +1050,6 @@ class Pow(Expr):
             return self, S.One
         base, exp = self.as_base_exp()
         n, d = base.as_numer_denom()
-        # this should be the same as ExpBase.as_numer_denom wrt
-        # exponent handling
         neg_exp = exp.is_negative
         if not neg_exp and not (-exp).is_negative:
             neg_exp = _coeff_isneg(exp)
