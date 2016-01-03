@@ -7,7 +7,7 @@ from sympy import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
                    integrate, log, Mul, N, oo, pi, Pow, product, Product,
                    Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol)
 from sympy.core.evalf import (complex_accuracy, PrecisionExhausted,
-                              scaled_zero, get_integer_part, as_mpmath)
+                              scaled_zero, as_mpmath)
 
 from sympy.abc import n, x, y
 
@@ -254,6 +254,21 @@ def test_evalf_integer_parts():
     assert ceiling(x).evalf(subs={x: 3*I}) == 3*I
     assert ceiling(x).evalf(subs={x: 2 + 3*I}) == 2 + 3*I
 
+    # issue sympy/sympy#10323
+    l = 1206577996382235787095214
+    y = ceiling(sqrt(l))
+    assert y == 1098443442506
+    assert y**2 >= l
+
+    def check(x):
+        c, f = ceiling(sqrt(x)), floor(sqrt(x))
+        assert (c - 1)**2 < x and c**2 >= x
+        assert (f + 1)**2 > x and f**2 <= x
+
+    check(2**30 + 1)
+    check(2**100 + 1)
+    check(2**112 + 2)
+
 
 def test_evalf_trig_zero_detection():
     a = sin(160*pi, evaluate=False)
@@ -470,11 +485,6 @@ def test_issue_8853():
     assert floor(-p + S.Half).is_even
     assert ceiling(p - S.Half).is_even
     assert ceiling(p + S.Half).is_even is False
-
-    assert get_integer_part(S.Half, -1, {}, True) == (0, 0)
-    assert get_integer_part(S.Half, 1, {}, True) == (1, 0)
-    assert get_integer_part(-S.Half, -1, {}, True) == (-1, 0)
-    assert get_integer_part(-S.Half, 1, {}, True) == (0, 0)
 
 
 def test_issue_9326():

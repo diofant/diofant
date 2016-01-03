@@ -515,7 +515,7 @@ class harmonic(Function):
     harmonic(1/3)
     >>> He = expand_func(H)
     >>> He
-    -log(6) - sqrt(3)*pi/6 + 2*Sum(log(sin(_k*pi/3))*cos(2*_k*pi/3), (_k, 1, 1))
+    -log(6) - sqrt(3)*pi/6 + 2*Sum(log(sin(pi*_k/3))*cos(2*pi*_k/3), (_k, 1, 1))
                            + 3*Sum(1/(3*_k + 1), (_k, 0, 0))
     >>> He.doit()
     -log(6) - sqrt(3)*pi/6 - log(sqrt(3)/2) + 3

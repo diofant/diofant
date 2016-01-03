@@ -83,7 +83,7 @@ def test_manualintegrate_trigpowers():
         cos(x)**5 / 5 - cos(x)**3 / 3
 
     assert manualintegrate(tan(x)**3 * sec(x), x) == sec(x)**3/3 - sec(x)
-    assert manualintegrate(tan(x) * sec(x) **2, x) == sec(x)**2/2
+    assert manualintegrate(tan(x) * sec(x) **2, x) == tan(x)**2/2
 
     assert manualintegrate(cot(x)**5 * csc(x), x) == \
         -csc(x)**5/5 + 2*csc(x)**3/3 - csc(x)

@@ -1095,3 +1095,7 @@ def test_issue_4950():
 
 def test_issue_4968():
     assert integrate(sin(log(x**2))) == x*sin(2*log(x))/5 - 2*x*cos(2*log(x))/5
+
+
+def test_issue_7098():
+    assert integrate(1/sqrt(x) * 1/sqrt(1 - x), (x, 0, 1)) == pi

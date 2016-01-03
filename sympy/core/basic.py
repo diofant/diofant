@@ -3,7 +3,7 @@
 from inspect import getmro
 from itertools import zip_longest
 
-from .assumptions import BasicMeta, ManagedProperties
+from .assumptions import ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
@@ -168,8 +168,8 @@ class Basic(metaclass=ManagedProperties):
         # following lines:
         if self is other:
             return 0
-        n1 = self.__class__
-        n2 = other.__class__
+        n1 = self.__class__.__name__
+        n2 = other.__class__.__name__
         c = (n1 > n2) - (n1 < n2)
         if c:
             return c
@@ -1105,7 +1105,7 @@ class Basic(metaclass=ManagedProperties):
             for f in self.atoms(Function, UndefinedFunction))
 
         pattern = sympify(pattern)
-        if isinstance(pattern, BasicMeta):
+        if isinstance(pattern, type):
             return any(isinstance(arg, pattern)
             for arg in preorder_traversal(self))
 
@@ -1718,7 +1718,8 @@ class preorder_traversal(object):
                     yield subtree
 
     def skip(self):
-        """Skip yielding current node's (last yielded node's) subtrees.
+        """
+        Skip yielding current node's (last yielded node's) subtrees.
 
         Examples
         ========
