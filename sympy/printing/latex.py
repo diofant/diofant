@@ -832,12 +832,6 @@ class LatexPrinter(Printer):
         else:
             return r"%s%s" % (func, arg)
 
-    def _print_ExpBase(self, expr, exp=None):
-        # TODO should exp_polar be printed differently?
-        #      what about exp_polar(0), exp_polar(1)?
-        tex = r"e^{%s}" % self._print(expr.args[0])
-        return self._do_exponent(tex, exp)
-
     def _print_elliptic_k(self, expr, exp=None):
         tex = r"\left(%s\right)" % self._print(expr.args[0])
         if exp is not None:
