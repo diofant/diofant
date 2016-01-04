@@ -7,7 +7,7 @@ from sympy.core.basic import Basic, Atom, preorder_traversal
 from sympy.core.singleton import S, Singleton
 from sympy.core.symbol import symbols
 from sympy.core.compatibility import default_sort_key
-from sympy import sin, Lambda, Q
+from sympy import sin, cos, Lambda, Q
 
 
 b1 = Basic()
@@ -196,3 +196,8 @@ def test_literal_evalf_is_number_is_zero_is_comparable():
     assert i.is_zero
     assert i.is_number is False
     assert i.evalf(2, strict=False) == 0
+
+    # issue sympy/sympy#10272
+    n = sin(1)**2 + cos(1)**2 - 1
+    assert n.is_comparable is not True
+    assert n.n(2).is_comparable is not True
