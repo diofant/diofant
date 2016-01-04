@@ -43,8 +43,7 @@ def heuristics(e, z, z0, dir):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
-            if l.has(S.Infinity) and (l.func not in (sin, cos) and
-                                      l.is_finite is None):
+            if l.has(S.Infinity) and l.is_bounded is None:
                 return
             elif isinstance(l, Limit):
                 return

@@ -81,6 +81,7 @@ def print_tree(node):
     commutative: True
     +-Symbol: y
     | algebraic: True
+    | bounded: True
     | commutative: True
     | complex: True
     | even: True
@@ -95,8 +96,10 @@ def print_tree(node):
     | rational: True
     | real: True
     | transcendental: False
+    | unbounded: False
     +-Symbol: x
       algebraic: True
+      bounded: True
       commutative: True
       complex: True
       even: False
@@ -113,6 +116,7 @@ def print_tree(node):
       rational: True
       real: True
       transcendental: False
+      unbounded: False
       zero: False
 
     See also: tree()
