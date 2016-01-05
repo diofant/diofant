@@ -121,7 +121,7 @@ class DieDistribution(SingleFiniteDistribution):
 
     @property
     def set(self):
-        return list(map(Integer, list(range(1, self.sides+1))))
+        return list(map(Integer, range(1, self.sides + 1)))
 
     def pdf(self, x):
         x = sympify(x)

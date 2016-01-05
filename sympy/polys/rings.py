@@ -1567,7 +1567,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not f:
             return (-oo,)*f.ring.ngens
         else:
-            return tuple(map(max, list(zip(*f.itermonoms()))))
+            return tuple(map(max, zip(*f.itermonoms())))
 
     def tail_degree(f, x=None):
         """
@@ -1591,7 +1591,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not f:
             return (-oo,)*f.ring.ngens
         else:
-            return tuple(map(min, list(zip(*f.itermonoms()))))
+            return tuple(map(min, zip(*f.itermonoms())))
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
