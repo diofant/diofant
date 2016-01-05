@@ -400,7 +400,6 @@ class Function(Application, Expr):
     def class_key(cls):
         from sympy.sets.fancysets import Naturals0
         funcs = {
-            'exp': 10,
             'log': 11,
             'sin': 20,
             'cos': 21,
