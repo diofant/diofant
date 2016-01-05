@@ -545,7 +545,7 @@ def exptrigsimp(expr, simplify=True):
     # conversion from exp to hyperbolic
     ex = set(a for a in newexpr.atoms(Pow) if a.base is S.Exp1) | newexpr.atoms(S.Exp1)
     if ex:
-        ex0 = set([list(ex)[0]])
+        ex0 = {list(ex)[0]}
         ex = [ei for ei in ex if 1/ei not in ex]
         if not ex:
             ex = ex0

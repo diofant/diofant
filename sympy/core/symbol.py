@@ -342,7 +342,7 @@ def symbols(names, **args):
         (a, b, c)
         >>> symbols(['a', 'b', 'c'])
         [a, b, c]
-        >>> symbols(set(['a', 'b', 'c'])) == {a, b, c}
+        >>> symbols({'a', 'b', 'c'}) == {a, b, c}
         True
 
     If an iterable container is needed for a single symbol, set the ``seq``

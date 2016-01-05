@@ -47,7 +47,7 @@ def singularities(f, x):
         guess |= singularities(log(f.base)*f.exp, x)
     elif f.func in (log, sign) and len(f.args) == 1:
         guess |= singularities(f.args[0], x)
-        guess |= set([v for v in solve(f.args[0], x) if v.is_real])
+        guess |= {v for v in solve(f.args[0], x) if v.is_real}
     else:
         raise NotImplementedError
 

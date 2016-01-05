@@ -160,7 +160,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     >>> diop_solve(x + 3*y - 4*z + w -6)
     (t, -t - 3*y + 4*z + 6, y, z)
     >>> pprint(diop_solve(x**2 + y**2 - 5))
-    set([(-2, -1), (-2, 1), (2, -1), (2, 1)])
+    {(-2, -1), (-2, 1), (2, -1), (2, 1)}
 
     See Also
     ========
@@ -545,7 +545,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     >>> from sympy.solvers.diophantine import diop_quadratic
     >>> from sympy.printing import pprint
     >>> pprint(diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t))
-    set([(-1, -1)])
+    {(-1, -1)}
 
     References
     ==========
