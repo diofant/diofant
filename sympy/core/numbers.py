@@ -118,7 +118,7 @@ def _decimal_to_Rational_prec(dec):
         rv = Integer(int(dec))
     else:
         s = (-1)**s
-        d = sum([di*10**i for i, di in enumerate(reversed(d))])
+        d = sum(di*10**i for i, di in enumerate(reversed(d)))
         rv = Rational(s*d, 10**-e)
     return rv, prec
 

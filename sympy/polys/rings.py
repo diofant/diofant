@@ -158,7 +158,7 @@ def sring(exprs, *symbols, **options):
     if opt.domain is None:
         # NOTE: this is inefficient because construct_domain() automatically
         # performs conversion to the target domain. It shouldn't do this.
-        coeffs = sum([ list(rep.values()) for rep in reps ], [])
+        coeffs = sum((list(rep.values()) for rep in reps), [])
         opt.domain, _ = construct_domain(coeffs, opt=opt)
 
     _ring = PolyRing(opt.gens, opt.domain, opt.order)

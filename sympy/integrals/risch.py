@@ -1162,8 +1162,8 @@ def residue_reduce(a, d, DE, z=None, invert=True):
     """
     # TODO: Use log_to_atan() from rationaltools.py
     # If r = residue_reduce(...), then the logarithmic part is given by:
-    # sum([RootSum(a[0].as_poly(z), lambda i: i*log(a[1].as_expr()).subs(z,
-    # i)).subs(t, log(x)) for a in r[0]])
+    # sum(RootSum(a[0].as_poly(z), lambda i: i*log(a[1].as_expr()).subs(z,
+    # i)).subs(t, log(x)) for a in r[0])
 
     z = z or Dummy('z')
     a, d = a.cancel(d, include=True)

@@ -2227,7 +2227,7 @@ class Permutation(Basic):
         """
         a = self.array_form
 
-        return sum([j for j in range(len(a) - 1) if a[j] > a[j + 1]])
+        return sum(j for j in range(len(a) - 1) if a[j] > a[j + 1])
 
     def runs(self):
         """
@@ -2614,7 +2614,7 @@ class Permutation(Basic):
         b = other.array_form
         if len(a) != len(b):
             raise ValueError("The permutations must be of the same size.")
-        return sum([abs(a[i] - b[i]) for i in range(len(a))])
+        return sum(abs(a[i] - b[i]) for i in range(len(a)))
 
     @classmethod
     def josephus(self, m, n, s=1):
