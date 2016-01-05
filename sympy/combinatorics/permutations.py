@@ -1448,7 +1448,7 @@ class Permutation(Basic):
         >>> Permutation.from_sequence('SymPy', key=lambda x: x.lower())
         Permutation(4)(0, 2)(1, 3)
         """
-        ic = list(zip(i, list(range(len(i)))))
+        ic = list(zip(i, range(len(i))))
         if key:
             ic.sort(key=lambda x: key(x[0]))
         else:

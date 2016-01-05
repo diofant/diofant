@@ -1288,7 +1288,7 @@ def to_int_repr(clauses, symbols):
 
     """
 
-    symbols = dict(zip(symbols, list(range(1, len(symbols) + 1))))
+    symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
         if arg.func is Not:

@@ -2296,7 +2296,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         """Computes the functional composition."""
         ring = f.ring
         poly = ring.zero
-        gens_map = dict(zip(ring.gens, list(range(ring.ngens))))
+        gens_map = dict(zip(ring.gens, range(ring.ngens)))
 
         if a is not None:
             replacements = [(x, a)]

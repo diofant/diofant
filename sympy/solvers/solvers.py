@@ -3071,7 +3071,7 @@ def unrad(eq, *syms, **flags):
         gens = [g for g in gens if g.free_symbols & syms]
 
     # get terms together that have common generators
-    drad = dict(zip(rads, list(range(len(rads)))))
+    drad = dict(zip(rads, range(len(rads))))
     rterms = {(): []}
     args = Add.make_args(poly.as_expr())
     for t in args:
