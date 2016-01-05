@@ -95,7 +95,6 @@ class FunctionClass(ManagedProperties):
     Use Function('<function name>' [ , signature ]) to create
     undefined function classes.
     """
-    _new = type.__new__
 
     def __init__(cls, *args, **kwargs):
         if hasattr(cls, 'eval'):
