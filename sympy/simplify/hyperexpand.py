@@ -1712,7 +1712,7 @@ def try_polynomial(func, z):
     a = al0[-1]
     fac = 1
     res = S(1)
-    for n in Tuple(*list(range(-a))):
+    for n in Tuple(*range(-a)):
         fac *= z
         fac /= n + 1
         for a in func.ap:
