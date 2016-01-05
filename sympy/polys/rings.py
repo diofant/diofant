@@ -1800,7 +1800,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> pprint(f.terms(grlex))
         [((1, 7), 1), ((2, 3), 2)]
         """
-        return self._sorted(list(self.items()), order)
+        return self._sorted(self.items(), order)
 
     def itercoeffs(self):
         """Iterator over coefficients of a polynomial. """
@@ -2304,7 +2304,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(list(x.items()), key=lambda k: gens_map[k[0]])
+                replacements = sorted(x.items(), key=lambda k: gens_map[k[0]])
             else:
                 raise ValueError("expected a generator, value pair a sequence of such pairs")
 

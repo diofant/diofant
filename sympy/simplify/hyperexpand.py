@@ -58,7 +58,7 @@ It is described in great(er) detail in the Sphinx documentation.
 #
 
 from collections import defaultdict
-from itertools import product
+from itertools import product, chain
 
 from sympy import SYMPY_DEBUG
 from sympy.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
@@ -1589,7 +1589,7 @@ def devise_plan(target, origin, z):
                          lambda p, i: UnShiftB(nal + aother, p + bother, i, z),
                          lambda p, i: ShiftB(p[i]))
 
-    for r in sorted(list(abuckets.keys()) + list(bbuckets.keys()), key=default_sort_key):
+    for r in sorted(chain(abuckets.keys(), bbuckets.keys()), key=default_sort_key):
         al = ()
         nal = ()
         bk = ()
@@ -1603,7 +1603,7 @@ def devise_plan(target, origin, z):
         if len(al) != len(nal) or len(bk) != len(nbk):
             raise ValueError('%s not reachable from %s' % (target, origin))
 
-        al, nal, bk, nbk = [sorted(list(w), key=default_sort_key)
+        al, nal, bk, nbk = [sorted(w, key=default_sort_key)
             for w in [al, nal, bk, nbk]]
 
         def others(dic, key):
@@ -1843,7 +1843,7 @@ def try_lerchphi(func):
     trans = {}
     for n, b in enumerate([S(1)] + list(deriv.keys())):
         trans[b] = n
-    basis = [expand_func(b) for (b, _) in sorted(list(trans.items()),
+    basis = [expand_func(b) for (b, _) in sorted(trans.items(),
                                                  key=lambda x:x[1])]
     B = Matrix(basis)
     C = Matrix([[0]*len(B)])
