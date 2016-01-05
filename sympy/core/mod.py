@@ -1,4 +1,4 @@
-from sympy.core.numbers import nan
+from .numbers import nan
 from .function import Function
 
 

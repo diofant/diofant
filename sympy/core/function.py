@@ -39,7 +39,8 @@ from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import iterable, is_sequence, as_int, ordered
+from .compatibility import (iterable, is_sequence, as_int, ordered,
+                            default_sort_key)
 from .decorators import _sympifyit
 from .expr import Expr, AtomicExpr
 from .numbers import Rational, Float
@@ -47,11 +48,10 @@ from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
 from .sympify import sympify
-from sympy.core.containers import Tuple, Dict
-from sympy.core.logic import fuzzy_and
-from sympy.utilities import default_sort_key
+from .containers import Tuple, Dict
+from .logic import fuzzy_and
+from .evaluate import global_evaluate
 from sympy.utilities.iterables import uniq
-from sympy.core.evaluate import global_evaluate
 
 
 def _coeff_isneg(a):
@@ -2428,4 +2428,4 @@ def nfloat(expr, n=15, exponent=False):
         lambda x: isinstance(x, Function)))
 
 
-from sympy.core.symbol import Dummy
+from .symbol import Dummy

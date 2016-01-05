@@ -52,7 +52,7 @@ def __cacheit_nocache(func):
 
 
 # from sympy.assumptions.assume import global_assumptions  # circular import
-from sympy.core.evaluate import global_evaluate
+from .evaluate import global_evaluate
 _globals = (global_evaluate,)
 
 

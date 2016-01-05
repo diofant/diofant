@@ -1,9 +1,9 @@
-from sympy.core.sympify import _sympify, sympify
-from sympy.core.basic import Basic, _aresame
-from sympy.core.cache import cacheit
-from sympy.core.compatibility import ordered
-from sympy.core.logic import fuzzy_and
-from sympy.core.evaluate import global_evaluate
+from .sympify import _sympify, sympify
+from .basic import Basic, _aresame
+from .cache import cacheit
+from .compatibility import ordered
+from .logic import fuzzy_and
+from .evaluate import global_evaluate
 
 
 class AssocOp(Basic):

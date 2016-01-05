@@ -5,7 +5,7 @@ This file assumes knowledge of Basic and little else.
 
 from strategies.dispatch import dispatch
 
-from sympy.core.basic import Basic, Atom
+from .basic import Basic, Atom
 from sympy.utilities.iterables import sift
 
 
