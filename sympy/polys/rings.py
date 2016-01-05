@@ -368,7 +368,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        mapping = dict(list(zip(self.symbols, self.gens)))
+        mapping = dict(zip(self.symbols, self.gens))
 
         try:
             poly = self._rebuild_expr(expr, mapping)
@@ -2296,7 +2296,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         """Computes the functional composition."""
         ring = f.ring
         poly = ring.zero
-        gens_map = dict(list(zip(ring.gens, list(range(ring.ngens)))))
+        gens_map = dict(zip(ring.gens, list(range(ring.ngens))))
 
         if a is not None:
             replacements = [(x, a)]

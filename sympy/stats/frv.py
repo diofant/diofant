@@ -297,7 +297,7 @@ class FinitePSpace(PSpace):
         for value, cum_prob in cdf:
             if x < cum_prob:
                 # return dictionary mapping RandomSymbols to values
-                return dict(list(zip(expr, value)))
+                return dict(zip(expr, value))
 
         assert False, "We should never have gotten to this point"
 

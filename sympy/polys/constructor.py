@@ -255,7 +255,7 @@ def construct_domain(obj, **args):
 
     if hasattr(obj, '__iter__'):
         if isinstance(obj, dict):
-            return domain, dict(list(zip(monoms, coeffs)))
+            return domain, dict(zip(monoms, coeffs))
         else:
             return domain, coeffs
     else:

@@ -1372,7 +1372,7 @@ class Lambda(Expr):
                 'args': list(self.nargs)[0],
                 'plural': 's'*(list(self.nargs)[0] != 1),
                 'given': n})
-        return self.expr.xreplace(dict(list(zip(self.variables, args))))
+        return self.expr.xreplace(dict(zip(self.variables, args)))
 
     def __eq__(self, other):
         if not isinstance(other, Lambda):
@@ -1382,7 +1382,7 @@ class Lambda(Expr):
 
         selfexpr = self.args[1]
         otherexpr = other.args[1]
-        otherexpr = otherexpr.xreplace(dict(list(zip(other.args[0], self.args[0]))))
+        otherexpr = otherexpr.xreplace(dict(zip(other.args[0], self.args[0])))
         return selfexpr == otherexpr
 
     def __ne__(self, other):

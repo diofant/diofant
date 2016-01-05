@@ -754,8 +754,8 @@ class Formula(object):
             else:
                 raise ValueError("At least one of the parameters of the "
                         "formula must be equal to %s" % (a,))
-        base_repl = [dict(list(zip(self.symbols, values)))
-                for values in product(*symbol_values)]
+        base_repl = [dict(zip(self.symbols, values))
+                     for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
         a_inv, b_inv = [{a: len(vals) for a, vals in bucket.items()}
                         for bucket in [abuckets, bbuckets]]
@@ -789,7 +789,7 @@ class Formula(object):
                     min_ = floor(min(vals))
                     max_ = ceiling(max(vals))
                     values.append([a0 + n for n in range(min_, max_ + 1)])
-                result.extend(dict(list(zip(self.symbols, l))) for l in product(*values))
+                result.extend(dict(zip(self.symbols, l)) for l in product(*values))
         return result
 
 

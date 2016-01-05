@@ -489,8 +489,8 @@ class DifferentialExtension(object):
                         rad = Mul(*[term**(power/n) for term, power in ans])
                         self.newf = self.newf.xreplace({exp(p*exparg):
                             exp(const*p)*rad for exparg, p in others})
-                        self.newf = self.newf.xreplace(dict(list(zip(reversed(self.T),
-                            reversed([f(self.x) for f in self.Tfuncs])))))
+                        self.newf = self.newf.xreplace(dict(zip(reversed(self.T),
+                            reversed([f(self.x) for f in self.Tfuncs]))))
                         restart = True
                         break
                     else:
@@ -1217,7 +1217,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
                     L = reduced(inv*coeff, [s])[1]
                     coeffs.append(L.as_expr())
 
-                h = Poly(dict(list(zip(h.monoms(), coeffs))), DE.t)
+                h = Poly(dict(zip(h.monoms(), coeffs)), DE.t)
 
             H.append((s, h))
 
