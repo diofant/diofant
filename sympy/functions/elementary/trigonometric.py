@@ -393,13 +393,8 @@ class sin(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
-
-    def _eval_is_finite(self):
-        arg = self.args[0]
-        if arg.is_extended_real:
-            return True
+    def _eval_is_real(self):
+        return self.args[0].is_real
 
 
 class cos(TrigonometricFunction):
@@ -770,14 +765,8 @@ class cos(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
-
-    def _eval_is_finite(self):
-        arg = self.args[0]
-
-        if arg.is_extended_real:
-            return True
+    def _eval_is_real(self):
+        return self.args[0].is_real
 
 
 class tan(TrigonometricFunction):
@@ -1151,7 +1140,7 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
         return self._calculate_reciprocal("_eval_expand_trig", **hints)
 
     def _eval_is_extended_real(self):
-        return self._reciprocal_of(self.args[0])._eval_is_extended_real()
+        return (1/self._reciprocal_of(self.args[0])).is_extended_real
 
     def _eval_as_leading_term(self, x):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
