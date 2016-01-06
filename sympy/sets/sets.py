@@ -684,6 +684,7 @@ class Interval(Set, EvalfMixin):
 
     Notes
     =====
+
     - Only real end points are supported
     - Interval(a, b) with a > b will return the empty set
     - Use the evalf() method to turn an Interval into an mpmath
@@ -694,6 +695,7 @@ class Interval(Set, EvalfMixin):
 
     .. [1] http://en.wikipedia.org/wiki/Interval_%28mathematics%29
     """
+
     is_Interval = True
 
     def __new__(cls, start, end, left_open=False, right_open=False):
@@ -709,9 +711,7 @@ class Interval(Set, EvalfMixin):
                 "left_open and right_open can have only true/false values, "
                 "got %s and %s" % (left_open, right_open))
 
-        inftys = [S.Infinity, S.NegativeInfinity]
-        # Only allow real intervals (use symbols with 'is_extended_real=True').
-        if not all(i.is_extended_real is not False or i in inftys for i in (start, end)):
+        if not all(i.is_extended_real is not False for i in (start, end)):
             raise ValueError("Non-real intervals are not supported")
 
         # evaluate if possible
@@ -720,16 +720,12 @@ class Interval(Set, EvalfMixin):
         elif (end - start).is_negative:
             return S.EmptySet
 
-        if end == start and (left_open or right_open):
-            return S.EmptySet
-        if end == start and not (left_open or right_open):
-            return FiniteSet(end)
+        is_open = left_open or right_open
 
-        # Make sure infinite interval end points are open.
-        if start == S.NegativeInfinity:
-            left_open = true
-        if end == S.Infinity:
-            right_open = true
+        if end == start and is_open:
+            return S.EmptySet
+        if end == start and not is_open:
+            return FiniteSet(end)
 
         return Basic.__new__(cls, start, end, left_open, right_open)
 
@@ -831,8 +827,7 @@ class Interval(Set, EvalfMixin):
             return
 
         # handle (-oo, oo)
-        infty = S.NegativeInfinity, S.Infinity
-        if Eq(self, Interval(*infty)) is S.true:
+        if Eq(self, S.Reals) is S.true:
             l, r = self.left, self.right
             if l.is_extended_real or r.is_extended_real:
                 return other
@@ -925,10 +920,6 @@ class Interval(Set, EvalfMixin):
     def _contains(self, other):
         if other.is_extended_real is False:
             return false
-
-        if self.start is S.NegativeInfinity and self.end is S.Infinity:
-            if other.is_extended_real is not None:
-                return _sympify(other.is_extended_real)
 
         if self.left_open:
             expr = other > self.start
