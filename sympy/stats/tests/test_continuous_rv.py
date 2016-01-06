@@ -64,7 +64,7 @@ def test_ContinuousDomain():
 
     Y = given(X, X >= 0)
 
-    assert Y.pspace.domain.set == Interval(0, oo)
+    assert Y.pspace.domain.set == Interval(0, oo, False, True)
 
 
 @pytest.mark.slow
