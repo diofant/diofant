@@ -2473,8 +2473,9 @@ class atan2(InverseTrigonometricFunction):
         d = x**2 + y**2
         return arg(n/sqrt(d)) - I*log(abs(n)/sqrt(abs(d)))
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real and self.args[1].is_extended_real
+    def _eval_is_real(self):
+        # XXX this seems to be wrong for (0, 0)
+        return self.args[0].is_real and self.args[1].is_real
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
