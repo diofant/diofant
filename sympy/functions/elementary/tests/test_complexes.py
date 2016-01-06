@@ -751,6 +751,8 @@ def test_periodic_argument():
 
     assert Abs(polar_lift(1 + I)) == Abs(1 + I)
 
+    assert periodic_argument(x, pi).is_real is True
+
 
 @pytest.mark.xfail
 def test_principal_branch_fail():
