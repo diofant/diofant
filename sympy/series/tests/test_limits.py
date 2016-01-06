@@ -8,6 +8,7 @@ from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    Function, subfactorial, PoleError)
 from sympy.series.limits import heuristics
 from sympy.series.order import Order
+
 from sympy.abc import x, y, z, a
 
 
@@ -164,7 +165,6 @@ def test_ceiling_requires_robust_assumptions():
 
 
 def test_atan():
-    x = Symbol("x", extended_real=True)
     assert limit(atan(x)*sin(1/x), x, 0) == 0
     assert limit(atan(x) + sqrt(x + 1) - sqrt(x), x, oo) == pi/2
 
@@ -179,7 +179,7 @@ def test_abs():
 def test_heuristic():
     x = Symbol("x", extended_real=True)
     assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
-    assert limit(log(2 + sqrt(atan(x))*sqrt(sin(1/x))), x, 0) == log(2)
+    assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, '+') == log(2)
 
 
 def test_issue_3871():
