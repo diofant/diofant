@@ -969,3 +969,13 @@ def test_sympyissue_9808():
             Complement(FiniteSet(y), FiniteSet(1), evaluate=False))
     assert (Complement(FiniteSet(1, 2, x), FiniteSet(x, y, 2, 3)) ==
             Complement(FiniteSet(1), FiniteSet(y), evaluate=False))
+
+
+def test_sympyissue_10337():
+    assert (FiniteSet(2) == 3) is False
+    assert (FiniteSet(2) != 3) is True
+
+    pytest.raises(TypeError, lambda: FiniteSet(2) < 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
