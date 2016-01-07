@@ -13,6 +13,8 @@ def test_exp_values():
     assert exp(oo) == oo
     assert exp(-oo) == 0
 
+    assert exp(zoo) == nan
+
     assert exp(0) == 1
     assert exp(1) == E
     assert exp(-1 + x).as_base_exp() == (S.Exp1, x - 1)

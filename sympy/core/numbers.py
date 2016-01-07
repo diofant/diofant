@@ -3008,6 +3008,8 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero
+        elif arg is S.ComplexInfinity:
+            return S.NaN
         elif arg.func is log:
             return arg.args[0]
         elif arg.is_Mul:
