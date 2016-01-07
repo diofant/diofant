@@ -773,7 +773,7 @@ def test_issue_7173():
 
 
 def test_issue_8514():
-    a, b, c, = symbols('a b c', positive=True)
+    a, b, c, = symbols('a b c', positive=True, finite=True)
     t = symbols('t', positive=True)
     ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
     assert ft == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -

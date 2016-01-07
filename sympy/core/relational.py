@@ -320,7 +320,8 @@ class Equality(Relational):
 
             # If appropriate, check if the difference evaluates.  Detect
             # incompatibility such as lhs real and rhs not real.
-            if lhs.is_complex and rhs.is_complex:
+            if ((lhs.is_complex and rhs.is_complex) or
+                    (lhs.is_extended_real and rhs.is_extended_real)):
                 r = (lhs - rhs).is_zero
                 if r is not None:
                     return _sympify(r)

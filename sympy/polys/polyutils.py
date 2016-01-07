@@ -35,8 +35,11 @@ def _nsort(roots, separated=False):
         if not separated:
             return list(roots)
         r = list(roots)[0]
-        if r.is_complex and r.is_extended_real is not None:
-            return [[r], []] if r.is_extended_real else [[], [r]]
+        if r.is_extended_real:
+            return [[r], []]
+        elif r.is_extended_real is False:
+            if r.is_complex is not None:
+                return [[], [r]]
     if not all(r.is_number for r in roots):
         raise NotImplementedError
     # see issue 6137:

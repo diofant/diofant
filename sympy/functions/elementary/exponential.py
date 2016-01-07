@@ -422,6 +422,13 @@ class log(Function):
             return False
         return arg.is_finite
 
+    def _eval_is_complex(self):
+        arg = self.args[0]
+        if arg.is_zero:
+            return False
+        elif arg.is_nonzero:
+            return arg.is_complex
+
     def _eval_is_positive(self):
         return (self.args[0] - 1).is_positive
 

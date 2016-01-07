@@ -881,6 +881,10 @@ class periodic_argument(Function):
         ub = periodic_argument(z, oo)._eval_evalf(prec)
         return (ub - ceiling(ub/period - S(1)/2)*period)._eval_evalf(prec)
 
+    def _eval_is_real(self):
+        if self.args[1].is_positive:
+            return True
+
 
 def unbranched_argument(arg):
     from sympy import oo
