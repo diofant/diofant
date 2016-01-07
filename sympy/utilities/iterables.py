@@ -1147,6 +1147,31 @@ def multiset_partitions(multiset, m=None):
     If ``multiset`` is an integer, a range [0, 1, ..., multiset - 1]
     will be supplied.
 
+    Counting
+    --------
+
+    The number of partitions of a set is given by the bell number:
+
+    >>> from sympy import bell
+    >>> len(list(multiset_partitions(5))) == bell(5) == 52
+    True
+
+    The number of partitions of length k from a set of size n is given by the
+    Stirling Number of the 2nd kind:
+
+    >>> def S2(n, k):
+    ...     from sympy import Dummy, binomial, factorial, Sum
+    ...     if k > n:
+    ...         return 0
+    ...     j = Dummy()
+    ...     arg = (-1)**(k-j)*j**n*binomial(k,j)
+    ...     return 1/factorial(k)*Sum(arg,(j,0,k)).doit()
+    ...
+    >>> S2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
+    True
+
+    These comments on counting apply to *sets*, not multisets.
+
     Examples
     ========
 
@@ -1177,31 +1202,6 @@ def multiset_partitions(multiset, m=None):
     [[[1, 1, 2]], [[1, 1], [2]], [[1, 2], [1]], [[1], [1], [2]]]
     >>> list(multiset_partitions([1]*3))
     [[[1, 1, 1]], [[1], [1, 1]], [[1], [1], [1]]]
-
-    Counting
-    ========
-
-    The number of partitions of a set is given by the bell number:
-
-    >>> from sympy import bell
-    >>> len(list(multiset_partitions(5))) == bell(5) == 52
-    True
-
-    The number of partitions of length k from a set of size n is given by the
-    Stirling Number of the 2nd kind:
-
-    >>> def S2(n, k):
-    ...     from sympy import Dummy, binomial, factorial, Sum
-    ...     if k > n:
-    ...         return 0
-    ...     j = Dummy()
-    ...     arg = (-1)**(k-j)*j**n*binomial(k,j)
-    ...     return 1/factorial(k)*Sum(arg,(j,0,k)).doit()
-    ...
-    >>> S2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
-    True
-
-    These comments on counting apply to *sets*, not multisets.
 
     Notes
     =====

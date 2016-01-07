@@ -220,7 +220,7 @@ def is_conservative(field):
     """
     Checks if a field is conservative.
 
-    Paramaters
+    Parameters
     ==========
 
     field : Vector
@@ -254,7 +254,7 @@ def is_solenoidal(field):
     """
     Checks if a field is solenoidal.
 
-    Paramaters
+    Parameters
     ==========
 
     field : Vector
