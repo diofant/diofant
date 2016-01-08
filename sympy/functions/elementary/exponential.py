@@ -288,24 +288,6 @@ class log(Function):
         """
         return self, S.One
 
-    @staticmethod
-    @cacheit
-    def taylor_term(n, x, *previous_terms):  # of log(1+x)
-        """
-        Returns the next term in the Taylor series expansion of `\log(1+x)`.
-        """
-        from sympy import powsimp
-        if n < 0:
-            return S.Zero
-        x = sympify(x)
-        if n == 0:
-            return x
-        if previous_terms:
-            p = previous_terms[-1]
-            if p is not None:
-                return powsimp((-n) * p * x / (n + 1), deep=True, combine='exp')
-        return (1 - 2*(n % 2)) * x**(n + 1)/(n + 1)
-
     def _eval_expand_log(self, deep=True, **hints):
         from sympy import unpolarify, expand_log
         from sympy.concrete import Sum, Product
@@ -438,34 +420,25 @@ class log(Function):
     def _eval_nseries(self, x, n, logx):
         # NOTE Please see the comment at the beginning of this file, labelled
         #      IMPORTANT.
-        from sympy import cancel, Order
+        from sympy import Order
         if not logx:
             logx = log(x)
-        if self.args[0] == x:
-            return logx
-        arg = self.args[0]
-        k, l = Wild("k"), Wild("l")
-        r = arg.match(k*x**l)
-        if r is not None:
-            k, l = r[k], r[l]
-            if l != 0 and not l.has(x) and not k.has(x):
-                r = log(k) + l*logx  # XXX true regardless of assumptions?
-                return r
-
-        # TODO new and probably slow
         s = self.args[0].nseries(x, n=n, logx=logx)
         while s.is_Order:
             n += 1
             s = self.args[0].nseries(x, n=n, logx=logx)
         a, b = s.as_leading_term(x).as_coeff_exponent(x)
-        p = cancel(s/(a*x**b) - 1)
-        g = None
-        l = []
-        for i in range(n + 2):
-            g = log.taylor_term(i, p, g)
-            g = g.nseries(x, n=n, logx=logx)
-            l.append(g)
-        return log(a) + b*logx + Add(*l) + Order(p**n, x)
+        t = (s/(a*x**b) - 1).cancel().nseries(x, n=n, logx=logx)
+        log_series = log(a) + b*logx + t
+        if t != 0:
+            # series of log(1 + t) in t
+            term = t
+            for i in range(1, n):
+                term *= -i*t/(i + 1)
+                term = term.nseries(x, n=n, logx=logx)
+                log_series += term
+            log_series += Order(t**n, x)
+        return log_series
 
     def _eval_as_leading_term(self, x):
         arg = self.args[0].as_leading_term(x)
