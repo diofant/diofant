@@ -158,7 +158,7 @@ def sring(exprs, *symbols, **options):
     if opt.domain is None:
         # NOTE: this is inefficient because construct_domain() automatically
         # performs conversion to the target domain. It shouldn't do this.
-        coeffs = sum([ list(rep.values()) for rep in reps ], [])
+        coeffs = sum((list(rep.values()) for rep in reps), [])
         opt.domain, _ = construct_domain(coeffs, opt=opt)
 
     _ring = PolyRing(opt.gens, opt.domain, opt.order)
@@ -368,7 +368,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        mapping = dict(list(zip(self.symbols, self.gens)))
+        mapping = dict(zip(self.symbols, self.gens))
 
         try:
             poly = self._rebuild_expr(expr, mapping)
@@ -1567,7 +1567,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not f:
             return (-oo,)*f.ring.ngens
         else:
-            return tuple(map(max, list(zip(*f.itermonoms()))))
+            return tuple(map(max, zip(*f.itermonoms())))
 
     def tail_degree(f, x=None):
         """
@@ -1591,7 +1591,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not f:
             return (-oo,)*f.ring.ngens
         else:
-            return tuple(map(min, list(zip(*f.itermonoms()))))
+            return tuple(map(min, zip(*f.itermonoms())))
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
@@ -1800,7 +1800,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> pprint(f.terms(grlex))
         [((1, 7), 1), ((2, 3), 2)]
         """
-        return self._sorted(list(self.items()), order)
+        return self._sorted(self.items(), order)
 
     def itercoeffs(self):
         """Iterator over coefficients of a polynomial. """
@@ -2296,7 +2296,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         """Computes the functional composition."""
         ring = f.ring
         poly = ring.zero
-        gens_map = dict(list(zip(ring.gens, list(range(ring.ngens)))))
+        gens_map = dict(zip(ring.gens, range(ring.ngens)))
 
         if a is not None:
             replacements = [(x, a)]
@@ -2304,7 +2304,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(list(x.items()), key=lambda k: gens_map[k[0]])
+                replacements = sorted(x.items(), key=lambda k: gens_map[k[0]])
             else:
                 raise ValueError("expected a generator, value pair a sequence of such pairs")
 

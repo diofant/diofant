@@ -174,7 +174,7 @@ class Routine(object):
         # InputArguments/InOutArguments---subset because user could
         # specify additional (unused) InputArguments or local_vars.
         notcovered = symbols.difference(input_symbols | local_vars | global_vars)
-        if notcovered != set([]):
+        if notcovered != set():
             raise ValueError("Symbols needed for output are not in input " +
                              ", ".join([str(x) for x in notcovered]))
 

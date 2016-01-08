@@ -154,7 +154,7 @@ References
 
 from random import shuffle
 
-from sympy.core.facts import FactRules, FactKB
+from .facts import FactRules, FactKB
 
 
 _assume_rules = FactRules([

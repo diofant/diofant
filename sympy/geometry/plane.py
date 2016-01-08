@@ -245,7 +245,7 @@ class Plane(GeometryEntity):
         if isinstance(l, LinearEntity3D):
             a = l.direction_ratio
             b = self.normal_vector
-            c = sum([i*j for i, j in zip(a, b)])
+            c = sum(i*j for i, j in zip(a, b))
             if c == 0:
                 return True
             else:
@@ -350,14 +350,14 @@ class Plane(GeometryEntity):
             c = Matrix(a.direction_ratio(b))
             d = Matrix(self.normal_vector)
             e = c.dot(d)
-            f = sqrt(sum([i**2 for i in self.normal_vector]))
+            f = sqrt(sum(i**2 for i in self.normal_vector))
             return abs(e / f)
         if isinstance(o, Plane):
             a, b = o.p1, self.p1
             c = Matrix(a.direction_ratio(b))
             d = Matrix(self.normal_vector)
             e = c.dot(d)
-            f = sqrt(sum([i**2 for i in self.normal_vector]))
+            f = sqrt(sum(i**2 for i in self.normal_vector))
             return abs(e / f)
 
     def angle_between(self, o):
@@ -396,15 +396,15 @@ class Plane(GeometryEntity):
             a = Matrix(self.normal_vector)
             b = Matrix(o.direction_ratio)
             c = a.dot(b)
-            d = sqrt(sum([i**2 for i in self.normal_vector]))
-            e = sqrt(sum([i**2 for i in o.direction_ratio]))
+            d = sqrt(sum(i**2 for i in self.normal_vector))
+            e = sqrt(sum(i**2 for i in o.direction_ratio))
             return asin(c/(d*e))
         if isinstance(o, Plane):
             a = Matrix(self.normal_vector)
             b = Matrix(o.normal_vector)
             c = a.dot(b)
-            d = sqrt(sum([i**2 for i in self.normal_vector]))
-            e = sqrt(sum([i**2 for i in o.normal_vector]))
+            d = sqrt(sum(i**2 for i in self.normal_vector))
+            e = sqrt(sum(i**2 for i in o.normal_vector))
             return acos(c/(d*e))
 
     @staticmethod

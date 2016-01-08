@@ -601,15 +601,18 @@ class StrPrinter(Printer):
     def _print_Sample(self, expr):
         return "Sample([%s])" % self.stringify(expr, ", ", 0)
 
-    def _print_set(self, s):
+    def _print_frozenset(self, s):
         items = sorted(s, key=default_sort_key)
 
         args = ', '.join(self._print(item) for item in items)
         if args:
-            args = '[%s]' % args
+            args = '{%s}' % args
         return '%s(%s)' % (type(s).__name__, args)
 
-    _print_frozenset = _print_set
+    def _print_set(self, expr):
+        if expr == set():
+            return "set()"
+        return "{%s}" % self.stringify(sorted(expr, key=default_sort_key), ", ")
 
     def _print_SparseMatrix(self, expr):
         from sympy.matrices import Matrix

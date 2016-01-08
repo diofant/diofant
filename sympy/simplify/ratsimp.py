@@ -151,9 +151,9 @@ def ratsimpmodprime(expr, G, *gens, **args):
             ng = Cs + Ds
 
             c_hat = Poly(
-                sum([Cs[i] * M1[i] for i in range(len(M1))]), opt.gens + ng)
+                sum(Cs[i] * M1[i] for i in range(len(M1))), opt.gens + ng)
             d_hat = Poly(
-                sum([Ds[i] * M2[i] for i in range(len(M2))]), opt.gens + ng)
+                sum(Ds[i] * M2[i] for i in range(len(M2))), opt.gens + ng)
 
             r = reduced(a * d_hat - b * c_hat, G, opt.gens + ng,
                         order=opt.order, polys=True)[1]
@@ -168,8 +168,8 @@ def ratsimpmodprime(expr, G, *gens, **args):
                 # The "free" variables occuring before as parameters
                 # might still be in the substituted c, d, so set them
                 # to the value chosen before:
-                c = c.subs(dict(list(zip(Cs + Ds, [1] * (len(Cs) + len(Ds))))))
-                d = d.subs(dict(list(zip(Cs + Ds, [1] * (len(Cs) + len(Ds))))))
+                c = c.subs(dict(zip(Cs + Ds, [1] * (len(Cs) + len(Ds)))))
+                d = d.subs(dict(zip(Cs + Ds, [1] * (len(Cs) + len(Ds)))))
 
                 c = Poly(c, opt.gens)
                 d = Poly(d, opt.gens)

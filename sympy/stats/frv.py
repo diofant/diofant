@@ -267,8 +267,8 @@ class FinitePSpace(PSpace):
     def integrate(self, expr, rvs=None):
         rvs = rvs or self.values
         expr = expr.xreplace({rs: rs.symbol for rs in rvs})
-        return sum([expr.xreplace(dict(elem)) * self.prob_of(elem)
-                for elem in self.domain])
+        return sum(expr.xreplace(dict(elem)) * self.prob_of(elem)
+                   for elem in self.domain)
 
     def probability(self, condition):
         cond_symbols = frozenset(rs.symbol for rs in random_symbols(condition))
@@ -297,7 +297,7 @@ class FinitePSpace(PSpace):
         for value, cum_prob in cdf:
             if x < cum_prob:
                 # return dictionary mapping RandomSymbols to values
-                return dict(list(zip(expr, value)))
+                return dict(zip(expr, value))
 
         assert False, "We should never have gotten to this point"
 

@@ -461,7 +461,7 @@ def limited_integrate(fa, fd, G, DE):
             raise NonElementaryIntegralException
         else:
             l[0] *= 1/l[0][0]
-            C = sum([Poly(i, DE.t)*q for (i, q) in zip(l[0], Q)])
+            C = sum(Poly(i, DE.t)*q for (i, q) in zip(l[0], Q))
             # Custom version of rischDE() that uses the already computed
             # denominator and degree bound from above.
             B, C, m, alpha, beta = spde(A, B, C, N, DE)

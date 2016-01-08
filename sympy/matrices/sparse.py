@@ -222,7 +222,7 @@ class SparseMatrix(MatrixBase):
         col_list
         """
         return [tuple(k + (self[k],)) for k in
-            sorted(list(self._smat.keys()), key=lambda k: list(k))]
+                sorted(self._smat.keys(), key=lambda k: list(k))]
 
     RL = property(row_list, None, None, "Alternate faster representation")
 
@@ -247,7 +247,7 @@ class SparseMatrix(MatrixBase):
         sympy.matrices.sparse.MutableSparseMatrix.col_op
         row_list
         """
-        return [tuple(k + (self[k],)) for k in sorted(list(self._smat.keys()), key=lambda k: list(reversed(k)))]
+        return [tuple(k + (self[k],)) for k in sorted(self._smat.keys(), key=lambda k: list(reversed(k)))]
 
     CL = property(col_list, None, None, "Alternate faster representation")
 

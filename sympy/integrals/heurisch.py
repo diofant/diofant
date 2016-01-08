@@ -168,7 +168,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     This is a heuristic approach to indefinite integration in finite
     terms using the extended heuristic (parallel) Risch algorithm, based
-    on Manuel Bronstein's "Poor Man's Integrator".
+    on Manuel Bronstein's "Poor Man's Integrator" [1]_.
 
     The algorithm supports various classes of functions including
     transcendental elementary or special functions like Airy,
@@ -184,21 +184,22 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     'integrate' function in most cases,  as this procedure needs some
     preprocessing steps and otherwise may fail.
 
-    Specification
-    =============
+    Parameters
+    ==========
 
-     heurisch(f, x, rewrite=False, hints=None)
+    heurisch(f, x, rewrite=False, hints=None)
 
-       where
-         f : expression
-         x : symbol
+    f : Expr
+        expression
+    x : Symbol
+        variable
 
-         rewrite -> force rewrite 'f' in terms of 'tan' and 'tanh'
-         hints   -> a list of functions that may appear in anti-derivate
-
-          - hints = None          --> no suggestions at all
-          - hints = [ ]           --> try to figure out
-          - hints = [f1, ..., fn] --> we know better
+    rewrite : Boolean, optional
+        force rewrite 'f' in terms of 'tan' and 'tanh', default False.
+    hints : None or list
+        a list of functions that may appear in anti-derivate.  If
+        None (default) - no suggestions at all, if empty list - try
+        to figure out.
 
     Examples
     ========
@@ -210,25 +211,25 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     >>> heurisch(y*tan(x), x)
     y*log(tan(x)**2 + 1)/2
 
-    See Manuel Bronstein's "Poor Man's Integrator":
+    References
+    ==========
 
-    [1] http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
+    .. [1] Manuel Bronstein's "Poor Man's Integrator",
+           http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
 
-    For more information on the implemented algorithm refer to:
+    .. [2] K. Geddes, L. Stefanus, On the Risch-Norman Integration
+           Method and its Implementation in Maple, Proceedings of
+           ISSAC'89, ACM Press, 212-217.
 
-    [2] K. Geddes, L. Stefanus, On the Risch-Norman Integration
-       Method and its Implementation in Maple, Proceedings of
-       ISSAC'89, ACM Press, 212-217.
+    .. [3] J. H. Davenport, On the Parallel Risch Algorithm (I),
+           Proceedings of EUROCAM'82, LNCS 144, Springer, 144-157.
 
-    [3] J. H. Davenport, On the Parallel Risch Algorithm (I),
-       Proceedings of EUROCAM'82, LNCS 144, Springer, 144-157.
+    .. [4] J. H. Davenport, On the Parallel Risch Algorithm (III):
+           Use of Tangents, SIGSAM Bulletin 16 (1982), 3-6.
 
-    [4] J. H. Davenport, On the Parallel Risch Algorithm (III):
-       Use of Tangents, SIGSAM Bulletin 16 (1982), 3-6.
-
-    [5] J. H. Davenport, B. M. Trager, On the Parallel Risch
-       Algorithm (II), ACM Transactions on Mathematical
-       Software 11 (1985), 356-362.
+    .. [5] J. H. Davenport, B. M. Trager, On the Parallel Risch
+           Algorithm (II), ACM Transactions on Mathematical
+           Software 11 (1985), 356-362.
 
     See Also
     ========

@@ -284,7 +284,7 @@ class RootOf(Expr):
             # the first one must be different from N others
             uu = {(u.ax, u.bx) for u, _, _ in complexes}
             u = uu.pop()
-            if sum([u[1] <= v[0] or v[1] <= u[0] for v in uu]) < N:
+            if sum(u[1] <= v[0] or v[1] <= u[0] for v in uu) < N:
                 # refine
                 for i, (u, f, k) in enumerate(complexes):
                     u = u._inner_refine()
@@ -388,7 +388,7 @@ class RootOf(Expr):
     @classmethod
     def _count_roots(cls, roots):
         """Count the number of real or complex roots including multiplicities."""
-        return sum([ k for _, _, k in roots ])
+        return sum(k for _, _, k in roots)
 
     @classmethod
     def _indexed_root(cls, poly, index):

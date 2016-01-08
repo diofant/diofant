@@ -21,10 +21,9 @@ from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
 from mpmath.libmp.gammazeta import mpf_bernoulli
 
-from .compatibility import SYMPY_INTS
+from .compatibility import SYMPY_INTS, is_sequence
 from .sympify import sympify
 from .singleton import S
-from sympy.utilities.iterables import is_sequence
 
 LG10 = math.log(10, 2)
 rnd = round_nearest
