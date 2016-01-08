@@ -160,18 +160,12 @@ def mrv(e, x):
 
 def mrv_max(f, g, x):
     """Computes the maximum of two MRV sets."""
-    if not f:
-        return g
-    elif not g:
-        return f
-    elif f & g:
+    if not f or not g or f & g:
         return f | g
 
     c = compare(list(f)[0], list(g)[0], x)
-    if c > 0:
-        return f
-    elif c < 0:
-        return g
+    if c:
+        return f if c > 0 else g
     else:
         return f | g
 
