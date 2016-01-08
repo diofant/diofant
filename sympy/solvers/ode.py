@@ -4845,7 +4845,7 @@ def _solve_undetermined_coefficients(eq, func, order, match):
 
     eqs = sub_func_doit(eq, f(x), trialfunc)
 
-    coeffsdict = dict(list(zip(trialset, [0]*(len(trialset) + 1))))
+    coeffsdict = dict(zip(trialset, [0]*(len(trialset) + 1)))
 
     eqs = expand_mul(eqs)
 

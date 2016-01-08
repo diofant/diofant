@@ -1288,8 +1288,7 @@ def to_int_repr(clauses, symbols):
 
     """
 
-    # Convert the symbol list into a dict
-    symbols = dict(list(zip(symbols, list(range(1, len(symbols) + 1)))))
+    symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
         if arg.func is Not:
@@ -1610,7 +1609,7 @@ def _finger(eq):
     So y and x have unique fingerprints, but a and b do not.
     """
     f = eq.free_symbols
-    d = dict(list(zip(f, [[0] * 5 for fi in f])))
+    d = dict(zip(f, ([0] * 5 for fi in f)))
     for a in eq.args:
         if a.is_Symbol:
             d[a][0] += 1

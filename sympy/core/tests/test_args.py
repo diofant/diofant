@@ -629,7 +629,7 @@ def test_sympy__stats__rv__ProductDomain():
 def test_sympy__stats__frv_types__DiscreteUniformDistribution():
     from sympy.stats.frv_types import DiscreteUniformDistribution
     from sympy.core.containers import Tuple
-    assert _test_args(DiscreteUniformDistribution(Tuple(*list(range(6)))))
+    assert _test_args(DiscreteUniformDistribution(Tuple(*range(6))))
 
 
 def test_sympy__stats__frv_types__DieDistribution():

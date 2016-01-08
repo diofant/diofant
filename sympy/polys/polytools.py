@@ -347,7 +347,7 @@ class Poly(Expr):
                 if f.rep.dom != dom:
                     f_coeffs = [dom.convert(c, f.rep.dom) for c in f_coeffs]
 
-                F = DMP(dict(list(zip(f_monoms, f_coeffs))), dom, lev)
+                F = DMP(dict(zip(f_monoms, f_coeffs)), dom, lev)
             else:
                 F = f.rep.convert(dom)
 
@@ -358,7 +358,7 @@ class Poly(Expr):
                 if g.rep.dom != dom:
                     g_coeffs = [dom.convert(c, g.rep.dom) for c in g_coeffs]
 
-                G = DMP(dict(list(zip(g_monoms, g_coeffs))), dom, lev)
+                G = DMP(dict(zip(g_monoms, g_coeffs)), dom, lev)
             else:
                 G = g.rep.convert(dom)
         else:
@@ -545,7 +545,7 @@ class Poly(Expr):
             raise PolynomialError(
                 "generators list can differ only up to order of elements")
 
-        rep = dict(list(zip(*_dict_reorder(f.rep.to_dict(), f.gens, gens))))
+        rep = dict(zip(*_dict_reorder(f.rep.to_dict(), f.gens, gens)))
 
         return f.per(DMP(rep, f.rep.dom, len(gens) - 1), gens=gens)
 
@@ -4120,7 +4120,7 @@ def _poly_from_expr(expr, opt):
     else:
         coeffs = list(map(domain.from_sympy, coeffs))
 
-    rep = dict(list(zip(monoms, coeffs)))
+    rep = dict(zip(monoms, coeffs))
     poly = Poly._from_dict(rep, opt)
 
     if opt.polys is None:
@@ -4222,7 +4222,7 @@ def _parallel_poly_from_expr(exprs, opt):
     polys = []
 
     for monoms, coeffs in zip(all_monoms, all_coeffs):
-        rep = dict(list(zip(monoms, coeffs)))
+        rep = dict(zip(monoms, coeffs))
         poly = Poly._from_dict(rep, opt)
         polys.append(poly)
 

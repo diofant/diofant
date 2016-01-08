@@ -1418,6 +1418,9 @@ class PrettyPrinter(Printer):
         items = sorted(s.args, key=default_sort_key)
         return self._print_seq(items, '{', '}', ', ' )
 
+    def _print_set(self, l):
+        return self._print_seq(sorted(l, key=default_sort_key), '{', '}')
+
     def _print_Range(self, s):
 
         if self._use_unicode:
@@ -1570,14 +1573,12 @@ class PrettyPrinter(Printer):
     def _print_Dict(self, d):
         return self._print_dict(d)
 
-    def _print_set(self, s):
+    def _print_frozenset(self, s):
         items = sorted(s, key=default_sort_key)
-        pretty = self._print_seq(items, '[', ']')
+        pretty = self._print_seq(items, '{', '}')
         pretty = prettyForm(*pretty.parens('(', ')', ifascii_nougly=True))
         pretty = prettyForm(*stringPict.next(type(s).__name__, pretty))
         return pretty
-
-    _print_frozenset = _print_set
 
     def _print_PolyRing(self, ring):
         return prettyForm(sstr(ring))

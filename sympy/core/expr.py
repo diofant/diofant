@@ -378,8 +378,8 @@ class Expr(Basic, EvalfMixin):
         if free:
             from sympy.utilities.randtest import random_complex_number
             a, c, b, d = re_min, re_max, im_min, im_max
-            reps = dict(list(zip(free, [random_complex_number(a, b, c, d, rational=True)
-                           for zi in free])))
+            reps = dict(zip(free, [random_complex_number(a, b, c, d, rational=True)
+                                   for zi in free]))
             try:
                 nmag = abs(self.evalf(2, subs=reps))
             except (ValueError, TypeError):
@@ -1664,7 +1664,8 @@ class Expr(Basic, EvalfMixin):
         commutative factors since the order that they appeared will be lost in
         the dictionary."""
         d = defaultdict(int)
-        d.update(dict([self.as_base_exp()]))
+        b, e = self.as_base_exp()
+        d[b] = e
         return d
 
     def as_coefficients_dict(self):

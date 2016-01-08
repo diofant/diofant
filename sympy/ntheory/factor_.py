@@ -1419,7 +1419,7 @@ class totient(Function):
 class divisor_sigma(Function):
     r"""Calculate the divisor function `\sigma_k(n)` for positive integer n.
 
-    ``divisor_sigma(n, k)`` is equal to ``sum([x**k for x in divisors(n)])``
+    ``divisor_sigma(n, k)`` is equal to ``sum(x**k for x in divisors(n))``
 
     If n's prime factorization is:
 

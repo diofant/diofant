@@ -180,7 +180,7 @@ class MatrixBase(object):
                             ncol.add(1)
                 if len(ncol) > 1:
                     raise ValueError("Got rows of variable lengths: %s" %
-                        sorted(list(ncol)))
+                        sorted(ncol))
                 cols = ncol.pop() if ncol else 0
                 rows = len(in_mat) if cols else 0
                 if rows:
@@ -3703,7 +3703,7 @@ class MatrixBase(object):
         from sympy.matrices import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
-        for eigenval in (sorted(list(jordan_block_structures.keys()), key=default_sort_key)):
+        for eigenval in (sorted(jordan_block_structures.keys(), key=default_sort_key)):
             l_jordan_chains = jordan_block_structures[eigenval]
             for s in reversed(sorted((l_jordan_chains).keys())):  # Start with the biggest block
                 s_chains = l_jordan_chains[s]

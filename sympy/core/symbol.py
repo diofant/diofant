@@ -1,14 +1,14 @@
 import string
 import re as _re
 
-from sympy.core.assumptions import StdFactKB
+from .assumptions import StdFactKB
 from .basic import Basic
 from .sympify import sympify
 from .singleton import S
 from .expr import Expr, AtomicExpr
 from .cache import cacheit
 from .function import FunctionClass
-from sympy.core.logic import fuzzy_bool
+from .logic import fuzzy_bool
 from sympy.logic.boolalg import Boolean
 from sympy.utilities.iterables import cartes
 
@@ -112,7 +112,7 @@ class Symbol(AtomicExpr, Boolean):
         cacheit(__new_stage2__))   # symbols are always cached
 
     def __getnewargs__(self):
-        return (self.name,)
+        return self.name,
 
     def __getstate__(self):
         return {'_assumptions': self._assumptions}
@@ -147,7 +147,7 @@ class Symbol(AtomicExpr, Boolean):
         if hints.get('ignore') == self:
             return
         else:
-            return (re(self), im(self))
+            return re(self), im(self)
 
     def is_constant(self, *wrt, **flags):
         if not wrt:
@@ -287,7 +287,7 @@ class Wild(Symbol):
         return Wild.__xnew__(cls, name, exclude, properties, **assumptions)
 
     def __getnewargs__(self):
-        return (self.name, self.exclude, self.properties)
+        return self.name, self.exclude, self.properties
 
     @staticmethod
     @cacheit
@@ -342,7 +342,7 @@ def symbols(names, **args):
         (a, b, c)
         >>> symbols(['a', 'b', 'c'])
         [a, b, c]
-        >>> symbols(set(['a', 'b', 'c'])) == {a, b, c}
+        >>> symbols({'a', 'b', 'c'}) == {a, b, c}
         True
 
     If an iterable container is needed for a single symbol, set the ``seq``

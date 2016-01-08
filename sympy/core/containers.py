@@ -6,9 +6,9 @@
     They are supposed to work seamlessly within the SymPy framework.
 """
 
-from sympy.core.basic import Basic
-from sympy.core.compatibility import as_int
-from sympy.core.sympify import sympify, converter
+from .basic import Basic
+from .compatibility import as_int
+from .sympify import sympify, converter
 from sympy.utilities.iterables import iterable
 
 

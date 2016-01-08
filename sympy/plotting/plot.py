@@ -1119,39 +1119,40 @@ def plot(*args, **kwargs):
     Default range may change in the future if a more advanced default range
     detection algorithm is implemented.
 
-    Arguments
-    =========
+    Parameters
+    ==========
 
-    ``expr`` : Expression representing the function of single variable
+    ``expr`` : Expr
+        Expression representing the function of single variable
 
-    ``range``: (x, 0, 5), A 3-tuple denoting the range of the free variable.
+    ``range``: tuple
+        (x, 0, 5), A 3-tuple denoting the range of the free variable.
 
-    Keyword Arguments
-    =================
-
-    Arguments for ``plot`` function:
-
-    ``show``: Boolean. The default value is set to ``True``. Set show to
-    ``False`` and the function will not display the plot. The returned
-    instance of the ``Plot`` class can then be used to save or display
-    the plot by calling the ``save()`` and ``show()`` methods
-    respectively.
+    ``show``: Boolean, optional
+        The default value is set to ``True``. Set show to ``False`` and the
+        function will not display the plot. The returned instance of the
+        ``Plot`` class can then be used to save or display the plot by calling
+        the ``save()`` and ``show()`` methods respectively.
 
     Arguments for ``LineOver1DRangeSeries`` class:
 
-    ``adaptive``: Boolean. The default value is set to True. Set adaptive to False and
-    specify ``nb_of_points`` if uniform sampling is required.
+    ``adaptive``: Boolean, optional
+        The default value is set to True. Set adaptive to False and
+        specify ``nb_of_points`` if uniform sampling is required.
 
-    ``depth``: int Recursion depth of the adaptive algorithm. A depth of value ``n``
-    samples a maximum of `2^{n}` points.
+    ``depth``: int, optional
+        Recursion depth of the adaptive algorithm. A depth of value ``n``
+        samples a maximum of `2^{n}` points.
 
-    ``nb_of_points``: int. Used when the ``adaptive`` is set to False. The function
-    is uniformly sampled at ``nb_of_points`` number of points.
+    ``nb_of_points``: int, optional
+        Used when the ``adaptive`` is set to False. The function
+        is uniformly sampled at ``nb_of_points`` number of points.
 
     Aesthetics options:
 
-    ``line_color``: float. Specifies the color for the plot.
-    See ``Plot`` to see how to set color for the plots.
+    ``line_color``: float, optional
+        Specifies the color for the plot.
+        See ``Plot`` to see how to set color for the plots.
 
     If there are multiple plots, then the same series series are applied to
     all the plots. If you want to set these options separately, you can index
@@ -1159,23 +1160,30 @@ def plot(*args, **kwargs):
 
     Arguments for ``Plot`` class:
 
-    ``title`` : str. Title of the plot. It is set to the latex representation of
-    the expression, if the plot has only one expression.
+    ``title`` : str, optional
+        Title of the plot. It is set to the latex representation of
+        the expression, if the plot has only one expression.
 
-    ``xlabel`` : str. Label for the x-axis.
+    ``xlabel`` : str, optional
+        Label for the x-axis.
 
-    ``ylabel`` : str. Label for the y-axis.
+    ``ylabel`` : str, optional
+        Label for the y-axis.
 
-    ``xscale``: {'linear', 'log'} Sets the scaling of the x-axis.
+    ``xscale``: {'linear', 'log'}, optional
+        Sets the scaling of the x-axis.
 
-    ``yscale``: {'linear', 'log'} Sets the scaling if the y-axis.
+    ``yscale``: {'linear', 'log'}, optional
+        Sets the scaling if the y-axis.
 
-    ``axis_center``: tuple of two floats denoting the coordinates of the center or
-    {'center', 'auto'}
+    ``axis_center``: tuple of two floats
+        denoting the coordinates of the center or {'center', 'auto'}
 
-    ``xlim`` : tuple of two floats, denoting the x-axis limits.
+    ``xlim`` : tuple of two floats
+        denoting the x-axis limits.
 
-    ``ylim`` : tuple of two floats, denoting the y-axis limits.
+    ``ylim`` : tuple of two floats
+        denoting the y-axis limits.
 
     Examples
     ========
@@ -1217,7 +1225,6 @@ def plot(*args, **kwargs):
 
     Plot
     sympy.plotting.plot.LineOver1DRangeSeries
-
     """
     args = list(map(sympify, args))
     free = set()
@@ -1276,35 +1283,37 @@ def plot_parametric(*args, **kwargs):
     Default range may change in the future if a more advanced default range
     detection algorithm is implemented.
 
-    Arguments
-    =========
+    Parameters
+    ==========
 
-    ``expr_x`` : Expression representing the function along x.
+    ``expr_x`` : Expr
+        Expression representing the function along x.
 
-    ``expr_y`` : Expression representing the function along y.
+    ``expr_y`` : Expr
+        Expression representing the function along y.
 
-    ``range``: (u, 0, 5), A 3-tuple denoting the range of the parameter
-    variable.
-
-    Keyword Arguments
-    =================
+    ``range``: tuple
+        (u, 0, 5), A 3-tuple denoting the range of the parameter variable.
 
     Arguments for ``Parametric2DLineSeries`` class:
 
-    ``adaptive``: Boolean. The default value is set to True. Set adaptive to
-    False and specify ``nb_of_points`` if uniform sampling is required.
+    ``adaptive``: Boolean, optional
+        The default value is set to True. Set adaptive to
+        False and specify ``nb_of_points`` if uniform sampling is required.
 
-    ``depth``: int Recursion depth of the adaptive algorithm. A depth of
-    value ``n`` samples a maximum of `2^{n}` points.
+    ``depth``: int, optional
+        Recursion depth of the adaptive algorithm. A depth of
+        value ``n`` samples a maximum of `2^{n}` points.
 
-    ``nb_of_points``: int. Used when the ``adaptive`` is set to False. The
-    function is uniformly sampled at ``nb_of_points`` number of points.
+    ``nb_of_points``: int, optional
+        Used when the ``adaptive`` is set to False. The
+        function is uniformly sampled at ``nb_of_points`` number of points.
 
-    Aesthetics
-    ----------
+    Aesthetics:
 
-    ``line_color``: function which returns a float. Specifies the color for the
-    plot. See ``sympy.plotting.Plot`` for more details.
+    ``line_color``: function which returns a float
+        Specifies the color for the  plot.  See ``sympy.plotting.Plot``
+        for more details.
 
     If there are multiple plots, then the same Series arguments are applied to
     all the plots. If you want to set these options separately, you can index
@@ -1312,20 +1321,26 @@ def plot_parametric(*args, **kwargs):
 
     Arguments for ``Plot`` class:
 
-    ``xlabel`` : str. Label for the x-axis.
+    ``xlabel`` : str
+        Label for the x-axis.
 
-    ``ylabel`` : str. Label for the y-axis.
+    ``ylabel`` : str
+        Label for the y-axis.
 
-    ``xscale``: {'linear', 'log'} Sets the scaling of the x-axis.
+    ``xscale``: {'linear', 'log'}
+        Sets the scaling of the x-axis.
 
-    ``yscale``: {'linear', 'log'} Sets the scaling if the y-axis.
+    ``yscale``: {'linear', 'log'}
+        Sets the scaling if the y-axis.
 
-    ``axis_center``: tuple of two floats denoting the coordinates of the center
-    or {'center', 'auto'}
+    ``axis_center``: tuple of two floats
+        denoting the coordinates of the center or {'center', 'auto'}
 
-    ``xlim`` : tuple of two floats, denoting the x-axis limits.
+    ``xlim`` : tuple of two floats
+        denoting the x-axis limits.
 
-    ``ylim`` : tuple of two floats, denoting the y-axis limits.
+    ``ylim`` : tuple of two floats
+        denoting the y-axis limits.
 
     Examples
     ========
@@ -1339,7 +1354,6 @@ def plot_parametric(*args, **kwargs):
     >>> print(str(plot_parametric(cos(u), sin(u), (u, -5, 5))))
     Plot object containing:
     [0]: parametric cartesian line: (cos(u), sin(u)) for u over (-5.0, 5.0)
-
 
     Multiple parametric plot with single range.
 
@@ -1356,11 +1370,10 @@ def plot_parametric(*args, **kwargs):
     [0]: parametric cartesian line: (cos(u), sin(u)) for u over (-5.0, 5.0)
     [1]: parametric cartesian line: (cos(u), u) for u over (-5.0, 5.0)
 
-
     See Also
     ========
-    Plot, Parametric2DLineSeries
 
+    Plot, Parametric2DLineSeries
     """
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
@@ -1396,30 +1409,31 @@ def plot3d_parametric_line(*args, **kwargs):
     Default range may change in the future if a more advanced default range
     detection algorithm is implemented.
 
-    Arguments
-    =========
+    Parameters
+    ==========
 
-    ``expr_x`` : Expression representing the function along x.
+    ``expr_x`` : Expr
+        Expression representing the function along x.
 
-    ``expr_y`` : Expression representing the function along y.
+    ``expr_y`` : Expr
+        Expression representing the function along y.
 
-    ``expr_z`` : Expression representing the function along z.
+    ``expr_z`` : Expr
+        Expression representing the function along z.
 
-    ``range``: ``(u, 0, 5)``, A 3-tuple denoting the range of the parameter
-    variable.
-
-    Keyword Arguments
-    =================
+    ``range``: tuple
+        ``(u, 0, 5)``, A 3-tuple denoting the range of the parameter variable.
 
     Arguments for ``Parametric3DLineSeries`` class.
 
-    ``nb_of_points``: The range is uniformly sampled at ``nb_of_points``
-    number of points.
+    ``nb_of_points``: int
+        The range is uniformly sampled at ``nb_of_points`` number of points.
 
     Aesthetics:
 
-    ``line_color``: function which returns a float. Specifies the color for the
-    plot. See ``sympy.plotting.Plot`` for more details.
+    ``line_color``: function which returns a float.
+        Specifies the color for the  plot. See ``sympy.plotting.Plot`` for
+        more details.
 
     If there are multiple plots, then the same series arguments are applied to
     all the plots. If you want to set these options separately, you can index
@@ -1427,7 +1441,8 @@ def plot3d_parametric_line(*args, **kwargs):
 
     Arguments for ``Plot`` class.
 
-    ``title`` : str. Title of the plot.
+    ``title`` : str
+        Title of the plot.
 
     Examples
     ========
@@ -1442,7 +1457,6 @@ def plot3d_parametric_line(*args, **kwargs):
     Plot object containing:
     [0]: 3D parametric cartesian line: (cos(u), sin(u), u) for u over (-5.0, 5.0)
 
-
     Multiple plots.
 
     >>> print(str(plot3d_parametric_line((cos(u), sin(u), u, (u, -5, 5)),
@@ -1451,12 +1465,10 @@ def plot3d_parametric_line(*args, **kwargs):
     [0]: 3D parametric cartesian line: (cos(u), sin(u), u) for u over (-5.0, 5.0)
     [1]: 3D parametric cartesian line: (sin(u), u**2, u) for u over (-5.0, 5.0)
 
-
     See Also
     ========
 
     Plot, Parametric3DLineSeries
-
     """
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
@@ -1498,32 +1510,31 @@ def plot3d(*args, **kwargs):
     Default range may change in the future if a more advanced default range
     detection algorithm is implemented.
 
-    Arguments
-    =========
+    Parameters
+    ==========
 
-    ``expr`` : Expression representing the function along x.
+    ``expr`` : Expr
+        Expression representing the function along x.
 
-    ``range_x``: (x, 0, 5), A 3-tuple denoting the range of the x
-    variable.
+    ``range_x``: tuple
+        (x, 0, 5), A 3-tuple denoting the range of the x variable.
 
-    ``range_y``: (y, 0, 5), A 3-tuple denoting the range of the y
-     variable.
-
-    Keyword Arguments
-    =================
+    ``range_y``: tuple
+        (y, 0, 5), A 3-tuple denoting the range of the y variable.
 
     Arguments for ``SurfaceOver2DRangeSeries`` class:
 
-    ``nb_of_points_x``: int. The x range is sampled uniformly at
-    ``nb_of_points_x`` of points.
+    ``nb_of_points_x``: int
+        The x range is sampled uniformly at ``nb_of_points_x`` of points.
 
-    ``nb_of_points_y``: int. The y range is sampled uniformly at
-    ``nb_of_points_y`` of points.
+    ``nb_of_points_y``: int
+        The y range is sampled uniformly at ``nb_of_points_y`` of points.
 
     Aesthetics:
 
-    ``surface_color``: Function which returns a float. Specifies the color for
-    the surface of the plot. See ``sympy.plotting.Plot`` for more details.
+    ``surface_color``: Function which returns a float
+        Specifies the color for the surface of the plot. See
+        ``sympy.plotting.Plot`` for more details.
 
     If there are multiple plots, then the same series arguments are applied to
     all the plots. If you want to set these options separately, you can index
@@ -1531,7 +1542,8 @@ def plot3d(*args, **kwargs):
 
     Arguments for ``Plot`` class:
 
-    ``title`` : str. Title of the plot.
+    ``title`` : str
+        Title of the plot.
 
     Examples
     ========
@@ -1546,14 +1558,12 @@ def plot3d(*args, **kwargs):
     Plot object containing:
     [0]: cartesian surface: x*y for x over (-5.0, 5.0) and y over (-5.0, 5.0)
 
-
     Multiple plots with same range
 
     >>> print(str(plot3d(x*y, -x*y, (x, -5, 5), (y, -5, 5))))
     Plot object containing:
     [0]: cartesian surface: x*y for x over (-5.0, 5.0) and y over (-5.0, 5.0)
     [1]: cartesian surface: -x*y for x over (-5.0, 5.0) and y over (-5.0, 5.0)
-
 
     Multiple plots with different ranges.
 
@@ -1563,11 +1573,10 @@ def plot3d(*args, **kwargs):
     [0]: cartesian surface: x**2 + y**2 for x over (-5.0, 5.0) and y over (-5.0, 5.0)
     [1]: cartesian surface: x*y for x over (-3.0, 3.0) and y over (-3.0, 3.0)
 
-
     See Also
     ========
-    Plot, SurfaceOver2DRangeSeries
 
+    Plot, SurfaceOver2DRangeSeries
     """
 
     args = list(map(sympify, args))
@@ -1604,45 +1613,46 @@ def plot3d_parametric_surface(*args, **kwargs):
     Default range may change in the future if a more advanced default range
     detection algorithm is implemented.
 
-    Arguments
-    =========
+    Parameters
+    ==========
 
-    ``expr_x``: Expression representing the function along ``x``.
+    ``expr_x``: Expr
+        Expression representing the function along ``x``.
 
-    ``expr_y``: Expression representing the function along ``y``.
+    ``expr_y``: Expr
+        Expression representing the function along ``y``.
 
-    ``expr_z``: Expression representing the function along ``z``.
+    ``expr_z``: Expr
+        Expression representing the function along ``z``.
 
-    ``range_u``: ``(u, 0, 5)``,  A 3-tuple denoting the range of the ``u``
-    variable.
+    ``range_u``: tuple
+        ``(u, 0, 5)``,  A 3-tuple denoting the range of the ``u`` variable.
 
-    ``range_v``: ``(v, 0, 5)``,  A 3-tuple denoting the range of the v
-    variable.
-
-    Keyword Arguments
-    =================
+    ``range_v``: tuple
+        ``(v, 0, 5)``,  A 3-tuple denoting the range of the v variable.
 
     Arguments for ``ParametricSurfaceSeries`` class:
 
-    ``nb_of_points_u``: int. The ``u`` range is sampled uniformly at
-    ``nb_of_points_v`` of points
+    ``nb_of_points_u``: int
+        The ``u`` range is sampled uniformly at ``nb_of_points_v`` of points
 
-    ``nb_of_points_y``: int. The ``v`` range is sampled uniformly at
-    ``nb_of_points_y`` of points
+    ``nb_of_points_y``: int
+        The ``v`` range is sampled uniformly at ``nb_of_points_y`` of points
 
     Aesthetics:
 
-    ``surface_color``: Function which returns a float. Specifies the color for
-    the surface of the plot. See ``sympy.plotting.Plot`` for more details.
+    ``surface_color``: Function which returns a float
+        Specifies the color for the surface of the plot. See
+        ``sympy.plotting.Plot`` for more details.
 
     If there are multiple plots, then the same series arguments are applied for
     all the plots. If you want to set these options separately, you can index
     the returned ``Plot`` object and set it.
 
-
     Arguments for ``Plot`` class:
 
-    ``title`` : str. Title of the plot.
+    ``title`` : str
+        Title of the plot.
 
     Examples
     ========
@@ -1658,11 +1668,10 @@ def plot3d_parametric_surface(*args, **kwargs):
     Plot object containing:
     [0]: parametric cartesian surface: (cos(u + v), sin(u - v), u - v) for u over (-5.0, 5.0) and v over (-5.0, 5.0)
 
-
     See Also
     ========
-    Plot, ParametricSurfaceSeries
 
+    Plot, ParametricSurfaceSeries
     """
 
     args = list(map(sympify, args))

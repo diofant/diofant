@@ -19,8 +19,7 @@ from .expr import Expr, AtomicExpr
 from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
-from sympy.core.compatibility import as_int, HAS_GMPY, SYMPY_INTS
-from sympy.utilities.misc import debug
+from .compatibility import as_int, HAS_GMPY, SYMPY_INTS
 
 rnd = mlib.round_nearest
 
@@ -119,7 +118,7 @@ def _decimal_to_Rational_prec(dec):
         rv = Integer(int(dec))
     else:
         s = (-1)**s
-        d = sum([di*10**i for i, di in enumerate(reversed(d))])
+        d = sum(di*10**i for i, di in enumerate(reversed(d)))
         rv = Rational(s*d, 10**-e)
     return rv, prec
 
@@ -794,6 +793,7 @@ class Float(Number):
         return mpmath.mpf(self._mpf_)
 
     def _as_mpf_val(self, prec):
+        from sympy.utilities.misc import debug
         rv = mpf_norm(self._mpf_, prec)
         if rv != self._mpf_ and self._prec == prec:
             debug(self._mpf_, rv)
