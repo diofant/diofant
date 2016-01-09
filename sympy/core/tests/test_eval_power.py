@@ -1,6 +1,5 @@
-from sympy.core import (
-    Rational, Symbol, S, Float, Integer, Number, Pow,
-    Basic, I, nan, pi, symbols, oo, zoo)
+from sympy.core import (Rational, Symbol, S, Float, Integer, Number,
+                        Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
 from sympy.core.tests.test_evalf import NS
 from sympy.functions.elementary.miscellaneous import sqrt, cbrt
 from sympy.functions.elementary.exponential import exp, log
@@ -351,3 +350,10 @@ def test_issue_8650():
     assert (n**n).is_positive is True
     x = 5*n+5
     assert (x**(5*(n+1))).is_positive is True
+
+
+def test_issue_10095():
+    assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
+    assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
+    e = Pow(1, oo, evaluate=False)
+    assert e.as_numer_denom() == (e, S.One)

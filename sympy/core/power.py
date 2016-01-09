@@ -1048,6 +1048,8 @@ class Pow(Expr):
         if not self.is_commutative:
             return self, S.One
         base, exp = self.as_base_exp()
+        if base is S.One:
+            return self, S.One
         n, d = base.as_numer_denom()
         neg_exp = exp.is_negative
         if not neg_exp and not (-exp).is_negative:
@@ -1070,6 +1072,10 @@ class Pow(Expr):
         if neg_exp:
             n, d = d, n
             exp = -exp
+        if d is S.One:
+            return self.func(n, exp), S.One
+        if n is S.One:
+            return S.One, self.func(d, exp)
         return self.func(n, exp), self.func(d, exp)
 
     def matches(self, expr, repl_dict={}):
