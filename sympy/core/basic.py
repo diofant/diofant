@@ -496,8 +496,8 @@ class Basic(metaclass=ManagedProperties):
             u += "_"
         name = '%%i%s' % u
         V = self.variables
-        return dict(list(zip(V, [Symbol(name % i, **v.assumptions0)
-            for i, v in enumerate(V)])))
+        return dict(zip(V, (Symbol(name % i, **v.assumptions0)
+                            for i, v in enumerate(V))))
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
@@ -747,15 +747,10 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import sqrt, sin, cos
         >>> from sympy.abc import a, b, c, d, e
 
-        >>> A = (sqrt(sin(2*x)), a)
-        >>> B = (sin(2*x), b)
-        >>> C = (cos(2*x), c)
-        >>> D = (x, d)
-        >>> E = (exp(x), e)
-
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
-        >>> expr.subs(dict([A, B, C, D, E]))
+        >>> expr.subs({sqrt(sin(2*x)): a, sin(2*x): b,
+        ...            cos(2*x): c, x: d, exp(x): e})
         a*c*sin(d*e) + b
 
         The resulting expression represents a literal replacement of the

@@ -58,7 +58,7 @@ It is described in great(er) detail in the Sphinx documentation.
 #
 
 from collections import defaultdict
-from itertools import product
+from itertools import product, chain
 
 from sympy import SYMPY_DEBUG
 from sympy.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
@@ -754,8 +754,8 @@ class Formula(object):
             else:
                 raise ValueError("At least one of the parameters of the "
                         "formula must be equal to %s" % (a,))
-        base_repl = [dict(list(zip(self.symbols, values)))
-                for values in product(*symbol_values)]
+        base_repl = [dict(zip(self.symbols, values))
+                     for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
         a_inv, b_inv = [{a: len(vals) for a, vals in bucket.items()}
                         for bucket in [abuckets, bbuckets]]
@@ -789,7 +789,7 @@ class Formula(object):
                     min_ = floor(min(vals))
                     max_ = ceiling(max(vals))
                     values.append([a0 + n for n in range(min_, max_ + 1)])
-                result.extend(dict(list(zip(self.symbols, l))) for l in product(*values))
+                result.extend(dict(zip(self.symbols, l)) for l in product(*values))
         return result
 
 
@@ -1589,7 +1589,7 @@ def devise_plan(target, origin, z):
                          lambda p, i: UnShiftB(nal + aother, p + bother, i, z),
                          lambda p, i: ShiftB(p[i]))
 
-    for r in sorted(list(abuckets.keys()) + list(bbuckets.keys()), key=default_sort_key):
+    for r in sorted(chain(abuckets.keys(), bbuckets.keys()), key=default_sort_key):
         al = ()
         nal = ()
         bk = ()
@@ -1603,7 +1603,7 @@ def devise_plan(target, origin, z):
         if len(al) != len(nal) or len(bk) != len(nbk):
             raise ValueError('%s not reachable from %s' % (target, origin))
 
-        al, nal, bk, nbk = [sorted(list(w), key=default_sort_key)
+        al, nal, bk, nbk = [sorted(w, key=default_sort_key)
             for w in [al, nal, bk, nbk]]
 
         def others(dic, key):
@@ -1712,7 +1712,7 @@ def try_polynomial(func, z):
     a = al0[-1]
     fac = 1
     res = S(1)
-    for n in Tuple(*list(range(-a))):
+    for n in Tuple(*range(-a)):
         fac *= z
         fac /= n + 1
         for a in func.ap:
@@ -1843,7 +1843,7 @@ def try_lerchphi(func):
     trans = {}
     for n, b in enumerate([S(1)] + list(deriv.keys())):
         trans[b] = n
-    basis = [expand_func(b) for (b, _) in sorted(list(trans.items()),
+    basis = [expand_func(b) for (b, _) in sorted(trans.items(),
                                                  key=lambda x:x[1])]
     B = Matrix(basis)
     C = Matrix([[0]*len(B)])

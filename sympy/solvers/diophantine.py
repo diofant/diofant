@@ -160,7 +160,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     >>> diop_solve(x + 3*y - 4*z + w -6)
     (t, -t - 3*y + 4*z + 6, y, z)
     >>> pprint(diop_solve(x**2 + y**2 - 5))
-    set([(-2, -1), (-2, 1), (2, -1), (2, 1)])
+    {(-2, -1), (-2, 1), (2, -1), (2, 1)}
 
     See Also
     ========
@@ -236,7 +236,7 @@ def classify_diop(eq):
     coeff = {}
     diop_type = None
 
-    coeff = dict([reversed(t.as_independent(*var)) for t in eq.args])
+    coeff = dict(reversed(t.as_independent(*var)) for t in eq.args)
     for v in coeff:
         if not isinstance(coeff[v], Integer):
             raise TypeError("Coefficients should be Integers")
@@ -545,7 +545,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     >>> from sympy.solvers.diophantine import diop_quadratic
     >>> from sympy.printing import pprint
     >>> pprint(diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t))
-    set([(-1, -1)])
+    {(-1, -1)}
 
     References
     ==========
@@ -1484,7 +1484,7 @@ def _find_DN(var, coeff):
 
     simplified = _mexpand(Subs(eq, (x, y), (u, v)).doit())
 
-    coeff = dict([reversed(t.as_independent(*[X, Y])) for t in simplified.args])
+    coeff = dict(reversed(t.as_independent(*[X, Y])) for t in simplified.args)
 
     for term in [X**2, Y**2, Integer(1)]:
         if term not in coeff.keys():

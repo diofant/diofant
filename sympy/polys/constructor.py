@@ -91,7 +91,7 @@ def _construct_algebraic(coeffs, opt):
     exts = list(exts)
 
     g, span, H = primitive_element(exts, ex=True, polys=True)
-    root = sum([ s*ext for s, ext in zip(span, exts) ])
+    root = sum(s*ext for s, ext in zip(span, exts))
 
     domain, g = QQ.algebraic_field((g, root)), g.rep.rep
 
@@ -255,7 +255,7 @@ def construct_domain(obj, **args):
 
     if hasattr(obj, '__iter__'):
         if isinstance(obj, dict):
-            return domain, dict(list(zip(monoms, coeffs)))
+            return domain, dict(zip(monoms, coeffs))
         else:
             return domain, coeffs
     else:

@@ -205,7 +205,6 @@ from sympy.core.function import expand_mul, count_ops
 from sympy.core.add import Add
 from sympy.core.symbol import Dummy
 from sympy.core.exprtools import Factors, gcd_terms, factor_terms
-from sympy.core.rules import Transform
 from sympy.core.basic import S
 from sympy.core.numbers import Integer, pi, I
 from sympy.polys.polytools import factor
@@ -1766,7 +1765,7 @@ fufuncs = '''
     TR0 TR1 TR2 TR3 TR4 TR5 TR6 TR7 TR8 TR9 TR10 TR10i TR11
     TR12 TR13 L TR2i TRmorrie TR12i
     TR14 TR15 TR16 TR111 TR22'''.split()
-FU = dict(list(zip(fufuncs, list(map(locals().get, fufuncs)))))
+FU = dict(zip(fufuncs, list(map(locals().get, fufuncs))))
 
 
 def _roots():

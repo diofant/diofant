@@ -1,10 +1,9 @@
 from mpmath.libmp.libintmath import giant_steps
-from sympy.core.evalf import DEFAULT_MAXPREC as target
 
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
-from .evalf import EvalfMixin
+from .evalf import EvalfMixin, DEFAULT_MAXPREC as target
 from .function import _coeff_isneg
 from .symbol import Symbol
 from .sympify import _sympify

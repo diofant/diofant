@@ -257,7 +257,7 @@ class DMP(PicklableWithSlots, CantSympify):
 
     @classmethod
     def from_monoms_coeffs(cls, monoms, coeffs, lev, dom, ring=None):
-        return DMP(dict(list(zip(monoms, coeffs))), dom, lev, ring)
+        return DMP(dict(zip(monoms, coeffs)), dom, lev, ring)
 
     def to_ring(f):
         """Make the ground domain a ring. """

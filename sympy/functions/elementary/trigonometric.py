@@ -720,12 +720,12 @@ class cos(TrigonometricFunction):
         if FC:
             decomp = ipartfrac(pi_coeff, FC)
             X = [(x[1], x[0]*S.Pi) for x in zip(decomp, numbered_symbols('z'))]
-            pcls = cos(sum([x[0] for x in X]))._eval_expand_trig().subs(X)
+            pcls = cos(sum(x[0] for x in X))._eval_expand_trig().subs(X)
             return pcls.rewrite(sqrt)
         else:
             decomp = ipartfrac(pi_coeff)
             X = [(x[1], x[0]*S.Pi) for x in zip(decomp, numbered_symbols('z'))]
-            pcls = cos(sum([x[0] for x in X]))._eval_expand_trig().subs(X)
+            pcls = cos(sum(x[0] for x in X))._eval_expand_trig().subs(X)
             return pcls
 
     def _eval_rewrite_as_sec(self, arg):
