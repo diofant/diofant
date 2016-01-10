@@ -4,6 +4,7 @@ from sympy import (Symbol, Rational, ln, exp, log, sqrt, E, O, pi, I, sinh,
                    sin, cosh, cos, tanh, coth, asinh, acosh, atanh, acoth, tan,
                    cot, Integer, PoleError, floor, ceiling, asin, symbols, limit,
                    Piecewise, Eq, sign, Derivative)
+
 from sympy.abc import x, y, z
 
 
@@ -83,7 +84,7 @@ def test_log_singular1():
 
 def test_log_power1():
     e = 1 / (1/x + x ** (log(3)/log(2)))
-    assert e.nseries(x, n=5) == x - x**(2 + log(3)/log(2)) + O(x**5)
+    assert e.nseries(x, n=2) == x - x**(2 + log(3)/log(2)) + O(x**(3 + 2*log(3)/log(2)))
 
 
 def test_log_series():
@@ -136,14 +137,14 @@ def test_series2x():
     assert ((x + 1)**1).nseries(x, 0, 3) == 1 + x
     assert ((x + 1)**2).nseries(x, 0, 3) == 1 + 2*x + x**2
     assert ((x + 1)**3).nseries(
-        x, 0, 3) == 1 + 3*x + 3*x**2 + x**3  # 1+3*x+3*x**2+O(x**3)
+        x, 0, 3) == 1 + 3*x + 3*x**2 + O(x**3)
 
     assert (1/(1 + x)).nseries(x, 0, 4) == 1 - x + x**2 - x**3 + O(x**4, x)
     assert (x + 3/(1 + 2*x)).nseries(x, 0, 4) == 3 - 5*x + 12*x**2 - 24*x**3 + O(x**4, x)
 
-    assert ((1/x + 1)**3).nseries(x, 0, 3) == 1 + x**(-3) + 3*x**(-2) + 3/x
-    assert (1/(1 + 1/x)).nseries(x, 0, 4) == x - x**2 + x**3 - O(x**4, x)
-    assert (1/(1 + 1/x**2)).nseries(x, 0, 6) == x**2 - x**4 + O(x**6, x)
+    assert ((1/x + 1)**3).nseries(x, 0, 4) == 1 + x**(-3) + 3*x**(-2) + 3/x
+    assert (1/(1 + 1/x)).nseries(x, 0, 3) == x - x**2 + x**3 - O(x**4)
+    assert (1/(1 + 1/x**2)).nseries(x, 0, 2) == x**2 - x**4 + O(x**6)
 
 
 def test_bug2():  # 1/log(0) * log(0) problem
@@ -163,19 +164,18 @@ def test_exp2():
     w = Symbol("w")
     e = w**(1 - log(x)/(log(2) + log(x)))
     logw = Symbol("logw")
-    assert e.nseries(
-        w, 0, 1, logx=logw) == exp(logw)*x**(-logw/(log(x) + log(2)))
+    assert e.nseries(w, n=1, logx=logw) == exp(logw - logw*log(x)/(log(2) + log(x)))
 
 
 def test_bug3():
     e = (2/x + 3/x**2)/(1/x + 1/x**2)
-    assert e.nseries(x, n=3) == 3 + O(x)
+    assert e.nseries(x, n=3) == 3 - x + x**2 + O(x**3)
 
 
 def test_generalexponent():
     p = 2
     e = (2/x + 3/x**p)/(1/x + 1/x**p)
-    assert e.nseries(x, 0, 3) == 3 + O(x)
+    assert e.nseries(x, 0, 3) == 3 - x + x**2 + O(x**3)
     p = Rational(1, 2)
     e = (2/x + 3/x**p)/(1/x + 1/x**p)
     assert e.nseries(x, 0, 2) == 2 + sqrt(x) + O(x)
@@ -188,7 +188,7 @@ def test_generalexponent():
 
 def test_genexp_x():
     e = 1/(1 + sqrt(x))
-    assert e.nseries(x, 0, 2) == \
+    assert e.nseries(x, 0, 4) == \
         1 + x - sqrt(x) - sqrt(x)**3 + O(x**2, x)
 
 # more complicated example
@@ -258,18 +258,18 @@ def test_sinsinbug():
 
 def test_issue_3258():
     a = x/(exp(x) - 1)
-    assert a.nseries(x, 0, 5) == 1 - x/2 - x**4/720 + x**2/12 + O(x**5)
+    assert a.nseries(x, 0, 6) == 1 - x/2 - x**4/720 + x**2/12 + O(x**5)
 
 
 def test_issue_3204():
     x = Symbol("x", nonnegative=True)
     f = sin(x**3)**Rational(1, 3)
-    assert f.nseries(x, 0, 17) == x - x**7/18 - x**13/3240 + O(x**17)
+    assert f.nseries(x, 0, 17) == x - x**7/18 - x**13/3240 + O(x**15)
 
 
 def test_issue_3224():
     f = sqrt(1 - sqrt(y))
-    assert f.nseries(y, 0, 2) == 1 - sqrt(y)/2 - y/8 - sqrt(y)**3/16 + O(y**2)
+    assert f.nseries(y, 0, 4) == 1 - sqrt(y)/2 - y/8 - sqrt(y)**3/16 + O(y**2)
 
 
 def test_issue_3463():
@@ -379,7 +379,7 @@ def test_series3():
 def test_bug4():
     w = Symbol("w")
     e = x/(w**4 + x**2*w**4 + 2*x*w**4)*w**4
-    assert e.nseries(w, n=2) in [x/(1 + 2*x + x**2),
+    assert e.nseries(w, n=2).simplify() in [x/(1 + 2*x + x**2),
         1/(1 + x/2 + 1/x/2)/2, 1/x/(1 + 2/x + x**(-2))]
 
 
@@ -396,7 +396,7 @@ def test_bug5():
 
 def test_issue_4115():
     assert (sin(x)/(1 - cos(x))).nseries(x, n=1) == O(1/x)
-    assert (sin(x)**2/(1 - cos(x))).nseries(x, n=1) == O(1, x)
+    assert (sin(x)**2/(1 - cos(x))).nseries(x, n=1) == 2 + O(x)
 
 
 def test_pole():
@@ -478,8 +478,7 @@ def test_issue_4441():
     assert f.series(x, 0, 5) == 1 - a*x + a**2*x**2 - a**3*x**3 + \
         a**4*x**4 + O(x**5)
     f = 1/(1 + (a + b)*x)
-    assert f.series(x, 0, 3) == 1 + x*(-a - b) + \
-        x**2*(a**2 + 2*a*b + b**2) + O(x**3)
+    assert f.series(x, 0, 3) == 1 + x*(-a - b) + x**2*(a + b)**2 + O(x**3)
 
 
 def test_issue_4329():

@@ -238,10 +238,10 @@ def test_issue_4547():
 
 def test_issue_5164():
     assert limit(x**0.5, x, oo) == oo**0.5 == oo
-    assert limit(x**0.5, x, 16) == S(16)**0.5
+    assert limit(x**0.5, x, 16) == S(2)**2.0
     assert limit(x**0.5, x, 0) == 0
     assert limit(x**(-0.5), x, oo) == 0
-    assert limit(x**(-0.5), x, 4) == S(4)**(-0.5)
+    assert limit(x**(-0.5), x, 4) == S(2)**(-1.0)
 
 
 def test_issue_5183():
@@ -401,7 +401,7 @@ def test_issue_7088():
 def test_issue_6364():
     a = Symbol('a')
     e = z/(1 - sqrt(1 + z)*sin(a)**2 - sqrt(1 - z)*cos(a)**2)
-    assert limit(e, z, 0).simplify() == 2/cos(2*a)
+    assert (limit(e, z, 0) - 2/cos(2*a)).simplify() == 0
 
 
 def test_issue_4099():
