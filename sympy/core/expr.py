@@ -2693,12 +2693,22 @@ class Expr(Basic, EvalfMixin):
             return self._eval_nseries(x, n=n, logx=logx)
 
     def _eval_nseries(self, x, n, logx):
-        """Return terms of series for self up to O(x**n) at x=0
-        from the positive direction.
+        """
+        Return series for self up to O(x**n) at x=0 from the positive direction.
 
         This is a method that should be overridden in subclasses. Users should
         never call this method directly (use .nseries() instead), so you don't
         have to write docstrings for _eval_nseries().
+
+        The series expansion code is an important part of the gruntz algorithm
+        for determining limits. _eval_nseries has to return a generalized power
+        series with coefficients in C(log(x), log).
+        In more detail, the result of _eval_nseries(self, x, n) must be
+           c_0*x**e_0 + ... (finitely many terms)
+        where e_i are numbers (not necessarily integers) and c_i involve only
+        numbers, the function log, and log(x).  (This also means it must not
+        contain log(x(1+p)), this *has* to be expanded to log(x)+log(1+p)
+        if x.is_positive and p.is_positive.)
         """
         from sympy.utilities.misc import filldedent
         raise NotImplementedError(filldedent("""

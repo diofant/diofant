@@ -11,17 +11,6 @@ from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.ntheory import multiplicity, perfect_power
 
-# NOTE IMPORTANT
-# The series expansion code in this file is an important part of the gruntz
-# algorithm for determining limits. _eval_nseries has to return a generalized
-# power series with coefficients in C(log(x), log).
-# In more detail, the result of _eval_nseries(self, x, n) must be
-#   c_0*x**e_0 + ... (finitely many terms)
-# where e_i are numbers (not necessarily integers) and c_i involve only
-# numbers, the function log, and log(x). [This also means it must not contain
-# log(x(1+p)), this *has* to be expanded to log(x)+log(1+p) if x.is_positive and
-# p.is_positive.]
-
 
 class exp_polar(Function):
     r"""
@@ -418,8 +407,6 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        # NOTE Please see the comment at the beginning of this file, labelled
-        #      IMPORTANT.
         from sympy import Order
         if not logx:
             logx = log(x)

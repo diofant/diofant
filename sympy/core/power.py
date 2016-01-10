@@ -1112,13 +1112,6 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
-        # NOTE! This function is an important part of the gruntz algorithm
-        #       for computing limits. It has to return a generalized power
-        #       series with coefficients in C(log, log(x)). In more detail:
-        # It has to return an expression
-        #     c_0*x**e_0 + c_1*x**e_1 + ... (finitely many terms)
-        # where e_i are numbers (not necessarily integers) and c_i are
-        # expressions involving only numbers, the log function, and log(x).
         from sympy import exp, log, Order, powsimp, limit
         b, e = self.args
         if e.is_number:
