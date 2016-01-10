@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (Symbol, Rational, exp, ln, log, nan, oo, O, pi, I,
                    Integral, sin, cos, sqrt, conjugate, expand, transpose,
-                   symbols, Function, Derivative, Integer)
+                   symbols, Function, Derivative, Integer, digamma)
 
 from sympy.abc import w, x, y, z
 
@@ -280,7 +280,6 @@ def test_getO():
 
 
 def test_leading_term():
-    from sympy import digamma
     assert O(1/digamma(1/x)) == O(1/log(x))
 
 
