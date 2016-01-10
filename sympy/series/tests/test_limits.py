@@ -7,7 +7,7 @@ from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    cot, Rational, I, tan, cot, integrate, Sum, sign,
                    Function, subfactorial, PoleError, Integer)
 from sympy.series.limits import heuristics
-from sympy.series.order import Order
+from sympy.series.order import O
 
 from sympy.abc import x, y, z, a
 
@@ -36,7 +36,7 @@ def test_basic1():
     limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
     assert limit(gamma(1/x + 3), x, oo) == 2
     assert limit(S.NaN, x, -oo) == S.NaN
-    assert limit(Order(2)*x, x, S.NaN) == S.NaN
+    assert limit(O(2)*x, x, S.NaN) == S.NaN
     assert limit(1/(x - 1), x, 1, dir="+") == oo
     assert limit(1/(x - 1), x, 1, dir="-") == -oo
     assert limit(1/(5 - x)**3, x, 5, dir="+") == -oo
@@ -326,7 +326,7 @@ def test_extended_real_line():
 @pytest.mark.xfail
 def test_order_oo():
     x = Symbol('x', positive=True, finite=True)
-    assert Order(x)*oo != Order(1, x)
+    assert O(x)*oo != O(1, x)
     assert limit(oo/(x**2 - 4), x, oo) == oo
 
 
