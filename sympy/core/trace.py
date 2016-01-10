@@ -1,5 +1,11 @@
-from sympy import Expr, Add, Mul, Pow, sympify, Matrix, Tuple
-from sympy.utilities import default_sort_key
+from .containers import Tuple
+from .compatibility import default_sort_key
+from .expr import Expr
+from .add import Add
+from .mul import Mul
+from .power import Pow
+from .sympify import sympify
+from sympy.matrices import Matrix
 
 
 def _is_scalar(e):

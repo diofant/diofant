@@ -1,5 +1,6 @@
 """Useful utilities for higher level polynomial classes. """
 
+from collections import defaultdict
 import re
 
 from sympy.polys.polyerrors import PolynomialError, GeneratorsNeeded, GeneratorsError
@@ -34,8 +35,11 @@ def _nsort(roots, separated=False):
         if not separated:
             return list(roots)
         r = list(roots)[0]
-        if r.is_complex and r.is_extended_real is not None:
-            return [[r], []] if r.is_extended_real else [[], [r]]
+        if r.is_extended_real:
+            return [[r], []]
+        elif r.is_extended_real is False:
+            if r.is_complex is not None:
+                return [[], [r]]
     if not all(r.is_number for r in roots):
         raise NotImplementedError
     # see issue 6137:
@@ -202,7 +206,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         if exp < 0:
                             exp, base = -exp, Pow(base, -S.One)
 
-                        monom[indices[base]] = exp
+                        monom[indices[base]] += exp
                     except KeyError:
                         if not factor.free_symbols.intersection(opt.gens):
                             coeff.append(factor)
@@ -245,7 +249,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
             expr = expr.lhs - expr.rhs
 
         for term in Add.make_args(expr):
-            coeff, elements = [], {}
+            coeff, elements = [], defaultdict(int)
 
             for factor in Mul.make_args(term):
                 if not _not_a_coeff(factor) and (factor.is_Number or _is_coeff(factor)):
@@ -256,7 +260,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
                     if exp < 0:
                         exp, base = -exp, Pow(base, -S.One)
 
-                    elements[base] = exp
+                    elements[base] += exp
                     gens.add(base)
 
             terms.append((coeff, elements))

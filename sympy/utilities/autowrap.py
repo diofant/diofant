@@ -279,13 +279,14 @@ class CythonCodeWrapper(CodeWrapper):
         This file contains all the definitions of the routines in c code and
         refers to the header file.
 
-        Arguments
-        ---------
-        routines
+        Parameters
+        ----------
+
+        routines : list
             List of Routine instances
-        f
+        f : file
             File-like object to write the file to
-        prefix
+        prefix : str
             The filename prefix, used to refer to the proper header file.
             Only the basename of the prefix is used.
         """
@@ -678,13 +679,14 @@ class UfuncifyCodeWrapper(CodeWrapper):
 
         This file contains all the definitions of the routines in c code.
 
-        Arguments
-        ---------
-        routines
+        Parameters
+        ----------
+
+        routines : list
             List of Routine instances
-        f
+        f : file
             File-like object to write the file to
-        prefix
+        prefix : str
             The filename prefix, used to name the imported module.
         """
         functions = []
@@ -780,10 +782,12 @@ class UfuncifyCodeWrapper(CodeWrapper):
 @doctest_depends_on(exe=('f2py', 'gfortran', 'gcc'), modules=('numpy',))
 def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
              flags=None, verbose=False, helpers=None):
-    """Generates a binary function that supports broadcasting on numpy arrays.
+    """
+    Generates a binary function that supports broadcasting on numpy arrays.
 
     Parameters
     ----------
+
     args : iterable
         Either a Symbol or an iterable of symbols. Specifies the argument
         sequence for the function.
@@ -813,8 +817,9 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         be tuples with (<funtion_name>, <sympy_expression>, <arguments>). It
         is mandatory to supply an argument sequence to helper routines.
 
-    Note
-    ----
+    Notes
+    -----
+
     The default backend ('numpy') will create actual instances of
     ``numpy.ufunc``. These support ndimensional broadcasting, and implicit type
     conversion. Use of the other backends will result in a "ufunc-like"
@@ -823,7 +828,8 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
 
     References
     ----------
-    [1] http://docs.scipy.org/doc/numpy/reference/ufuncs.html
+
+    .. [1] http://docs.scipy.org/doc/numpy/reference/ufuncs.html
 
     Examples
     --------

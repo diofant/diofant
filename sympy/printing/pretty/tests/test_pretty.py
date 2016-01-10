@@ -262,7 +262,6 @@ def test_upretty_subs_missing_in_24():
     assert upretty( Symbol('F_x') ) == 'Fₓ'
 
 
-@pytest.mark.xfail
 def test_missing_in_2X_issue_9047():
     import warnings
     with warnings.catch_warnings():
@@ -3013,8 +3012,8 @@ def test_any_object_in_sequence():
     assert upretty(expr) == "[Basic(Basic()), Basic()]"
 
     expr = {b2, b1}
-    assert pretty(expr) == "set([Basic(), Basic(Basic())])"
-    assert upretty(expr) == "set([Basic(), Basic(Basic())])"
+    assert pretty(expr) == "{Basic(), Basic(Basic())}"
+    assert upretty(expr) == "{Basic(), Basic(Basic())}"
 
     expr = {b2: b1, b1: b2}
     expr2 = Dict({b2: b1, b1: b2})
@@ -3029,22 +3028,31 @@ def test_any_object_in_sequence():
 
 def test_pretty_sets():
     s = FiniteSet
-    assert pretty(s(*[x*y, x**2])) == \
+    assert pretty(FiniteSet(x*y, x**2)) == \
 """\
   2      \n\
 {x , x*y}\
 """
-    assert pretty(s(*range(1, 6))) == "{1, 2, 3, 4, 5}"
-    assert pretty(s(*range(1, 13))) == "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}"
-    for s in (frozenset, set):
-        assert pretty(s([x*y, x**2])) == \
+    assert pretty(FiniteSet(*range(1, 6))) == "{1, 2, 3, 4, 5}"
+    assert pretty(FiniteSet(*range(1, 13))) == "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}"
+
+    assert pretty({x*y, x**2}) == \
 """\
-%s   2       \n\
-%s([x , x*y])\
-""" % (" " * len(s.__name__), s.__name__)
-        assert pretty(s(range(1, 6))) == "%s([1, 2, 3, 4, 5])" % s.__name__
-        assert pretty(s(range(1, 13))) == \
-            "%s([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])" % s.__name__
+  2      \n\
+{x , x*y}\
+"""
+    assert pretty(set(range(1, 6))) == "{1, 2, 3, 4, 5}"
+    assert pretty(set(range(1, 13))) == \
+        "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}"
+
+    assert pretty(frozenset({x*y, x**2})) == \
+"""\
+            2       \n\
+frozenset({x , x*y})\
+"""
+    assert pretty(frozenset(range(1, 6))) == "frozenset({1, 2, 3, 4, 5})"
+    assert pretty(frozenset(range(1, 13))) == \
+        "frozenset({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})"
 
     assert pretty(Range(0, 3, 1)) == '{0, 1, 2}'
 

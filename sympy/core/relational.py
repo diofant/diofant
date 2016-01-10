@@ -1,7 +1,9 @@
+from mpmath.libmp.libintmath import giant_steps
+
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
-from .evalf import EvalfMixin
+from .evalf import EvalfMixin, DEFAULT_MAXPREC as target
 from .function import _coeff_isneg
 from .symbol import Symbol
 from .sympify import _sympify
@@ -183,16 +185,19 @@ class Relational(Boolean, Expr, EvalfMixin):
                     if know:
                         dif = S.Zero
                     elif know is False:
-                        from mpmath.libmp.libintmath import giant_steps
-                        from sympy.core.evalf import DEFAULT_MAXPREC as target
-                        for prec in giant_steps(2, target):
-                            ndif = dif.evalf(prec)
-                            if ndif._prec != 1:
-                                break
-                        if ndif._prec > 1:
-                            dif = ndif
+                        if r.func is Eq:
+                            return False
+                        elif r.func is Ne:
+                            return True
+                        else:
+                            for prec in giant_steps(2, target):
+                                ndif = dif.evalf(prec)
+                                if ndif._prec != 1:
+                                    break
+                            if ndif._prec > 1:
+                                dif = ndif
                 # Can definitively compare a Number to zero, if appropriate.
-                if dif.is_Number and (dif.is_extended_real or r.func in (Eq, Ne)):
+                if dif.is_Number and dif.is_extended_real:
                     # Always T/F (we never return an expression w/ the evalf)
                     r = r.func._eval_relation(dif, S.Zero)
 
@@ -314,7 +319,8 @@ class Equality(Relational):
 
             # If appropriate, check if the difference evaluates.  Detect
             # incompatibility such as lhs real and rhs not real.
-            if lhs.is_complex and rhs.is_complex:
+            if ((lhs.is_complex and rhs.is_complex) or
+                    (lhs.is_extended_real and rhs.is_extended_real)):
                 r = (lhs - rhs).is_zero
                 if r is not None:
                     return _sympify(r)

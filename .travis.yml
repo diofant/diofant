@@ -19,7 +19,7 @@ matrix:
   include:
     - python: 3.4
       script:
-        - python setup.py test --cov -m 'not slow'
+        - python setup.py test --cov -m 'not slow and not xfail'
       after_success:
         - coveralls
     - python: 3.4

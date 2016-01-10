@@ -1,11 +1,10 @@
 """Singleton mechanism"""
 
-from .core import Registry
 from .assumptions import ManagedProperties
 from .sympify import sympify
 
 
-class SingletonRegistry(Registry):
+class SingletonRegistry(object):
     """
     A map from singleton classes to the corresponding instances.
     """
@@ -27,6 +26,12 @@ class SingletonRegistry(Registry):
 
     def register(self, cls):
         self._classes_to_install[cls.__name__] = cls
+
+    def __setattr__(self, name, obj):
+        setattr(self.__class__, name, obj)
+
+    def __delattr__(self, name):
+        delattr(self.__class__, name)
 
     def __getattr__(self, name):
         """Python calls __getattr__ if no attribute of that name was installed
@@ -63,23 +68,21 @@ class Singleton(ManagedProperties):
     Examples
     ========
 
-        >>> from sympy import S, Basic
-        >>> from sympy.core.singleton import Singleton
-        >>> class MySingleton(Basic, metaclass=Singleton):
-        ...     pass
-        >>> Basic() is Basic()
-        False
-        >>> MySingleton() is MySingleton()
-        True
-        >>> S.MySingleton is MySingleton()
-        True
+    >>> from sympy import S, Basic
+    >>> from sympy.core.singleton import Singleton
+    >>> class MySingleton(Basic, metaclass=Singleton):
+    ...     pass
+    >>> Basic() is Basic()
+    False
+    >>> MySingleton() is MySingleton()
+    True
+    >>> S.MySingleton is MySingleton()
+    True
 
     Notes
     =====
 
     Instance creation is delayed until the first time the value is accessed.
-    (SymPy versions before 0.7.7 would create the instance during class
-    creation time, which would be prone to import cycles.)
 
     This metaclass is a subclass of ManagedProperties because that is the
     metaclass of many classes that need to be Singletons (Python does not allow

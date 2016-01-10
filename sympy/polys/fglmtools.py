@@ -81,7 +81,7 @@ def _identity_matrix(n, domain):
 
 
 def _matrix_mul(M, v):
-    return [sum([row[i] * v[i] for i in range(len(v))]) for row in M]
+    return [sum(row[i] * v[i] for i in range(len(v))) for row in M]
 
 
 def _update(s, _lambda, P):

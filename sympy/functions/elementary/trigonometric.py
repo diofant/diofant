@@ -393,13 +393,11 @@ class sin(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+    def _eval_is_complex(self):
+        return self.args[0].is_complex
 
-    def _eval_is_finite(self):
-        arg = self.args[0]
-        if arg.is_extended_real:
-            return True
+    def _eval_is_real(self):
+        return self.args[0].is_real
 
 
 class cos(TrigonometricFunction):
@@ -722,12 +720,12 @@ class cos(TrigonometricFunction):
         if FC:
             decomp = ipartfrac(pi_coeff, FC)
             X = [(x[1], x[0]*S.Pi) for x in zip(decomp, numbered_symbols('z'))]
-            pcls = cos(sum([x[0] for x in X]))._eval_expand_trig().subs(X)
+            pcls = cos(sum(x[0] for x in X))._eval_expand_trig().subs(X)
             return pcls.rewrite(sqrt)
         else:
             decomp = ipartfrac(pi_coeff)
             X = [(x[1], x[0]*S.Pi) for x in zip(decomp, numbered_symbols('z'))]
-            pcls = cos(sum([x[0] for x in X]))._eval_expand_trig().subs(X)
+            pcls = cos(sum(x[0] for x in X))._eval_expand_trig().subs(X)
             return pcls
 
     def _eval_rewrite_as_sec(self, arg):
@@ -770,14 +768,11 @@ class cos(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+    def _eval_is_real(self):
+        return self.args[0].is_real
 
-    def _eval_is_finite(self):
-        arg = self.args[0]
-
-        if arg.is_extended_real:
-            return True
+    def _eval_is_complex(self):
+        return self.args[0].is_complex
 
 
 class tan(TrigonometricFunction):
@@ -1151,7 +1146,7 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
         return self._calculate_reciprocal("_eval_expand_trig", **hints)
 
     def _eval_is_extended_real(self):
-        return self._reciprocal_of(self.args[0])._eval_is_extended_real()
+        return (1/self._reciprocal_of(self.args[0])).is_extended_real
 
     def _eval_as_leading_term(self, x):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
@@ -2478,8 +2473,9 @@ class atan2(InverseTrigonometricFunction):
         d = x**2 + y**2
         return arg(n/sqrt(d)) - I*log(abs(n)/sqrt(abs(d)))
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real and self.args[1].is_extended_real
+    def _eval_is_real(self):
+        # XXX this seems to be wrong for (0, 0)
+        return self.args[0].is_real and self.args[1].is_real
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())

@@ -11,7 +11,7 @@ import pytest
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li, tan, acosh)
+                   Pow, Add, li, Li, tan, acosh, factorial, binomial)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -260,7 +260,7 @@ def test_rewrite():
     e = exp(x + 1/x)
     assert rewrite(e, x, m) == (1/m, -x - 1/x)
     e = 1/exp(-x + exp(-x)) - exp(x)
-    assert rewrite(e, x, m) == (Add(1/(m*exp(m)), -1/m, evaluate=False), -x)
+    assert rewrite(e, x, m) == (Add(-1/m, 1/(m*exp(m)), evaluate=False), -x)
 
     e = exp(x)*log(log(exp(x)))
     assert mrv(e, x) == {exp(x)}
@@ -288,6 +288,8 @@ def test_mrv_leadterm():
 
 
 def test_limit():
+    from sympy.functions import sign
+
     assert gruntz(x, x) == oo
     assert gruntz(-x, x) == -oo
     assert gruntz(-x, x) == -oo
@@ -325,6 +327,17 @@ def test_limit():
 
     # issue skirpichev/omg#56
     assert gruntz((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x) == oo
+
+    # issue sympy/sympy#9471
+    assert gruntz((((27**(log(x, 3))))/x**3), x) == 1
+    assert gruntz((((27**(log(x, 3) + 1)))/x**3), x) == 27
+
+    # issue sympy/sympy#9449
+    y = Symbol('y')
+    assert gruntz(x*(abs(1/x + y) - abs(y - 1/x))/2, x) == sign(y)
+
+    # issue sympy/sympy#8481
+    assert gruntz(m**x * exp(-m) / factorial(x), x) == 0
 
 
 def test_I():
@@ -402,6 +415,10 @@ def test_issue_6682():
 def test_issue_7096():
     from sympy.functions import sign
     assert gruntz((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
+
+
+def test_issue_8462():
+    assert gruntz(binomial(x, x/2), x) == oo
 
 
 def test_omgissue_74():

@@ -132,7 +132,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         a*Derivative(f(x), x, x) + b*Derivative(f(x), x, x)
 
         >>> collect(a*D(f,x) + b*D(f,x) + a*f + b*f, f)
-        (a + b)*f(x) + (a + b)*Derivative(f(x), x)
+        f(x)*(a + b) + (a + b)*Derivative(f(x), x)
 
     Or you can even match both derivative order and exponent at the same time::
 
@@ -703,16 +703,16 @@ def radsimp(expr, symbolic=True, max_terms=4):
         # by rterms [(sqrt arg, coeff), ... ]
         a, b, c, d, A, B, C, D = syms
         if len(rterms) == 2:
-            reps = dict(list(zip([A, a, B, b], [j for i in rterms for j in i])))
+            reps = dict(zip([A, a, B, b], [j for i in rterms for j in i]))
             return (
             sqrt(A)*a - sqrt(B)*b).xreplace(reps)
         if len(rterms) == 3:
-            reps = dict(list(zip([A, a, B, b, C, c], [j for i in rterms for j in i])))
+            reps = dict(zip([A, a, B, b, C, c], [j for i in rterms for j in i]))
             return (
             (sqrt(A)*a + sqrt(B)*b - sqrt(C)*c)*(2*sqrt(A)*sqrt(B)*a*b - A*a**2 -
             B*b**2 + C*c**2)).xreplace(reps)
         elif len(rterms) == 4:
-            reps = dict(list(zip([A, a, B, b, C, c, D, d], [j for i in rterms for j in i])))
+            reps = dict(zip([A, a, B, b, C, c, D, d], [j for i in rterms for j in i]))
             return ((sqrt(A)*a + sqrt(B)*b - sqrt(C)*c - sqrt(D)*d)*(2*sqrt(A)*sqrt(B)*a*b
                 - A*a**2 - B*b**2 - 2*sqrt(C)*sqrt(D)*c*d + C*c**2 +
                 D*d**2)*(-8*sqrt(A)*sqrt(B)*sqrt(C)*sqrt(D)*a*b*c*d + A**2*a**4 -

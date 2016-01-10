@@ -180,7 +180,7 @@ class FracField(DefaultPrinting):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        mapping = dict(list(zip(self.symbols, self.gens)))
+        mapping = dict(zip(self.symbols, self.gens))
 
         try:
             frac = self._rebuild_expr(expr, mapping)

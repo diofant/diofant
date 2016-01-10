@@ -41,7 +41,7 @@ class Naturals(Set, metaclass=Singleton):
     def _intersect(self, other):
         if other.is_Interval:
             return Intersection(
-                S.Integers, other, Interval(self._inf, S.Infinity))
+                S.Integers, other, Interval(self._inf, S.Infinity, False, True))
         return
 
     def _contains(self, other):
@@ -113,7 +113,7 @@ class Integers(Set, metaclass=Singleton):
 
     def _intersect(self, other):
         from sympy.functions.elementary.integers import floor, ceiling
-        if other is Interval(S.NegativeInfinity, S.Infinity) or other is S.Reals:
+        if other is Interval(S.NegativeInfinity, S.Infinity, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
@@ -169,7 +169,7 @@ class Integers(Set, metaclass=Singleton):
 
 class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
-        return Interval.__new__(cls, -S.Infinity, S.Infinity)
+        return Interval.__new__(cls, -S.Infinity, S.Infinity, True, True)
 
 
 class ImageSet(Set):
@@ -383,7 +383,7 @@ class Range(Set):
             return Range(inf, sup + 1, self.step)
 
         if other == S.Naturals:
-            return self._intersect(Interval(1, S.Infinity))
+            return self._intersect(Interval(1, S.Infinity, False, True))
 
         if other == S.Integers:
             return self

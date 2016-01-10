@@ -16,7 +16,6 @@ from sympy.core.rules import Transform
 from sympy.core.evaluate import global_evaluate
 from sympy.functions import (gamma, exp, sqrt, log, root, exp_polar,
                              sin, piecewise_fold)
-from sympy.functions.elementary.exponential import ExpBase
 from sympy.functions.elementary.hyperbolic import HyperbolicFunction
 from sympy.functions.elementary.integers import ceiling
 from sympy.functions.elementary.complexes import unpolarify
@@ -297,7 +296,7 @@ def posify(eq):
     >>> from sympy import posify, Symbol, log
     >>> from sympy.abc import x
     >>> posify(x + Symbol('p', positive=True) + Symbol('n', negative=True))
-    (_x + n + p, {_x: x})
+    (n + p + _x, {_x: x})
 
     >> log(1/x).expand()  # should be log(1/x) but it comes back as -log(x)
     log(1/x)
@@ -592,7 +591,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
         return expr
 
-    if not isinstance(expr, (Add, Mul, Pow, ExpBase)):
+    if not isinstance(expr, (Add, Mul, Pow, exp_polar)):
         return expr.func(*[simplify(x, ratio=ratio, measure=measure, fu=fu)
                          for x in expr.args])
 
@@ -648,7 +647,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
-    if (short.has(TrigonometricFunction, HyperbolicFunction, ExpBase) or
+    if (short.has(TrigonometricFunction, HyperbolicFunction, exp_polar) or
             any(a.base is S.Exp1 for a in short.atoms(Pow))):
         short = exptrigsimp(short, simplify=False)
 

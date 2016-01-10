@@ -3,7 +3,7 @@
 from inspect import getmro
 from itertools import zip_longest
 
-from .assumptions import BasicMeta, ManagedProperties
+from .assumptions import ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
@@ -137,10 +137,9 @@ class Basic(metaclass=ManagedProperties):
         {'commutative': True}
         >>> x = Symbol("x", positive=True)
         >>> x.assumptions0 == \
-        ... {'commutative': True, 'complex': True, 'extended_real': True,
-        ...  'hermitian': True, 'imaginary': False, 'negative': False,
-        ...  'nonnegative': True, 'nonpositive': False, 'nonzero': True,
-        ...  'positive': True, 'zero': False}
+        ... {'commutative': True, 'extended_real': True, 'imaginary': False,
+        ...  'negative': False, 'nonnegative': True, 'nonpositive': False,
+        ...  'nonzero': True, 'positive': True, 'zero': False}
         True
         """
         return {}
@@ -168,8 +167,8 @@ class Basic(metaclass=ManagedProperties):
         # following lines:
         if self is other:
             return 0
-        n1 = self.__class__
-        n2 = other.__class__
+        n1 = self.__class__.__name__
+        n2 = other.__class__.__name__
         c = (n1 > n2) - (n1 < n2)
         if c:
             return c
@@ -497,8 +496,8 @@ class Basic(metaclass=ManagedProperties):
             u += "_"
         name = '%%i%s' % u
         V = self.variables
-        return dict(list(zip(V, [Symbol(name % i, **v.assumptions0)
-            for i, v in enumerate(V)])))
+        return dict(zip(V, (Symbol(name % i, **v.assumptions0)
+                            for i, v in enumerate(V))))
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
@@ -544,8 +543,8 @@ class Basic(metaclass=ManagedProperties):
 
     @property
     def is_comparable(self):
-        """Return True if self can be computed to a real number
-        with precision, else False.
+        """
+        Test if self can be computed to a real number with precision.
 
         Examples
         ========
@@ -562,15 +561,15 @@ class Basic(metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        if is_real and is_number:
-            return True
-        n, i = [p.evalf(2) for p in self.as_real_imag()]
+        n, i = self.as_real_imag()
+        if not (self.is_Float and self._prec == 1):  # workaround for skirpichev/omg#161
+            n, i = n.evalf(2), i.evalf(2)
         if not i.is_Number or not n.is_Number:
             return False
-        if i and i._prec > 1:
+        if i and (i._prec > 1 or i._prec == -1):
             return False
-        if not i and i._prec == -1:
-            if n._prec > 1:
+        if not i and (i._prec > 1 or i._prec == -1):
+            if n._prec > 1 or n._prec == -1:
                 return True
 
     @property
@@ -748,15 +747,10 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import sqrt, sin, cos
         >>> from sympy.abc import a, b, c, d, e
 
-        >>> A = (sqrt(sin(2*x)), a)
-        >>> B = (sin(2*x), b)
-        >>> C = (cos(2*x), c)
-        >>> D = (x, d)
-        >>> E = (exp(x), e)
-
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
-        >>> expr.subs(dict([A, B, C, D, E]))
+        >>> expr.subs({sqrt(sin(2*x)): a, sin(2*x): b,
+        ...            cos(2*x): c, x: d, exp(x): e})
         a*c*sin(d*e) + b
 
         The resulting expression represents a literal replacement of the
@@ -1105,7 +1099,7 @@ class Basic(metaclass=ManagedProperties):
             for f in self.atoms(Function, UndefinedFunction))
 
         pattern = sympify(pattern)
-        if isinstance(pattern, BasicMeta):
+        if isinstance(pattern, type):
             return any(isinstance(arg, pattern)
             for arg in preorder_traversal(self))
 
@@ -1718,7 +1712,8 @@ class preorder_traversal(object):
                     yield subtree
 
     def skip(self):
-        """Skip yielding current node's (last yielded node's) subtrees.
+        """
+        Skip yielding current node's (last yielded node's) subtrees.
 
         Examples
         ========

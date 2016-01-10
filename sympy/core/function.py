@@ -39,8 +39,8 @@ from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import iterable, is_sequence, as_int, ordered
-from .core import BasicMeta
+from .compatibility import (iterable, is_sequence, as_int, ordered,
+                            default_sort_key)
 from .decorators import _sympifyit
 from .expr import Expr, AtomicExpr
 from .numbers import Rational, Float
@@ -48,11 +48,10 @@ from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
 from .sympify import sympify
-from sympy.core.containers import Tuple, Dict
-from sympy.core.logic import fuzzy_and
-from sympy.utilities import default_sort_key
+from .containers import Tuple, Dict
+from .logic import fuzzy_and
+from .evaluate import global_evaluate
 from sympy.utilities.iterables import uniq
-from sympy.core.evaluate import global_evaluate
 
 
 def _coeff_isneg(a):
@@ -96,11 +95,10 @@ class FunctionClass(ManagedProperties):
     Use Function('<function name>' [ , signature ]) to create
     undefined function classes.
     """
-    _new = type.__new__
 
     def __init__(cls, *args, **kwargs):
         if hasattr(cls, 'eval'):
-            evalargspec = inspect.getargspec(cls.eval)
+            evalargspec = inspect.getfullargspec(cls.eval)
             if evalargspec.varargs:
                 evalargs = None
             else:
@@ -402,7 +400,6 @@ class Function(Application, Expr):
     def class_key(cls):
         from sympy.sets.fancysets import Naturals0
         funcs = {
-            'exp': 10,
             'log': 11,
             'sin': 20,
             'cos': 21,
@@ -495,9 +492,6 @@ class Function(Application, Expr):
 
     def _eval_is_commutative(self):
         return fuzzy_and(a.is_commutative for a in self.args)
-
-    def _eval_is_complex(self):
-        return fuzzy_and(a.is_complex for a in self.args)
 
     def as_base_exp(self):
         """
@@ -686,7 +680,7 @@ class UndefinedFunction(FunctionClass):
     The (meta)class of undefined functions.
     """
     def __new__(mcl, name, **kwargs):
-        ret = BasicMeta.__new__(mcl, name, (AppliedUndef,), kwargs)
+        ret = type.__new__(mcl, name, (AppliedUndef,), kwargs)
         ret.__module__ = None
         return ret
 
@@ -1378,7 +1372,7 @@ class Lambda(Expr):
                 'args': list(self.nargs)[0],
                 'plural': 's'*(list(self.nargs)[0] != 1),
                 'given': n})
-        return self.expr.xreplace(dict(list(zip(self.variables, args))))
+        return self.expr.xreplace(dict(zip(self.variables, args)))
 
     def __eq__(self, other):
         if not isinstance(other, Lambda):
@@ -1388,7 +1382,7 @@ class Lambda(Expr):
 
         selfexpr = self.args[1]
         otherexpr = other.args[1]
-        otherexpr = otherexpr.xreplace(dict(list(zip(other.args[0], self.args[0]))))
+        otherexpr = otherexpr.xreplace(dict(zip(other.args[0], self.args[0])))
         return selfexpr == otherexpr
 
     def __ne__(self, other):
@@ -2434,4 +2428,4 @@ def nfloat(expr, n=15, exponent=False):
         lambda x: isinstance(x, Function)))
 
 
-from sympy.core.symbol import Dummy
+from .symbol import Dummy

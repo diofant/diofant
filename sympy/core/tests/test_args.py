@@ -629,7 +629,7 @@ def test_sympy__stats__rv__ProductDomain():
 def test_sympy__stats__frv_types__DiscreteUniformDistribution():
     from sympy.stats.frv_types import DiscreteUniformDistribution
     from sympy.core.containers import Tuple
-    assert _test_args(DiscreteUniformDistribution(Tuple(*list(range(6)))))
+    assert _test_args(DiscreteUniformDistribution(Tuple(*range(6))))
 
 
 def test_sympy__stats__frv_types__DieDistribution():
@@ -1056,10 +1056,6 @@ def test_sympy__functions__elementary__complexes__transpose():
 def test_sympy__functions__elementary__exponential__LambertW():
     from sympy.functions.elementary.exponential import LambertW
     assert _test_args(LambertW(2))
-
-
-def test_sympy__functions__elementary__exponential__ExpBase():
-    pass
 
 
 def test_sympy__functions__elementary__exponential__exp():

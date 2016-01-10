@@ -81,7 +81,7 @@ def test_Dict():
 
 def test_Dummy():
     assert str(d) == "_d"
-    assert str(d + x) == "_d + x"
+    assert str(d + x) == "x + _d"
 
 
 def test_EulerGamma():
@@ -180,7 +180,7 @@ def test_list():
 
 def test_Matrix_str():
     M = Matrix([[x**+1, 1], [y, x + y]])
-    assert str(M) == "Matrix([[x, 1], [y, x + y]])"
+    assert str(M)  == "Matrix([\n[x,     1],\n[y, x + y]])"
     assert sstr(M) == "Matrix([\n[x,     1],\n[y, x + y]])"
     M = Matrix([[1]])
     assert str(M) == sstr(M) == "Matrix([[1]])"
@@ -511,14 +511,14 @@ def test_set():
     assert sstr(set()) == 'set()'
     assert sstr(frozenset()) == 'frozenset()'
 
-    assert sstr({1, 2, 3}) == 'set([1, 2, 3])'
+    assert sstr({1, 2, 3}) == '{1, 2, 3}'
     assert sstr(
-        {1, x, x**2, x**3, x**4}) == 'set([1, x, x**2, x**3, x**4])'
+        {1, x, x**2, x**3, x**4}) == '{1, x, x**2, x**3, x**4}'
 
 
 def test_SparseMatrix():
     M = SparseMatrix([[x**+1, 1], [y, x + y]])
-    assert str(M) == "Matrix([[x, 1], [y, x + y]])"
+    assert str(M) ==  "Matrix([\n[x,     1],\n[y, x + y]])"
     assert sstr(M) == "Matrix([\n[x,     1],\n[y, x + y]])"
 
 

@@ -2,21 +2,21 @@
 
 from collections import defaultdict
 
-from sympy.core.add import Add
-from sympy.core.compatibility import iterable, is_sequence, SYMPY_INTS
-from sympy.core.mul import Mul, _keep_coeff
-from sympy.core.power import Pow
-from sympy.core.basic import Basic, preorder_traversal
-from sympy.core.expr import Expr
-from sympy.core.sympify import sympify
-from sympy.core.numbers import Rational, Integer, Number, I
-from sympy.core.singleton import S
-from sympy.core.symbol import Dummy
-from sympy.core.coreerrors import NonCommutativeExpression
-from sympy.core.containers import Tuple, Dict
-from sympy.utilities import default_sort_key
+from .add import Add
+from .compatibility import (iterable, is_sequence, SYMPY_INTS,
+                            default_sort_key, ordered)
+from .mul import Mul, _keep_coeff
+from .power import Pow
+from .basic import Basic, preorder_traversal
+from .expr import Expr
+from .sympify import sympify
+from .numbers import Rational, Integer, Number, I
+from .singleton import S
+from .symbol import Dummy
+from .coreerrors import NonCommutativeExpression
+from .containers import Tuple, Dict
 from sympy.utilities.iterables import (common_prefix, common_suffix,
-                                       variations, ordered)
+                                       variations)
 
 
 def _isnumber(i):
@@ -1017,7 +1017,7 @@ def _mask_nc(eq, name=None):
     One nc-symbol:
 
     >>> _mask_nc(A**2 - x**2, 'd')
-    (_d0**2 - x**2, {_d0: A}, [])
+    (-x**2 + _d0**2, {_d0: A}, [])
 
     Multiple nc-symbols:
 

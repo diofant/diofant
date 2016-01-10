@@ -8,6 +8,7 @@ from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    Function, subfactorial, PoleError)
 from sympy.series.limits import heuristics
 from sympy.series.order import Order
+
 from sympy.abc import x, y, z, a
 
 
@@ -166,7 +167,6 @@ def test_ceiling_requires_robust_assumptions():
 
 
 def test_atan():
-    x = Symbol("x", extended_real=True)
     assert limit(atan(x)*sin(1/x), x, 0) == 0
     assert limit(atan(x) + sqrt(x + 1) - sqrt(x), x, oo) == pi/2
 
@@ -181,7 +181,7 @@ def test_abs():
 def test_heuristic():
     x = Symbol("x", extended_real=True)
     assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
-    assert limit(log(2 + sqrt(atan(x))*sqrt(sin(1/x))), x, 0) == log(2)
+    assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, '+') == log(2)
 
 
 def test_issue_3871():
@@ -240,10 +240,10 @@ def test_issue_4547():
 
 def test_issue_5164():
     assert limit(x**0.5, x, oo) == oo**0.5 == oo
-    assert limit(x**0.5, x, 16) == S(16)**0.5
+    assert limit(x**0.5, x, 16) == S(2)**2.0
     assert limit(x**0.5, x, 0) == 0
     assert limit(x**(-0.5), x, oo) == 0
-    assert limit(x**(-0.5), x, 4) == S(4)**(-0.5)
+    assert limit(x**(-0.5), x, 4) == S(2)**(-1.0)
 
 
 def test_issue_5183():
@@ -403,7 +403,7 @@ def test_issue_7088():
 def test_issue_6364():
     a = Symbol('a')
     e = z/(1 - sqrt(1 + z)*sin(a)**2 - sqrt(1 - z)*cos(a)**2)
-    assert limit(e, z, 0).simplify() == 2/cos(2*a)
+    assert (limit(e, z, 0) - 2/cos(2*a)).simplify() == 0
 
 
 def test_issue_4099():

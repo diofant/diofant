@@ -2960,7 +2960,7 @@ def test_groebner():
 
     Q, r = reduced(f, G, x, y, z, modulus=7, symmetric=False, polys=True)
 
-    assert sum([ q*g for q, g in zip(Q, G.polys)], r) == Poly(f, modulus=7)
+    assert sum((q*g for q, g in zip(Q, G.polys)), r) == Poly(f, modulus=7)
 
     F = [x*y - 2*y, 2*y**2 - x**2]
 

@@ -874,8 +874,8 @@ def solve(f, *symbols, **flags):
 
         # arg
         _arg = [a for a in fi.atoms(arg) if a.has(*symbols)]
-        fi = fi.xreplace(dict(list(zip(_arg,
-            [atan(im(a.args[0])/re(a.args[0])) for a in _arg]))))
+        fi = fi.xreplace(dict(zip(_arg,
+            (atan(im(a.args[0])/re(a.args[0])) for a in _arg))))
 
         # save changes
         f[i] = fi
@@ -993,7 +993,7 @@ def solve(f, *symbols, **flags):
                     continue
             pot.skip()
     del seen
-    non_inverts = dict(list(zip(non_inverts, [Dummy() for d in non_inverts])))
+    non_inverts = dict(zip(non_inverts, (Dummy() for d in non_inverts)))
     f = [fi.subs(non_inverts) for fi in f]
 
     non_inverts = [(v, k.subs(swap_sym)) for k, v in non_inverts.items()]
@@ -1192,7 +1192,7 @@ def solve(f, *symbols, **flags):
         if isinstance(solution, dict):
             solution = [solution]
         elif iterable(solution[0]):
-            solution = [dict(list(zip(symbols, s))) for s in solution]
+            solution = [dict(zip(symbols, s)) for s in solution]
         elif isinstance(solution[0], dict):
             pass
         else:
@@ -1687,7 +1687,7 @@ def _solve_system(exprs, symbols, **flags):
                                         skip = True
                                 if not skip:
                                     got_s.update(syms)
-                                    result.extend([dict(list(zip(syms, r)))])
+                                    result.extend([dict(zip(syms, r))])
                     except NotImplementedError:
                         pass
                 if got_s:
@@ -1706,7 +1706,7 @@ def _solve_system(exprs, symbols, **flags):
                     # or not, so let solve resolve that. A list of dictionaries
                     # is going to always be returned from here.
                     #
-                    result = [dict(list(zip(solved_syms, r))) for r in result]
+                    result = [dict(zip(solved_syms, r)) for r in result]
 
     if result:
         if type(result) is dict:
@@ -2356,9 +2356,9 @@ def det_minor(M):
     if n == 2:
         return M[0, 0]*M[1, 1] - M[1, 0]*M[0, 1]
     else:
-        return sum([(1, -1)[i % 2]*Add(*[M[0, i]*d for d in
+        return sum((1, -1)[i % 2]*Add(*[M[0, i]*d for d in
             Add.make_args(det_minor(M.minorMatrix(0, i)))])
-            if M[0, i] else S.Zero for i in range(n)])
+            if M[0, i] else S.Zero for i in range(n))
 
 
 def det_quick(M, method=None):
@@ -2525,7 +2525,7 @@ def _tsolve(eq, sym, **flags):
                     up_or_log.add(gi)
         down = g.difference(up_or_log)
         eq_down = expand_log(expand_power_exp(eq)).subs(
-            dict(list(zip(up_or_log, [0]*len(up_or_log)))))
+            dict(zip(up_or_log, [0]*len(up_or_log))))
         eq = expand_power_exp(factor(eq_down, deep=True) + (eq - eq_down))
         rhs, lhs = _invert(eq, sym)
         if lhs.has(sym):
@@ -2941,8 +2941,7 @@ def unrad(eq, *syms, **flags):
     (x**3 - x**2 - 2*x - 1, [])
     >>> eq = sqrt(x) + root(x, 3) - 2
     >>> unrad(eq)
-    (_p**3 + _p**2 - 2, [_p, _p**6 - x])
-
+    (_p**3 + _p**2 - 2, [_p, -x + _p**6])
     """
     _inv_error = 'cannot get an analytical solution for the inversion'
 
@@ -3072,7 +3071,7 @@ def unrad(eq, *syms, **flags):
         gens = [g for g in gens if g.free_symbols & syms]
 
     # get terms together that have common generators
-    drad = dict(list(zip(rads, list(range(len(rads))))))
+    drad = dict(zip(rads, range(len(rads))))
     rterms = {(): []}
     args = Add.make_args(poly.as_expr())
     for t in args:

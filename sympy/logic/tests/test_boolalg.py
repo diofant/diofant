@@ -644,8 +644,9 @@ def test_bool_as_set():
     x = symbols('x')
 
     assert And(x <= 2, x >= -2).as_set() == Interval(-2, 2)
-    assert Or(x >= 2, x <= -2).as_set() == Interval(-oo, -2) + Interval(2, oo)
-    assert Not(x > 2).as_set() == Interval(-oo, 2)
+    assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2, True) +
+                                            Interval(2, oo, False, True))
+    assert Not(x > 2).as_set() == Interval(-oo, 2, True)
     assert true.as_set() == S.UniversalSet
     assert false.as_set() == EmptySet()
 
@@ -681,13 +682,13 @@ def test_canonical_atoms():
 
 def test_issue_8777():
     x = symbols('x')
-    assert And(x > 2, x < oo).as_set() == Interval(2, oo, left_open=True)
-    assert And(x >= 1, x < oo).as_set() == Interval(1, oo)
-    assert (x < oo).as_set() == Interval(-oo, oo)
-    assert (x > -oo).as_set() == Interval(-oo, oo)
+    assert And(x > 2, x < oo).as_set() == Interval(2, oo, True, True)
+    assert And(x >= 1, x < oo).as_set() == Interval(1, oo, False, True)
+    assert (x < oo).as_set() == Interval(-oo, oo, True, True)
+    assert (x > -oo).as_set() == Interval(-oo, oo, True, True)
 
 
 def test_issue_8975():
     x = symbols('x')
     assert Or(And(-oo < x, x <= -2), And(2 <= x, x < oo)).as_set() == \
-        Interval(-oo, -2) + Interval(2, oo)
+        Interval(-oo, -2, True) + Interval(2, oo, False, True)

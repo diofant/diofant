@@ -1082,7 +1082,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
                 reps = ((x, x + xarg), (u, u + yarg), (t, df), (u, f(x)))
                 dummy_eq = simplify(dummy_eq.subs(reps))
                 # get the re-cast values for e and d
-                r2 = collect(expand(dummy_eq), [df, f(x)]).match(e*df + d)
+                r2 = collect(expand(dummy_eq), [df, f(x)], exact=True).match(e*df + d)
                 if r2:
                     orderd = homogeneous_order(r2[d], x, f(x))
                     if orderd is not None:
@@ -4845,7 +4845,7 @@ def _solve_undetermined_coefficients(eq, func, order, match):
 
     eqs = sub_func_doit(eq, f(x), trialfunc)
 
-    coeffsdict = dict(list(zip(trialset, [0]*(len(trialset) + 1))))
+    coeffsdict = dict(zip(trialset, [0]*(len(trialset) + 1)))
 
     eqs = expand_mul(eqs)
 
@@ -5533,13 +5533,13 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
         >>> genform = Eq(eta.diff(x) + (eta.diff(y) - xi.diff(x))*h
         ... - (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)), 0)
         >>> pprint(genform, use_unicode=False)
-        /d               d           \                     d              2       d
-        |--(eta(x, y)) - --(xi(x, y))|*h(x, y) - eta(x, y)*--(h(x, y)) - h (x, y)*--(x
-        \dy              dx          /                     dy                     dy
+                    d              2       d                      /d               d
+        - eta(x, y)*--(h(x, y)) - h (x, y)*--(xi(x, y)) + h(x, y)*|--(eta(x, y)) - --(
+                    dy                     dy                     \dy              dx
         <BLANKLINE>
-                            d             d
-        i(x, y)) - xi(x, y)*--(h(x, y)) + --(eta(x, y)) = 0
-                            dx            dx
+                 \            d             d
+        xi(x, y))| - xi(x, y)*--(h(x, y)) + --(eta(x, y)) = 0
+                 /            dx            dx
 
     Solving the above mentioned PDE is not trivial, and can be solved only by
     making intelligent assumptions for `\xi` and `\eta` (heuristics). Once an

@@ -361,10 +361,13 @@ def test_function_complex():
     assert sin(x).is_commutative is True
     assert exp(x).is_commutative is True
     assert log(x).is_commutative is True
-    assert f(x).is_complex is True
     assert sin(x).is_complex is True
     assert exp(x).is_complex is True
-    assert log(x).is_complex is True
+    assert log(x).is_complex is None  # could be zero
+    n = Symbol('n', complex=True, nonzero=True)
+    z = Symbol('z', zero=True)
+    assert log(n).is_complex is True
+    assert log(z).is_complex is False
 
 
 def test_function__eval_nseries():

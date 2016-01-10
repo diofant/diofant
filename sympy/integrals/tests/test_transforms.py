@@ -709,7 +709,7 @@ def test_cosine_transform():
 
     assert cosine_transform(1/sqrt(a**2 + t**2), t, w) == sqrt(2)*meijerg(
         ((S(1)/2,), ()), ((0, 0), (S(1)/2,)), a**2*w**2/4)/(2*sqrt(pi))
-    assert inverse_cosine_transform(sqrt(2)*meijerg(((S(1)/2,), ()), ((0, 0), (S(1)/2,)), a**2*w**2/4)/(2*sqrt(pi)), w, t) == 1/(t*sqrt(a**2/t**2 + 1))
+    assert inverse_cosine_transform(sqrt(2)*meijerg(((S(1)/2,), ()), ((0, 0), (S(1)/2,)), a**2*w**2/4)/(2*sqrt(pi)), w, t) == 1/(a*sqrt(1 + t**2/a**2))
 
 
 def test_hankel_transform():
@@ -773,7 +773,7 @@ def test_issue_7173():
 
 
 def test_issue_8514():
-    a, b, c, = symbols('a b c', positive=True)
+    a, b, c, = symbols('a b c', positive=True, finite=True)
     t = symbols('t', positive=True)
     ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
     assert ft == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -

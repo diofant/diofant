@@ -1,4 +1,4 @@
-from sympy.core import Basic, S, Function, diff, Tuple
+from sympy.core import Basic, S, Function, diff, Tuple, Dummy
 from sympy.core.relational import Equality, Relational
 from sympy.functions.elementary.miscellaneous import Max, Min
 from sympy.logic.boolalg import (And, Boolean, distribute_and_over_or, Not, Or,
@@ -204,6 +204,14 @@ class Piecewise(Function):
         # following papers;
         #     http://portal.acm.org/citation.cfm?id=281649
         #     http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.4127&rep=rep1&type=pdf
+        from sympy.functions.elementary.complexes import Abs
+
+        if sym.is_real is None:
+            d = Dummy('d', real=True)
+            return self.subs(sym, d)._eval_interval(d, a, b)
+
+        if self.has(Abs):
+            return piecewise_fold(self.rewrite(Abs, Piecewise))._eval_interval(sym, a, b)
 
         if a is None or b is None:
             # In this case, it is just simple substitution

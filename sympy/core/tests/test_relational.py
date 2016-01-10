@@ -296,14 +296,15 @@ def test_relational_logic_symbols():
 
 def test_univariate_relational_as_set():
     assert (x > 0).as_set() == Interval(0, oo, True, True)
-    assert (x >= 0).as_set() == Interval(0, oo)
+    assert (x >= 0).as_set() == Interval(0, oo, False, True)
     assert (x < 0).as_set() == Interval(-oo, 0, True, True)
-    assert (x <= 0).as_set() == Interval(-oo, 0)
+    assert (x <= 0).as_set() == Interval(-oo, 0, True)
     assert Eq(x, 0).as_set() == FiniteSet(0)
     assert Ne(x, 0).as_set() == Interval(-oo, 0, True, True) + \
         Interval(0, oo, True, True)
 
-    assert (x**2 >= 4).as_set() == Interval(-oo, -2) + Interval(2, oo)
+    assert (x**2 >= 4).as_set() == (Interval(-oo, -2, True)
+                                    + Interval(2, oo, False, True))
 
 
 @pytest.mark.xfail
@@ -571,6 +572,11 @@ def test_issue_8449():
 def test_simplify():
     assert simplify(x*(y + 1) - x*y - x + 1 < x) == (x > 1)
     assert simplify(S(1) < -x) == (x < -1)
+
+    # issue sympy/sympy#10304
+    d = -(3*2**pi)**(1/pi) + 2*3**(1/pi)
+    assert d.is_real
+    assert simplify(Eq(1 + I*d, 0)) is False
 
 
 def test_equals():

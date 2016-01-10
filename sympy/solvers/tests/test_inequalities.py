@@ -21,7 +21,7 @@ inf = oo.evalf()
 def test_solve_poly_inequality():
     assert psolve(Poly(0, x), '==') == [S.Reals]
     assert psolve(Poly(1, x), '==') == [S.EmptySet]
-    assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, False)]
+    assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, True)]
 
 
 def test_reduce_poly_inequalities_real_interval():
@@ -49,7 +49,7 @@ def test_reduce_poly_inequalities_real_interval():
         [[Lt(x**2, 1)]], x, relational=False) == Interval(-1, 1, True, True)
     assert reduce_rational_inequalities(
         [[Ge(x**2, 1)]], x, relational=False) == \
-        Union(Interval(-oo, -1), Interval(1, oo))
+        Union(Interval(-oo, -1, True), Interval(1, oo, False, True))
     assert reduce_rational_inequalities(
         [[Gt(x**2, 1)]], x, relational=False) == \
         Interval(-1, 1).complement(S.Reals)
@@ -64,11 +64,11 @@ def test_reduce_poly_inequalities_real_interval():
         x**2, 1.0)]], x, relational=False) == Interval(-1.0, 1.0, True, True)
     assert reduce_rational_inequalities(
         [[Ge(x**2, 1.0)]], x, relational=False) == \
-        Union(Interval(-inf, -1.0), Interval(1.0, inf))
+        Union(Interval(-inf, -1.0, True), Interval(1.0, inf, False, True))
     assert reduce_rational_inequalities(
         [[Gt(x**2, 1.0)]], x, relational=False) == \
-        Union(Interval(-inf, -1.0, right_open=True),
-        Interval(1.0, inf, left_open=True))
+        Union(Interval(-inf, -1.0, True, True),
+        Interval(1.0, inf, True, True))
     assert reduce_rational_inequalities([[Ne(
         x**2, 1.0)]], x, relational=False) == \
         FiniteSet(-1.0, 1.0).complement(S.Reals)
@@ -98,7 +98,7 @@ def test_reduce_poly_inequalities_real_interval():
 
     # issue sympy/sympy#10237
     assert reduce_rational_inequalities(
-        [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo)
+        [[x < oo, x >= 0, -oo < x]], x, relational=False) == Interval(0, oo, False, True)
 
 
 def test_reduce_poly_inequalities_complex_relational():
@@ -268,12 +268,12 @@ def test_issue_5526():
 
 
 def test_solve_univariate_inequality():
-    assert isolve(x**2 >= 4, x, relational=False) == Union(Interval(-oo, -2),
-        Interval(2, oo))
+    assert isolve(x**2 >= 4, x, relational=False) == Union(Interval(-oo, -2, True),
+        Interval(2, oo, False, True))
     assert isolve(x**2 >= 4, x) == Or(And(Le(2, x), Lt(x, oo)), And(Le(x, -2),
         Lt(-oo, x)))
     assert isolve((x - 1)*(x - 2)*(x - 3) >= 0, x, relational=False) == \
-        Union(Interval(1, 2), Interval(3, oo))
+        Union(Interval(1, 2), Interval(3, oo, False, True))
     assert isolve((x - 1)*(x - 2)*(x - 3) >= 0, x) == \
         Or(And(Le(1, x), Le(x, 2)), And(Le(3, x), Lt(x, oo)))
     # issue 2785:
@@ -282,7 +282,7 @@ def test_solve_univariate_inequality():
               Interval(S(1)/2 + sqrt(5)/2, oo, True, True))
     # issue 2794:
     assert isolve(x**3 - x**2 + x - 1 > 0, x, relational=False) == \
-        Interval(1, oo, True)
+        Interval(1, oo, True, True)
 
     # XXX should be limited in domain, e.g. between 0 and 2*pi
     assert isolve(sin(x) < S.Half, x) == \

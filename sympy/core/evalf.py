@@ -21,10 +21,9 @@ from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
 from mpmath.libmp.gammazeta import mpf_bernoulli
 
-from .compatibility import SYMPY_INTS
+from .compatibility import SYMPY_INTS, is_sequence
 from .sympify import sympify
 from .singleton import S
-from sympy.utilities.iterables import is_sequence
 
 LG10 = math.log(10, 2)
 rnd = round_nearest
@@ -282,75 +281,6 @@ def check_target(expr, result, prec):
             "from zero. Try simplifying the input, using chop=True, or providing "
             "a higher maxn for evalf" % (expr))
 
-
-def get_integer_part(expr, no, options, return_ints=False):
-    """
-    With no = 1, computes ceiling(expr)
-    With no = -1, computes floor(expr)
-
-    Note: this function either gives the exact result or signals failure.
-    """
-    import sympy
-    # The expression is likely less than 2^30 or so
-    assumed_size = 30
-    ire, iim, ire_acc, iim_acc = evalf(expr, assumed_size, options)
-
-    # We now know the size, so we can calculate how much extra precision
-    # (if any) is needed to get within the nearest integer
-    if ire and iim:
-        gap = max(fastlog(ire) - ire_acc, fastlog(iim) - iim_acc)
-    elif ire:
-        gap = fastlog(ire) - ire_acc
-    elif iim:
-        gap = fastlog(iim) - iim_acc
-    else:
-        # ... or maybe the expression was exactly zero
-        return None, None, None, None
-
-    margin = 10
-
-    if gap >= -margin:
-        ire, iim, ire_acc, iim_acc = \
-            evalf(expr, margin + assumed_size + gap, options)
-
-    # We can now easily find the nearest integer, but to find floor/ceil, we
-    # must also calculate whether the difference to the nearest integer is
-    # positive or negative (which may fail if very close).
-    def calc_part(expr, nexpr):
-        from sympy import Add
-        nint = int(to_int(nexpr, rnd))
-        n, c, p, b = nexpr
-        if (c != 1 and p != 0) or p < 0:
-            expr = Add(expr, -nint, evaluate=False)
-            x, _, x_acc, _ = evalf(expr, 10, options)
-            try:
-                check_target(expr, (x, None, x_acc, None), 3)
-            except PrecisionExhausted:
-                if not expr.equals(0):
-                    raise PrecisionExhausted
-                x = fzero
-            nint += int(no*(mpf_cmp(x or fzero, fzero) == no))
-        nint = from_int(nint)
-        return nint, fastlog(nint) + 10
-
-    re, im, re_acc, im_acc = None, None, None, None
-
-    if ire:
-        re, re_acc = calc_part(sympy.re(expr, evaluate=False), ire)
-    if iim:
-        im, im_acc = calc_part(sympy.im(expr, evaluate=False), iim)
-
-    if return_ints:
-        return int(to_int(re or fzero)), int(to_int(im or fzero))
-    return re, im, re_acc, im_acc
-
-
-def evalf_ceiling(expr, prec, options):
-    return get_integer_part(expr.args[0], 1, options)
-
-
-def evalf_floor(expr, prec, options):
-    return get_integer_part(expr.args[0], -1, options)
 
 ############################################################################
 #                                                                          #
@@ -1228,8 +1158,6 @@ def _create_evalf_table():
 
         re: evalf_re,
         im: evalf_im,
-        floor: evalf_floor,
-        ceiling: evalf_ceiling,
 
         Integral: evalf_integral,
         Sum: evalf_sum,

@@ -326,11 +326,8 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-        a = sum([i*j for i, j in zip(l1.direction_ratio, l2.direction_ratio)])
-        if a == 0:
-            return True
-        else:
-            return False
+        a = sum(i*j for i, j in zip(l1.direction_ratio, l2.direction_ratio))
+        return True if a == 0 else False
 
     def angle_between(l1, l2):
         """The angle formed between the two linear entities.
@@ -449,7 +446,7 @@ class LinearEntity3D(GeometryEntity):
         t = Dummy()
         a = self.arbitrary_point(t)
         b = [i - j for i, j in zip(p.args, a.args)]
-        c = sum([i*j for i, j in zip(b, self.direction_ratio)])
+        c = sum(i*j for i, j in zip(b, self.direction_ratio))
         d = solve(c, t)
         e = a.subs(t, d[0])
         return Line3D(p, e)
@@ -502,7 +499,7 @@ class LinearEntity3D(GeometryEntity):
         t = Dummy()
         a = self.arbitrary_point(t)
         b = [i - j for i, j in zip(p.args, a.args)]
-        c = sum([i*j for i, j in zip(b, self.direction_ratio)])
+        c = sum(i*j for i, j in zip(b, self.direction_ratio))
         d = solve(c, t)
         e = a.subs(t, d[0])
         return Segment3D(p, e)

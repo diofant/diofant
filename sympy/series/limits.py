@@ -1,6 +1,7 @@
 from sympy.core import S, Symbol, Add, sympify, Expr, PoleError, Mul
 from sympy.core.symbol import Dummy
 from sympy.functions.combinatorial.factorials import factorial
+from sympy.functions.elementary.trigonometric import sin, cos
 from sympy.functions.special.gamma_functions import gamma
 from sympy.series.order import Order
 from .gruntz import limitinf
@@ -44,7 +45,8 @@ def heuristics(e, z, z0, dir):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
-            if l.has(S.Infinity) and l.is_finite is None:
+            if l.has(S.Infinity) and (l.func not in (sin, cos) and
+                                      l.is_finite is None):
                 return
             elif isinstance(l, Limit):
                 return
@@ -143,6 +145,8 @@ class Limit(Expr):
             else:
                 return right
 
+        use_heuristics = hints.get('heuristics', True)
+
         if z0.has(z):
             newz = z.as_dummy()
             r = limit(e.subs(z, newz), newz, z0, dir)
@@ -220,7 +224,9 @@ class Limit(Expr):
             if r is S.NaN:
                 raise PoleError()
         except (PoleError, ValueError, NotImplementedError):
-            r = heuristics(e, z, z0, dir)
+            r = None
+            if use_heuristics:
+                r = heuristics(e, z, z0, dir)
             if r is None:
                 return self
 

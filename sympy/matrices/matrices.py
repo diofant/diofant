@@ -180,7 +180,7 @@ class MatrixBase(object):
                             ncol.add(1)
                 if len(ncol) > 1:
                     raise ValueError("Got rows of variable lengths: %s" %
-                        sorted(list(ncol)))
+                        sorted(ncol))
                 cols = ncol.pop() if ncol else 0
                 rows = len(in_mat) if cols else 0
                 if rows:
@@ -685,13 +685,23 @@ class MatrixBase(object):
             return "Matrix([%s])" % self.table(printer, rowsep=',\n')
         return "Matrix([\n%s])" % self.table(printer, rowsep=',\n')
 
-    def __str__(self):
-        if self.rows == 0 or self.cols == 0:
-            return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
-        return "Matrix(%s)" % str(self.tolist())
-
+    # Note, we always use the default ordering (lex) in __str__ and __repr__,
+    # regardless of the global setting.  See issue 5487.
     def __repr__(self):
-        return sstr(self)
+        from sympy.printing import sstr
+        return sstr(self, order=None)
+
+    def __str__(self):
+        from sympy.printing import sstr
+        return sstr(self, order=None)
+
+    def _repr_pretty_(self, p, cycle):
+        from sympy.printing import pretty
+        p.text(pretty(self, order=None))
+
+    def _repr_latex_(self):
+        from sympy.printing import latex
+        return '$$' + latex(self, order=None) + '$$'
 
     def cholesky(self):
         """Returns the Cholesky decomposition L of a matrix A
@@ -1767,9 +1777,9 @@ class MatrixBase(object):
         ========
 
         >>> from sympy import Matrix, Symbol, trigsimp, cos, sin, oo
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> v = Matrix([cos(x), sin(x)])
-        >>> trigsimp( v.norm() )
+        >>> trigsimp(v.norm())
         1
         >>> v.norm(10)
         (sin(x)**10 + cos(x)**10)**(1/10)
@@ -2902,7 +2912,7 @@ class MatrixBase(object):
 
         >>> A = Matrix([[1, 2], [x, 0]])
         >>> A.charpoly().as_expr()
-        _lambda**2 - _lambda - 2*x
+        -2*x + _lambda**2 - _lambda
         >>> A.charpoly(x).as_expr()
         x**2 - 3*x
 
@@ -3693,7 +3703,7 @@ class MatrixBase(object):
         from sympy.matrices import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
-        for eigenval in (sorted(list(jordan_block_structures.keys()), key=default_sort_key)):
+        for eigenval in (sorted(jordan_block_structures.keys(), key=default_sort_key)):
             l_jordan_chains = jordan_block_structures[eigenval]
             for s in reversed(sorted((l_jordan_chains).keys())):  # Start with the biggest block
                 s_chains = l_jordan_chains[s]
