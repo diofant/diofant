@@ -1,14 +1,11 @@
-from sympy import limit, Symbol, oo, sqrt, Rational, log, exp, cos, sin, tan, \
-    pi, asin, together, root
+"""
+Numbers listed with the tests refer to problem numbers in the book
+"Anti-demidovich, problemas resueltos, Ed. URSS"
+"""
+from sympy import (limit, oo, sqrt, Rational, log, exp, cos, sin,
+                   tan, pi, asin, together, root)
 
-# Numbers listed with the tests refer to problem numbers in the book
-# "Anti-demidovich, problemas resueltos, Ed. URSS"
-
-x = Symbol("x")
-
-
-def test_leadterm():
-    assert (3 + 2*x**(log(3)/log(2) - 1)).leadterm(x) == (3, 0)
+from sympy.abc import a, h, m, n, x
 
 
 def root3(x):
@@ -17,6 +14,10 @@ def root3(x):
 
 def root4(x):
     return root(x, 4)
+
+
+def test_leadterm():
+    assert (3 + 2*x**(log(3)/log(2) - 1)).leadterm(x) == (3, 0)
 
 
 def test_Limits_simple_0():
@@ -43,14 +44,12 @@ def test_Limits_simple_2():
 
 
 def test_Limits_simple_3a():
-    a = Symbol('a')
     # issue 3513
     assert together(limit((x**2 - (a + 1)*x + a)/(x**3 - a**3), x, a)) == \
         (a - 1)/(3*a**2)  # 196
 
 
 def test_Limits_simple_3b():
-    h = Symbol("h")
     assert limit(((x + h)**3 - x**3)/h, h, 0) == 3*x**2  # 197
     assert limit((1/(1 - x) - 3/(1 - x**3)), x, 1) == -1  # 198
     assert limit((sqrt(1 + x) - 1)/(root3(1 + x) - 1), x, 0) == Rational(3)/2  # Primer 4
@@ -62,7 +61,6 @@ def test_Limits_simple_3b():
 
 
 def test_Limits_simple_4a():
-    a = Symbol('a')
     assert limit((sqrt(x) - sqrt(a))/(x - a), x, a) == 1/(2*sqrt(a))  # Primer 5
     assert limit((sqrt(x) - 1)/(root3(x) - 1), x, 1) == Rational(3)/2  # 205
     assert limit((sqrt(1 + x) - sqrt(1 - x))/x, x, 0) == 1  # 207
@@ -89,7 +87,6 @@ def test_bounded():
 
 
 def test_f1a():
-    h = Symbol("h")
     # issue 3508:
     assert limit((sin(2*x)/x)**(1 + x), x, 0) == 2  # Primer 7
 
@@ -100,10 +97,6 @@ def test_f1a2():
 
 
 def test_f1b():
-    m = Symbol("m")
-    n = Symbol("n")
-    h = Symbol("h")
-    a = Symbol("a")
     assert limit(sin(x)/x, x, 2) == sin(2)/2  # 216a
     assert limit(sin(3*x)/x, x, 0) == 3  # 217
     assert limit(sin(5*x)/sin(2*x), x, 0) == Rational(5)/2  # 218
@@ -133,6 +126,5 @@ def test_f2():
 
 
 def test_f3():
-    a = Symbol('a')
     # issue 3504
     assert limit(asin(a*x)/x, x, 0) == a
