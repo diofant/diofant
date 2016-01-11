@@ -530,9 +530,10 @@ class Integral(AddWithLimits):
 
                         function = antideriv._eval_interval(x, a, b)
                         function = Poly(function, *gens)
-                    elif isinstance(antideriv, Add):
-                        function = Add(*[i._eval_interval(x,a,b) for i in
-                            Add.make_args(antideriv)])
+                    elif (isinstance(antideriv, Add) and
+                          any(isinstance(t, Integral) for t in antideriv.args)):
+                        function = Add(*[i._eval_interval(x, a, b) for i in
+                                         Add.make_args(antideriv)])
                     else:
                         try:
                             function = antideriv._eval_interval(x, a, b)
