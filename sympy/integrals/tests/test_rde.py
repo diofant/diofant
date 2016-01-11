@@ -2,13 +2,14 @@
 
 import pytest
 
-from sympy import Poly, S, symbols, oo, I
+from sympy import Poly, symbols, oo, I, Integer, Rational
 from sympy.integrals.risch import (DifferentialExtension,
                                    NonElementaryIntegralException)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-                                 normal_denom, special_denom, bound_degree, spde,
-                                 solve_poly_rde, no_cancel_equal, cancel_primitive,
-                                 cancel_exp, rischDE)
+                                 normal_denom, special_denom, bound_degree,
+                                 spde, solve_poly_rde, no_cancel_equal,
+                                 cancel_primitive, cancel_exp, rischDE)
+
 from sympy.abc import x, t, z, n
 
 t0, t1, t2, k = symbols('t:3 k')

@@ -3,7 +3,7 @@ import pytest
 from sympy import (jn, yn, symbols, Symbol, sin, cos, pi, S, jn_zeros, besselj,
                    bessely, besseli, besselk, hankel1, hankel2, expand_func,
                    sqrt, sinh, cosh, diff, series, gamma, hyper, Abs, I, O, oo,
-                   conjugate)
+                   conjugate, Integer, Rational)
 from sympy.functions.special.bessel import fn
 from sympy.functions.special.bessel import (airyai, airybi,
                                             airyaiprime, airybiprime)

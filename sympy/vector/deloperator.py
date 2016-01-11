@@ -1,4 +1,4 @@
-from sympy.core import Basic
+from sympy.core import Basic, Integer
 from sympy.core.function import Derivative
 from sympy.vector.vector import Vector
 from sympy.vector.functions import express

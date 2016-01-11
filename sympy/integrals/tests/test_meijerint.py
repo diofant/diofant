@@ -2,7 +2,8 @@ import pytest
 
 from sympy import (meijerg, I, S, integrate, Integral, oo, gamma, cosh,
                    hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
-                   exp_polar, polygamma, hyper, log, expand_func)
+                   exp_polar, polygamma, hyper, log, expand_func, Integer,
+                   Rational)
 from sympy.integrals.meijerint import (_rewrite_single, _rewrite1,
                                        meijerint_indefinite, _inflate_g,
                                        _create_lookup_table, meijerint_definite,

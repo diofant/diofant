@@ -1,7 +1,7 @@
 import pytest
 
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
-                   oo, EmptySet, Q)
+                   oo, EmptySet, Q, Integer)
 from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                  Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                  conjuncts, disjuncts, distribute_or_over_and,

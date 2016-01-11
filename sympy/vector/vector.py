@@ -1,5 +1,6 @@
 from sympy.core.assumptions import StdFactKB
 from sympy.core import S, Pow
+from sympy.core.numbers import Integer
 from sympy.core.expr import AtomicExpr
 from sympy import diff as df, sqrt, ImmutableMatrix as Matrix
 from sympy.vector.coordsysrect import CoordSysCartesian

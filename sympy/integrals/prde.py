@@ -17,7 +17,7 @@ each function for more information.
 
 from functools import reduce
 
-from sympy.core import Dummy, ilcm, Add, Mul, Pow, S
+from sympy.core import Dummy, ilcm, Add, Mul, Pow, Integer
 from sympy.matrices import Matrix, zeros, eye
 from sympy.solvers import solve
 from sympy.polys import Poly, lcm, cancel, sqf_list

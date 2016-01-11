@@ -2,9 +2,9 @@
 
 from functools import reduce
 
-from sympy.core import S
+from sympy.core import S, sympify
 from sympy.core.function import Function
-from sympy.core.numbers import oo
+from sympy.core.numbers import oo, Integer, Rational
 from sympy.core.symbol import Dummy
 from sympy.integrals import integrate, Integral
 from sympy.integrals.meijerint import _dummy
@@ -360,7 +360,7 @@ def _rewrite_sin(m_n, s, a, b):
     Return ``(gamma1, gamma2, fac)`` so that ``f == fac/(gamma1 * gamma2)``.
 
     >>> from sympy.integrals.transforms import _rewrite_sin
-    >>> from sympy import pi, S
+    >>> from sympy import pi, Rational
     >>> from sympy.abc import s
     >>> _rewrite_sin((pi, 0), s, 0, 1)
     (gamma(s), gamma(-s + 1), pi)

@@ -26,9 +26,9 @@ from the names used in Bronstein's book.
 
 from functools import reduce
 
-from sympy import real_roots
+from sympy import real_roots, sympify
 from sympy.core.function import Lambda
-from sympy.core.numbers import ilcm, oo
+from sympy.core.numbers import ilcm, oo, Integer
 from sympy.core.mul import Mul
 from sympy.core.power import Pow
 from sympy.core.relational import Eq

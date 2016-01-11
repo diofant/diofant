@@ -2,7 +2,8 @@ import pytest
 
 from sympy import (Symbol, Rational, Order, exp, ln, log, nan, oo, O, pi, I,
                    S, Integral, sin, cos, sqrt, conjugate, expand, transpose,
-                   symbols, Function, Derivative)
+                   symbols, Function, Derivative, Integer)
+
 from sympy.abc import w, x, y, z
 
 

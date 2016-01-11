@@ -1,4 +1,4 @@
-from sympy import sympify
+from sympy import sympify, Integer
 from sympy.utilities.timeutils import timethis
 
 

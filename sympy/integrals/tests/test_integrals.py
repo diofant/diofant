@@ -6,8 +6,8 @@ from sympy import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
                    Integral, integrate, Interval, Lambda, LambertW, log,
                    Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
                    simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
-                   sympify, trigsimp, Tuple, nan, And, Eq, Ne, re,
-                   im, polar_lift, meijerg)
+                   sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
+                   im, polar_lift, meijerg, Rational)
 from sympy.functions.elementary.complexes import periodic_argument
 from sympy.integrals.risch import NonElementaryIntegral
 from sympy.utilities.randtest import verify_numerically

@@ -3,7 +3,7 @@ import pytest
 from sympy import (symbols, sin, simplify, cos, trigsimp, rad, tan,
                    exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
                    exp, S, integrate, I, Matrix, Symbol, coth, pi, log,
-                   count_ops, sqrt, E, expand, Piecewise)
+                   count_ops, sqrt, E, expand, Piecewise, Integer, Rational)
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
 

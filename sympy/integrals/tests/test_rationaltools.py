@@ -1,5 +1,5 @@
-from sympy import S, symbols, I, atan, log, Poly, sqrt, simplify, integrate
-
+from sympy import (S, symbols, I, atan, log, Poly, sqrt,
+                   simplify, integrate, Integer, Rational)
 from sympy.integrals.rationaltools import ratint, ratint_logpart, log_to_atan
 
 from sympy.abc import a, b, x, t

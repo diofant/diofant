@@ -61,7 +61,7 @@ def _coeff_isneg(a):
     ========
 
     >>> from sympy.core.function import _coeff_isneg
-    >>> from sympy import S, Symbol, oo, pi
+    >>> from sympy import Integer, Symbol, oo, pi
     >>> _coeff_isneg(-3*pi)
     True
     >>> _coeff_isneg(Integer(3))
@@ -291,7 +291,7 @@ class Function(Application, Expr):
     Suppose also that *my_func(x)* is real exactly when *x* is real. Here is
     an implementation that honours those requirements:
 
-    >>> from sympy import Function, S, oo, I, sin
+    >>> from sympy import Function, S, oo, I, sin, Symbol
     >>> class my_func(Function):
     ...
     ...     @classmethod

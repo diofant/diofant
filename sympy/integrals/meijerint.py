@@ -26,11 +26,12 @@ The main references for this are:
     Gordon and Breach Science Publisher
 """
 
-from sympy.core import oo, S, pi, Expr, Pow
+from sympy.core import oo, S, pi, Expr, Pow, sympify
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import expand, expand_mul, expand_power_base
 from sympy.core.add import Add
 from sympy.core.mul import Mul
+from sympy.core.numbers import Integer, Rational
 from sympy.core.cache import cacheit
 from sympy.core.symbol import Dummy, Wild
 from sympy.simplify import hyperexpand, powdenest, collect

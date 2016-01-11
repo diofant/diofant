@@ -1,4 +1,4 @@
-from sympy.core import symbols, S
+from sympy.core import symbols, S, Integer
 from sympy.functions import adjoint, conjugate, transpose
 from sympy.matrices.expressions import MatrixSymbol, Adjoint, trace, Transpose
 from sympy.matrices import eye, Matrix

@@ -6,7 +6,7 @@ should serve as a set of test cases.
 import pytest
 
 from sympy import (acos, cos, cosh, Eq, exp, Function, I, Integral, log, Pow,
-                   S, sin, sinh, sqrt, Symbol)
+                   S, sin, sinh, sqrt, Symbol, Integer)
 from sympy.solvers.ode import constant_renumber, constantsimp
 
 

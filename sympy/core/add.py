@@ -20,7 +20,7 @@ def _unevaluated_Add(*args):
     ========
 
     >>> from sympy.core.add import _unevaluated_Add as uAdd
-    >>> from sympy import S, Add
+    >>> from sympy import S, Add, Integer, Float
     >>> from sympy.abc import x, y
     >>> a = uAdd(*[Float(1.0), x, Integer(2)])
     >>> a.args[0]

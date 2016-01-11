@@ -5,6 +5,7 @@ from sympy import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
                    atan2, cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
                    factor, nsimplify, zoo, Subs)
 from sympy.core.basic import _aresame
+
 from sympy.abc import x, y, z
 
 

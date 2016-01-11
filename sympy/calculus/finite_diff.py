@@ -17,7 +17,7 @@ for:
 
 """
 
-from sympy import S
+from sympy import Integer, Rational
 from sympy.core.compatibility import iterable
 
 
@@ -55,7 +55,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.calculus import finite_diff_weights
     >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
     >>> res
@@ -83,7 +83,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Since res[1][2] has an order of accuracy of
     len(x_list[:3]) - order = 3 - 1 = 2, the same is true for res[1][1]!
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.calculus import finite_diff_weights
     >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1), Integer(2), -Integer(2)], 0)[1]
     >>> res
@@ -104,7 +104,6 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Let us compare this to a differently defined x_list. Pay attention to
     foo[i][k] corresponding to the gridpoint defined by x_list[k].
 
-    >>> from sympy import S
     >>> from sympy.calculus import finite_diff_weights
     >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0), Integer(1), Integer(2)], 0)[1]
     >>> foo

@@ -3,7 +3,7 @@ import pytest
 from sympy import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
                    log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
                    E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
-                   Tuple, Dummy, Eq, Expr, symbols, nfloat)
+                   Tuple, Dummy, Eq, Expr, symbols, nfloat, Integer)
 from sympy.core.function import PoleError, _mexpand
 from sympy.sets.sets import FiniteSet
 from sympy.solvers import solve

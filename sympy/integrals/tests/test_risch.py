@@ -2,7 +2,7 @@
 import pytest
 
 from sympy import (Poly, I, S, Function, log, symbols, exp, tan, sqrt,
-                   Symbol, Lambda, sin, Eq, Piecewise, factor)
+                   Symbol, Lambda, sin, Eq, Piecewise, factor, Integer, Rational)
 from sympy.integrals.risch import (gcdex_diophantine, frac_in, as_poly_1t,
                                    derivation, splitfactor, splitfactor_sqf,
                                    canonical_representation, hermite_reduce,
@@ -16,7 +16,9 @@ from sympy.integrals.risch import (gcdex_diophantine, frac_in, as_poly_1t,
                                    DecrementLevel, NonElementaryIntegral,
                                    recognize_log_derivative, recognize_derivative,
                                    laurent_series)
+
 from sympy.abc import x, t, nu, z, a, y
+
 t0, t1, t2 = symbols('t:3')
 i = Symbol('i')
 

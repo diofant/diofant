@@ -10,7 +10,7 @@ from sympy.core.mul import expand_2arg, Mul
 from sympy.core.power import Pow
 from sympy.core.relational import Eq
 from sympy.core.sympify import sympify
-from sympy.core.numbers import Rational, igcd, comp
+from sympy.core.numbers import Rational, igcd, comp, Integer, Float
 from sympy.core.exprtools import factor_terms
 from sympy.ntheory import divisors, isprime, nextprime
 from sympy.functions import exp, sqrt, im, cos, acos, Piecewise
@@ -215,7 +215,7 @@ def _roots_quartic_euler(p, q, r, a):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Rational, Integer
     >>> from sympy.polys.polyroots import _roots_quartic_euler
     >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
     >>> _roots_quartic_euler(p, q, r, Integer(0))[0]

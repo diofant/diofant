@@ -15,10 +15,12 @@ from sympy import (
     cos, S, Abs, And, Or, sin, sqrt, I, log, tan, hyperexpand, meijerg,
     EulerGamma, erf, besselj, bessely, besseli, besselk, simplify,
     exp_polar, polar_lift, unpolarify, Function, expint, expand_mul,
-    combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument, atan2, Abs)
+    combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument,
+    atan2, Abs, Integer, Rational)
 from sympy.matrices import Matrix, eye
 
 from sympy.abc import x, s, a, b, c, d
+
 nu, beta, rho = symbols('nu beta rho')
 
 

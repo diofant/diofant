@@ -9,7 +9,7 @@ http://www.emba.uvm.edu/~ddummit/quintics/quintics.nb
 """
 
 from sympy.core import S, Symbol
-from sympy.core.numbers import I
+from sympy.core.numbers import I, Rational, Integer
 from sympy.polys.polytools import Poly
 from sympy.core.evalf import N
 from sympy.functions import sqrt

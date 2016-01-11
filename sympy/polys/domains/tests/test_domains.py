@@ -2,18 +2,16 @@
 
 import pytest
 
-from sympy import S, sqrt, sin, oo, Poly, Float
-from sympy.abc import x, y, z
-
+from sympy import sqrt, sin, oo, Poly, Float, Integer, Rational
 from sympy.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
 from sympy.polys.domains.realfield import RealField
-
 from sympy.polys.rings import ring
 from sympy.polys.fields import field
-
 from sympy.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
                                     GeneratorsError, CoercionFailed,
                                     NotInvertible, DomainError)
+
+from sympy.abc import x, y, z
 
 ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 

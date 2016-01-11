@@ -1,7 +1,7 @@
 """ This module contains various functions that are special cases
     of incomplete gamma functions. It should probably be renamed. """
 
-from sympy.core import Add, S, sympify, cacheit, pi, I
+from sympy.core import Add, S, sympify, cacheit, pi, I, Integer, Rational
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.elementary.integers import floor
@@ -1128,7 +1128,7 @@ class expint(Function):
     Examples
     ========
 
-    >>> from sympy import expint, S
+    >>> from sympy import expint, Rational
     >>> from sympy.abc import nu, z
 
     Differentiation is supported. Differentiation with respect to z explains

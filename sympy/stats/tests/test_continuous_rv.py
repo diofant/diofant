@@ -12,14 +12,13 @@ from sympy.stats import (P, E, where, density, variance, covariance, skewness,
                          Triangular, Uniform, UniformSum, VonMises, Weibull,
                          WignerSemicircle, correlation, moment, cmoment,
                          smoment)
-from sympy import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf,
+from sympy import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf, oo,
                    Eq, log, lowergamma, Sum, symbols, sqrt, And, gamma, beta,
                    Piecewise, Integral, sin, cos, besseli, factorial, binomial,
-                   floor, expand_func)
+                   floor, expand_func, Integer, Rational)
 from sympy.stats.crv_types import NormalDistribution
 from sympy.stats.rv import ProductPSpace
 
-oo = S.Infinity
 
 x, y, z = map(Symbol, 'xyz')
 

@@ -2,7 +2,7 @@
 
 from functools import reduce
 
-from sympy.core import S, I, pi, oo, ilcm, Mod
+from sympy.core import S, I, pi, oo, ilcm, Mod, Integer, Rational
 from sympy.core.function import Function, Derivative, ArgumentIndexError
 from sympy.core.containers import Tuple
 from sympy.core.mul import Mul
@@ -148,7 +148,7 @@ class hyper(TupleParametersBase):
 
     More examples:
 
-    >>> from sympy import S
+    >>> from sympy import Rational
     >>> hyperexpand(hyper([], [Rational(1, 2)], -x**2/4))
     cos(x)
     >>> hyperexpand(x*hyper([Rational(1, 2), Rational(1, 2)], [Rational(3, 2)], x**2))
@@ -411,7 +411,7 @@ class meijerg(TupleParametersBase):
     cases. You can use expand_func or hyperexpand to (try to) rewrite a
     Meijer G-function in terms of named special functions. For example:
 
-    >>> from sympy import expand_func, S
+    >>> from sympy import expand_func, Rational
     >>> expand_func(meijerg([[],[]], [[0],[]], -x))
     E**x
     >>> hyperexpand(meijerg([[],[]], [[Rational(1, 2)],[0]], (x/2)**2))

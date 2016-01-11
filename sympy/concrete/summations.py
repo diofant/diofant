@@ -8,6 +8,7 @@ from sympy.concrete.gosper import gosper_sum
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.polys import apart, PolynomialError
 from sympy.solvers import solve
+from sympy.core.numbers import Integer
 
 
 class Sum(AddWithLimits,ExprWithIntLimits):

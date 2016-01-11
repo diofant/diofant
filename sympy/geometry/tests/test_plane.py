@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
+from sympy import (Abs, I, Dummy, Rational, Float, Symbol, cos, oo, pi,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             Polygon, Ray, RegularPolygon, Segment, Triangle,

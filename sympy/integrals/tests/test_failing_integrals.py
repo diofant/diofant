@@ -6,7 +6,8 @@ import signal
 import pytest
 
 from sympy import (integrate, Integral, exp, oo, pi, sign,
-                   sqrt, sin, cos, tan, S, log, gamma, sinh)
+                   sqrt, sin, cos, tan, S, log, gamma, sinh, Rational)
+
 from sympy.abc import x, k, c, y, R, b, h, a, m
 
 

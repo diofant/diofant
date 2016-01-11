@@ -1,10 +1,13 @@
 from sympy import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
-    atanh, hyper, meijerg, O)
+                   atanh, hyper, meijerg, O, Integer, Rational)
 from sympy.functions.special.elliptic_integrals import (elliptic_k as K,
-    elliptic_f as F, elliptic_e as E, elliptic_pi as P)
+                                                        elliptic_f as F,
+                                                        elliptic_e as E,
+                                                        elliptic_pi as P)
 from sympy.utilities.randtest import (test_derivative_numerically as td,
                                       random_complex_number as randcplx,
                                       verify_numerically as tn)
+
 from sympy.abc import z, m, n
 
 i = Symbol('i', integer=True)

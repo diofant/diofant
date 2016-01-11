@@ -1,4 +1,4 @@
-from sympy.core import S, sympify, diff
+from sympy.core import S, sympify, diff, Integer, Rational
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.relational import Eq
 from sympy.polys.polyerrors import PolynomialError

@@ -3,7 +3,7 @@ import pytest
 from sympy import (sqrt, Derivative, symbols, collect, Function, factor,
                    Wild, S, collect_const, log, fraction, I, cos, Add, O,
                    sin, rcollect, Mul, radsimp, diff, root, Symbol,
-                   Rational, exp)
+                   Rational, exp, Integer)
 
 from sympy.core.mul import _unevaluated_Mul as umul
 from sympy.simplify.radsimp import (_unevaluated_Add, collect_sqrt,

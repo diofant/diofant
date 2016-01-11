@@ -1,6 +1,6 @@
 """ Riemann zeta and related function. """
 
-from sympy.core import Function, S, sympify, pi
+from sympy.core import Function, S, sympify, pi, Integer, Rational
 from sympy.core.function import ArgumentIndexError
 from sympy.functions.combinatorial.numbers import bernoulli, factorial, harmonic
 from sympy.functions.elementary.exponential import log, exp
@@ -96,7 +96,7 @@ class lerchphi(Function):
     More generally, if :math:`a` is rational, the Lerch transcendent reduces
     to a sum of polylogarithms:
 
-    >>> from sympy import S
+    >>> from sympy import Rational
     >>> expand_func(lerchphi(z, s, Rational(1, 2)))
     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                 polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))

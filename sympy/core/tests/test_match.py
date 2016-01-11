@@ -1,8 +1,8 @@
 import pytest
 
 from sympy import (abc, Add, cos, Derivative, diff, exp, Float, Function,
-                   I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt, Symbol,
-                   symbols, Wild, pi, meijerg)
+                   I, Integer, log, Mul, oo, Poly, Rational, S, sin, sqrt,
+                   Symbol, symbols, Wild, pi, meijerg)
 
 
 def test_symbol():

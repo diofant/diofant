@@ -3170,7 +3170,7 @@ class Expr(Basic, EvalfMixin):
         Examples
         ========
 
-        >>> from sympy import pi, E, I, S, Add, Mul, Number
+        >>> from sympy import pi, E, I, Add, Mul, Number, Float
         >>> Float(10.5).round()
         11.
         >>> pi.round()

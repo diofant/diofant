@@ -1,7 +1,7 @@
 import pytest
 
 from sympy.core import (S, pi, oo, symbols, Function, Rational, Integer,
-                        Tuple, Symbol)
+                        Tuple, Symbol, I, sympify)
 from sympy.core import EulerGamma, GoldenRatio, Catalan, Lambda
 from sympy.functions import Piecewise, sqrt, ceiling, exp, sin, cos
 from sympy.utilities.lambdify import implemented_function

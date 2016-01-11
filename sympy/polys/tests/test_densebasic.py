@@ -40,10 +40,7 @@ from sympy.polys.densebasic import (
 from sympy.polys.specialpolys import f_polys
 from sympy.polys.domains import ZZ, QQ
 from sympy.polys.rings import ring
-
-from sympy.core.singleton import S
-
-from sympy import oo
+from sympy import oo, Integer, Rational
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 

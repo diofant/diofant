@@ -5,7 +5,7 @@ import pytest
 
 from sympy import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
                    Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                   oo, I, Abs, Function, true, false, And, Or, Not)
+                   oo, I, Abs, Function, true, false, And, Or, Not, sympify)
 from sympy.printing.lambdarepr import LambdaPrinter
 from sympy.utilities.lambdify import implemented_function
 from sympy.utilities.decorator import conserve_mpmath_dps

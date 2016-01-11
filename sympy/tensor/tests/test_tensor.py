@@ -2,7 +2,7 @@ import pytest
 
 from sympy import Matrix, eye
 from sympy.combinatorics import Permutation
-from sympy.core import S, Rational, Symbol, Basic
+from sympy.core import S, Rational, Symbol, Basic, Integer
 from sympy.core.containers import Tuple
 from sympy.core.symbol import symbols
 from sympy.external import import_module

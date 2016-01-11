@@ -46,7 +46,7 @@ class factorial(CombinatorialFunction):
        Examples
        ========
 
-       >>> from sympy import Symbol, factorial, S
+       >>> from sympy import Symbol, factorial, Rational
        >>> n = Symbol('n', integer=True)
 
        >>> factorial(0)

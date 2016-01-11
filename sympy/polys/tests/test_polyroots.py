@@ -4,7 +4,8 @@ import mpmath
 import pytest
 
 from sympy import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp,sin, cos,
-                   pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root)
+                   pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
+                   Integer)
 from sympy.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
 from sympy.polys.polyroots import (
     root_factors, roots_linear,

@@ -4,8 +4,9 @@ import pytest
 
 from sympy.polys.agca.modules import FreeModule, ModuleOrder, FreeModulePolyRing
 from sympy.polys import CoercionFailed, QQ, lex, grlex, ilex, ZZ
+from sympy import Integer, Rational
+
 from sympy.abc import x, y, z
-from sympy import S
 
 
 def test_FreeModuleElement():

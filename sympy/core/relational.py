@@ -511,7 +511,7 @@ class GreaterThan(_Greater):
 
     >>> from sympy import GreaterThan, StrictGreaterThan
     >>> from sympy import LessThan,    StrictLessThan
-    >>> from sympy import And, Ge, Gt, Le, Lt, Rel, S
+    >>> from sympy import And, Ge, Gt, Le, Lt, Rel, S, Integer
     >>> from sympy.abc import x, y, z
     >>> from sympy.core.relational import Relational
 

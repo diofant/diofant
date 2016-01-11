@@ -35,7 +35,8 @@ from sympy.polys.polyerrors import (
 from sympy.polys.specialpolys import f_polys
 from sympy.polys.domains import FF, ZZ, QQ, EX
 from sympy.polys.rings import ring
-from sympy import S, I, sin
+from sympy import I, sin, Integer, Rational
+
 from sympy.abc import x
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]

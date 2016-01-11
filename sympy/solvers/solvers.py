@@ -28,7 +28,7 @@ from sympy.core.function import (expand_mul, expand_multinomial, expand_log,
                                  nfloat, Function, expand_power_exp, Lambda,
                                  _mexpand)
 from sympy.integrals.integrals import Integral
-from sympy.core.numbers import ilcm, Float
+from sympy.core.numbers import ilcm, Float, Integer
 from sympy.core.relational import Relational, Ge
 from sympy.logic.boolalg import And, Or, BooleanAtom
 from sympy.core.basic import preorder_traversal
@@ -712,7 +712,7 @@ def solve(f, *symbols, **flags):
     roots which give a negative argument to odd-powered radicals will also need
     special checking:
 
-        >>> from sympy import real_root, S
+        >>> from sympy import real_root, Rational
         >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
         >>> solve(eq)  # this gives 2 solutions but misses a 3rd
         [RootOf(7*_p**5 - 7*_p**3 + 1, 1)**15,

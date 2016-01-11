@@ -824,7 +824,7 @@ def jacobi_symbol(m, n):
     ========
 
     >>> from sympy.ntheory import jacobi_symbol, legendre_symbol
-    >>> from sympy import Mul, S
+    >>> from sympy import Mul, S, Integer
     >>> jacobi_symbol(45, 77)
     -1
     >>> jacobi_symbol(60, 121)

@@ -7,7 +7,8 @@ from sympy import (
     gamma, GoldenRatio, hyper, hypersimp, I, Integral, integrate, log,
     logcombine, Matrix, MatrixSymbol, Mul, nsimplify, O, oo, pi, Piecewise,
     posify, rad, Rational, root, S, separatevars, signsimp, simplify,
-    sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan, tanh, zoo, Sum, Lt)
+    sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan, tanh,
+    zoo, Sum, Lt, Integer)
 from sympy.core.mul import _keep_coeff
 from sympy.simplify.simplify import nthroot
 

@@ -1,6 +1,7 @@
-from sympy import symbols, sin, exp, cos, Derivative, Integral, Basic, \
-    count_ops, S, And, I, pi, Eq, Or, Not, Xor, Nand, Nor, Implies, \
-    Equivalent, MatrixSymbol, Symbol, ITE
+from sympy import (symbols, sin, exp, cos, Derivative, Integral, Basic,
+                   count_ops, S, And, I, pi, Eq, Or, Not, Xor, Nand, Nor,
+                   Implies, Equivalent, MatrixSymbol, Symbol, ITE,
+                   Integer, Rational)
 from sympy.core.containers import Tuple
 
 x, y, z = symbols('x,y,z')

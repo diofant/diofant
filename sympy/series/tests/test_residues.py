@@ -1,6 +1,8 @@
 import pytest
 
-from sympy import residue, Symbol, Function, sin, S, I, exp, log, pi, factorial
+from sympy import (residue, Symbol, Function, sin, S,
+                   I, exp, log, pi, factorial, Integer, Rational)
+
 from sympy.abc import x, z, a, s
 
 

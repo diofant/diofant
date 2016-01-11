@@ -167,7 +167,7 @@ def Bernoulli(name, p, succ=1, fail=0):
     Returns a RandomSymbol
 
     >>> from sympy.stats import Bernoulli, density
-    >>> from sympy import S, Symbol
+    >>> from sympy import Rational, Symbol
 
     >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
     >>> density(X).dict == {0: Rational(1, 4), 1: Rational(3, 4)}

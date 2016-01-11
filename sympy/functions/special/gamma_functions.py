@@ -1,6 +1,6 @@
 from sympy.core import Add, S, sympify, oo, pi, Dummy
 from sympy.core.function import Function, ArgumentIndexError
-from sympy.core.numbers import Rational
+from sympy.core.numbers import Rational, Integer
 from sympy.core.power import Pow
 from .zeta_functions import zeta
 from .error_functions import erf
@@ -30,7 +30,7 @@ class gamma(Function):
     Examples
     ========
 
-    >>> from sympy import S, I, pi, oo, gamma
+    >>> from sympy import I, pi, oo, gamma, Rational
     >>> from sympy.abc import x
 
     Several special values are known:
@@ -218,7 +218,7 @@ class lowergamma(Function):
     Examples
     ========
 
-    >>> from sympy import lowergamma, S
+    >>> from sympy import lowergamma, Rational
     >>> from sympy.abc import s, x
     >>> lowergamma(s, x)
     lowergamma(s, x)
@@ -360,7 +360,7 @@ class uppergamma(Function):
     Examples
     ========
 
-    >>> from sympy import uppergamma, S
+    >>> from sympy import uppergamma, Rational
     >>> from sympy.abc import s, x
     >>> uppergamma(s, x)
     uppergamma(s, x)
@@ -487,7 +487,7 @@ class polygamma(Function):
 
     Several special values are known:
 
-    >>> from sympy import S, polygamma
+    >>> from sympy import S, polygamma, Integer
     >>> polygamma(0, 1)
     -EulerGamma
     >>> polygamma(0, 1/Integer(2))
@@ -773,7 +773,7 @@ class loggamma(Function):
 
     for half-integral values:
 
-    >>> from sympy import pi, Integer
+    >>> from sympy import pi, Rational
     >>> loggamma(Rational(5, 2))
     log(3*sqrt(pi)/4)
     >>> loggamma(n/2)

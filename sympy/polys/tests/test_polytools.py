@@ -29,7 +29,6 @@ from sympy.polys.polytools import (
     GroebnerBasis, is_zero_dimensional,
     _torational_factor_list,
     to_rational_coeffs)
-
 from sympy.polys.polyerrors import (
     MultivariatePolynomialError,
     ExactQuotientFailed,
@@ -44,18 +43,14 @@ from sympy.polys.polyerrors import (
     DomainError,
     OptionError,
     FlagError)
-
 from sympy.polys.polyclasses import DMP
-
 from sympy.polys.fields import field
 from sympy.polys.domains import FF, ZZ, QQ, RR, EX
 from sympy.polys.domains.realfield import RealField
 from sympy.polys.orderings import lex, grlex, grevlex
-
 from sympy import (
     S, Integer, Rational, Float, Mul, Symbol, sqrt, Piecewise, Derivative,
     exp, sin, tanh, expand, oo, I, pi, re, im, RootOf, Eq, Tuple, Expr, diff)
-
 from sympy.core.basic import _aresame
 from sympy.core.compatibility import iterable
 from sympy.core.mul import _keep_coeff

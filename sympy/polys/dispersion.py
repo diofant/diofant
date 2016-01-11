@@ -1,4 +1,4 @@
-from sympy.core import S
+from sympy.core import S, sympify
 from sympy.polys import Poly
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from sympy.core import S, symbols, Add, Mul
+from sympy.core import S, symbols, Add, Mul, Integer
 from sympy.functions import transpose, sin, cos, sqrt
 from sympy.simplify import simplify
 from sympy.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd, MatMul,

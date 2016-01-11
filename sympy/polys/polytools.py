@@ -2057,7 +2057,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from sympy import Poly, S, QQ
+        >>> from sympy import Poly, Rational, QQ
         >>> from sympy.abc import x
 
         >>> f = Poly(x/2 + Rational(1, 3), x, domain=QQ)

@@ -3,7 +3,7 @@ from textwrap import dedent
 import pytest
 
 from sympy import (symbols, Integral, Tuple, Dummy, Basic, default_sort_key,
-                   Matrix, factorial, true)
+                   Matrix, factorial, true, Integer)
 from sympy.combinatorics import RGS_enum, RGS_unrank, Permutation
 from sympy.utilities.iterables import (
     _partition, _set_partitions, binary_partitions, bracelets, capture,

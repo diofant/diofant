@@ -1,7 +1,8 @@
 import pytest
 
 from sympy import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
-                   StrictLessThan, pi, I, Rational, sympify, symbols, Dummy)
+                   StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
+                   Integer, Float)
 
 
 def test_Symbol():

@@ -1045,7 +1045,7 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from sympy import Rational, nsimplify, S, pi
+    >>> from sympy import Rational, nsimplify, sympify, pi
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1552,7 +1552,7 @@ class Rational(Number):
         Examples
         ========
 
-        >>> from sympy import S
+        >>> from sympy import Rational
         >>> Rational(-3, 2).as_content_primitive()
         (3/2, -1)
 

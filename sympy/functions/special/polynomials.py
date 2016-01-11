@@ -7,7 +7,7 @@ combinatorial polynomials.
 """
 
 from sympy.core.singleton import S
-from sympy.core import Rational
+from sympy.core import Rational, Integer
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.symbol import Dummy
 from sympy.functions.combinatorial.factorials import binomial, factorial, RisingFactorial
@@ -62,7 +62,7 @@ class jacobi(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from sympy import jacobi, S, conjugate, diff
+    >>> from sympy import jacobi, conjugate, diff, Rational
     >>> from sympy.abc import n,a,b,x
 
     >>> jacobi(0, a, b, x)

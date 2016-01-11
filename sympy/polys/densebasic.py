@@ -582,7 +582,7 @@ def dup_from_sympy(f, K):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_from_sympy
 
@@ -600,7 +600,7 @@ def dmp_from_sympy(f, u, K):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_from_sympy
 

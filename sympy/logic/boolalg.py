@@ -1551,7 +1551,7 @@ def simplify_logic(expr, form=None, deep=True):
 
     >>> from sympy.logic import simplify_logic
     >>> from sympy.abc import x, y, z
-    >>> from sympy import S
+    >>> from sympy import sympify
     >>> b = (~x & ~y & ~z) | ( ~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))

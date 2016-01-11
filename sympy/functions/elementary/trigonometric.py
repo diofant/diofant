@@ -1,7 +1,7 @@
 from sympy.core.add import Add
 from sympy.core.basic import sympify, cacheit
 from sympy.core.function import Function, ArgumentIndexError
-from sympy.core.numbers import igcdex, Rational
+from sympy.core.numbers import igcdex, Rational, Integer
 from sympy.core.singleton import S
 from sympy.core.symbol import Symbol
 from sympy.functions.combinatorial.factorials import factorial, RisingFactorial

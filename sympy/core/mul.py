@@ -34,7 +34,7 @@ def _unevaluated_Mul(*args):
     ========
 
     >>> from sympy.core.mul import _unevaluated_Mul as uMul
-    >>> from sympy import S, sqrt, Mul
+    >>> from sympy import sqrt, Mul, Integer, Float
     >>> from sympy.abc import x
     >>> a = uMul(*[Float(3.0), x, Integer(2)])
     >>> a.args[0]
@@ -1007,6 +1007,8 @@ class Mul(Expr, AssocOp):
         return zero
 
     def _eval_is_integer(self):
+        from sympy.core.numbers import Integer
+
         is_rational = self.is_rational
 
         if is_rational:
@@ -1198,6 +1200,7 @@ class Mul(Expr, AssocOp):
             return False
 
     def _eval_subs(self, old, new):
+        from sympy.core import Integer
         from sympy.functions.elementary.complexes import sign
         from sympy.ntheory.factor_ import multiplicity
         from sympy.simplify.powsimp import powdenest
@@ -1538,7 +1541,7 @@ def prod(a, start=1):
     Examples
     ========
 
-    >>> from sympy import prod, S
+    >>> from sympy import prod, Integer
     >>> prod(range(3))
     0
     >>> type(_) is int
@@ -1571,7 +1574,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
     >>> from sympy.core.mul import _keep_coeff
     >>> from sympy.abc import x, y
-    >>> from sympy import S
+    >>> from sympy import S, Integer
 
     >>> _keep_coeff(S.Half, x + 2)
     (x + 2)/2
@@ -1584,6 +1587,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     >>> _keep_coeff(Integer(-1), x + y, sign=True)
     -(x + y)
     """
+    from sympy.core import Integer
 
     if not coeff.is_Number:
         if factors.is_Number:

@@ -13,8 +13,9 @@ sympy.stats.rv_interface
 """
 
 from sympy import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
-                   Equality, solve, Lambda, DiracDelta)
+                   Equality, solve, Lambda, DiracDelta, Integer)
 from sympy.sets.sets import FiniteSet, ProductSet
+
 from sympy.abc import x
 
 

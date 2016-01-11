@@ -7,7 +7,7 @@ from sympy.polys.rootoftools import RootOf, RootSum
 from sympy.polys.polyerrors import (MultivariatePolynomialError,
                                     GeneratorsNeeded, PolynomialError)
 from sympy import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                   Function, Eq, solve, legendre_poly)
+                   Function, Eq, solve, legendre_poly, Integer)
 
 from sympy.abc import a, b, x, y, z, r
 

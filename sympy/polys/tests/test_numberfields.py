@@ -3,7 +3,7 @@
 import pytest
 
 from sympy import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                   pi, cos, sin, exp)
+                   pi, cos, sin, exp, Integer)
 from sympy.polys.numberfields import (
     minimal_polynomial,
     primitive_element,

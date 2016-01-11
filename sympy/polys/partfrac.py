@@ -4,7 +4,7 @@ from sympy.polys import Poly, RootSum, cancel, factor
 from sympy.polys.polytools import parallel_poly_from_expr
 from sympy.polys.polyoptions import allowed_flags, set_defaults
 from sympy.polys.polyerrors import PolynomialError
-from sympy.core import S, Add, sympify, Function, Lambda, Dummy
+from sympy.core import S, Add, sympify, Function, Lambda, Dummy, Integer
 from sympy.core.basic import preorder_traversal
 from sympy.utilities import numbered_symbols, take, xthreaded, public
 

@@ -237,7 +237,7 @@ from sympy.core.expr import AtomicExpr, Expr
 from sympy.core.function import (Function, Derivative, AppliedUndef, diff,
                                  expand, expand_mul, Subs, _mexpand)
 from sympy.core.multidimensional import vectorize
-from sympy.core.numbers import NaN, zoo, I, Number
+from sympy.core.numbers import NaN, zoo, I, Number, Integer
 from sympy.core.relational import Equality, Eq
 from sympy.core.symbol import Symbol, Wild, Dummy, symbols
 from sympy.core.sympify import sympify
@@ -1931,7 +1931,7 @@ def checksysodesol(eqs, sols, func=None):
     Examples
     ========
 
-    >>> from sympy import Eq, diff, symbols, sin, cos, exp, sqrt, S
+    >>> from sympy import Eq, diff, symbols, sin, cos, exp, sqrt, Rational
     >>> from sympy.solvers.ode import checksysodesol
     >>> C1, C2 = symbols('C1:3')
     >>> t = symbols('t')

@@ -243,10 +243,9 @@ def nthroot(expr, n, max_len=4, prec=15):
     ========
 
     >>> from sympy.simplify.simplify import nthroot
-    >>> from sympy import Rational, sqrt
+    >>> from sympy import sqrt
     >>> nthroot(90 + 34*sqrt(7), 3)
     sqrt(7) + 3
-
     """
     expr = sympify(expr)
     n = sympify(n)
@@ -1014,7 +1013,7 @@ def besselsimp(expr):
     of low order.  Finally, if the expression was changed, compute
     factorization of the result with factor().
 
-    >>> from sympy import besselj, besseli, besselsimp, polar_lift, I, S
+    >>> from sympy import besselj, besseli, besselsimp, polar_lift, I, Rational
     >>> from sympy.abc import z, nu
     >>> besselsimp(besselj(nu, z*polar_lift(-1)))
     E**(I*pi*nu)*besselj(nu, z)

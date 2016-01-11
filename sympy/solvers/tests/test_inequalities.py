@@ -4,7 +4,8 @@ import pytest
 
 from sympy import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
                    Or, S, sin, sqrt, Symbol, Union, Integral, Sum,
-                   Function, Poly, PurePoly, pi, root, log, E, Piecewise)
+                   Function, Poly, PurePoly, pi, root, log, E, Piecewise,
+                   Integer, Float, Rational)
 from sympy.solvers.inequalities import (reduce_inequalities,
                                         solve_poly_inequality as psolve,
                                         reduce_rational_inequalities,
@@ -12,6 +13,7 @@ from sympy.solvers.inequalities import (reduce_inequalities,
                                         reduce_piecewise_inequality)
 from sympy.polys.rootoftools import RootOf
 from sympy.solvers.solvers import solve
+
 from sympy.abc import x, y
 
 

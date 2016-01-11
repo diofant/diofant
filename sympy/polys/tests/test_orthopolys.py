@@ -2,8 +2,7 @@
 
 import pytest
 
-from sympy import Poly, S, Rational as Q
-
+from sympy import Poly, S, Rational as Q, Integer
 from sympy.polys.orthopolys import (
     jacobi_poly,
     gegenbauer_poly,

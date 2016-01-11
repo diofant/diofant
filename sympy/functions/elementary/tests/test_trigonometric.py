@@ -5,7 +5,7 @@ from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
                    cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
                    cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
                    diff, simplify, Heaviside, arg, conjugate, series,
-                   FiniteSet, asec, acsc, sech, csch)
+                   FiniteSet, asec, acsc, sech, csch, Integer)
 
 x, y, z = symbols('x y z')
 r = Symbol('r', real=True)

@@ -1,7 +1,7 @@
 """This module implements tools for integrating rational functions. """
 
-from sympy import (S, Symbol, symbols, I, log, atan, roots, RootSum,
-                   Lambda, cancel, Dummy)
+from sympy import (Symbol, symbols, I, log, atan, roots, RootSum,
+                   Lambda, cancel, Dummy, Integer, Rational)
 from sympy.polys import Poly, resultant, ZZ
 from sympy.polys.polytools import count_roots
 
@@ -270,7 +270,7 @@ def log_to_atan(f, g):
 
         >>> from sympy.integrals.rationaltools import log_to_atan
         >>> from sympy.abc import x
-        >>> from sympy import Poly, sqrt, S
+        >>> from sympy import Poly, sqrt, Rational
         >>> log_to_atan(Poly(x, x, domain='ZZ'), Poly(1, x, domain='ZZ'))
         2*atan(x)
         >>> log_to_atan(Poly(x + Rational(1, 2), x, domain='QQ'),
@@ -317,7 +317,7 @@ def log_to_real(h, q, x, t):
 
         >>> from sympy.integrals.rationaltools import log_to_real
         >>> from sympy.abc import x, y
-        >>> from sympy import Poly, sqrt, S
+        >>> from sympy import Poly, sqrt, Rational
         >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x, domain='QQ[y]'),
         ... Poly(3*y**2 + 1, y, domain='ZZ'), x, y)
         2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3

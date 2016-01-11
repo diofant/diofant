@@ -5,7 +5,7 @@ import pytest
 from sympy import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
                    fibonacci, floor, Function, GoldenRatio, I, Integral,
                    integrate, log, Mul, N, oo, pi, Pow, product, Product,
-                   Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol)
+                   Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol, Float)
 from sympy.core.evalf import (complex_accuracy, PrecisionExhausted,
                               scaled_zero, as_mpmath)
 

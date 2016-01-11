@@ -2,7 +2,7 @@ from sympy.core import S, Add, Mul, sympify, Symbol, Dummy
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import (Function, Derivative, ArgumentIndexError,
                                  AppliedUndef)
-from sympy.core.numbers import pi
+from sympy.core.numbers import pi, Rational
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.core.expr import Expr

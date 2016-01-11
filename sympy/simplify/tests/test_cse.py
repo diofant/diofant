@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (Add, Pow, Symbol, exp, sqrt, symbols, sympify, cse,
                    Matrix, S, cos, sin, Eq, Function, Tuple, RootOf,
-                   IndexedBase, Idx, Piecewise, O)
+                   IndexedBase, Idx, Piecewise, O, Integer, Rational, true)
 from sympy.simplify.cse_opts import sub_pre, sub_post
 from sympy.functions.special.hyper import meijerg
 from sympy.simplify import cse_main, cse_opts

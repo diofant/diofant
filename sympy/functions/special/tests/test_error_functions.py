@@ -2,8 +2,8 @@ import pytest
 
 from sympy import (symbols, expand, expand_func, nan, oo, Float, conjugate,
                    diff, re, im, Abs, O, exp_polar, polar_lift, limit,
-                   Symbol, I, integrate, S, sqrt, sin, cos, sinh, cosh,
-                   exp, log, pi, EulerGamma, erf, erfc, erfi, erf2, erfinv,
+                   Symbol, I, integrate, S, sqrt, sin, cos, sinh, cosh, Integer,
+                   exp, log, pi, EulerGamma, erf, erfc, erfi, erf2, erfinv, Rational,
                    erfcinv, erf2inv, gamma, uppergamma, Ei, expint, E1, li,
                    Li, Si, Ci, Shi, Chi, fresnels, fresnelc, hyper, meijerg)
 from sympy.functions.special.error_functions import _erfs, _eis

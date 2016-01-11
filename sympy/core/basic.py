@@ -228,7 +228,7 @@ class Basic(metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from sympy.core import S, I
+        >>> from sympy.core import S, I, Rational, Symbol
 
         >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
@@ -423,7 +423,7 @@ class Basic(metaclass=ManagedProperties):
         of sympy atom, while ``type(Integer(2))`` is type ``Integer`` and will find all
         integers in an expression:
 
-        >>> from sympy import S
+        >>> from sympy import S, Integer
         >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1)) == {1}
         True
 
@@ -1614,7 +1614,7 @@ def _aresame(a, b):
 
     To SymPy, 2.0 == 2:
 
-    >>> from sympy import S
+    >>> from sympy import Integer, Float
     >>> 2.0 == Integer(2)
     True
 

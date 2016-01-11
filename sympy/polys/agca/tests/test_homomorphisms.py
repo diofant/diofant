@@ -2,9 +2,10 @@
 
 import pytest
 
-from sympy import QQ, S
-from sympy.abc import x, y
+from sympy import QQ, Integer, Rational
 from sympy.polys.agca import homomorphism
+
+from sympy.abc import x, y
 
 
 def test_printing():

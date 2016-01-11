@@ -4,6 +4,7 @@ from sympy.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from sympy.core.singleton import Singleton, S
 from sympy.core.sympify import _sympify
 from sympy.core.function import Lambda
+from sympy.core.numbers import Integer
 
 
 class Naturals(Set, metaclass=Singleton):

@@ -1,14 +1,14 @@
 import pytest
 
 from sympy import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
-                   And, Tuple, Or, Dict, sympify, binomial, cancel)
+                   And, Tuple, Or, Dict, sympify, binomial, cancel,
+                   Rational, Integer, oo)
 from sympy.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
                          Hypergeometric, Rademacher, P, E, variance, covariance,
                          skewness, sample, density, where, FiniteRV, pspace, cdf,
                          correlation, moment, cmoment, smoment)
-from sympy.abc import p
 
-oo = S.Infinity
+from sympy.abc import p
 
 
 def BayesTest(A, B):

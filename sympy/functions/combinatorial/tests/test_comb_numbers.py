@@ -3,7 +3,8 @@ import string
 import pytest
 
 from sympy import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
-                   expand_func, diff, EulerGamma, cancel, re, im, Product)
+                   expand_func, diff, EulerGamma, cancel, re, im,
+                   Product, Integer)
 from sympy.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
                              catalan, genocchi, binomial, gamma, sqrt, hyper, log,
                              digamma, trigamma, polygamma, factorial, sin,

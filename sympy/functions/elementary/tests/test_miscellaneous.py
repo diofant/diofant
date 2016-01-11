@@ -1,7 +1,7 @@
 import pytest
 
 from sympy.core.function import Function
-from sympy.core.numbers import I, oo, Rational
+from sympy.core.numbers import I, oo, Rational, Integer
 from sympy.core.singleton import S
 from sympy.core.symbol import Symbol
 from sympy.functions.elementary.miscellaneous import (sqrt, cbrt, root,

@@ -2,9 +2,9 @@ import pytest
 
 from sympy import (
     Abs, And, binomial, Catalan, cos, Derivative, E, Eq, exp, EulerGamma,
-    factorial, Function, harmonic, I, Integral, KroneckerDelta, log,
-    nan, Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify,
-    sqrt, Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod)
+    factorial, Function, harmonic, I, Integral, KroneckerDelta, log, nan,
+    Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify, sqrt,
+    Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod, Integer)
 from sympy.concrete.summations import telescopic
 
 from sympy.abc import a, b, c, d, f, k, m, x, y, z

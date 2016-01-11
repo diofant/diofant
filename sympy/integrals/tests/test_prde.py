@@ -1,7 +1,9 @@
 """Most of these tests come from the examples in Bronstein's book."""
-from sympy import Poly, Matrix, S, symbols
+
+from sympy import Poly, Matrix, symbols, Integer, Rational
 from sympy.integrals.risch import DifferentialExtension
-from sympy.integrals.prde import (prde_normal_denom, prde_special_denom,
+from sympy.integrals.prde import (
+    prde_normal_denom, prde_special_denom,
     prde_linear_constraints, constant_system, prde_spde, prde_no_cancel_b_large,
     prde_no_cancel_b_small, limited_integrate_reduce, limited_integrate,
     is_deriv_k, is_log_deriv_k_t_radical, parametric_log_deriv_heu,

@@ -2,7 +2,7 @@
 
 from functools import reduce
 
-from sympy.core import Symbol, Dummy
+from sympy.core import Symbol, Dummy, Integer
 from sympy.core.compatibility import iterable
 from sympy.sets import Interval
 from sympy.core.relational import Relational, Eq, Ge, Lt

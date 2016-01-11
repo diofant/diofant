@@ -6,7 +6,8 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
                    ProductSet, E, sqrt, Complement, EmptySet, sin, cos, Lambda,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
-                   SymmetricDifference)
+                   SymmetricDifference, Integer, Rational)
+
 from sympy.abc import x, y, z
 
 

@@ -1,12 +1,13 @@
 import pytest
 
-from sympy import (hyper, meijerg, S, Tuple, pi, I, exp, log,
-                   cos, sqrt, symbols, oo, Derivative, gamma, O)
+from sympy import (hyper, meijerg, S, Tuple, pi, I, exp, log, Integer,
+                   cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
 from sympy.series.limits import limit
-from sympy.abc import x, z, k
 from sympy.utilities.randtest import (random_complex_number as randcplx,
                                       verify_numerically as tn,
                                       test_derivative_numerically as td)
+
+from sympy.abc import x, z, k
 
 
 def test_TupleParametersBase():
