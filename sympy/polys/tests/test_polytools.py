@@ -3163,4 +3163,4 @@ def test_noncommutative():
 
 def test_to_rational_coeffs():
     assert to_rational_coeffs(
-        Poly(x**3 + y*x**2 + sqrt(y), x, domain='EX')) == None
+        Poly(x**3 + y*x**2 + sqrt(y), x, domain='EX')) is None
