@@ -27,6 +27,7 @@ def test_det():
 
 
 def test_eval_determinant():
+    assert det(Matrix()) == 1
     assert det(Identity(n)) == 1
     assert det(ZeroMatrix(n, n)) == 0
     assert det(Transpose(A)) == det(A)

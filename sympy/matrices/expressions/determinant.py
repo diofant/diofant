@@ -7,12 +7,20 @@ class Determinant(Expr):
 
     Represents the determinant of a matrix expression.
 
-    >>> from sympy import MatrixSymbol, Determinant, eye
+    Examples
+    ========
+
+    >>> from sympy import MatrixSymbol, Determinant, eye, Matrix
     >>> A = MatrixSymbol('A', 3, 3)
     >>> Determinant(A)
     Determinant(A)
 
     >>> Determinant(eye(3)).doit()
+    1
+
+    Determinant of the empty matrix:
+
+    >>> Determinant(Matrix()).doit()
     1
     """
 
@@ -38,7 +46,7 @@ class Determinant(Expr):
 
 
 def det(matexpr):
-    """ Matrix Determinant
+    """Compute the Matrix Determinant
 
     >>> from sympy import MatrixSymbol, det, eye
     >>> A = MatrixSymbol('A', 3, 3)
@@ -47,6 +55,11 @@ def det(matexpr):
 
     >>> det(eye(3))
     1
+
+    See Also
+    ========
+
+    Determinant
     """
 
     return Determinant(matexpr).doit()
