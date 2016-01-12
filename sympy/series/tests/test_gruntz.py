@@ -339,6 +339,10 @@ def test_limit():
     # issue sympy/sympy#8481
     assert gruntz(m**x * exp(-m) / factorial(x), x) == 0
 
+    # issue sympy/sympy#4187
+    assert gruntz(exp(1/x)*log(1/x) - Ei(1/x), x) == -EulerGamma
+    assert gruntz(exp(x)*log(x) - Ei(x), x) == oo
+
 
 def test_I():
     from sympy.functions import sign
