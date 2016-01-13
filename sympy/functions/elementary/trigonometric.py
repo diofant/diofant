@@ -1,7 +1,7 @@
 from sympy.core.add import Add
 from sympy.core.basic import sympify, cacheit
 from sympy.core.function import Function, ArgumentIndexError
-from sympy.core.numbers import igcdex, Rational
+from sympy.core.numbers import igcdex, Rational, Integer
 from sympy.core.singleton import S
 from sympy.core.symbol import Symbol
 from sympy.functions.combinatorial.factorials import factorial, RisingFactorial
@@ -158,7 +158,7 @@ def _pi_coeff(arg, cycles=1):
                 elif not c2:
                     if x.is_even is not None:  # known parity
                         return S.Zero
-                    return S(2)
+                    return Integer(2)
                 else:
                     return c2*x
             return cx
@@ -1557,8 +1557,8 @@ class asin(InverseTrigonometricFunction):
                 (1 - sqrt(5))/4: -10,
                 (sqrt(3) - 1)/sqrt(2**3): 12,
                 (1 - sqrt(3))/sqrt(2**3): -12,
-                (sqrt(5) + 1)/4: S(10)/3,
-                -(sqrt(5) + 1)/4: -S(10)/3
+                (sqrt(5) + 1)/4: Rational(10, 3),
+                -(sqrt(5) + 1)/4: -Rational(10, 3)
             }
 
             if arg in cst_table:
@@ -1882,12 +1882,12 @@ class atan(InverseTrigonometricFunction):
                 -1/sqrt(3): -6,
                 sqrt(3): 3,
                 -sqrt(3): -3,
-                (1 + sqrt(2)): S(8)/3,
-                -(1 + sqrt(2)): S(8)/3,
+                (1 + sqrt(2)): Rational(8, 3),
+                -(1 + sqrt(2)): Rational(8, 3),
                 (sqrt(2) - 1): 8,
                 (1 - sqrt(2)): -8,
-                sqrt((5 + 2*sqrt(5))): S(5)/2,
-                -sqrt((5 + 2*sqrt(5))): -S(5)/2,
+                sqrt((5 + 2*sqrt(5))): Rational(5, 2),
+                -sqrt((5 + 2*sqrt(5))): -Rational(5, 2),
                 (2 - sqrt(3)): 12,
                 -(2 - sqrt(3)): -12
             }
@@ -1922,7 +1922,7 @@ class atan(InverseTrigonometricFunction):
 
     def _eval_rewrite_as_log(self, x):
         return S.ImaginaryUnit/2 * (log(
-            (S(1) - S.ImaginaryUnit * x)/(S(1) + S.ImaginaryUnit * x)))
+            (Integer(1) - S.ImaginaryUnit * x)/(Integer(1) + S.ImaginaryUnit * x)))
 
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == S.Infinity:
@@ -2030,14 +2030,14 @@ class acot(InverseTrigonometricFunction):
                 -sqrt(3): -6,
                 (1 + sqrt(2)): 8,
                 -(1 + sqrt(2)): -8,
-                (1 - sqrt(2)): -S(8)/3,
-                (sqrt(2) - 1): S(8)/3,
+                (1 - sqrt(2)): -Rational(8, 3),
+                (sqrt(2) - 1): Rational(8, 3),
                 sqrt(5 + 2*sqrt(5)): 10,
                 -sqrt(5 + 2*sqrt(5)): -10,
                 (2 + sqrt(3)): 12,
                 -(2 + sqrt(3)): -12,
-                (2 - sqrt(3)): S(12)/5,
-                -(2 - sqrt(3)): -S(12)/5,
+                (2 - sqrt(3)): Rational(12, 5),
+                -(2 - sqrt(3)): -Rational(12, 5),
             }
 
             if arg in cst_table:
@@ -2368,7 +2368,7 @@ class atan2(InverseTrigonometricFunction):
     `\operatorname{atan}` function for the point `(x, y) = (-1, 1)`
 
     >>> from sympy import atan, S
-    >>> atan(S(1) / -1)
+    >>> atan(Integer(1) / -1)
     -pi/4
     >>> atan2(1, -1)
     3*pi/4

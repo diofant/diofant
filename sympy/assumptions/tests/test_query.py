@@ -1030,7 +1030,7 @@ def test_finite():
     assert ask(Q.finite(Rational(1, 2) ** x)) is None
     assert ask(Q.finite(Rational(1, 2) ** x), Q.positive(x)) is True
     assert ask(Q.finite(Rational(1, 2) ** x), Q.negative(x)) is None
-    assert ask(Q.finite(S(2) ** x), Q.negative(x)) is True
+    assert ask(Q.finite(Integer(2) ** x), Q.negative(x)) is True
     assert ask(Q.finite(sqrt(x))) is None
     assert ask(Q.finite(2**x), ~Q.finite(x)) is False
     assert ask(Q.finite(x**2), ~Q.finite(x)) is False
@@ -1916,8 +1916,8 @@ def test_algebraic():
     assert ask(Q.algebraic(I*sqrt(3))) is True
     assert ask(Q.algebraic(sqrt(1 + I*sqrt(3)))) is True
 
-    assert ask(Q.algebraic((1 + I*sqrt(3)**(S(17)/31)))) is True
-    assert ask(Q.algebraic((1 + I*sqrt(3)**(S(17)/pi)))) is False
+    assert ask(Q.algebraic((1 + I*sqrt(3)**Rational(17, 31)))) is True
+    assert ask(Q.algebraic((1 + I*sqrt(3)**(Integer(17)/pi)))) is False
 
     for f in [exp, sin, tan, asin, atan, cos]:
         assert ask(Q.algebraic(f(7))) is False
@@ -2091,9 +2091,9 @@ def test_known_facts_consistent():
 
 def test_Add_queries():
     assert ask(Q.prime(12345678901234567890 + (cos(1)**2 + sin(1)**2))) is True
-    assert ask(Q.even(Add(S(2), S(2), evaluate=0))) is True
-    assert ask(Q.prime(Add(S(2), S(2), evaluate=0))) is False
-    assert ask(Q.integer(Add(S(2), S(2), evaluate=0))) is True
+    assert ask(Q.even(Add(Integer(2), Integer(2), evaluate=0))) is True
+    assert ask(Q.prime(Add(Integer(2), Integer(2), evaluate=0))) is False
+    assert ask(Q.integer(Add(Integer(2), Integer(2), evaluate=0))) is True
 
 
 def test_positive_assuming():

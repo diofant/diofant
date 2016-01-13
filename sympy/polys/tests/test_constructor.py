@@ -3,8 +3,8 @@
 from sympy.polys.constructor import construct_domain
 from sympy.polys.domains import ZZ, QQ, RR, EX
 from sympy.polys.domains.realfield import RealField
+from sympy import S, sqrt, sin, Float, Integer, Rational
 
-from sympy import S, sqrt, sin, Float
 from sympy.abc import x, y
 
 
@@ -12,11 +12,11 @@ def test_construct_domain():
     assert construct_domain([1, 2, 3]) == (ZZ, [ZZ(1), ZZ(2), ZZ(3)])
     assert construct_domain([1, 2, 3], field=True) == (QQ, [QQ(1), QQ(2), QQ(3)])
 
-    assert construct_domain([S(1), S(2), S(3)]) == (ZZ, [ZZ(1), ZZ(2), ZZ(3)])
-    assert construct_domain([S(1), S(2), S(3)], field=True) == (QQ, [QQ(1), QQ(2), QQ(3)])
+    assert construct_domain([Integer(1), Integer(2), Integer(3)]) == (ZZ, [ZZ(1), ZZ(2), ZZ(3)])
+    assert construct_domain([Integer(1), Integer(2), Integer(3)], field=True) == (QQ, [QQ(1), QQ(2), QQ(3)])
 
-    assert construct_domain([S(1)/2, S(2)]) == (QQ, [QQ(1, 2), QQ(2)])
-    result = construct_domain([3.14, 1, S(1)/2])
+    assert construct_domain([Rational(1, 2), Integer(2)]) == (QQ, [QQ(1, 2), QQ(2)])
+    result = construct_domain([3.14, 1, Rational(1, 2)])
     assert isinstance(result[0], RealField)
     assert result[1] == [RR(3.14), RR(1.0), RR(0.5)]
 
@@ -30,8 +30,8 @@ def test_construct_domain():
 
     alg = QQ.algebraic_field(sqrt(2))
 
-    assert construct_domain([7, S(1)/2, sqrt(2)], extension=True) == \
-        (alg, [alg.convert(7), alg.convert(S(1)/2), alg.convert(sqrt(2))])
+    assert construct_domain([7, Rational(1, 2), sqrt(2)], extension=True) == \
+        (alg, [alg.convert(7), alg.convert(Rational(1, 2)), alg.convert(sqrt(2))])
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 
@@ -89,7 +89,7 @@ def test_construct_domain():
         (dom, [dom.convert(2/x), dom.convert(3.5*y)])
 
     assert construct_domain(2) == (ZZ, ZZ(2))
-    assert construct_domain(S(2)/3) == (QQ, QQ(2, 3))
+    assert construct_domain(Rational(2, 3)) == (QQ, QQ(2, 3))
 
     assert construct_domain({}) == (ZZ, {})
 

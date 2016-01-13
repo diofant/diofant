@@ -928,7 +928,7 @@ def field_isomorphism_pslq(a, b):
         else:
             break
 
-        coeffs = [S(c)/coeffs[-1] for c in coeffs[:-1]]
+        coeffs = [sympify(c)/coeffs[-1] for c in coeffs[:-1]]
 
         while not coeffs[-1]:
             coeffs.pop()

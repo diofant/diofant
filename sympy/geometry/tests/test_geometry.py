@@ -3,7 +3,8 @@ import warnings
 import pytest
 
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                   simplify, sin, sqrt, symbols, Derivative, asin, acos)
+                   simplify, sin, sqrt, symbols, Derivative, asin, acos,
+                   Integer)
 from sympy.functions.elementary.trigonometric import tan
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             Polygon, Ray, RegularPolygon, Segment, Triangle,
@@ -556,14 +557,17 @@ def test_polygon():
     assert altitudes[p2] == s1[0]
     assert altitudes[p3] == s1[2]
     assert t1.orthocenter == p1
-    t = S('''Triangle(
-    Point(100080156402737/5000000000000, 79782624633431/500000000000),
-    Point(39223884078253/2000000000000, 156345163124289/1000000000000),
-    Point(31241359188437/1250000000000, 338338270939941/1000000000000000))''')
-    assert t.orthocenter == S('''Point(-780660869050599840216997'''
-    '''79471538701955848721853/80368430960602242240789074233100000000000000,'''
-    '''20151573611150265741278060334545897615974257/16073686192120448448157'''
-    '''8148466200000000000)''')
+    t = Triangle(Point(Rational(100080156402737, 5000000000000),
+                       Rational(79782624633431, 500000000000)),
+                 Point(Rational(39223884078253, 2000000000000),
+                       Rational(156345163124289, 1000000000000)),
+                 Point(Rational(31241359188437, 1250000000000),
+                       Rational(338338270939941, 1000000000000000)))
+    assert t.orthocenter == \
+        Point(Rational(-78066086905059984021699779471538701955848721853,
+                       80368430960602242240789074233100000000000000),
+              Rational(20151573611150265741278060334545897615974257,
+                       160736861921204484481578148466200000000000))
 
     # Ensure
     assert len(intersection(*bisectors.values())) == 1

@@ -7,7 +7,7 @@ combinatorial polynomials.
 """
 
 from sympy.core.singleton import S
-from sympy.core import Rational
+from sympy.core import Rational, Integer
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.symbol import Dummy
 from sympy.functions.combinatorial.factorials import binomial, factorial, RisingFactorial
@@ -62,7 +62,7 @@ class jacobi(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from sympy import jacobi, S, conjugate, diff
+    >>> from sympy import jacobi, conjugate, diff, Rational
     >>> from sympy.abc import n,a,b,x
 
     >>> jacobi(0, a, b, x)
@@ -83,10 +83,10 @@ class jacobi(OrthogonalPolynomial):
     >>> jacobi(n, 0, 0, x)
     legendre(n, x)
 
-    >>> jacobi(n, S(1)/2, S(1)/2, x)
+    >>> jacobi(n, Rational(1, 2), Rational(1, 2), x)
     RisingFactorial(3/2, n)*chebyshevu(n, x)/factorial(n + 1)
 
-    >>> jacobi(n, -S(1)/2, -S(1)/2, x)
+    >>> jacobi(n, -Rational(1, 2), -Rational(1, 2), x)
     RisingFactorial(1/2, n)*chebyshevt(n, x)/factorial(n)
 
     >>> jacobi(n, a, b, -x)
@@ -263,7 +263,7 @@ def jacobi_normalized(n, a, b, x):
     .. [2] http://mathworld.wolfram.com/JacobiPolynomial.html
     .. [3] http://functions.wolfram.com/Polynomials/JacobiP/
     """
-    nfactor = (S(2)**(a + b + 1) * (gamma(n + a + 1) * gamma(n + b + 1))
+    nfactor = (Integer(2)**(a + b + 1) * (gamma(n + a + 1) * gamma(n + b + 1))
                / (2*n + a + b + 1) / (factorial(n) * gamma(n + a + b + 1)))
 
     return jacobi(n, a, b, x) / sqrt(nfactor)

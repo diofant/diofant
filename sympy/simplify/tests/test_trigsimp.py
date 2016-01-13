@@ -3,7 +3,7 @@ import pytest
 from sympy import (symbols, sin, simplify, cos, trigsimp, rad, tan,
                    exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
                    exp, S, integrate, I, Matrix, Symbol, coth, pi, log,
-                   count_ops, sqrt, E, expand, Piecewise)
+                   count_ops, sqrt, E, expand, Piecewise, Integer, Rational)
 
 from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
 
@@ -22,7 +22,7 @@ def test_trigsimp1():
     assert trigsimp(1/sin(x)**2 - cot(x)**2) == 1
 
     assert trigsimp(5*cos(x)**2 + 5*sin(x)**2) == 5
-    assert trigsimp(5*cos(x/2)**2 + 2*sin(x/2)**2) == 3*cos(x)/2 + S(7)/2
+    assert trigsimp(5*cos(x/2)**2 + 2*sin(x/2)**2) == 3*cos(x)/2 + Rational(7, 2)
 
     assert trigsimp(sin(x)/cos(x)) == tan(x)
     assert trigsimp(2*tan(x)*cos(x)) == 2*sin(x)
@@ -265,7 +265,7 @@ def test_hyperbolic_simp():
     assert trigsimp(coth(x)**2 - 1/sinh(x)**2) == 1
 
     assert trigsimp(5*cosh(x)**2 - 5*sinh(x)**2) == 5
-    assert trigsimp(5*cosh(x/2)**2 - 2*sinh(x/2)**2) == 3*cosh(x)/2 + S(7)/2
+    assert trigsimp(5*cosh(x/2)**2 - 2*sinh(x/2)**2) == 3*cosh(x)/2 + Rational(7, 2)
 
     assert trigsimp(sinh(x)/cosh(x)) == tanh(x)
     assert trigsimp(tanh(x)) == trigsimp(sinh(x)/cosh(x))

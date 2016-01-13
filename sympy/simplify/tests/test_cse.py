@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (Add, Pow, Symbol, exp, sqrt, symbols, sympify, cse,
                    Matrix, S, cos, sin, Eq, Function, Tuple, RootOf,
-                   IndexedBase, Idx, Piecewise, O)
+                   IndexedBase, Idx, Piecewise, O, Integer, Rational, true)
 from sympy.simplify.cse_opts import sub_pre, sub_post
 from sympy.functions.special.hyper import meijerg
 from sympy.simplify import cse_main, cse_opts
@@ -254,21 +254,21 @@ def test_issue_4499():
     B = Function('B')
     G = Function('G')
     t = Tuple(*
-        (a, a + S(1)/2, 2*a, b, 2*a - b + 1, (sqrt(z)/2)**(-2*a + 1)*B(2*a -
+        (a, a + Rational(1, 2), 2*a, b, 2*a - b + 1, (sqrt(z)/2)**(-2*a + 1)*B(2*a -
         b, sqrt(z))*B(b - 1, sqrt(z))*G(b)*G(2*a - b + 1),
         sqrt(z)*(sqrt(z)/2)**(-2*a + 1)*B(b, sqrt(z))*B(2*a - b,
         sqrt(z))*G(b)*G(2*a - b + 1), sqrt(z)*(sqrt(z)/2)**(-2*a + 1)*B(b - 1,
         sqrt(z))*B(2*a - b + 1, sqrt(z))*G(b)*G(2*a - b + 1),
         (sqrt(z)/2)**(-2*a + 1)*B(b, sqrt(z))*B(2*a - b + 1,
-        sqrt(z))*G(b)*G(2*a - b + 1), 1, 0, S(1)/2, z/2, -b + 1, -2*a + b,
+        sqrt(z))*G(b)*G(2*a - b + 1), 1, 0, Rational(1, 2), z/2, -b + 1, -2*a + b,
         -2*a))
     c = cse(t)
     ans = (
         [(x0, 2*a), (x1, -b), (x2, x1 + 1), (x3, x0 + x2), (x4, sqrt(z)), (x5,
         B(x0 + x1, x4)), (x6, G(b)), (x7, G(x3)), (x8, -x0), (x9,
         (x4/2)**(x8 + 1)), (x10, x6*x7*x9*B(b - 1, x4)), (x11, x6*x7*x9*B(b,
-        x4)), (x12, B(x3, x4))], [(a, a + S(1)/2, x0, b, x3, x10*x5,
-        x11*x4*x5, x10*x12*x4, x11*x12, 1, 0, S(1)/2, z/2, x2, b + x8, x8)])
+        x4)), (x12, B(x3, x4))], [(a, a + Rational(1, 2), x0, b, x3, x10*x5,
+        x11*x4*x5, x10*x12*x4, x11*x12, 1, 0, Rational(1, 2), z/2, x2, b + x8, x8)])
     assert ans == c
 
 
@@ -364,12 +364,10 @@ def test_issue_7840():
     assert ss_answer == cse_answer
 
     # GitRay's example
-    expr = sympify(
-        "Piecewise((Symbol('ON'), Equality(Symbol('mode'), Symbol('ON'))), \
-        (Piecewise((Piecewise((Symbol('OFF'), StrictLessThan(Symbol('x'), \
-        Symbol('threshold'))), (Symbol('ON'), S.true)), Equality(Symbol('mode'), \
-        Symbol('AUTO'))), (Symbol('OFF'), S.true)), S.true))"
-    )
+    expr = Piecewise((Symbol('ON'), Eq(Symbol('mode'), Symbol('ON'))),
+                     (Piecewise((Piecewise((Symbol('OFF'), Symbol('x') < Symbol('threshold')),
+                                           (Symbol('ON'), true)), Eq(Symbol('mode'), Symbol('AUTO'))),
+                                (Symbol('OFF'), true)), true))
     substitutions, new_eqn = cse(expr)
     # this Piecewise should be exactly the same
     assert new_eqn[0] == expr

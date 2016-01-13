@@ -13,8 +13,9 @@ sympy.stats.rv_interface
 """
 
 from sympy import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
-                   Equality, solve, Lambda, DiracDelta)
+                   Equality, solve, Lambda, DiracDelta, Integer)
 from sympy.sets.sets import FiniteSet, ProductSet
+
 from sympy.abc import x
 
 
@@ -914,7 +915,7 @@ def sampling_P(condition, given_condition=None, numsamples=1,
         else:
             count_false += 1
 
-    result = S(count_true) / numsamples
+    result = Integer(count_true) / numsamples
     if evalf:
         return result.evalf()
     else:

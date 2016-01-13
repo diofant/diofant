@@ -1,5 +1,5 @@
 from sympy.core.sympify import _sympify
-from sympy.core import S, Basic
+from sympy.core import S, Basic, Integer
 from sympy.matrices.expressions.matexpr import ShapeError
 from sympy.matrices.expressions.matpow import MatPow
 
@@ -29,7 +29,7 @@ class Inverse(MatPow):
 
     """
     is_Inverse = True
-    exp = S(-1)
+    exp = Integer(-1)
 
     def __new__(cls, mat):
         mat = _sympify(mat)

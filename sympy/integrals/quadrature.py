@@ -1,4 +1,4 @@
-from sympy.core import S, Dummy, pi
+from sympy.core import S, Dummy, pi, Integer, Rational
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.elementary.trigonometric import sin, cos
 from sympy.functions.elementary.miscellaneous import sqrt
@@ -75,7 +75,7 @@ def gauss_legendre(n, n_digits):
     w  = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
-            r = r.eval_rational(S(1)/10**(n_digits+2))
+            r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.n(n_digits))
         w.append((2/((1-r**2) * pd.subs(x, r)**2)).n(n_digits))
     return xi, w
@@ -150,7 +150,7 @@ def gauss_laguerre(n, n_digits):
     w  = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
-            r = r.eval_rational(S(1)/10**(n_digits+2))
+            r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.n(n_digits))
         w.append((r/((n+1)**2 * p1.subs(x, r)**2)).n(n_digits))
     return xi, w
@@ -226,7 +226,7 @@ def gauss_hermite(n, n_digits):
     w  = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
-            r = r.eval_rational(S(1)/10**(n_digits+2))
+            r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.n(n_digits))
         w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs(x, r)**2)).n(n_digits))
     return xi, w
@@ -304,7 +304,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     w  = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
-            r = r.eval_rational(S(1)/10**(n_digits+2))
+            r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.n(n_digits))
         w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs(x, r)*p2.subs(x, r))).n(n_digits))
     return xi, w
@@ -531,7 +531,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     w  = []
     for r in p.real_roots():
         if isinstance(r, RootOf):
-            r = r.eval_rational(S(1)/10**(n_digits+2))
+            r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.n(n_digits))
         w.append((
             - (2*n+alpha+beta+2) / (n+alpha+beta+S.One)

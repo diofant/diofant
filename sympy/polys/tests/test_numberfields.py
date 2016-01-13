@@ -3,7 +3,7 @@
 import pytest
 
 from sympy import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                   pi, cos, sin, exp)
+                   pi, cos, sin, exp, Integer)
 from sympy.polys.numberfields import (
     minimal_polynomial,
     primitive_element,
@@ -99,10 +99,9 @@ def test_minimal_polynomial():
         a**Q(3, 2), x) == 729*x**4 - 506898*x**2 + 84604519
 
     # issue 5994
-    eq = S('''
-        -1/(800*sqrt(-1/240 + 1/(18000*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)) + 2*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)))''')
+    eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1,17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3))))
     assert minimal_polynomial(eq, x) == 8000*x**2 - 1
 
     ex = 1 + sqrt(2) + sqrt(3)
@@ -120,7 +119,7 @@ def test_minimal_polynomial():
     mp = minimal_polynomial(p, x)
     assert mp == x**8 - 512*x**7 - 118208*x**6 + 31131136*x**5 + 647362560*x**4 - 56026611712*x**3 + 116994310144*x**2 + 404854931456*x - 27216576512
 
-    assert minimal_polynomial(S("-sqrt(5)/2 - 1/2 + (-sqrt(5)/2 - 1/2)**2"), x) == x - 1
+    assert minimal_polynomial(-sqrt(5)/2 - S.Half + (-sqrt(5)/2 - S.Half)**2, x) == x - 1
     a = 1 + sqrt(2)
     assert minimal_polynomial((a*sqrt(2) + a)**3, x) == x**2 - 198*x + 1
 
@@ -137,7 +136,7 @@ def test_minimal_polynomial():
 
 
 def test_minimal_polynomial_hi_prec():
-    p = 1/sqrt(1 - 9*sqrt(2) + 7*sqrt(3) + S(1)/10**30)
+    p = 1/sqrt(1 - 9*sqrt(2) + 7*sqrt(3) + Rational(1, 10)**30)
     mp = minimal_polynomial(p, x)
     # checked with Wolfram Alpha
     assert mp.coeff(x**6) == -1232000000000000000000000000001223999999999999999999999999999987999999999999999999999999999996000000000000000000000000000000
@@ -158,10 +157,9 @@ def test_minimal_polynomial_sq():
 
 def test_minpoly_compose():
     # issue 6868
-    eq = S('''
-        -1/(800*sqrt(-1/240 + 1/(18000*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)) + 2*(-1/17280000 +
-        sqrt(15)*I/28800000)**(1/3)))''')
+    eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3))))
     mp = minimal_polynomial(eq + 3, x)
     assert mp == 8000*x**2 - 48000*x + 71999
 
@@ -335,29 +333,29 @@ def test_field_isomorphism():
     assert field_isomorphism( I*sqrt(3), -I*sqrt(3)/2) == [-2, 0]
     assert field_isomorphism(-I*sqrt(3), -I*sqrt(3)/2) == [ 2, 0]
 
-    assert field_isomorphism( 2*I*sqrt(3)/7, 5*I*sqrt(3)/3) == [ S(6)/35, 0]
-    assert field_isomorphism(-2*I*sqrt(3)/7, 5*I*sqrt(3)/3) == [-S(6)/35, 0]
+    assert field_isomorphism( 2*I*sqrt(3)/7, 5*I*sqrt(3)/3) == [ Rational(6, 35), 0]
+    assert field_isomorphism(-2*I*sqrt(3)/7, 5*I*sqrt(3)/3) == [-Rational(6, 35), 0]
 
-    assert field_isomorphism( 2*I*sqrt(3)/7, -5*I*sqrt(3)/3) == [-S(6)/35, 0]
-    assert field_isomorphism(-2*I*sqrt(3)/7, -5*I*sqrt(3)/3) == [ S(6)/35, 0]
-
-    assert field_isomorphism(
-        2*I*sqrt(3)/7 + 27, 5*I*sqrt(3)/3) == [ S(6)/35, 27]
-    assert field_isomorphism(
-        -2*I*sqrt(3)/7 + 27, 5*I*sqrt(3)/3) == [-S(6)/35, 27]
+    assert field_isomorphism( 2*I*sqrt(3)/7, -5*I*sqrt(3)/3) == [-Rational(6, 35), 0]
+    assert field_isomorphism(-2*I*sqrt(3)/7, -5*I*sqrt(3)/3) == [ Rational(6, 35), 0]
 
     assert field_isomorphism(
-        2*I*sqrt(3)/7 + 27, -5*I*sqrt(3)/3) == [-S(6)/35, 27]
+        2*I*sqrt(3)/7 + 27, 5*I*sqrt(3)/3) == [ Rational(6, 35), 27]
     assert field_isomorphism(
-        -2*I*sqrt(3)/7 + 27, -5*I*sqrt(3)/3) == [ S(6)/35, 27]
+        -2*I*sqrt(3)/7 + 27, 5*I*sqrt(3)/3) == [-Rational(6, 35), 27]
+
+    assert field_isomorphism(
+        2*I*sqrt(3)/7 + 27, -5*I*sqrt(3)/3) == [-Rational(6, 35), 27]
+    assert field_isomorphism(
+        -2*I*sqrt(3)/7 + 27, -5*I*sqrt(3)/3) == [ Rational(6, 35), 27]
 
     p = AlgebraicNumber( sqrt(2) + sqrt(3))
     q = AlgebraicNumber(-sqrt(2) + sqrt(3))
     r = AlgebraicNumber( sqrt(2) - sqrt(3))
     s = AlgebraicNumber(-sqrt(2) - sqrt(3))
 
-    pos_coeffs = [ S(1)/2, S(0), -S(9)/2, S(0)]
-    neg_coeffs = [-S(1)/2, S(0), S(9)/2, S(0)]
+    pos_coeffs = [ Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)]
+    neg_coeffs = [-Rational(1, 2), Integer(0), Rational(9, 2), Integer(0)]
 
     a = AlgebraicNumber(sqrt(2))
 
@@ -393,8 +391,8 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == neg_coeffs
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
-    pos_coeffs = [ S(1)/2, S(0), -S(11)/2, S(0)]
-    neg_coeffs = [-S(1)/2, S(0), S(11)/2, S(0)]
+    pos_coeffs = [ Rational(1, 2), Integer(0), -Rational(11, 2), Integer(0)]
+    neg_coeffs = [-Rational(1, 2), Integer(0), Rational(11, 2), Integer(0)]
 
     a = AlgebraicNumber(sqrt(3))
 
@@ -430,8 +428,8 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == neg_coeffs
     assert field_isomorphism(a, s, fast=False) == neg_coeffs
 
-    pos_coeffs = [ S(3)/2, S(0), -S(33)/2, -S(8)]
-    neg_coeffs = [-S(3)/2, S(0), S(33)/2, -S(8)]
+    pos_coeffs = [ Rational(3, 2), Integer(0), -Rational(33, 2), -Integer(8)]
+    neg_coeffs = [-Rational(3, 2), Integer(0), Rational(33, 2), -Integer(8)]
 
     a = AlgebraicNumber(3*sqrt(3) - 8)
 
@@ -452,10 +450,10 @@ def test_field_isomorphism():
 
     a = AlgebraicNumber(3*sqrt(2) + 2*sqrt(3) + 1)
 
-    pos_1_coeffs = [ S(1)/2, S(0), -S(5)/2, S(1)]
-    neg_5_coeffs = [-S(5)/2, S(0), S(49)/2, S(1)]
-    pos_5_coeffs = [ S(5)/2, S(0), -S(49)/2, S(1)]
-    neg_1_coeffs = [-S(1)/2, S(0), S(5)/2, S(1)]
+    pos_1_coeffs = [ Rational(1, 2), Integer(0), -Rational(5, 2), Integer(1)]
+    neg_5_coeffs = [-Rational(5, 2), Integer(0), Rational(49, 2), Integer(1)]
+    pos_5_coeffs = [ Rational(5, 2), Integer(0), -Rational(49, 2), Integer(1)]
+    neg_1_coeffs = [-Rational(1, 2), Integer(0), Rational(5, 2), Integer(1)]
 
     assert is_isomorphism_possible(a, p) is True
     assert is_isomorphism_possible(a, q) is True
@@ -493,7 +491,7 @@ def test_to_number_field():
     assert to_number_field(
         [sqrt(2), sqrt(3)]) == AlgebraicNumber(sqrt(2) + sqrt(3))
 
-    a = AlgebraicNumber(sqrt(2) + sqrt(3), [S(1)/2, S(0), -S(9)/2, S(0)])
+    a = AlgebraicNumber(sqrt(2) + sqrt(3), [Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
 
     assert to_number_field(sqrt(2), sqrt(2) + sqrt(3)) == a
     assert to_number_field(sqrt(2), AlgebraicNumber(sqrt(2) + sqrt(3))) == a
@@ -514,7 +512,7 @@ def test_AlgebraicNumber():
 
     assert a.is_aliased is False
 
-    assert a.coeffs() == [S(1), S(0)]
+    assert a.coeffs() == [Integer(1), Integer(0)]
     assert a.native_coeffs() == [QQ(1), QQ(0)]
 
     a = AlgebraicNumber(root, gen=x, alias='y')
@@ -540,11 +538,11 @@ def test_AlgebraicNumber():
     assert AlgebraicNumber(sqrt(2), []).rep == DMP([], QQ)
 
     assert AlgebraicNumber(sqrt(2), [8]).rep == DMP([QQ(8)], QQ)
-    assert AlgebraicNumber(sqrt(2), [S(8)/3]).rep == DMP([QQ(8, 3)], QQ)
+    assert AlgebraicNumber(sqrt(2), [Rational(8, 3)]).rep == DMP([QQ(8, 3)], QQ)
 
     assert AlgebraicNumber(sqrt(2), [7, 3]).rep == DMP([QQ(7), QQ(3)], QQ)
     assert AlgebraicNumber(
-        sqrt(2), [S(7)/9, S(3)/2]).rep == DMP([QQ(7, 9), QQ(3, 2)], QQ)
+        sqrt(2), [Rational(7, 9), Rational(3, 2)]).rep == DMP([QQ(7, 9), QQ(3, 2)], QQ)
 
     assert AlgebraicNumber(sqrt(2), [1, 2, 3]).rep == DMP([QQ(2), QQ(5)], QQ)
 
@@ -558,7 +556,7 @@ def test_AlgebraicNumber():
 
     assert a.is_aliased is False
 
-    assert a.coeffs() == [S(1), S(2)]
+    assert a.coeffs() == [Integer(1), Integer(2)]
     assert a.native_coeffs() == [QQ(1), QQ(2)]
 
     a = AlgebraicNumber((minpoly, root), [1, 2])
@@ -656,7 +654,7 @@ def test_to_algebraic_integer():
     assert a.root == 2*sqrt(3)
     assert a.rep == DMP([QQ(1), QQ(0)], QQ)
 
-    a = AlgebraicNumber(sqrt(3)/2, [S(7)/19, 3], gen=x).to_algebraic_integer()
+    a = AlgebraicNumber(sqrt(3)/2, [Rational(7, 19), 3], gen=x).to_algebraic_integer()
 
     assert a.minpoly == x**2 - 12
     assert a.root == 2*sqrt(3)
@@ -671,13 +669,13 @@ def test_IntervalPrinter():
 
 def test_isolate():
     assert isolate(1) == (1, 1)
-    assert isolate(S(1)/2) == (S(1)/2, S(1)/2)
+    assert isolate(Rational(1, 2)) == (Rational(1, 2), Rational(1, 2))
 
     assert isolate(sqrt(2)) == (1, 2)
     assert isolate(-sqrt(2)) == (-2, -1)
 
-    assert isolate(sqrt(2), eps=S(1)/100) == (S(24)/17, S(17)/12)
-    assert isolate(-sqrt(2), eps=S(1)/100) == (-S(17)/12, -S(24)/17)
+    assert isolate(sqrt(2), eps=Rational(1, 100)) == (Rational(24, 17), Rational(17, 12))
+    assert isolate(-sqrt(2), eps=Rational(1, 100)) == (-Rational(17, 12), -Rational(24, 17))
 
     pytest.raises(NotImplementedError, lambda: isolate(I))
 
@@ -708,8 +706,8 @@ def test_minpoly_fraction_field():
         Poly(z**2*y**2 - x, y)
 
     # this is (sqrt(1 + x**3)/x).integrate(x).diff(x) - sqrt(1 + x**3)/x
-    a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**(S(5)/2)*
-        (1 + x**(-3))**(S(3)/2)) + 1/(x**(S(11)/2)*(1 + x**(-3))**(S(3)/2))
+    a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**Rational(5, 2)*
+        (1 + x**(-3))**Rational(3, 2)) + 1/(x**Rational(11, 2)*(1 + x**(-3))**Rational(3, 2))
 
     assert minimal_polynomial(a, y) == y
 

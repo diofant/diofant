@@ -43,14 +43,12 @@ import random
 
 from sympy import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
                    Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
-                   Lambda, Basic)
+                   Lambda, Basic, Integer, oo, Rational)
 from sympy import beta as beta_fn
 from sympy import cos, exp, besseli
 from sympy.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribution,
                              ContinuousDistributionHandmade)
 from sympy.stats.rv import _value_check
-
-oo = S.Infinity
 
 __all__ = ['ContinuousRV',
 'Arcsin',
@@ -2008,7 +2006,7 @@ class StudentTDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         nu = self.nu
-        return 1/(sqrt(nu)*beta_fn(S(1)/2, nu/2))*(1 + x**2/nu)**(-(nu + 1)/2)
+        return 1/(sqrt(nu)*beta_fn(Rational(1, 2), nu/2))*(1 + x**2/nu)**(-(nu + 1)/2)
 
 
 def StudentT(name, nu):

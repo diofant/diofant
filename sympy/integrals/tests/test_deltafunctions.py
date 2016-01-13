@@ -1,4 +1,5 @@
-from sympy import cos, DiracDelta, Heaviside, Function, pi, S, sin, symbols
+from sympy import (cos, DiracDelta, Heaviside, Function, pi, S, sin,
+                   symbols, Integer, Rational)
 from sympy.integrals.deltafunctions import change_mul, deltaintegrate
 
 f = Function("f")
@@ -55,9 +56,9 @@ def test_deltaintegrate():
 
     p = x*y**2*z*DiracDelta(y - x)*DiracDelta(y - z)*DiracDelta(x - z)
     assert deltaintegrate(p, y) == x**3*z*DiracDelta(x - z)**2*Heaviside(y - x)
-    assert deltaintegrate((x + 1)*DiracDelta(2*x), x) == S(1)/2 * Heaviside(x)
-    assert deltaintegrate((x + 1)*DiracDelta(2*x/3 + 4/S(9)), x) == \
-        S(1)/2 * Heaviside(x + S(2)/3)
+    assert deltaintegrate((x + 1)*DiracDelta(2*x), x) == Rational(1, 2) * Heaviside(x)
+    assert deltaintegrate((x + 1)*DiracDelta(2*x/3 + 4/Integer(9)), x) == \
+        Rational(1, 2) * Heaviside(x + Rational(2, 3))
 
     a, b, c = symbols('a b c', commutative=False)
     assert deltaintegrate(DiracDelta(x - y)*f(x - b)*f(x - a), x) == \

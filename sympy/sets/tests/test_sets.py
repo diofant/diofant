@@ -6,7 +6,8 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
                    ProductSet, E, sqrt, Complement, EmptySet, sin, cos, Lambda,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
-                   SymmetricDifference)
+                   SymmetricDifference, Integer, Rational)
+
 from sympy.abc import x, y, z
 
 
@@ -245,7 +246,7 @@ def test_intersection():
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
     assert i.is_iterable
-    assert set(i) == {S(2), S(3)}
+    assert set(i) == {Integer(2), Integer(3)}
 
     # challenging intervals
     x = Symbol('x', extended_real=True)
@@ -414,13 +415,13 @@ def test_contains():
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
-    rad1 = Pow(Pow(2, S(1)/3) - 1, S(1)/3)
-    rad2 = Pow(S(1)/9, S(1)/3) - Pow(S(2)/9, S(1)/3) + Pow(S(4)/9, S(1)/3)
+    rad1 = Pow(Pow(2, Rational(1, 3)) - 1, Rational(1, 3))
+    rad2 = Pow(Rational(1, 9), Rational(1, 3)) - Pow(Rational(2, 9), Rational(1, 3)) + Pow(Rational(4, 9), Rational(1, 3))
     s1 = FiniteSet(rad1)
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet
 
-    items = [1, 2, S.Infinity, S('ham'), -1.1]
+    items = [1, 2, S.Infinity, Symbol('ham'), -1.1]
     fset = FiniteSet(*items)
     assert all(item in fset for item in items)
     assert all(fset.contains(item) is S.true for item in items)

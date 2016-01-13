@@ -43,14 +43,14 @@ class Field(Ring):
         in `primitive()`.
 
         >>> from sympy.polys.domains import QQ
-        >>> from sympy import S, gcd, primitive
+        >>> from sympy import Rational, gcd, primitive
         >>> from sympy.abc import x
 
         >>> print(QQ.gcd(QQ(2, 3), QQ(4, 9)))
         2/9
-        >>> print(gcd(S(2)/3, S(4)/9))
+        >>> print(gcd(Rational(2, 3), Rational(4, 9)))
         2/9
-        >>> print(primitive(2*x/3 + S(4)/9))
+        >>> print(primitive(2*x/3 + Rational(4, 9)))
         (2/9, 3*x + 2)
 
         """
@@ -69,11 +69,11 @@ class Field(Ring):
         Returns LCM of ``a`` and ``b``.
 
         >>> from sympy.polys.domains import QQ
-        >>> from sympy import S, lcm
+        >>> from sympy import Rational, lcm
 
         >>> print(QQ.lcm(QQ(2, 3), QQ(4, 9)))
         4/3
-        >>> print(lcm(S(2)/3, S(4)/9))
+        >>> print(lcm(Rational(2, 3), Rational(4, 9)))
         4/3
 
         """

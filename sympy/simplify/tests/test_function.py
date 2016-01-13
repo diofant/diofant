@@ -1,7 +1,7 @@
 """ Unit tests for Hyper_Function"""
-from sympy.core import symbols, Dummy, Tuple, S
-from sympy.functions import hyper
 
+from sympy.core import symbols, Dummy, Tuple, S, Integer, Rational
+from sympy.functions import hyper
 from sympy.simplify.hyperexpand import Hyper_Function
 
 
@@ -48,13 +48,13 @@ def test_gamma():
 
 
 def test_suitable_origin():
-    assert Hyper_Function((S(1)/2,), (S(3)/2,))._is_suitable_origin() is True
-    assert Hyper_Function((S(1)/2,), (S(1)/2,))._is_suitable_origin() is False
-    assert Hyper_Function((S(1)/2,), (-S(1)/2,))._is_suitable_origin() is False
-    assert Hyper_Function((S(1)/2,), (0,))._is_suitable_origin() is False
-    assert Hyper_Function((S(1)/2,), (-1, 1,))._is_suitable_origin() is False
-    assert Hyper_Function((S(1)/2, 0), (1,))._is_suitable_origin() is False
-    assert Hyper_Function((S(1)/2, 1),
-            (2, -S(2)/3))._is_suitable_origin() is True
-    assert Hyper_Function((S(1)/2, 1),
-            (2, -S(2)/3, S(3)/2))._is_suitable_origin() is True
+    assert Hyper_Function((Rational(1, 2),), (Rational(3, 2),))._is_suitable_origin() is True
+    assert Hyper_Function((Rational(1, 2),), (Rational(1, 2),))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2),), (-Rational(1, 2),))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2),), (0,))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2),), (-1, 1,))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2), 0), (1,))._is_suitable_origin() is False
+    assert Hyper_Function((Rational(1, 2), 1),
+            (2, -Rational(2, 3)))._is_suitable_origin() is True
+    assert Hyper_Function((Rational(1, 2), 1),
+            (2, -Rational(2, 3), Rational(3, 2)))._is_suitable_origin() is True

@@ -31,13 +31,13 @@ def test_mod():
     z = Rational(5, 18043)
 
     assert x % x == 0
-    assert x % y == 1/S(2)
-    assert x % z == 3/S(36086)
-    assert y % x == 1/S(4)
+    assert x % y == 1/Integer(2)
+    assert x % z == 3/Integer(36086)
+    assert y % x == 1/Integer(4)
     assert y % y == 0
-    assert y % z == 9/S(72172)
-    assert z % x == 5/S(18043)
-    assert z % y == 5/S(18043)
+    assert y % z == 9/Integer(72172)
+    assert z % x == 5/Integer(18043)
+    assert z % y == 5/Integer(18043)
     assert z % z == 0
 
     a = Float(2.6)
@@ -95,69 +95,69 @@ def test_mod():
 
 
 def test_divmod():
-    assert divmod(S(12), S(8)) == Tuple(1, 4)
-    assert divmod(-S(12), S(8)) == Tuple(-2, 4)
-    assert divmod(S(0), S(1)) == Tuple(0, 0)
-    pytest.raises(ZeroDivisionError, lambda: divmod(S(0), S(0)))
-    pytest.raises(ZeroDivisionError, lambda: divmod(S(1), S(0)))
-    assert divmod(S(12), 8) == Tuple(1, 4)
-    assert divmod(12, S(8)) == Tuple(1, 4)
+    assert divmod(Integer(12), Integer(8)) == Tuple(1, 4)
+    assert divmod(-Integer(12), Integer(8)) == Tuple(-2, 4)
+    assert divmod(Integer(0), Integer(1)) == Tuple(0, 0)
+    pytest.raises(ZeroDivisionError, lambda: divmod(Integer(0), Integer(0)))
+    pytest.raises(ZeroDivisionError, lambda: divmod(Integer(1), Integer(0)))
+    assert divmod(Integer(12), 8) == Tuple(1, 4)
+    assert divmod(12, Integer(8)) == Tuple(1, 4)
 
-    assert divmod(S("2"), S("3/2")) == Tuple(S("1"), S("1/2"))
-    assert divmod(S("3/2"), S("2")) == Tuple(S("0"), S("3/2"))
-    assert divmod(S("2"), S("3.5")) == Tuple(S("0"), S("2"))
-    assert divmod(S("3.5"), S("2")) == Tuple(S("1"), S("1.5"))
-    assert divmod(S("2"), S("1/3")) == Tuple(S("6"), S("0"))
-    assert divmod(S("1/3"), S("2")) == Tuple(S("0"), S("1/3"))
-    assert divmod(S("2"), S("0.1")) == Tuple(S("20"), S("0"))
-    assert divmod(S("0.1"), S("2")) == Tuple(S("0"), S("0.1"))
-    assert divmod(S("2"), 2) == Tuple(S("1"), S("0"))
-    assert divmod(2, S("2")) == Tuple(S("1"), S("0"))
-    assert divmod(S("2"), 1.5) == Tuple(S("1"), S("0.5"))
-    assert divmod(1.5, S("2")) == Tuple(S("0"), S("1.5"))
-    assert divmod(0.3, S("2")) == Tuple(S("0"), S("0.3"))
-    assert divmod(S("3/2"), S("3.5")) == Tuple(S("0"), S("3/2"))
-    assert divmod(S("3.5"), S("3/2")) == Tuple(S("2"), S("0.5"))
-    assert divmod(S("3/2"), S("1/3")) == Tuple(S("4"), Float("1/6"))
-    assert divmod(S("1/3"), S("3/2")) == Tuple(S("0"), S("1/3"))
-    assert divmod(S("3/2"), S("0.1")) == Tuple(S("15"), S("0"))
-    assert divmod(S("0.1"), S("3/2")) == Tuple(S("0"), S("0.1"))
-    assert divmod(S("3/2"), 2) == Tuple(S("0"), S("3/2"))
-    assert divmod(2, S("3/2")) == Tuple(S("1"), S("0.5"))
-    assert divmod(S("3/2"), 1.5) == Tuple(S("1"), S("0"))
-    assert divmod(1.5, S("3/2")) == Tuple(S("1"), S("0"))
-    assert divmod(S("3/2"), 0.3) == Tuple(S("5"), S("0"))
-    assert divmod(0.3, S("3/2")) == Tuple(S("0"), S("0.3"))
-    assert divmod(S("1/3"), S("3.5")) == Tuple(S("0"), S("1/3"))
-    assert divmod(S("3.5"), S("0.1")) == Tuple(S("35"), S("0"))
-    assert divmod(S("0.1"), S("3.5")) == Tuple(S("0"), S("0.1"))
-    assert divmod(S("3.5"), 2) == Tuple(S("1"), S("1.5"))
-    assert divmod(2, S("3.5")) == Tuple(S("0"), S("2"))
-    assert divmod(S("3.5"), 1.5) == Tuple(S("2"), S("0.5"))
-    assert divmod(1.5, S("3.5")) == Tuple(S("0"), S("1.5"))
-    assert divmod(0.3, S("3.5")) == Tuple(S("0"), S("0.3"))
-    assert divmod(S("0.1"), S("1/3")) == Tuple(S("0"), S("0.1"))
-    assert divmod(S("1/3"), 2) == Tuple(S("0"), S("1/3"))
-    assert divmod(2, S("1/3")) == Tuple(S("6"), S("0"))
-    assert divmod(S("1/3"), 1.5) == Tuple(S("0"), S("1/3"))
-    assert divmod(0.3, S("1/3")) == Tuple(S("0"), S("0.3"))
-    assert divmod(S("0.1"), 2) == Tuple(S("0"), S("0.1"))
-    assert divmod(2, S("0.1")) == Tuple(S("20"), S("0"))
-    assert divmod(S("0.1"), 1.5) == Tuple(S("0"), S("0.1"))
-    assert divmod(1.5, S("0.1")) == Tuple(S("15"), S("0"))
-    assert divmod(S("0.1"), 0.3) == Tuple(S("0"), S("0.1"))
+    assert divmod(Integer(2), Rational(3, 2)) == Tuple(Integer(1), Rational(1, 2))
+    assert divmod(Rational(3, 2), Integer(2)) == Tuple(Integer(0), Rational(3, 2))
+    assert divmod(Integer(2), Float(3.5)) == Tuple(Integer(0), Integer(2))
+    assert divmod(Float(3.5), Integer(2)) == Tuple(Integer(1), Float(1.5))
+    assert divmod(Integer(2), Rational(1, 3)) == Tuple(Integer(6), Integer(0))
+    assert divmod(Rational(1, 3), Integer(2)) == Tuple(Integer(0), Rational(1, 3))
+    assert divmod(Integer(2), Float(0.1)) == Tuple(Integer(20), Integer(0))
+    assert divmod(Float(0.1), Integer(2)) == Tuple(Integer(0), Float(0.1))
+    assert divmod(Integer(2), 2) == Tuple(Integer(1), Integer(0))
+    assert divmod(2, Integer(2)) == Tuple(Integer(1), Integer(0))
+    assert divmod(Integer(2), 1.5) == Tuple(Integer(1), Float(0.5))
+    assert divmod(1.5, Integer(2)) == Tuple(Integer(0), Float(1.5))
+    assert divmod(0.3, Integer(2)) == Tuple(Integer(0), Float(0.3))
+    assert divmod(Rational(3, 2), Float(3.5)) == Tuple(Integer(0), Rational(3, 2))
+    assert divmod(Float(3.5), Rational(3, 2)) == Tuple(Integer(2), Float(0.5))
+    assert divmod(Rational(3, 2), Rational(1, 3)) == Tuple(Integer(4), Float("1/6"))
+    assert divmod(Rational(1, 3), Rational(3, 2)) == Tuple(Integer(0), Rational(1, 3))
+    assert divmod(Rational(3, 2), Float(0.1)) == Tuple(Integer(15), Integer(0))
+    assert divmod(Float(0.1), Rational(3, 2)) == Tuple(Integer(0), Float(0.1))
+    assert divmod(Rational(3, 2), 2) == Tuple(Integer(0), Rational(3, 2))
+    assert divmod(2, Rational(3, 2)) == Tuple(Integer(1), Float(0.5))
+    assert divmod(Rational(3, 2), 1.5) == Tuple(Integer(1), Integer(0))
+    assert divmod(1.5, Rational(3, 2)) == Tuple(Integer(1), Integer(0))
+    assert divmod(Rational(3, 2), 0.3) == Tuple(Integer(5), Integer(0))
+    assert divmod(0.3, Rational(3, 2)) == Tuple(Integer(0), Float(0.3))
+    assert divmod(Rational(1, 3), Float(3.5)) == Tuple(Integer(0), Rational(1, 3))
+    assert divmod(Float(3.5), Float(0.1)) == Tuple(Integer(35), Integer(0))
+    assert divmod(Float(0.1), Float(3.5)) == Tuple(Integer(0), Float(0.1))
+    assert divmod(Float(3.5), 2) == Tuple(Integer(1), Float(1.5))
+    assert divmod(2, Float(3.5)) == Tuple(Integer(0), Integer(2))
+    assert divmod(Float(3.5), 1.5) == Tuple(Integer(2), Float(0.5))
+    assert divmod(1.5, Float(3.5)) == Tuple(Integer(0), Float(1.5))
+    assert divmod(0.3, Float(3.5)) == Tuple(Integer(0), Float(0.3))
+    assert divmod(Float(0.1), Rational(1, 3)) == Tuple(Integer(0), Float(0.1))
+    assert divmod(Rational(1, 3), 2) == Tuple(Integer(0), Rational(1, 3))
+    assert divmod(2, Rational(1, 3)) == Tuple(Integer(6), Integer(0))
+    assert divmod(Rational(1, 3), 1.5) == Tuple(Integer(0), Rational(1, 3))
+    assert divmod(0.3, Rational(1, 3)) == Tuple(Integer(0), Float(0.3))
+    assert divmod(Float(0.1), 2) == Tuple(Integer(0), Float(0.1))
+    assert divmod(2, Float(0.1)) == Tuple(Integer(20), Integer(0))
+    assert divmod(Float(0.1), 1.5) == Tuple(Integer(0), Float(0.1))
+    assert divmod(1.5, Float(0.1)) == Tuple(Integer(15), Integer(0))
+    assert divmod(Float(0.1), 0.3) == Tuple(Integer(0), Float(0.1))
 
-    assert str(divmod(S("2"), 0.3)) == '(6, 0.2)'
-    assert str(divmod(S("3.5"), S("1/3"))) == '(10, 0.166666666666667)'
-    assert str(divmod(S("3.5"), 0.3)) == '(11, 0.2)'
-    assert str(divmod(S("1/3"), S("0.1"))) == '(3, 0.0333333333333333)'
-    assert str(divmod(1.5, S("1/3"))) == '(4, 0.166666666666667)'
-    assert str(divmod(S("1/3"), 0.3)) == '(1, 0.0333333333333333)'
-    assert str(divmod(0.3, S("0.1"))) == '(2, 0.1)'
+    assert str(divmod(Integer(2), 0.3)) == '(6, 0.2)'
+    assert str(divmod(Float(3.5), Rational(1, 3))) == '(10, 0.166666666666667)'
+    assert str(divmod(Float(3.5), 0.3)) == '(11, 0.2)'
+    assert str(divmod(Rational(1, 3), Float(0.1))) == '(3, 0.0333333333333333)'
+    assert str(divmod(1.5, Rational(1, 3))) == '(4, 0.166666666666667)'
+    assert str(divmod(Rational(1, 3), 0.3)) == '(1, 0.0333333333333333)'
+    assert str(divmod(0.3, Float(0.1))) == '(2, 0.1)'
 
-    assert divmod(-3, S(2)) == (-2, 1)
-    assert divmod(S(-3), S(2)) == (-2, 1)
-    assert divmod(S(-3), 2) == (-2, 1)
+    assert divmod(-3, Integer(2)) == (-2, 1)
+    assert divmod(Integer(-3), Integer(2)) == (-2, 1)
+    assert divmod(Integer(-3), 2) == (-2, 1)
 
 
 def test_igcd():
@@ -265,8 +265,8 @@ def test_Rational_new():
     assert Rational(1, 3.0) == Rational(1, 3)
     assert Rational(Float(0.5)) == Rational(1, 2)
     assert Rational('1e2/1e-2') == Rational(10000)
-    assert Rational(-1, 0) == S.NegativeInfinity
-    assert Rational(1, 0) == S.Infinity
+    assert Rational(-1, 0) == S.ComplexInfinity
+    assert Rational(1, 0) == S.ComplexInfinity
     pytest.raises(TypeError, lambda: Rational('3**3'))
     pytest.raises(TypeError, lambda: Rational('1/2 + 2/3'))
 
@@ -341,7 +341,7 @@ def test_Float():
     assert eq((pi ** -1).evalf(), Float("0.31830988618379067"))
     a = Float(2) ** Float(4)
     assert eq(a.evalf(), Float(16))
-    assert (S(.3) == S(.5)) is False
+    assert (Float(.3) == Float(.5)) is False
     x_str = Float((0, '13333333333333', -52, 53))
     x2_str = Float((0, '26666666666666', -53, 53))
     x_hex = Float((0, int(0x13333333333333), -52, 53))
@@ -550,8 +550,8 @@ def test_Infinity():
     assert 2 - -oo == oo
     assert -2 + -oo == -oo
     assert -2 - -oo == oo
-    assert S(2) + oo == oo
-    assert S(2) - oo == -oo
+    assert Integer(2) + oo == oo
+    assert Integer(2) - oo == -oo
     assert oo/I == -oo*I
     assert -oo/I == oo*I
     assert oo*float(1) == Float('inf') and (oo*float(1)).is_Float
@@ -672,13 +672,13 @@ def test_Mul_Infinity_Zero():
 
 
 def test_Div_By_Zero():
-    assert 1/S(0) == zoo
+    assert 1/Integer(0) == zoo
     assert 1/Float(0) == Float('inf')
-    assert 0/S(0) == nan
+    assert 0/Integer(0) == nan
     assert 0/Float(0) == nan
-    assert S(0)/0 == nan
+    assert Rational(0, 0) == nan
     assert Float(0)/0 == nan
-    assert -1/S(0) == zoo
+    assert -1/Integer(0) == zoo
     assert -1/Float(0) == Float('-inf')
 
 
@@ -835,38 +835,38 @@ def test_integer_nthroot_overflow():
 def test_powers_Integer():
     """Test Integer._eval_power"""
     # check infinity
-    assert S(1) ** S.Infinity == S.NaN
-    assert S(-1)** S.Infinity == S.NaN
-    assert S(2) ** S.Infinity == S.Infinity
-    assert S(-2)** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
-    assert S(0) ** S.Infinity == 0
+    assert Integer(1) ** S.Infinity == S.NaN
+    assert Integer(-1)** S.Infinity == S.NaN
+    assert Integer(2) ** S.Infinity == S.Infinity
+    assert Integer(-2)** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
+    assert Integer(0) ** S.Infinity == 0
 
     # check Nan
-    assert S(1) ** S.NaN == S.NaN
-    assert S(-1) ** S.NaN == S.NaN
+    assert Integer(1) ** S.NaN == S.NaN
+    assert Integer(-1) ** S.NaN == S.NaN
 
     # check for exact roots
-    assert S(-1) ** Rational(6, 5) == - (-1)**(S(1)/5)
-    assert sqrt(S(4)) == 2
-    assert sqrt(S(-4)) == I * 2
-    assert S(16) ** Rational(1, 4) == 2
-    assert S(-16) ** Rational(1, 4) == 2 * (-1)**Rational(1, 4)
-    assert S(9) ** Rational(3, 2) == 27
-    assert S(-9) ** Rational(3, 2) == -27*I
-    assert S(27) ** Rational(2, 3) == 9
-    assert S(-27) ** Rational(2, 3) == 9 * (S(-1) ** Rational(2, 3))
+    assert Integer(-1) ** Rational(6, 5) == - (-1)**Rational(1, 5)
+    assert sqrt(Integer(4)) == 2
+    assert sqrt(Integer(-4)) == I * 2
+    assert Integer(16) ** Rational(1, 4) == 2
+    assert Integer(-16) ** Rational(1, 4) == 2 * (-1)**Rational(1, 4)
+    assert Integer(9) ** Rational(3, 2) == 27
+    assert Integer(-9) ** Rational(3, 2) == -27*I
+    assert Integer(27) ** Rational(2, 3) == 9
+    assert Integer(-27) ** Rational(2, 3) == 9 * (Integer(-1) ** Rational(2, 3))
     assert (-2) ** Rational(-2, 1) == Rational(1, 4)
 
     # not exact roots
     assert sqrt(-3) == I*sqrt(3)
-    assert (3) ** (S(3)/2) == 3 * sqrt(3)
-    assert (-3) ** (S(3)/2) == - 3 * sqrt(-3)
-    assert (-3) ** (S(5)/2) == 9 * I * sqrt(3)
-    assert (-3) ** (S(7)/2) == - I * 27 * sqrt(3)
-    assert (2) ** (S(3)/2) == 2 * sqrt(2)
-    assert (2) ** (S(-3)/2) == sqrt(2) / 4
-    assert (81) ** (S(2)/3) == 9 * (S(3) ** (S(2)/3))
-    assert (-81) ** (S(2)/3) == 9 * (S(-3) ** (S(2)/3))
+    assert (3) ** (Rational(3, 2)) == 3 * sqrt(3)
+    assert (-3) ** (Rational(3, 2)) == - 3 * sqrt(-3)
+    assert (-3) ** (Rational(5, 2)) == 9 * I * sqrt(3)
+    assert (-3) ** (Rational(7, 2)) == - I * 27 * sqrt(3)
+    assert (2) ** (Rational(3, 2)) == 2 * sqrt(2)
+    assert (2) ** (Rational(-3, 2)) == sqrt(2) / 4
+    assert (81) ** (Rational(2, 3)) == 9 * (Integer(3) ** (Rational(2, 3)))
+    assert (-81) ** (Rational(2, 3)) == 9 * (Integer(-3) ** (Rational(2, 3)))
     assert (-3) ** Rational(-7, 3) == \
         -(-1)**Rational(2, 3)*3**Rational(2, 3)/27
     assert (-3) ** Rational(-2, 3) == \
@@ -891,7 +891,7 @@ def test_powers_Integer():
     assert (-3) ** Rational(-2, 3) == \
         -(-1)**Rational(1, 3)*3**Rational(1, 3)/3
 
-    assert S(1234).factors() == {617: 1, 2: 1}
+    assert Integer(1234).factors() == {617: 1, 2: 1}
     assert Rational(2*3, 3*5*7).factors() == {2: 1, 5: -1, 7: -1}
 
     # test that eval_power factors numbers bigger than
@@ -917,10 +917,10 @@ def test_powers_Integer():
     assert 2**Rational(2, 3)*6**Rational(1, 3) == 2*3**Rational(1, 3)
     assert 2**Rational(2, 3)*6**Rational(8, 9) == \
         2*2**Rational(5, 9)*3**Rational(8, 9)
-    assert (-2)**Rational(2, S(3))*(-4)**Rational(1, S(3)) == -2*2**Rational(1, 3)
+    assert (-2)**Rational(2, Integer(3))*(-4)**Rational(1, Integer(3)) == -2*2**Rational(1, 3)
     assert 3*Pow(3, 2, evaluate=False) == 3**3
-    assert 3*Pow(3, -1/S(3), evaluate=False) == 3**(2/S(3))
-    assert (-2)**(1/S(3))*(-3)**(1/S(4))*(-5)**(5/S(6)) == \
+    assert 3*Pow(3, -1/Integer(3), evaluate=False) == 3**(2/Integer(3))
+    assert (-2)**(1/Integer(3))*(-3)**(1/Integer(4))*(-5)**(5/Integer(6)) == \
         -(-1)**Rational(5, 12)*2**Rational(1, 3)*3**Rational(1, 4) * \
         5**Rational(5, 6)
 
@@ -975,7 +975,7 @@ def test_powers_Rational():
 
 
 def test_powers_Float():
-    assert str((S('-1/10')**S('3/10')).n()) == str(Float(-.1)**(.3))
+    assert str((Rational(-1, 10)**Rational(3, 10)).n()) == str(Float(-.1)**(.3))
 
 
 def test_abs1():
@@ -1214,7 +1214,7 @@ def test_conversion_to_mpmath():
 
 def test_relational():
     # real
-    x = S(.1)
+    x = Float(.1)
     assert (x != cos) is True
     assert (x == cos) is False
 
@@ -1252,7 +1252,7 @@ def test_zoo():
     pb = Symbol('pb', positive=True, finite=True)
     nb = Symbol('nb', negative=True, finite=True)
     imb = Symbol('ib', imaginary=True, finite=True)
-    for i in [I, S.Infinity, S.NegativeInfinity, S.Zero, S.One, S.Pi, S.Half, S(3), log(3),
+    for i in [I, S.Infinity, S.NegativeInfinity, S.Zero, S.One, S.Pi, S.Half, Integer(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
         if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo
@@ -1299,7 +1299,7 @@ def test_zoo():
     assert zoo**2 is zoo
     assert 1/zoo is S.Zero
 
-    assert Mul.flatten([S(-1), oo, S(0)]) == ([S.NaN], [], None)
+    assert Mul.flatten([Integer(-1), oo, Integer(0)]) == ([S.NaN], [], None)
 
 
 def test_issue_4122():
@@ -1331,8 +1331,8 @@ def test_as_content_primitive():
     assert S.Zero.as_content_primitive() == (1, 0)
     assert S.Half.as_content_primitive() == (S.Half, 1)
     assert (-S.Half).as_content_primitive() == (S.Half, -1)
-    assert S(3).as_content_primitive() == (3, 1)
-    assert S(3.1).as_content_primitive() == (1, 3.1)
+    assert Integer(3).as_content_primitive() == (3, 1)
+    assert Float(3.1).as_content_primitive() == (1, 3.1)
 
 
 def test_hashing_sympy_integers():
@@ -1431,13 +1431,13 @@ def test_issue_7742():
 
 def test_simplify_AlgebraicNumber():
     A = AlgebraicNumber
-    e = 3**(S(1)/6)*(3 + (135 + 78*sqrt(3))**(S(2)/3))/(45 + 26*sqrt(3))**(S(1)/3)
+    e = 3**Rational(1, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/(45 + 26*sqrt(3))**Rational(1, 3)
     assert simplify(A(e)) == A(12)  # wester test_C20
 
-    e = (41 + 29*sqrt(2))**(S(1)/5)
+    e = (41 + 29*sqrt(2))**Rational(1, 5)
     assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
 
-    e = (3 + 4*I)**(Rational(3, 2))
+    e = (3 + 4*I)**Rational(3, 2)
     assert simplify(A(e)) == A(2 + 11*I)  # issue 4401
 
 
