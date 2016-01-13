@@ -103,32 +103,25 @@ def enable_automatic_symbols(app):
     #
     # In [1]: a = 1
     #
-    # In [2]: for i in range(10):
+    # In [2]: for i in range(3):
     #    ...:     a += 1
     #    ...:
     #
     # In [3]: a
-    # Out[3]: 11
+    # Out[3]: 4
     #
     # In [4]: a = 1
     #
-    # In [5]: for i in range(10):
+    # In [5]: for i in range(3):
     #    ...:     a += 1
-    #    ...:     print b
+    #    ...:     print(b)
     #    ...:
-    # b
-    # b
-    # b
-    # b
-    # b
-    # b
-    # b
     # b
     # b
     # b
     #
     # In [6]: a
-    # Out[6]: 12
+    # Out[6]: 5
     #
     # Note how the for loop is executed again because `b` was not defined, but `a`
     # was already incremented once, so the result is that it is incremented
@@ -163,11 +156,7 @@ def enable_automatic_symbols(app):
             etype, value, tb, tb_offset=tb_offset)
         self._showtraceback(etype, value, stb)
 
-    if hasattr(app, 'shell'):
-        app.shell.set_custom_exc((NameError,), _handler)
-    else:
-        # This was restructured in IPython 0.13
-        app.set_custom_exc((NameError,), _handler)
+    app.set_custom_exc((NameError,), _handler)
 
 
 def init_ipython_session(argv=[], auto_symbols=False,

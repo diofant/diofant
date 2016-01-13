@@ -176,7 +176,7 @@ def test_coset_rank():
         h1 = G.coset_unrank(rk, af=True)
         assert h == h1
         i += 1
-    assert G.coset_unrank(48) == None
+    assert G.coset_unrank(48) is None
     assert G.coset_unrank(G.coset_rank(gens[0])) == gens[0]
 
 
