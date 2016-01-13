@@ -28,7 +28,7 @@ from sympy.core.function import (expand_mul, expand_multinomial, expand_log,
                                  nfloat, Function, expand_power_exp, Lambda,
                                  _mexpand)
 from sympy.integrals.integrals import Integral
-from sympy.core.numbers import ilcm, Float
+from sympy.core.numbers import ilcm, Float, Integer
 from sympy.core.relational import Relational, Ge
 from sympy.logic.boolalg import And, Or, BooleanAtom
 from sympy.core.basic import preorder_traversal
@@ -712,8 +712,8 @@ def solve(f, *symbols, **flags):
     roots which give a negative argument to odd-powered radicals will also need
     special checking:
 
-        >>> from sympy import real_root, S
-        >>> eq = root(x, 3) - root(x, 5) + S(1)/7
+        >>> from sympy import real_root, Rational
+        >>> eq = root(x, 3) - root(x, 5) + Rational(1, 7)
         >>> solve(eq)  # this gives 2 solutions but misses a 3rd
         [RootOf(7*_p**5 - 7*_p**3 + 1, 1)**15,
         RootOf(7*_p**5 - 7*_p**3 + 1, 2)**15]
@@ -1992,11 +1992,11 @@ def minsolve_linear_system(system, *symbols, **flags):
                     key=lambda x: (len(x.free_symbols), default_sort_key(x)))
             x = max(k.free_symbols, key=default_sort_key)
             if len(k.free_symbols) != 1:
-                determined[x] = S(0)
+                determined[x] = Integer(0)
             else:
                 val = solve(k)[0]
                 if val == 0 and all(v.subs(x, val) == 0 for v in s.values()):
-                    determined[x] = S(1)
+                    determined[x] = Integer(1)
                 else:
                     determined[x] = val
             update(determined, s)
@@ -2021,15 +2021,15 @@ def minsolve_linear_system(system, *symbols, **flags):
                 subm = Matrix([system.col(i).T for i in nonzeros] + [system.col(-1).T]).T
                 s = solve_linear_system(subm, *[symbols[i] for i in nonzeros])
                 if s and not all(v == 0 for v in s.values()):
-                    subs = [(symbols[v], S(1)) for v in nonzeros]
+                    subs = [(symbols[v], Integer(1)) for v in nonzeros]
                     for k, v in s.items():
                         s[k] = v.subs(subs)
                     for sym in symbols:
                         if sym not in s:
                             if symbols.index(sym) in nonzeros:
-                                s[sym] = S(1)
+                                s[sym] = Integer(1)
                             else:
-                                s[sym] = S(0)
+                                s[sym] = Integer(0)
                     thissol = s
                     break
             if thissol is None:

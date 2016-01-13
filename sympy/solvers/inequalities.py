@@ -2,7 +2,7 @@
 
 from functools import reduce
 
-from sympy.core import Symbol, Dummy
+from sympy.core import Symbol, Dummy, Integer
 from sympy.core.compatibility import iterable
 from sympy.sets import Interval
 from sympy.core.relational import Relational, Eq, Ge, Lt
@@ -444,7 +444,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
         end = x
 
         if end in [S.NegativeInfinity, S.Infinity]:
-            if valid(S(0)):
+            if valid(Integer(0)):
                 sol_sets.append(Interval(start, S.Infinity, True, True))
                 break
 

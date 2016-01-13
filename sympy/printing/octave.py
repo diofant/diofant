@@ -197,7 +197,7 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_GoldenRatio(self, expr):
         # FIXME: how to do better, e.g., for octave_code(2*GoldenRatio)?
-        # return self._print((1+sqrt(S(5)))/2)
+        # return self._print((1+sqrt(Integer(5)))/2)
         return "(1+sqrt(5))/2"
 
     def _print_NumberSymbol(self, expr):

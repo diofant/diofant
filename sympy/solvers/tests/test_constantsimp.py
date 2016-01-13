@@ -6,7 +6,7 @@ should serve as a set of test cases.
 import pytest
 
 from sympy import (acos, cos, cosh, Eq, exp, Function, I, Integral, log, Pow,
-                   S, sin, sinh, sqrt, Symbol)
+                   S, sin, sinh, sqrt, Symbol, Integer)
 from sympy.solvers.ode import constant_renumber, constantsimp
 
 
@@ -96,7 +96,7 @@ def test_constant_power_as_exp():
     assert constant_renumber(
         constantsimp((x**C1)**y, [C1]), 'C', 1, 1) == (x**C1)**y
     assert constant_renumber(constantsimp(2**C1, [C1]), 'C', 1, 1) == C1
-    assert constant_renumber(constantsimp(S(2)**C1, [C1]), 'C', 1, 1) == C1
+    assert constant_renumber(constantsimp(Integer(2)**C1, [C1]), 'C', 1, 1) == C1
     assert constant_renumber(constantsimp(exp(C1), [C1]), 'C', 1, 1) == C1
     assert constant_renumber(
         constantsimp(exp(C1 + x), [C1]), 'C', 1, 1) == C1*exp(x)

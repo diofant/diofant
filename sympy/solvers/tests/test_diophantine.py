@@ -253,7 +253,7 @@ def is_pell_transformation_ok(eq):
             coeff[term] = Integer(0)
 
     if coeff[X**2] != 0:
-        return isinstance(S(coeff[Y**2])/coeff[X**2], Integer) and isinstance(S(coeff[Integer(1)])/coeff[X**2], Integer)
+        return isinstance(coeff[Y**2]/coeff[X**2], Integer) and isinstance(coeff[Integer(1)]/coeff[X**2], Integer)
 
     return True
 

@@ -1,9 +1,9 @@
 from sympy import (sin, cos, tan, sec, csc, cot, log, exp, atan, asin, acos,
                    Symbol, Integral, integrate, pi, Dummy, Derivative,
                    diff, I, sqrt, erf, Piecewise, Eq, symbols,
-                   And, Heaviside, S, asinh, acosh)
-from sympy.integrals.manualintegrate import manualintegrate, find_substitutions, \
-    _parts_rule
+                   And, Heaviside, S, asinh, acosh, Integer, Rational)
+from sympy.integrals.manualintegrate import (manualintegrate, find_substitutions,
+                                             _parts_rule)
 
 x, y, u, n, a, b = symbols('x y u n a b')
 
@@ -187,11 +187,11 @@ def test_manualintegrate_Heaviside():
     assert manualintegrate(Heaviside(2*x + 4), x) == (x+2)*Heaviside(2*x + 4)
     assert manualintegrate(x*Heaviside(x), x) == x**2*Heaviside(x)/2
     assert manualintegrate(Heaviside(x + 1)*Heaviside(1 - x)*x**2, x) == \
-        ((x**3/3 + S(1)/3)*Heaviside(x + 1) - S(2)/3)*Heaviside(-x + 1)
+        ((x**3/3 + Rational(1, 3))*Heaviside(x + 1) - Rational(2, 3))*Heaviside(-x + 1)
 
     y = Symbol('y')
     assert manualintegrate(sin(7 + x)*Heaviside(3*x - 7), x) == \
-            (- cos(x + 7) + cos(S(28)/3))*Heaviside(3*x - S(7))
+            (- cos(x + 7) + cos(Rational(28, 3)))*Heaviside(3*x - Integer(7))
 
     assert manualintegrate(sin(y + x)*Heaviside(3*x - y), x) == \
             (cos(4*y/3) - cos(x + y))*Heaviside(3*x - y)

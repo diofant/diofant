@@ -40,10 +40,7 @@ from sympy.polys.densebasic import (
 from sympy.polys.specialpolys import f_polys
 from sympy.polys.domains import ZZ, QQ
 from sympy.polys.rings import ring
-
-from sympy.core.singleton import S
-
-from sympy import oo
+from sympy import oo, Integer, Rational
 
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
@@ -236,16 +233,16 @@ def test_dmp_convert():
 
 
 def test_dup_from_sympy():
-    assert dup_from_sympy([S(1), S(2)], ZZ) == \
+    assert dup_from_sympy([Integer(1), Integer(2)], ZZ) == \
         [ZZ(1), ZZ(2)]
-    assert dup_from_sympy([S(1)/2, S(3)], QQ) == \
+    assert dup_from_sympy([Rational(1, 2), Integer(3)], QQ) == \
         [QQ(1, 2), QQ(3, 1)]
 
 
 def test_dmp_from_sympy():
-    assert dmp_from_sympy([[S(1), S(2)], [S(0)]], 1, ZZ) == \
+    assert dmp_from_sympy([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == \
         [[ZZ(1), ZZ(2)], []]
-    assert dmp_from_sympy([[S(1)/2, S(2)]], 1, QQ) == \
+    assert dmp_from_sympy([[Rational(1, 2), Integer(2)]], 1, QQ) == \
         [[QQ(1, 2), QQ(2, 1)]]
 
 

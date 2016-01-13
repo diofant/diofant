@@ -7,7 +7,7 @@ from sympy import (
     Pow, Product, QQ, RR, Rational, Ray, RootOf, RootSum, S,
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
-    Interval, Union)
+    Interval, Union, Integer, Float)
 from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
     euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
@@ -380,7 +380,7 @@ x    \
     assert upretty(expr) == ucode_str
 
     # see issue #2860
-    expr = S(2)**-1.0
+    expr = Integer(2)**-1.0
     ascii_str = \
 """\
  -1.0\n\
@@ -650,7 +650,7 @@ x + 10\
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
-    expr = -S(1)/2 - 3*x
+    expr = -Rational(1, 2) - 3*x
     ascii_str = \
 """\
 -3*x - 1/2\
@@ -662,7 +662,7 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = S(1)/2 - 3*x
+    expr = Rational(1, 2) - 3*x
     ascii_str = \
 """\
 -3*x + 1/2\
@@ -674,7 +674,7 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = -S(1)/2 - 3*x/2
+    expr = -Rational(1, 2) - 3*x/2
     ascii_str = \
 """\
   3*x   1\n\
@@ -690,7 +690,7 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = S(1)/2 - 3*x/2
+    expr = Rational(1, 2) - 3*x/2
     ascii_str = \
 """\
   3*x   1\n\
@@ -3407,18 +3407,18 @@ def test_pretty_Domain():
 
 
 def test_pretty_prec():
-    assert xpretty(S("0.3"), full_prec=True, wrap_line=False) == "0.300000000000000"
-    assert xpretty(S("0.3"), full_prec="auto", wrap_line=False) == "0.300000000000000"
-    assert xpretty(S("0.3"), full_prec=False, wrap_line=False) == "0.3"
-    assert xpretty(S("0.3")*x, full_prec=True, use_unicode=False, wrap_line=False) in [
+    assert xpretty(Float(0.3), full_prec=True, wrap_line=False) == "0.300000000000000"
+    assert xpretty(Float(0.3), full_prec="auto", wrap_line=False) == "0.300000000000000"
+    assert xpretty(Float(0.3), full_prec=False, wrap_line=False) == "0.3"
+    assert xpretty(Float(0.3)*x, full_prec=True, use_unicode=False, wrap_line=False) in [
         "0.300000000000000*x",
         "x*0.300000000000000"
     ]
-    assert xpretty(S("0.3")*x, full_prec="auto", use_unicode=False, wrap_line=False) in [
+    assert xpretty(Float("0.3")*x, full_prec="auto", use_unicode=False, wrap_line=False) in [
         "0.3*x",
         "x*0.3"
     ]
-    assert xpretty(S("0.3")*x, full_prec=False, use_unicode=False, wrap_line=False) in [
+    assert xpretty(Float("0.3")*x, full_prec=False, use_unicode=False, wrap_line=False) in [
         "0.3*x",
         "x*0.3"
     ]
@@ -3458,7 +3458,7 @@ def test_pretty_no_wrap_line():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: pretty(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: pretty(Integer(4), method="garbage"))
 
 
 def test_pretty_sum():
@@ -4089,7 +4089,7 @@ def test_hyper():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = hyper((pi, S('2/3'), -2*k), (3, 4, 5, -3), x**2)
+    expr = hyper((pi, Rational(2, 3), -2*k), (3, 4, 5, -3), x**2)
     ucode_str = \
 """\
  ┌─  ⎛π, 2/3, -2⋅k │  2⎞\n\
@@ -4988,7 +4988,7 @@ def test_issue_7927():
 ⎝   ⎝2⎠⎠      \
 """
     assert upretty(e) == ucode_str
-    e = sin(x)**(S(11)/13)
+    e = sin(x)**Rational(11, 13)
     ucode_str = \
 """\
         11\n\

@@ -1,4 +1,4 @@
-from sympy.core import S, sympify, diff
+from sympy.core import S, sympify, diff, Integer, Rational
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.relational import Eq
 from sympy.polys.polyerrors import PolynomialError
@@ -239,7 +239,7 @@ class Heaviside(Function):
 
     def _eval_rewrite_as_Piecewise(self, arg):
         if arg.is_extended_real:
-            return Piecewise((1, arg > 0), (S(1)/2, Eq(arg, 0)), (0, True))
+            return Piecewise((1, arg > 0), (Rational(1, 2), Eq(arg, 0)), (0, True))
 
     def _eval_rewrite_as_sign(self, arg):
         if arg.is_extended_real:

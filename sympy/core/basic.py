@@ -228,12 +228,13 @@ class Basic(metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from sympy.core import S, I
+        >>> from sympy.core import S, I, Rational, Symbol
 
-        >>> sorted([S(1)/2, I, -I], key=lambda x: x.sort_key())
+        >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
-        >>> S("[x, 1/x, 1/x**2, x**2, x**(1/2), x**(1/4), x**(3/2)]")
+        >>> x = Symbol('x')
+        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
@@ -418,15 +419,15 @@ class Basic(metaclass=ManagedProperties):
         True
 
         Be careful to check your assumptions when using the implicit option
-        since ``S(1).is_Integer = True`` but ``type(S(1))`` is ``One``, a special type
-        of sympy atom, while ``type(S(2))`` is type ``Integer`` and will find all
+        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is ``One``, a special type
+        of sympy atom, while ``type(Integer(2))`` is type ``Integer`` and will find all
         integers in an expression:
 
-        >>> from sympy import S
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(S(1)) == {1}
+        >>> from sympy import S, Integer
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1)) == {1}
         True
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(S(2)) == {1, 2}
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2)) == {1, 2}
         True
 
         Finally, arguments to atoms() can select more than atomic atoms: any
@@ -1613,15 +1614,15 @@ def _aresame(a, b):
 
     To SymPy, 2.0 == 2:
 
-    >>> from sympy import S
-    >>> 2.0 == S(2)
+    >>> from sympy import Integer, Float
+    >>> 2.0 == Integer(2)
     True
 
     Since a simple 'same or not' result is sometimes useful, this routine was
     written to provide that query:
 
     >>> from sympy.core.basic import _aresame
-    >>> _aresame(S(2.0), S(2))
+    >>> _aresame(Float(2.0), Integer(2))
     False
     """
     from .function import AppliedUndef, UndefinedFunction as UndefFunc

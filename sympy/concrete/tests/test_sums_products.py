@@ -2,9 +2,9 @@ import pytest
 
 from sympy import (
     Abs, And, binomial, Catalan, cos, Derivative, E, Eq, exp, EulerGamma,
-    factorial, Function, harmonic, I, Integral, KroneckerDelta, log,
-    nan, Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify,
-    sqrt, Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod)
+    factorial, Function, harmonic, I, Integral, KroneckerDelta, log, nan,
+    Ne, Or, oo, pi, Piecewise, Product, product, Rational, S, simplify, sqrt,
+    Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod, Integer)
 from sympy.concrete.summations import telescopic
 
 from sympy.abc import a, b, c, d, f, k, m, x, y, z
@@ -239,8 +239,8 @@ def test_geometric_sums():
 
     # issue 6802:
     assert summation((-1)**(2*x + 2), (x, 0, n)) == n + 1
-    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/S(3) - S(4)/3
-    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/S(2) + S(1)/2
+    assert summation((-2)**(2*x + 2), (x, 0, n)) == 4*4**(n + 1)/Integer(3) - Rational(4, 3)
+    assert summation((-1)**x, (x, 0, n)) == -(-1)**(n + 1)/Integer(2) + Rational(1, 2)
     assert summation(y**x, (x, a, b)) == \
         Piecewise((-a + b + 1, Eq(y, 1)), ((y**a - y**(b + 1))/(-y + 1), True))
     assert summation((-2)**(y*x + 2), (x, 0, n)) == \
@@ -276,9 +276,9 @@ def test_hypergeometric_sums():
 
 def test_other_sums():
     f = m**2 + m*exp(m)
-    g = 3*exp(S(3)/2)/2 + exp(S(1)/2)/2 - exp(-S(1)/2)/2 - 3*exp(-S(3)/2)/2 + 5
+    g = 3*exp(Rational(3, 2))/2 + exp(Rational(1, 2))/2 - exp(-Rational(1, 2))/2 - 3*exp(-Rational(3, 2))/2 + 5
 
-    assert summation(f, (m, -S(3)/2, S(3)/2)).expand() == g
+    assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).expand() == g
     assert summation(f, (m, -1.5, 1.5)).evalf().epsilon_eq(g.evalf(), 1e-10)
 
 fac = factorial
@@ -528,7 +528,7 @@ def test_Sum_doit():
 
     assert Sum(Sum(KroneckerDelta(m, n), (m, 1, 3)), (n, 1, 3)).doit() == 3
     assert Sum(Sum(KroneckerDelta(k, m), (m, 1, 3)), (n, 1, 3)).doit() == \
-        3*Piecewise((1, And(S(1) <= k, k <= 3)), (0, True))
+        3*Piecewise((1, And(Integer(1) <= k, k <= 3)), (0, True))
     assert Sum(f(n)*Sum(KroneckerDelta(m, n), (m, 0, oo)), (n, 1, 3)).doit() == \
         f(1) + f(2) + f(3)
     assert Sum(f(n)*Sum(KroneckerDelta(m, n), (m, 0, oo)), (n, 1, oo)).doit() == \
@@ -539,7 +539,7 @@ def test_Sum_doit():
 
     # issue 2597
     nmax = symbols('N', integer=True, positive=True)
-    pw = Piecewise((1, And(S(1) <= n, n <= nmax)), (0, True))
+    pw = Piecewise((1, And(Integer(1) <= n, n <= nmax)), (0, True))
     assert Sum(pw, (n, 1, nmax)).doit() == Sum(pw, (n, 1, nmax))
 
 
@@ -578,7 +578,7 @@ def test_hypersum():
     assert simplify(summation((-1)**n*x**(2*n + 1) /
         factorial(2*n + 1), (n, 3, oo))) == -x + sin(x) + x**3/6 - x**5/120
 
-    assert summation(1/(n + 2)**3, (n, 1, oo)) == -S(9)/8 + zeta(3)
+    assert summation(1/(n + 2)**3, (n, 1, oo)) == -Rational(9, 8) + zeta(3)
     assert summation(1/n**4, (n, 1, oo)) == pi**4/90
 
     s = summation(x**n*n, (n, -oo, 0))

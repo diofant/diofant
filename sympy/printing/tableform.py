@@ -112,8 +112,8 @@ class TableForm(object):
          .. . ..
         ... . ...
         """
-        from sympy import Symbol, S, Matrix
-        from sympy.core.sympify import SympifyError
+        from sympy import Symbol, Matrix
+        from sympy.core.sympify import sympify, SympifyError
 
         # We only support 2D data. Check the consistency:
         if isinstance(data, Matrix):
@@ -138,7 +138,7 @@ class TableForm(object):
                         lj = pad
                 else:
                     try:
-                        lj = S(lj)
+                        lj = sympify(lj)
                     except SympifyError:
                         lj = Symbol(str(lj))
                 line[j] = lj

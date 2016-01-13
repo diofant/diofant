@@ -1397,7 +1397,7 @@ def test_Pow_as_coeff_mul_doesnt_expand():
 
 def test_issue_3514():
     assert sqrt(S.Half) * sqrt(6) == 2 * sqrt(3)/2
-    assert S(1)/2*sqrt(6)*sqrt(2) == sqrt(3)
+    assert Rational(1, 2)*sqrt(6)*sqrt(2) == sqrt(3)
     assert sqrt(6)/2*sqrt(2) == sqrt(3)
     assert sqrt(6)*sqrt(2)/2 == sqrt(3)
 
@@ -1423,9 +1423,9 @@ def test_issue_5126():
 
 
 def test_Rational_as_content_primitive():
-    c, p = S(1), S(0)
+    c, p = Integer(1), Integer(0)
     assert (c*p).as_content_primitive() == (c, p)
-    c, p = S(1)/2, S(1)
+    c, p = Rational(1, 2), Integer(1)
     assert (c*p).as_content_primitive() == (c, p)
 
 
@@ -1550,7 +1550,7 @@ def test_Mod():
     # handling sums
     assert (x + 3) % 1 == Mod(x, 1)
     assert (x + 3.0) % 1 == Mod(1.*x, 1)
-    assert (x - S(33)/10) % 1 == Mod(x + S(7)/10, 1)
+    assert (x - Rational(33, 10)) % 1 == Mod(x + Rational(7, 10), 1)
 
     a = Mod(.6*x + y, .3*y)
     b = Mod(0.1*y + 0.6*x, 0.3*y)
@@ -1638,7 +1638,7 @@ def test_polar():
     x = Symbol('x')
     assert p.is_polar
     assert x.is_polar is None
-    assert S(1).is_polar is None
+    assert Integer(1).is_polar is None
     assert (p**x).is_polar is True
     assert (x**p).is_polar is None
     assert ((2*p)**x).is_polar is True
@@ -1864,18 +1864,22 @@ def test_issue_8247_8354():
     from sympy import tan
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
-    z = S('''-2**(1/3)*(3*sqrt(93) + 29)**2 - 4*(3*sqrt(93) + 29)**(4/3) +
-        12*sqrt(93)*(3*sqrt(93) + 29)**(1/3) + 116*(3*sqrt(93) + 29)**(1/3) +
-        174*2**(1/3)*sqrt(93) + 1678*2**(1/3)''')
+    z = (-2**Rational(1, 3)*(3*sqrt(93) + 29)**2 -
+         4*(3*sqrt(93) + 29)**Rational(4, 3) +
+         12*sqrt(93)*(3*sqrt(93) + 29)**Rational(1, 3) +
+         116*(3*sqrt(93) + 29)**Rational(1, 3) +
+         174*2**Rational(1, 3)*sqrt(93) + 1678*2**Rational(1, 3))
     assert z.is_positive is False  # it's 0
     z = 2*(-3*tan(19*pi/90) + sqrt(3))*cos(11*pi/90)*cos(19*pi/90) - \
         sqrt(3)*(-3 + 4*cos(19*pi/90)**2)
     assert z.is_positive is not True  # it's zero and it shouldn't hang
-    z = S('''9*(3*sqrt(93) + 29)**(2/3)*((3*sqrt(93) +
-        29)**(1/3)*(-2**(2/3)*(3*sqrt(93) + 29)**(1/3) - 2) - 2*2**(1/3))**3 +
-        72*(3*sqrt(93) + 29)**(2/3)*(81*sqrt(93) + 783) + (162*sqrt(93) +
-        1566)*((3*sqrt(93) + 29)**(1/3)*(-2**(2/3)*(3*sqrt(93) + 29)**(1/3) -
-        2) - 2*2**(1/3))**2''')
+    z = (9*(3*sqrt(93) + 29)**Rational(2, 3)*((3*sqrt(93) +
+         29)**Rational(1, 3)*(-2**Rational(2, 3)*(3*sqrt(93) +
+         29)**Rational(1, 3) - 2) - 2*2**Rational(1, 3))**3 +
+         72*(3*sqrt(93) + 29)**Rational(2, 3)*(81*sqrt(93) + 783) +
+         (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3)*
+         (-2**Rational(2, 3)*(3*sqrt(93) + 29)**Rational(1, 3) - 2) -
+         2*2**Rational(1, 3))**2)
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)
 
 

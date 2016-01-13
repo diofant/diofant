@@ -747,7 +747,7 @@ def evalf_subs(prec, subs):
     """ Change all Float entries in `subs` to have precision prec. """
     newsubs = {}
     for a, b in subs.items():
-        b = S(b)
+        b = sympify(b)
         if b.is_Float:
             b = b._eval_evalf(prec)
         newsubs[a] = b
