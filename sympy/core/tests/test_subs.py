@@ -5,6 +5,7 @@ from sympy import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
                    atan2, cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
                    factor, nsimplify, zoo, Subs)
 from sympy.core.basic import _aresame
+
 from sympy.abc import x, y, z
 
 
@@ -223,7 +224,7 @@ def test_mul():
     assert (-2*x**3/9).subs(-x/3, z) == -2*x*z**2
     assert (-2*x**3/9).subs(-2*x, z) == z*x**2/9
     assert (-2*x**3/9).subs(2*x, z) == -z*x**2/9
-    assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*(S(1)/7)**2*z**2
+    assert (2*(3*x/5/7)**2).subs(3*x/5, z) == 2*(Rational(1, 7))**2*z**2
     assert (4*x).subs(-2*x, z) == 4*x  # try keep subs literal
 
 
@@ -349,7 +350,7 @@ def test_division():
     assert (-(1/x**2)).subs(x, -2) == -Rational(1, 4)
 
     # issue 5360
-    assert (1/x).subs(x, 0) == 1/S(0)
+    assert (1/x).subs(x, 0) == 1/Integer(0)
 
 
 def test_add():
@@ -517,7 +518,7 @@ def test_issue_6079():
     assert not _aresame(x + 2, x + 2.0)
     assert not _aresame(Basic(cos, 1), Basic(cos, 1.))
     assert _aresame(cos, cos)
-    assert not _aresame(1, S(1))
+    assert not _aresame(1, Integer(1))
     assert not _aresame(x, symbols('x', positive=True))
 
 

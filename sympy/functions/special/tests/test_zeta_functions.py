@@ -1,6 +1,6 @@
 from sympy import (Symbol, zeta, nan, Rational, Float, pi, dirichlet_eta, log,
                    zoo, expand_func, polylog, lerchphi, S, exp, sqrt, I,
-                   exp_polar, polar_lift, O, Derivative)
+                   exp_polar, polar_lift, O, Derivative, Integer)
 from sympy.functions.special.zeta_functions import _zetas
 from sympy.utilities.randtest import (test_derivative_numerically as td,
                                       random_complex_number as randcplx,
@@ -148,14 +148,14 @@ def test_lerchphi_expansion():
     assert myexpand(lerchphi(z, -3, a), None)
 
     # polylog reduction
-    assert myexpand(lerchphi(z, s, S(1)/2),
+    assert myexpand(lerchphi(z, s, Rational(1, 2)),
                     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z)
                                 - polylog(s, polar_lift(-1)*sqrt(z))/sqrt(z)))
     assert myexpand(lerchphi(z, s, 2), -1/z + polylog(s, z)/z**2)
-    assert myexpand(lerchphi(z, s, S(3)/2), None)
-    assert myexpand(lerchphi(z, s, S(7)/3), None)
-    assert myexpand(lerchphi(z, s, -S(1)/3), None)
-    assert myexpand(lerchphi(z, s, -S(5)/2), None)
+    assert myexpand(lerchphi(z, s, Rational(3, 2)), None)
+    assert myexpand(lerchphi(z, s, Rational(7, 3)), None)
+    assert myexpand(lerchphi(z, s, -Rational(1, 3)), None)
+    assert myexpand(lerchphi(z, s, -Rational(5, 2)), None)
 
     # hurwitz zeta reduction
     assert myexpand(lerchphi(-1, s, a),

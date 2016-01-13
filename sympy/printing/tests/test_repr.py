@@ -189,5 +189,5 @@ def test_FracElement():
 
 
 def test_BooleanAtom():
-    assert srepr(true) == "S.true"
-    assert srepr(false) == "S.false"
+    assert srepr(true) == "true"
+    assert srepr(false) == "false"

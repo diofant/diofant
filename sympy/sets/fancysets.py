@@ -4,6 +4,7 @@ from sympy.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from sympy.core.singleton import Singleton, S
 from sympy.core.sympify import _sympify
 from sympy.core.function import Lambda
+from sympy.core.numbers import Integer
 
 
 class Naturals(Set, metaclass=Singleton):
@@ -128,7 +129,7 @@ class Integers(Set, metaclass=Singleton):
 
     def __iter__(self):
         yield S.Zero
-        i = S(1)
+        i = Integer(1)
         while True:
             yield i
             yield -i
@@ -323,7 +324,7 @@ class Range(Set):
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
         try:
-            start, stop, step = [w if w in [S.NegativeInfinity, S.Infinity] else S(as_int(w))
+            start, stop, step = [w if w in [S.NegativeInfinity, S.Infinity] else Integer(as_int(w))
                                  for w in (start, stop, step)]
         except ValueError:
             raise ValueError("Inputs to Range must be Integer Valued\n" +

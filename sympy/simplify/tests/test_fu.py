@@ -1,6 +1,6 @@
 from sympy import (
     Add, Mul, S, Symbol, cos, cot, pi, I, sin, sqrt, tan, root,
-    powsimp, symbols, sinh, cosh, tanh, coth, Dummy)
+    powsimp, symbols, sinh, cosh, tanh, coth, Dummy, Integer, Rational)
 from sympy.simplify.fu import (
     L, TR1, TR10, TR10i, TR11, TR12, TR12i, TR13, TR14, TR15, TR16,
     TR111, TR2, TR2i, TR3, TR5, TR6, TR7, TR8, TR9, TRmorrie, _TR56 as T,
@@ -90,8 +90,8 @@ def test_TR6():
 
 
 def test_TR7():
-    assert TR7(cos(x)**2) == cos(2*x)/2 + S(1)/2
-    assert TR7(cos(x)**2 + 1) == cos(2*x)/2 + S(3)/2
+    assert TR7(cos(x)**2) == cos(2*x)/2 + Rational(1, 2)
+    assert TR7(cos(x)**2 + 1) == cos(2*x)/2 + Rational(3, 2)
 
 
 def test_TR8():
@@ -101,15 +101,15 @@ def test_TR8():
     assert TR8(sin(1)*sin(2)*sin(3)) == sin(4)/4 - sin(6)/4 + sin(2)/4
     assert TR8(cos(2)*cos(3)*cos(4)*cos(5)) == \
         cos(4)/4 + cos(10)/8 + cos(2)/8 + cos(8)/8 + cos(14)/8 + \
-        cos(6)/8 + S(1)/8
+        cos(6)/8 + Rational(1, 8)
     assert TR8(cos(2)*cos(3)*cos(4)*cos(5)*cos(6)) == \
         cos(10)/8 + cos(4)/8 + 3*cos(2)/16 + cos(16)/16 + cos(8)/8 + \
-        cos(14)/16 + cos(20)/16 + cos(12)/16 + S(1)/16 + cos(6)/8
-    assert TR8(sin(3*pi/7)**2*cos(3*pi/7)**2/(16*sin(pi/7)**2)) == S(1)/64
+        cos(14)/16 + cos(20)/16 + cos(12)/16 + Rational(1, 16) + cos(6)/8
+    assert TR8(sin(3*pi/7)**2*cos(3*pi/7)**2/(16*sin(pi/7)**2)) == Rational(1, 64)
 
 
 def test_TR9():
-    a = S(1)/2
+    a = Rational(1, 2)
     b = 3*a
     assert TR9(a) == a
     assert TR9(cos(1) + cos(2)) == 2*cos(a)*cos(b)
@@ -120,7 +120,7 @@ def test_TR9():
     assert TR9(cos(4) + cos(2) + 2*cos(1)*cos(3)) == 4*cos(1)*cos(3)
     assert TR9((cos(4) + cos(2))/cos(3)/2 + cos(3)) == 2*cos(1)*cos(2)
     assert TR9(cos(3) + cos(4) + cos(5) + cos(6)) == \
-        4*cos(S(1)/2)*cos(1)*cos(S(9)/2)
+        4*cos(Rational(1, 2))*cos(1)*cos(Rational(9, 2))
     assert TR9(cos(3) + cos(3)*cos(2)) == cos(3) + cos(2)*cos(3)
     assert TR9(-cos(y) + cos(x*y)) == -2*sin(x*y/2 - y/2)*sin(x*y/2 + y/2)
     assert TR9(-sin(y) + sin(x*y)) == 2*sin(x*y/2 - y/2)*cos(x*y/2 + y/2)
@@ -242,7 +242,7 @@ def test_L():
 
 
 def test_fu():
-    assert fu(sin(50)**2 + cos(50)**2 + sin(pi/6)) == S(3)/2
+    assert fu(sin(50)**2 + cos(50)**2 + sin(pi/6)) == Rational(3, 2)
     assert fu(sqrt(6)*cos(x) + sqrt(2)*sin(x)) == 2*sqrt(2)*sin(x + pi/3)
 
     eq = sin(x)**4 - cos(y)**2 + sin(y)**2 + 2*cos(x)**2
@@ -259,7 +259,7 @@ def test_fu():
         -cos(x)**2 + cos(y)**2
 
     assert fu(cos(4*pi/9)) == sin(pi/18)
-    assert fu(cos(pi/9)*cos(2*pi/9)*cos(3*pi/9)*cos(4*pi/9)) == S(1)/16
+    assert fu(cos(pi/9)*cos(2*pi/9)*cos(3*pi/9)*cos(4*pi/9)) == Rational(1, 16)
 
     assert fu(
         tan(7*pi/18) + tan(5*pi/18) - sqrt(3)*tan(5*pi/18)*tan(7*pi/18)) == \
@@ -329,9 +329,9 @@ def test_TRmorrie():
     assert TRmorrie(x) == x
     assert TRmorrie(2*x) == 2*x
     e = cos(pi/7)*cos(2*pi/7)*cos(4*pi/7)
-    assert TR8(TRmorrie(e)) == -S(1)/8
+    assert TR8(TRmorrie(e)) == -Rational(1, 8)
     e = Mul(*[cos(2**i*pi/17) for i in range(1, 17)])
-    assert TR8(TR3(TRmorrie(e))) == S(1)/65536
+    assert TR8(TR3(TRmorrie(e))) == Rational(1, 65536)
 
 
 def test_hyper_as_trig():

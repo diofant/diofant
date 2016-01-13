@@ -2,7 +2,7 @@ from sympy.vector.coordsysrect import CoordSysCartesian
 from sympy.vector.dyadic import Dyadic
 from sympy.vector.vector import Vector, BaseVector
 from sympy.vector.scalar import BaseScalar
-from sympy import sympify, diff, integrate, S
+from sympy import sympify, diff, integrate, S, Integer
 
 
 def express(expr, system, system2=None, variables=False):
@@ -281,7 +281,7 @@ def is_solenoidal(field):
     if field == Vector.zero:
         return True
     coord_sys = list(field.separate())[0]
-    return divergence(field, coord_sys).simplify() == S(0)
+    return divergence(field, coord_sys).simplify() == Integer(0)
 
 
 def scalar_potential(field, coord_sys):
@@ -318,7 +318,7 @@ def scalar_potential(field, coord_sys):
     if not is_conservative(field):
         raise ValueError("Field is not conservative")
     if field == Vector.zero:
-        return S(0)
+        return Integer(0)
     # Express the field exntirely in coord_sys
     # Subsitute coordinate variables also
     if not isinstance(coord_sys, CoordSysCartesian):

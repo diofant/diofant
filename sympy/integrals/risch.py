@@ -26,9 +26,9 @@ from the names used in Bronstein's book.
 
 from functools import reduce
 
-from sympy import real_roots
+from sympy import real_roots, sympify
 from sympy.core.function import Lambda
-from sympy.core.numbers import ilcm, oo
+from sympy.core.numbers import ilcm, oo, Integer
 from sympy.core.mul import Mul
 from sympy.core.power import Pow
 from sympy.core.relational import Eq
@@ -93,7 +93,7 @@ def integer_powers(exprs):
                 terms[j].append((term, a))
                 break
         else:
-            terms[term] = [(term, S(1))]
+            terms[term] = [(term, Integer(1))]
 
     # After we have done this, we have all the like terms together, so we just
     # need to find a common denominator so that we can get the base term and
@@ -1211,7 +1211,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
             if invert:
                 h_lc = Poly(h.as_poly(DE.t).LC(), DE.t, field=True, expand=False)
-                inv, coeffs = h_lc.as_poly(z, field=True).invert(s), [S(1)]
+                inv, coeffs = h_lc.as_poly(z, field=True).invert(s), [Integer(1)]
 
                 for coeff in h.coeffs()[1:]:
                     L = reduced(inv*coeff, [s])[1]
@@ -1247,7 +1247,7 @@ def residue_reduce_derivation(H, DE, z):
     """
     # TODO: verify that this is correct for multiple extensions
     i = Dummy('i')
-    return S(sum((RootSum(a[0].as_poly(z), Lambda(i, i*derivation(a[1],
+    return sympify(sum((RootSum(a[0].as_poly(z), Lambda(i, i*derivation(a[1],
         DE).as_expr().subs(z, i)/a[1].as_expr().subs(z, i))) for a in H)))
 
 
@@ -1661,12 +1661,12 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     -----------
     log(log(x))
     """
-    f = S(f)
+    f = sympify(f)
 
     DE = extension or DifferentialExtension(f, x, handle_first=handle_first, rewrite_complex=rewrite_complex)
     fa, fd = DE.fa, DE.fd
 
-    result = S(0)
+    result = Integer(0)
     for case in reversed(DE.cases):
         if not DE.fa.has(DE.t) and not fd.has(DE.t) and not case == 'base':
             DE.decrement_level()
@@ -1683,7 +1683,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             # handle polynomials correctly.
             ans = integrate(fa.as_expr()/fd.as_expr(), DE.x, risch=False)
             b = False
-            i = S(0)
+            i = Integer(0)
         else:
             raise NotImplementedError("Only exponential and logarithmic "
             "extensions are currently supported.")

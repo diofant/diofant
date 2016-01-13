@@ -8,6 +8,7 @@ from sympy.concrete.gosper import gosper_sum
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.polys import apart, PolynomialError
 from sympy.solvers import solve
+from sympy.core.numbers import Integer
 
 
 class Sum(AddWithLimits,ExprWithIntLimits):
@@ -764,7 +765,7 @@ def _eval_sum_hyper(f, i, a):
 
     if f.subs(i, 0) == 0:
         if simplify(f.subs(i, Dummy('i', integer=True, positive=True))) == 0:
-            return S(0), True
+            return Integer(0), True
         return _eval_sum_hyper(f.subs(i, i + 1), i, 0)
 
     hs = hypersimp(f, i)

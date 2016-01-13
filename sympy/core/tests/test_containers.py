@@ -127,7 +127,7 @@ def test_Dict():
     pytest.raises(KeyError, lambda: d[2])
     assert len(d) == 3
     assert set(d.keys()) == {x, y, z}
-    assert set(d.values()) == {S(1), S(2), S(3)}
+    assert set(d.values()) == {Integer(1), Integer(2), Integer(3)}
     assert d.get(5, 'default') == 'default'
     assert x in d and z in d and 5 not in d
     assert d.has(x) and d.has(1)  # SymPy Basic .has method
@@ -142,7 +142,7 @@ def test_Dict():
     with pytest.raises(NotImplementedError):
         d[5] = 6  # assert immutability
 
-    assert set(d.items()) == {Tuple(x, S(1)), Tuple(y, S(2)), Tuple(z, S(3))}
+    assert set(d.items()) == {Tuple(x, Integer(1)), Tuple(y, Integer(2)), Tuple(z, Integer(3))}
     assert set(d) == {x, y, z}
     assert str(d) == '{x: 1, y: 2, z: 3}'
     assert d.__repr__() == '{x: 1, y: 2, z: 3}'

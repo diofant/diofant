@@ -6,7 +6,8 @@ import signal
 import pytest
 
 from sympy import (integrate, Integral, exp, oo, pi, sign,
-                   sqrt, sin, cos, tan, S, log, gamma, sinh)
+                   sqrt, sin, cos, tan, S, log, gamma, sinh, Rational)
+
 from sympy.abc import x, k, c, y, R, b, h, a, m
 
 
@@ -57,7 +58,7 @@ def test_issue_4511():
     # This works, but gives a complicated answer.  The correct answer is x - cos(x).
     # The last one is what Maple gives.  It is also quite slow.
     assert integrate(cos(x)**2 / (1 - sin(x))) in [x - cos(x), 1 - cos(x) + x,
-            -2/(tan((S(1)/2)*x)**2 + 1) + x]
+            -2/(tan((Rational(1, 2))*x)**2 + 1) + x]
 
 
 @pytest.mark.xfail

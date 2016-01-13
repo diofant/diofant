@@ -373,7 +373,7 @@ def test_series3():
     w = Symbol("w", extended_real=True)
     x = Symbol("x", extended_real=True)
     e = w**(-6)*(w**3*tan(w) - w**3*sin(w))
-    assert e.nseries(w, n=8) == Integer(1)/2 + O(w**2)
+    assert e.nseries(w, n=8) == Rational(1, 2) + O(w**2)
 
 
 def test_bug4():

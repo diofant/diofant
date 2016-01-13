@@ -460,8 +460,8 @@ which is exactly what is needed for the third paramenter,
 ``res``, in ``add``. Finally, the whole function call to add
 this rule to the table looks like::
 
-  add([S(1)/4],
-      [S(1)/2, S(5)/4],
+  add([Rational(1, 4)],
+      [Rational(1, 2), Rational(5, 4)],
       fresnelc(exp(pi*I/4)*root(z,4)*2/sqrt(pi)) / (exp(pi*I/4)*root(z,4)*2/sqrt(pi))
      )
 

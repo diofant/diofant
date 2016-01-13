@@ -25,10 +25,10 @@ def test_pow():
     assert refine(sqrt(x**2), Q.complex(x)) != Abs(x)
     assert refine(sqrt(x**2), Q.real(x)) == Abs(x)
     assert refine(sqrt(x**2), Q.positive(x)) == x
-    assert refine((x**3)**(S(1)/3)) != x
+    assert refine((x**3)**Rational(1, 3)) != x
 
-    assert refine((x**3)**(S(1)/3), Q.real(x)) != x
-    assert refine((x**3)**(S(1)/3), Q.positive(x)) == x
+    assert refine((x**3)**Rational(1, 3), Q.real(x)) != x
+    assert refine((x**3)**Rational(1, 3), Q.positive(x)) == x
 
     assert refine(sqrt(1/x), Q.real(x)) != 1/sqrt(x)
     assert refine(sqrt(1/x), Q.positive(x)) == 1/sqrt(x)

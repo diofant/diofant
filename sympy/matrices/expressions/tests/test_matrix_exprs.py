@@ -1,6 +1,6 @@
 import pytest
 
-from sympy.core import S, symbols, Add, Mul
+from sympy.core import S, symbols, Add, Mul, Integer
 from sympy.functions import transpose, sin, cos, sqrt
 from sympy.simplify import simplify
 from sympy.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd, MatMul,
@@ -104,7 +104,7 @@ def test_addition():
 
     assert A + ZeroMatrix(n, m) - A == ZeroMatrix(n, m)
     with pytest.raises(TypeError):
-        ZeroMatrix(n,m) + S(0)
+        ZeroMatrix(n, m) + Integer(0)
 
 
 def test_multiplication():

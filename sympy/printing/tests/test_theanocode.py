@@ -13,7 +13,7 @@ else:
     disabled = True
 
 import sympy
-from sympy import S
+from sympy import S, Rational
 sy = sympy
 from sympy.abc import x, y, z
 from sympy.printing.theanocode import (theano_code, dim_handling,
@@ -132,7 +132,7 @@ def test_dim_handling():
 
 
 def test_Rationals():
-    assert theq(theano_code(sympy.Integer(2) / 3), tt.true_div(2, 3))
+    assert theq(theano_code(sympy.Rational(2, 3)), tt.true_div(2, 3))
     assert theq(theano_code(S.Half), tt.true_div(1, 2))
 
 

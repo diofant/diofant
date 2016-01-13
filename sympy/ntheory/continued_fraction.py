@@ -226,7 +226,7 @@ def continued_fraction_convergents(cf):
     >>> list(continued_fraction_convergents([0, 2, 1, 2]))
     [0, 1/2, 1/3, 3/8]
 
-    >>> list(continued_fraction_convergents([1, S('1/2'), -7, S('1/4')]))
+    >>> list(continued_fraction_convergents([1, Rational(1, 2), -7, Rational(1, 4)]))
     [1, 3, 19/5, 7]
 
     >>> it = continued_fraction_convergents(continued_fraction_iterator(pi))

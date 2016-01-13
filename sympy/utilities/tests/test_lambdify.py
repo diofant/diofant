@@ -5,7 +5,7 @@ import pytest
 
 from sympy import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
                    Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                   oo, I, Abs, Function, true, false, And, Or, Not)
+                   oo, I, Abs, Function, true, false, And, Or, Not, sympify)
 from sympy.printing.lambdarepr import LambdaPrinter
 from sympy.utilities.lambdify import implemented_function
 from sympy.utilities.decorator import conserve_mpmath_dps
@@ -18,7 +18,7 @@ MutableDenseMatrix = Matrix
 numpy = import_module('numpy')
 numexpr = import_module('numexpr')
 
-w, x, y, z = symbols('w,x,y,z')
+w, x, y, z, a, b = symbols('w,x,y,z,a,b')
 
 # ================= Test different arguments =======================
 
@@ -156,19 +156,18 @@ def test_numpy_translation_abs():
     assert f(1) == 1
 
 
-@pytest.mark.skipif(numexpr is None, reason="no numpy")
+@pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_numexpr_printer():
     # if translation/printing is done incorrectly then evaluating
     # a lambdified numexpr expression will throw an exception
     from sympy.printing.lambdarepr import NumExprPrinter
-    from sympy import S
 
     blacklist = ('where', 'complex', 'contains')
     arg_tuple = (x, y, z)  # some functions take more than one argument
     for sym in NumExprPrinter._numexpr_functions.keys():
         if sym in blacklist:
             continue
-        ssym = S(sym)
+        ssym = sympify(sym)
         if hasattr(ssym, '_nargs'):
             nargs = ssym._nargs[0]
         else:
@@ -181,7 +180,7 @@ def test_numexpr_printer():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 @pytest.mark.skipif(numexpr is None, reason="no numexpr")
 def test_issue_9334():
-    expr = sympy.S('b*a - sqrt(a**2)')
+    expr = b*a - sqrt(a**2)
     a, b = sorted(expr.free_symbols, key=lambda s: s.name)
     func_numexpr = lambdify((a, b), expr, modules=[numexpr], dummify=False)
     foo, bar = numpy.random.random((2, 4))
@@ -553,7 +552,7 @@ def test_special_printers():
     def intervalrepr(expr):
         return IntervalPrinter().doprint(expr)
 
-    expr = sympy.sqrt(sympy.sqrt(2) + sympy.sqrt(3)) + sympy.S(1)/2
+    expr = sympy.sqrt(sympy.sqrt(2) + sympy.sqrt(3)) + sympy.Rational(1, 2)
 
     func0 = lambdify((), expr, modules="mpmath", printer=intervalrepr)
     func1 = lambdify((), expr, modules="mpmath", printer=IntervalPrinter)

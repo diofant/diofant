@@ -1,5 +1,6 @@
 from sympy.core.assumptions import StdFactKB
 from sympy.core import S, Pow
+from sympy.core.numbers import Integer
 from sympy.core.expr import AtomicExpr
 from sympy import diff as df, sqrt, ImmutableMatrix as Matrix
 from sympy.vector.coordsysrect import CoordSysCartesian
@@ -117,11 +118,11 @@ class Vector(BasisDependent):
             return directional_derivative
 
         if isinstance(self, VectorZero) or isinstance(other, VectorZero):
-            return S(0)
+            return Integer(0)
 
         v1 = express(self, other._sys)
         v2 = express(other, other._sys)
-        dotproduct = S(0)
+        dotproduct = Integer(0)
         for x in other._sys.base_vectors():
             dotproduct += (v1.components.get(x, 0) *
                            v2.components.get(x, 0))
@@ -322,12 +323,12 @@ class BaseVector(Vector, AtomicExpr):
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
         # Initialize an object
-        obj = super(BaseVector, cls).__new__(cls, S(index),
+        obj = super(BaseVector, cls).__new__(cls, Integer(index),
                                              system)
         # Assign important attributes
         obj._base_instance = obj
-        obj._components = {obj: S(1)}
-        obj._measure_number = S(1)
+        obj._components = {obj: Integer(1)}
+        obj._measure_number = Integer(1)
         obj._name = name
         obj._pretty_form = pretty_str
         obj._latex_form = latex_str

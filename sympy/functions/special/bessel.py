@@ -1,4 +1,4 @@
-from sympy import S, pi, I, Rational, Wild, cacheit, sympify
+from sympy import S, pi, I, Rational, Wild, cacheit, sympify, Integer
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.power import Pow
 from sympy.functions.combinatorial.factorials import factorial
@@ -163,7 +163,7 @@ class besselj(BesselBase):
             return (z)**nu*(-z)**(-nu)*besselj(nu, -z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
-                return S(-1)**(-nu)*besselj(-nu, z)
+                return Integer(-1)**(-nu)*besselj(-nu, z)
             newz = z.extract_multiplicatively(I)
             if newz:  # NOTE we don't want to change the function if z==0
                 return I**(nu)*besseli(nu, newz)
@@ -254,7 +254,7 @@ class bessely(BesselBase):
 
         if nu.is_integer:
             if nu.could_extract_minus_sign():
-                return S(-1)**(-nu)*bessely(-nu, z)
+                return Integer(-1)**(-nu)*bessely(-nu, z)
 
     def _eval_rewrite_as_besselj(self, nu, z):
         if nu.is_integer is False:
@@ -622,7 +622,7 @@ class jn(SphericalBesselBase):
         return self._eval_rewrite_as_besselj(self.order, self.argument)
 
     def _eval_rewrite_as_besselj(self, nu, z):
-        return sqrt(pi/(2*z)) * besselj(nu + S('1/2'), z)
+        return sqrt(pi/(2*z)) * besselj(nu + Rational(1, 2), z)
 
     def _expand(self, **hints):
         n = self.order
@@ -667,7 +667,7 @@ class yn(SphericalBesselBase):
         return self._eval_rewrite_as_bessely(self.order, self.argument)
 
     def _eval_rewrite_as_bessely(self, nu, z):
-        return sqrt(pi/(2*z)) * bessely(nu + S('1/2'), z)
+        return sqrt(pi/(2*z)) * bessely(nu + Rational(1, 2), z)
 
     def _expand(self, **hints):
         n = self.order
@@ -713,7 +713,7 @@ def jn_zeros(n, k, method="sympy", dps=15):
         from mpmath.libmp.libmpf import dps_to_prec
         from sympy import Expr
         prec = dps_to_prec(dps)
-        return [Expr._from_mpmath(besseljzero(S(n + 0.5)._to_mpmath(prec),
+        return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
                                               int(l)), prec)
                 for l in range(1, k + 1)]
     elif method == "scipy":
@@ -896,10 +896,10 @@ class airyai(AiryBase):
             x = sympify(x)
             if len(previous_terms) > 1:
                 p = previous_terms[-1]
-                return ((3**(S(1)/3)*x)**(-n)*(3**(S(1)/3)*x)**(n + 1)*sin(pi*(2*n/3 + S(4)/3))*factorial(n) *
-                        gamma(n/3 + S(2)/3)/(sin(pi*(2*n/3 + S(2)/3))*factorial(n + 1)*gamma(n/3 + S(1)/3)) * p)
+                return ((3**Rational(1, 3)*x)**(-n)*(3**Rational(1, 3)*x)**(n + 1)*sin(pi*(2*n/3 + Rational(4, 3)))*factorial(n) *
+                        gamma(n/3 + Rational(2, 3))/(sin(pi*(2*n/3 + Rational(2, 3)))*factorial(n + 1)*gamma(n/3 + Rational(1, 3))) * p)
             else:
-                return (S.One/(3**(S(2)/3)*pi) * gamma((n+S.One)/S(3)) * sin(2*pi*(n+S.One)/S(3)) /
+                return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) /
                         factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
@@ -919,9 +919,9 @@ class airyai(AiryBase):
             return ot*(Pow(a, ot)*besseli(-ot, tt*a) - z*Pow(a, -ot)*besseli(ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = S.One / (3**(S(2)/3)*gamma(S(2)/3))
-        pf2 = z / (root(3, 3)*gamma(S(1)/3))
-        return pf1 * hyper([], [S(2)/3], z**3/9) - pf2 * hyper([], [S(4)/3], z**3/9)
+        pf1 = S.One / (3**Rational(2, 3)*gamma(Rational(2, 3)))
+        pf2 = z / (root(3, 3)*gamma(Rational(1, 3)))
+        return pf1 * hyper([], [Rational(2, 3)], z**3/9) - pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -1063,10 +1063,10 @@ class airybi(AiryBase):
             x = sympify(x)
             if len(previous_terms) > 1:
                 p = previous_terms[-1]
-                return (3**(S(1)/3)*x * Abs(sin(2*pi*(n + S.One)/S(3))) * factorial((n - S.One)/S(3)) /
-                        ((n + S.One) * Abs(cos(2*pi*(n + S.Half)/S(3))) * factorial((n - 2)/S(3))) * p)
+                return (3**Rational(1, 3)*x * Abs(sin(2*pi*(n + S.One)/Integer(3))) * factorial((n - S.One)/Integer(3)) /
+                        ((n + S.One) * Abs(cos(2*pi*(n + S.Half)/Integer(3))) * factorial((n - 2)/Integer(3))) * p)
             else:
-                return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/S(3)) * Abs(sin(2*pi*(n + S.One)/S(3))) /
+                return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) /
                         factorial(n) * (root(3, 3)*x)**n)
 
     def _eval_rewrite_as_besselj(self, z):
@@ -1088,9 +1088,9 @@ class airybi(AiryBase):
             return sqrt(ot)*(b*besseli(-ot, tt*a) + z*c*besseli(ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = S.One / (root(3, 6)*gamma(S(2)/3))
-        pf2 = z*root(3, 6) / gamma(S(1)/3)
-        return pf1 * hyper([], [S(2)/3], z**3/9) + pf2 * hyper([], [S(4)/3], z**3/9)
+        pf1 = S.One / (root(3, 6)*gamma(Rational(2, 3)))
+        pf2 = z*root(3, 6) / gamma(Rational(1, 3))
+        return pf1 * hyper([], [Rational(2, 3)], z**3/9) + pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -1237,9 +1237,9 @@ class airyaiprime(AiryBase):
             return ot * (z**2*c*besseli(tt, tt*a) - b*besseli(-ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = z**2 / (2*3**(S(2)/3)*gamma(S(2)/3))
-        pf2 = 1 / (root(3, 3)*gamma(S(1)/3))
-        return pf1 * hyper([], [S(5)/3], z**3/9) - pf2 * hyper([], [S(1)/3], z**3/9)
+        pf1 = z**2 / (2*3**Rational(2, 3)*gamma(Rational(2, 3)))
+        pf2 = 1 / (root(3, 3)*gamma(Rational(1, 3)))
+        return pf1 * hyper([], [Rational(5, 3)], z**3/9) - pf2 * hyper([], [Rational(1, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
@@ -1392,9 +1392,9 @@ class airybiprime(AiryBase):
             return sqrt(ot) * (b*besseli(-tt, tt*a) + z**2*c*besseli(tt, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = z**2 / (2*root(3, 6)*gamma(S(2)/3))
-        pf2 = root(3, 6) / gamma(S(1)/3)
-        return pf1 * hyper([], [S(5)/3], z**3/9) + pf2 * hyper([], [S(1)/3], z**3/9)
+        pf1 = z**2 / (2*root(3, 6)*gamma(Rational(2, 3)))
+        pf2 = root(3, 6) / gamma(Rational(1, 3))
+        return pf1 * hyper([], [Rational(5, 3)], z**3/9) + pf2 * hyper([], [Rational(1, 3)], z**3/9)
 
     def _eval_expand_func(self, **hints):
         arg = self.args[0]

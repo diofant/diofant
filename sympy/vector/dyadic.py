@@ -1,6 +1,6 @@
 from sympy.vector.basisdependent import BasisDependent, \
     BasisDependentAdd, BasisDependentMul, BasisDependentZero
-from sympy.core import S, Pow
+from sympy.core import S, Pow, Integer
 from sympy.core.expr import AtomicExpr
 from sympy import ImmutableMatrix as Matrix
 import sympy.vector
@@ -190,7 +190,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
         obj = super(BaseDyadic, cls).__new__(cls, vector1, vector2)
         obj._base_instance = obj
         obj._measure_number = 1
-        obj._components = {obj: S(1)}
+        obj._components = {obj: Integer(1)}
         obj._sys = vector1._sys
         obj._pretty_form = ('(' + vector1._pretty_form + '|' +
                              vector2._pretty_form + ')')

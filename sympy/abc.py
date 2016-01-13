@@ -75,13 +75,13 @@ def clashing():
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import sympify
     >>> from sympy.abc import _clash1, _clash2, _clash
-    >>> S("Q & C", locals=_clash1)
+    >>> sympify("Q & C", locals=_clash1)
     And(C, Q)
-    >>> S('pi(x)', locals=_clash2)
+    >>> sympify('pi(x)', locals=_clash2)
     pi(x)
-    >>> S('pi(C, Q)', locals=_clash)
+    >>> sympify('pi(C, Q)', locals=_clash)
     pi(C, Q)
 
     Note: if changes are made to the docstring examples they can only

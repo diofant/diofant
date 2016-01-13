@@ -824,7 +824,7 @@ def jacobi_symbol(m, n):
     ========
 
     >>> from sympy.ntheory import jacobi_symbol, legendre_symbol
-    >>> from sympy import Mul, S
+    >>> from sympy import Mul, S, Integer
     >>> jacobi_symbol(45, 77)
     -1
     >>> jacobi_symbol(60, 121)
@@ -834,7 +834,7 @@ def jacobi_symbol(m, n):
     be demonstrated as follows:
 
     >>> L = legendre_symbol
-    >>> S(45).factors()
+    >>> Integer(45).factors()
     {3: 2, 5: 1}
     >>> jacobi_symbol(7, 45) == L(7, 3)**2 * L(7, 5)**1
     True

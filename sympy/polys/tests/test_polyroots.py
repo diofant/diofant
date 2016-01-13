@@ -4,7 +4,8 @@ import mpmath
 import pytest
 
 from sympy import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp,sin, cos,
-                   pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root)
+                   pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
+                   Integer)
 from sympy.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
 from sympy.polys.polyroots import (
     root_factors, roots_linear,
@@ -59,7 +60,7 @@ def test_roots_quadratic():
 def test_issue_8438():
     p = Poly([1, y, -2, -3], x).as_expr()
     roots = roots_cubic(Poly(p, x), x)
-    z = -S(3)/2 - 7*I/2  # this will fail in code given in commit msg
+    z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
     post = [r.subs(y, z) for r in roots]
     assert set(post) == \
     set(roots_cubic(Poly(p.subs(y, z), x)))
@@ -105,9 +106,9 @@ def test_roots_cubic():
     eq = -x**3 + 2*x**2 + 3*x - 2
     assert roots(eq, trig=True, multiple=True) == \
            roots_cubic(Poly(eq, x), trig=True) == [
-        S(2)/3 + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
-        -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + S(2)/3,
-        -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + S(2)/3,
+        Rational(2, 3) + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
+        -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + Rational(2, 3),
+        -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Rational(2, 3),
     ]
 
 
@@ -140,9 +141,9 @@ def test_roots_quartic():
                                       (-3, 5, -6, -4),
                                       (6, -5, -10, -3)]):
         if i == 2:
-            c = -a*(a**2/S(8) - b/S(2))
+            c = -a*(a**2/Integer(8) - b/Integer(2))
         elif i == 3:
-            d = a*(a*(3*a**2/S(256) - b/S(16)) + c/S(4))
+            d = a*(a*(3*a**2/Integer(256) - b/Integer(16)) + c/Integer(4))
         eq = x**4 + a*x**3 + b*x**2 + c*x + d
         ans = roots_quartic(Poly(eq, x))
         assert all(eq.subs(x, ai).n(chop=True) == 0 for ai in ans)
@@ -173,10 +174,10 @@ def test_roots_cyclotomic():
     assert roots_cyclotomic(cyclotomic_poly(1, x, polys=True)) == [1]
     assert roots_cyclotomic(cyclotomic_poly(2, x, polys=True)) == [-1]
     assert roots_cyclotomic(cyclotomic_poly(
-        3, x, polys=True)) == [-S(1)/2 - I*sqrt(3)/2, -S(1)/2 + I*sqrt(3)/2]
+        3, x, polys=True)) == [-Rational(1, 2) - I*sqrt(3)/2, -Rational(1, 2) + I*sqrt(3)/2]
     assert roots_cyclotomic(cyclotomic_poly(4, x, polys=True)) == [-I, I]
     assert roots_cyclotomic(cyclotomic_poly(
-        6, x, polys=True)) == [S(1)/2 - I*sqrt(3)/2, S(1)/2 + I*sqrt(3)/2]
+        6, x, polys=True)) == [Rational(1, 2) - I*sqrt(3)/2, Rational(1, 2) + I*sqrt(3)/2]
 
     assert roots_cyclotomic(cyclotomic_poly(7, x, polys=True)) == [
         -cos(pi/7) - I*sin(pi/7),
@@ -244,9 +245,9 @@ def test_roots_binomial():
 
     # issue 8813
     assert roots(Poly(2*x**3 - 16*y**3, x)) == {
-        2*y*(-S(1)/2 - sqrt(3)*I/2): 1,
+        2*y*(-Rational(1, 2) - sqrt(3)*I/2): 1,
         2*y: 1,
-        2*y*(-S(1)/2 + sqrt(3)*I/2): 1}
+        2*y*(-Rational(1, 2) + sqrt(3)*I/2): 1}
 
 
 def test_roots_preprocessing():
@@ -313,7 +314,7 @@ def test_roots0():
     assert roots(1, x) == {}
     assert roots(x, x) == {S.Zero: 1}
     assert roots(x**9, x) == {S.Zero: 9}
-    assert roots(((x - 2)*(x + 3)*(x - 4)).expand(), x) == {-S(3): 1, S(2): 1, S(4): 1}
+    assert roots(((x - 2)*(x + 3)*(x - 4)).expand(), x) == {-Integer(3): 1, Integer(2): 1, Integer(4): 1}
 
     assert roots(2*x + 1, x) == {-S.Half: 1}
     assert roots((2*x + 1)**2, x) == {-S.Half: 2}
@@ -353,20 +354,20 @@ def test_roots0():
     f = -2016*x**2 - 5616*x**3 - 2056*x**4 + 3324*x**5 + 2176*x**6 - \
         224*x**7 - 384*x**8 - 64*x**9
 
-    assert roots(f) == {S(0): 2, -S(2): 2, S(2): 1, -S(7)/2: 1, -S(3)/2: 1, -S(1)/2: 1, S(3)/2: 1}
+    assert roots(f) == {Integer(0): 2, -Integer(2): 2, Integer(2): 1, -Rational(7, 2): 1, -Rational(3, 2): 1, -Rational(1, 2): 1, Rational(3, 2): 1}
 
     assert roots((a + b + c)*x - (a + b + c + d), x) == {(a + b + c + d)/(a + b + c): 1}
 
     assert roots(x**3 + x**2 - x + 1, x, cubics=False) == {}
     assert roots(((x - 2)*(
-        x + 3)*(x - 4)).expand(), x, cubics=False) == {-S(3): 1, S(2): 1, S(4): 1}
+        x + 3)*(x - 4)).expand(), x, cubics=False) == {-Integer(3): 1, Integer(2): 1, Integer(4): 1}
     assert roots(((x - 2)*(x + 3)*(x - 4)*(x - 5)).expand(), x, cubics=False) == \
-        {-S(3): 1, S(2): 1, S(4): 1, S(5): 1}
-    assert roots(x**3 + 2*x**2 + 4*x + 8, x) == {-S(2): 1, -2*I: 1, 2*I: 1}
+        {-Integer(3): 1, Integer(2): 1, Integer(4): 1, Integer(5): 1}
+    assert roots(x**3 + 2*x**2 + 4*x + 8, x) == {-Integer(2): 1, -2*I: 1, 2*I: 1}
     assert roots(x**3 + 2*x**2 + 4*x + 8, x, cubics=True) == \
-        {-2*I: 1, 2*I: 1, -S(2): 1}
+        {-2*I: 1, 2*I: 1, -Integer(2): 1}
     assert roots((x**2 - x)*(x**3 + 2*x**2 + 4*x + 8), x ) == \
-        {S(1): 1, S(0): 1, -S(2): 1, -2*I: 1, 2*I: 1}
+        {Integer(1): 1, Integer(0): 1, -Integer(2): 1, -2*I: 1, 2*I: 1}
 
     r1_2, r1_3 = Rational(1, 2), Rational(1, 3)
 

@@ -110,7 +110,7 @@ class Predicate(Boolean):
 
     Predicates merely wrap their argument and remain unevaluated:
 
-        >>> from sympy import Q, ask, Symbol, S
+        >>> from sympy import Q, ask, Symbol, Integer
         >>> x = Symbol('x')
         >>> Q.prime(7)
         Q.prime(7)
@@ -125,7 +125,7 @@ class Predicate(Boolean):
 
         >>> Q.is_true(x > 1)
         Q.is_true(x > 1)
-        >>> Q.is_true(S(1) < x)
+        >>> Q.is_true(Integer(1) < x)
         Q.is_true(1 < x)
 
     """

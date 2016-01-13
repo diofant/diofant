@@ -10,9 +10,6 @@ class SingletonRegistry(object):
     """
     __slots__ = []
 
-    # Also allow things like S(5)
-    __call__ = staticmethod(sympify)
-
     def __init__(self):
         self._classes_to_install = {}
         # Dict of classes that have been registered, but that have not have been

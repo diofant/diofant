@@ -1,6 +1,6 @@
 """ Riemann zeta and related function. """
 
-from sympy.core import Function, S, sympify, pi
+from sympy.core import Function, S, sympify, pi, Integer, Rational
 from sympy.core.function import ArgumentIndexError
 from sympy.functions.combinatorial.numbers import bernoulli, factorial, harmonic
 from sympy.functions.elementary.exponential import log, exp
@@ -96,11 +96,11 @@ class lerchphi(Function):
     More generally, if :math:`a` is rational, the Lerch transcendent reduces
     to a sum of polylogarithms:
 
-    >>> from sympy import S
-    >>> expand_func(lerchphi(z, s, S(1)/2))
+    >>> from sympy import Rational
+    >>> expand_func(lerchphi(z, s, Rational(1, 2)))
     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                 polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))
-    >>> expand_func(lerchphi(z, s, S(3)/2))
+    >>> expand_func(lerchphi(z, s, Rational(3, 2)))
     -2**s/z + 2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                           polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))/z
 
@@ -122,7 +122,7 @@ class lerchphi(Function):
             t = Dummy('t')
             p = Poly((t + a)**(-s), t)
             start = 1/(1 - t)
-            res = S(0)
+            res = Integer(0)
             for c in reversed(p.all_coeffs()):
                 res += c*start
                 start = t*start.diff(t)
@@ -134,8 +134,8 @@ class lerchphi(Function):
             #   In: Proceedings of the 1997 International Symposium on Symbolic and
             #   Algebraic Computation, pages 205-211, New York, 1997. ACM.
             # TODO should something be polarified here?
-            add = S(0)
-            mul = S(1)
+            add = Integer(0)
+            mul = Integer(1)
             # First reduce a to the interaval (0, 1]
             if a > 1:
                 n = floor(a)
@@ -150,7 +150,7 @@ class lerchphi(Function):
                 mul = z**n
                 add = Add(*[z**(n - 1 - k)/(a - k - 1)**s for k in range(n)])
 
-            m, n = S([a.p, a.q])
+            m, n = Integer(a.p), Integer(a.q)
             zet = exp_polar(2*pi*I/n)
             root = z**(1/n)
             return add + mul*n**(s - 1)*Add(
@@ -161,14 +161,14 @@ class lerchphi(Function):
         if z.is_Pow and z.base is S.Exp1 and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
             # TODO reference?
             if z == -1:
-                p, q = S([1, 2])
+                p, q = Integer(1), Integer(2)
             elif z == I:
-                p, q = S([1, 4])
+                p, q = Integer(1), Integer(4)
             elif z == -I:
-                p, q = S([-1, 4])
+                p, q = Integer(-1), Integer(4)
             else:
                 arg = z.exp/(2*pi*I)
-                p, q = S([arg.p, arg.q])
+                p, q = Integer(arg.p), Integer(arg.q)
             return Add(*[exp(2*pi*I*k*p/q)/q**s*zeta(s, (k + a)/q)
                          for k in range(q)])
 
