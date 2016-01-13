@@ -111,6 +111,13 @@ class fibonacci(Function):
                        "only for positive integer indices.")
                 return cls._fibpoly(n).subs(_sym, sym)
 
+    def _eval_rewrite_as_sqrt(self, n, sym=None):
+        from sympy.functions import sqrt
+        if sym is None:
+            return (S.GoldenRatio**n - cos(S.Pi*n)/S.GoldenRatio**n)/sqrt(5)
+
+    _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
+
 
 class lucas(Function):
     """

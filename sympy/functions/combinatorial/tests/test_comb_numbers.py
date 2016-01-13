@@ -58,6 +58,9 @@ def test_fibonacci():
     assert fibonacci(3, x) == x**2 + 1
     assert fibonacci(4, x) == x**3 + 2*x
 
+    assert fibonacci(x).rewrite(sqrt) == (S.GoldenRatio**x - cos(S.Pi*x)/S.GoldenRatio**x)/sqrt(5)
+    assert fibonacci(x).rewrite('tractable') == fibonacci(x).rewrite(sqrt)
+
 
 def test_bell():
     assert [bell(n) for n in range(8)] == [1, 1, 2, 5, 15, 52, 203, 877]
