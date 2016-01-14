@@ -289,6 +289,8 @@ def checksol(f, symbol, sol=None, **flags):
             continue
         elif val.is_Rational:
             return val == 0
+        elif val.is_nonzero:
+            return False
         if numerical and not val.free_symbols:
             return bool(abs(val.n(18).n(12, chop=True)) < 1e-9)
         was = val

@@ -1748,3 +1748,7 @@ def test_issue_8828():
 
     p, q, r = [{tuple(i.evalf(2) for i in j) for j in R} for R in [A, B, C]]
     assert p == q == r
+
+
+def test_issue_10391():
+    assert solve((2*x + 8)*exp(-6*x), x) == [-4]
