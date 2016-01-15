@@ -404,7 +404,7 @@ def test_Pow():
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
     # see issue #2860
-    assert str(S(2)**-1.0) == '2**(-1.0)'
+    assert str(Integer(2)**-1.0) == '2**(-1.0)'
 
 
 def test_sqrt():
@@ -444,8 +444,8 @@ def test_Rational():
     assert str(Rational("-25")) == "-25"
     assert str(Rational("1.25")) == "5/4"
     assert str(Rational("-2.6e-2")) == "-13/500"
-    assert str(S("25/7")) == "25/7"
-    assert str(S("-123/569")) == "-123/569"
+    assert str(Rational(25, 7)) == "25/7"
+    assert str(Rational(-123, 569)) == "-123/569"
 
     assert str(sqrt(Rational(1, 4))) == "1/2"
     assert str(sqrt(Rational(1, 36))) == "1/6"
@@ -511,9 +511,9 @@ def test_set():
     assert sstr(set()) == 'set()'
     assert sstr(frozenset()) == 'frozenset()'
 
-    assert sstr({1, 2, 3}) == 'set([1, 2, 3])'
+    assert sstr({1, 2, 3}) == '{1, 2, 3}'
     assert sstr(
-        {1, x, x**2, x**3, x**4}) == 'set([1, x, x**2, x**3, x**4])'
+        {1, x, x**2, x**3, x**4}) == '{1, x, x**2, x**3, x**4}'
 
 
 def test_SparseMatrix():
@@ -590,18 +590,18 @@ def test_infinity():
 
 
 def test_full_prec():
-    assert sstr(S("0.3"), full_prec=True) == "0.300000000000000"
-    assert sstr(S("0.3"), full_prec="auto") == "0.300000000000000"
-    assert sstr(S("0.3"), full_prec=False) == "0.3"
-    assert sstr(S("0.3")*x, full_prec=True) in [
+    assert sstr(Float(0.3), full_prec=True) == "0.300000000000000"
+    assert sstr(Float(0.3), full_prec="auto") == "0.300000000000000"
+    assert sstr(Float(0.3), full_prec=False) == "0.3"
+    assert sstr(Float(0.3)*x, full_prec=True) in [
         "0.300000000000000*x",
         "x*0.300000000000000"
     ]
-    assert sstr(S("0.3")*x, full_prec="auto") in [
+    assert sstr(Float(0.3)*x, full_prec="auto") in [
         "0.3*x",
         "x*0.3"
     ]
-    assert sstr(S("0.3")*x, full_prec=False) in [
+    assert sstr(Float(0.3)*x, full_prec=False) in [
         "0.3*x",
         "x*0.3"
     ]
@@ -625,7 +625,7 @@ def test_empty_printer():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: sstr(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: sstr(Integer(4), method="garbage"))
 
 
 def test_RandomDomain():

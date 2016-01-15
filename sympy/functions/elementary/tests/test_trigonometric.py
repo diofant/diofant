@@ -5,10 +5,11 @@ from sympy import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
                    cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
                    cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
                    diff, simplify, Heaviside, arg, conjugate, series,
-                   FiniteSet, asec, acsc, sech, csch)
+                   FiniteSet, asec, acsc, sech, csch, Integer)
 
 x, y, z = symbols('x y z')
-r = Symbol('r', extended_real=True)
+r = Symbol('r', real=True)
+c = Symbol('c', complex=True)
 k = Symbol('k', integer=True)
 p = Symbol('p', positive=True)
 n = Symbol('n', negative=True)
@@ -82,7 +83,7 @@ def test_sin():
 
     assert sin(pi/8) == sqrt((2 - sqrt(2))/4)
 
-    assert sin(pi/10) == -S(1)/4 + sqrt(5)/4
+    assert sin(pi/10) == -Rational(1, 4) + sqrt(5)/4
 
     assert sin(pi/12) == -sqrt(2)/4 + sqrt(6)/4
     assert sin(5*pi/12) == sqrt(2)/4 + sqrt(6)/4
@@ -102,7 +103,8 @@ def test_sin():
 
     assert sin(k*pi*I) == sinh(k*pi)*I
 
-    assert sin(r).is_extended_real is True
+    assert sin(r).is_real
+    assert sin(c).is_complex
 
     assert sin(0, evaluate=False).is_algebraic
     assert sin(a).is_algebraic is None
@@ -289,7 +291,8 @@ def test_cos():
     assert cos(x*I) == cosh(x)
     assert cos(k*pi*I) == cosh(k*pi)
 
-    assert cos(r).is_extended_real is True
+    assert cos(r).is_real
+    assert cos(c).is_complex
 
     assert cos(0, evaluate=False).is_algebraic
     assert cos(a).is_algebraic is None
@@ -812,7 +815,7 @@ def test_atan2():
     assert ex.subs({x:2, y:3}).rewrite(arg) == 0
     assert ex.subs({x:2, y:3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
     assert ex.subs({x:2*I, y:3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
-    assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/S(3)) + atan(3/S(2))
+    assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
     i = symbols('i', imaginary=True)
     r = symbols('r', extended_real=True)
     e = atan2(i, r)
@@ -1184,7 +1187,7 @@ def test_sec():
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
 
-    assert sec(x).is_extended_real
+    assert sec(r).is_extended_real
     assert sec(z).is_extended_real is None
 
     assert sec(a).is_algebraic is None
@@ -1203,8 +1206,8 @@ def test_sec():
 
     # https://github.com/sympy/sympy/issues/7167
     assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
-            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(S(3)/2)/12 +
-            (x - 3*pi/2)**(S(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**Rational(3, 2)/12 +
+            (x - 3*pi/2)**Rational(7, 2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
     assert sec(x).diff(x) == tan(x)*sec(x)
 
@@ -1259,7 +1262,7 @@ def test_csc():
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
 
-    assert csc(x).is_extended_real
+    assert csc(r).is_extended_real
     assert csc(z).is_extended_real is None
 
     assert csc(a).is_algebraic is None

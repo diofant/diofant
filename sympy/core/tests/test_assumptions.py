@@ -1,7 +1,7 @@
 import pytest
 
 from sympy import I, sqrt, log, exp, sin, asin
-from sympy.core import Symbol, S, Rational, Integer, Dummy, Wild, Pow
+from sympy.core import Symbol, S, Rational, Integer, Dummy, Wild, Pow, Float
 from sympy.core.facts import InconsistentAssumptions
 from sympy import simplify
 
@@ -99,10 +99,10 @@ def test_infinity():
     assert oo.is_commutative is True
     assert oo.is_integer is False
     assert oo.is_rational is False
-    assert oo.is_algebraic is None
-    assert oo.is_transcendental is None
+    assert oo.is_algebraic is False
+    assert oo.is_transcendental is False
     assert oo.is_extended_real is True
-    assert oo.is_complex is True
+    assert oo.is_complex is False
     assert oo.is_noninteger is False
     assert oo.is_irrational is False
     assert oo.is_imaginary is False
@@ -126,10 +126,10 @@ def test_neg_infinity():
     assert mm.is_commutative is True
     assert mm.is_integer is False
     assert mm.is_rational is False
-    assert mm.is_algebraic is None
-    assert mm.is_transcendental is None
+    assert mm.is_algebraic is False
+    assert mm.is_transcendental is False
     assert mm.is_extended_real is True
-    assert mm.is_complex is True
+    assert mm.is_complex is False
     assert mm.is_noninteger is False
     assert mm.is_irrational is False
     assert mm.is_imaginary is False
@@ -149,9 +149,10 @@ def test_neg_infinity():
 
 def test_zoo():
     zoo = S.ComplexInfinity
-    assert zoo.is_complex
+    assert zoo.is_complex is False
     assert zoo.is_real is False
     assert zoo.is_prime is False
+    assert zoo.is_infinite
 
 
 def test_nan():
@@ -488,24 +489,24 @@ def test_neg_symbol_falsenonnegative_real():
 
 
 def test_prime():
-    assert S(-1).is_prime is False
-    assert S(-2).is_prime is False
-    assert S(-4).is_prime is False
-    assert S(0).is_prime is False
-    assert S(1).is_prime is False
-    assert S(2).is_prime is True
-    assert S(17).is_prime is True
-    assert S(4).is_prime is False
+    assert Integer(-1).is_prime is False
+    assert Integer(-2).is_prime is False
+    assert Integer(-4).is_prime is False
+    assert Integer(0).is_prime is False
+    assert Integer(1).is_prime is False
+    assert Integer(2).is_prime is True
+    assert Integer(17).is_prime is True
+    assert Integer(4).is_prime is False
 
 
 def test_composite():
-    assert S(-1).is_composite is False
-    assert S(-2).is_composite is False
-    assert S(-4).is_composite is False
-    assert S(0).is_composite is False
-    assert S(2).is_composite is False
-    assert S(17).is_composite is False
-    assert S(4).is_composite is True
+    assert Integer(-1).is_composite is False
+    assert Integer(-2).is_composite is False
+    assert Integer(-4).is_composite is False
+    assert Integer(0).is_composite is False
+    assert Integer(2).is_composite is False
+    assert Integer(17).is_composite is False
+    assert Integer(4).is_composite is True
 
 
 def test_prime_symbol():
@@ -877,7 +878,7 @@ def test_issue_4149():
             [False, True, False, True])
 
     # tests from the PR #7887:
-    e = S("-sqrt(3)*I/2 + 0.866025403784439*I")
+    e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
     assert e.is_extended_real is False
     assert e.is_imaginary
 

@@ -3,7 +3,7 @@ import pytest
 from sympy import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
                    log, exp, Rational, Float, sin, cos, acos, diff, I, re, im,
                    E, expand, pi, O, Sum, S, polygamma, loggamma, expint,
-                   Tuple, Dummy, Eq, Expr, symbols, nfloat)
+                   Tuple, Dummy, Eq, Expr, symbols, nfloat, Integer)
 from sympy.core.function import PoleError, _mexpand
 from sympy.sets.sets import FiniteSet
 from sympy.solvers import solve
@@ -361,10 +361,13 @@ def test_function_complex():
     assert sin(x).is_commutative is True
     assert exp(x).is_commutative is True
     assert log(x).is_commutative is True
-    assert f(x).is_complex is True
     assert sin(x).is_complex is True
     assert exp(x).is_complex is True
-    assert log(x).is_complex is True
+    assert log(x).is_complex is None  # could be zero
+    n = Symbol('n', complex=True, nonzero=True)
+    z = Symbol('z', zero=True)
+    assert log(n).is_complex is True
+    assert log(z).is_complex is False
 
 
 def test_function__eval_nseries():
@@ -384,10 +387,10 @@ def test_function__eval_nseries():
     assert loggamma(log(1/x)).nseries(x, n=1, logx=y) == loggamma(-y)
 
     # issue 6725:
-    assert expint(S(3)/2, -x)._eval_nseries(x, 5, None) == \
+    assert expint(Rational(3, 2), -x)._eval_nseries(x, 5, None) == \
         2 - 2*sqrt(pi)*sqrt(-x) - 2*x - x**2/3 - x**3/15 - x**4/84 + O(x**5)
     assert sin(sqrt(x))._eval_nseries(x, 3, None) == \
-        sqrt(x) - x**(S(3)/2)/6 + x**(S(5)/2)/120 + O(x**3)
+        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**3)
 
 
 def test_doit():
@@ -409,7 +412,7 @@ def test_evalf_default():
 
 
 def test_issue_5399():
-    args = [x, y, S(2), S.Half]
+    args = [x, y, Integer(2), S.Half]
 
     def ok(a):
         """Return True if the input args for diff are ok"""
@@ -600,11 +603,11 @@ def test_nfloat():
     from sympy.polys.rootoftools import RootOf
 
     x = Symbol("x")
-    eq = x**(S(4)/3) + 4*x**(S(1)/3)/3
-    assert _aresame(nfloat(eq), x**(S(4)/3) + (4.0/3)*x**(S(1)/3))
+    eq = x**Rational(4, 3) + 4*x**Rational(1, 3)/3
+    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**Rational(1, 3))
     assert _aresame(nfloat(eq, exponent=True), x**(4.0/3) + (4.0/3)*x**(1.0/3))
-    eq = x**(S(4)/3) + 4*x**(x/3)/3
-    assert _aresame(nfloat(eq), x**(S(4)/3) + (4.0/3)*x**(x/3))
+    eq = x**Rational(4, 3) + 4*x**(x/3)/3
+    assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*x**(x/3))
     big = 12345678901234567890
     # specify precision to match value used in nfloat
     Float_big = Float(big, 15)
@@ -616,7 +619,8 @@ def test_nfloat():
     assert nfloat(cos(x + sqrt(2))) == cos(x + nfloat(sqrt(2)))
 
     # issue 6342
-    f = S('x*lamda + lamda**3*(x/2 + 1/2) + lamda**2 + 1/4')
+    lamda = Symbol('lamda')
+    f = x*lamda + lamda**3*(x/2 + Rational(1, 2)) + lamda**2 + Rational(1, 4)
     assert not any(a.free_symbols for a in solve(f.subs(x, -0.139)))
 
     # issue 6632

@@ -5,9 +5,9 @@ import pytest
 from sympy import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
                    fibonacci, floor, Function, GoldenRatio, I, Integral,
                    integrate, log, Mul, N, oo, pi, Pow, product, Product,
-                   Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol)
+                   Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol, Float)
 from sympy.core.evalf import (complex_accuracy, PrecisionExhausted,
-                              scaled_zero, get_integer_part, as_mpmath)
+                              scaled_zero, as_mpmath)
 
 from sympy.abc import n, x, y
 
@@ -254,6 +254,21 @@ def test_evalf_integer_parts():
     assert ceiling(x).evalf(subs={x: 3*I}) == 3*I
     assert ceiling(x).evalf(subs={x: 2 + 3*I}) == 2 + 3*I
 
+    # issue sympy/sympy#10323
+    l = 1206577996382235787095214
+    y = ceiling(sqrt(l))
+    assert y == 1098443442506
+    assert y**2 >= l
+
+    def check(x):
+        c, f = ceiling(sqrt(x)), floor(sqrt(x))
+        assert (c - 1)**2 < x and c**2 >= x
+        assert (f + 1)**2 > x and f**2 <= x
+
+    check(2**30 + 1)
+    check(2**100 + 1)
+    check(2**112 + 2)
+
 
 def test_evalf_trig_zero_detection():
     a = sin(160*pi, evaluate=False)
@@ -371,24 +386,26 @@ def test_subs():
 
 def test_issue_4956_5204():
     # issue 4956
-    v = S('''(-27*12**(1/3)*sqrt(31)*I +
-    27*2**(2/3)*3**(1/3)*sqrt(31)*I)/(-2511*2**(2/3)*3**(1/3) +
-    (29*18**(1/3) + 9*2**(1/3)*3**(2/3)*sqrt(31)*I +
-    87*2**(1/3)*3**(1/6)*I)**2)''')
+    v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
+         27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I)/
+         (-2511*2**Rational(2, 3)*3**Rational(1, 3) + (29*18**Rational(1, 3) +
+         9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
+         87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
     assert NS(v, 1) == '0.e-118 - 0.e-118*I'
 
     # issue 5204
-    v = S('''-(357587765856 + 18873261792*249**(1/2) + 56619785376*I*83**(1/2) +
-    108755765856*I*3**(1/2) + 41281887168*6**(1/3)*(1422 +
-    54*249**(1/2))**(1/3) - 1239810624*6**(1/3)*249**(1/2)*(1422 +
-    54*249**(1/2))**(1/3) - 3110400000*I*6**(1/3)*83**(1/2)*(1422 +
-    54*249**(1/2))**(1/3) + 13478400000*I*3**(1/2)*6**(1/3)*(1422 +
-    54*249**(1/2))**(1/3) + 1274950152*6**(2/3)*(1422 +
-    54*249**(1/2))**(2/3) + 32347944*6**(2/3)*249**(1/2)*(1422 +
-    54*249**(1/2))**(2/3) - 1758790152*I*3**(1/2)*6**(2/3)*(1422 +
-    54*249**(1/2))**(2/3) - 304403832*I*6**(2/3)*83**(1/2)*(1422 +
-    4*249**(1/2))**(2/3))/(175732658352 + (1106028 + 25596*249**(1/2) +
-    76788*I*83**(1/2))**2)''')
+    v = (-(357587765856 + 18873261792*249**Rational(1, 2) +
+         56619785376*I*83**Rational(1, 2) + 108755765856*I*3**Rational(1, 2) +
+         41281887168*6**Rational(1, 3)*(1422 + 54*249**Rational(1, 2))**Rational(1, 3)
+         - 1239810624*6**Rational(1, 3)*249**Rational(1, 2)*(1422 +
+         54*249**Rational(1, 2))**Rational(1, 3) - 3110400000*I*6**Rational(1, 3)*83**Rational(1, 2)*(1422 +
+         54*249**Rational(1, 2))**Rational(1, 3) + 13478400000*I*3**Rational(1, 2)*6**Rational(1, 3)*(1422 +
+         54*249**Rational(1, 2))**Rational(1, 3) + 1274950152*6**Rational(2, 3)*(1422 +
+         54*249**Rational(1, 2))**Rational(2, 3) + 32347944*6**Rational(2, 3)*249**Rational(1, 2)*(1422 +
+         54*249**Rational(1, 2))**Rational(2, 3) - 1758790152*I*3**Rational(1, 2)*6**Rational(2, 3)*(1422 +
+         54*249**Rational(1, 2))**Rational(2, 3) - 304403832*I*6**Rational(2, 3)*83**Rational(1, 2)*(1422 +
+         4*249**Rational(1, 2))**Rational(2, 3))/(175732658352 + (1106028 + 25596*249**Rational(1, 2) +
+         76788*I*83**Rational(1, 2))**2))
     assert NS(v, 5) == '0.077284 + 1.1104*I'
     assert NS(v, 1) == '0.08 + 1.*I'
 
@@ -435,7 +452,7 @@ def test_infinities():
 
 def test_to_mpmath():
     assert sqrt(3)._to_mpmath(20)._mpf_ == (0, int(908093), -19, 20)
-    assert S(3.2)._to_mpmath(20)._mpf_ == (0, int(838861), -18, 20)
+    assert Float(3.2)._to_mpmath(20)._mpf_ == (0, int(838861), -18, 20)
 
 
 def test_issue_6632_evalf():
@@ -470,11 +487,6 @@ def test_issue_8853():
     assert floor(-p + S.Half).is_even
     assert ceiling(p - S.Half).is_even
     assert ceiling(p + S.Half).is_even is False
-
-    assert get_integer_part(S.Half, -1, {}, True) == (0, 0)
-    assert get_integer_part(S.Half, 1, {}, True) == (1, 0)
-    assert get_integer_part(-S.Half, -1, {}, True) == (-1, 0)
-    assert get_integer_part(-S.Half, 1, {}, True) == (0, 0)
 
 
 def test_issue_9326():

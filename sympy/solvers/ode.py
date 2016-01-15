@@ -237,7 +237,7 @@ from sympy.core.expr import AtomicExpr, Expr
 from sympy.core.function import (Function, Derivative, AppliedUndef, diff,
                                  expand, expand_mul, Subs, _mexpand)
 from sympy.core.multidimensional import vectorize
-from sympy.core.numbers import NaN, zoo, I, Number
+from sympy.core.numbers import NaN, zoo, I, Number, Integer
 from sympy.core.relational import Equality, Eq
 from sympy.core.symbol import Symbol, Wild, Dummy, symbols
 from sympy.core.sympify import sympify
@@ -1496,7 +1496,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
     r['b2'] = -fc[1,x(t),0]/fc[1,y(t),1]
     r['c1'] = -fc[0,y(t),0]/fc[0,x(t),1]
     r['c2'] = -fc[1,y(t),0]/fc[1,y(t),1]
-    forcing = [S(0), S(0)]
+    forcing = [Integer(0), Integer(0)]
     for i in range(2):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t)):
@@ -1582,7 +1582,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
     r['d2'] = fc[1,x(t),0]
     r['e1'] = fc[0,y(t),0]
     r['e2'] = fc[1,y(t),0]
-    const = [S(0), S(0)]
+    const = [Integer(0), Integer(0)]
     for i in range(2):
         for j in Add.make_args(eq[i]):
             if not (j.has(x(t)) or j.has(y(t))):
@@ -1595,8 +1595,8 @@ def check_linear_2eq_order2(eq, func, func_coef):
             return "type2"
 
         elif all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2 d1 d2 e1 e1'.split()):
-            p = [S(0), S(0)]
-            q = [S(0), S(0)]
+            p = [Integer(0), Integer(0)]
+            q = [Integer(0), Integer(0)]
             for n, e in enumerate([r['f1'], r['f2']]):
                 if e.has(t):
                     tpart = e.as_independent(t, Mul)[1]
@@ -1684,7 +1684,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
     r['d1'] = fc[0,z(t),0]
     r['d2'] = fc[1,z(t),0]
     r['d3'] = fc[2,z(t),0]
-    forcing = [S(0), S(0), S(0)]
+    forcing = [Integer(0), Integer(0), Integer(0)]
     for i in range(3):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t), z(t)):
@@ -1931,14 +1931,14 @@ def checksysodesol(eqs, sols, func=None):
     Examples
     ========
 
-    >>> from sympy import Eq, diff, symbols, sin, cos, exp, sqrt, S
+    >>> from sympy import Eq, diff, symbols, sin, cos, exp, sqrt, Rational
     >>> from sympy.solvers.ode import checksysodesol
     >>> C1, C2 = symbols('C1:3')
     >>> t = symbols('t')
     >>> x, y = symbols('x, y', function=True)
     >>> eq = (Eq(diff(x(t),t), x(t) + y(t) + 17), Eq(diff(y(t),t), -2*x(t) + y(t) + 12))
-    >>> sol = [Eq(x(t), (C1*sin(sqrt(2)*t) + C2*cos(sqrt(2)*t))*exp(t) - S(5)/3),
-    ... Eq(y(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - S(46)/3)]
+    >>> sol = [Eq(x(t), (C1*sin(sqrt(2)*t) + C2*cos(sqrt(2)*t))*exp(t) - Rational(5, 3)),
+    ... Eq(y(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(46, 3))]
     >>> checksysodesol(eq, sol)
     (True, [0, 0])
     >>> eq = (Eq(diff(x(t),t),x(t)*y(t)**4), Eq(diff(y(t),t),y(t)**3))
@@ -3624,10 +3624,10 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
                             seriesdict[term] = i + 1
                             break
                 else:
-                    seriesdict[term] = S(0)
+                    seriesdict[term] = Integer(0)
 
     # Stripping of terms so that the sum starts with the same number.
-    teq = S(0)
+    teq = Integer(0)
     suminit = seriesdict.values()
     rkeys = seriesdict.keys()
     req = Add(*rkeys)
@@ -3760,7 +3760,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
         else:
             term = series(term, n=1, x0=x0)
             if isinstance(term, Order):
-                indicial.append(S(0))
+                indicial.append(Integer(0))
             else:
                 for arg in term.args:
                     if not arg.has(x):
@@ -3801,7 +3801,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
                 power = int(key.name[1:])
                 finalseries1 += serdict1[key]*(x - x0)**power
             finalseries1 = (x - x0)**m1*finalseries1
-            finalseries2 = S(0)
+            finalseries2 = Integer(0)
             if serdict2:
                 for key in serdict2:
                     power = int(key.name[1:])
@@ -3839,7 +3839,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
         # Fill in with zeros, if coefficients are zero.
         for i in range(n + 1):
             if (i,) not in dict_:
-                dict_[(i,)] = S(0)
+                dict_[(i,)] = Integer(0)
         serlist.append(dict_)
 
     pseries = serlist[0]
@@ -3859,7 +3859,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
             if num:
                 return False
             else:
-                frobdict[numsyms[i]] = S(0)
+                frobdict[numsyms[i]] = Integer(0)
         else:
             frobdict[numsyms[i]] = -num/(indicial.subs(d, m+i))
 
@@ -4003,7 +4003,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     charroots = defaultdict(int)
     for root in chareqroots:
         charroots[root] += 1
-    gsol = S(0)
+    gsol = Integer(0)
     # We need keep track of terms so we can run collect() at the end.
     # This is necessary for constantsimp to work properly.
     ln = log
@@ -4645,7 +4645,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     charroots = defaultdict(int)
     for root in chareqroots:
         charroots[root] += 1
-    gsol = S(0)
+    gsol = Integer(0)
     # We need to keep track of terms so we can run collect() at the end.
     # This is necessary for constantsimp to work properly.
     global collectterms
@@ -4845,7 +4845,7 @@ def _solve_undetermined_coefficients(eq, func, order, match):
 
     eqs = sub_func_doit(eq, f(x), trialfunc)
 
-    coeffsdict = dict(list(zip(trialset, [0]*(len(trialset) + 1))))
+    coeffsdict = dict(zip(trialset, [0]*(len(trialset) + 1)))
 
     eqs = expand_mul(eqs)
 
@@ -5276,8 +5276,8 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
                 (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)))
             soltup = []
             for sol in infinitesimals:
-                tsol = {xi: S(sol[dxi]).subs(func, y),
-                    eta: S(sol[deta]).subs(func, y)}
+                tsol = {xi: sol[dxi].subs(func, y),
+                    eta: sol[deta].subs(func, y)}
                 sol = simplify(pde.subs(tsol).doit())
                 if sol:
                     soltup.append((False, sol.subs(y, func)))
@@ -5361,7 +5361,7 @@ def ode_lie_group(eq, func, order, match):
             h = sol[0].subs(func, y)
 
     if xis is not None and etas is not None:
-        inf = [{xi(x, f(x)): S(xis), eta(x, f(x)): S(etas)}]
+        inf = [{xi(x, f(x)): sympify(xis), eta(x, f(x)): sympify(etas)}]
 
         if not checkinfsol(eq, inf, func=f(x), order=1)[0][0]:
             raise ValueError("The given infinitesimals xi and eta"
@@ -5698,7 +5698,7 @@ def lie_heuristic_abaco1_simple(match, comp=False):
         except NotImplementedError:
             pass
         else:
-            inf = {xi: S(0), eta: fx}
+            inf = {xi: Integer(0), eta: fx}
             if not comp:
                 return [inf]
             if comp and inf not in xieta:
@@ -5712,7 +5712,7 @@ def lie_heuristic_abaco1_simple(match, comp=False):
         except NotImplementedError:
             pass
         else:
-            inf = {xi: S(0), eta: fy.subs(y, func)}
+            inf = {xi: Integer(0), eta: fy.subs(y, func)}
             if not comp:
                 return [inf]
             if comp and inf not in xieta:
@@ -5726,7 +5726,7 @@ def lie_heuristic_abaco1_simple(match, comp=False):
         except NotImplementedError:
             pass
         else:
-            inf = {xi: fx, eta: S(0)}
+            inf = {xi: fx, eta: Integer(0)}
             if not comp:
                 return [inf]
             if comp and inf not in xieta:
@@ -5740,7 +5740,7 @@ def lie_heuristic_abaco1_simple(match, comp=False):
         except NotImplementedError:
             pass
         else:
-            inf = {xi: fy.subs(y, func), eta: S(0)}
+            inf = {xi: fy.subs(y, func), eta: Integer(0)}
             if not comp:
                 return [inf]
             if comp and inf not in xieta:
@@ -5797,7 +5797,7 @@ def lie_heuristic_abaco1_product(match, comp=False):
         gysyms = gy.free_symbols
         if x not in gysyms:
             gy = exp(integrate(gy, y))
-            inf = {eta: S(0), xi: (fx*gy).subs(y, func)}
+            inf = {eta: Integer(0), xi: (fx*gy).subs(y, func)}
             if not comp:
                 return [inf]
             if comp and inf not in xieta:
@@ -5813,7 +5813,7 @@ def lie_heuristic_abaco1_product(match, comp=False):
             gy = exp(integrate(gy, y))
             etaval = fx*gy
             etaval = (etaval.subs([(x, u1), (y, x)])).subs(u1, y)
-            inf = {eta: etaval.subs(y, func), xi: S(0)}
+            inf = {eta: etaval.subs(y, func), xi: Integer(0)}
             if not comp:
                 return [inf]
             if comp and inf not in xieta:
@@ -6050,9 +6050,9 @@ def lie_heuristic_function_sum(match, comp=False):
                     if etaval.is_Mul:
                         etaval = Mul(*[arg for arg in etaval.args if arg.has(x, y)])
                     if odefac == hinv:  # Inverse ODE
-                        inf = {eta: etaval.subs(y, func), xi: S(0)}
+                        inf = {eta: etaval.subs(y, func), xi: Integer(0)}
                     else:
-                        inf = {xi: etaval.subs(y, func), eta: S(0)}
+                        inf = {xi: etaval.subs(y, func), eta: Integer(0)}
                     if not comp:
                         return [inf]
                     else:
@@ -6244,11 +6244,11 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
             etatry = -1/frac
             pde = etatry.diff(x) + etatry.diff(y)*h - hx - etatry*hy
             if not simplify(pde):
-                return [{xi: S(1), eta: etatry.subs(y, func)}]
+                return [{xi: Integer(1), eta: etatry.subs(y, func)}]
             xitry = -frac
             pde = -xitry.diff(x)*h -xitry.diff(y)*h**2 - xitry*hx -hy
             if not simplify(expand(pde)):
-                return [{xi: xitry.subs(y, func), eta: S(1)}]
+                return [{xi: xitry.subs(y, func), eta: Integer(1)}]
 
 
 def lie_heuristic_abaco2_unique_general(match, comp=False):
@@ -6275,7 +6275,7 @@ def lie_heuristic_abaco2_unique_general(match, comp=False):
     xi = Function('xi')(x, func)
     eta = Function('eta')(x, func)
 
-    C = S(0)
+    C = Integer(0)
     A = hx.diff(y)
     B = hy.diff(y) + hy**2
     C = hx.diff(x) - hx**2
@@ -6297,7 +6297,7 @@ def lie_heuristic_abaco2_unique_general(match, comp=False):
                 E3 = simplify(
                     E1*((28*Ax + 4*hx*A)*A**3 - E1*(hy*A + Ay)) - E1.diff(x)*8*A**4)
                 if not E3:
-                    etaval = cancel((4*A**3*(Ax - hx*A) + E1*(hy*A - Ay))/(S(2)*A*E1))
+                    etaval = cancel((4*A**3*(Ax - hx*A) + E1*(hy*A - Ay))/(Integer(2)*A*E1))
                     if x not in etaval:
                         try:
                             etaval = exp(integrate(etaval, y))
@@ -6318,7 +6318,7 @@ def lie_heuristic_abaco2_unique_general(match, comp=False):
                     -(A*D)*E1.diff(y) + ((E1.diff(x) - hy*D)*A + 3*Ay*D +
                                          (A*hx - 3*Ax)*E1)*E1)
                 if not E3:
-                    etaval = cancel(((A*hx - Ax)*E1 - (Ay + A*hy)*D)/(S(2)*A*D))
+                    etaval = cancel(((A*hx - Ax)*E1 - (Ay + A*hy)*D)/(Integer(2)*A*D))
                     if x not in etaval:
                         try:
                             etaval = exp(integrate(etaval, y))
@@ -6384,9 +6384,9 @@ def lie_heuristic_linear(match, comp=False):
                     coeffdict[xypart] += rem
             else:
                 if term not in coeffdict:
-                    coeffdict[term] = S(1)
+                    coeffdict[term] = Integer(1)
                 else:
-                    coeffdict[term] += S(1)
+                    coeffdict[term] += Integer(1)
 
     sollist = coeffdict.values()
     soldict = solve(sollist, symlist)
@@ -6426,7 +6426,7 @@ def sysode_linear_2eq_order1(match_):
     r['c'] = -fc[1,x(t),0]/fc[1,y(t),1]
     r['b'] = -fc[0,y(t),0]/fc[0,x(t),1]
     r['d'] = -fc[1,y(t),0]/fc[1,y(t),1]
-    forcing = [S(0), S(0)]
+    forcing = [Integer(0), Integer(0)]
     for i in range(2):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t)):
@@ -6861,7 +6861,7 @@ def sysode_linear_2eq_order2(match_):
     r['c2'] = -fc[1,x(t),0]/fc[1,y(t),2]
     r['d1'] = -fc[0,y(t),0]/fc[0,x(t),2]
     r['d2'] = -fc[1,y(t),0]/fc[1,y(t),2]
-    const = [S(0), S(0)]
+    const = [Integer(0), Integer(0)]
     for i in range(2):
         for j in Add.make_args(eq[i]):
             if not (j.has(x(t)) or j.has(y(t))):
@@ -7534,7 +7534,7 @@ def sysode_linear_3eq_order1(match_):
     r['c1'] = fc[0,z(t),0]/fc[0,x(t),1]
     r['c2'] = fc[1,z(t),0]/fc[1,y(t),1]
     r['c3'] = fc[2,z(t),0]/fc[2,z(t),1]
-    forcing = [S(0), S(0), S(0)]
+    forcing = [Integer(0), Integer(0), Integer(0)]
     for i in range(3):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t), z(t)):

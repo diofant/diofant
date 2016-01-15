@@ -1,7 +1,7 @@
 """This module implements tools for integrating rational functions. """
 
-from sympy import (S, Symbol, symbols, I, log, atan, roots, RootSum,
-                   Lambda, cancel, Dummy)
+from sympy import (Symbol, symbols, I, log, atan, roots, RootSum,
+                   Lambda, cancel, Dummy, Integer, Rational)
 from sympy.polys import Poly, resultant, ZZ
 from sympy.polys.polytools import count_roots
 
@@ -85,7 +85,7 @@ def ratint(f, x, **flags):
             else:
                 ereal = True
 
-        eps = S(0)
+        eps = Integer(0)
 
         if not ereal:
             for h, q in L:
@@ -241,13 +241,13 @@ def ratint_logpart(f, g, x, t=None):
             for a, j in h_lc_sqf:
                 h = h.quo(Poly(a.gcd(q)**j, x))
 
-            inv, coeffs = h_lc.invert(q), [S(1)]
+            inv, coeffs = h_lc.invert(q), [Integer(1)]
 
             for coeff in h.coeffs()[1:]:
                 T = (inv*coeff).rem(q)
                 coeffs.append(T.as_expr())
 
-            h = Poly(dict(list(zip(h.monoms(), coeffs))), x)
+            h = Poly(dict(zip(h.monoms(), coeffs)), x)
 
             H.append((h, q))
 
@@ -270,10 +270,10 @@ def log_to_atan(f, g):
 
         >>> from sympy.integrals.rationaltools import log_to_atan
         >>> from sympy.abc import x
-        >>> from sympy import Poly, sqrt, S
+        >>> from sympy import Poly, sqrt, Rational
         >>> log_to_atan(Poly(x, x, domain='ZZ'), Poly(1, x, domain='ZZ'))
         2*atan(x)
-        >>> log_to_atan(Poly(x + S(1)/2, x, domain='QQ'),
+        >>> log_to_atan(Poly(x + Rational(1, 2), x, domain='QQ'),
         ... Poly(sqrt(3)/2, x, domain='EX'))
         2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
 
@@ -317,8 +317,8 @@ def log_to_real(h, q, x, t):
 
         >>> from sympy.integrals.rationaltools import log_to_real
         >>> from sympy.abc import x, y
-        >>> from sympy import Poly, sqrt, S
-        >>> log_to_real(Poly(x + 3*y/2 + S(1)/2, x, domain='QQ[y]'),
+        >>> from sympy import Poly, sqrt, Rational
+        >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x, domain='QQ[y]'),
         ... Poly(3*y**2 + 1, y, domain='ZZ'), x, y)
         2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3
         >>> log_to_real(Poly(x**2 - 1, x, domain='ZZ'),
@@ -339,8 +339,8 @@ def log_to_real(h, q, x, t):
     H_map = collect(H, I, evaluate=False)
     Q_map = collect(Q, I, evaluate=False)
 
-    a, b = H_map.get(S(1), S(0)), H_map.get(I, S(0))
-    c, d = Q_map.get(S(1), S(0)), Q_map.get(I, S(0))
+    a, b = H_map.get(Integer(1), Integer(0)), H_map.get(I, Integer(0))
+    c, d = Q_map.get(Integer(1), Integer(0)), Q_map.get(I, Integer(0))
 
     R = Poly(resultant(c, d, v), u)
 
@@ -349,7 +349,7 @@ def log_to_real(h, q, x, t):
     if len(R_u) != R.count_roots():
         return
 
-    result = S(0)
+    result = Integer(0)
 
     for r_u in R_u.keys():
         C = Poly(c.subs({u: r_u}), v)

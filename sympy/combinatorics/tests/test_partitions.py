@@ -9,7 +9,7 @@ from sympy.utilities.iterables import default_sort_key, partitions
 def test_partition():
     from sympy.abc import x
 
-    pytest.raises(ValueError, lambda: Partition(*list(range(3))))
+    pytest.raises(ValueError, lambda: Partition(*range(3)))
     pytest.raises(ValueError, lambda: Partition([1, 1, 2]))
 
     a = Partition([1, 2, 3], [4])

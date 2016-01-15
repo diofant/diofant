@@ -46,7 +46,7 @@ class factorial(CombinatorialFunction):
        Examples
        ========
 
-       >>> from sympy import Symbol, factorial, S
+       >>> from sympy import Symbol, factorial, Rational
        >>> n = Symbol('n', integer=True)
 
        >>> factorial(0)
@@ -64,7 +64,7 @@ class factorial(CombinatorialFunction):
        >>> factorial(2*n)
        factorial(2*n)
 
-       >>> factorial(S(1)/2)
+       >>> factorial(Rational(1, 2))
        factorial(1/2)
 
        See Also
@@ -332,19 +332,18 @@ class factorial2(CombinatorialFunction):
             if arg.is_infinite:
                 return
 
-            # This implementation is faster than the recursive one
-            # It also avoids "maximum recursion depth exceeded" runtime error
+            if arg.is_negative:
+                if arg.is_odd:
+                    return arg * (S.NegativeOne) ** ((1 - arg) / 2) / factorial2(-arg)
+                elif arg.is_even:
+                    raise ValueError("argument must be nonnegative or odd")
+
             if arg.is_nonnegative:
                 if arg.is_even:
                     k = arg / 2
                     return 2 ** k * factorial(k)
-
-                return factorial(arg) / factorial2(arg - 1)
-
-            if arg.is_even:
-                raise ValueError("argument must be nonnegative or odd")
-
-            return arg * (S.NegativeOne) ** ((1 - arg) / 2) / factorial2(-arg)
+                elif arg.is_integer:
+                    return factorial(arg) / factorial2(arg - 1)
 
     def _eval_is_even(self):
         # Double factorial is even for every positive even input

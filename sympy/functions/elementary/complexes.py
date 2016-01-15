@@ -2,7 +2,7 @@ from sympy.core import S, Add, Mul, sympify, Symbol, Dummy
 from sympy.core.exprtools import factor_terms
 from sympy.core.function import (Function, Derivative, ArgumentIndexError,
                                  AppliedUndef)
-from sympy.core.numbers import pi
+from sympy.core.numbers import pi, Rational
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.core.expr import Expr
@@ -866,7 +866,7 @@ class periodic_argument(Function):
         if period == oo:
             return unbranched
         if period != oo:
-            n = ceiling(unbranched/period - S(1)/2)*period
+            n = ceiling(unbranched/period - Rational(1, 2))*period
             if not n.has(ceiling):
                 return unbranched - n
 
@@ -879,7 +879,11 @@ class periodic_argument(Function):
                 return self
             return unbranched._eval_evalf(prec)
         ub = periodic_argument(z, oo)._eval_evalf(prec)
-        return (ub - ceiling(ub/period - S(1)/2)*period)._eval_evalf(prec)
+        return (ub - ceiling(ub/period - Rational(1, 2))*period)._eval_evalf(prec)
+
+    def _eval_is_real(self):
+        if self.args[1].is_positive:
+            return True
 
 
 def unbranched_argument(arg):

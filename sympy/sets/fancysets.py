@@ -4,6 +4,7 @@ from sympy.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from sympy.core.singleton import Singleton, S
 from sympy.core.sympify import _sympify
 from sympy.core.function import Lambda
+from sympy.core.numbers import Integer
 
 
 class Naturals(Set, metaclass=Singleton):
@@ -41,7 +42,7 @@ class Naturals(Set, metaclass=Singleton):
     def _intersect(self, other):
         if other.is_Interval:
             return Intersection(
-                S.Integers, other, Interval(self._inf, S.Infinity))
+                S.Integers, other, Interval(self._inf, S.Infinity, False, True))
         return
 
     def _contains(self, other):
@@ -113,7 +114,7 @@ class Integers(Set, metaclass=Singleton):
 
     def _intersect(self, other):
         from sympy.functions.elementary.integers import floor, ceiling
-        if other is Interval(S.NegativeInfinity, S.Infinity) or other is S.Reals:
+        if other is Interval(S.NegativeInfinity, S.Infinity, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
@@ -128,7 +129,7 @@ class Integers(Set, metaclass=Singleton):
 
     def __iter__(self):
         yield S.Zero
-        i = S(1)
+        i = Integer(1)
         while True:
             yield i
             yield -i
@@ -169,7 +170,7 @@ class Integers(Set, metaclass=Singleton):
 
 class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
-        return Interval.__new__(cls, -S.Infinity, S.Infinity)
+        return Interval.__new__(cls, -S.Infinity, S.Infinity, True, True)
 
 
 class ImageSet(Set):
@@ -323,7 +324,7 @@ class Range(Set):
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
         try:
-            start, stop, step = [w if w in [S.NegativeInfinity, S.Infinity] else S(as_int(w))
+            start, stop, step = [w if w in [S.NegativeInfinity, S.Infinity] else Integer(as_int(w))
                                  for w in (start, stop, step)]
         except ValueError:
             raise ValueError("Inputs to Range must be Integer Valued\n" +
@@ -383,7 +384,7 @@ class Range(Set):
             return Range(inf, sup + 1, self.step)
 
         if other == S.Naturals:
-            return self._intersect(Interval(1, S.Infinity))
+            return self._intersect(Interval(1, S.Infinity, False, True))
 
         if other == S.Integers:
             return self

@@ -137,10 +137,9 @@ class Basic(metaclass=ManagedProperties):
         {'commutative': True}
         >>> x = Symbol("x", positive=True)
         >>> x.assumptions0 == \
-        ... {'commutative': True, 'complex': True, 'extended_real': True,
-        ...  'hermitian': True, 'imaginary': False, 'negative': False,
-        ...  'nonnegative': True, 'nonpositive': False, 'nonzero': True,
-        ...  'positive': True, 'zero': False}
+        ... {'commutative': True, 'extended_real': True, 'imaginary': False,
+        ...  'negative': False, 'nonnegative': True, 'nonpositive': False,
+        ...  'nonzero': True, 'positive': True, 'zero': False}
         True
         """
         return {}
@@ -229,12 +228,13 @@ class Basic(metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from sympy.core import S, I
+        >>> from sympy.core import S, I, Rational, Symbol
 
-        >>> sorted([S(1)/2, I, -I], key=lambda x: x.sort_key())
+        >>> sorted([S.Half, I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
-        >>> S("[x, 1/x, 1/x**2, x**2, x**(1/2), x**(1/4), x**(3/2)]")
+        >>> x = Symbol('x')
+        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
@@ -419,15 +419,15 @@ class Basic(metaclass=ManagedProperties):
         True
 
         Be careful to check your assumptions when using the implicit option
-        since ``S(1).is_Integer = True`` but ``type(S(1))`` is ``One``, a special type
-        of sympy atom, while ``type(S(2))`` is type ``Integer`` and will find all
+        since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is ``One``, a special type
+        of sympy atom, while ``type(Integer(2))`` is type ``Integer`` and will find all
         integers in an expression:
 
-        >>> from sympy import S
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(S(1)) == {1}
+        >>> from sympy import S, Integer
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1)) == {1}
         True
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(S(2)) == {1, 2}
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2)) == {1, 2}
         True
 
         Finally, arguments to atoms() can select more than atomic atoms: any
@@ -497,8 +497,8 @@ class Basic(metaclass=ManagedProperties):
             u += "_"
         name = '%%i%s' % u
         V = self.variables
-        return dict(list(zip(V, [Symbol(name % i, **v.assumptions0)
-            for i, v in enumerate(V)])))
+        return dict(zip(V, (Symbol(name % i, **v.assumptions0)
+                            for i, v in enumerate(V))))
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
@@ -544,8 +544,8 @@ class Basic(metaclass=ManagedProperties):
 
     @property
     def is_comparable(self):
-        """Return True if self can be computed to a real number
-        with precision, else False.
+        """
+        Test if self can be computed to a real number with precision.
 
         Examples
         ========
@@ -562,15 +562,15 @@ class Basic(metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        if is_real and is_number:
-            return True
-        n, i = [p.evalf(2) for p in self.as_real_imag()]
+        n, i = self.as_real_imag()
+        if not (self.is_Float and self._prec == 1):  # workaround for skirpichev/omg#161
+            n, i = n.evalf(2), i.evalf(2)
         if not i.is_Number or not n.is_Number:
             return False
-        if i and i._prec > 1:
+        if i and (i._prec > 1 or i._prec == -1):
             return False
-        if not i and i._prec == -1:
-            if n._prec > 1:
+        if not i and (i._prec > 1 or i._prec == -1):
+            if n._prec > 1 or n._prec == -1:
                 return True
 
     @property
@@ -748,15 +748,10 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import sqrt, sin, cos
         >>> from sympy.abc import a, b, c, d, e
 
-        >>> A = (sqrt(sin(2*x)), a)
-        >>> B = (sin(2*x), b)
-        >>> C = (cos(2*x), c)
-        >>> D = (x, d)
-        >>> E = (exp(x), e)
-
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
-        >>> expr.subs(dict([A, B, C, D, E]))
+        >>> expr.subs({sqrt(sin(2*x)): a, sin(2*x): b,
+        ...            cos(2*x): c, x: d, exp(x): e})
         a*c*sin(d*e) + b
 
         The resulting expression represents a literal replacement of the
@@ -1619,15 +1614,15 @@ def _aresame(a, b):
 
     To SymPy, 2.0 == 2:
 
-    >>> from sympy import S
-    >>> 2.0 == S(2)
+    >>> from sympy import Integer, Float
+    >>> 2.0 == Integer(2)
     True
 
     Since a simple 'same or not' result is sometimes useful, this routine was
     written to provide that query:
 
     >>> from sympy.core.basic import _aresame
-    >>> _aresame(S(2.0), S(2))
+    >>> _aresame(Float(2.0), Integer(2))
     False
     """
     from .function import AppliedUndef, UndefinedFunction as UndefFunc

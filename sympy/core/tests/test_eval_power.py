@@ -1,6 +1,5 @@
-from sympy.core import (
-    Rational, Symbol, S, Float, Integer, Number, Pow,
-    Basic, I, nan, pi, symbols, oo, zoo)
+from sympy.core import (Rational, Symbol, S, Float, Integer, Number,
+                        Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
 from sympy.core.tests.test_evalf import NS
 from sympy.functions.elementary.miscellaneous import sqrt, cbrt
 from sympy.functions.elementary.exponential import exp, log
@@ -26,7 +25,7 @@ def test_rational():
 
 def test_large_rational():
     e = (Rational(123712**12 - 1, 7) + Rational(1, 7))**Rational(1, 3)
-    assert e == 234232585392159195136 * (Rational(1, 7)**Rational(1, 3))
+    assert e == 234232585392159195136*Rational(1, 7)**Rational(1, 3)
 
 
 def test_negative_real():
@@ -225,9 +224,9 @@ def test_pow_as_base_exp():
     assert (S.Infinity**(2 - x)).as_base_exp() == (S.Infinity, 2 - x)
     assert (S.Infinity**(x - 2)).as_base_exp() == (S.Infinity, x - 2)
     p = S.Half**x
-    assert p.base, p.exp == p.as_base_exp() == (S(2), -x)
+    assert p.base, p.exp == p.as_base_exp() == (Integer(2), -x)
     # issue 8344:
-    assert Pow(1, 2, evaluate=False).as_base_exp() == (S(1), S(2))
+    assert Pow(1, 2, evaluate=False).as_base_exp() == (Integer(1), Integer(2))
 
 
 def test_issue_6100():
@@ -267,27 +266,27 @@ def test_issue_6990():
     b = Symbol('b')
     assert (sqrt(a + b*x + x**2)).series(x, 0, 3).removeO() == \
         b*x/(2*sqrt(a)) + x**2*(1/(2*sqrt(a)) -
-        b**2/(8*a**(S(3)/2))) + sqrt(a)
+        b**2/(8*a**Rational(3, 2))) + sqrt(a)
 
 
 def test_issue_6068():
     x = Symbol('x')
     assert sqrt(sin(x)).series(x, 0, 7) == \
-        sqrt(x) - x**(S(5)/2)/12 + x**(S(9)/2)/1440 - \
-        x**(S(13)/2)/24192 + O(x**7)
+        sqrt(x) - x**Rational(5, 2)/12 + x**Rational(9, 2)/1440 - \
+        x**Rational(13, 2)/24192 + O(x**7)
     assert sqrt(sin(x)).series(x, 0, 9) == \
-        sqrt(x) - x**(S(5)/2)/12 + x**(S(9)/2)/1440 - \
-        x**(S(13)/2)/24192 - 67*x**(S(17)/2)/29030400 + O(x**9)
+        sqrt(x) - x**Rational(5, 2)/12 + x**Rational(9, 2)/1440 - \
+        x**Rational(13, 2)/24192 - 67*x**Rational(17, 2)/29030400 + O(x**9)
     assert sqrt(sin(x**3)).series(x, 0, 19) == \
-        x**(S(3)/2) - x**(S(15)/2)/12 + x**(S(27)/2)/1440 + O(x**19)
+        x**Rational(3, 2) - x**Rational(15, 2)/12 + x**Rational(27, 2)/1440 + O(x**19)
     assert sqrt(sin(x**3)).series(x, 0, 20) == \
-        x**(S(3)/2) - x**(S(15)/2)/12 + x**(S(27)/2)/1440 - \
-        x**(S(39)/2)/24192 + O(x**20)
+        x**Rational(3, 2) - x**Rational(15, 2)/12 + x**Rational(27, 2)/1440 - \
+        x**Rational(39, 2)/24192 + O(x**20)
 
 
 def test_issue_6782():
     x = Symbol('x')
-    assert sqrt(sin(x**3)).series(x, 0, 7) == x**(S(3)/2) + O(x**7)
+    assert sqrt(sin(x**3)).series(x, 0, 7) == x**Rational(3, 2) + O(x**7)
     assert sqrt(sin(x**4)).series(x, 0, 3) == x**2 + O(x**3)
 
 
@@ -312,23 +311,23 @@ def test_issue_7638():
     # if 1/3 -> 1.0/3 this should fail since it cannot be shown that the
     # sign will be +/-1; for the previous "small arg" case, it didn't matter
     # that this could not be proved
-    assert (1 + I)**(4*I*f) == ((1 + I)**(12*I*f))**(S(1)/3)
+    assert (1 + I)**(4*I*f) == ((1 + I)**(12*I*f))**Rational(1, 3)
 
-    assert (((1 + I)**(I*(1 + 7*f)))**(S(1)/3)).exp == S(1)/3
+    assert (((1 + I)**(I*(1 + 7*f)))**Rational(1, 3)).exp == Rational(1, 3)
     r = symbols('r', extended_real=True)
     assert sqrt(r**2) == abs(r)
     assert cbrt(r**3) != r
-    assert sqrt(Pow(2*I, 5*S.Half)) != (2*I)**(5/S(4))
+    assert sqrt(Pow(2*I, 5*S.Half)) != (2*I)**(5/Integer(4))
     p = symbols('p', positive=True)
-    assert cbrt(p**2) == p**(2/S(3))
+    assert cbrt(p**2) == p**(2/Integer(3))
     assert NS(((0.2 + 0.7*I)**(0.7 + 1.0*I))**(0.5 - 0.1*I), 1) == '0.4 + 0.2*I'
     assert sqrt(1/(1 + I)) == sqrt((1 - I)/2)  # or 1/sqrt(1 + I)
     e = 1/(1 - sqrt(2))
     assert sqrt(e) == I/sqrt(-1 + sqrt(2))
     assert e**-S.Half == -I*sqrt(-1 + sqrt(2))
     assert sqrt((cos(1)**2 + sin(1)**2 - 1)**(3 + I)).exp == S.Half
-    assert sqrt(r**(4/S(3))) != r**(2/S(3))
-    assert sqrt((p + I)**(4/S(3))) == (p + I)**(2/S(3))
+    assert sqrt(r**(4/Integer(3))) != r**(2/Integer(3))
+    assert sqrt((p + I)**(4/Integer(3))) == (p + I)**(2/Integer(3))
     assert sqrt((p - p**2*I)**2) == p - p**2*I
     assert sqrt((p + r*I)**2) != p + r*I
     e = (1 + I/5)
@@ -351,3 +350,10 @@ def test_issue_8650():
     assert (n**n).is_positive is True
     x = 5*n+5
     assert (x**(5*(n+1))).is_positive is True
+
+
+def test_issue_10095():
+    assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
+    assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
+    e = Pow(1, oo, evaluate=False)
+    assert e.as_numer_denom() == (e, S.One)

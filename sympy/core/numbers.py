@@ -19,8 +19,7 @@ from .expr import Expr, AtomicExpr
 from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
-from sympy.core.compatibility import as_int, HAS_GMPY, SYMPY_INTS
-from sympy.utilities.misc import debug
+from .compatibility import as_int, HAS_GMPY, SYMPY_INTS
 
 rnd = mlib.round_nearest
 
@@ -119,7 +118,7 @@ def _decimal_to_Rational_prec(dec):
         rv = Integer(int(dec))
     else:
         s = (-1)**s
-        d = sum([di*10**i for i, di in enumerate(reversed(d))])
+        d = sum(di*10**i for i, di in enumerate(reversed(d)))
         rv = Rational(s*d, 10**-e)
     return rv, prec
 
@@ -794,6 +793,7 @@ class Float(Number):
         return mpmath.mpf(self._mpf_)
 
     def _as_mpf_val(self, prec):
+        from sympy.utilities.misc import debug
         rv = mpf_norm(self._mpf_, prec)
         if rv != self._mpf_ and self._prec == prec:
             debug(self._mpf_, rv)
@@ -1045,7 +1045,7 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from sympy import Rational, nsimplify, S, pi
+    >>> from sympy import Rational, nsimplify, sympify, pi
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1085,7 +1085,7 @@ class Rational(Number):
     the sympify() function, and conversion of floats to expressions
     or simple fractions can be handled with nsimplify:
 
-    >>> S('3**2/10')  # general expressions
+    >>> sympify('3**2/10')  # general expressions
     9/10
     >>> nsimplify(.3)  # numbers that have a simple form
     3/10
@@ -1190,9 +1190,7 @@ class Rational(Number):
                     raise ValueError("Indeterminate 0/0")
                 else:
                     return S.NaN
-            if p < 0:
-                return S.NegativeInfinity
-            return S.Infinity
+            return S.ComplexInfinity
         if q < 0:
             q = -q
             p = -p
@@ -1348,7 +1346,7 @@ class Rational(Number):
                 if self.is_negative:
                     if expt.q != 1:
                         return -(S.NegativeOne)**((expt.p % expt.q) /
-                               S(expt.q))*Rational(self.q, -self.p)**ne
+                               Integer(expt.q))*Rational(self.q, -self.p)**ne
                     else:
                         return S.NegativeOne**ne*Rational(self.q, -self.p)**ne
                 else:
@@ -1552,8 +1550,8 @@ class Rational(Number):
         Examples
         ========
 
-        >>> from sympy import S
-        >>> (S(-3)/2).as_content_primitive()
+        >>> from sympy import Rational
+        >>> Rational(-3, 2).as_content_primitive()
         (3/2, -1)
 
         See Also
@@ -1803,7 +1801,7 @@ class Integer(Rational):
             if self.is_negative:
                 if expt.q != 1:
                     return -(S.NegativeOne)**((expt.p % expt.q) /
-                            S(expt.q))*Rational(1, -self)**ne
+                            Integer(expt.q))*Rational(1, -self)**ne
                 else:
                     return (S.NegativeOne)**ne*Rational(1, -self)**ne
             else:
@@ -2804,7 +2802,6 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     is_infinite = True
     is_number = True
     is_prime = False
-    is_complex = True
     is_extended_real = False
 
     __slots__ = []
@@ -3009,6 +3006,8 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero
+        elif arg is S.ComplexInfinity:
+            return S.NaN
         elif arg.func is log:
             return arg.args[0]
         elif arg.is_Mul:

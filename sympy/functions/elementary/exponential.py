@@ -11,19 +11,41 @@ from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.ntheory import multiplicity, perfect_power
 
-# NOTE IMPORTANT
-# The series expansion code in this file is an important part of the gruntz
-# algorithm for determining limits. _eval_nseries has to return a generalized
-# power series with coefficients in C(log(x), log).
-# In more detail, the result of _eval_nseries(self, x, n) must be
-#   c_0*x**e_0 + ... (finitely many terms)
-# where e_i are numbers (not necessarily integers) and c_i involve only
-# numbers, the function log, and log(x). [This also means it must not contain
-# log(x(1+p)), this *has* to be expanded to log(x)+log(1+p) if x.is_positive and
-# p.is_positive.]
 
+class exp_polar(Function):
+    r"""
+    Represent a 'polar number' (see g-function Sphinx documentation).
 
-class ExpBase(Function):
+    ``exp_polar`` represents the function
+    `Exp: \mathbb{C} \rightarrow \mathcal{S}`, sending the complex number
+    `z = a + bi` to the polar number `r = exp(a), \theta = b`. It is one of
+    the main functions to construct polar numbers.
+
+    >>> from sympy import exp_polar, pi, I, exp
+
+    The main difference is that polar numbers don't "wrap around" at `2 \pi`:
+
+    >>> exp(2*pi*I)
+    1
+    >>> exp_polar(2*pi*I)
+    exp_polar(2*I*pi)
+
+    apart from that they behave mostly like classical complex numbers:
+
+    >>> exp_polar(2)*exp_polar(3)
+    exp_polar(5)
+
+    See also
+    ========
+
+    sympy.simplify.powsimp.powsimp
+    sympy.functions.elementary.complexes.polar_lift
+    sympy.functions.elementary.complexes.periodic_argument
+    sympy.functions.elementary.complexes.principal_branch
+    """
+
+    is_polar = True
+    is_comparable = False  # cannot be evalf'd
 
     unbranched = True
 
@@ -64,12 +86,6 @@ class ExpBase(Function):
         """
         return self.args[0]
 
-    def as_base_exp(self):
-        """
-        Returns the 2-tuple (base, exponent).
-        """
-        return self.func(1), Mul(*self.args)
-
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
 
@@ -96,12 +112,6 @@ class ExpBase(Function):
     def _eval_is_zero(self):
         return (self.args[0] is S.NegativeInfinity)
 
-    def _eval_power(self, other):
-        """exp(arg)**e -> exp(arg*e) if assumptions allow it.
-        """
-        b, e = self.as_base_exp()
-        return Pow._eval_power(Pow(b, e, evaluate=False), other)
-
     def _eval_expand_power_exp(self, **hints):
         arg = self.args[0]
         if arg.is_Add and arg.is_commutative:
@@ -111,45 +121,9 @@ class ExpBase(Function):
             return expr
         return self.func(arg)
 
-
-class exp_polar(ExpBase):
-    r"""
-    Represent a 'polar number' (see g-function Sphinx documentation).
-
-    ``exp_polar`` represents the function
-    `Exp: \mathbb{C} \rightarrow \mathcal{S}`, sending the complex number
-    `z = a + bi` to the polar number `r = exp(a), \theta = b`. It is one of
-    the main functions to construct polar numbers.
-
-    >>> from sympy import exp_polar, pi, I, exp
-
-    The main difference is that polar numbers don't "wrap around" at `2 \pi`:
-
-    >>> exp(2*pi*I)
-    1
-    >>> exp_polar(2*pi*I)
-    exp_polar(2*I*pi)
-
-    apart from that they behave mostly like classical complex numbers:
-
-    >>> exp_polar(2)*exp_polar(3)
-    exp_polar(5)
-
-    See also
-    ========
-
-    sympy.simplify.powsimp.powsimp
-    sympy.functions.elementary.complexes.polar_lift
-    sympy.functions.elementary.complexes.periodic_argument
-    sympy.functions.elementary.complexes.principal_branch
-    """
-
-    is_polar = True
-    is_comparable = False  # cannot be evalf'd
-
     def _eval_Abs(self):
         from sympy import expand_mul
-        return sqrt( expand_mul(self * self.conjugate()) )
+        return sqrt(expand_mul(self * self.conjugate()))
 
     def _eval_evalf(self, prec):
         """ Careful! any evalf of polar numbers is flaky """
@@ -177,8 +151,8 @@ class exp_polar(ExpBase):
     def as_base_exp(self):
         # XXX exp_polar(0) is special!
         if self.args[0] == 0:
-            return self, S(1)
-        return ExpBase.as_base_exp(self)
+            return self, Integer(1)
+        return self.func(1), Mul(*self.args)
 
 
 def exp(arg, **kwargs):
@@ -303,24 +277,6 @@ class log(Function):
         """
         return self, S.One
 
-    @staticmethod
-    @cacheit
-    def taylor_term(n, x, *previous_terms):  # of log(1+x)
-        """
-        Returns the next term in the Taylor series expansion of `\log(1+x)`.
-        """
-        from sympy import powsimp
-        if n < 0:
-            return S.Zero
-        x = sympify(x)
-        if n == 0:
-            return x
-        if previous_terms:
-            p = previous_terms[-1]
-            if p is not None:
-                return powsimp((-n) * p * x / (n + 1), deep=True, combine='exp')
-        return (1 - 2*(n % 2)) * x**(n + 1)/(n + 1)
-
     def _eval_expand_log(self, deep=True, **hints):
         from sympy import unpolarify, expand_log
         from sympy.concrete import Sum, Product
@@ -437,6 +393,13 @@ class log(Function):
             return False
         return arg.is_finite
 
+    def _eval_is_complex(self):
+        arg = self.args[0]
+        if arg.is_zero:
+            return False
+        elif arg.is_nonzero:
+            return arg.is_complex
+
     def _eval_is_positive(self):
         return (self.args[0] - 1).is_positive
 
@@ -444,36 +407,25 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        # NOTE Please see the comment at the beginning of this file, labelled
-        #      IMPORTANT.
-        from sympy import cancel, Order
+        from sympy import Order
         if not logx:
             logx = log(x)
-        if self.args[0] == x:
-            return logx
-        arg = self.args[0]
-        k, l = Wild("k"), Wild("l")
-        r = arg.match(k*x**l)
-        if r is not None:
-            k, l = r[k], r[l]
-            if l != 0 and not l.has(x) and not k.has(x):
-                r = log(k) + l*logx  # XXX true regardless of assumptions?
-                return r
-
-        # TODO new and probably slow
         s = self.args[0].nseries(x, n=n, logx=logx)
         while s.is_Order:
             n += 1
             s = self.args[0].nseries(x, n=n, logx=logx)
         a, b = s.as_leading_term(x).as_coeff_exponent(x)
-        p = cancel(s/(a*x**b) - 1)
-        g = None
-        l = []
-        for i in range(n + 2):
-            g = log.taylor_term(i, p, g)
-            g = g.nseries(x, n=n, logx=logx)
-            l.append(g)
-        return log(a) + b*logx + Add(*l) + Order(p**n, x)
+        t = (s/(a*x**b) - 1).cancel().nseries(x, n=n, logx=logx)
+        log_series = log(a) + b*logx + t
+        if t != 0:
+            # series of log(1 + t) in t
+            term = t
+            for i in range(1, n):
+                term *= -i*t/(i + 1)
+                term = term.nseries(x, n=n, logx=logx)
+                log_series += term
+            log_series += Order(t**n, x)
+        return log_series
 
     def _eval_as_leading_term(self, x):
         arg = self.args[0].as_leading_term(x)

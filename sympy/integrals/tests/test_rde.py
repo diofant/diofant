@@ -2,13 +2,14 @@
 
 import pytest
 
-from sympy import Poly, S, symbols, oo, I
+from sympy import Poly, symbols, oo, I, Integer, Rational
 from sympy.integrals.risch import (DifferentialExtension,
                                    NonElementaryIntegralException)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-                                 normal_denom, special_denom, bound_degree, spde,
-                                 solve_poly_rde, no_cancel_equal, cancel_primitive,
-                                 cancel_exp, rischDE)
+                                 normal_denom, special_denom, bound_degree,
+                                 spde, solve_poly_rde, no_cancel_equal,
+                                 cancel_primitive, cancel_exp, rischDE)
+
 from sympy.abc import x, t, z, n
 
 t0, t1, t2, k = symbols('t:3 k')
@@ -129,10 +130,10 @@ def test_spde():
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
     assert spde(Poly(x**2 + x + 1, x), Poly(-2*x - 1, x), Poly(x**5/2 +
     3*x**4/4 + x**3 - x**2 + 1, x), 4, DE) == \
-        (Poly(0, x), Poly(x/2 - S(1)/4, x), 2, Poly(x**2 + x + 1, x), Poly(5*x/4, x))
+        (Poly(0, x), Poly(x/2 - Rational(1, 4), x), 2, Poly(x**2 + x + 1, x), Poly(5*x/4, x))
     assert spde(Poly(x**2 + x + 1, x), Poly(-2*x - 1, x), Poly(x**5/2 +
     3*x**4/4 + x**3 - x**2 + 1, x), n, DE) == \
-        (Poly(0, x), Poly(x/2 - S(1)/4, x), -2 + n, Poly(x**2 + x + 1, x), Poly(5*x/4, x))
+        (Poly(0, x), Poly(x/2 - Rational(1, 4), x), -2 + n, Poly(x**2 + x + 1, x), Poly(5*x/4, x))
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1, t)]})
     pytest.raises(NonElementaryIntegralException, lambda: spde(Poly((t - 1)*(t**2 + 1)**2, t), Poly((t - 1)*(t**2 + 1), t), Poly(1, t), 0, DE))
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
@@ -148,7 +149,7 @@ def test_solve_poly_rde_no_cancel():
     oo, DE) == Poly(t + x, t)
     # deg(b) small
     DE = DifferentialExtension(extension={'D': [Poly(1, x)]})
-    assert solve_poly_rde(Poly(0, x), Poly(x/2 - S(1)/4, x), oo, DE) == \
+    assert solve_poly_rde(Poly(0, x), Poly(x/2 - Rational(1, 4), x), oo, DE) == \
         Poly(x**2/4 - x/4, x)
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t**2 + 1, t)]})
     assert solve_poly_rde(Poly(2, t), Poly(t**2 + 2*t + 3, t), 1, DE) == \

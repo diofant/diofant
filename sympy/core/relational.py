@@ -1,10 +1,9 @@
 from mpmath.libmp.libintmath import giant_steps
-from sympy.core.evalf import DEFAULT_MAXPREC as target
 
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
-from .evalf import EvalfMixin
+from .evalf import EvalfMixin, DEFAULT_MAXPREC as target
 from .function import _coeff_isneg
 from .symbol import Symbol
 from .sympify import _sympify
@@ -320,7 +319,8 @@ class Equality(Relational):
 
             # If appropriate, check if the difference evaluates.  Detect
             # incompatibility such as lhs real and rhs not real.
-            if lhs.is_complex and rhs.is_complex:
+            if ((lhs.is_complex and rhs.is_complex) or
+                    (lhs.is_extended_real and rhs.is_extended_real)):
                 r = (lhs - rhs).is_zero
                 if r is not None:
                     return _sympify(r)
@@ -511,7 +511,7 @@ class GreaterThan(_Greater):
 
     >>> from sympy import GreaterThan, StrictGreaterThan
     >>> from sympy import LessThan,    StrictLessThan
-    >>> from sympy import And, Ge, Gt, Le, Lt, Rel, S
+    >>> from sympy import And, Ge, Gt, Le, Lt, Rel, S, Integer
     >>> from sympy.abc import x, y, z
     >>> from sympy.core.relational import Relational
 
@@ -613,10 +613,10 @@ class GreaterThan(_Greater):
     "sympify" the literal before comparison, (2) use one of the wrappers, or (3)
     use the less succinct methods described above:
 
-    >>> e1 = S(1) >  x
-    >>> e2 = S(1) >= x
-    >>> e3 = S(1) <  x
-    >>> e4 = S(1) <= x
+    >>> e1 = Integer(1) >  x
+    >>> e2 = Integer(1) >= x
+    >>> e3 = Integer(1) <  x
+    >>> e4 = Integer(1) <= x
     >>> e5 = Gt(1, x)
     >>> e6 = Ge(1, x)
     >>> e7 = Lt(1, x)

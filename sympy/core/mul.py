@@ -34,9 +34,9 @@ def _unevaluated_Mul(*args):
     ========
 
     >>> from sympy.core.mul import _unevaluated_Mul as uMul
-    >>> from sympy import S, sqrt, Mul
+    >>> from sympy import sqrt, Mul, Integer, Float
     >>> from sympy.abc import x
-    >>> a = uMul(*[S(3.0), x, S(2)])
+    >>> a = uMul(*[Float(3.0), x, Integer(2)])
     >>> a.args[0]
     6.00000000000000
     >>> a.args[1]
@@ -1007,13 +1007,15 @@ class Mul(Expr, AssocOp):
         return zero
 
     def _eval_is_integer(self):
+        from sympy.core.numbers import Integer
+
         is_rational = self.is_rational
 
         if is_rational:
             n, d = self.as_numer_denom()
             if d is S.One:
                 return True
-            elif d is S(2):
+            elif d is Integer(2):
                 return n.is_even
         elif is_rational is False:
             return False
@@ -1028,7 +1030,7 @@ class Mul(Expr, AssocOp):
         zero = one_neither = False
 
         for t in self.args:
-            if not t.is_complex:
+            if t.is_finite and not t.is_complex:
                 return t.is_complex
             elif t.is_imaginary:
                 real = not real
@@ -1198,6 +1200,7 @@ class Mul(Expr, AssocOp):
             return False
 
     def _eval_subs(self, old, new):
+        from sympy.core import Integer
         from sympy.functions.elementary.complexes import sign
         from sympy.ntheory.factor_ import multiplicity
         from sympy.simplify.powsimp import powdenest
@@ -1301,7 +1304,7 @@ class Mul(Expr, AssocOp):
         # is 2*(1/7)**2
 
         if co_xmul and co_xmul.is_Rational and abs(co_old) != 1:
-            mult = S(multiplicity(abs(co_old), co_self))
+            mult = Integer(multiplicity(abs(co_old), co_self))
             c.pop(co_self)
             if co_old in c:
                 c[co_old] += mult
@@ -1538,12 +1541,12 @@ def prod(a, start=1):
     Examples
     ========
 
-    >>> from sympy import prod, S
+    >>> from sympy import prod, Integer
     >>> prod(range(3))
     0
     >>> type(_) is int
     True
-    >>> prod([S(2), 3])
+    >>> prod([Integer(2), 3])
     6
     >>> _.is_Integer
     True
@@ -1571,7 +1574,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
     >>> from sympy.core.mul import _keep_coeff
     >>> from sympy.abc import x, y
-    >>> from sympy import S
+    >>> from sympy import S, Integer
 
     >>> _keep_coeff(S.Half, x + 2)
     (x + 2)/2
@@ -1579,11 +1582,12 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     x/2 + 1
     >>> _keep_coeff(S.Half, (x + 2)*y, clear=False)
     y*(x + 2)/2
-    >>> _keep_coeff(S(-1), x + y)
+    >>> _keep_coeff(Integer(-1), x + y)
     -x - y
-    >>> _keep_coeff(S(-1), x + y, sign=True)
+    >>> _keep_coeff(Integer(-1), x + y, sign=True)
     -(x + y)
     """
+    from sympy.core import Integer
 
     if not coeff.is_Number:
         if factors.is_Number:
@@ -1596,7 +1600,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
         return -factors
     elif factors.is_Add:
         if not clear and coeff.is_Rational and coeff.q != 1:
-            q = S(coeff.q)
+            q = Integer(coeff.q)
             for i in factors.args:
                 c, t = i.as_coeff_Mul()
                 r = c/q

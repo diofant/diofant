@@ -1,7 +1,7 @@
 import pytest
 
-from sympy import (log, sqrt, Rational as R, Symbol, I, exp, pi, S,
-                   cos, sin, Mul, Pow, O)
+from sympy import (log, sqrt, Rational, Symbol, I, exp, pi, S,
+                   cos, sin, Mul, Pow, O, Integer)
 from sympy.simplify.radsimp import expand_numer
 from sympy.simplify.simplify import expand
 from sympy.core.function import expand_multinomial, expand_power_base
@@ -71,7 +71,7 @@ def test_expand_non_commutative():
         a**-3*(A*B*(A*B**2)*(A*B**2)*A*B*A**(-1))**-1
     assert ((a*b*A*B*A**-1)**i).expand() == a**i*b**i*(A*B/A)**i
     assert ((a*(a*b)**i)**i).expand() == a**i*a**(i**2)*b**(i**2)
-    e = Pow(Mul(a, 1/a, A, B, evaluate=False), S(2), evaluate=False)
+    e = Pow(Mul(a, 1/a, A, B, evaluate=False), Integer(2), evaluate=False)
     assert e.expand() == A*B*A*B
     assert sqrt(a*(A*b)**i).expand() == sqrt(a*b**i*A**i)
     assert (sqrt(-a)**a).expand() == sqrt(-a)**a
@@ -84,7 +84,7 @@ def test_expand_non_commutative():
 
 
 def test_expand_radicals():
-    a = (x + y)**R(1, 2)
+    a = (x + y)**Rational(1, 2)
 
     assert (a**1).expand() == a
     assert (a**3).expand() == x*a + y*a
@@ -94,7 +94,7 @@ def test_expand_radicals():
     assert (1/a**3).expand() == 1/(x*a + y*a)
     assert (1/a**5).expand() == 1/(x**2*a + 2*x*y*a + y**2*a)
 
-    a = (x + y)**R(1, 3)
+    a = (x + y)**Rational(1, 3)
 
     assert (a**1).expand() == a
     assert (a**2).expand() == a**2
@@ -131,7 +131,7 @@ def test_expand_frac():
 
 
 def test_issue_6121():
-    eq = -I*exp(-3*I*pi/4)/(4*pi**(S(3)/2)*sqrt(x))
+    eq = -I*exp(-3*I*pi/4)/(4*pi**Rational(3, 2)*sqrt(x))
     assert eq.expand(complex=True)  # does not give oo recursion
 
 
@@ -165,21 +165,21 @@ def test_expand_arit():
     b = Symbol("b", positive=True)
     c = Symbol("c")
 
-    p = R(5)
+    p = Rational(5)
     e = (a + b)*c
     assert e == c*(a + b)
-    assert (e.expand() - a*c - b*c) == R(0)
+    assert (e.expand() - a*c - b*c) == Rational(0)
     e = (a + b)*(a + b)
     assert e == (a + b)**2
     assert e.expand() == 2*a*b + a**2 + b**2
-    e = (a + b)*(a + b)**R(2)
+    e = (a + b)*(a + b)**Rational(2)
     assert e == (a + b)**3
     assert e.expand() == 3*b*a**2 + 3*a*b**2 + a**3 + b**3
     assert e.expand() == 3*b*a**2 + 3*a*b**2 + a**3 + b**3
     e = (a + b)*(a + c)*(b + c)
     assert e == (a + c)*(a + b)*(b + c)
     assert e.expand() == 2*a*b*c + b*a**2 + c*a**2 + b*c**2 + a*c**2 + c*b**2 + a*b**2
-    e = (a + R(1))**p
+    e = (a + Rational(1))**p
     assert e == (1 + a)**5
     assert e.expand() == 1 + 5*a + 10*a**2 + 10*a**3 + 5*a**4 + a**5
     e = (a + b + c)*(a + c + p)
@@ -287,7 +287,7 @@ def test_issues_5919_6830():
         return verify_numerically(e, expand_multinomial(e))
 
     for a in [2, S.Half]:
-        for b in [3, S(1)/3]:
+        for b in [3, Rational(1, 3)]:
             for n in range(2, 6):
                 assert ok(a, b, n)
 

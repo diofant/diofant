@@ -1,6 +1,6 @@
-from sympy import (S, Symbol, sqrt, I, Integer, Rational, cos, sin, im, re, Abs,
-        exp, sinh, cosh, tan, tanh, conjugate, sign, cot, coth, pi, symbols,
-        expand_complex)
+from sympy import (S, Symbol, sqrt, I, Integer, Rational, cos, sin, im, re,
+                   Abs, exp, sinh, cosh, tan, tanh, conjugate, sign, cot,
+                   coth, pi, symbols, expand_complex)
 
 
 def test_complex():
@@ -139,10 +139,10 @@ def test_expand_complex():
 def test_expand():
     f = (16 - 2*sqrt(29))**2
     assert f.expand() == 372 - 64*sqrt(29)
-    f = (Integer(1)/2 + I/2)**10
+    f = (Rational(1, 2) + I/2)**10
     assert f.expand() == I/32
-    f = (Integer(1)/2 + I)**10
-    assert f.expand() == Integer(237)/1024 - 779*I/256
+    f = (Rational(1, 2) + I)**10
+    assert f.expand() == Rational(237, 1024) - 779*I/256
 
 
 def test_re_im1652():
@@ -196,9 +196,10 @@ def test_real_imag():
 
 
 def test_pow_issue_1724():
-    e = ((-1)**(S(1)/3))
+    e = (-1)**Rational(1, 3)
     assert e.conjugate().n() == e.n().conjugate()
-    e = S('-2/3 - (-29/54 + sqrt(93)/18)**(1/3) - 1/(9*(-29/54 + sqrt(93)/18)**(1/3))')
+    e = (Rational(-2, 3) - (Rational(-29, 54) + sqrt(93)/18)**Rational(1, 3)
+         - 1/(9*(Rational(-29, 54) + sqrt(93)/18)**Rational(1, 3)))
     assert e.conjugate().n() == e.n().conjugate()
     e = 2**I
     assert e.conjugate().n() == e.n().conjugate()

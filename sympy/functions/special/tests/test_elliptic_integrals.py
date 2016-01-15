@@ -1,10 +1,13 @@
 from sympy import (S, Symbol, pi, I, oo, zoo, sin, sqrt, tan, gamma,
-    atanh, hyper, meijerg, O)
+                   atanh, hyper, meijerg, O, Integer, Rational)
 from sympy.functions.special.elliptic_integrals import (elliptic_k as K,
-    elliptic_f as F, elliptic_e as E, elliptic_pi as P)
+                                                        elliptic_f as F,
+                                                        elliptic_e as E,
+                                                        elliptic_pi as P)
 from sympy.utilities.randtest import (test_derivative_numerically as td,
                                       random_complex_number as randcplx,
                                       verify_numerically as tn)
+
 from sympy.abc import z, m, n
 
 i = Symbol('i', integer=True)
@@ -13,9 +16,9 @@ j = Symbol('k', integer=True, positive=True)
 
 def test_K():
     assert K(0) == pi/2
-    assert K(S(1)/2) == 8*pi**(S(3)/2)/gamma(-S(1)/4)**2
+    assert K(Rational(1, 2)) == 8*pi**Rational(3, 2)/gamma(-Rational(1, 4))**2
     assert K(1) == zoo
-    assert K(-1) == gamma(S(1)/4)**2/(4*sqrt(2*pi))
+    assert K(-1) == gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
     assert K(oo) == 0
     assert K(-oo) == 0
     assert K(I*oo) == 0
@@ -98,8 +101,8 @@ def test_E():
     assert E(z).rewrite(hyper) == (pi/2)*hyper((-S.Half, S.Half), (S.One,), z)
     assert tn(E(z), (pi/2)*hyper((-S.Half, S.Half), (S.One,), z))
     assert E(z).rewrite(meijerg) == \
-        -meijerg(((S.Half, S(3)/2), []), ((S.Zero,), (S.Zero,)), -z)/4
-    assert tn(E(z), -meijerg(((S.Half, S(3)/2), []), ((S.Zero,), (S.Zero,)), -z)/4)
+        -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4
+    assert tn(E(z), -meijerg(((S.Half, Rational(3, 2)), []), ((S.Zero,), (S.Zero,)), -z)/4)
 
     assert E(z, m).series(z) == \
         z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)

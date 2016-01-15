@@ -4,7 +4,7 @@ from sympy import (
     Abs, adjoint, arg, atan2, conjugate, cos, DiracDelta, E, exp, expand,
     Expr, Function, Heaviside, I, im, log, nan, oo, pi, Rational, re, S,
     sign, sin, sqrt, Symbol, symbols, transpose, zoo, exp_polar, Piecewise,
-    Interval, comp, Integral)
+    Interval, comp, Integral, Integer)
 
 
 def N_equals(a, b):
@@ -280,8 +280,8 @@ def test_as_real_imag():
     # issue 6261
     x = Symbol('x')
     assert sqrt(x).as_real_imag() == \
-        ((re(x)**2 + im(x)**2)**(S(1)/4)*cos(atan2(im(x), re(x))/2),
-     (re(x)**2 + im(x)**2)**(S(1)/4)*sin(atan2(im(x), re(x))/2))
+        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(atan2(im(x), re(x))/2),
+     (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(atan2(im(x), re(x))/2))
 
     # issue 3853
     a, b = symbols('a,b', extended_real=True)
@@ -751,6 +751,8 @@ def test_periodic_argument():
 
     assert Abs(polar_lift(1 + I)) == Abs(1 + I)
 
+    assert periodic_argument(x, pi).is_real is True
+
 
 @pytest.mark.xfail
 def test_principal_branch_fail():
@@ -796,5 +798,5 @@ def test_issue_6167_6151():
     one = cos(x)**2 + sin(x)**2
     e = big*one - big + eps
     assert sign(simplify(e)) == 1
-    for xi in (111, 11, 1, S(1)/10):
+    for xi in (111, 11, 1, Rational(1, 10)):
         assert sign(e.subs(x, xi)) == 1

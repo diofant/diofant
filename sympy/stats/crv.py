@@ -156,7 +156,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         sympy.stats.crv_types.*
     """
 
-    set = Interval(-oo, oo)
+    set = Interval(-oo, oo, True, True)
 
     def __new__(cls, *args):
         args = list(map(sympify, args))
@@ -221,7 +221,7 @@ class ContinuousDistributionHandmade(SingleContinuousDistribution):
     def set(self):
         return self.args[1]
 
-    def __new__(cls, pdf, set=Interval(-oo, oo)):
+    def __new__(cls, pdf, set=Interval(-oo, oo, True, True)):
         return Basic.__new__(cls, pdf, set)
 
 

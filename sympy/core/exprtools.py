@@ -2,21 +2,21 @@
 
 from collections import defaultdict
 
-from sympy.core.add import Add
-from sympy.core.compatibility import iterable, is_sequence, SYMPY_INTS
-from sympy.core.mul import Mul, _keep_coeff
-from sympy.core.power import Pow
-from sympy.core.basic import Basic, preorder_traversal
-from sympy.core.expr import Expr
-from sympy.core.sympify import sympify
-from sympy.core.numbers import Rational, Integer, Number, I
-from sympy.core.singleton import S
-from sympy.core.symbol import Dummy
-from sympy.core.coreerrors import NonCommutativeExpression
-from sympy.core.containers import Tuple, Dict
-from sympy.utilities import default_sort_key
+from .add import Add
+from .compatibility import (iterable, is_sequence, SYMPY_INTS,
+                            default_sort_key, ordered)
+from .mul import Mul, _keep_coeff
+from .power import Pow
+from .basic import Basic, preorder_traversal
+from .expr import Expr
+from .sympify import sympify
+from .numbers import Rational, Integer, Number, I
+from .singleton import S
+from .symbol import Dummy
+from .coreerrors import NonCommutativeExpression
+from .containers import Tuple, Dict
 from sympy.utilities.iterables import (common_prefix, common_suffix,
-                                       variations, ordered)
+                                       variations)
 
 
 def _isnumber(i):
@@ -109,7 +109,7 @@ class Factors(object):
 
         """
         if isinstance(factors, (SYMPY_INTS, float)):
-            factors = S(factors)
+            factors = sympify(factors)
 
         if isinstance(factors, Factors):
             factors = factors.factors.copy()
@@ -378,13 +378,13 @@ class Factors(object):
         of Rational-base terms, for example the following does not become
         2**(2*x)/2.
 
-        >>> Factors(2**(2*x + 2)).div(S(8))
+        >>> Factors(2**(2*x + 2)).div(Integer(8))
         (Factors({2: 2*x + 2}), Factors({8: 1}))
 
         factor_terms can clean up such Rational-bases powers:
 
         >>> from sympy.core.exprtools import factor_terms
-        >>> n, d = Factors(2**(2*x + 2)).div(S(8))
+        >>> n, d = Factors(2**(2*x + 2)).div(Integer(8))
         >>> n.as_expr()/d.as_expr()
         2**(2*x + 2)/8
         >>> factor_terms(_)
@@ -755,7 +755,7 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
                 numers.append(term.coeff*numer.as_expr())
         else:
             numers = [t.as_expr() for t in terms]
-            denom = Term(S(1)).numer
+            denom = Term(Integer(1)).numer
 
         cont = cont.as_expr()
         numer = Add(*numers)

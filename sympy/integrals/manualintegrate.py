@@ -107,7 +107,7 @@ def manual_diff(f, symbol):
         elif isinstance(f, sympy.csc):
             return -arg.diff(symbol) * sympy.csc(arg) * sympy.cot(arg)
         elif isinstance(f, sympy.Add):
-            return sum([manual_diff(arg, symbol) for arg in f.args])
+            return sum(manual_diff(arg, symbol) for arg in f.args)
         elif isinstance(f, sympy.Mul):
             if len(f.args) == 2 and isinstance(f.args[0], sympy.Number):
                 return f.args[0] * manual_diff(f.args[1], symbol)

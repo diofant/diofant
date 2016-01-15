@@ -269,7 +269,7 @@ def compute_known_facts(known_facts, known_facts_keys):
     mapping = single_fact_lookup(known_facts_keys, cnf)
     items = sorted(mapping.items(), key=str)
     keys = [str(i[0]) for i in items]
-    values = ['set(%s)' % sorted(i[1], key=str) for i in items]
+    values = ['{%s}' % ", ".join(str(a) for a in sorted(i[1], key=str)) for i in items]
     m = LINE.join(['\n'.join(
         wrap("%s: %s" % (k, v),
             subsequent_indent=HANG,

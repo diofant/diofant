@@ -1,4 +1,4 @@
-from sympy.core import Symbol, S, oo
+from sympy.core import Symbol, S, oo, Integer
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.polys import poly
 from sympy.polys.dispersion import dispersion, dispersionset
@@ -8,10 +8,10 @@ def test_dispersion():
     x = Symbol("x")
     a = Symbol("a")
 
-    fp = poly(S(0), x)
+    fp = poly(Integer(0), x)
     assert sorted(dispersionset(fp)) == [0]
 
-    fp = poly(S(2), x)
+    fp = poly(Integer(2), x)
     assert sorted(dispersionset(fp)) == [0]
 
     fp = poly(x + 1, x)

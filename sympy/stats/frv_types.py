@@ -121,7 +121,7 @@ class DieDistribution(SingleFiniteDistribution):
 
     @property
     def set(self):
-        return list(map(Integer, list(range(1, self.sides+1))))
+        return list(map(Integer, range(1, self.sides + 1)))
 
     def pdf(self, x):
         x = sympify(x)
@@ -167,14 +167,14 @@ def Bernoulli(name, p, succ=1, fail=0):
     Returns a RandomSymbol
 
     >>> from sympy.stats import Bernoulli, density
-    >>> from sympy import S, Symbol
+    >>> from sympy import Rational, Symbol
 
-    >>> X = Bernoulli('X', S(3)/4) # 1-0 Bernoulli variable, probability = 3/4
-    >>> density(X).dict == {0: S(1)/4, 1: S(3)/4}
+    >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
+    >>> density(X).dict == {0: Rational(1, 4), 1: Rational(3, 4)}
     True
 
     >>> X = Bernoulli('X', S.Half, 'Heads', 'Tails') # A fair coin toss
-    >>> density(X).dict == {Symbol('Heads'): S(1)/2, Symbol('Tails'): S(1)/2}
+    >>> density(X).dict == {Symbol('Heads'): Rational(1, 2), Symbol('Tails'): Rational(1, 2)}
     True
     """
 

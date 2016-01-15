@@ -17,11 +17,11 @@ for:
 
 """
 
-from sympy import S
+from sympy import Integer, Rational
 from sympy.core.compatibility import iterable
 
 
-def finite_diff_weights(order, x_list, x0=S(0)):
+def finite_diff_weights(order, x_list, x0=Integer(0)):
     """
     Calculates the finite difference weights for an arbitrarily
     spaced one-dimensional grid (x_list) for derivatives at 'x0'
@@ -42,7 +42,7 @@ def finite_diff_weights(order, x_list, x0=S(0)):
         nearest to farest from x0; see examples below.
     x0: Number or Symbol
         Root or value of the independent variable for which the finite
-        difference weights should be generated. Defaults to S(0).
+        difference weights should be generated. Defaults to Integer(0).
 
     Returns
     =======
@@ -55,9 +55,9 @@ def finite_diff_weights(order, x_list, x0=S(0)):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.calculus import finite_diff_weights
-    >>> res = finite_diff_weights(1, [-S(1)/2, S(1)/2, S(3)/2, S(5)/2], 0)
+    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
     >>> res
     [[[1, 0, 0, 0],
       [1/2, 1/2, 0, 0],
@@ -83,9 +83,9 @@ def finite_diff_weights(order, x_list, x0=S(0)):
     Since res[1][2] has an order of accuracy of
     len(x_list[:3]) - order = 3 - 1 = 2, the same is true for res[1][1]!
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.calculus import finite_diff_weights
-    >>> res = finite_diff_weights(1, [S(0), S(1), -S(1), S(2), -S(2)], 0)[1]
+    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1), Integer(2), -Integer(2)], 0)[1]
     >>> res
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -104,9 +104,8 @@ def finite_diff_weights(order, x_list, x0=S(0)):
     Let us compare this to a differently defined x_list. Pay attention to
     foo[i][k] corresponding to the gridpoint defined by x_list[k].
 
-    >>> from sympy import S
     >>> from sympy.calculus import finite_diff_weights
-    >>> foo = finite_diff_weights(1, [-S(2), -S(1), S(0), S(1), S(2)], 0)[1]
+    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0), Integer(1), Integer(2)], 0)[1]
     >>> foo
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -175,10 +174,10 @@ def finite_diff_weights(order, x_list, x0=S(0)):
     N = len(x_list) - 1
     delta = [[[0 for nu in range(N+1)] for n in range(N+1)] for
              m in range(M+1)]
-    delta[0][0][0] = S(1)
-    c1 = S(1)
+    delta[0][0][0] = Integer(1)
+    c1 = Integer(1)
     for n in range(1, N+1):
-        c2 = S(1)
+        c2 = Integer(1)
         for nu in range(0, n):
             c3 = x_list[n]-x_list[nu]
             c2 = c2 * c3
@@ -195,7 +194,7 @@ def finite_diff_weights(order, x_list, x0=S(0)):
     return delta
 
 
-def apply_finite_diff(order, x_list, y_list, x0=S(0)):
+def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     """
     Calculates the finite difference approximation of
     the derivative of requested order at x0 from points
@@ -213,7 +212,7 @@ def apply_finite_diff(order, x_list, y_list, x0=S(0)):
         variable in x_list.
     x0: Number or Symbol
         At what value of the independent variable the derivative should be
-        evaluated. Defaults to S(0).
+        evaluated. Defaults to Integer(0).
 
     Returns
     =======
@@ -384,7 +383,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
                       in range(-order//2, order//2 + 1)]
         else:
             # odd order => even number of points, half-way wrt grid point
-            points = [x0 + points*i/S(2) for i
+            points = [x0 + points*i/Integer(2) for i
                       in range(-order, order + 1, 2)]
 
     if len(points) < order+1:

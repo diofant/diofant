@@ -242,7 +242,7 @@ def is_pell_transformation_ok(eq):
     v = (A*Matrix([X, Y]) + B)[1]
     simplified = _mexpand(Subs(eq, (x, y), (u, v)).doit())
 
-    coeff = dict([reversed(t.as_independent(*[X, Y])) for t in simplified.args])
+    coeff = dict(reversed(t.as_independent(*[X, Y])) for t in simplified.args)
 
     for term in [X*Y, X, Y]:
         if term in coeff.keys():
@@ -253,7 +253,7 @@ def is_pell_transformation_ok(eq):
             coeff[term] = Integer(0)
 
     if coeff[X**2] != 0:
-        return isinstance(S(coeff[Y**2])/coeff[X**2], Integer) and isinstance(S(coeff[Integer(1)])/coeff[X**2], Integer)
+        return isinstance(coeff[Y**2]/coeff[X**2], Integer) and isinstance(coeff[Integer(1)]/coeff[X**2], Integer)
 
     return True
 
@@ -313,7 +313,7 @@ def is_normal_transformation_ok(eq):
     X, Y, Z = A*Matrix([x, y, z])
     simplified = _mexpand(Subs(eq, (x, y, z), (X, Y, Z)).doit())
 
-    coeff = dict([reversed(t.as_independent(*[X, Y, Z])) for t in simplified.args])
+    coeff = dict(reversed(t.as_independent(*[X, Y, Z])) for t in simplified.args)
     for term in [X*Y, Y*Z, X*Z]:
         if term in coeff.keys():
             return False

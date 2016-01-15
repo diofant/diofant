@@ -202,39 +202,49 @@ class ImplicitSeries(BaseSeries):
 def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     """A plot function to plot implicit equations / inequalities.
 
-    Arguments
-    =========
+    Parameters
+    ==========
 
-    - ``expr`` : The equation / inequality that is to be plotted.
-    - ``x_var`` (optional) : symbol to plot on x-axis or tuple giving symbol
-      and range as ``(symbol, xmin, xmax)``
-    - ``y_var`` (optional) : symbol to plot on y-axis or tuple giving symbol
-      and range as ``(symbol, ymin, ymax)``
+    ``expr`` : Expr
+        The equation / inequality that is to be plotted.
+    ``x_var`` : symbol or tuple, optional
+        symbol to plot on x-axis or tuple giving symbol and range
+        as ``(symbol, xmin, xmax)``
+    ``y_var`` : symbol or tuple, optional
+        symbol to plot on y-axis or tuple giving symbol and range
+        as ``(symbol, ymin, ymax)``
 
     If neither ``x_var`` nor ``y_var`` are given then the free symbols in the
     expression will be assigned in the order they are sorted.
 
     The following keyword arguments can also be used:
 
-    - ``adaptive``. Boolean. The default value is set to True. It has to be
+    ``adaptive`` : Boolean, optional
+        The default value is set to True. It has to be
         set to False if you want to use a mesh grid.
 
-    - ``depth`` integer. The depth of recursion for adaptive mesh grid.
+    ``depth`` : integer
+        The depth of recursion for adaptive mesh grid.
         Default value is 0. Takes value in the range (0, 4).
 
-    - ``points`` integer. The number of points if adaptive mesh grid is not
+    ``points`` : integer
+        The number of points if adaptive mesh grid is not
         used. Default value is 200.
 
-    - ``title`` string .The title for the plot.
+    ``title`` : str
+        The title for the plot.
 
-    - ``xlabel`` string. The label for the x-axis
+    ``xlabel`` : str
+        The label for the x-axis
 
-    - ``ylabel`` string. The label for the y-axis
+    ``ylabel`` : string
+        The label for the y-axis
 
     Aesthetics options:
 
-    - ``line_color``: float or string. Specifies the color for the plot.
-        See ``Plot`` to see how to set color for the plots.
+    ``line_color`` : float or str
+        Specifies the color for the plot.  See ``Plot`` to see how to
+        set color for the plots.
 
     plot_implicit, by default, uses interval arithmetic to plot functions. If
     the expression cannot be plotted using interval arithmetic, it defaults to

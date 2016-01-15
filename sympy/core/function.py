@@ -39,7 +39,8 @@ from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import iterable, is_sequence, as_int, ordered
+from .compatibility import (iterable, is_sequence, as_int, ordered,
+                            default_sort_key)
 from .decorators import _sympifyit
 from .expr import Expr, AtomicExpr
 from .numbers import Rational, Float
@@ -47,11 +48,10 @@ from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
 from .sympify import sympify
-from sympy.core.containers import Tuple, Dict
-from sympy.core.logic import fuzzy_and
-from sympy.utilities import default_sort_key
+from .containers import Tuple, Dict
+from .logic import fuzzy_and
+from .evaluate import global_evaluate
 from sympy.utilities.iterables import uniq
-from sympy.core.evaluate import global_evaluate
 
 
 def _coeff_isneg(a):
@@ -61,10 +61,10 @@ def _coeff_isneg(a):
     ========
 
     >>> from sympy.core.function import _coeff_isneg
-    >>> from sympy import S, Symbol, oo, pi
+    >>> from sympy import Integer, Symbol, oo, pi
     >>> _coeff_isneg(-3*pi)
     True
-    >>> _coeff_isneg(S(3))
+    >>> _coeff_isneg(Integer(3))
     False
     >>> _coeff_isneg(-oo)
     True
@@ -95,7 +95,6 @@ class FunctionClass(ManagedProperties):
     Use Function('<function name>' [ , signature ]) to create
     undefined function classes.
     """
-    _new = type.__new__
 
     def __init__(cls, *args, **kwargs):
         if hasattr(cls, 'eval'):
@@ -292,7 +291,7 @@ class Function(Application, Expr):
     Suppose also that *my_func(x)* is real exactly when *x* is real. Here is
     an implementation that honours those requirements:
 
-    >>> from sympy import Function, S, oo, I, sin
+    >>> from sympy import Function, S, oo, I, sin, Symbol
     >>> class my_func(Function):
     ...
     ...     @classmethod
@@ -306,7 +305,7 @@ class Function(Application, Expr):
     ...     def _eval_is_extended_real(self):
     ...         return self.args[0].is_extended_real
     ...
-    >>> x = S('x')
+    >>> x = Symbol('x')
     >>> my_func(0) + sin(0)
     1
     >>> my_func(oo)
@@ -401,7 +400,6 @@ class Function(Application, Expr):
     def class_key(cls):
         from sympy.sets.fancysets import Naturals0
         funcs = {
-            'exp': 10,
             'log': 11,
             'sin': 20,
             'cos': 21,
@@ -494,9 +492,6 @@ class Function(Application, Expr):
 
     def _eval_is_commutative(self):
         return fuzzy_and(a.is_commutative for a in self.args)
-
-    def _eval_is_complex(self):
-        return fuzzy_and(a.is_complex for a in self.args)
 
     def as_base_exp(self):
         """
@@ -1343,7 +1338,7 @@ class Lambda(Expr):
         if len(variables) == 1 and variables[0] == expr:
             return S.IdentityFunction
 
-        obj = Expr.__new__(cls, Tuple(*variables), S(expr))
+        obj = Expr.__new__(cls, Tuple(*variables), sympify(expr))
         obj.nargs = FiniteSet(len(variables))
         return obj
 
@@ -1377,7 +1372,7 @@ class Lambda(Expr):
                 'args': list(self.nargs)[0],
                 'plural': 's'*(list(self.nargs)[0] != 1),
                 'given': n})
-        return self.expr.xreplace(dict(list(zip(self.variables, args))))
+        return self.expr.xreplace(dict(zip(self.variables, args)))
 
     def __eq__(self, other):
         if not isinstance(other, Lambda):
@@ -1387,7 +1382,7 @@ class Lambda(Expr):
 
         selfexpr = self.args[1]
         otherexpr = other.args[1]
-        otherexpr = otherexpr.xreplace(dict(list(zip(other.args[0], self.args[0]))))
+        otherexpr = otherexpr.xreplace(dict(zip(other.args[0], self.args[0])))
         return selfexpr == otherexpr
 
     def __ne__(self, other):
@@ -2433,4 +2428,4 @@ def nfloat(expr, n=15, exponent=False):
         lambda x: isinstance(x, Function)))
 
 
-from sympy.core.symbol import Dummy
+from .symbol import Dummy

@@ -284,7 +284,7 @@ class RootOf(Expr):
             # the first one must be different from N others
             uu = {(u.ax, u.bx) for u, _, _ in complexes}
             u = uu.pop()
-            if sum([u[1] <= v[0] or v[1] <= u[0] for v in uu]) < N:
+            if sum(u[1] <= v[0] or v[1] <= u[0] for v in uu) < N:
                 # refine
                 for i, (u, f, k) in enumerate(complexes):
                     u = u._inner_refine()
@@ -388,7 +388,7 @@ class RootOf(Expr):
     @classmethod
     def _count_roots(cls, roots):
         """Count the number of real or complex roots including multiplicities."""
-        return sum([ k for _, _, k in roots ])
+        return sum(k for _, _, k in roots)
 
     @classmethod
     def _indexed_root(cls, poly, index):
@@ -606,10 +606,10 @@ class RootOf(Expr):
         evaluates it to 5 decimal digits (so all digits will be correct
         including rounding):
 
-        >>> from sympy import S, legendre_poly, Symbol
+        >>> from sympy import Rational, legendre_poly, Symbol
         >>> x = Symbol("x")
         >>> p = legendre_poly(4, x, polys=True)
-        >>> roots = [r.eval_rational(S(1)/10**7) for r in p.real_roots()]
+        >>> roots = [r.eval_rational(Rational(1, 10)**7) for r in p.real_roots()]
         >>> roots = [str(r.n(5)) for r in roots]
         >>> roots
         ['-0.86114', '-0.33998', '0.33998', '0.86114']
@@ -880,11 +880,11 @@ def bisect(f, a, b, tol):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Rational
     >>> from sympy.polys.rootoftools import bisect
-    >>> bisect(lambda x: x**2-1, -10, 0, S(1)/10**2)
+    >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**2)
     -1025/1024
-    >>> bisect(lambda x: x**2-1, -10, 0, S(1)/10**4)
+    >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**4)
     -131075/131072
 
     """

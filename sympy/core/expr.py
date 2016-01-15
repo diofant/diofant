@@ -236,7 +236,7 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s >= %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_extended_real is False:
+            if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
@@ -254,7 +254,7 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s <= %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_extended_real is False:
+            if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
@@ -272,7 +272,7 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s > %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_extended_real is False:
+            if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
@@ -290,7 +290,7 @@ class Expr(Basic, EvalfMixin):
         except SympifyError:
             raise TypeError("Invalid comparison %s < %s" % (self, other))
         for me in (self, other):
-            if me.is_complex and me.is_extended_real is False:
+            if me.is_commutative and me.is_extended_real is False:
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
@@ -378,8 +378,8 @@ class Expr(Basic, EvalfMixin):
         if free:
             from sympy.utilities.randtest import random_complex_number
             a, c, b, d = re_min, re_max, im_min, im_max
-            reps = dict(list(zip(free, [random_complex_number(a, b, c, d, rational=True)
-                           for zi in free])))
+            reps = dict(zip(free, [random_complex_number(a, b, c, d, rational=True)
+                                   for zi in free]))
             try:
                 nmag = abs(self.evalf(2, subs=reps))
             except (ValueError, TypeError):
@@ -455,7 +455,7 @@ class Expr(Basic, EvalfMixin):
         >>> from sympy.abc import a, n, x, y
         >>> x.is_constant()
         False
-        >>> S(2).is_constant()
+        >>> Integer(2).is_constant()
         True
         >>> Sum(x, (x, 1, 10)).is_constant()
         True
@@ -703,6 +703,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_is_positive(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
+        from sympy.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
@@ -724,6 +725,8 @@ class Expr(Basic, EvalfMixin):
                 return bool(not i and n > 0)
             elif n._prec == 1 and (not i or i._prec == 1) and \
                     self.is_algebraic and not self.has(Function):
+                if count_ops(self) > 75:
+                    return
                 try:
                     if minimal_polynomial(self).is_Symbol:
                         return False
@@ -733,6 +736,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_is_negative(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
+        from sympy.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
@@ -754,6 +758,8 @@ class Expr(Basic, EvalfMixin):
                 return bool(not i and n < 0)
             elif n._prec == 1 and (not i or i._prec == 1) and \
                     self.is_algebraic and not self.has(Function):
+                if count_ops(self) > 75:
+                    return
                 try:
                     if minimal_polynomial(self).is_Symbol:
                         return False
@@ -812,7 +818,7 @@ class Expr(Basic, EvalfMixin):
 
     def _eval_transpose(self):
         from sympy.functions.elementary.complexes import conjugate
-        if self.is_complex:
+        if self.is_complex or self.is_extended_real:
             return self
         elif self.is_hermitian:
             return conjugate(self)
@@ -1664,7 +1670,8 @@ class Expr(Basic, EvalfMixin):
         commutative factors since the order that they appeared will be lost in
         the dictionary."""
         d = defaultdict(int)
-        d.update(dict([self.as_base_exp()]))
+        b, e = self.as_base_exp()
+        d[b] = e
         return d
 
     def as_coefficients_dict(self):
@@ -1718,7 +1725,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import S
         >>> from sympy.abc import x, y
-        >>> (S(3)).as_coeff_mul()
+        >>> (Integer(3)).as_coeff_mul()
         (3, ())
         >>> (3*x*y).as_coeff_mul()
         (3, (x, y))
@@ -1753,7 +1760,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import S
         >>> from sympy.abc import x, y
-        >>> (S(3)).as_coeff_add()
+        >>> (Integer(3)).as_coeff_add()
         (3, ())
         >>> (3 + x).as_coeff_add()
         (3, (x,))
@@ -2145,8 +2152,8 @@ class Expr(Basic, EvalfMixin):
         (1, -1/2)
         """
         from sympy import exp_polar, pi, I, ceiling, Add
-        n = S(0)
-        res = S(1)
+        n = Integer(0)
+        res = Integer(1)
         args = Mul.make_args(self)
         exps = []
         for arg in args:
@@ -2154,7 +2161,7 @@ class Expr(Basic, EvalfMixin):
                 exps += [arg.exp]
             else:
                 res *= arg
-        piimult = S(0)
+        piimult = Integer(0)
         extras = []
         while exps:
             exp = exps.pop()
@@ -2173,13 +2180,13 @@ class Expr(Basic, EvalfMixin):
         else:
             coeff, tail = piimult.as_coeff_add(*piimult.free_symbols)
         # round down to nearest multiple of 2
-        branchfact = ceiling(coeff/2 - S(1)/2)*2
+        branchfact = ceiling(coeff/2 - Rational(1, 2))*2
         n += branchfact/2
         c = coeff - branchfact
         if allow_half:
             nc = c.extract_additively(1)
             if nc is not None:
-                n += S(1)/2
+                n += Rational(1, 2)
                 c = nc
         newexp = pi*I*Add(*((c, ) + tail)) + Add(*extras)
         if newexp != 0:
@@ -2432,7 +2439,7 @@ class Expr(Basic, EvalfMixin):
         >>> abs(x).series(dir="-")
         -x
         """
-        from sympy import collect, Dummy, Order, Rational, Symbol
+        from sympy import collect, Dummy, Order, Rational, Symbol, ceiling
 
         if x is None:
             syms = self.atoms(Symbol)
@@ -2509,7 +2516,7 @@ class Expr(Basic, EvalfMixin):
                         s1 = self._eval_nseries(x, n=n + more, logx=logx)
                         newn = s1.getn()
                         if newn != ngot:
-                            ndo = n + (n - ngot)*more/(newn - ngot)
+                            ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
                             s1 = self._eval_nseries(x, n=ndo, logx=logx)
                             while s1.getn() < n:
                                 s1 = self._eval_nseries(x, n=ndo, logx=logx)
@@ -2692,12 +2699,22 @@ class Expr(Basic, EvalfMixin):
             return self._eval_nseries(x, n=n, logx=logx)
 
     def _eval_nseries(self, x, n, logx):
-        """Return terms of series for self up to O(x**n) at x=0
-        from the positive direction.
+        """
+        Return series for self up to O(x**n) at x=0 from the positive direction.
 
         This is a method that should be overridden in subclasses. Users should
         never call this method directly (use .nseries() instead), so you don't
         have to write docstrings for _eval_nseries().
+
+        The series expansion code is an important part of the gruntz algorithm
+        for determining limits. _eval_nseries has to return a generalized power
+        series with coefficients in C(log(x), log).
+        In more detail, the result of _eval_nseries(self, x, n) must be
+           c_0*x**e_0 + ... (finitely many terms)
+        where e_i are numbers (not necessarily integers) and c_i involve only
+        numbers, the function log, and log(x).  (This also means it must not
+        contain log(x(1+p)), this *has* to be expanded to log(x)+log(1+p)
+        if x.is_positive and p.is_positive.)
         """
         from sympy.utilities.misc import filldedent
         raise NotImplementedError(filldedent("""
@@ -3159,8 +3176,8 @@ class Expr(Basic, EvalfMixin):
         Examples
         ========
 
-        >>> from sympy import pi, E, I, S, Add, Mul, Number
-        >>> S(10.5).round()
+        >>> from sympy import pi, E, I, Add, Mul, Number, Float
+        >>> Float(10.5).round()
         11.
         >>> pi.round()
         3.
@@ -3186,9 +3203,9 @@ class Expr(Basic, EvalfMixin):
         (or raises an error if applied to a complex value) while the
         latter returns either a Number or a complex number:
 
-        >>> isinstance(round(S(123), -2), Number)
+        >>> isinstance(round(Integer(123), -2), Number)
         False
-        >>> isinstance(S(123).round(-2), Number)
+        >>> isinstance(Integer(123).round(-2), Number)
         True
         >>> isinstance((3*I).round(), Mul)
         True

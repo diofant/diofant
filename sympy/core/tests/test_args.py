@@ -9,7 +9,7 @@ import io
 
 import pytest
 
-from sympy import Basic, S, symbols, sqrt, sin, oo, Interval, exp
+from sympy import Basic, S, symbols, sqrt, sin, oo, Interval, exp, Integer
 from sympy.utilities.exceptions import SymPyDeprecationWarning
 
 x, y, z = symbols('x,y,z')
@@ -629,7 +629,7 @@ def test_sympy__stats__rv__ProductDomain():
 def test_sympy__stats__frv_types__DiscreteUniformDistribution():
     from sympy.stats.frv_types import DiscreteUniformDistribution
     from sympy.core.containers import Tuple
-    assert _test_args(DiscreteUniformDistribution(Tuple(*list(range(6)))))
+    assert _test_args(DiscreteUniformDistribution(Tuple(*range(6))))
 
 
 def test_sympy__stats__frv_types__DieDistribution():
@@ -1056,10 +1056,6 @@ def test_sympy__functions__elementary__complexes__transpose():
 def test_sympy__functions__elementary__exponential__LambertW():
     from sympy.functions.elementary.exponential import LambertW
     assert _test_args(LambertW(2))
-
-
-def test_sympy__functions__elementary__exponential__ExpBase():
-    pass
 
 
 def test_sympy__functions__elementary__exponential__exp():
@@ -1979,7 +1975,7 @@ def test_sympy__matrices__expressions__matexpr__MatrixExpr():
 def test_sympy__matrices__expressions__matexpr__MatrixElement():
     from sympy.matrices.expressions.matexpr import MatrixSymbol, MatrixElement
     from sympy import S
-    assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), S(2), S(3)))
+    assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), Integer(2), Integer(3)))
 
 
 @pytest.mark.xfail
@@ -2064,13 +2060,13 @@ def test_sympy__matrices__expressions__funcmatrix__FunctionMatrix():
 def test_sympy__matrices__expressions__fourier__DFT():
     from sympy.matrices.expressions.fourier import DFT
     from sympy import S
-    assert _test_args(DFT(S(2)))
+    assert _test_args(DFT(Integer(2)))
 
 
 def test_sympy__matrices__expressions__fourier__IDFT():
     from sympy.matrices.expressions.fourier import IDFT
     from sympy import S
-    assert _test_args(IDFT(S(2)))
+    assert _test_args(IDFT(Integer(2)))
 
 from sympy.matrices.expressions import MatrixSymbol
 X = MatrixSymbol('X', 10, 10)

@@ -111,6 +111,13 @@ class fibonacci(Function):
                        "only for positive integer indices.")
                 return cls._fibpoly(n).subs(_sym, sym)
 
+    def _eval_rewrite_as_sqrt(self, n, sym=None):
+        from sympy.functions import sqrt
+        if sym is None:
+            return (S.GoldenRatio**n - cos(S.Pi*n)/S.GoldenRatio**n)/sqrt(5)
+
+    _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
+
 
 class lucas(Function):
     """
@@ -510,7 +517,7 @@ class harmonic(Function):
     >>> harmonic(11)
     83711/27720
 
-    >>> H = harmonic(1/S(3))
+    >>> H = harmonic(1/Integer(3))
     >>> H
     harmonic(1/3)
     >>> He = expand_func(H)
@@ -519,14 +526,14 @@ class harmonic(Function):
                            + 3*Sum(1/(3*_k + 1), (_k, 0, 0))
     >>> He.doit()
     -log(6) - sqrt(3)*pi/6 - log(sqrt(3)/2) + 3
-    >>> H = harmonic(25/S(7))
+    >>> H = harmonic(25/Integer(7))
     >>> He = simplify(expand_func(H).doit())
     >>> He
     log(sin(pi/7)**(-2*cos(pi/7))*sin(2*pi/7)**(2*cos(16*pi/7))*cos(pi/14)**(-2*sin(pi/14))/14)
     + pi*tan(pi/14)/2 + 30247/9900
     >>> He.n(40)
     1.983697455232980674869851942390639915940
-    >>> harmonic(25/S(7)).n(40)
+    >>> harmonic(25/Integer(7)).n(40)
     1.983697455232980674869851942390639915940
 
     We can rewrite harmonic numbers in terms of polygamma functions:
@@ -674,9 +681,9 @@ class harmonic(Function):
                 if u.is_nonnegative and p.is_positive and q.is_positive and p < q:
                     k = Dummy("k")
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
-                    t2 = 2 * Sum(cos((2 * pi * p * k) / S(q)) *
-                                   log(sin((pi * k) / S(q))),
-                                   (k, 1, floor((q - 1) / S(2))))
+                    t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
+                                   log(sin((pi * k) / q)),
+                                   (k, 1, floor((q - 1) / Integer(2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3
 
@@ -976,7 +983,7 @@ class genocchi(Function):
             if (not n.is_Integer) or n.is_nonpositive:
                 raise ValueError("Genocchi numbers are defined only for " +
                                  "positive integers")
-            return 2 * (1 - S(2) ** n) * bernoulli(n)
+            return 2 * (1 - Integer(2) ** n) * bernoulli(n)
 
         if n.is_odd and (n - 1).is_positive:
             return S.Zero
@@ -986,7 +993,7 @@ class genocchi(Function):
 
     def _eval_rewrite_as_bernoulli(self, n):
         if n.is_integer and n.is_nonnegative:
-            return 2 * (1 - S(2) ** n) * bernoulli(n)
+            return 2 * (1 - Integer(2) ** n) * bernoulli(n)
 
     def _eval_is_integer(self):
         if self.args[0].is_integer and self.args[0].is_positive:

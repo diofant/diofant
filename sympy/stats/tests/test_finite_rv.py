@@ -1,14 +1,14 @@
 import pytest
 
 from sympy import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
-                   And, Tuple, Or, Dict, sympify, binomial, cancel)
+                   And, Tuple, Or, Dict, sympify, binomial, cancel,
+                   Rational, Integer, oo)
 from sympy.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
                          Hypergeometric, Rademacher, P, E, variance, covariance,
                          skewness, sample, density, where, FiniteRV, pspace, cdf,
                          correlation, moment, cmoment, smoment)
-from sympy.abc import p
 
-oo = S.Infinity
+from sympy.abc import p
 
 
 def BayesTest(A, B):
@@ -24,18 +24,18 @@ def test_discreteuniform():
     assert E(X) == (a + b + c)/3
     assert simplify(variance(X)
                     - ((a**2 + b**2 + c**2)/3 - (a/3 + b/3 + c/3)**2)) == 0
-    assert P(Eq(X, a)) == P(Eq(X, b)) == P(Eq(X, c)) == S('1/3')
+    assert P(Eq(X, a)) == P(Eq(X, b)) == P(Eq(X, c)) == Rational(1, 3)
 
     Y = DiscreteUniform('Y', range(-5, 5))
 
     # Numeric
-    assert E(Y) == S('-1/2')
-    assert variance(Y) == S('33/4')
+    assert E(Y) == -Rational(1, 2)
+    assert variance(Y) == Rational(33, 4)
 
     for x in range(-5, 5):
-        assert P(Eq(Y, x)) == S('1/10')
-        assert P(Y <= x) == S(x + 6)/10
-        assert P(Y >= x) == S(5 - x)/10
+        assert P(Eq(Y, x)) == Rational(1, 10)
+        assert P(Y <= x) == Rational(x + 6, 10)
+        assert P(Y >= x) == Rational(5 - x, 10)
 
     assert dict(density(Die('D', 6)).items()) == \
            dict(density(DiscreteUniform('U', range(1, 7))).items())
@@ -47,7 +47,7 @@ def test_dice():
     a, b = symbols('a b')
 
     assert E(X) == 3 + S.Half
-    assert variance(X) == S(35)/12
+    assert variance(X) == Rational(35, 12)
     assert E(X + Y) == 7
     assert E(X + X) == 7
     assert E(a*X + b) == a*E(X) + b
@@ -64,7 +64,7 @@ def test_dice():
     assert smoment(X, 0) == 1
     assert P(X > 3) == S.Half
     assert P(2*X > 6) == S.Half
-    assert P(X > Y) == S(5)/12
+    assert P(X > Y) == Rational(5, 12)
     assert P(Eq(X, Y)) == P(Eq(X, 1))
 
     assert E(X, X > 3) == 5 == moment(X, 1, 0, X > 3)
@@ -80,7 +80,7 @@ def test_dice():
 
     assert density(X + Y) == density(Y + Z) != density(X + X)
     d = density(2*X + Y**Z)
-    assert d[S(22)] == S.One/108 and d[S(4100)] == S.One/216 and S(3130) not in d
+    assert d[Integer(22)] == S.One/108 and d[Integer(4100)] == S.One/216 and Integer(3130) not in d
 
     assert pspace(X).domain.as_boolean() == Or(
         *[Eq(X.symbol, i) for i in [1, 2, 3, 4, 5, 6]])
@@ -90,7 +90,7 @@ def test_dice():
 
 def test_given():
     X = Die('X', 6)
-    assert density(X, X > 5) == {S(6): S(1)}
+    assert density(X, X > 5) == {Integer(6): Integer(1)}
     assert where(X > 2, X > 5).as_boolean() == Eq(X.symbol, 6)
     assert sample(X, X > 5) == 6
 
@@ -173,7 +173,7 @@ def test_coins():
     assert dict(density(C).items()) == {H: S.Half, T: S.Half}
 
     F = Coin('F', S.One/10)
-    assert P(Eq(F, H)) == S(1)/10
+    assert P(Eq(F, H)) == Rational(1, 10)
 
     d = pspace(C).domain
 
@@ -189,7 +189,7 @@ def test_binomial_verify_parameters():
 
 def test_binomial_numeric():
     nvals = range(5)
-    pvals = [0, S(1)/4, S.Half, S(3)/4, 1]
+    pvals = [0, Rational(1, 4), S.Half, Rational(3, 4), 1]
 
     for n in nvals:
         for p in pvals:
@@ -245,7 +245,7 @@ def test_rademacher():
 def test_FiniteRV():
     F = FiniteRV('F', {1: S.Half, 2: S.One/4, 3: S.One/4})
 
-    assert dict(density(F).items()) == {S(1): S.Half, S(2): S.One/4, S(3): S.One/4}
+    assert dict(density(F).items()) == {Integer(1): S.Half, Integer(2): S.One/4, Integer(3): S.One/4}
     assert P(F >= 2) == S.Half
 
     assert pspace(F).domain.as_boolean() == Or(
@@ -261,4 +261,4 @@ def test_density_call():
 
     assert 0 in d
     assert 5 not in d
-    assert d(S(0)) == d[S(0)]
+    assert d(Integer(0)) == d[Integer(0)]

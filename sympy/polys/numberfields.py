@@ -845,7 +845,7 @@ def primitive_element(extension, x=None, **args):
     coeffs_generator = args.get('coeffs', _coeffs_generator)
 
     for coeffs in coeffs_generator(len(Y)):
-        f = x - sum([ c*y for c, y in zip(coeffs, Y)])
+        f = x - sum(c*y for c, y in zip(coeffs, Y))
         G = groebner(F + [f], Y + [x], order='lex', field=True)
 
         H, g = G[:-1], cls(G[-1], x, domain='QQ')
@@ -928,7 +928,7 @@ def field_isomorphism_pslq(a, b):
         else:
             break
 
-        coeffs = [S(c)/coeffs[-1] for c in coeffs[:-1]]
+        coeffs = [sympify(c)/coeffs[-1] for c in coeffs[:-1]]
 
         while not coeffs[-1]:
             coeffs.pop()
@@ -1026,7 +1026,7 @@ def to_number_field(extension, theta=None, **args):
         return AlgebraicNumber(extension[0])
 
     minpoly, coeffs = primitive_element(extension, gen, polys=True)
-    root = sum([ coeff*ext for coeff, ext in zip(coeffs, extension) ])
+    root = sum(coeff*ext for coeff, ext in zip(coeffs, extension))
 
     if theta is None:
         return AlgebraicNumber((minpoly, root))

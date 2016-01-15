@@ -32,7 +32,7 @@ lowered when the tensor is put in canonical form.
 from collections import defaultdict
 from functools import reduce
 
-from sympy import Matrix, Rational
+from sympy import Matrix, Rational, Integer
 from sympy.combinatorics.tensor_can import (get_symmetric_group_sgs,
                                             bsgs_direct_product, canonicalize,
                                             riemann_bsgs)
@@ -914,7 +914,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             sign_change = +1 if (gener(rank) == rank) else -1
             data_swapped = data
             last_data = data
-            permute_axes = list(map(gener, list(range(rank))))
+            permute_axes = list(map(gener, range(rank)))
             # the order of a permutation is the number of times to get the
             # identity by applying that permutation.
             for i in range(gener.order()-1):
@@ -3766,9 +3766,9 @@ def riemann_cyclic_replace(t_r):
     """
     free = sorted(t_r.free, key=lambda x: x[1])
     m, n, p, q = [x[0] for x in free]
-    t0 = S(2)/3*t_r
-    t1 = - S(1)/3*t_r.substitute_indices((m,m),(n,q),(p,n),(q,p))
-    t2 = S(1)/3*t_r.substitute_indices((m,m),(n,p),(p,n),(q,q))
+    t0 = Rational(2, 3)*t_r
+    t1 = - Rational(1, 3)*t_r.substitute_indices((m,m),(n,q),(p,n),(q,p))
+    t2 = Rational(1, 3)*t_r.substitute_indices((m,m),(n,p),(p,n),(q,q))
     t3 = t0 + t1 + t2
     return t3
 

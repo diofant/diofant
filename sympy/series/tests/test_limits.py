@@ -5,9 +5,10 @@ import pytest
 from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    acos, ceiling, atan, gamma, Symbol, S, pi, Integral,
                    cot, Rational, I, zoo, tan, cot, integrate, Sum, sign,
-                   Function, subfactorial, PoleError)
+                   Function, subfactorial, PoleError, Integer)
 from sympy.series.limits import heuristics
 from sympy.series.order import Order
+
 from sympy.abc import x, y, z, a
 
 
@@ -44,8 +45,8 @@ def test_basic1():
     assert limit(1/sin(x), x, pi, dir="-") == oo
     assert limit(1/cos(x), x, pi/2, dir="+") == -oo
     assert limit(1/cos(x), x, pi/2, dir="-") == oo
-    assert limit(1/tan(x**3), x, (2*pi)**(S(1)/3), dir="+") == oo
-    assert limit(1/tan(x**3), x, (2*pi)**(S(1)/3), dir="-") == -oo
+    assert limit(1/tan(x**3), x, (2*pi)**Rational(1, 3), dir="+") == oo
+    assert limit(1/tan(x**3), x, (2*pi)**Rational(1, 3), dir="-") == -oo
     assert limit(1/cot(x)**3, x, (3*pi/2), dir="+") == -oo
     assert limit(1/cot(x)**3, x, (3*pi/2), dir="-") == oo
 
@@ -164,7 +165,6 @@ def test_ceiling_requires_robust_assumptions():
 
 
 def test_atan():
-    x = Symbol("x", extended_real=True)
     assert limit(atan(x)*sin(1/x), x, 0) == 0
     assert limit(atan(x) + sqrt(x + 1) - sqrt(x), x, oo) == pi/2
 
@@ -179,7 +179,7 @@ def test_abs():
 def test_heuristic():
     x = Symbol("x", extended_real=True)
     assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
-    assert limit(log(2 + sqrt(atan(x))*sqrt(sin(1/x))), x, 0) == log(2)
+    assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, '+') == log(2)
 
 
 def test_issue_3871():
@@ -219,14 +219,14 @@ def test_doit2():
 
 
 def test_issue_3792():
-    assert limit( (1 - cos(x))/x**2, x, S(1)/2) == 4 - 4*cos(S(1)/2)
+    assert limit( (1 - cos(x))/x**2, x, Rational(1, 2)) == 4 - 4*cos(Rational(1, 2))
     assert limit(sin(sin(x + 1) + 1), x, 0) == sin(1 + sin(1))
     assert limit(abs(sin(x + 1) + 1), x, 0) == 1 + sin(1)
 
 
 def test_issue_4090():
-    assert limit(1/(x + 3), x, 2) == S(1)/5
-    assert limit(1/(x + pi), x, 2) == S(1)/(2 + pi)
+    assert limit(1/(x + 3), x, 2) == Rational(1, 5)
+    assert limit(1/(x + pi), x, 2) == Integer(1)/(2 + pi)
     assert limit(log(x)/(x**2 + 3), x, 2) == log(2)/7
     assert limit(log(x)/(x**2 + pi), x, 2) == log(2)/(4 + pi)
 
@@ -238,10 +238,10 @@ def test_issue_4547():
 
 def test_issue_5164():
     assert limit(x**0.5, x, oo) == oo**0.5 == oo
-    assert limit(x**0.5, x, 16) == S(16)**0.5
+    assert limit(x**0.5, x, 16) == Integer(2)**2.0
     assert limit(x**0.5, x, 0) == 0
     assert limit(x**(-0.5), x, oo) == 0
-    assert limit(x**(-0.5), x, 4) == S(4)**(-0.5)
+    assert limit(x**(-0.5), x, 4) == Integer(2)**(-1.0)
 
 
 def test_issue_5183():
@@ -297,7 +297,7 @@ def test_issue_3934():
 
 def test_compute_leading_term():
     # needs series to go to n = 32
-    assert limit(x**(S(77)/3)/(1 + x**(S(77)/3)), x, oo) == 1
+    assert limit(x**Rational(77, 3)/(1 + x**Rational(77, 3)), x, oo) == 1
     # needs series to go to n = 128
     assert limit(x**101.1/(1 + x**101.1), x, oo) == 1
 
@@ -374,8 +374,8 @@ def test_factorial():
 
 
 def test_issue_6560():
-    e = 5*x**3/4 - 3*x/4 + (y*(3*x**2/2 - S(1)/2) +
-        35*x**4/8 - 15*x**2/4 + S(3)/8)/(2*(y + 1))
+    e = 5*x**3/4 - 3*x/4 + (y*(3*x**2/2 - Rational(1, 2)) +
+        35*x**4/8 - 15*x**2/4 + Rational(3, 8))/(2*(y + 1))
     assert limit(e, y, oo) == (5*x**3 + 3*x**2 - 3*x - 1)/4
 
 
@@ -401,7 +401,7 @@ def test_issue_7088():
 def test_issue_6364():
     a = Symbol('a')
     e = z/(1 - sqrt(1 + z)*sin(a)**2 - sqrt(1 - z)*cos(a)**2)
-    assert limit(e, z, 0).simplify() == 2/cos(2*a)
+    assert (limit(e, z, 0) - 2/cos(2*a)).simplify() == 0
 
 
 def test_issue_4099():

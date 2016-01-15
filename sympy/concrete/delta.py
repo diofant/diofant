@@ -1,4 +1,4 @@
-from sympy.core import Add, Mul, S, Dummy
+from sympy.core import Add, Mul, S, Dummy, Integer
 from sympy.core.cache import cacheit
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import KroneckerDelta, Piecewise, piecewise_fold
@@ -14,7 +14,7 @@ def _expand_delta(expr, index):
         return expr
     delta = None
     func = Add
-    terms = [S(1)]
+    terms = [Integer(1)]
     for h in expr.args:
         if delta is None and h.is_Add and _has_simple_delta(h, index):
             delta = True
@@ -59,7 +59,7 @@ def _extract_delta(expr, index):
     if not _has_simple_delta(expr, index):
         return (None, expr)
     if isinstance(expr, KroneckerDelta):
-        return (expr, S(1))
+        return (expr, Integer(1))
     if not expr.is_Mul:
         raise ValueError("Incorrect expr")
     delta = None
@@ -183,10 +183,10 @@ def deltaproduct(f, limit):
         newexpr = f.func(*terms)
         k = Dummy("kprime", integer=True)
         if isinstance(limit[1], int) and isinstance(limit[2], int):
-            result = deltaproduct(newexpr, limit) + sum([
+            result = deltaproduct(newexpr, limit) + sum(
                 deltaproduct(newexpr, (limit[0], limit[1], ik - 1)) *
                 delta.subs(limit[0], ik) *
-                deltaproduct(newexpr, (limit[0], ik + 1, limit[2])) for ik in range(int(limit[1]), int(limit[2] + 1))]
+                deltaproduct(newexpr, (limit[0], ik + 1, limit[2])) for ik in range(int(limit[1]), int(limit[2] + 1))
             )
         else:
             result = deltaproduct(newexpr, limit) + deltasummation(

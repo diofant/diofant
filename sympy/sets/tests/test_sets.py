@@ -6,15 +6,14 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
                    ProductSet, E, sqrt, Complement, EmptySet, sin, cos, Lambda,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
-                   SymmetricDifference)
+                   SymmetricDifference, Integer, Rational)
+
 from sympy.abc import x, y, z
 
 
 def test_interval_arguments():
-    assert Interval(0, oo) == Interval(0, oo, False, True)
-    assert Interval(0, oo).right_open is true
-    assert Interval(-oo, 0) == Interval(-oo, 0, True, False)
-    assert Interval(-oo, 0).left_open is true
+    assert Interval(0, oo).right_open is false
+    assert Interval(-oo, 0).left_open is false
     assert Interval(oo, -oo) == S.EmptySet
 
     assert isinstance(Interval(1, 1), FiniteSet)
@@ -247,7 +246,7 @@ def test_intersection():
     # iterable
     i = Intersection(FiniteSet(1, 2, 3), Interval(2, 5), evaluate=False)
     assert i.is_iterable
-    assert set(i) == {S(2), S(3)}
+    assert set(i) == {Integer(2), Integer(3)}
 
     # challenging intervals
     x = Symbol('x', extended_real=True)
@@ -257,7 +256,7 @@ def test_intersection():
 
     # Singleton special cases
     assert Intersection(Interval(0, 1), S.EmptySet) == S.EmptySet
-    assert Intersection(Interval(-oo, oo), Interval(-oo, x)) == Interval(-oo, x)
+    assert Intersection(S.Reals, Interval(-oo, x, True)) == Interval(-oo, x, True)
 
     # Products
     line = Interval(0, 5)
@@ -399,6 +398,11 @@ def test_contains():
     assert Interval(0, 2, False, True).contains(2) is S.false
     assert Interval(0, 2, True, True).contains(0) is S.false
     assert Interval(0, 2, True, True).contains(2) is S.false
+    # issue sympy/sympy#10326
+    assert S.Reals.contains(oo) is S.false
+    assert S.Reals.contains(-oo) is S.false
+    assert Interval(-oo, oo, True).contains(oo) is S.true
+    assert Interval(-oo, oo).contains(-oo) is S.true
 
     assert FiniteSet(1, 2, 3).contains(2) is S.true
     assert FiniteSet(1, 2, Symbol('x')).contains(Symbol('x')) is S.true
@@ -411,13 +415,13 @@ def test_contains():
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
-    rad1 = Pow(Pow(2, S(1)/3) - 1, S(1)/3)
-    rad2 = Pow(S(1)/9, S(1)/3) - Pow(S(2)/9, S(1)/3) + Pow(S(4)/9, S(1)/3)
+    rad1 = Pow(Pow(2, Rational(1, 3)) - 1, Rational(1, 3))
+    rad2 = Pow(Rational(1, 9), Rational(1, 3)) - Pow(Rational(2, 9), Rational(1, 3)) + Pow(Rational(4, 9), Rational(1, 3))
     s1 = FiniteSet(rad1)
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet
 
-    items = [1, 2, S.Infinity, S('ham'), -1.1]
+    items = [1, 2, S.Infinity, Symbol('ham'), -1.1]
     fset = FiniteSet(*items)
     assert all(item in fset for item in items)
     assert all(fset.contains(item) is S.true for item in items)
@@ -490,13 +494,13 @@ def test_Interval_as_relational():
     assert Interval(-1, 2, True, True).as_relational(x) == \
         And(Lt(-1, x), Lt(x, 2))
 
-    assert Interval(-oo, 2, right_open=False).as_relational(x) == And(Lt(-oo, x), Le(x, 2))
-    assert Interval(-oo, 2, right_open=True).as_relational(x) == And(Lt(-oo, x), Lt(x, 2))
+    assert Interval(-oo, 2, right_open=False).as_relational(x) == And(Le(-oo, x), Le(x, 2))
+    assert Interval(-oo, 2, right_open=True).as_relational(x) == And(Le(-oo, x), Lt(x, 2))
 
-    assert Interval(-2, oo, left_open=False).as_relational(x) == And(Le(-2, x), Lt(x, oo))
-    assert Interval(-2, oo, left_open=True).as_relational(x) == And(Lt(-2, x), Lt(x, oo))
+    assert Interval(-2, oo, left_open=False).as_relational(x) == And(Le(-2, x), Le(x, oo))
+    assert Interval(-2, oo, left_open=True).as_relational(x) == And(Lt(-2, x), Le(x, oo))
 
-    assert Interval(-oo, oo).as_relational(x) == And(Lt(-oo, x), Lt(x, oo))
+    assert Interval(-oo, oo).as_relational(x) == And(Le(-oo, x), Le(x, oo))
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
     assert Interval(x, y).as_relational(x) == (x <= y)
@@ -702,8 +706,8 @@ def test_image_interval():
         Interval(-35, 0)  # Multiple Maxima
     assert imageset(x, x + 1/x, Interval(-oo, oo)) == Interval(-oo, -2) \
         + Interval(2, oo)  # Single Infinite discontinuity
-    assert imageset(x, 1/x + 1/(x-1)**2, Interval(0, 2, True, False)) == \
-        Interval(Rational(3, 2), oo, False)  # Multiple Infinite discontinuities
+    assert imageset(x, 1/x + 1/(x - 1)**2, Interval(0, 2, True, False)) == \
+        Interval(Rational(3, 2), oo, False, True)  # Multiple Infinite discontinuities
 
     # Test for Python lambda
     assert imageset(lambda x: 2*x, Interval(-2, 1)) == Interval(-4, 2)

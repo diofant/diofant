@@ -12,14 +12,13 @@ from sympy.stats import (P, E, where, density, variance, covariance, skewness,
                          Triangular, Uniform, UniformSum, VonMises, Weibull,
                          WignerSemicircle, correlation, moment, cmoment,
                          smoment)
-from sympy import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf,
+from sympy import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf, oo,
                    Eq, log, lowergamma, Sum, symbols, sqrt, And, gamma, beta,
                    Piecewise, Integral, sin, cos, besseli, factorial, binomial,
-                   floor, expand_func)
+                   floor, expand_func, Integer, Rational)
 from sympy.stats.crv_types import NormalDistribution
 from sympy.stats.rv import ProductPSpace
 
-oo = S.Infinity
 
 x, y, z = map(Symbol, 'xyz')
 
@@ -64,7 +63,7 @@ def test_ContinuousDomain():
 
     Y = given(X, X >= 0)
 
-    assert Y.pspace.domain.set == Interval(0, oo)
+    assert Y.pspace.domain.set == Interval(0, oo, False, True)
 
 
 @pytest.mark.slow
@@ -187,10 +186,10 @@ def test_beta():
     # assert variance(B) == (a*b) / ((a+b)**2 * (a+b+1))
 
     # Full symbolic solution is too much, test with numeric version
-    a, b = 1, 2
+    a, b = Integer(1), Integer(2)
     B = Beta('x', a, b)
-    assert expand_func(E(B)) == a / S(a + b)
-    assert expand_func(variance(B)) == (a*b) / S((a + b)**2 * (a + b + 1))
+    assert expand_func(E(B)) == a/(a + b)
+    assert expand_func(variance(B)) == (a*b)/(a + b)**2/(a + b + 1)
 
 
 def test_betaprime():
@@ -259,7 +258,7 @@ def test_exponential():
     assert skewness(X) == smoment(X, 3)
     assert smoment(2*X, 4) == smoment(X, 4)
     assert moment(X, 3) == 3*2*1/rate**3
-    assert P(X > 0) == S(1)
+    assert P(X > 0) == Integer(1)
     assert P(X > 1) == exp(-rate)
     assert P(X > 10) == exp(-10*rate)
 
@@ -359,7 +358,7 @@ def test_lognormal():
     # Test sampling: Only e^mean in sample std of 0
     for i in range(3):
         X = LogNormal('x', i, 0)
-        assert S(sample(X)) == N(exp(i))
+        assert sample(X) == N(exp(i))
     # The sympy integrator can't do this too well
     # assert E(X) ==
 
@@ -395,7 +394,7 @@ def test_nakagami():
     assert simplify(E(X, meijerg=True)) == (sqrt(mu)*sqrt(omega)
            *gamma(mu + S.Half)/gamma(mu + 1))
     assert simplify(variance(X, meijerg=True)) == (
-    omega - omega*gamma(mu + S(1)/2)**2/(gamma(mu)*gamma(mu + 1)))
+    omega - omega*gamma(mu + Rational(1, 2))**2/(gamma(mu)*gamma(mu + 1)))
 
 
 def test_pareto():
@@ -413,12 +412,12 @@ def test_pareto():
 
 
 def test_pareto_numeric():
-    xm, beta = 3, 2
+    xm, beta = Integer(3), Integer(2)
     alpha = beta + 5
     X = Pareto('x', xm, alpha)
 
-    assert E(X) == alpha*xm/S(alpha - 1)
-    assert variance(X) == xm**2*alpha / S(((alpha - 1)**2*(alpha - 2)))
+    assert E(X) == alpha*xm/(alpha - 1)
+    assert variance(X) == xm**2*alpha/(((alpha - 1)**2*(alpha - 2)))
     # Skewness tests too slow. Try shortcutting function?
 
 
@@ -529,12 +528,12 @@ def test_weibull():
 def test_weibull_numeric():
     # Test for integers and rationals
     a = 1
-    bvals = [S.Half, 1, S(3)/2, 5]
+    bvals = [S.Half, S.One, Rational(3, 2), Integer(5)]
     for b in bvals:
         X = Weibull('x', a, b)
-        assert simplify(E(X)) == simplify(a * gamma(1 + 1/S(b)))
+        assert simplify(E(X)) == simplify(a * gamma(1 + 1/b))
         assert simplify(variance(X)) == simplify(
-            a**2 * gamma(1 + 2/S(b)) - E(X)**2)
+            a**2 * gamma(1 + 2/b) - E(X)**2)
         # Not testing Skew... it's slow with int/frac values > 3/2
 
 

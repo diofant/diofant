@@ -16,7 +16,6 @@ from sympy.core.rules import Transform
 from sympy.core.evaluate import global_evaluate
 from sympy.functions import (gamma, exp, sqrt, log, root, exp_polar,
                              sin, piecewise_fold)
-from sympy.functions.elementary.exponential import ExpBase
 from sympy.functions.elementary.hyperbolic import HyperbolicFunction
 from sympy.functions.elementary.integers import ceiling
 from sympy.functions.elementary.complexes import unpolarify
@@ -244,10 +243,9 @@ def nthroot(expr, n, max_len=4, prec=15):
     ========
 
     >>> from sympy.simplify.simplify import nthroot
-    >>> from sympy import Rational, sqrt
+    >>> from sympy import sqrt
     >>> nthroot(90 + 34*sqrt(7), 3)
     sqrt(7) + 3
-
     """
     expr = sympify(expr)
     n = sympify(n)
@@ -592,7 +590,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
         return expr
 
-    if not isinstance(expr, (Add, Mul, Pow, ExpBase)):
+    if not isinstance(expr, (Add, Mul, Pow, exp_polar)):
         return expr.func(*[simplify(x, ratio=ratio, measure=measure, fu=fu)
                          for x in expr.args])
 
@@ -648,7 +646,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
-    if (short.has(TrigonometricFunction, HyperbolicFunction, ExpBase) or
+    if (short.has(TrigonometricFunction, HyperbolicFunction, exp_polar) or
             any(a.base is S.Exp1 for a in short.atoms(Pow))):
         short = exptrigsimp(short, simplify=False)
 
@@ -1015,13 +1013,13 @@ def besselsimp(expr):
     of low order.  Finally, if the expression was changed, compute
     factorization of the result with factor().
 
-    >>> from sympy import besselj, besseli, besselsimp, polar_lift, I, S
+    >>> from sympy import besselj, besseli, besselsimp, polar_lift, I, Rational
     >>> from sympy.abc import z, nu
     >>> besselsimp(besselj(nu, z*polar_lift(-1)))
     E**(I*pi*nu)*besselj(nu, z)
     >>> besselsimp(besseli(nu, z*polar_lift(-I)))
     E**(-I*pi*nu/2)*besselj(nu, z)
-    >>> besselsimp(besseli(S(-1)/2, z))
+    >>> besselsimp(besseli(Rational(-1, 2), z))
     sqrt(2)*cosh(z)/(sqrt(pi)*sqrt(z))
     >>> besselsimp(z*besseli(0, z) + z*(besseli(2, z))/2 + besseli(1, z))
     3*z*besseli(0, z)/2
@@ -1070,7 +1068,7 @@ def besselsimp(expr):
 
     def expander(fro):
         def repl(nu, z):
-            if (nu % 1) == S(1)/2:
+            if (nu % 1) == Rational(1, 2):
                 return exptrigsimp(trigsimp(unpolarify(
                     fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
                         func=True)).subs(z0, z)))
