@@ -18,6 +18,7 @@ addons:
       - libatlas-base-dev
       - liblapack-dev
       - gfortran
+      - graphviz
 matrix:
   include:
     - python: 3.4
@@ -26,10 +27,14 @@ matrix:
       after_success:
         - coveralls
     - python: 3.4
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip install sphinx numpydoc
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
         - py.test sympy/polys
+        - sphinx-build -W -b html docs build/sphinx/html
     - python: "pypy3"
       install:
         - pip install .

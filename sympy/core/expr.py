@@ -703,6 +703,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_is_positive(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
+        from sympy.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
@@ -724,6 +725,8 @@ class Expr(Basic, EvalfMixin):
                 return bool(not i and n > 0)
             elif n._prec == 1 and (not i or i._prec == 1) and \
                     self.is_algebraic and not self.has(Function):
+                if count_ops(self) > 75:
+                    return
                 try:
                     if minimal_polynomial(self).is_Symbol:
                         return False
@@ -733,6 +736,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_is_negative(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
+        from sympy.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
@@ -754,6 +758,8 @@ class Expr(Basic, EvalfMixin):
                 return bool(not i and n < 0)
             elif n._prec == 1 and (not i or i._prec == 1) and \
                     self.is_algebraic and not self.has(Function):
+                if count_ops(self) > 75:
+                    return
                 try:
                     if minimal_polynomial(self).is_Symbol:
                         return False

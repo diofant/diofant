@@ -424,7 +424,10 @@ class Pow(Expr):
                 return True
             c = self.exp.coeff(S.ImaginaryUnit)
             if c:
-                ok = (c*log(self.base)/S.Pi).is_Integer
+                if c in (S.One, S.NegativeOne):
+                    if self.base == 2:
+                        return False
+                ok = (c*log(self.base)/S.Pi).is_integer
                 if ok is not None:
                     return ok
 

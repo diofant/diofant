@@ -11,7 +11,8 @@ import pytest
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li, tan, acosh, factorial, binomial)
+                   Pow, Add, li, Li, tan, acosh, factorial, binomial,
+                   fibonacci, GoldenRatio)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -342,6 +343,9 @@ def test_limit():
     # issue sympy/sympy#4187
     assert gruntz(exp(1/x)*log(1/x) - Ei(1/x), x) == -EulerGamma
     assert gruntz(exp(x)*log(x) - Ei(x), x) == oo
+
+    # issue sympy/sympy#10382
+    assert gruntz(fibonacci(x + 1)/fibonacci(x), x) == GoldenRatio
 
 
 def test_I():
