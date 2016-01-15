@@ -893,8 +893,8 @@ def test_unrad1():
     # fails through a different code path
     pytest.raises(NotImplementedError, lambda: solve(-sqrt(2) + cosh(x)/x))
     # unrad some
-    assert solve(sqrt(x + root(x, 3))+root(x - y, 5), y) == [
-        x + (x**Rational(1, 3) + x)**Rational(5, 2)]
+    assert solve(sqrt(x + root(x, 3)) - root(x - y, 5), y) == [
+        x - (x**Rational(1, 3) + x)**Rational(5, 2)]
     assert check(unrad(sqrt(x) - root(x + 1, 3)*sqrt(x + 2) + 2),
         (s**10 + 8*s**8 + 24*s**6 - 12*s**5 - 22*s**4 - 160*s**3 - 212*s**2 -
         192*s - 56, [s, s**2 - x]))
