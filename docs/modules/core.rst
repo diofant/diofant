@@ -131,6 +131,10 @@ ilcm
 ^^^^
 .. autofunction:: ilcm
 
+mod_inverse
+^^^^^^^^^^^
+.. autofunction:: mod_inverse
+
 seterr
 ^^^^^^
 .. autofunction:: seterr

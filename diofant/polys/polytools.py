@@ -4645,6 +4645,7 @@ def invert(f, g, *gens, **args):
     ========
 
     >>> from diofant import invert
+    >>> from diofant.core.numbers import mod_inverse, Integer
     >>> from diofant.abc import x
 
     >>> invert(x**2 - 1, 2*x - 1)
@@ -4655,6 +4656,18 @@ def invert(f, g, *gens, **args):
     ...
     NotInvertible: zero divisor
 
+    For more efficient inversion of Rationals,
+    use the ``mod_inverse`` function:
+
+    >>> mod_inverse(3, 5)
+    2
+    >>> (Integer(2)/5).invert(Integer(7)/3)
+    5/2
+
+    See Also
+    ========
+
+    diofant.core.numbers.mod_inverse
     """
     options.allowed_flags(args, ['auto', 'polys'])
 
@@ -5508,7 +5521,8 @@ def _symbolic_factor_list(expr, opt, method):
     """Helper function for :func:`_symbolic_factor`. """
     coeff, factors = S.One, []
 
-    args = [i._eval_factor() if hasattr(i, '_eval_factor') else i for i in Mul.make_args(expr)]
+    args = [i._eval_factor() if hasattr(i, '_eval_factor') else i
+        for i in Mul.make_args(expr)]
     for arg in args:
         if arg.is_Number:
             coeff *= arg

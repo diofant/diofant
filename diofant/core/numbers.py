@@ -218,6 +218,63 @@ def igcdex(a, b):
     return x*x_sign, y*y_sign, a
 
 
+def mod_inverse(a, m):
+    """
+    Return the number c such that, ( a * c ) % m == 1 where
+    c has the same sign as a. If no such value exists, a
+    ValueError is raised.
+
+    Examples
+    ========
+
+    >>> from diofant.core.numbers import mod_inverse, Integer
+
+    Suppose we wish to find multiplicative inverse x of
+    3 modulo 11. This is the same as finding x such
+    that 3 * x = 1 (mod 11). One value of x that satisfies
+    this congruence is 4. Because 3 * 4 = 12 and 12 = 1 mod(11).
+    This is the value return by mod_inverse:
+
+    >>> mod_inverse(3, 11)
+    4
+    >>> mod_inverse(-3, 11)
+    -4
+
+    When there is a commono factor between the numerators of
+    ``a`` and ``m`` the inverse does not exist:
+
+    >>> mod_inverse(2, 4)
+    Traceback (most recent call last):
+    ...
+    ValueError: inverse of 2 mod 4 does not exist
+
+    >>> mod_inverse(Integer(2)/7, Integer(5)/2)
+    7/2
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
+    .. [2] https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
+    """
+    c = None
+    try:
+        a, m = as_int(a), as_int(m)
+        if m > 1:
+            x, y, g = igcdex(a, m)
+            if g == 1:
+                c = x % m
+            if a < 0:
+                c -= m
+    except ValueError:
+        a, m = sympify(a), sympify(m)
+        if not m.is_number or m > 1:
+            c = 1/a
+    if c is None:
+        raise ValueError('inverse of %s (mod %s) does not exist' % (a, m))
+    return c
+
+
 class Number(AtomicExpr):
     """
     Represents any kind of number in diofant.
@@ -258,6 +315,9 @@ class Number(AtomicExpr):
                 raise ValueError('String "%s" does not denote a Number' % obj)
         msg = "expected str|int|float|Decimal|Number object but got %r"
         raise TypeError(msg % type(obj).__name__)
+
+    def invert(self, other, *gens, **args):
+        return mod_inverse(self, other)
 
     def __divmod__(self, other):
         from .containers import Tuple
