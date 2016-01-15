@@ -1124,6 +1124,8 @@ class Pow(Expr):
                 s = b.nseries(x, n=n, logx=logx)
             a, b = s.as_leading_term(x).as_coeff_exponent(x)
             t = expand_mul((s/(a*x**b) - 1).cancel())
+            if t.is_Add:
+                t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
             if e is S.Infinity:
                 if b != 0:
                     sig = -b
