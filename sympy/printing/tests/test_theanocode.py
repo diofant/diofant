@@ -231,7 +231,6 @@ def test_BlockMatrix():
     assert any(theq(Blockt, solution) for solution in solutions)
 
 
-@pytest.mark.xfail
 def test_BlockMatrix_Inverse_execution():
     k, n = 2, 4
     dtype = 'float32'

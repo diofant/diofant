@@ -1739,8 +1739,7 @@ def test_R2():
     f = Sum((yn[i, 0] - m*xn[i, 0] - b)**2, (i, 0, n - 1))
     f1 = diff(f, m)
     f2 = diff(f, b)
-    # raises AttributeError: 'str' object has no attribute 'is_Piecewise'
-    solve((f1, f2), m, b)
+    assert solve((f1, f2), m, b) != []
 
 
 @pytest.mark.xfail
@@ -2504,8 +2503,6 @@ def test_W22():
                       (-sin(1) + sin(2), True)))
 
 
-@pytest.mark.xfail
-@pytest.mark.slow
 def test_W23():
     a, b = symbols('a b', extended_real=True, positive=True)
     r1 = integrate(integrate(x/(x**2 + y**2), (x, a, b)), (y, -oo, oo))
