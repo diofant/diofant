@@ -89,7 +89,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     initial equation to an equivalent one, for which the system of
     algebraic equations has only `r` indeterminates. This method is
     quite sophisticated (in comparison with the naive one) and was
-    invented together by Abramov, Bronstein and Petkovsek.
+    invented together by Abramov, Bronstein and Petkovšek.
 
     It is possible to generalize the algorithm implemented here to
     the case of linear q-difference and differential equations.
@@ -107,15 +107,15 @@ def rsolve_poly(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] S. A. Abramov, M. Bronstein and M. Petkovsek, On polynomial
+    .. [1] S. A. Abramov, M. Bronstein and M. Petkovšek, On polynomial
            solutions of linear operator equations, in: T. Levelt, ed.,
            Proc. ISSAC '95, ACM Press, New York, 1995, 290-296.
 
-    .. [2] M. Petkovsek, Hypergeometric solutions of linear recurrences
+    .. [2] M. Petkovšek, Hypergeometric solutions of linear recurrences
            with polynomial coefficients, J. Symbolic Computation,
            14 (1992), 243-264.
 
-    .. [3] M. Petkovsek, H. S. Wilf, D. Zeilberger, A = B, 1996.
+    .. [3] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996.
 
     """
     f = sympify(f)
@@ -505,11 +505,11 @@ def rsolve_hyper(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] M. Petkovsek, Hypergeometric solutions of linear recurrences
+    .. [1] M. Petkovšek, Hypergeometric solutions of linear recurrences
            with polynomial coefficients, J. Symbolic Computation,
            14 (1992), 243-264.
 
-    .. [2] M. Petkovsek, H. S. Wilf, D. Zeilberger, A = B, 1996.
+    .. [2] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996.
     """
     coeffs = list(map(sympify, coeffs))
 
