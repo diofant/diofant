@@ -719,11 +719,11 @@ class LatexPrinter(Printer):
     _print_Determinant = _print_Abs
 
     def _print_re(self, expr, exp=None):
-        tex = r"\Re{%s}" % self.parenthesize(expr.args[0], PRECEDENCE['Pow'])
+        tex = r"\Re{%s}" % self.parenthesize(expr.args[0], PRECEDENCE['Func'])
         return self._do_exponent(tex, exp)
 
     def _print_im(self, expr, exp=None):
-        tex = r"\Im{%s}" % self.parenthesize(expr.args[0], PRECEDENCE['Pow'])
+        tex = r"\Im{%s}" % self.parenthesize(expr.args[0], PRECEDENCE['Func'])
         return self._do_exponent(tex, exp)
 
     def _print_Not(self, e):
@@ -871,7 +871,7 @@ class LatexPrinter(Printer):
             return r"C%s" % tex
 
     def _print_subfactorial(self, expr, exp=None):
-        tex = r"!%s" % self.parenthesize(expr.args[0], PRECEDENCE["Pow"])
+        tex = r"!%s" % self.parenthesize(expr.args[0], PRECEDENCE["Func"])
 
         if exp is not None:
             return r"%s^{%s}" % (tex, exp)
@@ -879,7 +879,7 @@ class LatexPrinter(Printer):
             return tex
 
     def _print_factorial(self, expr, exp=None):
-        tex = r"%s!" % self.parenthesize(expr.args[0], PRECEDENCE["Pow"])
+        tex = r"%s!" % self.parenthesize(expr.args[0], PRECEDENCE["Func"])
 
         if exp is not None:
             return r"%s^{%s}" % (tex, exp)
@@ -887,7 +887,7 @@ class LatexPrinter(Printer):
             return tex
 
     def _print_factorial2(self, expr, exp=None):
-        tex = r"%s!!" % self.parenthesize(expr.args[0], PRECEDENCE["Pow"])
+        tex = r"%s!!" % self.parenthesize(expr.args[0], PRECEDENCE["Func"])
 
         if exp is not None:
             return r"%s^{%s}" % (tex, exp)
@@ -905,7 +905,7 @@ class LatexPrinter(Printer):
 
     def _print_RisingFactorial(self, expr, exp=None):
         n, k = expr.args
-        base = r"%s" % self.parenthesize(n, PRECEDENCE['Pow'])
+        base = r"%s" % self.parenthesize(n, PRECEDENCE['Func'])
 
         tex = r"{%s}^{\left(%s\right)}" % (base, self._print(k))
 
@@ -913,7 +913,7 @@ class LatexPrinter(Printer):
 
     def _print_FallingFactorial(self, expr, exp=None):
         n, k = expr.args
-        sub = r"%s" % self.parenthesize(k, PRECEDENCE['Pow'])
+        sub = r"%s" % self.parenthesize(k, PRECEDENCE['Func'])
 
         tex = r"{\left(%s\right)}_{%s}" % (self._print(n), sub)
 
