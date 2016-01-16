@@ -3066,7 +3066,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             if out:
                 return Mul(*out)*Pow(self, Add(*add), evaluate=False)
         elif arg.is_Matrix:
-            from sympy import Matrix
             return arg.exp()
 
     def _eval_rewrite_as_sin(self):

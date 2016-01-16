@@ -3073,7 +3073,7 @@ frozenset({x , x*y})\
 
 
 def test_ProductSet_paranthesis():
-    from sympy import Interval, Union, FiniteSet
+    from sympy import FiniteSet
     ucode_str = '([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])'
 
     a, b, c = Interval(2, 3), Interval(4, 7), Interval(1, 9)
@@ -4894,7 +4894,7 @@ def test_pretty_Complement():
 
 
 def test_pretty_SymmetricDifference():
-    from sympy import SymmetricDifference, Interval
+    from sympy import SymmetricDifference
     assert upretty(SymmetricDifference(Interval(2, 3), Interval(3, 5),
            evaluate=False)) == '[2, 3] ∆ [3, 5]'
     with pytest.raises(NotImplementedError):

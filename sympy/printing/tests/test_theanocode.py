@@ -13,7 +13,7 @@ else:
     disabled = True
 
 import sympy
-from sympy import S, Rational
+from sympy import S
 sy = sympy
 from sympy.abc import x, y, z
 from sympy.printing.theanocode import (theano_code, dim_handling,

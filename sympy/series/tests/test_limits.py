@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    acos, ceiling, atan, gamma, Symbol, S, pi, Integral,
-                   cot, Rational, I, zoo, tan, cot, integrate, Sum, sign,
+                   cot, Rational, I, tan, cot, integrate, Sum, sign,
                    Function, subfactorial, PoleError, Integer)
 from sympy.series.limits import heuristics
 from sympy.series.order import Order

@@ -2775,7 +2775,7 @@ class Expr(Basic, EvalfMixin):
         .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from sympy import Dummy
-        from sympy.series.gruntz import mrv, rewrite, mrv_leadterm
+        from sympy.series.gruntz import mrv, rewrite
         from sympy.functions import exp, log
         from sympy.series import Order
 

@@ -1,5 +1,4 @@
 from distutils.version import LooseVersion as V
-import re
 
 import pytest
 

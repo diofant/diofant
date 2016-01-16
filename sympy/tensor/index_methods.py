@@ -13,7 +13,7 @@
 from functools import reduce
 
 from sympy.core.function import Function
-from sympy.functions import exp, Piecewise
+from sympy.functions import Piecewise
 from sympy.tensor.indexed import Idx, Indexed
 
 

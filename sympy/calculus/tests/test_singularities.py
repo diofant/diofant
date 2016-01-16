@@ -1,4 +1,4 @@
-from sympy import Symbol, exp, log, sign
+from sympy import exp, log, sign
 from sympy.calculus.singularities import singularities
 
 from sympy.abc import x
