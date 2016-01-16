@@ -155,6 +155,9 @@ class floor(RoundFunction):
             return S.false
         return Gt(self, other, evaluate=False)
 
+    def _eval_as_leading_term(self, arg):
+        return self
+
 
 class ceiling(RoundFunction):
     """
