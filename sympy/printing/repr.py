@@ -44,7 +44,7 @@ class ReprPrinter(Printer):
             return str(expr)
 
     def _print_Add(self, expr, order=None):
-        args = self._as_ordered_terms(expr, order=order)
+        args = expr.as_ordered_terms(order=order or self.order)
         args = map(self._print, args)
         return "Add(%s)" % ", ".join(args)
 
