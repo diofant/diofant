@@ -3153,8 +3153,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         from ..polys.polytools import invert
         from .numbers import mod_inverse
-        from .symbol import Symbol
-        if self.is_number and not getattr(g, 'has', lambda x: False)(Symbol):
+        if self.is_number and getattr(g, 'is_number', True):
             return mod_inverse(self, g)
         return invert(self, g, *gens, **args)
 

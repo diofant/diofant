@@ -20,6 +20,7 @@ from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
 from .compatibility import as_int, HAS_GMPY, DIOFANT_INTS, gcd
+from ..utilities import filldedent
 
 rnd = mlib.round_nearest
 
@@ -268,7 +269,17 @@ def mod_inverse(a, m):
                 c -= m
     except ValueError:
         a, m = sympify(a), sympify(m)
-        if not m.is_number or m > 1:
+        if not (a.is_number and m.is_number):
+            raise TypeError(filldedent('''
+                Expected numbers for arguments; symbolic `mod_inverse`
+                is not implemented
+                but symbolic expressions can be handled with the
+                similar function,
+                sympy.polys.polytools.invert'''))
+        big = (m > 1)
+        if not (big is S.true or big is S.false):
+            raise ValueError('m > 1 did not evaluate; try to simplify %s' % m)
+        elif big:
             c = 1/a
     if c is None:
         raise ValueError('inverse of %s (mod %s) does not exist' % (a, m))
@@ -317,7 +328,10 @@ class Number(AtomicExpr):
         raise TypeError(msg % type(obj).__name__)
 
     def invert(self, other, *gens, **args):
-        return mod_inverse(self, other)
+        from ..polys.polytools import invert
+        if getattr(other, 'is_number', True):
+            return mod_inverse(self, other)
+        return invert(self, other, *gens, **args)
 
     def __divmod__(self, other):
         from .containers import Tuple

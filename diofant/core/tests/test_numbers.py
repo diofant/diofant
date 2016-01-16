@@ -7,7 +7,7 @@ import pytest
 from diofant import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
                      S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
                      Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
-                     AlgebraicNumber, simplify)
+                     AlgebraicNumber, simplify, sin)
 from diofant.core.power import integer_nthroot
 from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
                                   mpf_norm, comp, mod_inverse)
@@ -1520,5 +1520,8 @@ def test_mod_inverse():
     assert mod_inverse(2, 5) == 3
     assert mod_inverse(-2, 5) == -3
     x = Symbol('x')
-    assert mod_inverse(2, x) == Integer(1)/2
+    assert Integer(2).invert(x) == S.Half
+    pytest.raises(TypeError, lambda: mod_inverse(2, x))
     pytest.raises(ValueError, lambda: mod_inverse(2, S.Half))
+    pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
+    pytest.raises(ValueError, lambda: mod_inverse(2, 1))

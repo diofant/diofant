@@ -1634,6 +1634,10 @@ def test_float_0_fail():
     assert (x + Float(0.0)).is_Add
 
 
+def test_invert():
+    assert (x**2 - 1).invert(2*x - 1) == Rational(-4, 3)
+
+
 def test_sympyissue_6325():
     ans = (b**2 + z**2 - (b*(a + b*t) + z*(c + t*z))**2/(
         (a + b*t)**2 + (c + t*z)**2))/sqrt((a + b*t)**2 + (c + t*z)**2)
