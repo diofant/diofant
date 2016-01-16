@@ -9,6 +9,7 @@ the function ``homomorphism(from, to, matrix)`` to create homomorphism objects.
 from sympy.polys.agca.modules import (Module, FreeModule, QuotientModule,
                                       SubModule, SubQuotientModule)
 from sympy.polys.polyerrors import CoercionFailed
+from sympy.printing import sstr
 
 # The main computational task for module homomorphisms is kernels.
 # For this reason, the concrete classes are organised by domain module type.
@@ -466,7 +467,7 @@ class MatrixHomomorphism(ModuleHomomorphism):
         return Matrix([[self.ring.to_sympy(y) for y in c(x)] for x in self.matrix]).T
 
     def __repr__(self):
-        lines = repr(self._sympy_matrix()).split('\n')
+        lines = sstr(self._sympy_matrix()).split('\n')
         t = " : %s -> %s" % (self.domain, self.codomain)
         s = ' '*len(t)
         n = len(lines)
