@@ -329,7 +329,7 @@ you don't have to worry about this problem:
     Rational.
 
     >>> x = Symbol('x')
-    >>> print(solve(7*x - 22, x))
+    >>> solve(7*x - 22, x)
     [22/7]
     >>> 22/7  # After copy and paste we get a float
     3.142857142857143

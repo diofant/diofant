@@ -1347,9 +1347,8 @@ class DiagramGrid(object):
         >>> g = NamedMorphism(B, C, "g")
         >>> diagram = Diagram([f, g])
         >>> grid = DiagramGrid(diagram)
-        >>> print(grid)
-        [[Object("A"), Object("B")],
-        [None, Object("C")]]
+        >>> grid
+        [[Object('A'), Object('B')], [None, Object('C')]]
 
         """
         return repr(self._grid._array)

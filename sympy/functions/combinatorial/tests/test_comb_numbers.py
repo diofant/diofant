@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
                    expand_func, diff, EulerGamma, cancel, re, im,
-                   Product, Integer)
+                   Product, Integer, sstr)
 from sympy.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
                              catalan, genocchi, binomial, gamma, sqrt, hyper, log,
                              digamma, trigamma, polygamma, factorial, sin,
@@ -317,7 +317,7 @@ def test_catalan():
     c = catalan(S.Half).evalf()
     assert str(c) == '0.848826363156775'
     c = catalan(I).evalf(3)
-    assert str((re(c), im(c))) == '(0.398, -0.0209)'
+    assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
 
 
 def test_genocchi():

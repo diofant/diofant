@@ -8,7 +8,7 @@ from sympy import (
     logcombine, Matrix, MatrixSymbol, Mul, nsimplify, O, oo, pi, Piecewise,
     posify, rad, Rational, root, S, separatevars, signsimp, simplify,
     sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan, tanh,
-    zoo, Sum, Lt, Integer)
+    zoo, Sum, Lt, Integer, sstr)
 from sympy.core.mul import _keep_coeff
 from sympy.simplify.simplify import nthroot
 
@@ -420,7 +420,7 @@ def test_logcombine_complex_coeff():
 def test_posify():
     from sympy.abc import x
 
-    assert str(posify(
+    assert sstr(posify(
         x +
         Symbol('p', positive=True) +
         Symbol('n', negative=True))) == '(n + p + _x, {_x: x})'
@@ -430,19 +430,19 @@ def test_posify():
     # force=True option can do so as well when it is implemented.
     eq, rep = posify(1/x)
     assert log(eq).expand().subs(rep) == -log(x)
-    assert str(posify([x, 1 + x])) == '([_x, _x + 1], {_x: x})'
+    assert sstr(posify([x, 1 + x])) == '([_x, _x + 1], {_x: x})'
 
     x = symbols('x')
     p = symbols('p', positive=True)
     n = symbols('n', negative=True)
     orig = [x, n, p]
     modified, reps = posify(orig)
-    assert str(modified) == '[_x, n, p]'
+    assert sstr(modified) == '[_x, n, p]'
     assert [w.subs(reps) for w in modified] == orig
 
-    assert str(Integral(posify(1/x + y)[0], (y, 1, 3)).expand()) == \
+    assert sstr(Integral(posify(1/x + y)[0], (y, 1, 3)).expand()) == \
         'Integral(1/_x, (y, 1, 3)) + Integral(_y, (y, 1, 3))'
-    assert str(Sum(posify(1/x**n)[0], (n,1,3)).expand()) == \
+    assert sstr(Sum(posify(1/x**n)[0], (n,1,3)).expand()) == \
         'Sum(_x**(-n), (n, 1, 3))'
 
 

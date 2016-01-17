@@ -129,7 +129,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     >>> from sympy.calculus import finite_diff_weights
     >>> N, (h, x) = 4, symbols('h x')
     >>> x_list = [x+h*cos(i*pi/(N)) for i in range(N,-1,-1)] # chebyshev nodes
-    >>> print(x_list)
+    >>> x_list
     [-h + x, -sqrt(2)*h/2 + x, x, sqrt(2)*h/2 + x, h + x]
     >>> mycoeffs = finite_diff_weights(1, x_list, 0)[1][4]
     >>> [simplify(c) for c in  mycoeffs] #doctest: +NORMALIZE_WHITESPACE

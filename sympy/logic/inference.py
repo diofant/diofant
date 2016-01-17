@@ -66,7 +66,7 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     ...     for model in models:
     ...         if model:
     ...             # Do something with the model.
-    ...             print(model)
+    ...             return model
     ...         else:
     ...             # Given expr is unsatisfiable.
     ...             print("UNSAT")

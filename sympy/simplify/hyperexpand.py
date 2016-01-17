@@ -1523,10 +1523,10 @@ def devise_plan(target, origin, z):
     Very simple plans:
 
     >>> for i in devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z):
-    ...     print(i)
+    ...     i
     <Increment upper 1.>
     >>> for i in devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z):
-    ...     print(i)
+    ...     i
     <Increment lower index #0 of [], [1].>
 
     Several buckets:
@@ -1534,21 +1534,21 @@ def devise_plan(target, origin, z):
     >>> from sympy import S
     >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
     ...             Hyper_Function((2, Rational(3, 2)), ()), z):
-    ...     print(i)
+    ...     i
     <Decrement upper index #0 of [3/2, 1], [].>
     <Decrement upper index #0 of [2, 3/2], [].>
 
     A slightly more complicated plan:
 
     >>> for i in devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z):
-    ...     print(i)
+    ...     i
     <Increment upper 2.>
     <Decrement upper index #0 of [2, 2], [].>
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
     >>> for i in devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z):
-    ...     print(i)
+    ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>
     <Decrement upper index #1 of [-1, 2], [4].>

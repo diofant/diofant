@@ -998,7 +998,7 @@ def symarray(prefix, shape):  # pragma: no cover
     These doctests require numpy.
 
     >>> from sympy import symarray
-    >>> print(symarray('', 3))
+    >>> symarray('', 3)
     [_0 _1 _2]
 
     If you want multiple symarrays to contain distinct symbols, you *must*
@@ -1015,15 +1015,15 @@ def symarray(prefix, shape):  # pragma: no cover
 
     Creating symarrays with a prefix:
 
-    >>> print(symarray('a', 3))
+    >>> symarray('a', 3)
     [a_0 a_1 a_2]
 
     For more than one dimension, the shape must be given as a tuple:
 
-    >>> print(symarray('a', (2, 3)))
+    >>> symarray('a', (2, 3))
     [[a_0_0 a_0_1 a_0_2]
      [a_1_0 a_1_1 a_1_2]]
-    >>> print(symarray('a', (2, 3, 2)))
+    >>> symarray('a', (2, 3, 2))
     [[[a_0_0_0 a_0_0_1]
       [a_0_1_0 a_0_1_1]
       [a_0_2_0 a_0_2_1]]
@@ -1031,7 +1031,6 @@ def symarray(prefix, shape):  # pragma: no cover
      [[a_1_0_0 a_1_0_1]
       [a_1_1_0 a_1_1_1]
       [a_1_2_0 a_1_2_1]]]
-
     """
     from numpy import empty, ndindex
     arr = empty(shape, dtype=object)

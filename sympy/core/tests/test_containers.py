@@ -145,7 +145,7 @@ def test_Dict():
     assert set(d.items()) == {Tuple(x, Integer(1)), Tuple(y, Integer(2)), Tuple(z, Integer(3))}
     assert set(d) == {x, y, z}
     assert str(d) == '{x: 1, y: 2, z: 3}'
-    assert d.__repr__() == '{x: 1, y: 2, z: 3}'
+    assert d.__repr__() == "Dict(Tuple(Symbol('x'), Integer(1)), Tuple(Symbol('y'), Integer(2)), Tuple(Symbol('z'), Integer(3)))"
 
     # Test creating a Dict from a Dict.
     d = Dict({x: 1, y: 2, z: 3})
