@@ -1,6 +1,7 @@
 """ Caching facility for SymPy """
 
 from decorator import decorator
+import weakref
 
 
 # TODO: refactor CACHE & friends into class?
@@ -80,7 +81,7 @@ def __cacheit(f):
     set environment variable SYMPY_USE_CACHE to 'debug'.
     """
 
-    func_cache_it_cache = {}
+    f._cache_it_cache = func_cache_it_cache = weakref.WeakValueDictionary()
     CACHE.append((f, func_cache_it_cache))
 
     def wrapper(f, *args, **kw_args):
