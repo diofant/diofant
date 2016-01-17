@@ -1,8 +1,6 @@
 from sympy.core import S, Symbol, Add, sympify, Expr, PoleError, Mul
 from sympy.core.symbol import Dummy
-from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.elementary.trigonometric import sin, cos
-from sympy.functions.special.gamma_functions import gamma
 from sympy.series.order import Order
 from .gruntz import limitinf
 

@@ -32,7 +32,7 @@ lowered when the tensor is put in canonical form.
 from collections import defaultdict
 from functools import reduce
 
-from sympy import Matrix, Rational, Integer
+from sympy import Matrix, Rational
 from sympy.combinatorics.tensor_can import (get_symmetric_group_sgs,
                                             bsgs_direct_product, canonicalize,
                                             riemann_bsgs)

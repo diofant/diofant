@@ -29,10 +29,8 @@ sympy@googlegroups.com and ask for help.
 """
 
 import sys
-import subprocess
 import os
 import shutil
-import glob
 from setuptools import setup, Command, find_packages
 from setuptools.command.test import test as TestCommand
 

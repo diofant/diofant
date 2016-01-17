@@ -1,7 +1,6 @@
 """Singleton mechanism"""
 
 from .assumptions import ManagedProperties
-from .sympify import sympify
 
 
 class SingletonRegistry(object):

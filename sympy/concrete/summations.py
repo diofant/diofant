@@ -444,7 +444,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         References
         ==========
 
-        .. [1] M. Petkovsek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
+        .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
 
         """
         from sympy import Function, expand_func, gamma, factor, Mul

@@ -662,7 +662,7 @@ class G_Function(Expr):
 
 
 # Dummy variable.
-_x = Dummy('x')
+_x = Dummy('dummy_for_hyperexpand')
 
 
 class Formula(object):

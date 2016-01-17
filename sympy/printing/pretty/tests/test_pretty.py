@@ -1915,8 +1915,8 @@ __________ __________      \n\
 def test_pretty_lambda():
     # S.IdentityFunction is a special case
     expr = Lambda(y, y)
-    assert pretty(expr) == "x -> x"
-    assert upretty(expr) == "x ↦ x"
+    assert pretty(expr) == "dummy_for_IdentityFunction -> dummy_for_IdentityFunction"
+    assert upretty(expr) == "dummy_for_IdentityFunction ↦ dummy_for_IdentityFunction"
 
     expr = Lambda(x, x+1)
     assert pretty(expr) == "x -> x + 1"
@@ -3073,7 +3073,7 @@ frozenset({x , x*y})\
 
 
 def test_ProductSet_paranthesis():
-    from sympy import Interval, Union, FiniteSet
+    from sympy import FiniteSet
     ucode_str = '([4, 7] × {1, 2}) ∪ ([2, 3] × [4, 7])'
 
     a, b, c = Interval(2, 3), Interval(4, 7), Interval(1, 9)
@@ -4894,7 +4894,7 @@ def test_pretty_Complement():
 
 
 def test_pretty_SymmetricDifference():
-    from sympy import SymmetricDifference, Interval
+    from sympy import SymmetricDifference
     assert upretty(SymmetricDifference(Interval(2, 3), Interval(3, 5),
            evaluate=False)) == '[2, 3] ∆ [3, 5]'
     with pytest.raises(NotImplementedError):

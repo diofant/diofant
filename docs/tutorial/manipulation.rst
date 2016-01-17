@@ -32,30 +32,31 @@ tree:
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Symbol(x)_(0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Integer(2)_(1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
-    "Symbol(y)_(0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Symbol(x)_(1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Mul(Symbol(x), Symbol(y))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Pow(Symbol(x), Integer(2))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Add(Mul(Symbol(x), Symbol(y)), Pow(Symbol(x), Integer(2)))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Pow(Symbol('x'), Integer(2))_(0,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('x')_(0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Integer(2)_(0, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
+    "Mul(Symbol('x'), Symbol('y'))_(1,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Symbol('x')_(1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Symbol('y')_(1, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Mul(Symbol(x), Symbol(y))_(0,)" -> "Symbol(x)_(0, 0)";
-    "Mul(Symbol(x), Symbol(y))_(0,)" -> "Symbol(y)_(0, 1)";
-    "Pow(Symbol(x), Integer(2))_(1,)" -> "Symbol(x)_(1, 0)";
-    "Pow(Symbol(x), Integer(2))_(1,)" -> "Integer(2)_(1, 1)";
-    "Add(Mul(Symbol(x), Symbol(y)), Pow(Symbol(x), Integer(2)))_()" -> "Mul(Symbol(x), Symbol(y))_(0,)";
-    "Add(Mul(Symbol(x), Symbol(y)), Pow(Symbol(x), Integer(2)))_()" -> "Pow(Symbol(x), Integer(2))_(1,)";
+    "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))_()" -> "Pow(Symbol('x'), Integer(2))_(0,)";
+    "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))_()" -> "Mul(Symbol('x'), Symbol('y'))_(1,)";
+    "Pow(Symbol('x'), Integer(2))_(0,)" -> "Symbol('x')_(0, 0)";
+    "Pow(Symbol('x'), Integer(2))_(0,)" -> "Integer(2)_(0, 1)";
+    "Mul(Symbol('x'), Symbol('y'))_(1,)" -> "Symbol('x')_(1, 0)";
+    "Mul(Symbol('x'), Symbol('y'))_(1,)" -> "Symbol('y')_(1, 1)";
     }
 
 .. note::
@@ -136,46 +137,47 @@ Here is a diagram
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Half()_(0, 0)" ["color"="black", "label"="Rational(1, 2)", "shape"="ellipse"];
-    "Symbol(y)_(2, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Symbol(x)_(1, 1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Integer(2)_(1, 1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
-    "NegativeOne()_(2, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "NegativeOne()_(1, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Symbol(y)_(0, 1, 0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Symbol(x)_(0, 1, 0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Pow(Symbol(x), Integer(2))_(1, 1)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Pow(Symbol(y), NegativeOne())_(2,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Mul(Symbol(x), Symbol(y))_(0, 1, 0)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "sin(Mul(Symbol(x), Symbol(y)))_(0, 1)" ["color"="black", "label"="sin", "shape"="ellipse"];
-    "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Integer(-1)_(0, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
+    "Pow(Symbol('x'), Integer(2))_(0, 1)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('x')_(0, 1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Integer(2)_(0, 1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
+    "Pow(Symbol('y'), Integer(-1))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('y')_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
+    "Integer(-1)_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
+    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Rational(1, 2)_(2, 0)" ["color"="black", "label"="Rational(1, 2)", "shape"="ellipse"];
+    "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)" ["color"="black", "label"="sin", "shape"="ellipse"];
+    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Symbol('x')_(2, 1, 0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Symbol('y')_(2, 1, 0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Pow(Symbol(y), NegativeOne())_(2,)" -> "Symbol(y)_(2, 0)";
-    "Pow(Symbol(x), Integer(2))_(1, 1)" -> "Symbol(x)_(1, 1, 0)";
-    "Pow(Symbol(x), Integer(2))_(1, 1)" -> "Integer(2)_(1, 1, 1)";
-    "Pow(Symbol(y), NegativeOne())_(2,)" -> "NegativeOne()_(2, 1)";
-    "Mul(Symbol(x), Symbol(y))_(0, 1, 0)" -> "Symbol(x)_(0, 1, 0, 0)";
-    "Mul(Symbol(x), Symbol(y))_(0, 1, 0)" -> "Symbol(y)_(0, 1, 0, 1)";
-    "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)" -> "Half()_(0, 0)";
-    "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)" -> "NegativeOne()_(1, 0)";
-    "sin(Mul(Symbol(x), Symbol(y)))_(0, 1)" -> "Mul(Symbol(x), Symbol(y))_(0, 1, 0)";
-    "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)" -> "Pow(Symbol(x), Integer(2))_(1, 1)";
-    "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)" -> "sin(Mul(Symbol(x), Symbol(y)))_(0, 1)";
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" -> "Pow(Symbol(y), NegativeOne())_(2,)";
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" -> "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)";
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" -> "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)";
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)";
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Pow(Symbol('y'), Integer(-1))_(1,)";
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)";
+    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" -> "Integer(-1)_(0, 0)";
+    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" -> "Pow(Symbol('x'), Integer(2))_(0, 1)";
+    "Pow(Symbol('x'), Integer(2))_(0, 1)" -> "Symbol('x')_(0, 1, 0)";
+    "Pow(Symbol('x'), Integer(2))_(0, 1)" -> "Integer(2)_(0, 1, 1)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Symbol('y')_(1, 0)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Integer(-1)_(1, 1)";
+    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" -> "Rational(1, 2)_(2, 0)";
+    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" -> "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)";
+    "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)" -> "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)";
+    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('x')_(2, 1, 0, 0)";
+    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('y')_(2, 1, 0, 1)";
     }
 
 This expression reveals some interesting things about SymPy expression
@@ -197,26 +199,27 @@ class in SymPy.  ``x - y`` is represented as ``x + -y``, or, more completely,
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Symbol(x)_(1,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Symbol(y)_(0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "NegativeOne()_(0, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Mul(NegativeOne(), Symbol(y))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Add(Mul(NegativeOne(), Symbol(y)), Symbol(x))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Symbol('x')_(0,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Mul(Integer(-1), Symbol('y'))_(1,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Integer(-1)_(1, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
+    "Symbol('y')_(1, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Mul(NegativeOne(), Symbol(y))_(0,)" -> "Symbol(y)_(0, 1)";
-    "Mul(NegativeOne(), Symbol(y))_(0,)" -> "NegativeOne()_(0, 0)";
-    "Add(Mul(NegativeOne(), Symbol(y)), Symbol(x))_()" -> "Symbol(x)_(1,)";
-    "Add(Mul(NegativeOne(), Symbol(y)), Symbol(x))_()" -> "Mul(NegativeOne(), Symbol(y))_(0,)";
+    "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))_()" -> "Symbol('x')_(0,)";
+    "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))_()" -> "Mul(Integer(-1), Symbol('y'))_(1,)";
+    "Mul(Integer(-1), Symbol('y'))_(1,)" -> "Integer(-1)_(1, 0)";
+    "Mul(Integer(-1), Symbol('y'))_(1,)" -> "Symbol('y')_(1, 1)";
     }
 
 Next, look at ``1/y``.  We might expect to see something like ``Div(1, y)``,
@@ -236,26 +239,27 @@ see.
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Symbol(x)_(0,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Symbol(y)_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "NegativeOne()_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Pow(Symbol(y), NegativeOne())_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Mul(Symbol(x), Pow(Symbol(y), NegativeOne()))_()" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))_()" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Symbol('x')_(0,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Pow(Symbol('y'), Integer(-1))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('y')_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
+    "Integer(-1)_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Pow(Symbol(y), NegativeOne())_(1,)" -> "Symbol(y)_(1, 0)";
-    "Pow(Symbol(y), NegativeOne())_(1,)" -> "NegativeOne()_(1, 1)";
-    "Mul(Symbol(x), Pow(Symbol(y), NegativeOne()))_()" -> "Symbol(x)_(0,)";
-    "Mul(Symbol(x), Pow(Symbol(y), NegativeOne()))_()" -> "Pow(Symbol(y), NegativeOne())_(1,)";
+    "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))_()" -> "Symbol('x')_(0,)";
+    "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))_()" -> "Pow(Symbol('y'), Integer(-1))_(1,)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Symbol('y')_(1, 0)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Integer(-1)_(1, 1)";
     }
 
 We see that ``x/y`` is represented as ``x*y**-1``, i.e., ``Mul(x, Pow(y,

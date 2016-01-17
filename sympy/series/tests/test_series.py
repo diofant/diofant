@@ -1,9 +1,9 @@
 import pytest
 
-from sympy import (sin, cos, exp, E, series, oo, S, Derivative, O, Integral,
+from sympy import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
                    Function, log, sqrt, Symbol, Subs, pi, symbols, Rational)
 
-from sympy.abc import x, y, n, k
+from sympy.abc import x, y
 
 
 def test_sin():

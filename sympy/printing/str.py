@@ -45,7 +45,7 @@ class StrPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
 
         PREC = precedence(expr)
         l = []
@@ -253,7 +253,7 @@ class StrPrinter(Printer):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = expr.as_ordered_factors()
         else:
             # use make_args in case expr was something like -x -> x
