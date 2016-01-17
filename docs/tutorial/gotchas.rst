@@ -449,7 +449,7 @@ unsimplified trig identity, multiplied by a big number:
     >>> big = 12345678901234567890
     >>> big_trig_identity = big*cos(x)**2 + big*sin(x)**2 - big*1
     >>> abs(big_trig_identity.subs(x, .1).n(2)) > 1000
-    True
+    true
 
 When the `\cos` and `\sin` terms were evaluated to 15 digits of precision and
 multiplied by the big number, they gave a large number that was only

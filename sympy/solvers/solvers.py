@@ -592,7 +592,7 @@ def solve(f, *symbols, **flags):
             >>> solve([x < 3, x - 2])
             Eq(x, 2)
             >>> solve([x > 3, x - 2])
-            False
+            false
 
         * when the system is linear
 

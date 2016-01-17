@@ -696,8 +696,8 @@ def test_MatrixSlice():
 
 
 def test_true_false():
-    assert str(true) == repr(true) == sstr(true) == "True"
-    assert str(false) == repr(false) == sstr(false) == "False"
+    assert str(true) == repr(true) == sstr(true) == "true"
+    assert str(false) == repr(false) == sstr(false) == "false"
 
 
 def test_Equivalent():

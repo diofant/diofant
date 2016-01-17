@@ -2693,7 +2693,7 @@ class NaN(Number, metaclass=Singleton):
     >>> nan + 1
     nan
     >>> Eq(nan, nan)   # mathematical equality
-    False
+    false
     >>> nan == nan     # structural equality
     True
 
@@ -3099,7 +3099,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     >>> S.Pi
     pi
     >>> pi > 3
-    True
+    true
     >>> pi.is_irrational
     True
     >>> x = Symbol('x')
@@ -3160,7 +3160,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
 
     >>> from sympy import S
     >>> S.GoldenRatio > 1
-    True
+    true
     >>> S.GoldenRatio.expand(func=True)
     1/2 + sqrt(5)/2
     >>> S.GoldenRatio.is_irrational
@@ -3223,9 +3223,9 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     >>> from sympy import S
     >>> S.EulerGamma.is_irrational
     >>> S.EulerGamma > 0
-    True
+    true
     >>> S.EulerGamma > 1
-    False
+    false
 
     References
     ==========
@@ -3275,9 +3275,9 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     >>> from sympy import S
     >>> S.Catalan.is_irrational
     >>> S.Catalan > 0
-    True
+    true
     >>> S.Catalan > 1
-    False
+    false
 
     References
     ==========

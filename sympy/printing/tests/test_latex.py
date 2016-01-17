@@ -119,8 +119,8 @@ def test_latex_builtins():
     assert latex(True) == r"\mathrm{True}"
     assert latex(False) == r"\mathrm{False}"
     assert latex(None) == r"\mathrm{None}"
-    assert latex(true) == r"\mathrm{True}"
-    assert latex(false) == r'\mathrm{False}'
+    assert latex(true) == r"\mathrm{true}"
+    assert latex(false) == r'\mathrm{false}'
 
 
 def test_latex_Float():
