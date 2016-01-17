@@ -29,7 +29,7 @@ from sympy.polys.orthopolys import (
     legendre_poly
 )
 
-_x = Dummy('x')
+_x = Dummy('dummy_for_special_polynomials')
 
 
 class OrthogonalPolynomial(Function):

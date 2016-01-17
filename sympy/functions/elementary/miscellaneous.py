@@ -33,7 +33,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
 
     def __new__(cls):
         from sympy.sets.sets import FiniteSet
-        x = Dummy('x')
+        x = Dummy('dummy_for_IdentityFunction')
         # construct "by hand" to avoid infinite loop
         obj = Expr.__new__(cls, Tuple(x), x)
         obj.nargs = FiniteSet(1)
