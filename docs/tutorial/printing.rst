@@ -73,9 +73,9 @@ repr
 
 The repr form of an expression is designed to show the exact form of an
 expression.  It will be discussed more in the :ref:`tutorial-manipulation`
-section.  To get it, use ``srepr()`` [#srepr-fn]_.
+section.  To get it, use ``repr()``.
 
-    >>> srepr(Integral(sqrt(1/x), x))
+    >>> repr(Integral(sqrt(1/x), x))
     "Integral(Pow(Pow(Symbol('x'), Integer(-1)), Rational(1, 2)), Tuple(Symbol('x')))"
 
 The repr form is mostly useful for understanding how an expression is built
@@ -177,11 +177,3 @@ The ``dotprint()`` function in ``sympy.printing.dot`` prints output to dot
 format, which can be rendered with Graphviz.  See the
 :ref:`tutorial-manipulation` section for some examples of the output of this
 printer.
-
-.. rubric:: Footnotes
-
-.. [#srepr-fn] SymPy does not use the Python builtin ``repr()`` function for
-   repr printing, because in Python ``str(list)`` calls ``repr()`` on the
-   elements of the list, and some SymPy functions return lists (such as
-   ``solve()``).  Since ``srepr()`` is so verbose, it is unlikely that anyone
-   would want it called by default on the output of ``solve()``.

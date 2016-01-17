@@ -329,7 +329,7 @@ you don't have to worry about this problem:
     Rational.
 
     >>> x = Symbol('x')
-    >>> print(solve(7*x - 22, x))
+    >>> solve(7*x - 22, x)
     [22/7]
     >>> 22/7  # After copy and paste we get a float
     3.142857142857143
@@ -449,7 +449,7 @@ unsimplified trig identity, multiplied by a big number:
     >>> big = 12345678901234567890
     >>> big_trig_identity = big*cos(x)**2 + big*sin(x)**2 - big*1
     >>> abs(big_trig_identity.subs(x, .1).n(2)) > 1000
-    True
+    true
 
 When the `\cos` and `\sin` terms were evaluated to 15 digits of precision and
 multiplied by the big number, they gave a large number that was only

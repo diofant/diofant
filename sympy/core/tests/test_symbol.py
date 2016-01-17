@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
                    StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
-                   Integer, Float)
+                   Integer, Float, sstr)
 
 
 def test_Symbol():
@@ -298,7 +298,7 @@ def test_symbols():
 
     # issue 6675
     def sym(s):
-        return str(symbols(s))
+        return sstr(symbols(s))
     assert sym('a0:4') == '(a0, a1, a2, a3)'
     assert sym('a2:4,b1:3') == '(a2, a3, b1, b2)'
     assert sym('a1(2:4)') == '(a12, a13)'

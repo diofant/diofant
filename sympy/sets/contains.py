@@ -12,9 +12,9 @@ class Contains(BooleanFunction):
     >>> from sympy import Symbol, Integer, S
     >>> from sympy.sets.contains import Contains
     >>> Contains(Integer(2), S.Integers)
-    True
+    true
     >>> Contains(Integer(-2), S.Naturals)
-    False
+    false
     >>> i = Symbol('i', integer=True)
     >>> Contains(i, S.Naturals)
     Contains(i, Naturals())

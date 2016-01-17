@@ -1,4 +1,4 @@
-from sympy import Basic, Expr, srepr
+from sympy import Basic, Expr
 
 __all__ = ['dotprint']
 
@@ -53,7 +53,7 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     else:
         label = labelfunc(expr)
     style['label'] = label
-    expr_str = srepr(expr)
+    expr_str = repr(expr)
     if repeat:
         expr_str += '_%s' % str(pos)
     return '"%s" [%s];' % (expr_str, attrprint(style))
@@ -74,8 +74,8 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
     if atom(expr):
         return []
     else:
-        expr_str = srepr(expr)
-        arg_strs = [srepr(arg) for arg in expr.args]
+        expr_str = repr(expr)
+        arg_strs = [repr(arg) for arg in expr.args]
         if repeat:
             expr_str += '_%s' % str(pos)
             arg_strs = [arg_str + '_%s' % str(pos + (i,)) for i, arg_str in enumerate(arg_strs)]
@@ -131,8 +131,8 @@ def dotprint(expr, styles=default_styles,
           object might not equal the number of args it has).
 
     ``labelfunc``: How to label leaf nodes.  The default is ``str``.  Another
-          good option is ``srepr``. For example with ``str``, the leaf nodes
-          of ``x + 1`` are labeled, ``x`` and ``1``.  With ``srepr``, they
+          good option is ``repr``. For example with ``str``, the leaf nodes
+          of ``x + 1`` are labeled, ``x`` and ``1``.  With ``repr``, they
           are labeled ``Symbol('x')`` and ``Integer(1)``.
 
     Additional keyword arguments are included as styles for the graph.

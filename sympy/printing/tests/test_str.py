@@ -67,8 +67,9 @@ def test_Derivative():
 
 
 def test_dict():
-    assert str({1: 1 + x}) == sstr({1: 1 + x}) == "{1: x + 1}"
-    assert str({1: x**2, 2: y*x}) in ("{1: x**2, 2: x*y}", "{2: x*y, 1: x**2}")
+    assert sstr({1: 1 + x}) == "{1: x + 1}"
+    assert str({1: 1 + x}) == "{1: Add(Symbol('x'), Integer(1))}"
+    assert str({1: x**2, 2: y*x}) in ("{1: Pow(Symbol('x'), Integer(2)), 2: Mul(Symbol('x'), Symbol('y'))}", "{1: Mul(Symbol('x'), Symbol('y')), 2: Pow(Symbol('x'), Integer(2))}")
     assert sstr({1: x**2, 2: y*x}) == "{1: x**2, 2: x*y}"
 
 
@@ -173,9 +174,12 @@ def test_Limit():
 
 
 def test_list():
-    assert str([x]) == sstr([x]) == "[x]"
-    assert str([x**2, x*y + 1]) == sstr([x**2, x*y + 1]) == "[x**2, x*y + 1]"
-    assert str([x**2, [y + x]]) == sstr([x**2, [y + x]]) == "[x**2, [x + y]]"
+    assert sstr([x]) == "[x]"
+    assert str([x]) == "[Symbol('x')]"
+    assert sstr([x**2, x*y + 1]) == "[x**2, x*y + 1]"
+    assert str([x**2, x*y + 1]) == "[Pow(Symbol('x'), Integer(2)), Add(Mul(Symbol('x'), Symbol('y')), Integer(1))]"
+    assert sstr([x**2, [y + x]]) == "[x**2, [x + y]]"
+    assert str([x**2, [y + x]]) == "[Pow(Symbol('x'), Integer(2)), [Add(Symbol('x'), Symbol('y'))]]"
 
 
 def test_Matrix_str():
@@ -536,10 +540,12 @@ def test_Symbol():
 
 
 def test_tuple():
-    assert str((x,)) == sstr((x,)) == "(x,)"
-    assert str((x + y, 1 + x)) == sstr((x + y, 1 + x)) == "(x + y, x + 1)"
-    assert str((x + y, (
-        1 + x, x**2))) == sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
+    assert sstr((x,)) == "(x,)"
+    assert str((x,)) == "(Symbol('x'),)"
+    assert sstr((x + y, 1 + x)) == "(x + y, x + 1)"
+    assert str((x + y, 1 + x)) == "(Add(Symbol('x'), Symbol('y')), Add(Symbol('x'), Integer(1)))"
+    assert sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
+    assert str((x + y, (1 + x, x**2))) == "(Add(Symbol('x'), Symbol('y')), (Add(Symbol('x'), Integer(1)), Pow(Symbol('x'), Integer(2))))"
 
 
 def test_wild_str():
@@ -696,8 +702,8 @@ def test_MatrixSlice():
 
 
 def test_true_false():
-    assert str(true) == repr(true) == sstr(true) == "True"
-    assert str(false) == repr(false) == sstr(false) == "False"
+    assert str(true) == repr(true) == sstr(true) == "true"
+    assert str(false) == repr(false) == sstr(false) == "false"
 
 
 def test_Equivalent():

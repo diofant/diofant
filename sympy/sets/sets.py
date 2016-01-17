@@ -257,7 +257,7 @@ class Set(Basic):
 
         >>> from sympy import Interval
         >>> Interval(0, 1).contains(0.5)
-        True
+        true
         >>> 0.5 in Interval(0, 1)
         True
         """
@@ -777,9 +777,9 @@ class Interval(Set, EvalfMixin):
 
         >>> from sympy import Interval
         >>> Interval(0, 1, left_open=True).left_open
-        True
+        true
         >>> Interval(0, 1, left_open=False).left_open
-        False
+        false
         """
         return self._args[2]
 
@@ -793,9 +793,9 @@ class Interval(Set, EvalfMixin):
 
         >>> from sympy import Interval
         >>> Interval(0, 1, right_open=True).right_open
-        True
+        true
         >>> Interval(0, 1, right_open=False).right_open
-        False
+        false
         """
         return self._args[3]
 

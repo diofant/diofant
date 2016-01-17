@@ -83,6 +83,7 @@ from sympy.functions.elementary.complexes import polarify, unpolarify
 from sympy.simplify.powsimp import powdenest
 from sympy.polys import poly, Poly
 from sympy.series import residue
+from sympy.printing import sstr
 
 # function to define "buckets"
 
@@ -995,7 +996,7 @@ class ShiftA(Operator):
         self._poly = Poly(_x/ai + 1, _x)
 
     def __str__(self):
-        return '<Increment upper %s.>' % (1/self._poly.all_coeffs()[0])
+        return '<Increment upper %s.>' % sstr(1/self._poly.all_coeffs()[0])
 
 
 class ShiftB(Operator):
@@ -1008,7 +1009,7 @@ class ShiftB(Operator):
         self._poly = Poly(_x/(bi - 1) + 1, _x)
 
     def __str__(self):
-        return '<Decrement lower %s.>' % (1/self._poly.all_coeffs()[0] + 1)
+        return '<Decrement lower %s.>' % sstr(1/self._poly.all_coeffs()[0] + 1)
 
 
 class UnShiftA(Operator):
@@ -1048,8 +1049,8 @@ class UnShiftA(Operator):
         self._poly = Poly((n - m)/b0, _x)
 
     def __str__(self):
-        return '<Decrement upper index #%s of %s, %s.>' % (self._i,
-                                                        self._ap, self._bq)
+        return '<Decrement upper index #%s of %s, %s.>' % (sstr(self._i),
+                                                           sstr(self._ap), sstr(self._bq))
 
 
 class UnShiftB(Operator):
@@ -1090,8 +1091,8 @@ class UnShiftB(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment lower index #%s of %s, %s.>' % (self._i,
-                                                        self._ap, self._bq)
+        return '<Increment lower index #%s of %s, %s.>' % (sstr(self._i),
+                                                           sstr(self._ap), sstr(self._bq))
 
 
 class MeijerShiftA(Operator):
@@ -1102,7 +1103,7 @@ class MeijerShiftA(Operator):
         self._poly = Poly(bi - _x, _x)
 
     def __str__(self):
-        return '<Increment upper b=%s.>' % (self._poly.all_coeffs()[1])
+        return '<Increment upper b=%s.>' % sstr(self._poly.all_coeffs()[1])
 
 
 class MeijerShiftB(Operator):
@@ -1113,7 +1114,7 @@ class MeijerShiftB(Operator):
         self._poly = Poly(1 - bi + _x, _x)
 
     def __str__(self):
-        return '<Decrement upper a=%s.>' % (1 - self._poly.all_coeffs()[1])
+        return '<Decrement upper a=%s.>' % sstr(1 - self._poly.all_coeffs()[1])
 
 
 class MeijerShiftC(Operator):
@@ -1124,7 +1125,7 @@ class MeijerShiftC(Operator):
         self._poly = Poly(-bi + _x, _x)
 
     def __str__(self):
-        return '<Increment lower b=%s.>' % (-self._poly.all_coeffs()[1])
+        return '<Increment lower b=%s.>' % sstr(-self._poly.all_coeffs()[1])
 
 
 class MeijerShiftD(Operator):
@@ -1135,7 +1136,7 @@ class MeijerShiftD(Operator):
         self._poly = Poly(bi - 1 - _x, _x)
 
     def __str__(self):
-        return '<Decrement lower a=%s.>' % (self._poly.all_coeffs()[1] + 1)
+        return '<Decrement lower a=%s.>' % sstr(self._poly.all_coeffs()[1] + 1)
 
 
 class MeijerUnShiftA(Operator):
@@ -1180,8 +1181,8 @@ class MeijerUnShiftA(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Decrement upper b index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Decrement upper b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftB(Operator):
@@ -1227,8 +1228,8 @@ class MeijerUnShiftB(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment upper a index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Increment upper a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftC(Operator):
@@ -1278,8 +1279,8 @@ class MeijerUnShiftC(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Decrement lower b index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Decrement lower b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftD(Operator):
@@ -1327,8 +1328,8 @@ class MeijerUnShiftD(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment lower a index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Increment lower a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class ReduceOrder(Operator):
@@ -1392,7 +1393,7 @@ class ReduceOrder(Operator):
 
     def __str__(self):
         return '<Reduce order by cancelling upper %s with lower %s.>' % \
-            (self._a, self._b)
+            (sstr(self._a), sstr(self._b))
 
 
 def _reduce_order(ap, bq, gen, key):
@@ -1522,10 +1523,10 @@ def devise_plan(target, origin, z):
     Very simple plans:
 
     >>> for i in devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z):
-    ...     print(i)
+    ...     i
     <Increment upper 1.>
     >>> for i in devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z):
-    ...     print(i)
+    ...     i
     <Increment lower index #0 of [], [1].>
 
     Several buckets:
@@ -1533,21 +1534,21 @@ def devise_plan(target, origin, z):
     >>> from sympy import S
     >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
     ...             Hyper_Function((2, Rational(3, 2)), ()), z):
-    ...     print(i)
+    ...     i
     <Decrement upper index #0 of [3/2, 1], [].>
     <Decrement upper index #0 of [2, 3/2], [].>
 
     A slightly more complicated plan:
 
     >>> for i in devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z):
-    ...     print(i)
+    ...     i
     <Increment upper 2.>
     <Decrement upper index #0 of [2, 2], [].>
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
     >>> for i in devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z):
-    ...     print(i)
+    ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>
     <Decrement upper index #1 of [-1, 2], [4].>

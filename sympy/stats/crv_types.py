@@ -827,7 +827,7 @@ def Exponential(name, rate):
     E**(-lambda*z)*lambda
 
     >>> cdf(X)(z)
-    Piecewise((1 - E**(-lambda*z), z >= 0), (0, True))
+    Piecewise((1 - E**(-lambda*z), z >= 0), (0, true))
 
     >>> E(X)
     1/lambda
@@ -2218,7 +2218,7 @@ def Uniform(name, left, right):
     >>> X = Uniform("x", a, b)
 
     >>> density(X)(z)
-    Piecewise((1/(-a + b), And(a <= z, z <= b)), (0, True))
+    Piecewise((1/(-a + b), And(a <= z, z <= b)), (0, true))
 
     >>> cdf(X)(z)  # doctest: +SKIP
     -a/(-a + b) + z/(-a + b)

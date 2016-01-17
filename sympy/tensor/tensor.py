@@ -410,7 +410,8 @@ class TIDS(CantSympify):
         return TIDS(*self.mul(self, other))
 
     def __str__(self):
-        return "TIDS({0}, {1}, {2})".format(self.components, self.free, self.dum)
+        from sympy import sstr
+        return "TIDS({0}, {1}, {2})".format(sstr(self.components), sstr(self.free), sstr(self.dum))
 
     def __repr__(self):
         return self.__str__()

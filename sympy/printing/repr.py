@@ -9,6 +9,7 @@ import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps, repr_dps
 
 from sympy.core.function import AppliedUndef
+from sympy.core.compatibility import default_sort_key
 from .printer import Printer
 
 
@@ -41,7 +42,13 @@ class ReprPrinter(Printer):
         elif hasattr(expr, "__module__") and hasattr(expr, "__name__"):
             return "<'%s.%s'>" % (expr.__module__, expr.__name__)
         else:
-            return str(expr)
+            return repr(expr)
+
+    def _print_Dict(self, expr):
+        l = []
+        for o in sorted(expr.args, key=default_sort_key):
+            l.append(self._print(o))
+        return expr.__class__.__name__ + '(%s)' % ', '.join(l)
 
     def _print_Add(self, expr, order=None):
         args = expr.as_ordered_terms(order=order or self.order)

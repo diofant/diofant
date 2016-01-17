@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
                    Dummy, Eq, erf, erfi, exp, Function, I, Integral, LambertW,
-                   log, O, pi, Rational, RootOf, S, simplify, sin, sqrt,
+                   log, O, pi, Rational, RootOf, S, simplify, sin, sqrt, sstr,
                    Symbol, tan, asin, sinh, Piecewise, symbols, Poly, Integer)
 from sympy.solvers.ode import (_undetermined_coefficients_match, checkodesol,
                                classify_ode, classify_sysode, constant_renumber,
@@ -218,7 +218,7 @@ def test_linear_2eq_order2():
     "4*C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6))/3192), Eq(y(t), -sqrt(133)*(-C2*(133*t**8/24 - t**3/6 + "
     "sqrt(133)*t**3/2 + 1) + C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) - C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) + "
     "C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6))/266)]")
-    assert str(dsolve(eq8)) == sol8
+    assert sstr(dsolve(eq8)) == sol8
 
     eq9 = (Eq(diff(x(t),t,t), t*(4*diff(x(t),t) + 9*diff(y(t),t))), Eq(diff(y(t),t,t), t*(12*diff(x(t),t) - 6*diff(y(t),t))))
     sol9 = [Eq(x(t), -sqrt(133)*(4*C1*Integral(exp((-sqrt(133) - 1)*Integral(t, t)), t) + 4*C2 -
@@ -550,14 +550,14 @@ def test_nonlinear_3eq_order1():
     "C3 + Integral(-sqrt(15)/15, t))), Eq(y(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), "\
     "(_y, y(t))), C3 + Integral(sqrt(5)/10, t))), Eq(z(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*"\
     "sqrt(4*C1 - C2 + 5*_y**2)), (_y, z(t))), C3 + Integral(sqrt(3)/6, t)))]"
-    assert str(dsolve(eq1)) == sol1
+    assert sstr(dsolve(eq1)) == sol1
 
     eq2 = (4*diff(x(t),t) + 2*y(t)*z(t)*sin(t), 3*diff(y(t),t) - z(t)*x(t)*sin(t), 5*diff(z(t),t) - x(t)*y(t)*sin(t))
     sol2 = "[Eq(x(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), (_y, x(t))), C3 + "\
     "Integral(-sqrt(5)*sin(t)/10, t))), Eq(y(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), "\
     "(_y, y(t))), C3 + Integral(sqrt(15)*sin(t)/15, t))), Eq(z(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*"\
     "sqrt(4*C1 - C2 + 5*_y**2)), (_y, z(t))), C3 + Integral(-sqrt(3)*sin(t)/6, t)))]"
-    assert str(dsolve(eq2)) == sol2
+    assert sstr(dsolve(eq2)) == sol2
 
 
 def test_checkodesol():

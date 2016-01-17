@@ -593,7 +593,7 @@ class binomial(CombinatorialFunction):
     Rows of Pascal's triangle can be generated with the binomial function:
 
     >>> for N in range(8):
-    ...     print([ binomial(N, i) for i in range(N + 1)])
+    ...     [ binomial(N, i) for i in range(N + 1)]
     ...
     [1]
     [1, 1]

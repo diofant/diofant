@@ -41,7 +41,7 @@ def verify_numerically(f, g, z=None, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     >>> from sympy.abc import x
     >>> from sympy.utilities.randtest import verify_numerically as tn
     >>> tn(sin(x)**2 + cos(x)**2, 1, x)
-    True
+    true
     """
     f, g, z = Tuple(f, g, z)
     z = [z] if isinstance(z, Symbol) else (f.free_symbols | g.free_symbols)
@@ -67,7 +67,7 @@ def test_derivative_numerically(f, z, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     >>> from sympy.abc import x
     >>> from sympy.utilities.randtest import test_derivative_numerically as td
     >>> td(sin(x), x)
-    True
+    true
     """
     from sympy.core.function import Derivative
     z0 = random_complex_number(a, b, c, d)

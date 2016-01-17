@@ -13,19 +13,19 @@ Understanding Expression Trees
 Before we can do this, we need to understand how expressions are represented
 in SymPy.  A mathematical expression is represented as a tree.  Let us take
 the expression `x^2 + xy`, i.e., ``x**2 + x*y``.  We can see what this
-expression looks like internally by using ``srepr``
+expression looks like internally by using ``repr``
 
     >>> from sympy import *
     >>> x, y, z = symbols('x y z')
 
     >>> expr = x**2 + x*y
-    >>> srepr(expr)
+    >>> repr(expr)
     "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))"
 
 The easiest way to tear this apart is to look at a diagram of the expression
 tree:
 
-.. This comes from dotprint(x**2 + x*y, labelfunc=srepr)
+.. This comes from dotprint(x**2 + x*y, labelfunc=repr)
 
 .. graphviz::
 
@@ -81,7 +81,7 @@ integers.  It is similar to the Python built-in type ``int``, except that
 When we write ``x**2``, this creates a ``Pow`` object.  ``Pow`` is short for
 "power".
 
-    >>> srepr(x**2)
+    >>> repr(x**2)
     "Pow(Symbol('x'), Integer(2))"
 
 We could have created the same object by calling ``Pow(x, 2)``
@@ -89,7 +89,7 @@ We could have created the same object by calling ``Pow(x, 2)``
     >>> Pow(x, 2)
     x**2
 
-Note that in the ``srepr`` output, we see ``Integer(2)``, the SymPy version of
+Note that in the ``repr`` output, we see ``Integer(2)``, the SymPy version of
 integers, even though technically, we input ``2``, a Python int.  In general,
 whenever you combine a SymPy object with a non-SymPy object via some function
 or operation, the non-SymPy object will be converted into a SymPy object.  The
@@ -104,7 +104,7 @@ We have seen that ``x**2`` is represented as ``Pow(x, 2)``.  What about
 ``x*y``?  As we might expect, this is the multiplication of ``x`` and ``y``.
 The SymPy class for multiplication is ``Mul``.
 
-    >>> srepr(x*y)
+    >>> repr(x*y)
     "Mul(Symbol('x'), Symbol('y'))"
 
 Thus, we could have created the same object by writing ``Mul(x, y)``.
@@ -124,13 +124,13 @@ SymPy expression trees can have many branches, and can be quite deep or quite
 broad.  Here is a more complicated example
 
     >>> expr = sin(x*y)/2 - x**2 + 1/y
-    >>> srepr(expr)
+    >>> repr(expr)
     "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2),
     sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))"
 
 Here is a diagram
 
-.. dotprint(sin(x*y)/2 - x**2 + 1/y, labelfunc=srepr)
+.. dotprint(sin(x*y)/2 - x**2 + 1/y, labelfunc=repr)
 
 .. graphviz::
 
@@ -189,10 +189,10 @@ class in SymPy.  ``x - y`` is represented as ``x + -y``, or, more completely,
 ``x + -1*y``, i.e., ``Add(x, Mul(-1, y))``.
 
     >>> expr = x - y
-    >>> srepr(x - y)
+    >>> repr(x - y)
     "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))"
 
-.. dotprint(x - y, labelfunc=srepr)
+.. dotprint(x - y, labelfunc=repr)
 
 .. graphviz::
 
@@ -229,10 +229,10 @@ What if we had divided something other than 1 by ``y``, like ``x/y``?  Let's
 see.
 
     >>> expr = x/y
-    >>> srepr(expr)
+    >>> repr(expr)
     "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))"
 
-.. dotprint(x/y, labelfunc=srepr)
+.. dotprint(x/y, labelfunc=repr)
 
 .. graphviz::
 
@@ -272,7 +272,7 @@ numbers are always combined into a single term in a multiplication, so that
 when we divide by 2, it is represented as multiplying by 1/2.
 
 Finally, one last note.  You may have noticed that the order we entered our
-expression and the order that it came out from ``srepr`` or in the graph were
+expression and the order that it came out from ``repr`` or in the graph were
 different.  You may have also noticed this phenonemon earlier in the
 tutorial.  For example
 
@@ -381,7 +381,7 @@ Mul's ``args`` are sorted, so that the same ``Mul`` will have the same
 ``args``.  But the sorting is based on some criteria designed to make the
 sorting unique and efficient that has no mathematical significance.
 
-The ``srepr`` form of our ``expr`` is ``Mul(3, x, Pow(y, 2))``.  What if we
+The ``repr`` form of our ``expr`` is ``Mul(3, x, Pow(y, 2))``.  What if we
 want to get at the ``args`` of ``Pow(y, 2)``.  Notice that the ``y**2`` is in
 the third slot of ``expr.args``, i.e., ``expr.args[2]``.
 

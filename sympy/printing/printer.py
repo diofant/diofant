@@ -186,6 +186,8 @@ class Printer(object):
     printmethod = None
 
     def __init__(self, settings=None):
+        from sympy.external import import_module
+
         self._str = str
 
         self._settings = self._default_settings.copy()
@@ -205,6 +207,11 @@ class Printer(object):
         # _print_level is the number of times self._print() was recursively
         # called. See StrPrinter._print_Float() for an example of usage
         self._print_level = 0
+
+        numpy = import_module("numpy")
+        if numpy is not None:
+            formatter = {'numpystr': str}
+            numpy.set_printoptions(formatter=formatter)
 
     @classmethod
     def set_global_settings(cls, **settings):
