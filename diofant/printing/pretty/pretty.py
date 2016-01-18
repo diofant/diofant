@@ -1339,7 +1339,7 @@ class PrettyPrinter(Printer):
         if len(p.sets) > 1 and not has_variety(p.sets):
             return self._print(Pow(p.sets[0], len(p.sets), evaluate=False))
         else:
-            prod_char = "\N{MULTIPLICATION SIGN}"
+            prod_char = "\N{MULTIPLICATION SIGN}" if self._use_unicode else 'x'
             return self._print_seq(p.sets, None, None, ' %s ' % prod_char,
                                    parenthesize=lambda set: set.is_Union or
                                    set.is_Intersection or set.is_ProductSet)

@@ -3097,6 +3097,15 @@ def test_ProductSet_paranthesis():
     assert upretty(Union(a*b, b*FiniteSet(1, 2))) == ucode_str
 
 
+def test_sympyissue_10413():
+    ascii_str = '[2, 3] x [4, 7]'
+    ucode_str = '[2, 3] × [4, 7]'
+
+    a, b = Interval(2, 3), Interval(4, 7)
+    assert pretty(a*b) == ascii_str
+    assert upretty(a*b) == ucode_str
+
+
 def test_pretty_limits():
     expr = Limit(x, x, oo)
     ascii_str = \
