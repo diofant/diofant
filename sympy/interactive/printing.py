@@ -103,15 +103,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
                 latex_formatter.type_printers.pop(cls)
 
 
-def _is_ipython(shell):
-    """Is a shell instance an IPython shell?"""
-    # shortcut, so we don't import IPython if we don't have to
-    if 'IPython' not in sys.modules:
-        return False
-    from IPython.core.interactiveshell import InteractiveShell
-    return isinstance(shell, InteractiveShell)
-
-
 def init_printing(pretty_print=True, order=None, use_unicode=None,
                   use_latex=None, wrap_line=None, num_columns=None,
                   no_global=False, ip=None,
@@ -225,9 +216,6 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
             pass
         else:
             in_ipython = (ip is not None)
-
-    if ip and not in_ipython:
-        in_ipython = _is_ipython(ip)
 
     if in_ipython and pretty_print:
         try:
