@@ -23,11 +23,13 @@ from diofant.printing.pretty import pretty as xpretty, pprint
 from diofant.printing.pretty.pretty_symbology import xobj, U
 from diofant.core.trace import Tr
 
+from diofant.abc import a, b, x, y, z, k, w
+
 __all__ = ()
 
-a, b, x, y, z, k = symbols('a,b,x,y,z,k')
 th = Symbol('theta')
 ph = Symbol('phi')
+
 
 """
 Expressions whose pretty-printing is tested here:
@@ -3087,6 +3089,22 @@ frozenset({x , x*y})\
     ucode_str = '{-∞, …, -3, -2}'
     assert pretty(Range(-2, -oo, -1)) == ascii_str
     assert upretty(Range(-2, -oo, -1)) == ucode_str
+
+
+def test_pretty_Union():
+    a, b = Interval(2, 3), Interval(4, 7)
+    ucode_str = '[2, 3] ∪ [4, 7]'
+    ascii_str = '[2, 3] U [4, 7]'
+    assert upretty(Union(a, b)) == ucode_str
+    assert pretty(Union(a, b)) == ascii_str
+
+
+def test_pretty_Intersection():
+    a, b = Interval(x, y), Interval(z, w)
+    ucode_str = '[x, y] ∩ [z, w]'
+    ascii_str = '[x, y] n [z, w]'
+    assert upretty(Intersection(a, b)) == ucode_str
+    assert pretty(Intersection(a, b)) == ascii_str
 
 
 def test_ProductSet_paranthesis():
