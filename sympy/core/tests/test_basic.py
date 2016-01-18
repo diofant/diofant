@@ -7,7 +7,7 @@ from sympy.core.basic import Basic, Atom, preorder_traversal
 from sympy.core.singleton import S, Singleton
 from sympy.core.symbol import symbols
 from sympy.core.compatibility import default_sort_key
-from sympy import sin, cos, Lambda, Q
+from sympy import sin, cos, Lambda
 
 
 b1 = Basic()
@@ -170,8 +170,6 @@ def test_call():
     # TODO UndefinedFunction does not subclass Expr
     # f = Function('f')
     # assert (2*f)(x) == 2*f(x)
-
-    assert (Q.real & Q.positive).rcall(x) == Q.real(x) & Q.positive(x)
 
 
 def test_literal_evalf_is_number_is_zero_is_comparable():

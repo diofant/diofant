@@ -2,8 +2,8 @@
 
 import pytest
 
-from sympy import symbols, Q
-from sympy.logic.boolalg import And, Implies, Equivalent, true, false
+from sympy import symbols
+from sympy.logic.boolalg import And, Implies, Equivalent, true, false, Boolean
 from sympy.logic.inference import (literal_symbol, pl_true, satisfiable, valid,
                                    entails, PropKB)
 from sympy.logic.algorithms.dpll import (dpll, dpll_satisfiable,
@@ -218,15 +218,19 @@ def test_propKB_tolerant():
 
 def test_satisfiable_non_symbols():
     x, y = symbols('x y')
-    assumptions = Q.zero(x*y)
-    facts = Implies(Q.zero(x*y), Q.zero(x) | Q.zero(y))
-    query = ~Q.zero(x) & ~Q.zero(y)
+
+    class zero(Boolean):
+        pass
+
+    assumptions = zero(x*y)
+    facts = Implies(zero(x*y), zero(x) | zero(y))
+    query = ~zero(x) & ~zero(y)
     refutations = [
-        {Q.zero(x): True, Q.zero(x*y): True},
-        {Q.zero(y): True, Q.zero(x*y): True},
-        {Q.zero(x): True, Q.zero(y): True, Q.zero(x*y): True},
-        {Q.zero(x): True, Q.zero(y): False, Q.zero(x*y): True},
-        {Q.zero(x): False, Q.zero(y): True, Q.zero(x*y): True}]
+        {zero(x): True, zero(x*y): True},
+        {zero(y): True, zero(x*y): True},
+        {zero(x): True, zero(y): True, zero(x*y): True},
+        {zero(x): True, zero(y): False, zero(x*y): True},
+        {zero(x): False, zero(y): True, zero(x*y): True}]
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll')
     assert satisfiable(And(assumptions, facts, ~query), algorithm='dpll') in refutations
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll2')

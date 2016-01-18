@@ -441,8 +441,8 @@ def test_issue_6046():
     assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
     assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
-    exec("from sympy.abc import Q, C", locals)
-    assert str(sympify('C&Q', locals)) == 'And(C, Q)'
+    exec("from sympy.abc import S, O", locals)
+    assert str(sympify('O&S', locals)) == 'And(O, S)'
 
 
 def test_issue_8821_highprec_from_str():
