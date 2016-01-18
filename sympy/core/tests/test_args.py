@@ -79,16 +79,6 @@ def _test_args(obj):
     return all(isinstance(arg, Basic) for arg in obj.args)
 
 
-def test_sympy__assumptions__assume__AppliedPredicate():
-    from sympy.assumptions.assume import AppliedPredicate, Predicate
-    assert _test_args(AppliedPredicate(Predicate("test"), 2))
-
-
-def test_sympy__assumptions__assume__Predicate():
-    from sympy.assumptions.assume import Predicate
-    assert _test_args(Predicate("test"))
-
-
 @pytest.mark.xfail
 def test_sympy__combinatorics__graycode__GrayCode():
     from sympy.combinatorics.graycode import GrayCode
