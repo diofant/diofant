@@ -7,7 +7,7 @@ from ...core import Basic, Tuple
 from ...matrices import Matrix
 from ...utilities import flatten
 from .mutable_ndim_array import MutableNDimArray
-from .ndim_array import NDimArray
+from .ndim_array import NDimArray, ImmutableNDimArray
 
 
 class DenseNDimArray(NDimArray):
@@ -108,7 +108,7 @@ class DenseNDimArray(NDimArray):
         return type(self)(self._array, newshape)
 
 
-class ImmutableDenseNDimArray(DenseNDimArray, Basic):
+class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
     """
 
     """

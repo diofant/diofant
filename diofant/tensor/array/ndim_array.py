@@ -1,6 +1,6 @@
 import collections
 
-from ...core import Integer, sympify
+from ...core import Integer, sympify, Expr
 from ...matrices import Matrix
 
 
@@ -333,3 +333,7 @@ class NDimArray:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+
+class ImmutableNDimArray(NDimArray, Expr):
+    _op_priority = 11.0

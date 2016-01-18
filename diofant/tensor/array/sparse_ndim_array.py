@@ -6,7 +6,7 @@ from ...core import S, Dict, Expr, Tuple
 from ...matrices import SparseMatrix
 from ...utilities import flatten
 from .mutable_ndim_array import MutableNDimArray
-from .ndim_array import NDimArray
+from .ndim_array import NDimArray, ImmutableNDimArray
 
 
 class SparseNDimArray(NDimArray):
@@ -96,7 +96,7 @@ class SparseNDimArray(NDimArray):
         return iterator()
 
 
-class ImmutableSparseNDimArray(SparseNDimArray, Expr):
+class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
 
     def __new__(cls, *args, **kwargs):
 

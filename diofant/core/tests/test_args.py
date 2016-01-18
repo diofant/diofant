@@ -2124,6 +2124,10 @@ def test_diofant__simplify__hyperexpand__G_Function():
     assert _test_args(G_Function([2], [1], [], []))
 
 
+def test_diofant__tensor__array__ndim_array__ImmutableNDimArray():
+    pass
+
+
 def test_diofant__tensor__array__dense_ndim_array__ImmutableDenseNDimArray():
     from diofant.tensor.array.dense_ndim_array import ImmutableDenseNDimArray
     densarr = ImmutableDenseNDimArray(range(10, 34), (2, 3, 4))

@@ -7,6 +7,8 @@ from diofant import Symbol, Rational, SparseMatrix, Dict
 from diofant.matrices import Matrix
 from diofant.tensor.array.sparse_ndim_array import ImmutableSparseNDimArray
 
+from diofant.abc import x, y, z
+
 __all__ = ()
 
 
@@ -279,8 +281,6 @@ def test_slices():
 
 
 def test_diff_and_applyfunc():
-    from diofant.abc import x, y, z
-
     md = ImmutableDenseNDimArray([[x, y], [x*z, x*y*z]])
     assert md.diff(x) == ImmutableDenseNDimArray([[1, 0], [z, y*z]])
 
@@ -295,3 +295,17 @@ def test_diff_and_applyfunc():
     sdn = sd.applyfunc(lambda x: x/2)
     assert sdn == ImmutableSparseNDimArray([[x/2, y/2], [x*z/2, x*y*z/2]])
     assert sd != sdn
+
+
+def test_op_priority():
+    md = ImmutableDenseNDimArray([1, 2, 3])
+    e1 = (1+x)*md
+    e2 = md*(1+x)
+    assert e1 == ImmutableDenseNDimArray([1+x, 2+2*x, 3+3*x])
+    assert e1 == e2
+
+    sd = ImmutableSparseNDimArray([1, 2, 3])
+    e3 = (1+x)*md
+    e4 = md*(1+x)
+    assert e3 == ImmutableDenseNDimArray([1+x, 2+2*x, 3+3*x])
+    assert e3 == e4
