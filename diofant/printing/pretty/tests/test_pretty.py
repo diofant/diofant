@@ -10,7 +10,7 @@ from diofant import (
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
     Interval, Union, Integer, Float, Complement, Intersection,
-    MatrixSymbol, AlgebraicNumber)
+    Trace, MatrixSymbol, AlgebraicNumber)
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2_r
 from diofant.functions import (
@@ -2584,6 +2584,41 @@ def test_Adjoint():
         "    †\n⎛ T⎞ \n⎝X ⎠ "
     assert upretty(Transpose(Adjoint(X))) == \
         "    T\n⎛ †⎞ \n⎝X ⎠ "
+
+
+def test_pretty_Trace():
+    # issue sympy/sympy#9044
+    X = Matrix([[1, 2], [3, 4]])
+    Y = Matrix([[2, 4], [6, 8]])
+    ascii_str_1 = \
+"""\
+  /[1  2]\\
+tr|[    ]|
+  \[3  4]/\
+"""
+    ucode_str_1 = \
+"""\
+  ⎛⎡1  2⎤⎞
+tr⎜⎢    ⎥⎟
+  ⎝⎣3  4⎦⎠\
+"""
+    ascii_str_2 = \
+"""\
+  /[1  2]\     /[2  4]\\
+tr|[    ]| + tr|[    ]|
+  \[3  4]/     \[6  8]/\
+"""
+    ucode_str_2 = \
+"""\
+  ⎛⎡1  2⎤⎞     ⎛⎡2  4⎤⎞
+tr⎜⎢    ⎥⎟ + tr⎜⎢    ⎥⎟
+  ⎝⎣3  4⎦⎠     ⎝⎣6  8⎦⎠\
+"""
+    assert pretty(Trace(X)) == ascii_str_1
+    assert upretty(Trace(X)) == ucode_str_1
+
+    assert pretty(Trace(X) + Trace(Y)) == ascii_str_2
+    assert upretty(Trace(X) + Trace(Y)) == ucode_str_2
 
 
 def test_pretty_piecewise():
