@@ -13,49 +13,50 @@ Understanding Expression Trees
 Before we can do this, we need to understand how expressions are represented
 in SymPy.  A mathematical expression is represented as a tree.  Let us take
 the expression `x^2 + xy`, i.e., ``x**2 + x*y``.  We can see what this
-expression looks like internally by using ``srepr``
+expression looks like internally by using ``repr``
 
     >>> from sympy import *
     >>> x, y, z = symbols('x y z')
 
     >>> expr = x**2 + x*y
-    >>> srepr(expr)
+    >>> repr(expr)
     "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))"
 
 The easiest way to tear this apart is to look at a diagram of the expression
 tree:
 
-.. This comes from dotprint(x**2 + x*y, labelfunc=srepr)
+.. This comes from dotprint(x**2 + x*y, labelfunc=repr)
 
 .. graphviz::
 
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Symbol(x)_(0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Integer(2)_(1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
-    "Symbol(y)_(0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Symbol(x)_(1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Mul(Symbol(x), Symbol(y))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Pow(Symbol(x), Integer(2))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Add(Mul(Symbol(x), Symbol(y)), Pow(Symbol(x), Integer(2)))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Pow(Symbol('x'), Integer(2))_(0,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('x')_(0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Integer(2)_(0, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
+    "Mul(Symbol('x'), Symbol('y'))_(1,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Symbol('x')_(1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Symbol('y')_(1, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Mul(Symbol(x), Symbol(y))_(0,)" -> "Symbol(x)_(0, 0)";
-    "Mul(Symbol(x), Symbol(y))_(0,)" -> "Symbol(y)_(0, 1)";
-    "Pow(Symbol(x), Integer(2))_(1,)" -> "Symbol(x)_(1, 0)";
-    "Pow(Symbol(x), Integer(2))_(1,)" -> "Integer(2)_(1, 1)";
-    "Add(Mul(Symbol(x), Symbol(y)), Pow(Symbol(x), Integer(2)))_()" -> "Mul(Symbol(x), Symbol(y))_(0,)";
-    "Add(Mul(Symbol(x), Symbol(y)), Pow(Symbol(x), Integer(2)))_()" -> "Pow(Symbol(x), Integer(2))_(1,)";
+    "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))_()" -> "Pow(Symbol('x'), Integer(2))_(0,)";
+    "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))_()" -> "Mul(Symbol('x'), Symbol('y'))_(1,)";
+    "Pow(Symbol('x'), Integer(2))_(0,)" -> "Symbol('x')_(0, 0)";
+    "Pow(Symbol('x'), Integer(2))_(0,)" -> "Integer(2)_(0, 1)";
+    "Mul(Symbol('x'), Symbol('y'))_(1,)" -> "Symbol('x')_(1, 0)";
+    "Mul(Symbol('x'), Symbol('y'))_(1,)" -> "Symbol('y')_(1, 1)";
     }
 
 .. note::
@@ -80,7 +81,7 @@ integers.  It is similar to the Python built-in type ``int``, except that
 When we write ``x**2``, this creates a ``Pow`` object.  ``Pow`` is short for
 "power".
 
-    >>> srepr(x**2)
+    >>> repr(x**2)
     "Pow(Symbol('x'), Integer(2))"
 
 We could have created the same object by calling ``Pow(x, 2)``
@@ -88,7 +89,7 @@ We could have created the same object by calling ``Pow(x, 2)``
     >>> Pow(x, 2)
     x**2
 
-Note that in the ``srepr`` output, we see ``Integer(2)``, the SymPy version of
+Note that in the ``repr`` output, we see ``Integer(2)``, the SymPy version of
 integers, even though technically, we input ``2``, a Python int.  In general,
 whenever you combine a SymPy object with a non-SymPy object via some function
 or operation, the non-SymPy object will be converted into a SymPy object.  The
@@ -103,7 +104,7 @@ We have seen that ``x**2`` is represented as ``Pow(x, 2)``.  What about
 ``x*y``?  As we might expect, this is the multiplication of ``x`` and ``y``.
 The SymPy class for multiplication is ``Mul``.
 
-    >>> srepr(x*y)
+    >>> repr(x*y)
     "Mul(Symbol('x'), Symbol('y'))"
 
 Thus, we could have created the same object by writing ``Mul(x, y)``.
@@ -123,59 +124,60 @@ SymPy expression trees can have many branches, and can be quite deep or quite
 broad.  Here is a more complicated example
 
     >>> expr = sin(x*y)/2 - x**2 + 1/y
-    >>> srepr(expr)
+    >>> repr(expr)
     "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2),
     sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))"
 
 Here is a diagram
 
-.. dotprint(sin(x*y)/2 - x**2 + 1/y, labelfunc=srepr)
+.. dotprint(sin(x*y)/2 - x**2 + 1/y, labelfunc=repr)
 
 .. graphviz::
 
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Half()_(0, 0)" ["color"="black", "label"="Rational(1, 2)", "shape"="ellipse"];
-    "Symbol(y)_(2, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Symbol(x)_(1, 1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Integer(2)_(1, 1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
-    "NegativeOne()_(2, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "NegativeOne()_(1, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Symbol(y)_(0, 1, 0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Symbol(x)_(0, 1, 0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Pow(Symbol(x), Integer(2))_(1, 1)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Pow(Symbol(y), NegativeOne())_(2,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Mul(Symbol(x), Symbol(y))_(0, 1, 0)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "sin(Mul(Symbol(x), Symbol(y)))_(0, 1)" ["color"="black", "label"="sin", "shape"="ellipse"];
-    "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Integer(-1)_(0, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
+    "Pow(Symbol('x'), Integer(2))_(0, 1)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('x')_(0, 1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Integer(2)_(0, 1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
+    "Pow(Symbol('y'), Integer(-1))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('y')_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
+    "Integer(-1)_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
+    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Rational(1, 2)_(2, 0)" ["color"="black", "label"="Rational(1, 2)", "shape"="ellipse"];
+    "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)" ["color"="black", "label"="sin", "shape"="ellipse"];
+    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Symbol('x')_(2, 1, 0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Symbol('y')_(2, 1, 0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Pow(Symbol(y), NegativeOne())_(2,)" -> "Symbol(y)_(2, 0)";
-    "Pow(Symbol(x), Integer(2))_(1, 1)" -> "Symbol(x)_(1, 1, 0)";
-    "Pow(Symbol(x), Integer(2))_(1, 1)" -> "Integer(2)_(1, 1, 1)";
-    "Pow(Symbol(y), NegativeOne())_(2,)" -> "NegativeOne()_(2, 1)";
-    "Mul(Symbol(x), Symbol(y))_(0, 1, 0)" -> "Symbol(x)_(0, 1, 0, 0)";
-    "Mul(Symbol(x), Symbol(y))_(0, 1, 0)" -> "Symbol(y)_(0, 1, 0, 1)";
-    "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)" -> "Half()_(0, 0)";
-    "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)" -> "NegativeOne()_(1, 0)";
-    "sin(Mul(Symbol(x), Symbol(y)))_(0, 1)" -> "Mul(Symbol(x), Symbol(y))_(0, 1, 0)";
-    "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)" -> "Pow(Symbol(x), Integer(2))_(1, 1)";
-    "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)" -> "sin(Mul(Symbol(x), Symbol(y)))_(0, 1)";
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" -> "Pow(Symbol(y), NegativeOne())_(2,)";
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" -> "Mul(Half(), sin(Mul(Symbol(x), Symbol(y))))_(0,)";
-    "Add(Mul(Half(), sin(Mul(Symbol(x), Symbol(y)))), Mul(NegativeOne(), Pow(Symbol(x), Integer(2))), Pow(Symbol(y), NegativeOne()))_()" -> "Mul(NegativeOne(), Pow(Symbol(x), Integer(2)))_(1,)";
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)";
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Pow(Symbol('y'), Integer(-1))_(1,)";
+    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)";
+    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" -> "Integer(-1)_(0, 0)";
+    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" -> "Pow(Symbol('x'), Integer(2))_(0, 1)";
+    "Pow(Symbol('x'), Integer(2))_(0, 1)" -> "Symbol('x')_(0, 1, 0)";
+    "Pow(Symbol('x'), Integer(2))_(0, 1)" -> "Integer(2)_(0, 1, 1)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Symbol('y')_(1, 0)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Integer(-1)_(1, 1)";
+    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" -> "Rational(1, 2)_(2, 0)";
+    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" -> "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)";
+    "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)" -> "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)";
+    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('x')_(2, 1, 0, 0)";
+    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('y')_(2, 1, 0, 1)";
     }
 
 This expression reveals some interesting things about SymPy expression
@@ -187,36 +189,37 @@ class in SymPy.  ``x - y`` is represented as ``x + -y``, or, more completely,
 ``x + -1*y``, i.e., ``Add(x, Mul(-1, y))``.
 
     >>> expr = x - y
-    >>> srepr(x - y)
+    >>> repr(x - y)
     "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))"
 
-.. dotprint(x - y, labelfunc=srepr)
+.. dotprint(x - y, labelfunc=repr)
 
 .. graphviz::
 
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Symbol(x)_(1,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Symbol(y)_(0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "NegativeOne()_(0, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Mul(NegativeOne(), Symbol(y))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Add(Mul(NegativeOne(), Symbol(y)), Symbol(x))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Symbol('x')_(0,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Mul(Integer(-1), Symbol('y'))_(1,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Integer(-1)_(1, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
+    "Symbol('y')_(1, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Mul(NegativeOne(), Symbol(y))_(0,)" -> "Symbol(y)_(0, 1)";
-    "Mul(NegativeOne(), Symbol(y))_(0,)" -> "NegativeOne()_(0, 0)";
-    "Add(Mul(NegativeOne(), Symbol(y)), Symbol(x))_()" -> "Symbol(x)_(1,)";
-    "Add(Mul(NegativeOne(), Symbol(y)), Symbol(x))_()" -> "Mul(NegativeOne(), Symbol(y))_(0,)";
+    "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))_()" -> "Symbol('x')_(0,)";
+    "Add(Symbol('x'), Mul(Integer(-1), Symbol('y')))_()" -> "Mul(Integer(-1), Symbol('y'))_(1,)";
+    "Mul(Integer(-1), Symbol('y'))_(1,)" -> "Integer(-1)_(1, 0)";
+    "Mul(Integer(-1), Symbol('y'))_(1,)" -> "Symbol('y')_(1, 1)";
     }
 
 Next, look at ``1/y``.  We might expect to see something like ``Div(1, y)``,
@@ -226,36 +229,37 @@ What if we had divided something other than 1 by ``y``, like ``x/y``?  Let's
 see.
 
     >>> expr = x/y
-    >>> srepr(expr)
+    >>> repr(expr)
     "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))"
 
-.. dotprint(x/y, labelfunc=srepr)
+.. dotprint(x/y, labelfunc=repr)
 
 .. graphviz::
 
     digraph{
 
     # Graph style
+    "ordering"="out"
     "rankdir"="TD"
 
     #########
     # Nodes #
     #########
 
-    "Symbol(x)_(0,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Symbol(y)_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "NegativeOne()_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Pow(Symbol(y), NegativeOne())_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Mul(Symbol(x), Pow(Symbol(y), NegativeOne()))_()" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))_()" ["color"="black", "label"="Mul", "shape"="ellipse"];
+    "Symbol('x')_(0,)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
+    "Pow(Symbol('y'), Integer(-1))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
+    "Symbol('y')_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
+    "Integer(-1)_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
 
     #########
     # Edges #
     #########
 
-    "Pow(Symbol(y), NegativeOne())_(1,)" -> "Symbol(y)_(1, 0)";
-    "Pow(Symbol(y), NegativeOne())_(1,)" -> "NegativeOne()_(1, 1)";
-    "Mul(Symbol(x), Pow(Symbol(y), NegativeOne()))_()" -> "Symbol(x)_(0,)";
-    "Mul(Symbol(x), Pow(Symbol(y), NegativeOne()))_()" -> "Pow(Symbol(y), NegativeOne())_(1,)";
+    "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))_()" -> "Symbol('x')_(0,)";
+    "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))_()" -> "Pow(Symbol('y'), Integer(-1))_(1,)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Symbol('y')_(1, 0)";
+    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Integer(-1)_(1, 1)";
     }
 
 We see that ``x/y`` is represented as ``x*y**-1``, i.e., ``Mul(x, Pow(y,
@@ -268,7 +272,7 @@ numbers are always combined into a single term in a multiplication, so that
 when we divide by 2, it is represented as multiplying by 1/2.
 
 Finally, one last note.  You may have noticed that the order we entered our
-expression and the order that it came out from ``srepr`` or in the graph were
+expression and the order that it came out from ``repr`` or in the graph were
 different.  You may have also noticed this phenonemon earlier in the
 tutorial.  For example
 
@@ -377,7 +381,7 @@ Mul's ``args`` are sorted, so that the same ``Mul`` will have the same
 ``args``.  But the sorting is based on some criteria designed to make the
 sorting unique and efficient that has no mathematical significance.
 
-The ``srepr`` form of our ``expr`` is ``Mul(3, x, Pow(y, 2))``.  What if we
+The ``repr`` form of our ``expr`` is ``Mul(3, x, Pow(y, 2))``.  What if we
 want to get at the ``args`` of ``Pow(y, 2)``.  Notice that the ``y**2`` is in
 the third slot of ``expr.args``, i.e., ``expr.args[2]``.
 

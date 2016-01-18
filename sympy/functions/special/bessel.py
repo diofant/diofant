@@ -699,7 +699,7 @@ def jn_zeros(n, k, method="sympy", dps=15):
 
     >>> from sympy import jn_zeros
     >>> jn_zeros(2, 4, dps=5)
-    [5.7635, 9.0950, 12.323, 15.515]
+    [5.7635, 9.095, 12.323, 15.515]
 
     See Also
     ========

@@ -9,7 +9,7 @@ from sympy.functions.elementary.complexes import Abs
 from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.miscellaneous import sqrt
 
-_x = Dummy("x")
+_x = Dummy("dummy_for_spherical_harmonics")
 
 
 class Ynm(Function):

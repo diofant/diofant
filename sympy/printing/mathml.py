@@ -106,8 +106,7 @@ class MathMLPrinter(Printer):
             # thing a coeff of 1 can remain
             return self._print(terms[0])
 
-        if self.order != 'old':
-            terms = Mul._from_args(terms).as_ordered_factors()
+        terms = Mul._from_args(terms).as_ordered_factors()
 
         x = self.dom.createElement('apply')
         x.appendChild(self.dom.createElement('times'))
@@ -118,7 +117,7 @@ class MathMLPrinter(Printer):
         return x
 
     def _print_Add(self, expr, order=None):
-        args = self._as_ordered_terms(expr, order=order)
+        args = expr.as_ordered_terms(order=order or self.order)
         lastProcessed = self._print(args[0])
         plusNodes = []
         for arg in args[1:]:

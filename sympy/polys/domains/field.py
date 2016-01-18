@@ -46,13 +46,12 @@ class Field(Ring):
         >>> from sympy import Rational, gcd, primitive
         >>> from sympy.abc import x
 
-        >>> print(QQ.gcd(QQ(2, 3), QQ(4, 9)))
+        >>> QQ.gcd(QQ(2, 3), QQ(4, 9))
         2/9
-        >>> print(gcd(Rational(2, 3), Rational(4, 9)))
+        >>> gcd(Rational(2, 3), Rational(4, 9))
         2/9
-        >>> print(primitive(2*x/3 + Rational(4, 9)))
+        >>> primitive(2*x/3 + Rational(4, 9))
         (2/9, 3*x + 2)
-
         """
         try:
             ring = self.get_ring()

@@ -1,12 +1,7 @@
-from sympy.printing.dot import (purestr, styleof, attrprint, dotnode,
-        dotedges, dotprint)
+from sympy.printing.dot import (styleof, attrprint, dotnode,
+                                dotedges, dotprint)
 from sympy import Symbol, Integer, Basic, Expr, srepr
 from sympy.abc import x
-
-
-def test_purestr():
-    assert purestr(Symbol('x')) == "Symbol(x)"
-    assert purestr(Basic(1, 2)) == "Basic(1, 2)"
 
 
 def test_styleof():
@@ -23,26 +18,24 @@ def test_attrprint():
 
 
 def test_dotnode():
-
     assert dotnode(x, repeat=False) ==\
-        '"Symbol(x)" ["color"="black", "label"="x", "shape"="ellipse"];'
-    assert dotnode(x+2, repeat=False) == \
-            '"Add(Integer(2), Symbol(x))" ["color"="black", "label"="Add", "shape"="ellipse"];'
-
+        '"Symbol(\'x\')" ["color"="black", "label"="x", "shape"="ellipse"];'
+    assert dotnode(x + 2, repeat=False) == \
+        '"Add(Symbol(\'x\'), Integer(2))" ["color"="black", "label"="Add", "shape"="ellipse"];'
     assert dotnode(x + x**2, repeat=False) == \
-        '"Add(Symbol(x), Pow(Symbol(x), Integer(2)))" ["color"="black", "label"="Add", "shape"="ellipse"];'
+        '"Add(Pow(Symbol(\'x\'), Integer(2)), Symbol(\'x\'))" ["color"="black", "label"="Add", "shape"="ellipse"];'
     assert dotnode(x + x**2, repeat=True) == \
-        '"Add(Symbol(x), Pow(Symbol(x), Integer(2)))_()" ["color"="black", "label"="Add", "shape"="ellipse"];'
+        '"Add(Pow(Symbol(\'x\'), Integer(2)), Symbol(\'x\'))_()" ["color"="black", "label"="Add", "shape"="ellipse"];'
 
 
 def test_dotedges():
-    assert sorted(dotedges(x+2, repeat=False)) == [
-        '"Add(Integer(2), Symbol(x))" -> "Integer(2)";',
-        '"Add(Integer(2), Symbol(x))" -> "Symbol(x)";'
+    assert sorted(dotedges(x + 2, repeat=False)) == [
+        '"Add(Symbol(\'x\'), Integer(2))" -> "Integer(2)";',
+        '"Add(Symbol(\'x\'), Integer(2))" -> "Symbol(\'x\')";'
     ]
     assert sorted(dotedges(x + 2, repeat=True)) == [
-        '"Add(Integer(2), Symbol(x))_()" -> "Integer(2)_(0,)";',
-        '"Add(Integer(2), Symbol(x))_()" -> "Symbol(x)_(1,)";'
+        '"Add(Symbol(\'x\'), Integer(2))_()" -> "Integer(2)_(0,)";',
+        '"Add(Symbol(\'x\'), Integer(2))_()" -> "Symbol(\'x\')_(1,)";'
     ]
 
 

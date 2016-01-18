@@ -67,10 +67,6 @@ Some more information how the single concepts work and who should use which:
     not defined in the Printer subclass this will be the same as str(expr).
 """
 
-from functools import cmp_to_key
-
-from sympy import Basic, Add
-
 
 class Printer(object):
     """Generic printer
@@ -190,6 +186,8 @@ class Printer(object):
     printmethod = None
 
     def __init__(self, settings=None):
+        from sympy.external import import_module
+
         self._str = str
 
         self._settings = self._default_settings.copy()
@@ -209,6 +207,11 @@ class Printer(object):
         # _print_level is the number of times self._print() was recursively
         # called. See StrPrinter._print_Float() for an example of usage
         self._print_level = 0
+
+        numpy = import_module("numpy")
+        if numpy is not None:
+            formatter = {'numpystr': str}
+            numpy.set_printoptions(formatter=formatter)
 
     @classmethod
     def set_global_settings(cls, **settings):
@@ -256,12 +259,3 @@ class Printer(object):
             return self.emptyPrinter(expr)
         finally:
             self._print_level -= 1
-
-    def _as_ordered_terms(self, expr, order=None):
-        """A compatibility function for ordering terms in Add. """
-        order = order or self.order
-
-        if order == 'old':
-            return sorted(Add.make_args(expr), key=cmp_to_key(Basic._compare_pretty))
-        else:
-            return expr.as_ordered_terms(order=order)

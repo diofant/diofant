@@ -888,21 +888,16 @@ def integral_steps(integrand, symbol, **options):
     >>> from sympy.abc import x
     >>> print(repr(integral_steps(exp(x) / (1 + exp(2 * x)), x))) \
     # doctest: +NORMALIZE_WHITESPACE
-    URule(u_var=_u, u_func=E**x, constant=1,
-        substep=ArctanRule(context=1/(_u**2 + 1), symbol=_u),
-        context=E**x/(E**(2*x) + 1), symbol=x)
+    URule(u_var=Dummy('u'), u_func=Pow(E, Symbol('x')), constant=Integer(1),
+        substep=ArctanRule(context=Pow(Add(Pow(Dummy('u'), Integer(2)), Integer(1)), Integer(-1)),
+                           symbol=Dummy('u')),
+        context=Mul(Pow(E, Symbol('x')), Pow(Add(Pow(E, Mul(Integer(2), Symbol('x'))),
+                                                 Integer(1)),
+                                             Integer(-1))),
+        symbol=Symbol('x'))
     >>> print(repr(integral_steps(sin(x), x))) \
     # doctest: +NORMALIZE_WHITESPACE
-    TrigRule(func='sin', arg=x, context=sin(x), symbol=x)
-    >>> print(repr(integral_steps((x**2 + 3)**2 , x))) \
-    # doctest: +NORMALIZE_WHITESPACE
-    RewriteRule(rewritten=x**4 + 6*x**2 + 9,
-    substep=AddRule(substeps=[PowerRule(base=x, exp=4, context=x**4, symbol=x),
-        ConstantTimesRule(constant=6, other=x**2,
-            substep=PowerRule(base=x, exp=2, context=x**2, symbol=x),
-                context=6*x**2, symbol=x),
-        ConstantRule(constant=9, context=9, symbol=x)],
-    context=x**4 + 6*x**2 + 9, symbol=x), context=(x**2 + 3)**2, symbol=x)
+    TrigRule(func='sin', arg=Symbol('x'), context=sin(Symbol('x')), symbol=Symbol('x'))
 
     Returns
     =======

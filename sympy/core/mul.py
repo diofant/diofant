@@ -1,6 +1,6 @@
 from collections import defaultdict
 import operator
-from functools import cmp_to_key, reduce
+from functools import reduce
 
 from .sympify import sympify
 from .basic import Basic

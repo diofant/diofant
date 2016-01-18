@@ -195,8 +195,8 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
     >>> f = lambdify((x, y), Matrix([x, y]), modules=array2mat)
     >>> f(1, 2)
-    matrix([[1],
-            [2]])
+    [[1]
+     [2]]
 
     Usage
     =====
@@ -226,10 +226,10 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
         >>> f = lambdify((x,y), tan(x*y), "numpy")
         >>> f(1, 2)
-        -2.1850398632615189
+        -2.18503986326
         >>> from numpy import array
         >>> f(array([1, 2, 3]), array([2, 3, 5]))
-        array([-2.18503986, -0.29100619, -0.8559934 ])
+        [-2.18503986 -0.29100619 -0.8559934 ]
 
     (3) Use a dictionary defining custom functions:
 

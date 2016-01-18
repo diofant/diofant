@@ -1191,7 +1191,7 @@ class PrettyPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
         pforms, indices = [], []
 
         def pretty_negative(pform, index):
@@ -1261,7 +1261,7 @@ class PrettyPrinter(Printer):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = product.as_ordered_factors()
         else:
             args = product.args

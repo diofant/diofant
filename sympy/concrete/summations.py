@@ -79,7 +79,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     >>> Sum(x**k, (k, 0, oo))
     Sum(x**k, (k, 0, oo))
     >>> Sum(x**k, (k, 0, oo)).doit()
-    Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), True))
+    Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), true))
     >>> Sum(x**k/factorial(k), (k, 0, oo)).doit()
     E**x
 
@@ -444,7 +444,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         References
         ==========
 
-        .. [1] M. Petkovsek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
+        .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
 
         """
         from sympy import Function, expand_func, gamma, factor, Mul

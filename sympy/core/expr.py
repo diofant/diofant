@@ -1047,7 +1047,7 @@ class Expr(Basic, EvalfMixin):
         >>> (-2*x*y).args_cnc()
         [[-1, 2, x, y], []]
         >>> (-2.5*x).args_cnc()
-        [[-1, 2.50000000000000, x], []]
+        [[-1, 2.5, x], []]
         >>> (-2*x*A*B*y).args_cnc()
         [[-1, 2, x, y], [A, B]]
         >>> (-2*x*A*B*y).args_cnc(split_1=False)
@@ -2775,7 +2775,7 @@ class Expr(Basic, EvalfMixin):
         .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from sympy import Dummy
-        from sympy.series.gruntz import mrv, rewrite, mrv_leadterm
+        from sympy.series.gruntz import mrv, rewrite
         from sympy.functions import exp, log
         from sympy.series import Order
 

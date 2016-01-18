@@ -35,7 +35,7 @@ class StrPrinter(Printer):
             return expr
         elif isinstance(expr, Basic):
             if hasattr(expr, "args"):
-                return repr(expr)
+                return str(expr)
             else:
                 raise
         else:
@@ -45,7 +45,7 @@ class StrPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
 
         PREC = precedence(expr)
         l = []
@@ -66,10 +66,10 @@ class StrPrinter(Printer):
         return sign + ' '.join(l)
 
     def _print_BooleanTrue(self, expr):
-        return "True"
+        return "true"
 
     def _print_BooleanFalse(self, expr):
-        return "False"
+        return "false"
 
     def _print_And(self, expr):
         return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
@@ -253,7 +253,7 @@ class StrPrinter(Printer):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = expr.as_ordered_factors()
         else:
             # use make_args in case expr was something like -x -> x

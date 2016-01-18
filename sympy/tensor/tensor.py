@@ -32,7 +32,7 @@ lowered when the tensor is put in canonical form.
 from collections import defaultdict
 from functools import reduce
 
-from sympy import Matrix, Rational, Integer
+from sympy import Matrix, Rational
 from sympy.combinatorics.tensor_can import (get_symmetric_group_sgs,
                                             bsgs_direct_product, canonicalize,
                                             riemann_bsgs)
@@ -410,7 +410,8 @@ class TIDS(CantSympify):
         return TIDS(*self.mul(self, other))
 
     def __str__(self):
-        return "TIDS({0}, {1}, {2})".format(self.components, self.free, self.dum)
+        from sympy import sstr
+        return "TIDS({0}, {1}, {2})".format(sstr(self.components), sstr(self.free), sstr(self.dum))
 
     def __repr__(self):
         return self.__str__()

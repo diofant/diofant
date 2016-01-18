@@ -261,15 +261,15 @@ class Equality(Relational):
     >>> Eq(y, x + x**2)
     Eq(y, x**2 + x)
     >>> Eq(2, 5)
-    False
+    false
     >>> Eq(2, 5, evaluate=False)
     Eq(2, 5)
     >>> _.doit()
-    False
+    false
     >>> Eq(exp(x), exp(x).rewrite(cos))
     Eq(E**x, sinh(x) + cosh(x))
     >>> simplify(_)
-    True
+    true
 
     See Also
     ========

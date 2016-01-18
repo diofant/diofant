@@ -395,7 +395,7 @@ class GeometrySet(GeometryEntity, Set):
         """ Returns a sympy.sets.Set of intersection objects,
         if possible. """
 
-        from sympy.sets import Set, FiniteSet, Union
+        from sympy.sets import FiniteSet, Union
         from sympy.geometry import Point
 
         try:
