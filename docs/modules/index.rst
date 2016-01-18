@@ -32,7 +32,6 @@ access any SymPy module, or use this contens:
    polys/index.rst
    printing.rst
    plotting.rst
-   assumptions/index.rst
    rewriting.rst
    series.rst
    sets.rst

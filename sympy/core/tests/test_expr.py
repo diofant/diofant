@@ -5,7 +5,7 @@ from sympy import (Add, Basic, S, Symbol, Wild, Float, Integer, Rational, I,
                    sympify, WildFunction, Poly, Function, Derivative, Number,
                    pi, NumberSymbol, zoo, Piecewise, Mul, Pow, nsimplify, ratsimp,
                    trigsimp, radsimp, powsimp, simplify, together, collect,
-                   factorial, apart, combsimp, factor, refine, cancel, Tuple,
+                   factorial, apart, combsimp, factor, cancel, Tuple,
                    default_sort_key, DiracDelta, gamma, Dummy, Sum, E,
                    exp_polar, expand, diff, O, Heaviside, Si, Max)
 from sympy.core.function import AppliedUndef
@@ -1172,7 +1172,6 @@ def test_action_verbs():
     assert apart(y/(y + 2)/(y + 1), y) == (y/(y + 2)/(y + 1)).apart(y)
     assert combsimp(y/(x + 2)/(x + 1)) == (y/(x + 2)/(x + 1)).combsimp()
     assert factor(x**2 + 5*x + 6) == (x**2 + 5*x + 6).factor()
-    assert refine(sqrt(x**2)) == sqrt(x**2).refine()
     assert cancel((x**2 + 5*x + 6)/(x + 2)) == ((x**2 + 5*x + 6)/(x + 2)).cancel()
 
 
