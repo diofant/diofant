@@ -29,10 +29,8 @@ sympy@googlegroups.com and ask for help.
 """
 
 import sys
-import subprocess
 import os
 import shutil
-import glob
 from setuptools import setup, Command, find_packages
 from setuptools.command.test import test as TestCommand
 
@@ -98,7 +96,7 @@ class clean(Command):
                     os.remove(os.path.join(root, file))
 
         os.chdir(dir_setup)
-        names = ["python-build-stamp-2.4", "MANIFEST", "build", "dist", "doc/_build", ".coverage"]
+        names = ["python-build-stamp-2.4", "MANIFEST", "build", "dist", "doc/_build", ".coverage", ".cache"]
 
         for f in names:
             if os.path.isfile(f):
@@ -109,7 +107,7 @@ class clean(Command):
         os.chdir(curr_dir)
 
 
-class test_sympy(TestCommand):
+class test(TestCommand):
     """Runs all tests."""
 
     description = "run all tests and doctests"
@@ -161,7 +159,7 @@ setup(name='sympy',
       url='http://omg.rtfd.org',
       packages=find_packages(),
       ext_modules=[],
-      cmdclass={'test': test_sympy,
+      cmdclass={'test': test,
                 'clean': clean,
                 'audit': audit},
       classifiers=[

@@ -163,7 +163,7 @@ class Partition(FiniteSet):
         >>> a <= a
         True
         >>> a <= b
-        True
+        true
         """
         return self.sort_key() <= sympify(other).sort_key()
 
@@ -180,7 +180,7 @@ class Partition(FiniteSet):
         >>> a.rank, b.rank
         (9, 34)
         >>> a < b
-        True
+        true
         """
         return self.sort_key() < sympify(other).sort_key()
 

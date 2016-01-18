@@ -1,5 +1,4 @@
 from sympy.matrices.expressions import MatrixExpr
-from sympy import Q
 
 
 class Factorization(MatrixExpr):
@@ -8,11 +7,11 @@ class Factorization(MatrixExpr):
 
 
 class LofLU(Factorization):
-    predicates = Q.lower_triangular,
+    pass
 
 
 class UofLU(Factorization):
-    predicates = Q.upper_triangular,
+    pass
 
 
 class LofCholesky(LofLU):
@@ -24,31 +23,31 @@ class UofCholesky(UofLU):
 
 
 class QofQR(Factorization):
-    predicates = Q.orthogonal,
+    pass
 
 
 class RofQR(Factorization):
-    predicates = Q.upper_triangular,
+    pass
 
 
 class EigenVectors(Factorization):
-    predicates = Q.orthogonal,
+    pass
 
 
 class EigenValues(Factorization):
-    predicates = Q.diagonal,
+    pass
 
 
 class UofSVD(Factorization):
-    predicates = Q.orthogonal,
+    pass
 
 
 class SofSVD(Factorization):
-    predicates = Q.diagonal,
+    pass
 
 
 class VofSVD(Factorization):
-    predicates = Q.orthogonal,
+    pass
 
 
 def lu(expr):

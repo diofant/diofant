@@ -1,9 +1,8 @@
 from collections import defaultdict
-from functools import cmp_to_key, reduce
+from functools import reduce
 
-from .basic import Basic
 from .compatibility import is_sequence, default_sort_key
-from .logic import _fuzzy_group, fuzzy_or, fuzzy_not
+from .logic import _fuzzy_group
 from .singleton import S
 from .operations import AssocOp
 from .cache import cacheit
@@ -20,9 +19,9 @@ def _unevaluated_Add(*args):
     ========
 
     >>> from sympy.core.add import _unevaluated_Add as uAdd
-    >>> from sympy import S, Add
+    >>> from sympy import S, Add, Integer, Float
     >>> from sympy.abc import x, y
-    >>> a = uAdd(*[S(1.0), x, S(2)])
+    >>> a = uAdd(*[Float(1.0), x, Integer(2)])
     >>> a.args[0]
     3.00000000000000
     >>> a.args[1]

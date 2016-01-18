@@ -4,14 +4,14 @@ import pytest
 from sympy import (Symbol, exp, Integer, Float, sin, cos, log, Poly, Lambda,
                    Function, I, S, sqrt, srepr, Rational, Tuple, Matrix, Interval,
                    Add, Mul, Pow, Or, true, false, Abs, pi)
-from sympy.abc import x, y
 from sympy.core.sympify import sympify, _sympify, SympifyError, kernS
 from sympy.core.decorators import _sympifyit
 from sympy.utilities.decorator import conserve_mpmath_dps
 from sympy.geometry import Point, Line
 from sympy.functions.combinatorial.factorials import factorial, factorial2
-from sympy.abc import _clash, _clash1, _clash2
 from sympy.core.compatibility import HAS_GMPY
+
+from sympy.abc import x, y, _clash, _clash1, _clash2
 
 
 def test_issue_3538():
@@ -114,7 +114,7 @@ def test_sympify2():
 def test_sympify3():
     assert sympify("x**3") == x**3
     assert sympify("x^3") == x**3
-    assert sympify("1/2") == Integer(1)/2
+    assert sympify("1/2") == Rational(1, 2)
 
     pytest.raises(SympifyError, lambda: _sympify('x**3'))
     pytest.raises(SympifyError, lambda: _sympify('1/2'))
@@ -143,7 +143,7 @@ def test_sympyify_iterables():
     assert sympify({'.3', '.2'}, rational=True) == set(ans)
     assert sympify(tuple(['.3', '.2']), rational=True) == Tuple(*ans)
     assert sympify(dict(x=0, y=1)) == {x: 0, y: 1}
-    assert sympify(['1', '2', ['3', '4']]) == [S(1), S(2), [S(3), S(4)]]
+    assert sympify(['1', '2', ['3', '4']]) == [Integer(1), Integer(2), [Integer(3), Integer(4)]]
 
 
 def test_sympify4():
@@ -372,16 +372,16 @@ def test_issue_3982():
 
 
 def test_S_sympify():
-    assert S(1)/2 == sympify(1)/2
-    assert (-2)**(S(1)/2) == sqrt(2)*I
+    assert Rational(1, 2) == sympify(1)/2
+    assert (-2)**Rational(1, 2) == sqrt(2)*I
 
 
 def test_issue_4788():
-    assert srepr(S(1.0 + 0J)) == srepr(S(1.0)) == srepr(Float(1.0))
+    assert srepr(sympify(1.0 + 0J)) == srepr(Float(1.0)) == srepr(Float(1.0))
 
 
 def test_issue_4798_None():
-    assert S(None) is None
+    assert sympify(None) is None
 
 
 def test_issue_3218():
@@ -430,19 +430,19 @@ def test_kernS():
 
 
 def test_issue_6540_6552():
-    assert S('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
-    assert S('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
-    assert S('[[[2*(1)]]]') == [[[2]]]
-    assert S('Matrix([2*(1)])') == Matrix([2])
+    assert sympify('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
+    assert sympify('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
+    assert sympify('[[[2*(1)]]]') == [[[2]]]
+    assert sympify('Matrix([2*(1)])') == Matrix([2])
 
 
 def test_issue_6046():
-    assert str(S("Q & C", locals=_clash1)) == 'And(C, Q)'
-    assert str(S('pi(x)', locals=_clash2)) == 'pi(x)'
-    assert str(S('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
+    assert str(sympify("Q & C", locals=_clash1)) == 'And(C, Q)'
+    assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
+    assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
-    exec("from sympy.abc import Q, C", locals)
-    assert str(S('C&Q', locals)) == 'And(C, Q)'
+    exec("from sympy.abc import S, O", locals)
+    assert str(sympify('O&S', locals)) == 'And(O, S)'
 
 
 def test_issue_8821_highprec_from_str():

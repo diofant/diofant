@@ -1,6 +1,6 @@
 """Gosper's algorithm for hypergeometric summation. """
 
-from sympy.core import S, Dummy, symbols
+from sympy.core import S, Dummy, symbols, Integer
 from sympy.core.compatibility import is_sequence
 from sympy.polys import Poly, parallel_poly_from_expr, factor
 from sympy.solvers import solve
@@ -112,14 +112,14 @@ def gosper_term(f, n):
     A, B, C = gosper_normal(p, q, n)
     B = B.shift(-1)
 
-    N = S(A.degree())
-    M = S(B.degree())
-    K = S(C.degree())
+    N = Integer(A.degree())
+    M = Integer(B.degree())
+    K = Integer(C.degree())
 
     if (N != M) or (A.LC() != B.LC()):
         D = {K - max(N, M)}
     elif not N:
-        D = {K - N + 1, S(0)}
+        D = {K - N + 1, Integer(0)}
     else:
         D = {K - N + 1, (B.nth(N - 1) - A.nth(N - 1))/A.LC()}
 
@@ -188,7 +188,7 @@ def gosper_sum(f, k):
     References
     ==========
 
-    .. [1] Marko Petkovsek, Herbert S. Wilf, Doron Zeilberger, A = B,
+    .. [1] Marko Petkovšek, Herbert S. Wilf, Doron Zeilberger, A = B,
            AK Peters, Ltd., Wellesley, MA, USA, 1997, pp. 73--100
 
     """

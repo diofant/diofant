@@ -391,7 +391,7 @@ class MultisetPartitionTraverser():
            Part 1, of The Art of Computer Programming, by Donald Knuth.
 
     .. [Factorisatio] On a Problem of Oppenheim concerning
-           "Factorisatio Numerorum" E. R. Canfield, Paul Erdos, Carl
+           "Factorisatio Numerorum" E. R. Canfield, Paul Erdős, Carl
            Pomerance, JOURNAL OF NUMBER THEORY, Vol. 17, No. 1. August
            1983.  See section 7 for a description of an algorithm
            similar to Knuth's.

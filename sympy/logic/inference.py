@@ -54,7 +54,7 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     >>> satisfiable(A & ~A)
     False
     >>> satisfiable(True)
-    {True: True}
+    {true: True}
     >>> next(satisfiable(A & ~A, all_models=True))
     False
     >>> models = satisfiable((A >> B) & B, all_models=True)
@@ -66,7 +66,7 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     ...     for model in models:
     ...         if model:
     ...             # Do something with the model.
-    ...             print(model)
+    ...             return model
     ...         else:
     ...             # Given expr is unsatisfiable.
     ...             print("UNSAT")

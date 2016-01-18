@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
+from sympy import (Abs, I, Dummy, Rational, Float, Symbol, cos, oo, pi, sstr,
                    simplify, sin, sqrt, symbols, Derivative, asin, acos)
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             Polygon, Ray, RegularPolygon, Segment, Triangle,
@@ -182,18 +182,18 @@ def test_plane():
     assert pl3.random_point() in pl3
 
     # issue 8570
-    l2 = Line3D(Point3D(S(50000004459633)/5000000000000,
-                        -S(891926590718643)/1000000000000000,
-                        S(231800966893633)/100000000000000),
-                Point3D(S(50000004459633)/50000000000000,
-                        -S(222981647679771)/250000000000000,
-                        S(231800966893633)/100000000000000))
+    l2 = Line3D(Point3D(Rational(50000004459633, 5000000000000),
+                        Rational(-891926590718643, 1000000000000000),
+                        Rational(231800966893633, 100000000000000)),
+                Point3D(Rational(50000004459633, 50000000000000),
+                        Rational(-222981647679771, 250000000000000),
+                        Rational(231800966893633, 100000000000000)))
 
-    p2 = Plane(Point3D(S(402775636372767)/100000000000000,
-                       -S(97224357654973)/100000000000000,
-                       S(216793600814789)/100000000000000),
-               (-S('9.00000087501922'), -S('4.81170658872543e-13'),
-                S('0.0')))
+    p2 = Plane(Point3D(Rational(402775636372767, 100000000000000),
+                       Rational(-97224357654973, 100000000000000),
+                       Rational(216793600814789, 100000000000000)),
+               (-Float(9.00000087501922), Float(-4.81170658872543e-13),
+                Float(0.0)))
 
-    assert str([i.n(2) for i in p2.intersection(l2)]) == \
+    assert sstr([i.n(2) for i in p2.intersection(l2)]) == \
            '[Point3D(4.0, -0.89, 2.3)]'

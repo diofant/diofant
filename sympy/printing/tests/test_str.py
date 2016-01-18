@@ -67,8 +67,9 @@ def test_Derivative():
 
 
 def test_dict():
-    assert str({1: 1 + x}) == sstr({1: 1 + x}) == "{1: x + 1}"
-    assert str({1: x**2, 2: y*x}) in ("{1: x**2, 2: x*y}", "{2: x*y, 1: x**2}")
+    assert sstr({1: 1 + x}) == "{1: x + 1}"
+    assert str({1: 1 + x}) == "{1: Add(Symbol('x'), Integer(1))}"
+    assert str({1: x**2, 2: y*x}) in ("{1: Pow(Symbol('x'), Integer(2)), 2: Mul(Symbol('x'), Symbol('y'))}", "{1: Mul(Symbol('x'), Symbol('y')), 2: Pow(Symbol('x'), Integer(2))}")
     assert sstr({1: x**2, 2: y*x}) == "{1: x**2, 2: x*y}"
 
 
@@ -173,9 +174,12 @@ def test_Limit():
 
 
 def test_list():
-    assert str([x]) == sstr([x]) == "[x]"
-    assert str([x**2, x*y + 1]) == sstr([x**2, x*y + 1]) == "[x**2, x*y + 1]"
-    assert str([x**2, [y + x]]) == sstr([x**2, [y + x]]) == "[x**2, [x + y]]"
+    assert sstr([x]) == "[x]"
+    assert str([x]) == "[Symbol('x')]"
+    assert sstr([x**2, x*y + 1]) == "[x**2, x*y + 1]"
+    assert str([x**2, x*y + 1]) == "[Pow(Symbol('x'), Integer(2)), Add(Mul(Symbol('x'), Symbol('y')), Integer(1))]"
+    assert sstr([x**2, [y + x]]) == "[x**2, [x + y]]"
+    assert str([x**2, [y + x]]) == "[Pow(Symbol('x'), Integer(2)), [Add(Symbol('x'), Symbol('y'))]]"
 
 
 def test_Matrix_str():
@@ -404,7 +408,7 @@ def test_Pow():
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
     # see issue #2860
-    assert str(S(2)**-1.0) == '2**(-1.0)'
+    assert str(Integer(2)**-1.0) == '2**(-1.0)'
 
 
 def test_sqrt():
@@ -444,8 +448,8 @@ def test_Rational():
     assert str(Rational("-25")) == "-25"
     assert str(Rational("1.25")) == "5/4"
     assert str(Rational("-2.6e-2")) == "-13/500"
-    assert str(S("25/7")) == "25/7"
-    assert str(S("-123/569")) == "-123/569"
+    assert str(Rational(25, 7)) == "25/7"
+    assert str(Rational(-123, 569)) == "-123/569"
 
     assert str(sqrt(Rational(1, 4))) == "1/2"
     assert str(sqrt(Rational(1, 36))) == "1/6"
@@ -536,10 +540,12 @@ def test_Symbol():
 
 
 def test_tuple():
-    assert str((x,)) == sstr((x,)) == "(x,)"
-    assert str((x + y, 1 + x)) == sstr((x + y, 1 + x)) == "(x + y, x + 1)"
-    assert str((x + y, (
-        1 + x, x**2))) == sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
+    assert sstr((x,)) == "(x,)"
+    assert str((x,)) == "(Symbol('x'),)"
+    assert sstr((x + y, 1 + x)) == "(x + y, x + 1)"
+    assert str((x + y, 1 + x)) == "(Add(Symbol('x'), Symbol('y')), Add(Symbol('x'), Integer(1)))"
+    assert sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
+    assert str((x + y, (1 + x, x**2))) == "(Add(Symbol('x'), Symbol('y')), (Add(Symbol('x'), Integer(1)), Pow(Symbol('x'), Integer(2))))"
 
 
 def test_wild_str():
@@ -590,18 +596,18 @@ def test_infinity():
 
 
 def test_full_prec():
-    assert sstr(S("0.3"), full_prec=True) == "0.300000000000000"
-    assert sstr(S("0.3"), full_prec="auto") == "0.300000000000000"
-    assert sstr(S("0.3"), full_prec=False) == "0.3"
-    assert sstr(S("0.3")*x, full_prec=True) in [
+    assert sstr(Float(0.3), full_prec=True) == "0.300000000000000"
+    assert sstr(Float(0.3), full_prec="auto") == "0.300000000000000"
+    assert sstr(Float(0.3), full_prec=False) == "0.3"
+    assert sstr(Float(0.3)*x, full_prec=True) in [
         "0.300000000000000*x",
         "x*0.300000000000000"
     ]
-    assert sstr(S("0.3")*x, full_prec="auto") in [
+    assert sstr(Float(0.3)*x, full_prec="auto") in [
         "0.3*x",
         "x*0.3"
     ]
-    assert sstr(S("0.3")*x, full_prec=False) in [
+    assert sstr(Float(0.3)*x, full_prec=False) in [
         "0.3*x",
         "x*0.3"
     ]
@@ -625,7 +631,7 @@ def test_empty_printer():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: sstr(S(4), method="garbage"))
+    pytest.raises(TypeError, lambda: sstr(Integer(4), method="garbage"))
 
 
 def test_RandomDomain():
@@ -696,8 +702,8 @@ def test_MatrixSlice():
 
 
 def test_true_false():
-    assert str(true) == repr(true) == sstr(true) == "True"
-    assert str(false) == repr(false) == sstr(false) == "False"
+    assert str(true) == repr(true) == sstr(true) == "true"
+    assert str(false) == repr(false) == sstr(false) == "false"
 
 
 def test_Equivalent():

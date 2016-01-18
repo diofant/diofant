@@ -1,4 +1,4 @@
-from sympy import sympify
+from sympy import sympify, Integer
 from sympy.utilities.timeutils import timethis
 
 
@@ -42,7 +42,7 @@ def residue(expr, x, x0):
     # For the definition of a resultant, see section 1.4 (and any
     # previous sections for more review).
 
-    from sympy import collect, Mul, Order, S
+    from sympy import collect, Mul, Order
     expr = sympify(expr)
     if x0 != 0:
         expr = expr.subs(x, x + x0)
@@ -63,7 +63,7 @@ def residue(expr, x, x0):
         args = s.args
     else:
         args = [s]
-    res = S(0)
+    res = Integer(0)
     for arg in args:
         c, m = arg.as_coeff_mul(x)
         m = Mul(*m)

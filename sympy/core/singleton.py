@@ -1,7 +1,6 @@
 """Singleton mechanism"""
 
 from .assumptions import ManagedProperties
-from .sympify import sympify
 
 
 class SingletonRegistry(object):
@@ -9,9 +8,6 @@ class SingletonRegistry(object):
     A map from singleton classes to the corresponding instances.
     """
     __slots__ = []
-
-    # Also allow things like S(5)
-    __call__ = staticmethod(sympify)
 
     def __init__(self):
         self._classes_to_install = {}

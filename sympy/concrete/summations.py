@@ -8,6 +8,7 @@ from sympy.concrete.gosper import gosper_sum
 from sympy.functions.elementary.piecewise import Piecewise
 from sympy.polys import apart, PolynomialError
 from sympy.solvers import solve
+from sympy.core.numbers import Integer
 
 
 class Sum(AddWithLimits,ExprWithIntLimits):
@@ -78,7 +79,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     >>> Sum(x**k, (k, 0, oo))
     Sum(x**k, (k, 0, oo))
     >>> Sum(x**k, (k, 0, oo)).doit()
-    Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), True))
+    Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), true))
     >>> Sum(x**k/factorial(k), (k, 0, oo)).doit()
     E**x
 
@@ -443,7 +444,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         References
         ==========
 
-        .. [1] M. Petkovsek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
+        .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
 
         """
         from sympy import Function, expand_func, gamma, factor, Mul
@@ -764,7 +765,7 @@ def _eval_sum_hyper(f, i, a):
 
     if f.subs(i, 0) == 0:
         if simplify(f.subs(i, Dummy('i', integer=True, positive=True))) == 0:
-            return S(0), True
+            return Integer(0), True
         return _eval_sum_hyper(f.subs(i, i + 1), i, 0)
 
     hs = hypersimp(f, i)

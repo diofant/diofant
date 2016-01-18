@@ -21,12 +21,12 @@ from sympy import (
     im, DiracDelta, chebyshevt, legendre_poly, polylog, series, O,
     atan, sinh, cosh, tanh, floor, ceiling, solve, asinh, acot, csc, sec,
     LambertW, N, apart, sqrtdenest, factorial2, powdenest, Mul, S, ZZ,
-    Poly, expand_func, E, Q, And, Or, Ne, Eq, Le, Lt,
-    ask, refine, AlgebraicNumber, continued_fraction_iterator as cf_i,
+    Poly, expand_func, E, And, Or, Ne, Eq, Le, Lt,
+    AlgebraicNumber, continued_fraction_iterator as cf_i,
     continued_fraction_periodic as cf_p, continued_fraction_convergents as cf_c,
     continued_fraction_reduce as cf_r, FiniteSet, elliptic_e, elliptic_f,
     powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
-    residue, Derivative, logcombine, Symbol)
+    residue, Derivative, logcombine, Symbol, Integer)
 from sympy.functions.combinatorial.numbers import stirling
 from sympy.functions.special.zeta_functions import zeta
 from sympy.integrals.deltafunctions import deltaintegrate
@@ -34,7 +34,6 @@ from sympy.utilities.iterables import partitions
 from sympy.matrices import Matrix, GramSchmidt, eye
 from sympy.matrices.expressions.blockmatrix import BlockMatrix, block_collapse
 from sympy.matrices.expressions import MatrixSymbol, ZeroMatrix
-from sympy.assumptions import assuming
 from sympy.polys.rings import vring
 from sympy.polys.fields import vfield
 from sympy.polys.solvers import solve_lin_sys
@@ -243,7 +242,7 @@ def test_D7():
 def test_D8():
     # One way is to cheat by converting the sum to a string,
     # and replacing the '[' and ']' with ''.
-    # E.g., horner(S(str(_).replace('[','').replace(']','')))
+    # E.g., horner(sympify(str(_).replace('[','').replace(']','')))
     raise NotImplementedError("apply Horner's rule to sum(a[i]*x**i, (i,1,5))")
 
 
@@ -592,7 +591,7 @@ def test_I3():
 
 
 def test_I4():
-    assert refine(cos(pi*cos(n*pi)) + sin(pi/2*cos(n*pi)), Q.integer(n)) == (-1)**n - 1
+    assert cos(pi*cos(n*pi)) + sin(pi/2*cos(n*pi)) == (-1)**n - 1
 
 
 @pytest.mark.xfail
@@ -703,7 +702,7 @@ def test_J13():
 
 
 def test_J14():
-    p = hyper([S(1)/2, S(1)/2], [S(3)/2], z**2)
+    p = hyper([Rational(1, 2), Rational(1, 2)], [Rational(3, 2)], z**2)
     assert hyperexpand(p) == asin(z)/z
 
 
@@ -1104,7 +1103,7 @@ def test_M39():
 
 
 def test_N1():
-    assert ask(Q.is_true(E**pi > pi**E))
+    assert E**pi > pi**E
 
 
 @pytest.mark.xfail
@@ -1231,13 +1230,13 @@ def test_O10():
                               [3],
                               [5]]),
                               Matrix([
-                              [S(23)/19],
-                              [S(63)/19],
-                              [S(-47)/19]]),
+                              [Rational(23, 19)],
+                              [Rational(63, 19)],
+                              [Rational(-47, 19)]]),
                               Matrix([
-                              [S(1692)/353],
-                              [S(-1551)/706],
-                              [S(-423)/706]])]
+                              [Rational(1692, 353)],
+                              [Rational(-1551, 706)],
+                              [Rational(-423, 706)]])]
 
 
 @pytest.mark.xfail
@@ -1468,11 +1467,11 @@ def test_P23():
         [0, 0, 1, 2, 1],
         [0, 0, 0, 1, 2]])
     assert M.eigenvals() == {
-        S('1'): 1,
-        S('2'): 1,
-        S('3'): 1,
-        S('sqrt(3) + 2'): 1,
-        S('-sqrt(3) + 2'): 1}
+        Integer(1): 1,
+        Integer(2): 1,
+        Integer(3): 1,
+        sqrt(3) + 2: 1,
+        -sqrt(3) + 2: 1}
 
 
 def test_P24():
@@ -1485,13 +1484,13 @@ def test_P24():
                 [ -49,   -8,    8,   59,  208,  208,   99, -911],
                 [  29,  -44,   52,  -23,  208,  208, -911,   99]])
     assert M.eigenvals() == {
-        S('0'): 1,
-        S('10*sqrt(10405)'): 1,
-        S('100*sqrt(26) + 510'): 1,
-        S('1000'): 2,
-        S('-100*sqrt(26) + 510'): 1,
-        S('-10*sqrt(10405)'): 1,
-        S('1020'): 1}
+        Integer(0): 1,
+        10*sqrt(10405): 1,
+        100*sqrt(26) + 510: 1,
+        Integer(1000): 2,
+        -100*sqrt(26) + 510: 1,
+        -10*sqrt(10405): 1,
+        Integer(1020): 1}
 
 
 def test_P25():
@@ -1520,8 +1519,8 @@ def test_P26():
                 [  0,   0,   0,   0,   0,  0,  1, -1, -1],
                 [  0,   0,   0,   0,   0,  0,  0,  1,  0]])
     assert M.eigenvals() == {
-        S('-1/2 - sqrt(3)*I/2'): 2,
-        S('-1/2 + sqrt(3)*I/2'): 2}
+        R(-1, 2) - sqrt(3)*I/2: 2,
+        R(-1, 2) + sqrt(3)*I/2: 2}
 
 
 def test_P27():
@@ -1739,8 +1738,7 @@ def test_R2():
     f = Sum((yn[i, 0] - m*xn[i, 0] - b)**2, (i, 0, n - 1))
     f1 = diff(f, m)
     f2 = diff(f, b)
-    # raises AttributeError: 'str' object has no attribute 'is_Piecewise'
-    solve((f1, f2), m, b)
+    assert solve((f1, f2), m, b) != []
 
 
 @pytest.mark.xfail
@@ -2249,7 +2247,7 @@ def test_V4():
 def test_V5():
     # Takes extremely long time
     # https://github.com/sympy/sympy/issues/7149
-    assert (integrate((3*x - 5)**2/(2*x - 1)**(Rational(7, 2)), x) ==
+    assert (integrate((3*x - 5)**2/(2*x - 1)**Rational(7, 2), x) ==
             (-41 + 80*x - 45*x**2)/(5*(2*x - 1)**Rational(5, 2)))
 
 
@@ -2369,19 +2367,19 @@ def test_W2():
 def test_W3():
     # integral is not  calculated
     # https://github.com/sympy/sympy/issues/7161
-    assert integrate(sqrt(x + 1/x - 2), (x, 0, 1)) == S(4)/3
+    assert integrate(sqrt(x + 1/x - 2), (x, 0, 1)) == Rational(4, 3)
 
 
 @pytest.mark.xfail
 def test_W4():
     # integral is not  calculated
-    assert integrate(sqrt(x + 1/x - 2), (x, 1, 2)) == -2*sqrt(2)/3 + S(4)/3
+    assert integrate(sqrt(x + 1/x - 2), (x, 1, 2)) == -2*sqrt(2)/3 + Rational(4, 3)
 
 
 @pytest.mark.xfail
 def test_W5():
     # integral is not  calculated
-    assert integrate(sqrt(x + 1/x - 2), (x, 0, 2)) == -2*sqrt(2)/3 + S(8)/3
+    assert integrate(sqrt(x + 1/x - 2), (x, 0, 2)) == -2*sqrt(2)/3 + Rational(8, 3)
 
 
 @pytest.mark.xfail
@@ -2457,12 +2455,12 @@ def test_W14():
 @pytest.mark.xfail
 def test_W15():
     # integral not calculated
-    assert integrate(log(gamma(x))*cos(6*pi*x), (x, 0, 1)) == S(1)/12
+    assert integrate(log(gamma(x))*cos(6*pi*x), (x, 0, 1)) == Rational(1, 12)
 
 
 def test_W16():
     assert integrate((1 + x)**3*legendre_poly(1, x)*legendre_poly(2, x),
-                     (x, -1, 1)) == S(36)/35
+                     (x, -1, 1)) == Rational(36, 35)
 
 
 def test_W17():
@@ -2486,7 +2484,7 @@ def test_W19():
 def test_W20():
     # integral not calculated
     assert (integrate(x**2*polylog(3, 1/(x + 1)), (x, 0, 1)) ==
-            -pi**2/36 - S(17)/108 + zeta(3)/4 +
+            -pi**2/36 - Rational(17, 108) + zeta(3)/4 +
             (-pi**2/2 - 4*log(2) + log(2)**2 + 35/3)*log(2)/9)
 
 
@@ -2504,8 +2502,6 @@ def test_W22():
                       (-sin(1) + sin(2), True)))
 
 
-@pytest.mark.xfail
-@pytest.mark.slow
 def test_W23():
     a, b = symbols('a b', extended_real=True, positive=True)
     r1 = integrate(integrate(x/(x**2 + y**2), (x, a, b)), (y, -oo, oo))
@@ -2551,7 +2547,7 @@ def test_W26():
     # integrate(abs(y - x**2), (y,0,2)) raises ValueError: gamma function pole
     # https://github.com/sympy/sympy/issues/7165
     assert integrate(integrate(abs(y - x**2), (y, 0, 2)),
-                     (x, -1, 1)) == S(46)/15
+                     (x, -1, 1)) == Rational(46, 15)
 
 
 def test_W27():
@@ -2620,7 +2616,7 @@ def test_X7():
     #    = 1/x^2 - 1/(2 x) + 1/12 - x^2/720 + x^4/30240 + O(x^6)
     #    [Levinson and Redheffer, p. 173]
     assert (series(1/(x*(exp(x) - 1)), x, 0, 7) == x**(-2) - 1/(2*x) +
-            S(1)/12 - x**2/720 + x**4/30240 - x**6/1209600 + O(x**7))
+            Rational(1, 12) - x**2/720 + x**4/30240 - x**6/1209600 + O(x**7))
 
 
 def test_X8():
@@ -2630,8 +2626,8 @@ def test_X8():
     # see issue 7167:
     x = symbols('x', extended_real=True)
     assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
-            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**(S(3)/2)/12 +
-            (x - 3*pi/2)**(S(7)/2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**Rational(3, 2)/12 +
+            (x - 3*pi/2)**Rational(7, 2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
 
 def test_X9():

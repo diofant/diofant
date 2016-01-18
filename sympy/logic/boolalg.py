@@ -150,13 +150,13 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
 
     >>> from sympy import sympify, true, Or
     >>> sympify(True)
-    True
+    true
     >>> ~true
-    False
+    false
     >>> ~True
     -2
     >>> Or(True, False)
-    True
+    true
 
     See Also
     ========
@@ -202,13 +202,13 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
 
     >>> from sympy import sympify, false, Or, true
     >>> sympify(False)
-    False
+    false
     >>> false >> false
-    True
+    true
     >>> False >> False
     0
     >>> Or(True, False)
-    True
+    true
 
     See Also
     ========
@@ -441,13 +441,13 @@ class Not(BooleanFunction):
     >>> from sympy.logic.boolalg import Not, And, Or
     >>> from sympy.abc import x, A, B
     >>> Not(True)
-    False
+    false
     >>> Not(False)
-    True
+    true
     >>> Not(And(True, False))
-    True
+    true
     >>> Not(Or(True, False))
-    False
+    false
     >>> Not(And(And(True, x), Or(x, False)))
     Not(x)
     >>> ~x
@@ -470,8 +470,7 @@ class Not(BooleanFunction):
     >>> ~True
     -2
     >>> ~true
-    False
-
+    false
     """
 
     is_Not = True
@@ -572,13 +571,13 @@ class Xor(BooleanFunction):
     >>> from sympy import symbols
     >>> x, y = symbols('x y')
     >>> Xor(True, False)
-    True
+    true
     >>> Xor(True, True)
-    False
+    false
     >>> Xor(True, False, True, True, False)
-    True
+    true
     >>> Xor(True, False, True, False)
-    False
+    false
     >>> x ^ y
     Xor(x, y)
 
@@ -672,12 +671,11 @@ class Nand(BooleanFunction):
     >>> from sympy import symbols
     >>> x, y = symbols('x y')
     >>> Nand(False, True)
-    True
+    true
     >>> Nand(True, True)
-    False
+    false
     >>> Nand(x, y)
     Not(And(x, y))
-
     """
     @classmethod
     def eval(cls, *args):
@@ -702,16 +700,15 @@ class Nor(BooleanFunction):
     >>> x, y = symbols('x y')
 
     >>> Nor(True, False)
-    False
+    false
     >>> Nor(True, True)
-    False
+    false
     >>> Nor(False, True)
-    False
+    false
     >>> Nor(False, False)
-    True
+    true
     >>> Nor(x, y)
     Not(Or(x, y))
-
     """
     @classmethod
     def eval(cls, *args):
@@ -736,13 +733,13 @@ class Implies(BooleanFunction):
     >>> x, y = symbols('x y')
 
     >>> Implies(True, False)
-    False
+    false
     >>> Implies(False, False)
-    True
+    true
     >>> Implies(True, True)
-    True
+    true
     >>> Implies(False, True)
-    True
+    true
     >>> x >> y
     Implies(x, y)
     >>> y << x
@@ -763,8 +760,7 @@ class Implies(BooleanFunction):
     >>> True >> False
     1
     >>> true >> false
-    False
-
+    false
     """
     @classmethod
     def eval(cls, *args):
@@ -812,11 +808,11 @@ class Equivalent(BooleanFunction):
     >>> from sympy.logic.boolalg import Equivalent, And
     >>> from sympy.abc import x, y
     >>> Equivalent(False, False, False)
-    True
+    true
     >>> Equivalent(True, False, False)
-    False
+    false
     >>> Equivalent(x, And(x, True))
-    True
+    true
     """
     def __new__(cls, *args, **options):
         from sympy.core.relational import Relational
@@ -883,9 +879,9 @@ class ITE(BooleanFunction):
     >>> from sympy.logic.boolalg import ITE, And, Xor, Or
     >>> from sympy.abc import x, y, z
     >>> ITE(True, False, True)
-    False
+    false
     >>> ITE(Or(True, False), And(True, True), Xor(True, True))
-    True
+    true
     >>> ITE(x, y, z)
     ITE(x, y, z)
     >>> ITE(True, x, y)
@@ -1254,14 +1250,12 @@ def is_literal(expr):
     Examples
     ========
 
-    >>> from sympy import Or, Q
+    >>> from sympy import Or
     >>> from sympy.abc import A, B
     >>> from sympy.logic.boolalg import is_literal
     >>> is_literal(A)
     True
     >>> is_literal(~A)
-    True
-    >>> is_literal(Q.zero(A))
     True
     >>> is_literal(A + B)
     True
@@ -1551,16 +1545,15 @@ def simplify_logic(expr, form=None, deep=True):
 
     >>> from sympy.logic import simplify_logic
     >>> from sympy.abc import x, y, z
-    >>> from sympy import S
+    >>> from sympy import sympify
     >>> b = (~x & ~y & ~z) | ( ~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))
 
-    >>> S(b)
+    >>> sympify(b)
     Or(And(Not(x), Not(y), Not(z)), And(Not(x), Not(y), z))
     >>> simplify_logic(_)
     And(Not(x), Not(y))
-
     """
 
     if form == 'cnf' or form == 'dnf' or form is None:

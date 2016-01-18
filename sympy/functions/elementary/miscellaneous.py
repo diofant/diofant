@@ -33,7 +33,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
 
     def __new__(cls):
         from sympy.sets.sets import FiniteSet
-        x = Dummy('x')
+        x = Dummy('dummy_for_IdentityFunction')
         # construct "by hand" to avoid infinite loop
         obj = Expr.__new__(cls, Tuple(x), x)
         obj.nargs = FiniteSet(1)
@@ -73,7 +73,7 @@ def sqrt(arg):
 
     >>> from sympy import Eq
     >>> Eq(sqrt(x**2), x).subs(x, -1)
-    False
+    false
 
     This is because sqrt computes the principal square root, so the square may
     put the argument in a different branch.  This identity does hold if x is
@@ -142,7 +142,7 @@ def cbrt(arg):
 
     >>> from sympy import Eq
     >>> Eq(cbrt(x**3), x).subs(x, -1)
-    False
+    false
 
     This is because cbrt computes the principal cube root, this
     identity does hold if `x` is positive:

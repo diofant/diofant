@@ -163,15 +163,14 @@ If you want control over the assumptions of the variables, use
 
 Lastly, it is recommended that you not use :class:`I <sympy.core.numbers.ImaginaryUnit>`,
 :class:`E <sympy.core.numbers.Exp1>`, :class:`~sympy.core.singleton.S`,
-:func:`~sympy.core.evalf.N`, :class:`O <sympy.series.order.Order>`,
-or :obj:`~sympy.assumptions.ask.Q` for variable or symbol names, as those
+:func:`~sympy.core.evalf.N`, or :class:`O <sympy.series.order.Order>`,
+for variable or symbol names, as those
 are used for the imaginary unit (:math:`i`), the base of the natural
 logarithm (:math:`e`), the :func:`~sympy.core.sympify.sympify` function (see :ref:`Symbolic
 Expressions<symbolic-expressions>` below), numeric evaluation (:func:`~sympy.core.evalf.N`
 is equivalent to :ref:`evalf()<evalf-label>` ),
 the `big O <http://en.wikipedia.org/wiki/Big_O_notation>`_ order symbol
-(as in :math:`O(n\log{n})`), and the assumptions object that holds a list of
-supported ask keys (such as :ref:`Q.real <new-assumptions-real>`), respectively.  You can use the
+(as in :math:`O(n\log{n})`).  You can use the
 mnemonic ``QCOSINE`` to remember what Symbols are defined by default in SymPy.
 Or better yet, always use lowercase letters for Symbol names.  Python will
 not prevent you from overriding default SymPy names or functions, so be
@@ -294,10 +293,8 @@ to a Python expression.  Use the :func:`sympy.core.sympify.sympify` function, or
     6.2
     >>> type(6.2)
     <class 'float'>
-    >>> S(6.2)  # SymPy Float has no such problems because of arbitrary precision.
+    >>> Float(6.2)  # SymPy Float has no such problems because of arbitrary precision.
     6.20000000000000
-    >>> type(S(6.2))
-    <class 'sympy.core.numbers.Float'>
 
 If you include numbers in a SymPy expression, they will be sympified
 automatically, but there is one gotcha you should be aware of.  If you
@@ -308,8 +305,6 @@ numbers, or use :class:`~sympy.core.numbers.Rational`.
 
     >>> x**(1/2)
     x**0.5
-    >>> x**(S(1)/2)  # sympyify one of the ints
-    sqrt(x)
     >>> x**Rational(1, 2)  # use the Rational class
     sqrt(x)
 
@@ -333,7 +328,7 @@ you don't have to worry about this problem:
     Rational.
 
     >>> x = Symbol('x')
-    >>> print(solve(7*x - 22, x))
+    >>> solve(7*x - 22, x)
     [22/7]
     >>> 22/7  # After copy and paste we get a float
     3.142857142857143
@@ -343,10 +338,9 @@ you don't have to worry about this problem:
     >>> a
     [22/7]
 
-    The other solution is to put quotes around the expression
-    and run it through S() (i.e., sympify it):
+    The other solution is using the Rational class:
 
-    >>> S("22/7")
+    >>> Rational(22, 7)
     22/7
 
     >>> 1/2   # With division imported it evaluates to a python float
@@ -454,7 +448,7 @@ unsimplified trig identity, multiplied by a big number:
     >>> big = 12345678901234567890
     >>> big_trig_identity = big*cos(x)**2 + big*sin(x)**2 - big*1
     >>> abs(big_trig_identity.subs(x, .1).n(2)) > 1000
-    True
+    true
 
 When the `\cos` and `\sin` terms were evaluated to 15 digits of precision and
 multiplied by the big number, they gave a large number that was only
@@ -480,7 +474,7 @@ values for expressions:
     replacing x with a Rational representing 1/10 -- before the call
     to evaluate:
 
-    >>> big_trig_identity.subs(x, S('1/10')).n(2)
+    >>> big_trig_identity.subs(x, Rational(1, 10)).n(2)
     0.e-91
 
     3) Try to simplify the expression. In this case, SymPy will recognize

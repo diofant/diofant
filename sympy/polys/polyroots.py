@@ -10,7 +10,7 @@ from sympy.core.mul import expand_2arg, Mul
 from sympy.core.power import Pow
 from sympy.core.relational import Eq
 from sympy.core.sympify import sympify
-from sympy.core.numbers import Rational, igcd, comp
+from sympy.core.numbers import Rational, igcd, comp, Integer, Float
 from sympy.core.exprtools import factor_terms
 from sympy.ntheory import divisors, isprime, nextprime
 from sympy.functions import exp, sqrt, im, cos, acos, Piecewise
@@ -157,10 +157,10 @@ def roots_cubic(f, trig=False):
 
     coeff = I*sqrt(3)/2
     if u1 is None:
-        u1 = S(1)
+        u1 = Integer(1)
         u2 = -S.Half + coeff
         u3 = -S.Half - coeff
-        a, b, c, d = S(1), a, b, c
+        a, b, c, d = Integer(1), a, b, c
         D0 = b**2 - 3*a*c
         D1 = 2*b**3 - 9*a*b*c + 27*a**2*d
         C = root((D1 + sqrt(D1**2 - 4*D0**3))/2, 3)
@@ -215,10 +215,10 @@ def _roots_quartic_euler(p, q, r, a):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Rational, Integer
     >>> from sympy.polys.polyroots import _roots_quartic_euler
-    >>> p, q, r = -S(64)/5, -S(512)/125, -S(1024)/3125
-    >>> _roots_quartic_euler(p, q, r, S(0))[0]
+    >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
+    >>> _roots_quartic_euler(p, q, r, Integer(0))[0]
     -sqrt(32*sqrt(5)/125 + 16/5) + 4*sqrt(5)/5
     """
     # solve the resolvent equation
@@ -531,7 +531,7 @@ def roots_quintic(f):
     # zeta = a fifth root of unity
     zeta1, zeta2, zeta3, zeta4 = quintic.zeta
     T = quintic.T(theta, d)
-    tol = S(1e-10)
+    tol = Float(1e-10)
     alpha = T[1] + T[2]*delta
     alpha_bar = T[1] - T[2]*delta
     beta = T[3] + T[4]*delta
@@ -542,11 +542,11 @@ def roots_quintic(f):
 
     l0 = quintic.l0(theta)
 
-    l1 = _quintic_simplify((-alpha + sqrt(disc)) / S(2))
-    l4 = _quintic_simplify((-alpha - sqrt(disc)) / S(2))
+    l1 = _quintic_simplify((-alpha + sqrt(disc)) / Integer(2))
+    l4 = _quintic_simplify((-alpha - sqrt(disc)) / Integer(2))
 
-    l2 = _quintic_simplify((-alpha_bar + sqrt(disc_bar)) / S(2))
-    l3 = _quintic_simplify((-alpha_bar - sqrt(disc_bar)) / S(2))
+    l2 = _quintic_simplify((-alpha_bar + sqrt(disc_bar)) / Integer(2))
+    l3 = _quintic_simplify((-alpha_bar - sqrt(disc_bar)) / Integer(2))
 
     order = quintic.order(theta, d)
     test = (order*delta.n()) - ( (l1.n() - l4.n())*(l2.n() - l3.n()) )
@@ -928,7 +928,7 @@ def roots(f, *gens, **flags):
         if f.is_ground:
             return []
         if f.is_monomial:
-            return [S(0)]*f.degree()
+            return [Integer(0)]*f.degree()
 
         if f.length() == 2:
             if f.degree() == 1:
@@ -966,7 +966,7 @@ def roots(f, *gens, **flags):
     if not k:
         zeros = {}
     else:
-        zeros = {S(0): k}
+        zeros = {Integer(0): k}
 
     coeff, f = preprocess_roots(f)
 

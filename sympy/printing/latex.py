@@ -256,7 +256,7 @@ class LatexPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
 
         tex = ""
         for i, term in enumerate(terms):
@@ -315,7 +315,7 @@ class LatexPrinter(Printer):
             else:
                 _tex = last_term_tex = ""
 
-                if self.order not in ('old', 'none'):
+                if self.order != 'none':
                     args = expr.as_ordered_factors()
                 else:
                     args = expr.args
@@ -1837,9 +1837,8 @@ def latex(expr, **settings):
     8 \sqrt{2} \tau^{\frac{7}{2}}
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
-    "grevlex"), "old", and "none". This parameter does nothing for Mul objects.
-    Setting order to "old" uses the compatibility ordering for Add defined in
-    Printer. For very large expressions, set the 'order' keyword to 'none' if
+    "grevlex") and "none". This parameter does nothing for Mul objects.
+    For very large expressions, set the 'order' keyword to 'none' if
     speed is a concern.
 
     mode: Specifies how the generated code will be delimited. 'mode' can be one

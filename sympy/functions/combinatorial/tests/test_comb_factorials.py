@@ -166,6 +166,7 @@ def test_factorial2():
     assert factorial2(7) == 105
     assert factorial2(8) == 384
     assert factorial2(n).func == factorial2
+    factorial2(S.Half)  # issue sympy/sympy#10388
 
     # The following is exhaustive
     tt = Symbol('tt', integer=True, nonnegative=True)

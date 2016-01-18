@@ -1,5 +1,5 @@
 from sympy.core.sympify import _sympify
-from sympy.core import S, Basic
+from sympy.core import S, Basic, Integer
 from sympy.matrices.expressions.matexpr import ShapeError
 from sympy.matrices.expressions.matpow import MatPow
 
@@ -29,7 +29,7 @@ class Inverse(MatPow):
 
     """
     is_Inverse = True
-    exp = S(-1)
+    exp = Integer(-1)
 
     def __new__(cls, mat):
         mat = _sympify(mat)
@@ -59,29 +59,3 @@ class Inverse(MatPow):
             return self.arg.doit(**hints).inverse()
         else:
             return self.arg.inverse()
-
-
-from sympy.assumptions.ask import ask, Q
-from sympy.assumptions.refine import handlers_dict
-
-
-def refine_Inverse(expr, assumptions):
-    """
-    >>> from sympy import MatrixSymbol, Q, assuming, refine
-    >>> X = MatrixSymbol('X', 2, 2)
-    >>> X.I
-    X^-1
-    >>> with assuming(Q.orthogonal(X)):
-    ...     print(refine(X.I))
-    X'
-    """
-    if ask(Q.orthogonal(expr), assumptions):
-        return expr.arg.T
-    elif ask(Q.unitary(expr), assumptions):
-        return expr.arg.conjugate()
-    elif ask(Q.singular(expr), assumptions):
-        raise ValueError("Inverse of singular matrix %s" % expr.arg)
-
-    return expr
-
-handlers_dict['Inverse'] = refine_Inverse

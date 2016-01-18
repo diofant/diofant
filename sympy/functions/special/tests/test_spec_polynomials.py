@@ -1,8 +1,8 @@
 import pytest
 
 from sympy import (Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt,
-                   hyper, cos, gamma, conjugate, factorial, pi, oo, zoo,
-                   binomial, RisingFactorial, legendre, assoc_legendre,
+                   hyper, Integer, cos, gamma, conjugate, factorial, pi, oo,
+                   zoo, binomial, RisingFactorial, legendre, assoc_legendre,
                    chebyshevu, chebyshevt, chebyshevt_root, chebyshevu_root,
                    laguerre, assoc_laguerre, laguerre_poly, hermite,
                    gegenbauer, jacobi, jacobi_normalized)
@@ -19,16 +19,16 @@ def test_jacobi():
     assert jacobi(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
 
     assert jacobi(n, a, a, x) == RisingFactorial(
-        a + 1, n)*gegenbauer(n, a + S(1)/2, x)/RisingFactorial(2*a + 1, n)
+        a + 1, n)*gegenbauer(n, a + Rational(1, 2), x)/RisingFactorial(2*a + 1, n)
     assert jacobi(n, a, -a, x) == ((-1)**a*(-x + 1)**(-a/2)*(x + 1)**(a/2)*assoc_legendre(n, a, x)*
                                    factorial(-a + n)*gamma(a + n + 1)/(factorial(a + n)*gamma(n + 1)))
     assert jacobi(n, -b, b, x) == ((-x + 1)**(b/2)*(x + 1)**(-b/2)*assoc_legendre(n, b, x)*
                                    gamma(-b + n + 1)/gamma(n + 1))
     assert jacobi(n, 0, 0, x) == legendre(n, x)
     assert jacobi(n, S.Half, S.Half, x) == RisingFactorial(
-        S(3)/2, n)*chebyshevu(n, x)/factorial(n + 1)
+        Rational(3, 2), n)*chebyshevu(n, x)/factorial(n + 1)
     assert jacobi(n, -S.Half, -S.Half, x) == RisingFactorial(
-        S(1)/2, n)*chebyshevt(n, x)/factorial(n)
+        Rational(1, 2), n)*chebyshevt(n, x)/factorial(n)
 
     X = jacobi(n, a, b, x)
     assert isinstance(X, jacobi)
@@ -46,7 +46,7 @@ def test_jacobi():
 
     assert diff(jacobi(n, a, b, x), n) == Derivative(jacobi(n, a, b, x), n)
     assert diff(jacobi(n, a, b, x), x) == \
-        (a/2 + b/2 + n/2 + S(1)/2)*jacobi(n - 1, a + 1, b + 1, x)
+        (a/2 + b/2 + n/2 + Rational(1, 2))*jacobi(n - 1, a + 1, b + 1, x)
 
     assert jacobi_normalized(n, a, b, x) == \
            (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
@@ -67,7 +67,7 @@ def test_gegenbauer():
         x**3*(4*a**3/3 + 4*a**2 + 8*a/3) + x*(-2*a**2 - 2*a)
 
     assert gegenbauer(-1, a, x) == 0
-    assert gegenbauer(n, S(1)/2, x) == legendre(n, x)
+    assert gegenbauer(n, Rational(1, 2), x) == legendre(n, x)
     assert gegenbauer(n, 1, x) == chebyshevu(n, x)
     assert gegenbauer(n, -1, x) == 0
 
@@ -76,7 +76,7 @@ def test_gegenbauer():
 
     assert gegenbauer(n, a, -x) == (-1)**n*gegenbauer(n, a, x)
     assert gegenbauer(n, a, 0) == 2**n*sqrt(pi) * \
-        gamma(a + n/2)/(gamma(a)*gamma(-n/2 + S(1)/2)*gamma(n + 1))
+        gamma(a + n/2)/(gamma(a)*gamma(-n/2 + Rational(1, 2))*gamma(n + 1))
     assert gegenbauer(n, a, 1) == gamma(2*a + n)/(gamma(2*a)*gamma(n + 1))
 
     assert gegenbauer(n, Rational(3, 4), -1) == zoo

@@ -1,18 +1,15 @@
 How to Build Documentation
 ==========================
 
-To make the html documentation, install the prerequisites, e.g. on
-Debian/Ubuntu (similarly for other distributions)::
+To make the html documentation, install the prerequisites (optionally,
+you can also install the sphinx_rtd_theme package with pip)::
 
-    apt-get install python-sphinx texlive-latex-recommended dvipng
-    apt-get install python-pip
-    pip install numpydoc==0.5 sphinx_rtd_theme
+    pip install -r docs/requirements.txt
 
-and do::
+then enter the project directory and do::
 
-    cd docs
-    make html
+    python setup.py build_sphinx
 
 and to view it, do::
 
-    epiphany _build/html/index.html
+    epiphany build/sphinx/html/index.html

@@ -17,9 +17,10 @@ def print_cache():
         item = str(item)
         head = '='*len(item)
 
-        print(head)
-        print(item)
-        print(head)
+        if cache:
+            print(head)
+            print(item)
+            print(head)
 
         if not isinstance(cache, tuple):
             cache = (cache,)

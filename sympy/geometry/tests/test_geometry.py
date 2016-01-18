@@ -3,11 +3,12 @@ import warnings
 import pytest
 
 from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                   simplify, sin, sqrt, symbols, Derivative, asin, acos)
+                   simplify, sin, sqrt, symbols, Derivative, asin, acos,
+                   Integer)
 from sympy.functions.elementary.trigonometric import tan
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection,
+                            are_similar, convex_hull, intersection, Point2D,
                             Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
 from sympy.geometry.line import Undecidable
 from sympy.geometry.entity import rotate, scale, translate
@@ -556,14 +557,17 @@ def test_polygon():
     assert altitudes[p2] == s1[0]
     assert altitudes[p3] == s1[2]
     assert t1.orthocenter == p1
-    t = S('''Triangle(
-    Point(100080156402737/5000000000000, 79782624633431/500000000000),
-    Point(39223884078253/2000000000000, 156345163124289/1000000000000),
-    Point(31241359188437/1250000000000, 338338270939941/1000000000000000))''')
-    assert t.orthocenter == S('''Point(-780660869050599840216997'''
-    '''79471538701955848721853/80368430960602242240789074233100000000000000,'''
-    '''20151573611150265741278060334545897615974257/16073686192120448448157'''
-    '''8148466200000000000)''')
+    t = Triangle(Point(Rational(100080156402737, 5000000000000),
+                       Rational(79782624633431, 500000000000)),
+                 Point(Rational(39223884078253, 2000000000000),
+                       Rational(156345163124289, 1000000000000)),
+                 Point(Rational(31241359188437, 1250000000000),
+                       Rational(338338270939941, 1000000000000000)))
+    assert t.orthocenter == \
+        Point(Rational(-78066086905059984021699779471538701955848721853,
+                       80368430960602242240789074233100000000000000),
+              Rational(20151573611150265741278060334545897615974257,
+                       160736861921204484481578148466200000000000))
 
     # Ensure
     assert len(intersection(*bisectors.values())) == 1
@@ -717,7 +721,7 @@ def test_util():
 
 
 def test_repr():
-    assert repr(Circle((0, 1), 2)) == 'Circle(Point2D(0, 1), 2)'
+    assert repr(Circle((0, 1), 2)) == 'Circle(Point2D(Integer(0), Integer(1)), Integer(2))'
 
 
 def test_transform():
@@ -811,10 +815,17 @@ def test_reflect():
     rpent = pent.reflect(l)
     poly_pent = Polygon(*pent.vertices)
     assert rpent.center == pent.center.reflect(l)
-    assert str([w.n(3) for w in rpent.vertices]) == (
-        '[Point2D(-0.586, 4.27), Point2D(-1.69, 4.66), '
-        'Point2D(-2.41, 3.73), Point2D(-1.74, 2.76), '
-        'Point2D(-0.616, 3.10)]')
+    assert [w.n(3) for w in rpent.vertices] == \
+        [Point2D(Float('-0.585815', prec=3),
+                 Float('4.27051', prec=3)),
+         Point2D(Float('-1.69409', prec=3),
+                 Float('4.66211', prec=3)),
+         Point2D(Float('-2.40918', prec=3),
+                 Float('3.72949', prec=3)),
+         Point2D(Float('-1.74292', prec=3),
+                 Float('2.76123', prec=3)),
+         Point2D(Float('-0.615967', prec=3),
+                 Float('3.0957', prec=3))]
     assert pent.area.equals(-rpent.area)
 
 

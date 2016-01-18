@@ -1045,7 +1045,7 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from sympy import Rational, nsimplify, S, pi
+    >>> from sympy import Rational, nsimplify, sympify, pi
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1085,7 +1085,7 @@ class Rational(Number):
     the sympify() function, and conversion of floats to expressions
     or simple fractions can be handled with nsimplify:
 
-    >>> S('3**2/10')  # general expressions
+    >>> sympify('3**2/10')  # general expressions
     9/10
     >>> nsimplify(.3)  # numbers that have a simple form
     3/10
@@ -1190,9 +1190,7 @@ class Rational(Number):
                     raise ValueError("Indeterminate 0/0")
                 else:
                     return S.NaN
-            if p < 0:
-                return S.NegativeInfinity
-            return S.Infinity
+            return S.ComplexInfinity
         if q < 0:
             q = -q
             p = -p
@@ -1348,7 +1346,7 @@ class Rational(Number):
                 if self.is_negative:
                     if expt.q != 1:
                         return -(S.NegativeOne)**((expt.p % expt.q) /
-                               S(expt.q))*Rational(self.q, -self.p)**ne
+                               Integer(expt.q))*Rational(self.q, -self.p)**ne
                     else:
                         return S.NegativeOne**ne*Rational(self.q, -self.p)**ne
                 else:
@@ -1552,8 +1550,8 @@ class Rational(Number):
         Examples
         ========
 
-        >>> from sympy import S
-        >>> (S(-3)/2).as_content_primitive()
+        >>> from sympy import Rational
+        >>> Rational(-3, 2).as_content_primitive()
         (3/2, -1)
 
         See Also
@@ -1803,7 +1801,7 @@ class Integer(Rational):
             if self.is_negative:
                 if expt.q != 1:
                     return -(S.NegativeOne)**((expt.p % expt.q) /
-                            S(expt.q))*Rational(1, -self)**ne
+                            Integer(expt.q))*Rational(1, -self)**ne
                 else:
                     return (S.NegativeOne)**ne*Rational(1, -self)**ne
             else:
@@ -2196,7 +2194,23 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
                 i, r = divmod(expt.p, expt.q)
                 if i:
                     return self**i*self**Rational(r, expt.q)
-        return
+        if isinstance(expt, Add):
+            # Handle (-1)**((-1)**n/2 + m/2)
+            e2 = 2*expt
+            if e2.is_even:
+                if e2.could_extract_minus_sign():
+                    e2 *= self
+            if e2.is_Add:
+                i, p = e2.as_two_terms()
+                if p.is_Pow and p.base is S.NegativeOne:
+                    if p.exp.is_integer:
+                        i = (i + 1)/2
+                        if i.is_even:
+                            return self**p.exp
+                        elif i.is_odd:
+                            return self**(p.exp + 1)
+                        else:
+                            return self**(p.exp + i)
 
 
 class Half(RationalConstant, metaclass=Singleton):
@@ -2695,7 +2709,7 @@ class NaN(Number, metaclass=Singleton):
     >>> nan + 1
     nan
     >>> Eq(nan, nan)   # mathematical equality
-    False
+    false
     >>> nan == nan     # structural equality
     True
 
@@ -3068,7 +3082,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             if out:
                 return Mul(*out)*Pow(self, Add(*add), evaluate=False)
         elif arg.is_Matrix:
-            from sympy import Matrix
             return arg.exp()
 
     def _eval_rewrite_as_sin(self):
@@ -3102,7 +3115,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     >>> S.Pi
     pi
     >>> pi > 3
-    True
+    true
     >>> pi.is_irrational
     True
     >>> x = Symbol('x')
@@ -3163,7 +3176,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
 
     >>> from sympy import S
     >>> S.GoldenRatio > 1
-    True
+    true
     >>> S.GoldenRatio.expand(func=True)
     1/2 + sqrt(5)/2
     >>> S.GoldenRatio.is_irrational
@@ -3226,9 +3239,9 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     >>> from sympy import S
     >>> S.EulerGamma.is_irrational
     >>> S.EulerGamma > 0
-    True
+    true
     >>> S.EulerGamma > 1
-    False
+    false
 
     References
     ==========
@@ -3278,9 +3291,9 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     >>> from sympy import S
     >>> S.Catalan.is_irrational
     >>> S.Catalan > 0
-    True
+    true
     >>> S.Catalan > 1
-    False
+    false
 
     References
     ==========

@@ -4,7 +4,6 @@ from sympy.matrices.expressions.slice import MatrixSlice
 from sympy.matrices.expressions import MatrixSymbol
 from sympy.abc import a, b, c, d, k, l, m, n
 from sympy.functions.elementary.integers import floor
-from sympy.assumptions import assuming, Q
 
 
 X = MatrixSymbol('X', n, m)
@@ -52,14 +51,6 @@ def test_exceptions():
     pytest.raises(IndexError, lambda: X[0:12, 2])
     pytest.raises(IndexError, lambda: X[0:9, 22])
     pytest.raises(IndexError, lambda: X[-1:5, 2])
-
-
-@pytest.mark.xfail
-def test_symmetry():
-    X = MatrixSymbol('x', 10, 10)
-    Y = X[:5, 5:]
-    with assuming(Q.symmetric(X)):
-        assert Y.T == X[5:, :5]
 
 
 def test_slice_of_slice():

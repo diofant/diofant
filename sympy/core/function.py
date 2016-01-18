@@ -61,10 +61,10 @@ def _coeff_isneg(a):
     ========
 
     >>> from sympy.core.function import _coeff_isneg
-    >>> from sympy import S, Symbol, oo, pi
+    >>> from sympy import Integer, Symbol, oo, pi
     >>> _coeff_isneg(-3*pi)
     True
-    >>> _coeff_isneg(S(3))
+    >>> _coeff_isneg(Integer(3))
     False
     >>> _coeff_isneg(-oo)
     True
@@ -291,7 +291,7 @@ class Function(Application, Expr):
     Suppose also that *my_func(x)* is real exactly when *x* is real. Here is
     an implementation that honours those requirements:
 
-    >>> from sympy import Function, S, oo, I, sin
+    >>> from sympy import Function, S, oo, I, sin, Symbol
     >>> class my_func(Function):
     ...
     ...     @classmethod
@@ -305,7 +305,7 @@ class Function(Application, Expr):
     ...     def _eval_is_extended_real(self):
     ...         return self.args[0].is_extended_real
     ...
-    >>> x = S('x')
+    >>> x = Symbol('x')
     >>> my_func(0) + sin(0)
     1
     >>> my_func(oo)
@@ -1338,7 +1338,7 @@ class Lambda(Expr):
         if len(variables) == 1 and variables[0] == expr:
             return S.IdentityFunction
 
-        obj = Expr.__new__(cls, Tuple(*variables), S(expr))
+        obj = Expr.__new__(cls, Tuple(*variables), sympify(expr))
         obj.nargs = FiniteSet(len(variables))
         return obj
 

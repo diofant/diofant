@@ -1,7 +1,7 @@
 import pytest
 
 from sympy.core import (S, pi, oo, symbols, Function, Rational, Integer,
-                        Tuple, Symbol)
+                        Tuple, Symbol, I, sympify)
 from sympy.core import EulerGamma, GoldenRatio, Catalan, Lambda
 from sympy.functions import Piecewise, sqrt, ceiling, exp, sin, cos
 from sympy.utilities.lambdify import implemented_function
@@ -83,14 +83,14 @@ def test_mix_number_mult_symbols():
     assert mcode(1/x/y) == "1./(x.*y)"
     assert mcode(2*pi*x/y/z) == "2*pi*x./(y.*z)"
     assert mcode(3*pi/x) == "3*pi./x"
-    assert mcode(S(3)/5) == "3/5"
-    assert mcode(S(3)/5*x) == "3*x/5"
+    assert mcode(Rational(3, 5)) == "3/5"
+    assert mcode(Rational(3, 5)*x) == "3*x/5"
     assert mcode(x/y/z) == "x./(y.*z)"
     assert mcode((x+y)/z) == "(x + y)./z"
     assert mcode((x+y)/(z+x)) == "(x + y)./(x + z)"
     assert mcode((x+y)/EulerGamma) == "(x + y)/0.5772156649015329"
     assert mcode(x/3/pi) == "x/(3*pi)"
-    assert mcode(S(3)/5*x*y/pi) == "3*x.*y/(5*pi)"
+    assert mcode(Rational(3, 5)*x*y/pi) == "3*x.*y/(5*pi)"
 
 
 def test_mix_number_pow_symbols():
@@ -103,10 +103,9 @@ def test_mix_number_pow_symbols():
 
 
 def test_imag():
-    I = S('I')
     assert mcode(I) == "1i"
     assert mcode(5*I) == "5i"
-    assert mcode((S(3)/2)*I) == "3*1i/2"
+    assert mcode((Rational(3, 2))*I) == "3*1i/2"
     assert mcode(3+4*I) == "3 + 4i"
 
 
@@ -312,8 +311,8 @@ def test_octave_not_supported():
 
 def test_trick_indent_with_end_else_words():
     # words starting with "end" or "else" do not confuse the indenter
-    t1 = S('endless')
-    t2 = S('elsewhere')
+    t1 = sympify('endless')
+    t2 = sympify('elsewhere')
     pw = Piecewise((t1, x < 0), (t2, x <= 1), (1, True))
     assert mcode(pw, inline=False) == (
         "if (x < 0)\n"

@@ -1,4 +1,4 @@
-from sympy.core import symbols, S
+from sympy.core import symbols, S, Integer
 from sympy.functions import adjoint, conjugate, transpose
 from sympy.matrices.expressions import MatrixSymbol, Adjoint, trace, Transpose
 from sympy.matrices import eye, Matrix
@@ -22,7 +22,7 @@ def test_adjoint():
 
     assert Adjoint(eye(3)).doit() == eye(3)
 
-    assert Adjoint(S(5)).doit() == S(5)
+    assert Adjoint(Integer(5)).doit() == Integer(5)
 
     assert Adjoint(Matrix([[1, 2], [3, 4]])).doit() == Matrix([[1, 3], [2, 4]])
 

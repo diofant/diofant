@@ -7,7 +7,7 @@ from sympy.polys.orderings import (
     LexOrder, InverseOrder, ProductOrder, build_product_order)
 
 from sympy.abc import x, y, z, t
-from sympy.core import S
+from sympy.core import S, Integer
 
 
 def test_lex_order():
@@ -114,13 +114,13 @@ def test_monomial_key():
     pytest.raises(ValueError, lambda: monomial_key('foo'))
     pytest.raises(ValueError, lambda: monomial_key(1))
 
-    M = [x, x**2*z**2, x*y, x**2, S(1), y**2, x**3, y, z, x*y**2*z, x**2*y**2]
+    M = [x, x**2*z**2, x*y, x**2, Integer(1), y**2, x**3, y, z, x*y**2*z, x**2*y**2]
     assert sorted(M, key=monomial_key('lex', [z, y, x])) == \
-        [S(1), x, x**2, x**3, y, x*y, y**2, x**2*y**2, z, x*y**2*z, x**2*z**2]
+        [Integer(1), x, x**2, x**3, y, x*y, y**2, x**2*y**2, z, x*y**2*z, x**2*z**2]
     assert sorted(M, key=monomial_key('grlex', [z, y, x])) == \
-        [S(1), x, y, z, x**2, x*y, y**2, x**3, x**2*y**2, x*y**2*z, x**2*z**2]
+        [Integer(1), x, y, z, x**2, x*y, y**2, x**3, x**2*y**2, x*y**2*z, x**2*z**2]
     assert sorted(M, key=monomial_key('grevlex', [z, y, x])) == \
-        [S(1), x, y, z, x**2, x*y, y**2, x**3, x**2*y**2, x**2*z**2, x*y**2*z]
+        [Integer(1), x, y, z, x**2, x*y, y**2, x**3, x**2*y**2, x**2*z**2, x*y**2*z]
 
 
 def test_build_product_order():

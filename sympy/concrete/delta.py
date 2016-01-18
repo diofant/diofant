@@ -1,4 +1,4 @@
-from sympy.core import Add, Mul, S, Dummy
+from sympy.core import Add, Mul, S, Dummy, Integer
 from sympy.core.cache import cacheit
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import KroneckerDelta, Piecewise, piecewise_fold
@@ -14,7 +14,7 @@ def _expand_delta(expr, index):
         return expr
     delta = None
     func = Add
-    terms = [S(1)]
+    terms = [Integer(1)]
     for h in expr.args:
         if delta is None and h.is_Add and _has_simple_delta(h, index):
             delta = True
@@ -59,7 +59,7 @@ def _extract_delta(expr, index):
     if not _has_simple_delta(expr, index):
         return (None, expr)
     if isinstance(expr, KroneckerDelta):
-        return (expr, S(1))
+        return (expr, Integer(1))
     if not expr.is_Mul:
         raise ValueError("Incorrect expr")
     delta = None
@@ -264,9 +264,9 @@ def deltasummation(f, limit, no_piecewise=False):
     >>> deltasummation(KroneckerDelta(i, k), (k, -oo, oo))
     1
     >>> deltasummation(KroneckerDelta(i, k), (k, 0, oo))
-    Piecewise((1, 0 <= i), (0, True))
+    Piecewise((1, 0 <= i), (0, true))
     >>> deltasummation(KroneckerDelta(i, k), (k, 1, 3))
-    Piecewise((1, And(1 <= i, i <= 3)), (0, True))
+    Piecewise((1, And(1 <= i, i <= 3)), (0, true))
     >>> deltasummation(k*KroneckerDelta(i, j)*KroneckerDelta(j, k), (k, -oo, oo))
     j*KroneckerDelta(i, j)
     >>> deltasummation(j*KroneckerDelta(i, j), (j, -oo, oo))

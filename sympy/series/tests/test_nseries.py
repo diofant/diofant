@@ -2,8 +2,8 @@ import pytest
 
 from sympy import (Symbol, Rational, ln, exp, log, sqrt, E, O, pi, I, sinh,
                    sin, cosh, cos, tanh, coth, asinh, acosh, atanh, acoth, tan,
-                   cot, Integer, PoleError, floor, ceiling, asin, symbols, limit,
-                   Piecewise, Eq, sign, Derivative)
+                   cot, PoleError, floor, ceiling, asin, symbols, limit,
+                   sign, Derivative)
 
 from sympy.abc import x, y, z
 
@@ -373,7 +373,7 @@ def test_series3():
     w = Symbol("w", extended_real=True)
     x = Symbol("x", extended_real=True)
     e = w**(-6)*(w**3*tan(w) - w**3*sin(w))
-    assert e.nseries(w, n=8) == Integer(1)/2 + O(w**2)
+    assert e.nseries(w, n=8) == Rational(1, 2) + O(w**2)
 
 
 def test_bug4():

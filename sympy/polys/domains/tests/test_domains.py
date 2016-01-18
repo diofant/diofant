@@ -2,18 +2,16 @@
 
 import pytest
 
-from sympy import S, sqrt, sin, oo, Poly, Float
-from sympy.abc import x, y, z
-
+from sympy import sqrt, sin, oo, Poly, Float, Integer, Rational
 from sympy.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
 from sympy.polys.domains.realfield import RealField
-
 from sympy.polys.rings import ring
 from sympy.polys.fields import field
-
 from sympy.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
                                     GeneratorsError, CoercionFailed,
                                     NotInvertible, DomainError)
+
+from sympy.abc import x, y, z
 
 ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
@@ -284,25 +282,25 @@ def test_Domain__contains__():
     assert (17 in QQ[x, y]) is True
     assert (17 in RR[x, y]) is True
 
-    assert (-S(1)/7 in EX) is True
-    assert (-S(1)/7 in ZZ) is False
-    assert (-S(1)/7 in QQ) is True
-    assert (-S(1)/7 in RR) is True
-    assert (-S(1)/7 in CC) is True
-    assert (-S(1)/7 in ALG) is True
-    assert (-S(1)/7 in ZZ[x, y]) is False
-    assert (-S(1)/7 in QQ[x, y]) is True
-    assert (-S(1)/7 in RR[x, y]) is True
+    assert (-Rational(1, 7) in EX) is True
+    assert (-Rational(1, 7) in ZZ) is False
+    assert (-Rational(1, 7) in QQ) is True
+    assert (-Rational(1, 7) in RR) is True
+    assert (-Rational(1, 7) in CC) is True
+    assert (-Rational(1, 7) in ALG) is True
+    assert (-Rational(1, 7) in ZZ[x, y]) is False
+    assert (-Rational(1, 7) in QQ[x, y]) is True
+    assert (-Rational(1, 7) in RR[x, y]) is True
 
-    assert (S(3)/5 in EX) is True
-    assert (S(3)/5 in ZZ) is False
-    assert (S(3)/5 in QQ) is True
-    assert (S(3)/5 in RR) is True
-    assert (S(3)/5 in CC) is True
-    assert (S(3)/5 in ALG) is True
-    assert (S(3)/5 in ZZ[x, y]) is False
-    assert (S(3)/5 in QQ[x, y]) is True
-    assert (S(3)/5 in RR[x, y]) is True
+    assert (Rational(3, 5) in EX) is True
+    assert (Rational(3, 5) in ZZ) is False
+    assert (Rational(3, 5) in QQ) is True
+    assert (Rational(3, 5) in RR) is True
+    assert (Rational(3, 5) in CC) is True
+    assert (Rational(3, 5) in ALG) is True
+    assert (Rational(3, 5) in ZZ[x, y]) is False
+    assert (Rational(3, 5) in QQ[x, y]) is True
+    assert (Rational(3, 5) in RR[x, y]) is True
 
     assert (3.0 in EX) is True
     assert (3.0 in ZZ) is True
@@ -400,7 +398,7 @@ def test_Domain__contains__():
     assert (x**2 + y**2 in QQ[x, y]) is True
     assert (x**2 + y**2 in RR[x, y]) is True
 
-    assert (S(3)/2*x/(y + 1) - z in QQ[x, y, z]) is False
+    assert (Rational(3, 2)*x/(y + 1) - z in QQ[x, y, z]) is False
 
 
 def test_Domain_get_ring():
@@ -582,10 +580,10 @@ def test___eq__():
 
 
 def test_RealField_from_sympy():
-    assert RR.convert(S(0)) == RR.dtype(0)
-    assert RR.convert(S(0.0)) == RR.dtype(0.0)
-    assert RR.convert(S(1)) == RR.dtype(1)
-    assert RR.convert(S(1.0)) == RR.dtype(1.0)
+    assert RR.convert(Integer(0)) == RR.dtype(0)
+    assert RR.convert(Float(0.0)) == RR.dtype(0.0)
+    assert RR.convert(Integer(1)) == RR.dtype(1)
+    assert RR.convert(Float(1.0)) == RR.dtype(1.0)
     assert RR.convert(sin(1)) == RR.dtype(sin(1).evalf())
     assert RR.convert(oo) == RR("+inf")
     assert RR.convert(-oo) == RR("-inf")

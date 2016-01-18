@@ -5,7 +5,7 @@ from sympy import (Poly, igcd, divisors, sign, symbols, S, Integer, Wild,
 from sympy.core.function import _mexpand
 from sympy.simplify.radsimp import rad_rationalize
 from sympy.utilities import default_sort_key, numbered_symbols
-from sympy.core.numbers import igcdex
+from sympy.core.numbers import igcdex, Rational
 from sympy.ntheory.residue_ntheory import sqrt_mod
 from sympy.core.relational import Eq
 from sympy.solvers.solvers import check_assumptions
@@ -678,8 +678,8 @@ def _diop_quadratic(var, coeff, t):
                 s0 = solution[0]
                 t0 = solution[1]
 
-                x_0 = S(B*t0 + r*s0 + r*t0 - B*s0)/(4*A*r)
-                y_0 = S(s0 - t0)/(2*r)
+                x_0 = (B*t0 + r*s0 + r*t0 - B*s0)/(4*A*r)
+                y_0 = (s0 - t0)/(2*r)
 
                 if isinstance(s0, Symbol) or isinstance(t0, Symbol):
                     if check_param(x_0, y_0, 4*A*r, t) != (None, None):
@@ -728,8 +728,8 @@ def _diop_quadratic(var, coeff, t):
 
                     r = sol[0]
                     s = sol[1]
-                    x_n = S((r + s*sqrt(D))*(T + U*sqrt(D))**t + (r - s*sqrt(D))*(T - U*sqrt(D))**t)/2
-                    y_n = S((r + s*sqrt(D))*(T + U*sqrt(D))**t - (r - s*sqrt(D))*(T - U*sqrt(D))**t)/(2*sqrt(D))
+                    x_n = ((r + s*sqrt(D))*(T + U*sqrt(D))**t + (r - s*sqrt(D))*(T - U*sqrt(D))**t)/2
+                    y_n = ((r + s*sqrt(D))*(T + U*sqrt(D))**t - (r - s*sqrt(D))*(T - U*sqrt(D))**t)/(2*sqrt(D))
 
                     x_n = _mexpand(x_n)
                     y_n = _mexpand(y_n)
@@ -738,7 +738,7 @@ def _diop_quadratic(var, coeff, t):
                     l.add((x_n, y_n))
 
             else:
-                L = ilcm(S(P[0]).q, ilcm(S(P[1]).q, ilcm(S(P[2]).q, ilcm(S(P[3]).q, ilcm(S(Q[0]).q, S(Q[1]).q)))))
+                L = ilcm((P[0]).q, ilcm((P[1]).q, ilcm((P[2]).q, ilcm((P[3]).q, ilcm((Q[0]).q, (Q[1]).q)))))
 
                 k = 0
                 done = False
@@ -771,8 +771,8 @@ def _diop_quadratic(var, coeff, t):
                         if is_solution_quad(var, coeff, x, y):
                             done = True
 
-                            x_n = S( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ 2
-                            y_n = S( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ (2*sqrt(D))
+                            x_n = ( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ 2
+                            y_n = ( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ (2*sqrt(D))
 
                             x_n = _mexpand(x_n)
                             y_n = _mexpand(y_n)
@@ -1162,11 +1162,11 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
 
     elif N > 1:
         L1 = 0
-        L2 = floor(sqrt(S(N*(u - 1))/(2*D))) + 1
+        L2 = floor(sqrt((N*(u - 1))/(2*D))) + 1
 
     elif N < -1:
-        L1 = ceiling(sqrt(S(-N)/D))
-        L2 = floor(sqrt(S(-N*(u + 1))/(2*D))) + 1
+        L1 = ceiling(sqrt(-N/D))
+        L2 = floor(sqrt((-N*(u + 1))/(2*D))) + 1
 
     else:
         if D < 0:
@@ -1387,45 +1387,39 @@ def _transformation_to_DN(var, coeff):
     X, Y = symbols("X, Y", integer=True)
 
     if b != Integer(0):
-        B = (S(2*a)/b).p
-        C = (S(2*a)/b).q
-        A = (S(a)/B**2).p
-        T = (S(a)/B**2).q
+        B, C = Rational(2*a, b).as_numer_denom()
+        A, T = Rational(a, B**2).as_numer_denom()
 
         # eq_1 = A*B*X**2 + B*(c*T - A*C**2)*Y**2 + d*T*X + (B*e*T - d*T*C)*Y + f*T*B
         coeff = {X**2: A*B, X*Y: 0, Y**2: B*(c*T - A*C**2), X: d*T, Y: B*e*T - d*T*C, Integer(1): f*T*B}
         A_0, B_0 = _transformation_to_DN([X, Y], coeff)
-        return Matrix(2, 2, [S(1)/B, -S(C)/B, 0, 1])*A_0, Matrix(2, 2, [S(1)/B, -S(C)/B, 0, 1])*B_0
+        return Matrix(2, 2, [Integer(1)/B, -C/B, 0, 1])*A_0, Matrix(2, 2, [Integer(1)/B, -C/B, 0, 1])*B_0
 
     else:
         if d != Integer(0):
-            B = (S(2*a)/d).p
-            C = (S(2*a)/d).q
-            A = (S(a)/B**2).p
-            T = (S(a)/B**2).q
+            B, C = Rational(2*a, d).as_numer_denom()
+            A, T = Rational(a, B**2).as_numer_denom()
 
             # eq_2 = A*X**2 + c*T*Y**2 + e*T*Y + f*T - A*C**2
             coeff = {X**2: A, X*Y: 0, Y**2: c*T, X: 0, Y: e*T, Integer(1): f*T - A*C**2}
             A_0, B_0 = _transformation_to_DN([X, Y], coeff)
-            return Matrix(2, 2, [S(1)/B, 0, 0, 1])*A_0, Matrix(2, 2, [S(1)/B, 0, 0, 1])*B_0 + Matrix([-S(C)/B, 0])
+            return Matrix(2, 2, [Integer(1)/B, 0, 0, 1])*A_0, Matrix(2, 2, [Integer(1)/B, 0, 0, 1])*B_0 + Matrix([-C/B, 0])
 
         else:
             if e != Integer(0):
-                B = (S(2*c)/e).p
-                C = (S(2*c)/e).q
-                A = (S(c)/B**2).p
-                T = (S(c)/B**2).q
+                B, C = Rational(2*c, e).as_numer_denom()
+                A, T = Rational(c, B**2).as_numer_denom()
 
                 # eq_3 = a*T*X**2 + A*Y**2 + f*T - A*C**2
                 coeff = {X**2: a*T, X*Y: 0, Y**2: A, X: 0, Y: 0, Integer(1): f*T - A*C**2}
                 A_0, B_0 = _transformation_to_DN([X, Y], coeff)
-                return Matrix(2, 2, [1, 0, 0, S(1)/B])*A_0, Matrix(2, 2, [1, 0, 0, S(1)/B])*B_0 + Matrix([0, -S(C)/B])
+                return Matrix(2, 2, [1, 0, 0, Integer(1)/B])*A_0, Matrix(2, 2, [1, 0, 0, Integer(1)/B])*B_0 + Matrix([0, -C/B])
 
             else:
                 # TODO: pre-simplification: Not necessary but may simplify
                 # the equation.
 
-                return Matrix(2, 2, [S(1)/a, 0, 0, 1]), Matrix([0, 0])
+                return Matrix(2, 2, [Integer(1)/a, 0, 0, 1]), Matrix([0, 0])
 
 
 def find_DN(eq):
@@ -1534,7 +1528,7 @@ def check_param(x, y, a, t):
 
             return x*ilcm(l1, l2), y*ilcm(l1, l2)
 
-        eq = S(m - x_param[q])/x_param[p] - S(n - y_param[q])/y_param[p]
+        eq = (m - x_param[q])/x_param[p] - (n - y_param[q])/y_param[p]
 
         lcm_denom, junk = Poly(eq).clear_denoms()
         eq = eq * lcm_denom
@@ -1653,8 +1647,8 @@ def _diop_ternary_quadratic(_var, coeff):
             if X_0 is None:
                 return (None, None, None)
 
-            l = (S(B*y_0 + C*z_0)/(2*A)).q
-            x_0, y_0, z_0 = X_0*l - (S(B*y_0 + C*z_0)/(2*A)).p, y_0*l, z_0*l
+            l = Rational(B*y_0 + C*z_0, 2*A).q
+            x_0, y_0, z_0 = X_0*l - Rational(B*y_0 + C*z_0, 2*A).p, y_0*l, z_0*l
 
         elif coeff[z*y] != 0:
             if coeff[y**2] == 0:
@@ -1663,8 +1657,8 @@ def _diop_ternary_quadratic(_var, coeff):
                     A = coeff[x**2]
                     E = coeff[y*z]
 
-                    b = (S(-E)/A).p
-                    a = (S(-E)/A).q
+                    b = Rational(-E, A).p
+                    a = Rational(-E, A).q
 
                     x_0, y_0, z_0 = b, a, b
 
@@ -1745,7 +1739,7 @@ def _transformation_to_normal(var, coeff):
             _coeff[x*z] = 0
 
             T_0 = _transformation_to_normal(_var, _coeff)
-            return Matrix(3, 3, [1, S(-B)/(2*A), S(-C)/(2*A), 0, 1, 0, 0, 0, 1]) * T_0
+            return Matrix(3, 3, [1, -B/(2*A), -C/(2*A), 0, 1, 0, 0, 0, 1]) * T_0
 
         elif coeff[y*z] != 0:
             if coeff[y**2] == 0:
@@ -1936,9 +1930,9 @@ def _diop_ternary_quadratic_normal(var, coeff):
     if divisible(z_0, c_2) == True:
         z_0 = z_0 // abs(c_2)
     else:
-        x_0 = x_0*(S(z_0)/c_2).q
-        y_0 = y_0*(S(z_0)/c_2).q
-        z_0 = (S(z_0)/c_2).p
+        x_0 = x_0*Rational(z_0, c_2).q
+        y_0 = y_0*Rational(z_0, c_2).q
+        z_0 = Rational(z_0, c_2).p
 
     x_0, y_0, z_0 = simplified(x_0, y_0, z_0)
 

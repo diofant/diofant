@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (adjoint, conjugate, DiracDelta, Heaviside, nan, pi,
                    sign, sqrt, symbols, transpose, Symbol, Piecewise,
-                   I, S, Eq)
+                   I, S, Eq, Integer, Rational)
 from sympy.core.function import ArgumentIndexError
 
 x, y = symbols('x y')
@@ -69,7 +69,7 @@ def test_heaviside():
 def test_rewrite():
     x, y = Symbol('x', extended_real=True), Symbol('y')
     assert Heaviside(x).rewrite(Piecewise) == \
-        Piecewise((1, x > 0), (S(1)/2, Eq(x, 0)), (0, True))
+        Piecewise((1, x > 0), (Rational(1, 2), Eq(x, 0)), (0, True))
     assert Heaviside(y).rewrite(Piecewise) == Heaviside(y)
 
     assert Heaviside(x).rewrite(sign) == (sign(x)+1)/2

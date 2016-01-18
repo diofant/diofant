@@ -688,8 +688,8 @@ class MatrixBase(object):
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue 5487.
     def __repr__(self):
-        from sympy.printing import sstr
-        return sstr(self, order=None)
+        from sympy.printing import srepr
+        return srepr(self, order=None)
 
     def __str__(self):
         from sympy.printing import sstr
@@ -1818,7 +1818,7 @@ class MatrixBase(object):
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)
             # Note that while useful this is not mathematically a norm
             try:
-                return Pow(Add(*(abs(i)**ord for i in vals)), S(1) / ord)
+                return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
             except (NotImplementedError, TypeError):
                 raise ValueError("Expected order to be Number, Symbol, oo")
 

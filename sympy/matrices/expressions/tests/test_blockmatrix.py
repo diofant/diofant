@@ -110,9 +110,6 @@ def test_BlockMatrix_trace():
 def test_BlockMatrix_Determinant():
     A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
     X = BlockMatrix([[A, B], [C, D]])
-    from sympy import assuming, Q
-    with assuming(Q.invertible(A)):
-        assert det(X) == det(A) * det(D - C*A.I*B)
 
     assert isinstance(det(X), Expr)
 

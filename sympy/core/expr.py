@@ -455,7 +455,7 @@ class Expr(Basic, EvalfMixin):
         >>> from sympy.abc import a, n, x, y
         >>> x.is_constant()
         False
-        >>> S(2).is_constant()
+        >>> Integer(2).is_constant()
         True
         >>> Sum(x, (x, 1, 10)).is_constant()
         True
@@ -703,6 +703,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_is_positive(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
+        from sympy.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
@@ -724,6 +725,8 @@ class Expr(Basic, EvalfMixin):
                 return bool(not i and n > 0)
             elif n._prec == 1 and (not i or i._prec == 1) and \
                     self.is_algebraic and not self.has(Function):
+                if count_ops(self) > 75:
+                    return
                 try:
                     if minimal_polynomial(self).is_Symbol:
                         return False
@@ -733,6 +736,7 @@ class Expr(Basic, EvalfMixin):
     def _eval_is_negative(self):
         from sympy.polys.numberfields import minimal_polynomial
         from sympy.polys.polyerrors import NotAlgebraic
+        from sympy.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
@@ -754,6 +758,8 @@ class Expr(Basic, EvalfMixin):
                 return bool(not i and n < 0)
             elif n._prec == 1 and (not i or i._prec == 1) and \
                     self.is_algebraic and not self.has(Function):
+                if count_ops(self) > 75:
+                    return
                 try:
                     if minimal_polynomial(self).is_Symbol:
                         return False
@@ -1041,7 +1047,7 @@ class Expr(Basic, EvalfMixin):
         >>> (-2*x*y).args_cnc()
         [[-1, 2, x, y], []]
         >>> (-2.5*x).args_cnc()
-        [[-1, 2.50000000000000, x], []]
+        [[-1, 2.5, x], []]
         >>> (-2*x*A*B*y).args_cnc()
         [[-1, 2, x, y], [A, B]]
         >>> (-2*x*A*B*y).args_cnc(split_1=False)
@@ -1719,7 +1725,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import S
         >>> from sympy.abc import x, y
-        >>> (S(3)).as_coeff_mul()
+        >>> (Integer(3)).as_coeff_mul()
         (3, ())
         >>> (3*x*y).as_coeff_mul()
         (3, (x, y))
@@ -1754,7 +1760,7 @@ class Expr(Basic, EvalfMixin):
 
         >>> from sympy import S
         >>> from sympy.abc import x, y
-        >>> (S(3)).as_coeff_add()
+        >>> (Integer(3)).as_coeff_add()
         (3, ())
         >>> (3 + x).as_coeff_add()
         (3, (x,))
@@ -2146,8 +2152,8 @@ class Expr(Basic, EvalfMixin):
         (1, -1/2)
         """
         from sympy import exp_polar, pi, I, ceiling, Add
-        n = S(0)
-        res = S(1)
+        n = Integer(0)
+        res = Integer(1)
         args = Mul.make_args(self)
         exps = []
         for arg in args:
@@ -2155,7 +2161,7 @@ class Expr(Basic, EvalfMixin):
                 exps += [arg.exp]
             else:
                 res *= arg
-        piimult = S(0)
+        piimult = Integer(0)
         extras = []
         while exps:
             exp = exps.pop()
@@ -2174,13 +2180,13 @@ class Expr(Basic, EvalfMixin):
         else:
             coeff, tail = piimult.as_coeff_add(*piimult.free_symbols)
         # round down to nearest multiple of 2
-        branchfact = ceiling(coeff/2 - S(1)/2)*2
+        branchfact = ceiling(coeff/2 - Rational(1, 2))*2
         n += branchfact/2
         c = coeff - branchfact
         if allow_half:
             nc = c.extract_additively(1)
             if nc is not None:
-                n += S(1)/2
+                n += Rational(1, 2)
                 c = nc
         newexp = pi*I*Add(*((c, ) + tail)) + Add(*extras)
         if newexp != 0:
@@ -2769,7 +2775,7 @@ class Expr(Basic, EvalfMixin):
         .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from sympy import Dummy
-        from sympy.series.gruntz import mrv, rewrite, mrv_leadterm
+        from sympy.series.gruntz import mrv, rewrite
         from sympy.functions import exp, log
         from sympy.series import Order
 
@@ -3146,11 +3152,6 @@ class Expr(Basic, EvalfMixin):
         from sympy.polys import factor
         return factor(self, *gens, **args)
 
-    def refine(self, assumption=True):
-        """See the refine function in sympy.assumptions"""
-        from sympy.assumptions import refine
-        return refine(self, assumption)
-
     def cancel(self, *gens, **args):
         """See the cancel function in sympy.polys"""
         from sympy.polys import cancel
@@ -3170,8 +3171,8 @@ class Expr(Basic, EvalfMixin):
         Examples
         ========
 
-        >>> from sympy import pi, E, I, S, Add, Mul, Number
-        >>> S(10.5).round()
+        >>> from sympy import pi, E, I, Add, Mul, Number, Float
+        >>> Float(10.5).round()
         11.
         >>> pi.round()
         3.
@@ -3197,9 +3198,9 @@ class Expr(Basic, EvalfMixin):
         (or raises an error if applied to a complex value) while the
         latter returns either a Number or a complex number:
 
-        >>> isinstance(round(S(123), -2), Number)
+        >>> isinstance(round(Integer(123), -2), Number)
         False
-        >>> isinstance(S(123).round(-2), Number)
+        >>> isinstance(Integer(123).round(-2), Number)
         True
         >>> isinstance((3*I).round(), Mul)
         True

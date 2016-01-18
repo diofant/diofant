@@ -2,7 +2,6 @@ from strategies import exhaust, condition, do_one
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from sympy import ask, Q
 from sympy.core import Basic, Add, sympify
 from sympy.core.strategies import unpack
 from sympy.utilities import sift
@@ -115,13 +114,6 @@ class BlockMatrix(MatrixExpr):
             "Can't perform trace of irregular blockshape")
 
     def _eval_determinant(self):
-        if self.blockshape == (2, 2):
-            [[A, B],
-             [C, D]] = self.blocks.tolist()
-            if ask(Q.invertible(A)):
-                return det(A)*det(D - C*A.I*B)
-            elif ask(Q.invertible(D)):
-                return det(D)*det(A - B*D.I*C)
         return Determinant(self)
 
     def transpose(self):

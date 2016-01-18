@@ -261,15 +261,15 @@ class Equality(Relational):
     >>> Eq(y, x + x**2)
     Eq(y, x**2 + x)
     >>> Eq(2, 5)
-    False
+    false
     >>> Eq(2, 5, evaluate=False)
     Eq(2, 5)
     >>> _.doit()
-    False
+    false
     >>> Eq(exp(x), exp(x).rewrite(cos))
     Eq(E**x, sinh(x) + cosh(x))
     >>> simplify(_)
-    True
+    true
 
     See Also
     ========
@@ -511,7 +511,7 @@ class GreaterThan(_Greater):
 
     >>> from sympy import GreaterThan, StrictGreaterThan
     >>> from sympy import LessThan,    StrictLessThan
-    >>> from sympy import And, Ge, Gt, Le, Lt, Rel, S
+    >>> from sympy import And, Ge, Gt, Le, Lt, Rel, S, Integer
     >>> from sympy.abc import x, y, z
     >>> from sympy.core.relational import Relational
 
@@ -613,10 +613,10 @@ class GreaterThan(_Greater):
     "sympify" the literal before comparison, (2) use one of the wrappers, or (3)
     use the less succinct methods described above:
 
-    >>> e1 = S(1) >  x
-    >>> e2 = S(1) >= x
-    >>> e3 = S(1) <  x
-    >>> e4 = S(1) <= x
+    >>> e1 = Integer(1) >  x
+    >>> e2 = Integer(1) >= x
+    >>> e3 = Integer(1) <  x
+    >>> e4 = Integer(1) <= x
     >>> e5 = Gt(1, x)
     >>> e6 = Ge(1, x)
     >>> e7 = Lt(1, x)

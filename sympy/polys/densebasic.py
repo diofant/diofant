@@ -582,11 +582,11 @@ def dup_from_sympy(f, K):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dup_from_sympy
 
-    >>> dup_from_sympy([S(1), S(2)], ZZ) == [ZZ(1), ZZ(2)]
+    >>> dup_from_sympy([Integer(1), Integer(2)], ZZ) == [ZZ(1), ZZ(2)]
     True
 
     """
@@ -600,11 +600,11 @@ def dmp_from_sympy(f, u, K):
     Examples
     ========
 
-    >>> from sympy import S
+    >>> from sympy import Integer
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.densebasic import dmp_from_sympy
 
-    >>> dmp_from_sympy([[S(1)], [S(2)]], 1, ZZ) == [[ZZ(1)], [ZZ(2)]]
+    >>> dmp_from_sympy([[Integer(1)], [Integer(2)]], 1, ZZ) == [[ZZ(1)], [ZZ(2)]]
     True
 
     """

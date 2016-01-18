@@ -116,7 +116,7 @@ class OctaveCodePrinter(CodePrinter):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = expr.as_ordered_factors()
         else:
             # use make_args in case expr was something like -x -> x
@@ -197,7 +197,7 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_GoldenRatio(self, expr):
         # FIXME: how to do better, e.g., for octave_code(2*GoldenRatio)?
-        # return self._print((1+sqrt(S(5)))/2)
+        # return self._print((1+sqrt(Integer(5)))/2)
         return "(1+sqrt(5))/2"
 
     def _print_NumberSymbol(self, expr):

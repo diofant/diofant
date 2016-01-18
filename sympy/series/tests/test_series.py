@@ -1,9 +1,9 @@
 import pytest
 
-from sympy import (sin, cos, exp, E, series, oo, S, Derivative, O, Integral,
-                   Function, log, sqrt, Symbol, Subs, pi, symbols)
+from sympy import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
+                   Function, log, sqrt, Symbol, Subs, pi, symbols, Rational)
 
-from sympy.abc import x, y, n, k
+from sympy.abc import x, y
 
 
 def test_sin():
@@ -32,7 +32,7 @@ def test_exp2():
 
 def test_issue_5223():
     assert series(1, x) == 1
-    assert next(S(0).lseries(x)) == 0
+    assert next(Integer(0).lseries(x)) == 0
     assert cos(x).series() == cos(x).series(x)
     pytest.raises(ValueError, lambda: cos(x + y).series())
     pytest.raises(ValueError, lambda: x.series(dir=""))
@@ -75,7 +75,7 @@ def test_issue_5223():
     # XXX is this right? If not, fix "ngot > n" handling in expr.
     p = Symbol('p', positive=True)
     assert exp(sqrt(p)**3*log(p)).series(n=3) == \
-        1 + p**S('3/2')*log(p) + O(p**3*log(p)**3)
+        1 + p**Rational(3, 2)*log(p) + O(p**3*log(p)**3)
 
     assert exp(sin(x)*log(x)).series(n=2) == 1 + x*log(x) + O(x**2*log(x)**2)
 
@@ -115,13 +115,13 @@ def test_issue_4583():
 
 
 def test_issue_6318():
-    eq = (1/x)**(S(2)/3)
+    eq = (1/x)**Rational(2, 3)
     assert (eq + 1).as_leading_term(x) == eq
 
 
 def test_x_is_base_detection():
-    eq = (x**2)**(S(2)/3)
-    assert eq.series() == x**(S(4)/3)
+    eq = (x**2)**Rational(2, 3)
+    assert eq.series() == x**Rational(4, 3)
 
 
 def test_sin_power():

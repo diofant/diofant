@@ -424,7 +424,10 @@ class Pow(Expr):
                 return True
             c = self.exp.coeff(S.ImaginaryUnit)
             if c:
-                ok = (c*log(self.base)/S.Pi).is_Integer
+                if c in (S.One, S.NegativeOne):
+                    if self.base == 2:
+                        return False
+                ok = (c*log(self.base)/S.Pi).is_integer
                 if ok is not None:
                     return ok
 
@@ -499,7 +502,7 @@ class Pow(Expr):
         return self.base.is_polar
 
     def _eval_subs(self, old, new):
-        from sympy import exp, log, Symbol
+        from sympy import log, Symbol
 
         def _check(ct1, ct2, old):
             """Return bool, pow where, if bool is True, then the exponent of
@@ -1304,4 +1307,4 @@ class Pow(Expr):
 from .add import Add
 from .numbers import Integer
 from .mul import Mul, _keep_coeff
-from .symbol import Symbol, Dummy, symbols
+from .symbol import Dummy, symbols

@@ -1,5 +1,4 @@
 from distutils.version import LooseVersion as V
-import re
 
 import pytest
 
@@ -44,3 +43,16 @@ def check_disabled(request):
         if (V(pytest.__version__) < '2.6.3' and
                 pytest.config.getvalue('-s') != 'no'):
             pytest.skip("run py.test with -s or upgrade to newer version.")
+
+
+@pytest.fixture(autouse=True, scope='session')
+def set_displayhook():
+    import sys
+    from sympy import init_printing
+
+    # hook our nice, hash-stable strprinter
+    init_printing(pretty_print=False, use_unicode=False)
+
+    # doctest restore sys.displayhook from __displayhook__,
+    # see https://bugs.python.org/issue26092.
+    sys.__displayhook__ = sys.displayhook
