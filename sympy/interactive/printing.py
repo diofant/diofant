@@ -78,24 +78,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
             s = s.strip('$')
             return '$$%s$$' % s
 
-    def _result_display(self, arg):
-        """IPython's pretty-printer display hook, for use in IPython 0.10
-
-           This function was adapted from:
-
-            ipython/IPython/hooks.py:155
-
-        """
-        if self.rc.pprint:
-            out = stringify_func(arg)
-
-            if '\n' in out:
-                print
-
-            print(out)
-        else:
-            print(repr(arg))
-
     import IPython
     from sympy.core.basic import Basic
     from sympy.matrices.matrices import MatrixBase
