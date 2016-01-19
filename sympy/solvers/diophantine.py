@@ -504,7 +504,7 @@ def extended_euclid(a, b):
     if b == 0:
         return (1, 0, a)
 
-    x0, y0, d = extended_euclid(b, a%b)
+    x0, y0, d = extended_euclid(b, a % b)
     x, y = y0, x0 - (a//b) * y0
 
     return x, y, d
@@ -2057,7 +2057,7 @@ def reconstruct(a, b, z):
     if g != 1:
         f = factorint(g)
         for p, e in f.items():
-            if e %2 == 0:
+            if e % 2 == 0:
                 z = z*p**(e//2)
             else:
                 z = z*p**((e//2)+1)

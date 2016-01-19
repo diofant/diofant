@@ -1541,7 +1541,7 @@ def test_valued_assign_numpy_ndarray():
         assert A.data[i] == [E, -qx, -qy, -qz][i]
 
     # test on multi-indexed tensors.
-    random_4x4_data = [[(i**3-3*i**2)%(j+7) for i in range(4)] for j in range(4)]
+    random_4x4_data = [[(i**3 - 3*i**2) % (j + 7) for i in range(4)] for j in range(4)]
     AB(-i0, -i1).data = random_4x4_data
     for i in range(4):
         for j in range(4):

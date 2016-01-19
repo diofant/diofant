@@ -473,7 +473,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         y, x, sols = S.Zero, [], {}
 
         while not any(v for a, v in sols.items()):
-            if step%2 != 0:
+            if step % 2 != 0:
                 dy = sum(a(I, j)*f(n - j, k - I)/f(n, k) for j in range(J))
                 dx = [a(I, j) for j in range(J)]
                 I += 1
