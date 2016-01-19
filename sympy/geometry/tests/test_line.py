@@ -478,8 +478,8 @@ def test_line3d():
     assert s1.distance(pt1) == 0
     assert s2.distance(pt1) == sqrt(3)/2
     assert s2.distance(pt2) == 2
-    assert s1.distance((0,0,0)) == 0
-    assert s2.distance((0,0,0)) == sqrt(3)/2
+    assert s1.distance((0, 0, 0)) == 0
+    assert s2.distance((0, 0, 0)) == sqrt(3)/2
     # Line to point
     p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 1)
     s = Line3D(p1, p2)

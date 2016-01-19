@@ -5637,7 +5637,7 @@ def _symbolic_factor_list(expr, opt, method):
 def _symbolic_factor(expr, opt, method):
     """Helper function for :func:`_factor`. """
     if isinstance(expr, Expr) and not expr.is_Relational:
-        if hasattr(expr,'_eval_factor'):
+        if hasattr(expr, '_eval_factor'):
             return expr._eval_factor()
         coeff, factors = _symbolic_factor_list(together(expr), opt, method)
         return _keep_coeff(coeff, _factors_product(factors))

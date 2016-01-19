@@ -98,8 +98,8 @@ def test_latex_basic():
     assert latex((x & y) | z) == r"z \vee \left(x \wedge y\right)"
     assert latex(Implies(x, y)) == r"x \Rightarrow y"
     assert latex(~(x >> ~y)) == r"x \not\Rightarrow \neg y"
-    assert latex(Implies(Or(x,y), z)) == r"\left(x \vee y\right) \Rightarrow z"
-    assert latex(Implies(z, Or(x,y))) == r"z \Rightarrow \left(x \vee y\right)"
+    assert latex(Implies(Or(x, y), z)) == r"\left(x \vee y\right) \Rightarrow z"
+    assert latex(Implies(z, Or(x, y))) == r"z \Rightarrow \left(x \vee y\right)"
 
     assert latex(~x, symbol_names={x: "x_i"}) == r"\neg x_i"
     assert latex(x & y, symbol_names={x: "x_i", y: "y_i"}) == \
@@ -319,9 +319,9 @@ def test_latex_functions():
 
     theta = Symbol("theta", extended_real=True)
     phi = Symbol("phi", extended_real=True)
-    assert latex(Ynm(n,m,theta,phi)) == r'Y_{n}^{m}\left(\theta,\phi\right)'
+    assert latex(Ynm(n, m, theta, phi)) == r'Y_{n}^{m}\left(\theta,\phi\right)'
     assert latex(Ynm(n, m, theta, phi)**3) == r'\left(Y_{n}^{m}\left(\theta,\phi\right)\right)^{3}'
-    assert latex(Znm(n,m,theta,phi)) == r'Z_{n}^{m}\left(\theta,\phi\right)'
+    assert latex(Znm(n, m, theta, phi)) == r'Z_{n}^{m}\left(\theta,\phi\right)'
     assert latex(Znm(n, m, theta, phi)**3) == r'\left(Z_{n}^{m}\left(\theta,\phi\right)\right)^{3}'
 
     # Test latex printing of function names with "_"
@@ -427,11 +427,11 @@ def test_latex_derivatives():
 
     # mixed partial derivatives
     f = Function("f")
-    assert latex(diff(diff(f(x,y), x, evaluate=False), y, evaluate=False)) == \
-        r"\frac{\partial^{2}}{\partial x\partial y}  " + latex(f(x,y))
+    assert latex(diff(diff(f(x, y), x, evaluate=False), y, evaluate=False)) == \
+        r"\frac{\partial^{2}}{\partial x\partial y}  " + latex(f(x, y))
 
-    assert latex(diff(diff(diff(f(x,y), x, evaluate=False), x, evaluate=False), y, evaluate=False)) == \
-        r"\frac{\partial^{3}}{\partial x^{2}\partial y}  " + latex(f(x,y))
+    assert latex(diff(diff(diff(f(x, y), x, evaluate=False), x, evaluate=False), y, evaluate=False)) == \
+        r"\frac{\partial^{3}}{\partial x^{2}\partial y}  " + latex(f(x, y))
 
     # use ordinary d when one of the variables has been integrated out
     assert latex(diff(Integral(exp(-x * y), (x, 0, oo)), y, evaluate=False)) == \
@@ -506,7 +506,7 @@ def test_latex_union():
 
 
 def test_latex_symmetric_difference():
-    assert latex(SymmetricDifference(Interval(2,5), Interval(4,7),
+    assert latex(SymmetricDifference(Interval(2, 5), Interval(4, 7),
         evaluate=False)) == r'\left[2, 5\right] \triangle \left[4, 7\right]'
 
 
@@ -786,8 +786,8 @@ def test_latex_Lambda():
 
 
 def test_latex_PolyElement():
-    Ruv, u,v = ring("u,v", ZZ)
-    Rxyz, x,y,z = ring("x,y,z", Ruv)
+    Ruv,  u, v = ring("u,v", ZZ)
+    Rxyz,  x, y, z = ring("x,y,z", Ruv)
 
     assert latex(x - x) == r"0"
     assert latex(x - 1) == r"x - 1"
@@ -803,8 +803,8 @@ def test_latex_PolyElement():
 
 
 def test_latex_FracElement():
-    Fuv, u,v = field("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
+    Fuv,  u, v = field("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     assert latex(x - x) == r"0"
     assert latex(x - 1) == r"x - 1"

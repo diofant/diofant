@@ -11,7 +11,7 @@ from sympy.solvers import solve
 from sympy.core.numbers import Integer
 
 
-class Sum(AddWithLimits,ExprWithIntLimits):
+class Sum(AddWithLimits, ExprWithIntLimits):
     r"""Represents unevaluated summation.
 
     ``Sum`` represents a finite or infinite series, with the first argument
@@ -285,7 +285,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         i, a, b = self.limits[0]
         if (a > b) == True:
             if a - b == 1:
-                return S.Zero,S.Zero
+                return S.Zero, S.Zero
             a, b = b + 1, a - 1
             f = -f
         s = S.Zero

@@ -812,10 +812,10 @@ def test_atan2():
     assert atan2(y, x).rewrite(atan) == 2*atan(y/(x + sqrt(x**2 + y**2)))
 
     ex = atan2(y, x) - arg(x + I*y)
-    assert ex.subs({x:2, y:3}).rewrite(arg) == 0
-    assert ex.subs({x:2, y:3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
-    assert ex.subs({x:2*I, y:3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
-    assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
+    assert ex.subs({x: 2, y: 3}).rewrite(arg) == 0
+    assert ex.subs({x: 2, y: 3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
+    assert ex.subs({x: 2*I, y: 3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
+    assert ex.subs({x: 2*I, y: 3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
     i = symbols('i', imaginary=True)
     r = symbols('r', extended_real=True)
     e = atan2(i, r)

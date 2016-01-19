@@ -203,10 +203,10 @@ def test_erf2():
     assert erf2(-oo,  y) ==  erf(y) + 1
     assert erf2( oo,  y) ==  erf(y) - 1
     assert erf2(  x, oo) ==  1 - erf(x)
-    assert erf2(  x,-oo) == -1 - erf(x)
+    assert erf2(  x, -oo) == -1 - erf(x)
     assert erf2(x, erf2inv(x, y)) == y
 
-    assert erf2(-x, -y) == -erf2(x,y)
+    assert erf2(-x, -y) == -erf2(x, y)
     assert erf2(-x,  y) == erf(y) + erf(x)
     assert erf2( x, -y) == -erf(y) - erf(x)
     assert erf2(x, y).rewrite('fresnels') == erf(y).rewrite(fresnels)-erf(x).rewrite(fresnels)
@@ -260,7 +260,7 @@ def test_erf2inv():
     assert erf2inv(0, 1) == S.Infinity
     assert erf2inv(1, 0) == S.One
     assert erf2inv(0, y) == erfinv(y)
-    assert erf2inv(oo,y) == erfcinv(-y)
+    assert erf2inv(oo, y) == erfcinv(-y)
 
     assert erf2inv(x, y).diff(x) == exp(-x**2 + erf2inv(x, y)**2)
     assert erf2inv(x, y).diff(y) == sqrt(pi)*exp(erf2inv(x, y)**2)/2

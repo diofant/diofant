@@ -2764,13 +2764,13 @@ def test_nth_power_roots_poly():
 
 
 def test_torational_factor_list():
-    p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}))
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + sqrt(2))}))
     assert _torational_factor_list(p, x) == (-2, [
         (-x*(1 + sqrt(2))/2 + 1, 1),
         (-x*(1 + sqrt(2)) - 1, 1),
         (-x*(1 + sqrt(2)) + 1, 1)])
 
-    p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + 2**Rational(1, 4))}))
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + 2**Rational(1, 4))}))
     assert _torational_factor_list(p, x) is None
 
 
@@ -2880,7 +2880,7 @@ def test_cancel():
 
     # issue 9363
     M = MatrixSymbol('M', 5, 5)
-    assert cancel(M[0,0] + 7) == M[0,0] + 7
+    assert cancel(M[0, 0] + 7) == M[0, 0] + 7
     expr = sin(M[1, 4] + M[2, 1] * 5 * M[4, 0]) - 5 * M[1, 2] / z
     assert cancel(expr) == expr
 

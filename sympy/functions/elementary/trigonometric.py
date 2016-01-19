@@ -2198,7 +2198,7 @@ class asec(InverseTrigonometricFunction):
     def _eval_as_leading_term(self, x):
         from sympy import Order
         arg = self.args[0].as_leading_term(x)
-        if Order(1,x).contains(arg):
+        if Order(1, x).contains(arg):
             return log(arg)
         else:
             return self.func(arg)
@@ -2294,7 +2294,7 @@ class acsc(InverseTrigonometricFunction):
     def _eval_as_leading_term(self, x):
         from sympy import Order
         arg = self.args[0].as_leading_term(x)
-        if Order(1,x).contains(arg):
+        if Order(1, x).contains(arg):
             return log(arg)
         else:
             return self.func(arg)

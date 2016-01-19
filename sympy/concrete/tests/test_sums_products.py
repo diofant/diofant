@@ -483,15 +483,15 @@ def test_limit_subs():
 
 def test_function_subs():
     f = Function("f")
-    S = Sum(x*f(y),(x,0,oo),(y,0,oo))
-    assert S.subs(f(y),y) == Sum(x*y,(x,0,oo),(y,0,oo))
-    assert S.subs(f(x),x) == S
-    pytest.raises(ValueError, lambda: S.subs(f(y),x+y) )
-    S = Sum(x*log(y),(x,0,oo),(y,0,oo))
-    assert S.subs(log(y),y) == S
+    S = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
+    assert S.subs(f(y), y) == Sum(x*y, (x, 0, oo), (y, 0, oo))
+    assert S.subs(f(x), x) == S
+    pytest.raises(ValueError, lambda: S.subs(f(y), x + y))
+    S = Sum(x*log(y), (x, 0, oo), (y, 0, oo))
+    assert S.subs(log(y), y) == S
     f = Symbol('f')
-    S = Sum(x*f(y),(x,0,oo),(y,0,oo))
-    assert S.subs(f(y),y) == Sum(x*y,(x,0,oo),(y,0,oo))
+    S = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
+    assert S.subs(f(y), y) == Sum(x*y, (x, 0, oo), (y, 0, oo))
 
 
 def test_equality():
@@ -523,8 +523,8 @@ def test_Sum_doit():
     assert summation(n*Integral(a**2), (n, 0, 2)) == 3*Integral(a**2)
 
     # test nested sum evaluation
-    s = Sum( Sum( Sum(2,(z,1,n+1)), (y,x+1,n)), (x,1,n))
-    assert 0 == (s.doit() - n*(n+1)*(n-1)).factor()
+    s = Sum(Sum(Sum(2, (z, 1, n + 1)), (y, x + 1, n)), (x, 1, n))
+    assert 0 == (s.doit() - n*(n + 1)*(n - 1)).factor()
 
     assert Sum(Sum(KroneckerDelta(m, n), (m, 1, 3)), (n, 1, 3)).doit() == 3
     assert Sum(Sum(KroneckerDelta(k, m), (m, 1, 3)), (n, 1, 3)).doit() == \
@@ -804,25 +804,25 @@ def test_factor_expand_subs():
     assert Sum(4 * x * y, (x, 1, y)).factor() == 4 * y * Sum(x, (x, 1, y))
 
     # test expand
-    assert Sum(x+1,(x,1,y)).expand() == Sum(x,(x,1,y)) + Sum(1,(x,1,y))
-    assert Sum(x+a*x**2,(x,1,y)).expand() == Sum(x,(x,1,y)) + Sum(a*x**2,(x,1,y))
+    assert Sum(x + 1, (x, 1, y)).expand() == Sum(x, (x, 1, y)) + Sum(1, (x, 1, y))
+    assert Sum(x + a*x**2, (x, 1, y)).expand() == Sum(x, (x, 1, y)) + Sum(a*x**2, (x, 1, y))
     assert Sum(x**(n + 1)*(n + 1), (n, -1, oo)).expand() \
         == Sum(x*x**n, (n, -1, oo)) + Sum(n*x*x**n, (n, -1, oo))
     assert Sum(x**(n + 1)*(n + 1), (n, -1, oo)).expand(power_exp=False) \
-        == Sum(n*x**(n+1), (n, -1, oo)) + Sum(x**(n+1), (n, -1, oo))
-    assert Sum(a*n+a*n**2,(n,0,4)).expand() \
-        == Sum(a*n,(n,0,4)) + Sum(a*n**2,(n,0,4))
-    assert Sum(x**a*x**n,(x,0,3)) \
-        == Sum(x**(a+n),(x,0,3)).expand(power_exp=True)
-    assert Sum(x**(a+n),(x,0,3)) \
-        == Sum(x**(a+n),(x,0,3)).expand(power_exp=False)
+        == Sum(n*x**(n + 1), (n, -1, oo)) + Sum(x**(n+1), (n, -1, oo))
+    assert Sum(a*n + a*n**2, (n, 0, 4)).expand() \
+        == Sum(a*n, (n, 0, 4)) + Sum(a*n**2, (n, 0, 4))
+    assert Sum(x**a*x**n, (x, 0, 3)) \
+        == Sum(x**(a + n), (x, 0, 3)).expand(power_exp=True)
+    assert Sum(x**(a + n), (x, 0, 3)) \
+        == Sum(x**(a + n), (x, 0, 3)).expand(power_exp=False)
 
     # test subs
-    assert Sum(1/(1+a*x**2),(x,0,3)).subs([(a,3)]) == Sum(1/(1+3*x**2),(x,0,3))
-    assert Sum(x*y,(x,0,y),(y,0,x)).subs([(x,3)]) == Sum(x*y,(x,0,y),(y,0,3))
-    assert Sum(x,(x,1,10)).subs([(x,y-2)]) == Sum(x,(x,1,10))
-    assert Sum(1/x,(x,1,10)).subs([(x,(3+n)**3)]) == Sum(1/x,(x,1,10))
-    assert Sum(1/x,(x,1,10)).subs([(x,3*x-2)]) == Sum(1/x,(x,1,10))
+    assert Sum(1/(1 + a*x**2), (x, 0, 3)).subs([(a, 3)]) == Sum(1/(1 + 3*x**2), (x, 0, 3))
+    assert Sum(x*y, (x, 0, y), (y, 0, x)).subs([(x, 3)]) == Sum(x*y, (x, 0, y), (y, 0, 3))
+    assert Sum(x, (x, 1, 10)).subs([(x, y - 2)]) == Sum(x, (x, 1, 10))
+    assert Sum(1/x, (x, 1, 10)).subs([(x, (3 + n)**3)]) == Sum(1/x, (x, 1, 10))
+    assert Sum(1/x, (x, 1, 10)).subs([(x, 3*x - 2)]) == Sum(1/x, (x, 1, 10))
 
 
 def test_distribution_over_equality():

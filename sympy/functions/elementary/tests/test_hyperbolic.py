@@ -770,7 +770,7 @@ def test_derivs():
 
 
 def test_sinh_expansion():
-    x,y = symbols('x,y')
+    x, y = symbols('x,y')
     assert sinh(x+y).expand(trig=True) == sinh(x)*cosh(y) + cosh(x)*sinh(y)
     assert sinh(2*x).expand(trig=True) == 2*sinh(x)*cosh(x)
     assert sinh(3*x).expand(trig=True).expand() == \
@@ -778,7 +778,7 @@ def test_sinh_expansion():
 
 
 def test_cosh_expansion():
-    x,y = symbols('x,y')
+    x, y = symbols('x,y')
     assert cosh(x+y).expand(trig=True) == cosh(x)*cosh(y) + sinh(x)*sinh(y)
     assert cosh(2*x).expand(trig=True) == cosh(x)**2 + sinh(x)**2
     assert cosh(3*x).expand(trig=True).expand() == \

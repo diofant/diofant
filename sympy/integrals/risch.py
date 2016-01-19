@@ -914,7 +914,7 @@ def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
 
     for pi, i in p_sqf:
         Si = pi.as_poly(*kkinv).gcd(derivation(pi, DE,
-            coefficientD=coefficientD,basic=basic).as_poly(*kkinv)).as_poly(DE.t)
+            coefficientD=coefficientD, basic=basic).as_poly(*kkinv)).as_poly(DE.t)
         pi = Poly(pi, DE.t)
         Si = Poly(Si, DE.t)
         Ni = pi.exquo(Si)
@@ -1042,9 +1042,9 @@ def laurent_series(a, d, F, n, DE):
 
     E = d.quo(F**n)
     ha, hd = (a, E*Poly(z**n, DE.t))
-    dF = derivation(F,DE)
-    B, G = gcdex_diophantine(E, F, Poly(1,DE.t))
-    C, G = gcdex_diophantine(dF, F, Poly(1,DE.t))
+    dF = derivation(F, DE)
+    B, G = gcdex_diophantine(E, F, Poly(1, DE.t))
+    C, G = gcdex_diophantine(dF, F, Poly(1, DE.t))
 
     # initialization
     F_store = F
@@ -1055,7 +1055,7 @@ def laurent_series(a, d, F, n, DE):
         F_store = derivation(F_store, DE)
         v = (F_store.as_expr())/(j + 1)
         V.append(v)
-        DE_D_list.append(Poly(Z[j + 1],Z[j]))
+        DE_D_list.append(Poly(Z[j + 1], Z[j]))
 
     DE_new = DifferentialExtension(extension={'D': DE_D_list})  # a differential indeterminate
     for j in range(0, n):
@@ -1695,7 +1695,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
         else:
             result = result.subs(DE.backsubs)
             if not i.is_zero:
-                i = NonElementaryIntegral(i.function.subs(DE.backsubs),i.limits)
+                i = NonElementaryIntegral(i.function.subs(DE.backsubs), i.limits)
             if not separate_integral:
                 result += i
                 return result

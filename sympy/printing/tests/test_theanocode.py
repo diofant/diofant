@@ -214,7 +214,7 @@ def test_MatrixSlice_2():
 
     Y = X[1:2:3, 4:5:6]
     Yt = theano_code(Y)
-    assert tuple(Yt.owner.op.idx_list) == (slice(1,2,3), slice(4,5,6))
+    assert tuple(Yt.owner.op.idx_list) == (slice(1, 2, 3), slice(4, 5, 6))
 
 
 def test_BlockMatrix():

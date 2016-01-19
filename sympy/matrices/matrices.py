@@ -656,7 +656,7 @@ class MatrixBase(object):
         for i in range(self.rows):
             res.append([])
             for j in range(self.cols):
-                s = printer._print(self[i,j])
+                s = printer._print(self[i, j])
                 res[-1].append(s)
                 maxlen[j] = max(len(s), maxlen[j])
         # Patch strings together

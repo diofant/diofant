@@ -312,7 +312,7 @@ def test_multiset_partitions():
                 for p in multiset_partitions('sympy')) == ans
     factorings = [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3],
                   [6, 2, 2], [2, 2, 2, 3]]
-    assert list(factoring_visitor(p, [2,3]) for
+    assert list(factoring_visitor(p, [2, 3]) for
                 p in multiset_partitions_taocp([3, 1])) == factorings
 
 

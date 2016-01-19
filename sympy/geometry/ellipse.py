@@ -844,7 +844,7 @@ class Ellipse(GeometrySet):
         if prec is not None:
             points = [pt.n(prec) for pt in points]
             slopes = [i if _not_a_coeff(i) else i.n(prec) for i in slopes]
-        return [Line(pt, slope=s) for pt,s in zip(points, slopes)]
+        return [Line(pt, slope=s) for pt, s in zip(points, slopes)]
 
     def arbitrary_point(self, parameter='t'):
         """A parameterized point on the ellipse.

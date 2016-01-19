@@ -68,7 +68,7 @@ def test_rsolve_hyper():
 
     assert rsolve_hyper([-1, 1], 3*(n + n**2), n).expand() == C0 + n**3 - n
 
-    assert rsolve_hyper([-a, 1],0,n).expand() == C0*a**n
+    assert rsolve_hyper([-a, 1], 0, n).expand() == C0*a**n
 
     assert rsolve_hyper([-a, 0, 1], 0, n).expand() == (-1)**n*C1*a**(n/2) + C0*a**(n/2)
 
@@ -174,7 +174,7 @@ def test_rsolve():
 
     assert rsolve(Eq(y(n + 1), a*y(n)), y(n), {y(1): a}).simplify() == a**n
 
-    assert rsolve(y(n) - a*y(n-2),y(n),
+    assert rsolve(y(n) - a*y(n-2), y(n),
             {y(1): sqrt(a)*(a + b), y(2): a*(a - b)}).simplify() == \
             a**(n/2)*(-(-1)**n*b + a)
 

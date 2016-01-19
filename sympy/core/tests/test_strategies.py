@@ -41,7 +41,7 @@ def test_unpack():
 
 
 def test_sort():
-    assert sort(str)(Basic(3,1,2)) == Basic(1,2,3)
+    assert sort(str)(Basic(3, 1, 2)) == Basic(1, 2, 3)
 
 
 def test_term():

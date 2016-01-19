@@ -280,10 +280,10 @@ def test_evalf_trig_zero_detection():
 
 
 def test_evalf_sum():
-    assert Sum(n,(n,1,2)).evalf() == 3.
-    assert Sum(n,(n,1,2)).doit().evalf() == 3.
+    assert Sum(n, (n, 1, 2)).evalf() == 3.
+    assert Sum(n, (n, 1, 2)).doit().evalf() == 3.
     # the next test should return instantly
-    assert Sum(1/n,(n,1,2)).evalf() == 1.5
+    assert Sum(1/n, (n, 1, 2)).evalf() == 1.5
 
     # issue 8219
     assert Sum(E/factorial(n), (n, 0, oo)).evalf() == (E*E).evalf()
@@ -464,7 +464,7 @@ def test_issue_6632_evalf():
 def test_issue_4945():
     from sympy.abc import H
     from sympy import zoo
-    assert (H/0).evalf(subs={H:1}) == zoo*H
+    assert (H/0).evalf(subs={H: 1}) == zoo*H
 
 
 def test_evalf_integral():

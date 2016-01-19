@@ -302,7 +302,7 @@ def test_F5():
 
 def test_F6():
     partTest = [p.copy() for p in partitions(4)]
-    partDesired = [{4: 1}, {1: 1, 3: 1}, {2: 2}, {1: 2, 2:1}, {1: 4}]
+    partDesired = [{4: 1}, {1: 1, 3: 1}, {2: 2}, {1: 2, 2: 1}, {1: 4}]
     assert partTest == partDesired
 
 
@@ -343,7 +343,7 @@ def test_G15():
 
 
 def test_G16():
-    assert list(islice(cf_i(pi),10)) == [3, 7, 15, 1, 292, 1, 1, 1, 2, 1]
+    assert list(islice(cf_i(pi), 10)) == [3, 7, 15, 1, 292, 1, 1, 1, 2, 1]
 
 
 def test_G17():
@@ -669,11 +669,11 @@ def test_J6():
 
 
 def test_J7():
-    assert simplify(besselj(R(-5,2), pi/2)) == 12/(pi**2)
+    assert simplify(besselj(R(-5, 2), pi/2)) == 12/(pi**2)
 
 
 def test_J8():
-    p = besselj(R(3,2), z)
+    p = besselj(R(3, 2), z)
     q = (sin(z)/z - cos(z))/sqrt(pi*z/2)
     assert simplify(expand_func(p) -q) == 0
 
@@ -927,7 +927,7 @@ def test_M16():
 
 @pytest.mark.xfail
 def test_M17():
-    assert solve(asin(x) - atan(x),x) == [0]
+    assert solve(asin(x) - atan(x), x) == [0]
 
 
 @pytest.mark.xfail
@@ -980,7 +980,7 @@ def test_M27():
     x = symbols('x', extended_real=True)
     b = symbols('b', extended_real=True)
     with assuming(Q.is_true(sin(cos(1/E**2) + 1) + b > 0)):
-        solve(log(acos(asin(x**R(2,3) - b) - 1)) + 2, x) == [-b - sin(1 + cos(1/e**2))**R(3/2), b + sin(1 + cos(1/e**2))**R(3/2)]
+        solve(log(acos(asin(x**R(2, 3) - b) - 1)) + 2, x) == [-b - sin(1 + cos(1/e**2))**R(3/2), b + sin(1 + cos(1/e**2))**R(3/2)]
 
 
 @pytest.mark.xfail
@@ -995,12 +995,12 @@ def test_M29():
 
 @pytest.mark.xfail
 def test_M30():
-    assert solve(abs(2*x + 5) - abs(x - 2),x, assume=Q.real(x)) == [-1, -7]
+    assert solve(abs(2*x + 5) - abs(x - 2), x, assume=Q.real(x)) == [-1, -7]
 
 
 @pytest.mark.xfail
 def test_M31():
-    assert solve(1 - abs(x) - max(-x - 2, x - 2),x, assume=Q.real(x)) == [-3/2, 3/2]
+    assert solve(1 - abs(x) - max(-x - 2, x - 2), x, assume=Q.real(x)) == [-3/2, 3/2]
 
 
 @pytest.mark.xfail
@@ -1094,10 +1094,10 @@ def test_M39():
     x, y, z = symbols('x y z', complex=True)
     assert solve([x**2*y + 3*y*z - 4, -3*x**2*z + 2*y**2 + 1, 2*y*z**2 - z**2 - 1 ]) ==\
             [{y: 1, z: 1, x: -1}, {y: 1, z: 1, x: 1},
-             {y: sqrt(2)*I, z: R(1,3) - sqrt(2)*I/3, x: -sqrt(-1 - sqrt(2)*I)},
-             {y: sqrt(2)*I, z: R(1,3) - sqrt(2)*I/3, x: sqrt(-1 - sqrt(2)*I)},
-             {y: -sqrt(2)*I, z: R(1,3) + sqrt(2)*I/3, x: -sqrt(-1 + sqrt(2)*I)},
-             {y: -sqrt(2)*I, z: R(1,3) + sqrt(2)*I/3, x: sqrt(-1 + sqrt(2)*I)}]
+             {y: sqrt(2)*I, z: R(1, 3) - sqrt(2)*I/3, x: -sqrt(-1 - sqrt(2)*I)},
+             {y: sqrt(2)*I, z: R(1, 3) - sqrt(2)*I/3, x: sqrt(-1 - sqrt(2)*I)},
+             {y: -sqrt(2)*I, z: R(1, 3) + sqrt(2)*I/3, x: -sqrt(-1 + sqrt(2)*I)},
+             {y: -sqrt(2)*I, z: R(1, 3) + sqrt(2)*I/3, x: sqrt(-1 + sqrt(2)*I)}]
 
 # N. Inequalities
 
@@ -1660,7 +1660,7 @@ def test_P38():
               [0, 0, 0],
               [0, 0, 0]])
     # raises NotImplementedError: Implemented only for diagonalizable matrices
-    M**Rational(1,2)
+    M**Rational(1, 2)
 
 
 @pytest.mark.xfail
@@ -1684,7 +1684,7 @@ def test_P40():
 
 def test_P41():
     r, t = symbols('r t', extended_real=True)
-    assert hessian(r**2*sin(t),(r,t)) == Matrix([[  2*sin(t),   2*r*cos(t)],
+    assert hessian(r**2*sin(t), (r, t)) == Matrix([[  2*sin(t),   2*r*cos(t)],
                                                  [2*r*cos(t), -r**2*sin(t)]])
 
 
@@ -1697,7 +1697,7 @@ def test_P43():
         return Matrix([M.diff(v).T for v in Y]).T
     r, t = symbols('r t', extended_real=True)
     M = Matrix([r*cos(t), r*sin(t)])
-    assert __my_jacobian(M,[r,t]) == Matrix([[cos(t), -r*sin(t)],
+    assert __my_jacobian(M, [r, t]) == Matrix([[cos(t), -r*sin(t)],
                                              [sin(t),  r*cos(t)]])
 
 
@@ -1796,7 +1796,7 @@ def test_R6():
 
 def test_R7():
     n, k = symbols('n k', integer=True, positive=True)
-    T = Sum(k**3,(k,1,n)).doit()
+    T = Sum(k**3, (k, 1, n)).doit()
     assert T.factor() == n**2*(n + 1)**2/4
 
 
@@ -2234,7 +2234,7 @@ def test_V2():
 
 
 def test_V3():
-    assert integrate(1/(x**3 + 2),x).diff().simplify() == 1/(x**3 + 2)
+    assert integrate(1/(x**3 + 2), x).diff().simplify() == 1/(x**3 + 2)
 
 
 @pytest.mark.xfail

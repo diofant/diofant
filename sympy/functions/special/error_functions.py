@@ -909,9 +909,9 @@ class erf2inv(Function):
     def fdiff(self, argindex):
         x, y = self.args
         if argindex == 1:
-            return exp(self.func(x,y)**2-x**2)
+            return exp(self.func(x, y)**2-x**2)
         elif argindex == 2:
-            return sqrt(S.Pi)*S.Half*exp(self.func(x,y)**2)
+            return sqrt(S.Pi)*S.Half*exp(self.func(x, y)**2)
         else:
             raise ArgumentIndexError(self, argindex)
 

@@ -296,7 +296,7 @@ def test_ellipse_geom():
     e2 = Ellipse(Point(x, y), 4, 8)
     c = sqrt(3991)
     ans = [Point(-c/68 + a, 2*c/17 + a/2), Point(c/68 + a, -2*c/17 + a/2)]
-    assert [p.subs({x: 2, y:1}) for p in e1.intersection(e2)] == ans
+    assert [p.subs({x: 2, y: 1}) for p in e1.intersection(e2)] == ans
 
     # Combinations of above
     assert e3.is_tangent(e3.tangent_lines(p1 + Point(y1, 0))[0])
@@ -361,7 +361,7 @@ def test_polygon():
         Point(-15, 33/5), Point(-15, -87/10), Point(-15, -15),
         Point(-42/5, -15), Point(-2, -15), Point(7, -15), Point(15, -15),
         Point(15, -3), Point(15, 10), Point(15, 15)) == \
-        Polygon(Point(-15,-15), Point(15,-15), Point(15,15), Point(-15,15))
+        Polygon(Point(-15, -15), Point(15, -15), Point(15, 15), Point(-15, 15))
 
     p1 = Polygon(
         Point(0, 0), Point(3, -1),
@@ -383,7 +383,7 @@ def test_polygon():
     p6 = Polygon(
         Point(-11, 1), Point(-9, 6.6),
         Point(-4, -3), Point(-8.4, -8.7))
-    r = Ray(Point(-9,6.6), Point(-9,5.5))
+    r = Ray(Point(-9, 6.6), Point(-9, 5.5))
     #
     # General polygon
     #

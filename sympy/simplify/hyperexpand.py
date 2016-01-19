@@ -387,10 +387,10 @@ def add_formulae(formulae):
                  a*exp(z)/(a**2 - 2*a + 1),
                  a/(z*(a**2 - 2*a + 1))]),
          Matrix([[1-a, 1, -1/z, 1]]),
-         Matrix([[-1,0,-1/z,1],
-                 [0,-a,1,0],
-                 [0,0,z,0],
-                 [0,0,0,-1]]))
+         Matrix([[-1, 0, -1/z, 1],
+                 [0, -a, 1, 0],
+                 [0, 0, z, 0],
+                 [0, 0, 0, -1]]))
 
 
 def add_meijerg_formulae(formulae):

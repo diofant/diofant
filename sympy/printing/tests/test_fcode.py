@@ -654,9 +654,9 @@ def test_Matrix_printing():
     # Test using MatrixElements in a Matrix
     q = MatrixSymbol('q', 5, 1)
     M = MatrixSymbol('M', 3, 3)
-    m = Matrix([[sin(q[1,0]), 0, cos(q[2,0])],
-        [q[1,0] + q[2,0], q[3, 0], 5],
-        [2*q[4, 0]/q[1,0], sqrt(q[0,0]) + 4, 0]])
+    m = Matrix([[sin(q[1, 0]), 0, cos(q[2, 0])],
+                [q[1, 0] + q[2, 0], q[3, 0], 5],
+                [2*q[4, 0]/q[1, 0], sqrt(q[0, 0]) + 4, 0]])
     assert fcode(m, M) == (
         "      M(1, 1) = sin(q(2, 1))\n"
         "      M(2, 1) = q(2, 1) + q(3, 1)\n"

@@ -355,8 +355,8 @@ def test_args():
 
 def test_Cycle():
     assert str(Cycle()) == 'Cycle()'
-    assert Cycle(Cycle(1,2)) == Cycle(1, 2)
-    assert Cycle(1,2).copy() == Cycle(1,2)
+    assert Cycle(Cycle(1, 2)) == Cycle(1, 2)
+    assert Cycle(1, 2).copy() == Cycle(1, 2)
     assert list(Cycle(1, 3, 2)) == [0, 3, 1, 2]
     assert Cycle(1, 2)(2, 3) == Cycle(1, 3, 2)
     assert Cycle(1, 2)(2, 3)(4, 5) == Cycle(1, 3, 2)(4, 5)

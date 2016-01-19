@@ -503,7 +503,7 @@ def trigsimp(expr, **opts):
         'groebner': (lambda x: groebnersimp(x, **opts)),
         'combined': (lambda x: futrig(groebnersimp(x,
                                polynomial=True, hints=[2, tan]))),
-        'old': lambda x: trigsimp_old(x, **opts),}[method]
+        'old': lambda x: trigsimp_old(x, **opts)}[method]
 
     return trigsimpfunc(expr)
 

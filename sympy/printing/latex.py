@@ -484,7 +484,7 @@ class LatexPrinter(Printer):
 
         for system, vect in items:
             inneritems = list(vect.components.items())
-            inneritems.sort(key=lambda x:x[0].__str__())
+            inneritems.sort(key=lambda x: x[0].__str__())
             for k, v in inneritems:
                 if v == 1:
                     o1.append(' + ' + k._latex_form)
@@ -1819,7 +1819,7 @@ def translate(s):
         return "\\" + s
     else:
         # Process modifiers, if any, and recurse
-        for key in sorted(modifier_dict.keys(), key=lambda k:len(k), reverse=True):
+        for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
             if s.lower().endswith(key) and len(s)>len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s

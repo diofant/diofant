@@ -255,10 +255,10 @@ def test_bool_map():
     assert bool_map(SOPform([w, x, y, z], minterms),
         POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
-    assert bool_map(SOPform([x, z, y],[[1, 0, 1]]),
-        SOPform([a, b, c],[[1, 0, 1]])) != False
-    function1 = SOPform([x,z,y],[[1, 0, 1], [0, 0, 1]])
-    function2 = SOPform([a,b,c],[[1, 0, 1], [1, 0, 0]])
+    assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
+        SOPform([a, b, c], [[1, 0, 1]])) != False
+    function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
+    function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     assert bool_map(function1, function2) == \
         (function1, {y: a, z: b})
 
