@@ -30,8 +30,8 @@ def test_dyadic():
     assert d3 == A.i.outer(A.j)
     v1 = a*A.i - A.k
     v2 = A.i + b*A.j
-    assert v1 | v2 == v1.outer(v2) == a * (A.i|A.i) + (a*b) * (A.i|A.j) +\
-           - (A.k|A.i) - b * (A.k|A.j)
+    assert v1 | v2 == v1.outer(v2) == (a * (A.i | A.i) + (a*b) * (A.i | A.j)
+                                       - (A.k | A.i) - b * (A.k | A.j))
     assert d1 * 0 == Dyadic.zero
     assert d1 != Dyadic.zero
     assert d1 * 2 == 2 * (A.i | A.i)

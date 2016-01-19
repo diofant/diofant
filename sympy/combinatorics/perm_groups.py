@@ -2003,7 +2003,7 @@ class PermutationGroup(Basic):
                 for i in range(k):
                     g = self.random_pr()
                     h = Z.random_pr()
-                    conj = h^g
+                    conj = h ^ g
                     res = _strip(conj, base, basic_orbits, basic_transversals)
                     if res[0] != identity or res[1] != len(base) + 1:
                         gens = Z.generators
@@ -2021,7 +2021,7 @@ class PermutationGroup(Basic):
                 _loop = False
                 for g in self.generators:
                     for h in Z.generators:
-                        conj = h^g
+                        conj = h ^ g
                         res = _strip(conj, base, basic_orbits,
                                      basic_transversals)
                         if res[0] != identity or res[1] != len(base) + 1:

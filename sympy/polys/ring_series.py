@@ -215,7 +215,7 @@ def rs_pow(p1, n, x, prec):
         return rs_mul(p1, p2, x, prec)
     p = R(1)
     while 1:
-        if n&1:
+        if n & 1:
             p = rs_mul(p1, p, x, prec)
             n -= 1
             if not n:
