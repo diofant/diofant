@@ -402,7 +402,7 @@ class StrPrinter(Printer):
             return numer + "/" + denom
 
     def _print_Poly(self, expr):
-        terms, gens = [], [ self._print(s) for s in expr.gens ]
+        terms, gens = [], expr.gens
 
         for monom, coeff in expr.terms():
             s_monom = []
@@ -410,9 +410,10 @@ class StrPrinter(Printer):
             for i, exp in enumerate(monom):
                 if exp > 0:
                     if exp == 1:
-                        s_monom.append(gens[i])
+                        s_monom.append(self._print(gens[i]))
                     else:
-                        s_monom.append(gens[i] + "**%d" % exp)
+                        s_monom.append(self.parenthesize(gens[i],
+                                       PRECEDENCE["Atom"] - 1) + "**%d" % exp)
 
             s_monom = "*".join(s_monom)
 
@@ -460,7 +461,7 @@ class StrPrinter(Printer):
 
         format += ")"
 
-        return format % (' '.join(terms), ', '.join(gens))
+        return format % (' '.join(terms), ', '.join(self._print(s) for s in expr.gens))
 
     def _print_ProductSet(self, p):
         return ' x '.join(self._print(set) for set in p.sets)
