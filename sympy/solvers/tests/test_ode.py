@@ -541,7 +541,6 @@ def test_checksysodesol():
     assert checksysodesol(eq, sol) == (True, [0, 0])
 
 
-@pytest.mark.slow
 def test_nonlinear_3eq_order1():
     x, y, z = symbols('x, y, z', function=True)
     t = Symbol('t')
@@ -600,7 +599,6 @@ def test_checkodesol():
     assert not checkodesol(eq3, sol3)[1].has(f(x))
 
 
-@pytest.mark.slow
 def test_dsolve_options():
     eq = x*f(x).diff(x) + f(x)
     a = dsolve(eq, hint='all')
@@ -1194,7 +1192,6 @@ def test_homogeneous_order():
     pytest.raises(ValueError, lambda: homogeneous_order(x*y))
 
 
-@pytest.mark.slow
 def test_1st_homogeneous_coeff_ode():
     # Type: First order homogeneous, y'=f(y/x)
     eq1 = f(x)/x*cos(f(x)/x) - (x/f(x)*sin(f(x)/x) + cos(f(x)/x))*f(x).diff(x)
