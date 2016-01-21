@@ -395,7 +395,6 @@ def test_issue_4190():
     assert gruntz(x - gamma(1/x), x) == S.EulerGamma
 
 
-@pytest.mark.xfail
 def test_issue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
