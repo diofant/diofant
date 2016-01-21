@@ -64,7 +64,7 @@ def test_zeta_eval():
 
 def test__zetas():
     assert _zetas(1/x).nseries(x) == \
-        1 + x**log(5) + x**log(4) + x**log(3) + x**log(2) + O(x**log(6))
+        1 + x**log(7) + x**log(6) + x**log(5) + x**log(4) + x**log(3) + x**log(2) + O(x**log(6))
 
 
 def test_zeta_series():

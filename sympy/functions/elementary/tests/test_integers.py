@@ -222,14 +222,14 @@ def test_ceiling():
 
 def test_series():
     x, y = symbols('x,y')
-    assert floor(x).nseries(x, y, 100) == floor(y)
-    assert ceiling(x).nseries(x, y, 100) == ceiling(y)
-    assert floor(x).nseries(x, pi, 100) == 3
-    assert ceiling(x).nseries(x, pi, 100) == 4
-    assert floor(x).nseries(x, 0, 100) == 0
-    assert ceiling(x).nseries(x, 0, 100) == 1
-    assert floor(-x).nseries(x, 0, 100) == -1
-    assert ceiling(-x).nseries(x, 0, 100) == 0
+    assert floor(x).series(x, y, 100) == floor(y)
+    assert ceiling(x).series(x, y, 100) == ceiling(y)
+    assert floor(x).series(x, pi, 100) == 3
+    assert ceiling(x).series(x, pi, 100) == 4
+    assert floor(x).nseries(x, 100) == 0
+    assert ceiling(x).nseries(x, 100) == 1
+    assert floor(-x).nseries(x, 100) == -1
+    assert ceiling(-x).nseries(x, 100) == 0
 
 
 @pytest.mark.xfail
