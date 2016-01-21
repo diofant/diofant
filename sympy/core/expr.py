@@ -2665,7 +2665,7 @@ class Expr(Basic, EvalfMixin):
         ========
 
         >>> from sympy import sin, log, Symbol
-        >>> from sympy.abc import x, y
+        >>> from sympy.abc import x
         >>> sin(x).nseries(x)
         x - x**3/6 + x**5/120 + O(x**6)
         >>> log(x + 1).nseries(x, 5)
@@ -2680,19 +2680,9 @@ class Expr(Basic, EvalfMixin):
         Traceback (most recent call last):
         ...
         PoleError: ...
-        ...
         >>> logx = Symbol('logx')
         >>> e.nseries(x, logx=logx)
         sin(logx)
-
-        In the following example, the expansion works but gives only an
-        Order term unless the ``logx`` parameter is used:
-
-        >>> e = x**y
-        >>> e.nseries(x, 2)
-        O(log(x)**2)
-        >>> e.nseries(x, 2, logx=logx)
-        E**(logx*y)
 
         Notes
         =====
