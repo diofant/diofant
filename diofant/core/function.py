@@ -118,6 +118,8 @@ class FunctionClass(ManagedProperties):
 
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
+            if not nargs:
+                raise ValueError("Incorrectly specified nargs as %s" % str(nargs))
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = (as_int(nargs),)
@@ -223,20 +225,20 @@ class Application(Expr, metaclass=FunctionClass):
             #  - functions subclassed from Function (e.g. myfunc(1).nargs)
             #  - functions like cos(1).nargs
             #  - AppliedUndef with given nargs like Function('f', nargs=1)(1).nargs
-            # Canonicalize nargs here; change to set in nargs.
+            # Canonicalize nargs here
             if is_sequence(obj.nargs):
-                obj.nargs = tuple(ordered(set(obj.nargs)))
+                nargs = tuple(ordered(set(obj.nargs)))
             elif obj.nargs is not None:
-                obj.nargs = (as_int(obj.nargs),)
-
-            obj.nargs = FiniteSet(*obj.nargs) if obj.nargs is not None \
-                else Naturals0()
+                nargs = (as_int(obj.nargs),)
+            else:
+                nargs = None
         except AttributeError:
             # things passing through here:
             #  - WildFunction('f').nargs
             #  - AppliedUndef with no nargs like Function('f')(1).nargs
-            obj.nargs = FiniteSet(*obj._nargs) if obj._nargs is not None \
-                else Naturals0()
+            nargs = obj._nargs  # note the underscore here
+
+        obj.nargs = FiniteSet(*nargs) if nargs else Naturals0()
         return obj
 
     @classmethod
