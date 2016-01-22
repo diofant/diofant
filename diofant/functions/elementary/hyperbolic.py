@@ -837,6 +837,9 @@ class asinh(Function):
         else:
             return self.func(arg)
 
+    def _eval_rewrite_as_log(self, x):
+        return log(x + sqrt(x**2 + 1))
+
     def inverse(self, argindex=1):
         """
         Returns the inverse of this function.

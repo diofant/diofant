@@ -471,6 +471,10 @@ def test_asinh():
     pytest.raises(ArgumentIndexError, lambda: asinh(x).fdiff(2))
 
 
+def test_asinh_rewrite():
+    assert asinh(x).rewrite(log) == log(x + sqrt(x**2 + 1))
+
+
 def test_asinh_series():
     assert asinh(x).series(x, 0, 8) == \
         x - x**3/6 + 3*x**5/40 - 5*x**7/112 + O(x**8)
@@ -688,7 +692,6 @@ def test_complex_2899():
 
 
 def test_simplifications():
-    x = Symbol('x')
     assert sinh(asinh(x)) == x
     assert sinh(acosh(x)) == sqrt(x - 1) * sqrt(x + 1)
     assert sinh(atanh(x)) == x/sqrt(1 - x**2)
@@ -725,7 +728,6 @@ def test_sympyissue_4136():
 
 
 def test_sinh_rewrite():
-    x = Symbol('x')
     assert sinh(x).rewrite(exp) == (exp(x) - exp(-x))/2 \
         == sinh(x).rewrite('tractable')
     assert sinh(x).rewrite(cosh) == -I*cosh(x + I*pi/2)
@@ -736,7 +738,6 @@ def test_sinh_rewrite():
 
 
 def test_cosh_rewrite():
-    x = Symbol('x')
     assert cosh(x).rewrite(exp) == (exp(x) + exp(-x))/2 \
         == cosh(x).rewrite('tractable')
     assert cosh(x).rewrite(sinh) == -I*sinh(x + I*pi/2)
@@ -747,7 +748,6 @@ def test_cosh_rewrite():
 
 
 def test_tanh_rewrite():
-    x = Symbol('x')
     assert tanh(x).rewrite(exp) == (exp(x) - exp(-x))/(exp(x) + exp(-x)) \
         == tanh(x).rewrite('tractable')
     assert tanh(x).rewrite(sinh) == I*sinh(x)/sinh(I*pi/2 - x)
@@ -756,7 +756,6 @@ def test_tanh_rewrite():
 
 
 def test_coth_rewrite():
-    x = Symbol('x')
     assert coth(x).rewrite(exp) == (exp(x) + exp(-x))/(exp(x) - exp(-x)) \
         == coth(x).rewrite('tractable')
     assert coth(x).rewrite(sinh) == -I*sinh(I*pi/2 - x)/sinh(x)
@@ -765,7 +764,6 @@ def test_coth_rewrite():
 
 
 def test_csch_rewrite():
-    x = Symbol('x')
     assert csch(x).rewrite(exp) == 1 / (exp(x)/2 - exp(-x)/2) \
         == csch(x).rewrite('tractable')
     assert csch(x).rewrite(cosh) == I/cosh(x + I*pi/2)
@@ -776,7 +774,6 @@ def test_csch_rewrite():
 
 
 def test_sech_rewrite():
-    x = Symbol('x')
     assert sech(x).rewrite(exp) == 1 / (exp(x)/2 + exp(-x)/2) \
         == sech(x).rewrite('tractable')
     assert sech(x).rewrite(sinh) == I/sinh(x + I*pi/2)
@@ -787,7 +784,6 @@ def test_sech_rewrite():
 
 
 def test_derivs():
-    x = Symbol('x')
     assert coth(x).diff(x) == -sinh(x)**(-2)
     assert sinh(x).diff(x) == cosh(x)
     assert cosh(x).diff(x) == sinh(x)
