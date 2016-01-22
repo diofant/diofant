@@ -891,7 +891,7 @@ class Interval(Set, EvalfMixin):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
-        if not isinstance(other, Expr):
+        if not isinstance(other, Expr) or other in (S.NaN, S.ComplexInfinity):
             return false
 
         if other.is_extended_real is False:
