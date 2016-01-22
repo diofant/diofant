@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (S, Symbol, symbols, nan, oo, I, pi, Float, And, Or, Not,
                    Implies, Xor, zoo, sqrt, Rational, simplify, Function,
-                   Integer)
+                   Wild, Integer)
 from sympy.core.relational import (Relational, Equality, Unequality,
                                    GreaterThan, LessThan, StrictGreaterThan,
                                    StrictLessThan, Rel, Eq, Lt, Le,
@@ -656,3 +656,9 @@ def test_issue_8444():
     i = symbols('i', integer=True)
     assert (i > floor(i)) == False
     assert (i < ceiling(i)) == False
+
+
+def test_issue_7951():
+    p = Wild('p')
+    x = Symbol('x')
+    assert str(x < p) == 'x < p_'

@@ -3,7 +3,7 @@ import collections
 import pytest
 
 from sympy import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
-                   PurePoly, Rational, S, Symbol, cos, exp, oo, pi,
+                   PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
                    signsimp, simplify, sin, sqrt, symbols, sympify,
                    trigsimp, sstr)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
@@ -2379,7 +2379,7 @@ def test_pinv_solve():
     B = Matrix([5, 7])
     solution = A.pinv_solve(B)
     w = {}
-    for s in solution.atoms(Symbol):
+    for s in solution.atoms(Dummy, Symbol):
         # Extract dummy symbols used in the solution.
         w[s.name] = s
     assert solution == Matrix([[w['w0_0']/3 + w['w1_0']/3 - w['w2_0']/3 + 1],

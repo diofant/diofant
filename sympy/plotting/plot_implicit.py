@@ -341,7 +341,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     default_range = Tuple(-5, 5)
 
     def _range_tuple(s):
-        if isinstance(s, Symbol):
+        if isinstance(s, (Dummy, Symbol)):
             return Tuple(s) + default_range
         if len(s) == 3:
             return Tuple(*s)

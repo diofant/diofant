@@ -9,6 +9,7 @@ from tokenize import (tokenize, untokenize, TokenError,
 from keyword import iskeyword
 
 import sympy
+from sympy.core.symbol import Symbol
 from sympy.core.basic import Basic
 
 
@@ -42,7 +43,7 @@ def _token_callable(token, local_dict, global_dict, nextToken=None):
     func = local_dict.get(token[1])
     if not func:
         func = global_dict.get(token[1])
-    return callable(func) and not isinstance(func, sympy.Symbol)
+    return callable(func) and not isinstance(func, Symbol)
 
 
 class AppliedFunction(object):
