@@ -339,6 +339,12 @@ def test_Poly():
     assert str(Poly(x**2 + 1, x, modulus=2)) == "Poly(x**2 + 1, x, modulus=2)"
     assert str(Poly(2*x**2 + 3*x + 4, x, modulus=17)) == "Poly(2*x**2 + 3*x + 4, x, modulus=17)"
 
+    assert str(Poly(2**(2*x), 2**x)) == "Poly((2**x)**2, 2**x, domain='ZZ')"
+    assert str(Poly((x + 1)**2, x + 1, expand=False)) == "Poly((x + 1)**2, x + 1, domain='ZZ')"
+
+    assert str(Poly(y*x*sqrt(3), x, sqrt(3))) == \
+        "Poly(y*x*sqrt(3), x, sqrt(3), domain='ZZ[y]')"
+
 
 def test_PolyRing():
     assert str(ring("x", ZZ, lex)[0]) == "Polynomial ring in x over ZZ with lex order"

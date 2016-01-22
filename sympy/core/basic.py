@@ -519,7 +519,7 @@ class Basic(metaclass=ManagedProperties):
 
     @staticmethod
     def _recursive_call(expr_to_call, on_args):
-        from sympy import Symbol
+        from sympy.core.symbol import Dummy, Symbol
 
         def the_call_method_is_overridden(expr):
             for cls in getmro(type(expr)):
@@ -527,8 +527,8 @@ class Basic(metaclass=ManagedProperties):
                     return cls != Basic
 
         if callable(expr_to_call) and the_call_method_is_overridden(expr_to_call):
-            if isinstance(expr_to_call, Symbol):  # XXX When you call a Symbol it is
-                return expr_to_call               # transformed into an UndefFunction
+            if isinstance(expr_to_call, (Dummy, Symbol)):  # XXX When you call a Symbol it is
+                return expr_to_call                        # transformed into an UndefFunction
             else:
                 return expr_to_call(*on_args)
         elif expr_to_call.args:

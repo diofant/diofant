@@ -4,7 +4,7 @@ from sympy.core.mul import Mul
 from sympy.core.relational import Equality
 from sympy.sets.sets import Interval
 from sympy.core.singleton import S
-from sympy.core.symbol import Symbol
+from sympy.core.symbol import Dummy, Symbol
 from sympy.core.sympify import sympify
 from sympy.core.compatibility import is_sequence
 from sympy.core.containers import Tuple
@@ -22,7 +22,7 @@ def _process_limits(*symbols):
     limits = []
     orientation = 1
     for V in symbols:
-        if isinstance(V, Symbol):
+        if isinstance(V, (Dummy, Symbol)):
             limits.append(Tuple(V))
             continue
         elif is_sequence(V, Tuple):

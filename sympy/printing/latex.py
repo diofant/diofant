@@ -1229,7 +1229,7 @@ class LatexPrinter(Printer):
 
         return self._deal_with_super_sub(expr.name) if \
             '\\' not in expr.name else expr.name
-
+    _print_Wild = _print_Symbol
     _print_RandomSymbol = _print_Symbol
     _print_MatrixSymbol = _print_Symbol
 

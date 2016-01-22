@@ -922,7 +922,7 @@ class principal_branch(Function):
 
     @classmethod
     def eval(self, x, period):
-        from sympy import oo, exp_polar, I, Mul, polar_lift, Symbol
+        from sympy import oo, exp_polar, I, Mul, polar_lift
         if isinstance(x, polar_lift):
             return principal_branch(x.args[0], period)
         if period == oo:
@@ -982,7 +982,7 @@ def _polarify(eq, lift, pause=False):
         return eq
     if eq.is_number and not pause:
         return polar_lift(eq)
-    if isinstance(eq, Symbol) and not pause and lift:
+    if isinstance(eq, (Dummy, Symbol)) and not pause and lift:
         return polar_lift(eq)
     elif eq.is_Atom:
         return eq

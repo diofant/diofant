@@ -29,12 +29,14 @@ matrix:
     - python: 3.4
       install:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip install sphinx numpydoc
+        - pip install sphinx numpydoc pytest-cov
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
-        - py.test sympy/polys
+        - py.test --cov sympy sympy/polys
         - sphinx-build -W -b html docs build/sphinx/html
+      after_success:
+        - coveralls
     - python: "pypy3"
       install:
         - pip install .

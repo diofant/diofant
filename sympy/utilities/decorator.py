@@ -1,10 +1,10 @@
 """Useful utility decorators. """
 
+from functools import wraps
 import sys
 import types
 import inspect
 
-from sympy.core.decorators import wraps
 from sympy.core.compatibility import iterable
 
 
