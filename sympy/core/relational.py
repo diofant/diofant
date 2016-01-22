@@ -5,7 +5,7 @@ from .compatibility import ordered
 from .expr import Expr
 from .evalf import EvalfMixin, DEFAULT_MAXPREC as target
 from .function import _coeff_isneg
-from .symbol import Symbol
+from .symbol import Dummy, Symbol
 from .sympify import _sympify
 from .evaluate import global_evaluate
 from sympy.logic.boolalg import Boolean
@@ -180,7 +180,7 @@ class Relational(Boolean, Expr, EvalfMixin):
                 # True/False answer.  Check if we can deduce that dif is
                 # definitively zero or non-zero.  If non-zero, replace with an
                 # approximation.  If .equals(0) gives None, cannot be deduced.
-                if not dif.has(Symbol):
+                if not dif.has(Dummy, Symbol):
                     know = dif.equals(0)
                     if know:
                         dif = S.Zero

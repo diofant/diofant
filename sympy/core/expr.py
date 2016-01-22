@@ -1016,7 +1016,7 @@ class Expr(Basic, EvalfMixin):
                     if oi.is_Symbol:
                         return S.One
                     if oi.is_Pow:
-                        syms = oi.atoms(Symbol)
+                        syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
                             x = syms.pop()
                             oi = oi.subs(x, Dummy('x', positive=True))
@@ -1582,7 +1582,7 @@ class Expr(Basic, EvalfMixin):
         as_coeff_add
         as_coeff_mul
         """
-        from sympy import Symbol
+        from sympy.core.symbol import Dummy, Symbol
         from sympy.utilities.iterables import sift
 
         func = self.func
@@ -1591,7 +1591,7 @@ class Expr(Basic, EvalfMixin):
         sym = set()
         other = []
         for d in deps:
-            if isinstance(d, Symbol):  # Symbol.is_Symbol is True
+            if isinstance(d, (Dummy, Symbol)):  # Symbol.is_Symbol is True
                 sym.add(d)
             else:
                 other.append(d)
@@ -2439,10 +2439,10 @@ class Expr(Basic, EvalfMixin):
         >>> abs(x).series(dir="-")
         -x
         """
-        from sympy import collect, Dummy, Order, Rational, Symbol, ceiling
+        from sympy import collect, Dummy, Symbol, Order, Rational, ceiling
 
         if x is None:
-            syms = self.atoms(Symbol)
+            syms = self.atoms(Dummy, Symbol)
             if not syms:
                 return self
             elif len(syms) > 1:

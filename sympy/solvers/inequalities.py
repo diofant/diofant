@@ -484,7 +484,7 @@ def _reduce_inequalities(inequalities, symbols):
         # check for gens using atoms which is more strict than free_symbols to
         # guard against EX domain which won't be handled by
         # reduce_rational_inequalities
-        gens = expr.atoms(Symbol)
+        gens = expr.atoms(Dummy, Symbol)
 
         if len(gens) == 1:
             gen = gens.pop()

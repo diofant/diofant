@@ -149,6 +149,8 @@ class ReprPrinter(Printer):
             attr = ['%s=%s' % (k, v) for k, v in d.items()]
             return "%s(%s, %s)" % (expr.__class__.__name__,
                                    self._print(expr.name), ', '.join(attr))
+    _print_Dummy = _print_Symbol
+    _print_Wild = _print_Symbol
 
     def _print_Predicate(self, expr):
         return "%s(%s)" % (expr.__class__.__name__, self._print(expr.name))

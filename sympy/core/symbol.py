@@ -13,20 +13,10 @@ from sympy.logic.boolalg import Boolean
 from sympy.utilities.iterables import cartes
 
 
-class Symbol(AtomicExpr, Boolean):
-    """
-    Assumptions:
-       commutative = True
+class BaseSymbol(AtomicExpr, Boolean):
+    """Abstract class for Symbols.
 
-    You can override the default assumptions in the constructor:
-
-    >>> from sympy import symbols
-    >>> A,B = symbols('A,B', commutative = False)
-    >>> bool(A*B != B*A)
-    True
-    >>> bool(A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
-    True
-
+    Do not instantiate this, use Symbol, Dummy or Wild.
     """
 
     is_comparable = False
@@ -80,7 +70,7 @@ class Symbol(AtomicExpr, Boolean):
 
         """
         cls._sanitize(assumptions, cls)
-        return Symbol.__xnew_cached_(cls, name, **assumptions)
+        return BaseSymbol.__xnew_cached_(cls, name, **assumptions)
 
     def __new_stage2__(cls, name, **assumptions):
         if not isinstance(name, str):
@@ -159,7 +149,45 @@ class Symbol(AtomicExpr, Boolean):
         return {self}
 
 
-class Dummy(Symbol):
+class Symbol(BaseSymbol):
+    """Symbol is a placeholder for atomic symbolic expression.
+
+    It has a name and a set of assumptions.
+
+    Parameters
+    ==========
+
+    name : str
+        The name for Symbol.
+    \*\*assumptions : dict
+        Keyword arguments to specify assumptions for
+        Symbol.  Default assumption is commutative=True.
+
+    Examples
+    ========
+
+    >>> from sympy import symbols
+    >>> a, b = symbols('a,b')
+    >>> bool(a*b == b*a)
+    True
+
+    You can override default assumptions:
+
+    >>> A, B = symbols('A,B', commutative = False)
+    >>> bool(A*B != B*A)
+    True
+    >>> bool(A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
+    True
+
+    See Also
+    ========
+
+    :mod:`sympy.core.assumptions`
+    """
+    pass
+
+
+class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
     >>> from sympy import Dummy
@@ -173,6 +201,10 @@ class Dummy(Symbol):
     >>> Dummy() #doctest: +SKIP
     _Dummy_10
 
+    See Also
+    ========
+
+    Symbol
     """
 
     _count = 0
@@ -205,13 +237,11 @@ class Dummy(Symbol):
             2, (str(self), self.dummy_index)), S.One.sort_key(), S.One
 
     def _hashable_content(self):
-        return Symbol._hashable_content(self) + (self.dummy_index,)
+        return BaseSymbol._hashable_content(self) + (self.dummy_index,)
 
 
-class Wild(Symbol):
-    """
-    A Wild symbol matches anything, or anything
-    without whatever is explicitly excluded.
+class Wild(BaseSymbol):
+    """A Wild symbol matches anything, whatever is not explicitly excluded.
 
     Examples
     ========
@@ -235,8 +265,8 @@ class Wild(Symbol):
     >>> A.match(a)
     {a_: A_}
 
-    Tips
-    ====
+    Notes
+    =====
 
     When using Wild, be sure to use the exclude
     keyword to make the pattern more precise.
@@ -275,6 +305,10 @@ class Wild(Symbol):
     >>> E.match(a*b) == {a: 2, b: x**3*y*z}
     True
 
+    See Also
+    ========
+
+    Symbol
     """
     is_Wild = True
 
@@ -292,7 +326,7 @@ class Wild(Symbol):
     @staticmethod
     @cacheit
     def __xnew__(cls, name, exclude, properties, **assumptions):
-        obj = Symbol.__xnew__(cls, name, **assumptions)
+        obj = BaseSymbol.__xnew__(cls, name, **assumptions)
         obj.exclude = exclude
         obj.properties = properties
         return obj

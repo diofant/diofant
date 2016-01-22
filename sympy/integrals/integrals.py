@@ -276,7 +276,7 @@ class Integral(AddWithLimits):
                 Expecting a tuple (expr, symbol) where symbol identified
                 a free symbol in expr, but symbol is not in expr's free
                 symbols.'''))
-            if not isinstance(uvar, Symbol):
+            if not isinstance(uvar, (Dummy, Symbol)):
                 raise ValueError(filldedent('''
                 Expecting a tuple (expr, symbol) but didn't get
                 a symbol; got %s''' % uvar))

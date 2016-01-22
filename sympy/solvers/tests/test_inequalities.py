@@ -235,7 +235,7 @@ def test_issue_10203():
     y = Symbol('y', extended_real=True)
     assert reduce_inequalities(Eq(0, x - y), symbols=[x]) == Eq(x, y)
     assert reduce_inequalities(Ne(0, x - y), symbols=[x]) == \
-        Or(And(-oo < x, x < y), And(x < oo, x > y))
+        Or(And(-oo < x, x < y), And(x < oo, y < x))
 
 
 def test_issue_6343():

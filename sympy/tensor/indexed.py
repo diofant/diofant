@@ -105,7 +105,7 @@
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
 
-from sympy.core import Expr, Tuple, Symbol, sympify, S
+from sympy.core import Expr, Tuple, Dummy, Symbol, sympify, S
 from sympy.core.compatibility import is_sequence, NotIterable
 
 
@@ -325,7 +325,7 @@ class IndexedBase(Expr, NotIterable):
     def __new__(cls, label, shape=None, **kw_args):
         if isinstance(label, str):
             label = Symbol(label)
-        elif isinstance(label, Symbol):
+        elif isinstance(label, (Dummy, Symbol)):
             pass
         else:
             raise TypeError("Base label should be a string or Symbol.")
