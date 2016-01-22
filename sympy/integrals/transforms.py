@@ -1,6 +1,6 @@
 """ Integral Transforms """
 
-from functools import reduce
+from functools import reduce, wraps
 
 from sympy.core import S, sympify
 from sympy.core.function import Function
@@ -186,8 +186,6 @@ def _noconds_(default):
     argument of this function).
     """
     def make_wrapper(func):
-        from sympy.core.decorators import wraps
-
         @wraps(func)
         def wrapper(*args, **kwargs):
             noconds = kwargs.pop('noconds', default)
