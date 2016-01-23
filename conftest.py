@@ -1,5 +1,3 @@
-from distutils.version import LooseVersion as V
-
 import pytest
 
 from sympy.core.cache import clear_cache
@@ -38,11 +36,6 @@ def file_clear_cache():
 def check_disabled(request):
     if getattr(request.module, 'disabled', False):
         pytest.skip("test requirements not met.")
-    elif getattr(request.module, 'ipython', False):
-        # need to check version and options for ipython tests
-        if (V(pytest.__version__) < '2.6.3' and
-                pytest.config.getvalue('-s') != 'no'):
-            pytest.skip("run py.test with -s or upgrade to newer version.")
 
 
 @pytest.fixture(autouse=True, scope='session')
