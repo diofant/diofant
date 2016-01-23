@@ -2811,7 +2811,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return S.Exp1
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Zero
         elif arg is S.ComplexInfinity:
             return S.NaN
@@ -2842,7 +2842,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
             coeff, terms = arg.as_coeff_Mul()
 
             # but it can't be multiplied by oo
-            if coeff in [S.NegativeInfinity, S.Infinity]:
+            if coeff in [-S.Infinity, S.Infinity]:
                 return None
 
             coeffs, log_term = [coeff], None
