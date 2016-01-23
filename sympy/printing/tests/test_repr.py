@@ -64,7 +64,7 @@ def test_Singletons():
     sT(S.ImaginaryUnit, 'I')
     sT(S.Infinity, 'oo')
     sT(S.NaN, 'nan')
-    sT(S.NegativeInfinity, '-oo')
+    sT(-S.Infinity, '-oo')
     sT(S.NegativeOne, 'Integer(-1)')
     sT(S.One, 'Integer(1)')
     sT(S.Pi, 'pi')

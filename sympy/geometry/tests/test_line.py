@@ -570,7 +570,7 @@ def test_line3d():
 
     # Test zdirection
     negz = Ray3D(p1, Point3D(0, 0, -1))
-    assert negz.zdirection == S.NegativeInfinity
+    assert negz.zdirection == -S.Infinity
 
     # Test contains
     assert negz.contains(Segment3D(p1, Point3D(0, 0, -10))) is True

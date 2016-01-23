@@ -1099,7 +1099,7 @@ class Ray3D(LinearEntity3D):
         elif self.p1.x == self.p2.x:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -S.Infinity
 
     @property
     def ydirection(self):
@@ -1131,7 +1131,7 @@ class Ray3D(LinearEntity3D):
         elif self.p1.y == self.p2.y:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -S.Infinity
 
     @property
     def zdirection(self):
@@ -1165,7 +1165,7 @@ class Ray3D(LinearEntity3D):
         elif self.p1.z == self.p2.z:
             return S.Zero
         else:
-            return S.NegativeInfinity
+            return -S.Infinity
 
     def distance(self, o):
         """
@@ -1244,11 +1244,11 @@ class Ray3D(LinearEntity3D):
             if Point3D.are_collinear(self.p1, self.p2, o):
                 if self.xdirection is S.Infinity:
                     rv = o.x >= self.source.x
-                elif self.xdirection is S.NegativeInfinity:
+                elif self.xdirection == -S.Infinity:
                     rv = o.x <= self.source.x
                 elif self.ydirection is S.Infinity:
                     rv = o.y >= self.source.y
-                elif self.ydirection is S.NegativeInfinity:
+                elif self.ydirection == -S.Infinity:
                     rv = o.y <= self.source.y
                 elif self.zdirection is S.Infinity:
                     rv = o.z <= self.source.z

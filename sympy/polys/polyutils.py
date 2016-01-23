@@ -175,7 +175,7 @@ def _sort_factors(factors, **args):
 
 def _not_a_coeff(expr):
     """Do not treat NaN and infinities as valid polynomial coefficients. """
-    return expr in [S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity]
+    return expr in [S.NaN, S.Infinity, -S.Infinity, S.ComplexInfinity]
 
 
 def _parallel_dict_from_expr_if_gens(exprs, opt):

@@ -199,7 +199,7 @@ def checksol(f, symbol, sol=None, **flags):
     illegal = {S.NaN,
                S.ComplexInfinity,
                S.Infinity,
-               S.NegativeInfinity}
+               -S.Infinity}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
         return False
 

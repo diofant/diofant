@@ -89,6 +89,8 @@ class Add(Expr, AssocOp):
             if a.is_Rational:
                 if b.is_Mul:
                     rv = [a, b], [], None
+                    if b.is_infinite:
+                        return [b], [], None
             if rv:
                 if all(s.is_commutative for s in rv[0]):
                     return rv
@@ -209,7 +211,7 @@ class Add(Expr, AssocOp):
             newseq = [f for f in newseq if not
                       (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 
-        elif coeff is S.NegativeInfinity:
+        elif coeff == -S.Infinity:
             newseq = [f for f in newseq if not
                       (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 

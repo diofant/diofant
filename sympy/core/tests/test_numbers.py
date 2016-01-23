@@ -442,7 +442,7 @@ def test_Float():
     assert Float(decimal.Decimal('0.1'), 3) == Float('.1', 3)
     assert Float(decimal.Decimal('nan')) == S.NaN
     assert Float(decimal.Decimal('Infinity')) == S.Infinity
-    assert Float(decimal.Decimal('-Infinity')) == S.NegativeInfinity
+    assert Float(decimal.Decimal('-Infinity')) == -S.Infinity
 
     assert '{0:.3f}'.format(Float(4.236622)) == '4.237'
     assert '{0:.35f}'.format(Float(pi.n(40), 40)) == '3.14159265358979323846264338327950288'
@@ -772,20 +772,19 @@ def test_NaN():
 def test_special_numbers():
     assert isinstance(S.NaN, Number) is True
     assert isinstance(S.Infinity, Number) is True
-    assert isinstance(S.NegativeInfinity, Number) is True
 
     assert S.NaN.is_number is True
     assert S.Infinity.is_number is True
-    assert S.NegativeInfinity.is_number is True
+    assert (-S.Infinity).is_number is True
     assert S.ComplexInfinity.is_number is True
 
     assert isinstance(S.NaN, Rational) is False
     assert isinstance(S.Infinity, Rational) is False
-    assert isinstance(S.NegativeInfinity, Rational) is False
+    assert isinstance(-S.Infinity, Rational) is False
 
     assert S.NaN.is_rational is not True
     assert S.Infinity.is_rational is not True
-    assert S.NegativeInfinity.is_rational is not True
+    assert (-S.Infinity).is_rational is not True
 
 
 def test_powers():
@@ -1252,7 +1251,7 @@ def test_zoo():
     pb = Symbol('pb', positive=True, finite=True)
     nb = Symbol('nb', negative=True, finite=True)
     imb = Symbol('ib', imaginary=True, finite=True)
-    for i in [I, S.Infinity, S.NegativeInfinity, S.Zero, S.One, S.Pi, S.Half, Integer(3), log(3),
+    for i in [I, S.Infinity, -S.Infinity, S.Zero, S.One, S.Pi, S.Half, Integer(3), log(3),
               b, nz, p, n, im, pb, nb, imb, c]:
         if i.is_finite and (i.is_extended_real or i.is_imaginary):
             assert i + zoo is zoo

@@ -132,7 +132,6 @@ class Pow(Expr):
     ========
 
     sympy.core.numbers.Infinity
-    sympy.core.numbers.NegativeInfinity
     sympy.core.numbers.NaN
 
     References
@@ -1153,7 +1152,7 @@ class Pow(Expr):
             if arg_series.is_Order:
                 return 1 + arg_series
             arg0 = limit(arg_series.removeO(), x, 0)
-            if arg0 in (S.NegativeInfinity, S.Infinity):
+            if arg0 in (-S.Infinity, S.Infinity):
                 return self
             t = arg_series - arg0
             exp_series = term = exp(arg0)

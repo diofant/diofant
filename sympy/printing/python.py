@@ -5,7 +5,7 @@ from .repr import ReprPrinter
 from .str import StrPrinter
 
 # A list of classes that should be printed using StrPrinter
-STRPRINT = ("Add", "Infinity", "Integer", "Mul", "NegativeInfinity",
+STRPRINT = ("Add", "Infinity", "Integer", "Mul",
             "Pow", "Zero")
 
 

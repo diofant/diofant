@@ -1812,7 +1812,7 @@ class MatrixBase(object):
             elif ord == S.Infinity:  # max(abs(x))
                 return Max(*[abs(i) for i in vals])
 
-            elif ord == S.NegativeInfinity:  # min(abs(x))
+            elif ord == -S.Infinity:  # min(abs(x))
                 return Min(*[abs(i) for i in vals])
 
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)

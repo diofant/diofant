@@ -470,7 +470,7 @@ class Abs(Function):
             if arg2.is_nonnegative:
                 return arg2
         if arg.is_Add:
-            if arg.has(S.Infinity, S.NegativeInfinity):
+            if arg.has(S.Infinity, -S.Infinity):
                 if any(a.is_infinite for a in arg.as_real_imag()):
                     return S.Infinity
             if arg.is_extended_real is None and arg.is_imaginary is None:

@@ -11,11 +11,11 @@ from sympy.core.compatibility import iterable
 def threaded_factory(func, use_add):
     """A factory for ``threaded`` decorators. """
     from sympy.core import sympify
-    from sympy.matrices import Matrix
+    import sympy
 
     @wraps(func)
     def threaded_func(expr, *args, **kwargs):
-        if isinstance(expr, Matrix):
+        if isinstance(expr, sympy.Matrix):
             return expr.applyfunc(lambda f: func(f, *args, **kwargs))
         elif iterable(expr):
             try:

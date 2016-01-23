@@ -1085,7 +1085,7 @@ class laguerre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return S.One
-            elif x == S.NegativeInfinity:
+            elif x == -S.Infinity:
                 return S.Infinity
             elif x == S.Infinity:
                 return S.NegativeOne**n * S.Infinity
@@ -1199,7 +1199,7 @@ class assoc_laguerre(OrthogonalPolynomial):
                 return binomial(n + alpha, alpha)
             elif x == S.Infinity and n > S.Zero:
                 return S.NegativeOne**n * S.Infinity
-            elif x == S.NegativeInfinity and n > S.Zero:
+            elif x == -S.Infinity and n > S.Zero:
                 return S.Infinity
         else:
             # n is a given fixed integer, evaluate into polynomial

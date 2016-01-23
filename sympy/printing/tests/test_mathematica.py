@@ -50,7 +50,7 @@ def test_Mul():
 def test_constants():
     assert mcode(pi) == "Pi"
     assert mcode(oo) == "Infinity"
-    assert mcode(S.NegativeInfinity) == "-Infinity"
+    assert mcode(-S.Infinity) == "-Infinity"
     assert mcode(S.EulerGamma) == "EulerGamma"
     assert mcode(S.Catalan) == "Catalan"
     assert mcode(S.Exp1) == "E"

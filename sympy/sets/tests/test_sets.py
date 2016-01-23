@@ -178,12 +178,12 @@ def test_complement():
     assert FiniteSet(0).complement(S.Reals) ==  \
         Union(Interval(-oo, 0, True, True), Interval(0, oo, True, True))
 
-    assert (FiniteSet(5) + Interval(S.NegativeInfinity,
+    assert (FiniteSet(5) + Interval(-S.Infinity,
                                     0)).complement(S.Reals) == \
         Interval(0, 5, True, True) + Interval(5, S.Infinity, True, True)
 
     assert FiniteSet(1, 2, 3).complement(S.Reals) == \
-        Interval(S.NegativeInfinity, 1, True, True) + \
+        Interval(-S.Infinity, 1, True, True) + \
         Interval(1, 2, True, True) + Interval(2, 3, True, True) +\
         Interval(3, S.Infinity, True, True)
 
@@ -655,10 +655,10 @@ def test_supinf():
     assert FiniteSet(5, 1, x).inf == Min(1, x)
     assert FiniteSet(5, 1, x, y).sup == Max(5, x, y)
     assert FiniteSet(5, 1, x, y).inf == Min(1, x, y)
-    assert FiniteSet(5, 1, x, y, S.Infinity, S.NegativeInfinity).sup == \
+    assert FiniteSet(5, 1, x, y, S.Infinity, -S.Infinity).sup == \
         S.Infinity
-    assert FiniteSet(5, 1, x, y, S.Infinity, S.NegativeInfinity).inf == \
-        S.NegativeInfinity
+    assert FiniteSet(5, 1, x, y, S.Infinity, -S.Infinity).inf == \
+        -S.Infinity
     assert FiniteSet('Ham', 'Eggs').sup == Max('Ham', 'Eggs')
 
 

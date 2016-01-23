@@ -424,7 +424,7 @@ def evalf_mul(v, prec, options):
     args = list(v.args)
 
     # see if any argument is NaN or oo and thus warrants a special return
-    special = []
+    special, other = [], []
     from sympy.core.numbers import Float
     for arg in args:
         arg = evalf(arg, prec, options)
@@ -433,10 +433,19 @@ def evalf_mul(v, prec, options):
         arg = Float._new(arg[0], 1)
         if arg is S.NaN or arg.is_infinite:
             special.append(arg)
+        else:
+            other.append(arg)
     if special:
         from sympy.core.mul import Mul
+        other = Mul(*other)
         special = Mul(*special)
-        return evalf(special, prec + 4, {})
+        if other < 0:
+            r = list(evalf(special, prec + 4, {}))
+            sign, man, exp, bc = r[0]
+            r[0] = (sign, man, exp - 333, bc)
+            return tuple(r)
+        else:
+            return evalf(special, prec + 4, {})
 
     # With guard digits, multiplication in the real case does not destroy
     # accuracy. This is also true in the complex case when considering the
@@ -789,13 +798,13 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from sympy.core.numbers import Infinity, NegativeInfinity, Zero
+    from sympy.core.numbers import Infinity, Zero
     x = sympify(x)
     if isinstance(x, Zero) or x == 0:
         return mpf(0)
     if isinstance(x, Infinity):
         return mpf('inf')
-    if isinstance(x, NegativeInfinity):
+    if x == -S.Infinity:
         return mpf('-inf')
     # XXX
     re, im, _, _ = evalf(x, prec, options)
@@ -1117,8 +1126,6 @@ evalf_table = None
 def _create_evalf_table():
     global evalf_table
     from sympy.functions.combinatorial.numbers import bernoulli
-    from sympy.concrete.products import Product
-    from sympy.concrete.summations import Sum
     from sympy.core.add import Add
     from sympy.core.mul import Mul
     from sympy.core.numbers import Exp1, Float, Half, ImaginaryUnit, Integer, NaN, NegativeOne, One, Pi, Rational, Zero
@@ -1129,6 +1136,7 @@ def _create_evalf_table():
     from sympy.functions.elementary.piecewise import Piecewise
     from sympy.functions.elementary.trigonometric import atan, cos, sin
     from sympy.integrals.integrals import Integral
+    import sympy
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
@@ -1159,8 +1167,8 @@ def _create_evalf_table():
         im: evalf_im,
 
         Integral: evalf_integral,
-        Sum: evalf_sum,
-        Product: evalf_prod,
+        sympy.Sum: evalf_sum,
+        sympy.Product: evalf_prod,
         Piecewise: evalf_piecewise,
 
         bernoulli: evalf_bernoulli,

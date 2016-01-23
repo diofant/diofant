@@ -72,8 +72,8 @@ class sinh(HyperbolicFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity
+            elif arg == -S.Infinity:
+                return -S.Infinity
             elif arg is S.Zero:
                 return S.Zero
             elif arg.is_negative:
@@ -228,7 +228,7 @@ class cosh(HyperbolicFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Infinity
             elif arg is S.Zero:
                 return S.One
@@ -383,7 +383,7 @@ class tanh(HyperbolicFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -515,7 +515,7 @@ class coth(HyperbolicFunction):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.One
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.ComplexInfinity
@@ -808,8 +808,8 @@ class asinh(Function):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
-                return S.NegativeInfinity
+            elif arg == -S.Infinity:
+                return -S.Infinity
             elif arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
@@ -892,7 +892,7 @@ class acosh(Function):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Infinity
             elif arg is S.Zero:
                 return S.Pi*S.ImaginaryUnit / 2
@@ -1000,10 +1000,10 @@ class atanh(Function):
             elif arg is S.One:
                 return S.Infinity
             elif arg is S.NegativeOne:
-                return S.NegativeInfinity
+                return -S.Infinity
             elif arg is S.Infinity:
                 return -S.ImaginaryUnit * atan(arg)
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.ImaginaryUnit * atan(-arg)
             elif arg.is_negative:
                 return -cls(-arg)
@@ -1067,14 +1067,14 @@ class acoth(Function):
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return S.Pi*S.ImaginaryUnit / 2
             elif arg is S.One:
                 return S.Infinity
             elif arg is S.NegativeOne:
-                return S.NegativeInfinity
+                return -S.Infinity
             elif arg.is_negative:
                 return -cls(-arg)
         else:

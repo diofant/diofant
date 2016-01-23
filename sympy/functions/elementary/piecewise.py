@@ -227,7 +227,7 @@ class Piecewise(Function):
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
-                    sym, S.NegativeInfinity, S.Infinity, c)
+                    sym, -S.Infinity, S.Infinity, c)
                 values = []
                 for lower, upper, expr in intervals:
                     if (a < lower) == True:
@@ -331,7 +331,7 @@ class Piecewise(Function):
             elif isinstance(cond, Equality):
                 continue
             elif isinstance(cond, And):
-                lower = S.NegativeInfinity
+                lower = -S.Infinity
                 upper = S.Infinity
                 for cond2 in cond.args:
                     if sym not in [cond2.lts, cond2.gts]:
@@ -348,7 +348,7 @@ class Piecewise(Function):
                     cond = solve_univariate_inequality(cond, sym)
                 lower, upper = cond.lts, cond.gts  # part 1: initialize with givens
                 if cond.lts == sym:                # part 1a: expand the side ...
-                    lower = S.NegativeInfinity   # e.g. x <= 0 ---> -oo <= 0
+                    lower = -S.Infinity          # e.g. x <= 0 ---> -oo <= 0
                 elif cond.gts == sym:            # part 1a: ... that can be expanded
                     upper = S.Infinity           # e.g. x >= 0 --->  oo >= 0
                 else:
@@ -397,7 +397,7 @@ class Piecewise(Function):
                     return or_intervals
 
         int_expr.sort(key=lambda x: x[1].sort_key(
-        ) if x[1].is_number else S.NegativeInfinity.sort_key())
+        ) if x[1].is_number else (-S.Infinity).sort_key())
         int_expr.sort(key=lambda x: x[0].sort_key(
         ) if x[0].is_number else S.Infinity.sort_key())
 

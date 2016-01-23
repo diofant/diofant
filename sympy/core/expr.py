@@ -195,7 +195,7 @@ class Expr(Basic, EvalfMixin):
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
-        if r in (S.NaN, S.Infinity, S.NegativeInfinity):
+        if r in (S.NaN, S.Infinity, -S.Infinity):
             raise TypeError("can't convert %s to int" % r)
         i = int(r)
         if not i:
@@ -241,6 +241,8 @@ class Expr(Basic, EvalfMixin):
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
+            if self == other:
+                return S.true
             dif = self - other
             if dif.is_nonnegative is not None and \
                     dif.is_nonnegative is not dif.is_negative:
@@ -259,6 +261,8 @@ class Expr(Basic, EvalfMixin):
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
+            if self == other:
+                return S.true
             dif = self - other
             if dif.is_nonpositive is not None and \
                     dif.is_nonpositive is not dif.is_positive:
@@ -277,6 +281,8 @@ class Expr(Basic, EvalfMixin):
             if me is S.NaN:
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
+            if self == other:
+                return S.false
             dif = self - other
             if dif.is_positive is not None and \
                     dif.is_positive is not dif.is_nonpositive:
@@ -296,6 +302,8 @@ class Expr(Basic, EvalfMixin):
                 raise TypeError("Invalid NaN comparison")
         if self.is_extended_real and other.is_extended_real:
             dif = self - other
+            if self == other:
+                return S.false
             if dif.is_negative is not None and \
                     dif.is_negative is not dif.is_nonnegative:
                 return sympify(dif.is_negative)
@@ -783,7 +791,7 @@ class Expr(Basic, EvalfMixin):
             A = 0
         else:
             A = self.subs(x, a)
-            if A.has(S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+            if A.has(S.NaN, S.Infinity, -S.Infinity, S.ComplexInfinity):
                 A = limit(self, x, a)
                 if A is S.NaN:
                     return A
@@ -794,7 +802,7 @@ class Expr(Basic, EvalfMixin):
             B = 0
         else:
             B = self.subs(x, b)
-            if B.has(S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+            if B.has(S.NaN, S.Infinity, -S.Infinity, S.ComplexInfinity):
                 B = limit(self, x, b)
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
@@ -1912,11 +1920,6 @@ class Expr(Basic, EvalfMixin):
             if self is S.Infinity:
                 if c.is_positive:
                     return S.Infinity
-            elif self is S.NegativeInfinity:
-                if c.is_negative:
-                    return S.Infinity
-                elif c.is_positive:
-                    return S.NegativeInfinity
             elif self is S.ComplexInfinity:
                 if not c.is_zero:
                     return S.ComplexInfinity
@@ -1960,6 +1963,11 @@ class Expr(Basic, EvalfMixin):
                     return
             return Add(*newargs)
         elif self.is_Mul:
+            if self == -S.Infinity:
+                if c.is_negative:
+                    return S.Infinity
+                elif c.is_positive:
+                    return -S.Infinity
             args = list(self.args)
             for i, arg in enumerate(args):
                 newarg = arg.extract_multiplicatively(c)
@@ -2461,9 +2469,9 @@ class Expr(Basic, EvalfMixin):
         if len(dir) != 1 or dir not in '+-':
             raise ValueError("Dir must be '+' or '-'")
 
-        if x0 in [S.Infinity, S.NegativeInfinity]:
+        if x0 in [S.Infinity, -S.Infinity]:
             s = self.aseries(x, n)
-            if x0 is S.NegativeInfinity:
+            if x0 == -S.Infinity:
                 return s.subs(x, -x)
             return s
 
@@ -3211,7 +3219,7 @@ class Expr(Basic, EvalfMixin):
         x = self
         if not x.is_number:
             raise TypeError('%s is not a number' % type(x))
-        if x in (S.NaN, S.Infinity, S.NegativeInfinity, S.ComplexInfinity):
+        if x in (S.NaN, S.Infinity, -S.Infinity, S.ComplexInfinity):
             return x
         if not x.is_extended_real:
             i, r = x.as_real_imag()

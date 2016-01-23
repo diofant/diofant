@@ -156,7 +156,7 @@ class besselj(BesselBase):
                 return S.ComplexInfinity
             elif nu.is_imaginary:
                 return S.NaN
-        if z is S.Infinity or (z is S.NegativeInfinity):
+        if z is S.Infinity or (z == -S.Infinity):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -244,12 +244,12 @@ class bessely(BesselBase):
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.NegativeInfinity
+                return -S.Infinity
             elif re(nu).is_zero is False:
                 return S.ComplexInfinity
             elif re(nu).is_zero:
                 return S.NaN
-        if z is S.Infinity or z is S.NegativeInfinity:
+        if z is S.Infinity or z is -S.Infinity:
             return S.Zero
 
         if nu.is_integer:
@@ -326,7 +326,7 @@ class besseli(BesselBase):
             elif nu.is_imaginary:
                 return S.NaN
         if z.is_imaginary:
-            if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+            if im(z) is S.Infinity or im(z) == -S.Infinity:
                 return S.Zero
 
         if z.could_extract_minus_sign():
@@ -418,7 +418,7 @@ class besselk(BesselBase):
             elif re(nu).is_zero:
                 return S.NaN
         if z.is_imaginary:
-            if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+            if im(z) is S.Infinity or im(z) == -S.Infinity:
                 return S.Zero
 
         if nu.is_integer:
@@ -871,12 +871,12 @@ class airyai(AiryBase):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Zero
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One / (3**Rational(2, 3) * gamma(Rational(2, 3)))
@@ -1038,12 +1038,12 @@ class airybi(AiryBase):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One / (3**Rational(1, 6) * gamma(Rational(2, 3)))
@@ -1349,12 +1349,12 @@ class airybiprime(AiryBase):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
+        if arg.is_number:
             if arg is S.NaN:
                 return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
-            elif arg is S.NegativeInfinity:
+            elif arg == -S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return 3**Rational(1, 6) / gamma(Rational(1, 3))

@@ -145,7 +145,7 @@ def test_erfi():
     assert erfi(nan) == nan
 
     assert erfi(oo) == S.Infinity
-    assert erfi(-oo) == S.NegativeInfinity
+    assert erfi(-oo) == -S.Infinity
 
     assert erfi(0) == S.Zero
 

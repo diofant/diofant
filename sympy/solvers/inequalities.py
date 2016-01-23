@@ -56,7 +56,7 @@ def solve_poly_inequality(poly, rel):
             interval = Interval(root, root)
             intervals.append(interval)
     elif rel == '!=':
-        left = S.NegativeInfinity
+        left = -S.Infinity
 
         for right, _ in reals + [(S.Infinity, 1)]:
             interval = Interval(left, right, True, True)
@@ -93,7 +93,7 @@ def solve_poly_inequality(poly, rel):
                     intervals.insert(0, Interval(left, left))
 
         if sign == eq_sign:
-            intervals.insert(0, Interval(S.NegativeInfinity, right, True, right_open))
+            intervals.insert(0, Interval(-S.Infinity, right, True, right_open))
 
     return intervals
 
@@ -434,7 +434,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
                 return False
             raise NotImplementedError
 
-    start = S.NegativeInfinity
+    start = -S.Infinity
     sol_sets = [S.EmptySet]
     try:
         reals = _nsort(set(solns + singularities), separated=True)[0]
@@ -443,12 +443,12 @@ def solve_univariate_inequality(expr, gen, relational=True):
     for x in reals:
         end = x
 
-        if end in [S.NegativeInfinity, S.Infinity]:
+        if end in [-S.Infinity, S.Infinity]:
             if valid(Integer(0)):
                 sol_sets.append(Interval(start, S.Infinity, True, True))
                 break
 
-        if valid((start + end)/2 if start != S.NegativeInfinity else end - 1):
+        if valid((start + end)/2 if start != -S.Infinity else end - 1):
             sol_sets.append(Interval(start, end, True, True))
 
         if x in singularities:

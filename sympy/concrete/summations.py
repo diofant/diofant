@@ -718,8 +718,8 @@ def eval_sum_symbolic(f, limits):
 
         if n.is_Integer:
             if n >= 0:
-                if (b is S.Infinity and a is not S.NegativeInfinity) or \
-                   (a is S.NegativeInfinity and b is not S.Infinity):
+                if (b is S.Infinity and a != -S.Infinity) or \
+                   (a == -S.Infinity and b is not S.Infinity):
                     return S.Infinity
                 return ((bernoulli(n + 1, b + 1) - bernoulli(n + 1, a))/(n + 1)).expand()
             elif a.is_Integer and a >= 1:
@@ -728,8 +728,8 @@ def eval_sum_symbolic(f, limits):
                 else:
                     return harmonic(b, abs(n)) - harmonic(a - 1, abs(n))
 
-    if not (a.has(S.Infinity, S.NegativeInfinity) or
-            b.has(S.Infinity, S.NegativeInfinity)):
+    if not (a.has(S.Infinity, -S.Infinity) or
+            b.has(S.Infinity, -S.Infinity)):
         # Geometric terms
         c1 = Wild('c1', exclude=[i])
         c2 = Wild('c2', exclude=[i])
@@ -823,7 +823,7 @@ def eval_sum_hyper(f, i_a_b):
     old_sum = Sum(f, (i, a, b))
 
     if b != S.Infinity:
-        if a == S.NegativeInfinity:
+        if a == -S.Infinity:
             res = _eval_sum_hyper(f.subs(i, -i), i, -b)
             if res is not None:
                 return Piecewise(res, (old_sum, True))
@@ -838,7 +838,7 @@ def eval_sum_hyper(f, i_a_b):
                 return
         return Piecewise((res1 - res2, cond), (old_sum, True))
 
-    if a == S.NegativeInfinity:
+    if a == -S.Infinity:
         res1 = _eval_sum_hyper(f.subs(i, -i), i, 1)
         res2 = _eval_sum_hyper(f, i, 0)
         if res1 is None or res2 is None:
@@ -860,6 +860,6 @@ def eval_sum_hyper(f, i_a_b):
                 if f.is_positive or f.is_zero:
                     return S.Infinity
                 elif f.is_negative:
-                    return S.NegativeInfinity
+                    return -S.Infinity
             return
         return Piecewise(res, (old_sum, True))

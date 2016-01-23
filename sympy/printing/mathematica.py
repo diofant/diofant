@@ -75,9 +75,6 @@ class MCodePrinter(CodePrinter):
     def _print_Infinity(self, expr):
         return 'Infinity'
 
-    def _print_NegativeInfinity(self, expr):
-        return '-Infinity'
-
     def _print_list(self, expr):
         return '{' + ', '.join(self.doprint(a) for a in expr) + '}'
     _print_tuple = _print_list

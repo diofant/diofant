@@ -303,9 +303,6 @@ class StrPrinter(Printer):
     def _print_NaN(self, expr):
         return 'nan'
 
-    def _print_NegativeInfinity(self, expr):
-        return '-oo'
-
     def _print_Normal(self, expr):
         return "Normal(%s, %s)" % (expr.mu, expr.sigma)
 
