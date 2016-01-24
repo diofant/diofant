@@ -43,7 +43,7 @@ matrix:
       script:
         - py.test --ignore sympy/plotting/plot.py --ignore sympy/plotting/plot_implicit.py --ignore docs/modules/numeric-computation.rst --ignore sympy/matrices/dense.py --ignore sympy/tensor/tensor.py --ignore sympy/utilities/lambdify.py sympy docs
 before_install:
-  - pip install --upgrade pip setuptools pytest
+  - pip install --upgrade pip 'setuptools<=19.4' pytest
   - pip install coveralls
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
