@@ -402,7 +402,7 @@ def test_partitions():
     assert [p.copy() for p in partitions(8, k=4, m=3)] == [
         {4: 2}, {1: 1, 3: 1, 4: 1}, {2: 2, 4: 1}, {2: 1, 3: 2}] == [
         i.copy() for i in partitions(8, k=4, m=3) if all(k <= 4 for k in i)
-        and sum(i.values()) <=3]
+        and sum(i.values()) <= 3]
 
     assert [p.copy() for p in partitions(Integer(3), m=2)] == [
         {3: 1}, {1: 1, 2: 1}]

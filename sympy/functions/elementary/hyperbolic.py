@@ -771,7 +771,7 @@ class sech(ReciprocalHyperbolicFunction):
             return euler(n) / factorial(n) * x**(n)
 
     def _eval_rewrite_as_sinh(self, arg):
-        return S.ImaginaryUnit / sinh(arg + S.ImaginaryUnit * S.Pi /2)
+        return S.ImaginaryUnit / sinh(arg + S.ImaginaryUnit * S.Pi / 2)
 
 
 ###############################################################################

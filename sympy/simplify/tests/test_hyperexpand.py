@@ -92,7 +92,7 @@ def test_polynomial():
 
 def test_hyperexpand_bases():
     assert hyperexpand(hyper([2], [a], z)) == \
-        a + z**(-a + 1)*(-a**2 + 3*a + z*(a - 1) - 2)*exp(z)* \
+        a + z**(-a + 1)*(-a**2 + 3*a + z*(a - 1) - 2)*exp(z) * \
         lowergamma(a - 1, z) - 1
     # TODO [a+1, a-S.Half], [2*a]
     assert hyperexpand(hyper([1, 2], [3], z)) == -2/z - 2*log(-z + 1)/z**2
@@ -625,7 +625,7 @@ def test_hyperexpand_special():
         gamma(1 + b/2)*gamma(1 + b - a)/gamma(1 + b)/gamma(1 + b/2 - a)
     assert hyperexpand(meijerg([1 - z - a/2], [1 - z + a/2], [b/2], [-b/2], 1)) == \
         gamma(1 - 2*z)*gamma(z + a/2 + b/2)/gamma(1 - z + a/2 - b/2) \
-        /gamma(1 - z - a/2 + b/2)/gamma(1 - z + a/2 + b/2)
+        / gamma(1 - z - a/2 + b/2)/gamma(1 - z + a/2 + b/2)
     assert hyperexpand(hyper([a], [b], 0)) == 1
     assert hyper([a], [b], 0) != 0
 

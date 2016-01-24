@@ -221,7 +221,7 @@ def test_integrate_linearterm_pow():
 def test_issue_3618():
     assert integrate(pi*sqrt(x), x) == 2*pi*sqrt(x)**3/3
     assert integrate(pi*sqrt(x) + E*sqrt(x)**3, x) == \
-        2*pi*sqrt(x)**3/3 + 2*E *sqrt(x)**5/5
+        2*pi*sqrt(x)**3/3 + 2*E * sqrt(x)**5/5
 
 
 def test_issue_3623():
@@ -878,8 +878,8 @@ def test_issue_4892a():
     assert integrate(c*(P2 - P1), t) in [
         c*(-A*(-h1)*log(c*t)/c + A*t*exp(-z)),
         c*(-A*(-h2)*log(c*t)/c + A*t*exp(-z)),
-        c*( A* h1 *log(c*t)/c + A*t*exp(-z)),
-        c*( A* h2 *log(c*t)/c + A*t*exp(-z)),
+        c*(A*h1*log(c*t)/c + A*t*exp(-z)),
+        c*(A*h2*log(c*t)/c + A*t*exp(-z)),
         (A*c*t - A*(-h1)*log(t)*exp(z))*exp(-z),
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
     ]

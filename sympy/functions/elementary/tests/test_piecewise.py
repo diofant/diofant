@@ -40,7 +40,7 @@ def test_piecewise():
     # More subs tests
     p2 = Piecewise((1, x < pi), (-1, x < 2*pi), (0, x > 2*pi))
     p3 = Piecewise((1, Eq(x, 0)), (1/x, True))
-    p4 = Piecewise((1, Eq(x, 0)), (2, 1/x>2))
+    p4 = Piecewise((1, Eq(x, 0)), (2, 1/x > 2))
     assert p2.subs(x, 2) == 1
     assert p2.subs(x, 4) == -1
     assert p2.subs(x, 10) == 0

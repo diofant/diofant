@@ -130,7 +130,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     coeffs = [ Poly(coeff, n) for coeff in coeffs ]
 
     polys = [ Poly(0, n) ] * (r + 1)
-    terms = [ (S.Zero, S.NegativeInfinity) ] *(r + 1)
+    terms = [ (S.Zero, S.NegativeInfinity) ] * (r + 1)
 
     for i in range(0, r + 1):
         for j in range(i, r + 1):

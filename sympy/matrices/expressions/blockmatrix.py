@@ -159,9 +159,9 @@ class BlockMatrix(MatrixExpr):
             return False
         for i in range(self.blockshape[0]):
             for j in range(self.blockshape[1]):
-                if i==j and not self.blocks[i, j].is_Identity:
+                if i == j and not self.blocks[i, j].is_Identity:
                     return False
-                if i!=j and not self.blocks[i, j].is_ZeroMatrix:
+                if i != j and not self.blocks[i, j].is_ZeroMatrix:
                     return False
         return True
 
@@ -346,7 +346,7 @@ def bc_matmul(expr):
             matrices[i] = BlockMatrix([[A]])._blockmul(B)
             matrices.pop(i+1)
         else:
-            i+=1
+            i += 1
     return MatMul(factor, *matrices).doit()
 
 

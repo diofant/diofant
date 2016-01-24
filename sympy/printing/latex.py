@@ -1820,7 +1820,7 @@ def translate(s):
     else:
         # Process modifiers, if any, and recurse
         for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
-            if s.lower().endswith(key) and len(s)>len(key):
+            if s.lower().endswith(key) and len(s) > len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
 

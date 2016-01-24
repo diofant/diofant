@@ -200,7 +200,7 @@ def test_minpoly_compose():
     assert minimal_polynomial(sin(5*pi/14), x) == 8*x**3 - 4*x**2 - 4*x + 1
     assert minimal_polynomial(cos(pi/15), x) == 16*x**4 + 8*x**3 - 16*x**2 - 8*x + 1
 
-    ex = RootOf(x**3 +x*4 + 1, 0)
+    ex = RootOf(x**3 + x*4 + 1, 0)
     mp = minimal_polynomial(ex, x)
     assert mp == x**3 + 4*x + 1
     mp = minimal_polynomial(ex + 1, x)
@@ -706,7 +706,7 @@ def test_minpoly_fraction_field():
         Poly(z**2*y**2 - x, y)
 
     # this is (sqrt(1 + x**3)/x).integrate(x).diff(x) - sqrt(1 + x**3)/x
-    a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**Rational(5, 2)*
+    a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**Rational(5, 2) *
         (1 + x**(-3))**Rational(3, 2)) + 1/(x**Rational(11, 2)*(1 + x**(-3))**Rational(3, 2))
 
     assert minimal_polynomial(a, y) == y

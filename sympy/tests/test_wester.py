@@ -540,8 +540,8 @@ def test_H27():
     f = 24*x*y**19*z**8 - 47*x**17*y**5*z**8 + 6*x**15*y**9*z**2 - 3*x**22 + 5
     g = 34*x**5*y**8*z**13 + 20*x**7*y**7*z**7 + 12*x**9*y**16*z**4 + 80*y**14*z
     h = -2*z*y**7 \
-        *(6*x**9*y**9*z**3 + 10*x**7*z**6 + 17*y*x**5*z**12 + 40*y**7) \
-        *(3*x**22 + 47*x**17*y**5*z**8 - 6*x**15*y**9*z**2 - 24*x*y**19*z**8 - 5)
+        * (6*x**9*y**9*z**3 + 10*x**7*z**6 + 17*y*x**5*z**12 + 40*y**7) \
+        * (3*x**22 + 47*x**17*y**5*z**8 - 6*x**15*y**9*z**2 - 24*x*y**19*z**8 - 5)
     assert factor(expand(f*g)) == h
 
 
@@ -675,7 +675,7 @@ def test_J7():
 def test_J8():
     p = besselj(R(3, 2), z)
     q = (sin(z)/z - cos(z))/sqrt(pi*z/2)
-    assert simplify(expand_func(p) -q) == 0
+    assert simplify(expand_func(p) - q) == 0
 
 
 def test_J9():
@@ -821,7 +821,7 @@ def test_L7():
 @pytest.mark.xfail
 def test_L8():
     assert simplify((4*x + 4*sqrt(x) + 1)**(sqrt(x)/(2*sqrt(x) + 1))
-        *(2*sqrt(x) + 1)**(1/(2*sqrt(x) + 1)) - 2*sqrt(x) - 1) == 0
+        * (2*sqrt(x) + 1)**(1/(2*sqrt(x) + 1)) - 2*sqrt(x) - 1) == 0
 
 
 @pytest.mark.xfail
@@ -1005,7 +1005,7 @@ def test_M31():
 
 @pytest.mark.xfail
 def test_M32():
-    assert solve(max(2 - x**2, x)- max(-x, (x**3)/9), assume=Q.real(x)) == [-1, 3]
+    assert solve(max(2 - x**2, x) - max(-x, (x**3)/9), assume=Q.real(x)) == [-1, 3]
 
 
 @pytest.mark.xfail
@@ -1400,7 +1400,7 @@ def test_P16():
 @pytest.mark.xfail
 def test_P17():
     t = symbols('t', extended_real=True)
-    M=Matrix([
+    M = Matrix([
         [sin(2*t), cos(2*t)],
         [2*(1 - (cos(t)**2))*cos(t), (1 - 2*(sin(t)**2))*sin(t)]])
     assert M.rank() == 1
@@ -1656,9 +1656,9 @@ def test_P37():
 
 @pytest.mark.xfail
 def test_P38():
-    M=Matrix([[0, 1, 0],
-              [0, 0, 0],
-              [0, 0, 0]])
+    M = Matrix([[0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 0]])
     # raises NotImplementedError: Implemented only for diagonalizable matrices
     M**Rational(1, 2)
 
@@ -1779,7 +1779,7 @@ def test_R4():
 def test_R5():
     a, b, c, n, k = symbols('a b c n k', integer=True, positive=True)
     sk = ((-1)**k)*(binomial(a + b, a + k)
-                    *binomial(b + c, b + k)*binomial(c + a, c + k))
+                    * binomial(b + c, b + k)*binomial(c + a, c + k))
     Sm = Sum(sk, (k, 1, oo))
     T = Sm.doit()  # hypergeometric series not calculated
     assert T == factorial(a+b+c)/(factorial(a)*factorial(b)*factorial(c))
@@ -1931,7 +1931,7 @@ def test_R21():
 @pytest.mark.xfail
 def test_R23():
     n, k = symbols('n k', integer=True, positive=True)
-    Sm = Sum(Sum((factorial(n)/(factorial(k)**2*factorial(n - 2*k)))*
+    Sm = Sum(Sum((factorial(n)/(factorial(k)**2*factorial(n - 2*k))) *
                  (x/y)**k*(x*y)**(n - k), (n, 2*k, oo)), (k, 0, oo))
     # Missing how to express constraint abs(x*y)<1?
     T = Sm.doit()  # Sum not calculated
@@ -1962,7 +1962,7 @@ def test_S3():
 
 def test_S4():
     n, k = symbols('n k', integer=True, positive=True)
-    assert Product(1 + 1/k, (k, 1, n -1)).doit().simplify() == n
+    assert Product(1 + 1/k, (k, 1, n - 1)).doit().simplify() == n
 
 
 def test_S5():
@@ -1976,7 +1976,7 @@ def test_S6():
     n, k = symbols('n k', integer=True, positive=True)
     # Product raises Infinite recursion error.
     # https://github.com/sympy/sympy/issues/7133
-    assert (Product(x**2 -2*x*cos(k*pi/n) + 1, (k, 1, n - 1)).doit().simplify()
+    assert (Product(x**2 - 2*x*cos(k*pi/n) + 1, (k, 1, n - 1)).doit().simplify()
             == (x**(2*n) - 1)/(x**2 - 1))
 
 
@@ -2535,7 +2535,7 @@ def test_W24():
 @pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_W25():
     a, x, y = symbols('a x y', extended_real=True)
-    i1 = integrate(sin(a)*sin(y)/sqrt(1- sin(a)**2*sin(x)**2*sin(y)**2),
+    i1 = integrate(sin(a)*sin(y)/sqrt(1 - sin(a)**2*sin(x)**2*sin(y)**2),
                    (x, 0, pi/2))
     i2 = integrate(i1, (y, 0, pi/2))
     assert (i2 - pi*a/2).simplify() == 0
@@ -2666,7 +2666,7 @@ def test_X13():
 def test_X14():
     # Wallis' product => 1/sqrt(pi n) + ...   [Knopp, p. 385]
     assert series(1/2**(2*n)*binomial(2*n, n),
-                  n, x==oo, n=1) == 1/(sqrt(pi)*sqrt(n)) + O(1/x, (x, oo))
+                  n, x0=oo, n=1) == 1/(sqrt(pi)*sqrt(n)) + O(1/x, (x, oo))
 
 
 @pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")

@@ -330,7 +330,7 @@ def test_jscode_loops_multiple_terms():
 
 def test_Matrix_printing():
     # Test returning a Matrix
-    mat = Matrix([x*y, Piecewise((2 + x, y>0), (y, True)), sin(z)])
+    mat = Matrix([x*y, Piecewise((2 + x, y > 0), (y, True)), sin(z)])
     A = MatrixSymbol('A', 3, 1)
     assert jscode(mat, A) == (
         "A[0] = x*y;\n"

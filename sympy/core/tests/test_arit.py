@@ -1877,7 +1877,7 @@ def test_issue_8247_8354():
          29)**Rational(1, 3)*(-2**Rational(2, 3)*(3*sqrt(93) +
          29)**Rational(1, 3) - 2) - 2*2**Rational(1, 3))**3 +
          72*(3*sqrt(93) + 29)**Rational(2, 3)*(81*sqrt(93) + 783) +
-         (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3)*
+         (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3) *
          (-2**Rational(2, 3)*(3*sqrt(93) + 29)**Rational(1, 3) - 2) -
          2*2**Rational(1, 3))**2)
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)

@@ -590,7 +590,7 @@ def dsolve(eq, func=None, hint="default", simplify=True,
                     if eq[i].coeff(diff(func[i], t, ode_order(eq[i], func[i]))).is_negative:
                         eq[i] = -eq[i]
         match['eq'] = eq
-        if len(set(order.values()))!=1:
+        if len(set(order.values())) != 1:
             raise ValueError("It solves only those systems of equations whose orders are equal")
         match['order'] = list(order.values())[0]
 
@@ -1341,16 +1341,16 @@ def classify_sysode(eq, funcs=None, **kwargs):
     for i, fi in enumerate(eq):
         if isinstance(fi, Equality):
             eq[i] = fi.lhs - fi.rhs
-    matching_hints = {"no_of_equation": i+1}
+    matching_hints = {"no_of_equation": i + 1}
     matching_hints['eq'] = eq
-    if i==0:
+    if i == 0:
         raise ValueError("classify_sysode() works for systems of ODEs. "
         "For scalar ODEs, classify_ode should be used")
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
 
     # find all the functions if not given
     order = dict()
-    if funcs==[None]:
+    if funcs == [None]:
         funcs = []
         for eqs in eq:
             derivs = eqs.atoms(Derivative)
@@ -1403,8 +1403,8 @@ def classify_sysode(eq, funcs=None, **kwargs):
         for k in range(order[func]+1):
             func_coef[j, func, k] = collect(eqs.expand(), [diff(func, t, k)]).coeff(diff(func, t, k))
             if is_linear_:
-                if func_coef[j, func, k]==0:
-                    if k==0:
+                if func_coef[j, func, k] == 0:
+                    if k == 0:
                         coef = eqs.as_independent(func)[1]
                         for xr in range(1, ode_order(eqs, func)+1):
                             coef -= eqs.as_independent(diff(func, t, xr))[1]
@@ -1418,11 +1418,11 @@ def classify_sysode(eq, funcs=None, **kwargs):
                         if isinstance(func_, list):
                             for elem_func_ in func_:
                                 dep = func_coef[j, func, k].as_independent(elem_func_)[1]
-                                if dep!=1 and dep!=0:
+                                if dep != 1 and dep != 0:
                                     is_linear_ = False
                         else:
                             dep = func_coef[j, func, k].as_independent(func_)[1]
-                            if dep!=1 and dep!=0:
+                            if dep != 1 and dep != 0:
                                 is_linear_ = False
         return is_linear_
 
@@ -1438,7 +1438,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     matching_hints['func_coeff'] = func_coef
     matching_hints['is_linear'] = is_linear
 
-    if len(set(order.values()))==1:
+    if len(set(order.values())) == 1:
         order_eq = list(matching_hints['order'].values())[0]
         if matching_hints['is_linear'] == True:
             if matching_hints['no_of_equation'] == 2:
@@ -1519,15 +1519,15 @@ def check_linear_2eq_order1(eq, func, func_coef):
         for j in Mul.make_args(collect_const(i)):
             if not j.has(t):
                 q = j
-            if q and n==0:
+            if q and n == 0:
                 if ((r['b2']/j - r['b1'])/(r['c1'] - r['c2']/j)) == j:
                     p = 1
-            elif q and n==1:
+            elif q and n == 1:
                 if ((r['b1']/j - r['b2'])/(r['c2'] - r['c1']/j)) == j:
                     p = 2
     # End of condition for type 6
 
-    if r['d1']!=0 or r['d2']!=0:
+    if r['d1'] != 0 or r['d2'] != 0:
         if not r['d1'].has(t) and not r['d2'].has(t):
             if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
                 # Equations for type 2 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)+d1) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t)+d2)
@@ -1589,9 +1589,9 @@ def check_linear_2eq_order2(eq, func, func_coef):
                 const[i] += j
     r['f1'] = const[0]
     r['f2'] = const[1]
-    if r['f1']!=0 or r['f2']!=0:
+    if r['f1'] != 0 or r['f2'] != 0:
         if all(not r[k].has(t) for k in 'a1 a2 d1 d2 e1 e2 f1 f2'.split()) \
-        and r['b1']==r['c1']==r['b2']==r['c2']==0:
+        and r['b1'] == r['c1'] == r['b2'] == r['c2'] == 0:
             return "type2"
 
         elif all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2 d1 d2 e1 e1'.split()):
@@ -1613,25 +1613,25 @@ def check_linear_2eq_order2(eq, func, func_coef):
                 else:
                     q[n] = 1
 
-            if p[0]==1 and p[1]==1 and q[0]==0 and q[1]==0:
+            if p[0] == 1 and p[1] == 1 and q[0] == 0 and q[1] == 0:
                     return "type4"
             else:
                 return
         else:
             return
     else:
-        if r['b1']==r['b2']==r['c1']==r['c2']==0 and all(not r[k].has(t)
+        if r['b1'] == r['b2'] == r['c1'] == r['c2'] == 0 and all(not r[k].has(t)
         for k in 'a1 a2 d1 d2 e1 e2'.split()):
             return "type1"
 
-        elif r['b1']==r['e1']==r['c2']==r['d2']==0 and all(not r[k].has(t)
+        elif r['b1'] == r['e1'] == r['c2'] == r['d2'] == 0 and all(not r[k].has(t)
         for k in 'a1 a2 b2 c1 d1 e2'.split()) and r['c1'] == -r['b2'] and \
         r['d1'] == r['e2']:
             return "type3"
 
-        elif cancel(-r['b2']/r['d2'])==t and cancel(-r['c1']/r['e1'])==t and not \
+        elif cancel(-r['b2']/r['d2']) == t and cancel(-r['c1']/r['e1']) == t and not \
         (r['d2']/r['a2']).has(t) and not (r['e1']/r['a1']).has(t) and \
-        r['b1']==r['d1']==r['c2']==r['e2']==0:
+        r['b1'] == r['d1'] == r['c2'] == r['e2'] == 0:
             return "type5"
 
         elif ((r['a1']/r['d1']).expand()).match((p*(u*t**2+v*t+w)**2).expand()) and not \
@@ -1640,16 +1640,16 @@ def check_linear_2eq_order2(eq, func, func_coef):
             return "type10"
 
         elif not cancel(r['d1']/r['e1']).has(t) and not cancel(r['d2']/r['e2']).has(t) and not \
-        cancel(r['d1']*r['a2']/(r['d2']*r['a1'])).has(t) and r['b1']==r['b2']==r['c1']==r['c2']==0:
+        cancel(r['d1']*r['a2']/(r['d2']*r['a1'])).has(t) and r['b1'] == r['b2'] == r['c1'] == r['c2'] == 0:
             return "type6"
 
         elif not cancel(r['b1']/r['c1']).has(t) and not cancel(r['b2']/r['c2']).has(t) and not \
-        cancel(r['b1']*r['a2']/(r['b2']*r['a1'])).has(t) and r['d1']==r['d2']==r['e1']==r['e2']==0:
+        cancel(r['b1']*r['a2']/(r['b2']*r['a1'])).has(t) and r['d1'] == r['d2'] == r['e1'] == r['e2'] == 0:
             return "type7"
 
-        elif cancel(-r['b2']/r['d2'])==t and cancel(-r['c1']/r['e1'])==t and not \
+        elif cancel(-r['b2']/r['d2']) == t and cancel(-r['c1']/r['e1']) == t and not \
         cancel(r['e1']*r['a2']/(r['d2']*r['a1'])).has(t) and r['e1'].has(t) \
-        and r['b1']==r['d1']==r['c2']==r['e2']==0:
+        and r['b1'] == r['d1'] == r['c2'] == r['e2'] == 0:
             return "type8"
 
         elif (r['b1']/r['a1']).match(a/t) and (r['b2']/r['a2']).match(a/t) and not \
@@ -1658,7 +1658,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
         and not (r['d1']/r['e1']).has(t) and not (r['d2']/r['e2']).has(t):
             return "type9"
 
-        elif -r['b1']/r['d1']==-r['c1']/r['e1']==-r['b2']/r['d2']==-r['c2']/r['e2']==t:
+        elif -r['b1']/r['d1'] == -r['c1']/r['e1'] == -r['b2']/r['d2'] == -r['c2']/r['e2'] == t:
             return "type11"
 
         else:
@@ -1695,7 +1695,7 @@ def check_linear_3eq_order1(eq, func, func_coef):
         return
 
     if all(not r[k].has(t) for k in 'a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3'.split()):
-        if r['c1']==r['d1']==r['d2']==0:
+        if r['c1'] == r['d1'] == r['d2'] == 0:
             return 'type1'
         elif r['c1'] == -r['b2'] and r['d1'] == -r['b3'] and r['d2'] == -r['c3'] \
         and r['b1'] == r['c2'] == r['d3'] == 0:
@@ -1710,8 +1710,8 @@ def check_linear_3eq_order1(eq, func, func_coef):
             if r[k1] == 0:
                 continue
             else:
-                if all(not cancel(r[k1]/r[k]).has(t) for k in 'd1 b2 d2 b3 c3'.split() if r[k]!=0) \
-                and all(not cancel(r[k1]/(r['b1'] - r[k])).has(t) for k in 'b1 c2 d3'.split() if r['b1']!=r[k]):
+                if all(not cancel(r[k1]/r[k]).has(t) for k in 'd1 b2 d2 b3 c3'.split() if r[k] != 0) \
+                and all(not cancel(r[k1]/(r['b1'] - r[k])).has(t) for k in 'b1 c2 d3'.split() if r['b1'] != r[k]):
                     return 'type4'
                 else:
                     break
@@ -1730,7 +1730,7 @@ def check_linear_neq_order1(eq, func, func_coef):
         for j in range(n):
             if (fc[i, func[j], 0]/fc[i, func[i], 1]).has(t):
                 return
-    if len(eq)==3:
+    if len(eq) == 3:
         return 'type6'
     return 'type1'
 
@@ -1837,7 +1837,7 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
         num1, den1 = r1[a].as_numer_denom()
         num2, den2 = r2[b].as_numer_denom()
         num3, den3 = r3[c].as_numer_denom()
-        if solve([num1*u-den1*(v-w), num2*v-den2*(w-u), num3*w-den3*(u-v)], [u, v]):
+        if solve([num1*u - den1*(v - w), num2*v - den2*(w - u), num3*w - den3*(u - v)], [u, v]):
             return 'type1'
     r = eq[0].match(diff(x(t), t) - y(t)*z(t)*f)
     if r:
@@ -1848,7 +1848,7 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
         num1, den1 = r1[a].as_numer_denom()
         num2, den2 = r2[b].as_numer_denom()
         num3, den3 = r3[c].as_numer_denom()
-        if solve([num1*u-den1*(v-w), num2*v-den2*(w-u), num3*w-den3*(u-v)], [u, v]):
+        if solve([num1*u - den1*(v - w), num2*v - den2*(w - u), num3*w - den3*(u - v)], [u, v]):
             return 'type2'
     r = eq[0].match(diff(x(t), t) - (F2-F3))
     if r:
@@ -1963,7 +1963,7 @@ def checksysodesol(eqs, sols, func=None):
                 funcs.append(func_)
         funcs = list(set(funcs))
     if not all(isinstance(func, AppliedUndef) and len(func.args) == 1 for func in funcs)\
-    and len({func.args for func in funcs})!=1:
+    and len({func.args for func in funcs}) != 1:
         raise ValueError("func must be a function of one variable, not %s" % func)
     for sol in sols:
         if len(sol.atoms(AppliedUndef)) != 1:
@@ -2549,13 +2549,13 @@ def __remove_linear_redundancies(expr, Cs):
 
     def _linear(expr):
         if expr.func is Add:
-            xs = [i for i in Cs if expr.count(i)==cnts[i]
+            xs = [i for i in Cs if expr.count(i) == cnts[i]
                 and 0 == expr.diff(i, 2)]
             d = {}
             for x in xs:
                 y = expr.diff(x)
                 if y not in d:
-                    d[y]=[]
+                    d[y] = []
                 d[y].append(x)
             for y in d:
                 if len(d[y]) > 1:
@@ -4108,7 +4108,7 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
         if not isinstance(i, str) and i >= 0:
             chareq += (r[i]*diff(x**symbol, x, i)*x**-symbol).expand()
 
-    for i in range(1, degree(Poly(chareq, symbol))+1):
+    for i in range(1, degree(Poly(chareq, symbol)) + 1):
         eq += chareq.coeff(symbol**i)*diff(f(x), x, i)
 
     if chareq.as_coeff_add(symbol)[0]:
@@ -5205,7 +5205,7 @@ def ode_separable(eq, func, order, match):
     r = match  # {'m1':m1, 'm2':m2, 'y':y}
     u = r.get('hint', f(x))  # get u from separable_reduced else get f(x)
     return Eq(Integral(r['m2']['coeff']*r['m2'][r['y']]/r['m1'][r['y']],
-        (r['y'], None, u)), Integral(-r['m1']['coeff']*r['m1'][x]/
+        (r['y'], None, u)), Integral(-r['m1']['coeff']*r['m1'][x] /
         r['m2'][x], x) + C1)
 
 
@@ -6246,7 +6246,7 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
             if not simplify(pde):
                 return [{xi: Integer(1), eta: etatry.subs(y, func)}]
             xitry = -frac
-            pde = -xitry.diff(x)*h -xitry.diff(y)*h**2 - xitry*hx -hy
+            pde = -xitry.diff(x)*h - xitry.diff(y)*h**2 - xitry*hx - hy
             if not simplify(expand(pde)):
                 return [{xi: xitry.subs(y, func), eta: Integer(1)}]
 
@@ -6369,7 +6369,7 @@ def lie_heuristic_linear(match, comp=False):
     symbols = numbered_symbols("c", cls=Dummy)
     symlist = [next(symbols) for i in islice(symbols, 6)]
     C0, C1, C2, C3, C4, C5 = symlist
-    pde = C3 + (C4 - C0)*h -(C0*x + C1*y + C2)*hx - (C3*x + C4*y + C5)*hy - C1*h**2
+    pde = C3 + (C4 - C0)*h - (C0*x + C1*y + C2)*hx - (C3*x + C4*y + C5)*hy - C1*h**2
     pde, denom = pde.as_numer_denom()
     pde = powsimp(expand(pde))
     if pde.is_Add:
@@ -6560,13 +6560,13 @@ def _linear_2eq_order1_type1(x, y, t, r):
             gsol1 = r['b']*exp(sigma*t)*(C1*sin(beta*t)+C2*cos(beta*t))
             gsol2 = exp(sigma*t)*(((C1*(sigma-r['a'])-C2*beta)*sin(beta*t)+(C1*beta+(sigma-r['a'])*C2)*cos(beta*t)))
         if D == 0:
-            if r['a']!=r['d']:
+            if r['a'] != r['d']:
                 gsol1 = 2*r['b']*(C1 + C2/(r['a']-r['d'])+C2*t)*exp((r['a']+r['d'])*t/2)
                 gsol2 = ((r['d']-r['a'])*C1+C2+(r['d']-r['a'])*C2*t)*exp((r['a']+r['d'])*t/2)
-            if r['a']==r['d'] and r['a']!=0 and r['b']==0:
+            if r['a'] == r['d'] and r['a'] != 0 and r['b'] == 0:
                 gsol1 = C1*exp(r['a']*t)
                 gsol2 = (r['c']*C1*t+C2)*exp(r['a']*t)
-            if r['a']==r['d'] and r['a']!=0 and r['c']==0:
+            if r['a'] == r['d'] and r['a'] != 0 and r['c'] == 0:
                 gsol1 = (r['b']*C1*t+C2)*exp(r['a']*t)
                 gsol2 = C1*exp(r['a']*t)
     elif (r['a']*r['d'] - r['b']*r['c']) == 0 and (r['a']**2+r['b']**2) > 0:
@@ -6753,12 +6753,12 @@ def _linear_2eq_order1_type6(x, y, t, r):
         for j in Mul.make_args(collect_const(i)):
             if not j.has(t):
                 q = j
-            if q!=0 and n==0:
+            if q != 0 and n == 0:
                 if ((r['c']/j - r['a'])/(r['b'] - r['d']/j)) == j:
                     p = 1
                     s = j
                     break
-            if q!=0 and n==1:
+            if q != 0 and n == 1:
                 if ((r['a']/j - r['c'])/(r['d'] - r['b']/j)) == j:
                     p = 2
                     s = j
@@ -6768,7 +6768,7 @@ def _linear_2eq_order1_type6(x, y, t, r):
         hint1 = classify_ode(equ)[1]
         sol1 = dsolve(equ, hint=hint1+'_Integral').rhs
         sol2 = s*sol1 + C1*exp(-s*Integral(r['b'] - r['d']/s, t))
-    elif p ==2:
+    elif p == 2:
         equ = diff(y(t), t) - r['c']*y(t) - r['d']*s*y(t) + C1*exp(-s*Integral(r['d'] - r['b']/s, t))
         hint1 = classify_ode(equ)[1]
         sol2 = dsolve(equ, hint=hint1+'_Integral').rhs
@@ -7722,8 +7722,8 @@ def _linear_3eq_order1_type4(x, y, z, t, r):
     a1, g = div(r['a1'], f)
     b2 = div(r['b2'], f)[0]
     c3 = div(r['c3'], f)[0]
-    trans_eq = (diff(u(t), t)-a1*u(t)-a2*v(t)-a3*w(t), diff(v(t), t)-b1*u(t)-
-    b2*v(t)-b3*w(t), diff(w(t), t)-c1*u(t)-c2*v(t)-c3*w(t))
+    trans_eq = (diff(u(t), t) - a1*u(t) - a2*v(t) - a3*w(t), diff(v(t), t) - b1*u(t) -
+                b2*v(t) - b3*w(t), diff(w(t), t) - c1*u(t) - c2*v(t) - c3*w(t))
     sol = dsolve(trans_eq)
     sol1 = exp(Integral(g, t))*((sol[0].rhs).subs(t, Integral(f, t)))
     sol2 = exp(Integral(g, t))*((sol[1].rhs).subs(t, Integral(f, t)))
@@ -7824,8 +7824,8 @@ def _linear_neq_order1_type1(match_):
         if evects[0] not in conjugate_root:
             # If number of column of an eigenvector is not equal to the multiplicity
             # of its eigenvalue then the legt eigenvectors are calculated
-            if len(evects[2])!=evects[1]:
-                var_mat = Matrix(n, 1, lambda i, j: Symbol('x'+str(i)))
+            if len(evects[2]) != evects[1]:
+                var_mat = Matrix(n, 1, lambda i, j: Symbol('x' + str(i)))
                 Mnew = (M - evects[0]*eye(evects[2][-1].rows))*var_mat
                 w = [0 for i in range(evects[1])]
                 w[0] = evects[2][-1]
@@ -7914,7 +7914,7 @@ def _nonlinear_2eq_order1_type1(x, y, t, eq):
     g = ((diff(y(t), t) - eq[1])/r[f]).subs(y(t), v)
     F = r[f].subs(x(t), u).subs(y(t), v)
     n = r[n]
-    if n!=1:
+    if n != 1:
         phi = (C1 + (1-n)*Integral(1/g, v))**(1/(1-n))
     else:
         phi = C1*exp(Integral(1/g, v))
@@ -8228,7 +8228,7 @@ def _nonlinear_3eq_order1_type2(x, y, z, t, eq):
     n1, d1 = r[p].as_numer_denom()
     n2, d2 = r[q].as_numer_denom()
     n3, d3 = r[s].as_numer_denom()
-    val = solve([n1*u-d1*v+d1*w, d2*u+n2*v-d2*w, -d3*u+d3*v+n3*w], [u, v])
+    val = solve([n1*u - d1*v + d1*w, d2*u + n2*v - d2*w, -d3*u + d3*v + n3*w], [u, v])
     vals = [val[v], val[u]]
     c = lcm(vals[0].as_numer_denom()[1], vals[1].as_numer_denom()[1])
     a = vals[0].subs(w, c)
@@ -8240,17 +8240,17 @@ def _nonlinear_3eq_order1_type2(x, y, z, t, eq):
     x_z = sqrt(((b*C1-C2) - c*(b-c)*z(t)**2)/(a*(b-a)))
     y_z = sqrt(((a*C1-C2) - c*(a-c)*z(t)**2)/(b*(a-b)))
     try:
-        sol1 = dsolve(a*diff(x(t), t) - (b-c)*y_x*z_x*r[f]).rhs
+        sol1 = dsolve(a*diff(x(t), t) - (b - c)*y_x*z_x*r[f]).rhs
     except:
-        sol1 = dsolve(a*diff(x(t), t) - (b-c)*y_x*z_x*r[f], hint='separable_Integral')
+        sol1 = dsolve(a*diff(x(t), t) - (b - c)*y_x*z_x*r[f], hint='separable_Integral')
     try:
-        sol2 = dsolve(b*diff(y(t), t) - (c-a)*z_y*x_y*r[f]).rhs
+        sol2 = dsolve(b*diff(y(t), t) - (c - a)*z_y*x_y*r[f]).rhs
     except:
-        sol2 = dsolve(b*diff(y(t), t) - (c-a)*z_y*x_y*r[f], hint='separable_Integral')
+        sol2 = dsolve(b*diff(y(t), t) - (c - a)*z_y*x_y*r[f], hint='separable_Integral')
     try:
-        sol3 = dsolve(c*diff(z(t), t) - (a-b)*x_z*y_z*r[f]).rhs
+        sol3 = dsolve(c*diff(z(t), t) - (a - b)*x_z*y_z*r[f]).rhs
     except:
-        sol3 = dsolve(c*diff(z(t), t) - (a-b)*x_z*y_z*r[f], hint='separable_Integral')
+        sol3 = dsolve(c*diff(z(t), t) - (a - b)*x_z*y_z*r[f], hint='separable_Integral')
     return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
 
 
@@ -8288,7 +8288,7 @@ def _nonlinear_3eq_order1_type3(x, y, z, t, eq):
     q = Wild('q', exclude=[x(t), y(t), z(t), t])
     s = Wild('s', exclude=[x(t), y(t), z(t), t])
     F1, F2, F3 = symbols('F1, F2, F3', cls=Wild)
-    r1 = (diff(x(t), t) - eq[0]).match(F2-F3)
+    r1 = (diff(x(t), t) - eq[0]).match(F2 - F3)
     r = collect_const(r1[F2]).match(s*F2)
     r.update(collect_const(r1[F3]).match(q*F3))
     if eq[1].has(r[F2]) and not eq[1].has(r[F3]):
@@ -8304,12 +8304,12 @@ def _nonlinear_3eq_order1_type3(x, y, z, t, eq):
     z_xy = (C1-a*u-b*v)/c
     y_zx = (C1-a*u-c*w)/b
     x_yz = (C1-b*v-c*w)/a
-    y_x = dsolve(diff(v(u), u) - ((a*F3-c*F1)/(c*F2-b*F3)).subs(w, z_xy).subs(v, v(u))).rhs
-    z_x = dsolve(diff(w(u), u) - ((b*F1-a*F2)/(c*F2-b*F3)).subs(v, y_zx).subs(w, w(u))).rhs
-    z_y = dsolve(diff(w(v), v) - ((b*F1-a*F2)/(a*F3-c*F1)).subs(u, x_yz).subs(w, w(v))).rhs
-    x_y = dsolve(diff(u(v), v) - ((c*F2-b*F3)/(a*F3-c*F1)).subs(w, z_xy).subs(u, u(v))).rhs
-    y_z = dsolve(diff(v(w), w) - ((a*F3-c*F1)/(b*F1-a*F2)).subs(u, x_yz).subs(v, v(w))).rhs
-    x_z = dsolve(diff(u(w), w) - ((c*F2-b*F3)/(b*F1-a*F2)).subs(v, y_zx).subs(u, u(w))).rhs
+    y_x = dsolve(diff(v(u), u) - ((a*F3 - c*F1)/(c*F2 - b*F3)).subs(w, z_xy).subs(v, v(u))).rhs
+    z_x = dsolve(diff(w(u), u) - ((b*F1 - a*F2)/(c*F2 - b*F3)).subs(v, y_zx).subs(w, w(u))).rhs
+    z_y = dsolve(diff(w(v), v) - ((b*F1 - a*F2)/(a*F3 - c*F1)).subs(u, x_yz).subs(w, w(v))).rhs
+    x_y = dsolve(diff(u(v), v) - ((c*F2 - b*F3)/(a*F3 - c*F1)).subs(w, z_xy).subs(u, u(v))).rhs
+    y_z = dsolve(diff(v(w), w) - ((a*F3 - c*F1)/(b*F1 - a*F2)).subs(u, x_yz).subs(v, v(w))).rhs
+    x_z = dsolve(diff(u(w), w) - ((c*F2 - b*F3)/(b*F1 - a*F2)).subs(v, y_zx).subs(u, u(w))).rhs
     sol1 = dsolve(diff(u(t), t) - (c*F2 - b*F3).subs(v, y_x).subs(w, z_x).subs(u, u(t))).rhs
     sol2 = dsolve(diff(v(t), t) - (a*F3 - c*F1).subs(u, x_y).subs(w, z_y).subs(v, v(t))).rhs
     sol3 = dsolve(diff(w(t), t) - (b*F1 - a*F2).subs(u, x_z).subs(v, y_z).subs(w, w(t))).rhs
@@ -8419,13 +8419,13 @@ def _nonlinear_3eq_order1_type5(x, y, t, eq):
     x_yz = (C1*v**-b*w**-c)**-a
     y_zx = (C1*w**-c*u**-a)**-b
     z_xy = (C1*u**-a*v**-b)**-c
-    y_x = dsolve(diff(v(u), u) - ((v*(a*F3-c*F1))/(u*(c*F2-b*F3))).subs(w, z_xy).subs(v, v(u))).rhs
-    z_x = dsolve(diff(w(u), u) - ((w*(b*F1-a*F2))/(u*(c*F2-b*F3))).subs(v, y_zx).subs(w, w(u))).rhs
-    z_y = dsolve(diff(w(v), v) - ((w*(b*F1-a*F2))/(v*(a*F3-c*F1))).subs(u, x_yz).subs(w, w(v))).rhs
-    x_y = dsolve(diff(u(v), v) - ((u*(c*F2-b*F3))/(v*(a*F3-c*F1))).subs(w, z_xy).subs(u, u(v))).rhs
-    y_z = dsolve(diff(v(w), w) - ((v*(a*F3-c*F1))/(w*(b*F1-a*F2))).subs(u, x_yz).subs(v, v(w))).rhs
-    x_z = dsolve(diff(u(w), w) - ((u*(c*F2-b*F3))/(w*(b*F1-a*F2))).subs(v, y_zx).subs(u, u(w))).rhs
-    sol1 = dsolve(diff(u(t), t) - (u*(c*F2-b*F3)).subs(v, y_x).subs(w, z_x).subs(u, u(t))).rhs
-    sol2 = dsolve(diff(v(t), t) - (v*(a*F3-c*F1)).subs(u, x_y).subs(w, z_y).subs(v, v(t))).rhs
-    sol3 = dsolve(diff(w(t), t) - (w*(b*F1-a*F2)).subs(u, x_z).subs(v, y_z).subs(w, w(t))).rhs
+    y_x = dsolve(diff(v(u), u) - ((v*(a*F3 - c*F1))/(u*(c*F2 - b*F3))).subs(w, z_xy).subs(v, v(u))).rhs
+    z_x = dsolve(diff(w(u), u) - ((w*(b*F1 - a*F2))/(u*(c*F2 - b*F3))).subs(v, y_zx).subs(w, w(u))).rhs
+    z_y = dsolve(diff(w(v), v) - ((w*(b*F1 - a*F2))/(v*(a*F3 - c*F1))).subs(u, x_yz).subs(w, w(v))).rhs
+    x_y = dsolve(diff(u(v), v) - ((u*(c*F2 - b*F3))/(v*(a*F3 - c*F1))).subs(w, z_xy).subs(u, u(v))).rhs
+    y_z = dsolve(diff(v(w), w) - ((v*(a*F3 - c*F1))/(w*(b*F1 - a*F2))).subs(u, x_yz).subs(v, v(w))).rhs
+    x_z = dsolve(diff(u(w), w) - ((u*(c*F2 - b*F3))/(w*(b*F1 - a*F2))).subs(v, y_zx).subs(u, u(w))).rhs
+    sol1 = dsolve(diff(u(t), t) - (u*(c*F2 - b*F3)).subs(v, y_x).subs(w, z_x).subs(u, u(t))).rhs
+    sol2 = dsolve(diff(v(t), t) - (v*(a*F3 - c*F1)).subs(u, x_y).subs(w, z_y).subs(v, v(t))).rhs
+    sol3 = dsolve(diff(w(t), t) - (w*(b*F1 - a*F2)).subs(u, x_z).subs(v, y_z).subs(w, w(t))).rhs
     return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]

@@ -2770,7 +2770,7 @@ def _merge(arr, temp, left, mid, right):
             temp[k] = arr[j]
             k += 1
             j += 1
-            inv_count += (mid -i)
+            inv_count += (mid - i)
     while i < mid:
         temp[k] = arr[i]
         k += 1

@@ -342,7 +342,7 @@ def test_csch():
 def test_csch_series():
     x = Symbol('x')
     assert csch(x).series(x, 0, 10) == \
-       1/ x - x/6 + 7*x**3/360 - 31*x**5/15120 + 127*x**7/604800 \
+       1/x - x/6 + 7*x**3/360 - 31*x**5/15120 + 127*x**7/604800 \
           - 73*x**9/3421440 + O(x**10)
 
 
@@ -426,12 +426,12 @@ def test_asinh():
     assert asinh(-oo) == -oo
 
     assert asinh(I*oo) == oo
-    assert asinh(-I *oo) == -oo
+    assert asinh(-I*oo) == -oo
 
     assert asinh(zoo) == zoo
 
-    assert asinh(I *(sqrt(3) - 1)/(2**Rational(3, 2))) == pi*I/12
-    assert asinh(-I *(sqrt(3) - 1)/(2**Rational(3, 2))) == -pi*I/12
+    assert asinh(I*(sqrt(3) - 1)/2**Rational(3, 2)) == pi*I/12
+    assert asinh(-I*(sqrt(3) - 1)/2**Rational(3, 2)) == -pi*I/12
 
     assert asinh(I*(sqrt(5) - 1)/4) == pi*I/10
     assert asinh(-I*(sqrt(5) - 1)/4) == -pi*I/10
@@ -642,11 +642,11 @@ def test_complex():
         assert coth(z).expand(complex=True, deep=deep) == sinh(a)*cosh(
             a)/(sin(b)**2 + sinh(a)**2) - I*sin(b)*cos(b)/(sin(b)**2 + sinh(a)**2)
         assert csch(z).expand(complex=True, deep=deep) == cos(b) * sinh(a) / (sin(b)**2
-            *cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
-            *cosh(a)**2 + cos(b)**2 * sinh(a)**2)
+            * cosh(a)**2 + cos(b)**2 * sinh(a)**2) - I*sin(b) * cosh(a) / (sin(b)**2
+            * cosh(a)**2 + cos(b)**2 * sinh(a)**2)
         assert sech(z).expand(complex=True, deep=deep) == cos(b) * cosh(a) / (sin(b)**2
-            *sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
-            *sinh(a)**2 + cos(b)**2 * cosh(a)**2)
+            * sinh(a)**2 + cos(b)**2 * cosh(a)**2) - I*sin(b) * sinh(a) / (sin(b)**2
+            * sinh(a)**2 + cos(b)**2 * cosh(a)**2)
 
 
 def test_complex_2899():

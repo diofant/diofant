@@ -217,19 +217,19 @@ def test_deltaproduct_mul_add_x_kd_add_y_kd():
         (x + KD(i, k))*(y + KD(i, 3))
     assert dp((x + KD(i, k))*(y + KD(i, j)), (j, 1, k)) == \
         ((x + KD(i, k))*y)**k + Piecewise(
-            (((x + KD(i, k))*y)**(i - 1)*(x + KD(i, k))*
+            (((x + KD(i, k))*y)**(i - 1)*(x + KD(i, k)) *
              ((x + KD(i, k))*y)**(-i + k), And(Integer(1) <= i, i <= k)),
             (0, True)
     )
     assert dp((x + KD(i, k))*(y + KD(i, j)), (j, k, 3)) == \
         ((x + KD(i, k))*y)**(4 - k) + Piecewise(
-            (((x + KD(i, k))*y)**(i - k)*(x + KD(i, k))*
+            (((x + KD(i, k))*y)**(i - k)*(x + KD(i, k)) *
              ((x + KD(i, k))*y)**(-i + 3), And(k <= i, i <= 3)),
             (0, True)
     )
     assert dp((x + KD(i, k))*(y + KD(i, j)), (j, k, l)) == \
         ((x + KD(i, k))*y)**(-k + l + 1) + Piecewise(
-            (((x + KD(i, k))*y)**(i - k)*(x + KD(i, k))*
+            (((x + KD(i, k))*y)**(i - k)*(x + KD(i, k)) *
              ((x + KD(i, k))*y)**(-i + l), And(k <= i, i <= l)),
             (0, True)
     )

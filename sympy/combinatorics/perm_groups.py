@@ -489,7 +489,7 @@ class PermutationGroup(Basic):
         # size of orbit of base[pos] under the stabilizer we seek to insert
         # in the stabilizer chain at position pos + 1
         size = len(basic_orbits[pos])*len(basic_orbits[pos + 1]) \
-            //len(_orbit(degree, strong_gens_distr[pos], base[pos + 1]))
+            // len(_orbit(degree, strong_gens_distr[pos], base[pos + 1]))
         # initialize the wanted stabilizer by a subgroup
         if pos + 2 > base_len - 1:
             T = []

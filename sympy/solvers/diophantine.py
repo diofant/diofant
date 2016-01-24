@@ -615,10 +615,10 @@ def _diop_quadratic(var, coeff, t):
 
             for d in div:
                 if divisible(int(d - E), int(B)):
-                    x0  = (d - E) // B
+                    x0  = (d - E)//B
                     if divisible(int(D*E - B*F), int(d)):
-                        if divisible(int((D*E - B*F)// d - D), int(B)):
-                            y0 = ((D*E - B*F) // d - D) // B
+                        if divisible(int((D*E - B*F)//d - D), int(B)):
+                            y0 = ((D*E - B*F)//d - D)//B
                             l.add((x0, y0))
 
     # (3) Parabolic case: B**2 - 4*A*C = 0
@@ -771,8 +771,8 @@ def _diop_quadratic(var, coeff, t):
                         if is_solution_quad(var, coeff, x, y):
                             done = True
 
-                            x_n = ( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ 2
-                            y_n = ( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ (2*sqrt(D))
+                            x_n = ((X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L))/2
+                            y_n = ((X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L))/(2*sqrt(D))
 
                             x_n = _mexpand(x_n)
                             y_n = _mexpand(y_n)
@@ -2216,7 +2216,7 @@ def gaussian_reduce(w, a, b):
 
     while norm(u, w, a, b) > norm(v, w, a, b):
         k = dot(u, v, w, a, b) // dot(v, v, w, a, b)
-        u, v = v, (u[0]- k*v[0], u[1]- k*v[1])
+        u, v = v, (u[0] - k*v[0], u[1] - k*v[1])
 
     u, v = v, u
 

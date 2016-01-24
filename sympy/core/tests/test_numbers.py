@@ -836,9 +836,9 @@ def test_powers_Integer():
     """Test Integer._eval_power"""
     # check infinity
     assert Integer(1) ** S.Infinity == S.NaN
-    assert Integer(-1)** S.Infinity == S.NaN
+    assert Integer(-1) ** S.Infinity == S.NaN
     assert Integer(2) ** S.Infinity == S.Infinity
-    assert Integer(-2)** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
+    assert Integer(-2) ** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
     assert Integer(0) ** S.Infinity == 0
 
     # check Nan

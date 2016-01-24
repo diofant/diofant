@@ -281,7 +281,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
     else:
         dc = cQ.degree(DE.t)
 
-    alpha = cancel(-b.as_poly(DE.t).LC().as_expr()/
+    alpha = cancel(-b.as_poly(DE.t).LC().as_expr() /
         a.as_poly(DE.t).LC().as_expr())
 
     if case == 'base':

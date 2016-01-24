@@ -1176,7 +1176,7 @@ def test_issue_5901():
                 h(a), g(a), set=True) == \
         ([g(a)], {
         (-sqrt(h(a)**2*f(a)**2 + G)/f(a),),
-        (sqrt(h(a)**2*f(a)**2+ G)/f(a),)})
+        (sqrt(h(a)**2*f(a)**2 + G)/f(a),)})
     args = [f(x).diff(x, 2)*(f(x) + g(x)) - g(x)**2 + 2, f(x), g(x)]
     assert set(solve(*args)) == \
         {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))}

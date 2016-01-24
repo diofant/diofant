@@ -819,7 +819,7 @@ class PrettyPrinter(Printer):
                                 strs[0] += parts[0] + ' + '
                             else:
                                 strs[j] += parts[j] + ' '*(lengths[-1] -
-                                                           len(parts[j])+
+                                                           len(parts[j]) +
                                                            3)
                         else:
                             if j >= len(strs):

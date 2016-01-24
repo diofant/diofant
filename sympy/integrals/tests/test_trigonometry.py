@@ -60,11 +60,11 @@ def test_trigintegrate_even():
         x/8 - sin(2*x)*cos(2*x)/16
 
     assert trigintegrate(sin(x)**4 * cos(x)**2, x) == \
-        x/16 - sin(x) *cos(x)/16 - sin(x)**3*cos(x)/24 + \
+        x/16 - sin(x) * cos(x)/16 - sin(x)**3*cos(x)/24 + \
         sin(x)**5*cos(x)/6
 
     assert trigintegrate(sin(x)**2 * cos(x)**4, x) == \
-        x/16 + cos(x) *sin(x)/16 + cos(x)**3*sin(x)/24 - \
+        x/16 + cos(x) * sin(x)/16 + cos(x)**3*sin(x)/24 - \
         cos(x)**5*sin(x)/6
 
     assert trigintegrate(sin(x)**(-4), x) == -2*cos(x)/(3*sin(x)) \

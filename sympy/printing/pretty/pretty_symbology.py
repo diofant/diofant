@@ -547,7 +547,7 @@ def pretty_symbol(symb_name):
         if gG is not None:
             return gG
         for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
-            if s.lower().endswith(key) and len(s)>len(key):
+            if s.lower().endswith(key) and len(s) > len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
 

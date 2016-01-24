@@ -12,7 +12,7 @@ from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
 from sympy.utilities import cartes
 
 
-A, B, C, D= symbols('A,B,C,D')
+A, B, C, D = symbols('A,B,C,D')
 
 
 def test_overloading():
@@ -659,7 +659,7 @@ def test_multivariate_bool_as_set():
 
 def test_all_or_nothing():
     x = symbols('x', extended_real=True)
-    args = x >=- oo, x <= oo
+    args = x >= - oo, x <= oo
     v = And(*args)
     if v.func is And:
         assert len(v.args) == len(args) - args.count(S.true)

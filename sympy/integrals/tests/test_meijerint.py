@@ -123,7 +123,7 @@ def test_meijerint():
     from sympy import symbols, expand, arg
     s, t, mu = symbols('s t mu', extended_real=True)
     assert integrate(meijerg([], [], [0], [], s*t)
-                     *meijerg([], [], [mu/2], [-mu/2], t**2/4),
+                     * meijerg([], [], [mu/2], [-mu/2], t**2/4),
                      (t, 0, oo)).is_Piecewise
     s = symbols('s', positive=True)
     assert integrate(x**s*meijerg([[], []], [[0], []], x), (x, 0, oo)) == \
@@ -191,10 +191,10 @@ def test_meijerint():
     a, b, s = symbols('a b s')
     from sympy import And, re
     assert meijerint_definite(meijerg([], [], [a/2], [-a/2], x/4)
-                  *meijerg([], [], [b/2], [-b/2], x/4)*x**(s - 1), x, 0, oo) == \
+                  * meijerg([], [], [b/2], [-b/2], x/4)*x**(s - 1), x, 0, oo) == \
         (4*2**(2*s - 2)*gamma(-2*s + 1)*gamma(a/2 + b/2 + s)
-         /(gamma(-a/2 + b/2 - s + 1)*gamma(a/2 - b/2 - s + 1)
-           *gamma(a/2 + b/2 - s + 1)),
+         / (gamma(-a/2 + b/2 - s + 1)*gamma(a/2 - b/2 - s + 1)
+           * gamma(a/2 + b/2 - s + 1)),
             And(0 < -2*re(4*s) + 8, 0 < re(a/2 + b/2 + s), re(2*s) < 1))
 
     # test a bug
@@ -235,7 +235,7 @@ def test_bessel():
 
     assert simplify(integrate(sin(z*x)*(x**2 - 1)**(-(y + Rational(1, 2))),
                               (x, 1, oo), meijerg=True, conds='none')
-                    *2/((z/2)**y*sqrt(pi)*gamma(Rational(1, 2) - y))) == \
+                    * 2/((z/2)**y*sqrt(pi)*gamma(Rational(1, 2) - y))) == \
         besselj(y, z)
 
     # Werner Rosenheinrich
@@ -406,14 +406,14 @@ def test_probability():
     # Beta' distribution
     alpha, beta = symbols('alpha beta', positive=True)
     betadist = x**(alpha - 1)*(1 + x)**(-alpha - beta)*gamma(alpha + beta) \
-        /gamma(alpha)/gamma(beta)
+        / gamma(alpha)/gamma(beta)
     assert integrate(betadist, (x, 0, oo), meijerg=True) == 1
     i = integrate(x*betadist, (x, 0, oo), meijerg=True, conds='separate')
     assert (combsimp(i[0]), i[1]) == (alpha/(beta - 1), 1 < beta)
     j = integrate(x**2*betadist, (x, 0, oo), meijerg=True, conds='separate')
     assert j[1] == (1 < beta - 1)
     assert combsimp(j[0] - i[0]**2) == (alpha + beta - 1)*alpha \
-        /(beta - 2)/(beta - 1)**2
+        / (beta - 2)/(beta - 1)**2
 
     # Beta distribution
     # NOTE: this is evaluated using antiderivatives. It also tests that
@@ -462,7 +462,7 @@ def test_probability():
     # F-distribution
     d1, d2 = symbols('d1 d2', positive=True)
     f = sqrt(((d1*x)**d1 * d2**d2)/(d1*x + d2)**(d1 + d2))/x \
-        /gamma(d1/2)/gamma(d2/2)*gamma((d1 + d2)/2)
+        / gamma(d1/2)/gamma(d2/2)*gamma((d1 + d2)/2)
     assert simplify(integrate(f, (x, 0, oo), meijerg=True)) == 1
     # TODO conditions are a mess
     assert simplify(integrate(x*f, (x, 0, oo), meijerg=True, conds='none')
@@ -491,7 +491,7 @@ def test_probability():
     # higher moments oo
 
     # log-logistic
-    distn = (beta/alpha)*x**(beta - 1)/alpha**(beta - 1)/ \
+    distn = (beta/alpha)*x**(beta - 1)/alpha**(beta - 1) / \
         (1 + x**beta/alpha**beta)**2
     assert simplify(integrate(distn, (x, 0, oo))) == 1
     # NOTE the conditions are a mess, but correctly state beta > 1

@@ -638,7 +638,7 @@ def _denest_pow(eq):
         return Pow(polars[0][0], polars[0][1]*e)*powdenest(Mul(*nonpolars)**e)
     elif polars:
         return Mul(*[powdenest(bb**(ee*e)) for (bb, ee) in polars]) \
-            *powdenest(Mul(*nonpolars)**e)
+            * powdenest(Mul(*nonpolars)**e)
 
     if b.is_Integer:
         # use log to see if there is a power here

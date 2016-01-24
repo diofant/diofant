@@ -323,7 +323,7 @@ class sin(TrigonometricFunction):
         if arg.func is log:
             I = S.ImaginaryUnit
             x = arg.args[0]
-            return I*x**-I / 2 - I*x**I /2
+            return I*x**-I / 2 - I*x**I / 2
 
     def _eval_rewrite_as_cos(self, arg):
         return -cos(arg + S.Pi/2)
@@ -679,7 +679,7 @@ class cos(TrigonometricFunction):
             5: (sqrt(5) + 1)/4,
             17: sqrt((15 + sqrt(17))/32 + sqrt(2)*(sqrt(17 - sqrt(17)) +
                 sqrt(sqrt(2)*(-8*sqrt(17 + sqrt(17)) - (1 - sqrt(17))
-                *sqrt(17 - sqrt(17))) + 6*sqrt(17) + 34))/32)
+                * sqrt(17 - sqrt(17))) + 6*sqrt(17) + 34))/32)
             # 65537 and 257 are the only other known Fermat primes
             # Please add if you would like them
         }
@@ -1309,7 +1309,7 @@ class csc(ReciprocalTrigonometricFunction):
         else:
             x = sympify(x)
             k = n//2 + 1
-            return ((-1)**(k - 1)*2*(2**(2*k - 1) - 1)*
+            return ((-1)**(k - 1)*2*(2**(2*k - 1) - 1) *
                     bernoulli(2*k)*x**(2*k - 1)/factorial(2*k))
 
 
@@ -2011,7 +2011,7 @@ class acot(InverseTrigonometricFunction):
             elif arg is S.NegativeInfinity:
                 return S.Zero
             elif arg is S.Zero:
-                return S.Pi/ 2
+                return S.Pi / 2
             elif arg is S.One:
                 return S.Pi / 4
             elif arg is S.NegativeOne:
@@ -2089,7 +2089,7 @@ class acot(InverseTrigonometricFunction):
         return cot
 
     def _eval_rewrite_as_asin(self, arg):
-        return (arg*sqrt(1/arg**2)*
+        return (arg*sqrt(1/arg**2) *
                 (S.Pi/2 - asin(sqrt(-arg**2)/sqrt(-arg**2 - 1))))
 
     def _eval_rewrite_as_acos(self, arg):

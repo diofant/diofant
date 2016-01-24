@@ -308,7 +308,7 @@ def test_evalf_divergent_series():
 
 def test_evalf_product():
     assert Product(n, (n, 1, 10)).evalf() == 3628800.
-    assert Product(1 - S.Half**2/n**2, (n, 1, oo)).evalf(5)==0.63662
+    assert Product(1 - S.Half**2/n**2, (n, 1, oo)).evalf(5) == 0.63662
     assert Product(n, (n, -1, 3)).evalf() == 0
 
 
@@ -387,7 +387,7 @@ def test_subs():
 def test_issue_4956_5204():
     # issue 4956
     v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
-         27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I)/
+         27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
          (-2511*2**Rational(2, 3)*3**Rational(1, 3) + (29*18**Rational(1, 3) +
          9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
          87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))

@@ -147,7 +147,7 @@ def test_assemble_partfrac_list():
 
 def test_noncommutative_pseudomultivariate():
     class foo(Expr):
-        is_commutative=False
+        is_commutative = False
     e = x/(x + x*y)
     c = 1/(1 + y)
     assert apart(e + foo(e)) == c + foo(c)

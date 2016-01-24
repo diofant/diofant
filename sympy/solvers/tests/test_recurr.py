@@ -85,7 +85,7 @@ def recurrence_term(c, f):
 
 def test_rsolve_bulk():
     """Some bulk-generated tests."""
-    funcs = [ n, n + 1, n**2, n**3, n**4, n + n**2, 27*n + 52*n**2 - 3*
+    funcs = [ n, n + 1, n**2, n**3, n**4, n + n**2, 27*n + 52*n**2 - 3 *
         n**3 + 12*n**4 - 52*n**5 ]
     coeffs = [ [-2, 1], [-2, -1, 1], [-1, 1, 1, -1, 1], [-n, 1], [n**2 -
         n + 12, 1] ]

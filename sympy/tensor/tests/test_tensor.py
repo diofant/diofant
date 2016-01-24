@@ -367,7 +367,7 @@ def test_riemann_invariants():
     # T_c = R^{d0 d1 d2 d3} * R_{d0 d1}^{d4 d5} * R_{d2 d3}^{d6 d7} *
     # R_{d4 d5}^{d8 d9} * R_{d6 d7}^{d10 d11} * R_{d8 d9 d10 d11}
 
-    t = R(-d11, d1, -d0, d5)*R(d6, d4, d0, -d5)*R(-d7, -d2, -d8, -d9)* \
+    t = R(-d11, d1, -d0, d5)*R(d6, d4, d0, -d5)*R(-d7, -d2, -d8, -d9) * \
         R(-d10, -d3, -d6, -d4)*R(d2, d7, d11, -d1)*R(d8, d9, d3, d10)
     tc = t.canon_bp()
     assert str(tc) == 'R(L_0, L_1, L_2, L_3)*R(-L_0, -L_1, L_4, L_5)*R(-L_2, -L_3, L_6, L_7)*R(-L_4, -L_5, L_8, L_9)*R(-L_6, -L_7, L_10, L_11)*R(-L_8, -L_9, -L_10, -L_11)'
@@ -430,7 +430,7 @@ def test_canonicalize2():
     # eq.(6.60)
     # t = A(i0,i1,i2)*A(-i1,i3,i4)*A(-i2,i5,i6)*A(-i3,i7,i8)*A(-i6,-i7,i9)*
     #    A(-i8,i10,i13)*A(-i5,-i10,i11)*A(-i4,-i11,i12)*A(-i3,-i12,i14)
-    t = A(i0, i1, i2)*A(-i1, i3, i4)*A(-i2, i5, i6)*A(-i3, i7, i8)*A(-i6, -i7, i9)*\
+    t = A(i0, i1, i2)*A(-i1, i3, i4)*A(-i2, i5, i6)*A(-i3, i7, i8)*A(-i6, -i7, i9) *\
         A(-i8, i10, i13)*A(-i5, -i10, i11)*A(-i4, -i11, i12)*A(-i9, -i12, i14)
     t1 = t.canon_bp()
     assert t1 == 0

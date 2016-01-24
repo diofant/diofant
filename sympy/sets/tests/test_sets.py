@@ -601,7 +601,7 @@ def test_product_basic():
     assert 0 not in square
     assert (H, T) in coin ** 2
     assert (.5, .5, .5) in square * unit_line
-    assert (H, 3, 3) in coin * d6* d6
+    assert (H, 3, 3) in coin*d6*d6
     HH, TT = sympify(H), sympify(T)
     assert set(coin**2) == {(HH, HH), (HH, TT), (TT, HH), (TT, TT)}
 

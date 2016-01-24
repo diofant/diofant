@@ -1543,7 +1543,7 @@ def _rewrite_single(f, x, recursive=True):
         res += [(c, 0, meijerg(g.an, g.aother, g.bm, g.bother,
                                unpolarify(polarify(
                                    a, lift=True), exponents_only=True)
-                               *x**b))]
+                               * x**b))]
     _debug('Recursive Mellin transform worked:', g)
     return res, True
 
@@ -1809,7 +1809,7 @@ def meijerint_definite(f, x, a, b):
                 if (a - split >= 0) == True:
                     _debug('Trying x -> x + %s' % split)
                     res = _meijerint_definite_2(f.subs(x, x + split)
-                                                *Heaviside(x + split - a), x)
+                                                * Heaviside(x + split - a), x)
                     if res:
                         if _has(res[0], meijerg):
                             results.append(res)

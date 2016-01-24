@@ -67,7 +67,7 @@ def test_fcode_functions():
 
 # issue 6814
 def test_fcode_functions_with_integers():
-    x= symbols('x')
+    x = symbols('x')
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(10)) == "      x*2.30258509299405d0"
     assert fcode(x * log(Integer(10))) == "      x*2.30258509299405d0"
@@ -554,9 +554,9 @@ def test_fcode_Indexed_without_looking_for_contraction():
     len_y = 5
     y = IndexedBase('y', shape=(len_y,))
     x = IndexedBase('x', shape=(len_y,))
-    Dy = IndexedBase('Dy', shape=(len_y-1,))
-    i = Idx('i', len_y-1)
-    e=Eq(Dy[i], (y[i+1]-y[i])/(x[i+1]-x[i]))
+    Dy = IndexedBase('Dy', shape=(len_y - 1,))
+    i = Idx('i', len_y - 1)
+    e = Eq(Dy[i], (y[i + 1] - y[i])/(x[i + 1] - x[i]))
     code0 = fcode(e.rhs, assign_to=e.lhs, contract=False)
     assert code0.endswith('Dy(i) = (y(i + 1) - y(i))/(x(i + 1) - x(i))')
 
@@ -637,7 +637,7 @@ def test_indent():
 def test_Matrix_printing():
     x, y, z = symbols('x,y,z')
     # Test returning a Matrix
-    mat = Matrix([x*y, Piecewise((2 + x, y>0), (y, True)), sin(z)])
+    mat = Matrix([x*y, Piecewise((2 + x, y > 0), (y, True)), sin(z)])
     A = MatrixSymbol('A', 3, 1)
     assert fcode(mat, A) == (
         "      A(1, 1) = x*y\n"

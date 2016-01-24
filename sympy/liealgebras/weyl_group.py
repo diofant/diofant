@@ -175,7 +175,7 @@ class WeylGroup(Basic):
                     return 2
                 else:
                     m = len(reflections) / 2
-                    lcm = (6 * m)/ igcd(m, 6)
+                    lcm = (6 * m) / igcd(m, 6)
                 order = lcm / m
                 return order
 
@@ -354,7 +354,7 @@ class WeylGroup(Basic):
                     mat[a - 2, a - 2] = 0
                     mat[a-2, a-1] = 1
                     mat[a - 1, a - 2] = 1
-                    mat[a -1, a - 1] = 0
+                    mat[a - 1, a - 1] = 0
                     matrixform *= mat
             return matrixform
 

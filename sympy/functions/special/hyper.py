@@ -800,7 +800,7 @@ class HyperRep_power2(HyperRep):
             sgn = 1
             n -= 1
         return 2**(2*a - 1)*(1 + sgn*I*sqrt(x - 1))**(1 - 2*a) \
-            *exp(-2*n*pi*I*a)
+            * exp(-2*n*pi*I*a)
 
     @classmethod
     def _expr_big_minus(cls, a, x, n):
@@ -876,22 +876,22 @@ class HyperRep_asin2(HyperRep):
     @classmethod
     def _expr_small(cls, z):
         return HyperRep_asin1._expr_small(z) \
-            /HyperRep_power1._expr_small(Rational(1, 2), z)
+            / HyperRep_power1._expr_small(Rational(1, 2), z)
 
     @classmethod
     def _expr_small_minus(cls, z):
         return HyperRep_asin1._expr_small_minus(z) \
-            /HyperRep_power1._expr_small_minus(Rational(1, 2), z)
+            / HyperRep_power1._expr_small_minus(Rational(1, 2), z)
 
     @classmethod
     def _expr_big(cls, z, n):
         return HyperRep_asin1._expr_big(z, n) \
-            /HyperRep_power1._expr_big(Rational(1, 2), z, n)
+            / HyperRep_power1._expr_big(Rational(1, 2), z, n)
 
     @classmethod
     def _expr_big_minus(cls, z, n):
         return HyperRep_asin1._expr_big_minus(z, n) \
-            /HyperRep_power1._expr_big_minus(Rational(1, 2), z, n)
+            / HyperRep_power1._expr_big_minus(Rational(1, 2), z, n)
 
 
 class HyperRep_sqrts1(HyperRep):
@@ -951,7 +951,7 @@ class HyperRep_sqrts2(HyperRep):
             return (1 + z)**a*exp(2*pi*I*n*a)*sqrt(z)*sin(2*a*atan(sqrt(z)))
         else:
             return (1 + z)**a*exp(2*pi*I*n*a)*sqrt(z) \
-                *sin(2*a*atan(sqrt(z)) - 2*pi*a)
+                * sin(2*a*atan(sqrt(z)) - 2*pi*a)
 
 
 class HyperRep_log2(HyperRep):

@@ -446,7 +446,7 @@ def test_li():
                                   Chi(log(z)) - Shi(log(z)))
     assert li(z).rewrite(Chi) == (-log(1/log(z))/2 + log(log(z))/2 +
                                   Chi(log(z)) - Shi(log(z)))
-    assert li(z).rewrite(hyper) ==(log(z)*hyper((1, 1), (2, 2), log(z)) -
+    assert li(z).rewrite(hyper) == (log(z)*hyper((1, 1), (2, 2), log(z)) -
                                    log(1/log(z))/2 + log(log(z))/2 + EulerGamma)
     assert li(z).rewrite(meijerg) == (-log(1/log(z))/2 - log(-log(z)) + log(log(z))/2 -
                                       meijerg(((), (1,)), ((0, 0), ()), -log(z)))
