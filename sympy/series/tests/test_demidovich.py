@@ -16,10 +16,6 @@ def root4(x):
     return root(x, 4)
 
 
-def test_leadterm():
-    assert (3 + 2*x**(log(3)/log(2) - 1)).leadterm(x) == (3, 0)
-
-
 def test_Limits_simple_0():
     assert limit((2**(x + 1) + 3**(x + 1))/(2**x + 3**x), x, oo) == 3  # 175
 
