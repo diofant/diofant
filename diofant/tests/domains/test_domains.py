@@ -12,8 +12,8 @@ from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
 from diofant.polys import RootOf, field, ring, roots
 from diofant.polys.polyerrors import (CoercionFailed, DomainError,
-                                      GeneratorsError, GeneratorsNeeded,
-                                      NotInvertible, UnificationFailed)
+                                      GeneratorsError, NotInvertible,
+                                      UnificationFailed)
 
 
 __all__ = ()
@@ -620,11 +620,13 @@ def test_Ring():
 
 
 def test_PolynomialRing__init():
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
+    R, = ring("", ZZ)
+    assert ZZ.poly_ring() == R
 
 
 def test_FractionField__init():
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.frac_field())
+    F, = field("", ZZ)
+    assert ZZ.frac_field() == F
 
 
 def test_inject():

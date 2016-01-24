@@ -7,7 +7,7 @@ from diofant import Rational as Q  # noqa: N814
 from diofant import cos, erf, exp, integrate, pi, sin, sqrt, symbols
 from diofant.domains import ZZ
 from diofant.polys import factor
-from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
+from diofant.polys.polyerrors import PolynomialError
 from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
                                      _sort_gens, _unify_gens, dict_from_expr,
                                      parallel_dict_from_expr)
@@ -235,7 +235,7 @@ def test__dict_from_expr_if_gens():
 
 
 def test__dict_from_expr_no_gens():
-    pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(Integer(17)))
+    assert dict_from_expr(Integer(17)) == ({(): 17}, ())
 
     assert dict_from_expr(x) == ({(1,): 1}, (x,))
     assert dict_from_expr(y) == ({(1,): 1}, (y,))
@@ -244,7 +244,7 @@ def test__dict_from_expr_no_gens():
     assert dict_from_expr(x + y) == ({(1, 0): 1, (0, 1): 1}, (x, y))
 
     assert dict_from_expr(sqrt(2)) == ({(1,): 1}, (sqrt(2),))
-    pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
+    assert dict_from_expr(sqrt(2), greedy=False) == ({(): sqrt(2)}, ())
 
     assert dict_from_expr(x*y, domain=ZZ.poly_ring(x)) == ({(1,): x}, (y,))
     assert dict_from_expr(x*y, domain=ZZ.poly_ring(y)) == ({(1,): y}, (x,))

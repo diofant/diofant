@@ -25,8 +25,8 @@ from .monomials import (monomial_div, monomial_ldiv, monomial_min,
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, HeuristicGCDFailed,
-                         MultivariatePolynomialError, PolynomialError)
+                         HeuristicGCDFailed, MultivariatePolynomialError,
+                         PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
@@ -131,11 +131,8 @@ def sring(exprs, *symbols, **options):
 
 
 def _parse_symbols(symbols):
-    if not symbols:
-        raise GeneratorsNeeded("generators weren't specified")
-
     if isinstance(symbols, str):
-        return _symbols(symbols, seq=True)
+        return _symbols(symbols, seq=True) if symbols else ()
     elif isinstance(symbols, Expr):
         return symbols,
     elif is_sequence(symbols):
@@ -821,10 +818,14 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def is_squarefree(self):
+        if not self.ring.gens:
+            return True
         return self.ring.dmp_sqf_p(self)
 
     @property
     def is_irreducible(self):
+        if not self.ring.gens:
+            return True
         _, factors = self.factor_list()
         if not factors:
             return True
@@ -1476,6 +1477,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         Note that the degree of 0 is negative infinity (the Diofant object -oo).
 
         """
+        if not self.ring.gens:
+            return
         i = self.ring.index(x)
         return max((monom[i] for monom in self), default=-oo)
 
@@ -1495,6 +1498,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         Note that the degree of 0 is negative infinity (the Diofant object -oo)
 
         """
+        if not self.ring.gens:
+            return
         i = self.ring.index(x)
         return min((monom[i] for monom in self), default=-oo)
 
@@ -1615,7 +1620,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         p = self.ring.zero
         expv = self.leading_expv()
-        if expv:
+        if expv is not None:
             p[expv] = self[expv]
         return p
 

@@ -5,8 +5,9 @@ import pytest
 from diofant import sqrt
 from diofant.abc import x, y
 from diofant.domains import QQ, ZZ
+from diofant.polys import field, ring
 from diofant.polys.orderings import build_product_order
-from diofant.polys.polyerrors import CoercionFailed, GeneratorsNeeded
+from diofant.polys.polyerrors import CoercionFailed
 
 
 __all__ = ()
@@ -94,8 +95,13 @@ def test_units():
 
 
 def test_poly_frac():
-    pytest.raises(GeneratorsNeeded, lambda: QQ.poly_ring())
-    pytest.raises(GeneratorsNeeded, lambda: QQ.frac_field())
+    R, = ring("", QQ)
+
+    assert QQ.poly_ring() == R
+
+    F, = field("", QQ)
+
+    assert QQ.frac_field() == F
 
 
 def test_methods():

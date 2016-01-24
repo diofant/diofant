@@ -6,7 +6,7 @@ import re
 from ..core import Add, Mul, Pow, S, nan, oo, zoo
 from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
-from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsError, PolynomialError
 from .polyoptions import build_options
 
 
@@ -269,14 +269,6 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
             terms.append((coeff, elements))
 
         reprs.append(terms)
-
-    if not gens:
-        if len(exprs) == 1:
-            arg = exprs[0]
-        else:
-            arg = exprs,
-
-        raise GeneratorsNeeded("specify generators to give %s a meaning" % arg)
 
     gens = _sort_gens(gens, opt=opt)
     k, indices = len(gens), {}
