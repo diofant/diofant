@@ -955,7 +955,7 @@ def test_unrad1():
     # assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
     #    x**15 - x**3*cosh(x)**5 - 3*x**2*cosh(x)**5 - 3*x*cosh(x)**5 - cosh(x)**5, [])
     pytest.raises(NotImplementedError, lambda:
-                  unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))
+                  unrad(sqrt(cosh(x)/x) + root(x + 1, 3)*sqrt(x) - 1))
     assert unrad((x+y)**(2*y/3) + (x+y)**Rational(1, 3) + 1) is None
     assert check(unrad((x+y)**(2*y/3) + (x+y)**Rational(1, 3) + 1, x),
         (s**(2*y) + s + 1, [s, s**3 - x - y]))
@@ -1176,7 +1176,7 @@ def test_issue_5901():
                 h(a), g(a), set=True) == \
         ([g(a)], {
         (-sqrt(h(a)**2*f(a)**2 + G)/f(a),),
-        (sqrt(h(a)**2*f(a)**2+ G)/f(a),)})
+        (sqrt(h(a)**2*f(a)**2 + G)/f(a),)})
     args = [f(x).diff(x, 2)*(f(x) + g(x)) - g(x)**2 + 2, f(x), g(x)]
     assert set(solve(*args)) == \
         {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))}
@@ -1270,12 +1270,12 @@ def test_issue_6056():
         -log(2)/2 + log(1 - I),
         -log(2)/2 + log(-1 - I),
         -log(2)/2 + log(1 + I),
-        -log(2)/2 + log(-1 + I),}
+        -log(2)/2 + log(-1 + I), }
     assert {simplify(w) for w in solve((tanh(x + 3)*tanh(x - 3) + 1)**2)} == {
         -log(2)/2 + log(1 - I),
         -log(2)/2 + log(-1 - I),
         -log(2)/2 + log(1 + I),
-        -log(2)/2 + log(-1 + I),}
+        -log(2)/2 + log(-1 + I), }
 
 
 def test_issue_6060():
@@ -1738,12 +1738,12 @@ def test_issue_8828():
     f1 = (x - x1)**2 + (y - y1)**2 - (r1 - z)**2
     f2 = (x2 - x)**2 + (y2 - y)**2 - z**2
     f3 = (x - x3)**2 + (y - y3)**2 - (r3 - z)**2
-    F = f1,f2,f3
+    F = f1, f2, f3
 
     g1 = sqrt((x - x1)**2 + (y - y1)**2) + z - r1
     g2 = f2
     g3 = sqrt((x - x3)**2 + (y - y3)**2) + z - r3
-    G = g1,g2,g3
+    G = g1, g2, g3
 
     A = solve(F, v)
     B = solve(G, v)

@@ -125,16 +125,16 @@ def test_multiset_partitions_taocp():
 
     # Test cases should not be too large, since the baseline
     # implementation is fairly slow.
-    multiplicities = [2,2]
+    multiplicities = [2, 2]
     compare_multiset_w_baseline(multiplicities)
 
-    multiplicities = [4,3,1]
+    multiplicities = [4, 3, 1]
     compare_multiset_w_baseline(multiplicities)
 
 
 def test_multiset_partitions_versions():
     """Compares Knuth-based versions of multiset_partitions"""
-    multiplicities = [5,2,2,1]
+    multiplicities = [5, 2, 2, 1]
     m = MultisetPartitionTraverser()
     for s1, s2 in zip_longest(m.enum_all(multiplicities),
                               multiset_partitions_taocp(multiplicities)):
@@ -171,7 +171,7 @@ def subrange_exercise(mult, lb, ub):
 
 def test_subrange():
     # Quick, but doesn't hit some of the corner cases
-    mult = [4,4,2,1]  # mississippi
+    mult = [4, 4, 2, 1]  # mississippi
     lb = 1
     ub = 2
     subrange_exercise(mult, lb, ub)
@@ -180,7 +180,7 @@ def test_subrange():
 @pytest.mark.slow
 def test_subrange_large():
     # takes a second or so, depending on cpu, Python version, etc.
-    mult = [6,3,2,1]
+    mult = [6, 3, 2, 1]
     lb = 4
     ub = 7
     subrange_exercise(mult, lb, ub)

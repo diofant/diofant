@@ -31,8 +31,8 @@ def test_Assignment():
     Assignment(x, y)
     Assignment(x, 0)
     Assignment(A, mat)
-    Assignment(A[1,0], 0)
-    Assignment(A[1,0], x)
+    Assignment(A[1, 0], 0)
+    Assignment(A[1, 0], x)
     Assignment(B[i], x)
     Assignment(B[i], 0)
     # Here we test things to show that they error
@@ -41,7 +41,7 @@ def test_Assignment():
     pytest.raises(ValueError, lambda: Assignment(B[i], mat))
     pytest.raises(ValueError, lambda: Assignment(x, mat))
     pytest.raises(ValueError, lambda: Assignment(x, A))
-    pytest.raises(ValueError, lambda: Assignment(A[1,0], mat))
+    pytest.raises(ValueError, lambda: Assignment(A[1, 0], mat))
     # Scalar to matrix
     pytest.raises(ValueError, lambda: Assignment(A, x))
     pytest.raises(ValueError, lambda: Assignment(A, 0))

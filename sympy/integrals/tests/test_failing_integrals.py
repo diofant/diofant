@@ -64,7 +64,7 @@ def test_issue_4511():
 @pytest.mark.xfail
 def test_issue_4514():
     # The correct answer is 2*sin(x)
-    assert not integrate(sin(2*x)/ sin(x)).has(Integral)
+    assert not integrate(sin(2*x) / sin(x)).has(Integral)
 
 
 @pytest.mark.xfail

@@ -96,7 +96,7 @@ def test_powsimp():
     assert all(powsimp(e) == e for e in (sqrt(x**a), sqrt(x**2)))
 
     # issue 8836
-    assert str( powsimp(exp(I*pi/3)*root(-1,3)) ) == '(-1)**(2/3)'
+    assert str( powsimp(exp(I*pi/3)*root(-1, 3)) ) == '(-1)**(2/3)'
 
 
 def test_powsimp_negated_base():
@@ -281,7 +281,7 @@ def test_issue_from_PR1599():
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
         -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
     assert (powsimp(root(n1, 3)*root(n2, 3)*root(n3, 3)*root(n4, 3)) ==
-        -(-1)**Rational(1, 3)*
+        -(-1)**Rational(1, 3) *
         (-n1)**Rational(1, 3)*(-n2)**Rational(1, 3)*(-n3)**Rational(1, 3)*(-n4)**Rational(1, 3))
 
 

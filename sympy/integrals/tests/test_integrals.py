@@ -221,7 +221,7 @@ def test_integrate_linearterm_pow():
 def test_issue_3618():
     assert integrate(pi*sqrt(x), x) == 2*pi*sqrt(x)**3/3
     assert integrate(pi*sqrt(x) + E*sqrt(x)**3, x) == \
-        2*pi*sqrt(x)**3/3 + 2*E *sqrt(x)**5/5
+        2*pi*sqrt(x)**3/3 + 2*E * sqrt(x)**5/5
 
 
 def test_issue_3623():
@@ -469,8 +469,8 @@ def test_integrate_returns_piecewise():
         (0, Eq(n, 0)), ((n*x/2 - sin(n*x)*cos(n*x)/2)/n, True))
     assert integrate(x*sin(n*x), x) == Piecewise(
         (0, Eq(n, 0)), (-x*cos(n*x)/n + sin(n*x)/n**2, True))
-    assert integrate(exp(x*y),(x,0,z)) == Piecewise(
-        (z, Eq(y,0)), (exp(y*z)/y - 1/y, True))
+    assert integrate(exp(x*y), (x, 0, z)) == Piecewise(
+        (z, Eq(y, 0)), (exp(y*z)/y - 1/y, True))
 
 
 def test_subs1():
@@ -524,7 +524,7 @@ def test_subs5():
     e = Integral(exp(-x**2), (x, x))
     assert e.subs(x, 5) == Integral(exp(-x**2), (x, 5))
     e = Integral(exp(x), x)
-    assert (e.subs(x,1) - e.subs(x,0) - Integral(exp(x), (x, 0, 1))
+    assert (e.subs(x, 1) - e.subs(x, 0) - Integral(exp(x), (x, 0, 1))
         ).doit().is_zero
 
 
@@ -878,8 +878,8 @@ def test_issue_4892a():
     assert integrate(c*(P2 - P1), t) in [
         c*(-A*(-h1)*log(c*t)/c + A*t*exp(-z)),
         c*(-A*(-h2)*log(c*t)/c + A*t*exp(-z)),
-        c*( A* h1 *log(c*t)/c + A*t*exp(-z)),
-        c*( A* h2 *log(c*t)/c + A*t*exp(-z)),
+        c*(A*h1*log(c*t)/c + A*t*exp(-z)),
+        c*(A*h2*log(c*t)/c + A*t*exp(-z)),
         (A*c*t - A*(-h1)*log(t)*exp(z))*exp(-z),
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
     ]

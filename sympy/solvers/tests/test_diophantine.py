@@ -37,7 +37,7 @@ def test_linear():
     assert diop_solve(2*x + 4*y) == (2*t, -t)
     assert diop_solve(4*x + 6*y - 4) == (3*t - 2, -2*t + 2)
     assert diop_solve(4*x + 6*y - 3) == (None, None)
-    assert diop_solve(4*x + 3*y -4*z + 5) == \
+    assert diop_solve(4*x + 3*y - 4*z + 5) == \
            (3*t + 4*z - 5, -4*t - 4*z + 5, z)
     assert diop_solve(4*x + 2*y + 8*z - 5) == (None, None, None)
     assert diop_solve(5*x + 7*y - 2*z - 6) == \
@@ -57,8 +57,8 @@ def test_quadratic_simple_hyperbolic_case():
     assert diop_solve(-13*x*y + 2*x - 4*y - 54) == {(Integer(27), Integer(0))}
     assert diop_solve(-27*x*y - 30*x - 12*y - 54) == {(-Integer(14), -Integer(1))}
     assert diop_solve(2*x*y + 5*x + 56*y + 7) == {(-Integer(161), -Integer(3)),
-        (-Integer(47),-Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),
-        (-Integer(27), Integer(64)), (-Integer(21), Integer(7)),(-Integer(9), Integer(1)),
+        (-Integer(47), -Integer(6)), (-Integer(35), -Integer(12)), (-Integer(29), -Integer(69)),
+        (-Integer(27), Integer(64)), (-Integer(21), Integer(7)), (-Integer(9), Integer(1)),
         (Integer(105), -Integer(2))}
     assert diop_solve(6*x*y + 9*x + 2*y + 3) == set()
     assert diop_solve(x*y + x + y + 1) == {(-Integer(1), t), (t, -Integer(1))}
@@ -76,7 +76,7 @@ def test_quadratic_elliptical_case():
     assert diop_solve(x**2 + y**2 + 2*x + 2*y + 2) == {(-Integer(1), -Integer(1))}
     # assert diop_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950) == {(-Integer(15), Integer(6))}
     assert diop_solve(10*x**2 + 12*x*y + 12*y**2 - 34) == \
-        {(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)),(Integer(1), Integer(1)), (-Integer(1), Integer(2))}
+        {(Integer(1), -Integer(2)), (-Integer(1), -Integer(1)), (Integer(1), Integer(1)), (-Integer(1), Integer(2))}
 
 
 def test_quadratic_parabolic_case():
@@ -85,11 +85,11 @@ def test_quadratic_parabolic_case():
     assert diop_solve(8*x**2 - 24*x*y + 18*y**2 + 5*x + 7*y + 16) == \
         {(-174*t**2 + 17*t - 2, -116*t**2 + 21*t - 2), (-174*t**2 + 41*t - 4, -116*t**2 + 37*t - 4)}
     assert diop_solve(8*x**2 - 24*x*y + 18*y**2 + 6*x + 12*y - 6) == \
-        {(-63*t**2 + 12*t, -42*t**2 + 15*t -1), (-63*t**2 + 30*t - 3, -42*t**2 + 27*t - 4)}
+        {(-63*t**2 + 12*t, -42*t**2 + 15*t - 1), (-63*t**2 + 30*t - 3, -42*t**2 + 27*t - 4)}
     assert diop_solve(8*x**2 + 24*x*y + 18*y**2 + 4*x + 6*y - 7) == set()
-    assert diop_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1) == {(t,-t - 1)}
+    assert diop_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1) == {(t, -t - 1)}
     assert diop_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1) == \
-        {(-4*t**2, -4*t**2 + 4*t - 1),(-4*t**2 + 4*t -1, -4*t**2 + 8*t - 4)}
+        {(-4*t**2, -4*t**2 + 4*t - 1), (-4*t**2 + 4*t - 1, -4*t**2 + 8*t - 4)}
     assert check_solutions(y**2 - 41*x + 40)
 
 
@@ -99,15 +99,15 @@ def test_quadratic_perfect_square():
     # B**2 - 4*A*C is a perfect square
     assert diop_solve(48*x*y) == {(Integer(0), t), (t, Integer(0))}
     assert diop_solve(4*x**2 - 5*x*y + y**2 + 2) == \
-        {(-Integer(1), -Integer(3)),(-Integer(1), -Integer(2)),(Integer(1), Integer(2)),(Integer(1), Integer(3))}
-    assert diop_solve(-2*x**2 - 3*x*y + 2*y**2 -2*x - 17*y + 25) == {(Integer(4), Integer(15))}
+        {(-Integer(1), -Integer(3)), (-Integer(1), -Integer(2)), (Integer(1), Integer(2)), (Integer(1), Integer(3))}
+    assert diop_solve(-2*x**2 - 3*x*y + 2*y**2 - 2*x - 17*y + 25) == {(Integer(4), Integer(15))}
     assert diop_solve(12*x**2 + 13*x*y + 3*y**2 - 2*x + 3*y - 12) == \
         {(-Integer(6), Integer(9)), (-Integer(2), Integer(5)), (Integer(4), -Integer(4)), (-Integer(6), Integer(16))}
     assert diop_solve(8*x**2 + 10*x*y + 2*y**2 - 32*x - 13*y - 23) == \
         {(-Integer(44), Integer(47)), (Integer(22), -Integer(85))}
-    assert diop_solve(4*x**2 - 4*x*y - 3*y- 8*x - 3) == \
+    assert diop_solve(4*x**2 - 4*x*y - 3*y - 8*x - 3) == \
         {(-Integer(1), -Integer(9)), (-Integer(6), -Integer(9)), (Integer(0), -Integer(1)), (Integer(1), -Integer(1))}
-    assert diop_solve(- 4*x*y - 4*y**2 - 3*y- 5*x - 10) == \
+    assert diop_solve(- 4*x*y - 4*y**2 - 3*y - 5*x - 10) == \
         {(-Integer(2), Integer(0)), (-Integer(11), -Integer(1)), (-Integer(5), Integer(5))}
     assert diop_solve(x**2 - y**2 - 2*x - 2*y) == {(t, -t), (-t, -t - 2)}
     assert diop_solve(x**2 - 9*y**2 - 2*x - 6*y) == {(-3*t + 2, -t), (3*t, -t)}
@@ -193,7 +193,7 @@ def test_DN():
     assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
     assert set(diop_DN(157, 12)) == \
     {(Integer(13), Integer(1)), (Integer(10663), Integer(851)), (Integer(579160), Integer(46222)),
-        (Integer(483790960),Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
+        (Integer(483790960), Integer(38610722)), (Integer(26277068347), Integer(2097138361)), (Integer(21950079635497), Integer(1751807067011))}
     assert diop_DN(13, 25) == [(3245, 900)]
     assert diop_DN(192, 18) == []
     assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
@@ -266,7 +266,7 @@ def test_transformation_to_pell():
     assert is_pell_transformation_ok(-x**2 + 7*y**2 - 23)
     assert is_pell_transformation_ok(25*x**2 - 45*x*y + 5*y**2 - 5*x - 10*y + 5)
     assert is_pell_transformation_ok(190*x**2 + 30*x*y + y**2 - 3*y - 170*x - 130)
-    assert is_pell_transformation_ok(x**2 - 2*x*y -190*y**2 - 7*y - 23*x - 89)
+    assert is_pell_transformation_ok(x**2 - 2*x*y - 190*y**2 - 7*y - 23*x - 89)
     assert is_pell_transformation_ok(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950)
 
 
@@ -277,8 +277,8 @@ def test_find_DN():
     assert find_DN(x**2 - 2*x*y - 4*y**2 - 7) == (5, 7)
     assert find_DN(4*x**2 - 8*x*y - y**2 - 9) == (20, 36)
     assert find_DN(7*x**2 - 2*x*y - y**2 - 12) == (8, 84)
-    assert find_DN(-3*x**2 + 4*x*y -y**2) == (1, 0)
-    assert find_DN(-13*x**2 - 7*x*y + y**2 + 2*x - 2*y -14) == (101, -7825480)
+    assert find_DN(-3*x**2 + 4*x*y - y**2) == (1, 0)
+    assert find_DN(-13*x**2 - 7*x*y + y**2 + 2*x - 2*y - 14) == (101, -7825480)
 
 
 def test_ldescent():
@@ -345,7 +345,7 @@ def test_diop_ternary_quadratic():
     assert check_solutions(3*x**2 + 2*y**2 - z**2 - 2*x*y + 5*y*z - 7*y*z)
     assert check_solutions(8*x**2 - 12*y*z)
     assert check_solutions(45*x**2 - 7*y**2 - 8*x*y - z**2)
-    assert check_solutions(x**2 - 49*y**2 - z**2 + 13*z*y -8*x*y)
+    assert check_solutions(x**2 - 49*y**2 - z**2 + 13*z*y - 8*x*y)
     assert check_solutions(90*x**2 + 3*y**2 + 5*x*y + 2*z*y + 5*x*z)
     assert check_solutions(x**2 + 3*y**2 + z**2 - x*y - 17*y*z)
     assert check_solutions(x**2 + 3*y**2 + z**2 - x*y - 16*y*z + 12*x*z)

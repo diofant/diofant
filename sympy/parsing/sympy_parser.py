@@ -349,13 +349,13 @@ def split_symbols_custom(predicate):
     def _split_symbols(tokens, local_dict, global_dict):
         result = []
         split = False
-        split_previous=False
+        split_previous = False
         for tok in tokens:
             if split_previous:
                 # throw out closing parenthesis of Symbol that was split
-                split_previous=False
+                split_previous = False
                 continue
-            split_previous=False
+            split_previous = False
             if tok[0] == NAME and tok[1] == 'Symbol':
                 split = True
             elif split and tok[0] == NAME:

@@ -93,7 +93,7 @@ def test_issue_3557():
     solutions = solve([f_1, f_2, f_3], x, y, z, simplify=False)
 
     assert simplify(solutions[y]) == \
-        (a*i + c*d + f*g - a*f - c*g - d*i)/ \
+        (a*i + c*d + f*g - a*f - c*g - d*i) / \
         (a*e*i + b*f*g + c*d*h - a*f*h - b*d*i - c*e*g)
 
 
@@ -108,8 +108,8 @@ def test_simplify_other():
     # issue 6123
     # f = exp(-I*(k*sqrt(t) + x/(2*sqrt(t)))**2)
     # ans = integrate(f, (k, -oo, oo), conds='none')
-    ans = I*(-pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))*erf(x*exp(-3*I*pi/4)/
-        (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))/
+    ans = I*(-pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))*erf(x*exp(-3*I*pi/4) /
+        (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t)) /
         (2*sqrt(t)))*exp(-I*x**2/(4*t))/(sqrt(pi)*x) - I*sqrt(pi) * \
         (-erf(x*exp(I*pi/4)/(2*sqrt(t))) + 1)*exp(I*pi/4)/(2*sqrt(t))
     assert simplify(ans) == -(-1)**Rational(3, 4)*sqrt(pi)/sqrt(t)
@@ -397,7 +397,7 @@ def test_logcombine_1():
     # are testing is that a canonical result is obtained
     assert logcombine(log(x)*2*log(y) + log(z), force=True) == \
         log(z*y**log(x**2))
-    assert logcombine((x*y + sqrt(x**4 + y**4) + log(x) - log(y))/(pi*x**Rational(2, 3)*
+    assert logcombine((x*y + sqrt(x**4 + y**4) + log(x) - log(y))/(pi*x**Rational(2, 3) *
             sqrt(y)**3), force=True) == (
         x*y + sqrt(x**4 + y**4) + log(x/y))/(pi*x**Rational(2, 3)*y**Rational(3, 2))
     assert logcombine(gamma(-log(x/y))*acos(-log(x/y)), force=True) == \
@@ -442,7 +442,7 @@ def test_posify():
 
     assert sstr(Integral(posify(1/x + y)[0], (y, 1, 3)).expand()) == \
         'Integral(1/_x, (y, 1, 3)) + Integral(_y, (y, 1, 3))'
-    assert sstr(Sum(posify(1/x**n)[0], (n,1,3)).expand()) == \
+    assert sstr(Sum(posify(1/x**n)[0], (n, 1, 3)).expand()) == \
         'Sum(_x**(-n), (n, 1, 3))'
 
 

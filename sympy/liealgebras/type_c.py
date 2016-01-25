@@ -62,10 +62,10 @@ class TypeC(Standard_Cartan):
 
         n = self.n
         if i < n:
-            return self.basic_root(i-1,i)
+            return self.basic_root(i - 1, i)
         else:
             root = [0]*self.n
-            root[n-1] = 2
+            root[n - 1] = 2
             return root
 
     def positive_roots(self):
@@ -142,7 +142,7 @@ class TypeC(Standard_Cartan):
             m[i, i+1] = -1
             m[i, i-1] = -1
             i += 1
-        m[0,1] = -1
+        m[0, 1] = -1
         m[n-1, n-2] = -2
         return m
 

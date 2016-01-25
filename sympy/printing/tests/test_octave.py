@@ -145,8 +145,8 @@ def test_Matrices():
                 "0   exp(1) ceil(x)]")
     assert mcode(A) == expected
     # row and columns
-    assert mcode(A[:,0]) == "[1; 0; 0]"
-    assert mcode(A[0,:]) == "[1 sin(x/2) abs(x)]"
+    assert mcode(A[:, 0]) == "[1; 0; 0]"
+    assert mcode(A[0, :]) == "[1 sin(x/2) abs(x)]"
     # empty matrices
     assert mcode(Matrix(0, 0, [])) == '[]'
     assert mcode(Matrix(0, 3, [])) == 'zeros(0, 3)'
@@ -283,7 +283,7 @@ def test_octave_matrix_elements():
     assert mcode(A[0, 0]**2 + A[0, 1] + A[0, 2]) == "x.^2 + x.*y + 2"
     A = MatrixSymbol('AA', 1, 3)
     assert mcode(A) == "AA"
-    assert mcode(A[0,0]**2 + sin(A[0,1]) + A[0,2]) == \
+    assert mcode(A[0, 0]**2 + sin(A[0, 1]) + A[0, 2]) == \
            "sin(AA(1, 2)) + AA(1, 1).^2 + AA(1, 3)"
     assert mcode(sum(A)) == "AA(1, 1) + AA(1, 2) + AA(1, 3)"
 

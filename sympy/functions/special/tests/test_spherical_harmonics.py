@@ -5,7 +5,7 @@ from sympy.functions.special.spherical_harmonics import Ynm, Znm, Ynm_c
 def test_Ynm():
     # http://en.wikipedia.org/wiki/Spherical_harmonics
     th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
-    from sympy.abc import n,m
+    from sympy.abc import n, m
 
     assert Ynm(0, 0, th, ph).expand(func=True) == 1/(2*sqrt(pi))
     assert Ynm(1, -1, th, ph) == -exp(-2*I*ph)*Ynm(1, 1, th, ph)
@@ -33,7 +33,7 @@ def test_Ynm():
 
 def test_Ynm_c():
     th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
-    from sympy.abc import n,m
+    from sympy.abc import n, m
 
     assert Ynm_c(n, m, th, ph) == (-1)**(2*m)*exp(-2*I*m*ph)*Ynm(n, m, th, ph)
 

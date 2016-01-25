@@ -478,8 +478,8 @@ def test_line3d():
     assert s1.distance(pt1) == 0
     assert s2.distance(pt1) == sqrt(3)/2
     assert s2.distance(pt2) == 2
-    assert s1.distance((0,0,0)) == 0
-    assert s2.distance((0,0,0)) == sqrt(3)/2
+    assert s1.distance((0, 0, 0)) == 0
+    assert s2.distance((0, 0, 0)) == sqrt(3)/2
     # Line to point
     p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 1)
     s = Line3D(p1, p2)
@@ -594,7 +594,7 @@ def test_line3d():
     # Begin Segment
     seg1 = Segment3D(p1, Point3D(1, 0, 0))
     pytest.raises(TypeError, lambda: seg1.contains([]))
-    seg2= Segment3D(Point3D(2, 2, 2), Point3D(3, 2, 2))
+    seg2 = Segment3D(Point3D(2, 2, 2), Point3D(3, 2, 2))
     assert seg1.contains(seg2) is False
 
 
@@ -616,7 +616,7 @@ def test_line_intersection():
     assert Ray((0, 0), (10, 10)).contains(Segment((1, 1), (2, 2))) is True
     assert Segment((1, 1), (2, 2)) in Line((0, 0), (10, 10))
     x = 8*tan(13*pi/45)/(tan(13*pi/45) + sqrt(3))
-    y = (-8*sqrt(3)*tan(13*pi/45)**2 + 24*tan(13*pi/45))/ \
+    y = (-8*sqrt(3)*tan(13*pi/45)**2 + 24*tan(13*pi/45)) / \
         (-3 + tan(13*pi/45)**2)
     assert Line(Point(0, 0), Point(1, -sqrt(3))).contains(Point(x, y)) is True
 

@@ -100,7 +100,7 @@ def test_minimal_polynomial():
 
     # issue 5994
     eq = (-1/(800*sqrt(Rational(-1, 240) + 1/(18000*(Rational(-1, 17280000) +
-          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1,17280000) +
+          sqrt(15)*I/28800000)**Rational(1, 3)) + 2*(Rational(-1, 17280000) +
           sqrt(15)*I/28800000)**Rational(1, 3))))
     assert minimal_polynomial(eq, x) == 8000*x**2 - 1
 
@@ -200,7 +200,7 @@ def test_minpoly_compose():
     assert minimal_polynomial(sin(5*pi/14), x) == 8*x**3 - 4*x**2 - 4*x + 1
     assert minimal_polynomial(cos(pi/15), x) == 16*x**4 + 8*x**3 - 16*x**2 - 8*x + 1
 
-    ex = RootOf(x**3 +x*4 + 1, 0)
+    ex = RootOf(x**3 + x*4 + 1, 0)
     mp = minimal_polynomial(ex, x)
     assert mp == x**3 + 4*x + 1
     mp = minimal_polynomial(ex + 1, x)
@@ -226,9 +226,9 @@ def test_minpoly_compose():
         24*sqrt(10)*sqrt(-sqrt(5) + 5))**2) + 1
     pytest.raises(ZeroDivisionError, lambda: minimal_polynomial(ex, x))
 
-    ex = sqrt(1 + 2**Rational(1,3)) + sqrt(1 + 2**Rational(1,4)) + sqrt(2)
+    ex = sqrt(1 + 2**Rational(1, 3)) + sqrt(1 + 2**Rational(1, 4)) + sqrt(2)
     mp = minimal_polynomial(ex, x)
-    assert degree(mp) == 48 and mp.subs({x:0}) == -16630256576
+    assert degree(mp) == 48 and mp.subs({x: 0}) == -16630256576
 
 
 def test_minpoly_issue_7113():
@@ -241,7 +241,7 @@ def test_minpoly_issue_7113():
 
 
 def test_minpoly_issue_7574():
-    ex = -(-1)**Rational(1, 3) + (-1)**Rational(2,3)
+    ex = -(-1)**Rational(1, 3) + (-1)**Rational(2, 3)
     assert minimal_polynomial(ex, x) == x + 1
 
 
@@ -691,8 +691,8 @@ def test_minpoly_fraction_field():
     assert minimal_polynomial(sqrt(2) + sqrt(x), y) == \
         y**4 + (-2*x - 4)*y**2 + x**2 - 4*x + 4
 
-    assert minimal_polynomial(x**Rational(1,3), y) == y**3 - x
-    assert minimal_polynomial(x**Rational(1,3) + sqrt(x), y) == \
+    assert minimal_polynomial(x**Rational(1, 3), y) == y**3 - x
+    assert minimal_polynomial(x**Rational(1, 3) + sqrt(x), y) == \
         y**6 - 3*x*y**4 - 2*x*y**3 + 3*x**2*y**2 - 6*x**2*y - x**3 + x**2
 
     assert minimal_polynomial(sqrt(x) / z, y) == z**2*y**2 - x
@@ -706,7 +706,7 @@ def test_minpoly_fraction_field():
         Poly(z**2*y**2 - x, y)
 
     # this is (sqrt(1 + x**3)/x).integrate(x).diff(x) - sqrt(1 + x**3)/x
-    a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**Rational(5, 2)*
+    a = sqrt(x)/sqrt(1 + x**(-3)) - sqrt(x**3 + 1)/x + 1/(x**Rational(5, 2) *
         (1 + x**(-3))**Rational(3, 2)) + 1/(x**Rational(11, 2)*(1 + x**(-3))**Rational(3, 2))
 
     assert minimal_polynomial(a, y) == y
@@ -719,8 +719,8 @@ def test_minpoly_fraction_field():
 
 @pytest.mark.slow
 def test_minpoly_fraction_field_slow():
-    assert minimal_polynomial(minimal_polynomial(sqrt(x**Rational(1,5) - 1),
-        y).subs(y, sqrt(x**Rational(1,5) - 1)), z) == z
+    assert minimal_polynomial(minimal_polynomial(sqrt(x**Rational(1, 5) - 1),
+        y).subs(y, sqrt(x**Rational(1, 5) - 1)), z) == z
 
 
 def test_minpoly_domain():
@@ -728,7 +728,7 @@ def test_minpoly_domain():
         x - sqrt(2)
     assert minimal_polynomial(sqrt(8), x, domain=QQ.algebraic_field(sqrt(2))) == \
         x - 2*sqrt(2)
-    assert minimal_polynomial(sqrt(Rational(3,2)), x,
+    assert minimal_polynomial(sqrt(Rational(3, 2)), x,
         domain=QQ.algebraic_field(sqrt(2))) == 2*x**2 - 3
 
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))

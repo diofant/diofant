@@ -520,7 +520,7 @@ def _rewrite_gamma(f, s, a, b):
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                *reduce(igcd, [Integer(x.p) for x in s_multipliers])
+                * reduce(igcd, [Integer(x.p) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)

@@ -246,10 +246,10 @@ def constant_system(A, u, DE):
                 # This assumes that const(F(t0, ..., tn) == const(K) == F
                 Ri = A[i, :]
                 # Rm+1; m = A.rows
-                Rm1 = Ri.applyfunc(lambda x: derivation(x, DE, basic=True)/
+                Rm1 = Ri.applyfunc(lambda x: derivation(x, DE, basic=True) /
                     derivation(A[i, j], DE, basic=True))
                 Rm1 = Rm1.applyfunc(cancel)
-                um1 = cancel(derivation(u[i], DE, basic=True)/
+                um1 = cancel(derivation(u[i], DE, basic=True) /
                     derivation(A[i, j], DE, basic=True))
 
                 for s in range(A.rows):

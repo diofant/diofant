@@ -1389,8 +1389,7 @@ class Mul(Expr, AssocOp):
 
                             # the left residual
 
-                            l = rejoin(nc[i][0], nc[i][1] - ndo*
-                                    old_nc[0][1])
+                            l = rejoin(nc[i][0], nc[i][1] - ndo*old_nc[0][1])
 
                             # eliminate all middle terms
 
@@ -1399,8 +1398,7 @@ class Mul(Expr, AssocOp):
                             # the right residual (which may be the same as the middle if take == 2)
 
                             ir = i + take - 1
-                            r = (nc[ir][0], nc[ir][1] - ndo*
-                                 old_nc[-1][1])
+                            r = (nc[ir][0], nc[ir][1] - ndo*old_nc[-1][1])
                             if r[1]:
                                 if i + take < len(nc):
                                     nc[i:i + take] = [l*mid, r]

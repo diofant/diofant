@@ -2908,32 +2908,6 @@ class Expr(Basic, EvalfMixin):
                 return c, e
         return s, S.Zero
 
-    def leadterm(self, x):
-        """Returns the leading term a*x**b as a tuple (a, b).
-
-        Examples
-        ========
-
-        >>> from sympy.abc import x
-        >>> (1+x+x**2).leadterm(x)
-        (1, 0)
-        >>> (1/x**2+x+x**2).leadterm(x)
-        (1, -2)
-        """
-        from sympy import Dummy, log
-        l = self.as_leading_term(x)
-        d = Dummy('logx')
-        if l.has(log(x)):
-            l = l.subs(log(x), d)
-        c, e = l.as_coeff_exponent(x)
-        if x in c.free_symbols:
-            from sympy.utilities.misc import filldedent
-            raise ValueError(filldedent("""
-                cannot compute leadterm(%s, %s). The coefficient
-                should have been free of x but got %s""" % (self, x, c)))
-        c = c.subs(d, log(x))
-        return c, e
-
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product."""
         return S.One, self

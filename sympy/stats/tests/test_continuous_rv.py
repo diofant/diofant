@@ -167,7 +167,7 @@ def test_benini():
 
     X = Benini('x', alpha, b, sigma)
     assert density(X)(x) == ((alpha/x + 2*b*log(x/sigma)/x)
-                          *exp(-alpha*log(x/sigma) - b*log(x/sigma)**2))
+                             * exp(-alpha*log(x/sigma) - b*log(x/sigma)**2))
 
 
 def test_beta():
@@ -220,8 +220,8 @@ def test_chi_noncentral():
     l = Symbol("l")
 
     X = ChiNoncentral("x", k, l)
-    assert density(X)(x) == (x**k*l*(x*l)**(-k/2)*
-                          exp(-x**2/2 - l**2/2)*besseli(k/2 - 1, x*l))
+    assert density(X)(x) == (x**k*l*(x*l)**(-k/2) *
+                             exp(-x**2/2 - l**2/2)*besseli(k/2 - 1, x*l))
 
 
 def test_chi_squared():
@@ -271,7 +271,7 @@ def test_f_distribution():
 
     X = FDistribution("x", d1, d2)
     assert density(X)(x) == (d2**(d2/2)*sqrt((d1*x)**d1*(d1*x + d2)**(-d1 - d2))
-                             /(x*beta(d1/2, d2/2)))
+                             / (x*beta(d1/2, d2/2)))
 
 
 def test_fisher_z():
@@ -279,8 +279,9 @@ def test_fisher_z():
     d2 = Symbol("d2", positive=True)
 
     X = FisherZ("x", d1, d2)
-    assert density(X)(x) == (2*d1**(d1/2)*d2**(d2/2)*(d1*exp(2*x) + d2)
-                             **(-d1/2 - d2/2)*exp(d1*x)/beta(d1/2, d2/2))
+    assert density(X)(x) == (2*d1**(d1/2)*d2**(d2/2) *
+                             (d1*exp(2*x) + d2)**(-d1/2 - d2/2) *
+                             exp(d1*x)/beta(d1/2, d2/2))
 
 
 def test_frechet():
@@ -367,7 +368,7 @@ def test_lognormal():
 
     X = LogNormal('x', mu, sigma)
     assert density(X)(x) == (sqrt(2)*exp(-(-mu + log(x))**2
-                                    /(2*sigma**2))/(2*x*sqrt(pi)*sigma))
+                                    / (2*sigma**2))/(2*x*sqrt(pi)*sigma))
 
     X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
     assert density(X)(x) == sqrt(2)*exp(-log(x)**2/2)/(2*x*sqrt(pi))
@@ -378,7 +379,7 @@ def test_maxwell():
 
     X = Maxwell('x', a)
 
-    assert density(X)(x) == (sqrt(2)*x**2*exp(-x**2/(2*a**2))/
+    assert density(X)(x) == (sqrt(2)*x**2*exp(-x**2/(2*a**2)) /
         (sqrt(pi)*a**3))
     assert E(X) == 2*sqrt(2)*a/sqrt(pi)
     assert simplify(variance(X)) == a**2*(-8 + 3*pi)/pi
@@ -390,9 +391,9 @@ def test_nakagami():
 
     X = Nakagami('x', mu, omega)
     assert density(X)(x) == (2*x**(2*mu - 1)*mu**mu*omega**(-mu)
-                                *exp(-x**2*mu/omega)/gamma(mu))
+                             * exp(-x**2*mu/omega)/gamma(mu))
     assert simplify(E(X, meijerg=True)) == (sqrt(mu)*sqrt(omega)
-           *gamma(mu + S.Half)/gamma(mu + 1))
+           * gamma(mu + S.Half)/gamma(mu + 1))
     assert simplify(variance(X, meijerg=True)) == (
     omega - omega*gamma(mu + Rational(1, 2))**2/(gamma(mu)*gamma(mu + 1)))
 
@@ -505,7 +506,7 @@ def test_uniformsum():
 
     X = UniformSum('x', n)
     assert density(X)(x) == (Sum((-1)**_k*(-_k + x)**(n - 1)
-                        *binomial(n, _k), (_k, 0, floor(x)))/factorial(n - 1))
+                             * binomial(n, _k), (_k, 0, floor(x)))/factorial(n - 1))
 
 
 def test_von_mises():
@@ -590,7 +591,7 @@ def test_unevaluated():
         Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)), (x, 0, oo)))
 
     assert P(X > 0, X**2 < 1, evaluate=False) == (
-        Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)*
+        Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi) *
             Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)),
                 (x, -1, 1))), (x, 0, 1)))
 

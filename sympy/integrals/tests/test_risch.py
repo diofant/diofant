@@ -328,7 +328,7 @@ def test_integrate_hyperexponential_polynomial():
         Poly((x - t0)*t1**2 + (-2*t0 + 2*x)*t1, t1), Poly(-2*x*t0 + x**2 +
         t0**2, t1), True)
 
-    DE = DifferentialExtension(extension={'D':[Poly(1, x), Poly(t0, t0)]})
+    DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(t0, t0)]})
     assert integrate_hyperexponential_polynomial(Poly(0, t0), DE, z) == (
         Poly(0, t0), Poly(1, t0), True)
 
@@ -645,7 +645,7 @@ def test_risch_integrate():
     assert risch_integrate(sin(x), x, rewrite_complex=True) == -exp(I*x)/2 - exp(-I*x)/2
 
     # From my GSoC writeup
-    assert risch_integrate((1 + 2*x**2 + x**4 + 2*x**3*exp(2*x**2))/
+    assert risch_integrate((1 + 2*x**2 + x**4 + 2*x**3*exp(2*x**2)) /
     (x**4*exp(x**2) + 2*x**2*exp(x**2) + exp(x**2)), x) == \
         NonElementaryIntegral(exp(-x**2), x) + exp(x**2)/(1 + x**2)
 

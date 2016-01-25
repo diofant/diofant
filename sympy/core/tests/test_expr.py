@@ -238,18 +238,6 @@ def test_series_expansion_for_uniform_order():
     assert (1/x + y + y*x + x).series(x, 0, 1) == 1/x + y + O(x)
 
 
-def test_leadterm():
-    assert (3 + 2*x**(log(3)/log(2) - 1)).leadterm(x) == (3, 0)
-
-    assert (1/x**2 + 1 + x + x**2).leadterm(x)[1] == -2
-    assert (1/x + 1 + x + x**2).leadterm(x)[1] == -1
-    assert (x**2 + 1/x).leadterm(x)[1] == -1
-    assert (1 + x**2).leadterm(x)[1] == 0
-    assert (x + 1).leadterm(x)[1] == 0
-    assert (x + x**2).leadterm(x)[1] == 1
-    assert (x**2).leadterm(x)[1] == 2
-
-
 def test_as_leading_term():
     assert (3 + 2*x**(log(3)/log(2) - 1)).as_leading_term(x) == 3
     assert (1/x**2 + 1 + x + x**2).as_leading_term(x) == 1/x**2
@@ -260,15 +248,6 @@ def test_as_leading_term():
     assert (x + x**2).as_leading_term(x) == x
     assert (x**2).as_leading_term(x) == x**2
     assert (x + oo).as_leading_term(x) == oo
-
-
-def test_leadterm2():
-    assert (x*cos(1)*cos(1 + sin(1)) + sin(1 + sin(1))).leadterm(x) == \
-           (sin(1 + sin(1)), 0)
-
-
-def test_leadterm3():
-    assert (y + z + x).leadterm(x) == (y + z, 0)
 
 
 def test_as_leading_term2():

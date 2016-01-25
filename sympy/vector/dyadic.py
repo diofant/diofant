@@ -181,7 +181,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
         # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \
                not isinstance(vector2, (BaseVector, VectorZero)):
-            raise TypeError("BaseDyadic cannot be composed of non-base "+
+            raise TypeError("BaseDyadic cannot be composed of non-base " +
                             "vectors")
         # Handle special case of zero vector
         elif vector1 == Vector.zero or vector2 == Vector.zero:

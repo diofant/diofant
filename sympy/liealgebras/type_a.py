@@ -139,7 +139,7 @@ class TypeA(Standard_Cartan):
             m[i, i+1] = -1
             m[i, i-1] = -1
             i += 1
-        m[0,1] = -1
+        m[0, 1] = -1
         m[n-1, n-2] = -1
         return m
 

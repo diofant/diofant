@@ -277,8 +277,8 @@ class Pow(Expr):
                 #     _half(other) with constant floor or
                 #     floor(S.Half - im(e*log(b))/2/pi) == 0
                 try:
-                    s = exp(2*S.ImaginaryUnit*S.Pi*other*
-                        floor(S.Half - im(e*log(b))/2/S.Pi))
+                    s = exp(2*S.ImaginaryUnit*S.Pi*other *
+                            floor(S.Half - im(e*log(b))/2/S.Pi))
                     # be careful to test that s is -1 or 1 b/c sign(I) == I:
                     # so check that s is real
                     if s.is_extended_real and _n2(sign(s) - s) == 0:

@@ -909,9 +909,9 @@ class erf2inv(Function):
     def fdiff(self, argindex):
         x, y = self.args
         if argindex == 1:
-            return exp(self.func(x,y)**2-x**2)
+            return exp(self.func(x, y)**2-x**2)
         elif argindex == 2:
-            return sqrt(S.Pi)*S.Half*exp(self.func(x,y)**2)
+            return sqrt(S.Pi)*S.Half*exp(self.func(x, y)**2)
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -2330,7 +2330,7 @@ class _erfs(Function):
         # Expansion at oo
         if point is S.Infinity:
             z = self.args[0]
-            l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k)/
+            l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
                     factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
@@ -2341,7 +2341,7 @@ class _erfs(Function):
         if t is S.Infinity:
             z = self.args[0]
             # TODO: is the series really correct?
-            l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k)/
+            l = [1/sqrt(S.Pi)*factorial(2*k)*(-Integer(4))**(-k) /
                     factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries

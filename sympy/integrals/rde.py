@@ -58,7 +58,7 @@ def order_at(a, p, t):
     r = a.rem(p1)
     tracks_power = 1
     while r.is_zero:
-        power_list.append((p1,tracks_power))
+        power_list.append((p1, tracks_power))
         p1 = p1*p1
         tracks_power *= 2
         r = a.rem(p1)
@@ -281,7 +281,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
     else:
         dc = cQ.degree(DE.t)
 
-    alpha = cancel(-b.as_poly(DE.t).LC().as_expr()/
+    alpha = cancel(-b.as_poly(DE.t).LC().as_expr() /
         a.as_poly(DE.t).LC().as_expr())
 
     if case == 'base':

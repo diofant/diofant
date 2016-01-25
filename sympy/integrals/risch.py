@@ -914,7 +914,7 @@ def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
 
     for pi, i in p_sqf:
         Si = pi.as_poly(*kkinv).gcd(derivation(pi, DE,
-            coefficientD=coefficientD,basic=basic).as_poly(*kkinv)).as_poly(DE.t)
+            coefficientD=coefficientD, basic=basic).as_poly(*kkinv)).as_poly(DE.t)
         pi = Poly(pi, DE.t)
         Si = Poly(Si, DE.t)
         Ni = pi.exquo(Si)
@@ -973,7 +973,7 @@ def hermite_reduce(a, d, DE):
     dm = gcd(d, dd).as_poly(DE.t)
     ds, r = d.div(dm)
 
-    while dm.degree(DE.t)>0:
+    while dm.degree(DE.t) > 0:
 
         ddm = derivation(dm, DE)
         dm2 = gcd(dm, ddm)
@@ -1016,7 +1016,7 @@ def polynomial_reduce(p, DE):
     q = Poly(0, DE.t)
     while p.degree(DE.t) >= DE.d.degree(DE.t):
         m = p.degree(DE.t) - DE.d.degree(DE.t) + 1
-        q0 = Poly(DE.t**m, DE.t).mul(Poly(p.as_poly(DE.t).LC()/
+        q0 = Poly(DE.t**m, DE.t).mul(Poly(p.as_poly(DE.t).LC() /
             (m*DE.d.LC()), DE.t))
         q += q0
         p = p - derivation(q0, DE)
@@ -1033,7 +1033,7 @@ def laurent_series(a, d, F, n, DE):
     free factorization of D, return the principal parts of the Laurent series of
     A/D at all the zeros of F.
     """
-    if F.degree()==0:
+    if F.degree() == 0:
         return 0
     Z = _symbols('z', n)
     Z.insert(0, z)
@@ -1042,20 +1042,20 @@ def laurent_series(a, d, F, n, DE):
 
     E = d.quo(F**n)
     ha, hd = (a, E*Poly(z**n, DE.t))
-    dF = derivation(F,DE)
-    B, G = gcdex_diophantine(E, F, Poly(1,DE.t))
-    C, G = gcdex_diophantine(dF, F, Poly(1,DE.t))
+    dF = derivation(F, DE)
+    B, G = gcdex_diophantine(E, F, Poly(1, DE.t))
+    C, G = gcdex_diophantine(dF, F, Poly(1, DE.t))
 
     # initialization
     F_store = F
-    V, DE_D_list, H_list= [], [], []
+    V, DE_D_list, H_list = [], [], []
 
     for j in range(0, n):
     # jth derivative of z would be substituted with dfnth/(j+1) where dfnth =(d^n)f/(dx)^n
         F_store = derivation(F_store, DE)
         v = (F_store.as_expr())/(j + 1)
         V.append(v)
-        DE_D_list.append(Poly(Z[j + 1],Z[j]))
+        DE_D_list.append(Poly(Z[j + 1], Z[j]))
 
     DE_new = DifferentialExtension(extension={'D': DE_D_list})  # a differential indeterminate
     for j in range(0, n):
@@ -1094,7 +1094,7 @@ def recognize_derivative(a, d, DE, z=None):
     rational function if and only if Ei = 1 for each i, which is equivalent to
     Di | H[-1] for each i.
     """
-    flag =True
+    flag = True
     a, d = a.cancel(d, include=True)
     q, r = a.div(d)
     Np, Sp = splitfactor_sqf(d, DE, coefficientD=True, z=z)
@@ -1444,7 +1444,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         ret += qas/qds
 
     if not b:
-        i = p - (qd*derivation(qa, DE) - qa*derivation(qd, DE)).as_expr()/\
+        i = p - (qd*derivation(qa, DE) - qa*derivation(qd, DE)).as_expr() /\
             (qd**2).as_expr()
         i = NonElementaryIntegral(cancel(i).subs(s), DE.x)
     return (ret, i, b)
@@ -1695,7 +1695,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
         else:
             result = result.subs(DE.backsubs)
             if not i.is_zero:
-                i = NonElementaryIntegral(i.function.subs(DE.backsubs),i.limits)
+                i = NonElementaryIntegral(i.function.subs(DE.backsubs), i.limits)
             if not separate_integral:
                 result += i
                 return result

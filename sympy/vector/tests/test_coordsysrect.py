@@ -153,7 +153,7 @@ def test_rotation_matrix():
           sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1), cos(q1)*cos(q2)]])
     assert F.rotation_matrix(N) == Matrix([[
         q1**2 + q2**2 - q3**2 - q4**2,
-        2*q1*q4 + 2*q2*q3, -2*q1*q3 + 2*q2*q4],[ -2*q1*q4 + 2*q2*q3,
+        2*q1*q4 + 2*q2*q3, -2*q1*q3 + 2*q2*q4], [ -2*q1*q4 + 2*q2*q3,
             q1**2 - q2**2 + q3**2 - q4**2, 2*q1*q2 + 2*q3*q4],
         [2*q1*q3 + 2*q2*q4,
                                             -2*q1*q2 + 2*q3*q4,
@@ -162,7 +162,7 @@ def test_rotation_matrix():
         cos(q2)*cos(q3),  sin(q1)*sin(q2)*cos(q3) + sin(q3)*cos(q1),
         sin(q1)*sin(q3) - sin(q2)*cos(q1)*cos(q3)], [
             -sin(q3)*cos(q2), -sin(q1)*sin(q2)*sin(q3) + cos(q1)*cos(q3),
-            sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1)],[
+            sin(q1)*cos(q3) + sin(q2)*sin(q3)*cos(q1)], [
                 sin(q2), -sin(q1)*cos(q2), cos(q1)*cos(q2)]])
 
 
@@ -278,4 +278,4 @@ def test_evalf():
     A = CoordSysCartesian('A')
     v = 3*A.i + 4*A.j + a*A.k
     assert v.n() == v.evalf()
-    assert v.evalf(subs={a:1}) == v.subs(a, 1).evalf()
+    assert v.evalf(subs={a: 1}) == v.subs(a, 1).evalf()

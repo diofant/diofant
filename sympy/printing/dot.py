@@ -35,7 +35,7 @@ def attrprint(d, delimiter=', '):
     >>> print(attrprint({'color': 'blue', 'shape': 'ellipse'}))
     "color"="blue", "shape"="ellipse"
     """
-    return delimiter.join('"%s"="%s"'%item for item in sorted(d.items()))
+    return delimiter.join('"%s"="%s"' % item for item in sorted(d.items()))
 
 
 def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
@@ -79,7 +79,7 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
         if repeat:
             expr_str += '_%s' % str(pos)
             arg_strs = [arg_str + '_%s' % str(pos + (i,)) for i, arg_str in enumerate(arg_strs)]
-        return ['"%s" -> "%s";'%(expr_str, arg_str) for arg_str in arg_strs]
+        return ['"%s" -> "%s";' % (expr_str, arg_str) for arg_str in arg_strs]
 
 template = \
 """digraph{
@@ -182,6 +182,6 @@ def dotprint(expr, styles=default_styles,
 
     traverse(expr, 0)
 
-    return template%{'graphstyle': attrprint(graphstyle, delimiter='\n'),
-                     'nodes': '\n'.join(nodes),
-                     'edges': '\n'.join(edges)}
+    return template % {'graphstyle': attrprint(graphstyle, delimiter='\n'),
+                       'nodes': '\n'.join(nodes),
+                       'edges': '\n'.join(edges)}

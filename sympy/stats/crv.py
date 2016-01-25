@@ -386,7 +386,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
         y = Dummy('y')
         gs = solve(expr - y, self.value)
         if not gs:
-            raise ValueError("Can not solve %s for %s"%(expr, self.value))
+            raise ValueError("Can not solve %s for %s" % (expr, self.value))
         fx = self.compute_density(self.value)
         fy = sum(fx(g) * abs(g.diff(y)) for g in gs)
         return Lambda(y, fy)

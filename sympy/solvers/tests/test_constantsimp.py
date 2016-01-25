@@ -150,11 +150,11 @@ def test_ode_solutions():
         constantsimp(Eq(log(f(x)/C1) + 2*exp(x/f(x)), 0), [C1]),
         'C', 1, 1) == Eq(log(C1*f(x)) + 2*exp(x/f(x)), 0)
     assert constant_renumber(constantsimp(Eq(log(x*sqrt(2)*sqrt(1/x)*sqrt(f(x))
-        /C1) + x**2/(2*f(x)**2), 0), [C1]), 'C', 1, 1) == \
+        / C1) + x**2/(2*f(x)**2), 0), [C1]), 'C', 1, 1) == \
         Eq(log(C1*sqrt(x)*sqrt(f(x))) + x**2/(2*f(x)**2), 0)
     assert constant_renumber(constantsimp(Eq(-exp(-f(x)/x)*sin(f(x)/x)/2 + log(x/C1) -
         cos(f(x)/x)*exp(-f(x)/x)/2, 0), [C1]), 'C', 1, 1) == \
-        Eq(-exp(-f(x)/x)*sin(f(x)/x)/2 + log(C1*x) - cos(f(x)/x)*
+        Eq(-exp(-f(x)/x)*sin(f(x)/x)/2 + log(C1*x) - cos(f(x)/x) *
            exp(-f(x)/x)/2, 0)
     u2 = Symbol('u2')
     _a = Symbol('_a')

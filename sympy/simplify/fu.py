@@ -385,7 +385,7 @@ def TR2i(rv, half=False):
                     n[k] = d[a] = None
 
         if t:
-            rv = Mul(*(t + [b**e for b, e in n.items() if e]))/\
+            rv = Mul(*(t + [b**e for b, e in n.items() if e])) /\
                 Mul(*[b**e for b, e in d.items() if e])
             rv *= Mul(*[b**e for b, e in ndone])/Mul(*[b**e for b, e in ddone])
 
@@ -1596,7 +1596,7 @@ def L(rv):
 if SYMPY_DEBUG:
     (TR0, TR1, TR2, TR3, TR4, TR5, TR6, TR7, TR8, TR9, TR10, TR11, TR12, TR13,
     TR2i, TRmorrie, TR14, TR15, TR16, TR12i, TR111, TR22
-    )= list(map(debug,
+    ) = list(map(debug,
     (TR0, TR1, TR2, TR3, TR4, TR5, TR6, TR7, TR8, TR9, TR10, TR11, TR12, TR13,
     TR2i, TRmorrie, TR14, TR15, TR16, TR12i, TR111, TR22)))
 

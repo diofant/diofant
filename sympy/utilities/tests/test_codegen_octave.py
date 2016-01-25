@@ -434,7 +434,7 @@ def test_m_matrixsymbol_slice3():
 def test_m_matrixsymbol_slice_autoname():
     A = MatrixSymbol('A', 2, 3)
     B = MatrixSymbol('B', 1, 3)
-    name_expr = ("test", [Equality(B, A[0,:]), A[1,:], A[:,0], A[:,1]])
+    name_expr = ("test", [Equality(B, A[0, :]), A[1, :], A[:, 0], A[:, 1]])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
     source = result[1]
     expected = (
@@ -532,7 +532,7 @@ def test_m_InOutArgument_order():
     expr = Equality(x, x**2 + y)
     name_expr = ("test", expr)
     result, = codegen(name_expr, "Octave", header=False,
-                      empty=False, argument_sequence=(x,y))
+                      empty=False, argument_sequence=(x, y))
     source = result[1]
     expected = (
         "function x = test(x, y)\n"

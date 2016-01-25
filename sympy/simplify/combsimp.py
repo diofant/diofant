@@ -359,7 +359,7 @@ def combsimp(expr):
                     con = n*(resid + ui)  # for (2) and (3)
 
                     # (2)
-                    numer.append((2*S.Pi)**(Integer(n - 1)/2)*
+                    numer.append((2*S.Pi)**(Integer(n - 1)/2) *
                                  n**(Rational(1, 2) - con))
                     # (3)
                     new.append(con)

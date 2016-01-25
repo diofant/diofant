@@ -99,7 +99,7 @@ def test_dup_cyclotomic_p():
 
     R, x = ring("x", QQ)
     assert R.dup_cyclotomic_p(x**2 + x + 1) is True
-    assert R.dup_cyclotomic_p(QQ(1,2)*x**2 + x + 1) is False
+    assert R.dup_cyclotomic_p(QQ(1, 2)*x**2 + x + 1) is False
 
     R, x = ring("x", ZZ["y"])
     assert R.dup_cyclotomic_p(x**2 + x + 1) is False
@@ -250,7 +250,7 @@ def test_dup_zz_factor():
 
 
 def test_dmp_zz_wang():
-    R, x,y,z = ring("x,y,z", ZZ)
+    R,  x, y, z = ring("x,y,z", ZZ)
     UV, _x = ring("x", ZZ)
 
     p = ZZ(nextprime(R.dmp_zz_mignotte_bound(w_1)))
@@ -464,7 +464,7 @@ def test_dup_ext_factor():
 
 
 def test_dmp_ext_factor():
-    R, x,y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+    R,  x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
     def anp(x):
         return ANP(x, [QQ(1), QQ(0), QQ(-2)], QQ)
@@ -519,7 +519,7 @@ def test_dup_factor_list():
     assert R.dup_factor_list(6*x**2 - 5*x - 6) == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
     R, x = ring("x", QQ)
-    assert R.dup_factor_list(QQ(1,2)*x**2 + x + QQ(1,2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dup_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x = ring("x", FF(2))
     assert R.dup_factor_list(x**2 + 1) == (1, [(x + 1, 2)])
@@ -599,12 +599,12 @@ def test_dmp_factor_list():
     R, x = ring("x", ZZ)
     assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     R, x = ring("x", QQ)
-    assert R.dmp_factor_list(QQ(1,2)*x**2 + x + QQ(1,2)) == (QQ(1,2), [(x + 1, 2)])
+    assert R.dmp_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     R, x, y = ring("x,y", QQ)
-    assert R.dmp_factor_list(QQ(1,2)*x**2 + x + QQ(1,2)) == (QQ(1,2), [(x + 1, 2)])
+    assert R.dmp_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     f = 4*x**2*y + 4*x*y**2
@@ -619,15 +619,15 @@ def test_dmp_factor_list():
          (x, 1),
          (x + y, 1)]
 
-    R, x, y = ring("x,y", QQ)
-    f = QQ(1,2)*x**2*y + QQ(1,2)*x*y**2
+    R,  x, y = ring("x,y", QQ)
+    f = QQ(1, 2)*x**2*y + QQ(1, 2)*x*y**2
 
     assert R.dmp_factor_list(f) == \
-        (QQ(1,2), [(y, 1),
-                   (x, 1),
-                   (x + y, 1)])
+        (QQ(1, 2), [(y, 1),
+                    (x, 1),
+                    (x + y, 1)])
 
-    R, x, y = ring("x,y", RR)
+    R,  x, y = ring("x,y", RR)
     f = 2.0*x**2 - 8.0*y**2
 
     assert R.dmp_factor_list(f) == \

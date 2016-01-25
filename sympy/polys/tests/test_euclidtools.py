@@ -17,8 +17,8 @@ def test_dup_gcdex():
     f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     g = x**3 + x**2 - 4*x - 4
 
-    s = -QQ(1,5)*x + QQ(3,5)
-    t = QQ(1,5)*x**2 - QQ(6,5)*x + 2
+    s = -QQ(1, 5)*x + QQ(3, 5)
+    t = QQ(1, 5)*x**2 - QQ(6, 5)*x + 2
     h = x + 1
 
     assert R.dup_half_gcdex(f, g) == (s, h)
@@ -38,8 +38,8 @@ def test_dup_gcdex():
     f = 2*x
     g = x**2 - 16
 
-    s = QQ(1,32)*x
-    t = -QQ(1,16)
+    s = QQ(1, 32)*x
+    t = -QQ(1, 16)
     h = 1
 
     assert R.dup_half_gcdex(f, g) == (s, h)
@@ -48,7 +48,7 @@ def test_dup_gcdex():
 
 def test_dup_invert():
     R, x = ring("x", QQ)
-    assert R.dup_invert(2*x, x**2 - 16) == QQ(1,32)*x
+    assert R.dup_invert(2*x, x**2 - 16) == QQ(1, 32)*x
 
 
 def test_dup_euclidean_prs():
@@ -60,10 +60,10 @@ def test_dup_euclidean_prs():
     assert R.dup_euclidean_prs(f, g) == [
         f,
         g,
-        -QQ(5,9)*x**4 + QQ(1,9)*x**2 - QQ(1,3),
-        -QQ(117,25)*x**2 - 9*x + QQ(441,25),
-        QQ(233150,19773)*x - QQ(102500,6591),
-        -QQ(1288744821,543589225)]
+        -QQ(5, 9)*x**4 + QQ(1, 9)*x**2 - QQ(1, 3),
+        -QQ(117, 25)*x**2 - 9*x + QQ(441, 25),
+        QQ(233150, 19773)*x - QQ(102500, 6591),
+        -QQ(1288744821, 543589225)]
 
 
 def test_dup_primitive_prs():
@@ -209,15 +209,15 @@ def test_dmp_subresultants():
 
     assert R.dmp_zz_collins_resultant(f, g) == r.drop(x)
 
-    R, x, y, z, u, v = ring("x,y,z,u,v", QQ)
+    R,  x, y, z, u, v = ring("x,y,z,u,v", QQ)
 
-    f = x**2 - QQ(1,2)*x*y - QQ(1,3)*x*z + QQ(1,6)*y*z
+    f = x**2 - QQ(1, 2)*x*y - QQ(1, 3)*x*z + QQ(1, 6)*y*z
     g = x**2 - x*u - x*v + u*v
 
-    r = QQ(1,36)*y**2*z**2 - QQ(1,12)*y**2*z*u - QQ(1,12)*y**2*z*v + QQ(1,4)*y**2*u*v \
-      - QQ(1,18)*y*z**2*u - QQ(1,18)*y*z**2*v + QQ(1,6)*y*z*u**2 + QQ(1,3)*y*z*u*v \
-      + QQ(1,6)*y*z*v**2 - QQ(1,2)*y*u**2*v - QQ(1,2)*y*u*v**2 + QQ(1,9)*z**2*u*v \
-      - QQ(1,3)*z*u**2*v - QQ(1,3)*z*u*v**2 + u**2*v**2
+    r = QQ(1, 36)*y**2*z**2 - QQ(1, 12)*y**2*z*u - QQ(1, 12)*y**2*z*v + QQ(1, 4)*y**2*u*v \
+      - QQ(1, 18)*y*z**2*u - QQ(1, 18)*y*z**2*v + QQ(1, 6)*y*z*u**2 + QQ(1, 3)*y*z*u*v \
+      + QQ(1, 6)*y*z*v**2 - QQ(1, 2)*y*u**2*v - QQ(1, 2)*y*u*v**2 + QQ(1, 9)*z**2*u*v \
+      - QQ(1, 3)*z*u**2*v - QQ(1, 3)*z*u*v**2 + u**2*v**2
 
     assert R.dmp_qq_collins_resultant(f, g) == r.drop(x)
 
@@ -392,13 +392,13 @@ def test_dup_gcd():
 
     R, x = ring("x", QQ)
 
-    f = QQ(1,2)*x**2 + x + QQ(1,2)
-    g = QQ(1,2)*x + QQ(1,2)
+    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
+    g = QQ(1, 2)*x + QQ(1, 2)
 
     h = x + 1
 
-    assert R.dup_qq_heu_gcd(f, g) == (h, g, QQ(1,2))
-    assert R.dup_ff_prs_gcd(f, g) == (h, g, QQ(1,2))
+    assert R.dup_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
+    assert R.dup_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
 
     R, x = ring("x", ZZ)
 
@@ -413,7 +413,7 @@ def test_dup_gcd():
 
 
 def test_dmp_gcd():
-    R, x, y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
 
     f, g = 0, 0
     assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (0, 0, 0)
@@ -548,13 +548,13 @@ def test_dmp_gcd():
 
     R, x, y = ring("x,y", QQ)
 
-    f = QQ(1,2)*x**2 + x + QQ(1,2)
-    g = QQ(1,2)*x + QQ(1,2)
+    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
+    g = QQ(1, 2)*x + QQ(1, 2)
 
     h = x + 1
 
-    assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1,2))
-    assert R.dmp_ff_prs_gcd(f, g) == (h, g, QQ(1,2))
+    assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
+    assert R.dmp_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
 
     R, x, y = ring("x,y", RR)
 
@@ -581,7 +581,7 @@ def test_dup_lcm():
 
 
 def test_dmp_lcm():
-    R, x, y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
 
     assert R.dmp_lcm(2, 6) == 6
     assert R.dmp_lcm(x, y) == x*y
@@ -605,7 +605,7 @@ def test_dmp_lcm():
 
 
 def test_dmp_content():
-    R, x,y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
 
     assert R.dmp_content(-2) == 2
 
@@ -617,17 +617,17 @@ def test_dmp_content():
 
     assert R.dmp_content(F) == f.drop(x)
 
-    R, x,y,z = ring("x,y,z", ZZ)
+    R,  x, y, z = ring("x,y,z", ZZ)
 
     assert R.dmp_content(f_4) == 1
     assert R.dmp_content(f_5) == 1
 
-    R, x,y,z,t = ring("x,y,z,t", ZZ)
+    R,  x, y, z, t = ring("x,y,z,t", ZZ)
     assert R.dmp_content(f_6) == 1
 
 
 def test_dmp_primitive():
-    R, x,y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
 
     assert R.dmp_primitive(0) == (0, 0)
     assert R.dmp_primitive(1) == (1, 1)
@@ -640,14 +640,14 @@ def test_dmp_primitive():
 
     assert R.dmp_primitive(F) == (f.drop(x), F / f)
 
-    R, x,y,z = ring("x,y,z", ZZ)
+    R,  x, y, z = ring("x,y,z", ZZ)
 
     cont, f = R.dmp_primitive(f_4)
     assert cont == 1 and f == f_4
     cont, f = R.dmp_primitive(f_5)
     assert cont == 1 and f == f_5
 
-    R, x,y,z,t = ring("x,y,z,t", ZZ)
+    R,  x, y, z, t = ring("x,y,z,t", ZZ)
 
     cont, f = R.dmp_primitive(f_6)
     assert cont == 1 and f == f_6

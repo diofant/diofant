@@ -256,7 +256,7 @@ class TIDS(CantSympify):
                 # check consistency and update free
                 if is_contr:
                     if contr:
-                        raise ValueError('two equal contravariant indices in slots %d and %d' %(pos, i))
+                        raise ValueError('two equal contravariant indices in slots %d and %d' % (pos, i))
                     else:
                         free[pos] = False
                         free[i] = False
@@ -265,7 +265,7 @@ class TIDS(CantSympify):
                         free[pos] = False
                         free[i] = False
                     else:
-                        raise ValueError('two equal covariant indices in slots %d and %d' %(pos, i))
+                        raise ValueError('two equal covariant indices in slots %d and %d' % (pos, i))
                 if contr:
                     dum.append((i, pos, 0, 0))
                 else:
@@ -1178,8 +1178,8 @@ class _TensorManager(object):
         self._comm[1][1] = 1
         self._comm[2][1] = None
         self._comm[1][2] = None
-        self._comm_symbols2i = {0:0, 1:1, 2:2}
-        self._comm_i2symbol = {0:0, 1:1, 2:2}
+        self._comm_symbols2i = {0: 0, 1: 1, 2: 2}
+        self._comm_i2symbol = {0: 0, 1: 1, 2: 2}
 
     @property
     def comm(self):
@@ -2222,7 +2222,7 @@ class TensorHead(Basic):
         return r
 
     def _print(self):
-        return '%s(%s)' %(self.name, ','.join([str(x) for x in self.index_types]))
+        return '%s(%s)' % (self.name, ','.join([str(x) for x in self.index_types]))
 
     def _check_auto_matrix_indices_in_call(self, *indices):
         matrix_behavior_kinds = dict()
@@ -3768,8 +3768,8 @@ def riemann_cyclic_replace(t_r):
     free = sorted(t_r.free, key=lambda x: x[1])
     m, n, p, q = [x[0] for x in free]
     t0 = Rational(2, 3)*t_r
-    t1 = - Rational(1, 3)*t_r.substitute_indices((m,m),(n,q),(p,n),(q,p))
-    t2 = Rational(1, 3)*t_r.substitute_indices((m,m),(n,p),(p,n),(q,q))
+    t1 = - Rational(1, 3)*t_r.substitute_indices((m, m), (n, q), (p, n), (q, p))
+    t2 = Rational(1, 3)*t_r.substitute_indices((m, m), (n, p), (p, n), (q, q))
     t3 = t0 + t1 + t2
     return t3
 

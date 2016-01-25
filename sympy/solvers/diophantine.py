@@ -504,7 +504,7 @@ def extended_euclid(a, b):
     if b == 0:
         return (1, 0, a)
 
-    x0, y0, d = extended_euclid(b, a%b)
+    x0, y0, d = extended_euclid(b, a % b)
     x, y = y0, x0 - (a//b) * y0
 
     return x, y, d
@@ -615,10 +615,10 @@ def _diop_quadratic(var, coeff, t):
 
             for d in div:
                 if divisible(int(d - E), int(B)):
-                    x0  = (d - E) // B
+                    x0  = (d - E)//B
                     if divisible(int(D*E - B*F), int(d)):
-                        if divisible(int((D*E - B*F)// d - D), int(B)):
-                            y0 = ((D*E - B*F) // d - D) // B
+                        if divisible(int((D*E - B*F)//d - D), int(B)):
+                            y0 = ((D*E - B*F)//d - D)//B
                             l.add((x0, y0))
 
     # (3) Parabolic case: B**2 - 4*A*C = 0
@@ -771,8 +771,8 @@ def _diop_quadratic(var, coeff, t):
                         if is_solution_quad(var, coeff, x, y):
                             done = True
 
-                            x_n = ( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ 2
-                            y_n = ( (X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L) )/ (2*sqrt(D))
+                            x_n = ((X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) + (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L))/2
+                            y_n = ((X_1 + sqrt(D)*Y_1)*(T + sqrt(D)*U)**(t*L) - (X_1 - sqrt(D)*Y_1)*(T - sqrt(D)*U)**(t*L))/(2*sqrt(D))
 
                             x_n = _mexpand(x_n)
                             y_n = _mexpand(y_n)
@@ -1277,7 +1277,7 @@ def length(P, Q, D):
         if q == a:
             return len(res)
 
-        num, den = rad_rationalize(1,(q - a))
+        num, den = rad_rationalize(1, (q - a))
         q = num / den
 
         if q in v:
@@ -2057,7 +2057,7 @@ def reconstruct(a, b, z):
     if g != 1:
         f = factorint(g)
         for p, e in f.items():
-            if e %2 == 0:
+            if e % 2 == 0:
                 z = z*p**(e//2)
             else:
                 z = z*p**((e//2)+1)
@@ -2216,7 +2216,7 @@ def gaussian_reduce(w, a, b):
 
     while norm(u, w, a, b) > norm(v, w, a, b):
         k = dot(u, v, w, a, b) // dot(v, v, w, a, b)
-        u, v = v, (u[0]- k*v[0], u[1]- k*v[1])
+        u, v = v, (u[0] - k*v[0], u[1] - k*v[1])
 
     u, v = v, u
 
@@ -2609,9 +2609,9 @@ def sum_of_three_squares(n):
     .. [1] Representing a number as a sum of three squares, [online],
         Available: http://www.schorn.ch/howto.html
     """
-    special = {1:(1, 0, 0), 2:(1, 1, 0), 3:(1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58:(3, 7, 0),
-        85:(6, 7, 0), 130:(3, 11, 0), 214:(3, 6, 13), 226:(8, 9, 9), 370:(8, 9, 15),
-        526:(6, 7, 21), 706:(15, 15, 16), 730:(1, 27, 0), 1414:(6, 17, 33), 1906:(13, 21, 36),
+    special = {1: (1, 0, 0), 2: (1, 1, 0), 3: (1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58: (3, 7, 0),
+        85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
+        526: (6, 7, 21), 706: (15, 15, 16), 730: (1, 27, 0), 1414: (6, 17, 33), 1906: (13, 21, 36),
         2986: (21, 32, 39), 9634: (56, 57, 57)}
 
     v = 0

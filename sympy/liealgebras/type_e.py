@@ -114,7 +114,7 @@ class TypeE(Standard_Cartan):
                     for c in range(0, 2):
                         for d in range(0, 2):
                             for e in range(0, 2):
-                                if (a + b + c + d + e)%2 == 0:
+                                if (a + b + c + d + e) % 2 == 0:
                                     k += 1
                                     if a == 1:
                                         root[0] = Rational(-1, 2)
@@ -152,7 +152,7 @@ class TypeE(Standard_Cartan):
                         for d in range(0, 2):
                             for e in range(0, 2):
                                 for f in range(0, 2):
-                                    if (a + b + c + d + e + f)%2 == 0:
+                                    if (a + b + c + d + e + f) % 2 == 0:
                                         k += 1
                                         if a == 1:
                                             root[0] = Rational(-1, 2)
@@ -191,7 +191,7 @@ class TypeE(Standard_Cartan):
                             for e in range(0, 2):
                                 for f in range(0, 2):
                                     for g in range(0, 2):
-                                        if (a + b + c + d + e + f + g)%2 == 0:
+                                        if (a + b + c + d + e + f + g) % 2 == 0:
                                             k += 1
                                             if a == 1:
                                                 root[0] = Rational(-1, 2)

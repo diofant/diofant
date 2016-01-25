@@ -12,7 +12,7 @@ from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
 from sympy.utilities import cartes
 
 
-A, B, C, D= symbols('A,B,C,D')
+A, B, C, D = symbols('A,B,C,D')
 
 
 def test_overloading():
@@ -255,10 +255,10 @@ def test_bool_map():
     assert bool_map(SOPform([w, x, y, z], minterms),
         POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
-    assert bool_map(SOPform([x, z, y],[[1, 0, 1]]),
-        SOPform([a, b, c],[[1, 0, 1]])) != False
-    function1 = SOPform([x,z,y],[[1, 0, 1], [0, 0, 1]])
-    function2 = SOPform([a,b,c],[[1, 0, 1], [1, 0, 0]])
+    assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
+        SOPform([a, b, c], [[1, 0, 1]])) != False
+    function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
+    function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     assert bool_map(function1, function2) == \
         (function1, {y: a, z: b})
 
@@ -659,7 +659,7 @@ def test_multivariate_bool_as_set():
 
 def test_all_or_nothing():
     x = symbols('x', extended_real=True)
-    args = x >=- oo, x <= oo
+    args = x >= - oo, x <= oo
     v = And(*args)
     if v.func is And:
         assert len(v.args) == len(args) - args.count(S.true)

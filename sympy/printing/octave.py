@@ -301,7 +301,7 @@ class OctaveCodePrinter(CodePrinter):
         _print_SparseMatrix
 
     def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '(%s, %s)'%(expr.i+1, expr.j+1)
+        return self._print(expr.parent) + '(%s, %s)' % (expr.i + 1, expr.j + 1)
 
     def _print_MatrixSlice(self, expr):
         def strslice(x, lim):

@@ -18,16 +18,16 @@ def test_count_ops_non_visual():
     assert count(x + y*x + 2*y) == 4
     assert count({x + y: x}) == 1
     assert count({x + y: Integer(2) + x}) is not S.One
-    assert count(Or(x,y)) == 1
-    assert count(And(x,y)) == 1
+    assert count(Or(x, y)) == 1
+    assert count(And(x, y)) == 1
     assert count(Not(x)) == 1
-    assert count(Nor(x,y)) == 2
-    assert count(Nand(x,y)) == 2
-    assert count(Xor(x,y)) == 1
-    assert count(Implies(x,y)) == 1
-    assert count(Equivalent(x,y)) == 1
-    assert count(ITE(x,y,z)) == 1
-    assert count(ITE(True,x,y)) == 0
+    assert count(Nor(x, y)) == 2
+    assert count(Nand(x, y)) == 2
+    assert count(Xor(x, y)) == 1
+    assert count(Implies(x, y)) == 1
+    assert count(Equivalent(x, y)) == 1
+    assert count(ITE(x, y, z)) == 1
+    assert count(ITE(True, x, y)) == 0
 
 
 def test_count_ops_visual():
@@ -95,19 +95,19 @@ def test_count_ops_visual():
     assert count([]) is S.Zero
 
     assert count(Basic()) == 0
-    assert count(Basic(Basic(),Basic(x,x+y))) == ADD + 2*BASIC
+    assert count(Basic(Basic(), Basic(x, x + y))) == ADD + 2*BASIC
     assert count(Basic(x, x + y)) == ADD + BASIC
-    assert count(Or(x,y)) == OR
-    assert count(And(x,y)) == AND
-    assert count(And(x**y,z)) == AND + POW
-    assert count(Or(x,Or(y,And(z,a)))) == AND + OR
-    assert count(Nor(x,y)) == NOT + OR
-    assert count(Nand(x,y)) == NOT + AND
-    assert count(Xor(x,y)) == XOR
-    assert count(Implies(x,y)) == IMPLIES
-    assert count(Equivalent(x,y)) == EQUIVALENT
-    assert count(ITE(x,y,z)) == ITE
-    assert count([Or(x,y), And(x,y), Basic(x+y)]) == ADD + AND + BASIC + OR
+    assert count(Or(x, y)) == OR
+    assert count(And(x, y)) == AND
+    assert count(And(x**y, z)) == AND + POW
+    assert count(Or(x, Or(y, And(z, a)))) == AND + OR
+    assert count(Nor(x, y)) == NOT + OR
+    assert count(Nand(x, y)) == NOT + AND
+    assert count(Xor(x, y)) == XOR
+    assert count(Implies(x, y)) == IMPLIES
+    assert count(Equivalent(x, y)) == EQUIVALENT
+    assert count(ITE(x, y, z)) == ITE
+    assert count([Or(x, y), And(x, y), Basic(x + y)]) == ADD + AND + BASIC + OR
 
     assert count(Basic(Tuple(x))) == BASIC + TUPLE
     # It checks that TUPLE is counted as an operation.

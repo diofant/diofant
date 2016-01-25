@@ -217,7 +217,7 @@ def test_scalar_potential_difference():
                                         x*y*k, C, point1,
                                         genericpointC) ==
             x*y*z - 6)
-    potential_diff_P = (2*P.z*(P.x*sin(q) + P.y*cos(q))*
+    potential_diff_P = (2*P.z*(P.x*sin(q) + P.y*cos(q)) *
                         (P.x*cos(q) - P.y*sin(q))**2)
     assert (scalar_potential_difference(grad_field, P, P.origin,
                                         genericpointP).simplify() ==

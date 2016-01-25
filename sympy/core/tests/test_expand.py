@@ -191,9 +191,9 @@ def test_expand_arit():
     assert e.expand() == 1 + x**2/2 + O(x**4)
 
     e = (x*(y + z))**(x*(y + z))*(x + y)
-    assert e.expand(power_exp=False, power_base=False) == x*(x*y + x*
+    assert e.expand(power_exp=False, power_base=False) == x*(x*y + x *
                     z)**(x*y + x*z) + y*(x*y + x*z)**(x*y + x*z)
-    assert e.expand(power_exp=False, power_base=False, deep=False) == x* \
+    assert e.expand(power_exp=False, power_base=False, deep=False) == x * \
         (x*(y + z))**(x*(y + z)) + y*(x*(y + z))**(x*(y + z))
     e = (x*(y + z))**z
     assert e.expand(power_base=True, mul=True, deep=True) in [x**z*(y +
@@ -258,14 +258,14 @@ def test_issues_5919_6830():
     assert expand_multinomial((1 + x*p)**2) == (
         x**2*(x**4 + 4*x**3 + 6*x**2 + 4*x + 1) + 2*x*(x**2 + 2*x + 1) + 1)
     assert expand_multinomial((1 + (y + x)*p)**2) == (
-        2*((x + y)*(x**2 + 2*x + 1)) + (x**2 + 2*x*y + y**2)*
+        2*((x + y)*(x**2 + 2*x + 1)) + (x**2 + 2*x*y + y**2) *
         (x**4 + 4*x**3 + 6*x**2 + 4*x + 1) + 1)
     A = Symbol('A', commutative=False)
     p = (1 + A)**2
     assert expand_multinomial((1 + x*p)**2) == (
         x**2*(1 + 4*A + 6*A**2 + 4*A**3 + A**4) + 2*x*(1 + 2*A + A**2) + 1)
     assert expand_multinomial((1 + (y + x)*p)**2) == (
-        (x + y)*(1 + 2*A + A**2)*2 + (x**2 + 2*x*y + y**2)*
+        (x + y)*(1 + 2*A + A**2)*2 + (x**2 + 2*x*y + y**2) *
         (1 + 4*A + 6*A**2 + 4*A**3 + A**4) + 1)
     assert expand_multinomial((1 + (y + x)*p)**3) == (
         (x + y)*(1 + 2*A + A**2)*3 + (x**2 + 2*x*y + y**2)*(1 + 4*A +

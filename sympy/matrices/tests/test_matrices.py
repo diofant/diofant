@@ -88,7 +88,7 @@ def test_fancy_index_matrix():
             [3, 4, 5],
             [6, 7, 8],
             [3, 4, 5]])
-        assert a[:, [0,2,1,2,1]] == Matrix([
+        assert a[:, [0, 2, 1, 2, 1]] == Matrix([
             [0, 2, 1, 2, 1],
             [3, 5, 4, 5, 4],
             [6, 8, 7, 8, 7]])
@@ -2173,10 +2173,10 @@ def test_is_Identity():
     # issue 6242
     assert not Matrix([[1, 0, 0]]).is_Identity
     # issue 8854
-    assert SparseMatrix(3,3, {(0,0):1, (1,1):1, (2,2):1}).is_Identity
-    assert not SparseMatrix(2,3, range(6)).is_Identity
-    assert not SparseMatrix(3,3, {(0,0):1, (1,1):1}).is_Identity
-    assert not SparseMatrix(3,3, {(0,0):1, (1,1):1, (2,2):1, (0,1):2, (0,2):3}).is_Identity
+    assert SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1, (2, 2): 1}).is_Identity
+    assert not SparseMatrix(2, 3, range(6)).is_Identity
+    assert not SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1}).is_Identity
+    assert not SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1, (2, 2): 1, (0, 1): 2, (0, 2): 3}).is_Identity
 
 
 def test_dot():
@@ -2336,7 +2336,7 @@ def test_replace_map():
 def test_atoms():
     from sympy.abc import x
     m = Matrix([[1, 2], [x, 1 - 1/x]])
-    assert m.atoms() == {Integer(1),Integer(2),Integer(-1), x}
+    assert m.atoms() == {Integer(1), Integer(2), Integer(-1), x}
     assert m.atoms(Symbol) == {x}
 
 

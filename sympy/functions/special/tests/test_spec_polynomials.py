@@ -20,9 +20,9 @@ def test_jacobi():
 
     assert jacobi(n, a, a, x) == RisingFactorial(
         a + 1, n)*gegenbauer(n, a + Rational(1, 2), x)/RisingFactorial(2*a + 1, n)
-    assert jacobi(n, a, -a, x) == ((-1)**a*(-x + 1)**(-a/2)*(x + 1)**(a/2)*assoc_legendre(n, a, x)*
+    assert jacobi(n, a, -a, x) == ((-1)**a*(-x + 1)**(-a/2)*(x + 1)**(a/2)*assoc_legendre(n, a, x) *
                                    factorial(-a + n)*gamma(a + n + 1)/(factorial(a + n)*gamma(n + 1)))
-    assert jacobi(n, -b, b, x) == ((-x + 1)**(b/2)*(x + 1)**(-b/2)*assoc_legendre(n, b, x)*
+    assert jacobi(n, -b, b, x) == ((-x + 1)**(b/2)*(x + 1)**(-b/2)*assoc_legendre(n, b, x) *
                                    gamma(-b + n + 1)/gamma(n + 1))
     assert jacobi(n, 0, 0, x) == legendre(n, x)
     assert jacobi(n, S.Half, S.Half, x) == RisingFactorial(
@@ -50,7 +50,7 @@ def test_jacobi():
 
     assert jacobi_normalized(n, a, b, x) == \
            (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
-                                    /((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1))))
+                                    / ((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1))))
 
     pytest.raises(ValueError, lambda: jacobi(-2.1, a, b, x))
     pytest.raises(ValueError, lambda: jacobi(Dummy(positive=True, integer=True), 1, 2, oo))

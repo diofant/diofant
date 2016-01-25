@@ -1,9 +1,10 @@
 import pytest
 
 from sympy import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
-                   Function, log, sqrt, Symbol, Subs, pi, symbols, Rational)
+                   Function, log, sqrt, Symbol, Subs, pi, symbols,
+                   Rational, Integer)
 
-from sympy.abc import x, y
+from sympy.abc import x, y, l
 
 
 def test_sin():
@@ -60,9 +61,7 @@ def test_issue_5223():
     assert (1 + x).getn() is None
 
     assert ((1/sin(x))**oo).series() == oo
-    logx = Symbol('logx')
-    assert ((sin(x))**y).nseries(x, n=1, logx=logx) == \
-        exp(y*logx) + O(x*exp(y*logx), x)
+    assert ((sin(x))**y).nseries(x, n=1, logx=l) == exp(y*l) + O(x*exp(y*l), x)
 
     assert sin(1/x).series(x, oo, n=5) == 1/x - 1/(6*x**3) + O(x**(-5), (x, oo))
     assert abs(x).series(x, oo, n=5, dir='+') == x
@@ -99,8 +98,6 @@ def test_issue_3978():
     assert TestF(x).series(x, 0, 3) ==  TestF(0) + \
             x*Subs(Derivative(TestF(x), x), (x,), (0,)) + \
             x**2*Subs(Derivative(TestF(x), x, x), (x,), (0,))/2 + O(x**3)
-
-from sympy import Sum, Integer
 
 
 def test_issue_5852():
@@ -140,7 +137,7 @@ def test_exp_product_positive_factors():
     x = a * b
     assert series(exp(x), x, n=8) == 1 + a*b + a**2*b**2/2 + \
         a**3*b**3/6 + a**4*b**4/24 + a**5*b**5/120 + a**6*b**6/720 + \
-        a**7*b**7/5040 + O(a**8*b**8, a, b)
+        a**7*b**7/5040 + O(a**8*b**8)
 
 
 def test_issue_8805():
