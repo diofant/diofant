@@ -178,7 +178,7 @@ setup(name='sympy',
       setup_requires=['setuptools>=5.5.1,<=19.4', 'pip>=6.0'],
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],
-          'gmpy': ["gmpy>=1.16"],
+          'gmpy': ["gmpy2"],
           'plot': ["matplotlib"],
           'interactive': ["ipython>=2.3.0"],
       }
