@@ -425,7 +425,7 @@ def test_line3d():
     assert Line3D.are_concurrent(l1, l1_1, l3) is False
     parallel_1 = Line3D(Point3D(0, 0, 0), Point3D(1, 0, 0))
     parallel_2 = Line3D(Point3D(0, 1, 0), Point3D(1, 1, 0))
-    assert Line3D.are_concurrent(parallel_1, parallel_2) == False
+    assert Line3D.are_concurrent(parallel_1, parallel_2) is False
 
     # Finding angles
     l1_1 = Line3D(p1, Point3D(5, 0, 0))

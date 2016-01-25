@@ -603,7 +603,7 @@ def dsolve(eq, func=None, hint="default", simplify=True,
         if match['type_of_equation'] is None:
             raise NotImplementedError
         else:
-            if match['is_linear'] == True:
+            if match['is_linear']:
                 if match['no_of_equation'] > 3:
                     solvefunc = globals()['sysode_linear_neq_order%(order)s' % match]
                 else:
@@ -1440,7 +1440,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
 
     if len(set(order.values())) == 1:
         order_eq = list(matching_hints['order'].values())[0]
-        if matching_hints['is_linear'] == True:
+        if matching_hints['is_linear']:
             if matching_hints['no_of_equation'] == 2:
                 if order_eq == 1:
                     type_of_equation = check_linear_2eq_order1(eq, funcs, func_coef)

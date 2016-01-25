@@ -169,7 +169,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         for n, limit in enumerate(self.limits):
             i, a, b = limit
             dif = b - a
-            if dif.is_integer and (dif < 0) == True:
+            if dif.is_integer and (dif < 0) is S.true:
                 a, b = b + 1, a - 1
                 f = -f
 
@@ -283,7 +283,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if len(self.limits) != 1:
             raise ValueError("More than 1 limit")
         i, a, b = self.limits[0]
-        if (a > b) == True:
+        if (a > b) is S.true:
             if a - b == 1:
                 return S.Zero, S.Zero
             a, b = b + 1, a - 1

@@ -198,7 +198,7 @@ class Set(Basic):
             return S.EmptySet
 
         elif isinstance(other, FiniteSet):
-            return FiniteSet(*[el for el in other if self.contains(el) != True])
+            return FiniteSet(*[el for el in other if self.contains(el) is not S.true])
 
     def symmetric_difference(self, other):
         return SymmetricDifference(self, other)
@@ -264,7 +264,7 @@ class Set(Basic):
         other = sympify(other, strict=True)
         ret = self._contains(other)
         if ret is None:
-            if all(Eq(i, other) == False for i in self):
+            if all(Eq(i, other) is S.false for i in self):
                 return False
             ret = Contains(other, self, evaluate=False)
         return ret
@@ -702,7 +702,7 @@ class Interval(Set, EvalfMixin):
             raise ValueError("Non-real intervals are not supported")
 
         # evaluate if possible
-        if (end < start) == True:
+        if (end < start) is S.true:
             return S.EmptySet
         elif (end - start).is_negative:
             return S.EmptySet
@@ -1362,7 +1362,7 @@ class Intersection(Set):
         for s in args:
             if s.is_FiniteSet:
                 return s.func(*[x for x in s
-                    if all(other.contains(x) == True for other in args)])
+                    if all(other.contains(x) is S.true for other in args)])
 
         # If any of the sets are unions, return a Union of Intersections
         for s in args:

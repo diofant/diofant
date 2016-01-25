@@ -188,7 +188,7 @@ def test_DN():
     assert diop_DN(13, -4) == [(3, 1), (393, 109), (36, 10)]
     # Source I referred returned (3, 1), (393, 109) and (-3, 1) as fundamental solutions
     # So (-3, 1) and (393, 109) should be in the same equivalent class
-    assert equivalent(-3, 1, 393, 109, 13, -4) == True
+    assert equivalent(-3, 1, 393, 109, 13, -4)
 
     assert diop_DN(13, 27) == [(220, 61), (40, 11), (768, 213), (12, 3)]
     assert set(diop_DN(157, 12)) == \

@@ -239,8 +239,8 @@ def test_simplification():
 
     # check working of simplify
     assert simplify((A & B) | (A & C)) == And(A, Or(B, C))
-    assert simplify(And(x, Not(x))) == False
-    assert simplify(Or(x, Not(x))) == True
+    assert simplify(And(x, Not(x))) is S.false
+    assert simplify(Or(x, Not(x))) is S.true
 
 
 def test_bool_map():
@@ -256,7 +256,7 @@ def test_bool_map():
         POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
     assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
-        SOPform([a, b, c], [[1, 0, 1]])) != False
+                    SOPform([a, b, c], [[1, 0, 1]])) is not S.false
     function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     assert bool_map(function1, function2) == \
@@ -487,16 +487,16 @@ def test_is_literal():
 def test_operators():
     # Mostly test __and__, __rand__, and so on
     assert True & A == (A & True) == A
-    assert False & A == (A & False) == False
+    assert False & A == (A & False) == S.false
     assert A & B == And(A, B)
-    assert True | A == (A | True) == True
+    assert True | A == (A | True) == S.true
     assert False | A == (A | False) == A
     assert A | B == Or(A, B)
     assert ~A == Not(A)
     assert True >> A == (A << True) == A
     assert False >> A == (A << False) == S.true
-    assert (A >> True) == True << A == S.true
-    assert (A >> False) == False << A == ~A
+    assert (A >> True) == (True << A) == S.true
+    assert (A >> False) == (False << A) == ~A
     assert A >> B == B << A == Implies(A, B)
     assert True ^ A == A ^ True == ~A
     assert False ^ A == (A ^ False) == A

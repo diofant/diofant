@@ -1110,7 +1110,7 @@ def test_N1():
 def test_N2():
     x = symbols('x', extended_real=True)
     assert ask(Q.is_true(x**4 - x + 1 > 0))
-    assert ask(Q.is_true(x**4 - x + 1 > 1)) == False
+    assert ask(Q.is_true(x**4 - x + 1 > 1)) is False
 
 
 @pytest.mark.xfail

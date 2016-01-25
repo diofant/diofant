@@ -2,7 +2,7 @@ from strategies import exhaust, condition, do_one
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from sympy.core import Basic, Add, sympify
+from sympy.core import S, Basic, Add, sympify
 from sympy.core.strategies import unpack
 from sympy.utilities import sift
 from sympy.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
@@ -142,12 +142,12 @@ class BlockMatrix(MatrixExpr):
     def _entry(self, i, j):
         # Find row entry
         for row_block, numrows in enumerate(self.rowblocksizes):
-            if (i < numrows) != False:
+            if (i < numrows) is not S.false:
                 break
             else:
                 i -= numrows
         for col_block, numcols in enumerate(self.colblocksizes):
-            if (j < numcols) != False:
+            if (j < numcols) is not S.false:
                 break
             else:
                 j -= numcols

@@ -3259,7 +3259,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
         for b in orb:
             for gen in gens:
                 temp = gen[b]
-                if used[temp] == False:
+                if used[temp] is False:
                     orb.append(temp)
                     used[temp] = True
         return set(orb)
@@ -3356,7 +3356,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
     for x, px in tr:
         for gen in gens:
             temp = gen[x]
-            if used[temp] == False:
+            if used[temp] is False:
                 tr.append((temp, _af_rmul(gen, px)))
                 used[temp] = True
     if pairs:

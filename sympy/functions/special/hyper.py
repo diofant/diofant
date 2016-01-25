@@ -255,9 +255,9 @@ class hyper(TupleParametersBase):
         >>> hyper((1, 2), (3, 4), z).radius_of_convergence
         oo
         """
-        if any(a.is_integer and (a <= 0) == True for a in self.ap + self.bq):
-            aints = [a for a in self.ap if a.is_Integer and (a <= 0) == True]
-            bints = [a for a in self.bq if a.is_Integer and (a <= 0) == True]
+        if any(a.is_integer and (a <= 0) is S.true for a in self.ap + self.bq):
+            aints = [a for a in self.ap if a.is_Integer and (a <= 0) is S.true]
+            bints = [a for a in self.bq if a.is_Integer and (a <= 0) is S.true]
             if len(aints) < len(bints):
                 return Integer(0)
             popped = False
