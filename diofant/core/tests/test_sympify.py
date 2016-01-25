@@ -71,10 +71,7 @@ def test_sympify_Fraction():
 
 def test_sympify_gmpy():
     if HAS_GMPY:
-        if HAS_GMPY == 2:
-            import gmpy2 as gmpy
-        elif HAS_GMPY == 1:
-            import gmpy
+        import gmpy2 as gmpy
 
         value = sympify(gmpy.mpz(1000001))
         assert value == Integer(1000001) and type(value) is Integer

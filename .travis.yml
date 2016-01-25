@@ -12,6 +12,7 @@ env:
 addons:
   apt:
     packages:
+      - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
       - libatlas-base-dev
@@ -27,7 +28,7 @@ matrix:
         - codecov
     - python: 3.4
       install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - travis_wait pip install .[exports,plot,interactive]
         - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
       script:
         - python setup.py flake8
@@ -36,11 +37,25 @@ matrix:
       after_success:
         - codecov
     - python: 3.4
+      before_install:
+        - |
+          mkdir -p $HOME/.local
+          wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
+          tar xzvf mpc-1.0.2.tar.gz
+          pushd mpc-1.0.2
+          ./configure --prefix=$HOME/.local
+          make all install
+          popd
+          export CPATH=$HOME/.local/include
+          export LIBRARY_PATH=$HOME/.local/lib
+          export LD_LIBRARY_PATH=$HOME/.local/lib
+        - pip install --upgrade pip setuptools pytest
+        - pip install codecov
       install:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
         - pip install pytest-cov
       env:
-        - DIOFANT_GROUND_TYPES=gmpy1
+        - DIOFANT_GROUND_TYPES=gmpy
       script:
         - py.test --cov diofant diofant/polys
         - python examples/all.py
@@ -50,7 +65,7 @@ before_install:
   - pip install --upgrade pip setuptools pytest
   - pip install codecov
 install:
-  - travis_wait pip install .[exports,plot,interactive,gmpy]
+  - travis_wait pip install .[exports,plot,interactive]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0

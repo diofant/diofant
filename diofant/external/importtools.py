@@ -91,7 +91,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
 
     >>> # gmpy does not have __version__, but it does have gmpy.version()
 
-    >>> gmpy = import_module('gmpy', min_module_version='1.14',
+    >>> gmpy = import_module('gmpy2', min_module_version='2.0.0',
     ... module_version_attr='version', module_version_attr_call_args=(),
     ... warn_old_version=False)
 
@@ -103,7 +103,6 @@ def import_module(module, min_module_version=None, min_python_version=None,
     >>> # matplotlib.pyplot can raise RuntimeError when the display cannot be opened
     >>> matplotlib = import_module('matplotlib',
     ... __import__kwargs={'fromlist':['pyplot']}, catch=(RuntimeError,))
-
     """
     # keyword argument overrides default, and global variable overrides
     # keyword argument.
