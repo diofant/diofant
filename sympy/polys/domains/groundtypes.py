@@ -22,19 +22,7 @@ from sympy import (
     Integer as SymPyInteger,
     Rational as SymPyRational)
 
-if HAS_GMPY == 1:
-    from gmpy import (
-        mpz as GMPYInteger,
-        mpq as GMPYRational,
-        fac as gmpy_factorial,
-        numer as gmpy_numer,
-        denom as gmpy_denom,
-        gcdext as gmpy_gcdex,
-        gcd as gmpy_gcd,
-        lcm as gmpy_lcm,
-        sqrt as gmpy_sqrt,
-        qdiv as gmpy_qdiv)
-elif HAS_GMPY == 2:
+if HAS_GMPY == 2:
     from gmpy2 import (
         mpz as GMPYInteger,
         mpq as GMPYRational,

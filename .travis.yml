@@ -31,7 +31,7 @@ matrix:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
         - pip install sphinx numpydoc pytest-cov
       env:
-        - SYMPY_GROUND_TYPES=gmpy2
+        - SYMPY_GROUND_TYPES=gmpy
       script:
         - py.test --cov sympy sympy/polys
         - sphinx-build -W -b html docs build/sphinx/html

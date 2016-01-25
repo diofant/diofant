@@ -5,16 +5,13 @@ from sympy.core.cache import clear_cache
 
 def pytest_report_header(config):
     from sympy.utilities.misc import ARCH
-    s = "architecture: %s\n" % ARCH
     from sympy.core.cache import USE_CACHE
-    s += "cache:        %s\n" % USE_CACHE
     from sympy.core.compatibility import GROUND_TYPES, HAS_GMPY
+    s = "architecture: %s\n" % ARCH
+    s += "cache:        %s\n" % USE_CACHE
     version = ''
-    if GROUND_TYPES == 'gmpy':
-        if HAS_GMPY == 1:
-            import gmpy
-        elif HAS_GMPY == 2:
-            import gmpy2 as gmpy
+    if GROUND_TYPES == 'gmpy' and HAS_GMPY == 2:
+        import gmpy2 as gmpy
         version = gmpy.version()
     s += "ground types: %s %s\n" % (GROUND_TYPES, version)
     return s
