@@ -496,3 +496,12 @@ def test_issue_5925():
     sx = sqrt(x + z).series(z, 0, 1)
     sxy = sqrt(x + y + z).series(z, 0, 1)
     assert sxy.subs({x: 1, y: 2}) == sx.subs(x, 3)
+
+
+def test_issues_6235_6236():
+    q = Symbol('q', positive=True)
+    assert (((x - 1)**q + 1)/(x**q - 1)).nseries(x, n=2).removeO() == \
+        (-1 - x**q + (-1)**(q + 1) + (-1)**(q + 1)*x**q +
+         (-1)**q*q*x**(q + 1) + (-1)**q*q*x)
+    assert (((x - 1)**q)/(x**q - 1)).nseries(x, n=2).removeO() == \
+        (-1)**(q + 1) + (-1)**(q + 1)*x**q + (-1)**q*q*x**(q + 1) + (-1)**q*q*x
