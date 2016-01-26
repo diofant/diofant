@@ -4930,6 +4930,7 @@ def test_issue_8292():
 
 
 def test_issue_4335():
+    y = Function('y')
     expr = -y(x).diff(x)
     ucode_str = \
 """\
@@ -5000,7 +5001,8 @@ def test_issue_7927():
 
 
 def test_issue_6134():
-    from sympy.abc import lamda, phi, t
+    from sympy.abc import lamda, t
+    phi = Function('phi')
 
     e = lamda*x*Integral(phi(t)*pi*sin(pi*t), (t, 0, 1)) + lamda*x**2*Integral(phi(t)*2*pi*sin(2*pi*t), (t, 0, 1))
     ucode_str = \

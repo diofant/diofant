@@ -5,7 +5,7 @@ import pytest
 from sympy import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
                    PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
                    signsimp, simplify, sin, sqrt, symbols, sympify,
-                   trigsimp, sstr)
+                   trigsimp, sstr, Function)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
                                      NonSquareMatrixError, DeferredVector)
 from sympy.matrices import (
@@ -883,7 +883,8 @@ def test_subs():
 
 
 def test_simplify():
-    f, n = symbols('f, n')
+    n = Symbol('n')
+    f = Function('f')
 
     m = Matrix([[1, x], [x + 1/x, x - 1]])
     m = m.row_join(eye(m.cols))
