@@ -12,7 +12,11 @@ env:
   - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
+      - libmpc-dev
+      - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
       - libatlas-base-dev
@@ -31,7 +35,7 @@ matrix:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
         - pip install sphinx numpydoc pytest-cov
       env:
-        - SYMPY_GROUND_TYPES=gmpy1
+        - SYMPY_GROUND_TYPES=gmpy
       script:
         - py.test --cov sympy sympy/polys
         - sphinx-build -W -b html docs build/sphinx/html
