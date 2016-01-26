@@ -326,9 +326,3 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols('a::'))
     pytest.raises(ValueError, lambda: symbols(':a:'))
     pytest.raises(ValueError, lambda: symbols('::a'))
-
-
-def test_call():
-    f = Symbol('f')
-    assert f(2)
-    pytest.raises(TypeError, lambda: Wild('x')(1))
