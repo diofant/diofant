@@ -623,7 +623,7 @@ class polygamma(Function):
                 o = Order(1/z, x)
             elif n == 1:
                 o = Order(1/z**2, x)
-            r = e0._eval_nseries(z, n, logx) + o
+            r = e0 + o
             return (-1 * (-1/z)**N * r)._eval_nseries(x, n, logx)
 
     @classmethod

@@ -12,7 +12,7 @@ from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
                    Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                   fibonacci, GoldenRatio)
+                   fibonacci, GoldenRatio, Limit)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -395,7 +395,6 @@ def test_issue_4190():
     assert gruntz(x - gamma(1/x), x) == S.EulerGamma
 
 
-@pytest.mark.xfail
 def test_issue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
@@ -445,3 +444,9 @@ def test_omgissue_75():
     assert gruntz(abs(log(x)), x) == oo
     assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
     assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) ==  oo
+
+
+def test_issue_8241():
+    e = x/log(x)**(log(x)/(m*log(log(x))))
+    pytest.raises(NotImplementedError, lambda: gruntz(e, x))
+    assert isinstance(e.limit(x, oo), Limit)

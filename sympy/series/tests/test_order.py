@@ -100,13 +100,11 @@ def test_as_expr_variables():
     assert O(y).as_expr_variables(((x, 0), (y, 0))) == (y, ((x, 0), (y, 0)))
 
 
-def test_contains_0():
+def test_contains():
     assert O(1, x).contains(O(1, x))
     assert O(1, x).contains(O(1))
     assert O(1).contains(O(1, x)) is False
 
-
-def test_contains_1():
     assert O(x).contains(O(x))
     assert O(x).contains(O(x**2))
     assert not O(x**2).contains(O(x))
@@ -120,26 +118,22 @@ def test_contains_1():
     assert O(exp(2/x)).contains(O(exp(1/x)))
     assert not O(exp(1/x)).contains(O(exp(2/x)))
 
-
-def test_contains_2():
     assert O(x).contains(O(y)) is None
     assert O(x).contains(O(y*x))
     assert O(y*x).contains(O(x))
     assert O(y).contains(O(x*y))
     assert O(x).contains(O(y**2*x))
 
-
-def test_contains_3():
     assert O(x*y**2).contains(O(x**2*y)) is None
     assert O(x**2*y).contains(O(x*y**2)) is None
 
-
-def test_contains_4():
     assert O(sin(1/x**2)).contains(O(cos(1/x**2))) is None
     assert O(cos(1/x**2)).contains(O(sin(1/x**2))) is None
 
+    q = Symbol('q', positive=True)
+    assert O(x**8).contains(x**(q + 7)) is None
+    assert O(x**8).contains(x**(q + 8))
 
-def test_contains():
     assert O(1, x) not in O(1)
     assert O(1) in O(1, x)
     pytest.raises(TypeError, lambda: O(x*y**2) in O(x**2*y))

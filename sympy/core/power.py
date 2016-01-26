@@ -1116,54 +1116,55 @@ class Pow(Expr):
 
     def _eval_nseries(self, x, n, logx):
         from sympy import exp, log, Order, powsimp, limit
-        b, e = self.args
-        if e.is_number:
-            s = b.nseries(x, n=n, logx=logx)
-            while s.is_Order:
-                n += 1
-                s = b.nseries(x, n=n, logx=logx)
-            a, b = s.as_leading_term(x).as_coeff_exponent(x)
-            t = expand_mul((s/(a*x**b) - 1).cancel())
-            if e is S.Infinity:
-                if b != 0:
-                    sig = -b
-                else:
-                    sig = abs(a) - 1 if a != 1 else t.removeO()
-                if sig.is_positive:
-                    return S.Infinity
-                elif sig.is_negative:
-                    return S.Zero
-                else:
-                    raise NotImplementedError
-            pow_series = S.One
-            if t != 0:
-                # series of (1 + t)**e in t
-                term = pow_series
-                for i in range(1, n):
-                    term *= (e - i + 1)*t/i
-                    term = term.nseries(x, n=n, logx=logx)
-                    pow_series += term
-                if not (e.is_Integer and e >= 0 and n > e):
-                    pow_series += Order(t**n, x)
-            pow_series = expand_mul(pow_series*(a*x**b)**e)
-            return powsimp(pow_series, deep=True, combine='exp')
-        else:
-            arg = e*log(b)
-            arg_series = arg._eval_nseries(x, n=n, logx=logx)
-            if arg_series.is_Order:
-                return 1 + arg_series
-            arg0 = limit(arg_series.removeO(), x, 0)
-            if arg0 in (S.NegativeInfinity, S.Infinity):
+        if self.base is S.Exp1:
+            e_series = self.exp.nseries(x, n=n, logx=logx)
+            if e_series.is_Order:
+                return 1 + e_series
+            e0 = limit(e_series.removeO(), x, 0)
+            if e0 in (S.NegativeInfinity, S.Infinity):
                 return self
-            t = arg_series - arg0
-            exp_series = term = exp(arg0)
-            # series of exp(arg0 + t) in t
+            t = e_series - e0
+            exp_series = term = exp(e0)
+            # series of exp(e0 + t) in t
             for i in range(1, n):
                 term *= t/i
                 term = term.nseries(x, n=n, logx=logx)
                 exp_series += term
             exp_series += Order(t**n, x)
             return powsimp(exp_series, deep=True, combine='exp')
+        elif self.exp.has(x):
+            return exp(self.exp*log(self.base)).nseries(x, n=n, logx=logx)
+        else:
+            b_series = self.base.nseries(x, n=n, logx=logx)
+            while b_series.is_Order:
+                n += 1
+                b_series = self.base.nseries(x, n=n, logx=logx)
+            b0 = b_series.as_leading_term(x)
+            t = expand_mul((b_series/b0 - 1).cancel())
+            if t.is_Add:
+                t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
+            if self.exp is S.Infinity:
+                c, e = b0.as_coeff_exponent(x)
+                if e != 0:
+                    sig = -e
+                else:
+                    sig = abs(c) - 1 if c != 1 else t.removeO()
+                if sig.is_positive:
+                    return S.Infinity
+                elif sig.is_negative:
+                    return S.Zero
+                else:
+                    raise NotImplementedError
+            pow_series = term = S.One
+            # series of (1 + t)**e in t
+            for i in range(1, n):
+                term *= (self.exp - i + 1)*t/i
+                term = term.nseries(x, n=n, logx=logx)
+                pow_series += term
+            if t != 0 and not (self.exp.is_Integer and self.exp >= 0 and n > self.exp):
+                pow_series += Order(t**n, x)
+            pow_series = expand_mul(pow_series*b0**self.exp)
+            return powsimp(pow_series, deep=True, combine='exp')
 
     def _eval_as_leading_term(self, x):
         from sympy import exp, log, Order
