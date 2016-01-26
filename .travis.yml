@@ -13,6 +13,7 @@ env:
 addons:
   apt:
     packages:
+      - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
       - libatlas-base-dev
