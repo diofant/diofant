@@ -408,8 +408,6 @@ class log(Function):
 
     def _eval_nseries(self, x, n):
         from sympy import Order
-        if not logx:
-            logx = log(x)
         arg_series = self.args[0].nseries(x, n=n)
         while arg_series.is_Order:
             n += 1
@@ -425,7 +423,7 @@ class log(Function):
             log_series += term
         if t != 0:
             log_series += Order(t**n, x)
-        return log_series + log(c) + e*logx
+        return log_series + log(c) + e*log(x)
 
     def _eval_as_leading_term(self, x):
         arg = self.args[0].as_leading_term(x)
