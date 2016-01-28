@@ -566,9 +566,9 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     >>> x, y = symbols('x, y', function=True)
     >>> eq = (Eq(Derivative(x(t),t), 12*t*x(t) + 8*y(t)), Eq(Derivative(y(t),t), 21*x(t) + 7*t*y(t)))
     >>> dsolve(eq)
-    [Eq(x(t), C1*x0 + C2*x0*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0**2, t)),
-    Eq(y(t), C1*y0 + C2(E**Integral(7*t, t)*E**Integral(12*t, t)/x0 +
-    y0*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0**2, t)))]
+    [Eq(x(t), C1*x0(t) + C2*x0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)),
+    Eq(y(t), C1*y0(t) + C2*(E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t) +
+    y0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)))]
     >>> eq = (Eq(Derivative(x(t),t),x(t)*y(t)*sin(t)), Eq(Derivative(y(t),t),y(t)**2*sin(t)))
     >>> C1, C2 = symbols('C1, C2')
     >>> dsolve(eq) == {Eq(x(t), -E**C1/(C2*E**C1 - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
@@ -6829,11 +6829,11 @@ def _linear_2eq_order1_type7(x, y, t, r):
         sol2 = dsolve(diff(y(t), t, t) - (m2/r['c'])*diff(y(t), t) - (e2/r['c'])*y(t)).rhs
         sol1 = dsolve(diff(x(t), t) - r['a']*x(t) - r['b']*sol2).rhs
     else:
-        x0, y0 = symbols('x0, y0')  # x0 and y0 being particular solutions
+        x0, y0 = symbols('x0, y0', cls=Function)  # x0 and y0 being particular solutions
         F = exp(Integral(r['a'], t))
         P = exp(Integral(r['d'], t))
-        sol1 = C1*x0 + C2*x0*Integral(r['b']*F*P/x0**2, t)
-        sol2 = C1*y0 + C2(F*P/x0 + y0*Integral(r['b']*F*P/x0**2, t))
+        sol1 = C1*x0(t) + C2*x0(t)*Integral(r['b']*F*P/x0(t)**2, t)
+        sol2 = C1*y0(t) + C2*(F*P/x0(t) + y0(t)*Integral(r['b']*F*P/x0(t)**2, t))
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
