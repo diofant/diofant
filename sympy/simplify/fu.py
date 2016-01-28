@@ -496,9 +496,9 @@ def _TR56(rv, f, g, h, max, pow):
         if not (rv.is_Pow and rv.base.func == f):
             return rv
 
-        if (rv.exp < 0) == True:
+        if (rv.exp < 0) is S.true:
             return rv
-        if (rv.exp > max) == True:
+        if (rv.exp > max) is S.true:
             return rv
         if rv.exp == 2:
             return h(g(rv.base.args[0])**2)

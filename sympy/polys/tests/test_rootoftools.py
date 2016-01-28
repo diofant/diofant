@@ -143,7 +143,7 @@ def test_RootOf___eval_Eq__():
     eq = (x**3 + x + 1)
     assert [Eq(RootOf(eq, i), j) for i in range(3) for j in solve(eq)] == \
         [False, False, True, False, True, False, True, False, False]
-    assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) == False
+    assert Eq(RootOf(eq, 0), 1 + S.ImaginaryUnit) is S.false
 
 
 def test_RootOf_is_real():

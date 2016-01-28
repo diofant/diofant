@@ -1058,7 +1058,7 @@ class Ellipse(GeometrySet):
             t = -b / a
             result.append(lp[0] + (lp[1] - lp[0]) * t)
         # Definite and potential symbolic intersections are allowed.
-        elif (det > 0) != False:
+        elif (det > 0) is not S.false:
             root = sqrt(det)
             t_a = (-b - root) / a
             t_b = (-b + root) / a

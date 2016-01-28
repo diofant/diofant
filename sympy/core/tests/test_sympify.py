@@ -86,15 +86,15 @@ def test_sympify_mpmath():
 
     mpmath.mp.dps = 12
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) == True
+        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) is S.true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) == False
+        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) is S.false
 
     mpmath.mp.dps = 6
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) == True
+        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) is S.true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) == False
+        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) is S.false
 
     assert sympify(mpmath.mpc(1.0 + 2.0j)) == Float(1.0) + Float(2.0)*I
 

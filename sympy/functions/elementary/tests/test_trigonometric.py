@@ -1224,8 +1224,8 @@ def test_csc():
     # https://github.com/sympy/sympy/issues/6707
     cosecant = csc('x')
     alternate = 1/sin('x')
-    assert cosecant.equals(alternate) == True
-    assert alternate.equals(cosecant) == True
+    assert cosecant.equals(alternate)
+    assert alternate.equals(cosecant)
 
     assert csc.nargs == FiniteSet(1)
 

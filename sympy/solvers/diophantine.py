@@ -1927,7 +1927,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
 
     z_0, x_0, y_0 = descent(A, B)
 
-    if divisible(z_0, c_2) == True:
+    if divisible(z_0, c_2):
         z_0 = z_0 // abs(c_2)
     else:
         x_0 = x_0*Rational(z_0, c_2).q

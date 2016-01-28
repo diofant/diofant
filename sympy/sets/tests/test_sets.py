@@ -271,8 +271,8 @@ def test_intersection():
 
 
 def test_is_disjoint():
-    assert Interval(0, 2).is_disjoint(Interval(1, 2)) == False
-    assert Interval(0, 2).is_disjoint(Interval(3, 4)) == True
+    assert Interval(0, 2).is_disjoint(Interval(1, 2)) is False
+    assert Interval(0, 2).is_disjoint(Interval(3, 4)) is True
 
 
 def test_ProductSet_of_single_arg_is_arg():
@@ -356,29 +356,29 @@ def test_is_proper_subset():
 
 
 def test_is_superset():
-    assert Interval(0, 1).is_superset(Interval(0, 2)) == False
+    assert Interval(0, 1).is_superset(Interval(0, 2)) is False
     assert Interval(0, 3).is_superset(Interval(0, 2))
 
-    assert FiniteSet(1, 2).is_superset(FiniteSet(1, 2, 3, 4)) == False
-    assert FiniteSet(4, 5).is_superset(FiniteSet(1, 2, 3, 4)) == False
-    assert FiniteSet(1).is_superset(Interval(0, 2)) == False
-    assert FiniteSet(1, 2).is_superset(Interval(0, 2, True, True)) == False
+    assert FiniteSet(1, 2).is_superset(FiniteSet(1, 2, 3, 4)) is False
+    assert FiniteSet(4, 5).is_superset(FiniteSet(1, 2, 3, 4)) is False
+    assert FiniteSet(1).is_superset(Interval(0, 2)) is False
+    assert FiniteSet(1, 2).is_superset(Interval(0, 2, True, True)) is False
     assert (Interval(1, 2) + FiniteSet(3)).is_superset(
-        (Interval(0, 2, False, True) + FiniteSet(2, 3))) == False
+        (Interval(0, 2, False, True) + FiniteSet(2, 3))) is False
 
-    assert Interval(3, 4).is_superset(Union(Interval(0, 1), Interval(2, 5))) == False
+    assert Interval(3, 4).is_superset(Union(Interval(0, 1), Interval(2, 5))) is False
 
-    assert FiniteSet(1, 2, 3, 4).is_superset(Interval(0, 5)) == False
-    assert S.EmptySet.is_superset(FiniteSet(1, 2, 3)) == False
+    assert FiniteSet(1, 2, 3, 4).is_superset(Interval(0, 5)) is False
+    assert S.EmptySet.is_superset(FiniteSet(1, 2, 3)) is False
 
-    assert Interval(0, 1).is_superset(S.EmptySet) == True
-    assert S.EmptySet.is_superset(S.EmptySet) == True
+    assert Interval(0, 1).is_superset(S.EmptySet) is True
+    assert S.EmptySet.is_superset(S.EmptySet) is True
 
     pytest.raises(ValueError, lambda: S.EmptySet.is_superset(1))
 
     # tests for the issuperset alias
-    assert Interval(0, 1).issuperset(S.EmptySet) == True
-    assert S.EmptySet.issuperset(S.EmptySet) == True
+    assert Interval(0, 1).issuperset(S.EmptySet) is True
+    assert S.EmptySet.issuperset(S.EmptySet) is True
 
 
 def test_is_proper_superset():
@@ -824,16 +824,16 @@ def test_issue_7841():
 
 def test_Eq():
     assert Eq(Interval(0, 1), Interval(0, 1))
-    assert Eq(Interval(0, 1), Interval(0, 2)) == False
+    assert Eq(Interval(0, 1), Interval(0, 2)) is S.false
 
     s1 = FiniteSet(0, 1)
     s2 = FiniteSet(1, 2)
 
     assert Eq(s1, s1)
-    assert Eq(s1, s2) == False
+    assert Eq(s1, s2) is S.false
 
     assert Eq(s1*s2, s1*s2)
-    assert Eq(s1*s2, s2*s1) == False
+    assert Eq(s1*s2, s2*s1) is S.false
 
 
 def test_SymmetricDifference():
