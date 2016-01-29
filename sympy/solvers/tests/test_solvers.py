@@ -994,11 +994,12 @@ def test_unrad1():
         (729*s**13 - 216*s**12 + 1728*s**11 - 512*s**10 + 1701*s**9 -
         3024*s**8 + 1344*s**7 + 1323*s**5 - 2904*s**4 + 343*s, [s, s**4 - x -
         1]))  # orig expr has 2 real roots: -0.91, -0.15
+
+    # orig expr has 1 real root: 19.53
     assert check(unrad(root(x, 3)/2 - root(x + 1, 4) + root(x + 2, 3) - 2),
         (729*s**13 + 1242*s**12 + 18496*s**10 + 129701*s**9 + 388602*s**8 +
         453312*s**7 - 612864*s**6 - 3337173*s**5 - 6332418*s**4 - 7134912*s**3
         - 5064768*s**2 - 2111913*s - 398034, [s, s**4 - x - 1]))
-        # orig expr has 1 real root: 19.53
 
     ans = solve(sqrt(x) + sqrt(x + 1) -
                 sqrt(1 - x) - sqrt(2 + x))

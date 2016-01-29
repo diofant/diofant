@@ -94,11 +94,13 @@ class Add(Expr, AssocOp):
                     return rv
                 return [], rv[0], None
 
-        terms = {}      # term -> coeff
-                        # e.g. x**2 -> 5   for ... + 5*x**2 + ...
+        # term -> coeff
+        # e.g. x**2 -> 5   for ... + 5*x**2 + ...
+        terms = {}
 
-        coeff = S.Zero  # coefficient (Number or zoo) to always be in slot 0
-                        # e.g. 3 + ...
+        # coefficient (Number or zoo) to always be in slot 0, e.g. 3 + ...
+        coeff = S.Zero
+
         order_factors = []
 
         for o in seq:
