@@ -936,17 +936,17 @@ class Integral(AddWithLimits):
 
         return Add(*parts)
 
-    def _eval_lseries(self, x, logx):
+    def _eval_lseries(self, x):
         expr = self.as_dummy()
         symb = x
         for l in expr.limits:
             if x in l[1:]:
                 symb = l[0]
                 break
-        for term in expr.function.lseries(symb, logx):
+        for term in expr.function.lseries(symb):
             yield integrate(term, *expr.limits)
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         expr = self.as_dummy()
         symb = x
         for l in expr.limits:
@@ -954,7 +954,7 @@ class Integral(AddWithLimits):
                 symb = l[0]
                 break
         terms, order = expr.function.nseries(
-            x=symb, n=n, logx=logx).as_coeff_add(Order)
+            x=symb, n=n).as_coeff_add(Order)
         return integrate(terms, *expr.limits) + Add(*order)*x
 
     def as_sum(self, n, method="midpoint"):

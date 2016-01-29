@@ -941,11 +941,11 @@ class tan(TrigonometricFunction):
 
             return (-1)**a * b*(b - 1) * B/F * x**n
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         i = self.args[0].limit(x, 0)*2/S.Pi
         if i and i.is_Integer:
-            return self.rewrite(cos)._eval_nseries(x, n=n, logx=logx)
-        return Function._eval_nseries(self, x, n=n, logx=logx)
+            return self.rewrite(cos)._eval_nseries(x, n=n)
+        return Function._eval_nseries(self, x, n=n)
 
     def _eval_rewrite_as_Pow(self, arg):
         if arg.func is log:
@@ -1154,8 +1154,8 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     def _eval_is_finite(self):
         return (1/self._reciprocal_of(self.args[0])).is_finite
 
-    def _eval_nseries(self, x, n, logx):
-        return (1/self._reciprocal_of(self.args[0]))._eval_nseries(x, n, logx)
+    def _eval_nseries(self, x, n):
+        return (1/self._reciprocal_of(self.args[0]))._eval_nseries(x, n)
 
 
 class sec(ReciprocalTrigonometricFunction):
@@ -1755,8 +1755,8 @@ class acos(InverseTrigonometricFunction):
         x = self.args[0]
         return x.is_extended_real and (1 - abs(x)).is_nonnegative
 
-    def _eval_nseries(self, x, n, logx):
-        return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
+    def _eval_nseries(self, x, n):
+        return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n)
 
     def _eval_rewrite_as_log(self, x):
         return S.Pi/2 + S.ImaginaryUnit * \
@@ -1924,13 +1924,13 @@ class atan(InverseTrigonometricFunction):
         return S.ImaginaryUnit/2 * (log(
             (Integer(1) - S.ImaginaryUnit * x)/(Integer(1) + S.ImaginaryUnit * x)))
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         if args0[0] == S.Infinity:
-            return (S.Pi/2 - atan(1/self.args[0]))._eval_nseries(x, n, logx)
+            return (S.Pi/2 - atan(1/self.args[0]))._eval_nseries(x, n)
         elif args0[0] == S.NegativeInfinity:
-            return (-S.Pi/2 - atan(1/self.args[0]))._eval_nseries(x, n, logx)
+            return (-S.Pi/2 - atan(1/self.args[0]))._eval_nseries(x, n)
         else:
-            return super(atan, self)._eval_aseries(n, args0, x, logx)
+            return super(atan, self)._eval_aseries(n, args0, x)
 
     def inverse(self, argindex=1):
         """
@@ -2070,13 +2070,13 @@ class acot(InverseTrigonometricFunction):
     def _eval_is_extended_real(self):
         return self.args[0].is_extended_real
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         if args0[0] == S.Infinity:
-            return (S.Pi/2 - acot(1/self.args[0]))._eval_nseries(x, n, logx)
+            return (S.Pi/2 - acot(1/self.args[0]))._eval_nseries(x, n)
         elif args0[0] == S.NegativeInfinity:
-            return (3*S.Pi/2 - acot(1/self.args[0]))._eval_nseries(x, n, logx)
+            return (3*S.Pi/2 - acot(1/self.args[0]))._eval_nseries(x, n)
         else:
-            return super(atan, self)._eval_aseries(n, args0, x, logx)
+            return super(atan, self)._eval_aseries(n, args0, x)
 
     def _eval_rewrite_as_log(self, x):
         return S.ImaginaryUnit/2 * \

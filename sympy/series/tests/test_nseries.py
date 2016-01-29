@@ -88,19 +88,9 @@ def test_log_power1():
         O(x**(3 + 2*log(3)/log(2)))
 
 
-def test_log_series():
-    e = 1/(1 - log(x))
-    assert e.nseries(x, n=5, logx=l) == 1/(1 - l)
-
-
 def test_log2():
     e = log(-1/x)
     assert e.nseries(x, n=5) == -log(x) + log(-1)
-
-
-def test_log3():
-    e = 1/log(-1/x)
-    assert e.nseries(x, n=4, logx=l) == 1/(-l + log(-1))
 
 
 def test_series1():
@@ -155,11 +145,6 @@ def test_bug2():  # 1/log(0) * log(0) problem
 def test_exp():
     e = (1 + x)**(1/x)
     assert e.nseries(x, n=3) == exp(1) - x*exp(1)/2 + O(x**2)
-
-
-def test_exp2():
-    e = w**(1 - log(x)/(log(2) + log(x)))
-    assert e.nseries(w, n=1) == e
 
 
 def test_bug3():
@@ -368,15 +353,6 @@ def test_bug4():
     e = x/(w**4 + x**2*w**4 + 2*x*w**4)*w**4
     assert e.nseries(w, n=2).simplify() in [x/(1 + 2*x + x**2),
         1/(1 + x/2 + 1/x/2)/2, 1/x/(1 + 2/x + x**(-2))]
-
-
-def test_bug5():
-    e = (-log(w) + log(1 + w*log(x)))**(-2)*w**(-2)*((-log(w) +
-        log(1 + x*w))*(-log(w) + log(1 + w*log(x)))*w - x*(-log(w) +
-        log(1 + w*log(x)))*w)
-    assert e.nseries(w, n=1, logx=l) == (x/l + 1)/w + O(1, w)
-    assert e.nseries(w, n=2, logx=l) == x*log(x)/l**2 + log(x)/l - \
-        x/l + (1 + x/l)/w + O(w)
 
 
 def test_issue_4115():

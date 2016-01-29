@@ -1092,12 +1092,12 @@ class Ei(Function):
     def _eval_rewrite_as_tractable(self, z):
         return exp(z) * _eis(z)
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         x0 = self.args[0].limit(x, 0)
         if x0 is S.Zero:
             f = self._eval_rewrite_as_Si(*self.args)
-            return f._eval_nseries(x, n, logx)
-        return super(Ei, self)._eval_nseries(x, n, logx)
+            return f._eval_nseries(x, n)
+        return super(Ei, self)._eval_nseries(x, n)
 
 
 class expint(Function):
@@ -1261,16 +1261,16 @@ class expint(Function):
     _eval_rewrite_as_Chi = _eval_rewrite_as_Si
     _eval_rewrite_as_Shi = _eval_rewrite_as_Si
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         if not self.args[0].has(x):
             nu = self.args[0]
             if nu == 1:
                 f = self._eval_rewrite_as_Si(*self.args)
-                return f._eval_nseries(x, n, logx)
+                return f._eval_nseries(x, n)
             elif nu.is_Integer and nu > 1:
                 f = self._eval_rewrite_as_Ei(*self.args)
-                return f._eval_nseries(x, n, logx)
-        return super(expint, self)._eval_nseries(x, n, logx)
+                return f._eval_nseries(x, n)
+        return super(expint, self)._eval_nseries(x, n)
 
 
 def E1(z):
@@ -1572,19 +1572,19 @@ class TrigonometricIntegral(Function):
         from sympy import uppergamma
         return self._eval_rewrite_as_expint(z).rewrite(uppergamma)
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         # NOTE this is fairly inefficient
         from sympy import log, EulerGamma, Pow
         n += 1
         if self.args[0].subs(x, 0) != 0:
-            return super(TrigonometricIntegral, self)._eval_nseries(x, n, logx)
-        baseseries = self._trigfunc(x)._eval_nseries(x, n, logx)
+            return super(TrigonometricIntegral, self)._eval_nseries(x, n)
+        baseseries = self._trigfunc(x)._eval_nseries(x, n)
         if self._trigfunc(0) != 0:
             baseseries -= 1
         baseseries = baseseries.replace(Pow, lambda t, n: t**n/n, simultaneous=False)
         if self._trigfunc(0) != 0:
             baseseries += EulerGamma + log(x)
-        return baseseries.subs(x, self.args[0])._eval_nseries(x, n, logx)
+        return baseseries.subs(x, self.args[0])._eval_nseries(x, n)
 
 
 class Si(TrigonometricIntegral):
@@ -2155,7 +2155,7 @@ class fresnels(FresnelIntegral):
         return (pi*z**Rational(9, 4) / (sqrt(2)*(z**2)**Rational(3, 4)*(-z)**Rational(3, 4))
                 * meijerg([], [1], [Rational(3, 4)], [Rational(1, 4), 0], -pi**2*z**4/16))
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         from sympy import Order
         point = args0[0]
 
@@ -2177,7 +2177,7 @@ class fresnels(FresnelIntegral):
             return S.Half + (sin(z**2)*Add(*p) + cos(z**2)*Add(*q)).subs(x, sqrt(2/pi)*x)
 
         # All other points are not handled
-        return super(fresnels, self)._eval_aseries(n, args0, x, logx)
+        return super(fresnels, self)._eval_aseries(n, args0, x)
 
 
 class fresnelc(FresnelIntegral):
@@ -2287,7 +2287,7 @@ class fresnelc(FresnelIntegral):
         return (pi*z**Rational(3, 4) / (sqrt(2)*root(z**2, 4)*root(-z, 4))
                 * meijerg([], [1], [Rational(1, 4)], [Rational(3, 4), 0], -pi**2*z**4/16))
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         from sympy import Order
         point = args0[0]
 
@@ -2309,7 +2309,7 @@ class fresnelc(FresnelIntegral):
             return S.Half + (cos(z**2)*Add(*p) + sin(z**2)*Add(*q)).subs(x, sqrt(2/pi)*x)
 
         # All other points are not handled
-        return super(fresnelc, self)._eval_aseries(n, args0, x, logx)
+        return super(fresnelc, self)._eval_aseries(n, args0, x)
 
 
 ###############################################################################
@@ -2323,7 +2323,7 @@ class _erfs(Function):
     tractable for the Gruntz algorithm.
     """
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         from sympy import Order
         point = args0[0]
 
@@ -2334,7 +2334,7 @@ class _erfs(Function):
                     factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return (Add(*l))._eval_nseries(x, n) + o
 
         # Expansion at I*oo
         t = point.extract_multiplicatively(S.ImaginaryUnit)
@@ -2345,10 +2345,10 @@ class _erfs(Function):
                     factorial(k)*(1/z)**(2*k + 1) for k in range(0, n)]
             o = Order(1/z**(2*n + 1), x)
             # It is very inefficient to first add the order and then do the nseries
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return (Add(*l))._eval_nseries(x, n) + o
 
         # All other points are not handled
-        return super(_erfs, self)._eval_aseries(n, args0, x, logx)
+        return super(_erfs, self)._eval_aseries(n, args0, x)
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -2370,16 +2370,16 @@ class _eis(Function):
     tractable for the Gruntz algorithm.
     """
 
-    def _eval_aseries(self, n, args0, x, logx):
+    def _eval_aseries(self, n, args0, x):
         from sympy import Order
         if args0[0] != S.Infinity:
-            return super(_erfs, self)._eval_aseries(n, args0, x, logx)
+            return super(_erfs, self)._eval_aseries(n, args0, x)
 
         z = self.args[0]
         l = [ factorial(k) * (1/z)**(k + 1) for k in range(0, n) ]
         o = Order(1/z**(n + 1), x)
         # It is very inefficient to first add the order and then do the nseries
-        return (Add(*l))._eval_nseries(x, n, logx) + o
+        return (Add(*l))._eval_nseries(x, n) + o
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -2391,12 +2391,12 @@ class _eis(Function):
     def _eval_rewrite_as_intractable(self, z):
         return exp(-z)*Ei(z)
 
-    def _eval_nseries(self, x, n, logx):
+    def _eval_nseries(self, x, n):
         x0 = self.args[0].limit(x, 0)
         if x0 is S.Zero:
             f = self._eval_rewrite_as_intractable(*self.args)
-            return f._eval_nseries(x, n, logx)
-        return super(_eis, self)._eval_nseries(x, n, logx)
+            return f._eval_nseries(x, n)
+        return super(_eis, self)._eval_nseries(x, n)
 
     def _eval_evalf(self, prec):
         return self.rewrite('intractable').evalf(prec)
