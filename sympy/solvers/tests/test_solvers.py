@@ -1021,12 +1021,12 @@ def test_unrad1():
          Rational(1, 3) + (Rational(47, 54) + sqrt(93)/6)**Rational(1, 3))**3])
     assert solve(sqrt(sqrt(x + 1)) + x**Rational(1, 3) - 2) == (
         [(-sqrt(-2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-         6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 2) +
-         121/(4*sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-         2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))))/2 +
+          6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 2) +
+          121/(4*sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+          2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))))/2 +
             sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-         2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))/2 +
-         Rational(9, 4))**3])
+          2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))/2 +
+          Rational(9, 4))**3])
     assert solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) == (
         [(-(Rational(81, 2) + 3*sqrt(741)/2)**Rational(1, 3)/3 +
             (Rational(81, 2) + 3*sqrt(741)/2)**Rational(-1, 3) + 2)**2])
