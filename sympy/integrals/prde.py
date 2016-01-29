@@ -124,8 +124,9 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
         # Possible cancellation.
         if case == 'exp':
             dcoeff = DE.d.quo(Poly(DE.t, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 alphaa, alphad = frac_in(-ba.eval(0)/bd.eval(0)/a.eval(0), DE.t)
                 etaa, etad = frac_in(dcoeff, DE.t)
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
@@ -136,8 +137,9 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
 
         elif case == 'tan':
             dcoeff = DE.d.quo(Poly(DE.t**2 + 1, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 betaa, alphaa, alphad =  real_imag(ba, bd*a, DE.t)
                 betad = alphad
                 etaa, etad = frac_in(dcoeff, DE.t)

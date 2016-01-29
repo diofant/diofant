@@ -213,8 +213,9 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
 
         if case == 'exp':
             dcoeff = DE.d.quo(Poly(DE.t, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 alphaa, alphad = frac_in(-ba.eval(0)/bd.eval(0)/a.eval(0), DE.t)
                 etaa, etad = frac_in(dcoeff, DE.t)
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
@@ -225,8 +226,9 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
 
         elif case == 'tan':
             dcoeff = DE.d.quo(Poly(DE.t**2+1, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 alphaa, alphad = frac_in(im(-ba.eval(sqrt(-1))/bd.eval(sqrt(-1))/a.eval(sqrt(-1))), DE.t)
                 betaa, betad = frac_in(re(-ba.eval(sqrt(-1))/bd.eval(sqrt(-1))/a.eval(sqrt(-1))), DE.t)
                 etaa, etad = frac_in(dcoeff, DE.t)

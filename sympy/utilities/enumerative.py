@@ -105,14 +105,19 @@ class PartComponent(object):
     __slots__ = ('c', 'u', 'v')
 
     def __init__(self):
-        self.c = 0   # Component number
-        self.u = 0   # The as yet unpartitioned amount in component c
-                     # *before* it is allocated by this triple
-        self.v = 0   # Amount of c component in the current part
-                     # (v<=u).  An invariant of the representation is
-                     # that the next higher triple for this component
-                     # (if there is one) will have a value of u-v in
-                     # its u attribute.
+        # Component number
+        self.c = 0
+
+        # The as yet unpartitioned amount in component c
+        # *before* it is allocated by this triple
+        self.u = 0
+
+        # Amount of c component in the current part
+        # (v<=u).  An invariant of the representation is
+        # that the next higher triple for this component
+        # (if there is one) will have a value of u-v in
+        # its u attribute.
+        self.v = 0
 
     def __repr__(self):
         "for debug/algorithm animation purposes"
@@ -681,15 +686,16 @@ class MultisetPartitionTraverser():
 
         This call does nothing (and returns False) if the current top
         part has no unallocated multiplicity.
-
         """
         j = self.f[self.lpart]  # base of current top part
         k = self.f[self.lpart + 1]  # ub of current; potential base of next
         base = k  # save for later comparison
 
-        changed = False  # Set to true when the new part (so far) is
-                         # strictly less than (as opposed to less than
-                         # or equal) to the old.
+        # Set to true when the new part (so far) is
+        # strictly less than (as opposed to less than
+        # or equal) to the old.
+        changed = False
+
         for j in range(self.f[self.lpart], self.f[self.lpart + 1]):
             self.pstack[k].u = self.pstack[j].u - self.pstack[j].v
             if self.pstack[k].u == 0:

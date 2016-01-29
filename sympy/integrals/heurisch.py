@@ -490,8 +490,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                     break  # should this be: `irreducibles |= \
             else:          # set(root_factors(poly, z, filter=field))`
                 continue   # and the line below deleted?
-                           #               |
-                           #               V
+                #                          |
+                #                          V
             irreducibles |= set(root_factors(poly, z, filter=field))
 
         log_coeffs, log_part = [], []

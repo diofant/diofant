@@ -597,8 +597,6 @@ def _denester(nested, av0, h, max_depth_level):
                 sqvad1 = radsimp(1/sqvad)
                 res = _mexpand(sqvad/sqrt(2) + (v[1]*sqrt(R)*sqvad1/sqrt(2)))
                 return res, f
-
-                      #          sign(v[1])*sqrt(_mexpand(v[1]**2*R*vad1/2))), f
             else:  # Solution requires a fourth root
                 s2 = _mexpand(v[1]*R) + d
                 if s2 <= 0:

@@ -680,8 +680,9 @@ def test_prudnikov_1():
     assert can_do([a, a + Rational(1, 2)], [Rational(3, 2)])
     assert can_do([a, a/2 + 1], [a/2])
     assert can_do([1, b], [2])
+
     assert can_do([1, b], [b + 1], numerical=False)  # Lerch Phi
-             # NOTE: branches are complicated for |z| > 1
+    # NOTE: branches are complicated for |z| > 1
 
     assert can_do([a], [2*a])
     assert can_do([a], [2*a + 1])

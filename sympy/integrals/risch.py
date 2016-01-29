@@ -1274,8 +1274,9 @@ def integrate_primitive_polynomial(p, DE):
 
         Dta, Dtb = frac_in(DE.d, DE.T[DE.level - 1])
 
-        with DecrementLevel(DE):  # We had better be integrating the lowest extension (x)
-                                  # with ratint().
+        # We had better be integrating the lowest extension (x)
+        # with ratint().
+        with DecrementLevel(DE):
             a = p.LC()
             aa, ad = frac_in(a, DE.t)
 

@@ -629,7 +629,6 @@ def test_issue_5197():
     x = Symbol('x', positive=True)
     y = Symbol('y')
     assert solve([x + 5*y - 2, -3*x + 6*y - 15], x, y) == []
-                 # not {x: -3, y: 1} b/c x is positive
     # The solution following should not contain (-sqrt(2), sqrt(2))
     assert solve((x + y)*n - y**2 + 2, x, y) == [(sqrt(2), -sqrt(2))]
     y = Symbol('y', positive=True)

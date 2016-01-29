@@ -146,8 +146,8 @@ def test_simplify_measure():
         return len(str(expr))
 
     def measure2(expr):
-        return -count_ops(expr)
-                                       # Return the most complicated result
+        return -count_ops(expr)  # Return the most complicated result
+
     expr = (x + 1)/(x + sin(x)**2 + cos(x)**2)
     assert measure1(simplify(expr, measure=measure1)) <= measure1(expr)
     assert measure2(simplify(expr, measure=measure2)) <= measure2(expr)
