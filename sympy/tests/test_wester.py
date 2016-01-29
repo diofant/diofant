@@ -2909,7 +2909,7 @@ def test_Y11():
     x, s = symbols('x s')
     # raises RuntimeError: maximum recursion depth exceeded
     # https://github.com/sympy/sympy/issues/7181
-    F, _, _ =  mellin_transform(1/(1 - x), x, s)
+    F, _, _ = mellin_transform(1/(1 - x), x, s)
     assert F == pi*cot(pi*s)
 
 

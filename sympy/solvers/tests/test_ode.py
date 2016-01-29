@@ -2112,7 +2112,7 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_undetermined_coefficients():
     assert our_hint in classify_ode(eq, f(x))
 
     eq = Eq(x**2*diff(f(x), x, x) + x*diff(f(x), x), 1)
-    sol =  C1 + C2*log(x) + log(x)**2/2
+    sol = C1 + C2*log(x) + log(x)**2/2
     sols = constant_renumber(sol, 'C', 1, 2)
     assert our_hint in classify_ode(eq, f(x))
     assert dsolve(eq, f(x), hint=our_hint).rhs in (sol, sols)
@@ -2126,7 +2126,7 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_undetermined_coefficients():
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
 
     eq = Eq(x**2*diff(f(x), x, x) - x*diff(f(x), x) - 3*f(x), log(x)/x)
-    sol =  C1/x + C2*x**3 - Rational(1, 16)*log(x)/x - Rational(1, 8)*log(x)**2/x
+    sol = C1/x + C2*x**3 - Rational(1, 16)*log(x)/x - Rational(1, 8)*log(x)**2/x
     sols = constant_renumber(sol, 'C', 1, 2)
     assert our_hint in classify_ode(eq, f(x))
     assert dsolve(eq, f(x), hint=our_hint).rhs.expand() in (sol, sols)
@@ -2260,7 +2260,7 @@ def test_separable_reduced():
     assert classify_ode(eq) == ('separable_reduced', 'lie_group',
         'separable_reduced_Integral')
     sol = dsolve(eq, hint='separable_reduced', simplify=False)
-    assert sol.lhs ==  log(x**2*f(x))/3 + log(x**2*f(x) - Rational(3, 2))/6
+    assert sol.lhs == log(x**2*f(x))/3 + log(x**2*f(x) - Rational(3, 2))/6
     assert sol.rhs == C1 + log(x)
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
 

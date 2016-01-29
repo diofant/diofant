@@ -497,7 +497,7 @@ class Mul(Expr, AssocOp):
         # handle -1 and I
         if neg1e:
             # treat I as (-1)**(1/2) and compute -1's total exponent
-            p, q =  neg1e.as_numer_denom()
+            p, q = neg1e.as_numer_denom()
             # if the integer part is odd, extract -1
             n, p = divmod(p, q)
             if n % 2:

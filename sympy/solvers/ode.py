@@ -3660,7 +3660,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     else:
         startiter = -minf.args[0].as_independent(n)[0]
     lhs = maxf
-    rhs =  solve(req, maxf)
+    rhs = solve(req, maxf)
     if isinstance(rhs, list):
         rhs = rhs[0]
 

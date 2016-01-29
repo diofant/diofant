@@ -200,9 +200,9 @@ def test_erf2():
     assert erf2(x, x) == S.Zero
     assert erf2(nan, 0) == nan
 
-    assert erf2(-oo,  y) ==  erf(y) + 1
-    assert erf2( oo,  y) ==  erf(y) - 1
-    assert erf2(  x, oo) ==  1 - erf(x)
+    assert erf2(-oo,  y) == erf(y) + 1
+    assert erf2( oo,  y) == erf(y) - 1
+    assert erf2(  x, oo) == 1 - erf(x)
     assert erf2(  x, -oo) == -1 - erf(x)
     assert erf2(x, erf2inv(x, y)) == y
 

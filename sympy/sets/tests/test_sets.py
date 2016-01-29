@@ -575,7 +575,7 @@ def test_powerset():
     A = FiniteSet()
     pset = A.powerset()
     assert len(pset) == 1
-    assert pset ==  FiniteSet(S.EmptySet)
+    assert pset == FiniteSet(S.EmptySet)
 
     # FiniteSets
     A = FiniteSet(1, 2)

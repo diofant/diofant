@@ -168,7 +168,7 @@ def test_solve_polynomial1():
     assert solve(x - y**3, x) == [y**3]
     rx = root(x, 3)
     assert solve(x - y**3, y) == [
-        rx, -rx/2 - sqrt(3)*I*rx/2, -rx/2 +  sqrt(3)*I*rx/2]
+        rx, -rx/2 - sqrt(3)*I*rx/2, -rx/2 + sqrt(3)*I*rx/2]
     a11, a12, a21, a22, b1, b2 = symbols('a11,a12,a21,a22,b1,b2')
 
     assert solve([a11*x + a12*y - b1, a21*x + a22*y - b2], x, y) == \

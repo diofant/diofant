@@ -140,7 +140,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
             # We are guaranteed to not have problems,
             # because case != 'base'.
             with DecrementLevel(DE):
-                betaa, alphaa, alphad =  real_imag(ba, bd*a, DE.t)
+                betaa, alphaa, alphad = real_imag(ba, bd*a, DE.t)
                 betad = alphad
                 etaa, etad = frac_in(dcoeff, DE.t)
                 if recognize_log_derivative(2*betaa, betad, DE):
