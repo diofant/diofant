@@ -3668,7 +3668,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     tcounter = len([t for t in finaldict.values() if t])
 
     for count in range(tcounter, terms - 3):  # Assuming c0 and c1 to be arbitrary
-    # while tcounter < terms - 2:  # Assuming c0 and c1 to be arbitrary
+        # while tcounter < terms - 2:  # Assuming c0 and c1 to be arbitrary
         check = rhs.subs(n, startiter)
         nlhs = lhs.subs(n, startiter)
         nrhs = check.subs(finaldict)

@@ -1051,7 +1051,7 @@ def laurent_series(a, d, F, n, DE):
     V, DE_D_list, H_list = [], [], []
 
     for j in range(0, n):
-    # jth derivative of z would be substituted with dfnth/(j+1) where dfnth =(d^n)f/(dx)^n
+        # jth derivative of z would be substituted with dfnth/(j+1) where dfnth =(d^n)f/(dx)^n
         F_store = derivation(F_store, DE)
         v = (F_store.as_expr())/(j + 1)
         V.append(v)

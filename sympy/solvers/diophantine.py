@@ -1625,7 +1625,7 @@ def _diop_ternary_quadratic(_var, coeff):
 
     else:
         if coeff[x*y] != 0 or coeff[x*z] != 0:
-        # Apply the transformation x --> X - (B*y + C*z)/(2*A)
+            # Apply the transformation x --> X - (B*y + C*z)/(2*A)
             A = coeff[x**2]
             B = coeff[x*y]
             C = coeff[x*z]
