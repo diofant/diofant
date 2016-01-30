@@ -19,6 +19,5 @@ Contents:
    install.rst
    tutorial/index.rst
    modules/index.rst
-   special_topics/index.rst
    guide.rst
    aboutus.rst
