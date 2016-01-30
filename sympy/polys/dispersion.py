@@ -1,4 +1,4 @@
-from sympy.core import S, sympify
+from sympy.core import S
 from sympy.polys import Poly
 
 
@@ -113,10 +113,10 @@ def dispersionset(p, q=None, *gens, **args):
             # Note that the roles of `s` and `t` below are switched
             # w.r.t. the original paper. This is for consistency
             # with the description in the book of W. Koepf.
-            anm1 = s.coeff_monomial(gen**(m-1))
-            bnm1 = t.coeff_monomial(gen**(n-1))
-            alpha = (anm1 - bnm1) / sympify(n*bn)
-            if not alpha.is_integer:
+            anm1 = s.coeff_monomial(gen**(m - 1))
+            bnm1 = t.coeff_monomial(gen**(n - 1))
+            alpha = (anm1 - bnm1)/(n*bn)
+            if not alpha.is_Integer:
                 continue
             if alpha < 0 or alpha in J:
                 continue
