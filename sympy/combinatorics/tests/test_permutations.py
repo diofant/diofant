@@ -342,10 +342,13 @@ def test_args():
     assert Permutation(3).list(-1) == []
     assert Permutation(5)(1, 2).list(-1) == [0, 2, 1]
     assert Permutation(5)(1, 2).list() == [0, 2, 1, 3, 4, 5]
+
+    # enclosing brackets needed
     pytest.raises(TypeError, lambda: Permutation([1, 2], [0]))
-           # enclosing brackets needed
+
+    # enclosing brackets needed on 0
     pytest.raises(ValueError, lambda: Permutation([[1, 2], 0]))
-           # enclosing brackets needed on 0
+
     pytest.raises(ValueError, lambda: Permutation([1, 1, 0]))
     pytest.raises(ValueError, lambda: Permutation([[1], [1, 2]]))
     pytest.raises(ValueError, lambda: Permutation([4, 5], size=10))  # where are 0-3?

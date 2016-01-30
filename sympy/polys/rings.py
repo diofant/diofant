@@ -1396,7 +1396,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 else:
                     i += 1
             if not divoccurred:
-                expv =  p.leading_expv()
+                expv = p.leading_expv()
                 r = r._iadd_monom((expv, p[expv]))
                 del p[expv]
         if expv == ring.zero_monom:

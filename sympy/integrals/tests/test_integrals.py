@@ -1026,7 +1026,7 @@ def test_issue_6828():
 @pytest.mark.xfail
 def test_integrate_Piecewise_rational_over_reals():
     f = Piecewise(
-        (0,                                              t - 478.515625*pi <  0),
+        (0,                                              t - 478.515625*pi < 0),
         (13.2075145209219*pi/(0.000871222*t + 0.995)**2, t - 478.515625*pi >= 0))
 
     assert integrate(f, (t, 0, oo)) == 15235.9375*pi

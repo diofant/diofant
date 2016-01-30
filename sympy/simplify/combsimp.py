@@ -168,7 +168,7 @@ def combsimp(expr):
                         if not dd.has(gamma):
                             break
                 nd = Mul(*args)
-                if ipass ==  0 and not gamma_factor(nd):
+                if ipass == 0 and not gamma_factor(nd):
                     break
                 nd, dd = dd, nd  # now process in reversed order
             expr = gamma_ind*nd/dd

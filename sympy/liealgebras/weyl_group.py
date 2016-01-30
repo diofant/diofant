@@ -63,7 +63,7 @@ class WeylGroup(Basic):
         if self.cartan_type.series == "A":
             return fac(n+1)
 
-        if self.cartan_type.series == "B" or self.cartan_type.series ==  "C":
+        if self.cartan_type.series == "B" or self.cartan_type.series == "C":
             return fac(n)*(2**n)
 
         if self.cartan_type.series == "D":
@@ -92,7 +92,7 @@ class WeylGroup(Basic):
         if self.cartan_type.series == "A":
             return "S"+str(n+1) + ": the symmetric group acting on " + str(n+1) + " elements."
 
-        if self.cartan_type.series == "B" or self.cartan_type.series ==  "C":
+        if self.cartan_type.series == "B" or self.cartan_type.series == "C":
             return "The hyperoctahedral group acting on " + str(2*n) + " elements."
 
         if self.cartan_type.series == "D":
@@ -382,7 +382,7 @@ class WeylGroup(Basic):
         if self.cartan_type.series == "A" or self.cartan_type.series == "D" or self.cartan_type.series == "E":
             return self.cartan_type.dynkin_diagram()
 
-        if self.cartan_type.series == "B" or self.cartan_type.series ==  "C":
+        if self.cartan_type.series == "B" or self.cartan_type.series == "C":
             diag = "---".join("0" for i in range(1, n)) + "===0\n"
             diag += "   ".join(str(i) for i in range(1, n+1))
             return diag

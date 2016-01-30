@@ -198,19 +198,22 @@ class Mul(Expr, AssocOp):
 
         nc_seq = []
 
-        coeff = S.One       # standalone term
-                            # e.g. 3 * ...
+        # standalone term e.g. 3 * ...
+        coeff = S.One
 
-        c_powers = []       # (base,exp)      n
-                            # e.g. (x,n) for x
+        #                           n
+        # (base,exp)e.g. (x,n) for x
+        c_powers = []
 
-        num_exp = []        # (num-base, exp)           y
-                            # e.g.  (3, y)  for  ... * 3  * ...
+        #                                           y
+        # (num-base, exp) e.g.  (3, y)  for  ... * 3  * ...
+        num_exp = []
 
-        neg1e = S.Zero      # exponent on -1 extracted from Number-based Pow and I
+        neg1e = S.Zero  # exponent on -1 extracted from Number-based Pow and I
 
-        pnum_rat = {}       # (num-base, Rat-exp)          1/2
-                            # e.g.  (3, 1/2)  for  ... * 3     * ...
+        #                                                 1/2
+        # (num-base, Rat-exp) e.g.  (3, 1/2)  for  ... * 3     * ...
+        pnum_rat = {}
 
         order_symbols = None
 
@@ -410,8 +413,10 @@ class Mul(Expr, AssocOp):
 
         #  x    x     x
         # 2  * 3  -> 6
-        inv_exp_dict = {}   # exp:Mul(num-bases)     x    x
-                            # e.g.  x:6  for  ... * 2  * 3  * ...
+        # exp:Mul(num-bases)     x    x
+        # e.g.  x:6  for  ... * 2  * 3  * ...
+        inv_exp_dict = {}
+
         for b, e in num_exp:
             inv_exp_dict.setdefault(e, []).append(b)
         for e, b in inv_exp_dict.items():
@@ -492,7 +497,7 @@ class Mul(Expr, AssocOp):
         # handle -1 and I
         if neg1e:
             # treat I as (-1)**(1/2) and compute -1's total exponent
-            p, q =  neg1e.as_numer_denom()
+            p, q = neg1e.as_numer_denom()
             # if the integer part is odd, extract -1
             n, p = divmod(p, q)
             if n % 2:

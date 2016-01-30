@@ -227,10 +227,15 @@ def _implicit_application(tokens, local_dict, global_dict):
     """Adds parentheses as needed after functions."""
     result = []
     appendParen = 0  # number of closing parentheses to add
-    skip = 0  # number of tokens to delay before adding a ')' (to
-              # capture **, ^, etc.)
-    exponentSkip = False  # skipping tokens before inserting parentheses to
-                          # work with function exponentiation
+
+    # number of tokens to delay before adding a ')' (to
+    # capture **, ^, etc.)
+    skip = 0
+
+    # skipping tokens before inserting parentheses to
+    # work with function exponentiation
+    exponentSkip = False
+
     for tok, nextTok in zip(tokens, tokens[1:]):
         result.append(tok)
         if (tok[0] == NAME and

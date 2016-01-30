@@ -99,9 +99,9 @@ class Singleton(ManagedProperties):
         # class of which Singleton is the metaclas.
         # __call__ is invoked first, before __new__() and __init__().
         if self not in Singleton._instances:
+            # Invokes the standard constructor of SomeClass.
             Singleton._instances[self] = \
                 super(Singleton, self).__call__(*args, **kwargs)
-                # Invokes the standard constructor of SomeClass.
         return Singleton._instances[self]
 
         # Inject pickling support.

@@ -544,7 +544,7 @@ def test_PolynomialRing_from_FractionField():
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
-    h =  x**2 + y**2
+    h = x**2 + y**2
 
     assert R.to_domain().from_FractionField(f, F.to_domain()) is None
     assert R.to_domain().from_FractionField(g, F.to_domain()) == X**2/4 + Y**2/4
@@ -555,7 +555,7 @@ def test_PolynomialRing_from_FractionField():
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
-    h =  x**2 + y**2
+    h = x**2 + y**2
 
     assert R.to_domain().from_FractionField(f, F.to_domain()) is None
     assert R.to_domain().from_FractionField(g, F.to_domain()) == X**2/4 + Y**2/4

@@ -435,7 +435,7 @@ def test_rayleigh():
     sigma = Symbol("sigma", positive=True)
 
     X = Rayleigh('x', sigma)
-    assert density(X)(x) ==  x*exp(-x**2/(2*sigma**2))/sigma**2
+    assert density(X)(x) == x*exp(-x**2/(2*sigma**2))/sigma**2
     assert E(X) == sqrt(2)*sqrt(pi)*sigma/2
     assert variance(X) == -pi*sigma**2/2 + 2*sigma**2
 
