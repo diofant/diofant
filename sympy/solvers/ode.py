@@ -1536,7 +1536,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
             return
     else:
         if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
-             # Equations for type 1 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t))
+            # Equations for type 1 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t))
             return "type1"
         else:
             r['b1'] = r['b1']/r['a1']
@@ -3660,7 +3660,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     else:
         startiter = -minf.args[0].as_independent(n)[0]
     lhs = maxf
-    rhs =  solve(req, maxf)
+    rhs = solve(req, maxf)
     if isinstance(rhs, list):
         rhs = rhs[0]
 
@@ -3668,7 +3668,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     tcounter = len([t for t in finaldict.values() if t])
 
     for count in range(tcounter, terms - 3):  # Assuming c0 and c1 to be arbitrary
-    # while tcounter < terms - 2:  # Assuming c0 and c1 to be arbitrary
+        # while tcounter < terms - 2:  # Assuming c0 and c1 to be arbitrary
         check = rhs.subs(n, startiter)
         nlhs = lhs.subs(n, startiter)
         nrhs = check.subs(finaldict)
@@ -5117,8 +5117,9 @@ def _solve_variation_of_parameters(eq, func, order, match):
     wr = wronskian(gensols, x)
 
     if r.get('simplify', True):
-        wr = simplify(wr)  # We need much better simplification for
-                           # some ODEs. See issue 4662, for example.
+        # We need much better simplification for
+        # some ODEs. See issue 4662, for example.
+        wr = simplify(wr)
 
         # To reduce commonly occuring sin(x)**2 + cos(x)**2 to 1
         wr = trigsimp(wr, deep=True, recursive=True)

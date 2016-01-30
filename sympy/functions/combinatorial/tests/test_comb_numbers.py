@@ -210,8 +210,8 @@ def test_harmonic_rewrite_polygamma():
     m = Symbol("m")
 
     assert harmonic(n).rewrite(digamma) == polygamma(0, n + 1) + EulerGamma
-    assert harmonic(n).rewrite(trigamma) ==  polygamma(0, n + 1) + EulerGamma
-    assert harmonic(n).rewrite(polygamma) ==  polygamma(0, n + 1) + EulerGamma
+    assert harmonic(n).rewrite(trigamma) == polygamma(0, n + 1) + EulerGamma
+    assert harmonic(n).rewrite(polygamma) == polygamma(0, n + 1) + EulerGamma
 
     assert harmonic(n, 3).rewrite(polygamma) == polygamma(2, n + 1)/2 - polygamma(2, 1)/2
     assert harmonic(n, m).rewrite(polygamma) == (-1)**m*(polygamma(m - 1, 1) - polygamma(m - 1, n + 1))/factorial(m - 1)

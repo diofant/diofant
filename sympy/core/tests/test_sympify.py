@@ -407,7 +407,7 @@ def test_geometry():
 
 
 def test_kernS():
-    s =   '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'
+    s = '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'
     # when 1497 is fixed, this no longer should pass: the expression
     # should be unchanged
     assert -1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) == -1

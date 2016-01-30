@@ -385,7 +385,7 @@ def _sqrt_mod_prime_power(a, p, k):
                 res = pow(a, (p + 3) // 8, p)
             else:
                 b = pow(4*a, (p - 5) // 8, p)
-                x =  (2*a*b) % p
+                x = (2*a*b) % p
                 if pow(x, 2, p) == a:
                     res = x
         else:
