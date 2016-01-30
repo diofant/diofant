@@ -624,8 +624,9 @@ class ProductSet(Set):
         return all(set.is_iterable for set in self.sets)
 
     def __iter__(self):
+        from sympy.utilities.iterables import product_cantor
         if self.is_iterable:
-            return itertools.product(*self.sets)
+            return product_cantor(*self.sets)
         else:
             raise TypeError("Not all constituent sets are iterable")
 
