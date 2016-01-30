@@ -375,6 +375,8 @@ def test_intractable():
 def test_branch_cuts():
     assert gruntz(sqrt(-1 + I/x), x) == +I
     assert gruntz(sqrt(-1 - I/x), x) == -I
+    assert gruntz(log(-1 + I/x), x) == +I*pi
+    assert gruntz(log(-1 - I/x), x) == -I*pi
 
 
 def test_aseries_trig():
