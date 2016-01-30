@@ -1,6 +1,6 @@
 from sympy.concrete.expr_with_limits import AddWithLimits
 from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
-from sympy.core.function import Derivative
+from sympy.core.function import Derivative, Function
 from sympy.core.relational import Eq
 from sympy.core.singleton import S
 from sympy.core.symbol import (Dummy, Wild)
@@ -415,7 +415,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         return Sum(e * self.function, *limits)
 
-    def findrecur(self, F=Dummy('F'), n=None):
+    def findrecur(self, F=Function('F'), n=None):
         """
         Find a recurrence formula for the summand of the sum.
 
@@ -429,7 +429,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Examples
         ========
 
-        >>> from sympy import symbols, Function, factorial, oo
+        >>> from sympy import symbols, factorial, oo
         >>> from sympy.concrete import Sum
         >>> n, k = symbols('n, k', integer=True)
         >>> s = Sum(factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
@@ -447,7 +447,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
 
         """
-        from sympy import Function, expand_func, gamma, factor, Mul
+        from sympy import expand_func, gamma, factor, Mul
         from sympy.polys import together
         from sympy.simplify import collect
 
