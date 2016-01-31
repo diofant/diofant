@@ -372,6 +372,13 @@ def test_intractable():
     assert gruntz(log(gamma(gamma(x)))/exp(x), x) == oo
 
 
+def test_branch_cuts():
+    assert gruntz(sqrt(-1 + I/x), x) == +I
+    assert gruntz(sqrt(-1 - I/x), x) == -I
+    assert gruntz(log(-1 + I/x), x) == +I*pi
+    assert gruntz(log(-1 - I/x), x) == -I*pi
+
+
 def test_aseries_trig():
     assert gruntz(1/log(atan(x)), x) == -1/(-log(pi) + log(2))
     assert gruntz(1/acot(-x), x) == -oo

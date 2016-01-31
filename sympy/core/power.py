@@ -1115,7 +1115,7 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
-        from sympy import exp, log, Order, powsimp, limit
+        from sympy import exp, log, Order, powsimp, limit, floor, arg
         if self.base is S.Exp1:
             e_series = self.exp.nseries(x, n=n, logx=logx)
             if e_series.is_Order:
@@ -1143,8 +1143,8 @@ class Pow(Expr):
             t = expand_mul((b_series/b0 - 1).cancel())
             if t.is_Add:
                 t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
+            c, e = b0.as_coeff_exponent(x)
             if self.exp is S.Infinity:
-                c, e = b0.as_coeff_exponent(x)
                 if e != 0:
                     sig = -e
                 else:
@@ -1161,9 +1161,15 @@ class Pow(Expr):
                 term *= (self.exp - i + 1)*t/i
                 term = term.nseries(x, n=n, logx=logx)
                 pow_series += term
+            factor = b0**self.exp
             if t != 0 and not (self.exp.is_Integer and self.exp >= 0 and n > self.exp):
                 pow_series += Order(t**n, x)
-            pow_series = expand_mul(pow_series*b0**self.exp)
+                # branch handling
+                if c.is_negative:
+                    l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                    if l.is_finite:
+                        factor *= exp(2*S.Pi*S.ImaginaryUnit*self.exp*l)
+            pow_series = expand_mul(factor*pow_series)
             return powsimp(pow_series, deep=True, combine='exp')
 
     def _eval_as_leading_term(self, x):

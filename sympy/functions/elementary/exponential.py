@@ -407,7 +407,7 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        from sympy import Order
+        from sympy import Order, floor, arg
         if not logx:
             logx = log(x)
         arg_series = self.args[0].nseries(x, n=n, logx=logx)
@@ -425,6 +425,11 @@ class log(Function):
             log_series += term
         if t != 0:
             log_series += Order(t**n, x)
+            # branch handling
+            if c.is_negative:
+                l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                if l.is_finite:
+                    log_series += 2*S.ImaginaryUnit*S.Pi*l
         return log_series + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):
