@@ -185,10 +185,10 @@ class Point(GeometryEntity):
 
     def is_scalar_multiple(p1, p2):
         """Returns whether `p1` and `p2` are scalar multiples
-        of eachother.
+        of each other.
         """
         # if the vectors p1 and p2 are linearly dependent, then they must
-        # be scalar multiples of eachother
+        # be scalar multiples of each other
         m = Matrix([p1.args, p2.args])
         # XXX: issue sympy/sympy#9480 we need `simplify=True` otherwise the
         # rank may be computed incorrectly

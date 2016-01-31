@@ -40,7 +40,7 @@ functions to generate partitions that can be used as low-level tools for
 routines:  ``partitions`` and ``multiset_partitions``. The former gives
 integer partitions, and the latter gives enumerated partitions of elements.
 There is also a routine ``kbins`` that will give a variety of permutations
-of partions.
+of partitions.
 
 partitions::
 

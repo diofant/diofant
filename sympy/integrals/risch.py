@@ -1133,7 +1133,7 @@ def recognize_log_derivative(a, d, DE, z=None):
 
     for s, i in Sp:
         # TODO also consider the complex roots
-        # incase we have complex roots it should turn the flag false
+        # in case we have complex roots it should turn the flag false
         a = real_roots(s.as_poly(z))
 
         if any(not j.is_Integer for j in a):

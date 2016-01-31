@@ -125,7 +125,7 @@ class no_attrs_in_subclass(object):
 
 
 def doctest_depends_on(exe=None, modules=None, disable_viewers=None):
-    """Adds metadata about the depenencies which need to be met for doctesting
+    """Adds metadata about the dependencies which need to be met for doctesting
     the docstrings of the decorated objects."""
 
     def depends_on_deco(fn):

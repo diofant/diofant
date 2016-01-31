@@ -61,7 +61,7 @@ class Ynm(Function):
     >>> Ynm(n, m, theta, -phi)
     E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
 
-    For specific integers n and m we can evalute the harmonics
+    For specific integers n and m we can evaluate the harmonics
     to more useful expressions
 
     >>> simplify(Ynm(0, 0, theta, phi).expand(func=True))
