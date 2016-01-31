@@ -1230,6 +1230,7 @@ def test_sympyissue_5300():
 
 
 def test_as_coeff_Mul():
+    assert S.Zero.as_coeff_Mul() == (S.One, S.Zero)
     assert Integer(3).as_coeff_Mul() == (Integer(3), Integer(1))
     assert Rational(3, 4).as_coeff_Mul() == (Rational(3, 4), Integer(1))
     assert Float(5.0).as_coeff_Mul() == (Float(5.0), Integer(1))
