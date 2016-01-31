@@ -216,7 +216,7 @@ def Benini(name, alpha, beta, sigma):
                 -\beta\log^2\left[{\frac{x}{\sigma}}\right]}
                 \left(\frac{\alpha}{x}+\frac{2\beta\log{\frac{x}{\sigma}}}{x}\right)
 
-    This is a heavy-tailed distrubtion and is also known as the log-Rayleigh
+    This is a heavy-tailed distribution and is also known as the log-Rayleigh
     distribution.
 
     Parameters

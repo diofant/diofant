@@ -20,7 +20,7 @@ sure to install from git::
 .. note::
 
     You could use `pyvenv`_ (or `virtualenv`_) to create isolated Python
-    environment first, instead of installaing everything system-wide.
+    environment first, instead of installing everything system-wide.
 
 To update to the latest version, go into your repository and execute::
 

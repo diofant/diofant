@@ -66,8 +66,8 @@ principal_branch
 sympy.functions.elementary.trigonometric
 ========================================
 
-Trionometric Functions
-======================
+Trigonometric Functions
+=======================
 
 sin
 ---

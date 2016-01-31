@@ -1061,7 +1061,7 @@ def _partition(seq, vector, m=None):
 
 
 def _set_partitions(n):
-    """Cycle through all partions of n elements, yielding the
+    """Cycle through all partitions of n elements, yielding the
     current number of partitions, ``m``, and a mutable list, ``q``
     such that element[i] is in part q[i] of the partition.
 

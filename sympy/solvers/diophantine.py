@@ -2444,7 +2444,7 @@ def partition(n, k=None, zeros=False):
     example, partitions of 3 are 3 , 1 + 2, 1 + 1+ 1. A partition is returned
     as a tuple. If ``k`` equals None, then all possible partitions are returned
     irrespective of their size, otherwise only the partitions of size ``k`` are
-    returned. If there are no partions of `n` with size `k` then an empty tuple
+    returned. If there are no partitions of `n` with size `k` then an empty tuple
     is returned. If the ``zero`` parameter is set to True then a suitable
     number of zeros are added at the end of every partition of size less than
     ``k``.

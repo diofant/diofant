@@ -259,7 +259,7 @@ class Plane(GeometryEntity):
                 return False
 
     def is_perpendicular(self, l):
-        """is the given geometric entity perpendicualar to the given plane?
+        """is the given geometric entity perpendicular to the given plane?
 
         Parameters
         ==========
@@ -300,7 +300,7 @@ class Plane(GeometryEntity):
             return False
 
     def distance(self, o):
-        """Distance beteen the plane and another geometric entity.
+        """Distance between the plane and another geometric entity.
 
         Parameters
         ==========

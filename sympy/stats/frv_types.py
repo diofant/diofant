@@ -185,7 +185,7 @@ def Coin(name, p=S.Half):
     """
     Create a Finite Random Variable representing a Coin toss.
 
-    Probability p is the chance of gettings "Heads." Half by default
+    Probability p is the chance of getting "Heads." Half by default
 
     Returns a RandomSymbol.
 

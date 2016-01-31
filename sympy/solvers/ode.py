@@ -5905,7 +5905,7 @@ def lie_heuristic_chi(match, comp=False):
     that satisifies the PDE `\frac{d\chi}{dx} + h\frac{d\chi}{dx}
     - \frac{\partial h}{\partial y}\chi = 0`.
 
-    This assumes `\chi` to be a bivariate polynomial in `x` and `y`. By intution,
+    This assumes `\chi` to be a bivariate polynomial in `x` and `y`. By intuition,
     `h` should be a rational function in `x` and `y`. The method used here is
     to substitute a general binomial for `\chi` up to a certain maximum degree
     is reached. The coefficients of the polynomials, are calculated by by collecting
@@ -6492,7 +6492,7 @@ def _linear_2eq_order1_type1(x, y, t, r):
 
     .. math:: y = C_1 (\lambda_1 - a) e^{\lambda_1 t} + C_2 (\lambda_2 - a) e^{\lambda_2 t}
 
-    where `C_1` and `C_2` being arbitary constants
+    where `C_1` and `C_2` being arbitrary constants
 
     1.2. If `D < 0`. The characteristics equation has two conjugate
     roots, `\lambda_1 = \sigma + i \beta` and `\lambda_2 = \sigma - i \beta`.
@@ -6519,7 +6519,7 @@ def _linear_2eq_order1_type1(x, y, t, r):
 
     2. Case when `ad - bc = 0` and `a^{2} + b^{2} > 0`. The whole straight
     line `ax + by = 0` consists of singular points. The orginal system of differential
-    equaitons can be rewritten as
+    equations can be rewritten as
 
     .. math:: x' = ax + by , y' = k (ax + by)
 
@@ -6646,7 +6646,7 @@ def _linear_2eq_order1_type3(x, y, t, r):
 
     .. math:: x = e^{F} (C_1 e^{G} + C_2 e^{-G}) , y = e^{F} (C_1 e^{G} - C_2 e^{-G})
 
-    where `C_1` and `C_2` are arbitary constants, and
+    where `C_1` and `C_2` are arbitrary constants, and
 
     .. math:: F = \int f(t) \,dt , G = \int g(t) \,dt
 
@@ -6671,7 +6671,7 @@ def _linear_2eq_order1_type4(x, y, t, r):
 
     .. math:: x = F (C_1 \cos(G) + C_2 \sin(G)), y = F (-C_1 \sin(G) + C_2 \cos(G))
 
-    where `C_1` and `C_2` are arbitary constants, and
+    where `C_1` and `C_2` are arbitrary constants, and
 
     .. math:: F = \int f(t) \,dt , G = \int g(t) \,dt
 
@@ -6743,7 +6743,7 @@ def _linear_2eq_order1_type6(x, y, t, r):
 
     .. math:: y - ax = C_1 e^{-a \int h(t) \,dt}
 
-    and on substituing the value of y in first equation give rise to first order ODEs. After solving for
+    and on substituting the value of y in first equation give rise to first order ODEs. After solving for
     `x`, we can obtain `y` by substituting the value of `x` in second equation.
 
     """
@@ -6799,7 +6799,7 @@ def _linear_2eq_order1_type7(x, y, t, r):
     2. `fgp - g^{2} h + f g' - f' g = ag, fg + gp + g' = bg`
 
     If first condition is satisfied then it is solved by current dsolve solver and in second case it becomes
-    a constant cofficient differential equation which is also solved by current solver.
+    a constant coefficient differential equation which is also solved by current solver.
 
     Otherwise if the above condition fails then,
     a particular solution is assumed as `x = x_0(t)` and `y = y_0(t)`
@@ -6809,7 +6809,7 @@ def _linear_2eq_order1_type7(x, y, t, r):
 
     .. math:: y = C_1 y_0(t) + C_2 [\frac{F(t) P(t)}{x_0(t)} + y_0(t) \int \frac{g(t) F(t) P(t)}{x_0^{2}(t)} \,dt]
 
-    where C1 and C2 are arbitary constants and
+    where C1 and C2 are arbitrary constants and
 
     .. math:: F(t) = e^{\int f(t) \,dt} , P(t) = e^{\int p(t) \,dt}
 
@@ -6906,7 +6906,7 @@ def _linear_2eq_order2_type1(x, y, t, r):
 
     .. math:: y'' = cx + dy
 
-    The charecteristic equation for above equations
+    The characteristic equation for above equations
 
     .. math:: \lambda^4 - (a + d) \lambda^2 + ad - bc = 0
 
@@ -6914,14 +6914,14 @@ def _linear_2eq_order2_type1(x, y, t, r):
 
     1. When `ad - bc \neq 0`
 
-    1.1. If `D \neq 0`. The characteristic equation has four distict roots, `\lambda_1, \lambda_2, \lambda_3, \lambda_4`.
+    1.1. If `D \neq 0`. The characteristic equation has four distinct roots, `\lambda_1, \lambda_2, \lambda_3, \lambda_4`.
     The general solution of the system is
 
     .. math:: x = C_1 b e^{\lambda_1 t} + C_2 b e^{\lambda_2 t} + C_3 b e^{\lambda_3 t} + C_4 b e^{\lambda_4 t}
 
     .. math:: y = C_1 (\lambda_1^{2} - a) e^{\lambda_1 t} + C_2 (\lambda_2^{2} - a) e^{\lambda_2 t} + C_3 (\lambda_3^{2} - a) e^{\lambda_3 t} + C_4 (\lambda_4^{2} - a) e^{\lambda_4 t}
 
-    where `C_1,..., C_4` are arbitary constants.
+    where `C_1,..., C_4` are arbitrary constants.
 
     1.2. If `D = 0` and `a \neq d`:
 
@@ -6929,7 +6929,7 @@ def _linear_2eq_order2_type1(x, y, t, r):
 
     .. math:: y = C_1 (d - a) t e^{\frac{kt}{2}} + C_2 (d - a) t e^{\frac{-kt}{2}} + C_3 [(d - a) t + 2k] e^{\frac{kt}{2}} + C_4 [(d - a) t - 2k] e^{\frac{-kt}{2}}
 
-    where `C_1,..., C_4` are arbitary constants and `k = \sqrt{2 (a + d)}`
+    where `C_1,..., C_4` are arbitrary constants and `k = \sqrt{2 (a + d)}`
 
     1.3. If `D = 0` and `a = d \neq 0` and `b = 0`:
 
@@ -7113,7 +7113,7 @@ def _linear_2eq_order2_type4(x, y, t, r):
 
     .. math:: x = A e^{\lambda t}, y = B e^{\lambda t}
 
-    On substituting these expressions into the original system and colleting the
+    On substituting these expressions into the original system and collecting the
     coefficients of the unknown `A` and `B`, one obtains
 
     .. math:: (\lambda^{2} + a_1 \lambda + c_1) A + (b_1 \lambda + d_1) B = 0
@@ -7125,7 +7125,7 @@ def _linear_2eq_order2_type4(x, y, t, r):
 
     .. math:: (\lambda^2 + a_1 \lambda + c_1) (\lambda^2 + b_2 \lambda + d_2) - (b_1 \lambda + d_1) (a_2 \lambda + c_2) = 0
 
-    If all roots `k_1,...,k_4` of this equation are distict, the general solution of the original
+    If all roots `k_1,...,k_4` of this equation are distinct, the general solution of the original
     system of the differential equations has the form
 
     .. math:: x = C_1 (b_1 \lambda_1 + d_1) e^{\lambda_1 t} - C_2 (b_1 \lambda_2 + d_1) e^{\lambda_2 t} - C_3 (b_1 \lambda_3 + d_1) e^{\lambda_3 t} - C_4 (b_1 \lambda_4 + d_1) e^{\lambda_4 t}
@@ -7173,7 +7173,7 @@ def _linear_2eq_order2_type4(x, y, t, r):
 
 def _linear_2eq_order2_type5(x, y, t, r):
     r"""
-    The equation which come under this catagory are
+    The equation which come under this category are
 
     .. math:: x'' = a (t y' - y)
 
@@ -7201,7 +7201,7 @@ def _linear_2eq_order2_type5(x, y, t, r):
 
     .. math:: v = C_1 \sqrt{\left|ab\right|} \sin(\frac{1}{2} \sqrt{\left|ab\right|} t^2) + C_2 \sqrt{\left|ab\right|} \cos(-\frac{1}{2} \sqrt{\left|ab\right|} t^2)
 
-    where `C_1` and `C_2` are arbitary constants. On substituting the value of `u` and `v`
+    where `C_1` and `C_2` are arbitrary constants. On substituting the value of `u` and `v`
     in above equations and integrating the resulting expressions, the general solution will become
 
     .. math:: x = C_3 t + t \int \frac{u}{t^2} \,dt, y = C_4 t + t \int \frac{u}{t^2} \,dt
@@ -7244,7 +7244,7 @@ def _linear_2eq_order2_type6(x, y, t, r):
     .. math:: z_2'' = k_2 f(t) z_2, z_2 = a_2 x + (k_2 - a_1) y
 
     Solving the equations will give the values of `x` and `y` after obtaining the value
-    of `z_1` and `z_2` by solving the differential equation and substuting the result.
+    of `z_1` and `z_2` by solving the differential equation and substituting the result.
 
     """
     C1, C2, C3, C4 = symbols('C1:5')
@@ -7314,7 +7314,7 @@ def _linear_2eq_order2_type7(x, y, t, r):
 
 def _linear_2eq_order2_type8(x, y, t, r):
     r"""
-    The equation of this catagory are
+    The equation of this category are
 
     .. math:: x'' = a f(t) (t y' - y)
 
@@ -7342,7 +7342,7 @@ def _linear_2eq_order2_type8(x, y, t, r):
 
     .. math:: v = C_1 \sqrt{\left|ab\right|} \sin(\sqrt{\left|ab\right|} \int t f(t) \,dt) + C_2 \sqrt{\left|ab\right|} \cos(-\sqrt{\left|ab\right|} \int t f(t) \,dt)
 
-    where `C_1` and `C_2` are arbitary constants. On substituting the value of `u` and `v`
+    where `C_1` and `C_2` are arbitrary constants. On substituting the value of `u` and `v`
     in above equations and integrating the resulting expressions, the general solution will become
 
     .. math:: x = C_3 t + t \int \frac{u}{t^2} \,dt, y = C_4 t + t \int \frac{u}{t^2} \,dt
@@ -7389,7 +7389,7 @@ def _linear_2eq_order2_type9(x, y, t, r):
 
     .. math:: x = A e^{\lambda t}, y = B e^{\lambda t}
 
-    On substituting these expressions into the original system and colleting the
+    On substituting these expressions into the original system and collecting the
     coefficients of the unknown `A` and `B`, one obtains
 
     .. math:: (\lambda^{2} + (a_1 - 1) \lambda + c_1) A + (b_1 \lambda + d_1) B = 0
@@ -7401,7 +7401,7 @@ def _linear_2eq_order2_type9(x, y, t, r):
 
     .. math:: (\lambda^2 + (a_1 - 1) \lambda + c_1) (\lambda^2 + (b_2 - 1) \lambda + d_2) - (b_1 \lambda + d_1) (a_2 \lambda + c_2) = 0
 
-    If all roots `k_1,...,k_4` of this equation are distict, the general solution of the original
+    If all roots `k_1,...,k_4` of this equation are distinct, the general solution of the original
     system of the differential equations has the form
 
     .. math:: x = C_1 (b_1 \lambda_1 + d_1) e^{\lambda_1 t} - C_2 (b_1 \lambda_2 + d_1) e^{\lambda_2 t} - C_3 (b_1 \lambda_3 + d_1) e^{\lambda_3 t} - C_4 (b_1 \lambda_4 + d_1) e^{\lambda_4 t}
@@ -7433,7 +7433,7 @@ def _linear_2eq_order2_type9(x, y, t, r):
 
 def _linear_2eq_order2_type10(x, y, t, r):
     r"""
-    The equation of this catagory are
+    The equation of this category are
 
     .. math:: (\alpha t^2 + \beta t + \gamma)^{2} x'' = ax + by
 
@@ -7660,7 +7660,7 @@ def _linear_3eq_order1_type3(x, y, z, t, r):
 
     .. math:: a^2 x + b^2 y + c^2 z = A
 
-    where A is an arbitary constant. It follows that the integral lines are plane curves.
+    where A is an arbitrary constant. It follows that the integral lines are plane curves.
 
     2. Solution:
 
@@ -7759,7 +7759,7 @@ def _linear_neq_order1_type1(match_):
     .. math:: r \vec{v} = A \vec{v}
 
     where `r` comes out to be eigenvalue of `A` and vector `\vec{v}` is the eigenvector
-    of `A` corresponding to `r`. There are three possiblities of eigenvalues of `A`
+    of `A` corresponding to `r`. There are three possibilities of eigenvalues of `A`
 
     - `n` distinct real eigenvalues
     - complex conjugate eigenvalues
@@ -7773,7 +7773,7 @@ def _linear_neq_order1_type1(match_):
     where `C_1,C_2,...,C_n` are arbitrary constants.
 
     2. When some eigenvalues are complex then in order to make the solution real,
-    we take a llinear combination: if `r = a + bi` has an eigenvector
+    we take a linear combination: if `r = a + bi` has an eigenvector
     `\vec{v} = \vec{w_1} + i \vec{w_2}` then to obtain real-valued solutions to
     the system, replace the complex-valued solutions `e^{rx} \vec{v}`
     with real-valued solution `e^{ax} (\vec{w_1} \cos(bx) - \vec{w_2} \sin(bx))`
