@@ -502,8 +502,8 @@ def test_Poly__eq__():
 
     t0 = Symbol('t0')
 
-    f =  Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='QQ[x,t0]')
-    g =  Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='ZZ(x,t0)')
+    f = Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='QQ[x,t0]')
+    g = Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='ZZ(x,t0)')
 
     assert (f == g) is True
 

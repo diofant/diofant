@@ -132,7 +132,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(1 + sqrt(2)*I, x, compose=False) == x**2 - 2*x + 3
     assert minimal_polynomial(1/(1 + sqrt(2)) + 1, x, compose=False) == x**2 - 2
     assert minimal_polynomial(sqrt(2)*I + I*(1 + sqrt(2)), x,
-            compose=False) ==  x**4 + 18*x**2 + 49
+            compose=False) == x**4 + 18*x**2 + 49
 
 
 def test_minimal_polynomial_hi_prec():

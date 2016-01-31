@@ -186,7 +186,7 @@ def test_point3D():
     assert p.translate(*p.args) == Point3D(2, 2, 2)
 
     # Test __new__
-    assert Point3D(Point3D(1, 2, 3), 4, 5, evaluate=False) ==  Point3D(1, 2, 3)
+    assert Point3D(Point3D(1, 2, 3), 4, 5, evaluate=False) == Point3D(1, 2, 3)
 
     # Test length property returns correctly
     assert p.length == 0

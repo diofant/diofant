@@ -1755,23 +1755,23 @@ def test_R3():
 
 @pytest.mark.xfail
 def test_R4():
-# Macsyma indefinite sum test case:
-# (c15) /* Check whether the full Gosper algorithm is implemented
-#    => 1/2^(n + 1) binomial(n, k - 1) */
-# closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
-#  Time= 2690 msecs
-#                       (- n + k - 1) binomial(n + 1, k)
-# (d15)               - --------------------------------
-# 				                       n
-#                                    2 2  (n + 1)
-#
-# (c16) factcomb(makefact(%));
-#  Time= 220 msecs
-#                                  n!
-# (d16)                     ----------------
-#                                 n
-#                           2 k! 2  (n - k)!
-#  Might be possible after fixing https://github.com/sympy/sympy/pull/1879
+    # Macsyma indefinite sum test case:
+    # (c15) /* Check whether the full Gosper algorithm is implemented
+    #    => 1/2^(n + 1) binomial(n, k - 1) */
+    # closedform(indefsum(binomial(n, k)/2^n - binomial(n + 1, k)/2^(n + 1), k));
+    #  Time= 2690 msecs
+    #                       (- n + k - 1) binomial(n + 1, k)
+    # (d15)               - --------------------------------
+    #                                                      n
+    #                                    2 2  (n + 1)
+    #
+    # (c16) factcomb(makefact(%));
+    #  Time= 220 msecs
+    #                                  n!
+    # (d16)                     ----------------
+    #                                 n
+    #                           2 k! 2  (n - k)!
+    #  Might be possible after fixing https://github.com/sympy/sympy/pull/1879
     raise NotImplementedError("Indefinite sum not supported")
 
 
@@ -2265,17 +2265,17 @@ def test_V7():
 
 @pytest.mark.xfail
 def test_V8_V9():
-# Macsyma test case:
-# (c27) /* This example involves several symbolic parameters
-#    => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
-#                             [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
-#       [Gradshteyn and Ryzhik 2.553(3)] */
-#  assume(b^2 > a^2)$
-# (c28) integrate(1/(a + b*cos(x)), x);
-# (c29) trigsimp(ratsimp(diff(%, x)));
-#                         1
-# (d29)             ------------
-#                   b cos(x) + a
+    # Macsyma test case:
+    # (c27) /* This example involves several symbolic parameters
+    #    => 1/sqrt(b^2 - a^2) log([sqrt(b^2 - a^2) tan(x/2) + a + b]/
+    #                             [sqrt(b^2 - a^2) tan(x/2) - a - b])   (a^2 < b^2)
+    #       [Gradshteyn and Ryzhik 2.553(3)] */
+    #  assume(b^2 > a^2)$
+    # (c28) integrate(1/(a + b*cos(x)), x);
+    # (c29) trigsimp(ratsimp(diff(%, x)));
+    #                         1
+    # (d29)             ------------
+    #                   b cos(x) + a
     raise NotImplementedError(
         "Integrate with assumption not supported")
 
@@ -2323,13 +2323,13 @@ def test_V15():
 
 @pytest.mark.xfail
 def test_V16():
-# test case in Mathematica syntax:
-# In[53]:= Integrate[Cos[5*x]*CosIntegral[2*x], x]
-#          CosIntegral[2 x] Sin[5 x]   -SinIntegral[3 x] - SinIntegral[7 x]
-# Out[53]= ------------------------- + ------------------------------------
-#                      5                                10
-# cosine Integral function not supported
-# http://reference.wolfram.com/mathematica/ref/CosIntegral.html
+    # test case in Mathematica syntax:
+    # In[53]:= Integrate[Cos[5*x]*CosIntegral[2*x], x]
+    #          CosIntegral[2 x] Sin[5 x]   -SinIntegral[3 x] - SinIntegral[7 x]
+    # Out[53]= ------------------------- + ------------------------------------
+    #                      5                                10
+    # cosine Integral function not supported
+    # http://reference.wolfram.com/mathematica/ref/CosIntegral.html
     raise NotImplementedError("cosine integral function not supported")
 
 
@@ -2847,13 +2847,13 @@ def test_Y4():
 
 @pytest.mark.xfail
 def test_Y5_Y6():
-# Solve y'' + y = 4 [H(t - 1) - H(t - 2)], y(0) = 1, y'(0) = 0 where H is the
-# Heaviside (unit step) function (the RHS describes a pulse of magnitude 4 and
-# duration 1).  See David A. Sanchez, Richard C. Allen, Jr. and Walter T.
-# Kyner, _Differential Equations: An Introduction_, Addison-Wesley Publishing
-# Company, 1983, p. 211.  First, take the Laplace transform of the ODE
-# => s^2 Y(s) - s + Y(s) = 4/s [e^(-s) - e^(-2 s)]
-# where Y(s) is the Laplace transform of y(t)
+    # Solve y'' + y = 4 [H(t - 1) - H(t - 2)], y(0) = 1, y'(0) = 0 where H is the
+    # Heaviside (unit step) function (the RHS describes a pulse of magnitude 4 and
+    # duration 1).  See David A. Sanchez, Richard C. Allen, Jr. and Walter T.
+    # Kyner, _Differential Equations: An Introduction_, Addison-Wesley Publishing
+    # Company, 1983, p. 211.  First, take the Laplace transform of the ODE
+    # => s^2 Y(s) - s + Y(s) = 4/s [e^(-s) - e^(-2 s)]
+    # where Y(s) is the Laplace transform of y(t)
     t = symbols('t', extended_real=True, positive=True)
     s = symbols('s')
     y = Function('y')
@@ -2865,10 +2865,10 @@ def test_Y5_Y6():
     # https://github.com/sympy/sympy/issues/7176
     assert (F == s**2*LaplaceTransform(y(t), t, s) - s
             + LaplaceTransform(y(t), t, s) - 4*exp(-s)/s + 4*exp(-2*s)/s)
-# TODO implement second part of test case
-# Now, solve for Y(s) and then take the inverse Laplace transform
-#   => Y(s) = s/(s^2 + 1) + 4 [1/s - s/(s^2 + 1)] [e^(-s) - e^(-2 s)]
-#   => y(t) = cos t + 4 {[1 - cos(t - 1)] H(t - 1) - [1 - cos(t - 2)] H(t - 2)}
+    # TODO implement second part of test case
+    # Now, solve for Y(s) and then take the inverse Laplace transform
+    #   => Y(s) = s/(s^2 + 1) + 4 [1/s - s/(s^2 + 1)] [e^(-s) - e^(-2 s)]
+    #   => y(t) = cos t + 4 {[1 - cos(t - 1)] H(t - 1) - [1 - cos(t - 2)] H(t - 2)}
 
 
 @pytest.mark.xfail
@@ -2909,7 +2909,7 @@ def test_Y11():
     x, s = symbols('x s')
     # raises RuntimeError: maximum recursion depth exceeded
     # https://github.com/sympy/sympy/issues/7181
-    F, _, _ =  mellin_transform(1/(1 - x), x, s)
+    F, _, _ = mellin_transform(1/(1 - x), x, s)
     assert F == pi*cot(pi*s)
 
 
@@ -2926,13 +2926,13 @@ def test_Y12():
 
 @pytest.mark.xfail
 def test_Y13():
-# Z[H(t - m T)] => z/[z^m (z - 1)]   (H is the Heaviside (unit step) function)                                                 z
+    # Z[H(t - m T)] => z/[z^m (z - 1)] (H is the Heaviside (unit step) function)
     raise NotImplementedError("z-transform not supported")
 
 
 @pytest.mark.xfail
 def test_Y14():
-# Z[H(t - m T)] => z/[z^m (z - 1)]   (H is the Heaviside (unit step) function)
+    # Z[H(t - m T)] => z/[z^m (z - 1)] (H is the Heaviside (unit step) function)
     raise NotImplementedError("z-transform not supported")
 
 
@@ -2961,8 +2961,8 @@ def test_Z3():
 
 @pytest.mark.xfail
 def test_Z4():
-# => [c^(n+1) [c^(n+1) - 2 c - 2] + (n+1) c^2 + 2 c - n] / [(c-1)^3 (c+1)]
-#    [Joan Z. Yu and Robert Israel in sci.math.symbolic]
+    # => [c^(n+1) [c^(n+1) - 2 c - 2] + (n+1) c^2 + 2 c - n] / [(c-1)^3 (c+1)]
+    #    [Joan Z. Yu and Robert Israel in sci.math.symbolic]
     r = Function('r')
     c = symbols('c')
     # raises ValueError: Polynomial or rational function expected,

@@ -98,8 +98,9 @@ def test_math_lambda():
     f = lambdify(x, sin(x), "math")
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
+
+    # if this succeeds, it can't be a python math function
     pytest.raises(TypeError, lambda: f(x))
-           # if this succeeds, it can't be a python math function
 
 
 @conserve_mpmath_dps
@@ -109,8 +110,9 @@ def test_mpmath_lambda():
     f = lambdify(x, sin(x), "mpmath")
     prec = 1e-49  # mpmath precision is around 50 decimal places
     assert -prec < f(mpmath.mpf("0.2")) - sin02 < prec
+
+    # if this succeeds, it can't be a mpmath function
     pytest.raises(TypeError, lambda: f(x))
-           # if this succeeds, it can't be a mpmath function
 
 
 @conserve_mpmath_dps

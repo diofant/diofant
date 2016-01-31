@@ -95,7 +95,7 @@ def test_issue_3978():
     class TestF(Function):
         pass
 
-    assert TestF(x).series(x, 0, 3) ==  TestF(0) + \
+    assert TestF(x).series(x, 0, 3) == TestF(0) + \
             x*Subs(Derivative(TestF(x), x), (x,), (0,)) + \
             x**2*Subs(Derivative(TestF(x), x, x), (x,), (0,))/2 + O(x**3)
 
