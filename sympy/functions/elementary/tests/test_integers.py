@@ -111,6 +111,8 @@ def test_floor():
     assert (floor(x) <= y).is_Relational  # arg is not same as rhs
     assert (floor(x) > y).is_Relational
 
+    assert floor(x).as_leading_term(x) == floor(x)
+
 
 def test_ceiling():
 
