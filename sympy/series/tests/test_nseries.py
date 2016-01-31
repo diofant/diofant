@@ -505,3 +505,19 @@ def test_issues_6235_6236():
          (-1)**q*q*x**(q + 1) + (-1)**q*q*x)
     assert (((x - 1)**q)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1)**(q + 1) + (-1)**(q + 1)*x**q + (-1)**q*q*x**(q + 1) + (-1)**q*q*x
+
+
+def test_omgissue_210():
+    assert cos(x**6).nseries(x, n=2) == 1 + O(x**12)
+    assert cos(x**6).nseries(x, n=3) == 1 - x**12/2 + O(x**24)
+    assert cos(x**6).nseries(x, n=4) == 1 - x**12/2 + O(x**24)
+    assert cos(x**6).nseries(x, n=5) == 1 - x**12/2 + x**24/24 + O(x**36)
+
+    # issue sympy/sympy#10503
+    f = exp(x**3)*cos(x**6)
+    assert f.series(x, n=14) == (1 + x**3 + x**6/2 +
+                                 x**9/6 - 11*x**12/24 + O(x**14))
+    assert f.series(x, n=15) == (1 + x**3 + x**6/2 +
+                                 x**9/6 - 11*x**12/24 + O(x**15))
+    assert f.series(x, n=16) == (1 + x**3 + x**6/2 + x**9/6 - 11*x**12/24 -
+                                 59*x**15/120 + O(x**16))
