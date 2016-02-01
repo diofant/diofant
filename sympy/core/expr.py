@@ -2495,17 +2495,11 @@ class Expr(Basic, EvalfMixin):
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
             o = s1.getO() or S.Zero
+            on = Order(x**n, x)
             if o:
                 # make sure the requested order is returned
-                ngot = ceiling(o.getn())
-                if ngot > n:
-                    # leave o in its current form (e.g. with x*log(x)) so
-                    # it eats terms properly, then replace it below
-                    if n != 0:
-                        s1 += o.subs(x, x**Rational(n, ngot))
-                    else:
-                        s1 += Order(1, x)
-                elif ngot < n:
+                if not on.contains(o):
+                    ngot = o.getn()
                     # increase the requested number of terms to get the desired
                     # number keep increasing (up to 9) until the received order
                     # is different than the original order and then predict how
@@ -2516,15 +2510,14 @@ class Expr(Basic, EvalfMixin):
                         if newn != ngot:
                             ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
                             s1 = self._eval_nseries(x, n=ndo, logx=logx)
-                            while ceiling(s1.getn()) < n:
+                            while not on.contains(s1.getO()):
                                 s1 = self._eval_nseries(x, n=ndo, logx=logx)
                                 ndo += 1
                             break
                     else:
                         raise ValueError('Could not calculate %s terms for %s'
                                          % (str(n), self))
-                    s1 += Order(x**n, x)
-                o = s1.getO()
+                o = on
                 s1 = s1.removeO()
             else:
                 o = Order(x**n, x)
@@ -2665,7 +2658,7 @@ class Expr(Basic, EvalfMixin):
         >>> from sympy import sin, log, Symbol
         >>> from sympy.abc import x
         >>> sin(x).nseries(x)
-        x - x**3/6 + x**5/120 + O(x**6)
+        x - x**3/6 + x**5/120 + O(x**7)
         >>> log(x + 1).nseries(x, 5)
         x - x**2/2 + x**3/3 - x**4/4 + O(x**5)
 
