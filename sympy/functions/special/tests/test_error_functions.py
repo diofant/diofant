@@ -369,7 +369,7 @@ def test_expint():
     assert mytn(expint(3, x), expint(3, x).rewrite(Ei).rewrite(expint),
                 x**2*E1(x)/2 + (1 - x)*exp(-x)/2, x)
 
-    assert expint(Rational(3, 2), z).nseries(z) == \
+    assert expint(Rational(3, 2), z).nseries(z, n=10) == \
         2 + 2*z - z**2/3 + z**3/15 - z**4/84 + z**5/540 - \
         2*sqrt(pi)*sqrt(z) + O(z**6)
 
@@ -398,8 +398,8 @@ def test__eis():
     assert expand(Ei(z).rewrite('tractable').diff(z).rewrite('intractable')) \
         == Ei(z).diff(z)
 
-    assert _eis(z).series(z, n=3) == EulerGamma + log(z) + z*(-log(z) -
-        EulerGamma + 1) + z**2*(log(z)/2 - Rational(3, 4) + EulerGamma/2) + O(z**3*log(z))
+    assert _eis(z).series(z, n=2) == EulerGamma + log(z) + z*(-log(z) -
+        EulerGamma + 1) + z**2*(log(z)/2 - Rational(3, 4) + EulerGamma/2) + O(z**2)
 
 
 def tn_arg(func):
@@ -501,7 +501,7 @@ def test_si():
         x - x**3/18 + x**5/600 - x**7/35280 + O(x**9)
     assert Shi(x).nseries(x, n=8) == \
         x + x**3/18 + x**5/600 + x**7/35280 + O(x**9)
-    assert Si(sin(x)).nseries(x, n=5) == x - 2*x**3/9 + 17*x**5/450 + O(x**6)
+    assert Si(sin(x)).nseries(x, n=5) == x - 2*x**3/9 + 17*x**5/450 + O(x**7)
     assert Si(x).series(x, 1, n=3) == \
         Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, (x, 1))
 
@@ -543,9 +543,9 @@ def test_ci():
 
     from sympy import O, EulerGamma, log, limit
     assert Ci(x).nseries(x, n=4) == \
-        EulerGamma + log(x) - x**2/4 + x**4/96 + O(x**5)
+        EulerGamma + log(x) - x**2/4 + x**4/96 + O(x**6)
     assert Chi(x).nseries(x, n=4) == \
-        EulerGamma + log(x) + x**2/4 + x**4/96 + O(x**5)
+        EulerGamma + log(x) + x**2/4 + x**4/96 + O(x**6)
     assert limit(log(x) - Ci(2*x), x, 0) == -log(2) - EulerGamma
 
 

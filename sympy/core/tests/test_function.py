@@ -373,9 +373,9 @@ def test_function_complex():
 def test_function__eval_nseries():
     n = Symbol('n')
 
-    assert sin(x)._eval_nseries(x, 2, None) == x + O(x**2)
+    assert sin(x)._eval_nseries(x, 2, None) == x + O(x**3)
     assert sin(x + 1)._eval_nseries(x, 2, None) == x*cos(1) + sin(1) + O(x**2)
-    assert sin(pi*(1 - x))._eval_nseries(x, 2, None) == pi*x + O(x**2)
+    assert sin(pi*(1 - x))._eval_nseries(x, 2, None) == pi*x + O(x**3)
     assert acos(1 - x**2)._eval_nseries(x, 2, None) == sqrt(2)*x + O(x**2)
     assert polygamma(n, x + 1)._eval_nseries(x, 2, None) == \
         polygamma(n, 1) + polygamma(n + 1, 1)*x + O(x**2)
@@ -389,10 +389,10 @@ def test_function__eval_nseries():
     assert loggamma(log(1/x)).nseries(x, n=1, logx=y) == loggamma(-y)
 
     # issue 6725:
-    assert expint(Rational(3, 2), -x)._eval_nseries(x, 5, None) == \
+    assert expint(Rational(3, 2), -x)._eval_nseries(x, 8, None) == \
         2 - 2*I*sqrt(pi)*sqrt(x) - 2*x - x**2/3 - x**3/15 - x**4/84 + O(x**5)
-    assert sin(sqrt(x))._eval_nseries(x, 3, None) == \
-        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**3)
+    assert sin(sqrt(x))._eval_nseries(x, 6, None) == \
+        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**Rational(7, 2))
 
 
 def test_doit():
