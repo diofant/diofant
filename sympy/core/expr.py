@@ -2494,41 +2494,23 @@ class Expr(Basic, EvalfMixin):
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
-            o = s1.getO() or S.Zero
-            on = Order(x**n, x)
-            if o:
-                # make sure the requested order is returned
-                if not on.contains(o):
-                    ngot = o.getn()
-                    # increase the requested number of terms to get the desired
-                    # number keep increasing (up to 9) until the received order
-                    # is different than the original order and then predict how
-                    # many additional terms are needed
-                    for more in range(1, 9):
-                        s1 = self._eval_nseries(x, n=n + more, logx=logx)
-                        newn = s1.getn()
-                        if newn != ngot:
-                            ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
-                            s1 = self._eval_nseries(x, n=ndo, logx=logx)
-                            while not on.contains(s1.getO()):
-                                s1 = self._eval_nseries(x, n=ndo, logx=logx)
-                                ndo += 1
-                            break
-                    else:
-                        raise ValueError('Could not calculate %s terms for %s'
-                                         % (str(n), self))
-                o = on
-                s1 = s1.removeO()
-            else:
-                o = Order(x**n, x)
-                if (s1 + o).removeO() == s1:
-                    o = S.Zero
+            cur_order = s1.getO() or S.Zero
+
+            # Now make sure the requested order is returned
+            target_order = Order(x**n, x)
+            ndo = n + 1
+            while not target_order.contains(cur_order):
+                s1 = self._eval_nseries(x, n=ndo, logx=logx)
+                ndo += 1
+                cur_order = s1.getO()
+
+            if (s1 + target_order).removeO() == s1:
+                target_order = S.Zero
 
             try:
-                return collect(s1, x) + o
-            except NotImplementedError:
-                return s1 + o
-
+                return collect(s1.removeO(), x) + target_order
+            except NotImplementedError:  # XXX parse_derivative of radsimp.py
+                return s1 + target_order
         else:  # lseries handling
             def yield_lseries(s):
                 """Return terms of lseries one at a time."""
