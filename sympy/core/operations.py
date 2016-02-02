@@ -45,6 +45,9 @@ class AssocOp(Basic):
             return Order(obj, *order_symbols)
         return obj
 
+    def _eval_is_commutative(self):
+        return fuzzy_and(a.is_commutative for a in args)
+
     @classmethod
     def _from_args(cls, args, is_commutative=None):
         """Create new instance with already-processed args"""

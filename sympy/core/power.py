@@ -192,6 +192,9 @@ class Pow(Expr):
         obj.is_commutative = (b.is_commutative and e.is_commutative)
         return obj
 
+    def _eval_is_commutative(self):
+        return self.base.is_commutative and self.exp.is_commutative
+
     @property
     def base(self):
         return self._args[0]

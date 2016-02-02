@@ -245,8 +245,7 @@ class RandomSymbol(Expr):
     def _eval_is_extended_real(self):
         return self.symbol.is_extended_real or self.pspace.is_extended_real
 
-    @property
-    def is_commutative(self):
+    def _eval_is_commutative(self):
         return self.symbol.is_commutative
 
     def _hashable_content(self):

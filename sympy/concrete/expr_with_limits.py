@@ -328,6 +328,9 @@ class ExprWithLimits(Expr):
 
         return self.func(func, *limits)
 
+    def _eval_is_commutative(self):
+        return self.function.is_commutative
+
 
 class AddWithLimits(ExprWithLimits):
     r"""Represents unevaluated oriented additions.

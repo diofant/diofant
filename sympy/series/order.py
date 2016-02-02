@@ -413,4 +413,8 @@ class Order(Expr):
         if expr is not None:
             return self.func(expr, *self.args[1:])
 
+    def _eval_is_commutative(self):
+        return self.expr.is_commutative
+
+
 O = Order
