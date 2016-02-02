@@ -1704,7 +1704,7 @@ def test_add_flatten():
 def test_omgissue_31():
     assert sin(x + O(x**2)) - sin(x + O(x**2)) == \
         Add(-sin(x + O(x**2)), sin(x + O(x**2)), evaluate=False)
-    assert sin(O(x))/sin(O(x)) == Mul(sin(O(x)), 1/sin(O(x)), evaluate=False)
+    assert sin(O(x))/sin(O(x)) == Mul(1/sin(O(x)), sin(O(x)), evaluate=False)
 
 
 def test_issue_5160_6087_6089_6090():

@@ -1023,19 +1023,18 @@ def _mask_nc(eq, name=None):
     If there is an object that:
 
         - doesn't contain nc-symbols
-        - but has arguments which derive from Basic, not Expr
+        - but has arguments which derive from Expr
         - and doesn't define an _eval_is_commutative routine
 
     then it will give False (or None?) for the is_commutative test. Such
     objects are also removed by this routine:
 
-    >>> from sympy import Basic
-    >>> eq = (1 + Mul(Basic(), Basic(), evaluate=False))
-    >>> eq.is_commutative
-    False
+    >>> from sympy import Expr
+    >>> eq = (1 + Mul(Expr(), Expr(), evaluate=False))
+    >>> eq.is_commutative is None
+    True
     >>> _mask_nc(eq, 'd')
-    (_d0**2 + 1, {_d0: Basic()}, [])
-
+    (_d0**2 + 1, {_d0: Expr()}, [])
     """
     name = name or 'mask'
     # Make Dummy() append sequential numbers to the name
