@@ -141,8 +141,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     .. [3] http://en.wikipedia.org/wiki/Empty_sum
     """
 
-    __slots__ = ['is_commutative']
-
     def __new__(cls, function, *symbols, **assumptions):
         obj = AddWithLimits.__new__(cls, function, *symbols, **assumptions)
         if not hasattr(obj, 'limits'):

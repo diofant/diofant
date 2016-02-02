@@ -91,8 +91,6 @@ class Order(Expr):
 
     is_Order = True
 
-    __slots__ = []
-
     @cacheit
     def __new__(cls, expr, *args, **kwargs):
         expr = sympify(expr)

@@ -27,8 +27,6 @@ class Expr(Basic, EvalfMixin):
     sympy.core.basic.Basic
     """
 
-    __slots__ = []
-
     @property
     def _diff_wrt(self):
         """Is it allowed to take derivative wrt to this instance.
@@ -3222,8 +3220,6 @@ class AtomicExpr(Atom, Expr):
     """
     is_number = False
     is_Atom = True
-
-    __slots__ = []
 
     def _eval_derivative(self, s):
         if self == s:

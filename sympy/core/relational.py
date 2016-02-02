@@ -42,7 +42,6 @@ class Relational(Boolean, Expr, EvalfMixin):
     Eq(y, x**2 + x)
 
     """
-    __slots__ = []
 
     is_Relational = True
 
@@ -293,8 +292,6 @@ class Equality(Relational):
     """
     rel_op = '=='
 
-    __slots__ = []
-
     is_Equality = True
 
     def __new__(cls, lhs, rhs=0, **options):
@@ -366,8 +363,6 @@ class Unequality(Relational):
     """
     rel_op = '!='
 
-    __slots__ = []
-
     def __new__(cls, lhs, rhs, **options):
         lhs = _sympify(lhs)
         rhs = _sympify(rhs)
@@ -395,7 +390,6 @@ class _Inequality(Relational):
     comparing two real numbers.
 
     """
-    __slots__ = []
 
     def __new__(cls, lhs, rhs, **options):
         lhs = _sympify(lhs)
@@ -430,7 +424,6 @@ class _Greater(_Inequality):
     it for the .gts and .lts properties.
 
     """
-    __slots__ = ()
 
     @property
     def gts(self):
@@ -448,7 +441,6 @@ class _Less(_Inequality):
     the .gts and .lts properties.
 
     """
-    __slots__ = ()
 
     @property
     def gts(self):
@@ -700,7 +692,6 @@ class GreaterThan(_Greater):
        "It right 0 < x < 1 ?"
        `Issue 6059 <https://github.com/sympy/sympy/issues/6059>`_
     """
-    __slots__ = ()
 
     rel_op = '>='
 
@@ -714,7 +705,6 @@ Ge = GreaterThan
 
 class LessThan(_Less):
     __doc__ = GreaterThan.__doc__
-    __slots__ = ()
 
     rel_op = '<='
 
@@ -728,7 +718,6 @@ Le = LessThan
 
 class StrictGreaterThan(_Greater):
     __doc__ = GreaterThan.__doc__
-    __slots__ = ()
 
     rel_op = '>'
 
@@ -742,7 +731,6 @@ Gt = StrictGreaterThan
 
 class StrictLessThan(_Less):
     __doc__ = GreaterThan.__doc__
-    __slots__ = ()
 
     rel_op = '<'
 

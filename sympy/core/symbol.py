@@ -21,8 +21,6 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     is_comparable = False
 
-    __slots__ = ['name']
-
     is_Symbol = True
 
     @property
@@ -205,8 +203,6 @@ class Dummy(BaseSymbol):
 
     _count = 0
 
-    __slots__ = ['dummy_index']
-
     is_Dummy = True
 
     def __new__(cls, name=None, **assumptions):
@@ -307,8 +303,6 @@ class Wild(BaseSymbol):
     Symbol
     """
     is_Wild = True
-
-    __slots__ = ['exclude', 'properties']
 
     def __new__(cls, name, exclude=(), properties=(), **assumptions):
         exclude = tuple([sympify(x) for x in exclude])

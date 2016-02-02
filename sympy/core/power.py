@@ -145,8 +145,6 @@ class Pow(Expr):
     """
     is_Pow = True
 
-    __slots__ = ['is_commutative']
-
     @cacheit
     def __new__(cls, b, e, evaluate=None):
         if evaluate is None:
@@ -188,9 +186,7 @@ class Pow(Expr):
                 obj = b._eval_power(e)
                 if obj is not None:
                     return obj
-        obj = Expr.__new__(cls, b, e)
-        obj.is_commutative = (b.is_commutative and e.is_commutative)
-        return obj
+        return Expr.__new__(cls, b, e)
 
     def _eval_is_commutative(self):
         return self.base.is_commutative and self.exp.is_commutative

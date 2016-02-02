@@ -2,14 +2,13 @@
 
 import operator
 
-from sympy.polys.polyutils import PicklableWithSlots
 from sympy.polys.domains.domainelement import DomainElement
 from sympy.printing.defaults import DefaultPrinting
 from sympy.utilities import public
 
 
 @public
-class PythonRational(DefaultPrinting, PicklableWithSlots, DomainElement):
+class PythonRational(DefaultPrinting, DomainElement):
     """
     Rational number type based on Python integers.
 
@@ -30,8 +29,6 @@ class PythonRational(DefaultPrinting, PicklableWithSlots, DomainElement):
     7/5
 
     """
-
-    __slots__ = ['p', 'q']
 
     def parent(self):
         from sympy.polys.domains import PythonRationalField

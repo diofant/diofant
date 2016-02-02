@@ -7,7 +7,6 @@ class SingletonRegistry(object):
     """
     A map from singleton classes to the corresponding instances.
     """
-    __slots__ = []
 
     def __init__(self):
         self._classes_to_install = {}

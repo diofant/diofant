@@ -36,7 +36,6 @@ _complexes_cache = {}
 class RootOf(Expr):
     """Represents ``k``-th root of a univariate polynomial. """
 
-    __slots__ = ['poly', 'index']
     is_complex = True
     is_number = True
 
@@ -672,8 +671,6 @@ class RootOf(Expr):
 @public
 class RootSum(Expr):
     """Represents a sum of all roots of a univariate polynomial. """
-
-    __slots__ = ['poly', 'fun', 'auto']
 
     def __new__(cls, expr, func=None, x=None, auto=True, quadratic=False):
         """Construct a new ``RootSum`` instance carrying all roots of a polynomial. """

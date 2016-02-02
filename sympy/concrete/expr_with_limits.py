@@ -57,7 +57,6 @@ def _process_limits(*symbols):
 
 
 class ExprWithLimits(Expr):
-    __slots__ = ['is_commutative']
 
     def __new__(cls, function, *symbols, **assumptions):
         # Any embedded piecewise functions need to be brought out to the
@@ -98,7 +97,6 @@ class ExprWithLimits(Expr):
         arglist = [function]
         arglist.extend(limits)
         obj._args = tuple(arglist)
-        obj.is_commutative = function.is_commutative  # limits already checked
 
         return obj
 
@@ -377,7 +375,6 @@ class AddWithLimits(ExprWithLimits):
         arglist = [orientation*function]
         arglist.extend(limits)
         obj._args = tuple(arglist)
-        obj.is_commutative = function.is_commutative  # limits already checked
 
         return obj
 

@@ -18,10 +18,6 @@ class AssocOp(Basic):
     the attribute `identity`.
     """
 
-    # for performance reason, we don't let is_commutative go to assumptions,
-    # and keep it right here
-    __slots__ = ['is_commutative']
-
     @cacheit
     def __new__(cls, *args, **options):
         from sympy import Order
@@ -38,8 +34,7 @@ class AssocOp(Basic):
             return args[0]
 
         c_part, nc_part, order_symbols = cls.flatten(args)
-        is_commutative = not nc_part
-        obj = cls._from_args(c_part + nc_part, is_commutative)
+        obj = cls._from_args(c_part + nc_part)
 
         if order_symbols is not None:
             return Order(obj, *order_symbols)
@@ -49,18 +44,14 @@ class AssocOp(Basic):
         return fuzzy_and(a.is_commutative for a in args)
 
     @classmethod
-    def _from_args(cls, args, is_commutative=None):
+    def _from_args(cls, args):
         """Create new instance with already-processed args"""
         if len(args) == 0:
             return cls.identity
         elif len(args) == 1:
             return args[0]
 
-        obj = super(AssocOp, cls).__new__(cls, *args)
-        if is_commutative is None:
-            is_commutative = fuzzy_and(a.is_commutative for a in args)
-        obj.is_commutative = is_commutative
-        return obj
+        return super(AssocOp, cls).__new__(cls, *args)
 
     def _new_rawargs(self, *args, **kwargs):
         """Create new instance of own class with args exactly as provided by
@@ -104,11 +95,7 @@ class AssocOp(Basic):
            self is non-commutative and kwarg `reeval=False` has not been
            passed.
         """
-        if kwargs.pop('reeval', True) and self.is_commutative is False:
-            is_commutative = None
-        else:
-            is_commutative = self.is_commutative
-        return self._from_args(args, is_commutative)
+        return self._from_args(args)
 
     @classmethod
     def flatten(cls, seq):

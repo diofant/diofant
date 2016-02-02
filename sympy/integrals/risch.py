@@ -154,13 +154,6 @@ class DifferentialExtension(object):
       Use the methods self.increment_level() and self.decrement_level() to change
       the current level.
     """
-    # __slots__ is defined mainly so we can iterate over all the attributes
-    # of the class easily (the memory use doesn't matter too much, since we
-    # only create one DifferentialExtension per integration).  Also, it's nice
-    # to have a safeguard when debugging.
-    __slots__ = ('f', 'x', 'T', 'D', 'fa', 'fd', 'Tfuncs', 'backsubs', 'E_K',
-        'E_args', 'L_K', 'L_args', 'cases', 'case', 't', 'd', 'newf', 'level',
-        'ts')
 
     def __init__(self, f=None, x=None, handle_first='log', dummy=True, extension=None, rewrite_complex=False):
         """
@@ -398,7 +391,9 @@ class DifferentialExtension(object):
 
     def __getattr__(self, attr):
         # Avoid AttributeErrors when debugging
-        if attr not in self.__slots__:
+        if attr not in ('f', 'x', 'T', 'D', 'fa', 'fd', 'Tfuncs', 'backsubs',
+                        'E_K', 'E_args', 'L_K', 'L_args', 'cases', 'case', 't',
+                        'd', 'newf', 'level', 'ts'):
             raise AttributeError("%s has no attribute %s" % (repr(self), repr(attr)))
         return
 
@@ -656,7 +651,6 @@ class DecrementLevel(object):
     """
     A context manager for decrementing the level of a DifferentialExtension.
     """
-    __slots__ = ('DE',)
 
     def __init__(self, DE):
         self.DE = DE
