@@ -336,6 +336,7 @@ def test_linear_subs():
     assert integrate(besselj(1, x - 1), x, meijerg=True) == -besselj(0, 1 - x)
 
 
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="XXX Too slow for travis.")
 @pytest.mark.slow
 def test_probability():
     # various integrals from probability theory
