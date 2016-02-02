@@ -539,7 +539,7 @@ def test_Piecewise():
 
 def test_polymorphism():
     class A(Basic):
-        def _eval_simplify(x, **kwargs):
+        def _eval_simplify(self, **kwargs):
             return 1
 
     a = A(5, 2)

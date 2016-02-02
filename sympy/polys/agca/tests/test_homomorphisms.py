@@ -81,8 +81,8 @@ def test_creation():
     assert SQ.quotient_hom() == homomorphism(SQ.base, SQ, im)
 
     class conv(object):
-        def convert(x, y=None):
-            return x
+        def convert(self, y=None):
+            return self
 
     class dummy(object):
         container = conv()

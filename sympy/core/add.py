@@ -263,8 +263,9 @@ class Add(Expr, AssocOp):
         """Nice order of classes"""
         return 4, 1, cls.__name__
 
-    def as_coefficients_dict(a):
+    def as_coefficients_dict(self):
         """Return a dictionary mapping terms to their Rational coefficient.
+
         Since the dictionary is a defaultdict, inquiries about terms which
         were not present will return a coefficient of 0. If an expression is
         not an Add it is considered to have a single term.
@@ -284,7 +285,7 @@ class Add(Expr, AssocOp):
         """
 
         d = defaultdict(list)
-        for ai in a.args:
+        for ai in self.args:
             c, m = ai.as_coeff_Mul()
             d[m].append(c)
         for k, v in d.items():

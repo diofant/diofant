@@ -29,10 +29,10 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \dots)`. """
         return self.get_field().algebraic_field(*extension)
 
-    def from_AlgebraicField(K1, a, K0):
+    def from_AlgebraicField(self, a, K0):
         """Convert a ``ANP`` object to ``dtype``. """
         if a.is_ground:
-            return K1.convert(a.LC(), K0.dom)
+            return self.convert(a.LC(), K0.dom)
 
     def log(self, a, b):
         """Returns b-base logarithm of ``a``. """

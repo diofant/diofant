@@ -162,72 +162,72 @@ class Domain(object):
         """Convert a SymPy object to ``dtype``. """
         raise NotImplementedError
 
-    def from_FF_python(K1, a, K0):
+    def from_FF_python(self, a, K0):
         """Convert ``ModularInteger(int)`` to ``dtype``. """
         return
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
         return
 
-    def from_QQ_python(K1, a, K0):
+    def from_QQ_python(self, a, K0):
         """Convert a Python ``Fraction`` object to ``dtype``. """
         return
 
-    def from_FF_gmpy(K1, a, K0):
+    def from_FF_gmpy(self, a, K0):
         """Convert ``ModularInteger(mpz)`` to ``dtype``. """
         return
 
-    def from_ZZ_gmpy(K1, a, K0):
+    def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY ``mpz`` object to ``dtype``. """
         return
 
-    def from_QQ_gmpy(K1, a, K0):
+    def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY ``mpq`` object to ``dtype``. """
         return
 
-    def from_RealField(K1, a, K0):
+    def from_RealField(self, a, K0):
         """Convert a real element object to ``dtype``. """
         return
 
-    def from_ComplexField(K1, a, K0):
+    def from_ComplexField(self, a, K0):
         """Convert a complex element to ``dtype``. """
         return
 
-    def from_AlgebraicField(K1, a, K0):
+    def from_AlgebraicField(self, a, K0):
         """Convert an algebraic number to ``dtype``. """
         return
 
-    def from_PolynomialRing(K1, a, K0):
+    def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         if a.is_ground:
-            return K1.convert(a.LC, K0.dom)
+            return self.convert(a.LC, K0.dom)
 
-    def from_FractionField(K1, a, K0):
+    def from_FractionField(self, a, K0):
         """Convert a rational function to ``dtype``. """
         return
 
-    def from_ExpressionDomain(K1, a, K0):
+    def from_ExpressionDomain(self, a, K0):
         """Convert a ``EX`` object to ``dtype``. """
-        return K1.from_sympy(a.ex)
+        return self.from_sympy(a.ex)
 
-    def from_GlobalPolynomialRing(K1, a, K0):
+    def from_GlobalPolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         if a.degree() <= 0:
-            return K1.convert(a.LC(), K0.dom)
+            return self.convert(a.LC(), K0.dom)
 
-    def from_GeneralizedPolynomialRing(K1, a, K0):
-        return K1.from_FractionField(a, K0)
+    def from_GeneralizedPolynomialRing(self, a, K0):
+        return self.from_FractionField(a, K0)
 
-    def unify_with_symbols(K0, K1, symbols):
-        if (K0.is_Composite and (set(K0.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
-            raise UnificationFailed("can't unify %s with %s, given %s generators" % (K0, K1, tuple(symbols)))
+    def unify_with_symbols(self, K1, symbols):
+        if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
+            raise UnificationFailed("can't unify %s with %s, given %s generators" % (self, K1, tuple(symbols)))
 
-        return K0.unify(K1)
+        return self.unify(K1)
 
-    def unify(K0, K1, symbols=None):
+    def unify(self, K1, symbols=None):
         """
-        Construct a minimal domain that contains elements of ``K0`` and ``K1``.
+        Construct a minimal domain that contains elements of ``self`` and ``K1``.
 
         Known domains (from smallest to largest):
 
@@ -240,37 +240,36 @@ class Domain(object):
         - ``K[x, y, z]``
         - ``K(x, y, z)``
         - ``EX``
-
         """
         if symbols is not None:
-            return K0.unify_with_symbols(K1, symbols)
+            return self.unify_with_symbols(K1, symbols)
 
-        if K0 == K1:
-            return K0
+        if self == K1:
+            return self
 
-        if K0.is_EX:
-            return K0
+        if self.is_EX:
+            return self
         if K1.is_EX:
             return K1
 
-        if K0.is_Composite or K1.is_Composite:
-            K0_ground = K0.dom if K0.is_Composite else K0
+        if self.is_Composite or K1.is_Composite:
+            self_ground = self.dom if self.is_Composite else self
             K1_ground = K1.dom if K1.is_Composite else K1
 
-            K0_symbols = K0.symbols if K0.is_Composite else ()
+            self_symbols = self.symbols if self.is_Composite else ()
             K1_symbols = K1.symbols if K1.is_Composite else ()
 
-            domain = K0_ground.unify(K1_ground)
-            symbols = _unify_gens(K0_symbols, K1_symbols)
-            order = K0.order if K0.is_Composite else K1.order
+            domain = self_ground.unify(K1_ground)
+            symbols = _unify_gens(self_symbols, K1_symbols)
+            order = self.order if self.is_Composite else K1.order
 
-            if ((K0.is_FractionField and K1.is_PolynomialRing or
-                 K1.is_FractionField and K0.is_PolynomialRing) and
-                 (not K0_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
+            if ((self.is_FractionField and K1.is_PolynomialRing or
+                 K1.is_FractionField and self.is_PolynomialRing) and
+                 (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
                 domain = domain.get_ring()
 
-            if K0.is_Composite and (not K1.is_Composite or K0.is_FractionField or K1.is_PolynomialRing):
-                cls = K0.__class__
+            if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
+                cls = self.__class__
             else:
                 cls = K1.__class__
 
@@ -281,38 +280,38 @@ class Domain(object):
             tol = max(K0.tolerance, K1.tolerance)
             return cls(prec=prec, tol=tol)
 
-        if K0.is_ComplexField and K1.is_ComplexField:
-            return mkinexact(K0.__class__, K0, K1)
-        if K0.is_ComplexField and K1.is_RealField:
-            return mkinexact(K0.__class__, K0, K1)
-        if K0.is_RealField and K1.is_ComplexField:
-            return mkinexact(K1.__class__, K1, K0)
-        if K0.is_RealField and K1.is_RealField:
-            return mkinexact(K0.__class__, K0, K1)
-        if K0.is_ComplexField or K0.is_RealField:
-            return K0
+        if self.is_ComplexField and K1.is_ComplexField:
+            return mkinexact(self.__class__, self, K1)
+        if self.is_ComplexField and K1.is_RealField:
+            return mkinexact(self.__class__, self, K1)
+        if self.is_RealField and K1.is_ComplexField:
+            return mkinexact(K1.__class__, K1, self)
+        if self.is_RealField and K1.is_RealField:
+            return mkinexact(self.__class__, self, K1)
+        if self.is_ComplexField or self.is_RealField:
+            return self
         if K1.is_ComplexField or K1.is_RealField:
             return K1
 
-        if K0.is_AlgebraicField and K1.is_AlgebraicField:
-            return K0.__class__(K0.dom.unify(K1.dom), *_unify_gens(K0.orig_ext, K1.orig_ext))
-        elif K0.is_AlgebraicField:
-            return K0
+        if self.is_AlgebraicField and K1.is_AlgebraicField:
+            return self.__class__(self.dom.unify(K1.dom), *_unify_gens(self.orig_ext, K1.orig_ext))
+        elif self.is_AlgebraicField:
+            return self
         elif K1.is_AlgebraicField:
             return K1
 
-        if K0.is_RationalField:
-            return K0
+        if self.is_RationalField:
+            return self
         if K1.is_RationalField:
             return K1
 
-        if K0.is_IntegerRing:
-            return K0
+        if self.is_IntegerRing:
+            return self
         if K1.is_IntegerRing:
             return K1
 
-        if K0.is_FiniteField and K1.is_FiniteField:
-            return K0.__class__(max(K0.mod, K1.mod, key=default_sort_key))
+        if self.is_FiniteField and K1.is_FiniteField:
+            return self.__class__(max(self.mod, K1.mod, key=default_sort_key))
 
         from sympy.polys.domains import EX
         return EX

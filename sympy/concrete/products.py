@@ -324,7 +324,7 @@ class Product(ExprWithIntLimits):
             return self.func(self.function.transpose(), *self.limits)
         return
 
-    def reverse_order(expr, *indices):
+    def reverse_order(self, *indices):
         """
         Reverse the order of a limit in a Product.
 
@@ -396,18 +396,18 @@ class Product(ExprWithIntLimits):
 
         for i, indx in enumerate(l_indices):
             if not isinstance(indx, int):
-                l_indices[i] = expr.index(indx)
+                l_indices[i] = self.index(indx)
 
         e = 1
         limits = []
-        for i, limit in enumerate(expr.limits):
+        for i, limit in enumerate(self.limits):
             l = limit
             if i in l_indices:
                 e = -e
                 l = (limit[0], limit[2] + 1, limit[1] - 1)
             limits.append(l)
 
-        return Product(expr.function ** e, *limits)
+        return Product(self.function ** e, *limits)
 
 
 def product(*args, **kwargs):
