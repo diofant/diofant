@@ -25,8 +25,6 @@ from sympy.series.order import Order
 class Integral(AddWithLimits):
     """Represents unevaluated integral."""
 
-    __slots__ = ['is_commutative']
-
     def __new__(cls, function, *symbols, **assumptions):
         """Create an unevaluated integral.
 

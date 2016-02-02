@@ -102,8 +102,6 @@ class PartComponent(object):
     Knuth's psuedocode makes c, u, and v separate arrays.
     """
 
-    __slots__ = ('c', 'u', 'v')
-
     def __init__(self):
         # Component number
         self.c = 0

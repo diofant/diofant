@@ -91,8 +91,6 @@ class Order(Expr):
 
     is_Order = True
 
-    __slots__ = []
-
     @cacheit
     def __new__(cls, expr, *args, **kwargs):
         expr = sympify(expr)
@@ -412,5 +410,9 @@ class Order(Expr):
         expr = self.expr._eval_transpose()
         if expr is not None:
             return self.func(expr, *self.args[1:])
+
+    def _eval_is_commutative(self):
+        return self.expr.is_commutative
+
 
 O = Order

@@ -47,8 +47,6 @@ from sympy.core.compatibility import iterable
 class Poly(Expr):
     """Generic class for representing polynomial expressions. """
 
-    __slots__ = ['rep', 'gens']
-
     is_commutative = True
     is_Poly = True
 

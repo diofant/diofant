@@ -18,8 +18,6 @@ from sympy.core.singleton import Singleton, S
 class Boolean(Basic):
     """A boolean object is an object for which logic operations make sense."""
 
-    __slots__ = []
-
     def __and__(self, other):
         """Overloading for & operator"""
         return And(self, other)

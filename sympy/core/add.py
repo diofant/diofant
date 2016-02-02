@@ -59,8 +59,6 @@ def _unevaluated_Add(*args):
 
 class Add(Expr, AssocOp):
 
-    __slots__ = []
-
     is_Add = True
 
     @classmethod

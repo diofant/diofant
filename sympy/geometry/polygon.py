@@ -1040,8 +1040,6 @@ class RegularPolygon(Polygon):
 
     """
 
-    __slots__ = ['_n', '_center', '_radius', '_rot']
-
     def __new__(self, c, r, n, rot=0, **kwargs):
         r, n, rot = map(sympify, (r, n, rot))
         c = Point(c)

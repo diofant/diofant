@@ -39,10 +39,6 @@ class Basic(metaclass=ManagedProperties):
         >>> cot(x)._args    # do not use this, use cot(x).args instead
         (x,)
     """
-    __slots__ = ['_mhash',              # hash value
-                 '_args',               # arguments
-                 '_assumptions'
-                ]
 
     # To be overridden with True in the appropriate subclasses
     is_number = False
@@ -1571,8 +1567,6 @@ class Atom(Basic):
     """
 
     is_Atom = True
-
-    __slots__ = []
 
     def matches(self, expr, repl_dict={}):
         if self == expr:
