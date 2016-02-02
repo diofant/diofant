@@ -70,7 +70,7 @@ class NDimArray:
         real_index = 0
         # check if input index can exist in current indexing
         for i in range(self._rank):
-            if index[i] > self.shape[i]:
+            if index[i] >= self.shape[i]:
                 raise ValueError('Index ' + str(index) + ' out of border')
             real_index = real_index*self.shape[i] + index[i]
 
@@ -305,6 +305,9 @@ class NDimArray:
         other = sympify(other)
         result_list = [i/other for i in self]
         return type(self)(result_list, self.shape)
+
+    def __rtruediv__(self, other):
+        return NotImplemented
 
     def __eq__(self, other):
         """
