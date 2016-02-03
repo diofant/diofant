@@ -61,7 +61,7 @@ def test_issue_5223():
     assert (1 + x).getn() is None
 
     assert ((1/sin(x))**oo).series() == oo
-    assert ((sin(x))**y).nseries(x, n=1) == x**y + O(x**(y + 1), x)
+    assert ((sin(x))**y).nseries(x, n=1) == x**y + O(x**(y + 2), x)
 
     assert sin(1/x).series(x, oo, n=5) == 1/x - 1/(6*x**3) + O(x**(-5), (x, oo))
     assert abs(x).series(x, oo, n=5, dir='+') == x
@@ -70,13 +70,14 @@ def test_issue_5223():
     assert abs(-x).series(x, -oo, n=5, dir='-') == -x
 
     assert exp(x*log(x)).series(n=3) == \
-        1 + x*log(x) + x**2*log(x)**2/2 + O(x**3*log(x)**3)
-    # XXX is this right? If not, fix "ngot > n" handling in expr.
+        1 + x*log(x) + x**2*log(x)**2/2 + x**3*log(x)**3/6 + O(x**3)
+
     p = Symbol('p', positive=True)
     assert exp(sqrt(p)**3*log(p)).series(n=3) == \
-        1 + p**Rational(3, 2)*log(p) + O(p**Rational(27, 10)*log(p)**3)
+        1 + p**3*log(p)**2/2 + p**Rational(3, 2)*log(p) + O(p**3)
 
-    assert exp(sin(x)*log(x)).series(n=2) == 1 + x*log(x) + O(x**2*log(x)**2)
+    assert exp(sin(x)*log(x)).series(n=2) == \
+        1 + x*log(x) + x**2*log(x)**2/2 + O(x**2)
 
 
 def test_issue_3978():

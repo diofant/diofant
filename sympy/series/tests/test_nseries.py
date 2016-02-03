@@ -106,11 +106,11 @@ def test_log3():
 def test_series1():
     e = sin(x)
     assert e.nseries(x, 0) != 0
-    assert e.nseries(x, 0) == O(1, x)
+    assert e.nseries(x, 0) == O(x)
     assert e.nseries(x, 1) == O(x)
-    assert e.nseries(x, 2) == x + O(x**2)
+    assert e.nseries(x, 2) == x + O(x**3)
     assert e.nseries(x, 3) == x + O(x**3)
-    assert e.nseries(x, 4) == x - x**3/6 + O(x**4)
+    assert e.nseries(x, 4) == x - x**3/6 + O(x**5)
 
     e = (exp(x) - 1)/x
     assert e.nseries(x, 4) == 1 + x/2 + x**2/6 + O(x**3)
@@ -245,7 +245,7 @@ def test_expbug5():
 
 
 def test_sinsinbug():
-    assert sin(sin(x)).nseries(x, 8) == x - x**3/3 + x**5/10 - 8*x**7/315 + O(x**8)
+    assert sin(sin(x)).nseries(x, 8) == x - x**3/3 + x**5/10 - 8*x**7/315 + O(x**9)
 
 
 def test_issue_3258():
@@ -256,7 +256,7 @@ def test_issue_3258():
 def test_issue_3204():
     x = Symbol("x", nonnegative=True)
     f = sin(x**3)**Rational(1, 3)
-    assert f.nseries(x, 17) == x - x**7/18 - x**13/3240 + O(x**15)
+    assert f.nseries(x) == x - x**7/18 - x**13/3240 + O(x**19)
 
 
 def test_issue_3224():
@@ -273,7 +273,7 @@ def test_issue_3463():
 
 
 def test_sin():
-    assert sin(8*x).nseries(x, n=4) == 8*x - 256*x**3/3 + O(x**4)
+    assert sin(8*x).nseries(x, n=4) == 8*x - 256*x**3/3 + O(x**5)
     assert sin(x + y).nseries(x, n=1) == sin(y) + O(x)
     assert sin(x + y).nseries(x, n=2) == sin(y) + cos(y)*x + O(x**2)
     assert sin(x + y).nseries(x, n=5) == sin(y) + cos(y)*x - sin(y)*x**2/2 - \
@@ -282,14 +282,14 @@ def test_sin():
 
 def test_issue_3515():
     e = sin(8*x)/x
-    assert e.nseries(x, n=6) == 8 - 256*x**2/3 + 4096*x**4/15 + O(x**5)
+    assert e.nseries(x, n=6) == 8 - 256*x**2/3 + 4096*x**4/15 + O(x**6)
 
 
 def test_issue_3505():
     e = sin(x)**(-4)*(sqrt(cos(x))*sin(x)**2 -
         cos(x)**Rational(1, 3)*sin(x)**2)
     assert e.nseries(x, n=8) == -Rational(1)/12 - 7*x**2/288 - \
-        43*x**4/10368 + O(x**5)
+        43*x**4/10368 + O(x**6)
 
 
 def test_issue_3501():
@@ -303,9 +303,9 @@ def test_issue_3501():
 
 def test_issue_3502():
     e = sin(5*x)/sin(2*x)
-    assert e.nseries(x, n=2) == Rational(5, 2) + O(x)
+    assert e.nseries(x, n=2) == Rational(5, 2) + O(x**2)
     assert e.nseries(x, n=6) == \
-        Rational(5, 2) - 35*x**2/4 + 329*x**4/48 + O(x**5)
+        Rational(5, 2) - 35*x**2/4 + 329*x**4/48 + O(x**6)
 
 
 def test_issue_3503():
@@ -315,7 +315,7 @@ def test_issue_3503():
 
 def test_issue_3506():
     e = (x + sin(3*x))**(-2)*(x*(x + sin(3*x)) - (x + sin(3*x))*sin(2*x))
-    assert e.nseries(x) == -Rational(1, 4) + 5*x**2/96 + 91*x**4/768 + O(x**5)
+    assert e.nseries(x) == -Rational(1, 4) + 5*x**2/96 + 91*x**4/768 + O(x**6)
 
 
 def test_issue_3508():
@@ -329,7 +329,7 @@ def test_issue_3508():
 def test_issue_3507():
     e = x**(-4)*(x**2 - x**2*sqrt(cos(x)))
     assert e.nseries(x, n=7) == \
-        Rational(1, 4) + x**2/96 + 19*x**4/5760 + O(x**5)
+        Rational(1, 4) + x**2/96 + 19*x**4/5760 + O(x**6)
 
 
 def test_issue_3639():
@@ -338,16 +338,16 @@ def test_issue_3639():
 
 
 def test_hyperbolic():
-    assert sinh(x).nseries(x, n=6) == x + x**3/6 + x**5/120 + O(x**6)
-    assert cosh(x).nseries(x, n=5) == 1 + x**2/2 + x**4/24 + O(x**5)
-    assert tanh(x).nseries(x, n=6) == x - x**3/3 + 2*x**5/15 + O(x**6)
+    assert sinh(x).nseries(x, n=6) == x + x**3/6 + x**5/120 + O(x**7)
+    assert cosh(x).nseries(x, n=5) == 1 + x**2/2 + x**4/24 + O(x**6)
+    assert tanh(x).nseries(x, n=6) == x - x**3/3 + 2*x**5/15 + O(x**7)
     assert coth(x).nseries(x, n=6) == \
-        1/x - x**3/45 + x/3 + 2*x**5/945 + O(x**6)
-    assert asinh(x).nseries(x, n=6) == x - x**3/6 + 3*x**5/40 + O(x**6)
+        1/x - x**3/45 + x/3 + 2*x**5/945 + O(x**7)
+    assert asinh(x).nseries(x, n=6) == x - x**3/6 + 3*x**5/40 + O(x**7)
     assert acosh(x).nseries(x, n=6) == \
-        pi*I/2 - I*x - 3*I*x**5/40 - I*x**3/6 + O(x**6)
-    assert atanh(x).nseries(x, n=6) == x + x**3/3 + x**5/5 + O(x**6)
-    assert acoth(x).nseries(x, n=6) == x + x**3/3 + x**5/5 + pi*I/2 + O(x**6)
+        pi*I/2 - I*x - 3*I*x**5/40 - I*x**3/6 + O(x**7)
+    assert atanh(x).nseries(x, n=6) == x + x**3/3 + x**5/5 + O(x**7)
+    assert acoth(x).nseries(x, n=6) == x + x**3/3 + x**5/5 + pi*I/2 + O(x**7)
 
 
 def test_series2():
@@ -381,7 +381,7 @@ def test_bug5():
 
 def test_issue_4115():
     assert (sin(x)/(1 - cos(x))).nseries(x, n=4) == 2/x + O(x)
-    assert (sin(x)**2/(1 - cos(x))).nseries(x, n=2) == 2 + O(x)
+    assert (sin(x)**2/(1 - cos(x))).nseries(x, n=2) == 2 + O(x**2)
 
 
 def test_pole():
@@ -434,8 +434,8 @@ def test_abs():
     assert abs(x).nseries(x, n=4) == x
     assert abs(-x).nseries(x, n=4) == x
     assert abs(x + 1).nseries(x, n=4) == x + 1
-    assert abs(sin(x)).nseries(x, n=4) == x - Rational(1, 6)*x**3 + O(x**4)
-    assert abs(sin(-x)).nseries(x, n=4) == x - Rational(1, 6)*x**3 + O(x**4)
+    assert abs(sin(x)).nseries(x, n=4) == x - Rational(1, 6)*x**3 + O(x**5)
+    assert abs(sin(-x)).nseries(x, n=4) == x - Rational(1, 6)*x**3 + O(x**5)
     assert abs(x - a).series(x, 1) == (x - a)*sign(1 - a)
 
 
@@ -505,3 +505,19 @@ def test_issues_6235_6236():
          (-1)**q*q*x**(q + 1) + (-1)**q*q*x)
     assert (((x - 1)**q)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1)**(q + 1) + (-1)**(q + 1)*x**q + (-1)**q*q*x**(q + 1) + (-1)**q*q*x
+
+
+def test_omgissue_210():
+    assert cos(x**6).nseries(x, n=2) == 1 + O(x**12)
+    assert cos(x**6).nseries(x, n=3) == 1 - x**12/2 + O(x**24)
+    assert cos(x**6).nseries(x, n=4) == 1 - x**12/2 + O(x**24)
+    assert cos(x**6).nseries(x, n=5) == 1 - x**12/2 + x**24/24 + O(x**36)
+
+    # issue sympy/sympy#10503
+    f = exp(x**3)*cos(x**6)
+    assert f.series(x, n=14) == (1 + x**3 + x**6/2 +
+                                 x**9/6 - 11*x**12/24 + O(x**14))
+    assert f.series(x, n=15) == (1 + x**3 + x**6/2 +
+                                 x**9/6 - 11*x**12/24 + O(x**15))
+    assert f.series(x, n=16) == (1 + x**3 + x**6/2 + x**9/6 - 11*x**12/24 -
+                                 59*x**15/120 + O(x**16))

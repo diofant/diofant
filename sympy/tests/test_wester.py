@@ -2632,7 +2632,7 @@ def test_X8():
 
 def test_X9():
     assert (series(x**x, x, x0=0, n=4) == 1 + x*log(x) + x**2*log(x)**2/2 +
-            x**3*log(x)**3/6 + O(x**4*log(x)**4))
+            x**3*log(x)**3/6 + x**4*log(x)**4) + O(x**4)
 
 
 def test_X10():
@@ -2647,6 +2647,7 @@ def test_X11():
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 @pytest.mark.xfail
 def test_X12():
     # Look at the generalized Taylor series around x = 1
