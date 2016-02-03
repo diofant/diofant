@@ -63,7 +63,7 @@ from itertools import product, chain
 from sympy import SYMPY_DEBUG
 from sympy.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
                         EulerGamma, oo, zoo, expand_func, Add, nan,
-                        Expr, Integer, Rational)
+                        Expr, Integer, Rational, Symbol)
 from sympy.core.mod import Mod
 from sympy.core.compatibility import default_sort_key
 from sympy.utilities.iterables import sift
@@ -663,7 +663,7 @@ class G_Function(Expr):
 
 
 # Dummy variable.
-_x = Dummy('dummy_for_hyperexpand')
+_x = Symbol('symbol_for_hyperexpand')
 
 
 class Formula(object):
