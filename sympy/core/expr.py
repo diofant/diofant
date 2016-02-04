@@ -10,9 +10,10 @@ from .evalf import EvalfMixin, pure_complex
 from .decorators import _sympifyit, call_highest_priority
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
+from .assumptions import ManagedProperties
 
 
-class Expr(Basic, EvalfMixin):
+class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     """
     Base class for algebraic expressions.
 
@@ -26,6 +27,40 @@ class Expr(Basic, EvalfMixin):
 
     sympy.core.basic.Basic
     """
+
+    def __new__(cls, *args):
+        obj = Basic.__new__(cls, *args)
+        obj._assumptions = cls.default_assumptions
+        return obj
+
+    @property
+    def assumptions0(self):
+        r"""
+        Return object `type` assumptions.
+
+        For example:
+
+          Symbol('x', real=True)
+          Symbol('x', integer=True)
+
+        are different objects. In other words, besides Python type (Symbol in
+        this case), the initial assumptions are also forming their typeinfo.
+
+        Examples
+        ========
+
+        >>> from sympy import Symbol
+        >>> from sympy.abc import x
+        >>> x.assumptions0
+        {'commutative': True}
+        >>> x = Symbol("x", positive=True)
+        >>> x.assumptions0 == \
+        ... {'commutative': True, 'extended_real': True, 'imaginary': False,
+        ...  'negative': False, 'nonnegative': True, 'nonpositive': False,
+        ...  'nonzero': True, 'positive': True, 'zero': False}
+        True
+        """
+        return {}
 
     @property
     def _diff_wrt(self):

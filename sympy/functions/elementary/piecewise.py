@@ -1,4 +1,4 @@
-from sympy.core import Basic, S, Function, diff, Tuple, Dummy
+from sympy.core import Basic, S, Function, diff, Tuple, Dummy, Expr
 from sympy.core.relational import Equality, Relational
 from sympy.functions.elementary.miscellaneous import Max, Min
 from sympy.logic.boolalg import (And, Boolean, distribute_and_over_or, Not, Or,
@@ -110,7 +110,7 @@ class Piecewise(Function):
             r = None
 
         if r is None:
-            return Basic.__new__(cls, *newargs, **options)
+            return Expr.__new__(cls, *newargs, **options)
         else:
             return r
 

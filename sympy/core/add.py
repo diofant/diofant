@@ -57,7 +57,7 @@ def _unevaluated_Add(*args):
     return Add._from_args(newargs)
 
 
-class Add(Expr, AssocOp):
+class Add(AssocOp):
 
     is_Add = True
 

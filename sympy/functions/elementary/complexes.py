@@ -1001,7 +1001,8 @@ def _polarify(eq, lift, pause=False):
         limits = []
         for limit in eq.args[1:]:
             var = _polarify(limit[0], lift=False, pause=pause)
-            rest = _polarify(limit[1:], lift=lift, pause=pause)
+            rest = tuple(map(lambda x: _polarify(x, lift=lift, pause=pause),
+                             limit[1:]))
             limits.append((var,) + rest)
         return Integral(*((func,) + tuple(limits)))
     else:

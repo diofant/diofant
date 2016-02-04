@@ -326,7 +326,7 @@ def real_root(arg, n=None):
 ###############################################################################
 
 
-class MinMaxBase(Expr, LatticeOp):
+class MinMaxBase(LatticeOp):
     def __new__(cls, *args, **assumptions):
         if not args:
             raise ValueError("The Max/Min functions must have arguments.")
