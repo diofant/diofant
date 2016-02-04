@@ -3,14 +3,13 @@
 from inspect import getmro
 from itertools import zip_longest
 
-from .assumptions import ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
 from .singleton import S
 
 
-class Basic(metaclass=ManagedProperties):
+class Basic(object):
     """
     Base class for all objects in Diofant.
 
@@ -64,7 +63,6 @@ class Basic(metaclass=ManagedProperties):
 
     def __new__(cls, *args):
         obj = object.__new__(cls)
-        obj._assumptions = cls.default_assumptions
         obj._mhash = None  # will be set by __hash__ method.
 
         obj._args = args  # all items in args must be Basic objects

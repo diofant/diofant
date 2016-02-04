@@ -4,9 +4,10 @@ from .cache import cacheit
 from .compatibility import ordered
 from .logic import _fuzzy_group
 from .evaluate import global_evaluate
+from .expr import Expr
 
 
-class AssocOp(Basic):
+class AssocOp(Expr):
     """ Associative operations, can separate noncommutative and
     commutative parts.
 

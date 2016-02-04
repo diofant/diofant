@@ -267,7 +267,7 @@ And then, certain simplifications will be possible:
 
 The assumptions system additionally has deductive capabilities.  You
 might check assumptions on any expression with ``is_assumption``
-attributes, like :attr:`~diofant.core.basic.Basic.is_positive`.
+attributes, like :attr:`~diofant.core.expr.Expr.is_positive`.
 
     >>> p.is_positive
     True

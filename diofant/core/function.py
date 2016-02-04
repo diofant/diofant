@@ -183,7 +183,7 @@ class FunctionClass(ManagedProperties):
         return self.__name__
 
 
-class Application(Basic, metaclass=FunctionClass):
+class Application(Expr, metaclass=FunctionClass):
     """
     Base class for applied functions.
 
@@ -553,7 +553,7 @@ class Function(Application, Expr):
         from diofant.sets.sets import FiniteSet
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
-        if any(t.is_finite is False for t in args0):
+        if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
             from diofant import oo, zoo, nan
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
@@ -2352,6 +2352,13 @@ def count_ops(expr, visual=False):
                 elif _coeff_isneg(aargs[0]):  # -x + y = SUB, but already recorded ADD
                     ops.append(SUB - ADD)
                 continue
+            elif isinstance(expr, BooleanFunction):
+                ops = []
+                for arg in expr.args:
+                    ops.append(count_ops(arg, visual=True))
+                o = Symbol(expr.func.__name__.upper())
+                ops.append(o)
+                continue
             if a.is_Pow and a.exp is S.NegativeOne:
                 ops.append(DIV)
                 args.append(a.base)  # won't be -Mul but could be Add
@@ -2376,12 +2383,6 @@ def count_ops(expr, visual=False):
                count_ops(v, visual=visual) for k, v in expr.items()]
     elif iterable(expr):
         ops = [count_ops(i, visual=visual) for i in expr]
-    elif isinstance(expr, BooleanFunction):
-        ops = []
-        for arg in expr.args:
-            ops.append(count_ops(arg, visual=True))
-        o = Symbol(expr.func.__name__.upper())
-        ops.append(o)
     elif not isinstance(expr, Basic):
         ops = []
     else:  # it's Basic not isinstance(expr, Expr):

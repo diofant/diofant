@@ -10,7 +10,7 @@ from .numbers import ilcm, igcd
 from .expr import Expr
 
 
-class Add(Expr, AssocOp):
+class Add(AssocOp):
 
     is_Add = True
 

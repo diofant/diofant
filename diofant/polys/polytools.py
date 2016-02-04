@@ -79,7 +79,7 @@ class Poly(Expr):
         elif rep.lev != len(gens) - 1:
             raise PolynomialError("invalid arguments: %s, %s" % (rep, gens))
 
-        obj = Basic.__new__(cls)
+        obj = Expr.__new__(cls)
 
         obj.rep = rep
         obj.gens = gens
