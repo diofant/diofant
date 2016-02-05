@@ -38,7 +38,7 @@ class Determinant(Expr):
     def arg(self):
         return self.args[0]
 
-    def doit(self, expand=False):
+    def doit(self, **hints):
         try:
             return self.arg._eval_determinant()
         except (AttributeError, NotImplementedError):
