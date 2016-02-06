@@ -1701,6 +1701,9 @@ def test_add_flatten():
     assert a - b == nan
     assert (1/a).simplify() == (1/b).simplify() == 0
 
+    a = Pow(2, 3, evaluate=False)
+    assert a + a == 16
+
 
 def test_omgissue_31():
     assert sin(x + O(x**2)) - sin(x + O(x**2)) == \
