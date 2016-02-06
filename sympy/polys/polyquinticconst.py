@@ -8,14 +8,14 @@ Mathematica notebook:
 http://www.emba.uvm.edu/~ddummit/quintics/quintics.nb
 """
 
-from sympy.core import Dummy
+from sympy.core import Symbol
 from sympy.core.numbers import I, Rational
 from sympy.polys.polytools import Poly
 from sympy.core.evalf import N
 from sympy.functions import sqrt
 from sympy.utilities import public
 
-x = Dummy('dummy_for_polyquinticconst')
+x = Symbol('dummy_for_polyquinticconst')
 
 
 @public
