@@ -491,7 +491,7 @@ class BaseScalarField(Expr):
     # XXX Workaround for limitations on the content of args
     free_symbols = set()
 
-    def doit(self):
+    def doit(self, **hints):
         return self
 
 

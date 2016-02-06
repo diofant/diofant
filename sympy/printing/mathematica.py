@@ -23,6 +23,7 @@ known_functions = {
     "coth": [(lambda x: True, "Coth")],
     "sech": [(lambda x: True, "Sech")],
     "csch": [(lambda x: True, "Csch")],
+    "sign": [(lambda x: True, "Sign")],
 }
 
 

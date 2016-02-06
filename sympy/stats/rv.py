@@ -628,7 +628,9 @@ class Density(Basic):
         else:
             return
 
-    def doit(self, evaluate=True, **kwargs):
+    def doit(self, **kwargs):
+        evaluate = kwargs.pop('evaluate', True)
+
         expr, condition = self.expr, self.condition
         if condition is not None:
             # Recompute on new conditional expr
@@ -686,9 +688,11 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
 
     if numsamples:
         return sampling_density(expr, condition, numsamples=numsamples,
-                **kwargs)
+                                **kwargs)
 
-    return Density(expr, condition).doit(evaluate=evaluate, **kwargs)
+    kwargs['evaluate'] = evaluate
+
+    return Density(expr, condition).doit(**kwargs)
 
 
 def cdf(expr, condition=None, evaluate=True, **kwargs):

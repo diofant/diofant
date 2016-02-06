@@ -1502,8 +1502,8 @@ class Subs(Expr):
     def _eval_is_commutative(self):
         return self.expr.is_commutative
 
-    def doit(self):
-        return self.expr.doit().subs(list(zip(self.variables, self.point)))
+    def doit(self, **hints):
+        return self.expr.doit(**hints).subs(list(zip(self.variables, self.point)))
 
     def evalf(self, prec=None, **options):
         return self.doit().evalf(prec, **options)

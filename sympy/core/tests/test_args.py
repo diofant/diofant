@@ -6,6 +6,7 @@ import os
 import re
 import warnings
 import io
+import inspect
 
 import pytest
 
@@ -76,7 +77,18 @@ def test_all_classes_are_tested():
 
 
 def _test_args(obj):
-    return all(isinstance(arg, Basic) for arg in obj.args)
+    res = all(isinstance(arg, Basic) for arg in obj.args)
+
+    if hasattr(obj, 'doit'):
+        doit = obj.doit
+        if inspect.ismethod(doit):
+            spec = inspect.getargspec(doit)
+            res &= (len(spec.args) == 1 and spec.varargs is None
+                    and spec.keywords is not None)
+        else:
+            res &= False
+
+    return res
 
 
 @pytest.mark.xfail
