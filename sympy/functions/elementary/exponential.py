@@ -1,10 +1,9 @@
 from sympy.core import sympify
 from sympy.core.add import Add
-from sympy.core.function import Lambda, Function, ArgumentIndexError
+from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.numbers import Integer
 from sympy.core.power import Pow
 from sympy.core.singleton import S
-from sympy.core.symbol import Dummy
 from sympy.core.mul import Mul
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.ntheory import multiplicity, perfect_power
@@ -184,8 +183,6 @@ class log(Function):
         """
         if argindex == 1:
             return 1/self.args[0]
-            s = Dummy('x')
-            return Lambda(s**(-1), s)
         else:
             raise ArgumentIndexError(self, argindex)
 
