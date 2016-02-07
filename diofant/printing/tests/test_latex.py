@@ -1408,3 +1408,10 @@ def test_diffgeom():
     dg = Differential(s_field)
     assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
                         r'\boldsymbol{\mathrm{y}} \right )})'
+
+
+def test_sympyissue_10489():
+    latexSymbolWithBrace = 'C_{x_{0}}'
+    s = Symbol(latexSymbolWithBrace)
+    assert latex(s) == latexSymbolWithBrace
+    assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'
