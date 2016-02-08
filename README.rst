@@ -19,5 +19,6 @@ For installation instructions and usage information, see the
 See the `docs/aboutus.rst <http://omg.rtfd.org/en/latest/aboutus.html>`_
 file for credits and brief history.
 
-New BSD License (see the LICENSE file for details) covers all
-files in this repository unless stated otherwise.
+New BSD License (see the LICENSE file for details) covers
+all files in this repository (but **not** unmerged yet pull
+requests), unless stated otherwise.
