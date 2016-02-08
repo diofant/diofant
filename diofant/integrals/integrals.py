@@ -1,6 +1,6 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Dummy, Eq, Expr, S, Symbol, Tuple, Wild, diff,
-                    nan, oo, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, Mul, S, Symbol, Tuple, Wild,
+                    diff, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
@@ -535,8 +535,34 @@ class Integral(AddWithLimits):
                         function = Add(*[i._eval_interval(x, a, b) for i in
                                          Add.make_args(antideriv)])
                     else:
+                        def is_indef_int(g, x):
+                            return (isinstance(g, Integral) and
+                                    any(i == (x,) for i in g.limits))
+
+                        def eval_factored(f, x, a, b):
+                            # _eval_interval for integrals with
+                            # (constant) factors
+                            # a single indefinite integral is assumed
+                            args = []
+                            for g in Mul.make_args(f):
+                                if is_indef_int(g, x):
+                                    args.append(g._eval_interval(x, a, b))
+                                else:
+                                    args.append(g)
+                            return Mul(*args)
+
+                        integrals, others = [], []
+                        for f in Add.make_args(antideriv):
+                            if any(is_indef_int(g, x)
+                                   for g in Mul.make_args(f)):
+                                integrals.append(f)
+                            else:
+                                others.append(f)
+                        uneval = Add(*[eval_factored(f, x, a, b)
+                                       for f in integrals])
                         try:
-                            function = antideriv._eval_interval(x, a, b)
+                            evalued = Add(*others)._eval_interval(x, a, b)
+                            function = uneval + evalued
                         except NotImplementedError:
                             # This can happen if _eval_interval depends in a
                             # complicated way on limits that cannot be computed
