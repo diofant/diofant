@@ -8,7 +8,7 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
                    SymmetricDifference, Integer, Rational)
 
-from sympy.abc import x, y, z
+from sympy.abc import a, b, x, y, z
 
 
 def test_interval_arguments():
@@ -408,15 +408,14 @@ def test_contains():
     assert FiniteSet(1, 2, Symbol('x')).contains(Symbol('x')) is S.true
 
     # issue 8197
-    from sympy.abc import a, b
     assert isinstance(FiniteSet(b).contains(-a), Contains)
     assert isinstance(FiniteSet(b).contains(a), Contains)
     assert isinstance(FiniteSet(a).contains(1), Contains)
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
-    rad1 = Pow(Pow(2, Rational(1, 3)) - 1, Rational(1, 3))
-    rad2 = Pow(Rational(1, 9), Rational(1, 3)) - Pow(Rational(2, 9), Rational(1, 3)) + Pow(Rational(4, 9), Rational(1, 3))
+    rad1 = Integer(4)
+    rad2 = Pow(2, 2, evaluate=False)
     s1 = FiniteSet(rad1)
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet
@@ -688,7 +687,6 @@ def test_Interval_free_symbols():
 
 
 def test_image_interval():
-    from sympy.core.numbers import Rational
     x = Symbol('x', extended_real=True)
     a = Symbol('a', extended_real=True)
     assert imageset(x, 2*x, Interval(-2, 1)) == Interval(-4, 2)
