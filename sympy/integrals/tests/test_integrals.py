@@ -1084,6 +1084,7 @@ def test_issue_8901():
     assert integrate(tanh(x)) == x - log(tanh(x) + 1)
 
 
+@pytest.mark.slow
 def test_issue_7130():
     i, L, b = symbols('i L b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)
