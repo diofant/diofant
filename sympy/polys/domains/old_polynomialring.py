@@ -72,26 +72,9 @@ class PolynomialRingBase(Ring, CharacteristicZero, CompositeDomain):
         """Convert a Python `int` object to `dtype`. """
         return self(self.dom.convert(a, K0))
 
-    def from_QQ_python(self, a, K0):
-        """Convert a Python `Fraction` object to `dtype`. """
-        return self(self.dom.convert(a, K0))
-
     def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY `mpz` object to `dtype`. """
         return self(self.dom.convert(a, K0))
-
-    def from_QQ_gmpy(self, a, K0):
-        """Convert a GMPY `mpq` object to `dtype`. """
-        return self(self.dom.convert(a, K0))
-
-    def from_RealField(self, a, K0):
-        """Convert a mpmath `mpf` object to `dtype`. """
-        return self(self.dom.convert(a, K0))
-
-    def from_AlgebraicField(self, a, K0):
-        """Convert a `ANP` object to `dtype`. """
-        if self.dom == K0:
-            return self(a)
 
     def from_GlobalPolynomialRing(self, a, K0):
         """Convert a `DMP` object to `dtype`. """
@@ -112,14 +95,6 @@ class PolynomialRingBase(Ring, CharacteristicZero, CompositeDomain):
         """Returns a field associated with `self`. """
         return FractionField(self.dom, *self.gens)
 
-    def poly_ring(self, *gens):
-        """Returns a polynomial ring, i.e. `K[X]`. """
-        raise NotImplementedError('nested domains not allowed')
-
-    def frac_field(self, *gens):
-        """Returns a fraction field, i.e. `K(X)`. """
-        raise NotImplementedError('nested domains not allowed')
-
     def revert(self, a):
         try:
             return 1/a
@@ -133,23 +108,6 @@ class PolynomialRingBase(Ring, CharacteristicZero, CompositeDomain):
     def gcd(self, a, b):
         """Returns GCD of `a` and `b`. """
         return a.gcd(b)
-
-    def lcm(self, a, b):
-        """Returns LCM of `a` and `b`. """
-        return a.lcm(b)
-
-    def factorial(self, a):
-        """Returns factorial of `a`. """
-        return self.dtype(self.dom.factorial(a))
-
-    def _vector_to_sdm(self, v, order):
-        """
-        For internal use by the modules class.
-
-        Convert an iterable of elements of this ring into a sparse distributed
-        module element.
-        """
-        raise NotImplementedError
 
     def _sdm_to_dics(self, s, n):
         """Helper for _sdm_to_vector."""
@@ -247,22 +205,6 @@ class GlobalPolynomialRing(PolynomialRingBase):
             rep[k] = self.dom.from_sympy(v)
 
         return self(rep)
-
-    def is_positive(self, a):
-        """Returns True if `LC(a)` is positive. """
-        return self.dom.is_positive(a.LC())
-
-    def is_negative(self, a):
-        """Returns True if `LC(a)` is negative. """
-        return self.dom.is_negative(a.LC())
-
-    def is_nonpositive(self, a):
-        """Returns True if `LC(a)` is non-positive. """
-        return self.dom.is_nonpositive(a.LC())
-
-    def is_nonnegative(self, a):
-        """Returns True if `LC(a)` is non-negative. """
-        return self.dom.is_nonnegative(a.LC())
 
     def _vector_to_sdm(self, v, order):
         """
