@@ -100,8 +100,6 @@ API reference
 .. autofunction:: sympy.integrals.heurisch.heurisch
 .. autofunction:: sympy.integrals.heurisch.heurisch_wrapper
 .. autofunction:: sympy.integrals.trigonometry.trigintegrate
-.. autofunction:: sympy.integrals.manualintegrate.manualintegrate
-.. autofunction:: sympy.integrals.manualintegrate.integral_steps
 
 The class `Integral` represents an unevaluated integral and has some methods that help in the integration of an expression.
 
