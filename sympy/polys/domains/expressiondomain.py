@@ -5,7 +5,6 @@ from sympy.polys.domains.simpledomain import SimpleDomain
 from sympy.polys.domains.characteristiczero import CharacteristicZero
 from sympy.core import sympify, SympifyError
 from sympy.utilities import public
-from sympy.polys.polyutils import PicklableWithSlots
 
 
 @public
@@ -14,10 +13,8 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
     is_SymbolicDomain = is_EX = True
 
-    class Expression(PicklableWithSlots):
+    class Expression(object):
         """An arbitrary expression. """
-
-        __slots__ = ['ex']
 
         def __init__(self, ex):
             if not isinstance(ex, self.__class__):

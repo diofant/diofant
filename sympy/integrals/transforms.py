@@ -1,6 +1,6 @@
 """ Integral Transforms """
 
-from functools import reduce
+from functools import reduce, wraps
 
 from sympy.core import S, sympify
 from sympy.core.function import Function
@@ -186,8 +186,6 @@ def _noconds_(default):
     argument of this function).
     """
     def make_wrapper(func):
-        from sympy.core.decorators import wraps
-
         @wraps(func)
         def wrapper(*args, **kwargs):
             noconds = kwargs.pop('noconds', default)
@@ -269,7 +267,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
         return a, b, aux
 
     conds = [process_conds(c) for c in disjuncts(cond)]
-    conds = [x for x in conds if x[2] != False]
+    conds = [x for x in conds if x[2] is not S.false]
     conds.sort(key=lambda x: (x[0] - x[1], count_ops(x[2])))
 
     if not conds:
@@ -307,7 +305,7 @@ class MellinTransform(IntegralTransform):
             b += [sb]
             cond += [c]
         res = (Max(*a), Min(*b)), And(*cond)
-        if (res[0][0] >= res[0][1]) == True or res[1] == False:
+        if (res[0][0] >= res[0][1]) is S.true or res[1] is S.false:
             raise IntegralTransformError(
                 'Mellin', None, 'no combined convergence.')
         return res
@@ -474,10 +472,10 @@ def _rewrite_gamma(f, s, a, b):
             return b_ >= c
         if b_ is None:
             return a_ >= c
-        if (c >= b_) == True:
-            return False
-        if (c <= a_) == True:
-            return True
+        if (c >= b_) is S.true:
+            return S.false
+        if (c <= a_) is S.true:
+            return S.true
         if is_numer:
             return
         if a_.free_symbols or b_.free_symbols or c.free_symbols:
@@ -522,7 +520,7 @@ def _rewrite_gamma(f, s, a, b):
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                *reduce(igcd, [Integer(x.p) for x in s_multipliers])
+                * reduce(igcd, [Integer(x.p) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)
@@ -621,8 +619,8 @@ def _rewrite_gamma(f, s, a, b):
         elif isinstance(fact, gamma):
             a, b = linear_arg(fact.args[0])
             if is_numer:
-                if (a > 0 and (left(-b/a, is_numer) == False)) or \
-                   (a < 0 and (left(-b/a, is_numer) == True)):
+                if (a > 0 and (left(-b/a, is_numer) is S.false)) or \
+                   (a < 0 and (left(-b/a, is_numer) is S.true)):
                     raise NotImplementedError(
                         'Gammas partially over the strip.')
             ugammas += [(a, b)]
@@ -919,9 +917,9 @@ def _simplifyconds(expr, s, a):
         if n is None:
             return
         try:
-            if n > 0 and (abs(ex1) <= abs(a)**n) == True:
+            if n > 0 and (abs(ex1) <= abs(a)**n) is S.true:
                 return False
-            if n < 0 and (abs(ex1) >= abs(a)**n) == True:
+            if n < 0 and (abs(ex1) >= abs(a)**n) is S.true:
                 return True
         except TypeError:
             pass
@@ -1027,9 +1025,9 @@ def _laplace_transform(f, t, s_, simplify=True):
         return a, aux
 
     conds = [process_conds(c) for c in disjuncts(cond)]
-    conds2 = [x for x in conds if x[1] != False and x[0] != -oo]
+    conds2 = [x for x in conds if x[1] is not S.false and x[0] != -oo]
     if not conds2:
-        conds2 = [x for x in conds if x[1] != False]
+        conds2 = [x for x in conds if x[1] is not S.false]
     conds = conds2
 
     def cnt(expr):

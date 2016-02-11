@@ -221,7 +221,7 @@ def test_integrate_linearterm_pow():
 def test_issue_3618():
     assert integrate(pi*sqrt(x), x) == 2*pi*sqrt(x)**3/3
     assert integrate(pi*sqrt(x) + E*sqrt(x)**3, x) == \
-        2*pi*sqrt(x)**3/3 + 2*E *sqrt(x)**5/5
+        2*pi*sqrt(x)**3/3 + 2*E * sqrt(x)**5/5
 
 
 def test_issue_3623():
@@ -469,8 +469,8 @@ def test_integrate_returns_piecewise():
         (0, Eq(n, 0)), ((n*x/2 - sin(n*x)*cos(n*x)/2)/n, True))
     assert integrate(x*sin(n*x), x) == Piecewise(
         (0, Eq(n, 0)), (-x*cos(n*x)/n + sin(n*x)/n**2, True))
-    assert integrate(exp(x*y),(x,0,z)) == Piecewise(
-        (z, Eq(y,0)), (exp(y*z)/y - 1/y, True))
+    assert integrate(exp(x*y), (x, 0, z)) == Piecewise(
+        (z, Eq(y, 0)), (exp(y*z)/y - 1/y, True))
 
 
 def test_subs1():
@@ -524,7 +524,7 @@ def test_subs5():
     e = Integral(exp(-x**2), (x, x))
     assert e.subs(x, 5) == Integral(exp(-x**2), (x, 5))
     e = Integral(exp(x), x)
-    assert (e.subs(x,1) - e.subs(x,0) - Integral(exp(x), (x, 0, 1))
+    assert (e.subs(x, 1) - e.subs(x, 0) - Integral(exp(x), (x, 0, 1))
         ).doit().is_zero
 
 
@@ -878,8 +878,8 @@ def test_issue_4892a():
     assert integrate(c*(P2 - P1), t) in [
         c*(-A*(-h1)*log(c*t)/c + A*t*exp(-z)),
         c*(-A*(-h2)*log(c*t)/c + A*t*exp(-z)),
-        c*( A* h1 *log(c*t)/c + A*t*exp(-z)),
-        c*( A* h2 *log(c*t)/c + A*t*exp(-z)),
+        c*(A*h1*log(c*t)/c + A*t*exp(-z)),
+        c*(A*h2*log(c*t)/c + A*t*exp(-z)),
         (A*c*t - A*(-h1)*log(t)*exp(z))*exp(-z),
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
     ]
@@ -1026,7 +1026,7 @@ def test_issue_6828():
 @pytest.mark.xfail
 def test_integrate_Piecewise_rational_over_reals():
     f = Piecewise(
-        (0,                                              t - 478.515625*pi <  0),
+        (0,                                              t - 478.515625*pi < 0),
         (13.2075145209219*pi/(0.000871222*t + 0.995)**2, t - 478.515625*pi >= 0))
 
     assert integrate(f, (t, 0, oo)) == 15235.9375*pi
@@ -1084,6 +1084,7 @@ def test_issue_8901():
     assert integrate(tanh(x)) == x - log(tanh(x) + 1)
 
 
+@pytest.mark.slow
 def test_issue_7130():
     i, L, b = symbols('i L b')
     integrand = (cos(pi*i*x/L)**2 / (a + b*x)).rewrite(exp)

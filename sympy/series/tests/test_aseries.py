@@ -1,7 +1,8 @@
 import pytest
 
 from sympy import S, Symbol, symbols, exp, log, sqrt, O, oo, sin, cos, PoleError
-from sympy.abc import x, y, z
+
+from sympy.abc import x
 
 
 @pytest.mark.slow

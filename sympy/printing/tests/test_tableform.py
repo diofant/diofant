@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import pytest
 
-from sympy import TableForm, Integer, Rational
+from sympy import TableForm, Rational
 from sympy.printing.latex import latex
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.functions.elementary.trigonometric import sin

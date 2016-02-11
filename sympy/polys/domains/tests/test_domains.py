@@ -4,6 +4,7 @@ import pytest
 
 from sympy import sqrt, sin, oo, Poly, Float, Integer, Rational
 from sympy.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
+from sympy.polys.domains.domainelement import DomainElement
 from sympy.polys.domains.realfield import RealField
 from sympy.polys.rings import ring
 from sympy.polys.fields import field
@@ -18,6 +19,10 @@ ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
 def unify(K0, K1):
     return K0.unify(K1)
+
+
+def test_Domain_interface():
+    pytest.raises(NotImplementedError, lambda: DomainElement().parent())
 
 
 def test_Domain_unify():
@@ -534,23 +539,23 @@ def test_Domain__algebraic_field():
 
 
 def test_PolynomialRing_from_FractionField():
-    F, x,y = field("x,y", ZZ)
-    R, X,Y = ring("x,y", ZZ)
+    F,  x, y = field("x,y", ZZ)
+    R,  X, Y = ring("x,y", ZZ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
-    h =  x**2 + y**2
+    h = x**2 + y**2
 
     assert R.to_domain().from_FractionField(f, F.to_domain()) is None
     assert R.to_domain().from_FractionField(g, F.to_domain()) == X**2/4 + Y**2/4
     assert R.to_domain().from_FractionField(h, F.to_domain()) == X**2 + Y**2
 
-    F, x,y = field("x,y", QQ)
-    R, X,Y = ring("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
+    R,  X, Y = ring("x,y", QQ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
-    h =  x**2 + y**2
+    h = x**2 + y**2
 
     assert R.to_domain().from_FractionField(f, F.to_domain()) is None
     assert R.to_domain().from_FractionField(g, F.to_domain()) == X**2/4 + Y**2/4
@@ -558,8 +563,8 @@ def test_PolynomialRing_from_FractionField():
 
 
 def test_FractionField_from_PolynomialRing():
-    R, x,y = ring("x,y", QQ)
-    F, X,Y = field("x,y", ZZ)
+    R,  x, y = ring("x,y", QQ)
+    F,  X, Y = field("x,y", ZZ)
 
     f = 3*x**2 + 5*y**2
     g = x**2/3 + y**2/5

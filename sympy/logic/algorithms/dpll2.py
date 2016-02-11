@@ -52,11 +52,6 @@ def dpll_satisfiable(expr, all_models=False):
     except StopIteration:
         return False
 
-    # Uncomment to confirm the solution is valid (hitting set for the clauses)
-    # else:
-        # for cls in clauses_int_repr:
-            # assert solver.var_settings.intersection(cls)
-
 
 def _all_models(models):
     satisfiable = False

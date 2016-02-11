@@ -116,7 +116,7 @@ class OctaveCodePrinter(CodePrinter):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = expr.as_ordered_factors()
         else:
             # use make_args in case expr was something like -x -> x
@@ -301,7 +301,7 @@ class OctaveCodePrinter(CodePrinter):
         _print_SparseMatrix
 
     def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '(%s, %s)'%(expr.i+1, expr.j+1)
+        return self._print(expr.parent) + '(%s, %s)' % (expr.i + 1, expr.j + 1)
 
     def _print_MatrixSlice(self, expr):
         def strslice(x, lim):

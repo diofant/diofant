@@ -1,4 +1,4 @@
-from sympy import sin, cos, exp, tanh, E, S, Order
+from sympy import sin, cos, exp, tanh, E, S, O
 from sympy.abc import x, y
 
 
@@ -35,7 +35,7 @@ def test_exp2():
 def test_simple():
     assert [t for t in x.lseries()] == [x]
     assert [t for t in S.One.lseries(x)] == [1]
-    assert not next((x/(x + y)).lseries(y)).has(Order)
+    assert not next((x/(x + y)).lseries(y)).has(O)
 
 
 def test_issue_5183():

@@ -185,10 +185,10 @@ class Point(GeometryEntity):
 
     def is_scalar_multiple(p1, p2):
         """Returns whether `p1` and `p2` are scalar multiples
-        of eachother.
+        of each other.
         """
         # if the vectors p1 and p2 are linearly dependent, then they must
-        # be scalar multiples of eachother
+        # be scalar multiples of each other
         m = Matrix([p1.args, p2.args])
         # XXX: issue sympy/sympy#9480 we need `simplify=True` otherwise the
         # rank may be computed incorrectly
@@ -360,14 +360,14 @@ class Point(GeometryEntity):
     def dot(self, p2):
         """Return dot product of self with another Point."""
         p2 = Point(p2)
-        return Add(*[a*b for a,b in zip(self, p2)])
+        return Add(*[a*b for a, b in zip(self, p2)])
 
     def equals(self, other):
         """Returns whether the coordinates of self and other agree."""
         # a point is equal to another point if all its components are equal
         if not isinstance(other, Point) or len(self.args) != len(other.args):
             return False
-        return all(a.equals(b) for a,b in zip(self.args, other.args))
+        return all(a.equals(b) for a, b in zip(self.args, other.args))
 
     def __len__(self):
         return len(self.args)
@@ -850,7 +850,7 @@ class Point3D(Point):
         >>> p1.direction_ratio(Point3D(2, 3, 5))
         [1, 1, 2]
         """
-        return [(point.x - self.x),(point.y - self.y),(point.z - self.z)]
+        return [(point.x - self.x), (point.y - self.y), (point.z - self.z)]
 
     def direction_cosine(self, point):
         """
@@ -876,7 +876,7 @@ class Point3D(Point):
         """
         a = self.direction_ratio(point)
         b = sqrt(sum(i**2 for i in a))
-        return [(point.x - self.x) / b,(point.y - self.y) / b,
+        return [(point.x - self.x) / b, (point.y - self.y) / b,
                 (point.z - self.z) / b]
 
     @staticmethod

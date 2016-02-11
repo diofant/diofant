@@ -49,18 +49,10 @@ def gosper_normal(f, g, n, polys=True):
     b, B = q.LC(), q.monic()
 
     C, Z = A.one, a/b
-    h = Dummy('h')
 
-    D = Poly(n + h, n, h, domain=opt.domain)
+    J = A.dispersionset(B)
 
-    R = A.resultant(B.compose(D))
-    roots = set(R.ground_roots().keys())
-
-    for r in set(roots):
-        if not r.is_Integer or r < 0:
-            roots.remove(r)
-
-    for i in sorted(roots):
+    for i in sorted(J):
         d = A.gcd(B.shift(+i))
 
         A = A.quo(d)
@@ -188,7 +180,7 @@ def gosper_sum(f, k):
     References
     ==========
 
-    .. [1] Marko Petkovsek, Herbert S. Wilf, Doron Zeilberger, A = B,
+    .. [1] Marko Petkovšek, Herbert S. Wilf, Doron Zeilberger, A = B,
            AK Peters, Ltd., Wellesley, MA, USA, 1997, pp. 73--100
 
     """

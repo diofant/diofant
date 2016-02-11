@@ -1,28 +1,9 @@
-from sympy import (Basic, Expr, Symbol, Integer, Rational, Float,
-                   default_sort_key, Add, Mul)
+from sympy import Basic, Expr
 
 __all__ = ['dotprint']
 
 default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
                   (Expr,  {'color': 'black'})]
-
-
-sort_classes = (Add, Mul)
-slotClasses = (Symbol, Integer, Rational, Float)
-# XXX: Why not just use srepr()?
-
-
-def purestr(x):
-    """ A string that follows obj = type(obj)(*obj.args) exactly """
-    if not isinstance(x, Basic):
-        return str(x)
-    if type(x) in slotClasses:
-        args = [getattr(x, slot) for slot in x.__slots__]
-    elif type(x) in sort_classes:
-        args = sorted(x.args, key=default_sort_key)
-    else:
-        args = x.args
-    return "%s(%s)"%(type(x).__name__, ', '.join(map(purestr, args)))
 
 
 def styleof(expr, styles=default_styles):
@@ -54,7 +35,7 @@ def attrprint(d, delimiter=', '):
     >>> print(attrprint({'color': 'blue', 'shape': 'ellipse'}))
     "color"="blue", "shape"="ellipse"
     """
-    return delimiter.join('"%s"="%s"'%item for item in sorted(d.items()))
+    return delimiter.join('"%s"="%s"' % item for item in sorted(d.items()))
 
 
 def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
@@ -63,7 +44,7 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     >>> from sympy.printing.dot import dotnode
     >>> from sympy.abc import x
     >>> print(dotnode(x))
-    "Symbol(x)_()" ["color"="black", "label"="x", "shape"="ellipse"];
+    "Symbol('x')_()" ["color"="black", "label"="x", "shape"="ellipse"];
     """
     style = styleof(expr, styles)
 
@@ -72,7 +53,7 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     else:
         label = labelfunc(expr)
     style['label'] = label
-    expr_str = purestr(expr)
+    expr_str = repr(expr)
     if repeat:
         expr_str += '_%s' % str(pos)
     return '"%s" [%s];' % (expr_str, attrprint(style))
@@ -87,20 +68,18 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
     >>> from sympy.abc import x
     >>> for e in dotedges(x+2):
     ...     print(e)
-    "Add(Integer(2), Symbol(x))_()" -> "Integer(2)_(0,)";
-    "Add(Integer(2), Symbol(x))_()" -> "Symbol(x)_(1,)";
+    "Add(Symbol('x'), Integer(2))_()" -> "Integer(2)_(0,)";
+    "Add(Symbol('x'), Integer(2))_()" -> "Symbol('x')_(1,)";
     """
     if atom(expr):
         return []
     else:
-        # TODO: This is quadratic in complexity (purestr(expr) already
-        # contains [purestr(arg) for arg in expr.args]).
-        expr_str = purestr(expr)
-        arg_strs = [purestr(arg) for arg in expr.args]
+        expr_str = repr(expr)
+        arg_strs = [repr(arg) for arg in expr.args]
         if repeat:
             expr_str += '_%s' % str(pos)
             arg_strs = [arg_str + '_%s' % str(pos + (i,)) for i, arg_str in enumerate(arg_strs)]
-        return ['"%s" -> "%s";'%(expr_str, arg_str) for arg_str in arg_strs]
+        return ['"%s" -> "%s";' % (expr_str, arg_str) for arg_str in arg_strs]
 
 template = \
 """digraph{
@@ -152,8 +131,8 @@ def dotprint(expr, styles=default_styles,
           object might not equal the number of args it has).
 
     ``labelfunc``: How to label leaf nodes.  The default is ``str``.  Another
-          good option is ``srepr``. For example with ``str``, the leaf nodes
-          of ``x + 1`` are labeled, ``x`` and ``1``.  With ``srepr``, they
+          good option is ``repr``. For example with ``str``, the leaf nodes
+          of ``x + 1`` are labeled, ``x`` and ``1``.  With ``repr``, they
           are labeled ``Symbol('x')`` and ``Integer(1)``.
 
     Additional keyword arguments are included as styles for the graph.
@@ -163,7 +142,7 @@ def dotprint(expr, styles=default_styles,
 
     >>> from sympy.printing.dot import dotprint
     >>> from sympy.abc import x
-    >>> print(dotprint(x+2)) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(dotprint(x + 2)) # doctest: +NORMALIZE_WHITESPACE
     digraph{
     <BLANKLINE>
     # Graph style
@@ -174,18 +153,17 @@ def dotprint(expr, styles=default_styles,
     # Nodes #
     #########
     <BLANKLINE>
-    "Add(Integer(2), Symbol(x))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
+    "Add(Symbol('x'), Integer(2))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
     "Integer(2)_(0,)" ["color"="black", "label"="2", "shape"="ellipse"];
-    "Symbol(x)_(1,)" ["color"="black", "label"="x", "shape"="ellipse"];
+    "Symbol('x')_(1,)" ["color"="black", "label"="x", "shape"="ellipse"];
     <BLANKLINE>
     #########
     # Edges #
     #########
     <BLANKLINE>
-    "Add(Integer(2), Symbol(x))_()" -> "Integer(2)_(0,)";
-    "Add(Integer(2), Symbol(x))_()" -> "Symbol(x)_(1,)";
+    "Add(Symbol('x'), Integer(2))_()" -> "Integer(2)_(0,)";
+    "Add(Symbol('x'), Integer(2))_()" -> "Symbol('x')_(1,)";
     }
-
     """
     # repeat works by adding a signature tuple to the end of each node for its
     # position in the graph. For example, for expr = Add(x, Pow(x, 2)), the x in the
@@ -204,6 +182,6 @@ def dotprint(expr, styles=default_styles,
 
     traverse(expr, 0)
 
-    return template%{'graphstyle': attrprint(graphstyle, delimiter='\n'),
-                     'nodes': '\n'.join(nodes),
-                     'edges': '\n'.join(edges)}
+    return template % {'graphstyle': attrprint(graphstyle, delimiter='\n'),
+                       'nodes': '\n'.join(nodes),
+                       'edges': '\n'.join(edges)}

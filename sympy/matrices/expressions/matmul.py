@@ -116,7 +116,7 @@ def validate(*matrices):
     for i in range(len(matrices)-1):
         A, B = matrices[i:i+2]
         if A.cols != B.rows:
-            raise ShapeError("Matrices %s and %s are not aligned"%(A, B))
+            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
 
 # Rules
 
@@ -237,36 +237,3 @@ def only_squares(*matrices):
             out.append(MatMul(*matrices[start:i+1]).doit())
             start = i+1
     return out
-
-
-from sympy.assumptions.ask import ask, Q
-from sympy.assumptions.refine import handlers_dict
-
-
-def refine_MatMul(expr, assumptions):
-    """
-    >>> from sympy import MatrixSymbol, Q, assuming, refine
-    >>> X = MatrixSymbol('X', 2, 2)
-    >>> expr = X * X.T
-    >>> print(expr)
-    X*X'
-    >>> with assuming(Q.orthogonal(X)):
-    ...     print(refine(expr))
-    I
-    """
-    newargs = []
-    last = expr.args[0]
-    for arg in expr.args[1:]:
-        if arg == last.T and ask(Q.orthogonal(arg), assumptions):
-            last = Identity(arg.shape[0])
-        elif arg == last.conjugate() and ask(Q.unitary(arg), assumptions):
-            last = Identity(arg.shape[0])
-        else:
-            newargs.append(last)
-            last = arg
-    newargs.append(last)
-
-    return MatMul(*newargs)
-
-
-handlers_dict['MatMul'] = refine_MatMul

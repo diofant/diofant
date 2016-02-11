@@ -357,7 +357,7 @@ def solve(f, *symbols, **flags):
         - transcendental
         - piecewise combinations of the above
         - systems of linear and polynomial equations
-        - sytems containing relational expressions.
+        - systems containing relational expressions.
 
     Input is formed as:
 
@@ -592,7 +592,7 @@ def solve(f, *symbols, **flags):
             >>> solve([x < 3, x - 2])
             Eq(x, 2)
             >>> solve([x > 3, x - 2])
-            False
+            false
 
         * when the system is linear
 
@@ -783,7 +783,7 @@ def solve(f, *symbols, **flags):
     bare_f = not iterable(f)
     ordered_symbols = (symbols and
                        symbols[0] and
-                       (isinstance(symbols[0], Symbol) or
+                       (isinstance(symbols[0], (Dummy, Symbol)) or
                         is_sequence(symbols[0],
                         include=GeneratorType)
                        )

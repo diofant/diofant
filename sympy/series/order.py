@@ -1,4 +1,4 @@
-from sympy.core import S, sympify, Expr, Rational, Symbol, Dummy
+from sympy.core import S, sympify, Expr, Symbol, Dummy
 from sympy.core import Add, Mul, expand_power_base, expand_log
 from sympy.core.cache import cacheit
 from sympy.core.compatibility import default_sort_key, is_sequence
@@ -91,8 +91,6 @@ class Order(Expr):
 
     is_Order = True
 
-    __slots__ = []
-
     @cacheit
     def __new__(cls, expr, *args, **kwargs):
         expr = sympify(expr)
@@ -116,7 +114,7 @@ class Order(Expr):
                 variables = list(map(sympify, args))
                 point = [S.Zero]*len(variables)
 
-        if not all(isinstance(v, Symbol) for v in variables):
+        if not all(isinstance(v, (Dummy, Symbol)) for v in variables):
             raise TypeError('Variables are not symbols, got %s' % variables)
 
         if len(list(uniq(variables))) != len(variables):
@@ -412,5 +410,9 @@ class Order(Expr):
         expr = self.expr._eval_transpose()
         if expr is not None:
             return self.func(expr, *self.args[1:])
+
+    def _eval_is_commutative(self):
+        return self.expr.is_commutative
+
 
 O = Order

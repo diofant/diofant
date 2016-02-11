@@ -3,7 +3,7 @@
 import mpmath
 import pytest
 
-from sympy import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp,sin, cos,
+from sympy import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp, sin, cos,
                    pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
                    Integer)
 from sympy.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
@@ -40,8 +40,7 @@ def test_roots_quadratic():
     assert roots_quadratic(f) == \
         [-sqrt(2*y**2 + 1)/y + 1/y, sqrt(2*y**2 + 1)/y + 1/y]
     f = Poly(x**2 + (-y**2 - 2)*x + y**2 + 1, x)
-    assert roots_quadratic(f) == \
-        [1,y**2 + 1]
+    assert roots_quadratic(f) == [1, y**2 + 1]
 
     f = Poly(sqrt(2)*x**2 - 1, x)
     r = roots_quadratic(f)

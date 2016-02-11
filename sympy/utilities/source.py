@@ -5,14 +5,6 @@ This module adds several functions for interactive source code inspection.
 import inspect
 
 
-def source(object):
-    """
-    Prints the source code of a given object.
-    """
-    print('In file: %s' % inspect.getsourcefile(object))
-    print(inspect.getsource(object))
-
-
 def get_class(lookup_view):
     """
     Convert a string version of a class name to the object.
@@ -40,7 +32,6 @@ def get_mod_func(callback):
         >>> from sympy.utilities.source import get_mod_func
         >>> get_mod_func('sympy.core.basic.Basic')
         ('sympy.core.basic', 'Basic')
-
     """
     dot = callback.rfind('.')
     if dot == -1:

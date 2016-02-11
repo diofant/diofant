@@ -27,8 +27,6 @@ class Expr(Basic, EvalfMixin):
     sympy.core.basic.Basic
     """
 
-    __slots__ = []
-
     @property
     def _diff_wrt(self):
         """Is it allowed to take derivative wrt to this instance.
@@ -1016,7 +1014,7 @@ class Expr(Basic, EvalfMixin):
                     if oi.is_Symbol:
                         return S.One
                     if oi.is_Pow:
-                        syms = oi.atoms(Symbol)
+                        syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
                             x = syms.pop()
                             oi = oi.subs(x, Dummy('x', positive=True))
@@ -1047,7 +1045,7 @@ class Expr(Basic, EvalfMixin):
         >>> (-2*x*y).args_cnc()
         [[-1, 2, x, y], []]
         >>> (-2.5*x).args_cnc()
-        [[-1, 2.50000000000000, x], []]
+        [[-1, 2.5, x], []]
         >>> (-2*x*A*B*y).args_cnc()
         [[-1, 2, x, y], [A, B]]
         >>> (-2*x*A*B*y).args_cnc(split_1=False)
@@ -1582,7 +1580,7 @@ class Expr(Basic, EvalfMixin):
         as_coeff_add
         as_coeff_mul
         """
-        from sympy import Symbol
+        from sympy.core.symbol import Dummy, Symbol
         from sympy.utilities.iterables import sift
 
         func = self.func
@@ -1591,7 +1589,7 @@ class Expr(Basic, EvalfMixin):
         sym = set()
         other = []
         for d in deps:
-            if isinstance(d, Symbol):  # Symbol.is_Symbol is True
+            if isinstance(d, (Dummy, Symbol)):  # Symbol.is_Symbol is True
                 sym.add(d)
             else:
                 other.append(d)
@@ -2439,10 +2437,10 @@ class Expr(Basic, EvalfMixin):
         >>> abs(x).series(dir="-")
         -x
         """
-        from sympy import collect, Dummy, Order, Rational, Symbol, ceiling
+        from sympy import collect, Dummy, Symbol, Order, Rational, ceiling
 
         if x is None:
-            syms = self.atoms(Symbol)
+            syms = self.atoms(Dummy, Symbol)
             if not syms:
                 return self
             elif len(syms) > 1:
@@ -2496,48 +2494,23 @@ class Expr(Basic, EvalfMixin):
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
-            o = s1.getO() or S.Zero
-            if o:
-                # make sure the requested order is returned
-                ngot = o.getn()
-                if ngot > n:
-                    # leave o in its current form (e.g. with x*log(x)) so
-                    # it eats terms properly, then replace it below
-                    if n != 0:
-                        s1 += o.subs(x, x**Rational(n, ngot))
-                    else:
-                        s1 += Order(1, x)
-                elif ngot < n:
-                    # increase the requested number of terms to get the desired
-                    # number keep increasing (up to 9) until the received order
-                    # is different than the original order and then predict how
-                    # many additional terms are needed
-                    for more in range(1, 9):
-                        s1 = self._eval_nseries(x, n=n + more, logx=logx)
-                        newn = s1.getn()
-                        if newn != ngot:
-                            ndo = ceiling(n + (n - ngot)*more/(newn - ngot))
-                            s1 = self._eval_nseries(x, n=ndo, logx=logx)
-                            while s1.getn() < n:
-                                s1 = self._eval_nseries(x, n=ndo, logx=logx)
-                                ndo += 1
-                            break
-                    else:
-                        raise ValueError('Could not calculate %s terms for %s'
-                                         % (str(n), self))
-                    s1 += Order(x**n, x)
-                o = s1.getO()
-                s1 = s1.removeO()
-            else:
-                o = Order(x**n, x)
-                if (s1 + o).removeO() == s1:
-                    o = S.Zero
+            cur_order = s1.getO() or S.Zero
+
+            # Now make sure the requested order is returned
+            target_order = Order(x**n, x)
+            ndo = n + 1
+            while not target_order.contains(cur_order):
+                s1 = self._eval_nseries(x, n=ndo, logx=logx)
+                ndo += 1
+                cur_order = s1.getO()
+
+            if (s1 + target_order).removeO() == s1:
+                target_order = S.Zero
 
             try:
-                return collect(s1, x) + o
-            except NotImplementedError:
-                return s1 + o
-
+                return collect(s1.removeO(), x) + target_order
+            except NotImplementedError:  # XXX parse_derivative of radsimp.py
+                return s1 + target_order
         else:  # lseries handling
             def yield_lseries(s):
                 """Return terms of lseries one at a time."""
@@ -2630,17 +2603,12 @@ class Expr(Basic, EvalfMixin):
             yield series - e
             e = series
 
-    def nseries(self, x=None, x0=0, n=6, dir='+', logx=None):
-        """Wrapper to _eval_nseries if assumptions allow, else to series.
+    def nseries(self, x, n=6, logx=None):
+        """Calculate "n" terms of series in x around 0
 
-        If x is given, x0 is 0, dir='+', and self has x, then _eval_nseries is
-        called. This calculates "n" terms in the innermost expressions and
-        then builds up the final series just by "cross-multiplying" everything
-        out.
-
-        The optional ``logx`` parameter can be used to replace any log(x) in the
-        returned series with a symbolic value to avoid evaluating log(x) at 0. A
-        symbol to use in place of log(x) should be provided.
+        This calculates n terms of series in the innermost expressions
+        and then builds up the final series just by "cross-multiplying"
+        everything out.
 
         Advantage -- it's fast, because we don't have to determine how many
         terms we need to calculate in advance.
@@ -2649,80 +2617,73 @@ class Expr(Basic, EvalfMixin):
         expected, but the O(x**n) term appended will always be correct and
         so the result, though perhaps shorter, will also be correct.
 
-        If any of those assumptions is not met, this is treated like a
-        wrapper to series which will try harder to return the correct
-        number of terms.
+        Parameters
+        ==========
+
+        x : Symbol
+            variable for series expansion (positive and finite symbol)
+        n : Integer, optional
+            number of terms to calculate.  Default is 6.
+        logx : Symbol, optional
+            This can be used to replace any log(x) in the returned series
+            with a symbolic value to avoid evaluating log(x) at 0.
 
         See Also
         ========
 
+        series
         lseries
 
         Examples
         ========
 
         >>> from sympy import sin, log, Symbol
-        >>> from sympy.abc import x, y
-        >>> sin(x).nseries(x, 0, 6)
-        x - x**3/6 + x**5/120 + O(x**6)
-        >>> log(x+1).nseries(x, 0, 5)
+        >>> from sympy.abc import x
+        >>> sin(x).nseries(x)
+        x - x**3/6 + x**5/120 + O(x**7)
+        >>> log(x + 1).nseries(x, 5)
         x - x**2/2 + x**3/3 - x**4/4 + O(x**5)
 
         Handling of the ``logx`` parameter --- in the following example the
         expansion fails since ``sin`` does not have an asymptotic expansion
-        at -oo (the limit of log(x) as x approaches 0):
+        at -oo (the limit of log(x) as x approaches 0).
 
         >>> e = sin(log(x))
-        >>> e.nseries(x, 0, 6)
+        >>> e.nseries(x)
         Traceback (most recent call last):
         ...
         PoleError: ...
-        ...
         >>> logx = Symbol('logx')
-        >>> e.nseries(x, 0, 6, logx=logx)
+        >>> e.nseries(x, logx=logx)
         sin(logx)
 
-        In the following example, the expansion works but gives only an Order term
-        unless the ``logx`` parameter is used:
+        Notes
+        =====
 
-        >>> e = x**y
-        >>> e.nseries(x, 0, 2)
-        O(log(x)**2)
-        >>> e.nseries(x, 0, 2, logx=logx)
-        E**(logx*y)
-        """
-        if x and x not in self.free_symbols:
-            return self
-        if x is None or x0 or dir != '+':  # {see XPOS above} or (x.is_positive == x.is_negative == None):
-            return self.series(x, x0, n, dir)
-        else:
-            return self._eval_nseries(x, n=n, logx=logx)
+        This method call the helper method _eval_nseries.  Such methods
+        should be implemented in subclasses.
 
-    def _eval_nseries(self, x, n, logx):
-        """
-        Return series for self up to O(x**n) at x=0 from the positive direction.
+        The series expansion code is an important part of the gruntz
+        algorithm for determining limits. _eval_nseries has to return a
+        generalized power series with coefficients in C(log(x), log)::
 
-        This is a method that should be overridden in subclasses. Users should
-        never call this method directly (use .nseries() instead), so you don't
-        have to write docstrings for _eval_nseries().
-
-        The series expansion code is an important part of the gruntz algorithm
-        for determining limits. _eval_nseries has to return a generalized power
-        series with coefficients in C(log(x), log).
-        In more detail, the result of _eval_nseries(self, x, n) must be
            c_0*x**e_0 + ... (finitely many terms)
-        where e_i are numbers (not necessarily integers) and c_i involve only
-        numbers, the function log, and log(x).  (This also means it must not
-        contain log(x(1+p)), this *has* to be expanded to log(x)+log(1+p)
-        if x.is_positive and p.is_positive.)
+
+        where e_i are numbers (not necessarily integers) and c_i involve
+        only numbers, the function log, and log(x).  (This also means it
+        must not contain log(x(1 + p)), this *has* to be expanded to
+        log(x) + log(1 + p) if p.is_positive.)
         """
-        from sympy.utilities.misc import filldedent
-        raise NotImplementedError(filldedent("""
-                     The _eval_nseries method should be added to
-                     %s to give terms up to O(x**n) at x=0
-                     from the positive direction so it is available when
-                     nseries calls it.""" % self.func)
-                     )
+        from sympy import Dummy, collect
+        if x.is_positive and x.is_finite:
+            series = self._eval_nseries(x, n=n, logx=logx)
+            order = series.getO() or S.Zero
+            return collect(series.removeO(), x) + order
+        else:
+            p = Dummy('x', positive=True, finite=True)
+            e = self.subs(x, p)
+            e = e.nseries(p, n, logx=logx)
+            return e.subs(p, x)
 
     def aseries(self, x, n=6, bound=0, hir=False):
         """Returns asymptotic expansion for "self". See [3]_
@@ -2775,7 +2736,7 @@ class Expr(Basic, EvalfMixin):
         .. [3] http://en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from sympy import Dummy
-        from sympy.series.gruntz import mrv, rewrite, mrv_leadterm
+        from sympy.series.gruntz import mrv, rewrite
         from sympy.functions import exp, log
         from sympy.series import Order
 
@@ -2907,32 +2868,6 @@ class Expr(Basic, EvalfMixin):
             if b == x:
                 return c, e
         return s, S.Zero
-
-    def leadterm(self, x):
-        """Returns the leading term a*x**b as a tuple (a, b).
-
-        Examples
-        ========
-
-        >>> from sympy.abc import x
-        >>> (1+x+x**2).leadterm(x)
-        (1, 0)
-        >>> (1/x**2+x+x**2).leadterm(x)
-        (1, -2)
-        """
-        from sympy import Dummy, log
-        l = self.as_leading_term(x)
-        d = Dummy('logx')
-        if l.has(log(x)):
-            l = l.subs(log(x), d)
-        c, e = l.as_coeff_exponent(x)
-        if x in c.free_symbols:
-            from sympy.utilities.misc import filldedent
-            raise ValueError(filldedent("""
-                cannot compute leadterm(%s, %s). The coefficient
-                should have been free of x but got %s""" % (self, x, c)))
-        c = c.subs(d, log(x))
-        return c, e
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product."""
@@ -3152,11 +3087,6 @@ class Expr(Basic, EvalfMixin):
         from sympy.polys import factor
         return factor(self, *gens, **args)
 
-    def refine(self, assumption=True):
-        """See the refine function in sympy.assumptions"""
-        from sympy.assumptions import refine
-        return refine(self, assumption)
-
     def cancel(self, *gens, **args):
         """See the cancel function in sympy.polys"""
         from sympy.polys import cancel
@@ -3265,8 +3195,6 @@ class AtomicExpr(Atom, Expr):
     """
     is_number = False
     is_Atom = True
-
-    __slots__ = []
 
     def _eval_derivative(self, s):
         if self == s:

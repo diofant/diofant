@@ -384,7 +384,7 @@ def test_dup_from_to_dict():
     assert dup_to_raw_dict(f) == g
     assert dup_to_dict(f) == h
 
-    R, x,y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
     K = R.to_domain()
 
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
@@ -586,7 +586,7 @@ def test_dmp_include():
 
 
 def test_dmp_inject():
-    R, x,y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
     K = R.to_domain()
 
     assert dmp_inject([], 0, K) == ([[[]]], 2)
@@ -604,7 +604,7 @@ def test_dmp_inject():
 
 
 def test_dmp_eject():
-    R, x,y = ring("x,y", ZZ)
+    R,  x, y = ring("x,y", ZZ)
     K = R.to_domain()
 
     assert dmp_eject([[[]]], 2, K) == []

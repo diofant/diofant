@@ -110,9 +110,6 @@ def test_BlockMatrix_trace():
 def test_BlockMatrix_Determinant():
     A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
     X = BlockMatrix([[A, B], [C, D]])
-    from sympy import assuming, Q
-    with assuming(Q.invertible(A)):
-        assert det(X) == det(A) * det(D - C*A.I*B)
 
     assert isinstance(det(X), Expr)
 
@@ -195,7 +192,7 @@ def test_blockcut():
 
 
 def test_reblock_2x2():
-    B = BlockMatrix([[MatrixSymbol('A_%d%d'%(i,j), 2, 2)
+    B = BlockMatrix([[MatrixSymbol('A_%d%d' % (i, j), 2, 2)
                             for j in range(3)]
                             for i in range(3)])
     assert B.blocks.shape == (3, 3)
@@ -208,8 +205,8 @@ def test_reblock_2x2():
 
 
 def test_deblock():
-    B = BlockMatrix([[MatrixSymbol('A_%d%d'%(i,j), n, n)
-                    for j in range(4)]
-                    for i in range(4)])
+    B = BlockMatrix([[MatrixSymbol('A_%d%d' % (i, j), n, n)
+                      for j in range(4)]
+                     for i in range(4)])
 
     assert deblock(reblock_2x2(B)) == B

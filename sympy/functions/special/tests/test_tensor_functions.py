@@ -54,7 +54,7 @@ def test_kronecker_delta():
     assert conjugate(KroneckerDelta(i, j)) == KroneckerDelta(i, j)
     assert transpose(KroneckerDelta(i, j)) == KroneckerDelta(i, j)
     # to test if canonical
-    assert (KroneckerDelta(i, j) == KroneckerDelta(j, i)) == True
+    assert KroneckerDelta(i, j) == KroneckerDelta(j, i)
 
 
 def test_kronecker_delta_secondquant():

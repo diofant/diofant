@@ -83,6 +83,7 @@ from sympy.functions.elementary.complexes import polarify, unpolarify
 from sympy.simplify.powsimp import powdenest
 from sympy.polys import poly, Poly
 from sympy.series import residue
+from sympy.printing import sstr
 
 # function to define "buckets"
 
@@ -217,7 +218,7 @@ def add_formulae(formulae):
                   * exp(-I*pi/4)/(2*root(z, 4)),
                   sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
                                       + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
-                  *exp(-I*pi/4)/2,
+                  * exp(-I*pi/4)/2,
                   1 ]),
          Matrix([[1, 0, 0]]),
          Matrix([[-Rational(1, 4), 1,      Rational(1, 4)],
@@ -227,7 +228,7 @@ def add_formulae(formulae):
     # 2F2
     addb([S.Half, a], [Rational(3, 2), a + 1],
          Matrix([a/(2*a - 1)*(-I)*sqrt(pi/z)*erf(I*sqrt(z)),
-                 a/(2*a - 1)*(polar_lift(-1)*z)**(-a)*
+                 a/(2*a - 1)*(polar_lift(-1)*z)**(-a) *
                  lowergamma(a, polar_lift(-1)*z),
                  a/(2*a - 1)*exp(z)]),
          Matrix([[1, -1, 0]]),
@@ -286,14 +287,14 @@ def add_formulae(formulae):
     addb([a], [a - S.Half, 2*a],
          Matrix([z**(S.Half - a)*besseli(a - S.Half, sqrt(z))**2,
                  z**(1 - a)*besseli(a - S.Half, sqrt(z))
-                 *besseli(a - Rational(3, 2), sqrt(z)),
+                 * besseli(a - Rational(3, 2), sqrt(z)),
                  z**(Rational(3, 2) - a)*besseli(a - Rational(3, 2), sqrt(z))**2]),
          Matrix([[-gamma(a + S.Half)**2/4**(S.Half - a),
                  2*gamma(a - S.Half)*gamma(a + S.Half)/4**(1 - a),
                  0]]),
          Matrix([[1 - 2*a, 1, 0], [z/2, S.Half - a, S.Half], [0, z, 0]]))
     addb([S.Half], [b, 2 - b],
-         pi*(1 - b)/sin(pi*b)*
+         pi*(1 - b)/sin(pi*b) *
          Matrix([besseli(1 - b, sqrt(z))*besseli(b - 1, sqrt(z)),
                  sqrt(z)*(besseli(-b, sqrt(z))*besseli(b - 1, sqrt(z))
                           + besseli(1 - b, sqrt(z))*besseli(b, sqrt(z))),
@@ -386,10 +387,10 @@ def add_formulae(formulae):
                  a*exp(z)/(a**2 - 2*a + 1),
                  a/(z*(a**2 - 2*a + 1))]),
          Matrix([[1-a, 1, -1/z, 1]]),
-         Matrix([[-1,0,-1/z,1],
-                 [0,-a,1,0],
-                 [0,0,z,0],
-                 [0,0,0,-1]]))
+         Matrix([[-1, 0, -1/z, 1],
+                 [0, -a, 1, 0],
+                 [0, 0, z, 0],
+                 [0, 0, 0, -1]]))
 
 
 def add_meijerg_formulae(formulae):
@@ -662,7 +663,7 @@ class G_Function(Expr):
 
 
 # Dummy variable.
-_x = Dummy('x')
+_x = Dummy('dummy_for_hyperexpand')
 
 
 class Formula(object):
@@ -995,7 +996,7 @@ class ShiftA(Operator):
         self._poly = Poly(_x/ai + 1, _x)
 
     def __str__(self):
-        return '<Increment upper %s.>' % (1/self._poly.all_coeffs()[0])
+        return '<Increment upper %s.>' % sstr(1/self._poly.all_coeffs()[0])
 
 
 class ShiftB(Operator):
@@ -1008,7 +1009,7 @@ class ShiftB(Operator):
         self._poly = Poly(_x/(bi - 1) + 1, _x)
 
     def __str__(self):
-        return '<Decrement lower %s.>' % (1/self._poly.all_coeffs()[0] + 1)
+        return '<Decrement lower %s.>' % sstr(1/self._poly.all_coeffs()[0] + 1)
 
 
 class UnShiftA(Operator):
@@ -1048,8 +1049,8 @@ class UnShiftA(Operator):
         self._poly = Poly((n - m)/b0, _x)
 
     def __str__(self):
-        return '<Decrement upper index #%s of %s, %s.>' % (self._i,
-                                                        self._ap, self._bq)
+        return '<Decrement upper index #%s of %s, %s.>' % (sstr(self._i),
+                                                           sstr(self._ap), sstr(self._bq))
 
 
 class UnShiftB(Operator):
@@ -1090,8 +1091,8 @@ class UnShiftB(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment lower index #%s of %s, %s.>' % (self._i,
-                                                        self._ap, self._bq)
+        return '<Increment lower index #%s of %s, %s.>' % (sstr(self._i),
+                                                           sstr(self._ap), sstr(self._bq))
 
 
 class MeijerShiftA(Operator):
@@ -1102,7 +1103,7 @@ class MeijerShiftA(Operator):
         self._poly = Poly(bi - _x, _x)
 
     def __str__(self):
-        return '<Increment upper b=%s.>' % (self._poly.all_coeffs()[1])
+        return '<Increment upper b=%s.>' % sstr(self._poly.all_coeffs()[1])
 
 
 class MeijerShiftB(Operator):
@@ -1113,7 +1114,7 @@ class MeijerShiftB(Operator):
         self._poly = Poly(1 - bi + _x, _x)
 
     def __str__(self):
-        return '<Decrement upper a=%s.>' % (1 - self._poly.all_coeffs()[1])
+        return '<Decrement upper a=%s.>' % sstr(1 - self._poly.all_coeffs()[1])
 
 
 class MeijerShiftC(Operator):
@@ -1124,7 +1125,7 @@ class MeijerShiftC(Operator):
         self._poly = Poly(-bi + _x, _x)
 
     def __str__(self):
-        return '<Increment lower b=%s.>' % (-self._poly.all_coeffs()[1])
+        return '<Increment lower b=%s.>' % sstr(-self._poly.all_coeffs()[1])
 
 
 class MeijerShiftD(Operator):
@@ -1135,7 +1136,7 @@ class MeijerShiftD(Operator):
         self._poly = Poly(bi - 1 - _x, _x)
 
     def __str__(self):
-        return '<Decrement lower a=%s.>' % (self._poly.all_coeffs()[1] + 1)
+        return '<Decrement lower a=%s.>' % sstr(self._poly.all_coeffs()[1] + 1)
 
 
 class MeijerUnShiftA(Operator):
@@ -1180,8 +1181,8 @@ class MeijerUnShiftA(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Decrement upper b index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Decrement upper b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftB(Operator):
@@ -1227,8 +1228,8 @@ class MeijerUnShiftB(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment upper a index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Increment upper a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftC(Operator):
@@ -1278,8 +1279,8 @@ class MeijerUnShiftC(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Decrement lower b index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Decrement lower b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class MeijerUnShiftD(Operator):
@@ -1327,8 +1328,8 @@ class MeijerUnShiftD(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment lower a index #%s of %s, %s, %s, %s.>' % (self._i,
-                                      self._an, self._ap, self._bm, self._bq)
+        return '<Increment lower a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
+                                      sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
 
 
 class ReduceOrder(Operator):
@@ -1341,7 +1342,7 @@ class ReduceOrder(Operator):
         n = ai - bj
         if not n.is_Integer or n < 0:
             return
-        if bj.is_integer and bj <= 0 and bj + n - 1 >= 0:
+        if bj.is_integer and bj <= 0:
             return
 
         expr = Operator.__new__(cls)
@@ -1392,7 +1393,7 @@ class ReduceOrder(Operator):
 
     def __str__(self):
         return '<Reduce order by cancelling upper %s with lower %s.>' % \
-            (self._a, self._b)
+            (sstr(self._a), sstr(self._b))
 
 
 def _reduce_order(ap, bq, gen, key):
@@ -1522,10 +1523,10 @@ def devise_plan(target, origin, z):
     Very simple plans:
 
     >>> for i in devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z):
-    ...     print(i)
+    ...     i
     <Increment upper 1.>
     >>> for i in devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z):
-    ...     print(i)
+    ...     i
     <Increment lower index #0 of [], [1].>
 
     Several buckets:
@@ -1533,21 +1534,21 @@ def devise_plan(target, origin, z):
     >>> from sympy import S
     >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
     ...             Hyper_Function((2, Rational(3, 2)), ()), z):
-    ...     print(i)
+    ...     i
     <Decrement upper index #0 of [3/2, 1], [].>
     <Decrement upper index #0 of [2, 3/2], [].>
 
     A slightly more complicated plan:
 
     >>> for i in devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z):
-    ...     print(i)
+    ...     i
     <Increment upper 2.>
     <Decrement upper index #0 of [2, 2], [].>
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
     >>> for i in devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z):
-    ...     print(i)
+    ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>
     <Decrement upper index #1 of [-1, 2], [4].>
@@ -1705,7 +1706,7 @@ def try_polynomial(func, z):
     al0 = [x for x in a0 if x <= 0]
     bl0 = [x for x in b0 if x <= 0]
 
-    if bl0:
+    if bl0 and len(al0) <= 1:
         return oo
     if not al0:
         return
@@ -1944,10 +1945,10 @@ def hyperexpand_special(ap, bq, z):
             # Kummer
             if b.is_integer and b.is_negative:
                 return 2*cos(pi*b/2)*gamma(-b)*gamma(b - a + 1) \
-                    /gamma(-b/2)/gamma(b/2 - a + 1)
+                    / gamma(-b/2)/gamma(b/2 - a + 1)
             else:
                 return gamma(b/2 + 1)*gamma(b - a + 1) \
-                    /gamma(b + 1)/gamma(b/2 - a + 1)
+                    / gamma(b + 1)/gamma(b/2 - a + 1)
     # TODO tons of more formulae
     #      investigate what algorithms exist
     return hyper(ap, bq, z_)

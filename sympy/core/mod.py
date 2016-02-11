@@ -1,3 +1,4 @@
+from .singleton import S
 from .numbers import nan
 from .function import Function
 
@@ -59,7 +60,7 @@ class Mod(Function):
             else:
                 if type(d) is int:
                     rv = p - d*q
-                    if (rv*q < 0) == True:
+                    if (rv*q < 0) is S.true:
                         rv += q
                     return rv
 

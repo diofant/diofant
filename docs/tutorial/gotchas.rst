@@ -163,15 +163,14 @@ If you want control over the assumptions of the variables, use
 
 Lastly, it is recommended that you not use :class:`I <sympy.core.numbers.ImaginaryUnit>`,
 :class:`E <sympy.core.numbers.Exp1>`, :class:`~sympy.core.singleton.S`,
-:func:`~sympy.core.evalf.N`, :class:`O <sympy.series.order.Order>`,
-or :obj:`~sympy.assumptions.ask.Q` for variable or symbol names, as those
+:func:`~sympy.core.evalf.N`, or :class:`O <sympy.series.order.Order>`,
+for variable or symbol names, as those
 are used for the imaginary unit (:math:`i`), the base of the natural
 logarithm (:math:`e`), the :func:`~sympy.core.sympify.sympify` function (see :ref:`Symbolic
 Expressions<symbolic-expressions>` below), numeric evaluation (:func:`~sympy.core.evalf.N`
 is equivalent to :ref:`evalf()<evalf-label>` ),
 the `big O <http://en.wikipedia.org/wiki/Big_O_notation>`_ order symbol
-(as in :math:`O(n\log{n})`), and the assumptions object that holds a list of
-supported ask keys (such as :ref:`Q.real <new-assumptions-real>`), respectively.  You can use the
+(as in :math:`O(n\log{n})`).  You can use the
 mnemonic ``QCOSINE`` to remember what Symbols are defined by default in SymPy.
 Or better yet, always use lowercase letters for Symbol names.  Python will
 not prevent you from overriding default SymPy names or functions, so be
@@ -329,7 +328,7 @@ you don't have to worry about this problem:
     Rational.
 
     >>> x = Symbol('x')
-    >>> print(solve(7*x - 22, x))
+    >>> solve(7*x - 22, x)
     [22/7]
     >>> 22/7  # After copy and paste we get a float
     3.142857142857143
@@ -449,7 +448,7 @@ unsimplified trig identity, multiplied by a big number:
     >>> big = 12345678901234567890
     >>> big_trig_identity = big*cos(x)**2 + big*sin(x)**2 - big*1
     >>> abs(big_trig_identity.subs(x, .1).n(2)) > 1000
-    True
+    true
 
 When the `\cos` and `\sin` terms were evaluated to 15 digits of precision and
 multiplied by the big number, they gave a large number that was only

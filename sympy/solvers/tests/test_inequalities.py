@@ -109,7 +109,7 @@ def test_reduce_poly_inequalities_complex_relational():
     assert reduce_rational_inequalities(
         [[Le(x**2, 0)]], x, relational=True) == Eq(x, 0)
     assert reduce_rational_inequalities(
-        [[Lt(x**2, 0)]], x, relational=True) == False
+        [[Lt(x**2, 0)]], x, relational=True) is False
     assert reduce_rational_inequalities(
         [[Ge(x**2, 0)]], x, relational=True) == And(Lt(-oo, x), Lt(x, oo))
     assert reduce_rational_inequalities(
@@ -144,7 +144,7 @@ def test_reduce_poly_inequalities_complex_relational():
 
 
 def test_reduce_rational_inequalities_real_relational():
-    assert reduce_rational_inequalities([], x) == False
+    assert reduce_rational_inequalities([], x) is False
     assert reduce_rational_inequalities(
         [[(x**2 + 3*x + 2)/(x**2 - 16) >= 0]], x, relational=False) == \
         Union(Interval.open(-oo, -4), Interval(-2, -1), Interval.open(4, oo))
@@ -211,7 +211,7 @@ def test_reduce_inequalities_general():
 def test_reduce_inequalities_boolean():
     assert reduce_inequalities(
         [Eq(x**2, 0), True]) == Eq(x, 0)
-    assert reduce_inequalities([Eq(x**2, 0), False]) == False
+    assert reduce_inequalities([Eq(x**2, 0), False]) is S.false
 
 
 def test_reduce_inequalities_multivariate():
@@ -235,7 +235,7 @@ def test_issue_10203():
     y = Symbol('y', extended_real=True)
     assert reduce_inequalities(Eq(0, x - y), symbols=[x]) == Eq(x, y)
     assert reduce_inequalities(Ne(0, x - y), symbols=[x]) == \
-        Or(And(-oo < x, x < y), And(x < oo, x > y))
+        Or(And(-oo < x, x < y), And(x < oo, y < x))
 
 
 def test_issue_6343():

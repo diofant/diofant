@@ -216,8 +216,8 @@ def test_ccode_Indexed_without_looking_for_contraction():
     y = IndexedBase('y', shape=(len_y,))
     x = IndexedBase('x', shape=(len_y,))
     Dy = IndexedBase('Dy', shape=(len_y-1,))
-    i = Idx('i', len_y-1)
-    e=Eq(Dy[i], (y[i+1]-y[i])/(x[i+1]-x[i]))
+    i = Idx('i', len_y - 1)
+    e = Eq(Dy[i], (y[i + 1] - y[i])/(x[i + 1] - x[i]))
     code0 = ccode(e.rhs, assign_to=e.lhs, contract=False)
     assert code0 == 'Dy[i] = (y[%s] - y[i])/(x[%s] - x[i]);' % (i + 1, i + 1)
 
@@ -402,7 +402,7 @@ def test_dereference_printing():
 
 def test_Matrix_printing():
     # Test returning a Matrix
-    mat = Matrix([x*y, Piecewise((2 + x, y>0), (y, True)), sin(z)])
+    mat = Matrix([x*y, Piecewise((2 + x, y > 0), (y, True)), sin(z)])
     A = MatrixSymbol('A', 3, 1)
     assert ccode(mat, A) == (
         "A[0] = x*y;\n"
@@ -425,9 +425,9 @@ def test_Matrix_printing():
     # Test using MatrixElements in a Matrix
     q = MatrixSymbol('q', 5, 1)
     M = MatrixSymbol('M', 3, 3)
-    m = Matrix([[sin(q[1,0]), 0, cos(q[2,0])],
-        [q[1,0] + q[2,0], q[3, 0], 5],
-        [2*q[4, 0]/q[1,0], sqrt(q[0,0]) + 4, 0]])
+    m = Matrix([[sin(q[1, 0]), 0, cos(q[2, 0])],
+                [q[1, 0] + q[2, 0], q[3, 0], 5],
+                [2*q[4, 0]/q[1, 0], sqrt(q[0, 0]) + 4, 0]])
     assert ccode(m, M) == (
         "M[0] = sin(q[1]);\n"
         "M[1] = 0;\n"

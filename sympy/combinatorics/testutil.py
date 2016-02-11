@@ -188,7 +188,7 @@ def _verify_normal_closure(group, arg, closure=None):
         subgr_gens = [arg]
     for el in group.generate_dimino():
         for gen in subgr_gens:
-            conjugates.add(gen^el)
+            conjugates.add(gen ^ el)
     naive_closure = PermutationGroup(list(conjugates))
     return closure.is_subgroup(naive_closure)
 

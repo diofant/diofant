@@ -3,9 +3,9 @@ import collections
 import pytest
 
 from sympy import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
-                   PurePoly, Rational, S, Symbol, cos, exp, oo, pi,
+                   PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
                    signsimp, simplify, sin, sqrt, symbols, sympify,
-                   trigsimp, sstr)
+                   trigsimp, sstr, Function)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
                                      NonSquareMatrixError, DeferredVector)
 from sympy.matrices import (
@@ -88,7 +88,7 @@ def test_fancy_index_matrix():
             [3, 4, 5],
             [6, 7, 8],
             [3, 4, 5]])
-        assert a[:, [0,2,1,2,1]] == Matrix([
+        assert a[:, [0, 2, 1, 2, 1]] == Matrix([
             [0, 2, 1, 2, 1],
             [3, 5, 4, 5, 4],
             [6, 8, 7, 8, 7]])
@@ -883,7 +883,8 @@ def test_subs():
 
 
 def test_simplify():
-    f, n = symbols('f, n')
+    n = Symbol('n')
+    f = Function('f')
 
     m = Matrix([[1, x], [x + 1/x, x - 1]])
     m = m.row_join(eye(m.cols))
@@ -2173,10 +2174,10 @@ def test_is_Identity():
     # issue 6242
     assert not Matrix([[1, 0, 0]]).is_Identity
     # issue 8854
-    assert SparseMatrix(3,3, {(0,0):1, (1,1):1, (2,2):1}).is_Identity
-    assert not SparseMatrix(2,3, range(6)).is_Identity
-    assert not SparseMatrix(3,3, {(0,0):1, (1,1):1}).is_Identity
-    assert not SparseMatrix(3,3, {(0,0):1, (1,1):1, (2,2):1, (0,1):2, (0,2):3}).is_Identity
+    assert SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1, (2, 2): 1}).is_Identity
+    assert not SparseMatrix(2, 3, range(6)).is_Identity
+    assert not SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1}).is_Identity
+    assert not SparseMatrix(3, 3, {(0, 0): 1, (1, 1): 1, (2, 2): 1, (0, 1): 2, (0, 2): 3}).is_Identity
 
 
 def test_dot():
@@ -2336,7 +2337,7 @@ def test_replace_map():
 def test_atoms():
     from sympy.abc import x
     m = Matrix([[1, 2], [x, 1 - 1/x]])
-    assert m.atoms() == {Integer(1),Integer(2),Integer(-1), x}
+    assert m.atoms() == {Integer(1), Integer(2), Integer(-1), x}
     assert m.atoms(Symbol) == {x}
 
 
@@ -2379,7 +2380,7 @@ def test_pinv_solve():
     B = Matrix([5, 7])
     solution = A.pinv_solve(B)
     w = {}
-    for s in solution.atoms(Symbol):
+    for s in solution.atoms(Dummy, Symbol):
         # Extract dummy symbols used in the solution.
         w[s.name] = s
     assert solution == Matrix([[w['w0_0']/3 + w['w1_0']/3 - w['w2_0']/3 + 1],

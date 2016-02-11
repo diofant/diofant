@@ -8,7 +8,7 @@ from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
 from sympy.functions.elementary.trigonometric import tan
 from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
                             Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection,
+                            are_similar, convex_hull, intersection, Point2D,
                             Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
 from sympy.geometry.line import Undecidable
 from sympy.geometry.entity import rotate, scale, translate
@@ -296,7 +296,7 @@ def test_ellipse_geom():
     e2 = Ellipse(Point(x, y), 4, 8)
     c = sqrt(3991)
     ans = [Point(-c/68 + a, 2*c/17 + a/2), Point(c/68 + a, -2*c/17 + a/2)]
-    assert [p.subs({x: 2, y:1}) for p in e1.intersection(e2)] == ans
+    assert [p.subs({x: 2, y: 1}) for p in e1.intersection(e2)] == ans
 
     # Combinations of above
     assert e3.is_tangent(e3.tangent_lines(p1 + Point(y1, 0))[0])
@@ -361,7 +361,7 @@ def test_polygon():
         Point(-15, 33/5), Point(-15, -87/10), Point(-15, -15),
         Point(-42/5, -15), Point(-2, -15), Point(7, -15), Point(15, -15),
         Point(15, -3), Point(15, 10), Point(15, 15)) == \
-        Polygon(Point(-15,-15), Point(15,-15), Point(15,15), Point(-15,15))
+        Polygon(Point(-15, -15), Point(15, -15), Point(15, 15), Point(-15, 15))
 
     p1 = Polygon(
         Point(0, 0), Point(3, -1),
@@ -383,7 +383,7 @@ def test_polygon():
     p6 = Polygon(
         Point(-11, 1), Point(-9, 6.6),
         Point(-4, -3), Point(-8.4, -8.7))
-    r = Ray(Point(-9,6.6), Point(-9,5.5))
+    r = Ray(Point(-9, 6.6), Point(-9, 5.5))
     #
     # General polygon
     #
@@ -721,7 +721,7 @@ def test_util():
 
 
 def test_repr():
-    assert repr(Circle((0, 1), 2)) == 'Circle(Point2D(0, 1), 2)'
+    assert repr(Circle((0, 1), 2)) == 'Circle(Point2D(Integer(0), Integer(1)), Integer(2))'
 
 
 def test_transform():
@@ -815,10 +815,17 @@ def test_reflect():
     rpent = pent.reflect(l)
     poly_pent = Polygon(*pent.vertices)
     assert rpent.center == pent.center.reflect(l)
-    assert str([w.n(3) for w in rpent.vertices]) == (
-        '[Point2D(-0.586, 4.27), Point2D(-1.69, 4.66), '
-        'Point2D(-2.41, 3.73), Point2D(-1.74, 2.76), '
-        'Point2D(-0.616, 3.10)]')
+    assert [w.n(3) for w in rpent.vertices] == \
+        [Point2D(Float('-0.585815', prec=3),
+                 Float('4.27051', prec=3)),
+         Point2D(Float('-1.69409', prec=3),
+                 Float('4.66211', prec=3)),
+         Point2D(Float('-2.40918', prec=3),
+                 Float('3.72949', prec=3)),
+         Point2D(Float('-1.74292', prec=3),
+                 Float('2.76123', prec=3)),
+         Point2D(Float('-0.615967', prec=3),
+                 Float('3.0957', prec=3))]
     assert pent.area.equals(-rpent.area)
 
 

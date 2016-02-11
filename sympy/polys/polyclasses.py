@@ -1,12 +1,11 @@
 """OO layer for several polynomial representations. """
 
 from sympy.core.sympify import CantSympify
-from sympy.polys.polyutils import PicklableWithSlots
 from sympy.polys.polyerrors import CoercionFailed, NotReversible
 from sympy import oo
 
 
-class GenericPoly(PicklableWithSlots):
+class GenericPoly(object):
     """Base class for low-level polynomial representations. """
 
     def ground_to_ring(f):
@@ -138,10 +137,8 @@ def init_normal_DMP(rep, lev, dom):
     return DMP(dmp_normal(rep, lev, dom), dom, lev)
 
 
-class DMP(PicklableWithSlots, CantSympify):
+class DMP(CantSympify):
     """Dense Multivariate Polynomials over `K`. """
-
-    __slots__ = ['rep', 'lev', 'dom', 'ring']
 
     def __init__(self, rep, dom, lev=None, ring=None):
         if lev is not None:
@@ -1025,10 +1022,8 @@ def init_normal_DMF(num, den, lev, dom):
                dmp_normal(den, lev, dom), dom, lev)
 
 
-class DMF(PicklableWithSlots, CantSympify):
+class DMF(CantSympify):
     """Dense Multivariate Fractions over `K`. """
-
-    __slots__ = ['num', 'den', 'lev', 'dom', 'ring']
 
     def __init__(self, rep, dom, lev=None, ring=None):
         num, den, lev = self._parse(rep, dom, lev)
@@ -1470,10 +1465,8 @@ def init_normal_ANP(rep, mod, dom):
                dup_normal(mod, dom), dom)
 
 
-class ANP(PicklableWithSlots, CantSympify):
+class ANP(CantSympify):
     """Dense Algebraic Number Polynomials over a field. """
-
-    __slots__ = ['rep', 'mod', 'dom']
 
     def __init__(self, rep, mod, dom):
         if type(rep) is dict:

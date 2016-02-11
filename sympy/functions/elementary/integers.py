@@ -4,7 +4,7 @@ from sympy.core import Add
 from sympy.core.evalf import PrecisionExhausted
 from sympy.core.numbers import Integer
 from sympy.core.relational import Gt, Lt, Ge, Le
-from sympy.core.symbol import Symbol
+from sympy.core.symbol import Dummy, Symbol
 
 
 ###############################################################################
@@ -39,7 +39,7 @@ class RoundFunction(Function):
         for t in terms:
             if t.is_integer or (t.is_imaginary and im(t).is_integer):
                 ipart += t
-            elif t.has(Symbol):
+            elif t.has(Dummy, Symbol):
                 spart += t
             else:
                 npart += t
@@ -154,6 +154,9 @@ class floor(RoundFunction):
         if self.args[0] == other and other.is_extended_real:
             return S.false
         return Gt(self, other, evaluate=False)
+
+    def _eval_as_leading_term(self, arg):
+        return self
 
 
 class ceiling(RoundFunction):

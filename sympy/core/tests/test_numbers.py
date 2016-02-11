@@ -710,21 +710,21 @@ def test_Infinity_inequations():
     pytest.raises(TypeError, lambda: I >= -oo)
 
     assert oo > -oo and oo >= -oo
-    assert (oo < -oo) == False and (oo <= -oo) == False
+    assert (oo < -oo) is S.false and (oo <= -oo) is S.false
     assert -oo < oo and -oo <= oo
-    assert (-oo > oo) == False and (-oo >= oo) == False
+    assert (-oo > oo) is S.false and (-oo >= oo) is S.false
 
-    assert (oo < oo) == False  # issue 7775
-    assert (oo > oo) == False
-    assert (-oo > -oo) == False and (-oo < -oo) == False
+    assert (oo < oo) is S.false  # issue 7775
+    assert (oo > oo) is S.false
+    assert (-oo > -oo) is S.false and (-oo < -oo) is S.false
     assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
 
     x = Symbol('x')
     b = Symbol('b', finite=True, extended_real=True)
     assert (x < oo) == Lt(x, oo)  # issue 7775
     assert b < oo and b > -oo and b <= oo and b >= -oo
-    assert oo > b and oo >= b and (oo < b) == False and (oo <= b) == False
-    assert (-oo > b) == False and (-oo >= b) == False and -oo < b and -oo <= b
+    assert oo > b and oo >= b and (oo < b) is S.false and (oo <= b) is S.false
+    assert (-oo > b) is S.false and (-oo >= b) is S.false and -oo < b and -oo <= b
     assert (oo < x) == Lt(oo, x) and (oo > x) == Gt(oo, x)
     assert (oo <= x) == Le(oo, x) and (oo >= x) == Ge(oo, x)
     assert (-oo < x) == Lt(-oo, x) and (-oo > x) == Gt(-oo, x)
@@ -836,9 +836,9 @@ def test_powers_Integer():
     """Test Integer._eval_power"""
     # check infinity
     assert Integer(1) ** S.Infinity == S.NaN
-    assert Integer(-1)** S.Infinity == S.NaN
+    assert Integer(-1) ** S.Infinity == S.NaN
     assert Integer(2) ** S.Infinity == S.Infinity
-    assert Integer(-2)** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
+    assert Integer(-2) ** S.Infinity == S.Infinity + S.Infinity * S.ImaginaryUnit
     assert Integer(0) ** S.Infinity == 0
 
     # check Nan

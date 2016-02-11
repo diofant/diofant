@@ -5,9 +5,8 @@ from decorator import decorator
 
 # TODO: refactor CACHE & friends into class?
 
-# global cache registry:
-CACHE = []  # [] of
-            #    (item, {} or tuple of {})
+# global cache registry: [] of (item, {} or tuple of {})
+CACHE = []
 
 
 def print_cache():
@@ -17,9 +16,10 @@ def print_cache():
         item = str(item)
         head = '='*len(item)
 
-        print(head)
-        print(item)
-        print(head)
+        if cache:
+            print(head)
+            print(item)
+            print(head)
 
         if not isinstance(cache, tuple):
             cache = (cache,)

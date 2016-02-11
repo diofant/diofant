@@ -241,6 +241,8 @@ def limitinf(e, x):
         return s*S.Infinity
     elif sig == 0:
         return limitinf(c0, x)
+    else:
+        raise NotImplementedError('Result depends on the sign of %s' % sig)
 
 
 @cacheit

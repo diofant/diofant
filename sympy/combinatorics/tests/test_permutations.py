@@ -342,10 +342,13 @@ def test_args():
     assert Permutation(3).list(-1) == []
     assert Permutation(5)(1, 2).list(-1) == [0, 2, 1]
     assert Permutation(5)(1, 2).list() == [0, 2, 1, 3, 4, 5]
+
+    # enclosing brackets needed
     pytest.raises(TypeError, lambda: Permutation([1, 2], [0]))
-           # enclosing brackets needed
+
+    # enclosing brackets needed on 0
     pytest.raises(ValueError, lambda: Permutation([[1, 2], 0]))
-           # enclosing brackets needed on 0
+
     pytest.raises(ValueError, lambda: Permutation([1, 1, 0]))
     pytest.raises(ValueError, lambda: Permutation([[1], [1, 2]]))
     pytest.raises(ValueError, lambda: Permutation([4, 5], size=10))  # where are 0-3?
@@ -355,8 +358,8 @@ def test_args():
 
 def test_Cycle():
     assert str(Cycle()) == 'Cycle()'
-    assert Cycle(Cycle(1,2)) == Cycle(1, 2)
-    assert Cycle(1,2).copy() == Cycle(1,2)
+    assert Cycle(Cycle(1, 2)) == Cycle(1, 2)
+    assert Cycle(1, 2).copy() == Cycle(1, 2)
     assert list(Cycle(1, 3, 2)) == [0, 3, 1, 2]
     assert Cycle(1, 2)(2, 3) == Cycle(1, 3, 2)
     assert Cycle(1, 2)(2, 3)(4, 5) == Cycle(1, 3, 2)(4, 5)

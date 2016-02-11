@@ -165,7 +165,7 @@ def deltaproduct(f, limit):
     """
     from sympy.concrete.products import product
 
-    if ((limit[2] - limit[1]) < 0) == True:
+    if ((limit[2] - limit[1]) < 0) is S.true:
         return S.One
 
     if not f.has(KroneckerDelta):
@@ -264,9 +264,9 @@ def deltasummation(f, limit, no_piecewise=False):
     >>> deltasummation(KroneckerDelta(i, k), (k, -oo, oo))
     1
     >>> deltasummation(KroneckerDelta(i, k), (k, 0, oo))
-    Piecewise((1, 0 <= i), (0, True))
+    Piecewise((1, 0 <= i), (0, true))
     >>> deltasummation(KroneckerDelta(i, k), (k, 1, 3))
-    Piecewise((1, And(1 <= i, i <= 3)), (0, True))
+    Piecewise((1, And(1 <= i, i <= 3)), (0, true))
     >>> deltasummation(k*KroneckerDelta(i, j)*KroneckerDelta(j, k), (k, -oo, oo))
     j*KroneckerDelta(i, j)
     >>> deltasummation(j*KroneckerDelta(i, j), (j, -oo, oo))
@@ -284,7 +284,7 @@ def deltasummation(f, limit, no_piecewise=False):
     from sympy.concrete.summations import summation
     from sympy.solvers import solve
 
-    if ((limit[2] - limit[1]) < 0) == True:
+    if ((limit[2] - limit[1]) < 0) is S.true:
         return S.Zero
 
     if not f.has(KroneckerDelta):

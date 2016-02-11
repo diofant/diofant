@@ -240,11 +240,11 @@ def power_rule(integral):
     integrand, symbol = integral
     base, exp = integrand.as_base_exp()
 
-    if symbol not in exp.free_symbols and isinstance(base, sympy.Symbol):
+    if symbol not in exp.free_symbols and isinstance(base, (sympy.Dummy, sympy.Symbol)):
         if sympy.simplify(exp + 1) == 0:
             return ReciprocalRule(base, integrand, symbol)
         return PowerRule(base, exp, integrand, symbol)
-    elif symbol not in base.free_symbols and isinstance(exp, sympy.Symbol):
+    elif symbol not in base.free_symbols and isinstance(exp, (sympy.Dummy, sympy.Symbol)):
         rule = ExpRule(base, exp, integrand, symbol)
 
         if sympy.log(base).is_nonzero:
@@ -260,7 +260,7 @@ def power_rule(integral):
 
 def exp_rule(integral):
     integrand, symbol = integral
-    if isinstance(integrand.args[0], sympy.Symbol):
+    if isinstance(integrand.args[0], (sympy.Dummy, sympy.Symbol)):
         return ExpRule(sympy.E, integrand.args[0], integrand, symbol)
 
 
@@ -372,7 +372,7 @@ def _parts_rule(integrand, symbol):
                 args = [arg for arg in integrand.args
                         if any(isinstance(arg, cls) for cls in functions)]
                 if args:
-                    u = reduce(lambda a,b: a*b, args)
+                    u = reduce(lambda a, b: a*b, args)
                     dv = integrand / u
                     return u, dv
 
@@ -479,7 +479,7 @@ def trig_rule(integral):
     if isinstance(integrand, sympy.sin) or isinstance(integrand, sympy.cos):
         arg = integrand.args[0]
 
-        if not isinstance(arg, sympy.Symbol):
+        if not isinstance(arg, (sympy.Dummy, sympy.Symbol)):
             return  # perhaps a substitution can deal with it
 
         if isinstance(integrand, sympy.sin):
@@ -680,7 +680,7 @@ def trig_tansec_rule(integral):
         match = integrand.match(pattern)
 
         if match:
-            a, b, m, n = match.get(a, 0),match.get(b, 0), match.get(m, 0), match.get(n, 0)
+            a, b, m, n = match.get(a, 0), match.get(b, 0), match.get(m, 0), match.get(n, 0)
             return multiplexer({
                 tansec_tanodd_condition: tansec_tanodd,
                 tansec_seceven_condition: tansec_seceven,
@@ -701,7 +701,7 @@ def trig_cotcsc_rule(integral):
         match = integrand.match(pattern)
 
         if match:
-            a, b, m, n = match.get(a, 0),match.get(b, 0), match.get(m, 0), match.get(n, 0)
+            a, b, m, n = match.get(a, 0), match.get(b, 0), match.get(m, 0), match.get(n, 0)
             return multiplexer({
                 cotcsc_cotodd_condition: cotcsc_cotodd,
                 cotcsc_csceven_condition: cotcsc_csceven
@@ -888,21 +888,16 @@ def integral_steps(integrand, symbol, **options):
     >>> from sympy.abc import x
     >>> print(repr(integral_steps(exp(x) / (1 + exp(2 * x)), x))) \
     # doctest: +NORMALIZE_WHITESPACE
-    URule(u_var=_u, u_func=E**x, constant=1,
-        substep=ArctanRule(context=1/(_u**2 + 1), symbol=_u),
-        context=E**x/(E**(2*x) + 1), symbol=x)
+    URule(u_var=Dummy('u'), u_func=Pow(E, Symbol('x')), constant=Integer(1),
+        substep=ArctanRule(context=Pow(Add(Pow(Dummy('u'), Integer(2)), Integer(1)), Integer(-1)),
+                           symbol=Dummy('u')),
+        context=Mul(Pow(E, Symbol('x')), Pow(Add(Pow(E, Mul(Integer(2), Symbol('x'))),
+                                                 Integer(1)),
+                                             Integer(-1))),
+        symbol=Symbol('x'))
     >>> print(repr(integral_steps(sin(x), x))) \
     # doctest: +NORMALIZE_WHITESPACE
-    TrigRule(func='sin', arg=x, context=sin(x), symbol=x)
-    >>> print(repr(integral_steps((x**2 + 3)**2 , x))) \
-    # doctest: +NORMALIZE_WHITESPACE
-    RewriteRule(rewritten=x**4 + 6*x**2 + 9,
-    substep=AddRule(substeps=[PowerRule(base=x, exp=4, context=x**4, symbol=x),
-        ConstantTimesRule(constant=6, other=x**2,
-            substep=PowerRule(base=x, exp=2, context=x**2, symbol=x),
-                context=6*x**2, symbol=x),
-        ConstantRule(constant=9, context=9, symbol=x)],
-    context=x**4 + 6*x**2 + 9, symbol=x), context=(x**2 + 3)**2, symbol=x)
+    TrigRule(func='sin', arg=Symbol('x'), context=sin(Symbol('x')), symbol=Symbol('x'))
 
     Returns
     =======
@@ -934,7 +929,7 @@ def integral_steps(integrand, symbol, **options):
         elif symbol not in integrand.free_symbols:
             return sympy.Number
         else:
-            for cls in (sympy.Pow, sympy.Symbol, sympy.log,
+            for cls in (sympy.Pow, sympy.Dummy, sympy.Symbol, sympy.log,
                         sympy.Add, sympy.Mul, sympy.atan, sympy.asin, sympy.acos, sympy.Heaviside):
                 if isinstance(integrand, cls):
                     return cls
@@ -948,6 +943,7 @@ def integral_steps(integrand, symbol, **options):
     result = do_one([
         null_safe(switch(key, {
             sympy.Pow: do_one([null_safe(power_rule), null_safe(inverse_trig_rule)]),
+            sympy.Dummy: power_rule,
             sympy.Symbol: power_rule,
             sympy.Add: add_rule,
             sympy.Mul: do_one([null_safe(mul_rule), null_safe(trig_product_rule),

@@ -45,8 +45,8 @@ def test_gosper_sum():
     assert gosper_sum(
         n*(n + a + b)*a**n*b**n/(factorial(n + a)*factorial(n + b)),
         (n, 0, m)).rewrite(factorial) == \
-        -a*b*(a**m*b**m*factorial(a)*
-        factorial(b) - factorial(a + m)*factorial(b + m))/(factorial(a)*
+        -a*b*(a**m*b**m*factorial(a) *
+        factorial(b) - factorial(a + m)*factorial(b + m))/(factorial(a) *
         factorial(b)*factorial(a + m)*factorial(b + m))
 
 
@@ -61,7 +61,7 @@ def test_gosper_sum_indefinite():
 
 def test_gosper_sum_parametric():
     assert gosper_sum(binomial(Rational(1, 2), m - j + 1)*binomial(Rational(1, 2), m + j), (j, 1, n)) == \
-        n*(1 + m - n)*(-1 + 2*m + 2*n)*binomial(Rational(1, 2), 1 + m - n)* \
+        n*(1 + m - n)*(-1 + 2*m + 2*n)*binomial(Rational(1, 2), 1 + m - n) * \
         binomial(Rational(1, 2), m + n)/(m*(1 + 2*m))
 
 
@@ -106,7 +106,7 @@ def test_gosper_sum_AeqB_part1():
         3*m + 2)/(40*27**m*factorial(m)*factorial(m + 1)*factorial(m + 2))
     g1f = (2*m + 1)**2*binomial(2*m, m)**2/(4**(2*m)*(m + 1))
     g1g = -binomial(2*m, m)**2/4**(2*m)
-    g1h = 4*pi -(2*m + 1)**2*(3*m + 4)*factorial(m - Rational(1, 2))**2/factorial(m + 1)**2
+    g1h = 4*pi - (2*m + 1)**2*(3*m + 4)*factorial(m - Rational(1, 2))**2/factorial(m + 1)**2
 
     g = gosper_sum(f1a, (n, 0, m))
     assert g is not None and simplify(g - g1a) == 0
@@ -167,7 +167,7 @@ def test_gosper_sum_AeqB_part3():
     f3d = n**2*4**n/((n + 1)*(n + 2))
     f3e = 2**n/(n + 1)
     f3f = 4*(n - 1)*(n**2 - 2*n - 1)/(n**2*(n + 1)**2*(n - 2)**2*(n - 3)**2)
-    f3g = (n**4 - 14*n**2 - 24*n - 9)*2**n/(n**2*(n + 1)**2*(n + 2)**2*
+    f3g = (n**4 - 14*n**2 - 24*n - 9)*2**n/(n**2*(n + 1)**2*(n + 2)**2 *
            (n + 3)**2)
 
     # g3a -> no closed form

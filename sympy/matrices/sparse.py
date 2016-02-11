@@ -178,7 +178,7 @@ class SparseMatrix(MatrixBase):
         col
         row_list
         """
-        return self[i,:]
+        return self[i, :]
 
     def col(self, j):
         """Returns column j from self as a column vector.

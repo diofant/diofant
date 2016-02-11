@@ -895,10 +895,10 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     _, s = _get_coeff_exp(po, x)
     _, b1 = _get_coeff_exp(g1.argument, x)
     _, b2 = _get_coeff_exp(g2.argument, x)
-    if (b1 < 0) == True:
+    if (b1 < 0) is S.true:
         b1 = -b1
         g1 = _flip_g(g1)
-    if (b2 < 0) == True:
+    if (b2 < 0) is S.true:
         b2 = -b2
         g2 = _flip_g(g2)
     if not b1.is_Rational or not b2.is_Rational:
@@ -1049,7 +1049,7 @@ def _check_antecedents(g1, g2, x):
         lambda_c = (q - p)*abs(omega)**(1/(q - p))*cos(psi) \
             + (v - u)*abs(sigma)**(1/(v - u))*cos(theta)
         # the TypeError might be raised here, e.g. if lambda_c is NaN
-        if _eval_cond(lambda_c > 0) != False:
+        if _eval_cond(lambda_c > 0) is not S.false:
             c15 = (lambda_c > 0)
         else:
             def lambda_s0(c1, c2):
@@ -1167,7 +1167,7 @@ def _check_antecedents(g1, g2, x):
     # Let's short-circuit if this worked ...
     # the rest is corner-cases and terrible to read.
     r = Or(*conds)
-    if _eval_cond(r) != False:
+    if _eval_cond(r) is not S.false:
         return r
 
     conds += [And(m + n > p, Eq(t, 0), Eq(phi, 0), s.is_positive is True, bstar.is_positive is True, cstar.is_negative is True,
@@ -1457,7 +1457,7 @@ def _rewrite_single(f, x, recursive=True):
                     continue
                 if not isinstance(cond, (bool, BooleanAtom)):
                     cond = unpolarify(cond.subs(subs))
-                if _eval_cond(cond) == False:
+                if _eval_cond(cond) is S.false:
                     continue
                 if not isinstance(terms, list):
                     terms = terms(subs)
@@ -1544,7 +1544,7 @@ def _rewrite_single(f, x, recursive=True):
         res += [(c, 0, meijerg(g.an, g.aother, g.bm, g.bother,
                                unpolarify(polarify(
                                    a, lift=True), exponents_only=True)
-                               *x**b))]
+                               * x**b))]
     _debug('Recursive Mellin transform worked:', g)
     return res, True
 
@@ -1665,7 +1665,7 @@ def _meijerint_indefinite_1(f, x):
 
         def tr(p):
             return [a + rho + 1 for a in p]
-        if any(b.is_integer and (b <= 0) == True for b in tr(g.bm)):
+        if any(b.is_integer and (b <= 0) is S.true for b in tr(g.bm)):
             r = -meijerg(
                 tr(g.an), tr(g.aother) + [1], tr(g.bm) + [0], tr(g.bother), t)
         else:
@@ -1729,7 +1729,7 @@ def meijerint_definite(f, x, a, b):
     >>> from sympy import exp, oo
     >>> from sympy.abc import x
     >>> meijerint_definite(exp(-x**2), x, -oo, oo)
-    (sqrt(pi), True)
+    (sqrt(pi), true)
 
     This function is implemented as a succession of functions
     meijerint_definite, _meijerint_definite_2, _meijerint_definite_3,
@@ -1807,10 +1807,10 @@ def meijerint_definite(f, x, a, b):
     else:
         if b == oo:
             for split in _find_splitting_points(f, x):
-                if (a - split >= 0) == True:
+                if (a - split >= 0) is S.true:
                     _debug('Trying x -> x + %s' % split)
                     res = _meijerint_definite_2(f.subs(x, x + split)
-                                                *Heaviside(x + split - a), x)
+                                                * Heaviside(x + split - a), x)
                     if res:
                         if _has(res[0], meijerg):
                             results.append(res)
@@ -1914,7 +1914,7 @@ def _meijerint_definite_3(f, x):
     integral. If this fails, it tries using linearity.
     """
     res = _meijerint_definite_4(f, x)
-    if res and res[1] != False:
+    if res and res[1] is not S.false:
         return res
     if f.is_Add:
         _debug('Expanding and evaluating all terms.')

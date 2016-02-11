@@ -256,13 +256,13 @@ class Polyhedron(Basic):
         represent it in a way that helps to visualize the Rubik's cube.
 
         >>> from sympy.utilities.iterables import flatten, unflatten
-        >>> from sympy import symbols
+        >>> from sympy import symbols, sstr
         >>> from sympy.combinatorics import RubikGroup
         >>> facelets = flatten([symbols(s+'1:5') for s in 'UFRBLD'])
         >>> def show():
         ...     pairs = unflatten(r2.corners, 2)
-        ...     print(pairs[::2])
-        ...     print(pairs[1::2])
+        ...     print(sstr(pairs[::2]))
+        ...     print(sstr(pairs[1::2]))
         ...
         >>> r2 = Polyhedron(facelets, pgroup=RubikGroup(2))
         >>> show()

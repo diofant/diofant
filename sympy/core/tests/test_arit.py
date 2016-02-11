@@ -1607,7 +1607,7 @@ def test_Mod_is_integer():
 def test_Mod_is_nonposneg():
     n = Symbol('n', integer=True)
     k = Symbol('k', integer=True, positive=True)
-    assert (n%3).is_nonnegative
+    assert (n % 3).is_nonnegative
     assert Mod(n, -3).is_nonpositive
     assert Mod(n, k).is_nonnegative
     assert Mod(n, -k).is_nonpositive
@@ -1704,7 +1704,7 @@ def test_add_flatten():
 def test_omgissue_31():
     assert sin(x + O(x**2)) - sin(x + O(x**2)) == \
         Add(-sin(x + O(x**2)), sin(x + O(x**2)), evaluate=False)
-    assert sin(O(x))/sin(O(x)) == Mul(sin(O(x)), 1/sin(O(x)), evaluate=False)
+    assert sin(O(x))/sin(O(x)) == Mul(1/sin(O(x)), sin(O(x)), evaluate=False)
 
 
 def test_issue_5160_6087_6089_6090():
@@ -1743,8 +1743,8 @@ def test_float_int():
         112345678901234567890123456789000192
     assert Integer(Float('123456789012345678901234567890e5', '')) == \
         12345678901234567890123456789000000
-    assert same_and_same_prec(Float('123000e-2',''), Float('1230.00', ''))
-    assert same_and_same_prec(Float('123000e2',''), Float('12300000', ''))
+    assert same_and_same_prec(Float('123000e-2', ''), Float('1230.00', ''))
+    assert same_and_same_prec(Float('123000e2', ''), Float('12300000', ''))
 
     assert int(1 + Rational('.9999999999999999999999999')) == 1
     assert int(pi/1e20) == 0
@@ -1877,7 +1877,7 @@ def test_issue_8247_8354():
          29)**Rational(1, 3)*(-2**Rational(2, 3)*(3*sqrt(93) +
          29)**Rational(1, 3) - 2) - 2*2**Rational(1, 3))**3 +
          72*(3*sqrt(93) + 29)**Rational(2, 3)*(81*sqrt(93) + 783) +
-         (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3)*
+         (162*sqrt(93) + 1566)*((3*sqrt(93) + 29)**Rational(1, 3) *
          (-2**Rational(2, 3)*(3*sqrt(93) + 29)**Rational(1, 3) - 2) -
          2*2**Rational(1, 3))**2)
     assert z.is_positive is False  # it's 0 (and a single _mexpand isn't enough)

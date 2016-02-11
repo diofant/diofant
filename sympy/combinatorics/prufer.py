@@ -220,7 +220,7 @@ class Prufer(Basic):
             d[p] += 1
         for i in prufer:
             for j in range(n):
-            # find the smallest leaf (degree = 1)
+                # find the smallest leaf (degree = 1)
                 if d[j] == 1:
                     break
             # (i, j) is the new edge that we append to the tree
@@ -428,4 +428,4 @@ class Prufer(Basic):
         prufer_rank, rank, next, size
 
         """
-        return Prufer.unrank(self.rank -delta, self.nodes)
+        return Prufer.unrank(self.rank - delta, self.nodes)

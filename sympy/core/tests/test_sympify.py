@@ -86,15 +86,15 @@ def test_sympify_mpmath():
 
     mpmath.mp.dps = 12
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) == True
+        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) is S.true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) == False
+        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) is S.false
 
     mpmath.mp.dps = 6
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) == True
+        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) is S.true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) == False
+        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) is S.false
 
     assert sympify(mpmath.mpc(1.0 + 2.0j)) == Float(1.0) + Float(2.0)*I
 
@@ -407,7 +407,7 @@ def test_geometry():
 
 
 def test_kernS():
-    s =   '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'
+    s = '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'
     # when 1497 is fixed, this no longer should pass: the expression
     # should be unchanged
     assert -1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) == -1
@@ -441,8 +441,8 @@ def test_issue_6046():
     assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
     assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
-    exec("from sympy.abc import Q, C", locals)
-    assert str(sympify('C&Q', locals)) == 'And(C, Q)'
+    exec("from sympy.abc import S, O", locals)
+    assert str(sympify('O&S', locals)) == 'And(O, S)'
 
 
 def test_issue_8821_highprec_from_str():

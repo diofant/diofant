@@ -255,7 +255,7 @@ class LatexPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
 
         tex = ""
         for i, term in enumerate(terms):
@@ -314,7 +314,7 @@ class LatexPrinter(Printer):
             else:
                 _tex = last_term_tex = ""
 
-                if self.order not in ('old', 'none'):
+                if self.order != 'none':
                     args = expr.as_ordered_factors()
                 else:
                     args = expr.args
@@ -484,7 +484,7 @@ class LatexPrinter(Printer):
 
         for system, vect in items:
             inneritems = list(vect.components.items())
-            inneritems.sort(key=lambda x:x[0].__str__())
+            inneritems.sort(key=lambda x: x[0].__str__())
             for k, v in inneritems:
                 if v == 1:
                     o1.append(' + ' + k._latex_form)
@@ -1229,7 +1229,7 @@ class LatexPrinter(Printer):
 
         return self._deal_with_super_sub(expr.name) if \
             '\\' not in expr.name else expr.name
-
+    _print_Wild = _print_Symbol
     _print_RandomSymbol = _print_Symbol
     _print_MatrixSymbol = _print_Symbol
 
@@ -1312,7 +1312,7 @@ class LatexPrinter(Printer):
     _print_Matrix = _print_MatrixBase
 
     def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '_{%s, %s}'%(expr.i, expr.j)
+        return self._print(expr.parent) + '_{%s, %s}' % (expr.i, expr.j)
 
     def _print_MatrixSlice(self, expr):
         def latexslice(x):
@@ -1784,7 +1784,7 @@ class LatexPrinter(Printer):
         return r'\mbox{Tr}\left(%s\right)' % (contents)
 
     def _print_totient(self, expr):
-        return r'\phi\left( %s \right)' %  self._print(expr.args[0])
+        return r'\phi\left( %s \right)' % self._print(expr.args[0])
 
     def _print_divisor_sigma(self, expr, exp=None):
         if len(expr.args) == 2:
@@ -1819,8 +1819,8 @@ def translate(s):
         return "\\" + s
     else:
         # Process modifiers, if any, and recurse
-        for key in sorted(modifier_dict.keys(), key=lambda k:len(k), reverse=True):
-            if s.lower().endswith(key) and len(s)>len(key):
+        for key in sorted(modifier_dict.keys(), key=lambda k: len(k), reverse=True):
+            if s.lower().endswith(key) and len(s) > len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s
 
@@ -1836,9 +1836,8 @@ def latex(expr, **settings):
     8 \sqrt{2} \tau^{\frac{7}{2}}
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
-    "grevlex"), "old", and "none". This parameter does nothing for Mul objects.
-    Setting order to "old" uses the compatibility ordering for Add defined in
-    Printer. For very large expressions, set the 'order' keyword to 'none' if
+    "grevlex") and "none". This parameter does nothing for Mul objects.
+    For very large expressions, set the 'order' keyword to 'none' if
     speed is a concern.
 
     mode: Specifies how the generated code will be delimited. 'mode' can be one

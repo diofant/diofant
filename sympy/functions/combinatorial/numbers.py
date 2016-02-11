@@ -20,6 +20,7 @@ from sympy.functions.combinatorial.factorials import binomial, factorial
 from sympy.functions.elementary.exponential import log
 from sympy.functions.elementary.integers import floor
 from sympy.functions.elementary.trigonometric import sin, cos, cot
+from sympy.utilities.memoization import recurrence_memo
 
 
 def _product(a, b):
@@ -28,12 +29,9 @@ def _product(a, b):
         p *= k
     return p
 
-from sympy.utilities.memoization import recurrence_memo
-
 
 # Dummy symbol used for computing polynomial sequences
-_sym = Symbol('x')
-_symbols = Function('x')
+_sym = Dummy('_for_recurrence_memo')
 
 
 ############################################################################

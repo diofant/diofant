@@ -78,24 +78,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
             s = s.strip('$')
             return '$$%s$$' % s
 
-    def _result_display(self, arg):
-        """IPython's pretty-printer display hook, for use in IPython 0.10
-
-           This function was adapted from:
-
-            ipython/IPython/hooks.py:155
-
-        """
-        if self.rc.pprint:
-            out = stringify_func(arg)
-
-            if '\n' in out:
-                print
-
-            print(out)
-        else:
-            print(repr(arg))
-
     import IPython
     from sympy.core.basic import Basic
     from sympy.matrices.matrices import MatrixBase
@@ -119,15 +101,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
             # latex_formatter.for_type(cls, None)
             if cls in latex_formatter.type_printers:
                 latex_formatter.type_printers.pop(cls)
-
-
-def _is_ipython(shell):
-    """Is a shell instance an IPython shell?"""
-    # shortcut, so we don't import IPython if we don't have to
-    if 'IPython' not in sys.modules:
-        return False
-    from IPython.core.interactiveshell import InteractiveShell
-    return isinstance(shell, InteractiveShell)
 
 
 def init_printing(pretty_print=True, order=None, use_unicode=None,
@@ -243,9 +216,6 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
             pass
         else:
             in_ipython = (ip is not None)
-
-    if ip and not in_ipython:
-        in_ipython = _is_ipython(ip)
 
     if in_ipython and pretty_print:
         try:

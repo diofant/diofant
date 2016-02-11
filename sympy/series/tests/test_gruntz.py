@@ -12,7 +12,7 @@ from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
                    S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
                    coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
                    Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                   fibonacci, GoldenRatio)
+                   fibonacci, GoldenRatio, Limit)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -372,6 +372,13 @@ def test_intractable():
     assert gruntz(log(gamma(gamma(x)))/exp(x), x) == oo
 
 
+def test_branch_cuts():
+    assert gruntz(sqrt(-1 + I/x), x) == +I
+    assert gruntz(sqrt(-1 - I/x), x) == -I
+    assert gruntz(log(-1 + I/x), x) == +I*pi
+    assert gruntz(log(-1 - I/x), x) == -I*pi
+
+
 def test_aseries_trig():
     assert gruntz(1/log(atan(x)), x) == -1/(-log(pi) + log(2))
     assert gruntz(1/acot(-x), x) == -oo
@@ -395,7 +402,6 @@ def test_issue_4190():
     assert gruntz(x - gamma(1/x), x) == S.EulerGamma
 
 
-@pytest.mark.xfail
 def test_issue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
@@ -431,17 +437,23 @@ def test_issue_8462():
 
 def test_omgissue_74():
     from sympy.functions import sign
-    assert gruntz(sign(log(1 + 1/x)), x) ==  1
+    assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
-    assert gruntz(sign(sin( 1/x)), x) ==  1
+    assert gruntz(sign(sin( 1/x)), x) == +1
     assert gruntz(sign(sin(-1/x)), x) == -1
-    assert gruntz(sign(tan( 1/x)), x) ==  1
+    assert gruntz(sign(tan( 1/x)), x) == +1
     assert gruntz(sign(tan(-1/x)), x) == -1
     assert gruntz(sign(cos(pi/2 + 1/x)), x) == -1
-    assert gruntz(sign(cos(pi/2 - 1/x)), x) ==  1
+    assert gruntz(sign(cos(pi/2 - 1/x)), x) == +1
 
 
 def test_omgissue_75():
     assert gruntz(abs(log(x)), x) == oo
     assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
-    assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) ==  oo
+    assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo
+
+
+def test_issue_8241():
+    e = x/log(x)**(log(x)/(m*log(log(x))))
+    pytest.raises(NotImplementedError, lambda: gruntz(e, x))
+    assert isinstance(e.limit(x, oo), Limit)

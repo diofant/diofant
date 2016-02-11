@@ -335,13 +335,13 @@ def test_Poly__new__():
 
     assert Poly(x**2 + 1, extension=I).get_domain() == QQ.algebraic_field(I)
 
-    f = 3*x**5 - x**4 + x**3 - x** 2 + 65538
+    f = 3*x**5 - x**4 + x**3 - x**2 + 65538
 
     assert Poly(f, x, modulus=65537, symmetric=True) == \
-        Poly(3*x**5 - x**4 + x**3 - x** 2 + 1, x, modulus=65537,
+        Poly(3*x**5 - x**4 + x**3 - x**2 + 1, x, modulus=65537,
              symmetric=True)
     assert Poly(f, x, modulus=65537, symmetric=False) == \
-        Poly(3*x**5 + 65536*x**4 + x**3 + 65536*x** 2 + 1, x,
+        Poly(3*x**5 + 65536*x**4 + x**3 + 65536*x**2 + 1, x,
              modulus=65537, symmetric=False)
 
     assert isinstance(Poly(x**2 + x + 1.0).get_domain(), RealField)
@@ -502,8 +502,8 @@ def test_Poly__eq__():
 
     t0 = Symbol('t0')
 
-    f =  Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='QQ[x,t0]')
-    g =  Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='ZZ(x,t0)')
+    f = Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='QQ[x,t0]')
+    g = Poly((t0/2 + x**2)*t**2 - x**2*t, t, domain='ZZ(x,t0)')
 
     assert (f == g) is True
 
@@ -2346,10 +2346,10 @@ def test_factor():
     assert factor(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
 
     assert factor(x**11 + x + 1, modulus=65537, symmetric=True) == \
-        (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x** 2 + 1)
+        (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x**2 + 1)
     assert factor(x**11 + x + 1, modulus=65537, symmetric=False) == \
         (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
-         x**3 + 65536*x** 2 + 1)
+         x**3 + 65536*x**2 + 1)
 
     f = x/pi + x*sin(x)/pi
     g = y/(pi**2 + 2*pi + 1) + y*sin(x)/(pi**2 + 2*pi + 1)
@@ -2764,13 +2764,13 @@ def test_nth_power_roots_poly():
 
 
 def test_torational_factor_list():
-    p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}))
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + sqrt(2))}))
     assert _torational_factor_list(p, x) == (-2, [
         (-x*(1 + sqrt(2))/2 + 1, 1),
         (-x*(1 + sqrt(2)) - 1, 1),
         (-x*(1 + sqrt(2)) + 1, 1)])
 
-    p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + 2**Rational(1, 4))}))
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + 2**Rational(1, 4))}))
     assert _torational_factor_list(p, x) is None
 
 
@@ -2880,8 +2880,8 @@ def test_cancel():
 
     # issue 9363
     M = MatrixSymbol('M', 5, 5)
-    assert cancel(M[0,0] + 7) == M[0,0] + 7
-    expr = sin(M[1, 4] + M[2, 1] * 5 * M[4, 0]) - 5 * M[1, 2] / z
+    assert cancel(M[0, 0] + 7) == M[0, 0] + 7
+    expr = (z*sin(M[1, 4] + M[2, 1] * 5 * M[4, 0]) - 5 * M[1, 2])/z
     assert cancel(expr) == expr
 
 
@@ -3095,13 +3095,13 @@ def test_poly():
         y + z)**2 - x - 1) == Poly(2*y**2 + 4*y*z + 2*z**2 - x - 1, x, y, z)
     assert poly(x*(
         y + z)**2 - x - 1) == Poly(x*y**2 + 2*x*y*z + x*z**2 - x - 1, x, y, z)
-    assert poly(2*x*(y + z)**2 - x - 1) == Poly(2*x*y**2 + 4*x*y*z + 2*
+    assert poly(2*x*(y + z)**2 - x - 1) == Poly(2*x*y**2 + 4*x*y*z + 2 *
                 x*z**2 - x - 1, x, y, z)
 
     assert poly(x*y + (x + y)**2 + (x + z)**2) == \
         Poly(2*x*z + 3*x*y + y**2 + z**2 + 2*x**2, x, y, z)
     assert poly(x*y*(x + y)*(x + z)**2) == \
-        Poly(x**3*y**2 + x*y**2*z**2 + y*x**2*z**2 + 2*z*x**2*
+        Poly(x**3*y**2 + x*y**2*z**2 + y*x**2*z**2 + 2*z*x**2 *
              y**2 + 2*y*z*x**3 + y*x**4, x, y, z)
 
     assert poly(Poly(x + y + z, y, x, z)) == Poly(x + y + z, y, x, z)
@@ -3147,7 +3147,7 @@ def test_issue_5786():
 
 def test_noncommutative():
     class foo(Expr):
-        is_commutative=False
+        is_commutative = False
     e = x/(x + x*y)
     c = 1/( 1 + y)
     assert cancel(foo(e)) == foo(c)

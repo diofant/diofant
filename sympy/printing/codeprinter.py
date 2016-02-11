@@ -54,7 +54,6 @@ class Assignment(Relational):
     """
 
     rel_op = ':='
-    __slots__ = []
 
     def __new__(cls, lhs, rhs=0, **assumptions):
         from sympy.matrices.expressions.matexpr import (
@@ -450,7 +449,7 @@ class CodePrinter(StrPrinter):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = expr.as_ordered_factors()
         else:
             # use make_args in case expr was something like -x -> x

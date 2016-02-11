@@ -124,8 +124,9 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
         # Possible cancellation.
         if case == 'exp':
             dcoeff = DE.d.quo(Poly(DE.t, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 alphaa, alphad = frac_in(-ba.eval(0)/bd.eval(0)/a.eval(0), DE.t)
                 etaa, etad = frac_in(dcoeff, DE.t)
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
@@ -136,9 +137,10 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
 
         elif case == 'tan':
             dcoeff = DE.d.quo(Poly(DE.t**2 + 1, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
-                betaa, alphaa, alphad =  real_imag(ba, bd*a, DE.t)
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
+                betaa, alphaa, alphad = real_imag(ba, bd*a, DE.t)
                 betad = alphad
                 etaa, etad = frac_in(dcoeff, DE.t)
                 if recognize_log_derivative(2*betaa, betad, DE):
@@ -246,10 +248,10 @@ def constant_system(A, u, DE):
                 # This assumes that const(F(t0, ..., tn) == const(K) == F
                 Ri = A[i, :]
                 # Rm+1; m = A.rows
-                Rm1 = Ri.applyfunc(lambda x: derivation(x, DE, basic=True)/
+                Rm1 = Ri.applyfunc(lambda x: derivation(x, DE, basic=True) /
                     derivation(A[i, j], DE, basic=True))
                 Rm1 = Rm1.applyfunc(cancel)
-                um1 = cancel(derivation(u[i], DE, basic=True)/
+                um1 = cancel(derivation(u[i], DE, basic=True) /
                     derivation(A[i, j], DE, basic=True))
 
                 for s in range(A.rows):
@@ -563,13 +565,12 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
 
 def parametric_log_deriv(fa, fd, wa, wd, DE):
     # TODO: Write the full algorithm using the structure theorems.
-#    try:
+    # try:
     A = parametric_log_deriv_heu(fa, fd, wa, wd, DE)
-#    except NotImplementedError:
-        # Heuristic failed, we have to use the full method.
-        # TODO: This could be implemented more efficiently.
-        # It isn't too worrisome, because the heuristic handles most difficult
-        # cases.
+    # except NotImplementedError:
+    # Heuristic failed, we have to use the full method.
+    # TODO: This could be implemented more efficiently.  It isn't too
+    # worrisome, because the heuristic handles most difficult cases.
     return A
 
 

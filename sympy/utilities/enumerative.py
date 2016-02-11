@@ -33,7 +33,7 @@ partition A is greater than partition B if A's leftmost/greatest
 part is greater than B's leftmost part.  If the leftmost parts are
 equal, compare the second parts, and so on.
 
-In this ordering, the greatest partion of a given multiset has only
+In this ordering, the greatest partition of a given multiset has only
 one part.  The least partition is the one in which the components
 are spread out, one per part.
 
@@ -102,17 +102,20 @@ class PartComponent(object):
     Knuth's psuedocode makes c, u, and v separate arrays.
     """
 
-    __slots__ = ('c', 'u', 'v')
-
     def __init__(self):
-        self.c = 0   # Component number
-        self.u = 0   # The as yet unpartitioned amount in component c
-                     # *before* it is allocated by this triple
-        self.v = 0   # Amount of c component in the current part
-                     # (v<=u).  An invariant of the representation is
-                     # that the next higher triple for this component
-                     # (if there is one) will have a value of u-v in
-                     # its u attribute.
+        # Component number
+        self.c = 0
+
+        # The as yet unpartitioned amount in component c
+        # *before* it is allocated by this triple
+        self.u = 0
+
+        # Amount of c component in the current part
+        # (v<=u).  An invariant of the representation is
+        # that the next higher triple for this component
+        # (if there is one) will have a value of u-v in
+        # its u attribute.
+        self.v = 0
 
     def __repr__(self):
         "for debug/algorithm animation purposes"
@@ -145,7 +148,7 @@ class PartComponent(object):
 # - flag variable x takes on values True/False instead of 1/0
 #
 def multiset_partitions_taocp(multiplicities):
-    """Enumerates partions of a multiset.
+    """Enumerates partitions of a multiset.
 
     Parameters
     ==========
@@ -391,7 +394,7 @@ class MultisetPartitionTraverser():
            Part 1, of The Art of Computer Programming, by Donald Knuth.
 
     .. [Factorisatio] On a Problem of Oppenheim concerning
-           "Factorisatio Numerorum" E. R. Canfield, Paul Erdos, Carl
+           "Factorisatio Numerorum" E. R. Canfield, Paul Erdős, Carl
            Pomerance, JOURNAL OF NUMBER THEORY, Vol. 17, No. 1. August
            1983.  See section 7 for a description of an algorithm
            similar to Knuth's.
@@ -681,15 +684,16 @@ class MultisetPartitionTraverser():
 
         This call does nothing (and returns False) if the current top
         part has no unallocated multiplicity.
-
         """
         j = self.f[self.lpart]  # base of current top part
         k = self.f[self.lpart + 1]  # ub of current; potential base of next
         base = k  # save for later comparison
 
-        changed = False  # Set to true when the new part (so far) is
-                         # strictly less than (as opposed to less than
-                         # or equal) to the old.
+        # Set to true when the new part (so far) is
+        # strictly less than (as opposed to less than
+        # or equal) to the old.
+        changed = False
+
         for j in range(self.f[self.lpart], self.f[self.lpart + 1]):
             self.pstack[k].u = self.pstack[j].u - self.pstack[j].v
             if self.pstack[k].u == 0:

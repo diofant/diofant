@@ -489,7 +489,7 @@ class PermutationGroup(Basic):
         # size of orbit of base[pos] under the stabilizer we seek to insert
         # in the stabilizer chain at position pos + 1
         size = len(basic_orbits[pos])*len(basic_orbits[pos + 1]) \
-            //len(_orbit(degree, strong_gens_distr[pos], base[pos + 1]))
+            // len(_orbit(degree, strong_gens_distr[pos], base[pos + 1]))
         # initialize the wanted stabilizer by a subgroup
         if pos + 2 > base_len - 1:
             T = []
@@ -2003,7 +2003,7 @@ class PermutationGroup(Basic):
                 for i in range(k):
                     g = self.random_pr()
                     h = Z.random_pr()
-                    conj = h^g
+                    conj = h ^ g
                     res = _strip(conj, base, basic_orbits, basic_transversals)
                     if res[0] != identity or res[1] != len(base) + 1:
                         gens = Z.generators
@@ -2021,7 +2021,7 @@ class PermutationGroup(Basic):
                 _loop = False
                 for g in self.generators:
                     for h in Z.generators:
-                        conj = h^g
+                        conj = h ^ g
                         res = _strip(conj, base, basic_orbits,
                                      basic_transversals)
                         if res[0] != identity or res[1] != len(base) + 1:
@@ -3259,7 +3259,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
         for b in orb:
             for gen in gens:
                 temp = gen[b]
-                if used[temp] == False:
+                if used[temp] is False:
                     orb.append(temp)
                     used[temp] = True
         return set(orb)
@@ -3356,7 +3356,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
     for x, px in tr:
         for gen in gens:
             temp = gen[x]
-            if used[temp] == False:
+            if used[temp] is False:
                 tr.append((temp, _af_rmul(gen, px)))
                 used[temp] = True
     if pairs:

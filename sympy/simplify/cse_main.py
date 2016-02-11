@@ -156,7 +156,7 @@ def opt_cse(exprs, order='canonical'):
     >>> from sympy.simplify.cse_main import opt_cse
     >>> from sympy.abc import x
     >>> opt_subs = opt_cse([x**-2])
-    >>> print(opt_subs)
+    >>> opt_subs
     {x**(-2): 1/(x**2)}
     """
     opt_subs = dict()

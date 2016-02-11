@@ -407,25 +407,30 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        from sympy import Order
+        from sympy import Order, floor, arg
         if not logx:
             logx = log(x)
-        s = self.args[0].nseries(x, n=n, logx=logx)
-        while s.is_Order:
+        arg_series = self.args[0].nseries(x, n=n, logx=logx)
+        while arg_series.is_Order:
             n += 1
-            s = self.args[0].nseries(x, n=n, logx=logx)
-        a, b = s.as_leading_term(x).as_coeff_exponent(x)
-        t = (s/(a*x**b) - 1).cancel().nseries(x, n=n, logx=logx)
-        log_series = log(a) + b*logx + t
+            arg_series = self.args[0].nseries(x, n=n, logx=logx)
+        arg0 = arg_series.as_leading_term(x)
+        c, e = arg0.as_coeff_exponent(x)
+        t = (arg_series/arg0 - 1).cancel().nseries(x, n=n, logx=logx)
+        # series of log(1 + t) in t
+        log_series = term = t
+        for i in range(1, n):
+            term *= -i*t/(i + 1)
+            term = term.nseries(x, n=n, logx=logx)
+            log_series += term
         if t != 0:
-            # series of log(1 + t) in t
-            term = t
-            for i in range(1, n):
-                term *= -i*t/(i + 1)
-                term = term.nseries(x, n=n, logx=logx)
-                log_series += term
             log_series += Order(t**n, x)
-        return log_series
+            # branch handling
+            if c.is_negative:
+                l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                if l.is_finite:
+                    log_series += 2*S.ImaginaryUnit*S.Pi*l
+        return log_series + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):
         arg = self.args[0].as_leading_term(x)

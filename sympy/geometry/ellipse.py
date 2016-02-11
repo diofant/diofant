@@ -844,7 +844,7 @@ class Ellipse(GeometrySet):
         if prec is not None:
             points = [pt.n(prec) for pt in points]
             slopes = [i if _not_a_coeff(i) else i.n(prec) for i in slopes]
-        return [Line(pt, slope=s) for pt,s in zip(points, slopes)]
+        return [Line(pt, slope=s) for pt, s in zip(points, slopes)]
 
     def arbitrary_point(self, parameter='t'):
         """A parameterized point on the ellipse.
@@ -1058,7 +1058,7 @@ class Ellipse(GeometrySet):
             t = -b / a
             result.append(lp[0] + (lp[1] - lp[0]) * t)
         # Definite and potential symbolic intersections are allowed.
-        elif (det > 0) != False:
+        elif (det > 0) is not S.false:
             root = sqrt(det)
             t_a = (-b - root) / a
             t_b = (-b + root) / a

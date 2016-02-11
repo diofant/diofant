@@ -92,7 +92,7 @@ def test_polynomial():
 
 def test_hyperexpand_bases():
     assert hyperexpand(hyper([2], [a], z)) == \
-        a + z**(-a + 1)*(-a**2 + 3*a + z*(a - 1) - 2)*exp(z)* \
+        a + z**(-a + 1)*(-a**2 + 3*a + z*(a - 1) - 2)*exp(z) * \
         lowergamma(a - 1, z) - 1
     # TODO [a+1, a-S.Half], [2*a]
     assert hyperexpand(hyper([1, 2], [3], z)) == -2/z - 2*log(-z + 1)/z**2
@@ -625,7 +625,7 @@ def test_hyperexpand_special():
         gamma(1 + b/2)*gamma(1 + b - a)/gamma(1 + b)/gamma(1 + b/2 - a)
     assert hyperexpand(meijerg([1 - z - a/2], [1 - z + a/2], [b/2], [-b/2], 1)) == \
         gamma(1 - 2*z)*gamma(z + a/2 + b/2)/gamma(1 - z + a/2 - b/2) \
-        /gamma(1 - z - a/2 + b/2)/gamma(1 - z + a/2 + b/2)
+        / gamma(1 - z - a/2 + b/2)/gamma(1 - z + a/2 + b/2)
     assert hyperexpand(hyper([a], [b], 0)) == 1
     assert hyper([a], [b], 0) != 0
 
@@ -680,8 +680,9 @@ def test_prudnikov_1():
     assert can_do([a, a + Rational(1, 2)], [Rational(3, 2)])
     assert can_do([a, a/2 + 1], [a/2])
     assert can_do([1, b], [2])
+
     assert can_do([1, b], [b + 1], numerical=False)  # Lerch Phi
-             # NOTE: branches are complicated for |z| > 1
+    # NOTE: branches are complicated for |z| > 1
 
     assert can_do([a], [2*a])
     assert can_do([a], [2*a + 1])
@@ -1013,3 +1014,10 @@ def test_prudnikov_fail_other():
 def test_bug():
     h = hyper([-1, 1], [z], -1)
     assert hyperexpand(h) == (z + 1)/z
+
+
+def test_omgissue_203():
+    h = hyper((-5, -3, -4), (-6, -6), 1)
+    assert hyperexpand(h) == Rational(1, 30)
+    h = hyper((-6, -7, -5), (-6, -6), 1)
+    assert hyperexpand(h) == -Rational(1, 6)

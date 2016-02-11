@@ -25,8 +25,6 @@ from sympy.series.order import Order
 class Integral(AddWithLimits):
     """Represents unevaluated integral."""
 
-    __slots__ = ['is_commutative']
-
     def __new__(cls, function, *symbols, **assumptions):
         """Create an unevaluated integral.
 
@@ -276,7 +274,7 @@ class Integral(AddWithLimits):
                 Expecting a tuple (expr, symbol) where symbol identified
                 a free symbol in expr, but symbol is not in expr's free
                 symbols.'''))
-            if not isinstance(uvar, Symbol):
+            if not isinstance(uvar, (Dummy, Symbol)):
                 raise ValueError(filldedent('''
                 Expecting a tuple (expr, symbol) but didn't get
                 a symbol; got %s''' % uvar))
@@ -371,7 +369,7 @@ class Integral(AddWithLimits):
         >>> from sympy import Integral
         >>> from sympy.abc import x, i
         >>> Integral(x**i, (i, 1, 3)).doit()
-        Piecewise((2, Eq(log(x), 0)), (x**3/log(x) - x/log(x), True))
+        Piecewise((2, Eq(log(x), 0)), (x**3/log(x) - x/log(x), true))
 
         See Also
         ========
@@ -1214,7 +1212,7 @@ def integrate(*args, **kwargs):
 
     >>> integrate(x**a*exp(-x), (x, 0, oo)) # same as conds='piecewise'
     Piecewise((gamma(a + 1), -re(a) < 1),
-        (Integral(E**(-x)*x**a, (x, 0, oo)), True))
+        (Integral(E**(-x)*x**a, (x, 0, oo)), true))
 
     >>> integrate(x**a*exp(-x), (x, 0, oo), conds='none')
     gamma(a + 1)

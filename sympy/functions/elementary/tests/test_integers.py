@@ -1,7 +1,7 @@
 import pytest
 
 from sympy import (Symbol, floor, nan, oo, E, symbols, ceiling, pi, Rational,
-                   Float, I, sin, exp, log, factorial)
+                   Float, I, sin, exp, log, factorial, S)
 
 
 def test_floor():
@@ -104,12 +104,14 @@ def test_floor():
     assert floor(factorial(50)/exp(1)) == \
         11188719610782480504630258070757734324011354208865721592720336800
 
-    assert (floor(y) <= y) == True
-    assert (floor(y) > y) == False
+    assert (floor(y) <= y) is S.true
+    assert (floor(y) > y) is S.false
     assert (floor(x) <= x).is_Relational  # x could be non-real
     assert (floor(x) > x).is_Relational
     assert (floor(x) <= y).is_Relational  # arg is not same as rhs
     assert (floor(x) > y).is_Relational
+
+    assert floor(x).as_leading_term(x) == floor(x)
 
 
 def test_ceiling():
@@ -212,8 +214,8 @@ def test_ceiling():
     assert ceiling(factorial(50)/exp(1)) == \
         11188719610782480504630258070757734324011354208865721592720336801
 
-    assert (ceiling(y) >= y) == True
-    assert (ceiling(y) < y) == False
+    assert (ceiling(y) >= y) is S.true
+    assert (ceiling(y) < y) is S.false
     assert (ceiling(x) >= x).is_Relational  # x could be non-real
     assert (ceiling(x) < x).is_Relational
     assert (ceiling(x) >= y).is_Relational  # arg is not same as rhs
@@ -222,14 +224,14 @@ def test_ceiling():
 
 def test_series():
     x, y = symbols('x,y')
-    assert floor(x).nseries(x, y, 100) == floor(y)
-    assert ceiling(x).nseries(x, y, 100) == ceiling(y)
-    assert floor(x).nseries(x, pi, 100) == 3
-    assert ceiling(x).nseries(x, pi, 100) == 4
-    assert floor(x).nseries(x, 0, 100) == 0
-    assert ceiling(x).nseries(x, 0, 100) == 1
-    assert floor(-x).nseries(x, 0, 100) == -1
-    assert ceiling(-x).nseries(x, 0, 100) == 0
+    assert floor(x).series(x, y, 100) == floor(y)
+    assert ceiling(x).series(x, y, 100) == ceiling(y)
+    assert floor(x).series(x, pi, 100) == 3
+    assert ceiling(x).series(x, pi, 100) == 4
+    assert floor(x).nseries(x, 100) == 0
+    assert ceiling(x).nseries(x, 100) == 1
+    assert floor(-x).nseries(x, 100) == -1
+    assert ceiling(-x).nseries(x, 100) == 0
 
 
 @pytest.mark.xfail

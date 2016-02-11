@@ -1,3 +1,4 @@
+from functools import wraps
 from tempfile import NamedTemporaryFile
 import os
 import errno
@@ -12,7 +13,6 @@ from sympy.plotting import (plot, plot_parametric, plot3d_parametric_line,
 from sympy.plotting.plot import unset_show
 from sympy.plotting.experimental_lambdify import lambdify
 from sympy.external import import_module
-from sympy.core.decorators import wraps
 
 
 matplotlib = import_module('matplotlib', min_module_version='1.1.0',

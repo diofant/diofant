@@ -3,7 +3,7 @@ import pytest
 from sympy import (Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational,
                    log, Integer, polygamma, EulerGamma, pi, uppergamma, S,
                    expand_func, loggamma, sin, cos, O, lowergamma, exp, erf,
-                   exp_polar, harmonic, zeta,conjugate)
+                   exp_polar, harmonic, zeta, conjugate)
 from sympy.core.function import ArgumentIndexError
 from sympy.utilities.randtest import (test_derivative_numerically as td,
                                       random_complex_number as randcplx,
@@ -394,7 +394,7 @@ def test_polygamma_expansion():
         -log(x) - x/2 - x**2/12 + O(x**4)
     assert polygamma(1, 1/x).series(x, n=5) == \
         x + x**2/2 + x**3/6 + O(x**5)
-    assert polygamma(3, 1/x).nseries(x, n=11) == \
+    assert polygamma(3, 1/x).nseries(x, n=8) == \
         2*x**3 + 3*x**4 + 2*x**5 - x**7 + 4*x**9/3 + O(x**11)
 
 

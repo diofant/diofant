@@ -74,7 +74,7 @@ def continued_fraction_periodic(p, q, d=0):
         # the number is a rational number
         return list(continued_fraction_iterator(Rational(p + sd, q)))
 
-    if (d - p**2)%q:
+    if (d - p**2) % q:
         d *= q**2
         sd *= q
         p *= abs(q)

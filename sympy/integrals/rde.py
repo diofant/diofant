@@ -58,7 +58,7 @@ def order_at(a, p, t):
     r = a.rem(p1)
     tracks_power = 1
     while r.is_zero:
-        power_list.append((p1,tracks_power))
+        power_list.append((p1, tracks_power))
         p1 = p1*p1
         tracks_power *= 2
         r = a.rem(p1)
@@ -213,8 +213,9 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
 
         if case == 'exp':
             dcoeff = DE.d.quo(Poly(DE.t, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 alphaa, alphad = frac_in(-ba.eval(0)/bd.eval(0)/a.eval(0), DE.t)
                 etaa, etad = frac_in(dcoeff, DE.t)
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
@@ -225,8 +226,9 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
 
         elif case == 'tan':
             dcoeff = DE.d.quo(Poly(DE.t**2+1, DE.t))
-            with DecrementLevel(DE):  # We are guaranteed to not have problems,
-                                      # because case != 'base'.
+            # We are guaranteed to not have problems,
+            # because case != 'base'.
+            with DecrementLevel(DE):
                 alphaa, alphad = frac_in(im(-ba.eval(sqrt(-1))/bd.eval(sqrt(-1))/a.eval(sqrt(-1))), DE.t)
                 betaa, betad = frac_in(re(-ba.eval(sqrt(-1))/bd.eval(sqrt(-1))/a.eval(sqrt(-1))), DE.t)
                 etaa, etad = frac_in(dcoeff, DE.t)
@@ -281,7 +283,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
     else:
         dc = cQ.degree(DE.t)
 
-    alpha = cancel(-b.as_poly(DE.t).LC().as_expr()/
+    alpha = cancel(-b.as_poly(DE.t).LC().as_expr() /
         a.as_poly(DE.t).LC().as_expr())
 
     if case == 'base':

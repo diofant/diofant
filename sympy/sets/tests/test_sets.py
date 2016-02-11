@@ -8,7 +8,7 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
                    SymmetricDifference, Integer, Rational)
 
-from sympy.abc import x, y, z
+from sympy.abc import a, b, x, y, z
 
 
 def test_interval_arguments():
@@ -271,8 +271,8 @@ def test_intersection():
 
 
 def test_is_disjoint():
-    assert Interval(0, 2).is_disjoint(Interval(1, 2)) == False
-    assert Interval(0, 2).is_disjoint(Interval(3, 4)) == True
+    assert Interval(0, 2).is_disjoint(Interval(1, 2)) is False
+    assert Interval(0, 2).is_disjoint(Interval(3, 4)) is True
 
 
 def test_ProductSet_of_single_arg_is_arg():
@@ -356,29 +356,29 @@ def test_is_proper_subset():
 
 
 def test_is_superset():
-    assert Interval(0, 1).is_superset(Interval(0, 2)) == False
+    assert Interval(0, 1).is_superset(Interval(0, 2)) is False
     assert Interval(0, 3).is_superset(Interval(0, 2))
 
-    assert FiniteSet(1, 2).is_superset(FiniteSet(1, 2, 3, 4)) == False
-    assert FiniteSet(4, 5).is_superset(FiniteSet(1, 2, 3, 4)) == False
-    assert FiniteSet(1).is_superset(Interval(0, 2)) == False
-    assert FiniteSet(1, 2).is_superset(Interval(0, 2, True, True)) == False
+    assert FiniteSet(1, 2).is_superset(FiniteSet(1, 2, 3, 4)) is False
+    assert FiniteSet(4, 5).is_superset(FiniteSet(1, 2, 3, 4)) is False
+    assert FiniteSet(1).is_superset(Interval(0, 2)) is False
+    assert FiniteSet(1, 2).is_superset(Interval(0, 2, True, True)) is False
     assert (Interval(1, 2) + FiniteSet(3)).is_superset(
-        (Interval(0, 2, False, True) + FiniteSet(2, 3))) == False
+        (Interval(0, 2, False, True) + FiniteSet(2, 3))) is False
 
-    assert Interval(3, 4).is_superset(Union(Interval(0, 1), Interval(2, 5))) == False
+    assert Interval(3, 4).is_superset(Union(Interval(0, 1), Interval(2, 5))) is False
 
-    assert FiniteSet(1, 2, 3, 4).is_superset(Interval(0, 5)) == False
-    assert S.EmptySet.is_superset(FiniteSet(1, 2, 3)) == False
+    assert FiniteSet(1, 2, 3, 4).is_superset(Interval(0, 5)) is False
+    assert S.EmptySet.is_superset(FiniteSet(1, 2, 3)) is False
 
-    assert Interval(0, 1).is_superset(S.EmptySet) == True
-    assert S.EmptySet.is_superset(S.EmptySet) == True
+    assert Interval(0, 1).is_superset(S.EmptySet) is True
+    assert S.EmptySet.is_superset(S.EmptySet) is True
 
     pytest.raises(ValueError, lambda: S.EmptySet.is_superset(1))
 
     # tests for the issuperset alias
-    assert Interval(0, 1).issuperset(S.EmptySet) == True
-    assert S.EmptySet.issuperset(S.EmptySet) == True
+    assert Interval(0, 1).issuperset(S.EmptySet) is True
+    assert S.EmptySet.issuperset(S.EmptySet) is True
 
 
 def test_is_proper_superset():
@@ -408,15 +408,14 @@ def test_contains():
     assert FiniteSet(1, 2, Symbol('x')).contains(Symbol('x')) is S.true
 
     # issue 8197
-    from sympy.abc import a, b
     assert isinstance(FiniteSet(b).contains(-a), Contains)
     assert isinstance(FiniteSet(b).contains(a), Contains)
     assert isinstance(FiniteSet(a).contains(1), Contains)
     pytest.raises(TypeError, lambda: 1 in FiniteSet(a))
 
     # issue 8209
-    rad1 = Pow(Pow(2, Rational(1, 3)) - 1, Rational(1, 3))
-    rad2 = Pow(Rational(1, 9), Rational(1, 3)) - Pow(Rational(2, 9), Rational(1, 3)) + Pow(Rational(4, 9), Rational(1, 3))
+    rad1 = Integer(4)
+    rad2 = Pow(2, 2, evaluate=False)
     s1 = FiniteSet(rad1)
     s2 = FiniteSet(rad2)
     assert s1 - s2 == S.EmptySet
@@ -575,7 +574,7 @@ def test_powerset():
     A = FiniteSet()
     pset = A.powerset()
     assert len(pset) == 1
-    assert pset ==  FiniteSet(S.EmptySet)
+    assert pset == FiniteSet(S.EmptySet)
 
     # FiniteSets
     A = FiniteSet(1, 2)
@@ -601,7 +600,7 @@ def test_product_basic():
     assert 0 not in square
     assert (H, T) in coin ** 2
     assert (.5, .5, .5) in square * unit_line
-    assert (H, 3, 3) in coin * d6* d6
+    assert (H, 3, 3) in coin*d6*d6
     HH, TT = sympify(H), sympify(T)
     assert set(coin**2) == {(HH, HH), (HH, TT), (TT, HH), (TT, TT)}
 
@@ -688,7 +687,6 @@ def test_Interval_free_symbols():
 
 
 def test_image_interval():
-    from sympy.core.numbers import Rational
     x = Symbol('x', extended_real=True)
     a = Symbol('a', extended_real=True)
     assert imageset(x, 2*x, Interval(-2, 1)) == Interval(-4, 2)
@@ -824,16 +822,16 @@ def test_issue_7841():
 
 def test_Eq():
     assert Eq(Interval(0, 1), Interval(0, 1))
-    assert Eq(Interval(0, 1), Interval(0, 2)) == False
+    assert Eq(Interval(0, 1), Interval(0, 2)) is S.false
 
     s1 = FiniteSet(0, 1)
     s2 = FiniteSet(1, 2)
 
     assert Eq(s1, s1)
-    assert Eq(s1, s2) == False
+    assert Eq(s1, s2) is S.false
 
     assert Eq(s1*s2, s1*s2)
-    assert Eq(s1*s2, s2*s1) == False
+    assert Eq(s1*s2, s2*s1) is S.false
 
 
 def test_SymmetricDifference():

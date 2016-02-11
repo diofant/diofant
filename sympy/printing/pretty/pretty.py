@@ -61,6 +61,7 @@ class PrettyPrinter(Printer):
     def _print_Symbol(self, e):
         symb = pretty_symbol(e.name)
         return prettyForm(symb)
+    _print_Dummy = _print_Symbol
     _print_RandomSymbol = _print_Symbol
 
     def _print_Float(self, e):
@@ -642,7 +643,7 @@ class PrettyPrinter(Printer):
         if (isinstance(expr.parent, MatrixSymbol)
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
-                Symbol(expr.parent.name + '_%d%d'%(expr.i, expr.j)))
+                Symbol(expr.parent.name + '_%d%d' % (expr.i, expr.j)))
         else:
             prettyFunc = self._print(expr.parent)
             prettyIndices = self._print_seq((expr.i, expr.j), delimiter=', '
@@ -818,7 +819,7 @@ class PrettyPrinter(Printer):
                                 strs[0] += parts[0] + ' + '
                             else:
                                 strs[j] += parts[j] + ' '*(lengths[-1] -
-                                                           len(parts[j])+
+                                                           len(parts[j]) +
                                                            3)
                         else:
                             if j >= len(strs):
@@ -1191,7 +1192,7 @@ class PrettyPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
         pforms, indices = [], []
 
         def pretty_negative(pform, index):
@@ -1261,7 +1262,7 @@ class PrettyPrinter(Printer):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = product.as_ordered_factors()
         else:
             args = product.args

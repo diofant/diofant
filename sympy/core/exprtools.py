@@ -75,8 +75,6 @@ def decompose_power(expr):
 class Factors(object):
     """Efficient representation of ``f_1*f_2*...*f_n``."""
 
-    __slots__ = ['factors', 'gens']
-
     def __init__(self, factors=None):  # Factors
         """Initialize Factors from dict or expr.
 
@@ -599,8 +597,6 @@ class Factors(object):
 class Term(object):
     """Efficient representation of ``coeff*(numer/denom)``. """
 
-    __slots__ = ['coeff', 'numer', 'denom']
-
     def __init__(self, term, numer=None, denom=None):  # Term
         if numer is None and denom is None:
             if not term.is_commutative:
@@ -1027,19 +1023,18 @@ def _mask_nc(eq, name=None):
     If there is an object that:
 
         - doesn't contain nc-symbols
-        - but has arguments which derive from Basic, not Expr
+        - but has arguments which derive from Expr
         - and doesn't define an _eval_is_commutative routine
 
     then it will give False (or None?) for the is_commutative test. Such
     objects are also removed by this routine:
 
-    >>> from sympy import Basic
-    >>> eq = (1 + Mul(Basic(), Basic(), evaluate=False))
-    >>> eq.is_commutative
-    False
+    >>> from sympy import Expr
+    >>> eq = (1 + Mul(Expr(), Expr(), evaluate=False))
+    >>> eq.is_commutative is None
+    True
     >>> _mask_nc(eq, 'd')
-    (_d0**2 + 1, {_d0: Basic()}, [])
-
+    (_d0**2 + 1, {_d0: Expr()}, [])
     """
     name = name or 'mask'
     # Make Dummy() append sequential numbers to the name

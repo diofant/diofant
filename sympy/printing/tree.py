@@ -78,6 +78,7 @@ def print_tree(node):
     >>> y = Symbol('y', even=True)
     >>> print_tree(y**x)
     Pow: y**x
+    commutative: True
     +-Symbol: y
     | algebraic: True
     | commutative: True

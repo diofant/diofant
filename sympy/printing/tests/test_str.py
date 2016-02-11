@@ -67,8 +67,9 @@ def test_Derivative():
 
 
 def test_dict():
-    assert str({1: 1 + x}) == sstr({1: 1 + x}) == "{1: x + 1}"
-    assert str({1: x**2, 2: y*x}) in ("{1: x**2, 2: x*y}", "{2: x*y, 1: x**2}")
+    assert sstr({1: 1 + x}) == "{1: x + 1}"
+    assert str({1: 1 + x}) == "{1: Add(Symbol('x'), Integer(1))}"
+    assert str({1: x**2, 2: y*x}) in ("{1: Pow(Symbol('x'), Integer(2)), 2: Mul(Symbol('x'), Symbol('y'))}", "{1: Mul(Symbol('x'), Symbol('y')), 2: Pow(Symbol('x'), Integer(2))}")
     assert sstr({1: x**2, 2: y*x}) == "{1: x**2, 2: x*y}"
 
 
@@ -173,9 +174,12 @@ def test_Limit():
 
 
 def test_list():
-    assert str([x]) == sstr([x]) == "[x]"
-    assert str([x**2, x*y + 1]) == sstr([x**2, x*y + 1]) == "[x**2, x*y + 1]"
-    assert str([x**2, [y + x]]) == sstr([x**2, [y + x]]) == "[x**2, [x + y]]"
+    assert sstr([x]) == "[x]"
+    assert str([x]) == "[Symbol('x')]"
+    assert sstr([x**2, x*y + 1]) == "[x**2, x*y + 1]"
+    assert str([x**2, x*y + 1]) == "[Pow(Symbol('x'), Integer(2)), Add(Mul(Symbol('x'), Symbol('y')), Integer(1))]"
+    assert sstr([x**2, [y + x]]) == "[x**2, [x + y]]"
+    assert str([x**2, [y + x]]) == "[Pow(Symbol('x'), Integer(2)), [Add(Symbol('x'), Symbol('y'))]]"
 
 
 def test_Matrix_str():
@@ -185,7 +189,7 @@ def test_Matrix_str():
     M = Matrix([[1]])
     assert str(M) == sstr(M) == "Matrix([[1]])"
     M = Matrix([[1, 2]])
-    assert str(M) == sstr(M) ==  "Matrix([[1, 2]])"
+    assert str(M) == sstr(M) == "Matrix([[1, 2]])"
     M = Matrix()
     assert str(M) == sstr(M) == "Matrix(0, 0, [])"
     M = Matrix(0, 1, lambda i, j: 0)
@@ -335,6 +339,12 @@ def test_Poly():
     assert str(Poly(x**2 + 1, x, modulus=2)) == "Poly(x**2 + 1, x, modulus=2)"
     assert str(Poly(2*x**2 + 3*x + 4, x, modulus=17)) == "Poly(2*x**2 + 3*x + 4, x, modulus=17)"
 
+    assert str(Poly(2**(2*x), 2**x)) == "Poly((2**x)**2, 2**x, domain='ZZ')"
+    assert str(Poly((x + 1)**2, x + 1, expand=False)) == "Poly((x + 1)**2, x + 1, domain='ZZ')"
+
+    assert str(Poly(y*x*sqrt(3), x, sqrt(3))) == \
+        "Poly(y*x*sqrt(3), x, sqrt(3), domain='ZZ[y]')"
+
 
 def test_PolyRing():
     assert str(ring("x", ZZ, lex)[0]) == "Polynomial ring in x over ZZ with lex order"
@@ -349,8 +359,8 @@ def test_FracField():
 
 
 def test_PolyElement():
-    Ruv, u,v = ring("u,v", ZZ)
-    Rxyz, x,y,z = ring("x,y,z", Ruv)
+    Ruv,  u, v = ring("u,v", ZZ)
+    Rxyz,  x, y, z = ring("x,y,z", Ruv)
 
     assert str(x - x) == "0"
     assert str(x - 1) == "x - 1"
@@ -366,8 +376,8 @@ def test_PolyElement():
 
 
 def test_FracElement():
-    Fuv, u,v = field("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
+    Fuv,  u, v = field("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     assert str(x - x) == "0"
     assert str(x - 1) == "x - 1"
@@ -518,7 +528,7 @@ def test_set():
 
 def test_SparseMatrix():
     M = SparseMatrix([[x**+1, 1], [y, x + y]])
-    assert str(M) ==  "Matrix([\n[x,     1],\n[y, x + y]])"
+    assert str(M) == "Matrix([\n[x,     1],\n[y, x + y]])"
     assert sstr(M) == "Matrix([\n[x,     1],\n[y, x + y]])"
 
 
@@ -536,10 +546,12 @@ def test_Symbol():
 
 
 def test_tuple():
-    assert str((x,)) == sstr((x,)) == "(x,)"
-    assert str((x + y, 1 + x)) == sstr((x + y, 1 + x)) == "(x + y, x + 1)"
-    assert str((x + y, (
-        1 + x, x**2))) == sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
+    assert sstr((x,)) == "(x,)"
+    assert str((x,)) == "(Symbol('x'),)"
+    assert sstr((x + y, 1 + x)) == "(x + y, x + 1)"
+    assert str((x + y, 1 + x)) == "(Add(Symbol('x'), Symbol('y')), Add(Symbol('x'), Integer(1)))"
+    assert sstr((x + y, (1 + x, x**2))) == "(x + y, (x + 1, x**2))"
+    assert str((x + y, (1 + x, x**2))) == "(Add(Symbol('x'), Symbol('y')), (Add(Symbol('x'), Integer(1)), Pow(Symbol('x'), Integer(2))))"
 
 
 def test_wild_str():
@@ -696,8 +708,8 @@ def test_MatrixSlice():
 
 
 def test_true_false():
-    assert str(true) == repr(true) == sstr(true) == "True"
-    assert str(false) == repr(false) == sstr(false) == "False"
+    assert str(true) == repr(true) == sstr(true) == "true"
+    assert str(false) == repr(false) == sstr(false) == "false"
 
 
 def test_Equivalent():
@@ -713,5 +725,5 @@ def test_Complement():
 
 
 def test_SymmetricDifference():
-    assert str(SymmetricDifference(Interval(2,3), Interval(3,4),evaluate=False)) == \
+    assert str(SymmetricDifference(Interval(2, 3), Interval(3, 4), evaluate=False)) == \
         'SymmetricDifference([2, 3], [3, 4])'

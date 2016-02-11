@@ -357,7 +357,7 @@ class CythonCodeWrapper(CodeWrapper):
         # locally in the Cython code.
             if isinstance(arg, (InputArgument, InOutArgument)) and arg.dimensions:
                 dims = [d[1] + 1 for d in arg.dimensions]
-                sym_dims = [(i, d) for (i, d) in enumerate(dims) if isinstance(d, Symbol)]
+                sym_dims = [(i, d) for (i, d) in enumerate(dims) if isinstance(d, (Dummy, Symbol))]
                 for (i, d) in sym_dims:
                     py_inferred[d] = (arg.name, i)
         for arg in args:
@@ -457,6 +457,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
 
     Parameters
     ----------
+
     expr
         The SymPy expression that should be wrapped as a binary routine.
     language : string, optional
@@ -484,6 +485,9 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         compiled main expression can link to the helper routine. Items should
         be tuples with (<funtion_name>, <sympy_expression>, <arguments>). It
         is mandatory to supply an argument sequence to helper routines.
+
+    Examples
+    --------
 
     >>> from sympy.abc import x, y, z
     >>> from sympy.utilities.autowrap import autowrap
@@ -857,13 +861,13 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     >>> f_cython = ufuncify((x, y), y + x**2, backend='Cython')
     >>> f_cython(1, 2)
     Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
+    ...
     TypeError: Argument '_x' has incorrect type (expected numpy.ndarray, got int)
     >>> f_cython(numpy.array([1.0]), numpy.array([2.0]))
     array([ 3.])
     """
 
-    if isinstance(args, Symbol):
+    if isinstance(args, (Dummy, Symbol)):
         args = (args,)
     else:
         args = tuple(args)

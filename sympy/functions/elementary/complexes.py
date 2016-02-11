@@ -246,7 +246,7 @@ class sign(Function):
     is_finite = True
     is_complex = True
 
-    def doit(self):
+    def doit(self, **hints):
         if self.args[0].is_nonzero:
             return self.args[0] / Abs(self.args[0])
         return self
@@ -922,7 +922,7 @@ class principal_branch(Function):
 
     @classmethod
     def eval(self, x, period):
-        from sympy import oo, exp_polar, I, Mul, polar_lift, Symbol
+        from sympy import oo, exp_polar, I, Mul, polar_lift
         if isinstance(x, polar_lift):
             return principal_branch(x.args[0], period)
         if period == oo:
@@ -963,7 +963,7 @@ class principal_branch(Function):
             if arg == 0:
                 return abs(c)*principal_branch(Mul(*m), period)
             return principal_branch(exp_polar(I*arg)*Mul(*m), period)*abs(c)
-        if arg.is_number and ((abs(arg) < period/2) == True or arg == period/2) \
+        if arg.is_number and ((abs(arg) < period/2) is S.true or arg == period/2) \
                 and m == ():
             return exp_polar(arg*I)*abs(c)
 
@@ -982,7 +982,7 @@ def _polarify(eq, lift, pause=False):
         return eq
     if eq.is_number and not pause:
         return polar_lift(eq)
-    if isinstance(eq, Symbol) and not pause and lift:
+    if isinstance(eq, (Dummy, Symbol)) and not pause and lift:
         return polar_lift(eq)
     elif eq.is_Atom:
         return eq

@@ -2,8 +2,7 @@ from strategies import exhaust, condition, do_one
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from sympy import ask, Q
-from sympy.core import Basic, Add, sympify
+from sympy.core import S, Basic, Add, sympify
 from sympy.core.strategies import unpack
 from sympy.utilities import sift
 from sympy.matrices.expressions.matexpr import MatrixExpr, ZeroMatrix, Identity
@@ -115,13 +114,6 @@ class BlockMatrix(MatrixExpr):
             "Can't perform trace of irregular blockshape")
 
     def _eval_determinant(self):
-        if self.blockshape == (2, 2):
-            [[A, B],
-             [C, D]] = self.blocks.tolist()
-            if ask(Q.invertible(A)):
-                return det(A)*det(D - C*A.I*B)
-            elif ask(Q.invertible(D)):
-                return det(D)*det(A - B*D.I*C)
         return Determinant(self)
 
     def transpose(self):
@@ -150,12 +142,12 @@ class BlockMatrix(MatrixExpr):
     def _entry(self, i, j):
         # Find row entry
         for row_block, numrows in enumerate(self.rowblocksizes):
-            if (i < numrows) != False:
+            if (i < numrows) is not S.false:
                 break
             else:
                 i -= numrows
         for col_block, numcols in enumerate(self.colblocksizes):
-            if (j < numcols) != False:
+            if (j < numcols) is not S.false:
                 break
             else:
                 j -= numcols
@@ -167,9 +159,9 @@ class BlockMatrix(MatrixExpr):
             return False
         for i in range(self.blockshape[0]):
             for j in range(self.blockshape[1]):
-                if i==j and not self.blocks[i, j].is_Identity:
+                if i == j and not self.blocks[i, j].is_Identity:
                     return False
-                if i!=j and not self.blocks[i, j].is_ZeroMatrix:
+                if i != j and not self.blocks[i, j].is_ZeroMatrix:
                     return False
         return True
 
@@ -354,7 +346,7 @@ def bc_matmul(expr):
             matrices[i] = BlockMatrix([[A]])._blockmul(B)
             matrices.pop(i+1)
         else:
-            i+=1
+            i += 1
     return MatMul(factor, *matrices).doit()
 
 

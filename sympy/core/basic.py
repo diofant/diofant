@@ -39,10 +39,6 @@ class Basic(metaclass=ManagedProperties):
         >>> cot(x)._args    # do not use this, use cot(x).args instead
         (x,)
     """
-    __slots__ = ['_mhash',              # hash value
-                 '_args',               # arguments
-                 '_assumptions'
-                ]
 
     # To be overridden with True in the appropriate subclasses
     is_number = False
@@ -363,8 +359,8 @@ class Basic(metaclass=ManagedProperties):
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue 5487.
     def __repr__(self):
-        from sympy.printing import sstr
-        return sstr(self, order=None)
+        from sympy.printing import srepr
+        return srepr(self, order=None)
 
     def __str__(self):
         from sympy.printing import sstr
@@ -519,7 +515,7 @@ class Basic(metaclass=ManagedProperties):
 
     @staticmethod
     def _recursive_call(expr_to_call, on_args):
-        from sympy import Symbol
+        from sympy.core.symbol import Dummy, Symbol
 
         def the_call_method_is_overridden(expr):
             for cls in getmro(type(expr)):
@@ -527,8 +523,8 @@ class Basic(metaclass=ManagedProperties):
                     return cls != Basic
 
         if callable(expr_to_call) and the_call_method_is_overridden(expr_to_call):
-            if isinstance(expr_to_call, Symbol):  # XXX When you call a Symbol it is
-                return expr_to_call               # transformed into an UndefFunction
+            if isinstance(expr_to_call, (Dummy, Symbol)):  # XXX When you call a Symbol it is
+                return expr_to_call                        # transformed into an UndefFunction
             else:
                 return expr_to_call(*on_args)
         elif expr_to_call.args:
@@ -1571,8 +1567,6 @@ class Atom(Basic):
     """
 
     is_Atom = True
-
-    __slots__ = []
 
     def matches(self, expr, repl_dict={}):
         if self == expr:

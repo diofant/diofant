@@ -35,7 +35,7 @@ class StrPrinter(Printer):
             return expr
         elif isinstance(expr, Basic):
             if hasattr(expr, "args"):
-                return repr(expr)
+                return str(expr)
             else:
                 raise
         else:
@@ -45,7 +45,7 @@ class StrPrinter(Printer):
         if self.order == 'none':
             terms = list(expr.args)
         else:
-            terms = self._as_ordered_terms(expr, order=order)
+            terms = expr.as_ordered_terms(order=order or self.order)
 
         PREC = precedence(expr)
         l = []
@@ -66,10 +66,10 @@ class StrPrinter(Printer):
         return sign + ' '.join(l)
 
     def _print_BooleanTrue(self, expr):
-        return "True"
+        return "true"
 
     def _print_BooleanFalse(self, expr):
-        return "False"
+        return "false"
 
     def _print_And(self, expr):
         return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
@@ -220,7 +220,7 @@ class StrPrinter(Printer):
         _print_MatrixBase
 
     def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '[%s, %s]'%(expr.i, expr.j)
+        return self._print(expr.parent) + '[%s, %s]' % (expr.i, expr.j)
 
     def _print_MatrixSlice(self, expr):
         def strslice(x):
@@ -253,7 +253,7 @@ class StrPrinter(Printer):
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
 
-        if self.order not in ('old', 'none'):
+        if self.order != 'none':
             args = expr.as_ordered_factors()
         else:
             # use make_args in case expr was something like -x -> x
@@ -402,7 +402,7 @@ class StrPrinter(Printer):
             return numer + "/" + denom
 
     def _print_Poly(self, expr):
-        terms, gens = [], [ self._print(s) for s in expr.gens ]
+        terms, gens = [], expr.gens
 
         for monom, coeff in expr.terms():
             s_monom = []
@@ -410,9 +410,10 @@ class StrPrinter(Printer):
             for i, exp in enumerate(monom):
                 if exp > 0:
                     if exp == 1:
-                        s_monom.append(gens[i])
+                        s_monom.append(self._print(gens[i]))
                     else:
-                        s_monom.append(gens[i] + "**%d" % exp)
+                        s_monom.append(self.parenthesize(gens[i],
+                                       PRECEDENCE["Atom"] - 1) + "**%d" % exp)
 
             s_monom = "*".join(s_monom)
 
@@ -460,7 +461,7 @@ class StrPrinter(Printer):
 
         format += ")"
 
-        return format % (' '.join(terms), ', '.join(gens))
+        return format % (' '.join(terms), ', '.join(self._print(s) for s in expr.gens))
 
     def _print_ProductSet(self, p):
         return ' x '.join(self._print(set) for set in p.sets)

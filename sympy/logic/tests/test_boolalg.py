@@ -1,7 +1,7 @@
 import pytest
 
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
-                   oo, EmptySet, Q, Integer)
+                   oo, EmptySet, Integer)
 from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                  Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                  conjuncts, disjuncts, distribute_or_over_and,
@@ -12,7 +12,7 @@ from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
 from sympy.utilities import cartes
 
 
-A, B, C, D= symbols('A,B,C,D')
+A, B, C, D = symbols('A,B,C,D')
 
 
 def test_overloading():
@@ -239,8 +239,8 @@ def test_simplification():
 
     # check working of simplify
     assert simplify((A & B) | (A & C)) == And(A, Or(B, C))
-    assert simplify(And(x, Not(x))) == False
-    assert simplify(Or(x, Not(x))) == True
+    assert simplify(And(x, Not(x))) is S.false
+    assert simplify(Or(x, Not(x))) is S.true
 
 
 def test_bool_map():
@@ -255,10 +255,10 @@ def test_bool_map():
     assert bool_map(SOPform([w, x, y, z], minterms),
         POSform([w, x, y, z], minterms)) == \
         (And(Or(Not(w), y), Or(Not(x), y), z), {x: x, w: w, z: z, y: y})
-    assert bool_map(SOPform([x, z, y],[[1, 0, 1]]),
-        SOPform([a, b, c],[[1, 0, 1]])) != False
-    function1 = SOPform([x,z,y],[[1, 0, 1], [0, 0, 1]])
-    function2 = SOPform([a,b,c],[[1, 0, 1], [1, 0, 0]])
+    assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
+                    SOPform([a, b, c], [[1, 0, 1]])) is not S.false
+    function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
+    function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     assert bool_map(function1, function2) == \
         (function1, {y: a, z: b})
 
@@ -481,25 +481,22 @@ def test_is_literal():
     assert is_literal(A) is True
     assert is_literal(~A) is True
     assert is_literal(Or(A, B)) is False
-    assert is_literal(Q.zero(A)) is True
-    assert is_literal(Not(Q.zero(A))) is True
     assert is_literal(Or(A, B)) is False
-    assert is_literal(And(Q.zero(A), Q.zero(B))) is False
 
 
 def test_operators():
     # Mostly test __and__, __rand__, and so on
     assert True & A == (A & True) == A
-    assert False & A == (A & False) == False
+    assert False & A == (A & False) == S.false
     assert A & B == And(A, B)
-    assert True | A == (A | True) == True
+    assert True | A == (A | True) == S.true
     assert False | A == (A | False) == A
     assert A | B == Or(A, B)
     assert ~A == Not(A)
     assert True >> A == (A << True) == A
     assert False >> A == (A << False) == S.true
-    assert (A >> True) == True << A == S.true
-    assert (A >> False) == False << A == ~A
+    assert (A >> True) == (True << A) == S.true
+    assert (A >> False) == (False << A) == ~A
     assert A >> B == B << A == Implies(A, B)
     assert True ^ A == A ^ True == ~A
     assert False ^ A == (A ^ False) == A
@@ -662,7 +659,7 @@ def test_multivariate_bool_as_set():
 
 def test_all_or_nothing():
     x = symbols('x', extended_real=True)
-    args = x >=- oo, x <= oo
+    args = x >= - oo, x <= oo
     v = And(*args)
     if v.func is And:
         assert len(v.args) == len(args) - args.count(S.true)

@@ -1,6 +1,6 @@
 from collections import defaultdict
 import operator
-from functools import cmp_to_key, reduce
+from functools import reduce
 
 from .sympify import sympify
 from .basic import Basic
@@ -79,8 +79,6 @@ def _unevaluated_Mul(*args):
 
 
 class Mul(Expr, AssocOp):
-
-    __slots__ = []
 
     is_Mul = True
 
@@ -198,19 +196,22 @@ class Mul(Expr, AssocOp):
 
         nc_seq = []
 
-        coeff = S.One       # standalone term
-                            # e.g. 3 * ...
+        # standalone term e.g. 3 * ...
+        coeff = S.One
 
-        c_powers = []       # (base,exp)      n
-                            # e.g. (x,n) for x
+        #                           n
+        # (base,exp)e.g. (x,n) for x
+        c_powers = []
 
-        num_exp = []        # (num-base, exp)           y
-                            # e.g.  (3, y)  for  ... * 3  * ...
+        #                                           y
+        # (num-base, exp) e.g.  (3, y)  for  ... * 3  * ...
+        num_exp = []
 
-        neg1e = S.Zero      # exponent on -1 extracted from Number-based Pow and I
+        neg1e = S.Zero  # exponent on -1 extracted from Number-based Pow and I
 
-        pnum_rat = {}       # (num-base, Rat-exp)          1/2
-                            # e.g.  (3, 1/2)  for  ... * 3     * ...
+        #                                                 1/2
+        # (num-base, Rat-exp) e.g.  (3, 1/2)  for  ... * 3     * ...
+        pnum_rat = {}
 
         order_symbols = None
 
@@ -410,8 +411,10 @@ class Mul(Expr, AssocOp):
 
         #  x    x     x
         # 2  * 3  -> 6
-        inv_exp_dict = {}   # exp:Mul(num-bases)     x    x
-                            # e.g.  x:6  for  ... * 2  * 3  * ...
+        # exp:Mul(num-bases)     x    x
+        # e.g.  x:6  for  ... * 2  * 3  * ...
+        inv_exp_dict = {}
+
         for b, e in num_exp:
             inv_exp_dict.setdefault(e, []).append(b)
         for e, b in inv_exp_dict.items():
@@ -492,7 +495,7 @@ class Mul(Expr, AssocOp):
         # handle -1 and I
         if neg1e:
             # treat I as (-1)**(1/2) and compute -1's total exponent
-            p, q =  neg1e.as_numer_denom()
+            p, q = neg1e.as_numer_denom()
             # if the integer part is odd, extract -1
             n, p = divmod(p, q)
             if n % 2:
@@ -1389,8 +1392,7 @@ class Mul(Expr, AssocOp):
 
                             # the left residual
 
-                            l = rejoin(nc[i][0], nc[i][1] - ndo*
-                                    old_nc[0][1])
+                            l = rejoin(nc[i][0], nc[i][1] - ndo*old_nc[0][1])
 
                             # eliminate all middle terms
 
@@ -1399,8 +1401,7 @@ class Mul(Expr, AssocOp):
                             # the right residual (which may be the same as the middle if take == 2)
 
                             ir = i + take - 1
-                            r = (nc[ir][0], nc[ir][1] - ndo*
-                                 old_nc[-1][1])
+                            r = (nc[ir][0], nc[ir][1] - ndo*old_nc[-1][1])
                             if r[1]:
                                 if i + take < len(nc):
                                     nc[i:i + take] = [l*mid, r]
@@ -1466,10 +1467,7 @@ class Mul(Expr, AssocOp):
     def _eval_nseries(self, x, n, logx):
         from sympy import Order, powsimp
         terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
-        res = powsimp(self.func(*terms).expand(), combine='exp', deep=True)
-        if res.has(Order):
-            res += Order(x**n, x)
-        return res
+        return powsimp(self.func(*terms).expand(), combine='exp', deep=True)
 
     def _eval_as_leading_term(self, x):
         return self.func(*[t.as_leading_term(x) for t in self.args])

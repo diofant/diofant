@@ -40,7 +40,7 @@ def test_piecewise():
     # More subs tests
     p2 = Piecewise((1, x < pi), (-1, x < 2*pi), (0, x > 2*pi))
     p3 = Piecewise((1, Eq(x, 0)), (1/x, True))
-    p4 = Piecewise((1, Eq(x, 0)), (2, 1/x>2))
+    p4 = Piecewise((1, Eq(x, 0)), (2, 1/x > 2))
     assert p2.subs(x, 2) == 1
     assert p2.subs(x, 4) == -1
     assert p2.subs(x, 10) == 0
@@ -337,7 +337,7 @@ def test_piecewise_fold_piecewise_in_cond():
     assert(p2.subs(x, -pi/2) == 0.0)
     assert(p2.subs(x, 1) == 0.0)
     assert(p2.subs(x, -pi/4) == 1.0)
-    p4 = Piecewise((0, Eq(p1, 0)), (1,True))
+    p4 = Piecewise((0, Eq(p1, 0)), (1, True))
     assert(piecewise_fold(p4) == Piecewise(
         (0, Or(And(Eq(cos(x), 0), x < 0), Not(x < 0))), (1, True)))
 
@@ -419,8 +419,7 @@ def test_piecewise_lambdify():
 def test_piecewise_series():
     from sympy import sin, cos, O
     p1 = Piecewise((sin(x), x < 0), (cos(x), x > 0))
-    p2 = Piecewise((x + O(x**2), x < 0), (1 + O(x**2), x > 0))
-    assert p1.nseries(x, n=2) == p2
+    assert p1.nseries(x, n=2) == 1 + O(x**2)
 
 
 def test_piecewise_as_leading_term():

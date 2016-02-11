@@ -14,7 +14,7 @@ from mpmath.libmp import (from_int, from_man_exp, from_rational, fhalf,
                           mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_e,
                           mpf_exp, mpf_log, mpf_lt, mpf_mul, mpf_neg,
                           mpf_pi, mpf_pow, mpf_pow_int, mpf_shift, mpf_sin,
-                          mpf_sqrt, normalize, round_nearest, to_int, to_str)
+                          mpf_sqrt, normalize, round_nearest, to_str)
 from mpmath.libmp import bitcount as mpmath_bitcount
 from mpmath.libmp.backend import MPZ
 from mpmath.libmp.libmpc import _infs_nan
@@ -1125,8 +1125,7 @@ def _create_evalf_table():
     from sympy.core.power import Pow
     from sympy.core.symbol import Dummy, Symbol
     from sympy.functions.elementary.complexes import Abs, im, re
-    from sympy.functions.elementary.exponential import exp, log
-    from sympy.functions.elementary.integers import ceiling, floor
+    from sympy.functions.elementary.exponential import log
     from sympy.functions.elementary.piecewise import Piecewise
     from sympy.functions.elementary.trigonometric import atan, cos, sin
     from sympy.integrals.integrals import Integral
@@ -1220,8 +1219,6 @@ def evalf(x, prec, options):
 
 class EvalfMixin(object):
     """Mixin class adding evalf capabililty."""
-
-    __slots__ = []
 
     def evalf(self, n=15, subs=None, maxn=100, chop=False, strict=False, quad=None, verbose=False):
         """

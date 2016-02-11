@@ -6,6 +6,7 @@ import os
 import re
 import warnings
 import io
+import inspect
 
 import pytest
 
@@ -76,17 +77,18 @@ def test_all_classes_are_tested():
 
 
 def _test_args(obj):
-    return all(isinstance(arg, Basic) for arg in obj.args)
+    res = all(isinstance(arg, Basic) for arg in obj.args)
 
+    if hasattr(obj, 'doit'):
+        doit = obj.doit
+        if inspect.ismethod(doit):
+            spec = inspect.getargspec(doit)
+            res &= (len(spec.args) == 1 and spec.varargs is None
+                    and spec.keywords is not None)
+        else:
+            res &= False
 
-def test_sympy__assumptions__assume__AppliedPredicate():
-    from sympy.assumptions.assume import AppliedPredicate, Predicate
-    assert _test_args(AppliedPredicate(Predicate("test"), 2))
-
-
-def test_sympy__assumptions__assume__Predicate():
-    from sympy.assumptions.assume import Predicate
-    assert _test_args(Predicate("test"))
+    return res
 
 
 @pytest.mark.xfail
@@ -158,19 +160,19 @@ def test_sympy__concrete__products__Product():
 def test_sympy__concrete__expr_with_limits__ExprWithLimits():
     from sympy.concrete.expr_with_limits import ExprWithLimits
     assert _test_args(ExprWithLimits(x, (x, 0, 10)))
-    assert _test_args(ExprWithLimits(x*y, (x, 0, 10.),(y,1.,3)))
+    assert _test_args(ExprWithLimits(x*y, (x, 0, 10.), (y, 1., 3)))
 
 
 def test_sympy__concrete__expr_with_limits__AddWithLimits():
     from sympy.concrete.expr_with_limits import AddWithLimits
     assert _test_args(AddWithLimits(x, (x, 0, 10)))
-    assert _test_args(AddWithLimits(x*y, (x, 0, 10),(y,1,3)))
+    assert _test_args(AddWithLimits(x*y, (x, 0, 10), (y, 1, 3)))
 
 
 def test_sympy__concrete__expr_with_intlimits__ExprWithIntLimits():
     from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
     assert _test_args(ExprWithIntLimits(x, (x, 0, 10)))
-    assert _test_args(ExprWithIntLimits(x*y, (x, 0, 10),(y,1,3)))
+    assert _test_args(ExprWithIntLimits(x*y, (x, 0, 10), (y, 1, 3)))
 
 
 def test_sympy__concrete__summations__Sum():
@@ -761,7 +763,7 @@ def test_sympy__stats__crv_types__ChiDistribution():
 
 def test_sympy__stats__crv_types__ChiNoncentralDistribution():
     from sympy.stats.crv_types import ChiNoncentralDistribution
-    assert _test_args(ChiNoncentralDistribution(1,1))
+    assert _test_args(ChiNoncentralDistribution(1, 1))
 
 
 def test_sympy__stats__crv_types__ChiSquaredDistribution():
@@ -902,6 +904,10 @@ def test_sympy__stats__drv_types__PoissonDistribution():
 def test_sympy__stats__drv_types__GeometricDistribution():
     from sympy.stats.drv_types import GeometricDistribution
     assert _test_args(GeometricDistribution(.5))
+
+
+def test_sympy__core__symbol__BaseSymbol():
+    pass
 
 
 def test_sympy__core__symbol__Dummy():
@@ -1974,7 +1980,6 @@ def test_sympy__matrices__expressions__matexpr__MatrixExpr():
 
 def test_sympy__matrices__expressions__matexpr__MatrixElement():
     from sympy.matrices.expressions.matexpr import MatrixSymbol, MatrixElement
-    from sympy import S
     assert _test_args(MatrixElement(MatrixSymbol('A', 3, 5), Integer(2), Integer(3)))
 
 
@@ -2059,13 +2064,11 @@ def test_sympy__matrices__expressions__funcmatrix__FunctionMatrix():
 
 def test_sympy__matrices__expressions__fourier__DFT():
     from sympy.matrices.expressions.fourier import DFT
-    from sympy import S
     assert _test_args(DFT(Integer(2)))
 
 
 def test_sympy__matrices__expressions__fourier__IDFT():
     from sympy.matrices.expressions.fourier import IDFT
-    from sympy import S
     assert _test_args(IDFT(Integer(2)))
 
 from sympy.matrices.expressions import MatrixSymbol
@@ -2247,7 +2250,6 @@ def test_sympy__tensor__tensor__TensAdd():
 
 
 def test_sympy__tensor__tensor__Tensor():
-    from sympy.core import S
     from sympy.tensor.tensor import TensorIndexType, TensorSymmetry, TensorType, get_symmetric_group_sgs, tensor_indices, TensMul, TIDS
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)
@@ -2258,7 +2260,6 @@ def test_sympy__tensor__tensor__Tensor():
 
 
 def test_sympy__tensor__tensor__TensMul():
-    from sympy.core import S
     from sympy.tensor.tensor import TensorIndexType, TensorSymmetry, TensorType, get_symmetric_group_sgs, tensor_indices, TensMul, TIDS
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)

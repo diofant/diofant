@@ -55,8 +55,15 @@ License
 By submitting a PR, you agree to license your code under the SymPy's
 `BSD license`_ and `LGPL`_.
 
+Contributor Code of Conduct
+---------------------------
+
+This project adheres to `No Code of Conduct`_.  We are all adults.  We accept
+anyone's contributions.  Please, write good code.  Especially, please avoid
+writing **wrong** code (i.e. mathematically incorrect).  Nothing else matters.
 
 .. _GitHub issues: https://github.com/skirpichev/omg/issues
 .. _Pull Requests (PR): https://github.com/skirpichev/omg/pulls
 .. _BSD license: LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
+.. _No Code of Conduct: https://github.com/domgetter/NCoC

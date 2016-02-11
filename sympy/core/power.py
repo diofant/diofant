@@ -145,8 +145,6 @@ class Pow(Expr):
     """
     is_Pow = True
 
-    __slots__ = ['is_commutative']
-
     @cacheit
     def __new__(cls, b, e, evaluate=None):
         if evaluate is None:
@@ -188,9 +186,10 @@ class Pow(Expr):
                 obj = b._eval_power(e)
                 if obj is not None:
                     return obj
-        obj = Expr.__new__(cls, b, e)
-        obj.is_commutative = (b.is_commutative and e.is_commutative)
-        return obj
+        return Expr.__new__(cls, b, e)
+
+    def _eval_is_commutative(self):
+        return self.base.is_commutative and self.exp.is_commutative
 
     @property
     def base(self):
@@ -242,7 +241,7 @@ class Pow(Expr):
                 # floor(S.Half - e*arg(b)/2/pi) == 0
 
                 # handle -1 as special case
-                if (e == -1) == True:
+                if (e == -1):
                     # floor arg. is 1/2 + arg(b)/2/pi
                     if _half(other):
                         if b.is_negative is True:
@@ -255,15 +254,15 @@ class Pow(Expr):
                     if b.is_imaginary:
                         b = abs(im(b))*S.ImaginaryUnit
 
-                if (abs(e) < 1) == True or (e == 1) == True:
+                if (abs(e) < 1) is S.true or (e == 1):
                     s = 1  # floor = 0
                 elif b.is_nonnegative:
                     s = 1  # floor = 0
-                elif re(b).is_nonnegative and (abs(e) < 2) == True:
+                elif re(b).is_nonnegative and (abs(e) < 2) is S.true:
                     s = 1  # floor = 0
-                elif im(b).is_nonzero and (abs(e) == 2) == True:
+                elif im(b).is_nonzero and (abs(e) == 2):
                     s = 1  # floor = 0
-                elif b.is_imaginary and (abs(e) == 2) == True:
+                elif b.is_imaginary and (abs(e) == 2):
                     s = 1  # floor = 0
                 elif _half(other):
                     s = exp(2*S.Pi*S.ImaginaryUnit*other*floor(
@@ -277,8 +276,8 @@ class Pow(Expr):
                 #     _half(other) with constant floor or
                 #     floor(S.Half - im(e*log(b))/2/pi) == 0
                 try:
-                    s = exp(2*S.ImaginaryUnit*S.Pi*other*
-                        floor(S.Half - im(e*log(b))/2/S.Pi))
+                    s = exp(2*S.ImaginaryUnit*S.Pi*other *
+                            floor(S.Half - im(e*log(b))/2/S.Pi))
                     # be careful to test that s is -1 or 1 b/c sign(I) == I:
                     # so check that s is real
                     if s.is_extended_real and _n2(sign(s) - s) == 0:
@@ -502,7 +501,7 @@ class Pow(Expr):
         return self.base.is_polar
 
     def _eval_subs(self, old, new):
-        from sympy import exp, log, Symbol
+        from sympy import log, Symbol
 
         def _check(ct1, ct2, old):
             """Return bool, pow where, if bool is True, then the exponent of
@@ -1115,55 +1114,62 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
-        from sympy import exp, log, Order, powsimp, limit
-        b, e = self.args
-        if e.is_number:
-            s = b.nseries(x, n=n, logx=logx)
-            while s.is_Order:
-                n += 1
-                s = b.nseries(x, n=n, logx=logx)
-            a, b = s.as_leading_term(x).as_coeff_exponent(x)
-            t = expand_mul((s/(a*x**b) - 1).cancel())
-            if e is S.Infinity:
-                if b != 0:
-                    sig = -b
-                else:
-                    sig = abs(a) - 1 if a != 1 else t.removeO()
-                if sig.is_positive:
-                    return S.Infinity
-                elif sig.is_negative:
-                    return S.Zero
-                else:
-                    raise NotImplementedError
-            pow_series = S.One
-            if t != 0:
-                # series of (1 + t)**e in t
-                term = pow_series
-                for i in range(1, n):
-                    term *= (e - i + 1)*t/i
-                    term = term.nseries(x, n=n, logx=logx)
-                    pow_series += term
-                if not (e.is_Integer and e >= 0 and n > e):
-                    pow_series += Order(t**n, x)
-            pow_series = expand_mul(pow_series*(a*x**b)**e)
-            return powsimp(pow_series, deep=True, combine='exp')
-        else:
-            arg = e*log(b)
-            arg_series = arg._eval_nseries(x, n=n, logx=logx)
-            if arg_series.is_Order:
-                return 1 + arg_series
-            arg0 = limit(arg_series.removeO(), x, 0)
-            if arg0 in (S.NegativeInfinity, S.Infinity):
+        from sympy import exp, log, Order, powsimp, limit, floor, arg
+        if self.base is S.Exp1:
+            e_series = self.exp.nseries(x, n=n, logx=logx)
+            if e_series.is_Order:
+                return 1 + e_series
+            e0 = limit(e_series.removeO(), x, 0)
+            if e0 in (S.NegativeInfinity, S.Infinity):
                 return self
-            t = arg_series - arg0
-            exp_series = term = exp(arg0)
-            # series of exp(arg0 + t) in t
+            t = e_series - e0
+            exp_series = term = exp(e0)
+            # series of exp(e0 + t) in t
             for i in range(1, n):
                 term *= t/i
                 term = term.nseries(x, n=n, logx=logx)
                 exp_series += term
             exp_series += Order(t**n, x)
             return powsimp(exp_series, deep=True, combine='exp')
+        elif self.exp.has(x):
+            return exp(self.exp*log(self.base)).nseries(x, n=n, logx=logx)
+        else:
+            b_series = self.base.nseries(x, n=n, logx=logx)
+            while b_series.is_Order:
+                n += 1
+                b_series = self.base.nseries(x, n=n, logx=logx)
+            b0 = b_series.as_leading_term(x)
+            t = expand_mul((b_series/b0 - 1).cancel())
+            if t.is_Add:
+                t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
+            c, e = b0.as_coeff_exponent(x)
+            if self.exp is S.Infinity:
+                if e != 0:
+                    sig = -e
+                else:
+                    sig = abs(c) - 1 if c != 1 else t.removeO()
+                if sig.is_positive:
+                    return S.Infinity
+                elif sig.is_negative:
+                    return S.Zero
+                else:
+                    raise NotImplementedError
+            pow_series = term = S.One
+            # series of (1 + t)**e in t
+            for i in range(1, n):
+                term *= (self.exp - i + 1)*t/i
+                term = term.nseries(x, n=n, logx=logx)
+                pow_series += term
+            factor = b0**self.exp
+            if t != 0 and not (self.exp.is_Integer and self.exp >= 0 and n > self.exp):
+                pow_series += Order(t**n, x)
+                # branch handling
+                if c.is_negative:
+                    l = floor(arg(t.removeO()*c)/(2*S.Pi)).limit(x, 0)
+                    if l.is_finite:
+                        factor *= exp(2*S.Pi*S.ImaginaryUnit*self.exp*l)
+            pow_series = expand_mul(factor*pow_series)
+            return powsimp(pow_series, deep=True, combine='exp')
 
     def _eval_as_leading_term(self, x):
         from sympy import exp, log, Order
@@ -1307,4 +1313,4 @@ class Pow(Expr):
 from .add import Add
 from .numbers import Integer
 from .mul import Mul, _keep_coeff
-from .symbol import Symbol, Dummy, symbols
+from .symbol import Dummy, symbols

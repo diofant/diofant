@@ -106,7 +106,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     >>> heurisch(cos(n*x), x)
     sin(n*x)/n
     >>> heurisch_wrapper(cos(n*x), x)
-    Piecewise((x, Eq(n, 0)), (sin(n*x)/n, True))
+    Piecewise((x, Eq(n, 0)), (sin(n*x)/n, true))
 
     See Also
     ========
@@ -295,10 +295,10 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
                         if M is not None:
                             if M[a].is_positive:
-                                terms.add(sqrt(pi/4*(-M[a]))*exp(M[c] - M[b]**2/(4*M[a]))*
+                                terms.add(sqrt(pi/4*(-M[a]))*exp(M[c] - M[b]**2/(4*M[a])) *
                                           erfi(sqrt(M[a])*x + M[b]/(2*sqrt(M[a]))))
                             elif M[a].is_negative:
-                                terms.add(sqrt(pi/4*(-M[a]))*exp(M[c] - M[b]**2/(4*M[a]))*
+                                terms.add(sqrt(pi/4*(-M[a]))*exp(M[c] - M[b]**2/(4*M[a])) *
                                           erf(sqrt(-M[a])*x - M[b]/(2*sqrt(-M[a]))))
 
                         M = g.exp.match(a*log(x)**2)
@@ -324,7 +324,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                             if M[a].is_positive:
                                 terms.add(acosh(sqrt(M[a]/M[b])*x))
                             elif M[a].is_negative:
-                                terms.add((-M[b]/2*sqrt(-M[a])*
+                                terms.add((-M[b]/2*sqrt(-M[a]) *
                                            atan(sqrt(-M[a])*x/sqrt(M[a]*x**2 - M[b]))))
 
         else:
@@ -490,8 +490,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                     break  # should this be: `irreducibles |= \
             else:          # set(root_factors(poly, z, filter=field))`
                 continue   # and the line below deleted?
-                           #               |
-                           #               V
+                #                          |
+                #                          V
             irreducibles |= set(root_factors(poly, z, filter=field))
 
         log_coeffs, log_part = [], []

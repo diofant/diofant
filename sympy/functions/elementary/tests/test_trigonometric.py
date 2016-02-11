@@ -160,7 +160,7 @@ def test_sin_rewrite():
         exp).subs(x, 3).n() == sin(x).rewrite(exp).subs(x, tan(3)).n()
     assert sin(cot(x)).rewrite(
         exp).subs(x, 3).n() == sin(x).rewrite(exp).subs(x, cot(3)).n()
-    assert sin(log(x)).rewrite(Pow) == I*x**-I / 2 - I*x**I /2
+    assert sin(log(x)).rewrite(Pow) == I*x**-I / 2 - I*x**I / 2
     assert sin(x).rewrite(csc) == 1/csc(x)
 
 
@@ -487,7 +487,7 @@ def test_tan_expansion():
     assert tan(x + y).expand(trig=True) == ((tan(x) + tan(y))/(1 - tan(x)*tan(y))).expand()
     assert tan(x - y).expand(trig=True) == ((tan(x) - tan(y))/(1 + tan(x)*tan(y))).expand()
     assert tan(x + y + z).expand(trig=True) == (
-        (tan(x) + tan(y) + tan(z) - tan(x)*tan(y)*tan(z))/
+        (tan(x) + tan(y) + tan(z) - tan(x)*tan(y)*tan(z)) /
         (1 - tan(x)*tan(y) - tan(x)*tan(z) - tan(y)*tan(z))).expand()
     assert 0 == tan(2*x).expand(trig=True).rewrite(tan).subs([(tan(x), Rational(1, 7))])*24 - 7
     assert 0 == tan(3*x).expand(trig=True).rewrite(tan).subs([(tan(x), Rational(1, 5))])*55 - 37
@@ -623,7 +623,7 @@ def test_cot_expansion():
     assert cot(x + y).expand(trig=True) == ((cot(x)*cot(y) - 1)/(cot(x) + cot(y))).expand()
     assert cot(x - y).expand(trig=True) == (-(cot(x)*cot(y) + 1)/(cot(x) - cot(y))).expand()
     assert cot(x + y + z).expand(trig=True) == (
-        (cot(x)*cot(y)*cot(z) - cot(x) - cot(y) - cot(z))/
+        (cot(x)*cot(y)*cot(z) - cot(x) - cot(y) - cot(z)) /
         (-1 + cot(x)*cot(y) + cot(x)*cot(z) + cot(y)*cot(z))).expand()
     assert cot(3*x).expand(trig=True) == ((cot(x)**3 - 3*cot(x))/(3*cot(x)**2 - 1)).expand()
     assert 0 == cot(2*x).expand(trig=True).rewrite(cot).subs([(cot(x), Rational(1, 3))])*3 + 4
@@ -805,17 +805,17 @@ def test_atan2():
     u = Symbol("u", negative=True)
     assert atan2(0, u) == pi
 
-    assert atan2(y, oo) ==  0
-    assert atan2(y, -oo)==  2*pi*Heaviside(re(y)) - pi
+    assert atan2(y, oo) == 0
+    assert atan2(y, -oo) == 2*pi*Heaviside(re(y)) - pi
 
     assert atan2(y, x).rewrite(log) == -I*log((x + I*y)/sqrt(x**2 + y**2))
     assert atan2(y, x).rewrite(atan) == 2*atan(y/(x + sqrt(x**2 + y**2)))
 
     ex = atan2(y, x) - arg(x + I*y)
-    assert ex.subs({x:2, y:3}).rewrite(arg) == 0
-    assert ex.subs({x:2, y:3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
-    assert ex.subs({x:2*I, y:3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
-    assert ex.subs({x:2*I, y:3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
+    assert ex.subs({x: 2, y: 3}).rewrite(arg) == 0
+    assert ex.subs({x: 2, y: 3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
+    assert ex.subs({x: 2*I, y: 3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
+    assert ex.subs({x: 2*I, y: 3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
     i = symbols('i', imaginary=True)
     r = symbols('r', extended_real=True)
     e = atan2(i, r)
@@ -830,7 +830,7 @@ def test_atan2():
     assert diff(atan2(y, x), y) == x/(x**2 + y**2)
 
     assert simplify(diff(atan2(y, x).rewrite(log), x)) == -y/(x**2 + y**2)
-    assert simplify(diff(atan2(y, x).rewrite(log), y)) ==  x/(x**2 + y**2)
+    assert simplify(diff(atan2(y, x).rewrite(log), y)) == x/(x**2 + y**2)
 
 
 def test_acot():
@@ -1224,8 +1224,8 @@ def test_csc():
     # https://github.com/sympy/sympy/issues/6707
     cosecant = csc('x')
     alternate = 1/sin('x')
-    assert cosecant.equals(alternate) == True
-    assert alternate.equals(cosecant) == True
+    assert cosecant.equals(alternate)
+    assert alternate.equals(cosecant)
 
     assert csc.nargs == FiniteSet(1)
 

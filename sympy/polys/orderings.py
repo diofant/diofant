@@ -2,7 +2,7 @@
 
 __all__ = ["lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex"]
 
-from sympy.core import Symbol
+from sympy.core.symbol import Symbol
 from sympy.core.compatibility import iterable
 
 
@@ -14,7 +14,10 @@ class MonomialOrder(object):
     is_default = False
 
     def __repr__(self):
-        return self.__class__.__name__ + "()"
+        if self.alias:
+            return str(self)
+        else:
+            return self.__class__.__name__ + "()"
 
     def __str__(self):
         return self.alias

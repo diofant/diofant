@@ -29,7 +29,7 @@ from sympy.polys.orthopolys import (
     legendre_poly
 )
 
-_x = Dummy('x')
+_x = Dummy('dummy_for_special_polynomials')
 
 
 class OrthogonalPolynomial(Function):
@@ -356,7 +356,7 @@ class gegenbauer(OrthogonalPolynomial):
         if not n.is_Number:
             # Handle this before the general sign extraction rule
             if x == S.NegativeOne:
-                if (re(a) > S.Half) == True:
+                if (re(a) > S.Half) is S.true:
                     return S.ComplexInfinity
                 else:
                     # No sec function available yet

@@ -6,7 +6,7 @@ from sympy.core import Symbol, Dummy, Integer
 from sympy.core.compatibility import iterable
 from sympy.sets import Interval
 from sympy.core.relational import Relational, Eq, Ge, Lt
-from sympy.sets.sets import FiniteSet, Union, Intersection
+from sympy.sets.sets import FiniteSet, Union
 from sympy.core.singleton import S
 from sympy.functions import Abs, Piecewise
 from sympy.logic import And
@@ -484,7 +484,7 @@ def _reduce_inequalities(inequalities, symbols):
         # check for gens using atoms which is more strict than free_symbols to
         # guard against EX domain which won't be handled by
         # reduce_rational_inequalities
-        gens = expr.atoms(Symbol)
+        gens = expr.atoms(Dummy, Symbol)
 
         if len(gens) == 1:
             gen = gens.pop()

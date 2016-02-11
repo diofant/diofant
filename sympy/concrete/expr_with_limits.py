@@ -4,7 +4,7 @@ from sympy.core.mul import Mul
 from sympy.core.relational import Equality
 from sympy.sets.sets import Interval
 from sympy.core.singleton import S
-from sympy.core.symbol import Symbol
+from sympy.core.symbol import Dummy, Symbol
 from sympy.core.sympify import sympify
 from sympy.core.compatibility import is_sequence
 from sympy.core.containers import Tuple
@@ -22,7 +22,7 @@ def _process_limits(*symbols):
     limits = []
     orientation = 1
     for V in symbols:
-        if isinstance(V, Symbol):
+        if isinstance(V, (Dummy, Symbol)):
             limits.append(Tuple(V))
             continue
         elif is_sequence(V, Tuple):
@@ -57,7 +57,6 @@ def _process_limits(*symbols):
 
 
 class ExprWithLimits(Expr):
-    __slots__ = ['is_commutative']
 
     def __new__(cls, function, *symbols, **assumptions):
         # Any embedded piecewise functions need to be brought out to the
@@ -98,7 +97,6 @@ class ExprWithLimits(Expr):
         arglist = [function]
         arglist.extend(limits)
         obj._args = tuple(arglist)
-        obj.is_commutative = function.is_commutative  # limits already checked
 
         return obj
 
@@ -328,6 +326,9 @@ class ExprWithLimits(Expr):
 
         return self.func(func, *limits)
 
+    def _eval_is_commutative(self):
+        return self.function.is_commutative
+
 
 class AddWithLimits(ExprWithLimits):
     r"""Represents unevaluated oriented additions.
@@ -374,7 +375,6 @@ class AddWithLimits(ExprWithLimits):
         arglist = [orientation*function]
         arglist.extend(limits)
         obj._args = tuple(arglist)
-        obj.is_commutative = function.is_commutative  # limits already checked
 
         return obj
 
