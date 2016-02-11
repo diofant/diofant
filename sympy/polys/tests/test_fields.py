@@ -94,7 +94,7 @@ def test_FracElement_from_expr():
     f = F.from_expr(x)
     assert f == X and isinstance(f, F.dtype)
 
-    f = F.from_expr(Rational(3,7)*x)
+    f = F.from_expr(Rational(3, 7)*x)
     assert f == 3*X/7 and isinstance(f, F.dtype)
 
     f = F.from_expr(1/x)
@@ -136,7 +136,7 @@ def test_FracElement__lt_le_gt_ge__():
 
 
 def test_FracElement___neg__():
-    F, x,y = field("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
 
     f = (7*x - 9)/y
     g = (-7*x + 9)/y
@@ -146,26 +146,26 @@ def test_FracElement___neg__():
 
 
 def test_FracElement___add__():
-    F, x,y = field("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
 
     f, g = 1/x, 1/y
     assert f + g == g + f == (x + y)/(x*y)
 
     assert x + F.ring.gens[0] == F.ring.gens[0] + x == 2*x
 
-    F, x,y = field("x,y", ZZ)
+    F,  x, y = field("x,y", ZZ)
     assert x + 3 == 3 + x
-    assert x + QQ(3,7) == QQ(3,7) + x == (7*x + 3)/7
+    assert x + QQ(3, 7) == QQ(3, 7) + x == (7*x + 3)/7
 
-    Fuv, u,v = field("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
+    Fuv,  u, v = field("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = (u*v + x)/(y + u*v)
     assert dict(f.numer) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
     assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): u*v}
 
-    Ruv, u,v = ring("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Ruv)
+    Ruv,  u, v = ring("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = (u*v + x)/(y + u*v)
     assert dict(f.numer) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
@@ -173,53 +173,53 @@ def test_FracElement___add__():
 
 
 def test_FracElement___sub__():
-    F, x,y = field("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
 
     f, g = 1/x, 1/y
     assert f - g == (-x + y)/(x*y)
 
     assert x - F.ring.gens[0] == F.ring.gens[0] - x == 0
 
-    F, x,y = field("x,y", ZZ)
+    F,  x, y = field("x,y", ZZ)
     assert x - 3 == -(3 - x)
-    assert x - QQ(3,7) == -(QQ(3,7) - x) == (7*x - 3)/7
+    assert x - QQ(3, 7) == -(QQ(3, 7) - x) == (7*x - 3)/7
 
-    Fuv, u,v = field("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
-
-    f = (u*v - x)/(y - u*v)
-    assert dict(f.numer) == {(1, 0, 0, 0):-1, (0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0):-u*v}
-
-    Ruv, u,v = ring("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Ruv)
+    Fuv,  u, v = field("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = (u*v - x)/(y - u*v)
-    assert dict(f.numer) == {(1, 0, 0, 0):-1, (0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0):-u*v}
+    assert dict(f.numer) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
+    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
+
+    Ruv,  u, v = ring("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
+
+    f = (u*v - x)/(y - u*v)
+    assert dict(f.numer) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
+    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
 
 
 def test_FracElement___mul__():
-    F, x,y = field("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
 
     f, g = 1/x, 1/y
     assert f*g == g*f == 1/(x*y)
 
     assert x*F.ring.gens[0] == F.ring.gens[0]*x == x**2
 
-    F, x,y = field("x,y", ZZ)
+    F,  x, y = field("x,y", ZZ)
     assert x*3 == 3*x
-    assert x*QQ(3,7) == QQ(3,7)*x == 3*x/7
+    assert x*QQ(3, 7) == QQ(3, 7)*x == 3*x/7
 
-    Fuv, u,v = field("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
+    Fuv,  u, v = field("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = ((u + 1)*x*y + 1)/((v - 1)*z - t*u*v - 1)
     assert dict(f.numer) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
     assert dict(f.denom) == {(0, 0, 1, 0): v - 1, (0, 0, 0, 1): -u*v, (0, 0, 0, 0): -1}
 
-    Ruv, u,v = ring("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Ruv)
+    Ruv,  u, v = ring("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = ((u + 1)*x*y + 1)/((v - 1)*z - t*u*v - 1)
     assert dict(f.numer) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
@@ -227,23 +227,23 @@ def test_FracElement___mul__():
 
 
 def test_FracElement___div__():
-    F, x,y = field("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
 
     f, g = 1/x, 1/y
     assert f/g == y/x
 
     assert x/F.ring.gens[0] == F.ring.gens[0]/x == 1
 
-    F, x,y = field("x,y", ZZ)
+    F,  x, y = field("x,y", ZZ)
     assert x*3 == 3*x
-    assert x/QQ(3,7) == (QQ(3,7)/x)**-1 == 7*x/3
+    assert x/QQ(3, 7) == (QQ(3, 7)/x)**-1 == 7*x/3
 
     pytest.raises(ZeroDivisionError, lambda: x/0)
     pytest.raises(ZeroDivisionError, lambda: 1/(x - x))
     pytest.raises(ZeroDivisionError, lambda: x/(x - x))
 
-    Fuv, u,v = field("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Fuv)
+    Fuv,  u, v = field("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = (u*v)/(x*y)
     assert dict(f.numer) == {(0, 0, 0, 0): u*v}
@@ -253,8 +253,8 @@ def test_FracElement___div__():
     assert dict(g.numer) == {(1, 1, 0, 0): 1}
     assert dict(g.denom) == {(0, 0, 0, 0): u*v}
 
-    Ruv, u,v = ring("u,v", ZZ)
-    Fxyzt, x,y,z,t = field("x,y,z,t", Ruv)
+    Ruv,  u, v = ring("u,v", ZZ)
+    Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = (u*v)/(x*y)
     assert dict(f.numer) == {(0, 0, 0, 0): u*v}
@@ -266,7 +266,7 @@ def test_FracElement___div__():
 
 
 def test_FracElement___pow__():
-    F, x,y = field("x,y", QQ)
+    F,  x, y = field("x,y", QQ)
 
     f, g = 1/x, 1/y
 
@@ -280,14 +280,14 @@ def test_FracElement___pow__():
 
 
 def test_FracElement_diff():
-    F, x,y,z = field("x,y,z", ZZ)
+    F,  x, y, z = field("x,y,z", ZZ)
 
     assert ((x**2 + y)/(z + 1)).diff(x) == 2*x/(z + 1)
 
 
 @pytest.mark.xfail
 def test_FracElement___call__():
-    F, x,y,z = field("x,y,z", ZZ)
+    F,  x, y, z = field("x,y,z", ZZ)
     f = (x**2 + 3*y)/z
 
     r = f(1, 1, 1)
@@ -296,7 +296,7 @@ def test_FracElement___call__():
 
 
 def test_FracElement_evaluate():
-    F, x,y,z = field("x,y,z", ZZ)
+    F,  x, y, z = field("x,y,z", ZZ)
     Fyz = field("y,z", ZZ)[0]
     f = (x**2 + 3*y)/z
 
@@ -305,7 +305,7 @@ def test_FracElement_evaluate():
 
 
 def test_FracElement_subs():
-    F, x,y,z = field("x,y,z", ZZ)
+    F,  x, y, z = field("x,y,z", ZZ)
     f = (x**2 + 3*y)/z
 
     assert f.subs(x, 0) == 3*y/z

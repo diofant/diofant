@@ -1578,9 +1578,9 @@ class Segment(LinearEntity):
         p2 = Point(p2)
         if p1 == p2:
             return Point(p1)
-        if (p1.x > p2.x) == True:
+        if (p1.x > p2.x) is S.true:
             p1, p2 = p2, p1
-        elif (p1.x == p2.x) == True and (p1.y > p2.y) == True:
+        elif (p1.x == p2.x) and (p1.y > p2.y) is S.true:
             p1, p2 = p2, p1
         return LinearEntity.__new__(cls, p1, p2, **kwargs)
 

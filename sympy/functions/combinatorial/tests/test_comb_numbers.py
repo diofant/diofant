@@ -210,11 +210,11 @@ def test_harmonic_rewrite_polygamma():
     m = Symbol("m")
 
     assert harmonic(n).rewrite(digamma) == polygamma(0, n + 1) + EulerGamma
-    assert harmonic(n).rewrite(trigamma) ==  polygamma(0, n + 1) + EulerGamma
-    assert harmonic(n).rewrite(polygamma) ==  polygamma(0, n + 1) + EulerGamma
+    assert harmonic(n).rewrite(trigamma) == polygamma(0, n + 1) + EulerGamma
+    assert harmonic(n).rewrite(polygamma) == polygamma(0, n + 1) + EulerGamma
 
-    assert harmonic(n,3).rewrite(polygamma) == polygamma(2, n + 1)/2 - polygamma(2, 1)/2
-    assert harmonic(n,m).rewrite(polygamma) == (-1)**m*(polygamma(m - 1, 1) - polygamma(m - 1, n + 1))/factorial(m - 1)
+    assert harmonic(n, 3).rewrite(polygamma) == polygamma(2, n + 1)/2 - polygamma(2, 1)/2
+    assert harmonic(n, m).rewrite(polygamma) == (-1)**m*(polygamma(m - 1, 1) - polygamma(m - 1, n + 1))/factorial(m - 1)
 
     assert expand_func(harmonic(n+4)) == harmonic(n) + 1/(n + 4) + 1/(n + 3) + 1/(n + 2) + 1/(n + 1)
     assert expand_func(harmonic(n-4)) == harmonic(n) - 1/(n - 1) - 1/(n - 2) - 1/(n - 3) - 1/n
@@ -484,13 +484,13 @@ def test_nC_nP_nT():
     assert nT('aaaa') == nT(4) == len(list(partitions(4))) == 5
     assert nT('aaab') == len(list(multiset_partitions('aaab'))) == 7
     assert nC('aabb'*3, 3) == 4  # aaa, bbb, abb, baa
-    assert dict(_AOP_product((4,1,1,1))) == {
+    assert dict(_AOP_product((4, 1, 1, 1))) == {
         0: 1, 1: 4, 2: 7, 3: 8, 4: 8, 5: 7, 6: 4, 7: 1}
     # the following was the first t that showed a problem in a previous form of
     # the function, so it's not as random as it may appear
     t = (3, 9, 4, 6, 6, 5, 5, 2, 10, 4)
     assert sum(_AOP_product(t)[i] for i in range(55)) == 58212000
-    pytest.raises(ValueError, lambda: _multiset_histogram({1:'a'}))
+    pytest.raises(ValueError, lambda: _multiset_histogram({1: 'a'}))
 
 
 def test_issue_8496():

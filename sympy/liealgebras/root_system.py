@@ -111,7 +111,7 @@ class RootSystem(Basic):
 
         """
         n = self.cartan_type.rank()
-        rs = " + ".join("alpha["+str(i) +"]" for i in range(1, n+1))
+        rs = " + ".join("alpha[" + str(i) + "]" for i in range(1, n + 1))
         return rs
 
     def add_simple_roots(self, root1, root2):

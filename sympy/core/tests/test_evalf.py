@@ -280,10 +280,10 @@ def test_evalf_trig_zero_detection():
 
 
 def test_evalf_sum():
-    assert Sum(n,(n,1,2)).evalf() == 3.
-    assert Sum(n,(n,1,2)).doit().evalf() == 3.
+    assert Sum(n, (n, 1, 2)).evalf() == 3.
+    assert Sum(n, (n, 1, 2)).doit().evalf() == 3.
     # the next test should return instantly
-    assert Sum(1/n,(n,1,2)).evalf() == 1.5
+    assert Sum(1/n, (n, 1, 2)).evalf() == 1.5
 
     # issue 8219
     assert Sum(E/factorial(n), (n, 0, oo)).evalf() == (E*E).evalf()
@@ -308,7 +308,7 @@ def test_evalf_divergent_series():
 
 def test_evalf_product():
     assert Product(n, (n, 1, 10)).evalf() == 3628800.
-    assert Product(1 - S.Half**2/n**2, (n, 1, oo)).evalf(5)==0.63662
+    assert Product(1 - S.Half**2/n**2, (n, 1, oo)).evalf(5) == 0.63662
     assert Product(n, (n, -1, 3)).evalf() == 0
 
 
@@ -387,7 +387,7 @@ def test_subs():
 def test_issue_4956_5204():
     # issue 4956
     v = ((-27*12**Rational(1, 3)*sqrt(31)*I +
-         27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I)/
+         27*2**Rational(2, 3)*3**Rational(1, 3)*sqrt(31)*I) /
          (-2511*2**Rational(2, 3)*3**Rational(1, 3) + (29*18**Rational(1, 3) +
          9*2**Rational(1, 3)*3**Rational(2, 3)*sqrt(31)*I +
          87*2**Rational(1, 3)*3**Rational(1, 6)*I)**2))
@@ -464,7 +464,7 @@ def test_issue_6632_evalf():
 def test_issue_4945():
     from sympy.abc import H
     from sympy import zoo
-    assert (H/0).evalf(subs={H:1}) == zoo*H
+    assert (H/0).evalf(subs={H: 1}) == zoo*H
 
 
 def test_evalf_integral():

@@ -201,53 +201,6 @@ class stringPict(object):
 
         return ('\n'.join(res.picture), res.baseline)
 
-    def leftslash(self):
-        """Precede object by a slash of the proper size.
-        """
-        # XXX not used anywhere ?
-        height = max(
-            self.baseline,
-            self.height() - 1 - self.baseline)*2 + 1
-        slash = '\n'.join(
-            ' '*(height - i - 1) + xobj('/', 1) + ' '*i
-            for i in range(height)
-        )
-        return self.left(stringPict(slash, height//2))
-
-    def root(self, n=None):
-        """Produce a nice root symbol.
-        Produces ugly results for big n inserts.
-        """
-        # XXX not used anywhere
-        # XXX duplicate of root drawing in pretty.py
-        # put line over expression
-        result = self.above('_'*self.width())
-        # construct right half of root symbol
-        height = self.height()
-        slash = '\n'.join(
-            ' ' * (height - i - 1) + '/' + ' ' * i
-            for i in range(height)
-        )
-        slash = stringPict(slash, height - 1)
-        # left half of root symbol
-        if height > 2:
-            downline = stringPict('\\ \n \\', 1)
-        else:
-            downline = stringPict('\\')
-        # put n on top, as low as possible
-        if n is not None and n.width() > downline.width():
-            downline = downline.left(' '*(n.width() - downline.width()))
-            downline = downline.above(n)
-        # build root symbol
-        root = downline.right(slash)
-        # glue it on at the proper height
-        # normally, the root symbel is as high as self
-        # which is one less than result
-        # this moves the root symbol one down
-        # if the root became higher, the baseline has to grow too
-        root.baseline = result.baseline - result.height() + root.height()
-        return result.left(root)
-
     def render(self, * args, **kwargs):
         """Return the string form of self.
 
@@ -415,7 +368,7 @@ class prettyForm(stringPict):
         if den.binding == prettyForm.DIV:
             den = stringPict(*den.parens())
 
-        if num.binding==prettyForm.NEG:
+        if num.binding == prettyForm.NEG:
             num = num.right(" ")[0]
 
         return prettyForm(binding=prettyForm.DIV, *stringPict.stack(
@@ -499,23 +452,3 @@ class prettyForm(stringPict):
         return prettyForm(binding=prettyForm.POW, *bot.above(top))
 
     simpleFunctions = ["sin", "cos", "tan"]
-
-    @staticmethod
-    def apply(function, *args):
-        """Functions of one or more variables.
-        """
-        if function in prettyForm.simpleFunctions:
-            # simple function: use only space if possible
-            assert len(
-                args) == 1, "Simple function %s must have 1 argument" % function
-            arg = args[0].__pretty__()
-            if arg.binding <= prettyForm.DIV:
-                # optimization: no parentheses necessary
-                return prettyForm(binding=prettyForm.FUNC, *arg.left(function + ' '))
-        argumentList = []
-        for arg in args:
-            argumentList.append(',')
-            argumentList.append(arg.__pretty__())
-        argumentList = stringPict(*stringPict.next(*argumentList[1:]))
-        argumentList = stringPict(*argumentList.parens())
-        return prettyForm(binding=prettyForm.ATOM, *argumentList.left(function))

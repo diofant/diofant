@@ -1,6 +1,6 @@
 from sympy.concrete.expr_with_limits import AddWithLimits
 from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
-from sympy.core.function import Derivative
+from sympy.core.function import Derivative, Function
 from sympy.core.relational import Eq
 from sympy.core.singleton import S
 from sympy.core.symbol import (Dummy, Wild)
@@ -11,7 +11,7 @@ from sympy.solvers import solve
 from sympy.core.numbers import Integer
 
 
-class Sum(AddWithLimits,ExprWithIntLimits):
+class Sum(AddWithLimits, ExprWithIntLimits):
     r"""Represents unevaluated summation.
 
     ``Sum`` represents a finite or infinite series, with the first argument
@@ -141,8 +141,6 @@ class Sum(AddWithLimits,ExprWithIntLimits):
     .. [3] http://en.wikipedia.org/wiki/Empty_sum
     """
 
-    __slots__ = ['is_commutative']
-
     def __new__(cls, function, *symbols, **assumptions):
         obj = AddWithLimits.__new__(cls, function, *symbols, **assumptions)
         if not hasattr(obj, 'limits'):
@@ -169,7 +167,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         for n, limit in enumerate(self.limits):
             i, a, b = limit
             dif = b - a
-            if dif.is_integer and (dif < 0) == True:
+            if dif.is_integer and (dif < 0) is S.true:
                 a, b = b + 1, a - 1
                 f = -f
 
@@ -283,9 +281,9 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         if len(self.limits) != 1:
             raise ValueError("More than 1 limit")
         i, a, b = self.limits[0]
-        if (a > b) == True:
+        if (a > b) is S.true:
             if a - b == 1:
-                return S.Zero,S.Zero
+                return S.Zero, S.Zero
             a, b = b + 1, a - 1
             f = -f
         s = S.Zero
@@ -415,7 +413,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
 
         return Sum(e * self.function, *limits)
 
-    def findrecur(self, F=Dummy('F'), n=None):
+    def findrecur(self, F=Function('F'), n=None):
         """
         Find a recurrence formula for the summand of the sum.
 
@@ -429,7 +427,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         Examples
         ========
 
-        >>> from sympy import symbols, Function, factorial, oo
+        >>> from sympy import symbols, factorial, oo
         >>> from sympy.concrete import Sum
         >>> n, k = symbols('n, k', integer=True)
         >>> s = Sum(factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
@@ -447,7 +445,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
 
         """
-        from sympy import Function, expand_func, gamma, factor, Mul
+        from sympy import expand_func, gamma, factor, Mul
         from sympy.polys import together
         from sympy.simplify import collect
 
@@ -473,7 +471,7 @@ class Sum(AddWithLimits,ExprWithIntLimits):
         y, x, sols = S.Zero, [], {}
 
         while not any(v for a, v in sols.items()):
-            if step%2 != 0:
+            if step % 2 != 0:
                 dy = sum(a(I, j)*f(n - j, k - I)/f(n, k) for j in range(J))
                 dx = [a(I, j) for j in range(J)]
                 I += 1

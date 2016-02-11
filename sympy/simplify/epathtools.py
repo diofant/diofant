@@ -24,8 +24,6 @@ class EPath(object):
 
     """
 
-    __slots__ = ["_path", "_epath"]
-
     def __new__(cls, path):
         """Construct new EPath. """
         if isinstance(path, EPath):

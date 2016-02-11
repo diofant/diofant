@@ -2,19 +2,16 @@
 
 import operator
 
-from sympy.polys.polyutils import PicklableWithSlots
 from sympy.polys.polyerrors import CoercionFailed
 from sympy.polys.domains.domainelement import DomainElement
 from sympy.utilities import public
 
 
 @public
-class ModularInteger(PicklableWithSlots, DomainElement):
+class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 
     mod, dom, sym, _parent = None, None, None, None
-
-    __slots__ = ['val']
 
     def parent(self):
         return self._parent

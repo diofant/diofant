@@ -61,7 +61,7 @@ class Ynm(Function):
     >>> Ynm(n, m, theta, -phi)
     E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
 
-    For specific integers n and m we can evalute the harmonics
+    For specific integers n and m we can evaluate the harmonics
     to more useful expressions
 
     >>> simplify(Ynm(0, 0, theta, phi).expand(func=True))
@@ -199,7 +199,7 @@ class Ynm(Function):
         # TODO: Assert |m| <= n ortherwise we should return 0
         term = simplify(self.expand(func=True))
         # We can do this because of the range of theta
-        term = term.xreplace({Abs(sin(theta)):sin(theta)})
+        term = term.xreplace({Abs(sin(theta)): sin(theta)})
         return simplify(trigsimp(term))
 
     def _eval_conjugate(self):

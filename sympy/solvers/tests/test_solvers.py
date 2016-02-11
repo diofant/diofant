@@ -168,7 +168,7 @@ def test_solve_polynomial1():
     assert solve(x - y**3, x) == [y**3]
     rx = root(x, 3)
     assert solve(x - y**3, y) == [
-        rx, -rx/2 - sqrt(3)*I*rx/2, -rx/2 +  sqrt(3)*I*rx/2]
+        rx, -rx/2 - sqrt(3)*I*rx/2, -rx/2 + sqrt(3)*I*rx/2]
     a11, a12, a21, a22, b1, b2 = symbols('a11,a12,a21,a22,b1,b2')
 
     assert solve([a11*x + a12*y - b1, a21*x + a22*y - b2], x, y) == \
@@ -629,7 +629,6 @@ def test_issue_5197():
     x = Symbol('x', positive=True)
     y = Symbol('y')
     assert solve([x + 5*y - 2, -3*x + 6*y - 15], x, y) == []
-                 # not {x: -3, y: 1} b/c x is positive
     # The solution following should not contain (-sqrt(2), sqrt(2))
     assert solve((x + y)*n - y**2 + 2, x, y) == [(sqrt(2), -sqrt(2))]
     y = Symbol('y', positive=True)
@@ -955,7 +954,7 @@ def test_unrad1():
     # assert unrad(root(cosh(x), 3)/x*root(x + 1, 5) - 1) == (
     #    x**15 - x**3*cosh(x)**5 - 3*x**2*cosh(x)**5 - 3*x*cosh(x)**5 - cosh(x)**5, [])
     pytest.raises(NotImplementedError, lambda:
-                  unrad(sqrt(cosh(x)/x) + root(x + 1,3)*sqrt(x) - 1))
+                  unrad(sqrt(cosh(x)/x) + root(x + 1, 3)*sqrt(x) - 1))
     assert unrad((x+y)**(2*y/3) + (x+y)**Rational(1, 3) + 1) is None
     assert check(unrad((x+y)**(2*y/3) + (x+y)**Rational(1, 3) + 1, x),
         (s**(2*y) + s + 1, [s, s**3 - x - y]))
@@ -995,11 +994,12 @@ def test_unrad1():
         (729*s**13 - 216*s**12 + 1728*s**11 - 512*s**10 + 1701*s**9 -
         3024*s**8 + 1344*s**7 + 1323*s**5 - 2904*s**4 + 343*s, [s, s**4 - x -
         1]))  # orig expr has 2 real roots: -0.91, -0.15
+
+    # orig expr has 1 real root: 19.53
     assert check(unrad(root(x, 3)/2 - root(x + 1, 4) + root(x + 2, 3) - 2),
         (729*s**13 + 1242*s**12 + 18496*s**10 + 129701*s**9 + 388602*s**8 +
         453312*s**7 - 612864*s**6 - 3337173*s**5 - 6332418*s**4 - 7134912*s**3
         - 5064768*s**2 - 2111913*s - 398034, [s, s**4 - x - 1]))
-        # orig expr has 1 real root: 19.53
 
     ans = solve(sqrt(x) + sqrt(x + 1) -
                 sqrt(1 - x) - sqrt(2 + x))
@@ -1021,12 +1021,12 @@ def test_unrad1():
          Rational(1, 3) + (Rational(47, 54) + sqrt(93)/6)**Rational(1, 3))**3])
     assert solve(sqrt(sqrt(x + 1)) + x**Rational(1, 3) - 2) == (
         [(-sqrt(-2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-         6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 2) +
-         121/(4*sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-         2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))))/2 +
+          6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 2) +
+          121/(4*sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
+          2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))))/2 +
             sqrt(-6/(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) +
-         2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))/2 +
-         Rational(9, 4))**3])
+          2*(Rational(-1, 16) + sqrt(6913)/16)**Rational(1, 3) + Rational(17, 4))/2 +
+          Rational(9, 4))**3])
     assert solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) == (
         [(-(Rational(81, 2) + 3*sqrt(741)/2)**Rational(1, 3)/3 +
             (Rational(81, 2) + 3*sqrt(741)/2)**Rational(-1, 3) + 2)**2])
@@ -1176,7 +1176,7 @@ def test_issue_5901():
                 h(a), g(a), set=True) == \
         ([g(a)], {
         (-sqrt(h(a)**2*f(a)**2 + G)/f(a),),
-        (sqrt(h(a)**2*f(a)**2+ G)/f(a),)})
+        (sqrt(h(a)**2*f(a)**2 + G)/f(a),)})
     args = [f(x).diff(x, 2)*(f(x) + g(x)) - g(x)**2 + 2, f(x), g(x)]
     assert set(solve(*args)) == \
         {(-sqrt(2), sqrt(2)), (sqrt(2), -sqrt(2))}
@@ -1270,12 +1270,12 @@ def test_issue_6056():
         -log(2)/2 + log(1 - I),
         -log(2)/2 + log(-1 - I),
         -log(2)/2 + log(1 + I),
-        -log(2)/2 + log(-1 + I),}
+        -log(2)/2 + log(-1 + I), }
     assert {simplify(w) for w in solve((tanh(x + 3)*tanh(x - 3) + 1)**2)} == {
         -log(2)/2 + log(1 - I),
         -log(2)/2 + log(-1 - I),
         -log(2)/2 + log(1 + I),
-        -log(2)/2 + log(-1 + I),}
+        -log(2)/2 + log(-1 + I), }
 
 
 def test_issue_6060():
@@ -1738,12 +1738,12 @@ def test_issue_8828():
     f1 = (x - x1)**2 + (y - y1)**2 - (r1 - z)**2
     f2 = (x2 - x)**2 + (y2 - y)**2 - z**2
     f3 = (x - x3)**2 + (y - y3)**2 - (r3 - z)**2
-    F = f1,f2,f3
+    F = f1, f2, f3
 
     g1 = sqrt((x - x1)**2 + (y - y1)**2) + z - r1
     g2 = f2
     g3 = sqrt((x - x3)**2 + (y - y3)**2) + z - r3
-    G = g1,g2,g3
+    G = g1, g2, g3
 
     A = solve(F, v)
     B = solve(G, v)

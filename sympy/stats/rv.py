@@ -245,8 +245,7 @@ class RandomSymbol(Expr):
     def _eval_is_extended_real(self):
         return self.symbol.is_extended_real or self.pspace.is_extended_real
 
-    @property
-    def is_commutative(self):
+    def _eval_is_commutative(self):
         return self.symbol.is_commutative
 
     def _hashable_content(self):
@@ -629,7 +628,9 @@ class Density(Basic):
         else:
             return
 
-    def doit(self, evaluate=True, **kwargs):
+    def doit(self, **kwargs):
+        evaluate = kwargs.pop('evaluate', True)
+
         expr, condition = self.expr, self.condition
         if condition is not None:
             # Recompute on new conditional expr
@@ -687,9 +688,11 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
 
     if numsamples:
         return sampling_density(expr, condition, numsamples=numsamples,
-                **kwargs)
+                                **kwargs)
 
-    return Density(expr, condition).doit(evaluate=evaluate, **kwargs)
+    kwargs['evaluate'] = evaluate
+
+    return Density(expr, condition).doit(**kwargs)
 
 
 def cdf(expr, condition=None, evaluate=True, **kwargs):

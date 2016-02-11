@@ -98,8 +98,9 @@ def test_math_lambda():
     f = lambdify(x, sin(x), "math")
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
+
+    # if this succeeds, it can't be a python math function
     pytest.raises(TypeError, lambda: f(x))
-           # if this succeeds, it can't be a python math function
 
 
 @conserve_mpmath_dps
@@ -109,8 +110,9 @@ def test_mpmath_lambda():
     f = lambdify(x, sin(x), "mpmath")
     prec = 1e-49  # mpmath precision is around 50 decimal places
     assert -prec < f(mpmath.mpf("0.2")) - sin02 < prec
+
+    # if this succeeds, it can't be a mpmath function
     pytest.raises(TypeError, lambda: f(x))
-           # if this succeeds, it can't be a mpmath function
 
 
 @conserve_mpmath_dps
@@ -366,8 +368,8 @@ def test_numpy_matmul():
 def test_numpy_numexpr():
     a, b, c = numpy.random.randn(3, 128, 128)
     # ensure that numpy and numexpr return same value for complicated expression
-    expr = sin(x) + cos(y) + tan(z)**2 + Abs(z-y)*acos(sin(y*z)) + \
-           Abs(y-z)*acosh(2+exp(y-x))- sqrt(x**2+I*y**2)
+    expr = (sin(x) + cos(y) + tan(z)**2 + Abs(z - y)*acos(sin(y*z)) +
+            Abs(y - z)*acosh(2 + exp(y - x)) - sqrt(x**2 + I*y**2))
     npfunc = lambdify((x, y, z), expr, modules='numpy')
     nefunc = lambdify((x, y, z), expr, modules='numexpr')
     assert numpy.allclose(npfunc(a, b, c), nefunc(a, b, c))

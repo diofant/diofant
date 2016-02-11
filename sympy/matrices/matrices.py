@@ -656,7 +656,7 @@ class MatrixBase(object):
         for i in range(self.rows):
             res.append([])
             for j in range(self.cols):
-                s = printer._print(self[i,j])
+                s = printer._print(self[i, j])
                 res[-1].append(s)
                 maxlen[j] = max(len(s), maxlen[j])
         # Patch strings together
@@ -3447,14 +3447,14 @@ class MatrixBase(object):
         if len(ev) == 0:
             raise AttributeError("could not compute the eigenvalues")
         for eigenval, multiplicity, vects in _eigenvects:
-            l_jordan_chains={}
+            l_jordan_chains = {}
             geometrical = len(vects)
             if geometrical == multiplicity:
                 # The Jordan chains have all length 1 and consist of only one vector
                 # which is the eigenvector of course
                 chains = []
                 for v in vects:
-                    chain=[v]
+                    chain = [v]
                     chains.append(chain)
                 l_jordan_chains[1] = chains
                 jordan_block_structures[eigenval] = l_jordan_chains
@@ -3509,8 +3509,8 @@ class MatrixBase(object):
                 # by counting the number of Jordan chains for `a` given `s`
                 # `a_0` is `dim(Kernel(Ms[0]) = dim (Kernel(I)) = 0` since `I` is regular
 
-                l_jordan_chains={}
-                chain_vectors=[]
+                l_jordan_chains = {}
+                chain_vectors = []
                 Ms = [I]
                 Ns = [[]]
                 a = [0]
@@ -3524,7 +3524,7 @@ class MatrixBase(object):
                     a.append(a_new)
                     M_new = Ms[-1]*M
                     Ns_new = M_new.nullspace()
-                    a_new=len(Ns_new)
+                    a_new = len(Ns_new)
                     Ms.append(M_new)
                     Ns.append(Ns_new)
                     smax += 1
@@ -3605,7 +3605,7 @@ class MatrixBase(object):
                     s_chains = []
                     # s_cells=[]
                     for i in range(0, n_e0):
-                        chain=[e0s[i]]
+                        chain = [e0s[i]]
                         for k in range(1, s):
                             v = M*chain[k-1]
                             chain.append(v)
@@ -3708,7 +3708,7 @@ class MatrixBase(object):
             for s in reversed(sorted((l_jordan_chains).keys())):  # Start with the biggest block
                 s_chains = l_jordan_chains[s]
                 block = self.jordan_cell(eigenval, s)
-                number_of_s_chains=len(s_chains)
+                number_of_s_chains = len(s_chains)
                 for i in range(0, number_of_s_chains):
                     Jcells.append(type(self)(block))
                     chain_vectors = s_chains[i]

@@ -6,6 +6,7 @@ import os
 import re
 import warnings
 import io
+import inspect
 
 import pytest
 
@@ -76,7 +77,18 @@ def test_all_classes_are_tested():
 
 
 def _test_args(obj):
-    return all(isinstance(arg, Basic) for arg in obj.args)
+    res = all(isinstance(arg, Basic) for arg in obj.args)
+
+    if hasattr(obj, 'doit'):
+        doit = obj.doit
+        if inspect.ismethod(doit):
+            spec = inspect.getargspec(doit)
+            res &= (len(spec.args) == 1 and spec.varargs is None
+                    and spec.keywords is not None)
+        else:
+            res &= False
+
+    return res
 
 
 @pytest.mark.xfail
@@ -148,19 +160,19 @@ def test_sympy__concrete__products__Product():
 def test_sympy__concrete__expr_with_limits__ExprWithLimits():
     from sympy.concrete.expr_with_limits import ExprWithLimits
     assert _test_args(ExprWithLimits(x, (x, 0, 10)))
-    assert _test_args(ExprWithLimits(x*y, (x, 0, 10.),(y,1.,3)))
+    assert _test_args(ExprWithLimits(x*y, (x, 0, 10.), (y, 1., 3)))
 
 
 def test_sympy__concrete__expr_with_limits__AddWithLimits():
     from sympy.concrete.expr_with_limits import AddWithLimits
     assert _test_args(AddWithLimits(x, (x, 0, 10)))
-    assert _test_args(AddWithLimits(x*y, (x, 0, 10),(y,1,3)))
+    assert _test_args(AddWithLimits(x*y, (x, 0, 10), (y, 1, 3)))
 
 
 def test_sympy__concrete__expr_with_intlimits__ExprWithIntLimits():
     from sympy.concrete.expr_with_intlimits import ExprWithIntLimits
     assert _test_args(ExprWithIntLimits(x, (x, 0, 10)))
-    assert _test_args(ExprWithIntLimits(x*y, (x, 0, 10),(y,1,3)))
+    assert _test_args(ExprWithIntLimits(x*y, (x, 0, 10), (y, 1, 3)))
 
 
 def test_sympy__concrete__summations__Sum():
@@ -751,7 +763,7 @@ def test_sympy__stats__crv_types__ChiDistribution():
 
 def test_sympy__stats__crv_types__ChiNoncentralDistribution():
     from sympy.stats.crv_types import ChiNoncentralDistribution
-    assert _test_args(ChiNoncentralDistribution(1,1))
+    assert _test_args(ChiNoncentralDistribution(1, 1))
 
 
 def test_sympy__stats__crv_types__ChiSquaredDistribution():

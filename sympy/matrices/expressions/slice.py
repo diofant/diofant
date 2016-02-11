@@ -1,5 +1,5 @@
 from sympy.matrices.expressions.matexpr import MatrixExpr
-from sympy import Tuple, Basic
+from sympy import Tuple, Basic, S
 from sympy.functions.elementary.integers import floor
 
 
@@ -7,9 +7,9 @@ def normalize(i, parentsize):
     if isinstance(i, slice):
         i = (i.start, i.stop, i.step)
     if not isinstance(i, (tuple, list, Tuple)):
-        if (i < 0) == True:
+        if (i < S.Zero) is S.true:
             i += parentsize
-        i = (i, i+1, 1)
+        i = (i, i + 1, 1)
     i = list(i)
     if len(i) == 2:
         i.append(1)
@@ -17,13 +17,13 @@ def normalize(i, parentsize):
     start = start or 0
     if stop is None:
         stop = parentsize
-    if (start < 0) == True:
+    if (start < S.Zero) is S.true:
         start += parentsize
-    if (stop < 0) == True:
+    if (stop < S.Zero) is S.true:
         stop += parentsize
     step = step or 1
 
-    if ((stop - start) * step < 1) == True:
+    if ((stop - start) * step < S.One) is S.true:
         raise IndexError()
 
     return (start, stop, step)
@@ -59,10 +59,10 @@ class MatrixSlice(MatrixExpr):
         colslice = normalize(colslice, parent.shape[1])
         if not (len(rowslice) == len(colslice) == 3):
             raise IndexError()
-        if ((0 > rowslice[0]) == True or
-                (parent.shape[0] < rowslice[1]) == True or
-                (0 > colslice[0]) == True or
-                (parent.shape[1] < colslice[1]) == True):
+        if ((0 > rowslice[0]) is S.true or
+                (parent.shape[0] < rowslice[1]) is S.true or
+                (0 > colslice[0]) is S.true or
+                (parent.shape[1] < colslice[1]) is S.true):
             raise IndexError()
         if isinstance(parent, MatrixSlice):
             return mat_slice_of_slice(parent, rowslice, colslice)

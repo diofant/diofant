@@ -259,7 +259,7 @@ class Plane(GeometryEntity):
                 return False
 
     def is_perpendicular(self, l):
-        """is the given geometric entity perpendicualar to the given plane?
+        """is the given geometric entity perpendicular to the given plane?
 
         Parameters
         ==========
@@ -300,7 +300,7 @@ class Plane(GeometryEntity):
             return False
 
     def distance(self, o):
-        """Distance beteen the plane and another geometric entity.
+        """Distance between the plane and another geometric entity.
 
         Parameters
         ==========
@@ -701,10 +701,10 @@ class Plane(GeometryEntity):
                 f = solve((d.subs(z, 0), e.subs(z, 0)), [x, y])
                 if len(f) == 2:
                     return [Line3D(Point3D(f[x], f[y], 0), direction_ratio=c)]
-                g = solve((d.subs(y, 0), e.subs(y, 0)),[x, z])
+                g = solve((d.subs(y, 0), e.subs(y, 0)), [x, z])
                 if len(g) == 2:
                     return [Line3D(Point3D(g[x], 0, g[z]), direction_ratio=c)]
-                h = solve((d.subs(x, 0), e.subs(x, 0)),[y, z])
+                h = solve((d.subs(x, 0), e.subs(x, 0)), [y, z])
                 if len(h) == 2:
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]
 

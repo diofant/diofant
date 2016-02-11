@@ -25,7 +25,7 @@ matrix:
       script:
         - python setup.py test --cov -m 'not slow and not xfail'
       after_success:
-        - coveralls
+        - codecov
     - python: 3.4
       install:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
@@ -36,15 +36,15 @@ matrix:
         - py.test --cov sympy sympy/polys
         - sphinx-build -W -b html docs build/sphinx/html
       after_success:
-        - coveralls
+        - codecov
     - python: "pypy3"
       install:
         - pip install .
       script:
         - py.test --ignore sympy/plotting/plot.py --ignore sympy/plotting/plot_implicit.py --ignore docs/modules/numeric-computation.rst --ignore sympy/matrices/dense.py --ignore sympy/tensor/tensor.py --ignore sympy/utilities/lambdify.py sympy docs
 before_install:
-  - pip install --upgrade pip setuptools pytest
-  - pip install coveralls
+  - pip install --upgrade pip 'setuptools<=19.4' pytest
+  - pip install codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
 before_script:

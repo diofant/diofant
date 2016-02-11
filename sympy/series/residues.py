@@ -46,11 +46,8 @@ def residue(expr, x, x0):
     expr = sympify(expr)
     if x0 != 0:
         expr = expr.subs(x, x + x0)
-    for n in [0, 1, 2, 4, 8, 16, 32]:
-        if n == 0:
-            s = expr.series(x, n=0)
-        else:
-            s = expr.nseries(x, n=n)
+    for n in [1, 2, 4, 8, 16, 32]:
+        s = expr.nseries(x, n=n)
         if s.has(Order) and s.removeO() == 0:
             # bug in nseries
             continue

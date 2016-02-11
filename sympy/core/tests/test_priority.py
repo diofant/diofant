@@ -7,6 +7,8 @@ class Higher(Expr):
     _op_priority = 20.0
     result = 'high'
 
+    is_commutative = False
+
     @call_highest_priority('__rmul__')
     def __mul__(self, other):
         return self.result

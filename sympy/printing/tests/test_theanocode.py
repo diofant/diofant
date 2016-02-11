@@ -214,7 +214,7 @@ def test_MatrixSlice_2():
 
     Y = X[1:2:3, 4:5:6]
     Yt = theano_code(Y)
-    assert tuple(Yt.owner.op.idx_list) == (slice(1,2,3), slice(4,5,6))
+    assert tuple(Yt.owner.op.idx_list) == (slice(1, 2, 3), slice(4, 5, 6))
 
 
 def test_BlockMatrix():
@@ -289,11 +289,11 @@ def test_cache():
 def test_Piecewise():
     # A piecewise linear
     xt, yt = theano_code(x), theano_code(y)
-    expr = sy.Piecewise((0, x<0), (x, x<2), (1, True))  # ___/III
+    expr = sy.Piecewise((0, x < 0), (x, x < 2), (1, True))  # ___/III
     result = theano_code(expr)
     assert result.owner.op == tt.switch
 
-    expected = tt.switch(xt<0, 0, tt.switch(xt<2, xt, 1))
+    expected = tt.switch(xt < 0, 0, tt.switch(xt < 2, xt, 1))
     assert theq(result, expected)
 
     expr = sy.Piecewise((x, x < 0))

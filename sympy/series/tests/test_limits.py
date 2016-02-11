@@ -7,9 +7,9 @@ from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    cot, Rational, I, tan, cot, integrate, Sum, sign,
                    Function, subfactorial, PoleError, Integer)
 from sympy.series.limits import heuristics
-from sympy.series.order import Order
+from sympy.series.order import O
 
-from sympy.abc import x, y, z, a
+from sympy.abc import a, c, x, y, z, a, n
 
 
 def test_basic1():
@@ -36,7 +36,7 @@ def test_basic1():
     limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
     assert limit(gamma(1/x + 3), x, oo) == 2
     assert limit(S.NaN, x, -oo) == S.NaN
-    assert limit(Order(2)*x, x, S.NaN) == S.NaN
+    assert limit(O(2)*x, x, S.NaN) == S.NaN
     assert limit(1/(x - 1), x, 1, dir="+") == oo
     assert limit(1/(x - 1), x, 1, dir="-") == -oo
     assert limit(1/(5 - x)**3, x, 5, dir="+") == -oo
@@ -190,7 +190,6 @@ def test_issue_3871():
 
 
 def test_exponential():
-    n = Symbol('n')
     x = Symbol('x', extended_real=True)
     assert limit((1 + x/n)**n, n, oo) == exp(x)
     assert limit((1 + x/(2*n))**n, n, oo) == exp(x/2)
@@ -201,7 +200,6 @@ def test_exponential():
 
 @pytest.mark.xfail
 def test_exponential2():
-    n = Symbol('n')
     assert limit((1 + x/(n + sin(n)))**n, n, oo) == exp(x)
 
 
@@ -326,7 +324,7 @@ def test_extended_real_line():
 @pytest.mark.xfail
 def test_order_oo():
     x = Symbol('x', positive=True, finite=True)
-    assert Order(x)*oo != Order(1, x)
+    assert O(x)*oo != O(1, x)
     assert limit(oo/(x**2 - 4), x, oo) == oo
 
 
@@ -380,9 +378,7 @@ def test_issue_6560():
 
 
 def test_issue_5172():
-    n = Symbol('n')
     r = Symbol('r', positive=True)
-    c = Symbol('c')
     p = Symbol('p', positive=True)
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
@@ -394,18 +390,15 @@ def test_issue_5172():
 
 
 def test_issue_7088():
-    a = Symbol('a')
     assert limit(sqrt(x/(x + a)), x, oo) == 1
 
 
 def test_issue_6364():
-    a = Symbol('a')
     e = z/(1 - sqrt(1 + z)*sin(a)**2 - sqrt(1 - z)*cos(a)**2)
     assert (limit(e, z, 0) - 2/cos(2*a)).simplify() == 0
 
 
 def test_issue_4099():
-    a = Symbol('a')
     assert limit(a/x, x, 0) == oo*sign(a)
     assert limit(-a/x, x, 0) == -oo*sign(a)
     assert limit(-a*x, x, oo) == -oo*sign(a)

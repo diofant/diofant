@@ -322,7 +322,7 @@ def test_meijerg_eval():
 
     expr = (meijerg(((0.5,), ()), ((0.5, 0, 0.5), ()), exp_polar(-I*pi)/4)
             + meijerg(((0.5,), ()), ((0.5, 0, 0.5), ()), exp_polar(I*pi)/4)) \
-        /(2*sqrt(pi))
+        / (2*sqrt(pi))
     assert (expr - pi/exp(1)).n(chop=True) == 0
 
 

@@ -14,7 +14,7 @@ def test_dup_sturm():
     assert R.dup_sturm(x) == [x, 1]
 
     f = x**3 - 2*x**2 + 3*x - 5
-    assert R.dup_sturm(f) == [f, 3*x**2 - 4*x + 3, -QQ(10,9)*x + QQ(13,3), -QQ(3303,100)]
+    assert R.dup_sturm(f) == [f, 3*x**2 - 4*x + 3, -QQ(10, 9)*x + QQ(13, 3), -QQ(3303, 100)]
 
 
 def test_dup_refine_real_root():

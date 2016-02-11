@@ -456,11 +456,11 @@ class Function(Application, Expr):
                 # pass
                 if isinstance(m, mpf):
                     m = m._mpf_
-                    return m[1] !=1 and m[-1] == 1
+                    return m[1] != 1 and m[-1] == 1
                 elif isinstance(m, mpc):
                     m, n = m._mpc_
-                    return m[1] !=1 and m[-1] == 1 and \
-                        n[1] !=1 and n[-1] == 1
+                    return m[1] != 1 and m[-1] == 1 and \
+                        n[1] != 1 and n[-1] == 1
                 else:
                     return False
 
@@ -603,18 +603,16 @@ class Function(Application, Expr):
                 return series + Order(x**n, x)
             return e1.nseries(x, n=n, logx=logx)
         arg = self.args[0]
-        l = []
-        g = None
-        # try to predict a number of terms needed
-        nterms = n + 2
-        cf = Order(arg.as_leading_term(x), x).getn()
-        if cf != 0:
-            nterms = int(nterms / cf)
-        for i in range(nterms):
-            g = self.taylor_term(i, arg, g)
-            g = g.nseries(x, n=n, logx=logx)
-            l.append(g)
-        return Add(*l) + Order(x**n, x)
+        f_series = order = S.Zero
+        i, term = 0, None
+        while order == 0 or i <= n:
+            if term:
+                f_series += term
+            term = self.taylor_term(i, arg, term)
+            term = term.nseries(x, n=n, logx=logx)
+            order = Order(term, x)
+            i += 1
+        return f_series + order
 
     def fdiff(self, argindex=1):
         """
@@ -1504,8 +1502,8 @@ class Subs(Expr):
     def _eval_is_commutative(self):
         return self.expr.is_commutative
 
-    def doit(self):
-        return self.expr.doit().subs(list(zip(self.variables, self.point)))
+    def doit(self, **hints):
+        return self.expr.doit(**hints).subs(list(zip(self.variables, self.point)))
 
     def evalf(self, prec=None, **options):
         return self.doit().evalf(prec, **options)

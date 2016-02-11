@@ -160,3 +160,6 @@ class ImmutableSparseMatrix(Basic, SparseMatrix):
         return hash((type(self).__name__,) + (self.shape, tuple(self._smat)))
 
     _eval_Eq = ImmutableMatrix._eval_Eq
+# This is included after the class definition as a workaround for issue 7213.
+# See https://github.com/sympy/sympy/issues/7213
+ImmutableSparseMatrix.is_zero = SparseMatrix.is_zero

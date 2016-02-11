@@ -329,8 +329,8 @@ class interval(object):
             elif other.is_valid is None or self.is_valid is None:
                 return interval(-float('inf'), float('inf'), is_valid=None)
             else:
-               # denominator contains both signs, i.e. being divided by zero
-               # return the whole real line with is_valid = None
+                # denominator contains both signs, i.e. being divided by zero
+                # return the whole real line with is_valid = None
                 if 0 in other:
                     return interval(-float('inf'), float('inf'), is_valid=None)
 

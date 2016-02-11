@@ -54,7 +54,6 @@ class Assignment(Relational):
     """
 
     rel_op = ':='
-    __slots__ = []
 
     def __new__(cls, lhs, rhs=0, **assumptions):
         from sympy.matrices.expressions.matexpr import (

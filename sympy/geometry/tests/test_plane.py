@@ -165,7 +165,7 @@ def test_plane():
     assert pl4.intersection(pl4.p1) == [pl4.p1]
     assert pl3.intersection(pl6) == [
         Line3D(Point3D(8, 4, 0), Point3D(2, 4, 6))]
-    assert pl3.intersection(Line3D(Point3D(1,2,4), Point3D(4,4,2))) == [
+    assert pl3.intersection(Line3D(Point3D(1, 2, 4), Point3D(4, 4, 2))) == [
         Point3D(2, 8/3, 10/3)]
     assert pl3.intersection(Plane(Point3D(6, 0, 0), normal_vector=(2, -5, 3))
         ) == [Line3D(Point3D(-24, -12, 0), Point3D(-25, -13, -1))]
@@ -176,7 +176,7 @@ def test_plane():
     assert pl7.intersection(Line(Point(2, 3), Point(4, 2))) == [
         Point3D(13/2, 3/4, 0)]
     r = Ray(Point(2, 3), Point(4, 2))
-    assert Plane((1,2,0), normal_vector=(0,0,1)).intersection(r) == [
+    assert Plane((1, 2, 0), normal_vector=(0, 0, 1)).intersection(r) == [
         Ray3D(Point(2, 3), Point(4, 2))]
 
     assert pl3.random_point() in pl3

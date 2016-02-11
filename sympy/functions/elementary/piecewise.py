@@ -219,41 +219,41 @@ class Piecewise(Function):
                 super(Piecewise, self)._eval_interval(sym, a, b))
 
         mul = 1
-        if (a == b) == True:
+        if a == b:
             return S.Zero
-        elif (a > b) == True:
+        elif (a > b) is S.true:
             a, b, mul = b, a, -1
-        elif (a <= b) != True:
+        elif (a <= b) is not S.true:
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
                     sym, S.NegativeInfinity, S.Infinity, c)
                 values = []
                 for lower, upper, expr in intervals:
-                    if (a < lower) == True:
+                    if (a < lower) is S.true:
                         mid = lower
                         rep = b
                         val = e._eval_interval(sym, mid, b)
                         val += self._eval_interval(sym, a, mid)
-                    elif (a > upper) == True:
+                    elif (a > upper) is S.true:
                         mid = upper
                         rep = b
                         val = e._eval_interval(sym, mid, b)
                         val += self._eval_interval(sym, a, mid)
-                    elif (a >= lower) == True and (a <= upper) == True:
+                    elif (a >= lower) is S.true and (a <= upper) is S.true:
                         rep = b
                         val = e._eval_interval(sym, a, b)
-                    elif (b < lower) == True:
+                    elif (b < lower) is S.true:
                         mid = lower
                         rep = a
                         val = e._eval_interval(sym, a, mid)
                         val += self._eval_interval(sym, mid, b)
-                    elif (b > upper) == True:
+                    elif (b > upper) is S.true:
                         mid = upper
                         rep = a
                         val = e._eval_interval(sym, a, mid)
                         val += self._eval_interval(sym, mid, b)
-                    elif ((b >= lower) == True) and ((b <= upper) == True):
+                    elif ((b >= lower) is S.true) and ((b <= upper) is S.true):
                         rep = a
                         val = e._eval_interval(sym, a, b)
                     else:
@@ -375,8 +375,8 @@ class Piecewise(Function):
                         self.__eval_cond(upper == int_expr[n][1]):
                     upper = Min(upper, int_expr[n][0])
                 elif len(int_expr[n][1].free_symbols) and \
-                        (lower >= int_expr[n][0]) != True and \
-                        (int_expr[n][1] == Min(lower, upper)) != True:
+                        (lower >= int_expr[n][0]) is not S.true and \
+                        (int_expr[n][1] == Min(lower, upper)) is not True:
                     upper = Min(upper, int_expr[n][0])
                 elif self.__eval_cond(upper > int_expr[n][0]) and \
                         self.__eval_cond(upper <= int_expr[n][1]):
@@ -385,7 +385,7 @@ class Piecewise(Function):
                         self.__eval_cond(upper < int_expr[n][1]):
                     int_expr[n][0] = Max(upper, int_expr[n][0])
 
-            if self.__eval_cond(lower >= upper) != True:  # Is it still an interval?
+            if self.__eval_cond(lower >= upper) is not True:  # Is it still an interval?
                 int_expr.append([lower, upper, expr])
             if orig_cond == targetcond:
                 return [(lower, upper, None)]
@@ -419,14 +419,14 @@ class Piecewise(Function):
         holes = []
         curr_low = a
         for int_a, int_b, expr in int_expr:
-            if (curr_low < int_a) == True:
+            if (curr_low < int_a) is S.true:
                 holes.append([curr_low, Min(b, int_a), default])
-            elif (curr_low >= int_a) != True:
+            elif (curr_low >= int_a) is not S.true:
                 holes.append([curr_low, Min(b, int_a), default])
             curr_low = Min(b, int_b)
-        if (curr_low < b) == True:
+        if (curr_low < b) is S.true:
             holes.append([Min(b, curr_low), b, default])
-        elif (curr_low >= b) != True:
+        elif (curr_low >= b) is not S.true:
             holes.append([Min(b, curr_low), b, default])
 
         if holes and default is not None:

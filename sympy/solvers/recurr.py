@@ -130,7 +130,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     coeffs = [ Poly(coeff, n) for coeff in coeffs ]
 
     polys = [ Poly(0, n) ] * (r + 1)
-    terms = [ (S.Zero, S.NegativeInfinity) ] *(r + 1)
+    terms = [ (S.Zero, S.NegativeInfinity) ] * (r + 1)
 
     for i in range(0, r + 1):
         for j in range(i, r + 1):
@@ -628,7 +628,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 # start the product with the term y(n_root + 1).
                 n0 = 0
                 for n_root in roots(ratio.as_numer_denom()[1], n).keys():
-                    if (n0 < (n_root + 1)) == True:
+                    if (n0 < (n_root + 1)) is S.true:
                         n0 = n_root + 1
                 K = product(ratio, (n, n0, n - 1))
                 if K.has(factorial, FallingFactorial, RisingFactorial):

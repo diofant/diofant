@@ -175,7 +175,7 @@ setup(name='sympy',
       ],
       tests_require=['pytest>=2.7.0', 'pep8>=1.6.0', 'pytest-cov'],
       install_requires=['mpmath>=0.19', 'decorator', 'strategies>=0.2.3'],
-      setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
+      setup_requires=['setuptools>=5.5.1,<=19.4', 'pip>=6.0'],
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],
           'gmpy': ["gmpy>=1.16"],

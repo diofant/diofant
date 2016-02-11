@@ -372,7 +372,7 @@ def _parts_rule(integrand, symbol):
                 args = [arg for arg in integrand.args
                         if any(isinstance(arg, cls) for cls in functions)]
                 if args:
-                    u = reduce(lambda a,b: a*b, args)
+                    u = reduce(lambda a, b: a*b, args)
                     dv = integrand / u
                     return u, dv
 
@@ -680,7 +680,7 @@ def trig_tansec_rule(integral):
         match = integrand.match(pattern)
 
         if match:
-            a, b, m, n = match.get(a, 0),match.get(b, 0), match.get(m, 0), match.get(n, 0)
+            a, b, m, n = match.get(a, 0), match.get(b, 0), match.get(m, 0), match.get(n, 0)
             return multiplexer({
                 tansec_tanodd_condition: tansec_tanodd,
                 tansec_seceven_condition: tansec_seceven,
@@ -701,7 +701,7 @@ def trig_cotcsc_rule(integral):
         match = integrand.match(pattern)
 
         if match:
-            a, b, m, n = match.get(a, 0),match.get(b, 0), match.get(m, 0), match.get(n, 0)
+            a, b, m, n = match.get(a, 0), match.get(b, 0), match.get(m, 0), match.get(n, 0)
             return multiplexer({
                 cotcsc_cotodd_condition: cotcsc_cotodd,
                 cotcsc_csceven_condition: cotcsc_csceven

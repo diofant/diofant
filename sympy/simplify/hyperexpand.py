@@ -218,7 +218,7 @@ def add_formulae(formulae):
                   * exp(-I*pi/4)/(2*root(z, 4)),
                   sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
                                       + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
-                  *exp(-I*pi/4)/2,
+                  * exp(-I*pi/4)/2,
                   1 ]),
          Matrix([[1, 0, 0]]),
          Matrix([[-Rational(1, 4), 1,      Rational(1, 4)],
@@ -228,7 +228,7 @@ def add_formulae(formulae):
     # 2F2
     addb([S.Half, a], [Rational(3, 2), a + 1],
          Matrix([a/(2*a - 1)*(-I)*sqrt(pi/z)*erf(I*sqrt(z)),
-                 a/(2*a - 1)*(polar_lift(-1)*z)**(-a)*
+                 a/(2*a - 1)*(polar_lift(-1)*z)**(-a) *
                  lowergamma(a, polar_lift(-1)*z),
                  a/(2*a - 1)*exp(z)]),
          Matrix([[1, -1, 0]]),
@@ -287,14 +287,14 @@ def add_formulae(formulae):
     addb([a], [a - S.Half, 2*a],
          Matrix([z**(S.Half - a)*besseli(a - S.Half, sqrt(z))**2,
                  z**(1 - a)*besseli(a - S.Half, sqrt(z))
-                 *besseli(a - Rational(3, 2), sqrt(z)),
+                 * besseli(a - Rational(3, 2), sqrt(z)),
                  z**(Rational(3, 2) - a)*besseli(a - Rational(3, 2), sqrt(z))**2]),
          Matrix([[-gamma(a + S.Half)**2/4**(S.Half - a),
                  2*gamma(a - S.Half)*gamma(a + S.Half)/4**(1 - a),
                  0]]),
          Matrix([[1 - 2*a, 1, 0], [z/2, S.Half - a, S.Half], [0, z, 0]]))
     addb([S.Half], [b, 2 - b],
-         pi*(1 - b)/sin(pi*b)*
+         pi*(1 - b)/sin(pi*b) *
          Matrix([besseli(1 - b, sqrt(z))*besseli(b - 1, sqrt(z)),
                  sqrt(z)*(besseli(-b, sqrt(z))*besseli(b - 1, sqrt(z))
                           + besseli(1 - b, sqrt(z))*besseli(b, sqrt(z))),
@@ -387,10 +387,10 @@ def add_formulae(formulae):
                  a*exp(z)/(a**2 - 2*a + 1),
                  a/(z*(a**2 - 2*a + 1))]),
          Matrix([[1-a, 1, -1/z, 1]]),
-         Matrix([[-1,0,-1/z,1],
-                 [0,-a,1,0],
-                 [0,0,z,0],
-                 [0,0,0,-1]]))
+         Matrix([[-1, 0, -1/z, 1],
+                 [0, -a, 1, 0],
+                 [0, 0, z, 0],
+                 [0, 0, 0, -1]]))
 
 
 def add_meijerg_formulae(formulae):
@@ -1342,7 +1342,7 @@ class ReduceOrder(Operator):
         n = ai - bj
         if not n.is_Integer or n < 0:
             return
-        if bj.is_integer and bj <= 0 and bj + n - 1 >= 0:
+        if bj.is_integer and bj <= 0:
             return
 
         expr = Operator.__new__(cls)
@@ -1706,7 +1706,7 @@ def try_polynomial(func, z):
     al0 = [x for x in a0 if x <= 0]
     bl0 = [x for x in b0 if x <= 0]
 
-    if bl0:
+    if bl0 and len(al0) <= 1:
         return oo
     if not al0:
         return
@@ -1945,10 +1945,10 @@ def hyperexpand_special(ap, bq, z):
             # Kummer
             if b.is_integer and b.is_negative:
                 return 2*cos(pi*b/2)*gamma(-b)*gamma(b - a + 1) \
-                    /gamma(-b/2)/gamma(b/2 - a + 1)
+                    / gamma(-b/2)/gamma(b/2 - a + 1)
             else:
                 return gamma(b/2 + 1)*gamma(b - a + 1) \
-                    /gamma(b + 1)/gamma(b/2 - a + 1)
+                    / gamma(b + 1)/gamma(b/2 - a + 1)
     # TODO tons of more formulae
     #      investigate what algorithms exist
     return hyper(ap, bq, z_)

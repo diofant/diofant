@@ -68,7 +68,7 @@ def test_rsolve_hyper():
 
     assert rsolve_hyper([-1, 1], 3*(n + n**2), n).expand() == C0 + n**3 - n
 
-    assert rsolve_hyper([-a, 1],0,n).expand() == C0*a**n
+    assert rsolve_hyper([-a, 1], 0, n).expand() == C0*a**n
 
     assert rsolve_hyper([-a, 0, 1], 0, n).expand() == (-1)**n*C1*a**(n/2) + C0*a**(n/2)
 
@@ -85,7 +85,7 @@ def recurrence_term(c, f):
 
 def test_rsolve_bulk():
     """Some bulk-generated tests."""
-    funcs = [ n, n + 1, n**2, n**3, n**4, n + n**2, 27*n + 52*n**2 - 3*
+    funcs = [ n, n + 1, n**2, n**3, n**4, n + n**2, 27*n + 52*n**2 - 3 *
         n**3 + 12*n**4 - 52*n**5 ]
     coeffs = [ [-2, 1], [-2, -1, 1], [-1, 1, 1, -1, 1], [-n, 1], [n**2 -
         n + 12, 1] ]
@@ -174,7 +174,7 @@ def test_rsolve():
 
     assert rsolve(Eq(y(n + 1), a*y(n)), y(n), {y(1): a}).simplify() == a**n
 
-    assert rsolve(y(n) - a*y(n-2),y(n),
+    assert rsolve(y(n) - a*y(n-2), y(n),
             {y(1): sqrt(a)*(a + b), y(2): a*(a - b)}).simplify() == \
             a**(n/2)*(-(-1)**n*b + a)
 

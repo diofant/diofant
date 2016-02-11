@@ -1322,9 +1322,9 @@ class Segment3D(LinearEntity3D):
         p2 = Point3D(p2)
         if p1 == p2:
             return Point3D(p1)
-        if (p1.x > p2.x) == True:
+        if (p1.x > p2.x) is S.true:
             p1, p2 = p2, p1
-        elif (p1.x == p2.x) == True and (p1.y > p2.y) == True:
+        elif (p1.x == p2.x) and (p1.y > p2.y) is S.true:
             p1, p2 = p2, p1
         return LinearEntity3D.__new__(cls, p1, p2, **kwargs)
 

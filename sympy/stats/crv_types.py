@@ -202,7 +202,7 @@ class BeniniDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         alpha, beta, sigma = self.alpha, self.beta, self.sigma
         return (exp(-alpha*log(x/sigma) - beta*log(x/sigma)**2)
-               *(alpha/x + 2*beta*log(x/sigma)/x))
+               * (alpha/x + 2*beta*log(x/sigma)/x))
 
 
 def Benini(name, alpha, beta, sigma):
@@ -216,7 +216,7 @@ def Benini(name, alpha, beta, sigma):
                 -\beta\log^2\left[{\frac{x}{\sigma}}\right]}
                 \left(\frac{\alpha}{x}+\frac{2\beta\log{\frac{x}{\sigma}}}{x}\right)
 
-    This is a heavy-tailed distrubtion and is also known as the log-Rayleigh
+    This is a heavy-tailed distribution and is also known as the log-Rayleigh
     distribution.
 
     Parameters
@@ -1798,11 +1798,10 @@ class QuadraticUDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         a, b = self.a, self.b
-        alpha = 12 / (b-a)**3
-        beta = (a+b) / 2
-        return Piecewise(
-            (alpha * (x-beta)**2, And(a<=x, x<=b)),
-            (S.Zero, True))
+        alpha = 12/(b - a)**3
+        beta = (a + b)/2
+        return Piecewise((alpha*(x - beta)**2, And(a <= x, x <= b)),
+                         (S.Zero, True))
 
 
 def QuadraticU(name, a, b):
@@ -1877,7 +1876,7 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         mu, s = self.mu, self.s
         return Piecewise(
-            ((1+cos(pi*(x-mu)/s)) / (2*s), And(mu-s<=x, x<=mu+s)),
+            ((1 + cos(pi*(x - mu)/s))/(2*s), And(mu - s <= x, x <= mu + s)),
             (S.Zero, True))
 
 

@@ -41,7 +41,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
     if len(factors) == 1:
         return factors[0]
 
-    points = {x:v}
+    points = {x: v}
     symbols = dom.symbols if hasattr(dom, 'symbols') else []
     t = QQ(1, 10)
 
@@ -173,7 +173,7 @@ def _minimal_polynomial_sq(p, n, x):
     while 1:
         p1 = _separate_sq(p)
         if p1 is p:
-            p = p1.subs({x:x**n})
+            p = p1.subs({x: x**n})
             break
         else:
             p = p1
@@ -428,7 +428,7 @@ def _minpoly_cos(ex, x):
                 q = sympify(c.q)
                 if q.is_prime:
                     s = _minpoly_sin(ex, x)
-                    return _mexpand(s.subs({x:sqrt((1 - x)/2)}))
+                    return _mexpand(s.subs({x: sqrt((1 - x)/2)}))
 
             # for a = pi*p/q, cos(q*a) =T_q(cos(a)) = (-1)**p
             n = int(c.q)
@@ -484,7 +484,7 @@ def _minpoly_rootof(ex, x):
     Returns the minimal polynomial of a ``RootOf`` object.
     """
     p = ex.expr
-    p = p.subs({ex.poly.gens[0]:x})
+    p = p.subs({ex.poly.gens[0]: x})
     _, factors = factor_list(p, x)
     result = _choose_factor(factors, x, ex)
     return result

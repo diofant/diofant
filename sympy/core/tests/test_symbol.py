@@ -294,7 +294,7 @@ def test_symbols():
 
     assert symbols('aa:d') == (aa, ab, ac, ad)
     assert symbols('aa:d,x:z') == (aa, ab, ac, ad, x, y, z)
-    assert symbols(('aa:d','x:z')) == ((aa, ab, ac, ad), (x, y, z))
+    assert symbols(('aa:d', 'x:z')) == ((aa, ab, ac, ad), (x, y, z))
 
     # issue 6675
     def sym(s):
@@ -326,9 +326,3 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols('a::'))
     pytest.raises(ValueError, lambda: symbols(':a:'))
     pytest.raises(ValueError, lambda: symbols('::a'))
-
-
-def test_call():
-    f = Symbol('f')
-    assert f(2)
-    pytest.raises(TypeError, lambda: Wild('x')(1))

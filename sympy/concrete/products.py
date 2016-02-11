@@ -182,8 +182,6 @@ class Product(ExprWithIntLimits):
     .. [3] http://en.wikipedia.org/wiki/Empty_product
     """
 
-    __slots__ = ['is_commutative']
-
     def __new__(cls, function, *symbols, **assumptions):
         obj = ExprWithIntLimits.__new__(cls, function, *symbols, **assumptions)
         return obj

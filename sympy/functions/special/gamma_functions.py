@@ -428,11 +428,11 @@ class uppergamma(Function):
 
         # We extract branching information here. C/f lowergamma.
         nx, n = z.extract_branch_factor()
-        if a.is_integer and (a > 0) == True:
+        if a.is_integer and (a > 0) is S.true:
             nx = unpolarify(z)
             if z != nx:
                 return uppergamma(a, nx)
-        elif a.is_integer and (a <= 0) == True:
+        elif a.is_integer and (a <= 0) is S.true:
             if n != 0:
                 return -2*pi*I*n*(-1)**(-a)/factorial(-a) + uppergamma(a, nx)
         elif n != 0:
@@ -575,11 +575,11 @@ class polygamma(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_is_positive(self):
-        if self.args[1].is_positive and (self.args[0] > 0) == True:
+        if self.args[1].is_positive and (self.args[0] > 0) is S.true:
             return self.args[0].is_odd
 
     def _eval_is_negative(self):
-        if self.args[1].is_positive and (self.args[0] > 0) == True:
+        if self.args[1].is_positive and (self.args[0] > 0) is S.true:
             return self.args[0].is_even
 
     def _eval_is_extended_real(self):
@@ -623,7 +623,7 @@ class polygamma(Function):
                 o = Order(1/z, x)
             elif n == 1:
                 o = Order(1/z**2, x)
-            r = e0._eval_nseries(z, n, logx) + o
+            r = e0 + o
             return (-1 * (-1/z)**N * r)._eval_nseries(x, n, logx)
 
     @classmethod

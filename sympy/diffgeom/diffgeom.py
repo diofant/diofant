@@ -491,7 +491,7 @@ class BaseScalarField(Expr):
     # XXX Workaround for limitations on the content of args
     free_symbols = set()
 
-    def doit(self):
+    def doit(self, **hints):
         return self
 
 
@@ -1038,7 +1038,7 @@ class BaseCovarDerivativeOp(Expr):
         derivs = []
         for v in vectors:
             d = Add(*[(self._christoffel[k][wrt_vector._index][v._index]
-                       *v._coord_sys.base_vector(k))
+                       * v._coord_sys.base_vector(k))
                       for k in range(v._coord_sys.dim)])
             derivs.append(d)
         to_subs = [wrt_vector(d) for d in d_funcs]
