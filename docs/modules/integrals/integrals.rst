@@ -100,8 +100,6 @@ API reference
 .. autofunction:: diofant.integrals.heurisch.heurisch
 .. autofunction:: diofant.integrals.heurisch.heurisch_wrapper
 .. autofunction:: diofant.integrals.trigonometry.trigintegrate
-.. autofunction:: diofant.integrals.manualintegrate.manualintegrate
-.. autofunction:: diofant.integrals.manualintegrate.integral_steps
 
 The class `Integral` represents an unevaluated integral and has some methods that help in the integration of an expression.
 
