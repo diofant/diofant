@@ -188,6 +188,11 @@ def test_Range():
 
     assert Range(1, 10, 1).boundary == Range(1, 10, 1)
 
+    assert Range(range(10)) == Range(10)
+    assert Range(range(1, 10)) == Range(1, 10)
+    assert Range(range(1, 10, 2)) == Range(1, 10, 2)
+    assert Range(range(1000000000000)) == Range(1000000000000)
+
 
 def test_range_interval_intersection():
     # Intersection with intervals
