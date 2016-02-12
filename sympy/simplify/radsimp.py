@@ -3,7 +3,6 @@ from collections import defaultdict
 import mpmath
 
 from sympy import SYMPY_DEBUG
-from sympy.core.evaluate import global_evaluate
 from sympy.core.compatibility import iterable, ordered, as_int, default_sort_key
 from sympy.core import expand_power_base, sympify, Add, S, Mul, Derivative, Pow, symbols, expand_mul
 from sympy.core.numbers import Rational, Float
@@ -16,7 +15,7 @@ from sympy.polys import gcd
 from sympy.simplify.sqrtdenest import sqrtdenest
 
 
-def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_term=True):
+def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_term=True):
     """Collect additive terms of an expression.
 
     This function collects additive terms of an expression with respect
@@ -40,11 +39,11 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
         an expression
     syms : iterable of Symbol's
         collected symbols
-    evaluate : boolean or None
-        First, if ``evaluate`` flag is set, this function will return an
-        expression with collected terms else it will return a dictionary with
-        expressions up to rational powers as keys and collected coefficients
-        as values.
+    evaluate : boolean
+        First, if ``evaluate`` flag is set (by default), this function will
+        return an expression with collected terms else it will return a
+        dictionary with expressions up to rational powers as keys and
+        collected coefficients as values.
 
     Examples
     ========
@@ -161,9 +160,6 @@ def collect(expr, syms, func=None, evaluate=None, exact=False, distribute_order_
 
     collect_const, collect_sqrt, rcollect
     """
-    if evaluate is None:
-        evaluate = global_evaluate[0]
-
     def make_expression(terms):
         product = []
 
@@ -433,7 +429,7 @@ def rcollect(expr, *vars):
             return expr
 
 
-def collect_sqrt(expr, evaluate=None):
+def collect_sqrt(expr, evaluate=True):
     """Return expr with terms having common square roots collected together.
     If ``evaluate`` is False a count indicating the number of sqrt-containing
     terms will be returned and, if non-zero, the terms of the Add will be
@@ -473,8 +469,6 @@ def collect_sqrt(expr, evaluate=None):
     ========
     collect, collect_const, rcollect
     """
-    if evaluate is None:
-        evaluate = global_evaluate[0]
     # this step will help to standardize any complex arguments
     # of sqrts
     coeff, expr = expr.as_content_primitive()
