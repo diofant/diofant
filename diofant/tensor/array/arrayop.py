@@ -1,8 +1,8 @@
 import collections
 import itertools
 
-from ...core import S, Tuple
-from ...matrices import Matrix
+from ...core import S, Tuple, diff
+from ...matrices import MatrixBase
 from .dense_ndim_array import ImmutableDenseNDimArray
 from .ndim_array import NDimArray
 
@@ -10,7 +10,7 @@ from .ndim_array import NDimArray
 def _arrayfy(a):
     if isinstance(a, NDimArray):
         return a
-    if isinstance(a, (Matrix, list, tuple, Tuple)):
+    if isinstance(a, (MatrixBase, list, tuple, Tuple)):
         return ImmutableDenseNDimArray(a)
     return a
 
@@ -142,3 +142,44 @@ def tensorcontraction(array, *contraction_axes):
         return contracted_array[0]
 
     return type(array)(contracted_array, remaining_shape)
+
+
+def derive_by_array(expr, dx):
+    r"""
+    Derivative by arrays. Supports both arrays and scalars.
+
+    Given the array `A_{i_1, \ldots, i_N}` and the array `X_{j_1, \ldots, j_M}`
+    this function will return a new array `B` defined by
+
+    `B_{j_1,\ldots,j_M,i_1,\ldots,i_N} := \frac{\partial A_{i_1,\ldots,i_N}}{\partial X_{j_1,\ldots,j_M}}`
+
+    Examples
+    ========
+
+    >>> from diofant.abc import x, y, z, t
+    >>> from diofant import cos
+    >>> derive_by_array(cos(x*t), x)
+    -t*sin(t*x)
+    >>> derive_by_array(cos(x*t), [x, y, z, t])
+    [-t*sin(t*x), 0, 0, -x*sin(t*x)]
+    >>> derive_by_array([x, y**2*z], [[x, y], [z, t]])
+    [[[1, 0], [0, 2*y*z]], [[0, y**2], [0, 0]]]
+
+    """
+    array_types = (collections.Iterable, MatrixBase, NDimArray)
+
+    if isinstance(dx, array_types):
+        dx = ImmutableDenseNDimArray(dx)
+        for i in dx:
+            if not i._diff_wrt:
+                raise ValueError("cannot derive by this array")
+
+    if isinstance(expr, array_types):
+        expr = ImmutableDenseNDimArray(expr)
+        new_array = [[y.diff(x) for y in expr] for x in dx]
+        return type(expr)(new_array, dx.shape + expr.shape)
+    else:
+        if isinstance(dx, array_types):
+            return ImmutableDenseNDimArray([expr.diff(i) for i in dx], dx.shape)
+        else:
+            return diff(expr, dx)

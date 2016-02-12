@@ -1,9 +1,11 @@
 import pytest
 
+from diofant import Derivative, cos, exp, log, sin
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          s, t, u, v, w, x, y, z)
 from diofant.tensor.array import Array
-from diofant.tensor.array.arrayop import tensorcontraction, tensorproduct
+from diofant.tensor.array.arrayop import (derive_by_array, tensorcontraction,
+                                          tensorproduct)
 
 
 __all__ = ()
@@ -61,3 +63,23 @@ def test_tensorcontraction():
     assert tensorcontraction(C1, (0, 2, 3)) == Array([a + p, e + t, i + x])
     assert tensorcontraction(C1, (2, 3)) == Array([[a + d, e + h, i + l],
                                                    [m + p, q + t, u + x]])
+
+
+def test_derivative_by_array():
+    bexpr = x*y**2*exp(z)*log(t)
+    sexpr = sin(bexpr)
+    cexpr = cos(bexpr)
+
+    a = Array([sexpr])
+
+    assert derive_by_array(sexpr, t) == x*y**2*exp(z)*cos(x*y**2*exp(z)*log(t))/t
+    assert derive_by_array(sexpr, [x, y, z]) == Array([bexpr/x*cexpr, 2*y*bexpr/y**2*cexpr, bexpr*cexpr])
+    assert derive_by_array(a, [x, y, z]) == Array([[bexpr/x*cexpr], [2*y*bexpr/y**2*cexpr], [bexpr*cexpr]])
+
+    assert derive_by_array(sexpr, [[x, y], [z, t]]) == Array([[bexpr/x*cexpr, 2*y*bexpr/y**2*cexpr], [bexpr*cexpr, bexpr/log(t)/t*cexpr]])
+    assert derive_by_array(a, [[x, y], [z, t]]) == Array([[[bexpr/x*cexpr], [2*y*bexpr/y**2*cexpr]], [[bexpr*cexpr], [bexpr/log(t)/t*cexpr]]])
+    assert derive_by_array([[x, y], [z, t]], [x, y]) == Array([[[1, 0], [0, 0]], [[0, 1], [0, 0]]])
+    assert derive_by_array([[x, y], [z, t]], [[x, y], [z, t]]) == Array([[[[1, 0], [0, 0]], [[0, 1], [0, 0]]],
+                                                                         [[[0, 0], [1, 0]], [[0, 0], [0, 1]]]])
+
+    pytest.raises(ValueError, lambda: derive_by_array(x, [Derivative(x**2, x)]))

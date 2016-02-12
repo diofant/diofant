@@ -163,11 +163,53 @@ or equivalently
 Matrix([
 [2*x,  x - y],
 [2*z, -t + z]])
+
+
+Derivatives by array
+--------------------
+
+The usual derivative operation may be extended to support derivation with
+respect to arrays, provided that all elements in the that array are symbols or
+expressions suitable for derivations.
+
+The definition of a derivative by an array is as follows: given the array
+`A_{i_1, \ldots, i_N}` and the array `X_{j_1, \ldots, j_M}`
+the derivative of arrays will return a new array `B` defined by
+
+`B_{j_1,\ldots,j_M,i_1,\ldots,i_N} := \frac{\partial A_{i_1,\ldots,i_N}}{\partial X_{j_1,\ldots,j_M}}`
+
+The function ``derive_by_array`` performs such an operation:
+
+>>> from diofant.tensor.array import Array, tensorcontraction, derive_by_array
+>>> from diofant.abc import x, y, z, t
+>>> from diofant import sin, exp, symbols, Function
+
+With scalars, it behaves exactly as the ordinary derivative:
+
+>>> derive_by_array(sin(x*y), x)
+y*cos(x*y)
+
+Scalar derived by an array basis:
+
+>>> derive_by_array(sin(x*y), [x, y, z])
+[y*cos(x*y), x*cos(x*y), 0]
+
+Deriving array by an array basis: `B^{nm} := \frac{\partial A^m}{\partial x^n}`
+
+>>> basis = [x, y, z]
+>>> ax = derive_by_array([exp(x), sin(y*z), t], basis)
+>>> ax
+[[E**x, 0, 0], [0, z*cos(y*z), 0], [0, y*cos(y*z), 0]]
+
+Contraction of the resulting array: `\sum_m \frac{\partial A^m}{\partial x^m}`
+
+>>> tensorcontraction(ax, (0, 1))
+E**x + z*cos(y*z)
 """
 
 from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray  # noqa: F401
 from .sparse_ndim_array import MutableSparseNDimArray, ImmutableSparseNDimArray  # noqa: F401
-from .arrayop import tensorproduct, tensorcontraction  # noqa: F401
+from .arrayop import derive_by_array, tensorproduct, tensorcontraction  # noqa: F401
 
 Array = ImmutableDenseNDimArray
 NDimArray = ImmutableDenseNDimArray
