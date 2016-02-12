@@ -2670,6 +2670,7 @@ def test_X14():
                   n, x0=oo, n=1) == 1/(sqrt(pi)*sqrt(n)) + O(1/x, (x, oo))
 
 
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="too much memory")
 @pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
 def test_X15():
     # => 0!/x - 1!/x^2 + 2!/x^3 - 3!/x^4 + O(1/x^5)   [Knopp, p. 544]
