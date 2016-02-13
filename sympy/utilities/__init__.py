@@ -11,6 +11,6 @@ from .misc import filldedent
 
 from .lambdify import lambdify
 
-from .decorator import threaded, xthreaded, public
+from .decorator import public
 
 from .timeutils import timed
