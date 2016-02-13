@@ -131,6 +131,11 @@ def test_sympyissue_5981():
     assert integrate(1/(u**2 + 1)) == atan(u)
 
 
+def test_sympyissue_10488():
+    a, b, c, x = symbols('a b c x', real=True, positive=True)
+    assert integrate(x/(a*x + b), x) == x/a - b*log(a*x + b)/a**2
+
+
 def test_log_to_atan():
     f, g = (Poly(x + Rational(1, 2), x, domain='QQ'), Poly(sqrt(3)/2, x, domain='EX'))
     fg_ans = 2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)

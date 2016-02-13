@@ -89,10 +89,12 @@ def ratint(f, x, **flags):
 
         if not ereal:
             for h, q in L:
+                _, h = h.primitive()
                 eps += RootSum(
                     q, Lambda(t, t*log(h.as_expr())), quadratic=True)
         else:
             for h, q in L:
+                _, h = h.primitive()
                 R = log_to_real(h, q, x, t)
 
                 if R is not None:
