@@ -37,6 +37,7 @@ matrix:
       script:
         - python setup.py flake8
         - py.test --cov sympy sympy/polys
+        - python setup.py test --cov -m 'slow and not xfail'
         - sphinx-build -W -b html docs build/sphinx/html
       after_success:
         - codecov
