@@ -342,6 +342,7 @@ class MatrixSymbol(MatrixExpr):
     I + 2*A*B
     """
     is_commutative = False
+    is_Atom = True
 
     def __new__(cls, name, n, m):
         n, m = sympify(n), sympify(m)
