@@ -1,4 +1,4 @@
-from itertools import product as cartes
+import itertools
 
 import pytest
 
@@ -244,10 +244,10 @@ def test_issue_5164():
 
 def test_issue_5183():
     # using list(...) so py.test can recalculate values
-    tests = list(cartes([x, -x],
-                        [-1, 1],
-                        [2, 3, Rational(1, 2), Rational(2, 3)],
-                        ['-', '+']))
+    tests = list(itertools.product([x, -x],
+                                   [-1, 1],
+                                   [2, 3, Rational(1, 2), Rational(2, 3)],
+                                   ['-', '+']))
     results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
                oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)),
@@ -276,9 +276,9 @@ def test_issue_5229():
 
 def test_issue_4546():
     # using list(...) so py.test can recalculate values
-    tests = list(cartes([cot, tan],
-                        [-pi/2, 0, pi/2, pi, 3*pi/2],
-                        ['-', '+']))
+    tests = list(itertools.product([cot, tan],
+                                   [-pi/2, 0, pi/2, pi, 3*pi/2],
+                                   ['-', '+']))
     results = (0, 0, -oo, oo, 0, 0, -oo, oo, 0, 0,
                oo, -oo, 0, 0, oo, -oo, 0, 0, oo, -oo)
     assert len(tests) == len(results)

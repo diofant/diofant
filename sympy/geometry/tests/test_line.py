@@ -1,3 +1,5 @@
+import itertools
+
 import pytest
 
 from sympy import (Rational, Float, S, Symbol, cos, oo, pi,
@@ -8,7 +10,6 @@ from sympy.geometry import (Circle, GeometryError, Line, Point, Ray,
                             Point3D, Line3D, Ray3D, Segment3D, Plane)
 from sympy.geometry.line import Undecidable
 from sympy.geometry.polygon import _asa as asa
-from sympy.utilities.iterables import cartes
 
 x = Symbol('x', extended_real=True)
 y = Symbol('y', extended_real=True)
@@ -622,7 +623,7 @@ def test_line_intersection():
 
 def test_issue_2941():
     def _check():
-        for f, g in cartes(*[(Line, Ray, Segment)]*2):
+        for f, g in itertools.product(*[(Line, Ray, Segment)]*2):
             l1 = f(a, b)
             l2 = g(c, d)
             assert l1.intersection(l2) == l2.intersection(l1)

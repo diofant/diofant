@@ -1,5 +1,7 @@
 """Tests for algorithms for computing symbolic roots of polynomials. """
 
+import itertools
+
 import mpmath
 import pytest
 
@@ -13,7 +15,6 @@ from sympy.polys.polyroots import (
     roots_binomial, preprocess_roots, roots)
 from sympy.polys.orthopolys import legendre_poly
 from sympy.polys.polyutils import _nsort
-from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
 
 
@@ -50,7 +51,7 @@ def test_roots_quadratic():
     f = Poly(-24*x**2 - 180*x + 264)
     assert [w.n(2) for w in f.all_roots(radicals=True)] == \
            [w.n(2) for w in f.all_roots(radicals=False)]
-    for _a, _b, _c in cartes((-2, 2), (-2, 2), (0, -1)):
+    for _a, _b, _c in itertools.product((-2, 2), (-2, 2), (0, -1)):
         f = Poly(_a*x**2 + _b*x + _c)
         roots = roots_quadratic(f)
         assert roots == _nsort(roots)
@@ -235,7 +236,7 @@ def test_roots_binomial():
 
     assert powsimp(r0[0]) == powsimp(r1[0])
     assert powsimp(r0[1]) == powsimp(r1[1])
-    for a, b, s, n in cartes((1, 2), (1, 2), (-1, 1), (2, 3, 4, 5)):
+    for a, b, s, n in itertools.product((1, 2), (1, 2), (-1, 1), (2, 3, 4, 5)):
         if a == b and a != 1:  # a == b == 1 is sufficient
             continue
         p = Poly(a*x**n + s*b)
