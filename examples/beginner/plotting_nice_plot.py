@@ -5,8 +5,9 @@
 Demonstrates simple plotting.
 """
 
-from sympy import Symbol, cos, sin, log, tan
+from sympy import cos, sin, log, tan
 from sympy.plotting.plot import plot3d
+
 from sympy.abc import x, y
 
 

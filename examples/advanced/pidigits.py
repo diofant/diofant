@@ -7,7 +7,6 @@ computation of the digits of pi.
 """
 
 from mpmath import libmp, pi
-from mpmath import functions as mpf_funs
 
 import math
 from time import clock

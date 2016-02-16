@@ -35,7 +35,7 @@ from sympy.polys.polyerrors import (
 from sympy.polys.specialpolys import f_polys
 from sympy.polys.domains import FF, ZZ, QQ, EX
 from sympy.polys.rings import ring
-from sympy import I, sin, Integer, Rational
+from sympy import I, sin, Rational
 
 from sympy.abc import x
 

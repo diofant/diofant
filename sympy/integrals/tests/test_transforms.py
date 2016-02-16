@@ -12,9 +12,9 @@ from sympy.integrals.transforms import (
     InverseSineTransform, InverseCosineTransform, IntegralTransformError)
 from sympy import (
     gamma, exp, oo, Heaviside, symbols, Symbol, re, factorial, pi,
-    cos, S, Abs, And, Or, sin, sqrt, I, log, tan, hyperexpand, meijerg,
+    cos, Abs, And, Or, sin, sqrt, I, log, tan, hyperexpand, meijerg,
     EulerGamma, erf, besselj, bessely, besseli, besselk, simplify,
-    exp_polar, polar_lift, unpolarify, Function, expint, expand_mul,
+    exp_polar, polar_lift, unpolarify, Function, expand_mul,
     combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument,
     atan2, Abs, Integer, Rational)
 from sympy.matrices import Matrix, eye

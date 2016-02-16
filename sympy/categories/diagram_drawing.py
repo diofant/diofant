@@ -91,7 +91,6 @@ from sympy.utilities import default_sort_key
 from itertools import chain
 from sympy.core.compatibility import iterable
 from sympy.printing import latex
-from sympy.utilities.decorator import doctest_depends_on
 
 
 class _GrowableGrid(object):

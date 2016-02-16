@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import (meijerg, I, S, integrate, Integral, oo, gamma, cosh,
+from sympy import (meijerg, I, integrate, Integral, oo, gamma, cosh,
                    hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
                    exp_polar, polygamma, hyper, log, expand_func, Integer,
                    Rational)

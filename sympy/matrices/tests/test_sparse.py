@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import Symbol, I, Rational, PurePoly, Integer
+from sympy import Symbol, I, Rational, PurePoly
 from sympy.matrices import Matrix, SparseMatrix, eye, zeros, ShapeError
 
 

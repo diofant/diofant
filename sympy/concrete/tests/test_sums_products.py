@@ -7,7 +7,7 @@ from sympy import (
     Sum, summation, Symbol, symbols, sympify, zeta, gamma, Le, Mod, Integer)
 from sympy.concrete.summations import telescopic
 
-from sympy.abc import a, b, c, d, f, k, m, x, y, z
+from sympy.abc import a, b, c, d, k, m, x, y, z
 
 n = Symbol('n', integer=True)
 

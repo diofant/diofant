@@ -9,8 +9,8 @@ and calculates all kinds of interesting properties, like Jacobian, metric
 tensor, Laplace operator, ...
 """
 
-from sympy import var, sin, cos, pprint, Matrix, eye, trigsimp, Eq, \
-    Function, simplify, sinh, cosh, expand, symbols
+from sympy import (sin, cos, pprint, Matrix, eye, Eq, Function, simplify,
+                   sinh, cosh, expand, symbols)
 
 
 def laplace(f, g_inv, g_det, X):

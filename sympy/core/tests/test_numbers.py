@@ -1018,9 +1018,9 @@ def test_bug_sqrt():
 
 def test_pi_Pi():
     "Test that pi (instance) is imported, but Pi (class) is not"
-    from sympy import pi
+    from sympy import pi  # noqa
     with pytest.raises(ImportError):
-        from sympy import Pi
+        from sympy import Pi  # noqa
 
 
 def test_no_len():

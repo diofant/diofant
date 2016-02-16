@@ -37,7 +37,6 @@ from sympy.core.symbol import Dummy, Wild
 from sympy.simplify import hyperexpand, powdenest, collect
 from sympy.logic.boolalg import And, Or, BooleanAtom
 from sympy.functions.special.delta_functions import Heaviside
-from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.piecewise import Piecewise, piecewise_fold
 from sympy.functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
                                                    HyperbolicFunction)
@@ -1743,7 +1742,7 @@ def meijerint_definite(f, x, a, b):
     #
     # There are usually several ways of doing this, and we want to try all.
     # This function does (1), calls _meijerint_definite_2 for step (2).
-    from sympy import arg, exp, I, And, DiracDelta, count_ops
+    from sympy import arg, exp, I, And, DiracDelta
     _debug('Integrating', f, 'wrt %s from %s to %s.' % (x, a, b))
 
     if f.has(DiracDelta):

@@ -1,12 +1,11 @@
 import pytest
 
-from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                   simplify, sin, sqrt, symbols, Derivative, asin, acos)
+from sympy import (Rational, Float, S, Symbol, cos, oo, pi,
+                   simplify, sin, sqrt, symbols, acos)
 from sympy.functions.elementary.trigonometric import tan
-from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
-                            Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection,
-                            Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
+from sympy.geometry import (Circle, GeometryError, Line, Point, Ray,
+                            Segment, Triangle, intersection,
+                            Point3D, Line3D, Ray3D, Segment3D, Plane)
 from sympy.geometry.line import Undecidable
 from sympy.geometry.polygon import _asa as asa
 from sympy.utilities.iterables import cartes

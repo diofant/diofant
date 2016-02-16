@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import Integer, S
+from sympy import Integer
 from sympy.core.operations import LatticeOp
 from sympy.core.sympify import SympifyError
 

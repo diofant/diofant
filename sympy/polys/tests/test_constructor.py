@@ -3,7 +3,7 @@
 from sympy.polys.constructor import construct_domain
 from sympy.polys.domains import ZZ, QQ, RR, EX
 from sympy.polys.domains.realfield import RealField
-from sympy import S, sqrt, sin, Float, Integer, Rational
+from sympy import sqrt, sin, Float, Integer, Rational
 
 from sympy.abc import x, y
 

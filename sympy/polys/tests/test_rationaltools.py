@@ -1,7 +1,7 @@
 """Tests for tools for manipulation of rational expressions. """
 
 from sympy.polys.rationaltools import together
-from sympy import S, symbols, Rational, sin, exp, Eq, Integral, Mul, Integer
+from sympy import S, symbols, Rational, sin, exp, Eq, Integral, Mul
 
 from sympy.abc import x, y, z
 

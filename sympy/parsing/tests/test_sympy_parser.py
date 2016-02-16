@@ -1,7 +1,7 @@
 import pytest
 
 from sympy.core import Symbol, Function, Float, Rational, Integer, I, Mul, Pow
-from sympy.functions import exp, factorial, sin
+from sympy.functions import exp, sin
 from sympy.logic import And
 from sympy.series import Limit
 

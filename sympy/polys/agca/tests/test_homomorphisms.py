@@ -2,7 +2,7 @@
 
 import pytest
 
-from sympy import QQ, Integer, Rational
+from sympy import QQ, Rational
 from sympy.polys.agca import homomorphism
 
 from sympy.abc import x, y
