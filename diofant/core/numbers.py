@@ -1401,34 +1401,11 @@ class Rational(Number):
         smaller than limit (or cheap to compute). Special methods of
         factoring are disabled by default so that only trial division is used.
         """
-        from ..ntheory import factorint
+        from ..ntheory import factorrat
 
-        f = factorint(self.p, limit=limit, use_trial=use_trial,
-                      use_rho=use_rho, use_pm1=use_pm1,
-                      verbose=verbose).copy()
-        f = defaultdict(int, f)
-        for p, e in factorint(self.q, limit=limit,
-                              use_trial=use_trial,
-                              use_rho=use_rho,
-                              use_pm1=use_pm1,
-                              verbose=verbose).items():
-            f[p] += -e
-
-        if len(f) > 1 and 1 in f:
-            del f[1]
-        if not f:
-            f = {1: 1}
-        if not visual:
-            return dict(f)
-        else:
-            if -1 in f:
-                f.pop(-1)
-                args = [S.NegativeOne]
-            else:
-                args = []
-            args.extend([Pow(*i, evaluate=False)
-                         for i in sorted(f.items())])
-            return Mul(*args, evaluate=False)
+        return factorrat(self, limit=limit, use_trial=use_trial,
+                         use_rho=use_rho, use_pm1=use_pm1,
+                         verbose=verbose).copy()
 
     @_sympifyit('other', NotImplemented)
     def gcd(self, other):
@@ -2145,7 +2122,8 @@ class One(IntegerConstant, metaclass=Singleton):
                 verbose=False, visual=False):
         if visual:
             return S.One
-        return {1: 1}
+        else:
+            return {}
 
 
 class NegativeOne(IntegerConstant, metaclass=Singleton):
