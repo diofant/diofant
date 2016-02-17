@@ -258,11 +258,11 @@ class Order(Expr):
     def free_symbols(self):
         return self.expr.free_symbols | set(self.variables)
 
-    def _eval_power(b, e):
+    def _eval_power(self, e):
         if e.is_Number and e.is_nonnegative:
-            return b.func(b.expr ** e, *b.args[1:])
+            return self.func(self.expr ** e, *self.args[1:])
         if e == O(1):
-            return b
+            return self
         return
 
     def as_expr_variables(self, order_symbols):

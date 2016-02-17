@@ -68,46 +68,44 @@ class PolynomialRing(Ring, CompositeDomain):
         """Convert SymPy's expression to `dtype`. """
         return self.ring.from_expr(a)
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert a Python `int` object to `dtype`. """
-        return K1(K1.domain.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
-    def from_QQ_python(K1, a, K0):
+    def from_QQ_python(self, a, K0):
         """Convert a Python `Fraction` object to `dtype`. """
-        return K1(K1.domain.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
-    def from_ZZ_gmpy(K1, a, K0):
+    def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY `mpz` object to `dtype`. """
-        return K1(K1.domain.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
-    def from_QQ_gmpy(K1, a, K0):
+    def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY `mpq` object to `dtype`. """
-        return K1(K1.domain.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
-    def from_RealField(K1, a, K0):
+    def from_RealField(self, a, K0):
         """Convert a mpmath `mpf` object to `dtype`. """
-        return K1(K1.domain.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
-    def from_AlgebraicField(K1, a, K0):
+    def from_AlgebraicField(self, a, K0):
         """Convert an algebraic number to ``dtype``. """
-        if K1.domain == K0:
-            return K1.new(a)
+        if self.domain == K0:
+            return self.new(a)
 
-    def from_PolynomialRing(K1, a, K0):
+    def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         try:
-            return a.set_ring(K1.ring)
+            return a.set_ring(self.ring)
         except (CoercionFailed, GeneratorsError):
             return
 
-    def from_FractionField(K1, a, K0):
+    def from_FractionField(self, a, K0):
         """Convert a rational function to ``dtype``. """
         denom = K0.denom(a)
 
         if denom.is_ground:
-            return K1.from_PolynomialRing(K0.numer(a)/denom, K0.field.ring.to_domain())
-        else:
-            return
+            return self.from_PolynomialRing(K0.numer(a)/denom, K0.field.ring.to_domain())
 
     def get_field(self):
         """Returns a field associated with `self`. """

@@ -2250,7 +2250,7 @@ def test_sympy__tensor__tensor__TensAdd():
 
 
 def test_sympy__tensor__tensor__Tensor():
-    from sympy.tensor.tensor import TensorIndexType, TensorSymmetry, TensorType, get_symmetric_group_sgs, tensor_indices, TensMul, TIDS
+    from sympy.tensor.tensor import TensorIndexType, TensorSymmetry, TensorType, get_symmetric_group_sgs, tensor_indices
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)
     sym = TensorSymmetry(get_symmetric_group_sgs(1))
@@ -2260,7 +2260,7 @@ def test_sympy__tensor__tensor__Tensor():
 
 
 def test_sympy__tensor__tensor__TensMul():
-    from sympy.tensor.tensor import TensorIndexType, TensorSymmetry, TensorType, get_symmetric_group_sgs, tensor_indices, TensMul, TIDS
+    from sympy.tensor.tensor import TensorIndexType, TensorSymmetry, TensorType, get_symmetric_group_sgs, tensor_indices
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     a, b = tensor_indices('a,b', Lorentz)
     sym = TensorSymmetry(get_symmetric_group_sgs(1))
@@ -2553,25 +2553,29 @@ def test_sympy__vector__point__Point():
 
 
 def test_sympy__vector__basisdependent__BasisDependent():
-    from sympy.vector.basisdependent import BasisDependent
+    # from sympy.vector.basisdependent import BasisDependent
+    pass
     # These classes have been created to maintain an OOP hierarchy
     # for Vectors and Dyadics. Are NOT meant to be initialized
 
 
 def test_sympy__vector__basisdependent__BasisDependentMul():
-    from sympy.vector.basisdependent import BasisDependentMul
+    # from sympy.vector.basisdependent import BasisDependentMul
+    pass
     # These classes have been created to maintain an OOP hierarchy
     # for Vectors and Dyadics. Are NOT meant to be initialized
 
 
 def test_sympy__vector__basisdependent__BasisDependentAdd():
-    from sympy.vector.basisdependent import BasisDependentAdd
+    # from sympy.vector.basisdependent import BasisDependentAdd
+    pass
     # These classes have been created to maintain an OOP hierarchy
     # for Vectors and Dyadics. Are NOT meant to be initialized
 
 
 def test_sympy__vector__basisdependent__BasisDependentZero():
-    from sympy.vector.basisdependent import BasisDependentZero
+    # from sympy.vector.basisdependent import BasisDependentZero
+    pass
     # These classes have been created to maintain an OOP hierarchy
     # for Vectors and Dyadics. Are NOT meant to be initialized
 
@@ -2608,13 +2612,13 @@ def test_sympy__vector__vector__VectorZero():
 
 
 def test_sympy__vector__vector__Vector():
-    from sympy.vector.vector import Vector
+    # from sympy.vector.vector import Vector
     # Vector is never to be initialized using args
     pass
 
 
 def test_sympy__vector__dyadic__Dyadic():
-    from sympy.vector.dyadic import Dyadic
+    # from sympy.vector.dyadic import Dyadic
     # Dyadic is never to be initialized using args
     pass
 
@@ -2654,12 +2658,14 @@ def test_sympy__vector__deloperator__Del():
 
 
 def test_sympy__vector__orienters__Orienter():
-    from sympy.vector.orienters import Orienter
+    # from sympy.vector.orienters import Orienter
+    pass
     # Not to be initialized
 
 
 def test_sympy__vector__orienters__ThreeAngleOrienter():
-    from sympy.vector.orienters import ThreeAngleOrienter
+    # from sympy.vector.orienters import ThreeAngleOrienter
+    pass
     # Not to be initialized
 
 

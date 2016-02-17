@@ -5,8 +5,8 @@ import pytest
 
 from sympy.polys.partfrac import (apart_undetermined_coeffs, apart,
                                   apart_list, assemble_partfrac_list)
-from sympy import (S, Poly, E, pi, I, Matrix, Eq, RootSum, Lambda, Rational,
-                   Symbol, Dummy, factor, together, sqrt, Expr, Integer)
+from sympy import (Poly, E, pi, I, Matrix, Eq, RootSum, Lambda, Rational,
+                   Symbol, Dummy, factor, together, sqrt, Expr)
 
 from sympy.abc import x, y, a, b, c
 

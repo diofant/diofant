@@ -183,15 +183,11 @@ http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
 """
 
 from collections import defaultdict
-from itertools import combinations
 
 from strategies.tree import greedy
 from strategies.core import identity, debug
 
-from sympy.simplify.simplify import simplify, _mexpand, bottom_up
-from sympy.simplify.powsimp import powsimp
-from sympy.simplify.combsimp import combsimp
-from sympy.simplify.ratsimp import ratsimp
+from sympy.simplify.simplify import bottom_up
 from sympy.core.sympify import sympify
 from sympy.functions.elementary.trigonometric import (
     cos, sin, tan, cot, sec, csc, sqrt, TrigonometricFunction)
@@ -201,7 +197,7 @@ from sympy.core.compatibility import ordered
 from sympy.core.expr import Expr
 from sympy.core.mul import Mul
 from sympy.core.power import Pow
-from sympy.core.function import expand_mul, count_ops
+from sympy.core.function import expand_mul
 from sympy.core.add import Add
 from sympy.core.symbol import Dummy
 from sympy.core.exprtools import Factors, gcd_terms, factor_terms

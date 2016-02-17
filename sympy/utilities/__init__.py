@@ -2,7 +2,7 @@
 SymPy.
 """
 from .iterables import (flatten, group, take, subsets,
-    variations, numbered_symbols, cartes, capture, dict_merge,
+    variations, numbered_symbols, capture, dict_merge,
     postorder_traversal, interactive_traversal,
     prefixes, postfixes, sift, topological_sort, unflatten,
     has_dups, has_variety, reshape, default_sort_key, ordered)

@@ -1,8 +1,5 @@
 """Tools for setting up printing in interactive sessions. """
 
-import sys
-from io import BytesIO
-
 from sympy import latex as default_latex
 from sympy.utilities.misc import debug
 
@@ -32,10 +29,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
                            latex_mode, print_builtin,
                            latex_printer):
     """Setup printing in IPython interactive session. """
-    try:
-        from IPython.lib.latextools import latex_to_png
-    except ImportError:
-        pass
 
     latex = latex_printer or default_latex
 
@@ -218,10 +211,9 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
             in_ipython = (ip is not None)
 
     if in_ipython and pretty_print:
+        from code import InteractiveConsole
         try:
-            import IPython
             from IPython.terminal.interactiveshell import TerminalInteractiveShell
-            from code import InteractiveConsole
         except ImportError:
             pass
         else:

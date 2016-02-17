@@ -220,19 +220,19 @@ class LinearEntity(GeometrySet):
         except AttributeError:
             return False
 
-    def is_parallel(l1, l2):
+    def is_parallel(self, other):
         """Are two linear entities parallel?
 
         Parameters
         ==========
 
-        l1 : LinearEntity
-        l2 : LinearEntity
+        self : LinearEntity
+        other : LinearEntity
 
         Returns
         =======
 
-        True : if l1 and l2 are parallel,
+        True : if self and other are parallel,
         False : otherwise.
 
         See Also
@@ -257,25 +257,25 @@ class LinearEntity(GeometrySet):
 
         """
         try:
-            a1, b1, c1 = l1.coefficients
-            a2, b2, c2 = l2.coefficients
+            a1, b1, c1 = self.coefficients
+            a2, b2, c2 = other.coefficients
             return bool(simplify(a1*b2 - b1*a2) == 0)
         except AttributeError:
             return False
 
-    def is_perpendicular(l1, l2):
+    def is_perpendicular(self, other):
         """Are two linear entities perpendicular?
 
         Parameters
         ==========
 
-        l1 : LinearEntity
-        l2 : LinearEntity
+        self : LinearEntity
+        other : LinearEntity
 
         Returns
         =======
 
-        True : if l1 and l2 are perpendicular,
+        True : if self and other are perpendicular,
         False : otherwise.
 
         See Also
@@ -299,20 +299,20 @@ class LinearEntity(GeometrySet):
 
         """
         try:
-            a1, b1, c1 = l1.coefficients
-            a2, b2, c2 = l2.coefficients
+            a1, b1, c1 = self.coefficients
+            a2, b2, c2 = other.coefficients
             return bool(simplify(a1*a2 + b1*b2) == 0)
         except AttributeError:
             return False
 
-    def angle_between(l1, l2):
+    def angle_between(self, other):
         """The angle formed between the two linear entities.
 
         Parameters
         ==========
 
-        l1 : LinearEntity
-        l2 : LinearEntity
+        self : LinearEntity
+        other : LinearEntity
 
         Returns
         =======
@@ -345,8 +345,8 @@ class LinearEntity(GeometrySet):
         pi/2
 
         """
-        v1 = l1.p2 - l1.p1
-        v2 = l2.p2 - l2.p1
+        v1 = self.p2 - self.p1
+        v2 = other.p2 - other.p1
         return acos(v1.dot(v2)/(abs(v1)*abs(v2)))
 
     def parallel_line(self, p):

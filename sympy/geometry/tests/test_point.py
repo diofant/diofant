@@ -1,11 +1,7 @@
 import pytest
 
-from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                   simplify, sin, sqrt, symbols, Derivative, asin, acos)
-from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
-                            Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection,
-                            Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
+from sympy import I, Rational, Float, Symbol, pi, sqrt
+from sympy.geometry import Line, Point, Point3D, Line3D
 from sympy.matrices import Matrix
 
 x = Symbol('x', real=True)

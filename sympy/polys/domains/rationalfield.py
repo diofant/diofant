@@ -23,7 +23,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
         from sympy.polys.domains import AlgebraicField
         return AlgebraicField(self, *extension)
 
-    def from_AlgebraicField(K1, a, K0):
+    def from_AlgebraicField(self, a, K0):
         """Convert a ``ANP`` object to ``dtype``. """
         if a.is_ground:
-            return K1.convert(a.LC(), K0.dom)
+            return self.convert(a.LC(), K0.dom)

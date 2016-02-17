@@ -7,7 +7,7 @@ from sympy import (symbols, Integral, Tuple, Dummy, Basic, default_sort_key,
 from sympy.combinatorics import RGS_enum, RGS_unrank, Permutation
 from sympy.utilities.iterables import (
     _partition, _set_partitions, binary_partitions, bracelets, capture,
-    cartes, common_prefix, common_suffix, dict_merge, filter_symbols,
+    common_prefix, common_suffix, dict_merge, filter_symbols,
     flatten, generate_bell, generate_derangements, generate_involutions,
     generate_oriented_forest, group, has_dups, kbins, minlex, multiset,
     multiset_combinations, multiset_partitions,
@@ -153,15 +153,6 @@ def test_variations():
         (0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
         (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)
     ]
-
-
-def test_cartes():
-    assert list(cartes([1, 2], [3, 4, 5])) == \
-        [(1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)]
-    assert list(cartes()) == [()]
-    assert list(cartes('a')) == [('a',)]
-    assert list(cartes('a', repeat=2)) == [('a', 'a')]
-    assert list(cartes(list(range(2)))) == [(0,), (1,)]
 
 
 def test_filter_symbols():

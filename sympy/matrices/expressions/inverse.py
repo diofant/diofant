@@ -1,5 +1,5 @@
 from sympy.core.sympify import _sympify
-from sympy.core import S, Basic, Integer
+from sympy.core import Basic, Integer
 from sympy.matrices.expressions.matexpr import ShapeError
 from sympy.matrices.expressions.matpow import MatPow
 

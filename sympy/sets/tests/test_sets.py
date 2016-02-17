@@ -2,9 +2,9 @@ from mpmath import mpi
 import pytest
 
 from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
-                   GreaterThan, LessThan, Max, Min, And, Or, Eq, Ge, Le, Gt,
+                   LessThan, Max, Min, And, Or, Eq, Le,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
-                   ProductSet, E, sqrt, Complement, EmptySet, sin, cos, Lambda,
+                   ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
                    ImageSet, pi, Eq, Pow, Contains, Sum, RootOf,
                    SymmetricDifference, Integer, Rational)
 

@@ -1,4 +1,4 @@
-from sympy import (cos, DiracDelta, Heaviside, Function, pi, S, sin,
+from sympy import (cos, DiracDelta, Heaviside, Function, pi, sin,
                    symbols, Integer, Rational)
 from sympy.integrals.deltafunctions import change_mul, deltaintegrate
 

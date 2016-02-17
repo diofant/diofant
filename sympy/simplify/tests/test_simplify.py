@@ -1,18 +1,18 @@
 import pytest
 
 from sympy import (
-    Abs, acos, Add, atan, Basic, binomial, besselsimp, collect, cos, cosh, cot,
-    coth, count_ops, Derivative, diff, E, Eq, erf, exp, exp_polar, expand,
-    expand_multinomial, factor, factorial, Float, fraction, Function,
+    Abs, acos, Add, atan, Basic, binomial, besselsimp, cos, cosh,
+    count_ops, diff, E, Eq, erf, exp, expand,
+    expand_multinomial, factor, factorial, Float, Function,
     gamma, GoldenRatio, hyper, hypersimp, I, Integral, integrate, log,
-    logcombine, Matrix, MatrixSymbol, Mul, nsimplify, O, oo, pi, Piecewise,
-    posify, rad, Rational, root, S, separatevars, signsimp, simplify,
-    sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan, tanh,
+    logcombine, Matrix, Mul, nsimplify, oo, pi, Piecewise,
+    posify, rad, Rational, S, separatevars, signsimp, simplify,
+    sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan,
     zoo, Sum, Lt, Integer, sstr)
 from sympy.core.mul import _keep_coeff
 from sympy.simplify.simplify import nthroot
 
-from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
+from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i
 
 
 def test_issue_7263():
@@ -24,8 +24,6 @@ def test_issue_7263():
 def test_factorial_simplify():
     # There are more tests in test_factorials.py. These are just to
     # ensure that simplify() calls factorial_simplify correctly
-    from sympy.specfun.factorials import factorial
-    x = Symbol('x')
     assert simplify(factorial(x)/x) == factorial(x - 1)
     assert simplify(factorial(factorial(x))) == factorial(factorial(x))
 
@@ -290,7 +288,6 @@ def test_hypersimp():
 
 
 def test_nsimplify():
-    x = Symbol("x")
     assert nsimplify(0) == 0
     assert nsimplify(-1) == -1
     assert nsimplify(1) == 1
@@ -352,10 +349,6 @@ def test_issue_9448():
 
 
 def test_extract_minus_sign():
-    x = Symbol("x")
-    y = Symbol("y")
-    a = Symbol("a")
-    b = Symbol("b")
     assert simplify(-x/-y) == x/y
     assert simplify(-x/y) == -x/y
     assert simplify(x/y) == x/y
@@ -366,8 +359,6 @@ def test_extract_minus_sign():
 
 
 def test_diff():
-    x = Symbol("x")
-    y = Symbol("y")
     f = Function("f")
     g = Function("g")
     assert simplify(g(x).diff(x)*f(x).diff(x) - f(x).diff(x)*g(x).diff(x)) == 0
@@ -377,8 +368,6 @@ def test_diff():
 
 
 def test_logcombine_1():
-    x, y = symbols("x,y")
-    a = Symbol("a")
     z, w = symbols("z,w", positive=True)
     b = Symbol("b", extended_real=True)
     assert logcombine(log(x) + 2*log(y)) == log(x) + 2*log(y)
@@ -450,7 +439,6 @@ def test_posify():
 
 def test_issue_4194():
     # simplify should call cancel
-    from sympy.abc import x, y
     f = Function('f')
     assert simplify((4*x + 6*f(y))/(2*x + 3*f(y))) == 2
 
@@ -539,7 +527,7 @@ def test_Piecewise():
 
 def test_polymorphism():
     class A(Basic):
-        def _eval_simplify(x, **kwargs):
+        def _eval_simplify(self, **kwargs):
             return 1
 
     a = A(5, 2)

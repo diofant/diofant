@@ -26,60 +26,60 @@ class DummyNumber(object):
     with itself.
     """
 
-    def __radd__(self, a):
-        if isinstance(a, (int, float)):
-            return a + self.number
+    def __radd__(self, other):
+        if isinstance(other, (int, float)):
+            return other + self.number
         return NotImplemented
 
-    def __truediv__(a, b):
-        return a.__div__(b)
+    def __truediv__(self, other):
+        return self.__div__(other)
 
-    def __rtruediv__(a, b):
-        return a.__rdiv__(b)
+    def __rtruediv__(self, other):
+        return self.__rdiv__(other)
 
-    def __add__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number + a
+    def __add__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number + other
         return NotImplemented
 
-    def __rsub__(self, a):
-        if isinstance(a, (int, float)):
-            return a - self.number
+    def __rsub__(self, other):
+        if isinstance(other, (int, float)):
+            return other - self.number
         return NotImplemented
 
-    def __sub__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number - a
+    def __sub__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number - other
         return NotImplemented
 
-    def __rmul__(self, a):
-        if isinstance(a, (int, float)):
-            return a * self.number
+    def __rmul__(self, other):
+        if isinstance(other, (int, float)):
+            return other * self.number
         return NotImplemented
 
-    def __mul__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number * a
+    def __mul__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number * other
         return NotImplemented
 
-    def __rdiv__(self, a):
-        if isinstance(a, (int, float)):
-            return a / self.number
+    def __rdiv__(self, other):
+        if isinstance(other, (int, float)):
+            return other / self.number
         return NotImplemented
 
-    def __div__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number / a
+    def __div__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number / other
         return NotImplemented
 
-    def __rpow__(self, a):
-        if isinstance(a, (int, float)):
-            return a ** self.number
+    def __rpow__(self, other):
+        if isinstance(other, (int, float)):
+            return other ** self.number
         return NotImplemented
 
-    def __pow__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number ** a
+    def __pow__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number ** other
         return NotImplemented
 
     def __pos__(self):

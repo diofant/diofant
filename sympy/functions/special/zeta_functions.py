@@ -1,6 +1,6 @@
 """ Riemann zeta and related function. """
 
-from sympy.core import Function, S, sympify, pi, Integer, Rational
+from sympy.core import Function, S, sympify, pi, Integer
 from sympy.core.function import ArgumentIndexError
 from sympy.functions.combinatorial.numbers import bernoulli, factorial, harmonic
 from sympy.functions.elementary.exponential import log, exp

@@ -29,10 +29,13 @@ matrix:
     - python: 3.4
       install:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
+        # see https://gitlab.com/pycqa/flake8/issues/121
+        - pip install git+https://gitlab.com/pycqa/flake8.git@a8aac560
         - pip install sphinx numpydoc pytest-cov
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
+        - python setup.py flake8
         - py.test --cov sympy sympy/polys
         - sphinx-build -W -b html docs build/sphinx/html
       after_success:

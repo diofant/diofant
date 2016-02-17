@@ -1,9 +1,10 @@
+import itertools
+
 import pytest
 
 from sympy import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
                    sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
                    Integer, sign, im, nan, Dummy, factorial, comp, O)
-from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
 
 
@@ -1832,7 +1833,7 @@ def test_mul_zero_detection():
                 else:
                     assert e.is_zero is False
 
-    for iz, ib in cartes(*[[True, False, None]]*2):
+    for iz, ib in itertools.product(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz)
         b = Dummy('f', finite=ib)
         e = Mul(z, b, evaluate=False)
@@ -1849,7 +1850,7 @@ def test_mul_zero_detection():
         else:
             assert e.is_extended_real
 
-    for iz, ib in cartes(*[[True, False, None]]*2):
+    for iz, ib in itertools.product(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz, extended_real=True)
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(z, b, evaluate=False)

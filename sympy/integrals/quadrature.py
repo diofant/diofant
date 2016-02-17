@@ -1,4 +1,4 @@
-from sympy.core import S, Dummy, pi, Integer, Rational
+from sympy.core import S, Dummy, pi, Rational
 from sympy.functions.combinatorial.factorials import factorial
 from sympy.functions.elementary.trigonometric import sin, cos
 from sympy.functions.elementary.miscellaneous import sqrt

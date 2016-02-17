@@ -2,7 +2,7 @@
 
 import pytest
 
-from sympy import Poly, symbols, oo, I, Integer, Rational
+from sympy import Poly, symbols, oo, I, Rational
 from sympy.integrals.risch import (DifferentialExtension,
                                    NonElementaryIntegralException)
 from sympy.integrals.rde import (order_at, order_at_oo, weak_normalizer,

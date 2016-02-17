@@ -1,7 +1,8 @@
 from sympy.core.strategies import (rm_id, glom, flatten, unpack, sort,
                                    arguments, operator, term)
-from sympy.core import Basic, Integer, Add, Mul, symbols
-from sympy.abc import x, y
+from sympy.core import Basic, Integer, Add
+
+from sympy.abc import x
 
 
 def test_rm_id():
