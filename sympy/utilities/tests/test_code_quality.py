@@ -148,9 +148,7 @@ def test_files():
 
     # Files to test at top level
     top_level_files = [join(TOP_PATH, file) for file in [
-        "build.py",
         "setup.py",
-        "setupegg.py",
     ]]
     # Files to exclude from all tests
     exclude = set()
@@ -160,16 +158,10 @@ def test_files():
         "%(sep)ssympy%(sep)s__init__.py" % sepd,
         # these __init__.py should be fixed:
         # XXX: not really, they use useful import pattern (DRY)
-        "%(sep)svector%(sep)s__init__.py" % sepd,
-        "%(sep)smechanics%(sep)s__init__.py" % sepd,
-        "%(sep)squantum%(sep)s__init__.py" % sepd,
         "%(sep)spolys%(sep)s__init__.py" % sepd,
         "%(sep)spolys%(sep)sdomains%(sep)s__init__.py" % sepd,
         # interactive sympy executes ``from sympy import *``:
         "%(sep)sinteractive%(sep)ssession.py" % sepd,
-        # these two are import timing tests:
-        "%(sep)sbin%(sep)ssympy_time.py" % sepd,
-        "%(sep)sbin%(sep)ssympy_time_cache.py" % sepd,
     }
     check_files(top_level_files, test)
     check_directory_tree(BIN_PATH, test, {"~", ".pyc", ".sh"}, "*")
