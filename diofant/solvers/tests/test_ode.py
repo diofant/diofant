@@ -2855,3 +2855,10 @@ def test_sympyissue_7138():
 def test_diofantissue_309():
     assert dsolve(f(x).diff(x)**2 - 1, f(x)) == [Eq(f(x), C1 - x),
                                                  Eq(f(x), C1 + x)]
+
+
+def test_sympyissue_10379():
+    t, y = symbols('t,y')
+    sol = dsolve(f(t).diff(t) - (1 - 51.05*y*f(t)))
+    ans = Eq(0.019588638589618*log(51.05*y*f(t) - 1.0)/y, C1 - t)
+    assert str(sol) == str(ans)
