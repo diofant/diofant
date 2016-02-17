@@ -3,9 +3,7 @@ branches:
     - master
 language: python
 sudo: false
-cache:
-  directories:
-    - $HOME/.cache/pip
+cache: pip
 python:
   - 3.4
 env:
