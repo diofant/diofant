@@ -650,3 +650,10 @@ def test_sympyissue_8444():
     i = Symbol('i', integer=True)
     assert (i > floor(i)) is S.false
     assert (i < ceiling(i)) is S.false
+
+
+def test_sympyissue_10633():
+    assert Eq(True, False) is S.false
+    assert Eq(False, True) is S.false
+    assert Eq(True, True) is S.true
+    assert Eq(False, False) is S.true
