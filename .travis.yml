@@ -3,9 +3,7 @@ branches:
     - master
 language: python
 sudo: false
-cache:
-  directories:
-    - $HOME/.cache/pip
+cache: pip
 python:
   - 3.4
 env:
@@ -37,6 +35,7 @@ matrix:
       script:
         - python setup.py flake8
         - py.test --cov sympy sympy/polys
+        - python setup.py test --cov -m 'slow and not xfail'
         - sphinx-build -W -b html docs build/sphinx/html
       after_success:
         - codecov

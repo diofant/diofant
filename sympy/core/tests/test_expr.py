@@ -1166,6 +1166,8 @@ def test_as_coefficients_dict():
     check = [Integer(1), x, y, x*y, 1]
     assert [Add(3*x, 2*x, y, 3).as_coefficients_dict()[i] for i in check] == \
         [3, 5, 1, 0, 3]
+    assert [Add(3*x, 2*x, y, 3, evaluate=False).as_coefficients_dict()[i]
+            for i in check] == [3, 5, 1, 0, 3]
     assert [(3*x*y).as_coefficients_dict()[i] for i in check] == \
         [0, 0, 0, 3, 0]
     assert (3.0*x*y).as_coefficients_dict()[3.0*x*y] == 1
