@@ -450,3 +450,8 @@ def test_issue_10610():
 
 def test_issue_9075():
     assert limit((6**(x + 1) + x + 1)/(6**x + x), x, oo) == 6
+
+
+def test_issue_8634():
+    p = Symbol('p', positive=True)
+    assert limit(x**p, x, -oo) == oo*sign((-1)**p)
