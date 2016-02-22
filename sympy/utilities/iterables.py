@@ -1,8 +1,8 @@
 from collections import defaultdict
-from itertools import (combinations, permutations, product,
+from itertools import (combinations, permutations, product, cycle, count,
                        combinations_with_replacement)
 import random
-from operator import gt
+from operator import gt, mul
 
 from sympy.core import Basic, S
 # this is the logical location of these functions
@@ -2094,49 +2094,40 @@ def kbins(l, k, ordered=None):
             'ordered must be one of 00, 01, 10 or 11, not %s' % ordered)
 
 
-def product_cantor(*args):
-    """Cartesian product, using Cantor enumeration
+def cantor_product(*args):
+    """ Breadth-first (diagonal) cartesian product of iterables.
 
-    Examples
-    ========
+    Each iterable is advanced in turn in a round-robin fashion. As usual with
+    breadth-first, this comes at the cost of memory consumption.
 
-    >>> from itertools import product, count, islice
-    >>> from sympy.utilities.iterables import product_cantor
-
-    >>> list(product_cantor([1, 2, 3], [3, 4]))
-    [(1, 3), (2, 3), (2, 4), (3, 4), (3, 3), (1, 3), (1, 4)]
-    >>> list(product([1, 2, 3], [3, 4]))
-    [(1, 3), (1, 4), (2, 3), (2, 4), (3, 3), (3, 4)]
-
-    >>> set(product_cantor([1, 2, 3], [3, 4])) == set(product([1, 2, 3], [3, 4]))
-    True
-
-    >>> list(islice(product_cantor(count(1), count(1)), 7))
-    [(1, 1), (2, 1), (2, 2), (3, 2), (3, 3), (4, 3), (4, 4)]
+    >>> from itertools import islice, count
+    >>> list(islice(cantor_product(count(), count()), 9))
+    [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)]
     """
-    iterables = [iter(a) for a in args]
-    n, l = 0, len(iterables)
-    r, r_done, is_infinite, can_cycle = [0]*l, [False]*l, [True]*l, [True]*l
-    while True:
+    def cartpi(*args):
+        """ Like itertools.product(), but supports infinite sequences."""
+        if args:
+            return (b + (a,) for b in cartpi(*args[:-1]) for a in args[-1])
+        return ((), )
+    # get iterators for items of args
+    argsit = list(map(iter, args))
+    # fetch initial values
+    try:
+        argslist = [[next(a)] for a in argsit]
+    except StopIteration:
+        return
+    yield tuple(a[0] for a in argslist)
+    # bookkeeping of which iterators still have values
+    stopped = len(args)*[False]
+    n = len(args)
+    while not all(stopped):
+        n = (n - 1) % len(args)
+        if stopped[n]:
+            continue
         try:
-            r[n] = next(iterables[n])
-            r_done[n] = True
+            argslist[n].append(next(argsit[n]))
         except StopIteration:
-            is_infinite[n] = False
-            if any(is_infinite):
-                iterables[n] = iter(args[n])
-                continue
-            else:
-                can_cycle[n] = False
-                r[n] = next(iter(args[n]))
-                r_done[n] = True
-        if any(can_cycle):
-            while True:
-                n = (n + 1) % l
-                if can_cycle[n]:
-                    break
-        else:
-            break
-        if all(r_done):
-            yield tuple(r)
-            r_done[n] = False
+            stopped[n] = True
+            continue
+        for result in cartpi(*(argslist[:n] + [argslist[n][-1:]] + argslist[n + 1:])):
+            yield result
