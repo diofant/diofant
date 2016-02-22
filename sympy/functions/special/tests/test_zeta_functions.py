@@ -1,6 +1,6 @@
 from sympy import (Symbol, zeta, nan, Rational, Float, pi, dirichlet_eta, log,
-                   zoo, expand_func, polylog, lerchphi, S, exp, sqrt, I,
-                   exp_polar, polar_lift, O, Derivative, Integer)
+                   zoo, expand_func, polylog, lerchphi, exp, sqrt, I,
+                   exp_polar, polar_lift, O, Derivative)
 from sympy.functions.special.zeta_functions import _zetas
 from sympy.utilities.randtest import (test_derivative_numerically as td,
                                       random_complex_number as randcplx,

@@ -1,11 +1,8 @@
 import pytest
 
-from sympy import (Abs, I, Dummy, Rational, Float, Symbol, cos, oo, pi, sstr,
-                   simplify, sin, sqrt, symbols, Derivative, asin, acos)
-from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
-                            Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection,
-                            Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
+from sympy import Dummy, Rational, Float, Symbol, pi, sstr, sqrt, asin
+from sympy.geometry import (Line, Point, Ray, Segment,
+                            Point3D, Line3D, Ray3D, Segment3D, Plane)
 from sympy.geometry.util import are_coplanar
 
 x = Symbol('x', real=True)

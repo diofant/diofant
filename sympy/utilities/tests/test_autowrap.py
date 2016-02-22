@@ -9,7 +9,7 @@ import shutil
 import pytest
 
 from sympy.utilities.autowrap import (autowrap, binary_function,
-                                      CythonCodeWrapper, ufuncify,
+                                      CythonCodeWrapper,
                                       UfuncifyCodeWrapper, CodeWrapper)
 from sympy.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                      make_routine)

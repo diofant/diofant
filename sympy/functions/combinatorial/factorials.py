@@ -247,12 +247,12 @@ class subfactorial(CombinatorialFunction):
 
     @classmethod
     @cacheit
-    def _eval(self, n):
+    def _eval(cls, n):
         if not n:
             return S.One
         elif n == 1:
             return S.Zero
-        return (n - 1)*(self._eval(n - 1) + self._eval(n - 2))
+        return (n - 1)*(cls._eval(n - 1) + cls._eval(n - 2))
 
     @classmethod
     def eval(cls, arg):
@@ -642,7 +642,7 @@ class binomial(CombinatorialFunction):
             raise ArgumentIndexError(self, argindex)
 
     @classmethod
-    def _eval(self, n, k):
+    def _eval(cls, n, k):
         # n.is_Number and k.is_Integer and k != 1 and n != k
         if k.is_Integer:
             if n.is_Integer and n >= 0:

@@ -41,23 +41,23 @@ class GMPYRationalField(RationalField):
         else:
             raise CoercionFailed("expected `Rational` object, got %s" % a)
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert a Python `int` object to `dtype`. """
         return GMPYRational(a)
 
-    def from_QQ_python(K1, a, K0):
+    def from_QQ_python(self, a, K0):
         """Convert a Python `Fraction` object to `dtype`. """
         return GMPYRational(a.numerator, a.denominator)
 
-    def from_ZZ_gmpy(K1, a, K0):
+    def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY `mpz` object to `dtype`. """
         return GMPYRational(a)
 
-    def from_QQ_gmpy(K1, a, K0):
+    def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY `mpq` object to `dtype`. """
         return a
 
-    def from_RealField(K1, a, K0):
+    def from_RealField(self, a, K0):
         """Convert a mpmath `mpf` object to `dtype`. """
         return GMPYRational(*K0.to_rational(a))
 

@@ -6,7 +6,6 @@ from mpmath import pslq, mp
 
 from sympy import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
                    Dummy, expand_mul, I, pi)
-from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.trigonometric import cos, sin
 from sympy.polys.polytools import (Poly, PurePoly, sqf_norm, invert,
                                    factor_list, groebner, resultant,

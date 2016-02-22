@@ -13,13 +13,13 @@ from sympy.core.sympify import sympify
 from sympy.integrals.manualintegrate import manualintegrate
 from sympy.integrals.trigonometry import trigintegrate
 from sympy.integrals.meijerint import meijerint_definite, meijerint_indefinite
-from sympy.utilities import xthreaded
 from sympy.utilities.misc import filldedent
 from sympy.polys import Poly, PolynomialError
 from sympy.functions import Piecewise, sqrt, sign
 from sympy.functions.elementary.exponential import log
 from sympy.series import limit
 from sympy.series.order import Order
+from sympy.matrices import MatrixBase
 
 
 class Integral(AddWithLimits):
@@ -401,6 +401,10 @@ class Integral(AddWithLimits):
 
         # now compute and check the function
         function = self.function
+
+        if isinstance(function, MatrixBase):
+            return function.applyfunc(lambda f: self.func(f, self.limits).doit(**hints))
+
         if deep:
             function = function.doit(**hints)
         if function.is_zero:
@@ -1076,7 +1080,6 @@ class Integral(AddWithLimits):
         return result*dx
 
 
-@xthreaded
 def integrate(*args, **kwargs):
     """integrate(f, var, ...)
 
@@ -1239,7 +1242,6 @@ def integrate(*args, **kwargs):
         return integral
 
 
-@xthreaded
 def line_integrate(field, curve, vars):
     """line_integrate(field, Curve, variables)
 

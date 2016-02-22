@@ -1,14 +1,12 @@
 """Transform a string with Python-like source code into SymPy expression. """
 
 import ast
-from io import BytesIO, StringIO
-import re
+from io import BytesIO
 import unicodedata
 from tokenize import (tokenize, untokenize, TokenError,
                       NUMBER, STRING, NAME, OP, ENDMARKER)
 from keyword import iskeyword
 
-import sympy
 from sympy.core.symbol import Symbol
 from sympy.core.basic import Basic
 

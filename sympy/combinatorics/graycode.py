@@ -276,7 +276,7 @@ class GrayCode(Basic):
         return rv.rjust(self.n, '0')
 
     @classmethod
-    def unrank(self, n, rank):
+    def unrank(cls, n, rank):
         """
         Unranks an n-bit sized Gray code of rank k. This method exists
         so that a derivative GrayCode class can define its own code of

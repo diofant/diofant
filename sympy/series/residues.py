@@ -48,13 +48,8 @@ def residue(expr, x, x0):
         expr = expr.subs(x, x + x0)
     for n in [1, 2, 4, 8, 16, 32]:
         s = expr.nseries(x, n=n)
-        if s.has(Order) and s.removeO() == 0:
-            # bug in nseries
-            continue
         if not s.has(Order) or s.getn() >= 0:
             break
-    if s.has(Order) and s.getn() < 0:
-        raise NotImplementedError('Bug in nseries?')
     s = collect(s.removeO(), x)
     if s.is_Add:
         args = s.args

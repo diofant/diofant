@@ -1040,7 +1040,7 @@ class RegularPolygon(Polygon):
 
     """
 
-    def __new__(self, c, r, n, rot=0, **kwargs):
+    def __new__(cls, c, r, n, rot=0, **kwargs):
         r, n, rot = map(sympify, (r, n, rot))
         c = Point(c)
         if not isinstance(r, Expr):
@@ -1050,7 +1050,7 @@ class RegularPolygon(Polygon):
             if n < 3:
                 raise GeometryError("n must be a >= 3, not %s" % n)
 
-        obj = GeometryEntity.__new__(self, c, r, n, **kwargs)
+        obj = GeometryEntity.__new__(cls, c, r, n, **kwargs)
         obj._n = n
         obj._center = c
         obj._radius = r
@@ -1710,7 +1710,7 @@ class Triangle(Polygon):
         """
         return self.args
 
-    def is_similar(t1, t2):
+    def is_similar(self, other):
         """Is another triangle similar to this one.
 
         Two triangles are similar if one can be uniformly scaled to the other.
@@ -1744,11 +1744,11 @@ class Triangle(Polygon):
         False
 
         """
-        if not isinstance(t2, Polygon):
+        if not isinstance(other, Polygon):
             return False
 
-        s1_1, s1_2, s1_3 = [side.length for side in t1.sides]
-        s2 = [side.length for side in t2.sides]
+        s1_1, s1_2, s1_3 = [side.length for side in self.sides]
+        s2 = [side.length for side in other.sides]
 
         def _are_similar(u1, u2, u3, v1, v2, v3):
             e1 = simplify(u1/v1)

@@ -1,7 +1,6 @@
 """Miscellaneous stuff that doesn't really fit anywhere else."""
 
 import sys
-import os
 from textwrap import fill, dedent
 
 

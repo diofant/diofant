@@ -4,7 +4,7 @@ from sympy import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
                    Function, log, sqrt, Symbol, Subs, pi, symbols,
                    Rational, Integer)
 
-from sympy.abc import x, y, l
+from sympy.abc import x, y
 
 
 def test_sin():
@@ -143,3 +143,11 @@ def test_exp_product_positive_factors():
 
 def test_issue_8805():
     assert series(1, n=8) == 1
+
+
+def test_issue_9173():
+    p_0, p_1, p_2, p_3, b_0, b_1, b_2 = symbols('p_0:4, b_0:3')
+    Q = (p_0 + (p_1 + (p_2 + p_3/y)/y)/y)/(1 + ((p_3/(b_0*y) +
+        (b_0*p_2 - b_1*p_3)/b_0**2)/y + (b_0**2*p_1 - b_0*b_1*p_2 -
+            p_3*(b_0*b_2 - b_1**2))/b_0**3)/y)
+    assert Q.series(y, n=3) == b_2*y**2 + b_1*y + b_0 + O(y**3)

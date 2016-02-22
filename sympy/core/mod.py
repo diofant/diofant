@@ -1,4 +1,3 @@
-from .singleton import S
 from .numbers import nan
 from .function import Function
 

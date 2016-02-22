@@ -1,3 +1,4 @@
+import itertools
 import string
 import re as _re
 
@@ -10,7 +11,6 @@ from .cache import cacheit
 from .function import FunctionClass
 from .logic import fuzzy_bool
 from sympy.logic.boolalg import Boolean
-from sympy.utilities.iterables import cartes
 
 
 class BaseSymbol(AtomicExpr, Boolean):
@@ -533,7 +533,7 @@ def symbols(names, **args):
                 if len(split) == 1:
                     names = split[0]
                 else:
-                    names = [''.join(s) for s in cartes(*split)]
+                    names = [''.join(s) for s in itertools.product(*split)]
                 if literals:
                     result.extend([cls(literal(s), **args) for s in names])
                 else:

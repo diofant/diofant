@@ -26,60 +26,60 @@ class DummyNumber(object):
     with itself.
     """
 
-    def __radd__(self, a):
-        if isinstance(a, (int, float)):
-            return a + self.number
+    def __radd__(self, other):
+        if isinstance(other, (int, float)):
+            return other + self.number
         return NotImplemented
 
-    def __truediv__(a, b):
-        return a.__div__(b)
+    def __truediv__(self, other):
+        return self.__div__(other)
 
-    def __rtruediv__(a, b):
-        return a.__rdiv__(b)
+    def __rtruediv__(self, other):
+        return self.__rdiv__(other)
 
-    def __add__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number + a
+    def __add__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number + other
         return NotImplemented
 
-    def __rsub__(self, a):
-        if isinstance(a, (int, float)):
-            return a - self.number
+    def __rsub__(self, other):
+        if isinstance(other, (int, float)):
+            return other - self.number
         return NotImplemented
 
-    def __sub__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number - a
+    def __sub__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number - other
         return NotImplemented
 
-    def __rmul__(self, a):
-        if isinstance(a, (int, float)):
-            return a * self.number
+    def __rmul__(self, other):
+        if isinstance(other, (int, float)):
+            return other * self.number
         return NotImplemented
 
-    def __mul__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number * a
+    def __mul__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number * other
         return NotImplemented
 
-    def __rdiv__(self, a):
-        if isinstance(a, (int, float)):
-            return a / self.number
+    def __rdiv__(self, other):
+        if isinstance(other, (int, float)):
+            return other / self.number
         return NotImplemented
 
-    def __div__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number / a
+    def __div__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number / other
         return NotImplemented
 
-    def __rpow__(self, a):
-        if isinstance(a, (int, float)):
-            return a ** self.number
+    def __rpow__(self, other):
+        if isinstance(other, (int, float)):
+            return other ** self.number
         return NotImplemented
 
-    def __pow__(self, a):
-        if isinstance(a, (int, float, DummyNumber)):
-            return self.number ** a
+    def __pow__(self, other):
+        if isinstance(other, (int, float, DummyNumber)):
+            return self.number ** other
         return NotImplemented
 
     def __pos__(self):
@@ -249,24 +249,22 @@ def test_as_leading_term():
     assert (x**2).as_leading_term(x) == x**2
     assert (x + oo).as_leading_term(x) == oo
 
-
-def test_as_leading_term2():
     assert (x*cos(1)*cos(1 + sin(1)) + sin(1 + sin(1))).as_leading_term(x) == \
         sin(1 + sin(1))
 
-
-def test_as_leading_term3():
     assert (2 + pi + x).as_leading_term(x) == 2 + pi
     assert (2*x + pi*x + x**2).as_leading_term(x) == (2 + pi)*x
 
-
-def test_as_leading_term4():
     # see issue 6843
     n = Symbol('n', integer=True, positive=True)
     r = -n**3/(2*n**2 + 4*n + 2) - n**2/(n**2 + 2*n + 1) + \
         n**2/(n + 1) - n/(2*n**2 + 4*n + 2) + n/(n*x + x) + 2*n/(n + 1) - \
         1 + 1/(n*x + x) + 1/(n + 1) - 1/x
     assert r.as_leading_term(x).cancel() == n/2
+
+    # see issue sympy/sympy#9075
+    assert (6**(x + 1)).as_leading_term(x) == 6
+    assert (6**(x + n)).as_leading_term(x) == 6**n
 
 
 def test_as_leading_term_stub():
@@ -1166,6 +1164,8 @@ def test_as_coefficients_dict():
     check = [Integer(1), x, y, x*y, 1]
     assert [Add(3*x, 2*x, y, 3).as_coefficients_dict()[i] for i in check] == \
         [3, 5, 1, 0, 3]
+    assert [Add(3*x, 2*x, y, 3, evaluate=False).as_coefficients_dict()[i]
+            for i in check] == [3, 5, 1, 0, 3]
     assert [(3*x*y).as_coefficients_dict()[i] for i in check] == \
         [0, 0, 0, 3, 0]
     assert (3.0*x*y).as_coefficients_dict()[3.0*x*y] == 1

@@ -1,4 +1,4 @@
-from sympy import (S, symbols, I, atan, log, Poly, sqrt,
+from sympy import (symbols, I, atan, log, Poly, sqrt,
                    simplify, integrate, Integer, Rational)
 from sympy.integrals.rationaltools import ratint, ratint_logpart, log_to_atan
 

@@ -1,7 +1,6 @@
 from sympy.core import Function, S, Mul, Pow, Add, Integer, Rational
 from sympy.core.compatibility import ordered, default_sort_key
 from sympy.functions.combinatorial.factorials import (binomial,
-                                                      CombinatorialFunction,
                                                       factorial)
 from sympy.functions import gamma, sqrt, sin
 from sympy.polys import factor, cancel

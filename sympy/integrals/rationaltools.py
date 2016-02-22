@@ -1,9 +1,8 @@
 """This module implements tools for integrating rational functions. """
 
 from sympy import (S, Symbol, symbols, I, log, atan, roots, RootSum,
-                   Lambda, cancel, Dummy, Integer, Rational)
+                   Lambda, cancel, Dummy, Integer)
 from sympy.polys import Poly, resultant, ZZ
-from sympy.polys.polytools import count_roots
 
 
 def ratint(f, x, **flags):

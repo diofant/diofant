@@ -258,19 +258,19 @@ class Order(Expr):
     def free_symbols(self):
         return self.expr.free_symbols | set(self.variables)
 
-    def _eval_power(b, e):
+    def _eval_power(self, e):
         if e.is_Number and e.is_nonnegative:
-            return b.func(b.expr ** e, *b.args[1:])
+            return self.func(self.expr ** e, *self.args[1:])
         if e == O(1):
-            return b
+            return self
         return
 
     def as_expr_variables(self, order_symbols):
         if order_symbols is None:
             order_symbols = self.args[1:]
         else:
-            if not all(o[1] == order_symbols[0][1] for o in order_symbols) and \
-               not all(p == self.point[0] for p in self.point):
+            if (not all(o[1] == order_symbols[0][1] for o in order_symbols) and
+                    not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
                     'or oo not supported, got %s as a point.' % point)
             if order_symbols and order_symbols[0][1] != self.point[0]:
@@ -308,8 +308,8 @@ class Order(Expr):
         if expr is S.NaN:
             return False
         if expr.is_Order:
-            if not all(p == expr.point[0] for p in expr.point) and \
-               not all(p == self.point[0] for p in self.point):
+            if (not all(p == expr.point[0] for p in expr.point) and
+                   not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
                     'or oo not supported, got %s as a point.' % point)
             else:
@@ -343,10 +343,7 @@ class Order(Expr):
             ratio = self.expr/expr.expr
             ratio = powsimp(ratio, deep=True, combine='exp')
             for s in common_symbols:
-                try:
-                    l = Limit(ratio, s, point).doit(heuristics=False)
-                except NotImplementedError:
-                    l = None
+                l = Limit(ratio, s, point).doit(heuristics=False)
                 if not isinstance(l, Limit):
                     l = l != 0
                 else:
