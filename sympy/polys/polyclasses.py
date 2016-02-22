@@ -361,9 +361,8 @@ class DMP(CantSympify):
 
         >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.printing import sstr
 
-        >>> print(sstr(DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()))
+        >>> DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()
         ([2], DMP([[1], [1, 2]], ZZ, None))
         """
         J, F, u = dmp_exclude(self.rep, self.lev, self.dom)
@@ -378,12 +377,11 @@ class DMP(CantSympify):
 
         >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.printing import sstr
 
-        >>> print(sstr(DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])))
+        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
         DMP([[[2], []], [[1, 0], []]], ZZ, None)
 
-        >>> print(sstr(DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])))
+        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
         DMP([[[1], []], [[2, 0], []]], ZZ, None)
         """
         return self.per(dmp_permute(self.rep, P, self.lev, self.dom))

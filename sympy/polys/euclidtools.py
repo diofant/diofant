@@ -319,10 +319,9 @@ def dup_inner_subresultants(f, g, K):
     ========
 
     >>> from sympy.polys import ring, ZZ
-    >>> from sympy.printing import pprint
     >>> R, x = ring("x", ZZ)
 
-    >>> pprint(R.dup_inner_subresultants(x**2 + 1, x**2 - 1))
+    >>> R.dup_inner_subresultants(x**2 + 1, x**2 - 1)
     ([x**2 + 1, x**2 - 1, -2], [1, 1, 4])
 
     References
@@ -408,12 +407,10 @@ def dup_prs_resultant(f, g, K):
     ========
 
     >>> from sympy.polys import ring, ZZ
-    >>> from sympy.printing import pprint
     >>> R, x = ring("x", ZZ)
 
-    >>> pprint(R.dup_prs_resultant(x**2 + 1, x**2 - 1))
+    >>> R.dup_prs_resultant(x**2 + 1, x**2 - 1)
     (4, [x**2 + 1, x**2 - 1, -2])
-
     """
     if not f or not g:
         return (K.zero, [])
@@ -436,9 +433,8 @@ def dup_resultant(f, g, K, includePRS=False):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> print(R.dup_resultant(x**2 + 1, x**2 - 1))
+    >>> R.dup_resultant(x**2 + 1, x**2 - 1)
     4
-
     """
     if includePRS:
         return dup_prs_resultant(f, g, K)
@@ -807,9 +803,8 @@ def dup_discriminant(f, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> print(R.dup_discriminant(x**2 + 2*x + 3))
+    >>> R.dup_discriminant(x**2 + 2*x + 3)
     -8
-
     """
     d = dup_degree(f)
 
@@ -836,7 +831,6 @@ def dmp_discriminant(f, u, K):
 
     >>> R.dmp_discriminant(x**2*y + x*z + t)
     -4*y*t + z**2
-
     """
     if not u:
         return dup_discriminant(f, K)
@@ -870,8 +864,6 @@ def _dup_rr_trivial_gcd(f, g, K):
         else:
             return dup_neg(f, K), [-K.one], []
 
-    return
-
 
 def _dup_ff_trivial_gcd(f, g, K):
     """Handle trivial cases in GCD algorithm over a field. """
@@ -881,8 +873,6 @@ def _dup_ff_trivial_gcd(f, g, K):
         return dup_monic(g, K), [], [dup_LC(g, K)]
     elif not g:
         return dup_monic(f, K), [dup_LC(f, K)], []
-    else:
-        return
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
@@ -904,8 +894,6 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
             return dmp_neg(f, u, K), dmp_ground(-K.one, u), dmp_zero(u)
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
-    else:
-        return
 
 
 def _dmp_ff_trivial_gcd(f, g, u, K):
@@ -925,8 +913,6 @@ def _dmp_ff_trivial_gcd(f, g, u, K):
                 dmp_zero(u))
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
-    else:
-        return
 
 
 def _dmp_simplify_gcd(f, g, u, K):

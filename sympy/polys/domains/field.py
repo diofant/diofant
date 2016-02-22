@@ -70,11 +70,10 @@ class Field(Ring):
         >>> from sympy.polys.domains import QQ
         >>> from sympy import Rational, lcm
 
-        >>> print(QQ.lcm(QQ(2, 3), QQ(4, 9)))
+        >>> QQ.lcm(QQ(2, 3), QQ(4, 9))
         4/3
-        >>> print(lcm(Rational(2, 3), Rational(4, 9)))
+        >>> lcm(Rational(2, 3), Rational(4, 9))
         4/3
-
         """
 
         try:
