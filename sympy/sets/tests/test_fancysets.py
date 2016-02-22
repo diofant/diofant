@@ -267,4 +267,4 @@ def test_ImageSet_simplification():
 def test_issue_10497():
     # __iter__ for infinite product set
     assert (list(itertools.islice(iter(S.Integers**2), 7)) ==
-            [(0, 0), (1, 0), (1, 1), (-1, 1), (-1, -1), (2, -1), (2, 2)])
+            [(0, 0), (0, 1), (1, 0), (1, 1), (0, -1), (1, -1), (-1, 0)])
