@@ -381,7 +381,6 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     >>> g = x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1
     >>> R.dup_cyclotomic_p(g)
     True
-
     """
     if K.is_QQ:
         try:

@@ -8,8 +8,7 @@ from sympy.simplify import hypersimp
 
 
 def gosper_normal(f, g, n, polys=True):
-    r"""
-    Compute the Gosper's normal form of ``f`` and ``g``.
+    r"""Compute the Gosper's normal form of ``f`` and ``g``.
 
     Given relatively prime univariate polynomials ``f`` and ``g``,
     rewrite their quotient to a normal form defined as follows:
@@ -35,15 +34,12 @@ def gosper_normal(f, g, n, polys=True):
     Examples
     ========
 
-    >>> from sympy.concrete.gosper import gosper_normal
     >>> from sympy.abc import n
 
-    >>> gosper_normal(4*n+5, 2*(4*n+1)*(2*n+3), n, polys=False)
+    >>> gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n, polys=False)
     (1/4, n + 3/2, n + 1/4)
-
     """
-    (p, q), opt = parallel_poly_from_expr(
-        (f, g), n, field=True, extension=True)
+    (p, q), opt = parallel_poly_from_expr((f, g), n, field=True, extension=True)
 
     a, A = p.LC(), p.monic()
     b, B = q.LC(), q.monic()
@@ -72,8 +68,7 @@ def gosper_normal(f, g, n, polys=True):
 
 
 def gosper_term(f, n):
-    r"""
-    Compute Gosper's hypergeometric term for ``f``.
+    r"""Compute Gosper's hypergeometric term for ``f``.
 
     Suppose ``f`` is a hypergeometric term such that:
 
@@ -86,18 +81,16 @@ def gosper_term(f, n):
     Examples
     ========
 
-    >>> from sympy.concrete.gosper import gosper_term
     >>> from sympy.functions import factorial
     >>> from sympy.abc import n
 
     >>> gosper_term((4*n + 1)*factorial(n)/factorial(2*n + 1), n)
     (-n - 1/2)/(n + 1/4)
-
     """
     r = hypersimp(f, n)
 
     if r is None:
-        return    # 'f' is *not* a hypergeometric term
+        return
 
     p, q = r.as_numer_denom()
 
@@ -120,7 +113,7 @@ def gosper_term(f, n):
             D.remove(d)
 
     if not D:
-        return    # 'f(n)' is *not* Gosper-summable
+        return  # 'f(n)' is *not* Gosper-summable
 
     d = max(D)
 
@@ -133,7 +126,7 @@ def gosper_term(f, n):
     solution = solve(H.coeffs(), coeffs)
 
     if solution is None:
-        return    # 'f(n)' is *not* Gosper-summable
+        return  # 'f(n)' is *not* Gosper-summable
 
     x = x.as_expr().subs(solution)
 
@@ -142,14 +135,13 @@ def gosper_term(f, n):
             x = x.subs(coeff, 0)
 
     if x is S.Zero:
-        return    # 'f(n)' is *not* Gosper-summable
+        return  # 'f(n)' is *not* Gosper-summable
     else:
         return B.as_expr()*x/C.as_expr()
 
 
 def gosper_sum(f, k):
-    r"""
-    Gosper's hypergeometric summation algorithm.
+    r"""Gosper's hypergeometric summation algorithm.
 
     Given a hypergeometric term ``f`` such that:
 
@@ -163,7 +155,6 @@ def gosper_sum(f, k):
     Examples
     ========
 
-    >>> from sympy.concrete.gosper import gosper_sum
     >>> from sympy.functions import factorial
     >>> from sympy.abc import i, n, k
 
@@ -182,7 +173,6 @@ def gosper_sum(f, k):
 
     .. [1] Marko Petkovšek, Herbert S. Wilf, Doron Zeilberger, A = B,
            AK Peters, Ltd., Wellesley, MA, USA, 1997, pp. 73--100
-
     """
     indefinite = False
 

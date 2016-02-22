@@ -47,8 +47,6 @@ def sdm_monomial_mul(M, X):
 
     Multiplying `xy^3` into `x f_1` yields `x^2 y^3 f_1`:
 
-    >>> from sympy.polys.distributedmodules import sdm_monomial_mul
-
     >>> sdm_monomial_mul((1, 1, 0), (1, 3))
     (1, 2, 3)
     """
@@ -63,8 +61,6 @@ def sdm_monomial_deg(M):
     ========
 
     For example, the total degree of `x^2 y f_5` is 3:
-
-    >>> from sympy.polys.distributedmodules import sdm_monomial_deg
 
     >>> sdm_monomial_deg((5, 2, 1))
     3
@@ -81,8 +77,6 @@ def sdm_monomial_lcm(A, B):
     monomials.
 
     Otherwise the result is undefined.
-
-    >>> from sympy.polys.distributedmodules import sdm_monomial_lcm
 
     >>> sdm_monomial_lcm((1, 2, 3), (1, 0, 5))
     (1, 2, 5)
@@ -107,8 +101,6 @@ def sdm_monomial_divides(A, B):
     expression.
 
     `A = f_1` divides `B = f_1`
-
-    >>> from sympy.polys.distributedmodules import sdm_monomial_divides
 
     >>> sdm_monomial_divides((1, 0, 0), (1, 0, 0))
     True
@@ -164,7 +156,6 @@ def sdm_from_dict(d, O):
 
     Here ``O`` is the monomial order to use.
 
-    >>> from sympy.polys.distributedmodules import sdm_from_dict
     >>> from sympy.polys import QQ, lex
 
     >>> dic = {(1, 1, 0): QQ(1), (1, 0, 0): QQ(2), (0, 1, 0): QQ(0)}
@@ -198,7 +189,6 @@ def sdm_add(f, g, O, K):
 
     `(xy f_1) + (f_2) = f_2 + xy f_1`
 
-    >>> from sympy.polys.distributedmodules import sdm_add
     >>> from sympy.polys import lex, QQ
 
     >>> sdm_add([((1, 1, 1), QQ(1))], [((2, 0, 0), QQ(1))], lex, QQ)
@@ -244,7 +234,6 @@ def sdm_LM(f):
     Examples
     ========
 
-    >>> from sympy.polys.distributedmodules import sdm_LM, sdm_from_dict
     >>> from sympy.polys import QQ, lex
 
     >>> dic = {(1, 2, 3): QQ(1), (4, 0, 0): QQ(1), (4, 0, 1): QQ(1)}
@@ -263,7 +252,6 @@ def sdm_LT(f):
     Examples
     ========
 
-    >>> from sympy.polys.distributedmodules import sdm_LT, sdm_from_dict
     >>> from sympy.polys import QQ, lex
 
     >>> dic = {(1, 2, 3): QQ(1), (4, 0, 0): QQ(2), (4, 0, 1): QQ(3)}
@@ -285,7 +273,6 @@ def sdm_mul_term(f, term, O, K):
 
     `0 f_1 = 0`
 
-    >>> from sympy.polys.distributedmodules import sdm_mul_term
     >>> from sympy.polys import lex, QQ
 
     >>> sdm_mul_term([((1, 0, 0), QQ(1))], ((0, 0), QQ(0)), lex, QQ)
@@ -333,8 +320,6 @@ def sdm_deg(f):
     Examples
     ========
 
-    >>> from sympy.polys.distributedmodules import sdm_deg
-
     >>> sdm_deg([((1, 2, 3), 1), ((10, 0, 1), 1), ((2, 3, 4), 4)])
     7
     """
@@ -354,7 +339,6 @@ def sdm_from_vector(vec, O, K, **opts):
     Examples
     ========
 
-    >>> from sympy.polys.distributedmodules import sdm_from_vector
     >>> from sympy.abc import x, y, z
     >>> from sympy.polys import QQ, lex
 
@@ -380,7 +364,6 @@ def sdm_to_vector(f, gens, K, n=None):
     Examples
     ========
 
-    >>> from sympy.polys.distributedmodules import sdm_to_vector
     >>> from sympy.abc import x, y, z
     >>> from sympy.polys import QQ, lex
     >>> f = [((1, 0, 0, 1), QQ(2)), ((0, 2, 0, 0), QQ(1)), ((0, 0, 2, 0), QQ(1))]
@@ -424,7 +407,6 @@ def sdm_spoly(f, g, O, K, phantom=None):
     Examples
     ========
 
-    >>> from sympy.polys.distributedmodules import sdm_spoly
     >>> from sympy.polys import QQ, lex
 
     >>> f = [((2, 1, 1), QQ(1)), ((1, 0, 1), QQ(1))]
@@ -467,8 +449,6 @@ def sdm_ecart(f):
 
     Examples
     ========
-
-    >>> from sympy.polys.distributedmodules import sdm_ecart
 
     >>> sdm_ecart([((1, 2, 3), 1), ((1, 0, 1), 1)])
     0

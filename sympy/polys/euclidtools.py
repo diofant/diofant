@@ -62,7 +62,6 @@ def dup_half_gcdex(f, g, K):
 
     >>> R.dup_half_gcdex(f, g)
     (-1/5*x + 3/5, x + 1)
-
     """
     if not K.has_Field:
         raise DomainError("can't compute half extended GCD over %s" % K)
@@ -89,7 +88,6 @@ def dmp_half_gcdex(f, g, u, K):
 
     >>> from sympy.polys import ring, ZZ
     >>> R, x,y = ring("x,y", ZZ)
-
     """
     if not u:
         return dup_half_gcdex(f, g, K)

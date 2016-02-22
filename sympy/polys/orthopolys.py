@@ -285,18 +285,17 @@ def spherical_bessel_fn(n, x=None, **args):
     Examples
     ========
 
-    >>> from sympy.polys.orthopolys import spherical_bessel_fn as fn
     >>> from sympy import Symbol
-    >>> z = Symbol("z")
-    >>> fn(1, z)
-    z**(-2)
-    >>> fn(2, z)
-    -1/z + 3/z**3
-    >>> fn(3, z)
-    -6/z**2 + 15/z**4
-    >>> fn(4, z)
-    1/z - 45/z**3 + 105/z**5
 
+    >>> z = Symbol("z")
+    >>> spherical_bessel_fn(1, z)
+    z**(-2)
+    >>> spherical_bessel_fn(2, z)
+    -1/z + 3/z**3
+    >>> spherical_bessel_fn(3, z)
+    -6/z**2 + 15/z**4
+    >>> spherical_bessel_fn(4, z)
+    1/z - 45/z**3 + 105/z**5
     """
 
     if n < 0:

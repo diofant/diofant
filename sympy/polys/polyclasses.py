@@ -359,7 +359,6 @@ class DMP(CantSympify):
         Examples
         ========
 
-        >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
 
         >>> DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()
@@ -375,7 +374,6 @@ class DMP(CantSympify):
         Examples
         ========
 
-        >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
 
         >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
