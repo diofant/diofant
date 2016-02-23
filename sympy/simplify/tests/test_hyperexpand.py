@@ -1021,3 +1021,8 @@ def test_omgissue_203():
     assert hyperexpand(h) == Rational(1, 30)
     h = hyper((-6, -7, -5), (-6, -6), 1)
     assert hyperexpand(h) == -Rational(1, 6)
+
+
+def test_issue_6052():
+    G0 = meijerg((), (), (1,), (0,), 0)
+    assert hyperexpand(G0) == 0
