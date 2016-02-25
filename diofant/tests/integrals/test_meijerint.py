@@ -3,7 +3,7 @@ from random import randrange, uniform
 
 import pytest
 
-from diofant import (E1, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
+from diofant import (E1, RR, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      Integral, Mul, Piecewise, Rational, Shi, Si, Symbol,
                      acosh, acoth, arg, asin, atan, besseli, besselj, cbrt,
                      combsimp, cos, cosh, erf, exp, exp_polar, expand,
@@ -12,7 +12,7 @@ from diofant import (E1, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      laplace_transform, log, lowergamma, meijerg, nan, oo, pi,
                      piecewise_fold, polygamma, powdenest, powsimp, re,
                      simplify, sin, sinh, sqrt, symbols, unpolarify)
-from diofant.abc import a, b, c, d, s, t, x, y, z
+from diofant.abc import R, a, b, c, d, r, s, t, x, y, z
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
                                          meijerint_definite,
@@ -659,3 +659,10 @@ def test_meijerint_indefinite_abs():
 def test_sympyissue_13536():
     a = Symbol('a', real=True, positive=True)
     assert integrate(1/x**2, (x, oo, a)) == -1/a
+
+
+def test_sympyissue_10681():
+    f = integrate(r**2*(R**2 - r**2)**0.5, r, meijerg=True)
+    g = (1.0/3)*R**1.0*r**3*hyper((-0.5, Rational(3, 2)), (Rational(5, 2),),
+                                  r**2*exp_polar(2*I*pi)/R**2)
+    assert RR.almosteq((f/g).n(), 1.0, 1e-12)

@@ -2,9 +2,9 @@ from random import randrange
 
 import pytest
 
-from diofant import (Ci, I, Integer, Piecewise, Rational, Si, Symbol, Tuple,
-                     asin, atanh, besseli, cbrt, combsimp, cos, erf, exp,
-                     exp_polar, expand, gamma, hyper, lerchphi, log,
+from diofant import (RR, Ci, I, Integer, Piecewise, Rational, Si, Symbol,
+                     Tuple, asin, atanh, besseli, cbrt, combsimp, cos, erf,
+                     exp, exp_polar, expand, gamma, hyper, lerchphi, log,
                      lowergamma, meijerg, oo, pi, polylog, simplify, sin, sqrt,
                      sympify, unpolarify, uppergamma)
 from diofant.abc import a, b, c, z
@@ -546,6 +546,15 @@ def test_meijerg_confluence():
     assert u([1, 1], [], [], [0])
     assert u([1, 1], [2, 2, 5], [1, 1, 6], [0, 0])
     assert u([1, 1], [2, 2, 5], [1, 1, 6], [0])
+
+
+def test_meijerg_with_Floats():
+    # see sympy/sympy#10681
+    f = meijerg(((3.0, 1), ()), ((Rational(3, 2),), (0,)), z)
+    a = -2.3632718012073
+    g = a*z**Rational(3, 2)*hyper((-0.5, Rational(3, 2)),
+                                  (Rational(5, 2),), z*exp_polar(I*pi))
+    assert RR.almosteq((hyperexpand(f)/g).n(), 1.0, 1e-12)
 
 
 def test_lerchphi():
