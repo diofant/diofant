@@ -1,8 +1,11 @@
+import gc
+import weakref
+
 import pytest
 
 from sympy import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
                    StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
-                   Integer, Float, sstr)
+                   Integer, Float, sstr, default_sort_key)
 
 
 def test_Symbol():
@@ -325,3 +328,12 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols('a::'))
     pytest.raises(ValueError, lambda: symbols(':a:'))
     pytest.raises(ValueError, lambda: symbols('::a'))
+
+
+def test_weakref():
+    x, y = Symbol('x'), Symbol('y')
+    d = weakref.WeakKeyDictionary([(x, 1), (y, 2)])
+    assert sstr(sorted(d.keys(), key=default_sort_key)) == '[x, y]'
+    del x
+    gc.collect()
+    assert sstr(list(d.keys())) == '[y]'

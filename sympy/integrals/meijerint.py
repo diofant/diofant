@@ -33,7 +33,7 @@ from sympy.core.add import Add
 from sympy.core.mul import Mul
 from sympy.core.numbers import Integer, Rational
 from sympy.core.cache import cacheit
-from sympy.core.symbol import Dummy, Wild
+from sympy.core.symbol import Dummy, Symbol, Wild
 from sympy.simplify import hyperexpand, powdenest, collect
 from sympy.logic.boolalg import And, Or, BooleanAtom
 from sympy.functions.special.delta_functions import Heaviside
@@ -46,7 +46,7 @@ from sympy.utilities.misc import debug as _debug
 from sympy.utilities import default_sort_key
 
 # keep this at top for easy reference
-z = Dummy('z')
+z = Symbol('z_for_meijerint')
 
 
 def _has(res, *f):

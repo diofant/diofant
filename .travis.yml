@@ -7,7 +7,9 @@ cache: pip
 python:
   - 3.4
 env:
-  - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y
+  - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y SPLIT="1/3"
+  - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y SPLIT="2/3"
+  - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y SPLIT="3/3"
 addons:
   apt:
     packages:
@@ -40,6 +42,8 @@ matrix:
       after_success:
         - codecov
     - python: "pypy3"
+      env:
+        - SYMPY_GROUND_TYPES=python MPMATH_NOGMPY=Y
       install:
         - pip install .
       script:

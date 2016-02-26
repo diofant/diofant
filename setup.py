@@ -56,12 +56,14 @@ class test(TestCommand):
 
     description = "run all tests and doctests"
     user_options = [('cov', None, "gatter coverage information"),
-                    ('mark=', "m", "run tests matching given mark expression")]
+                    ('mark=', "m", "run tests matching given mark expression"),
+                    ('split=', None, "run part of the test suite")]
 
     def initialize_options(self):
         TestCommand.initialize_options(self)
         self.cov = None
         self.mark = None
+        self.split = None
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -76,6 +78,8 @@ class test(TestCommand):
             self.pytest_args.extend(["--cov", "sympy"])
         if self.mark is not None:
             self.pytest_args.extend(["-m", self.mark])
+        if self.split is not None:
+            self.pytest_args.extend(["--split", self.split])
 
     def run_tests(self):
         import pytest

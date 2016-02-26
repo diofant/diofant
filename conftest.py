@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from sympy.core.cache import clear_cache
@@ -49,3 +51,34 @@ def set_displayhook():
     # doctest restore sys.displayhook from __displayhook__,
     # see https://bugs.python.org/issue26092.
     sys.__displayhook__ = sys.displayhook
+
+
+sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
+
+
+def process_split(session, config, items):
+    split = config.getoption("--split")
+    if not split:
+        return
+    m = sp.match(split)
+    if not m:
+        raise ValueError("split must be a string of the form a/b "
+                         "where a and b are ints.")
+    i, t = map(int, m.groups())
+    start, end = (i - 1)*len(items)//t, i*len(items)//t
+
+    if i < t:
+        # remove elements from end of list first
+        del items[end:]
+    del items[:start]
+
+
+def pytest_addoption(parser):
+    parser.addoption("--split", action="store", default="",
+                     help="split tests")
+
+
+def pytest_collection_modifyitems(session, config, items):
+    """ pytest hook. """
+    # handle splits
+    process_split(session, config, items)
