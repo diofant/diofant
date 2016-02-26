@@ -1966,9 +1966,6 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     premult must be a*z**prem for some a independent of z.
     """
 
-    if z is S.Zero:
-        return S.One
-
     z = polarify(z, subs=False)
     if rewrite == 'default':
         rewrite = 'nonrepsmall'
@@ -2029,7 +2026,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     p = simplify(p).subs(z0, z)
 
     # Try special expansions early.
-    if unpolarify(z) in [1, -1] and (len(func.ap), len(func.bq)) == (2, 1):
+    if unpolarify(z) in [1, 0, -1]:
         f = build_hypergeometric_formula(func)
         r = carryout_plan(f, ops).replace(hyper, hyperexpand_special)
         if not r.has(hyper):
