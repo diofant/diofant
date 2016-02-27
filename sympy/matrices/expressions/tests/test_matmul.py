@@ -21,7 +21,7 @@ def test_adjoint():
     assert adjoint(2*A*B) == 2*Adjoint(B)*Adjoint(A)
     assert adjoint(2*I*C) == -2*I*Adjoint(C)
 
-    M = Matrix(2, 2, [1, 2 + I, 3, 4])
+    M = Matrix(2, 2, [1, 2 + I, 3, 4]).as_immutable()
     MA = Matrix(2, 2, [1, 3, 2 - I, 4])
     assert adjoint(M) == MA
     assert adjoint(2*M) == 2*MA
@@ -33,7 +33,7 @@ def test_transpose():
     assert transpose(2*A*B) == 2*Transpose(B)*Transpose(A)
     assert transpose(2*I*C) == 2*I*Transpose(C)
 
-    M = Matrix(2, 2, [1, 2 + I, 3, 4])
+    M = Matrix(2, 2, [1, 2 + I, 3, 4]).as_immutable()
     MT = Matrix(2, 2, [1, 3, 2 + I, 4])
     assert transpose(M) == MT
     assert transpose(2*M) == 2*MT
