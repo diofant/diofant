@@ -744,10 +744,9 @@ def eval_sum_symbolic(f, limits):
 
             return Piecewise((l, Eq(q, S.One)), (r, True))
 
-        r = gosper_sum(f, (i, a, b))
-
-        if r not in (None, S.NaN):
-            return r
+    r = gosper_sum(f, (i, a, b))
+    if r is not None and r.is_finite:
+        return r
 
     return eval_sum_hyper(f_orig, (i, a, b))
 
