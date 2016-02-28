@@ -1,6 +1,6 @@
 """Most of these tests come from the examples in Bronstein's book."""
 
-from sympy import Poly, Matrix, symbols, Integer, Rational
+from sympy import Poly, Matrix, symbols, Rational
 from sympy.integrals.risch import DifferentialExtension
 from sympy.integrals.prde import (
     prde_normal_denom, prde_special_denom,

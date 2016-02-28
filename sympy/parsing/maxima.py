@@ -4,26 +4,26 @@ from sympy import sympify, Sum, product, sin, cos
 
 
 class MaximaHelpers:
-    def maxima_expand(expr):
-        return expr.expand()
+    def maxima_expand(self):
+        return self.expand()
 
-    def maxima_float(expr):
-        return expr.evalf()
+    def maxima_float(self):
+        return self.evalf()
 
-    def maxima_trigexpand(expr):
-        return expr.expand(trig=True)
+    def maxima_trigexpand(self):
+        return self.expand(trig=True)
 
-    def maxima_sum(a1, a2, a3, a4):
-        return Sum(a1, (a2, a3, a4)).doit()
+    def maxima_sum(self, var, low, high):
+        return Sum(self, (var, low, high)).doit()
 
-    def maxima_product(a1, a2, a3, a4):
-        return product(a1, (a2, a3, a4))
+    def maxima_product(self, var, low, high):
+        return product(self, (var, low, high))
 
-    def maxima_csc(expr):
-        return 1/sin(expr)
+    def maxima_csc(self):
+        return 1/sin(self)
 
-    def maxima_sec(expr):
-        return 1/cos(expr)
+    def maxima_sec(self):
+        return 1/cos(self)
 
 sub_dict = {
     'pi': re.compile('%pi'),

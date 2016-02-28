@@ -1,6 +1,6 @@
 """ Unit tests for Hyper_Function"""
 
-from sympy.core import symbols, Dummy, Tuple, S, Integer, Rational
+from sympy.core import symbols, Dummy, Tuple, Rational
 from sympy.functions import hyper
 from sympy.simplify.hyperexpand import Hyper_Function
 

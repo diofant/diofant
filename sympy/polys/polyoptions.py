@@ -57,16 +57,16 @@ class BooleanOption(Option):
 class OptionType(type):
     """Base type for all options that does registers options. """
 
-    def __init__(cls, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         @property
-        def getter(self):
+        def getter(a):
             try:
-                return self[cls.option]
+                return a[self.option]
             except KeyError:
-                return cls.default()
+                return self.default()
 
-        setattr(Options, cls.option, getter)
-        Options.__options__[cls.option] = cls
+        setattr(Options, self.option, getter)
+        Options.__options__[self.option] = self
 
 
 @public

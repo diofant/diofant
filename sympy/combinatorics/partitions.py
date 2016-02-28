@@ -235,7 +235,7 @@ class Partition(FiniteSet):
             [i for p in partition for i in p], key=default_sort_key)])
 
     @classmethod
-    def from_rgs(self, rgs, elements):
+    def from_rgs(cls, rgs, elements):
         """
         Creates a set partition from a restricted growth string.
 

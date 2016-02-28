@@ -183,13 +183,13 @@ class Point(GeometryEntity):
                 return False
         return True
 
-    def is_scalar_multiple(p1, p2):
-        """Returns whether `p1` and `p2` are scalar multiples
+    def is_scalar_multiple(self, other):
+        """Returns whether `self` and `other` are scalar multiples
         of each other.
         """
-        # if the vectors p1 and p2 are linearly dependent, then they must
+        # if the vectors self and other are linearly dependent, then they must
         # be scalar multiples of each other
-        m = Matrix([p1.args, p2.args])
+        m = Matrix([self.args, other.args])
         # XXX: issue sympy/sympy#9480 we need `simplify=True` otherwise the
         # rank may be computed incorrectly
         return m.rank(simplify=True) < 2

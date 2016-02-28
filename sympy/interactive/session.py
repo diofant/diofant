@@ -302,7 +302,7 @@ def init_session(ipython=None, pretty_print=True, order=None,
 
     if ipython is not False:
         try:
-            import IPython
+            import IPython  # noqa
         except ImportError:
             if ipython is True:
                 raise RuntimeError("IPython is not available on this system")

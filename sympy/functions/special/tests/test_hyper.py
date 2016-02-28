@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import (hyper, meijerg, S, Tuple, pi, I, exp, log, Integer,
+from sympy import (hyper, meijerg, S, Tuple, pi, I, exp, log,
                    cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
 from sympy.series.limits import limit
 from sympy.utilities.randtest import (random_complex_number as randcplx,

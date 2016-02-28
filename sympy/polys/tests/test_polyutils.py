@@ -2,7 +2,7 @@
 
 import pytest
 
-from sympy import (S, Integer, sin, cos, sqrt, symbols, pi, Eq,
+from sympy import (Integer, sin, cos, sqrt, symbols, pi, Eq,
                    Integral, exp, Mul, Rational as Q, I)
 from sympy.polys.polyutils import (
     _nsort,

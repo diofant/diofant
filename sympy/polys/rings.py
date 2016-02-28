@@ -610,7 +610,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if not v:
                 del self[k]
 
-    def __eq__(p1, p2):
+    def __eq__(self, other):
         """Equality test for polynomials.
 
         Examples
@@ -626,63 +626,63 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> p1 == 2*(x**2 + y**2)
         True
         """
-        if not p2:
-            return not p1
-        elif isinstance(p2, p1.ring.dtype):
-            return dict.__eq__(p1, p2)
-        elif len(p1) > 1:
+        if not other:
+            return not self
+        elif isinstance(other, self.ring.dtype):
+            return dict.__eq__(self, other)
+        elif len(self) > 1:
             return False
         else:
-            return p1.get(p1.ring.zero_monom) == p2
+            return self.get(self.ring.zero_monom) == other
 
-    def __ne__(p1, p2):
-        return not p1.__eq__(p2)
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
-    def almosteq(p1, p2, tolerance=None):
+    def almosteq(self, other, tolerance=None):
         """Approximate equality test for polynomials. """
-        ring = p1.ring
+        ring = self.ring
 
-        if isinstance(p2, ring.dtype):
-            if set(p1.keys()) != set(p2.keys()):
+        if isinstance(other, ring.dtype):
+            if set(self.keys()) != set(other.keys()):
                 return False
 
             almosteq = ring.domain.almosteq
 
-            for k in p1.keys():
-                if not almosteq(p1[k], p2[k], tolerance):
+            for k in self.keys():
+                if not almosteq(self[k], other[k], tolerance):
                     return False
             else:
                 return True
-        elif len(p1) > 1:
+        elif len(self) > 1:
             return False
         else:
             try:
-                p2 = ring.domain.convert(p2)
+                other = ring.domain.convert(other)
             except CoercionFailed:
                 return False
             else:
-                return ring.domain.almosteq(p1.const(), p2, tolerance)
+                return ring.domain.almosteq(self.const(), other, tolerance)
 
     def sort_key(self):
         return (len(self), self.terms())
 
-    def _cmp(p1, p2, op):
-        if isinstance(p2, p1.ring.dtype):
-            return op(p1.sort_key(), p2.sort_key())
+    def _cmp(self, other, op):
+        if isinstance(other, self.ring.dtype):
+            return op(self.sort_key(), other.sort_key())
         else:
             return NotImplemented
 
-    def __lt__(p1, p2):
-        return p1._cmp(p2, lt)
+    def __lt__(self, other):
+        return self._cmp(other, lt)
 
-    def __le__(p1, p2):
-        return p1._cmp(p2, le)
+    def __le__(self, other):
+        return self._cmp(other, le)
 
-    def __gt__(p1, p2):
-        return p1._cmp(p2, gt)
+    def __gt__(self, other):
+        return self._cmp(other, gt)
 
-    def __ge__(p1, p2):
-        return p1._cmp(p2, ge)
+    def __ge__(self, other):
+        return self._cmp(other, ge)
 
     def _drop(self, gen):
         ring = self.ring
@@ -824,51 +824,51 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.ring.domain.is_nonpositive(self.LC)
 
     @property
-    def is_zero(f):
-        return not f
+    def is_zero(self):
+        return not self
 
     @property
-    def is_one(f):
-        return f == f.ring.one
+    def is_one(self):
+        return self == self.ring.one
 
     @property
-    def is_monic(f):
-        return f.ring.domain.is_one(f.LC)
+    def is_monic(self):
+        return self.ring.domain.is_one(self.LC)
 
     @property
-    def is_primitive(f):
-        return f.ring.domain.is_one(f.content())
+    def is_primitive(self):
+        return self.ring.domain.is_one(self.content())
 
     @property
-    def is_linear(f):
-        return all(sum(monom) <= 1 for monom in f.itermonoms())
+    def is_linear(self):
+        return all(sum(monom) <= 1 for monom in self.itermonoms())
 
     @property
-    def is_quadratic(f):
-        return all(sum(monom) <= 2 for monom in f.itermonoms())
+    def is_quadratic(self):
+        return all(sum(monom) <= 2 for monom in self.itermonoms())
 
     @property
-    def is_squarefree(f):
-        return f.ring.dmp_sqf_p(f)
+    def is_squarefree(self):
+        return self.ring.dmp_sqf_p(self)
 
     @property
-    def is_irreducible(f):
-        return f.ring.dmp_irreducible_p(f)
+    def is_irreducible(self):
+        return self.ring.dmp_irreducible_p(self)
 
     @property
-    def is_cyclotomic(f):
-        if f.ring.is_univariate:
-            return f.ring.dup_cyclotomic_p(f)
+    def is_cyclotomic(self):
+        if self.ring.is_univariate:
+            return self.ring.dup_cyclotomic_p(self)
         else:
             raise MultivariatePolynomialError("cyclotomic polynomial")
 
     def __neg__(self):
-        return self.new([ (monom, -coeff) for monom, coeff in self.iterterms() ])
+        return self.new([(monom, -coeff) for monom, coeff in self.iterterms()])
 
     def __pos__(self):
         return self
 
-    def __add__(p1, p2):
+    def __add__(self, other):
         """Add two polynomials.
 
         Examples
@@ -881,58 +881,58 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> (x + y)**2 + (x - y)**2
         2*x**2 + 2*y**2
         """
-        if not p2:
-            return p1.copy()
-        ring = p1.ring
-        if isinstance(p2, ring.dtype):
-            p = p1.copy()
+        if not other:
+            return self.copy()
+        ring = self.ring
+        if isinstance(other, ring.dtype):
+            p = self.copy()
             get = p.get
             zero = ring.domain.zero
-            for k, v in p2.items():
+            for k, v in other.items():
                 v = get(k, zero) + v
                 if v:
                     p[k] = v
                 else:
                     del p[k]
             return p
-        elif isinstance(p2, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == p2.ring:
+        elif isinstance(other, PolyElement):
+            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(p2.ring.domain, PolynomialRing) and p2.ring.domain.ring == ring:
-                return p2.__radd__(p1)
+            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
+                return other.__radd__(self)
             else:
                 return NotImplemented
 
         try:
-            cp2 = ring.domain_new(p2)
+            cp2 = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            p = p1.copy()
+            p = self.copy()
             if not cp2:
                 return p
             zm = ring.zero_monom
-            if zm not in p1.keys():
+            if zm not in self.keys():
                 p[zm] = cp2
             else:
-                if p2 == -p[zm]:
+                if other == -p[zm]:
                     del p[zm]
                 else:
                     p[zm] += cp2
             return p
 
-    def __radd__(p1, n):
-        p = p1.copy()
+    def __radd__(self, n):
+        p = self.copy()
         if not n:
             return p
-        ring = p1.ring
+        ring = self.ring
         try:
             n = ring.domain_new(n)
         except CoercionFailed:
             return NotImplemented
         else:
             zm = ring.zero_monom
-            if zm not in p1.keys():
+            if zm not in self.keys():
                 p[zm] = n
             else:
                 if n == -p[zm]:
@@ -941,8 +941,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                     p[zm] += n
             return p
 
-    def __sub__(p1, p2):
-        """Subtract polynomial p2 from p1.
+    def __sub__(self, other):
+        """Subtract polynomial other from self.
 
         Examples
         ========
@@ -956,46 +956,46 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> p1 - p2
         -x*y + x
         """
-        if not p2:
-            return p1.copy()
-        ring = p1.ring
-        if isinstance(p2, ring.dtype):
-            p = p1.copy()
+        if not other:
+            return self.copy()
+        ring = self.ring
+        if isinstance(other, ring.dtype):
+            p = self.copy()
             get = p.get
             zero = ring.domain.zero
-            for k, v in p2.items():
+            for k, v in other.items():
                 v = get(k, zero) - v
                 if v:
                     p[k] = v
                 else:
                     del p[k]
             return p
-        elif isinstance(p2, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == p2.ring:
+        elif isinstance(other, PolyElement):
+            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(p2.ring.domain, PolynomialRing) and p2.ring.domain.ring == ring:
-                return p2.__rsub__(p1)
+            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
+                return other.__rsub__(self)
             else:
                 return NotImplemented
 
         try:
-            p2 = ring.domain_new(p2)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            p = p1.copy()
+            p = self.copy()
             zm = ring.zero_monom
-            if zm not in p1.keys():
-                p[zm] = -p2
+            if zm not in self.keys():
+                p[zm] = -other
             else:
-                if p2 == p[zm]:
+                if other == p[zm]:
                     del p[zm]
                 else:
-                    p[zm] -= p2
+                    p[zm] -= other
             return p
 
-    def __rsub__(p1, n):
-        """n - p1 with n convertible to the coefficient domain.
+    def __rsub__(self, n):
+        """n - self with n convertible to the coefficient domain.
 
         Examples
         ========
@@ -1008,19 +1008,19 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> 4 - p
         -x - y + 4
         """
-        ring = p1.ring
+        ring = self.ring
         try:
             n = ring.domain_new(n)
         except CoercionFailed:
             return NotImplemented
         else:
             p = ring.zero
-            for expv in p1:
-                p[expv] = -p1[expv]
+            for expv in self:
+                p[expv] = -self[expv]
             p += n
             return p
 
-    def __mul__(p1, p2):
+    def __mul__(self, other):
         """Multiply two polynomials.
 
         Examples
@@ -1035,42 +1035,41 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> p1*p2
         x**2 - y**2
         """
-        ring = p1.ring
+        ring = self.ring
         p = ring.zero
-        if not p1 or not p2:
+        if not self or not other:
             return p
-        elif isinstance(p2, ring.dtype):
+        elif isinstance(other, ring.dtype):
             get = p.get
             zero = ring.domain.zero
             monomial_mul = ring.monomial_mul
-            p2it = list(p2.items())
-            for exp1, v1 in p1.items():
-                for exp2, v2 in p2it:
+            for exp1, v1 in self.items():
+                for exp2, v2 in other.items():
                     exp = monomial_mul(exp1, exp2)
                     p[exp] = get(exp, zero) + v1*v2
             p.strip_zero()
             return p
-        elif isinstance(p2, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == p2.ring:
+        elif isinstance(other, PolyElement):
+            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(p2.ring.domain, PolynomialRing) and p2.ring.domain.ring == ring:
-                return p2.__rmul__(p1)
+            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
+                return other.__rmul__(self)
             else:
                 return NotImplemented
 
         try:
-            p2 = ring.domain_new(p2)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            for exp1, v1 in p1.items():
-                v = v1*p2
+            for exp1, v1 in self.items():
+                v = v1*other
                 if v:
                     p[exp1] = v
             return p
 
-    def __rmul__(p1, p2):
-        """p2 * p1 with p2 in the coefficient domain of p1.
+    def __rmul__(self, other):
+        """other * self with other in the coefficient domain of self.
 
         Examples
         ========
@@ -1083,16 +1082,16 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> 4 * p
         4*x + 4*y
         """
-        p = p1.ring.zero
-        if not p2:
+        p = self.ring.zero
+        if not other:
             return p
         try:
-            p2 = p.ring.domain_new(p2)
+            other = p.ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            for exp1, v1 in p1.items():
-                v = p2*v1
+            for exp1, v1 in self.items():
+                v = other*v1
                 if v:
                     p[exp1] = v
             return p
@@ -1217,82 +1216,82 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         p.strip_zero()
         return p
 
-    def __divmod__(p1, p2):
-        ring = p1.ring
+    def __divmod__(self, other):
+        ring = self.ring
         p = ring.zero
 
-        if not p2:
+        if not other:
             raise ZeroDivisionError("polynomial division")
-        elif isinstance(p2, ring.dtype):
-            return p1.div(p2)
-        elif isinstance(p2, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == p2.ring:
+        elif isinstance(other, ring.dtype):
+            return self.div(other)
+        elif isinstance(other, PolyElement):
+            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(p2.ring.domain, PolynomialRing) and p2.ring.domain.ring == ring:
-                return p2.__rdivmod__(p1)
+            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
+                return other.__rdivmod__(self)
             else:
                 return NotImplemented
 
         try:
-            p2 = ring.domain_new(p2)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            return (p1.quo_ground(p2), p1.rem_ground(p2))
+            return (self.quo_ground(other), self.rem_ground(other))
 
-    def __rdivmod__(p1, p2):
+    def __rdivmod__(self, other):
         return NotImplemented
 
-    def __mod__(p1, p2):
-        ring = p1.ring
+    def __mod__(self, other):
+        ring = self.ring
         p = ring.zero
 
-        if not p2:
+        if not other:
             raise ZeroDivisionError("polynomial division")
-        elif isinstance(p2, ring.dtype):
-            return p1.rem(p2)
-        elif isinstance(p2, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == p2.ring:
+        elif isinstance(other, ring.dtype):
+            return self.rem(other)
+        elif isinstance(other, PolyElement):
+            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(p2.ring.domain, PolynomialRing) and p2.ring.domain.ring == ring:
-                return p2.__rmod__(p1)
+            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
+                return other.__rmod__(self)
             else:
                 return NotImplemented
 
         try:
-            p2 = ring.domain_new(p2)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            return p1.rem_ground(p2)
+            return self.rem_ground(other)
 
-    def __rmod__(p1, p2):
+    def __rmod__(self, other):
         return NotImplemented
 
-    def __truediv__(p1, p2):
-        ring = p1.ring
+    def __truediv__(self, other):
+        ring = self.ring
         p = ring.zero
 
-        if not p2:
+        if not other:
             raise ZeroDivisionError("polynomial division")
-        elif isinstance(p2, ring.dtype):
-            return p1.quo(p2)
-        elif isinstance(p2, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == p2.ring:
+        elif isinstance(other, ring.dtype):
+            return self.quo(other)
+        elif isinstance(other, PolyElement):
+            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(p2.ring.domain, PolynomialRing) and p2.ring.domain.ring == ring:
-                return p2.__rtruediv__(p1)
+            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
+                return other.__rtruediv__(self)
             else:
                 return NotImplemented
 
         try:
-            p2 = ring.domain_new(p2)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
-            return p1.quo_ground(p2)
+            return self.quo_ground(other)
 
-    def __rtruediv__(p1, p2):
+    def __rtruediv__(self, other):
         return NotImplemented
 
     __floordiv__ = __div__ = __truediv__
@@ -1455,16 +1454,16 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         return r
 
-    def quo(f, G):
-        return f.div(G)[0]
+    def quo(self, G):
+        return self.div(G)[0]
 
-    def exquo(f, G):
-        q, r = f.div(G)
+    def exquo(self, G):
+        q, r = self.div(G)
 
         if not r:
             return q
         else:
-            raise ExactQuotientFailed(f, G)
+            raise ExactQuotientFailed(self, G)
 
     def _iadd_monom(self, mc):
         """add to self the monomial coeff*x0**i0*x1**i1*...
@@ -1545,53 +1544,53 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 del p1[ka]
         return p1
 
-    def degree(f, x=None):
+    def degree(self, x=None):
         """
         The leading degree in ``x`` or the main variable.
 
         Note that the degree of 0 is negative infinity (the SymPy object -oo).
         """
-        i = f.ring.index(x)
+        i = self.ring.index(x)
 
-        if not f:
+        if not self:
             return -oo
         else:
-            return max([ monom[i] for monom in f.itermonoms() ])
+            return max([monom[i] for monom in self.itermonoms()])
 
-    def degrees(f):
+    def degrees(self):
         """
         A tuple containing leading degrees in all variables.
 
         Note that the degree of 0 is negative infinity (the SymPy object -oo)
         """
-        if not f:
-            return (-oo,)*f.ring.ngens
+        if not self:
+            return (-oo,)*self.ring.ngens
         else:
-            return tuple(map(max, zip(*f.itermonoms())))
+            return tuple(map(max, zip(*self.itermonoms())))
 
-    def tail_degree(f, x=None):
+    def tail_degree(self, x=None):
         """
         The tail degree in ``x`` or the main variable.
 
         Note that the degree of 0 is negative infinity (the SymPy object -oo)
         """
-        i = f.ring.index(x)
+        i = self.ring.index(x)
 
-        if not f:
+        if not self:
             return -oo
         else:
-            return min([ monom[i] for monom in f.itermonoms() ])
+            return min([monom[i] for monom in self.itermonoms()])
 
-    def tail_degrees(f):
+    def tail_degrees(self):
         """
         A tuple containing tail degrees in all variables.
 
         Note that the degree of 0 is negative infinity (the SymPy object -oo)
         """
-        if not f:
-            return (-oo,)*f.ring.ngens
+        if not self:
+            return (-oo,)*self.ring.ngens
         else:
-            return tuple(map(min, zip(*f.itermonoms())))
+            return tuple(map(min, zip(*self.itermonoms())))
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
@@ -1826,9 +1825,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         """Unordered list of polynomial terms. """
         return list(self.items())
 
-    def imul_num(p, c):
-        """multiply inplace the polynomial p by an element in the
-        coefficient ring, provided p is not one of the generators;
+    def imul_num(self, c):
+        """multiply inplace the polynomial self by an element in the
+        coefficient ring, provided self is not one of the generators;
         else multiply not inplace
 
         Examples
@@ -1851,98 +1850,98 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> p1 is p
         False
         """
-        if p in p.ring._gens_set:
-            return p*c
+        if self in self.ring._gens_set:
+            return self*c
         if not c:
-            p.clear()
+            self.clear()
             return
-        for exp in p:
-            p[exp] *= c
-        return p
+        for exp in self:
+            self[exp] *= c
+        return self
 
-    def content(f):
+    def content(self):
         """Returns GCD of polynomial's coefficients. """
-        domain = f.ring.domain
+        domain = self.ring.domain
         cont = domain.zero
         gcd = domain.gcd
 
-        for coeff in f.itercoeffs():
+        for coeff in self.itercoeffs():
             cont = gcd(cont, coeff)
 
         return cont
 
-    def primitive(f):
+    def primitive(self):
         """Returns content and a primitive polynomial. """
-        cont = f.content()
-        return cont, f.quo_ground(cont)
+        cont = self.content()
+        return cont, self.quo_ground(cont)
 
-    def monic(f):
+    def monic(self):
         """Divides all coefficients by the leading coefficient. """
-        if not f:
-            return f
+        if not self:
+            return self
         else:
-            return f.quo_ground(f.LC)
+            return self.quo_ground(self.LC)
 
-    def mul_ground(f, x):
+    def mul_ground(self, x):
         if not x:
-            return f.ring.zero
+            return self.ring.zero
 
-        terms = [ (monom, coeff*x) for monom, coeff in f.iterterms() ]
-        return f.new(terms)
+        terms = [(monom, coeff*x) for monom, coeff in self.iterterms()]
+        return self.new(terms)
 
-    def mul_monom(f, monom):
-        monomial_mul = f.ring.monomial_mul
-        terms = [ (monomial_mul(f_monom, monom), f_coeff) for f_monom, f_coeff in f.items() ]
-        return f.new(terms)
+    def mul_monom(self, monom):
+        monomial_mul = self.ring.monomial_mul
+        terms = [(monomial_mul(f_monom, monom), f_coeff) for f_monom, f_coeff in self.items()]
+        return self.new(terms)
 
-    def mul_term(f, term):
+    def mul_term(self, term):
         monom, coeff = term
 
-        if not f or not coeff:
-            return f.ring.zero
-        elif monom == f.ring.zero_monom:
-            return f.mul_ground(coeff)
+        if not self or not coeff:
+            return self.ring.zero
+        elif monom == self.ring.zero_monom:
+            return self.mul_ground(coeff)
 
-        monomial_mul = f.ring.monomial_mul
-        terms = [ (monomial_mul(f_monom, monom), f_coeff*coeff) for f_monom, f_coeff in f.items() ]
-        return f.new(terms)
+        monomial_mul = self.ring.monomial_mul
+        terms = [(monomial_mul(f_monom, monom), f_coeff*coeff) for f_monom, f_coeff in self.items()]
+        return self.new(terms)
 
-    def quo_ground(f, x):
-        domain = f.ring.domain
+    def quo_ground(self, x):
+        domain = self.ring.domain
 
         if not x:
             raise ZeroDivisionError('polynomial division')
-        if not f or x == domain.one:
-            return f
+        if not self or x == domain.one:
+            return self
 
         if domain.has_Field:
             quo = domain.quo
-            terms = [ (monom, quo(coeff, x)) for monom, coeff in f.iterterms() ]
+            terms = [(monom, quo(coeff, x)) for monom, coeff in self.iterterms()]
         else:
-            terms = [ (monom, coeff // x) for monom, coeff in f.iterterms() if not (coeff % x) ]
+            terms = [(monom, coeff//x) for monom, coeff in self.iterterms() if not (coeff % x)]
 
-        return f.new(terms)
+        return self.new(terms)
 
-    def quo_term(f, term):
+    def quo_term(self, term):
         monom, coeff = term
 
         if not coeff:
             raise ZeroDivisionError("polynomial division")
-        elif not f:
-            return f.ring.zero
-        elif monom == f.ring.zero_monom:
-            return f.quo_ground(coeff)
+        elif not self:
+            return self.ring.zero
+        elif monom == self.ring.zero_monom:
+            return self.quo_ground(coeff)
 
-        term_div = f._term_div()
+        term_div = self._term_div()
 
-        terms = [ term_div(t, term) for t in f.iterterms() ]
-        return f.new([ t for t in terms if t is not None ])
+        terms = [term_div(t, term) for t in self.iterterms()]
+        return self.new([t for t in terms if t is not None])
 
-    def trunc_ground(f, p):
-        if f.ring.domain.is_ZZ:
+    def trunc_ground(self, p):
+        if self.ring.domain.is_ZZ:
             terms = []
 
-            for monom, coeff in f.iterterms():
+            for monom, coeff in self.iterterms():
                 coeff = coeff % p
 
                 if coeff > p // 2:
@@ -1950,9 +1949,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
                 terms.append((monom, coeff))
         else:
-            terms = [ (monom, coeff % p) for monom, coeff in f.iterterms() ]
+            terms = [(monom, coeff % p) for monom, coeff in self.iterterms()]
 
-        poly = f.new(terms)
+        poly = self.new(terms)
         poly.strip_zero()
         return poly
 
@@ -1970,22 +1969,22 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         return gcd, f, g
 
-    def _norm(f, norm_func):
-        if not f:
-            return f.ring.domain.zero
+    def _norm(self, norm_func):
+        if not self:
+            return self.ring.domain.zero
         else:
-            ground_abs = f.ring.domain.abs
-            return norm_func([ ground_abs(coeff) for coeff in f.itercoeffs() ])
+            ground_abs = self.ring.domain.abs
+            return norm_func([ground_abs(coeff) for coeff in self.itercoeffs()])
 
-    def max_norm(f):
-        return f._norm(max)
+    def max_norm(self):
+        return self._norm(max)
 
-    def l1_norm(f):
-        return f._norm(sum)
+    def l1_norm(self):
+        return self._norm(sum)
 
-    def deflate(f, *G):
-        ring = f.ring
-        polys = [f] + list(G)
+    def deflate(self, *G):
+        ring = self.ring
+        polys = [self] + list(G)
 
         J = [0]*ring.ngens
 
@@ -2009,18 +2008,18 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             h = ring.zero
 
             for I, coeff in p.iterterms():
-                N = [ i // j for i, j in zip(I, J) ]
+                N = [i//j for i, j in zip(I, J)]
                 h[tuple(N)] = coeff
 
             H.append(h)
 
         return J, H
 
-    def inflate(f, J):
-        poly = f.ring.zero
+    def inflate(self, J):
+        poly = self.ring.zero
 
-        for I, coeff in f.iterterms():
-            N = [ i*j for i, j in zip(I, J) ]
+        for I, coeff in self.iterterms():
+            N = [i*j for i, j in zip(I, J)]
             poly[tuple(N)] = coeff
 
         return poly
@@ -2041,66 +2040,66 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return h.monic()
 
-    def gcd(f, g):
-        return f.cofactors(g)[0]
+    def gcd(self, other):
+        return self.cofactors(other)[0]
 
-    def cofactors(f, g):
-        if not f and not g:
-            zero = f.ring.zero
+    def cofactors(self, other):
+        if not self and not other:
+            zero = self.ring.zero
             return zero, zero, zero
-        elif not f:
-            h, cff, cfg = f._gcd_zero(g)
+        elif not self:
+            h, cff, cfg = self._gcd_zero(other)
             return h, cff, cfg
-        elif not g:
-            h, cfg, cff = g._gcd_zero(f)
+        elif not other:
+            h, cfg, cff = other._gcd_zero(self)
             return h, cff, cfg
-        elif len(f) == 1:
-            h, cff, cfg = f._gcd_monom(g)
+        elif len(self) == 1:
+            h, cff, cfg = self._gcd_monom(other)
             return h, cff, cfg
-        elif len(g) == 1:
-            h, cfg, cff = g._gcd_monom(f)
+        elif len(other) == 1:
+            h, cfg, cff = other._gcd_monom(self)
             return h, cff, cfg
 
-        J, (f, g) = f.deflate(g)
+        J, (f, g) = self.deflate(other)
         h, cff, cfg = f._gcd(g)
 
         return (h.inflate(J), cff.inflate(J), cfg.inflate(J))
 
-    def _gcd_zero(f, g):
-        one, zero = f.ring.one, f.ring.zero
-        if g.is_nonnegative:
-            return g, zero, one
+    def _gcd_zero(self, other):
+        one, zero = self.ring.one, self.ring.zero
+        if other.is_nonnegative:
+            return other, zero, one
         else:
-            return -g, zero, -one
+            return -other, zero, -one
 
-    def _gcd_monom(f, g):
-        ring = f.ring
+    def _gcd_monom(self, other):
+        ring = self.ring
         ground_gcd = ring.domain.gcd
         ground_quo = ring.domain.quo
         monomial_gcd = ring.monomial_gcd
         monomial_ldiv = ring.monomial_ldiv
-        mf, cf = list(f.iterterms())[0]
+        mf, cf = list(self.iterterms())[0]
         _mgcd, _cgcd = mf, cf
-        for mg, cg in g.iterterms():
+        for mg, cg in other.iterterms():
             _mgcd = monomial_gcd(_mgcd, mg)
             _cgcd = ground_gcd(_cgcd, cg)
-        h = f.new([(_mgcd, _cgcd)])
-        cff = f.new([(monomial_ldiv(mf, _mgcd), ground_quo(cf, _cgcd))])
-        cfg = f.new([(monomial_ldiv(mg, _mgcd), ground_quo(cg, _cgcd)) for mg, cg in g.iterterms()])
+        h = self.new([(_mgcd, _cgcd)])
+        cff = self.new([(monomial_ldiv(mf, _mgcd), ground_quo(cf, _cgcd))])
+        cfg = self.new([(monomial_ldiv(mg, _mgcd), ground_quo(cg, _cgcd)) for mg, cg in other.iterterms()])
         return h, cff, cfg
 
-    def _gcd(f, g):
-        ring = f.ring
+    def _gcd(self, other):
+        ring = self.ring
 
         if ring.domain.is_QQ:
-            return f._gcd_QQ(g)
+            return self._gcd_QQ(other)
         elif ring.domain.is_ZZ:
-            return f._gcd_ZZ(g)
+            return self._gcd_ZZ(other)
         else:  # TODO: don't use dense representation (port PRS algorithms)
-            return ring.dmp_inner_gcd(f, g)
+            return ring.dmp_inner_gcd(self, other)
 
-    def _gcd_ZZ(f, g):
-        return heugcd(f, g)
+    def _gcd_ZZ(self, other):
+        return heugcd(self, other)
 
     def _gcd_QQ(self, g):
         f = self
@@ -2179,7 +2178,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         return p, q
 
-    def diff(f, x):
+    def diff(self, x):
         """Computes partial derivative in ``x``.
 
         Examples
@@ -2193,21 +2192,21 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         >>> p.diff(x)
         2*x*y**3 + 1
         """
-        ring = f.ring
+        ring = self.ring
         i = ring.index(x)
         m = ring.monomial_basis(i)
         g = ring.zero
-        for expv, coeff in f.iterterms():
+        for expv, coeff in self.iterterms():
             if expv[i]:
                 e = ring.monomial_ldiv(expv, m)
                 g[e] = coeff*expv[i]
         return g
 
-    def __call__(f, *values):
-        if 0 < len(values) <= f.ring.ngens:
-            return f.evaluate(list(zip(f.ring.gens, values)))
+    def __call__(self, *values):
+        if 0 < len(values) <= self.ring.ngens:
+            return self.evaluate(list(zip(self.ring.gens, values)))
         else:
-            raise ValueError("expected at least 1 and at most %s values, got %s" % (f.ring.ngens, len(values)))
+            raise ValueError("expected at least 1 and at most %s values, got %s" % (self.ring.ngens, len(values)))
 
     def evaluate(self, x, a=None):
         f = self
@@ -2292,9 +2291,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
             return poly
 
-    def compose(f, x, a=None):
+    def compose(self, x, a=None):
         """Computes the functional composition."""
-        ring = f.ring
+        ring = self.ring
         poly = ring.zero
         gens_map = dict(zip(ring.gens, range(ring.ngens)))
 
@@ -2311,7 +2310,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         for k, (x, g) in enumerate(replacements):
             replacements[k] = (gens_map[x], ring.ring_new(g))
 
-        for monom, coeff in f.iterterms():
+        for monom, coeff in self.iterterms():
             monom = list(monom)
             subpoly = ring.one
 
@@ -2328,62 +2327,62 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
 
-    def pdiv(f, g):
-        return f.ring.dmp_pdiv(f, g)
+    def pdiv(self, other):
+        return self.ring.dmp_pdiv(self, other)
 
-    def prem(f, g):
-        return f.ring.dmp_prem(f, g)
+    def prem(self, other):
+        return self.ring.dmp_prem(self, other)
 
-    def pquo(f, g):
-        return f.ring.dmp_quo(f, g)
+    def pquo(self, other):
+        return self.ring.dmp_quo(self, other)
 
-    def pexquo(f, g):
-        return f.ring.dmp_exquo(f, g)
+    def pexquo(self, other):
+        return self.ring.dmp_exquo(self, other)
 
-    def half_gcdex(f, g):
-        return f.ring.dmp_half_gcdex(f, g)
+    def half_gcdex(self, other):
+        return self.ring.dmp_half_gcdex(self, other)
 
-    def gcdex(f, g):
-        return f.ring.dmp_gcdex(f, g)
+    def gcdex(self, other):
+        return self.ring.dmp_gcdex(self, other)
 
-    def subresultants(f, g):
-        return f.ring.dmp_subresultants(f, g)
+    def subresultants(self, other):
+        return self.ring.dmp_subresultants(self, other)
 
-    def resultant(f, g):
-        return f.ring.dmp_resultant(f, g)
+    def resultant(self, other):
+        return self.ring.dmp_resultant(self, other)
 
-    def discriminant(f):
-        return f.ring.dmp_discriminant(f)
+    def discriminant(self):
+        return self.ring.dmp_discriminant(self)
 
-    def decompose(f):
-        if f.ring.is_univariate:
-            return f.ring.dup_decompose(f)
+    def decompose(self):
+        if self.ring.is_univariate:
+            return self.ring.dup_decompose(self)
         else:
             raise MultivariatePolynomialError("polynomial decomposition")
 
-    def shift(f, a):
-        if f.ring.is_univariate:
-            return f.ring.dup_shift(f, a)
+    def shift(self, a):
+        if self.ring.is_univariate:
+            return self.ring.dup_shift(self, a)
         else:
             raise MultivariatePolynomialError("polynomial shift")
 
-    def sturm(f):
-        if f.ring.is_univariate:
-            return f.ring.dup_sturm(f)
+    def sturm(self):
+        if self.ring.is_univariate:
+            return self.ring.dup_sturm(self)
         else:
             raise MultivariatePolynomialError("sturm sequence")
 
-    def gff_list(f):
-        return f.ring.dmp_gff_list(f)
+    def gff_list(self):
+        return self.ring.dmp_gff_list(self)
 
-    def sqf_norm(f):
-        return f.ring.dmp_sqf_norm(f)
+    def sqf_norm(self):
+        return self.ring.dmp_sqf_norm(self)
 
-    def sqf_part(f):
-        return f.ring.dmp_sqf_part(f)
+    def sqf_part(self):
+        return self.ring.dmp_sqf_part(self)
 
-    def sqf_list(f, all=False):
-        return f.ring.dmp_sqf_list(f, all=all)
+    def sqf_list(self, all=False):
+        return self.ring.dmp_sqf_list(self, all=all)
 
-    def factor_list(f):
-        return f.ring.dmp_factor_list(f)
+    def factor_list(self):
+        return self.ring.dmp_factor_list(self)

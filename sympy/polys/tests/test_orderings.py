@@ -7,7 +7,7 @@ from sympy.polys.orderings import (
     LexOrder, InverseOrder, ProductOrder, build_product_order)
 
 from sympy.abc import x, y, z, t
-from sympy.core import S, Integer
+from sympy.core import Integer
 
 
 def test_lex_order():

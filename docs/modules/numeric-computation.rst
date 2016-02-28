@@ -121,7 +121,7 @@ should call the ``ufuncify`` function
     >>> expr = sin(x)/x
 
     >>> from sympy.utilities.autowrap import ufuncify
-    >>> f = ufuncify([x], expr)
+    >>> f = ufuncify((x,), expr)
 
 This function ``f`` consumes and returns a NumPy array. Generally ``ufuncify``
 performs at least as well as ``lambdify``. If the expression is complicated

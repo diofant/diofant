@@ -96,9 +96,9 @@ class FunctionClass(ManagedProperties):
     undefined function classes.
     """
 
-    def __init__(cls, *args, **kwargs):
-        if hasattr(cls, 'eval'):
-            evalargspec = inspect.getfullargspec(cls.eval)
+    def __init__(self, *args, **kwargs):
+        if hasattr(self, 'eval'):
+            evalargspec = inspect.getfullargspec(self.eval)
             if evalargspec.varargs:
                 evalargs = None
             else:
@@ -113,15 +113,15 @@ class FunctionClass(ManagedProperties):
             evalargs = None
         # honor kwarg value or class-defined value before using
         # the number of arguments in the eval function (if present)
-        nargs = kwargs.pop('nargs', cls.__dict__.get('nargs', evalargs))
-        super(FunctionClass, cls).__init__(args, kwargs)
+        nargs = kwargs.pop('nargs', self.__dict__.get('nargs', evalargs))
+        super(FunctionClass, self).__init__(args, kwargs)
 
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = (as_int(nargs),)
-        cls._nargs = nargs
+        self._nargs = nargs
 
     @property
     def nargs(self):
@@ -163,8 +163,8 @@ class FunctionClass(ManagedProperties):
         # problems with trying to import FiniteSet there
         return FiniteSet(*self._nargs) if self._nargs else S.Naturals0
 
-    def __repr__(cls):
-        return cls.__name__
+    def __repr__(self):
+        return self.__name__
 
 
 class Application(Basic, metaclass=FunctionClass):
@@ -677,13 +677,13 @@ class UndefinedFunction(FunctionClass):
     """
     The (meta)class of undefined functions.
     """
-    def __new__(mcl, name, **kwargs):
-        ret = type.__new__(mcl, name, (AppliedUndef,), kwargs)
+    def __new__(cls, name, **kwargs):
+        ret = type.__new__(cls, name, (AppliedUndef,), kwargs)
         ret.__module__ = None
         return ret
 
-    def __instancecheck__(cls, instance):
-        return cls in type(instance).__mro__
+    def __instancecheck__(self, instance):
+        return self in type(instance).__mro__
 
 UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
                                          (s.class_key() == o.class_key()))
@@ -739,9 +739,9 @@ class WildFunction(Function, AtomicExpr):
 
     include = set()
 
-    def __init__(cls, name, **assumptions):
+    def __init__(self, name, **assumptions):
         from sympy.sets.sets import Set, FiniteSet
-        cls.name = name
+        self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)
         if not isinstance(nargs, Set):
             # Canonicalize nargs here.  See also FunctionClass.
@@ -750,7 +750,7 @@ class WildFunction(Function, AtomicExpr):
             elif nargs is not None:
                 nargs = (as_int(nargs),)
             nargs = FiniteSet(*nargs)
-        cls.nargs = nargs
+        self.nargs = nargs
 
     def matches(self, expr, repl_dict={}):
         if not isinstance(expr, (AppliedUndef, Function)):

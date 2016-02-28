@@ -1,31 +1,7 @@
 #!/usr/bin/env python
 """
-Setuptools-based setup script for SymPy.
-
-This uses Setuptools (http://pythonhosted.org/setuptools/setuptools.html),
-a collection of enhancements to the standard Python distutils.
-For the easiest installation just type the command (you'll probably
-need root privileges for that):
-
-    python setup.py install
-
-This will install the library in the default location. For instructions on
-how to customize the install procedure read the output of:
-
-    python setup.py --help install
-
-In addition, there are some other commands:
-
-    python setup.py clean -> will clean all trash (*.pyc and stuff)
-    python setup.py test  -> will run the complete test suite
-    python setup.py audit -> will run pyflakes checker on source code
-
-To get a full list of avaiable commands, read the output of:
-
-    python setup.py --help-commands
-
-Or, if all else fails, feel free to write to the sympy list at
-sympy@googlegroups.com and ask for help.
+This script uses Setuptools (http://pythonhosted.org/setuptools/), a
+collection of enhancements to the standard Python distutils.
 """
 
 import sys
@@ -39,38 +15,6 @@ from setuptools.command.test import test as TestCommand
 if sys.version_info[:2] < (3, 2):
     print("SymPy requires Python 3.2 or newer. Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
-
-
-class audit(Command):
-    """Audits SymPy's source code for following issues:
-        - Names which are used but not defined or used before they are defined.
-        - Names which are redefined without having been used.
-    """
-
-    description = "Audit SymPy source with PyFlakes"
-    user_options = []
-
-    def initialize_options(self):
-        self.all = None
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        import os
-        try:
-            import pyflakes.scripts.pyflakes as flakes
-        except ImportError:
-            print("In order to run the audit, you need to have PyFlakes installed.")
-            sys.exit(-1)
-        dirs = (os.path.join(*d) for d in (m.split('.') for m in find_packages()))
-        warns = 0
-        for dir in dirs:
-            for filename in os.listdir(dir):
-                if filename.endswith('.py') and filename != '__init__.py':
-                    warns += flakes.checkPath(os.path.join(dir, filename))
-        if warns > 0:
-            print("Audit finished with total %d warnings" % warns)
 
 
 class clean(Command):
@@ -135,13 +79,7 @@ class test(TestCommand):
 
     def run_tests(self):
         import pytest
-        import pep8
-        errno = pytest.main(self.pytest_args)
-        if errno != 0:
-            sys.exit(errno)
-        del sys.argv[:]
-        errno = pep8._main()
-        sys.exit(errno)
+        return pytest.main(self.pytest_args)
 
 
 exec(open('sympy/release.py').read())
@@ -160,8 +98,7 @@ setup(name='sympy',
       packages=find_packages(),
       ext_modules=[],
       cmdclass={'test': test,
-                'clean': clean,
-                'audit': audit},
+                'clean': clean},
       classifiers=[
           'License :: OSI Approved :: BSD License',
           'Operating System :: OS Independent',
@@ -173,8 +110,8 @@ setup(name='sympy',
           'Programming Language :: Python :: 3.2',
           'Programming Language :: Python :: 3.4',
       ],
-      tests_require=['pytest>=2.7.0', 'pep8>=1.6.0', 'pytest-cov'],
-      install_requires=['mpmath>=0.19', 'decorator', 'strategies>=0.2.3'],
+      tests_require=['pytest>=2.7.0', 'flake8', 'pep8-naming', 'pytest-cov'],
+      install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
       setup_requires=['setuptools>=5.5.1,<=19.4', 'pip>=6.0'],
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],

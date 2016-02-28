@@ -33,33 +33,33 @@ class PythonIntegerRing(IntegerRing):
         else:
             raise CoercionFailed("expected an integer, got %s" % a)
 
-    def from_FF_python(K1, a, K0):
+    def from_FF_python(self, a, K0):
         """Convert ``ModularInteger(int)`` to Python's ``int``. """
         return a.to_int()
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert Python's ``int`` to Python's ``int``. """
         return a
 
-    def from_QQ_python(K1, a, K0):
+    def from_QQ_python(self, a, K0):
         """Convert Python's ``Fraction`` to Python's ``int``. """
         if a.denominator == 1:
             return a.numerator
 
-    def from_FF_gmpy(K1, a, K0):
+    def from_FF_gmpy(self, a, K0):
         """Convert ``ModularInteger(mpz)`` to Python's ``int``. """
         return PythonInteger(a.to_int())
 
-    def from_ZZ_gmpy(K1, a, K0):
+    def from_ZZ_gmpy(self, a, K0):
         """Convert GMPY's ``mpz`` to Python's ``int``. """
         return PythonInteger(a)
 
-    def from_QQ_gmpy(K1, a, K0):
+    def from_QQ_gmpy(self, a, K0):
         """Convert GMPY's ``mpq`` to Python's ``int``. """
         if a.denom() == 1:
             return PythonInteger(a.numer())
 
-    def from_RealField(K1, a, K0):
+    def from_RealField(self, a, K0):
         """Convert mpmath's ``mpf`` to Python's ``int``. """
         p, q = K0.to_rational(a)
 
