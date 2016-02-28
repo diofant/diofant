@@ -463,7 +463,7 @@ def test_telescopic_sums():
     assert telescopic(1/m, -m/(1 + m), (m, n - 1, n)) == \
         telescopic(1/k, -k/(1 + k), (k, n - 1, n))
 
-    assert Sum(1/x/(x - 1), (x, a, b)).doit() == -((a - b - 1)/(b*(a - 1)))
+    assert Sum(1/x/(x - 1), (x, a, b)).doit().simplify() == ((b - a + 1)/(b*(a - 1)))
 
 
 def test_sum_reconstruct():
@@ -858,3 +858,7 @@ def test_issue_8016():
     s = Sum(binomial(m, k)*binomial(m, n-k)*(-1)**k, (k, 0, n))
     assert s.doit().simplify() == \
         cos(pi*n/2)*gamma(m + 1)/gamma(n/2 + 1)/gamma(m - n/2 + 1)
+
+
+def test_omgissue_236():
+    assert summation(n/((n + 2)*(n + 4)*(n + 8)), (n, 1, oo)) == Rational(4, 35)
