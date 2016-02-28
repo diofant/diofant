@@ -125,9 +125,6 @@ def gosper_term(f, n):
 
     solution = solve(H.coeffs(), coeffs)
 
-    if solution is None:
-        return  # 'f(n)' is *not* Gosper-summable
-
     x = x.as_expr().subs(solution)
 
     for coeff in coeffs:
@@ -194,7 +191,7 @@ def gosper_sum(f, k):
         if result is S.NaN:
             try:
                 result = (f*(g + 1)).limit(k, b) - (f*g).limit(k, a)
-            except NotImplementedError:
+            except NotImplementedError:  # pragma: no cover
                 result = None
 
     return factor(result)
