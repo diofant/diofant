@@ -73,8 +73,8 @@ def runtest_autowrap_matrix_matrix(language, backend):
 @pytest.mark.skipif(numpy is None, reason="Couldn't import numpy.")
 def runtest_ufuncify(language, backend):
     a, b, c = symbols('a b c')
-    fabc = ufuncify([a, b, c], a*b + c, backend=backend)
-    facb = ufuncify([a, c, b], a*b + c, backend=backend)
+    fabc = ufuncify((a, b, c), a*b + c, backend=backend)
+    facb = ufuncify((a, c, b), a*b + c, backend=backend)
     grid = numpy.linspace(-2, 2, 50)
     b = numpy.linspace(-5, 4, 50)
     c = numpy.linspace(-1, 1, 50)
