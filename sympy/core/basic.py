@@ -3,14 +3,13 @@
 from inspect import getmro
 from itertools import zip_longest
 
-from .assumptions import ManagedProperties
 from .cache import cacheit
 from .sympify import _sympify, sympify, SympifyError
 from .compatibility import iterable, ordered
 from .singleton import S
 
 
-class Basic(metaclass=ManagedProperties):
+class Basic(object):
     """
     Base class for all objects in SymPy.
 
@@ -69,7 +68,6 @@ class Basic(metaclass=ManagedProperties):
 
     def __new__(cls, *args):
         obj = object.__new__(cls)
-        obj._assumptions = cls.default_assumptions
         obj._mhash = None  # will be set by __hash__ method.
 
         obj._args = args  # all items in args must be Basic objects
@@ -110,35 +108,6 @@ class Basic(metaclass=ManagedProperties):
         Defining more than _hashable_content is necessary if __eq__ has
         been defined by a class. See note about this in Basic.__eq__."""
         return self._args
-
-    @property
-    def assumptions0(self):
-        r"""
-        Return object `type` assumptions.
-
-        For example:
-
-          Symbol('x', real=True)
-          Symbol('x', integer=True)
-
-        are different objects. In other words, besides Python type (Symbol in
-        this case), the initial assumptions are also forming their typeinfo.
-
-        Examples
-        ========
-
-        >>> from sympy import Symbol
-        >>> from sympy.abc import x
-        >>> x.assumptions0
-        {'commutative': True}
-        >>> x = Symbol("x", positive=True)
-        >>> x.assumptions0 == \
-        ... {'commutative': True, 'extended_real': True, 'imaginary': False,
-        ...  'negative': False, 'nonnegative': True, 'nonpositive': False,
-        ...  'nonzero': True, 'positive': True, 'zero': False}
-        True
-        """
-        return {}
 
     def compare(self, other):
         """
