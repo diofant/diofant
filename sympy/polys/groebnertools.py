@@ -530,7 +530,6 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> from sympy.polys.groebnertools import lbp, sig, f5_reduce, Polyn
     >>> from sympy.polys import ring, QQ, lex
 
     >>> R, x,y,z = ring("x,y,z", QQ, lex)

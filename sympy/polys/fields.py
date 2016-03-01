@@ -515,13 +515,11 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         Examples
         ========
 
-        >>> from sympy.polys.fields import field
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y, z = field("x,y,z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
-
         """
         x = x.to_poly()
         return self.new(self.numer.diff(x)*self.denom -
