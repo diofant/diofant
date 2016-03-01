@@ -878,12 +878,11 @@ def bisect(f, a, b, tol):
     ========
 
     >>> from sympy import Rational
-    >>> from sympy.polys.rootoftools import bisect
+
     >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**2)
     -1025/1024
     >>> bisect(lambda x: x**2-1, -10, 0, Rational(1, 10)**4)
     -131075/131072
-
     """
     a = sympify(a)
     b = sympify(b)
