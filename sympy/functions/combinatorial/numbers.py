@@ -10,7 +10,7 @@ the separate 'factorials' module.
 from mpmath import bernfrac, workprec
 from mpmath.libmp import ifib as _ifib
 
-from sympy.core import S, Symbol, Rational, Integer, Add, Dummy
+from sympy.core import S, Rational, Integer, Add, Dummy
 from sympy.core.compatibility import as_int, SYMPY_INTS
 from sympy.core.cache import cacheit
 from sympy.core.function import Function, expand_mul

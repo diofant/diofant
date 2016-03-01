@@ -16,7 +16,7 @@ from sympy import (
     meijerg, oo, polar_lift, polylog, re, root, sin, sqrt, symbols,
     uppergamma, zeta, subfactorial, totient, elliptic_k, elliptic_f,
     elliptic_e, elliptic_pi, cos, tan, Wild, true, false, Equivalent, Not,
-    Contains, divisor_sigma, SymmetricDifference)
+    Contains, divisor_sigma, SymmetricDifference, Dummy)
 from sympy.abc import mu, tau
 from sympy.printing.latex import latex, translate
 from sympy.functions import DiracDelta, Heaviside, KroneckerDelta, LeviCivita
@@ -148,6 +148,8 @@ def test_latex_symbols():
     assert latex(Symbol('e^Alpha')) == r"e^{A}"
     assert latex(Symbol('omega_alpha^beta')) == r"\omega^{\beta}_{\alpha}"
     assert latex(Symbol('omega') ** Symbol('beta')) == r"\omega^{\beta}"
+
+    assert latex(Dummy('x')) == 'x'
 
 
 @pytest.mark.xfail

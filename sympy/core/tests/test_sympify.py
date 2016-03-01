@@ -1,14 +1,13 @@
 import mpmath
 import pytest
 
-from sympy import (Symbol, exp, Integer, Float, sin, cos, log, Poly, Lambda,
+from sympy import (Symbol, exp, Integer, Float, sin, cos, Poly, Lambda,
                    Function, I, S, sqrt, srepr, Rational, Tuple, Matrix, Interval,
                    Add, Mul, Pow, Or, true, false, Abs, pi)
 from sympy.core.sympify import sympify, _sympify, SympifyError, kernS
 from sympy.core.decorators import _sympifyit
 from sympy.utilities.decorator import conserve_mpmath_dps
 from sympy.geometry import Point, Line
-from sympy.functions.combinatorial.factorials import factorial, factorial2
 from sympy.core.compatibility import HAS_GMPY
 
 from sympy.abc import x, y, _clash, _clash1, _clash2

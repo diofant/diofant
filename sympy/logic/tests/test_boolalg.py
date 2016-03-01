@@ -1,3 +1,5 @@
+import itertools
+
 import pytest
 
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
@@ -9,7 +11,6 @@ from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                  is_nnf, is_cnf, is_dnf, simplify_logic, to_nnf,
                                  to_cnf, to_dnf, to_int_repr, bool_map, true,
                                  false, BooleanAtom, is_literal)
-from sympy.utilities import cartes
 
 
 A, B, C, D = symbols('A,B,C,D')
@@ -541,7 +542,7 @@ def test_true_false():
     assert ~true is false
     assert ~false is true
 
-    for T, F in cartes([True, true], [False, false]):
+    for T, F in itertools.product([True, true], [False, false]):
         assert And(T, F) is false
         assert And(F, T) is false
         assert And(F, F) is false

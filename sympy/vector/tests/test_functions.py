@@ -1,7 +1,7 @@
 from sympy.vector.vector import Vector
 from sympy.vector.coordsysrect import CoordSysCartesian
 from sympy.vector.functions import express, matrix_to_vector
-from sympy import symbols, S, sin, cos, ImmutableMatrix as Matrix, Integer
+from sympy import symbols, sin, cos, ImmutableMatrix as Matrix, Integer
 
 N = CoordSysCartesian('N')
 q1, q2, q3, q4, q5 = symbols('q1 q2 q3 q4 q5')

@@ -1,152 +1,80 @@
 """ Caching facility for SymPy """
 
-from decorator import decorator
+import os
+
+from cachetools import cached
+
+from .evaluate import global_evaluate
 
 
-# TODO: refactor CACHE & friends into class?
-
-# global cache registry: [] of (item, {} or tuple of {})
+# global cache registry: [] of (item, {})
 CACHE = []
 
 
 def print_cache():
-    """print cache content"""
+    """Print cache content"""
 
     for item, cache in CACHE:
         item = str(item)
-        head = '='*len(item)
 
         if cache:
+            head = '='*len(item)
             print(head)
             print(item)
             print(head)
 
-        if not isinstance(cache, tuple):
-            cache = (cache,)
-            shown = False
-        else:
-            shown = True
-
-        for i, kv in enumerate(cache):
-            if shown:
-                print('\n*** %i ***\n' % i)
-
-            for k, v in list(kv.items()):
-                print('  %s :\t%s' % (k, v))
+        for k, v in list(cache.items()):
+            print('  %s : %s' % (k, v))
 
 
 def clear_cache():
-    """clear cache content"""
+    """Clear cache content"""
     for item, cache in CACHE:
-        if not isinstance(cache, tuple):
-            cache = (cache,)
-
-        for kv in cache:
-            kv.clear()
-
-########################################
+        cache.clear()
 
 
-def __cacheit_nocache(func):
-    return func
+def cache_key(*args, **kwargs):
+    key = [(x, type(x)) for x in args]
+    if kwargs:
+        key.extend([(x, kwargs[x], type(kwargs[x])) for x in sorted(kwargs)])
+    key.extend([tuple(global_evaluate)])
+    return tuple(key)
 
 
-# from sympy.assumptions.assume import global_assumptions  # circular import
-from .evaluate import global_evaluate
-_globals = (global_evaluate,)
-
-
-def __cacheit(f):
+def cacheit(f):
     """Caching decorator.
 
-    Notes
-    =====
-
-    Important: the result of cached function must be *immutable*!
+    The result of cached function must be *immutable*.
 
     Examples
     ========
 
     >>> from sympy.core.cache import cacheit
+    >>> from sympy.abc import x, y
+
     >>> @cacheit
     ... def f(a, b):
+    ...    print(a, b)
     ...    return a + b
 
-    >>> @cacheit
-    ... def f(a, b):
-    ...    return [a, b]  # <-- WRONG, returns mutable object
-
-    to force cacheit to check returned results mutability and consistency,
-    set environment variable SYMPY_USE_CACHE to 'debug'.
+    >>> f(x, y)
+    x y
+    x + y
+    >>> f(x, y)
+    x + y
     """
 
-    func_cache_it_cache = {}
-    CACHE.append((f, func_cache_it_cache))
-
-    def wrapper(f, *args, **kw_args):
-        """Assemble the args and kw_args to compute the hash."""
-        k = [(x, type(x)) for x in args]
-        if kw_args:
-            keys = sorted(kw_args)
-            k.extend([(x, kw_args[x], type(kw_args[x])) for x in keys])
-        if _globals:
-            k.extend([tuple(g) for g in _globals])
-        k = tuple(k)
-
-        try:
-            return func_cache_it_cache[k]
-        except (KeyError, TypeError):
-            pass
-        r = f(*args, **kw_args)
-        try:
-            func_cache_it_cache[k] = r
-        except TypeError:  # k is unhashable
-            # Note, collections.Hashable is not smart enough to be used here.
-            pass
-        return r
-    return decorator(wrapper, f)
+    f_cache_it_cache = {}
+    CACHE.append((f, f_cache_it_cache))
+    return cached(f_cache_it_cache, key=cache_key)(f)
 
 
-def __cacheit_debug(f):
-    """cacheit + code to check cache consistency"""
-    cfunc = __cacheit(f)
+USE_CACHE = os.getenv('SYMPY_USE_CACHE', 'yes').lower()
 
-    def wrapper(f, *args, **kw_args):
-        # always call function itself and compare it with cached version
-        r1 = f(*args, **kw_args)
-        r2 = cfunc(*args, **kw_args)
-
-        # try to see if the result is immutable
-        #
-        # this works because:
-        #
-        # hash([1, 2, 3])         -> raise TypeError
-        # hash({'a':1, 'b':2})    -> raise TypeError
-        # hash((1, [2, 3]))       -> raise TypeError
-        #
-        # hash((1, 2, 3))         -> just computes the hash
-        hash(r1), hash(r2)
-
-        # also see if returned values are the same
-        if r1 != r2:
-            raise RuntimeError("Returned values are not the same")
-        return r1
-    return decorator(wrapper, f)
-
-
-def _getenv(key, default=None):
-    from os import getenv
-    return getenv(key, default)
-
-# SYMPY_USE_CACHE=yes/no/debug
-USE_CACHE = _getenv('SYMPY_USE_CACHE', 'yes').lower()
-
-if USE_CACHE == 'no':
-    cacheit = __cacheit_nocache
-elif USE_CACHE == 'yes':
-    cacheit = __cacheit
-elif USE_CACHE == 'debug':
-    cacheit = __cacheit_debug   # a lot slower
-else:
-    raise RuntimeError(
-        'unrecognized value for SYMPY_USE_CACHE: %s' % USE_CACHE)
+if USE_CACHE == "yes":
+    pass
+elif USE_CACHE == 'no':  # pragma: no cover
+    def cacheit(f):
+        return f
+else:  # pragma: no cover
+    raise RuntimeError('unrecognized value for SYMPY_USE_CACHE: %s' % USE_CACHE)

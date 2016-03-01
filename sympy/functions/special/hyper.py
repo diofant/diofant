@@ -835,16 +835,16 @@ class HyperRep_atanh(HyperRep):
     def _expr_small(cls, x):
         return atanh(sqrt(x))/sqrt(x)
 
-    def _expr_small_minus(cls, x):
+    def _expr_small_minus(self, x):
         return atan(sqrt(x))/sqrt(x)
 
-    def _expr_big(cls, x, n):
+    def _expr_big(self, x, n):
         if n.is_even:
             return (acoth(sqrt(x)) + I*pi/2)/sqrt(x)
         else:
             return (acoth(sqrt(x)) - I*pi/2)/sqrt(x)
 
-    def _expr_big_minus(cls, x, n):
+    def _expr_big_minus(self, x, n):
         if n.is_even:
             return atan(sqrt(x))/sqrt(x)
         else:
@@ -946,7 +946,7 @@ class HyperRep_sqrts2(HyperRep):
             return sqrt(z)/2*((sqrt(z) - 1)**(2*a)*exp(2*pi*I*a*(n + 1)) -
                               (sqrt(z) + 1)**(2*a)*exp(2*pi*I*a*n))
 
-    def _expr_big_minus(cls, a, z, n):
+    def _expr_big_minus(self, a, z, n):
         if n.is_even:
             return (1 + z)**a*exp(2*pi*I*n*a)*sqrt(z)*sin(2*a*atan(sqrt(z)))
         else:
@@ -972,7 +972,7 @@ class HyperRep_log2(HyperRep):
         else:
             return (n - Rational(1, 2))*pi*I + log(sqrt(z)/2) - I*asin(1/sqrt(z))
 
-    def _expr_big_minus(cls, z, n):
+    def _expr_big_minus(self, z, n):
         if n.is_even:
             return pi*I*n + log(Rational(1, 2) + sqrt(1 + z)/2)
         else:

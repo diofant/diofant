@@ -519,7 +519,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
             if not isinstance(missing, OutputArgument):
                 raise
             new_args.append(missing.name)
-        routine = make_routine('autofunc', expr, args + new_args)
+        routine = make_routine('autofunc', expr, list(args) + new_args)
 
     helps = []
     for name, expr, args in helpers:
@@ -901,4 +901,4 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         args = [y] + indexed_args + [m]
         args_with_indices = [a[i] for a in indexed_args]
         return autowrap(Eq(y[i], f(*args_with_indices)), language, backend,
-                        tempdir, args, flags, verbose, helpers)
+                        tempdir, tuple(args), flags, verbose, helpers)

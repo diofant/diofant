@@ -44,7 +44,6 @@ this_file = os.path.abspath(__file__)
 sympy_dir = os.path.join(os.path.dirname(this_file), "..")
 sympy_dir = os.path.normpath(sympy_dir)
 sys.path.insert(0, sympy_dir)
-import sympy
 
 TERMINAL_EXAMPLES = [
     "intermediate.infinite_1d_box",

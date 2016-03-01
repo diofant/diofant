@@ -62,7 +62,8 @@ class Product(ExprWithIntLimits):
     ========
 
     >>> from sympy.abc import a, b, i, k, m, n, x
-    >>> from sympy import Product, factorial, oo
+    >>> from sympy import factorial, oo
+
     >>> Product(k, (k, 1, m))
     Product(k, (k, 1, m))
     >>> Product(k, (k, 1, m)).doit()
@@ -98,6 +99,7 @@ class Product(ExprWithIntLimits):
     By the same formula we can compute sin(pi/2):
 
     >>> from sympy import pi, gamma, simplify
+
     >>> P = pi * x * Product(1 - x**2/k**2, (k, 1, n))
     >>> P = P.subs(x, pi/2)
     >>> P
@@ -324,7 +326,7 @@ class Product(ExprWithIntLimits):
             return self.func(self.function.transpose(), *self.limits)
         return
 
-    def reverse_order(expr, *indices):
+    def reverse_order(self, *indices):
         """
         Reverse the order of a limit in a Product.
 
@@ -340,8 +342,9 @@ class Product(ExprWithIntLimits):
         Examples
         ========
 
-        >>> from sympy import Product, simplify, RisingFactorial, gamma, Sum
+        >>> from sympy import simplify, RisingFactorial, gamma, Sum
         >>> from sympy.abc import x, y, a, b, c, d
+
         >>> P = Product(x, (x, a, b))
         >>> Pr = P.reverse_order(x)
         >>> Pr
@@ -396,23 +399,22 @@ class Product(ExprWithIntLimits):
 
         for i, indx in enumerate(l_indices):
             if not isinstance(indx, int):
-                l_indices[i] = expr.index(indx)
+                l_indices[i] = self.index(indx)
 
         e = 1
         limits = []
-        for i, limit in enumerate(expr.limits):
+        for i, limit in enumerate(self.limits):
             l = limit
             if i in l_indices:
                 e = -e
                 l = (limit[0], limit[2] + 1, limit[1] - 1)
             limits.append(l)
 
-        return Product(expr.function ** e, *limits)
+        return Product(self.function ** e, *limits)
 
 
 def product(*args, **kwargs):
-    r"""
-    Compute the product.
+    r"""Compute the product.
 
     The notation for symbols is similar to the notation used in Sum or
     Integral. product(f, (i, a, b)) computes the product of f with
@@ -429,7 +431,7 @@ def product(*args, **kwargs):
     If it cannot compute the product, it returns an unevaluated Product object.
     Repeated products can be computed by introducing additional symbols tuples::
 
-    >>> from sympy import product, symbols
+    >>> from sympy import symbols
     >>> i, n, m, k = symbols('i n m k', integer=True)
 
     >>> product(i, (i, 1, k))
@@ -438,7 +440,6 @@ def product(*args, **kwargs):
     m**k
     >>> product(i, (i, 1, k), (k, 1, n))
     Product(factorial(k), (k, 1, n))
-
     """
 
     prod = Product(*args, **kwargs)

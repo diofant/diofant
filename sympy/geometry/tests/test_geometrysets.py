@@ -1,22 +1,6 @@
-import warnings
-
-from sympy import (Abs, I, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                   simplify, sin, sqrt, symbols, Derivative, asin, acos)
-from sympy.functions.elementary.trigonometric import tan
-from sympy.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
-                            Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection,
-                            Point3D, Line3D, Ray3D, Segment3D, Plane, centroid)
-from sympy.geometry.line import Undecidable
-from sympy.geometry.entity import rotate, scale, translate
-from sympy.geometry.polygon import _asa as asa, rad, deg
-from sympy.geometry.util import idiff, are_coplanar
-from sympy.sets import (Set, FiniteSet, Union, Intersection, Complement, EmptySet)
-from sympy.integrals.integrals import Integral
-from sympy.matrices import Matrix
-from sympy.solvers.solvers import solve
-from sympy.utilities.iterables import cartes
-from sympy.utilities.randtest import verify_numerically
+from sympy import Rational, Symbol
+from sympy.geometry import Circle, Line, Point, Polygon, Segment
+from sympy.sets import FiniteSet, Union, Intersection, EmptySet
 
 x = Symbol('x', real=True)
 y = Symbol('y', real=True)

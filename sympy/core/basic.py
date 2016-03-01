@@ -1719,8 +1719,8 @@ class preorder_traversal(object):
         >>> pt = preorder_traversal((x+y*z)*z)
         >>> for i in pt:
         ...     print(i)
-        ...     if i == x+y*z:
-        ...             pt.skip()
+        ...     if i == x + y*z:
+        ...         pt.skip()
         z*(x + y*z)
         z
         x + y*z

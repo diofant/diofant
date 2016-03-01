@@ -2,7 +2,6 @@ import pytest
 
 from sympy import (Derivative as D, Eq, exp, sin,
                    Function, Symbol, symbols, cos, log, Integer)
-from sympy.core import S
 from sympy.solvers.pde import (pde_separate_add, pde_separate_mul,
                                pdsolve, classify_pde, checkpdesol)
 

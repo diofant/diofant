@@ -6,7 +6,6 @@ from mpmath import pslq, mp
 
 from sympy import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
                    Dummy, expand_mul, I, pi)
-from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.trigonometric import cos, sin
 from sympy.polys.polytools import (Poly, PurePoly, sqf_norm, invert,
                                    factor_list, groebner, resultant,
@@ -85,7 +84,7 @@ def _separate_sq(p):
 
     >>> from sympy import sqrt
     >>> from sympy.abc import x
-    >>> from sympy.polys.numberfields import _separate_sq
+
     >>> p= -x + sqrt(2) + sqrt(3) + sqrt(7)
     >>> p = _separate_sq(p); p
     -x**2 + 2*sqrt(3)*x + 2*sqrt(7)*x - 2*sqrt(21) - 8
@@ -152,13 +151,12 @@ def _minimal_polynomial_sq(p, n, x):
     Examples
     ========
 
-    >>> from sympy.polys.numberfields import _minimal_polynomial_sq
     >>> from sympy import sqrt
     >>> from sympy.abc import x
+
     >>> q = 1 + sqrt(2) + sqrt(3)
     >>> _minimal_polynomial_sq(q, 3, x)
     x**12 - 4*x**9 - 4*x**6 + 16*x**3 - 8
-
     """
     from sympy.simplify.simplify import _is_sum_surds
 
@@ -212,8 +210,8 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     ========
 
     >>> from sympy import sqrt, Add, Mul, QQ
-    >>> from sympy.polys.numberfields import _minpoly_op_algebraic_element
     >>> from sympy.abc import x, y
+
     >>> p1 = sqrt(sqrt(2) + 1)
     >>> p2 = sqrt(sqrt(2) - 1)
     >>> _minpoly_op_algebraic_element(Mul, p1, p2, x, QQ)
@@ -312,8 +310,8 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     ========
 
     >>> from sympy import sqrt, QQ, Rational
-    >>> from sympy.polys.numberfields import _minpoly_pow, minpoly
     >>> from sympy.abc import x, y
+
     >>> p = sqrt(1 + sqrt(2))
     >>> _minpoly_pow(p, 2, x, QQ)
     x**2 - 2*x - 1
@@ -323,7 +321,6 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     x**3 - y
     >>> minpoly(y**Rational(1, 3), x)
     x**3 - y
-
     """
     pw = sympify(pw)
     if not mp:

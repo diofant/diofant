@@ -2,8 +2,6 @@
 This module adds several functions for interactive source code inspection.
 """
 
-import inspect
-
 
 def get_class(lookup_view):
     """

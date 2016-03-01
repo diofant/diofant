@@ -77,25 +77,25 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             raise CoercionFailed(
                 "%s is not a valid algebraic number in %s" % (a, self))
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
-        return K1(K1.dom.convert(a, K0))
+        return self(self.dom.convert(a, K0))
 
-    def from_QQ_python(K1, a, K0):
+    def from_QQ_python(self, a, K0):
         """Convert a Python ``Fraction`` object to ``dtype``. """
-        return K1(K1.dom.convert(a, K0))
+        return self(self.dom.convert(a, K0))
 
-    def from_ZZ_gmpy(K1, a, K0):
+    def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return K1(K1.dom.convert(a, K0))
+        return self(self.dom.convert(a, K0))
 
-    def from_QQ_gmpy(K1, a, K0):
+    def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return K1(K1.dom.convert(a, K0))
+        return self(self.dom.convert(a, K0))
 
-    def from_RealField(K1, a, K0):
+    def from_RealField(self, a, K0):
         """Convert a mpmath ``mpf`` object to ``dtype``. """
-        return K1(K1.dom.convert(a, K0))
+        return self(self.dom.convert(a, K0))
 
     def get_ring(self):
         """Returns a ring associated with ``self``. """

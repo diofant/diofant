@@ -5,8 +5,8 @@ import pytest
 
 from sympy.polys.partfrac import (apart_undetermined_coeffs, apart,
                                   apart_list, assemble_partfrac_list)
-from sympy import (S, Poly, E, pi, I, Matrix, Eq, RootSum, Lambda, Rational,
-                   Symbol, Dummy, factor, together, sqrt, Expr, Integer)
+from sympy import (Poly, E, pi, I, Matrix, Eq, RootSum, Lambda, Rational,
+                   Symbol, Dummy, factor, together, sqrt, Expr)
 
 from sympy.abc import x, y, a, b, c
 
@@ -36,15 +36,6 @@ def test_apart():
     assert apart(Eq((x**2 + 1)/(x + 1), x), x) == Eq(x - 1 + 2/(x + 1), x)
 
     pytest.raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
-
-
-def test_apart_matrix():
-    M = Matrix(2, 2, lambda i, j: 1/(x + i + 1)/(x + j))
-
-    assert apart(M) == Matrix([
-        [1/x - 1/(x + 1), (x + 1)**(-2)],
-        [1/(2*x) - (Rational(1, 2))/(x + 2), 1/(x + 1) - 1/(x + 2)],
-    ])
 
 
 def test_apart_symbolic():

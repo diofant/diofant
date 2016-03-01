@@ -1,14 +1,12 @@
 from sympy import (
     Rational, combsimp, factorial, gamma, binomial, Symbol, pi, S,
-    sin, exp, powsimp, sqrt, sympify, FallingFactorial, RisingFactorial,
+    sin, exp, powsimp, sqrt, FallingFactorial, RisingFactorial,
     simplify, symbols, cos, rf)
 
-from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
+from sympy.abc import x, y, n, k
 
 
 def test_combsimp():
-    from sympy.abc import n, k
-
     assert combsimp(factorial(n)) == factorial(n)
     assert combsimp(binomial(n, k)) == binomial(n, k)
 
@@ -64,7 +62,6 @@ def test_combsimp():
 
 
 def test_combsimp_gamma():
-    from sympy.abc import x, y
     R = Rational
 
     assert combsimp(gamma(x)) == gamma(x)
@@ -128,7 +125,6 @@ def test_combsimp_gamma():
 
 def test_issue_9699():
     n, k = symbols('n k', real=True)
-    x, y = symbols('x, y')
     assert combsimp((n + 1)*factorial(n)) == factorial(n + 1)
     assert combsimp((x + 1)*factorial(x)/gamma(y)) == gamma(x + 2)/gamma(y)
     assert combsimp(factorial(n)/n) == factorial(n - 1)

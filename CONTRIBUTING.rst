@@ -47,7 +47,8 @@ All work should be submitted via `Pull Requests (PR)`_.
 6. Usually, it's good idea to be sure that all tests
    pass and you don't break anything, so please run::
 
-       $ ./setup.py test
+       $ python setup.py flake8
+       $ python setup.py test
 
 License
 -------

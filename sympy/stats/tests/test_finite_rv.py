@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
                    And, Tuple, Or, Dict, sympify, binomial, cancel,
-                   Rational, Integer, oo)
+                   Rational, Integer)
 from sympy.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
                          Hypergeometric, Rademacher, P, E, variance, covariance,
                          skewness, sample, density, where, FiniteRV, pspace, cdf,

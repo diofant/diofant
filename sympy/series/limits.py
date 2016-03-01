@@ -169,30 +169,6 @@ class Limit(Expr):
                     order = limit(order.expr, z, z0, dir)
                     e = e.removeO() + order
 
-        if e.is_Mul:
-            if abs(z0) in (S.Infinity, S.NegativeInfinity):
-                # XXX todo: this should probably be stated in the
-                # negative -- i.e. to exclude expressions that should
-                # not be handled this way but I'm not sure what that
-                # condition is; when ok is True it means that the leading
-                # term approach is going to succeed (hopefully)
-                def ok(w):
-                    return (z in w.free_symbols and any(a.is_polynomial(z) or
-                            any(z in m.free_symbols and m.is_polynomial(z)
-                                for m in Mul.make_args(a))
-                            for a in Add.make_args(w)))
-                if all(ok(w) for w in e.as_numer_denom()):
-                    u = Dummy(positive=True)
-                    if z0 is S.Infinity:
-                        inve = e.subs(z, 1/u)
-                    else:
-                        inve = e.subs(z, -1/u)
-                    r = limit(inve.as_leading_term(u), u, S.Zero)
-                    if isinstance(r, Limit):
-                        return self
-                    else:
-                        return r
-
         try:
             # Convert to the limit z->oo and use Gruntz algorithm.
             newe, newz = e, z

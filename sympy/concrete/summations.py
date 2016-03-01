@@ -67,7 +67,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     ========
 
     >>> from sympy.abc import i, k, m, n, x
-    >>> from sympy import Sum, factorial, oo, IndexedBase, Function
+    >>> from sympy import factorial, oo, IndexedBase, Function
+
     >>> Sum(k, (k, 1, m))
     Sum(k, (k, 1, m))
     >>> Sum(k, (k, 1, m)).doit()
@@ -87,6 +88,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     can use either Function of IndexedBase classes:
 
     >>> f = Function('f')
+
     >>> Sum(f(n), (n, 0, 3)).doit()
     f(0) + f(1) + f(2) + f(3)
     >>> Sum(f(n), (n, 0, oo)).doit()
@@ -243,7 +245,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         the first omitted term in the tail):
 
             >>> from sympy.abc import k, a, b
-            >>> from sympy import Sum
+
             >>> Sum(1/k, (k, 2, 5)).doit().evalf()
             1.28333333333333
             >>> s, e = Sum(1/k, (k, 2, 5)).euler_maclaurin()
@@ -334,8 +336,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         return s + iterm, abs(term)
 
     def reverse_order(self, *indices):
-        """
-        Reverse the order of a limit in a Sum.
+        """Reverse the order of a limit in a Sum.
 
         Usage
         =====
@@ -349,7 +350,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Examples
         ========
 
-        >>> from sympy import Sum
         >>> from sympy.abc import x, y, a, b, c, d
 
         >>> Sum(x, (x, 0, 3)).reverse_order(x)
@@ -414,8 +414,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         return Sum(e * self.function, *limits)
 
     def findrecur(self, F=Function('F'), n=None):
-        """
-        Find a recurrence formula for the summand of the sum.
+        """Find a recurrence formula for the summand of the sum.
 
         Given a sum `f(n) = \sum_k F(n, k)`, where `F(n, k)` is
         doubly hypergeometric (that's, both `F(n + 1, k)/F(n, k)`
@@ -428,7 +427,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         ========
 
         >>> from sympy import symbols, factorial, oo
-        >>> from sympy.concrete import Sum
+
         >>> n, k = symbols('n, k', integer=True)
         >>> s = Sum(factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
         >>> s.findrecur()
@@ -443,7 +442,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         ==========
 
         .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
-
         """
         from sympy import expand_func, gamma, factor, Mul
         from sympy.polys import together
@@ -501,8 +499,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
 
 def summation(f, *symbols, **kwargs):
-    r"""
-    Compute the summation of f with respect to symbols.
+    r"""Compute the summation of f with respect to symbols.
 
     The notation for symbols is similar to the notation used in Integral.
     summation(f, (i, a, b)) computes the sum of f with respect to i from a to b,
@@ -520,7 +517,8 @@ def summation(f, *symbols, **kwargs):
     If it cannot compute the sum, it returns an unevaluated Sum object.
     Repeated sums can be computed by introducing additional symbols tuples::
 
-    >>> from sympy import summation, oo, symbols, log
+    >>> from sympy import oo, symbols, log
+
     >>> i, n, m = symbols('i n m', integer=True)
 
     >>> summation(2*i - 1, (i, 1, n))
@@ -534,6 +532,7 @@ def summation(f, *symbols, **kwargs):
 
     >>> from sympy.abc import x
     >>> from sympy import factorial
+
     >>> summation(x**n/factorial(n), (n, 0, oo))
     E**x
 
@@ -744,10 +743,9 @@ def eval_sum_symbolic(f, limits):
 
             return Piecewise((l, Eq(q, S.One)), (r, True))
 
-        r = gosper_sum(f, (i, a, b))
-
-        if r not in (None, S.NaN):
-            return r
+    r = gosper_sum(f, (i, a, b))
+    if r is not None and r.is_finite:
+        return r
 
     return eval_sum_hyper(f_orig, (i, a, b))
 

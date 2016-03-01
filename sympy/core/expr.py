@@ -2437,7 +2437,7 @@ class Expr(Basic, EvalfMixin):
         >>> abs(x).series(dir="-")
         -x
         """
-        from sympy import collect, Dummy, Symbol, Order, Rational, ceiling
+        from sympy import collect, Dummy, Symbol, Order
 
         if x is None:
             syms = self.atoms(Dummy, Symbol)

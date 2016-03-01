@@ -1,9 +1,8 @@
 import pytest
 
 from sympy import (log, sqrt, Rational, Symbol, I, exp, pi, S,
-                   cos, sin, Mul, Pow, O, Integer)
+                   cos, sin, Mul, Pow, O, Integer, expand)
 from sympy.simplify.radsimp import expand_numer
-from sympy.simplify.simplify import expand
 from sympy.core.function import expand_multinomial, expand_power_base
 from sympy.utilities.randtest import verify_numerically
 

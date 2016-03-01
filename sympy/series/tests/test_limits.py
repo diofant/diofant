@@ -1,4 +1,5 @@
-from itertools import product as cartes
+import itertools
+import os
 
 import pytest
 
@@ -244,10 +245,10 @@ def test_issue_5164():
 
 def test_issue_5183():
     # using list(...) so py.test can recalculate values
-    tests = list(cartes([x, -x],
-                        [-1, 1],
-                        [2, 3, Rational(1, 2), Rational(2, 3)],
-                        ['-', '+']))
+    tests = list(itertools.product([x, -x],
+                                   [-1, 1],
+                                   [2, 3, Rational(1, 2), Rational(2, 3)],
+                                   ['-', '+']))
     results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
                oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign((-1)**Rational(1, 3)),
@@ -276,9 +277,9 @@ def test_issue_5229():
 
 def test_issue_4546():
     # using list(...) so py.test can recalculate values
-    tests = list(cartes([cot, tan],
-                        [-pi/2, 0, pi/2, pi, 3*pi/2],
-                        ['-', '+']))
+    tests = list(itertools.product([cot, tan],
+                                   [-pi/2, 0, pi/2, pi, 3*pi/2],
+                                   ['-', '+']))
     results = (0, 0, -oo, oo, 0, 0, -oo, oo, 0, 0,
                oo, -oo, 0, 0, oo, -oo, 0, 0, oo, -oo)
     assert len(tests) == len(results)
@@ -304,6 +305,13 @@ def test_issue_5955():
     assert limit((x**16)/(1 + x**16), x, oo) == 1
     assert limit((x**100)/(1 + x**100), x, oo) == 1
     assert limit((x**1885)/(1 + x**1885), x, oo) == 1
+    assert limit((x**100/((x + 1)**100 + exp(-x))), x, oo) == 1
+
+
+@pytest.mark.slow
+@pytest.mark.xfail
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
+def test_issue_5955_slow():
     assert limit((x**1000/((x + 1)**1000 + exp(-x))), x, oo) == 1
 
 
@@ -434,3 +442,16 @@ def test_issue_9205():
     assert Limit(x, x, a, '-').free_symbols == {a}
     assert Limit(x + y, x + y, a).free_symbols == {a}
     assert Limit(-x**2 + y, x**2, a).free_symbols == {y, a}
+
+
+def test_issue_10610():
+    assert limit(3**x*3**(-x - 1)*(x + 1)**2/x**2, x, oo) == Rational(1, 3)
+
+
+def test_issue_9075():
+    assert limit((6**(x + 1) + x + 1)/(6**x + x), x, oo) == 6
+
+
+def test_issue_8634():
+    p = Symbol('p', positive=True)
+    assert limit(x**p, x, -oo) == oo*sign((-1)**p)

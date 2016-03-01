@@ -5,7 +5,7 @@ from sympy.vector.vector import Vector
 from sympy.vector.coordsysrect import CoordSysCartesian
 from sympy.simplify import simplify
 from sympy.core.symbol import symbols
-from sympy.core import S, Integer
+from sympy.core.numbers import Integer
 from sympy import sin, cos
 from sympy.vector.functions import (curl, divergence, gradient,
                                     is_conservative, is_solenoidal,

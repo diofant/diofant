@@ -755,11 +755,12 @@ class PrettyPrinter(Printer):
         if not self._use_unicode:
             raise NotImplementedError("ASCII pretty printing of BasisDependent is not implemented")
 
+        orig_self = self
+
         class Fake(object):
             baseline = 0
 
-            # slf to distinguish from self from _print_BasisDependent
-            def render(slf, *args, **kwargs):
+            def render(self, *args, **kwargs):
                 if expr == expr.zero:
                     return expr.zero._pretty_form
                 o1 = []
@@ -785,8 +786,7 @@ class PrettyPrinter(Printer):
                         else:
                             # We always wrap the measure numbers in
                             # parentheses
-                            arg_str = self._print(
-                                v).parens()[0]
+                            arg_str = orig_self._print(v).parens()[0]
 
                             o1.append(arg_str + ' ' + k._pretty_form)
                         vectstrs.append(k._pretty_form)

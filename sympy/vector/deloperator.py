@@ -3,7 +3,6 @@ from sympy.core.function import Derivative
 from sympy.vector.vector import Vector
 from sympy.vector.functions import express
 from sympy.vector.coordsysrect import CoordSysCartesian
-from sympy.core import S
 
 
 class Del(Basic):

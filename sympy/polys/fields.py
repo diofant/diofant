@@ -209,16 +209,16 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         self.numer = numer
         self.denom = denom
 
-    def raw_new(f, numer, denom):
-        return f.__class__(numer, denom)
+    def raw_new(self, numer, denom):
+        return self.__class__(numer, denom)
 
-    def new(f, numer, denom):
-        return f.raw_new(*numer.cancel(denom))
+    def new(self, numer, denom):
+        return self.raw_new(*numer.cancel(denom))
 
-    def to_poly(f):
-        if f.denom != 1:
-            raise ValueError("f.denom should be 1")
-        return f.numer
+    def to_poly(self):
+        if self.denom != 1:
+            raise ValueError("self.denom should be 1")
+        return self.numer
 
     def parent(self):
         return self.field.to_domain()
@@ -249,46 +249,45 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
     def as_expr(self, *symbols):
         return self.numer.as_expr(*symbols)/self.denom.as_expr(*symbols)
 
-    def __eq__(f, g):
-        if isinstance(g, f.field.dtype):
-            return f.numer == g.numer and f.denom == g.denom
+    def __eq__(self, other):
+        if isinstance(other, self.field.dtype):
+            return self.numer == other.numer and self.denom == other.denom
         else:
-            return f.numer == g and f.denom == f.field.ring.one
+            return self.numer == other and self.denom == self.field.ring.one
 
-    def __ne__(f, g):
-        return not f.__eq__(g)
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
-    def __bool__(f):
-        return bool(f.numer)
+    def __bool__(self):
+        return bool(self.numer)
 
     def sort_key(self):
         return (self.denom.sort_key(), self.numer.sort_key())
 
-    def _cmp(f1, f2, op):
-        if isinstance(f2, f1.field.dtype):
-            return op(f1.sort_key(), f2.sort_key())
+    def _cmp(self, other, op):
+        if isinstance(other, self.field.dtype):
+            return op(self.sort_key(), other.sort_key())
         else:
             return NotImplemented
 
-    def __lt__(f1, f2):
-        return f1._cmp(f2, lt)
+    def __lt__(self, other):
+        return self._cmp(other, lt)
 
-    def __le__(f1, f2):
-        return f1._cmp(f2, le)
+    def __le__(self, other):
+        return self._cmp(other, le)
 
-    def __gt__(f1, f2):
-        return f1._cmp(f2, gt)
+    def __gt__(self, other):
+        return self._cmp(other, gt)
 
-    def __ge__(f1, f2):
-        return f1._cmp(f2, ge)
+    def __ge__(self, other):
+        return self._cmp(other, ge)
 
-    def __pos__(f):
-        """Negate all coefficients in ``f``. """
-        return f.raw_new(f.numer, f.denom)
+    def __pos__(self):
+        return self.raw_new(self.numer, self.denom)
 
-    def __neg__(f):
-        """Negate all coefficients in ``f``. """
-        return f.raw_new(-f.numer, f.denom)
+    def __neg__(self):
+        """Negate all coefficients in ``self``. """
+        return self.raw_new(-self.numer, self.denom)
 
     def _extract_ground(self, element):
         domain = self.field.domain
@@ -310,244 +309,248 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         else:
             return 1, element, None
 
-    def __add__(f, g):
-        """Add rational functions ``f`` and ``g``. """
-        field = f.field
+    def __add__(self, other):
+        """Add rational functions ``self`` and ``other``. """
+        field = self.field
 
-        if not g:
-            return f
-        elif not f:
-            return g
-        elif isinstance(g, field.dtype):
-            if f.denom == g.denom:
-                return f.new(f.numer + g.numer, f.denom)
+        if not other:
+            return self
+        elif not self:
+            return other
+        elif isinstance(other, field.dtype):
+            if self.denom == other.denom:
+                return self.new(self.numer + other.numer, self.denom)
             else:
-                return f.new(f.numer*g.denom + f.denom*g.numer, f.denom*g.denom)
-        elif isinstance(g, field.ring.dtype):
-            return f.new(f.numer + f.denom*g, f.denom)
+                return self.new(self.numer*other.denom + self.denom*other.numer,
+                                self.denom*other.denom)
+        elif isinstance(other, field.ring.dtype):
+            return self.new(self.numer + self.denom*other, self.denom)
         else:
-            if isinstance(g, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == g.field:
+            if isinstance(other, FracElement):
+                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
                     pass
-                elif isinstance(g.field.domain, FractionField) and g.field.domain.field == field:
-                    return g.__radd__(f)
+                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                    return other.__radd__(self)
                 else:
                     return NotImplemented
-            elif isinstance(g, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == g.ring:
+            elif isinstance(other, PolyElement):
+                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return g.__radd__(f)
+                    return other.__radd__(self)
 
-        return f.__radd__(g)
+        return self.__radd__(other)
 
-    def __radd__(f, c):
-        if isinstance(c, f.field.ring.dtype):
-            return f.new(f.numer + f.denom*c, f.denom)
+    def __radd__(self, other):
+        if isinstance(other, self.field.ring.dtype):
+            return self.new(self.numer + self.denom*other, self.denom)
 
-        op, g_numer, g_denom = f._extract_ground(c)
+        op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return f.new(f.numer + f.denom*g_numer, f.denom)
+            return self.new(self.numer + self.denom*other_numer, self.denom)
         elif not op:
             return NotImplemented
         else:
-            return f.new(f.numer*g_denom + f.denom*g_numer, f.denom*g_denom)
+            return self.new(self.numer*other_denom + self.denom*other_numer,
+                            self.denom*other_denom)
 
-    def __sub__(f, g):
-        """Subtract rational functions ``f`` and ``g``. """
-        field = f.field
+    def __sub__(self, other):
+        """Subtract rational functions ``self`` and ``other``. """
+        field = self.field
 
-        if not g:
-            return f
-        elif not f:
-            return -g
-        elif isinstance(g, field.dtype):
-            if f.denom == g.denom:
-                return f.new(f.numer - g.numer, f.denom)
+        if not other:
+            return self
+        elif not self:
+            return -other
+        elif isinstance(other, field.dtype):
+            if self.denom == other.denom:
+                return self.new(self.numer - other.numer, self.denom)
             else:
-                return f.new(f.numer*g.denom - f.denom*g.numer, f.denom*g.denom)
-        elif isinstance(g, field.ring.dtype):
-            return f.new(f.numer - f.denom*g, f.denom)
+                return self.new(self.numer*other.denom - self.denom*other.numer,
+                                self.denom*other.denom)
+        elif isinstance(other, field.ring.dtype):
+            return self.new(self.numer - self.denom*other, self.denom)
         else:
-            if isinstance(g, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == g.field:
+            if isinstance(other, FracElement):
+                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
                     pass
-                elif isinstance(g.field.domain, FractionField) and g.field.domain.field == field:
-                    return g.__rsub__(f)
+                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                    return other.__rsub__(self)
                 else:
                     return NotImplemented
-            elif isinstance(g, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == g.ring:
+            elif isinstance(other, PolyElement):
+                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return g.__rsub__(f)
+                    return other.__rsub__(self)
 
-        op, g_numer, g_denom = f._extract_ground(g)
+        op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return f.new(f.numer - f.denom*g_numer, f.denom)
+            return self.new(self.numer - self.denom*other_numer, self.denom)
         elif not op:
             return NotImplemented
         else:
-            return f.new(f.numer*g_denom - f.denom*g_numer, f.denom*g_denom)
+            return self.new(self.numer*other_denom - self.denom*other_numer,
+                            self.denom*other_denom)
 
-    def __rsub__(f, c):
-        if isinstance(c, f.field.ring.dtype):
-            return f.new(-f.numer + f.denom*c, f.denom)
+    def __rsub__(self, other):
+        if isinstance(other, self.field.ring.dtype):
+            return self.new(-self.numer + self.denom*other, self.denom)
 
-        op, g_numer, g_denom = f._extract_ground(c)
+        op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return f.new(-f.numer + f.denom*g_numer, f.denom)
+            return self.new(-self.numer + self.denom*other_numer, self.denom)
         elif not op:
             return NotImplemented
         else:
-            return f.new(-f.numer*g_denom + f.denom*g_numer, f.denom*g_denom)
+            return self.new(-self.numer*other_denom + self.denom*other_numer,
+                            self.denom*other_denom)
 
-    def __mul__(f, g):
-        """Multiply rational functions ``f`` and ``g``. """
-        field = f.field
+    def __mul__(self, other):
+        """Multiply rational functions ``self`` and ``other``. """
+        field = self.field
 
-        if not f or not g:
+        if not self or not other:
             return field.zero
-        elif isinstance(g, field.dtype):
-            return f.new(f.numer*g.numer, f.denom*g.denom)
-        elif isinstance(g, field.ring.dtype):
-            return f.new(f.numer*g, f.denom)
+        elif isinstance(other, field.dtype):
+            return self.new(self.numer*other.numer, self.denom*other.denom)
+        elif isinstance(other, field.ring.dtype):
+            return self.new(self.numer*other, self.denom)
         else:
-            if isinstance(g, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == g.field:
+            if isinstance(other, FracElement):
+                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
                     pass
-                elif isinstance(g.field.domain, FractionField) and g.field.domain.field == field:
-                    return g.__rmul__(f)
+                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                    return other.__rmul__(self)
                 else:
                     return NotImplemented
-            elif isinstance(g, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == g.ring:
+            elif isinstance(other, PolyElement):
+                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return g.__rmul__(f)
+                    return other.__rmul__(self)
 
-        return f.__rmul__(g)
+        return self.__rmul__(other)
 
-    def __rmul__(f, c):
-        if isinstance(c, f.field.ring.dtype):
-            return f.new(f.numer*c, f.denom)
+    def __rmul__(self, other):
+        if isinstance(other, self.field.ring.dtype):
+            return self.new(self.numer*other, self.denom)
 
-        op, g_numer, g_denom = f._extract_ground(c)
+        op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return f.new(f.numer*g_numer, f.denom)
+            return self.new(self.numer*other_numer, self.denom)
         elif not op:
             return NotImplemented
         else:
-            return f.new(f.numer*g_numer, f.denom*g_denom)
+            return self.new(self.numer*other_numer, self.denom*other_denom)
 
-    def __truediv__(f, g):
-        """Computes quotient of fractions ``f`` and ``g``. """
-        field = f.field
+    def __truediv__(self, other):
+        """Computes quotient of fractions ``self`` and ``other``. """
+        field = self.field
 
-        if not g:
+        if not other:
             raise ZeroDivisionError
-        elif isinstance(g, field.dtype):
-            return f.new(f.numer*g.denom, f.denom*g.numer)
-        elif isinstance(g, field.ring.dtype):
-            return f.new(f.numer, f.denom*g)
+        elif isinstance(other, field.dtype):
+            return self.new(self.numer*other.denom, self.denom*other.numer)
+        elif isinstance(other, field.ring.dtype):
+            return self.new(self.numer, self.denom*other)
         else:
-            if isinstance(g, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == g.field:
+            if isinstance(other, FracElement):
+                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
                     pass
-                elif isinstance(g.field.domain, FractionField) and g.field.domain.field == field:
-                    return g.__rtruediv__(f)
+                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                    return other.__rtruediv__(self)
                 else:
                     return NotImplemented
-            elif isinstance(g, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == g.ring:
+            elif isinstance(other, PolyElement):
+                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return g.__rtruediv__(f)
+                    return other.__rtruediv__(self)
 
-        op, g_numer, g_denom = f._extract_ground(g)
+        op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return f.new(f.numer, f.denom*g_numer)
+            return self.new(self.numer, self.denom*other_numer)
         elif not op:
             return NotImplemented
         else:
-            return f.new(f.numer*g_denom, f.denom*g_numer)
+            return self.new(self.numer*other_denom, self.denom*other_numer)
 
     __div__ = __truediv__
 
-    def __rtruediv__(f, c):
-        if not f:
+    def __rtruediv__(self, other):
+        if not self:
             raise ZeroDivisionError
-        elif isinstance(c, f.field.ring.dtype):
-            return f.new(f.denom*c, f.numer)
+        elif isinstance(other, self.field.ring.dtype):
+            return self.new(self.denom*other, self.numer)
 
-        op, g_numer, g_denom = f._extract_ground(c)
+        op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return f.new(f.denom*g_numer, f.numer)
+            return self.new(self.denom*other_numer, self.numer)
         elif not op:
             return NotImplemented
         else:
-            return f.new(f.denom*g_numer, f.numer*g_denom)
+            return self.new(self.denom*other_numer, self.numer*other_denom)
 
     __rdiv__ = __rtruediv__
 
-    def __pow__(f, n):
-        """Raise ``f`` to a non-negative power ``n``. """
+    def __pow__(self, n):
+        """Raise ``self`` to a non-negative power ``n``. """
         if n >= 0:
-            return f.raw_new(f.numer**n, f.denom**n)
-        elif not f:
+            return self.raw_new(self.numer**n, self.denom**n)
+        elif not self:
             raise ZeroDivisionError
         else:
-            return f.raw_new(f.denom**-n, f.numer**-n)
+            return self.raw_new(self.denom**-n, self.numer**-n)
 
-    def diff(f, x):
+    def diff(self, x):
         """Computes partial derivative in ``x``.
 
         Examples
         ========
 
-        >>> from sympy.polys.fields import field
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y, z = field("x,y,z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
-
         """
         x = x.to_poly()
-        return f.new(f.numer.diff(x)*f.denom - f.numer*f.denom.diff(x), f.denom**2)
+        return self.new(self.numer.diff(x)*self.denom -
+                        self.numer*self.denom.diff(x), self.denom**2)
 
-    def __call__(f, *values):
-        if 0 < len(values) <= f.field.ngens:
-            return f.evaluate(list(zip(f.field.gens, values)))
+    def __call__(self, *values):
+        if 0 < len(values) <= self.field.ngens:
+            return self.evaluate(list(zip(self.field.gens, values)))
         else:
-            raise ValueError("expected at least 1 and at most %s values, got %s" % (f.field.ngens, len(values)))
+            raise ValueError("expected at least 1 and at most %s values, got %s" % (self.field.ngens, len(values)))
 
-    def evaluate(f, x, a=None):
+    def evaluate(self, x, a=None):
         if isinstance(x, list) and a is None:
-            x = [ (X.to_poly(), a) for X, a in x ]
-            numer, denom = f.numer.evaluate(x), f.denom.evaluate(x)
+            x = [(X.to_poly(), a) for X, a in x]
+            numer, denom = self.numer.evaluate(x), self.denom.evaluate(x)
         else:
             x = x.to_poly()
-            numer, denom = f.numer.evaluate(x, a), f.denom.evaluate(x, a)
+            numer, denom = self.numer.evaluate(x, a), self.denom.evaluate(x, a)
 
         field = numer.ring.to_field()
         return field.new(numer, denom)
 
-    def subs(f, x, a=None):
+    def subs(self, x, a=None):
         if isinstance(x, list) and a is None:
-            x = [ (X.to_poly(), a) for X, a in x ]
-            numer, denom = f.numer.subs(x), f.denom.subs(x)
+            x = [(X.to_poly(), a) for X, a in x]
+            numer, denom = self.numer.subs(x), self.denom.subs(x)
         else:
             x = x.to_poly()
-            numer, denom = f.numer.subs(x, a), f.denom.subs(x, a)
+            numer, denom = self.numer.subs(x, a), self.denom.subs(x, a)
 
-        return f.new(numer, denom)
+        return self.new(numer, denom)
 
-    def compose(f, x, a=None):
+    def compose(self, x, a=None):
         raise NotImplementedError
