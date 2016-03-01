@@ -445,7 +445,7 @@ class Subset(Basic):
         return 2**(self.superset_size)
 
     @classmethod
-    def subset_from_bitlist(self, super_set, bitlist):
+    def subset_from_bitlist(cls, super_set, bitlist):
         """
         Gets the subset defined by the bitlist.
 
@@ -469,7 +469,7 @@ class Subset(Basic):
         return Subset(ret_set, super_set)
 
     @classmethod
-    def bitlist_from_subset(self, subset, superset):
+    def bitlist_from_subset(cls, subset, superset):
         """
         Gets the bitlist corresponding to a subset.
 
@@ -492,7 +492,7 @@ class Subset(Basic):
         return ''.join(bitlist)
 
     @classmethod
-    def unrank_binary(self, rank, superset):
+    def unrank_binary(cls, rank, superset):
         """
         Gets the binary ordered subset of the specified rank.
 
@@ -511,7 +511,7 @@ class Subset(Basic):
         return Subset.subset_from_bitlist(superset, bits)
 
     @classmethod
-    def unrank_gray(self, rank, superset):
+    def unrank_gray(cls, rank, superset):
         """
         Gets the Gray code ordered subset of the specified rank.
 
@@ -532,7 +532,7 @@ class Subset(Basic):
         return Subset.subset_from_bitlist(superset, graycode_bitlist)
 
     @classmethod
-    def subset_indices(self, subset, superset):
+    def subset_indices(cls, subset, superset):
         """Return indices of subset in superset in a list; the list is empty
         if all elements of subset are not in superset.
 

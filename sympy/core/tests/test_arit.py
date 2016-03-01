@@ -1,9 +1,10 @@
+import itertools
+
 import pytest
 
 from sympy import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
                    sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
                    Integer, sign, im, nan, Dummy, factorial, comp, O)
-from sympy.utilities.iterables import cartes
 from sympy.utilities.randtest import verify_numerically
 
 
@@ -1700,6 +1701,9 @@ def test_add_flatten():
     assert a - b == nan
     assert (1/a).simplify() == (1/b).simplify() == 0
 
+    a = Pow(2, 3, evaluate=False)
+    assert a + a == 16
+
 
 def test_omgissue_31():
     assert sin(x + O(x**2)) - sin(x + O(x**2)) == \
@@ -1832,7 +1836,7 @@ def test_mul_zero_detection():
                 else:
                     assert e.is_zero is False
 
-    for iz, ib in cartes(*[[True, False, None]]*2):
+    for iz, ib in itertools.product(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz)
         b = Dummy('f', finite=ib)
         e = Mul(z, b, evaluate=False)
@@ -1849,7 +1853,7 @@ def test_mul_zero_detection():
         else:
             assert e.is_extended_real
 
-    for iz, ib in cartes(*[[True, False, None]]*2):
+    for iz, ib in itertools.product(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz, extended_real=True)
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(z, b, evaluate=False)

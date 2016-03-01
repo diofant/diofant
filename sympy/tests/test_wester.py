@@ -1590,7 +1590,7 @@ def test_P31():
 
 def test_P32():
     M = Matrix([[1, -2],
-                [2, 1]])
+                [2, 1]]).as_immutable()
     assert exp(M).rewrite(cos).simplify() == Matrix([[E*cos(2), -E*sin(2)],
                                                      [E*sin(2),  E*cos(2)]])
 
@@ -1600,7 +1600,7 @@ def test_P33():
     M = Matrix([[0,    1,      0,   0],
                 [0,    0,      0, 2*w],
                 [0,    0,      0,   1],
-                [0, -2*w, 3*w**2,   0]])
+                [0, -2*w, 3*w**2,   0]]).as_immutable()
     assert exp(M*t).rewrite(cos).expand() == Matrix([
         [1, -3*t + 4*sin(t*w)/w,  6*t*w - 6*sin(t*w), -2*cos(t*w)/w + 2/w],
         [0,      4*cos(t*w) - 3, -6*w*cos(t*w) + 6*w,          2*sin(t*w)],
@@ -2670,6 +2670,7 @@ def test_X14():
                   n, x0=oo, n=1) == 1/(sqrt(pi)*sqrt(n)) + O(1/x, (x, oo))
 
 
+@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="too much memory")
 @pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
 def test_X15():
     # => 0!/x - 1!/x^2 + 2!/x^3 - 3!/x^4 + O(1/x^5)   [Knopp, p. 544]

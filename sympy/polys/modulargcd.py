@@ -123,7 +123,6 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import _chinese_remainder_reconstruction_univariate
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x = ring("x", ZZ)
@@ -186,7 +185,6 @@ def modgcd_univariate(f, g):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import modgcd_univariate
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x = ring("x", ZZ)
@@ -306,7 +304,6 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import _primitive
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, y = ring("x, y", ZZ)
@@ -363,7 +360,6 @@ def _deg(f):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import _deg
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, y = ring("x, y", ZZ)
@@ -411,7 +407,6 @@ def _LC(f):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import _LC
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, y = ring("x, y", ZZ)
@@ -567,7 +562,6 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import _chinese_remainder_reconstruction_multivariate
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, y = ring("x, y", ZZ)
@@ -732,7 +726,6 @@ def modgcd_bivariate(f, g):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import modgcd_bivariate
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, y = ring("x, y", ZZ)
@@ -1092,7 +1085,6 @@ def modgcd_multivariate(f, g):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import modgcd_multivariate
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, y = ring("x, y", ZZ)
@@ -1857,7 +1849,6 @@ def _func_field_modgcd_m(f, g, minpoly):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import _func_field_modgcd_m
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x, z = ring('x, z', ZZ)
@@ -2174,7 +2165,6 @@ def func_field_modgcd(f, g):
     Examples
     ========
 
-    >>> from sympy.polys.modulargcd import func_field_modgcd
     >>> from sympy.polys import AlgebraicField, QQ, ring
     >>> from sympy import sqrt
 

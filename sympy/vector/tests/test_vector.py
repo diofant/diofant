@@ -1,8 +1,8 @@
 from sympy.simplify import simplify, trigsimp
-from sympy import pi, sqrt, symbols, ImmutableMatrix as Matrix, \
-    sin, cos, Function, Integral, Derivative, diff, integrate
-from sympy.vector.vector import Vector, BaseVector, VectorAdd, \
-    VectorMul, VectorZero
+from sympy import (pi, sqrt, symbols, ImmutableMatrix as Matrix,
+                   sin, cos, Function, Integral, Derivative, diff)
+from sympy.vector.vector import (Vector, BaseVector, VectorAdd,
+                                 VectorMul, VectorZero)
 from sympy.vector.coordsysrect import CoordSysCartesian
 
 C = CoordSysCartesian('C')

@@ -22,110 +22,110 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
             else:
                 self.ex = ex.ex
 
-        def __repr__(f):
-            return 'EX(%s)' % repr(f.ex)
+        def __repr__(self):
+            return 'EX(%s)' % repr(self.ex)
 
-        def __str__(f):
-            return 'EX(%s)' % str(f.ex)
+        def __str__(self):
+            return 'EX(%s)' % str(self.ex)
 
         def __hash__(self):
             return hash((self.__class__.__name__, self.ex))
 
-        def as_expr(f):
-            return f.ex
+        def as_expr(self):
+            return self.ex
 
-        def numer(f):
-            return f.__class__(f.ex.as_numer_denom()[0])
+        def numer(self):
+            return self.__class__(self.ex.as_numer_denom()[0])
 
-        def denom(f):
-            return f.__class__(f.ex.as_numer_denom()[1])
+        def denom(self):
+            return self.__class__(self.ex.as_numer_denom()[1])
 
-        def simplify(f, ex):
-            return f.__class__(ex.cancel())
+        def simplify(self, ex):
+            return self.__class__(ex.cancel())
 
-        def __abs__(f):
-            return f.__class__(abs(f.ex))
+        def __abs__(self):
+            return self.__class__(abs(self.ex))
 
-        def __neg__(f):
-            return f.__class__(-f.ex)
+        def __neg__(self):
+            return self.__class__(-self.ex)
 
-        def _to_ex(f, g):
+        def _to_ex(self, other):
             try:
-                return f.__class__(g)
+                return self.__class__(other)
             except SympifyError:
                 return
 
-        def __add__(f, g):
-            g = f._to_ex(g)
+        def __add__(self, other):
+            other = self._to_ex(other)
 
-            if g is not None:
-                return f.simplify(f.ex + g.ex)
+            if other is not None:
+                return self.simplify(self.ex + other.ex)
             else:
                 return NotImplemented
 
-        def __radd__(f, g):
-            return f.simplify(f.__class__(g).ex + f.ex)
+        def __radd__(self, other):
+            return self.simplify(self.__class__(other).ex + self.ex)
 
-        def __sub__(f, g):
-            g = f._to_ex(g)
+        def __sub__(self, other):
+            other = self._to_ex(other)
 
-            if g is not None:
-                return f.simplify(f.ex - g.ex)
+            if other is not None:
+                return self.simplify(self.ex - other.ex)
             else:
                 return NotImplemented
 
-        def __rsub__(f, g):
-            return f.simplify(f.__class__(g).ex - f.ex)
+        def __rsub__(self, other):
+            return self.simplify(self.__class__(other).ex - self.ex)
 
-        def __mul__(f, g):
-            g = f._to_ex(g)
+        def __mul__(self, other):
+            other = self._to_ex(other)
 
-            if g is not None:
-                return f.simplify(f.ex*g.ex)
+            if other is not None:
+                return self.simplify(self.ex*other.ex)
             else:
                 return NotImplemented
 
-        def __rmul__(f, g):
-            return f.simplify(f.__class__(g).ex*f.ex)
+        def __rmul__(self, other):
+            return self.simplify(self.__class__(other).ex*self.ex)
 
-        def __pow__(f, n):
-            n = f._to_ex(n)
+        def __pow__(self, n):
+            n = self._to_ex(n)
 
             if n is not None:
-                return f.simplify(f.ex**n.ex)
+                return self.simplify(self.ex**n.ex)
             else:
                 return NotImplemented
 
-        def __truediv__(f, g):
-            g = f._to_ex(g)
+        def __truediv__(self, other):
+            other = self._to_ex(other)
 
-            if g is not None:
-                return f.simplify(f.ex/g.ex)
+            if other is not None:
+                return self.simplify(self.ex/other.ex)
             else:
                 return NotImplemented
 
-        def __rtruediv__(f, g):
-            return f.simplify(f.__class__(g).ex/f.ex)
+        def __rtruediv__(self, other):
+            return self.simplify(self.__class__(other).ex/self.ex)
 
         __div__ = __truediv__
         __rdiv__ = __rtruediv__
 
-        def __eq__(f, g):
-            return f.ex == f.__class__(g).ex
+        def __eq__(self, other):
+            return self.ex == self.__class__(other).ex
 
-        def __ne__(f, g):
-            return not f.__eq__(g)
+        def __ne__(self, other):
+            return not self.__eq__(other)
 
-        def __bool__(f):
-            return f.ex != 0
+        def __bool__(self):
+            return self.ex != 0
 
-        def gcd(f, g):
+        def gcd(self, other):
             from sympy.polys import gcd
-            return f.__class__(gcd(f.ex, f.__class__(g).ex))
+            return self.__class__(gcd(self.ex, self.__class__(other).ex))
 
-        def lcm(f, g):
+        def lcm(self, other):
             from sympy.polys import lcm
-            return f.__class__(lcm(f.ex, f.__class__(g).ex))
+            return self.__class__(lcm(self.ex, self.__class__(other).ex))
 
     dtype = Expression
 
@@ -148,35 +148,35 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Convert SymPy's expression to ``dtype``. """
         return self.dtype(a)
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_QQ_python(K1, a, K0):
+    def from_QQ_python(self, a, K0):
         """Convert a Python ``Fraction`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_ZZ_gmpy(K1, a, K0):
+    def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_QQ_gmpy(K1, a, K0):
+    def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_RealField(K1, a, K0):
+    def from_RealField(self, a, K0):
         """Convert a mpmath ``mpf`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_PolynomialRing(K1, a, K0):
+    def from_PolynomialRing(self, a, K0):
         """Convert a ``DMP`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_FractionField(K1, a, K0):
+    def from_FractionField(self, a, K0):
         """Convert a ``DMF`` object to ``dtype``. """
-        return K1(K0.to_sympy(a))
+        return self(K0.to_sympy(a))
 
-    def from_ExpressionDomain(K1, a, K0):
+    def from_ExpressionDomain(self, a, K0):
         """Convert a ``EX`` object to ``dtype``. """
         return a
 

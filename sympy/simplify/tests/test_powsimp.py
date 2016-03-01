@@ -1,9 +1,9 @@
 from sympy import (
     symbols, powsimp, symbols, MatrixSymbol, sqrt, pi, Mul, gamma, Function,
-    S, I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest,
+    I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest,
     root, Rational)
 
-from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
+from sympy.abc import x, y, z, a, b, c
 
 
 def test_powsimp():
@@ -111,7 +111,6 @@ def test_powsimp_negated_base():
 
 
 def test_powsimp_nc():
-    x, y, z = symbols('x,y,z')
     A, B, C = symbols('A B C', commutative=False)
 
     assert powsimp(A**x*A**y, combine='all') == A**(x + y)
@@ -193,7 +192,6 @@ def test_powdenest():
 
 def test_powdenest_polar():
     x, y, z = symbols('x y z', polar=True)
-    a, b, c = symbols('a b c')
     assert powdenest((x*y*z)**a) == x**a*y**a*z**a
     assert powdenest((x**a*y**b)**c) == x**(a*c)*y**(b*c)
     assert powdenest(((x**a)**b*y**c)**c) == x**(a*b*c)*y**(c**2)
@@ -223,7 +221,6 @@ def test_issue_6367():
 
 def test_powsimp_polar():
     from sympy import polar_lift, exp_polar
-    x, y, z = symbols('x y z')
     p, q, r = symbols('p q r', polar=True)
 
     assert (polar_lift(-1))**(2*x) == exp_polar(2*pi*I*x)

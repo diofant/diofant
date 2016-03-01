@@ -8,7 +8,7 @@ from sympy import (
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
     erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
-    root, simplify, atan2, arg, Mul, SparseMatrix, Tuple, nsolve, oo)
+    root, simplify, atan2, arg, SparseMatrix, Tuple, nsolve, oo)
 from sympy.core.function import nfloat
 from sympy.solvers import (solve_linear_system, solve_linear_system_LU,
                            solve_undetermined_coeffs)

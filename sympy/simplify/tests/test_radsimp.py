@@ -9,7 +9,7 @@ from sympy.core.mul import _unevaluated_Mul as umul
 from sympy.simplify.radsimp import (_unevaluated_Add, collect_sqrt,
                                     fraction_expand)
 
-from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
+from sympy.abc import x, y, z, t, a, b, c, d, f
 
 
 def test_radsimp():
@@ -158,7 +158,6 @@ def test_radsimp_issue_3214():
 
 def test_collect_1():
     """Collect with respect to a Symbol"""
-    x, y, z, n = symbols('x,y,z,n')
     assert collect( x + y*x, x ) == x * (1 + y)
     assert collect( x + x**2, x ) == x + x**2
     assert collect( x**2 + y*x**2, x ) == (x**2)*(1 + y)
@@ -176,16 +175,13 @@ def test_collect_1():
 
 def test_collect_2():
     """Collect with respect to a sum"""
-    a, b, x = symbols('a,b,x')
     assert collect(a*(cos(x) + sin(x)) + b*(cos(x) + sin(x)),
         sin(x) + cos(x)) == (a + b)*(cos(x) + sin(x))
 
 
 def test_collect_3():
     """Collect with respect to a product"""
-    a, b, c = symbols('a,b,c')
     f = Function('f')
-    x, y, z, n = symbols('x,y,z,n')
 
     assert collect(-x/8 + x*y, -x) == x*(y - Rational(1, 8))
 
@@ -204,7 +200,6 @@ def test_collect_3():
 
 def test_collect_4():
     """Collect with respect to a power"""
-    a, b, c, x = symbols('a,b,c,x')
 
     assert collect(a*x**c + b*x**c, x**c) == x**c*(a + b)
     # issue 6096: 2 stays with c (unless c is integer or x is positive0
@@ -213,7 +208,6 @@ def test_collect_4():
 
 def test_collect_5():
     """Collect with respect to a tuple"""
-    a, x, y, z, n = symbols('a,x,y,z,n')
     assert collect(x**2*y**4 + z*(x*y**2)**2 + z + a*z, [x*y**2, z]) in [
         z*(1 + a + x**2*y**4) + x**2*y**4,
         z*(1 + a) + x**2*y**4*(1 + z) ]
@@ -224,7 +218,6 @@ def test_collect_5():
 def test_collect_D():
     D = Derivative
     f = Function('f')
-    x, a, b = symbols('x,a,b')
     fx = D(f(x), x)
     fxx = D(f(x), x, x)
 
@@ -255,8 +248,6 @@ def test_collect_func():
 
 
 def test_collect_order():
-    a, b, x, t = symbols('a,b,x,t')
-
     assert collect(t + t*x + t*x**2 + O(x**3), t) == t*(1 + x + x**2 + O(x**3))
     assert collect(t + t*x + x**2 + O(x**3), t) == \
         t*(1 + x + O(x**3)) + x**2 + O(x**3)
@@ -300,7 +291,6 @@ def test_collect_issues():
 def test_collect_D_0():
     D = Derivative
     f = Function('f')
-    x, a, b = symbols('x,a,b')
     fxx = D(f(x), x, x)
 
     # collect does not distinguish nested derivatives, so it returns
@@ -310,7 +300,6 @@ def test_collect_D_0():
 
 def test_collect_Wild():
     """Collect with respect to functions with Wild argument"""
-    a, b, x, y = symbols('a b x y')
     f = Function('f')
     w1 = Wild('.1')
     w2 = Wild('.2')
@@ -364,7 +353,6 @@ def test_fraction_expand():
 
 
 def test_fraction():
-    x, y, z = map(Symbol, 'xyz')
     A = Symbol('A', commutative=False)
 
     assert fraction(Rational(1, 2)) == (1, 2)
@@ -394,7 +382,7 @@ def test_fraction():
 
 
 def test_issue_5615():
-    aA, Re, a, b, D = symbols('aA Re a b D')
+    aA, Re, D = symbols('aA Re D')
     e = ((D**3*a + b*aA**3)/Re).expand()
     assert collect(e, [aA**3/Re, a]) == e
 

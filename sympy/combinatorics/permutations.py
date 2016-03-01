@@ -1431,7 +1431,7 @@ class Permutation(Basic):
         return res
 
     @classmethod
-    def from_sequence(self, i, key=None):
+    def from_sequence(cls, i, key=None):
         """Return the permutation needed to obtain ``i`` from the sorted
         elements of ``i``. If custom sorting is desired, a key can be given.
 
@@ -1586,7 +1586,7 @@ class Permutation(Basic):
         return _af_new(perm)
 
     @classmethod
-    def unrank_nonlex(self, n, r):
+    def unrank_nonlex(cls, n, r):
         """
         This is a linear time unranking algorithm that does not
         respect lexicographic order [3].
@@ -2345,7 +2345,7 @@ class Permutation(Basic):
         return rank
 
     @classmethod
-    def unrank_trotterjohnson(self, size, rank):
+    def unrank_trotterjohnson(cls, size, rank):
         """
         Trotter Johnson permutation unranking. See [4] section 2.4.
 
@@ -2617,7 +2617,7 @@ class Permutation(Basic):
         return sum(abs(a[i] - b[i]) for i in range(len(a)))
 
     @classmethod
-    def josephus(self, m, n, s=1):
+    def josephus(cls, m, n, s=1):
         """Return as a permutation the shuffling of range(n) using the Josephus
         scheme in which every m-th item is selected until all have been chosen.
         The returned permutation has elements listed by the order in which they
@@ -2666,7 +2666,7 @@ class Permutation(Basic):
         return Perm(perm)
 
     @classmethod
-    def from_inversion_vector(self, inversion):
+    def from_inversion_vector(cls, inversion):
         """
         Calculates the permutation from the inversion vector.
 
@@ -2693,7 +2693,7 @@ class Permutation(Basic):
         return _af_new(perm)
 
     @classmethod
-    def random(self, n):
+    def random(cls, n):
         """
         Generates a random permutation of length ``n``.
 
@@ -2712,7 +2712,7 @@ class Permutation(Basic):
         return _af_new(perm_array)
 
     @classmethod
-    def unrank_lex(self, size, rank):
+    def unrank_lex(cls, size, rank):
         """
         Lexicographic permutation unranking.
 

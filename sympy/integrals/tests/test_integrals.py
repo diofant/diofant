@@ -1107,3 +1107,16 @@ def test_issue_7098():
 def test_issue_4187():
     assert integrate(log(x)*exp(-x), (x, 0, oo)) == -EulerGamma
     assert integrate(log(x)*exp(x), (x, 0, oo)) == oo
+
+
+def test_issue_10567():
+    a, b, c, t = symbols('a b c t')
+    vt = Matrix([a*t, b, c])
+    assert integrate(vt, t) == Integral(vt, t).doit()
+    assert integrate(vt, t) == Matrix([[a*t**2/2], [b*t], [c*t]])
+
+
+def test_issue_4231():
+    e = (1 + 2*x + sqrt(x + log(x))*(1 + 3*x) +
+         x**2)/(x*(x + sqrt(x + log(x)))*sqrt(x + log(x)))
+    assert integrate(e, x) == 2*log(x + sqrt(x + log(x))) + 2*sqrt(x + log(x))

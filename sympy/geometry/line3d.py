@@ -244,19 +244,19 @@ class LinearEntity3D(GeometryEntity):
         except AttributeError:
             return False
 
-    def is_parallel(l1, l2):
+    def is_parallel(self, other):
         """Are two linear entities parallel?
 
         Parameters
         ==========
 
-        l1 : LinearEntity
-        l2 : LinearEntity
+        self : LinearEntity
+        other : LinearEntity
 
         Returns
         =======
 
-        True : if l1 and l2 are parallel,
+        True : if self and other are parallel,
         False : otherwise.
 
         Examples
@@ -275,10 +275,10 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-        if l1 == l2:
+        if self == other:
             return True
-        a = l1.direction_cosine
-        b = l2.direction_cosine
+        a = self.direction_cosine
+        b = other.direction_cosine
         # lines are parallel if the direction_cosines are the same or
         # differ by a constant
         rat = set()
@@ -291,19 +291,19 @@ class LinearEntity3D(GeometryEntity):
                 return False
         return True
 
-    def is_perpendicular(l1, l2):
+    def is_perpendicular(self, other):
         """Are two linear entities perpendicular?
 
         Parameters
         ==========
 
-        l1 : LinearEntity
-        l2 : LinearEntity
+        self : LinearEntity
+        other : LinearEntity
 
         Returns
         =======
 
-        True : if l1 and l2 are perpendicular,
+        True : if self and other are perpendicular,
         False : otherwise.
 
         See Also
@@ -326,17 +326,17 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-        a = sum(i*j for i, j in zip(l1.direction_ratio, l2.direction_ratio))
+        a = sum(i*j for i, j in zip(self.direction_ratio, other.direction_ratio))
         return True if a == 0 else False
 
-    def angle_between(l1, l2):
+    def angle_between(self, other):
         """The angle formed between the two linear entities.
 
         Parameters
         ==========
 
-        l1 : LinearEntity
-        l2 : LinearEntity
+        self : LinearEntity
+        other : LinearEntity
 
         Returns
         =======
@@ -369,8 +369,8 @@ class LinearEntity3D(GeometryEntity):
         acos(-sqrt(2)/3)
 
         """
-        v1 = l1.p2 - l1.p1
-        v2 = l2.p2 - l2.p1
+        v1 = self.p2 - self.p1
+        v2 = other.p2 - other.p1
         return acos(v1.dot(v2)/(abs(v1)*abs(v2)))
 
     def parallel_line(self, p):

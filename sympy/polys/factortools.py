@@ -381,7 +381,6 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     >>> g = x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1
     >>> R.dup_cyclotomic_p(g)
     True
-
     """
     if K.is_QQ:
         try:
@@ -558,10 +557,10 @@ def dup_zz_factor(f, K):
     Consider polynomial `f = 2*x**4 - 2`::
 
         >>> from sympy.polys import ring, ZZ
-        >>> from sympy.printing import pprint
+
         >>> R, x = ring("x", ZZ)
 
-        >>> pprint(R.dup_zz_factor(2*x**4 - 2))
+        >>> R.dup_zz_factor(2*x**4 - 2)
         (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
     In result we got the following factorization::
@@ -1039,10 +1038,10 @@ def dmp_zz_factor(f, u, K):
     Consider polynomial `f = 2*(x**2 - y**2)`::
 
         >>> from sympy.polys import ring, ZZ
-        >>> from sympy.printing import pprint
+
         >>> R, x,y = ring("x,y", ZZ)
 
-        >>> pprint(R.dmp_zz_factor(2*x**2 - 2*y**2))
+        >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
         (2, [(x - y, 1), (x + y, 1)])
 
     In result we got the following factorization::

@@ -130,7 +130,7 @@ class ExprWithIntLimits(ExprWithLimits):
 
         return self.func(function, *limits)
 
-    def index(expr, x):
+    def index(self, x):
         """
         Return the index of a dummy variable in the list of limits.
 
@@ -163,14 +163,14 @@ class ExprWithIntLimits(ExprWithLimits):
         sympy.concrete.summations.Sum.reverse_order
         sympy.concrete.products.Product.reverse_order
         """
-        variables = [limit[0] for limit in expr.limits]
+        variables = [limit[0] for limit in self.limits]
 
         if variables.count(x) != 1:
-            raise ValueError(expr, "Number of instances of variable not equal to one")
+            raise ValueError(self, "Number of instances of variable not equal to one")
         else:
             return variables.index(x)
 
-    def reorder(expr, *arg):
+    def reorder(self, *arg):
         """
         Reorder limits in a expression containing a Sum or a Product.
 
@@ -218,7 +218,7 @@ class ExprWithIntLimits(ExprWithLimits):
         sympy.concrete.summations.Sum.reverse_order
         sympy.concrete.products.Product.reverse_order
         """
-        new_expr = expr
+        new_expr = self
 
         for r in arg:
             if len(r) != 2:
@@ -228,15 +228,15 @@ class ExprWithIntLimits(ExprWithLimits):
             index2 = r[1]
 
             if not isinstance(r[0], int):
-                index1 = expr.index(r[0])
+                index1 = self.index(r[0])
             if not isinstance(r[1], int):
-                index2 = expr.index(r[1])
+                index2 = self.index(r[1])
 
             new_expr = new_expr.reorder_limit(index1, index2)
 
         return new_expr
 
-    def reorder_limit(expr, x, y):
+    def reorder_limit(self, x, y):
         """
         Interchange two limit tuples of a Sum or Product expression.
 
@@ -270,9 +270,9 @@ class ExprWithIntLimits(ExprWithLimits):
         sympy.concrete.summations.Sum.reverse_order
         sympy.concrete.products.Product.reverse_order
         """
-        var = {limit[0] for limit in expr.limits}
-        limit_x = expr.limits[x]
-        limit_y = expr.limits[y]
+        var = {limit[0] for limit in self.limits}
+        limit_x = self.limits[x]
+        limit_y = self.limits[y]
 
         if (len(set(limit_x[1].free_symbols).intersection(var)) == 0 and
                 len(set(limit_x[2].free_symbols).intersection(var)) == 0 and
@@ -280,7 +280,7 @@ class ExprWithIntLimits(ExprWithLimits):
                 len(set(limit_y[2].free_symbols).intersection(var)) == 0):
 
             limits = []
-            for i, limit in enumerate(expr.limits):
+            for i, limit in enumerate(self.limits):
                 if i == x:
                     limits.append(limit_y)
                 elif i == y:
@@ -288,6 +288,6 @@ class ExprWithIntLimits(ExprWithLimits):
                 else:
                     limits.append(limit)
 
-            return type(expr)(expr.function, *limits)
+            return type(self)(self.function, *limits)
         else:
-            raise ReorderError(expr, "could not interchange the two limits specified")
+            raise ReorderError(self, "could not interchange the two limits specified")

@@ -49,6 +49,7 @@ tox.ini
 # Coverage files (./bin/coverage_report.py)
 .coverage
 covhtml/
+htmlcov/
 
 # Built doc files (cd docs; make html)
 docs/_build/

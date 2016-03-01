@@ -1,11 +1,11 @@
 import pytest
 
 from sympy import (Eq, factorial, Function, Lambda, rf, S, sqrt, symbols,
-                   I, expand_func, binomial, gamma, Integer, Rational)
+                   I, expand_func, binomial, gamma, Rational)
 from sympy.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
                                   rsolve_ratio)
 
-from sympy.abc import a, b, c
+from sympy.abc import a, b
 
 y = Function('y')
 n, k = symbols('n,k', integer=True)

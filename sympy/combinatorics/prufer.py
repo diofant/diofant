@@ -313,7 +313,7 @@ class Prufer(Basic):
         return r
 
     @classmethod
-    def unrank(self, rank, n):
+    def unrank(cls, rank, n):
         """Finds the unranked Prufer sequence.
 
         Examples

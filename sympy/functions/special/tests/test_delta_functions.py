@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (adjoint, conjugate, DiracDelta, Heaviside, nan, pi,
                    sign, sqrt, symbols, transpose, Symbol, Piecewise,
-                   I, S, Eq, Integer, Rational)
+                   I, Eq, Rational)
 from sympy.core.function import ArgumentIndexError
 
 x, y = symbols('x y')

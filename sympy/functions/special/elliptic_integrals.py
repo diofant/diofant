@@ -1,6 +1,6 @@
 """ Elliptic integrals. """
 
-from sympy.core import S, pi, I, Integer, Rational
+from sympy.core import S, pi, I, Rational
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.functions.elementary.hyperbolic import atanh
 from sympy.functions.elementary.trigonometric import sin, tan

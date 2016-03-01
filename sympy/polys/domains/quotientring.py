@@ -143,9 +143,9 @@ class QuotientRing(Ring):
         return isinstance(other, QuotientRing) and \
             self.ring == other.ring and self.base_ideal == other.base_ideal
 
-    def from_ZZ_python(K1, a, K0):
+    def from_ZZ_python(self, a, K0):
         """Convert a Python `int` object to `dtype`. """
-        return K1(K1.ring.convert(a, K0))
+        return self(self.ring.convert(a, K0))
 
     from_QQ_python = from_ZZ_python
     from_ZZ_gmpy = from_ZZ_python

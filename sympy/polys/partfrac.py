@@ -6,10 +6,9 @@ from sympy.polys.polyoptions import allowed_flags, set_defaults
 from sympy.polys.polyerrors import PolynomialError
 from sympy.core import S, Add, sympify, Function, Lambda, Dummy, Integer
 from sympy.core.basic import preorder_traversal
-from sympy.utilities import numbered_symbols, take, xthreaded, public
+from sympy.utilities import numbered_symbols, take, public
 
 
-@xthreaded
 @public
 def apart(f, x=None, full=False, **options):
     """
@@ -34,7 +33,6 @@ def apart(f, x=None, full=False, **options):
     Examples
     ========
 
-    >>> from sympy.polys.partfrac import apart
     >>> from sympy.abc import x, y
 
     By default, using the undetermined coefficients method:
@@ -246,7 +244,6 @@ def apart_list(f, x=None, dummies=None, **options):
 
     A first example:
 
-    >>> from sympy.polys.partfrac import apart_list, assemble_partfrac_list
     >>> from sympy.abc import x, t
 
     >>> f = (2*x**3 - 2*x) / (x**2 - 2*x + 1)
@@ -420,7 +417,6 @@ def assemble_partfrac_list(partial_list):
 
     This example is taken from Bronstein's original paper:
 
-    >>> from sympy.polys.partfrac import apart_list, assemble_partfrac_list
     >>> from sympy.abc import x, y
 
     >>> f = 36 / (x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2)

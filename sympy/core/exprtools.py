@@ -935,9 +935,10 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
     def do(expr):
         is_iterable = iterable(expr)
 
-        if not isinstance(expr, Basic) or expr.is_Atom:
-            if is_iterable:
-                return type(expr)([do(i) for i in expr])
+        if not isinstance(expr, Basic) and is_iterable:
+            return type(expr)([do(i) for i in expr])
+
+        if expr.is_Atom:
             return expr
 
         if expr.is_Pow or expr.is_Function or \

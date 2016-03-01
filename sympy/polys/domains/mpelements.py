@@ -42,84 +42,84 @@ new = object.__new__
 @public
 class MPContext(PythonMPContext):
 
-    def __init__(ctx, prec=53, dps=None, tol=None):
-        ctx._prec_rounding = [prec, round_nearest]
+    def __init__(self, prec=53, dps=None, tol=None):
+        self._prec_rounding = [prec, round_nearest]
 
         if dps is None:
-            ctx._set_prec(prec)
+            self._set_prec(prec)
         else:
-            ctx._set_dps(dps)
+            self._set_dps(dps)
 
-        ctx.mpf = type('RealElement', (RealElement,), {})
-        ctx.mpc = type('ComplexElement', (ComplexElement,), {})
-        ctx.mpf._ctxdata = [ctx.mpf, new, ctx._prec_rounding]
-        ctx.mpc._ctxdata = [ctx.mpc, new, ctx._prec_rounding]
-        ctx.mpf.context = ctx
-        ctx.mpc.context = ctx
-        ctx.constant = type('constant', (_constant,), {})
-        ctx.constant._ctxdata = [ctx.mpf, new, ctx._prec_rounding]
-        ctx.constant.context = ctx
+        self.mpf = type('RealElement', (RealElement,), {})
+        self.mpc = type('ComplexElement', (ComplexElement,), {})
+        self.mpf._ctxdata = [self.mpf, new, self._prec_rounding]
+        self.mpc._ctxdata = [self.mpc, new, self._prec_rounding]
+        self.mpf.context = self
+        self.mpc.context = self
+        self.constant = type('constant', (_constant,), {})
+        self.constant._ctxdata = [self.mpf, new, self._prec_rounding]
+        self.constant.context = self
 
-        ctx.types = [ctx.mpf, ctx.mpc, ctx.constant]
-        ctx.trap_complex = True
-        ctx.pretty = True
+        self.types = [self.mpf, self.mpc, self.constant]
+        self.trap_complex = True
+        self.pretty = True
 
         if tol is None:
-            ctx.tol = ctx._make_tol()
+            self.tol = self._make_tol()
         elif tol is False:
-            ctx.tol = fzero
+            self.tol = fzero
         else:
-            ctx.tol = ctx._convert_tol(tol)
+            self.tol = self._convert_tol(tol)
 
-        ctx.tolerance = ctx.make_mpf(ctx.tol)
+        self.tolerance = self.make_mpf(self.tol)
 
-        if not ctx.tolerance:
-            ctx.max_denom = 1000000
+        if not self.tolerance:
+            self.max_denom = 1000000
         else:
-            ctx.max_denom = int(1/ctx.tolerance)
+            self.max_denom = int(1/self.tolerance)
 
-        ctx.zero = ctx.make_mpf(fzero)
-        ctx.one = ctx.make_mpf(fone)
-        ctx.j = ctx.make_mpc((fzero, fone))
-        ctx.inf = ctx.make_mpf(finf)
-        ctx.ninf = ctx.make_mpf(fninf)
-        ctx.nan = ctx.make_mpf(fnan)
+        self.zero = self.make_mpf(fzero)
+        self.one = self.make_mpf(fone)
+        self.j = self.make_mpc((fzero, fone))
+        self.inf = self.make_mpf(finf)
+        self.ninf = self.make_mpf(fninf)
+        self.nan = self.make_mpf(fnan)
 
-    def _make_tol(ctx):
+    def _make_tol(self):
         hundred = (0, 25, 2, 5)
-        eps = (0, MPZ_ONE, 1-ctx.prec, 1)
+        eps = (0, MPZ_ONE, 1 - self.prec, 1)
         return mpf_mul(hundred, eps)
 
-    def make_tol(ctx):
-        return ctx.make_mpf(ctx._make_tol())
+    def make_tol(self):
+        return self.make_mpf(self._make_tol())
 
-    def _convert_tol(ctx, tol):
+    def _convert_tol(self, tol):
         if isinstance(tol, int_types):
             return from_int(tol)
         if isinstance(tol, float):
             return from_float(tol)
         if hasattr(tol, "_mpf_"):
             return tol._mpf_
-        prec, rounding = ctx._prec_rounding
+        prec, rounding = self._prec_rounding
         if isinstance(tol, str):
             return from_str(tol, prec, rounding)
         raise ValueError("expected a real number, got %s" % tol)
 
-    def _convert_fallback(ctx, x, strings):
+    def _convert_fallback(self, x, strings):
         raise TypeError("cannot create mpf from " + repr(x))
 
     @property
-    def _repr_digits(ctx):
-        return repr_dps(ctx._prec)
+    def _repr_digits(self):
+        return repr_dps(self._prec)
 
     @property
-    def _str_digits(ctx):
-        return ctx._dps
+    def _str_digits(self):
+        return self._dps
 
-    def to_rational(ctx, s, limit=True):
+    def to_rational(self, s, limit=True):
         p, q = to_rational(s._mpf_)
 
-        if not limit or q <= ctx.max_denom:
+        if not limit or q <= self.max_denom:
             return p, q
 
         p0, q0, p1, q1 = 0, 1, 1, 0
@@ -128,12 +128,12 @@ class MPContext(PythonMPContext):
         while True:
             a = n//d
             q2 = q0 + a*q1
-            if q2 > ctx.max_denom:
+            if q2 > self.max_denom:
                 break
             p0, q0, p1, q1 = p1, q1, p0 + a*p1, q2
             n, d = d, n - a*d
 
-        k = (ctx.max_denom - q0)//q1
+        k = (self.max_denom - q0)//q1
 
         number = mpq(p, q)
         bound1 = mpq(p0 + k*p1, q0 + k*q1)
@@ -146,15 +146,15 @@ class MPContext(PythonMPContext):
         else:
             return bound1._mpq_
 
-    def almosteq(ctx, s, t, rel_eps=None, abs_eps=None):
-        t = ctx.convert(t)
+    def almosteq(self, s, t, rel_eps=None, abs_eps=None):
+        t = self.convert(t)
         if abs_eps is None and rel_eps is None:
-            rel_eps = abs_eps = ctx.tolerance or ctx.make_tol()
+            rel_eps = abs_eps = self.tolerance or self.make_tol()
         if abs_eps is None:
-            abs_eps = ctx.convert(rel_eps)
+            abs_eps = self.convert(rel_eps)
         elif rel_eps is None:
-            rel_eps = ctx.convert(abs_eps)
-        diff = abs(s-t)
+            rel_eps = self.convert(abs_eps)
+        diff = abs(s - t)
         if diff <= abs_eps:
             return True
         abss = abs(s)

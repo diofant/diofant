@@ -50,7 +50,6 @@ def test_as_dummy():
 
 
 def test_lt_gt():
-    from sympy import sympify as S
     x, y = Symbol('x'), Symbol('y')
 
     assert (x >= y) == GreaterThan(x, y)

@@ -8,26 +8,26 @@ from sympy import oo
 class GenericPoly(object):
     """Base class for low-level polynomial representations. """
 
-    def ground_to_ring(f):
+    def ground_to_ring(self):
         """Make the ground domain a ring. """
-        return f.set_domain(f.dom.get_ring())
+        return self.set_domain(self.dom.get_ring())
 
-    def ground_to_field(f):
+    def ground_to_field(self):
         """Make the ground domain a field. """
-        return f.set_domain(f.dom.get_field())
+        return self.set_domain(self.dom.get_field())
 
-    def ground_to_exact(f):
+    def ground_to_exact(self):
         """Make the ground domain exact. """
-        return f.set_domain(f.dom.get_exact())
+        return self.set_domain(self.dom.get_exact())
 
     @classmethod
-    def _perify_factors(per, result, include):
+    def _perify_factors(cls, result, include):
         if include:
             coeff, factors = result
         else:
             coeff = result
 
-        factors = [ (per(g), k) for g, k in factors ]
+        factors = [(cls(g), k) for g, k in factors]
 
         if include:
             return coeff, factors
@@ -154,30 +154,32 @@ class DMP(CantSympify):
         self.dom = dom
         self.ring = ring
 
-    def __repr__(f):
-        return "%s(%s, %s, %s)" % (f.__class__.__name__, f.rep, f.dom, f.ring)
+    def __repr__(self):
+        return "%s(%s, %s, %s)" % (self.__class__.__name__, self.rep,
+                                   self.dom, self.ring)
 
-    def __hash__(f):
-        return hash((f.__class__.__name__, f.to_tuple(), f.lev, f.dom, f.ring))
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.to_tuple(),
+                     self.lev, self.dom, self.ring))
 
-    def unify(f, g):
+    def unify(self, other):
         """Unify representations of two multivariate polynomials. """
-        if not isinstance(g, DMP) or f.lev != g.lev:
-            raise UnificationFailed("can't unify %s with %s" % (f, g))
+        if not isinstance(other, DMP) or self.lev != other.lev:
+            raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if f.dom == g.dom and f.ring == g.ring:
-            return f.lev, f.dom, f.per, f.rep, g.rep
+        if self.dom == other.dom and self.ring == other.ring:
+            return self.lev, self.dom, self.per, self.rep, other.rep
         else:
-            lev, dom = f.lev, f.dom.unify(g.dom)
-            ring = f.ring
-            if g.ring is not None:
+            lev, dom = self.lev, self.dom.unify(other.dom)
+            ring = self.ring
+            if other.ring is not None:
                 if ring is not None:
-                    ring = ring.unify(g.ring)
+                    ring = ring.unify(other.ring)
                 else:
-                    ring = g.ring
+                    ring = other.ring
 
-            F = dmp_convert(f.rep, lev, f.dom, dom)
-            G = dmp_convert(g.rep, lev, g.dom, dom)
+            F = dmp_convert(self.rep, lev, self.dom, dom)
+            G = dmp_convert(other.rep, lev, other.dom, dom)
 
             def per(rep, dom=dom, lev=lev, kill=False):
                 if kill:
@@ -190,9 +192,9 @@ class DMP(CantSympify):
 
             return lev, dom, per, F, G
 
-    def per(f, rep, dom=None, kill=False, ring=None):
+    def per(self, rep, dom=None, kill=False, ring=None):
         """Create a DMP out of the given representation. """
-        lev = f.lev
+        lev = self.lev
 
         if kill:
             if not lev:
@@ -201,10 +203,10 @@ class DMP(CantSympify):
                 lev -= 1
 
         if dom is None:
-            dom = f.dom
+            dom = self.dom
 
         if ring is None:
-            ring = f.ring
+            ring = self.ring
 
         return DMP(rep, dom, lev, ring)
 
@@ -226,26 +228,26 @@ class DMP(CantSympify):
         """Create an instance of ``cls`` given a list of SymPy coefficients. """
         return cls(dmp_from_sympy(rep, lev, dom), dom, lev)
 
-    def to_dict(f, zero=False):
-        """Convert ``f`` to a dict representation with native coefficients. """
-        return dmp_to_dict(f.rep, f.lev, f.dom, zero=zero)
+    def to_dict(self, zero=False):
+        """Convert ``self`` to a dict representation with native coefficients. """
+        return dmp_to_dict(self.rep, self.lev, self.dom, zero=zero)
 
-    def to_sympy_dict(f, zero=False):
-        """Convert ``f`` to a dict representation with SymPy coefficients. """
-        rep = dmp_to_dict(f.rep, f.lev, f.dom, zero=zero)
+    def to_sympy_dict(self, zero=False):
+        """Convert ``self`` to a dict representation with SymPy coefficients. """
+        rep = dmp_to_dict(self.rep, self.lev, self.dom, zero=zero)
 
         for k, v in rep.items():
-            rep[k] = f.dom.to_sympy(v)
+            rep[k] = self.dom.to_sympy(v)
 
         return rep
 
-    def to_tuple(f):
+    def to_tuple(self):
         """
-        Convert ``f`` to a tuple representation with native coefficients.
+        Convert ``self`` to a tuple representation with native coefficients.
 
         This is needed for hashing.
         """
-        return dmp_to_tuple(f.rep, f.lev)
+        return dmp_to_tuple(self.rep, self.lev)
 
     @classmethod
     def from_dict(cls, rep, lev, dom):
@@ -256,260 +258,263 @@ class DMP(CantSympify):
     def from_monoms_coeffs(cls, monoms, coeffs, lev, dom, ring=None):
         return DMP(dict(zip(monoms, coeffs)), dom, lev, ring)
 
-    def to_ring(f):
+    def to_ring(self):
         """Make the ground domain a ring. """
-        return f.convert(f.dom.get_ring())
+        return self.convert(self.dom.get_ring())
 
-    def to_field(f):
+    def to_field(self):
         """Make the ground domain a field. """
-        return f.convert(f.dom.get_field())
+        return self.convert(self.dom.get_field())
 
-    def to_exact(f):
+    def to_exact(self):
         """Make the ground domain exact. """
-        return f.convert(f.dom.get_exact())
+        return self.convert(self.dom.get_exact())
 
-    def convert(f, dom):
-        """Convert the ground domain of ``f``. """
-        if f.dom == dom:
-            return f
+    def convert(self, dom):
+        """Convert the ground domain of ``self``. """
+        if self.dom == dom:
+            return self
         else:
-            return DMP(dmp_convert(f.rep, f.lev, f.dom, dom), dom, f.lev)
+            return DMP(dmp_convert(self.rep, self.lev, self.dom, dom),
+                       dom, self.lev)
 
-    def slice(f, m, n, j=0):
-        """Take a continuous subsequence of terms of ``f``. """
-        return f.per(dmp_slice_in(f.rep, m, n, j, f.lev, f.dom))
+    def slice(self, m, n, j=0):
+        """Take a continuous subsequence of terms of ``self``. """
+        return self.per(dmp_slice_in(self.rep, m, n, j, self.lev, self.dom))
 
-    def coeffs(f, order=None):
-        """Returns all non-zero coefficients from ``f`` in lex order. """
-        return [ c for _, c in dmp_list_terms(f.rep, f.lev, f.dom, order=order) ]
+    def coeffs(self, order=None):
+        """Returns all non-zero coefficients from ``self`` in lex order. """
+        return [c for _, c in dmp_list_terms(self.rep, self.lev,
+                                             self.dom, order=order)]
 
-    def monoms(f, order=None):
-        """Returns all non-zero monomials from ``f`` in lex order. """
-        return [ m for m, _ in dmp_list_terms(f.rep, f.lev, f.dom, order=order) ]
+    def monoms(self, order=None):
+        """Returns all non-zero monomials from ``self`` in lex order. """
+        return [m for m, _ in dmp_list_terms(self.rep, self.lev,
+                                             self.dom, order=order)]
 
-    def terms(f, order=None):
-        """Returns all non-zero terms from ``f`` in lex order. """
-        return dmp_list_terms(f.rep, f.lev, f.dom, order=order)
+    def terms(self, order=None):
+        """Returns all non-zero terms from ``self`` in lex order. """
+        return dmp_list_terms(self.rep, self.lev, self.dom, order=order)
 
-    def all_coeffs(f):
-        """Returns all coefficients from ``f``. """
-        if not f.lev:
-            if not f:
-                return [f.dom.zero]
+    def all_coeffs(self):
+        """Returns all coefficients from ``self``. """
+        if not self.lev:
+            if not self:
+                return [self.dom.zero]
             else:
-                return [ c for c in f.rep ]
+                return [c for c in self.rep]
         else:
             raise PolynomialError('multivariate polynomials not supported')
 
-    def all_monoms(f):
-        """Returns all monomials from ``f``. """
-        if not f.lev:
-            n = dup_degree(f.rep)
+    def all_monoms(self):
+        """Returns all monomials from ``self``. """
+        if not self.lev:
+            n = dup_degree(self.rep)
 
             if n < 0:
                 return [(0,)]
             else:
-                return [ (n - i,) for i, c in enumerate(f.rep) ]
+                return [(n - i,) for i, c in enumerate(self.rep)]
         else:
             raise PolynomialError('multivariate polynomials not supported')
 
-    def all_terms(f):
-        """Returns all terms from a ``f``. """
-        if not f.lev:
-            n = dup_degree(f.rep)
+    def all_terms(self):
+        """Returns all terms from a ``self``. """
+        if not self.lev:
+            n = dup_degree(self.rep)
 
             if n < 0:
-                return [((0,), f.dom.zero)]
+                return [((0,), self.dom.zero)]
             else:
-                return [ ((n - i,), c) for i, c in enumerate(f.rep) ]
+                return [((n - i,), c) for i, c in enumerate(self.rep)]
         else:
             raise PolynomialError('multivariate polynomials not supported')
 
-    def lift(f):
+    def lift(self):
         """Convert algebraic coefficients to rationals. """
-        return f.per(dmp_lift(f.rep, f.lev, f.dom), dom=f.dom.dom)
+        return self.per(dmp_lift(self.rep, self.lev, self.dom),
+                        dom=self.dom.dom)
 
-    def deflate(f):
-        """Reduce degree of `f` by mapping `x_i^m` to `y_i`. """
-        J, F = dmp_deflate(f.rep, f.lev, f.dom)
-        return J, f.per(F)
+    def deflate(self):
+        """Reduce degree of `self` by mapping `x_i^m` to `y_i`. """
+        J, F = dmp_deflate(self.rep, self.lev, self.dom)
+        return J, self.per(F)
 
-    def inject(f, front=False):
-        """Inject ground domain generators into ``f``. """
-        F, lev = dmp_inject(f.rep, f.lev, f.dom, front=front)
-        return f.__class__(F, f.dom.dom, lev)
+    def inject(self, front=False):
+        """Inject ground domain generators into ``self``. """
+        F, lev = dmp_inject(self.rep, self.lev, self.dom, front=front)
+        return self.__class__(F, self.dom.dom, lev)
 
-    def eject(f, dom, front=False):
+    def eject(self, dom, front=False):
         """Eject selected generators into the ground domain. """
-        F = dmp_eject(f.rep, f.lev, dom, front=front)
-        return f.__class__(F, dom, f.lev - len(dom.symbols))
+        F = dmp_eject(self.rep, self.lev, dom, front=front)
+        return self.__class__(F, dom, self.lev - len(dom.symbols))
 
-    def exclude(f):
+    def exclude(self):
         r"""
-        Remove useless generators from ``f``.
+        Remove useless generators from ``self``.
 
-        Returns the removed generators and the new excluded ``f``.
+        Returns the removed generators and the new excluded ``self``.
 
         Examples
         ========
 
-        >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.printing import sstr
 
-        >>> print(sstr(DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()))
+        >>> DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()
         ([2], DMP([[1], [1, 2]], ZZ, None))
-
         """
-        J, F, u = dmp_exclude(f.rep, f.lev, f.dom)
-        return J, f.__class__(F, f.dom, u)
+        J, F, u = dmp_exclude(self.rep, self.lev, self.dom)
+        return J, self.__class__(F, self.dom, u)
 
-    def permute(f, P):
+    def permute(self, P):
         r"""
         Returns a polynomial in `K[x_{P(1)}, ..., x_{P(n)}]`.
 
         Examples
         ========
 
-        >>> from sympy.polys.polyclasses import DMP
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.printing import sstr
 
-        >>> print(sstr(DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])))
+        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
         DMP([[[2], []], [[1, 0], []]], ZZ, None)
 
-        >>> print(sstr(DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])))
+        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
         DMP([[[1], []], [[2, 0], []]], ZZ, None)
-
         """
-        return f.per(dmp_permute(f.rep, P, f.lev, f.dom))
+        return self.per(dmp_permute(self.rep, P, self.lev, self.dom))
 
-    def terms_gcd(f):
-        """Remove GCD of terms from the polynomial ``f``. """
-        J, F = dmp_terms_gcd(f.rep, f.lev, f.dom)
-        return J, f.per(F)
+    def terms_gcd(self):
+        """Remove GCD of terms from the polynomial ``self``. """
+        J, F = dmp_terms_gcd(self.rep, self.lev, self.dom)
+        return J, self.per(F)
 
-    def add_ground(f, c):
-        """Add an element of the ground domain to ``f``. """
-        return f.per(dmp_add_ground(f.rep, f.dom.convert(c), f.lev, f.dom))
+    def add_ground(self, c):
+        """Add an element of the ground domain to ``self``. """
+        return self.per(dmp_add_ground(self.rep, self.dom.convert(c),
+                                       self.lev, self.dom))
 
-    def sub_ground(f, c):
-        """Subtract an element of the ground domain from ``f``. """
-        return f.per(dmp_sub_ground(f.rep, f.dom.convert(c), f.lev, f.dom))
+    def sub_ground(self, c):
+        """Subtract an element of the ground domain from ``self``. """
+        return self.per(dmp_sub_ground(self.rep, self.dom.convert(c),
+                                       self.lev, self.dom))
 
-    def mul_ground(f, c):
-        """Multiply ``f`` by a an element of the ground domain. """
-        return f.per(dmp_mul_ground(f.rep, f.dom.convert(c), f.lev, f.dom))
+    def mul_ground(self, c):
+        """Multiply ``self`` by a an element of the ground domain. """
+        return self.per(dmp_mul_ground(self.rep, self.dom.convert(c),
+                                       self.lev, self.dom))
 
-    def quo_ground(f, c):
-        """Quotient of ``f`` by a an element of the ground domain. """
-        return f.per(dmp_quo_ground(f.rep, f.dom.convert(c), f.lev, f.dom))
+    def quo_ground(self, c):
+        """Quotient of ``self`` by a an element of the ground domain. """
+        return self.per(dmp_quo_ground(self.rep, self.dom.convert(c),
+                                       self.lev, self.dom))
 
-    def exquo_ground(f, c):
-        """Exact quotient of ``f`` by a an element of the ground domain. """
-        return f.per(dmp_exquo_ground(f.rep, f.dom.convert(c), f.lev, f.dom))
+    def exquo_ground(self, c):
+        """Exact quotient of ``self`` by a an element of the ground domain. """
+        return self.per(dmp_exquo_ground(self.rep, self.dom.convert(c),
+                                         self.lev, self.dom))
 
-    def abs(f):
-        """Make all coefficients in ``f`` positive. """
-        return f.per(dmp_abs(f.rep, f.lev, f.dom))
+    def abs(self):
+        """Make all coefficients in ``self`` positive. """
+        return self.per(dmp_abs(self.rep, self.lev, self.dom))
 
-    def neg(f):
-        """Negate all coefficients in ``f``. """
-        return f.per(dmp_neg(f.rep, f.lev, f.dom))
+    def neg(self):
+        """Negate all coefficients in ``self``. """
+        return self.per(dmp_neg(self.rep, self.lev, self.dom))
 
-    def add(f, g):
-        """Add two multivariate polynomials ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def add(self, other):
+        """Add two multivariate polynomials ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_add(F, G, lev, dom))
 
-    def sub(f, g):
-        """Subtract two multivariate polynomials ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def sub(self, other):
+        """Subtract two multivariate polynomials ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_sub(F, G, lev, dom))
 
-    def mul(f, g):
+    def mul(self, other):
         """Multiply two multivariate polynomials ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_mul(F, G, lev, dom))
 
-    def sqr(f):
-        """Square a multivariate polynomial ``f``. """
-        return f.per(dmp_sqr(f.rep, f.lev, f.dom))
+    def sqr(self):
+        """Square a multivariate polynomial ``self``. """
+        return self.per(dmp_sqr(self.rep, self.lev, self.dom))
 
-    def pow(f, n):
-        """Raise ``f`` to a non-negative power ``n``. """
+    def pow(self, n):
+        """Raise ``self`` to a non-negative power ``n``. """
         if isinstance(n, int):
-            return f.per(dmp_pow(f.rep, n, f.lev, f.dom))
+            return self.per(dmp_pow(self.rep, n, self.lev, self.dom))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
-    def pdiv(f, g):
-        """Polynomial pseudo-division of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def pdiv(self, other):
+        """Polynomial pseudo-division of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         q, r = dmp_pdiv(F, G, lev, dom)
         return per(q), per(r)
 
-    def prem(f, g):
-        """Polynomial pseudo-remainder of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def prem(self, other):
+        """Polynomial pseudo-remainder of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_prem(F, G, lev, dom))
 
-    def pquo(f, g):
-        """Polynomial pseudo-quotient of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def pquo(self, other):
+        """Polynomial pseudo-quotient of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_pquo(F, G, lev, dom))
 
-    def pexquo(f, g):
-        """Polynomial exact pseudo-quotient of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def pexquo(self, other):
+        """Polynomial exact pseudo-quotient of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_pexquo(F, G, lev, dom))
 
-    def div(f, g):
-        """Polynomial division with remainder of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def div(self, other):
+        """Polynomial division with remainder of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         q, r = dmp_div(F, G, lev, dom)
         return per(q), per(r)
 
-    def rem(f, g):
-        """Computes polynomial remainder of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def rem(self, other):
+        """Computes polynomial remainder of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_rem(F, G, lev, dom))
 
-    def quo(f, g):
-        """Computes polynomial quotient of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def quo(self, other):
+        """Computes polynomial quotient of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_quo(F, G, lev, dom))
 
-    def exquo(f, g):
-        """Computes polynomial exact quotient of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def exquo(self, other):
+        """Computes polynomial exact quotient of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         res = per(dmp_exquo(F, G, lev, dom))
-        if f.ring and res not in f.ring:
+        if self.ring and res not in self.ring:
             from sympy.polys.polyerrors import ExactQuotientFailed
-            raise ExactQuotientFailed(f, g, f.ring)
+            raise ExactQuotientFailed(self, other, self.ring)
         return res
 
-    def degree(f, j=0):
-        """Returns the leading degree of ``f`` in ``x_j``. """
+    def degree(self, j=0):
+        """Returns the leading degree of ``self`` in ``x_j``. """
         if isinstance(j, int):
-            return dmp_degree_in(f.rep, j, f.lev)
+            return dmp_degree_in(self.rep, j, self.lev)
         else:
             raise TypeError("``int`` expected, got %s" % type(j))
 
-    def degree_list(f):
-        """Returns a list of degrees of ``f``. """
-        return dmp_degree_list(f.rep, f.lev)
+    def degree_list(self):
+        """Returns a list of degrees of ``self``. """
+        return dmp_degree_list(self.rep, self.lev)
 
-    def total_degree(f):
-        """Returns the total degree of ``f``. """
-        return max(sum(m) for m in f.monoms())
+    def total_degree(self):
+        """Returns the total degree of ``self``. """
+        return max(sum(m) for m in self.monoms())
 
-    def homogenize(f, s):
-        """Return homogeneous polynomial of ``f``"""
-        td = f.total_degree()
+    def homogenize(self, s):
+        """Return homogeneous polynomial of ``self``"""
+        td = self.total_degree()
         result = {}
-        new_symbol = (s == len(f.terms()[0][0]))
-        for term in f.terms():
+        new_symbol = (s == len(self.terms()[0][0]))
+        for term in self.terms():
             d = sum(term[0])
             if d < td:
                 i = td - d
@@ -521,14 +526,14 @@ class DMP(CantSympify):
                 l = list(term[0])
                 l[s] += i
                 result[tuple(l)] = term[1]
-        return DMP(result, f.dom, f.lev + int(new_symbol), f.ring)
+        return DMP(result, self.dom, self.lev + int(new_symbol), self.ring)
 
-    def homogeneous_order(f):
-        """Returns the homogeneous order of ``f``. """
-        if f.is_zero:
+    def homogeneous_order(self):
+        """Returns the homogeneous order of ``self``. """
+        if self.is_zero:
             return -oo
 
-        monoms = f.monoms()
+        monoms = self.monoms()
         tdeg = sum(monoms[0])
 
         for monom in monoms:
@@ -539,65 +544,65 @@ class DMP(CantSympify):
 
         return tdeg
 
-    def LC(f):
-        """Returns the leading coefficient of ``f``. """
-        return dmp_ground_LC(f.rep, f.lev, f.dom)
+    def LC(self):
+        """Returns the leading coefficient of ``self``. """
+        return dmp_ground_LC(self.rep, self.lev, self.dom)
 
-    def TC(f):
-        """Returns the trailing coefficient of ``f``. """
-        return dmp_ground_TC(f.rep, f.lev, f.dom)
+    def TC(self):
+        """Returns the trailing coefficient of ``self``. """
+        return dmp_ground_TC(self.rep, self.lev, self.dom)
 
-    def nth(f, *N):
-        """Returns the ``n``-th coefficient of ``f``. """
+    def nth(self, *N):
+        """Returns the ``n``-th coefficient of ``self``. """
         if all(isinstance(n, int) for n in N):
-            return dmp_ground_nth(f.rep, N, f.lev, f.dom)
+            return dmp_ground_nth(self.rep, N, self.lev, self.dom)
         else:
             raise TypeError("a sequence of integers expected")
 
-    def max_norm(f):
-        """Returns maximum norm of ``f``. """
-        return dmp_max_norm(f.rep, f.lev, f.dom)
+    def max_norm(self):
+        """Returns maximum norm of ``self``. """
+        return dmp_max_norm(self.rep, self.lev, self.dom)
 
-    def l1_norm(f):
-        """Returns l1 norm of ``f``. """
-        return dmp_l1_norm(f.rep, f.lev, f.dom)
+    def l1_norm(self):
+        """Returns l1 norm of ``self``. """
+        return dmp_l1_norm(self.rep, self.lev, self.dom)
 
-    def clear_denoms(f):
+    def clear_denoms(self):
         """Clear denominators, but keep the ground domain. """
-        coeff, F = dmp_clear_denoms(f.rep, f.lev, f.dom)
-        return coeff, f.per(F)
+        coeff, F = dmp_clear_denoms(self.rep, self.lev, self.dom)
+        return coeff, self.per(F)
 
-    def integrate(f, m=1, j=0):
-        """Computes the ``m``-th order indefinite integral of ``f`` in ``x_j``. """
+    def integrate(self, m=1, j=0):
+        """Computes the ``m``-th order indefinite integral of ``self`` in ``x_j``. """
         if not isinstance(m, int):
             raise TypeError("``int`` expected, got %s" % type(m))
 
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))
 
-        return f.per(dmp_integrate_in(f.rep, m, j, f.lev, f.dom))
+        return self.per(dmp_integrate_in(self.rep, m, j, self.lev, self.dom))
 
-    def diff(f, m=1, j=0):
-        """Computes the ``m``-th order derivative of ``f`` in ``x_j``. """
+    def diff(self, m=1, j=0):
+        """Computes the ``m``-th order derivative of ``self`` in ``x_j``. """
         if not isinstance(m, int):
             raise TypeError("``int`` expected, got %s" % type(m))
 
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))
 
-        return f.per(dmp_diff_in(f.rep, m, j, f.lev, f.dom))
+        return self.per(dmp_diff_in(self.rep, m, j, self.lev, self.dom))
 
-    def eval(f, a, j=0):
-        """Evaluates ``f`` at the given point ``a`` in ``x_j``. """
+    def eval(self, a, j=0):
+        """Evaluates ``self`` at the given point ``a`` in ``x_j``. """
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))
 
-        return f.per(dmp_eval_in(f.rep,
-            f.dom.convert(a), j, f.lev, f.dom), kill=True)
+        return self.per(dmp_eval_in(self.rep, self.dom.convert(a),
+                                    j, self.lev, self.dom), kill=True)
 
-    def half_gcdex(f, g):
+    def half_gcdex(self, other):
         """Half extended Euclidean algorithm, if univariate. """
-        lev, dom, per, F, G = f.unify(g)
+        lev, dom, per, F, G = self.unify(other)
 
         if not lev:
             s, h = dup_half_gcdex(F, G, dom)
@@ -605,9 +610,9 @@ class DMP(CantSympify):
         else:
             raise ValueError('univariate polynomial expected')
 
-    def gcdex(f, g):
+    def gcdex(self, other):
         """Extended Euclidean algorithm, if univariate. """
-        lev, dom, per, F, G = f.unify(g)
+        lev, dom, per, F, G = self.unify(other)
 
         if not lev:
             s, t, h = dup_gcdex(F, G, dom)
@@ -615,59 +620,60 @@ class DMP(CantSympify):
         else:
             raise ValueError('univariate polynomial expected')
 
-    def invert(f, g):
-        """Invert ``f`` modulo ``g``, if possible. """
-        lev, dom, per, F, G = f.unify(g)
+    def invert(self, other):
+        """Invert ``self`` modulo ``other``, if possible. """
+        lev, dom, per, F, G = self.unify(other)
 
         if not lev:
             return per(dup_invert(F, G, dom))
         else:
             raise ValueError('univariate polynomial expected')
 
-    def revert(f, n):
-        """Compute ``f**(-1)`` mod ``x**n``. """
-        if not f.lev:
-            return f.per(dup_revert(f.rep, n, f.dom))
+    def revert(self, n):
+        """Compute ``self**(-1)`` mod ``x**n``. """
+        if not self.lev:
+            return self.per(dup_revert(self.rep, n, self.dom))
         else:
             raise ValueError('univariate polynomial expected')
 
-    def subresultants(f, g):
-        """Computes subresultant PRS sequence of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def subresultants(self, other):
+        """Computes subresultant PRS sequence of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         R = dmp_subresultants(F, G, lev, dom)
         return list(map(per, R))
 
-    def resultant(f, g, includePRS=False):
-        """Computes resultant of ``f`` and ``g`` via PRS. """
-        lev, dom, per, F, G = f.unify(g)
+    def resultant(self, other, includePRS=False):
+        """Computes resultant of ``self`` and ``other`` via PRS. """
+        lev, dom, per, F, G = self.unify(other)
         if includePRS:
             res, R = dmp_resultant(F, G, lev, dom, includePRS=includePRS)
             return per(res, kill=True), list(map(per, R))
         return per(dmp_resultant(F, G, lev, dom), kill=True)
 
-    def discriminant(f):
-        """Computes discriminant of ``f``. """
-        return f.per(dmp_discriminant(f.rep, f.lev, f.dom), kill=True)
+    def discriminant(self):
+        """Computes discriminant of ``self``. """
+        return self.per(dmp_discriminant(self.rep, self.lev,
+                                         self.dom), kill=True)
 
-    def cofactors(f, g):
-        """Returns GCD of ``f`` and ``g`` and their cofactors. """
-        lev, dom, per, F, G = f.unify(g)
+    def cofactors(self, other):
+        """Returns GCD of ``self`` and ``other`` and their cofactors. """
+        lev, dom, per, F, G = self.unify(other)
         h, cff, cfg = dmp_inner_gcd(F, G, lev, dom)
         return per(h), per(cff), per(cfg)
 
-    def gcd(f, g):
-        """Returns polynomial GCD of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def gcd(self, other):
+        """Returns polynomial GCD of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_gcd(F, G, lev, dom))
 
-    def lcm(f, g):
-        """Returns polynomial LCM of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def lcm(self, other):
+        """Returns polynomial LCM of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_lcm(F, G, lev, dom))
 
-    def cancel(f, g, include=True):
-        """Cancel common factors in a rational function ``f/g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def cancel(self, other, include=True):
+        """Cancel common factors in a rational function ``self/other``. """
+        lev, dom, per, F, G = self.unify(other)
 
         if include:
             F, G = dmp_cancel(F, G, lev, dom, include=True)
@@ -681,266 +687,276 @@ class DMP(CantSympify):
         else:
             return cF, cG, F, G
 
-    def trunc(f, p):
-        """Reduce ``f`` modulo a constant ``p``. """
-        return f.per(dmp_ground_trunc(f.rep, f.dom.convert(p), f.lev, f.dom))
+    def trunc(self, p):
+        """Reduce ``self`` modulo a constant ``p``. """
+        return self.per(dmp_ground_trunc(self.rep, self.dom.convert(p),
+                                         self.lev, self.dom))
 
-    def monic(f):
-        """Divides all coefficients by ``LC(f)``. """
-        return f.per(dmp_ground_monic(f.rep, f.lev, f.dom))
+    def monic(self):
+        """Divides all coefficients by ``LC(self)``. """
+        return self.per(dmp_ground_monic(self.rep, self.lev, self.dom))
 
-    def content(f):
+    def content(self):
         """Returns GCD of polynomial coefficients. """
-        return dmp_ground_content(f.rep, f.lev, f.dom)
+        return dmp_ground_content(self.rep, self.lev, self.dom)
 
-    def primitive(f):
-        """Returns content and a primitive form of ``f``. """
-        cont, F = dmp_ground_primitive(f.rep, f.lev, f.dom)
-        return cont, f.per(F)
+    def primitive(self):
+        """Returns content and a primitive form of ``self``. """
+        cont, F = dmp_ground_primitive(self.rep, self.lev, self.dom)
+        return cont, self.per(F)
 
-    def compose(f, g):
-        """Computes functional composition of ``f`` and ``g``. """
-        lev, dom, per, F, G = f.unify(g)
+    def compose(self, other):
+        """Computes functional composition of ``self`` and ``other``. """
+        lev, dom, per, F, G = self.unify(other)
         return per(dmp_compose(F, G, lev, dom))
 
-    def decompose(f):
-        """Computes functional decomposition of ``f``. """
-        if not f.lev:
-            return list(map(f.per, dup_decompose(f.rep, f.dom)))
+    def decompose(self):
+        """Computes functional decomposition of ``self``. """
+        if not self.lev:
+            return list(map(self.per, dup_decompose(self.rep, self.dom)))
         else:
             raise ValueError('univariate polynomial expected')
 
-    def shift(f, a):
-        """Efficiently compute Taylor shift ``f(x + a)``. """
-        if not f.lev:
-            return f.per(dup_shift(f.rep, f.dom.convert(a), f.dom))
+    def shift(self, a):
+        """Efficiently compute Taylor shift ``self(x + a)``. """
+        if not self.lev:
+            return self.per(dup_shift(self.rep, self.dom.convert(a), self.dom))
         else:
             raise ValueError('univariate polynomial expected')
 
-    def sturm(f):
-        """Computes the Sturm sequence of ``f``. """
-        if not f.lev:
-            return list(map(f.per, dup_sturm(f.rep, f.dom)))
+    def sturm(self):
+        """Computes the Sturm sequence of ``self``. """
+        if not self.lev:
+            return list(map(self.per, dup_sturm(self.rep, self.dom)))
         else:
             raise ValueError('univariate polynomial expected')
 
-    def gff_list(f):
-        """Computes greatest factorial factorization of ``f``. """
-        if not f.lev:
-            return [ (f.per(g), k) for g, k in dup_gff_list(f.rep, f.dom) ]
+    def gff_list(self):
+        """Computes greatest factorial factorization of ``self``. """
+        if not self.lev:
+            return [(self.per(g), k) for g, k in dup_gff_list(self.rep,
+                                                              self.dom)]
         else:
             raise ValueError('univariate polynomial expected')
 
-    def sqf_norm(f):
-        """Computes square-free norm of ``f``. """
-        s, g, r = dmp_sqf_norm(f.rep, f.lev, f.dom)
-        return s, f.per(g), f.per(r, dom=f.dom.dom)
+    def sqf_norm(self):
+        """Computes square-free norm of ``self``. """
+        s, g, r = dmp_sqf_norm(self.rep, self.lev, self.dom)
+        return s, self.per(g), self.per(r, dom=self.dom.dom)
 
-    def sqf_part(f):
-        """Computes square-free part of ``f``. """
-        return f.per(dmp_sqf_part(f.rep, f.lev, f.dom))
+    def sqf_part(self):
+        """Computes square-free part of ``self``. """
+        return self.per(dmp_sqf_part(self.rep, self.lev, self.dom))
 
-    def sqf_list(f, all=False):
-        """Returns a list of square-free factors of ``f``. """
-        coeff, factors = dmp_sqf_list(f.rep, f.lev, f.dom, all)
-        return coeff, [ (f.per(g), k) for g, k in factors ]
+    def sqf_list(self, all=False):
+        """Returns a list of square-free factors of ``self``. """
+        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.dom, all)
+        return coeff, [(self.per(g), k) for g, k in factors]
 
-    def sqf_list_include(f, all=False):
-        """Returns a list of square-free factors of ``f``. """
-        factors = dmp_sqf_list_include(f.rep, f.lev, f.dom, all)
-        return [ (f.per(g), k) for g, k in factors ]
+    def sqf_list_include(self, all=False):
+        """Returns a list of square-free factors of ``self``. """
+        factors = dmp_sqf_list_include(self.rep, self.lev, self.dom, all)
+        return [(self.per(g), k) for g, k in factors]
 
-    def factor_list(f):
-        """Returns a list of irreducible factors of ``f``. """
-        coeff, factors = dmp_factor_list(f.rep, f.lev, f.dom)
-        return coeff, [ (f.per(g), k) for g, k in factors ]
+    def factor_list(self):
+        """Returns a list of irreducible factors of ``self``. """
+        coeff, factors = dmp_factor_list(self.rep, self.lev, self.dom)
+        return coeff, [(self.per(g), k) for g, k in factors]
 
-    def factor_list_include(f):
-        """Returns a list of irreducible factors of ``f``. """
-        factors = dmp_factor_list_include(f.rep, f.lev, f.dom)
-        return [ (f.per(g), k) for g, k in factors ]
+    def factor_list_include(self):
+        """Returns a list of irreducible factors of ``self``. """
+        factors = dmp_factor_list_include(self.rep, self.lev, self.dom)
+        return [(self.per(g), k) for g, k in factors]
 
-    def intervals(f, all=False, eps=None, inf=None, sup=None, fast=False, sqf=False):
-        """Compute isolating intervals for roots of ``f``. """
-        if not f.lev:
+    def intervals(self, all=False, eps=None, inf=None, sup=None, fast=False, sqf=False):
+        """Compute isolating intervals for roots of ``self``. """
+        if not self.lev:
             if not all:
                 if not sqf:
-                    return dup_isolate_real_roots(f.rep, f.dom, eps=eps, inf=inf, sup=sup, fast=fast)
+                    return dup_isolate_real_roots(self.rep, self.dom, eps=eps,
+                                                  inf=inf, sup=sup, fast=fast)
                 else:
-                    return dup_isolate_real_roots_sqf(f.rep, f.dom, eps=eps, inf=inf, sup=sup, fast=fast)
+                    return dup_isolate_real_roots_sqf(self.rep, self.dom,
+                                                      eps=eps, inf=inf,
+                                                      sup=sup, fast=fast)
             else:
                 if not sqf:
-                    return dup_isolate_all_roots(f.rep, f.dom, eps=eps, inf=inf, sup=sup, fast=fast)
+                    return dup_isolate_all_roots(self.rep, self.dom, eps=eps,
+                                                 inf=inf, sup=sup, fast=fast)
                 else:
-                    return dup_isolate_all_roots_sqf(f.rep, f.dom, eps=eps, inf=inf, sup=sup, fast=fast)
+                    return dup_isolate_all_roots_sqf(self.rep, self.dom,
+                                                     eps=eps, inf=inf, sup=sup,
+                                                     fast=fast)
         else:
             raise PolynomialError(
                 "can't isolate roots of a multivariate polynomial")
 
-    def refine_root(f, s, t, eps=None, steps=None, fast=False):
+    def refine_root(self, s, t, eps=None, steps=None, fast=False):
         """
         Refine an isolating interval to the given precision.
 
         ``eps`` should be a rational number.
-
         """
-        if not f.lev:
-            return dup_refine_real_root(f.rep, s, t, f.dom, eps=eps, steps=steps, fast=fast)
+        if not self.lev:
+            return dup_refine_real_root(self.rep, s, t, self.dom, eps=eps,
+                                        steps=steps, fast=fast)
         else:
             raise PolynomialError(
                 "can't refine a root of a multivariate polynomial")
 
-    def count_real_roots(f, inf=None, sup=None):
-        """Return the number of real roots of ``f`` in ``[inf, sup]``. """
-        return dup_count_real_roots(f.rep, f.dom, inf=inf, sup=sup)
+    def count_real_roots(self, inf=None, sup=None):
+        """Return the number of real roots of ``self`` in ``[inf, sup]``. """
+        return dup_count_real_roots(self.rep, self.dom, inf=inf, sup=sup)
 
-    def count_complex_roots(f, inf=None, sup=None):
-        """Return the number of complex roots of ``f`` in ``[inf, sup]``. """
-        return dup_count_complex_roots(f.rep, f.dom, inf=inf, sup=sup)
-
-    @property
-    def is_zero(f):
-        """Returns ``True`` if ``f`` is a zero polynomial. """
-        return dmp_zero_p(f.rep, f.lev)
+    def count_complex_roots(self, inf=None, sup=None):
+        """Return the number of complex roots of ``self`` in ``[inf, sup]``. """
+        return dup_count_complex_roots(self.rep, self.dom, inf=inf, sup=sup)
 
     @property
-    def is_one(f):
-        """Returns ``True`` if ``f`` is a unit polynomial. """
-        return dmp_one_p(f.rep, f.lev, f.dom)
+    def is_zero(self):
+        """Returns ``True`` if ``self`` is a zero polynomial. """
+        return dmp_zero_p(self.rep, self.lev)
 
     @property
-    def is_ground(f):
-        """Returns ``True`` if ``f`` is an element of the ground domain. """
-        return dmp_ground_p(f.rep, None, f.lev)
+    def is_one(self):
+        """Returns ``True`` if ``self`` is a unit polynomial. """
+        return dmp_one_p(self.rep, self.lev, self.dom)
 
     @property
-    def is_sqf(f):
-        """Returns ``True`` if ``f`` is a square-free polynomial. """
-        return dmp_sqf_p(f.rep, f.lev, f.dom)
+    def is_ground(self):
+        """Returns ``True`` if ``self`` is an element of the ground domain. """
+        return dmp_ground_p(self.rep, None, self.lev)
 
     @property
-    def is_monic(f):
-        """Returns ``True`` if the leading coefficient of ``f`` is one. """
-        return f.dom.is_one(dmp_ground_LC(f.rep, f.lev, f.dom))
+    def is_sqf(self):
+        """Returns ``True`` if ``self`` is a square-free polynomial. """
+        return dmp_sqf_p(self.rep, self.lev, self.dom)
 
     @property
-    def is_primitive(f):
-        """Returns ``True`` if the GCD of the coefficients of ``f`` is one. """
-        return f.dom.is_one(dmp_ground_content(f.rep, f.lev, f.dom))
+    def is_monic(self):
+        """Returns ``True`` if the leading coefficient of ``self`` is one. """
+        return self.dom.is_one(dmp_ground_LC(self.rep, self.lev, self.dom))
 
     @property
-    def is_linear(f):
-        """Returns ``True`` if ``f`` is linear in all its variables. """
-        return all(sum(monom) <= 1 for monom in dmp_to_dict(f.rep, f.lev, f.dom).keys())
+    def is_primitive(self):
+        """Returns ``True`` if the GCD of the coefficients of ``self`` is one. """
+        return self.dom.is_one(dmp_ground_content(self.rep, self.lev, self.dom))
 
     @property
-    def is_quadratic(f):
-        """Returns ``True`` if ``f`` is quadratic in all its variables. """
-        return all(sum(monom) <= 2 for monom in dmp_to_dict(f.rep, f.lev, f.dom).keys())
+    def is_linear(self):
+        """Returns ``True`` if ``self`` is linear in all its variables. """
+        return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev,
+                                                            self.dom).keys())
 
     @property
-    def is_monomial(f):
-        """Returns ``True`` if ``f`` is zero or has only one term. """
-        return len(f.to_dict()) <= 1
+    def is_quadratic(self):
+        """Returns ``True`` if ``self`` is quadratic in all its variables. """
+        return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev,
+                                                            self.dom).keys())
 
     @property
-    def is_homogeneous(f):
-        """Returns ``True`` if ``f`` is a homogeneous polynomial. """
-        return f.homogeneous_order() is not None
+    def is_monomial(self):
+        """Returns ``True`` if ``self`` is zero or has only one term. """
+        return len(self.to_dict()) <= 1
 
     @property
-    def is_irreducible(f):
-        """Returns ``True`` if ``f`` has no factors over its domain. """
-        return dmp_irreducible_p(f.rep, f.lev, f.dom)
+    def is_homogeneous(self):
+        """Returns ``True`` if ``self`` is a homogeneous polynomial. """
+        return self.homogeneous_order() is not None
 
     @property
-    def is_cyclotomic(f):
-        """Returns ``True`` if ``f`` is a cyclotomic polynomial. """
-        if not f.lev:
-            return dup_cyclotomic_p(f.rep, f.dom)
+    def is_irreducible(self):
+        """Returns ``True`` if ``self`` has no factors over its domain. """
+        return dmp_irreducible_p(self.rep, self.lev, self.dom)
+
+    @property
+    def is_cyclotomic(self):
+        """Returns ``True`` if ``self`` is a cyclotomic polynomial. """
+        if not self.lev:
+            return dup_cyclotomic_p(self.rep, self.dom)
         else:
             return False
 
-    def __abs__(f):
-        return f.abs()
+    def __abs__(self):
+        return self.abs()
 
-    def __neg__(f):
-        return f.neg()
+    def __neg__(self):
+        return self.neg()
 
-    def __add__(f, g):
-        if not isinstance(g, DMP):
+    def __add__(self, other):
+        if not isinstance(other, DMP):
             try:
-                g = f.per(dmp_ground(f.dom.convert(g), f.lev))
+                other = self.per(dmp_ground(self.dom.convert(other), self.lev))
             except TypeError:
                 return NotImplemented
             except (CoercionFailed, NotImplementedError):
-                if f.ring is not None:
+                if self.ring is not None:
                     try:
-                        g = f.ring.convert(g)
+                        other = self.ring.convert(other)
                     except (CoercionFailed, NotImplementedError):
                         return NotImplemented
 
-        return f.add(g)
+        return self.add(other)
 
-    def __radd__(f, g):
-        return f.__add__(g)
+    def __radd__(self, other):
+        return self.__add__(other)
 
-    def __sub__(f, g):
-        if not isinstance(g, DMP):
+    def __sub__(self, other):
+        if not isinstance(other, DMP):
             try:
-                g = f.per(dmp_ground(f.dom.convert(g), f.lev))
+                other = self.per(dmp_ground(self.dom.convert(other), self.lev))
             except TypeError:
                 return NotImplemented
             except (CoercionFailed, NotImplementedError):
-                if f.ring is not None:
+                if self.ring is not None:
                     try:
-                        g = f.ring.convert(g)
+                        other = self.ring.convert(other)
                     except (CoercionFailed, NotImplementedError):
                         return NotImplemented
 
-        return f.sub(g)
+        return self.sub(other)
 
-    def __rsub__(f, g):
-        return (-f).__add__(g)
+    def __rsub__(self, other):
+        return (-self).__add__(other)
 
-    def __mul__(f, g):
-        if isinstance(g, DMP):
-            return f.mul(g)
+    def __mul__(self, other):
+        if isinstance(other, DMP):
+            return self.mul(other)
         else:
             try:
-                return f.mul_ground(g)
+                return self.mul_ground(other)
             except TypeError:
                 return NotImplemented
             except (CoercionFailed, NotImplementedError):
-                if f.ring is not None:
+                if self.ring is not None:
                     try:
-                        return f.mul(f.ring.convert(g))
+                        return self.mul(self.ring.convert(other))
                     except (CoercionFailed, NotImplementedError):
                         pass
                 return NotImplemented
 
-    def __div__(f, g):
-        if isinstance(g, DMP):
-            return f.exquo(g)
+    def __div__(self, other):
+        if isinstance(other, DMP):
+            return self.exquo(other)
         else:
             try:
-                return f.mul_ground(g)
+                return self.mul_ground(other)
             except TypeError:
                 return NotImplemented
             except (CoercionFailed, NotImplementedError):
-                if f.ring is not None:
+                if self.ring is not None:
                     try:
-                        return f.exquo(f.ring.convert(g))
+                        return self.exquo(self.ring.convert(other))
                     except (CoercionFailed, NotImplementedError):
                         pass
                 return NotImplemented
 
-    def __rdiv__(f, g):
-        if isinstance(g, DMP):
-            return g.exquo(f)
-        elif f.ring is not None:
+    def __rdiv__(self, other):
+        if isinstance(other, DMP):
+            return other.exquo(self)
+        elif self.ring is not None:
             try:
-                return f.ring.convert(g).exquo(f)
+                return self.ring.convert(other).exquo(self)
             except (CoercionFailed, NotImplementedError):
                 pass
         return NotImplemented
@@ -948,73 +964,72 @@ class DMP(CantSympify):
     __truediv__ = __div__
     __rtruediv__ = __rdiv__
 
-    def __rmul__(f, g):
-        return f.__mul__(g)
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
-    def __pow__(f, n):
-        return f.pow(n)
+    def __pow__(self, n):
+        return self.pow(n)
 
-    def __divmod__(f, g):
-        return f.div(g)
+    def __divmod__(self, other):
+        return self.div(other)
 
-    def __mod__(f, g):
-        return f.rem(g)
+    def __mod__(self, other):
+        return self.rem(other)
 
-    def __floordiv__(f, g):
-        if isinstance(g, DMP):
-            return f.quo(g)
+    def __floordiv__(self, other):
+        if isinstance(other, DMP):
+            return self.quo(other)
         else:
             try:
-                return f.quo_ground(g)
+                return self.quo_ground(other)
             except TypeError:
                 return NotImplemented
 
-    def __eq__(f, g):
+    def __eq__(self, other):
         try:
-            _, _, _, F, G = f.unify(g)
+            _, _, _, F, G = self.unify(other)
 
-            if f.lev == g.lev:
+            if self.lev == other.lev:
                 return F == G
         except UnificationFailed:
             pass
 
         return False
 
-    def __ne__(f, g):
-        return not f.__eq__(g)
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
-    def eq(f, g, strict=False):
+    def eq(self, other, strict=False):
         if not strict:
-            return f.__eq__(g)
+            return self.__eq__(other)
         else:
-            return f._strict_eq(g)
+            return self._strict_eq(other)
 
-    def ne(f, g, strict=False):
-        return not f.eq(g, strict=strict)
+    def ne(self, other, strict=False):
+        return not self.eq(other, strict=strict)
 
-    def _strict_eq(f, g):
-        return isinstance(g, f.__class__) and f.lev == g.lev \
-            and f.dom == g.dom \
-            and f.rep == g.rep
+    def _strict_eq(self, other):
+        return (isinstance(other, self.__class__) and self.lev == other.lev
+                           and self.dom == other.dom and self.rep == other.rep)
 
-    def __lt__(f, g):
-        _, _, _, F, G = f.unify(g)
+    def __lt__(self, other):
+        _, _, _, F, G = self.unify(other)
         return F.__lt__(G)
 
-    def __le__(f, g):
-        _, _, _, F, G = f.unify(g)
+    def __le__(self, other):
+        _, _, _, F, G = self.unify(other)
         return F.__le__(G)
 
-    def __gt__(f, g):
-        _, _, _, F, G = f.unify(g)
+    def __gt__(self, other):
+        _, _, _, F, G = self.unify(other)
         return F.__gt__(G)
 
-    def __ge__(f, g):
-        _, _, _, F, G = f.unify(g)
+    def __ge__(self, other):
+        _, _, _, F, G = self.unify(other)
         return F.__ge__(G)
 
-    def __bool__(f):
-        return not dmp_zero_p(f.rep, f.lev)
+    def __bool__(self):
+        return not dmp_zero_p(self.rep, self.lev)
 
 
 def init_normal_DMF(num, den, lev, dom):
@@ -1093,34 +1108,36 @@ class DMF(CantSympify):
 
         return num, den, lev
 
-    def __repr__(f):
-        return "%s((%s, %s), %s, %s)" % (f.__class__.__name__, f.num, f.den,
-                                         f.dom, f.ring)
+    def __repr__(self):
+        return "%s((%s, %s), %s, %s)" % (self.__class__.__name__, self.num,
+                                         self.den, self.dom, self.ring)
 
-    def __hash__(f):
-        return hash((f.__class__.__name__, dmp_to_tuple(f.num, f.lev),
-            dmp_to_tuple(f.den, f.lev), f.lev, f.dom, f.ring))
+    def __hash__(self):
+        return hash((self.__class__.__name__, dmp_to_tuple(self.num, self.lev),
+                     dmp_to_tuple(self.den, self.lev), self.lev, self.dom,
+                     self.ring))
 
-    def poly_unify(f, g):
+    def poly_unify(self, other):
         """Unify a multivariate fraction and a polynomial. """
-        if not isinstance(g, DMP) or f.lev != g.lev:
-            raise UnificationFailed("can't unify %s with %s" % (f, g))
+        if not isinstance(other, DMP) or self.lev != other.lev:
+            raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if f.dom == g.dom and f.ring == g.ring:
-            return (f.lev, f.dom, f.per, (f.num, f.den), g.rep)
+        if self.dom == other.dom and self.ring == other.ring:
+            return (self.lev, self.dom, self.per,
+                    (self.num, self.den), other.rep)
         else:
-            lev, dom = f.lev, f.dom.unify(g.dom)
-            ring = f.ring
-            if g.ring is not None:
+            lev, dom = self.lev, self.dom.unify(other.dom)
+            ring = self.ring
+            if other.ring is not None:
                 if ring is not None:
-                    ring = ring.unify(g.ring)
+                    ring = ring.unify(other.ring)
                 else:
-                    ring = g.ring
+                    ring = other.ring
 
-            F = (dmp_convert(f.num, lev, f.dom, dom),
-                 dmp_convert(f.den, lev, f.dom, dom))
+            F = (dmp_convert(self.num, lev, self.dom, dom),
+                 dmp_convert(self.den, lev, self.dom, dom))
 
-            G = dmp_convert(g.rep, lev, g.dom, dom)
+            G = dmp_convert(other.rep, lev, other.dom, dom)
 
             def per(num, den, cancel=True, kill=False, lev=lev):
                 if kill:
@@ -1132,32 +1149,32 @@ class DMF(CantSympify):
                 if cancel:
                     num, den = dmp_cancel(num, den, lev, dom)
 
-                return f.__class__.new((num, den), dom, lev, ring=ring)
+                return self.__class__.new((num, den), dom, lev, ring=ring)
 
             return lev, dom, per, F, G
 
-    def frac_unify(f, g):
+    def frac_unify(self, other):
         """Unify representations of two multivariate fractions. """
-        if not isinstance(g, DMF) or f.lev != g.lev:
-            raise UnificationFailed("can't unify %s with %s" % (f, g))
+        if not isinstance(other, DMF) or self.lev != other.lev:
+            raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if f.dom == g.dom and f.ring == g.ring:
-            return (f.lev, f.dom, f.per, (f.num, f.den),
-                                         (g.num, g.den))
+        if self.dom == other.dom and self.ring == other.ring:
+            return (self.lev, self.dom, self.per, (self.num, self.den),
+                    (other.num, other.den))
         else:
-            lev, dom = f.lev, f.dom.unify(g.dom)
-            ring = f.ring
-            if g.ring is not None:
+            lev, dom = self.lev, self.dom.unify(other.dom)
+            ring = other.ring
+            if other.ring is not None:
                 if ring is not None:
-                    ring = ring.unify(g.ring)
+                    ring = ring.unify(other.ring)
                 else:
-                    ring = g.ring
+                    ring = other.ring
 
-            F = (dmp_convert(f.num, lev, f.dom, dom),
-                 dmp_convert(f.den, lev, f.dom, dom))
+            F = (dmp_convert(self.num, lev, self.dom, dom),
+                 dmp_convert(self.den, lev, self.dom, dom))
 
-            G = (dmp_convert(g.num, lev, g.dom, dom),
-                 dmp_convert(g.den, lev, g.dom, dom))
+            G = (dmp_convert(other.num, lev, other.dom, dom),
+                 dmp_convert(other.den, lev, other.dom, dom))
 
             def per(num, den, cancel=True, kill=False, lev=lev):
                 if kill:
@@ -1169,13 +1186,13 @@ class DMF(CantSympify):
                 if cancel:
                     num, den = dmp_cancel(num, den, lev, dom)
 
-                return f.__class__.new((num, den), dom, lev, ring=ring)
+                return self.__class__.new((num, den), dom, lev, ring=ring)
 
             return lev, dom, per, F, G
 
-    def per(f, num, den, cancel=True, kill=False, ring=None):
+    def per(self, num, den, cancel=True, kill=False, ring=None):
         """Create a DMF out of the given representation. """
-        lev, dom = f.lev, f.dom
+        lev, dom = self.lev, self.dom
 
         if kill:
             if not lev:
@@ -1187,13 +1204,13 @@ class DMF(CantSympify):
             num, den = dmp_cancel(num, den, lev, dom)
 
         if ring is None:
-            ring = f.ring
+            ring = self.ring
 
-        return f.__class__.new((num, den), dom, lev, ring=ring)
+        return self.__class__.new((num, den), dom, lev, ring=ring)
 
-    def half_per(f, rep, kill=False):
+    def half_per(self, rep, kill=False):
         """Create a DMP out of the given representation. """
-        lev = f.lev
+        lev = self.lev
 
         if kill:
             if not lev:
@@ -1201,7 +1218,7 @@ class DMF(CantSympify):
             else:
                 lev -= 1
 
-        return DMP(rep, f.dom, lev)
+        return DMP(rep, self.dom, lev)
 
     @classmethod
     def zero(cls, lev, dom, ring=None):
@@ -1211,29 +1228,30 @@ class DMF(CantSympify):
     def one(cls, lev, dom, ring=None):
         return cls.new(1, dom, lev, ring=ring)
 
-    def numer(f):
-        """Returns the numerator of ``f``. """
-        return f.half_per(f.num)
+    def numer(self):
+        """Returns the numerator of ``self``. """
+        return self.half_per(self.num)
 
-    def denom(f):
-        """Returns the denominator of ``f``. """
-        return f.half_per(f.den)
+    def denom(self):
+        """Returns the denominator of ``self``. """
+        return self.half_per(self.den)
 
-    def cancel(f):
-        """Remove common factors from ``f.num`` and ``f.den``. """
-        return f.per(f.num, f.den)
+    def cancel(self):
+        """Remove common factors from ``self.num`` and ``self.den``. """
+        return self.per(self.num, self.den)
 
-    def neg(f):
-        """Negate all coefficients in ``f``. """
-        return f.per(dmp_neg(f.num, f.lev, f.dom), f.den, cancel=False)
+    def neg(self):
+        """Negate all coefficients in ``self``. """
+        return self.per(dmp_neg(self.num, self.lev, self.dom),
+                        self.den, cancel=False)
 
-    def add(f, g):
-        """Add two multivariate fractions ``f`` and ``g``. """
-        if isinstance(g, DMP):
-            lev, dom, per, (F_num, F_den), G = f.poly_unify(g)
+    def add(self, other):
+        """Add two multivariate fractions ``self`` and ``other``. """
+        if isinstance(other, DMP):
+            lev, dom, per, (F_num, F_den), G = self.poly_unify(other)
             num, den = dmp_add_mul(F_num, F_den, G, lev, dom), F_den
         else:
-            lev, dom, per, F, G = f.frac_unify(g)
+            lev, dom, per, F, G = self.frac_unify(other)
             (F_num, F_den), (G_num, G_den) = F, G
 
             num = dmp_add(dmp_mul(F_num, G_den, lev, dom),
@@ -1242,13 +1260,13 @@ class DMF(CantSympify):
 
         return per(num, den)
 
-    def sub(f, g):
-        """Subtract two multivariate fractions ``f`` and ``g``. """
-        if isinstance(g, DMP):
-            lev, dom, per, (F_num, F_den), G = f.poly_unify(g)
+    def sub(self, other):
+        """Subtract two multivariate fractions ``self`` and ``other``. """
+        if isinstance(other, DMP):
+            lev, dom, per, (F_num, F_den), G = self.poly_unify(other)
             num, den = dmp_sub_mul(F_num, F_den, G, lev, dom), F_den
         else:
-            lev, dom, per, F, G = f.frac_unify(g)
+            lev, dom, per, F, G = self.frac_unify(other)
             (F_num, F_den), (G_num, G_den) = F, G
 
             num = dmp_sub(dmp_mul(F_num, G_den, lev, dom),
@@ -1257,13 +1275,13 @@ class DMF(CantSympify):
 
         return per(num, den)
 
-    def mul(f, g):
-        """Multiply two multivariate fractions ``f`` and ``g``. """
-        if isinstance(g, DMP):
-            lev, dom, per, (F_num, F_den), G = f.poly_unify(g)
+    def mul(self, other):
+        """Multiply two multivariate fractions ``self`` and ``other``. """
+        if isinstance(other, DMP):
+            lev, dom, per, (F_num, F_den), G = self.poly_unify(other)
             num, den = dmp_mul(F_num, G, lev, dom), F_den
         else:
-            lev, dom, per, F, G = f.frac_unify(g)
+            lev, dom, per, F, G = self.frac_unify(other)
             (F_num, F_den), (G_num, G_den) = F, G
 
             num = dmp_mul(F_num, G_num, lev, dom)
@@ -1271,193 +1289,193 @@ class DMF(CantSympify):
 
         return per(num, den)
 
-    def pow(f, n):
-        """Raise ``f`` to a non-negative power ``n``. """
+    def pow(self, n):
+        """Raise ``self`` to a non-negative power ``n``. """
         if isinstance(n, int):
-            return f.per(dmp_pow(f.num, n, f.lev, f.dom),
-                         dmp_pow(f.den, n, f.lev, f.dom), cancel=False)
+            return self.per(dmp_pow(self.num, n, self.lev, self.dom),
+                            dmp_pow(self.den, n, self.lev, self.dom),
+                            cancel=False)
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
-    def quo(f, g):
-        """Computes quotient of fractions ``f`` and ``g``. """
-        if isinstance(g, DMP):
-            lev, dom, per, (F_num, F_den), G = f.poly_unify(g)
+    def quo(self, other):
+        """Computes quotient of fractions ``self`` and ``other``. """
+        if isinstance(other, DMP):
+            lev, dom, per, (F_num, F_den), G = self.poly_unify(other)
             num, den = F_num, dmp_mul(F_den, G, lev, dom)
         else:
-            lev, dom, per, F, G = f.frac_unify(g)
+            lev, dom, per, F, G = self.frac_unify(other)
             (F_num, F_den), (G_num, G_den) = F, G
 
             num = dmp_mul(F_num, G_den, lev, dom)
             den = dmp_mul(F_den, G_num, lev, dom)
 
         res = per(num, den)
-        if f.ring is not None and res not in f.ring:
+        if self.ring is not None and res not in self.ring:
             from sympy.polys.polyerrors import ExactQuotientFailed
-            raise ExactQuotientFailed(f, g, f.ring)
+            raise ExactQuotientFailed(self, other, self.ring)
         return res
 
     exquo = quo
 
-    def invert(f, check=True):
-        """Computes inverse of a fraction ``f``. """
-        if check and f.ring is not None and not f.ring.is_unit(f):
-            raise NotReversible(f, f.ring)
-        res = f.per(f.den, f.num, cancel=False)
-        return res
+    def invert(self, check=True):
+        """Computes inverse of a fraction ``self``. """
+        if check and self.ring is not None and not self.ring.is_unit(self):
+            raise NotReversible(self, self.ring)
+        return self.per(self.den, self.num, cancel=False)
 
     @property
-    def is_zero(f):
-        """Returns ``True`` if ``f`` is a zero fraction. """
-        return dmp_zero_p(f.num, f.lev)
+    def is_zero(self):
+        """Returns ``True`` if ``self`` is a zero fraction. """
+        return dmp_zero_p(self.num, self.lev)
 
     @property
-    def is_one(f):
-        """Returns ``True`` if ``f`` is a unit fraction. """
-        return dmp_one_p(f.num, f.lev, f.dom) and \
-            dmp_one_p(f.den, f.lev, f.dom)
+    def is_one(self):
+        """Returns ``True`` if ``self`` is a unit fraction. """
+        return (dmp_one_p(self.num, self.lev, self.dom) and
+                dmp_one_p(self.den, self.lev, self.dom))
 
-    def __neg__(f):
-        return f.neg()
+    def __neg__(self):
+        return self.neg()
 
-    def __add__(f, g):
-        if isinstance(g, (DMP, DMF)):
-            return f.add(g)
+    def __add__(self, other):
+        if isinstance(other, (DMP, DMF)):
+            return self.add(other)
 
         try:
-            return f.add(f.half_per(g))
+            return self.add(self.half_per(other))
         except TypeError:
             return NotImplemented
         except (CoercionFailed, NotImplementedError):
-            if f.ring is not None:
+            if self.ring is not None:
                 try:
-                    return f.add(f.ring.convert(g))
+                    return self.add(self.ring.convert(other))
                 except (CoercionFailed, NotImplementedError):
                     pass
             return NotImplemented
 
-    def __radd__(f, g):
-        return f.__add__(g)
+    def __radd__(self, other):
+        return self.__add__(other)
 
-    def __sub__(f, g):
-        if isinstance(g, (DMP, DMF)):
-            return f.sub(g)
+    def __sub__(self, other):
+        if isinstance(other, (DMP, DMF)):
+            return self.sub(other)
 
         try:
-            return f.sub(f.half_per(g))
+            return self.sub(self.half_per(other))
         except TypeError:
             return NotImplemented
         except (CoercionFailed, NotImplementedError):
-            if f.ring is not None:
+            if self.ring is not None:
                 try:
-                    return f.sub(f.ring.convert(g))
+                    return self.sub(self.ring.convert(other))
                 except (CoercionFailed, NotImplementedError):
                     pass
             return NotImplemented
 
-    def __rsub__(f, g):
-        return (-f).__add__(g)
+    def __rsub__(self, other):
+        return (-self).__add__(other)
 
-    def __mul__(f, g):
-        if isinstance(g, (DMP, DMF)):
-            return f.mul(g)
+    def __mul__(self, other):
+        if isinstance(other, (DMP, DMF)):
+            return self.mul(other)
 
         try:
-            return f.mul(f.half_per(g))
+            return self.mul(self.half_per(other))
         except TypeError:
             return NotImplemented
         except (CoercionFailed, NotImplementedError):
-            if f.ring is not None:
+            if self.ring is not None:
                 try:
-                    return f.mul(f.ring.convert(g))
+                    return self.mul(self.ring.convert(other))
                 except (CoercionFailed, NotImplementedError):
                     pass
             return NotImplemented
 
-    def __rmul__(f, g):
-        return f.__mul__(g)
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
-    def __pow__(f, n):
-        return f.pow(n)
+    def __pow__(self, n):
+        return self.pow(n)
 
-    def __div__(f, g):
-        if isinstance(g, (DMP, DMF)):
-            return f.quo(g)
+    def __div__(self, other):
+        if isinstance(other, (DMP, DMF)):
+            return self.quo(other)
 
         try:
-            return f.quo(f.half_per(g))
+            return self.quo(self.half_per(other))
         except TypeError:
             return NotImplemented
         except (CoercionFailed, NotImplementedError):
-            if f.ring is not None:
+            if self.ring is not None:
                 try:
-                    return f.quo(f.ring.convert(g))
+                    return self.quo(self.ring.convert(other))
                 except (CoercionFailed, NotImplementedError):
                     pass
             return NotImplemented
 
-    def __rdiv__(self, g):
-        r = self.invert(check=False)*g
+    def __rdiv__(self, other):
+        r = self.invert(check=False)*other
         if self.ring and r not in self.ring:
             from sympy.polys.polyerrors import ExactQuotientFailed
-            raise ExactQuotientFailed(g, self, self.ring)
+            raise ExactQuotientFailed(other, self, self.ring)
         return r
 
     __truediv__ = __div__
     __rtruediv__ = __rdiv__
 
-    def __eq__(f, g):
+    def __eq__(self, other):
         try:
-            if isinstance(g, DMP):
-                _, _, _, (F_num, F_den), G = f.poly_unify(g)
+            if isinstance(other, DMP):
+                _, _, _, (F_num, F_den), G = self.poly_unify(other)
 
-                if f.lev == g.lev:
-                    return dmp_one_p(F_den, f.lev, f.dom) and F_num == G
+                if self.lev == other.lev:
+                    return dmp_one_p(F_den, self.lev, self.dom) and F_num == G
             else:
-                _, _, _, F, G = f.frac_unify(g)
+                _, _, _, F, G = self.frac_unify(other)
 
-                if f.lev == g.lev:
+                if self.lev == other.lev:
                     return F == G
         except UnificationFailed:
             pass
 
         return False
 
-    def __ne__(f, g):
+    def __ne__(self, other):
         try:
-            if isinstance(g, DMP):
-                _, _, _, (F_num, F_den), G = f.poly_unify(g)
+            if isinstance(other, DMP):
+                _, _, _, (F_num, F_den), G = self.poly_unify(other)
 
-                if f.lev == g.lev:
-                    return not (dmp_one_p(F_den, f.lev, f.dom) and F_num == G)
+                if self.lev == other.lev:
+                    return not (dmp_one_p(F_den, self.lev, self.dom) and F_num == G)
             else:
-                _, _, _, F, G = f.frac_unify(g)
+                _, _, _, F, G = self.frac_unify(other)
 
-                if f.lev == g.lev:
+                if self.lev == other.lev:
                     return F != G
         except UnificationFailed:
             pass
 
         return True
 
-    def __lt__(f, g):
-        _, _, _, F, G = f.frac_unify(g)
+    def __lt__(self, other):
+        _, _, _, F, G = self.frac_unify(other)
         return F.__lt__(G)
 
-    def __le__(f, g):
-        _, _, _, F, G = f.frac_unify(g)
+    def __le__(self, other):
+        _, _, _, F, G = self.frac_unify(other)
         return F.__le__(G)
 
-    def __gt__(f, g):
-        _, _, _, F, G = f.frac_unify(g)
+    def __gt__(self, other):
+        _, _, _, F, G = self.frac_unify(other)
         return F.__gt__(G)
 
-    def __ge__(f, g):
-        _, _, _, F, G = f.frac_unify(g)
+    def __ge__(self, other):
+        _, _, _, F, G = self.frac_unify(other)
         return F.__ge__(G)
 
-    def __bool__(f):
-        return not dmp_zero_p(f.num, f.lev)
+    def __bool__(self):
+        return not dmp_zero_p(self.num, self.lev)
 
 
 def init_normal_ANP(rep, mod, dom):
@@ -1487,40 +1505,42 @@ class ANP(CantSympify):
 
         self.dom = dom
 
-    def __repr__(f):
-        return "%s(%s, %s, %s)" % (f.__class__.__name__, f.rep, f.mod, f.dom)
+    def __repr__(self):
+        return "%s(%s, %s, %s)" % (self.__class__.__name__, self.rep,
+                                   self.mod, self.dom)
 
-    def __hash__(f):
-        return hash((f.__class__.__name__, f.to_tuple(), dmp_to_tuple(f.mod, 0), f.dom))
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.to_tuple(),
+                     dmp_to_tuple(self.mod, 0), self.dom))
 
-    def unify(f, g):
+    def unify(self, other):
         """Unify representations of two algebraic numbers. """
-        if not isinstance(g, ANP) or f.mod != g.mod:
-            raise UnificationFailed("can't unify %s with %s" % (f, g))
+        if not isinstance(other, ANP) or self.mod != other.mod:
+            raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if f.dom == g.dom:
-            return f.dom, f.per, f.rep, g.rep, f.mod
+        if self.dom == other.dom:
+            return self.dom, self.per, self.rep, other.rep, self.mod
         else:
-            dom = f.dom.unify(g.dom)
+            dom = self.dom.unify(other.dom)
 
-            F = dup_convert(f.rep, f.dom, dom)
-            G = dup_convert(g.rep, g.dom, dom)
+            F = dup_convert(self.rep, self.dom, dom)
+            G = dup_convert(other.rep, other.dom, dom)
 
-            if dom != f.dom and dom != g.dom:
-                mod = dup_convert(f.mod, f.dom, dom)
+            if dom != self.dom and dom != other.dom:
+                mod = dup_convert(self.mod, self.dom, dom)
             else:
-                if dom == f.dom:
-                    mod = f.mod
+                if dom == self.dom:
+                    mod = self.mod
                 else:
-                    mod = g.mod
+                    mod = other.mod
 
             def per(rep):
                 return ANP(rep, mod, dom)
 
         return dom, per, F, G, mod
 
-    def per(f, rep, mod=None, dom=None):
-        return ANP(rep, mod or f.mod, dom or f.dom)
+    def per(self, rep, mod=None, dom=None):
+        return ANP(rep, mod or self.mod, dom or self.dom)
 
     @classmethod
     def zero(cls, mod, dom):
@@ -1530,193 +1550,195 @@ class ANP(CantSympify):
     def one(cls, mod, dom):
         return ANP(1, mod, dom)
 
-    def to_dict(f):
-        """Convert ``f`` to a dict representation with native coefficients. """
-        return dmp_to_dict(f.rep, 0, f.dom)
+    def to_dict(self):
+        """Convert ``self`` to a dict representation with native coefficients. """
+        return dmp_to_dict(self.rep, 0, self.dom)
 
-    def to_sympy_dict(f):
-        """Convert ``f`` to a dict representation with SymPy coefficients. """
-        rep = dmp_to_dict(f.rep, 0, f.dom)
+    def to_sympy_dict(self):
+        """Convert ``self`` to a dict representation with SymPy coefficients. """
+        rep = dmp_to_dict(self.rep, 0, self.dom)
 
         for k, v in rep.items():
-            rep[k] = f.dom.to_sympy(v)
+            rep[k] = self.dom.to_sympy(v)
 
         return rep
 
-    def to_list(f):
-        """Convert ``f`` to a list representation with native coefficients. """
-        return f.rep
+    def to_list(self):
+        """Convert ``self`` to a list representation with native coefficients. """
+        return self.rep
 
-    def to_sympy_list(f):
-        """Convert ``f`` to a list representation with SymPy coefficients. """
-        return [ f.dom.to_sympy(c) for c in f.rep ]
+    def to_sympy_list(self):
+        """Convert ``self`` to a list representation with SymPy coefficients. """
+        return [self.dom.to_sympy(c) for c in self.rep]
 
-    def to_tuple(f):
+    def to_tuple(self):
         """
-        Convert ``f`` to a tuple representation with native coefficients.
+        Convert ``self`` to a tuple representation with native coefficients.
 
         This is needed for hashing.
         """
-        return dmp_to_tuple(f.rep, 0)
+        return dmp_to_tuple(self.rep, 0)
 
     @classmethod
     def from_list(cls, rep, mod, dom):
         return ANP(dup_strip(list(map(dom.convert, rep))), mod, dom)
 
-    def neg(f):
-        return f.per(dup_neg(f.rep, f.dom))
+    def neg(self):
+        return self.per(dup_neg(self.rep, self.dom))
 
-    def add(f, g):
-        dom, per, F, G, mod = f.unify(g)
+    def add(self, other):
+        dom, per, F, G, mod = self.unify(other)
         return per(dup_add(F, G, dom))
 
-    def sub(f, g):
-        dom, per, F, G, mod = f.unify(g)
+    def sub(self, other):
+        dom, per, F, G, mod = self.unify(other)
         return per(dup_sub(F, G, dom))
 
-    def mul(f, g):
-        dom, per, F, G, mod = f.unify(g)
+    def mul(self, other):
+        dom, per, F, G, mod = self.unify(other)
         return per(dup_rem(dup_mul(F, G, dom), mod, dom))
 
-    def pow(f, n):
-        """Raise ``f`` to a non-negative power ``n``. """
+    def pow(self, n):
+        """Raise ``self`` to a non-negative power ``n``. """
         if isinstance(n, int):
             if n < 0:
-                F, n = dup_invert(f.rep, f.mod, f.dom), -n
+                F, n = dup_invert(self.rep, self.mod, self.dom), -n
             else:
-                F = f.rep
+                F = self.rep
 
-            return f.per(dup_rem(dup_pow(F, n, f.dom), f.mod, f.dom))
+            return self.per(dup_rem(dup_pow(F, n, self.dom),
+                                    self.mod, self.dom))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
-    def div(f, g):
-        dom, per, F, G, mod = f.unify(g)
-        return (per(dup_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, dom)), self.zero(mod, dom))
+    def div(self, other):
+        dom, per, F, G, mod = self.unify(other)
+        return (per(dup_rem(dup_mul(F, dup_invert(G, mod, dom),
+                                    dom), mod, dom)), self.zero(mod, dom))
 
-    def rem(f, g):
-        dom, _, _, _, mod = f.unify(g)
+    def rem(self, other):
+        dom, _, _, _, mod = self.unify(other)
         return self.zero(mod, dom)
 
-    def quo(f, g):
-        dom, per, F, G, mod = f.unify(g)
+    def quo(self, other):
+        dom, per, F, G, mod = self.unify(other)
         return per(dup_rem(dup_mul(F, dup_invert(G, mod, dom), dom), mod, dom))
 
     exquo = quo
 
-    def LC(f):
-        """Returns the leading coefficient of ``f``. """
-        return dup_LC(f.rep, f.dom)
+    def LC(self):
+        """Returns the leading coefficient of ``self``. """
+        return dup_LC(self.rep, self.dom)
 
-    def TC(f):
-        """Returns the trailing coefficient of ``f``. """
-        return dup_TC(f.rep, f.dom)
-
-    @property
-    def is_zero(f):
-        """Returns ``True`` if ``f`` is a zero algebraic number. """
-        return not f
+    def TC(self):
+        """Returns the trailing coefficient of ``self``. """
+        return dup_TC(self.rep, self.dom)
 
     @property
-    def is_one(f):
-        """Returns ``True`` if ``f`` is a unit algebraic number. """
-        return f.rep == [f.dom.one]
+    def is_zero(self):
+        """Returns ``True`` if ``self`` is a zero algebraic number. """
+        return not self
 
     @property
-    def is_ground(f):
-        """Returns ``True`` if ``f`` is an element of the ground domain. """
-        return not f.rep or len(f.rep) == 1
+    def is_one(self):
+        """Returns ``True`` if ``self`` is a unit algebraic number. """
+        return self.rep == [self.dom.one]
 
-    def __neg__(f):
-        return f.neg()
+    @property
+    def is_ground(self):
+        """Returns ``True`` if ``self`` is an element of the ground domain. """
+        return not self.rep or len(self.rep) == 1
 
-    def __add__(f, g):
-        if isinstance(g, ANP):
-            return f.add(g)
+    def __neg__(self):
+        return self.neg()
+
+    def __add__(self, other):
+        if isinstance(other, ANP):
+            return self.add(other)
         else:
             try:
-                return f.add(f.per(g))
+                return self.add(self.per(other))
             except (CoercionFailed, TypeError):
                 return NotImplemented
 
-    def __radd__(f, g):
-        return f.__add__(g)
+    def __radd__(self, other):
+        return self.__add__(other)
 
-    def __sub__(f, g):
-        if isinstance(g, ANP):
-            return f.sub(g)
+    def __sub__(self, other):
+        if isinstance(other, ANP):
+            return self.sub(other)
         else:
             try:
-                return f.sub(f.per(g))
+                return self.sub(self.per(other))
             except (CoercionFailed, TypeError):
                 return NotImplemented
 
-    def __rsub__(f, g):
-        return (-f).__add__(g)
+    def __rsub__(self, other):
+        return (-self).__add__(other)
 
-    def __mul__(f, g):
-        if isinstance(g, ANP):
-            return f.mul(g)
+    def __mul__(self, other):
+        if isinstance(other, ANP):
+            return self.mul(other)
         else:
             try:
-                return f.mul(f.per(g))
+                return self.mul(self.per(other))
             except (CoercionFailed, TypeError):
                 return NotImplemented
 
-    def __rmul__(f, g):
-        return f.__mul__(g)
+    def __rmul__(self, other):
+        return self.__mul__(other)
 
-    def __pow__(f, n):
-        return f.pow(n)
+    def __pow__(self, n):
+        return self.pow(n)
 
-    def __divmod__(f, g):
-        return f.div(g)
+    def __divmod__(self, other):
+        return self.div(other)
 
-    def __mod__(f, g):
-        return f.rem(g)
+    def __mod__(self, other):
+        return self.rem(other)
 
-    def __div__(f, g):
-        if isinstance(g, ANP):
-            return f.quo(g)
+    def __div__(self, other):
+        if isinstance(other, ANP):
+            return self.quo(other)
         else:
             try:
-                return f.quo(f.per(g))
+                return self.quo(self.per(other))
             except (CoercionFailed, TypeError):
                 return NotImplemented
 
     __truediv__ = __div__
 
-    def __eq__(f, g):
+    def __eq__(self, other):
         try:
-            _, _, F, G, _ = f.unify(g)
+            _, _, F, G, _ = self.unify(other)
 
             return F == G
         except UnificationFailed:
             return False
 
-    def __ne__(f, g):
+    def __ne__(self, other):
         try:
-            _, _, F, G, _ = f.unify(g)
+            _, _, F, G, _ = self.unify(other)
 
             return F != G
         except UnificationFailed:
             return True
 
-    def __lt__(f, g):
-        _, _, F, G, _ = f.unify(g)
+    def __lt__(self, other):
+        _, _, F, G, _ = self.unify(other)
         return F.__lt__(G)
 
-    def __le__(f, g):
-        _, _, F, G, _ = f.unify(g)
+    def __le__(self, other):
+        _, _, F, G, _ = self.unify(other)
         return F.__le__(G)
 
-    def __gt__(f, g):
-        _, _, F, G, _ = f.unify(g)
+    def __gt__(self, other):
+        _, _, F, G, _ = self.unify(other)
         return F.__gt__(G)
 
-    def __ge__(f, g):
-        _, _, F, G, _ = f.unify(g)
+    def __ge__(self, other):
+        _, _, F, G, _ = self.unify(other)
         return F.__ge__(G)
 
-    def __bool__(f):
-        return bool(f.rep)
+    def __bool__(self):
+        return bool(self.rep)

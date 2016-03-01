@@ -921,7 +921,7 @@ class principal_branch(Function):
     is_comparable = False  # cannot always be evalf'd
 
     @classmethod
-    def eval(self, x, period):
+    def eval(cls, x, period):
         from sympy import oo, exp_polar, I, Mul, polar_lift
         if isinstance(x, polar_lift):
             return principal_branch(x.args[0], period)

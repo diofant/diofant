@@ -1,16 +1,14 @@
 import pytest
 
-from sympy import (symbols, sin, simplify, cos, trigsimp, rad, tan,
+from sympy import (symbols, sin, simplify, cos, trigsimp, tan,
                    exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
                    exp, S, integrate, I, Matrix, Symbol, coth, pi, log,
-                   count_ops, sqrt, E, expand, Piecewise, Integer, Rational)
+                   count_ops, sqrt, E, expand, Piecewise, Rational)
 
-from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i, k
+from sympy.abc import x, y, z, a, b
 
 
 def test_trigsimp1():
-    x, y = symbols('x,y')
-
     assert trigsimp(1 - sin(x)**2) == cos(x)**2
     assert trigsimp(1 - cos(x)**2) == sin(x)**2
     assert trigsimp(sin(x)**2 + cos(x)**2) == 1
@@ -65,7 +63,6 @@ def test_trigsimp1a():
 
 
 def test_trigsimp2():
-    x, y = symbols('x,y')
     assert trigsimp(cos(x)**2*sin(y)**2 + cos(x)**2*cos(y)**2 + sin(x)**2,
             recursive=True) == 1
     assert trigsimp(sin(x)**2*sin(y)**2 + sin(x)**2*cos(y)**2 + cos(x)**2,
@@ -75,12 +72,10 @@ def test_trigsimp2():
 
 
 def test_issue_4373():
-    x = Symbol("x")
     assert abs(trigsimp(2.0*sin(x)**2 + 2.0*cos(x)**2) - 2.0) < 1e-10
 
 
 def test_trigsimp3():
-    x, y = symbols('x,y')
     assert trigsimp(sin(x)/cos(x)) == tan(x)
     assert trigsimp(sin(x)**2/cos(x)**2) == tan(x)**2
     assert trigsimp(sin(x)**3/cos(x)**3) == tan(x)**3
@@ -94,7 +89,6 @@ def test_trigsimp3():
 
 
 def test_issue_4661():
-    a, x, y = symbols('a x y')
     eq = -4*sin(x)**4 + 4*cos(x)**4 - 8*cos(x)**2
     assert trigsimp(eq) == -4
     n = sin(x)**6 + 4*sin(x)**4*cos(x)**2 + 5*sin(x)**2*cos(x)**4 + 2*cos(x)**6
@@ -106,25 +100,20 @@ def test_issue_4661():
 
 
 def test_issue_4494():
-    a, b = symbols('a b')
     eq = sin(a)**2*sin(b)**2 + cos(a)**2*cos(b)**2*tan(a)**2 + cos(a)**2
     assert trigsimp(eq) == 1
 
 
 def test_issue_5948():
-    a, x, y = symbols('a x y')
-    assert trigsimp(diff(integrate(cos(x)/sin(x)**7, x), x)) == \
-           cos(x)/sin(x)**7
+    assert trigsimp(diff(integrate(cos(x)/sin(x)**7, x), x)) == cos(x)/sin(x)**7
 
 
 def test_issue_4775():
-    a, x, y = symbols('a x y')
     assert trigsimp(sin(x)*cos(y)+cos(x)*sin(y)) == sin(x + y)
     assert trigsimp(sin(x)*cos(y)+cos(x)*sin(y)+3) == sin(x + y) + 3
 
 
 def test_issue_4280():
-    a, x, y = symbols('a x y')
     assert trigsimp(cos(x)**2 + cos(y)**2*sin(x)**2 + sin(y)**2*sin(x)**2) == 1
     assert trigsimp(a**2*sin(x)**2 + a**2*cos(y)**2*cos(x)**2 + a**2*cos(x)**2*sin(y)**2) == a**2
     assert trigsimp(a**2*cos(y)**2*sin(x)**2 + a**2*sin(y)**2*sin(x)**2) == a**2*sin(x)**2
@@ -151,8 +140,6 @@ def test_issue_3210():
 
 
 def test_trigsimp_issues():
-    a, x, y = symbols('a x y')
-
     # issue 4625 - factor_terms works, too
     assert trigsimp(sin(x)**3 + cos(x)**2*sin(x)) == sin(x)
 
@@ -197,7 +184,6 @@ def test_trigsimp_issues():
 
 
 def test_trigsimp_issue_2515():
-    x = Symbol('x')
     assert trigsimp(x*cos(x)*tan(x)) == x*sin(x)
     assert trigsimp(-sin(x) + cos(x)*tan(x)) == 0
 
@@ -217,7 +203,6 @@ def test_trigsimp_issue_7761():
 
 
 def test_trigsimp_noncommutative():
-    x, y = symbols('x,y')
     A, B = symbols('A,B', commutative=False)
 
     assert trigsimp(A - A*sin(x)**2) == A*cos(x)**2
@@ -252,8 +237,6 @@ def test_trigsimp_noncommutative():
 
 
 def test_hyperbolic_simp():
-    x, y = symbols('x,y')
-
     assert trigsimp(sinh(x)**2 + 1) == cosh(x)**2
     assert trigsimp(cosh(x)**2 - 1) == sinh(x)**2
     assert trigsimp(cosh(x)**2 - sinh(x)**2) == 1
@@ -402,7 +385,7 @@ def test_exptrigsimp():
 
 @pytest.mark.xfail
 def test_issue_6811_fail():
-    xp, y, x, z = symbols('xp, y, x, z')
+    xp = Symbol('xp')
     eq = 4*(-19*sin(x)*y + 5*sin(3*x)*y + 15*cos(2*x)*z - 21*z)*xp/(9*cos(x) - 5*cos(3*x))
     assert trigsimp(eq) == -2*(2*cos(x)*tan(x)*y + 3*z)*xp/cos(x)
 

@@ -9,7 +9,7 @@ from sympy.solvers.diophantine import (diop_solve, diop_DN, diop_bf_DN, length,
                                        prime_as_sum_of_two_squares, partition,
                                        power_representation)
 
-from sympy import symbols, Integer, Matrix, simplify, Subs, S, factor_list
+from sympy import symbols, Integer, Matrix, simplify, Subs, factor_list
 from sympy.core.function import _mexpand
 from sympy.functions.elementary.trigonometric import sin
 from sympy.utilities import default_sort_key
