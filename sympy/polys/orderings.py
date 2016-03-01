@@ -88,7 +88,6 @@ class ProductOrder(MonomialOrder):
     We can use a lexicographic order on x_1, x_2 and also on
     y_1, y_2, y_3, and their product on {x_i, y_i} as follows:
 
-    >>> from sympy.polys.orderings import lex, grlex, ProductOrder
     >>> P = ProductOrder(
     ...     (lex, lambda m: m[:2]), # lex order on x_1 and x_2 of monomial
     ...     (grlex, lambda m: m[2:]) # grlex on y_1, y_2, y_3
@@ -154,7 +153,6 @@ class InverseOrder(MonomialOrder):
     For example, in the inverse lexicographic order on a single variable `x`,
     high powers of `x` count as small:
 
-    >>> from sympy.polys.orderings import lex, InverseOrder
     >>> ilex = InverseOrder(lex)
     >>> ilex((5,)) < ilex((0,))
     True
@@ -225,7 +223,6 @@ def monomial_key(order=None, gens=None):
 
     If the ``gens`` input argument contains a list of generators, the
     resulting key function can be used to sort SymPy ``Expr`` objects.
-
     """
     if order is None:
         order = lex
@@ -274,13 +271,11 @@ def build_product_order(arg, gens):
 
     For example, build a product of two grlex orders:
 
-    >>> from sympy.polys.orderings import grlex, build_product_order
     >>> from sympy.abc import x, y, z, t
 
     >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))
     ((3, (1, 2)), (7, (3, 4)))
-
     """
     gens2idx = {}
     for i, g in enumerate(gens):

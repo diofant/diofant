@@ -30,7 +30,6 @@ def heugcd(f, g):
     Examples
     ========
 
-    >>> from sympy.polys.heuristicgcd import heugcd
     >>> from sympy.polys import ring, ZZ
 
     >>> R, x,y, = ring("x,y", ZZ)
