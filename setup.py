@@ -79,7 +79,8 @@ class test(TestCommand):
 
     def run_tests(self):
         import pytest
-        return pytest.main(self.pytest_args)
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
 
 
 exec(open('sympy/release.py').read())

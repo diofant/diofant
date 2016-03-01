@@ -23,7 +23,6 @@ def dup_add_term(f, c, i, K):
 
     >>> R.dup_add_term(x**2 - 1, ZZ(2), 4)
     2*x**4 + x**2 - 1
-
     """
     if not c:
         return f
@@ -52,7 +51,6 @@ def dmp_add_term(f, c, i, u, K):
 
     >>> R.dmp_add_term(x*y + 1, 2, 2)
     2*x**2 + x*y + 1
-
     """
     if not u:
         return dup_add_term(f, c, i, K)
@@ -86,7 +84,6 @@ def dup_sub_term(f, c, i, K):
 
     >>> R.dup_sub_term(2*x**4 + x**2 - 1, ZZ(2), 4)
     x**2 - 1
-
     """
     if not c:
         return f
@@ -115,7 +112,6 @@ def dmp_sub_term(f, c, i, u, K):
 
     >>> R.dmp_sub_term(2*x**2 + x*y + 1, 2, 2)
     x*y + 1
-
     """
     if not u:
         return dup_add_term(f, -c, i, K)
@@ -149,7 +145,6 @@ def dup_mul_term(f, c, i, K):
 
     >>> R.dup_mul_term(x**2 - 1, ZZ(3), 2)
     3*x**4 - 3*x**2
-
     """
     if not c or not f:
         return []
@@ -169,7 +164,6 @@ def dmp_mul_term(f, c, i, u, K):
 
     >>> R.dmp_mul_term(x**2*y + x, 3*y, 2)
     3*x**4*y**2 + 3*x**3*y
-
     """
     if not u:
         return dup_mul_term(f, c, i, K)
@@ -196,7 +190,6 @@ def dup_add_ground(f, c, K):
 
     >>> R.dup_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
     x**3 + 2*x**2 + 3*x + 8
-
     """
     return dup_add_term(f, c, 0, K)
 
@@ -213,7 +206,6 @@ def dmp_add_ground(f, c, u, K):
 
     >>> R.dmp_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
     x**3 + 2*x**2 + 3*x + 8
-
     """
     return dmp_add_term(f, dmp_ground(c, u - 1), 0, u, K)
 
@@ -230,7 +222,6 @@ def dup_sub_ground(f, c, K):
 
     >>> R.dup_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
     x**3 + 2*x**2 + 3*x
-
     """
     return dup_sub_term(f, c, 0, K)
 
@@ -264,7 +255,6 @@ def dup_mul_ground(f, c, K):
 
     >>> R.dup_mul_ground(x**2 + 2*x - 1, ZZ(3))
     3*x**2 + 6*x - 3
-
     """
     if not c or not f:
         return []
@@ -284,7 +274,6 @@ def dmp_mul_ground(f, c, u, K):
 
     >>> R.dmp_mul_ground(2*x + 2*y, ZZ(3))
     6*x + 6*y
-
     """
     if not u:
         return dup_mul_ground(f, c, K)
@@ -310,7 +299,6 @@ def dup_quo_ground(f, c, K):
     >>> R, x = ring("x", QQ)
     >>> R.dup_quo_ground(3*x**2 + 2, QQ(2))
     3/2*x**2 + 1
-
     """
     if not c:
         raise ZeroDivisionError('polynomial division')
@@ -339,7 +327,6 @@ def dmp_quo_ground(f, c, u, K):
     >>> R, x,y = ring("x,y", QQ)
     >>> R.dmp_quo_ground(2*x**2*y + 3*x, QQ(2))
     x**2*y + 3/2*x
-
     """
     if not u:
         return dup_quo_ground(f, c, K)
@@ -361,7 +348,6 @@ def dup_exquo_ground(f, c, K):
 
     >>> R.dup_exquo_ground(x**2 + 2, QQ(2))
     1/2*x**2 + 1
-
     """
     if not c:
         raise ZeroDivisionError('polynomial division')
@@ -383,7 +369,6 @@ def dmp_exquo_ground(f, c, u, K):
 
     >>> R.dmp_exquo_ground(x**2*y + 2*x, QQ(2))
     1/2*x**2*y + x
-
     """
     if not u:
         return dup_exquo_ground(f, c, K)
@@ -405,7 +390,6 @@ def dup_lshift(f, n, K):
 
     >>> R.dup_lshift(x**2 + 1, 2)
     x**4 + x**2
-
     """
     if not f:
         return f
@@ -427,7 +411,6 @@ def dup_rshift(f, n, K):
     x**2 + 1
     >>> R.dup_rshift(x**4 + x**2 + 2, 2)
     x**2 + 1
-
     """
     return f[:-n]
 
@@ -444,7 +427,6 @@ def dup_abs(f, K):
 
     >>> R.dup_abs(x**2 - 1)
     x**2 + 1
-
     """
     return [ K.abs(coeff) for coeff in f ]
 
@@ -461,7 +443,6 @@ def dmp_abs(f, u, K):
 
     >>> R.dmp_abs(x**2*y - x)
     x**2*y + x
-
     """
     if not u:
         return dup_abs(f, K)
@@ -483,7 +464,6 @@ def dup_neg(f, K):
 
     >>> R.dup_neg(x**2 - 1)
     -x**2 + 1
-
     """
     return [ -coeff for coeff in f ]
 
@@ -500,7 +480,6 @@ def dmp_neg(f, u, K):
 
     >>> R.dmp_neg(x**2*y - x)
     -x**2*y + x
-
     """
     if not u:
         return dup_neg(f, K)
@@ -522,7 +501,6 @@ def dup_add(f, g, K):
 
     >>> R.dup_add(x**2 - 1, x - 2)
     x**2 + x - 3
-
     """
     if not f:
         return g
@@ -557,7 +535,6 @@ def dmp_add(f, g, u, K):
 
     >>> R.dmp_add(x**2 + y, x**2*y + x)
     x**2*y + x**2 + x + y
-
     """
     if not u:
         return dup_add(f, g, K)
@@ -599,7 +576,6 @@ def dup_sub(f, g, K):
 
     >>> R.dup_sub(x**2 - 1, x - 2)
     x**2 - x + 1
-
     """
     if not f:
         return dup_neg(g, K)
@@ -634,7 +610,6 @@ def dmp_sub(f, g, u, K):
 
     >>> R.dmp_sub(x**2 + y, x**2*y + x)
     -x**2*y + x**2 - x + y
-
     """
     if not u:
         return dup_sub(f, g, K)
@@ -676,7 +651,6 @@ def dup_add_mul(f, g, h, K):
 
     >>> R.dup_add_mul(x**2 - 1, x - 2, x + 2)
     2*x**2 - 5
-
     """
     return dup_add(f, dup_mul(g, h, K), K)
 
@@ -710,7 +684,6 @@ def dup_sub_mul(f, g, h, K):
 
     >>> R.dup_sub_mul(x**2 - 1, x - 2, x + 2)
     3
-
     """
     return dup_sub(f, dup_mul(g, h, K), K)
 
@@ -727,7 +700,6 @@ def dmp_sub_mul(f, g, h, u, K):
 
     >>> R.dmp_sub_mul(x**2 + y, x, x + 2)
     -2*x + y
-
     """
     return dmp_sub(f, dmp_mul(g, h, u, K), u, K)
 
@@ -744,7 +716,6 @@ def dup_mul(f, g, K):
 
     >>> R.dup_mul(x - 2, x + 2)
     x**2 - 4
-
     """
     if f == g:
         return dup_sqr(f, K)
@@ -801,7 +772,6 @@ def dmp_mul(f, g, u, K):
 
     >>> R.dmp_mul(x*y + 1, x)
     x**2*y + x
-
     """
     if not u:
         return dup_mul(f, g, K)
@@ -844,7 +814,6 @@ def dup_sqr(f, K):
 
     >>> R.dup_sqr(x**2 + 1)
     x**4 + 2*x**2 + 1
-
     """
     df, h = len(f) - 1, []
 
@@ -884,7 +853,6 @@ def dmp_sqr(f, u, K):
 
     >>> R.dmp_sqr(x**2 + x*y + y**2)
     x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
-
     """
     if not u:
         return dup_sqr(f, K)
@@ -932,7 +900,6 @@ def dup_pow(f, n, K):
 
     >>> R.dup_pow(x - 2, 3)
     x**3 - 6*x**2 + 12*x - 8
-
     """
     if not n:
         return [K.one]
@@ -969,7 +936,6 @@ def dmp_pow(f, n, u, K):
 
     >>> R.dmp_pow(x*y + 1, 3)
     x**3*y**3 + 3*x**2*y**2 + 3*x*y + 1
-
     """
     if not u:
         return dup_pow(f, n, K)
@@ -1009,7 +975,6 @@ def dup_pdiv(f, g, K):
 
     >>> R.dup_pdiv(x**2 + 1, 2*x - 4)
     (2*x + 4, 20)
-
     """
     df = dup_degree(f)
     dg = dup_degree(g)
@@ -1062,7 +1027,6 @@ def dup_prem(f, g, K):
 
     >>> R.dup_prem(x**2 + 1, 2*x - 4)
     20
-
     """
     df = dup_degree(f)
     dg = dup_degree(g)
@@ -1110,7 +1074,6 @@ def dup_pquo(f, g, K):
 
     >>> R.dup_pquo(x**2 + 1, 2*x - 4)
     2*x + 4
-
     """
     return dup_pdiv(f, g, K)[0]
 
@@ -1132,7 +1095,6 @@ def dup_pexquo(f, g, K):
     Traceback (most recent call last):
     ...
     ExactQuotientFailed: [2, -4] does not divide [1, 0, 1]
-
     """
     q, r = dup_pdiv(f, g, K)
 
@@ -1154,7 +1116,6 @@ def dmp_pdiv(f, g, u, K):
 
     >>> R.dmp_pdiv(x**2 + x*y, 2*x + 2)
     (2*x + 2*y - 2, -4*y + 4)
-
     """
     if not u:
         return dup_pdiv(f, g, K)
@@ -1211,7 +1172,6 @@ def dmp_prem(f, g, u, K):
 
     >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
     -4*y + 4
-
     """
     if not u:
         return dup_prem(f, g, K)
@@ -1269,7 +1229,6 @@ def dmp_pquo(f, g, u, K):
 
     >>> R.dmp_pquo(f, h)
     2*x + 2*y - 2
-
     """
     return dmp_pdiv(f, g, u, K)[0]
 
@@ -1295,7 +1254,6 @@ def dmp_pexquo(f, g, u, K):
     Traceback (most recent call last):
     ...
     ExactQuotientFailed: [[2], [2]] does not divide [[1], [1, 0], []]
-
     """
     q, r = dmp_pdiv(f, g, u, K)
 
@@ -1317,7 +1275,6 @@ def dup_rr_div(f, g, K):
 
     >>> R.dup_rr_div(x**2 + 1, 2*x - 4)
     (0, x**2 + 1)
-
     """
     df = dup_degree(f)
     dg = dup_degree(g)
@@ -1366,7 +1323,6 @@ def dmp_rr_div(f, g, u, K):
 
     >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
     (0, x**2 + x*y)
-
     """
     if not u:
         return dup_rr_div(f, g, K)
@@ -1419,7 +1375,6 @@ def dup_ff_div(f, g, K):
 
     >>> R.dup_ff_div(x**2 + 1, 2*x - 4)
     (1/2*x + 1, 5)
-
     """
     df = dup_degree(f)
     dg = dup_degree(g)
@@ -1465,7 +1420,6 @@ def dmp_ff_div(f, g, u, K):
 
     >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
-
     """
     if not u:
         return dup_ff_div(f, g, K)
@@ -1522,7 +1476,6 @@ def dup_div(f, g, K):
     >>> R, x = ring("x", QQ)
     >>> R.dup_div(x**2 + 1, 2*x - 4)
     (1/2*x + 1, 5)
-
     """
     if K.has_Field:
         return dup_ff_div(f, g, K)
@@ -1546,7 +1499,6 @@ def dup_rem(f, g, K):
     >>> R, x = ring("x", QQ)
     >>> R.dup_rem(x**2 + 1, 2*x - 4)
     5
-
     """
     return dup_div(f, g, K)[1]
 
@@ -1567,7 +1519,6 @@ def dup_quo(f, g, K):
     >>> R, x = ring("x", QQ)
     >>> R.dup_quo(x**2 + 1, 2*x - 4)
     1/2*x + 1
-
     """
     return dup_div(f, g, K)[0]
 
@@ -1589,7 +1540,6 @@ def dup_exquo(f, g, K):
     Traceback (most recent call last):
     ...
     ExactQuotientFailed: [2, -4] does not divide [1, 0, 1]
-
     """
     q, r = dup_div(f, g, K)
 
@@ -1615,7 +1565,6 @@ def dmp_div(f, g, u, K):
     >>> R, x,y = ring("x,y", QQ)
     >>> R.dmp_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
-
     """
     if K.has_Field:
         return dmp_ff_div(f, g, u, K)
@@ -1639,7 +1588,6 @@ def dmp_rem(f, g, u, K):
     >>> R, x,y = ring("x,y", QQ)
     >>> R.dmp_rem(x**2 + x*y, 2*x + 2)
     -y + 1
-
     """
     return dmp_div(f, g, u, K)[1]
 
@@ -1660,7 +1608,6 @@ def dmp_quo(f, g, u, K):
     >>> R, x,y = ring("x,y", QQ)
     >>> R.dmp_quo(x**2 + x*y, 2*x + 2)
     1/2*x + 1/2*y - 1/2
-
     """
     return dmp_div(f, g, u, K)[0]
 
@@ -1686,7 +1633,6 @@ def dmp_exquo(f, g, u, K):
     Traceback (most recent call last):
     ...
     ExactQuotientFailed: [[2], [2]] does not divide [[1], [1, 0], []]
-
     """
     q, r = dmp_div(f, g, u, K)
 
@@ -1706,9 +1652,8 @@ def dup_max_norm(f, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> print(R.dup_max_norm(-x**2 + 2*x - 3))
+    >>> R.dup_max_norm(-x**2 + 2*x - 3)
     3
-
     """
     if not f:
         return K.zero
@@ -1726,9 +1671,8 @@ def dmp_max_norm(f, u, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x,y = ring("x,y", ZZ)
 
-    >>> print(R.dmp_max_norm(2*x*y - x - 3))
+    >>> R.dmp_max_norm(2*x*y - x - 3)
     3
-
     """
     if not u:
         return dup_max_norm(f, K)
@@ -1748,9 +1692,8 @@ def dup_l1_norm(f, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x = ring("x", ZZ)
 
-    >>> print(R.dup_l1_norm(2*x**3 - 3*x**2 + 1))
+    >>> R.dup_l1_norm(2*x**3 - 3*x**2 + 1)
     6
-
     """
     if not f:
         return K.zero
@@ -1768,9 +1711,8 @@ def dmp_l1_norm(f, u, K):
     >>> from sympy.polys import ring, ZZ
     >>> R, x,y = ring("x,y", ZZ)
 
-    >>> print(R.dmp_l1_norm(2*x*y - x - 3))
+    >>> R.dmp_l1_norm(2*x*y - x - 3)
     6
-
     """
     if not u:
         return dup_l1_norm(f, K)
@@ -1792,7 +1734,6 @@ def dup_expand(polys, K):
 
     >>> R.dup_expand([x**2 - 1, x, 2])
     2*x**3 - 2*x
-
     """
     if not polys:
         return [K.one]
@@ -1817,7 +1758,6 @@ def dmp_expand(polys, u, K):
 
     >>> R.dmp_expand([x**2 + y**2, x + 1])
     x**3 + x**2 + x*y**2 + y**2
-
     """
     if not polys:
         return dmp_one(u, K)

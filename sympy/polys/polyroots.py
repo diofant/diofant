@@ -216,7 +216,7 @@ def _roots_quartic_euler(p, q, r, a):
     ========
 
     >>> from sympy import Rational, Integer
-    >>> from sympy.polys.polyroots import _roots_quartic_euler
+
     >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
     >>> _roots_quartic_euler(p, q, r, Integer(0))[0]
     -sqrt(32*sqrt(5)/125 + 16/5) + 4*sqrt(5)/5
@@ -265,7 +265,6 @@ def roots_quartic(f):
     ========
 
         >>> from sympy import Poly, symbols, I
-        >>> from sympy.polys.polyroots import roots_quartic
 
         >>> r = roots_quartic(Poly('x**4-6*x**3+17*x**2-26*x+20'))
 
@@ -424,13 +423,10 @@ def _inv_totient_estimate(m):
     Examples
     ========
 
-    >>> from sympy.polys.polyroots import _inv_totient_estimate
-
     >>> _inv_totient_estimate(192)
     (192, 840)
     >>> _inv_totient_estimate(400)
     (400, 1750)
-
     """
     primes = [ d + 1 for d in divisors(m) if isprime(d + 1) ]
 
@@ -673,7 +669,7 @@ def _integer_basis(poly):
 
     >>> from sympy.polys import Poly
     >>> from sympy.abc import x
-    >>> from sympy.polys.polyroots import _integer_basis
+
     >>> p = Poly(x**5 + 512*x + 1024, x, domain='ZZ')
     >>> _integer_basis(p)
     4
@@ -1073,11 +1069,9 @@ def root_factors(f, *gens, **args):
     ========
 
     >>> from sympy.abc import x, y
-    >>> from sympy.polys.polyroots import root_factors
 
     >>> root_factors(x**2 - y, x)
     [x - sqrt(y), x + sqrt(y)]
-
     """
     args = dict(args)
     filter = args.pop('filter', None)
