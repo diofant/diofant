@@ -11,8 +11,8 @@ def singularities(f, x):
     ========
 
     >>> from sympy import Symbol, exp, log
-    >>> from sympy.calculus import singularities
     >>> from sympy.abc import x
+
     >>> singularities(1/(1 + x), x) == {-1}
     True
 

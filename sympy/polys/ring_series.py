@@ -20,7 +20,7 @@ def _invert_monoms(p1):
 
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import _invert_monoms
+
     >>> R, x = ring('x', ZZ)
     >>> p = x**2 + 2*x + 3
     >>> _invert_monoms(p)
@@ -28,8 +28,8 @@ def _invert_monoms(p1):
 
     See Also
     ========
-    sympy.polys.densebasic.dup_reverse
 
+    sympy.polys.densebasic.dup_reverse
     """
     terms = list(p1.items())
     terms.sort()
@@ -46,7 +46,6 @@ def _invert_monoms(p1):
 def _giant_steps(target):
     """
     list of precision steps for the Newton's method
-
     """
     res = giant_steps(2, target)
     if res[0] != 2:
@@ -64,7 +63,7 @@ def rs_trunc(p1, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_trunc
+
     >>> R, x = ring('x', QQ)
     >>> p = x**10 + x**5 + x + 1
     >>> rs_trunc(p, x, 12)
@@ -94,7 +93,7 @@ def rs_mul(p1, p2, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_mul
+
     >>> R, x = ring('x', QQ)
     >>> p1 = x**2 + 2*x + 1
     >>> p2 = x + 1
@@ -145,7 +144,7 @@ def rs_square(p1, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_square
+
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + 2*x + 1
     >>> rs_square(p, x, 3)
@@ -186,7 +185,7 @@ def rs_pow(p1, n, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_pow
+
     >>> R, x = ring('x', QQ)
     >>> p = x + 1
     >>> rs_pow(p, 4, x, 3)
@@ -234,7 +233,7 @@ def _has_constant_term(p, x):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import _has_constant_term
+
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + x + 1
     >>> _has_constant_term(p, x)
@@ -263,12 +262,11 @@ def _series_inversion1(p, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import _series_inversion1
+
     >>> R, x = ring('x', QQ)
     >>> p = x + 1
     >>> _series_inversion1(p, x, 4)
     -x**3 + x**2 - x + 1
-
     """
     ring = p.ring
     zm = ring.zero_monom
@@ -297,7 +295,7 @@ def rs_series_inversion(p, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_series_inversion
+
     >>> R, x, y = ring('x, y', QQ)
     >>> rs_series_inversion(1 + x*y**2, x, 4)
     -x**3*y**6 + x**2*y**4 - x*y**2 + 1
@@ -331,7 +329,7 @@ def rs_series_from_list(p, c, x, prec, concur=1):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_series_from_list, rs_trunc
+
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + x + 1
     >>> c = [1, 2, 3]
@@ -412,7 +410,7 @@ def rs_integrate(self, x):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_integrate
+
     >>> R, x, y = ring('x, y', QQ)
     >>> p = x + x**2*y**3
     >>> rs_integrate(p, x)
@@ -445,7 +443,7 @@ def rs_log(p, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_log
+
     >>> R, x = ring('x', QQ)
     >>> rs_log(1 + x, x, 8)
     1/7*x**7 - 1/6*x**6 + 1/5*x**5 - 1/4*x**4 + 1/3*x**3 - 1/2*x**2 + x
@@ -482,7 +480,7 @@ def rs_exp(p, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_exp
+
     >>> R, x = ring('x', QQ)
     >>> rs_exp(x**2, x, 7)
     1/6*x**6 + 1/2*x**4 + x**2 + 1
@@ -514,7 +512,7 @@ def rs_newton(p, x, prec):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_newton
+
     >>> R, x = ring('x', QQ)
     >>> p = x**2 - 2
     >>> rs_newton(p, x, 5)
@@ -540,7 +538,7 @@ def rs_hadamard_exp(p1, inverse=False):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_hadamard_exp
+
     >>> R, x = ring('x', QQ)
     >>> p = 1 + x + x**2 + x**3
     >>> rs_hadamard_exp(p)
@@ -568,7 +566,7 @@ def rs_compose_add(p1, p2):
 
     >>> from sympy.polys.domains import QQ
     >>> from sympy.polys.rings import ring
-    >>> from sympy.polys.ring_series import rs_compose_add
+
     >>> R, x = ring('x', QQ)
     >>> f = x**2 - 2
     >>> g = x**2 - 3

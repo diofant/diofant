@@ -78,8 +78,6 @@ class Options(dict):
     ========
 
     >>> from sympy.polys.domains import ZZ
-    >>> from sympy.polys.polyoptions import Options
-    >>> from sympy.polys.polyoptions import build_options
 
     >>> from sympy.abc import x, y, z
 
@@ -727,7 +725,6 @@ def allowed_flags(args, flags):
     Examples
     ========
 
-    >>> from sympy.polys.polyoptions import allowed_flags
     >>> from sympy.polys.domains import ZZ
 
     >>> allowed_flags({'domain': ZZ}, [])
