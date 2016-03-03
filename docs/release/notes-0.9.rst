@@ -8,6 +8,7 @@ New features
 ============
 
 * Polynomial solvers now express all available solutions with :class:`~diofant.polys.rootoftools.RootOf`, see `#400 <https://github.com/diofant/diofant/pull/400>`_.  Only zero-dimentional systems are supported, however.
+* Support solving linear programming problems, see `#283 <https://github.com/diofant/diofant/pull/283>`_.
 
 Major changes
 =============
@@ -87,7 +88,7 @@ Issues closed
 * `sympy/sympy#10925 <https://github.com/sympy/sympy/issues/10925>`_ plot doesn't work with Piecewise
 * `#336 <https://github.com/diofant/diofant/issues/336>`_ Drop diofant/plotting/experimental_lambdify.py
 
-.. last pr: #384
+.. last pr: #283
 
 See also full `list of closed issues
 <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.9.0+is%3Aclosed>`_

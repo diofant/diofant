@@ -1,8 +1,10 @@
-from diofant.core import oo, E
-from diofant.calculus import minimize, maximize
-from diofant.functions import exp, sign
+import pytest
 
-from diofant.abc import x
+from diofant.core import oo, E, S, Eq, Rational
+from diofant.calculus.optimization import minimize, maximize, simplex
+from diofant.functions import exp, sign, sqrt
+
+from diofant.abc import x, y, z
 
 __all__ = ()
 
@@ -26,3 +28,57 @@ def test_minimize():
 def test_maximize():
     # issue sympy/sympy#4173
     assert maximize([x**(1/x), x > 0], x) == (exp(1/E), {x: E})
+
+    # https://groups.google.com/forum/#!topic/sympy/tB2Sly4Gh_4
+    assert maximize([12*x + 40*y, x + y <= 16, x + 3*y <= 36, x <= 10,
+                     x >= 0, y >= 0], x, y) == (480, {x: 0, y: 12})
+
+
+def test_minimize_linear():
+    assert minimize([-2*x - 3*y - 2*z, 2*x + y + z <= 4,
+                     x + 2*y + z <= 7, z <= 5, x >= 0,
+                     y >= 0, z >= 0], x, y, z) == (-11, {x: 0, y: 3, z: 1})
+    assert minimize([-2*x - 3*y - 2*z, 2*x + y + z <= 4,
+                     x + 2*y + z <= 7, z <= 5, x >= 0,
+                     y >= 0, z >= 0], x, y, z) == (-11, {x: 0, y: 3, z: 1})
+    assert minimize([-2*x - 3*y - 2*z, 2*x + y + z <= 4,
+                     x + 2*y + z < 7, z <= 5, x >= 0,
+                     y >= 0, z >= 0], x, y, z) is None
+    assert minimize([-2*x - 3*y - 4*z, 3*x + 2*y + z <= 10,
+                     2*x + 5*y + 3*z <= 15, x >= 0,
+                     y >= 0, z >= 0], x, y, z) == (-20, {x: 0, y: 0, z: 5})
+    assert maximize([12*x + 40*y, x + y <= 15, x + 3*y <= 36,
+                     x <= 10, x >= 0, y >= 0], x, y) == (480, {x: 0, y: 12})
+    assert minimize([-2*x - 3*y - 4*z, Eq(3*x + 2*y + z, 10),
+                     Eq(2*x + 5*y + 3*z, 15), x >= 0, y >= 0, z >= 0],
+                    x, y, z) == (Rational(-130, 7),
+                                 {x: Rational(15, 7), y: 0,
+                                  z: Rational(25, 7)})
+
+
+@pytest.mark.xfail
+def test_minimize_linear_2():
+    assert minimize([2*x + 3*y - z, 1 <= x + y + z,
+                     x + y + z <= 2, 1 <= x - y + z,
+                     x - y + z <= 2, Eq(x - y - z, 3)],
+                    x, y, z) == (3, {x: 2, y: -S.Half, z: -S.Half})
+
+
+def test_simplex():
+    pytest.raises(ValueError, lambda: simplex([1], [[1, 2], [2, 3]],
+                                              [4, 7]))
+    pytest.raises(ValueError, lambda: simplex([1, 3], [[1, 2],
+                                                       [2, 3]], [4]))
+
+    pytest.raises(NotImplementedError,
+                  lambda: simplex([1, 3], [[1, 2], [2, 3]], [-3, 1]))
+
+    assert simplex([2, 3, 2], [[2, 1, 1], [1, 2, 1], [0, 0, 1]],
+                   [4, 7, 5]) == (11, (0, 3, 1))
+    assert simplex([2, 3, 4], [[3, 2, 1], [2, 5, 3]],
+                   [10, 15]) == (20, (0, 0, 5))
+    assert simplex([S.Half, 3, 1, 1],
+                   [[1, 1, 1, 1],
+                    [-2, -1, 1, 1],
+                    [0, 1, 0, -1]],
+                   [40, 10, 10]) == (90, (0, 25, 0, 15))
