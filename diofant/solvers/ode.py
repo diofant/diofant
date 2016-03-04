@@ -2011,13 +2011,17 @@ def checksysodesol(eqs, sols, func=None):
         raise ValueError("number of solutions provided does not match the number of equations")
     dictsol = {}
     for sol in sols:
-        sol_func = list(sol.atoms(AppliedUndef))[0]
-        if sol.lhs == sol_func:
-            dictsol[sol_func] = sol.rhs
-        elif sol.rhs == sol_func:
-            dictsol[sol_func] = sol.lhs
-        else:  # pragma: no cover
-            raise NotImplementedError
+        func = list(sol.atoms(AppliedUndef))[0]
+        if sol.rhs == func:
+            sol = sol.reversed
+        solved = sol.lhs == func and not sol.rhs.has(func)
+        if not solved:
+            rhs = solve(sol, func)
+            if not rhs:  # pragma: no cover
+                raise NotImplementedError
+        else:
+            rhs = sol.rhs
+        dictsol[func] = rhs
     checkeq = []
     for eq in eqs:
         for func in funcs:
@@ -2286,15 +2290,12 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
         order = ode_order(ode, func)
     solved = sol.lhs == func and not sol.rhs.has(func)
     if solve_for_func and not solved:
-        solved = solve(sol, func)
-        if solved and not any(isinstance(_[func], RootOf) for _ in solved):
-            if len(solved) == 1:
-                result = checkodesol(ode, Eq(func, solved[0][func]),
-                                     order=order, solve_for_func=False)
-            else:
-                result = checkodesol(ode, [Eq(func, t[func]) for t in solved],
-                                     order=order, solve_for_func=False)
-            return result
+        rhs = solve(sol, func)
+        if rhs and not any(isinstance(_[func], RootOf) for _ in rhs):
+            eqs = [Eq(func, t[func]) for t in rhs]
+            if len(rhs) == 1:
+                eqs = eqs[0]
+            return checkodesol(ode, eqs, order=order, solve_for_func=False)
 
     s = True
     testnum = 0
