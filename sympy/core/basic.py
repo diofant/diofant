@@ -171,9 +171,6 @@ class Basic(metaclass=ManagedProperties):
         #
         st = self._hashable_content()
         ot = other._hashable_content()
-        c = (len(st) > len(ot)) - (len(st) < len(ot))
-        if c:
-            return c
         for l, r in zip(st, ot):
             l = Basic(*l) if isinstance(l, frozenset) else l
             r = Basic(*r) if isinstance(r, frozenset) else r
