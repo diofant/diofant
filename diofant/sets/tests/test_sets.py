@@ -446,6 +446,8 @@ def test_contains():
     assert Interval(0, 2, True, True).contains(0) is false
     assert Interval(0, 2, True, True).contains(2) is false
 
+    assert Interval(0, 2) not in Interval(0, 2)
+
     # issue sympy/sympy#10326
     assert S.Reals.contains(oo) is false
     assert S.Reals.contains(-oo) is false
