@@ -609,26 +609,21 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import sin
         >>> from sympy.abc import x, y
 
-        >>> print((x**2 + x*y).as_poly())
+        >>> (x**2 + x*y).as_poly()
         Poly(x**2 + x*y, x, y, domain='ZZ')
 
-        >>> print((x**2 + x*y).as_poly(x, y))
+        >>> (x**2 + x*y).as_poly(x, y)
         Poly(x**2 + x*y, x, y, domain='ZZ')
 
-        >>> print((x**2 + sin(y)).as_poly(x, y))
-        None
+        >>> (x**2 + sin(y)).as_poly(x, y) is None
+        True
         """
         from sympy.polys import Poly, PolynomialError
 
         try:
-            poly = Poly(self, *gens, **args)
-
-            if not poly.is_Poly:
-                return
-            else:
-                return poly
+            return Poly(self, *gens, **args)
         except PolynomialError:
-            return
+            pass
 
     def as_content_primitive(self, radical=False):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
