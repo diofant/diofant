@@ -1654,10 +1654,7 @@ class preorder_traversal(object):
             else:
                 args = node.args
             if keys:
-                if not keys:
-                    args = ordered(args, keys, default=False)
-                else:
-                    args = ordered(args)
+                args = ordered(args)
             for arg in args:
                 for subtree in self._preorder_traversal(arg, keys):
                     yield subtree
