@@ -783,13 +783,13 @@ class LatexPrinter(Printer):
 
     def _print_LogOp(self, args, char):
         arg = args[0]
-        if arg.is_Boolean and not arg.is_Not:
+        if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
             tex = r"\left(%s\right)" % self._print(arg)
         else:
             tex = r"%s" % self._print(arg)
 
         for arg in args[1:]:
-            if arg.is_Boolean and not arg.is_Not:
+            if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
                 tex += r" %s \left(%s\right)" % (char, self._print(arg))
             else:
                 tex += r" %s %s" % (char, self._print(arg))

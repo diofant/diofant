@@ -5,7 +5,7 @@ Boolean algebra module for SymPy
 from collections import defaultdict
 from itertools import combinations, product
 
-from sympy.core.basic import Basic
+from sympy.core.basic import Basic, Atom
 from sympy.core.cache import cacheit
 from sympy.core.numbers import Number
 from sympy.core.operations import LatticeOp
@@ -76,7 +76,7 @@ class Boolean(Basic):
                 not satisfiable(Not(Equivalent(self, other)))
 
 
-class BooleanAtom(Boolean):
+class BooleanAtom(Atom, Boolean):
     """
     Base class of BooleanTrue and BooleanFalse.
     """
