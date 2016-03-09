@@ -812,8 +812,6 @@ class Basic(metaclass=ManagedProperties):
                 # in things like Derivative(f(x, y), x) in which x
                 # is both free and bound
                 rv = rv._subs(old, d*m, **kwargs)
-                if not isinstance(rv, Basic):
-                    break
                 reps[d] = new
             reps[m] = S.One  # get rid of m
             return rv.xreplace(reps)
