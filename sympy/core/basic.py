@@ -460,8 +460,7 @@ class Basic(metaclass=ManagedProperties):
         while any(s.name.endswith(u) for s in V):
             u += "_"
         name = '%%i%s' % u
-        return dict(zip(V, (Symbol(name % i, **v.assumptions0)
-                            for i, v in enumerate(V))))
+        return {v: Symbol(name % i, **v.assumptions0) for i, v in enumerate(V)}
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
