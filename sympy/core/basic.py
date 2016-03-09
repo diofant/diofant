@@ -297,14 +297,15 @@ class Basic(metaclass=ManagedProperties):
         >>> (u**2 + y).dummy_eq(x**2 + y, y)
         False
         """
+        other = sympify(other)
         dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
 
         if not dummy_symbols:
             return self == other
         elif len(dummy_symbols) == 1:
             dummy = dummy_symbols.pop()
-        else:
-            raise ValueError(
+        else:  # pragma: no cover
+            raise NotImplementedError(
                 "only one dummy symbol allowed on the left-hand side")
 
         if symbol is None:
@@ -314,11 +315,11 @@ class Basic(metaclass=ManagedProperties):
                 return self == other
             elif len(symbols) == 1:
                 symbol = symbols.pop()
-            else:
-                raise ValueError("specify a symbol in which expressions should be compared")
+            else:  # pragma: no cover
+                raise NotImplementedError(
+                    "specify a symbol in which expressions should be compared")
 
         tmp = dummy.__class__()
-
         return self.subs(dummy, tmp) == other.subs(symbol, tmp)
 
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
