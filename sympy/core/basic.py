@@ -451,13 +451,14 @@ class Basic(metaclass=ManagedProperties):
         {x: 0_}
         """
         from sympy import Symbol
-        if not hasattr(self, 'variables'):
+        try:
+            V = self.variables
+        except AttributeError:
             return {}
         u = "_"
-        while any(s.name.endswith(u) for s in self.free_symbols):
+        while any(s.name.endswith(u) for s in V):
             u += "_"
         name = '%%i%s' % u
-        V = self.variables
         return dict(zip(V, (Symbol(name % i, **v.assumptions0)
                             for i, v in enumerate(V))))
 
