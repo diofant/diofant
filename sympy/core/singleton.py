@@ -25,9 +25,6 @@ class SingletonRegistry(object):
     def __setattr__(self, name, obj):
         setattr(self.__class__, name, obj)
 
-    def __delattr__(self, name):
-        delattr(self.__class__, name)
-
     def __getattr__(self, name):
         """Python calls __getattr__ if no attribute of that name was installed
         yet.
@@ -102,8 +99,3 @@ class Singleton(ManagedProperties):
             Singleton._instances[self] = \
                 super(Singleton, self).__call__(*args, **kwargs)
         return Singleton._instances[self]
-
-        # Inject pickling support.
-        def __getnewargs__(self):
-            return ()
-        self.__getnewargs__ = __getnewargs__

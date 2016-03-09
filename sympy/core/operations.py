@@ -448,7 +448,3 @@ class LatticeOp(AssocOp):
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
-
-    @staticmethod
-    def _compare_pretty(a, b):
-        return (str(a) > str(b)) - (str(a) < str(b))

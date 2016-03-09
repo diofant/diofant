@@ -275,8 +275,6 @@ class Number(AtomicExpr):
                 return val
             else:
                 raise ValueError('String "%s" does not denote a Number' % obj)
-            if isinstance(obj, Number):
-                return obj
         msg = "expected str|int|float|Decimal|Number object but got %r"
         raise TypeError(msg % type(obj).__name__)
 

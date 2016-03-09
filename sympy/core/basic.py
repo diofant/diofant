@@ -171,9 +171,6 @@ class Basic(metaclass=ManagedProperties):
         #
         st = self._hashable_content()
         ot = other._hashable_content()
-        c = (len(st) > len(ot)) - (len(st) < len(ot))
-        if c:
-            return c
         for l, r in zip(st, ot):
             l = Basic(*l) if isinstance(l, frozenset) else l
             r = Basic(*r) if isinstance(r, frozenset) else r
@@ -184,33 +181,6 @@ class Basic(metaclass=ManagedProperties):
             if c:
                 return c
         return 0
-
-    @staticmethod
-    def _compare_pretty(a, b):
-        from sympy.series.order import Order
-        if isinstance(a, Order) and not isinstance(b, Order):
-            return 1
-        if not isinstance(a, Order) and isinstance(b, Order):
-            return -1
-
-        if a.is_Rational and b.is_Rational:
-            l = a.p * b.q
-            r = b.p * a.q
-            return (l > r) - (l < r)
-        else:
-            from sympy.core.symbol import Wild
-            p1, p2, p3 = Wild("p1"), Wild("p2"), Wild("p3")
-            r_a = a.match(p1 * p2**p3)
-            if r_a and p3 in r_a:
-                a3 = r_a[p3]
-                r_b = b.match(p1 * p2**p3)
-                if r_b and p3 in r_b:
-                    b3 = r_b[p3]
-                    c = Basic.compare(a3, b3)
-                    if c != 0:
-                        return c
-
-        return Basic.compare(a, b)
 
     @classmethod
     def class_key(cls):
@@ -272,13 +242,8 @@ class Basic(metaclass=ManagedProperties):
         if self is other:
             return True
 
-        from .function import AppliedUndef, UndefinedFunction as UndefFunc
+        from .function import AppliedUndef
 
-        if isinstance(self, UndefFunc) and isinstance(other, UndefFunc):
-            if self.class_key() == other.class_key():
-                return True
-            else:
-                return False
         if type(self) is not type(other):
             # issue 6100 a**1.0 == a like a**2.0 == a**2
             if isinstance(self, Pow) and self.exp == 1:
@@ -644,26 +609,21 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import sin
         >>> from sympy.abc import x, y
 
-        >>> print((x**2 + x*y).as_poly())
+        >>> (x**2 + x*y).as_poly()
         Poly(x**2 + x*y, x, y, domain='ZZ')
 
-        >>> print((x**2 + x*y).as_poly(x, y))
+        >>> (x**2 + x*y).as_poly(x, y)
         Poly(x**2 + x*y, x, y, domain='ZZ')
 
-        >>> print((x**2 + sin(y)).as_poly(x, y))
-        None
+        >>> (x**2 + sin(y)).as_poly(x, y) is None
+        True
         """
         from sympy.polys import Poly, PolynomialError
 
         try:
-            poly = Poly(self, *gens, **args)
-
-            if not poly.is_Poly:
-                return
-            else:
-                return poly
+            return Poly(self, *gens, **args)
         except PolynomialError:
-            return
+            pass
 
     def as_content_primitive(self, radical=False):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
@@ -1694,10 +1654,7 @@ class preorder_traversal(object):
             else:
                 args = node.args
             if keys:
-                if not keys:
-                    args = ordered(args, keys, default=False)
-                else:
-                    args = ordered(args)
+                args = ordered(args)
             for arg in args:
                 for subtree in self._preorder_traversal(arg, keys):
                     yield subtree
