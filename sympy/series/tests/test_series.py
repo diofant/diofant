@@ -158,3 +158,8 @@ def test_issue_9549():
     r = e.series(x, oo)
     assert r == x**(-5) - 1/x**4 + x**(-3) + 1/x + O(x**(-6), (x, oo))
     assert e.series(x, oo, n=8) + O(1/x**6, (x, oo)) == r
+
+
+def test_issue_10761():
+    e = 1/(x**-2 + x**-3)
+    assert e.series(x) == x**3 - x**4 + x**5 + O(x**6)
