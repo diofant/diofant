@@ -2005,6 +2005,8 @@ def test_condition_number():
     assert all(Float(1.).epsilon_eq(Mc.subs(x, val).evalf()) for val in
                [Rational(1, 5), Rational(1, 2), Rational(1, 10), pi/2, pi, 7*pi/4 ])
 
+    assert Matrix([]).condition_number() == 0  # issue sympy/sympy#10782
+
 
 def test_equality():
     A = Matrix(((1, 2, 3), (4, 5, 6), (7, 8, 9)))
