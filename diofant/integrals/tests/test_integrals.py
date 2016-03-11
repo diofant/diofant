@@ -1177,3 +1177,7 @@ def test_sympyissue_12582():
 def test_sympyissue_13312():
     assert integrate(exp(-a*t), (t, b, oo)) == Piecewise((-b + oo, Eq(a, 0)),
                                                          (-exp(-oo*sign(a))/a + exp(-a*b)/a, True))
+
+
+def test_sympyissue_10680():
+    integrate(x**log(x**log(x**log(x))), x)  # not raises
