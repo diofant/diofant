@@ -9,10 +9,10 @@ complex part, because it needs to calculate a limit to return the result.
 import pytest
 
 from sympy import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                   S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh,
-                   coth, sinh, tanh, digamma, Integer, Ei, EulerGamma, Mul,
-                   Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                   fibonacci, GoldenRatio, Limit)
+                   S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh, airyai,
+                   airybi, coth, sinh, tanh, digamma, Integer, Ei, EulerGamma,
+                   Mul, Pow, Add, li, Li, tan, acosh, factorial, binomial,
+                   root, fibonacci, GoldenRatio, Limit)
 from sympy.series.gruntz import (compare, mrv, rewrite,
                                  mrv_leadterm, limitinf as gruntz, sign)
 
@@ -372,6 +372,14 @@ def test_intractable():
     assert gruntz(gamma(Rational(1, 7) + 1/x), x) == gamma(Rational(1, 7))
     assert gruntz(log(x**x)/log(gamma(x)), x) == 1
     assert gruntz(log(gamma(gamma(x)))/exp(x), x) == oo
+
+    # issue sympy/sympy#10804
+    assert gruntz(2*airyai(x)*root(x, 4) *
+                  exp(2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
+    assert gruntz(airybi(x)*root(x, 4) *
+                  exp(-2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
+    assert gruntz(airyai(2 + 1/x), x) == airyai(2)
+    assert gruntz(airybi(2 + 1/x), x) == airybi(2)
 
 
 def test_branch_cuts():
