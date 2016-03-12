@@ -3191,6 +3191,23 @@ x─→1⁺⎝    y⎠\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    # issue sympy/sympy#10803
+    expr = 1/Limit(x, x, oo)
+    ascii_str = \
+"""\
+        -1\n\
+/ lim x\\  \n\
+\\x->oo /  \
+"""
+    ucode_str = \
+"""\
+       -1\n\
+⎛lim x⎞  \n\
+⎝x─→∞ ⎠  \
+"""
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
 
 def test_pretty_RootOf():
     expr = RootOf(x**5 + 11*x - 2, 0)
