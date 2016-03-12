@@ -400,10 +400,10 @@ class Expr(Basic, EvalfMixin):
             # precision to see if we can get any significance
 
             from mpmath.libmp.libintmath import giant_steps
-            from sympy.core.evalf import DEFAULT_MAXPREC as target
+            from sympy.core.evalf import DEFAULT_MAXPREC as TARGET
 
             # evaluate
-            for prec in giant_steps(2, target):
+            for prec in giant_steps(2, TARGET):
                 nmag = abs(self.evalf(prec, subs=reps))
                 if nmag._prec != 1:
                     break
