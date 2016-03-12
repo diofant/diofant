@@ -162,13 +162,13 @@ class PrettyPrinter(Printer):
         arg = args[0]
         pform = self._print(arg)
 
-        if arg.is_Boolean and not arg.is_Not:
+        if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
             pform = prettyForm(*pform.parens())
 
         for arg in args[1:]:
             pform_arg = self._print(arg)
 
-            if arg.is_Boolean and not arg.is_Not:
+            if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
                 pform_arg = prettyForm(*pform_arg.parens())
 
             pform = prettyForm(*pform.right(' %s ' % char))
