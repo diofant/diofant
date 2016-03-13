@@ -214,3 +214,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11207` floor(ceiling(x)) doesn't simplify
 * :sympyissue:`9135` Incorrect subsitution of partial derivatives by .subs()
 * :sympyissue:`10829` subs method gives wrong result for powers
+* :sympyissue:`10816` is_nthpow_residue(a,n,m) gives NotImplemented error when m don't have primitive root
