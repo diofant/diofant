@@ -583,8 +583,8 @@ class LatexPrinter(Printer):
 
                 symbols.insert(0, r"\, d%s" % self._print(symbol))
 
-        return r"%s %s%s" % (tex,
-            str(self._print(expr.function)), "".join(symbols))
+        tmpl = r"%s \left(%s\right)%s" if expr.function.is_Add else r"%s %s%s"
+        return tmpl % (tex, str(self._print(expr.function)), "".join(symbols))
 
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args

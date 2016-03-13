@@ -467,6 +467,7 @@ def test_latex_integrals():
 
     # issue sympy/sympy#10806
     assert latex(Integral(x, x)**2) == r"\left(\int x\, dx\right)^{2}"
+    assert latex(Integral(z + x, z)) == r"\int \left(x + z\right)\, dz"
 
 
 def test_latex_sets():
