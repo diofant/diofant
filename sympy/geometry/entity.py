@@ -289,10 +289,6 @@ class GeometryEntity(Basic):
     def equals(self, o):
         return self == o
 
-    def __ne__(self, o):
-        """Test inequality of two geometrical entities."""
-        return not self.__eq__(o)
-
     def __radd__(self, a):
         return a.__add__(self)
 
