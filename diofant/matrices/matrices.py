@@ -2015,6 +2015,8 @@ class MatrixBase(DefaultPrinting):
         >>> a.is_nilpotent()
         False
         """
+        if not self:
+            return True
         if not self.is_square:
             raise NonSquareMatrixError(
                 "Nilpotency is valid only for square matrices")
