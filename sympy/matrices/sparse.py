@@ -1091,9 +1091,6 @@ class SparseMatrix(MatrixBase):
         except AttributeError:
             return False
 
-    def __ne__(self, other):
-        return not self == other
-
     def as_mutable(self):
         """Returns a mutable version of this matrix.
 

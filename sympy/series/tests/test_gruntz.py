@@ -435,6 +435,8 @@ def test_issue_7096():
 
 def test_issue_8462():
     assert gruntz(binomial(x, x/2), x) == oo
+    # issue sympy/sympy#10801
+    assert gruntz(16**x/(x*binomial(2*x, x)**2), x) == pi
 
 
 def test_omgissue_74():

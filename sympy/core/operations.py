@@ -393,20 +393,22 @@ class LatticeOp(AssocOp):
 
     def __new__(cls, *args, **options):
         args = (_sympify(arg) for arg in args)
-        try:
-            _args = frozenset(cls._new_args_filter(args))
-        except ShortCircuit:
-            return sympify(cls.zero)
-        if not _args:
-            return sympify(cls.identity)
-        elif len(_args) == 1:
-            return set(_args).pop()
+
+        if options.pop('evaluate', global_evaluate[0]):
+            try:
+                _args = frozenset(cls._new_args_filter(args))
+            except ShortCircuit:
+                return sympify(cls.zero)
+            if not _args:
+                return sympify(cls.identity)
+            elif len(_args) == 1:
+                return set(_args).pop()
         else:
-            # XXX in almost every other case for __new__, *_args is
-            # passed along, but the expectation here is for _args
-            obj = super(AssocOp, cls).__new__(cls, _args)
-            obj._argset = _args
-            return obj
+            _args = frozenset(args)
+
+        obj = super(AssocOp, cls).__new__(cls, _args)
+        obj._argset = _args
+        return obj
 
     @classmethod
     def _new_args_filter(cls, arg_sequence, call_cls=None):
@@ -448,7 +450,3 @@ class LatticeOp(AssocOp):
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
-
-    @staticmethod
-    def _compare_pretty(a, b):
-        return (str(a) > str(b)) - (str(a) < str(b))

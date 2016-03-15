@@ -113,7 +113,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             pass
         elif r.func in (Eq, Ne):
             r = r.func(*ordered(r.args), evaluate=False)
-        else:
+        else:  # pragma: no cover
             raise NotImplemented
         if r.lhs.is_Number and not r.rhs.is_Number:
             r = r.reversed
@@ -229,7 +229,7 @@ class Relational(Boolean, Expr, EvalfMixin):
 
         if len(syms) == 1:
             sym = syms.pop()
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Sorry, Relational.as_set procedure"
                                       " is not yet implemented for"
                                       " multivariate expressions")
