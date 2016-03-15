@@ -213,3 +213,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11090` ImmutableMatrix * MatrixSymbol raises AttributeError
 * :sympyissue:`11207` floor(ceiling(x)) doesn't simplify
 * :sympyissue:`9135` Incorrect subsitution of partial derivatives by .subs()
+* :sympyissue:`10829` subs method gives wrong result for powers

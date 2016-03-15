@@ -555,6 +555,11 @@ class Pow(Expr):
         if old == self.base:
             return new**self.exp._subs(old, new)
 
+        if old.func is self.func and self.exp == old.exp:
+            l = log(self.base, old.base)
+            if l.is_Number:
+                return Pow(new, l)
+
         if isinstance(old, self.func) and self.base == old.base:
             if self.exp.is_Add is False:
                 ct2 = old.exp.as_independent(Symbol, as_Add=False)

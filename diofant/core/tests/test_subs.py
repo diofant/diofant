@@ -59,6 +59,10 @@ def test_powers():
     assert (x**(4.0*y)).subs(x**(2.0*y), n) == n**2.0
     assert (2**(x + 2)).subs(2, 3) == 3**(x + 3)
 
+    # issue sympy/sympy#10829
+    assert (4**x).subs(2**x, y) == y**2
+    assert (9**x).subs(3**x, y) == y**2
+
 
 def test_logexppow():   # no eval()
     x = Symbol('x', extended_real=True)
