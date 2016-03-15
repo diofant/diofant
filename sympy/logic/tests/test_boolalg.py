@@ -34,8 +34,9 @@ def test_And():
     assert And(A) == A
     assert And(True) is true
     assert And(False) is false
-    assert And(True, True ) is true
+    assert And(True, True) is true
     assert And(True, False) is false
+    assert And(True, False, evaluate=False) is not false
     assert And(False, False) is false
     assert And(True, A) == A
     assert And(False, A) is false

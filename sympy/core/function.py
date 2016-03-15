@@ -1383,9 +1383,6 @@ class Lambda(Expr):
         otherexpr = otherexpr.xreplace(dict(zip(other.args[0], self.args[0])))
         return selfexpr == otherexpr
 
-    def __ne__(self, other):
-        return not(self == other)
-
     def __hash__(self):
         return super(Lambda, self).__hash__()
 
@@ -1534,9 +1531,6 @@ class Subs(Expr):
         if not isinstance(other, Subs):
             return False
         return self._expr == other._expr
-
-    def __ne__(self, other):
-        return not(self == other)
 
     def __hash__(self):
         return super(Subs, self).__hash__()
