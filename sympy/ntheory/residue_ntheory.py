@@ -4,6 +4,7 @@ from sympy.core.singleton import S
 from sympy.core.numbers import igcd, igcdex
 from sympy.core.compatibility import as_int
 from sympy.core.function import Function
+from sympy.utilities.iterables import cantor_product
 from .primetest import isprime
 from .factor_ import factorint, trailing, totient
 
@@ -301,13 +302,12 @@ def sqrt_mod_iter(a, p, domain=int):
             v.append(rx)
             pv.append(px**ex)
         mm, e, s = gf_crt1(pv, ZZ)
-        from sympy.utilities.iterables import cantor_product as _product
         if domain is ZZ:
-            for vx in _product(*v):
+            for vx in cantor_product(*v):
                 r = gf_crt2(vx, pv, mm, e, s, ZZ)
                 yield r
         else:
-            for vx in _product(*v):
+            for vx in cantor_product(*v):
                 r = gf_crt2(vx, pv, mm, e, s, ZZ)
                 yield domain(r)
 
