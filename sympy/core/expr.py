@@ -2853,7 +2853,8 @@ class Expr(Basic, EvalfMixin):
         obj = self._eval_as_leading_term(x)
         if obj is not None:
             return powsimp(obj, deep=True, combine='exp')
-        raise NotImplementedError('as_leading_term(%s, %s)' % (self, x))
+        raise NotImplementedError('as_leading_term(%s, %s)' %
+                                  (self, x))  # pragma: no cover
 
     def _eval_as_leading_term(self, x):
         return self
