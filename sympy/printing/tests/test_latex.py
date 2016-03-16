@@ -465,6 +465,9 @@ def test_latex_integrals():
     assert latex(Integral(x, x, y, (z, 0, 1))) == \
         r"\int_{0}^{1}\int\int x\, dx\, dy\, dz"
 
+    # issue sympy/sympy#10806
+    assert latex(Integral(x, x)**2) == r"\left(\int x\, dx\right)^{2}"
+
 
 def test_latex_sets():
     for s in (frozenset, set):

@@ -7,14 +7,10 @@ from sympy import (Symbol, Dummy, diff, Derivative, Rational, roots, S, sqrt,
                    laguerre, assoc_laguerre, laguerre_poly, hermite,
                    gegenbauer, jacobi, jacobi_normalized)
 
-x = Symbol('x')
+from sympy.abc import a, b, n, m, k, x, alpha
 
 
 def test_jacobi():
-    n = Symbol("n")
-    a = Symbol("a")
-    b = Symbol("b")
-
     assert jacobi(0, a, b, x) == 1
     assert jacobi(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
 
@@ -48,6 +44,17 @@ def test_jacobi():
     assert diff(jacobi(n, a, b, x), x) == \
         (a/2 + b/2 + n/2 + Rational(1, 2))*jacobi(n - 1, a + 1, b + 1, x)
 
+    # XXX see issue sympy/sympy#5539
+    assert str(jacobi(n, a, b, x).diff(a)) == \
+        ("Sum((jacobi(n, a, b, x) + (a + b + 2*_k + 1)*RisingFactorial(b + "
+         "_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + "
+         "b + _k + 1, n - _k)))/(a + b + n + _k + 1), (_k, 0, n - 1))")
+    assert str(jacobi(n, a, b, x).diff(b)) == \
+        ("Sum(((-1)**(n - _k)*(a + b + 2*_k + 1)*RisingFactorial(a + "
+         "_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + "
+         "b + _k + 1, n - _k)) + jacobi(n, a, b, x))/(a + b + n + "
+         "_k + 1), (_k, 0, n - 1))")
+
     assert jacobi_normalized(n, a, b, x) == \
            (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
                                     / ((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1))))
@@ -57,9 +64,6 @@ def test_jacobi():
 
 
 def test_gegenbauer():
-    n = Symbol("n")
-    a = Symbol("a")
-
     assert gegenbauer(0, a, x) == 1
     assert gegenbauer(1, a, x) == 2*a*x
     assert gegenbauer(2, a, x) == -a + x**2*(2*a**2 + 2*a)
@@ -89,6 +93,12 @@ def test_gegenbauer():
     assert diff(gegenbauer(n, a, x), n) == Derivative(gegenbauer(n, a, x), n)
     assert diff(gegenbauer(n, a, x), x) == 2*a*gegenbauer(n - 1, a + 1, x)
 
+    # XXX see issue sympy/sympy#5539
+    assert str(gegenbauer(n, a, x).diff(a)) == \
+        ("Sum((2*(-1)**(n - _k) + 2)*(a + _k)*gegenbauer(_k, a, x)/((n - "
+         "_k)*(2*a + n + _k)) + (2/(2*a + n + _k) + (2*_k + 2)/((2*a + "
+         "_k)*(2*a + 2*_k + 1)))*gegenbauer(n, a, x), (_k, 0, n - 1))")
+
 
 def test_legendre():
     pytest.raises(ValueError, lambda: legendre(-1, x))
@@ -113,8 +123,6 @@ def test_legendre():
         sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
         -sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
     }
-
-    n = Symbol("n")
 
     X = legendre(n, x)
     assert isinstance(X, legendre)
@@ -152,9 +160,6 @@ def test_assoc_legendre():
     assert Plm(3, -2, x) == Plm(3, 2, x)/120
     assert Plm(3, -1, x) == -Plm(3, 1, x)/12
 
-    n = Symbol("n")
-    m = Symbol("m")
-
     X = Plm(n, m, x)
     assert isinstance(X, assoc_legendre)
 
@@ -166,9 +171,12 @@ def test_assoc_legendre():
     assert conjugate(assoc_legendre(n, m, x)) == \
         assoc_legendre(n, conjugate(m), conjugate(x))
 
+    assert assoc_legendre(n, m, x).diff(x) == \
+        (n*x*assoc_legendre(n, m, x) -
+         (m + n)*assoc_legendre(n - 1, m, x))/(x**2 - 1)
+
 
 def test_chebyshev():
-
     assert chebyshevt(0, x) == 1
     assert chebyshevt(1, x) == x
     assert chebyshevt(2, x) == 2*x**2 - 1
@@ -222,7 +230,6 @@ def test_hermite():
     assert hermite(4, x) == 16*x**4 - 48*x**2 + 12
     assert hermite(6, x) == 64*x**6 - 480*x**4 + 720*x**2 - 120
 
-    n = Symbol("n")
     assert hermite(n, x) == hermite(n, x)
     assert hermite(n, -x) == (-1)**n*hermite(n, x)
     assert hermite(-n, x) == hermite(-n, x)
@@ -234,9 +241,6 @@ def test_hermite():
 
 
 def test_laguerre():
-    n = Symbol("n")
-
-    # Laguerre polynomials:
     assert laguerre(0, x) == 1
     assert laguerre(1, x) == -x + 1
     assert laguerre(2, x) == x**2/2 - 2*x + 1
@@ -255,10 +259,6 @@ def test_laguerre():
 
 
 def test_assoc_laguerre():
-    n = Symbol("n")
-    m = Symbol("m")
-    alpha = Symbol("alpha")
-
     # generalized Laguerre polynomials:
     assert assoc_laguerre(0, alpha, x) == 1
     assert assoc_laguerre(1, alpha, x) == -x + alpha + 1
@@ -289,6 +289,6 @@ def test_assoc_laguerre():
 
 @pytest.mark.xfail
 def test_laguerre_2():
-    # This fails due to issue for Sum, like issue 2440
-    alpha, k = Symbol("alpha"), Dummy("k")
-    assert diff(assoc_laguerre(n, alpha, x), alpha) == Sum(assoc_laguerre(k, alpha, x)/(-alpha + n), (k, 0, n - 1))
+    # This fails due to issue for Sum, like issue sympy/sympy#5539
+    assert diff(assoc_laguerre(n, alpha, x), alpha) == \
+        Sum(assoc_laguerre(k, alpha, x)/(-alpha + n), (k, 0, n - 1))

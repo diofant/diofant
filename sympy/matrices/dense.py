@@ -365,9 +365,6 @@ class DenseMatrix(MatrixBase):
         except AttributeError:
             return False
 
-    def __ne__(self, other):
-        return not self == other
-
     def _cholesky(self):
         """Helper function of cholesky.
         Without the error checks.

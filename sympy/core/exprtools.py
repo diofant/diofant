@@ -590,9 +590,6 @@ class Factors(object):
             other = Factors(other)
         return self.factors == other.factors
 
-    def __ne__(self, other):  # Factors
-        return not self.__eq__(other)
-
 
 class Term(object):
     """Efficient representation of ``coeff*(numer/denom)``. """
@@ -699,9 +696,6 @@ class Term(object):
         return (self.coeff == other.coeff and
                 self.numer == other.numer and
                 self.denom == other.denom)
-
-    def __ne__(self, other):  # Term
-        return not self.__eq__(other)
 
 
 def _gcd_terms(terms, isprimitive=False, fraction=True):

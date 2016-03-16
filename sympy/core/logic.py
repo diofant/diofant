@@ -170,12 +170,6 @@ class Logic(object):
         else:
             return self.args == other.args
 
-    def __ne__(self, other):
-        if not isinstance(other, type(self)):
-            return True
-        else:
-            return self.args != other.args
-
     def __lt__(self, other):
         if self.__cmp__(other) == -1:
             return True
