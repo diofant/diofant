@@ -590,9 +590,8 @@ class Add(Expr, AssocOp):
             return self._new_rawargs(*args)
 
     @cacheit
-    def extract_leading_order(self, symbols, point=None):
-        """
-        Returns the leading term and its order.
+    def extract_leading_order(self, symbols):
+        """Returns the leading term and its order.
 
         Examples
         ========
@@ -604,13 +603,11 @@ class Add(Expr, AssocOp):
         ((1, O(1)),)
         >>> (x + x**2).extract_leading_order(x)
         ((x, O(x)),)
-
         """
         from sympy import Order
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
-        if not point:
-            point = [0]*len(symbols)
+        point = [0]*len(symbols)
         seq = [(f, Order(f, *zip(symbols, point))) for f in self.args]
         for ef, of in seq:
             for e, o in lst:
