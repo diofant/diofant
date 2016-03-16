@@ -406,10 +406,6 @@ class Number(AtomicExpr):
         raise NotImplementedError('%s needs .__eq__() method' %
             (self.__class__.__name__))
 
-    def __ne__(self, other):
-        raise NotImplementedError('%s needs .__ne__() method' %
-            (self.__class__.__name__))
-
     def __lt__(self, other):
         try:
             other = _sympify(other)
@@ -958,9 +954,6 @@ class Float(Number):
             return bool(mlib.mpf_eq(self._mpf_, ompf))
         return False    # Float != non-Number
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __gt__(self, other):
         try:
             other = _sympify(other)
@@ -1402,9 +1395,6 @@ class Rational(Number):
                 return mlib.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
         return False
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __gt__(self, other):
         try:
             other = _sympify(other)
@@ -1698,9 +1688,6 @@ class Integer(Rational):
         elif isinstance(other, Integer):
             return (self.p == other.p)
         return Rational.__eq__(self, other)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __gt__(self, other):
         try:
@@ -2389,9 +2376,6 @@ class Infinity(Number, metaclass=Singleton):
     def __eq__(self, other):
         return other is S.Infinity
 
-    def __ne__(self, other):
-        return other is not S.Infinity
-
     def __lt__(self, other):
         try:
             other = _sympify(other)
@@ -2594,9 +2578,6 @@ class NegativeInfinity(Number, metaclass=Singleton):
     def __eq__(self, other):
         return other is S.NegativeInfinity
 
-    def __ne__(self, other):
-        return other is not S.NegativeInfinity
-
     def __lt__(self, other):
         try:
             other = _sympify(other)
@@ -2742,9 +2723,6 @@ class NaN(Number, metaclass=Singleton):
         # NaN is structurally equal to another NaN
         return other is S.NaN
 
-    def __ne__(self, other):
-        return other is not S.NaN
-
     def _eval_Eq(self, other):
         # NaN is not mathematically equal to anything, even NaN
         return S.false
@@ -2855,9 +2833,6 @@ class NumberSymbol(AtomicExpr):
             return False
 
         return False    # NumberSymbol != non-(Number|self)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __lt__(self, other):
         try:
