@@ -1904,7 +1904,7 @@ class Poly(Expr):
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
 
-        >>> print(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM())
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM()
         x**2*y**0
         """
         return Monomial(self.monoms(order)[0], self.gens)
@@ -1919,7 +1919,7 @@ class Poly(Expr):
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
 
-        >>> print(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM())
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM()
         x**0*y**1
         """
         return Monomial(self.monoms(order)[-1], self.gens)
@@ -1933,9 +1933,8 @@ class Poly(Expr):
 
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
-        >>> from sympy.printing import sstr
 
-        >>> print(sstr(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()))
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()
         (x**2*y**0, 4)
         """
         monom, coeff = self.terms(order)[0]
@@ -1950,9 +1949,8 @@ class Poly(Expr):
 
         >>> from sympy import Poly
         >>> from sympy.abc import x, y
-        >>> from sympy.printing import sstr
 
-        >>> print(sstr(Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()))
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()
         (x**0*y**1, 3)
         """
         monom, coeff = self.terms(order)[-1]

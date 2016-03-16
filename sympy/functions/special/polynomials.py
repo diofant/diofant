@@ -143,9 +143,6 @@ class jacobi(OrthogonalPolynomial):
         elif b == -a:
             # P^{a, -a}_n(x)
             return gamma(n + a + 1) / gamma(n + 1) * (1 + x)**(a/2) / (1 - x)**(a/2) * assoc_legendre(n, -a, x)
-        elif a == -b:
-            # P^{-b, b}_n(x)
-            return gamma(n - b + 1) / gamma(n + 1) * (1 - x)**(b/2) / (1 + x)**(b/2) * assoc_legendre(n, b, x)
 
         if not n.is_Number:
             # Symbolic result P^{a,b}_n(x)
@@ -195,16 +192,6 @@ class jacobi(OrthogonalPolynomial):
             return S.Half * (a + b + n + 1) * jacobi(n - 1, a + 1, b + 1, x)
         else:
             raise ArgumentIndexError(self, argindex)
-
-    def _eval_rewrite_as_polynomial(self, n, a, b, x):
-        from sympy import Sum
-        # Make sure n \in N
-        if n.is_negative or n.is_integer is False:
-            raise ValueError("n should be a non-negative integer.")
-        k = Dummy("k")
-        kern = (RisingFactorial(-n, k) * RisingFactorial(a + b + n + 1, k) * RisingFactorial(a + k + 1, n - k) /
-                factorial(k) * ((1 - x)/2)**k)
-        return 1 / factorial(n) * Sum(kern, (k, 0, n))
 
     def _eval_conjugate(self):
         n, a, b, x = self.args
@@ -403,13 +390,6 @@ class gegenbauer(OrthogonalPolynomial):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_rewrite_as_polynomial(self, n, a, x):
-        from sympy import Sum
-        k = Dummy("k")
-        kern = ((-1)**k * RisingFactorial(a, n - k) * (2*x)**(n - 2*k) /
-                (factorial(k) * factorial(n - 2*k)))
-        return Sum(kern, (k, 0, floor(n/2)))
-
     def _eval_conjugate(self):
         n, a, x = self.args
         return self.func(n, a.conjugate(), x.conjugate())
@@ -520,12 +500,6 @@ class chebyshevt(OrthogonalPolynomial):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_rewrite_as_polynomial(self, n, x):
-        from sympy import Sum
-        k = Dummy("k")
-        kern = binomial(n, 2*k) * (x**2 - 1)**k * x**(n - 2*k)
-        return Sum(kern, (k, 0, floor(n/2)))
-
 
 class chebyshevu(OrthogonalPolynomial):
     r"""
@@ -633,13 +607,6 @@ class chebyshevu(OrthogonalPolynomial):
             return ((n + 1) * chebyshevt(n + 1, x) - x * chebyshevu(n, x)) / (x**2 - 1)
         else:
             raise ArgumentIndexError(self, argindex)
-
-    def _eval_rewrite_as_polynomial(self, n, x):
-        from sympy import Sum
-        k = Dummy("k")
-        kern = S.NegativeOne**k * factorial(
-            n - k) * (2*x)**(n - 2*k) / (factorial(k) * factorial(n - 2*k))
-        return Sum(kern, (k, 0, floor(n/2)))
 
 
 class chebyshevt_root(Function):
@@ -813,12 +780,6 @@ class legendre(OrthogonalPolynomial):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_rewrite_as_polynomial(self, n, x):
-        from sympy import Sum
-        k = Dummy("k")
-        kern = (-1)**k*binomial(n, k)**2*((1 + x)/2)**(n - k)*((1 - x)/2)**k
-        return Sum(kern, (k, 0, n))
-
 
 class assoc_legendre(Function):
     r"""
@@ -911,13 +872,6 @@ class assoc_legendre(Function):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_rewrite_as_polynomial(self, n, m, x):
-        from sympy import Sum
-        k = Dummy("k")
-        kern = factorial(2*n - 2*k)/(2**n*factorial(n - k)*factorial(
-            k)*factorial(n - 2*k - m))*(-1)**k*x**(n - m - 2*k)
-        return (1 - x**2)**(m/2) * Sum(kern, (k, 0, floor((n - m)*S.Half)))
-
     def _eval_conjugate(self):
         n, m, x = self.args
         return self.func(n, m.conjugate(), x.conjugate())
@@ -1007,12 +961,6 @@ class hermite(OrthogonalPolynomial):
             return 2*n*hermite(n - 1, x)
         else:
             raise ArgumentIndexError(self, argindex)
-
-    def _eval_rewrite_as_polynomial(self, n, x):
-        from sympy import Sum
-        k = Dummy("k")
-        kern = (-1)**k / (factorial(k)*factorial(n - 2*k)) * (2*x)**(n - 2*k)
-        return factorial(n)*Sum(kern, (k, 0, floor(n/2)))
 
 ############################################################################
 # Laguerre polynomials
@@ -1107,15 +1055,6 @@ class laguerre(OrthogonalPolynomial):
             return -assoc_laguerre(n - 1, 1, x)
         else:
             raise ArgumentIndexError(self, argindex)
-
-    def _eval_rewrite_as_polynomial(self, n, x):
-        from sympy import Sum
-        # Make sure n \in N_0
-        if n.is_negative or n.is_integer is False:
-            raise ValueError("n should be a non-negative integer.")
-        k = Dummy("k")
-        kern = RisingFactorial(-n, k) / factorial(k)**2 * x**k
-        return Sum(kern, (k, 0, n))
 
 
 class assoc_laguerre(OrthogonalPolynomial):
@@ -1225,16 +1164,6 @@ class assoc_laguerre(OrthogonalPolynomial):
             return -assoc_laguerre(n - 1, alpha + 1, x)
         else:
             raise ArgumentIndexError(self, argindex)
-
-    def _eval_rewrite_as_polynomial(self, n, x):
-        from sympy import Sum
-        # Make sure n \in N_0
-        if n.is_negative or n.is_integer is False:
-            raise ValueError("n should be a non-negative integer.")
-        k = Dummy("k")
-        kern = RisingFactorial(
-            -n, k) / (gamma(k + alpha + 1) * factorial(k)) * x**k
-        return gamma(n + alpha + 1) / factorial(n) * Sum(kern, (k, 0, n))
 
     def _eval_conjugate(self):
         n, alpha, x = self.args

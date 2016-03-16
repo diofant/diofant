@@ -158,6 +158,11 @@ def test_Lambda():
     pytest.raises(ValueError, lambda: Lambda(1, x))
     assert Lambda(x, 1)(1) is S.One
 
+    assert (2*x).canonical_variables == {}
+    assert Lambda(x, 2*x).canonical_variables == {x: Symbol('0_')}
+    x_ = Symbol('x_')
+    assert Lambda(x_, 2*x_).canonical_variables == {x_: Symbol('0__')}
+
 
 def test_IdentityFunction():
     assert Lambda(x, x) is Lambda(y, y) is S.IdentityFunction

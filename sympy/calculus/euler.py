@@ -44,7 +44,7 @@ def euler_equations(L, funcs=(), vars=()):
     ========
 
     >>> from sympy import Symbol, Function
-    >>> from sympy.calculus.euler import euler_equations
+
     >>> x = Function('x')
     >>> t = Symbol('t')
     >>> L = (x(t).diff(t))**2/2 - x(t)**2/2
@@ -60,9 +60,8 @@ def euler_equations(L, funcs=(), vars=()):
     ==========
 
     .. [1] http://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation
-
     """
-
+    L = sympify(L)
     funcs = tuple(funcs) if iterable(funcs) else (funcs,)
 
     if not funcs:

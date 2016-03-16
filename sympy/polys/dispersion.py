@@ -19,7 +19,6 @@ def dispersionset(p, q=None, *gens, **args):
     ========
 
     >>> from sympy import poly
-    >>> from sympy.polys.dispersion import dispersion, dispersionset
     >>> from sympy.abc import x
 
     Dispersion set and dispersion of a simple polynomial:
@@ -145,7 +144,6 @@ def dispersion(p, q=None, *gens, **args):
     ========
 
     >>> from sympy import poly
-    >>> from sympy.polys.dispersion import dispersion, dispersionset
     >>> from sympy.abc import x
 
     Dispersion set and dispersion of a simple polynomial:

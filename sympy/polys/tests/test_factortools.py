@@ -532,6 +532,10 @@ def test_dup_factor_list():
     coeff, factors = R.dup_factor_list(f)
     assert coeff == RR(1.0) and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
 
+    # issue skirpichev/omg#238
+    f = 0.1*x**2 + 1.1*x + 1.0
+    assert R.dup_factor_list(f) == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
+
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
 
@@ -637,6 +641,11 @@ def test_dmp_factor_list():
     f = 6.7225336055071*x**2*y**2 - 10.6463972754741*x*y - 0.33469524022264
     coeff, factors = R.dmp_factor_list(f)
     assert coeff == RR(1.0) and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
+
+    # issue skirpichev/omg#238
+    R,  x, y, z = ring("x,y,z", RR)
+    f = x*y + x*z + 0.1*y + 0.1*z
+    assert R.dmp_factor_list(f) == (10.0, [(0.1*y + 0.1*z, 1), (x + 0.1, 1)])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)

@@ -32,7 +32,7 @@ def test_postorder_traversal():
     expr = Piecewise((x, x < 1), (x**2, True))
     expected = [
         x, 1, x, x < 1, ExprCondPair(x, x < 1),
-        2, x, x**2, true,
+        true, 2, x, x**2,
         ExprCondPair(x**2, True), Piecewise((x, x < 1), (x**2, True))
     ]
     assert list(postorder_traversal(expr, keys=default_sort_key)) == expected

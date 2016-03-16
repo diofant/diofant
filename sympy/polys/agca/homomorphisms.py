@@ -23,7 +23,6 @@ class ModuleHomomorphism(object):
 
     >>> from sympy import QQ
     >>> from sympy.abc import x
-    >>> from sympy.polys.agca import homomorphism
 
     >>> F = QQ.old_poly_ring(x).free_module(2)
     >>> homomorphism(F, F, [[1, 0], [0, 1]])
@@ -76,7 +75,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> homomorphism(F, F, [[1, 0], [x, 0]]).kernel()
@@ -95,7 +93,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> homomorphism(F, F, [[1, 0], [x, 0]]).image() == F.submodule([1, 0])
@@ -137,7 +134,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -174,7 +170,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -202,7 +197,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -230,7 +224,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -329,7 +322,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -349,7 +341,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -369,7 +360,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -390,7 +380,6 @@ class ModuleHomomorphism(object):
 
         >>> from sympy import QQ
         >>> from sympy.abc import x
-        >>> from sympy.polys.agca import homomorphism
 
         >>> F = QQ.old_poly_ring(x).free_module(2)
         >>> h = homomorphism(F, F, [[1, 0], [x, 0]])
@@ -520,7 +509,6 @@ class FreeModuleHomomorphism(MatrixHomomorphism):
 
     >>> from sympy import QQ
     >>> from sympy.abc import x
-    >>> from sympy.polys.agca import homomorphism
 
     >>> F = QQ.old_poly_ring(x).free_module(2)
     >>> homomorphism(F, F, [[1, 0], [0, 1]])
@@ -557,7 +545,6 @@ class SubModuleHomomorphism(MatrixHomomorphism):
 
     >>> from sympy import QQ
     >>> from sympy.abc import x
-    >>> from sympy.polys.agca import homomorphism
 
     >>> M = QQ.old_poly_ring(x).free_module(2)*x
     >>> homomorphism(M, M, [[1, 0], [0, 1]])
@@ -593,7 +580,6 @@ def homomorphism(domain, codomain, matrix):
 
     >>> from sympy import QQ
     >>> from sympy.abc import x
-    >>> from sympy.polys.agca import homomorphism
 
     >>> R = QQ.old_poly_ring(x)
     >>> T = R.free_module(2)
