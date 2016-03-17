@@ -1971,20 +1971,21 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         rewrite = 'nonrepsmall'
 
     def carryout_plan(f, ops):
+        from sympy import eye
+
         C = apply_operators(f.C.subs(f.z, z0), ops,
                             make_derivative_operator(f.M.subs(f.z, z0), z0))
-        from sympy import eye
         C = apply_operators(C, ops0,
-                            make_derivative_operator(f.M.subs(f.z, z0)
-                                         + prem*eye(f.M.shape[0]), z0))
+                            make_derivative_operator(f.M.subs(f.z, z0) +
+                                                     prem*eye(f.M.shape[0]), z0))
 
         if premult == 1:
             C = C.applyfunc(make_simp(z0))
         r = C*f.B.subs(f.z, z0)*premult
-        res = r[0].subs(z0, z)
+        res = r[0].subs(z0, z).replace(hyper, hyperexpand_special)
         if rewrite:
             res = res.rewrite(rewrite)
-        return res
+        return powdenest(res, polar=True)
 
     # TODO
     # The following would be possible:
@@ -2023,12 +2024,12 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     # apply the plan for poly
     p = apply_operators(p, ops, lambda f: z0*f.diff(z0))
     p = apply_operators(p*premult, ops0, lambda f: z0*f.diff(z0))
-    p = simplify(p).subs(z0, z)
+    p = unpolarify(simplify(p).subs(z0, z))
 
     # Try special expansions early.
     if unpolarify(z) in [1, 0, -1]:
         f = build_hypergeometric_formula(func)
-        r = carryout_plan(f, ops).replace(hyper, hyperexpand_special)
+        r = carryout_plan(f, ops) + p
         if not r.has(hyper):
             return r + p
 
@@ -2051,9 +2052,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     ops += devise_plan(func, formula.func, z0)
 
     # Now carry out the plan.
-    r = carryout_plan(formula, ops) + p
-
-    return powdenest(r, polar=True).replace(hyper, hyperexpand_special)
+    return carryout_plan(formula, ops) + p
 
 
 def devise_plan_meijer(fro, to, z):
