@@ -1982,10 +1982,19 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         if premult == 1:
             C = C.applyfunc(make_simp(z0))
         r = C*f.B.subs(f.z, z0)*premult
+
+        # Try substitution first
         res = r[0].subs(z0, z).replace(hyper, hyperexpand_special)
         if rewrite:
             res = res.rewrite(rewrite)
-        return powdenest(res, polar=True)
+        res = powdenest(res, polar=True)
+
+        if res is not S.NaN:
+            pass
+        elif not r.has(hyper):
+            res = r[0].limit(z0, unpolarify(z))
+
+        return res
 
     # TODO
     # The following would be possible:
@@ -2030,7 +2039,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     if unpolarify(z) in [1, 0, -1]:
         f = build_hypergeometric_formula(func)
         r = carryout_plan(f, ops) + p
-        if not r.has(hyper):
+        if not r.has(hyper) and r is not S.NaN:
             return r + p
 
     # Try to find a formula in our collection
