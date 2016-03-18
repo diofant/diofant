@@ -8,16 +8,18 @@ from sympy import (
     logcombine, Matrix, Mul, nsimplify, oo, pi, Piecewise,
     posify, rad, Rational, S, separatevars, signsimp, simplify,
     sin, sinh, solve, sqrt, Symbol, symbols, sympify, tan,
-    zoo, Sum, Lt, Integer, sstr)
+    zoo, Sum, Lt, Integer, sstr, Number, cancel,
+    besselj, besseli, exp_polar, cosine_transform)
 from sympy.core.mul import _keep_coeff
 from sympy.simplify.simplify import nthroot
 
-from sympy.abc import x, y, z, t, a, b, c, d, e, f, g, h, i
+from sympy.abc import (x, y, z, t, a, b, c, d, e, f, g, h, i, r,
+                       R, k, n, m, w, s)
 
 
 def test_issue_7263():
     assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf() -
-            673.447451402970) < 1e-12
+               673.447451402970) < 1e-12
 
 
 def test_factorial_simplify():
@@ -28,7 +30,7 @@ def test_factorial_simplify():
 
 
 def test_simplify_expr():
-    x, y, z, k, n, m, w, s, A = symbols('x,y,z,k,n,m,w,s,A')
+    A = Symbol('A')
     f = Function('f')
 
     assert all(simplify(tmp) == tmp for tmp in [I, E, oo, x, -x, -oo, -E, -I])
@@ -107,10 +109,10 @@ def test_simplify_other():
     # issue 6123
     # f = exp(-I*(k*sqrt(t) + x/(2*sqrt(t)))**2)
     # ans = integrate(f, (k, -oo, oo), conds='none')
-    ans = I*(-pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))*erf(x*exp(-3*I*pi/4) /
-        (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t)) /
-        (2*sqrt(t)))*exp(-I*x**2/(4*t))/(sqrt(pi)*x) - I*sqrt(pi) * \
-        (-erf(x*exp(I*pi/4)/(2*sqrt(t))) + 1)*exp(I*pi/4)/(2*sqrt(t))
+    ans = (I*(-pi*x*exp(-3*I*pi/4 + I*x**2/(4*t))*erf(x*exp(-3*I*pi/4) /
+              (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t)) /
+              (2*sqrt(t)))*exp(-I*x**2/(4*t))/(sqrt(pi)*x) - I*sqrt(pi) *
+           (-erf(x*exp(I*pi/4)/(2*sqrt(t))) + 1)*exp(I*pi/4)/(2*sqrt(t)))
     assert simplify(ans) == -(-1)**Rational(3, 4)*sqrt(pi)/sqrt(t)
     # issue 6370
     assert simplify(2**(2 + x)/4) == 2**x
@@ -131,11 +133,11 @@ def test_simplify_ratio():
              '(1/2 + sqrt(3)*I/2)*(sqrt(21)/2 + 5/2)**(1/3)',
              '-(sqrt(21)/2 + 5/2)**(1/3) - 1/(sqrt(21)/2 + 5/2)**(1/3)']
 
-    for r in roots:
-        r = sympify(r)
-        assert count_ops(simplify(r, ratio=1)) <= count_ops(r)
+    for root in roots:
+        root = sympify(root)
+        assert count_ops(simplify(root, ratio=1)) <= count_ops(root)
         # If ratio=oo, simplify() is always applied:
-        assert simplify(r, ratio=oo) is not r
+        assert simplify(root, ratio=oo) is not root
 
 
 def test_simplify_measure():
@@ -166,8 +168,6 @@ def test_issue_5652():
 
 
 def test_simplify_fail1():
-    x = Symbol('x')
-    y = Symbol('y')
     e = (x + y)**2/(-4*x*y**2 - 2*y**3 - 2*x**2*y)
     assert simplify(e) == 1 / (-2*y)
 
@@ -200,7 +200,7 @@ def test_nthroot1():
 
 
 def test_separatevars():
-    x, y, z, n = symbols('x,y,z,n')
+    n = Symbol('n')
     assert separatevars(2*n*x*z + 2*x*y*z) == 2*x*z*(n + y)
     assert separatevars(x*z + x*y*z) == x*z*(1 + y)
     assert separatevars(pi*x*z + pi*x*y*z) == pi*x*z*(1 + y)
@@ -252,15 +252,16 @@ def test_separatevars():
 
 
 def test_separatevars_advanced_factor():
-    x, y, z = symbols('x,y,z')
-    assert separatevars(1 + log(x)*log(y) + log(x) + log(y)) == \
-        (log(x) + 1)*(log(y) + 1)
-    assert separatevars(1 + x - log(z) - x*log(z) - exp(y)*log(z) -
-        x*exp(y)*log(z) + x*exp(y) + exp(y)) == \
-        -((x + 1)*(log(z) - 1)*(exp(y) + 1))
+    x, y = symbols('x,y')
+    assert (separatevars(1 + log(x)*log(y) + log(x) + log(y)) ==
+            (log(x) + 1)*(log(y) + 1))
+    assert (separatevars(1 + x - log(z) - x*log(z) - exp(y)*log(z) -
+                         x*exp(y)*log(z) + x*exp(y) +
+                         exp(y)) == -((exp(y) + 1) *
+                                      (x + 1)*(log(z) - 1)))
     x, y = symbols('x,y', positive=True)
-    assert separatevars(1 + log(x**log(y)) + log(x*y)) == \
-        (log(x) + 1)*(log(y) + 1)
+    assert (separatevars(1 + log(x**log(y)) + log(x*y)) ==
+            (log(x) + 1)*(log(y) + 1))
 
 
 def test_hypersimp():
@@ -342,8 +343,8 @@ def test_nsimplify():
 
 
 def test_issue_9448():
-    expr = (1/(1 - (-1)**Rational(2, 3) - (-1)**Rational(1, 3))
-            + 1/(1 + (-1)**Rational(2, 3) + (-1)**Rational(1, 3)))
+    expr = (1/(1 - (-1)**Rational(2, 3) - (-1)**Rational(1, 3)) +
+            1/(1 + (-1)**Rational(2, 3) + (-1)**Rational(1, 3)))
     assert nsimplify(expr) == S.Half
 
 
@@ -377,7 +378,7 @@ def test_logcombine_1():
     assert logcombine(log(x)*log(z)) == log(x)*log(z)
     assert logcombine(log(w)*log(x)) == log(w)*log(x)
     assert logcombine(cos(-2*log(z) + b*log(w))) in [cos(log(w**b/z**2)),
-                                                   cos(log(z**2/w**b))]
+                                                     cos(log(z**2/w**b))]
     assert logcombine(log(log(x) - log(y)) - log(z), force=True) == \
         log(log(x/y)/z)
     assert logcombine((2 + I)*log(x), force=True) == (2 + I)*log(x)
@@ -387,9 +388,11 @@ def test_logcombine_1():
     # are testing is that a canonical result is obtained
     assert logcombine(log(x)*2*log(y) + log(z), force=True) == \
         log(z*y**log(x**2))
-    assert logcombine((x*y + sqrt(x**4 + y**4) + log(x) - log(y))/(pi*x**Rational(2, 3) *
-            sqrt(y)**3), force=True) == (
-        x*y + sqrt(x**4 + y**4) + log(x/y))/(pi*x**Rational(2, 3)*y**Rational(3, 2))
+    assert logcombine((x*y + sqrt(x**4 + y**4) + log(x) -
+                       log(y))/(pi*x**Rational(2, 3) *
+                                sqrt(y)**3), force=True) == (
+        x*y + sqrt(x**4 + y**4) + log(x/y))/(pi*x**Rational(2, 3) *
+                                             y**Rational(3, 2))
     assert logcombine(gamma(-log(x/y))*acos(-log(x/y)), force=True) == \
         acos(-log(x/y))*gamma(-log(x/y))
 
@@ -403,13 +406,10 @@ def test_logcombine_1():
 def test_logcombine_complex_coeff():
     i = Integral((sin(x**2) + cos(x**3))/x, x)
     assert logcombine(i, force=True) == i
-    assert logcombine(i + 2*log(x), force=True) == \
-        i + log(x**2)
+    assert logcombine(i + 2*log(x), force=True) == i + log(x**2)
 
 
 def test_posify():
-    from sympy.abc import x
-
     assert sstr(posify(
         x +
         Symbol('p', positive=True) +
@@ -422,7 +422,6 @@ def test_posify():
     assert log(eq).expand().subs(rep) == -log(x)
     assert sstr(posify([x, 1 + x])) == '([_x, _x + 1], {_x: x})'
 
-    x = symbols('x')
     p = symbols('p', positive=True)
     n = symbols('n', negative=True)
     orig = [x, n, p]
@@ -458,8 +457,7 @@ def test_as_content_primitive():
         (18, x*(x + 1)**3)
     assert (2 + 2*x + 2*y*(3 + 3*y)).as_content_primitive() == \
         (2, x + 3*y*(y + 1) + 1)
-    assert ((2 + 6*x)**2).as_content_primitive() == \
-        (4, (3*x + 1)**2)
+    assert ((2 + 6*x)**2).as_content_primitive() == (4, (3*x + 1)**2)
     assert ((2 + 6*x)**(2*y)).as_content_primitive() == \
         (1, (_keep_coeff(Integer(2), (3*x + 1)))**(2*y))
     assert (5 + 10*x + 2*y*(3 + 3*y)).as_content_primitive() == \
@@ -468,8 +466,7 @@ def test_as_content_primitive():
         (11, x*(y + 1))
     assert ((5*(x*(1 + y)) + 2*x*(3 + 3*y))**2).as_content_primitive() == \
         (121, x**2*(y + 1)**2)
-    assert (y**2).as_content_primitive() == \
-        (1, y**2)
+    assert (y**2).as_content_primitive() == (1, y**2)
     assert (S.Infinity).as_content_primitive() == (1, oo)
     eq = x**(2 + y)
     assert (eq).as_content_primitive() == (1, eq)
@@ -496,7 +493,6 @@ def test_signsimp():
 
 
 def test_besselsimp():
-    from sympy import besselj, besseli, exp_polar, cosh, cosine_transform
     assert besselsimp(exp(-I*pi*y/2)*besseli(y, z*exp_polar(I*pi/2))) == \
         besselj(y, z)
     assert besselsimp(exp(-I*pi*a/2)*besseli(a, 2*sqrt(x)*exp_polar(I*pi/2))) == \
@@ -542,13 +538,12 @@ def test_issue_6811():
     eq = (x + 2*y)*(2*x + 2)
     assert simplify(eq) == (x + 1)*(x + 2*y)*2
     # reject the 2-arg Mul -- these are a headache for test writing
-    assert simplify(eq.expand()) == \
-        2*x**2 + 4*x*y + 2*x + 4*y
+    assert simplify(eq.expand()) == 2*x**2 + 4*x*y + 2*x + 4*y
 
 
 def test_issue_6920():
     e = [cos(x) + I*sin(x), cos(x) - I*sin(x),
-        cosh(x) - sinh(x), cosh(x) + sinh(x)]
+         cosh(x) - sinh(x), cosh(x) + sinh(x)]
     ok = [exp(I*x), exp(-I*x), exp(-x), exp(x)]
     # wrap in f to show that the change happens wherever ei occurs
     f = Function('f')
@@ -556,11 +551,11 @@ def test_issue_6920():
 
 
 def test_issue_7001():
-    from sympy.abc import r, R
-    assert simplify(-(r*Piecewise((4*pi/3, r <= R),
-        (-8*pi*R**3/(3*r**3), True)) + 2*Piecewise((4*pi*r/3, r <= R),
-        (4*pi*R**3/(3*r**2), True)))/(4*pi*r)) == \
-        Piecewise((-1, r <= R), (0, True))
+    assert (simplify(-(r*Piecewise((4*pi/3, r <= R),
+                                   (-8*pi*R**3/(3*r**3), True)) +
+                       2*Piecewise((4*pi*r/3, r <= R),
+                                   (4*pi*R**3/(3*r**2), True)))/(4*pi*r)) ==
+            Piecewise((-1, r <= R), (0, True)))
 
 
 def test_inequality_no_auto_simplify():
@@ -573,7 +568,6 @@ def test_inequality_no_auto_simplify():
 
 
 def test_issue_9398():
-    from sympy import Number, cancel
     assert cancel(1e-14) != 0
     assert cancel(1e-14*I) != 0
 
