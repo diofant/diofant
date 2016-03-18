@@ -20,7 +20,6 @@ def test_issue_7263():
             673.447451402970) < 1e-12
 
 
-@pytest.mark.xfail
 def test_factorial_simplify():
     # There are more tests in test_factorials.py. These are just to
     # ensure that simplify() calls factorial_simplify correctly
