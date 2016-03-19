@@ -29,7 +29,7 @@ matrix:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
         # see https://gitlab.com/pycqa/flake8/issues/121
         - pip install git+https://gitlab.com/pycqa/flake8.git@a8aac560
-        - pip install sphinx numpydoc pytest-cov
+        - pip install sphinx numpydoc pytest-cov pyenchant sphinxcontrib-spelling
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
@@ -37,6 +37,7 @@ matrix:
         - py.test --cov sympy sympy/polys
         - python setup.py test --cov -m 'slow and not xfail'
         - sphinx-build -W -b html docs build/sphinx/html
+        - sphinx-build -W -b spelling docs build/sphinx/spelling
       after_success:
         - codecov
     - python: "pypy3"
