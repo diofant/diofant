@@ -1971,19 +1971,29 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         rewrite = 'nonrepsmall'
 
     def carryout_plan(f, ops):
+        from sympy import eye
+
         C = apply_operators(f.C.subs(f.z, z0), ops,
                             make_derivative_operator(f.M.subs(f.z, z0), z0))
-        from sympy import eye
         C = apply_operators(C, ops0,
-                            make_derivative_operator(f.M.subs(f.z, z0)
-                                         + prem*eye(f.M.shape[0]), z0))
+                            make_derivative_operator(f.M.subs(f.z, z0) +
+                                                     prem*eye(f.M.shape[0]), z0))
 
         if premult == 1:
             C = C.applyfunc(make_simp(z0))
         r = C*f.B.subs(f.z, z0)*premult
-        res = r[0].subs(z0, z)
+
+        # Try substitution first
+        res = r[0].subs(z0, z).replace(hyper, hyperexpand_special)
         if rewrite:
             res = res.rewrite(rewrite)
+        res = powdenest(res, polar=True)
+
+        if res is not S.NaN:
+            pass
+        elif not r.has(hyper):
+            res = r[0].limit(z0, unpolarify(z))
+
         return res
 
     # TODO
@@ -2023,13 +2033,13 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     # apply the plan for poly
     p = apply_operators(p, ops, lambda f: z0*f.diff(z0))
     p = apply_operators(p*premult, ops0, lambda f: z0*f.diff(z0))
-    p = simplify(p).subs(z0, z)
+    p = unpolarify(simplify(p).subs(z0, z))
 
     # Try special expansions early.
     if unpolarify(z) in [1, 0, -1]:
         f = build_hypergeometric_formula(func)
-        r = carryout_plan(f, ops).replace(hyper, hyperexpand_special)
-        if not r.has(hyper):
+        r = carryout_plan(f, ops) + p
+        if not r.has(hyper) and r is not S.NaN:
             return r + p
 
     # Try to find a formula in our collection
@@ -2051,9 +2061,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     ops += devise_plan(func, formula.func, z0)
 
     # Now carry out the plan.
-    r = carryout_plan(formula, ops) + p
-
-    return powdenest(r, polar=True).replace(hyper, hyperexpand_special)
+    return carryout_plan(formula, ops) + p
 
 
 def devise_plan_meijer(fro, to, z):
