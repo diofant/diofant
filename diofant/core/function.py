@@ -448,7 +448,7 @@ class Function(Application, Expr):
         except (AttributeError, KeyError):
             try:
                 return Float(self._imp_(*self.args), prec)
-            except (AttributeError, TypeError):
+            except (AttributeError, TypeError, ValueError):
                 return
 
         # Convert all args to mpf or mpc
