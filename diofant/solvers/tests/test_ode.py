@@ -2857,3 +2857,9 @@ def test_sympyissue_10379():
     sol = dsolve(f(t).diff(t) - (1 - 51.05*y*f(t)))
     ans = Eq(0.019588638589618*log(51.05*y*f(t) - 1.0)/y, C1 - t)
     assert str(sol) == str(ans)
+
+
+def test_sympyissue_10867():
+    v = Eq(g(x).diff(x).diff(x), (x-2)**2 + (x-3)**3)
+    ans = Eq(g(x), C1 + C2*x + x**5/20 - 2*x**4/3 + 23*x**3/6 - 23*x**2/2)
+    assert dsolve(v, g(x)) == ans
