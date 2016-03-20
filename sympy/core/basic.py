@@ -171,9 +171,6 @@ class Basic(metaclass=ManagedProperties):
         #
         st = self._hashable_content()
         ot = other._hashable_content()
-        c = (len(st) > len(ot)) - (len(st) < len(ot))
-        if c:
-            return c
         for l, r in zip(st, ot):
             l = Basic(*l) if isinstance(l, frozenset) else l
             r = Basic(*r) if isinstance(r, frozenset) else r
@@ -184,33 +181,6 @@ class Basic(metaclass=ManagedProperties):
             if c:
                 return c
         return 0
-
-    @staticmethod
-    def _compare_pretty(a, b):
-        from sympy.series.order import Order
-        if isinstance(a, Order) and not isinstance(b, Order):
-            return 1
-        if not isinstance(a, Order) and isinstance(b, Order):
-            return -1
-
-        if a.is_Rational and b.is_Rational:
-            l = a.p * b.q
-            r = b.p * a.q
-            return (l > r) - (l < r)
-        else:
-            from sympy.core.symbol import Wild
-            p1, p2, p3 = Wild("p1"), Wild("p2"), Wild("p3")
-            r_a = a.match(p1 * p2**p3)
-            if r_a and p3 in r_a:
-                a3 = r_a[p3]
-                r_b = b.match(p1 * p2**p3)
-                if r_b and p3 in r_b:
-                    b3 = r_b[p3]
-                    c = Basic.compare(a3, b3)
-                    if c != 0:
-                        return c
-
-        return Basic.compare(a, b)
 
     @classmethod
     def class_key(cls):
@@ -272,13 +242,8 @@ class Basic(metaclass=ManagedProperties):
         if self is other:
             return True
 
-        from .function import AppliedUndef, UndefinedFunction as UndefFunc
+        from .function import AppliedUndef
 
-        if isinstance(self, UndefFunc) and isinstance(other, UndefFunc):
-            if self.class_key() == other.class_key():
-                return True
-            else:
-                return False
         if type(self) is not type(other):
             # issue 6100 a**1.0 == a like a**2.0 == a**2
             if isinstance(self, Pow) and self.exp == 1:
@@ -298,17 +263,6 @@ class Basic(metaclass=ManagedProperties):
                 return False
 
         return self._hashable_content() == other._hashable_content()
-
-    def __ne__(self, other):
-        """a != b  -> Compare two symbolic trees and see whether they are different
-
-           this is the same as:
-
-             a.compare(b) != 0
-
-           but faster
-        """
-        return not self.__eq__(other)
 
     def dummy_eq(self, other, symbol=None):
         """
@@ -332,14 +286,15 @@ class Basic(metaclass=ManagedProperties):
         >>> (u**2 + y).dummy_eq(x**2 + y, y)
         False
         """
+        other = sympify(other)
         dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
 
         if not dummy_symbols:
             return self == other
         elif len(dummy_symbols) == 1:
             dummy = dummy_symbols.pop()
-        else:
-            raise ValueError(
+        else:  # pragma: no cover
+            raise NotImplementedError(
                 "only one dummy symbol allowed on the left-hand side")
 
         if symbol is None:
@@ -349,11 +304,11 @@ class Basic(metaclass=ManagedProperties):
                 return self == other
             elif len(symbols) == 1:
                 symbol = symbols.pop()
-            else:
-                raise ValueError("specify a symbol in which expressions should be compared")
+            else:  # pragma: no cover
+                raise NotImplementedError(
+                    "specify a symbol in which expressions should be compared")
 
         tmp = dummy.__class__()
-
         return self.subs(dummy, tmp) == other.subs(symbol, tmp)
 
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
@@ -486,15 +441,15 @@ class Basic(metaclass=ManagedProperties):
         {x: 0_}
         """
         from sympy import Symbol
-        if not hasattr(self, 'variables'):
+        try:
+            V = self.variables
+        except AttributeError:
             return {}
         u = "_"
-        while any(s.name.endswith(u) for s in self.free_symbols):
+        while any(s.name.endswith(u) for s in V):
             u += "_"
         name = '%%i%s' % u
-        V = self.variables
-        return dict(zip(V, (Symbol(name % i, **v.assumptions0)
-                            for i, v in enumerate(V))))
+        return {v: Symbol(name % i, **v.assumptions0) for i, v in enumerate(V)}
 
     def rcall(self, *args):
         """Apply on the argument recursively through the expression tree.
@@ -515,18 +470,13 @@ class Basic(metaclass=ManagedProperties):
 
     @staticmethod
     def _recursive_call(expr_to_call, on_args):
-        from sympy.core.symbol import Dummy, Symbol
-
         def the_call_method_is_overridden(expr):
             for cls in getmro(type(expr)):
                 if '__call__' in cls.__dict__:
                     return cls != Basic
 
         if callable(expr_to_call) and the_call_method_is_overridden(expr_to_call):
-            if isinstance(expr_to_call, (Dummy, Symbol)):  # XXX When you call a Symbol it is
-                return expr_to_call                        # transformed into an UndefFunction
-            else:
-                return expr_to_call(*on_args)
+            return expr_to_call(*on_args)
         elif expr_to_call.args:
             args = [Basic._recursive_call(
                 sub, on_args) for sub in expr_to_call.args]
@@ -644,26 +594,21 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import sin
         >>> from sympy.abc import x, y
 
-        >>> print((x**2 + x*y).as_poly())
+        >>> (x**2 + x*y).as_poly()
         Poly(x**2 + x*y, x, y, domain='ZZ')
 
-        >>> print((x**2 + x*y).as_poly(x, y))
+        >>> (x**2 + x*y).as_poly(x, y)
         Poly(x**2 + x*y, x, y, domain='ZZ')
 
-        >>> print((x**2 + sin(y)).as_poly(x, y))
-        None
+        >>> (x**2 + sin(y)).as_poly(x, y) is None
+        True
         """
         from sympy.polys import Poly, PolynomialError
 
         try:
-            poly = Poly(self, *gens, **args)
-
-            if not poly.is_Poly:
-                return
-            else:
-                return poly
+            return Poly(self, *gens, **args)
         except PolynomialError:
-            return
+            pass
 
     def as_content_primitive(self, radical=False):
         """A stub to allow Basic args (like Tuple) to be skipped when computing
@@ -852,8 +797,6 @@ class Basic(metaclass=ManagedProperties):
                 # in things like Derivative(f(x, y), x) in which x
                 # is both free and bound
                 rv = rv._subs(old, d*m, **kwargs)
-                if not isinstance(rv, Basic):
-                    break
                 reps[d] = new
             reps[m] = S.One  # get rid of m
             return rv.xreplace(reps)
@@ -1052,13 +995,7 @@ class Basic(metaclass=ManagedProperties):
         if self in rule:
             return rule[self]
         elif rule:
-            args = []
-            for a in self.args:
-                try:
-                    args.append(a.xreplace(rule))
-                except AttributeError:
-                    args.append(a)
-            args = tuple(args)
+            args = tuple(a.xreplace(rule) for a in self.args)
             if not _aresame(args, self.args):
                 return self.func(*args)
         return self
@@ -1694,10 +1631,7 @@ class preorder_traversal(object):
             else:
                 args = node.args
             if keys:
-                if not keys:
-                    args = ordered(args, keys, default=False)
-                else:
-                    args = ordered(args)
+                args = ordered(args)
             for arg in args:
                 for subtree in self._preorder_traversal(arg, keys):
                     yield subtree
