@@ -2,7 +2,7 @@ from .sympify import _sympify, sympify
 from .basic import Basic, _aresame
 from .cache import cacheit
 from .compatibility import ordered
-from .logic import fuzzy_and
+from .logic import _fuzzy_group
 from .evaluate import global_evaluate
 
 
@@ -41,7 +41,7 @@ class AssocOp(Basic):
         return obj
 
     def _eval_is_commutative(self):
-        return fuzzy_and(a.is_commutative for a in args)
+        return _fuzzy_group(a.is_commutative for a in self.args)
 
     @classmethod
     def _from_args(cls, args):

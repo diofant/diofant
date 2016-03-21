@@ -458,9 +458,6 @@ class Add(Expr, AssocOp):
     def _eval_is_algebraic(self):
         return _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
 
-    def _eval_is_commutative(self):
-        return _fuzzy_group(a.is_commutative for a in self.args)
-
     def _eval_is_imaginary(self):
         rv = _fuzzy_group(a.is_imaginary for a in self.args)
         if rv is False:
