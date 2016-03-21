@@ -465,8 +465,6 @@ class Add(Expr, AssocOp):
         rv = _fuzzy_group(a.is_imaginary for a in self.args)
         if rv is False:
             return rv
-        elif self.is_zero:
-            return True
         iargs = [a*S.ImaginaryUnit for a in self.args]
         r = _fuzzy_group(a.is_extended_real for a in iargs)
         if r:
