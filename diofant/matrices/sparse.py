@@ -1360,6 +1360,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         True
         """
         A, B = self, other
+        if not self:
+            return type(self)(other)
         if not A.rows == B.rows:
             raise ShapeError()
         A = A.copy()
@@ -1418,6 +1420,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         True
         """
         A, B = self, other
+        if not self:
+            return type(self)(other)
         if not A.cols == B.cols:
             raise ShapeError()
         A = A.copy()
