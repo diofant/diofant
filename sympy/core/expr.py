@@ -2853,7 +2853,8 @@ class Expr(Basic, EvalfMixin):
         obj = self._eval_as_leading_term(x)
         if obj is not None:
             return powsimp(obj, deep=True, combine='exp')
-        raise NotImplementedError('as_leading_term(%s, %s)' % (self, x))
+        raise NotImplementedError('as_leading_term(%s, %s)' %
+                                  (self, x))  # pragma: no cover
 
     def _eval_as_leading_term(self, x):
         return self
@@ -3037,11 +3038,6 @@ class Expr(Basic, EvalfMixin):
         from sympy.simplify import nsimplify
         return nsimplify(self, constants, tolerance, full)
 
-    def separate(self, deep=False, force=False):
-        """See the separate function in sympy.simplify"""
-        from sympy.core.function import expand_power_base
-        return expand_power_base(self, deep=deep, force=force)
-
     def collect(self, syms, func=None, evaluate=True, exact=False, distribute_order_term=True):
         """See the collect function in sympy.simplify"""
         from sympy.simplify import collect
@@ -3091,11 +3087,6 @@ class Expr(Basic, EvalfMixin):
         """See the cancel function in sympy.polys"""
         from sympy.polys import cancel
         return cancel(self, *gens, **args)
-
-    def invert(self, g):
-        """See the invert function in sympy.polys"""
-        from sympy.polys import invert
-        return invert(self, g)
 
     def round(self, p=0):
         """Return x rounded to the given decimal place.

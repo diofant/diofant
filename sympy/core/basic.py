@@ -159,8 +159,6 @@ class Basic(metaclass=ManagedProperties):
         >>> y.compare(x)
         1
         """
-        # all redefinitions of __cmp__ method should start with the
-        # following lines:
         if self is other:
             return 0
         n1 = self.__class__.__name__
@@ -168,7 +166,7 @@ class Basic(metaclass=ManagedProperties):
         c = (n1 > n2) - (n1 < n2)
         if c:
             return c
-        #
+
         st = self._hashable_content()
         ot = other._hashable_content()
         for l, r in zip(st, ot):
