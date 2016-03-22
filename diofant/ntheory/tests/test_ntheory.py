@@ -660,6 +660,8 @@ def test_residue():
         assert pow(r, q, p) == a
     assert nthroot_mod(11, 3, 109) is None
     assert nthroot_mod(6, 12, 5) == 1
+    pytest.raises(NotImplementedError, lambda: nthroot_mod(16, 5, 36))
+    pytest.raises(NotImplementedError, lambda: nthroot_mod(9, 16, 36))
 
     for p in primerange(5, 100):
         qv = range(3, p, 4)
