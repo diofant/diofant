@@ -225,7 +225,7 @@ class ImageSet(Set):
         L = self.lamda
         if self._is_multivariate():
             solns = solve([expr - val for val, expr in zip(other, L.expr)],
-                    L.variables)
+                          L.variables)
         else:
             solns = solve(L.expr - other, L.variables[0])
 
@@ -328,7 +328,7 @@ class Range(Set):
                                  for w in (start, stop, step)]
         except ValueError:
             raise ValueError("Inputs to Range must be Integer Valued\n" +
-                    "Use ImageSets of Ranges for other cases")
+                             "Use ImageSets of Ranges for other cases")
 
         if not step.is_finite:
             raise ValueError("Infinite step is not allowed")

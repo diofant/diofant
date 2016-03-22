@@ -28,26 +28,6 @@ from sympy.functions import cos, sin
 from sympy.matrices import eye
 from sympy.sets import Set
 
-# How entities are ordered; used by __cmp__ in GeometryEntity
-ordering_of_classes = [
-    "Point2D",
-    "Point3D",
-    "Point",
-    "Segment",
-    "Ray",
-    "Line",
-    "Line3D",
-    "Ray3D",
-    "Segment3D",
-    "Plane",
-    "Triangle",
-    "RegularPolygon",
-    "Polygon",
-    "Circle",
-    "Ellipse",
-    "Curve"
-]
-
 
 class GeometryEntity(Basic):
     """The base class for all geometrical entities.
@@ -78,15 +58,10 @@ class GeometryEntity(Basic):
 
         An entity is not required to implement this method.
 
-        If two different types of entities can intersect, the item with
-        higher index in ordering_of_classes should implement
-        intersections with anything having a lower index.
-
         See Also
         ========
 
         sympy.geometry.util.intersection
-
         """
         raise NotImplementedError()
 
@@ -310,36 +285,6 @@ class GeometryEntity(Basic):
         """String representation of a GeometryEntity that can be evaluated
         by sympy."""
         return type(self).__name__ + repr(self.args)
-
-    def __cmp__(self, other):
-        """Comparison of two GeometryEntities."""
-        n1 = self.__class__.__name__
-        n2 = other.__class__.__name__
-        c = (n1 > n2) - (n1 < n2)
-        if not c:
-            return 0
-
-        i1 = -1
-        for cls in self.__class__.__mro__:
-            try:
-                i1 = ordering_of_classes.index(cls.__name__)
-                break
-            except ValueError:
-                i1 = -1
-        if i1 == -1:
-            return c
-
-        i2 = -1
-        for cls in other.__class__.__mro__:
-            try:
-                i2 = ordering_of_classes.index(cls.__name__)
-                break
-            except ValueError:
-                i2 = -1
-        if i2 == -1:
-            return c
-
-        return (i1 > i2) - (i1 < i2)
 
     def __contains__(self, other):
         """Subclasses should implement this method for anything more complex than equality."""
