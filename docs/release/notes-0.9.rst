@@ -221,3 +221,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10044` Error pretty printing a tuple with a sympy.vector basis vector
 * :sympyissue:`10395` nfloat changes the arguments inside Max.
 * :sympyissue:`10641` Or, And don't evaluate
+* :sympyissue:`10821` latex bug for commutator output

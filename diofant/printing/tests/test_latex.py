@@ -1411,3 +1411,9 @@ def test_sympyissue_10489():
     s = Symbol(latexSymbolWithBrace)
     assert latex(s) == latexSymbolWithBrace
     assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'
+
+
+def test_sympyissue_10889():
+    A, B = symbols('A B', commutative=False)
+    e = Mul(-1, A*B - B*A)
+    assert latex(e) == "- (A B - B A)"
