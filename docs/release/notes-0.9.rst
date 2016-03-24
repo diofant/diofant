@@ -206,3 +206,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8257` Interval(-oo, oo) + FiniteSet(oo) takes forever
 * :sympyissue:`11198` factor_list(sqrt(const)*x) error
 * :sympyissue:`10784` autowrap on windows -- distutils doesn't work with C compiler
+* :sympyissue:`10897` rewrite im() in terms of re() and vice versa
