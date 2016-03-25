@@ -2,7 +2,7 @@ from .sympify import _sympify, sympify
 from .basic import Basic, _aresame
 from .cache import cacheit
 from .compatibility import ordered
-from .logic import fuzzy_and
+from .logic import _fuzzy_group
 from .evaluate import global_evaluate
 
 
@@ -41,7 +41,7 @@ class AssocOp(Basic):
         return obj
 
     def _eval_is_commutative(self):
-        return fuzzy_and(a.is_commutative for a in args)
+        return _fuzzy_group(a.is_commutative for a in self.args)
 
     @classmethod
     def _from_args(cls, args):
@@ -99,19 +99,19 @@ class AssocOp(Basic):
 
     @classmethod
     def flatten(cls, seq):
-        """Return seq so that none of the elements are of type `cls`. This is
-        the vanilla routine that will be used if a class derived from AssocOp
-        does not define its own flatten routine."""
+        """Return seq so that none of the elements are of type `cls`.
+
+        This is the vanilla routine that will be used if a class derived
+        from AssocOp does not define its own flatten routine.
+        """
         # apply associativity, no commutativity property is used
         new_seq = []
-        while seq:
-            o = seq.pop()
+        for o in seq:
             if o.__class__ is cls:  # classes must match exactly
                 seq.extend(o.args)
             else:
                 new_seq.append(o)
-        # c_part, nc_part, order_symbols
-        return [], new_seq, None
+        return [], new_seq, None  # c_part, nc_part, order_symbols
 
     def _matches_commutative(self, expr, repl_dict={}):
         """

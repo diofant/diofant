@@ -3,7 +3,7 @@ from mpmath.libmp.libintmath import giant_steps
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
-from .evalf import EvalfMixin, DEFAULT_MAXPREC as target
+from .evalf import EvalfMixin, DEFAULT_MAXPREC as TARGET
 from .function import _coeff_isneg
 from .symbol import Dummy, Symbol
 from .sympify import _sympify
@@ -189,7 +189,7 @@ class Relational(Boolean, Expr, EvalfMixin):
                         elif r.func is Ne:
                             return True
                         else:
-                            for prec in giant_steps(2, target):
+                            for prec in giant_steps(2, TARGET):
                                 ndif = dif.evalf(prec)
                                 if ndif._prec != 1:
                                     break

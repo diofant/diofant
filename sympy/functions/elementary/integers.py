@@ -53,14 +53,14 @@ class RoundFunction(Function):
             npart.is_extended_real and (spart.is_imaginary or (S.ImaginaryUnit*spart).is_extended_real) or
                 npart.is_imaginary and spart.is_extended_real):
             try:
-                from sympy.core.evalf import DEFAULT_MAXPREC as target
+                from sympy.core.evalf import DEFAULT_MAXPREC as TARGET
                 prec = 10
                 while True:
                     r, i = cls(npart, evaluate=False).evalf(prec).as_real_imag()
                     if 2**prec > max(abs(int(r)), abs(int(i))) + 10:
                         break
                     else:
-                        if prec >= target:
+                        if prec >= TARGET:
                             raise PrecisionExhausted
                         prec += 10
                 ipart += Integer(r) + Integer(i)*S.ImaginaryUnit
