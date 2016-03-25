@@ -238,6 +238,10 @@ def test_evalf_bugs():
     # issue sympy/sympy#7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0
 
+    # issue sympy/sympy#5412
+    assert (oo*I).n() == oo*I
+    assert (oo + oo*I).n() == oo + oo*I
+
 
 def test_evalf_integer_parts():
     a = floor(log(8)/log(2) - exp(-1000), evaluate=False)
