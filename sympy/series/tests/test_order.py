@@ -40,6 +40,7 @@ def test_simple_1():
     assert O(x**2 + x + y, y) == O(1, y)
     pytest.raises(ValueError, lambda: O(exp(x), x, x))
     pytest.raises(TypeError, lambda: O(x, 2 - x))
+    pytest.raises(ValueError, lambda: O(x, (x, x**2)))
 
 
 def test_simple_2():
