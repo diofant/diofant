@@ -201,7 +201,7 @@ class BasisDependentMul(BasisDependent, Mul):
 
         # Determine the component and check arguments
         # Also keep a count to ensure two vectors aren't
-        # being multipled
+        # being multiplied
         for arg in args:
             if isinstance(arg, cls._zero_func):
                 count += 1
@@ -217,7 +217,7 @@ class BasisDependentMul(BasisDependent, Mul):
                 expr = arg
             else:
                 measure_number *= arg
-        # Make sure incompatible types weren't multipled
+        # Make sure incompatible types weren't multiplied
         if count > 1:
             raise ValueError("Invalid multiplication")
         elif count == 0:
