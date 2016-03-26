@@ -1,4 +1,4 @@
-from sympy.core import S, Symbol, Add, sympify, Expr, PoleError, Mul
+from sympy.core import S, Symbol, sympify, Expr, PoleError
 from sympy.core.symbol import Dummy
 from sympy.functions.elementary.trigonometric import sin, cos
 from sympy.series.order import Order
