@@ -10,8 +10,7 @@ from sympy import (
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
     root, simplify, atan2, arg, SparseMatrix, Tuple, nsolve, oo)
 from sympy.core.function import nfloat
-from sympy.solvers import (solve_linear_system, solve_linear_system_LU,
-                           solve_undetermined_coeffs)
+from sympy.solvers import solve_linear_system, solve_undetermined_coeffs
 from sympy.solvers.solvers import (_invert, unrad, checksol, posify,
                                    _ispow, det_quick, det_perm, det_minor,
                                    _simple_dens)
@@ -318,15 +317,6 @@ def test_linear_system_function():
     assert solve([a(0, 0) + a(0, 1) + a(1, 0) + a(1, 1), -a(1, 0) - a(1, 1)],
         a(0, 0), a(0, 1), a(1, 0), a(1, 1)) == {a(1, 0): -a(1, 1), a(0, 0): -a(0, 1)}
 
-
-def test_linear_systemLU():
-    n = Symbol('n')
-
-    M = Matrix([[1, 2, 0, 1], [1, 3, 2*n, 1], [4, -1, n**2, 1]])
-
-    assert solve_linear_system_LU(M, [x, y, z]) == {z: -3/(n**2 + 18*n),
-                                                  x: 1 - 12*n/(n**2 + 18*n),
-                                                  y: 6*n/(n**2 + 18*n)}
 
 # Note: multiple solutions exist for some of these equations, so the tests
 # should be expected to break if the implementation of the solver changes
