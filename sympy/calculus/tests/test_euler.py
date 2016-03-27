@@ -12,6 +12,7 @@ def test_euler_interface():
     pytest.raises(TypeError, lambda: euler(D(x(t), t)*y(t), [x(t), y]))
     pytest.raises(ValueError, lambda: euler(D(x(t), t)*x(y), [x(t), x(y)]))
     pytest.raises(TypeError, lambda: euler(D(x(t), t)**2, x(0)))
+    pytest.raises(TypeError, lambda: euler(1, y))
     assert euler(D(x(t), t)**2/2, {x(t)}) == [Eq(-D(x(t), t, t))]
     assert euler(D(x(t), t)**2/2, x(t), {t}) == [Eq(-D(x(t), t, t))]
 

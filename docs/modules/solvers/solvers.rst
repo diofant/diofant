@@ -26,8 +26,6 @@ is the symbol that we want to solve the equation for.
 
 .. autofunction:: sympy.solvers.solvers.solve_linear_system
 
-.. autofunction:: sympy.solvers.solvers.solve_linear_system_LU
-
 .. autofunction:: sympy.solvers.solvers.solve_undetermined_coeffs
 
 .. autofunction:: sympy.solvers.solvers.nsolve

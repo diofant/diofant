@@ -545,11 +545,13 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         numer = ring.from_expr(raw_numer)
 
-        solution = solve_lin_sys(numer.coeffs(), coeff_ring, _raw=False)
+        solution = solve_lin_sys(numer.coeffs(), coeff_ring)
 
         if solution is None:
             return
         else:
+            solution = [(coeff_ring.symbols[coeff_ring.index(k)],
+                         v.as_expr()) for k, v in solution.items()]
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [S.Zero]*len(poly_coeffs))))
 

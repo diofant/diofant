@@ -244,10 +244,10 @@ def test_latex_functions():
     assert latex(Order(x)) == r"\mathcal{O}\left(x\right)"
     assert latex(Order(x, x)) == r"\mathcal{O}\left(x\right)"
     assert latex(Order(x, (x, 0))) == r"\mathcal{O}\left(x\right)"
-    assert latex(Order(x, (x, oo))) == r"\mathcal{O}\left(x; x\rightarrow\infty\right)"
-    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow\left ( 0, \quad 0\right )\right)"
-    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow\left ( 0, \quad 0\right )\right)"
-    assert latex(Order(x, (x, oo), (y, oo))) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow\left ( \infty, \quad \infty\right )\right)"
+    assert latex(Order(x, (x, oo))) == r"\mathcal{O}\left(x; x\rightarrow{}\infty\right)"
+    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)"
+    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)"
+    assert latex(Order(x, (x, oo), (y, oo))) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( \infty, \quad \infty\right )\right)"
     assert latex(lowergamma(x, y)) == r'\gamma\left(x, y\right)'
     assert latex(uppergamma(x, y)) == r'\Gamma\left(x, y\right)'
 
@@ -464,6 +464,10 @@ def test_latex_integrals():
         r"\int\int\int\int\int\int x\, dx\, dx\, dx\, dx\, dx\, dx"
     assert latex(Integral(x, x, y, (z, 0, 1))) == \
         r"\int_{0}^{1}\int\int x\, dx\, dy\, dz"
+
+    # issue sympy/sympy#10806
+    assert latex(Integral(x, x)**2) == r"\left(\int x\, dx\right)^{2}"
+    assert latex(Integral(z + x, z)) == r"\int \left(x + z\right)\, dz"
 
 
 def test_latex_sets():

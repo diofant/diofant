@@ -3,7 +3,7 @@ from mpmath.libmp.libintmath import giant_steps
 from .basic import S
 from .compatibility import ordered
 from .expr import Expr
-from .evalf import EvalfMixin, DEFAULT_MAXPREC as target
+from .evalf import EvalfMixin, DEFAULT_MAXPREC as TARGET
 from .function import _coeff_isneg
 from .symbol import Dummy, Symbol
 from .sympify import _sympify
@@ -113,7 +113,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             pass
         elif r.func in (Eq, Ne):
             r = r.func(*ordered(r.args), evaluate=False)
-        else:
+        else:  # pragma: no cover
             raise NotImplemented
         if r.lhs.is_Number and not r.rhs.is_Number:
             r = r.reversed
@@ -189,7 +189,7 @@ class Relational(Boolean, Expr, EvalfMixin):
                         elif r.func is Ne:
                             return True
                         else:
-                            for prec in giant_steps(2, target):
+                            for prec in giant_steps(2, TARGET):
                                 ndif = dif.evalf(prec)
                                 if ndif._prec != 1:
                                     break
@@ -229,7 +229,7 @@ class Relational(Boolean, Expr, EvalfMixin):
 
         if len(syms) == 1:
             sym = syms.pop()
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Sorry, Relational.as_set procedure"
                                       " is not yet implemented for"
                                       " multivariate expressions")
