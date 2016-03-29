@@ -29,7 +29,7 @@ matrix:
         - travis_wait pip install .[exports,plot,interactive,gmpy]
         # see https://gitlab.com/pycqa/flake8/issues/121
         - pip install git+https://gitlab.com/pycqa/flake8.git@a8aac560
-        - pip install sphinx numpydoc pytest-cov
+        - pip install sphinx numpydoc pytest-cov sphinx_rtd_theme
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
