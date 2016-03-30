@@ -2041,25 +2041,32 @@ def minsolve_linear_system(system, *symbols, **flags):
 
 
 def solve_linear_system(system, *symbols, **flags):
-    r"""
-    Solve system of N linear equations with M variables, which means
-    both under- and overdetermined systems are supported. The possible
-    number of solutions is zero, one or infinite. Respectively, this
-    procedure will return None or a dictionary with solutions. In the
-    case of underdetermined systems, all arbitrary parameters are skipped.
-    This may cause a situation in which an empty dictionary is returned.
-    In that case, all symbols can be assigned arbitrary values.
+    r"""Solve system of linear equations.
 
-    Input to this functions is a Nx(M+1) matrix, which means it has
-    to be in augmented form. If you prefer to enter N equations and M
-    unknowns then use `solve(Neqs, *Msymbols)` instead. Note: a local
-    copy of the matrix is made by this routine so the matrix that is
-    passed will not be modified.
+    Both under- and overdetermined systems are supported. The possible
+    number of solutions is zero, one or infinite.
 
-    The algorithm used here is fraction-free Gaussian elimination,
-    which results, after elimination, in an upper-triangular matrix.
-    Then solutions are found using back-substitution. This approach
-    is more efficient and compact than the Gauss-Jordan method.
+    Parameters
+    ==========
+
+    system : Matrix
+        Nx(M+1) matrix, which means it has to be in augmented
+        form.  This matrix will not be modified.
+    \*symbols : list
+        List of M Symbol's
+
+    Returns
+    =======
+
+    solution: dict or None
+        Respectively, this procedure will return None or
+        a dictionary with solutions.  In the case of underdetermined
+        systems, all arbitrary parameters are skipped.  This may
+        cause a situation in which an empty dictionary is returned.
+        In that case, all symbols can be assigned arbitrary values.
+
+    Examples
+    ========
 
     >>> from sympy import Matrix, solve_linear_system
     >>> from sympy.abc import x, y
@@ -2078,6 +2085,11 @@ def solve_linear_system(system, *symbols, **flags):
     >>> system = Matrix(( (0,0,0), (0,0,0) ))
     >>> solve_linear_system(system, x, y)
     {}
+
+    See Also
+    ========
+
+    sympy.matrices.matrices.MatrixBase.rref
     """
     from sympy.polys.rings import sring
     from sympy.polys.solvers import solve_lin_sys
