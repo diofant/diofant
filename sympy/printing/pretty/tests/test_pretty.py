@@ -314,6 +314,10 @@ def test_upretty_modifiers():
     assert upretty( Symbol('x__dot') ) == 'x__dot'
 
 
+def test_pretty_atom():
+    assert upretty(S.Rationals) == 'ℚ'
+
+
 def test_pretty_basic():
     assert pretty( -Rational(1)/2 ) == '-1/2'
     assert pretty( -Rational(13)/22 ) == \

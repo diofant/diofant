@@ -1,4 +1,4 @@
-from sympy.core import oo, diff, Dummy, sympify
+from sympy.core import oo, diff, sympify
 from sympy.sets import Interval
 from sympy.core.compatibility import is_sequence
 from sympy.series import limit
