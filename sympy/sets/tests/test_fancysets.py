@@ -3,6 +3,7 @@ import itertools
 import pytest
 
 from sympy.sets.fancysets import ImageSet, Range
+from sympy.sets.contains import Contains
 from sympy.sets.sets import FiniteSet, Interval, imageset, EmptySet
 from sympy import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
                    Rational, sqrt, tan, log, Abs, exp, I)
@@ -53,6 +54,20 @@ def test_integers():
     assert Z.sup == oo
 
     assert Z.boundary == Z
+
+
+def test_rationals():
+    Q = S.Rationals
+    assert 5 in Q
+    assert -5 in Q
+    assert Rational(1, 3) in Q
+    assert pi not in Q
+    assert Q.contains(x) == Contains(x, Q, evaluate=False)
+
+    assert Q.inf == -oo
+    assert Q.sup == oo
+
+    assert Q.boundary == Q
 
 
 def test_ImageSet():
