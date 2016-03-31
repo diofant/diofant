@@ -370,8 +370,9 @@ def test_Cycle():
     pytest.raises(ValueError, lambda: Cycle().list())
     assert Cycle(1, 2).list() == [0, 2, 1]
     assert Cycle(1, 2).list(4) == [0, 2, 1, 3]
-    assert Permutation(Cycle(1, 2), size=4) == \
-        Permutation([0, 2, 1, 3])
+    assert Cycle(3).list(2) == [0, 1]
+    assert Cycle(3).list(6) == [0, 1, 2, 3, 4, 5]
+    assert Permutation(Cycle(1, 2), size=4) == Permutation([0, 2, 1, 3])
     assert str(Cycle(1, 2)(4, 5)) == 'Cycle(1, 2)(4, 5)'
     assert str(Cycle(1, 2)) == 'Cycle(1, 2)'
     assert Cycle(Permutation(list(range(3)))) == Cycle()
