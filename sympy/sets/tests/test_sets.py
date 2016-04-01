@@ -5,7 +5,7 @@ from sympy import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
                    LessThan, Max, Min, And, Or, Eq, Le,
                    Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
                    ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
-                   ImageSet, pi, Pow, Contains, Sum, RootOf,
+                   ImageSet, pi, Pow, Contains, Sum, RootOf, log,
                    SymmetricDifference, Integer, Rational)
 
 from sympy.abc import a, b, x, y, z
@@ -228,7 +228,13 @@ def test_intersect():
     assert Union(Interval(0, 1), Interval(2, 3)).intersect(S.EmptySet) == \
         S.EmptySet
     assert Union(Interval(0, 5), FiniteSet('ham')).intersect(FiniteSet(2, 3, 4, 5, 6)) == \
-        FiniteSet(2, 3, 4, 5)
+        Union(FiniteSet(2, 3, 4, 5), Intersection(FiniteSet(6), Union(Interval(0, 5), FiniteSet('ham'))))
+
+    # issue 8217
+    assert Intersection(FiniteSet(x), FiniteSet(y)) == \
+        Intersection(FiniteSet(x), FiniteSet(y), evaluate=False)
+    assert FiniteSet(x).intersect(S.Reals) == \
+        Intersection(S.Reals, FiniteSet(x), evaluate=False)
 
     # tests for the intersection alias
     assert Interval(0, 5).intersection(FiniteSet(1, 3)) == FiniteSet(1, 3)
@@ -837,3 +843,8 @@ def test_SymmetricDifference():
 def test_issue_9956():
     assert Union(Interval(-oo, oo), FiniteSet(1)) == Interval(-oo, oo)
     assert Interval(-oo, oo).contains(1) is S.true
+
+
+def test_issue_9536():
+    a = Symbol('a', real=True)
+    assert FiniteSet(log(a)).intersect(S.Reals) == Intersection(S.Reals, FiniteSet(log(a)))
