@@ -2,7 +2,7 @@
 
 from mpmath.ctx_mp_python import PythonMPContext, _mpf, _mpc, _constant
 from mpmath.libmp import (MPZ_ONE, fzero, fone, finf, fninf, fnan,
-                          round_nearest, mpf_mul, mpf_abs, mpf_lt, mpc_abs,
+                          round_nearest, mpf_mul,
                           repr_dps, int_types, from_int, from_float,
                           from_str, to_rational)
 from mpmath.rational import mpq

@@ -118,6 +118,10 @@ def test_FracElement_from_expr():
     pytest.raises(ValueError, lambda: F.from_expr(2**x))
     pytest.raises(ValueError, lambda: F.from_expr(7*x + sqrt(2)))
 
+    F,  X, Y = field((2**x, y), ZZ)
+    f = F.from_expr(2**(2*x) + 1)
+    assert f == X**2 + 1
+
 
 def test_FracElement__lt_le_gt_ge__():
     F, x, y = field("x,y", ZZ)

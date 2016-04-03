@@ -400,10 +400,10 @@ class Expr(Basic, EvalfMixin):
             # precision to see if we can get any significance
 
             from mpmath.libmp.libintmath import giant_steps
-            from sympy.core.evalf import DEFAULT_MAXPREC as target
+            from sympy.core.evalf import DEFAULT_MAXPREC as TARGET
 
             # evaluate
-            for prec in giant_steps(2, target):
+            for prec in giant_steps(2, TARGET):
                 nmag = abs(self.evalf(prec, subs=reps))
                 if nmag._prec != 1:
                     break
@@ -525,7 +525,7 @@ class Expr(Basic, EvalfMixin):
             # try 0 (for a) and 1 (for b)
             try:
                 a = expr.subs(list(zip(free, [0]*len(free))),
-                              simultaneous=True)
+                              simultaneous=True).evalf(n=15)
                 if a is S.NaN:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
@@ -536,7 +536,7 @@ class Expr(Basic, EvalfMixin):
             if a is not None and a is not S.NaN:
                 try:
                     b = expr.subs(list(zip(free, [1]*len(free))),
-                                  simultaneous=True)
+                                  simultaneous=True).evalf(n=15)
                     if b is S.NaN:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
@@ -2853,7 +2853,8 @@ class Expr(Basic, EvalfMixin):
         obj = self._eval_as_leading_term(x)
         if obj is not None:
             return powsimp(obj, deep=True, combine='exp')
-        raise NotImplementedError('as_leading_term(%s, %s)' % (self, x))
+        raise NotImplementedError('as_leading_term(%s, %s)' %
+                                  (self, x))  # pragma: no cover
 
     def _eval_as_leading_term(self, x):
         return self
@@ -3037,11 +3038,6 @@ class Expr(Basic, EvalfMixin):
         from sympy.simplify import nsimplify
         return nsimplify(self, constants, tolerance, full)
 
-    def separate(self, deep=False, force=False):
-        """See the separate function in sympy.simplify"""
-        from sympy.core.function import expand_power_base
-        return expand_power_base(self, deep=deep, force=force)
-
     def collect(self, syms, func=None, evaluate=True, exact=False, distribute_order_term=True):
         """See the collect function in sympy.simplify"""
         from sympy.simplify import collect
@@ -3091,11 +3087,6 @@ class Expr(Basic, EvalfMixin):
         """See the cancel function in sympy.polys"""
         from sympy.polys import cancel
         return cancel(self, *gens, **args)
-
-    def invert(self, g):
-        """See the invert function in sympy.polys"""
-        from sympy.polys import invert
-        return invert(self, g)
 
     def round(self, p=0):
         """Return x rounded to the given decimal place.

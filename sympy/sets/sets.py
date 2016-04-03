@@ -264,7 +264,7 @@ class Set(Basic):
         other = sympify(other, strict=True)
         ret = self._contains(other)
         if ret is None:
-            if all(Eq(i, other) is S.false for i in self):
+            if self.is_iterable and all(Eq(i, other) is S.false for i in self):
                 return False
             ret = Contains(other, self, evaluate=False)
         return ret
@@ -580,8 +580,7 @@ class ProductSet(Set):
                 return false
         except TypeError:  # maybe element isn't an iterable
             return false
-        return And(*
-            [set.contains(item) for set, item in zip(self.sets, element)])
+        return And(*[s.contains(i) for s, i in zip(self.sets, element)])
 
     def _intersect(self, other):
         """
@@ -593,8 +592,7 @@ class ProductSet(Set):
             return
         if len(other.args) != len(self.args):
             return S.EmptySet
-        return ProductSet(a.intersect(b)
-                for a, b in zip(self.sets, other.sets))
+        return ProductSet(a.intersect(b) for a, b in zip(self.sets, other.sets))
 
     def _union(self, other):
         if not other.is_ProductSet:
@@ -617,7 +615,7 @@ class ProductSet(Set):
     def _boundary(self):
         return Union(ProductSet(b + b.boundary if i != j else b.boundary
                                 for j, b in enumerate(self.sets))
-                                for i, a in enumerate(self.sets))
+                     for i, a in enumerate(self.sets))
 
     @property
     def is_iterable(self):
@@ -936,7 +934,7 @@ class Interval(Set, EvalfMixin):
 
         try:
             sing = [x for x in singularities(expr, var)
-                if x.is_extended_real and x in self]
+                    if x.is_extended_real and x in self]
         except NotImplementedError:
             return
 
@@ -985,12 +983,13 @@ class Interval(Set, EvalfMixin):
 
     def to_mpi(self, prec=53):
         return mpi(mpf(self.start._eval_evalf(prec)),
-            mpf(self.end._eval_evalf(prec)))
+                   mpf(self.end._eval_evalf(prec)))
 
     def _eval_evalf(self, prec):
         return Interval(self.left._eval_evalf(prec),
-            self.right._eval_evalf(prec),
-                        left_open=self.left_open, right_open=self.right_open)
+                        self.right._eval_evalf(prec),
+                        left_open=self.left_open,
+                        right_open=self.right_open)
 
     def _is_comparable(self, other):
         is_comparable = self.start.is_comparable
@@ -1304,11 +1303,11 @@ class Intersection(Set):
         if len(args) == 0:
             raise TypeError("Intersection expected at least one argument")
 
+        args = list(ordered(args, Set._infimum_key))
+
         # Reduce sets using known rules
         if evaluate:
             return Intersection.reduce(args)
-
-        args = list(ordered(args, Set._infimum_key))
 
         return Basic.__new__(cls, *args)
 
@@ -1361,8 +1360,16 @@ class Intersection(Set):
         # all other sets in the intersection
         for s in args:
             if s.is_FiniteSet:
-                return s.func(*[x for x in s
-                    if all(other.contains(x) is S.true for other in args)])
+                args = [a for a in args if a != s]
+                res = s.func(*[x for x in s
+                               if all(other.contains(x) is S.true
+                                      for other in args)])
+                unk = [x for x in s
+                       if any(other.contains(x) not in (S.true, S.false)
+                              for other in args)]
+                if unk:
+                    res += Intersection(*([s.func(*unk)] + args), evaluate=False)
+                return res
 
         # If any of the sets are unions, return a Union of Intersections
         for s in args:
@@ -1668,7 +1675,7 @@ class FiniteSet(Set, EvalfMixin):
 
             if syms != []:
                 return Complement(Union(intervals, evaluate=False),
-                    FiniteSet(*syms), evaluate=False)
+                                  FiniteSet(*syms), evaluate=False)
             else:
                 return Union(intervals, evaluate=False)
 
