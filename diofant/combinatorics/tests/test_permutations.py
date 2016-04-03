@@ -4,11 +4,13 @@ import pytest
 
 from diofant.combinatorics.permutations import (Cycle, Permutation, _af_parity,
                                                 _af_rmul, _af_rmuln)
+from diofant.core.symbol import Symbol
 
 
 __all__ = ()
 
 rmul = Permutation.rmul
+a = Symbol('a', integer=True)
 
 
 def test_Permutation():
@@ -347,7 +349,7 @@ def test_args():
     assert Permutation(5)(1, 2).list() == [0, 2, 1, 3, 4, 5]
 
     # enclosing brackets needed
-    pytest.raises(TypeError, lambda: Permutation([1, 2], [0]))
+    pytest.raises(ValueError, lambda: Permutation([1, 2], [0]))
 
     # enclosing brackets needed on 0
     pytest.raises(ValueError, lambda: Permutation([[1, 2], 0]))
@@ -370,6 +372,7 @@ def test_Cycle():
     pytest.raises(ValueError, lambda: Cycle().list())
     assert Cycle(1, 2).list() == [0, 2, 1]
     assert Cycle(1, 2).list(4) == [0, 2, 1, 3]
+    assert Cycle().size == 0
     assert Cycle(3).list(2) == [0, 1]
     assert Cycle(3).list(6) == [0, 1, 2, 3, 4, 5]
     assert Permutation(Cycle(1, 2), size=4) == Permutation([0, 2, 1, 3])
@@ -378,9 +381,11 @@ def test_Cycle():
     assert Cycle(Permutation(list(range(3)))) == Cycle()
     assert Cycle(1, 2).list() == [0, 2, 1]
     assert Cycle(1, 2).list(4) == [0, 2, 1, 3]
-    pytest.raises(TypeError, lambda: Cycle((1, 2)))
+    pytest.raises(ValueError, lambda: Cycle((1, 2)))
     pytest.raises(ValueError, lambda: Cycle(1, 2, 1))
     pytest.raises(TypeError, lambda: Cycle(1, 2)*{})
+    pytest.raises(ValueError, lambda: Cycle(4)[a])
+    pytest.raises(ValueError, lambda: Cycle(2, -4, 3))
 
     # check round-trip
     p = Permutation([[1, 2], [4, 3]], size=5)

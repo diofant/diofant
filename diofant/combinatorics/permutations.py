@@ -5,7 +5,7 @@ from functools import reduce
 from mpmath.libmp.libintmath import ifac
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import is_sequence
+from ..core.compatibility import as_int, is_sequence
 from ..matrices import zeros
 from ..polys import lcm
 from ..utilities import flatten, has_dups, has_variety
@@ -300,6 +300,7 @@ class Cycle(dict):
 
     def __missing__(self, arg):
         """Enter arg into dictionary and return arg."""
+        arg = as_int(arg)
         self[arg] = arg
         return arg
 
@@ -409,7 +410,9 @@ class Cycle(dict):
                 for k, v in args[0].items():
                     self[k] = v
                 return
-        args = [int(a) for a in args]
+        args = [as_int(a) for a in args]
+        if any(i < 0 for i in args):
+            raise ValueError('negative integers are not allowed in a cycle.')
         if has_dups(args):
             raise ValueError('All elements must be unique in a cycle.')
         for i in range(-len(args), 0):
@@ -417,6 +420,8 @@ class Cycle(dict):
 
     @property
     def size(self):
+        if not self:
+            return 0
         return max(self.keys()) + 1
 
     def copy(self):
