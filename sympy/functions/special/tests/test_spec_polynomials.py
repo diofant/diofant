@@ -257,6 +257,10 @@ def test_laguerre():
 
     pytest.raises(ValueError, lambda: laguerre(-2.1, x))
 
+    # issue sympy/sympy#10961
+    X = laguerre(Rational(5, 2), x)
+    assert isinstance(X, laguerre)
+
 
 def test_assoc_laguerre():
     # generalized Laguerre polynomials:
@@ -285,6 +289,10 @@ def test_assoc_laguerre():
         assoc_laguerre(n, conjugate(alpha), conjugate(x))
 
     pytest.raises(ValueError, lambda: assoc_laguerre(-2.1, alpha, x))
+
+    # issue sympy/sympy#10961
+    X = assoc_laguerre(Rational(5, 2), alpha, x)
+    assert isinstance(X, assoc_laguerre)
 
 
 @pytest.mark.xfail
