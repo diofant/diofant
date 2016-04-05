@@ -157,7 +157,9 @@ class Set(Basic):
 
     def _complement(self, other):
         # this behaves as other - self
-        if isinstance(other, ProductSet):
+        if other.is_subset(self):
+            return S.EmptySet
+        elif isinstance(other, ProductSet):
             # For each set consider it or it's complement
             # We need at least one of the sets to be complemented
             # Consider all 2^n combinations.
@@ -182,9 +184,6 @@ class Set(Basic):
 
         elif isinstance(other, Complement):
             return Complement(other.args[0], Union(other.args[1], self), evaluate=False)
-
-        elif isinstance(other, EmptySet):
-            return S.EmptySet
 
         elif isinstance(other, FiniteSet):
             unks = FiniteSet(*[el for el in other

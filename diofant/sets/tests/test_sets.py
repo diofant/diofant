@@ -1011,3 +1011,8 @@ def test_sympyissue_8257():
     assert FiniteSet(+oo) + Interval(-oo, oo) == Interval(-oo, oo)
     assert Interval(-oo, oo) + FiniteSet(-oo) == Interval(-oo, oo)
     assert FiniteSet(-oo) + Interval(-oo, oo) == Interval(-oo, oo)
+
+
+def test_sympyissue_10931():
+    assert S.Integers - S.Integers == S.EmptySet
+    assert S.Integers - S.Reals == S.EmptySet

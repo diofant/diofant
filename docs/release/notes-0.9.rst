@@ -208,3 +208,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10784` autowrap on windows -- distutils doesn't work with C compiler
 * :sympyissue:`10897` rewrite im() in terms of re() and vice versa
 * :sympyissue:`10963` x**6000%400 hangs
+* :sympyissue:`10931` S.Integers - S.Integers does not evaluate
