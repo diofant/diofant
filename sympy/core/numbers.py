@@ -2947,8 +2947,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return (Integer(2), Integer(3))
-        elif issubclass(number_cls, Rational):
-            pass
 
     def _eval_power(self, arg):
         from sympy.functions.elementary.exponential import log
@@ -3154,8 +3152,6 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return (S.One, Rational(2))
-        elif issubclass(number_cls, Rational):
-            pass
 
 
 class EulerGamma(NumberSymbol, metaclass=Singleton):
