@@ -1,8 +1,8 @@
 SymPy
 =====
 
-.. image:: https://secure.travis-ci.org/skirpichev/omg.png?branch=master
-    :target: http://travis-ci.org/skirpichev/omg
+.. image:: https://travis-ci.org/skirpichev/omg.svg?branch=master
+    :target: https://travis-ci.org/skirpichev/omg
 
 .. image:: https://codecov.io/github/skirpichev/omg/coverage.svg?branch=master
     :target: https://codecov.io/github/skirpichev/omg?branch=master
