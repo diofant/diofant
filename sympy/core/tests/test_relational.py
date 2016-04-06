@@ -1,15 +1,18 @@
+import random
+from operator import gt, lt, ge, le
+
 import pytest
 
-from sympy import (S, Symbol, symbols, nan, oo, I, pi, Float, And, Or, Not,
+from sympy import (S, Symbol, nan, oo, I, pi, Float, And, Or, Not,
                    Implies, Xor, zoo, sqrt, Rational, simplify, Function,
-                   Wild, Integer)
+                   Wild, Integer, floor, ceiling)
 from sympy.core.relational import (Relational, Equality, Unequality,
                                    GreaterThan, LessThan, StrictGreaterThan,
                                    StrictLessThan, Rel, Eq, Lt, Le,
                                    Gt, Ge, Ne)
 from sympy.sets.sets import Interval, FiniteSet
 
-x, y, z, t = symbols('x,y,z,t')
+from sympy.abc import w, x, y, z, t
 
 
 def test_rel_ne():
@@ -154,7 +157,6 @@ def test_rich_cmp():
 
 
 def test_doit():
-    from sympy import Symbol
     p = Symbol('p', positive=True)
     n = Symbol('n', negative=True)
     np = Symbol('np', nonpositive=True)
@@ -173,8 +175,6 @@ def test_doit():
 
 
 def test_new_relational():
-    x = Symbol('x')
-
     assert Eq(x) == Relational(x, 0)       # None ==> Equality
     assert Eq(x) == Relational(x, 0, '==')
     assert Eq(x) == Relational(x, 0, 'eq')
@@ -254,13 +254,12 @@ def test_new_relational():
     assert (x < 0) != StrictLessThan(x, 1)
 
     # finally, some fuzz testing
-    from random import randint
     for i in range(100):
         while 1:
-            strtype, length = (chr, 65535) if randint(0, 1) else (chr, 255)
-            relation_type = strtype(randint(0, length))
-            if randint(0, 1):
-                relation_type += strtype(randint(0, length))
+            strtype, length = (chr, 65535) if random.randint(0, 1) else (chr, 255)
+            relation_type = strtype(random.randint(0, length))
+            if random.randint(0, 1):
+                relation_type += strtype(random.randint(0, length))
             if relation_type not in ('==', 'eq', '!=', '<>', 'ne', '>=', 'ge',
                                      '<=', 'le', '>', 'gt', '<', 'lt'):
                 break
@@ -304,8 +303,8 @@ def test_univariate_relational_as_set():
     assert Ne(x, 0).as_set() == Interval(-oo, 0, True, True) + \
         Interval(0, oo, True, True)
 
-    assert (x**2 >= 4).as_set() == (Interval(-oo, -2, True)
-                                    + Interval(2, oo, False, True))
+    assert (x**2 >= 4).as_set() == (Interval(-oo, -2, True) +
+                                    Interval(2, oo, False, True))
 
 
 @pytest.mark.xfail
@@ -368,14 +367,13 @@ def test_complex_compare_not_real():
     # two cases which are not real
     y = Symbol('y', imaginary=True, nonzero=True)
     z = Symbol('z', complex=True, extended_real=False)
-    for w in (y, z):
-        assert_all_ineq_raise_TypeError(2, w)
+    for a in (y, z):
+        assert_all_ineq_raise_TypeError(2, a)
     # some cases which should remain un-evaluated
-    t = Symbol('t')
     x = Symbol('x', extended_real=True)
     z = Symbol('z', complex=True)
-    for w in (x, z, t):
-        assert_all_ineq_give_class_Inequality(2, w)
+    for a in (x, z, t):
+        assert_all_ineq_give_class_Inequality(2, a)
 
 
 def test_imaginary_and_inf_compare_raises_TypeError():
@@ -434,7 +432,6 @@ def test_x_minus_y_not_same_as_x_lt_y():
 
 def test_nan_equality_exceptions():
     # See issue #7774
-    import random
     assert Equality(nan, nan) is S.false
     assert Unequality(nan, nan) is S.true
 
@@ -510,7 +507,6 @@ def test_inequalities_symbol_name_same_complex():
 
 def test_inequalities_cant_sympify_other():
     # see issue 7833
-    from operator import gt, lt, ge, le
 
     bar = "foo"
 
@@ -578,7 +574,6 @@ def test_simplify():
 
 
 def test_equals():
-    w, x, y, z = symbols('w:z')
     f = Function('f')
     assert Eq(x, 1).equals(Eq(x*(y + 1) - x*y - x + 1, x))
     assert Eq(x, y).equals(x < y, True) is False
@@ -638,10 +633,10 @@ def test_canonical():
 
 @pytest.mark.xfail
 def test_issue_8444():
-    x = symbols('x', extended_real=True)
+    x = Symbol('x', extended_real=True)
     assert (x <= oo) == (x >= -oo) == S.true
 
-    x = symbols('x')
+    x = Symbol('x', real=True)
     assert x >= floor(x)
     assert (x < floor(x)) is S.false
     assert Gt(x, floor(x)) == Gt(x, floor(x), evaluate=False)
@@ -650,6 +645,6 @@ def test_issue_8444():
     assert (x > ceiling(x)) is S.false
     assert Lt(x, ceiling(x)) == Lt(x, ceiling(x), evaluate=False)
     assert Le(x, ceiling(x)) == Le(x, ceiling(x), evaluate=False)
-    i = symbols('i', integer=True)
+    i = Symbol('i', integer=True)
     assert (i > floor(i)) is S.false
     assert (i < ceiling(i)) is S.false
