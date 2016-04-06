@@ -2952,13 +2952,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
         from sympy.functions.elementary.exponential import log
         from sympy import Add, Mul, Pow
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
-                return S.One
-            elif arg is S.One:
-                return S.Exp1
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero
