@@ -520,12 +520,9 @@ def test_inequalities_cant_sympify_other():
 
 
 def test_ineq_avoid_wild_symbol_flip():
-    # see issue #7951, we try to avoid this internally, e.g., by using
-    # __lt__ instead of "<".
-    from sympy.core.symbol import Wild
-    p = symbols('p', cls=Wild)
-    # x > p might flip, but Gt should not:
+    p = Wild('p')
     assert Gt(x, p) == Gt(x, p, evaluate=False)
+    assert (x < p) == Lt(x, p, evaluate=False)  # issue sympy/sympy#7951
     # Previously failed as 'p > x':
     e = Lt(x, y).subs({y: p})
     assert e == Lt(x, p, evaluate=False)
@@ -656,9 +653,3 @@ def test_issue_8444():
     i = symbols('i', integer=True)
     assert (i > floor(i)) is S.false
     assert (i < ceiling(i)) is S.false
-
-
-def test_issue_7951():
-    p = Wild('p')
-    x = Symbol('x')
-    assert str(x < p) == 'x < p_'
