@@ -2813,11 +2813,11 @@ class NumberSymbol(AtomicExpr):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def approximation(self, number_cls):
-        """ Return an interval with number_cls endpoints
-        that contains the value of NumberSymbol.
-        If not implemented, then return None.
+    def approximation_interval(self, number_cls):
+        """ Return an interval with number_cls endpoints that contains the
+        value of NumberSymbol.  If not implemented, then return None.
         """
+        return  # pragma: no cover
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
@@ -2891,8 +2891,7 @@ class NumberSymbol(AtomicExpr):
             return Expr.__ge__(self, other)
 
     def __int__(self):
-        # subclass with appropriate return value
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def __hash__(self):
         return super(NumberSymbol, self).__hash__()
