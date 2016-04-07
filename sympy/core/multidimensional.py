@@ -6,6 +6,8 @@ Read the vectorize docstring for more details.
 
 from functools import wraps
 
+from sympy.core.numbers import Integer
+
 
 def apply_on_element(f, args, kwargs, n):
     """
@@ -14,23 +16,22 @@ def apply_on_element(f, args, kwargs, n):
     other arguments stay the same.
     """
     # Get the specified argument.
-    if isinstance(n, int):
+    if isinstance(n, (int, Integer)):
         structure = args[n]
         is_arg = True
     elif isinstance(n, str):
         structure = kwargs[n]
         is_arg = False
+    else:  # pragma: no cover
+        raise NotImplementedError
 
     # Define reduced function that is only dependend of the specified argument.
     def f_reduced(x):
-        if hasattr(x, "__iter__"):
-            return list(map(f_reduced, x))
+        if is_arg:
+            args[n] = x
         else:
-            if is_arg:
-                args[n] = x
-            else:
-                kwargs[n] = x
-            return f(*args, **kwargs)
+            kwargs[n] = x
+        return f(*args, **kwargs)
 
     # f_reduced will call itself recursively so that in the end f is applied to
     # all basic elements.
@@ -63,12 +64,14 @@ class vectorize:
     """
     Generalizes a function taking scalars to accept multidimensional arguments.
 
-    For example
+    Examples
+    ========
 
     >>> from sympy import diff, sin, symbols, Function
     >>> from sympy.core.multidimensional import vectorize
-    >>> x, y, z = symbols('x y z')
-    >>> f, g, h = list(map(Function, 'fgh'))
+
+    >>> x, y = symbols('x, y')
+    >>> f, g = symbols('f, g', cls=Function)
 
     >>> @vectorize(0)
     ... def vsin(x):
@@ -81,8 +84,9 @@ class vectorize:
     ... def vdiff(f, y):
     ...     return diff(f, y)
 
-    >>> vdiff([f(x, y, z), g(x, y, z), h(x, y, z)], [x, y, z])
-    [[Derivative(f(x, y, z), x), Derivative(f(x, y, z), y), Derivative(f(x, y, z), z)], [Derivative(g(x, y, z), x), Derivative(g(x, y, z), y), Derivative(g(x, y, z), z)], [Derivative(h(x, y, z), x), Derivative(h(x, y, z), y), Derivative(h(x, y, z), z)]]
+    >>> vdiff([f(x, y), g(x, y)], [x, y])
+    [[Derivative(f(x, y), x), Derivative(f(x, y), y)],
+     [Derivative(g(x, y), x), Derivative(g(x, y), y)]]
     """
     def __init__(self, *mdargs):
         """
@@ -92,7 +96,7 @@ class vectorize:
         If no argument is given, everything is treated multidimensional.
         """
         for a in mdargs:
-            if not isinstance(a, (int, str)):
+            if not isinstance(a, (int, Integer, str)):
                 raise TypeError("a is of invalid type")
         self.mdargs = mdargs
 
@@ -107,12 +111,12 @@ class vectorize:
             if self.mdargs:
                 mdargs = self.mdargs
             else:
-                mdargs = range(len(args)) + kwargs.keys()
+                mdargs = list(range(len(args))) + list(kwargs.keys())
 
             arglength = len(args)
 
             for n in mdargs:
-                if isinstance(n, int):
+                if isinstance(n, (int, Integer)):
                     if n >= arglength:
                         continue
                     entry = args[n]
@@ -123,6 +127,9 @@ class vectorize:
                     except KeyError:
                         continue
                     is_arg = False
+                else:  # pragma: no cover
+                    raise NotImplementedError
+
                 if hasattr(entry, "__iter__"):
                     # Create now a copy of the given array and manipulate then
                     # the entries directly.
