@@ -267,6 +267,10 @@ def test_PolyElement_from_expr():
     pytest.raises(ValueError, lambda: R.from_expr(2**x))
     pytest.raises(ValueError, lambda: R.from_expr(7*x + sqrt(2)))
 
+    R,  X, Y = ring((2**x, y), ZZ)
+    f = R.from_expr(2**(2*x) + 1)
+    assert f == X**2 + 1
+
 
 def test_PolyElement_degree():
     R,  x, y, z = ring("x,y,z", ZZ)
