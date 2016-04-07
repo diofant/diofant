@@ -9,26 +9,18 @@ class RawMatrix(Matrix):
 
 def eqs_to_matrix(eqs, ring):
     """Transform from equations to matrix form. """
-    xs = ring.gens
-    M = zeros(len(eqs), len(xs)+1, cls=RawMatrix)
+    m = zeros(len(eqs), len(ring.gens) + 1, cls=RawMatrix)
 
     for j, e_j in enumerate(eqs):
-        for i, x_i in enumerate(xs):
-            M[j, i] = e_j.coeff(x_i)
-        M[j, -1] = -e_j.coeff(1)
+        for i, x_i in enumerate(ring.gens):
+            m[j, i] = e_j.coeff(x_i)
+        m[j, -1] = -e_j.coeff(1)
 
-    return M
+    return m
 
 
-def solve_lin_sys(eqs, ring, _raw=True):
-    """Solve a system of linear equations.
-
-    If ``_raw`` is False, the keys and values in the returned dictionary
-    will be of type Expr (and the unit of the field will be removed from
-    the keys) otherwise the low-level polys types will be returned, e.g.
-    PolyElement: PythonRational.
-    """
-    as_expr = not _raw
+def solve_lin_sys(eqs, ring):
+    """Solve a system of linear equations. """
 
     assert ring.domain.has_Field
 
@@ -36,31 +28,19 @@ def solve_lin_sys(eqs, ring, _raw=True):
     matrix = eqs_to_matrix(eqs, ring)
 
     # solve by row-reduction
-    echelon, pivots = matrix.rref(iszerofunc=lambda x: not x, simplify=lambda x: x)
+    echelon, pivots = matrix.rref(iszerofunc=lambda x: not x)
 
-    # construct the returnable form of the solutions
-    keys = ring.symbols if as_expr else ring.gens
-
-    if pivots[-1] == len(keys):
+    if not pivots:
+        return {}
+    elif pivots[-1] == len(ring.gens):
         return
-
-    if len(pivots) == len(keys):
-        sol = []
-        for s in echelon[:, -1]:
-            a = ring.ground_new(s)
-            if as_expr:
-                a = a.as_expr()
-            sol.append(a)
-        sols = dict(zip(keys, sol))
+    elif len(pivots) == len(ring.gens):
+        sol = [ring.ground_new(s) for s in echelon[:, -1]]
+        return dict(zip(ring.gens, sol))
     else:
         sols = {}
-        g = ring.gens
-        _g = [[-i] for i in g]
         for i, p in enumerate(pivots):
-            vect = RawMatrix(_g[p + 1:] + [[ring.one]])
-            v = (echelon[i, p + 1:]*vect)[0]
-            if as_expr:
-                v = v.as_expr()
-            sols[keys[p]] = v
+            vect = RawMatrix([[-x] for x in ring.gens[p+1:]] + [[ring.one]])
+            sols[ring.gens[p]] = (echelon[i, p + 1:]*vect)[0]
 
-    return sols
+        return sols

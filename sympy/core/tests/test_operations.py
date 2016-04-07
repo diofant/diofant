@@ -1,13 +1,20 @@
 import pytest
 
 from sympy import Integer
-from sympy.core.operations import LatticeOp
+from sympy.core.operations import AssocOp, LatticeOp
 from sympy.core.sympify import SympifyError
 
-# create the simplest possible Lattice class
+
+class MyMul(AssocOp):
+    identity = Integer(1)
+
+
+def test_flatten():
+    assert MyMul(2, MyMul(4, 3)) == MyMul(2, 4, 3)
 
 
 class join(LatticeOp):
+    """Simplest possible Lattice class."""
     zero = Integer(0)
     identity = Integer(1)
 

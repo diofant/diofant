@@ -964,9 +964,6 @@ class Mul(Expr, AssocOp):
     def _eval_is_finite(self):
         return _fuzzy_group(a.is_finite for a in self.args)
 
-    def _eval_is_commutative(self):
-        return _fuzzy_group(a.is_commutative for a in self.args)
-
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
 

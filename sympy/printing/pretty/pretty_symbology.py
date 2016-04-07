@@ -515,6 +515,7 @@ atoms_table = {
                                 (U('DOUBLE-STRUCK CAPITAL N') +
                                  U('SUBSCRIPT ZERO'))),
     'Integers':                U('DOUBLE-STRUCK CAPITAL Z'),
+    'Rationals':               U('DOUBLE-STRUCK CAPITAL Q'),
     'Reals':                   U('DOUBLE-STRUCK CAPITAL R'),
     'Union':                   U('UNION'),
     'SymmetricDifference':     U('INCREMENT'),

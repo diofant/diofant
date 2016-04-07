@@ -8,7 +8,8 @@ from sympy.core.numbers import Integer
 
 
 class Naturals(Set, metaclass=Singleton):
-    """
+    """The set of natural numbers.
+
     Represents the natural numbers (or counting numbers) which are all
     positive integers starting from 1. This set is also available as
     the Singleton, S.Naturals.
@@ -31,7 +32,8 @@ class Naturals(Set, metaclass=Singleton):
 
     See Also
     ========
-    Naturals0 : non-negative integers (i.e. includes 0, too)
+
+    Naturals0 : non-negative integers
     Integers : also includes negative integers
     """
 
@@ -63,12 +65,15 @@ class Naturals(Set, metaclass=Singleton):
 
 
 class Naturals0(Naturals):
-    """Represents the whole numbers which are all the non-negative integers,
-    inclusive of zero.
+    """The set of natural numbers, starting from 0.
+
+    Represents the whole numbers which are all the non-negative
+    integers, inclusive of zero.
 
     See Also
     ========
-    Naturals : positive integers; does not include 0
+
+    Naturals : positive integers
     Integers : also includes the negative integers
     """
     _inf = S.Zero
@@ -81,9 +86,10 @@ class Naturals0(Naturals):
 
 
 class Integers(Set, metaclass=Singleton):
-    """
-    Represents all integers: positive, negative and zero. This set is also
-    available as the Singleton, S.Integers.
+    """The set of all integers.
+
+    Represents all integers: positive, negative and zero. This set
+    is also available as the Singleton, S.Integers.
 
     Examples
     ========
@@ -106,6 +112,7 @@ class Integers(Set, metaclass=Singleton):
 
     See Also
     ========
+
     Naturals0 : non-negative integers
     Integers : positive and negative integers and zero
     """
@@ -168,14 +175,35 @@ class Integers(Set, metaclass=Singleton):
         return ImageSet(Lambda(n, expr), S.Integers)
 
 
+class Rationals(Set, metaclass=Singleton):
+    """The set of all rationals. """
+
+    def _contains(self, other):
+        if other.is_rational:
+            return S.true
+        elif other.is_rational is False:
+            return S.false
+
+    @property
+    def _inf(self):
+        return -S.Infinity
+
+    @property
+    def _sup(self):
+        return S.Infinity
+
+    @property
+    def _boundary(self):
+        return self
+
+
 class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
         return Interval.__new__(cls, -S.Infinity, S.Infinity, True, True)
 
 
 class ImageSet(Set):
-    """
-    Image of a set under a mathematical function
+    """Image of a set under a mathematical function.
 
     Examples
     ========
@@ -225,7 +253,7 @@ class ImageSet(Set):
         L = self.lamda
         if self._is_multivariate():
             solns = solve([expr - val for val, expr in zip(other, L.expr)],
-                    L.variables)
+                          L.variables)
         else:
             solns = solve(L.expr - other, L.variables[0])
 
@@ -298,8 +326,7 @@ class ImageSet(Set):
 
 
 class Range(Set):
-    """
-    Represents a range of integers.
+    """Represents a range of integers.
 
     Examples
     ========
@@ -313,7 +340,6 @@ class Range(Set):
     [10, 12, 14, 16, 18]
     >>> list(Range(20, 10, -2)) # 20 to 10 backward in steps of 2
     [12, 14, 16, 18, 20]
-
     """
 
     is_iterable = True
@@ -328,7 +354,7 @@ class Range(Set):
                                  for w in (start, stop, step)]
         except ValueError:
             raise ValueError("Inputs to Range must be Integer Valued\n" +
-                    "Use ImageSets of Ranges for other cases")
+                             "Use ImageSets of Ranges for other cases")
 
         if not step.is_finite:
             raise ValueError("Infinite step is not allowed")

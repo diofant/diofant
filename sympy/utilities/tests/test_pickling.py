@@ -21,13 +21,13 @@ from sympy.functions import (Piecewise, lowergamma, acosh, chebyshevu,
                              chebyshevt, ln, chebyshevt_root, binomial,
                              legendre, Heaviside, factorial, bernoulli, coth,
                              tanh, assoc_legendre, sign, arg, asin, DiracDelta,
-                             re, rf, Abs, uppergamma, binomial, sinh, Ynm, cos,
+                             re, rf, Abs, uppergamma, binomial, sinh, cos,
                              cot, acos, acot, gamma, bell, hermite, harmonic,
-                             LambertW, zeta, log, factorial, asinh, acoth, Znm,
+                             LambertW, zeta, log, factorial, asinh, acoth,
                              cosh, dirichlet_eta, Eijk, loggamma, erf, ceiling,
                              im, fibonacci, conjugate, tan, chebyshevu_root,
-                             floor, atanh, sqrt, RisingFactorial, sin, atan, ff,
-                             FallingFactorial, lucas, atan2, polygamma, exp)
+                             floor, atanh, sqrt, sin, atan, ff,
+                             lucas, atan2, polygamma, exp)
 
 from sympy.sets.sets import Interval
 from sympy.core.multidimensional import vectorize
@@ -49,7 +49,7 @@ from sympy.ntheory.generate import Sieve
 from sympy.plotting.plot import Plot
 
 from sympy import ZZ, QQ, lex
-from sympy.polys.polytools import Poly, PurePoly, GroebnerBasis
+from sympy.polys.polytools import Poly, PurePoly
 from sympy.polys.polyclasses import DMP, DMF, ANP
 from sympy.polys.rings import PolyRing
 from sympy.polys.fields import FracField
@@ -58,27 +58,22 @@ from sympy.polys.domains.pythonfinitefield import PythonFiniteField
 from sympy.polys.domains.mpelements import MPContext
 from sympy.polys.domains.pythonintegerring import PythonIntegerRing
 from sympy.polys.domains.pythonrationalfield import PythonRationalField
-from sympy.polys.domains.realfield import RealField
-from sympy.polys.domains.complexfield import ComplexField
 from sympy.polys.domains.algebraicfield import AlgebraicField
-from sympy.polys.domains.polynomialring import PolynomialRing
-from sympy.polys.domains.fractionfield import FractionField
 from sympy.polys.domains.expressiondomain import ExpressionDomain
 from sympy.polys.numberfields import AlgebraicNumber
 from sympy.polys.orderings import (LexOrder, GradedLexOrder,
                                    ReversedGradedLexOrder, ProductOrder,
                                    InverseOrder)
 from sympy.polys.monomials import MonomialOps, Monomial
-from sympy.polys.polyerrors import (ExactQuotientFailed, OperationNotSupported,
-                                    HeuristicGCDFailed, HomomorphismFailed,
+from sympy.polys.polyerrors import (HeuristicGCDFailed, HomomorphismFailed,
                                     IsomorphismFailed, ExtraneousFactors,
                                     EvaluationFailed, RefinementFailed,
                                     CoercionFailed, NotInvertible, NotReversible,
                                     NotAlgebraic, DomainError, PolynomialError,
                                     UnificationFailed, GeneratorsError,
-                                    GeneratorsNeeded, ComputationFailed,
+                                    GeneratorsNeeded,
                                     UnivariatePolynomialError,
-                                    MultivariatePolynomialError, PolificationFailed,
+                                    MultivariatePolynomialError,
                                     OptionError, FlagError)
 from sympy.polys.polyoptions import Options
 from sympy.polys.rootoftools import RootOf, RootSum
@@ -376,7 +371,6 @@ def test_pickling_polys_domains():
         check(c)
 
     if HAS_GMPY:
-        from sympy.polys.domains.gmpyfinitefield import GMPYFiniteField
         from sympy.polys.domains.gmpyintegerring import GMPYIntegerRing
         from sympy.polys.domains.gmpyrationalfield import GMPYRationalField
 

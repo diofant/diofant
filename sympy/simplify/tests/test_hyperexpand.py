@@ -1027,3 +1027,8 @@ def test_issue_6052():
     G0 = meijerg((), (), (1,), (0,), 0)
     assert hyperexpand(G0) == 0
     assert hyperexpand(hyper((), (2,), 0)) == 1
+
+
+def test_omgissue_241():
+    e = hyper((2, 3, 5, 9, 1), (1, 4, 6, 10), 1)
+    assert hyperexpand(e) == Rational(108, 7)
