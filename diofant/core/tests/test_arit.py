@@ -1620,6 +1620,9 @@ def test_Mod():
     # issue diofant/diofant#312
     assert Mod(-x, 2*x) == x
 
+    # issue sympy/sympy#10963
+    assert (x**6000 % 400).args[1] == 400
+
 
 def test_Mod_is_integer():
     p = Symbol('p', integer=True)
