@@ -186,8 +186,6 @@ class Limit(Expr):
                 newe = newe.subs(z, newz)
 
             r = limitinf(newe, newz)
-            if r is S.NaN:
-                raise PoleError()
         except (PoleError, ValueError, NotImplementedError):
             r = None
             if use_heuristics:

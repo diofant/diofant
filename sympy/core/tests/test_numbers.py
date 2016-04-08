@@ -1388,8 +1388,25 @@ def test_Float_eq():
 
 
 def test_int_NumberSymbols():
-    assert [int(i) for i in [pi, EulerGamma, E, GoldenRatio, Catalan]] == \
-        [3, 0, 2, 1, 0]
+    assert [int(i) for i in [pi, EulerGamma, E,
+                             GoldenRatio, Catalan]] == [3, 0, 2, 1, 0]
+
+
+def test_approximation_interval():
+    assert S.Exp1.approximation_interval(Integer) == (2, 3)
+    assert S.Exp1.approximation_interval(Float) is None
+
+    assert GoldenRatio.approximation_interval(Integer) == (1, 2)
+    assert GoldenRatio.approximation_interval(Float) is None
+
+    assert EulerGamma.approximation_interval(Integer) == (0, 1)
+    assert EulerGamma.approximation_interval(Rational) == (Rational(1, 2),
+                                                           Rational(3, 5))
+    assert EulerGamma.approximation_interval(Float) is None
+
+    assert Catalan.approximation_interval(Integer) == (0, 1)
+    assert Catalan.approximation_interval(Rational) == (Rational(9, 10), 1)
+    assert Catalan.approximation_interval(Float) is None
 
 
 def test_issue_6640():
