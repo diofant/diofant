@@ -2812,11 +2812,11 @@ class NumberSymbol(AtomicExpr):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def approximation(self, number_cls):
-        """ Return an interval with number_cls endpoints
-        that contains the value of NumberSymbol.
-        If not implemented, then return None.
+    def approximation_interval(self, number_cls):
+        """ Return an interval with number_cls endpoints that contains the
+        value of NumberSymbol.  If not implemented, then return None.
         """
+        return  # pragma: no cover
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
@@ -2890,8 +2890,7 @@ class NumberSymbol(AtomicExpr):
             return Expr.__ge__(self, other)
 
     def __int__(self):
-        # subclass with appropriate return value
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def __hash__(self):
         return super(NumberSymbol, self).__hash__()
@@ -2946,20 +2945,12 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return (Integer(2), Integer(3))
-        elif issubclass(number_cls, Rational):
-            pass
 
     def _eval_power(self, arg):
         from sympy.functions.elementary.exponential import log
         from sympy import Add, Mul, Pow
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
-                return S.One
-            elif arg is S.One:
-                return S.Exp1
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero
@@ -3153,8 +3144,6 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return (S.One, Rational(2))
-        elif issubclass(number_cls, Rational):
-            pass
 
 
 class EulerGamma(NumberSymbol, metaclass=Singleton):
