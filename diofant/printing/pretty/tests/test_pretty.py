@@ -6,13 +6,13 @@ import pytest
 
 from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      Complement, Contains, Derivative, Dict, Eq, Equivalent,
-                     FiniteSet, Float, Function, Ge, Gt, I, Implies, Integer,
-                     Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
-                     Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or, Pow,
-                     Product, Range, Rational, Ray, RealField, RootOf, RootSum,
-                     S, Segment, Subs, Sum, Symbol, SymmetricDifference, Trace,
-                     Tuple, Union, Xor, cbrt, conjugate, grlex, groebner, ilex,
-                     oo, pi, root, symbols)
+                     EulerGamma, FiniteSet, Float, Function, Ge, GoldenRatio,
+                     Gt, I, Implies, Integer, Integral, Intersection, Interval,
+                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mul, Nand,
+                     Ne, Nor, Not, O, Or, Pow, Product, Range, Rational, Ray,
+                     RealField, RootOf, RootSum, S, Segment, Subs, Sum, Symbol,
+                     SymmetricDifference, Trace, Tuple, Union, Xor, cbrt,
+                     conjugate, grlex, groebner, ilex, oo, pi, root, symbols)
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
@@ -968,6 +968,16 @@ x - ── + ─── + O⎝x ⎠\n\
 
     assert pretty(expr, order='rev-lex') == ascii_str
     assert upretty(expr, order='rev-lex') == ucode_str
+
+
+def test_EulerGamma():
+    assert pretty(EulerGamma) == str(EulerGamma) == "EulerGamma"
+    assert upretty(EulerGamma) == "γ"
+
+
+def test_GoldenRatio():
+    assert pretty(GoldenRatio) == str(GoldenRatio) == "GoldenRatio"
+    assert upretty(GoldenRatio) == "φ"
 
 
 def test_pretty_relational():
