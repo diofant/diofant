@@ -107,7 +107,6 @@ def test_exp_rewrite():
     assert exp(x*I).rewrite(cos) == cos(x) + I*sin(x)
     assert exp(1).rewrite(cos) == sinh(1) + cosh(1)
     assert exp(1).rewrite(sin) == sinh(1) + cosh(1)
-    assert exp(1).rewrite(sin) == sinh(1) + cosh(1)
     assert exp(x).rewrite(tanh) == (1 + tanh(x/2))/(1 - tanh(x/2))
 
 

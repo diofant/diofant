@@ -488,6 +488,11 @@ def test_sympy__sets__fancysets__Integers():
     assert _test_args(Integers())
 
 
+def test_sympy__sets__fancysets__Rationals():
+    from sympy.sets.fancysets import Rationals
+    assert _test_args(Rationals())
+
+
 def test_sympy__sets__fancysets__Reals():
     from sympy.sets.fancysets import Reals
     assert _test_args(Reals())

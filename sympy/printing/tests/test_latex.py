@@ -534,6 +534,10 @@ def test_latex_Naturals():
     assert latex(S.Integers) == r"\mathbb{Z}"
 
 
+def test_latex_Rationals():
+    assert latex(S.Rationals) == r"\mathbb{Q}"
+
+
 def test_latex_ImageSet():
     x = Symbol('x')
     assert latex(ImageSet(Lambda(x, x**2), S.Naturals)) == \
