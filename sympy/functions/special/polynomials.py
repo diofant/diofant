@@ -1022,6 +1022,8 @@ class laguerre(OrthogonalPolynomial):
     .. [4] http://functions.wolfram.com/Polynomials/LaguerreL3/
     """
 
+    _ortho_poly = staticmethod(laguerre_poly)
+
     @classmethod
     def eval(cls, n, x):
         if not n.is_Number:
@@ -1043,7 +1045,7 @@ class laguerre(OrthogonalPolynomial):
                 raise ValueError(
                     "The index n must be nonnegative integer (got %r)" % n)
             else:
-                return laguerre_poly(n, x, 0)
+                return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
         if argindex == 1:
@@ -1127,6 +1129,11 @@ class assoc_laguerre(OrthogonalPolynomial):
     """
 
     @classmethod
+    def _eval_at_order(cls, n, x, alpha):
+        if n.is_integer and n >= 0:
+            return laguerre_poly(int(n), _x, alpha).subs(_x, x)
+
+    @classmethod
     def eval(cls, n, alpha, x):
         # L_{n}^{0}(x)  --->  L_{n}(x)
         if alpha == S.Zero:
@@ -1146,7 +1153,7 @@ class assoc_laguerre(OrthogonalPolynomial):
                 raise ValueError(
                     "The index n must be nonnegative integer (got %r)" % n)
             else:
-                return laguerre_poly(n, x, alpha)
+                return cls._eval_at_order(n, x, alpha)
 
     def fdiff(self, argindex=3):
         from sympy import Sum
