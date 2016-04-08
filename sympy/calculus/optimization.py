@@ -42,7 +42,7 @@ def minimize(f, *v):
     if not v:
         v = f.free_symbols
         if not v:
-            raise ValueError
+            return f, dict()
         v = tuple(v)
 
     assert all(x.is_Symbol for x in v)

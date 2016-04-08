@@ -356,10 +356,12 @@ class PolyRing(DefaultPrinting, IPolys):
                 return reduce(add, list(map(_rebuild, expr.args)))
             elif expr.is_Mul:
                 return reduce(mul, list(map(_rebuild, expr.args)))
-            elif expr.is_Pow and expr.exp.is_Integer and expr.exp >= 0:
-                return _rebuild(expr.base)**int(expr.exp)
-            else:
-                return domain.convert(expr)
+            elif expr.is_Pow:
+                c, a = expr.exp.as_coeff_Mul(rational=True)
+                if c.is_Integer and c > 1:
+                    return _rebuild(expr.base**a)**int(c)
+
+            return domain.convert(expr)
 
         return _rebuild(sympify(expr))
 
