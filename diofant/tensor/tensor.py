@@ -950,7 +950,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         numpy = import_module('numpy')
 
         def ikey(x):
-            return x[1:]
+            return x[2], x[1]
 
         free1 = free1[:]
         free2 = free2[:]
