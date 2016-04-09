@@ -469,3 +469,7 @@ def test_issue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))
     pytest.raises(NotImplementedError, lambda: gruntz(e, x))
     assert isinstance(e.limit(x, oo), Limit)
+
+
+def test_issue_10976():
+    assert gruntz(erf(m/x)/erf(1/x), x) == m
