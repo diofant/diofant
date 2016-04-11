@@ -1143,6 +1143,13 @@ class _airyais(Function):
         # All other points are not handled
         return super(_airyais, self)._eval_aseries(n, args0, x, logx)
 
+    def _eval_nseries(self, x, n, logx):
+        x0 = self.args[0].limit(x, 0)
+        if x0 is S.Zero:
+            return self.rewrite('intractable')._eval_nseries(x, n, logx)
+        else:
+            return super(_airyais, self)._eval_nseries(x, n, logx)
+
 
 class _airybis(Function):
     def _eval_rewrite_as_intractable(self, x):
@@ -1163,6 +1170,13 @@ class _airybis(Function):
 
         # All other points are not handled
         return super(_airybis, self)._eval_aseries(n, args0, x, logx)
+
+    def _eval_nseries(self, x, n, logx):
+        x0 = self.args[0].limit(x, 0)
+        if x0 is S.Zero:
+            return self.rewrite('intractable')._eval_nseries(x, n, logx)
+        else:
+            return super(_airybis, self)._eval_nseries(x, n, logx)
 
 
 class airyaiprime(AiryBase):
