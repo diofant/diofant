@@ -378,6 +378,10 @@ def test_intractable():
                   exp(2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
     assert gruntz(airybi(x)*root(x, 4) *
                   exp(-2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
+    assert gruntz(airyai(1/x), x) == (3**Rational(5, 6) *
+                                      gamma(Rational(1, 3))/(6*pi))
+    assert gruntz(airybi(1/x), x) == (3**Rational(1, 3) *
+                                      gamma(Rational(1, 3))/(2*pi))
     assert gruntz(airyai(2 + 1/x), x) == airyai(2)
     assert gruntz(airybi(2 + 1/x), x) == airybi(2)
 
