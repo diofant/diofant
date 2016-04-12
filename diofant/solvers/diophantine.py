@@ -1,6 +1,7 @@
 from ..core import (Add, Eq, Integer, Mul, Rational, S, Subs, Symbol, Wild,
                     igcd, ilcm, integer_nthroot, symbols, sympify)
 from ..core.assumptions import check_assumptions
+from ..core.compatibility import as_int
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
 from ..functions import ceiling, floor, sign, sqrt
@@ -17,6 +18,64 @@ __all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_so
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',
            'diop_ternary_quadratic',  'square_factor', 'descent', 'diop_general_pythagorean',
            'diop_general_sum_of_squares', 'partition', 'sum_of_three_squares', 'sum_of_four_squares')
+
+
+# these types are known (but not necessarily handled)
+diop_known = {
+    "binary_quadratic",
+    "cubic_thue",
+    "general_pythagorean",
+    "general_sum_of_squares",
+    "homogeneous_general_quadratic",
+    "homogeneous_ternary_quadratic",
+    "homogeneous_ternary_quadratic_normal",
+    "inhomogeneous_general_quadratic",
+    "inhomogeneous_ternary_quadratic",
+    "linear",
+    "univariate"}
+
+
+def _is_int(i):
+    try:
+        as_int(i)
+        return True
+    except ValueError:
+        pass
+
+
+def _sorted_tuple(*i):
+    return tuple(sorted(i))
+
+
+def _remove_gcd(*x):
+    try:
+        g = igcd(*x)
+        return tuple(i//g for i in x)
+    except ValueError:
+        return x
+    except TypeError:
+        raise TypeError('_remove_gcd(a,b,c) or _remove_gcd(*container)')
+
+
+def _rational_pq(a, b):
+    # return `(numer, denom)` for a/b; sign in numer and gcd removed
+    return _remove_gcd(sign(b)*a, abs(b))
+
+
+def _nint_or_floor(p, q):
+    # return nearest int to p/q; in case of tie return floor(p/q)
+    w, r = divmod(p, q)
+    if abs(r) <= abs(q)//2:
+        return w
+    return w + 1
+
+
+def _odd(i):
+    return i % 2 != 0
+
+
+def _even(i):
+    return i % 2 == 0
 
 
 def diophantine(eq, param=symbols("t", integer=True)):
