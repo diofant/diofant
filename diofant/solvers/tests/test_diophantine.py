@@ -9,8 +9,7 @@ from diofant.functions.elementary.trigonometric import sin
 from diofant.solvers.diophantine import (classify_diop, descent, diop_bf_DN,
                                          diop_DN, diop_solve, diophantine,
                                          equivalent, find_DN, ldescent, length,
-                                         pairwise_prime, partition,
-                                         power_representation,
+                                         partition, power_representation,
                                          prime_as_sum_of_two_squares,
                                          square_factor, sum_of_four_squares,
                                          sum_of_three_squares,
@@ -357,16 +356,6 @@ def test_diop_ternary_quadratic():
     assert check_solutions(x**2 + 3*y**2 + z**2 - x*y - 16*y*z + 12*x*z)
     assert check_solutions(x**2 + 3*y**2 + z**2 - 13*x*y - 16*y*z + 12*x*z)
     assert check_solutions(x*y - 7*y*z + 13*x*z)
-
-
-def test_pairwise_prime():
-    assert pairwise_prime(6, 10, 15) == (5, 3, 2)
-    assert pairwise_prime(2, 3, 5) == (2, 3, 5)
-    assert pairwise_prime(1, 4, 7) == (1, 4, 7)
-    assert pairwise_prime(4, 6, 5) == (1, 6, 5)
-    assert pairwise_prime(6, 10, -15) == (5, 3, -2)
-    assert pairwise_prime(-6, -10, -15) == (-5, -3, -2)
-    assert pairwise_prime(4, -6, -5) == (1, -6, -5)
 
 
 def test_square_factor():

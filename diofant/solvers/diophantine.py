@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ..core import (Add, Eq, Integer, S, Symbol, factor_terms, igcd, ilcm,
+from ..core import (Add, Eq, Integer, Mul, S, Symbol, factor_terms, igcd, ilcm,
                     integer_nthroot, symbols)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int
@@ -2054,90 +2054,28 @@ def sqf_normal(a, b, c, steps=False):
 def square_factor(a):
     r"""
     Returns an integer `c` s.t. `a = c^2k, \ c,k \in Z`. Here `k` is square
-    free.
+    free. `a` can be given as an integer or a dictionary of factors.
 
     Examples
     ========
 
-    >>> from diofant.solvers.diophantine import square_factor
     >>> square_factor(24)
     2
-    >>> square_factor(36)
+    >>> square_factor(-36*3)
     6
     >>> square_factor(1)
     1
-    """
-    f = factorint(abs(a))
-    c = 1
-
-    for p, e in f.items():
-        c = c * p**(e//2)
-
-    return c
-
-
-def pairwise_prime(a, b, c):
-    r"""
-    Transform `ax^2 + by^2 + cz^2 = 0` into an equivalent equation
-    `a'x^2 + b'y^2 + c'z^2 = 0` where `a', b', c'` are pairwise relatively
-    prime.
-
-    Returns a tuple containing `a', b', c'`. `\gcd(a, b, c)` should equal `1`
-    for this to work. The solutions for `ax^2 + by^2 + cz^2 = 0` can be
-    recovered from the solutions of `a'x^2 + b'y^2 + c'z^2 = 0`.
-
-    Examples
-    ========
-
-    >>> from diofant.solvers.diophantine import pairwise_prime
-    >>> pairwise_prime(6, 15, 10)
-    (5, 2, 3)
-
-    See Also
-    ========
-
-    diofant.solvers.diophantine.make_prime
-    diofant.solvers.diophantine.reconstruct
-    """
-    a, b, c = make_prime(a, b, c)
-    b, c, a = make_prime(b, c, a)
-    c, a, b = make_prime(c, a, b)
-
-    return a, b, c
-
-
-def make_prime(a, b, c):
-    r"""
-    Transform the equation `ax^2 + by^2 + cz^2 = 0` to an equivalent equation
-    `a'x^2 + b'y^2 + c'z^2 = 0` with `\gcd(a', b') = 1`.
-
-    Returns a tuple `(a', b', c')` which satisfies above conditions. Note that
-    in the returned tuple `\gcd(a', c')` and `\gcd(b', c')` can take any value.
-
-    Examples
-    ========
-
-    >>> from diofant.solvers.diophantine import make_prime
-    >>> make_prime(4, 2, 7)
-    (2, 1, 14)
+    >>> square_factor({3: 2, 2: 1, -1: 1})
+    3
 
     See Also
     ========
 
     diofant.solvers.diophantine.reconstruct
+    diofant.ntheory.factor_.core
     """
-    g = igcd(a, b)
-
-    if g != 1:
-        f = factorint(g)
-        for p, e in f.items():
-            a = a // p**e
-            b = b // p**e
-
-            if e % 2 == 1:
-                c = p*c
-
-    return a, b, c
+    f = a if isinstance(a, dict) else factorint(a)
+    return Mul(*[p**(e//2) for p, e in f.items()])
 
 
 def reconstruct(a, b, z):

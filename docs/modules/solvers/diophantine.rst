@@ -425,13 +425,9 @@ prime_as_sum_of_two_squares
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.prime_as_sum_of_two_squares
 
-pairwise_prime
-^^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.pairwise_prime
-
-make_prime
-^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.make_prime
+square_factor
+^^^^^^^^^^^^^
+.. autofunction:: diofant.solvers.diophantine.square_factor
 
 reconstruct
 ^^^^^^^^^^^
