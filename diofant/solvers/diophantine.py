@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from ..core import (Add, Dummy, Eq, Integer, Mul, Rational, S, Symbol,
                     factor_terms, igcd, ilcm, integer_nthroot, symbols)
 from ..core.assumptions import check_assumptions
@@ -307,8 +305,7 @@ def classify_diop(eq):
         raise ValueError('equation should have 1 or more free symbols')
     var.sort(key=default_sort_key)
     eq = eq.expand(force=True)
-    coeff = defaultdict(int)
-    coeff.update(eq.as_coefficients_dict())
+    coeff = eq.as_coefficients_dict()
     if not all(_is_int(c) for c in coeff.values()):
         raise TypeError("Coefficients should be Integers")
 
@@ -1567,8 +1564,7 @@ def _find_DN(var, coeff):
     eq = x**2*coeff[x**2] + x*y*coeff[x*y] + y**2*coeff[y**2] + x*coeff[x] + y*coeff[y] + coeff[1]
     simplified = _mexpand(eq.subs({x: u, y: v}))
 
-    coeff = defaultdict(int)
-    coeff.update(simplified.as_coefficients_dict())
+    coeff = simplified.as_coefficients_dict()
 
     return -coeff[Y**2]/coeff[X**2], -coeff[1]/coeff[X**2]
 
