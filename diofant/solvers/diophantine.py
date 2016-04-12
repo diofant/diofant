@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from ..core import (Add, Eq, Integer, Rational, S, Symbol, factor_terms, igcd,
-                    ilcm, integer_nthroot, symbols)
+from ..core import (Add, Eq, Integer, S, Symbol, factor_terms, igcd, ilcm,
+                    integer_nthroot, symbols)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int
 from ..core.function import _mexpand
@@ -1709,8 +1709,8 @@ def _diop_ternary_quadratic(_var, coeff):
             if x_0 is None:
                 return None, None, None
 
-            l = Rational(B*y_0 + C*z_0, 2*A).q
-            x_0, y_0, z_0 = x_0*l - Rational(B*y_0 + C*z_0, 2*A).p, y_0*l, z_0*l
+            p, q = _rational_pq(B*y_0 + C*z_0, 2*A)
+            x_0, y_0, z_0 = x_0*q - p, y_0*q, z_0*q
 
         elif coeff[z*y] != 0:
             if coeff[y**2] == 0:
@@ -1938,30 +1938,21 @@ def diop_ternary_quadratic_normal(eq):
 
 def _diop_ternary_quadratic_normal(var, coeff):
 
-    x, y, z = var[:3]
+    x, y, z = var
 
     a = coeff[x**2]
     b = coeff[y**2]
     c = coeff[z**2]
+    try:
+        assert len([k for k in coeff if coeff[k]]) == 3
+        assert all(coeff[i**2] for i in var)
+    except AssertionError:
+        raise ValueError(filldedent('''
+    coeff dict is not consistent with assumption of this routine:
+    coefficients should be those of an expression in the form
+    a*x**2 + b*y**2 + c*z**2 where a*b*c != 0.'''))
 
-    if a*b*c == 0:
-        raise ValueError("Try factoring out you equation or using diophantine()")
-
-    g = igcd(a, igcd(b, c))
-
-    a = a // g
-    b = b // g
-    c = c // g
-
-    a_0 = square_factor(a)
-    b_0 = square_factor(b)
-    c_0 = square_factor(c)
-
-    a_1 = a // a_0**2
-    b_1 = b // b_0**2
-    c_1 = c // c_0**2
-
-    a_2, b_2, c_2 = pairwise_prime(a_1, b_1, c_1)
+    (sqf_of_a, sqf_of_b, sqf_of_c), (a_1, b_1, c_1), (a_2, b_2, c_2) = sqf_normal(a, b, c, steps=True)
 
     A = -a_2*c_2
     B = -b_2*c_2
@@ -1970,18 +1961,16 @@ def _diop_ternary_quadratic_normal(var, coeff):
     if A < 0 and B < 0:
         return None, None, None
 
-    if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
-            sqrt_mod(-a_2*b_2, c_2) is None):
+    if any(_ is None for _ in [sqrt_mod(-b_2*c_2, a_2),
+                               sqrt_mod(-c_2*a_2, b_2),
+                               sqrt_mod(-a_2*b_2, c_2)]):
         return None, None, None
 
     z_0, x_0, y_0 = descent(A, B)
 
-    if divisible(z_0, c_2):
-        z_0 = z_0 // abs(c_2)
-    else:
-        x_0 = x_0*Rational(z_0, c_2).q
-        y_0 = y_0*Rational(z_0, c_2).q
-        z_0 = Rational(z_0, c_2).p
+    z_0, q = _rational_pq(z_0, abs(c_2))
+    x_0 *= q
+    y_0 *= q
 
     x_0, y_0, z_0 = _remove_gcd(x_0, y_0, z_0)
 
@@ -1997,13 +1986,69 @@ def _diop_ternary_quadratic_normal(var, coeff):
     y_0 = reconstruct(a_1, c_1, y_0)
     z_0 = reconstruct(a_1, b_1, z_0)
 
-    l = ilcm(a_0, ilcm(b_0, c_0))
+    sq_lcm = ilcm(sqf_of_a, sqf_of_b, sqf_of_c)
 
-    x_0 = abs(x_0*l//a_0)
-    y_0 = abs(y_0*l//b_0)
-    z_0 = abs(z_0*l//c_0)
+    x_0 = abs(x_0*sq_lcm//sqf_of_a)
+    y_0 = abs(y_0*sq_lcm//sqf_of_b)
+    z_0 = abs(z_0*sq_lcm//sqf_of_c)
 
     return _remove_gcd(x_0, y_0, z_0)
+
+
+def sqf_normal(a, b, c, steps=False):
+    """
+    Return `a', b', c'`, the coefficients of the square-free normal
+    form of `ax^2 + by^2 + cz^2 = 0`, where `a', b', c'` are pairwise
+    prime.  If `steps` is True then also return three tuples:
+    `sq`, `sqf`, and `(a', b', c')` where `sq` contains the square
+    factors of `a`, `b` and `c` after removing the `gcd(a, b, c)`;
+    `sqf` contains the values of `a`, `b` and `c` after removing
+    both the `gcd(a, b, c)` and the square factors.
+
+    The solutions for `ax^2 + by^2 + cz^2 = 0` can be
+    recovered from the solutions of `a'x^2 + b'y^2 + c'z^2 = 0`.
+
+    Examples
+    ========
+
+    >>> from diofant.solvers.diophantine import sqf_normal
+    >>> sqf_normal(2 * 3**2 * 5, 2 * 5 * 11, 2 * 7**2 * 11)
+    (11, 1, 5)
+    >>> sqf_normal(2 * 3**2 * 5, 2 * 5 * 11, 2 * 7**2 * 11, True)
+    ((3, 1, 7), (5, 55, 11), (11, 1, 5))
+
+    References
+    ==========
+
+    .. [1] Legendre's Theorem, Legrange's Descent,
+           http://public.csusm.edu/aitken_html/notes/legendre.pdf
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.reconstruct
+    """
+    ABC = A, B, C = _remove_gcd(a, b, c)
+    sq = tuple(square_factor(i) for i in ABC)
+    sqf = A, B, C = tuple(i//j**2 for i, j in zip(ABC, sq))
+    pc = igcd(A, B)
+    A //= pc
+    B //= pc
+    pa = igcd(B, C)
+    B //= pa
+    C //= pa
+    pb = igcd(A, C)
+    A //= pb
+    B //= pb
+
+    A *= pa
+    B *= pb
+    C *= pc
+
+    if steps:
+        return sq, sqf, (A, B, C)
+    else:
+        return A, B, C
 
 
 def square_factor(a):
