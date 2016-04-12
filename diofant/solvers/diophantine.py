@@ -2739,15 +2739,19 @@ def power_representation(n, p, k, zeros=False):
     >>> from diofant.solvers.diophantine import power_representation
     >>> f = power_representation(1729, 3, 2)  # Represent 1729 as a sum of two cubes
     >>> next(f)
-    (12, 1)
+    (1, 12)
     >>> next(f)
-    (10, 9)
+    (9, 10)
     """
+    p, k, n = [as_int(i) for i in (p, k, n)]
     if p < 1 or k < 1 or n < 1:
-        raise ValueError("Expected: n > 0 and k >= 1 and p >= 1")
+        raise ValueError(filldedent('''
+    Expecting positive integers for n, p, and k, got (%s, %s, %s)''' % (n, p, k)))
 
     if k == 1:
-        if perfect_power(n):
+        if p == 1:
+            yield (n,)
+        elif perfect_power(n):
             yield (perfect_power(n)[0],)
         else:
             yield ()
@@ -2765,18 +2769,18 @@ def power_representation(n, p, k, zeros=False):
         if zeros:
             for i in range(2, k):
                 for t in pow_rep_recursive(a, i, n, [], p):
-                    yield t + (0,) * (k - i)
+                    yield _sorted_tuple(*(t + (0,)*(k - i)))
 
 
 def pow_rep_recursive(n_i, k, n_remaining, terms, p):
 
     if k == 0 and n_remaining == 0:
-        yield tuple(terms)
+        yield _sorted_tuple(*terms)
     else:
         if n_i >= 1 and k > 0 and n_remaining >= 0:
             if n_i**p <= n_remaining:
                 for t in pow_rep_recursive(n_i, k - 1, n_remaining - n_i**p, terms + [n_i], p):
-                    yield t
+                    yield _sorted_tuple(*t)
 
             for t in pow_rep_recursive(n_i - 1, k, n_remaining, terms, p):
-                yield t
+                yield _sorted_tuple(*t)
