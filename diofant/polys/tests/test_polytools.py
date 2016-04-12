@@ -3182,3 +3182,9 @@ def test_sympyissue_8754():
                     Float('0.0001')*x + Float('0.00040000000000000002', 15)*y,
                     evaluate=False)
     assert expand(v) == w
+
+
+def test_factor_terms():
+    # issue sympy/sympy#7067
+    assert factor_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
+    assert sqf_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])

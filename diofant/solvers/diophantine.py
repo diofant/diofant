@@ -1,5 +1,6 @@
 from ..core import (Add, Eq, Integer, Mul, Rational, S, Subs, Symbol, Wild,
-                    igcd, ilcm, integer_nthroot, symbols, sympify)
+                    factor_terms, igcd, ilcm, integer_nthroot, symbols,
+                    sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int
 from ..core.function import _mexpand
@@ -8,7 +9,8 @@ from ..functions import ceiling, floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, isprime, nextprime, perfect_power,
                        sqrt_mod)
-from ..polys import Poly, factor_list
+from ..polys import GeneratorsNeeded, Poly, factor_list
+from ..simplify import signsimp
 from ..simplify.radsimp import rad_rationalize
 from ..utilities import default_sort_key, numbered_symbols
 from .solvers import solve
@@ -87,12 +89,11 @@ def diophantine(eq, param=symbols("t", integer=True)):
     `(x + y)(x - y) = 0` and `x+y = 0` and `x-y = 0` are solved independently
     and combined. Each term is solved by calling ``diop_solve()``.
 
-    Output of ``diophantine()`` is a set of tuples. Each tuple represents a
-    solution of the input equation. In a tuple, solution for each variable is
-    listed according to the alphabetic order of input variables. i.e. if we have
-    an equation with two variables `a` and `b`, first element of the tuple will
-    give the solution for `a` and the second element will give the solution for
-    `b`.
+    Output of ``diophantine()`` is a set of tuples. The elements of the
+    tuple are the solutions for each variable in the the equation and
+    are arranged according to the alphabetic ordering of the variables.
+    e.g. For an equation with two variables, `a` and `b`, the first
+    element of the tuple is the solution for `a` and the second for `b`.
 
     Parameters
     ==========
@@ -110,6 +111,11 @@ def diophantine(eq, param=symbols("t", integer=True)):
     >>> diophantine(x**2 - y**2)
     {(-t_0, -t_0), (t_0, -t_0)}
 
+    >>> diophantine(x*(2*x + 3*y - z))
+    {(0, n1, n2), (t_0, -t_1, 2*t_0 - 3*t_1)}
+    >>> diophantine(x**2 + 3*x*y + 4*x)
+    {(0, n1), (3*t_0 - 4, -t_0)}
+
     See Also
     ========
 
@@ -121,12 +127,19 @@ def diophantine(eq, param=symbols("t", integer=True)):
     if eq == 0:
         return {(param,)}
 
-    eq = Poly(eq).as_expr()
-    if not eq.is_polynomial() or eq.is_number:
-        raise TypeError("Equation input format not supported")
-
-    var = list(eq.expand(force=True).free_symbols)
-    var.sort(key=default_sort_key)
+    try:
+        eq = factor_terms(eq)
+        assert not eq.is_number
+        var = list(eq.expand(force=True).free_symbols)
+        var.sort(key=default_sort_key)
+        eq = eq.as_independent(*var, as_Add=False)[1]
+        p = Poly(eq)
+        assert not any(g.is_number for g in p.gens)
+        eq = p.as_expr()
+        assert eq.is_polynomial()
+    except (GeneratorsNeeded, AssertionError):
+        raise TypeError("Equation should be a polynomial with "
+                        "Rational coefficients.")
 
     terms = factor_list(eq)[1]
 
@@ -134,19 +147,24 @@ def diophantine(eq, param=symbols("t", integer=True)):
 
     for term in terms:
 
-        base = term[0]
-
-        var_t, jnk, eq_type = classify_diop(base)
+        base, _ = term
+        var_t, _, eq_type = classify_diop(base)
+        _, base = signsimp(base, evaluate=False).as_coeff_Mul()
         solution = diop_solve(base, param)
 
-        if eq_type in ["linear", "homogeneous_ternary_quadratic", "general_pythagorean"]:
-            if merge_solution(var, var_t, solution) != ():
-                sols.add(merge_solution(var, var_t, solution))
+        if eq_type in ["linear", "homogeneous_ternary_quadratic",
+                       "homogeneous_ternary_quadratic_normal",
+                       "general_pythagorean"]:
+            sols.add(merge_solution(var, var_t, solution))
 
-        elif eq_type in ["binary_quadratic",  "general_sum_of_squares", "univariate"]:
+        elif eq_type in ["binary_quadratic", "general_sum_of_squares",
+                         "univariate"]:
             for sol in solution:
-                if merge_solution(var, var_t, sol) != ():
-                    sols.add(merge_solution(var, var_t, sol))
+                sols.add(merge_solution(var, var_t, sol))
+
+    # remove null merge results
+    if () in sols:
+        sols.remove(())
 
     return sols
 
