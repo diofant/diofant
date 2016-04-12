@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from ..core import (Add, Eq, Integer, Mul, Rational, S, Subs, Symbol, Wild,
                     factor_terms, igcd, ilcm, integer_nthroot, symbols,
                     sympify)
@@ -7,12 +9,12 @@ from ..core.function import _mexpand
 from ..core.numbers import igcdex
 from ..functions import ceiling, floor, sign, sqrt
 from ..matrices import Matrix
-from ..ntheory import (divisors, factorint, isprime, nextprime, perfect_power,
-                       sqrt_mod)
+from ..ntheory import (divisors, factorint, is_square, isprime, nextprime,
+                       perfect_power, sqrt_mod)
 from ..polys import GeneratorsNeeded, Poly, factor_list
 from ..simplify import signsimp
 from ..simplify.radsimp import rad_rationalize
-from ..utilities import default_sort_key, numbered_symbols
+from ..utilities import default_sort_key, filldedent, numbered_symbols
 from .solvers import solve
 
 
@@ -282,13 +284,6 @@ def classify_diop(eq):
     """
     Helper routine used by diop_solve() to find the type of the ``eq`` etc.
 
-    Returns a tuple containing the type of the diophantine equation along with
-    the variables(free symbols) and their coefficients. Variables are returned
-    as a list and coefficients are returned as a dict with the key being the
-    respective term and the constant term is keyed to Integer(1). Type is an
-    element in the set {"linear", "binary_quadratic", "general_pythagorean",
-    "homogeneous_ternary_quadratic", "univariate", "general_sum_of_squares"}
-
     Parameters
     ==========
 
@@ -305,113 +300,90 @@ def classify_diop(eq):
     >>> classify_diop(x + 3*y -4*z + 5)
     ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
     >>> classify_diop(x**2 + y**2 - x*y + x + 5)
-    ([x, y], {1: 5, x: 1, x**2: 1, y: 0, y**2: 1, x*y: -1}, 'binary_quadratic')
+    ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
     """
-    eq = eq.expand(force=True)
-
-    coeff = eq.as_coefficients_dict()
-    diop_type = None
-
-    var = []
-    if isinstance(eq, Symbol):
-        var.append(eq)
-        coeff[eq] = Integer(1)
-    elif isinstance(eq, Mul) and Poly(eq).total_degree() == 1:
-        var.append(eq.as_two_terms()[1])
-        coeff[eq.as_two_terms()[1]] = Integer(eq.as_two_terms()[0])
-    else:
+    try:
         var = list(eq.free_symbols)
-        var.sort(key=default_sort_key)
-        coeff = {v: k for k, v in (t.as_independent(*var) for t in eq.args)}
+        assert var
+    except (AttributeError, AssertionError):
+        raise ValueError('equation should have 1 or more free symbols')
+    var.sort(key=default_sort_key)
+    eq = eq.expand(force=True)
+    coeff = defaultdict(int)
+    coeff.update(eq.as_coefficients_dict())
+    if not all(_is_int(c) for c in coeff.values()):
+        raise TypeError("Coefficients should be Integers")
 
-    for c in coeff:
-        if not isinstance(coeff[c], Integer):
-            raise TypeError("Coefficients should be Integers")
-
-    if Poly(eq).total_degree() == 1:
+    diop_type = None
+    total_degree = Poly(eq).total_degree()
+    homogeneous = 1 not in coeff
+    if total_degree == 1:
         diop_type = "linear"
+
     elif len(var) == 1:
         diop_type = "univariate"
-    elif Poly(eq).total_degree() == 2 and len(var) == 2:
+
+    elif total_degree == 2 and len(var) == 2:
         diop_type = "binary_quadratic"
-        x, y = var[:2]
 
-        if isinstance(eq, Mul):
-            coeff = {x**2: 0, x*y: eq.args[0], y**2: 0, x: 0, y: 0, Integer(1): 0}
+    elif total_degree == 2 and len(var) == 3 and homogeneous:
+        if set(coeff) & set(var):
+            diop_type = "inhomogeneous_ternary_quadratic"
         else:
-            for term in [x**2, y**2, x*y, x, y, Integer(1)]:
-                if term not in list(coeff):
-                    coeff[term] = Integer(0)
-
-    elif Poly(eq).total_degree() == 2 and len(var) == 3 and Integer(1) not in coeff:
-        for v in var:
-            if v in coeff:
-                diop_type = "inhomogeneous_ternary_quadratic"
-                break
-        else:
-            diop_type = "homogeneous_ternary_quadratic"
-
-            x, y, z = var[:3]
-
-            for term in [x**2, y**2, z**2, x*y, y*z, x*z]:
-                if term not in list(coeff):
-                    coeff[term] = Integer(0)
-
-    elif Poly(eq).degree() == 2 and len(var) >= 3:
-
-        for v in var:
-            if v in coeff:
-                diop_type = "inhomogeneous_general_quadratic"
-                break
-
-        else:
-            if Integer(1) in coeff:
-                constant_term = True
+            nonzero = [k for k in coeff if coeff[k]]
+            if len(nonzero) == 3 and all(i**2 in nonzero for i in var):
+                diop_type = "homogeneous_ternary_quadratic_normal"
             else:
-                constant_term = False
+                diop_type = "homogeneous_ternary_quadratic"
 
-            non_square_degree_2_terms = False
-            for v in var:
-                for u in var:
-                    if u != v and u*v in coeff:
-                        non_square_degree_2_terms = True
-                        break
-                if non_square_degree_2_terms:
-                    break
-
-            if constant_term and non_square_degree_2_terms:
-                diop_type = "inhomogeneous_general_quadratic"
-
-            elif constant_term and not non_square_degree_2_terms:
-                for v in var:
-                    if coeff[v**2] != 1:
-                        break
+    elif total_degree == 2 and len(var) >= 3:
+        if set(coeff) & set(var):
+            diop_type = "inhomogeneous_general_quadratic"
+        else:
+            # there may be Pow keys like x**2 or Mul keys like x*y
+            if any(k.is_Mul for k in coeff):  # cross terms
+                if not homogeneous:
+                    diop_type = "inhomogeneous_general_quadratic"
                 else:
+                    diop_type = "homogeneous_general_quadratic"
+            else:  # all squares, no constant
+                if all(coeff[k] == 1 for k in coeff if k != 1):
                     diop_type = "general_sum_of_squares"
-
-            elif not constant_term and non_square_degree_2_terms:
-                diop_type = "homogeneous_general_quadratic"
-
-            else:
-                coeff_sign_sum = 0
-
-                for v in var:
-                    if not isinstance(sqrt(abs(Integer(coeff[v**2]))), Integer):
-                        break
-                    coeff_sign_sum = coeff_sign_sum + sign(coeff[v**2])
-                else:
-                    if abs(coeff_sign_sum) == len(var) - 2 and not constant_term:
+                elif all(is_square(abs(coeff[k])) for k in coeff):
+                    if abs(sum(sign(coeff[k]) for k in coeff)) == \
+                            len(var) - 2:
+                        # all but one has the same sign
+                        # e.g. 4*x**2 + y**2 - 4*z**2
                         diop_type = "general_pythagorean"
 
-    elif Poly(eq).total_degree() == 3 and len(var) == 2:
-
-        x, y = var[:2]
+    elif total_degree == 3 and len(var) == 2:
         diop_type = "cubic_thue"
 
     if diop_type is not None:
         return var, coeff, diop_type
-    else:
-        raise NotImplementedError("Still not implemented")
+
+    # new diop type instructions
+    # --------------------------
+    # if this error raises and the equation *can* be classified,
+    # * it should be identified in the if-block above
+    # * the type should be added to the diop_known
+    # * a dedicated handler should be written (e.g. diop_linear)
+    # * it should be passed to that handler in diop_solve
+    raise NotImplementedError("This equation is not yet recognized.")
+
+
+classify_diop.__doc__ += """
+    Returns
+    =======
+
+    Returns a tuple containing the type of the diophantine equation along with
+    the variables(free symbols) and their coefficients. Variables are returned
+    as a list and coefficients are returned as a dict with the key being the
+    respective term and the constant term is keyed to Integer(1).  The type
+    is one of the following:
+
+        * %s
+""" % ('\n        * '.join(sorted(diop_known)))
 
 
 def diop_linear(eq, param=symbols("t", integer=True)):
@@ -1767,7 +1739,9 @@ def diop_ternary_quadratic(eq):
     """
     var, coeff, diop_type = classify_diop(eq)
 
-    if diop_type == "homogeneous_ternary_quadratic":
+    if diop_type in (
+            "homogeneous_ternary_quadratic",
+            "homogeneous_ternary_quadratic_normal"):
         return _diop_ternary_quadratic(var, coeff)
 
 
@@ -1885,7 +1859,8 @@ def transformation_to_normal(eq):
     """
     var, coeff, diop_type = classify_diop(eq)
 
-    if diop_type == "homogeneous_ternary_quadratic":
+    if diop_type in ("homogeneous_ternary_quadratic",
+                     "homogeneous_ternary_quadratic_normal"):
         return _transformation_to_normal(var, coeff)
 
 
@@ -2004,7 +1979,8 @@ def parametrize_ternary_quadratic(eq):
     """
     var, coeff, diop_type = classify_diop(eq)
 
-    if diop_type == "homogeneous_ternary_quadratic":
+    if diop_type in ("homogeneous_ternary_quadratic",
+                     "homogeneous_ternary_quadratic_normal"):
         x_0, y_0, z_0 = _diop_ternary_quadratic(var, coeff)
         return _parametrize_ternary_quadratic((x_0, y_0, z_0), var, coeff)
 
@@ -2070,7 +2046,7 @@ def diop_ternary_quadratic_normal(eq):
     """
     var, coeff, diop_type = classify_diop(eq)
 
-    if diop_type == "homogeneous_ternary_quadratic":
+    if diop_type == "homogeneous_ternary_quadratic_normal":
         return _diop_ternary_quadratic_normal(var, coeff)
 
 
