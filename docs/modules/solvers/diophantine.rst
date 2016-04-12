@@ -45,6 +45,7 @@ structured in the following manner.
     - :py:meth:`~diofant.solvers.diophantine.diop_linear`
     - :py:meth:`~diofant.solvers.diophantine.diop_quadratic`
     - :py:meth:`~diofant.solvers.diophantine.diop_ternary_quadratic`
+    - :py:meth:`~diofant.solvers.diophantine.diop_ternary_quadratic_normal`
     - :py:meth:`~diofant.solvers.diophantine.diop_general_pythagorean`
     - :py:meth:`~diofant.solvers.diophantine.diop_general_sum_of_squares`
 
@@ -428,6 +429,10 @@ prime_as_sum_of_two_squares
 square_factor
 ^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.square_factor
+
+sqf_normal
+^^^^^^^^^^
+.. autofunction:: diofant.solvers.diophantine.sqf_normal
 
 reconstruct
 ^^^^^^^^^^^
