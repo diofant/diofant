@@ -393,10 +393,6 @@ divisible
 ^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.divisible
 
-extended_euclid
-^^^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.extended_euclid
-
 PQa
 ^^^
 .. autofunction:: diofant.solvers.diophantine.PQa
