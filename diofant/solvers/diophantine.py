@@ -1742,14 +1742,11 @@ def _diop_ternary_quadratic(_var, coeff):
 
 def transformation_to_normal(eq):
     """
-    Returns the transformation Matrix from general ternary quadratic equation
-    `eq` to normal form.
-
-    General form of the ternary quadratic equation is `ax^2 + by^2 cz^2 + dxy +
-    eyz + fxz`. This function returns a 3X3 transformation Matrix which
-    transforms the former equation to the form `ax^2 + by^2 + cz^2 = 0`. This
-    is not used in solving ternary quadratics. Only implemented for the sake
-    of completeness.
+    Returns the transformation Matrix that converts a general ternary
+    quadratic equation `eq` (`ax^2 + by^2 + cz^2 + dxy + eyz + fxz`)
+    to a form without cross terms: `ax^2 + by^2 + cz^2 = 0`. This is
+    not used in solving ternary quadratics; it is only implemented for
+    the sake of completeness.
     """
     var, coeff, diop_type = classify_diop(eq)
 
@@ -1760,10 +1757,23 @@ def transformation_to_normal(eq):
 
 def _transformation_to_normal(var, coeff):
 
-    _var = [var[0]]*3
-    _var[1], _var[2] = var[1], var[2]
+    _var = list(var)  # copy
+    x, y, z = var
 
-    x, y, z = var[:3]
+    if not any(coeff[i**2] for i in var):
+        # https://math.stackexchange.com/questions/448051/transform-quadratic-ternary-form-to-normal-form/448065#448065
+        a = coeff[x*y]
+        b = coeff[y*z]
+        c = coeff[x*z]
+        swap = False
+        if not a:  # b can't be 0 or else there aren't 3 vars
+            swap = True
+            a, b = b, a
+        T = Matrix(((1, 1, -b/a), (1, -1, -c/a), (0, 0, 1)))
+        if swap:
+            T.row_swap(0, 1)
+            T.col_swap(0, 1)
+        return T
 
     if coeff[x**2] == 0:
         # If the coefficient of x is zero change the variables
@@ -1781,65 +1791,46 @@ def _transformation_to_normal(var, coeff):
             T.col_swap(0, 1)
             return T
 
-    else:
-        # Apply the transformation x --> X - (B*Y + C*Z)/(2*A)
-        if coeff[x*y] != 0 or coeff[x*z] != 0:
-            A = coeff[x**2]
-            B = coeff[x*y]
-            C = coeff[x*z]
-            D = coeff[y**2]
-            E = coeff[y*z]
-            F = coeff[z**2]
+    # Apply the transformation x --> X - (B*Y + C*Z)/(2*A)
+    if coeff[x*y] != 0 or coeff[x*z] != 0:
+        A = coeff[x**2]
+        B = coeff[x*y]
+        C = coeff[x*z]
+        D = coeff[y**2]
+        E = coeff[y*z]
+        F = coeff[z**2]
 
-            _coeff = {}
+        _coeff = {x**2: 4*A**2, y**2: 4*A*D - B**2, z**2: 4*A*F - C**2,
+                  y*z: 4*A*E - 2*B*C, x*y: 0, x*z: 0}
 
-            _coeff[x**2] = 4*A**2
-            _coeff[y**2] = 4*A*D - B**2
-            _coeff[z**2] = 4*A*F - C**2
-            _coeff[y*z] = 4*A*E - 2*B*C
-            _coeff[x*y] = 0
-            _coeff[x*z] = 0
+        T_0 = _transformation_to_normal(_var, _coeff)
+        return Matrix(3, 3, [1, Integer(-B)/(2*A), Integer(-C)/(2*A), 0, 1, 0, 0, 0, 1])*T_0
 
-            T_0 = _transformation_to_normal(_var, _coeff)
-            return Matrix(3, 3, [1, -B/(2*A), -C/(2*A), 0, 1, 0, 0, 0, 1]) * T_0
-
-        elif coeff[y*z] != 0:
-            if coeff[y**2] == 0:
-                if coeff[z**2] == 0:
-                    # Equations of the form A*x**2 + E*yz = 0.
-                    # Apply transformation y -> Y + Z ans z -> Y - Z
-                    return Matrix(3, 3, [1, 0, 0, 0, 1, 1, 0, 1, -1])
-
-                else:
-                    # Ax**2 + E*y*z + F*z**2  = 0
-                    _var[0], _var[2] = var[2], var[0]
-                    T = _transformtion_to_normal(_var, coeff)
-                    T.row_swap(0, 2)
-                    T.col_swap(0, 2)
-                    return T
+    elif coeff[y*z] != 0:
+        if coeff[y**2] == 0:
+            if coeff[z**2] == 0:
+                # Equations of the form A*x**2 + E*yz = 0.
+                # Apply transformation y -> Y + Z ans z -> Y - Z
+                return Matrix(3, 3, [1, 0, 0, 0, 1, 1, 0, 1, -1])
 
             else:
-                # A*x**2 + D*y**2 + E*y*z + F*z**2 = 0, F may be zero
-                _var[0], _var[1] = var[1], var[0]
+                # Ax**2 + E*y*z + F*z**2  = 0
+                _var[0], _var[2] = var[2], var[0]
                 T = _transformation_to_normal(_var, coeff)
-                T.row_swap(0, 1)
-                T.col_swap(0, 1)
+                T.row_swap(0, 2)
+                T.col_swap(0, 2)
                 return T
 
         else:
-            return Matrix(3, 3, [1, 0, 0, 0, 1, 0, 0, 0, 1])
+            # A*x**2 + D*y**2 + E*y*z + F*z**2 = 0, F may be zero
+            _var[0], _var[1] = var[1], var[0]
+            T = _transformation_to_normal(_var, coeff)
+            T.row_swap(0, 1)
+            T.col_swap(0, 1)
+            return T
 
-
-def simplified(x, y, z):
-    """
-    Simplify the solution `(x, y, z)`.
-    """
-    if x is None or y is None or z is None:
-        return x, y, z
-
-    g = igcd(x, igcd(y, z))
-
-    return x // g, y // g, z // g
+    else:
+        return Matrix.eye(3)
 
 
 def parametrize_ternary_quadratic(eq):
@@ -1991,7 +1982,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
         y_0 = y_0*Rational(z_0, c_2).q
         z_0 = Rational(z_0, c_2).p
 
-    x_0, y_0, z_0 = simplified(x_0, y_0, z_0)
+    x_0, y_0, z_0 = _remove_gcd(x_0, y_0, z_0)
 
     # Holzer reduction
     if sign(a) == sign(b):
@@ -2011,7 +2002,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
     y_0 = abs(y_0*l//b_0)
     z_0 = abs(z_0*l//c_0)
 
-    return simplified(x_0, y_0, z_0)
+    return _remove_gcd(x_0, y_0, z_0)
 
 
 def square_factor(a):
@@ -2182,7 +2173,7 @@ def ldescent(A, B):
 
     if B_0 is not None:
         W, X, Y = ldescent(A, B_0)
-        return simplified((-A*X + r*W), (r*X - W), Y*(B_0*d))
+        return _remove_gcd((-A*X + r*W), (r*X - W), Y*(B_0*d))
     # In this module Descent will always be called with inputs which have solutions.
 
 
@@ -2241,7 +2232,7 @@ def descent(A, B):
 
     x_1, z_1, y_1 = descent(A, t_1)
 
-    return simplified(x_0*x_1 + A*z_0*z_1, z_0*x_1 + x_0*z_1, t_1*t_2*y_1)
+    return _remove_gcd(x_0*x_1 + A*z_0*z_1, z_0*x_1 + x_0*z_1, t_1*t_2*y_1)
 
 
 def gaussian_reduce(w, a, b):

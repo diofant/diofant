@@ -401,10 +401,6 @@ equivalent
 ^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.equivalent
 
-simplified
-^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.simplified
-
 parametrize_ternary_quadratic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.parametrize_ternary_quadratic
