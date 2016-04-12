@@ -279,7 +279,7 @@ general sum of squares too. Either you can call
 level API.
 
 >>> diophantine(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 - 112)
-{(8, 4, 4, 4, 0, 0)}
+{(-10, -3, 0, 1, 1, 1)}
 
 If you want to get a more thorough idea about the the Diophantine module please
 refer to the following blog.
