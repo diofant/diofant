@@ -1115,7 +1115,7 @@ def cornacchia(a, b, m):
     Uses the algorithm due to Cornacchia. The method only finds primitive
     solutions, i.e. ones with `\gcd(x, y) = 1`. So this method can't be used to
     find the solutions of `x^2 + y^2 = 20` since the only solution to former is
-    `(x,y) = (4, 2)` and it is not primitive. When ` a = b = 1`, only the
+    `(x, y) = (4, 2)` and it is not primitive. When `a = b = 1`, only the
     solutions with `x \geq y` are found. For more details, see the References.
 
     Examples
@@ -1138,13 +1138,9 @@ def cornacchia(a, b, m):
     sols = set()
 
     a1 = igcdex(a, m)[0]
-    v = sqrt_mod(-b*a1, m, True)
-
-    if v is None:
+    v = sqrt_mod(-b*a1, m, all_roots=True)
+    if not v:
         return
-
-    if not isinstance(v, list):
-        v = [v]
 
     for t in v:
         if t < m // 2:
@@ -1161,8 +1157,8 @@ def cornacchia(a, b, m):
 
         if m1 % b == 0:
             m1 = m1 // b
-            if isinstance(sqrt(m1), Integer):
-                s = sqrt(m1)
+            s, _exact = integer_nthroot(m1, 2)
+            if _exact:
                 sols.add((int(r), int(s)))
 
     return sols
