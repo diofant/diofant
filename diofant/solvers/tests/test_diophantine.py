@@ -451,28 +451,13 @@ def test_diop_general_sum_of_squares():
 
 
 def test_partition():
-    tests = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-    for test in tests:
-        f = partition(test)
-        while True:
-            try:
-                l = next(f)
-            except StopIteration:
-                break
-
-    tests_k = [8, 10]
-
-    for test in tests_k:
-        for k in range(8):
-            f = partition(test, k)
-
-            while True:
-                try:
-                    l = next(f)
-                    assert len(l) == k
-                except StopIteration:
-                    break
+    for n in [8, 10]:
+        for k in range(1, 8):
+            for p in partition(n, k):
+                assert len(p) == k
+    assert [p for p in partition(3, 5)] == []
+    assert [p for p in partition(3, 5, 1)] == [(0, 0, 0, 0, 3),
+                                               (0, 0, 0, 1, 2), (0, 0, 1, 1, 1)]
 
 
 def test_prime_as_sum_of_two_squares():
