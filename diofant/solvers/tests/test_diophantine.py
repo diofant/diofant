@@ -497,6 +497,8 @@ def test_diophantine():
     assert diophantine(573*x**2+267*y**2-984*z**2) == {(49, 233, 127)}
     # this produces factors during reconstruction
     assert diophantine(x**2 + 3*y**2 - 12*z**2) == {(0, 2, 1)}
+    # solvers have not been written for every type
+    pytest.raises(NotImplementedError, lambda: diophantine(x*y**2 + 1))
 
 
 def test_general_pythagorean():
