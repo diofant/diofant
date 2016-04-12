@@ -1637,18 +1637,15 @@ def diop_ternary_quadratic(eq):
     """
     var, coeff, diop_type = classify_diop(eq)
 
-    if diop_type in (
-            "homogeneous_ternary_quadratic",
-            "homogeneous_ternary_quadratic_normal"):
+    if diop_type in ("homogeneous_ternary_quadratic",
+                     "homogeneous_ternary_quadratic_normal"):
         return _diop_ternary_quadratic(var, coeff)
 
 
 def _diop_ternary_quadratic(_var, coeff):
 
-    x, y, z = _var[:3]
-
-    var = [x]*3
-    var[0], var[1], var[2] = _var[0], _var[1], _var[2]
+    x, y, z = _var
+    var = [x, y, z]
 
     # Equations of the form B*x*y + C*z*x + E*y*z = 0 and At least two of the
     # coefficients A, B, C are non-zero.
@@ -1659,8 +1656,8 @@ def _diop_ternary_quadratic(_var, coeff):
     # using methods for binary quadratic diophantine equations. Let's select the
     # solution which minimizes |x| + |z|
 
-    if coeff[x**2] == 0 and coeff[y**2] == 0 and coeff[z**2] == 0:
-        if coeff[x*z] != 0:
+    if not any(coeff[i**2] for i in var):
+        if coeff[x*z]:
             sols = diophantine(coeff[x*y]*x + coeff[y*z]*z - x*z)
             s = sols.pop()
             min_sum = abs(s[0]) + abs(s[1])
@@ -1676,7 +1673,7 @@ def _diop_ternary_quadratic(_var, coeff):
             var[0], var[1] = _var[1], _var[0]
             y_0, x_0, z_0 = _diop_ternary_quadratic(var, coeff)
 
-        return simplified(x_0, y_0, z_0)
+        return _remove_gcd(x_0, y_0, z_0)
 
     if coeff[x**2] == 0:
         # If the coefficient of x is zero change the variables
@@ -1689,7 +1686,7 @@ def _diop_ternary_quadratic(_var, coeff):
             y_0, x_0, z_0 = _diop_ternary_quadratic(var, coeff)
 
     else:
-        if coeff[x*y] != 0 or coeff[x*z] != 0:
+        if coeff[x*y] or coeff[x*z]:
             # Apply the transformation x --> X - (B*y + C*z)/(2*A)
             A = coeff[x**2]
             B = coeff[x*y]
@@ -1722,8 +1719,7 @@ def _diop_ternary_quadratic(_var, coeff):
                     A = coeff[x**2]
                     E = coeff[y*z]
 
-                    b = Rational(-E, A).p
-                    a = Rational(-E, A).q
+                    b, a = _rational_pq(-E, A)
 
                     x_0, y_0, z_0 = b, a, b
 
@@ -1741,7 +1737,7 @@ def _diop_ternary_quadratic(_var, coeff):
             # Ax**2 + D*y**2 + F*z**2 = 0, C may be zero
             x_0, y_0, z_0 = _diop_ternary_quadratic_normal(var, coeff)
 
-    return simplified(x_0, y_0, z_0)
+    return _remove_gcd(x_0, y_0, z_0)
 
 
 def transformation_to_normal(eq):
