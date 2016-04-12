@@ -136,7 +136,7 @@ For linear Diophantine equations, the customized parameter is the prefix used
 for each free variable in the solution. Consider the following example:
 
 >>> diop_solve(2*x + 3*y - 5*z + 7, m)
-(m_0, -9*m_0 - 5*m_1 - 14, -5*m_0 - 3*m_1 - 7)
+(m_0, m_0 + 5*m_1 - 14, m_0 + 3*m_1 - 7)
 
 In the solution above, m_0 and m_1 are independent free variables.
 
