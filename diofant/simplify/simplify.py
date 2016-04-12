@@ -8,7 +8,7 @@ from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     sympify)
 from ..core.compatibility import as_int, iterable, ordered
 from ..core.evaluate import global_evaluate
-from ..core.function import _mexpand
+from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
                          exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
@@ -1243,3 +1243,48 @@ def product_mul(self, other, method=0):
                             return Product(self.function, (i, x2, y1))
 
     return Mul(self, other)
+
+
+def clear_coefficients(expr, rhs=Integer(0)):
+    """Return `p, r` where `p` is the expression obtained when Rational
+    additive and multiplicative coefficients of `expr` have been stripped
+    away in a naive fashion (i.e. without simplification). The operations
+    needed to remove the coefficients will be applied to `rhs` and returned
+    as `r`.
+
+    Examples
+    ========
+
+    >>> from diofant.simplify.simplify import clear_coefficients
+    >>> from diofant.abc import x, y
+    >>> from diofant import Dummy
+    >>> expr = 4*y*(6*x + 3)
+    >>> clear_coefficients(expr - 2)
+    (y*(2*x + 1), 1/6)
+
+    When solving 2 or more expressions like `expr = a`,
+    `expr = b`, etc..., it is advantageous to provide a Dummy symbol
+    for `rhs` and  simply replace it with `a`, `b`, etc... in `r`.
+
+    >>> rhs = Dummy('rhs')
+    >>> clear_coefficients(expr, rhs)
+    (y*(2*x + 1), _rhs/12)
+    >>> _[1].subs(rhs, 2)
+    1/6
+    """
+    was = None
+    free = expr.free_symbols
+    if expr.is_Rational:
+        return (Integer(0), rhs - expr)
+    while expr and was != expr:
+        was = expr
+        m, expr = (expr.as_content_primitive() if free else
+                   factor_terms(expr).as_coeff_Mul(rational=True))
+        rhs /= m
+        c, expr = expr.as_coeff_Add(rational=True)
+        rhs -= c
+    expr = signsimp(expr, evaluate=False)
+    if _coeff_isneg(expr):
+        expr = -expr
+        rhs = -rhs
+    return expr, rhs
