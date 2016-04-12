@@ -181,3 +181,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`13629` bug in rsolve
 * :sympyissue:`13645` sympy hangs on evaluating expression
 * :sympyissue:`11378` S.Reals should be accessible as just "Reals"
+* :sympyissue:`10999` diop: holzer error
+* :sympyissue:`11000` diop: power_representation
+* :sympyissue:`11026` diophantine(x**3+y**3-2) -> KeyError instead of {(1, 1)}
