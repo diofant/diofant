@@ -205,9 +205,9 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     """
     Solves the diophantine equation ``eq``.
 
-    Similar to ``diophantine()`` but doesn't try to factor ``eq`` as latter
-    does. Uses ``classify_diop()`` to determine the type of the eqaution and
-    calls the appropriate solver function.
+    Unlike ``diophantine()``, factoring of ``eq`` is not attempted. Uses
+    ``classify_diop()`` to determine the type of the equation and calls
+    the appropriate solver function.
 
     Parameters
     ==========
@@ -248,6 +248,9 @@ def diop_solve(eq, param=symbols("t", integer=True)):
         x_0, y_0, z_0 = _diop_ternary_quadratic(var, coeff)
         return _parametrize_ternary_quadratic((x_0, y_0, z_0), var, coeff)
 
+    elif eq_type == "homogeneous_ternary_quadratic_normal":
+        return _diop_ternary_quadratic_normal(var, coeff)
+
     elif eq_type == "general_pythagorean":
         return _diop_general_pythagorean(var, coeff, param)
 
@@ -263,6 +266,16 @@ def diop_solve(eq, param=symbols("t", integer=True)):
 
     elif eq_type == "general_sum_of_squares":
         return _diop_general_sum_of_squares(var, coeff)
+
+    if eq_type is not None and eq_type not in diop_known:
+            raise ValueError(filldedent('''
+    Alhough this type of equation was identified, it is not yet
+    handled. It should, however, be listed in `diop_known` at the
+    top of this file. Developers should see comments at the end of
+    `classify_diop`.
+            '''))
+    else:
+        raise NotImplementedError('equation recognized but not yet handled.')
 
 
 def classify_diop(eq):
