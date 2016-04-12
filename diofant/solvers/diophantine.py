@@ -1558,23 +1558,19 @@ def find_DN(eq):
 
 def _find_DN(var, coeff):
 
-    x, y = var[:2]
+    x, y = var
     X, Y = symbols("X, Y", integer=True)
     A, B = _transformation_to_DN(var, coeff)
 
     u = (A*Matrix([X, Y]) + B)[0]
     v = (A*Matrix([X, Y]) + B)[1]
-    eq = x**2*coeff[x**2] + x*y*coeff[x*y] + y**2*coeff[y**2] + x*coeff[x] + y*coeff[y] + coeff[Integer(1)]
+    eq = x**2*coeff[x**2] + x*y*coeff[x*y] + y**2*coeff[y**2] + x*coeff[x] + y*coeff[y] + coeff[1]
+    simplified = _mexpand(eq.subs({x: u, y: v}))
 
-    simplified = _mexpand(Subs(eq, (x, y), (u, v)).doit())
+    coeff = defaultdict(int)
+    coeff.update(simplified.as_coefficients_dict())
 
-    coeff = {v: k for k, v in (t.as_independent(X, Y) for t in simplified.args)}
-
-    for term in [X**2, Y**2, Integer(1)]:
-        if term not in list(coeff):
-            coeff[term] = Integer(0)
-
-    return -coeff[Y**2]/coeff[X**2], -coeff[Integer(1)]/coeff[X**2]
+    return -coeff[Y**2]/coeff[X**2], -coeff[1]/coeff[X**2]
 
 
 def check_param(x, y, a, t):
