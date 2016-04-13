@@ -766,3 +766,13 @@ def test_sum_of_squares():
     assert len(ans) == 153
     assert len([i for i in ans if all(j > 0 for j in i)]) == 115
     assert len([i for i in ans if 0 in i]) == 38
+
+
+def test_sympyissue_9539():
+    assert diophantine(6*w + 9*y + 20*x - z) == {(t_0, t_1, t_1 + t_2,
+                                                  6*t_0 + 29*t_1 + 9*t_2)}
+
+
+def test_sympyissue_8943():
+    assert diophantine((3*(x**2 + y**2 + z**2) -
+                       14*(x*y + y*z + z*x))) == {(0, 0, 0)}

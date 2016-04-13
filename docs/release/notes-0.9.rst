@@ -184,3 +184,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10999` diop: holzer error
 * :sympyissue:`11000` diop: power_representation
 * :sympyissue:`11026` diophantine(x**3+y**3-2) -> KeyError instead of {(1, 1)}
+* :sympyissue:`8943` diophantine misses trivial solution
