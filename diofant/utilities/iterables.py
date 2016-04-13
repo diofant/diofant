@@ -1204,13 +1204,14 @@ def multiset_partitions(multiset, m=None):
 
 
 def partitions(n, m=None, k=None, size=False):
-    """Generate all partitions of integer n (>= 0).
+    """Generate all partitions of positive integer, n.
 
     Parameters
     ==========
 
     ``m`` : integer (default gives partitions of all sizes)
-        limits number of parts in partition (mnemonic: m, maximum parts)
+        limits number of parts in partition (mnemonic: m, maximum parts).
+        Default value, None, gives partitions from 1 through n.
     ``k`` : integer (default gives partitions number from 1 through n)
         limits the numbers that are kept in the partition (mnemonic: k, keys)
     ``size`` : bool (default False, only partition is returned)
@@ -1279,13 +1280,16 @@ def partitions(n, m=None, k=None, size=False):
     diofant.combinatorics.partitions.IntegerPartition
 
     """
-    if n < 0:
-        raise ValueError("n must be >= 0")
-    if m == 0:
+    if n <= 0:
+        raise ValueError("n must be > 0")
+    if m is None:
+        m = n
+    elif m <= 0:
         raise ValueError("m must be > 0")
-    m = min(m or n, n)
+    else:
+        m = min(m, n)
     if m < 1:
-        raise ValueError("maximum numbers in partition, m, must be > 0")
+        raise ValueError("maximum number of parts in partition, m, must be > 0")
     k = min(k or n, n)
     if k < 1:
         raise ValueError("maximum value in partition, k, must be > 0")
