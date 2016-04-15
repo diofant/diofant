@@ -500,6 +500,11 @@ def test_diophantine():
     # solvers have not been written for every type
     pytest.raises(NotImplementedError, lambda: diophantine(x*y**2 + 1))
 
+    # rational expressions
+    assert diophantine(1/x) == set()
+    assert diophantine(1/x + 1/y - Rational(1, 2)) == {(6, 3), (-2, 1),
+                                                       (4, 4), (1, -2), (3, 6)}
+
 
 def test_general_pythagorean():
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
