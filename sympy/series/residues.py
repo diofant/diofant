@@ -1,8 +1,6 @@
 from sympy import sympify, Integer
-from sympy.utilities.timeutils import timethis
 
 
-@timethis('residue')
 def residue(expr, x, x0):
     """
     Finds the residue of ``expr`` at the point ``x=x0``.
