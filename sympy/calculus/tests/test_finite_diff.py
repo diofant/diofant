@@ -1,10 +1,15 @@
+import pytest
+
 from sympy import Integer, Rational, symbols, Function
 from sympy.calculus.finite_diff import (apply_finite_diff,
                                         finite_diff_weights, as_finite_diff)
 
+from sympy.abc import x, y, h
+
 
 def test_apply_finite_diff():
-    x, h = symbols('x h')
+    pytest.raises(ValueError, lambda: apply_finite_diff(1, [1, 2], [3], x))
+
     f = Function('f')
     assert (apply_finite_diff(1, [x-h, x+h], [f(x-h), f(x+h)], x) -
             (f(x+h)-f(x-h))/(2*h)).simplify() == 0
@@ -14,6 +19,9 @@ def test_apply_finite_diff():
 
 
 def test_finite_diff_weights():
+    pytest.raises(ValueError, lambda: finite_diff_weights(-1, [5, 6], 5))
+    pytest.raises(ValueError, lambda: finite_diff_weights(Rational(1, 3),
+                                                          [5, 6], 5))
 
     d = finite_diff_weights(1, [5, 6, 7], 5)
     assert d[1][2] == [-Rational(3, 2), 2, -Rational(1, 2)]
@@ -96,7 +104,6 @@ def test_finite_diff_weights():
 
 
 def test_as_finite_diff():
-    x, h = symbols('x h')
     f = Function('f')
 
     # Central 1st derivative at gridpoint
@@ -173,3 +180,12 @@ def test_as_finite_diff():
     assert (as_finite_diff(f(x).diff(x, 3), [x-h, x+h, x + 3*h, x + 5*h]) -
             (2*h)**-3 * (f(x + 5*h)-f(x-h) +
                          3*(f(x+h)-f(x + 3*h)))).simplify() == 0
+
+    assert as_finite_diff(f(x).diff(x, 2)) == -2*f(x) + f(x - 1) + f(x + 1)
+
+    d2fdxdy = f(x, y).diff(x, y)
+    assert as_finite_diff(d2fdxdy, wrt=x) == (-f(x - Rational(1, 2), y) +
+                                              f(x + Rational(1, 2), y))
+    pytest.raises(ValueError, lambda: as_finite_diff(d2fdxdy))
+    pytest.raises(ValueError, lambda: as_finite_diff(f(x).diff(x, 2),
+                                                     [x, x + h]))
