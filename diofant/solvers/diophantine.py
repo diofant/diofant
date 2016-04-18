@@ -1,7 +1,7 @@
 from ..core import (Add, Eq, Integer, Mul, Rational, S, Symbol, factor_terms,
                     igcd, ilcm, integer_nthroot, oo, symbols)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import as_int
+from ..core.compatibility import as_int, is_sequence
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
 from ..functions import floor, sign, sqrt
@@ -80,7 +80,7 @@ def _even(i):
     return i % 2 == 0
 
 
-def diophantine(eq, param=symbols("t", integer=True)):
+def diophantine(eq, param=symbols("t", integer=True), syms=None):
     """
     Simplify the solution procedure of diophantine equation ``eq`` by
     converting it into a product of terms which should equal zero.
@@ -130,6 +130,14 @@ def diophantine(eq, param=symbols("t", integer=True)):
     try:
         var = list(eq.expand(force=True).free_symbols)
         var.sort(key=default_sort_key)
+        if syms:
+            if not is_sequence(syms):
+                raise TypeError('syms should be given as a sequence, e.g. a list')
+            syms = [i for i in syms if i in var]
+            if syms != var:
+                map = dict(zip(syms, range(len(syms))))
+                return {tuple(t[map[i]] for i in var)
+                        for t in diophantine(eq, param)}
         n, d = eq.as_numer_denom()
         if not n.free_symbols:
             return set()

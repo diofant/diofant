@@ -186,3 +186,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11026` diophantine(x**3+y**3-2) -> KeyError instead of {(1, 1)}
 * :sympyissue:`8943` diophantine misses trivial solution
 * :sympyissue:`11016` diop: sum of squares needs to try more options to satisfy conditions
+* :sympyissue:`9538` diophantine() doesn't let you specify the variable order
