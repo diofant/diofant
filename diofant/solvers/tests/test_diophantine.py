@@ -531,10 +531,13 @@ def test_diop_general_sum_of_squares_quick():
     var = symbols(':5') + (symbols('6', negative=True),)
     eq = Add(*[i**2 for i in var]) - 112
     assert diophantine(eq) == {
-        (1, 1, 1, 3, 6, -8), (2, 3, 3, 4, 5, -7),
-        (2, 2, 4, 4, 6, -6), (1, 3, 4, 5, 5, -6),
-        (1, 2, 3, 3, 5, -8), (1, 1, 2, 3, 4, -9),
-        (1, 1, 3, 4, 6, -7)}
+        (0, 1, 1, 5, 6, -7), (1, 1, 1, 3, 6, -8), (2, 3, 3, 4, 5, -7),
+        (0, 1, 1, 1, 3, -10), (0, 0, 4, 4, 4, -8), (1, 2, 3, 3, 5, -8),
+        (0, 1, 2, 3, 7, -7), (2, 2, 4, 4, 6, -6), (1, 1, 3, 4, 6, -7),
+        (0, 2, 3, 3, 3, -9), (0, 0, 2, 2, 2, -10), (1, 1, 2, 3, 4, -9),
+        (0, 1, 1, 2, 5, -9), (0, 0, 2, 6, 6, -6), (1, 3, 4, 5, 5, -6),
+        (0, 2, 2, 2, 6, -8), (0, 3, 3, 3, 6, -7), (0, 2, 3, 5, 5, -7),
+        (0, 1, 5, 5, 5, -6)}
     # handle negated squares with signsimp
     assert diophantine(12 - x**2 - y**2 - z**2) == {(2, 2, 2)}
     # diophantine handles simplification, so classify_diop should
@@ -764,24 +767,10 @@ def test_fail_holzer():
     X, Y, Z = ans = 2, 7, 13
     assert eq(*xyz) == 0
     assert eq(*ans) == 0
+    assert max(a*x**2, b*y**2, c*z**2) <= a*b*c
     assert max(a*X**2, b*Y**2, c*Z**2) <= a*b*c
     h = holzer(x, y, z, a, b, c)
-    assert h == ans
-
-
-@pytest.mark.xfail
-def test_sum_of_squares():
-    eq = u**2 + v**2 + x**2 + y**2 + z**2 - 123
-    ans = diop_general_sum_of_squares(eq, oo)  # allow oo to be used
-    assert len(ans) == 14
-    assert len([i for i in ans if all(j > 0 for j in i)]) == 8
-    assert len([i for i in ans if 0 in i]) == 6
-
-    eq = u**2 + v**2 + x**2 + y**2 + z**2 - 1313
-    ans = diop_general_sum_of_squares(eq, oo)
-    assert len(ans) == 153
-    assert len([i for i in ans if all(j > 0 for j in i)]) == 115
-    assert len([i for i in ans if 0 in i]) == 38
+    assert h == ans  # it would be nice to get the smaller soln
 
 
 def test_sympyissue_9539():
@@ -795,6 +784,10 @@ def test_sympyissue_8943():
 
 
 def test_diop_sum_of_even_powers():
+    eq = u**2 + v**2 + x**2 + y**2 + z**2 - 123
+    ans = diop_general_sum_of_squares(eq, oo)  # allow oo to be used
+    assert len(ans) == 14
+
     eq = x**4 + y**4 + z**4 - 2673
     assert diop_solve(eq) == {(3, 6, 6), (2, 4, 7)}
     assert diop_general_sum_of_even_powers(eq, 2) == {(3, 6, 6), (2, 4, 7)}
