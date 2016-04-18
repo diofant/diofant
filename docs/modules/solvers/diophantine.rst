@@ -48,6 +48,7 @@ structured in the following manner.
     - :py:meth:`~diofant.solvers.diophantine.diop_ternary_quadratic_normal`
     - :py:meth:`~diofant.solvers.diophantine.diop_general_pythagorean`
     - :py:meth:`~diofant.solvers.diophantine.diop_general_sum_of_squares`
+    - :py:meth:`~diofant.solvers.diophantine.diop_general_sum_of_even_powers`
 
   - :py:meth:`~diofant.solvers.diophantine.merge_solution`
 
@@ -280,7 +281,8 @@ general sum of squares too. Either you can call
 level API.
 
 >>> diophantine(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 - 112)
-{(-10, -3, 0, 1, 1, 1)}
+{(1, 1, 1, 3, 6, 8), (1, 1, 2, 3, 4, 9), (1, 1, 3, 4, 6, 7),
+ (1, 2, 3, 3, 5, 8), (1, 3, 4, 5, 5, 6), (2, 2, 4, 4, 6, 6), (2, 3, 3, 4, 5, 7)}
 
 Simple Eqyptian fractions can be found with the Diophantine module, too.
 For example, here are the ways that one might represent 1/2 as a sum of two
@@ -378,6 +380,10 @@ diop_general_sum_of_squares
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.diop_general_sum_of_squares
 
+diop_general_sum_of_even_powers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autofunction:: diofant.solvers.diophantine.diop_general_sum_of_even_powers
+
 partition
 ^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.partition
@@ -390,9 +396,21 @@ sum_of_four_squares
 ^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.sum_of_four_squares
 
+power_representation
+^^^^^^^^^^^^^^^^^^^^
+.. autofunction:: diofant.solvers.diophantine.power_representation
+
+.. function:: sum_of_powers
+
+    alias of :func:`~diofant.solvers.diophantine.power_representation`
+
+sum_of_squares
+^^^^^^^^^^^^^^
+.. autofunction:: diofant.solvers.diophantine.sum_of_squares
+
 Internal Functions
 ------------------
-These functions are intended for the internal use in Diophantine module.
+These functions are intended for internal use in the Diophantine module.
 
 merge_solution
 ^^^^^^^^^^^^^^

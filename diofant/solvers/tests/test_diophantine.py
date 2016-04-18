@@ -2,18 +2,20 @@ from random import randint
 
 import pytest
 
-from diofant import (Add, Eq, Integer, Matrix, Rational, factor_list,
-                     factorint, oo, pi, simplify, symbols)
-from diofant.abc import a, b, c, d, e, f, g, h, i
+from diofant import (Add, Eq, Integer, Matrix, Mul, Rational, factorint, oo,
+                     pi, simplify, symbols)
+from diofant.abc import a, b, c, d, e
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
-from diofant.solvers.diophantine import (_diop_general_sum_of_squares,
+from diofant.solvers.diophantine import (_can_do_sum_of_squares,
+                                         _diop_general_sum_of_squares,
                                          _diop_ternary_quadratic_normal, _even,
                                          _nint_or_floor, _odd, _remove_gcd,
                                          base_solution_linear, check_param,
                                          classify_diop, cornacchia, descent,
                                          diop_bf_DN, diop_DN,
                                          diop_general_pythagorean,
+                                         diop_general_sum_of_even_powers,
                                          diop_general_sum_of_squares,
                                          diop_linear, diop_quadratic,
                                          diop_solve, diop_ternary_quadratic,
@@ -25,6 +27,7 @@ from diofant.solvers.diophantine import (_diop_general_sum_of_squares,
                                          prime_as_sum_of_two_squares,
                                          reconstruct, sqf_normal,
                                          square_factor, sum_of_four_squares,
+                                         sum_of_powers, sum_of_squares,
                                          sum_of_three_squares,
                                          transformation_to_DN,
                                          transformation_to_normal)
@@ -54,7 +57,6 @@ def test_classify_diop():
     pytest.raises(TypeError, lambda: classify_diop(x**2/3 - 1))
     pytest.raises(ValueError, lambda: classify_diop(1))
     pytest.raises(NotImplementedError, lambda: classify_diop(w*x*y*z - 1))
-    pytest.raises(NotImplementedError, lambda: classify_diop(x**3 + y**3 + z**4 - 90))
     assert classify_diop(14*x**2 + 15*x - 42) == ([x], {1: -42, x: 15, x**2: 14}, 'univariate')
     assert classify_diop(x*y + z) == ([x, y, z], {x*y: 1, z: 1}, 'inhomogeneous_ternary_quadratic')
     assert classify_diop(x*y + z + w + x**2) == ([w, x, y, z], {x*y: 1, w: 1, x**2: 1, z: 1}, 'inhomogeneous_general_quadratic')
@@ -194,8 +196,8 @@ def test_DN():
 
     # When equation is x**2 + y**2 = N
     # Solutions are interchangeable
-    assert diop_DN(-1, 5) == [(2, 1)]
-    assert diop_DN(-1, 169) == [(12, 5), (0, 13)]
+    assert diop_DN(-1, 5) == [(1, 2)]
+    assert diop_DN(-1, 169) == [(5, 12), (0, 13)]
 
     # D > 0 and D is not a square
 
@@ -516,32 +518,30 @@ def test_general_pythagorean():
     assert check_solutions(16*a**2 - b**2 + 9*c**2 + d**2 + 25*e**2)
 
 
-@pytest.mark.slow
-def test_diop_general_sum_of_squares():
-    assert check_solutions(a**2 + b**2 + c**2 - 5)
-    assert check_solutions(a**2 + b**2 + c**2 - 57)
-    assert check_solutions(a**2 + b**2 + c**2 - 349560695)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 - 304)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 - 23345)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 - 23345494)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 + e**2 - 1344545)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 - 6933949)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 + g**2 - 753934)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 + g**2 + h**2 - 5)
-    assert check_solutions(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 + g**2 + h**2 + i**2 - 693940)
-    assert diop_solve(w**2 + x**2 + y**2 + z**2) == {(0, 0, 0, 0)}
-
-
 def test_diop_general_sum_of_squares_quick():
-    assert _diop_general_sum_of_squares(3, -2) == set()
-    assert _diop_general_sum_of_squares(3, 1) == {(0, 0, 1)}
-    assert _diop_general_sum_of_squares(4, 1) == {(0, 0, 0, 1)}
-    assert diop_solve(Add(*[i**2 for i in symbols('i:8')]) - 1) == {(0, 0, 0, 0, 0, 0, 0, 1)}
-    pytest.raises(ValueError, lambda: _diop_general_sum_of_squares(2, 2))
+    for i in range(3, 10):
+        assert check_solutions(sum(i**2 for i in symbols(':%i' % i)) - i)
+    pytest.raises(ValueError, lambda: _diop_general_sum_of_squares((x, y), 2))
+    assert _diop_general_sum_of_squares((x, y, z), -2) == set()
     eq = x**2 + y**2 + z**2 - (1 + 4 + 9)
     assert diop_general_sum_of_squares(eq) == {(1, 2, 3)}
     eq = u**2 + v**2 + x**2 + y**2 + z**2 - 1313
     assert len(diop_general_sum_of_squares(eq, 3)) == 3
+    # issue sympy/sympy#11016
+    var = symbols(':5') + (symbols('6', negative=True),)
+    eq = Add(*[i**2 for i in var]) - 112
+    assert diophantine(eq) == {
+        (1, 1, 1, 3, 6, -8), (2, 3, 3, 4, 5, -7),
+        (2, 2, 4, 4, 6, -6), (1, 3, 4, 5, 5, -6),
+        (1, 2, 3, 3, 5, -8), (1, 1, 2, 3, 4, -9),
+        (1, 1, 3, 4, 6, -7)}
+    # handle negated squares with signsimp
+    assert diophantine(12 - x**2 - y**2 - z**2) == {(2, 2, 2)}
+    # diophantine handles simplification, so classify_diop should
+    # not have to look for additional patterns that are removed
+    # by diophantine
+    eq = a**2 + b**2 + c**2 + d**2 - 4
+    pytest.raises(NotImplementedError, lambda: classify_diop(-eq))
 
 
 def test_partition():
@@ -558,6 +558,9 @@ def test_prime_as_sum_of_two_squares():
     for i in [5, 13, 17, 29, 37, 41, 2341, 3557, 34841, 64601]:
         a, b = prime_as_sum_of_two_squares(i)
         assert a**2 + b**2 == i
+    assert prime_as_sum_of_two_squares(7) is None
+    ans = prime_as_sum_of_two_squares(800029)
+    assert ans == (450, 773) and type(ans[0]) is int
 
 
 def test_sum_of_three_squares():
@@ -566,8 +569,8 @@ def test_sum_of_three_squares():
         a, b, c = sum_of_three_squares(i)
         assert a**2 + b**2 + c**2 == i
 
-    assert sum_of_three_squares(7) == (None, None, None)
-    assert sum_of_three_squares((4**5)*15) == (None, None, None)
+    assert sum_of_three_squares(7) is None
+    assert sum_of_three_squares((4**5)*15) is None
     assert sum_of_three_squares(25) == (5, 0, 0)
     assert sum_of_three_squares(4) == (0, 0, 2)
 
@@ -604,14 +607,20 @@ def test_power_representation():
 
     assert list(power_representation(20, 2, 4, True)) == [(1, 1, 3, 3), (0, 0, 2, 4)]
     pytest.raises(ValueError, lambda: list(power_representation(1.2, 2, 2)))
-    pytest.raises(ValueError, lambda: list(power_representation(0, 2, 2)))
     pytest.raises(ValueError, lambda: list(power_representation(2, 0, 2)))
     pytest.raises(ValueError, lambda: list(power_representation(2, 2, 0)))
+    assert list(power_representation(-1, 2, 2)) == []
     assert list(power_representation(1, 1, 1)) == [(1,)]  # issue sympy/sympy#11000
-    assert list(power_representation(3, 2, 1)) == [()]
+    assert list(power_representation(3, 2, 1)) == []
     assert list(power_representation(4, 2, 1)) == [(2,)]
-    assert list(power_representation(3**4, 4, 6, 1)) == [(1, 2, 2, 2, 2, 2)]
-    assert list(power_representation(3**4, 4, 5, 1)) == []
+    assert list(power_representation(3**4, 4, 6, zeros=True)) == [(1, 2, 2, 2, 2, 2), (0, 0, 0, 0, 0, 3)]
+    assert list(power_representation(3**4, 4, 5, zeros=False)) == []
+    assert list(power_representation(-2, 3, 2)) == [(-1, -1)]
+    assert list(power_representation(-2, 4, 2)) == []
+    assert list(power_representation(0, 3, 2, True)) == [(0, 0)]
+    assert list(power_representation(0, 3, 2, False)) == []
+    # when we are dealing with squares, do feasibility checks
+    assert len(list(power_representation(4**10*(8*10 + 7), 2, 3))) == 0
 
 
 def test_assumptions():
@@ -637,16 +646,15 @@ def check_solutions(eq):
     """
     s = diophantine(eq)
 
-    terms = factor_list(eq)[1]
+    factors = Mul.make_args(eq)
 
     var = list(eq.free_symbols)
     var.sort(key=default_sort_key)
 
     while s:
         solution = s.pop()
-        for term in terms:
-            subeq = term[0]
-            if simplify(_mexpand(subeq.subs(zip(var, solution)))) == 0:
+        for f in factors:
+            if simplify(_mexpand(f.subs(zip(var, solution)))) == 0:
                 break
         else:
             return False
@@ -691,6 +699,8 @@ def test_diopcoverage():
     assert base_solution_linear(4, 8, 12, t=None) == tuple(_.subs(t, 0) for _ in ans)
 
     assert cornacchia(1, 1, 20) is None
+    assert cornacchia(1, 1, 5) == {(1, 2)}
+    assert cornacchia(1, 2, 17) == {(3, 2)}
     assert cornacchia(2, 3, 31) == set()
 
     pytest.raises(ValueError, lambda: reconstruct(4, 20, 1))
@@ -729,6 +739,7 @@ def test_diopcoverage():
     assert parametrize_ternary_quadratic(x + y) is None  # wrong type
     assert diop_general_pythagorean(x + y) is None  # wrong type
     assert diop_general_sum_of_squares(x + y) is None  # wrong type
+    assert diop_general_sum_of_even_powers(x + y) is None  # wrong type
 
 
 def test_holzer():
@@ -781,3 +792,70 @@ def test_sympyissue_9539():
 def test_sympyissue_8943():
     assert diophantine((3*(x**2 + y**2 + z**2) -
                        14*(x*y + y*z + z*x))) == {(0, 0, 0)}
+
+
+def test_diop_sum_of_even_powers():
+    eq = x**4 + y**4 + z**4 - 2673
+    assert diop_solve(eq) == {(3, 6, 6), (2, 4, 7)}
+    assert diop_general_sum_of_even_powers(eq, 2) == {(3, 6, 6), (2, 4, 7)}
+    pytest.raises(NotImplementedError, lambda: diop_general_sum_of_even_powers(-eq, 2))
+    neg = symbols('neg', negative=True)
+    eq = x**4 + y**4 + neg**4 - 2673
+    assert diop_general_sum_of_even_powers(eq) == {(-2, 4, 7)}
+    assert diophantine(x**4 + y**4 + 2) == set()
+    assert diop_general_sum_of_even_powers(x**4 + y**4 - 2, limit=0) == set()
+
+
+def test_sum_of_squares_powers():
+    pytest.raises(ValueError, lambda: list(sum_of_squares(10, -1)))
+    assert list(sum_of_squares(-10, 2)) == []
+    assert list(sum_of_squares(2, 3)) == []
+    assert list(sum_of_squares(0, 3, True)) == [(0, 0, 0)]
+    assert list(sum_of_squares(0, 3)) == []
+    assert list(sum_of_squares(4, 1)) == [(2,)]
+    assert list(sum_of_squares(5, 1)) == []
+    assert list(sum_of_squares(50, 2)) == [(1, 7), (5, 5)]
+    assert list(sum_of_squares(11, 5, True)) == [(1, 1, 1, 2, 2), (0, 0, 1, 1, 3)]
+    assert list(sum_of_squares(8, 8)) == [(1, 1, 1, 1, 1, 1, 1, 1)]
+
+    assert [len(list(sum_of_squares(i, 5, True))) for i in range(30)] == [
+        1, 1, 1, 1, 2,
+        2, 1, 1, 2, 2,
+        2, 2, 2, 3, 2,
+        1, 3, 3, 3, 3,
+        4, 3, 3, 2, 2,
+        4, 4, 4, 4, 5]
+    assert [len(list(sum_of_squares(i, 5))) for i in range(30)] == [
+        0, 0, 0, 0, 0,
+        1, 0, 0, 1, 0,
+        0, 1, 0, 1, 1,
+        0, 1, 1, 0, 1,
+        2, 1, 1, 1, 1,
+        1, 1, 1, 1, 3]
+    for i in range(30):
+        s1 = set(sum_of_squares(i, 5, True))
+        assert not s1 or all(sum(j**2 for j in t) == i for t in s1)
+        s2 = set(sum_of_squares(i, 5))
+        assert all(sum(j**2 for j in t) == i for t in s2)
+
+    pytest.raises(ValueError, lambda: list(sum_of_powers(2, -1, 1)))
+    pytest.raises(ValueError, lambda: list(sum_of_powers(2, 1, -1)))
+    assert list(sum_of_powers(-2, 3, 2)) == [(-1, -1)]
+    assert list(sum_of_powers(-2, 4, 2)) == []
+    assert list(sum_of_powers(2, 1, 1)) == [(2,)]
+    assert list(sum_of_powers(2, 1, 3, True)) == [(0, 0, 2), (0, 1, 1)]
+    assert list(sum_of_powers(5, 1, 2, True)) == [(0, 5), (1, 4), (2, 3)]
+    assert list(sum_of_powers(6, 2, 2)) == []
+    assert list(sum_of_powers(3**5, 3, 1)) == []
+    assert list(sum_of_powers(3**6, 3, 1)) == [(9,)] and (9**3 == 3**6)
+    assert list(sum_of_powers(2**1000, 5, 2)) == []
+
+
+def test__can_do_sum_of_squares():
+    assert _can_do_sum_of_squares(3, -1) is False
+    assert _can_do_sum_of_squares(-3, 1) is False
+    assert _can_do_sum_of_squares(0, 1)
+    assert _can_do_sum_of_squares(4, 1)
+    assert _can_do_sum_of_squares(1, 2)
+    assert _can_do_sum_of_squares(2, 2)
+    assert _can_do_sum_of_squares(3, 2) is False

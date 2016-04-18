@@ -2034,3 +2034,36 @@ def cantor_product(*args):
                 for result in product(*(argslist[:n] + [argslist[n][-1:]] +
                                         argslist[n + 1:])):
                     yield result
+
+
+def permute_signs(t):
+    """Return iterator in which the signs of non-zero elements
+    of t are permuted.
+
+    Examples
+    ========
+
+    >>> list(permute_signs((0, 1, 2)))
+    [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2)]
+    """
+    for signs in product(*[(1, -1)]*(len(t) - t.count(0))):
+        signs = list(signs)
+        yield type(t)([i*signs.pop() if i else i for i in t])
+
+
+def signed_permutations(t):
+    """Return iterator in which the signs of non-zero elements
+    of t and the order of the elements are permuted.
+
+    Examples
+    ========
+
+    >>> list(signed_permutations((0, 1, 2)))
+    [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2), (0, 2, 1),
+     (0, -2, 1), (0, 2, -1), (0, -2, -1), (1, 0, 2), (-1, 0, 2),
+     (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
+     (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
+     (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)]
+    """
+    return (type(t)(i) for j in permutations(t)
+            for i in permute_signs(j))

@@ -1,5 +1,5 @@
-from ..core import (Add, Dummy, Eq, Integer, Mul, Rational, S, Symbol,
-                    factor_terms, igcd, ilcm, integer_nthroot, symbols)
+from ..core import (Add, Eq, Integer, Mul, Rational, S, Symbol, factor_terms,
+                    igcd, ilcm, integer_nthroot, oo, symbols)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int
 from ..core.function import _mexpand
@@ -17,7 +17,8 @@ from .solvers import solve
 __all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',
            'diop_ternary_quadratic',  'square_factor', 'descent', 'diop_general_pythagorean',
-           'diop_general_sum_of_squares', 'partition', 'sum_of_three_squares', 'sum_of_four_squares')
+           'diop_general_sum_of_squares', 'partition', 'sum_of_three_squares', 'sum_of_four_squares',
+           'diop_general_sum_of_even_powers', 'sum_of_squares', 'sum_of_powers')
 
 
 # these types are known (but not necessarily handled)
@@ -25,6 +26,7 @@ diop_known = {
     "binary_quadratic",
     "cubic_thue",
     "general_pythagorean",
+    "general_sum_of_even_powers",
     "general_sum_of_squares",
     "homogeneous_general_quadratic",
     "homogeneous_ternary_quadratic",
@@ -165,9 +167,12 @@ def diophantine(eq, param=symbols("t", integer=True)):
             sols.add(merge_solution(var, var_t, solution))
 
         elif eq_type in ["binary_quadratic", "general_sum_of_squares",
-                         "univariate"]:
+                         "general_sum_of_even_powers", "univariate"]:
             for sol in solution:
                 sols.add(merge_solution(var, var_t, sol))
+
+        else:  # pragma: no cover
+            raise NotImplementedError('unhandled type: %s' % eq_type)
 
     # remove null merge results
     if () in sols:
@@ -241,7 +246,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     >>> diop_solve(x + 3*y - 4*z + w -6)
     (t_0, t_0 + t_1, 6*t_0 + 5*t_1 + 4*t_2 - 6, 5*t_0 + 4*t_1 + 3*t_2 - 6)
     >>> diop_solve(x**2 + y**2 - 5)
-    {(-2, -1), (-2, 1), (2, -1), (2, 1)}
+    {(-1, -2), (-1, 2), (1, -2), (1, 2)}
 
     See Also
     ========
@@ -277,7 +282,13 @@ def diop_solve(eq, param=symbols("t", integer=True)):
         return s
 
     elif eq_type == "general_sum_of_squares":
-        return _diop_general_sum_of_squares(len(var), -int(coeff[1]))
+        return _diop_general_sum_of_squares(var, -int(coeff[1]), limit=oo)
+
+    elif eq_type == "general_sum_of_even_powers":
+        for k in coeff.keys():
+            if k.is_Pow and coeff[k]:
+                p = k.exp
+        return _diop_general_sum_of_even_powers(var, p, -int(coeff[1]), limit=oo)
 
     if eq_type is not None and eq_type not in diop_known:
             raise ValueError(filldedent('''
@@ -355,18 +366,22 @@ def classify_diop(eq):
                     diop_type = "inhomogeneous_general_quadratic"
                 else:
                     diop_type = "homogeneous_general_quadratic"
-            else:  # all squares, no constant
+            else:  # all squares: x**2 + y**2 + ... + constant
                 if all(coeff[k] == 1 for k in coeff if k != 1):
                     diop_type = "general_sum_of_squares"
                 elif all(is_square(abs(coeff[k])) for k in coeff):
-                    if abs(sum(sign(coeff[k]) for k in coeff)) == \
-                            len(var) - 2:
+                    if abs(sum(sign(coeff[k]) for k in coeff)) == len(var) - 2:
                         # all but one has the same sign
                         # e.g. 4*x**2 + y**2 - 4*z**2
                         diop_type = "general_pythagorean"
 
     elif total_degree == 3 and len(var) == 2:
         diop_type = "cubic_thue"
+
+    elif (total_degree > 3 and total_degree % 2 == 0 and
+          all(k.is_Pow for k in coeff if k != 1)):
+        if all(coeff[k] == 1 for k in coeff if k != 1):
+            diop_type = 'general_sum_of_even_powers'
 
     if diop_type is not None:
         return var, coeff, diop_type
@@ -379,7 +394,10 @@ def classify_diop(eq):
     # if a solver can be written for it,
     #  * a dedicated handler should be written (e.g. diop_linear)
     #  * it should be passed to that handler in diop_solve
-    raise NotImplementedError("This equation is not yet recognized.")
+    raise NotImplementedError(filldedent('''
+        This equation is not yet recognized or else has not been
+        simplified sufficiently to put it in a form recognized by
+        diop_classify().'''))
 
 
 classify_diop.__doc__ += """
@@ -1121,8 +1139,8 @@ def cornacchia(a, b, m):
     Uses the algorithm due to Cornacchia. The method only finds primitive
     solutions, i.e. ones with `\gcd(x, y) = 1`. So this method can't be used to
     find the solutions of `x^2 + y^2 = 20` since the only solution to former is
-    `(x, y) = (4, 2)` and it is not primitive. When `a = b = 1`, only the
-    solutions with `x \geq y` are found. For more details, see the References.
+    `(x, y) = (4, 2)` and it is not primitive. When `a = b`, only the
+    solutions with `x \leq y` are found. For more details, see the References.
 
     Examples
     ========
@@ -1131,7 +1149,7 @@ def cornacchia(a, b, m):
     >>> cornacchia(2, 3, 35)  # equation 2x**2 + 3y**2 = 35
     {(2, 3), (4, 1)}
     >>> cornacchia(1, 1, 25)  # equation x**2 + y**2 = 25
-    {(4, 3)}
+    {(3, 4)}
 
     References
     ===========
@@ -1140,6 +1158,11 @@ def cornacchia(a, b, m):
     .. [2] Solving the diophantine equation ax**2 + by**2 = m by Cornacchia's
         method, [online], Available:
         http://www.numbertheory.org/php/cornacchia.html
+
+    See Also
+    ========
+
+    diofant.utilities.iterables.signed_permutations
     """
     sols = set()
 
@@ -1165,6 +1188,8 @@ def cornacchia(a, b, m):
             m1 = m1 // b
             s, _exact = integer_nthroot(m1, 2)
             if _exact:
+                if a == b and r > s:
+                    r, s = s, r
                 sols.add((int(r), int(s)))
 
     return sols
@@ -2433,7 +2458,7 @@ def diop_general_sum_of_squares(eq, limit=1):
     >>> from diofant.solvers.diophantine import diop_general_sum_of_squares
     >>> from diofant.abc import a, b, c, d, e, f
     >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345)
-    {(-48, 0, 1, 2, 6)}
+    {(2, 4, 4, 10, 47)}
 
     References
     ==========
@@ -2445,51 +2470,99 @@ def diop_general_sum_of_squares(eq, limit=1):
     var, coeff, diop_type = classify_diop(eq)
 
     if diop_type == "general_sum_of_squares":
-        return _diop_general_sum_of_squares(len(var), -int(coeff[1]), limit)
+        return _diop_general_sum_of_squares(var, -int(coeff[1]), limit)
 
 
-def _diop_general_sum_of_squares(n, k, limit=1):
-    # sum(i**2 for i in var) == k
+def _diop_general_sum_of_squares(var, k, limit=1):
+    # solves Eq(sum(i**2 for i in var), k)
+    n = len(var)
     if n < 3:
         raise ValueError('n must be greater than 2')
 
     s = set()
 
-    if k < 0:
+    if k < 0 or limit < 1:
         return s
 
-    if n == 3:
-        s.add(sum_of_three_squares(k))
-    elif n == 4:
-        s.add(sum_of_four_squares(k))
-    else:
-        m, r = divmod(n, 4)
-        sum_x2 = Add(*[Dummy()**2 for i in range(r)])
-        took = 0
-        for part in partition(k, m + (1 if r else 0), True):
-            soln = ()
-            rem = k
-            for n_i in part[:m]:
-                soln += sum_of_four_squares(n_i)
-                rem -= n_i
-            if r:
-                eq = sum_x2 - rem
-                rem_sol = sorted(_sorted_tuple(*i) for i in diop_solve(eq))
-            else:
-                rem_sol = [()]
-            for sol in rem_sol:
-                s.add(_sorted_tuple(*(soln + sol)))
-                took += 1
-                if took >= limit:
-                    break
-            else:
-                continue
+    sign = [-1 if x.is_nonpositive else 1 for x in var]
+    negs = sign.count(-1) != 0
+
+    took = 0
+    for t in sum_of_squares(k, n):
+        if negs:
+            s.add(tuple(sign[i]*j for i, j in enumerate(t)))
+        else:
+            s.add(t)
+        took += 1
+        if took == limit:
             break
     return s
 
 
-# Functions below this comment can be more suitably grouped under an Additive number theory module
-# rather than the Diophantine equation module.
+def diop_general_sum_of_even_powers(eq, limit=1):
+    """
+    Solves the equation `x_{1}^e + x_{2}^e + . . . + x_{n}^e - k = 0`
+    where `e` is an even, integer power.
+
+    Returns at most ``limit`` number of solutions.
+
+    Parameters
+    ==========
+
+    eq : Expr
+        An expression which is assumed to be zero.  Also, ``eq`` should
+        be in the form, `x_{1}^e + x_{2}^e + . . . + x_{n}^e - k = 0`.
+    limit : Expr, optional
+        Limit number of returned solutions.  Default is 1.
+
+    Examples
+    ========
+
+    >>> from diofant.abc import a, b
+    >>> diop_general_sum_of_even_powers(a**4 + b**4 - (2**4 + 3**4))
+    {(2, 3)}
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.power_representation
+    """
+    var, coeff, diop_type = classify_diop(eq)
+
+    if diop_type == "general_sum_of_even_powers":
+        for k in coeff.keys():
+            if k.is_Pow and coeff[k]:
+                p = k.exp
+        return _diop_general_sum_of_even_powers(var, p, -coeff[1], limit)
+
+
+def _diop_general_sum_of_even_powers(var, p, n, limit=1):
+    # solves Eq(sum(i**2 for i in var), n)
+    k = len(var)
+
+    s = set()
+
+    if n < 0 or limit < 1:
+        return s
+
+    sign = [-1 if x.is_nonpositive else 1 for x in var]
+    negs = sign.count(-1) != 0
+
+    took = 0
+    for t in power_representation(n, p, k):
+        if negs:
+            s.add(tuple(sign[i]*j for i, j in enumerate(t)))
+        else:
+            s.add(t)
+        took += 1
+        if took == limit:
+            break
+    return s
+
+
+# Functions below this comment can be more suitably grouped under
+# an Additive number theory module rather than the Diophantine
+# equation module.
 
 
 def partition(n, k=None, zeros=False):
@@ -2554,21 +2627,27 @@ def partition(n, k=None, zeros=False):
 
 def prime_as_sum_of_two_squares(p):
     """
-    Represent a prime `p` which is congruent to 1 mod 4, as a sum of two
-    squares.
+    Represent a prime `p` as a unique sum of two squares; this can
+    only be done if the prime is congruent to 1 mod 4.
 
     Examples
     ========
 
     >>> from diofant.solvers.diophantine import prime_as_sum_of_two_squares
+    >>> prime_as_sum_of_two_squares(7)  # can't be done
     >>> prime_as_sum_of_two_squares(5)
-    (2, 1)
+    (1, 2)
 
     References
     ==========
 
     .. [1] Representing a number as a sum of four squares, [online],
-        Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
+           Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.sum_of_squares
     """
     if not p % 4 == 1:
         return
@@ -2587,7 +2666,7 @@ def prime_as_sum_of_two_squares(p):
     while b**2 > p:
         a, b = b, a % b
 
-    return b, a % b
+    return a % b, b
 
 
 def sum_of_three_squares(n):
@@ -2595,7 +2674,7 @@ def sum_of_three_squares(n):
     Returns a 3-tuple `(a, b, c)` such that `a^2 + b^2 + c^2 = n` and
     `a, b, c \geq 0`.
 
-    Returns (None, None, None) if `n = 4^a(8m + 7)` for some `a, m \in Z`. See
+    Returns None if `n = 4^a(8m + 7)` for some `a, m \in Z`. See
     [1]_ for more details.
 
     Parameters
@@ -2615,7 +2694,12 @@ def sum_of_three_squares(n):
     ==========
 
     .. [1] Representing a number as a sum of three squares, [online],
-        Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
+           Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.sum_of_squares
     """
     special = {1: (1, 0, 0), 2: (1, 1, 0), 3: (1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58: (3, 7, 0),
                85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
@@ -2631,7 +2715,7 @@ def sum_of_three_squares(n):
     n //= 4**v
 
     if n % 8 == 7:
-        return None, None, None
+        return
 
     if n in special:
         x, y, z = special[n]
@@ -2694,7 +2778,12 @@ def sum_of_four_squares(n):
     ==========
 
     .. [1] Representing a number as a sum of four squares, [online],
-        Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
+           Available: https://web.archive.org/web/20130115040528/http://schorn.ch:80/howto.html
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.sum_of_squares
     """
     if n == 0:
         return 0, 0, 0, 0
@@ -2718,12 +2807,12 @@ def sum_of_four_squares(n):
 
 def power_representation(n, p, k, zeros=False):
     """
-    Returns a generator for finding k-tuples `(n_{1}, n_{2}, . . . n_{k})` such
-    that `n = n_{1}^p + n_{2}^p + . . . n_{k}^p`.
+    Returns a generator for finding k-tuples of integers,
+    `(n_{1}, n_{2}, ... n_{k})`, such that
+    `n = n_{1}^p + n_{2}^p + ... n_{k}^p`.
 
-    Here `n` is a non-negative integer. StopIteration exception is raised after
-    all the solutions are generated, so should always be used within a try-
-    catch block.
+    StopIteration exception is raised after all the solutions are
+    generated, so should always be used within a try-catch block.
 
     Parameters
     ==========
@@ -2732,7 +2821,7 @@ def power_representation(n, p, k, zeros=False):
         a non-negative integer
     k, p : int
         parameters to control representation ``n`` as a sum
-        of ``k``, ``p``th powers.
+        of ``k``, ``p``-th powers.
     zeros : boolean, optional
         if ``True`` (the default is ``False``), then the solutions
         will contain zeros.
@@ -2746,34 +2835,81 @@ def power_representation(n, p, k, zeros=False):
     (1, 12)
     >>> next(f)
     (9, 10)
+
+    For even `p` the `permute_sign` function can be used to get all
+    signed values:
+
+    >>> from diofant.utilities.iterables import permute_signs
+    >>> list(permute_signs((1, 12)))
+    [(1, 12), (-1, 12), (1, -12), (-1, -12)]
+
+    All possible signed permutations can also be obtained:
+
+    >>> from diofant.utilities.iterables import signed_permutations
+    >>> list(signed_permutations((1, 12)))
+    [(1, 12), (-1, 12), (1, -12), (-1, -12), (12, 1), (-12, 1),
+     (12, -1), (-12, -1)]
     """
-    p, k, n = [as_int(i) for i in (p, k, n)]
-    if p < 1 or k < 1 or n < 1:
+    n, p, k = [as_int(i) for i in (n, p, k)]
+
+    if n < 0:
+        if p % 2:
+            for t in power_representation(-n, p, k, zeros):
+                yield tuple(-i for i in t)
+        return
+
+    if p < 1 or k < 1:
         raise ValueError(filldedent('''
-    Expecting positive integers for n, p, and k, got (%s, %s, %s)''' % (n, p, k)))
+    Expecting positive integers for `(p, k)`, but got `(%s, %s)`''' % (p, k)))
+
+    if n == 0:
+        if zeros:
+            yield (0,)*k
+        return
 
     if k == 1:
         if p == 1:
             yield (n,)
-        elif perfect_power(n):
-            yield (perfect_power(n)[0],)
         else:
-            yield ()
+            be = perfect_power(n)
+            if be:
+                b, e = be
+                d, r = divmod(e, p)
+                if not r:
+                    yield (b**d,)
+        return
 
-    elif p == 1:
-        for t in partition(n, k, zeros):
+    if p == 1:
+        for t in partition(n, k, zeros=zeros):
             yield t
+        return
 
-    else:
-        a = integer_nthroot(n, p)[0]
+    if p == 2:
+        feasible = _can_do_sum_of_squares(n, k)
+        if not feasible:
+            return
+        if feasible is 1:  # it's prime and k == 2
+            yield prime_as_sum_of_two_squares(n)
+            return
 
+    if k == 2 and p > 2:
+        be = perfect_power(n)
+        if be and be[1] % p == 0:
+            return  # Fermat: a**n + b**n = c**n has no solution for n > 2
+
+    if n >= k:
+        a = integer_nthroot(n - (k - 1), p)[0]
         for t in pow_rep_recursive(a, k, n, [], p):
                 yield t
 
-        if zeros:
-            for i in range(2, k):
-                for t in pow_rep_recursive(a, i, n, [], p):
-                    yield _sorted_tuple(*(t + (0,)*(k - i)))
+    if zeros:
+        a = integer_nthroot(n, p)[0]
+        for i in range(1, k):
+            for t in pow_rep_recursive(a, i, n, [], p):
+                yield (0,) * (k - i) + t
+
+
+sum_of_powers = power_representation
 
 
 def pow_rep_recursive(n_i, k, n_remaining, terms, p):
@@ -2788,3 +2924,87 @@ def pow_rep_recursive(n_i, k, n_remaining, terms, p):
 
             for t in pow_rep_recursive(n_i - 1, k, n_remaining, terms, p):
                 yield _sorted_tuple(*t)
+
+
+def sum_of_squares(n, k, zeros=False):
+    """Return a generator that yields the k-tuples of nonnegative
+    values, the squares of which sum to n. If zeros is False (default)
+    then the solution will not contain zeros. The nonnegative
+    elements of a tuple are sorted.
+
+    * If k == 1 and n is square, (n,) is returned.
+
+    * If k == 2 then n can only be written as a sum of squares if
+      every prime in the factorization of n that has the form
+      4*k + 3 has an even multiplicity. If n is prime then
+      it can only be written as a sum of two squares if it is
+      in the form 4*k + 1.
+
+    * if k == 3 then n can be written as a sum of squares if it does
+      not have the form 4**m*(8*k + 7).
+
+    * all integers can be written as the sum of 4 squares.
+
+    * if k > 4 then n can be partitioned and each partition can
+      be written as a sum of 4 squares; if n is not evenly divisible
+      by 4 then n can be written as a sum of squares only if the
+      an additional partition can be written as as sum of squares.
+      For example, if k = 6 then n is partitioned into two parts,
+      the first being written as a sum of 4 squares and the second
+      being written as a sum of 2 squares -- which can only be
+      done if the contition above for k = 2 can be met, so this will
+      automatically reject certain partitions of n.
+
+    Examples
+    ========
+
+    >>> list(sum_of_squares(25, 2))
+    [(3, 4)]
+    >>> list(sum_of_squares(25, 2, True))
+    [(3, 4), (0, 5)]
+    >>> list(sum_of_squares(25, 4))
+    [(1, 2, 2, 4)]
+
+    See Also
+    ========
+
+    diofant.utilities.iterables.signed_permutations
+    """
+    for t in power_representation(n, 2, k, zeros):
+        yield t
+
+
+def _can_do_sum_of_squares(n, k):
+    """Return True if n can be written as the sum of k squares,
+    False if it can't, or 1 if k == 2 and n is prime (in which
+    case it *can* be written as a sum of two squares). A False
+    is returned only if it can't be written as k-squares, even
+    if 0s are allowed.
+    """
+    if k < 1:
+        return False
+    if n < 0:
+        return False
+    if n == 0:
+        return True
+    if k == 1:
+        return is_square(n)
+    if k == 2:
+        if n in (1, 2):
+            return True
+        if isprime(n):
+            if n % 4 == 1:
+                return 1  # signal that it was prime
+            return False
+        else:
+            f = factorint(n)
+            for p, m in f.items():
+                # we can proceed iff no prime factor in the form 4*k + 3
+                # has an odd multiplicity
+                if (p % 4 == 3) and m % 2:
+                    return False
+            return True
+    if k == 3:
+        if (n//4**multiplicity(4, n)) % 8 == 7:
+            return False
+    return True
