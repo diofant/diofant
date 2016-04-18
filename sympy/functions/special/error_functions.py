@@ -2323,6 +2323,12 @@ class _erfs(Function):
     tractable for the Gruntz algorithm.
     """
 
+    @classmethod
+    def eval(cls, z):
+        r = cls(z, evaluate=False).rewrite('intractable')
+        if r.is_number:
+            return r
+
     def _eval_aseries(self, n, args0, x, logx):
         from sympy import Order
         point = args0[0]

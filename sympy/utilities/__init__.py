@@ -12,5 +12,3 @@ from .misc import filldedent
 from .lambdify import lambdify
 
 from .decorator import public
-
-from .timeutils import timed

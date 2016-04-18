@@ -4,11 +4,9 @@ from sympy.functions.combinatorial.factorials import (binomial,
                                                       factorial)
 from sympy.functions import gamma, sqrt, sin
 from sympy.polys import factor, cancel
-from sympy.utilities.timeutils import timethis
 from sympy.utilities.iterables import sift, uniq
 
 
-@timethis('combsimp')
 def combsimp(expr):
     r"""
     Simplify combinatorial expressions.

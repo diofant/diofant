@@ -86,12 +86,6 @@ class NumPyPrinter(LambdaPrinter):
         "full_prec": "auto",
     }
 
-    def _print_seq(self, seq, delimiter=', '):
-        "General sequence printer: converts to tuple"
-        # Print tuples here instead of lists because numba supports
-        #     tuples in nopython mode.
-        return '({},)'.format(delimiter.join(self._print(item) for item in seq))
-
     def _print_MatMul(self, expr):
         "Matrix multiplication printer"
         return '({0})'.format(').dot('.join(self._print(i) for i in expr.args))
@@ -198,6 +192,7 @@ class NumExprPrinter(LambdaPrinter):
     _print_MutableDenseMatrix = \
     _print_ImmutableMatrix = \
     _print_ImmutableDenseMatrix = \
+    _print_MatrixSymbol = \
     blacklisted
     # blacklist some python expressions
     _print_list = \
