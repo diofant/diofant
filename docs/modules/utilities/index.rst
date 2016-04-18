@@ -21,4 +21,3 @@ Contents:
    misc.rst
    randtest.rst
    source.rst
-   timeutils.rst
