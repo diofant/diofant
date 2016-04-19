@@ -51,11 +51,6 @@ from sympy.solvers.polysys import solve_poly_system
 from sympy.solvers.inequalities import reduce_inequalities
 
 
-def _ispow(e):
-    """Return True if e is a Pow or is exp."""
-    return isinstance(e, Expr) and e.is_Pow
-
-
 def _simple_dens(f, symbols):
     # when checking if a denominator is zero, we can just check the
     # base of powers with nonzero exponents since if the base is zero
@@ -2650,7 +2645,7 @@ def _invert(eq, *symbols, **kwargs):
             a, b = ordered(lhs.args)
             ai, ad = a.as_independent(*symbols)
             bi, bd = b.as_independent(*symbols)
-            if any(_ispow(i) for i in (ad, bd)):
+            if any(i.is_Pow for i in (ad, bd)):
                 a_base, a_exp = ad.as_base_exp()
                 b_base, b_exp = bd.as_base_exp()
                 if a_base == b_base:
@@ -2675,7 +2670,7 @@ def _invert(eq, *symbols, **kwargs):
                         # f(x, x + y) == f(2, 3) -> x == 2 or x == 3 - y
                         raise NotImplementedError('equal function with more than 1 argument')
 
-        elif lhs.is_Mul and any(_ispow(a) for a in lhs.args):
+        elif lhs.is_Mul and any(a.is_Pow for a in lhs.args):
             lhs = powsimp(powdenest(lhs))
 
         if lhs.is_Function:

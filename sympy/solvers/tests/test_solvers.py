@@ -12,7 +12,7 @@ from sympy import (
 from sympy.core.function import nfloat
 from sympy.solvers import solve_linear_system, solve_undetermined_coeffs
 from sympy.solvers.solvers import (_invert, unrad, checksol, posify,
-                                   _ispow, det_quick, det_perm, det_minor,
+                                   det_quick, det_perm, det_minor,
                                    _simple_dens)
 from sympy.polys.rootoftools import RootOf
 from sympy.utilities.randtest import verify_numerically as tn
@@ -1377,12 +1377,6 @@ def test_issue_6605():
     assert solve(5**(x/2) - 2**(x/3)) == [0]
     b = sqrt(6)*sqrt(log(2))/sqrt(log(5))
     assert solve(5**(x/2) - 2**(3/x)) == [-b, b]
-
-
-def test__ispow():
-    assert _ispow(x**2)
-    assert not _ispow(x)
-    assert not _ispow(True)
 
 
 def test_issue_6644():
