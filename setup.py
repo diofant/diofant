@@ -79,7 +79,8 @@ class test(TestCommand):
 
     def run_tests(self):
         import pytest
-        return pytest.main(self.pytest_args)
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
 
 
 exec(open('sympy/release.py').read())
@@ -91,7 +92,6 @@ setup(name='sympy',
       description='Computer algebra system (CAS) in Python',
       long_description=long_description,
       maintainer='Sergey B Kirpichev',
-      maintainer_email='skirpichev@gmail.com',
       license='BSD',
       keywords="Math CAS",
       url='http://omg.rtfd.org',

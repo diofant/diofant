@@ -166,16 +166,18 @@ class FracField(DefaultPrinting):
                 return reduce(add, list(map(_rebuild, expr.args)))
             elif expr.is_Mul:
                 return reduce(mul, list(map(_rebuild, expr.args)))
-            elif expr.is_Pow and expr.exp.is_Integer:
-                return _rebuild(expr.base)**int(expr.exp)
-            else:
-                try:
-                    return domain.convert(expr)
-                except CoercionFailed:
-                    if not domain.has_Field and domain.has_assoc_Field:
-                        return domain.get_field().convert(expr)
-                    else:
-                        raise
+            elif expr.is_Pow:
+                c, a = expr.exp.as_coeff_Mul(rational=True)
+                if c.is_Integer and c != 1:
+                    return _rebuild(expr.base**a)**int(c)
+
+            try:
+                return domain.convert(expr)
+            except CoercionFailed:
+                if not domain.has_Field and domain.has_assoc_Field:
+                    return domain.get_field().convert(expr)
+                else:
+                    raise
 
         return _rebuild(sympify(expr))
 
@@ -515,13 +517,11 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         Examples
         ========
 
-        >>> from sympy.polys.fields import field
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y, z = field("x,y,z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
-
         """
         x = x.to_poly()
         return self.new(self.numer.diff(x)*self.denom -

@@ -16,7 +16,7 @@ from sympy import (
     meijerg, oo, polar_lift, polylog, re, root, sin, sqrt, symbols,
     uppergamma, zeta, subfactorial, totient, elliptic_k, elliptic_f,
     elliptic_e, elliptic_pi, cos, tan, Wild, true, false, Equivalent, Not,
-    Contains, divisor_sigma, SymmetricDifference)
+    Contains, divisor_sigma, SymmetricDifference, Dummy)
 from sympy.abc import mu, tau
 from sympy.printing.latex import latex, translate
 from sympy.functions import DiracDelta, Heaviside, KroneckerDelta, LeviCivita
@@ -149,6 +149,8 @@ def test_latex_symbols():
     assert latex(Symbol('omega_alpha^beta')) == r"\omega^{\beta}_{\alpha}"
     assert latex(Symbol('omega') ** Symbol('beta')) == r"\omega^{\beta}"
 
+    assert latex(Dummy('x')) == 'x'
+
 
 @pytest.mark.xfail
 def test_latex_symbols_failing():
@@ -242,10 +244,10 @@ def test_latex_functions():
     assert latex(Order(x)) == r"\mathcal{O}\left(x\right)"
     assert latex(Order(x, x)) == r"\mathcal{O}\left(x\right)"
     assert latex(Order(x, (x, 0))) == r"\mathcal{O}\left(x\right)"
-    assert latex(Order(x, (x, oo))) == r"\mathcal{O}\left(x; x\rightarrow\infty\right)"
-    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow\left ( 0, \quad 0\right )\right)"
-    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow\left ( 0, \quad 0\right )\right)"
-    assert latex(Order(x, (x, oo), (y, oo))) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow\left ( \infty, \quad \infty\right )\right)"
+    assert latex(Order(x, (x, oo))) == r"\mathcal{O}\left(x; x\rightarrow{}\infty\right)"
+    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)"
+    assert latex(Order(x, x, y)) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)"
+    assert latex(Order(x, (x, oo), (y, oo))) == r"\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( \infty, \quad \infty\right )\right)"
     assert latex(lowergamma(x, y)) == r'\gamma\left(x, y\right)'
     assert latex(uppergamma(x, y)) == r'\Gamma\left(x, y\right)'
 
@@ -463,6 +465,10 @@ def test_latex_integrals():
     assert latex(Integral(x, x, y, (z, 0, 1))) == \
         r"\int_{0}^{1}\int\int x\, dx\, dy\, dz"
 
+    # issue sympy/sympy#10806
+    assert latex(Integral(x, x)**2) == r"\left(\int x\, dx\right)^{2}"
+    assert latex(Integral(z + x, z)) == r"\int \left(x + z\right)\, dz"
+
 
 def test_latex_sets():
     for s in (frozenset, set):
@@ -526,6 +532,10 @@ def test_latex_productset():
 def test_latex_Naturals():
     assert latex(S.Naturals) == r"\mathbb{N}"
     assert latex(S.Integers) == r"\mathbb{Z}"
+
+
+def test_latex_Rationals():
+    assert latex(S.Rationals) == r"\mathbb{Q}"
 
 
 def test_latex_ImageSet():

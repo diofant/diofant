@@ -435,6 +435,8 @@ def test_issue_7096():
 
 def test_issue_8462():
     assert gruntz(binomial(x, x/2), x) == oo
+    # issue sympy/sympy#10801
+    assert gruntz(16**x/(x*binomial(2*x, x)**2), x) == pi
 
 
 def test_omgissue_74():
@@ -459,3 +461,7 @@ def test_issue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))
     pytest.raises(NotImplementedError, lambda: gruntz(e, x))
     assert isinstance(e.limit(x, oo), Limit)
+
+
+def test_issue_10976():
+    assert gruntz(erf(m/x)/erf(1/x), x) == m

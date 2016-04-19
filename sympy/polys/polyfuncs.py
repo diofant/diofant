@@ -26,7 +26,6 @@ def symmetrize(F, *gens, **args):
     Examples
     ========
 
-    >>> from sympy.polys.polyfuncs import symmetrize
     >>> from sympy.abc import x, y
 
     >>> symmetrize(x**2 + y**2)
@@ -153,7 +152,6 @@ def horner(f, *gens, **args):
     Examples
     ========
 
-    >>> from sympy.polys.polyfuncs import horner
     >>> from sympy.abc import x, y, a, b, c, d, e
 
     >>> horner(9*x**4 + 8*x**3 + 7*x**2 + 6*x + 5)
@@ -204,7 +202,6 @@ def interpolate(data, x):
     Examples
     ========
 
-    >>> from sympy.polys.polyfuncs import interpolate
     >>> from sympy.abc import x
 
     A list is interpreted as though it were paired with a range starting
@@ -251,7 +248,6 @@ def viete(f, roots=None, *gens, **args):
     Examples
     ========
 
-    >>> from sympy.polys.polyfuncs import viete
     >>> from sympy import symbols
 
     >>> x, a, b, c, r1, r2 = symbols('x,a:c,r1:3')

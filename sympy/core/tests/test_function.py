@@ -1,3 +1,6 @@
+import inspect
+import sys
+
 import pytest
 
 from sympy import (Lambda, Symbol, Function, Derivative, Subs, sqrt,
@@ -157,6 +160,11 @@ def test_Lambda():
     assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
     pytest.raises(ValueError, lambda: Lambda(1, x))
     assert Lambda(x, 1)(1) is S.One
+
+    assert (2*x).canonical_variables == {}
+    assert Lambda(x, 2*x).canonical_variables == {x: Symbol('0_')}
+    x_ = Symbol('x_')
+    assert Lambda(x_, 2*x_).canonical_variables == {x_: Symbol('0__')}
 
 
 def test_IdentityFunction():
@@ -341,6 +349,12 @@ def test_extensibility_eval():
         def eval(cls, *args):
             return (0, 0, 0)
     assert MyFunc(0) == (0, 0, 0)
+
+
+@pytest.mark.skipif(sys.version_info < (3, 3), reason="Requires 3.3")
+def test_function_signature():
+    assert str(inspect.signature(sin)) == '(arg)'
+    assert str(inspect.signature(log)) == '(arg, base=None)'
 
 
 def test_function_non_commutative():

@@ -7,9 +7,7 @@ from sympy.sets import Interval
 
 @cacheit
 def _expand_delta(expr, index):
-    """
-    Expand the first Add containing a simple KroneckerDelta.
-    """
+    """Expand the first Add containing a simple KroneckerDelta. """
     if not expr.is_Mul:
         return expr
     delta = None
@@ -27,8 +25,7 @@ def _expand_delta(expr, index):
 
 @cacheit
 def _extract_delta(expr, index):
-    """
-    Extract a simple KroneckerDelta from the expression.
+    """Extract a simple KroneckerDelta from the expression.
 
     Returns the tuple ``(delta, newexpr)`` where:
 
@@ -42,8 +39,8 @@ def _extract_delta(expr, index):
     ========
 
     >>> from sympy import KroneckerDelta
-    >>> from sympy.concrete.delta import _extract_delta
     >>> from sympy.abc import x, y, i, j, k
+
     >>> _extract_delta(4*x*y*KroneckerDelta(i, j), i)
     (KroneckerDelta(i, j), 4*x*y)
     >>> _extract_delta(4*x*y*KroneckerDelta(i, j), k)
@@ -105,9 +102,7 @@ def _is_simple_delta(delta, index):
 
 @cacheit
 def _remove_multiple_delta(expr):
-    """
-    Evaluate products of KroneckerDelta's.
-    """
+    """Evaluate products of KroneckerDelta's. """
     from sympy.solvers import solve
     if expr.is_Add:
         return expr.func(*list(map(_remove_multiple_delta, expr.args)))
@@ -136,9 +131,7 @@ def _remove_multiple_delta(expr):
 
 @cacheit
 def _simplify_delta(expr):
-    """
-    Rewrite a KroneckerDelta's indices in its simplest form.
-    """
+    """Rewrite a KroneckerDelta's indices in its simplest form. """
     from sympy.solvers import solve
     if isinstance(expr, KroneckerDelta):
         try:
@@ -153,8 +146,7 @@ def _simplify_delta(expr):
 
 @cacheit
 def deltaproduct(f, limit):
-    """
-    Handle products containing a KroneckerDelta.
+    """Handle products containing a KroneckerDelta.
 
     See Also
     ========
@@ -218,8 +210,7 @@ def deltaproduct(f, limit):
 
 @cacheit
 def deltasummation(f, limit, no_piecewise=False):
-    """
-    Handle summations containing a KroneckerDelta.
+    """Handle summations containing a KroneckerDelta.
 
     The idea for summation is the following:
 
@@ -259,7 +250,6 @@ def deltasummation(f, limit, no_piecewise=False):
     >>> from sympy import oo, symbols
     >>> from sympy.abc import k
     >>> i, j = symbols('i, j', integer=True, finite=True)
-    >>> from sympy.concrete.delta import deltasummation
     >>> from sympy import KroneckerDelta, Piecewise
     >>> deltasummation(KroneckerDelta(i, k), (k, -oo, oo))
     1

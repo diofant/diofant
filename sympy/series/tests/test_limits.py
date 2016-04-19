@@ -455,3 +455,7 @@ def test_issue_9075():
 def test_issue_8634():
     p = Symbol('p', positive=True)
     assert limit(x**p, x, -oo) == oo*sign((-1)**p)
+
+
+def test_issue_9558():
+    assert limit(sin(x)**15, x, 0, '-') == 0  # should be fast

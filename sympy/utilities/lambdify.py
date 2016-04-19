@@ -61,6 +61,7 @@ MPMATH_TRANSLATIONS = {
     "Si": "si",
     "Ci": "ci",
     "ceiling": "ceil",
+    "Ynm": "spherharm",
 }
 
 NUMPY_TRANSLATIONS = {

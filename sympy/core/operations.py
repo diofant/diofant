@@ -2,7 +2,7 @@ from .sympify import _sympify, sympify
 from .basic import Basic, _aresame
 from .cache import cacheit
 from .compatibility import ordered
-from .logic import fuzzy_and
+from .logic import _fuzzy_group
 from .evaluate import global_evaluate
 
 
@@ -41,7 +41,7 @@ class AssocOp(Basic):
         return obj
 
     def _eval_is_commutative(self):
-        return fuzzy_and(a.is_commutative for a in args)
+        return _fuzzy_group(a.is_commutative for a in self.args)
 
     @classmethod
     def _from_args(cls, args):
@@ -99,19 +99,19 @@ class AssocOp(Basic):
 
     @classmethod
     def flatten(cls, seq):
-        """Return seq so that none of the elements are of type `cls`. This is
-        the vanilla routine that will be used if a class derived from AssocOp
-        does not define its own flatten routine."""
+        """Return seq so that none of the elements are of type `cls`.
+
+        This is the vanilla routine that will be used if a class derived
+        from AssocOp does not define its own flatten routine.
+        """
         # apply associativity, no commutativity property is used
         new_seq = []
-        while seq:
-            o = seq.pop()
+        for o in seq:
             if o.__class__ is cls:  # classes must match exactly
                 seq.extend(o.args)
             else:
                 new_seq.append(o)
-        # c_part, nc_part, order_symbols
-        return [], new_seq, None
+        return [], new_seq, None  # c_part, nc_part, order_symbols
 
     def _matches_commutative(self, expr, repl_dict={}):
         """
@@ -393,20 +393,22 @@ class LatticeOp(AssocOp):
 
     def __new__(cls, *args, **options):
         args = (_sympify(arg) for arg in args)
-        try:
-            _args = frozenset(cls._new_args_filter(args))
-        except ShortCircuit:
-            return sympify(cls.zero)
-        if not _args:
-            return sympify(cls.identity)
-        elif len(_args) == 1:
-            return set(_args).pop()
+
+        if options.pop('evaluate', global_evaluate[0]):
+            try:
+                _args = frozenset(cls._new_args_filter(args))
+            except ShortCircuit:
+                return sympify(cls.zero)
+            if not _args:
+                return sympify(cls.identity)
+            elif len(_args) == 1:
+                return set(_args).pop()
         else:
-            # XXX in almost every other case for __new__, *_args is
-            # passed along, but the expectation here is for _args
-            obj = super(AssocOp, cls).__new__(cls, _args)
-            obj._argset = _args
-            return obj
+            _args = frozenset(args)
+
+        obj = super(AssocOp, cls).__new__(cls, _args)
+        obj._argset = _args
+        return obj
 
     @classmethod
     def _new_args_filter(cls, arg_sequence, call_cls=None):
@@ -448,7 +450,3 @@ class LatticeOp(AssocOp):
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
-
-    @staticmethod
-    def _compare_pretty(a, b):
-        return (str(a) > str(b)) - (str(a) < str(b))

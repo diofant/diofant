@@ -583,8 +583,8 @@ class LatexPrinter(Printer):
 
                 symbols.insert(0, r"\, d%s" % self._print(symbol))
 
-        return r"%s %s%s" % (tex,
-            str(self._print(expr.function)), "".join(symbols))
+        tmpl = r"%s \left(%s\right)%s" if expr.function.is_Add else r"%s %s%s"
+        return tmpl % (tex, str(self._print(expr.function)), "".join(symbols))
 
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args
@@ -783,13 +783,13 @@ class LatexPrinter(Printer):
 
     def _print_LogOp(self, args, char):
         arg = args[0]
-        if arg.is_Boolean and not arg.is_Not:
+        if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
             tex = r"\left(%s\right)" % self._print(arg)
         else:
             tex = r"%s" % self._print(arg)
 
         for arg in args[1:]:
-            if arg.is_Boolean and not arg.is_Not:
+            if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
                 tex += r" %s \left(%s\right)" % (char, self._print(arg))
             else:
                 tex += r" %s %s" % (char, self._print(arg))
@@ -1216,7 +1216,7 @@ class LatexPrinter(Printer):
                 s += self._print(expr.variables)
             elif len(expr.variables):
                 s += self._print(expr.variables[0])
-            s += r'\rightarrow'
+            s += r'\rightarrow{}'
             if len(expr.point) > 1:
                 s += self._print(expr.point)
             else:
@@ -1230,6 +1230,7 @@ class LatexPrinter(Printer):
         return self._deal_with_super_sub(expr.name) if \
             '\\' not in expr.name else expr.name
     _print_Wild = _print_Symbol
+    _print_Dummy = _print_Symbol
     _print_RandomSymbol = _print_Symbol
     _print_MatrixSymbol = _print_Symbol
 
@@ -1524,6 +1525,9 @@ class LatexPrinter(Printer):
 
     def _print_Reals(self, i):
         return r"\mathbb{R}"
+
+    def _print_Rationals(self, i):
+        return r"\mathbb{Q}"
 
     def _print_ImageSet(self, s):
         return r"\left\{%s\; |\; %s \in %s\right\}" % (

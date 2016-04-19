@@ -40,7 +40,6 @@ def ring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> from sympy.polys.rings import ring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.orderings import lex
 
@@ -70,7 +69,6 @@ def xring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> from sympy.polys.rings import xring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.orderings import lex
 
@@ -100,7 +98,6 @@ def vring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> from sympy.polys.rings import vring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.orderings import lex
 
@@ -131,7 +128,6 @@ def sring(exprs, *symbols, **options):
     ========
 
     >>> from sympy.core import symbols
-    >>> from sympy.polys.rings import sring
     >>> from sympy.polys.domains import ZZ
     >>> from sympy.polys.orderings import lex
 
@@ -360,10 +356,12 @@ class PolyRing(DefaultPrinting, IPolys):
                 return reduce(add, list(map(_rebuild, expr.args)))
             elif expr.is_Mul:
                 return reduce(mul, list(map(_rebuild, expr.args)))
-            elif expr.is_Pow and expr.exp.is_Integer and expr.exp >= 0:
-                return _rebuild(expr.base)**int(expr.exp)
-            else:
-                return domain.convert(expr)
+            elif expr.is_Pow:
+                c, a = expr.exp.as_coeff_Mul(rational=True)
+                if c.is_Integer and c > 1:
+                    return _rebuild(expr.base**a)**int(c)
+
+            return domain.convert(expr)
 
         return _rebuild(sympify(expr))
 
@@ -452,14 +450,12 @@ class PolyRing(DefaultPrinting, IPolys):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.printing import pprint
 
         >>> R, x = ring("x", ZZ)
         >>> R.add([ x**2 + 2*i + 3 for i in range(4) ])
         4*x**2 + 24
-        >>> pprint(_.factor_list())
+        >>> _.factor_list()
         (4, [(x**2 + 6, 1)])
         """
         p = self.zero
@@ -479,14 +475,12 @@ class PolyRing(DefaultPrinting, IPolys):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.printing import pprint
 
         >>> R, x = ring("x", ZZ)
         >>> R.mul([ x**2 + 2*i + 3 for i in range(4) ])
         x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
-        >>> pprint(_.factor_list())
+        >>> _.factor_list()
         (1, [(x**2 + 3, 1), (x**2 + 5, 1), (x**2 + 7, 1), (x**2 + 9, 1)])
         """
         p = self.one
@@ -550,7 +544,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> R, x, y = ring('x, y', ZZ)
         >>> p = (x + y)**2
@@ -617,7 +610,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p1 = (x + y)**2 + (x - y)**2
@@ -875,7 +867,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> (x + y)**2 + (x - y)**2
@@ -948,7 +939,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p1 = x + y**2
@@ -1001,7 +991,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y
@@ -1027,7 +1016,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import QQ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', QQ)
         >>> p1 = x + y
@@ -1075,7 +1063,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y
@@ -1103,7 +1090,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ========
 
         >>> from sympy.polys.domains import ZZ
-        >>> from sympy.polys.rings import ring
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y**2
@@ -1187,7 +1173,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
@@ -1344,7 +1329,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
@@ -1474,7 +1458,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
@@ -1517,7 +1500,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y, z = ring('x, y, z', ZZ)
@@ -1598,7 +1580,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y, z = ring('x, y, z', ZZ)
@@ -1626,17 +1607,16 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y, z = ring("x,y,z", ZZ)
         >>> f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
-        >>> print(f.coeff(x**2*y))
+        >>> f.coeff(x**2*y)
         3
-        >>> print(f.coeff(x*y))
+        >>> f.coeff(x*y)
         0
-        >>> print(f.coeff(1))
+        >>> f.coeff(1)
         23
         """
         if element == 1:
@@ -1673,7 +1653,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
@@ -1700,7 +1679,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
@@ -1735,17 +1713,15 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
         >>> from sympy.polys.orderings import lex, grlex
-        >>> from sympy.printing import pprint
 
         >>> _, x, y = ring("x, y", ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
-        >>> pprint(f.coeffs())
+        >>> f.coeffs()
         [2, 1]
-        >>> pprint(f.coeffs(grlex))
+        >>> f.coeffs(grlex)
         [1, 2]
         """
         return [ coeff for _, coeff in self.terms(order) ]
@@ -1761,7 +1737,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
         >>> from sympy.polys.orderings import lex, grlex
 
@@ -1786,17 +1761,15 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
         >>> from sympy.polys.orderings import lex, grlex
-        >>> from sympy.printing import pprint
 
         >>> _, x, y = ring("x, y", ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
-        >>> pprint(f.terms())
+        >>> f.terms()
         [((2, 3), 2), ((1, 7), 1)]
-        >>> pprint(f.terms(grlex))
+        >>> f.terms(grlex)
         [((1, 7), 1), ((2, 3), 2)]
         """
         return self._sorted(self.items(), order)
@@ -1833,7 +1806,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring('x, y', ZZ)
@@ -2184,7 +2156,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         Examples
         ========
 
-        >>> from sympy.polys.rings import ring
         >>> from sympy.polys.domains import ZZ
 
         >>> _, x, y = ring("x,y", ZZ)

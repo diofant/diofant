@@ -68,6 +68,10 @@ def test_subs():
     pytest.raises(ValueError, lambda: b21.subs(b1, b2, b3))
 
 
+def test_rewrite():
+    assert sin(1).rewrite() == sin(1)
+
+
 def test_atoms():
     assert b21.atoms() == set()
 

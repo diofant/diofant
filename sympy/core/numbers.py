@@ -275,8 +275,6 @@ class Number(AtomicExpr):
                 return val
             else:
                 raise ValueError('String "%s" does not denote a Number' % obj)
-            if isinstance(obj, Number):
-                return obj
         msg = "expected str|int|float|Decimal|Number object but got %r"
         raise TypeError(msg % type(obj).__name__)
 
@@ -406,10 +404,6 @@ class Number(AtomicExpr):
 
     def __eq__(self, other):
         raise NotImplementedError('%s needs .__eq__() method' %
-            (self.__class__.__name__))
-
-    def __ne__(self, other):
-        raise NotImplementedError('%s needs .__ne__() method' %
             (self.__class__.__name__))
 
     def __lt__(self, other):
@@ -960,9 +954,6 @@ class Float(Number):
             return bool(mlib.mpf_eq(self._mpf_, ompf))
         return False    # Float != non-Number
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __gt__(self, other):
         try:
             other = _sympify(other)
@@ -1404,9 +1395,6 @@ class Rational(Number):
                 return mlib.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
         return False
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __gt__(self, other):
         try:
             other = _sympify(other)
@@ -1700,9 +1688,6 @@ class Integer(Rational):
         elif isinstance(other, Integer):
             return (self.p == other.p)
         return Rational.__eq__(self, other)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __gt__(self, other):
         try:
@@ -2391,9 +2376,6 @@ class Infinity(Number, metaclass=Singleton):
     def __eq__(self, other):
         return other is S.Infinity
 
-    def __ne__(self, other):
-        return other is not S.Infinity
-
     def __lt__(self, other):
         try:
             other = _sympify(other)
@@ -2596,9 +2578,6 @@ class NegativeInfinity(Number, metaclass=Singleton):
     def __eq__(self, other):
         return other is S.NegativeInfinity
 
-    def __ne__(self, other):
-        return other is not S.NegativeInfinity
-
     def __lt__(self, other):
         try:
             other = _sympify(other)
@@ -2744,9 +2723,6 @@ class NaN(Number, metaclass=Singleton):
         # NaN is structurally equal to another NaN
         return other is S.NaN
 
-    def __ne__(self, other):
-        return other is not S.NaN
-
     def _eval_Eq(self, other):
         # NaN is not mathematically equal to anything, even NaN
         return S.false
@@ -2837,11 +2813,11 @@ class NumberSymbol(AtomicExpr):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def approximation(self, number_cls):
-        """ Return an interval with number_cls endpoints
-        that contains the value of NumberSymbol.
-        If not implemented, then return None.
+    def approximation_interval(self, number_cls):
+        """ Return an interval with number_cls endpoints that contains the
+        value of NumberSymbol.  If not implemented, then return None.
         """
+        return  # pragma: no cover
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
@@ -2857,9 +2833,6 @@ class NumberSymbol(AtomicExpr):
             return False
 
         return False    # NumberSymbol != non-(Number|self)
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __lt__(self, other):
         try:
@@ -2918,8 +2891,7 @@ class NumberSymbol(AtomicExpr):
             return Expr.__ge__(self, other)
 
     def __int__(self):
-        # subclass with appropriate return value
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def __hash__(self):
         return super(NumberSymbol, self).__hash__()
@@ -2974,20 +2946,12 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return (Integer(2), Integer(3))
-        elif issubclass(number_cls, Rational):
-            pass
 
     def _eval_power(self, arg):
         from sympy.functions.elementary.exponential import log
         from sympy import Add, Mul, Pow
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
-                return S.One
-            elif arg is S.One:
-                return S.Exp1
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero
@@ -3181,8 +3145,6 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return (S.One, Rational(2))
-        elif issubclass(number_cls, Rational):
-            pass
 
 
 class EulerGamma(NumberSymbol, metaclass=Singleton):
