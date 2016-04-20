@@ -5,7 +5,7 @@ efficient unit propagation.
 
 References:
   - http://en.wikipedia.org/wiki/DPLL_algorithm
-  - http://bioinformatics.louisville.edu/ouyang/MingOuyangThesis.pdf
+  - https://www.researchgate.net/publication/242384772
 """
 
 from sympy import default_sort_key
