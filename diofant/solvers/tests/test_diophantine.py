@@ -3,7 +3,7 @@ from random import randint
 import pytest
 
 from diofant import (Add, Eq, Integer, Matrix, Mul, Rational, factorint, oo,
-                     pi, simplify, symbols)
+                     pi, powsimp, symbols)
 from diofant.abc import a, b, c, d, e
 from diofant.core.function import _mexpand
 from diofant.functions.elementary.trigonometric import sin
@@ -40,6 +40,10 @@ n1, p, q, x, y, z, w, t, u, v, X, Y, Z = symbols("n1, p, q, x, y, z, w, t, u, v,
 t_0, t_1, t_2, t_3, t_4, t_5, t_6 = symbols("t_:7", integer=True)
 m1, m2, m3 = symbols('m1:4', integer=True)
 n1 = symbols('n1', integer=True)
+
+
+def diop_simplify(eq):
+    return _mexpand(powsimp(_mexpand(eq)))
 
 
 def test_input_format():
@@ -160,7 +164,10 @@ def test_quadratic_non_perfect_square():
 
 
 def test_sympyissue_9106():
-    assert check_integrality(-48 - 2*x*(3*x - 1) + y*(3*y - 1))
+    eq = -48 - 2*x*(3*x - 1) + y*(3*y - 1)
+    v = (x, y)
+    for sol in diophantine(eq):
+        assert not diop_simplify(eq.xreplace(dict(zip(v, sol))))
 
 
 @pytest.mark.slow
@@ -285,7 +292,7 @@ def is_pell_transformation_ok(eq):
     A, B = transformation_to_DN(eq)
     u = (A*Matrix([X, Y]) + B)[0]
     v = (A*Matrix([X, Y]) + B)[1]
-    simplified = _mexpand(eq.subs({x: u, y: v}))
+    simplified = diop_simplify(eq.subs({x: u, y: v}))
 
     coeff = {val: key for key, val in (t.as_independent(X, Y)
                                        for t in simplified.args)}
@@ -352,7 +359,7 @@ def test_diop_ternary_quadratic_normal():
 def is_normal_transformation_ok(eq):
     A = transformation_to_normal(eq)
     X, Y, Z = A*Matrix([x, y, z])
-    simplified = _mexpand(eq.subs({x: X, y: Y, z: Z}))
+    simplified = diop_simplify(eq.subs({x: X, y: Y, z: Z}))
 
     coeff = {val: key for key, val in (t.as_independent(X, Y, Z)
                                        for t in simplified.args)}
@@ -657,31 +664,10 @@ def check_solutions(eq):
     while s:
         solution = s.pop()
         for f in factors:
-            if simplify(_mexpand(f.subs(zip(var, solution)))) == 0:
+            if diop_simplify(f.subs(zip(var, solution))) == 0:
                 break
         else:
             return False
-    return True
-
-
-def check_integrality(eq):
-    """
-    Check that the solutions returned by diophantine() are integers.
-    This should be seldom needed except for general quadratic
-    equations which are solved with rational transformations.
-    """
-    def _check_values(x):
-        """ Check a number of values. """
-        for i in range(-4, 4):
-            if not isinstance(simplify(x.subs(t, i)), Integer):
-                return False
-        return True
-
-    for soln in diophantine(eq, param=t):
-        for x in soln:
-            if not _check_values(x):
-                return False
-
     return True
 
 
