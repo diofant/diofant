@@ -9,7 +9,7 @@
     [-1]
 """
 from .solvers import (solve, solve_linear_system, solve_undetermined_coeffs,
-                      nsolve, solve_linear, checksol, det_quick, inv_quick)
+                      nsolve, solve_linear, checksol)
 
 from .recurr import rsolve, rsolve_poly, rsolve_ratio, rsolve_hyper
 
