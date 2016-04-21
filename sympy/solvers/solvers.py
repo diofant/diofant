@@ -51,11 +51,6 @@ from sympy.solvers.polysys import solve_poly_system
 from sympy.solvers.inequalities import reduce_inequalities
 
 
-def _ispow(e):
-    """Return True if e is a Pow or is exp."""
-    return isinstance(e, Expr) and e.is_Pow
-
-
 def _simple_dens(f, symbols):
     # when checking if a denominator is zero, we can just check the
     # base of powers with nonzero exponents since if the base is zero
@@ -2150,103 +2145,6 @@ def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
         return  # no solutions
 
 
-def det_perm(M):
-    """Return the det(``M``) by using permutations to select factors.
-    For size larger than 8 the number of permutations becomes prohibitively
-    large, or if there are no symbols in the matrix, it is better to use the
-    standard determinant routines, e.g. `M.det()`.
-
-    See Also
-    ========
-    det_minor
-    det_quick
-    """
-    args = []
-    s = True
-    n = M.rows
-    try:
-        list = M._mat
-    except AttributeError:
-        list = flatten(M.tolist())
-    for perm in generate_bell(n):
-        fac = []
-        idx = 0
-        for j in perm:
-            fac.append(list[idx + j])
-            idx += n
-        term = Mul(*fac)  # disaster with unevaluated Mul -- takes forever for n=7
-        args.append(term if s else -term)
-        s = not s
-    return Add(*args)
-
-
-def det_minor(M):
-    """Return the ``det(M)`` computed from minors without
-    introducing new nesting in products.
-
-    See Also
-    ========
-    det_perm
-    det_quick
-    """
-    n = M.rows
-    if n == 2:
-        return M[0, 0]*M[1, 1] - M[1, 0]*M[0, 1]
-    else:
-        return sum((1, -1)[i % 2]*Add(*[M[0, i]*d for d in
-            Add.make_args(det_minor(M.minorMatrix(0, i)))])
-            if M[0, i] else S.Zero for i in range(n))
-
-
-def det_quick(M, method=None):
-    """Return ``det(M)`` assuming that either
-    there are lots of zeros or the size of the matrix
-    is small. If this assumption is not met, then the normal
-    Matrix.det function will be used with method = ``method``.
-
-    See Also
-    ========
-    det_minor
-    det_perm
-    """
-    if any(i.has(Symbol) for i in M):
-        if M.rows < 8 and all(i.has(Symbol) for i in M):
-            return det_perm(M)
-        return det_minor(M)
-    else:
-        return M.det(method=method) if method else M.det()
-
-
-def inv_quick(M):
-    """Return the inverse of ``M``, assuming that either
-    there are lots of zeros or the size of the matrix
-    is small.
-    """
-    from sympy.matrices import zeros
-    if any(i.has(Symbol) for i in M):
-        if all(i.has(Symbol) for i in M):
-            def det(_):
-                return det_perm(_)
-        else:
-            def det(_):
-                return det_minor(_)
-    else:
-        return M.inv()
-    n = M.rows
-    d = det(M)
-    if d is S.Zero:
-        raise ValueError("Matrix det == 0; not invertible.")
-    ret = zeros(n)
-    s1 = -1
-    for i in range(n):
-        s = s1 = -s1
-        for j in range(n):
-            di = det(M.minorMatrix(i, j))
-            ret[j, i] = s*di/d
-            s = -s
-    return ret
-
-
 # these are functions that have multiple inverse values per period
 multi_inverses = {
     sin: lambda x: (asin(x), S.Pi - asin(x)),
@@ -2650,7 +2548,7 @@ def _invert(eq, *symbols, **kwargs):
             a, b = ordered(lhs.args)
             ai, ad = a.as_independent(*symbols)
             bi, bd = b.as_independent(*symbols)
-            if any(_ispow(i) for i in (ad, bd)):
+            if any(i.is_Pow for i in (ad, bd)):
                 a_base, a_exp = ad.as_base_exp()
                 b_base, b_exp = bd.as_base_exp()
                 if a_base == b_base:
@@ -2675,7 +2573,7 @@ def _invert(eq, *symbols, **kwargs):
                         # f(x, x + y) == f(2, 3) -> x == 2 or x == 3 - y
                         raise NotImplementedError('equal function with more than 1 argument')
 
-        elif lhs.is_Mul and any(_ispow(a) for a in lhs.args):
+        elif lhs.is_Mul and any(a.is_Pow for a in lhs.args):
             lhs = powsimp(powdenest(lhs))
 
         if lhs.is_Function:
