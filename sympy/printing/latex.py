@@ -167,7 +167,8 @@ class LatexPrinter(Printer):
         """
         return not ((expr.is_Integer and expr.is_nonnegative)
                     or (expr.is_Atom and (expr is not S.NegativeOne
-                                          and expr.is_Rational is False)))
+                                          and expr.is_Rational is False
+                                          and not expr.is_Float)))
 
     def _needs_function_brackets(self, expr):
         """

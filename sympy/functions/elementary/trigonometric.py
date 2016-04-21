@@ -1964,7 +1964,9 @@ class acot(InverseTrigonometricFunction):
     """
     The inverse cotangent function.
 
-    Returns the arc cotangent of x (measured in radians).
+    Returns the arc cotangent of x (measured in radians).  This
+    function has a branch cut discontinuity in the complex plane
+    running from `-i` to `i`.
 
     See Also
     ========
@@ -1985,9 +1987,9 @@ class acot(InverseTrigonometricFunction):
     References
     ==========
 
-    .. [1] http://en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] http://dlmf.nist.gov/4.23
-    .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcCot
+    .. [1] http://dlmf.nist.gov/4.23
+    .. [2] http://functions.wolfram.com/ElementaryFunctions/ArcCot
+    .. [3] http://en.wikipedia.org/wiki/Inverse_trigonometric_functions
     """
 
     def fdiff(self, argindex=1):
