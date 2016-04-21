@@ -276,9 +276,6 @@ def _create_lookup_table(table):
 # First some helper functions.
 ####################################################################
 
-from sympy.utilities.timeutils import timethis
-timeit = timethis('meijerg')
-
 
 def _mytype(f, x):
     """ Create a hashable entity describing the type of f. """
@@ -1407,7 +1404,6 @@ _lookup_table = None
 
 
 @cacheit
-@timeit
 def _rewrite_single(f, x, recursive=True):
     """
     Try to rewrite f as a sum of single G functions of the form
@@ -1712,7 +1708,6 @@ def _meijerint_indefinite_1(f, x):
     return Piecewise((res, _my_unpolarify(cond)), (Integral(f, x), True))
 
 
-@timeit
 def meijerint_definite(f, x, a, b):
     """
     Integrate ``f`` over the interval [``a``, ``b``], by rewriting it as a product
@@ -1933,7 +1928,6 @@ def _my_unpolarify(f):
     return _eval_cond(unpolarify(f))
 
 
-@timeit
 def _meijerint_definite_4(f, x, only_double=False):
     """
     Try to integrate f dx from zero to infinity.

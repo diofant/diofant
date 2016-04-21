@@ -166,13 +166,7 @@ class Ynm(Function):
         return rv.subs(sqrt(-cos(theta)**2 + 1), sin(theta))
 
     def fdiff(self, argindex=4):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
-            # Diff wrt m
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 3:
+        if argindex == 3:
             # Diff wrt theta
             n, m, theta, phi = self.args
             return (m * cot(theta) * Ynm(n, m, theta, phi) +
@@ -181,13 +175,8 @@ class Ynm(Function):
             # Diff wrt phi
             n, m, theta, phi = self.args
             return I * m * Ynm(n, m, theta, phi)
-        else:
+        else:  # diff wrt n, m, etc
             raise ArgumentIndexError(self, argindex)
-
-    def _eval_rewrite_as_polynomial(self, n, m, theta, phi):
-        # TODO: Make sure n \in N
-        # TODO: Assert |m| <= n ortherwise we should return 0
-        return self.expand(func=True)
 
     def _eval_rewrite_as_sin(self, n, m, theta, phi):
         return self.rewrite(cos)
@@ -215,20 +204,6 @@ class Ynm(Function):
         im = (sqrt((2*n + 1)/(4*pi) * factorial(n - m)/factorial(n + m)) *
               sin(m*phi) * assoc_legendre(n, m, cos(theta)))
         return (re, im)
-
-    def _eval_evalf(self, prec):
-        # Note: works without this function by just calling
-        #       mpmath for Legendre polynomials. But using
-        #       the dedicated function directly is cleaner.
-        from mpmath import mp, workprec
-        from sympy import Expr
-        n = self.args[0]._to_mpmath(prec)
-        m = self.args[1]._to_mpmath(prec)
-        theta = self.args[2]._to_mpmath(prec)
-        phi = self.args[3]._to_mpmath(prec)
-        with workprec(prec):
-            res = mp.spherharm(n, m, theta, phi)
-        return Expr._from_mpmath(res, prec)
 
 
 def Ynm_c(n, m, theta, phi):
