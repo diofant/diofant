@@ -1,5 +1,5 @@
 from ..core import (Add, Eq, Integer, Mul, Rational, S, Symbol, factor_terms,
-                    igcd, ilcm, integer_nthroot, oo, symbols)
+                    igcd, ilcm, integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
 from ..core.function import _mexpand
@@ -191,7 +191,7 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
     if not sols and eq.subs(zip(var, null)) is S.Zero:
         sols.add(null)
 
-    return sols
+    return {sympify(i) for i in sols}
 
 
 def merge_solution(var, var_t, solution):
@@ -215,7 +215,7 @@ def merge_solution(var, var_t, solution):
     params = numbered_symbols("n", integer=True, start=1)
     for v in var:
         if v in var_t:
-            sol.append(next(solution))  # use strict sympify?
+            sol.append(next(solution))
         else:
             sol.append(next(params))
 
