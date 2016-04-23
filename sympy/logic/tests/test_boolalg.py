@@ -3,14 +3,14 @@ import itertools
 import pytest
 
 from sympy import (symbols, Dummy, simplify, Equality, S, Interval,
-                   oo, EmptySet, Integer)
+                   oo, EmptySet, Integer, Unequality)
 from sympy.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
                                  Nand, Nor, Not, Or, POSform, SOPform, Xor,
                                  conjuncts, disjuncts, distribute_or_over_and,
                                  distribute_and_over_or, eliminate_implications,
                                  is_nnf, is_cnf, is_dnf, simplify_logic, to_nnf,
                                  to_cnf, to_dnf, to_int_repr, bool_map, true,
-                                 false, BooleanAtom, is_literal)
+                                 false, BooleanAtom, is_literal, BooleanFunction)
 
 
 A, B, C, D = symbols('A,B,C,D')
@@ -108,6 +108,7 @@ def test_Not():
     assert Not(0) is true
     assert Not(1) is false
     assert Not(2) is false
+    assert Not(Unequality(A, B)) == Equality(A, B)
 
 
 def test_Nand():
@@ -366,6 +367,13 @@ def test_to_nnf():
     assert to_nnf(true) is true
     assert to_nnf(false) is false
     assert to_nnf(A) == A
+    assert (~A).to_nnf() == ~A
+
+    class Boo(BooleanFunction):
+        pass
+
+    pytest.raises(ValueError, lambda: to_nnf(~Boo(A)))
+
     assert to_nnf(A | ~A | B) is true
     assert to_nnf(A & ~A & B) is false
     assert to_nnf(A >> B) == ~A | B
@@ -401,7 +409,8 @@ def test_to_cnf():
 
 
 def test_to_dnf():
-
+    assert to_dnf(true) == true
+    assert to_dnf((~B) & (~C)) == (~B) & (~C)
     assert to_dnf(~(B | C)) == And(Not(B), Not(C))
     assert to_dnf(A & (B | C)) == Or(And(A, B), And(A, C))
     assert to_dnf(A >> B) == (~A) | B
@@ -461,6 +470,8 @@ def test_is_dnf():
 
 def test_ITE():
     A, B, C = map(Boolean, symbols('A,B,C'))
+
+    pytest.raises(ValueError, lambda: ITE(A, B))
 
     assert ITE(True, False, True) is false
     assert ITE(True, True, False) is true
@@ -645,7 +656,7 @@ def test_bool_as_set():
     assert And(x <= 2, x >= -2).as_set() == Interval(-2, 2)
     assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2, True) +
                                             Interval(2, oo, False, True))
-    assert Not(x > 2).as_set() == Interval(-oo, 2, True)
+    assert Not(x > 2, evaluate=False).as_set() == Interval(-oo, 2, True)
     assert true.as_set() == S.UniversalSet
     assert false.as_set() == EmptySet()
 
