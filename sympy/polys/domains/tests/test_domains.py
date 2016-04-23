@@ -5,6 +5,7 @@ import pytest
 from sympy import sqrt, sin, oo, Poly, Float, Integer, Rational
 from sympy.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
 from sympy.polys.domains.domainelement import DomainElement
+from sympy.polys.domains.pythonrational import PythonRational
 from sympy.polys.domains.realfield import RealField
 from sympy.polys.rings import ring
 from sympy.polys.fields import field
@@ -483,6 +484,13 @@ def test_Domain_convert():
     R, x = ring("x", ZZ)
     assert ZZ.convert(x - x) == 0
     assert ZZ.convert(x - x, R.to_domain()) == 0
+
+    F3 = FF(3)
+    assert F3.convert(Float(2.0)) == F3.dtype(2)
+    assert F3.convert(PythonRational(2, 1)) == F3.dtype(2)
+    pytest.raises(CoercionFailed, lambda: F3.convert(PythonRational(1, 2)))
+    assert F3.convert(2.0) == F3.dtype(2)
+    pytest.raises(CoercionFailed, lambda: F3.convert(2.1))
 
 
 def test_PolynomialRing__init():
