@@ -187,3 +187,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8943` diophantine misses trivial solution
 * :sympyissue:`11016` diop: sum of squares needs to try more options to satisfy conditions
 * :sympyissue:`9538` diophantine() doesn't let you specify the variable order
+* :sympyissue:`11049` diop: recursion error

@@ -502,6 +502,7 @@ def test_diophantine():
     assert diophantine(x**2 + y**2 + z**2 - 14) == {(1, 2, 3)}
     assert diophantine(x**2 + 15*x/14 - 3) == set()
 
+    # test issue sympy/sympy#11049
     eq = 92*x**2 - 99*y**2 - z**2
     coeff = eq.as_coefficients_dict()
     assert _diop_ternary_quadratic_normal((x, y, z), coeff) == (9, 7, 51)
