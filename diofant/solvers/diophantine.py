@@ -2163,6 +2163,9 @@ def ldescent(A, B):
     if B == 1:
         return 1, 0, 1
 
+    if B == -1:  # and A == -1
+        return
+
     r = sqrt_mod(A, B)
 
     Q = (r**2 - A) // B
