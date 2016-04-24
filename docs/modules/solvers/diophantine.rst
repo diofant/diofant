@@ -329,20 +329,24 @@ References
 User Functions
 --------------
 
-These are functions that are imported into the global namespace with ``from
-diofant import *``. These functions are intended for use by ordinary users of Diofant.
+These functions are imported into the global namespace
+with ``from diofant import *``.
 
 diophantine
 ^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.diophantine
 
-diop_solve
-^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.diop_solve
-
 classify_diop
 ^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.classify_diop
+
+Internal Functions
+------------------
+These functions are intended for internal use in the Diophantine module.
+
+diop_solve
+^^^^^^^^^^
+.. autofunction:: diofant.solvers.diophantine.diop_solve
 
 diop_linear
 ^^^^^^^^^^^
@@ -423,10 +427,6 @@ power_representation
 sum_of_squares
 ^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.sum_of_squares
-
-Internal Functions
-------------------
-These functions are intended for internal use in the Diophantine module.
 
 merge_solution
 ^^^^^^^^^^^^^^
