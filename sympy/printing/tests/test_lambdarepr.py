@@ -1,15 +1,19 @@
 import pytest
 
-from sympy import symbols, sin, Matrix, Interval, Piecewise
+from sympy import sin, Matrix, Interval, Piecewise, And, Or, Not, false
 from sympy.printing.lambdarepr import lambdarepr
 
-x, y, z = symbols("x,y,z")
+from sympy.abc import x, y, z
 
 
 def test_basic():
     assert lambdarepr(x*y) == "x*y"
     assert lambdarepr(x + y) in ["y + x", "x + y"]
     assert lambdarepr(x**y) == "x**y"
+    assert lambdarepr(And(x, y)) == "((x) and (y))"
+    assert lambdarepr(Or(x, y)) == "((x) or (y))"
+    assert lambdarepr(Not(x)) == "(not (x))"
+    assert lambdarepr(false) == "False"
 
 
 def test_matrix():

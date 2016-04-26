@@ -1334,6 +1334,10 @@ def test_Pow():
     e = Pow(2, 2, evaluate=False)
     assert latex(e)  == r'2^{2}'
 
+    # issue sympy/sympy#11011
+    assert (latex(Float('1.453e4500')**x) ==
+            r"\left(1.453 \cdot 10^{4500}\right)^{x}")
+
 
 def test_issue_7180():
     assert latex(Equivalent(x, y)) == r"x \equiv y"

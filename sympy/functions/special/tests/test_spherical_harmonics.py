@@ -1,4 +1,8 @@
-from sympy import Symbol, sqrt, pi, sin, cos, cot, exp, I, diff, conjugate
+import pytest
+
+from sympy import (Symbol, sqrt, pi, sin, cos, cot, exp, I,
+                   diff, conjugate, factorial, assoc_legendre)
+from sympy.core.function import ArgumentIndexError
 from sympy.functions.special.spherical_harmonics import Ynm, Znm, Ynm_c
 
 
@@ -23,12 +27,23 @@ def test_Ynm():
     assert diff(Ynm(n, m, th, ph), th) == (m*cot(th)*Ynm(n, m, th, ph)
                                            + sqrt((-m + n)*(m + n + 1))*exp(-I*ph)*Ynm(n, m + 1, th, ph))
     assert diff(Ynm(n, m, th, ph), ph) == I*m*Ynm(n, m, th, ph)
+    pytest.raises(ArgumentIndexError, lambda: Ynm(n, m, th, ph).fdiff(1))
 
     assert conjugate(Ynm(n, m, th, ph)) == (-1)**(2*m)*exp(-2*I*m*ph)*Ynm(n, m, th, ph)
 
     assert Ynm(n, m, -th, ph) == Ynm(n, m, th, ph)
     assert Ynm(n, m, th, -ph) == exp(-2*I*m*ph)*Ynm(n, m, th, ph)
     assert Ynm(n, -m, th, ph) == (-1)**m*exp(-2*I*m*ph)*Ynm(n, m, th, ph)
+
+    assert (Ynm(n, m, th, ph).rewrite(sin) ==
+            Ynm(n, m, th, ph).rewrite(cos) ==
+            exp(I*m*ph)*sqrt((2*n + 1)*factorial(-m + n)/factorial(m + n)) *
+            assoc_legendre(n, m, cos(th))/(2*sqrt(pi)))
+    assert (Ynm(n, m, th, ph).as_real_imag() ==
+            (sqrt((2*n + 1)*factorial(-m + n)/factorial(m + n))*cos(m*ph) *
+             assoc_legendre(n, m, cos(th))/(2*sqrt(pi)),
+             sqrt((2*n + 1)*factorial(-m + n)/factorial(m + n))*sin(m*ph) *
+             assoc_legendre(n, m, cos(th))/(2*sqrt(pi))))
 
 
 def test_Ynm_c():
