@@ -10,10 +10,8 @@ from sympy import (
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
     root, simplify, atan2, arg, SparseMatrix, Tuple, nsolve, oo)
 from sympy.core.function import nfloat
-from sympy.solvers import (solve_linear_system, solve_linear_system_LU,
-                           solve_undetermined_coeffs)
+from sympy.solvers import solve_linear_system, solve_undetermined_coeffs
 from sympy.solvers.solvers import (_invert, unrad, checksol, posify,
-                                   _ispow, det_quick, det_perm, det_minor,
                                    _simple_dens)
 from sympy.polys.rootoftools import RootOf
 from sympy.utilities.randtest import verify_numerically as tn
@@ -318,15 +316,6 @@ def test_linear_system_function():
     assert solve([a(0, 0) + a(0, 1) + a(1, 0) + a(1, 1), -a(1, 0) - a(1, 1)],
         a(0, 0), a(0, 1), a(1, 0), a(1, 1)) == {a(1, 0): -a(1, 1), a(0, 0): -a(0, 1)}
 
-
-def test_linear_systemLU():
-    n = Symbol('n')
-
-    M = Matrix([[1, 2, 0, 1], [1, 3, 2*n, 1], [4, -1, n**2, 1]])
-
-    assert solve_linear_system_LU(M, [x, y, z]) == {z: -3/(n**2 + 18*n),
-                                                  x: 1 - 12*n/(n**2 + 18*n),
-                                                  y: 6*n/(n**2 + 18*n)}
 
 # Note: multiple solutions exist for some of these equations, so the tests
 # should be expected to break if the implementation of the solver changes
@@ -1131,8 +1120,9 @@ def test_issue_5849():
         ans[0]) for ei in e] == [0, 0, I3 - I6, -I3 + I6, 0, 0, 0, 0, 0]
 
 
+@pytest.mark.xfail
 def test_issue_5849_matrix():
-    '''Same as test_2750 but solved with the matrix solver.'''
+    '''Same as test_issue_5849 but solved with the matrix solver.'''
     I1, I2, I3, I4, I5, I6 = symbols('I1:7')
     dI1, dI4, dQ2, dQ4, Q2, Q4 = symbols('dI1,dI4,dQ2,dQ4,Q2,Q4')
 
@@ -1388,12 +1378,6 @@ def test_issue_6605():
     assert solve(5**(x/2) - 2**(3/x)) == [-b, b]
 
 
-def test__ispow():
-    assert _ispow(x**2)
-    assert not _ispow(x)
-    assert not _ispow(True)
-
-
 def test_issue_6644():
     eq = -sqrt((m - q)**2 + (-m/(2*q) + Rational(1, 2))**2) + sqrt((-m**2/2 - sqrt(
     4*m**4 - 4*m**2 + 8*m + 1)/4 - Rational(1, 4))**2 + (m**2/2 - m - sqrt(
@@ -1606,21 +1590,9 @@ def test_issue_5114_6611():
         [-h/m + k*(1/p + 1/o + 1/m) - n/p], [-k/p + n*(1/q + 1/p)]])
     v = Matrix([f, h, k, n, b, c])
     ans = solve(list(eqs), list(v), simplify=False)
-    # If time is taken to simplify then then 2617 below becomes
-    # 1168 and the time is about 50 seconds instead of 2.
-    assert sum(s.count_ops() for s in ans.values()) <= 2617
-
-
-def test_det_quick():
-    m = Matrix(3, 3, symbols('a:9'))
-    assert m.det() == det_quick(m)  # calls det_perm
-    m[0, 0] = 1
-    assert m.det() == det_quick(m)  # calls det_minor
-    m = Matrix(3, 3, list(range(9)))
-    assert m.det() == det_quick(m)  # defaults to .det()
-    # make sure they work with Sparse
-    s = SparseMatrix(2, 2, (1, 2, 1, 4))
-    assert det_perm(s) == det_minor(s) == s.det()
+    # If time is taken to simplify then then 3270 below becomes
+    # 3093 and the time is about 50 seconds instead of 2.
+    assert sum(s.count_ops() for s in ans.values()) <= 3270
 
 
 def test_piecewise():

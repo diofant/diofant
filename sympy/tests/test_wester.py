@@ -68,8 +68,11 @@ def test_B1():
 
 
 def test_B2():
+    a, b, c = FiniteSet(j), FiniteSet(m), FiniteSet(j, k)
+    d, e = FiniteSet(i), FiniteSet(j, k, l)
+
     assert (FiniteSet(i, j, j, k, k, k) & FiniteSet(l, k, j) &
-            FiniteSet(j, m, j)) == FiniteSet(j)
+            FiniteSet(j, m, j)) == a | (b & (c | (d & e)))
 
 
 def test_B3():

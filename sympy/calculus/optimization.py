@@ -1,4 +1,4 @@
-from sympy.core import oo, diff, Dummy, sympify
+from sympy.core import oo, diff, sympify
 from sympy.sets import Interval
 from sympy.core.compatibility import is_sequence
 from sympy.series import limit
@@ -42,7 +42,7 @@ def minimize(f, *v):
     if not v:
         v = f.free_symbols
         if not v:
-            raise ValueError
+            return f, dict()
         v = tuple(v)
 
     assert all(x.is_Symbol for x in v)

@@ -458,15 +458,10 @@ class Add(Expr, AssocOp):
     def _eval_is_algebraic(self):
         return _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
 
-    def _eval_is_commutative(self):
-        return _fuzzy_group(a.is_commutative for a in self.args)
-
     def _eval_is_imaginary(self):
         rv = _fuzzy_group(a.is_imaginary for a in self.args)
         if rv is False:
             return rv
-        elif self.is_zero:
-            return True
         iargs = [a*S.ImaginaryUnit for a in self.args]
         r = _fuzzy_group(a.is_extended_real for a in iargs)
         if r:
@@ -590,9 +585,8 @@ class Add(Expr, AssocOp):
             return self._new_rawargs(*args)
 
     @cacheit
-    def extract_leading_order(self, symbols, point=None):
-        """
-        Returns the leading term and its order.
+    def extract_leading_order(self, symbols):
+        """Returns the leading term and its order.
 
         Examples
         ========
@@ -604,13 +598,11 @@ class Add(Expr, AssocOp):
         ((1, O(1)),)
         >>> (x + x**2).extract_leading_order(x)
         ((x, O(x)),)
-
         """
         from sympy import Order
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
-        if not point:
-            point = [0]*len(symbols)
+        point = [0]*len(symbols)
         seq = [(f, Order(f, *zip(symbols, point))) for f in self.args]
         for ef, of in seq:
             for e, o in lst:

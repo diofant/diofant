@@ -490,14 +490,11 @@ class chebyshevt(OrthogonalPolynomial):
                 return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt x
             n, x = self.args
             return n * chebyshevu(n - 1, x)
-        else:
+        else:  # wrt n
             raise ArgumentIndexError(self, argindex)
 
 
@@ -598,14 +595,11 @@ class chebyshevu(OrthogonalPolynomial):
                 return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt x
             n, x = self.args
             return ((n + 1) * chebyshevt(n + 1, x) - x * chebyshevu(n, x)) / (x**2 - 1)
-        else:
+        else:  # wrt n
             raise ArgumentIndexError(self, argindex)
 
 
@@ -769,15 +763,12 @@ class legendre(OrthogonalPolynomial):
                 return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt x
             # Find better formula, this is unsuitable for x = 1
             n, x = self.args
             return n/(x**2 - 1)*(x*legendre(n, x) - legendre(n - 1, x))
-        else:
+        else:  # wrt n
             raise ArgumentIndexError(self, argindex)
 
 
@@ -858,18 +849,12 @@ class assoc_legendre(Function):
             return cls._eval_at_order(int(n), abs(int(m))).subs(_x, x)
 
     def fdiff(self, argindex=3):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
-            # Diff wrt m
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 3:
+        if argindex == 3:
             # Diff wrt x
             # Find better formula, this is unsuitable for x = 1
             n, m, x = self.args
             return 1/(x**2 - 1)*(x*n*assoc_legendre(n, m, x) - (m + n)*assoc_legendre(n - 1, m, x))
-        else:
+        else:  # wrt n, m
             raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
@@ -952,14 +937,11 @@ class hermite(OrthogonalPolynomial):
                 return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt x
             n, x = self.args
             return 2*n*hermite(n - 1, x)
-        else:
+        else:  # wrt n
             raise ArgumentIndexError(self, argindex)
 
 ############################################################################
@@ -1022,6 +1004,8 @@ class laguerre(OrthogonalPolynomial):
     .. [4] http://functions.wolfram.com/Polynomials/LaguerreL3/
     """
 
+    _ortho_poly = staticmethod(laguerre_poly)
+
     @classmethod
     def eval(cls, n, x):
         if not n.is_Number:
@@ -1043,17 +1027,14 @@ class laguerre(OrthogonalPolynomial):
                 raise ValueError(
                     "The index n must be nonnegative integer (got %r)" % n)
             else:
-                return laguerre_poly(n, x, 0)
+                return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt x
             n, x = self.args
             return -assoc_laguerre(n - 1, 1, x)
-        else:
+        else:  # wrt n
             raise ArgumentIndexError(self, argindex)
 
 
@@ -1127,6 +1108,11 @@ class assoc_laguerre(OrthogonalPolynomial):
     """
 
     @classmethod
+    def _eval_at_order(cls, n, x, alpha):
+        if n.is_integer and n >= 0:
+            return laguerre_poly(int(n), _x, alpha).subs(_x, x)
+
+    @classmethod
     def eval(cls, n, alpha, x):
         # L_{n}^{0}(x)  --->  L_{n}(x)
         if alpha == S.Zero:
@@ -1136,9 +1122,9 @@ class assoc_laguerre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == S.Zero:
                 return binomial(n + alpha, alpha)
-            elif x == S.Infinity and n > S.Zero:
+            elif x == S.Infinity and n.is_positive:
                 return S.NegativeOne**n * S.Infinity
-            elif x == S.NegativeInfinity and n > S.Zero:
+            elif x == S.NegativeInfinity and n.is_positive:
                 return S.Infinity
         else:
             # n is a given fixed integer, evaluate into polynomial
@@ -1146,14 +1132,11 @@ class assoc_laguerre(OrthogonalPolynomial):
                 raise ValueError(
                     "The index n must be nonnegative integer (got %r)" % n)
             else:
-                return laguerre_poly(n, x, alpha)
+                return cls._eval_at_order(n, x, alpha)
 
     def fdiff(self, argindex=3):
         from sympy import Sum
-        if argindex == 1:
-            # Diff wrt n
-            raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt alpha
             n, alpha, x = self.args
             k = Dummy("k")
@@ -1162,7 +1145,7 @@ class assoc_laguerre(OrthogonalPolynomial):
             # Diff wrt x
             n, alpha, x = self.args
             return -assoc_laguerre(n - 1, alpha + 1, x)
-        else:
+        else:  # wrt n
             raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):

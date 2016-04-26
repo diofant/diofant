@@ -1,4 +1,4 @@
-from sympy.core import S, Symbol, Add, sympify, Expr, PoleError, Mul
+from sympy.core import S, Symbol, sympify, Expr, PoleError
 from sympy.core.symbol import Dummy
 from sympy.functions.elementary.trigonometric import sin, cos
 from sympy.series.order import Order
@@ -186,8 +186,6 @@ class Limit(Expr):
                 newe = newe.subs(z, newz)
 
             r = limitinf(newe, newz)
-            if r is S.NaN:
-                raise PoleError()
         except (PoleError, ValueError, NotImplementedError):
             r = None
             if use_heuristics:

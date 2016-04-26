@@ -10,6 +10,7 @@ def test_type_E():
     assert c.cartan_matrix() == m
     assert c.dimension() == 8
     assert c.simple_root(6) == [0, 0, 0, -1, 1, 0, 0, 0]
+    assert c.simple_root(1) == [1/2, -1/2, -1/2, -1/2, -1/2, -1/2, -1/2, 1/2]
     assert c.roots() == 72
     assert c.basis() == 78
     diag = " "*8 + "2\n" + " "*8 + "0\n" + " "*8 + "|\n" + " "*8 + "|\n"

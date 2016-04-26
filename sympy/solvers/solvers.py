@@ -1,4 +1,4 @@
-﻿"""
+"""
 This module contain solvers for all kinds of equations:
 
     - algebraic or transcendental, use solve()
@@ -49,11 +49,6 @@ from sympy.utilities.misc import filldedent
 from sympy.utilities.iterables import uniq, generate_bell, flatten
 from sympy.solvers.polysys import solve_poly_system
 from sympy.solvers.inequalities import reduce_inequalities
-
-
-def _ispow(e):
-    """Return True if e is a Pow or is exp."""
-    return isinstance(e, Expr) and e.is_Pow
 
 
 def _simple_dens(f, symbols):
@@ -2041,25 +2036,32 @@ def minsolve_linear_system(system, *symbols, **flags):
 
 
 def solve_linear_system(system, *symbols, **flags):
-    r"""
-    Solve system of N linear equations with M variables, which means
-    both under- and overdetermined systems are supported. The possible
-    number of solutions is zero, one or infinite. Respectively, this
-    procedure will return None or a dictionary with solutions. In the
-    case of underdetermined systems, all arbitrary parameters are skipped.
-    This may cause a situation in which an empty dictionary is returned.
-    In that case, all symbols can be assigned arbitrary values.
+    r"""Solve system of linear equations.
 
-    Input to this functions is a Nx(M+1) matrix, which means it has
-    to be in augmented form. If you prefer to enter N equations and M
-    unknowns then use `solve(Neqs, *Msymbols)` instead. Note: a local
-    copy of the matrix is made by this routine so the matrix that is
-    passed will not be modified.
+    Both under- and overdetermined systems are supported. The possible
+    number of solutions is zero, one or infinite.
 
-    The algorithm used here is fraction-free Gaussian elimination,
-    which results, after elimination, in an upper-triangular matrix.
-    Then solutions are found using back-substitution. This approach
-    is more efficient and compact than the Gauss-Jordan method.
+    Parameters
+    ==========
+
+    system : Matrix
+        Nx(M+1) matrix, which means it has to be in augmented
+        form.  This matrix will not be modified.
+    \*symbols : list
+        List of M Symbol's
+
+    Returns
+    =======
+
+    solution: dict or None
+        Respectively, this procedure will return None or
+        a dictionary with solutions.  In the case of underdetermined
+        systems, all arbitrary parameters are skipped.  This may
+        cause a situation in which an empty dictionary is returned.
+        In that case, all symbols can be assigned arbitrary values.
+
+    Examples
+    ========
 
     >>> from sympy import Matrix, solve_linear_system
     >>> from sympy.abc import x, y
@@ -2079,163 +2081,29 @@ def solve_linear_system(system, *symbols, **flags):
     >>> solve_linear_system(system, x, y)
     {}
 
+    See Also
+    ========
+
+    sympy.matrices.matrices.MatrixBase.rref
     """
-    do_simplify = flags.get('simplify', True)
+    from sympy.polys.rings import sring
+    from sympy.polys.solvers import solve_lin_sys
 
-    if system.rows == system.cols - 1 == len(symbols):
-        try:
-            # well behaved n-equations and n-unknowns
-            inv = inv_quick(system[:, :-1])
-            rv = dict(zip(symbols, inv*system[:, -1]))
-            if do_simplify:
-                for k, v in rv.items():
-                    rv[k] = simplify(v)
-            if not all(i.is_zero for i in rv.values()):
-                # non-trivial solution
-                return rv
-        except ValueError:
-            pass
+    eqs = system*Matrix(symbols + (-1,))
+    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
 
-    matrix = system[:, :]
-    syms = list(symbols)
+    res = solve_lin_sys(eqs, domain)
+    if res is None:
+        return
 
-    i, m = 0, matrix.cols - 1  # don't count augmentation
+    for k in list(res.keys()):
+        s = domain.symbols[domain.index(k)]
+        res[s] = res[k].as_expr()
+        del res[k]
+        if flags.get('simplify', True):
+            res[s] = simplify(res[s])
 
-    while i < matrix.rows:
-        if i == m:
-            # an overdetermined system
-            if any(matrix[i:, m]):
-                return   # no solutions
-            else:
-                # remove trailing rows
-                matrix = matrix[:i, :]
-                break
-
-        if not matrix[i, i]:
-            # there is no pivot in current column
-            # so try to find one in other columns
-            for k in range(i + 1, m):
-                if matrix[i, k]:
-                    break
-            else:
-                if matrix[i, m]:
-                    # We need to know if this is always zero or not. We
-                    # assume that if there are free symbols that it is not
-                    # identically zero (or that there is more than one way
-                    # to make this zero). Otherwise, if there are none, this
-                    # is a constant and we assume that it does not simplify
-                    # to zero XXX are there better (fast) ways to test this?
-                    # The .equals(0) method could be used but that can be
-                    # slow; numerical testing is prone to errors of scaling.
-                    if not matrix[i, m].free_symbols:
-                        return  # no solution
-
-                    # A row of zeros with a non-zero rhs can only be accepted
-                    # if there is another equivalent row. Any such rows will
-                    # be deleted.
-                    nrows = matrix.rows
-                    rowi = matrix.row(i)
-                    ip = None
-                    j = i + 1
-                    while j < matrix.rows:
-                        # do we need to see if the rhs of j
-                        # is a constant multiple of i's rhs?
-                        rowj = matrix.row(j)
-                        if rowj == rowi:
-                            matrix.row_del(j)
-                        elif rowj[:-1] == rowi[:-1]:
-                            if ip is None:
-                                _, ip = rowi[-1].as_content_primitive()
-                            _, jp = rowj[-1].as_content_primitive()
-                            if not (simplify(jp - ip) or simplify(jp + ip)):
-                                matrix.row_del(j)
-
-                        j += 1
-
-                    if nrows == matrix.rows:
-                        # no solution
-                        return
-                # zero row or was a linear combination of
-                # other rows or was a row with a symbolic
-                # expression that matched other rows, e.g. [0, 0, x - y]
-                # so now we can safely skip it
-                matrix.row_del(i)
-                if not matrix:
-                    # every choice of variable values is a solution
-                    # so we return an empty dict instead of None
-                    return dict()
-                continue
-
-            # we want to change the order of colums so
-            # the order of variables must also change
-            syms[i], syms[k] = syms[k], syms[i]
-            matrix.col_swap(i, k)
-
-        pivot_inv = S.One/matrix[i, i]
-
-        # divide all elements in the current row by the pivot
-        matrix.row_op(i, lambda x, _: x * pivot_inv)
-
-        for k in range(i + 1, matrix.rows):
-            if matrix[k, i]:
-                coeff = matrix[k, i]
-
-                # subtract from the current row the row containing
-                # pivot and multiplied by extracted coefficient
-                matrix.row_op(k, lambda x, j: simplify(x - matrix[i, j]*coeff))
-
-        i += 1
-
-    # if there weren't any problems, augmented matrix is now
-    # in row-echelon form so we can check how many solutions
-    # there are and extract them using back substitution
-
-    if len(syms) == matrix.rows:
-        # this system is Cramer equivalent so there is
-        # exactly one solution to this system of equations
-        k, solutions = i - 1, {}
-
-        while k >= 0:
-            content = matrix[k, m]
-
-            # run back-substitution for variables
-            for j in range(k + 1, m):
-                content -= matrix[k, j]*solutions[syms[j]]
-
-            if do_simplify:
-                solutions[syms[k]] = simplify(content)
-            else:
-                solutions[syms[k]] = content
-
-            k -= 1
-
-        return solutions
-    elif len(syms) > matrix.rows:
-        # this system will have infinite number of solutions
-        # dependent on exactly len(syms) - i parameters
-        k, solutions = i - 1, {}
-
-        while k >= 0:
-            content = matrix[k, m]
-
-            # run back-substitution for variables
-            for j in range(k + 1, i):
-                content -= matrix[k, j]*solutions[syms[j]]
-
-            # run back-substitution for parameters
-            for j in range(i, m):
-                content -= matrix[k, j]*syms[j]
-
-            if do_simplify:
-                solutions[syms[k]] = simplify(content)
-            else:
-                solutions[syms[k]] = content
-
-            k -= 1
-
-        return solutions
-    else:
-        return []   # no solutions
+    return res
 
 
 def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
@@ -2275,141 +2143,6 @@ def solve_undetermined_coeffs(equ, coeffs, sym, **flags):
         return solve(system, *coeffs, **flags)
     else:
         return  # no solutions
-
-
-def solve_linear_system_LU(matrix, syms):
-    """
-    Solves the augmented matrix system using LUsolve and returns a dictionary
-    in which solutions are keyed to the symbols of syms *as ordered*.
-
-    The matrix must be invertible.
-
-    Examples
-    ========
-
-    >>> from sympy import Matrix, Rational
-    >>> from sympy.abc import x, y, z
-    >>> from sympy.solvers.solvers import solve_linear_system_LU
-
-    >>> solve_linear_system_LU(Matrix([
-    ... [1, 2, 0, 1],
-    ... [3, 2, 2, 1],
-    ... [2, 0, 0, 1]]), [x, y, z]) == {x: Rational(1, 2),
-    ...                                y: Rational(1, 4), z: -Rational(1, 2)}
-    True
-
-    See Also
-    ========
-
-    sympy.matrices.matrices.MatrixBase.LUsolve
-
-    """
-    if matrix.rows != matrix.cols - 1:
-        raise ValueError("Rows should be equal to columns - 1")
-    A = matrix[:matrix.rows, :matrix.rows]
-    b = matrix[:, matrix.cols - 1:]
-    soln = A.LUsolve(b)
-    solutions = {}
-    for i in range(soln.rows):
-        solutions[syms[i]] = soln[i, 0]
-    return solutions
-
-
-def det_perm(M):
-    """Return the det(``M``) by using permutations to select factors.
-    For size larger than 8 the number of permutations becomes prohibitively
-    large, or if there are no symbols in the matrix, it is better to use the
-    standard determinant routines, e.g. `M.det()`.
-
-    See Also
-    ========
-    det_minor
-    det_quick
-    """
-    args = []
-    s = True
-    n = M.rows
-    try:
-        list = M._mat
-    except AttributeError:
-        list = flatten(M.tolist())
-    for perm in generate_bell(n):
-        fac = []
-        idx = 0
-        for j in perm:
-            fac.append(list[idx + j])
-            idx += n
-        term = Mul(*fac)  # disaster with unevaluated Mul -- takes forever for n=7
-        args.append(term if s else -term)
-        s = not s
-    return Add(*args)
-
-
-def det_minor(M):
-    """Return the ``det(M)`` computed from minors without
-    introducing new nesting in products.
-
-    See Also
-    ========
-    det_perm
-    det_quick
-    """
-    n = M.rows
-    if n == 2:
-        return M[0, 0]*M[1, 1] - M[1, 0]*M[0, 1]
-    else:
-        return sum((1, -1)[i % 2]*Add(*[M[0, i]*d for d in
-            Add.make_args(det_minor(M.minorMatrix(0, i)))])
-            if M[0, i] else S.Zero for i in range(n))
-
-
-def det_quick(M, method=None):
-    """Return ``det(M)`` assuming that either
-    there are lots of zeros or the size of the matrix
-    is small. If this assumption is not met, then the normal
-    Matrix.det function will be used with method = ``method``.
-
-    See Also
-    ========
-    det_minor
-    det_perm
-    """
-    if any(i.has(Symbol) for i in M):
-        if M.rows < 8 and all(i.has(Symbol) for i in M):
-            return det_perm(M)
-        return det_minor(M)
-    else:
-        return M.det(method=method) if method else M.det()
-
-
-def inv_quick(M):
-    """Return the inverse of ``M``, assuming that either
-    there are lots of zeros or the size of the matrix
-    is small.
-    """
-    from sympy.matrices import zeros
-    if any(i.has(Symbol) for i in M):
-        if all(i.has(Symbol) for i in M):
-            def det(_):
-                return det_perm(_)
-        else:
-            def det(_):
-                return det_minor(_)
-    else:
-        return M.inv()
-    n = M.rows
-    d = det(M)
-    if d is S.Zero:
-        raise ValueError("Matrix det == 0; not invertible.")
-    ret = zeros(n)
-    s1 = -1
-    for i in range(n):
-        s = s1 = -s1
-        for j in range(n):
-            di = det(M.minorMatrix(i, j))
-            ret[j, i] = s*di/d
-            s = -s
-    return ret
 
 
 # these are functions that have multiple inverse values per period
@@ -2815,7 +2548,7 @@ def _invert(eq, *symbols, **kwargs):
             a, b = ordered(lhs.args)
             ai, ad = a.as_independent(*symbols)
             bi, bd = b.as_independent(*symbols)
-            if any(_ispow(i) for i in (ad, bd)):
+            if any(i.is_Pow for i in (ad, bd)):
                 a_base, a_exp = ad.as_base_exp()
                 b_base, b_exp = bd.as_base_exp()
                 if a_base == b_base:
@@ -2840,7 +2573,7 @@ def _invert(eq, *symbols, **kwargs):
                         # f(x, x + y) == f(2, 3) -> x == 2 or x == 3 - y
                         raise NotImplementedError('equal function with more than 1 argument')
 
-        elif lhs.is_Mul and any(_ispow(a) for a in lhs.args):
+        elif lhs.is_Mul and any(a.is_Pow for a in lhs.args):
             lhs = powsimp(powdenest(lhs))
 
         if lhs.is_Function:

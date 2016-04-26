@@ -6,6 +6,7 @@ from sympy.abc import x
 
 
 def test_minimize():
+    assert minimize(1) == (1, {})
     assert minimize((x - 2)**2) == (0, {x: 2})
     assert minimize((x - 2)**2, x) == (0, {x: 2})
     assert minimize(1/x, x) == (-oo, {x: 0})
