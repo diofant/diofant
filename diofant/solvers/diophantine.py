@@ -102,6 +102,8 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
         an equation (to be solved)
     t : Symbol, optional
         the parameter to be used in the solution.
+    syms : list of Symbol's, optional
+        which determines the order of the elements in the returned tuple.
 
     Examples
     ========
