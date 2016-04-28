@@ -3,7 +3,8 @@
 import pytest
 
 from sympy.polys.domains import QQ, ZZ
-from sympy.polys.polyerrors import ExactQuotientFailed, CoercionFailed, NotReversible
+from sympy.polys.polyerrors import (ExactQuotientFailed, CoercionFailed,
+                                    NotReversible, GeneratorsNeeded)
 
 from sympy.abc import x, y
 
@@ -100,3 +101,8 @@ def test_units():
     assert not R.is_unit(R.convert(2))
     assert not R.is_unit(R.convert(x))
     assert not R.is_unit(R.convert(1 + x))
+
+
+def test_old_poly_frac():
+    pytest.raises(GeneratorsNeeded, lambda: QQ.old_poly_ring())
+    pytest.raises(GeneratorsNeeded, lambda: QQ.old_frac_field())

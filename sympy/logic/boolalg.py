@@ -419,7 +419,7 @@ class Or(LatticeOp, BooleanFunction):
         from sympy.sets.sets import Union
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Sorry, Or.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")
@@ -505,12 +505,12 @@ class Not(BooleanFunction):
 
         >>> from sympy import Not, Symbol
         >>> x = Symbol('x', extended_real=True)
-        >>> Not(x>0).as_set()
+        >>> Not(x>0, evaluate=False).as_set()
         (-oo, 0]
         """
         if len(self.free_symbols) == 1:
-            return self.args[0].as_set().complement
-        else:
+            return self.args[0].as_set().complement(S.Reals)
+        else:  # pragma: no cover
             raise NotImplementedError("Sorry, Not.as_set has not yet been"
                                       " implemented for mutivariate"
                                       " expressions")

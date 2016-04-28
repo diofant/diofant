@@ -92,15 +92,5 @@ class FractionField(Field, CharacteristicZero, CompositeDomain):
             else:
                 return self((a.numer().convert(self.dom).rep,
                              a.denom().convert(self.dom).rep))
-        elif set(K0.gens).issubset(self.gens):
-            nmonoms, ncoeffs = _dict_reorder(a.numer().to_dict(),
-                                             K0.gens, self.gens)
-            dmonoms, dcoeffs = _dict_reorder(a.denom().to_dict(),
-                                             K0.gens, self.gens)
-
-            if self.dom != K0.dom:
-                ncoeffs = [self.dom.convert(c, K0.dom) for c in ncoeffs]
-                dcoeffs = [self.dom.convert(c, K0.dom) for c in dcoeffs]
-
-            return self((dict(zip(nmonoms, ncoeffs)),
-                         dict(zip(dmonoms, dcoeffs))))
+        else:  # pragma: no cover
+            raise NotImplementedError
