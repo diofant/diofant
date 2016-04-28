@@ -9,6 +9,7 @@ from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
                      default_sort_key, factorial, symbols, true)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
+from diofant.functions.combinatorial.numbers import nT
 from diofant.functions.elementary.piecewise import ExprCondPair, Piecewise
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
@@ -24,7 +25,8 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
-                                         numbered_symbols, ordered, partitions,
+                                         numbered_symbols, ordered,
+                                         ordered_partitions, partitions,
                                          permutations, postfixes,
                                          postorder_traversal, prefixes,
                                          reshape, rotate_left, rotate_right,
@@ -754,3 +756,13 @@ def test_cantor_product():
     assert (list(itertools.islice(cantor_product(itertools.count(1),
                                                  itertools.count(1)), 7)) ==
             [(1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (2, 3), (3, 1)])
+
+
+def test_ordered_partitions():
+    pytest.raises(ValueError, lambda: list(ordered_partitions(0, 1)))
+    pytest.raises(ValueError, lambda: list(ordered_partitions(1, 0)))
+    for i in range(1, 7):
+        for j in [None] + list(range(1, i)):
+            assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
+                    sum(1 for p in ordered_partitions(i, j, 0)) ==
+                    nT(i, j))
