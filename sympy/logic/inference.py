@@ -18,7 +18,6 @@ def literal_symbol(literal):
     A
     >>> literal_symbol(~A)
     A
-
     """
 
     if literal is True or literal is False:
@@ -82,7 +81,8 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     elif algorithm == "dpll2":
         from sympy.logic.algorithms.dpll2 import dpll_satisfiable
         return dpll_satisfiable(expr, all_models)
-    raise NotImplementedError
+    else:  # pragma: no cover
+        raise NotImplementedError
 
 
 def valid(expr):
@@ -217,13 +217,13 @@ class KB(object):
             self.tell(sentence)
 
     def tell(self, sentence):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def ask(self, query):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def retract(self, sentence):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @property
     def clauses(self):

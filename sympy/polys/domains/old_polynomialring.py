@@ -101,14 +101,6 @@ class PolynomialRingBase(Ring, CharacteristicZero, CompositeDomain):
         except (ExactQuotientFailed, ZeroDivisionError):
             raise NotReversible('%s is not a unit' % a)
 
-    def gcdex(self, a, b):
-        """Extended GCD of `a` and `b`. """
-        return a.gcdex(b)
-
-    def gcd(self, a, b):
-        """Returns GCD of `a` and `b`. """
-        return a.gcd(b)
-
     def _sdm_to_dics(self, s, n):
         """Helper for _sdm_to_vector."""
         from sympy.polys.distributedmodules import sdm_to_dict
