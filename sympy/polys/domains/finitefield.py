@@ -23,12 +23,9 @@ class FiniteField(Field, SimpleDomain):
     dom = None
     mod = None
 
-    def __init__(self, mod, dom=None, symmetric=True):
+    def __init__(self, mod, dom, symmetric=True):
         if mod <= 0:
             raise ValueError('modulus must be a positive integer, got %s' % mod)
-        if dom is None:
-            from sympy.polys.domains import ZZ
-            dom = ZZ
 
         self.dtype = ModularIntegerFactory(mod, dom, symmetric, self)
         self.zero = self.dtype(0)

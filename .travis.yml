@@ -30,13 +30,20 @@ matrix:
         # see https://gitlab.com/pycqa/flake8/issues/121
         - pip install git+https://gitlab.com/pycqa/flake8.git@a8aac560
         - pip install sphinx numpydoc pytest-cov sphinx_rtd_theme
+      script:
+        - python setup.py flake8
+        - python setup.py test --cov -m 'slow and not xfail'
+        - sphinx-build -W -b html docs build/sphinx/html
+      after_success:
+        - codecov
+    - python: 3.4
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip install pytest-cov
       env:
         - SYMPY_GROUND_TYPES=gmpy1
       script:
-        - python setup.py flake8
         - py.test --cov sympy sympy/polys
-        - python setup.py test --cov -m 'slow and not xfail'
-        - sphinx-build -W -b html docs build/sphinx/html
       after_success:
         - codecov
     - python: "pypy3"

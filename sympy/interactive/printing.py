@@ -1,21 +1,19 @@
 """Tools for setting up printing in interactive sessions. """
 
+import builtins
+import sys
+
 from sympy import latex as default_latex
 from sympy.utilities.misc import debug
 
 
 def _init_python_printing(stringify_func):
     """Setup printing in Python interactive session. """
-    import builtins
-    import sys
 
     def _displayhook(arg):
         """Python's pretty-printer display hook.
 
-           This function was adapted from:
-
-            http://www.python.org/dev/peps/pep-0217/
-
+        This function was adapted from PEP 217.
         """
         if arg is not None:
             builtins._ = None
@@ -29,6 +27,10 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
                            latex_mode, print_builtin,
                            latex_printer):
     """Setup printing in IPython interactive session. """
+
+    import IPython
+    from sympy.core.basic import Basic
+    from sympy.matrices.matrices import MatrixBase
 
     latex = latex_printer or default_latex
 
@@ -45,8 +47,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
         If o is a container type, this is True if and only if every element of
         o can be printed with LaTeX.
         """
-        from sympy import Basic
-        from sympy.matrices import MatrixBase
         if isinstance(o, (list, tuple, set, frozenset)):
             return all(_can_print_latex(i) for i in o)
         elif isinstance(o, dict):
@@ -71,9 +71,6 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
             s = s.strip('$')
             return '$$%s$$' % s
 
-    import IPython
-    from sympy.core.basic import Basic
-    from sympy.matrices.matrices import MatrixBase
     printable_types = [Basic, MatrixBase, float, tuple, list, set,
                        frozenset, dict, int]
 
@@ -83,15 +80,13 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
         plaintext_formatter.for_type(cls, _print_plain)
 
     latex_formatter = ip.display_formatter.formatters['text/latex']
-    if use_latex in (True, 'mathjax'):
+    if use_latex:
         debug("init_printing: using mathjax formatter")
         for cls in printable_types:
             latex_formatter.for_type(cls, _print_latex_text)
     else:
         debug("init_printing: not using text/latex formatter")
         for cls in printable_types:
-            # Better way to set this, but currently does not work in IPython
-            # latex_formatter.for_type(cls, None)
             if cls in latex_formatter.type_printers:
                 latex_formatter.type_printers.pop(cls)
 
@@ -102,8 +97,7 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
                   latex_mode='equation*', print_builtin=True,
                   str_printer=None, pretty_printer=None,
                   latex_printer=None):
-    """
-    Initializes pretty-printer depending on the environment.
+    """Initializes pretty-printer depending on the environment.
 
     Parameters
     ==========
@@ -186,7 +180,6 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
     x + y +
     x**2 + y**2
     """
-    import sys
     from sympy.printing.printer import Printer
 
     if pretty_print:
@@ -209,27 +202,21 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
             pass
         else:
             in_ipython = (ip is not None)
+    else:
+        in_ipython = True
 
-    if in_ipython and pretty_print:
-        from code import InteractiveConsole
-        try:
-            from IPython.terminal.interactiveshell import TerminalInteractiveShell
-        except ImportError:
-            pass
-        else:
-            # This will be True if we are in the qtconsole or notebook
-            if not isinstance(ip, (InteractiveConsole, TerminalInteractiveShell)) \
-                    and 'ipython-console' not in ''.join(sys.argv):
-                if use_unicode is None:
-                    debug("init_printing: Setting use_unicode to True")
-                    use_unicode = True
-                if use_latex is None:
-                    debug("init_printing: Setting use_latex to True")
-                    use_latex = True
+    if in_ipython:
+        if use_unicode is None:
+            debug("init_printing: Setting use_unicode to True")
+            use_unicode = True
+        if use_latex is None:
+            debug("init_printing: Setting use_latex to True")
+            use_latex = True
 
     if not no_global:
         Printer.set_global_settings(order=order, use_unicode=use_unicode,
-                                    wrap_line=wrap_line, num_columns=num_columns)
+                                    wrap_line=wrap_line,
+                                    num_columns=num_columns)
     else:
         _stringify_func = stringify_func
 

@@ -502,7 +502,6 @@ class CodePrinter(StrPrinter):
     _print_NegativeInfinity = _print_not_supported
     _print_Normal = _print_not_supported
     _print_Order = _print_not_supported
-    _print_PDF = _print_not_supported
     _print_RootOf = _print_not_supported
     _print_RootsOf = _print_not_supported
     _print_RootSum = _print_not_supported

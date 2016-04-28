@@ -21,6 +21,8 @@ def test_literal():
     assert literal_symbol(A) is A
     assert literal_symbol(~A) is A
 
+    pytest.raises(ValueError, lambda: literal_symbol(A + B))
+
 
 def test_find_pure_symbol():
     A, B, C = symbols('A,B,C')
@@ -207,6 +209,8 @@ def test_PropKB():
     assert kb.ask(~C) is False
     kb.retract(A)
     assert kb.ask(C) is False
+    kb = PropKB((A >> B) & (B >> C))
+    assert kb.ask(A >> C) is True
 
 
 def test_propKB_tolerant():
