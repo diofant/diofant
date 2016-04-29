@@ -758,8 +758,8 @@ def test_cantor_product():
 
 
 def test_ordered_partitions():
-    pytest.raises(ValueError, lambda: list(ordered_partitions(0, 1)))
-    pytest.raises(ValueError, lambda: list(ordered_partitions(1, 0)))
+    assert list(ordered_partitions(0, 1)) == [[]]
+    assert list(ordered_partitions(1, 0)) == [[]]
     for i in range(1, 7):
         for j in [None] + list(range(1, i)):
             assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
