@@ -10,6 +10,7 @@ Examples
 """
 
 from .solvers import solve, solve_linear, checksol  # noqa: F401
+from .diophantine import diophantine  # noqa: F401
 from .recurr import rsolve, rsolve_poly, rsolve_ratio, rsolve_hyper  # noqa: F401
 from .ode import checkodesol, classify_ode, dsolve, homogeneous_order  # noqa: F401
 from .polysys import solve_poly_system, solve_linear_system  # noqa: F401

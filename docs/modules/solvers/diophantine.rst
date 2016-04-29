@@ -329,12 +329,14 @@ References
 User Functions
 --------------
 
-These functions are imported into the global namespace
-with ``from diofant import *``.
+This function is imported into the global namespace
+with ``from diofant import *``:
 
 diophantine
 ^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.diophantine
+
+And this function is imported with ``from diofant.solvers.diophantine import *``:
 
 classify_diop
 ^^^^^^^^^^^^^

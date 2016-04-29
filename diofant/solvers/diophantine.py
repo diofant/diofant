@@ -14,12 +14,7 @@ from ..utilities import default_sort_key, filldedent, numbered_symbols
 from .solvers import solve
 
 
-__all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
-           'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',
-           'diop_ternary_quadratic',  'square_factor', 'descent', 'diop_general_pythagorean',
-           'diop_general_sum_of_squares', 'partition', 'sum_of_three_squares', 'sum_of_four_squares',
-           'diop_general_sum_of_even_powers', 'sum_of_squares', 'sum_of_powers')
-
+__all__ = ('diophantine', 'classify_diop')
 
 # these types are known (but not necessarily handled)
 diop_known = {
@@ -2335,7 +2330,6 @@ def holzer(x, y, z, a, b, c):
         k = 2*c
     else:
         k = c//2
-    k = Integer(k)
 
     small = a*b*c
     step = 0
@@ -2368,13 +2362,13 @@ def holzer(x, y, z, a, b, c):
 
         A = a*u**2 + b*v**2 + c*w**2
         B = a*u*x_0 + b*v*y_0 + c*w*z_0
-        x = (x_0*A - 2*u*B)/k
-        y = (y_0*A - 2*v*B)/k
-        z = (z_0*A - 2*w*B)/k
+        x = Rational(x_0*A - 2*u*B, k)
+        y = Rational(y_0*A - 2*v*B, k)
+        z = Rational(z_0*A - 2*w*B, k)
         assert all(i.is_Integer for i in (x, y, z))
         step += 1
 
-    return x_0, y_0, z_0
+    return tuple(int(i) for i in (x_0, y_0, z_0))
 
 
 def diop_general_pythagorean(eq, param=symbols("m", integer=True)):
