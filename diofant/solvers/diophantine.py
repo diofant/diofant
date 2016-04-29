@@ -742,10 +742,10 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     References
     ==========
 
-    .. [1] Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
-          Available: https://www.alpertron.com.ar/METHODS.HTM
+    .. [1] Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, [online],
+           Available: https://www.alpertron.com.ar/METHODS.HTM
     .. [2] Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
-          Available: http://www.jpr2718.org/ax2p.pdf
+           Available: http://www.jpr2718.org/ax2p.pdf
 
     See Also
     ========
@@ -2902,6 +2902,11 @@ def power_representation(n, p, k, zeros=False):
         feasible = _can_do_sum_of_squares(n, k)
         if not feasible:
             return
+        if not zeros and n > 33 and k >= 5 and k <= n and n - k in (13, 10, 7,
+                                                                    5, 4, 2, 1):
+            # Todd G. Will, "When Is n^2 a Sum of k Squares?", [online].
+            # Available: https://www.maa.org/sites/default/files/Will-MMz-201037918.pdf
+            return
         if feasible is 1:  # it's prime and k == 2
             yield prime_as_sum_of_two_squares(n)
             return
@@ -3021,4 +3026,6 @@ def _can_do_sum_of_squares(n, k):
     if k == 3:
         if (n//4**multiplicity(4, n)) % 8 == 7:
             return False
+    # every number can be written as a sum of 4 squares; for k > 4 partitions
+    # can be 0
     return True
