@@ -17,7 +17,7 @@ from sympy.functions import sin, cos, exp, cosh, tanh, sinh, tan, cot, coth
 from sympy.polys.polyerrors import PolificationFailed
 from sympy.polys.polytools import groebner
 from sympy.polys.domains import ZZ
-from sympy.polys import factor, cancel, parallel_poly_from_expr
+from sympy.polys import Poly, factor, cancel, parallel_poly_from_expr
 from sympy.utilities.misc import debug
 
 
