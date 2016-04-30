@@ -198,6 +198,10 @@ def test_rsolve_raises():
     pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1), y(n), {x(0): 0}))
     pytest.raises(ValueError, lambda: rsolve(y(n) - y(n + 1) + y(n - 1)**2, y(n)))
 
+    # sympy/sympy#11063
+    pytest.raises(ValueError, lambda: rsolve(y(n + 1, a) - y(n, 2*a),
+                                             y(n, a), {y(0, a): a}))
+
 
 def test_issue_6844():
     f = y(n + 2) - y(n + 1) + y(n)/4
