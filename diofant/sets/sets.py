@@ -855,6 +855,8 @@ class Interval(Set, EvalfMixin):
 
         See Set._union for docstring
         """
+        if other.is_UniversalSet:
+            return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
             from ..functions import Min, Max
             # Non-overlapping intervals
@@ -1570,9 +1572,6 @@ class UniversalSet(Set, metaclass=Singleton):
 
     def as_relational(self, symbol):
         return true
-
-    def _union(self, other):
-        return self
 
     @property
     def _boundary(self):

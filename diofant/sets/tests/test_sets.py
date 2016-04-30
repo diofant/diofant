@@ -1000,6 +1000,17 @@ def test_sympyissue_9447():
                        Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
 
 
+def test_sympyissue_2799():
+    U = S.UniversalSet
+    a = Symbol('a', real=True)
+    inf_interval = Interval(a, oo)
+    R = S.Reals
+
+    assert U + inf_interval == inf_interval + U
+    assert U + R == R + U
+    assert R + inf_interval == inf_interval + R
+
+
 def test_sympyissue_9706():
     assert Interval(-oo, 0).closure == Interval(-oo, 0)
     assert Interval(0, oo).closure == Interval(0, oo)
