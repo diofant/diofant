@@ -1,4 +1,4 @@
-from sympy.core import oo, diff, sympify
+from sympy.core import oo, nan, diff, sympify
 from sympy.sets import Interval
 from sympy.core.compatibility import is_sequence
 from sympy.series import limit
@@ -99,9 +99,12 @@ def minimize_univariate(f, x, dom):
     elif dom.is_FiniteSet:
         for p in dom.args:
             extr[p] = f.subs(x, p)
+    else:  # pragma: no cover
+        raise NotImplementedError
 
     if extr:
-        m = Min(*extr.values())
+        min, point = oo, nan
         for p, fp in extr.items():
-            if fp == m:
-                return (m, dict({x: p}))
+            if fp < min:
+                point, min = p, fp
+        return (min, dict({x: point}))
