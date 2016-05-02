@@ -188,6 +188,7 @@ def test_simple_products():
     assert Product(x**k, (k, 1, n)).variables == [k]
 
     pytest.raises(ValueError, lambda: Product(n))
+    pytest.raises(ValueError, lambda: Product(n*k))
     pytest.raises(ValueError, lambda: Product(n, k))
     pytest.raises(ValueError, lambda: Product(n, k, 1))
     pytest.raises(ValueError, lambda: Product(n, k, 1, 10))
