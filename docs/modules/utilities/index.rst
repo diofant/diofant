@@ -20,4 +20,3 @@ Contents:
    memoization.rst
    misc.rst
    randtest.rst
-   source.rst
