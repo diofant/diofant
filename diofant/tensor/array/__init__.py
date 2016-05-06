@@ -209,7 +209,7 @@ E**x + z*cos(y*z)
 
 from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray  # noqa: F401
 from .sparse_ndim_array import MutableSparseNDimArray, ImmutableSparseNDimArray  # noqa: F401
-from .arrayop import derive_by_array, tensorproduct, tensorcontraction  # noqa: F401
+from .arrayop import derive_by_array, permutedims, tensorproduct, tensorcontraction  # noqa: F401
 
 Array = ImmutableDenseNDimArray
 NDimArray = ImmutableDenseNDimArray
