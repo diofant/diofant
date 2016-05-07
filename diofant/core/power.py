@@ -1,4 +1,5 @@
 from math import log as _log
+from math import sqrt as _sqrt
 
 from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 
@@ -17,6 +18,13 @@ from .numbers import E, I, Integer, nan, oo, pi
 from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
+
+
+def isqrt(n):
+    """Return the largest integer less than or equal to sqrt(n)."""
+    if n < 17984395633462800708566937239552:
+        return int(_sqrt(n))
+    return integer_nthroot(int(n), 2)[0]
 
 
 def integer_nthroot(y, n):
