@@ -1,6 +1,6 @@
 import pytest
 
-from sympy import (symbols, sin, simplify, cos, trigsimp, tan,
+from sympy import (symbols, sin, simplify, cos, trigsimp, tan, csc,
                    exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
                    exp, S, integrate, I, Matrix, Symbol, coth, pi, log,
                    count_ops, sqrt, E, expand, Piecewise, Rational)
@@ -313,6 +313,9 @@ def test_trigsimp_groebner():
     # test hyperbolic / sums
     assert trigsimp_groebner((tanh(x)+tanh(y))/(1+tanh(x)*tanh(y)),
                              hints=[(tanh, x, y)]) == tanh(x + y)
+
+    # issue sympy/sympy#11062
+    trigsimp_groebner(csc(x) * sin(x))  # not raises
 
 
 def test_issue_2827_trigsimp_methods():
