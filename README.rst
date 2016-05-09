@@ -4,8 +4,8 @@ SymPy
 .. image:: https://travis-ci.org/skirpichev/omg.svg?branch=master
     :target: https://travis-ci.org/skirpichev/omg
 
-.. image:: https://codecov.io/github/skirpichev/omg/coverage.svg?branch=master
-    :target: https://codecov.io/github/skirpichev/omg?branch=master
+.. image:: https://coveralls.io/repos/skirpichev/omg/badge.svg
+    :target: https://coveralls.io/r/skirpichev/omg
 
 .. image:: https://readthedocs.org/projects/omg/badge/?version=latest
     :target: https://readthedocs.org/projects/omg/?badge=latest
