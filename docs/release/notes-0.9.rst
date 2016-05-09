@@ -210,3 +210,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10963` x**6000%400 hangs
 * :sympyissue:`10931` S.Integers - S.Integers does not evaluate
 * :sympyissue:`2799` S.UniversalSet + Interval(0, oo) takes forever
+* :sympyissue:`11090` ImmutableMatrix * MatrixSymbol raises AttributeError
