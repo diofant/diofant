@@ -1,5 +1,5 @@
-SymPy
-=====
+Diofant
+=======
 
 .. image:: https://travis-ci.org/diofant/diofant.svg?branch=master
     :target: https://travis-ci.org/diofant/diofant
