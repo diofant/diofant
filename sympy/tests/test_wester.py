@@ -2685,7 +2685,7 @@ def test_X15():
             6/x**4 + 2/x**3 - 1/x**2 + 1/x + O(x**(-5), (x, oo)))
 
 
-@pytest.mark.xfail(reason="https://github.com/skirpichev/omg/pull/158")
+@pytest.mark.xfail(reason="https://github.com/diofant/diofant/pull/158")
 def test_X16():
     # Multivariate Taylor series expansion => 1 - (x^2 + 2 x y + y^2)/2 + O(x^4)
     assert (series(cos(x + y), x + y, x0=0, n=4) == 1 - (x + y)**2/2 +

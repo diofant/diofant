@@ -286,7 +286,7 @@ def test_powsimp_on_numbers():
     assert 2**(Rational(1, 3) - 2) == 2**Rational(1, 3)/4
 
 
-def test_omgissue_124():
+def test_diofantissue_124():
     n = Symbol('n', odd=True)
     assert powsimp((-1)**(n/2)) in ((-1)**(n/2), I**n)
     assert powsimp((-1)**(n/2 - Rational(1, 2)) -

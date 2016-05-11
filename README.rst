@@ -1,22 +1,22 @@
 SymPy
 =====
 
-.. image:: https://travis-ci.org/skirpichev/omg.svg?branch=master
-    :target: https://travis-ci.org/skirpichev/omg
+.. image:: https://travis-ci.org/diofant/diofant.svg?branch=master
+    :target: https://travis-ci.org/diofant/diofant
 
-.. image:: https://codecov.io/github/skirpichev/omg/coverage.svg?branch=master
-    :target: https://codecov.io/github/skirpichev/omg?branch=master
+.. image:: https://codecov.io/github/diofant/diofant/coverage.svg?branch=master
+    :target: https://codecov.io/github/diofant/diofant?branch=master
 
-.. image:: https://readthedocs.org/projects/omg/badge/?version=latest
-    :target: https://readthedocs.org/projects/omg/?badge=latest
+.. image:: https://readthedocs.org/projects/diofant/badge/?version=latest
+    :target: https://readthedocs.org/projects/diofant/?badge=latest
     :alt: Documentation Status
 
 A Python library for symbolic mathematics.
 
 For installation instructions and usage information, see the
-`online documentation <http://omg.rtfd.io/en/latest/>`_.
+`online documentation <http://diofant.rtfd.io/en/latest/>`_.
 
-See the `docs/aboutus.rst <http://omg.rtfd.io/en/latest/aboutus.html>`_
+See the `docs/aboutus.rst <http://diofant.rtfd.io/en/latest/aboutus.html>`_
 file for credits and brief history.
 
 New BSD License (see the LICENSE file for details) covers

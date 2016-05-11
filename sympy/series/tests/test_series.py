@@ -132,7 +132,7 @@ def test_issue_7203():
         -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
 
 
-@pytest.mark.xfail(reason="https://github.com/skirpichev/omg/pull/158")
+@pytest.mark.xfail(reason="https://github.com/diofant/diofant/pull/158")
 def test_exp_product_positive_factors():
     a, b = symbols('a, b', positive=True)
     x = a * b

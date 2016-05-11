@@ -87,7 +87,7 @@ htmlhelp_basename = 'SymPydoc'
 # toctree_only is set to True so that the start file document itself is not included in the
 # output, only the documents referenced by it via TOC trees.  The extra stuff in the master
 # document is intended to show up in the HTML, but doesn't really belong in the LaTeX output.
-latex_documents = [('index', 'omg.tex', 'SymPy Documentation',
+latex_documents = [('index', 'diofant.tex', 'SymPy Documentation',
                     'SymPy Development Team', 'manual', True)]
 
 # Additional stuff for the LaTeX preamble.

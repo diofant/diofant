@@ -1016,7 +1016,7 @@ def test_bug():
     assert hyperexpand(h) == (z + 1)/z
 
 
-def test_omgissue_203():
+def test_diofantissue_203():
     h = hyper((-5, -3, -4), (-6, -6), 1)
     assert hyperexpand(h) == Rational(1, 30)
     h = hyper((-6, -7, -5), (-6, -6), 1)
@@ -1029,6 +1029,6 @@ def test_issue_6052():
     assert hyperexpand(hyper((), (2,), 0)) == 1
 
 
-def test_omgissue_241():
+def test_diofantissue_241():
     e = hyper((2, 3, 5, 9, 1), (1, 4, 6, 10), 1)
     assert hyperexpand(e) == Rational(108, 7)
