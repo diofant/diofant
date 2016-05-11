@@ -116,7 +116,7 @@ setup(name='sympy',
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],
           'gmpy': ["gmpy>=1.16"],
-          'plot': ["matplotlib"],
+          'plot': ["pyparsing!=2.1.2", "matplotlib"],
           'interactive': ["ipython>=2.3.0"],
       }
 )
