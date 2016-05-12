@@ -105,3 +105,88 @@ def minimize_univariate(f, x, dom):
         for p, fp in extr.items():
             if fp == m:
                 return (m, dict({x: p}))
+
+
+def simplex(f, cs):
+    """
+    Simplex algorithm for linear programming.
+
+    Examples
+    ========
+
+    >>> from sympy.calculus.optimization import simplex
+    >>> from sympy.abc import x, y, z
+
+    >>> simplex(-2*x - 3*y - 2*z, [2*x + y + z <= 4,
+    ...                            x + 2*y + z <= 7,
+    ...                            z <= 5])
+    (11, [0, 3, 1])
+    >>> simplex(-2*x - 3*y - 4*z, [3*x + 2*y + z <= 10,
+    ...                            2*x + 5*y + 3*z <= 15])
+    (20, [0, 0, 5])
+
+    References
+    ==========
+
+    .. [1] https://en.wikipedia.org/wiki/Simplex_method
+    """
+    from sympy import Matrix, default_sort_key, Le
+
+    syms = sorted(f.free_symbols, key=default_sort_key)
+    n = len(syms)
+    obj = [1] + [f.coeff(s) for s in syms]
+    rows, cons = [], []
+    for c in cs:
+        assert c.func is Le and not c.rhs.has(*syms)
+        rows.append([0] + [c.lhs.coeff(s) for s in syms])
+        cons.append(c.rhs)
+
+    def pivot_column(obj):
+        low, idx = 0, 0
+        for i in range(1, len(obj) - 1):
+            if obj[i] < low:
+                low, idx = obj[i], i
+        return -1 if idx == 0 else idx
+
+    def pivot_row(rows, col):
+        rhs = [rows[i][-1] for i in range(len(rows))]
+        lhs = [rows[i][col] for i in range(len(rows))]
+        ratio, idx = oo, 0
+        for i in range(len(rhs)):
+            if lhs[i] != 0:
+                r = rhs[i]/lhs[i]
+                if r < ratio:
+                    ratio, idx = r, i
+        return idx
+
+    # build full tableau
+    for i in range(len(rows)):
+        obj += [0]
+        ident = [0 if r != i else 1 for r in range(len(rows))]
+        rows[i] += ident + [cons[i]]
+        rows[i] = Matrix(rows[i])
+    obj = Matrix(obj + [0])
+
+    # solve
+    while min(obj[1:-1]) < 0:
+        col = pivot_column(obj)
+        row = pivot_row(rows, col)
+
+        e = rows[row][col]
+        rows[row] /= e
+        for r in range(len(rows)):
+            if r == row:
+                continue
+            rows[r] = rows[r] - rows[r][col]*rows[row]
+        obj = obj - obj[col]*rows[row]
+
+    ans = list(range(n))
+    for i in range(1, n + 1):
+        ans[i - 1] = 0
+        for j in range(len(rows)):
+            if rows[j][i] != 0:
+                if ans[i - 1] != 0:
+                    ans[i - 1] = 0
+                    break
+                ans[i - 1] = rows[j][-1]
+    return (obj[-1], ans)

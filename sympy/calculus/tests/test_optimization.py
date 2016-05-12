@@ -1,8 +1,8 @@
 from sympy.core import oo, E
-from sympy.calculus import minimize, maximize
+from sympy.calculus.optimization import minimize, maximize, simplex
 from sympy.functions import exp
 
-from sympy.abc import x
+from sympy.abc import x, y, z
 
 
 def test_minimize():
@@ -23,3 +23,11 @@ def test_minimize():
 def test_maximize():
     # issue sympy/sympy#4173
     assert maximize([x**(1/x), x > 0], x) == (exp(1/E), {x: E})
+
+
+def test_simplex():
+    assert simplex(-2*x - 3*y - 2*z, [2*x + y + z <= 4,
+                                      x + 2*y + z <= 7,
+                                      z <= 5]) == (11, [0, 3, 1])
+    assert simplex(-2*x - 3*y - 4*z, [3*x + 2*y + z <= 10,
+                                      2*x + 5*y + 3*z <= 15]) == (20, [0, 0, 5])
