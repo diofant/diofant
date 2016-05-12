@@ -1,3 +1,4 @@
+import itertools
 from textwrap import dedent
 
 import pytest
@@ -14,7 +15,7 @@ from sympy.utilities.iterables import (
     multiset_permutations, necklaces, numbered_symbols, ordered, partitions,
     permutations, postfixes, postorder_traversal, prefixes, reshape,
     rotate_left, rotate_right, runs, sift, subsets, take, topological_sort,
-    unflatten, uniq, variations)
+    unflatten, uniq, variations, cantor_product)
 from sympy.utilities.enumerative import (factoring_visitor,
                                          multiset_partitions_taocp)
 from sympy.core.singleton import S
@@ -700,3 +701,13 @@ def test__partition():
         ['b', 'e'], ['a', 'c'], ['d']]
     output = (3, [1, 0, 1, 2, 0])
     assert _partition('abcde', *output) == [['b', 'e'], ['a', 'c'], ['d']]
+
+
+def test_cantor_product():
+    assert (list(cantor_product([1, 2, 3], [3, 4])) ==
+            [(1, 3), (1, 4), (2, 3), (2, 4), (3, 3), (3, 4)])
+    assert (sorted(cantor_product([1, 2, 3], [3, 4])) ==
+            sorted(itertools.product([1, 2, 3], [3, 4])))
+    assert (list(itertools.islice(cantor_product(itertools.count(1),
+                                                 itertools.count(1)), 7)) ==
+            [(1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (2, 3), (3, 1)])

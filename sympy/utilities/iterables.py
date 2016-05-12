@@ -1,8 +1,8 @@
 from collections import defaultdict
-from itertools import (combinations, permutations, product,
+from itertools import (combinations, permutations, product, cycle, count,
                        combinations_with_replacement)
 import random
-from operator import gt
+from operator import gt, mul
 
 from sympy.core import Basic, S
 # this is the logical location of these functions
@@ -2092,3 +2092,42 @@ def kbins(l, k, ordered=None):
     else:
         raise ValueError(
             'ordered must be one of 00, 01, 10 or 11, not %s' % ordered)
+
+
+def cantor_product(*args):
+    """ Breadth-first (diagonal) cartesian product of iterables.
+
+    Each iterable is advanced in turn in a round-robin fashion. As usual with
+    breadth-first, this comes at the cost of memory consumption.
+
+    >>> from itertools import islice, count
+    >>> list(islice(cantor_product(count(), count()), 9))
+    [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)]
+    """
+    def cartpi(*args):
+        """ Like itertools.product(), but supports infinite sequences."""
+        if args:
+            return (b + (a,) for b in cartpi(*args[:-1]) for a in args[-1])
+        return ((), )
+    # get iterators for items of args
+    argsit = list(map(iter, args))
+    # fetch initial values
+    try:
+        argslist = [[next(a)] for a in argsit]
+    except StopIteration:
+        return
+    yield tuple(a[0] for a in argslist)
+    # bookkeeping of which iterators still have values
+    stopped = len(args)*[False]
+    n = len(args)
+    while not all(stopped):
+        n = (n - 1) % len(args)
+        if stopped[n]:
+            continue
+        try:
+            argslist[n].append(next(argsit[n]))
+        except StopIteration:
+            stopped[n] = True
+            continue
+        for result in cartpi(*(argslist[:n] + [argslist[n][-1:]] + argslist[n + 1:])):
+            yield result
