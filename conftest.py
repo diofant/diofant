@@ -1,7 +1,5 @@
 import pytest
 
-from sympy.core.cache import clear_cache
-
 
 def pytest_report_header(config):
     from sympy.utilities.misc import ARCH
@@ -25,11 +23,6 @@ def pytest_terminal_summary(terminalreporter):
             terminalreporter.stats.get('failed', None)):
         terminalreporter.write_sep(
             ' ', 'DO *NOT* COMMIT!', red=True, bold=True)
-
-
-@pytest.fixture(autouse=True, scope='module')
-def file_clear_cache():
-    clear_cache()
 
 
 @pytest.fixture(autouse=True, scope='module')
