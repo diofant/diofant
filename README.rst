@@ -4,8 +4,8 @@ Diofant
 .. image:: https://travis-ci.org/diofant/diofant.svg?branch=master
     :target: https://travis-ci.org/diofant/diofant
 
-.. image:: https://codecov.io/github/diofant/diofant/coverage.svg?branch=master
-    :target: https://codecov.io/github/diofant/diofant?branch=master
+.. image:: https://coveralls.io/repos/diofant/diofant/badge.svg
+    :target: https://coveralls.io/r/diofant/diofant
 
 .. image:: https://readthedocs.org/projects/diofant/badge/?version=latest
     :target: https://readthedocs.org/projects/diofant/?badge=latest
