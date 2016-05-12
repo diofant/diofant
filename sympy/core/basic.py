@@ -993,7 +993,13 @@ class Basic(metaclass=ManagedProperties):
         if self in rule:
             return rule[self]
         elif rule:
-            args = tuple(a.xreplace(rule) for a in self.args)
+            args = []
+            for a in self.args:
+                try:
+                    args.append(a.xreplace(rule))
+                except AttributeError:
+                    args.append(a)
+            args = tuple(args)
             if not _aresame(args, self.args):
                 return self.func(*args)
         return self

@@ -972,7 +972,7 @@ def matrix2numpy(m, dtype=object):  # pragma: no cover
 
 
 @doctest_depends_on(modules=('numpy',))
-def symarray(prefix, shape):  # pragma: no cover
+def symarray(prefix, shape, **kwargs):  # pragma: no cover
     """Create a numpy ndarray of symbols (as an object array).
 
     The created symbols are named ``prefix_i1_i2_``...  You should thus provide a
@@ -988,6 +988,9 @@ def symarray(prefix, shape):  # pragma: no cover
     shape : int or tuple
       Shape of the created array.  If an int, the array is one-dimensional; for
       more than one dimension the shape must be a tuple.
+
+    \*\*kwargs : dict
+      keyword arguments passed on to Symbol
 
     Examples
     --------
@@ -1028,11 +1031,17 @@ def symarray(prefix, shape):  # pragma: no cover
      [[a_1_0_0 a_1_0_1]
       [a_1_1_0 a_1_1_1]
       [a_1_2_0 a_1_2_1]]]
+
+    For setting assumptions of the underlying Symbols:
+
+    >>> [s.is_real for s in symarray('a', 2, real=True)]
+    [True, True]
     """
     from numpy import empty, ndindex
     arr = empty(shape, dtype=object)
     for index in ndindex(shape):
-        arr[index] = Symbol('%s_%s' % (prefix, '_'.join(map(str, index))))
+        arr[index] = Symbol('%s_%s' % (prefix, '_'.join(map(str, index))),
+                            **kwargs)
     return arr
 
 

@@ -1521,6 +1521,9 @@ class LatexPrinter(Printer):
     def _print_Naturals(self, n):
         return r"\mathbb{N}"
 
+    def _print_Naturals0(self, n):
+        return r"\mathbb{N_0}"
+
     def _print_Integers(self, i):
         return r"\mathbb{Z}"
 
@@ -1839,6 +1842,12 @@ def latex(expr, **settings):
 
     >>> print(latex((2*tau)**Rational(7,2)))
     8 \sqrt{2} \tau^{\frac{7}{2}}
+
+    Not using a print statement for printing, results in double backslashes for
+    latex commands since that's the way Python escapes backslashes in strings.
+
+    >>> latex((2*tau)**Rational(7,2))
+    '8 \\sqrt{2} \\tau^{\\frac{7}{2}}'
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
     "grevlex") and "none". This parameter does nothing for Mul objects.

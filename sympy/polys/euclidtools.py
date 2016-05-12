@@ -890,6 +890,8 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
             return f, dmp_one(u, K), dmp_zero(u)
         else:
             return dmp_neg(f, u, K), dmp_ground(-K.one, u), dmp_zero(u)
+    elif dmp_one_p(f, u, K) or dmp_one_p(g, u, K):
+        return dmp_one(u, K), f, g
     elif query('USE_SIMPLIFY_GCD'):
         return _dmp_simplify_gcd(f, g, u, K)
 
