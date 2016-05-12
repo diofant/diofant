@@ -481,6 +481,11 @@ class Pow(Expr):
             elif self.base is S.NegativeOne:
                 return True
 
+    def _eval_is_bounded(self):
+        if self.exp.is_finite and self.exp.is_positive:
+            if self.base.is_bounded:
+                return True
+
     def _eval_is_finite(self):
         if self.exp.is_negative:
             if self.base.is_zero:

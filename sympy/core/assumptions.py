@@ -90,6 +90,11 @@ Here follows a list of possible assumption names:
         object absolute value is bounded (is value is
         arbitrarily large).  See [7]_, [8]_, [9]_.
 
+    bounded
+    unbounded
+        object is a bounded (unbounded) set [14]_
+        or is finite (infinite).
+
     negative
     nonnegative
         object can have only negative (only
@@ -149,7 +154,7 @@ References
 .. [11] http://en.wikipedia.org/wiki/Algebraic_number
 .. [12] http://en.wikipedia.org/wiki/Real_number
 .. [13] http://en.wikipedia.org/wiki/Extended_real_number_line
-
+.. [14] http://en.wikipedia.org/wiki/Bounded_set
 """
 
 from random import shuffle
@@ -195,6 +200,10 @@ _assume_rules = FactRules([
     'nonzero        ==  ~zero',
 
     'polar          -> commutative',
+
+    'unbounded      -> ~bounded',
+    'finite         -> bounded',
+    'infinite       -> unbounded',
 ])
 
 _assume_defined = frozenset(_assume_rules.defined_facts.copy())

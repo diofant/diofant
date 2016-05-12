@@ -399,6 +399,9 @@ class sin(TrigonometricFunction):
     def _eval_is_real(self):
         return self.args[0].is_real
 
+    def _eval_is_bounded(self):
+        return True
+
 
 class cos(TrigonometricFunction):
     """
@@ -773,6 +776,9 @@ class cos(TrigonometricFunction):
 
     def _eval_is_complex(self):
         return self.args[0].is_complex
+
+    def _eval_is_bounded(self):
+        return True
 
 
 class tan(TrigonometricFunction):

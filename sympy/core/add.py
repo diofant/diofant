@@ -446,6 +446,9 @@ class Add(Expr, AssocOp):
     def _eval_is_finite(self):
         return _fuzzy_group((a.is_finite for a in self.args), quick_exit=True)
 
+    def _eval_is_bounded(self):
+        return _fuzzy_group((a.is_bounded for a in self.args), quick_exit=True)
+
     def _eval_is_hermitian(self):
         return _fuzzy_group((a.is_hermitian for a in self.args), quick_exit=True)
 
