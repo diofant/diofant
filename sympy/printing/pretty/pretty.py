@@ -521,7 +521,7 @@ class PrettyPrinter(Printer):
         e, z, z0, dir = l.args
 
         E = self._print(e)
-        if e.is_Add:
+        if e.is_Add or e.is_Relational:
             E = prettyForm(*E.parens())
         Lim = prettyForm('lim')
 
