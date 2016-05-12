@@ -328,7 +328,7 @@ def test_limit():
     assert gruntz(1/li(x), x) == 0
     assert gruntz(1/Li(x), x) == 0
 
-    # issue skirpichev/omg#56
+    # issue diofant/diofant#56
     assert gruntz((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x) == oo
 
     # issue sympy/sympy#9471
@@ -439,7 +439,7 @@ def test_issue_8462():
     assert gruntz(16**x/(x*binomial(2*x, x)**2), x) == pi
 
 
-def test_omgissue_74():
+def test_diofantissue_74():
     from sympy.functions import sign
     assert gruntz(sign(log(1 + 1/x)), x) == +1
     assert gruntz(sign(log(1 - 1/x)), x) == -1
@@ -451,7 +451,7 @@ def test_omgissue_74():
     assert gruntz(sign(cos(pi/2 - 1/x)), x) == +1
 
 
-def test_omgissue_75():
+def test_diofantissue_75():
     assert gruntz(abs(log(x)), x) == oo
     assert gruntz(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
     assert gruntz(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo

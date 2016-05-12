@@ -507,7 +507,7 @@ class Basic(metaclass=ManagedProperties):
         if is_number is False:
             return False
         n, i = self.as_real_imag()
-        if not (self.is_Float and self._prec == 1):  # workaround for skirpichev/omg#161
+        if not (self.is_Float and self._prec == 1):  # workaround for diofant/diofant#161
             n, i = n.evalf(2), i.evalf(2)
         if not i.is_Number or not n.is_Number:
             return False

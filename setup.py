@@ -94,7 +94,7 @@ setup(name='sympy',
       maintainer='Sergey B Kirpichev',
       license='BSD',
       keywords="Math CAS",
-      url='http://omg.rtfd.io',
+      url='http://diofant.rtfd.io',
       packages=find_packages(),
       ext_modules=[],
       cmdclass={'test': test,
@@ -116,7 +116,7 @@ setup(name='sympy',
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],
           'gmpy': ["gmpy>=1.16"],
-          'plot': ["matplotlib"],
+          'plot': ["pyparsing!=2.1.2", "matplotlib"],
           'interactive': ["ipython>=2.3.0"],
       }
 )

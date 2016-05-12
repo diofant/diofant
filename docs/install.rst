@@ -13,8 +13,8 @@ Source
 If you are a developer or like to get the latest updates as they come, be
 sure to install from git::
 
-    $ git clone git://github.com/skirpichev/omg.git
-    $ cd omg
+    $ git clone git://github.com/diofant/diofant.git
+    $ cd diofant
     $ python setup.py develop
 
 .. note::

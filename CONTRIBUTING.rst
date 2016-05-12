@@ -63,8 +63,8 @@ This project adheres to `No Code of Conduct`_.  We are all adults.  We accept
 anyone's contributions.  Please, write good code.  Especially, please avoid
 writing **wrong** code (i.e. mathematically incorrect).  Nothing else matters.
 
-.. _GitHub issues: https://github.com/skirpichev/omg/issues
-.. _Pull Requests (PR): https://github.com/skirpichev/omg/pulls
+.. _GitHub issues: https://github.com/diofant/diofant/issues
+.. _Pull Requests (PR): https://github.com/diofant/diofant/pulls
 .. _BSD license: LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
 .. _No Code of Conduct: https://github.com/domgetter/NCoC

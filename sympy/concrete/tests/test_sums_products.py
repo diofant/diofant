@@ -860,5 +860,5 @@ def test_issue_8016():
         cos(pi*n/2)*gamma(m + 1)/gamma(n/2 + 1)/gamma(m - n/2 + 1)
 
 
-def test_omgissue_236():
+def test_diofantissue_236():
     assert summation(n/((n + 2)*(n + 4)*(n + 8)), (n, 1, oo)) == Rational(4, 35)
