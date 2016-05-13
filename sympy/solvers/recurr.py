@@ -58,7 +58,7 @@ from sympy.core.mul import Mul
 from sympy.core import sympify
 from sympy.simplify import simplify, hypersimp, hypersimilar
 from sympy.solvers import solve, solve_undetermined_coeffs
-from sympy.polys import Poly, quo, gcd, lcm, roots, resultant
+from sympy.polys import Poly, quo, gcd, lcm_list, roots, resultant
 from sympy.functions import binomial, factorial, FallingFactorial, RisingFactorial
 from sympy.matrices import Matrix, casoratian
 from sympy.concrete import product
@@ -707,57 +707,41 @@ def rsolve(f, y, init=None):
     """
     if isinstance(f, Equality):
         f = f.lhs - f.rhs
+    f = f.expand()
 
     n = y.args[0]
-    k = Wild('k', exclude=(n,))
-
-    # Preprocess user input to allow things like
-    # y(n) + a*(y(n + 1) + y(n - 1))/2
-    f = f.expand().collect(y.func(Wild('m', integer=True)))
 
     h_part = defaultdict(lambda: S.Zero)
     i_part = S.Zero
-    for g in Add.make_args(f):
-        coeff = S.One
-        kspec = None
-        for h in Mul.make_args(g):
-            if h.is_Function:
-                if h.func == y.func:
-                    result = h.args[0].match(n + k)
 
-                    if result is not None:
-                        kspec = int(result[k])
-                    else:
-                        raise ValueError(
-                            "'%s(%s+k)' expected, got '%s'" % (y.func, n, h))
-                else:
-                    raise ValueError(
-                        "'%s' expected, got '%s'" % (y.func, h.func))
+    for h, c in f.collect(y.func(Wild('n')), evaluate=False).items():
+        if h.func == y.func:
+            k = Wild('k', exclude=(n,))
+            r = h.args[0].match(n + k)
+            if r:
+                c = simplify(c)
+                if not c.is_rational_function(n):
+                    raise ValueError("Rational function of '%s' expected, got '%s'" % (n, c))
+                h_part[int(r[k])] = c
             else:
-                coeff *= h
-
-        if kspec is not None:
-            h_part[kspec] += coeff
+                raise ValueError("'%s(%s + Integer)' expected, got '%s'" % (y.func, n, h))
         else:
-            i_part += coeff
+            i_term = h*c
+            if i_term.find(y.func(Wild('k'))):
+                raise ValueError("Linear recurrence for '%s' expected, got '%s'" % (y.func, f))
+            i_part -= i_term
 
-    for k, coeff in h_part.items():
-        h_part[k] = simplify(coeff)
+    if not i_part.is_rational_function(n):
+        raise ValueError("Inhomogeneous part should be a rational function of '%s', got '%s'" % (n, i_part))
 
-    common = S.One
+    k_min, k_max = min(h_part.keys()), max(h_part.keys())
 
-    for coeff in h_part.values():
-        if coeff.is_rational_function(n):
-            if not coeff.is_polynomial(n):
-                common = lcm(common, coeff.as_numer_denom()[1], n)
-        else:
-            raise ValueError(
-                "Polynomial or rational function expected, got '%s'" % coeff)
+    if k_min < 0:
+        return rsolve(f.subs(n, n + abs(k_min)), y, init)
 
     i_numer, i_denom = i_part.as_numer_denom()
 
-    if i_denom.is_polynomial(n):
-        common = lcm(common, i_denom, n)
+    common = lcm_list([x.as_numer_denom()[1] for x in h_part.values()] + [i_denom])
 
     if common is not S.One:
         for k, coeff in h_part.items():
@@ -766,24 +750,9 @@ def rsolve(f, y, init=None):
 
         i_part = i_numer*quo(common, i_denom, n)
 
-    K_min = min(h_part.keys())
+    coeffs = [h_part[i] for i in range(k_max + 1)]
 
-    if K_min < 0:
-        K = abs(K_min)
-
-        H_part = defaultdict(lambda: S.Zero)
-        i_part = i_part.subs(n, n + K).expand()
-        common = common.subs(n, n + K).expand()
-
-        for k, coeff in h_part.items():
-            H_part[k + K] = coeff.subs(n, n + K).expand()
-    else:
-        H_part = h_part
-
-    K_max = max(H_part.keys())
-    coeffs = [H_part[i] for i in range(K_max + 1)]
-
-    result = rsolve_hyper(coeffs, -i_part, n, symbols=True)
+    result = rsolve_hyper(coeffs, i_part, n, symbols=True)
 
     if result is None:
         return
@@ -806,7 +775,7 @@ def rsolve(f, y, init=None):
                 if k.is_Function and k.func == y.func:
                     i = int(k.args[0])
                 else:
-                    raise ValueError("Integer or term expected, got '%s'" % k)
+                    raise ValueError("Integer or term '%s(Integer)' expected, got '%s'" % (y.func, k))
             try:
                 eq = solution.limit(n, i) - v
             except NotImplementedError:
