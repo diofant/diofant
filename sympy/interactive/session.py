@@ -1,6 +1,7 @@
 """Tools for setting up interactive sessions. """
 
 import ast
+import builtins
 
 
 class IntegerWrapper(ast.NodeTransformer):
@@ -18,64 +19,37 @@ class IntegerWrapper(ast.NodeTransformer):
         return node
 
 
-def enable_automatic_symbols(app):
-    """Allow IPython to automatially create symbols. """
-    # XXX: This should perhaps use ast, like IntegerWrapper above.
-    # This would avoid re-executing the code, which can lead to subtle
-    # issues.  For example:
-    #
-    # In [1]: a = 1
-    #
-    # In [2]: for i in range(3):
-    #    ...:     a += 1
-    #    ...:
-    #
-    # In [3]: a
-    # Out[3]: 4
-    #
-    # In [4]: a = 1
-    #
-    # In [5]: for i in range(3):
-    #    ...:     a += 1
-    #    ...:     print(b)
-    #    ...:
-    # b
-    # b
-    # b
-    #
-    # In [6]: a
-    # Out[6]: 5
-    #
-    # Note how the for loop is executed again because `b` was not defined, but `a`
-    # was already incremented once, so the result is that it is incremented
-    # multiple times.
+class AutomaticSymbols(ast.NodeTransformer):
+    """Add missing Symbol definitions automatically."""
+    def __init__(self, app):
+        super(AutomaticSymbols, self).__init__()
+        self.app = app
+        self.names = []
 
-    import re
-    re_nameerror = re.compile(
-        "name '(?P<symbol>[A-Za-z_][A-Za-z0-9_]*)' is not defined")
+    def visit_Module(self, node):
+        for s in node.body:
+            self.visit(s)
 
-    def _handler(self, etype, value, tb, tb_offset=None):
-        """Handle :exc:`NameError` exception and allow injection of missing symbols. """
-        match = re_nameerror.match(str(value))
+        for v in self.names:
+            if v in self.app.user_ns.keys() or v in builtins.__dir__():
+                continue
 
-        if match is not None:
-            # XXX: Make sure Symbol is in scope. Otherwise you'll get infinite recursion.
-            self.run_cell("%(symbol)s = Symbol('%(symbol)s')" %
-                          {'symbol': match.group("symbol")},
-                           store_history=False)
+            assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],
+                                value=ast.Call(func=ast.Name(id='Symbol',
+                                                             ctx=ast.Load()),
+                                args=[ast.Str(s=v)], keywords=[],
+                                starargs=None, kwargs=None))
+            node.body.insert(0, assign)
 
-            try:
-                code = self.user_ns['In'][-1]
-            except (KeyError, IndexError):
-                pass
-            else:
-                self.run_cell(code, store_history=False)
-                return
-            finally:
-                self.run_cell("del %s" % match.group("symbol"),
-                              store_history=False)
+        newnode = ast.Module(body=node.body)
+        ast.copy_location(newnode, node)
+        ast.fix_missing_locations(newnode)
+        return newnode
 
-    app.set_custom_exc((NameError,), _handler)
+    def visit_Name(self, node):
+        if isinstance(node.ctx, ast.Load):
+            self.names.append(node.id)
+        return node
 
 
 def init_ipython_session(argv=[], auto_symbols=False,
@@ -91,7 +65,7 @@ def init_ipython_session(argv=[], auto_symbols=False,
     app.initialize(argv)
 
     if auto_symbols:
-        enable_automatic_symbols(app.shell)
+        app.shell.ast_transformers.append(AutomaticSymbols(app.shell))
     if auto_int_to_Integer:
         app.shell.ast_transformers.append(IntegerWrapper())
 
