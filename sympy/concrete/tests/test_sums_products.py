@@ -559,6 +559,7 @@ def test_Sum_interface():
     assert Sum(0, (n, 0, oo)).doit() == 0
     pytest.raises(ValueError, lambda: Sum(1))
     pytest.raises(ValueError, lambda: summation(1))
+    pytest.raises(ValueError, lambda: Sum(x, (x, 1, 2, 3)))
 
 
 def test_eval_diff():

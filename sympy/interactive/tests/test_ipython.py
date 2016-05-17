@@ -3,7 +3,6 @@
 import ast
 
 from sympy.interactive.session import (init_ipython_session,
-                                       enable_automatic_symbols,
                                        IntegerWrapper)
 from sympy.core import Symbol, Rational, Integer
 from sympy.external import import_module
@@ -46,10 +45,8 @@ def test_automatic_symbols():
     # NOTE: Because of the way the hook works, you have to use run_cell(code,
     # True).  This means that the code must have no Out, or it will be printed
     # during the tests.
-    app = init_ipython_session()
+    app = init_ipython_session(auto_symbols=True)
     app.run_cell("from sympy import *")
-
-    enable_automatic_symbols(app)
 
     symbol = "verylongsymbolname"
     assert symbol not in app.user_ns
@@ -73,12 +70,11 @@ def test_automatic_symbols():
 
 def test_int_to_Integer():
     # XXX: Warning, don't test with == here.  0.5 == Rational(1, 2) is True!
-    app = init_ipython_session()
+    app = init_ipython_session(auto_int_to_Integer=True)
     app.run_cell("from sympy import Integer")
     app.run_cell("a = 1")
-    assert isinstance(app.user_ns['a'], int)
+    assert isinstance(app.user_ns['a'], Integer)
 
-    app.ast_transformers.append(IntegerWrapper())
     app.run_cell("a = 1/2")
     assert isinstance(app.user_ns['a'], Rational)
     app.run_cell("a = 1")

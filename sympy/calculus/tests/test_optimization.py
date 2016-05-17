@@ -1,6 +1,6 @@
 from sympy.core import oo, E
 from sympy.calculus import minimize, maximize
-from sympy.functions import exp
+from sympy.functions import exp, sign
 
 from sympy.abc import x
 
@@ -18,6 +18,7 @@ def test_minimize():
     assert minimize([x**2 - 1,
                      (x - 1)*(x - 2)*(x - 3)*(4 - x) >= 0]) == (0, {x: 1})
     assert minimize([x**2, (x + 2)*(x - 1)*(1 - x) >= 0]) == (1, {x: 1})
+    assert minimize(sign(x), x) == (-1, {x: 0})
 
 
 def test_maximize():
