@@ -1,12 +1,18 @@
-from sympy.core import Symbol, oo, Integer
+import pytest
+
+from sympy.core import oo, Integer
 from sympy.functions.elementary.miscellaneous import sqrt
 from sympy.polys import poly
 from sympy.polys.dispersion import dispersion, dispersionset
 
+from sympy.abc import x, y, a
+
 
 def test_dispersion():
-    x = Symbol("x")
-    a = Symbol("a")
+    pytest.raises(ValueError, lambda: dispersionset(poly(x*y, x, y),
+                                                    poly(x, x)))
+    pytest.raises(ValueError, lambda: dispersionset(poly(x, x),
+                                                    poly(y, y)))
 
     fp = poly(Integer(0), x)
     assert sorted(dispersionset(fp)) == [0]

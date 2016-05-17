@@ -1,6 +1,7 @@
 """Tools to assist importing optional external modules."""
 
 import sys
+from distutils.version import LooseVersion
 
 # Override these in the module to change the default warning behavior.
 # For example, you might set both to False before running the tests so that
@@ -142,29 +143,15 @@ def import_module(module, min_module_version=None, min_python_version=None,
         if warn_not_installed:
             warnings.warn("%s module is not installed" % module, UserWarning)
         return
-    except catch as e:
-        if warn_not_installed:
-            warnings.warn(
-                "%s module could not be used (%s)" % (module, repr(e)))
-        return
 
     if min_module_version:
         modversion = getattr(mod, module_version_attr)
         if module_version_attr_call_args is not None:
             modversion = modversion(*module_version_attr_call_args)
-        if modversion < min_module_version:
+        if LooseVersion(modversion) < LooseVersion(min_module_version):
             if warn_old_version:
-                # Attempt to create a pretty string version of the version
-                if isinstance(min_module_version, str):
-                    verstr = min_module_version
-                elif isinstance(min_module_version, (tuple, list)):
-                    verstr = '.'.join(map(str, min_module_version))
-                else:
-                    # Either don't know what this is.  Hopefully
-                    # it's something that has a nice str version, like an int.
-                    verstr = str(min_module_version)
                 warnings.warn("%s version is too old to use "
-                    "(%s or newer required)" % (module, verstr),
+                    "(%s or newer required)" % (module, min_module_version),
                     UserWarning)
             return
 

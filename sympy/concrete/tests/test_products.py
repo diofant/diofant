@@ -2,6 +2,7 @@ import pytest
 
 from sympy import (symbols, Symbol, product, factorial, rf, sqrt, cos,
                    Function, Product, Rational, Sum, oo, exp, log, S, simplify)
+from sympy.concrete.expr_with_intlimits import ReorderError
 
 a, k, n, m, x = symbols('a,k,n,m,x', integer=True)
 f = Function('f')
@@ -188,6 +189,7 @@ def test_simple_products():
     assert Product(x**k, (k, 1, n)).variables == [k]
 
     pytest.raises(ValueError, lambda: Product(n))
+    pytest.raises(ValueError, lambda: Product(n*k))
     pytest.raises(ValueError, lambda: Product(n, k))
     pytest.raises(ValueError, lambda: Product(n, k, 1))
     pytest.raises(ValueError, lambda: Product(n, k, 1, 10))
@@ -294,6 +296,15 @@ def test_change_index():
     assert Product(x*y, (x, a, b), (y, c, d)).change_index(x, x - 1, z) == \
         Product((z + 1)*y, (z, a - 1, b - 1), (y, c, d))
 
+    p = Product(x, (x, 1, 5))
+    pytest.raises(ValueError, lambda: p.change_index(x, x**2, y))
+    pytest.raises(ValueError, lambda: p.change_index(x, 2*x, y))
+
+
+def test_index():
+    p = Product(x, (x, 1, 3), (x, 1, 4))
+    pytest.raises(ValueError, lambda: p.index(x))
+
 
 def test_reorder():
     b, y, c, d, z = symbols('b, y, c, d, z', integer=True)
@@ -314,6 +325,9 @@ def test_reorder():
         Product(x*y, (y, c, d), (x, a, b))
     assert Product(x*y, (x, a, b), (y, c, d)).reorder((y, x)) == \
         Product(x*y, (y, c, d), (x, a, b))
+
+    pytest.raises(ValueError,
+                  lambda: Product(x*y, (x, a, b), (y, c, d)).reorder((x,)))
 
 
 def test_reverse_order():
@@ -338,6 +352,12 @@ def test_reverse_order():
            Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
     assert Product(x*y, (x, a, b), (y, 2, 5)).reverse_order(y, x) == \
            Product(x*y, (x, b + 1, a - 1), (y, 6, 1))
+
+
+def test_reorder_limit():
+    x, y, a, b, c, d = symbols('x, y, a, b, c, d', integer=True)
+    pytest.raises(ReorderError,
+                  lambda: Product(x**2, (x, a, b), (y, x, d)).reorder_limit(1, 0))
 
 
 def test_rewrite_Sum():
