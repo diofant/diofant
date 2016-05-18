@@ -216,24 +216,23 @@ def _solve_lambert(f, symbol, gens):
     #         log(c) + log(B) = log(R - d*log(a*B + b))
 
     soln = []
-    if not soln:
-        mainlog = _mostfunc(lhs, log, symbol)
-        if mainlog:
-            if lhs.is_Mul and rhs != 0:
-                soln = _lambert(log(lhs) - log(rhs), symbol)
-            elif lhs.is_Add:
-                other = lhs.subs(mainlog, 0)
-                if other and not other.is_Add and [
-                        tmp for tmp in other.atoms(Pow)
-                        if symbol in tmp.free_symbols]:
-                    if not rhs:
-                        diff = log(other) - log(other - lhs)
-                    else:
-                        diff = log(lhs - other) - log(rhs - other)
-                    soln = _lambert(expand_log(diff), symbol)
+    mainlog = _mostfunc(lhs, log, symbol)
+    if mainlog:
+        if lhs.is_Mul and rhs != 0:
+            soln = _lambert(log(lhs) - log(rhs), symbol)
+        elif lhs.is_Add:
+            other = lhs.subs(mainlog, 0)
+            if other and not other.is_Add and [
+                    tmp for tmp in other.atoms(Pow)
+                    if symbol in tmp.free_symbols]:
+                if not rhs:
+                    diff = log(other) - log(other - lhs)
                 else:
-                    # it's ready to go
-                    soln = _lambert(lhs - rhs, symbol)
+                    diff = log(lhs - other) - log(rhs - other)
+                soln = _lambert(expand_log(diff), symbol)
+            else:
+                # it's ready to go
+                soln = _lambert(lhs - rhs, symbol)
 
     # 2) d*p**(a*B + b) + c*B = R
     #     collect on main pow
