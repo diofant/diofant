@@ -5,7 +5,7 @@ SymPy is written entirely in Python and does not require any external
 libraries, except optionally for plotting support.
 """
 
-from sympy.release import __version__
+__version__ = "0.8a0"
 
 
 def __sympy_debug():

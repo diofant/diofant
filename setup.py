@@ -4,6 +4,7 @@ This script uses Setuptools (http://pythonhosted.org/setuptools/), a
 collection of enhancements to the standard Python distutils.
 """
 
+import re
 import sys
 import os
 import shutil
@@ -83,9 +84,14 @@ class test(TestCommand):
         sys.exit(errno)
 
 
-exec(open('sympy/release.py').read())
 with open('sympy/__init__.py') as f:
-    long_description = f.read().split('"""')[1]
+    source = f.read()
+    long_description = source.split('"""')[1]
+
+    for line in source.splitlines():
+        m = re.match('^__version__ = "([0-9a.]+)".*$', line)
+        if m:
+            __version__ = m.group(1)
 
 setup(name='sympy',
       version=__version__,
