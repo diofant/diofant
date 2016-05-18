@@ -1066,8 +1066,6 @@ class Rational(Number):
     1/100
     >>> Rational(".1")
     1/10
-    >>> Rational('1e-2/3.2')
-    1/320
 
     The conversion of other types of strings can be handled by
     the sympify() function, and conversion of floats to expressions
@@ -1126,38 +1124,26 @@ class Rational(Number):
                 return p
 
             if isinstance(p, str):
-                p = p.replace(' ', '')
                 try:
-                    # we might have a Float
-                    neg_pow, digits, expt = decimal.Decimal(p).as_tuple()
-                    p = [1, -1][neg_pow]*int("".join(str(x) for x in digits))
-                    if expt > 0:
-                        # TODO: this branch needs a test
-                        return Rational(p*Pow(10, expt), 1)
-                    return Rational(p, Pow(10, -expt))
-                except decimal.InvalidOperation:
-                    f = regex.match('^([-+]?[0-9]+)/([0-9]+)$', p)
-                    if f:
-                        n, d = f.groups()
-                        return Rational(int(n), int(d))
-                    elif p.count('/') == 1:
-                        p, q = p.split('/')
-                        return Rational(Rational(p), Rational(q))
-                    else:
-                        pass  # error will raise below
-            else:
+                    p = fractions.Fraction(p)
+                except ValueError:
+                    pass  # error will raise below
+            elif isinstance(p, float):
+                p = fractions.Fraction(p)
+
+            if not isinstance(p, str):
                 try:
                     if isinstance(p, fractions.Fraction):
                         return Rational(p.numerator, p.denominator)
                 except NameError:
                     pass  # error will raise below
 
-                if isinstance(p, (float, Float)):
+                if isinstance(p, Float):
                     return Rational(*float(p).as_integer_ratio())
 
             if not isinstance(p, SYMPY_INTS + (Rational,)):
                 raise TypeError('invalid input: %s' % p)
-            q = S.One
+            q = q or S.One
         else:
             p = Rational(p)
             q = Rational(q)
@@ -1203,49 +1189,8 @@ class Rational(Number):
         311/99
 
         """
-        # Algorithm notes: For any real number x, define a *best upper
-        # approximation* to x to be a rational number p/q such that:
-        #
-        #   (1) p/q >= x, and
-        #   (2) if p/q > r/s >= x then s > q, for any rational r/s.
-        #
-        # Define *best lower approximation* similarly.  Then it can be
-        # proved that a rational number is a best upper or lower
-        # approximation to x if, and only if, it is a convergent or
-        # semiconvergent of the (unique shortest) continued fraction
-        # associated to x.
-        #
-        # To find a best rational approximation with denominator <= M,
-        # we find the best upper and lower approximations with
-        # denominator <= M and take whichever of these is closer to x.
-        # In the event of a tie, the bound with smaller denominator is
-        # chosen.  If both denominators are equal (which can happen
-        # only when max_denominator == 1 and self is midway between
-        # two integers) the lower bound---i.e., the floor of self, is
-        # taken.
-
-        if max_denominator < 1:
-            raise ValueError("max_denominator should be at least 1")
-        if self.q <= max_denominator:
-            return self
-
-        p0, q0, p1, q1 = 0, 1, 1, 0
-        n, d = self.p, self.q
-        while True:
-            a = n//d
-            q2 = q0 + a*q1
-            if q2 > max_denominator:
-                break
-            p0, q0, p1, q1 = p1, q1, p0 + a*p1, q2
-            n, d = d, n - a*d
-
-        k = (max_denominator - q0)//q1
-        bound1 = Rational(p0 + k*p1, q0 + k*q1)
-        bound2 = Rational(p1, q1)
-        if abs(bound2 - self) <= abs(bound1 - self):
-            return bound2
-        else:
-            return bound1
+        f = fractions.Fraction(self.p, self.q)
+        return Rational(f.limit_denominator(fractions.Fraction(int(max_denominator))))
 
     def __getnewargs__(self):
         return (self.p, self.q)

@@ -1,6 +1,9 @@
 Guidelines for contributing
 ===========================
 
+This project adheres to `No Code of Conduct`_.  Contributions will
+be judged by their technical merit.  Nothing else matters.
+
 .. _reporting-issues:
 
 Reporting issues
@@ -8,16 +11,14 @@ Reporting issues
 
 When opening a new issue, please take the following steps:
 
-1. Search `GitHub issues`_ for your issue to avoid duplicate
-   reports.  Keyword searches for your error messages are most helpful.
+1. Please search `GitHub issues`_ to avoid duplicate reports.
 
-2. If possible, try updating to master and reproducing your issue,
-   because we may have already fixed it.
+2. If possible, try updating to master and reproducing your issue.
 
 3. Try to include a minimal reproducible test case as an example.
 
-4. Include relevant system information (python version,
-   program version, any relevant package versions e.g. mpmath's).
+4. Include any relevant details of your local setup (i.e. Python
+   version, installed libraries).
 
 Contributing code
 -----------------
@@ -26,45 +27,43 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 1. PR can be submitted as soon as there is code worth discussing.
 
-2. Please put your work on the branch of your fork, not
-   in the master branch.
+2. Please put your work on the branch of your fork, not in the
+   master branch.  PR should generally be made against master.
 
-3. PR should generally be made against master.
-
-4. One logical change per commit.  Make good commit messages: short
+3. One logical change per commit.  Make good commit messages: short
    (<= 78 characters) one-line summary, then newline followed by
    verbose description of your changes.
+
+4. Please conform to `PEP 8`_ for code formatting, check
+   code quality with `flake8`_ tool::
+
+       $ python setup.py flake8
 
 5. PR should include tests:
 
    1. Bugfixes should include regression tests.
-   2. All new functionality should be tested.
+   2. All new functionality should be tested, every new line
+      should be covered by tests.
    3. All new public interfaces (methods, functions or classes) should
       have doctests showing how to use them.
    4. Keep in mind, doctests are not tests.  Think of them as
       examples that happen to be tested.
 
-6. Usually, it's good idea to be sure that all tests
+6. Usually, it's good idea to be sure that all existing tests
    pass and you don't break anything, so please run::
 
-       $ python setup.py flake8
        $ python setup.py test
 
 License
 -------
 
-By submitting a PR, you agree to license your code under the SymPy's
+By submitting a PR, you agree to license your code under the
 `BSD license`_ and `LGPL`_.
-
-Contributor Code of Conduct
----------------------------
-
-This project adheres to `No Code of Conduct`_.  We are all adults.  We accept
-anyone's contributions.  Please, write good code.  Especially, please avoid
-writing **wrong** code (i.e. mathematically incorrect).  Nothing else matters.
 
 .. _GitHub issues: https://github.com/diofant/diofant/issues
 .. _Pull Requests (PR): https://github.com/diofant/diofant/pulls
+.. _PEP 8: http://www.python.org/dev/peps/pep-0008
+.. _flake8: http://flake8.rtfd.io/
 .. _BSD license: LICENSE
 .. _LGPL: https://www.gnu.org/copyleft/lesser.html
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
