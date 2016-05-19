@@ -1520,10 +1520,10 @@ def check_linear_2eq_order1(eq, func, func_coef):
             if not j.has(t):
                 q = j
             if q and n == 0:
-                if ((r['b2']/j - r['b1'])/(r['c1'] - r['c2']/j)) == j:
+                if cancel((r['b2']/j - r['b1'])/(r['c1'] - r['c2']/j)) == j:
                     p = 1
             elif q and n == 1:
-                if ((r['b1']/j - r['b2'])/(r['c2'] - r['c1']/j)) == j:
+                if cancel((r['b1']/j - r['b2'])/(r['c2'] - r['c1']/j)) == j:
                     p = 2
     # End of condition for type 6
 
@@ -6757,12 +6757,12 @@ def _linear_2eq_order1_type6(x, y, t, r):
             if not j.has(t):
                 q = j
             if q != 0 and n == 0:
-                if ((r['c']/j - r['a'])/(r['b'] - r['d']/j)) == j:
+                if cancel((r['c']/j - r['a'])/(r['b'] - r['d']/j)) == j:
                     p = 1
                     s = j
                     break
             if q != 0 and n == 1:
-                if ((r['a']/j - r['c'])/(r['d'] - r['b']/j)) == j:
+                if cancel((r['a']/j - r['c'])/(r['d'] - r['b']/j)) == j:
                     p = 2
                     s = j
                     break
