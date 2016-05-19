@@ -6691,8 +6691,7 @@ def _linear_2eq_order1_type4(x, y, t, r):
 
 
 def _linear_2eq_order1_type5(x, y, t, r):
-    r"""
-    The equations of this type of ode are .
+    r"""The equations of this type of ode are
 
     .. math:: x' = f(t) x + g(t) y
 
@@ -6705,7 +6704,6 @@ def _linear_2eq_order1_type5(x, y, t, r):
     leads to a system of constant coefficient linear differential equations
 
     .. math:: u'(T) = v , v'(T) = au + bv
-
     """
     C1, C2, C3, C4 = symbols('C1:5')
     u, v = symbols('u, v', cls=Function)
@@ -6717,12 +6715,8 @@ def _linear_2eq_order1_type5(x, y, t, r):
         sol = dsolve(eq)
         sol1 = exp(Integral(r['a'], t))*sol[0].rhs.subs(T, Integral(r['b'], t))
         sol2 = exp(Integral(r['a'], t))*sol[1].rhs.subs(T, Integral(r['b'], t))
-    if not cancel(r['a']/r['d']).has(t):
-        p = cancel(r['a']/r['d'])
-        q = cancel((r['b']-r['c'])/r['d'])
-        sol = dsolve(Eq(diff(u(T), T), v(T)), Eq(diff(v(T), T), p*u(T)+q*v(T)))
-        sol1 = exp(Integral(r['c'], t))*sol[1].rhs.subs(T, Integral(r['d'], t))
-        sol2 = exp(Integral(r['c'], t))*sol[0].rhs.subs(T, Integral(r['d'], t))
+    else:  # pragma: no cover
+        raise NotImplementedError
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
