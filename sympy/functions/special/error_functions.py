@@ -108,9 +108,7 @@ class erf(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.One
             elif arg is S.NegativeInfinity:
                 return S.NegativeOne
@@ -300,9 +298,7 @@ class erfc(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return S.One
@@ -480,9 +476,7 @@ class erfi(Function):
     @classmethod
     def eval(cls, z):
         if z.is_Number:
-            if z is S.NaN:
-                return S.NaN
-            elif z is S.Zero:
+            if z is S.Zero:
                 return S.Zero
             elif z is S.Infinity:
                 return S.Infinity
@@ -648,9 +642,7 @@ class erf2(Function):
         I = S.Infinity
         N = S.NegativeInfinity
         O = S.Zero
-        if x is S.NaN or y is S.NaN:
-            return S.NaN
-        elif x == y:
+        if x == y:
             return S.Zero
         elif (x is I or x is N or x is O) or (y is I or y is N or y is O):
             return erf(y) - erf(x)
@@ -765,9 +757,7 @@ class erfinv(Function):
 
     @classmethod
     def eval(cls, z):
-        if z is S.NaN:
-            return S.NaN
-        elif z is S.NegativeOne:
+        if z is S.NegativeOne:
             return S.NegativeInfinity
         elif z is S.Zero:
             return S.Zero
@@ -843,9 +833,7 @@ class erfcinv (Function):
 
     @classmethod
     def eval(cls, z):
-        if z is S.NaN:
-            return S.NaN
-        elif z is S.Zero:
+        if z is S.Zero:
             return S.Infinity
         elif z is S.One:
             return S.Zero
@@ -917,9 +905,7 @@ class erf2inv(Function):
 
     @classmethod
     def eval(cls, x, y):
-        if x is S.NaN or y is S.NaN:
-            return S.NaN
-        elif x is S.Zero and y is S.Zero:
+        if x is S.Zero and y is S.Zero:
             return S.Zero
         elif x is S.Zero and y is S.One:
             return S.Infinity

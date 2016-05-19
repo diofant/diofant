@@ -259,8 +259,6 @@ class subfactorial(CombinatorialFunction):
         if arg.is_Number:
             if arg.is_Integer and arg.is_nonnegative:
                 return cls._eval(arg)
-            elif arg is S.NaN:
-                return S.NaN
             elif arg is S.Infinity:
                 return S.Infinity
 
@@ -435,14 +433,10 @@ class RisingFactorial(CombinatorialFunction):
         x = sympify(x)
         k = sympify(k)
 
-        if x is S.NaN:
-            return S.NaN
-        elif x is S.One:
+        if x is S.One:
             return factorial(k)
         elif k.is_Integer:
-            if k is S.NaN:
-                return S.NaN
-            elif k is S.Zero:
+            if k is S.Zero:
                 return S.One
             else:
                 if k.is_positive:
@@ -511,12 +505,8 @@ class FallingFactorial(CombinatorialFunction):
         x = sympify(x)
         k = sympify(k)
 
-        if x is S.NaN:
-            return S.NaN
-        elif k.is_Integer:
-            if k is S.NaN:
-                return S.NaN
-            elif k is S.Zero:
+        if k.is_Integer:
+            if k is S.Zero:
                 return S.One
             else:
                 if k.is_positive:

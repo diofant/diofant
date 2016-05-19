@@ -202,6 +202,9 @@ class Application(Basic, metaclass=FunctionClass):
             raise ValueError("Unknown options: %s" % options)
 
         if evaluate:
+            if S.NaN in args:
+                return S.NaN
+
             evaluated = cls.eval(*args)
             if evaluated is not None:
                 return evaluated
