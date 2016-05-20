@@ -1850,46 +1850,6 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
         num3, den3 = r3[c].as_numer_denom()
         if solve([num1*u - den1*(v - w), num2*v - den2*(w - u), num3*w - den3*(u - v)], [u, v]):
             return 'type2'
-    r = eq[0].match(diff(x(t), t) - (F2-F3))
-    if r:
-        r1 = collect_const(r[F2]).match(c*F2)
-        r1.update(collect_const(r[F3]).match(b*F3))
-        if r1:
-            if eq[1].has(r1[F2]) and not eq[1].has(r1[F3]):
-                r1[F2], r1[F3] = r1[F3], r1[F2]
-                r1[c], r1[b] = -r1[b], -r1[c]
-            r2 = eq[1].match(diff(y(t), t) - a*r1[F3] + r1[c]*F1)
-        if r2:
-            r3 = (eq[2] == diff(z(t), t) - r1[b]*r2[F1] + r2[a]*r1[F2])
-        if r1 and r2 and r3:
-            return 'type3'
-    r = eq[0].match(diff(x(t), t) - z(t)*F2 + y(t)*F3)
-    if r:
-        r1 = collect_const(r[F2]).match(c*F2)
-        r1.update(collect_const(r[F3]).match(b*F3))
-        if r1:
-            if eq[1].has(r1[F2]) and not eq[1].has(r1[F3]):
-                r1[F2], r1[F3] = r1[F3], r1[F2]
-                r1[c], r1[b] = -r1[b], -r1[c]
-            r2 = (diff(y(t), t) - eq[1]).match(a*x(t)*r1[F3] - r1[c]*z(t)*F1)
-        if r2:
-            r3 = (diff(z(t), t) - eq[2] == r1[b]*y(t)*r2[F1] - r2[a]*x(t)*r1[F2])
-        if r1 and r2 and r3:
-            return 'type4'
-    r = (diff(x(t), t) - eq[0]).match(x(t)*(F2 - F3))
-    if r:
-        r1 = collect_const(r[F2]).match(c*F2)
-        r1.update(collect_const(r[F3]).match(b*F3))
-        if r1:
-            if eq[1].has(r1[F2]) and not eq[1].has(r1[F3]):
-                r1[F2], r1[F3] = r1[F3], r1[F2]
-                r1[c], r1[b] = -r1[b], -r1[c]
-            r2 = (diff(y(t), t) - eq[1]).match(y(t)*(a*r1[F3] - r1[c]*F1))
-        if r2:
-            r3 = (diff(z(t), t) - eq[2] == z(t)*(r1[b]*r2[F1] - r2[a]*r1[F2]))
-        if r1 and r2 and r3:
-            return 'type5'
-    return
 
 
 def check_nonlinear_3eq_order2(eq, func, func_coef):
@@ -6252,85 +6212,6 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
             pde = -xitry.diff(x)*h - xitry.diff(y)*h**2 - xitry*hx - hy
             if not simplify(expand(pde)):
                 return [{xi: xitry.subs(y, func), eta: Integer(1)}]
-
-
-def lie_heuristic_abaco2_unique_general(match, comp=False):
-    r"""
-    This heuristic finds if infinitesimals of the form `\eta = f(x)`, `\xi = g(y)`
-    without making any assumptions on `h`.
-
-    The complete sequence of steps is given in the paper mentioned below.
-
-    References
-    ==========
-    - E.S. Cheb-Terrab, A.D. Roche, Symmetries and First Order
-      ODE Patterns, pp. 10 - pp. 12
-
-    """
-    xieta = []
-    h = match['h']
-    hx = match['hx']
-    hy = match['hy']
-    func = match['func']
-    hinv = match['hinv']
-    x = func.args[0]
-    y = match['y']
-    xi = Function('xi')(x, func)
-    eta = Function('eta')(x, func)
-
-    C = Integer(0)
-    A = hx.diff(y)
-    B = hy.diff(y) + hy**2
-    C = hx.diff(x) - hx**2
-
-    if not (A and B and C):
-        return
-
-    Ax = A.diff(x)
-    Ay = A.diff(y)
-    Axy = Ax.diff(y)
-    Axx = Ax.diff(x)
-    Ayy = Ay.diff(y)
-    D = simplify(2*Axy + hx*Ay - Ax*hy + (hx*hy + 2*A)*A)*A - 3*Ax*Ay
-    if not D:
-        E1 = simplify(3*Ax**2 + ((hx**2 + 2*C)*A - 2*Axx)*A)
-        if E1:
-            E2 = simplify((2*Ayy + (2*B - hy**2)*A)*A - 3*Ay**2)
-            if not E2:
-                E3 = simplify(
-                    E1*((28*Ax + 4*hx*A)*A**3 - E1*(hy*A + Ay)) - E1.diff(x)*8*A**4)
-                if not E3:
-                    etaval = cancel((4*A**3*(Ax - hx*A) + E1*(hy*A - Ay))/(Integer(2)*A*E1))
-                    if x not in etaval:
-                        try:
-                            etaval = exp(integrate(etaval, y))
-                        except NotImplementedError:
-                            pass
-                        else:
-                            xival = -4*A**3*etaval/E1
-                            if y not in xival:
-                                return [{xi: xival, eta: etaval.subs(y, func)}]
-
-    else:
-        E1 = simplify((2*Ayy + (2*B - hy**2)*A)*A - 3*Ay**2)
-        if E1:
-            E2 = simplify(
-                4*A**3*D - D**2 + E1*((2*Axx - (hx**2 + 2*C)*A)*A - 3*Ax**2))
-            if not E2:
-                E3 = simplify(
-                    -(A*D)*E1.diff(y) + ((E1.diff(x) - hy*D)*A + 3*Ay*D +
-                                         (A*hx - 3*Ax)*E1)*E1)
-                if not E3:
-                    etaval = cancel(((A*hx - Ax)*E1 - (Ay + A*hy)*D)/(Integer(2)*A*D))
-                    if x not in etaval:
-                        try:
-                            etaval = exp(integrate(etaval, y))
-                        except NotImplementedError:
-                            pass
-                        else:
-                            xival = -E1*etaval/D
-                            if y not in xival:
-                                return [{xi: xival, eta: etaval.subs(y, func)}]
 
 
 def lie_heuristic_linear(match, comp=False):

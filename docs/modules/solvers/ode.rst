@@ -174,10 +174,6 @@ abaco2_unique_unknown
 ^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode.lie_heuristic_abaco2_unique_unknown
 
-abaco2_unique_general
-^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode.lie_heuristic_abaco2_unique_general
-
 linear
 ^^^^^^
 .. autofunction:: sympy.solvers.ode.lie_heuristic_linear
