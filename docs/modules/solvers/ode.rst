@@ -303,18 +303,6 @@ system_of_odes_nonlinear_3eq_order1_type2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type2
 
-system_of_odes_nonlinear_3eq_order1_type3
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type3
-
-system_of_odes_nonlinear_3eq_order1_type4
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type4
-
-system_of_odes_nonlinear_3eq_order1_type5
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type5
-
 Information on the ode module
 -----------------------------
 
