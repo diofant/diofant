@@ -31,7 +31,7 @@ h = Function('h')
 def test_linear_2eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
     k, l, m, n = symbols('k, l, m, n', Integer=True)
-    t = Symbol('t')
+    t, a = symbols('t, a')
     x0, y0 = symbols('x0, y0', cls=Function)
     eq1 = (Eq(diff(x(t), t), 9*y(t)), Eq(diff(y(t), t), 12*x(t)))
     sol1 = [Eq(x(t), 9*C1*exp(-6*sqrt(3)*t) + 9*C2*exp(6*sqrt(3)*t)),
@@ -81,6 +81,11 @@ def test_linear_2eq_order1():
     Eq(y(t), C1*y0(t) + C2*(y0(t)*Integral(t**2*exp(Integral(5*t, t))*exp(Integral(9*t**2 + 5*t, t))/x0(t)**2, t) +
     exp(Integral(5*t, t))*exp(Integral(9*t**2 + 5*t, t))/x0(t)))]
     assert dsolve(eq10) == sol10
+
+    eq11 = (Eq(diff(x(t), t), f(t)*x(t) + g(t)*y(t)), Eq(diff(y(t), t), a*(f(t) + a*h(t))*x(t) + a*(g(t) - h(t))*y(t)))
+    sol11 = [Eq(x(t), exp(-Integral(-a*g(t) - f(t), t))*(C1 - Integral(-exp(-a*Integral(h(t), t))*exp(Integral(-a*g(t) - f(t), t))*C2*g(t), t))),
+             Eq(y(t), exp(-Integral(-a*g(t) - f(t), t))*a*(C1 - Integral(-exp(-a*Integral(h(t), t))*exp(Integral(-a*g(t) - f(t), t))*C2*g(t), t)) + exp(-a*Integral(g(t) - (a*g(t) - a*h(t))/a, t))*C1)]
+    assert dsolve(eq11) == sol11
 
 
 def test_linear_2eq_order1_nonhomog_linear():

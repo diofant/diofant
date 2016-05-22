@@ -60,8 +60,6 @@ class DiracDelta(Function):
             raise ValueError("Error: the second argument of DiracDelta must be \
             a non-negative integer, %s given instead." % (k,))
         arg = sympify(arg)
-        if arg is S.NaN:
-            return S.NaN
         if arg.is_positive or arg.is_negative:
             return S.Zero
 
@@ -226,9 +224,7 @@ class Heaviside(Function):
     @classmethod
     def eval(cls, arg):
         arg = sympify(arg)
-        if arg is S.NaN:
-            return S.NaN
-        elif im(arg).is_nonzero:
+        if im(arg).is_nonzero:
             raise ValueError("Function defined only for Real Values. Complex part: %s  found in %s ." % (repr(im(arg)), repr(arg)) )
         elif arg.is_negative:
             return S.Zero

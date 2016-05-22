@@ -48,9 +48,7 @@ class re(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg is S.NaN:
-            return S.NaN
-        elif arg.is_extended_real:
+        if arg.is_extended_real:
             return arg
         elif arg.is_imaginary or (S.ImaginaryUnit*arg).is_extended_real:
             return S.Zero
@@ -136,9 +134,7 @@ class im(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg is S.NaN:
-            return S.NaN
-        elif arg.is_extended_real:
+        if arg.is_extended_real:
             return S.Zero
         elif arg.is_imaginary or (S.ImaginaryUnit*arg).is_extended_real:
             return -S.ImaginaryUnit * arg
@@ -276,8 +272,6 @@ class sign(Function):
             if c is S.One and len(unk) == len(args):
                 return
             return s * cls(arg._new_rawargs(*unk))
-        if arg is S.NaN:
-            return S.NaN
         if arg.is_zero:  # it may be an Expr that is zero
             return S.Zero
         if arg.is_positive:
@@ -443,8 +437,6 @@ class Abs(Function):
             known = Mul(*known)
             unk = cls(Mul(*unk), evaluate=False) if unk else S.One
             return known*unk
-        if arg is S.NaN:
-            return S.NaN
         if arg.is_Pow:
             base, exponent = arg.as_base_exp()
             if base.is_extended_real:

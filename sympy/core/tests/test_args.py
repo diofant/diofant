@@ -1757,72 +1757,6 @@ def test_sympy__integrals__transforms__HankelTransform():
     assert _test_args(HankelTransform(2, x, y, 0))
 
 
-@pytest.mark.xfail
-def test_sympy__liealgebras__cartan_type__CartanType_generator():
-    from sympy.liealgebras.cartan_type import CartanType_generator
-    assert _test_args(CartanType_generator("A2"))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__cartan_type__Standard_Cartan():
-    from sympy.liealgebras.cartan_type import Standard_Cartan
-    assert _test_args(Standard_Cartan("A", 2))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__weyl_group__WeylGroup():
-    from sympy.liealgebras.weyl_group import WeylGroup
-    assert _test_args(WeylGroup("B4"))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__root_system__RootSystem():
-    from sympy.liealgebras.root_system import RootSystem
-    assert _test_args(RootSystem("A2"))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_a__TypeA():
-    from sympy.liealgebras.type_a import TypeA
-    assert _test_args(TypeA(2))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_b__TypeB():
-    from sympy.liealgebras.type_b import TypeB
-    assert _test_args(TypeB(4))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_c__TypeC():
-    from sympy.liealgebras.type_c import TypeC
-    assert _test_args(TypeC(4))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_d__TypeD():
-    from sympy.liealgebras.type_d import TypeD
-    assert _test_args(TypeD(4))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_e__TypeE():
-    from sympy.liealgebras.type_e import TypeE
-    assert _test_args(TypeE(6))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_f__TypeF():
-    from sympy.liealgebras.type_f import TypeF
-    assert _test_args(TypeF(4))
-
-
-@pytest.mark.xfail
-def test_sympy__liealgebras__type_g__TypeG():
-    from sympy.liealgebras.type_g import TypeG
-    assert _test_args(TypeG(2))
-
-
 def test_sympy__logic__boolalg__And():
     from sympy.logic.boolalg import And
     assert _test_args(And(x, y, 2))
@@ -2461,65 +2395,6 @@ def test_sympy__diffgeom__diffgeom__CovarDerivativeOp():
     cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
     v = BaseVectorField(cs, 0)
     _test_args(CovarDerivativeOp(v, [[[0, ]*3, ]*3, ]*3))
-
-
-def test_sympy__categories__baseclasses__Class():
-    from sympy.categories.baseclasses import Class
-    assert _test_args(Class())
-
-
-def test_sympy__categories__baseclasses__Object():
-    from sympy.categories import Object
-    assert _test_args(Object("A"))
-
-
-@pytest.mark.xfail
-def test_sympy__categories__baseclasses__Morphism():
-    from sympy.categories import Object, Morphism
-    assert _test_args(Morphism(Object("A"), Object("B")))
-
-
-def test_sympy__categories__baseclasses__IdentityMorphism():
-    from sympy.categories import Object, IdentityMorphism
-    assert _test_args(IdentityMorphism(Object("A")))
-
-
-def test_sympy__categories__baseclasses__NamedMorphism():
-    from sympy.categories import Object, NamedMorphism
-    assert _test_args(NamedMorphism(Object("A"), Object("B"), "f"))
-
-
-def test_sympy__categories__baseclasses__CompositeMorphism():
-    from sympy.categories import Object, NamedMorphism, CompositeMorphism
-    A = Object("A")
-    B = Object("B")
-    C = Object("C")
-    f = NamedMorphism(A, B, "f")
-    g = NamedMorphism(B, C, "g")
-    assert _test_args(CompositeMorphism(f, g))
-
-
-def test_sympy__categories__baseclasses__Diagram():
-    from sympy.categories import Object, NamedMorphism, Diagram
-    A = Object("A")
-    B = Object("B")
-    C = Object("C")
-    f = NamedMorphism(A, B, "f")
-    d = Diagram([f])
-    assert _test_args(d)
-
-
-def test_sympy__categories__baseclasses__Category():
-    from sympy.categories import Object, NamedMorphism, Diagram, Category
-    A = Object("A")
-    B = Object("B")
-    C = Object("C")
-    f = NamedMorphism(A, B, "f")
-    g = NamedMorphism(B, C, "g")
-    d1 = Diagram([f, g])
-    d2 = Diagram([f])
-    K = Category("K", commutative_diagrams=[d1, d2])
-    assert _test_args(K)
 
 
 def test_sympy__ntheory__factor___totient():

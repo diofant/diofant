@@ -68,9 +68,7 @@ class sinh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.NegativeInfinity
@@ -224,9 +222,7 @@ class cosh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Infinity
@@ -379,9 +375,7 @@ class tanh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.One
             elif arg is S.NegativeInfinity:
                 return S.NegativeOne
@@ -511,9 +505,7 @@ class coth(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.One
             elif arg is S.NegativeInfinity:
                 return S.NegativeOne
@@ -804,9 +796,7 @@ class asinh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.NegativeInfinity
@@ -887,9 +877,7 @@ class acosh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Infinity
@@ -992,9 +980,7 @@ class atanh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
+            if arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
                 return S.Infinity
@@ -1062,9 +1048,7 @@ class acoth(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Zero
             elif arg is S.NegativeInfinity:
                 return S.Zero

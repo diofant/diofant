@@ -174,10 +174,6 @@ abaco2_unique_unknown
 ^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode.lie_heuristic_abaco2_unique_unknown
 
-abaco2_unique_general
-^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode.lie_heuristic_abaco2_unique_general
-
 linear
 ^^^^^^
 .. autofunction:: sympy.solvers.ode.lie_heuristic_linear
@@ -306,18 +302,6 @@ system_of_odes_nonlinear_3eq_order1_type1
 system_of_odes_nonlinear_3eq_order1_type2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type2
-
-system_of_odes_nonlinear_3eq_order1_type3
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type3
-
-system_of_odes_nonlinear_3eq_order1_type4
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type4
-
-system_of_odes_nonlinear_3eq_order1_type5
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._nonlinear_3eq_order1_type5
 
 Information on the ode module
 -----------------------------

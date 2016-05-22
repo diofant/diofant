@@ -432,16 +432,12 @@ class zeta(Function):
             z, a = list(map(sympify, (z, a_)))
 
         if a.is_Number:
-            if a is S.NaN:
-                return S.NaN
-            elif a is S.One and a_ is not None:
+            if a is S.One and a_ is not None:
                 return cls(z)
             # TODO Should a == 0 return S.NaN as well?
 
         if z.is_Number:
-            if z is S.NaN:
-                return S.NaN
-            elif z is S.Infinity:
+            if z is S.Infinity:
                 return S.One
             elif z is S.Zero:
                 if a.is_negative:

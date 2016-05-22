@@ -50,7 +50,7 @@ def minimize(f, *v):
     if constr:
         dom = solve(constr, *v).as_set()
     else:
-        dom = Interval(-oo, oo)**len(v)
+        dom = Interval(-oo, oo, True, True)**len(v)
 
     if len(v) == 1:
         return minimize_univariate(f, v[0], dom)
@@ -104,7 +104,7 @@ def minimize_univariate(f, x, dom):
 
     if extr:
         min, point = oo, nan
-        for p, fp in extr.items():
+        for p, fp in sorted(extr.items()):
             if fp < min:
                 point, min = p, fp
         return (min, dict({x: point}))
