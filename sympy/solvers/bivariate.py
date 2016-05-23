@@ -175,15 +175,7 @@ def _solve_lambert(f, symbol, gens):
     1b)
       if a*log(b*B + c) + d*B = R then
       X = B, f = R
-    2a)
-      if (b*B + c)*exp(d*B + g) = R then
-      log(b*B + c) + d*B + g = log(R)
-      a = 1, f = log(R) - g, X = B
-    2b)
-      if -b*B + g*exp(d*B + h) = c then
-      log(g) + d*B + h - log(b*B + c) = 0
-      a = -1, f = -h - log(g), X = B
-    3)
+    2)
       if d*p**(a*B + g) - b*B = c then
       log(d) + (a*B + g)*log(p) - log(c + b*B) = 0
       a = -1, d = a*log(p), f = -log(d) - g*log(p)
@@ -224,56 +216,25 @@ def _solve_lambert(f, symbol, gens):
     #         log(c) + log(B) = log(R - d*log(a*B + b))
 
     soln = []
-    if not soln:
-        mainlog = _mostfunc(lhs, log, symbol)
-        if mainlog:
-            if lhs.is_Mul and rhs != 0:
-                soln = _lambert(log(lhs) - log(rhs), symbol)
-            elif lhs.is_Add:
-                other = lhs.subs(mainlog, 0)
-                if other and not other.is_Add and [
-                        tmp for tmp in other.atoms(Pow)
-                        if symbol in tmp.free_symbols]:
-                    if not rhs:
-                        diff = log(other) - log(other - lhs)
-                    else:
-                        diff = log(lhs - other) - log(rhs - other)
-                    soln = _lambert(expand_log(diff), symbol)
+    mainlog = _mostfunc(lhs, log, symbol)
+    if mainlog:
+        if lhs.is_Mul and rhs != 0:
+            soln = _lambert(log(lhs) - log(rhs), symbol)
+        elif lhs.is_Add:
+            other = lhs.subs(mainlog, 0)
+            if other and not other.is_Add and [
+                    tmp for tmp in other.atoms(Pow)
+                    if symbol in tmp.free_symbols]:
+                if not rhs:
+                    diff = log(other) - log(other - lhs)
                 else:
-                    # it's ready to go
-                    soln = _lambert(lhs - rhs, symbol)
-
-    # For the next two,
-    #     collect on main exp
-    #     2a) (b*B + c)*exp(d*B + g) = R
-    #         lhs is mul:
-    #             log to give
-    #             log(b*B + c) + d*B = log(R) - g
-    #     2b) -b*B + g*exp(d*B + h) = R
-    #         lhs is add:
-    #             add b*B
-    #             log and rearrange
-    #             log(R + b*B) - d*B = log(g) + h
-
-    if not soln:
-        mainexp = _mostfunc(lhs, exp, symbol)
-        if mainexp:
-            lhs = collect(lhs, mainexp)
-            if lhs.is_Mul and rhs != 0:
-                soln = _lambert(expand_log(log(lhs) - log(rhs)), symbol)
-            elif lhs.is_Add:
-                # move all but mainexp-containing term to rhs
-                other = lhs.subs(mainexp, 0)
-                mainterm = lhs - other
-                rhs = rhs - other
-                if (mainterm.could_extract_minus_sign() and
-                        rhs.could_extract_minus_sign()):
-                    mainterm *= -1
-                    rhs *= -1
-                diff = log(mainterm) - log(rhs)
+                    diff = log(lhs - other) - log(rhs - other)
                 soln = _lambert(expand_log(diff), symbol)
+            else:
+                # it's ready to go
+                soln = _lambert(lhs - rhs, symbol)
 
-    # 3) d*p**(a*B + b) + c*B = R
+    # 2) d*p**(a*B + b) + c*B = R
     #     collect on main pow
     #     log(R - c*B) - a*B*log(p) = log(d) + b*log(p)
 
@@ -293,7 +254,7 @@ def _solve_lambert(f, symbol, gens):
 
     if not soln:
         raise NotImplementedError('%s does not appear to have a solution in '
-            'terms of LambertW' % f)
+                                  'terms of LambertW' % f)
 
     return list(ordered(soln))
 

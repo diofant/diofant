@@ -1,4 +1,4 @@
-from sympy.core import oo, diff, sympify
+from sympy.core import oo, nan, diff, sympify
 from sympy.sets import Interval
 from sympy.core.compatibility import is_sequence
 from sympy.series import limit
@@ -50,7 +50,7 @@ def minimize(f, *v):
     if constr:
         dom = solve(constr, *v).as_set()
     else:
-        dom = Interval(-oo, oo)**len(v)
+        dom = Interval(-oo, oo, True, True)**len(v)
 
     if len(v) == 1:
         return minimize_univariate(f, v[0], dom)
@@ -99,9 +99,12 @@ def minimize_univariate(f, x, dom):
     elif dom.is_FiniteSet:
         for p in dom.args:
             extr[p] = f.subs(x, p)
+    else:  # pragma: no cover
+        raise NotImplementedError
 
     if extr:
-        m = Min(*extr.values())
-        for p, fp in extr.items():
-            if fp == m:
-                return (m, dict({x: p}))
+        min, point = oo, nan
+        for p, fp in sorted(extr.items()):
+            if fp < min:
+                point, min = p, fp
+        return (min, dict({x: point}))

@@ -971,63 +971,6 @@ def test_PolynomialRingBase():
         r"S_<^{-1}\mathbb{Q}\left[x, y\right]"
 
 
-def test_categories():
-    from sympy.categories import (Object, IdentityMorphism,
-        NamedMorphism, Category, Diagram, DiagramGrid)
-
-    A1 = Object("A1")
-    A2 = Object("A2")
-    A3 = Object("A3")
-
-    f1 = NamedMorphism(A1, A2, "f1")
-    f2 = NamedMorphism(A2, A3, "f2")
-    id_A1 = IdentityMorphism(A1)
-
-    K1 = Category("K1")
-
-    assert latex(A1) == "A_{1}"
-    assert latex(f1) == "f_{1}:A_{1}\\rightarrow A_{2}"
-    assert latex(id_A1) == "id:A_{1}\\rightarrow A_{1}"
-    assert latex(f2*f1) == "f_{2}\\circ f_{1}:A_{1}\\rightarrow A_{3}"
-
-    assert latex(K1) == "\mathbf{K_{1}}"
-
-    d = Diagram()
-    assert latex(d) == "\emptyset"
-
-    d = Diagram({f1: "unique", f2: S.EmptySet})
-    assert latex(d) == r"\left \{ f_{2}\circ f_{1}:A_{1}" \
-        r"\rightarrow A_{3} : \emptyset, \quad id:A_{1}\rightarrow " \
-        r"A_{1} : \emptyset, \quad id:A_{2}\rightarrow A_{2} : " \
-        r"\emptyset, \quad id:A_{3}\rightarrow A_{3} : \emptyset, " \
-        r"\quad f_{1}:A_{1}\rightarrow A_{2} : \left\{unique\right\}, " \
-        r"\quad f_{2}:A_{2}\rightarrow A_{3} : \emptyset\right \}"
-
-    d = Diagram({f1: "unique", f2: S.EmptySet}, {f2 * f1: "unique"})
-    assert latex(d) == r"\left \{ f_{2}\circ f_{1}:A_{1}" \
-        r"\rightarrow A_{3} : \emptyset, \quad id:A_{1}\rightarrow " \
-        r"A_{1} : \emptyset, \quad id:A_{2}\rightarrow A_{2} : " \
-        r"\emptyset, \quad id:A_{3}\rightarrow A_{3} : \emptyset, " \
-        r"\quad f_{1}:A_{1}\rightarrow A_{2} : \left\{unique\right\}," \
-        r" \quad f_{2}:A_{2}\rightarrow A_{3} : \emptyset\right \}" \
-        r"\Longrightarrow \left \{ f_{2}\circ f_{1}:A_{1}" \
-        r"\rightarrow A_{3} : \left\{unique\right\}\right \}"
-
-    # A linear diagram.
-    A = Object("A")
-    B = Object("B")
-    C = Object("C")
-    f = NamedMorphism(A, B, "f")
-    g = NamedMorphism(B, C, "g")
-    d = Diagram([f, g])
-    grid = DiagramGrid(d)
-
-    assert latex(grid) == "\\begin{array}{cc}\n" \
-        "A & B \\\\\n" \
-        " & C \n" \
-        "\\end{array}\n"
-
-
 def test_Modules():
     from sympy.polys.domains import QQ
     from sympy.polys.agca import homomorphism

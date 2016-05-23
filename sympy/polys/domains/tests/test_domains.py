@@ -25,6 +25,12 @@ def unify(K0, K1):
 def test_Domain_interface():
     pytest.raises(NotImplementedError, lambda: DomainElement().parent())
 
+    assert RR(1).parent() is RR
+    assert CC(1).parent() is CC
+
+    RR3 = RealField(prec=53, dps=3)
+    assert str(RR3(1.7611107002)) == '1.76'
+
 
 def test_Domain_unify():
     F3 = GF(3)
@@ -787,3 +793,10 @@ def test_CC_double():
     assert CC(1e-15j).imag > 1e-50
     assert CC(1e-20j).imag > 1e-50
     assert CC(1e-40j).imag > 1e-50
+
+
+def test_almosteq():
+    assert CC.almosteq(CC(2), 3) is False
+    assert CC.almosteq(2, CC(3)) is False
+    assert CC.almosteq(2, CC(2.5), 0.1) is False
+    assert CC.almosteq(2, CC(2.5), 1.0) is True

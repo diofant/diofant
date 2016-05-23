@@ -99,9 +99,7 @@ class gamma(Function):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg.is_Integer:
                 if arg.is_positive:
@@ -418,9 +416,7 @@ class uppergamma(Function):
     def eval(cls, a, z):
         from sympy import unpolarify, I, expint
         if z.is_Number:
-            if z is S.NaN:
-                return S.NaN
-            elif z is S.Infinity:
+            if z is S.Infinity:
                 return S.Zero
             elif z is S.Zero:
                 # TODO: Holds only for Re(a) > 0:
@@ -641,9 +637,7 @@ class polygamma(Function):
                 return loggamma(z)
             else:
                 if z.is_Number:
-                    if z is S.NaN:
-                        return S.NaN
-                    elif z is S.Infinity:
+                    if z is S.Infinity:
                         if n.is_Number:
                             if n is S.Zero:
                                 return S.Infinity
@@ -659,9 +653,7 @@ class polygamma(Function):
                                 return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
 
         if n == 0:
-            if z is S.NaN:
-                return S.NaN
-            elif z.is_Rational:
+            if z.is_Rational:
                 # TODO actually *any* n/m can be done, but that is messy
                 lookup = {Rational(1, 2): -2*log(2) - S.EulerGamma,
                           Rational(1, 3): -S.Pi/2/sqrt(3) - 3*log(3)/2 - S.EulerGamma,
@@ -867,8 +859,6 @@ class loggamma(Function):
             return S.Infinity
         elif abs(z) is S.Infinity:
             return S.ComplexInfinity
-        if z is S.NaN:
-            return S.NaN
 
     def _eval_expand_func(self, **hints):
         from sympy import Sum

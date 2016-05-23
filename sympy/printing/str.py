@@ -695,19 +695,6 @@ class StrPrinter(Printer):
     def _print_DMF(self, expr):
         return self._print_DMP(expr)
 
-    def _print_Object(self, object):
-        return 'Object("%s")' % object.name
-
-    def _print_IdentityMorphism(self, morphism):
-        return 'IdentityMorphism(%s)' % morphism.domain
-
-    def _print_NamedMorphism(self, morphism):
-        return 'NamedMorphism(%s, %s, "%s")' % \
-               (morphism.domain, morphism.codomain, morphism.name)
-
-    def _print_Category(self, category):
-        return 'Category("%s")' % category.name
-
     def _print_BaseScalarField(self, field):
         return field._coord_sys._names[field._index]
 

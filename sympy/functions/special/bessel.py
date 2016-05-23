@@ -873,9 +873,7 @@ class airyai(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Zero
             elif arg is S.NegativeInfinity:
                 return S.Zero
@@ -1043,9 +1041,7 @@ class airybi(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero
@@ -1260,9 +1256,7 @@ class airyaiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Zero
             elif arg is S.Zero:
                 return -S.One / (3**Rational(1, 3) * gamma(Rational(1, 3)))
@@ -1413,9 +1407,7 @@ class airybiprime(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity
             elif arg is S.NegativeInfinity:
                 return S.Zero

@@ -14,7 +14,7 @@ def Abs(x):
             return interval(0, max(abs(x.start), abs(x.end)), is_valid=x.is_valid)
         else:
             return interval(abs(x.start), abs(x.end))
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 # Monotonic
@@ -27,7 +27,7 @@ def exp(x):
         return interval(np.exp(x), np.exp(x))
     elif isinstance(x, interval):
         return interval(np.exp(x.start), np.exp(x.end), is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -49,7 +49,7 @@ def log(x):
             return interval(-np.inf, np.inf, is_valid=None)
 
         return interval(np.log(x.start), np.log(x.end))
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -70,7 +70,7 @@ def log10(x):
         elif x.start <= 0:
             return interval(-np.inf, np.inf, is_valid=None)
         return interval(np.log10(x.start), np.log10(x.end))
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -84,7 +84,7 @@ def atan(x):
         start = np.arctan(x.start)
         end = np.arctan(x.end)
         return interval(start, end, is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -113,7 +113,7 @@ def sin(x):
                 # sin has min
                 start = -1
             return interval(start, end)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -144,7 +144,7 @@ def cos(x):
                 # cos has min
                 start = -1
             return interval(start, end, is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -172,14 +172,14 @@ def sqrt(x):
         else:
             return interval(np.sqrt(x.start), np.sqrt(x.end),
                     is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
 def imin(*args):
     """Evaluates the minimum of a list of intervals"""
     np = import_module('numpy')
-    if not all(isinstance(arg, (int, float, interval)) for arg in args):
+    if not all(isinstance(arg, (int, float, interval)) for arg in args):  # pragma: no cover
         return NotImplementedError
     else:
         new_args = [a for a in args if isinstance(a, (int, float))
@@ -200,7 +200,7 @@ def imin(*args):
 def imax(*args):
     """Evaluates the maximum of a list of intervals"""
     np = import_module('numpy')
-    if not all(isinstance(arg, (int, float, interval)) for arg in args):
+    if not all(isinstance(arg, (int, float, interval)) for arg in args):  # pragma: no cover
         return NotImplementedError
     else:
         new_args = [a for a in args if isinstance(a, (int, float))
@@ -227,7 +227,7 @@ def sinh(x):
         return interval(np.sinh(x), np.sinh(x))
     elif isinstance(x, interval):
         return interval(np.sinh(x.start), np.sinh(x.end), is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -246,7 +246,7 @@ def cosh(x):
             start = np.cosh(x.start)
             end = np.cosh(x.end)
             return interval(start, end, is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -258,7 +258,7 @@ def tanh(x):
         return interval(np.tanh(x), np.tanh(x))
     elif isinstance(x, interval):
         return interval(np.tanh(x.start), np.tanh(x.end), is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -282,6 +282,8 @@ def asin(x):
             start = np.arcsin(x.start)
             end = np.arcsin(x.end)
             return interval(start, end, is_valid=x.is_valid)
+    else:  # pragma: no cover
+        raise NotImplementedError
 
 
 def acos(x):
@@ -304,6 +306,8 @@ def acos(x):
             start = np.arccos(x.start)
             end = np.arccos(x.end)
             return interval(start, end, is_valid=x.is_valid)
+    else:  # pragma: no cover
+        raise NotImplementedError
 
 
 def ceil(x):
@@ -323,7 +327,7 @@ def ceil(x):
             else:
                 # Not continuous over the interval
                 return interval(start, end, is_valid=None)
-    else:
+    else:  # pragma: no cover
         return NotImplementedError
 
 
@@ -344,7 +348,7 @@ def floor(x):
             else:
                 # not continuous over the interval
                 return interval(start, end, is_valid=None)
-    else:
+    else:  # pragma: no cover
         return NotImplementedError
 
 
@@ -368,7 +372,7 @@ def acosh(x):
             start = np.arccosh(x.start)
             end = np.arccosh(x.end)
             return interval(start, end, is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         return NotImplementedError
 
 
@@ -382,7 +386,7 @@ def asinh(x):
         start = np.arcsinh(x.start)
         end = np.arcsinh(x.end)
         return interval(start, end, is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         return NotImplementedError
 
 
@@ -406,7 +410,7 @@ def atanh(x):
             start = np.arctanh(x.start)
             end = np.arctanh(x.end)
             return interval(start, end, is_valid=x.is_valid)
-    else:
+    else:  # pragma: no cover
         return NotImplementedError
 
 

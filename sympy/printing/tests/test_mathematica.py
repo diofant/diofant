@@ -2,7 +2,7 @@ from sympy.core import (S, pi, oo, symbols, Function,
                         Rational, Integer, Tuple)
 from sympy.integrals import Integral
 from sympy.concrete import Sum
-from sympy.functions import exp, sin, cos, sign
+from sympy.functions import exp, sin, cos, sign, atanh
 
 from sympy import mathematica_code as mcode
 
@@ -28,6 +28,8 @@ def test_Function():
     assert mcode(f(x, y, z)) == "f[x, y, z]"
     assert mcode(sin(x) ** cos(x)) == "Sin[x]^Cos[x]"
     assert mcode(sign(x)) == "Sign[x]"
+
+    assert mcode(atanh(x), user_functions={"atanh": "ArcTanh"}) == "ArcTanh[x]"
 
 
 def test_Pow():

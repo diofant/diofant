@@ -228,9 +228,7 @@ class sin(TrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
+            if arg is S.Zero:
                 return S.Zero
             elif arg is S.Infinity or arg is S.NegativeInfinity:
                 return
@@ -462,9 +460,7 @@ class cos(TrigonometricFunction):
     def eval(cls, arg):
         from sympy import chebyshevt
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
+            if arg is S.Zero:
                 return S.One
             elif arg is S.Infinity or arg is S.NegativeInfinity:
                 # In this cases, it is unclear if we should
@@ -836,9 +832,7 @@ class tan(TrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Zero:
+            if arg is S.Zero:
                 return S.Zero
 
         if arg.could_extract_minus_sign():
@@ -1523,9 +1517,7 @@ class asin(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.NegativeInfinity * S.ImaginaryUnit
             elif arg is S.NegativeInfinity:
                 return S.Infinity * S.ImaginaryUnit
@@ -1693,9 +1685,7 @@ class acos(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Infinity * S.ImaginaryUnit
             elif arg is S.NegativeInfinity:
                 return S.NegativeInfinity * S.ImaginaryUnit
@@ -1859,9 +1849,7 @@ class atan(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Pi / 2
             elif arg is S.NegativeInfinity:
                 return -S.Pi / 2
@@ -2006,9 +1994,7 @@ class acot(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.Infinity:
+            if arg is S.Infinity:
                 return S.Zero
             elif arg is S.NegativeInfinity:
                 return S.Zero
@@ -2176,9 +2162,7 @@ class asec(InverseTrigonometricFunction):
         if arg.is_zero:
             return S.ComplexInfinity
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.One:
+            if arg is S.One:
                 return S.Zero
             elif arg is S.NegativeOne:
                 return S.Pi
@@ -2272,9 +2256,7 @@ class acsc(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is S.NaN:
-                return S.NaN
-            elif arg is S.One:
+            if arg is S.One:
                 return S.Pi/2
             elif arg is S.NegativeOne:
                 return -S.Pi/2
