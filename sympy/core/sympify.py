@@ -238,13 +238,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
             return a
     except TypeError:  # Type of a is unhashable
         pass
-    try:
-        cls = a.__class__
-    except AttributeError:  # a is probably an old-style class object
-        cls = type(a)
+    cls = a.__class__
     if issubclass(cls, Basic):
         return a
-    if isinstance(cls, type(None)):
+    if issubclass(cls, type(None)):
         if strict:
             raise SympifyError(a)
         else:
@@ -278,19 +275,11 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         raise SympifyError(a)
 
     if iterable(a):
-        try:
-            return type(a)([sympify(x, locals=locals, convert_xor=convert_xor,
-                rational=rational) for x in a])
-        except TypeError:
-            # Not all iterables are rebuildable with their type.
-            pass
+        return type(a)([sympify(x, locals=locals, convert_xor=convert_xor,
+                                rational=rational) for x in a])
     if isinstance(a, dict):
-        try:
-            return type(a)([sympify(x, locals=locals, convert_xor=convert_xor,
-                rational=rational) for x in a.items()])
-        except TypeError:
-            # Not all iterables are rebuildable with their type.
-            pass
+        return type(a)([sympify(x, locals=locals, convert_xor=convert_xor,
+                                rational=rational) for x in a.items()])
 
     # At this point we were given an arbitrary expression
     # which does not inherit from Basic and doesn't implement

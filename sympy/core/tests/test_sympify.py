@@ -21,6 +21,8 @@ def test_issue_3538():
 
 
 def test_sympify1():
+    assert sympify(None) is None
+    pytest.raises(SympifyError, lambda: sympify(None, strict=True))
     assert sympify("x") == Symbol("x")
     assert sympify("   x") == Symbol("x")
     assert sympify("   x   ") == Symbol("x")
