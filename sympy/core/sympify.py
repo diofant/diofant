@@ -15,9 +15,14 @@ class SympifyError(ValueError):
         if self.base_exc is None:
             return "SympifyError: %r" % (self.expr,)
 
+        try:
+            s = str(self.expr)
+        except Exception:
+            s = repr(self.expr)
+
         return ("Sympify of expression '%s' failed, because of exception being "
-            "raised:\n%s: %s" % (self.expr, self.base_exc.__class__.__name__,
-            str(self.base_exc)))
+                "raised:\n%s: %s" % (s, self.base_exc.__class__.__name__,
+                                     str(self.base_exc)))
 
 converter = {}  # See sympify docstring.
 

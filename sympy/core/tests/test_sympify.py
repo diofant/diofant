@@ -159,6 +159,16 @@ def test_sympify4():
     assert a == x
 
 
+def test_sympify5():
+    class A:
+        def __str__(self):
+            raise TypeError
+
+    with pytest.raises(SympifyError) as err:
+        sympify(A())
+    assert str(err).find('A object at') > 0
+
+
 def test_sympify_text():
     assert sympify('some') == Symbol('some')
     assert sympify('core') == Symbol('core')
