@@ -176,6 +176,20 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> sympify('2**2 / 3 + 5', evaluate=False)
     2**2/3 + 5
 
+    Sometimes autosimplification during sympification results in expressions
+    that are very different in structure than what was entered.  Below you
+    can see how an expression reduces to -1 by autosimplification, but does
+    not do so when ``evaluate`` option is used.
+
+    >>> from sympy.abc import x
+    >>> -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
+    -1
+    >>> s = '-2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1'
+    >>> sympify(s)
+    -1
+    >>> sympify(s, evaluate=False)
+    -2*((x - 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
+
     Extending
     ---------
 
@@ -213,26 +227,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     Matrix([
     [1],
     [2]])
-
-    Notes
-    =====
-
-    Sometimes autosimplification during sympification results in expressions
-    that are very different in structure than what was entered. Until such
-    autosimplification is no longer done, the ``kernS`` function might be of
-    some use. In the example below you can see how an expression reduces to
-    -1 by autosimplification, but does not do so when ``kernS`` is used.
-
-    >>> from sympy.core.sympify import kernS
-    >>> from sympy.abc import x
-    >>> -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
-    -1
-    >>> s = '-2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1'
-    >>> sympify(s)
-    -1
-    >>> kernS(s)
-    -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
-
     """
     from .basic import Basic
 
@@ -347,99 +341,3 @@ def _sympify(a):
 
     """
     return sympify(a, strict=True)
-
-
-def kernS(s):
-    """Use a hack to try keep autosimplification from joining Integer or
-    minus sign into an Add of a Mul; this modification doesn't
-    prevent the 2-arg Mul from becoming an Add, however.
-
-    Examples
-    ========
-
-    >>> from sympy.core.sympify import kernS
-    >>> from sympy.abc import x, y, z
-
-    The 2-arg Mul allows a leading Integer to be distributed but kernS will
-    prevent that:
-
-    >>> 2*(x + y)
-    2*x + 2*y
-    >>> kernS('2*(x + y)')
-    2*(x + y)
-
-    If use of the hack fails, the un-hacked string will be passed to sympify...
-    and you get what you get.
-
-    XXX This hack should not be necessary once issue 4596 has been resolved.
-    """
-    import re
-    from sympy.core.symbol import Symbol
-
-    hit = False
-    if '(' in s:
-        if s.count('(') != s.count(")"):
-            raise SympifyError('unmatched left parenthesis')
-
-        kern = '_kern'
-        while kern in s:
-            kern += "_"
-        olds = s
-        # digits*( -> digits*kern*(
-        s = re.sub(r'(\d+)( *\* *)\(', r'\1*%s\2(' % kern, s)
-        # negated parenthetical
-        kern2 = kern + "2"
-        while kern2 in s:
-            kern2 += "_"
-        # step 1:  -(...)  -->  kern-kern*(...)
-        target = r'%s-%s*(' % (kern, kern)
-        s = re.sub(r'- *\(', target, s)
-        # step 2: double the matching closing parenthesis
-        # kern-kern*(...)  -->  kern-kern*(...)kern2
-        i = nest = 0
-        while True:
-            j = s.find(target, i)
-            if j == -1:
-                break
-            j = s.find('(')
-            for j in range(j, len(s)):
-                if s[j] == "(":
-                    nest += 1
-                elif s[j] == ")":
-                    nest -= 1
-                if nest == 0:
-                    break
-            s = s[:j] + kern2 + s[j:]
-            i = j
-        # step 3: put in the parentheses
-        # kern-kern*(...)kern2  -->  (-kern*(...))
-        s = s.replace(target, target.replace(kern, "(", 1))
-        s = s.replace(kern2, ')')
-        hit = kern in s
-
-    for i in range(2):
-        try:
-            expr = sympify(s)
-            break
-        except:  # the kern might cause unknown errors, so use bare except
-            if hit:
-                s = olds  # maybe it didn't like the kern; use un-kerned s
-                hit = False
-                continue
-            expr = sympify(s)  # let original error raise
-
-    if not hit:
-        return expr
-
-    rep = {Symbol(kern): 1}
-
-    def _clear(expr):
-        if isinstance(expr, (list, tuple, set)):
-            return type(expr)([_clear(e) for e in expr])
-        if hasattr(expr, 'subs'):
-            return expr.subs(rep, hack2=True)
-        return expr
-
-    expr = _clear(expr)
-    # hope that kern is not there anymore
-    return expr
