@@ -2,6 +2,7 @@ from sympy import S, pi, I, Rational, Wild, cacheit, sympify, Integer
 from sympy.core.function import Function, ArgumentIndexError
 from sympy.core.power import Pow
 from sympy.functions.combinatorial.factorials import factorial
+from sympy.functions.elementary.exponential import exp
 from sympy.functions.elementary.trigonometric import sin, cos, csc, cot
 from sympy.functions.elementary.complexes import Abs
 from sympy.functions.elementary.miscellaneous import sqrt, root
@@ -921,6 +922,9 @@ class airyai(AiryBase):
         pf2 = z / (root(3, 3)*gamma(Rational(1, 3)))
         return pf1 * hyper([], [Rational(2, 3)], z**3/9) - pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
+    def _eval_rewrite_as_tractable(self, z):
+        return exp(-Rational(2, 3)*z**Rational(3, 2))*sqrt(pi*sqrt(z))/2*_airyais(z)
+
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
         symbs = arg.free_symbols
@@ -1088,6 +1092,9 @@ class airybi(AiryBase):
         pf2 = z*root(3, 6) / gamma(Rational(1, 3))
         return pf1 * hyper([], [Rational(2, 3)], z**3/9) + pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
+    def _eval_rewrite_as_tractable(self, z):
+        return exp(Rational(2, 3)*z**Rational(3, 2))*sqrt(pi*sqrt(z))*_airybis(z)
+
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
         symbs = arg.free_symbols
@@ -1110,6 +1117,62 @@ class airybi(AiryBase):
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
                     return S.Half * (sqrt(3)*(S.One - pf)*airyai(newarg) + (S.One + pf)*airybi(newarg))
+
+
+class _airyais(Function):
+    def _eval_rewrite_as_intractable(self, x):
+        return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+
+    def _eval_aseries(self, n, args0, x, logx):
+        from sympy import Order, Add, combsimp
+        point = args0[0]
+
+        if point is S.Infinity:
+            z = self.args[0]
+            l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
+                 Rational(-3, 4)**k/(2*S.Pi**2*factorial(k) *
+                                     z**Rational(3*k + 1, 2)) for k in range(n)]
+            l = [combsimp(t) for t in l]
+            o = Order(1/z**Rational(3*n + 1, 2), x)
+            return (Add(*l))._eval_nseries(x, n, logx) + o
+
+        # All other points are not handled
+        return super(_airyais, self)._eval_aseries(n, args0, x, logx)
+
+    def _eval_nseries(self, x, n, logx):
+        x0 = self.args[0].limit(x, 0)
+        if x0 is S.Zero:
+            return self.rewrite('intractable')._eval_nseries(x, n, logx)
+        else:
+            return super(_airyais, self)._eval_nseries(x, n, logx)
+
+
+class _airybis(Function):
+    def _eval_rewrite_as_intractable(self, x):
+        return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(S.Pi*sqrt(x))
+
+    def _eval_aseries(self, n, args0, x, logx):
+        from sympy import Order, Add, combsimp
+        point = args0[0]
+
+        if point is S.Infinity:
+            z = self.args[0]
+            l = [gamma(k + Rational(5, 6))*gamma(k + Rational(1, 6)) *
+                 Rational(3, 4)**k/(2*S.Pi**2*factorial(k) *
+                                    z**Rational(3*k + 1, 2)) for k in range(n)]
+            l = [combsimp(t) for t in l]
+            o = Order(1/z**Rational(3*n + 1, 2), x)
+            return (Add(*l))._eval_nseries(x, n, logx) + o
+
+        # All other points are not handled
+        return super(_airybis, self)._eval_aseries(n, args0, x, logx)
+
+    def _eval_nseries(self, x, n, logx):
+        x0 = self.args[0].limit(x, 0)
+        if x0 is S.Zero:
+            return self.rewrite('intractable')._eval_nseries(x, n, logx)
+        else:
+            return super(_airybis, self)._eval_nseries(x, n, logx)
 
 
 class airyaiprime(AiryBase):
