@@ -1111,6 +1111,19 @@ class PrettyPrinter(Printer):
         else:
             return self._print_Function(e)
 
+    def _print_DiracDelta(self, e):
+        if self._use_unicode:
+            pform = self._print(e.args[0])
+            pform = prettyForm(*pform.parens())
+            delta = self._print(greek_unicode['delta'])
+            if len(e.args) > 1 and e.args[1] != 0:
+                k = prettyForm(*self._print(e.args[1]).parens())
+                delta = delta**k
+            pform = prettyForm(*pform.left(delta))
+            return pform
+        else:
+            return self._print_Function(e)
+
     def _print_expint(self, e):
         from sympy import Function
         if e.args[0].is_Integer and self._use_unicode:
