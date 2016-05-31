@@ -2,9 +2,9 @@ import mpmath
 import pytest
 
 from sympy import (Symbol, exp, Integer, Float, sin, cos, Poly, Lambda,
-                   Function, I, S, sqrt, srepr, Rational, Tuple, Matrix, Interval,
-                   Add, Mul, Pow, Or, true, false, Abs, pi)
-from sympy.core.sympify import sympify, _sympify, SympifyError, kernS
+                   Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
+                   Interval, Add, Mul, Pow, Or, true, false, Abs, pi)
+from sympy.core.sympify import sympify, _sympify, SympifyError
 from sympy.core.decorators import _sympifyit
 from sympy.utilities.decorator import conserve_mpmath_dps
 from sympy.geometry import Point, Line
@@ -21,6 +21,8 @@ def test_issue_3538():
 
 
 def test_sympify1():
+    assert sympify(None) is None
+    pytest.raises(SympifyError, lambda: sympify(None, strict=True))
     assert sympify("x") == Symbol("x")
     assert sympify("   x") == Symbol("x")
     assert sympify("   x   ") == Symbol("x")
@@ -155,6 +157,16 @@ def test_sympify4():
     assert _sympify(a)**3 == x**3
     assert sympify(a)**3 == x**3
     assert a == x
+
+
+def test_sympify5():
+    class A:
+        def __str__(self):
+            raise TypeError
+
+    with pytest.raises(SympifyError) as err:
+        sympify(A())
+    assert str(err).find('A object at') > 0
 
 
 def test_sympify_text():
@@ -403,29 +415,6 @@ def test_geometry():
     assert p == Point(0, 1) and isinstance(p, Point)
     L = sympify(Line(p, (1, 0)))
     assert L == Line((0, 1), (1, 0)) and isinstance(L, Line)
-
-
-def test_kernS():
-    s = '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'
-    # when 1497 is fixed, this no longer should pass: the expression
-    # should be unchanged
-    assert -1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) == -1
-    # sympification should not allow the constant to enter a Mul
-    # or else the structure can change dramatically
-    ss = kernS(s)
-    assert ss != -1 and ss.simplify() == -1
-    s = '-1 - 2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x)))'.replace(
-        'x', '_kern')
-    ss = kernS(s)
-    assert ss != -1 and ss.simplify() == -1
-    # issue 6687
-    assert kernS('Interval(-1,-2 - 4*(-3))') == Interval(-1, 10)
-    assert kernS('_kern') == Symbol('_kern')
-    assert kernS('E**-(x)') == exp(-x)
-    e = 2*(x + y)*y
-    assert kernS(['2*(x + y)*y', ('2*(x + y)*y',)]) == [e, (e,)]
-    assert kernS('-(2*sin(x)**2 + 2*sin(x)*cos(x))*y/2') == \
-        -y*(2*sin(x)**2 + 2*sin(x)*cos(x))/2
 
 
 def test_issue_6540_6552():
