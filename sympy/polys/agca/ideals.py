@@ -42,27 +42,27 @@ class Ideal(object):
 
     def _contains_elem(self, x):
         """Implementation of element containment."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def _contains_ideal(self, I):
         """Implementation of ideal containment."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def _quotient(self, J):
         """Implementation of ideal quotient."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def _intersect(self, J):
         """Implementation of ideal intersection."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def is_whole_ring(self):
         """Return True if ``self`` is the whole ring."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def is_zero(self):
         """Return True if ``self`` is the zero ideal."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def _equals(self, J):
         """Implementation of ideal equality."""
@@ -70,35 +70,35 @@ class Ideal(object):
 
     def is_prime(self):
         """Return True if ``self`` is a prime ideal."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def is_maximal(self):
         """Return True if ``self`` is a maximal ideal."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def is_radical(self):
         """Return True if ``self`` is a radical ideal."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def is_primary(self):
         """Return True if ``self`` is a primary ideal."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def is_principal(self):
         """Return True if ``self`` is a principal ideal."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def radical(self):
         """Compute the radical of ``self``."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def depth(self):
         """Compute the depth of ``self``."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def height(self):
         """Compute the height of ``self``."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     # TODO more
 
@@ -182,7 +182,7 @@ class Ideal(object):
         That is, if ``self`` is the ideal `I`, compute the set
         `I : J^\infty = \{x \in R | xJ^n \subset I \text{ for some } n\}`.
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
         # Note this can be implemented using repeated quotient
 
     def union(self, J):
@@ -247,7 +247,7 @@ class Ideal(object):
 
     def __pow__(self, exp):
         if exp < 0:
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         # TODO exponentiate by squaring
         return reduce(lambda x, y: x*y, [self]*exp, self.ring.ideal(1))
 
@@ -278,22 +278,22 @@ class ModuleImplementedIdeal(Ideal):
 
     def _contains_ideal(self, J):
         if not isinstance(J, ModuleImplementedIdeal):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self._module.is_submodule(J._module)
 
     def _intersect(self, J):
         if not isinstance(J, ModuleImplementedIdeal):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.__class__(self.ring, self._module.intersect(J._module))
 
     def _quotient(self, J, **opts):
         if not isinstance(J, ModuleImplementedIdeal):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self._module.module_quotient(J._module, **opts)
 
     def _union(self, J):
         if not isinstance(J, ModuleImplementedIdeal):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.__class__(self.ring, self._module.union(J._module))
 
     @property
@@ -344,7 +344,7 @@ class ModuleImplementedIdeal(Ideal):
     # NOTE this is the only method using the fact that the module is a SubModule
     def _product(self, J):
         if not isinstance(J, ModuleImplementedIdeal):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.__class__(self.ring, self._module.submodule(
             *[[x*y] for [x] in self._module.gens for [y] in J._module.gens]))
 
