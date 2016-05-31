@@ -325,3 +325,14 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols('a::'))
     pytest.raises(ValueError, lambda: symbols(':a:'))
     pytest.raises(ValueError, lambda: symbols('::a'))
+
+
+def test_issue_9057():
+    from sympy.functions import beta
+
+    beta(2, 3)
+
+    beta = Symbol('beta')
+    pytest.raises(TypeError, lambda: beta(2))
+    pytest.raises(TypeError, lambda: beta(2.5))
+    pytest.raises(TypeError, lambda: beta(2, 3))
