@@ -742,15 +742,8 @@ class Add(Expr, AssocOp):
 
         if ngcd == dlcm == 1:
             return S.One, self
-        if not inf:
-            for i, (p, q, term) in enumerate(terms):
-                terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
-        else:
-            for i, (p, q, term) in enumerate(terms):
-                if q:
-                    terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
-                else:
-                    terms[i] = _keep_coeff(Rational(p, q), term)
+        for i, (p, q, term) in enumerate(terms):
+            terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
 
         # we don't need a complete re-flattening since no new terms will join
         # so we just use the same sort as is used in Add.flatten. When the
