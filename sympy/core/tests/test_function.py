@@ -351,7 +351,6 @@ def test_extensibility_eval():
     assert MyFunc(0) == (0, 0, 0)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 3), reason="Requires 3.3")
 def test_function_signature():
     assert str(inspect.signature(sin)) == '(arg)'
     assert str(inspect.signature(log)) == '(arg, base=None)'
