@@ -633,11 +633,8 @@ class Mul(Expr, AssocOp):
         """
         args = self.args
 
-        if len(args) == 1:
-            return S.One, self
-        elif len(args) == 2:
+        if len(args) == 2:
             return args
-
         else:
             return args[0], self._new_rawargs(*args[1:])
 
