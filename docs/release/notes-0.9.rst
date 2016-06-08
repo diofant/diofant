@@ -211,3 +211,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10931` S.Integers - S.Integers does not evaluate
 * :sympyissue:`2799` S.UniversalSet + Interval(0, oo) takes forever
 * :sympyissue:`11090` ImmutableMatrix * MatrixSymbol raises AttributeError
+* :sympyissue:`11207` floor(ceiling(x)) doesn't simplify

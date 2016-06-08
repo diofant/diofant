@@ -2,14 +2,13 @@ import pytest
 
 from diofant import (E, Float, I, Rational, Symbol, ceiling, exp, factorial,
                      false, floor, log, nan, oo, pi, sin, symbols, true)
+from diofant.abc import x, y
 
 
 __all__ = ()
 
 
 def test_floor():
-
-    x = Symbol('x')
     i = Symbol('i', imaginary=True)
     y = Symbol('y', extended_real=True)
     r = Symbol('r', real=True)
@@ -126,8 +125,6 @@ def test_floor():
 
 
 def test_ceiling():
-
-    x = Symbol('x')
     i = Symbol('i', imaginary=True)
     y = Symbol('y', extended_real=True)
     k, n = symbols('k,n', integer=True)
@@ -234,7 +231,6 @@ def test_ceiling():
 
 
 def test_series():
-    x, y = symbols('x,y')
     assert floor(x).series(x, y, 100) == floor(y)
     assert ceiling(x).series(x, y, 100) == ceiling(y)
     assert floor(x).series(x, pi, 100) == 3
@@ -251,3 +247,10 @@ def test_sympyissue_4149():
     assert floor(3 + pi*I + y*I) == 3 + floor(pi + y)*I
     assert floor(3*I + pi*I + y*I) == floor(3 + pi + y)*I
     assert floor(3 + E + pi*I + y*I) == 5 + floor(pi + y)*I
+
+
+def test_sympyissue_11207():
+    assert floor(floor(x)) == floor(x)
+    assert floor(ceiling(x)) == ceiling(x)
+    assert ceiling(floor(x)) == floor(x)
+    assert ceiling(ceiling(x)) == ceiling(x)
