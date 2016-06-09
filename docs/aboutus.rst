@@ -423,6 +423,9 @@ for a full list.
 #. Richard Otis: Improved lambdify support for numpy
 #. Jason Siefken: GeometricEntity now inherits from Set
 #. David T: Update finite_diff.py, added extensive examples
+#. Akshay Nagar: Fix wrong solution of non-homogeneous ODE system
+#. Matthew Thomas: Fix latex printing for Order
+#. Sumith1896: Update reference link in dpll.py
 
 You can use git to see the biggest developers::
 

@@ -46,11 +46,6 @@ matrix:
         - py.test --cov sympy sympy/polys
       after_success:
         - codecov
-    - python: "pypy3"
-      install:
-        - pip install .
-      script:
-        - py.test --ignore sympy/plotting/plot.py --ignore sympy/plotting/plot_implicit.py --ignore docs/modules/numeric-computation.rst --ignore sympy/matrices/dense.py --ignore sympy/tensor/tensor.py --ignore sympy/utilities/lambdify.py sympy docs
 before_install:
   - pip install --upgrade pip 'setuptools<=19.4' pytest
   - pip install codecov

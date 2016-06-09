@@ -12,7 +12,7 @@ from sympy.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
     euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
     lowergamma, meijerg, sin, sqrt, subfactorial, tan, uppergamma,
-    elliptic_k, elliptic_f, elliptic_e, elliptic_pi)
+    elliptic_k, elliptic_f, elliptic_e, elliptic_pi, DiracDelta)
 from sympy.printing.pretty import pretty as xpretty, pprint
 from sympy.core.trace import Tr
 
@@ -4035,6 +4035,26 @@ def test_gammas():
     assert upretty(lowergamma(x, y)) == "γ(x, y)"
     assert upretty(uppergamma(x, y)) == "Γ(x, y)"
     assert xpretty(gamma(x), use_unicode=True) == 'Γ(x)'
+
+
+def test_deltas():
+    assert upretty(DiracDelta(x)) == 'δ(x)'
+    assert pretty(DiracDelta(x)) == 'DiracDelta(x)'
+
+    ucode_str = \
+"""\
+ ⎛x + 1⎞\n\
+δ⎜─────⎟\n\
+ ⎝x + 2⎠\
+"""
+    assert upretty(DiracDelta((x + 1)/(x + 2))) == ucode_str
+
+    ucode_str = \
+"""\
+ (3)   \n\
+δ   (x)\
+"""
+    assert upretty(DiracDelta(x, 3)) == ucode_str
 
 
 def test_hyper():

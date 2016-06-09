@@ -3,7 +3,7 @@ import pytest
 from sympy import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
                    abc, Integer, Eq, symbols, Add, I, Float, log, Rational, Lambda,
                    atan2, cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
-                   factor, nsimplify, zoo, Subs)
+                   factor, nsimplify, zoo, Subs, E)
 from sympy.core.basic import _aresame
 
 from sympy.abc import x, y, z
@@ -654,3 +654,9 @@ def test_pow_eval_subs_no_cache():
 def test_diofantissue_124():
     n = Symbol('n', integer=True)
     assert exp(n*x).subs({exp(x): x}) == x**n
+
+
+def test_issue_11159():
+    exp1 = E
+    exp0 = exp1*exp1
+    assert exp0.subs(exp1, exp0) == E**4

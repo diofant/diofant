@@ -8,5 +8,4 @@ coverage:
     project:
       default:
         threshold: 1%
-    changes: false
 comment: false
