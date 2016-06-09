@@ -1,14 +1,16 @@
 import pytest
 
 from diofant import octave_code as mcode
+from diofant.abc import n, x, y, z
 from diofant.core import (Catalan, E, EulerGamma, Function, GoldenRatio, I,
                           Integer, Lambda, Rational, Symbol, Tuple, nan, oo,
-                          pi, symbols, zoo)
-from diofant.functions import Piecewise, ceiling, cos, exp, sin, sqrt
-from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
-                                              airybiprime, besseli, besselj,
-                                              besselk, bessely, hankel1,
-                                              hankel2, jn, yn)
+                          pi, zoo)
+from diofant.functions import (Chi, Ci, Piecewise, Shi, Si, airyai,
+                               airyaiprime, airybi, airybiprime, besseli,
+                               besselj, besselk, bessely, ceiling, cos, exp,
+                               hankel1, hankel2, jn, laguerre, li, loggamma,
+                               lowergamma, polygamma, sin, sqrt, uppergamma,
+                               yn)
 from diofant.logic import false, true
 from diofant.matrices import (HadamardProduct, Identity, Matrix, MatrixSymbol,
                               SparseMatrix, eye)
@@ -16,8 +18,6 @@ from diofant.utilities.lambdify import implemented_function
 
 
 __all__ = ()
-
-x, y, z = symbols('x,y,z')
 
 
 def test_Integer():
@@ -359,7 +359,6 @@ def test_sparse():
 
 
 def test_specfun():
-    n = Symbol('n')
     for f in [besselj, bessely, besseli, besselk]:
         assert mcode(f(n, x)) == f.__name__ + '(n, x)'
     assert mcode(hankel1(n, x)) == 'besselh(n, 1, x)'
@@ -368,5 +367,15 @@ def test_specfun():
     assert mcode(airyaiprime(x)) == 'airy(1, x)'
     assert mcode(airybi(x)) == 'airy(2, x)'
     assert mcode(airybiprime(x)) == 'airy(3, x)'
+    assert mcode(uppergamma(n, x)) == 'gammainc(x, n, \'upper\')'
+    assert mcode(lowergamma(n, x)) == 'gammainc(x, n, \'lower\')'
     assert mcode(jn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*besselj(n + 1/2, x)/2'
     assert mcode(yn(n, x)) == 'sqrt(2)*sqrt(pi)*sqrt(1./x).*bessely(n + 1/2, x)/2'
+    assert mcode(Chi(x)) == 'coshint(x)'
+    assert mcode(Ci(x)) == 'cosint(x)'
+    assert mcode(laguerre(n, x)) == 'laguerreL(n, x)'
+    assert mcode(li(x)) == 'logint(x)'
+    assert mcode(loggamma(x)) == 'gammaln(x)'
+    assert mcode(polygamma(n, x)) == 'psi(n, x)'
+    assert mcode(Shi(x)) == 'sinhint(x)'
+    assert mcode(Si(x)) == 'sinint(x)'
