@@ -1441,12 +1441,12 @@ def classify_sysode(eq, funcs=None, **kwargs):
     matching_hints['func_coeff'] = func_coef
     matching_hints['is_linear'] = is_linear
 
+    type_of_equation = None
+
     if len(set(order.values())) == 1:
         order_eq = list(matching_hints['order'].values())[0]
         if matching_hints['is_linear']:
-            type_of_equation = None
             if order_eq == 1:
-                # TODO: seperate hint for real?
                 type_of_equation = check_linear_order1_jordan(eq, funcs, func_coef)
 
             if type_of_equation is None:
@@ -1455,36 +1455,18 @@ def classify_sysode(eq, funcs=None, **kwargs):
                         type_of_equation = check_linear_2eq_order1(eq, funcs, func_coef)
                     elif order_eq == 2:
                         type_of_equation = check_linear_2eq_order2(eq, funcs, func_coef)
-                    else:
-                        type_of_equation = None
-
                 elif matching_hints['no_of_equation'] == 3:
                     if order_eq == 1:
                         type_of_equation = check_linear_3eq_order1(eq, funcs, func_coef)
                         if type_of_equation is None:
                             type_of_equation = check_linear_neq_order1(eq, funcs, func_coef)
-                    else:
-                        type_of_equation = None
-                else:
-                    if order_eq == 1:
-                        type_of_equation = check_linear_neq_order1(eq, funcs, func_coef)
-                    else:
-                        type_of_equation = None
         else:
             if matching_hints['no_of_equation'] == 2:
                 if order_eq == 1:
                     type_of_equation = check_nonlinear_2eq_order1(eq, funcs, func_coef)
-                else:
-                    type_of_equation = None
             elif matching_hints['no_of_equation'] == 3:
                 if order_eq == 1:
                     type_of_equation = check_nonlinear_3eq_order1(eq, funcs, func_coef)
-                else:
-                    type_of_equation = None
-            else:
-                type_of_equation = None
-    else:
-        type_of_equation = None
 
     matching_hints['type_of_equation'] = type_of_equation
 
