@@ -6321,69 +6321,7 @@ def sysode_linear_order1_jordan(match_):
     A = M.inv()*L
     T, JJ = A.jordan_cells()
 
-    if all(a.is_extended_real for a in A):
-        # If matrix A is real: special treatment for conj pairs
-        def imag(q):
-            return (q - q.conjugate())/(2*I)
-
-        def real(q):
-            return (q + q.conjugate())/2
-
-        def extract_eigenvector_blocks(JJ, evs):
-            TT = []
-            c = 0
-            for J in JJ:
-                mult = J.rows
-                TT.append([evs.col(i) for i in range(c, c + mult)])
-                c = c + mult
-            assert len(TT) == len(JJ)
-            assert c == evs.cols
-            return TT
-
-        def make_exp_real_jordan_block(m, a, b, t, T):
-            R = Matrix([[cos(b*t), sin(b*t)], [-sin(b*t), cos(b*t)]])
-            expm = Matrix(2*m, 2*m, lambda r, c: 0)
-            for i in range(m):
-                for j in range(i, m):
-                    r = j - i
-                    expm[2*i:2*i+2, 2*j:2*j+2] = t**r/factorial(r)*R
-            expm = exp(a*t)*expm
-            T2 = []
-            for ev in T:
-                T2.extend([real(ev), imag(ev)])
-            return (expm, T2)
-
-        TT = extract_eigenvector_blocks(JJ, T)
-
-        # list of eigenvalues
-        ll = [J[0, 0] for J in JJ]
-
-        expm_list = []
-        ev_lol = []
-        for i in range(len(JJ)):
-            J = JJ[i]
-            evs = TT[i]
-            l = J[0, 0]
-            if l.is_complex and l.is_extended_real is False:
-                a, b = real(l), imag(l)
-                if b.is_positive:
-                    m = J.rows
-                    myexpm, myevs = make_exp_real_jordan_block(m, a, b, t, evs)
-                    expm_list.append(myexpm)
-                    ev_lol.append(myevs)
-            else:
-                expm_list.append((J*t).exp())
-                ev_lol.append(evs)
-        expm = Matrix(BlockDiagMatrix(*expm_list))
-
-        # rebuild matrix with eigenvector columns
-        T = Matrix(n, 0, [])
-        for evs in ev_lol:
-            for ev in evs:
-                T = T.row_join(ev)
-    else:
-        expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
-
+    expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
     q = T*expm*T.inv()
     Cvec = Matrix(get_numbered_constants(eq, num=n))
     q = q*Cvec
