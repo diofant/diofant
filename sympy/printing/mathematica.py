@@ -92,6 +92,10 @@ class MCodePrinter(CodePrinter):
                     return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
         return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
 
+    def _print_Derivative(self, expr):
+        return 'D[%s, %s]' % (self.doprint(expr.expr),
+                              ', '.join(self.doprint(a) for a in expr.variables))
+
     def _print_Integral(self, expr):
         if len(expr.variables) == 1 and not expr.limits[0][1:]:
             args = [expr.args[0], expr.variables[0]]
