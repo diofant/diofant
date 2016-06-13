@@ -173,6 +173,8 @@ def test_FactRules_parse():
     f = FactRules('~z == nz')
     assert f.prereq == {'z': {'nz'}, 'nz': {'z'}}
 
+    pytest.raises(ValueError, lambda: FactRules('a ? b'))
+
 
 def test_FactRules_parse2():
     pytest.raises(ValueError, lambda: FactRules('a -> ~a'))
