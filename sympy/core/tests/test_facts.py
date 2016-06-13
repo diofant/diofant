@@ -188,6 +188,9 @@ def test_FactRules_deduce():
         kb.deduce_all_facts(facts)
         return kb
 
+    assert (str(D({'a': T})) ==
+            '{\n\ta: True,\n\tb: True,\n\tc: True,\n\td: True,\n\te: True}')
+
     assert D({'a': T}) == {'a': T, 'b': T, 'c': T, 'd': T, 'e': T}
     assert D({'b': T}) == {        'b': T, 'c': T, 'd': T, 'e': T}
     assert D({'c': T}) == {                'c': T,         'e': T}
