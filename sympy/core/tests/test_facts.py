@@ -2,7 +2,7 @@ import pytest
 
 from sympy.core.facts import (deduce_alpha_implications,
                               apply_beta_to_alpha_route, rules_2prereq,
-                              FactRules, FactKB)
+                              FactRules, FactKB, InconsistentAssumptions)
 from sympy.core.logic import And, Not
 
 T = True
@@ -318,3 +318,11 @@ def test_FactRules_deduce_staticext():
     assert ('nneg', True) in f.full_implications[('pos', True)]
     assert ('nneg', True) in f.full_implications[('zero', True)]
     assert ('npos', True) in f.full_implications[('zero', True)]
+
+
+def test_inconsistent_assumptions():
+    kb = FactKB(FactRules(['npos -> ~pos', 'pos -> ~npos']))
+    with pytest.raises(InconsistentAssumptions) as err:
+        kb.deduce_all_facts({'pos': T, 'npos': T})
+    assert str(err.value) in ['{\n\tnpos: False,\n\tpos: True}, npos=True',
+                              '{\n\tnpos: True,\n\tpos: False}, pos=True']
