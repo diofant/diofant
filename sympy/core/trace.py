@@ -32,9 +32,7 @@ def _cycle_permute(l):
     in case of lexicographic sort
 
     """
-
-    if len(l) == 1:
-        return l
+    assert len(l) > 1
 
     min_item = min(l, key=default_sort_key)
     indices = [i for i, x in enumerate(l) if x == min_item]
@@ -64,8 +62,7 @@ def _rearrange_args(l):
      to enable expansion of args
      A,B,A ==> A**2,B
     """
-    if len(l) == 1:
-        return l
+    assert len(l) > 1
 
     x = list(l[-1:])
     x.extend(l[0:-1])
