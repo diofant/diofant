@@ -1,3 +1,5 @@
+import re
+
 import mpmath
 import pytest
 
@@ -166,7 +168,9 @@ def test_sympify5():
 
     with pytest.raises(SympifyError) as err:
         sympify(A())
-    assert str(err).find('A object at') > 0
+    assert re.match("^Sympify of expression '<sympy.core\.tests\.test_sympify"
+                    "\.test_sympify5\.<locals>\.A object at 0x[0-9a-f]+>' failed,"
+                    " because of exception being raised:\nTypeError: $", str(err.value))
 
 
 def test_sympify_text():
