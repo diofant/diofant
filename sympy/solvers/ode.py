@@ -6309,6 +6309,27 @@ def lie_heuristic_linear(match, comp=False):
 
 
 def sysode_linear_order1_jordan(match_):
+    r"""System of n first-order constant-coefficient linear differential equations
+
+    .. math ::
+        M x' = L x + f(t)
+
+    Notes
+    =====
+
+    The nonhomogeneous case is not implemented yet.  Mass-matrix
+    assumed to be invertible and provided general solution uses the
+    Jordan canonical form for `A = M^{-1} L`, see [1]_.
+
+    References
+    ==========
+
+    .. [1] Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner.  Solving
+           Ordinary Differential Equations I.  Nonstiff Problems.
+           Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
+           Second revised edition 1993, pp. 73-76.
+    """
+
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
