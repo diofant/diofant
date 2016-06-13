@@ -156,17 +156,6 @@ class Tr(Expr):
 
             return Expr.__new__(cls, expr, indices)
 
-    def doit(self, **kwargs):
-        """ Perform the trace operation.
-
-        #TODO: Current version ignores the indices set for partial trace.
-
-        """
-        if hasattr(self.args[0], '_eval_trace'):
-            return self.args[0]._eval_trace(indices=self.args[1])
-
-        return self
-
     @property
     def is_number(self):
         # TODO : improve this implementation
