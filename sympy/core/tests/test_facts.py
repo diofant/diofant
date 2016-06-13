@@ -72,6 +72,8 @@ def test_deduce_alpha_implications():
 def test_apply_beta_to_alpha_route():
     APPLY = apply_beta_to_alpha_route
 
+    pytest.raises(TypeError, lambda: APPLY({}, [(Not('a'), 'b')]))
+
     # indicates empty alpha-chain with attached beta-rule #bidx
     def Q(bidx):
         return (set(), [bidx])
