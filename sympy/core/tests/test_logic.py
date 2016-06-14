@@ -147,6 +147,7 @@ def test_logic_fromstring():
 
 
 def test_logic_not():
+    assert Not(False) is True
     assert Not('a') != '~a'
     assert Not('~a') != 'a'
 
@@ -154,6 +155,8 @@ def test_logic_not():
     # functionality into some method.
     assert Not(And('a', 'b')) == Or(Not('a'), Not('b'))
     assert Not(Or('a', 'b')) == And(Not('a'), Not('b'))
+
+    pytest.raises(ValueError, lambda: Not(ValueError))
 
 
 def test_formatting():
