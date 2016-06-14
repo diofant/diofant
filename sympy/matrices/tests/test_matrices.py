@@ -4,7 +4,7 @@ import pytest
 
 from sympy import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
                    PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
-                   signsimp, simplify, sin, sqrt, symbols, sympify,
+                   simplify, sin, sqrt, symbols, sympify,
                    trigsimp, sstr, Function)
 from sympy.matrices.matrices import (ShapeError, MatrixError,
                                      NonSquareMatrixError, DeferredVector)
@@ -2128,22 +2128,15 @@ def test_copyin():
 
 
 def test_invertible_check():
-    # sometimes a singular matrix will have a pivot vector shorter than
-    # the number of rows in a matrix...
     assert Matrix([[1, 2], [1, 2]]).rref() == (Matrix([[1, 2], [0, 0]]), [0])
     pytest.raises(ValueError, lambda: Matrix([[1, 2], [1, 2]]).inv())
-    # ... but sometimes it won't, so that is an insufficient test of
-    # whether something is invertible.
     m = Matrix([
         [-1, -1,  0],
         [ x,  1,  1],
         [ 1,  x, -1],
     ])
-    assert len(m.rref()[1]) == m.rows
-    # in addition, unless simplify=True in the call to rref, the identity
-    # matrix will be returned even though m is not invertible
-    assert m.rref()[0] == eye(3)
-    assert m.rref(simplify=signsimp)[0] != eye(3)
+    assert len(m.rref()[1]) == 2
+    assert m.rref()[0] != eye(3)
     pytest.raises(ValueError, lambda: m.inv(method="ADJ"))
     pytest.raises(ValueError, lambda: m.inv(method="GE"))
     pytest.raises(ValueError, lambda: m.inv(method="LU"))
