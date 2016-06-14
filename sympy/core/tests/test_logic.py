@@ -144,6 +144,8 @@ def test_logic_fromstring():
     pytest.raises(ValueError, lambda: s('a|b'))
     pytest.raises(ValueError, lambda: s('~'))
     pytest.raises(ValueError, lambda: s('~ a'))
+    pytest.raises(ValueError, lambda: s('a b'))
+    pytest.raises(ValueError, lambda: s(''))
 
 
 def test_logic_not():
