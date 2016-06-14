@@ -175,6 +175,9 @@ def test_FactRules_parse():
 
     pytest.raises(ValueError, lambda: FactRules('a ? b'))
 
+    f = FactRules('a -> b & ~b')  # trivial test
+    assert f.prereq == {}
+
 
 def test_FactRules_parse2():
     pytest.raises(ValueError, lambda: FactRules('a -> ~a'))
