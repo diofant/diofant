@@ -1,9 +1,9 @@
 import pytest
 
-from sympy.core.facts import (deduce_alpha_implications,
+from sympy.core.facts import (deduce_alpha_implications, Prover,
                               apply_beta_to_alpha_route, rules_2prereq,
                               FactRules, FactKB, InconsistentAssumptions)
-from sympy.core.logic import And, Not
+from sympy.core.logic import And, Or, Not
 
 T = True
 F = False
@@ -177,6 +177,14 @@ def test_FactRules_parse():
 
     f = FactRules('a -> b & ~b')  # trivial test
     assert f.prereq == {}
+
+    # tautologies
+    assert FactRules('a -> a | b').prereq == {}
+    # XXX: We don't support non-atomic left operands, so use Prover directly
+    p = Prover()
+    p.process_rule(And('a', 'b'), 'a')
+    p.process_rule(Or('a', 'b'), 'a')
+    assert p.proved_rules == []
 
 
 def test_FactRules_parse2():
