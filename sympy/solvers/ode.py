@@ -6341,9 +6341,10 @@ def sysode_linear_order1_jordan(match_):
 
     A = M.inv()*L
     T, JJ = A.jordan_cells()
+    T, Tinv = map(simplify, [T, T.inv()])
 
     expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
-    q = T*expm*T.inv()
+    q = T*expm*Tinv
     Cvec = Matrix(get_numbered_constants(eq, num=n))
     q = q*Cvec
 
