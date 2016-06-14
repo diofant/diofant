@@ -2495,3 +2495,31 @@ def test_issue_9422():
     assert x*M1 != M1*x
     assert a*M1 == M1*a
     assert y*x*M == Matrix([[y*x, 0], [0, y*x]])
+
+
+def test_issue_9480():
+    m = Matrix([[-5 + 5*sqrt(2), -5],
+                [-5*sqrt(2)/2 + 5, -5*sqrt(2)/2]])
+    assert m.rank() == 1
+
+
+def test_diofantissue_288():
+    k = Symbol('k')
+    m = Matrix([[-exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
+                 exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
+                 exp(I*k)/4 + S.Half + exp(-I*k)/4,
+                 -exp(I*k)/4 - S.Half - exp(-I*k)/4],
+                [exp(I*k)*I/(4*k) + S.Half - exp(-I*k)*I/(4*k),
+                 -exp(I*k)*I/(4*k) + S.Half + exp(-I*k)*I/(4*k),
+                 -exp(I*k)/4 - S.Half - exp(-I*k)/4,
+                 exp(I*k)/4 + S.Half + exp(-I*k)/4],
+                [exp(I*k)/4 + S.Half + exp(-I*k)/4,
+                 -exp(I*k)/4 - S.Half - exp(-I*k)/4,
+                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
+                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
+                [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,
+                 exp(I*k)/4 + 1/2 + exp(-I*k)/4,
+                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4,
+                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4]])
+    assert m.det() == 0
+    assert m.rank() != 4
