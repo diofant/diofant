@@ -115,7 +115,7 @@ setup(name='sympy',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
       ],
-      tests_require=['pytest>=2.7.0', 'flake8', 'pep8-naming', 'pytest-cov'],
+      tests_require=['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming', 'pytest-cov'],
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
       setup_requires=['setuptools>=5.5.1,<=19.4', 'pip>=6.0'],
       extras_require={
