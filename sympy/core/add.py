@@ -645,21 +645,15 @@ class Add(Expr, AssocOp):
     def _eval_as_leading_term(self, x):
         from sympy import expand_mul, factor_terms
 
-        old = self
-
         expr = expand_mul(self)
         if not expr.is_Add:
             return expr.as_leading_term(x)
-
-        infinite = [t for t in expr.args if t.is_infinite]
 
         expr = expr.func(*[t.as_leading_term(x) for t in expr.args]).removeO()
         if not expr:
             # simple leading term analysis gave us 0 but we have to send
             # back a term, so compute the leading term (via series)
-            return old.compute_leading_term(x)
-        elif expr is S.NaN:
-            return old.func._from_args(infinite)
+            return self.compute_leading_term(x)
         elif not expr.is_Add:
             return expr
         else:
@@ -742,15 +736,8 @@ class Add(Expr, AssocOp):
 
         if ngcd == dlcm == 1:
             return S.One, self
-        if not inf:
-            for i, (p, q, term) in enumerate(terms):
-                terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
-        else:
-            for i, (p, q, term) in enumerate(terms):
-                if q:
-                    terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
-                else:
-                    terms[i] = _keep_coeff(Rational(p, q), term)
+        for i, (p, q, term) in enumerate(terms):
+            terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
 
         # we don't need a complete re-flattening since no new terms will join
         # so we just use the same sort as is used in Add.flatten. When the
