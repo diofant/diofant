@@ -57,11 +57,10 @@ class Mod(Function):
             except TypeError:
                 pass
             else:
-                if type(d) is int:
-                    rv = p - d*q
-                    if (rv*q < 0) is S.true:
-                        rv += q
-                    return rv
+                rv = p - d*q
+                if (rv*q < 0) is S.true:
+                    rv += q
+                return rv
 
             # by difference
             d = p - q

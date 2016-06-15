@@ -350,8 +350,7 @@ class ManagedProperties(type):
                 continue  # not an assumption-aware class
         for fact in derived_from_bases - set(self.default_assumptions):
             pname = as_property(fact)
-            if pname not in self.__dict__:
-                setattr(self, pname, make_property(fact))
+            setattr(self, pname, make_property(fact))
 
         # Finally, add any missing automagic property (e.g. for Basic)
         for fact in _assume_defined:

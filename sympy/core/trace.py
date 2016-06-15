@@ -32,9 +32,7 @@ def _cycle_permute(l):
     in case of lexicographic sort
 
     """
-
-    if len(l) == 1:
-        return l
+    assert len(l) > 1
 
     min_item = min(l, key=default_sort_key)
     indices = [i for i, x in enumerate(l) if x == min_item]
@@ -64,8 +62,7 @@ def _rearrange_args(l):
      to enable expansion of args
      A,B,A ==> A**2,B
     """
-    if len(l) == 1:
-        return l
+    assert len(l) > 1
 
     x = list(l[-1:])
     x.extend(l[0:-1])
@@ -155,17 +152,6 @@ class Tr(Expr):
                 return expr
 
             return Expr.__new__(cls, expr, indices)
-
-    def doit(self, **kwargs):
-        """ Perform the trace operation.
-
-        #TODO: Current version ignores the indices set for partial trace.
-
-        """
-        if hasattr(self.args[0], '_eval_trace'):
-            return self.args[0]._eval_trace(indices=self.args[1])
-
-        return self
 
     @property
     def is_number(self):

@@ -1196,9 +1196,6 @@ class Expr(Basic, EvalfMixin):
         1
         """
         x = sympify(x)
-        if not isinstance(x, Basic):
-            return S.Zero
-
         n = as_int(n)
 
         if not x:

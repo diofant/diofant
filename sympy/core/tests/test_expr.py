@@ -1353,6 +1353,9 @@ def test_as_ordered_terms():
     assert ( 4 - 3*I).as_ordered_terms() == [4, -3*I]
     assert (-4 - 3*I).as_ordered_terms() == [-4, -3*I]
 
+    assert (x*y).as_ordered_terms(data=True) == ([(x*y, ((1.0, 0.0),
+                                                         (1, 1), ()))], [x, y])
+
     f = x**2*y**2 + x*y**4 + y + 2
 
     assert f.as_ordered_terms(order="lex") == [x**2*y**2, x*y**4, y, 2]
