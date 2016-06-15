@@ -6,7 +6,7 @@ from sympy.sets.fancysets import ImageSet, Range
 from sympy.sets.contains import Contains
 from sympy.sets.sets import FiniteSet, Interval, imageset, EmptySet
 from sympy import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
-                   Rational, sqrt, tan, log, Abs, exp, I)
+                   Integer, Rational, sqrt, tan, log, Abs, exp, I)
 
 from sympy.abc import x, n, m, t
 
@@ -68,6 +68,13 @@ def test_rationals():
     assert Q.sup == oo
 
     assert Q.boundary == Q
+
+    assert (list(itertools.islice(S.Rationals, 17)) ==
+            [Integer(0), Integer(1), Rational(1, 2), Rational(1, 3),
+             Integer(-1), Rational(-1, 2), Rational(-1, 3), Rational(1, 4),
+             Rational(-1, 4), Integer(2), Rational(2, 3), Rational(1, 5),
+             Rational(-1, 5), Rational(2, 5), Integer(-2),
+             Rational(-2, 3), Rational(-2, 5)])
 
 
 def test_ImageSet():

@@ -4,7 +4,8 @@ from sympy.sets.sets import Set, Interval, Intersection, EmptySet, FiniteSet
 from sympy.core.singleton import Singleton, S
 from sympy.core.sympify import _sympify
 from sympy.core.function import Lambda
-from sympy.core.numbers import Integer
+from sympy.core.numbers import Integer, Rational
+from sympy.utilities.iterables import cantor_product
 
 
 class Naturals(Set, metaclass=Singleton):
@@ -195,6 +196,14 @@ class Rationals(Set, metaclass=Singleton):
     @property
     def _boundary(self):
         return self
+
+    def __iter__(self):
+        seen = []
+        for n, d in cantor_product(S.Integers, S.Naturals):
+            r = Rational(n, d)
+            if r not in seen:
+                seen.append(r)
+                yield r
 
 
 class Reals(Interval, metaclass=Singleton):
