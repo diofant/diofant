@@ -4,6 +4,7 @@ from sympy.core.singleton import S
 from sympy.core.numbers import igcd, igcdex
 from sympy.core.compatibility import as_int
 from sympy.core.function import Function
+from sympy.utilities.iterables import cantor_product
 from .primetest import isprime
 from .factor_ import factorint, trailing, totient
 
@@ -252,36 +253,6 @@ def sqrt_mod(a, p, all_roots=False):
         return
 
 
-def _product(*iters):
-    """Cartesian product generator.
-
-    Notes
-    =====
-
-    Unlike itertools.product, it works also with iterables which do not fit
-    in memory.  See http://bugs.python.org/issue10109.
-    """
-    import itertools
-    inf_iters = tuple(itertools.cycle(enumerate(it)) for it in iters)
-    num_iters = len(inf_iters)
-    cur_val = [None]*num_iters
-
-    first_v = True
-    while True:
-        i, p = 0, num_iters
-        while p and not i:
-            p -= 1
-            i, cur_val[p] = next(inf_iters[p])
-
-        if not p and not i:
-            if first_v:
-                first_v = False
-            else:
-                break
-
-        yield cur_val
-
-
 def sqrt_mod_iter(a, p, domain=int):
     """Iterate over solutions to ``x**2 = a mod p``.
 
@@ -332,11 +303,11 @@ def sqrt_mod_iter(a, p, domain=int):
             pv.append(px**ex)
         mm, e, s = gf_crt1(pv, ZZ)
         if domain is ZZ:
-            for vx in _product(*v):
+            for vx in cantor_product(*v):
                 r = gf_crt2(vx, pv, mm, e, s, ZZ)
                 yield r
         else:
-            for vx in _product(*v):
+            for vx in cantor_product(*v):
                 r = gf_crt2(vx, pv, mm, e, s, ZZ)
                 yield domain(r)
 
