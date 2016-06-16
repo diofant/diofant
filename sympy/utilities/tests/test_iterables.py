@@ -1,3 +1,5 @@
+import itertools
+import random
 from textwrap import dedent
 
 import pytest
@@ -14,7 +16,7 @@ from sympy.utilities.iterables import (
     multiset_permutations, necklaces, numbered_symbols, ordered, partitions,
     permutations, postfixes, postorder_traversal, prefixes, reshape,
     rotate_left, rotate_right, runs, sift, subsets, take, topological_sort,
-    unflatten, uniq, variations)
+    unflatten, uniq, variations, cantor_product)
 from sympy.utilities.enumerative import (factoring_visitor,
                                          multiset_partitions_taocp)
 from sympy.core.singleton import S
@@ -700,3 +702,30 @@ def test__partition():
         ['b', 'e'], ['a', 'c'], ['d']]
     output = (3, [1, 0, 1, 2, 0])
     assert _partition('abcde', *output) == [['b', 'e'], ['a', 'c'], ['d']]
+
+
+def test_cantor_product():
+    assert list(cantor_product([], [1, 2])) == []
+    assert list(cantor_product([], itertools.count(1))) == []
+
+    assert (list(cantor_product([1, 2, 3], [3, 4])) ==
+            [(1, 3), (1, 4), (2, 3), (2, 4), (3, 3), (3, 4)])
+
+    assert (sorted(cantor_product([1, 2, 3], [3, 4])) ==
+            sorted(itertools.product([1, 2, 3], [3, 4])))
+
+    l1 = [random.randint(0, 100) for a in range(10)]
+    l2 = [random.randint(0, 100) for a in range(10)]
+    assert (sorted(list(cantor_product(l1, l2))) ==
+            sorted(list(itertools.product(l1, l2))))
+
+    assert (list(itertools.islice(cantor_product([1, 2],
+                                                 itertools.count(3)), 10)) ==
+            [(1, 3), (1, 4), (2, 3), (2, 4), (1, 5), (2, 5), (1, 6), (2, 6), (1, 7), (2, 7)])
+    assert (list(itertools.islice(cantor_product([1, 2, 3],
+                                                 itertools.count(4)), 10)) ==
+            [(1, 4), (1, 5), (2, 4), (2, 5), (1, 6), (2, 6), (3, 4), (3, 5), (3, 6), (1, 7)])
+
+    assert (list(itertools.islice(cantor_product(itertools.count(1),
+                                                 itertools.count(1)), 7)) ==
+            [(1, 1), (1, 2), (2, 1), (2, 2), (1, 3), (2, 3), (3, 1)])
