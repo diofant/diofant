@@ -312,10 +312,8 @@ class Prover(object):
         return self.split_alpha_beta()[1]
 
     def process_rule(self, a, b):
-        """process a -> b rule"""   # TODO write more?
-        if (not a) or isinstance(b, bool):
-            return
-        if isinstance(a, bool):
+        """process a -> b rule"""
+        if (not a) or any(isinstance(x, bool) for x in [a, b]):
             return
         if (a, b) in self._rules_seen:
             return

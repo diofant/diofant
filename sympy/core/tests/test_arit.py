@@ -1543,6 +1543,7 @@ def test_Mod():
     assert Mod(5*sqrt(2), sqrt(5)) == 5*sqrt(2) - 3*sqrt(5)
     p = symbols('p', positive=True)
     assert Mod(p + 1, p + 3) == p + 1
+    assert Mod(x + 1, x + 3) == Mod(x + 1, x + 3, evaluate=False)
     n = symbols('n', negative=True)
     assert Mod(n - 3, n - 1) == -2
     assert Mod(n - 2*p, n - p) == -p

@@ -1,9 +1,9 @@
 import pytest
 
-from sympy.core.facts import (deduce_alpha_implications,
+from sympy.core.facts import (deduce_alpha_implications, Prover,
                               apply_beta_to_alpha_route, rules_2prereq,
-                              FactRules, FactKB)
-from sympy.core.logic import And, Not
+                              FactRules, FactKB, InconsistentAssumptions)
+from sympy.core.logic import And, Or, Not
 
 T = True
 F = False
@@ -71,6 +71,8 @@ def test_deduce_alpha_implications():
 # TODO move me to appropriate place
 def test_apply_beta_to_alpha_route():
     APPLY = apply_beta_to_alpha_route
+
+    pytest.raises(TypeError, lambda: APPLY({}, [(Not('a'), 'b')]))
 
     # indicates empty alpha-chain with attached beta-rule #bidx
     def Q(bidx):
@@ -171,6 +173,19 @@ def test_FactRules_parse():
     f = FactRules('~z == nz')
     assert f.prereq == {'z': {'nz'}, 'nz': {'z'}}
 
+    pytest.raises(ValueError, lambda: FactRules('a ? b'))
+
+    f = FactRules('a -> b & ~b')  # trivial test
+    assert f.prereq == {}
+
+    # tautologies
+    assert FactRules('a -> a | b').prereq == {}
+    # XXX: We don't support non-atomic left operands, so use Prover directly
+    p = Prover()
+    p.process_rule(And('a', 'b'), 'a')
+    p.process_rule(Or('a', 'b'), 'a')
+    assert p.proved_rules == []
+
 
 def test_FactRules_parse2():
     pytest.raises(ValueError, lambda: FactRules('a -> ~a'))
@@ -183,6 +198,9 @@ def test_FactRules_deduce():
         kb = FactKB(f)
         kb.deduce_all_facts(facts)
         return kb
+
+    assert (str(D({'a': T})) ==
+            '{\n\ta: True,\n\tb: True,\n\tc: True,\n\td: True,\n\te: True}')
 
     assert D({'a': T}) == {'a': T, 'b': T, 'c': T, 'd': T, 'e': T}
     assert D({'b': T}) == {        'b': T, 'c': T, 'd': T, 'e': T}
@@ -311,3 +329,11 @@ def test_FactRules_deduce_staticext():
     assert ('nneg', True) in f.full_implications[('pos', True)]
     assert ('nneg', True) in f.full_implications[('zero', True)]
     assert ('npos', True) in f.full_implications[('zero', True)]
+
+
+def test_inconsistent_assumptions():
+    kb = FactKB(FactRules(['npos -> ~pos', 'pos -> ~npos']))
+    with pytest.raises(InconsistentAssumptions) as err:
+        kb.deduce_all_facts({'pos': T, 'npos': T})
+    assert str(err.value) in ['{\n\tnpos: False,\n\tpos: True}, npos=True',
+                              '{\n\tnpos: True,\n\tpos: False}, pos=True']

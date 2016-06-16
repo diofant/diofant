@@ -2092,3 +2092,39 @@ def kbins(l, k, ordered=None):
     else:
         raise ValueError(
             'ordered must be one of 00, 01, 10 or 11, not %s' % ordered)
+
+
+def cantor_product(*args):
+    """ Breadth-first (diagonal) cartesian product of iterables.
+
+    Each iterable is advanced in turn in a round-robin fashion. As usual with
+    breadth-first, this comes at the cost of memory consumption.
+
+    >>> from itertools import islice, count
+    >>> list(islice(cantor_product(count(), count()), 9))
+    [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)]
+    """
+    args = list(map(iter, args))
+
+    try:
+        argslist = [[next(a)] for a in args]
+    except StopIteration:
+        return
+    else:
+        yield tuple(a[0] for a in argslist)
+
+    nargs = len(args)
+    exhausted = [False]*nargs
+    n = nargs
+
+    while not all(exhausted):
+        n = (n - 1) % nargs
+        if not exhausted[n]:
+            try:
+                argslist[n].append(next(args[n]))
+            except StopIteration:
+                exhausted[n] = True
+            else:
+                for result in product(*(argslist[:n] + [argslist[n][-1:]] +
+                                        argslist[n + 1:])):
+                    yield result
