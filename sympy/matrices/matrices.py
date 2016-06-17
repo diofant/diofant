@@ -24,7 +24,10 @@ from sympy.printing import sstr
 
 def _iszero(x):
     """Returns True if x is zero."""
-    return x.is_zero
+    r = x.equals(0)
+    if r is None:  # pragma: no cover
+        raise NotImplementedError("Zero-decision problem for %s" % x)
+    return r
 
 
 class MatrixError(Exception):
