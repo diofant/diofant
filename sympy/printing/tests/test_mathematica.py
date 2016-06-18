@@ -1,5 +1,5 @@
 from sympy.core import (S, pi, oo, symbols, Function,
-                        Rational, Integer, Tuple)
+                        Rational, Integer, Tuple, Derivative)
 from sympy.integrals import Integral
 from sympy.concrete import Sum
 from sympy.functions import exp, sin, cos, sign, atanh
@@ -30,6 +30,10 @@ def test_Function():
     assert mcode(sign(x)) == "Sign[x]"
 
     assert mcode(atanh(x), user_functions={"atanh": "ArcTanh"}) == "ArcTanh[x]"
+
+
+def test_Derivative():
+    assert mcode(Derivative(f(x), x, x)) == 'D[f[x], x, x]'
 
 
 def test_Pow():

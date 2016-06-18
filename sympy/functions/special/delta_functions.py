@@ -167,38 +167,11 @@ class DiracDelta(Function):
 
 
 class Heaviside(Function):
-    """Heaviside Piecewise function
+    r"""Heaviside step function [1]_
 
-    Heaviside function has the following properties [*]_:
-
-    1) ``diff(Heaviside(x),x) = DiracDelta(x)``
-                        ``( 0, if x < 0``
-    2) ``Heaviside(x) = < ( 1/2 if x==0 [*]``
-                        ``( 1, if x > 0``
-
-    .. [*] Regarding to the value at 0, Mathematica defines ``H(0) = 1``,
-           but Maple uses ``H(0) = undefined``
-
-    I think is better to have H(0) = 1/2, due to the following::
-
-        integrate(DiracDelta(x), x) = Heaviside(x)
-        integrate(DiracDelta(x), (x, -oo, oo)) = 1
-
-    and since DiracDelta is a symmetric function,
-    ``integrate(DiracDelta(x), (x, 0, oo))`` should be 1/2 (which is what
-    Maple returns).
-
-    If we take ``Heaviside(0) = 1/2``, we would have
-    ``integrate(DiracDelta(x), (x, 0, oo)) = ``
-    ``Heaviside(oo) - Heaviside(0) = 1 - 1/2 = 1/2``
-    and
-    ``integrate(DiracDelta(x), (x, -oo, 0)) = ``
-    ``Heaviside(0) - Heaviside(-oo) = 1/2 - 0 = 1/2``
-
-    If we consider, instead ``Heaviside(0) = 1``, we would have
-    ``integrate(DiracDelta(x), (x, 0, oo)) = Heaviside(oo) - Heaviside(0) = 0``
-    and
-    ``integrate(DiracDelta(x), (x, -oo, 0)) = Heaviside(0) - Heaviside(-oo) = 1``
+    .. math ::
+        H(x) = \left\{\begin{matrix}0, x < 0\\
+                      1/2, x = 0\\ 1, x > 0 \end{matrix}\right.
 
     See Also
     ========
@@ -208,15 +181,13 @@ class Heaviside(Function):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/HeavisideStepFunction.html
-
+    .. [1] https://en.wikipedia.org/wiki/Heaviside_step_function
     """
 
     is_real = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            # property number 1
             return DiracDelta(self.args[0])
         else:
             raise ArgumentIndexError(self, argindex)
