@@ -2635,3 +2635,13 @@ def test_dsolve_linsystem_symbol():
     s = dsolve(eq1)
     assert checksysodesol(eq1, s) == (True, [0, 0])
     assert [a.rewrite(Pow, cos).simplify() for a in s] == sol1
+
+
+def test_diofantissue_293():
+    eqs = (-f(x) + Derivative(f(x), x) + Derivative(g(x), x),
+           g(x) + Derivative(f(x), x) - Derivative(g(x), x))
+    sol = [Eq(f(x), (C1*(E**(x*(1 - I)/2)/2 + E**(x*(1 + I)/2)/2) +
+                     C2*(-E**(x*(1 - I)/2)*I/2 + E**(x*(1 + I)/2)*I/2))),
+           Eq(g(x), (C1*(E**(x*(1 - I)/2)*I/2 - E**(x*(1 + I)/2)*I/2) +
+                     C2*(E**(x*(1 - I)/2)/2 + E**(x*(1 + I)/2)/2)))]
+    assert dsolve(eqs) == sol
