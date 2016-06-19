@@ -26,7 +26,7 @@ from sympy import (
     continued_fraction_periodic as cf_p, continued_fraction_convergents as cf_c,
     continued_fraction_reduce as cf_r, FiniteSet, elliptic_e, elliptic_f,
     powsimp, hessian, wronskian, fibonacci, sign, Lambda, Piecewise, Subs,
-    residue, Derivative, logcombine, Symbol, Integer)
+    residue, Derivative, logcombine, Symbol, Integer, Complement)
 from sympy.functions.combinatorial.numbers import stirling
 from sympy.functions.special.zeta_functions import zeta
 from sympy.integrals.deltafunctions import deltaintegrate
@@ -77,7 +77,7 @@ def test_B2():
 
 def test_B3():
     assert (FiniteSet(i, j, k, l, m) - FiniteSet(j) ==
-            FiniteSet(i, k, l, m))
+            Complement(FiniteSet(i, k, l, m), FiniteSet(j)))
 
 
 def test_B4():

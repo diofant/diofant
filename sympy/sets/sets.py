@@ -198,7 +198,13 @@ class Set(Basic):
             return S.EmptySet
 
         elif isinstance(other, FiniteSet):
-            return FiniteSet(*[el for el in other if self.contains(el) is not S.true])
+            syms = FiniteSet(*[el for el in other
+                               if self.contains(el) not in [S.true, S.false]])
+            other = set(other) - set(syms)
+            ret = FiniteSet(*[el for el in other if self.contains(el) is S.false])
+            if syms:
+                ret |= Complement(FiniteSet(*syms), self, evaluate=False)
+            return ret
 
     def symmetric_difference(self, other):
         return SymmetricDifference(self, other)
@@ -1660,23 +1666,26 @@ class FiniteSet(Set, EvalfMixin):
         return self.__class__(el for el in self if el in other)
 
     def _complement(self, other):
-        if other is S.Reals:
-            nums = sorted(m for m in self.args if m.is_number)
+        if other.is_Interval:
+            nums = sorted(m for m in self.args if m.is_number and m in other)
             syms = [m for m in self.args if m.is_Symbol]
-            # Reals cannot contain elements other than numbers and symbols.
+            # Intervals cannot contain elements other than numbers and symbols.
 
-            intervals = []  # Build up a list of intervals between the elements
-            if nums != []:
-                intervals += [Interval(S.NegativeInfinity, nums[0], True, True)]
+            intervals = S.EmptySet  # Build up a list of intervals between the elements
+            if nums:
+                intervals |= Interval(other.left, nums[0],
+                                      other.left_open, True)
                 for a, b in zip(nums[:-1], nums[1:]):
-                    intervals.append(Interval(a, b, True, True))  # both open
-                intervals.append(Interval(nums[-1], S.Infinity, True, True))
-
-            if syms != []:
-                return Complement(Union(intervals, evaluate=False),
-                                  FiniteSet(*syms), evaluate=False)
+                    intervals |= Interval(a, b, True, True)  # both open
+                intervals |= Interval(nums[-1], other.right,
+                                      True, other.right_open)
             else:
-                return Union(intervals, evaluate=False)
+                intervals |= other
+
+            if syms:
+                return Complement(intervals, FiniteSet(*syms), evaluate=False)
+            else:
+                return intervals
 
         return Set._complement(self, other)
 

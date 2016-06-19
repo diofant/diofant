@@ -118,7 +118,8 @@ def test_difference():
         Union(Interval(0, 1, False, True), Interval(1, 2, True, False))
 
     assert FiniteSet(1, 2, 3) - FiniteSet(2) == FiniteSet(1, 3)
-    assert FiniteSet('ham', 'eggs') - FiniteSet('eggs') == FiniteSet('ham')
+    assert (FiniteSet('ham', 'eggs') - FiniteSet('eggs') ==
+            Complement(FiniteSet('ham'), FiniteSet('eggs')))
     assert FiniteSet(1, 2, 3, 4) - Interval(2, 10, True, False) == \
         FiniteSet(1, 2)
     assert FiniteSet(1, 2, 3, 4) - S.EmptySet == FiniteSet(1, 2, 3, 4)
@@ -848,3 +849,16 @@ def test_issue_9956():
 def test_issue_9536():
     a = Symbol('a', real=True)
     assert FiniteSet(log(a)).intersect(S.Reals) == Intersection(S.Reals, FiniteSet(log(a)))
+
+
+def test_issue_9637():
+    n = Symbol('n')
+    a = FiniteSet(n)
+    b = FiniteSet(2, n)
+    assert Complement(S.Reals, a) == Complement(S.Reals, a, evaluate=False)
+    assert Complement(Interval(1, 3), a) == Complement(Interval(1, 3), a, evaluate=False)
+    assert (Complement(Interval(1, 3), b) ==
+            Complement(Union(Interval(1, 2, right_open=True),
+                             Interval(2, 3, left_open=True)), a, evaluate=False))
+    assert Complement(a, S.Reals) == Complement(a, S.Reals, evaluate=False)
+    assert Complement(a, Interval(1, 3)) == Complement(a, Interval(1, 3), evaluate=False)
