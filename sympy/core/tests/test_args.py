@@ -82,9 +82,9 @@ def _test_args(obj):
     if hasattr(obj, 'doit'):
         doit = obj.doit
         if inspect.ismethod(doit):
-            spec = inspect.getargspec(doit)
+            spec = inspect.getfullargspec(doit)
             res &= (len(spec.args) == 1 and spec.varargs is None
-                    and spec.keywords is not None)
+                    and spec.varkw is not None)
         else:
             res &= False
 
