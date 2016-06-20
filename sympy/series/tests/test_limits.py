@@ -446,6 +446,8 @@ def test_issue_9205():
 
 def test_issue_10610():
     assert limit(3**x*3**(-x - 1)*(x + 1)**2/x**2, x, oo) == Rational(1, 3)
+    assert limit(2**x*2**(-x - 1)*(x + 1)*(y - 1)**(-x) *
+                 (y - 1)**(x + 1)/(x + 2), x, oo) == y/2 - S.Half
 
 
 def test_issue_9075():
