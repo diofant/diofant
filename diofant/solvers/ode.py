@@ -697,7 +697,7 @@ def solve_ics(sols, funcs, constants, ics):
     # x0)): value (currently checked by classify_ode). To solve, replace x
     # with x0, f(x0) with value, then solve for constants.
     x = funcs[0].args[0]
-    eqs = []
+    subs_sols = []
     for funcarg, value in ics.items():
         if isinstance(funcarg, AppliedUndef):
             x0 = funcarg.args[0]
@@ -709,13 +709,13 @@ def solve_ics(sols, funcs, constants, ics):
 
         for sol in sols:
             if sol.has(matching_func):
-                eq = sol
-                eq = eq.subs(x, x0)
-                eq = eq.subs(funcarg, value)
-                eqs.append(eq)
+                sol2 = sol
+                sol2 = sol2.subs(x, x0)
+                sol2 = sol2.subs(funcarg, value)
+                subs_sols.append(sol2)
 
     try:
-        solved_constants = solve(eqs, constants, dict=True)
+        solved_constants = solve(subs_sols, constants, dict=True)
     except NotImplementedError:  # pragma: no cover
         solved_constants = []
 
