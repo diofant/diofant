@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
                    sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
-                   Integer, sign, im, nan, Dummy, factorial, comp, O)
+                   Integer, sign, im, nan, Dummy, factorial, comp, O, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -1707,6 +1707,8 @@ def test_add_flatten():
 
     a = Pow(2, 3, evaluate=False)
     assert a + a == 16
+
+    assert zoo + 1 + zoo is nan
 
 
 def test_diofantissue_31():
