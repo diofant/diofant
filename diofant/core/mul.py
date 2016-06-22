@@ -250,11 +250,12 @@ class Mul(Expr, AssocOp):
                 if o is S.NaN or coeff is S.ComplexInfinity and o is S.Zero:
                     # we know for sure the result will be nan
                     return [S.NaN], [], None
-                elif coeff.is_Number:  # it could be zoo
+                if coeff.is_Number:  # it could be zoo
                     coeff *= o
                     if coeff is S.NaN:
                         # we know for sure the result will be nan
                         return [S.NaN], [], None
+                o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             elif o is S.ComplexInfinity:

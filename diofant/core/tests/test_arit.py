@@ -1687,7 +1687,7 @@ def test_issue_6077():
     assert 2**(1.5*x)*2**(2.5*x) == 2**(4.0*x)
 
 
-def test_mul_flatten_oo():
+def test_mul_flatten_oo_zoo():
     p = symbols('p', positive=True)
     n, m = symbols('n,m', negative=True)
     x_im = symbols('x_im', imaginary=True)
@@ -1695,6 +1695,8 @@ def test_mul_flatten_oo():
     assert n*m*oo == oo
     assert p*oo == oo
     assert x_im*oo != I*oo  # i could be +/- 3*I -> +/-oo
+
+    assert zoo*2*zoo is zoo
 
 
 def test_add_flatten():
