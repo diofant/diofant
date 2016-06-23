@@ -1620,6 +1620,11 @@ def test_sympyissue_7426():
     assert f1.equals(f2) is False
 
 
+def test_sympyissue_11122():
+    p = Symbol('p', positive=False)
+    assert (p > 0) is false
+
+
 def test_pow_rewrite():
     assert (2**x).rewrite(sin) == 2**x
     assert (2**x).rewrite(tanh) == 2**x
