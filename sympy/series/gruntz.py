@@ -67,7 +67,7 @@ References
 
 from functools import reduce
 
-from sympy.core import S, Dummy, Mul, Add, evaluate
+from sympy.core import S, Dummy, Mul, Add, evaluate, Float
 from sympy.core.compatibility import default_sort_key
 from sympy.functions import log, exp, sign as sgn
 from sympy.core.cache import cacheit
@@ -217,6 +217,7 @@ def limitinf(e, x):
     oo
     """
     assert x.is_real and x.is_positive
+    assert not e.has(Float)
 
     # Rewrite e in terms of tractable functions only:
     e = e.rewrite('tractable', deep=True)

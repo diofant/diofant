@@ -1,4 +1,4 @@
-from sympy.core import S, Symbol, sympify, Expr, PoleError
+from sympy.core import S, Symbol, sympify, Expr, Rational, Float, PoleError
 from sympy.core.symbol import Dummy
 from sympy.functions.elementary.trigonometric import sin, cos
 from sympy.series.order import Order
@@ -145,6 +145,11 @@ class Limit(Expr):
 
         use_heuristics = hints.get('heuristics', True)
 
+        has_Floats = e.has(Float)
+        if has_Floats:
+            e = e.subs({k: Rational(k) for k in e.atoms(Float)},
+                       simultaneous=True)
+
         if z0.has(z):
             newz = z.as_dummy()
             r = limit(e.subs(z, newz), newz, z0, dir)
@@ -192,5 +197,8 @@ class Limit(Expr):
                 r = heuristics(e, z, z0, dir)
             if r is None:
                 return self
+
+        if has_Floats:
+            r = r.evalf()
 
         return r

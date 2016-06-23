@@ -4,9 +4,9 @@ import os
 import pytest
 
 from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
-                   acos, ceiling, atan, gamma, Symbol, S, pi, Integral,
+                   acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
                    cot, Rational, I, tan, cot, integrate, Sum, sign,
-                   Function, subfactorial, PoleError, Integer)
+                   Function, subfactorial, PoleError, Integer, Float)
 from sympy.series.limits import heuristics
 from sympy.series.order import O
 
@@ -237,10 +237,10 @@ def test_issue_4547():
 
 def test_issue_5164():
     assert limit(x**0.5, x, oo) == oo**0.5 == oo
-    assert limit(x**0.5, x, 16) == Integer(2)**2.0
+    assert limit(x**0.5, x, 16) == 4.0
     assert limit(x**0.5, x, 0) == 0
     assert limit(x**(-0.5), x, oo) == 0
-    assert limit(x**(-0.5), x, 4) == Integer(2)**(-1.0)
+    assert limit(x**(-0.5), x, 4) == 0.5
 
 
 def test_issue_5183():
@@ -295,10 +295,8 @@ def test_issue_3934():
 
 
 def test_compute_leading_term():
-    # needs series to go to n = 32
     assert limit(x**Rational(77, 3)/(1 + x**Rational(77, 3)), x, oo) == 1
-    # needs series to go to n = 128
-    assert limit(x**101.1/(1 + x**101.1), x, oo) == 1
+    assert limit(x**Rational('101.1')/(1 + x**Rational('101.1')), x, oo) == 1
 
 
 def test_issue_5955():
@@ -461,3 +459,13 @@ def test_issue_8634():
 
 def test_issue_9558():
     assert limit(sin(x)**15, x, 0, '-') == 0  # should be fast
+
+
+def test_diofantissue_296():
+    e = log(exp(1/x)/Float(2) + exp(-1/x)/2)*x**2
+    assert e.limit(x, oo) == 0.5
+
+
+def test_issue_5383():
+    e = (1.0 + 1.0*x)**(1.0/x)
+    assert e.limit(x, 0) == E.n()
