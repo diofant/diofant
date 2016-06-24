@@ -5,11 +5,11 @@ import pytest
 from diofant import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
                    Dummy, Eq, erf, erfi, exp, Function, I, E, Integral, LambertW,
                    Pow, log, O, pi, Rational, RootOf, simplify, sin, sqrt, sstr,
-                   Symbol, tan, asin, sinh, Piecewise, symbols, Poly, Integer)
+                   Symbol, Subs, tan, asin, sinh, Piecewise, symbols, Poly, Integer)
 from diofant.solvers.ode import (_undetermined_coefficients_match, checkodesol,
                                classify_ode, classify_sysode, constant_renumber,
                                constantsimp, homogeneous_order, infinitesimals,
-                               checkinfsol, checksysodesol)
+                               checkinfsol, checksysodesol, solve_ics)
 from diofant.solvers.deutils import ode_order
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
@@ -934,6 +934,58 @@ def test_classify_sysode():
     'is_linear': True, 'eq': [-20*y(t) + 20*z(t) + 3*Derivative(x(t), t), 15*x(t) - 15*z(t) + 4*Derivative(y(t), t),
     -12*x(t) + 12*y(t) + 5*Derivative(z(t), t)], 'order': {z(t): 1, y(t): 1, x(t): 1}}
     assert classify_sysode(eq16) == sol16
+
+
+def test_solve_ics():
+    # Basic tests that things work from dsolve.
+    assert dsolve(f(x).diff(x) - f(x), f(x), ics={f(0): 1}) == Eq(f(x), exp(x))
+    assert dsolve(f(x).diff(x) - f(x), f(x), ics={f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), exp(x))
+    assert dsolve(f(x).diff(x, x) + f(x), f(x),
+                  ics={f(0): 1,
+                       f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), sin(x) + cos(x))
+    assert (dsolve([f(x).diff(x) - f(x) + g(x), g(x).diff(x) - g(x) - f(x)],
+                   [f(x), g(x)], ics={f(0): 1, g(0): 0}) ==
+            [Eq(f(x), E**(x*(1 - I))/2 + E**(x*(1 + I))/2),
+             Eq(g(x), E**(x*(1 - I))*I/2 - E**(x*(1 + I))*I/2)])
+
+
+    assert solve_ics([Eq(f(x), C1*exp(x))], [f(x)], [C1], {f(0): 1}) == {C1: 1}
+    assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
+        {f(0): 1, f(pi/2): 1}) == {C1: 1, C2: 1}
+
+    assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
+        {f(0): 1, f(x).diff(x).subs(x, 0): 1}) == {C1: 1, C2: 1}
+
+    # XXX: Ought to be ValueError
+    pytest.raises(NotImplementedError, lambda: solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
+
+    # XXX: Ought to be ValueError
+    pytest.raises(ValueError, lambda: solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1}))
+
+    EI, q, L = symbols('EI q L')
+
+    # eq = Eq(EI*diff(f(x), x, 4), q)
+    sols = [Eq(f(x), C1 + C2*x + C3*x**2 + C4*x**3 + q*x**4/(24*EI))]
+    funcs = [f(x)]
+    constants = [C1, C2, C3, C4]
+    # Test both cases, Derivative (the default from f(x).diff(x).subs(x, L)),
+    # and Subs
+    ics1 = {f(0): 0,
+        f(x).diff(x).subs(x, 0): 0,
+        f(L).diff(L, 2): 0,
+        f(L).diff(L, 3): 0}
+    ics2 = {f(0): 0,
+        f(x).diff(x).subs(x, 0): 0,
+        Subs(f(x).diff(x, 2), x, L): 0,
+        Subs(f(x).diff(x, 3), x, L): 0}
+
+    solved_constants1 = solve_ics(sols, funcs, constants, ics1)
+    solved_constants2 = solve_ics(sols, funcs, constants, ics2)
+    assert solved_constants1 == solved_constants2 == {
+        C1: 0,
+        C2: 0,
+        C3: L**2*q/(4*EI),
+        C4: -L*q/(6*EI)}
 
 
 def test_ode_order():
