@@ -720,9 +720,9 @@ def test_classify_ode_ics():
     ics = {x: 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
 
-    ###########
-    # f(0) type
-    ###########
+    ############################
+    # f(0) type (AppliedUndef) #
+    ############################
 
     # Wrong function
     ics = {g(0): 1}
@@ -740,9 +740,9 @@ def test_classify_ode_ics():
     ics = {f(0): 1}
     classify_ode(eq, f(x), ics=ics)
 
-    ############
-    # f'(0) type
-    ############
+    #####################
+    # f'(0) type (Subs) #
+    #####################
 
     # Wrong function
     ics = {g(x).diff(x).subs(x, 0): 1}
@@ -767,6 +767,31 @@ def test_classify_ode_ics():
     # Does not raise
     ics = {f(x).diff(x).subs(x, 0): 1}
     classify_ode(eq, f(x), ics=ics)
+
+    ###########################
+    # f'(y) type (Derivative) #
+    ###########################
+
+    # Wrong function
+    ics = {g(x).diff(x).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
+    # Contains x
+    ics = {f(y).diff(y).subs(y, x): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
+    # Too many args
+    ics = {f(x, y).diff(x).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
+    # Derivative wrt wrong vars
+    ics = {Derivative(f(x), x, z).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
+    # Does not raise
+    ics = {f(x).diff(x).subs(x, y): 1}
+    classify_ode(eq, f(x), ics=ics)
+
 
 def test_classify_sysode():
     # Here x is assumed to be x(t) and y as y(t) for simplicity.
