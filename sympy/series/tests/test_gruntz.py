@@ -426,7 +426,6 @@ def test_issue_5172():
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs(c, c + 1)
     assert gruntz(expr.subs(c, m), n) == 1
-    # fail:
     assert gruntz(expr.subs(c, p), n).simplify() == \
         (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
 
