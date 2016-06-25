@@ -21,9 +21,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     long-standing mathematical convention, the end term is included in the
     summation.
 
-    Finite sums
-    ===========
-
     For finite sums (and sums with symbolic limits assumed to be finite) we
     follow the summation convention described by Karr [1], especially
     definition 3 of section 1.4. The sum:
@@ -338,14 +335,13 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     def reverse_order(self, *indices):
         """Reverse the order of a limit in a Sum.
 
-        Usage
-        =====
+        Parameters
+        ==========
 
-        ``reverse_order(self, *indices)`` reverses some limits in the expression
-        ``self`` which can be either a ``Sum`` or a ``Product``. The selectors in
-        the argument ``indices`` specify some indices whose limits get reversed.
-        These selectors are either variable names or numerical indices counted
-        starting from the inner-most limit tuple.
+        \*indices : list
+            The selectors in the argument ``indices`` specify some indices whose
+            limits get reversed.  These selectors are either variable names or
+            numerical indices counted starting from the inner-most limit tuple.
 
         Examples
         ========

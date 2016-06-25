@@ -383,10 +383,10 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     Solves any (supported) kind of ordinary differential equation and
     system of ordinary differential equations.
 
-    For single ordinary differential equation
-    =========================================
+    **For single ordinary differential equation**
 
     It is classified under this when number of equation in ``eq`` is one.
+
     **Usage**
 
         ``dsolve(eq, f(x), hint)`` -> Solve ordinary differential equation
@@ -523,10 +523,10 @@ def dsolve(eq, func=None, hint="default", simplify=True,
           specific hint, where ``<hintname>`` is the name of a hint without
           ``_Integral``.
 
-    For system of ordinary differential equations
-    =============================================
+    **For system of ordinary differential equations**
 
-   **Usage**
+    **Usage**
+
         ``dsolve(eq, func)`` -> Solve a system of ordinary differential
         equations ``eq`` for ``func`` being list of functions including
         `x(t)`, `y(t)`, `z(t)` where number of functions in the list depends

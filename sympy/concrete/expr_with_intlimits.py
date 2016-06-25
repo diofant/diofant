@@ -20,13 +20,16 @@ class ExprWithIntLimits(ExprWithLimits):
         `x`. For `a` the only values allowed are `\pm 1`. A new variable to be used
         after the change of index can also be specified.
 
-        Usage
-        =====
+        Parameters
+        ==========
 
-        ``change_index(expr, var, trafo, newvar=None)`` where ``var`` specifies the
-        index variable `x` to transform. The transformation ``trafo`` must be linear
-        and given in terms of ``var``. If the optional argument ``newvar`` is
-        provided then ``var`` gets replaced by ``newvar`` in the final expression.
+        var : Symbol
+            specifies the index variable `x` to transform.
+        trafo : Expr
+            The linear transformation in terms of ``var``.
+        newvar : Symbol, optional
+            Replacement symbol to be used instead of
+            ``var`` in the final expression.
 
         Examples
         ========
@@ -134,12 +137,14 @@ class ExprWithIntLimits(ExprWithLimits):
         """
         Return the index of a dummy variable in the list of limits.
 
-        Usage
-        =====
-
-        ``index(expr, x)``  returns the index of the dummy variable ``x`` in the
-        limits of ``expr``. Note that we start counting with 0 at the inner-most
+        Note that we start counting with 0 at the inner-most
         limits tuple.
+
+        Parameters
+        ==========
+
+        x : Symbol
+            a dummy variable
 
         Examples
         ========
@@ -174,12 +179,12 @@ class ExprWithIntLimits(ExprWithLimits):
         """
         Reorder limits in a expression containing a Sum or a Product.
 
-        Usage
-        =====
+        Parameters
+        ==========
 
-        ``expr.reorder(*arg)`` reorders the limits in the expression ``expr``
-        according to the list of tuples given by ``arg``. These tuples can
-        contain numerical indices or index variable names or involve both.
+        \*arg : list of tuples
+            These tuples can contain numerical indices or index
+            variable names or involve both.
 
         Examples
         ========
@@ -240,13 +245,12 @@ class ExprWithIntLimits(ExprWithLimits):
         """
         Interchange two limit tuples of a Sum or Product expression.
 
-        Usage
-        =====
+        Parameters
+        ==========
 
-        ``expr.reorder_limit(x, y)`` interchanges two limit tuples. The
-        arguments ``x`` and ``y`` are integers corresponding to the index
-        variables of the two limits which are to be interchanged. The
-        expression ``expr`` has to be either a Sum or a Product.
+        x, y: int
+            are integers corresponding to the index
+            variables of the two limits which are to be interchanged.
 
         Examples
         ========

@@ -199,9 +199,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     [[1]
      [2]]
 
-    Usage
-    =====
-
     (1) Use one of the provided modules:
 
         >>> from sympy import sin, tan, gamma

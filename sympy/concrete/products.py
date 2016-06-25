@@ -16,9 +16,6 @@ class Product(ExprWithIntLimits):
     with long-standing mathematical convention, the end term is included in
     the product.
 
-    Finite products
-    ===============
-
     For finite products (and products with symbolic limits assumed to be finite)
     we follow the analogue of the summation convention described by Karr [1],
     especially definition 3 of section 1.4. The product:
@@ -330,14 +327,13 @@ class Product(ExprWithIntLimits):
         """
         Reverse the order of a limit in a Product.
 
-        Usage
-        =====
+        Parameters
+        ==========
 
-        ``reverse_order(expr, *indices)`` reverses some limits in the expression
-        ``expr`` which can be either a ``Sum`` or a ``Product``. The selectors in
-        the argument ``indices`` specify some indices whose limits get reversed.
-        These selectors are either variable names or numerical indices counted
-        starting from the inner-most limit tuple.
+        \*indices : list
+            The selectors in the argument ``indices`` specify some indices whose
+            limits get reversed.  These selectors are either variable names or
+            numerical indices counted starting from the inner-most limit tuple.
 
         Examples
         ========
