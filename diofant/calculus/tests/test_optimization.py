@@ -64,6 +64,18 @@ def test_minimize_linear_2():
                     x, y, z) == (3, {x: 2, y: -S.Half, z: -S.Half})
 
 
+@pytest.mark.xfail
+def test_minimize_poly():
+    assert minimize([x - 2*y, x**2 + y**2 <= 1],
+                    x, y) == (-sqrt(5), {x: 4/sqrt(5) - sqrt(5),
+                                         y: 2/sqrt(5)})
+
+
+@pytest.mark.xfail
+def test_minimize_analytic():
+    assert minimize(exp(x**2 + y**2), x, y) == (1, {x: 0, y: 0})
+
+
 def test_simplex():
     pytest.raises(ValueError, lambda: simplex([1], [[1, 2], [2, 3]],
                                               [4, 7]))
