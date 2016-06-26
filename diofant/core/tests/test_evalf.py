@@ -365,6 +365,7 @@ def test_issue_5486():
 def test_issue_5486_bug():
     from diofant import I, Expr
     assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
+    pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
 
 
 def test_bugs():
