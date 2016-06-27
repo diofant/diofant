@@ -44,7 +44,10 @@ def singularities(f, x):
     elif f.func in (Add, Mul):
         guess = guess.union(*[singularities(a, x) for a in f.args])
     elif f.func is Pow:
-        guess |= singularities(log(f.base)*f.exp, x)
+        if f.exp.is_number and f.exp.is_negative:
+            guess = {v for v in solve(f.base, x) if v.is_real}
+        else:
+            guess |= singularities(log(f.base)*f.exp, x)
     elif f.func in (log, sign) and len(f.args) == 1:
         guess |= singularities(f.args[0], x)
         guess |= {v for v in solve(f.args[0], x) if v.is_real}
