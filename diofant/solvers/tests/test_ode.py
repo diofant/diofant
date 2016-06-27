@@ -736,6 +736,11 @@ def test_classify_ode_ics():
     ics = {f(0, 0): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
 
+    # point contains f
+    # XXX: Should be NotImplementedError
+    ics = {f(0): f(1)}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
     # Does not raise
     ics = {f(0): 1}
     classify_ode(eq, f(x), ics=ics)
@@ -764,6 +769,11 @@ def test_classify_ode_ics():
     ics = {Derivative(f(x), x, y).subs(x, 0): 1}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
 
+    # point contains f
+    # XXX: Should be NotImplementedError
+    ics = {f(x).diff(x).subs(x, 0): f(0)}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
     # Does not raise
     ics = {f(x).diff(x).subs(x, 0): 1}
     classify_ode(eq, f(x), ics=ics)
@@ -786,6 +796,11 @@ def test_classify_ode_ics():
 
     # Derivative wrt wrong vars
     ics = {Derivative(f(x), x, z).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+
+    # point contains f
+    # XXX: Should be NotImplementedError
+    ics = {f(x).diff(x).subs(x, y): f(0)}
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
 
     # Does not raise
