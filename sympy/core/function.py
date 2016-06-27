@@ -981,8 +981,7 @@ class Derivative(Expr):
             if len(variables) != 1:
                 from sympy.utilities.misc import filldedent
                 raise ValueError(filldedent('''
-                    Since there is more than one variable in the
-                    expression, the variable(s) of differentiation
+                    The variable(s) of differentiation
                     must be supplied to differentiate %s''' % expr))
 
         # Standardize the variables by sympifying them and making appending a
