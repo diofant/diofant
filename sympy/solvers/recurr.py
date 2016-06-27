@@ -58,7 +58,7 @@ from sympy.core.mul import Mul
 from sympy.core import sympify
 from sympy.simplify import simplify, hypersimp, hypersimilar
 from sympy.solvers import solve, solve_undetermined_coeffs
-from sympy.polys import Poly, quo, gcd, lcm_list, roots, resultant
+from sympy.polys import Poly, quo, gcd, gcd_list, lcm_list, roots, resultant
 from sympy.functions import binomial, factorial, FallingFactorial, RisingFactorial
 from sympy.matrices import Matrix, casoratian
 from sympy.concrete import product
@@ -128,6 +128,11 @@ def rsolve_poly(coeffs, f, n, **hints):
     r = len(coeffs) - 1
 
     coeffs = [ Poly(coeff, n) for coeff in coeffs ]
+
+    g = gcd_list(coeffs + [f], n, polys=True)
+    if not g.is_ground:
+        coeffs = [quo(c, g, n, polys=False) for c in coeffs]
+        f = quo(f, g, n, polys=False)
 
     polys = [ Poly(0, n) ] * (r + 1)
     terms = [ (S.Zero, S.NegativeInfinity) ] * (r + 1)
@@ -558,14 +563,19 @@ def rsolve_hyper(coeffs, f, n, **hints):
             for j in range(0, r + 1):
                 polys[j] *= Mul(*(denoms[:j] + denoms[j + 1:]))
 
-            R = rsolve_poly(polys, Mul(*denoms), n)
+            R = rsolve_ratio(polys, Mul(*denoms), n, symbols=True)
+            if R is not None:
+                R, syms = R
+                if syms:
+                    R = R.subs(zip(syms, [0]*len(syms)))
 
-            if not (R is None or R is S.Zero):
+            if R:
                 inhomogeneous[i] *= R
             else:
                 return
 
             result = Add(*inhomogeneous)
+            result = simplify(result)
     else:
         result = S.Zero
 
@@ -623,14 +633,11 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
                 ratio = z * A * C.subs(n, n + 1) / B / C
                 ratio = simplify(ratio)
-                # If there is a nonnegative root in the denominator of the ratio,
-                # this indicates that the term y(n_root) is zero, and one should
-                # start the product with the term y(n_root + 1).
-                n0 = 0
-                for n_root in roots(ratio.as_numer_denom()[1], n).keys():
-                    if (n0 < (n_root + 1)) is S.true:
-                        n0 = n_root + 1
-                K = product(ratio, (n, n0, n - 1))
+
+                skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n).keys()
+                                   if v.is_Integer]) + 1
+                K = product(ratio, (n, skip, n - 1))
+
                 if K.has(factorial, FallingFactorial, RisingFactorial):
                     K = simplify(K)
 
@@ -640,11 +647,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
     kernel.sort(key=default_sort_key)
     sk = list(zip(numbered_symbols('C'), kernel))
 
-    if sk:
-        for C, ker in sk:
-            result += C * ker
-    else:
-        return
+    for C, ker in sk:
+        result += C * ker
 
     if hints.get('symbols', False):
         symbols |= {s for s, k in sk}

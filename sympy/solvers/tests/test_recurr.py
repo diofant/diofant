@@ -58,9 +58,9 @@ def test_rsolve_hyper():
         [2*n*(n + 1), -n**2 - 3*n + 2, n - 1], 0, n) == C1*factorial(n) + C0*2**n
 
     assert rsolve_hyper(
-        [n + 2, -(2*n + 3)*(17*n**2 + 51*n + 39), n + 1], 0, n) is None
+        [n + 2, -(2*n + 3)*(17*n**2 + 51*n + 39), n + 1], 0, n) == 0
 
-    assert rsolve_hyper([-n - 1, -1, 1], 0, n) is None
+    assert rsolve_hyper([-n - 1, -1, 1], 0, n) == 0
 
     assert rsolve_hyper([-1, 1], n, n).expand() == C0 + n**2/2 - n/2
 
@@ -75,7 +75,7 @@ def test_rsolve_hyper():
     assert rsolve_hyper([1, 1, 1], 0, n).expand() == \
         C0*(-Rational(1, 2) - sqrt(3)*I/2)**n + C1*(-Rational(1, 2) + sqrt(3)*I/2)**n
 
-    assert rsolve_hyper([1, -2*n/a - 2/a, 1], 0, n) is None
+    assert rsolve_hyper([1, -2*n/a - 2/a, 1], 0, n) == 0
 
 
 def recurrence_term(c, f):
@@ -95,9 +95,9 @@ def test_rsolve_bulk():
             q = recurrence_term(c, p)
             if p.is_polynomial(n):
                 assert rsolve_poly(c, q, n) == p
-            # See issue sympy/sympy#7055:
-            # if p.is_hypergeometric(n):
-            #    assert rsolve_hyper(c, q, n) == p
+            if p.is_hypergeometric(n) and len(c) <= 3:
+                assert rsolve_hyper(c, q, n).subs(zip(symbols('C:3'),
+                                                      [0, 0, 0])).expand() == p
 
 
 @pytest.mark.slow
@@ -207,3 +207,13 @@ def test_issue_6844():
     f = y(n + 2) - y(n + 1) + y(n)/4
     assert rsolve(f, y(n)) == 2**(-n)*(C0 + C1*n)
     assert rsolve(f, y(n), {y(0): 0, y(1): 1}) == 2*2**(-n)*n
+
+
+def test_diofantissue_294():
+    f = y(n) - y(n - 1) - 2*y(n - 2) - 2*n
+    assert rsolve(f, y(n)) == (-1)**n*C0 + 2**n*C1 - n - Rational(5, 2)
+    # issue sympy/sympy#11261
+    assert rsolve(f, y(n), {y(0): -1, y(1): 1}) == (-(-1)**n/2 + 2*2**n -
+                                                    n - Rational(5, 2))
+    # issue sympy/sympy#7055
+    assert rsolve(-2*y(n) + y(n + 1) + n - 1, y(n)) == 2**n*C0 + n
