@@ -924,10 +924,9 @@ class Expr(Basic, EvalfMixin):
                     if factor.is_number:
                         try:
                             coeff *= complex(factor)
+                            continue
                         except TypeError:
                             pass
-                        else:
-                            continue
 
                     if factor.is_commutative:
                         base, exp = decompose_power(factor)
