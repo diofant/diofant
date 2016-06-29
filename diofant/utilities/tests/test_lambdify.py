@@ -328,6 +328,12 @@ def test_numpy_old_matrix():
 
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
+def test_python_div_zero_sympyissue_11306():
+    p = Piecewise((1 / x, y < -1), (x, y <= 1), (1 / x, True))
+    lambdify([x, y], p, modules='numpy')(0, 1)
+
+
+@pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_piecewise():
     pieces = Piecewise((x, x < 3), (x**2, x > 5), (0, True))
     f = lambdify(x, pieces, modules="numpy")

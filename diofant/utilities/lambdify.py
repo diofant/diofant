@@ -292,8 +292,11 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     from ..core import Symbol
     from .iterables import flatten
 
+    module_provided = True
+
     # If the user hasn't specified any modules, use what is available.
     if modules is None:
+        module_provided = False
         # Use either numpy (if available) or python.math where possible.
         # XXX: This leads to different behaviour on different systems and
         #      might be the reason for irreproducible errors.
@@ -370,6 +373,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if flat in lstr:
         namespace.update({flat: flatten})
     func = eval(lstr, namespace)
+    # For numpy lambdify, wrap all input arguments in arrays.
+    if module_provided and _module_present('numpy', namespaces):
+        def array_wrap(funcarg):
+            def wrapper(*argsx, **kwargsx):
+                return funcarg(*[namespace['asarray'](i) for i in argsx], **kwargsx)
+            return wrapper
+        func = array_wrap(func)
     # Apply the docstring
     sig = "func({0})".format(", ".join(str(i) for i in names))
     sig = textwrap.fill(sig, subsequent_indent=' '*8)
