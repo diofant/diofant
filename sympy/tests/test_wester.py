@@ -2076,12 +2076,9 @@ def test_T11():
     assert limit(n**x/(x*product((1 + x/k), (k, 1, n))), n, oo) == gamma(x)
 
 
-@pytest.mark.xfail
 def test_T12():
     x, t = symbols('x t', extended_real=True)
-    # raises PoleError: Don't know how to calculate the
-    #           limit(sqrt(pi)*x*erf(x)/(2*(1 - exp(-x**2))), x, 0, dir=+)
-    assert limit(x * integrate(exp(-t**2), (t, 0, x))/(1 - exp(-x**2)),
+    assert limit(x*integrate(exp(-t**2), (t, 0, x))/(1 - exp(-x**2)),
                  x, 0) == 1
 
 
