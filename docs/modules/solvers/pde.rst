@@ -35,7 +35,7 @@ checkpdesol
 
 Hint Methods
 ------------
-These funcions are meant for internal use. However they contain useful information on the various solving methods.
+These functions are meant for internal use. However they contain useful information on the various solving methods.
 
 pde_1st_linear_constant_coeff_homogeneous
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

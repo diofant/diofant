@@ -3,6 +3,7 @@ from sympy.core import (S, pi, oo, symbols, Function,
 from sympy.integrals import Integral
 from sympy.concrete import Sum
 from sympy.functions import exp, sin, cos, sign, atanh
+from sympy.matrices import Matrix
 
 from sympy import mathematica_code as mcode
 
@@ -88,3 +89,8 @@ def test_Sum():
                      (y, -oo, oo))) == \
         "Hold[Sum[E^(-x^2 - y^2), {x, -Infinity, Infinity}, " \
         "{y, -Infinity, Infinity}]]"
+
+
+def test_Matrix():
+    assert mcode(Matrix()) == '{}'
+    assert mcode(Matrix([[1, 2], [3, 4444]])) == '{{1, 2}, {3, 4444}}'

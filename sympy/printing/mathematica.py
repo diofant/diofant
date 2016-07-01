@@ -106,6 +106,21 @@ class MCodePrinter(CodePrinter):
     def _print_Sum(self, expr):
         return "Hold[Sum[" + ', '.join(self.doprint(a) for a in expr.args) + "]]"
 
+    def _print_MatrixBase(self, A):
+        res = []
+        for i in range(A.rows):
+            res.append("{" +
+                       ", ".join([self.doprint(e) for e in A.row(i)]) +
+                       "}")
+        return "{" + ", ".join(res) + "}"
+
+    _print_Matrix = \
+        _print_DenseMatrix = \
+        _print_MutableDenseMatrix = \
+        _print_ImmutableMatrix = \
+        _print_ImmutableDenseMatrix = \
+        _print_MatrixBase
+
 
 def mathematica_code(expr, **settings):
     r"""Converts an expr to a string of the Wolfram Mathematica code
