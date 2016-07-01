@@ -1113,7 +1113,7 @@ class Derivative(Expr):
             # sorting its variables.
             if isinstance(expr, Derivative):
                 expr = cls(
-                    expr.args[0], *cls._sort_variables(expr.args[1:])
+                    expr.expr, *cls._sort_variables(expr.variables)
                 )
 
         if nderivs > 1 and assumptions.get('simplify', True):
@@ -1240,11 +1240,11 @@ class Derivative(Expr):
 
     @property
     def expr(self):
-        return self._args[0]
+        return self.args[0]
 
     @property
     def variables(self):
-        return self._args[1:]
+        return self.args[1:]
 
     @property
     def free_symbols(self):
@@ -1256,10 +1256,10 @@ class Derivative(Expr):
             return Subs(self, old, new)
         # If both are Derivatives with the same expr, check if old is
         # equivalent to self or if old is a subderivative of self.
-        if old.is_Derivative and old.expr == self.args[0]:
+        if old.is_Derivative and old.expr == self.expr:
             # Check if canonnical order of variables is equal.
             old_vars = Derivative._sort_variables(old.variables)
-            self_vars = Derivative._sort_variables(self.args[1:])
+            self_vars = Derivative._sort_variables(self.variables)
             if old_vars == self_vars:
                 return new
 
@@ -1286,21 +1286,19 @@ class Derivative(Expr):
         return Derivative(*(x._subs(old, new) for x in self.args))
 
     def _eval_lseries(self, x, logx):
-        dx = self.args[1:]
-        for term in self.args[0].lseries(x, logx=logx):
-            yield self.func(term, *dx)
+        for term in self.expr.lseries(x, logx=logx):
+            yield self.func(term, *self.variables)
 
     def _eval_nseries(self, x, n, logx):
-        arg = self.args[0].nseries(x, n=n, logx=logx)
+        arg = self.expr.nseries(x, n=n, logx=logx)
         o = arg.getO()
-        dx = self.args[1:]
-        rv = [self.func(a, *dx) for a in Add.make_args(arg.removeO())]
+        rv = [self.func(a, *self.variables) for a in Add.make_args(arg.removeO())]
         if o:
             rv.append(o/x)
         return Add(*rv)
 
     def _eval_as_leading_term(self, x):
-        return self.args[0].as_leading_term(x)
+        return self.func(self.expr.as_leading_term(x), *self.variables)
 
 
 class Lambda(Expr):

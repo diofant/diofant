@@ -1400,12 +1400,10 @@ def test_P16():
     assert M.rank() == 1
 
 
-@pytest.mark.xfail
 def test_P17():
     t = symbols('t', extended_real=True)
-    M = Matrix([
-        [sin(2*t), cos(2*t)],
-        [2*(1 - (cos(t)**2))*cos(t), (1 - 2*(sin(t)**2))*sin(t)]])
+    M = Matrix([[sin(2*t), cos(2*t)],
+                [2*(1 - (cos(t)**2))*cos(t), (1 - 2*(sin(t)**2))*sin(t)]])
     assert M.rank() == 1
 
 
@@ -2078,12 +2076,9 @@ def test_T11():
     assert limit(n**x/(x*product((1 + x/k), (k, 1, n))), n, oo) == gamma(x)
 
 
-@pytest.mark.xfail
 def test_T12():
     x, t = symbols('x t', extended_real=True)
-    # raises PoleError: Don't know how to calculate the
-    #           limit(sqrt(pi)*x*erf(x)/(2*(1 - exp(-x**2))), x, 0, dir=+)
-    assert limit(x * integrate(exp(-t**2), (t, 0, x))/(1 - exp(-x**2)),
+    assert limit(x*integrate(exp(-t**2), (t, 0, x))/(1 - exp(-x**2)),
                  x, 0) == 1
 
 

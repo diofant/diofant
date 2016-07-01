@@ -705,3 +705,11 @@ def test_mexpand():
     assert _mexpand(None) is None
     assert _mexpand(1) is S.One
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
+
+
+def test_issue_11313():
+    # test Derivative series & as_leading_term
+    assert Derivative(x**3 + x**4, x).as_leading_term(x).doit() == 3*x**2
+    s = Derivative(sin(x), x).series(x, n=3)
+    assert s == Derivative(-x**3/6, x) + Derivative(x, x) + O(x**3)
+    assert s.doit() == 1 - x**2/2 + O(x**3)
