@@ -3,7 +3,7 @@
 import pytest
 
 from sympy import (Integer, sin, cos, sqrt, symbols, pi, Eq,
-                   Integral, exp, Mul, Rational as Q, I)
+                   Integral, exp, Mul, Abs, Rational as Q, I)
 from sympy.polys.polyutils import (
     _nsort,
     _sort_gens,
@@ -15,7 +15,7 @@ from sympy.polys.polyutils import (
 from sympy.polys.polyerrors import (
     GeneratorsNeeded,
     PolynomialError)
-
+from sympy.polys import factor
 from sympy.polys.domains import ZZ
 
 x, y, z, p, q, r, s, t, u, v, w = symbols('x,y,z,p,q,r,s,t,u,v,w')
@@ -305,3 +305,10 @@ def test_issue_7383():
     Ec = u.diff(z, z).subs([(x, sqrt(R*R - z*z))])
     assert integrate(Ec, (z, -R, R)).simplify() == \
         -2*sqrt(2)*R*a**3*exp(-R**2*a**2/2)/(3*sqrt(pi))
+
+
+def test_issue_10161():
+    x = symbols('x', real=True)
+    h = (2*x*(-2*x + Abs(x))*(x**2 - 1)/Abs(x**2 - 1)
+         + (x/Abs(x) - 2)*Abs(x**2 - 1))
+    assert (h - factor(h)).simplify() == 0
