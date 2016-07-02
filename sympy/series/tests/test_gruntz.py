@@ -270,7 +270,9 @@ def test_rewrite():
     assert rewrite(e, x, m) == (1/m*log(x), -x)
 
     e = exp(-x + 1/x**2) - exp(x + 1/x)
-    assert rewrite(e, x, m) == (Add(m*exp(1/x + x**(-2)), -1/m, evaluate=False), -x - 1/x)
+    assert rewrite(e, x, m) == (Add(m, Mul(-1, exp(1/x + x**(-2))/m,
+                                           evaluate=False),
+                                    evaluate=False), -x + 1/x**2)
 
 
 def test_mrv_leadterm():
