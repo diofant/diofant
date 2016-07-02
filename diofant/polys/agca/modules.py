@@ -346,7 +346,7 @@ class FreeModule(Module):
             if len(tpl) != self.rank:
                 raise CoercionFailed
             return FreeModuleElement(self, tpl)
-        elif elem is 0:
+        elif elem == 0:
             return FreeModuleElement(self, (self.ring.convert(0),)*self.rank)
         else:
             raise CoercionFailed

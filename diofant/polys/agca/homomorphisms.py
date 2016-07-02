@@ -297,7 +297,7 @@ class ModuleHomomorphism:
 
     def __div__(self, oth):
         try:
-            return self._mul_scalar(1/self.ring.convert(oth))
+            return self._mul_scalar(self.ring.convert(1)/self.ring.convert(oth))
         except CoercionFailed:
             return NotImplemented
 
