@@ -872,3 +872,10 @@ def test_issue_10113():
     assert imageset(x, f, Interval(-2, 3)) == Union(Interval(-oo, 0, True),
                                                     Interval(Rational(9, 5),
                                                              oo, False, True))
+
+
+def test_issue_9808():
+    assert (Complement(FiniteSet(y), FiniteSet(1)) ==
+            Complement(FiniteSet(y), FiniteSet(1), evaluate=False))
+    assert (Complement(FiniteSet(1, 2, x), FiniteSet(x, y, 2, 3)) ==
+            Complement(FiniteSet(1), FiniteSet(y), evaluate=False))

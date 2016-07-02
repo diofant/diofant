@@ -198,12 +198,13 @@ class Set(Basic):
             return S.EmptySet
 
         elif isinstance(other, FiniteSet):
-            syms = FiniteSet(*[el for el in other
+            unks = FiniteSet(*[el for el in other
                                if self.contains(el) not in [S.true, S.false]])
-            other = set(other) - set(syms)
+            other = FiniteSet(*[el for el in other
+                                if self.contains(el) is not S.true])
             ret = FiniteSet(*[el for el in other if self.contains(el) is S.false])
-            if syms:
-                ret |= Complement(FiniteSet(*syms), self, evaluate=False)
+            if unks:
+                ret |= Complement(FiniteSet(*unks), self, evaluate=False)
             return ret
 
     def symmetric_difference(self, other):
@@ -1686,6 +1687,19 @@ class FiniteSet(Set, EvalfMixin):
                 return Complement(intervals, FiniteSet(*syms), evaluate=False)
             else:
                 return intervals
+
+        elif other.is_FiniteSet:
+            common = FiniteSet(*[el for el in other
+                                 if self.contains(el) is S.true])
+            self2 = FiniteSet(*[el for el in self
+                                if common.contains(el) is not S.true])
+            if self2.is_EmptySet:
+                self2 = common
+            other = FiniteSet(*[el for el in other
+                                if common.contains(el) is not S.true])
+            return Set._complement(FiniteSet(*[el for el in self2
+                                               if other.contains(el) is not S.false]),
+                                   other)
 
         return Set._complement(self, other)
 
