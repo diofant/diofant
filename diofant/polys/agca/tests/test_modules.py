@@ -319,7 +319,7 @@ def test_QuotientModule():
 
 
 def test_ModulesQuotientRing():
-    R = QQ.poly_ring(x, y, order=(("lex", x), ("ilex", y))) / [x**2 + 1]
+    R = QQ.poly_ring(x, y, order=lambda q: "lex" if q == x else "ilex") / [x**2 + 1]
     M1 = R.free_module(2)
     assert M1 == R.free_module(2)
     assert M1 != QQ.poly_ring(x).free_module(2)

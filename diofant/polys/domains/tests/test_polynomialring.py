@@ -10,7 +10,7 @@ from diofant.abc import x, y
 
 
 def test_build_order():
-    R = QQ.poly_ring(x, y, order=(("lex", x), ("ilex", y)))
+    R = QQ.poly_ring(x, y, order=lambda q: "lex" if q == x else "ilex")
     assert R.order((1, 5)) == ((1,), (-5,))
 
 

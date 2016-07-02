@@ -109,7 +109,7 @@ def test_properties():
     assert h.quotient_domain(
         h.kernel()).restrict_codomain(h.image()).is_isomorphism()
 
-    R2 = QQ.poly_ring(x, y, order=(("lex", x), ("ilex", y))) / [x**2 + 1]
+    R2 = QQ.poly_ring(x, y, order=lambda q: "lex" if q == x else "ilex") / [x**2 + 1]
     F = R2.free_module(2)
     h = homomorphism(F, F, [[x, 0], [y, y + 1]])
     assert h.is_isomorphism()
