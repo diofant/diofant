@@ -95,8 +95,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...
     SympifyError: SympifyError: "could not parse u'x***2'"
 
-    Locals
-    ------
+    *Locals*
 
     The sympification happens with access to everything that is loaded
     by ``from sympy import *``; anything used in a string that is not
@@ -147,8 +146,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> sympify('E & O', _clash1)
     And(E, O)
 
-    Strict
-    ------
+    *Strict*
 
     If the option ``strict`` is set to ``True``, only the types for which an
     explicit conversion has been defined are converted. In the other
@@ -161,8 +159,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...
     SympifyError: SympifyError: None
 
-    Evaluation
-    ----------
+    *Evaluation*
 
     If the option ``evaluate`` is set to ``False``, then arithmetic and
     operators will be converted into their SymPy equivalents and the
@@ -190,8 +187,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> sympify(s, evaluate=False)
     -2*((x - 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
 
-    Extending
-    ---------
+    *Extending*
 
     To extend ``sympify`` to convert custom objects (not derived from ``Basic``),
     just define a ``_sympy_`` method to your class. You can do that even to

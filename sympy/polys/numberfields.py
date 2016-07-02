@@ -568,24 +568,17 @@ def minimal_polynomial(ex, x=None, **args):
 
     ex : algebraic element expression
     x : independent variable of the minimal polynomial
-
-    Options
-    =======
-
-    compose : if ``True`` ``_minpoly_compose`` is used, if ``False`` the ``groebner`` algorithm
-    polys : if ``True`` returns a ``Poly`` object
-    domain : ground domain
-
-    Notes
-    =====
-
-    By default ``compose=True``, the minimal polynomial of the subexpressions of ``ex``
-    are computed, then the arithmetic operations on them are performed using the resultant
-    and factorization.
-    If ``compose=False``, a bottom-up algorithm is used with ``groebner``.
-    The default algorithm stalls less frequently.
-
-    If no ground domain is given, it will be generated automatically from the expression.
+    compose : boolean, optional
+        If ``True`` (default), the minimal polynomial of the subexpressions
+        of ``ex`` are computed, then the arithmetic operations on them are
+        performed using the resultant and factorization.  Else a bottom-up
+        algorithm is used with ``groebner``.  The default algorithm
+        stalls less frequently.
+    polys : boolean, optional
+        if ``True`` returns a ``Poly`` object (the default is ``False``).
+    domain : Domain, optional
+        If no ground domain is given, it will be generated automatically
+        from the expression.
 
     Examples
     ========

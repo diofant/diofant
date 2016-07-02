@@ -229,8 +229,8 @@ def nthroot(expr, n, max_len=4, prec=15):
     n : integer
     max_len : maximum number of surds passed as constants to ``nsimplify``
 
-    Algorithm
-    =========
+    Notes
+    =====
 
     First ``nsimplify`` is used to get a candidate root; if it is not a
     root the minimal polynomial is computed; the answer is one of its

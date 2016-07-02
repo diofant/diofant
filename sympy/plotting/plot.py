@@ -1095,22 +1095,19 @@ def plot(*args, **kwargs):
     the midpoint of two points that has to be further sampled. Hence the same
     plots can appear slightly different.
 
-    Usage
-    =====
-
-    Single Plot
+    *Single Plot.*
 
     ``plot(expr, range, **kwargs)``
 
     If the range is not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots with same range.
+    *Multiple plots with same range.*
 
     ``plot(expr1, expr2, ..., range, **kwargs)``
 
     If the range is not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots with different ranges.
+    *Multiple plots with different ranges.*
 
     ``plot((expr1, range), (expr2, range), ..., **kwargs)``
 
@@ -1259,22 +1256,19 @@ def plot_parametric(*args, **kwargs):
     the midpoint of two points that has to be further sampled. Hence the same
     plots can appear slightly different.
 
-    Usage
-    =====
-
-    Single plot.
+    *Single plot.*
 
     ``plot_parametric(expr_x, expr_y, range, **kwargs)``
 
     If the range is not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots with same range.
+    *Multiple plots with same range.*
 
     ``plot_parametric((expr1_x, expr1_y), (expr2_x, expr2_y), range, **kwargs)``
 
     If the range is not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots with different ranges.
+    *Multiple plots with different ranges.*
 
     ``plot_parametric((expr_x, expr_y, range), ..., **kwargs)``
 
@@ -1391,16 +1385,13 @@ def plot3d_parametric_line(*args, **kwargs):
     """
     Plots a 3D parametric line plot.
 
-    Usage
-    =====
-
-    Single plot:
+    *Single plot.*
 
     ``plot3d_parametric_line(expr_x, expr_y, expr_z, range, **kwargs)``
 
     If the range is not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots.
+    *Multiple plots.*
 
     ``plot3d_parametric_line((expr_x, expr_y, expr_z, range), ..., **kwargs)``
 
@@ -1486,22 +1477,19 @@ def plot3d(*args, **kwargs):
     """
     Plots a 3D surface plot.
 
-    Usage
-    =====
-
-    Single plot
+    *Single plot.*
 
     ``plot3d(expr, range_x, range_y, **kwargs)``
 
     If the ranges are not specified, then a default range of (-10, 10) is used.
 
-    Multiple plot with the same range.
+    *Multiple plot with the same range.*
 
     ``plot3d(expr1, expr2, range_x, range_y, **kwargs)``
 
     If the ranges are not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots with different ranges.
+    *Multiple plots with different ranges.*
 
     ``plot3d((expr1, range_x, range_y), (expr2, range_x, range_y), ..., **kwargs)``
 
@@ -1595,16 +1583,13 @@ def plot3d_parametric_surface(*args, **kwargs):
     """
     Plots a 3D parametric surface plot.
 
-    Usage
-    =====
-
-    Single plot.
+    *Single plot.*
 
     ``plot3d_parametric_surface(expr_x, expr_y, expr_z, range_u, range_v, **kwargs)``
 
     If the ranges is not specified, then a default range of (-10, 10) is used.
 
-    Multiple plots.
+    *Multiple plots.*
 
     ``plot3d_parametric_surface((expr_x, expr_y, expr_z, range_u, range_v), ..., **kwargs)``
 

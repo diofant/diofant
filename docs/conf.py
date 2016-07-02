@@ -10,7 +10,12 @@
 # serve to show the default value.
 
 import os
+import warnings
 import sympy
+
+# This turns numpydoc's section warnings to exceptions,
+# see numpy/numpydoc#58.
+warnings.simplefilter('error', UserWarning)
 
 # General configuration
 # ---------------------
