@@ -125,10 +125,10 @@ def mrv(e, x):
 
     >>> x = Symbol('x', real=True, positive=True)
 
-    >>> mrv(log(x - log(x))/log(x), x) == {x}
-    True
-    >>> mrv(exp(x + exp(-x)), x) == {exp(x + exp(-x)), exp(-x)}
-    True
+    >>> mrv(log(x - log(x))/log(x), x)
+    {x}
+    >>> mrv(exp(x + exp(-x)), x)
+    {E**(-x), E**(x + E**(-x))}
     """
     if not e.has(x):
         return set()

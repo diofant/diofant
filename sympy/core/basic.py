@@ -132,11 +132,10 @@ class Basic(metaclass=ManagedProperties):
         >>> x.assumptions0
         {'commutative': True}
         >>> x = Symbol("x", positive=True)
-        >>> x.assumptions0 == \
-        ... {'commutative': True, 'extended_real': True, 'imaginary': False,
-        ...  'negative': False, 'nonnegative': True, 'nonpositive': False,
-        ...  'nonzero': True, 'positive': True, 'zero': False}
-        True
+        >>> x.assumptions0
+        {'commutative': True, 'extended_real': True, 'imaginary': False,
+         'negative': False, 'nonnegative': True, 'nonpositive': False,
+         'nonzero': True, 'positive': True, 'zero': False}
         """
         return {}
 
@@ -340,32 +339,32 @@ class Basic(metaclass=ManagedProperties):
 
         >>> from sympy import I, pi, sin
         >>> from sympy.abc import x, y
-        >>> (1 + x + 2*sin(y + I*pi)).atoms() == {1, 2, I, pi, x, y}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms()
+        {1, 2, I, pi, x, y}
 
         If one or more types are given, the results will contain only
         those types of atoms.
 
         >>> from sympy import Number, NumberSymbol, Symbol
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol) == {x, y}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Symbol)
+        {x, y}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number) == {1, 2}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number)
+        {1, 2}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol) == {1, 2, pi}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol)
+        {1, 2, pi}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I) == {1, 2, I, pi}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Number, NumberSymbol, I)
+        {1, 2, I, pi}
 
         Note that I (imaginary unit) and zoo (complex infinity) are special
         types of number symbols and are not part of the NumberSymbol class.
 
         The type can be given implicitly, too:
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(x) == {x, y}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(x)
+        {x, y}
 
         Be careful to check your assumptions when using the implicit option
         since ``Integer(1).is_Integer = True`` but ``type(Integer(1))`` is ``One``, a special type
@@ -373,11 +372,11 @@ class Basic(metaclass=ManagedProperties):
         integers in an expression:
 
         >>> from sympy import S, Integer
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1)) == {1}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(1))
+        {1}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2)) == {1, 2}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Integer(2))
+        {1, 2}
 
         Finally, arguments to atoms() can select more than atomic atoms: any
         sympy type (loaded in core/__init__.py) can be listed as an argument
@@ -387,13 +386,13 @@ class Basic(metaclass=ManagedProperties):
         >>> from sympy import Function, Mul
         >>> from sympy.core.function import AppliedUndef
         >>> f = Function('f')
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function) == {f(x), sin(y + I*pi)}
-        True
-        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef) == {f(x)}
-        True
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(Function)
+        {f(x), sin(y + I*pi)}
+        >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
+        {f(x)}
 
-        >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul) == {I*pi, 2*sin(y + I*pi)}
-        True
+        >>> (1 + x + 2*sin(y + I*pi)).atoms(Mul)
+        {I*pi, 2*sin(y + I*pi)}
         """
         if types:
             types = tuple(
@@ -1356,13 +1355,13 @@ class Basic(metaclass=ManagedProperties):
         >>> q = Wild("q")
         >>> r = Wild("r")
         >>> e = (x+y)**(x+y)
-        >>> e.match(p**p) == {p: x + y}
-        True
-        >>> e.match(p**q) == {p: x + y, q: x + y}
-        True
+        >>> e.match(p**p)
+        {p_: x + y}
+        >>> e.match(p**q)
+        {p_: x + y, q_: x + y}
         >>> e = (2*x)**2
-        >>> e.match(p*q**r) == {p: 4, q: x, r: 2}
-        True
+        >>> e.match(p*q**r)
+        {p_: 4, q_: x, r_: 2}
         >>> (p*q**r).xreplace(e.match(p*q**r))
         4*x**2
         """
