@@ -671,8 +671,8 @@ def canonicalize(g, dummies, msym, *v):
     0 if the tensor is zero, else return the array form of
     the permutation representing the canonical form of the tensor.
 
-    Algorithm
-    =========
+    Notes
+    =====
 
     First one uses canonical_free to get the minimum tensor under
     lexicographic order, using only the slot symmetries.

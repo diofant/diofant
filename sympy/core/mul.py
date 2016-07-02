@@ -151,12 +151,10 @@ class Mul(Expr, AssocOp):
 
               This consideration is moot if the cache is turned off.
 
-            NB
-            --
-              The validity of the above notes depends on the implementation
-              details of Mul and flatten which may change at any time. Therefore,
-              you should only consider them when your code is highly performance
-              sensitive.
+            The validity of the above notes depends on the implementation
+            details of Mul and flatten which may change at any time. Therefore,
+            you should only consider them when your code is highly performance
+            sensitive.
         """
         from sympy.series.order import Order
 

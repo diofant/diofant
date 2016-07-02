@@ -451,13 +451,14 @@ class Permutation(Basic):
     >>> from sympy.combinatorics import Permutation
     >>> Permutation.print_cyclic = False
 
-    Permutations Notation
-    =====================
+    Notes
+    =====
+
+    *Permutations Notation*
 
     Permutations are commonly represented in disjoint cycle or array forms.
 
-    Array Notation and 2-line Form
-    ------------------------------------
+    *Array Notation and 2-line Form*
 
     In the 2-line form, the elements and their final positions are shown
     as a matrix with 2 rows:
@@ -497,8 +498,7 @@ class Permutation(Basic):
     >>> [p(q(i)) for i in range(p.size)]
     [1, 2, 0]
 
-    Disjoint Cycle Notation
-    -----------------------
+    *Disjoint Cycle Notation*
 
     In disjoint cycle notation, only the elements that have shifted are
     indicated. In the above case, the 2 and 1 switched places. This can
@@ -573,8 +573,7 @@ class Permutation(Basic):
     True
 
 
-    Equality testing
-    ----------------
+    *Equality testing*
 
     The array forms must be the same in order for permutations to be equal:
 
@@ -582,8 +581,7 @@ class Permutation(Basic):
     False
 
 
-    Identity Permutation
-    --------------------
+    *Identity Permutation*
 
     The identity permutation is a permutation in which no element is out of
     place. It can be entered in a variety of ways. All the following create
@@ -603,9 +601,7 @@ class Permutation(Basic):
     >>> I == Permutation([range(4)])
     False
 
-
-    Permutation Printing
-    ====================
+    *Permutation Printing*
 
     There are a few things to note about how Permutations are printed.
 
@@ -656,8 +652,7 @@ class Permutation(Basic):
     >>> p.size
     4
 
-    Short introduction to other methods
-    ===================================
+    *Short introduction to other methods*
 
     The permutation can act as a bijective function, telling what element is
     located at a given position

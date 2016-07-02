@@ -1147,8 +1147,7 @@ def multiset_partitions(multiset, m=None):
     If ``multiset`` is an integer, a range [0, 1, ..., multiset - 1]
     will be supplied.
 
-    Counting
-    --------
+    *Counting*
 
     The number of partitions of a set is given by the bell number:
 

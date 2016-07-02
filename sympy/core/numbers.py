@@ -1085,10 +1085,7 @@ class Rational(Number):
     TypeError: invalid input: pi
 
 
-    Low-level
-    ---------
-
-    Access numerator and denominator as .p and .q:
+    Low-level access numerator and denominator as .p and .q:
 
     >>> r = Rational(3, 4)
     >>> r

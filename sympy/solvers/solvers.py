@@ -661,8 +661,7 @@ def solve(f, *symbols, **flags):
         >>> limit(eq, x, 0, '+')
         0
 
-    Disabling high-order, explicit solutions
-    ----------------------------------------
+    *Disabling high-order, explicit solutions*
 
     When solving polynomial expressions, one might not want explicit solutions
     (which can be quite long). If the expression is univariate, RootOf
@@ -691,8 +690,7 @@ def solve(f, *symbols, **flags):
         >>> solve(eq, cubics=False)
         [-1, -1 + sqrt(2), -sqrt(2) - 1]
 
-    Solving equations involving radicals
-    ------------------------------------
+    *Solving equations involving radicals*
 
     Because of SymPy's use of the principle root (issue #8789), some solutions
     to radical equations will be missed unless check=False:
