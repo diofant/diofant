@@ -1009,6 +1009,11 @@ def test_checksol():
     assert warn[0].message.args[0] == """
 \tWarning: could not verify solution %s.""" % sol
 
+    eq = r - x**2 - y**2
+    dict_var_soln = {y: - sqrt(r) / sqrt(tan(t)**2 + 1),
+                     x: -sqrt(r)*tan(t)/sqrt(tan(t)**2 + 1)}
+    assert checksol(eq, dict_var_soln) is True
+
 
 def test_exclude():
     R, C, Ri, Vout, V1, Vminus, Vplus, s = \
