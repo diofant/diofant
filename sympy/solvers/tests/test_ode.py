@@ -367,7 +367,7 @@ def test_nonlinear_2eq_order1():
 
     eq5 = (Eq(x(t), t*diff(x(t), t)+diff(x(t), t)*diff(y(t), t)), Eq(y(t), t*diff(y(t), t)+diff(y(t), t)**2))
     sol5 = {Eq(x(t), C1*C2 + C1*t), Eq(y(t), C2**2 + C2*t)}
-    assert dsolve(eq5) == sol5
+    assert dsolve(eq5, [x(t), y(t)]) == sol5
 
     eq6 = (Eq(diff(x(t), t), x(t)**2*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol6 = [
