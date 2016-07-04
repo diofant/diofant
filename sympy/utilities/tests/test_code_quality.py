@@ -21,14 +21,12 @@ BIN_PATH = join(TOP_PATH, "bin")
 EXAMPLES_PATH = join(TOP_PATH, "examples")
 
 # Error messages
-message_implicit = "File contains an implicit import: %s, line %s."
 message_carriage = "File contains carriage returns at end of line: %s, line %s"
 message_str_raise = "File contains string exception: %s, line %s"
 message_gen_raise = "File contains generic exception: %s, line %s"
 message_old_raise = "File contains old-style raise statement: %s, line %s, \"%s\""
 message_self_assignments = "File contains assignments to self/cls: %s, line %s."
 
-implicit_test_re = re.compile(r'^\s*(>>> )?(\.\.\. )?from .* import .*\*')
 str_raise_re = re.compile(
     r'^\s*(>>> )?(\.\.\. )?raise(\s+(\'|\")|\s*(\(\s*)+(\'|\"))')
 gen_raise_re = re.compile(
@@ -121,9 +119,6 @@ def test_files():
                 assert False, message_str_raise % (fname, idx + 1)
             if gen_raise_re.search(line):
                 assert False, message_gen_raise % (fname, idx + 1)
-            if (implicit_test_re.search(line) and
-                    not filter(lambda ex: ex in fname, import_exclude)):
-                assert False, message_implicit % (fname, idx + 1)
 
             result = old_raise_re.search(line)
 
@@ -135,23 +130,10 @@ def test_files():
     top_level_files = [join(TOP_PATH, file) for file in [
         "setup.py",
     ]]
-    # Files to exclude from all tests
-    exclude = set()
-    # Files to exclude from the implicit import test
-    import_exclude = {
-        # glob imports are allowed in top-level __init__.py:
-        "%(sep)ssympy%(sep)s__init__.py" % sepd,
-        # these __init__.py should be fixed:
-        # XXX: not really, they use useful import pattern (DRY)
-        "%(sep)spolys%(sep)s__init__.py" % sepd,
-        "%(sep)spolys%(sep)sdomains%(sep)s__init__.py" % sepd,
-        # interactive sympy executes ``from sympy import *``:
-        "%(sep)sinteractive%(sep)ssession.py" % sepd,
-    }
     check_files(top_level_files, test)
     check_directory_tree(BIN_PATH, test, {"~", ".pyc", ".sh"}, "*")
-    check_directory_tree(SYMPY_PATH, test, exclude)
-    check_directory_tree(EXAMPLES_PATH, test, exclude)
+    check_directory_tree(SYMPY_PATH, test)
+    check_directory_tree(EXAMPLES_PATH, test)
 
 
 def _with_space(c):
@@ -224,37 +206,6 @@ def test_raise_statement_regular_expression():
         assert gen_raise_re.search(_with_space(c)) is not None, c
     for c in old_candidates_fail:
         assert old_raise_re.search(_with_space(c)) is not None, c
-
-
-def test_implicit_imports_regular_expression():
-    candidates_ok = [
-        "from sympy import something",
-        ">>> from sympy import something",
-        "from sympy.somewhere import something",
-        ">>> from sympy.somewhere import something",
-        "import sympy",
-        ">>> import sympy",
-        "import sympy.something.something",
-        "... import sympy",
-        "... import sympy.something.something",
-        "... from sympy import something",
-        "... from sympy.somewhere import something",
-        ">> from sympy import *",  # To allow 'fake' docstrings
-        "# from sympy import *",
-        "some text # from sympy import *",
-    ]
-    candidates_fail = [
-        "from sympy import *",
-        ">>> from sympy import *",
-        "from sympy.somewhere import *",
-        ">>> from sympy.somewhere import *",
-        "... from sympy import *",
-        "... from sympy.somewhere import *",
-    ]
-    for c in candidates_ok:
-        assert implicit_test_re.search(_with_space(c)) is None, c
-    for c in candidates_fail:
-        assert implicit_test_re.search(_with_space(c)) is not None, c
 
 
 def test_find_self_assignments():
