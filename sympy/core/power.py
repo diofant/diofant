@@ -875,7 +875,7 @@ class Pow(Expr):
             return result
 
     def as_real_imag(self, deep=True, **hints):
-        from sympy import atan2, cos, im, re, sin, exp
+        from sympy import atan2, cos, sin
         from sympy.polys.polytools import poly
 
         if self.exp.is_Integer:
@@ -933,6 +933,7 @@ class Pow(Expr):
 
             return (rp*cos(tp), rp*sin(tp))
         elif self.base is S.Exp1:
+            from sympy import exp
             re, im = self.exp.as_real_imag()
             if deep:
                 re = re.expand(deep, **hints)
@@ -940,7 +941,7 @@ class Pow(Expr):
             c, s = cos(im), sin(im)
             return (exp(re)*c, exp(re)*s)
         else:
-
+            from sympy import re, im
             if deep:
                 hints['complex'] = False
 

@@ -11,10 +11,10 @@ from sympy.simplify.hyperexpand import (ShiftA, ShiftB, UnShiftA, UnShiftB,
                        hyperexpand, Hyper_Function, G_Function,
                        reduce_order_meijer,
                        build_hypergeometric_formula)
-from sympy import hyper, I, S, meijerg, Piecewise, Rational, Integer
+from sympy import (hyper, I, S, meijerg, Piecewise, Rational, Integer,
+                   cos, sin, log, exp, asin, lowergamma, atanh, besseli,
+                                      gamma, sqrt, pi, erf, exp_polar)
 from sympy.utilities.randtest import verify_numerically as tn
-from sympy import (cos, sin, log, exp, asin, lowergamma, atanh, besseli,
-                   gamma, sqrt, pi, erf, exp_polar, Integer)
 
 from sympy.abc import z, a, b, c
 

@@ -447,12 +447,13 @@ class MatrixHomomorphism(ModuleHomomorphism):
         """Helper function which returns a sympy matrix ``self.matrix``."""
         from sympy.matrices import Matrix
 
-        def c(x):
-            return x
-
         if isinstance(self.codomain, (QuotientModule, SubQuotientModule)):
             def c(x):
                 return x.data
+        else:
+            def c(x):
+                return x
+
         return Matrix([[self.ring.to_sympy(y) for y in c(x)] for x in self.matrix]).T
 
     def __repr__(self):

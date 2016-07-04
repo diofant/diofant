@@ -14,7 +14,7 @@ def arguments(o):
     return o.args
 
 
-@dispatch((int, Atom))
+@dispatch((int, Atom))  # noqa: F811
 def arguments(o):
     return ()
 
@@ -24,7 +24,7 @@ def operator(o):
     return o.func
 
 
-@dispatch((int, Atom))
+@dispatch((int, Atom))  # noqa: F811
 def operator(o):
     return o
 
@@ -34,7 +34,7 @@ def term(op, args):
     return op(*args)
 
 
-@dispatch((int, Atom), (tuple, list))
+@dispatch((int, Atom), (tuple, list))  # noqa: F811
 def term(op, args):
     return op
 

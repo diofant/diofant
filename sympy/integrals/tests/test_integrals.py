@@ -7,7 +7,7 @@ from sympy import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
                    Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
                    simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
                    sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                   im, polar_lift, meijerg, Rational)
+                   im, polar_lift, meijerg)
 from sympy.functions.elementary.complexes import periodic_argument
 from sympy.integrals.risch import NonElementaryIntegral
 from sympy.utilities.randtest import verify_numerically

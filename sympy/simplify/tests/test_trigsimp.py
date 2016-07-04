@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (symbols, sin, simplify, cos, trigsimp, tan, csc,
                    exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
-                   exp, S, integrate, I, Matrix, Symbol, coth, pi, log,
+                   S, integrate, I, Matrix, Symbol, coth, pi, log,
                    count_ops, sqrt, E, expand, Piecewise, Rational)
 
 from sympy.abc import x, y, z, a, b

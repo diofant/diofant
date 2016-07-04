@@ -647,12 +647,12 @@ def test_kbins():
             [[1], [0, 0]]
             [[1, 0], [0]]\n''')
 
-    def test():
+    def test2():
         for ordered in [None, 0, 1, 10, 11]:
             print('ordered =', ordered)
             for p in kbins(list(range(3)), 2, ordered=ordered):
                 print('   ', p)
-    assert capture(lambda: test()) == dedent('''\
+    assert capture(lambda: test2()) == dedent('''\
         ordered = None
             [[0], [1, 2]]
             [[0, 1], [2]]

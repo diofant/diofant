@@ -2,9 +2,8 @@ import pytest
 
 from sympy import (sin, cos, atan2, log, exp, gamma, conjugate, sqrt,
                    factorial, Integral, Piecewise, Add, diff, symbols,
-                   Integer, Float, Dummy, Eq)
-from sympy import Catalan, EulerGamma, E, GoldenRatio, I, pi
-from sympy import Function, Rational, Integer, Lambda
+                   Integer, Float, Dummy, Eq, Function, Rational, Lambda,
+                   Catalan, EulerGamma, E, GoldenRatio, I, pi)
 from sympy.core.relational import Relational
 from sympy.logic.boolalg import And, Or, Not, Equivalent, Xor
 from sympy.printing.fcode import fcode, FCodePrinter
