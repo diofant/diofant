@@ -22,16 +22,11 @@ EXAMPLES_PATH = join(TOP_PATH, "examples")
 
 # Error messages
 message_carriage = "File contains carriage returns at end of line: %s, line %s"
-message_str_raise = "File contains string exception: %s, line %s"
 message_gen_raise = "File contains generic exception: %s, line %s"
-message_old_raise = "File contains old-style raise statement: %s, line %s, \"%s\""
 message_self_assignments = "File contains assignments to self/cls: %s, line %s."
 
-str_raise_re = re.compile(
-    r'^\s*(>>> )?(\.\.\. )?raise(\s+(\'|\")|\s*(\(\s*)+(\'|\"))')
 gen_raise_re = re.compile(
     r'^\s*(>>> )?(\.\.\. )?raise(\s+Exception|\s*(\(\s*)+Exception)')
-old_raise_re = re.compile(r'^\s*(>>> )?(\.\.\. )?raise((\s*\(\s*)|\s+)\w+\s*,')
 
 
 def find_self_assignments(s):
@@ -115,16 +110,8 @@ def test_files():
         for idx, line in enumerate(test_file):
             if line.endswith("\r\n"):
                 assert False, message_carriage % (fname, idx + 1)
-            if str_raise_re.search(line):
-                assert False, message_str_raise % (fname, idx + 1)
             if gen_raise_re.search(line):
                 assert False, message_gen_raise % (fname, idx + 1)
-
-            result = old_raise_re.search(line)
-
-            if result is not None:
-                assert False, message_old_raise % (
-                    fname, idx + 1, result.group(2))
 
     # Files to test at top level
     top_level_files = [join(TOP_PATH, file) for file in [
@@ -153,13 +140,6 @@ def test_raise_statement_regular_expression():
         ''''"""This function will raise ValueError, except when it doesn't"""''',
         "raise (ValueError('text')",
     ]
-    str_candidates_fail = [
-        "raise 'exception'",
-        "raise 'Exception'",
-        'raise "exception"',
-        'raise "Exception"',
-        "raise 'ValueError'",
-    ]
     gen_candidates_fail = [
         "raise Exception('text') # raise Exception, 'text'",
         "raise Exception('text')",
@@ -173,39 +153,11 @@ def test_raise_statement_regular_expression():
         ">>> raise Exception, 'text' # raise Exception('text')",
         ">>> raise Exception, 'text' # raise Exception, 'text'",
     ]
-    old_candidates_fail = [
-        "raise Exception, 'text'",
-        "raise Exception, 'text' # raise Exception('text')",
-        "raise Exception, 'text' # raise Exception, 'text'",
-        ">>> raise Exception, 'text'",
-        ">>> raise Exception, 'text' # raise Exception('text')",
-        ">>> raise Exception, 'text' # raise Exception, 'text'",
-        "raise ValueError, 'text'",
-        "raise ValueError, 'text' # raise Exception('text')",
-        "raise ValueError, 'text' # raise Exception, 'text'",
-        ">>> raise ValueError, 'text'",
-        ">>> raise ValueError, 'text' # raise Exception('text')",
-        ">>> raise ValueError, 'text' # raise Exception, 'text'",
-        "raise(ValueError,",
-        "raise (ValueError,",
-        "raise( ValueError,",
-        "raise ( ValueError,",
-        "raise(ValueError ,",
-        "raise (ValueError ,",
-        "raise( ValueError ,",
-        "raise ( ValueError ,",
-    ]
 
     for c in candidates_ok:
-        assert str_raise_re.search(_with_space(c)) is None, c
         assert gen_raise_re.search(_with_space(c)) is None, c
-        assert old_raise_re.search(_with_space(c)) is None, c
-    for c in str_candidates_fail:
-        assert str_raise_re.search(_with_space(c)) is not None, c
     for c in gen_candidates_fail:
         assert gen_raise_re.search(_with_space(c)) is not None, c
-    for c in old_candidates_fail:
-        assert old_raise_re.search(_with_space(c)) is not None, c
 
 
 def test_find_self_assignments():
