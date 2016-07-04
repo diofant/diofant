@@ -105,8 +105,6 @@ def test_files():
 
     def test_this_file(fname, test_file):
         line = None  # to flag the case where there were no lines in file
-        tests = 0
-        test_set = set()
         for idx, line in enumerate(test_file):
             if line.endswith("\r\n"):
                 assert False, message_carriage % (fname, idx + 1)
