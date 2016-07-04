@@ -257,25 +257,6 @@ def test_implicit_imports_regular_expression():
         assert implicit_test_re.search(_with_space(c)) is not None, c
 
 
-def test_test_suite_defs():
-    candidates_ok = [
-        "    def foo():\n",
-        "def foo(arg):\n",
-        "def _foo():\n",
-        "def test_foo():\n",
-    ]
-    candidates_fail = [
-        "def foo():\n",
-        "def foo() :\n",
-        "def foo( ):\n",
-        "def  foo():\n",
-    ]
-    for c in candidates_ok:
-        assert test_suite_def_re.search(c) is None, c
-    for c in candidates_fail:
-        assert test_suite_def_re.search(c) is not None, c
-
-
 def test_find_self_assignments():
     candidates_ok = [
         "class A(object):\n    def foo(self, arg): arg = self\n",
