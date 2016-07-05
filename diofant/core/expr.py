@@ -3148,15 +3148,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify import trigsimp
         return trigsimp(self, **args)
 
-    def radsimp(self):
+    def radsimp(self, **kwargs):
         """See the radsimp function in diofant.simplify"""
         from ..simplify import radsimp
-        return radsimp(self)
+        return radsimp(self, **kwargs)
 
-    def powsimp(self, deep=False, combine='all'):
+    def powsimp(self, **args):
         """See the powsimp function in diofant.simplify"""
         from ..simplify import powsimp
-        return powsimp(self, deep, combine)
+        return powsimp(self, **args)
 
     def combsimp(self):
         """See the combsimp function in diofant.simplify"""
