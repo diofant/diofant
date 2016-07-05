@@ -7862,9 +7862,6 @@ def _nonlinear_2eq_order1_type5(func, t, eq):
     if not (r1 and r2):
         r1 = (-eq[0]).match(t*diff(x(t), t) - x(t) + f)
         r2 = (-eq[1]).match(t*diff(y(t), t) - y(t) + g)
-    if not (r1 and r2):
-        r1 = eq[0].match(diff(x(t), t) - x(t)/t + f/t)
-        r2 = eq[1].match(diff(y(t), t) - y(t)/t + g/t)
     return {Eq(x(t), C1*t + r1[f].subs(x1, C1).subs(y1, C2)), Eq(y(t), C2*t + r2[g].subs(x1, C1).subs(y1, C2))}
 
 
