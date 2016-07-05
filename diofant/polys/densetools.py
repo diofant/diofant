@@ -1096,7 +1096,7 @@ def dmp_lift(f, u, K):
 
         polys.append(dmp_from_dict(G, u, K))
 
-    return dmp_convert(dmp_expand(polys, u, K), u, K, K.dom)
+    return dmp_convert(dmp_expand(polys, u, K), u, K, K.domain)
 
 
 def dup_sign_variations(f, K):

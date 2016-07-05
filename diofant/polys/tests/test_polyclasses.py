@@ -14,19 +14,19 @@ def test_DMP___init__():
     f = DMP([[0], [], [0, 1, 2], [3]], ZZ)
 
     assert f.rep == [[1, 2], [3]]
-    assert f.dom == ZZ
+    assert f.domain == ZZ
     assert f.lev == 1
 
     f = DMP([[1, 2], [3]], ZZ, 1)
 
     assert f.rep == [[1, 2], [3]]
-    assert f.dom == ZZ
+    assert f.domain == ZZ
     assert f.lev == 1
 
     f = DMP({(1, 1): 1, (0, 0): 2}, ZZ, 1)
 
     assert f.rep == [[1, 0], [2]]
-    assert f.dom == ZZ
+    assert f.domain == ZZ
     assert f.lev == 1
 
 
@@ -270,84 +270,84 @@ def test_DMF__init__():
     assert f.num == [[1, 2], [3]]
     assert f.den == [[1, 2, 3]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[1, 2], [3]], [[1, 2, 3]]), ZZ, 1)
 
     assert f.num == [[1, 2], [3]]
     assert f.den == [[1, 2, 3]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[-1], [-2]], [[3], [-4]]), ZZ)
 
     assert f.num == [[-1], [-2]]
     assert f.den == [[3], [-4]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[1], [2]], [[-3], [4]]), ZZ)
 
     assert f.num == [[-1], [-2]]
     assert f.den == [[3], [-4]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[1], [2]], [[-3], [4]]), ZZ)
 
     assert f.num == [[-1], [-2]]
     assert f.den == [[3], [-4]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[]], [[-3], [4]]), ZZ)
 
     assert f.num == [[]]
     assert f.den == [[1]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(17, ZZ, 1)
 
     assert f.num == [[17]]
     assert f.den == [[1]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[1], [2]]), ZZ)
 
     assert f.num == [[1], [2]]
     assert f.den == [[1]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF([[0], [], [0, 1, 2], [3]], ZZ)
 
     assert f.num == [[1, 2], [3]]
     assert f.den == [[1]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF({(1, 1): 1, (0, 0): 2}, ZZ, 1)
 
     assert f.num == [[1, 0], [2]]
     assert f.den == [[1]]
     assert f.lev == 1
-    assert f.dom == ZZ
+    assert f.domain == ZZ
 
     f = DMF(([[QQ(1)], [QQ(2)]], [[-QQ(3)], [QQ(4)]]), QQ)
 
     assert f.num == [[-QQ(1)], [-QQ(2)]]
     assert f.den == [[QQ(3)], [-QQ(4)]]
     assert f.lev == 1
-    assert f.dom == QQ
+    assert f.domain == QQ
 
     f = DMF(([[QQ(1, 5)], [QQ(2, 5)]], [[-QQ(3, 7)], [QQ(4, 7)]]), QQ)
 
     assert f.num == [[-QQ(7)], [-QQ(14)]]
     assert f.den == [[QQ(15)], [-QQ(20)]]
     assert f.lev == 1
-    assert f.dom == QQ
+    assert f.domain == QQ
 
     pytest.raises(ValueError, lambda: DMF(([1], [[1]]), ZZ))
     pytest.raises(ZeroDivisionError, lambda: DMF(([1], []), ZZ))
@@ -412,7 +412,7 @@ def test_ANP___init__():
 
     assert f.rep == [QQ(1), QQ(1)]
     assert f.mod == [QQ(1), QQ(0), QQ(1)]
-    assert f.dom == QQ
+    assert f.domain == QQ
 
     rep = {1: QQ(1), 0: QQ(1)}
     mod = {2: QQ(1), 0: QQ(1)}
@@ -421,13 +421,13 @@ def test_ANP___init__():
 
     assert f.rep == [QQ(1), QQ(1)]
     assert f.mod == [QQ(1), QQ(0), QQ(1)]
-    assert f.dom == QQ
+    assert f.domain == QQ
 
     f = ANP(1, mod, QQ)
 
     assert f.rep == [QQ(1)]
     assert f.mod == [QQ(1), QQ(0), QQ(1)]
-    assert f.dom == QQ
+    assert f.domain == QQ
 
 
 def test_ANP___eq__():

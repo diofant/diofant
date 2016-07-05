@@ -144,7 +144,7 @@ class RootOf(Expr):
         else:
             _reals_cache[factor] = real_part = \
                 dup_isolate_real_roots_sqf(
-                    factor.rep.rep, factor.rep.dom, blackbox=True)
+                    factor.rep.rep, factor.rep.domain, blackbox=True)
 
         return real_part
 
@@ -156,7 +156,7 @@ class RootOf(Expr):
         else:
             _complexes_cache[factor] = complex_part = \
                 dup_isolate_complex_roots_sqf(
-                factor.rep.rep, factor.rep.dom, blackbox=True)
+                factor.rep.rep, factor.rep.domain, blackbox=True)
         return complex_part
 
     @classmethod
