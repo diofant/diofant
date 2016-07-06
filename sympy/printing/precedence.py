@@ -38,7 +38,8 @@ PRECEDENCE_VALUES = {
     "MatAdd": PRECEDENCE["Add"],
     "MatMul": PRECEDENCE["Mul"],
     "MatPow": PRECEDENCE["Pow"],
-    "HadamardProduct": PRECEDENCE["Mul"]
+    "HadamardProduct": PRECEDENCE["Mul"],
+    "Fraction": PRECEDENCE["Atom"],
 }
 
 # Sometimes it's not enough to assign a fixed precedence value to a

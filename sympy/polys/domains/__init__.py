@@ -78,7 +78,7 @@ QQ_gmpy = GMPYRationalField
 RR = RealField()
 CC = ComplexField()
 
-from .pythonrational import PythonRational
+from .groundtypes import PythonRational
 
 from sympy.core.compatibility import GROUND_TYPES
 

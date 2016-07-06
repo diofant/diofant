@@ -126,11 +126,9 @@ class ReprPrinter(Printer):
     def _print_Rational(self, expr):
         return 'Rational(%s, %s)' % (self._print(expr.p), self._print(expr.q))
 
-    def _print_PythonRational(self, expr):
-        return "%s(%d, %d)" % (expr.__class__.__name__, expr.p, expr.q)
-
     def _print_Fraction(self, expr):
         return 'Fraction(%s, %s)' % (self._print(expr.numerator), self._print(expr.denominator))
+    _print_PythonRational = _print_Fraction
 
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)

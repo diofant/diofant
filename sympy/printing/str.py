@@ -517,17 +517,12 @@ class StrPrinter(Printer):
         else:
             return "%s/%s" % (expr.p, expr.q)
 
-    def _print_PythonRational(self, expr):
-        if expr.q == 1:
-            return str(expr.p)
-        else:
-            return "%d/%d" % (expr.p, expr.q)
-
     def _print_Fraction(self, expr):
         if expr.denominator == 1:
             return str(expr.numerator)
         else:
             return "%s/%s" % (expr.numerator, expr.denominator)
+    _print_PythonRational = _print_Fraction
 
     def _print_mpq(self, expr):
         if expr.denominator == 1:

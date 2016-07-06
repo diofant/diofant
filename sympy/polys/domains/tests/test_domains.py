@@ -5,7 +5,7 @@ import pytest
 from sympy import sqrt, sin, oo, Poly, Float, Integer, Rational
 from sympy.polys.domains import ZZ, QQ, RR, CC, FF, GF, EX
 from sympy.polys.domains.domainelement import DomainElement
-from sympy.polys.domains.pythonrational import PythonRational
+from sympy.polys.domains.groundtypes import PythonRational
 from sympy.polys.domains.realfield import RealField
 from sympy.polys.rings import ring
 from sympy.polys.fields import field
