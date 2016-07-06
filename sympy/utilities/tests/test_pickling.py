@@ -53,7 +53,7 @@ from sympy.polys.polytools import Poly, PurePoly
 from sympy.polys.polyclasses import DMP, DMF, ANP
 from sympy.polys.rings import PolyRing
 from sympy.polys.fields import FracField
-from sympy.polys.domains.pythonrational import PythonRational
+from sympy.polys.domains.groundtypes import PythonRational
 from sympy.polys.domains.pythonfinitefield import PythonFiniteField
 from sympy.polys.domains.mpelements import MPContext
 from sympy.polys.domains.pythonintegerring import PythonIntegerRing

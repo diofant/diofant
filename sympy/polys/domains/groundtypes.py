@@ -3,6 +3,7 @@
 __all__ = []
 
 import builtins
+import fractions
 
 import mpmath.libmp as mlib
 
@@ -11,8 +12,8 @@ from sympy.core.compatibility import HAS_GMPY
 PythonInteger = builtins.int
 PythonReal = builtins.float
 PythonComplex = builtins.complex
+PythonRational = fractions.Fraction
 
-from .pythonrational import PythonRational
 from sympy.core.numbers import (
     igcdex as python_gcdex,
     igcd as python_gcd,
