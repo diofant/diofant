@@ -5,7 +5,7 @@ from diofant.abc import n, x, y, z
 from diofant.core import (Catalan, E, EulerGamma, Function, GoldenRatio, I,
                           Integer, Lambda, Rational, Symbol, Tuple, nan, oo,
                           pi, zoo)
-from diofant.functions import (Chi, Ci, Piecewise, Shi, Si, airyai,
+from diofant.functions import (Chi, Ci, LambertW, Piecewise, Shi, Si, airyai,
                                airyaiprime, airybi, airybiprime, besseli,
                                besselj, besselk, bessely, ceiling, cos, exp,
                                hankel1, hankel2, jn, laguerre, li, loggamma,
@@ -379,3 +379,5 @@ def test_specfun():
     assert mcode(polygamma(n, x)) == 'psi(n, x)'
     assert mcode(Shi(x)) == 'sinhint(x)'
     assert mcode(Si(x)) == 'sinint(x)'
+    assert mcode(LambertW(x)) == 'lambertw(x)'
+    assert mcode(LambertW(x, n)) == 'lambertw(n, x)'
