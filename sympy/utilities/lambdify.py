@@ -483,7 +483,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
         return iterable(l, exclude=(str, DeferredVector))
 
     if isiter(args) and any(isiter(i) for i in args):
-        from sympy.utilities.iterables import flatten
         import re
         dum_args = [str(Dummy(str(i))) for i in range(len(args))]
         iter_args = ','.join([i if isiter(a) else i

@@ -1,5 +1,5 @@
 from sympy import (
-    symbols, powsimp, symbols, MatrixSymbol, sqrt, pi, Mul, gamma, Function,
+    powsimp, symbols, MatrixSymbol, sqrt, pi, Mul, gamma, Function,
     I, exp, simplify, sin, E, log, hyper, Symbol, Dummy, powdenest,
     root, Rational)
 

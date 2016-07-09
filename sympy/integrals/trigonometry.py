@@ -1,4 +1,4 @@
-from sympy.core import cacheit, Dummy, Eq, Integer, Rational, S, Wild, Integer
+from sympy.core import cacheit, Dummy, Eq, Integer, Rational, S, Wild
 from sympy.functions import binomial, sin, cos, Piecewise
 
 # TODO sin(a*x)*cos(b*x) -> sin((a+b)x) + sin((a-b)x) ?

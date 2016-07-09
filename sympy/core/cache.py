@@ -41,38 +41,35 @@ def cache_key(*args, **kwargs):
     return tuple(key)
 
 
-def cacheit(f):
-    """Caching decorator.
-
-    The result of cached function must be *immutable*.
-
-    Examples
-    ========
-
-    >>> from sympy.core.cache import cacheit
-    >>> from sympy.abc import x, y
-
-    >>> @cacheit
-    ... def f(a, b):
-    ...    print(a, b)
-    ...    return a + b
-
-    >>> f(x, y)
-    x y
-    x + y
-    >>> f(x, y)
-    x + y
-    """
-
-    f_cache_it_cache = {}
-    CACHE.append((f, f_cache_it_cache))
-    return cached(f_cache_it_cache, key=cache_key)(f)
-
-
 USE_CACHE = os.getenv('SYMPY_USE_CACHE', 'yes').lower()
 
 if USE_CACHE == "yes":
-    pass
+    def cacheit(f):
+        """Caching decorator.
+
+        The result of cached function must be *immutable*.
+
+        Examples
+        ========
+
+        >>> from sympy.core.cache import cacheit
+        >>> from sympy.abc import x, y
+
+        >>> @cacheit
+        ... def f(a, b):
+        ...    print(a, b)
+        ...    return a + b
+
+        >>> f(x, y)
+        x y
+        x + y
+        >>> f(x, y)
+        x + y
+        """
+
+        f_cache_it_cache = {}
+        CACHE.append((f, f_cache_it_cache))
+        return cached(f_cache_it_cache, key=cache_key)(f)
 elif USE_CACHE == 'no':  # pragma: no cover
     def cacheit(f):
         return f

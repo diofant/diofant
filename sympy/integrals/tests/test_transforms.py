@@ -16,7 +16,7 @@ from sympy import (
     EulerGamma, erf, besselj, bessely, besseli, besselk, simplify,
     exp_polar, polar_lift, unpolarify, Function, expand_mul,
     combsimp, trigsimp, atan, sinh, cosh, Ne, periodic_argument,
-    atan2, Abs, Integer, Rational)
+    atan2, Integer, Rational)
 from sympy.matrices import Matrix, eye
 
 from sympy.abc import x, s, a, b, c, d

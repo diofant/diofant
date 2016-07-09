@@ -5,12 +5,12 @@ import pytest
 
 from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                   cot, Rational, I, tan, cot, integrate, Sum, sign,
+                   cot, Rational, I, tan, integrate, Sum, sign,
                    Function, subfactorial, PoleError, Integer, Float)
 from sympy.series.limits import heuristics
 from sympy.series.order import O
 
-from sympy.abc import a, c, x, y, z, a, n
+from sympy.abc import a, c, x, y, z, n
 
 
 def test_basic1():
