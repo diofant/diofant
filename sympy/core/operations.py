@@ -129,8 +129,8 @@ class AssocOp(Basic):
         >>> b = Wild("b")
         >>> c = Wild("c")
         >>> x, y, z = symbols("x y z")
-        >>> (a+sin(b)*c)._matches_commutative(x+sin(y)*z) == {a: x, b: y, c: z}
-        True
+        >>> (a + sin(b)*c)._matches_commutative(x + sin(y)*z)
+        {a_: x, b_: y, c_: z}
 
         In the example above, "a+sin(b)*c" is the pattern, and "x+sin(y)*z" is
         the expression.
@@ -138,18 +138,17 @@ class AssocOp(Basic):
         The repl_dict contains parts that were already matched. For example
         here:
 
-        >>> (x+sin(b)*c)._matches_commutative(x+sin(y)*z, repl_dict={a: x}) == {a: x, b: y, c: z}
-        True
+        >>> (x + sin(b)*c)._matches_commutative(x + sin(y)*z, repl_dict={a: x})
+        {a_: x, b_: y, c_: z}
 
         the only function of the repl_dict is to return it in the
         result, e.g. if you omit it:
 
-        >>> (x+sin(b)*c)._matches_commutative(x+sin(y)*z) == {b: y, c: z}
-        True
+        >>> (x + sin(b)*c)._matches_commutative(x + sin(y)*z)
+        {b_: y, c_: z}
 
         the "a: x" is not returned in the result, but otherwise it is
         equivalent.
-
         """
         # make sure expr is Expr if pattern is Expr
         from .expr import Add, Expr

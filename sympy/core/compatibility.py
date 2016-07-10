@@ -344,7 +344,7 @@ def ordered(seq, keys=None, default=True, warn=False):
     Examples
     ========
 
-    >>> from sympy.utilities.iterables import ordered
+    >>> from sympy.core.compatibility import ordered
     >>> from sympy import count_ops
     >>> from sympy.abc import x, y
 

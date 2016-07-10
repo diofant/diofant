@@ -68,7 +68,7 @@ References
 from functools import reduce
 
 from sympy.core import S, Dummy, Mul, Add, evaluate, Float
-from sympy.core.compatibility import default_sort_key
+from sympy.core.compatibility import ordered
 from sympy.functions import log, exp, sign as sgn
 from sympy.core.cache import cacheit
 
@@ -125,10 +125,10 @@ def mrv(e, x):
 
     >>> x = Symbol('x', real=True, positive=True)
 
-    >>> mrv(log(x - log(x))/log(x), x) == {x}
-    True
-    >>> mrv(exp(x + exp(-x)), x) == {exp(x + exp(-x)), exp(-x)}
-    True
+    >>> mrv(log(x - log(x))/log(x), x)
+    {x}
+    >>> mrv(exp(x + exp(-x)), x)
+    {E**(-x), E**(x + E**(-x))}
     """
     if not e.has(x):
         return set()
@@ -331,8 +331,7 @@ def rewrite(e, x, w):
             e = e.xreplace({x: exp(x)})
             Omega = {s.xreplace({x: exp(x)}) for s in Omega}
 
-    # Use default_sort_key as a last resort to get deterministic output.
-    Omega = sorted(Omega, key=lambda a: (-len(mrv(a, x)), default_sort_key(a)))
+    Omega = list(ordered(Omega, keys=lambda a: -len(mrv(a, x))))
 
     for g in Omega:
         sig = sign(g.exp, x)

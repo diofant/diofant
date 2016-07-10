@@ -121,6 +121,12 @@ class MCodePrinter(CodePrinter):
         _print_ImmutableDenseMatrix = \
         _print_MatrixBase
 
+    def _print_Relational(self, expr):
+        PREC = precedence(expr)
+        return '%s %s %s' % (self.parenthesize(expr.lhs, PREC),
+                             expr.rel_op,
+                             self.parenthesize(expr.rhs, PREC))
+
 
 def mathematica_code(expr, **settings):
     r"""Converts an expr to a string of the Wolfram Mathematica code

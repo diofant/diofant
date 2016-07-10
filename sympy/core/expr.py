@@ -1050,8 +1050,8 @@ class Expr(Basic, EvalfMixin):
         [[-1, 2, x, y], [A, B]]
         >>> (-2*x*A*B*y).args_cnc(split_1=False)
         [[-2, x, y], [A, B]]
-        >>> (-2*x*y).args_cnc(cset=True) == [{-1, 2, x, y}, []]
-        True
+        >>> (-2*x*y).args_cnc(cset=True)
+        [{-1, 2, x, y}, []]
 
         The arg is always treated as a Mul:
 
@@ -1679,13 +1679,12 @@ class Expr(Basic, EvalfMixin):
         ========
 
         >>> from sympy.abc import a, x
-        >>> d = (3*x + a*x + 4).as_coefficients_dict()
-        >>> d == {1: 4, x: 3, a*x: 1}
-        True
-        >>> d[a]
+        >>> (3*x + a*x + 4).as_coefficients_dict()
+        {1: 4, x: 3, a*x: 1}
+        >>> _[a]
         0
-        >>> (3*a*x).as_coefficients_dict() == {a*x: 3}
-        True
+        >>> (3*a*x).as_coefficients_dict()
+        {a*x: 3}
         """
         c, m = self.as_coeff_Mul()
         if not c.is_Rational:

@@ -2645,3 +2645,14 @@ def test_diofantissue_293():
            Eq(g(x), (C1*(E**(x*(1 - I)/2)*I/2 - E**(x*(1 + I)/2)*I/2) +
                      C2*(E**(x*(1 - I)/2)/2 + E**(x*(1 + I)/2)/2)))]
     assert dsolve(eqs) == sol
+
+
+def test_issue_11290():
+    eq = cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x)
+    s0 = dsolve(eq, f(x), simplify=False, hint='1st_exact')
+    s1 = dsolve(eq, f(x), simplify=False, hint='1st_exact_Integral')
+    assert (str(s1) ==
+            "Eq(Subs(Integral(-x*sin(_y) + _y**2 "
+            "- Integral(-sin(_y), x), _y) + "
+            "Integral(cos(_y), x), (_y,), (f(x),)), C1)")
+    assert s1.doit() == s0

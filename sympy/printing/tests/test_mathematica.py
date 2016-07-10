@@ -1,5 +1,6 @@
 from sympy.core import (S, pi, oo, symbols, Function,
-                        Rational, Integer, Tuple, Derivative)
+                        Rational, Integer, Tuple, Derivative,
+                        Eq, Ne, Le, Gt)
 from sympy.integrals import Integral
 from sympy.concrete import Sum
 from sympy.functions import exp, sin, cos, sign, atanh
@@ -94,3 +95,10 @@ def test_Sum():
 def test_Matrix():
     assert mcode(Matrix()) == '{}'
     assert mcode(Matrix([[1, 2], [3, 4444]])) == '{{1, 2}, {3, 4444}}'
+
+
+def test_Relational():
+    assert mcode(Eq(x, y)) == 'x == y'
+    assert mcode(Ne(x, y/(1 + y**2))) == 'x != y/(y^2 + 1)'
+    assert mcode(Le(0, x**2)) == '0 <= x^2'
+    assert mcode(Gt(pi, 3, evaluate=False)) == 'Pi > 3'

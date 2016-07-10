@@ -1530,10 +1530,10 @@ class Permutation(Basic):
         ========
 
         >>> from sympy.combinatorics import Permutation
-        >>> Permutation([0, 1, 2, 3, 4, 5]).atoms() == {0, 1, 2, 3, 4, 5}
-        True
-        >>> Permutation([[0, 1], [2, 3], [4, 5]]).atoms() == {0, 1, 2, 3, 4, 5}
-        True
+        >>> Permutation([0, 1, 2, 3, 4, 5]).atoms()
+        {0, 1, 2, 3, 4, 5}
+        >>> Permutation([[0, 1], [2, 3], [4, 5]]).atoms()
+        {0, 1, 2, 3, 4, 5}
         """
         return set(self.array_form)
 

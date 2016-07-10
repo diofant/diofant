@@ -5,7 +5,7 @@ import pytest
 
 from sympy import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                    acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                   cot, Rational, I, tan, integrate, Sum, sign,
+                   cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
                    Function, subfactorial, PoleError, Integer, Float)
 from sympy.series.limits import heuristics
 from sympy.series.order import O
@@ -469,3 +469,9 @@ def test_diofantissue_296():
 def test_issue_5383():
     e = (1.0 + 1.0*x)**(1.0/x)
     assert e.limit(x, 0) == E.n()
+
+
+def test_issue_6171():
+    e = Piecewise((0, x < 0), (1, True))
+    assert e.limit(x, 0) == 1
+    assert e.limit(x, 0, "-") == 0

@@ -269,8 +269,8 @@ class Wild(BaseSymbol):
 
     >>> from sympy import symbols
     >>> a, b = symbols('a b', cls=Wild)
-    >>> (2 + 3*y).match(a*x + b*y) == {a: 2/x, b: 3}
-    True
+    >>> (2 + 3*y).match(a*x + b*y)
+    {a_: 2/x, b_: 3}
 
     This is technically correct, because
     (2/x)*x + 3*y == 2 + 3*y, but you probably
@@ -288,14 +288,14 @@ class Wild(BaseSymbol):
 
     >>> E = 2*x**3*y*z
     >>> a, b = symbols('a b', cls=Wild)
-    >>> E.match(a*b) == {a: 2*y*z, b: x**3}
-    True
+    >>> E.match(a*b)
+    {a_: 2*y*z, b_: x**3}
     >>> a = Wild('a', exclude=[x, y])
-    >>> E.match(a*b) == {a: z, b: 2*x**3*y}
-    True
+    >>> E.match(a*b)
+    {a_: z, b_: 2*x**3*y}
     >>> a = Wild('a', exclude=[x, y, z])
-    >>> E.match(a*b) == {a: 2, b: x**3*y*z}
-    True
+    >>> E.match(a*b)
+    {a_: 2, b_: x**3*y*z}
 
     See Also
     ========
@@ -363,8 +363,8 @@ def symbols(names, **args):
         (a, b, c)
         >>> symbols(['a', 'b', 'c'])
         [a, b, c]
-        >>> symbols({'a', 'b', 'c'}) == {a, b, c}
-        True
+        >>> symbols({'a', 'b', 'c'})
+        {a, b, c}
 
     If an iterable container is needed for a single symbol, set the ``seq``
     argument to ``True`` or terminate the symbol name with a comma::
