@@ -8,9 +8,9 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
                      InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseMellinTransform,
                      InverseSineTransform, Lambda, LaplaceTransform, Limit,
-                     Matrix, MatrixSymbol, Max, MellinTransform, Min, Mul, Not,
-                     Order, Piecewise, Poly, Pow, Product, Range, Rational,
-                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
+                     Matrix, MatrixSymbol, Max, MellinTransform, Min, Mod, Mul,
+                     Not, Order, Piecewise, Poly, Pow, Product, Range,
+                     Rational, RisingFactorial, RootOf, RootSum, S, Shi, Si,
                      SineTransform, Subs, Sum, Symbol, SymmetricDifference,
                      Tuple, Union, Wild, Ynm, Znm, acot, airyai, airyaiprime,
                      airybi, airybiprime, arg, asin, assoc_laguerre,
@@ -402,6 +402,13 @@ def test_latex_functions():
     assert latex(divisor_sigma(x)**2) == r"\sigma^{2}\left(x\right)"
     assert latex(divisor_sigma(x, y)) == r"\sigma_y\left(x\right)"
     assert latex(divisor_sigma(x, y)**2) == r"\sigma^{2}_y\left(x\right)"
+
+    assert latex(Mod(x, 7)) == r'x\bmod{7}'
+    assert latex(Mod(x + 1, 7)) == r'\left(x + 1\right)\bmod{7}'
+    assert latex(Mod(2 * x, 7)) == r'\left(2 x\right)\bmod{7}'
+    assert latex(Mod(x, 7) + 1) == r'\left(x\bmod{7}\right) + 1'
+    assert latex(2 * Mod(x, 7)) == r'2 \left(x\bmod{7}\right)'
+    assert latex(Mod(x, 7)**2) == r'\left(x\bmod{7}\right)^{2}'
 
     # some unknown function name should get rendered with \operatorname
     fjlkd = Function('fjlkd')
