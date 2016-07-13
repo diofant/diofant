@@ -644,7 +644,7 @@ def evalf_trig(v, prec, options):
         func = mpf_cos
     elif v.func is sin:
         func = mpf_sin
-    else:
+    else:  # pagma: no cover
         raise NotImplementedError
     arg = v.args[0]
     # 20 extra bits is possibly overkill. It does make the need
@@ -660,7 +660,7 @@ def evalf_trig(v, prec, options):
             return fone, None, prec, None
         elif v.func is sin:
             return None, None, None, None
-        else:
+        else:  # pragme: no cover
             raise NotImplementedError
     # For trigonometric functions, we are interested in the
     # fixed-point (absolute) accuracy of the argument.
@@ -1052,7 +1052,7 @@ def evalf_sum(expr, prec, options):
         expr = expr.subs(options['subs'])
     func = expr.function
     limits = expr.limits
-    if len(limits) != 1 or len(limits[0]) != 3:
+    if len(limits) != 1 or len(limits[0]) != 3:  # pragma: no cover
         raise NotImplementedError
     if func is S.Zero:
         return mpf(0), None, None, None
@@ -1351,6 +1351,7 @@ def N(x, n=15, **options):
     Calls x.evalf(n, \*\*options).
 
     Both .n() and N() are equivalent to .evalf(); use the one that you like better.
+
     Examples
     ========
 
