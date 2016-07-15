@@ -1595,6 +1595,9 @@ def test_Mod():
     n = Symbol('n', odd=True)
     assert Mod(n, 2) == 1
 
+    # issue diofant/diofant#312
+    assert Mod(-x, 2*x) == x
+
 
 def test_Mod_is_integer():
     p = Symbol('p', integer=True)

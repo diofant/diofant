@@ -58,9 +58,10 @@ class Mod(Function):
                 pass
             else:
                 rv = p - d*q
-                if (rv*q < 0) is S.true:
-                    rv += q
-                return rv
+                if (rv*q).is_nonnegative:
+                    return rv
+                elif (rv*q).is_nonpositive:
+                    return rv + q
 
             # by difference
             d = p - q
