@@ -855,7 +855,8 @@ class MatplotlibBackend(BaseBackend):
                 self.ax.set_zlim((min(z), max(z)))
             elif s.is_3Dsurface:
                 x, y, z = s.get_meshes()
-                collection = self.ax.plot_surface(x, y, z, cmap=self.cm.jet,
+                colormap = getattr(self.cm, 'viridis', self.cm.jet)
+                collection = self.ax.plot_surface(x, y, z, cmap=colormap,
                                                   rstride=1, cstride=1,
                                                   linewidth=0.1)
             elif s.is_implicit:
