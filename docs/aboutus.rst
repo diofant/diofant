@@ -426,6 +426,22 @@ for a full list.
 #. Akshay Nagar: Fix wrong solution of non-homogeneous ODE system
 #. Matthew Thomas: Fix latex printing for Order
 #. Sumith1896: Update reference link in dpll.py
+#. Yu Kobayashi: Fix Tuple constructor
+#. Shashank Kumar: Fixed indenation error in summations.py
+#. Tschijnmo TSCHAU: Shortcut cancelling fractions with integer one
+#. Jens Jørgen Mortensen: Fix typo
+#. Dzhelil Rufat: Mod._eval_is_integer fix
+#. Prashant Tyagi: Cleanup Set.contains
+#. Matthew Davis: fix typo
+#. Jacob Garber: Correct Polygon.encloses_point
+#. Moo VI: Add xreplace method to matrices
+#. Isuru Fernando: Fix a bug in fdiff(argindex)
+#. Justin Blythe: Improve solve() docstring
+#. Keval Shah: Fix matrix power of identity/zero matrices
+#. Kshitij Saraogi: Paranthesised printing of Union and Intersection
+#. Meghana Madhyastha: changes to desolve constants passing 'eq'
+#. Tanu Hari Dixit: Changed the use of pyglet plot module in examples
+#. Dustin Gadal: Replace linear diophantine solver
 
 You can use git to see the biggest developers::
 
