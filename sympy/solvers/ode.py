@@ -6298,8 +6298,6 @@ def sysode_linear_2eq_order1(match_):
         raise NotImplementedError("Only homogeneous problems are supported" +
                                   " (and constant inhomogeneity)")
 
-    if match_['type_of_equation'] == 'type1':
-        sol = _linear_2eq_order1_type1(x, y, t, r, eq)
     if match_['type_of_equation'] == 'type2':
         gsol = _linear_2eq_order1_type1(x, y, t, r, eq)
         psol = _linear_2eq_order1_type2(x, y, t, r, eq)
@@ -6730,8 +6728,6 @@ def sysode_linear_2eq_order2(match_):
         sol = [Eq(x(t), gsol[0].rhs+psol[0]), Eq(y(t), gsol[1].rhs+psol[1])]
     elif match_['type_of_equation'] == 'type3':
         sol = _linear_2eq_order2_type3(x, y, t, r, eq)
-    elif match_['type_of_equation'] == 'type4':
-        sol = _linear_2eq_order2_type4(x, y, t, r, eq)
     elif match_['type_of_equation'] == 'type5':
         sol = _linear_2eq_order2_type5(x, y, t, r, eq)
     elif match_['type_of_equation'] == 'type6':
@@ -6742,8 +6738,6 @@ def sysode_linear_2eq_order2(match_):
         sol = _linear_2eq_order2_type8(x, y, t, r, eq)
     elif match_['type_of_equation'] == 'type9':
         sol = _linear_2eq_order2_type9(x, y, t, r, eq)
-    elif match_['type_of_equation'] == 'type10':
-        sol = _linear_2eq_order2_type10(x, y, t, r, eq)
     elif match_['type_of_equation'] == 'type11':
         sol = _linear_2eq_order2_type11(x, y, t, r, eq)
     return sol
@@ -6935,90 +6929,6 @@ def _linear_2eq_order2_type3(x, y, t, r, eq):
         beta = r['a']/2 - sqrt(r['a']**2 + 4*r['b'])/2
         sol1 = C1*cos(alpha*t) + C2*sin(alpha*t) + C3*cos(beta*t) + C4*sin(beta*t)
         sol2 = -C1*sin(alpha*t) + C2*cos(alpha*t) - C3*sin(beta*t) + C4*cos(beta*t)
-    return [Eq(x(t), sol1), Eq(y(t), sol2)]
-
-
-def _linear_2eq_order2_type4(x, y, t, r, eq):
-    r"""
-    These equations are found in the theory of oscillations
-
-    .. math:: x'' + a_1 x' + b_1 y' + c_1 x + d_1 y = k_1 e^{i \omega t}
-
-    .. math:: y'' + a_2 x' + b_2 y' + c_2 x + d_2 y = k_2 e^{i \omega t}
-
-    The general solution of this linear nonhomogeneous system of constant-coefficient
-    differential equations is given by the sum of its particular solution and the
-    general solution of the corresponding homogeneous system (with `k_1 = k_2 = 0`)
-
-    1. A particular solution is obtained by the method of undetermined coefficients:
-
-    .. math:: x = A_* e^{i \omega t}, y = B_* e^{i \omega t}
-
-    On substituting these expressions into the original system of differential equations,
-    one arrive at a linear nonhomogeneous system of algebraic equations for the
-    coefficients `A` and `B`.
-
-    2. The general solution of the homogeneous system of differential equations is determined
-    by a linear combination of linearly independent particular solutions determined by
-    the method of undetermined coefficients in the form of exponentials:
-
-    .. math:: x = A e^{\lambda t}, y = B e^{\lambda t}
-
-    On substituting these expressions into the original system and collecting the
-    coefficients of the unknown `A` and `B`, one obtains
-
-    .. math:: (\lambda^{2} + a_1 \lambda + c_1) A + (b_1 \lambda + d_1) B = 0
-
-    .. math:: (a_2 \lambda + c_2) A + (\lambda^{2} + b_2 \lambda + d_2) B = 0
-
-    The determinant of this system must vanish for nontrivial solutions A, B to exist.
-    This requirement results in the following characteristic equation for `\lambda`
-
-    .. math:: (\lambda^2 + a_1 \lambda + c_1) (\lambda^2 + b_2 \lambda + d_2) - (b_1 \lambda + d_1) (a_2 \lambda + c_2) = 0
-
-    If all roots `k_1,...,k_4` of this equation are distinct, the general solution of the original
-    system of the differential equations has the form
-
-    .. math:: x = C_1 (b_1 \lambda_1 + d_1) e^{\lambda_1 t} - C_2 (b_1 \lambda_2 + d_1) e^{\lambda_2 t} - C_3 (b_1 \lambda_3 + d_1) e^{\lambda_3 t} - C_4 (b_1 \lambda_4 + d_1) e^{\lambda_4 t}
-
-    .. math:: y = C_1 (\lambda_1^{2} + a_1 \lambda_1 + c_1) e^{\lambda_1 t} + C_2 (\lambda_2^{2} + a_1 \lambda_2 + c_1) e^{\lambda_2 t} + C_3 (\lambda_3^{2} + a_1 \lambda_3 + c_1) e^{\lambda_3 t} + C_4 (\lambda_4^{2} + a_1 \lambda_4 + c_1) e^{\lambda_4 t}
-
-    """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    k = Symbol('k')
-    Ra, Ca, Rb, Cb = symbols('Ra, Ca, Rb, Cb')
-    a1 = r['a1']
-    a2 = r['a2']
-    b1 = r['b1']
-    b2 = r['b2']
-    c1 = r['c1']
-    c2 = r['c2']
-    d1 = r['d1']
-    d2 = r['d2']
-    k1 = r['e1'].expand().as_independent(t)[0]
-    k2 = r['e2'].expand().as_independent(t)[0]
-    ew1 = r['e1'].expand().as_independent(t)[1]
-    ew2 = powdenest(ew1).as_base_exp()[1]
-    ew3 = collect(ew2, t).coeff(t)
-    w = cancel(ew3/I)
-    # The particular solution is assumed to be (Ra+I*Ca)*exp(I*w*t) and
-    # (Rb+I*Cb)*exp(I*w*t) for x(t) and y(t) respectively
-    peq1 = (-w**2+c1)*Ra - a1*w*Ca + d1*Rb - b1*w*Cb - k1
-    peq2 = a1*w*Ra + (-w**2+c1)*Ca + b1*w*Rb + d1*Cb
-    peq3 = c2*Ra - a2*w*Ca + (-w**2+d2)*Rb - b2*w*Cb - k2
-    peq4 = a2*w*Ra + c2*Ca + b2*w*Rb + (-w**2+d2)*Cb
-    # FIXME: solve for what in what?  Ra, Rb, etc I guess
-    # but then psol not used for anything?
-    psol = solve([peq1, peq2, peq3, peq4])
-
-    chareq = (k**2+a1*k+c1)*(k**2+b2*k+d2) - (b1*k+d1)*(a2*k+c2)
-    [k1, k2, k3, k4] = roots_quartic(Poly(chareq))
-    sol1 = -C1*(b1*k1+d1)*exp(k1*t) - C2*(b1*k2+d1)*exp(k2*t) - \
-    C3*(b1*k3+d1)*exp(k3*t) - C4*(b1*k4+d1)*exp(k4*t) + (Ra+I*Ca)*exp(I*w*t)
-
-    a1_ = (a1-1)
-    sol2 = C1*(k1**2+a1_*k1+c1)*exp(k1*t) + C2*(k2**2+a1_*k2+c1)*exp(k2*t) + \
-    C3*(k3**2+a1_*k3+c1)*exp(k3*t) + C4*(k4**2+a1_*k4+c1)*exp(k4*t) + (Rb+I*Cb)*exp(I*w*t)
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
@@ -7282,49 +7192,6 @@ def _linear_2eq_order2_type9(x, y, t, r, eq):
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
-def _linear_2eq_order2_type10(x, y, t, r, eq):
-    r"""
-    The equation of this category are
-
-    .. math:: (\alpha t^2 + \beta t + \gamma)^{2} x'' = ax + by
-
-    .. math:: (\alpha t^2 + \beta t + \gamma)^{2} y'' = cx + dy
-
-    The transformation
-
-    .. math:: \tau = \int \frac{1}{\alpha t^2 + \beta t + \gamma} \,dt , u = \frac{x}{\sqrt{\left|\alpha t^2 + \beta t + \gamma\right|}} , v = \frac{y}{\sqrt{\left|\alpha t^2 + \beta t + \gamma\right|}}
-
-    leads to a constant coefficient linear system of equations
-
-    .. math:: u'' = (a - \alpha \gamma + \frac{1}{4} \beta^{2}) u + b v
-
-    .. math:: v'' = c u + (d - \alpha \gamma + \frac{1}{4} \beta^{2}) v
-
-    These system of equations obtained can be solved by type1 of System of two
-    constant-coefficient second-order linear homogeneous differential equations.
-
-    """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    u, v = symbols('u, v', function=True)
-    T = Symbol('T')
-    p = Wild('p', exclude=[t, t**2])
-    q = Wild('q', exclude=[t, t**2])
-    s = Wild('s', exclude=[t, t**2])
-    n = Wild('n', exclude=[t, t**2])
-    num, denum = r['c1'].as_numer_denom()
-    dic = denum.match((n*(p*t**2+q*t+s)**2).expand())
-    eqz = dic[p]*t**2 + dic[q]*t + dic[s]
-    a = num/dic[n]
-    b = cancel(r['d1']*eqz**2)
-    c = cancel(r['c2']*eqz**2)
-    d = cancel(r['d2']*eqz**2)
-    [msol1, msol2] = dsolve([Eq(diff(u(t), t, t), (a - dic[p]*dic[s] + dic[q]**2/4)*u(t)
-    + b*v(t)), Eq(diff(v(t), t, t), c*u(t) + (d - dic[p]*dic[s] + dic[q]**2/4)*v(t))])
-    sol1 = (msol1.rhs*sqrt(abs(eqz))).subs(t, Integral(1/eqz, t))
-    sol2 = (msol2.rhs*sqrt(abs(eqz))).subs(t, Integral(1/eqz, t))
-    return [Eq(x(t), sol1), Eq(y(t), sol2)]
-
-
 def _linear_2eq_order2_type11(x, y, t, r, eq):
     r"""
     The equations which comes under this type are
@@ -7392,140 +7259,9 @@ def sysode_linear_3eq_order1(match_):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t), z(t)):
                 raise NotImplementedError("Only homogeneous problems are supported, non-homogenous are not supported currently.")
-    if match_['type_of_equation'] == 'type1':
-        sol = _linear_3eq_order1_type1(x, y, z, t, r, eq)
-    if match_['type_of_equation'] == 'type2':
-        sol = _linear_3eq_order1_type2(x, y, z, t, r, eq)
-    if match_['type_of_equation'] == 'type3':
-        sol = _linear_3eq_order1_type3(x, y, z, t, r, eq)
     if match_['type_of_equation'] == 'type4':
         sol = _linear_3eq_order1_type4(x, y, z, t, r, eq)
-    if match_['type_of_equation'] == 'type6':
-        sol = _linear_neq_order1_type1(match_)
     return sol
-
-
-def _linear_3eq_order1_type1(x, y, z, t, r, eq):
-    r"""
-    .. math:: x' = ax
-
-    .. math:: y' = bx + cy
-
-    .. math:: z' = dx + ky + pz
-
-    Solution of such equations are forward substitution. Solving first equations
-    gives the value of `x`, substituting it in second and third equation and
-    solving second equation gives `y` and similarly substituting `y` in third
-    equation give `z`.
-
-    .. math:: x = C_1 e^{at}
-
-    .. math:: y = \frac{b C_1}{a - c} e^{at} + C_2 e^{ct}
-
-    .. math:: z = \frac{C_1}{a - p} (d + \frac{bk}{a - c}) e^{at} + \frac{k C_2}{c - p} e^{ct} + C_3 e^{pt}
-
-    where `C_1, C_2` and `C_3` are arbitrary constants.
-
-    """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    a = -r['a1']
-    b = -r['a2']
-    c = -r['b2']
-    d = -r['a3']
-    k = -r['b3']
-    p = -r['c3']
-    sol1 = C1*exp(a*t)
-    sol2 = b*C1*exp(a*t)/(a-c) + C2*exp(c*t)
-    sol3 = C1*(d+b*k/(a-c))*exp(a*t)/(a-p) + k*C2*exp(c*t)/(c-p) + C3*exp(p*t)
-    return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
-
-
-def _linear_3eq_order1_type2(x, y, z, t, r, eq):
-    r"""
-    The equations of this type are
-
-    .. math:: x' = cy - bz
-
-    .. math:: y' = az - cx
-
-    .. math:: z' = bx - ay
-
-    1. First integral:
-
-    .. math:: ax + by + cz = A             \qquad - (1)
-
-    .. math:: x^2 + y^2 + z^2 = B^2        \qquad - (2)
-
-    where `A` and `B` are arbitrary constants. It follows from these integrals
-    that the integral lines are circles formed by the intersection of the planes
-    `(1)` and sphere `(2)`
-
-    2. Solution:
-
-    .. math:: x = a C_0 + k C_1 \cos(kt) + (c C_2 - b C_3) \sin(kt)
-
-    .. math:: y = b C_0 + k C_2 \cos(kt) + (a C_2 - c C_3) \sin(kt)
-
-    .. math:: z = c C_0 + k C_3 \cos(kt) + (b C_2 - a C_3) \sin(kt)
-
-    where `k = \sqrt{a^2 + b^2 + c^2}` and the four constants of integration,
-    `C_1,...,C_4` are constrained by a single relation,
-
-    .. math:: a C_1 + b C_2 + c C_3 = 0
-
-    """
-    C0, C1, C2, C3 = get_numbered_constants(eq, num=4, start=0)
-    a = -r['c2']
-    b = -r['a3']
-    c = -r['b1']
-    k = sqrt(a**2 + b**2 + c**2)
-    C3 = (-a*C1 - b*C2)/c
-    sol1 = a*C0 + k*C1*cos(k*t) + (c*C2-b*C3)*sin(k*t)
-    sol2 = b*C0 + k*C2*cos(k*t) + (a*C3-c*C1)*sin(k*t)
-    sol3 = c*C0 + k*C3*cos(k*t) + (b*C1-a*C2)*sin(k*t)
-    return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
-
-
-def _linear_3eq_order1_type3(x, y, z, t, r, eq):
-    r"""
-    Equations of this system of ODEs
-
-    .. math:: a x' = bc (y - z)
-
-    .. math:: b y' = ac (z - x)
-
-    .. math:: c z' = ab (x - y)
-
-    1. First integral:
-
-    .. math:: a^2 x + b^2 y + c^2 z = A
-
-    where A is an arbitrary constant. It follows that the integral lines are plane curves.
-
-    2. Solution:
-
-    .. math:: x = C_0 + k C_1 \cos(kt) + a^{-1} bc (C_2 - C_3) \sin(kt)
-
-    .. math:: y = C_0 + k C_2 \cos(kt) + a b^{-1} c (C_3 - C_1) \sin(kt)
-
-    .. math:: z = C_0 + k C_3 \cos(kt) + ab c^{-1} (C_1 - C_2) \sin(kt)
-
-    where `k = \sqrt{a^2 + b^2 + c^2}` and the four constants of integration,
-    `C_1,...,C_4` are constrained by a single relation
-
-    .. math:: a^2 C_1 + b^2 C_2 + c^2 C_3 = 0
-
-    """
-    C0, C1, C2, C3 = get_numbered_constants(eq, num=4, start=0)
-    c = sqrt(r['b1']*r['c2'])
-    b = sqrt(r['b1']*r['a3'])
-    a = sqrt(r['c2']*r['a3'])
-    C3 = (-a**2*C1-b**2*C2)/c**2
-    k = sqrt(a**2 + b**2 + c**2)
-    sol1 = C0 + k*C1*cos(k*t) + a**-1*b*c*(C2-C3)*sin(k*t)
-    sol2 = C0 + k*C2*cos(k*t) + a*b**-1*c*(C3-C1)*sin(k*t)
-    sol3 = C0 + k*C3*cos(k*t) + a*b*c**-1*(C1-C2)*sin(k*t)
-    return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
 
 
 def _linear_3eq_order1_type4(x, y, z, t, r, eq):
