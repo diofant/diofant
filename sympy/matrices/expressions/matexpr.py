@@ -320,6 +320,12 @@ class MatrixElement(Expr):
     j = property(lambda self: self.args[2])
     _diff_wrt = True
 
+    def xreplace(self, rule):
+        if self in rule:
+            return rule[self]
+        else:
+            return self
+
     def doit(self, **kwargs):
         deep = kwargs.get('deep', True)
         if deep:
