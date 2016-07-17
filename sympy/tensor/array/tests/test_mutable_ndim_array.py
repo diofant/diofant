@@ -1,5 +1,7 @@
 from copy import copy
 
+import pytest
+
 from sympy.tensor.array.dense_ndim_array import MutableDenseNDimArray
 from sympy import Symbol, Rational, SparseMatrix
 from sympy.matrices import Matrix
@@ -144,6 +146,9 @@ def test_ndim_array_converting():
 
     matrix = sparse_array.tomatrix()
     assert(isinstance(matrix, SparseMatrix))
+
+    pytest.raises(ValueError,
+                  lambda: MutableSparseNDimArray([1]*6, (2, 2, 2)).tomatrix())
 
     for i in range(len(sparse_array)):
         assert sparse_array[i] == matrix[i]

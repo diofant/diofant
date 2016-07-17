@@ -8,9 +8,6 @@ from sympy.tensor.array.ndim_array import NDimArray
 
 class SparseNDimArray(NDimArray):
 
-    def __new__(cls, *args, **kwargs):
-        return ImmutableSparseNDimArray(*args, **kwargs)
-
     def __getitem__(self, index):
         """
         Get an element from a sparse N-dim array.
@@ -76,13 +73,6 @@ class SparseNDimArray(NDimArray):
             for i in range(self._loop_size):
                 yield self[i]
         return iterator()
-
-    def reshape(self, *newshape):
-        new_total_size = functools.reduce(lambda x, y: x*y, newshape)
-        if new_total_size != self._loop_size:
-            raise ValueError("Invalid reshape parameters " + newshape)
-
-        return type(self)(*(newshape + (self._array,)))
 
 
 class ImmutableSparseNDimArray(SparseNDimArray, Expr):

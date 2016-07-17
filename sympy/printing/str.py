@@ -505,8 +505,7 @@ class StrPrinter(Printer):
     def _print_ImmutableDenseNDimArray(self, expr):
         return str(expr)
 
-    def _print_ImmutableSparseNDimArray(self, expr):
-        return str(expr)
+    _print_ImmutableSparseNDimArray = _print_ImmutableDenseNDimArray
 
     def _print_Integer(self, expr):
         return str(expr.p)

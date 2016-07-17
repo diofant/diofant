@@ -69,6 +69,8 @@ def test_reshape():
     assert array.rank() == 3
     assert len(array) == 50
 
+    pytest.raises(ValueError, lambda: array.reshape(1, 1))
+
 
 def test_iterator():
     array = ImmutableDenseNDimArray(range(4), (2, 2))
@@ -144,6 +146,9 @@ def test_ndim_array_converting():
 
     matrix = sparse_array.tomatrix()
     assert(isinstance(matrix, SparseMatrix))
+
+    pytest.raises(ValueError,
+                  lambda: ImmutableDenseNDimArray([1]*6, (2, 2, 2)).tomatrix())
 
     for i in range(len(sparse_array)):
         assert sparse_array[i] == matrix[i]

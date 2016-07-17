@@ -55,9 +55,6 @@ class NDimArray(object):
     [[-3, -3], [-3, -3]]
 
     """
-    def __new__(cls, *args, **kwargs):
-        from sympy.tensor.array import ImmutableDenseNDimArray
-        return ImmutableDenseNDimArray(*args, **kwargs)
 
     def _parse_index(self, index):
 
@@ -206,23 +203,6 @@ class NDimArray(object):
             return "[" + ", ".join([f(sh, shape_left[1:], i+e*sh, i+(e+1)*sh) for e in range(shape_left[0])]) + "]"  # + "\n"*len(shape_left)
 
         return f(self._loop_size, self.shape, 0, self._loop_size)
-
-        out_str = ''
-
-        # forming output string
-        for i, el in enumerate(self):
-
-            out_str += str(el) + '  '
-            chidx = i+1
-            for sh in reversed(self.shape):
-                if chidx % sh == 0:
-                    out_str += '\n'
-                    chidx //= sh
-
-        return out_str
-
-    def __repr__(self):
-        return self.__str__()
 
     def tolist(self):
         """
