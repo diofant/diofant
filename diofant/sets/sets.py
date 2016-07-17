@@ -1262,10 +1262,9 @@ class Union(Set, EvalfMixin):
 
     def __iter__(self):
         # roundrobin recipe taken from itertools documentation:
-        # https://docs.python.org/2/library/itertools.html#recipes
+        # https://docs.python.org/3/library/itertools.html#itertools-recipes
         def roundrobin(*iterables):
             "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
-            # Recipe credited to George Sakkis
             pending = len(iterables)
             nexts = itertools.cycle(iter(it).next for it in iterables)
             while pending:
