@@ -1,3 +1,5 @@
+import pytest
+
 from sympy.vector.coordsysrect import CoordSysCartesian
 from sympy.vector.scalar import BaseScalar
 from sympy import sin, cos, pi, ImmutableMatrix as Matrix, \
@@ -21,6 +23,9 @@ def test_func_args():
     v = A.x*A.i + A.y*A.j + A.z*A.k
     assert v.func(*v.args) == v
     assert A.origin.func(*A.origin.args) == A.origin
+
+    pytest.raises(TypeError, lambda: CoordSysCartesian('B', parent=A,
+                                                       location=Point('a')))
 
 
 def test_coordsyscartesian_equivalence():
