@@ -211,7 +211,7 @@ class Basic(metaclass=ManagedProperties):
                 return arg
 
         args = self._sorted_args
-        args = len(args), tuple([inner_key(arg) for arg in args])
+        args = len(args), tuple(inner_key(arg) for arg in args)
         return self.class_key(), args, S.One.sort_key(), S.One
 
     def __eq__(self, other):

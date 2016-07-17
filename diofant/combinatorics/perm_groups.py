@@ -3223,7 +3223,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
         used = {alpha}
         for b in orb:
             for gen in gens:
-                temp = tuple([gen[x] for x in b])
+                temp = tuple(gen[x] for x in b)
                 if temp not in used:
                     orb.append(temp)
                     used.add(temp)
@@ -3234,7 +3234,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
         used = {alpha}
         for b in orb:
             for gen in gens:
-                temp = frozenset([gen[x] for x in b])
+                temp = frozenset(gen[x] for x in b)
                 if temp not in used:
                     orb.append(temp)
                     used.add(temp)

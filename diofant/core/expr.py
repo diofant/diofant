@@ -874,7 +874,7 @@ class Expr(Basic, EvalfMixin):
             _, ((re, im), monom, ncpart) = term
 
             monom = neg(monom_key(monom))
-            ncpart = tuple([e.sort_key(order=order) for e in ncpart])
+            ncpart = tuple(e.sort_key(order=order) for e in ncpart)
             coeff = ((bool(im), im), (re, im))
 
             return monom, ncpart, coeff

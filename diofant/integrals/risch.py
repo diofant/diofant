@@ -284,10 +284,10 @@ class DifferentialExtension(object):
 
             # TODO: This probably doesn't need to be completely recomputed at
             # each pass.
-            exps = update(exps, set(a for a in self.newf.atoms(Pow) if a.base is S.Exp1),
+            exps = update(exps, {a for a in self.newf.atoms(Pow) if a.base is S.Exp1},
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
-            pows = update(pows, set(a for a in self.newf.atoms(Pow) if a.base is not S.Exp1),
+            pows = update(pows, {a for a in self.newf.atoms(Pow) if a.base is not S.Exp1},
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
             numpows = update(numpows, set(pows),

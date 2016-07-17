@@ -549,8 +549,8 @@ class Hyper_Function(Expr):
             bucket = list(bucket.items())
             if not any(isinstance(x[0], Mod) for x in bucket):
                 bucket.sort(key=lambda x: default_sort_key(x[0]))
-            bucket = tuple([(mod, len(values)) for mod, values in bucket if
-                    values])
+            bucket = tuple((mod, len(values))
+                           for mod, values in bucket if values)
             return bucket
 
         return (self.gamma, tr(abuckets), tr(bbuckets))
@@ -655,7 +655,7 @@ class G_Function(Expr):
                 items.sort(key=lambda x: x - x0, reverse=flip)
                 dic[m] = items
 
-        return tuple([dict(w) for w in dicts])
+        return tuple(dict(w) for w in dicts)
 
     @property
     def signature(self):

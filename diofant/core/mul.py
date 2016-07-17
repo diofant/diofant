@@ -1315,10 +1315,10 @@ class Mul(Expr, AssocOp):
         elif len(old_c) > len(c):
             # more commutative terms
             ok = False
-        elif set(i[0] for i in old_nc).difference(set(i[0] for i in nc)):
+        elif {i[0] for i in old_nc} - {i[0] for i in nc}:
             # unmatched non-commutative bases
             ok = False
-        elif set(old_c).difference(set(c)):
+        elif set(old_c) - set(c):
             # unmatched commutative terms
             ok = False
         elif any(sign(c[b]) != sign(old_c[b]) for b in old_c):

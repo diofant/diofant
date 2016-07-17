@@ -101,7 +101,7 @@ def monomial_mul(A, B):
     which gives `x**4*y**5*z`.
 
     """
-    return tuple([ a + b for a, b in zip(A, B) ])
+    return tuple(a + b for a, b in zip(A, B))
 
 
 def monomial_div(A, B):
@@ -146,12 +146,12 @@ def monomial_ldiv(A, B):
     which gives `x**2*y**2*z**-1`.
 
     """
-    return tuple([ a - b for a, b in zip(A, B) ])
+    return tuple(a - b for a, b in zip(A, B))
 
 
 def monomial_pow(A, n):
     """Return the n-th pow of the monomial. """
-    return tuple([ a*n for a in A ])
+    return tuple(a*n for a in A)
 
 
 def monomial_gcd(A, B):
@@ -166,7 +166,7 @@ def monomial_gcd(A, B):
     which gives `x*y**2`.
 
     """
-    return tuple([ min(a, b) for a, b in zip(A, B) ])
+    return tuple(min(a, b) for a, b in zip(A, B))
 
 
 def monomial_lcm(A, B):
@@ -181,7 +181,7 @@ def monomial_lcm(A, B):
     which gives `x**3*y**4*z`.
 
     """
-    return tuple([ max(a, b) for a, b in zip(A, B) ])
+    return tuple(max(a, b) for a, b in zip(A, B))
 
 
 def monomial_divides(A, B):

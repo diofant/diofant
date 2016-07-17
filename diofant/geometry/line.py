@@ -147,10 +147,10 @@ class LinearEntity(GeometrySet):
             return (S.One, S.Zero, -p1.x)
         elif p1.y == p2.y:
             return (S.Zero, S.One, -p1.y)
-        return tuple([simplify(i) for i in
-               (self.p1.y - self.p2.y,
-                self.p2.x - self.p1.x,
-                self.p1.x*self.p2.y - self.p1.y*self.p2.x)])
+        return tuple(simplify(i)
+                     for i in (self.p1.y - self.p2.y,
+                               self.p2.x - self.p1.x,
+                                self.p1.x*self.p2.y - self.p1.y*self.p2.x))
 
     @staticmethod
     def are_concurrent(*lines):

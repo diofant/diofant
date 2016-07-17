@@ -163,7 +163,7 @@ class Order(Expr):
                 expr = expand_multinomial(expr)
 
             if s:
-                args = tuple([r[0] for r in rs.items()])
+                args = tuple(r[0] for r in rs.items())
             else:
                 args = tuple(variables)
 

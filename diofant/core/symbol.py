@@ -305,7 +305,7 @@ class Wild(BaseSymbol):
     is_Wild = True
 
     def __new__(cls, name, exclude=(), properties=(), **assumptions):
-        exclude = tuple([sympify(x) for x in exclude])
+        exclude = tuple(sympify(x) for x in exclude)
         properties = tuple(properties)
         cls._sanitize(assumptions, cls)
         return Wild.__xnew__(cls, name, exclude, properties, **assumptions)

@@ -441,11 +441,11 @@ class LatexPrinter(Printer):
     def _print_Sum(self, expr):
         if len(expr.limits) == 1:
             tex = r"\sum_{%s=%s}^{%s} " % \
-                tuple([ self._print(i) for i in expr.limits[0] ])
+                tuple(self._print(i) for i in expr.limits[0])
         else:
             def _format_ineq(l):
                 return r"%s \leq %s \leq %s" % \
-                    tuple([self._print(s) for s in (l[1], l[0], l[2])])
+                    tuple(self._print(s) for s in (l[1], l[0], l[2]))
 
             tex = r"\sum_{\substack{%s}} " % \
                 str.join('\\\\', [ _format_ineq(l) for l in expr.limits ])
@@ -460,11 +460,11 @@ class LatexPrinter(Printer):
     def _print_Product(self, expr):
         if len(expr.limits) == 1:
             tex = r"\prod_{%s=%s}^{%s} " % \
-                tuple([ self._print(i) for i in expr.limits[0] ])
+                tuple(self._print(i) for i in expr.limits[0])
         else:
             def _format_ineq(l):
                 return r"%s \leq %s \leq %s" % \
-                    tuple([self._print(s) for s in (l[1], l[0], l[2])])
+                    tuple(self._print(s) for s in (l[1], l[0], l[2]))
 
             tex = r"\prod_{\substack{%s}} " % \
                 str.join('\\\\', [ _format_ineq(l) for l in expr.limits ])

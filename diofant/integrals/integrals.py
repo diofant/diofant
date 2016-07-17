@@ -71,7 +71,7 @@ class Integral(AddWithLimits):
         return obj
 
     def __getnewargs__(self):
-        return (self.function,) + tuple([tuple(xab) for xab in self.limits])
+        return (self.function,) + tuple(tuple(xab) for xab in self.limits)
 
     @property
     def free_symbols(self):

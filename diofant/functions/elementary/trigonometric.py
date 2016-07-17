@@ -697,7 +697,7 @@ class cos(TrigonometricFunction):
                 return False
             if max(primes.values()) > 1:
                 return False
-            return tuple([ p for p in primes if primes[p] == 1])
+            return tuple(p for p in primes if primes[p] == 1)
 
         if pi_coeff.q in cst_table_some:
             return chebyshevt(pi_coeff.p, cst_table_some[pi_coeff.q]).expand()

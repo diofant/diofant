@@ -323,7 +323,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
             x = gcd*Mul(*key)
             r = build_ideal(x, terms)
             res.extend(r)
-            newgens.extend(set(fn(v*x) for fn, v in terms))
+            newgens.extend({fn(v*x) for fn, v in terms})
 
         # Add generators for compound expressions from iterables
         for fn, args in iterables:
@@ -543,7 +543,7 @@ def exptrigsimp(expr, simplify=True):
         newexpr = newexpr.simplify()
 
     # conversion from exp to hyperbolic
-    ex = set(a for a in newexpr.atoms(Pow) if a.base is S.Exp1) | newexpr.atoms(S.Exp1)
+    ex = {a for a in newexpr.atoms(Pow) if a.base is S.Exp1} | newexpr.atoms(S.Exp1)
     if ex:
         ex0 = {list(ex)[0]}
         ex = [ei for ei in ex if 1/ei not in ex]
@@ -1046,7 +1046,7 @@ def __trigsimp(expr, deep=False):
     try:
         if not expr.has(*_trigs):
             raise TypeError
-        e = set(a for a in expr.atoms(Pow) if a.base is S.Exp1)
+        e = {a for a in expr.atoms(Pow) if a.base is S.Exp1}
         new = expr.rewrite(exp, deep=deep)
         if new == e:
             raise TypeError
@@ -1054,7 +1054,7 @@ def __trigsimp(expr, deep=False):
         if fnew != new:
             new = sorted([new, factor(new)], key=count_ops)[0]
         # if all exp that were introduced disappeared then accept it
-        ne = set(a for a in new.atoms(Pow) if a.base is S.Exp1)
+        ne = {a for a in new.atoms(Pow) if a.base is S.Exp1}
         if not (ne - e):
             expr = new
     except TypeError:

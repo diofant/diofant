@@ -33,7 +33,7 @@ def minimize(f, *v):
     """
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
-    constr = set([c for c in f if c.is_Relational])
+    constr = {c for c in f if c.is_Relational}
 
     assert len(f - constr) == 1
 

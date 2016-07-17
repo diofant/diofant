@@ -938,7 +938,7 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
         if expr.is_Pow or expr.is_Function or \
                 is_iterable or not hasattr(expr, 'args_cnc'):
             args = expr.args
-            newargs = tuple([do(i) for i in args])
+            newargs = tuple(do(i) for i in args)
             if newargs == args:
                 return expr
             return expr.func(*newargs)

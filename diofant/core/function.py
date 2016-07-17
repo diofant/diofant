@@ -1047,7 +1047,7 @@ class Derivative(Expr):
         # functions and Derivatives as those can be created by intermediate
         # derivatives.
         if evaluate:
-            symbol_set = set(sc[0] for sc in variable_count if sc[0].is_Symbol)
+            symbol_set = {sc[0] for sc in variable_count if sc[0].is_Symbol}
             if symbol_set.difference(expr.free_symbols):
                 return S.Zero
 

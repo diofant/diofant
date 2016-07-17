@@ -89,7 +89,7 @@ class FracField(DefaultPrinting):
 
     def _gens(self):
         """Return a list of polynomial generators. """
-        return tuple([ self.dtype(gen) for gen in self.ring.gens ])
+        return tuple(self.dtype(gen) for gen in self.ring.gens)
 
     def __getnewargs__(self):
         return (self.symbols, self.domain, self.order)
