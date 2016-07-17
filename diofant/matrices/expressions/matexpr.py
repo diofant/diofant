@@ -419,7 +419,7 @@ class Identity(MatrixExpr):
 
     @property
     def shape(self):
-        return (self.args[0], self.args[0])
+        return self.args[0], self.args[0]
 
     def _eval_transpose(self):
         return self
@@ -461,7 +461,7 @@ class ZeroMatrix(MatrixExpr):
 
     @property
     def shape(self):
-        return (self.args[0], self.args[1])
+        return self.args[0], self.args[1]
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rpow__')

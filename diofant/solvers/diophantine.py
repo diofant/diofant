@@ -594,9 +594,9 @@ def base_solution_linear(c, a, b, t=None):
 
     if c == 0:
         if t is not None:
-            return (b*t, -a*t)
+            return b*t, -a*t
         else:
-            return (S.Zero, S.Zero)
+            return S.Zero, S.Zero
     else:
         x0, y0, d = extended_euclid(int(abs(a)), int(abs(b)))
 
@@ -605,11 +605,11 @@ def base_solution_linear(c, a, b, t=None):
 
         if divisible(c, d):
             if t is not None:
-                return (c*x0 + b*t, c*y0 - a*t)
+                return c*x0 + b*t, c*y0 - a*t
             else:
-                return (Integer(c*x0), Integer(c*y0))
+                return Integer(c*x0), Integer(c*y0)
         else:
-            return (None, None)
+            return None, None
 
 
 def extended_euclid(a, b):
@@ -638,7 +638,7 @@ def extended_euclid(a, b):
     (2, -1, 1)
     """
     if b == 0:
-        return (1, 0, a)
+        return 1, 0, a
 
     x0, y0, d = extended_euclid(b, a % b)
     x, y = y0, x0 - (a//b) * y0
@@ -1640,7 +1640,7 @@ def check_param(x, y, a, t):
 
         return diop_solve(eq, t)[0], diop_solve(eq, t)[1]
     else:
-        return (None, None)
+        return None, None
 
 
 def diop_ternary_quadratic(eq):
@@ -1749,7 +1749,7 @@ def _diop_ternary_quadratic(_var, coeff):
             x_0, y_0, z_0 = _diop_ternary_quadratic(var, _coeff)
 
             if x_0 is None:
-                return (None, None, None)
+                return None, None, None
 
             l = Rational(B*y_0 + C*z_0, 2*A).q
             x_0, y_0, z_0 = x_0*l - Rational(B*y_0 + C*z_0, 2*A).p, y_0*l, z_0*l
@@ -1877,7 +1877,7 @@ def simplified(x, y, z):
     Simplify the solution `(x, y, z)`.
     """
     if x is None or y is None or z is None:
-        return (x, y, z)
+        return x, y, z
 
     g = igcd(x, igcd(y, z))
 
@@ -1930,7 +1930,7 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     v[0], v[1], v[2] = _var[0], _var[1], _var[2]
 
     if x_0 is None:
-        return (None, None, None)
+        return None, None, None
 
     if x_0 == 0:
         if y_0 == 0:
@@ -2017,11 +2017,11 @@ def _diop_ternary_quadratic_normal(var, coeff):
 
     # If following two conditions are satisified then there are no solutions
     if A < 0 and B < 0:
-        return (None, None, None)
+        return None, None, None
 
     if (sqrt_mod(-b_2*c_2, a_2) is None or sqrt_mod(-c_2*a_2, b_2) is None or
             sqrt_mod(-a_2*b_2, c_2) is None):
-        return (None, None, None)
+        return None, None, None
 
     z_0, x_0, y_0 = descent(A, B)
 
@@ -2200,10 +2200,10 @@ def ldescent(A, B):
         return w, x, y
 
     if A == 1:
-        return (S.One, S.One, 0)
+        return S.One, S.One, 0
 
     if B == 1:
-        return (S.One, 0, S.One)
+        return S.One, 0, S.One
 
     r = sqrt_mod(A, B)
 
@@ -2262,16 +2262,16 @@ def descent(A, B):
         return x, z, y
 
     if B == 1:
-        return (1, 0, 1)
+        return 1, 0, 1
     if A == 1:
-        return (1, 1, 0)
+        return 1, 1, 0
     if B == -1:
-        return (None, None, None)
+        return None, None, None
     if B == -A:
-        return (0, 1, 1)
+        return 0, 1, 1
     if B == A:
         x, z, y = descent(-1, A)
-        return (A*y, z, x)
+        return A*y, z, x
 
     w = sqrt_mod(A, B)
     x_0, z_0 = gaussian_reduce(w, A, B)
@@ -2680,7 +2680,7 @@ def prime_as_sum_of_two_squares(p):
     while b**2 > p:
         a, b = b, a % b
 
-    return (b, a % b)
+    return b, a % b
 
 
 def sum_of_three_squares(n):
@@ -2718,23 +2718,23 @@ def sum_of_three_squares(n):
     v = 0
 
     if n == 0:
-        return (0, 0, 0)
+        return 0, 0, 0
 
     while n % 4 == 0:
         v = v + 1
         n = n // 4
 
     if n % 8 == 7:
-        return (None, None, None)
+        return None, None, None
 
     if n in special.keys():
         x, y, z = special[n]
-        return (2**v*x, 2**v*y, 2**v*z)
+        return 2**v*x, 2**v*y, 2**v*z
 
     l = int(sqrt(n))
 
     if n == l**2:
-        return (2**v*l, 0, 0)
+        return 2**v*l, 0, 0
 
     x = None
 
@@ -2747,7 +2747,7 @@ def sum_of_three_squares(n):
                 break
 
         y, z = prime_as_sum_of_two_squares((n - x**2) // 2)
-        return (2**v*x, 2**v*(y + z), 2**v*abs(y - z))
+        return 2**v*x, 2**v*(y + z), 2**v*abs(y - z)
 
     if n % 8 == 2 or n % 8 == 6:
         l = l if l % 2 else l - 1
@@ -2760,7 +2760,7 @@ def sum_of_three_squares(n):
             break
 
     y, z = prime_as_sum_of_two_squares(n - x**2)
-    return (2**v*x, 2**v*y, 2**v*z)
+    return 2**v*x, 2**v*y, 2**v*z
 
 
 def sum_of_four_squares(n):
@@ -2791,7 +2791,7 @@ def sum_of_four_squares(n):
         Available: http://www.schorn.ch/howto.html
     """
     if n == 0:
-        return (0, 0, 0, 0)
+        return 0, 0, 0, 0
 
     v = 0
     while n % 4 == 0:
@@ -2809,7 +2809,7 @@ def sum_of_four_squares(n):
 
     x, y, z = sum_of_three_squares(n)
 
-    return (2**v*d, 2**v*x, 2**v*y, 2**v*z)
+    return 2**v*d, 2**v*x, 2**v*y, 2**v*z
 
 
 def power_representation(n, p, k, zeros=False):

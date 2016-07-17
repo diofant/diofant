@@ -287,9 +287,9 @@ class Factors(object):
         if not isinstance(other, Factors):
             other = Factors(other)
             if other.is_zero:
-                return (Factors(), Factors(S.Zero))
+                return Factors(), Factors(S.Zero)
             if self.is_zero:
-                return (Factors(S.Zero), Factors())
+                return Factors(S.Zero), Factors()
 
         self_factors = dict(self.factors)
         other_factors = dict(other.factors)
@@ -396,7 +396,7 @@ class Factors(object):
             if other.is_zero:
                 raise ZeroDivisionError
             if self.is_zero:
-                return (Factors(S.Zero), Factors())
+                return Factors(S.Zero), Factors()
 
         for factor, exp in other.factors.items():
             if factor in quo:

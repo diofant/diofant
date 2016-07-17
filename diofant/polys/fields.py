@@ -28,7 +28,7 @@ def field(symbols, domain, order=lex):
 def xfield(symbols, domain, order=lex):
     """Construct new rational function field returning (field, (x1, ..., xn)). """
     _field = FracField(symbols, domain, order)
-    return (_field, _field.gens)
+    return _field, _field.gens
 
 
 @public
@@ -92,7 +92,7 @@ class FracField(DefaultPrinting):
         return tuple(self.dtype(gen) for gen in self.ring.gens)
 
     def __getnewargs__(self):
-        return (self.symbols, self.domain, self.order)
+        return self.symbols, self.domain, self.order
 
     def __hash__(self):
         return self._hash
@@ -226,7 +226,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         return self.field.to_domain()
 
     def __getnewargs__(self):
-        return (self.field, self.numer, self.denom)
+        return self.field, self.numer, self.denom
 
     _hash = None
 
@@ -264,7 +264,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         return bool(self.numer)
 
     def sort_key(self):
-        return (self.denom.sort_key(), self.numer.sort_key())
+        return self.denom.sort_key(), self.numer.sort_key()
 
     def _cmp(self, other, op):
         if isinstance(other, self.field.dtype):

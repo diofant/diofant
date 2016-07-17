@@ -709,18 +709,18 @@ class Mul(Expr, AssocOp):
         if addterms == 1:
             if m == 1:
                 if imco is S.Zero:
-                    return (reco, S.Zero)
+                    return reco, S.Zero
                 else:
-                    return (S.Zero, reco*imco)
+                    return S.Zero, reco*imco
             if imco is S.Zero:
-                return (r, i)
-            return (-imco*i, imco*r)
+                return r, i
+            return -imco*i, imco*r
         addre, addim = expand_mul(addterms, deep=False).as_real_imag()
         if imco is S.Zero:
-            return (r*addre - i*addim, i*addre + r*addim)
+            return r*addre - i*addim, i*addre + r*addim
         else:
             r, i = -imco*i, imco*r
-            return (r*addre - i*addim, r*addim + i*addre)
+            return r*addre - i*addim, r*addim + i*addre
 
     @staticmethod
     def _expandsums(sums):
@@ -1235,7 +1235,7 @@ class Mul(Expr, AssocOp):
                     c[b] += e
                 else:
                     nc.append([b, e])
-            return (c, nc)
+            return c, nc
 
         def rejoin(b, co):
             """

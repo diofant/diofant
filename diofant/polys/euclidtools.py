@@ -411,12 +411,12 @@ def dup_prs_resultant(f, g, K):
     (4, [x**2 + 1, x**2 - 1, -2])
     """
     if not f or not g:
-        return (K.zero, [])
+        return K.zero, []
 
     R, S = dup_inner_subresultants(f, g, K)
 
     if dup_degree(R[-1]) > 0:
-        return (K.zero, R)
+        return K.zero, R
 
     return S[-1], R
 
@@ -572,12 +572,12 @@ def dmp_prs_resultant(f, g, u, K):
         return dup_prs_resultant(f, g, K)
 
     if dmp_zero_p(f, u) or dmp_zero_p(g, u):
-        return (dmp_zero(u - 1), [])
+        return dmp_zero(u - 1), []
 
     R, S = dmp_inner_subresultants(f, g, u, K)
 
     if dmp_degree(R[-1], u) > 0:
-        return (dmp_zero(u - 1), R)
+        return dmp_zero(u - 1), R
 
     return S[-1], R
 

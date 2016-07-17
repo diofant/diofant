@@ -82,7 +82,7 @@ def _sort_gens(gens, **args):
 
         if wrt is not None:
             try:
-                return (-len(wrt) + wrt.index(gen), gen, 0)
+                return -len(wrt) + wrt.index(gen), gen, 0
             except ValueError:
                 pass
 
@@ -94,16 +94,16 @@ def _sort_gens(gens, **args):
             index = 0
 
         try:
-            return ( gens_order[name], name, index)
+            return gens_order[name], name, index
         except KeyError:
             pass
 
         try:
-            return (_gens_order[name], name, index)
+            return _gens_order[name], name, index
         except KeyError:
             pass
 
-        return (_max_order, name, index)
+        return _max_order, name, index
 
     try:
         gens = sorted(gens, key=order_key)
@@ -162,10 +162,10 @@ def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order. """
     def order_if_multiple_key(factor):
         (f, n) = factor
-        return (len(f), n, f)
+        return len(f), n, f
 
     def order_no_multiple_key(f):
-        return (len(f), f)
+        return len(f), f
 
     if args.get('multiple', True):
         return sorted(factors, key=order_if_multiple_key)

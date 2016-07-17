@@ -54,9 +54,9 @@ def _extract_delta(expr, index):
     deltasummation
     """
     if not _has_simple_delta(expr, index):
-        return (None, expr)
+        return None, expr
     if isinstance(expr, KroneckerDelta):
-        return (expr, Integer(1))
+        return expr, Integer(1)
     if not expr.is_Mul:
         raise ValueError("Incorrect expr")
     delta = None
@@ -67,7 +67,7 @@ def _extract_delta(expr, index):
             delta = arg
         else:
             terms.append(arg)
-    return (delta, expr.func(*terms))
+    return delta, expr.func(*terms)
 
 
 @cacheit

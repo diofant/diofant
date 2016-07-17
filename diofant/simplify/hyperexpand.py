@@ -492,11 +492,11 @@ class Hyper_Function(Expr):
 
     @property
     def args(self):
-        return (self.ap, self.bq)
+        return self.ap, self.bq
 
     @property
     def sizes(self):
-        return (len(self.ap), len(self.bq))
+        return len(self.ap), len(self.bq)
 
     @property
     def gamma(self):
@@ -553,7 +553,7 @@ class Hyper_Function(Expr):
                            for mod, values in bucket if values)
             return bucket
 
-        return (self.gamma, tr(abuckets), tr(bbuckets))
+        return self.gamma, tr(abuckets), tr(bbuckets)
 
     def difficulty(self, func):
         """ Estimate how many steps it takes to reach ``func`` from self.
@@ -617,7 +617,7 @@ class G_Function(Expr):
 
     @property
     def args(self):
-        return (self.an, self.ap, self.bm, self.bq)
+        return self.an, self.ap, self.bm, self.bq
 
     def _hashable_content(self):
         return super(G_Function, self)._hashable_content() + self.args
@@ -659,7 +659,7 @@ class G_Function(Expr):
 
     @property
     def signature(self):
-        return (len(self.an), len(self.ap), len(self.bm), len(self.bq))
+        return len(self.an), len(self.ap), len(self.bm), len(self.bq)
 
 
 # Dummy variable.
@@ -2423,7 +2423,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
             # sympify('meijerg(((0, -1/2, 0, -1/2, 1/2), ()), ((0,),
             #                  (-1/2, -1/2, -1/2, -1)), exp_polar(I*pi))/4')
             c0 = 3
-        return (c0, expr.count(hyper), expr.count_ops())
+        return c0, expr.count(hyper), expr.count_ops()
 
     w1 = weight(slater1, cond1)
     w2 = weight(slater2, cond2)

@@ -1796,13 +1796,13 @@ class FiniteSet(Set, EvalfMixin):
         return Or(*[Eq(symbol, elem) for elem in self])
 
     def compare(self, other):
-        return (hash(self) - hash(other))
+        return hash(self) - hash(other)
 
     def _eval_evalf(self, prec):
         return FiniteSet(*[elem._eval_evalf(prec) for elem in self])
 
     def _hashable_content(self):
-        return (self._elements,)
+        return self._elements,
 
     @property
     def _sorted_args(self):

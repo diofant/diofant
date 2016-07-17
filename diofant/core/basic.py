@@ -1203,7 +1203,7 @@ class Basic(metaclass=ManagedProperties):
                 if exact:
                     def _value(expr, result):
                         return (value.subs(result)
-                            if all(val for val in result.values()) else expr)
+                                if all(val for val in result.values()) else expr)
                 else:
                     def _value(expr, result):
                         return value.subs(result)

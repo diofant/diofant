@@ -464,7 +464,7 @@ class MatrixBase(object):
         >>> M.cols
         3
         """
-        return (self.rows, self.cols)
+        return self.rows, self.cols
 
     def __sub__(self, a):
         return self + (-a)
@@ -3384,7 +3384,7 @@ class MatrixBase(object):
                     P = P.col_insert(P.cols, vec)
             D = diag(*diagvals)
             self._diagonalize_clear_subproducts()
-            return (P, D)
+            return P, D
 
     def is_diagonalizable(self, reals_only=False, clear_subproducts=True):
         """Check if matrix is diagonalizable.

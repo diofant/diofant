@@ -1412,7 +1412,7 @@ class Lambda(Expr):
         return super(Lambda, self).__hash__()
 
     def _hashable_content(self):
-        return (self.expr.xreplace(self.canonical_variables),)
+        return self.expr.xreplace(self.canonical_variables),
 
     @property
     def is_identity(self):
@@ -1550,7 +1550,7 @@ class Subs(Expr):
     @property
     def free_symbols(self):
         return (self.expr.free_symbols - set(self.variables) |
-            set(self.point.free_symbols))
+                set(self.point.free_symbols))
 
     def __eq__(self, other):
         if not isinstance(other, Subs):
@@ -1561,7 +1561,7 @@ class Subs(Expr):
         return super(Subs, self).__hash__()
 
     def _hashable_content(self):
-        return (self._expr.xreplace(self.canonical_variables),)
+        return self._expr.xreplace(self.canonical_variables),
 
     def _eval_subs(self, old, new):
         if old in self.variables:

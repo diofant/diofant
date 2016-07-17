@@ -1125,7 +1125,7 @@ def _futrig(e, **kwargs):
         coeff = S.One
 
     def Lops(x):
-        return (L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add)
+        return L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add
 
     def trigs(x):
         return x.has(TrigonometricFunction)

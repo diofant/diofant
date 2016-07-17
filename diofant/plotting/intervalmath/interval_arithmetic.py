@@ -99,11 +99,11 @@ class interval(object):
     def __lt__(self, other):
         if isinstance(other, (int, float)):
             if self.end < other:
-                return (True, self.is_valid)
+                return True, self.is_valid
             elif self.start > other:
-                return (False, self.is_valid)
+                return False, self.is_valid
             else:
-                return (None, self.is_valid)
+                return None, self.is_valid
 
         elif isinstance(other, interval):
             if self.is_valid is False or other.is_valid is False:
@@ -113,21 +113,21 @@ class interval(object):
             else:
                 valid = True
             if self.end < other. start:
-                return (True, valid)
+                return True, valid
             if self.start > other.end:
-                return (False, valid)
-            return (None, valid)
+                return False, valid
+            return None, valid
         else:
             return NotImplemented
 
     def __gt__(self, other):
         if isinstance(other, (int, float)):
             if self.start > other:
-                return (True, self.is_valid)
+                return True, self.is_valid
             elif self.end < other:
-                return (False, self.is_valid)
+                return False, self.is_valid
             else:
-                return (None, self.is_valid)
+                return None, self.is_valid
         elif isinstance(other, interval):
             return other.__lt__(self)
         else:
@@ -136,11 +136,11 @@ class interval(object):
     def __eq__(self, other):
         if isinstance(other, (int, float)):
             if self.start == other and self.end == other:
-                return (True, self.is_valid)
+                return True, self.is_valid
             if other in self:
-                return (None, self.is_valid)
+                return None, self.is_valid
             else:
-                return (False, self.is_valid)
+                return False, self.is_valid
 
         if isinstance(other, interval):
             if self.is_valid is False or other.is_valid is False:
@@ -150,22 +150,22 @@ class interval(object):
             else:
                 valid = True
             if self.start == other.start and self.end == other.end:
-                return (True, valid)
+                return True, valid
             elif self.__lt__(other)[0] is not None:
-                return (False, valid)
+                return False, valid
             else:
-                return (None, valid)
+                return None, valid
         else:
             return NotImplemented
 
     def __ne__(self, other):
         if isinstance(other, (int, float)):
             if self.start == other and self.end == other:
-                return (False, self.is_valid)
+                return False, self.is_valid
             if other in self:
-                return (None, self.is_valid)
+                return None, self.is_valid
             else:
-                return (True, self.is_valid)
+                return True, self.is_valid
 
         if isinstance(other, interval):
             if self.is_valid is False or other.is_valid is False:
@@ -175,21 +175,21 @@ class interval(object):
             else:
                 valid = True
             if self.start == other.start and self.end == other.end:
-                return (False, valid)
+                return False, valid
             if not self.__lt__(other)[0] is None:
-                return (True, valid)
-            return (None, valid)
+                return True, valid
+            return None, valid
         else:
             return NotImplemented
 
     def __le__(self, other):
         if isinstance(other, (int, float)):
             if self.end <= other:
-                return (True, self.is_valid)
+                return True, self.is_valid
             if self.start > other:
-                return (False, self.is_valid)
+                return False, self.is_valid
             else:
-                return (None, self.is_valid)
+                return None, self.is_valid
 
         if isinstance(other, interval):
             if self.is_valid is False or other.is_valid is False:
@@ -199,21 +199,21 @@ class interval(object):
             else:
                 valid = True
             if self.end <= other.start:
-                return (True, valid)
+                return True, valid
             if self.start > other.end:
-                return (False, valid)
-            return (None, valid)
+                return False, valid
+            return None, valid
         else:
             return NotImplemented
 
     def __ge__(self, other):
         if isinstance(other, (int, float)):
             if self.start >= other:
-                return (True, self.is_valid)
+                return True, self.is_valid
             elif self.end < other:
-                return (False, self.is_valid)
+                return False, self.is_valid
             else:
-                return (None, self.is_valid)
+                return None, self.is_valid
         elif isinstance(other, interval):
             return other.__le__(self)
 

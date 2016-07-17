@@ -70,7 +70,7 @@ def maximize(f, *v):
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
     fv, d = minimize([e if e.is_Relational else -e for e in f], *v)
-    return (-fv, d)
+    return -fv, d
 
 
 def minimize_univariate(f, x, dom):
@@ -89,7 +89,7 @@ def minimize_univariate(f, x, dom):
             if s in dom:
                 m = Min(limit(f, x, s), limit(f, x, s, dir="-"))
                 if m is -oo:
-                    return (-oo, dict({x: s}))
+                    return -oo, dict({x: s})
                 else:
                     extr[s] = m
 
@@ -107,4 +107,4 @@ def minimize_univariate(f, x, dom):
         for p, fp in sorted(extr.items()):
             if fp < min:
                 point, min = p, fp
-        return (min, dict({x: point}))
+        return min, dict({x: point})

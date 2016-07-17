@@ -404,7 +404,7 @@ class TIDS(CantSympify):
             else:
                 new_dummy = (ipos2, ipos1, cpos2, cpos1)
             dum.append(new_dummy)
-        return (f.components + g.components, free, dum)
+        return f.components + g.components, free, dum
 
     def __mul__(self, other):
         return TIDS(*self.mul(self, other))
@@ -2652,7 +2652,7 @@ class TensAdd(TensExpr):
         # collect canonicalized terms
         def sort_key(t):
             x = get_tids(t)
-            return (x.components, x.free, x.dum)
+            return x.components, x.free, x.dum
         args.sort(key=sort_key)
         args = TensAdd._tensAdd_collect_terms(args)
         if not args:
@@ -3257,7 +3257,7 @@ class Tensor(TensExpr):
         if component.rank > 0:
             return ('%s(%s)' % (component.name, ', '.join(indices)))
         else:
-            return ('%s' % component.name)
+            return '%s' % component.name
 
     def equals(self, other):
         if other == 0:
@@ -3734,7 +3734,7 @@ class TensMul(TensExpr):
     def __iter__(self):
         if self.data is None:
             raise ValueError("No iteration on abstract tensors")
-        return (self.data.flatten()).__iter__()
+        return self.data.flatten().__iter__()
 
 
 def canon_bp(p):

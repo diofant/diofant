@@ -283,7 +283,7 @@ def _mytype(f, x):
     if x not in f.free_symbols:
         return ()
     elif f.is_Function:
-        return (type(f),)
+        return type(f),
     else:
         types = [_mytype(a, x) for a in f.args]
         res = []
@@ -1753,7 +1753,7 @@ def meijerint_definite(f, x, a, b):
     x = d
 
     if a == b:
-        return (S.Zero, True)
+        return S.Zero, True
 
     results = []
     if a == -oo and b != oo:

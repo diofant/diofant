@@ -374,7 +374,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
     atom_set = set().union(*[i.free_symbols for i in eq])
     ncs = numbered_symbols(start=start, prefix=prefix, exclude=atom_set)
     Cs = [next(ncs) for i in range(num)]
-    return (Cs[0] if num == 1 else tuple(Cs))
+    return Cs[0] if num == 1 else tuple(Cs)
 
 
 def dsolve(eq, func=None, hint="default", simplify=True,
@@ -1931,9 +1931,9 @@ def checksysodesol(eqs, sols, func=None):
             eq = 0
         checkeq.append(eq)
     if len(set(checkeq)) == 1 and list(set(checkeq))[0] == 0:
-        return (True, checkeq)
+        return True, checkeq
     else:
-        return (False, checkeq)
+        return False, checkeq
 
 
 @vectorize(0)
@@ -2318,12 +2318,12 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
             break
 
     if not s:
-        return (True, s)
+        return True, s
     elif s is True:  # The code above never was able to change s
         raise NotImplementedError("Unable to test if " + str(sol) +
             " is a solution to " + str(ode) + ".")
     else:
-        return (False, s)
+        return False, s
 
 
 def ode_sol_simplicity(sol, func, trysolving=True):

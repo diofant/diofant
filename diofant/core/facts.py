@@ -62,9 +62,9 @@ def _base_fact(atom):
 
 def _as_pair(atom):
     if isinstance(atom, Not):
-        return (atom.arg, False)
+        return atom.arg, False
     else:
-        return (atom, True)
+        return atom, True
 
 # XXX this prepares forward-chaining rules for alpha-network
 

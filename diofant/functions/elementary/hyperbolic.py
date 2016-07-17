@@ -131,14 +131,14 @@ class sinh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             re, im = self.args[0].as_real_imag()
-        return (sinh(re)*cos(im), cosh(re)*sin(im))
+        return sinh(re)*cos(im), cosh(re)*sin(im)
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
@@ -277,15 +277,15 @@ class cosh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             re, im = self.args[0].as_real_imag()
 
-        return (cosh(re)*cos(im), sinh(re)*sin(im))
+        return cosh(re)*cos(im), sinh(re)*sin(im)
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
@@ -435,15 +435,15 @@ class tanh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             re, im = self.args[0].as_real_imag()
         denom = sinh(re)**2 + cos(im)**2
-        return (sinh(re)*cosh(re)/denom, sin(im)*cos(im)/denom)
+        return sinh(re)*cosh(re)/denom, sin(im)*cos(im)/denom
 
     def _eval_rewrite_as_tractable(self, arg):
         neg_exp, pos_exp = exp(-arg), exp(arg)
@@ -565,15 +565,15 @@ class coth(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             re, im = self.args[0].as_real_imag()
         denom = sinh(re)**2 + sin(im)**2
-        return (sinh(re)*cosh(re)/denom, -sin(im)*cos(im)/denom)
+        return sinh(re)*cosh(re)/denom, -sin(im)*cos(im)/denom
 
     def _eval_rewrite_as_tractable(self, arg):
         neg_exp, pos_exp = exp(-arg), exp(arg)

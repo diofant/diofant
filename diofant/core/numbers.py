@@ -212,12 +212,12 @@ def igcdex(a, b):
 
     """
     if (not a) and (not b):
-        return (0, 1, 0)
+        return 0, 1, 0
 
     if not a:
-        return (0, b//abs(b), abs(b))
+        return 0, b//abs(b), abs(b)
     if not b:
-        return (a//abs(a), 0, abs(a))
+        return a//abs(a), 0, abs(a)
 
     if a < 0:
         a, x_sign = -a, -1
@@ -235,7 +235,7 @@ def igcdex(a, b):
         (c, q) = (a % b, a // b)
         (a, b, r, s, x, y) = (b, c, x - q*r, y - q*s, r, s)
 
-    return (x*x_sign, y*y_sign, a)
+    return x*x_sign, y*y_sign, a
 
 
 class Number(AtomicExpr):
@@ -763,13 +763,13 @@ class Float(Number):
 
     # mpz can't be pickled
     def __getnewargs__(self):
-        return (mlib.to_pickable(self._mpf_),)
+        return mlib.to_pickable(self._mpf_),
 
     def __getstate__(self):
         return {'_prec': self._prec}
 
     def _hashable_content(self):
-        return (self._mpf_, self._prec)
+        return self._mpf_, self._prec
 
     def floor(self):
         return Integer(int(mlib.to_int(
@@ -1190,10 +1190,10 @@ class Rational(Number):
         return Rational(f.limit_denominator(fractions.Fraction(int(max_denominator))))
 
     def __getnewargs__(self):
-        return (self.p, self.q)
+        return self.p, self.q
 
     def _hashable_content(self):
-        return (self.p, self.q)
+        return self.p, self.q
 
     def _eval_is_positive(self):
         return self.p > 0
@@ -1537,7 +1537,7 @@ class Integer(Rational):
         return obj
 
     def __getnewargs__(self):
-        return (self.p,)
+        return self.p,
 
     # Arithmetic operations are here for efficiency
     def __int__(self):
@@ -2899,7 +2899,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (Integer(2), Integer(3))
+            return Integer(2), Integer(3)
 
     def _eval_power(self, arg):
         from diofant.functions.elementary.exponential import log
@@ -3040,9 +3040,9 @@ class Pi(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (Integer(3), Integer(4))
+            return Integer(3), Integer(4)
         elif issubclass(number_cls, Rational):
-            return (Rational(223, 71), Rational(22, 7))
+            return Rational(223, 71), Rational(22, 7)
 
 pi = S.Pi
 
@@ -3098,7 +3098,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (S.One, Rational(2))
+            return S.One, Rational(2)
 
 
 class EulerGamma(NumberSymbol, metaclass=Singleton):
@@ -3150,9 +3150,9 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (S.Zero, S.One)
+            return S.Zero, S.One
         elif issubclass(number_cls, Rational):
-            return (S.Half, Rational(3, 5))
+            return S.Half, Rational(3, 5)
 
 
 class Catalan(NumberSymbol, metaclass=Singleton):
@@ -3197,9 +3197,9 @@ class Catalan(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (S.Zero, S.One)
+            return S.Zero, S.One
         elif issubclass(number_cls, Rational):
-            return (Rational(9, 10), S.One)
+            return Rational(9, 10), S.One
 
 
 class ImaginaryUnit(AtomicExpr, metaclass=Singleton):

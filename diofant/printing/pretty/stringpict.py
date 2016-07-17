@@ -199,7 +199,7 @@ class stringPict(object):
             rparen = stringPict(vobj(right, h), baseline=b)
             res = stringPict(*res.right(rparen))
 
-        return ('\n'.join(res.picture), res.baseline)
+        return '\n'.join(res.picture), res.baseline
 
     def render(self, * args, **kwargs):
         """Return the string form of self.

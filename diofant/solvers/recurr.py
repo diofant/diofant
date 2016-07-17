@@ -182,7 +182,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     if N < 0:
         if homogeneous:
             if hints.get('symbols', False):
-                return (S.Zero, [])
+                return S.Zero, []
             else:
                 return S.Zero
         else:
@@ -322,7 +322,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             if not solutions:
                 if homogeneous:
                     if hints.get('symbols', False):
-                        return (S.Zero, [])
+                        return S.Zero, []
                     else:
                         return S.Zero
                 else:
@@ -345,7 +345,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             result += s.expand()
 
     if hints.get('symbols', False):
-        return (result, C)
+        return result, C
     else:
         return result
 
@@ -454,7 +454,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
 
         if result is not None:
             if hints.get('symbols', False):
-                return (simplify(result[0] / C), result[1])
+                return simplify(result[0] / C), result[1]
             else:
                 return simplify(result / C)
         else:
@@ -652,7 +652,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     if hints.get('symbols', False):
         symbols |= {s for s, k in sk}
-        return (result, list(symbols))
+        return result, list(symbols)
     else:
         return result
 

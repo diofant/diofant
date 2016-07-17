@@ -72,8 +72,8 @@ def change_mul(node, x):
             nnode = Mul(*new_args).expand()
         else:  # if the node didn't change there is nothing to do
             nnode = None
-        return (None, nnode)
-    return (dirac, Mul(*new_args))
+        return None, nnode
+    return dirac, Mul(*new_args)
 
 
 def deltaintegrate(f, x):
