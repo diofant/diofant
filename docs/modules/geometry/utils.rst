@@ -1,7 +1,7 @@
 Utils
 -----
 
-.. module:: sympy.geometry.util
+.. module:: diofant.geometry.util
 
 .. autofunction:: idiff
 

@@ -4,14 +4,14 @@
  Printing
 ==========
 
-As we have already seen, SymPy can pretty print its output using Unicode
+As we have already seen, Diofant can pretty print its output using Unicode
 characters.  This is a short introduction to the most common printing options
-available in SymPy.
+available in Diofant.
 
 Printers
 ========
 
-There are several printers available in SymPy.  The most common ones are
+There are several printers available in Diofant.  The most common ones are
 
 - str
 - repr
@@ -21,7 +21,7 @@ There are several printers available in SymPy.  The most common ones are
 - MathML
 - Dot
 
-In addition to these, there are also "printers" that can output SymPy objects
+In addition to these, there are also "printers" that can output Diofant objects
 to code, such as C, Fortran, Javascript, Theano, and Python.  These are not
 discussed in this tutorial.
 
@@ -43,7 +43,7 @@ To explicitly not use `\LaTeX`, pass ``use_latex=False`` to
 pass ``use_unicode=False``.
 
 For convinience, the ``init_session()`` function is available, it will
-automatically import everything in SymPy, create some common Symbols, setup
+automatically import everything in Diofant, create some common Symbols, setup
 plotting, and run ``init_printing()``.
 
 Printing Functions
@@ -61,7 +61,7 @@ easy to read, but in a form that is correct Python syntax so that it can be
 copied and pasted.  The ``str()`` form of an expression will usually look
 exactly the same as the expression as you would enter it.
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x y z')
     >>> str(Integral(sqrt(1/x), x))
     'Integral(sqrt(1/x), x)'
@@ -142,15 +142,15 @@ To get the `\LaTeX` form of an expression, use ``latex()``.
 
 The ``latex()`` function has many options to change the formatting of
 different things.  See :py:meth:`its documentation
-<sympy.printing.latex.latex>` for more details.
+<diofant.printing.latex.latex>` for more details.
 
 MathML
 ------
 
 There is also a printer to MathML, called ``print_mathml()``.  It must be
-imported from ``sympy.printing.mathml``.
+imported from ``diofant.printing.mathml``.
 
-    >>> from sympy.printing.mathml import print_mathml
+    >>> from diofant.printing.mathml import print_mathml
     >>> print_mathml(Integral(sqrt(1/x), x))
     <apply>
         <int/>
@@ -173,7 +173,7 @@ function ``mathml()``.
 Dot
 ---
 
-The ``dotprint()`` function in ``sympy.printing.dot`` prints output to dot
+The ``dotprint()`` function in ``diofant.printing.dot`` prints output to dot
 format, which can be rendered with Graphviz.  See the
 :ref:`tutorial-manipulation` section for some examples of the output of this
 printer.

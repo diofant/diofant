@@ -1,14 +1,14 @@
 import pytest
 
-from sympy.core.cache import clear_cache
+from diofant.core.cache import clear_cache
 
 
 def pytest_report_header(config):
-    from sympy.utilities.misc import ARCH
+    from diofant.utilities.misc import ARCH
     s = "architecture: %s\n" % ARCH
-    from sympy.core.cache import USE_CACHE
+    from diofant.core.cache import USE_CACHE
     s += "cache:        %s\n" % USE_CACHE
-    from sympy.core.compatibility import GROUND_TYPES, HAS_GMPY
+    from diofant.core.compatibility import GROUND_TYPES, HAS_GMPY
     version = ''
     if GROUND_TYPES == 'gmpy':
         if HAS_GMPY == 1:
@@ -41,7 +41,7 @@ def check_disabled(request):
 @pytest.fixture(autouse=True, scope='session')
 def set_displayhook():
     import sys
-    from sympy import init_printing
+    from diofant import init_printing
 
     # hook our nice, hash-stable strprinter
     init_printing(pretty_print=False, use_unicode=False)

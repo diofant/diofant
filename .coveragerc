@@ -1,5 +1,5 @@
 [run]
 branch = True
 
-omit = sympy/tests/*
-       sympy/*/tests/*
+omit = diofant/tests/*
+       diofant/*/tests/*

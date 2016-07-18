@@ -4,7 +4,7 @@
 Matrices
 ========
 
-.. automodule:: sympy.matrices
+.. automodule:: diofant.matrices
 
 Contents:
 

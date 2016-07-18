@@ -1,5 +1,5 @@
 #
-# SymPy documentation build configuration file.
+# Diofant documentation build configuration file.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -11,7 +11,7 @@
 
 import os
 import warnings
-import sympy
+import diofant
 
 # This turns numpydoc's section warnings to exceptions,
 # see numpy/numpydoc#58.
@@ -47,14 +47,14 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = 'SymPy'
-copyright = '2016 SymPy Development Team, Sergey B Kirpichev'
+project = 'Diofant'
+copyright = '2016 Diofant Development Team, Sergey B Kirpichev'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = sympy.__version__
+version = diofant.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -82,7 +82,7 @@ html_last_updated_fmt = '%b %d, %Y'
 html_domain_indices = ['py-modindex']
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SymPydoc'
+htmlhelp_basename = 'Diofantdoc'
 
 # Options for LaTeX output
 # ------------------------
@@ -92,8 +92,8 @@ htmlhelp_basename = 'SymPydoc'
 # toctree_only is set to True so that the start file document itself is not included in the
 # output, only the documents referenced by it via TOC trees.  The extra stuff in the master
 # document is intended to show up in the HTML, but doesn't really belong in the LaTeX output.
-latex_documents = [('index', 'diofant.tex', 'SymPy Documentation',
-                    'SymPy Development Team', 'manual', True)]
+latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
+                    'Diofant Development Team', 'manual', True)]
 
 # Additional stuff for the LaTeX preamble.
 latex_elements = {
@@ -121,8 +121,8 @@ latex_use_modindex = False
 # ----------------------
 
 texinfo_documents = [
-    (master_doc, 'sympy', 'SymPy Documentation', 'SymPy Development Team',
-   'SymPy', 'Computer algebra system (CAS) in Python', 'Programming', 1),
+    (master_doc, 'diofant', 'Diofant Documentation', 'Diofant Development Team',
+   'Diofant', 'Computer algebra system (CAS) in Python', 'Programming', 1),
 ]
 
 # Use svg for graphviz

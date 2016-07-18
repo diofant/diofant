@@ -3,7 +3,7 @@ Introduction
 ============
 
 This page gives a brief conceptual overview of the functionality present in
-:mod:`sympy.vector`.
+:mod:`diofant.vector`.
 
 Vectors and Scalars
 ===================

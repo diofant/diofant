@@ -3,9 +3,9 @@
 Setup ufuncs for the legendre polynomials
 -----------------------------------------
 
-This example demonstrates how you can use the ufuncify utility in SymPy
+This example demonstrates how you can use the ufuncify utility in Diofant
 to create fast, customized universal functions for use with numpy
-arrays. An autowrapped sympy expression can be significantly faster than
+arrays. An autowrapped diofant expression can be significantly faster than
 what you would get by applying a sequence of the ufuncs shipped with
 numpy. [0]
 
@@ -19,7 +19,7 @@ http://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/
 
 import sys
 
-from sympy.external import import_module
+from diofant.external import import_module
 
 np = import_module('numpy')
 if not np:
@@ -29,9 +29,9 @@ if not plt:
     sys.exit("Cannot import matplotlib.pyplot. Exiting.")
 
 import mpmath
-from sympy.utilities.autowrap import ufuncify
-from sympy.utilities.lambdify import implemented_function
-from sympy import symbols, legendre, pprint
+from diofant.utilities.autowrap import ufuncify
+from diofant.utilities.lambdify import implemented_function
+from diofant import symbols, legendre, pprint
 
 
 def main():
@@ -51,7 +51,7 @@ def main():
     # Let's also plot the ufunc's we generate
     for n in range(6):
 
-        # Setup the SymPy expression to ufuncify
+        # Setup the Diofant expression to ufuncify
         expr = legendre(n, x)
         print("The polynomial of degree %i is" % n)
         pprint(expr)
@@ -72,7 +72,7 @@ def main():
         print("The largest error in applied ufunc was %e" % maxdiff)
         assert maxdiff < 1e-14
 
-        # We can also attach the autowrapped legendre polynomial to a sympy
+        # We can also attach the autowrapped legendre polynomial to a diofant
         # function and plot values as they are calculated by the binary function
         plot1 = plt.pyplot.plot(grid, polyvector, hold=True)
 

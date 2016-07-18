@@ -4,7 +4,7 @@
 Utilities
 =========
 
-.. automodule:: sympy.utilities
+.. automodule:: diofant.utilities
 
 Contents:
 

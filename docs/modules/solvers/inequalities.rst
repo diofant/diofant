@@ -3,7 +3,7 @@
 Inequality Solvers
 ==================
 
-.. module:: sympy.solvers.inequalities
+.. module:: diofant.solvers.inequalities
 
 .. autofunction:: solve_rational_inequalities
 

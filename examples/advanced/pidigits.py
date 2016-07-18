@@ -68,7 +68,7 @@ def calculateit(func, base, n, tofile):
 
 def interactive():
     """Simple function to interact with user"""
-    print("Compute digits of pi with SymPy\n")
+    print("Compute digits of pi with Diofant\n")
     base = input("Which base? (2-36, 10 for decimal) \n> ")
     digits = input("How many digits? (enter a big number, say, 10000)\n> ")
     tofile = raw_input("Output to file? (enter a filename, or just press enter\nto print directly to the screen) \n> ")

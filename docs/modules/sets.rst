@@ -1,7 +1,7 @@
 Sets
 ===========
 
-.. automodule:: sympy.sets.sets
+.. automodule:: diofant.sets.sets
 
 Set
 ^^^
@@ -60,7 +60,7 @@ UniversalSet
 
 Special Sets
 ------------
-.. automodule:: sympy.sets.fancysets
+.. automodule:: diofant.sets.fancysets
 
 Naturals
 ^^^^^^^^

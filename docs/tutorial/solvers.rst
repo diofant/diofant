@@ -2,7 +2,7 @@
  Solvers
 =========
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x y z')
     >>> init_printing(use_unicode=True)
 
@@ -10,7 +10,7 @@ A Note about Equations
 ======================
 
 Recall from the :ref:`gotchas <tutorial_gotchas_equals>` section of this
-tutorial that symbolic equations in SymPy are not represented by ``=`` or
+tutorial that symbolic equations in Diofant are not represented by ``=`` or
 ``==``, but by ``Eq``.
 
 
@@ -18,7 +18,7 @@ tutorial that symbolic equations in SymPy are not represented by ``=`` or
     x = y
 
 
-However, there is an even easier way.  In SymPy, any expression not in an
+However, there is an even easier way.  In Diofant, any expression not in an
 ``Eq`` is automatically assumed to equal 0 by the solving functions.  Since `a
 = b` if and only if `a - b = 0`, this means that instead of using ``x == y``,
 you can just use ``x - y``.  For example

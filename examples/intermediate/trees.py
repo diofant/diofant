@@ -12,7 +12,7 @@ and paste in the sequence returned by this script:
 and it will shows you the A000055
 """
 
-from sympy import Symbol, Poly
+from diofant import Symbol, Poly
 
 
 def T(x):

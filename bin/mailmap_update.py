@@ -9,7 +9,7 @@ import sys
 from subprocess import getoutput
 from distutils.version import LooseVersion
 
-from sympy.utilities.misc import filldedent
+from diofant.utilities.misc import filldedent
 
 
 def yellow(s):
@@ -29,11 +29,11 @@ def red(s):
 
 mailmap_update_path = os.path.abspath(__file__)
 mailmap_update_dir = os.path.dirname(mailmap_update_path)
-sympy_top = os.path.split(mailmap_update_dir)[0]
-sympy_dir = os.path.join(sympy_top, 'sympy')
+diofant_top = os.path.split(mailmap_update_dir)[0]
+diofant_dir = os.path.join(diofant_top, 'diofant')
 
-if os.path.isdir(sympy_dir):
-    sys.path.insert(0, sympy_top)
+if os.path.isdir(diofant_dir):
+    sys.path.insert(0, diofant_top)
 
 git_command = 'git log --format="%aN" | sort -u'
 

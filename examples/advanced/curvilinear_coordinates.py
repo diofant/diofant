@@ -9,7 +9,7 @@ and calculates all kinds of interesting properties, like Jacobian, metric
 tensor, Laplace operator, ...
 """
 
-from sympy import (sin, cos, pprint, Matrix, eye, Eq, Function, simplify,
+from diofant import (sin, cos, pprint, Matrix, eye, Eq, Function, simplify,
                    sinh, cosh, expand, symbols)
 
 
@@ -37,7 +37,7 @@ def transform(name, X, Y, g_correct=None, recursive=False):
     of metric, Laplace operator in the new coordinates, ...
 
     g_correct ... if not None, it will be taken as the metric --- this is
-                  useful if sympy's trigsimp() is not powerful enough to
+                  useful if diofant's trigsimp() is not powerful enough to
                   simplify the metric so that it is usable for later
                   calculation. Leave it as None, only if the metric that
                   transform() prints is not simplified, you can help it by

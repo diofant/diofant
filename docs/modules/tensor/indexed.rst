@@ -2,5 +2,5 @@
 Indexed Objects
 ===============
 
-.. automodule:: sympy.tensor.indexed
+.. automodule:: diofant.tensor.indexed
    :members:

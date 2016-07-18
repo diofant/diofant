@@ -9,8 +9,8 @@ import sys
 
 from sample import sample
 
-from sympy import Symbol
-from sympy.external import import_module
+from diofant import Symbol
+from diofant.external import import_module
 
 
 def mplot3d(f, var1, var2, show=True):

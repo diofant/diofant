@@ -1,5 +1,5 @@
 3D Line
 -------
 
-.. automodule:: sympy.geometry.line3d
+.. automodule:: diofant.geometry.line3d
    :members:

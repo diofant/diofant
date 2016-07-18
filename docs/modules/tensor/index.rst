@@ -4,7 +4,7 @@
 Tensors
 =======
 
-.. automodule:: sympy.tensor
+.. automodule:: diofant.tensor
 
 Contents
 ========

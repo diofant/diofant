@@ -6,11 +6,11 @@ Numerical evaluation
 Basics
 ------
 
-Exact SymPy expressions can be converted to floating-point approximations
+Exact Diofant expressions can be converted to floating-point approximations
 (decimal numbers) using either the ``.evalf()`` method or the ``N()`` function.
 ``N(expr, <args>)`` is equivalent to ``sympify(expr).evalf(<args>)``.
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> N(sqrt(2)*pi)
     4.44288293815837
     >>> (sqrt(2)*pi).evalf()
@@ -44,7 +44,7 @@ expression is a polynomial in expanded form, the coefficients are evaluated:
 
 
 You can also use the standard Python functions ``float()``, ``complex()`` to
-convert SymPy expressions to regular Python numbers:
+convert Diofant expressions to regular Python numbers:
 
     >>> float(pi)
     3.1415926535...
@@ -75,7 +75,7 @@ significantly speed up computations such as the one above.
 Floating-point numbers
 ----------------------
 
-Floating-point numbers in SymPy are instances of the class ``Float``. A ``Float``
+Floating-point numbers in Diofant are instances of the class ``Float``. A ``Float``
 can be created with a custom precision as second argument:
 
     >>> Float(0.1)

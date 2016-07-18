@@ -3,7 +3,7 @@
 Partitions
 ==========
 
-.. module:: sympy.combinatorics.partitions
+.. module:: diofant.combinatorics.partitions
 
 .. autoclass:: Partition
    :members:

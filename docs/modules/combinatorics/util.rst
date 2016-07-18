@@ -3,7 +3,7 @@
 Utilities
 ============
 
-.. module:: sympy.combinatorics.util
+.. module:: diofant.combinatorics.util
 
 .. autofunction:: _base_ordering
 

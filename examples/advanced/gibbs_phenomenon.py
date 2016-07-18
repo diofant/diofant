@@ -13,7 +13,7 @@ See:
  * http://en.wikipedia.org/wiki/Gibbs_phenomena
 """
 
-from sympy import (var, sqrt, integrate, conjugate, Abs, pprint, pi,
+from diofant import (var, sqrt, integrate, conjugate, Abs, pprint, pi,
                    sin, cos, lambdify, Integral)
 
 x = var("x", extended_real=True)
@@ -29,7 +29,7 @@ def l2_norm(f, lim):
     Examples
     ========
 
-    >>> from sympy import Symbol
+    >>> from diofant import Symbol
     >>> from gibbs_phenomenon import l2_norm
     >>> x = Symbol('x', extended_real=True)
     >>> l2_norm(1, (x, -1, 1))
@@ -65,7 +65,7 @@ def l2_gram_schmidt(list, lim):
     Examples
     ========
 
-    >>> from sympy import Symbol
+    >>> from diofant import Symbol
     >>> from gibbs_phenomenon import l2_gram_schmidt
 
     >>> x = Symbol('x', extended_real=True)    # perform computations over reals to save time

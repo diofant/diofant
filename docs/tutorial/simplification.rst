@@ -6,8 +6,8 @@
 
 To make this document easier to read, we are going to enable pretty printing.
 
-    >>> from sympy import *
-    >>> from sympy.abc import x, y, z
+    >>> from diofant import *
+    >>> from diofant.abc import x, y, z
     >>> init_printing(use_unicode=True)
 
 Automatic simplification
@@ -37,7 +37,7 @@ Use keyword argument ``evaluate`` to prevent this:
 
 Now let's jump in and do some interesting mathematics.  One of the most useful
 features of a symbolic manipulation system is the ability to simplify
-mathematical expressions.  SymPy has dozens of functions to perform various
+mathematical expressions.  Diofant has dozens of functions to perform various
 kinds of simplification.  There is also one general function called
 ``simplify()`` that attempts to apply all of these functions in an intelligent
 way to arrive at the simplest form of an expression.  Here are some examples
@@ -54,7 +54,7 @@ Here, ``gamma(x)`` is `\Gamma(x)`, the `gamma function
 is capable of handling a large class of expressions.
 
 But ``simplify()`` has a pitfall.  It just applies all the major
-simplification operations in SymPy, and uses heuristics to determine the
+simplification operations in Diofant, and uses heuristics to determine the
 simplest result. But "simplest" is not a well-defined term.  For example, say
 we wanted to "simplify" `x^2 + 2x + 1` into `(x + 1)^2`:
 
@@ -77,7 +77,7 @@ of their output.  These will be discussed with each function below.  For
 example, ``factor()``, when called on a polynomial with rational coefficients,
 is guaranteed to factor the polynomial into irreducible factors.
 ``simplify()`` has no guarantees.  It is entirely heuristical, and, as we saw
-above, it may even miss a possible type of simplification that SymPy is
+above, it may even miss a possible type of simplification that Diofant is
 capable of doing.
 
 ``simplify()`` is best when used interactively, when you just want to whittle
@@ -92,7 +92,7 @@ Polynomial/Rational Function Simplification
 expand
 ------
 
-``expand()`` is one of the most common simplification functions in SymPy.
+``expand()`` is one of the most common simplification functions in Diofant.
 Although it has a lot of scopes, for now, we will consider its function in
 expanding polynomial expressions. For example:
 
@@ -250,7 +250,7 @@ Trigonometric Simplification
 
 .. note::
 
-   SymPy follows Python's naming conventions for inverse trigonometric
+   Diofant follows Python's naming conventions for inverse trigonometric
    functions, which is to append an ``a`` to the front of the function's
    name.  For example, the inverse cosine, or arc cosine, is called ``acos()``.
 
@@ -356,15 +356,15 @@ To summarize
 +-----------------------+------------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------+
 
 
-This is important to remember, because by default, SymPy will not perform
+This is important to remember, because by default, Diofant will not perform
 simplifications if they are not true in general.
 
-In order to make SymPy perform simplifications involving identities that are
+In order to make Diofant perform simplifications involving identities that are
 only true under certain assumptions, we need to put assumptions on our
 Symbols.  We will undertake a full discussion of the assumptions system later,
 but for now, all we need to know are the following.
 
-- By default, SymPy Symbols are assumed to be complex (elements of
+- By default, Diofant Symbols are assumed to be complex (elements of
   `\mathbb{C}`).  That is, a simplification will not be applied to an
   expression with a given Symbol unless it holds for all complex numbers.
 
@@ -382,7 +382,7 @@ but for now, all we need to know are the following.
 
 .. note::
 
-   In SymPy, ``sqrt(x)`` is just a shortcut to ``x**Rational(1, 2)``.  They
+   In Diofant, ``sqrt(x)`` is just a shortcut to ``x**Rational(1, 2)``.  They
    are exactly the same object.
 
      >>> sqrt(x) == x**Rational(1, 2)
@@ -501,8 +501,8 @@ Exponentials and logarithms
 
 .. note::
 
-   In SymPy, as in Python and most programming languages, ``log`` is the
-   natural logarithm, also known as ``ln``.  SymPy automatically provides an
+   In Diofant, as in Python and most programming languages, ``log`` is the
+   natural logarithm, also known as ``ln``.  Diofant automatically provides an
    alias ``ln = log`` in case you forget this.
 
     >>> ln(x)
@@ -584,14 +584,14 @@ assumptions.
 Special Functions
 =================
 
-SymPy implements dozens of special functions, ranging from functions in
+Diofant implements dozens of special functions, ranging from functions in
 combinatorics to mathematical physics.
 
-An extensive list of the special functions included with SymPy and their
+An extensive list of the special functions included with Diofant and their
 documentation is at the :ref:`Functions Module <functions-contents>` page.
 
 For the purposes of this tutorial, let's introduce a few special functions in
-SymPy.
+Diofant.
 
 Let's define ``x``, ``y``, and ``z`` as regular, complex Symbols, removing any
 assumptions we put on them in the previous section.  We will also define ``k``,
@@ -643,7 +643,7 @@ rewrite
 -------
 
 A common way to deal with special functions is to rewrite them in terms of one
-another.  This works for any function in SymPy, not just special functions.
+another.  This works for any function in Diofant, not just special functions.
 To rewrite an expression in terms of a function, use
 ``expr.rewrite(function)``.  For example,
 
@@ -679,7 +679,7 @@ To rewrite ``hyper`` in terms of more standard functions, use
          z
 
 ``hyperexpand()`` also works on the more general Meijer G-function (see
-:py:meth:`its documentation <sympy.functions.special.hyper.meijerg>` for more
+:py:meth:`its documentation <diofant.functions.special.hyper.meijerg>` for more
 information).
 
     >>> expr = meijerg([[1],[1]], [[1],[]], -z)
@@ -713,7 +713,7 @@ To simplify combinatorial expressions, use ``combsimp()``.
 Example: Continued Fractions
 ============================
 
-Let's use SymPy to explore continued fractions.  A `continued fraction
+Let's use Diofant to explore continued fractions.  A `continued fraction
 <http://en.wikipedia.org/wiki/Continued_fraction>`_ is an expression of the
 form
 
@@ -748,7 +748,7 @@ differently from the rest.
             z
 
 We use ``Integer(0)`` in ``list_to_frac`` so that the result will always be a
-SymPy object, even if we only pass in Python ints.
+Diofant object, even if we only pass in Python ints.
 
     >>> list_to_frac([1, 2, 3, 4])
     43
@@ -789,7 +789,7 @@ into standard rational function form using ``cancel()``.
 Now suppose we were given ``frac`` in the above canceled form. In fact, we
 might be given the fraction in any form, but we can always put it into the
 above canonical form with ``cancel()``.  Suppose that we knew that it could be
-rewritten as a continued fraction.  How could we do this with SymPy?  A
+rewritten as a continued fraction.  How could we do this with Diofant?  A
 continued fraction is recursively `c + \frac{1}{f}`, where `c` is an integer
 and `f` is a (smaller) continued fraction.  If we could write the expression
 in this form, we could pull out each `c` recursively and add it to a list.  We

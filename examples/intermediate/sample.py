@@ -1,12 +1,12 @@
 """
-Utility functions for plotting sympy functions.
+Utility functions for plotting diofant functions.
 
 See examples\mplot2d.py and examples\mplot3d.py for usable 2d and 3d
 graphing functions using matplotlib.
 """
 
-from sympy.core.sympify import sympify, SympifyError
-from sympy.external import import_module
+from diofant.core.sympify import sympify, SympifyError
+from diofant.external import import_module
 np = import_module('numpy')
 
 
@@ -22,7 +22,7 @@ def sample2d(f, x_args):
     try:
         f = sympify(f)
     except SympifyError:
-        raise ValueError("f could not be interpretted as a SymPy function")
+        raise ValueError("f could not be interpretted as a Diofant function")
     try:
         x, x_min, x_max, x_n = x_args
     except AttributeError:
@@ -55,7 +55,7 @@ def sample3d(f, x_args, y_args):
     try:
         f = sympify(f)
     except SympifyError:
-        raise ValueError("f could not be interpreted as a SymPy function")
+        raise ValueError("f could not be interpreted as a Diofant function")
     try:
         x, x_min, x_max, x_n = x_args
         y, y_min, y_max, y_n = y_args

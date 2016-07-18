@@ -1,7 +1,7 @@
 Number Theory
 ====================
 
-.. module:: sympy.ntheory.generate
+.. module:: diofant.ntheory.generate
 
 Ntheory Class Reference
 -----------------------
@@ -27,7 +27,7 @@ Ntheory Functions Reference
 
 .. autofunction:: cycle_length
 
-.. module:: sympy.ntheory.factor_
+.. module:: diofant.ntheory.factor_
 
 .. autofunction:: smoothness
 
@@ -55,7 +55,7 @@ Ntheory Functions Reference
 
 .. autofunction:: core
 
-.. module:: sympy.ntheory.modular
+.. module:: diofant.ntheory.modular
 
 .. autofunction:: symmetric_residue
 
@@ -67,7 +67,7 @@ Ntheory Functions Reference
 
 .. autofunction:: solve_congruence
 
-.. module:: sympy.ntheory.multinomial
+.. module:: diofant.ntheory.multinomial
 
 .. autofunction:: binomial_coefficients
 
@@ -77,17 +77,17 @@ Ntheory Functions Reference
 
 .. autofunction:: multinomial_coefficients_iterator
 
-.. module:: sympy.ntheory.partitions_
+.. module:: diofant.ntheory.partitions_
 
 .. autofunction:: npartitions
 
-.. module:: sympy.ntheory.primetest
+.. module:: diofant.ntheory.primetest
 
 .. autofunction:: mr
 
 .. autofunction:: isprime
 
-.. module:: sympy.ntheory.residue_ntheory
+.. module:: diofant.ntheory.residue_ntheory
 
 .. autofunction:: n_order
 
@@ -109,12 +109,12 @@ Ntheory Functions Reference
 
 .. autofunction:: jacobi_symbol
 
-.. automodule:: sympy.ntheory.continued_fraction
+.. automodule:: diofant.ntheory.continued_fraction
     :members:
 
-.. autoclass:: sympy.ntheory.mobius
+.. autoclass:: diofant.ntheory.mobius
     :members:
 
-.. module:: sympy.ntheory.egyptian_fraction
+.. module:: diofant.ntheory.egyptian_fraction
 
 .. autofunction:: egyptian_fraction

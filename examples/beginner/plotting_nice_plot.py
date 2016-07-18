@@ -5,10 +5,10 @@
 Demonstrates simple plotting.
 """
 
-from sympy import cos, sin, log, tan
-from sympy.plotting.plot import plot3d
+from diofant import cos, sin, log, tan
+from diofant.plotting.plot import plot3d
 
-from sympy.abc import x, y
+from diofant.abc import x, y
 
 
 def main():

@@ -3,8 +3,8 @@
 Installation
 ------------
 
-The SymPy CAS can be installed on virtually any computer with Python
-3.4 or above.  SymPy requires `setuptools`_.  The current recommended
+The Diofant CAS can be installed on virtually any computer with Python
+3.4 or above.  Diofant requires `setuptools`_.  The current recommended
 method of installation is directly from the source files.
 
 Source
@@ -26,22 +26,22 @@ To update to the latest version, go into your repository and execute::
 
     $ git pull origin master
 
-You can see old SymPy's history (from Hg and SVN repos) in the
+You can see old Diofant's history (from Hg and SVN repos) in the
 branch sympy-svn-history.  To see this history as part of
 master's, simply do::
 
     $ git fetch origin 'refs/replace/*:refs/replace/*'
 
-Run SymPy
-=========
+Run Diofant
+===========
 
-After installation, it is best to verify that your freshly-installed SymPy
+After installation, it is best to verify that your freshly-installed Diofant
 works.  To do this, start up the Python interpreter and import the
-SymPy libraries::
+Diofant libraries::
 
-    >>> from sympy import *
+    >>> from diofant import *
 
-From here, execute some simple SymPy statements like the ones below::
+From here, execute some simple Diofant statements like the ones below::
 
     >>> x = Symbol('x')
     >>> limit(sin(x)/x, x, 0)
@@ -49,7 +49,7 @@ From here, execute some simple SymPy statements like the ones below::
     >>> integrate(1/x, x)
     log(x)
 
-For a starter guide on using SymPy effectively, refer to the :ref:`tutorial`.
+For a starter guide on using Diofant effectively, refer to the :ref:`tutorial`.
 
 Questions
 =========

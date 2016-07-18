@@ -88,13 +88,13 @@ Suppose `f: \mathcal{S} \to \mathbb{C}` is a holomorphic function. We wish to
 define a function `F` on (part of) the complex numbers `\mathbb{C}` that
 represents `f` as closely as possible. This process is knows as "introducing
 branch cuts". In our situation, there is actually a canonical way of doing this
-(which is adhered to in all of SymPy), as follows: Introduce the "cut complex
+(which is adhered to in all of Diofant), as follows: Introduce the "cut complex
 plane"
 `C = \mathbb{C} \setminus \mathbb{R}_{\le 0}`. Define a function
 `l: C \to \mathcal{S}` via `re^{i\theta} \mapsto r \operatorname{Exp}(i\theta)`. Here `r > 0`
 and `-\pi < \theta \le \pi`. Then `l` is holomorphic, and we define
 `G = f \circ l`. This called "lifting to the principal branch" throughout the
-SymPy documentation.
+Diofant documentation.
 
 Table Lookups and Inverse Mellin Transforms
 ===========================================
@@ -195,7 +195,7 @@ simple as possible, since they are very complicated anyway.):
             \right| \frac{\omega}{\sigma} \right)
 
 The more interesting question is under what conditions these formulae are
-valid. Below we detail the conditions implemented in SymPy. They are an
+valid. Below we detail the conditions implemented in Diofant. They are an
 amalgamation of conditions found in [Prudnikov1990]_ and [Luke1969]_; please
 let us know if you find any errors.
 
@@ -499,10 +499,10 @@ Implemented G-Function Formulae
 An important part of the algorithm is a table expressing various functions
 as Meijer G-functions. This is essentially a table of Mellin Transforms in
 disguise. The following automatically generated table shows the formulae
-currently implemented in SymPy. An entry "generated" means that the
+currently implemented in Diofant. An entry "generated" means that the
 corresponding G-function has a variable number of parameters.
 This table is intended to shrink in future, when the algorithm's capabilities
 of deriving new formulae improve. Of course it has to grow whenever a new class
 of special functions is to be dealt with.
 
-.. automodule:: sympy.integrals.meijerint_doc
+.. automodule:: diofant.integrals.meijerint_doc

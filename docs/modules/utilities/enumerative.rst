@@ -1,7 +1,7 @@
 ===========
 Enumerative
 ===========
-.. module:: sympy.utilities.enumerative
+.. module:: diofant.utilities.enumerative
 
 This module includes functions and classes for enumerating and
 counting multiset partitions.

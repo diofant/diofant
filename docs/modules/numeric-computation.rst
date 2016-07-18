@@ -1,13 +1,13 @@
 Numeric Computation
 ===================
 
-Symbolic computer algebra systems like SymPy facilitate the construction and
+Symbolic computer algebra systems like Diofant facilitate the construction and
 manipulation of mathematical expressions.  Unfortunately when it comes time
 to evaluate these expressions on numerical data, symbolic systems often have
 poor performance.
 
-Fortunately SymPy offers a number of easy-to-use hooks into other numeric
-systems, allowing you to create mathematical expressions in SymPy and then
+Fortunately Diofant offers a number of easy-to-use hooks into other numeric
+systems, allowing you to create mathematical expressions in Diofant and then
 ship them off to the numeric system of your choice.  This page documents many
 of the options available including the ``math`` library, the popular array
 computing package ``numpy``, code generation in ``Fortran`` or ``C``, and the
@@ -17,13 +17,13 @@ use of the array compiler ``Theano``.
 Subs/evalf
 ----------
 
-Subs is the slowest but simplest option.  It runs at SymPy speeds.
+Subs is the slowest but simplest option.  It runs at Diofant speeds.
 The ``.subs(...).evalf()`` method can substitute a numeric value
-for a symbolic one and then evaluate the result within SymPy.
+for a symbolic one and then evaluate the result within Diofant.
 
 
-    >>> from sympy import *
-    >>> from sympy.abc import x
+    >>> from diofant import *
+    >>> from diofant.abc import x
     >>> expr = sin(x)/x
     >>> expr.evalf(subs={x: 3.14})
     0.000507214304613640
@@ -36,11 +36,11 @@ can be useful while prototyping or if you just want to see a value once.
 Lambdify
 --------
 
-The ``lambdify`` function translates SymPy expressions into Python functions,
+The ``lambdify`` function translates Diofant expressions into Python functions,
 leveraging a variety of numerical libraries.  It is used as follows:
 
-    >>> from sympy import *
-    >>> from sympy.abc import x
+    >>> from diofant import *
+    >>> from diofant.abc import x
     >>> expr = sin(x)/x
     >>> f = lambdify(x, expr)
     >>> f(3.14)
@@ -50,15 +50,15 @@ Here lambdify makes a function that computes ``f(x) = sin(x)/x``.  By default
 lambdify relies on implementations in the ``math`` standard library. This
 numerical evaluation takes on the order of hundreds of nanoseconds, roughly two
 orders of magnitude faster than the ``.subs`` method.  This is the speed
-difference between SymPy and raw Python.
+difference between Diofant and raw Python.
 
 Lambdify can leverage a variety of numerical backends.  By default it uses the
 ``math`` library.  However it also supports ``mpmath`` and most notably,
 ``numpy``.  Using the ``numpy`` library gives the generated function access to
 powerful vectorized ufuncs that are backed by compiled C code.
 
-    >>> from sympy import *
-    >>> from sympy.abc import x
+    >>> from diofant import *
+    >>> from diofant.abc import x
     >>> expr = sin(x)/x
     >>> f = lambdify(x, expr, "numpy")
 
@@ -110,17 +110,17 @@ A better solution would fuse both element-wise operations into a single for loop
     }
 
 Statically compiled projects like NumPy are unable to take advantage of such
-optimizations. Fortunately, SymPy is able to generate efficient low-level C
+optimizations. Fortunately, Diofant is able to generate efficient low-level C
 or Fortran code. It can then depend on projects like ``Cython`` or ``f2py`` to
 compile and reconnect that code back up to Python. Fortunately this process is
-well automated and a SymPy user wishing to make use of this code generation
+well automated and a Diofant user wishing to make use of this code generation
 should call the ``ufuncify`` function
 
-    >>> from sympy import *
-    >>> from sympy.abc import x
+    >>> from diofant import *
+    >>> from diofant.abc import x
     >>> expr = sin(x)/x
 
-    >>> from sympy.utilities.autowrap import ufuncify
+    >>> from diofant.utilities.autowrap import ufuncify
     >>> f = ufuncify((x,), expr)
 
 This function ``f`` consumes and returns a NumPy array. Generally ``ufuncify``
@@ -132,16 +132,16 @@ on this topic.
 Theano
 ------
 
-SymPy has a strong connection with
+Diofant has a strong connection with
 `Theano <http://deeplearning.net/software/theano/>`_, a mathematical array
-compiler.  SymPy expressions can be easily translated to Theano graphs and then
+compiler.  Diofant expressions can be easily translated to Theano graphs and then
 compiled using the Theano compiler chain.
 
-    >>> from sympy import *
-    >>> from sympy.abc import x
+    >>> from diofant import *
+    >>> from diofant.abc import x
     >>> expr = sin(x)/x
 
-    >>> from sympy.printing.theanocode import theano_function
+    >>> from diofant.printing.theanocode import theano_function
     >>> f = theano_function([x], [expr])
 
 If array broadcasting or types are desired then Theano requires this extra
@@ -149,9 +149,9 @@ information
 
     >>> f = theano_function([x], [expr], dims={x: 1}, dtypes={x: 'float64'})
 
-Theano has a more sophisticated code generation system than SymPy's C/Fortran
+Theano has a more sophisticated code generation system than Diofant's C/Fortran
 code printers.  Among other things it handles common sub-expressions and
-compilation onto the GPU.  Theano also supports SymPy Matrix and Matrix
+compilation onto the GPU.  Theano also supports Diofant Matrix and Matrix
 Expression objects.
 
 

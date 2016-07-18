@@ -3,7 +3,7 @@
 Prufer Sequences
 ================
 
-.. module:: sympy.combinatorics.prufer
+.. module:: diofant.combinatorics.prufer
 
 .. autoclass:: Prufer
    :members:

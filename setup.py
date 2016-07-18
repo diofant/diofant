@@ -14,7 +14,7 @@ from setuptools.command.test import test as TestCommand
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (3, 4):
-    print("SymPy requires Python 3.4 or newer. Python %d.%d detected" % sys.version_info[:2])
+    print("Diofant requires Python 3.4 or newer. Python %d.%d detected" % sys.version_info[:2])
     sys.exit(-1)
 
 
@@ -74,7 +74,7 @@ class test(TestCommand):
             pass
         self.pytest_args = []
         if self.cov is not None:
-            self.pytest_args.extend(["--cov", "sympy"])
+            self.pytest_args.extend(["--cov", "diofant"])
         if self.mark is not None:
             self.pytest_args.extend(["-m", self.mark])
 
@@ -84,7 +84,7 @@ class test(TestCommand):
         sys.exit(errno)
 
 
-with open('sympy/__init__.py') as f:
+with open('diofant/__init__.py') as f:
     source = f.read()
     long_description = source.split('"""')[1]
 
@@ -93,7 +93,7 @@ with open('sympy/__init__.py') as f:
         if m:
             __version__ = m.group(1)
 
-setup(name='sympy',
+setup(name='diofant',
       version=__version__,
       description='Computer algebra system (CAS) in Python',
       long_description=long_description,

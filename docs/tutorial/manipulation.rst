@@ -11,11 +11,11 @@ Understanding Expression Trees
 ==============================
 
 Before we can do this, we need to understand how expressions are represented
-in SymPy.  A mathematical expression is represented as a tree.  Let us take
+in Diofant.  A mathematical expression is represented as a tree.  Let us take
 the expression `x^2 + xy`, i.e., ``x**2 + x*y``.  We can see what this
 expression looks like internally by using ``repr``
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x y z')
 
     >>> expr = x**2 + x*y
@@ -62,7 +62,7 @@ tree:
 .. note::
 
    The above diagram was made using `Graphviz <http://www.graphviz.org/>`_ and
-   the :py:meth:`dotprint <sympy.printing.dot.dotprint>` function.
+   the :py:meth:`dotprint <diofant.printing.dot.dotprint>` function.
 
 First, let's look at the leaves of this tree.  Symbols are instances of the
 class Symbol.  While we have been doing
@@ -74,9 +74,9 @@ we could have also done
     >>> x = Symbol('x')
 
 Either way, we get a Symbol with the name "x" [#symbols-fn]_.  For the number in the
-expression, 2, we got ``Integer(2)``.  ``Integer`` is the SymPy class for
+expression, 2, we got ``Integer(2)``.  ``Integer`` is the Diofant class for
 integers.  It is similar to the Python built-in type ``int``, except that
-``Integer`` plays nicely with other SymPy types.
+``Integer`` plays nicely with other Diofant types.
 
 When we write ``x**2``, this creates a ``Pow`` object.  ``Pow`` is short for
 "power".
@@ -89,20 +89,20 @@ We could have created the same object by calling ``Pow(x, 2)``
     >>> Pow(x, 2)
     x**2
 
-Note that in the ``repr`` output, we see ``Integer(2)``, the SymPy version of
+Note that in the ``repr`` output, we see ``Integer(2)``, the Diofant version of
 integers, even though technically, we input ``2``, a Python int.  In general,
-whenever you combine a SymPy object with a non-SymPy object via some function
-or operation, the non-SymPy object will be converted into a SymPy object.  The
+whenever you combine a Diofant object with a non-Diofant object via some function
+or operation, the non-Diofant object will be converted into a Diofant object.  The
 function that does this is ``sympify`` [#sympify-fn]_.
 
     >>> type(2)
     <... 'int'>
     >>> type(sympify(2))
-    <class 'sympy.core.numbers.Integer'>
+    <class 'diofant.core.numbers.Integer'>
 
 We have seen that ``x**2`` is represented as ``Pow(x, 2)``.  What about
 ``x*y``?  As we might expect, this is the multiplication of ``x`` and ``y``.
-The SymPy class for multiplication is ``Mul``.
+The Diofant class for multiplication is ``Mul``.
 
     >>> repr(x*y)
     "Mul(Symbol('x'), Symbol('y'))"
@@ -113,14 +113,14 @@ Thus, we could have created the same object by writing ``Mul(x, y)``.
     x*y
 
 Now we get to our final expression, ``x**2 + x*y``.  This is the addition of
-our last two objects, ``Pow(x, 2)``, and ``Mul(x, y)``.  The SymPy class for
+our last two objects, ``Pow(x, 2)``, and ``Mul(x, y)``.  The Diofant class for
 addition is ``Add``, so, as you might expect, to create this object, we use
 ``Add(Pow(x, 2), Mul(x, y))``.
 
     >>> Add(Pow(x, 2), Mul(x, y))
     x**2 + x*y
 
-SymPy expression trees can have many branches, and can be quite deep or quite
+Diofant expression trees can have many branches, and can be quite deep or quite
 broad.  Here is a more complicated example
 
     >>> expr = sin(x*y)/2 - x**2 + 1/y
@@ -180,12 +180,12 @@ Here is a diagram
     "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('y')_(2, 1, 0, 1)";
     }
 
-This expression reveals some interesting things about SymPy expression
+This expression reveals some interesting things about Diofant expression
 trees. Let's go through them one by one.
 
 Let's first look at the term ``x**2``.  As we expected, we see ``Pow(x, 2)``.
 One level up, we see we have ``Mul(-1, Pow(x, 2))``.  There is no subtraction
-class in SymPy.  ``x - y`` is represented as ``x + -y``, or, more completely,
+class in Diofant.  ``x - y`` is represented as ``x + -y``, or, more completely,
 ``x + -1*y``, i.e., ``Add(x, Mul(-1, y))``.
 
     >>> expr = x - y
@@ -223,7 +223,7 @@ class in SymPy.  ``x - y`` is represented as ``x + -y``, or, more completely,
     }
 
 Next, look at ``1/y``.  We might expect to see something like ``Div(1, y)``,
-but similar to subtraction, there is no class in SymPy for division.  Rather,
+but similar to subtraction, there is no class in Diofant for division.  Rather,
 division is represented by a power of -1.  Hence, we have ``Pow(y, -1)``.
 What if we had divided something other than 1 by ``y``, like ``x/y``?  Let's
 see.
@@ -279,10 +279,10 @@ tutorial.  For example
      >>> 1 + x
      x + 1
 
-This because in SymPy, the arguments of the commutative operations ``Add`` and
+This because in Diofant, the arguments of the commutative operations ``Add`` and
 ``Mul`` are stored in an arbitrary (but consistent!) order, which is
 independent of the order inputted (if you're worried about noncommutative
-multiplication, don't be.  In SymPy, you can create noncommutative Symbols
+multiplication, don't be.  In Diofant, you can create noncommutative Symbols
 using ``Symbol('A', commutative=False)``, and the order of multiplication for
 noncommutative Symbols is kept the same as the input).  Furthermore, as we
 shall see in the next section, the printing order and the order in which
@@ -293,7 +293,7 @@ things are stored internally need not be the same either.
    The way an expression is represented internally and the way it is printed
    are often not the same.
 
-In general, an important thing to keep in mind when working with SymPy expression
+In general, an important thing to keep in mind when working with Diofant expression
 trees is this:  the internal representation of an expression and the way it is
 printed need not be the same.  The same is true for the input form.   If some
 expression manipulation algorithm is not working in the way you expected it
@@ -303,8 +303,8 @@ what you thought it was.
 Recursing through an Expression Tree
 ====================================
 
-Now that you know how expression trees work in SymPy, let's look at how to dig
-our way through an expression tree.  Every object in SymPy has two very
+Now that you know how expression trees work in Diofant, let's look at how to dig
+our way through an expression tree.  Every object in Diofant has two very
 important attributes, ``func``, and ``args``.
 
 
@@ -320,7 +320,7 @@ as the one used to create it.  For example
 
     >>> expr = Add(x, x)
     >>> expr.func
-    <class 'sympy.core.mul.Mul'>
+    <class 'diofant.core.mul.Mul'>
 
 We created ``Add(x, x)``, so we might expect ``expr.func`` to be ``Add``, but
 instead we got ``Mul``.  Why is that?  Let's take a closer look at ``expr``.
@@ -329,7 +329,7 @@ instead we got ``Mul``.  Why is that?  Let's take a closer look at ``expr``.
     2*x
 
 ``Add(x, x)``, i.e., ``x + x``, was automatically converted into ``Mul(2,
-x)``, i.e., ``2*x``, which is a ``Mul``.   SymPy classes make heavy use of the
+x)``, i.e., ``2*x``, which is a ``Mul``.   Diofant classes make heavy use of the
 ``__new__`` class constructor, which, unlike ``__init__``, allows a different
 class to be returned from the constructor.
 
@@ -337,11 +337,11 @@ Second, some classes are special-cased, usually for efficiency reasons
 [#singleton-fn]_.
 
     >>> Integer(2).func
-    <class 'sympy.core.numbers.Integer'>
+    <class 'diofant.core.numbers.Integer'>
     >>> Integer(0).func
-    <class 'sympy.core.numbers.Zero'>
+    <class 'diofant.core.numbers.Zero'>
     >>> Integer(-1).func
-    <class 'sympy.core.numbers.NegativeOne'>
+    <class 'diofant.core.numbers.NegativeOne'>
 
 For the most part, these issues will not bother us.  The special classes
 ``Zero``, ``One``, ``NegativeOne``, and so on are subclasses of ``Integer``,
@@ -355,7 +355,7 @@ args
 
     >>> expr = 3*y**2*x
     >>> expr.func
-    <class 'sympy.core.mul.Mul'>
+    <class 'diofant.core.mul.Mul'>
     >>> expr.args
     (3, x, y**2)
 
@@ -401,10 +401,10 @@ Let's see.
     >>> Integer(2).args
     ()
 
-They both have empty ``args``.  In SymPy, empty ``args`` signal that we have
+They both have empty ``args``.  In Diofant, empty ``args`` signal that we have
 hit a leaf of the expression tree.
 
-So there are two possibilities for a SymPy expression. Either it has empty
+So there are two possibilities for a Diofant expression. Either it has empty
 ``args``, in which case it is a leaf node in any expression tree, or it has
 ``args``, in which case, it is a branch node of any expression tree.  When it
 has ``args``, it can be completely rebuilt from its ``func`` and its ``args``.
@@ -412,7 +412,7 @@ This is expressed in the key invariant.
 
 .. topic:: Key Invariant
 
-   Every well-formed SymPy expression must either have empty ``args`` or
+   Every well-formed Diofant expression must either have empty ``args`` or
    satisfy ``expr == expr.func(*expr.args)``.
 
 (Recall that in Python if ``a`` is a tuple, then ``f(*a)`` means to call ``f``
@@ -453,7 +453,7 @@ Can you guess why we called our function ``pre``?  We just wrote a pre-order
 traversal function for our expression tree.   See if you can write a
 post-order traversal function.
 
-Such traversals are so common in SymPy that the generator functions
+Such traversals are so common in Diofant that the generator functions
 ``preorder_traversal`` and ``postorder_traversal`` are provided to make such
 traversals easy.  We could have also written our algorithm as
 

@@ -45,7 +45,7 @@ is preferred.
 Domains
 =======
 
-.. currentmodule:: sympy.polys.domains
+.. currentmodule:: diofant.polys.domains
 
 Here we document the various implemented ground domains. There are three
 types: abstract domains, concrete domains, and "implementation domains".
@@ -62,19 +62,19 @@ refers to the most efficient implementation of the integer ring available.
 Abstract Domains
 ****************
 
-.. autoclass:: sympy.polys.domains.domain.Domain
+.. autoclass:: diofant.polys.domains.domain.Domain
    :members:
 
-.. autoclass:: sympy.polys.domains.field.Field
+.. autoclass:: diofant.polys.domains.field.Field
    :members:
 
-.. autoclass:: sympy.polys.domains.ring.Ring
+.. autoclass:: diofant.polys.domains.ring.Ring
    :members:
 
-.. autoclass:: sympy.polys.domains.simpledomain.SimpleDomain
+.. autoclass:: diofant.polys.domains.simpledomain.SimpleDomain
    :members:
 
-.. autoclass:: sympy.polys.domains.compositedomain.CompositeDomain
+.. autoclass:: diofant.polys.domains.compositedomain.CompositeDomain
    :members:
 
 Concrete Domains
@@ -92,10 +92,10 @@ Concrete Domains
 .. autoclass:: RationalField
    :members:
 
-.. currentmodule:: sympy.polys.polyclasses
-.. autoclass:: sympy.polys.domains.AlgebraicField
+.. currentmodule:: diofant.polys.polyclasses
+.. autoclass:: diofant.polys.domains.AlgebraicField
    :members:
-.. currentmodule:: sympy.polys.domains
+.. currentmodule:: diofant.polys.domains
 
 .. autoclass:: FractionField
    :members:
@@ -121,7 +121,7 @@ Implementation Domains
 Level One
 =========
 
-.. currentmodule:: sympy.polys.polyclasses
+.. currentmodule:: diofant.polys.polyclasses
 
 .. autoclass:: DMP
    :members:
@@ -152,7 +152,7 @@ may be slightly more efficient.)
 
 **Basic manipulation:**
 
-.. currentmodule:: sympy.polys.densebasic
+.. currentmodule:: diofant.polys.densebasic
 
 .. autofunction:: dmp_LC
 .. autofunction:: dmp_TC
@@ -169,7 +169,7 @@ may be slightly more efficient.)
 .. autofunction:: dmp_to_tuple
 .. autofunction:: dmp_normal
 .. autofunction:: dmp_convert
-.. autofunction:: dmp_from_sympy
+.. autofunction:: dmp_from_diofant
 .. autofunction:: dmp_nth
 .. autofunction:: dmp_ground_nth
 .. autofunction:: dmp_zero_p
@@ -203,7 +203,7 @@ may be slightly more efficient.)
 
 **Arithmetic operations:**
 
-.. currentmodule:: sympy.polys.densearith
+.. currentmodule:: diofant.polys.densearith
 
 .. autofunction:: dmp_add_term
 .. autofunction:: dmp_sub_term
@@ -240,7 +240,7 @@ may be slightly more efficient.)
 
 **Further tools:**
 
-.. currentmodule:: sympy.polys.densetools
+.. currentmodule:: diofant.polys.densetools
 
 .. autofunction:: dmp_integrate
 .. autofunction:: dmp_integrate_in
@@ -274,7 +274,7 @@ may be slightly more efficient.)
 
 Manipulation of dense, univariate polynomials with finite field coefficients
 ****************************************************************************
-.. currentmodule:: sympy.polys.galoistools
+.. currentmodule:: diofant.polys.galoistools
 
 Functions in this module carry the prefix ``gf_``, referring to the classical
 name "Galois Fields" for finite fields. Note that many polynomial
@@ -353,7 +353,7 @@ there is code to manipulate polynomials in a *sparse* representation.
 
 
 
-.. currentmodule:: sympy.polys.rings
+.. currentmodule:: diofant.polys.rings
 
 Sparse polynomials are represented as dictionaries.
 
@@ -376,7 +376,7 @@ functions are only provided to the extend needed. They carry the prefix
 ``sdm_``. Note that in examples, the generators of the free module are called
 `f_1, f_2, \dots`.
 
-.. currentmodule:: sympy.polys.distributedmodules
+.. currentmodule:: diofant.polys.distributedmodules
 
 .. autofunction:: sdm_monomial_mul
 .. autofunction:: sdm_monomial_deg
@@ -398,7 +398,7 @@ Polynomial factorization algorithms
 
 Many variants of Euclid's algorithm:
 
-.. currentmodule:: sympy.polys.euclidtools
+.. currentmodule:: diofant.polys.euclidtools
 
 Classical remainder sequence
 ----------------------------
@@ -648,7 +648,7 @@ including the last one which is the resultant if this does not vanish.
 
 Polynomial factorization in characteristic zero:
 
-.. currentmodule:: sympy.polys.factortools
+.. currentmodule:: diofant.polys.factortools
 
 .. autofunction:: dmp_trial_division
 .. autofunction:: dmp_zz_mignotte_bound
@@ -683,7 +683,7 @@ performance-sensitive. We present here various low-level implementations of
 Groebner basis computation algorithms; please see the previous section of the
 manual for usage.
 
-.. currentmodule:: sympy.polys.groebnertools
+.. currentmodule:: diofant.polys.groebnertools
 
 .. autofunction:: groebner
 .. autofunction:: spoly
@@ -692,13 +692,13 @@ manual for usage.
 .. autofunction:: is_minimal
 .. autofunction:: is_reduced
 
-.. currentmodule:: sympy.polys.fglmtools
+.. currentmodule:: diofant.polys.fglmtools
 
 .. autofunction:: matrix_fglm
 
 Groebner basis algorithms for modules are also provided:
 
-.. currentmodule:: sympy.polys.distributedmodules
+.. currentmodule:: diofant.polys.distributedmodules
 
 .. autofunction:: sdm_spoly
 .. autofunction:: sdm_ecart
@@ -712,7 +712,7 @@ These are exceptions defined by the polynomials module.
 
 TODO sort and explain
 
-.. currentmodule:: sympy.polys.polyerrors
+.. currentmodule:: diofant.polys.polyerrors
 
 .. autoclass:: BasePolynomialError
 
@@ -746,7 +746,7 @@ Reference
 Modular GCD
 ***********
 
-.. currentmodule:: sympy.polys.modulargcd
+.. currentmodule:: diofant.polys.modulargcd
 
 .. autofunction:: modgcd_univariate
 .. autofunction:: modgcd_bivariate
@@ -756,7 +756,7 @@ Modular GCD
 
 Manipulation of power series
 ****************************************************************************
-.. currentmodule:: sympy.polys.ring_series
+.. currentmodule:: diofant.polys.ring_series
 
 Functions in this module carry the prefix ``rs_``, standing for "ring series".
 They manipulate finite power series in the sparse representation provided
@@ -783,10 +783,10 @@ Undocumented
 Many parts of the polys module are still undocumented, and even where there is
 documentation it is scarce. Please contribute!
 
-.. currentmodule:: sympy.polys.polyoptions
+.. currentmodule:: diofant.polys.polyoptions
 
 .. autoclass:: Order
 .. autoclass:: Options
 
-.. currentmodule:: sympy.polys.polyconfig
+.. currentmodule:: diofant.polys.polyconfig
 .. autofunction:: setup

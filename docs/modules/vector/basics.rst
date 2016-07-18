@@ -2,16 +2,16 @@
 Basic Implementation details
 ============================
 
-.. automodule:: sympy.vector
+.. automodule:: diofant.vector
 
 Coordinate Systems and Vectors
 ==============================
 
-As of now, :mod:`sympy.vector` only deals with the Cartesian (also called
+As of now, :mod:`diofant.vector` only deals with the Cartesian (also called
 rectangular) coordinate systems. A 3D Cartesian coordinate system can
-be initialized in :mod:`sympy.vector` as
+be initialized in :mod:`diofant.vector` as
 
-  >>> from sympy.vector import CoordSysCartesian
+  >>> from diofant.vector import CoordSysCartesian
   >>> N = CoordSysCartesian('N')
 
 The string parameter to the constructor denotes the name assigned to the
@@ -32,30 +32,30 @@ properties respectively.
   >>> N.i
   N.i
   >>> type(N.i)
-  <class 'sympy.vector.vector.BaseVector'>
+  <class 'diofant.vector.vector.BaseVector'>
 
 As seen above, the basis vectors are all instances of a class called
 ``BaseVector``.
 
 When a ``BaseVector`` is multiplied by a scalar (essentially any
-SymPy ``Expr``), we get a ``VectorMul`` - the product of
+Diofant ``Expr``), we get a ``VectorMul`` - the product of
 a base vector and a scalar.
 
   >>> 3*N.i
   3*N.i
   >>> type(3*N.i)
-  <class 'sympy.vector.vector.VectorMul'>
+  <class 'diofant.vector.vector.VectorMul'>
 
 Addition of ``VectorMul`` and ``BaseVectors`` gives rise to
 formation of ``VectorAdd`` - except for special cases, ofcourse.
 
   >>> v = 2*N.i + N.j
   >>> type(v)
-  <class 'sympy.vector.vector.VectorAdd'>
+  <class 'diofant.vector.vector.VectorAdd'>
   >>> v - N.j
   2*N.i
   >>> type(v - N.j)
-  <class 'sympy.vector.vector.VectorMul'>
+  <class 'diofant.vector.vector.VectorMul'>
 
 What about a zero vector? It can be accessed using the ``zero``
 attribute assigned to class ``Vector``. Since the notion of a zero
@@ -63,11 +63,11 @@ vector remains the same regardless of the coordinate system in
 consideration, we use ``Vector.zero`` wherever such a quantity is
 required.
 
-  >>> from sympy.vector import Vector
+  >>> from diofant.vector import Vector
   >>> Vector.zero
   0
   >>> type(Vector.zero)
-  <class 'sympy.vector.vector.VectorZero'>
+  <class 'diofant.vector.vector.VectorZero'>
   >>> N.i + Vector.zero
   N.i
   >>> Vector.zero == 2*Vector.zero
@@ -119,21 +119,21 @@ However, this is not the recommended way of performing these operations.
 Using the original methods makes the code clearer and easier to follow.
 
 In addition to these operations, it is also possible to compute the
-outer products of ``Vector`` instances in :mod:`sympy.vector`. More
+outer products of ``Vector`` instances in :mod:`diofant.vector`. More
 on that in a little bit.
 
 
-SymPy operations on Vectors
-===========================
+Diofant operations on Vectors
+=============================
 
-The SymPy operations of ``simplify``, ``trigsimp``, ``diff``,
-and ``factor`` work on ``Vector`` objects, with the standard SymPy API.
+The Diofant operations of ``simplify``, ``trigsimp``, ``diff``,
+and ``factor`` work on ``Vector`` objects, with the standard Diofant API.
 
 In essence, the methods work on the measure numbers(The coefficients
 of the basis vectors) present in the provided vectorial expression.
 
-  >>> from sympy.abc import a, b, c
-  >>> from sympy import sin, cos, trigsimp, diff
+  >>> from diofant.abc import a, b, c
+  >>> from diofant import sin, cos, trigsimp, diff
   >>> v = (a*b + a*c + b**2 + b*c)*N.i + N.j
   >>> v.factor()
   ((a + b)*(b + c))*N.i + N.j
@@ -144,14 +144,14 @@ of the basis vectors) present in the provided vectorial expression.
   N.i + (-cos(2*b))*N.k
   >>> diff(v, b)
   (4*sin(b)*cos(b))*N.k
-  >>> from sympy import Derivative
+  >>> from diofant import Derivative
   >>> Derivative(v, b).doit()
   (4*sin(b)*cos(b))*N.k
 
 ``Integral`` also works with ``Vector`` instances, similar to
 ``Derivative``.
 
-  >>> from sympy import Integral
+  >>> from diofant import Integral
   >>> v1 = a*N.i + sin(a)*N.j - N.k
   >>> Integral(v1, a)
   (Integral(a, a))*N.i + (Integral(sin(a), a))*N.j + (Integral(-1, a))*N.k
@@ -162,25 +162,25 @@ Points
 ======
 
 As mentioned before, every coordinate system corresponds to a unique origin
-point. Points, in general, have been implemented in :mod:`sympy.vector` in the
+point. Points, in general, have been implemented in :mod:`diofant.vector` in the
 form of the ``Point`` class.
 
 To access the origin of system, use the ``origin`` property of the
 ``CoordSysCartesian`` class.
 
-  >>> from sympy.vector import CoordSysCartesian
+  >>> from diofant.vector import CoordSysCartesian
   >>> N = CoordSysCartesian('N')
   >>> N.origin
   N.origin
   >>> type(N.origin)
-  <class 'sympy.vector.point.Point'>
+  <class 'diofant.vector.point.Point'>
 
 You can instantiate new points in space using the ``locate_new``
 method of ``Point``. The arguments include the name(string) of the
 new ``Point``, and its position vector with respect to the
 'parent' ``Point``.
 
-  >>> from sympy.abc import a, b, c
+  >>> from diofant.abc import a, b, c
   >>> P = N.origin.locate_new('P', a*N.i + b*N.j + c*N.k)
   >>> Q = P.locate_new('Q', -b*N.j)
 
@@ -213,14 +213,14 @@ Dyadics
 A dyadic, or dyadic tensor, is a second-order tensor formed by the
 juxtaposition of pairs of vectors. Therefore, the outer products of vectors
 give rise to the formation of dyadics. Dyadic tensors have been implemented
-in :mod:`sympy.vector` in the ``Dyadic`` class.
+in :mod:`diofant.vector` in the ``Dyadic`` class.
 
 Once again, you never have to instantiate objects of ``Dyadic``.
 The outer products of vectors can be computed using the ``outer``
 method of ``Vector``. The ``|`` operator has been overloaded for
 ``outer``.
 
-  >>> from sympy.vector import CoordSysCartesian
+  >>> from diofant.vector import CoordSysCartesian
   >>> N = CoordSysCartesian('N')
   >>> N.i.outer(N.j)
   (N.i|N.j)

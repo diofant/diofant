@@ -7,7 +7,7 @@ Polynomials Manipulation Module Reference
 Basic polynomial manipulation functions
 =======================================
 
-.. currentmodule:: sympy.polys.polytools
+.. currentmodule:: diofant.polys.polytools
 
 .. autofunction:: poly
 .. autofunction:: poly_from_expr
@@ -31,8 +31,8 @@ Basic polynomial manipulation functions
 .. autofunction:: subresultants
 .. autofunction:: resultant
 .. autofunction:: discriminant
-.. autofunction:: sympy.polys.dispersion.dispersion
-.. autofunction:: sympy.polys.dispersion.dispersionset
+.. autofunction:: diofant.polys.dispersion.dispersion
+.. autofunction:: diofant.polys.dispersion.dispersionset
 .. autofunction:: terms_gcd
 .. autofunction:: cofactors
 .. autofunction:: gcd
@@ -78,7 +78,7 @@ Basic polynomial manipulation functions
 Extra polynomial manipulation functions
 =======================================
 
-.. currentmodule:: sympy.polys.polyfuncs
+.. currentmodule:: diofant.polys.polyfuncs
 
 .. autofunction:: symmetrize
 .. autofunction:: horner
@@ -88,14 +88,14 @@ Extra polynomial manipulation functions
 Domain constructors
 ===================
 
-.. currentmodule:: sympy.polys.constructor
+.. currentmodule:: diofant.polys.constructor
 
 .. autofunction:: construct_domain
 
 Algebraic number fields
 =======================
 
-.. currentmodule:: sympy.polys.numberfields
+.. currentmodule:: diofant.polys.numberfields
 
 .. autofunction:: minimal_polynomial
 .. autofunction:: minpoly
@@ -110,7 +110,7 @@ Algebraic number fields
 Monomials encoded as tuples
 ===========================
 
-.. currentmodule:: sympy.polys.monomials
+.. currentmodule:: diofant.polys.monomials
 
 .. autoclass:: Monomial
 .. autofunction:: itermonomials
@@ -119,7 +119,7 @@ Monomials encoded as tuples
 Orderings of monomials
 ======================
 
-.. currentmodule:: sympy.polys.orderings
+.. currentmodule:: diofant.polys.orderings
 
 .. autoclass:: LexOrder
 .. autoclass:: GradedLexOrder
@@ -128,7 +128,7 @@ Orderings of monomials
 Formal manipulation of roots of polynomials
 ===========================================
 
-.. currentmodule:: sympy.polys.rootoftools
+.. currentmodule:: diofant.polys.rootoftools
 
 .. autoclass:: RootOf
 .. autoclass:: RootSum
@@ -136,14 +136,14 @@ Formal manipulation of roots of polynomials
 Symbolic root-finding algorithms
 ================================
 
-.. currentmodule:: sympy.polys.polyroots
+.. currentmodule:: diofant.polys.polyroots
 
 .. autofunction:: roots
 
 Special polynomials
 ===================
 
-.. currentmodule:: sympy.polys.specialpolys
+.. currentmodule:: diofant.polys.specialpolys
 
 .. autofunction:: swinnerton_dyer_poly
 .. autofunction:: interpolating_poly
@@ -154,7 +154,7 @@ Special polynomials
 Orthogonal polynomials
 ======================
 
-.. currentmodule:: sympy.polys.orthopolys
+.. currentmodule:: diofant.polys.orthopolys
 
 .. autofunction:: chebyshevt_poly
 .. autofunction:: chebyshevu_poly
@@ -168,14 +168,14 @@ Orthogonal polynomials
 Manipulation of rational functions
 ==================================
 
-.. currentmodule:: sympy.polys.rationaltools
+.. currentmodule:: diofant.polys.rationaltools
 
 .. autofunction:: together
 
 Partial fraction decomposition
 ==============================
 
-.. currentmodule:: sympy.polys.partfrac
+.. currentmodule:: diofant.polys.partfrac
 
 .. autofunction:: apart
 .. autofunction:: apart_list
@@ -184,7 +184,7 @@ Partial fraction decomposition
 Dispersion of Polynomials
 =========================
 
-.. currentmodule:: sympy.polys.dispersion
+.. currentmodule:: diofant.polys.dispersion
 
 .. autofunction:: dispersionset
 .. autofunction:: dispersion

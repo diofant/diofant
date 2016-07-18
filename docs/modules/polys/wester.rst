@@ -10,7 +10,7 @@ Introduction
 In this tutorial we present examples from Wester's article concerning
 comparison and critique of mathematical abilities of several computer
 algebra systems (see [Wester1999]_). All the examples are related to
-polynomial and algebraic computations and SymPy specific remarks were
+polynomial and algebraic computations and Diofant specific remarks were
 added to all of them.
 
 Examples
@@ -20,7 +20,7 @@ All examples in this tutorial are computable, so one can just copy and
 paste them into a Python shell and do something useful with them. All
 computations were done using the following setup::
 
-    >>> from sympy import *
+    >>> from diofant import *
 
     >>> init_printing(use_unicode=True, wrap_line=False, no_global=True)
 
@@ -30,15 +30,15 @@ computations were done using the following setup::
 Simple univariate polynomial factorization
 ------------------------------------------
 
-To obtain a factorization of a polynomial use :func:`~sympy.polys.polytools.factor` function.
-By default :func:`~sympy.polys.polytools.factor` returns the result in unevaluated form, so the
+To obtain a factorization of a polynomial use :func:`~diofant.polys.polytools.factor` function.
+By default :func:`~diofant.polys.polytools.factor` returns the result in unevaluated form, so the
 content of the input polynomial is left unexpanded, as in the following
 example::
 
     >>> factor(6*x - 10)
     2⋅(3⋅x - 5)
 
-To achieve the same effect in a more systematic way use :func:`~sympy.polys.polytools.primitive`
+To achieve the same effect in a more systematic way use :func:`~diofant.polys.polytools.primitive`
 function, which returns the content and the primitive part of the input
 polynomial::
 
@@ -48,7 +48,7 @@ polynomial::
 .. note::
 
     The content and the primitive part can be computed only over a ring. To
-    simplify coefficients of a polynomial over a field use :func:`~sympy.polys.polytools.monic`.
+    simplify coefficients of a polynomial over a field use :func:`~diofant.polys.polytools.monic`.
 
 Univariate GCD, resultant and factorization
 -------------------------------------------
@@ -60,7 +60,7 @@ Consider univariate polynomials ``f``, ``g`` and ``h`` over integers::
     >>> h = 34*x**19 - 25*x**16 + 70*x**7 + 20*x**3 - 91*x - 86
 
 We can compute the greatest common divisor (GCD) of two polynomials using
-:func:`~sympy.polys.polytools.gcd` function::
+:func:`~diofant.polys.polytools.gcd` function::
 
     >>> gcd(f, g)
     1
@@ -113,7 +113,7 @@ Multivariate factorization of large polynomials is also possible::
 Support for symbols in exponents
 --------------------------------
 
-Polynomial manipulation functions provided by :mod:`sympy.polys` are mostly
+Polynomial manipulation functions provided by :mod:`diofant.polys` are mostly
 used with integer exponents. However, it's perfectly valid to compute with
 symbolic exponents, e.g.::
 
@@ -124,7 +124,7 @@ symbolic exponents, e.g.::
 Testing if polynomials have common zeros
 ----------------------------------------
 
-To test if two polynomials have a root in common we can use :func:`~sympy.polys.polytools.resultant`
+To test if two polynomials have a root in common we can use :func:`~diofant.polys.polytools.resultant`
 function. The theory says that the resultant of two polynomials vanishes if
 there is a common zero of those polynomials. For example::
 
@@ -148,7 +148,7 @@ Normalizing simple rational functions
 -------------------------------------
 
 To remove common factors from the numerator and the denominator of a rational
-function the elegant way, use :func:`~sympy.polys.polytools.cancel` function. For example::
+function the elegant way, use :func:`~diofant.polys.polytools.cancel` function. For example::
 
     >>> cancel((x**2 - 4)/(x**2 + 4*x + 4))
     x - 2
@@ -179,7 +179,7 @@ The same can be achieved in factored form::
 Factoring in terms of cyclotomic polynomials
 --------------------------------------------
 
-SymPy can very efficiently decompose polynomials of the form `x^n \pm 1` in
+Diofant can very efficiently decompose polynomials of the form `x^n \pm 1` in
 terms of cyclotomic polynomials::
 
     >>> factor(x**15 - 1)
@@ -187,7 +187,7 @@ terms of cyclotomic polynomials::
     (x - 1)⋅⎝x  + x + 1⎠⋅⎝x  + x  + x  + x + 1⎠⋅⎝x  - x  + x  - x  + x - x + 1⎠
 
 The original Wester`s example was `x^{100} - 1`, but was truncated for
-readability purpose. Note that this is not a big struggle for :func:`~sympy.polys.polytools.factor`
+readability purpose. Note that this is not a big struggle for :func:`~diofant.polys.polytools.factor`
 to decompose polynomials of degree 1000 or greater.
 
 Univariate factoring over Gaussian numbers
@@ -198,7 +198,7 @@ Consider a univariate polynomial ``f`` with integer coefficients::
     >>> f = 4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153
 
 We want to obtain a factorization of ``f`` over Gaussian numbers. To do this
-we use :func:`~sympy.polys.polytools.factor` as previously, but this time we set ``gaussian`` keyword
+we use :func:`~diofant.polys.polytools.factor` as previously, but this time we set ``gaussian`` keyword
 to ``True``::
 
     >>> factor(f, gaussian=True)
@@ -207,7 +207,7 @@ to ``True``::
       ⎝     2 ⎠ ⎝     2 ⎠
 
 As the result we got a splitting factorization of ``f`` with monic factors
-(this is a general rule when computing in a field with SymPy). The ``gaussian``
+(this is a general rule when computing in a field with Diofant). The ``gaussian``
 keyword is useful for improving code readability, however the same result can
 be computed using more general syntax::
 
@@ -225,7 +225,7 @@ Consider two univariate polynomials ``f`` and ``g``::
     >>> g = x**2 - 2
 
 We would like to reduce degrees of the numerator and the denominator of a
-rational function ``f/g``. Do do this we employ :func:`~sympy.polys.polytools.cancel` function::
+rational function ``f/g``. Do do this we employ :func:`~diofant.polys.polytools.cancel` function::
 
     >>> cancel(f/g)
      3      2     ___  2             ___         ___
@@ -234,9 +234,9 @@ rational function ``f/g``. Do do this we employ :func:`~sympy.polys.polytools.ca
                           2
                          x  - 2
 
-Unfortunately nothing interesting happened. This is because by default SymPy
+Unfortunately nothing interesting happened. This is because by default Diofant
 treats `\sqrt{2}` as a generator, obtaining a bivariate polynomial for the
-numerator. To make :func:`~sympy.polys.polytools.cancel` recognize algebraic properties of `\sqrt{2}`,
+numerator. To make :func:`~diofant.polys.polytools.cancel` recognize algebraic properties of `\sqrt{2}`,
 one needs to use ``extension`` keyword::
 
     >>> cancel(f/g, extension=True)
@@ -246,7 +246,7 @@ one needs to use ``extension`` keyword::
            ___
      x - ╲╱ 2
 
-Setting ``extension=True`` tells :func:`~sympy.polys.polytools.cancel` to find minimal algebraic
+Setting ``extension=True`` tells :func:`~diofant.polys.polytools.cancel` to find minimal algebraic
 number domain for the coefficients of ``f/g``. The automatically inferred
 domain is `\mathbb{Q}(\sqrt{2})`. If one doesn't want to rely on automatic
 inference, the same result can be obtained by setting the ``extension``
@@ -266,7 +266,7 @@ Consider a univariate polynomial ``f`` with integer coefficients::
 
     >>> f = x**4 - 3*x**2 + 1
 
-With :mod:`sympy.polys` we can obtain factorizations of ``f`` over different
+With :mod:`diofant.polys` we can obtain factorizations of ``f`` over different
 domains, which includes:
 
 * rationals::
@@ -291,7 +291,7 @@ domains, which includes:
 Factoring polynomials into linear factors
 -----------------------------------------
 
-Currently SymPy can factor polynomials into irreducibles over various domains,
+Currently Diofant can factor polynomials into irreducibles over various domains,
 which can result in a splitting factorization (into linear factors). However,
 there is currently no systematic way to infer a splitting field (algebraic
 number field) automatically. In future the following syntax will be
@@ -305,7 +305,7 @@ implemented::
 Note this is different from ``extension=True``, because the later only tells how
 expression parsing should be done, not what should be the domain of computation.
 One can simulate the ``split`` keyword for several classes of polynomials using
-:func:`~sympy.solvers.solvers.solve` function.
+:func:`~diofant.solvers.solvers.solve` function.
 
 Advanced factoring over finite fields
 -------------------------------------
@@ -359,8 +359,8 @@ expanding ``f``::
     ⎛       2      3⎞
     ⎝x - 2⋅y  + 3⋅z ⎠
 
-The default in :mod:`sympy.polys` is to expand all expressions given as
-arguments to polynomial manipulation functions and :class:`~sympy.polys.polytools.Poly` class.
+The default in :mod:`diofant.polys` is to expand all expressions given as
+arguments to polynomial manipulation functions and :class:`~diofant.polys.polytools.Poly` class.
 If we know that expanding is unnecessary, then by setting ``expand=False``
 we can save quite a lot of time for complicated inputs. This can be really
 important when computing with expressions like::
@@ -376,11 +376,11 @@ Computing reduced Gröbner bases
 -------------------------------
 
 To compute a reduced Gröbner basis for a set of polynomials use
-:func:`~sympy.polys.polytools.groebner` function. The function accepts various monomial
+:func:`~diofant.polys.polytools.groebner` function. The function accepts various monomial
 orderings, e.g.: ``lex``, ``grlex`` and ``grevlex``, or a user
 defined one, via ``order`` keyword. The ``lex`` ordering is the
 most interesting because it has elimination property, which means
-that if the system of polynomial equations to :func:`~sympy.polys.polytools.groebner` is
+that if the system of polynomial equations to :func:`~diofant.polys.polytools.groebner` is
 zero-dimensional (has finite number of solutions) the last element
 of the basis is a univariate polynomial. Consider the following example::
 
@@ -398,7 +398,7 @@ all its elements, for example we can factor those elements::
     ⎣c  + s  - 1, c  ⋅(c - 1) ⋅(c + 1) ⎦
 
 From the above we can easily find all solutions of the system of polynomial
-equations. Or we can use :func:`~sympy.solvers.solvers.solve` to achieve this in a more systematic
+equations. Or we can use :func:`~diofant.solvers.solvers.solve` to achieve this in a more systematic
 way::
 
     >>> solve([f, s**2 + c**2 - 1], c, s)
@@ -426,7 +426,7 @@ Consider a univariate rational function ``f`` with integer coefficients::
 
     >>> f = (x**2 + 2*x + 3)/(x**3 + 4*x**2 + 5*x + 2)
 
-To decompose ``f`` into partial fractions use :func:`~sympy.polys.partfrac.apart` function::
+To decompose ``f`` into partial fractions use :func:`~diofant.polys.partfrac.apart` function::
 
     >>> apart(f)
       3       2        2
@@ -435,7 +435,7 @@ To decompose ``f`` into partial fractions use :func:`~sympy.polys.partfrac.apart
                     (x + 1)
 
 To return from partial fractions to the rational function use
-a composition of :func:`~sympy.polys.rationaltools.together` and :func:`~sympy.polys.polytools.cancel`::
+a composition of :func:`~diofant.polys.rationaltools.together` and :func:`~diofant.polys.polytools.cancel`::
 
     >>> cancel(together(_))
          2

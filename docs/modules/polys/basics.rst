@@ -4,15 +4,15 @@
 Basic functionality of the module
 =================================
 
-.. automodule:: sympy.polys
+.. automodule:: diofant.polys
 
 Introduction
 ============
 
 This tutorial tries to give an overview of the functionality concerning
-polynomials within SymPy. All code examples assume::
+polynomials within Diofant. All code examples assume::
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x,y,z')
     >>> init_printing(use_unicode=False, wrap_line=False, no_global=True)
 
@@ -20,12 +20,12 @@ Basic functionality
 ===================
 
 These functions provide different algorithms dealing with polynomials in the
-form of SymPy expression, like symbols, sums etc.
+form of Diofant expression, like symbols, sums etc.
 
 Division
 --------
 
-The function :func:`~sympy.polys.polytools.div` provides
+The function :func:`~diofant.polys.polytools.div` provides
 division of polynomials with remainder.
 That is, for polynomials ``f`` and ``g``, it computes ``q`` and ``r``, such
 that `f = g \cdot q + r` and `\deg(r) < q`. For polynomials in one variables
@@ -201,7 +201,7 @@ Solving Equations
 We have (incomplete) methods to find the complex or even symbolic roots of
 polynomials and to solve some systems of polynomial equations::
 
-    >>> from sympy import roots, solve_poly_system
+    >>> from diofant import roots, solve_poly_system
 
     >>> solve(x**3 + 2*x + 3, x)
                ____          ____

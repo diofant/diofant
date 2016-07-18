@@ -1,11 +1,11 @@
 Matrix Expressions
 ==================
 
-.. module:: sympy.matrices.expressions
+.. module:: diofant.matrices.expressions
 
 The Matrix expression module allows users to write down statements like
 
-    >>> from sympy import MatrixSymbol, Matrix
+    >>> from diofant import MatrixSymbol, Matrix
     >>> X = MatrixSymbol('X', 3, 3)
     >>> Y = MatrixSymbol('Y', 3, 3)
     >>> (X.T*X).I*Y
@@ -52,9 +52,9 @@ Block Matrices
 
 Block matrices allow you to construct larger matrices out of smaller
 sub-blocks. They can work with :class:`MatrixExpr` or
-:class:`~sympy.matrices.immutable.ImmutableMatrix` objects.
+:class:`~diofant.matrices.immutable.ImmutableMatrix` objects.
 
-.. module:: sympy.matrices.expressions.blockmatrix
+.. module:: diofant.matrices.expressions.blockmatrix
 
 .. autoclass:: BlockMatrix
    :members:

@@ -1,7 +1,7 @@
 Stats
 ===========
 
-.. automodule:: sympy.stats
+.. automodule:: diofant.stats
 
 Random Variable Types
 ^^^^^^^^^^^^^^^^^^^^^
@@ -75,9 +75,9 @@ Interface
 
 Mechanics
 ^^^^^^^^^
-.. module:: sympy.stats.rv
+.. module:: diofant.stats.rv
 
-SymPy Stats employs a relatively complex class hierarchy.
+Diofant Stats employs a relatively complex class hierarchy.
 
 ``RandomDomain``\s are a mapping of variables to possible values. For example we
 might say that the symbol ``Symbol('x')`` can take on the values
@@ -92,7 +92,7 @@ fully define the roll of a fair die named ``x``.
 
 .. class:: PSpace
 
-A RandomSymbol represents the PSpace's symbol 'x' inside of SymPy expressions.
+A RandomSymbol represents the PSpace's symbol 'x' inside of Diofant expressions.
 
 .. class:: RandomSymbol
 
@@ -128,11 +128,11 @@ We specialize further into Finite and Continuous versions of these classes to
 represent finite (such as dice) and continuous (such as normals) random
 variables.
 
-.. module:: sympy.stats.frv
+.. module:: diofant.stats.frv
 .. class:: FiniteDomain
 .. class:: FinitePSpace
 
-.. module:: sympy.stats.crv
+.. module:: diofant.stats.crv
 .. class:: ContinuousDomain
 .. class:: ContinuousPSpace
 
@@ -140,45 +140,45 @@ Additionally there are a few specialized classes that implement certain common
 random variable types. There is for example a DiePSpace that implements
 SingleFinitePSpace and a NormalPSpace that implements SingleContinuousPSpace.
 
-.. module:: sympy.stats.frv_types
+.. module:: diofant.stats.frv_types
 .. class:: DiePSpace
 
-.. module:: sympy.stats.crv_types
+.. module:: diofant.stats.crv_types
 .. class:: NormalPSpace
 
 RandomVariables can be extracted from these objects using the PSpace.values
 method.
 
-As previously mentioned SymPy Stats employs a relatively complex class
+As previously mentioned Diofant Stats employs a relatively complex class
 structure. Inheritance is widely used in the implementation of end-level
-classes. This tactic was chosen to balance between the need to allow SymPy to
+classes. This tactic was chosen to balance between the need to allow Diofant to
 represent arbitrarily defined random variables and optimizing for common cases.
 This complicates the code but is structured to only be important to those
-working on extending SymPy Stats to other random variable types.
+working on extending Diofant Stats to other random variable types.
 
 Users will not use this class structure. Instead these mechanics are exposed
 through variable creation functions Die, Coin, FiniteRV, Normal, Exponential,
 etc.... These build the appropriate SinglePSpaces and return the corresponding
 RandomVariable. Conditional and Product spaces are formed in the natural
-construction of SymPy expressions and the use of interface functions E, Given,
+construction of Diofant expressions and the use of interface functions E, Given,
 Density, etc....
 
 
-.. function:: sympy.stats.Die
-.. function:: sympy.stats.Normal
+.. function:: diofant.stats.Die
+.. function:: diofant.stats.Normal
 
 There are some additional functions that may be useful. They are largely used
 internally.
 
 
-.. autofunction:: sympy.stats.rv.random_symbols
-.. autofunction:: sympy.stats.rv.pspace
-.. autofunction:: sympy.stats.rv.rs_swap
+.. autofunction:: diofant.stats.rv.random_symbols
+.. autofunction:: diofant.stats.rv.pspace
+.. autofunction:: diofant.stats.rv.rs_swap
 
-.. autofunction:: sympy.stats.rv.sampling_P
-.. autofunction:: sympy.stats.rv.sampling_E
-.. autofunction:: sympy.stats.rv.sample_iter_lambdify
-.. autofunction:: sympy.stats.rv.sample_iter_subs
-.. autofunction:: sympy.stats.rv.sampling_density
-.. autofunction:: sympy.stats.rv.independent
-.. autofunction:: sympy.stats.rv.dependent
+.. autofunction:: diofant.stats.rv.sampling_P
+.. autofunction:: diofant.stats.rv.sampling_E
+.. autofunction:: diofant.stats.rv.sample_iter_lambdify
+.. autofunction:: diofant.stats.rv.sample_iter_subs
+.. autofunction:: diofant.stats.rv.sampling_density
+.. autofunction:: diofant.stats.rv.independent
+.. autofunction:: diofant.stats.rv.dependent

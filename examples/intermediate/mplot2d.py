@@ -9,9 +9,9 @@ import sys
 
 from sample import sample
 
-from sympy import sqrt, Symbol
-from sympy.core.compatibility import is_sequence
-from sympy.external import import_module
+from diofant import sqrt, Symbol
+from diofant.core.compatibility import is_sequence
+from diofant.external import import_module
 
 
 def mplot2d(f, var, show=True):

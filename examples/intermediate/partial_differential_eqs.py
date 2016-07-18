@@ -5,8 +5,8 @@
 Demonstrates various ways to solve partial differential equations
 """
 
-from sympy import symbols, Eq, Function, pde_separate, pprint, sin, cos
-from sympy import Derivative as D
+from diofant import symbols, Eq, Function, pde_separate, pprint, sin, cos
+from diofant import Derivative as D
 
 
 def main():

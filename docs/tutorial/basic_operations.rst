@@ -5,10 +5,10 @@
 ==================
 
 Here we discuss some of the most basic operations needed for expression
-manipulation in SymPy.  Some more advanced operations will be discussed later
+manipulation in Diofant.  Some more advanced operations will be discussed later
 in the :ref:`advanced expression manipulation <tutorial-manipulation>` section.
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols("x y z")
 
 Substitution
@@ -50,7 +50,7 @@ Substitution is usually done for one of two reasons:
    x**(x**(x**x))
 
    The second is if we want to perform a very controlled simplification, or
-   perhaps a simplification that SymPy is otherwise unable to do.  For
+   perhaps a simplification that Diofant is otherwise unable to do.  For
    example, say we have `\sin(2x) + \cos(2x)`, and we want to replace
    `\sin(2x)` with `2\sin(x)\cos(x)`.  As we will learn later, the function
    ``expand_trig`` does this.  However, this function will also expand
@@ -66,7 +66,7 @@ Substitution is usually done for one of two reasons:
    2*sin(x)*cos(x) + cos(2*x)
 
 There are two important things to note about ``subs``.  First, it returns a
-new expression.  SymPy objects are immutable.  That means that ``subs`` does
+new expression.  Diofant objects are immutable.  That means that ``subs`` does
 not modify it in-place.  For example
 
    >>> expr = cos(x)
@@ -79,10 +79,10 @@ not modify it in-place.  For example
 
 .. sidebar:: Quick Tip
 
-   SymPy expressions are immutable.  No function will change them in-place.
+   Diofant expressions are immutable.  No function will change them in-place.
 
 Here, we see that performing ``expr.subs(x, 0)`` leaves ``expr`` unchanged.
-In fact, since SymPy expressions are immutable, no function will change them
+In fact, since Diofant expressions are immutable, no function will change them
 in-place.  All functions will return new expressions.
 
 To perform multiple substitutions at once, pass a list of ``(old, new)`` pairs
@@ -102,11 +102,11 @@ with `y`, to get `y^4 - 4x^3 + 4y^2 - 2x + 3`.
     >>> expr.subs(replacements)
     -4*x**3 - 2*x + y**4 + 4*y**2 + 3
 
-Converting Strings to SymPy Expressions
-=======================================
+Converting Strings to Diofant Expressions
+=========================================
 
 The ``sympify`` function (that's ``sympify``, not to be confused with
-``simplify``) can be used to convert strings into SymPy expressions.
+``simplify``) can be used to convert strings into Diofant expressions.
 
 For example
 
@@ -129,7 +129,7 @@ To evaluate a numerical expression into a floating point number, use
     >>> expr.evalf()
     2.82842712474619
 
-SymPy can evaluate floating point expressions to arbitrary precision.  By
+Diofant can evaluate floating point expressions to arbitrary precision.  By
 default, 15 digits of precision are used, but you can pass any number as the
 argument to ``evalf``.  Let's compute the first 100 digits of `\pi`.
 
@@ -161,13 +161,13 @@ user's discretion by setting the ``chop`` flag to True.
 ``subs`` and ``evalf`` are good if you want to do simple evaluation, but if
 you intend to evaluate an expression at many points, there are more efficient
 ways.  For example, if you wanted to evaluate an expression at a thousand
-points, using SymPy would be far slower than it needs to be, especially if you
+points, using Diofant would be far slower than it needs to be, especially if you
 only care about machine precision.  Instead, you should use libraries like
 `NumPy <http://www.numpy.org/>`_ and `SciPy <http://www.scipy.org/>`_.
 
-The easiest way to convert a SymPy expression to an expression that can be
+The easiest way to convert a Diofant expression to an expression that can be
 numerically evaluated is to use the ``lambdify`` function.  ``lambdify`` acts
-like a ``lambda`` function, except it converts the SymPy names to the names of
+like a ``lambda`` function, except it converts the Diofant names to the names of
 the given numerical library, usually NumPy.  For example
 
     >>> import numpy # doctest:+SKIP
@@ -186,7 +186,7 @@ library math module, use ``"math"``.
     0.09983341664682815
 
 To use lambdify with numerical libraries that it does not know about, pass a
-dictionary of ``sympy_name:numerical_function`` pairs.  For example
+dictionary of ``diofant_name:numerical_function`` pairs.  For example
 
     >>> def mysin(x):
     ...     """

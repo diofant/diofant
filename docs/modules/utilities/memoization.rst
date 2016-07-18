@@ -2,5 +2,5 @@
 Memoization
 ===========
 
-.. automodule:: sympy.utilities.memoization
+.. automodule:: diofant.utilities.memoization
    :members:

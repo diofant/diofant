@@ -1,55 +1,55 @@
-================================================
-Essential Functions in sympy.vector (docstrings)
-================================================
+==================================================
+Essential Functions in diofant.vector (docstrings)
+==================================================
 
 matrix_to_vector
 ----------------
 
-.. autofunction:: sympy.vector.matrix_to_vector
+.. autofunction:: diofant.vector.matrix_to_vector
 
 express
 -------
 
-.. autofunction:: sympy.vector.express
+.. autofunction:: diofant.vector.express
 
 
 curl
 ----
 
-.. autofunction:: sympy.vector.curl
+.. autofunction:: diofant.vector.curl
 
 
 divergence
 ----------
 
-.. autofunction:: sympy.vector.divergence
+.. autofunction:: diofant.vector.divergence
 
 
 gradient
 --------
 
-.. autofunction:: sympy.vector.gradient
+.. autofunction:: diofant.vector.gradient
 
 
 is_conservative
 ---------------
 
-.. autofunction:: sympy.vector.is_conservative
+.. autofunction:: diofant.vector.is_conservative
 
 
 is_solenoidal
 -------------
 
-.. autofunction:: sympy.vector.is_solenoidal
+.. autofunction:: diofant.vector.is_solenoidal
 
 
 scalar_potential
 ----------------
 
-.. autofunction:: sympy.vector.scalar_potential
+.. autofunction:: diofant.vector.scalar_potential
 
 
 scalar_potential_difference
 ---------------------------
 
-.. autofunction:: sympy.vector.scalar_potential_difference
+.. autofunction:: diofant.vector.scalar_potential_difference
