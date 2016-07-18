@@ -511,6 +511,9 @@ atoms_table = {
     'ImaginaryUnit':           U('DOUBLE-STRUCK ITALIC SMALL I'),
     'EmptySet':                U('EMPTY SET'),
     'Naturals':                U('DOUBLE-STRUCK CAPITAL N'),
+    'Naturals0':               (U('DOUBLE-STRUCK CAPITAL N') and
+                                (U('DOUBLE-STRUCK CAPITAL N') +
+                                 U('SUBSCRIPT ZERO'))),
     'Integers':                U('DOUBLE-STRUCK CAPITAL Z'),
     'Rationals':               U('DOUBLE-STRUCK CAPITAL Q'),
     'Reals':                   U('DOUBLE-STRUCK CAPITAL R'),

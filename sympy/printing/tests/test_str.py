@@ -2,7 +2,7 @@ import pytest
 
 from sympy import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
     factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
-    Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Rational, Float, Rel,
+    Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Pow, Rational, Float, Rel,
     S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
     WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
     subfactorial, true, false, Equivalent, Xor, Complement, SymmetricDifference)
@@ -414,7 +414,7 @@ def test_Pow():
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
     # see issue #2860
-    assert str(Integer(2)**-1.0) == '2**(-1.0)'
+    assert str(Pow(Integer(2), -1.0, evaluate=False)) == '2**(-1.0)'
 
 
 def test_sqrt():

@@ -12,6 +12,8 @@ from sympy.core.power import integer_nthroot
 from sympy.core.numbers import (igcd, ilcm, igcdex, seterr,
                                 mpf_norm, comp)
 
+t = Symbol('t', real=False)
+
 
 def same_and_same_prec(a, b):
     # stricter matching for Floats
@@ -1480,3 +1482,17 @@ def test_comp():
     assert comp(sqrt(2).n(2), Float(1.4, 2), '')
     pytest.raises(ValueError, lambda: comp(sqrt(2).n(2), 1.4, ''))
     assert comp(sqrt(2).n(2), Float(1.4, 3), '') is False
+
+
+def test_issue_10063():
+    assert 2**Float(3) == Float(8)
+
+
+def test_issue_10020():
+    assert oo**I is S.NaN
+    assert oo**(1 + I) is S.ComplexInfinity
+    assert oo**(-1 + I) is S.Zero
+    assert (-oo)**I is S.NaN
+    assert (-oo)**(-1 + I) is S.Zero
+    assert oo**t == Pow(oo, t, evaluate=False)
+    assert (-oo)**t == Pow(-oo, t, evaluate=False)

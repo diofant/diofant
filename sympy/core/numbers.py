@@ -1710,6 +1710,9 @@ class Integer(Rational):
             # (-2)**k --> 2**k
             if self.is_negative and expt.is_even:
                 return (-self)**expt
+        if isinstance(expt, Float):
+            # Rational knows how to exponentiate by a Float
+            return super(Integer, self)._eval_power(expt)
         if not isinstance(expt, Rational):
             return
         if expt is S.Half and self.is_negative:
@@ -2297,6 +2300,8 @@ class Infinity(Number, metaclass=Singleton):
         NegativeInfinity
 
         """
+        from sympy.functions import re
+
         if expt.is_positive:
             return S.Infinity
         if expt.is_negative:
@@ -2305,8 +2310,15 @@ class Infinity(Number, metaclass=Singleton):
             return S.NaN
         elif expt is S.ComplexInfinity:
             return S.NaN
+        if expt.is_real is False and expt.is_number:
+            expt_real = re(expt)
+            if expt_real.is_positive:
+                return S.ComplexInfinity
+            if expt_real.is_negative:
+                return S.Zero
+            if expt_real.is_zero:
+                return S.NaN
 
-        if expt.is_number:
             return self**expt.evalf()
 
     def _as_mpf_val(self, prec):
@@ -2497,7 +2509,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
         NaN
 
         """
-        if isinstance(expt, Number):
+        if expt.is_number:
             if expt is S.NaN or \
                 expt is S.Infinity or \
                     expt is S.NegativeInfinity:

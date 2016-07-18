@@ -274,6 +274,20 @@ class LatexPrinter(Printer):
 
         return tex
 
+    def _print_Cycle(self, expr):
+        from sympy.combinatorics.permutations import Permutation, Cycle
+        if not expr or (isinstance(expr, Permutation) and not expr.list()):
+            return r"\left( \right)"
+        expr_perm = Permutation(expr).cyclic_form
+        term_tex = ''
+        for i in expr_perm:
+            term_tex += str(i).replace(',', r"\;")
+        term_tex = term_tex.replace('[', r"\left( ")
+        term_tex = term_tex.replace(']', r"\right)")
+        return term_tex
+
+    _print_Permutation = _print_Cycle
+
     def _print_Float(self, expr):
         # Based off of that in StrPrinter
         dps = prec_to_dps(expr._prec)
@@ -1511,6 +1525,9 @@ class LatexPrinter(Printer):
     def _print_Naturals(self, n):
         return r"\mathbb{N}"
 
+    def _print_Naturals0(self, n):
+        return r"\mathbb{N_0}"
+
     def _print_Integers(self, i):
         return r"\mathbb{Z}"
 
@@ -1767,6 +1784,12 @@ def latex(expr, **settings):
 
     >>> print(latex((2*tau)**Rational(7,2)))
     8 \sqrt{2} \tau^{\frac{7}{2}}
+
+    Not using a print statement for printing, results in double backslashes for
+    latex commands since that's the way Python escapes backslashes in strings.
+
+    >>> latex((2*tau)**Rational(7,2))
+    '8 \\sqrt{2} \\tau^{\\frac{7}{2}}'
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
     "grevlex") and "none". This parameter does nothing for Mul objects.

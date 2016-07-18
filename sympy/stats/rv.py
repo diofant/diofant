@@ -13,7 +13,9 @@ sympy.stats.rv_interface
 """
 
 from sympy import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
-                   Equality, solve, Lambda, DiracDelta, Integer)
+                   Equality, solve, Lambda, DiracDelta, Integer, sympify)
+from sympy.core.relational import Relational
+from sympy.logic.boolalg import Boolean
 from sympy.sets.sets import FiniteSet, ProductSet
 
 from sympy.abc import x
@@ -119,7 +121,7 @@ class PSpace(Basic):
     A Probability Space
 
     Probability Spaces encode processes that equal different values
-    probabalistically. These underly Random Symbols which occur in SymPy
+    probabilistically. These underly Random Symbols which occur in SymPy
     expressions and contain the mechanics to evaluate statistical statements.
 
     See Also
@@ -419,9 +421,10 @@ def pspace(expr):
     True
     """
 
+    expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
-        return
+        raise ValueError("Expression containing Random Variable expected, not %s" % (expr))
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -466,7 +469,7 @@ def given(expr, condition=None, **kwargs):
 
     >>> from sympy.stats import given, density, Die
     >>> X = Die('X', 6)
-    >>> Y = given(X, X>3)
+    >>> Y = given(X, X > 3)
     >>> density(Y).dict
     {4: 1/3, 5: 1/3, 6: 1/3}
 
@@ -543,7 +546,7 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     >>> E(2*X + 1)
     8
 
-    >>> E(X, X>3) # Expectation of X given that it is above 3
+    >>> E(X, X > 3) # Expectation of X given that it is above 3
     5
     """
 
@@ -578,14 +581,13 @@ def probability(condition, given_condition=None, numsamples=None,
     Parameters
     ==========
 
-    expr : Relational containing RandomSymbols
+    condition : Combination of Relationals containing RandomSymbols
         The condition of which you want to compute the probability
-    given_condition : Relational containing RandomSymbols
-        A conditional expression. P(X>1, X>0) is expectation of X>1 given X>0
+    given_condition : Combination of Relationals containing RandomSymbols
+        A conditional expression. P(X > 1, X > 0) is expectation of X > 1
+        given X > 0
     numsamples : int
         Enables sampling and approximates the probability with this many samples
-    evalf : Bool (defaults to True)
-        If sampling return a number rather than a complex expression
     evaluate : Bool (defaults to True)
         In case of continuous systems return unevaluated integral
 
@@ -595,13 +597,30 @@ def probability(condition, given_condition=None, numsamples=None,
     >>> from sympy.stats import P, Die
     >>> from sympy import Eq
     >>> X, Y = Die('X', 6), Die('Y', 6)
-    >>> P(X>3)
+    >>> P(X > 3)
     1/2
-    >>> P(Eq(X, 5), X>2) # Probability that X == 5 given that X > 2
+    >>> P(Eq(X, 5), X > 2) # Probability that X == 5 given that X > 2
     1/4
-    >>> P(X>Y)
+    >>> P(X > Y)
     5/12
     """
+
+    condition = sympify(condition)
+    given_condition = sympify(given_condition)
+
+    if given_condition is not None and \
+            not isinstance(given_condition, (Relational, Boolean)):
+        raise ValueError("%s is not a relational or combination of relationals"
+                % (given_condition))
+    if given_condition is S.false:
+        return S.Zero
+    if not isinstance(condition, (Relational, Boolean)):
+        raise ValueError("%s is not a relational or combination of relationals"
+                % (condition))
+    if condition is S.true:
+        return S.One
+    if condition is S.false:
+        return S.Zero
 
     if numsamples:
         return sampling_P(condition, given_condition, numsamples=numsamples,
@@ -664,7 +683,8 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     expr : Expr containing RandomSymbols
         The expression of which you want to compute the density value
     condition : Relational containing RandomSymbols
-        A conditional expression. density(X>1, X>0) is density of X>1 given X>0
+        A conditional expression. density(X > 1, X > 0) is density of X > 1
+        given X > 0
     numsamples : int
         Enables sampling and approximates the density with this many samples
 
@@ -719,8 +739,8 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
     {1: 1/6, 2: 1/6, 3: 1/6, 4: 1/6, 5: 1/6, 6: 1/6}
     >>> cdf(D)
     {1: 1/6, 2: 1/3, 3: 1/2, 4: 2/3, 5: 5/6, 6: 1}
-    >>> cdf(3*D, D>2) == {9: Rational(1, 4), 12: Rational(1, 2),
-    ...                   15: Rational(3, 4), 18: 1}
+    >>> cdf(3*D, D > 2) == {9: Rational(1, 4), 12: Rational(1, 2),
+    ...                     15: Rational(3, 4), 18: 1}
     True
 
     >>> cdf(X)

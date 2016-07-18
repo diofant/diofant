@@ -223,10 +223,6 @@ system_of_odes_linear_2eq_order2_type3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode._linear_2eq_order2_type3
 
-system_of_odes_linear_2eq_order2_type4
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._linear_2eq_order2_type4
-
 system_of_odes_linear_2eq_order2_type5
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode._linear_2eq_order2_type5
@@ -247,25 +243,9 @@ system_of_odes_linear_2eq_order2_type9
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode._linear_2eq_order2_type9
 
-system_of_odes_linear_2eq_order2_type10
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._linear_2eq_order2_type10
-
 system_of_odes_linear_2eq_order2_type11
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: sympy.solvers.ode._linear_2eq_order2_type11
-
-system_of_odes_linear_3eq_order1_type1
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._linear_3eq_order1_type1
-
-system_of_odes_linear_3eq_order1_type2
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._linear_3eq_order1_type2
-
-system_of_odes_linear_3eq_order1_type3
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: sympy.solvers.ode._linear_3eq_order1_type3
 
 system_of_odes_linear_3eq_order1_type4
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

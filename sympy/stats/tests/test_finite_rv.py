@@ -2,13 +2,15 @@ import pytest
 
 from sympy import (FiniteSet, S, Symbol, sqrt, symbols, simplify, Eq, cos,
                    And, Tuple, Or, Dict, sympify, binomial, cancel,
-                   Rational, Integer)
+                   Rational, Integer, KroneckerDelta)
 from sympy.stats import (DiscreteUniform, Die, Bernoulli, Coin, Binomial,
                          Hypergeometric, Rademacher, P, E, variance, covariance,
                          skewness, sample, density, where, FiniteRV, pspace, cdf,
                          correlation, moment, cmoment, smoment)
+from sympy.stats.frv_types import DieDistribution
+from sympy.matrices import Matrix
 
-from sympy.abc import p
+from sympy.abc import p, x
 
 
 def BayesTest(A, B):
@@ -262,3 +264,14 @@ def test_density_call():
     assert 0 in d
     assert 5 not in d
     assert d(Integer(0)) == d[Integer(0)]
+
+
+def test_DieDistribution():
+    X = DieDistribution(6)
+    assert X.pdf(S.Half) == S.Zero
+    assert X.pdf(x).subs({x: 1}).doit() == Rational(1, 6)
+    assert X.pdf(x).subs({x: 7}).doit() == 0
+    assert X.pdf(x).subs({x: -1}).doit() == 0
+    assert X.pdf(x).subs({x: Rational(1, 3)}).doit() == 0
+    pytest.raises(TypeError, lambda: X.pdf(x).subs({x: Matrix([0, 0])}))
+    pytest.raises(ValueError, lambda: X.pdf(x**2 - 1))

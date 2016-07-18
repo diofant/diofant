@@ -92,15 +92,15 @@ Diophantine equations. Let's solve `2x + 3y = 5`. Note that although we
 write the equation in the above form, when we input the equation to any of the
 functions in Diophantine module, it needs to be in the form `eq = 0`.
 
->>> diophantine(2*x + 3*y - 5) == {(3*t - 5, -2*t + 5)}
-True
+>>> diophantine(2*x + 3*y - 5)
+{(3*t_0 - 5, -2*t_0 + 5)}
 
 Note that stepping one more level below the highest API, we can solve the very
 same equation by calling :py:meth:`~sympy.solvers.diophantine.diop_solve`.
 
 >>> from sympy.solvers.diophantine import diop_solve
 >>> diop_solve(2*x + 3*y - 5)
-(3*t - 5, -2*t + 5)
+(3*t_0 - 5, -2*t_0 + 5)
 
 Note that it returns a tuple rather than a set.
 :py:meth:`~sympy.solvers.diophantine.diophantine` always return a set of tuples.
@@ -112,12 +112,12 @@ which is what :py:meth:`~sympy.solvers.diophantine.diop_solve` calls internally.
 
 >>> from sympy.solvers.diophantine import diop_linear
 >>> diop_linear(2*x + 3*y - 5)
-(3*t - 5, -2*t + 5)
+(3*t_0 - 5, -2*t_0 + 5)
 
 If the given equation has no solutions then the outputs will look like below.
 
->>> diophantine(2*x + 4*y - 3) == set()
-True
+>>> diophantine(2*x + 4*y - 3)
+set()
 >>> diop_solve(2*x + 4*y - 3)
 (None, None)
 >>> diop_linear(2*x + 4*y - 3)
@@ -126,13 +126,21 @@ True
 Note that except for the highest level API, in case of no solutions, a tuple of
 `None` are returned. Size of the tuple is the same as the number of variables.
 Also, one can specifically set the parameter to be used in the solutions by
-passing a customized parameter. Consider the following example.
+passing a customized parameter. Consider the following example:
 
 >>> m = symbols("m", integer=True)
 >>> diop_solve(2*x + 3*y - 5, m)
-(3*m - 5, -2*m + 5)
+(3*m_0 - 5, -2*m_0 + 5)
 
-Please note that for the moment, user can set the parameter only for linear
+For linear Diophantine equations, the customized parameter is the prefix used
+for each free variable in the solution. Consider the following example:
+
+>>> diop_solve(2*x + 3*y - 5*z + 7, m)
+(m_0, -9*m_0 - 5*m_1 - 14, -5*m_0 - 3*m_1 - 7)
+
+In the solution above, m_0 and m_1 are independent free variables.
+
+Please note that for the moment, users can set the parameter only for linear
 Diophantine equations and binary quadratic equations.
 
 Let's try solving a binary quadratic equation which is an equation with two
@@ -144,35 +152,38 @@ of the solutions. Let us define `\Delta = b^2 - 4ac` w.r.t. the binary quadratic
 
 When `\Delta < 0`, there are either no solutions or only a finite number of solutions.
 
->>> diophantine(x**2 - 4*x*y + 8*y**2 - 3*x + 7*y - 5) == {(2, 1), (5, 1)}
-True
+>>> diophantine(x**2 - 4*x*y + 8*y**2 - 3*x + 7*y - 5)
+{(2, 1), (5, 1)}
 
 In the above equation `\Delta = (-4)^2 - 4*1*8 = -16` and hence only a finite
 number of solutions exist.
 
 When `\Delta = 0` we might have either no solutions or parameterized solutions.
 
->>> diophantine(3*x**2 - 6*x*y + 3*y**2 - 3*x + 7*y - 5) == set()
-True
->>> diophantine(x**2 - 4*x*y + 4*y**2 - 3*x + 7*y - 5) == {(-2*t**2 - 7*t + 10, -t**2 - 3*t + 5)}
-True
->>> diophantine(x**2 + 2*x*y + y**2 - 3*x - 3*y) == {(t, -t), (t, -t + 3)}
-True
+>>> diophantine(3*x**2 - 6*x*y + 3*y**2 - 3*x + 7*y - 5)
+set()
+>>> diophantine(x**2 - 4*x*y + 4*y**2 - 3*x + 7*y - 5)
+{(-2*t**2 - 7*t + 10, -t**2 - 3*t + 5)}
+>>> diophantine(x**2 + 2*x*y + y**2 - 3*x - 3*y)
+{(t_0, -t_0), (t_0, -t_0 + 3)}
 
 The most interesting case is when `\Delta > 0` and it is not a perfect square.
 In this case, the equation has either no solutions or an infinte number of
 solutions. Consider the below cases where `\Delta = 8`.
 
->>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5) == set()
-True
->>> from sympy import expand
+>>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5)
+set()
+>>> from sympy import sqrt
 >>> n = symbols("n", integer=True)
 >>> s = diophantine(x**2 -  2*y**2 - 2*x - 4*y, n)
->>> x_n, y_n = s.pop()
->>> expand(x_n)
--(-2*sqrt(2) + 3)**n/2 + sqrt(2)*(-2*sqrt(2) + 3)**n/2 - sqrt(2)*(2*sqrt(2) + 3)**n/2 - (2*sqrt(2) + 3)**n/2 + 1
->>> expand(y_n)
--sqrt(2)*(-2*sqrt(2) + 3)**n/4 + (-2*sqrt(2) + 3)**n/2 + sqrt(2)*(2*sqrt(2) + 3)**n/4 + (2*sqrt(2) + 3)**n/2 - 1
+>>> x_1, y_1 = s.pop()
+>>> x_2, y_2 = s.pop()
+>>> x_n = -(-2*sqrt(2) + 3)**n/2 + sqrt(2)*(-2*sqrt(2) + 3)**n/2 - sqrt(2)*(2*sqrt(2) + 3)**n/2 - (2*sqrt(2) + 3)**n/2 + 1
+>>> x_1 == x_n or x_2 == x_n
+True
+>>> y_n = -sqrt(2)*(-2*sqrt(2) + 3)**n/4 + (-2*sqrt(2) + 3)**n/2 + sqrt(2)*(2*sqrt(2) + 3)**n/4 + (2*sqrt(2) + 3)**n/2 - 1
+>>> y_1 == y_n or y_2 == y_n
+True
 
 Here `n` is an integer. Although x_n and y_n may not look like
 integers, substituting in specific values for n (and simplifying) shows that they
@@ -225,10 +236,10 @@ of the form `ax^2 + by^2 + cz^2 + dxy + eyz + fzx = 0`. These type of equations
 either have infinitely many solutions or no solutions (except the obvious
 solution (0, 0, 0))
 
->>> diophantine(3*x**2 + 4*y**2 - 5*z**2 + 4*x*y + 6*y*z + 7*z*x) == set()
-True
->>> diophantine(3*x**2 + 4*y**2 - 5*z**2 + 4*x*y - 7*y*z + 7*z*x) == {(-16*p**2 + 28*p*q + 20*q**2, 3*p**2 + 38*p*q - 25*q**2, 4*p**2 - 24*p*q + 68*q**2)}
-True
+>>> diophantine(3*x**2 + 4*y**2 - 5*z**2 + 4*x*y + 6*y*z + 7*z*x)
+set()
+>>> diophantine(3*x**2 + 4*y**2 - 5*z**2 + 4*x*y - 7*y*z + 7*z*x)
+{(-16*p**2 + 28*p*q + 20*q**2, 3*p**2 + 38*p*q - 25*q**2, 4*p**2 - 24*p*q + 68*q**2)}
 
 If you are only interested about a base solution rather than the parameterized
 general solution (to be more precise, one of the general solutions), you can
@@ -258,8 +269,8 @@ general sum of squares equation, `x_{1}^2 + x_{2}^2 + \ldots + x_{n}^2 = k` can
 also be solved using the Diophantine module.
 
 >>> from sympy.abc import a, b, c, d, e, f
->>> diophantine(9*a**2 + 16*b**2 + c**2 + 49*d**2 + 4*e**2 - 25*f**2) == {(70*t1**2 + 70*t2**2 + 70*t3**2 + 70*t4**2 - 70*t5**2, 105*t1*t5, 420*t2*t5, 60*t3*t5, 210*t4*t5, 42*t1**2 + 42*t2**2 + 42*t3**2 + 42*t4**2 + 42*t5**2)}
-True
+>>> diophantine(9*a**2 + 16*b**2 + c**2 + 49*d**2 + 4*e**2 - 25*f**2)
+{(70*t1**2 + 70*t2**2 + 70*t3**2 + 70*t4**2 - 70*t5**2, 105*t1*t5, 420*t2*t5, 60*t3*t5, 210*t4*t5, 42*t1**2 + 42*t2**2 + 42*t3**2 + 42*t4**2 + 42*t5**2)}
 
 function :py:meth:`~sympy.solvers.diophantine.diop_general_pythagorean` can
 also be called directly to solve the same equation. This is true about the
@@ -267,8 +278,8 @@ general sum of squares too. Either you can call
 :py:meth:`~sympy.solvers.diophantine.diop_general_pythagorean` or use the high
 level API.
 
->>> diophantine(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 - 112) == {(8, 4, 4, 4, 0, 0)}
-True
+>>> diophantine(a**2 + b**2 + c**2 + d**2 + e**2 + f**2 - 112)
+{(8, 4, 4, 4, 0, 0)}
 
 If you want to get a more thorough idea about the the Diophantine module please
 refer to the following blog.

@@ -633,14 +633,24 @@ class Function(Application, Expr):
         """
         if not (1 <= argindex <= len(self.args)):
             raise ArgumentIndexError(self, argindex)
-        if not self.args[argindex - 1].is_Symbol:
-            # See issue 4624 and issue 4719 and issue 5600
-            arg_dummy = Dummy('xi_%i' % argindex)
-            arg_dummy.dummy_index = hash(self.args[argindex - 1])
-            return Subs(Derivative(
-                self.subs(self.args[argindex - 1], arg_dummy),
-                arg_dummy), arg_dummy, self.args[argindex - 1])
-        return Derivative(self, self.args[argindex - 1], evaluate=False)
+
+        if self.args[argindex - 1].is_Symbol:
+            for i in range(len(self.args)):
+                if i == argindex - 1:
+                    continue
+                # See issue sympy/sympy#8510
+                if self.args[argindex - 1] in self.args[i].free_symbols:
+                    break
+            else:
+                return Derivative(self, self.args[argindex - 1], evaluate=False)
+        # See issue sympy/sympy#4624 and issue sympy/sympy#4719
+        # and issue sympy/sympy#5600
+        arg_dummy = Dummy('xi_%i' % argindex)
+        arg_dummy.dummy_index = hash(self.args[argindex - 1])
+        new_args = [arg for arg in self.args]
+        new_args[argindex-1] = arg_dummy
+        return Subs(Derivative(self.func(*new_args), arg_dummy),
+            arg_dummy, self.args[argindex - 1])
 
     def _eval_as_leading_term(self, x):
         """Stub that should be overridden by new Functions to return
@@ -981,8 +991,7 @@ class Derivative(Expr):
             if len(variables) != 1:
                 from sympy.utilities.misc import filldedent
                 raise ValueError(filldedent('''
-                    Since there is more than one variable in the
-                    expression, the variable(s) of differentiation
+                    The variable(s) of differentiation
                     must be supplied to differentiate %s''' % expr))
 
         # Standardize the variables by sympifying them and making appending a
@@ -1086,14 +1095,19 @@ class Derivative(Expr):
                 if not is_symbol:
                     new_v = Dummy('xi_%i' % i)
                     new_v.dummy_index = hash(v)
-                    expr = expr.subs(v, new_v)
+                    expr = expr.xreplace({v: new_v})
                     old_v = v
                     v = new_v
                 obj = expr._eval_derivative(v)
                 nderivs += 1
                 if not is_symbol:
                     if obj is not None:
-                        obj = obj.subs(v, old_v)
+                        if obj.is_Derivative and not old_v.is_Symbol:
+                            # Derivative evaluated at a generic point, i.e.
+                            # that is not a symbol.
+                            obj = Subs(obj, v, old_v)
+                        else:
+                            obj = obj.xreplace({v: old_v})
                     v = old_v
 
             if obj is None:

@@ -178,6 +178,19 @@ def test_power():
     A = Matrix([[0, 4], [-1, 5]])
     assert (A**Rational(1, 2))**2 == A
 
+    assert Matrix([[1, 0], [1, 1]])**S.Half == Matrix([[1, 0], [S.Half, 1]])
+    from sympy.abc import a, b, n
+    assert Matrix([[1, a], [0, 1]])**n == Matrix([[1, a*n], [0, 1]])
+    assert Matrix([[b, a], [0, b]])**n == Matrix([[b**n, a*b**(n - 1)*n], [0, b**n]])
+    assert Matrix([[a, 1, 0], [0, a, 1], [0, 0, a]])**n == Matrix([
+        [a**n, a**(n - 1)*n, a**(n - 2)*(n - 1)*n/2],
+        [0, a**n, a**(n - 1)*n],
+        [0, 0, a**n]])
+    assert Matrix([[a, 1, 0], [0, a, 0], [0, 0, b]])**n == Matrix([
+        [a**n, a**(n - 1)*n, 0],
+        [0, a**n, 0],
+        [0, 0, b**n]])
+
 
 def test_creation():
     pytest.raises(ValueError, lambda: Matrix(5, 5, range(20)))
@@ -882,6 +895,15 @@ def test_subs():
         assert Matrix([[2, 0], [0, 2]]) == cls.eye(2).subs(1, 2)
 
 
+def test_xreplace():
+    assert Matrix([[1, x], [x, 4]]).xreplace({x: 5}) == \
+        Matrix([[1, 5], [5, 4]])
+    assert Matrix([[x, 2], [x + y, 4]]).xreplace({x: -1, y: -2}) == \
+        Matrix([[-1, 2], [-3, 4]])
+    for cls in classes:
+        assert Matrix([[2, 0], [0, 2]]) == cls.eye(2).xreplace({1: 2})
+
+
 def test_simplify():
     n = Symbol('n')
     f = Function('f')
@@ -1563,6 +1585,20 @@ def test_jordan_form_complex_issue_9274():
     assert simplify(P*J*P.inv()) == A
 
 
+def test_issue_10220():
+    # two non-orthogonal Jordan blocks with eigenvalue 1
+    M = Matrix([[1, 0, 0, 1],
+                [0, 1, 1, 0],
+                [0, 0, 1, 1],
+                [0, 0, 0, 1]])
+    P, C = M.jordan_cells()
+    assert P == Matrix([[0, 1, 0, 1],
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 0, 1, 0]])
+    assert len(C) == 2
+
+
 def test_Matrix_berkowitz_charpoly():
     UA, K_i, K_w = symbols('UA K_i K_w')
 
@@ -1659,8 +1695,7 @@ def test_errors():
     pytest.raises(ValueError,
         lambda: Matrix([[5, 10, 7], [0, -1, 2], [8, 3, 4]]
         ).LUdecomposition_Simple(iszerofunc=lambda x: abs(x) <= 4))
-    pytest.raises(NotImplementedError, lambda: Matrix([[1, 0], [1, 1]])**Rational(1, 2))
-    pytest.raises(NotImplementedError,
+    pytest.raises(TypeError,
         lambda: Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])**(0.5))
     pytest.raises(IndexError, lambda: eye(3)[5, 2])
     pytest.raises(IndexError, lambda: eye(3)[2, 5])
@@ -2452,7 +2487,7 @@ def test_hermitian():
     assert a.is_hermitian is False
 
 
-def test_issue_9457_9467():
+def test_issue_9457_9467_9876():
     # for row_del(index)
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     M.row_del(1)
@@ -2460,6 +2495,9 @@ def test_issue_9457_9467():
     N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     N.row_del(-2)
     assert N == Matrix([[1, 2, 3], [3, 4, 5]])
+    O = Matrix([[1, 2, 3], [5, 6, 7], [9, 10, 11]])
+    O.row_del(-1)
+    assert O == Matrix([[1, 2, 3], [5, 6, 7]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
     pytest.raises(IndexError, lambda: P.row_del(10))
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])

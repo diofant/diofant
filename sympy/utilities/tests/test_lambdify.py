@@ -5,7 +5,7 @@ import pytest
 
 from sympy import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
                    Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                   oo, I, Abs, Function, true, false, And, Or, Not, sympify)
+                   oo, I, Abs, Function, true, false, And, Or, Not, sympify, ITE)
 from sympy.printing.lambdarepr import LambdaPrinter
 from sympy.utilities.lambdify import implemented_function
 from sympy.utilities.decorator import conserve_mpmath_dps
@@ -577,3 +577,8 @@ def test_issue_2790():
     assert lambdify((x, (y, z)), x + y)(1, (2, 4)) == 3
     assert lambdify((x, (y, (w, z))), w + x + y + z)(1, (2, (3, 4))) == 10
     assert lambdify(x, x + 1, dummify=False)(1) == 2
+
+
+def test_ITE():
+    assert lambdify((x, y, z), ITE(x, y, z))(True, 5, 3) == 5
+    assert lambdify((x, y, z), ITE(x, y, z))(False, 5, 3) == 3

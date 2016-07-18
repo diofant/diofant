@@ -250,6 +250,9 @@ def test_geometric_sums():
     # issue 8251:
     assert summation((1/(n + 1)**2)*n**2, (n, 0, oo)) == oo
 
+    # issue sympy/sympy#9908:
+    assert Sum(1/(n**3 - 1), (n, -oo, -2)).doit() == summation(1/(n**3 - 1), (n, -oo, -2))
+
 
 def test_harmonic_sums():
     assert summation(1/k, (k, 0, n)) == Sum(1/k, (k, 0, n))
@@ -863,3 +866,10 @@ def test_issue_8016():
 
 def test_diofantissue_236():
     assert summation(n/((n + 2)*(n + 4)*(n + 8)), (n, 1, oo)) == Rational(4, 35)
+
+
+def test_issue_10156():
+    cx = Sum(2*y**2*x, (x, 1, 3))
+    e = 2*y*Sum(2*cx*x**2, (x, 1, 9))
+    assert e.factor() == \
+        8*y**3*Sum(x, (x, 1, 3))*Sum(x**2, (x, 1, 9))
