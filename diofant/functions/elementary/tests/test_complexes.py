@@ -83,6 +83,8 @@ def test_re():
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
 
+    assert re(zoo) == nan
+
 
 def test_im():
     a, b = symbols('a,b', extended_real=True)
@@ -147,6 +149,8 @@ def test_im():
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
+
+    assert re(zoo) == nan
 
 
 def test_sign():
