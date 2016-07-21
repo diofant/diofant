@@ -795,9 +795,6 @@ def solve_ics(sols, funcs, constants, ics):
     if len(solved_constants) > 1:  # pragma: no cover
         raise NotImplementedError("Initial conditions produced too many solutions for constants")
 
-    if len(solved_constants[0]) != len(constants):
-        raise ValueError("Initial conditions did not produce a solution for all constants. Perhaps they are under-specified.")
-
     return solved_constants[0]
 
 

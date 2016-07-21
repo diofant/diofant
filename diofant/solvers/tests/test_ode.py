@@ -980,9 +980,6 @@ def test_solve_ics():
     # XXX: Ought to be ValueError
     pytest.raises(NotImplementedError, lambda: solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
 
-    # XXX: Ought to be ValueError
-    pytest.raises(ValueError, lambda: solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1}))
-
     EI, q, L = symbols('EI q L')
 
     # eq = Eq(EI*diff(f(x), x, 4), q)
@@ -1007,6 +1004,12 @@ def test_solve_ics():
         C2: 0,
         C3: L**2*q/(4*EI),
         C4: -L*q/(6*EI)}
+
+    # Under-specified case:
+    assert solve_ics([Eq(f(x), E**(2*x)*C2 + E**(-2*x)*C1)],
+                     [f(x)], {C1, C2}, {f(0): 1}) == {C1: 1 - C2}
+    assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))],
+                     [f(x)], [C1, C2], {f(0): 1}) == {C2: 1}
 
 
 def test_ode_order():
