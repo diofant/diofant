@@ -1,6 +1,10 @@
 About
 =====
 
+The Diofant project is a fork of the SymPy, last reqular SymPy's commit
+is cbdd072 (22 Feb 2015).  The git history goes back to 2007, when development
+was in svn and then in hg.
+
 SymPy Development Team
 ----------------------
 
@@ -476,9 +480,6 @@ and family to play a lead development role.  Unfortunately, his remaining
 activity neither constructive nor productive anymore and SymPy just
 slowly dying now.
 
-This project is a fork of the SymPy, last SymPy's commit is cbdd072 (22 Feb
-2015).  The git history goes back to 2007, when development was in svn and then in hg.
-
 Financial and Infrastructure Support
 ------------------------------------
 
@@ -525,8 +526,7 @@ Financial and Infrastructure Support
 License
 -------
 
-Unless stated otherwise, all files in the SymPy project, SymPy's webpage (and
-wiki), all images and all documentation including this User's Guide are licensed
+Unless stated otherwise, all files in the Diofant project are licensed
 using the new BSD license:
 
 .. literalinclude:: ../LICENSE
