@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # Check the plot docstring
 
-from sympy import Symbol, exp, sin, cos
-from sympy.plotting import (plot, plot_parametric,
+from diofant import Symbol, exp, sin, cos
+from diofant.plotting import (plot, plot_parametric,
                             plot3d_parametric_surface, plot3d_parametric_line,
                             plot3d)
 

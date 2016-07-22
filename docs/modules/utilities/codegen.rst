@@ -3,14 +3,14 @@ Codegen
 =======
 
 This module provides functionality to generate directly compilable code from
-SymPy expressions.  The ``codegen`` function is the user interface to the code
-generation functionality in SymPy.  Some details of the implementation is given
+Diofant expressions.  The ``codegen`` function is the user interface to the code
+generation functionality in Diofant.  Some details of the implementation is given
 below for advanced users that may want to use the framework directly.
 
-.. note:: The ``codegen`` callable is not in the sympy namespace automatically,
+.. note:: The ``codegen`` callable is not in the diofant namespace automatically,
    to use it you must first execute
 
-   >>> from sympy.utilities.codegen import codegen
+   >>> from diofant.utilities.codegen import codegen
 
 Implementation Details
 ======================
@@ -46,5 +46,5 @@ the routine will need and if there should be a return value.
 API Reference
 =============
 
-.. automodule:: sympy.utilities.codegen
+.. automodule:: diofant.utilities.codegen
    :members:

@@ -8,13 +8,13 @@ command for setup.py).
 
 Usage:
 
-./bin/coverage_doctest.py sympy/core
+./bin/coverage_doctest.py diofant/core
 
 or
 
-./bin/coverage_doctest.py sympy/core/basic.py
+./bin/coverage_doctest.py diofant/core/basic.py
 
-If no arguments are given, all files in sympy/ are checked.
+If no arguments are given, all files in diofant/ are checked.
 """
 
 import os
@@ -238,7 +238,7 @@ def _get_arg_list(name, fobj):
 def get_mod_name(path, base):
 
     """ Gets a module name, given the path of file/dir and base
-    dir of sympy """
+    dir of diofant """
 
     rel_path = os.path.relpath(path, base)
 
@@ -271,7 +271,7 @@ def find_sphinx(name, mod_path, found={}):
 
     doc_path = mod_path.split('.')
     doc_path[-1] += '.html'
-    sphinx_path = os.path.join(sympy_top, 'build', 'sphinx', 'html', '_modules', *doc_path)
+    sphinx_path = os.path.join(diofant_top, 'build', 'sphinx', 'html', '_modules', *doc_path)
     if not os.path.exists(sphinx_path):
         return False
     with open(sphinx_path) as f:
@@ -535,11 +535,11 @@ def coverage(module_path, verbose=False, no_color=False, sphinx=True):
     return total_doctests, total_sphinx, total_members
 
 
-def go(sympy_top, file, verbose=False, no_color=False, exact=True, sphinx=True):
+def go(diofant_top, file, verbose=False, no_color=False, exact=True, sphinx=True):
     if os.path.isdir(file):
         doctests, total_sphinx, num_functions = 0, 0, 0
         for F in os.listdir(file):
-            _doctests, _total_sphinx,  _num_functions = go(sympy_top, '%s/%s' % (file, F),
+            _doctests, _total_sphinx,  _num_functions = go(diofant_top, '%s/%s' % (file, F),
                 verbose=verbose, no_color=no_color, exact=False, sphinx=sphinx)
             doctests += _doctests
             total_sphinx += _total_sphinx
@@ -554,16 +554,16 @@ def go(sympy_top, file, verbose=False, no_color=False, exact=True, sphinx=True):
         sys.exit(1)
 
     # Relpath for constructing the module name
-    return coverage(get_mod_name(file, sympy_top), verbose=verbose,
+    return coverage(get_mod_name(file, diofant_top), verbose=verbose,
         no_color=no_color, sphinx=sphinx)
 
 if __name__ == "__main__":
 
     bintest_dir = os.path.abspath(os.path.dirname(__file__))   # bin/cover...
-    sympy_top = os.path.split(bintest_dir)[0]      # ../
-    sympy_dir = os.path.join(sympy_top, 'sympy')  # ../sympy/
-    if os.path.isdir(sympy_dir):
-        sys.path.insert(0, sympy_top)
+    diofant_top = os.path.split(bintest_dir)[0]      # ../
+    diofant_dir = os.path.join(diofant_top, 'diofant')  # ../diofant/
+    if os.path.isdir(diofant_dir):
+        sys.path.insert(0, diofant_top)
 
     usage = "usage: ./bin/doctest_coverage.py PATHS"
 
@@ -573,7 +573,7 @@ if __name__ == "__main__":
         formatter_class=RawDescriptionHelpFormatter,
     )
 
-    parser.add_argument("path", nargs='*', default=[os.path.join(sympy_top, 'sympy')])
+    parser.add_argument("path", nargs='*', default=[os.path.join(diofant_top, 'diofant')])
     parser.add_argument("-v", "--verbose", action="store_true", dest="verbose",
             default=False)
     parser.add_argument("--no-colors", action="store_true", dest="no_color",
@@ -583,7 +583,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.sphinx and not os.path.exists(os.path.join(sympy_top, 'build', 'sphinx', 'html')):
+    if args.sphinx and not os.path.exists(os.path.join(diofant_top, 'build', 'sphinx', 'html')):
         print("""
 Cannot check Sphinx coverage without a documentation build. To build the
 docs, run "./setup.py build_sphinx".  To skip checking Sphinx coverage, pass --no-sphinx.
@@ -597,7 +597,7 @@ docs, run "./setup.py build_sphinx".  To skip checking Sphinx coverage, pass --n
         print('DOCTEST COVERAGE for %s' % (file))
         print('='*70)
         print()
-        doctests, total_sphinx, num_functions = go(sympy_top, file, verbose=args.verbose,
+        doctests, total_sphinx, num_functions = go(diofant_top, file, verbose=args.verbose,
             no_color=args.no_color, sphinx=args.sphinx)
         if num_functions == 0:
             score = 100
@@ -618,32 +618,32 @@ docs, run "./setup.py build_sphinx".  To skip checking Sphinx coverage, pass --n
 
         if args.no_color:
             print("TOTAL DOCTEST SCORE for %s: %s%% (%s of %s)" %
-                (get_mod_name(file, sympy_top), score, doctests, num_functions))
+                (get_mod_name(file, diofant_top), score, doctests, num_functions))
 
         elif score < 100:
             print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
-                (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
+                (get_mod_name(file, diofant_top), c_color % (colors["Red"]),
                 score, doctests, num_functions, c_normal))
 
         else:
             print("TOTAL DOCTEST SCORE for %s: %s%s%% (%s of %s)%s" %
-                (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
+                (get_mod_name(file, diofant_top), c_color % (colors["Green"]),
                 score, doctests, num_functions, c_normal))
 
         if args.sphinx:
             if args.no_color:
                 print("TOTAL SPHINX SCORE for %s: %s%% (%s of %s)" %
-                    (get_mod_name(file, sympy_top), sphinx_score,
+                    (get_mod_name(file, diofant_top), sphinx_score,
                      num_functions - total_sphinx, num_functions))
 
             elif sphinx_score < 100:
                 print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
-                    (get_mod_name(file, sympy_top), c_color % (colors["Red"]),
+                    (get_mod_name(file, diofant_top), c_color % (colors["Red"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 
             else:
                 print("TOTAL SPHINX SCORE for %s: %s%s%% (%s of %s)%s" %
-                    (get_mod_name(file, sympy_top), c_color % (colors["Green"]),
+                    (get_mod_name(file, diofant_top), c_color % (colors["Green"]),
                     sphinx_score, num_functions - total_sphinx, num_functions, c_normal))
 
         print()

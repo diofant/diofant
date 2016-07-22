@@ -50,7 +50,7 @@ commutative algebra over fields.
 
 All code examples assume::
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x,y,z')
     >>> init_printing(use_unicode=True, wrap_line=False, no_global=True)
 
@@ -84,7 +84,7 @@ create the local ring of the nodal cubic `y^2 = x^3` at the origin, over
         ╲- x  + y ╱
 
 Note how the python list notation can be used as a short cut to express ideals.
-You can use the ``convert`` method to return ordinary sympy objects into
+You can use the ``convert`` method to return ordinary diofant objects into
 objects understood by the AGCA module (although in many cases this will be done
 automatically -- for example the list was automatically turned into an ideal,
 and in the process the symbols `x` and `y` were automatically converted into
@@ -113,14 +113,14 @@ AGCA module and the rest of the polys module. All domains are documented
 in detail in the polys reference, so we show here only an abridged version,
 with the methods most pertinent to the AGCA module.
 
-.. autoclass:: sympy.polys.domains.ring.Ring
+.. autoclass:: diofant.polys.domains.ring.Ring
    :members: free_module, ideal, quotient_ring
    :noindex:
 
-.. autofunction:: sympy.polys.domains.polynomialring.PolynomialRing
+.. autofunction:: diofant.polys.domains.polynomialring.PolynomialRing
    :noindex:
 
-.. autoclass:: sympy.polys.domains.quotientring.QuotientRing
+.. autoclass:: diofant.polys.domains.quotientring.QuotientRing
    :noindex:
 
 Modules, Ideals and their Elementary Properties
@@ -173,13 +173,13 @@ we created above, together with a submodule::
 
 Note how python lists can be used as a short-cut notation for module
 elements (vectors). As usual, the ``convert`` method can be used to convert
-sympy/python objects into the internal AGCA representation (see detailed
+diofant/python objects into the internal AGCA representation (see detailed
 reference below).
 
 Here is the detailed documentation of the classes for modules, free modules,
 and submodules:
 
-.. currentmodule:: sympy.polys.agca.modules
+.. currentmodule:: diofant.polys.agca.modules
 
 .. autoclass:: Module
    :members:
@@ -211,7 +211,7 @@ This is the detailed documentation of the class ideal. Please note that most
 of the methods regarding properties of ideals (primality etc.) are not yet
 implemented.
 
-.. currentmodule:: sympy.polys.agca.ideals
+.. currentmodule:: diofant.polys.agca.ideals
 
 .. autoclass:: Ideal
    :members:
@@ -225,7 +225,7 @@ containing `N`, then `K/N` is in a natural way a submodule of `M/N`. Such a
 module is called a subquotient. Here is the documentation of quotient and
 subquotient modules:
 
-.. currentmodule:: sympy.polys.agca.modules
+.. currentmodule:: diofant.polys.agca.modules
 
 .. autoclass:: QuotientModule
    :members:
@@ -303,7 +303,7 @@ there is a convenience function ``homomorphism`` to define a homomorphism
 between arbitrary modules via the method outlined above. It is essentially
 the only way homomorphisms need ever be created by the user.
 
-.. currentmodule:: sympy.polys.agca.homomorphisms
+.. currentmodule:: diofant.polys.agca.homomorphisms
 .. autofunction:: homomorphism
 
 Finally, here is the detailed reference of the actual homomorphism class:

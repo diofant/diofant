@@ -3,17 +3,17 @@
 Modules Reference
 =================
 
-.. module:: sympy
+.. module:: diofant
 
-Because every feature of SymPy must have a test case, when you are not sure how
+Because every feature of Diofant must have a test case, when you are not sure how
 to use something, just look into the ``tests/`` directories, find that feature
 and read the tests for it, that will tell you everything you need to know.
 
 Most of the things are already documented though in this document, that is
-automatically generated using SymPy's docstrings.
+automatically generated using Diofant's docstrings.
 
 Click the  "modules" (:ref:`modindex`) link in the top right corner to easily
-access any SymPy module, or use this contens:
+access any Diofant module, or use this contens:
 
 .. toctree::
    :maxdepth: 2

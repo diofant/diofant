@@ -1,5 +1,5 @@
 Plane
 -----
 
-.. automodule:: sympy.geometry.plane
+.. automodule:: diofant.geometry.plane
    :members:

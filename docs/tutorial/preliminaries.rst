@@ -18,7 +18,7 @@ knowledge will be introduced as necessary.
 Installation
 ============
 
-You will need to install SymPy first.  See the :ref:`installation guide
+You will need to install Diofant first.  See the :ref:`installation guide
 <installation>`.
 
 Exercises
@@ -33,11 +33,11 @@ exercises in particular are recommended to anyone going through this tutorial.
 About This Tutorial
 ===================
 
-This tutorial aims to give an introduction to SymPy for someone who has not
-used the library before.  Many features of SymPy will be introduced in this
+This tutorial aims to give an introduction to Diofant for someone who has not
+used the library before.  Many features of Diofant will be introduced in this
 tutorial, but they will not be exhaustive. In fact, virtually every
 functionality shown in this tutorial will have more options or capabilities
-than what will be shown.  The rest of the SymPy documentation serves as API
+than what will be shown.  The rest of the Diofant documentation serves as API
 documentation, which extensively lists every feature and option of each
 function.
 
@@ -46,7 +46,7 @@ These are the goals of this tutorial:
 .. NB: This is mainly here for you, the person who is editing and adding to
    this tutorial. Try to keep these principles in mind.
 
-- To give a guide, suitable for someone who has never used SymPy (but who has
+- To give a guide, suitable for someone who has never used Diofant (but who has
   used Python and knows the necessary mathematics).
 
 - To be written in a narrative format, which is both easy and fun to follow.
@@ -73,4 +73,4 @@ These are the goals of this tutorial:
 - To avoid unnecessary duplication, it is assumed that previous sections of
   the tutorial have already been read.
 
-Feedback on this tutorial, or on SymPy in general is always welcome.
+Feedback on this tutorial, or on Diofant in general is always welcome.

@@ -1,7 +1,7 @@
 Entities
 --------
 
-.. module:: sympy.geometry.entity
+.. module:: diofant.geometry.entity
 
-.. autoclass:: sympy.geometry.entity.GeometryEntity
+.. autoclass:: diofant.geometry.entity.GeometryEntity
    :members:

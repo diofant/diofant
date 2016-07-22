@@ -1,7 +1,7 @@
 Matrices (linear algebra)
 =========================
 
-.. module:: sympy.matrices.matrices
+.. module:: diofant.matrices.matrices
 
 Creating Matrices
 -----------------
@@ -9,9 +9,9 @@ Creating Matrices
 The linear algebra module is designed to be as simple as possible. First, we
 import and declare our first ``Matrix`` object:
 
-    >>> from sympy.interactive.printing import init_printing
+    >>> from diofant.interactive.printing import init_printing
     >>> init_printing(use_unicode=False, wrap_line=False, no_global=True)
-    >>> from sympy.matrices import Matrix, eye, zeros, ones, diag, GramSchmidt
+    >>> from diofant.matrices import Matrix, eye, zeros, ones, diag, GramSchmidt
     >>> M = Matrix([[1,0,0], [0,0,0]]); M
     [1  0  0]
     [       ]
@@ -32,7 +32,7 @@ import and declare our first ``Matrix`` object:
     [3]
 
 In addition to creating a matrix from a list of appropriately-sized lists
-and/or matrices, SymPy also supports more advanced methods of matrix creation
+and/or matrices, Diofant also supports more advanced methods of matrix creation
 including a single list of values and dimension inputs:
 
     >>> Matrix(2, 3, [1, 2, 3, 4, 5, 6])
@@ -327,7 +327,7 @@ but we can also apply functions to our matrix entries using ``applyfunc()``. Her
 
 One more useful matrix-wide entry application function is the substitution function. Let's declare a matrix with symbolic entries then substitute a value. Remember we can substitute anything - even another symbol!:
 
-    >>> from sympy import Symbol
+    >>> from diofant import Symbol
     >>> x = Symbol('x')
     >>> M = eye(3) * x
     >>> M
@@ -368,7 +368,7 @@ determinant:
     >>> M3.det()
     0
 
-Another common operation is the inverse: In SymPy, this is computed by Gaussian
+Another common operation is the inverse: In Diofant, this is computed by Gaussian
 elimination by default (for dense matrices) but we can specify it be done by `LU`
 decomposition as well:
 
@@ -536,41 +536,41 @@ Matrix Functions Reference
 
 .. autofunction:: classof
 
-.. autofunction:: sympy.matrices.dense.matrix_multiply_elementwise
+.. autofunction:: diofant.matrices.dense.matrix_multiply_elementwise
 
-.. autofunction:: sympy.matrices.dense.zeros
+.. autofunction:: diofant.matrices.dense.zeros
 
-.. autofunction:: sympy.matrices.dense.ones
+.. autofunction:: diofant.matrices.dense.ones
 
-.. autofunction:: sympy.matrices.dense.eye
+.. autofunction:: diofant.matrices.dense.eye
 
-.. autofunction:: sympy.matrices.dense.diag
+.. autofunction:: diofant.matrices.dense.diag
 
-.. autofunction:: sympy.matrices.dense.jordan_cell
+.. autofunction:: diofant.matrices.dense.jordan_cell
 
-.. autofunction:: sympy.matrices.dense.hessian
+.. autofunction:: diofant.matrices.dense.hessian
 
-.. autofunction:: sympy.matrices.dense.GramSchmidt
+.. autofunction:: diofant.matrices.dense.GramSchmidt
 
-.. autofunction:: sympy.matrices.dense.wronskian
+.. autofunction:: diofant.matrices.dense.wronskian
 
-.. autofunction:: sympy.matrices.dense.casoratian
+.. autofunction:: diofant.matrices.dense.casoratian
 
-.. autofunction:: sympy.matrices.dense.randMatrix
+.. autofunction:: diofant.matrices.dense.randMatrix
 
 Numpy Utility Functions Reference
 ---------------------------------
 
-.. autofunction:: sympy.matrices.dense.list2numpy
+.. autofunction:: diofant.matrices.dense.list2numpy
 
-.. autofunction:: sympy.matrices.dense.matrix2numpy
+.. autofunction:: diofant.matrices.dense.matrix2numpy
 
-.. autofunction:: sympy.matrices.dense.symarray
+.. autofunction:: diofant.matrices.dense.symarray
 
-.. autofunction:: sympy.matrices.dense.rot_axis1
+.. autofunction:: diofant.matrices.dense.rot_axis1
 
-.. autofunction:: sympy.matrices.dense.rot_axis2
+.. autofunction:: diofant.matrices.dense.rot_axis2
 
-.. autofunction:: sympy.matrices.dense.rot_axis3
+.. autofunction:: diofant.matrices.dense.rot_axis3
 
 .. autofunction:: a2idx

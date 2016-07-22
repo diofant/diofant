@@ -6,9 +6,9 @@ of the infinite 1D box of width ``a`` with a perturbation
 which is linear in ``x``, up to second order in perturbation
 """
 
-from sympy.core import pi
-from sympy import Integral, var, S
-from sympy.functions import sin, sqrt
+from diofant.core import pi
+from diofant import Integral, var, S
+from diofant.functions import sin, sqrt
 
 
 def X_n(n, a, x):

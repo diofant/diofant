@@ -1,20 +1,20 @@
 Symbolic Integrals
 ==================
 
-.. module:: sympy.integrals
+.. module:: diofant.integrals
 
-The ``integrals`` module in SymPy implements methods to calculate definite and indefinite integrals of expressions.
+The ``integrals`` module in Diofant implements methods to calculate definite and indefinite integrals of expressions.
 
-Principal method in this module is :func:`~sympy.integrals.integrals.integrate`
+Principal method in this module is :func:`~diofant.integrals.integrals.integrate`
 
   - ``integrate(f, x)`` returns the indefinite integral :math:`\int f\,dx`
   - ``integrate(f, (x, a, b))`` returns the definite integral :math:`\int_{a}^{b} f\,dx`
 
 Examples
 --------
-SymPy can integrate a vast array of functions. It can integrate polynomial functions::
+Diofant can integrate a vast array of functions. It can integrate polynomial functions::
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> init_printing(use_unicode=False, wrap_line=False, no_global=True)
     >>> x = Symbol('x')
     >>> integrate(x**2 + x + 1, x)
@@ -31,7 +31,7 @@ Rational functions::
 	             x + 1
 
 
-Exponential-polynomial functions. These multiplicative combinations of polynomials and the functions ``exp``, ``cos`` and ``sin`` can be integrated by hand using repeated integration by parts, which is an extremely tedious process. Happily, SymPy will deal with these integrals.
+Exponential-polynomial functions. These multiplicative combinations of polynomials and the functions ``exp``, ``cos`` and ``sin`` can be integrated by hand using repeated integration by parts, which is an extremely tedious process. Happily, Diofant will deal with these integrals.
 
 ::
 
@@ -54,9 +54,9 @@ even a few nonelementary integrals (in particular, some integrals involving the 
 Integral Transforms
 -------------------
 
-.. module:: sympy.integrals.transforms
+.. module:: diofant.integrals.transforms
 
-SymPy has special support for definite integrals, and integral transforms.
+Diofant has special support for definite integrals, and integral transforms.
 
 .. autofunction:: mellin_transform
 .. autofunction:: inverse_mellin_transform
@@ -77,9 +77,9 @@ Internals
 
 There is a general method for calculating antiderivatives of elementary functions, called the *Risch algorithm*. The Risch algorithm is a decision procedure that can determine whether an elementary solution exists, and in that case calculate it. It can be extended to handle many nonelementary functions in addition to the elementary ones.
 
-SymPy currently uses a simplified version of the Risch algorithm, called the *Risch-Norman algorithm*. This algorithm is much faster, but may fail to find an antiderivative, although it is still very powerful. SymPy also uses pattern matching and heuristics to speed up evaluation of some types of integrals, e.g. polynomials.
+Diofant currently uses a simplified version of the Risch algorithm, called the *Risch-Norman algorithm*. This algorithm is much faster, but may fail to find an antiderivative, although it is still very powerful. Diofant also uses pattern matching and heuristics to speed up evaluation of some types of integrals, e.g. polynomials.
 
-For non-elementary definite integrals, SymPy uses so-called Meijer G-functions.
+For non-elementary definite integrals, Diofant uses so-called Meijer G-functions.
 Details are described here:
 
 .. toctree::
@@ -90,87 +90,87 @@ Details are described here:
 API reference
 -------------
 
-.. autofunction:: sympy.integrals.integrals.integrate
-.. autofunction:: sympy.integrals.integrals.line_integrate
-.. autofunction:: sympy.integrals.deltafunctions.deltaintegrate
-.. autofunction:: sympy.integrals.rationaltools.ratint
-.. autofunction:: sympy.integrals.rationaltools.ratint_logpart
-.. autofunction:: sympy.integrals.rationaltools.ratint_ratpart
-.. autofunction:: sympy.integrals.heurisch.components
-.. autofunction:: sympy.integrals.heurisch.heurisch
-.. autofunction:: sympy.integrals.heurisch.heurisch_wrapper
-.. autofunction:: sympy.integrals.trigonometry.trigintegrate
-.. autofunction:: sympy.integrals.manualintegrate.manualintegrate
-.. autofunction:: sympy.integrals.manualintegrate.integral_steps
+.. autofunction:: diofant.integrals.integrals.integrate
+.. autofunction:: diofant.integrals.integrals.line_integrate
+.. autofunction:: diofant.integrals.deltafunctions.deltaintegrate
+.. autofunction:: diofant.integrals.rationaltools.ratint
+.. autofunction:: diofant.integrals.rationaltools.ratint_logpart
+.. autofunction:: diofant.integrals.rationaltools.ratint_ratpart
+.. autofunction:: diofant.integrals.heurisch.components
+.. autofunction:: diofant.integrals.heurisch.heurisch
+.. autofunction:: diofant.integrals.heurisch.heurisch_wrapper
+.. autofunction:: diofant.integrals.trigonometry.trigintegrate
+.. autofunction:: diofant.integrals.manualintegrate.manualintegrate
+.. autofunction:: diofant.integrals.manualintegrate.integral_steps
 
 The class `Integral` represents an unevaluated integral and has some methods that help in the integration of an expression.
 
-.. autoclass:: sympy.integrals.integrals.Integral
+.. autoclass:: diofant.integrals.integrals.Integral
    :members:
 
    .. data:: is_commutative
 
       Returns whether all the free symbols in the integral are commutative.
 
-.. autoclass:: sympy.integrals.transforms.IntegralTransform
+.. autoclass:: diofant.integrals.transforms.IntegralTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.MellinTransform
+.. autoclass:: diofant.integrals.transforms.MellinTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.InverseMellinTransform
+.. autoclass:: diofant.integrals.transforms.InverseMellinTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.LaplaceTransform
+.. autoclass:: diofant.integrals.transforms.LaplaceTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.InverseLaplaceTransform
+.. autoclass:: diofant.integrals.transforms.InverseLaplaceTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.FourierTransform
+.. autoclass:: diofant.integrals.transforms.FourierTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.InverseFourierTransform
+.. autoclass:: diofant.integrals.transforms.InverseFourierTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.SineTransform
+.. autoclass:: diofant.integrals.transforms.SineTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.InverseSineTransform
+.. autoclass:: diofant.integrals.transforms.InverseSineTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.CosineTransform
+.. autoclass:: diofant.integrals.transforms.CosineTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.InverseCosineTransform
+.. autoclass:: diofant.integrals.transforms.InverseCosineTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.HankelTransform
+.. autoclass:: diofant.integrals.transforms.HankelTransform
    :members:
 
-.. autoclass:: sympy.integrals.transforms.InverseHankelTransform
+.. autoclass:: diofant.integrals.transforms.InverseHankelTransform
    :members:
 
 TODO and Bugs
 -------------
-There are still lots of functions that SymPy does not know how to integrate. For bugs related to this module, see https://github.com/sympy/sympy/issues?q=label%3AIntegration
+There are still lots of functions that Diofant does not know how to integrate. For bugs related to this module, see https://github.com/sympy/sympy/issues?q=label%3AIntegration
 
 Numeric Integrals
 =================
 
-SymPy has functions to calculate points and weights for Gaussian quadrature of
+Diofant has functions to calculate points and weights for Gaussian quadrature of
 any order and any precision:
 
-.. autofunction:: sympy.integrals.quadrature.gauss_legendre
+.. autofunction:: diofant.integrals.quadrature.gauss_legendre
 
-.. autofunction:: sympy.integrals.quadrature.gauss_laguerre
+.. autofunction:: diofant.integrals.quadrature.gauss_laguerre
 
-.. autofunction:: sympy.integrals.quadrature.gauss_hermite
+.. autofunction:: diofant.integrals.quadrature.gauss_hermite
 
-.. autofunction:: sympy.integrals.quadrature.gauss_gen_laguerre
+.. autofunction:: diofant.integrals.quadrature.gauss_gen_laguerre
 
-.. autofunction:: sympy.integrals.quadrature.gauss_chebyshev_t
+.. autofunction:: diofant.integrals.quadrature.gauss_chebyshev_t
 
-.. autofunction:: sympy.integrals.quadrature.gauss_chebyshev_u
+.. autofunction:: diofant.integrals.quadrature.gauss_chebyshev_u
 
-.. autofunction:: sympy.integrals.quadrature.gauss_jacobi
+.. autofunction:: diofant.integrals.quadrature.gauss_jacobi

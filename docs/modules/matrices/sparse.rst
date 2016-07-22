@@ -1,7 +1,7 @@
 Sparse Matrices
 ===============
 
-.. module:: sympy.matrices.sparse
+.. module:: diofant.matrices.sparse
 
 SparseMatrix Class Reference
 ----------------------------
@@ -12,5 +12,5 @@ SparseMatrix Class Reference
 
 ImmutableSparseMatrix Class Reference
 -------------------------------------
-.. autoclass:: sympy.matrices.immutable.ImmutableSparseMatrix
+.. autoclass:: diofant.matrices.immutable.ImmutableSparseMatrix
    :members:

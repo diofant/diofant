@@ -1,7 +1,7 @@
 Ellipses
 --------
 
-.. module:: sympy.geometry.ellipse
+.. module:: diofant.geometry.ellipse
 
 .. autoclass:: Ellipse
    :members:

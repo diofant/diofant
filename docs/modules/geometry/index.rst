@@ -6,7 +6,7 @@ Geometry
 Introduction
 ------------
 
-The geometry module for SymPy allows one to create two-dimensional geometrical
+The geometry module for Diofant allows one to create two-dimensional geometrical
 entities, such as lines and circles, and query for information about these
 entities. This could include asking the area of an ellipse, checking for
 collinearity of a set of points, or finding the intersection between two lines.
@@ -39,8 +39,8 @@ Example Usage
 The following Python session gives one an idea of how to work with some of the
 geometry module.
 
-    >>> from sympy import *
-    >>> from sympy.geometry import *
+    >>> from diofant import *
+    >>> from diofant.geometry import *
     >>> x = Point(0, 0)
     >>> y = Point(1, 1)
     >>> z = Point(2, 2)
@@ -73,8 +73,8 @@ Intersection of medians
 -----------------------
 ::
 
-    >>> from sympy import symbols
-    >>> from sympy.geometry import Point, Triangle, intersection
+    >>> from diofant import symbols
+    >>> from diofant.geometry import Point, Triangle, intersection
 
     >>> a, b = symbols("a,b", positive=True)
 
@@ -103,8 +103,8 @@ From Wikipedia ([WikiPappus]_):
 
 ::
 
-    >>> from sympy import *
-    >>> from sympy.geometry import *
+    >>> from diofant import *
+    >>> from diofant.geometry import *
     >>>
     >>> l1 = Line(Point(0, 0), Point(5, 6))
     >>> l2 = Line(Point(0, 0), Point(2, -2))
@@ -154,7 +154,7 @@ Miscellaneous Notes
 * Although ``Polygon`` can refer to any type of polygon, the code has been
   written for simple polygons. Hence, expect potential problems if dealing
   with complex polygons (overlapping sides).
-* Since SymPy is still in its infancy some things may not simplify
+* Since Diofant is still in its infancy some things may not simplify
   properly and hence some things that should return ``True`` (e.g.,
   ``Point.is_collinear``) may not actually do so. Similarly, attempting to find
   the intersection of entities that do intersect may result in an empty
@@ -169,8 +169,8 @@ Truth Setting Expressions
 When one deals with symbolic entities, it often happens that an assertion
 cannot be guaranteed. For example, consider the following code:
 
-    >>> from sympy import *
-    >>> from sympy.geometry import *
+    >>> from diofant import *
+    >>> from diofant.geometry import *
     >>> x,y,z = map(Symbol, 'xyz')
     >>> p1,p2,p3 = Point(x, y), Point(y, z), Point(2*x*y, y)
     >>> Point.is_collinear(p1, p2, p3)

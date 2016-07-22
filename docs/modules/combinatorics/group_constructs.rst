@@ -3,6 +3,6 @@
 Group constructors
 ==================
 
-.. module:: sympy.combinatorics.group_constructs
+.. module:: diofant.combinatorics.group_constructs
 
 .. autofunction:: DirectProduct

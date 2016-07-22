@@ -3,7 +3,7 @@
 Named Groups
 ============
 
-.. module:: sympy.combinatorics.named_groups
+.. module:: diofant.combinatorics.named_groups
 
 .. autofunction:: SymmetricGroup
 

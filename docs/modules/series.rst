@@ -4,17 +4,17 @@ Series Expansions
 The series module implements series expansions as a
 function and many related functions.
 
-.. automodule:: sympy.series.limits
+.. automodule:: diofant.series.limits
    :members:
 
-.. automodule:: sympy.series.series
+.. automodule:: diofant.series.series
    :members:
 
-.. automodule:: sympy.series.order
+.. automodule:: diofant.series.order
    :members:
 
-.. automodule:: sympy.series.residues
+.. automodule:: diofant.series.residues
    :members:
 
-.. automodule:: sympy.series.gruntz
+.. automodule:: diofant.series.gruntz
    :members:

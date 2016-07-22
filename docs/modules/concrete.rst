@@ -13,7 +13,7 @@ To check if a sequence is of this type you can use the ``is_hypergeometric``
 method which is available in Basic class. Here is simple example involving a
 polynomial:
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> n, k = symbols('n,k')
     >>> (n**2 + 1).is_hypergeometric(n)
     True
@@ -81,27 +81,27 @@ hypergeometric:
 
 Concrete Class Reference
 ------------------------
-.. autoclass:: sympy.concrete.summations.Sum
+.. autoclass:: diofant.concrete.summations.Sum
    :members:
 
-.. autoclass:: sympy.concrete.products.Product
+.. autoclass:: diofant.concrete.products.Product
    :members:
 
-.. autoclass:: sympy.concrete.expr_with_limits.ExprWithLimits
+.. autoclass:: diofant.concrete.expr_with_limits.ExprWithLimits
    :members:
 
-.. autoclass:: sympy.concrete.expr_with_intlimits.ExprWithIntLimits
+.. autoclass:: diofant.concrete.expr_with_intlimits.ExprWithIntLimits
    :members:
 
 Concrete Functions Reference
 ----------------------------
 
-.. autofunction:: sympy.concrete.summations.summation
+.. autofunction:: diofant.concrete.summations.summation
 
-.. autofunction:: sympy.concrete.products.product
+.. autofunction:: diofant.concrete.products.product
 
-.. autofunction:: sympy.concrete.gosper.gosper_normal
+.. autofunction:: diofant.concrete.gosper.gosper_normal
 
-.. autofunction:: sympy.concrete.gosper.gosper_term
+.. autofunction:: diofant.concrete.gosper.gosper_term
 
-.. autofunction:: sympy.concrete.gosper.gosper_sum
+.. autofunction:: diofant.concrete.gosper.gosper_sum

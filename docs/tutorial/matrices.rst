@@ -2,10 +2,10 @@
  Matrices
 ==========
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> init_printing(use_unicode=True)
 
-To make a matrix in SymPy, use the ``Matrix`` object.  A matrix is constructed
+To make a matrix in Diofant, use the ``Matrix`` object.  A matrix is constructed
 by providing a list of row vectors that make up the matrix.  For example,
 to construct the matrix
 
@@ -33,7 +33,7 @@ a column vector.
     ⎢ ⎥
     ⎣3⎦
 
-Matrices are manipulated just like any other object in SymPy or Python.
+Matrices are manipulated just like any other object in Diofant or Python.
 
     >>> M = Matrix([[1, 2, 3], [3, 2, 1]])
     >>> N = Matrix([0, 1, 1])
@@ -42,10 +42,10 @@ Matrices are manipulated just like any other object in SymPy or Python.
     ⎢ ⎥
     ⎣3⎦
 
-One important thing to note about SymPy matrices is that, unlike every other
-object in SymPy, they are mutable.  This means that they can be modified in
+One important thing to note about Diofant matrices is that, unlike every other
+object in Diofant, they are mutable.  This means that they can be modified in
 place, as we will see below.  The downside to this is that ``Matrix`` cannot
-be used in places that require immutability, such as inside other SymPy
+be used in places that require immutability, such as inside other Diofant
 expressions or as keys to dictionaries.  If you need an immutable version of
 ``Matrix``, use ``ImmutableMatrix``.
 
@@ -366,7 +366,7 @@ To diagonalize a matrix, use ``diagonalize``. ``diagonalize`` returns a tuple
 .. sidebar:: Quick Tip
 
    ``lambda`` is a reserved keyword in Python, so to create a Symbol called
-   `\lambda`, while using the same names for SymPy Symbols and Python
+   `\lambda`, while using the same names for Diofant Symbols and Python
    variables, use ``lamda`` (without the ``b``).  It will still pretty print
    as `\lambda`.
 

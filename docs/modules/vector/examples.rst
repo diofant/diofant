@@ -3,7 +3,7 @@ General examples of usage
 =========================
 
 This section details the solution of two basic problems in vector
-math/calculus using the :mod:`sympy.vector` package.
+math/calculus using the :mod:`diofant.vector` package.
 
 Quadrilateral problem
 =====================
@@ -23,7 +23,7 @@ and basic operations on ``Vector``.
 
 Define a coordinate system
 
-  >>> from sympy.vector import CoordSysCartesian
+  >>> from diofant.vector import CoordSysCartesian
   >>> Sys = CoordSysCartesian('Sys')
 
 Define point O to be Sys' origin. We can do this without
@@ -33,7 +33,7 @@ loss of generality
 
 Define point A with respect to O
 
-  >>> from sympy import symbols
+  >>> from diofant import symbols
   >>> a1, a2, a3 = symbols('a1 a2 a3')
   >>> A = O.locate_new('A', a1*Sys.i + a2*Sys.j + a3*Sys.k)
 
@@ -88,15 +88,15 @@ Solution
 
 Start with a coordinate system
 
-  >>> from sympy.vector import CoordSysCartesian
+  >>> from diofant.vector import CoordSysCartesian
   >>> C = CoordSysCartesian('C')
 
 The scalar field :math:`f` and the measure numbers of the vector field
 :math:`\vec v` are all functions of the coordinate variables of the
 coordinate system in general.
-Hence, define SymPy functions that way.
+Hence, define Diofant functions that way.
 
-  >>> from sympy import symbols, Function
+  >>> from diofant import symbols, Function
   >>> v1, v2, v3, f = symbols('v1 v2 v3 f', cls=Function)
 
 ``v1``, ``v2`` and ``v3`` are the :math:`X`, :math:`Y` and :math:`Z`
@@ -116,10 +116,10 @@ Similarly, the RHS would be defined.
   >>> rhs = ((vfield.dot(C.delop(ffield))) + (ffield * (C.delop.dot(vfield)))).doit()
 
 Now, to prove the product rule, we would just need to equate the expanded and
-simplified versions of the lhs and the rhs, so that the SymPy expressions match.
+simplified versions of the lhs and the rhs, so that the Diofant expressions match.
 
   >>> lhs.expand().simplify() == rhs.expand().simplify()
   True
 
 Thus, the general form of the third product rule mentioned above can be proven
-using :mod:`sympy.vector`.
+using :mod:`diofant.vector`.

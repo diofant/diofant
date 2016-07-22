@@ -6,8 +6,8 @@ Polynomials Manipulation
 
 Computations with polynomials are at the core of computer algebra and
 having a fast and robust polynomials manipulation module is a key for
-building a powerful symbolic manipulation system. SymPy has a dedicated
-module :mod:`sympy.polys` for computing in polynomial algebras over
+building a powerful symbolic manipulation system. Diofant has a dedicated
+module :mod:`diofant.polys` for computing in polynomial algebras over
 various coefficient domains.
 
 There is a vast number of methods implemented, ranging from simple tools

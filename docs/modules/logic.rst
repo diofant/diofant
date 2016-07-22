@@ -1,22 +1,22 @@
 Logic
 =====
 
-.. module:: sympy.logic
+.. module:: diofant.logic
 
 Introduction
 ------------
 
-The logic module for SymPy allows to form and manipulate logic expressions
+The logic module for Diofant allows to form and manipulate logic expressions
 using symbolic and Boolean values.
 
 Forming logical expressions
 ---------------------------
 
 You can build Boolean expressions with the standard python operators ``&``
-(:class:`~sympy.logic.boolalg.And`), ``|`` (:class:`~sympy.logic.boolalg.Or`),
-``~`` (:class:`sympy.logic.boolalg.Not`)::
+(:class:`~diofant.logic.boolalg.And`), ``|`` (:class:`~diofant.logic.boolalg.Or`),
+``~`` (:class:`diofant.logic.boolalg.Not`)::
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y = symbols('x,y')
     >>> y | (x & y)
     Or(And(x, y), y)
@@ -32,8 +32,8 @@ You can also form implications with ``>>`` and ``<<``::
     >>> x << y
     Implies(y, x)
 
-Like most types in SymPy, Boolean expressions inherit from
-:class:`~sympy.core.basic.Basic`::
+Like most types in Diofant, Boolean expressions inherit from
+:class:`~diofant.core.basic.Basic`::
 
     >>> (y & x).subs({x: True, y: True})
     true
@@ -43,60 +43,60 @@ Like most types in SymPy, Boolean expressions inherit from
 The logic module also includes the following functions to derive boolean expressions
 from their truth tables-
 
-.. autofunction:: sympy.logic.boolalg.SOPform
+.. autofunction:: diofant.logic.boolalg.SOPform
 
-.. autofunction:: sympy.logic.boolalg.POSform
+.. autofunction:: diofant.logic.boolalg.POSform
 
 Boolean functions
 -----------------------
 
-.. autoclass:: sympy.logic.boolalg.BooleanTrue
+.. autoclass:: diofant.logic.boolalg.BooleanTrue
 
-.. autoclass:: sympy.logic.boolalg.BooleanFalse
+.. autoclass:: diofant.logic.boolalg.BooleanFalse
 
-.. autoclass:: sympy.logic.boolalg.And
+.. autoclass:: diofant.logic.boolalg.And
 
-.. autoclass:: sympy.logic.boolalg.Or
+.. autoclass:: diofant.logic.boolalg.Or
 
-.. autoclass:: sympy.logic.boolalg.Not
+.. autoclass:: diofant.logic.boolalg.Not
 
-.. autoclass:: sympy.logic.boolalg.Xor
+.. autoclass:: diofant.logic.boolalg.Xor
 
-.. autoclass:: sympy.logic.boolalg.Nand
+.. autoclass:: diofant.logic.boolalg.Nand
 
-.. autoclass:: sympy.logic.boolalg.Nor
+.. autoclass:: diofant.logic.boolalg.Nor
 
-.. autoclass:: sympy.logic.boolalg.Implies
+.. autoclass:: diofant.logic.boolalg.Implies
 
-.. autoclass:: sympy.logic.boolalg.Equivalent
+.. autoclass:: diofant.logic.boolalg.Equivalent
 
-.. autoclass:: sympy.logic.boolalg.ITE
+.. autoclass:: diofant.logic.boolalg.ITE
 
 The following functions can be used to handle Conjunctive and Disjunctive Normal
 forms-
 
-.. autofunction:: sympy.logic.boolalg.to_cnf
+.. autofunction:: diofant.logic.boolalg.to_cnf
 
-.. autofunction:: sympy.logic.boolalg.to_dnf
+.. autofunction:: diofant.logic.boolalg.to_dnf
 
-.. autofunction:: sympy.logic.boolalg.is_cnf
+.. autofunction:: diofant.logic.boolalg.is_cnf
 
-.. autofunction:: sympy.logic.boolalg.is_dnf
+.. autofunction:: diofant.logic.boolalg.is_dnf
 
 Simplification and equivalence-testing
 --------------------------------------
 
-.. autofunction:: sympy.logic.boolalg.simplify_logic
+.. autofunction:: diofant.logic.boolalg.simplify_logic
 
-SymPy's simplify() function can also be used to simplify logic expressions to their
+Diofant's simplify() function can also be used to simplify logic expressions to their
 simplest forms.
 
-.. autofunction:: sympy.logic.boolalg.bool_map
+.. autofunction:: diofant.logic.boolalg.bool_map
 
 Inference
 ---------
 
-.. module: sympy.logic.inference
+.. module: diofant.logic.inference
 
 This module implements some inference routines in propositional logic.
 
@@ -108,8 +108,8 @@ values for ``x`` that make this sentence ``True``. On the other hand, ``(x
 | y) & (x | ~y) & (~x | y)`` is satisfiable with both ``x`` and ``y`` being
 ``True``.
 
-    >>> from sympy.logic.inference import satisfiable
-    >>> from sympy import Symbol
+    >>> from diofant.logic.inference import satisfiable
+    >>> from diofant import Symbol
     >>> x = Symbol('x')
     >>> y = Symbol('y')
     >>> satisfiable(x & ~x)
@@ -120,6 +120,6 @@ values for ``x`` that make this sentence ``True``. On the other hand, ``(x
 As you see, when a sentence is satisfiable, it returns a model that makes that
 sentence ``True``. If it is not satisfiable it will return ``False``.
 
-.. autofunction:: sympy.logic.inference.satisfiable
+.. autofunction:: diofant.logic.inference.satisfiable
 
 .. TODO: write about CNF file format

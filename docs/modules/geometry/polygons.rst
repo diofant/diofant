@@ -1,7 +1,7 @@
 Polygons
 --------
 
-.. module:: sympy.geometry.polygon
+.. module:: diofant.geometry.polygon
 
 .. autoclass:: Polygon
    :members:

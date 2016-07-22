@@ -1,7 +1,7 @@
 Simplify
 ********
 
-.. currentmodule:: sympy.simplify.simplify
+.. currentmodule:: diofant.simplify.simplify
 
 simplify
 --------
@@ -41,7 +41,7 @@ logcombine
 
 Radsimp
 -------
-.. module:: sympy.simplify.radsimp
+.. module:: diofant.simplify.radsimp
 
 radsimp
 ^^^^^^^
@@ -71,7 +71,7 @@ fraction
 
 Ratsimp
 -------
-.. module:: sympy.simplify.ratsimp
+.. module:: diofant.simplify.ratsimp
 
 ratsimp
 ^^^^^^^
@@ -79,7 +79,7 @@ ratsimp
 
 Trigonometric simplification
 ----------------------------
-.. module:: sympy.simplify.trigsimp
+.. module:: diofant.simplify.trigsimp
 
 trigsimp
 ^^^^^^^^
@@ -87,7 +87,7 @@ trigsimp
 
 Power simplification
 --------------------
-.. module:: sympy.simplify.powsimp
+.. module:: diofant.simplify.powsimp
 
 powsimp
 ^^^^^^^
@@ -99,7 +99,7 @@ powdenest
 
 Combinatorial simplification
 ----------------------------
-.. module:: sympy.simplify.combsimp
+.. module:: diofant.simplify.combsimp
 
 combsimp
 ^^^^^^^^
@@ -107,7 +107,7 @@ combsimp
 
 Square Root Denest
 ------------------
-.. module:: sympy.simplify.sqrtdenest
+.. module:: diofant.simplify.sqrtdenest
 
 sqrtdenest
 ^^^^^^^^^^
@@ -115,7 +115,7 @@ sqrtdenest
 
 Common Subexpresion Elimination
 -------------------------------
-.. module:: sympy.simplify.cse_main
+.. module:: diofant.simplify.cse_main
 
 cse
 ^^^
@@ -123,15 +123,15 @@ cse
 
 opt_cse
 ^^^^^^^
-.. autofunction:: sympy.simplify.cse_main.opt_cse
+.. autofunction:: diofant.simplify.cse_main.opt_cse
 
 tree_cse
 ^^^^^^^^
-.. autofunction:: sympy.simplify.cse_main.tree_cse
+.. autofunction:: diofant.simplify.cse_main.tree_cse
 
 Hypergeometric Function Expansion
 ---------------------------------
-.. module:: sympy.simplify.hyperexpand
+.. module:: diofant.simplify.hyperexpand
 
 hyperexpand
 ^^^^^^^^^^^
@@ -139,7 +139,7 @@ hyperexpand
 
 Traversal Tools
 ---------------
-.. module:: sympy.simplify.traversaltools
+.. module:: diofant.simplify.traversaltools
 
 use
 ^^^
@@ -147,7 +147,7 @@ use
 
 EPath Tools
 -----------
-.. module:: sympy.simplify.epathtools
+.. module:: diofant.simplify.epathtools
 
 EPath class
 ^^^^^^^^^^^

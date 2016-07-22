@@ -4,13 +4,13 @@ Printing System
 See the :ref:`tutorial-printing` section in Tutorial for introduction into
 printing.
 
-This guide documents the printing system in SymPy and how it works
+This guide documents the printing system in Diofant and how it works
 internally.
 
 Printer Class
 -------------
 
-.. automodule:: sympy.printing.printer
+.. automodule:: diofant.printing.printer
 
 The main class responsible for printing is ``Printer`` (see also its
 `source code
@@ -25,10 +25,10 @@ The main class responsible for printing is ``Printer`` (see also its
 PrettyPrinter Class
 -------------------
 
-The pretty printing subsystem is implemented in ``sympy.printing.pretty.pretty``
+The pretty printing subsystem is implemented in ``diofant.printing.pretty.pretty``
 by the ``PrettyPrinter`` class deriving from ``Printer``. It relies on
-the modules ``sympy.printing.pretty.stringPict``, and
-``sympy.printing.pretty.pretty_symbology`` for rendering nice-looking
+the modules ``diofant.printing.pretty.stringPict``, and
+``diofant.printing.pretty.pretty_symbology`` for rendering nice-looking
 formulas.
 
 The module ``stringPict`` provides a base class ``stringPict`` and a derived
@@ -39,7 +39,7 @@ The module ``pretty_symbology`` provides primitives to construct 2D shapes
 (hline, vline, etc) together with a technique to use unicode automatically
 when possible.
 
-.. module:: sympy.printing.pretty.pretty
+.. module:: diofant.printing.pretty.pretty
 
 .. autoclass:: PrettyPrinter
    :members: _use_unicode, doprint
@@ -52,16 +52,16 @@ when possible.
 CCodePrinter
 ------------
 
-.. module:: sympy.printing.ccode
+.. module:: diofant.printing.ccode
 
 This class implements C code printing (i.e. it converts Python expressions
 to strings of C code).
 
 Usage::
 
-    >>> from sympy.printing import print_ccode
-    >>> from sympy.functions import sin, cos, Abs
-    >>> from sympy.abc import x
+    >>> from diofant.printing import print_ccode
+    >>> from diofant.functions import sin, cos, Abs
+    >>> from diofant.abc import x
     >>> print_ccode(sin(x)**2 + cos(x)**2)
     pow(sin(x), 2) + pow(cos(x), 2)
     >>> print_ccode(2*x + cos(x), assign_to="result")
@@ -69,29 +69,29 @@ Usage::
     >>> print_ccode(Abs(x**2))
     fabs(pow(x, 2))
 
-.. autodata:: sympy.printing.ccode.known_functions
+.. autodata:: diofant.printing.ccode.known_functions
 
-.. autoclass:: sympy.printing.ccode.CCodePrinter
+.. autoclass:: diofant.printing.ccode.CCodePrinter
    :members:
 
    .. autoattribute:: CCodePrinter.printmethod
 
 
-.. autofunction:: sympy.printing.ccode.ccode
+.. autofunction:: diofant.printing.ccode.ccode
 
-.. autofunction:: sympy.printing.ccode.print_ccode
+.. autofunction:: diofant.printing.ccode.print_ccode
 
 Fortran Printing
 ----------------
 
-The ``fcode`` function translates a sympy expression into Fortran code. The main
+The ``fcode`` function translates a diofant expression into Fortran code. The main
 purpose is to take away the burden of manually translating long mathematical
 expressions. Therefore the resulting expression should also require no (or
 very little) manual tweaking to make it compilable. The optional arguments
 of ``fcode`` can be used to fine-tune the behavior of ``fcode`` in such a way
 that manual changes in the result are no longer needed.
 
-.. module:: sympy.printing.fcode
+.. module:: diofant.printing.fcode
 .. autofunction:: fcode
 .. autofunction:: print_fcode
 .. autoclass:: FCodePrinter
@@ -102,7 +102,7 @@ that manual changes in the result are no longer needed.
 
 Two basic examples:
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x = symbols("x")
     >>> fcode(sqrt(1-x**2))
     '      sqrt(-x**2 + 1)'
@@ -212,24 +212,24 @@ translated in pure Fortran and (iii) a string of Fortran code. A few examples:
 Mathematica code printing
 -------------------------
 
-.. module:: sympy.printing.mathematica
+.. module:: diofant.printing.mathematica
 
-.. autodata:: sympy.printing.mathematica.known_functions
+.. autodata:: diofant.printing.mathematica.known_functions
 
-.. autoclass:: sympy.printing.mathematica.MCodePrinter
+.. autoclass:: diofant.printing.mathematica.MCodePrinter
    :members:
 
    .. autoattribute:: MCodePrinter.printmethod
 
-.. autofunction:: sympy.printing.mathematica.mathematica_code
+.. autofunction:: diofant.printing.mathematica.mathematica_code
 
 LambdaPrinter
 -------------
 
-.. module:: sympy.printing.lambdarepr
+.. module:: diofant.printing.lambdarepr
 
 This classes implements printing to strings that can be used by the
-:py:func:`sympy.utilities.lambdify.lambdify` function.
+:py:func:`diofant.utilities.lambdify.lambdify` function.
 
 .. autoclass:: LambdaPrinter
 
@@ -241,9 +241,9 @@ This classes implements printing to strings that can be used by the
 LatexPrinter
 ------------
 
-.. module:: sympy.printing.latex
+.. module:: diofant.printing.latex
 
-This class implements LaTeX printing. See ``sympy.printing.latex``.
+This class implements LaTeX printing. See ``diofant.printing.latex``.
 
 .. autodata:: accepted_latex_functions
 
@@ -259,9 +259,9 @@ This class implements LaTeX printing. See ``sympy.printing.latex``.
 MathMLPrinter
 -------------
 
-.. module:: sympy.printing.mathml
+.. module:: diofant.printing.mathml
 
-This class is responsible for MathML printing. See ``sympy.printing.mathml``.
+This class is responsible for MathML printing. See ``diofant.printing.mathml``.
 
 More info on mathml content: http://www.w3.org/TR/MathML2/chapter4.html
 
@@ -277,12 +277,12 @@ More info on mathml content: http://www.w3.org/TR/MathML2/chapter4.html
 PythonPrinter
 -------------
 
-.. module:: sympy.printing.python
+.. module:: diofant.printing.python
 
 This class implements Python printing. Usage::
 
-    >>> from sympy import print_python, sin
-    >>> from sympy.abc import x
+    >>> from diofant import print_python, sin
+    >>> from diofant.abc import x
 
     >>> print_python(5*x**3 + sin(x))
     x = Symbol('x')
@@ -291,7 +291,7 @@ This class implements Python printing. Usage::
 ReprPrinter
 -----------
 
-.. module:: sympy.printing.repr
+.. module:: diofant.printing.repr
 
 This printer generates executable code. This code satisfies the identity
 ``eval(srepr(expr)) == expr``.
@@ -306,9 +306,9 @@ This printer generates executable code. This code satisfies the identity
 StrPrinter
 ----------
 
-.. module:: sympy.printing.str
+.. module:: diofant.printing.str
 
-This module generates readable representations of SymPy expressions.
+This module generates readable representations of Diofant expressions.
 
 .. autoclass:: StrPrinter
    :members: parenthesize, stringify, emptyPrinter
@@ -320,7 +320,7 @@ This module generates readable representations of SymPy expressions.
 Tree Printing
 -------------
 
-.. module:: sympy.printing.tree
+.. module:: diofant.printing.tree
 
 The functions in this module create a representation of an expression as a
 tree.
@@ -336,29 +336,29 @@ tree.
 Implementation - Helper Classes/Functions
 -----------------------------------------
 
-.. module:: sympy.printing.conventions
+.. module:: diofant.printing.conventions
 
 .. autofunction:: split_super_sub
 
 CodePrinter
 +++++++++++
 
-.. module:: sympy.printing.codeprinter
+.. module:: diofant.printing.codeprinter
 
 This class is a base class for other classes that implement code-printing
 functionality, and additionally lists a number of functions that cannot be
 easily translated to C or Fortran.
 
-.. autoclass:: sympy.printing.codeprinter.CodePrinter
+.. autoclass:: diofant.printing.codeprinter.CodePrinter
 
    .. autoattribute:: CodePrinter.printmethod
 
-.. autoexception:: sympy.printing.codeprinter.AssignmentError
+.. autoexception:: diofant.printing.codeprinter.AssignmentError
 
 Precedence
 ++++++++++
 
-.. module:: sympy.printing.precedence
+.. module:: diofant.printing.precedence
 
 .. autodata:: PRECEDENCE
 
@@ -382,7 +382,7 @@ Precedence
 Pretty-Printing Implementation Helpers
 --------------------------------------
 
-.. module:: sympy.printing.pretty.pretty_symbology
+.. module:: diofant.printing.pretty.pretty_symbology
 
 .. autofunction:: U
 .. autofunction:: pretty_use_unicode
@@ -423,7 +423,7 @@ The following constants/functions are for rendering atoms and symbols.
 .. autofunction:: pretty_symbol
 .. autofunction:: annotated
 
-.. automodule:: sympy.printing.pretty.stringpict
+.. automodule:: diofant.printing.pretty.stringpict
 
 .. autoclass:: stringPict
    :members:
@@ -434,4 +434,4 @@ The following constants/functions are for rendering atoms and symbols.
 dotprint
 --------
 
-.. autofunction:: sympy.printing.dot.dotprint
+.. autofunction:: diofant.printing.dot.dotprint

@@ -1,7 +1,7 @@
 Plotting
 ========
 
-.. module:: sympy.plotting.plot
+.. module:: diofant.plotting.plot
 
 Introduction
 ------------
@@ -25,7 +25,7 @@ argument.
 Plot Class
 ----------
 
-.. autoclass:: sympy.plotting.plot.Plot
+.. autoclass:: diofant.plotting.plot.Plot
    :members:
 
 Plotting Function Reference
@@ -41,37 +41,37 @@ Plotting Function Reference
 
 .. autofunction:: plot3d_parametric_surface
 
-.. autofunction:: sympy.plotting.plot_implicit.plot_implicit
+.. autofunction:: diofant.plotting.plot_implicit.plot_implicit
 
 Series Classes
 --------------
 
-.. autoclass:: sympy.plotting.plot.BaseSeries
+.. autoclass:: diofant.plotting.plot.BaseSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.Line2DBaseSeries
+.. autoclass:: diofant.plotting.plot.Line2DBaseSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.LineOver1DRangeSeries
+.. autoclass:: diofant.plotting.plot.LineOver1DRangeSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.Parametric2DLineSeries
+.. autoclass:: diofant.plotting.plot.Parametric2DLineSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.Line3DBaseSeries
+.. autoclass:: diofant.plotting.plot.Line3DBaseSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.Parametric3DLineSeries
+.. autoclass:: diofant.plotting.plot.Parametric3DLineSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.SurfaceBaseSeries
+.. autoclass:: diofant.plotting.plot.SurfaceBaseSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.SurfaceOver2DRangeSeries
+.. autoclass:: diofant.plotting.plot.SurfaceOver2DRangeSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot.ParametricSurfaceSeries
+.. autoclass:: diofant.plotting.plot.ParametricSurfaceSeries
    :members:
 
-.. autoclass:: sympy.plotting.plot_implicit.ImplicitSeries
+.. autoclass:: diofant.plotting.plot_implicit.ImplicitSeries
    :members:

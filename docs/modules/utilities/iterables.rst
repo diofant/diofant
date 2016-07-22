@@ -12,7 +12,7 @@ return the variations with repetition if set to True, or the variations
 without repetition if set to False.
 
 Examples::
-    >>> from sympy.utilities.iterables import variations
+    >>> from diofant.utilities.iterables import variations
     >>> list(variations([1,2,3], 2))
     [(1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)]
     >>> list(variations([1,2,3], 2, True))
@@ -32,13 +32,13 @@ of partitions.
 
 partitions::
 
-    >>> from sympy.utilities.iterables import partitions
+    >>> from diofant.utilities.iterables import partitions
     >>> [p.copy() for s, p in partitions(7, m=2, size=True) if s == 2]
     [{1: 1, 6: 1}, {2: 1, 5: 1}, {3: 1, 4: 1}]
 
 multiset_partitions::
 
-    >>> from sympy.utilities.iterables import multiset_partitions
+    >>> from diofant.utilities.iterables import multiset_partitions
     >>> [p for p in multiset_partitions(3, 2)]
     [[[0, 1], [2]], [[0, 2], [1]], [[0], [1, 2]]]
     >>> [p for p in multiset_partitions([1, 1, 1, 2], 2)]
@@ -46,7 +46,7 @@ multiset_partitions::
 
 kbins::
 
-    >>> from sympy.utilities.iterables import kbins
+    >>> from diofant.utilities.iterables import kbins
     >>> def show(k):
     ...     rv = []
     ...     for p in k:
@@ -75,5 +75,5 @@ kbins::
 Docstring
 =========
 
-.. automodule:: sympy.utilities.iterables
+.. automodule:: diofant.utilities.iterables
    :members:

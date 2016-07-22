@@ -1,4 +1,4 @@
-This directory contains SymPy example programs.
+This directory contains Diofant example programs.
 
 -------------------
 DIRECTORY STRUCTURE
@@ -9,7 +9,7 @@ the mathematics and programming concepts.  They roughly follow the following
 guide:
 
 beginner :
-  Simple examples appropriate for first steps in using SymPy, for someone
+  Simple examples appropriate for first steps in using Diofant, for someone
   with little or no programming experience.
 
 intermediate :
@@ -28,7 +28,7 @@ All the working examples can be run by executing the "all.py" script, use
 commented out in this script.
 
 To run the individual examples one needs to have Python version >= 2.7
-installed and SymPy must be in your PYTHONPATH environment variable.  Most
+installed and Diofant must be in your PYTHONPATH environment variable.  Most
 examples can be run from the command line python and the name of the example::
 
     $ export PYTHONPATH=$PWD/..:$PYTHONPATH
@@ -36,7 +36,7 @@ examples can be run from the command line python and the name of the example::
     (3*a*b**2)**c
 
 Note, that on most systems, the current directory is searched by Python
-automatically, so "python beginner/basic.py" works from the sympy root
+automatically, so "python beginner/basic.py" works from the diofant root
 directory, however there are systems (Ubuntu Intrepid) where this
 doesn't work by default, unless you put "PYTHONPATH=." into your
 .bashrc for example.

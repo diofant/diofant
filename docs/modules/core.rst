@@ -1,9 +1,9 @@
-SymPy Core
-==========
+Diofant Core
+============
 
 sympify
 -------
-.. module:: sympy.core.sympify
+.. module:: diofant.core.sympify
 
 sympify
 ^^^^^^^
@@ -12,11 +12,11 @@ sympify
 assumptions
 -----------
 
-.. automodule:: sympy.core.assumptions
+.. automodule:: diofant.core.assumptions
 
 cache
 -------
-.. module:: sympy.core.cache
+.. module:: diofant.core.cache
 
 cacheit
 ^^^^^^^
@@ -24,7 +24,7 @@ cacheit
 
 basic
 -----
-.. module:: sympy.core.basic
+.. module:: diofant.core.basic
 
 Basic
 ^^^^^
@@ -38,11 +38,11 @@ Atom
 
 core
 ----
-.. module:: sympy.core.core
+.. module:: diofant.core.core
 
 singleton
 ---------
-.. module:: sympy.core.singleton
+.. module:: diofant.core.singleton
 
 S
 ^
@@ -51,7 +51,7 @@ S
 
 expr
 ----
-.. module:: sympy.core.expr
+.. module:: diofant.core.expr
 
 Expr
 ----
@@ -65,7 +65,7 @@ AtomicExpr
 
 symbol
 ------
-.. module:: sympy.core.symbol
+.. module:: diofant.core.symbol
 
 Symbol
 ^^^^^^
@@ -92,7 +92,7 @@ var
 
 numbers
 -------
-.. module:: sympy.core.numbers
+.. module:: diofant.core.numbers
 
 Number
 ^^^^^^
@@ -222,7 +222,7 @@ GoldenRatio
 
 power
 -----
-.. module:: sympy.core.power
+.. module:: diofant.core.power
 
 Pow
 ^^^
@@ -235,7 +235,7 @@ integer_nthroot
 
 mul
 ---
-.. module:: sympy.core.mul
+.. module:: diofant.core.mul
 
 Mul
 ^^^
@@ -248,7 +248,7 @@ prod
 
 add
 ---
-.. module:: sympy.core.add
+.. module:: diofant.core.add
 
 Add
 ^^^
@@ -257,7 +257,7 @@ Add
 
 mod
 ---
-.. module:: sympy.core.mod
+.. module:: diofant.core.mod
 
 Mod
 ^^^
@@ -266,7 +266,7 @@ Mod
 
 relational
 ----------
-.. module:: sympy.core.relational
+.. module:: diofant.core.relational
 
 Rel
 ^^^
@@ -340,7 +340,7 @@ StrictLessThan
 
 multidimensional
 ----------------
-.. module:: sympy.core.multidimensional
+.. module:: diofant.core.multidimensional
 
 vectorize
 ^^^^^^^^^
@@ -349,7 +349,7 @@ vectorize
 
 function
 --------
-.. module:: sympy.core.function
+.. module:: diofant.core.function
 
 Lambda
 ^^^^^^
@@ -382,12 +382,12 @@ Function
 
 .. note:: Not all functions are the same
 
-   SymPy defines many functions (like ``cos`` and ``factorial``). It also
+   Diofant defines many functions (like ``cos`` and ``factorial``). It also
    allows the user to create generic functions which act as argument
    holders. Such functions are created just like symbols:
 
-   >>> from sympy import Function, cos
-   >>> from sympy.abc import x
+   >>> from diofant import Function, cos
+   >>> from diofant.abc import x
    >>> f = Function('f')
    >>> f(2) + f(x)
    f(2) + f(x)
@@ -399,10 +399,10 @@ Function
    >>> e.atoms(Function) == {f(x), cos(x)}
    True
 
-   If you just want the function you defined, not SymPy functions, the
+   If you just want the function you defined, not Diofant functions, the
    thing to search for is AppliedUndef:
 
-   >>> from sympy.core.function import AppliedUndef
+   >>> from diofant.core.function import AppliedUndef
    >>> e.atoms(AppliedUndef) == {f(x)}
    True
 
@@ -462,7 +462,7 @@ nfloat
 
 evalf
 -----
-.. module:: sympy.core.evalf
+.. module:: diofant.core.evalf
 
 .. autoclass:: EvalfMixin
    :members:
@@ -478,7 +478,7 @@ N
 
 containers
 ----------
-.. module:: sympy.core.containers
+.. module:: diofant.core.containers
 
 Tuple
 ^^^^^
@@ -492,7 +492,7 @@ Dict
 
 compatibility
 -------------
-.. automodule:: sympy.core.compatibility
+.. automodule:: diofant.core.compatibility
    :members:
 
 iterable
@@ -509,7 +509,7 @@ as_int
 
 exprtools
 ---------
-.. module:: sympy.core.exprtools
+.. module:: diofant.core.exprtools
 
 gcd_terms
 ^^^^^^^^^

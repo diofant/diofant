@@ -39,11 +39,11 @@ import os
 import sys
 import traceback
 
-# add local sympy to the module path
+# add local diofant to the module path
 this_file = os.path.abspath(__file__)
-sympy_dir = os.path.join(os.path.dirname(this_file), "..")
-sympy_dir = os.path.normpath(sympy_dir)
-sys.path.insert(0, sympy_dir)
+diofant_dir = os.path.join(os.path.dirname(this_file), "..")
+diofant_dir = os.path.normpath(diofant_dir)
+sys.path.insert(0, diofant_dir)
 
 TERMINAL_EXAMPLES = [
     "intermediate.infinite_1d_box",

@@ -2,16 +2,16 @@
  Gotchas and Pitfalls
 =====================
 
-To begin, we should make something about SymPy clear.  SymPy is nothing more
+To begin, we should make something about Diofant clear.  Diofant is nothing more
 than a Python library, like ``NumPy``, ``Django``, or even modules in the
-Python standard library ``sys`` or ``re``.  What this means is that SymPy does
+Python standard library ``sys`` or ``re``.  What this means is that Diofant does
 not add anything to the Python language.  Limitations that are inherent in the
-Python language are also inherent in SymPy.  It also means that SymPy tries to
-use Python idioms whenever possible, making programming with SymPy easy for
+Python language are also inherent in Diofant.  It also means that Diofant tries to
+use Python idioms whenever possible, making programming with Diofant easy for
 those already familiar with programming with Python.
 
 For example, implicit multiplication (like ``3x`` or ``3 x``) is not
-allowed in Python, and thus not allowed in SymPy: to multiply ``3``
+allowed in Python, and thus not allowed in Diofant: to multiply ``3``
 and ``x``, you must type ``3*x`` with the ``*``.  Also, to
 raise something to a power, use ``**``, not ``^`` (logical exclusive
 or in Python) as many computer algebra systems use.  Parentheses
@@ -22,13 +22,13 @@ or in Python) as many computer algebra systems use.  Parentheses
 Variables and Symbols
 =====================
 
-One consequence of this fact is that SymPy can be used in any environment
+One consequence of this fact is that Diofant can be used in any environment
 where Python is available.  We just import it, like we would any other
 library:
 
-    >>> from sympy import *
+    >>> from diofant import *
 
-This imports all the functions and classes from SymPy into our interactive
+This imports all the functions and classes from Diofant into our interactive
 Python session.  Now, suppose we start to do a computation.
 
     >>> x + 1
@@ -38,8 +38,8 @@ Python session.  Now, suppose we start to do a computation.
 
 Oops! What happened here?  We tried to use the variable ``x``, but it tells us
 that ``x`` is not defined.  In Python, variables have no meaning until they
-are defined.  SymPy is no different.  Unlike many symbolic manipulation
-systems you may have used, in SymPy, variables are not defined automatically.
+are defined.  Diofant is no different.  Unlike many symbolic manipulation
+systems you may have used, in Diofant, variables are not defined automatically.
 To define variables, we must use ``symbols``.
 
     >>> x = symbols('x')
@@ -65,7 +65,7 @@ variable it is assigned to need not have anything to do with one another.
 
 Here we have done the very confusing thing of assigning a Symbol with the name
 ``a`` to the variable ``b``, and a Symbol of the name ``b`` to the variable
-``a``.  Now the Python variable named ``a`` points to the SymPy Symbol named
+``a``.  Now the Python variable named ``a`` points to the Diofant Symbol named
 ``b``, and visa versa.  How confusing.  We could have also done something like
 
     >>> crazy = symbols('unrelated')
@@ -83,9 +83,9 @@ variables.
 
 To avoid confusion, throughout this tutorial, Symbol names and Python variable
 names will always coincide.  Furthermore, the word "Symbol" will refer to a
-SymPy Symbol and the word "variable" will refer to a Python variable.
+Diofant Symbol and the word "variable" will refer to a Python variable.
 
-Finally, let us be sure we understand the difference between SymPy Symbols and
+Finally, let us be sure we understand the difference between Diofant Symbols and
 Python variables.  Consider the following::
 
   x = symbols('x')
@@ -103,11 +103,11 @@ you're wrong.  Let's see what really happens
     x + 1
 
 Changing ``x`` to ``2`` had no effect on ``expr``.  This is because ``x = 2``
-changes the Python variable ``x`` to ``2``, but has no effect on the SymPy
+changes the Python variable ``x`` to ``2``, but has no effect on the Diofant
 Symbol ``x``, which was what we used in creating ``expr``.  When we created
 ``expr``, the Python variable ``x`` was a Symbol.  After we created, it, we
 changed the Python variable ``x`` to 2.  But ``expr`` remains the same.  This
-behavior is not unique to SymPy.  All Python programs work this way: if a
+behavior is not unique to Diofant.  All Python programs work this way: if a
 variable is changed, expressions that were already created with that variable
 do not change automatically.  For example
 
@@ -132,9 +132,9 @@ do not change automatically.  For example
 In this example, if we want to know what ``expr`` is with the new value of
 ``x``, we need to reevaluate the code that created ``expr``, namely, ``expr =
 x + 1``.  This can be complicated if several lines created ``expr``.  One
-advantage of using a symbolic computation system like SymPy is that we can
+advantage of using a symbolic computation system like Diofant is that we can
 build a symbolic representation for ``expr``, and then substitute ``x`` with
-values.  The correct way to do this in SymPy is to use ``subs``, which will be
+values.  The correct way to do this in Diofant is to use ``subs``, which will be
 discussed in more detail later.
 
     >>> x = symbols('x')
@@ -142,13 +142,13 @@ discussed in more detail later.
     >>> expr.subs(x, 2)
     3
 
-You can also import common symbol names from ``sympy.abc`` module.
+You can also import common symbol names from ``diofant.abc`` module.
 
-    >>> from sympy.abc import w
+    >>> from diofant.abc import w
     >>> w
     w
-    >>> import sympy
-    >>> dir(sympy.abc)  #doctest: +SKIP
+    >>> import diofant
+    >>> dir(diofant.abc)  #doctest: +SKIP
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
     'P', 'Q', 'R', 'S', 'Symbol', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
     '__builtins__', '__doc__', '__file__', '__name__', '__package__', '_greek',
@@ -159,24 +159,24 @@ You can also import common symbol names from ``sympy.abc`` module.
     'v', 'w', 'x', 'xi', 'y', 'z', 'zeta']
 
 If you want control over the assumptions of the variables, use
-:func:`~sympy.core.symbol.Symbol` and :func:`~sympy.core.symbol.symbols`.
+:func:`~diofant.core.symbol.Symbol` and :func:`~diofant.core.symbol.symbols`.
 
-Lastly, it is recommended that you not use :class:`I <sympy.core.numbers.ImaginaryUnit>`,
-:class:`E <sympy.core.numbers.Exp1>`, :class:`~sympy.core.singleton.S`,
-:func:`~sympy.core.evalf.N`, or :class:`O <sympy.series.order.Order>`,
+Lastly, it is recommended that you not use :class:`I <diofant.core.numbers.ImaginaryUnit>`,
+:class:`E <diofant.core.numbers.Exp1>`, :class:`~diofant.core.singleton.S`,
+:func:`~diofant.core.evalf.N`, or :class:`O <diofant.series.order.Order>`,
 for variable or symbol names, as those
 are used for the imaginary unit (:math:`i`), the base of the natural
-logarithm (:math:`e`), the :func:`~sympy.core.sympify.sympify` function (see :ref:`Symbolic
-Expressions<symbolic-expressions>` below), numeric evaluation (:func:`~sympy.core.evalf.N`
+logarithm (:math:`e`), the :func:`~diofant.core.sympify.sympify` function (see :ref:`Symbolic
+Expressions<symbolic-expressions>` below), numeric evaluation (:func:`~diofant.core.evalf.N`
 is equivalent to :ref:`evalf()<evalf-label>` ),
 the `big O <http://en.wikipedia.org/wiki/Big_O_notation>`_ order symbol
 (as in :math:`O(n\log{n})`).  You can use the
-mnemonic ``QCOSINE`` to remember what Symbols are defined by default in SymPy.
+mnemonic ``QCOSINE`` to remember what Symbols are defined by default in Diofant.
 Or better yet, always use lowercase letters for Symbol names.  Python will
-not prevent you from overriding default SymPy names or functions, so be
+not prevent you from overriding default Diofant names or functions, so be
 careful.
 
-    >>> cos(pi)  # cos and pi are a built-in sympy names.
+    >>> cos(pi)  # cos and pi are a built-in diofant names.
     -1
     >>> pi = 3   # Notice that there is no warning for overriding pi.
     >>> cos(pi)
@@ -186,13 +186,13 @@ careful.
     ...
     >>> cos(pi)
     15
-    >>> from sympy import cos  # reimport to restore normal behavior
+    >>> from diofant import cos  # reimport to restore normal behavior
 
-To get a full list of all default names in SymPy do:
+To get a full list of all default names in Diofant do:
 
-    >>> import sympy
-    >>> dir(sympy)  #doctest: +SKIP
-    # A big list of all default sympy names and functions follows.
+    >>> import diofant
+    >>> dir(diofant)  #doctest: +SKIP
+    # A big list of all default diofant names and functions follows.
     # Ignore everything that starts and ends with __.
 
 If you have `IPython <http://ipython.org/>`_ installed and
@@ -204,20 +204,20 @@ the TAB key to get a list of all built-in names and to autocomplete.
 Equals signs
 ============
 
-Another very important consequence of the fact that SymPy does not extend
-Python syntax is that ``=`` does not represent equality in SymPy.  Rather it
+Another very important consequence of the fact that Diofant does not extend
+Python syntax is that ``=`` does not represent equality in Diofant.  Rather it
 is Python variable assignment.  This is hard-coded into the Python language,
-and SymPy makes no attempts to change that.
+and Diofant makes no attempts to change that.
 
 You may think, however, that ``==``, which is used for equality testing in
-Python, is used for SymPy as equality.  This is not quite correct either.  Let
+Python, is used for Diofant as equality.  This is not quite correct either.  Let
 us see what happens when we use ``==``.
 
     >>> x + 1 == 4
     False
 
 Instead of treating ``x + 1 == 4`` symbolically, we just got ``False``.  In
-SymPy, ``==`` represents exact structural equality testing.  This means that
+Diofant, ``==`` represents exact structural equality testing.  This means that
 ``a == b`` means that we are *asking* if `a = b`.  We always get a ``bool`` as
 the result of ``==``.  There is a separate object, called ``Eq``, which can be
 used to create symbolic equalities
@@ -232,7 +232,7 @@ if `(x + 1)^2 = x^2 + 2x + 1`.  We might try something like this:
     False
 
 We got ``False`` again. However, `(x + 1)^2` *does* equal `x^2 + 2x + 1`. What
-is going on here?  Did we find a bug in SymPy, or is it just not powerful
+is going on here?  Did we find a bug in Diofant, or is it just not powerful
 enough to recognize this basic algebraic fact?
 
 Recall from above that ``==`` represents *exact* structural equality testing.
@@ -241,7 +241,7 @@ they are exactly equal structurally.  Here, `(x + 1)^2` and `x^2 + 2x + 1` are
 not the same symbolically. One is the power of an addition of two terms, and
 the other is the addition of three terms.
 
-It turns out that when using SymPy as a library, having ``==`` test for exact
+It turns out that when using Diofant as a library, having ``==`` test for exact
 symbolic equality is far more useful than having it represent symbolic
 equality, or having it test for mathematical equality.  However, as a new
 user, you will probably care more about the latter two.  We have already seen
@@ -277,31 +277,31 @@ equal by evaluating them numerically at random points.
 Symbolic Expressions
 ====================
 
-.. _python-vs-sympy-numbers:
+.. _python-vs-diofant-numbers:
 
-Python numbers vs. SymPy Numbers
---------------------------------
+Python numbers vs. Diofant Numbers
+----------------------------------
 
-SymPy uses its own classes for integers, rational numbers, and floating
+Diofant uses its own classes for integers, rational numbers, and floating
 point numbers instead of the default Python `int` and `float`
 types because it allows for more control.  But you have to be careful.
 If you type an expression that just has numbers in it, it will default
-to a Python expression.  Use the :func:`sympy.core.sympify.sympify` function, or just
-:func:`S <sympy.core.sympify.sympify>`, to ensure that something is a SymPy expression.
+to a Python expression.  Use the :func:`diofant.core.sympify.sympify` function, or just
+:func:`S <diofant.core.sympify.sympify>`, to ensure that something is a Diofant expression.
 
     >>> 6.2  # Python float. Notice the floating point accuracy problems.
     6.2
     >>> type(6.2)
     <class 'float'>
-    >>> Float(6.2)  # SymPy Float has no such problems because of arbitrary precision.
+    >>> Float(6.2)  # Diofant Float has no such problems because of arbitrary precision.
     6.20000000000000
 
-If you include numbers in a SymPy expression, they will be sympified
+If you include numbers in a Diofant expression, they will be sympified
 automatically, but there is one gotcha you should be aware of.  If you
-do ``<number>/<number>`` inside of a SymPy expression, Python will
-evaluate the two numbers before SymPy has a chance to get
-to them.  The solution is to :func:`~sympy.core.sympify.sympify` one of the
-numbers, or use :class:`~sympy.core.numbers.Rational`.
+do ``<number>/<number>`` inside of a Diofant expression, Python will
+evaluate the two numbers before Diofant has a chance to get
+to them.  The solution is to :func:`~diofant.core.sympify.sympify` one of the
+numbers, or use :class:`~diofant.core.numbers.Rational`.
 
     >>> x**(1/2)
     x**0.5
@@ -322,9 +322,9 @@ you don't have to worry about this problem:
 .. note::
 
     A common mistake is copying an expression that is printed and reusing
-    it.  If the expression has a :class:`~sympy.core.numbers.Rational`
+    it.  If the expression has a :class:`~diofant.core.numbers.Rational`
     (i.e., ``<number>/<number>``) in it, you will not get the same result,
-    obtaining the Python result for the division rather than a SymPy
+    obtaining the Python result for the division rather than a Diofant
     Rational.
 
     >>> x = Symbol('x')
@@ -354,10 +354,10 @@ you don't have to worry about this problem:
     >>> x**(1/2)
     x**0.5
 
-:class:`~sympy.core.numbers.Rational` only works for number/number and is only meant for
+:class:`~diofant.core.numbers.Rational` only works for number/number and is only meant for
 rational numbers.  If you want a fraction with symbols or expressions in
 it, just use ``/``.  If you do number/expression or expression/number,
-then the number will automatically be converted into a SymPy Number.
+then the number will automatically be converted into a Diofant Number.
 You only need to be careful with number/number.
 
     >>> Rational(2, x)
@@ -370,7 +370,7 @@ You only need to be careful with number/number.
 Evaluating Expressions with Floats and Rationals
 ------------------------------------------------
 
-SymPy keeps track of the precision of ``Float`` objects. The default precision is
+Diofant keeps track of the precision of ``Float`` objects. The default precision is
 15 digits. When an expression involving a ``Float`` is evaluated, the result
 will be expressed to 15 digits of precision but those digits (depending
 on the numbers involved with the calculation) may not all be significant.
@@ -477,7 +477,7 @@ values for expressions:
     >>> big_trig_identity.subs(x, Rational(1, 10)).n(2)
     0.e-91
 
-    3) Try to simplify the expression. In this case, SymPy will recognize
+    3) Try to simplify the expression. In this case, Diofant will recognize
     the trig identity and simplify it to zero so you don't even have to
     evaluate it numerically:
 
@@ -490,7 +490,7 @@ values for expressions:
 Immutability of Expressions
 ---------------------------
 
-Expressions in SymPy are immutable, and cannot be modified by an in-place
+Expressions in Diofant are immutable, and cannot be modified by an in-place
 operation.  This means that a function will always return an object, and the
 original expression will not be modified. The following example snippet
 demonstrates how this works::
@@ -505,13 +505,13 @@ demonstrates how this works::
 	if __name__ == "__main__":
 	    main()
 
-The output shows that the :func:`~sympy.core.basic.Basic.subs` function has replaced variable
+The output shows that the :func:`~diofant.core.basic.Basic.subs` function has replaced variable
 ``x`` with variable ``a``, and variable ``y`` with variable ``b``::
 
 	original = 3*x + 4*y
 	modified = 3*a + 4*b
 
-The :func:`~sympy.core.basic.Basic.subs` function does not modify the original expression `expr``.
+The :func:`~diofant.core.basic.Basic.subs` function does not modify the original expression `expr``.
 Rather, a modified copy of the expression is returned. This returned object
 is stored in the variable ``expr_modified``. Note that unlike C/C++ and
 other high-level languages, Python does not require you to declare a variable
@@ -520,11 +520,11 @@ before it is used.
 Inverse Trig Functions
 ----------------------
 
-SymPy uses different names for some functions than most computer algebra
+Diofant uses different names for some functions than most computer algebra
 systems.  In particular, the inverse trig functions use the python names
-of :func:`~sympy.functions.elementary.trigonometric.asin`,
-:func:`~sympy.functions.elementary.trigonometric.acos` and
+of :func:`~diofant.functions.elementary.trigonometric.asin`,
+:func:`~diofant.functions.elementary.trigonometric.acos` and
 so on instead of the usual ``arcsin``
 and ``arccos``.  Use the methods described in the section
 :ref:`Variables and Symbols <tutorial-gotchas-symbols>`
-above to see the names of all SymPy functions.
+above to see the names of all Diofant functions.

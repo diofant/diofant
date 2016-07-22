@@ -15,7 +15,7 @@ $ python fem.py
 
 """
 
-from sympy import (symbols, Symbol, factorial, Rational, zeros, eye,
+from diofant import (symbols, Symbol, factorial, Rational, zeros, eye,
                    integrate, diff, pprint, reduced)
 
 x, y, z = symbols('x,y,z')

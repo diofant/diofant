@@ -5,7 +5,7 @@ Term rewriting is a very general class of functionalities which are used to
 convert expressions of one type in terms of expressions of different kind. For
 example expanding, combining and converting expressions apply to term
 rewriting, and also simplification routines can be included here. Currently
-SymPy has several functions and basic built-in methods for performing various
+Diofant has several functions and basic built-in methods for performing various
 types of rewriting.
 
 Expanding
@@ -18,7 +18,7 @@ of more general functions is possible. Below are listed all currently available
 expand rules.
 
 Expanding of arithmetic expressions involving products and powers:
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x,y,z')
     >>> ((x + y)*(x - y)).expand(basic=True)
     x**2 - y**2
@@ -61,14 +61,14 @@ use ``rewrite()`` to do specific type of rewrite::
 Common Subexpression Detection and Collection
 ---------------------------------------------
 
-.. module:: sympy.simplify.cse_main
+.. module:: diofant.simplify.cse_main
 
 Before evaluating a large expression, it is often useful to identify common
 subexpressions, collect them and evaluate them at once. This is implemented
 in the ``cse`` function. Examples::
 
-    >>> from sympy import cse, sqrt, sin, pprint
-    >>> from sympy.abc import x
+    >>> from diofant import cse, sqrt, sin, pprint
+    >>> from diofant.abc import x
 
     >>> pprint(cse(sqrt(sin(x))), use_unicode=True)
     ⎛    ⎡  ________⎤⎞

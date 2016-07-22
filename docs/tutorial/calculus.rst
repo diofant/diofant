@@ -3,10 +3,10 @@
 ==========
 
 This section covers how to do basic calculus tasks such as derivatives,
-integrals, limits, and series expansions in SymPy.  If you are not familiar
+integrals, limits, and series expansions in Diofant.  If you are not familiar
 with the math of any part of this section, you may safely skip it.
 
-    >>> from sympy import *
+    >>> from diofant import *
     >>> x, y, z = symbols('x y z')
     >>> init_printing(use_unicode=True)
 
@@ -75,7 +75,7 @@ To evaluate an unevaluated derivative, use the ``doit`` method.
     ℯ     ⋅x ⋅y ⋅⎝x ⋅y ⋅z  + 14⋅x ⋅y ⋅z  + 52⋅x⋅y⋅z + 48⎠
 
 These unevaluated objects are useful for delaying the evaluation of the
-derivative, or for printing purposes.  They are also used when SymPy does not
+derivative, or for printing purposes.  They are also used when Diofant does not
 know how to compute the derivative of an expression (for example, if it
 contains an undefined function, which are described in the :ref:`Solving
 Differential Equations <tutorial-dsolve>` section).
@@ -91,13 +91,13 @@ expression.
     >>> integrate(cos(x), x)
     sin(x)
 
-Note that SymPy does not include the constant of integration.  If you want it,
+Note that Diofant does not include the constant of integration.  If you want it,
 you can add one yourself, or rephrase your problem as a differential equation
 and use ``dsolve`` to solve it, which does add the constant (see :ref:`tutorial-dsolve`).
 
 .. sidebar:: Quick Tip
 
-   `\infty` in SymPy is ``oo`` (that's the lowercase letter "oh" twice).  This
+   `\infty` in Diofant is ``oo`` (that's the lowercase letter "oh" twice).  This
    is because ``oo`` looks like `\infty`, and is easy to type.
 
 To compute a definite integral, pass the argument ``(integration_variable,
@@ -214,7 +214,7 @@ does not converge unless `\Re(y) > 1.`
 Limits
 ======
 
-SymPy can compute symbolic limits with the ``limit`` function.  The syntax to compute
+Diofant can compute symbolic limits with the ``limit`` function.  The syntax to compute
 
 .. math::
 
@@ -226,7 +226,7 @@ is ``limit(f(x), x, x0)``.
     1
 
 ``limit`` should be used instead of ``subs`` whenever the point of evaluation
-is a singularity.  Even though SymPy has objects to represent `\infty`, using
+is a singularity.  Even though Diofant has objects to represent `\infty`, using
 them for evaluation is not reliable because they do not keep track of things
 like rate of growth.  Also, things like `\infty - \infty` and
 `\frac{\infty}{\infty}` return `\mathrm{nan}` (not-a-number).  For example
@@ -268,7 +268,7 @@ As opposed to
 Series Expansion
 ================
 
-SymPy can compute asymptotic series expansions of functions around a point. To
+Diofant can compute asymptotic series expansions of functions around a point. To
 compute the expansion of `f(x)` around the point `x = x_0` terms of order
 `x^n`, use ``f(x).series(x, x0, n)``.  ``x0`` and ``n`` can be omitted, in
 which case the defaults ``x0=0`` and ``n=6`` will be used.
