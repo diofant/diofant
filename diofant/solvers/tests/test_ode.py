@@ -970,6 +970,9 @@ def test_solve_ics():
                   ics={f(0): 1}, hint='1st_exact', simplify=True) ==
             Eq(x*cos(f(x)) + f(x)**3/3, Rational(1, 3)))
 
+    assert (dsolve(x + f(x)*Derivative(f(x), x), ics={f(1): 0}) ==
+            [Eq(f(x), -sqrt(-x**2 + 1)), Eq(f(x), sqrt(-x**2 + 1))])
+
     assert solve_ics([Eq(f(x), C1*exp(x))], [f(x)], [C1], {f(0): 1}) == {C1: 1}
     assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
         {f(0): 1, f(pi/2): 1}) == {C1: 1, C2: 1}
