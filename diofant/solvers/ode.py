@@ -697,6 +697,13 @@ def _helper_simplify(eq, hint, match, simplify=True, ics=None, **kwargs):
         if isinstance(rv, Expr):
             solved_constants = solve_ics([rv], [r['func']], cons(rv), ics)
             rv = rv.subs(solved_constants)
+        elif iterable(rv):
+            rv1 = []
+            for s in rv:
+                solved_constants = solve_ics([s], [r['func']], cons(s), ics)
+                if solved_constants:
+                    rv1.append(s.subs(solved_constants))
+            rv = rv1
         else:  # pragma: no cover
             raise NotImplementedError
     return rv
