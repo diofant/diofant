@@ -53,7 +53,7 @@ class GradedLexOrder(MonomialOrder):
     is_global = True
 
     def __call__(self, monomial):
-        return (sum(monomial), monomial)
+        return sum(monomial), monomial
 
 
 class ReversedGradedLexOrder(MonomialOrder):
@@ -63,7 +63,7 @@ class ReversedGradedLexOrder(MonomialOrder):
     is_global = True
 
     def __call__(self, monomial):
-        return (sum(monomial), tuple(reversed([-m for m in monomial])))
+        return sum(monomial), tuple(reversed([-m for m in monomial]))
 
 
 class ProductOrder(MonomialOrder):

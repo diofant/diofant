@@ -1054,7 +1054,7 @@ def isolate(alg, eps=None, fast=False):
     alg = sympify(alg)
 
     if alg.is_Rational:
-        return (alg, alg)
+        return alg, alg
     elif not alg.is_extended_real:
         raise NotImplementedError(
             "complex algebraic numbers are not supported")
@@ -1082,4 +1082,4 @@ def isolate(alg, eps=None, fast=False):
     if eps is not None:
         a, b = poly.refine_root(a, b, eps=eps, fast=fast)
 
-    return (a, b)
+    return a, b

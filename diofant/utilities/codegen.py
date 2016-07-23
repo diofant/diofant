@@ -506,13 +506,13 @@ class CodeGen(object):
                 out_arg = expr.lhs
                 expr = expr.rhs
                 if isinstance(out_arg, Indexed):
-                    dims = tuple([ (S.Zero, dim - 1) for dim in out_arg.shape])
+                    dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
                     symbol = out_arg.base.label
                 elif isinstance(out_arg, Symbol):
                     dims = []
                     symbol = out_arg
                 elif isinstance(out_arg, MatrixSymbol):
-                    dims = tuple([ (S.Zero, dim - 1) for dim in out_arg.shape])
+                    dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
                     symbol = out_arg
                 else:
                     raise CodeGenError("Only Indexed, Symbol, or MatrixSymbol "
@@ -530,7 +530,7 @@ class CodeGen(object):
             elif isinstance(expr, (ImmutableMatrix, MatrixSlice)):
                 # Create a "dummy" MatrixSymbol to use as the Output arg
                 out_arg = MatrixSymbol('out_%s' % abs(hash(expr)), *expr.shape)
-                dims = tuple([(S.Zero, dim - 1) for dim in out_arg.shape])
+                dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
                 output_args.append(
                     OutputArgument(out_arg, out_arg, expr, dimensions=dims))
             else:

@@ -400,13 +400,13 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 c_split = _splitter(c)
 
                 if s.as_poly(y).degree() == 0:
-                    return (c_split[0], q * c_split[1])
+                    return c_split[0], q*c_split[1]
 
                 q_split = _splitter(cancel(q / s))
 
-                return (c_split[0]*q_split[0]*s, c_split[1]*q_split[1])
+                return c_split[0]*q_split[0]*s, c_split[1]*q_split[1]
         else:
-            return (S.One, p)
+            return S.One, p
 
     special = {}
 

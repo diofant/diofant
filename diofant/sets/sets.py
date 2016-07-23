@@ -1262,10 +1262,9 @@ class Union(Set, EvalfMixin):
 
     def __iter__(self):
         # roundrobin recipe taken from itertools documentation:
-        # https://docs.python.org/2/library/itertools.html#recipes
+        # https://docs.python.org/3/library/itertools.html#itertools-recipes
         def roundrobin(*iterables):
             "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
-            # Recipe credited to George Sakkis
             pending = len(iterables)
             nexts = itertools.cycle(iter(it).next for it in iterables)
             while pending:
@@ -1796,13 +1795,13 @@ class FiniteSet(Set, EvalfMixin):
         return Or(*[Eq(symbol, elem) for elem in self])
 
     def compare(self, other):
-        return (hash(self) - hash(other))
+        return hash(self) - hash(other)
 
     def _eval_evalf(self, prec):
         return FiniteSet(*[elem._eval_evalf(prec) for elem in self])
 
     def _hashable_content(self):
-        return (self._elements,)
+        return self._elements,
 
     @property
     def _sorted_args(self):

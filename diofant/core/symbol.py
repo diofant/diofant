@@ -305,7 +305,7 @@ class Wild(BaseSymbol):
     is_Wild = True
 
     def __new__(cls, name, exclude=(), properties=(), **assumptions):
-        exclude = tuple([sympify(x) for x in exclude])
+        exclude = tuple(sympify(x) for x in exclude)
         properties = tuple(properties)
         cls._sanitize(assumptions, cls)
         return Wild.__xnew__(cls, name, exclude, properties, **assumptions)
@@ -558,7 +558,7 @@ def var(names, **args):
 
     This calls :func:`symbols` with the same arguments and puts the results
     into the *global* namespace. It's recommended not to use :func:`var` in
-    library code, where :func:`symbols` has to be used::
+    library code, where :func:`symbols` has to be used.
 
     Examples
     ========
@@ -582,7 +582,6 @@ def var(names, **args):
 
     See :func:`symbols` documentation for more details on what kinds of
     arguments can be passed to :func:`var`.
-
     """
     def traverse(symbols, frame):
         """Recursively inject symbols to the global namespace. """

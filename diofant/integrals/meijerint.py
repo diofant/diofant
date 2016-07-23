@@ -283,7 +283,7 @@ def _mytype(f, x):
     if x not in f.free_symbols:
         return ()
     elif f.is_Function:
-        return (type(f),)
+        return type(f),
     else:
         types = [_mytype(a, x) for a in f.args]
         res = []
@@ -364,8 +364,8 @@ def _exponents(expr, x):
 def _functions(expr, x):
     """ Find the types of functions in expr, to estimate the complexity. """
     from diofant import Function
-    return (set(e.func for e in expr.atoms(Function) if x in e.free_symbols) |
-            set(e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols))
+    return ({e.func for e in expr.atoms(Function) if x in e.free_symbols} |
+            {e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols})
 
 
 def _find_splitting_points(expr, x):
@@ -1620,7 +1620,7 @@ def meijerint_indefinite(f, x):
         if rv:
             if not type(rv) is list:
                 return collect(factor_terms(rv),
-                               set(a for a in rv.atoms(Pow) if a.base is S.Exp1))
+                               {a for a in rv.atoms(Pow) if a.base is S.Exp1})
             results.extend(rv)
     if results:
         return next(ordered(results))
@@ -1753,7 +1753,7 @@ def meijerint_definite(f, x, a, b):
     x = d
 
     if a == b:
-        return (S.Zero, True)
+        return S.Zero, True
 
     results = []
     if a == -oo and b != oo:
@@ -1836,7 +1836,7 @@ def meijerint_definite(f, x, a, b):
         if rv:
             if not type(rv) is list:
                 rv = (collect(factor_terms(rv[0]),
-                              set(a for a in rv[0].atoms(Pow) if a.base is S.Exp1)),) + rv[1:]
+                              {a for a in rv[0].atoms(Pow) if a.base is S.Exp1}),) + rv[1:]
                 return rv
             results.extend(rv)
     if results:

@@ -211,7 +211,7 @@ class Basic(metaclass=ManagedProperties):
                 return arg
 
         args = self._sorted_args
-        args = len(args), tuple([inner_key(arg) for arg in args])
+        args = len(args), tuple(inner_key(arg) for arg in args)
         return self.class_key(), args, S.One.sort_key(), S.One
 
     def __eq__(self, other):
@@ -1203,7 +1203,7 @@ class Basic(metaclass=ManagedProperties):
                 if exact:
                     def _value(expr, result):
                         return (value.subs(result)
-                            if all(val for val in result.values()) else expr)
+                                if all(val for val in result.values()) else expr)
                 else:
                     def _value(expr, result):
                         return value.subs(result)

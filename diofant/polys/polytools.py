@@ -183,7 +183,7 @@ class Poly(Expr):
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances. """
-        return (self.rep, self.gens)
+        return self.rep, self.gens
 
     def __hash__(self):
         return super(Poly, self).__hash__()
@@ -257,7 +257,7 @@ class Poly(Expr):
         (x**2 + 1,)
 
         """
-        return (self.as_expr(),)
+        return self.as_expr(),
 
     @property
     def gen(self):
@@ -2404,7 +2404,7 @@ class Poly(Expr):
             raise OperationNotSupported(self, 'resultant')
 
         if includePRS:
-            return (per(result, remove=0), list(map(per, R)))
+            return per(result, remove=0), list(map(per, R))
         return per(result, remove=0)
 
     def discriminant(self):
@@ -3067,7 +3067,7 @@ class Poly(Expr):
         if sqf:
             def _real(interval):
                 s, t = interval
-                return (QQ.to_diofant(s), QQ.to_diofant(t))
+                return QQ.to_diofant(s), QQ.to_diofant(t)
 
             if not all:
                 return list(map(_real, result))
@@ -3083,7 +3083,7 @@ class Poly(Expr):
         else:
             def _real(interval):
                 (s, t), k = interval
-                return ((QQ.to_diofant(s), QQ.to_diofant(t)), k)
+                return (QQ.to_diofant(s), QQ.to_diofant(t)), k
 
             if not all:
                 return list(map(_real, result))
@@ -3890,7 +3890,7 @@ class PurePoly(Poly):
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances. """
-        return (self.rep,)
+        return self.rep,
 
     def __hash__(self):
         return super(PurePoly, self).__hash__()
@@ -5467,12 +5467,12 @@ def _sorted_factors(factors, method):
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return (exp, len(rep), rep)
+            return exp, len(rep), rep
     else:
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return (len(rep), exp, rep)
+            return len(rep), exp, rep
 
     return sorted(factors, key=key)
 
@@ -5776,7 +5776,7 @@ def _torational_factor_list(p, x):
         a = []
         for z in factors[1:][0]:
             a.append((z[0].subs({x: x - t}), z[1]))
-    return (c, a)
+    return c, a
 
 
 @public
@@ -6378,7 +6378,7 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return (Tuple(*self._basis), Tuple(*self._options.gens))
+        return Tuple(*self._basis), Tuple(*self._options.gens)
 
     @property
     def exprs(self):

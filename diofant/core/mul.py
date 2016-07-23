@@ -709,18 +709,18 @@ class Mul(Expr, AssocOp):
         if addterms == 1:
             if m == 1:
                 if imco is S.Zero:
-                    return (reco, S.Zero)
+                    return reco, S.Zero
                 else:
-                    return (S.Zero, reco*imco)
+                    return S.Zero, reco*imco
             if imco is S.Zero:
-                return (r, i)
-            return (-imco*i, imco*r)
+                return r, i
+            return -imco*i, imco*r
         addre, addim = expand_mul(addterms, deep=False).as_real_imag()
         if imco is S.Zero:
-            return (r*addre - i*addim, i*addre + r*addim)
+            return r*addre - i*addim, i*addre + r*addim
         else:
             r, i = -imco*i, imco*r
-            return (r*addre - i*addim, r*addim + i*addre)
+            return r*addre - i*addim, r*addim + i*addre
 
     @staticmethod
     def _expandsums(sums):
@@ -1235,7 +1235,7 @@ class Mul(Expr, AssocOp):
                     c[b] += e
                 else:
                     nc.append([b, e])
-            return (c, nc)
+            return c, nc
 
         def rejoin(b, co):
             """
@@ -1315,10 +1315,10 @@ class Mul(Expr, AssocOp):
         elif len(old_c) > len(c):
             # more commutative terms
             ok = False
-        elif set(i[0] for i in old_nc).difference(set(i[0] for i in nc)):
+        elif {i[0] for i in old_nc} - {i[0] for i in nc}:
             # unmatched non-commutative bases
             ok = False
-        elif set(old_c).difference(set(c)):
+        elif set(old_c) - set(c):
             # unmatched commutative terms
             ok = False
         elif any(sign(c[b]) != sign(old_c[b]) for b in old_c):

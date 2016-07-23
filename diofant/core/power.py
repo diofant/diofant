@@ -924,7 +924,7 @@ class Pow(Expr):
             im_part3 = Add(*[cc*a**aa*b**bb for (aa, bb), cc in r])
 
             return (re_part.subs({a: re, b: S.ImaginaryUnit*im}),
-            im_part1.subs({a: re, b: im}) + im_part3.subs({a: re, b: -im}))
+                    im_part1.subs({a: re, b: im}) + im_part3.subs({a: re, b: -im}))
 
         elif self.exp.is_Rational:
             re, im = self.base.as_real_imag(deep=deep)
@@ -943,7 +943,7 @@ class Pow(Expr):
 
             rp, tp = self.func(r, self.exp), t*self.exp
 
-            return (rp*cos(tp), rp*sin(tp))
+            return rp*cos(tp), rp*sin(tp)
         elif self.base is S.Exp1:
             from diofant import exp
             re, im = self.exp.as_real_imag()
@@ -951,7 +951,7 @@ class Pow(Expr):
                 re = re.expand(deep, **hints)
                 im = im.expand(deep, **hints)
             c, s = cos(im), sin(im)
-            return (exp(re)*c, exp(re)*s)
+            return exp(re)*c, exp(re)*s
         else:
             from diofant import re, im
             if deep:
@@ -961,9 +961,9 @@ class Pow(Expr):
                 if hints.get('ignore') == expanded:
                     return
                 else:
-                    return (re(expanded), im(expanded))
+                    return re(expanded), im(expanded)
             else:
-                return (re(self), im(self))
+                return re(self), im(self)
 
     def _eval_derivative(self, s):
         from diofant import log

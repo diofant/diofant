@@ -134,9 +134,9 @@ def _mobius_to_interval(M, field):
     s, t = field(a, c), field(b, d)
 
     if s <= t:
-        return (s, t)
+        return s, t
     else:
-        return (t, s)
+        return t, s
 
 
 def dup_step_refine_real_root(f, M, K, fast=False):
@@ -250,7 +250,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
         raise DomainError("real root refinement not supported over %s" % K)
 
     if s == t:
-        return (s, t)
+        return s, t
 
     if s > t:
         s, t = t, s
@@ -273,9 +273,9 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
         f, s, t, K, eps=eps, steps=steps, disjoint=disjoint, fast=fast)
 
     if negative:
-        return (-t, -s)
+        return -t, -s
     else:
-        return ( s, t)
+        return s, t
 
 
 def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
@@ -1743,7 +1743,7 @@ class RealInterval(object):
 
     def as_tuple(self):
         """Return tuple representation of real isolating interval. """
-        return (self.a, self.b)
+        return self.a, self.b
 
     def __repr__(self):
         return "(%s, %s)" % (self.a, self.b)
@@ -1846,11 +1846,11 @@ class ComplexInterval(object):
     @property
     def center(self):
         """Return the center of the complex isolating interval. """
-        return ((self.ax + self.bx)/2, (self.ay + self.by)/2)
+        return (self.ax + self.bx)/2, (self.ay + self.by)/2
 
     def as_tuple(self):
         """Return tuple representation of complex isolating interval. """
-        return ((self.ax, self.ay), (self.bx, self.by))
+        return (self.ax, self.ay), (self.bx, self.by)
 
     def __repr__(self):
         return "(%s, %s) x (%s, %s)" % (self.ax, self.bx, self.ay, self.by)

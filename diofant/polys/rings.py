@@ -81,7 +81,7 @@ def xring(symbols, domain, order=lex):
     <class 'diofant.polys.rings.PolyElement'>
     """
     _ring = PolyRing(symbols, domain, order)
-    return (_ring, _ring.gens)
+    return _ring, _ring.gens
 
 
 @public
@@ -161,9 +161,9 @@ def sring(exprs, *symbols, **options):
     polys = list(map(_ring.from_dict, reps))
 
     if single:
-        return (_ring, polys[0])
+        return _ring, polys[0]
     else:
-        return (_ring, polys)
+        return _ring, polys
 
 
 def _parse_symbols(symbols):
@@ -173,7 +173,7 @@ def _parse_symbols(symbols):
     if isinstance(symbols, str):
         return _symbols(symbols, seq=True)
     elif isinstance(symbols, Expr):
-        return (symbols,)
+        return symbols,
     elif is_sequence(symbols):
         if all(isinstance(s, str) for s in symbols):
             return _symbols(symbols)
@@ -252,7 +252,7 @@ class PolyRing(DefaultPrinting, IPolys):
         return tuple(_gens)
 
     def __getnewargs__(self):
-        return (self.symbols, self.domain, self.order)
+        return self.symbols, self.domain, self.order
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -518,7 +518,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.ring.to_domain()
 
     def __getnewargs__(self):
-        return (self.ring, list(self.iterterms()))
+        return self.ring, list(self.iterterms())
 
     _hash = None
 
@@ -656,7 +656,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 return ring.domain.almosteq(self.const(), other, tolerance)
 
     def sort_key(self):
-        return (len(self), self.terms())
+        return len(self), self.terms()
 
     def _cmp(self, other, op):
         if isinstance(other, self.ring.dtype):
@@ -1222,7 +1222,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
         else:
-            return (self.quo_ground(other), self.rem_ground(other))
+            return self.quo_ground(other), self.rem_ground(other)
 
     def __rdivmod__(self, other):
         return NotImplemented
@@ -1669,9 +1669,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def LT(self):
         expv = self.leading_expv()
         if expv is None:
-            return (self.ring.zero_monom, self.ring.domain.zero)
+            return self.ring.zero_monom, self.ring.domain.zero
         else:
-            return (expv, self._get_coeff(expv))
+            return expv, self._get_coeff(expv)
 
     def leading_term(self):
         """Leading term as a polynomial element.
@@ -2035,7 +2035,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         J, (f, g) = self.deflate(other)
         h, cff, cfg = f._gcd(g)
 
-        return (h.inflate(J), cff.inflate(J), cfg.inflate(J))
+        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
 
     def _gcd_zero(self, other):
         one, zero = self.ring.one, self.ring.zero

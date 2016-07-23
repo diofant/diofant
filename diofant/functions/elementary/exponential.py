@@ -352,9 +352,9 @@ class log(Function):
             arg = arg(self.args[0])
         if hints.get('log', False):  # Expand the log
             hints['complex'] = False
-            return (log(abs).expand(deep, **hints), arg)
+            return log(abs).expand(deep, **hints), arg
         else:
-            return (log(abs), arg)
+            return log(abs), arg
 
     def _eval_is_rational(self):
         s = self.func(*self.args)

@@ -58,7 +58,7 @@ class BlockMatrix(MatrixExpr):
             numrows += M[i, 0].shape[0]
         for i in range(M.shape[1]):
             numcols += M[0, i].shape[1]
-        return (numrows, numcols)
+        return numrows, numcols
 
     @property
     def blockshape(self):
@@ -78,10 +78,10 @@ class BlockMatrix(MatrixExpr):
 
     def structurally_equal(self, other):
         return (isinstance(other, BlockMatrix)
-            and self.shape == other.shape
-            and self.blockshape == other.blockshape
-            and self.rowblocksizes == other.rowblocksizes
-            and self.colblocksizes == other.colblocksizes)
+                and self.shape == other.shape
+                and self.blockshape == other.blockshape
+                and self.rowblocksizes == other.rowblocksizes
+                and self.colblocksizes == other.colblocksizes)
 
     def _blockmul(self, other):
         if (isinstance(other, BlockMatrix) and
@@ -215,7 +215,7 @@ class BlockDiagMatrix(BlockMatrix):
     @property
     def blockshape(self):
         n = len(self.args)
-        return (n, n)
+        return n, n
 
     @property
     def rowblocksizes(self):

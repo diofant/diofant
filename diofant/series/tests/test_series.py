@@ -170,3 +170,9 @@ def test_issue_10761():
                                  - x**8 + x**9 - x**10 + x**11 - x**12
                                  + x**13 - x**14 + x**15 - x**16
                                  + x**17 - x**18 + x**19 + O(x**20))
+
+
+def test_issue_11407():
+    a, b, c = symbols('a, b, c')
+    assert sqrt(a + b + c*x).series(x, 0, 1) == sqrt(a + b) + O(x)
+    assert sqrt(a + b + c + c*x).series(x, 0, 1) == sqrt(a + b + c) + O(x)

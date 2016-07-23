@@ -231,8 +231,8 @@ class Partition(FiniteSet):
         for i, part in enumerate(partition):
             for j in part:
                 rgs[j] = i
-        return tuple([rgs[i] for i in sorted(
-            [i for p in partition for i in p], key=default_sort_key)])
+        return tuple(rgs[i] for i in sorted([i for p in partition for i in p],
+                                            key=default_sort_key))
 
     @classmethod
     def from_rgs(cls, rgs, elements):

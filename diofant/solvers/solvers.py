@@ -1054,8 +1054,8 @@ def solve(f, *symbols, **flags):
                     solution = [_do_dict(s) for s in solution]
                     break
                 elif type(solution[0]) is tuple:
-                    solution = [tuple([v.subs(non_inverts) for v in s]) for s
-                                in solution]
+                    solution = [tuple(v.subs(non_inverts) for v in s)
+                                for s in solution]
                     break
                 else:
                     solution = [v.subs(non_inverts) for v in solution]
@@ -1095,7 +1095,7 @@ def solve(f, *symbols, **flags):
             type(solution[0]) is dict and
             all(s in solution[0] for s in symbols)
     ):
-        solution = [tuple([r[s].subs(r) for s in symbols]) for r in solution]
+        solution = [tuple(r[s].subs(r) for s in symbols) for r in solution]
 
     # Get assumptions about symbols, to filter solutions.
     # Note that if assumptions about a solution can't be verified, it is still
@@ -1216,7 +1216,7 @@ def solve(f, *symbols, **flags):
     if not solution:
         return [], set()
     k = list(ordered(solution[0].keys()))
-    return k, {tuple([s[ki] for ki in k]) for s in solution}
+    return k, {tuple(s[ki] for ki in k) for s in solution}
 
 
 def _solve(f, *symbols, **flags):
@@ -1426,7 +1426,7 @@ def _solve(f, *symbols, **flags):
             bases = set(bases)
 
             if len(bases) > 1 or not all(q == 1 for q in qs):
-                funcs = set(b for b in bases if b.is_Function)
+                funcs = {b for b in bases if b.is_Function}
 
                 trig = {_ for _ in funcs if
                     isinstance(_, TrigonometricFunction)}

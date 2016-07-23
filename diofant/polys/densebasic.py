@@ -1220,7 +1220,7 @@ def dup_multi_deflate(polys, K):
 
         G = igcd(G, g)
 
-    return G, tuple([ p[::G] for p in polys ])
+    return G, tuple(p[::G] for p in polys)
 
 
 def dmp_multi_deflate(polys, u, K):

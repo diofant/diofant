@@ -105,7 +105,7 @@ class RootOf(Expr):
         return obj
 
     def _hashable_content(self):
-        return (self.poly, self.index)
+        return self.poly, self.index
 
     @property
     def expr(self):
@@ -113,7 +113,7 @@ class RootOf(Expr):
 
     @property
     def args(self):
-        return (self.expr, Integer(self.index))
+        return self.expr, Integer(self.index)
 
     @property
     def free_symbols(self):
@@ -830,7 +830,7 @@ class RootSum(Expr):
         return factor(p/q)
 
     def _hashable_content(self):
-        return (self.poly, self.fun)
+        return self.poly, self.fun
 
     @property
     def expr(self):
@@ -838,7 +838,7 @@ class RootSum(Expr):
 
     @property
     def args(self):
-        return (self.expr, self.fun, self.poly.gen)
+        return self.expr, self.fun, self.poly.gen
 
     @property
     def free_symbols(self):

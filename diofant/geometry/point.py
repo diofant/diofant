@@ -533,7 +533,7 @@ class Point2D(Point):
 
         """
 
-        return (self.x, self.y, self.x, self.y)
+        return self.x, self.y, self.x, self.y
 
     def is_concyclic(*points):
         """Is a sequence of points concyclic?

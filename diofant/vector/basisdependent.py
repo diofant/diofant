@@ -122,7 +122,7 @@ class BasisDependent(Expr):
         expression -> a/b -> a, b
 
         """
-        return (self, 1)
+        return self, 1
 
     def factor(self, *args, **kwargs):
         """
@@ -140,12 +140,12 @@ class BasisDependent(Expr):
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product. """
-        return (Integer(1), self)
+        return Integer(1), self
 
     def as_coeff_add(self, *deps):
         """Efficiently extract the coefficient of a summation. """
         l = [x * self.components[x] for x in self.components]
-        return (0, tuple(l))
+        return 0, tuple(l)
 
     def diff(self, *args, **kwargs):
         """

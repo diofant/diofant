@@ -26,7 +26,7 @@ def normalize(i, parentsize):
     if ((stop - start) * step < S.One) is S.true:
         raise IndexError()
 
-    return (start, stop, step)
+    return start, stop, step
 
 
 class MatrixSlice(MatrixExpr):

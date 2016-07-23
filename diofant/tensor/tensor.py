@@ -404,7 +404,7 @@ class TIDS(CantSympify):
             else:
                 new_dummy = (ipos2, ipos1, cpos2, cpos1)
             dum.append(new_dummy)
-        return (f.components + g.components, free, dum)
+        return f.components + g.components, free, dum
 
     def __mul__(self, other):
         return TIDS(*self.mul(self, other))
@@ -793,7 +793,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             # special case to handle metrics. Metric tensors cannot be
             # constructed through contraction by the metric, their
             # components show if they are a matrix or its inverse.
-            signature = tuple([i.is_up for i in key.get_indices()])
+            signature = tuple(i.is_up for i in key.get_indices())
             srch = (key.component,) + signature
             if srch in self._substitutions_dict_tensmul:
                 return self._substitutions_dict_tensmul[srch]
@@ -805,7 +805,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 # special case to handle metrics. Metric tensors cannot be
                 # constructed through contraction by the metric, their
                 # components show if they are a matrix or its inverse.
-                signature = tuple([i.is_up for i in tensmul_list[0].get_indices()])
+                signature = tuple(i.is_up for i in tensmul_list[0].get_indices())
                 srch = (tensmul_list[0].components[0],) + signature
                 if srch in self._substitutions_dict_tensmul:
                     return self._substitutions_dict_tensmul[srch]
@@ -2246,7 +2246,7 @@ class TensorHead(Basic):
             mat_ind = [i for i, e in enumerate(indices) if e is True]
             if mat_ind:
                 not_equal = True
-            indices = tuple([_ for _ in indices if _ is not True])
+            indices = tuple(_ for _ in indices if _ is not True)
 
             for i, el in enumerate(indices):
                 if not isinstance(el, TensorIndex):
@@ -2652,7 +2652,7 @@ class TensAdd(TensExpr):
         # collect canonicalized terms
         def sort_key(t):
             x = get_tids(t)
-            return (x.components, x.free, x.dum)
+            return x.components, x.free, x.dum
         args.sort(key=sort_key)
         args = TensAdd._tensAdd_collect_terms(args)
         if not args:
@@ -3175,7 +3175,7 @@ class Tensor(TensExpr):
 
         # object is rebuilt in order to make sure that all contracted indices
         # get recognized as dummies, but only if there are contracted indices.
-        if len(set(i if i.is_up else -i for i in indices)) != len(indices):
+        if len({i if i.is_up else -i for i in indices}) != len(indices):
             return t.func(*t.args)
         return t
 
@@ -3257,7 +3257,7 @@ class Tensor(TensExpr):
         if component.rank > 0:
             return ('%s(%s)' % (component.name, ', '.join(indices)))
         else:
-            return ('%s' % component.name)
+            return '%s' % component.name
 
     def equals(self, other):
         if other == 0:
@@ -3695,7 +3695,7 @@ class TensMul(TensExpr):
 
         # object is rebuilt in order to make sure that all contracted indices
         # get recognized as dummies, but only if there are contracted indices.
-        if len(set(i if i.is_up else -i for i in indices)) != len(indices):
+        if len({i if i.is_up else -i for i in indices}) != len(indices):
             return t.func(*t.args)
         return t
 
@@ -3734,7 +3734,7 @@ class TensMul(TensExpr):
     def __iter__(self):
         if self.data is None:
             raise ValueError("No iteration on abstract tensors")
-        return (self.data.flatten()).__iter__()
+        return self.data.flatten().__iter__()
 
 
 def canon_bp(p):

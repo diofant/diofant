@@ -292,11 +292,11 @@ def Num(f):
 
 
 def sig(monomial, index):
-    return (monomial, index)
+    return monomial, index
 
 
 def lbp(signature, polynomial, number):
-    return (signature, polynomial, number)
+    return signature, polynomial, number
 
 # signature functions
 
@@ -331,7 +331,7 @@ def sig_key(s, order):
     s < t iff [k > l] or [k == l and m < n]
     s > t otherwise
     """
-    return (-s[1], order(s[0]))
+    return -s[1], order(s[0])
 
 
 def sig_mult(s, m):
@@ -398,7 +398,7 @@ def lbp_key(f):
     """
     Key for comparing two labeled polynomials.
     """
-    return (sig_key(Sign(f), Polyn(f).ring.order), -Num(f))
+    return sig_key(Sign(f), Polyn(f).ring.order), -Num(f)
 
 # algorithm and helper functions
 
@@ -433,9 +433,9 @@ def critical_pair(f, g, ring):
     # return in proper order, such that the S-polynomial is just
     # u_first * f_first - u_second * f_second:
     if lbp_cmp(fr, gr) == -1:
-        return (Sign(gr), vm, g, Sign(fr), um, f)
+        return Sign(gr), vm, g, Sign(fr), um, f
     else:
-        return (Sign(fr), um, f, Sign(gr), vm, g)
+        return Sign(fr), um, f, Sign(gr), vm, g
 
 
 def cp_cmp(c, d):
@@ -478,7 +478,7 @@ def cp_key(c, ring):
     """
     Key for comparing critical pairs.
     """
-    return (lbp_key(lbp(c[0], ring.zero, Num(c[2]))), lbp_key(lbp(c[3], ring.zero, Num(c[5]))))
+    return lbp_key(lbp(c[0], ring.zero, Num(c[2]))), lbp_key(lbp(c[3], ring.zero, Num(c[5])))
 
 
 def s_poly(cp):

@@ -522,7 +522,7 @@ class Lambdifier(object):
                     break
             func_tail = self.str2tree(tail[:i])
             tail = self.str2tree(tail[i:])
-            return (head, (func, func_tail), tail)
+            return head, (func, func_tail), tail
 
     @classmethod
     def tree2str(cls, tree):

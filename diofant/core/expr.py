@@ -874,7 +874,7 @@ class Expr(Basic, EvalfMixin):
             _, ((re, im), monom, ncpart) = term
 
             monom = neg(monom_key(monom))
-            ncpart = tuple([e.sort_key(order=order) for e in ncpart])
+            ncpart = tuple(e.sort_key(order=order) for e in ncpart)
             coeff = ((bool(im), im), (re, im))
 
             return monom, ncpart, coeff
@@ -1606,9 +1606,9 @@ class Expr(Basic, EvalfMixin):
         if (want is not func or
                 func is not Add and func is not Mul):
             if has(self):
-                return (want.identity, self)
+                return want.identity, self
             else:
-                return (self, want.identity)
+                return self, want.identity
         else:
             if func is Add:
                 args = list(self.args)
@@ -1619,8 +1619,7 @@ class Expr(Basic, EvalfMixin):
         depend = d[True]
         indep = d[False]
         if func is Add:  # all terms were treated as commutative
-            return (Add(*indep),
-                    Add(*depend))
+            return Add(*indep), Add(*depend)
         else:  # handle noncommutative by stopping at first dependent term
             for i, n in enumerate(nc):
                 if has(n):
@@ -1655,7 +1654,7 @@ class Expr(Basic, EvalfMixin):
         if hints.get('ignore') == self:
             return
         else:
-            return (re(self), im(self))
+            return re(self), im(self)
 
     def as_powers_dict(self):
         """Return self as a dictionary of factors with each factor being
@@ -2919,9 +2918,9 @@ class Expr(Basic, EvalfMixin):
         if hasattr(expr, hint):
             newexpr = getattr(expr, hint)(**hints)
             if newexpr != expr:
-                return (newexpr, True)
+                return newexpr, True
 
-        return (expr, hit)
+        return expr, hit
 
     @cacheit
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,

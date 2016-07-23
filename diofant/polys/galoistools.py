@@ -992,7 +992,7 @@ def gf_cofactors(f, g, p, K):
     ([1, 3], [3, 3], [2, 1])
     """
     if not f and not g:
-        return ([], [], [])
+        return [], [], []
 
     h = gf_gcd(f, g, p, K)
 

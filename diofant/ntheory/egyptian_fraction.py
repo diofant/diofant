@@ -194,4 +194,4 @@ def egypt_harmonic(r):
         acc += 1/d
         rv.append(d)
         d += 1
-    return (rv, r - acc)
+    return rv, r - acc
