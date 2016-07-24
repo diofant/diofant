@@ -42,6 +42,8 @@ def test_random_symbols():
     assert set(random_symbols(2*X + Y.symbol)) == {X}
     assert set(random_symbols(2)) == set()
 
+    assert X.is_commutative
+
 
 def test_pspace():
     X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
