@@ -150,10 +150,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         return obj
 
     def _eval_is_zero(self):
-        # a Sum is only zero if its function is zero or if all terms
-        # cancel out. This only answers whether the summand is zero; if
-        # not then None is returned since we don't analyze whether all
-        # terms cancel out.
         if self.function.is_zero:
             return True
 
