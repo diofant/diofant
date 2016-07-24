@@ -177,21 +177,23 @@ class factorial(CombinatorialFunction):
             return Product(i, (i, 1, n))
 
     def _eval_is_integer(self):
-        if self.args[0].is_integer and self.args[0].is_nonnegative:
+        n = self.args[0]
+        if n.is_integer and n.is_nonnegative:
             return True
 
     def _eval_is_positive(self):
-        if self.args[0].is_integer and self.args[0].is_nonnegative:
+        n = self.args[0]
+        if n.is_integer and n.is_nonnegative:
             return True
 
     def _eval_is_composite(self):
-        x = self.args[0]
-        if x.is_integer:
-            return (x - 3).is_nonnegative
+        n = self.args[0]
+        if n.is_integer:
+            return (n - 3).is_nonnegative
 
     def _eval_is_extended_real(self):
-        x = self.args[0]
-        if x.is_nonnegative or x.is_noninteger:
+        n = self.args[0]
+        if n.is_nonnegative or n.is_noninteger:
             return True
 
 
@@ -263,23 +265,27 @@ class subfactorial(CombinatorialFunction):
                 return S.Infinity
 
     def _eval_is_even(self):
-        if self.args[0].is_odd and self.args[0].is_nonnegative:
+        n = self.args[0]
+        if n.is_odd and n.is_nonnegative:
             return True
 
     def _eval_is_integer(self):
-        if self.args[0].is_integer and self.args[0].is_nonnegative:
+        n = self.args[0]
+        if n.is_integer and n.is_nonnegative:
             return True
 
-    def _eval_rewrite_as_uppergamma(self, arg):
+    def _eval_rewrite_as_uppergamma(self, n):
         from diofant import uppergamma
-        return uppergamma(arg + 1, -1)/S.Exp1
+        return uppergamma(n + 1, -1)/S.Exp1
 
     def _eval_is_nonnegative(self):
-        if self.args[0].is_integer and self.args[0].is_nonnegative:
+        n = self.args[0]
+        if n.is_integer and n.is_nonnegative:
             return True
 
     def _eval_is_odd(self):
-        if self.args[0].is_even and self.args[0].is_nonnegative:
+        n = self.args[0]
+        if n.is_even and n.is_nonnegative:
             return True
 
 
@@ -298,14 +304,15 @@ class factorial2(CombinatorialFunction):
 
     References
     ==========
+
     .. [1] https://en.wikipedia.org/wiki/Double_factorial
 
     Examples
     ========
 
-    >>> from diofant import factorial2, var
-    >>> var('n')
-    n
+    >>> from diofant import factorial2
+    >>> from diofant.abc import n
+
     >>> factorial2(n + 1)
     factorial2(n + 1)
     >>> factorial2(5)
@@ -324,27 +331,26 @@ class factorial2(CombinatorialFunction):
     """
 
     @classmethod
-    def eval(cls, arg):
+    def eval(cls, n):
         # TODO: extend this to complex numbers?
-        if arg.is_Number:
-            if arg.is_infinite:
+        if n.is_Number:
+            if n.is_infinite:
                 return
 
-            if arg.is_negative:
-                if arg.is_odd:
-                    return arg * (S.NegativeOne) ** ((1 - arg) / 2) / factorial2(-arg)
-                elif arg.is_even:
+            if n.is_negative:
+                if n.is_odd:
+                    return n * (S.NegativeOne) ** ((1 - n) / 2) / factorial2(-n)
+                elif n.is_even:
                     raise ValueError("argument must be nonnegative or odd")
 
-            if arg.is_nonnegative:
-                if arg.is_even:
-                    k = arg / 2
+            if n.is_nonnegative:
+                if n.is_even:
+                    k = n / 2
                     return 2 ** k * factorial(k)
-                elif arg.is_integer:
-                    return factorial(arg) / factorial2(arg - 1)
+                elif n.is_integer:
+                    return factorial(n) / factorial2(n - 1)
 
     def _eval_is_even(self):
-        # Double factorial is even for every positive even input
         n = self.args[0]
         if n.is_integer:
             if n.is_odd:
@@ -356,8 +362,6 @@ class factorial2(CombinatorialFunction):
                     return False
 
     def _eval_is_integer(self):
-        # Double factorial is an integer for every nonnegative input, and for
-        # -1 and -3
         n = self.args[0]
         if n.is_integer:
             if (n + 1).is_nonnegative:
@@ -365,28 +369,13 @@ class factorial2(CombinatorialFunction):
             if n.is_odd:
                 return (n + 3).is_nonnegative
 
-    def _eval_is_odd(self):
-        # Double factorial is odd for every odd input not smaller than -3, and
-        # for 0
-        n = self.args[0]
-        if n.is_odd:
-            return (n + 3).is_nonnegative
-        if n.is_even:
-            if n.is_positive:
-                return False
-            if n.is_zero:
-                return True
-
     def _eval_is_positive(self):
-        # Double factorial is positive for every nonnegative input, and for
-        # every odd negative input which is of the form -1-4k for an
-        # nonnegative integer k
         n = self.args[0]
         if n.is_integer:
             if (n + 1).is_nonnegative:
                 return True
             if n.is_odd:
-                return ((n + 1) / 2).is_even
+                return ((n + 1)/2).is_even
 
 
 ###############################################################################
@@ -465,8 +454,10 @@ class RisingFactorial(CombinatorialFunction):
         return self._eval_rewrite_as_gamma(x, k).rewrite('tractable')
 
     def _eval_is_integer(self):
-        return fuzzy_and((self.args[0].is_integer, self.args[1].is_integer,
-                          self.args[1].is_nonnegative))
+        x, k = self.args
+        if x.is_integer and k.is_integer:
+            if k.is_nonnegative:
+                return True
 
 
 class FallingFactorial(CombinatorialFunction):
@@ -532,8 +523,10 @@ class FallingFactorial(CombinatorialFunction):
         return (-1)**k * gamma(-x + k) / gamma(-x)
 
     def _eval_is_integer(self):
-        return fuzzy_and((self.args[0].is_integer, self.args[1].is_integer,
-                          self.args[1].is_nonnegative))
+        x, k = self.args
+        if x.is_integer and k.is_integer:
+            if k.is_nonnegative:
+                return True
 
 
 rf = RisingFactorial
@@ -729,5 +722,6 @@ class binomial(CombinatorialFunction):
         return self._eval_rewrite_as_gamma(n, k).rewrite('tractable')
 
     def _eval_is_integer(self):
-        if self.args[0].is_integer and self.args[1].is_integer:
+        n, k = self.args
+        if n.is_integer and k.is_integer:
             return True
