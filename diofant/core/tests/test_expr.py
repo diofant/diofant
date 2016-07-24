@@ -442,7 +442,7 @@ def test_SAGE2():
 def test_SAGE3():
     class MySymbol:
         def __rmul__(self, other):
-            return ('mys', other, self)
+            return 'mys', other, self
 
     o = MySymbol()
     e = x*o

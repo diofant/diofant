@@ -101,7 +101,7 @@ def monomial_mul(A, B):
     which gives `x**4*y**5*z`.
 
     """
-    return tuple([ a + b for a, b in zip(A, B) ])
+    return tuple(a + b for a, b in zip(A, B))
 
 
 def monomial_div(A, B):
@@ -146,12 +146,12 @@ def monomial_ldiv(A, B):
     which gives `x**2*y**2*z**-1`.
 
     """
-    return tuple([ a - b for a, b in zip(A, B) ])
+    return tuple(a - b for a, b in zip(A, B))
 
 
 def monomial_pow(A, n):
     """Return the n-th pow of the monomial. """
-    return tuple([ a*n for a in A ])
+    return tuple(a*n for a in A)
 
 
 def monomial_gcd(A, B):
@@ -166,7 +166,7 @@ def monomial_gcd(A, B):
     which gives `x*y**2`.
 
     """
-    return tuple([ min(a, b) for a, b in zip(A, B) ])
+    return tuple(min(a, b) for a, b in zip(A, B))
 
 
 def monomial_lcm(A, B):
@@ -181,7 +181,7 @@ def monomial_lcm(A, B):
     which gives `x**3*y**4*z`.
 
     """
-    return tuple([ max(a, b) for a, b in zip(A, B) ])
+    return tuple(max(a, b) for a, b in zip(A, B))
 
 
 def monomial_divides(A, B):
@@ -289,7 +289,7 @@ class MonomialOps(object):
         def %(name)s(A, B):
             (%(A)s,) = A
             (%(B)s,) = B
-            return (%(AB)s,)
+            return %(AB)s,
         """)
         A = self._vars("a")
         B = self._vars("b")
@@ -302,7 +302,7 @@ class MonomialOps(object):
         template = dedent("""\
         def %(name)s(A, k):
             (%(A)s,) = A
-            return (%(Ak)s,)
+            return %(Ak)s,
         """)
         A = self._vars("a")
         Ak = [ "%s*k" % a for a in A ]
@@ -315,7 +315,7 @@ class MonomialOps(object):
         def %(name)s(A, B, k):
             (%(A)s,) = A
             (%(B)s,) = B
-            return (%(ABk)s,)
+            return %(ABk)s,
         """)
         A = self._vars("a")
         B = self._vars("b")
@@ -329,7 +329,7 @@ class MonomialOps(object):
         def %(name)s(A, B):
             (%(A)s,) = A
             (%(B)s,) = B
-            return (%(AB)s,)
+            return %(AB)s,
         """)
         A = self._vars("a")
         B = self._vars("b")
@@ -344,7 +344,7 @@ class MonomialOps(object):
             (%(A)s,) = A
             (%(B)s,) = B
             %(RAB)s
-            return (%(R)s,)
+            return %(R)s,
         """)
         A = self._vars("a")
         B = self._vars("b")
@@ -359,7 +359,7 @@ class MonomialOps(object):
         def %(name)s(A, B):
             (%(A)s,) = A
             (%(B)s,) = B
-            return (%(AB)s,)
+            return %(AB)s,
         """)
         A = self._vars("a")
         B = self._vars("b")
@@ -373,7 +373,7 @@ class MonomialOps(object):
         def %(name)s(A, B):
             (%(A)s,) = A
             (%(B)s,) = B
-            return (%(AB)s,)
+            return %(AB)s,
         """)
         A = self._vars("a")
         B = self._vars("b")

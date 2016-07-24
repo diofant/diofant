@@ -119,7 +119,7 @@ def weak_normalizer(a, d, DE, z=None):
     r = Poly(r, z)
 
     if not r.has(z):
-        return (Poly(1, DE.t), (a, d))
+        return Poly(1, DE.t), (a, d)
 
     N = [i for i in r.real_roots() if i in ZZ and i > 0]
 
@@ -131,7 +131,7 @@ def weak_normalizer(a, d, DE, z=None):
     sd = q*d
     sn, sd = sn.cancel(sd, include=True)
 
-    return (q, (sn, sd))
+    return q, (sn, sd)
 
 
 def normal_denom(fa, fd, ga, gd, DE):
@@ -165,7 +165,7 @@ def normal_denom(fa, fd, ga, gd, DE):
     ba, bd = ba.cancel(fd, include=True)
 
     # (dn*h, dn*h*f - dn*Dh, dn*h**2*g, h)
-    return (a, (ba, bd), (ca, cd), h)
+    return a, (ba, bd), (ca, cd), h
 
 
 def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
@@ -199,7 +199,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
     elif case in ['primitive', 'base']:
         B = ba.to_field().quo(bd)
         C = ca.to_field().quo(cd)
-        return (a, B, C, Poly(1, DE.t))
+        return a, B, C, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
             "'base'}, not %s." % case)
@@ -249,7 +249,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
     h = pn
 
     # (a*p**N, (b + n*a*Dp/p)*p**N, c*p**(N - n), p**-n)
-    return (A, B, C, h)
+    return A, B, C, h
 
 
 def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
@@ -386,7 +386,7 @@ def spde(a, b, c, n, DE):
 
     while True:
         if c.is_zero:
-            return (zero, zero, 0, zero, beta)  # -1 is more to the point
+            return zero, zero, 0, zero, beta  # -1 is more to the point
         if (n < 0) is True:
             raise NonElementaryIntegralException
 
@@ -399,7 +399,7 @@ def spde(a, b, c, n, DE):
         if a.degree(DE.t) == 0:
             b = b.to_field().quo(a)
             c = c.to_field().quo(a)
-            return (b, c, n, alpha, beta)
+            return b, c, n, alpha, beta
 
         r, z = gcdex_diophantine(b, a, c)
         b += derivation(a, DE)
@@ -469,7 +469,7 @@ def no_cancel_b_small(b, c, n, DE):
                 raise NonElementaryIntegralException
             if b.degree(DE.t) == 0:
                 return (q, b.as_poly(DE.T[DE.level - 1]),
-                    c.as_poly(DE.T[DE.level - 1]))
+                        c.as_poly(DE.T[DE.level - 1]))
             p = Poly(c.as_poly(DE.t).LC()/b.as_poly(DE.t).LC(), DE.t,
                 expand=False)
 
@@ -509,7 +509,7 @@ def no_cancel_equal(b, c, n, DE):
 
         u = cancel(m*DE.d.as_poly(DE.t).LC() + b.as_poly(DE.t).LC())
         if u.is_zero:
-            return (q, m, c)
+            return q, m, c
         if m > 0:
             p = Poly(c.as_poly(DE.t).LC()/u*DE.t**m, DE.t, expand=False)
         else:
@@ -759,4 +759,4 @@ def rischDE(fa, fd, ga, gd, DE):
     else:
         y = solve_poly_rde(B, C, m, DE)
 
-    return (alpha*y + beta, hn*hs)
+    return alpha*y + beta, hn*hs

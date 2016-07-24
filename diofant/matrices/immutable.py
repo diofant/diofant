@@ -47,7 +47,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 
     @property
     def shape(self):
-        return tuple([int(i) for i in self.args[:2]])
+        return tuple(int(i) for i in self.args[:2])
 
     @property
     def _mat(self):

@@ -445,7 +445,7 @@ class SparseMatrix(MatrixBase):
         else:
             raise NotImplementedError(
                 "Cannot add %s to %s" %
-                tuple([c.__class__.__name__ for c in (other, self)]))
+                tuple(c.__class__.__name__ for c in (other, self)))
 
     def __neg__(self):
         """Negate all elements of self.
@@ -498,7 +498,7 @@ class SparseMatrix(MatrixBase):
         """
         if not isinstance(other, SparseMatrix):
             raise ValueError('only use add with %s, not %s' %
-                tuple([c.__class__.__name__ for c in (self, other)]))
+                tuple(c.__class__.__name__ for c in (self, other)))
         if self.shape != other.shape:
             raise ShapeError()
         M = self.copy()

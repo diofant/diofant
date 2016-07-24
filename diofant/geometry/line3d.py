@@ -174,7 +174,7 @@ class LinearEntity3D(GeometryEntity):
         (Point3D(0, 0, 0), Point3D(5, 11, 1))
 
         """
-        return (self.p1, self.p2)
+        return self.p1, self.p2
 
     @staticmethod
     def are_concurrent(*lines):
@@ -907,8 +907,7 @@ class Line3D(LinearEntity3D):
         x, y, z, k = _symbol(x), _symbol(y), _symbol(z), _symbol(k)
         p1, p2 = self.points
         a = p1.direction_ratio(p2)
-        return (((x - p1.x)/a[0]), ((y - p1.y)/a[1]),
-                ((z - p1.z)/a[2]), k)
+        return (x - p1.x)/a[0], (y - p1.y)/a[1], (z - p1.z)/a[2], k
 
     def contains(self, o):
         """Return True if o is on this Line, or False otherwise.

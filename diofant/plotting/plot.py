@@ -403,7 +403,7 @@ class List2DSeries(Line2DBaseSeries):
         return 'list plot'
 
     def get_points(self):
-        return (self.list_x, self.list_y)
+        return self.list_x, self.list_y
 
 
 class LineOver1DRangeSeries(Line2DBaseSeries):
@@ -503,7 +503,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
             list_x = np.linspace(self.start, self.end, num=self.nb_of_points)
         f = vectorized_lambdify([self.var], self.expr)
         list_y = f(list_x)
-        return (list_x, list_y)
+        return list_x, list_y
 
 
 class Parametric2DLineSeries(Line2DBaseSeries):
@@ -540,7 +540,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         fy = vectorized_lambdify([self.var], self.expr_y)
         list_x = fx(param)
         list_y = fy(param)
-        return (list_x, list_y)
+        return list_x, list_y
 
     def get_segments(self):
         """
@@ -672,7 +672,7 @@ class Parametric3DLineSeries(Line3DBaseSeries):
         list_x = fx(param)
         list_y = fy(param)
         list_z = fz(param)
-        return (list_x, list_y, list_z)
+        return list_x, list_y, list_z
 
 
 # Surfaces
@@ -740,7 +740,7 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
                                      np.linspace(self.start_y, self.end_y,
                                                  num=self.nb_of_points_y))
         f = vectorized_lambdify((self.var_x, self.var_y), self.expr)
-        return (mesh_x, mesh_y, f(mesh_x, mesh_y))
+        return mesh_x, mesh_y, f(mesh_x, mesh_y)
 
 
 class ParametricSurfaceSeries(SurfaceBaseSeries):
@@ -789,7 +789,7 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
         fx = vectorized_lambdify((self.var_u, self.var_v), self.expr_x)
         fy = vectorized_lambdify((self.var_u, self.var_v), self.expr_y)
         fz = vectorized_lambdify((self.var_u, self.var_v), self.expr_z)
-        return (fx(mesh_u, mesh_v), fy(mesh_u, mesh_v), fz(mesh_u, mesh_v))
+        return fx(mesh_u, mesh_v), fy(mesh_u, mesh_v), fz(mesh_u, mesh_v)
 
 
 # Contours
@@ -831,7 +831,7 @@ class ContourSeries(BaseSeries):
                                      np.linspace(self.start_y, self.end_y,
                                                  num=self.nb_of_points_y))
         f = vectorized_lambdify((self.var_x, self.var_y), self.expr)
-        return (mesh_x, mesh_y, f(mesh_x, mesh_y))
+        return mesh_x, mesh_y, f(mesh_x, mesh_y)
 
 
 ##############################################################################

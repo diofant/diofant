@@ -638,7 +638,7 @@ class Add(Expr, AssocOp):
             re, im = term.as_real_imag(deep=deep)
             re_part.append(re)
             im_part.append(im)
-        return (self.func(*re_part), self.func(*im_part))
+        return self.func(*re_part), self.func(*im_part)
 
     def _eval_as_leading_term(self, x):
         from diofant import expand_mul, factor_terms

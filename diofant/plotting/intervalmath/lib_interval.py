@@ -432,7 +432,7 @@ def And(*args):
             second = None
         else:
             second = True
-        return (first, second)
+        return first, second
     return reduce(reduce_and, args)
 
 
@@ -453,5 +453,5 @@ def Or(*args):
             second = None
         else:
             second = False
-        return (first, second)
+        return first, second
     return reduce(reduce_or, args)

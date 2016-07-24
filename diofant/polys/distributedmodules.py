@@ -630,7 +630,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
             + sdm_monomial_deg(sdm_monomial_lcm(LMi, LMj))
 
     def ourkey(p):
-        return (p[2], O(p[3]), p[1])
+        return p[2], O(p[3]), p[1]
 
     def update(f, sugar, P):
         """Add f with sugar ``sugar`` to S, update P."""

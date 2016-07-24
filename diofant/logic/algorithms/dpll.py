@@ -292,7 +292,7 @@ def find_unit_clause_int_repr(clauses, model):
     (2, False)
 
     """
-    bound = set(model) | set(-sym for sym in model)
+    bound = set(model) | {-sym for sym in model}
     for clause in clauses:
         unbound = clause - bound
         if len(unbound) == 1:

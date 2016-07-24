@@ -42,6 +42,7 @@ matrix:
         - DIOFANT_GROUND_TYPES=gmpy1
       script:
         - py.test --cov diofant diofant/polys
+        - python examples/all.py
       after_success:
         - codecov
 before_install:

@@ -267,7 +267,7 @@ def mrv_leadterm(e, x):
     (-1, 0)
     """
     if not e.has(x):
-        return (e, S.Zero)
+        return e, S.Zero
 
     e = e.replace(lambda f: f.is_Pow and f.base != S.Exp1 and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))

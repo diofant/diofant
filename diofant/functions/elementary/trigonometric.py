@@ -49,14 +49,14 @@ class TrigonometricFunction(Function):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.args[0].expand(deep, **hints), S.Zero)
+                return self.args[0].expand(deep, **hints), S.Zero
             else:
-                return (self.args[0], S.Zero)
+                return self.args[0], S.Zero
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             re, im = self.args[0].as_real_imag()
-        return (re, im)
+        return re, im
 
 
 def _peeloff_pi(arg):
@@ -351,7 +351,7 @@ class sin(TrigonometricFunction):
 
     def as_real_imag(self, deep=True, **hints):
         re, im = self._as_real_imag(deep=deep, **hints)
-        return (sin(re)*cosh(im), cos(re)*sinh(im))
+        return sin(re)*cosh(im), cos(re)*sinh(im)
 
     def _eval_expand_trig(self, **hints):
         from diofant import chebyshevt, chebyshevu, expand_mul
@@ -634,7 +634,7 @@ class cos(TrigonometricFunction):
             # such that g is the gcd and x1*y1+x2*y2+x3*y3 - g = 0
             # Note, that this is only one such linear combination.
             if len(x) == 1:
-                return (1, x[0])
+                return 1, x[0]
             if len(x) == 2:
                 return igcdex(x[0], x[-1])
             g = migcdex(x[1:])
@@ -697,7 +697,7 @@ class cos(TrigonometricFunction):
                 return False
             if max(primes.values()) > 1:
                 return False
-            return tuple([ p for p in primes if primes[p] == 1])
+            return tuple(p for p in primes if primes[p] == 1)
 
         if pi_coeff.q in cst_table_some:
             return chebyshevt(pi_coeff.p, cst_table_some[pi_coeff.q]).expand()
@@ -732,7 +732,7 @@ class cos(TrigonometricFunction):
 
     def as_real_imag(self, deep=True, **hints):
         re, im = self._as_real_imag(deep=deep, **hints)
-        return (cos(re)*cosh(im), -sin(re)*sinh(im))
+        return cos(re)*cosh(im), -sin(re)*sinh(im)
 
     def _eval_expand_trig(self, **hints):
         from diofant import chebyshevt
@@ -954,9 +954,9 @@ class tan(TrigonometricFunction):
         re, im = self._as_real_imag(deep=deep, **hints)
         if im:
             denom = cos(2*re) + cosh(2*im)
-            return (sin(2*re)/denom, sinh(2*im)/denom)
+            return sin(2*re)/denom, sinh(2*im)/denom
         else:
-            return (self.func(re), S.Zero)
+            return self.func(re), S.Zero
 
     def _eval_expand_trig(self, **hints):
         from diofant import im, re
@@ -1386,9 +1386,9 @@ class cot(ReciprocalTrigonometricFunction):
         re, im = self._as_real_imag(deep=deep, **hints)
         if im:
             denom = cos(2*re) - cosh(2*im)
-            return (-sin(2*re)/denom, -sinh(2*im)/denom)
+            return -sin(2*re)/denom, -sinh(2*im)/denom
         else:
-            return (self.func(re), S.Zero)
+            return self.func(re), S.Zero
 
     def _eval_expand_trig(self, **hints):
         from diofant import im, re

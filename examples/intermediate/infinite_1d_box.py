@@ -7,7 +7,7 @@ which is linear in ``x``, up to second order in perturbation
 """
 
 from diofant.core import pi
-from diofant import Integral, var, S
+from diofant import Integral, var, sympify
 from diofant.functions import sin, sqrt
 
 
@@ -23,7 +23,7 @@ def X_n(n, a, x):
     ``x``
         x coordinate.
     """
-    n, a, x = map(S, [n, a, x])
+    n, a, x = map(sympify, [n, a, x])
     C = sqrt(2 / a)
     return C * sin(pi * n * x / a)
 

@@ -348,7 +348,7 @@ class AssocOp(Basic):
         if isinstance(expr, cls):
             return expr.args
         else:
-            return (expr,)
+            return expr,
 
 
 class ShortCircuit(Exception):

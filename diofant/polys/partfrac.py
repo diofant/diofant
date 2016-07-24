@@ -338,7 +338,7 @@ def apart_list(f, x=None, dummies=None, **options):
 
     rationalpart = apart_list_full_decomposition(P, Q, dummies)
 
-    return (common, polypart, rationalpart)
+    return common, polypart, rationalpart
 
 
 def apart_list_full_decomposition(P, Q, dummygen):

@@ -85,7 +85,7 @@ class re(Function):
         """
         Returns the real number with a zero imaginary part.
         """
-        return (self, S.Zero)
+        return self, S.Zero
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -178,7 +178,7 @@ class im(Function):
         >>> im(2 + 3*I).as_real_imag()
         (3, 0)
         """
-        return (self, S.Zero)
+        return self, S.Zero
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -448,9 +448,10 @@ class Abs(Function):
                     if base.func is cls and exponent is S.NegativeOne:
                         return arg
                     return Abs(base)**exponent
-                if base.is_positive:
+                if base.is_nonnegative:
                     return base**re(exponent)
-                return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
+                if base.is_negative:
+                    return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
         if arg.is_zero:  # it may be an Expr that is zero
             return S.Zero
         if arg.is_nonnegative:

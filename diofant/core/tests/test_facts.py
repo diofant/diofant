@@ -76,7 +76,7 @@ def test_apply_beta_to_alpha_route():
 
     # indicates empty alpha-chain with attached beta-rule #bidx
     def Q(bidx):
-        return (set(), [bidx])
+        return set(), [bidx]
 
     # x -> a        &(a,b) -> x     --  x -> a
     A = {'x': {'a'}}

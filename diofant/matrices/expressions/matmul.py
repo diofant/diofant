@@ -39,7 +39,7 @@ class MatMul(MatrixExpr):
     @property
     def shape(self):
         matrices = [arg for arg in self.args if arg.is_Matrix]
-        return (matrices[0].rows, matrices[-1].cols)
+        return matrices[0].rows, matrices[-1].cols
 
     def _entry(self, i, j, expand=True):
         coeff, matrices = self.as_coeff_matrices()

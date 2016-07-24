@@ -31,7 +31,7 @@ class DenseNDimArray(NDimArray):
 
             def slice_expand(s, dim):
                 if not isinstance(s, slice):
-                        return (s,)
+                    return s,
                 start, stop, step = s.indices(dim)
                 return [start + i*step for i in range((stop-start)//step)]
 
