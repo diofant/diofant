@@ -188,11 +188,11 @@ class sinh(HyperbolicFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_is_finite(self):
-        arg = self.args[0]
-        if arg.is_imaginary:
+        if self.args[0].is_imaginary:
             return True
 
 
@@ -335,11 +335,11 @@ class cosh(HyperbolicFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_is_finite(self):
-        arg = self.args[0]
-        if arg.is_imaginary:
+        if self.args[0].is_imaginary:
             return True
 
 
@@ -472,11 +472,11 @@ class tanh(HyperbolicFunction):
             return self.func(arg)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_is_finite(self):
-        arg = self.args[0]
-        if arg.is_extended_real:
+        if self.args[0].is_extended_real:
             return True
 
 
