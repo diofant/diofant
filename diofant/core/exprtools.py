@@ -179,10 +179,7 @@ class Factors(object):
                             raise ValueError('unexpected factor in i1: %s' % a)
 
         self.factors = factors
-        try:
-            self.gens = frozenset(factors.keys())
-        except AttributeError:
-            raise TypeError('expecting Expr or dictionary')
+        self.gens = frozenset(factors.keys())
 
     def __hash__(self):  # Factors
         keys = tuple(ordered(self.factors.keys()))
