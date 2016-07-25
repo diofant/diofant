@@ -33,7 +33,7 @@ class TrigonometricFunction(Function):
     def _eval_is_algebraic(self):
         s = self.func(*self.args)
         if s.func == self.func:
-            if self.args[0].is_nonzero and self.args[0].is_algebraic:
+            if self.args[0].is_algebraic and self.args[0].is_nonzero:
                 return False
             pi_coeff = _pi_coeff(self.args[0])
             if pi_coeff is not None and pi_coeff.is_rational:
@@ -395,7 +395,8 @@ class sin(TrigonometricFunction):
         return self.args[0].is_complex
 
     def _eval_is_real(self):
-        return self.args[0].is_real
+        if self.args[0].is_real:
+            return True
 
 
 class cos(TrigonometricFunction):
@@ -765,7 +766,8 @@ class cos(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_real(self):
-        return self.args[0].is_real
+        if self.args[0].is_real:
+            return True
 
     def _eval_is_complex(self):
         return self.args[0].is_complex
@@ -1027,13 +1029,18 @@ class tan(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+    def _eval_is_real(self):
+        if (2*self.args[0]/S.Pi).is_noninteger:
+            return True
 
     def _eval_is_finite(self):
-        arg = self.args[0]
+        if self.args[0].is_imaginary:
+            return True
 
-        if arg.is_imaginary:
+    def _eval_is_nonzero(self):
+        if (2*self.args[0]/S.Pi).is_noninteger:
+            return True
+        elif self.args[0].is_imaginary and self.args[0].is_nonzero:
             return True
 
 

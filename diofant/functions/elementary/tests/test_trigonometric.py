@@ -428,7 +428,8 @@ def test_tan():
 
     assert tan(k*pi*I) == tanh(k*pi)*I
 
-    assert tan(r).is_extended_real is True
+    ni = Symbol('ni', noninteger=True)
+    assert tan(ni*pi/2).is_real is True
 
     assert tan(0, evaluate=False).is_algebraic
     assert tan(a).is_algebraic is None
@@ -559,7 +560,8 @@ def test_cot():
     assert cot(x*I) == -coth(x)*I
     assert cot(k*pi*I) == -coth(k*pi)*I
 
-    assert cot(r).is_extended_real is True
+    ni = Symbol('ni', noninteger=True)
+    assert cot(pi*ni/2).is_extended_real is True
 
     assert cot(a).is_algebraic is None
     assert cot(na).is_algebraic is False
