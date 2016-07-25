@@ -324,8 +324,10 @@ class IndexedBase(Expr, NotIterable):
         obj = Expr.__new__(cls, label, **kw_args)
         if is_sequence(shape):
             obj._shape = Tuple(*shape)
+        elif shape is not None:
+            obj._shape = Tuple(shape)
         else:
-            obj._shape = sympify(shape)
+            obj._shape = shape
         return obj
 
     @property
