@@ -875,7 +875,7 @@ class periodic_argument(Function):
         return (ub - ceiling(ub/period - Rational(1, 2))*period)._eval_evalf(prec)
 
     def _eval_is_real(self):
-        if self.args[1].is_positive:
+        if self.args[1].is_real and self.args[1].is_positive:
             return True
 
 
