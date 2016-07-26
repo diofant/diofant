@@ -531,10 +531,10 @@ def test_true_false():
     assert false is not False
     assert true
     assert not false
-    assert true == True  # noqa
-    assert false == False  # noqa
-    assert not (true == False)  # noqa
-    assert not (false == True)  # noqa
+    assert true == True  # noqa: E712
+    assert false == False  # noqa: E712
+    assert not (true == False)  # noqa: E712
+    assert not (false == True)  # noqa: E712
     assert not (true == false)
 
     assert hash(true) == hash(True)
