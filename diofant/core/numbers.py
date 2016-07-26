@@ -128,17 +128,10 @@ def _literal_float(f):
     pat = r"[-+]?((\d*\.\d+)|(\d+\.?))(eE[-+]?\d+)?"
     return bool(regex.match(pat, f))
 
-# (a,b) -> gcd(a,b)
-_gcdcache = {}
 
-# TODO caching with decorator, but not to degrade performance
-
-
+@cacheit
 def igcd(*args):
     """Computes positive integer greatest common divisor.
-
-    The algorithm is based on the well known Euclid's algorithm. To
-    improve speed, igcd() has its own caching mechanism implemented.
 
     Examples
     ========
@@ -148,27 +141,14 @@ def igcd(*args):
     2
     >>> igcd(5, 10, 15)
     5
-
     """
     a = args[0]
     for b in args[1:]:
-        try:
-            a = _gcdcache[(a, b)]
-        except KeyError:
-            a, b = as_int(a), as_int(b)
+        a, b = as_int(a), abs(as_int(b))
 
-            if a and b:
-                if b < 0:
-                    b = -b
-
-                while b:
-                    a, b = b, a % b
-            else:
-                a = abs(a or b)
-
-            _gcdcache[(a, b)] = a
-        if a == 1 or b == 1:
-            return 1
+        a = fractions.gcd(a, b)
+        if a == 1:
+            break
     return a
 
 

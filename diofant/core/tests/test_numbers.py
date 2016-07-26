@@ -170,7 +170,7 @@ def test_igcd():
     assert igcd(7, 0) == 7
     assert igcd(7, 1) == 1
     assert igcd(1, 7) == 1
-    assert igcd(-1, 0) == 1
+    assert igcd(-1, 0) == -1
     assert igcd(0, -1) == 1
     assert igcd(-1, -1) == 1
     assert igcd(-1, 7) == 1
