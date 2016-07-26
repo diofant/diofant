@@ -1115,65 +1115,41 @@ class Rational(Number):
     is_Rational = True
 
     @cacheit
-    def __new__(cls, p, q=None):
-        if q is None:
+    def __new__(cls, p, q=1):
+        if q == 1:
             if isinstance(p, Rational):
                 return p
+            elif isinstance(p, Float):
+                p, q = float(p).as_integer_ratio()
 
-            if isinstance(p, str):
-                try:
-                    p = fractions.Fraction(p)
-                except ValueError:
-                    pass  # error will raise below
-            elif isinstance(p, float):
-                p = fractions.Fraction(p)
-
-            if not isinstance(p, str):
-                try:
-                    if isinstance(p, fractions.Fraction):
-                        return Rational(p.numerator, p.denominator)
-                except NameError:
-                    pass  # error will raise below
-
-                if isinstance(p, Float):
-                    return Rational(*float(p).as_integer_ratio())
-
-            if not isinstance(p, DIOFANT_INTS + (Rational,)):
-                raise TypeError('invalid input: %s' % p)
-            q = q or S.One
-        else:
-            p = Rational(p)
-            q = Rational(q)
-
-        if isinstance(q, Rational):
-            p *= q.q
-            q = q.p
         if isinstance(p, Rational):
-            q *= p.q
-            p = p.p
+            p = fractions.Fraction(p.p, p.q)
+        if isinstance(q, Rational):
+            q = fractions.Fraction(q.p, q.q)
 
-        # p and q are now integers
-        if q == 0:
+        try:
+            f = fractions.Fraction(p)/fractions.Fraction(q)
+            p, q = f.numerator, f.denominator
+        except ValueError:
+            raise TypeError('invalid input: %s, %s' % (p, q))
+        except ZeroDivisionError:
             if p == 0:
                 if _errdict["divide"]:
                     raise ValueError("Indeterminate 0/0")
                 else:
                     return S.NaN
-            return S.ComplexInfinity
-        if q < 0:
-            q = -q
-            p = -p
-        n = igcd(abs(p), q)
-        if n > 1:
-            p //= n
-            q //= n
+            else:
+                return S.ComplexInfinity
+
         if q == 1:
             return Integer(p)
         if p == 1 and q == 2:
             return S.Half
+
         obj = Expr.__new__(cls)
         obj.p = p
         obj.q = q
+
         return obj
 
     def limit_denominator(self, max_denominator=1000000):
