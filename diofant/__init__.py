@@ -5,7 +5,7 @@ Diofant is written entirely in Python and does not require any external
 libraries, except optionally for plotting support.
 """
 
-__version__ = "0.8a0"
+__version__ = "0.8.0a1"
 
 
 def __diofant_debug():

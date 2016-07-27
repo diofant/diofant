@@ -47,7 +47,7 @@ matrix:
       after_success:
         - codecov
 before_install:
-  - pip install --upgrade pip 'setuptools<=19.4' pytest
+  - pip install --upgrade pip setuptools pytest
   - pip install codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]

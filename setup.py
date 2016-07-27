@@ -93,7 +93,7 @@ with open('diofant/__init__.py') as f:
         if m:
             __version__ = m.group(1)
 
-setup(name='diofant',
+setup(name='Diofant',
       version=__version__,
       description='Computer algebra system (CAS) in Python',
       long_description=long_description,
@@ -106,6 +106,10 @@ setup(name='diofant',
       cmdclass={'test': test,
                 'clean': clean},
       classifiers=[
+          'Development Status :: 3 - Alpha',
+          'Intended Audience :: Developers',
+          'Intended Audience :: Education',
+          'Intended Audience :: Science/Research',
           'License :: OSI Approved :: BSD License',
           'Operating System :: OS Independent',
           'Programming Language :: Python',
@@ -114,10 +118,11 @@ setup(name='diofant',
           'Topic :: Scientific/Engineering :: Physics',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
       ],
       tests_require=['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming', 'pytest-cov'],
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
-      setup_requires=['setuptools>=5.5.1,<=19.4', 'pip>=6.0'],
+      setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],
           'gmpy': ["gmpy>=1.16"],
