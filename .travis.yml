@@ -6,6 +6,7 @@ sudo: false
 cache: pip
 python:
   - 3.4
+  - 3.5
 env:
   - DIOFANT_GROUND_TYPES=python MPMATH_NOGMPY=Y
 addons:
