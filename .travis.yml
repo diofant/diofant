@@ -1,6 +1,5 @@
 branches:
-  only:
-    - master
+  only: master
 language: python
 sudo: false
 cache: pip
@@ -20,15 +19,9 @@ addons:
 matrix:
   include:
     - python: 3.4
-      script:
-        - python setup.py test --cov -m 'not slow and not xfail'
-      after_success:
-        - codecov
+      env: COVERAGE_MARK='not slow and not xfail'
     - python: 3.4
-      script:
-        - python setup.py test --cov -m 'slow and not xfail'
-      after_success:
-        - codecov
+      env: COVERAGE_MARK='slow and not xfail'
     - python: 3.4
       install:
         - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
@@ -38,8 +31,7 @@ matrix:
         - sphinx-build -W -b html docs build/sphinx/html
         - python examples/all.py
         - py.test --cov diofant diofant/polys
-      after_success:
-        - codecov
+      after_success: codecov
 before_install:
   - |
     mkdir -p $HOME/.local
@@ -52,14 +44,19 @@ before_install:
     export CPATH=$HOME/.local/include
     export LIBRARY_PATH=$HOME/.local/lib
     export LD_LIBRARY_PATH=$HOME/.local/lib
-  - pip install --upgrade pip setuptools pytest
-  - pip install codecov
+  - pip install --upgrade pip setuptools pytest codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
 script:
-  - python setup.py test
+  - |
+    if [ -n "${COVERAGE_MARK}" ]; then
+      python setup.py test --cov -m "${COVERAGE_MARK}"
+    else
+      python setup.py test
+    fi
+after_success: test -n "${COVERAGE_MARK}" && codecov
 notifications:
   email: false
