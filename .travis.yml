@@ -7,8 +7,6 @@ cache: pip
 python:
   - 3.4
   - 3.5
-env:
-  - DIOFANT_GROUND_TYPES=python MPMATH_NOGMPY=Y
 addons:
   apt:
     packages:
@@ -27,45 +25,37 @@ matrix:
       after_success:
         - codecov
     - python: 3.4
-      install:
-        - travis_wait pip install .[exports,plot,interactive]
-        - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
       script:
-        - python setup.py flake8
         - python setup.py test --cov -m 'slow and not xfail'
-        - sphinx-build -W -b html docs build/sphinx/html
       after_success:
         - codecov
     - python: 3.4
-      before_install:
-        - |
-          mkdir -p $HOME/.local
-          wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
-          tar xzvf mpc-1.0.2.tar.gz
-          pushd mpc-1.0.2
-          ./configure --prefix=$HOME/.local
-          make all install
-          popd
-          export CPATH=$HOME/.local/include
-          export LIBRARY_PATH=$HOME/.local/lib
-          export LD_LIBRARY_PATH=$HOME/.local/lib
-        - pip install --upgrade pip setuptools pytest
-        - pip install codecov
       install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip install pytest-cov
-      env:
-        - DIOFANT_GROUND_TYPES=gmpy
+        - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
+        - travis_wait pip install .[exports,plot,interactive]
       script:
-        - py.test --cov diofant diofant/polys
+        - python setup.py flake8
+        - sphinx-build -W -b html docs build/sphinx/html
         - python examples/all.py
+        - py.test --cov diofant diofant/polys
       after_success:
         - codecov
 before_install:
+  - |
+    mkdir -p $HOME/.local
+    wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
+    tar xzvf mpc-1.0.2.tar.gz
+    pushd mpc-1.0.2
+    ./configure --prefix=$HOME/.local
+    make all install
+    popd
+    export CPATH=$HOME/.local/include
+    export LIBRARY_PATH=$HOME/.local/lib
+    export LD_LIBRARY_PATH=$HOME/.local/lib
   - pip install --upgrade pip setuptools pytest
   - pip install codecov
 install:
-  - travis_wait pip install .[exports,plot,interactive]
+  - travis_wait pip install .[exports,plot,interactive,gmpy]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
