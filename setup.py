@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This script uses Setuptools (http://pythonhosted.org/setuptools/), a
 collection of enhancements to the standard Python distutils.
@@ -12,9 +12,11 @@ from setuptools import setup, Command, find_packages
 from setuptools.command.test import test as TestCommand
 
 
-# Make sure I have the right Python version.
+# Make sure I have the right Python version.  We can drop this
+# when setuptools 24.2.1 enter into the Debian stable.
 if sys.version_info[:2] < (3, 4):
-    print("Diofant requires Python 3.4 or newer. Python %d.%d detected" % sys.version_info[:2])
+    print('Diofant requires Python 3.4 or newer. '
+          'Python %d.%d detected' % sys.version_info[:2])
     sys.exit(-1)
 
 
@@ -120,6 +122,7 @@ setup(name='Diofant',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
       ],
+      python_requires='>=3.4',
       tests_require=['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming', 'pytest-cov'],
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
       setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
