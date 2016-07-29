@@ -286,36 +286,36 @@ _xobj_unicode = {
     ']':    (( EXT(']'), CUP(']'), CLO(']') ), ']'),
     '{':    (( EXT('{}'), HUP('{'), HLO('{'), MID('{') ), '{'),
     '}':    (( EXT('{}'), HUP('}'), HLO('}'), MID('}') ), '}'),
-    '|':    U('BOX DRAWINGS LIGHT VERTICAL'),
+    '|':    '\N{BOX DRAWINGS LIGHT VERTICAL}',
 
-    '<':    ((U('BOX DRAWINGS LIGHT VERTICAL'),
-              U('BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT'),
-              U('BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT')), '<'),
+    '<':    (('\N{BOX DRAWINGS LIGHT VERTICAL}',
+              '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}',
+              '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}'), '<'),
 
-    '>':    ((U('BOX DRAWINGS LIGHT VERTICAL'),
-              U('BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT'),
-              U('BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT')), '>'),
+    '>':    (('\N{BOX DRAWINGS LIGHT VERTICAL}',
+              '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}',
+              '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}'), '>'),
 
-    'lfloor': (( EXT('['), EXT('['), CLO('[') ), U('LEFT FLOOR')),
-    'rfloor': (( EXT(']'), EXT(']'), CLO(']') ), U('RIGHT FLOOR')),
-    'lceil':  (( EXT('['), CUP('['), EXT('[') ), U('LEFT CEILING')),
-    'rceil':  (( EXT(']'), CUP(']'), EXT(']') ), U('RIGHT CEILING')),
+    'lfloor': (( EXT('['), EXT('['), CLO('[') ), '\N{LEFT FLOOR}'),
+    'rfloor': (( EXT(']'), EXT(']'), CLO(']') ), '\N{RIGHT FLOOR}'),
+    'lceil':  (( EXT('['), CUP('['), EXT('[') ), '\N{LEFT CEILING}'),
+    'rceil':  (( EXT(']'), CUP(']'), EXT(']') ), '\N{RIGHT CEILING}'),
 
-    'int':  (( EXT('int'), U('TOP HALF INTEGRAL'), U('BOTTOM HALF INTEGRAL') ), U('INTEGRAL')),
-    'sum':  (( U('BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT'), '_', U('OVERLINE'), U('BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT')), U('N-ARY SUMMATION')),
+    'int':  (( EXT('int'), '\N{TOP HALF INTEGRAL}', '\N{BOTTOM HALF INTEGRAL}' ), '\N{INTEGRAL}'),
+    'sum':  (( '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}', '_', '\N{OVERLINE}', '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}'), '\N{N-ARY SUMMATION}'),
 
     # horizontal objects
     # '-':   '-',
-    '-':    U('BOX DRAWINGS LIGHT HORIZONTAL'),
-    '_':    U('LOW LINE'),
+    '-':    '\N{BOX DRAWINGS LIGHT HORIZONTAL}',
+    '_':    '\N{LOW LINE}',
     # We used to use this, but LOW LINE looks better for roots, as it's a
     # little lower (i.e., it lines up with the / perfectly.  But perhaps this
     # one would still be wanted for some cases?
-    # '_':    U('HORIZONTAL SCAN LINE-9'),
+    # '_':    '\N{HORIZONTAL SCAN LINE-9}',
 
     # diagonal objects '\' & '/' ?
-    '/':    U('BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT'),
-    '\\':   U('BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT'),
+    '/':    '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}',
+    '\\':   '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}',
 }
 
 _xobj_ascii = {
@@ -436,9 +436,9 @@ def hobj(symb, width):
 # RADICAL
 # n -> symbol
 root = {
-    2: U('SQUARE ROOT'),   # U('RADICAL SYMBOL BOTTOM')
-    3: U('CUBE ROOT'),
-    4: U('FOURTH ROOT'),
+    2: '\N{SQUARE ROOT}',   # '\N{RADICAL SYMBOL BOTTOM}'
+    3: '\N{CUBE ROOT}',
+    4: '\N{FOURTH ROOT}',
 }
 
 
@@ -471,20 +471,20 @@ _xsym = {
     '==':  ('=', '='),
     '<':   ('<', '<'),
     '>':   ('>', '>'),
-    '<=':  ('<=', U('LESS-THAN OR EQUAL TO')),
-    '>=':  ('>=', U('GREATER-THAN OR EQUAL TO')),
-    '!=':  ('!=', U('NOT EQUAL TO')),
-    '*':   ('*', U('DOT OPERATOR')),
-    '-->': ('-->', U('EM DASH') + U('EM DASH') +
-            U('BLACK RIGHT-POINTING TRIANGLE') if U('EM DASH')
-            and U('BLACK RIGHT-POINTING TRIANGLE') else None),
-    '==>': ('==>', U('BOX DRAWINGS DOUBLE HORIZONTAL') +
-            U('BOX DRAWINGS DOUBLE HORIZONTAL') +
-            U('BLACK RIGHT-POINTING TRIANGLE') if
-            U('BOX DRAWINGS DOUBLE HORIZONTAL') and
-            U('BOX DRAWINGS DOUBLE HORIZONTAL') and
-            U('BLACK RIGHT-POINTING TRIANGLE') else None),
-    '.':   ('*', U('RING OPERATOR')),
+    '<=':  ('<=', '\N{LESS-THAN OR EQUAL TO}'),
+    '>=':  ('>=', '\N{GREATER-THAN OR EQUAL TO}'),
+    '!=':  ('!=', '\N{NOT EQUAL TO}'),
+    '*':   ('*', '\N{DOT OPERATOR}'),
+    '-->': ('-->', '\N{EM DASH}' + '\N{EM DASH}' +
+            '\N{BLACK RIGHT-POINTING TRIANGLE}' if '\N{EM DASH}'
+            and '\N{BLACK RIGHT-POINTING TRIANGLE}' else None),
+    '==>': ('==>', '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' +
+            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' +
+            '\N{BLACK RIGHT-POINTING TRIANGLE}' if
+            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' and
+            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' and
+            '\N{BLACK RIGHT-POINTING TRIANGLE}' else None),
+    '.':   ('*', '\N{RING OPERATOR}'),
 }
 
 
@@ -502,25 +502,25 @@ def xsym(sym):
 
 atoms_table = {
     # class                    how-to-display
-    'Exp1':                    U('SCRIPT SMALL E'),
-    'Pi':                      U('GREEK SMALL LETTER PI'),
-    'Infinity':                U('INFINITY'),
-    'NegativeInfinity':        U('INFINITY') and ('-' + U('INFINITY')),  # XXX what to do here
-    # 'ImaginaryUnit':          U('GREEK SMALL LETTER IOTA'),
-    # 'ImaginaryUnit':          U('MATHEMATICAL ITALIC SMALL I'),
-    'ImaginaryUnit':           U('DOUBLE-STRUCK ITALIC SMALL I'),
-    'EmptySet':                U('EMPTY SET'),
-    'Naturals':                U('DOUBLE-STRUCK CAPITAL N'),
-    'Naturals0':               (U('DOUBLE-STRUCK CAPITAL N') and
-                                (U('DOUBLE-STRUCK CAPITAL N') +
-                                 U('SUBSCRIPT ZERO'))),
-    'Integers':                U('DOUBLE-STRUCK CAPITAL Z'),
-    'Rationals':               U('DOUBLE-STRUCK CAPITAL Q'),
-    'Reals':                   U('DOUBLE-STRUCK CAPITAL R'),
-    'Union':                   U('UNION'),
-    'SymmetricDifference':     U('INCREMENT'),
-    'Intersection':            U('INTERSECTION'),
-    'Ring':                    U('RING OPERATOR')
+    'Exp1':                    '\N{SCRIPT SMALL E}',
+    'Pi':                      '\N{GREEK SMALL LETTER PI}',
+    'Infinity':                '\N{INFINITY}',
+    'NegativeInfinity':        '\N{INFINITY}' and ('-' + '\N{INFINITY}'),  # XXX what to do here
+    # 'ImaginaryUnit':          '\N{GREEK SMALL LETTER IOTA}',
+    # 'ImaginaryUnit':          '\N{MATHEMATICAL ITALIC SMALL I}',
+    'ImaginaryUnit':           '\N{DOUBLE-STRUCK ITALIC SMALL I}',
+    'EmptySet':                '\N{EMPTY SET}',
+    'Naturals':                '\N{DOUBLE-STRUCK CAPITAL N}',
+    'Naturals0':               ('\N{DOUBLE-STRUCK CAPITAL N}' and
+                                ('\N{DOUBLE-STRUCK CAPITAL N}' +
+                                 '\N{SUBSCRIPT ZERO}')),
+    'Integers':                '\N{DOUBLE-STRUCK CAPITAL Z}',
+    'Rationals':               '\N{DOUBLE-STRUCK CAPITAL Q}',
+    'Reals':                   '\N{DOUBLE-STRUCK CAPITAL R}',
+    'Union':                   '\N{UNION}',
+    'SymmetricDifference':     '\N{INCREMENT}',
+    'Intersection':            '\N{INTERSECTION}',
+    'Ring':                    '\N{RING OPERATOR}'
 }
 
 
