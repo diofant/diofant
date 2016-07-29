@@ -40,7 +40,7 @@ from diofant.logic.boolalg import And, Or, BooleanAtom
 from diofant.functions.special.delta_functions import Heaviside
 from diofant.functions.elementary.piecewise import Piecewise, piecewise_fold
 from diofant.functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
-                                                   HyperbolicFunction)
+                                                     HyperbolicFunction)
 from diofant.functions.special.hyper import meijerg
 from diofant.utilities.iterables import multiset_partitions
 from diofant.utilities.misc import debug as _debug

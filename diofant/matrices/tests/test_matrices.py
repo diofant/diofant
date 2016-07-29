@@ -3,11 +3,11 @@ import collections
 import pytest
 
 from diofant import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
-                   PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
-                   simplify, sin, sqrt, symbols, sympify,
-                   trigsimp, sstr, Function)
+                     PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
+                     simplify, sin, sqrt, symbols, sympify,
+                     trigsimp, sstr, Function)
 from diofant.matrices.matrices import (ShapeError, MatrixError,
-                                     NonSquareMatrixError, DeferredVector)
+                                       NonSquareMatrixError, DeferredVector)
 from diofant.matrices import (
     GramSchmidt, ImmutableMatrix, ImmutableSparseMatrix, Matrix,
     SparseMatrix, casoratian, diag, eye, hessian,

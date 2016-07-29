@@ -14,7 +14,7 @@ from diofant.core.mul import _keep_coeff
 from diofant.simplify.simplify import nthroot
 
 from diofant.abc import (x, y, z, t, a, b, c, d, e, f, g, h, i, r,
-                       R, k, n, m, w, s)
+                         R, k, n, m, w, s)
 
 
 def test_issue_7263():

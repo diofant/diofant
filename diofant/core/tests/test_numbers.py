@@ -5,12 +5,12 @@ from mpmath import mpf
 import pytest
 
 from diofant import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
-                   S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
-                   Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
-                   AlgebraicNumber, simplify)
+                     S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
+                     Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
+                     AlgebraicNumber, simplify)
 from diofant.core.power import integer_nthroot
 from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
-                                mpf_norm, comp)
+                                  mpf_norm, comp)
 
 t = Symbol('t', real=False)
 

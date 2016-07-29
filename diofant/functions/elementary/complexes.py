@@ -1,7 +1,7 @@
 from diofant.core import S, Add, Mul, sympify, Symbol, Dummy
 from diofant.core.exprtools import factor_terms
 from diofant.core.function import (Function, Derivative, ArgumentIndexError,
-                                 AppliedUndef)
+                                   AppliedUndef)
 from diofant.core.numbers import pi, Rational
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.functions.elementary.piecewise import Piecewise

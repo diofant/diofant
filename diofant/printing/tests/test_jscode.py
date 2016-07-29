@@ -1,7 +1,7 @@
 import pytest
 
 from diofant.core import (pi, oo, symbols, Rational, Integer, GoldenRatio,
-                        EulerGamma, Catalan, Lambda, Dummy)
+                          EulerGamma, Catalan, Lambda, Dummy)
 from diofant.functions import Piecewise, sin, cos, Abs, exp, ceiling, sqrt
 from diofant.printing.jscode import JavascriptCodePrinter
 from diofant.utilities.lambdify import implemented_function

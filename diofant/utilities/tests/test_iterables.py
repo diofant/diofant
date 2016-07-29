@@ -5,7 +5,7 @@ from textwrap import dedent
 import pytest
 
 from diofant import (symbols, Integral, Tuple, Dummy, Basic, default_sort_key,
-                   Matrix, factorial, true, Integer)
+                     Matrix, factorial, true, Integer)
 from diofant.combinatorics import RGS_enum, RGS_unrank, Permutation
 from diofant.utilities.iterables import (
     _partition, _set_partitions, binary_partitions, bracelets, capture,
@@ -18,11 +18,11 @@ from diofant.utilities.iterables import (
     rotate_left, rotate_right, runs, sift, subsets, take, topological_sort,
     unflatten, uniq, variations, cantor_product)
 from diofant.utilities.enumerative import (factoring_visitor,
-                                         multiset_partitions_taocp)
+                                           multiset_partitions_taocp)
 from diofant.core.singleton import S
 from diofant.functions.elementary.piecewise import Piecewise, ExprCondPair
 
-w, x, y, z = symbols('w,x,y,z')
+from diofant.abc import w, x, y, z
 
 
 def test_postorder_traversal():

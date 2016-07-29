@@ -4,12 +4,12 @@ from operator import gt, lt, ge, le
 import pytest
 
 from diofant import (S, Symbol, nan, oo, I, pi, Float, And, Or, Not,
-                   Implies, Xor, zoo, sqrt, Rational, simplify, Function,
-                   Wild, Integer, floor, ceiling)
+                     Implies, Xor, zoo, sqrt, Rational, simplify, Function,
+                     Wild, Integer, floor, ceiling)
 from diofant.core.relational import (Relational, Equality, Unequality,
-                                   GreaterThan, LessThan, StrictGreaterThan,
-                                   StrictLessThan, Rel, Eq, Lt, Le,
-                                   Gt, Ge, Ne)
+                                     GreaterThan, LessThan, StrictGreaterThan,
+                                     StrictLessThan, Rel, Eq, Lt, Le,
+                                     Gt, Ge, Ne)
 from diofant.sets.sets import Interval, FiniteSet
 
 from diofant.abc import w, x, y, z, t

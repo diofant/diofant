@@ -6,8 +6,8 @@ import mpmath
 import pytest
 
 from diofant import (S, symbols, Symbol, Wild, Rational, sqrt, powsimp, sin, cos,
-                   pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
-                   Integer)
+                     pi, I, Interval, re, im, exp, ZZ, Piecewise, acos, root,
+                     Integer)
 from diofant.polys import Poly, cyclotomic_poly, intervals, nroots, RootOf
 from diofant.polys.polyroots import (
     root_factors, roots_linear,

@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                   pi, cos, sin, exp, Integer)
+                     pi, cos, sin, exp, Integer)
 from diofant.polys.numberfields import (
     minimal_polynomial,
     primitive_element,
@@ -14,7 +14,7 @@ from diofant.polys.numberfields import (
     AlgebraicNumber,
     isolate, IntervalPrinter)
 from diofant.polys.polyerrors import (IsomorphismFailed, NotAlgebraic,
-                                    GeneratorsError)
+                                      GeneratorsError)
 from diofant.polys.polyclasses import DMP
 from diofant.polys.domains import QQ
 from diofant.polys.rootoftools import RootOf

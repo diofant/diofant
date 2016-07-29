@@ -8,26 +8,26 @@ from diofant.core.basic import Atom, Basic
 from diofant.core.singleton import SingletonRegistry, S
 from diofant.core.symbol import Dummy, Symbol, Wild
 from diofant.core.numbers import (E, I, pi, oo, zoo, nan, Integer,
-                                Rational, Float)
+                                  Rational, Float)
 from diofant.core.relational import (Equality, GreaterThan, LessThan, Relational,
-                                   StrictGreaterThan, StrictLessThan, Unequality)
+                                     StrictGreaterThan, StrictLessThan, Unequality)
 from diofant.core.add import Add
 from diofant.core.mul import Mul
 from diofant.core.power import Pow
 from diofant.core.function import (Derivative, Function, FunctionClass, Lambda,
-                                 WildFunction)
+                                   WildFunction)
 
 from diofant.functions import (Piecewise, lowergamma, acosh, chebyshevu,
-                             chebyshevt, ln, chebyshevt_root, binomial,
-                             legendre, Heaviside, factorial, bernoulli, coth,
-                             tanh, assoc_legendre, sign, arg, asin, DiracDelta,
-                             re, rf, Abs, uppergamma, sinh, cos,
-                             cot, acos, acot, gamma, bell, hermite, harmonic,
-                             LambertW, zeta, log, asinh, acoth,
-                             cosh, dirichlet_eta, Eijk, loggamma, erf, ceiling,
-                             im, fibonacci, conjugate, tan, chebyshevu_root,
-                             floor, atanh, sqrt, sin, atan, ff,
-                             lucas, atan2, polygamma, exp)
+                               chebyshevt, ln, chebyshevt_root, binomial,
+                               legendre, Heaviside, factorial, bernoulli, coth,
+                               tanh, assoc_legendre, sign, arg, asin, DiracDelta,
+                               re, rf, Abs, uppergamma, sinh, cos,
+                               cot, acos, acot, gamma, bell, hermite, harmonic,
+                               LambertW, zeta, log, asinh, acoth,
+                               cosh, dirichlet_eta, Eijk, loggamma, erf, ceiling,
+                               im, fibonacci, conjugate, tan, chebyshevu_root,
+                               floor, atanh, sqrt, sin, atan, ff,
+                               lucas, atan2, polygamma, exp)
 
 from diofant.sets.sets import Interval
 from diofant.core.multidimensional import vectorize
@@ -62,19 +62,19 @@ from diofant.polys.domains.algebraicfield import AlgebraicField
 from diofant.polys.domains.expressiondomain import ExpressionDomain
 from diofant.polys.numberfields import AlgebraicNumber
 from diofant.polys.orderings import (LexOrder, GradedLexOrder,
-                                   ReversedGradedLexOrder, ProductOrder,
-                                   InverseOrder)
+                                     ReversedGradedLexOrder, ProductOrder,
+                                     InverseOrder)
 from diofant.polys.monomials import MonomialOps, Monomial
 from diofant.polys.polyerrors import (HeuristicGCDFailed, HomomorphismFailed,
-                                    IsomorphismFailed, ExtraneousFactors,
-                                    EvaluationFailed, RefinementFailed,
-                                    CoercionFailed, NotInvertible, NotReversible,
-                                    NotAlgebraic, DomainError, PolynomialError,
-                                    UnificationFailed, GeneratorsError,
-                                    GeneratorsNeeded,
-                                    UnivariatePolynomialError,
-                                    MultivariatePolynomialError,
-                                    OptionError, FlagError)
+                                      IsomorphismFailed, ExtraneousFactors,
+                                      EvaluationFailed, RefinementFailed,
+                                      CoercionFailed, NotInvertible, NotReversible,
+                                      NotAlgebraic, DomainError, PolynomialError,
+                                      UnificationFailed, GeneratorsError,
+                                      GeneratorsNeeded,
+                                      UnivariatePolynomialError,
+                                      MultivariatePolynomialError,
+                                      OptionError, FlagError)
 from diofant.polys.polyoptions import Options
 from diofant.polys.rootoftools import RootOf, RootSum
 

@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (Derivative as D, Eq, exp, sin,
-                   Function, Symbol, symbols, cos, log, Integer)
+                     Function, Symbol, symbols, cos, log, Integer)
 from diofant.solvers.pde import (pde_separate_add, pde_separate_mul,
-                               pdsolve, classify_pde, checkpdesol)
+                                 pdsolve, classify_pde, checkpdesol)
 
 a, b, c, x, y = symbols('a b c x y')
 

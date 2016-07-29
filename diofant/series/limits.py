@@ -1,7 +1,7 @@
 from diofant.core import S, Symbol, sympify, Expr, Rational, Float, PoleError
 from diofant.core.symbol import Dummy
 from diofant.functions.elementary.trigonometric import sin, cos
-from diofant.series.order import Order
+from .order import Order
 from .gruntz import limitinf
 
 

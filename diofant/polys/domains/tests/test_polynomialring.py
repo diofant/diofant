@@ -4,7 +4,7 @@ import pytest
 
 from diofant.polys.domains import QQ, ZZ
 from diofant.polys.polyerrors import (ExactQuotientFailed, CoercionFailed,
-                                    NotReversible, GeneratorsNeeded)
+                                      NotReversible, GeneratorsNeeded)
 
 from diofant.abc import x, y
 

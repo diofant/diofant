@@ -3,13 +3,13 @@ import sys
 import pytest
 
 from diofant import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
-                   cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
-                   exp, erf, erfi, EulerGamma, factor, Function, I,
-                   Integral, integrate, Interval, Lambda, LambertW, log,
-                   Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
-                   simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
-                   sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                   im, polar_lift, meijerg)
+                     cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
+                     exp, erf, erfi, EulerGamma, factor, Function, I,
+                     Integral, integrate, Interval, Lambda, LambertW, log,
+                     Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
+                     simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
+                     sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
+                     im, polar_lift, meijerg)
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically

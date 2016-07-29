@@ -3,8 +3,8 @@ from itertools import zip_longest
 import pytest
 
 from diofant.utilities.enumerative import (list_visitor,
-                                         MultisetPartitionTraverser,
-                                         multiset_partitions_taocp)
+                                           MultisetPartitionTraverser,
+                                           multiset_partitions_taocp)
 from diofant.utilities.iterables import _set_partitions
 
 # first some functions only useful as test scaffolding - these provide

@@ -3,10 +3,10 @@
 import pytest
 
 from diofant import (S, Add, sin, Mul, Symbol, oo, Integral, sqrt, Tuple, I,
-                   Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
-                   root, exp, cos, Integer, Float, Rational)
+                     Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
+                     root, exp, cos, Integer, Float, Rational)
 from diofant.core.exprtools import (decompose_power, Factors, Term, _gcd_terms,
-                                  gcd_terms, factor_terms, factor_nc)
+                                    gcd_terms, factor_terms, factor_nc)
 from diofant.core.mul import _keep_coeff as _keep_coeff
 from diofant.simplify.cse_opts import sub_pre
 

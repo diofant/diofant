@@ -1,7 +1,7 @@
 import random
 
 from diofant import (Basic, sympify, symbols, Dummy, Lambda, summation,
-                   Piecewise, S, cacheit, solve, Sum)
+                     Piecewise, S, cacheit, solve, Sum)
 from diofant.stats.rv import NamedArgsMixin, SinglePSpace, SingleDomain
 
 

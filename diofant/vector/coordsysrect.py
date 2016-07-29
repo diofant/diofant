@@ -3,7 +3,7 @@ from diofant.vector.scalar import BaseScalar
 from diofant import eye, trigsimp, ImmutableMatrix as Matrix, Symbol
 from diofant.core.cache import cacheit
 from diofant.vector.orienters import (Orienter, AxisOrienter, BodyOrienter,
-                                    SpaceOrienter, QuaternionOrienter)
+                                      SpaceOrienter, QuaternionOrienter)
 import diofant.vector
 
 

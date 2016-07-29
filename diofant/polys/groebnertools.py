@@ -1,7 +1,7 @@
 """Groebner bases algorithms. """
 
 from diofant.polys.monomials import (monomial_mul, monomial_lcm,
-                                   monomial_divides, term_div)
+                                     monomial_divides, term_div)
 from diofant.polys.orderings import lex
 from diofant.polys.polyerrors import DomainError
 from diofant.polys.polyconfig import query

@@ -16,7 +16,7 @@ from .symbol import Dummy
 from .coreerrors import NonCommutativeExpression
 from .containers import Tuple, Dict
 from diofant.utilities.iterables import (common_prefix, common_suffix,
-                                       variations)
+                                         variations)
 
 
 def _isnumber(i):

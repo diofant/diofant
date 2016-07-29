@@ -1,6 +1,7 @@
 import pytest
 
-from diofant.core.compatibility import default_sort_key, as_int, ordered, iterable
+from diofant.core.compatibility import (default_sort_key, as_int, ordered,
+                                        iterable)
 from diofant.core.singleton import S
 
 from diofant.abc import x

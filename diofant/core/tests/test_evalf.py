@@ -3,11 +3,11 @@ from mpmath.libmp.libmpf import from_float
 import pytest
 
 from diofant import (Abs, Add, atan, ceiling, cos, E, Eq, exp, factorial,
-                   fibonacci, floor, Function, GoldenRatio, I, Integral,
-                   integrate, log, Mul, N, oo, pi, Pow, product, Product,
-                   Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol, Float)
+                     fibonacci, floor, Function, GoldenRatio, I, Integral,
+                     integrate, log, Mul, N, oo, pi, Pow, product, Product,
+                     Rational, S, Sum, sin, sqrt, sstr, sympify, Symbol, Float)
 from diofant.core.evalf import (complex_accuracy, PrecisionExhausted,
-                              scaled_zero, as_mpmath)
+                                scaled_zero, as_mpmath)
 
 from diofant.abc import n, x, y
 

@@ -5,7 +5,7 @@ from mpmath import sqrt
 from diofant.ntheory import nextprime
 from diofant.ntheory.modular import crt
 from diofant.polys.galoistools import (gf_gcd, gf_from_dict, gf_gcdex,
-                                     gf_div, gf_lcm)
+                                       gf_div, gf_lcm)
 from diofant.polys.polyerrors import ModularGCDFailed
 from diofant.polys.domains import PolynomialRing
 from diofant import Dummy

@@ -28,8 +28,8 @@ from diofant.core import oo
 from diofant.core.symbol import Dummy
 from diofant.polys import Poly, gcd, ZZ, cancel
 from diofant.integrals.risch import (gcdex_diophantine, frac_in, derivation,
-                                   splitfactor, NonElementaryIntegralException,
-                                   DecrementLevel)
+                                     splitfactor, NonElementaryIntegralException,
+                                     DecrementLevel)
 
 # TODO: Add messages to NonElementaryIntegralException errors
 

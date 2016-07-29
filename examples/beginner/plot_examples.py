@@ -3,8 +3,8 @@
 
 from diofant import Symbol, exp, sin, cos
 from diofant.plotting import (plot, plot_parametric,
-                            plot3d_parametric_surface, plot3d_parametric_line,
-                            plot3d)
+                              plot3d_parametric_surface, plot3d_parametric_line,
+                              plot3d)
 
 lx = range(5)
 ly = [i**2 for i in lx]

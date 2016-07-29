@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (adjoint, conjugate, DiracDelta, Heaviside, nan, pi,
-                   sign, sqrt, symbols, transpose, Symbol, Piecewise,
-                   I, Eq, Rational)
+                     sign, sqrt, symbols, transpose, Symbol, Piecewise,
+                     I, Eq, Rational)
 from diofant.core.function import ArgumentIndexError
 
 x, y = symbols('x y')

@@ -4,9 +4,10 @@ for example:
 the expression E**(pi*I) will be converted into -1
 the expression (x+x)**2 will be converted into 4*x**2
 """
+
 from .simplify import (simplify, hypersimp, hypersimilar,
-    logcombine, separatevars, posify, besselsimp,
-    signsimp, bottom_up, nsimplify)
+                       logcombine, separatevars, posify, besselsimp,
+                       signsimp, bottom_up, nsimplify)
 
 from .fu import FU, fu
 

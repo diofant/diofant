@@ -289,7 +289,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         raise SympifyError(a, exc)
 
     from diofant.parsing.sympy_parser import (parse_expr, TokenError,
-                                            standard_transformations)
+                                              standard_transformations)
     from diofant.parsing.sympy_parser import convert_xor as t_convert_xor
     from diofant.parsing.sympy_parser import rationalize as t_rationalize
 

@@ -8,8 +8,8 @@ from diofant.functions.combinatorial.factorials import factorial, RisingFactoria
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.functions.elementary.exponential import log, exp
 from diofant.functions.elementary.hyperbolic import (acoth, asinh, atanh, cosh,
-                                                   coth, HyperbolicFunction,
-                                                   sinh, tanh, csch, sech)
+                                                     coth, HyperbolicFunction,
+                                                     sinh, tanh, csch, sech)
 from diofant.utilities.iterables import numbered_symbols
 
 ###############################################################################

@@ -3,7 +3,7 @@ Numbers listed with the tests refer to problem numbers in the book
 "Anti-demidovich, problemas resueltos, Ed. URSS"
 """
 from diofant import (limit, oo, sqrt, Rational, log, exp, cos, sin,
-                   tan, pi, asin, together, root)
+                     tan, pi, asin, together, root)
 
 from diofant.abc import a, h, m, n, x
 

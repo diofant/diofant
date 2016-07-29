@@ -29,7 +29,7 @@ from .plot import BaseSeries, Plot
 from .experimental_lambdify import experimental_lambdify, vectorized_lambdify
 from .intervalmath import interval
 from diofant.core.relational import (Equality, GreaterThan, LessThan,
-                Relational, StrictLessThan, StrictGreaterThan)
+                                     Relational, StrictLessThan, StrictGreaterThan)
 from diofant import Eq, Tuple, sympify, Symbol, Dummy
 from diofant.external import import_module
 from diofant.logic.boolalg import BooleanFunction

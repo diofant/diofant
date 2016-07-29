@@ -1,7 +1,7 @@
 """This module implements tools for integrating rational functions. """
 
 from diofant import (S, Symbol, symbols, I, log, atan, roots, RootSum,
-                   Lambda, cancel, Dummy, Integer)
+                     Lambda, cancel, Dummy, Integer)
 from diofant.polys import Poly, resultant, ZZ
 
 

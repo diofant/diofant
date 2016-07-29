@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Symbol, Rational, exp, ln, log, nan, oo, O, pi, I,
-                   Integral, sin, cos, sqrt, conjugate, expand, transpose,
-                   symbols, Function, Derivative, Integer, digamma)
+                     Integral, sin, cos, sqrt, conjugate, expand, transpose,
+                     symbols, Function, Derivative, Integer, digamma)
 
 from diofant.abc import w, x, y, z
 

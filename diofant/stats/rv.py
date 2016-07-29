@@ -13,7 +13,7 @@ diofant.stats.rv_interface
 """
 
 from diofant import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
-                   Equality, solve, Lambda, DiracDelta, Integer, sympify)
+                     Equality, solve, Lambda, DiracDelta, Integer, sympify)
 from diofant.core.relational import Relational
 from diofant.logic.boolalg import Boolean
 from diofant.sets.sets import FiniteSet, ProductSet

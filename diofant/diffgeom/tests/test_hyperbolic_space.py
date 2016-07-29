@@ -14,8 +14,8 @@ https://en.wikipedia.org/wiki/Poincare_half-plane_model
 '''
 from diofant import diag
 from diofant.diffgeom import (twoform_to_matrix,
-                            metric_to_Christoffel_1st, metric_to_Christoffel_2nd,
-                            metric_to_Riemann_components, metric_to_Ricci_components)
+                              metric_to_Christoffel_1st, metric_to_Christoffel_2nd,
+                              metric_to_Riemann_components, metric_to_Ricci_components)
 import diofant.diffgeom.rn
 from diofant.tensor.array import ImmutableDenseNDimArray
 

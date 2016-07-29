@@ -8,7 +8,8 @@ from diofant import (
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
     Interval, Union, Integer, Float, Complement, Intersection)
-from diofant.functions import (Abs, Chi, Ci, Ei, KroneckerDelta,
+from diofant.functions import (
+    Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
     euler, exp, expint, factorial, factorial2, floor, gamma, hyper, log,
     lowergamma, meijerg, sin, sqrt, subfactorial, tan, uppergamma,

@@ -5,7 +5,7 @@ from diofant.polys.domains.simpledomain import SimpleDomain
 from diofant.polys.domains.characteristiczero import CharacteristicZero
 from diofant.polys.polyclasses import ANP
 from diofant.polys.polyerrors import (CoercionFailed, DomainError,
-                                    NotAlgebraic, IsomorphismFailed)
+                                      NotAlgebraic, IsomorphismFailed)
 from diofant.utilities import public
 
 

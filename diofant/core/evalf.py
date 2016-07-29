@@ -1119,7 +1119,9 @@ def _create_evalf_table():
     from diofant.concrete.summations import Sum
     from diofant.core.add import Add
     from diofant.core.mul import Mul
-    from diofant.core.numbers import Exp1, Float, Half, ImaginaryUnit, Integer, NaN, NegativeOne, One, Pi, Rational, Zero
+    from diofant.core.numbers import (Exp1, Float, Half, ImaginaryUnit,
+                                      Integer, NaN, NegativeOne, One, Pi,
+                                      Rational, Zero)
     from diofant.core.power import Pow
     from diofant.core.symbol import Dummy, Symbol
     from diofant.functions.elementary.complexes import Abs, im, re
@@ -1131,8 +1133,10 @@ def _create_evalf_table():
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
         Float: lambda x, prec, options: (x._mpf_, None, prec, None),
-        Rational: lambda x, prec, options: (from_rational(x.p, x.q, prec), None, prec, None),
-        Integer: lambda x, prec, options: (from_int(x.p, prec), None, prec, None),
+        Rational: lambda x, prec, options: (from_rational(x.p, x.q, prec),
+                                            None, prec, None),
+        Integer: lambda x, prec, options: (from_int(x.p, prec),
+                                           None, prec, None),
         Zero: lambda x, prec, options: (None, None, prec, None),
         One: lambda x, prec, options: (fone, None, prec, None),
         Half: lambda x, prec, options: (fhalf, None, prec, None),

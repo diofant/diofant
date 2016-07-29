@@ -2,7 +2,7 @@ import pytest
 
 from diofant import Dummy, Rational, Float, Symbol, pi, sstr, sqrt, asin
 from diofant.geometry import (Line, Point, Ray, Segment,
-                            Point3D, Line3D, Ray3D, Segment3D, Plane)
+                              Point3D, Line3D, Ray3D, Segment3D, Plane)
 from diofant.geometry.util import are_coplanar
 
 x = Symbol('x', real=True)

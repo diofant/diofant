@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (sin, cos, atan2, log, exp, gamma, conjugate, sqrt,
-                   factorial, Integral, Piecewise, Add, diff, symbols,
-                   Integer, Float, Dummy, Eq, Function, Rational, Lambda,
-                   Catalan, EulerGamma, E, GoldenRatio, I, pi)
+                     factorial, Integral, Piecewise, Add, diff, symbols,
+                     Integer, Float, Dummy, Eq, Function, Rational, Lambda,
+                     Catalan, EulerGamma, E, GoldenRatio, I, pi)
 from diofant.core.relational import Relational
 from diofant.logic.boolalg import And, Or, Not, Equivalent, Xor
 from diofant.printing.fcode import fcode, FCodePrinter

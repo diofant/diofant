@@ -6,7 +6,7 @@ import sys
 import pytest
 
 from diofant.interactive.session import (init_ipython_session,
-                                       IntegerWrapper)
+                                         IntegerWrapper)
 from diofant.core import Symbol, Rational, Integer
 from diofant.external import import_module
 

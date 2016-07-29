@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Function, Derivative, diff, sin, pi,
-                   log, Integer, Rational, S)
+                     log, Integer, Rational, S)
 from diofant.core.multidimensional import vectorize
 
 from diofant.abc import x, y, z

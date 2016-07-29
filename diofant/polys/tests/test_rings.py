@@ -10,8 +10,8 @@ from diofant.polys.fields import field, FracField
 from diofant.polys.domains import ZZ, QQ, RR, FF, EX
 from diofant.polys.orderings import lex, grlex
 from diofant.polys.polyerrors import (GeneratorsError, GeneratorsNeeded,
-                                    ExactQuotientFailed,
-                                    MultivariatePolynomialError, CoercionFailed)
+                                      ExactQuotientFailed,
+                                      MultivariatePolynomialError, CoercionFailed)
 from diofant.core import Symbol, symbols
 from diofant import sqrt, pi, oo
 

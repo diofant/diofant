@@ -3,12 +3,12 @@ import warnings
 import pytest
 
 from diofant import (Abs, Dummy, Rational, Float, S, Symbol, cos, oo, pi,
-                   sqrt, symbols, Derivative)
+                     sqrt, symbols, Derivative)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
-                            Polygon, Ray, RegularPolygon, Segment, Triangle,
-                            are_similar, convex_hull, intersection, Point2D,
-                            centroid)
+                              Polygon, Ray, RegularPolygon, Segment, Triangle,
+                              are_similar, convex_hull, intersection, Point2D,
+                              centroid)
 from diofant.geometry.entity import rotate, scale, translate
 from diofant.geometry.polygon import rad, deg
 from diofant.geometry.util import idiff

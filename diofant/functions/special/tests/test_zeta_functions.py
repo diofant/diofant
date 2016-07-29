@@ -1,10 +1,10 @@
 from diofant import (Symbol, zeta, nan, Rational, Float, pi, dirichlet_eta, log,
-                   zoo, expand_func, polylog, lerchphi, exp, sqrt, I,
-                   exp_polar, polar_lift, O, Derivative)
+                     zoo, expand_func, polylog, lerchphi, exp, sqrt, I,
+                     exp_polar, polar_lift, O, Derivative)
 from diofant.functions.special.zeta_functions import _zetas
 from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                      random_complex_number as randcplx,
-                                      verify_numerically as tn)
+                                        random_complex_number as randcplx,
+                                        verify_numerically as tn)
 
 x = Symbol('x')
 a = Symbol('a')

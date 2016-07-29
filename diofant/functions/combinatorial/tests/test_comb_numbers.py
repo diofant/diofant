@@ -3,12 +3,12 @@ import string
 import pytest
 
 from diofant import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
-                   expand_func, diff, EulerGamma, cancel, re, im,
-                   Product, Integer, sstr)
+                     expand_func, diff, EulerGamma, cancel, re, im,
+                     Product, Integer, sstr)
 from diofant.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
-                             catalan, genocchi, binomial, gamma, sqrt, hyper, log,
-                             digamma, trigamma, polygamma, factorial, sin,
-                             cos, cot, zeta)
+                               catalan, genocchi, binomial, gamma, sqrt, hyper, log,
+                               digamma, trigamma, polygamma, factorial, sin,
+                               cos, cot, zeta)
 
 x = Symbol('x')
 

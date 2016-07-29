@@ -6,7 +6,7 @@ from diofant.polys.domains.characteristiczero import CharacteristicZero
 from diofant.polys.polyclasses import DMF
 from diofant.polys.polyerrors import GeneratorsNeeded
 from diofant.polys.polyutils import (dict_from_basic, basic_from_dict,
-                                   _dict_reorder)
+                                     _dict_reorder)
 from diofant.utilities import public
 
 

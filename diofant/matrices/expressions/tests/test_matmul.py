@@ -3,10 +3,11 @@ from strategies.core import null_safe
 from diofant.core import I, symbols, Basic
 from diofant.functions import adjoint, transpose
 from diofant.matrices import (Identity, Inverse, Matrix, MatrixSymbol, ZeroMatrix,
-        eye, ImmutableMatrix)
+                              eye, ImmutableMatrix)
 from diofant.matrices.expressions import Adjoint, Transpose, det, MatPow
 from diofant.matrices.expressions.matmul import (factor_in_front, remove_ids,
-        MatMul, xxinv, any_zeros, unpack, only_squares)
+                                                 MatMul, xxinv, any_zeros,
+                                                 unpack, only_squares)
 
 n, m, l, k = symbols('n m l k', integer=True)
 A = MatrixSymbol('A', n, m)

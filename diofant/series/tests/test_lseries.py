@@ -1,4 +1,5 @@
 from diofant import sin, cos, exp, tanh, E, S, O
+
 from diofant.abc import x, y
 
 
