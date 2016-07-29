@@ -1646,22 +1646,21 @@ def test_P36():
                               [1, 4]])
 
 
-@pytest.mark.xfail
 def test_P37():
     M = Matrix([[1, 1, 0],
                 [0, 1, 0],
                 [0, 0, 1]])
-    # raises NotImplementedError: Implemented only for diagonalizable matrices
-    M**Rational(1, 2)
+    assert M**Rational(1, 2) == Matrix([[1, 1/2, 0],
+                                        [0, 1, 0],
+                                        [0, 0, 1]])
 
 
-@pytest.mark.xfail
 def test_P38():
     M = Matrix([[0, 1, 0],
                 [0, 0, 0],
                 [0, 0, 0]])
     # raises NotImplementedError: Implemented only for diagonalizable matrices
-    M**Rational(1, 2)
+    assert all(e in (S.NaN, S.ComplexInfinity) for e in M**Rational(1, 2))
 
 
 @pytest.mark.xfail
