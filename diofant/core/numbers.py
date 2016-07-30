@@ -3241,10 +3241,8 @@ converter[fractions.Fraction] = sympify_fractions
 
 
 try:
-    if HAS_GMPY == 2:
+    if HAS_GMPY:
         import gmpy2 as gmpy
-    elif HAS_GMPY == 1:
-        import gmpy
     else:
         raise ImportError
 
