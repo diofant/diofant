@@ -444,23 +444,11 @@ GROUND_TYPES = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 HAS_GMPY = 0
 
 if GROUND_TYPES != 'python':
-
-    # Don't try to import gmpy2 if ground types is set to gmpy1. This is
-    # primarily intended for testing.
-
-    if GROUND_TYPES != 'gmpy1':
-        gmpy = import_module('gmpy2', min_module_version='2.0.0',
-            module_version_attr='version', module_version_attr_call_args=())
-        if gmpy:
-            HAS_GMPY = 2
-    else:
-        GROUND_TYPES = 'gmpy'
-
-    if not HAS_GMPY:
-        gmpy = import_module('gmpy', min_module_version='1.13',
-            module_version_attr='version', module_version_attr_call_args=())
-        if gmpy:
-            HAS_GMPY = 1
+    gmpy = import_module('gmpy2', min_module_version='2.0.0',
+                         module_version_attr='version',
+                         module_version_attr_call_args=())
+    if gmpy:
+        HAS_GMPY = 2
 
 if GROUND_TYPES == 'auto':
     if HAS_GMPY:

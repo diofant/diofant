@@ -153,6 +153,7 @@ def test_issue_9173():
     assert Q.series(y, n=3) == b_2*y**2 + b_1*y + b_0 + O(y**3)
 
 
+@pytest.mark.slow
 def test_issue_9549():
     e = (x**2 + x + 1)/(x**3 + x**2)
     r = e.series(x, oo)

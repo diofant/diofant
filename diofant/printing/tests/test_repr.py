@@ -180,12 +180,22 @@ def test_FracField():
 
 def test_PolyElement():
     R, x, y = ring("x,y", ZZ)
-    assert srepr(3*x**2*y + 1) == "PolyElement(PolyRing((Symbol('x'), Symbol('y')), ZZ, lex), [((2, 1), 3), ((0, 0), 1)])"
+    g = R.domain.dtype
+    assert srepr(3*x**2*y + 1) == ("PolyElement(PolyRing((Symbol('x'), "
+                                   "Symbol('y')), ZZ, lex), [((2, 1), %s), "
+                                   "((0, 0), %s)])" % (repr(g(3)), repr(g(1))))
 
 
 def test_FracElement():
     F, x, y = field("x,y", ZZ)
-    assert srepr((3*x**2*y + 1)/(x - y**2)) == "FracElement(FracField((Symbol('x'), Symbol('y')), ZZ, lex), [((2, 1), 3), ((0, 0), 1)], [((1, 0), 1), ((0, 2), -1)])"
+    g = F.domain.dtype
+    assert srepr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
+                                                "Symbol('y')), ZZ, lex), [((2, 1), %s), "
+                                                "((0, 0), %s)], [((1, 0), %s), "
+                                                "((0, 2), %s)])" % (repr(g(3)),
+                                                                    repr(g(1)),
+                                                                    repr(g(1)),
+                                                                    repr(g(-1))))
 
 
 def test_BooleanAtom():

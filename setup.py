@@ -125,7 +125,7 @@ setup(name='Diofant',
       setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
       extras_require={
           'exports': ["numpy", "scipy", "Theano"],
-          'gmpy': ["gmpy>=1.16"],
+          'gmpy': ["gmpy2"],
           'plot': ["pyparsing!=2.1.2", "matplotlib"],
           'interactive': ["ipython>=2.3.0"],
       }

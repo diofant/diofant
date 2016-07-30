@@ -1,17 +1,15 @@
 branches:
-  only:
-    - master
+  only: master
 language: python
 sudo: false
 cache: pip
 python:
   - 3.4
   - 3.5
-env:
-  - DIOFANT_GROUND_TYPES=python MPMATH_NOGMPY=Y
 addons:
   apt:
     packages:
+      - libmpfr-dev
       - libgmp-dev
       - libatlas-dev
       - libatlas-base-dev
@@ -21,40 +19,44 @@ addons:
 matrix:
   include:
     - python: 3.4
-      script:
-        - python setup.py test --cov -m 'not slow and not xfail'
-      after_success:
-        - codecov
+      env: COVERAGE_MARK='not slow and not xfail'
+    - python: 3.4
+      env: COVERAGE_MARK='slow and not xfail'
     - python: 3.4
       install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
         - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
+        - travis_wait pip install .[exports,plot,interactive]
       script:
         - python setup.py flake8
-        - python setup.py test --cov -m 'slow and not xfail'
         - sphinx-build -W -b html docs build/sphinx/html
-      after_success:
-        - codecov
-    - python: 3.4
-      install:
-        - travis_wait pip install .[exports,plot,interactive,gmpy]
-        - pip install pytest-cov
-      env:
-        - DIOFANT_GROUND_TYPES=gmpy1
-      script:
-        - py.test --cov diofant diofant/polys
         - python examples/all.py
-      after_success:
-        - codecov
+        - py.test --cov diofant diofant/polys
+      after_success: codecov
 before_install:
-  - pip install --upgrade pip setuptools pytest
-  - pip install codecov
+  - |
+    mkdir -p $HOME/.local
+    wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.2.tar.gz
+    tar xzvf mpc-1.0.2.tar.gz
+    pushd mpc-1.0.2
+    ./configure --prefix=$HOME/.local
+    make all install
+    popd
+    export CPATH=$HOME/.local/include
+    export LIBRARY_PATH=$HOME/.local/lib
+    export LD_LIBRARY_PATH=$HOME/.local/lib
+  - pip install --upgrade pip setuptools pytest codecov
 install:
   - travis_wait pip install .[exports,plot,interactive,gmpy]
 before_script:
   - sh -e /etc/init.d/xvfb start
   - export DISPLAY=:99.0
 script:
-  - python setup.py test
+  - |
+    if [ -n "${COVERAGE_MARK}" ]; then
+      python setup.py test --cov -m "${COVERAGE_MARK}"
+    else
+      python setup.py test
+    fi
+after_success: test -n "${COVERAGE_MARK}" && codecov
 notifications:
   email: false
