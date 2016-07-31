@@ -8,6 +8,8 @@ from diofant import (
     Segment, Subs, Sum, Symbol, Tuple, Xor, ZZ, conjugate,
     groebner, oo, pi, symbols, ilex, grlex, Range, Contains,
     Interval, Union, Integer, Float, Complement, Intersection)
+from diofant.diffgeom import BaseVectorField
+from diofant.diffgeom.rn import R2_r
 from diofant.functions import (
     Abs, Chi, Ci, Ei, KroneckerDelta,
     Piecewise, Shi, Si, atan2, binomial, catalan, ceiling, cos,
@@ -5013,3 +5015,7 @@ def test_issue_9877():
     ucode_str2 = '{x} ∩ {y} ∩ ({z} \ [1, 2])'
     d, e, f, g = FiniteSet(x), FiniteSet(y), FiniteSet(z), Interval(1, 2)
     assert upretty(Intersection(d, e, Complement(f, g))) == ucode_str2
+
+
+def test_BaseVectorField():
+    assert upretty(BaseVectorField(R2_r, 1)) == '∂_y'
