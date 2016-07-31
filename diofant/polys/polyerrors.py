@@ -15,18 +15,18 @@ class BasePolynomialError(Exception):
 class ExactQuotientFailed(BasePolynomialError):
 
     def __init__(self, f, g, dom=None):
-        self.f, self.g, self.dom = f, g, dom
+        self.f, self.g, self.domain = f, g, dom
 
     def __str__(self):  # pragma: no cover
         from diofant.printing.str import sstr
 
-        if self.dom is None:
+        if self.domain is None:
             return "%s does not divide %s" % (sstr(self.g), sstr(self.f))
         else:
-            return "%s does not divide %s in %s" % (sstr(self.g), sstr(self.f), sstr(self.dom))
+            return "%s does not divide %s in %s" % (sstr(self.g), sstr(self.f), sstr(self.domain))
 
     def new(self, f, g):
-        return self.__class__(f, g, self.dom)
+        return self.__class__(f, g, self.domain)
 
 
 @public

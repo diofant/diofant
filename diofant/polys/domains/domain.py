@@ -201,7 +201,7 @@ class Domain(object):
     def from_PolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         if a.is_ground:
-            return self.convert(a.LC, K0.dom)
+            return self.convert(a.LC, K0.domain)
 
     def from_FractionField(self, a, K0):
         """Convert a rational function to ``dtype``. """
@@ -214,7 +214,7 @@ class Domain(object):
     def from_GlobalPolynomialRing(self, a, K0):
         """Convert a polynomial to ``dtype``. """
         if a.degree() <= 0:
-            return self.convert(a.LC(), K0.dom)
+            return self.convert(a.LC(), K0.domain)
 
     def from_GeneralizedPolynomialRing(self, a, K0):
         return self.from_FractionField(a, K0)
@@ -253,8 +253,8 @@ class Domain(object):
             return K1
 
         if self.is_Composite or K1.is_Composite:
-            self_ground = self.dom if self.is_Composite else self
-            K1_ground = K1.dom if K1.is_Composite else K1
+            self_ground = self.domain if self.is_Composite else self
+            K1_ground = K1.domain if K1.is_Composite else K1
 
             self_symbols = self.symbols if self.is_Composite else ()
             K1_symbols = K1.symbols if K1.is_Composite else ()
@@ -294,7 +294,7 @@ class Domain(object):
             return K1
 
         if self.is_AlgebraicField and K1.is_AlgebraicField:
-            return self.__class__(self.dom.unify(K1.dom), *_unify_gens(self.orig_ext, K1.orig_ext))
+            return self.__class__(self.domain.unify(K1.domain), *_unify_gens(self.orig_ext, K1.orig_ext))
         elif self.is_AlgebraicField:
             return self
         elif K1.is_AlgebraicField:

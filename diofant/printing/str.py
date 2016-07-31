@@ -687,7 +687,7 @@ class StrPrinter(Printer):
 
         cls = p.__class__.__name__
         rep = self._print(p.rep)
-        dom = self._print(p.dom)
+        dom = self._print(p.domain)
         ring = self._print(p.ring)
 
         return "%s(%s, %s, %s)" % (cls, rep, dom, ring)

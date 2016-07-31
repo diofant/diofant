@@ -10,15 +10,15 @@ class GenericPoly(object):
 
     def ground_to_ring(self):
         """Make the ground domain a ring. """
-        return self.set_domain(self.dom.get_ring())
+        return self.set_domain(self.domain.get_ring())
 
     def ground_to_field(self):
         """Make the ground domain a field. """
-        return self.set_domain(self.dom.get_field())
+        return self.set_domain(self.domain.get_field())
 
     def ground_to_exact(self):
         """Make the ground domain exact. """
-        return self.set_domain(self.dom.get_exact())
+        return self.set_domain(self.domain.get_exact())
 
     @classmethod
     def _perify_factors(cls, result, include):
@@ -151,26 +151,26 @@ class DMP(CantSympify):
 
         self.rep = rep
         self.lev = lev
-        self.dom = dom
+        self.domain = dom
         self.ring = ring
 
     def __repr__(self):
         return "%s(%s, %s, %s)" % (self.__class__.__name__, self.rep,
-                                   self.dom, self.ring)
+                                   self.domain, self.ring)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.to_tuple(),
-                     self.lev, self.dom, self.ring))
+                     self.lev, self.domain, self.ring))
 
     def unify(self, other):
         """Unify representations of two multivariate polynomials. """
         if not isinstance(other, DMP) or self.lev != other.lev:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.dom == other.dom and self.ring == other.ring:
-            return self.lev, self.dom, self.per, self.rep, other.rep
+        if self.domain == other.domain and self.ring == other.ring:
+            return self.lev, self.domain, self.per, self.rep, other.rep
         else:
-            lev, dom = self.lev, self.dom.unify(other.dom)
+            lev, dom = self.lev, self.domain.unify(other.domain)
             ring = self.ring
             if other.ring is not None:
                 if ring is not None:
@@ -178,8 +178,8 @@ class DMP(CantSympify):
                 else:
                     ring = other.ring
 
-            F = dmp_convert(self.rep, lev, self.dom, dom)
-            G = dmp_convert(other.rep, lev, other.dom, dom)
+            F = dmp_convert(self.rep, lev, self.domain, dom)
+            G = dmp_convert(other.rep, lev, other.domain, dom)
 
             def per(rep, dom=dom, lev=lev, kill=False):
                 if kill:
@@ -203,7 +203,7 @@ class DMP(CantSympify):
                 lev -= 1
 
         if dom is None:
-            dom = self.dom
+            dom = self.domain
 
         if ring is None:
             ring = self.ring
@@ -230,14 +230,14 @@ class DMP(CantSympify):
 
     def to_dict(self, zero=False):
         """Convert ``self`` to a dict representation with native coefficients. """
-        return dmp_to_dict(self.rep, self.lev, self.dom, zero=zero)
+        return dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
 
     def to_diofant_dict(self, zero=False):
         """Convert ``self`` to a dict representation with Diofant coefficients. """
-        rep = dmp_to_dict(self.rep, self.lev, self.dom, zero=zero)
+        rep = dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
 
         for k, v in rep.items():
-            rep[k] = self.dom.to_diofant(v)
+            rep[k] = self.domain.to_diofant(v)
 
         return rep
 
@@ -260,47 +260,47 @@ class DMP(CantSympify):
 
     def to_ring(self):
         """Make the ground domain a ring. """
-        return self.convert(self.dom.get_ring())
+        return self.convert(self.domain.get_ring())
 
     def to_field(self):
         """Make the ground domain a field. """
-        return self.convert(self.dom.get_field())
+        return self.convert(self.domain.get_field())
 
     def to_exact(self):
         """Make the ground domain exact. """
-        return self.convert(self.dom.get_exact())
+        return self.convert(self.domain.get_exact())
 
     def convert(self, dom):
         """Convert the ground domain of ``self``. """
-        if self.dom == dom:
+        if self.domain == dom:
             return self
         else:
-            return DMP(dmp_convert(self.rep, self.lev, self.dom, dom),
+            return DMP(dmp_convert(self.rep, self.lev, self.domain, dom),
                        dom, self.lev)
 
     def slice(self, m, n, j=0):
         """Take a continuous subsequence of terms of ``self``. """
-        return self.per(dmp_slice_in(self.rep, m, n, j, self.lev, self.dom))
+        return self.per(dmp_slice_in(self.rep, m, n, j, self.lev, self.domain))
 
     def coeffs(self, order=None):
         """Returns all non-zero coefficients from ``self`` in lex order. """
         return [c for _, c in dmp_list_terms(self.rep, self.lev,
-                                             self.dom, order=order)]
+                                             self.domain, order=order)]
 
     def monoms(self, order=None):
         """Returns all non-zero monomials from ``self`` in lex order. """
         return [m for m, _ in dmp_list_terms(self.rep, self.lev,
-                                             self.dom, order=order)]
+                                             self.domain, order=order)]
 
     def terms(self, order=None):
         """Returns all non-zero terms from ``self`` in lex order. """
-        return dmp_list_terms(self.rep, self.lev, self.dom, order=order)
+        return dmp_list_terms(self.rep, self.lev, self.domain, order=order)
 
     def all_coeffs(self):
         """Returns all coefficients from ``self``. """
         if not self.lev:
             if not self:
-                return [self.dom.zero]
+                return [self.domain.zero]
             else:
                 return [c for c in self.rep]
         else:
@@ -324,7 +324,7 @@ class DMP(CantSympify):
             n = dup_degree(self.rep)
 
             if n < 0:
-                return [((0,), self.dom.zero)]
+                return [((0,), self.domain.zero)]
             else:
                 return [((n - i,), c) for i, c in enumerate(self.rep)]
         else:
@@ -332,18 +332,18 @@ class DMP(CantSympify):
 
     def lift(self):
         """Convert algebraic coefficients to rationals. """
-        return self.per(dmp_lift(self.rep, self.lev, self.dom),
-                        dom=self.dom.dom)
+        return self.per(dmp_lift(self.rep, self.lev, self.domain),
+                        dom=self.domain.domain)
 
     def deflate(self):
         """Reduce degree of `self` by mapping `x_i^m` to `y_i`. """
-        J, F = dmp_deflate(self.rep, self.lev, self.dom)
+        J, F = dmp_deflate(self.rep, self.lev, self.domain)
         return J, self.per(F)
 
     def inject(self, front=False):
         """Inject ground domain generators into ``self``. """
-        F, lev = dmp_inject(self.rep, self.lev, self.dom, front=front)
-        return self.__class__(F, self.dom.dom, lev)
+        F, lev = dmp_inject(self.rep, self.lev, self.domain, front=front)
+        return self.__class__(F, self.domain.domain, lev)
 
     def eject(self, dom, front=False):
         """Eject selected generators into the ground domain. """
@@ -364,8 +364,8 @@ class DMP(CantSympify):
         >>> DMP([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], ZZ).exclude()
         ([2], DMP([[1], [1, 2]], ZZ, None))
         """
-        J, F, u = dmp_exclude(self.rep, self.lev, self.dom)
-        return J, self.__class__(F, self.dom, u)
+        J, F, u = dmp_exclude(self.rep, self.lev, self.domain)
+        return J, self.__class__(F, self.domain, u)
 
     def permute(self, P):
         r"""
@@ -382,45 +382,45 @@ class DMP(CantSympify):
         >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
         DMP([[[1], []], [[2, 0], []]], ZZ, None)
         """
-        return self.per(dmp_permute(self.rep, P, self.lev, self.dom))
+        return self.per(dmp_permute(self.rep, P, self.lev, self.domain))
 
     def terms_gcd(self):
         """Remove GCD of terms from the polynomial ``self``. """
-        J, F = dmp_terms_gcd(self.rep, self.lev, self.dom)
+        J, F = dmp_terms_gcd(self.rep, self.lev, self.domain)
         return J, self.per(F)
 
     def add_ground(self, c):
         """Add an element of the ground domain to ``self``. """
-        return self.per(dmp_add_ground(self.rep, self.dom.convert(c),
-                                       self.lev, self.dom))
+        return self.per(dmp_add_ground(self.rep, self.domain.convert(c),
+                                       self.lev, self.domain))
 
     def sub_ground(self, c):
         """Subtract an element of the ground domain from ``self``. """
-        return self.per(dmp_sub_ground(self.rep, self.dom.convert(c),
-                                       self.lev, self.dom))
+        return self.per(dmp_sub_ground(self.rep, self.domain.convert(c),
+                                       self.lev, self.domain))
 
     def mul_ground(self, c):
         """Multiply ``self`` by a an element of the ground domain. """
-        return self.per(dmp_mul_ground(self.rep, self.dom.convert(c),
-                                       self.lev, self.dom))
+        return self.per(dmp_mul_ground(self.rep, self.domain.convert(c),
+                                       self.lev, self.domain))
 
     def quo_ground(self, c):
         """Quotient of ``self`` by a an element of the ground domain. """
-        return self.per(dmp_quo_ground(self.rep, self.dom.convert(c),
-                                       self.lev, self.dom))
+        return self.per(dmp_quo_ground(self.rep, self.domain.convert(c),
+                                       self.lev, self.domain))
 
     def exquo_ground(self, c):
         """Exact quotient of ``self`` by a an element of the ground domain. """
-        return self.per(dmp_exquo_ground(self.rep, self.dom.convert(c),
-                                         self.lev, self.dom))
+        return self.per(dmp_exquo_ground(self.rep, self.domain.convert(c),
+                                         self.lev, self.domain))
 
     def abs(self):
         """Make all coefficients in ``self`` positive. """
-        return self.per(dmp_abs(self.rep, self.lev, self.dom))
+        return self.per(dmp_abs(self.rep, self.lev, self.domain))
 
     def neg(self):
         """Negate all coefficients in ``self``. """
-        return self.per(dmp_neg(self.rep, self.lev, self.dom))
+        return self.per(dmp_neg(self.rep, self.lev, self.domain))
 
     def add(self, other):
         """Add two multivariate polynomials ``self`` and ``other``. """
@@ -439,12 +439,12 @@ class DMP(CantSympify):
 
     def sqr(self):
         """Square a multivariate polynomial ``self``. """
-        return self.per(dmp_sqr(self.rep, self.lev, self.dom))
+        return self.per(dmp_sqr(self.rep, self.lev, self.domain))
 
     def pow(self, n):
         """Raise ``self`` to a non-negative power ``n``. """
         if isinstance(n, int):
-            return self.per(dmp_pow(self.rep, n, self.lev, self.dom))
+            return self.per(dmp_pow(self.rep, n, self.lev, self.domain))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
@@ -526,7 +526,7 @@ class DMP(CantSympify):
                 l = list(term[0])
                 l[s] += i
                 result[tuple(l)] = term[1]
-        return DMP(result, self.dom, self.lev + int(new_symbol), self.ring)
+        return DMP(result, self.domain, self.lev + int(new_symbol), self.ring)
 
     def homogeneous_order(self):
         """Returns the homogeneous order of ``self``. """
@@ -546,30 +546,30 @@ class DMP(CantSympify):
 
     def LC(self):
         """Returns the leading coefficient of ``self``. """
-        return dmp_ground_LC(self.rep, self.lev, self.dom)
+        return dmp_ground_LC(self.rep, self.lev, self.domain)
 
     def TC(self):
         """Returns the trailing coefficient of ``self``. """
-        return dmp_ground_TC(self.rep, self.lev, self.dom)
+        return dmp_ground_TC(self.rep, self.lev, self.domain)
 
     def nth(self, *N):
         """Returns the ``n``-th coefficient of ``self``. """
         if all(isinstance(n, int) for n in N):
-            return dmp_ground_nth(self.rep, N, self.lev, self.dom)
+            return dmp_ground_nth(self.rep, N, self.lev, self.domain)
         else:
             raise TypeError("a sequence of integers expected")
 
     def max_norm(self):
         """Returns maximum norm of ``self``. """
-        return dmp_max_norm(self.rep, self.lev, self.dom)
+        return dmp_max_norm(self.rep, self.lev, self.domain)
 
     def l1_norm(self):
         """Returns l1 norm of ``self``. """
-        return dmp_l1_norm(self.rep, self.lev, self.dom)
+        return dmp_l1_norm(self.rep, self.lev, self.domain)
 
     def clear_denoms(self):
         """Clear denominators, but keep the ground domain. """
-        coeff, F = dmp_clear_denoms(self.rep, self.lev, self.dom)
+        coeff, F = dmp_clear_denoms(self.rep, self.lev, self.domain)
         return coeff, self.per(F)
 
     def integrate(self, m=1, j=0):
@@ -580,7 +580,7 @@ class DMP(CantSympify):
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))
 
-        return self.per(dmp_integrate_in(self.rep, m, j, self.lev, self.dom))
+        return self.per(dmp_integrate_in(self.rep, m, j, self.lev, self.domain))
 
     def diff(self, m=1, j=0):
         """Computes the ``m``-th order derivative of ``self`` in ``x_j``. """
@@ -590,15 +590,15 @@ class DMP(CantSympify):
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))
 
-        return self.per(dmp_diff_in(self.rep, m, j, self.lev, self.dom))
+        return self.per(dmp_diff_in(self.rep, m, j, self.lev, self.domain))
 
     def eval(self, a, j=0):
         """Evaluates ``self`` at the given point ``a`` in ``x_j``. """
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))
 
-        return self.per(dmp_eval_in(self.rep, self.dom.convert(a),
-                                    j, self.lev, self.dom), kill=True)
+        return self.per(dmp_eval_in(self.rep, self.domain.convert(a),
+                                    j, self.lev, self.domain), kill=True)
 
     def half_gcdex(self, other):
         """Half extended Euclidean algorithm, if univariate. """
@@ -632,7 +632,7 @@ class DMP(CantSympify):
     def revert(self, n):
         """Compute ``self**(-1)`` mod ``x**n``. """
         if not self.lev:
-            return self.per(dup_revert(self.rep, n, self.dom))
+            return self.per(dup_revert(self.rep, n, self.domain))
         else:
             raise ValueError('univariate polynomial expected')
 
@@ -653,7 +653,7 @@ class DMP(CantSympify):
     def discriminant(self):
         """Computes discriminant of ``self``. """
         return self.per(dmp_discriminant(self.rep, self.lev,
-                                         self.dom), kill=True)
+                                         self.domain), kill=True)
 
     def cofactors(self, other):
         """Returns GCD of ``self`` and ``other`` and their cofactors. """
@@ -689,20 +689,20 @@ class DMP(CantSympify):
 
     def trunc(self, p):
         """Reduce ``self`` modulo a constant ``p``. """
-        return self.per(dmp_ground_trunc(self.rep, self.dom.convert(p),
-                                         self.lev, self.dom))
+        return self.per(dmp_ground_trunc(self.rep, self.domain.convert(p),
+                                         self.lev, self.domain))
 
     def monic(self):
         """Divides all coefficients by ``LC(self)``. """
-        return self.per(dmp_ground_monic(self.rep, self.lev, self.dom))
+        return self.per(dmp_ground_monic(self.rep, self.lev, self.domain))
 
     def content(self):
         """Returns GCD of polynomial coefficients. """
-        return dmp_ground_content(self.rep, self.lev, self.dom)
+        return dmp_ground_content(self.rep, self.lev, self.domain)
 
     def primitive(self):
         """Returns content and a primitive form of ``self``. """
-        cont, F = dmp_ground_primitive(self.rep, self.lev, self.dom)
+        cont, F = dmp_ground_primitive(self.rep, self.lev, self.domain)
         return cont, self.per(F)
 
     def compose(self, other):
@@ -713,21 +713,21 @@ class DMP(CantSympify):
     def decompose(self):
         """Computes functional decomposition of ``self``. """
         if not self.lev:
-            return list(map(self.per, dup_decompose(self.rep, self.dom)))
+            return list(map(self.per, dup_decompose(self.rep, self.domain)))
         else:
             raise ValueError('univariate polynomial expected')
 
     def shift(self, a):
         """Efficiently compute Taylor shift ``self(x + a)``. """
         if not self.lev:
-            return self.per(dup_shift(self.rep, self.dom.convert(a), self.dom))
+            return self.per(dup_shift(self.rep, self.domain.convert(a), self.domain))
         else:
             raise ValueError('univariate polynomial expected')
 
     def sturm(self):
         """Computes the Sturm sequence of ``self``. """
         if not self.lev:
-            return list(map(self.per, dup_sturm(self.rep, self.dom)))
+            return list(map(self.per, dup_sturm(self.rep, self.domain)))
         else:
             raise ValueError('univariate polynomial expected')
 
@@ -735,37 +735,37 @@ class DMP(CantSympify):
         """Computes greatest factorial factorization of ``self``. """
         if not self.lev:
             return [(self.per(g), k) for g, k in dup_gff_list(self.rep,
-                                                              self.dom)]
+                                                              self.domain)]
         else:
             raise ValueError('univariate polynomial expected')
 
     def sqf_norm(self):
         """Computes square-free norm of ``self``. """
-        s, g, r = dmp_sqf_norm(self.rep, self.lev, self.dom)
-        return s, self.per(g), self.per(r, dom=self.dom.dom)
+        s, g, r = dmp_sqf_norm(self.rep, self.lev, self.domain)
+        return s, self.per(g), self.per(r, dom=self.domain.domain)
 
     def sqf_part(self):
         """Computes square-free part of ``self``. """
-        return self.per(dmp_sqf_part(self.rep, self.lev, self.dom))
+        return self.per(dmp_sqf_part(self.rep, self.lev, self.domain))
 
     def sqf_list(self, all=False):
         """Returns a list of square-free factors of ``self``. """
-        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.dom, all)
+        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain, all)
         return coeff, [(self.per(g), k) for g, k in factors]
 
     def sqf_list_include(self, all=False):
         """Returns a list of square-free factors of ``self``. """
-        factors = dmp_sqf_list_include(self.rep, self.lev, self.dom, all)
+        factors = dmp_sqf_list_include(self.rep, self.lev, self.domain, all)
         return [(self.per(g), k) for g, k in factors]
 
     def factor_list(self):
         """Returns a list of irreducible factors of ``self``. """
-        coeff, factors = dmp_factor_list(self.rep, self.lev, self.dom)
+        coeff, factors = dmp_factor_list(self.rep, self.lev, self.domain)
         return coeff, [(self.per(g), k) for g, k in factors]
 
     def factor_list_include(self):
         """Returns a list of irreducible factors of ``self``. """
-        factors = dmp_factor_list_include(self.rep, self.lev, self.dom)
+        factors = dmp_factor_list_include(self.rep, self.lev, self.domain)
         return [(self.per(g), k) for g, k in factors]
 
     def intervals(self, all=False, eps=None, inf=None, sup=None, fast=False, sqf=False):
@@ -773,18 +773,18 @@ class DMP(CantSympify):
         if not self.lev:
             if not all:
                 if not sqf:
-                    return dup_isolate_real_roots(self.rep, self.dom, eps=eps,
+                    return dup_isolate_real_roots(self.rep, self.domain, eps=eps,
                                                   inf=inf, sup=sup, fast=fast)
                 else:
-                    return dup_isolate_real_roots_sqf(self.rep, self.dom,
+                    return dup_isolate_real_roots_sqf(self.rep, self.domain,
                                                       eps=eps, inf=inf,
                                                       sup=sup, fast=fast)
             else:
                 if not sqf:
-                    return dup_isolate_all_roots(self.rep, self.dom, eps=eps,
+                    return dup_isolate_all_roots(self.rep, self.domain, eps=eps,
                                                  inf=inf, sup=sup, fast=fast)
                 else:
-                    return dup_isolate_all_roots_sqf(self.rep, self.dom,
+                    return dup_isolate_all_roots_sqf(self.rep, self.domain,
                                                      eps=eps, inf=inf, sup=sup,
                                                      fast=fast)
         else:
@@ -798,7 +798,7 @@ class DMP(CantSympify):
         ``eps`` should be a rational number.
         """
         if not self.lev:
-            return dup_refine_real_root(self.rep, s, t, self.dom, eps=eps,
+            return dup_refine_real_root(self.rep, s, t, self.domain, eps=eps,
                                         steps=steps, fast=fast)
         else:
             raise PolynomialError(
@@ -806,11 +806,11 @@ class DMP(CantSympify):
 
     def count_real_roots(self, inf=None, sup=None):
         """Return the number of real roots of ``self`` in ``[inf, sup]``. """
-        return dup_count_real_roots(self.rep, self.dom, inf=inf, sup=sup)
+        return dup_count_real_roots(self.rep, self.domain, inf=inf, sup=sup)
 
     def count_complex_roots(self, inf=None, sup=None):
         """Return the number of complex roots of ``self`` in ``[inf, sup]``. """
-        return dup_count_complex_roots(self.rep, self.dom, inf=inf, sup=sup)
+        return dup_count_complex_roots(self.rep, self.domain, inf=inf, sup=sup)
 
     @property
     def is_zero(self):
@@ -820,7 +820,7 @@ class DMP(CantSympify):
     @property
     def is_one(self):
         """Returns ``True`` if ``self`` is a unit polynomial. """
-        return dmp_one_p(self.rep, self.lev, self.dom)
+        return dmp_one_p(self.rep, self.lev, self.domain)
 
     @property
     def is_ground(self):
@@ -830,29 +830,29 @@ class DMP(CantSympify):
     @property
     def is_sqf(self):
         """Returns ``True`` if ``self`` is a square-free polynomial. """
-        return dmp_sqf_p(self.rep, self.lev, self.dom)
+        return dmp_sqf_p(self.rep, self.lev, self.domain)
 
     @property
     def is_monic(self):
         """Returns ``True`` if the leading coefficient of ``self`` is one. """
-        return self.dom.is_one(dmp_ground_LC(self.rep, self.lev, self.dom))
+        return self.domain.is_one(dmp_ground_LC(self.rep, self.lev, self.domain))
 
     @property
     def is_primitive(self):
         """Returns ``True`` if the GCD of the coefficients of ``self`` is one. """
-        return self.dom.is_one(dmp_ground_content(self.rep, self.lev, self.dom))
+        return self.domain.is_one(dmp_ground_content(self.rep, self.lev, self.domain))
 
     @property
     def is_linear(self):
         """Returns ``True`` if ``self`` is linear in all its variables. """
         return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.dom).keys())
+                                                            self.domain).keys())
 
     @property
     def is_quadratic(self):
         """Returns ``True`` if ``self`` is quadratic in all its variables. """
         return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.dom).keys())
+                                                            self.domain).keys())
 
     @property
     def is_monomial(self):
@@ -867,13 +867,13 @@ class DMP(CantSympify):
     @property
     def is_irreducible(self):
         """Returns ``True`` if ``self`` has no factors over its domain. """
-        return dmp_irreducible_p(self.rep, self.lev, self.dom)
+        return dmp_irreducible_p(self.rep, self.lev, self.domain)
 
     @property
     def is_cyclotomic(self):
         """Returns ``True`` if ``self`` is a cyclotomic polynomial. """
         if not self.lev:
-            return dup_cyclotomic_p(self.rep, self.dom)
+            return dup_cyclotomic_p(self.rep, self.domain)
         else:
             return False
 
@@ -886,7 +886,7 @@ class DMP(CantSympify):
     def __add__(self, other):
         if not isinstance(other, DMP):
             try:
-                other = self.per(dmp_ground(self.dom.convert(other), self.lev))
+                other = self.per(dmp_ground(self.domain.convert(other), self.lev))
             except TypeError:
                 return NotImplemented
             except (CoercionFailed, NotImplementedError):
@@ -904,7 +904,7 @@ class DMP(CantSympify):
     def __sub__(self, other):
         if not isinstance(other, DMP):
             try:
-                other = self.per(dmp_ground(self.dom.convert(other), self.lev))
+                other = self.per(dmp_ground(self.domain.convert(other), self.lev))
             except TypeError:
                 return NotImplemented
             except (CoercionFailed, NotImplementedError):
@@ -1010,7 +1010,7 @@ class DMP(CantSympify):
 
     def _strict_eq(self, other):
         return (isinstance(other, self.__class__) and self.lev == other.lev
-                           and self.dom == other.dom and self.rep == other.rep)
+                           and self.domain == other.domain and self.rep == other.rep)
 
     def __lt__(self, other):
         _, _, _, F, G = self.unify(other)
@@ -1047,7 +1047,7 @@ class DMF(CantSympify):
         self.num = num
         self.den = den
         self.lev = lev
-        self.dom = dom
+        self.domain = dom
         self.ring = ring
 
     @classmethod
@@ -1059,7 +1059,7 @@ class DMF(CantSympify):
         obj.num = num
         obj.den = den
         obj.lev = lev
-        obj.dom = dom
+        obj.domain = dom
         obj.ring = ring
 
         return obj
@@ -1110,11 +1110,11 @@ class DMF(CantSympify):
 
     def __repr__(self):
         return "%s((%s, %s), %s, %s)" % (self.__class__.__name__, self.num,
-                                         self.den, self.dom, self.ring)
+                                         self.den, self.domain, self.ring)
 
     def __hash__(self):
         return hash((self.__class__.__name__, dmp_to_tuple(self.num, self.lev),
-                     dmp_to_tuple(self.den, self.lev), self.lev, self.dom,
+                     dmp_to_tuple(self.den, self.lev), self.lev, self.domain,
                      self.ring))
 
     def poly_unify(self, other):
@@ -1122,11 +1122,11 @@ class DMF(CantSympify):
         if not isinstance(other, DMP) or self.lev != other.lev:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.dom == other.dom and self.ring == other.ring:
-            return (self.lev, self.dom, self.per,
+        if self.domain == other.domain and self.ring == other.ring:
+            return (self.lev, self.domain, self.per,
                     (self.num, self.den), other.rep)
         else:
-            lev, dom = self.lev, self.dom.unify(other.dom)
+            lev, dom = self.lev, self.domain.unify(other.domain)
             ring = self.ring
             if other.ring is not None:
                 if ring is not None:
@@ -1134,10 +1134,10 @@ class DMF(CantSympify):
                 else:
                     ring = other.ring
 
-            F = (dmp_convert(self.num, lev, self.dom, dom),
-                 dmp_convert(self.den, lev, self.dom, dom))
+            F = (dmp_convert(self.num, lev, self.domain, dom),
+                 dmp_convert(self.den, lev, self.domain, dom))
 
-            G = dmp_convert(other.rep, lev, other.dom, dom)
+            G = dmp_convert(other.rep, lev, other.domain, dom)
 
             def per(num, den, cancel=True, kill=False, lev=lev):
                 if kill:
@@ -1158,11 +1158,11 @@ class DMF(CantSympify):
         if not isinstance(other, DMF) or self.lev != other.lev:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.dom == other.dom and self.ring == other.ring:
-            return (self.lev, self.dom, self.per, (self.num, self.den),
+        if self.domain == other.domain and self.ring == other.ring:
+            return (self.lev, self.domain, self.per, (self.num, self.den),
                     (other.num, other.den))
         else:
-            lev, dom = self.lev, self.dom.unify(other.dom)
+            lev, dom = self.lev, self.domain.unify(other.domain)
             ring = other.ring
             if other.ring is not None:
                 if ring is not None:
@@ -1170,11 +1170,11 @@ class DMF(CantSympify):
                 else:
                     ring = other.ring
 
-            F = (dmp_convert(self.num, lev, self.dom, dom),
-                 dmp_convert(self.den, lev, self.dom, dom))
+            F = (dmp_convert(self.num, lev, self.domain, dom),
+                 dmp_convert(self.den, lev, self.domain, dom))
 
-            G = (dmp_convert(other.num, lev, other.dom, dom),
-                 dmp_convert(other.den, lev, other.dom, dom))
+            G = (dmp_convert(other.num, lev, other.domain, dom),
+                 dmp_convert(other.den, lev, other.domain, dom))
 
             def per(num, den, cancel=True, kill=False, lev=lev):
                 if kill:
@@ -1192,7 +1192,7 @@ class DMF(CantSympify):
 
     def per(self, num, den, cancel=True, kill=False, ring=None):
         """Create a DMF out of the given representation. """
-        lev, dom = self.lev, self.dom
+        lev, dom = self.lev, self.domain
 
         if kill:
             if not lev:
@@ -1218,7 +1218,7 @@ class DMF(CantSympify):
             else:
                 lev -= 1
 
-        return DMP(rep, self.dom, lev)
+        return DMP(rep, self.domain, lev)
 
     @classmethod
     def zero(cls, lev, dom, ring=None):
@@ -1242,7 +1242,7 @@ class DMF(CantSympify):
 
     def neg(self):
         """Negate all coefficients in ``self``. """
-        return self.per(dmp_neg(self.num, self.lev, self.dom),
+        return self.per(dmp_neg(self.num, self.lev, self.domain),
                         self.den, cancel=False)
 
     def add(self, other):
@@ -1292,8 +1292,8 @@ class DMF(CantSympify):
     def pow(self, n):
         """Raise ``self`` to a non-negative power ``n``. """
         if isinstance(n, int):
-            return self.per(dmp_pow(self.num, n, self.lev, self.dom),
-                            dmp_pow(self.den, n, self.lev, self.dom),
+            return self.per(dmp_pow(self.num, n, self.lev, self.domain),
+                            dmp_pow(self.den, n, self.lev, self.domain),
                             cancel=False)
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
@@ -1332,8 +1332,8 @@ class DMF(CantSympify):
     @property
     def is_one(self):
         """Returns ``True`` if ``self`` is a unit fraction. """
-        return (dmp_one_p(self.num, self.lev, self.dom) and
-                dmp_one_p(self.den, self.lev, self.dom))
+        return (dmp_one_p(self.num, self.lev, self.domain) and
+                dmp_one_p(self.den, self.lev, self.domain))
 
     def __neg__(self):
         return self.neg()
@@ -1430,7 +1430,7 @@ class DMF(CantSympify):
                 _, _, _, (F_num, F_den), G = self.poly_unify(other)
 
                 if self.lev == other.lev:
-                    return dmp_one_p(F_den, self.lev, self.dom) and F_num == G
+                    return dmp_one_p(F_den, self.lev, self.domain) and F_num == G
             else:
                 _, _, _, F, G = self.frac_unify(other)
 
@@ -1447,7 +1447,7 @@ class DMF(CantSympify):
                 _, _, _, (F_num, F_den), G = self.poly_unify(other)
 
                 if self.lev == other.lev:
-                    return not (dmp_one_p(F_den, self.lev, self.dom) and F_num == G)
+                    return not (dmp_one_p(F_den, self.lev, self.domain) and F_num == G)
             else:
                 _, _, _, F, G = self.frac_unify(other)
 
@@ -1503,33 +1503,33 @@ class ANP(CantSympify):
             else:
                 self.mod = dup_strip(mod)
 
-        self.dom = dom
+        self.domain = dom
 
     def __repr__(self):
         return "%s(%s, %s, %s)" % (self.__class__.__name__, self.rep,
-                                   self.mod, self.dom)
+                                   self.mod, self.domain)
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.to_tuple(),
-                     dmp_to_tuple(self.mod, 0), self.dom))
+                     dmp_to_tuple(self.mod, 0), self.domain))
 
     def unify(self, other):
         """Unify representations of two algebraic numbers. """
         if not isinstance(other, ANP) or self.mod != other.mod:
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if self.dom == other.dom:
-            return self.dom, self.per, self.rep, other.rep, self.mod
+        if self.domain == other.domain:
+            return self.domain, self.per, self.rep, other.rep, self.mod
         else:
-            dom = self.dom.unify(other.dom)
+            dom = self.domain.unify(other.domain)
 
-            F = dup_convert(self.rep, self.dom, dom)
-            G = dup_convert(other.rep, other.dom, dom)
+            F = dup_convert(self.rep, self.domain, dom)
+            G = dup_convert(other.rep, other.domain, dom)
 
-            if dom != self.dom and dom != other.dom:
-                mod = dup_convert(self.mod, self.dom, dom)
+            if dom != self.domain and dom != other.domain:
+                mod = dup_convert(self.mod, self.domain, dom)
             else:
-                if dom == self.dom:
+                if dom == self.domain:
                     mod = self.mod
                 else:
                     mod = other.mod
@@ -1540,7 +1540,7 @@ class ANP(CantSympify):
         return dom, per, F, G, mod
 
     def per(self, rep, mod=None, dom=None):
-        return ANP(rep, mod or self.mod, dom or self.dom)
+        return ANP(rep, mod or self.mod, dom or self.domain)
 
     @classmethod
     def zero(cls, mod, dom):
@@ -1552,14 +1552,14 @@ class ANP(CantSympify):
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
-        return dmp_to_dict(self.rep, 0, self.dom)
+        return dmp_to_dict(self.rep, 0, self.domain)
 
     def to_diofant_dict(self):
         """Convert ``self`` to a dict representation with Diofant coefficients. """
-        rep = dmp_to_dict(self.rep, 0, self.dom)
+        rep = dmp_to_dict(self.rep, 0, self.domain)
 
         for k, v in rep.items():
-            rep[k] = self.dom.to_diofant(v)
+            rep[k] = self.domain.to_diofant(v)
 
         return rep
 
@@ -1569,7 +1569,7 @@ class ANP(CantSympify):
 
     def to_diofant_list(self):
         """Convert ``self`` to a list representation with Diofant coefficients. """
-        return [self.dom.to_diofant(c) for c in self.rep]
+        return [self.domain.to_diofant(c) for c in self.rep]
 
     def to_tuple(self):
         """
@@ -1584,7 +1584,7 @@ class ANP(CantSympify):
         return ANP(dup_strip(list(map(dom.convert, rep))), mod, dom)
 
     def neg(self):
-        return self.per(dup_neg(self.rep, self.dom))
+        return self.per(dup_neg(self.rep, self.domain))
 
     def add(self, other):
         dom, per, F, G, mod = self.unify(other)
@@ -1602,12 +1602,12 @@ class ANP(CantSympify):
         """Raise ``self`` to a non-negative power ``n``. """
         if isinstance(n, int):
             if n < 0:
-                F, n = dup_invert(self.rep, self.mod, self.dom), -n
+                F, n = dup_invert(self.rep, self.mod, self.domain), -n
             else:
                 F = self.rep
 
-            return self.per(dup_rem(dup_pow(F, n, self.dom),
-                                    self.mod, self.dom))
+            return self.per(dup_rem(dup_pow(F, n, self.domain),
+                                    self.mod, self.domain))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
@@ -1628,11 +1628,11 @@ class ANP(CantSympify):
 
     def LC(self):
         """Returns the leading coefficient of ``self``. """
-        return dup_LC(self.rep, self.dom)
+        return dup_LC(self.rep, self.domain)
 
     def TC(self):
         """Returns the trailing coefficient of ``self``. """
-        return dup_TC(self.rep, self.dom)
+        return dup_TC(self.rep, self.domain)
 
     @property
     def is_zero(self):
@@ -1642,7 +1642,7 @@ class ANP(CantSympify):
     @property
     def is_one(self):
         """Returns ``True`` if ``self`` is a unit algebraic number. """
-        return self.rep == [self.dom.one]
+        return self.rep == [self.domain.one]
 
     @property
     def is_ground(self):
