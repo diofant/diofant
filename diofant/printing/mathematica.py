@@ -24,6 +24,8 @@ known_functions = {
     "sech": [(lambda x: True, "Sech")],
     "csch": [(lambda x: True, "Csch")],
     "sign": [(lambda x: True, "Sign")],
+    "meijerg": [(lambda *x: True, "MeijerG")],
+    "hyper": [(lambda *x: True, "HypergeometricPFQ")],
 }
 
 

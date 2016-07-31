@@ -1,9 +1,9 @@
 from diofant.core import (S, pi, oo, symbols, Function,
-                        Rational, Integer, Tuple, Derivative,
-                        Eq, Ne, Le, Gt)
+                          Rational, Integer, Tuple, Derivative,
+                          Eq, Ne, Le, Gt)
 from diofant.integrals import Integral
 from diofant.concrete import Sum
-from diofant.functions import exp, sin, cos, sign, atanh
+from diofant.functions import exp, sin, cos, sign, atanh, meijerg, hyper
 from diofant.matrices import Matrix
 
 from diofant import mathematica_code as mcode
@@ -32,6 +32,11 @@ def test_Function():
     assert mcode(sign(x)) == "Sign[x]"
 
     assert mcode(atanh(x), user_functions={"atanh": "ArcTanh"}) == "ArcTanh[x]"
+
+    assert (mcode(meijerg(((1, 1), (3, 4)), ((1,), ()), x)) ==
+            "MeijerG[{{1, 1}, {3, 4}}, {{1}, {}}, x]")
+    assert (mcode(hyper((1, 2, 3), (3, 4), x)) ==
+            "HypergeometricPFQ[{1, 2, 3}, {3, 4}, x]")
 
 
 def test_Derivative():
