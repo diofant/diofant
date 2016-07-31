@@ -1096,7 +1096,7 @@ def dup_ext_factor(f, K):
     f, F = dup_sqf_part(f, K), f
     s, g, r = dup_sqf_norm(f, K)
 
-    factors = dup_factor_list_include(r, K.dom)
+    factors = dup_factor_list_include(r, K.domain)
 
     if len(factors) == 1:
         return lc, [(f, n//dup_degree(f))]
@@ -1104,7 +1104,7 @@ def dup_ext_factor(f, K):
     H = s*K.unit
 
     for i, (factor, _) in enumerate(factors):
-        h = dup_convert(factor, K.dom, K)
+        h = dup_convert(factor, K.domain, K)
         h, _, g = dup_inner_gcd(h, g, K)
         h = dup_shift(h, H, K)
         factors[i] = h
@@ -1127,7 +1127,7 @@ def dmp_ext_factor(f, u, K):
     f, F = dmp_sqf_part(f, u, K), f
     s, g, r = dmp_sqf_norm(f, u, K)
 
-    factors = dmp_factor_list_include(r, u, K.dom)
+    factors = dmp_factor_list_include(r, u, K.domain)
 
     if len(factors) == 1:
         coeff, factors = lc, [f]
@@ -1135,7 +1135,7 @@ def dmp_ext_factor(f, u, K):
         H = dmp_raise([K.one, s*K.unit], u, 0, K)
 
         for i, (factor, _) in enumerate(factors):
-            h = dmp_convert(factor, u, K.dom, K)
+            h = dmp_convert(factor, u, K.domain, K)
             h, _, g = dmp_inner_gcd(h, g, u, K)
             h = dmp_compose(h, H, u, K)
             factors[i] = h
@@ -1145,14 +1145,14 @@ def dmp_ext_factor(f, u, K):
 
 def dup_gf_factor(f, K):
     """Factor univariate polynomials over finite fields. """
-    f = dup_convert(f, K, K.dom)
+    f = dup_convert(f, K, K.domain)
 
-    coeff, factors = gf_factor(f, K.mod, K.dom)
+    coeff, factors = gf_factor(f, K.mod, K.domain)
 
     for i, (f, k) in enumerate(factors):
-        factors[i] = (dup_convert(f, K.dom, K), k)
+        factors[i] = (dup_convert(f, K.domain, K), k)
 
-    return K.convert(coeff, K.dom), factors
+    return K.convert(coeff, K.domain), factors
 
 
 def dmp_gf_factor(f, u, K):
@@ -1189,12 +1189,12 @@ def dup_factor_list(f, K0):
         elif K.is_Poly:
             f, u = dmp_inject(f, 0, K)
 
-            coeff, factors = dmp_factor_list(f, u, K.dom)
+            coeff, factors = dmp_factor_list(f, u, K.domain)
 
             for i, (f, k) in enumerate(factors):
                 factors[i] = (dmp_eject(f, u, K), k)
 
-            coeff = K.convert(coeff, K.dom)
+            coeff = K.convert(coeff, K.domain)
         else:  # pragma: no cover
             raise DomainError('factorization not supported over %s' % K0)
 
@@ -1268,12 +1268,12 @@ def dmp_factor_list(f, u, K0):
         elif K.is_Poly:
             f, v = dmp_inject(f, u, K)
 
-            coeff, factors = dmp_factor_list(f, v, K.dom)
+            coeff, factors = dmp_factor_list(f, v, K.domain)
 
             for i, (f, k) in enumerate(factors):
                 factors[i] = (dmp_eject(f, v, K), k)
 
-            coeff = K.convert(coeff, K.dom)
+            coeff = K.convert(coeff, K.domain)
         else:  # pragma: no cover
             raise DomainError('factorization not supported over %s' % K0)
 

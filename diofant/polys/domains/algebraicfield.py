@@ -30,7 +30,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         self.orig_ext = ext
         self.ext = to_number_field(ext)
         self.mod = self.ext.minpoly.rep
-        self.domain = self.dom = dom
+        self.domain = dom
 
         self.ngens = 1
         self.symbols = self.gens = (self.ext,)
@@ -40,13 +40,13 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         self.one = self.dtype.one(self.mod.rep, dom)
 
     def new(self, element):
-        return self.dtype(element, self.mod.rep, self.dom)
+        return self.dtype(element, self.mod.rep, self.domain)
 
     def __str__(self):
-        return str(self.dom) + '<' + str(self.ext) + '>'
+        return str(self.domain) + '<' + str(self.ext) + '>'
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.dtype, self.dom, self.ext))
+        return hash((self.__class__.__name__, self.dtype, self.domain, self.ext))
 
     def __eq__(self, other):
         """Returns ``True`` if two domains are equivalent. """
@@ -55,7 +55,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \dots)`. """
-        return AlgebraicField(self.dom, *((self.ext,) + extension))
+        return AlgebraicField(self.domain, *((self.ext,) + extension))
 
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
@@ -65,7 +65,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def from_diofant(self, a):
         """Convert Diofant's expression to ``dtype``. """
         try:
-            return self([self.dom.from_diofant(a)])
+            return self([self.domain.from_diofant(a)])
         except CoercionFailed:
             pass
 
@@ -79,23 +79,23 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def from_ZZ_python(self, a, K0):
         """Convert a Python ``int`` object to ``dtype``. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def from_QQ_python(self, a, K0):
         """Convert a Python ``Fraction`` object to ``dtype``. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def from_QQ_gmpy(self, a, K0):
         """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def from_RealField(self, a, K0):
         """Convert a mpmath ``mpf`` object to ``dtype``. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def get_ring(self):
         """Returns a ring associated with ``self``. """
@@ -103,19 +103,19 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """
-        return self.dom.is_positive(a.LC())
+        return self.domain.is_positive(a.LC())
 
     def is_negative(self, a):
         """Returns True if ``a`` is negative. """
-        return self.dom.is_negative(a.LC())
+        return self.domain.is_negative(a.LC())
 
     def is_nonpositive(self, a):
         """Returns True if ``a`` is non-positive. """
-        return self.dom.is_nonpositive(a.LC())
+        return self.domain.is_nonpositive(a.LC())
 
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
-        return self.dom.is_nonnegative(a.LC())
+        return self.domain.is_nonnegative(a.LC())
 
     def numer(self, a):
         """Returns numerator of ``a``. """
