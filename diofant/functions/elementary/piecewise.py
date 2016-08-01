@@ -311,7 +311,11 @@ class Piecewise(Function):
         or_cond = False
         or_intervals = []
         independent_expr_cond = []
+        if isinstance(targetcond, Relational) and targetcond.has(sym):
+            targetcond = solve_univariate_inequality(targetcond, sym)
         for expr, cond in self.args:
+            if isinstance(cond, Relational) and cond.has(sym):
+                cond = solve_univariate_inequality(cond, sym)
             if isinstance(cond, Or):
                 for cond2 in sorted(cond.args, key=default_sort_key):
                     expr_cond.append((expr, cond2))

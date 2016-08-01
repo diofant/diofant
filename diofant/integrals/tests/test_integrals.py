@@ -1141,3 +1141,8 @@ def test_sympyissue_4231():
     e = (1 + 2*x + sqrt(x + log(x))*(1 + 3*x) +
          x**2)/(x*(x + sqrt(x + log(x)))*sqrt(x + log(x)))
     assert integrate(e, x) == 2*log(x + sqrt(x + log(x))) + 2*sqrt(x + log(x))
+
+
+def test_issue_11045():
+    e = 1/(x*sqrt(x**2 - 1))
+    assert integrate(e, (x, 1, 2)) == pi/3
