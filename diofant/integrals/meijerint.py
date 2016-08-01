@@ -1466,6 +1466,12 @@ def _rewrite_single(f, x, recursive=True):
                     #      but better be safe.
                     if Tuple(*(r1 + (g,))).has(oo, zoo, -oo):
                         continue
+
+                    # A Meijer G-function is undefined in case:
+                    if any((a - b).is_integer and (a - b).is_positive
+                           for a in g.an for b in g.bm):
+                        continue
+
                     g = meijerg(g.an, g.aother, g.bm, g.bother,
                                 unpolarify(g.argument, exponents_only=True))
                     res.append(r1 + (g,))
@@ -1477,8 +1483,9 @@ def _rewrite_single(f, x, recursive=True):
         return
     _debug('Trying recursive Mellin transform method.')
     from diofant.integrals.transforms import (mellin_transform,
-                                    inverse_mellin_transform, IntegralTransformError,
-                                    MellinTransformStripError)
+                                              inverse_mellin_transform,
+                                              IntegralTransformError,
+                                              MellinTransformStripError)
     from diofant import oo, nan, zoo, simplify, cancel
 
     def my_imt(F, s, x, strip):
