@@ -85,6 +85,7 @@ class MCodePrinter(CodePrinter):
         return '{' + ', '.join(self.doprint(a) for a in expr) + '}'
     _print_tuple = _print_list
     _print_Tuple = _print_list
+    _print_ExprCondPair = _print_list
 
     def _print_Function(self, expr):
         if expr.func.__name__ in self.known_functions:
@@ -97,6 +98,15 @@ class MCodePrinter(CodePrinter):
     def _print_Min(self, expr):
         return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
     _print_Max = _print_Min
+
+    def _print_Piecewise(self, expr):
+        return expr.func.__name__ + "[{%s}]" % self.stringify(expr.args, ", ")
+
+    def _print_BooleanTrue(self, expr):
+        return "True"
+
+    def _print_BooleanFalse(self, expr):
+        return "False"
 
     def _print_Derivative(self, expr):
         return 'D[%s, %s]' % (self.doprint(expr.expr),

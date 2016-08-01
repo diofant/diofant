@@ -4,8 +4,9 @@ from diofant.core import (S, pi, oo, symbols, Function,
 from diofant.integrals import Integral
 from diofant.concrete import Sum
 from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
-                               Min, Max)
+                               Min, Max, Piecewise)
 from diofant.matrices import Matrix
+from diofant.logic import Or, true, false
 
 from diofant import mathematica_code as mcode
 
@@ -111,3 +112,16 @@ def test_Relational():
     assert mcode(Ne(x, y/(1 + y**2))) == 'x != y/(y^2 + 1)'
     assert mcode(Le(0, x**2)) == '0 <= x^2'
     assert mcode(Gt(pi, 3, evaluate=False)) == 'Pi > 3'
+
+
+def test_Booleans():
+    assert mcode(true) == "True"
+    assert mcode(false) == "False"
+
+
+def test_Piecewise():
+    g = Piecewise((0, Or(x <= -1, x >= 1)), (1 - x, x > 0), (1 + x, True))
+
+    assert (mcode(g) ==
+            'Piecewise[{{0, x >= 1 || x <= -1}, '
+            '{-x + 1, x > 0}, {x + 1, True}}]')
