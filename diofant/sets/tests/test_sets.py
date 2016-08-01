@@ -526,7 +526,7 @@ def test_Intersection_as_relational():
 
 
 def test_EmptySet():
-    assert S.EmptySet.as_relational(x) is False
+    assert S.EmptySet.as_relational(x) is false
     assert S.EmptySet.intersect(S.UniversalSet) == S.EmptySet
     assert S.EmptySet.boundary == S.EmptySet
 

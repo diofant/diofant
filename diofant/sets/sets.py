@@ -1540,7 +1540,7 @@ class EmptySet(Set, metaclass=Singleton):
         return false
 
     def as_relational(self, symbol):
-        return False
+        return false
 
     def __len__(self):
         return 0
