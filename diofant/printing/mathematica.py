@@ -94,6 +94,10 @@ class MCodePrinter(CodePrinter):
                     return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
         return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
 
+    def _print_Min(self, expr):
+        return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
+    _print_Max = _print_Min
+
     def _print_Derivative(self, expr):
         return 'D[%s, %s]' % (self.doprint(expr.expr),
                               ', '.join(self.doprint(a) for a in expr.variables))

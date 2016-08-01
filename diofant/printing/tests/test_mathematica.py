@@ -3,7 +3,8 @@ from diofant.core import (S, pi, oo, symbols, Function,
                           Eq, Ne, Le, Gt)
 from diofant.integrals import Integral
 from diofant.concrete import Sum
-from diofant.functions import exp, sin, cos, sign, atanh, meijerg, hyper
+from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
+                               Min, Max)
 from diofant.matrices import Matrix
 
 from diofant import mathematica_code as mcode
@@ -37,6 +38,9 @@ def test_Function():
             "MeijerG[{{1, 1}, {3, 4}}, {{1}, {}}, x]")
     assert (mcode(hyper((1, 2, 3), (3, 4), x)) ==
             "HypergeometricPFQ[{1, 2, 3}, {3, 4}, x]")
+
+    assert mcode(Min(x, y)) == "Min[x, y]"
+    assert mcode(Max(x, y)) == "Max[x, y]"
 
 
 def test_Derivative():
