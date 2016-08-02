@@ -589,8 +589,6 @@ class Expr(Basic, EvalfMixin):
         """
         from diofant.simplify.simplify import nsimplify, simplify
         from diofant.solvers.solvers import solve
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.polys.numberfields import minimal_polynomial
 
         other = sympify(other)
         if self == other:
@@ -656,18 +654,7 @@ class Expr(Basic, EvalfMixin):
                                                  and simplify(si) == s
                                                  for si in sol):
                                 return True
-                    except NotImplementedError:
-                        pass
-
-                # try to prove with minimal_polynomial but know when
-                # *not* to use this or else it can take a long time. e.g. issue 8354
-                if True:  # change True to condition that assures non-hang
-                    try:
-                        mp = minimal_polynomial(diff)
-                        if mp.is_Symbol:
-                            return True
-                        return False
-                    except (NotAlgebraic, NotImplementedError):
+                    except NotImplementedError:  # pragma: no cover
                         pass
 
         # diff has not simplified to zero; constant is either None, True
@@ -937,10 +924,9 @@ class Expr(Basic, EvalfMixin):
                     if factor.is_number:
                         try:
                             coeff *= complex(factor)
+                            continue
                         except TypeError:
                             pass
-                        else:
-                            continue
 
                     if factor.is_commutative:
                         base, exp = decompose_power(factor)

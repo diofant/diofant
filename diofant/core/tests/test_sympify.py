@@ -268,6 +268,11 @@ def test_sympifyit():
 
     pytest.raises(SympifyError, lambda: add_raises(x, '1'))
 
+    with pytest.raises(LookupError):
+        @_sympifyit('x', NotImplemented)
+        def spam():
+            return
+
 
 def test_int_float():
     class F1_1(object):

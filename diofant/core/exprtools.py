@@ -131,7 +131,7 @@ class Factors(object):
                     if n.p != 1:
                         factors[Integer(n.p)] = S.One
                     factors[Integer(n.q)] = S.NegativeOne
-                else:
+                else:  # pragma: no cover
                     raise ValueError('Expected Float|Rational|Integer, not %s' % n)
         elif isinstance(factors, Basic) and not factors.args:
             factors = {factors: S.One}
@@ -179,14 +179,11 @@ class Factors(object):
                             raise ValueError('unexpected factor in i1: %s' % a)
 
         self.factors = factors
-        try:
-            self.gens = frozenset(factors.keys())
-        except AttributeError:
-            raise TypeError('expecting Expr or dictionary')
+        self.gens = frozenset(factors.keys())
 
     def __hash__(self):  # Factors
         keys = tuple(ordered(self.factors.keys()))
-        values = [self.factors[k] for k in keys]
+        values = tuple(self.factors[k] for k in keys)
         return hash((keys, values))
 
     def __repr__(self):  # Factors

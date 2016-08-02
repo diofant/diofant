@@ -127,6 +127,7 @@ class Add(Expr, AssocOp):
                     if coeff is S.NaN:
                         # we know for sure the result will be nan
                         return [S.NaN], [], None
+                o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             elif o is S.ComplexInfinity:

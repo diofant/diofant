@@ -25,6 +25,8 @@ from .compatibility import DIOFANT_INTS, is_sequence
 from .sympify import sympify
 from .singleton import S
 
+from diofant.utilities.misc import debug
+
 LG10 = math.log(10, 2)
 rnd = round_nearest
 
@@ -394,8 +396,7 @@ def evalf_add(v, prec, options):
             [a[1::2] for a in terms if a[1]], prec, target_prec)
         acc = complex_accuracy((re, im, re_acc, im_acc))
         if acc >= target_prec:
-            if options.get('verbose'):
-                print("ADD: wanted", target_prec, "accurate bits, got", re_acc, im_acc)
+            debug("ADD: wanted", target_prec, "accurate bits, got", re_acc, im_acc)
             break
         else:
             if (prec - target_prec) > options['maxprec']:
@@ -403,8 +404,7 @@ def evalf_add(v, prec, options):
 
             prec = prec + max(10 + 2**i, target_prec - acc)
             i += 1
-            if options.get('verbose'):
-                print("ADD: restarting with prec", prec)
+            debug("ADD: restarting with prec", prec)
 
     options['maxprec'] = oldmaxprec
     if iszero(re, scaled=True):
@@ -520,8 +520,7 @@ def evalf_mul(v, prec, options):
             D = mpf_mul(im, wre, use_prec)
             re = mpf_add(A, B, use_prec)
             im = mpf_add(C, D, use_prec)
-        if options.get('verbose'):
-            print("MUL: wanted", prec, "accurate bits, got", acc)
+        debug("MUL: wanted", prec, "accurate bits, got", acc)
         # multiply by I
         if direction & 1:
             re, im = mpf_neg(im), re
@@ -645,7 +644,7 @@ def evalf_trig(v, prec, options):
         func = mpf_cos
     elif v.func is sin:
         func = mpf_sin
-    else:
+    else:  # pagma: no cover
         raise NotImplementedError
     arg = v.args[0]
     # 20 extra bits is possibly overkill. It does make the need
@@ -661,7 +660,7 @@ def evalf_trig(v, prec, options):
             return fone, None, prec, None
         elif v.func is sin:
             return None, None, None, None
-        else:
+        else:  # pragme: no cover
             raise NotImplementedError
     # For trigonometric functions, we are interested in the
     # fixed-point (absolute) accuracy of the argument.
@@ -683,9 +682,8 @@ def evalf_trig(v, prec, options):
         gap = -ysize
         accuracy = (xprec - xsize) - gap
         if accuracy < prec:
-            if options.get('verbose'):
-                print("SIN/COS", accuracy, "wanted", prec, "gap", gap)
-                print(to_str(y, 10))
+            debug("SIN/COS", accuracy, "wanted", prec, "gap", gap)
+            debug(to_str(y, 10))
             if xprec > options.get('maxprec', DEFAULT_MAXPREC):
                 return y, None, accuracy, None
             xprec += gap
@@ -1054,7 +1052,7 @@ def evalf_sum(expr, prec, options):
         expr = expr.subs(options['subs'])
     func = expr.function
     limits = expr.limits
-    if len(limits) != 1 or len(limits[0]) != 3:
+    if len(limits) != 1 or len(limits[0]) != 3:  # pragma: no cover
         raise NotImplementedError
     if func is S.Zero:
         return mpf(0), None, None, None
@@ -1195,11 +1193,10 @@ def evalf(x, prec, options):
             r = re, im, reprec, imprec
         except AttributeError:
             raise NotImplementedError
-    if options.get("verbose"):
-        print("### input", x)
-        print("### output", to_str(r[0] or fzero, 50))
-        print("### raw", r)  # r[0], r[2]
-        print()
+    debug("### input", x)
+    debug("### output", to_str(r[0] or fzero, 50))
+    debug("### raw", r)  # r[0], r[2]
+    debug()
     chop = options.get('chop', False)
     if chop:
         if chop is True:
@@ -1220,7 +1217,7 @@ def evalf(x, prec, options):
 class EvalfMixin(object):
     """Mixin class adding evalf capabililty."""
 
-    def evalf(self, n=15, subs=None, maxn=100, chop=False, strict=False, quad=None, verbose=False):
+    def evalf(self, n=15, subs=None, maxn=100, chop=False, strict=False, quad=None):
         """
         Evaluate the given formula to an accuracy of n digits.
         Optional keyword arguments:
@@ -1247,10 +1244,6 @@ class EvalfMixin(object):
                 Choose algorithm for numerical quadrature. By default,
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
-
-            verbose=<bool>
-                Print debug information (default=False)
-
         """
         from diofant import Float, Number
         n = n if n is not None else 15
@@ -1261,7 +1254,7 @@ class EvalfMixin(object):
         # for sake of sage that doesn't like evalf(1)
         if n == 1 and isinstance(self, Number):
             from diofant.core.expr import _mag
-            rv = self.evalf(2, subs, maxn, chop, strict, quad, verbose)
+            rv = self.evalf(2, subs, maxn, chop, strict, quad)
             m = _mag(rv)
             rv = rv.round(1 - m)
             return rv
@@ -1270,7 +1263,7 @@ class EvalfMixin(object):
             _create_evalf_table()
         prec = dps_to_prec(n)
         options = {'maxprec': max(prec, int(maxn*LG10)), 'chop': chop,
-               'strict': strict, 'verbose': verbose}
+                   'strict': strict}
         if subs is not None:
             options['subs'] = subs
         if quad is not None:
@@ -1358,6 +1351,7 @@ def N(x, n=15, **options):
     Calls x.evalf(n, \*\*options).
 
     Both .n() and N() are equivalent to .evalf(); use the one that you like better.
+
     Examples
     ========
 
