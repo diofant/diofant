@@ -19,10 +19,11 @@ addons:
 matrix:
   include:
     - python: 3.4
-      env: COVERAGE_MARK='not slow and not xfail'
+      env: COVERAGE='on' SELECT='not slow and not xfail'
     - python: 3.4
-      env: COVERAGE_MARK='slow and not xfail'
+      env: COVERAGE='on' SELECT='slow and not xfail'
     - python: 3.4
+      env: COVERAGE='on' EXTRA='on'
       install:
         - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
         - travis_wait pip install .[exports,plot,interactive]
@@ -52,12 +53,12 @@ before_script:
   - export DISPLAY=:99.0
 script:
   - |
-    if [ -n "${COVERAGE_MARK}" ]; then
-      python setup.py test --cov -m "${COVERAGE_MARK}"
+    if [ -n "${COVERAGE}" ]; then
+      python setup.py test --cov -m "${SELECT}"
     else
       python setup.py test
     fi
-after_success: test -n "${COVERAGE_MARK}" && codecov
+after_success: test -n "${COVERAGE}" && codecov
 deploy:
   provider: pypi
   user: skirpichev
@@ -68,7 +69,7 @@ deploy:
   server: https://testpypi.python.org/pypi
   on:
     python: 3.4
-    condition: -z "${COVERAGE_MARK}"
+    condition: -z "${COVERAGE}"
     tags: true
 notifications:
   email: false
