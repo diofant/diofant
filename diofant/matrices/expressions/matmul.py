@@ -6,7 +6,7 @@ from diofant.functions import adjoint
 from diofant.matrices.expressions.transpose import transpose
 from diofant.core.strategies import rm_id, unpack, flatten
 from diofant.matrices.expressions.matexpr import (MatrixExpr, ShapeError,
-                                                Identity, ZeroMatrix)
+                                                  Identity, ZeroMatrix)
 from diofant.matrices.matrices import MatrixBase
 
 

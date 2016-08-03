@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from diofant.core.logic import (fuzzy_not, Logic, And, Or, Not, fuzzy_and,
-                              fuzzy_or, _fuzzy_group)
+                                fuzzy_or, _fuzzy_group)
 
 T = True
 F = False

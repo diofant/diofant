@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Symbol, floor, nan, oo, E, symbols, ceiling, pi, Rational,
-                   Float, I, sin, exp, log, factorial, S)
+                     Float, I, sin, exp, log, factorial, S)
 
 
 def test_floor():

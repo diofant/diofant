@@ -2,7 +2,8 @@ from collections import defaultdict
 
 from diofant import DIOFANT_DEBUG
 from diofant.core.compatibility import iterable, ordered, default_sort_key
-from diofant.core import expand_power_base, sympify, Add, S, Mul, Derivative, Pow, symbols, expand_mul
+from diofant.core import (expand_power_base, sympify, Add, S, Mul,
+                          Derivative, Pow, symbols, expand_mul)
 from diofant.core.numbers import Rational
 from diofant.core.exprtools import Factors, gcd_terms
 from diofant.core.mul import _keep_coeff, _unevaluated_Mul

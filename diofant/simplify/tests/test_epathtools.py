@@ -4,6 +4,7 @@ import pytest
 
 from diofant.simplify.epathtools import epath, EPath
 from diofant import sin, cos, E
+
 from diofant.abc import x, y, z, t
 
 

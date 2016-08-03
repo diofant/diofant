@@ -3,8 +3,9 @@
 import pytest
 
 from diofant import (adjoint, cancel, collect, combsimp, conjugate, cos, expand,
-                   factor, posify, radsimp, ratsimp, rcollect, sin, simplify,
-                   symbols, transpose, trigsimp, I)
+                     factor, posify, radsimp, ratsimp, rcollect, sin, simplify,
+                     symbols, transpose, trigsimp, I)
+
 from diofant.abc import x, y, z
 
 A, B, C = symbols("A B C", commutative=False)

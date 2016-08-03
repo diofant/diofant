@@ -1,9 +1,10 @@
 import pytest
 
-from diofant import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
-                   abc, Integer, Eq, symbols, Add, I, Float, log, Rational, Lambda,
-                   atan2, cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
-                   factor, nsimplify, zoo, Subs, E, RootOf)
+from diofant import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function,
+                     Derivative, abc, Integer, Eq, symbols, Add, I, Float,
+                     log, Rational, Lambda, atan2, cse, cot, tan, S, Tuple,
+                     Basic, Dict, Piecewise, oo, Mul, factor, nsimplify,
+                     zoo, Subs, E, RootOf)
 from diofant.core.basic import _aresame
 
 from diofant.abc import x, y, z

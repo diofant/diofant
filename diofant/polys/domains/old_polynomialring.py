@@ -6,10 +6,10 @@ from diofant.polys.domains.characteristiczero import CharacteristicZero
 from diofant.polys.domains.old_fractionfield import FractionField
 from diofant.polys.polyclasses import DMP, DMF
 from diofant.polys.polyerrors import (GeneratorsNeeded, PolynomialError,
-                                    CoercionFailed, ExactQuotientFailed,
-                                    NotReversible)
+                                      CoercionFailed, ExactQuotientFailed,
+                                      NotReversible)
 from diofant.polys.polyutils import (dict_from_basic, basic_from_dict,
-                                   _dict_reorder)
+                                     _dict_reorder)
 from diofant.polys.orderings import monomial_key, build_product_order
 from diofant.polys.agca.modules import FreeModulePolyRing
 from diofant.core.compatibility import iterable

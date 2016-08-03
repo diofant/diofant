@@ -1,5 +1,5 @@
 from diofant.core import (Rational, Symbol, S, Float, Integer, Number,
-                        Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
+                          Pow, Basic, I, nan, pi, symbols, oo, zoo, E)
 from diofant.core.tests.test_evalf import NS
 from diofant.functions.elementary.miscellaneous import sqrt, cbrt
 from diofant.functions.elementary.exponential import exp, log

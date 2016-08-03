@@ -2,7 +2,7 @@
 
 from diofant.polys.domains.domain import Domain
 from diofant.polys.polyerrors import (ExactQuotientFailed, NotInvertible,
-                                    NotReversible)
+                                      NotReversible)
 from diofant.utilities import public
 
 

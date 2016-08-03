@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (residue, Symbol, Function, sin, sqrt,
-                   I, exp, log, pi, factorial, Rational)
+                     I, exp, log, pi, factorial, Rational)
 
 from diofant.abc import x, z, a, s
 

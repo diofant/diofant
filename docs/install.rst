@@ -22,7 +22,11 @@ sure to install from git::
 
     $ git clone git://github.com/diofant/diofant.git
     $ cd diofant
-    $ python setup.py develop
+    $ pip install -e .
+
+or to install also extra dependencies::
+
+    $ pip install -e .[gmpy,plot]
 
 To update to the latest version, go into your repository and execute::
 

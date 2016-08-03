@@ -3,16 +3,16 @@ from collections import defaultdict
 import mpmath
 
 from diofant.core import (Basic, S, Add, Mul, Pow,
-                        Symbol, sympify, expand_mul, expand_func,
-                        Dummy, Expr, factor_terms,
-                        expand_power_exp)
+                          Symbol, sympify, expand_mul, expand_func,
+                          Dummy, Expr, factor_terms,
+                          expand_power_exp)
 from diofant.core.compatibility import iterable, ordered, as_int
 from diofant.core.numbers import Float, I, pi, Rational, Integer
 from diofant.core.function import expand_log, count_ops, _mexpand
 from diofant.core.rules import Transform
 from diofant.core.evaluate import global_evaluate
 from diofant.functions import (gamma, exp, sqrt, log, exp_polar,
-                             piecewise_fold)
+                               piecewise_fold)
 from diofant.functions.elementary.hyperbolic import HyperbolicFunction
 from diofant.functions.elementary.integers import ceiling
 from diofant.functions.elementary.complexes import unpolarify

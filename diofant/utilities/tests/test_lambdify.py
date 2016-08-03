@@ -4,8 +4,8 @@ import mpmath
 import pytest
 
 from diofant import (symbols, lambdify, sqrt, sin, cos, tan, pi, acos, acosh,
-                   Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
-                   oo, I, Abs, Function, true, false, And, Or, Not, sympify, ITE)
+                     Rational, Float, Matrix, Lambda, Piecewise, exp, Integral,
+                     oo, I, Abs, Function, true, false, And, Or, Not, sympify, ITE)
 from diofant.printing.lambdarepr import LambdaPrinter
 from diofant.utilities.lambdify import implemented_function
 from diofant.utilities.decorator import conserve_mpmath_dps

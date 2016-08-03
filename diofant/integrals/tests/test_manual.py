@@ -1,9 +1,9 @@
 from diofant import (sin, cos, tan, sec, csc, cot, log, exp, atan, asin, acos,
-                   Symbol, Integral, integrate, pi, Dummy, Derivative,
-                   diff, I, sqrt, erf, Piecewise, Eq, symbols,
-                   And, Heaviside, S, asinh, acosh, Integer, Rational)
+                     Symbol, Integral, integrate, pi, Dummy, Derivative,
+                     diff, I, sqrt, erf, Piecewise, Eq, symbols,
+                     And, Heaviside, S, asinh, acosh, Integer, Rational)
 from diofant.integrals.manualintegrate import (manualintegrate, find_substitutions,
-                                             _parts_rule)
+                                               _parts_rule)
 
 x, y, u, n, a, b = symbols('x y u n a b')
 

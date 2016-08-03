@@ -1,8 +1,8 @@
-from diofant import sin, cos, symbols, pi, ImmutableMatrix as Matrix, \
-    simplify
+from diofant import (sin, cos, symbols, pi, ImmutableMatrix as Matrix,
+                     simplify)
 from diofant.vector import (CoordSysCartesian, Vector, Dyadic,
-                          DyadicAdd, DyadicMul, DyadicZero,
-                          BaseDyadic, express)
+                            DyadicAdd, DyadicMul, DyadicZero,
+                            BaseDyadic, express)
 
 
 A = CoordSysCartesian('A')

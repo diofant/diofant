@@ -19,25 +19,25 @@ import warnings
 from mpmath import findroot
 
 from diofant.core.compatibility import (iterable, is_sequence, ordered,
-                                      default_sort_key)
+                                        default_sort_key)
 from diofant.core.sympify import sympify
 from diofant.core import S, Add, Symbol, Equality, Dummy, Expr, Mul, Pow
 from diofant.core.exprtools import factor_terms
 from diofant.core.function import (expand_mul, expand_multinomial, expand_log,
-                                 Derivative, AppliedUndef, UndefinedFunction,
-                                 nfloat, Function, expand_power_exp, Lambda,
-                                 _mexpand)
+                                   Derivative, AppliedUndef, UndefinedFunction,
+                                   nfloat, Function, expand_power_exp, Lambda,
+                                   _mexpand)
 from diofant.integrals.integrals import Integral
 from diofant.core.numbers import ilcm, Float, Integer
 from diofant.core.relational import Relational, Ge
 from diofant.logic.boolalg import And, Or, BooleanAtom
 from diofant.core.basic import preorder_traversal
 from diofant.functions import (log, exp, LambertW, cos, sin, tan, acos, asin,
-                             atan, Abs, re, im, arg, sqrt, atan2)
+                               atan, Abs, re, im, arg, sqrt, atan2)
 from diofant.functions.elementary.trigonometric import (TrigonometricFunction,
-                                                      HyperbolicFunction)
+                                                        HyperbolicFunction)
 from diofant.simplify import (simplify, collect, powsimp, posify, powdenest,
-                            nsimplify, denom, logcombine)
+                              nsimplify, denom, logcombine)
 from diofant.simplify.sqrtdenest import sqrt_depth
 from diofant.simplify.fu import TR1
 from diofant.matrices import Matrix, zeros

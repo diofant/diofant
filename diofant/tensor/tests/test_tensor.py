@@ -9,10 +9,10 @@ from diofant.external import import_module
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.printing.pretty.pretty import pretty
 from diofant.tensor.tensor import (TensorIndexType, tensor_indices, TensorSymmetry,
-                                 get_symmetric_group_sgs, TensorType, TensorIndex,
-                                 tensor_mul, TensAdd, riemann_cyclic_replace,
-                                 riemann_cyclic, TensMul, tensorsymmetry,
-                                 tensorhead, TensorManager, TensExpr, TIDS)
+                                   get_symmetric_group_sgs, TensorType, TensorIndex,
+                                   tensor_mul, TensAdd, riemann_cyclic_replace,
+                                   riemann_cyclic, TensMul, tensorsymmetry,
+                                   tensorhead, TensorManager, TensExpr, TIDS)
 
 numpy = import_module("numpy")
 

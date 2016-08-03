@@ -1,5 +1,5 @@
 from diofant.printing.dot import (styleof, attrprint, dotnode,
-                                dotedges, dotprint)
+                                  dotedges, dotprint)
 from diofant import Symbol, Integer, Basic, Expr, srepr
 from diofant.abc import x
 

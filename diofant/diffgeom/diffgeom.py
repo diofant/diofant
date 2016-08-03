@@ -3,7 +3,7 @@ from functools import reduce
 
 from diofant.matrices import Matrix
 from diofant.core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
-                        Mul, Add, symbols, Tuple)
+                          Mul, Add, symbols, Tuple)
 from diofant.core.numbers import Zero
 from diofant.solvers import solve
 from diofant.functions import factorial

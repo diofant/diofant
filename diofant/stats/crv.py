@@ -11,12 +11,12 @@ diofant.stats.frv
 import random
 
 from diofant.stats.rv import (RandomDomain, SingleDomain, ConditionalDomain,
-                            ProductDomain, PSpace, SinglePSpace, random_symbols,
-                            ProductPSpace, NamedArgsMixin)
+                              ProductDomain, PSpace, SinglePSpace, random_symbols,
+                              ProductPSpace, NamedArgsMixin)
 from diofant.functions.special.delta_functions import DiracDelta
 from diofant import (Interval, symbols, sympify, Dummy, Mul,
-                   Integral, And, Or, Piecewise, solve, cacheit, integrate,
-                   oo, Lambda, Basic, S)
+                     Integral, And, Or, Piecewise, solve, cacheit, integrate,
+                     oo, Lambda, Basic, S)
 from diofant.solvers.inequalities import reduce_rational_inequalities
 from diofant.polys.polyerrors import PolynomialError
 

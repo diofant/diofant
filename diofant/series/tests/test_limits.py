@@ -4,9 +4,9 @@ import os
 import pytest
 
 from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
-                   acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                   cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
-                   Function, subfactorial, PoleError, Integer, Float)
+                     acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
+                     cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
+                     Function, subfactorial, PoleError, Integer, Float)
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 

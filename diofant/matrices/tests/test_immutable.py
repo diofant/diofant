@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (ImmutableMatrix, Matrix, eye, zeros, S, Equality,
-                   Unequality, ImmutableSparseMatrix, SparseMatrix, sympify)
+                     Unequality, ImmutableSparseMatrix, SparseMatrix, sympify)
 from diofant.abc import x, y
 
 IM = ImmutableMatrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])

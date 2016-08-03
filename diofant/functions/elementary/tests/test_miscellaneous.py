@@ -5,7 +5,7 @@ from diofant.core.numbers import I, oo, Rational
 from diofant.core.singleton import S
 from diofant.core.symbol import Symbol
 from diofant.functions.elementary.miscellaneous import (sqrt, cbrt, root,
-                                                      Min, Max, real_root)
+                                                        Min, Max, real_root)
 from diofant.functions.elementary.trigonometric import cos, sin
 from diofant.functions.elementary.integers import floor, ceiling
 from diofant.functions.special.delta_functions import Heaviside

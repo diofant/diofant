@@ -10,7 +10,7 @@ References:
 
 from diofant import default_sort_key
 from diofant.logic.boolalg import (Or, Not, conjuncts, disjuncts, to_cnf,
-                                 to_int_repr, _find_predicates)
+                                   to_int_repr, _find_predicates)
 from diofant.logic.inference import pl_true, literal_symbol
 
 

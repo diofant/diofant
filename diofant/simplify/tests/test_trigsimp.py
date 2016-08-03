@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (symbols, sin, simplify, cos, trigsimp, tan, csc,
-                   exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
-                   S, integrate, I, Matrix, Symbol, coth, pi, log,
-                   count_ops, sqrt, E, expand, Piecewise, Rational)
+                     exptrigsimp, sinh, cosh, diff, cot, Subs, exp, tanh,
+                     S, integrate, I, Matrix, Symbol, coth, pi, log,
+                     count_ops, sqrt, E, expand, Piecewise, Rational)
 
 from diofant.abc import x, y, z, a, b
 

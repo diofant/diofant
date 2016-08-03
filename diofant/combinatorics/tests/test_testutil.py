@@ -1,11 +1,12 @@
-from diofant.combinatorics.named_groups import SymmetricGroup, AlternatingGroup,\
-    CyclicGroup
-from diofant.combinatorics.testutil import _verify_bsgs, _cmp_perm_lists,\
-    _naive_list_centralizer, _verify_centralizer,\
-    _verify_normal_closure
+from random import shuffle
+
+from diofant.combinatorics.named_groups import (SymmetricGroup, AlternatingGroup,
+                                                CyclicGroup)
+from diofant.combinatorics.testutil import (_verify_bsgs, _cmp_perm_lists,
+                                            _naive_list_centralizer, _verify_centralizer,
+                                            _verify_normal_closure)
 from diofant.combinatorics.permutations import Permutation
 from diofant.combinatorics.perm_groups import PermutationGroup
-from random import shuffle
 
 
 def test_cmp_perm_lists():

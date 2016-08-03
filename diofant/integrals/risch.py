@@ -37,12 +37,12 @@ from diofant.core.symbol import Symbol, Dummy
 from diofant.core.compatibility import ordered
 from diofant.integrals.heurisch import _symbols
 from diofant.functions import (acos, acot, asin, atan, cos, cot, exp, log,
-                             Piecewise, sin, tan)
+                               Piecewise, sin, tan)
 
 from diofant.functions import sinh, cosh, tanh, coth
 from diofant.integrals import Integral, integrate
 from diofant.polys import (gcd, cancel, PolynomialError, Poly,
-                         reduced, RootSum, DomainError)
+                           reduced, RootSum, DomainError)
 from diofant.utilities.iterables import numbered_symbols
 
 from diofant.abc import z

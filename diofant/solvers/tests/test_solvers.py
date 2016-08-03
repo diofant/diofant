@@ -12,7 +12,7 @@ from diofant import (
 from diofant.core.function import nfloat
 from diofant.solvers import solve_linear_system, solve_undetermined_coeffs
 from diofant.solvers.solvers import (_invert, unrad, checksol, posify,
-                                   _simple_dens)
+                                     _simple_dens)
 from diofant.polys.rootoftools import RootOf
 from diofant.utilities.randtest import verify_numerically as tn
 

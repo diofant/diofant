@@ -4,8 +4,8 @@ from math import log
 from diofant.core import Basic
 from diofant.combinatorics import Permutation
 from diofant.combinatorics.permutations import (_af_commutes_with, _af_invert,
-                                              _af_rmul, _af_rmuln, _af_pow,
-                                              Cycle)
+                                                _af_rmul, _af_rmuln, _af_pow,
+                                                Cycle)
 from diofant.combinatorics.util import (
     _check_cycles_alt_sym, _distribute_gens_by_base,
     _orbits_transversals_from_bsgs, _handle_precomputed_bsgs, _base_ordering,

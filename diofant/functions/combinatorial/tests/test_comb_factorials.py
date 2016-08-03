@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (S, Symbol, symbols, factorial, factorial2, binomial,
-                   rf, ff, gamma, polygamma, EulerGamma, O, pi, nan, exp,
-                   oo, zoo, simplify, expand_func, Product, loggamma)
+                     rf, ff, gamma, polygamma, EulerGamma, O, pi, nan, exp,
+                     oo, zoo, simplify, expand_func, Product, loggamma)
 from diofant.functions.combinatorial.factorials import subfactorial
 from diofant.functions.special.gamma_functions import uppergamma
 

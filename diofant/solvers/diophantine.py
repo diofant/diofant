@@ -1,7 +1,7 @@
 from diofant import (Poly, igcd, divisors, sign, symbols, S, Integer, Wild,
-                   Symbol, factorint, Add, Mul, solve, ceiling, floor, sqrt,
-                   sympify, Subs, ilcm, Matrix, factor_list, perfect_power,
-                   isprime, nextprime, integer_nthroot)
+                     Symbol, factorint, Add, Mul, solve, ceiling, floor, sqrt,
+                     sympify, Subs, ilcm, Matrix, factor_list, perfect_power,
+                     isprime, nextprime, integer_nthroot)
 from diofant.core.function import _mexpand
 from diofant.simplify.radsimp import rad_rationalize
 from diofant.utilities import default_sort_key, numbered_symbols

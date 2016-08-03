@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (adjoint, And, Basic, conjugate, diff, expand, Eq, Function,
-                   I, Integral, integrate, Interval, lambdify, log, Max, Min,
-                   oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
-                   symbols, transpose, cos, exp, Abs, Not, Symbol, sympify, Gt)
+                     I, Integral, integrate, Interval, lambdify, log, Max, Min,
+                     oo, Or, pi, Piecewise, piecewise_fold, Rational, solve,
+                     symbols, transpose, cos, exp, Abs, Not, Symbol, sympify, Gt)
 from diofant.printing import srepr
 
 x, y = symbols('x y')

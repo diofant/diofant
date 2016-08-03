@@ -2,8 +2,8 @@ import pytest
 
 from diofant.core.compatibility import ordered
 from diofant.combinatorics.partitions import (Partition, IntegerPartition,
-                                            RGS_enum, RGS_unrank, RGS_rank,
-                                            random_integer_partition)
+                                              RGS_enum, RGS_unrank, RGS_rank,
+                                              random_integer_partition)
 from diofant.sets.sets import Set
 from diofant.utilities.iterables import default_sort_key, partitions
 

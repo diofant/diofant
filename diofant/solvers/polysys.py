@@ -4,7 +4,7 @@ from diofant.core import S
 from diofant.polys import Poly, groebner, roots
 from diofant.polys.polytools import parallel_poly_from_expr
 from diofant.polys.polyerrors import (ComputationFailed,
-                                    PolificationFailed, CoercionFailed)
+                                      PolificationFailed, CoercionFailed)
 from diofant.simplify import rcollect
 from diofant.utilities import default_sort_key, postfixes
 

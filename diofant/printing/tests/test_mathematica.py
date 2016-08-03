@@ -1,10 +1,12 @@
 from diofant.core import (S, pi, oo, symbols, Function,
-                        Rational, Integer, Tuple, Derivative,
-                        Eq, Ne, Le, Gt)
+                          Rational, Integer, Tuple, Derivative,
+                          Eq, Ne, Le, Gt)
 from diofant.integrals import Integral
 from diofant.concrete import Sum
-from diofant.functions import exp, sin, cos, sign, atanh
+from diofant.functions import (exp, sin, cos, sign, atanh, meijerg, hyper,
+                               Min, Max, Piecewise)
 from diofant.matrices import Matrix
+from diofant.logic import Or, true, false
 
 from diofant import mathematica_code as mcode
 
@@ -32,6 +34,14 @@ def test_Function():
     assert mcode(sign(x)) == "Sign[x]"
 
     assert mcode(atanh(x), user_functions={"atanh": "ArcTanh"}) == "ArcTanh[x]"
+
+    assert (mcode(meijerg(((1, 1), (3, 4)), ((1,), ()), x)) ==
+            "MeijerG[{{1, 1}, {3, 4}}, {{1}, {}}, x]")
+    assert (mcode(hyper((1, 2, 3), (3, 4), x)) ==
+            "HypergeometricPFQ[{1, 2, 3}, {3, 4}, x]")
+
+    assert mcode(Min(x, y)) == "Min[x, y]"
+    assert mcode(Max(x, y)) == "Max[x, y]"
 
 
 def test_Derivative():
@@ -102,3 +112,16 @@ def test_Relational():
     assert mcode(Ne(x, y/(1 + y**2))) == 'x != y/(y^2 + 1)'
     assert mcode(Le(0, x**2)) == '0 <= x^2'
     assert mcode(Gt(pi, 3, evaluate=False)) == 'Pi > 3'
+
+
+def test_Booleans():
+    assert mcode(true) == "True"
+    assert mcode(false) == "False"
+
+
+def test_Piecewise():
+    g = Piecewise((0, Or(x <= -1, x >= 1)), (1 - x, x > 0), (1 + x, True))
+
+    assert (mcode(g) ==
+            'Piecewise[{{0, x >= 1 || x <= -1}, '
+            '{-x + 1, x > 0}, {x + 1, True}}]')

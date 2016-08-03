@@ -6,7 +6,7 @@ from mpmath import mpf, mpc, findroot, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
 from diofant.core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
-                        sympify, Rational, Dummy)
+                          sympify, Rational, Dummy)
 from diofant.core.cache import cacheit
 from diofant.core.function import AppliedUndef
 from diofant.functions.elementary.miscellaneous import root as _root
@@ -14,12 +14,12 @@ from diofant.polys.polytools import Poly, PurePoly, factor
 from diofant.polys.rationaltools import together
 from diofant.polys.polyfuncs import symmetrize, viete
 from diofant.polys.rootisolation import (dup_isolate_complex_roots_sqf,
-                                       dup_isolate_real_roots_sqf)
+                                         dup_isolate_real_roots_sqf)
 from diofant.polys.polyroots import (roots_linear, roots_quadratic,
-                                   roots_binomial, preprocess_roots, roots)
+                                     roots_binomial, preprocess_roots, roots)
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                    GeneratorsNeeded, PolynomialError,
-                                    DomainError)
+                                      GeneratorsNeeded, PolynomialError,
+                                      DomainError)
 from diofant.polys.domains import QQ
 from diofant.utilities import lambdify, public
 

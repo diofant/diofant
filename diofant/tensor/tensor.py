@@ -34,8 +34,8 @@ from functools import reduce
 
 from diofant import Matrix, Rational
 from diofant.combinatorics.tensor_can import (get_symmetric_group_sgs,
-                                            bsgs_direct_product, canonicalize,
-                                            riemann_bsgs)
+                                              bsgs_direct_product, canonicalize,
+                                              riemann_bsgs)
 from diofant.core import Basic, sympify, Add, S
 from diofant.core.containers import Tuple
 from diofant.core.symbol import Symbol, symbols

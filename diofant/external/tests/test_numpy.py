@@ -8,7 +8,7 @@
 import mpmath
 
 from diofant import (Rational, Symbol, list2numpy, matrix2numpy, sin, Float,
-                   Matrix, lambdify, symarray, symbols, Integer)
+                     Matrix, lambdify, symarray, symbols, Integer)
 import diofant
 from diofant.abc import x, y, z
 from diofant.utilities.decorator import conserve_mpmath_dps

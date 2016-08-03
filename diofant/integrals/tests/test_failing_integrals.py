@@ -6,7 +6,7 @@ import signal
 import pytest
 
 from diofant import (integrate, Integral, exp, oo, pi, sign,
-                   sqrt, sin, cos, tan, log, gamma, sinh, Rational)
+                     sqrt, sin, cos, tan, log, gamma, sinh, Rational)
 
 from diofant.abc import x, k, c, y, R, b, h, a, m
 

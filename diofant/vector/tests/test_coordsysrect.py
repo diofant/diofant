@@ -2,13 +2,13 @@ import pytest
 
 from diofant.vector.coordsysrect import CoordSysCartesian
 from diofant.vector.scalar import BaseScalar
-from diofant import sin, cos, pi, ImmutableMatrix as Matrix, \
-    symbols, simplify, zeros
+from diofant import (sin, cos, pi, ImmutableMatrix as Matrix,
+                     symbols, simplify, zeros)
 from diofant.vector.functions import express
 from diofant.vector.point import Point
 from diofant.vector.vector import Vector
 from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
-                                    SpaceOrienter, QuaternionOrienter)
+                                      SpaceOrienter, QuaternionOrienter)
 
 a, b, c, q = symbols('a b c q')
 q1, q2, q3, q4 = symbols('q1 q2 q3 q4')

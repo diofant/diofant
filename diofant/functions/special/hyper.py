@@ -8,7 +8,7 @@ from diofant.core.containers import Tuple
 from diofant.core.mul import Mul
 from diofant.core.symbol import Dummy
 from diofant.functions import (sqrt, exp, log, sin, cos, asin, atan,
-                             sinh, cosh, asinh, acosh, atanh, acoth)
+                               sinh, cosh, asinh, acosh, atanh, acoth)
 
 
 class TupleArg(Tuple):

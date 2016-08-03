@@ -827,4 +827,4 @@ class Add(Expr, AssocOp):
         return tuple(sorted(self.args, key=default_sort_key))
 
 from .mul import Mul, _keep_coeff, prod
-from diofant.core.numbers import Rational
+from .numbers import Rational

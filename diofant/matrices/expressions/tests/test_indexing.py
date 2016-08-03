@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (symbols, MatrixSymbol, MatPow, BlockMatrix,
-                   Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
+                     Identity, ZeroMatrix, ImmutableMatrix, eye, Sum)
 
 k, l, m, n = symbols('k l m n', integer=True)
 i, j = symbols('i j', integer=True)

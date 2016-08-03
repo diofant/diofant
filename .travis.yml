@@ -58,5 +58,17 @@ script:
       python setup.py test
     fi
 after_success: test -n "${COVERAGE_MARK}" && codecov
+deploy:
+  provider: pypi
+  user: skirpichev
+  password:
+    secure: "eqw999YWDRgBpREgnGEv+z30/2TaJAsvKNlPHFYFQQO+RGZBX9CqyrmlpZWCT7rOuSS+PAkoOyYnS9qBBcYHJycjM4DuW6wakVLeY2GlGP+cH0Xw2xVFkewuUvs6CMLhjEJ9NBTMbI/ghPviOalodAz9TuNcErglKJypOi93rIs="
+  distributions: "sdist bdist_wheel"
+  # TODO Remove for deployment to official PyPi repo
+  server: https://testpypi.python.org/pypi
+  on:
+    python: 3.4
+    condition: -z "${COVERAGE_MARK}"
+    tags: true
 notifications:
   email: false

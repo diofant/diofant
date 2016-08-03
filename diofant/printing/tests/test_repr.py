@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (symbols, Function, Integer, Matrix, Abs, Rational, Float,
-                   S, WildFunction, ImmutableMatrix, sin, true, false, ones,
-                   Symbol, Dummy, Wild)
+                     S, WildFunction, ImmutableMatrix, sin, true, false, ones,
+                     Symbol, Dummy, Wild)
 from diofant.geometry import Point, Ellipse
 from diofant.printing import srepr
 from diofant.polys import ring, field, ZZ, QQ, lex, grlex

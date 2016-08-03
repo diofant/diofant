@@ -2,12 +2,12 @@ import pytest
 
 from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_r, R3_c, R3_s
 from diofant.diffgeom import (Commutator, Differential, TensorProduct,
-                            WedgeProduct, BaseCovarDerivativeOp, CovarDerivativeOp,
-                            LieDerivative, covariant_order, contravariant_order,
-                            twoform_to_matrix, metric_to_Christoffel_1st,
-                            metric_to_Christoffel_2nd, metric_to_Riemann_components,
-                            metric_to_Ricci_components, intcurve_diffequ,
-                            intcurve_series)
+                              WedgeProduct, BaseCovarDerivativeOp, CovarDerivativeOp,
+                              LieDerivative, covariant_order, contravariant_order,
+                              twoform_to_matrix, metric_to_Christoffel_1st,
+                              metric_to_Christoffel_2nd, metric_to_Riemann_components,
+                              metric_to_Ricci_components, intcurve_diffequ,
+                              intcurve_series)
 from diofant.core import Symbol, symbols
 from diofant.simplify import trigsimp, simplify
 from diofant.functions import sqrt, atan2, sin

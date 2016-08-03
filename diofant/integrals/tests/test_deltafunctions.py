@@ -1,5 +1,5 @@
 from diofant import (cos, DiracDelta, Heaviside, Function, pi, sin,
-                   symbols, Integer, Rational)
+                     symbols, Integer, Rational)
 from diofant.integrals.deltafunctions import change_mul, deltaintegrate
 
 f = Function("f")

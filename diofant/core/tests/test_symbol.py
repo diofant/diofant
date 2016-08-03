@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Symbol, Wild, GreaterThan, LessThan, StrictGreaterThan,
-                   StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
-                   Integer, Float, sstr)
+                     StrictLessThan, pi, I, Rational, sympify, symbols, Dummy,
+                     Integer, Float, sstr)
 
 
 def test_Symbol():

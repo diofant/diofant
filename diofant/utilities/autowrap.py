@@ -80,9 +80,9 @@ from diofant.core.relational import Eq
 from diofant.core.symbol import Dummy, Symbol
 from diofant.tensor.indexed import Idx, IndexedBase
 from diofant.utilities.codegen import (make_routine, get_code_generator,
-                                     OutputArgument, InOutArgument, InputArgument,
-                                     CodeGenArgumentListError, Result,
-                                     ResultBase, CCodeGen)
+                                       OutputArgument, InOutArgument, InputArgument,
+                                       CodeGenArgumentListError, Result,
+                                       ResultBase, CCodeGen)
 from diofant.utilities.lambdify import implemented_function
 from diofant.utilities.decorator import doctest_depends_on
 

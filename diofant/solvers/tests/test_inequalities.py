@@ -3,14 +3,14 @@
 import pytest
 
 from diofant import (And, Eq, FiniteSet, Ge, Gt, Interval, Le, Lt, Ne, oo,
-                   Or, S, sin, sqrt, Symbol, Union, Integral,
-                   Poly, PurePoly, pi, root, log, E, Piecewise,
-                   Integer, Float, Rational)
+                     Or, S, sin, sqrt, Symbol, Union, Integral,
+                     Poly, PurePoly, pi, root, log, E, Piecewise,
+                     Integer, Float, Rational)
 from diofant.solvers.inequalities import (reduce_inequalities,
-                                        solve_poly_inequality as psolve,
-                                        reduce_rational_inequalities,
-                                        solve_univariate_inequality as isolve,
-                                        reduce_piecewise_inequality)
+                                          solve_poly_inequality as psolve,
+                                          reduce_rational_inequalities,
+                                          solve_univariate_inequality as isolve,
+                                          reduce_piecewise_inequality)
 from diofant.polys.rootoftools import RootOf
 from diofant.solvers.solvers import solve
 

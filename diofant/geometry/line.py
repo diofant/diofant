@@ -13,8 +13,8 @@ from diofant.core import S, sympify, Dummy
 from diofant.core.exprtools import factor_terms
 from diofant.core.relational import Eq
 from diofant.functions.elementary.trigonometric import (acos,
-                                                      _pi_coeff as pi_coeff,
-                                                      sqrt, tan)
+                                                        _pi_coeff as pi_coeff,
+                                                        sqrt, tan)
 from diofant.functions.elementary.piecewise import Piecewise
 from diofant.logic.boolalg import And
 from diofant.simplify.simplify import simplify

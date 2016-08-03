@@ -3,14 +3,14 @@ import itertools
 import pytest
 
 from diofant import (symbols, Dummy, simplify, Equality, S, Interval,
-                   oo, EmptySet, Integer, Unequality, Union)
+                     oo, EmptySet, Integer, Unequality, Union)
 from diofant.logic.boolalg import (And, Boolean, Equivalent, ITE, Implies,
-                                 Nand, Nor, Not, Or, POSform, SOPform, Xor,
-                                 conjuncts, disjuncts, distribute_or_over_and,
-                                 distribute_and_over_or, eliminate_implications,
-                                 is_nnf, is_cnf, is_dnf, simplify_logic, to_nnf,
-                                 to_cnf, to_dnf, to_int_repr, bool_map, true,
-                                 false, BooleanAtom, is_literal, BooleanFunction)
+                                   Nand, Nor, Not, Or, POSform, SOPform, Xor,
+                                   conjuncts, disjuncts, distribute_or_over_and,
+                                   distribute_and_over_or, eliminate_implications,
+                                   is_nnf, is_cnf, is_dnf, simplify_logic, to_nnf,
+                                   to_cnf, to_dnf, to_int_repr, bool_map, true,
+                                   false, BooleanAtom, is_literal, BooleanFunction)
 
 
 A, B, C, D = symbols('A,B,C,D')

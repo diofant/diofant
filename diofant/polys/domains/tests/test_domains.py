@@ -10,8 +10,8 @@ from diofant.polys.domains.realfield import RealField
 from diofant.polys.rings import ring
 from diofant.polys.fields import field
 from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
-                                    GeneratorsError, CoercionFailed,
-                                    NotInvertible, DomainError)
+                                      GeneratorsError, CoercionFailed,
+                                      NotInvertible, DomainError)
 
 from diofant.abc import x, y, z
 

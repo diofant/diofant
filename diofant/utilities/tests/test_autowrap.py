@@ -9,10 +9,10 @@ import shutil
 import pytest
 
 from diofant.utilities.autowrap import (autowrap, binary_function,
-                                      CythonCodeWrapper,
-                                      UfuncifyCodeWrapper, CodeWrapper)
+                                        CythonCodeWrapper,
+                                        UfuncifyCodeWrapper, CodeWrapper)
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
-                                     make_routine)
+                                       make_routine)
 from diofant.core import symbols, Eq
 
 

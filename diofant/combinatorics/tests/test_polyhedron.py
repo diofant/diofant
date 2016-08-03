@@ -2,9 +2,9 @@ import pytest
 
 from diofant import symbols, FiniteSet
 from diofant.combinatorics.polyhedron import (Polyhedron, tetrahedron,
-                                            cube as square, octahedron,
-                                            dodecahedron, icosahedron,
-                                            cube_faces)
+                                              cube as square, octahedron,
+                                              dodecahedron, icosahedron,
+                                              cube_faces)
 from diofant.combinatorics.permutations import Permutation
 from diofant.combinatorics.perm_groups import PermutationGroup
 

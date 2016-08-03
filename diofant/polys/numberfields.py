@@ -5,14 +5,14 @@ from functools import reduce
 from mpmath import pslq, mp
 
 from diofant import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
-                   Dummy, expand_mul, I, pi)
+                     Dummy, expand_mul, I, pi)
 from diofant.functions.elementary.trigonometric import cos, sin
 from diofant.polys.polytools import (Poly, PurePoly, sqf_norm, invert,
-                                   factor_list, groebner, resultant,
-                                   degree, poly_from_expr,
-                                   parallel_poly_from_expr, lcm)
+                                     factor_list, groebner, resultant,
+                                     degree, poly_from_expr,
+                                     parallel_poly_from_expr, lcm)
 from diofant.polys.polyerrors import (IsomorphismFailed, CoercionFailed,
-                                    NotAlgebraic, GeneratorsError)
+                                      NotAlgebraic, GeneratorsError)
 from diofant.polys.rootoftools import RootOf
 from diofant.polys.specialpolys import cyclotomic_poly
 from diofant.polys.polyutils import dict_from_expr, expr_from_dict

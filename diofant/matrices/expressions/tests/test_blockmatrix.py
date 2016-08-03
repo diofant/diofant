@@ -1,8 +1,9 @@
-from diofant.matrices.expressions.blockmatrix import (block_collapse, bc_matmul,
-        bc_block_plus_ident, BlockDiagMatrix, BlockMatrix, bc_dist, bc_matadd,
-        bc_transpose, blockcut, reblock_2x2, deblock)
+from diofant.matrices.expressions.blockmatrix import (
+    block_collapse, bc_matmul,
+    bc_block_plus_ident, BlockDiagMatrix, BlockMatrix, bc_dist, bc_matadd,
+    bc_transpose, blockcut, reblock_2x2, deblock)
 from diofant.matrices.expressions import (MatrixSymbol, Identity,
-        Inverse, trace, Transpose, det)
+                                          Inverse, trace, Transpose, det)
 from diofant.matrices import Matrix, ImmutableMatrix
 from diofant.core import Tuple, symbols, Expr
 from diofant.functions import transpose
