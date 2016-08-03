@@ -1,5 +1,3 @@
-branches:
-  only: master
 language: python
 sudo: false
 cache: pip
