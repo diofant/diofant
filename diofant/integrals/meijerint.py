@@ -1460,18 +1460,16 @@ def _rewrite_single(f, x, recursive=True):
                 for fac, g in terms:
                     r1 = _get_coeff_exp(unpolarify(fac.subs(subs).subs(z, x),
                                                    exponents_only=True), x)
-                    g = g.subs(subs).subs(z, x)
+                    try:
+                        g = g.subs(subs).subs(z, x)
+                    except ValueError:
+                        continue
+
                     # NOTE these substitutions can in principle introduce oo,
                     #      zoo and other absurdities. It shouldn't matter,
                     #      but better be safe.
                     if Tuple(*(r1 + (g,))).has(oo, zoo, -oo):
                         continue
-
-                    # A Meijer G-function is undefined in case:
-                    if any((a - b).is_integer and (a - b).is_positive
-                           for a in g.an for b in g.bm):
-                        continue
-
                     g = meijerg(g.an, g.aother, g.bm, g.bother,
                                 unpolarify(g.argument, exponents_only=True))
                     res.append(r1 + (g,))
