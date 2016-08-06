@@ -41,37 +41,35 @@ def cache_key(*args, **kwargs):
     return tuple(key)
 
 
-USE_CACHE = os.getenv('DIOFANT_USE_CACHE', 'yes').lower()
+USE_CACHE = os.getenv('DIOFANT_USE_CACHE', 'True') == 'True'
 
-if USE_CACHE == "yes":
-    def cacheit(f):
-        """Caching decorator.
 
-        The result of cached function must be *immutable*.
+def cacheit(f):
+    """Caching decorator.
 
-        Examples
-        ========
+    The result of cached function must be *immutable*.
 
-        >>> from diofant.core.cache import cacheit
-        >>> from diofant.abc import x, y
+    Examples
+    ========
 
-        >>> @cacheit
-        ... def f(a, b):
-        ...    print(a, b)
-        ...    return a + b
+    >>> from diofant.core.cache import cacheit
+    >>> from diofant.abc import x, y
 
-        >>> f(x, y)
-        x y
-        x + y
-        >>> f(x, y)
-        x + y
-        """
+    >>> @cacheit
+    ... def f(a, b):
+    ...    print(a, b)
+    ...    return a + b
 
+    >>> f(x, y)
+    x y
+    x + y
+    >>> f(x, y)
+    x + y
+    """
+
+    if USE_CACHE:
         f_cache_it_cache = {}
         CACHE.append((f, f_cache_it_cache))
         return cached(f_cache_it_cache, key=cache_key)(f)
-elif USE_CACHE == 'no':  # pragma: no cover
-    def cacheit(f):
+    else:
         return f
-else:  # pragma: no cover
-    raise RuntimeError('unrecognized value for DIOFANT_USE_CACHE: %s' % USE_CACHE)
