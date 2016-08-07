@@ -9,6 +9,10 @@ release with pip::
 
     $ pip install --pre diofant
 
+or to install also extra dependencies::
+
+    $ pip install --pre diofant[gmpy,plot]
+
 .. note::
 
     You could use `pyvenv`_ to create isolated Python environment first,
@@ -23,10 +27,6 @@ sure to install from git::
     $ git clone git://github.com/diofant/diofant.git
     $ cd diofant
     $ pip install -e .
-
-or to install also extra dependencies::
-
-    $ pip install -e .[gmpy,plot]
 
 To update to the latest version, go into your repository and execute::
 
