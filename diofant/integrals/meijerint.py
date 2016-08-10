@@ -1460,7 +1460,11 @@ def _rewrite_single(f, x, recursive=True):
                 for fac, g in terms:
                     r1 = _get_coeff_exp(unpolarify(fac.subs(subs).subs(z, x),
                                                    exponents_only=True), x)
-                    g = g.subs(subs).subs(z, x)
+                    try:
+                        g = g.subs(subs).subs(z, x)
+                    except ValueError:
+                        continue
+
                     # NOTE these substitutions can in principle introduce oo,
                     #      zoo and other absurdities. It shouldn't matter,
                     #      but better be safe.
@@ -1477,8 +1481,9 @@ def _rewrite_single(f, x, recursive=True):
         return
     _debug('Trying recursive Mellin transform method.')
     from diofant.integrals.transforms import (mellin_transform,
-                                    inverse_mellin_transform, IntegralTransformError,
-                                    MellinTransformStripError)
+                                              inverse_mellin_transform,
+                                              IntegralTransformError,
+                                              MellinTransformStripError)
     from diofant import oo, nan, zoo, simplify, cancel
 
     def my_imt(F, s, x, strip):
