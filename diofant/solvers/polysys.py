@@ -192,15 +192,13 @@ def solve_generic(polys, opt):
         if len(univariate) == 1:
             f = univariate.pop()
         else:
-            raise NotImplementedError("only zero-dimensional systems supported (finite number of solutions)")
+            raise NotImplementedError("only zero-dimensional systems "
+                                      "supported (finite number of solutions)")
 
         gens = f.gens
         gen = gens[-1]
 
         zeros = list(roots(f.ltrim(gen)).keys())
-
-        if not zeros:
-            return []
 
         if len(basis) == 1:
             return [ (zero,) for zero in zeros ]
@@ -224,7 +222,7 @@ def solve_generic(polys, opt):
 
     try:
         result = _solve_reduced_system(polys, opt.gens, entry=True)
-    except CoercionFailed:
+    except CoercionFailed:  # pragma: no cover
         raise NotImplementedError
 
     if result is not None:

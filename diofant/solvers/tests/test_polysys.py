@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import flatten, I, Integer, Poly, QQ, Rational, S, sqrt, symbols
-from diofant.polys import PolynomialError
+from diofant.polys import PolynomialError, ComputationFailed
 from diofant.solvers.polysys import solve_poly_system, solve_triangulated
 
 from diofant.abc import x, y, z
@@ -11,6 +11,8 @@ from diofant.abc import x, y, z
 
 def test_solve_poly_system():
     assert solve_poly_system([x - 1], x) == [(S.One,)]
+
+    pytest.raises(ComputationFailed, lambda: solve_poly_system([0, 1]))
 
     assert solve_poly_system([y - x, y - x - 1], x, y) is None
 
@@ -21,6 +23,9 @@ def test_solve_poly_system():
 
     assert solve_poly_system([x*y - 2*y, 2*y**2 - x**2], x, y) == \
         [(0, 0), (2, -sqrt(2)), (2, sqrt(2))]
+
+    assert solve_poly_system([x*y - 2*y, 2*y**2 - x**3], x, y) == \
+        [(0, 0), (2, -2), (2, 2)]
 
     assert solve_poly_system([y - x**2, y + x**2 + 1], x, y) == \
         [(-I*sqrt(S.Half), -S.Half), (I*sqrt(S.Half), -S.Half)]
