@@ -1,3 +1,7 @@
+"""
+This module implements sums and products containing the Kronecker Delta function.
+"""
+
 from ..core import Add, Dummy, Integer, Mul, S, cacheit
 from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
