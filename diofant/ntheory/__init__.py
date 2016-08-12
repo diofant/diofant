@@ -13,7 +13,7 @@ from .residue_ntheory import (is_primitive_root, is_quad_residue,  # noqa: F401
                               legendre_symbol, jacobi_symbol, n_order,
                               sqrt_mod, quadratic_residues, primitive_root,
                               nthroot_mod, is_nthpow_residue, sqrt_mod_iter,
-                              mobius)
+                              mobius, discrete_log)
 from .multinomial import (binomial_coefficients, binomial_coefficients_list,  # noqa: F401
                           multinomial_coefficients)
 from .continued_fraction import (continued_fraction_periodic,  # noqa: F401
