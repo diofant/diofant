@@ -18,6 +18,8 @@ or to install also extra dependencies::
     You could use `pyvenv`_ to create isolated Python environment first,
     instead of installing everything system-wide.
 
+.. _installation-src:
+
 From sources
 ============
 
@@ -26,7 +28,7 @@ sure to install from git::
 
     $ git clone git://github.com/diofant/diofant.git
     $ cd diofant
-    $ pip install -e .
+    $ pip install -e .[develop,docs]
 
 You can see old Diofant's history (from SVN repository) in the
 branch sympy-svn-history.  To see this history as part of

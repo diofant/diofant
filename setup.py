@@ -95,6 +95,15 @@ with open('diofant/__init__.py') as f:
         if m:
             __version__ = m.group(1)
 
+extra_reqs = {'exports': ["numpy", "scipy", "Theano"],
+              'gmpy': ["gmpy2"],
+              'plot': ["pyparsing!=2.1.2", "matplotlib"],
+              'interactive': ["ipython>=2.3.0"],
+              'docs': ["sphinx>=1.2.3", "numpydoc", "sphinx_rtd_theme"],
+              }
+extra_reqs['develop'] = ['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming',
+                         'pytest-cov', 'coverage']
+
 setup(name='Diofant',
       version=__version__,
       description='Computer algebra system (CAS) in Python',
@@ -123,13 +132,8 @@ setup(name='Diofant',
           'Programming Language :: Python :: 3.5',
       ],
       python_requires='>=3.4',
-      tests_require=['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming', 'pytest-cov'],
+      tests_require=extra_reqs['develop'],
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
       setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
-      extras_require={
-          'exports': ["numpy", "scipy", "Theano"],
-          'gmpy': ["gmpy2"],
-          'plot': ["pyparsing!=2.1.2", "matplotlib"],
-          'interactive': ["ipython>=2.3.0"],
-      }
+      extras_require=extra_reqs,
 )
