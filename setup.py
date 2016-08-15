@@ -25,8 +25,8 @@ class clean(Command):
     is in the VCS.
     """
 
-    description = "remove build files"
-    user_options = [("all", "a", "the same")]
+    description = 'remove build files'
+    user_options = [('all', 'a', 'the same')]
 
     def initialize_options(self):
         self.all = None
@@ -43,7 +43,8 @@ class clean(Command):
                     os.remove(os.path.join(root, file))
 
         os.chdir(dir_setup)
-        names = ["python-build-stamp-2.4", "MANIFEST", "build", "dist", "doc/_build", ".coverage", ".cache"]
+        names = ['python-build-stamp-2.4', 'MANIFEST', 'build', 'dist',
+                 'doc/_build', '.coverage', '.cache']
 
         for f in names:
             if os.path.isfile(f):
@@ -57,9 +58,9 @@ class clean(Command):
 class test(TestCommand):
     """Runs all tests."""
 
-    description = "run all tests and doctests"
-    user_options = [('cov', None, "gatter coverage information"),
-                    ('mark=', "m", "run tests matching given mark expression")]
+    description = 'run all tests and doctests'
+    user_options = [('cov', None, 'gatter coverage information'),
+                    ('mark=', 'm', 'run tests matching given mark expression')]
 
     def initialize_options(self):
         TestCommand.initialize_options(self)
@@ -76,9 +77,9 @@ class test(TestCommand):
             pass
         self.pytest_args = []
         if self.cov is not None:
-            self.pytest_args.extend(["--cov", "diofant"])
+            self.pytest_args.extend(['--cov', 'diofant'])
         if self.mark is not None:
-            self.pytest_args.extend(["-m", self.mark])
+            self.pytest_args.extend(['-m', self.mark])
 
     def run_tests(self):
         import pytest
@@ -95,11 +96,11 @@ with open('diofant/__init__.py') as f:
         if m:
             __version__ = m.group(1)
 
-extra_reqs = {'exports': ["numpy", "scipy", "Theano"],
-              'gmpy': ["gmpy2"],
-              'plot': ["pyparsing!=2.1.2", "matplotlib"],
-              'interactive': ["ipython>=2.3.0"],
-              'docs': ["sphinx>=1.2.3", "numpydoc", "sphinx_rtd_theme"],
+extra_reqs = {'exports': ['numpy', 'scipy', 'Theano'],
+              'gmpy': ['gmpy2'],
+              'plot': ['pyparsing!=2.1.2', 'matplotlib'],
+              'interactive': ['ipython>=2.3.0'],
+              'docs': ['sphinx>=1.2.3', 'numpydoc', 'sphinx_rtd_theme'],
               }
 extra_reqs['develop'] = ['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming',
                          'pytest-cov', 'coverage']
@@ -110,7 +111,7 @@ setup(name='Diofant',
       long_description=long_description,
       maintainer='Sergey B Kirpichev',
       license='BSD',
-      keywords="Math CAS",
+      keywords='Math CAS',
       url='http://diofant.rtfd.io',
       packages=find_packages(),
       ext_modules=[],
