@@ -9,7 +9,6 @@ import sys
 import os
 import shutil
 from setuptools import setup, Command, find_packages
-from setuptools.command.test import test as TestCommand
 
 
 # Make sure I have the right Python version.  We can drop this
@@ -55,38 +54,6 @@ class clean(Command):
         os.chdir(curr_dir)
 
 
-class test(TestCommand):
-    """Runs all tests."""
-
-    description = 'run all tests and doctests'
-    user_options = [('cov', None, 'gatter coverage information'),
-                    ('mark=', 'm', 'run tests matching given mark expression')]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.cov = None
-        self.mark = None
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        try:
-            # New setuptools don't need this anymore
-            self.test_args = []
-            self.test_suite = True
-        except AttributeError:
-            pass
-        self.pytest_args = []
-        if self.cov is not None:
-            self.pytest_args.extend(['--cov', 'diofant'])
-        if self.mark is not None:
-            self.pytest_args.extend(['-m', self.mark])
-
-    def run_tests(self):
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
-
-
 with open('diofant/__init__.py') as f:
     source = f.read()
     long_description = source.split('"""')[1]
@@ -96,14 +63,15 @@ with open('diofant/__init__.py') as f:
         if m:
             __version__ = m.group(1)
 
+setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner']
 extra_reqs = {'exports': ['numpy', 'scipy', 'Theano'],
               'gmpy': ['gmpy2'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib'],
               'interactive': ['ipython>=2.3.0'],
               'docs': ['sphinx>=1.2.3', 'numpydoc', 'sphinx_rtd_theme'],
               }
-extra_reqs['develop'] = ['pytest>=2.7.0', 'flake8>=2.5.5', 'pep8-naming',
-                         'pytest-cov', 'coverage']
+extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5', 'pep8-naming',
+                         'pytest-cov', 'coverage'] + setup_reqs
 
 setup(name='Diofant',
       version=__version__,
@@ -115,8 +83,7 @@ setup(name='Diofant',
       url='http://diofant.rtfd.io',
       packages=find_packages(),
       ext_modules=[],
-      cmdclass={'test': test,
-                'clean': clean},
+      cmdclass={'clean': clean},
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',
@@ -135,6 +102,6 @@ setup(name='Diofant',
       python_requires='>=3.4',
       tests_require=extra_reqs['develop'],
       install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
-      setup_requires=['setuptools>=5.5.1', 'pip>=6.0'],
+      setup_requires=setup_reqs,
       extras_require=extra_reqs,
 )
