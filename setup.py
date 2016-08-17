@@ -19,41 +19,6 @@ if sys.version_info[:2] < (3, 4):
     sys.exit(-1)
 
 
-class clean(Command):
-    """Cleans *.pyc and debian trashs, so you should get the same copy as
-    is in the VCS.
-    """
-
-    description = 'remove build files'
-    user_options = [('all', 'a', 'the same')]
-
-    def initialize_options(self):
-        self.all = None
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        dir_setup = os.path.dirname(os.path.realpath(__file__))
-        curr_dir = os.getcwd()
-        for root, dirs, files in os.walk(dir_setup):
-            for file in files:
-                if file.endswith('.pyc') and os.path.isfile:
-                    os.remove(os.path.join(root, file))
-
-        os.chdir(dir_setup)
-        names = ['python-build-stamp-2.4', 'MANIFEST', 'build', 'dist',
-                 'doc/_build', '.coverage', '.cache']
-
-        for f in names:
-            if os.path.isfile(f):
-                os.remove(f)
-            elif os.path.isdir(f):
-                shutil.rmtree(f)
-
-        os.chdir(curr_dir)
-
-
 with open('diofant/__init__.py') as f:
     source = f.read()
     long_description = source.split('"""')[1]
@@ -83,7 +48,6 @@ setup(name='Diofant',
       url='http://diofant.rtfd.io',
       packages=find_packages(),
       ext_modules=[],
-      cmdclass={'clean': clean},
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',
