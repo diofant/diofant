@@ -497,13 +497,13 @@ def test_ITE():
     assert ITE(False, False, True) is true
     assert isinstance(ITE(A, B, C), ITE)
 
-    A = True
-    assert ITE(A, B, C) == B
-    A = False
-    assert ITE(A, B, C) == C
-    B = True
-    assert ITE(And(A, B), B, C) == C
-    assert ITE(Or(A, False), And(B, True), False) is false
+    assert ITE(True, B, C) == B
+    assert ITE(False, B, C) == C
+
+    assert ITE(A, B, B) == B
+
+    assert ITE(C, False, True) == Not(C)
+    assert ITE(C, True, False) == C
 
 
 def test_ITE_diff():
