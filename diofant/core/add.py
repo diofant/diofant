@@ -480,9 +480,7 @@ class Add(Expr, AssocOp):
         for t in self.args:
             a = t.is_irrational
             if a:
-                others = list(self.args)
-                others.remove(t)
-                if all(x.is_rational is True for x in others):
+                if all(x.is_rational for x in self.args if x != t):
                     return True
                 return
             if a is None:
