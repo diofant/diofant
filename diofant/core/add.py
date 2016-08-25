@@ -470,7 +470,7 @@ class Add(Expr, AssocOp):
             return True
 
     def _eval_is_odd(self):
-        l = [f for f in self.args if not (f.is_even is True)]
+        l = [f for f in self.args if not f.is_even]
         if not l:
             return False
         if l[0].is_odd:
