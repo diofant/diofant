@@ -902,7 +902,8 @@ class loggamma(Function):
         return log(gamma(z))
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_nonnegative:
+            return True
 
     def _eval_conjugate(self):
         z = self.args[0]
