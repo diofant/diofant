@@ -2016,7 +2016,8 @@ class FresnelIntegral(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())

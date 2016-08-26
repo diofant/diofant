@@ -578,6 +578,7 @@ def test_fresnel():
         pi*z**3/6 - pi**3*z**7/336 + pi**5*z**11/42240 + O(z**15)
 
     assert fresnels(w).is_extended_real is True
+    assert fresnels(z).is_extended_real is None
 
     assert fresnels(z).as_real_imag() == \
         ((fresnels(re(z) - I*re(z)*Abs(im(z))/Abs(re(z)))/2 +
