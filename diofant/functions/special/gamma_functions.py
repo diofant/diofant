@@ -571,15 +571,9 @@ class polygamma(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_is_positive(self):
-        if self.args[1].is_positive and (self.args[0] > 0) is S.true:
-            return self.args[0].is_odd
-
-    def _eval_is_negative(self):
-        if self.args[1].is_positive and (self.args[0] > 0) is S.true:
-            return self.args[0].is_even
-
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_positive and self.args[1].is_positive:
+            if self.args[0].is_odd:
+                return True
 
     def _eval_aseries(self, n, args0, x, logx):
         from diofant import Order
