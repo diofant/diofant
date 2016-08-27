@@ -84,33 +84,30 @@ class exp_polar(Function):
         return self.args[0]
 
     def _eval_conjugate(self):
-        return self.func(self.args[0].conjugate())
+        return self.func(self.exp.conjugate())
 
     def _eval_is_finite(self):
-        arg = self.args[0]
+        arg = self.exp
         if arg.is_infinite:
-            if arg.is_negative:
-                return True
             if arg.is_positive:
                 return False
+            elif arg.is_negative:
+                return True
         if arg.is_finite:
             return True
 
     def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.exp is S.Zero:
-                return True
-            elif s.exp.is_rational and s.exp.is_nonzero:
-                return False
-        else:
-            return s.is_rational
+        if self.exp is S.Zero:
+            return True
+        elif self.exp.is_rational and self.exp.is_nonzero:
+            return False
 
     def _eval_is_zero(self):
-        return (self.args[0] is S.NegativeInfinity)
+        if self.exp.is_infinite and self.exp.is_negative:
+            return True
 
     def _eval_expand_power_exp(self, **hints):
-        arg = self.args[0]
+        arg = self.exp
         if arg.is_Add and arg.is_commutative:
             expr = 1
             for x in arg.args:
@@ -125,29 +122,28 @@ class exp_polar(Function):
     def _eval_evalf(self, prec):
         """ Careful! any evalf of polar numbers is flaky """
         from diofant import im, pi, re
-        i = im(self.args[0])
+        i = im(self.exp)
         try:
             bad = (i <= -pi or i > pi)
         except TypeError:
             bad = True
         if bad:
             return self  # cannot evalf for this argument
-        res = exp(self.args[0]).evalf(prec)
+        res = exp(self.exp).evalf(prec)
         if i > 0 and im(res) < 0:
             # i ~ pi, but exp(I*i) evaluated to argument slightly bigger than pi
             return re(res)
         return res
 
     def _eval_power(self, other):
-        return self.func(self.args[0]*other)
+        return self.func(self.exp*other)
 
     def _eval_is_extended_real(self):
-        if self.args[0].is_extended_real:
+        if self.exp.is_extended_real:
             return True
 
     def as_base_exp(self):
-        # XXX exp_polar(0) is special!
-        if self.args[0] == 0:
+        if self.exp == 0:
             return self, Integer(1)
         return self.func(1), Mul(*self.args)
 

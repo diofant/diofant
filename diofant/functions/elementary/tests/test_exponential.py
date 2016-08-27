@@ -225,9 +225,10 @@ def test_exp_assumptions():
         assert e(i).is_extended_real is None
         assert e(i).is_imaginary is None
         assert e(r).is_extended_real is True
-        assert e(r).is_imaginary is False
         assert e(re(x)).is_extended_real is True
-        assert e(re(x)).is_imaginary is False
+        if e is not exp_polar:
+            assert e(r).is_imaginary is False
+            assert e(re(x)).is_imaginary is False
 
     assert exp(0, evaluate=False).is_algebraic
 
@@ -415,6 +416,22 @@ def test_polar():
     assert (exp_polar(1.0*pi*I).n(n=5)).as_real_imag()[1] >= 0
 
     assert exp_polar(0).is_rational is True  # issue 8008
+
+    nz = Symbol('nz', rational=True, nonzero=True)
+    assert exp_polar(nz).is_rational is False
+
+    assert exp_polar(oo).is_finite is False
+    assert exp_polar(-oo).is_finite
+    assert exp_polar(zoo).is_finite is None
+
+    assert exp_polar(-oo).is_zero
+
+    ninf = Symbol('ninf', infinite=True, negative=True)
+    assert exp_polar(ninf).is_zero
+
+    r = Symbol('r', extended_real=True)
+    assert exp_polar(r).is_extended_real
+    assert exp_polar(x).is_extended_real is None
 
 
 def test_log_product():
