@@ -355,8 +355,6 @@ class log(Function):
     def _eval_is_rational(self):
         s = self.func(*self.args)
         if s.func == self.func:
-            if (self.args[0] - 1).is_zero:
-                return True
             if s.args[0].is_rational and (self.args[0] - 1).is_nonzero:
                 return False
         else:
@@ -365,11 +363,8 @@ class log(Function):
     def _eval_is_algebraic(self):
         s = self.func(*self.args)
         if s.func == self.func:
-            if (self.args[0] - 1).is_zero:
-                return True
-            elif (self.args[0] - 1).is_nonzero:
-                if self.args[0].is_algebraic:
-                    return False
+            if self.args[0].is_algebraic and (self.args[0] - 1).is_nonzero:
+                return False
         else:
             return s.is_algebraic
 
@@ -380,13 +375,12 @@ class log(Function):
         arg = self.args[0]
         if arg.is_zero:
             return False
-        return arg.is_finite
+        elif arg.is_nonzero:
+            return arg.is_finite
 
     def _eval_is_complex(self):
         arg = self.args[0]
-        if arg.is_zero:
-            return False
-        elif arg.is_nonzero:
+        if arg.is_nonzero:
             return arg.is_complex
 
     def _eval_is_positive(self):

@@ -246,6 +246,7 @@ def test_log_assumptions():
     p = symbols('p', positive=True)
     n = symbols('n', negative=True)
     z = symbols('z', zero=True)
+    nz = symbols('nz', nonzero=True, finite=True)
     x = symbols('x', infinite=True, positive=True)
 
     assert log(z).is_positive is False
@@ -253,10 +254,17 @@ def test_log_assumptions():
     assert log(2) > 0
     assert log(1, evaluate=False).is_zero
     assert log(1 + z).is_zero
+    assert log(1 + z).is_rational
+    assert log(1 + z).is_algebraic
+    assert log(1 + p).is_algebraic is None
     assert log(p).is_zero is None
     assert log(n).is_zero is False
     assert log(0.5).is_negative is True
     assert log(exp(p) + 1).is_positive
+    assert log(z).is_finite is False
+    assert log(p).is_finite is None
+    assert log(nz).is_finite
+    assert log(z).is_complex is False
 
     assert log(1, evaluate=False).is_algebraic
     assert log(42, evaluate=False).is_algebraic is False
