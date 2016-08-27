@@ -1,7 +1,8 @@
 from strategies import exhaust, do_one
 from strategies.core import typed
 
-from diofant.core import Mul, Basic, sympify, Add, Number
+from diofant.core import Mul, sympify, Add, Number, Expr
+from diofant.core.logic import _fuzzy_group
 from diofant.functions import adjoint
 from diofant.matrices.expressions.transpose import transpose
 from diofant.core.strategies import rm_id, unpack, flatten
@@ -26,11 +27,14 @@ class MatMul(MatrixExpr):
     """
     is_MatMul = True
 
+    def _eval_is_commutative(self):
+        return _fuzzy_group(a.is_commutative for a in self.args)
+
     def __new__(cls, *args, **kwargs):
         check = kwargs.get('check', True)
 
         args = list(map(sympify, args))
-        obj = Basic.__new__(cls, *args)
+        obj = Expr.__new__(cls, *args)
         factor, matrices = obj.as_coeff_matrices()
         if check:
             validate(*matrices)

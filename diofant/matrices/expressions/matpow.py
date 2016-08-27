@@ -44,6 +44,9 @@ class MatPow(MatrixExpr):
                     + " of matrix power either not defined or not implemented")
         return A._entry(i, j)
 
+    def _eval_is_commutative(self):
+        return self.base.is_commutative and self.exp.is_commutative
+
     def doit(self, **kwargs):
         deep = kwargs.get('deep', True)
         if deep:

@@ -1,4 +1,4 @@
-from diofant import Basic, Expr
+from diofant import Expr
 from diofant.matrices.matrices import MatrixBase
 from .matexpr import ShapeError
 
@@ -25,7 +25,7 @@ class Trace(Expr):
         if not mat.is_square:
             raise ShapeError("Trace of a non-square matrix")
 
-        return Basic.__new__(cls, mat)
+        return Expr.__new__(cls, mat)
 
     def _eval_transpose(self):
         return self

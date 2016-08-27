@@ -1,4 +1,4 @@
-from diofant import Basic, Expr, sympify
+from diofant import Expr, sympify
 from .matexpr import ShapeError
 
 
@@ -32,7 +32,7 @@ class Determinant(Expr):
         if not mat.is_square:
             raise ShapeError("Det of a non-square matrix")
 
-        return Basic.__new__(cls, mat)
+        return Expr.__new__(cls, mat)
 
     @property
     def arg(self):
