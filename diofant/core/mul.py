@@ -1099,12 +1099,11 @@ class Mul(Expr, AssocOp):
         for t in self.args:
             a = t.is_irrational
             if a:
-                others = list(self.args)
-                others.remove(t)
-                if all((x.is_rational and x.is_nonzero) is True for x in others):
+                if all(x.is_rational and x.is_nonzero
+                       for x in self.args if x != t):
                     return True
                 return
-            if a is None:
+            elif a is None:
                 return
         return False
 
