@@ -381,7 +381,8 @@ class Pow(Expr):
                 return False
         if b.is_Number and e.is_Number:
             check = self.func(*self.args)
-            return check.is_Integer
+            if check.is_Integer:
+                return True
 
     def _eval_is_extended_real(self):
         from diofant import arg, log, Mul
