@@ -497,15 +497,7 @@ class Pow(Expr):
         if self.exp.is_negative:
             if self.base.is_zero:
                 return False
-            if self.base.is_infinite:
-                return True
-        c1 = self.base.is_finite
-        if c1 is None:
-            return
-        c2 = self.exp.is_finite
-        if c2 is None:
-            return
-        if c1 and c2:
+        if self.base.is_finite and self.exp.is_finite:
             if self.exp.is_nonnegative or self.base.is_nonzero:
                 return True
 
