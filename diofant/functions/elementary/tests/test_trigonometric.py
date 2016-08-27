@@ -665,6 +665,15 @@ def test_asin():
     assert asin(-2).is_extended_real is False
     assert asin(r).is_extended_real is None
 
+    assert asin(0, evaluate=False).is_rational
+    assert asin(1, evaluate=False).is_rational is False
+
+    z = Symbol('z', zero=True)
+    rn = Symbol('rn', rational=True, nonzero=True)
+    assert asin(z).is_rational
+    assert asin(rn).is_rational is False
+    assert asin(x).is_rational is None
+
     assert asin(-2*I) == -I*asinh(2)
 
     assert asin(Rational(1, 7), evaluate=False).is_positive is True
@@ -712,6 +721,15 @@ def test_acos():
     assert acos(-2).is_extended_real is False
     assert acos(r).is_extended_real is None
 
+    assert acos(1, evaluate=False).is_rational
+    assert acos(0, evaluate=False).is_rational is False
+
+    z = Symbol('z', zero=True)
+    rn = Symbol('rn', rational=True, nonzero=True)
+    assert acos(1 + z).is_rational
+    assert acos(1 + rn).is_rational is False
+    assert acos(x).is_rational is None
+
     assert acos(Rational(1, 7), evaluate=False).is_positive is True
     assert acos(Rational(-1, 7), evaluate=False).is_positive is True
     assert acos(Rational(3, 2), evaluate=False).is_positive is False
@@ -722,6 +740,8 @@ def test_acos():
     assert acos(S.One/3).conjugate() == acos(S.One/3)
     assert acos(-S.One/3).conjugate() == acos(-S.One/3)
     assert acos(p + n*I).conjugate() == acos(p - n*I)
+
+    z = Symbol('z')
     assert acos(z).conjugate() != acos(conjugate(z))
 
 
@@ -765,6 +785,15 @@ def test_atan():
     assert atan(p).is_positive is True
     assert atan(n).is_positive is False
     assert atan(x).is_positive is None
+
+    assert atan(0, evaluate=False).is_rational
+    assert atan(1, evaluate=False).is_rational is False
+
+    z = Symbol('z', zero=True)
+    rn = Symbol('rn', rational=True, nonzero=True)
+    assert atan(z).is_rational
+    assert atan(rn).is_rational is False
+    assert atan(x).is_rational is None
 
 
 def test_atan_rewrite():
@@ -856,6 +885,12 @@ def test_acot():
     assert acot(r).is_positive is True
     assert acot(p).is_positive is True
     assert acot(I).is_positive is False
+
+    assert acot(0, evaluate=False).is_rational is False
+
+    q = Symbol('q', rational=True)
+    assert acot(q).is_rational is False
+    assert acot(x).is_rational is None
 
 
 def test_acot_rewrite():
