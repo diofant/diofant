@@ -1137,6 +1137,9 @@ def test_Pow_is_negative_positive():
     assert (2**x).is_positive is None
     assert (2**x).is_negative is None
 
+    s = Symbol('s', nonpositive=True)
+    assert (s**n).is_negative is False
+
 
 def test_Pow_is_zero():
     z = Symbol('z', zero=True)
