@@ -364,12 +364,13 @@ def test_lambertw():
     assert LambertW(-p - 2/S.Exp1, evaluate=False).is_extended_real is False
     assert LambertW(S.Half, -1, evaluate=False).is_extended_real is False
     assert LambertW(-S.One/10, -1, evaluate=False).is_extended_real
-    assert LambertW(-10, -1, evaluate=False).is_extended_real is False
-    assert LambertW(-2, 2, evaluate=False).is_extended_real is False
 
     assert LambertW(0, evaluate=False).is_algebraic
     na = Symbol('na', nonzero=True, algebraic=True)
     assert LambertW(na).is_algebraic is False
+
+    assert LambertW(x, -1).is_extended_real is None
+    assert LambertW(x, 2).is_extended_real is None
 
     # See sympy/sympy#7259:
     assert LambertW(x).series(x) == x - x**2 + 3*x**3/2 - 8*x**4/3 + \

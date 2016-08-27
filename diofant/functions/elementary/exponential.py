@@ -513,12 +513,9 @@ class LambertW(Function):
             elif (x + 1/S.Exp1).is_nonpositive:
                 return False
         elif (k + 1).is_zero:
-            if x.is_negative and (x + 1/S.Exp1).is_positive:
+            if x.is_negative and (x + 1/S.Exp1).is_nonnegative:
                 return True
-            elif x.is_nonpositive or (x + 1/S.Exp1).is_nonnegative:
-                return False
-        elif k.is_nonzero and (k + 1).is_nonzero:
-            if x.is_extended_real:
+            elif x.is_nonpositive or (x + 1/S.Exp1).is_positive:
                 return False
 
     def _eval_is_algebraic(self):
