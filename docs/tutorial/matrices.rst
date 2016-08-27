@@ -363,7 +363,7 @@ To diagonalize a matrix, use ``diagonalize``. ``diagonalize`` returns a tuple
     >>> P*D*P**-1 == M
     True
 
-.. sidebar:: Quick Tip
+.. tip::
 
    ``lambda`` is a reserved keyword in Python, so to create a Symbol called
    `\lambda`, while using the same names for Diofant Symbols and Python

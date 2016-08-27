@@ -95,7 +95,7 @@ Note that Diofant does not include the constant of integration.  If you want it,
 you can add one yourself, or rephrase your problem as a differential equation
 and use ``dsolve`` to solve it, which does add the constant (see :ref:`tutorial-dsolve`).
 
-.. sidebar:: Quick Tip
+.. tip::
 
    `\infty` in Diofant is ``oo`` (that's the lowercase letter "oh" twice).  This
    is because ``oo`` looks like `\infty`, and is easy to type.

@@ -77,7 +77,7 @@ not modify it in-place.  For example
    >>> x
    x
 
-.. sidebar:: Quick Tip
+.. note::
 
    Diofant expressions are immutable.  No function will change them in-place.
 
