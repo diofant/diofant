@@ -6,8 +6,8 @@ from diofant.logic import And
 from diofant.series import Limit
 
 from diofant.parsing.sympy_parser import (parse_expr, standard_transformations,
-                                        rationalize, TokenError, split_symbols,
-                                        implicit_multiplication)
+                                          rationalize, TokenError, split_symbols,
+                                          implicit_multiplication)
 
 
 def test_diofant_parser():

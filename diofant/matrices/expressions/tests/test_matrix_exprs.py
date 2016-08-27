@@ -4,8 +4,8 @@ from diofant.core import S, symbols, Add, Mul, Integer
 from diofant.functions import transpose, sin, cos, sqrt
 from diofant.simplify import simplify
 from diofant.matrices import (Identity, ImmutableMatrix, Inverse, MatAdd, MatMul,
-                            MatPow, Matrix, MatrixExpr, MatrixSymbol, ShapeError,
-                            ZeroMatrix, Transpose, Adjoint)
+                              MatPow, Matrix, MatrixExpr, MatrixSymbol, ShapeError,
+                              ZeroMatrix, Transpose, Adjoint)
 
 n, m, l, k, p = symbols('n m l k p', integer=True)
 x = symbols('x')

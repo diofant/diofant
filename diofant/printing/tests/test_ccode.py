@@ -1,9 +1,9 @@
 import pytest
 
 from diofant.core import (pi, oo, symbols, Rational, Integer,
-                        GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
+                          GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
 from diofant.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
-                             gamma, sign)
+                               gamma, sign)
 from diofant.logic import ITE
 from diofant.printing.ccode import CCodePrinter
 from diofant.utilities.lambdify import implemented_function

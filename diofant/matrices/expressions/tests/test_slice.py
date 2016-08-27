@@ -2,8 +2,9 @@ import pytest
 
 from diofant.matrices.expressions.slice import MatrixSlice
 from diofant.matrices.expressions import MatrixSymbol
-from diofant.abc import a, b, c, d, k, l, m, n
 from diofant.functions.elementary.integers import floor
+
+from diofant.abc import a, b, c, d, k, l, m, n
 
 
 X = MatrixSymbol('X', n, m)

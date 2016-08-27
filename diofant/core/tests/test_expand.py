@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (log, sqrt, Rational, Symbol, I, exp, pi, S,
-                   cos, sin, Mul, Pow, O, Integer, expand)
+                     cos, sin, Mul, Pow, O, Integer, expand)
 from diofant.simplify.radsimp import expand_numer
 from diofant.core.function import expand_multinomial, expand_power_base
 from diofant.utilities.randtest import verify_numerically

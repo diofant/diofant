@@ -3,10 +3,10 @@ import os
 import pytest
 
 from diofant import (Rational, sqrt, symbols, sin, exp, log,
-                   sinh, cosh, cos, pi, I, erf, tan, asin, asinh,
-                   acos, Function, Derivative, diff, simplify,
-                   LambertW, Eq, Piecewise, Symbol, Add, ratsimp,
-                   Integral, Sum)
+                     sinh, cosh, cos, pi, I, erf, tan, asin, asinh,
+                     acos, Function, Derivative, diff, simplify,
+                     LambertW, Eq, Piecewise, Symbol, Add, ratsimp,
+                     Integral, Sum)
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
 x, y, z, nu = symbols('x,y,z,nu')

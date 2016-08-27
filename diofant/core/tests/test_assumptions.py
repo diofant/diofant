@@ -2,7 +2,7 @@ import pytest
 
 from diofant import I, sqrt, log, exp, sin, asin
 from diofant.core import (Symbol, S, Rational, Integer, Dummy,
-                        Wild, Pow, Float, Mod, pi)
+                          Wild, Pow, Float, Mod, pi)
 from diofant.core.facts import InconsistentAssumptions
 from diofant import simplify
 

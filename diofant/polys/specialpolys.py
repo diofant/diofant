@@ -7,7 +7,7 @@ from diofant.polys.polytools import Poly, PurePoly
 from diofant.polys.polyutils import _analyze_gens
 from diofant.polys.polyclasses import DMP
 from diofant.polys.densebasic import (dmp_zero, dmp_one, dmp_ground,
-                                    dup_from_raw_dict, dmp_raise, dup_random)
+                                      dup_from_raw_dict, dmp_raise, dup_random)
 from diofant.polys.densearith import dmp_add_term, dmp_neg, dmp_mul, dmp_sqr
 from diofant.polys.factortools import dup_zz_cyclotomic_poly
 from diofant.polys.domains import ZZ

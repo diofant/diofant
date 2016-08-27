@@ -9,26 +9,28 @@ release with pip::
 
     $ pip install --pre diofant
 
+or to install also extra dependencies::
+
+    $ pip install --pre diofant[gmpy,plot]
+
 .. note::
 
     You could use `pyvenv`_ to create isolated Python environment first,
     instead of installing everything system-wide.
 
-Source
-======
+.. _installation-src:
+
+From sources
+============
 
 If you are a developer or like to get the latest updates as they come, be
 sure to install from git::
 
     $ git clone git://github.com/diofant/diofant.git
     $ cd diofant
-    $ python setup.py develop
+    $ pip install -e .[develop,docs]
 
-To update to the latest version, go into your repository and execute::
-
-    $ git pull origin master
-
-You can see old Diofant's history (from Hg and SVN repos) in the
+You can see old Diofant's history (from SVN repository) in the
 branch sympy-svn-history.  To see this history as part of
 master's, simply do::
 
@@ -37,21 +39,14 @@ master's, simply do::
 Run Diofant
 ===========
 
-After installation, it is best to verify that your freshly-installed Diofant
-works.  To do this, start up the Python interpreter and import the
-Diofant libraries::
+To verify that your freshly-installed Diofant works, please start up the
+Python interpreter and execute some simple statements like the ones below::
 
-    >>> from diofant import *
+    >>> from diofant.abc import x
+    >>> ((1 + x)**(1/x)).limit(x, 0)
+    E
 
-From here, execute some simple Diofant statements like the ones below::
-
-    >>> x = Symbol('x')
-    >>> limit(sin(x)/x, x, 0)
-    1
-    >>> integrate(1/x, x)
-    log(x)
-
-For a starter guide on using Diofant effectively, refer to the :ref:`tutorial`.
+For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 
 Questions
 =========

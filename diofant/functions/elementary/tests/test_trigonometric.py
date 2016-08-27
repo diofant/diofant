@@ -1,11 +1,11 @@
 import pytest
 
 from diofant import (symbols, Symbol, nan, oo, zoo, I, sinh, sin, pi, atan,
-                   acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh,
-                   cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
-                   cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
-                   diff, simplify, Heaviside, arg, conjugate, series,
-                   FiniteSet, asec, acsc, sech, csch, Integer)
+                     acos, Rational, sqrt, asin, acot, coth, E, S, tan, tanh,
+                     cos, cosh, atan2, exp, log, asinh, acoth, atanh, O,
+                     cancel, Matrix, re, im, Float, Pow, gcd, sec, csc, cot,
+                     diff, simplify, Heaviside, arg, conjugate, series,
+                     FiniteSet, asec, acsc, sech, csch, Integer)
 
 x, y, z = symbols('x y z')
 r = Symbol('r', real=True)

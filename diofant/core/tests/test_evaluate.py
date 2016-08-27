@@ -1,6 +1,7 @@
-from diofant.abc import x, y
 from diofant.core.evaluate import evaluate
 from diofant.core import Mul, Add
+
+from diofant.abc import x, y
 
 
 def test_add():

@@ -1460,7 +1460,7 @@ def dmp_inject(f, u, K, front=False):
 
     w = u + v + 1
 
-    return dmp_from_dict(h, w, K.dom), w
+    return dmp_from_dict(h, w, K.domain), w
 
 
 def dmp_eject(f, u, K, front=False):

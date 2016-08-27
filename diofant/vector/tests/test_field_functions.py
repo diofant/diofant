@@ -8,9 +8,9 @@ from diofant.core.symbol import symbols
 from diofant.core.numbers import Integer
 from diofant import sin, cos
 from diofant.vector.functions import (curl, divergence, gradient,
-                                    is_conservative, is_solenoidal,
-                                    scalar_potential,
-                                    scalar_potential_difference)
+                                      is_conservative, is_solenoidal,
+                                      scalar_potential,
+                                      scalar_potential_difference)
 
 C = CoordSysCartesian('C')
 i, j, k = C.base_vectors()

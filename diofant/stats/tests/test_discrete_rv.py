@@ -1,8 +1,9 @@
 from diofant.stats.drv_types import (PoissonDistribution, GeometricDistribution,
-        Poisson)
-from diofant.abc import x
+                                     Poisson)
 from diofant import S, Sum
 from diofant.stats import E, variance, density
+
+from diofant.abc import x
 
 
 def test_PoissonDistribution():

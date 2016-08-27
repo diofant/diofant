@@ -1,5 +1,3 @@
-branches:
-  only: master
 language: python
 sudo: false
 cache: pip
@@ -19,10 +17,11 @@ addons:
 matrix:
   include:
     - python: 3.4
-      env: COVERAGE_MARK='not slow and not xfail'
+      env: COVERAGE='on' SELECT='not slow and not xfail'
     - python: 3.4
-      env: COVERAGE_MARK='slow and not xfail'
+      env: COVERAGE='on' SELECT='slow and not xfail'
     - python: 3.4
+      env: COVERAGE='on' EXTRA='on'
       install:
         - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
         - travis_wait pip install .[exports,plot,interactive]
@@ -52,11 +51,23 @@ before_script:
   - export DISPLAY=:99.0
 script:
   - |
-    if [ -n "${COVERAGE_MARK}" ]; then
-      python setup.py test --cov -m "${COVERAGE_MARK}"
+    if [ -n "${COVERAGE}" ]; then
+      python setup.py test --addopts "--cov diofant -m \"${SELECT}\""
     else
       python setup.py test
     fi
-after_success: test -n "${COVERAGE_MARK}" && codecov
+after_success: test -n "${COVERAGE}" && codecov
+deploy:
+  provider: pypi
+  user: skirpichev
+  password:
+    secure: "eqw999YWDRgBpREgnGEv+z30/2TaJAsvKNlPHFYFQQO+RGZBX9CqyrmlpZWCT7rOuSS+PAkoOyYnS9qBBcYHJycjM4DuW6wakVLeY2GlGP+cH0Xw2xVFkewuUvs6CMLhjEJ9NBTMbI/ghPviOalodAz9TuNcErglKJypOi93rIs="
+  distributions: "sdist bdist_wheel"
+  # TODO Remove for deployment to official PyPi repo
+  server: https://testpypi.python.org/pypi
+  on:
+    python: 3.4
+    condition: -z "${COVERAGE}"
+    tags: true
 notifications:
   email: false

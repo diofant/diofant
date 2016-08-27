@@ -5,7 +5,7 @@ from diofant.core.expr import AtomicExpr
 from diofant import diff as df, sqrt, ImmutableMatrix as Matrix
 from diofant.vector.coordsysrect import CoordSysCartesian
 from diofant.vector.basisdependent import (BasisDependent, BasisDependentAdd,
-                                         BasisDependentMul, BasisDependentZero)
+                                           BasisDependentMul, BasisDependentZero)
 from diofant.vector.dyadic import BaseDyadic, Dyadic, DyadicAdd
 
 

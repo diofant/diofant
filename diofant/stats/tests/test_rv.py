@@ -1,10 +1,10 @@
 import pytest
 
 from diofant import (Symbol, Interval, symbols, Eq, cos, And, Tuple,
-                   integrate, oo, sin, Sum, Basic, DiracDelta)
+                     integrate, oo, sin, Sum, Basic, DiracDelta)
 from diofant.stats import (Die, Normal, Exponential, P, E, variance,
-                         density, given, independent, dependent, where,
-                         pspace, random_symbols, sample)
+                           density, given, independent, dependent, where,
+                           pspace, random_symbols, sample)
 from diofant.stats.rv import ProductPSpace, rs_swap, Density, NamedArgsMixin
 
 from diofant.abc import x

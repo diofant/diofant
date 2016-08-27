@@ -4,7 +4,7 @@ from diofant.polys.polytools import poly_from_expr, parallel_poly_from_expr, Pol
 from diofant.polys.polyoptions import allowed_flags
 from diofant.polys.specialpolys import symmetric_poly, interpolating_poly
 from diofant.polys.polyerrors import (PolificationFailed, ComputationFailed,
-                                    MultivariatePolynomialError)
+                                      MultivariatePolynomialError)
 from diofant.utilities import numbered_symbols, take, public
 from diofant.core import S, Basic, Add, Mul
 

@@ -46,21 +46,16 @@ diofant_dir = os.path.normpath(diofant_dir)
 sys.path.insert(0, diofant_dir)
 
 TERMINAL_EXAMPLES = [
-    "intermediate.infinite_1d_box",
     "intermediate.partial_differential_eqs",
     "intermediate.trees",
     "intermediate.vandermonde",
     "advanced.curvilinear_coordinates",
     "advanced.fem",
     "advanced.gibbs_phenomenon",
-    "advanced.pidigits",
     "advanced.relativity",
 ]
 
 WINDOWED_EXAMPLES = [
-    "beginner.plotting_nice_plot",
-    "intermediate.mplot2d",
-    "intermediate.mplot3d",
     "advanced.autowrap_ufuncify",
 ]
 

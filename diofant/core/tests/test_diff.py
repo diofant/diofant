@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Symbol, Rational, cos, sin, tan, cot, exp, log, Function,
-                   Derivative, Expr, symbols, pi, I, S)
+                     Derivative, Expr, symbols, pi, I, S)
 
 
 def test_diff():

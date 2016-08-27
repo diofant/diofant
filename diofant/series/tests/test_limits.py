@@ -4,13 +4,14 @@ import os
 import pytest
 
 from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
-                   acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
-                   cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
-                   Function, subfactorial, PoleError, Integer, Float)
+                     acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
+                     cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
+                     Function, subfactorial, PoleError, Integer, Float,
+                     diff, simplify)
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
-from diofant.abc import a, c, x, y, z, n
+from diofant.abc import a, b, c, x, y, z, n
 
 
 def test_basic1():
@@ -475,3 +476,13 @@ def test_issue_6171():
     e = Piecewise((0, x < 0), (1, True))
     assert e.limit(x, 0) == 1
     assert e.limit(x, 0, "-") == 0
+
+
+def test_issue_11526():
+    df = diff(1/(a*log((x - b)/(x - c))), x)
+    res = -1/(-a*c + a*b)
+    assert limit(df, x, oo) == res
+    assert limit(simplify(df), x, oo) == res
+
+    e = log((1/x - b)/(1/x - c))
+    assert e.as_leading_term(x) == x*(c - b)

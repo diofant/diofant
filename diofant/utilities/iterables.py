@@ -7,9 +7,9 @@ from operator import gt
 from diofant.core import Basic, S
 # this is the logical location of these functions
 from diofant.core.compatibility import (as_int, default_sort_key,
-                                      is_sequence, iterable, ordered)
+                                        is_sequence, iterable, ordered)
 from diofant.utilities.enumerative import (multiset_partitions_taocp,
-                                         list_visitor, MultisetPartitionTraverser)
+                                           list_visitor, MultisetPartitionTraverser)
 
 
 def flatten(iterable, levels=None, cls=None):

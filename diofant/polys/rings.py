@@ -15,7 +15,8 @@ from diofant.polys.orderings import lex
 from diofant.polys.heuristicgcd import heugcd
 from diofant.polys.compatibility import IPolys
 from diofant.polys.polyutils import expr_from_dict, _dict_reorder, _parallel_dict_from_expr
-from diofant.polys.polyerrors import CoercionFailed, GeneratorsError, GeneratorsNeeded, ExactQuotientFailed, MultivariatePolynomialError
+from diofant.polys.polyerrors import (CoercionFailed, GeneratorsError, GeneratorsNeeded,
+                                      ExactQuotientFailed, MultivariatePolynomialError)
 from diofant.polys.domains.domainelement import DomainElement
 from diofant.polys.domains.polynomialring import PolynomialRing
 from diofant.polys.polyoptions import Domain as DomainOpt, Order as OrderOpt, build_options

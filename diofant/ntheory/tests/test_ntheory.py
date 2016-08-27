@@ -3,28 +3,28 @@ from collections import defaultdict
 import pytest
 
 from diofant import (Sieve, binomial_coefficients, binomial_coefficients_list,
-                   multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
-                   summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
+                     multinomial_coefficients, Mul, S, Pow, sieve, Symbol,
+                     summation, factorial as fac, pi, GoldenRatio as phi, sqrt)
 from diofant.core.numbers import Integer, Rational
 from diofant.ntheory import (isprime, n_order, is_primitive_root,
-                           is_quad_residue, legendre_symbol, jacobi_symbol,
-                           npartitions, totient, factorint, primefactors, divisors,
-                           randprime, nextprime, prevprime, primerange, primepi,
-                           prime, pollard_rho, perfect_power, multiplicity,
-                           trailing, divisor_count, primorial, pollard_pm1,
-                           sqrt_mod, primitive_root, quadratic_residues,
-                           is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
-                           divisor_sigma)
+                             is_quad_residue, legendre_symbol, jacobi_symbol,
+                             npartitions, totient, factorint, primefactors, divisors,
+                             randprime, nextprime, prevprime, primerange, primepi,
+                             prime, pollard_rho, perfect_power, multiplicity,
+                             trailing, divisor_count, primorial, pollard_pm1,
+                             sqrt_mod, primitive_root, quadratic_residues,
+                             is_nthpow_residue, nthroot_mod, sqrt_mod_iter, mobius,
+                             divisor_sigma)
 from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
 from diofant.ntheory.factor_ import (smoothness, smoothness_p,
-                                   antidivisors, antidivisor_count, core)
+                                     antidivisors, antidivisor_count, core)
 from diofant.ntheory.generate import cycle_length
 from diofant.ntheory.primetest import _mr_safe_helper, mr
 from diofant.ntheory.modular import crt, crt1, crt2, solve_congruence
 from diofant.ntheory.continued_fraction import (continued_fraction_periodic as cf_p,
-                                              continued_fraction_iterator as cf_i,
-                                              continued_fraction_convergents as cf_c,
-                                              continued_fraction_reduce as cf_r)
+                                                continued_fraction_iterator as cf_i,
+                                                continued_fraction_convergents as cf_c,
+                                                continued_fraction_reduce as cf_r)
 from diofant.ntheory.egyptian_fraction import egyptian_fraction
 from diofant.core.add import Add
 from diofant.polys.domains import ZZ

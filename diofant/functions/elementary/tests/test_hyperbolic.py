@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (symbols, Symbol, sinh, nan, oo, zoo, pi,
-                   asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
-                   tan, cosh, cos, S, sin, Rational, atanh, acoth,
-                   O, exp, sech, sec, csch)
+                     asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
+                     tan, cosh, cos, S, sin, Rational, atanh, acoth,
+                     O, exp, sech, sec, csch)
 
 
 def test_sinh():

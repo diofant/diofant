@@ -1,4 +1,4 @@
-from diofant import (symbols, FunctionMatrix, MatrixExpr, Lambda, Matrix)
+from diofant import symbols, FunctionMatrix, MatrixExpr, Lambda, Matrix
 
 
 def test_funcmatrix():

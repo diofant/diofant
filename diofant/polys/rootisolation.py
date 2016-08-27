@@ -1,12 +1,12 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from diofant.polys.densebasic import (dup_LC, dup_TC, dup_degree, dup_strip,
-                                    dup_reverse, dup_convert, dup_terms_gcd)
+                                      dup_reverse, dup_convert, dup_terms_gcd)
 from diofant.polys.densearith import dup_neg, dup_rshift, dup_rem
 from diofant.polys.densetools import (dup_clear_denoms, dup_mirror, dup_scale,
-                                    dup_shift, dup_transform, dup_diff,
-                                    dup_eval, dmp_eval_in, dup_sign_variations,
-                                    dup_real_imag)
+                                      dup_shift, dup_transform, dup_diff,
+                                      dup_eval, dmp_eval_in, dup_sign_variations,
+                                      dup_real_imag)
 from diofant.polys.sqfreetools import dup_sqf_part, dup_sqf_list
 from diofant.polys.factortools import dup_factor_list
 from diofant.polys.polyerrors import RefinementFailed, DomainError
@@ -1705,12 +1705,12 @@ class RealInterval(object):
             self.mobius = data[:-1]
             self.neg = data[-1]
 
-        self.f, self.dom = f, dom
+        self.f, self.domain = f, dom
 
     @property
     def a(self):
         """Return the position of the left end. """
-        field = self.dom.get_field()
+        field = self.domain.get_field()
         a, b, c, d = self.mobius
 
         if not self.neg:
@@ -1758,9 +1758,9 @@ class RealInterval(object):
             return self
 
         f, mobius = dup_inner_refine_real_root(
-            self.f, self.mobius, self.dom, steps=1, mobius=True)
+            self.f, self.mobius, self.domain, steps=1, mobius=True)
 
-        return RealInterval(mobius + (self.neg,), f, self.dom)
+        return RealInterval(mobius + (self.neg,), f, self.domain)
 
     def refine_disjoint(self, other):
         """Refine an isolating interval until it is disjoint with another one. """
@@ -1804,7 +1804,7 @@ class ComplexInterval(object):
         self.f1, self.F1 = f1, F1
         self.f2, self.F2 = f2, F2
 
-        self.dom = dom
+        self.domain = dom
         self.conj = conj
 
     @property
@@ -1858,7 +1858,7 @@ class ComplexInterval(object):
     def conjugate(self):
         """This complex interval really is located in lower half-plane. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
-            self.F1, self.F2, self.f1, self.f2, self.dom, conj=True)
+            self.F1, self.F2, self.f1, self.f2, self.domain, conj=True)
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint. """
@@ -1879,7 +1879,7 @@ class ComplexInterval(object):
         f1, F1 = self.f1, self.F1
         f2, F2 = self.f2, self.F2
 
-        dom = self.dom
+        dom = self.domain
 
         if s - u > t - v:
             D_L, D_R = _vertical_bisection(1, (u, v), (s, t), I, Q, F1, F2, f1, f2, dom)

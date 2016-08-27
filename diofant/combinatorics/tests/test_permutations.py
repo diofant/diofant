@@ -3,7 +3,7 @@ from itertools import permutations
 import pytest
 
 from diofant.combinatorics.permutations import (Permutation, _af_parity,
-                                              _af_rmul, _af_rmuln, Cycle)
+                                                _af_rmul, _af_rmuln, Cycle)
 
 rmul = Permutation.rmul
 

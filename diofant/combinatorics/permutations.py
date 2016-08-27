@@ -7,7 +7,7 @@ from mpmath.libmp.libintmath import ifac
 from diofant.core import Basic
 from diofant.core.compatibility import is_sequence
 from diofant.utilities.iterables import (flatten, has_variety, minlex,
-                                       has_dups, runs)
+                                         has_dups, runs)
 from diofant.polys.polytools import lcm
 from diofant.matrices import zeros
 

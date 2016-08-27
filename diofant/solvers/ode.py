@@ -235,7 +235,7 @@ from diofant.core.containers import Tuple
 from diofant.core.exprtools import factor_terms
 from diofant.core.expr import AtomicExpr, Expr
 from diofant.core.function import (Function, Derivative, AppliedUndef, diff,
-                                 expand, expand_mul, Subs, _mexpand)
+                                   expand, expand_mul, Subs, _mexpand)
 from diofant.core.multidimensional import vectorize
 from diofant.core.numbers import NaN, zoo, I, Number, Integer
 from diofant.core.relational import Equality, Eq
@@ -243,7 +243,7 @@ from diofant.core.symbol import Symbol, Wild, Dummy, symbols
 from diofant.core.sympify import sympify
 from diofant.logic.boolalg import BooleanAtom
 from diofant.functions import (cos, exp, im, log, re, sin, tan, sqrt,
-                             atan2, conjugate)
+                               atan2, conjugate)
 from diofant.functions.combinatorial.factorials import factorial
 from diofant.integrals.integrals import Integral, integrate
 from diofant.matrices import wronskian, Matrix, BlockDiagMatrix, eye, zeros
@@ -253,7 +253,7 @@ from diofant.polys.polytools import cancel, degree, div
 from diofant.series import Order
 from diofant.series.series import series
 from diofant.simplify import (collect, logcombine, powsimp, separatevars,
-                            simplify, trigsimp, posify, cse)
+                              simplify, trigsimp, posify, cse)
 from diofant.simplify.powsimp import powdenest
 from diofant.simplify.radsimp import collect_const
 from diofant.solvers import solve

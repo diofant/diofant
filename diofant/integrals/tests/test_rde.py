@@ -4,11 +4,11 @@ import pytest
 
 from diofant import Poly, symbols, oo, I, Rational
 from diofant.integrals.risch import (DifferentialExtension,
-                                   NonElementaryIntegralException)
+                                     NonElementaryIntegralException)
 from diofant.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-                                 normal_denom, special_denom, bound_degree,
-                                 spde, solve_poly_rde, no_cancel_equal,
-                                 cancel_primitive, cancel_exp, rischDE)
+                                   normal_denom, special_denom, bound_degree,
+                                   spde, solve_poly_rde, no_cancel_equal,
+                                   cancel_primitive, cancel_exp, rischDE)
 
 from diofant.abc import x, t, z, n
 

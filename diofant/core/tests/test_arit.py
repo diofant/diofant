@@ -2,9 +2,10 @@ import itertools
 
 import pytest
 
-from diofant import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
-                   sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
-                   Integer, sign, im, nan, Dummy, factorial, comp, O)
+from diofant import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float,
+                     re, pi, sympify, Add, Mul, Pow, Mod, I, log, S, Max,
+                     symbols, oo, Integer, sign, im, nan, Dummy,
+                     factorial, comp, O, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -1687,7 +1688,7 @@ def test_issue_6077():
     assert 2**(1.5*x)*2**(2.5*x) == 2**(4.0*x)
 
 
-def test_mul_flatten_oo():
+def test_mul_flatten_oo_zoo():
     p = symbols('p', positive=True)
     n, m = symbols('n,m', negative=True)
     x_im = symbols('x_im', imaginary=True)
@@ -1695,6 +1696,8 @@ def test_mul_flatten_oo():
     assert n*m*oo == oo
     assert p*oo == oo
     assert x_im*oo != I*oo  # i could be +/- 3*I -> +/-oo
+
+    assert zoo*2*zoo is zoo
 
 
 def test_add_flatten():
@@ -1707,6 +1710,8 @@ def test_add_flatten():
 
     a = Pow(2, 3, evaluate=False)
     assert a + a == 16
+
+    assert zoo + 1 + zoo is nan
 
 
 def test_diofantissue_31():

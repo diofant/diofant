@@ -5,9 +5,9 @@ import pytest
 from diofant.polys.polytools import Poly
 from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                    GeneratorsNeeded, PolynomialError)
+                                      GeneratorsNeeded, PolynomialError)
 from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                   Function, Eq, solve, legendre_poly)
+                     Function, Eq, solve, legendre_poly)
 
 from diofant.abc import a, b, x, y, z, r
 

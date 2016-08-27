@@ -12,11 +12,11 @@ from itertools import product
 import random
 
 from diofant import (Basic, Symbol, cacheit, sympify, Mul,
-                   And, Or, Tuple, Piecewise, Eq, Lambda)
+                     And, Or, Tuple, Piecewise, Eq, Lambda)
 from diofant.sets.sets import FiniteSet
 from diofant.stats.rv import (RandomDomain, ProductDomain, ConditionalDomain,
-                            PSpace, ProductPSpace, SinglePSpace, random_symbols,
-                            sumsets, rv_subs, NamedArgsMixin)
+                              PSpace, ProductPSpace, SinglePSpace, random_symbols,
+                              sumsets, rv_subs, NamedArgsMixin)
 from diofant.core.containers import Dict
 
 

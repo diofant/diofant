@@ -31,9 +31,6 @@ class PolynomialRing(Ring, CompositeDomain):
         self.symbols = ring.symbols
         self.domain = ring.domain
 
-        # TODO: remove this
-        self.dom = self.domain
-
     def new(self, element):
         return self.ring.ring_new(element)
 

@@ -1,8 +1,8 @@
 from diofant.simplify import simplify, trigsimp
 from diofant import (pi, sqrt, symbols, ImmutableMatrix as Matrix,
-                   sin, cos, Function, Integral, Derivative, diff)
+                     sin, cos, Function, Integral, Derivative, diff)
 from diofant.vector.vector import (Vector, BaseVector, VectorAdd,
-                                 VectorMul, VectorZero)
+                                   VectorMul, VectorZero)
 from diofant.vector.coordsysrect import CoordSysCartesian
 
 C = CoordSysCartesian('C')

@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (Symbol, Rational, ln, exp, log, sqrt, E, O, pi, I, sinh,
-                   sin, cosh, cos, tanh, coth, asinh, acosh, atanh, acoth, tan,
-                   cot, PoleError, floor, ceiling, asin, limit,
-                   sign, Derivative)
+                     sin, cosh, cos, tanh, coth, asinh, acosh, atanh, acoth,
+                     tan, cot, PoleError, floor, ceiling, asin, limit,
+                     sign, Derivative)
 
 from diofant.abc import a, b, l, x, y, w, z
 

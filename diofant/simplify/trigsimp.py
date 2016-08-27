@@ -6,8 +6,8 @@ from strategies.tree import greedy
 
 from diofant.core.cache import cacheit
 from diofant.core import (sympify, Basic, S, Expr, expand_mul, factor_terms,
-                        Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols,
-                        Wild, expand)
+                          Mul, Pow, Dummy, igcd, FunctionClass, Add, symbols,
+                          Wild, expand)
 from diofant.core.compatibility import iterable
 from diofant.core.numbers import I, Integer
 from diofant.core.function import count_ops, _mexpand

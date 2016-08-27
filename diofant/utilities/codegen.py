@@ -89,7 +89,7 @@ from diofant.printing.fcode import fcode, FCodePrinter
 from diofant.printing.octave import octave_code, OctaveCodePrinter
 from diofant.tensor import Idx, Indexed, IndexedBase
 from diofant.matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
-                            MatrixExpr, MatrixSlice)
+                              MatrixExpr, MatrixSlice)
 
 
 __all__ = [

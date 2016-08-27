@@ -5,8 +5,8 @@ import mpmath
 import pytest
 
 from diofant import (Symbol, exp, Integer, Float, sin, cos, Poly, Lambda,
-                   Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
-                   Interval, Add, Mul, Pow, Or, true, false, Abs, pi)
+                     Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
+                     Interval, Add, Mul, Pow, Or, true, false, Abs, pi)
 from diofant.core.sympify import sympify, _sympify, SympifyError
 from diofant.core.decorators import _sympifyit
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -267,6 +267,11 @@ def test_sympifyit():
     assert add_raises(x, y) == x + y
 
     pytest.raises(SympifyError, lambda: add_raises(x, '1'))
+
+    with pytest.raises(LookupError):
+        @_sympifyit('x', NotImplemented)
+        def spam():
+            return
 
 
 def test_int_float():

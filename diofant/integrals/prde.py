@@ -22,12 +22,12 @@ from diofant.matrices import Matrix, zeros, eye
 from diofant.solvers import solve
 from diofant.polys import Poly, lcm, cancel, sqf_list
 from diofant.integrals.risch import (gcdex_diophantine, frac_in, derivation,
-                                   NonElementaryIntegralException,
-                                   residue_reduce, splitfactor,
-                                   residue_reduce_derivation, DecrementLevel,
-                                   recognize_log_derivative)
+                                     NonElementaryIntegralException,
+                                     residue_reduce, splitfactor,
+                                     residue_reduce_derivation, DecrementLevel,
+                                     recognize_log_derivative)
 from diofant.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-                                 bound_degree, spde, solve_poly_rde)
+                                   bound_degree, spde, solve_poly_rde)
 from diofant.utilities.misc import debug
 
 

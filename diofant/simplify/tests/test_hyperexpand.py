@@ -3,17 +3,17 @@ from random import randrange
 import pytest
 
 from diofant.simplify.hyperexpand import (ShiftA, ShiftB, UnShiftA, UnShiftB,
-                       MeijerShiftA, MeijerShiftB, MeijerShiftC, MeijerShiftD,
-                       MeijerUnShiftA, MeijerUnShiftB, MeijerUnShiftC,
-                       MeijerUnShiftD,
-                       ReduceOrder, reduce_order, apply_operators,
-                       devise_plan, make_derivative_operator, Formula,
-                       hyperexpand, Hyper_Function, G_Function,
-                       reduce_order_meijer,
-                       build_hypergeometric_formula)
+                                          MeijerShiftA, MeijerShiftB, MeijerShiftC, MeijerShiftD,
+                                          MeijerUnShiftA, MeijerUnShiftB, MeijerUnShiftC,
+                                          MeijerUnShiftD,
+                                          ReduceOrder, reduce_order, apply_operators,
+                                          devise_plan, make_derivative_operator, Formula,
+                                          hyperexpand, Hyper_Function, G_Function,
+                                          reduce_order_meijer,
+                                          build_hypergeometric_formula)
 from diofant import (hyper, I, S, meijerg, Piecewise, Rational, Integer,
-                   cos, sin, log, exp, asin, lowergamma, atanh, besseli,
-                                      gamma, sqrt, pi, erf, exp_polar)
+                     cos, sin, log, exp, asin, lowergamma, atanh, besseli,
+                     gamma, sqrt, pi, erf, exp_polar)
 from diofant.utilities.randtest import verify_numerically as tn
 
 from diofant.abc import z, a, b, c

@@ -5,12 +5,12 @@ import pytest
 from diofant import symbols
 from diofant.logic.boolalg import And, Implies, Equivalent, true, false, Boolean
 from diofant.logic.inference import (literal_symbol, pl_true, satisfiable, valid,
-                                   entails, PropKB)
+                                     entails, PropKB)
 from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
-                                         find_pure_symbol, find_unit_clause,
-                                         unit_propagate, find_pure_symbol_int_repr,
-                                         find_unit_clause_int_repr,
-                                         unit_propagate_int_repr)
+                                           find_pure_symbol, find_unit_clause,
+                                           unit_propagate, find_pure_symbol_int_repr,
+                                           find_unit_clause_int_repr,
+                                           unit_propagate_int_repr)
 from diofant.logic.algorithms.dpll2 import dpll_satisfiable as dpll2_satisfiable
 
 

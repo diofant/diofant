@@ -62,17 +62,17 @@ from itertools import product, chain
 
 from diofant import DIOFANT_DEBUG
 from diofant.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
-                        EulerGamma, oo, zoo, expand_func, Add, nan,
-                        Expr, Integer, Rational)
+                          EulerGamma, oo, zoo, expand_func, Add, nan,
+                          Expr, Integer, Rational)
 from diofant.core.mod import Mod
 from diofant.core.compatibility import default_sort_key
 from diofant.utilities.iterables import sift
 from diofant.functions import (exp, sqrt, root, log, lowergamma, cos, besseli,
-                             gamma, uppergamma, expint, erf, sin, besselj, Ei,
-                             Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
-                             polar_lift, exp_polar, floor, ceiling, rf,
-                             factorial, lerchphi, Piecewise, re, elliptic_k,
-                             elliptic_e)
+                               gamma, uppergamma, expint, erf, sin, besselj, Ei,
+                               Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
+                               polar_lift, exp_polar, floor, ceiling, rf,
+                               factorial, lerchphi, Piecewise, re, elliptic_k,
+                               elliptic_e)
 from diofant.functions.special.hyper import (
     hyper, HyperRep_atanh,
     HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,

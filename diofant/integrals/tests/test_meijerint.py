@@ -1,16 +1,17 @@
 import pytest
 
 from diofant import (meijerg, I, integrate, Integral, oo, gamma, cosh,
-                   hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
-                   exp_polar, polygamma, hyper, log, expand_func, Integer,
-                   Rational)
+                     hyperexpand, exp, simplify, sqrt, pi, erf, sin, cos,
+                     exp_polar, polygamma, hyper, log, expand_func, Integer,
+                     Rational, nan)
 from diofant.integrals.meijerint import (_rewrite_single, _rewrite1,
-                                       meijerint_indefinite, _inflate_g,
-                                       _create_lookup_table, meijerint_definite,
-                                       meijerint_inversion)
+                                         meijerint_indefinite, _inflate_g,
+                                         _create_lookup_table,
+                                         meijerint_definite,
+                                         meijerint_inversion)
 from diofant.utilities import default_sort_key
 from diofant.utilities.randtest import (verify_numerically,
-                                      random_complex_number as randcplx)
+                                        random_complex_number as randcplx)
 
 from diofant.abc import x, y, a, b, c, d, s, t, z
 
@@ -651,3 +652,12 @@ def test_issue_6860():
 def test_issue_8368():
     assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
         (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
+
+
+def test_meijerint_indefinite_abs():
+    # issue sympy/sympy#4311
+    assert meijerint_indefinite(x*abs(9 - x**2), x) is not nan
+    # issue sympy/sympy#7165
+    assert meijerint_indefinite(abs(y - x**2), y) is not nan
+    # issue sympy/sympy#8733
+    assert meijerint_indefinite(abs(x + 1), x) is not nan

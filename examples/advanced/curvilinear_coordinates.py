@@ -10,7 +10,7 @@ tensor, Laplace operator, ...
 """
 
 from diofant import (sin, cos, pprint, Matrix, eye, Eq, Function, simplify,
-                   sinh, cosh, expand, symbols)
+                     sinh, cosh, expand, symbols)
 
 
 def laplace(f, g_inv, g_det, X):

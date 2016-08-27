@@ -9,7 +9,7 @@ import pytest
 
 from diofant import symbols
 from diofant.matrices import (Matrix, MatrixSymbol, eye, Identity,
-                            ImmutableMatrix)
+                              ImmutableMatrix)
 from diofant.matrices.expressions import MatrixExpr, MatAdd
 from diofant.matrices.matrices import classof
 

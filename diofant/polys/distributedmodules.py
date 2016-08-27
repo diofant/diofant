@@ -29,7 +29,7 @@ The main reference for this file is [SCA],
 from itertools import permutations
 
 from diofant.polys.monomials import (monomial_mul, monomial_lcm, monomial_div,
-                                   monomial_deg)
+                                     monomial_deg)
 from diofant.polys.polytools import Poly
 from diofant.polys.polyutils import parallel_dict_from_expr
 from diofant import S, sympify

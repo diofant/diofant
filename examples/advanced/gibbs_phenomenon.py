@@ -14,7 +14,7 @@ See:
 """
 
 from diofant import (var, sqrt, integrate, conjugate, Abs, pprint, pi,
-                   sin, cos, lambdify, Integral)
+                     sin, cos, lambdify, Integral)
 
 x = var("x", extended_real=True)
 

@@ -10,8 +10,8 @@ from diofant.polys.domains.realfield import RealField
 from diofant.polys.rings import ring
 from diofant.polys.fields import field
 from diofant.polys.polyerrors import (UnificationFailed, GeneratorsNeeded,
-                                    GeneratorsError, CoercionFailed,
-                                    NotInvertible, DomainError)
+                                      GeneratorsError, CoercionFailed,
+                                      NotInvertible, DomainError)
 
 from diofant.abc import x, y, z
 
@@ -541,15 +541,15 @@ def test_Domain___eq__():
 def test_Domain__algebraic_field():
     alg = ZZ.algebraic_field(sqrt(2))
     assert alg.ext.minpoly == Poly(x**2 - 2)
-    assert alg.dom == QQ
+    assert alg.domain == QQ
 
     alg = QQ.algebraic_field(sqrt(2))
     assert alg.ext.minpoly == Poly(x**2 - 2)
-    assert alg.dom == QQ
+    assert alg.domain == QQ
 
     alg = alg.algebraic_field(sqrt(3))
     assert alg.ext.minpoly == Poly(x**4 - 10*x**2 + 1)
-    assert alg.dom == QQ
+    assert alg.domain == QQ
 
 
 def test_PolynomialRing_from_FractionField():

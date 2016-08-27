@@ -1,13 +1,13 @@
 import pytest
 
 from diofant import (Symbol, gamma, I, oo, nan, zoo, factorial, sqrt, Rational,
-                   log, Integer, polygamma, EulerGamma, pi, uppergamma, S,
-                   expand_func, loggamma, sin, cos, O, lowergamma, exp, erf,
-                   exp_polar, harmonic, zeta, conjugate)
+                     log, Integer, polygamma, EulerGamma, pi, uppergamma, S,
+                     expand_func, loggamma, sin, cos, O, lowergamma, exp, erf,
+                     exp_polar, harmonic, zeta, conjugate)
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import (test_derivative_numerically as td,
-                                      random_complex_number as randcplx,
-                                      verify_numerically as tn)
+                                        random_complex_number as randcplx,
+                                        verify_numerically as tn)
 
 x = Symbol('x')
 y = Symbol('y')

@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (diff, Integral, Limit, sin, Symbol, Integer, Rational, cos,
-                   tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh,
-                   atanh, E, I, oo, pi, GoldenRatio, EulerGamma, Sum,
-                   Eq, Ne, Ge, Lt, Float)
+                     tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh,
+                     atanh, E, I, oo, pi, GoldenRatio, EulerGamma, Sum,
+                     Eq, Ne, Ge, Lt, Float)
 from diofant.printing.mathml import mathml, MathMLPrinter
 
 x = Symbol('x')

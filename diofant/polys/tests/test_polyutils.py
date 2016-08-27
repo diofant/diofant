@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import (Integer, sin, cos, sqrt, symbols, pi, Eq,
-                   Integral, exp, Mul, Abs, Rational as Q, I)
+                     Integral, exp, Mul, Abs, Rational as Q, I)
 from diofant.polys.polyutils import (
     _nsort,
     _sort_gens,

@@ -6,7 +6,7 @@ from diofant.polys.constructor import construct_domain
 from diofant.polys.polytools import Poly, PurePoly
 from diofant.polys.polyclasses import DMP
 from diofant.polys.densearith import (dup_mul, dup_mul_ground, dup_lshift,
-                                    dup_sub, dup_add)
+                                      dup_sub, dup_add)
 from diofant.polys.domains import ZZ, QQ
 
 

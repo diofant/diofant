@@ -1,6 +1,6 @@
 from diofant.core.basic import Basic
 from diofant import (sympify, eye, sin, cos, rot_axis1, rot_axis2,
-                   rot_axis3, ImmutableMatrix as Matrix, Symbol)
+                     rot_axis3, ImmutableMatrix as Matrix, Symbol)
 from diofant.core.cache import cacheit
 import diofant.vector
 

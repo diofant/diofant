@@ -7,9 +7,9 @@ from diofant import erf, Integral
 from diofant import Equality
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.utilities.codegen import (codegen, make_routine, CCodeGen,
-                                     InputArgument, CodeGenError, FCodeGen,
-                                     CodeGenArgumentListError,
-                                     OutputArgument, InOutArgument)
+                                       InputArgument, CodeGenError, FCodeGen,
+                                       CodeGenArgumentListError,
+                                       OutputArgument, InOutArgument)
 from diofant.utilities.lambdify import implemented_function
 
 # FIXME: Fails due to circular import in with core

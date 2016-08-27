@@ -2,7 +2,7 @@
 
 from diofant.polys.domains.rationalfield import RationalField
 from diofant.polys.domains.groundtypes import (PythonInteger, PythonRational,
-                                             DiofantRational)
+                                               DiofantRational)
 from diofant.polys.polyerrors import CoercionFailed
 from diofant.utilities import public
 

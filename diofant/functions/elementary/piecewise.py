@@ -2,7 +2,7 @@ from diofant.core import Basic, S, Function, diff, Tuple, Dummy
 from diofant.core.relational import Equality, Relational
 from diofant.functions.elementary.miscellaneous import Max, Min
 from diofant.logic.boolalg import (And, Boolean, distribute_and_over_or, Not, Or,
-                                 true, false)
+                                   true, false)
 from diofant.core.compatibility import default_sort_key
 
 

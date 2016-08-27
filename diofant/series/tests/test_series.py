@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
-                   Function, log, sqrt, Symbol, Subs, pi, symbols,
-                   Rational, Integer)
+                     Function, log, sqrt, Symbol, Subs, pi, symbols,
+                     Rational, Integer)
 
 from diofant.abc import x, y
 

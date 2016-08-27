@@ -7,9 +7,9 @@ import sys
 import pytest
 
 from diofant import (pi, sin, cos, Symbol, Integral, summation, sqrt, log,
-                   oo, LambertW, I, meijerg, exp_polar, Max)
+                     oo, LambertW, I, meijerg, exp_polar, Max)
 from diofant.plotting import (plot, plot_parametric, plot3d_parametric_line,
-                            plot3d, plot3d_parametric_surface)
+                              plot3d, plot3d_parametric_surface)
 from diofant.plotting.plot import unset_show
 from diofant.plotting.experimental_lambdify import lambdify
 from diofant.external import import_module

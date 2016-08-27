@@ -11,7 +11,7 @@ from diofant.utilities import public
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 
-    mod, dom, sym, _parent = None, None, None, None
+    mod, domain, sym, _parent = None, None, None, None
 
     def parent(self):
         return self._parent
@@ -20,7 +20,7 @@ class ModularInteger(DomainElement):
         if isinstance(val, self.__class__):
             self.val = val.val % self.mod
         else:
-            self.val = self.dom.convert(val) % self.mod
+            self.val = self.domain.convert(val) % self.mod
 
     def __hash__(self):
         return hash((self.val, self.mod))
@@ -55,7 +55,7 @@ class ModularInteger(DomainElement):
             return other.val
         else:
             try:
-                return cls.dom.convert(other)
+                return cls.domain.convert(other)
             except CoercionFailed:
                 return
 
@@ -124,7 +124,7 @@ class ModularInteger(DomainElement):
 
     def __pow__(self, exp):
         if not exp:
-            return self.__class__(self.dom.one)
+            return self.__class__(self.domain.one)
 
         if exp < 0:
             val, exp = self.invert(), -exp
@@ -164,7 +164,7 @@ class ModularInteger(DomainElement):
 
     @classmethod
     def _invert(cls, value):
-        return cls.dom.invert(value, cls.mod)
+        return cls.domain.invert(value, cls.mod)
 
     def invert(self):
         return self.__class__(self._invert(self.val))
@@ -190,7 +190,7 @@ def ModularIntegerFactory(_mod, _dom, _sym, parent):
         cls = _modular_integer_cache[key]
     except KeyError:
         class cls(ModularInteger):
-            mod, dom, sym = _mod, _dom, _sym
+            mod, domain, sym = _mod, _dom, _sym
             _parent = parent
 
         if _sym:

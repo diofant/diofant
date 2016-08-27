@@ -2,7 +2,7 @@ import pytest
 
 from diofant import Integer, Rational, symbols, Function
 from diofant.calculus.finite_diff import (apply_finite_diff,
-                                        finite_diff_weights, as_finite_diff)
+                                          finite_diff_weights, as_finite_diff)
 
 from diofant.abc import x, y, h
 

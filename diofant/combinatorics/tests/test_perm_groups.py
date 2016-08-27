@@ -1,12 +1,12 @@
 from diofant.combinatorics.perm_groups import PermutationGroup
 from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
-                                              DihedralGroup, AlternatingGroup,
-                                              AbelianGroup, RubikGroup)
+                                                DihedralGroup, AlternatingGroup,
+                                                AbelianGroup, RubikGroup)
 from diofant.combinatorics.permutations import Permutation
 from diofant.combinatorics.generators import rubik_cube_generators
 from diofant.combinatorics.polyhedron import tetrahedron as Tetra, cube
 from diofant.combinatorics.testutil import (_verify_bsgs, _verify_centralizer,
-                                          _verify_normal_closure)
+                                            _verify_normal_closure)
 
 rmul = Permutation.rmul
 

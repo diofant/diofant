@@ -14,7 +14,7 @@ from diofant.printing.conventions import requires_partial
 from .stringpict import prettyForm, stringPict
 from .pretty_symbology import (hobj, vobj, xobj, xsym, pretty_symbol,
                                pretty_atom, pretty_use_unicode,
-                               pretty_try_use_unicode, greek_unicode, U,
+                               pretty_try_use_unicode, greek_unicode,
                                annotated)
 from diofant.utilities import default_sort_key
 
@@ -248,7 +248,7 @@ class PrettyPrinter(Printer):
 
     def _print_Derivative(self, deriv):
         if requires_partial(deriv) and self._use_unicode:
-            deriv_symbol = U('PARTIAL DIFFERENTIAL')
+            deriv_symbol = '\N{PARTIAL DIFFERENTIAL}'
         else:
             deriv_symbol = r'd'
         syms = list(reversed(deriv.variables))
@@ -1822,7 +1822,7 @@ class PrettyPrinter(Printer):
         return self._print(pretty_symbol(string))
 
     def _print_BaseVectorField(self, field):
-        s = U('PARTIAL DIFFERENTIAL') + '_' + field._coord_sys._names[field._index]
+        s = '\N{PARTIAL DIFFERENTIAL}' + '_' + field._coord_sys._names[field._index]
         return self._print(pretty_symbol(s))
 
     def _print_Differential(self, diff):
