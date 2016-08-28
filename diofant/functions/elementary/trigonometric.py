@@ -22,25 +22,6 @@ class TrigonometricFunction(Function):
 
     unbranched = True
 
-    def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational and s.args[0].is_nonzero:
-                return False
-        else:
-            return s.is_rational
-
-    def _eval_is_algebraic(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if self.args[0].is_algebraic and self.args[0].is_nonzero:
-                return False
-            pi_coeff = _pi_coeff(self.args[0])
-            if pi_coeff is not None and pi_coeff.is_rational:
-                return True
-        else:
-            return s.is_algebraic
-
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
         return re_part + im_part*S.ImaginaryUnit
@@ -397,6 +378,27 @@ class sin(TrigonometricFunction):
     def _eval_is_real(self):
         if self.args[0].is_real:
             return True
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            elif s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if self.args[0].is_algebraic and self.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(self.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                return True
+        else:
+            return s.is_algebraic
 
 
 class cos(TrigonometricFunction):
@@ -772,6 +774,27 @@ class cos(TrigonometricFunction):
     def _eval_is_complex(self):
         return self.args[0].is_complex
 
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            if s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if self.args[0].is_algebraic and self.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(self.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                return True
+        else:
+            return s.is_algebraic
+
 
 class tan(TrigonometricFunction):
     """
@@ -1043,6 +1066,28 @@ class tan(TrigonometricFunction):
         elif self.args[0].is_imaginary and self.args[0].is_nonzero:
             return True
 
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            elif s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_algebraic and s.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(s.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                if (2*pi_coeff).is_noninteger:
+                    return True
+        else:
+            return s.is_algebraic
+
 
 class ReciprocalTrigonometricFunction(TrigonometricFunction):
     """Base class for reciprocal functions of trigonometric functions. """
@@ -1149,11 +1194,30 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     def _eval_is_extended_real(self):
         return (1/self._reciprocal_of(self.args[0])).is_extended_real
 
-    def _eval_as_leading_term(self, x):
-        return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
-
     def _eval_is_finite(self):
         return (1/self._reciprocal_of(self.args[0])).is_finite
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if self.args[0].is_algebraic and self.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(self.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                return True
+        else:
+            return s.is_algebraic
+
+    def _eval_as_leading_term(self, x):
+        return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
 
     def _eval_nseries(self, x, n, logx):
         return (1/self._reciprocal_of(self.args[0]))._eval_nseries(x, n, logx)

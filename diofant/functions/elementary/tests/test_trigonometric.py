@@ -111,7 +111,10 @@ def test_sin():
     assert sin(na).is_algebraic is False
     q = Symbol('q', rational=True)
     assert sin(pi*q).is_algebraic
+    qz = Symbol('qz', zero=True)
     qn = Symbol('qn', rational=True, nonzero=True)
+    assert sin(qz).is_rational
+    assert sin(0, evaluate=False).is_rational
     assert sin(qn).is_rational is False
     assert sin(q).is_rational is None  # issue 8653
 
@@ -301,6 +304,13 @@ def test_cos():
     assert cos(pi*q).is_algebraic
     assert cos(2*pi/7).is_algebraic
 
+    qz = Symbol('qz', zero=True)
+    qn = Symbol('qn', rational=True, nonzero=True)
+    assert cos(qz).is_rational
+    assert cos(0, evaluate=False).is_rational
+    assert cos(qn).is_rational is False
+    assert cos(q).is_rational is None
+
     assert cos(k*pi) == (-1)**k
     assert cos(2*k*pi) == 1
 
@@ -434,6 +444,17 @@ def test_tan():
     assert tan(0, evaluate=False).is_algebraic
     assert tan(a).is_algebraic is None
     assert tan(na).is_algebraic is False
+
+    qz = Symbol('qz', zero=True)
+    qn = Symbol('qn', rational=True, nonzero=True)
+    assert tan(qz).is_rational
+    assert tan(0, evaluate=False).is_rational
+    assert tan(qn).is_rational is False
+    assert tan(x).is_rational is None
+
+    assert tan(qz).is_algebraic
+    assert tan(10*pi/7, evaluate=False).is_algebraic
+    assert tan(pi*k/2).is_algebraic is None
 
     assert tan(10*pi/7) == tan(3*pi/7)
     assert tan(11*pi/7) == -tan(3*pi/7)
