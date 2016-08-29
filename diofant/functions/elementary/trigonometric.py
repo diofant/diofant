@@ -1199,23 +1199,10 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
         return (1/self._reciprocal_of(self.args[0])).is_finite
 
     def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational and s.args[0].is_nonzero:
-                return False
-        else:
-            return s.is_rational
+        return (1/self._reciprocal_of(self.args[0])).is_rational
 
     def _eval_is_algebraic(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if self.args[0].is_algebraic and self.args[0].is_nonzero:
-                return False
-            pi_coeff = _pi_coeff(self.args[0])
-            if pi_coeff is not None and pi_coeff.is_rational:
-                return True
-        else:
-            return s.is_algebraic
+        return (1/self._reciprocal_of(self.args[0])).is_algebraic
 
     def _eval_as_leading_term(self, x):
         return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
