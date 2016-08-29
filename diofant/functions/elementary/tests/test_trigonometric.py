@@ -903,7 +903,6 @@ def test_acot():
     assert acot(I*pi) == -I*acoth(pi)
     assert acot(-2*I) == I*acoth(2)
     assert acot(x).is_positive is None
-    assert acot(r).is_positive is True
     assert acot(p).is_positive is True
     assert acot(I).is_positive is False
 
