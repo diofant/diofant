@@ -876,6 +876,13 @@ def test_atan2():
     assert rewrite == -I*log(abs(I*i + r)/sqrt(abs(i**2 + r**2))) + arg((I*i + r)/sqrt(i**2 + r**2))
     assert (e - rewrite).subs(reps).equals(0)
 
+    r1 = Symbol('r1', real=True, nonzero=True)
+    r2 = Symbol('r2', real=True, nonzero=True)
+    assert atan2(r1, r2).is_real
+    r1 = Symbol('r1', real=True)
+    r2 = Symbol('r2', real=True)
+    assert atan2(r1, r2).is_real is None
+
     assert conjugate(atan2(x, y)) == atan2(conjugate(x), conjugate(y))
 
     assert diff(atan2(y, x), x) == -y/(x**2 + y**2)

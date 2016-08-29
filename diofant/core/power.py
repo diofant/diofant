@@ -880,7 +880,7 @@ class Pow(Expr):
             return result
 
     def as_real_imag(self, deep=True, **hints):
-        from diofant import atan2, cos, sin
+        from diofant import arg, cos, sin
         from diofant.polys.polytools import poly
 
         if self.exp.is_Integer:
@@ -932,7 +932,7 @@ class Pow(Expr):
             #      x being imaginary there are actually q roots, but
             #      only a single one is returned from here.
             r = self.func(self.func(re, 2) + self.func(im, 2), S.Half)
-            t = atan2(im, re)
+            t = arg(re + S.ImaginaryUnit*im)
 
             rp, tp = self.func(r, self.exp), t*self.exp
 

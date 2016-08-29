@@ -66,11 +66,11 @@ def test_re():
     assert re(i*r*x).diff(i) == I*r*im(x)
 
     assert re(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2)
+        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)
     assert re(a * (2 + b*I)) == 2*a
 
     assert re((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2)/2 + Rational(1, 2)
+        (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
 
     assert re(x).rewrite(im) == x - im(x)
     assert (x + re(y)).rewrite(re, im) == x + y - im(y)
@@ -133,11 +133,11 @@ def test_im():
     assert im(i*r*x).diff(i) == -I * re(r*x)
 
     assert im(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)
+        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)
     assert im(a * (2 + b*I)) == a*b
 
     assert im((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)/2
+        (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2
 
     assert im(x).rewrite(re) == x - re(x)
     assert (x + im(y)).rewrite(im, re) == x + y - re(y)
@@ -279,16 +279,16 @@ def test_as_real_imag():
 
     # issue 6261
     assert sqrt(x).as_real_imag() == \
-        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(atan2(im(x), re(x))/2),
-     (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(atan2(im(x), re(x))/2))
+        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(arg(re(x) + I*im(x))/2),
+     (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
 
     # issue 3853
     a, b = symbols('a,b', extended_real=True)
     assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
            (
                (a**2 + b**2)**Rational(
-                   1, 4)*cos(atan2(b, a)/2)/2 + Rational(1, 2),
-               (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)/2)
+                   1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2),
+               (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2)
 
     assert sqrt(a**2).as_real_imag() == (sqrt(a**2), 0)
     i = symbols('i', imaginary=True)
