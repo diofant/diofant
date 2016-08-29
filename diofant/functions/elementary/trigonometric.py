@@ -374,7 +374,8 @@ class sin(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_complex(self):
-        return self.args[0].is_complex
+        if self.args[0].is_complex:
+            return True
 
     def _eval_is_real(self):
         if self.args[0].is_real:
@@ -773,7 +774,8 @@ class cos(TrigonometricFunction):
             return True
 
     def _eval_is_complex(self):
-        return self.args[0].is_complex
+        if self.args[0].is_complex:
+            return True
 
     def _eval_is_rational(self):
         s = self.func(*self.args)
