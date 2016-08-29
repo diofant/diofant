@@ -593,12 +593,11 @@ def test_DifferentialExtension_Rothstein():
         [x, 1/(t0 + 1) - 10*x], [], [])
 
 
-class TestingException(Exception):
-    """Dummy Exception class for testing."""
-    pass
-
-
 def test_DecrementLevel():
+    class TestingException(Exception):
+        """Dummy Exception class for testing."""
+        pass
+
     DE = DifferentialExtension(x*log(exp(x) + 1), x, dummy=False)
     assert DE.level == -1
     assert DE.t == t1
