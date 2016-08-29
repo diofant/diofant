@@ -116,31 +116,30 @@ class Integral(AddWithLimits):
         # zero so we check for those.
         if self.function.is_zero:
             return True
-        got_none = False
-        for l in self.limits:
-            if len(l) == 3:
-                z = (l[1] == l[2]) or (l[1] - l[2]).is_zero
-                if z:
-                    return True
-                elif z is None:
-                    got_none = True
+        got_false = False
         free = self.function.free_symbols
         for xab in self.limits:
-            if len(xab) == 1:
-                free.add(xab[0])
-                continue
-            if len(xab) == 2 and xab[0] not in free:
+            if len(xab) == 3:
+                z = Eq(xab[1], xab[2])
+                if z is S.true:
+                    return True
+                elif z is S.false:
+                    got_false = True
+            elif len(xab) == 2 and xab[0] not in free:
                 if xab[1].is_zero:
                     return True
-                elif xab[1].is_zero is None:
-                    got_none = True
+                elif xab[1].is_nonzero:
+                    got_false = True
+            else:
+                free.add(xab[0])
+                continue
             # take integration symbol out of free since it will be replaced
             # with the free symbols in the limits
             free.discard(xab[0])
             # add in the new symbols
             for i in xab[1:]:
                 free.update(i.free_symbols)
-        if self.function.is_zero is False and got_none is False:
+        if self.function.is_nonzero and got_false:
             return False
 
     def transform(self, x, u):

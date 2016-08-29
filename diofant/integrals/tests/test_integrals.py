@@ -725,6 +725,7 @@ def test_is_zero():
     from diofant.abc import x, m
     assert Integral(0, (x, 1, x)).is_zero
     assert Integral(1, (x, 1, 1)).is_zero
+    assert Integral(1, (x, m)).is_zero is None
     assert Integral(1, (x, 1, 2), (y, 2)).is_zero is False
     assert Integral(x, (m, 0)).is_zero
     assert Integral(x + m, (m, 0)).is_zero is None
