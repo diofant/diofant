@@ -787,6 +787,9 @@ def test_special_is_rational():
     assert sqrt(3).is_rational is False
     assert (3 + sqrt(3)).is_rational is False
     assert (3*sqrt(3)).is_rational is False
+    z = Symbol('z', zero=True)
+    assert exp(z).is_rational
+    assert exp(0, evaluate=False).is_rational
     assert exp(3).is_rational is False
     assert exp(ni).is_rational is False
     assert exp(rn).is_rational is False
