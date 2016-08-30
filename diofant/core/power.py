@@ -1002,10 +1002,10 @@ class Pow(Expr):
                     return True
             elif b.is_irrational:
                 return e.is_zero
-        elif b is S.Exp1:
+        if b is S.Exp1:
             s = self.func(*self.args)
             if s.func == self.func:
-                if s.exp is S.Zero:
+                if s.exp.is_zero:
                     return True
                 elif s.exp.is_rational and s.exp.is_nonzero:
                     return False
