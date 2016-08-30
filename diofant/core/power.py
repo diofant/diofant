@@ -1004,14 +1004,8 @@ class Pow(Expr):
                 if e.is_zero:
                     return True
         if b is S.Exp1:
-            s = self.func(*self.args)
-            if s.func == self.func:
-                if s.exp.is_zero:
-                    return True
-                elif s.exp.is_rational and s.exp.is_nonzero:
-                    return False
-            else:
-                return s.is_rational
+            if e.is_rational and e.is_nonzero:
+                return False
 
     def _eval_is_algebraic(self):
         if self.base.is_zero or (self.base - 1).is_zero:
