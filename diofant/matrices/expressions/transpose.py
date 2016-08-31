@@ -18,13 +18,13 @@ class Transpose(MatrixExpr):
     >>> A = MatrixSymbol('A', 3, 5)
     >>> B = MatrixSymbol('B', 5, 3)
     >>> Transpose(A)
-    A'
+    A.T
     >>> A.T == transpose(A) == Transpose(A)
     True
     >>> Transpose(A*B)
-    (A*B)'
+    (A*B).T
     >>> transpose(A*B)
-    B'*A'
+    B.T*A.T
     """
 
     is_Transpose = True

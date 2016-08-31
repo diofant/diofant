@@ -620,7 +620,7 @@ class StrPrinter(Printer):
         return self._print_tuple(expr)
 
     def _print_Transpose(self, T):
-        return "%s'" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
+        return "%s.T" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
 
     def _print_Union(self, expr):
         return ' U '.join(self._print(set) for set in expr.args)
