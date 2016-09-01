@@ -684,7 +684,7 @@ def test_Add_is_pos_neg():
 
 
 def test_Add_is_imaginary():
-    nn = Dummy(nonnegative=True)
+    nn = Dummy(nonnegative=True, finite=True)
     assert (I*nn + I).is_imaginary  # issue 8046, 17
 
 
@@ -870,11 +870,11 @@ def test_issue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
     assert (3*I + S.Pi*I).is_imaginary
-    y = Symbol('y', extended_real=True)
+    y = Symbol('y', real=True)
     assert (3*I + S.Pi*I + y*I).is_imaginary is True
-    p = Symbol('p', positive=True)
+    p = Symbol('p', positive=True, finite=True)
     assert (3*I + S.Pi*I + p*I).is_imaginary
-    n = Symbol('n', negative=True)
+    n = Symbol('n', negative=True, finite=True)
     assert (-3*I - S.Pi*I + n*I).is_imaginary
 
     i = Symbol('i', imaginary=True)

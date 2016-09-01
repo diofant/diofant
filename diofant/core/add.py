@@ -465,7 +465,7 @@ class Add(Expr, AssocOp):
         if rv is False:
             return rv
         iargs = [a*S.ImaginaryUnit for a in self.args]
-        return _fuzzy_group((a.is_extended_real for a in iargs), quick_exit=True)
+        return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
 
     def _eval_is_odd(self):
         l = [f for f in self.args if not f.is_even]
