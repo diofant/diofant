@@ -1164,21 +1164,16 @@ class Mul(Expr, AssocOp):
             for t in self.args:
                 if not t.is_integer:
                     return
-                elif t.is_even:
+                elif t.is_even or (acc + t).is_odd:
                     r = False
-                elif t.is_integer:
-                    if r is False:
-                        pass
-                    elif acc != 1 and (acc + t).is_odd:
-                        r = False
-                    elif t.is_odd is None:
-                        r = None
+                elif r is False:
+                    pass
+                elif r and t.is_odd is None:
+                    r = None
                 acc = t
             return r
-
-        # !integer -> !odd
-        elif is_integer is False:
-            return False
+        else:
+            return is_integer
 
     def _eval_is_even(self):
         is_integer = self.is_integer
