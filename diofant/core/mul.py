@@ -1000,18 +1000,16 @@ class Mul(Expr, AssocOp):
         return zero
 
     def _eval_is_integer(self):
-        from diofant.core.numbers import Integer
-
         is_rational = self.is_rational
 
         if is_rational:
             n, d = self.as_numer_denom()
             if d is S.One:
                 return True
-            elif d is Integer(2):
+            elif d == 2:
                 return n.is_even
-        elif is_rational is False:
-            return False
+        else:
+            return is_rational
 
     def _eval_is_polar(self):
         has_polar = any(arg.is_polar for arg in self.args)
