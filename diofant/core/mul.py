@@ -983,21 +983,11 @@ class Mul(Expr, AssocOp):
             return self.is_zero
 
     def _eval_is_zero(self):
-        zero = infinite = False
-        for a in self.args:
-            z = a.is_zero
-            if z:
-                if infinite:
-                    return  # 0*oo is nan and nan.is_zero is None
-                zero = True
-            else:
-                if not a.is_finite:
-                    if zero:
-                        return  # 0*oo is nan and nan.is_zero is None
-                    infinite = True
-                if zero is False and z is None:  # trap None
-                    zero = None
-        return zero
+        if any(a.is_zero for a in self.args):
+            if all(a.is_finite for a in self.args):
+                return True
+        elif all(a.is_nonzero for a in self.args):
+            return False
 
     def _eval_is_integer(self):
         is_rational = self.is_rational
