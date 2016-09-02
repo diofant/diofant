@@ -454,36 +454,27 @@ class Pow(Expr):
 
     def _eval_is_imaginary(self):
         from diofant import arg, log
+
         if self.base.is_imaginary:
             if self.exp.is_integer:
-                odd = self.exp.is_odd
-                if odd is not None:
-                    return odd
-                return
+                return self.exp.is_odd
 
-        if self.exp.is_imaginary:
-            imlog = log(self.base).is_imaginary
-            if imlog is not None and self.exp.is_nonzero:
+        if self.exp.is_imaginary and self.exp.is_nonzero:
+            if log(self.base).is_imaginary:
                 return False
 
-        if self.base.is_extended_real and self.exp.is_extended_real:
+        if self.base.is_real and self.exp.is_real:
             if self.base.is_positive:
                 return False
             else:
-                rat = self.exp.is_rational
-                if not rat:
-                    return rat
                 if self.exp.is_integer:
                     return False
                 else:
-                    half = (2*self.exp).is_integer
-                    if half:
+                    if (2*self.exp).is_integer:
                         return self.base.is_negative
-                    return half
 
-        if self.base.is_extended_real is False:  # we already know it's not imag
-            i = arg(self.base)*self.exp/S.Pi
-            return (2*i).is_odd
+        if self.base.is_real is False:  # we already know it's not imag
+            return (2*arg(self.base)*self.exp/S.Pi).is_odd
 
     def _eval_is_odd(self):
         if self.exp.is_integer:

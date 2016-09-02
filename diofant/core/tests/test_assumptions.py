@@ -888,7 +888,7 @@ def test_issue_4149():
 
 
 def test_issue_2920():
-    n = Symbol('n', negative=True)
+    n = Symbol('n', real=True, negative=True)
     assert sqrt(n).is_imaginary
 
 
