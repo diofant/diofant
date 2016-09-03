@@ -7,7 +7,7 @@ from .basic import Basic
 from .singleton import S
 from .operations import AssocOp
 from .cache import cacheit
-from .logic import fuzzy_not, _fuzzy_group
+from .logic import fuzzy_not, _fuzzy_group, fuzzy_and
 from .compatibility import default_sort_key
 from .expr import Expr
 
@@ -1042,9 +1042,10 @@ class Mul(Expr, AssocOp):
     def _eval_is_imaginary(self):
         obj = S.ImaginaryUnit*self
         if obj.is_Mul:
-            return obj._eval_is_extended_real()
+            return fuzzy_and([obj._eval_is_extended_real(),
+                              obj._eval_is_finite()])
         else:
-            return obj.is_extended_real
+            return obj.is_real
 
     def _eval_is_hermitian(self):
         real = True
