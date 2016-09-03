@@ -1006,6 +1006,9 @@ def test_Pow_is_real():
     assert (i**o).is_extended_real is False
     assert (i**k).is_extended_real is None
     assert (i**(4*k)).is_extended_real is True
+    assert (x**i).is_extended_real is None
+    assert (i**(S.Half + x)).is_extended_real is None
+    assert Pow(I, 2, evaluate=False).is_extended_real
 
     x = Symbol("x", nonnegative=True)
     y = Symbol("y", nonnegative=True)

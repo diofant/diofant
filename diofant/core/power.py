@@ -426,22 +426,18 @@ class Pow(Expr):
             elif self.exp.is_Add:
                 c, a = self.exp.as_coeff_Add()
                 if c and c.is_Integer:
-                    return Mul(
-                        self.base**c, self.base**a, evaluate=False).is_extended_real
-            elif self.base in (-S.ImaginaryUnit, S.ImaginaryUnit):
-                if (self.exp/2).is_integer is False:
-                    return False
+                    return Mul(self.base**c, self.base**a,
+                               evaluate=False).is_extended_real
+            elif (self.base in (-S.ImaginaryUnit, S.ImaginaryUnit) and
+                  (self.exp/2).is_noninteger):
+                return False
         if real_b and im_e:
             if self.base is S.NegativeOne:
                 return True
             c = self.exp.coeff(S.ImaginaryUnit)
-            if c:
-                if c in (S.One, S.NegativeOne):
-                    if self.base == 2:
-                        return False
-                ok = (c*log(self.base)/S.Pi).is_integer
-                if ok is not None:
-                    return ok
+            if c in (S.One, S.NegativeOne):
+                if self.base == 2:
+                    return False
 
         if real_b is False:  # we already know it's not imag
             i = arg(self.base)*self.exp/S.Pi
