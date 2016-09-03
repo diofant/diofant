@@ -962,9 +962,7 @@ class Mul(Expr, AssocOp):
 
     def _eval_is_infinite(self):
         if any(a.is_infinite for a in self.args):
-            if any(a.is_zero for a in self.args):
-                return S.NaN.is_infinite
-            if any(a.is_zero is None for a in self.args):
+            if any(not a.is_nonzero for a in self.args):
                 return
             return True
 
