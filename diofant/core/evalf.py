@@ -1255,14 +1255,6 @@ class EvalfMixin(object):
         if subs and is_sequence(subs):
             raise TypeError('subs must be given as a dictionary')
 
-        # for sake of sage that doesn't like evalf(1)
-        if n == 1 and isinstance(self, Number):
-            from diofant.core.expr import _mag
-            rv = self.evalf(2, subs, maxn, chop, strict, quad)
-            m = _mag(rv)
-            rv = rv.round(1 - m)
-            return rv
-
         if not evalf_table:
             _create_evalf_table()
         prec = dps_to_prec(n)
