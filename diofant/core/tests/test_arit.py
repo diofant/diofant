@@ -549,6 +549,7 @@ def test_Mul_is_negative_positive():
 
     e = 2*z
     assert e.is_Mul and e.is_positive is False and e.is_negative is False
+    assert (x*y).is_positive is None
 
     neg = Symbol('neg', negative=True)
     pos = Symbol('pos', positive=True)
