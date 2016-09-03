@@ -481,6 +481,10 @@ class Abs(Function):
     def _eval_is_nonzero(self):
         return self._args[0].is_nonzero
 
+    def _eval_is_finite(self):
+        if self.args[0].is_complex:
+            return True
+
     def _eval_is_positive(self):
         return self.is_nonzero
 

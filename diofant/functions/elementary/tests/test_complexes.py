@@ -419,12 +419,14 @@ def test_Abs_properties():
     assert Abs(x).is_rational is None
     assert Abs(x).is_positive is None
     assert Abs(x).is_nonnegative is True
+    assert Abs(x).is_finite is None
 
     z = Symbol('z', complex=True, zero=False)
     assert Abs(z).is_extended_real is True
     assert Abs(z).is_rational is None
     assert Abs(z).is_positive is True
     assert Abs(z).is_zero is False
+    assert Abs(z).is_finite
 
     p = Symbol('p', positive=True)
     assert Abs(p).is_extended_real is True
@@ -437,11 +439,13 @@ def test_Abs_properties():
     assert Abs(q).is_integer is None
     assert Abs(q).is_positive is None
     assert Abs(q).is_nonnegative is True
+    assert Abs(q).is_finite
 
     i = Symbol('i', integer=True)
     assert Abs(i).is_integer is True
     assert Abs(i).is_positive is None
     assert Abs(i).is_nonnegative is True
+    assert Abs(i).is_finite
 
     e = Symbol('n', even=True)
     ne = Symbol('ne', extended_real=True, even=False)
