@@ -1291,6 +1291,13 @@ def test_Mul_hermitian_antihermitian():
     assert e5.is_antihermitian is None
     assert e6.is_antihermitian is None
 
+    z = Symbol('z', zero=True)
+    e = Symbol('e', antihermitian=True, finite=True)
+    assert (z*e).is_antihermitian is False
+    A = Symbol('A', hermitian=True, commutative=False)
+    B = Symbol('B', hermitian=True, commutative=False)
+    assert (A*B).is_hermitian is None
+
 
 def test_Add_is_comparable():
     assert (x + y).is_comparable is False
