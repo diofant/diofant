@@ -1076,10 +1076,9 @@ class Mul(Expr, AssocOp):
             return real
 
     def _eval_is_antihermitian(self):
-        z = self.is_zero
-        if z:
+        if self.is_zero:
             return False
-        elif z is False:
+        elif self.is_nonzero:
             return (S.ImaginaryUnit*self).is_hermitian
 
     def _eval_is_irrational(self):
