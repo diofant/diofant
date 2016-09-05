@@ -1220,6 +1220,8 @@ def test_Mul_is_imaginary_real():
     p = Symbol('p', positive=True, real=True)
     i = Symbol('i', imaginary=True)
     ii = Symbol('ii', imaginary=True)
+    ni = Symbol('ni', imaginary=True, nonzero=True)
+    nii = Symbol('nii', imaginary=True, nonzero=True)
     x = Symbol('x')
 
     assert I.is_imaginary is True
@@ -1256,7 +1258,7 @@ def test_Mul_is_imaginary_real():
     assert (x*i).is_imaginary is None
     assert (x*i).is_extended_real is None
 
-    assert (i*ii).is_imaginary is False
+    assert (ni*nii).is_imaginary is False
     assert (i*ii).is_extended_real is True
 
     assert (r*i*ii).is_imaginary is None
@@ -1816,18 +1818,19 @@ def test_mul_coeff():
 
 
 def test_mul_zero_detection():
-    nz = Dummy(extended_real=True, zero=False, finite=True)
+    nz = Dummy(real=True, nonzero=True)
     r = Dummy(extended_real=True)
-    c = Dummy(extended_real=False, complex=True, finite=True)
-    c2 = Dummy(extended_real=False, complex=True, finite=True)
-    i = Dummy(imaginary=True, finite=True)
+    c = Dummy(real=False, complex=True)
+    c2 = Dummy(real=False, complex=True)
+    i = Dummy(imaginary=True)
+    ni = Dummy(imaginary=True, nonzero=True)
     e = nz*r*c
     assert e.is_imaginary is None
     assert e.is_extended_real is None
     e = nz*c
     assert e.is_imaginary is None
     assert e.is_extended_real is False
-    e = nz*i*c
+    e = nz*ni*c
     assert e.is_imaginary is False
     assert e.is_extended_real is None
     # check for more than one complex; it is important to use

@@ -1011,18 +1011,17 @@ class Mul(Expr, AssocOp):
         for t in self.args:
             if t.is_finite and not t.is_complex:
                 return t.is_complex
-            elif t.is_imaginary:
-                real = not real
-            elif t.is_extended_real:
-                if not zero:
-                    z = t.is_zero
-                    if not z and zero is False:
-                        zero = z
-                    elif z:
-                        if all(a.is_finite for a in self.args):
-                            return True
-                        return
-            elif t.is_extended_real is False:
+            elif t.is_imaginary or t.is_extended_real:
+                if t.is_imaginary:
+                    real = not real
+                z = t.is_zero
+                if not z and zero is False:
+                    zero = z
+                elif z:
+                    if all(a.is_finite for a in self.args):
+                        return True
+                    return
+            elif t.is_complex and t.is_real is False:
                 if one_neither:
                     return  # complex terms might cancel
                 one_neither = True
