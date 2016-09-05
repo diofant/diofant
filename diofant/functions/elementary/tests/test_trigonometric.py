@@ -682,6 +682,9 @@ def test_asin():
 
     assert asin(x).diff(x) == 1/sqrt(1 - x**2)
 
+    assert asin(c).is_complex
+    assert asin(x).is_complex is None
+
     assert asin(0.2).is_extended_real is True
     assert asin(-2).is_extended_real is False
     assert asin(r).is_extended_real is None

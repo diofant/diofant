@@ -1650,6 +1650,10 @@ class asin(InverseTrigonometricFunction):
     def _eval_rewrite_as_acsc(self, arg):
         return acsc(1/arg)
 
+    def _eval_is_complex(self):
+        if self.args[0].is_complex:
+            return True
+
     def _eval_is_extended_real(self):
         x = self.args[0]
         return fuzzy_and([x.is_real, (1 - abs(x)).is_nonnegative])
