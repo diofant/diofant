@@ -1045,8 +1045,8 @@ class Mul(Expr, AssocOp):
             return obj.is_real
 
     def _eval_is_hermitian(self):
-        real = True
-        one_nc = zero = one_neither = False
+        hermitian = True
+        one_nc = zero = False
 
         for t in self.args:
             if not t.is_commutative:
@@ -1054,25 +1054,21 @@ class Mul(Expr, AssocOp):
                     return
                 one_nc = True
 
-            if t.is_antihermitian:
-                real = not real
-            elif t.is_hermitian:
-                if zero is False:
-                    zero = fuzzy_not(t.is_nonzero)
-                    if zero:
+            if t.is_antihermitian or t.is_hermitian:
+                if t.is_antihermitian:
+                    hermitian = not hermitian
+                z = t.is_zero
+                if not z and zero is False:
+                    zero = z
+                elif z:
+                    if self.is_finite:
                         return True
-            elif t.is_hermitian is False:
-                if one_neither:
                     return
-                one_neither = True
             else:
                 return
 
-        if one_neither:
-            if real:
-                return zero
-        elif zero is False or real:
-            return real
+        if zero is False or hermitian:
+            return hermitian
 
     def _eval_is_antihermitian(self):
         if self.is_zero:
