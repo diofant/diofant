@@ -676,9 +676,7 @@ class Expr(Basic, EvalfMixin):
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
@@ -705,18 +703,14 @@ class Expr(Basic, EvalfMixin):
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
             r, i = self.evalf(2).as_real_imag()
-            if not i.is_Number or not r.is_Number:
-                return False
-            if r._prec != 1 and i._prec != 1:
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
                 return bool(not i and r > 0)
 
     def _eval_is_negative(self):
@@ -726,18 +720,14 @@ class Expr(Basic, EvalfMixin):
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
             r, i = self.evalf(2).as_real_imag()
-            if not i.is_Number or not r.is_Number:
-                return False
-            if r._prec != 1 and i._prec != 1:
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
                 return bool(not i and r < 0)
 
     def _eval_interval(self, x, a, b):
