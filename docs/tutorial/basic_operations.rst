@@ -131,10 +131,10 @@ To evaluate a numerical expression into a floating point number, use
 
 Diofant can evaluate floating point expressions to arbitrary precision.  By
 default, 15 digits of precision are used, but you can pass any number as the
-argument to ``evalf``.  Let's compute the first 100 digits of `\pi`.
+argument to ``evalf``.  Let's compute the first 70 digits of `\pi`.
 
-    >>> pi.evalf(100)
-    3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068
+    >>> pi.evalf(70)
+    3.141592653589793238462643383279502884197169399375105820974944592307816
 
 To numerically evaluate an expression with a Symbol at a point, we might use
 ``subs`` followed by ``evalf``, but it is more efficient and numerically
