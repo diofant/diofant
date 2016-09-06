@@ -9,7 +9,7 @@ from .expr import Expr
 from .evalf import PrecisionExhausted
 from .function import (_coeff_isneg, expand_complex, expand_multinomial,
                        expand_mul)
-from .logic import fuzzy_bool
+from .logic import fuzzy_or
 from .compatibility import as_int
 from .evaluate import global_evaluate
 from diofant.utilities.iterables import sift
@@ -386,20 +386,20 @@ class Pow(Expr):
 
     def _eval_is_extended_real(self):
         from diofant import arg, log, Mul
+
         if self.base is S.Exp1:
             if self.exp.is_extended_real:
                 return True
             elif self.exp.is_imaginary:
-                arg2 = -2*S.ImaginaryUnit*self.exp/S.Pi
-                return arg2.is_even
-        real_b = self.base.is_extended_real
-        if real_b is None:
+                return (2*S.ImaginaryUnit*self.exp/S.Pi).is_even
+
+        if self.base.is_extended_real is None:
             if self.base.func == Pow and self.base.base is S.Exp1 and self.base.exp.is_imaginary:
                 return self.exp.is_imaginary
-        real_e = self.exp.is_extended_real
-        if real_e is None:
+        if self.exp.is_extended_real is None:
             return
-        if real_b and real_e:
+
+        if self.base.is_extended_real and self.exp.is_extended_real:
             if self.base.is_positive:
                 return True
             elif self.base.is_nonnegative:
@@ -407,21 +407,23 @@ class Pow(Expr):
                     return True
             else:
                 if self.exp.is_integer:
-                    return True
+                    if self.base.is_nonzero or self.exp.is_nonnegative:
+                        return True
                 elif self.base.is_negative:
-                    if self.exp.is_Rational:
+                    if self.exp.is_rational and self.exp.is_noninteger:
                         return False
-        if real_e and self.exp.is_negative:
+
+        if self.base.is_nonzero and self.exp.is_negative:
             return Pow(self.base, -self.exp).is_extended_real
-        im_b = self.base.is_imaginary
-        im_e = self.exp.is_imaginary
-        if im_b:
+
+        if self.base.is_imaginary:
             if self.exp.is_integer:
                 if self.exp.is_even:
-                    return True
+                    if self.base.is_nonzero or self.exp.is_nonnegative:
+                        return True
                 elif self.exp.is_odd:
                     return False
-            elif im_e and log(self.base).is_imaginary:
+            elif self.exp.is_imaginary and log(self.base).is_imaginary:
                 return True
             elif self.exp.is_Add:
                 c, a = self.exp.as_coeff_Add()
@@ -431,7 +433,9 @@ class Pow(Expr):
             elif (self.base in (-S.ImaginaryUnit, S.ImaginaryUnit) and
                   (self.exp/2).is_noninteger):
                 return False
-        if real_b and im_e:
+            return
+
+        if self.base.is_extended_real and self.exp.is_imaginary:
             if self.base is S.NegativeOne:
                 return True
             c = self.exp.coeff(S.ImaginaryUnit)
@@ -439,7 +443,7 @@ class Pow(Expr):
                 if self.base == 2:
                     return False
 
-        if real_b is False:  # we already know it's not imag
+        if self.base.is_extended_real is False:  # we already know it's not imag
             i = arg(self.base)*self.exp/S.Pi
             return i.is_integer
 
@@ -669,7 +673,7 @@ class Pow(Expr):
             if polar:
                 return True
             if polar is None:
-                return fuzzy_bool(x.is_nonnegative)
+                return fuzzy_or([x.is_nonnegative, (1/x).is_nonnegative])
         sifted = sift(cargs, pred)
         nonneg = sifted[True]
         other = sifted[None]

@@ -1002,7 +1002,7 @@ def test_Pow_is_real():
     e = Symbol('e', even=True)
     o = Symbol('o', odd=True)
     k = Symbol('k', integer=True)
-    assert (i**e).is_extended_real is True
+    assert (i**(e**2)).is_extended_real is True
     assert (i**o).is_extended_real is False
     assert (i**k).is_extended_real is None
     assert (i**(4*k)).is_extended_real is True
