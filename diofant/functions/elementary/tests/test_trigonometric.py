@@ -1254,9 +1254,6 @@ def test_sec():
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
 
-    assert sec(r).is_extended_real
-    assert sec(z).is_extended_real is None
-
     assert sec(a).is_algebraic is None
     assert sec(na).is_algebraic is False
 
@@ -1328,9 +1325,6 @@ def test_csc():
 
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
-
-    assert csc(r).is_extended_real
-    assert csc(z).is_extended_real is None
 
     assert csc(a).is_algebraic is None
     assert csc(na).is_algebraic is False
