@@ -132,7 +132,6 @@ class PSpace(Basic):
 
     is_Finite = None
     is_Continuous = None
-    is_real = None
 
     @property
     def domain(self):
