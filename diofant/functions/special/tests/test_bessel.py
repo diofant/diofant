@@ -355,6 +355,7 @@ def test_airy_base():
 
     assert conjugate(airyai(z)) == airyai(conjugate(z))
     assert airyai(x).is_extended_real
+    assert airyai(z).is_extended_real is None
 
     assert airyai(x+I*y).as_real_imag() == (
         airyai(x - I*x*Abs(y)/Abs(x))/2 + airyai(x + I*x*Abs(y)/Abs(x))/2,

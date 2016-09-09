@@ -466,7 +466,7 @@ class Abs(Function):
             if arg.has(S.Infinity, S.NegativeInfinity):
                 if any(a.is_infinite for a in arg.as_real_imag()):
                     return S.Infinity
-            if arg.is_extended_real is None and arg.is_imaginary is None:
+            if arg.is_extended_real is not True and arg.is_imaginary is None:
                 if all(a.is_extended_real or a.is_imaginary or (S.ImaginaryUnit*a).is_extended_real for a in arg.args):
                     from diofant import expand_mul
                     return sqrt(expand_mul(arg*arg.conjugate()))
@@ -480,6 +480,10 @@ class Abs(Function):
 
     def _eval_is_nonzero(self):
         return self._args[0].is_nonzero
+
+    def _eval_is_finite(self):
+        if self.args[0].is_complex:
+            return True
 
     def _eval_is_positive(self):
         return self.is_nonzero
@@ -875,7 +879,7 @@ class periodic_argument(Function):
         return (ub - ceiling(ub/period - Rational(1, 2))*period)._eval_evalf(prec)
 
     def _eval_is_real(self):
-        if self.args[1].is_positive:
+        if self.args[1].is_real and self.args[1].is_positive:
             return True
 
 

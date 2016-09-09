@@ -9,7 +9,15 @@ def test_floor():
     x = Symbol('x')
     i = Symbol('i', imaginary=True)
     y = Symbol('y', extended_real=True)
+    r = Symbol('r', real=True)
     k, n = symbols('k,n', integer=True)
+
+    assert floor(y).is_extended_real
+    assert floor(x).is_extended_real is None
+    assert floor(r).is_finite
+    assert floor(y).is_finite is None
+    assert floor(r).is_integer
+    assert floor(y).is_integer is None
 
     assert floor(nan) == nan
 

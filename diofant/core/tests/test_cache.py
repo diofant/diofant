@@ -86,10 +86,10 @@ def test_nocache(clear_imports, monkeypatch):
 
     # see commit 53dd1eb
     mx = -Symbol('x', negative=False)
-    assert mx.is_positive is False
+    assert mx.is_positive is not True
 
     px = 2*Symbol('x', positive=False)
-    assert px.is_positive is False
+    assert px.is_positive is not True
 
     # see commit 2eaaba2
     s = 1/sqrt(x**2)

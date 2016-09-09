@@ -186,6 +186,7 @@ def test_mul():
     assert (x*y/z).subs(x, 1/a) == y/(z*a)
     assert (2*x*y).subs(5*x*y, z) != 2*z/5
     assert (x*y*A).subs(x*y, a) == a*A
+    assert Subs(x*y*A, x*y, a).is_commutative is False
     assert (x**2*y**(3*x/2)).subs(x*y**(x/2), 2) == 4*y**(x/2)
     assert (x*exp(x*2)).subs(x*exp(x), 2) == 2*exp(x)
     assert ((x**(2*y))**3).subs(x**y, 2) == 64
@@ -193,6 +194,7 @@ def test_mul():
     assert (x*y*(1 + x)*(1 + x*y)).subs(x*y, 2) == 6*(1 + x)
     assert ((1 + A*B)*A*B).subs(A*B, x*A*B)
     assert (x*a/z).subs(x/z, A) == a*A
+    assert Subs(x*a/z, x/z, A).is_commutative is False
     assert (x**3*A).subs(x**2*A, a) == a*x
     assert (x**2*A*B).subs(x**2*B, a) == a*A
     assert (x**2*A*B).subs(x**2*A, a) == a*B
