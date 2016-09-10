@@ -239,7 +239,6 @@ class sign(Function):
     diofant.functions.elementary.complexes.conjugate
     """
 
-    is_finite = True
     is_complex = True
 
     def doit(self, **hints):
@@ -562,8 +561,7 @@ class arg(Function):
     pi/4
     """
 
-    is_extended_real = True
-    is_finite = True
+    is_real = True
 
     @classmethod
     def eval(cls, arg):
