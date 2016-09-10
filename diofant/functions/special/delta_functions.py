@@ -41,7 +41,7 @@ class DiracDelta(Function):
     .. [1] http://mathworld.wolfram.com/DeltaFunction.html
     """
 
-    is_extended_real = True
+    is_commutative = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -159,6 +159,15 @@ class DiracDelta(Function):
     @staticmethod
     def _latex_no_arg(printer):
         return r'\delta'
+
+    def _eval_adjoint(self):
+        return self
+
+    def _eval_conjugate(self):
+        return self
+
+    def _eval_transpose(self):
+        return self
 
 
 ###############################################################################
