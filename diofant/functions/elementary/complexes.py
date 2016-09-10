@@ -573,6 +573,8 @@ class arg(Function):
             arg_ = sign(c)*arg_
         else:
             arg_ = arg
+        if arg_.is_zero:
+            return S.Zero
         x, y = re(arg_), im(arg_)
         rv = atan2(y, x)
         if rv.is_number and not rv.atoms(AppliedUndef):

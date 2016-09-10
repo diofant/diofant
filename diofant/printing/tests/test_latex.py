@@ -340,10 +340,10 @@ def test_latex_functions():
     assert latex(Znm(n, m, theta, phi)**3) == r'\left(Z_{n}^{m}\left(\theta,\phi\right)\right)^{3}'
 
     # Test latex printing of function names with "_"
-    assert latex(
-        polar_lift(0)) == r"\operatorname{polar\_lift}{\left (0 \right )}"
-    assert latex(polar_lift(
-        0)**3) == r"\operatorname{polar\_lift}^{3}{\left (0 \right )}"
+    assert (latex(polar_lift(0, evaluate=False)) ==
+            r"\operatorname{polar\_lift}{\left (0 \right )}")
+    assert (latex(polar_lift(0, evaluate=False)**3) ==
+            r"\operatorname{polar\_lift}^{3}{\left (0 \right )}")
 
     assert latex(totient(n)) == r'\phi\left( n \right)'
 
