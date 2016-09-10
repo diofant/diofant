@@ -184,8 +184,6 @@ class Heaviside(Function):
     .. [1] https://en.wikipedia.org/wiki/Heaviside_step_function
     """
 
-    is_real = True
-
     def fdiff(self, argindex=1):
         if argindex == 1:
             return DiracDelta(self.args[0])
@@ -211,3 +209,7 @@ class Heaviside(Function):
     def _eval_rewrite_as_sign(self, arg):
         if arg.is_extended_real:
             return (sign(arg)+1)/2
+
+    def _eval_is_real(self):
+        if self.args[0].is_extended_real:
+            return True
