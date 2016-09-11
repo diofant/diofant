@@ -616,8 +616,6 @@ class Float(Number):
 
     # A Float represents many real numbers,
     # both rational and irrational.
-    is_rational = None
-    is_irrational = None
     is_number = True
 
     is_extended_real = True
@@ -3077,7 +3075,6 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     is_real = True
     is_positive = True
     is_negative = False
-    is_irrational = None
     is_number = True
 
     def _latex(self, printer):
@@ -3127,7 +3124,6 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     is_real = True
     is_positive = True
     is_negative = False
-    is_irrational = None
     is_number = True
 
     def __int__(self):

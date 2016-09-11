@@ -320,7 +320,6 @@ class IndexedBase(Expr, NotIterable):
     (o, p)
 
     """
-    is_commutative = True
 
     def __new__(cls, label, shape=None, **kw_args):
         if isinstance(label, str):

@@ -468,7 +468,7 @@ def test_abs():
 
 
 def test_arg():
-    assert arg(0) == nan
+    assert arg(0) == 0
     assert arg(1) == 0
     assert arg(-1) == pi
     assert arg(I) == pi/2
