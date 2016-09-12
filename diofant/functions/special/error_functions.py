@@ -150,7 +150,11 @@ class erf(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return True
+        elif arg.is_imaginary and arg.is_nonzero:
+            return False
 
     def _eval_rewrite_as_uppergamma(self, z):
         from diofant import uppergamma
@@ -337,7 +341,11 @@ class erfc(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return True
+        elif arg.is_imaginary and arg.is_nonzero:
+            return False
 
     def _eval_rewrite_as_tractable(self, z):
         return self.rewrite(erf).rewrite("tractable", deep=True)
@@ -514,7 +522,11 @@ class erfi(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return True
+        elif arg.is_imaginary and arg.is_nonzero:
+            return False
 
     def _eval_rewrite_as_tractable(self, z):
         return self.rewrite(erf).rewrite("tractable", deep=True)
@@ -662,7 +674,12 @@ class erf2(Function):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real and self.args[1].is_extended_real
+        x, y = self.args
+        if y.is_extended_real:
+            if x.is_extended_real:
+                return True
+            elif x.is_imaginary and x.is_nonzero:
+                return False
 
     def _eval_rewrite_as_erf(self, x, y):
         return erf(y) - erf(x)
@@ -1999,7 +2016,8 @@ class FresnelIntegral(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())

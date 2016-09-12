@@ -122,9 +122,9 @@ class RootOf(Expr):
         # either case no free symbols should be reported.
         return set()
 
-    def _eval_is_extended_real(self):
-        """Return ``True`` if the root is real. """
+    def _eval_is_real(self):
         return self.index < len(_reals_cache[self.poly])
+    _eval_is_extended_real = _eval_is_real
 
     @classmethod
     def real_roots(cls, poly, radicals=True):
@@ -505,7 +505,7 @@ class RootOf(Expr):
 
     def _get_interval(self):
         """Internal function for retrieving isolation interval from cache. """
-        if self.is_extended_real:
+        if self.is_real:
             return _reals_cache[self.poly][self.index]
         else:
             reals_count = len(_reals_cache[self.poly])
@@ -513,7 +513,7 @@ class RootOf(Expr):
 
     def _set_interval(self, interval):
         """Internal function for updating isolation interval in cache. """
-        if self.is_extended_real:
+        if self.is_real:
             _reals_cache[self.poly][self.index] = interval
         else:
             reals_count = len(_reals_cache[self.poly])

@@ -111,7 +111,10 @@ def test_sin():
     assert sin(na).is_algebraic is False
     q = Symbol('q', rational=True)
     assert sin(pi*q).is_algebraic
+    qz = Symbol('qz', zero=True)
     qn = Symbol('qn', rational=True, nonzero=True)
+    assert sin(qz).is_rational
+    assert sin(0, evaluate=False).is_rational
     assert sin(qn).is_rational is False
     assert sin(q).is_rational is None  # issue 8653
 
@@ -301,6 +304,13 @@ def test_cos():
     assert cos(pi*q).is_algebraic
     assert cos(2*pi/7).is_algebraic
 
+    qz = Symbol('qz', zero=True)
+    qn = Symbol('qn', rational=True, nonzero=True)
+    assert cos(qz).is_rational
+    assert cos(0, evaluate=False).is_rational
+    assert cos(qn).is_rational is False
+    assert cos(q).is_rational is None
+
     assert cos(k*pi) == (-1)**k
     assert cos(2*k*pi) == 1
 
@@ -428,11 +438,23 @@ def test_tan():
 
     assert tan(k*pi*I) == tanh(k*pi)*I
 
-    assert tan(r).is_extended_real is True
+    ni = Symbol('ni', noninteger=True)
+    assert tan(ni*pi/2).is_real is True
 
     assert tan(0, evaluate=False).is_algebraic
     assert tan(a).is_algebraic is None
     assert tan(na).is_algebraic is False
+
+    qz = Symbol('qz', zero=True)
+    qn = Symbol('qn', rational=True, nonzero=True)
+    assert tan(qz).is_rational
+    assert tan(0, evaluate=False).is_rational
+    assert tan(qn).is_rational is False
+    assert tan(x).is_rational is None
+
+    assert tan(qz).is_algebraic
+    assert tan(10*pi/7, evaluate=False).is_algebraic
+    assert tan(pi*k/2).is_algebraic is None
 
     assert tan(10*pi/7) == tan(3*pi/7)
     assert tan(11*pi/7) == -tan(3*pi/7)
@@ -559,7 +581,8 @@ def test_cot():
     assert cot(x*I) == -coth(x)*I
     assert cot(k*pi*I) == -coth(k*pi)*I
 
-    assert cot(r).is_extended_real is True
+    ni = Symbol('ni', noninteger=True)
+    assert cot(pi*ni/2).is_extended_real is True
 
     assert cot(a).is_algebraic is None
     assert cot(na).is_algebraic is False
@@ -659,9 +682,21 @@ def test_asin():
 
     assert asin(x).diff(x) == 1/sqrt(1 - x**2)
 
+    assert asin(c).is_complex
+    assert asin(x).is_complex is None
+
     assert asin(0.2).is_extended_real is True
     assert asin(-2).is_extended_real is False
     assert asin(r).is_extended_real is None
+
+    assert asin(0, evaluate=False).is_rational
+    assert asin(1, evaluate=False).is_rational is False
+
+    z = Symbol('z', zero=True)
+    rn = Symbol('rn', rational=True, nonzero=True)
+    assert asin(z).is_rational
+    assert asin(rn).is_rational is False
+    assert asin(x).is_rational is None
 
     assert asin(-2*I) == -I*asinh(2)
 
@@ -710,6 +745,15 @@ def test_acos():
     assert acos(-2).is_extended_real is False
     assert acos(r).is_extended_real is None
 
+    assert acos(1, evaluate=False).is_rational
+    assert acos(0, evaluate=False).is_rational is False
+
+    z = Symbol('z', zero=True)
+    rn = Symbol('rn', rational=True, nonzero=True)
+    assert acos(1 + z).is_rational
+    assert acos(1 + rn).is_rational is False
+    assert acos(x).is_rational is None
+
     assert acos(Rational(1, 7), evaluate=False).is_positive is True
     assert acos(Rational(-1, 7), evaluate=False).is_positive is True
     assert acos(Rational(3, 2), evaluate=False).is_positive is False
@@ -720,6 +764,8 @@ def test_acos():
     assert acos(S.One/3).conjugate() == acos(S.One/3)
     assert acos(-S.One/3).conjugate() == acos(-S.One/3)
     assert acos(p + n*I).conjugate() == acos(p - n*I)
+
+    z = Symbol('z')
     assert acos(z).conjugate() != acos(conjugate(z))
 
 
@@ -763,6 +809,15 @@ def test_atan():
     assert atan(p).is_positive is True
     assert atan(n).is_positive is False
     assert atan(x).is_positive is None
+
+    assert atan(0, evaluate=False).is_rational
+    assert atan(1, evaluate=False).is_rational is False
+
+    z = Symbol('z', zero=True)
+    rn = Symbol('rn', rational=True, nonzero=True)
+    assert atan(z).is_rational
+    assert atan(rn).is_rational is False
+    assert atan(x).is_rational is None
 
 
 def test_atan_rewrite():
@@ -824,6 +879,13 @@ def test_atan2():
     assert rewrite == -I*log(abs(I*i + r)/sqrt(abs(i**2 + r**2))) + arg((I*i + r)/sqrt(i**2 + r**2))
     assert (e - rewrite).subs(reps).equals(0)
 
+    r1 = Symbol('r1', real=True, nonzero=True)
+    r2 = Symbol('r2', real=True, nonzero=True)
+    assert atan2(r1, r2).is_real
+    r1 = Symbol('r1', real=True)
+    r2 = Symbol('r2', real=True)
+    assert atan2(r1, r2).is_real is None
+
     assert conjugate(atan2(x, y)) == atan2(conjugate(x), conjugate(y))
 
     assert diff(atan2(y, x), x) == -y/(x**2 + y**2)
@@ -851,9 +913,14 @@ def test_acot():
     assert acot(I*pi) == -I*acoth(pi)
     assert acot(-2*I) == I*acoth(2)
     assert acot(x).is_positive is None
-    assert acot(r).is_positive is True
     assert acot(p).is_positive is True
     assert acot(I).is_positive is False
+
+    assert acot(0, evaluate=False).is_rational is False
+
+    q = Symbol('q', rational=True)
+    assert acot(q).is_rational is False
+    assert acot(x).is_rational is None
 
 
 def test_acot_rewrite():
@@ -1187,9 +1254,6 @@ def test_sec():
     assert sec(x).expand(trig=True) == 1/cos(x)
     assert sec(2*x).expand(trig=True) == 1/(2*cos(x)**2 - 1)
 
-    assert sec(r).is_extended_real
-    assert sec(z).is_extended_real is None
-
     assert sec(a).is_algebraic is None
     assert sec(na).is_algebraic is False
 
@@ -1261,9 +1325,6 @@ def test_csc():
 
     assert csc(x).expand(trig=True) == 1/sin(x)
     assert csc(2*x).expand(trig=True) == 1/(2*sin(x)*cos(x))
-
-    assert csc(r).is_extended_real
-    assert csc(z).is_extended_real is None
 
     assert csc(a).is_algebraic is None
     assert csc(na).is_algebraic is False

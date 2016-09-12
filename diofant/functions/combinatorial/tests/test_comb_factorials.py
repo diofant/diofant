@@ -41,9 +41,6 @@ def test_rf_eval_apply():
     assert rf(x, m).is_integer is None
     assert rf(n, k).is_integer is None
     assert rf(n, m).is_integer is True
-    assert rf(n, k + pi).is_integer is False
-    assert rf(n, m + pi).is_integer is False
-    assert rf(pi, m).is_integer is False
 
     assert rf(x, y).rewrite('tractable') == \
         exp(-loggamma(x))*exp(loggamma(x + y))
@@ -83,9 +80,6 @@ def test_ff_eval_apply():
     assert ff(x, m).is_integer is None
     assert ff(n, k).is_integer is None
     assert ff(n, m).is_integer is True
-    assert ff(n, k + pi).is_integer is False
-    assert ff(n, m + pi).is_integer is False
-    assert ff(pi, m).is_integer is False
 
 
 def test_factorial():
@@ -219,12 +213,15 @@ def test_factorial2():
     assert factorial2(nf).is_positive is None
     assert factorial2(nn).is_positive is None
 
+    assert factorial2(0, evaluate=False).is_even is False
+    assert factorial2(0, evaluate=False).is_odd is True
     assert factorial2(tt).is_even is None
     assert factorial2(tt).is_odd is None
     assert factorial2(tte).is_even is None
     assert factorial2(tte).is_odd is None
     assert factorial2(tte + 2).is_even is True
     assert factorial2(tpe).is_even is True
+    assert factorial2(tpe).is_odd is False
     assert factorial2(tto).is_odd is True
     assert factorial2(tf).is_even is None
     assert factorial2(tf).is_odd is None
@@ -277,6 +274,7 @@ def test_binomial():
     assert expand_func(binomial(n, n - 3)) == n*(n - 2)*(n - 1)/6
 
     assert binomial(n, k).is_integer
+    assert binomial(p, k).is_integer is None
 
 
 def test_binomial_diff():

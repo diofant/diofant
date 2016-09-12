@@ -668,88 +668,67 @@ class Expr(Basic, EvalfMixin):
         return
 
     def _eval_is_zero(self):
+        from diofant.polys.numberfields import minimal_polynomial
+        from diofant.polys.polyerrors import NotAlgebraic
+        from diofant.core.function import count_ops
+
         if self.is_number:
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
-            n, i = self.evalf(2).as_real_imag()
-            if n.is_Number and i.is_Number and n._prec != 1 and i._prec != 1:
-                if n != 0 or i != 0:
+            r, i = self.evalf(2).as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                if r != 0 or i != 0:
                     return False
+            elif (r._prec == 1 and (not i or i._prec == 1) and
+                  self.is_algebraic and not self.has(Function)):
+                if count_ops(self) > 75:
+                    return
+                try:
+                    if minimal_polynomial(self).is_Symbol:
+                        return True
+                except (NotAlgebraic, NotImplementedError):
+                    pass
 
     def _eval_is_positive(self):
-        from diofant.polys.numberfields import minimal_polynomial
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
-            n, i = self.evalf(2).as_real_imag()
-            if not i.is_Number or not n.is_Number:
-                return False
-            if n._prec != 1 and i._prec != 1:
-                return bool(not i and n > 0)
-            elif n._prec == 1 and (not i or i._prec == 1) and \
-                    self.is_algebraic and not self.has(Function):
-                if count_ops(self) > 75:
-                    return
-                try:
-                    if minimal_polynomial(self).is_Symbol:
-                        return False
-                except (NotAlgebraic, NotImplementedError):
-                    pass
+            r, i = self.evalf(2).as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                return bool(not i and r > 0)
 
     def _eval_is_negative(self):
-        from diofant.polys.numberfields import minimal_polynomial
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
-            n, i = self.evalf(2).as_real_imag()
-            if not i.is_Number or not n.is_Number:
-                return False
-            if n._prec != 1 and i._prec != 1:
-                return bool(not i and n < 0)
-            elif n._prec == 1 and (not i or i._prec == 1) and \
-                    self.is_algebraic and not self.has(Function):
-                if count_ops(self) > 75:
-                    return
-                try:
-                    if minimal_polynomial(self).is_Symbol:
-                        return False
-                except (NotAlgebraic, NotImplementedError):
-                    pass
+            r, i = self.evalf(2).as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                return bool(not i and r < 0)
 
     def _eval_interval(self, x, a, b):
         """Returns evaluation over an interval.

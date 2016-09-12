@@ -326,9 +326,8 @@ class besseli(BesselBase):
                 return S.ComplexInfinity
             elif nu.is_imaginary:
                 return S.NaN
-        if z.is_imaginary:
-            if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
-                return S.Zero
+        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+            return S.Zero
 
         if z.could_extract_minus_sign():
             return (z)**nu*(-z)**(-nu)*besseli(nu, -z)
@@ -418,9 +417,8 @@ class besselk(BesselBase):
                 return S.ComplexInfinity
             elif re(nu).is_zero:
                 return S.NaN
-        if z.is_imaginary:
-            if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
-                return S.Zero
+        if im(z) is S.Infinity or im(z) is S.NegativeInfinity:
+            return S.Zero
 
         if nu.is_integer:
             if nu.could_extract_minus_sign():
@@ -756,7 +754,8 @@ class AiryBase(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
