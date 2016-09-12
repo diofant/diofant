@@ -1,6 +1,7 @@
 from diofant.core.add import Add
 from diofant.core.basic import sympify, cacheit
 from diofant.core.function import Function, ArgumentIndexError
+from diofant.core.logic import fuzzy_and, fuzzy_not
 from diofant.core.numbers import igcdex, Rational, Integer
 from diofant.core.singleton import S
 from diofant.core.symbol import Symbol
@@ -21,25 +22,6 @@ class TrigonometricFunction(Function):
     """Base class for trigonometric functions. """
 
     unbranched = True
-
-    def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational and s.args[0].is_nonzero:
-                return False
-        else:
-            return s.is_rational
-
-    def _eval_is_algebraic(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if self.args[0].is_nonzero and self.args[0].is_algebraic:
-                return False
-            pi_coeff = _pi_coeff(self.args[0])
-            if pi_coeff is not None and pi_coeff.is_rational:
-                return True
-        else:
-            return s.is_algebraic
 
     def _eval_expand_complex(self, deep=True, **hints):
         re_part, im_part = self.as_real_imag(deep=deep, **hints)
@@ -392,10 +374,33 @@ class sin(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_complex(self):
-        return self.args[0].is_complex
+        if self.args[0].is_complex:
+            return True
 
     def _eval_is_real(self):
-        return self.args[0].is_real
+        if self.args[0].is_real:
+            return True
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            elif s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if self.args[0].is_algebraic and self.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(self.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                return True
+        else:
+            return s.is_algebraic
 
 
 class cos(TrigonometricFunction):
@@ -765,10 +770,33 @@ class cos(TrigonometricFunction):
             return self.func(arg)
 
     def _eval_is_real(self):
-        return self.args[0].is_real
+        if self.args[0].is_real:
+            return True
 
     def _eval_is_complex(self):
-        return self.args[0].is_complex
+        if self.args[0].is_complex:
+            return True
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            if s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if self.args[0].is_algebraic and self.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(self.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                return True
+        else:
+            return s.is_algebraic
 
 
 class tan(TrigonometricFunction):
@@ -1027,14 +1055,41 @@ class tan(TrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+    def _eval_is_real(self):
+        if (2*self.args[0]/S.Pi).is_noninteger:
+            return True
 
     def _eval_is_finite(self):
-        arg = self.args[0]
-
-        if arg.is_imaginary:
+        if self.args[0].is_imaginary:
             return True
+
+    def _eval_is_nonzero(self):
+        if (2*self.args[0]/S.Pi).is_noninteger:
+            return True
+        elif self.args[0].is_imaginary and self.args[0].is_nonzero:
+            return True
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            elif s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_algebraic and s.args[0].is_nonzero:
+                return False
+            pi_coeff = _pi_coeff(s.args[0])
+            if pi_coeff is not None and pi_coeff.is_rational:
+                if (2*pi_coeff).is_noninteger:
+                    return True
+        else:
+            return s.is_algebraic
 
 
 class ReciprocalTrigonometricFunction(TrigonometricFunction):
@@ -1142,11 +1197,17 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     def _eval_is_extended_real(self):
         return (1/self._reciprocal_of(self.args[0])).is_extended_real
 
-    def _eval_as_leading_term(self, x):
-        return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
-
     def _eval_is_finite(self):
         return (1/self._reciprocal_of(self.args[0])).is_finite
+
+    def _eval_is_rational(self):
+        return (1/self._reciprocal_of(self.args[0])).is_rational
+
+    def _eval_is_algebraic(self):
+        return (1/self._reciprocal_of(self.args[0])).is_algebraic
+
+    def _eval_as_leading_term(self, x):
+        return (1/self._reciprocal_of(self.args[0]))._eval_as_leading_term(x)
 
     def _eval_nseries(self, x, n, logx):
         return (1/self._reciprocal_of(self.args[0]))._eval_nseries(x, n, logx)
@@ -1500,20 +1561,6 @@ class asin(InverseTrigonometricFunction):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational:
-                return False
-        else:
-            return s.is_rational
-
-    def _eval_is_positive(self):
-        if self.args[0].is_positive:
-            return (self.args[0] - 1).is_negative
-        if self.args[0].is_negative:
-            return not (self.args[0] + 1).is_positive
-
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
@@ -1603,9 +1650,29 @@ class asin(InverseTrigonometricFunction):
     def _eval_rewrite_as_acsc(self, arg):
         return acsc(1/arg)
 
+    def _eval_is_complex(self):
+        if self.args[0].is_complex:
+            return True
+
     def _eval_is_extended_real(self):
         x = self.args[0]
-        return x.is_extended_real and (1 - abs(x)).is_nonnegative
+        return fuzzy_and([x.is_real, (1 - abs(x)).is_nonnegative])
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            elif s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_positive(self):
+        if self.args[0].is_positive:
+            return (self.args[0] - 1).is_negative
+        if self.args[0].is_negative:
+            return fuzzy_not((self.args[0] + 1).is_positive)
 
     def inverse(self, argindex=1):
         """
@@ -1670,18 +1737,6 @@ class acos(InverseTrigonometricFunction):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational:
-                return False
-        else:
-            return s.is_rational
-
-    def _eval_is_positive(self):
-        x = self.args[0]
-        return (1 - abs(x)).is_nonnegative
-
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
@@ -1741,9 +1796,23 @@ class acos(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if (s.args[0] - 1).is_zero:
+                return True
+            elif s.args[0].is_rational and (s.args[0] - 1).is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_positive(self):
+        x = self.args[0]
+        return fuzzy_and([x.is_real, (1 - abs(x)).is_positive])
+
     def _eval_is_extended_real(self):
         x = self.args[0]
-        return x.is_extended_real and (1 - abs(x)).is_nonnegative
+        return fuzzy_and([x.is_real, (1 - abs(x)).is_nonnegative])
 
     def _eval_nseries(self, x, n, logx):
         return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
@@ -1835,17 +1904,6 @@ class atan(InverseTrigonometricFunction):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational:
-                return False
-        else:
-            return s.is_rational
-
-    def _eval_is_positive(self):
-        return self.args[0].is_positive
-
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
@@ -1904,6 +1962,19 @@ class atan(InverseTrigonometricFunction):
             return arg
         else:
             return self.func(arg)
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_zero:
+                return True
+            elif s.args[0].is_rational and s.args[0].is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_positive(self):
+        return self.args[0].is_positive
 
     def _eval_is_extended_real(self):
         return self.args[0].is_extended_real
@@ -1980,17 +2051,6 @@ class acot(InverseTrigonometricFunction):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    def _eval_is_rational(self):
-        s = self.func(*self.args)
-        if s.func == self.func:
-            if s.args[0].is_rational:
-                return False
-        else:
-            return s.is_rational
-
-    def _eval_is_positive(self):
-        return self.args[0].is_extended_real
-
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
@@ -2054,6 +2114,17 @@ class acot(InverseTrigonometricFunction):
             return arg
         else:
             return self.func(arg)
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_rational:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_positive(self):
+        return self.args[0].is_nonnegative
 
     def _eval_is_extended_real(self):
         return self.args[0].is_extended_real
@@ -2458,8 +2529,10 @@ class atan2(InverseTrigonometricFunction):
         return arg(n/sqrt(d)) - I*log(abs(n)/sqrt(abs(d)))
 
     def _eval_is_real(self):
-        # XXX this seems to be wrong for (0, 0)
-        return self.args[0].is_real and self.args[1].is_real
+        y, x = self.args
+        if x.is_real and y.is_real:
+            if x.is_nonzero and y.is_nonzero:
+                return True
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())

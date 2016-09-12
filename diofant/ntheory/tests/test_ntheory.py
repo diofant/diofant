@@ -397,6 +397,7 @@ def test_totient():
 
     n = Symbol("n", integer=True, positive=True)
     assert totient(n).is_integer
+    assert totient(m).is_integer is None
 
 
 def test_divisor_sigma():

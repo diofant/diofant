@@ -42,6 +42,8 @@ def test_simple_1():
     pytest.raises(TypeError, lambda: O(x, 2 - x))
     pytest.raises(ValueError, lambda: O(x, (x, x**2)))
 
+    assert O(x**2).is_commutative
+
 
 def test_simple_2():
     assert O(2*x)*x == O(x**2)

@@ -433,14 +433,17 @@ class Add(Expr, AssocOp):
         return all(term._eval_is_algebraic_expr(syms) for term in self.args)
 
     # assumption methods
+
     def _eval_is_extended_real(self):
-        return _fuzzy_group((a.is_extended_real for a in self.args), quick_exit=True)
+        return _fuzzy_group((a.is_extended_real for a in self.args),
+                            quick_exit=True)
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
 
     def _eval_is_antihermitian(self):
-        return _fuzzy_group((a.is_antihermitian for a in self.args), quick_exit=True)
+        return _fuzzy_group((a.is_antihermitian for a in self.args),
+                            quick_exit=True)
 
     def _eval_is_finite(self):
         return _fuzzy_group((a.is_finite for a in self.args), quick_exit=True)
@@ -458,16 +461,14 @@ class Add(Expr, AssocOp):
         return _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
 
     def _eval_is_imaginary(self):
-        rv = _fuzzy_group(a.is_imaginary for a in self.args)
+        rv = _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
         if rv is False:
             return rv
         iargs = [a*S.ImaginaryUnit for a in self.args]
-        r = _fuzzy_group(a.is_extended_real for a in iargs)
-        if r:
-            return True
+        return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
 
     def _eval_is_odd(self):
-        l = [f for f in self.args if not (f.is_even is True)]
+        l = [f for f in self.args if not f.is_even]
         if not l:
             return False
         if l[0].is_odd:
@@ -477,9 +478,7 @@ class Add(Expr, AssocOp):
         for t in self.args:
             a = t.is_irrational
             if a:
-                others = list(self.args)
-                others.remove(t)
-                if all(x.is_rational is True for x in others):
+                if all(x.is_rational for x in self.args if x != t):
                     return True
                 return
             if a is None:

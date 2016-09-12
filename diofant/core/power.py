@@ -9,7 +9,7 @@ from .expr import Expr
 from .evalf import PrecisionExhausted
 from .function import (_coeff_isneg, expand_complex, expand_multinomial,
                        expand_mul)
-from .logic import fuzzy_bool
+from .logic import fuzzy_or
 from .compatibility import as_int
 from .evaluate import global_evaluate
 from diofant.utilities.iterables import sift
@@ -381,24 +381,25 @@ class Pow(Expr):
                 return False
         if b.is_Number and e.is_Number:
             check = self.func(*self.args)
-            return check.is_Integer
+            if check.is_Integer:
+                return True
 
     def _eval_is_extended_real(self):
         from diofant import arg, log, Mul
+
         if self.base is S.Exp1:
             if self.exp.is_extended_real:
                 return True
             elif self.exp.is_imaginary:
-                arg2 = -2*S.ImaginaryUnit*self.exp/S.Pi
-                return arg2.is_even
-        real_b = self.base.is_extended_real
-        if real_b is None:
+                return (2*S.ImaginaryUnit*self.exp/S.Pi).is_even
+
+        if self.base.is_extended_real is None:
             if self.base.func == Pow and self.base.base is S.Exp1 and self.base.exp.is_imaginary:
                 return self.exp.is_imaginary
-        real_e = self.exp.is_extended_real
-        if real_e is None:
+        if self.exp.is_extended_real is None:
             return
-        if real_b and real_e:
+
+        if self.base.is_extended_real and self.exp.is_extended_real:
             if self.base.is_positive:
                 return True
             elif self.base.is_nonnegative:
@@ -406,43 +407,43 @@ class Pow(Expr):
                     return True
             else:
                 if self.exp.is_integer:
-                    return True
+                    if self.base.is_nonzero or self.exp.is_nonnegative:
+                        return True
                 elif self.base.is_negative:
-                    if self.exp.is_Rational:
+                    if self.exp.is_rational and self.exp.is_noninteger:
                         return False
-        if real_e and self.exp.is_negative:
+
+        if self.base.is_nonzero and self.exp.is_negative:
             return Pow(self.base, -self.exp).is_extended_real
-        im_b = self.base.is_imaginary
-        im_e = self.exp.is_imaginary
-        if im_b:
+
+        if self.base.is_imaginary:
             if self.exp.is_integer:
                 if self.exp.is_even:
-                    return True
+                    if self.base.is_nonzero or self.exp.is_nonnegative:
+                        return True
                 elif self.exp.is_odd:
                     return False
-            elif im_e and log(self.base).is_imaginary:
+            elif self.exp.is_imaginary and log(self.base).is_imaginary:
                 return True
             elif self.exp.is_Add:
                 c, a = self.exp.as_coeff_Add()
                 if c and c.is_Integer:
-                    return Mul(
-                        self.base**c, self.base**a, evaluate=False).is_extended_real
-            elif self.base in (-S.ImaginaryUnit, S.ImaginaryUnit):
-                if (self.exp/2).is_integer is False:
-                    return False
-        if real_b and im_e:
+                    return Mul(self.base**c, self.base**a,
+                               evaluate=False).is_extended_real
+            elif (self.base in (-S.ImaginaryUnit, S.ImaginaryUnit) and
+                  (self.exp/2).is_noninteger):
+                return False
+            return
+
+        if self.base.is_extended_real and self.exp.is_imaginary:
             if self.base is S.NegativeOne:
                 return True
             c = self.exp.coeff(S.ImaginaryUnit)
-            if c:
-                if c in (S.One, S.NegativeOne):
-                    if self.base == 2:
-                        return False
-                ok = (c*log(self.base)/S.Pi).is_integer
-                if ok is not None:
-                    return ok
+            if c in (S.One, S.NegativeOne):
+                if self.base == 2:
+                    return False
 
-        if real_b is False:  # we already know it's not imag
+        if self.base.is_extended_real is False:  # we already know it's not imag
             i = arg(self.base)*self.exp/S.Pi
             return i.is_integer
 
@@ -453,36 +454,27 @@ class Pow(Expr):
 
     def _eval_is_imaginary(self):
         from diofant import arg, log
+
         if self.base.is_imaginary:
             if self.exp.is_integer:
-                odd = self.exp.is_odd
-                if odd is not None:
-                    return odd
-                return
+                return self.exp.is_odd
 
-        if self.exp.is_imaginary:
-            imlog = log(self.base).is_imaginary
-            if imlog is not None and self.exp.is_nonzero:
+        if self.exp.is_imaginary and self.exp.is_nonzero:
+            if log(self.base).is_imaginary:
                 return False
 
-        if self.base.is_extended_real and self.exp.is_extended_real:
+        if self.base.is_real and self.exp.is_real:
             if self.base.is_positive:
                 return False
             else:
-                rat = self.exp.is_rational
-                if not rat:
-                    return rat
                 if self.exp.is_integer:
                     return False
                 else:
-                    half = (2*self.exp).is_integer
-                    if half:
+                    if (2*self.exp).is_integer:
                         return self.base.is_negative
-                    return half
 
-        if self.base.is_extended_real is False:  # we already know it's not imag
-            i = arg(self.base)*self.exp/S.Pi
-            return (2*i).is_odd
+        if self.base.is_real is False:  # we already know it's not imag
+            return (2*arg(self.base)*self.exp/S.Pi).is_odd
 
     def _eval_is_odd(self):
         if self.exp.is_integer:
@@ -497,15 +489,7 @@ class Pow(Expr):
         if self.exp.is_negative:
             if self.base.is_zero:
                 return False
-            if self.base.is_infinite:
-                return True
-        c1 = self.base.is_finite
-        if c1 is None:
-            return
-        c2 = self.exp.is_finite
-        if c2 is None:
-            return
-        if c1 and c2:
+        if self.base.is_finite and self.exp.is_finite:
             if self.exp.is_nonnegative or self.base.is_nonzero:
                 return True
 
@@ -689,7 +673,7 @@ class Pow(Expr):
             if polar:
                 return True
             if polar is None:
-                return fuzzy_bool(x.is_nonnegative)
+                return fuzzy_or([x.is_nonnegative, (1/x).is_nonnegative])
         sifted = sift(cargs, pred)
         nonneg = sifted[True]
         other = sifted[None]
@@ -887,7 +871,7 @@ class Pow(Expr):
             return result
 
     def as_real_imag(self, deep=True, **hints):
-        from diofant import atan2, cos, sin
+        from diofant import arg, cos, sin
         from diofant.polys.polytools import poly
 
         if self.exp.is_Integer:
@@ -939,7 +923,7 @@ class Pow(Expr):
             #      x being imaginary there are actually q roots, but
             #      only a single one is returned from here.
             r = self.func(self.func(re, 2) + self.func(im, 2), S.Half)
-            t = atan2(im, re)
+            t = arg(re + S.ImaginaryUnit*im)
 
             rp, tp = self.func(r, self.exp), t*self.exp
 
@@ -1008,16 +992,11 @@ class Pow(Expr):
                 if b == e:  # always rational, even for 0**0
                     return True
             elif b.is_irrational:
-                return e.is_zero
-        elif b is S.Exp1:
-            s = self.func(*self.args)
-            if s.func == self.func:
-                if s.exp is S.Zero:
+                if e.is_zero:
                     return True
-                elif s.exp.is_rational and s.exp.is_nonzero:
-                    return False
-            else:
-                return s.is_rational
+        if b is S.Exp1:
+            if e.is_rational and e.is_nonzero:
+                return False
 
     def _eval_is_algebraic(self):
         if self.base.is_zero or (self.base - 1).is_zero:
@@ -1036,7 +1015,7 @@ class Pow(Expr):
             return self.base.is_algebraic
         elif self.base.is_algebraic and self.exp.is_algebraic:
             if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
-                    or self.base.is_integer is False or self.base.is_irrational):
+                 or self.base.is_irrational):
                 return self.exp.is_rational
 
     def _eval_is_rational_function(self, syms):

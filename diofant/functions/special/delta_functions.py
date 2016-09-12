@@ -41,7 +41,7 @@ class DiracDelta(Function):
     .. [1] http://mathworld.wolfram.com/DeltaFunction.html
     """
 
-    is_extended_real = True
+    is_commutative = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -160,6 +160,15 @@ class DiracDelta(Function):
     def _latex_no_arg(printer):
         return r'\delta'
 
+    def _eval_adjoint(self):
+        return self
+
+    def _eval_conjugate(self):
+        return self
+
+    def _eval_transpose(self):
+        return self
+
 
 ###############################################################################
 # ############################ HEAVISIDE FUNCTION ########################### #
@@ -183,8 +192,6 @@ class Heaviside(Function):
 
     .. [1] https://en.wikipedia.org/wiki/Heaviside_step_function
     """
-
-    is_real = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -211,3 +218,7 @@ class Heaviside(Function):
     def _eval_rewrite_as_sign(self, arg):
         if arg.is_extended_real:
             return (sign(arg)+1)/2
+
+    def _eval_is_real(self):
+        if self.args[0].is_extended_real:
+            return True

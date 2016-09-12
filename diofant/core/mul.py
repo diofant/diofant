@@ -7,7 +7,7 @@ from .basic import Basic
 from .singleton import S
 from .operations import AssocOp
 from .cache import cacheit
-from .logic import fuzzy_not, _fuzzy_group
+from .logic import fuzzy_not, _fuzzy_group, fuzzy_and
 from .compatibility import default_sort_key
 from .expr import Expr
 
@@ -962,9 +962,7 @@ class Mul(Expr, AssocOp):
 
     def _eval_is_infinite(self):
         if any(a.is_infinite for a in self.args):
-            if any(a.is_zero for a in self.args):
-                return S.NaN.is_infinite
-            if any(a.is_zero is None for a in self.args):
+            if any(not a.is_nonzero for a in self.args):
                 return
             return True
 
@@ -983,35 +981,23 @@ class Mul(Expr, AssocOp):
             return self.is_zero
 
     def _eval_is_zero(self):
-        zero = infinite = False
-        for a in self.args:
-            z = a.is_zero
-            if z:
-                if infinite:
-                    return  # 0*oo is nan and nan.is_zero is None
-                zero = True
-            else:
-                if not a.is_finite:
-                    if zero:
-                        return  # 0*oo is nan and nan.is_zero is None
-                    infinite = True
-                if zero is False and z is None:  # trap None
-                    zero = None
-        return zero
+        if any(a.is_zero for a in self.args):
+            if all(a.is_finite for a in self.args):
+                return True
+        elif all(a.is_nonzero for a in self.args):
+            return False
 
     def _eval_is_integer(self):
-        from diofant.core.numbers import Integer
-
         is_rational = self.is_rational
 
         if is_rational:
             n, d = self.as_numer_denom()
             if d is S.One:
                 return True
-            elif d is Integer(2):
+            elif d == 2:
                 return n.is_even
-        elif is_rational is False:
-            return False
+        else:
+            return is_rational
 
     def _eval_is_polar(self):
         has_polar = any(arg.is_polar for arg in self.args)
@@ -1025,18 +1011,17 @@ class Mul(Expr, AssocOp):
         for t in self.args:
             if t.is_finite and not t.is_complex:
                 return t.is_complex
-            elif t.is_imaginary:
-                real = not real
-            elif t.is_extended_real:
-                if not zero:
-                    z = t.is_zero
-                    if not z and zero is False:
-                        zero = z
-                    elif z:
-                        if all(a.is_finite for a in self.args):
-                            return True
-                        return
-            elif t.is_extended_real is False:
+            elif t.is_imaginary or t.is_extended_real:
+                if t.is_imaginary:
+                    real = not real
+                z = t.is_zero
+                if not z and zero is False:
+                    zero = z
+                elif z:
+                    if all(a.is_finite for a in self.args):
+                        return True
+                    return
+            elif t.is_complex and t.is_real is False:
                 if one_neither:
                     return  # complex terms might cancel
                 one_neither = True
@@ -1054,13 +1039,14 @@ class Mul(Expr, AssocOp):
     def _eval_is_imaginary(self):
         obj = S.ImaginaryUnit*self
         if obj.is_Mul:
-            return obj._eval_is_extended_real()
+            return fuzzy_and([obj._eval_is_extended_real(),
+                              obj._eval_is_finite()])
         else:
-            return obj.is_extended_real
+            return obj.is_real
 
     def _eval_is_hermitian(self):
-        real = True
-        one_nc = zero = one_neither = False
+        hermitian = True
+        one_nc = zero = False
 
         for t in self.args:
             if not t.is_commutative:
@@ -1068,43 +1054,37 @@ class Mul(Expr, AssocOp):
                     return
                 one_nc = True
 
-            if t.is_antihermitian:
-                real = not real
-            elif t.is_hermitian:
-                if zero is False:
-                    zero = fuzzy_not(t.is_nonzero)
-                    if zero:
+            if t.is_antihermitian or t.is_hermitian:
+                if t.is_antihermitian:
+                    hermitian = not hermitian
+                z = t.is_zero
+                if not z and zero is False:
+                    zero = z
+                elif z:
+                    if self.is_finite:
                         return True
-            elif t.is_hermitian is False:
-                if one_neither:
                     return
-                one_neither = True
             else:
                 return
 
-        if one_neither:
-            if real:
-                return zero
-        elif zero is False or real:
-            return real
+        if zero is False or hermitian:
+            return hermitian
 
     def _eval_is_antihermitian(self):
-        z = self.is_zero
-        if z:
+        if self.is_zero:
             return False
-        elif z is False:
+        elif self.is_nonzero:
             return (S.ImaginaryUnit*self).is_hermitian
 
     def _eval_is_irrational(self):
         for t in self.args:
             a = t.is_irrational
             if a:
-                others = list(self.args)
-                others.remove(t)
-                if all((x.is_rational and x.is_nonzero) is True for x in others):
+                if all(x.is_rational and x.is_nonzero
+                       for x in self.args if x != t):
                     return True
                 return
-            if a is None:
+            elif a is None:
                 return
         return False
 
@@ -1123,31 +1103,25 @@ class Mul(Expr, AssocOp):
         """
 
         sign = 1
-        saw_NON = saw_NOT = False
+        saw_NON = False
         for t in self.args:
             if t.is_positive:
                 continue
             elif t.is_negative:
                 sign = -sign
             elif t.is_zero:
-                return False
+                if self.is_finite:
+                    return False
+                else:
+                    return
             elif t.is_nonpositive:
                 sign = -sign
                 saw_NON = True
             elif t.is_nonnegative:
                 saw_NON = True
-            elif t.is_positive is False:
-                sign = -sign
-                if saw_NOT:
-                    return
-                saw_NOT = True
-            elif t.is_negative is False:
-                if saw_NOT:
-                    return
-                saw_NOT = True
             else:
                 return
-        if sign == 1 and saw_NON is False and saw_NOT is False:
+        if sign == 1 and saw_NON is False:
             return True
         if sign < 0:
             return False
@@ -1167,21 +1141,16 @@ class Mul(Expr, AssocOp):
             for t in self.args:
                 if not t.is_integer:
                     return
-                elif t.is_even:
+                elif t.is_even or (acc + t).is_odd:
                     r = False
-                elif t.is_integer:
-                    if r is False:
-                        pass
-                    elif acc != 1 and (acc + t).is_odd:
-                        r = False
-                    elif t.is_odd is None:
-                        r = None
+                elif r is False:
+                    pass
+                elif r and t.is_odd is None:
+                    r = None
                 acc = t
             return r
-
-        # !integer -> !odd
-        elif is_integer is False:
-            return False
+        else:
+            return is_integer
 
     def _eval_is_even(self):
         is_integer = self.is_integer
