@@ -31,6 +31,7 @@ access any Diofant module, or use this contens:
    matrices/index.rst
    polys/index.rst
    printing.rst
+   interactive.rst
    plotting.rst
    rewriting.rst
    series.rst
