@@ -45,10 +45,15 @@ def test_DiracDelta():
 
 
 def test_heaviside():
+    x, y = symbols('x, y', extended_real=True)
+    z = Symbol('z')
     assert Heaviside(0) == 0.5
     assert Heaviside(-5) == 0
     assert Heaviside(1) == 1
     assert Heaviside(nan) == nan
+
+    assert Heaviside(x).is_real
+    assert Heaviside(z).is_real is None
 
     assert adjoint(Heaviside(x)) == Heaviside(x)
     assert adjoint(Heaviside(x - y)) == Heaviside(x - y)
@@ -58,8 +63,8 @@ def test_heaviside():
     assert transpose(Heaviside(x - y)) == Heaviside(x - y)
 
     assert Heaviside(x).diff(x) == DiracDelta(x)
-    assert Heaviside(x + I).is_Function is True
-    assert Heaviside(I*x).is_Function is True
+    assert Heaviside(z + I).is_Function is True
+    assert Heaviside(I*z).is_Function is True
 
     pytest.raises(ArgumentIndexError, lambda: Heaviside(x).fdiff(2))
     pytest.raises(ValueError, lambda: Heaviside(I))

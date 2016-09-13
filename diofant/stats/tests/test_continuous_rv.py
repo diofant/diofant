@@ -23,8 +23,8 @@ from diofant.abc import x, y, z
 
 
 def test_single_normal():
-    mu = Symbol('mu', extended_real=True, finite=True)
-    sigma = Symbol('sigma', extended_real=True, positive=True, finite=True)
+    mu = Symbol('mu', real=True)
+    sigma = Symbol('sigma', real=True, positive=True)
     X = Normal('x', 0, 1)
     Y = X*sigma + mu
 

@@ -195,8 +195,8 @@ class Product(ExprWithIntLimits):
     function = term
 
     def _eval_is_zero(self):
-        # a Product is zero only if its term is zero.
-        return self.term.is_zero
+        if self.term.is_zero:
+            return True
 
     def doit(self, **hints):
         f = self.function

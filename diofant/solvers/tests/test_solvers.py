@@ -6,7 +6,7 @@ from diofant import (
     Abs, And, Derivative, Dummy, Eq, Float, Function, Gt, I, Integral,
     LambertW, Lt, Matrix, Or, Piecewise, Poly, Rational, S, Symbol,
     Wild, acos, asin, atan, atanh, cos, cosh, diff, erf, erfinv, erfc,
-    erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow,
+    erfcinv, exp, im, log, pi, re, sec, sin, Integer, Pow, expand_log,
     sinh, solve, solve_linear, sqrt, sstr, symbols, sympify, tan, tanh,
     root, simplify, atan2, arg, SparseMatrix, Tuple, nsolve, oo)
 from diofant.core.function import nfloat
@@ -1375,7 +1375,7 @@ def test_issue_6605():
     x = symbols('x', extended_real=True)
     assert solve(5**(x/2) - 2**(x/3)) == [0]
     b = sqrt(6)*sqrt(log(2))/sqrt(log(5))
-    assert solve(5**(x/2) - 2**(3/x)) == [-b, b]
+    assert [expand_log(s) for s in solve(5**(x/2) - 2**(3/x))] == [-b, b]
 
 
 def test_issue_6644():
@@ -1477,10 +1477,10 @@ def test_lambert_multivariate():
     _13 = Rational(1, 3)
     _56 = Rational(5, 6)
     _53 = Rational(5, 3)
-    assert solve(3*log(p**(3*x + 5)) + p**(3*x + 5), x) == [
-        log((-3**_13 - 3**_56*I)*LambertW(_13)**_13/(2*p**_53))/log(p),
-        log((-3**_13 + 3**_56*I)*LambertW(_13)**_13/(2*p**_53))/log(p),
-        log((3*LambertW(_13)/p**5)**(1/(3*log(p))))]
+    assert (solve(3*log(p**(3*x + 5)) + p**(3*x + 5), x) ==
+            [(-5*log(p) + log(LambertW(_13)) + log(3))/(3*log(p)),
+             log((-3**_13 - 3**_56*I)*LambertW(_13)**_13/(2*p**_53))/log(p),
+             log((-3**_13 + 3**_56*I)*LambertW(_13)**_13/(2*p**_53))/log(p)])
 
     # check collection
     assert solve(3*log(a**(3*x + 5)) + b*log(a**(3*x + 5)) + a**(3*x + 5), x) == [
