@@ -17,3 +17,4 @@ Contents:
    modules/index.rst
    guide.rst
    aboutus.rst
+   release/index.rst
