@@ -120,7 +120,7 @@ do not change automatically.  For example
     'abcdef'
 
 
-.. sidebar:: Quick Tip
+.. tip::
 
    To change the value of a Symbol in an expression, use ``subs``
 

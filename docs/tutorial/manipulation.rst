@@ -288,7 +288,7 @@ noncommutative Symbols is kept the same as the input).  Furthermore, as we
 shall see in the next section, the printing order and the order in which
 things are stored internally need not be the same either.
 
-.. sidebar:: Quick Tip
+.. tip::
 
    The way an expression is represented internally and the way it is printed
    are often not the same.

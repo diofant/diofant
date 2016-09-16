@@ -220,6 +220,7 @@ Issues closed
 * `sympy/sympy#11553 <https://github.com/sympy/sympy/issues/11553>`_ Polynomial solve with GoldenRatio causes Traceback
 * `sympy/sympy#8045 <https://github.com/sympy/sympy/issues/8045>`_ make all NaN is_* properties that are now None -> False (including is_complex)
 * `#34 <https://github.com/diofant/diofant/issues/34>`_ assumptions todo
+* `#203 <https://github.com/diofant/diofant/issues/203>`_ Add changelog (in sphinx docs)
 
 Full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_.
 
@@ -460,5 +461,6 @@ Pull requests
 * `#327 <https://github.com/diofant/diofant/pull/327>`_ v0.8.0a3
 * `#316 <https://github.com/diofant/diofant/pull/316>`_ Check & fix all assumptions helpers
 * `#334 <https://github.com/diofant/diofant/pull/334>`_ Check & fix explicit assumption properties (i.e. is_real = False)
+* `#305 <https://github.com/diofant/diofant/pull/305>`_ Add release notes
 
 Full `list of merged pull requests <https://github.com/diofant/diofant/pulls?utf8=%E2%9C%93&q=is%3Apr%20is%3Amerged%20milestone%3A0.8.0>`_.

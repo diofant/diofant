@@ -13,7 +13,7 @@ or to install also extra dependencies::
 
     $ pip install --pre diofant[gmpy,plot]
 
-.. note::
+.. tip::
 
     You could use `pyvenv`_ to create isolated Python environment first,
     instead of installing everything system-wide.
