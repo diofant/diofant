@@ -9,7 +9,7 @@ from diofant import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
 from diofant.solvers.ode import (_undetermined_coefficients_match, checkodesol,
                                  classify_ode, classify_sysode, constant_renumber,
                                  constantsimp, homogeneous_order, infinitesimals,
-                                 checkinfsol, checksysodesol, solve_ics)
+                                 checkinfsol, checksysodesol, solve_init)
 from diofant.solvers.deutils import ode_order
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
@@ -712,100 +712,100 @@ def test_classify_ode():
         ('separable', '1st_power_series', 'lie_group', 'separable_Integral')
 
 
-def test_classify_ode_ics():
+def test_classify_ode_init():
     # Dummy
     eq = f(x).diff(x, x) - f(x)
 
     # Not f(0) or f'(0)
-    ics = {x: 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {x: 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     ############################
     # f(0) type (AppliedUndef) #
     ############################
 
     # Wrong function
-    ics = {g(0): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {g(0): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Contains x
-    ics = {f(x): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(x): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Too many args
-    ics = {f(0, 0): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(0, 0): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
     # XXX: Should be NotImplementedError
-    ics = {f(0): f(1)}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(0): f(1)}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Does not raise
-    ics = {f(0): 1}
-    classify_ode(eq, f(x), ics=ics)
+    init = {f(0): 1}
+    classify_ode(eq, f(x), init=init)
 
     #####################
     # f'(0) type (Subs) #
     #####################
 
     # Wrong function
-    ics = {g(x).diff(x).subs(x, 0): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {g(x).diff(x).subs(x, 0): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Contains x
-    ics = {f(y).diff(y).subs(y, x): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(y).diff(y).subs(y, x): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Wrong variable
-    ics = {f(y).diff(y).subs(y, 0): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(y).diff(y).subs(y, 0): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Too many args
-    ics = {f(x, y).diff(x).subs(x, 0): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(x, y).diff(x).subs(x, 0): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Derivative wrt wrong vars
-    ics = {Derivative(f(x), x, y).subs(x, 0): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {Derivative(f(x), x, y).subs(x, 0): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
     # XXX: Should be NotImplementedError
-    ics = {f(x).diff(x).subs(x, 0): f(0)}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(x).diff(x).subs(x, 0): f(0)}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Does not raise
-    ics = {f(x).diff(x).subs(x, 0): 1}
-    classify_ode(eq, f(x), ics=ics)
+    init = {f(x).diff(x).subs(x, 0): 1}
+    classify_ode(eq, f(x), init=init)
 
     ###########################
     # f'(y) type (Derivative) #
     ###########################
 
     # Wrong function
-    ics = {g(x).diff(x).subs(x, y): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {g(x).diff(x).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Contains x
-    ics = {f(y).diff(y).subs(y, x): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(y).diff(y).subs(y, x): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Too many args
-    ics = {f(x, y).diff(x).subs(x, y): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(x, y).diff(x).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Derivative wrt wrong vars
-    ics = {Derivative(f(x), x, z).subs(x, y): 1}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {Derivative(f(x), x, z).subs(x, y): 1}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
     # XXX: Should be NotImplementedError
-    ics = {f(x).diff(x).subs(x, y): f(0)}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), ics=ics))
+    init = {f(x).diff(x).subs(x, y): f(0)}
+    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # Does not raise
-    ics = {f(x).diff(x).subs(x, y): 1}
-    classify_ode(eq, f(x), ics=ics)
+    init = {f(x).diff(x).subs(x, y): 1}
+    classify_ode(eq, f(x), init=init)
 
 
 def test_classify_sysode():
@@ -951,37 +951,37 @@ def test_classify_sysode():
     assert classify_sysode(eq16) == sol16
 
 
-def test_solve_ics():
+def test_solve_init():
     # Basic tests that things work from dsolve.
-    assert dsolve(f(x).diff(x) - f(x), f(x), ics={f(0): 1}) == Eq(f(x), exp(x))
-    assert dsolve(f(x).diff(x) - f(x), f(x), ics={f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), exp(x))
+    assert dsolve(f(x).diff(x) - f(x), f(x), init={f(0): 1}) == Eq(f(x), exp(x))
+    assert dsolve(f(x).diff(x) - f(x), f(x), init={f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), exp(x))
     assert dsolve(f(x).diff(x, x) + f(x), f(x),
-                  ics={f(0): 1,
-                       f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), sin(x) + cos(x))
+                  init={f(0): 1,
+                        f(x).diff(x).subs(x, 0): 1}) == Eq(f(x), sin(x) + cos(x))
     assert (dsolve([f(x).diff(x) - f(x) + g(x), g(x).diff(x) - g(x) - f(x)],
-                   [f(x), g(x)], ics={f(0): 1, g(0): 0}) ==
+                   [f(x), g(x)], init={f(0): 1, g(0): 0}) ==
             [Eq(f(x), E**(x*(1 - I))/2 + E**(x*(1 + I))/2),
              Eq(g(x), E**(x*(1 - I))*I/2 - E**(x*(1 + I))*I/2)])
 
     assert (dsolve(cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x), f(x),
-                   ics={f(0): 1}, hint='1st_exact', simplify=False) ==
+                   init={f(0): 1}, hint='1st_exact', simplify=False) ==
             Eq(x*cos(f(x)) + f(x)**3/3, Rational(1, 3)))
     assert (dsolve(cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x), f(x),
-                  ics={f(0): 1}, hint='1st_exact', simplify=True) ==
+                  init={f(0): 1}, hint='1st_exact', simplify=True) ==
             Eq(x*cos(f(x)) + f(x)**3/3, Rational(1, 3)))
 
-    assert (dsolve(x + f(x)*Derivative(f(x), x), ics={f(1): 0}) ==
+    assert (dsolve(x + f(x)*Derivative(f(x), x), init={f(1): 0}) ==
             [Eq(f(x), -sqrt(-x**2 + 1)), Eq(f(x), sqrt(-x**2 + 1))])
 
-    assert solve_ics([Eq(f(x), C1*exp(x))], [f(x)], [C1], {f(0): 1}) == {C1: 1}
-    assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
+    assert solve_init([Eq(f(x), C1*exp(x))], [f(x)], [C1], {f(0): 1}) == {C1: 1}
+    assert solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
         {f(0): 1, f(pi/2): 1}) == {C1: 1, C2: 1}
 
-    assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
+    assert solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
         {f(0): 1, f(x).diff(x).subs(x, 0): 1}) == {C1: 1, C2: 1}
 
     # XXX: Ought to be ValueError
-    pytest.raises(NotImplementedError, lambda: solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
+    pytest.raises(NotImplementedError, lambda: solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
 
     EI, q, L = symbols('EI q L')
 
@@ -991,17 +991,17 @@ def test_solve_ics():
     constants = [C1, C2, C3, C4]
     # Test both cases, Derivative (the default from f(x).diff(x).subs(x, L)),
     # and Subs
-    ics1 = {f(0): 0,
+    init1 = {f(0): 0,
         f(x).diff(x).subs(x, 0): 0,
         f(L).diff(L, 2): 0,
         f(L).diff(L, 3): 0}
-    ics2 = {f(0): 0,
+    init2 = {f(0): 0,
         f(x).diff(x).subs(x, 0): 0,
         Subs(f(x).diff(x, 2), x, L): 0,
         Subs(f(x).diff(x, 3), x, L): 0}
 
-    solved_constants1 = solve_ics(sols, funcs, constants, ics1)
-    solved_constants2 = solve_ics(sols, funcs, constants, ics2)
+    solved_constants1 = solve_init(sols, funcs, constants, init1)
+    solved_constants2 = solve_init(sols, funcs, constants, init2)
     assert solved_constants1 == solved_constants2 == {
         C1: 0,
         C2: 0,
@@ -1009,9 +1009,9 @@ def test_solve_ics():
         C4: -L*q/(6*EI)}
 
     # Under-specified case:
-    assert solve_ics([Eq(f(x), E**(2*x)*C2 + E**(-2*x)*C1)],
+    assert solve_init([Eq(f(x), E**(2*x)*C2 + E**(-2*x)*C1)],
                      [f(x)], {C1, C2}, {f(0): 1}) == {C1: 1 - C2}
-    assert solve_ics([Eq(f(x), C1*sin(x) + C2*cos(x))],
+    assert solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))],
                      [f(x)], [C1, C2], {f(0): 1}) == {C2: 1}
 
 
@@ -2662,7 +2662,7 @@ def test_series():
         C1*x**4/8 + C1*x**2/2 + C1 + O(x**6))
     eq = f(x).diff(x) - sin(x*f(x))
     sol = Eq(f(x), (x - 2)**2*(1 + sin(4))*cos(4) + (x - 2)*sin(4) + 2 + O(x**3))
-    assert dsolve(eq, hint='1st_power_series', ics={f(2): 2}, n=3) == sol
+    assert dsolve(eq, hint='1st_power_series', init={f(2): 2}, n=3) == sol
 
 
 @pytest.mark.slow
