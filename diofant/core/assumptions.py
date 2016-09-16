@@ -33,6 +33,10 @@ Here follows a list of possible assumption names:
         object commutes with any other object with
         respect to multiplication operation.
 
+    polar
+        object can have values from the Riemann surface of the logarithm,
+        see :py:class:`~diofant.functions.elementary.exponential.exp_polar`.
+
     complex
         object can have only values from the set
         of complex numbers.
@@ -50,8 +54,10 @@ Here follows a list of possible assumption names:
         real number line [13]_.
 
     integer
+    noninteger
         object can have only values from the set
-        of integers.
+        of integers (respectively, from the subset of real
+        numbers, that aren't integers).
 
     odd
     even

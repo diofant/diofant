@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import (S, Rational, Symbol, Poly, sqrt, I, oo, Tuple, expand,
-                     pi, cos, sin, exp, Integer)
+                     pi, cos, sin, exp, Integer, GoldenRatio, solve)
 from diofant.polys.numberfields import (
     minimal_polynomial,
     primitive_element,
@@ -732,3 +732,8 @@ def test_minpoly_domain():
         domain=QQ.algebraic_field(sqrt(2))) == 2*x**2 - 3
 
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, x, domain=QQ))
+
+
+def test_issue_11553():
+    eqs = (x + y + 1, x + GoldenRatio)
+    assert solve(eqs, x, y) == {x: -GoldenRatio, y: -1 + GoldenRatio}

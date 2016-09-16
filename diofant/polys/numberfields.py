@@ -5,7 +5,7 @@ from functools import reduce
 from mpmath import pslq, mp
 
 from diofant import (S, Rational, AlgebraicNumber, Add, Mul, sympify,
-                     Dummy, expand_mul, I, pi)
+                     Dummy, expand_mul, I, pi, GoldenRatio)
 from diofant.functions.elementary.trigonometric import cos, sin
 from diofant.polys.polytools import (Poly, PurePoly, sqf_norm, invert,
                                      factor_list, groebner, resultant,
@@ -507,6 +507,8 @@ def _minpoly_compose(ex, x, dom):
         return ex.q*x - ex.p
     if ex is I:
         return x**2 + 1
+    if ex is GoldenRatio:
+        return x**2 - x - 1
     if hasattr(dom, 'symbols') and ex in dom.symbols:
         return x - ex
 

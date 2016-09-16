@@ -343,19 +343,6 @@ when `b` is an integer (again, it may also hold in other cases as well).  Two
 common consequences of the failure of identity 3 are that `\sqrt{x^2}\neq x`
 and that `\sqrt{\frac{1}{x}} \neq \frac{1}{\sqrt{x}}`.
 
-To summarize
-
-+-----------------------+------------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------+
-|Identity               |Sufficient conditions to hold       |Counterexample when conditions are not met          |Important consequences                                                       |
-+=======================+====================================+====================================================+=============================================================================+
-|1. `x^ax^b = x^{a + b}`|Always true                         |None                                                |None                                                                         |
-+-----------------------+------------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------+
-|2. `x^ay^a = (xy)^a`   |`x, y \geq 0` and `a \in \mathbb{R}`|`(-1)^{1/2}(-1)^{1/2} \neq (-1\cdot-1)^{1/2}`       |`\sqrt{x}\sqrt{y} \neq \sqrt{xy}` in general                                 |
-+-----------------------+------------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------+
-|3. `(x^a)^b = x^{ab}`  |`b \in \mathbb{Z}`                  |`{\left((-1)^2\right )}^{1/2} \neq (-1)^{2\cdot1/2}`|`\sqrt{x^2}\neq x` and `\sqrt{\frac{1}{x}}\neq\frac{1}{\sqrt{x}}` in general |
-+-----------------------+------------------------------------+----------------------------------------------------+-----------------------------------------------------------------------------+
-
-
 This is important to remember, because by default, Diofant will not perform
 simplifications if they are not true in general.
 
@@ -629,7 +616,7 @@ represents `\Gamma(z) = \int_0^\infty t^{z - 1}e^{-t}\,dt`, which for positive i
 The `generalized hypergeometric function
 <http://en.wikipedia.org/wiki/Generalized_hypergeometric_function>`_ is
 ``hyper``.  ``hyper([a_1, ..., a_p], [b_1, ..., b_q], z)`` represents
-`{}_pF_q\left(\begin{matrix} a_1, \dots, a_p \\ b_1, \dots, b_q \end{matrix}
+`{}_pF_q\left(\begin{matrix} a_1, \ldots, a_p \\ b_1, \ldots, b_q \end{matrix}
 \middle| z \right)`.  The most common case is `{}_2F_1`, which is often
 referred to as the `ordinary hypergeometric function
 <http://en.wikipedia.org/wiki/Hypergeometric_function>`_.

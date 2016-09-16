@@ -44,9 +44,9 @@ computing `\lim_{x \to \infty} f(x)`:
    constants and compute the leading term of the power series of `f(\omega)`
    around `\omega = 0^+`:
 
-       .. math:: f(\omega) = c_0 \omega^{e_0} + c_1 \omega^{e_1} + \dots
+       .. math:: f(\omega) = c_0 \omega^{e_0} + c_1 \omega^{e_1} + \ldots
 
-   where `e_0 < e_1 < e_2 \dots`
+   where `e_0 < e_1 < e_2 \ldots`
 
 4. If the leading exponent `e_0 > 0` then the limit is `0`.  If `e_0 < 0`,
    then the answer is `\pm\infty` (depends on sign of `c_0`).  Finally,
