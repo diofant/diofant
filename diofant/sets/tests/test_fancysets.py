@@ -6,7 +6,7 @@ from diofant.sets.fancysets import ImageSet, Range
 from diofant.sets.contains import Contains
 from diofant.sets.sets import FiniteSet, Interval, imageset, EmptySet
 from diofant import (S, Symbol, Lambda, symbols, cos, sin, pi, oo, Basic,
-                   Integer, Rational, sqrt, tan, log, Abs, exp, I)
+                     Integer, Rational, sqrt, tan, log, Abs, exp, I)
 
 from diofant.abc import x, n, m, t
 

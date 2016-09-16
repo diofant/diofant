@@ -1,11 +1,11 @@
 import pytest
 
 from diofant import (Add, Mul, Abs, Catalan, cos, Derivative, E, EulerGamma, exp,
-    factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
-    Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Pow, Rational, Float, Rel,
-    S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
-    WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
-    subfactorial, true, false, Equivalent, Xor, Complement, SymmetricDifference)
+                     factorial, factorial2, Function, GoldenRatio, I, Integer, Integral,
+                     Interval, Lambda, Limit, Matrix, nan, O, oo, pi, Pow, Rational, Float, Rel,
+                     S, sin, SparseMatrix, sqrt, summation, Sum, Symbol, symbols, Wild,
+                     WildFunction, zeta, zoo, Dummy, Dict, Tuple, FiniteSet, factor,
+                     subfactorial, true, false, Equivalent, Xor, Complement, SymmetricDifference)
 from diofant.core import Expr
 from diofant.polys import Poly, RootOf, RootSum, groebner, ring, field, ZZ, QQ, lex, grlex
 from diofant.geometry import Point, Circle

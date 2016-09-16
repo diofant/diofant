@@ -5,12 +5,12 @@ from mpmath import mpf
 import pytest
 
 from diofant import (Rational, Symbol, Float, I, sqrt, oo, nan, pi, E, Integer,
-                   S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
-                   Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
-                   AlgebraicNumber, simplify)
+                     S, factorial, Catalan, EulerGamma, GoldenRatio, cos, exp,
+                     Number, zoo, log, Mul, Pow, Tuple, latex, Gt, Lt, Ge, Le,
+                     AlgebraicNumber, simplify)
 from diofant.core.power import integer_nthroot
 from diofant.core.numbers import (igcd, ilcm, igcdex, seterr,
-                                mpf_norm, comp)
+                                  mpf_norm, comp)
 
 t = Symbol('t', real=False)
 
@@ -170,7 +170,7 @@ def test_igcd():
     assert igcd(7, 0) == 7
     assert igcd(7, 1) == 1
     assert igcd(1, 7) == 1
-    assert igcd(-1, 0) == 1
+    assert igcd(-1, 0) == -1
     assert igcd(0, -1) == 1
     assert igcd(-1, -1) == 1
     assert igcd(-1, 7) == 1
@@ -1018,9 +1018,9 @@ def test_bug_sqrt():
 
 def test_pi_Pi():
     "Test that pi (instance) is imported, but Pi (class) is not"
-    from diofant import pi  # noqa
+    from diofant import pi
     with pytest.raises(ImportError):
-        from diofant import Pi  # noqa
+        from diofant import Pi
 
 
 def test_no_len():

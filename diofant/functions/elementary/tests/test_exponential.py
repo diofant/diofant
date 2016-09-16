@@ -2,6 +2,7 @@ from diofant import (
     symbols, log, Float, nan, oo, zoo, I, pi, E, O, exp, Symbol,
     LambertW, sqrt, Rational, expand_log, S, sign, conjugate, Integer,
     sin, cos, sinh, cosh, tanh, exp_polar, re, Function, simplify)
+
 from diofant.abc import x, y, z
 
 
@@ -224,9 +225,10 @@ def test_exp_assumptions():
         assert e(i).is_extended_real is None
         assert e(i).is_imaginary is None
         assert e(r).is_extended_real is True
-        assert e(r).is_imaginary is False
         assert e(re(x)).is_extended_real is True
-        assert e(re(x)).is_imaginary is False
+        if e is not exp_polar:
+            assert e(r).is_imaginary is False
+            assert e(re(x)).is_imaginary is False
 
     assert exp(0, evaluate=False).is_algebraic
 
@@ -244,6 +246,7 @@ def test_log_assumptions():
     p = symbols('p', positive=True)
     n = symbols('n', negative=True)
     z = symbols('z', zero=True)
+    nz = symbols('nz', nonzero=True, finite=True)
     x = symbols('x', infinite=True, positive=True)
 
     assert log(z).is_positive is False
@@ -251,10 +254,17 @@ def test_log_assumptions():
     assert log(2) > 0
     assert log(1, evaluate=False).is_zero
     assert log(1 + z).is_zero
+    assert log(1 + z).is_rational
+    assert log(1 + z).is_algebraic
+    assert log(1 + p).is_algebraic is None
     assert log(p).is_zero is None
     assert log(n).is_zero is False
     assert log(0.5).is_negative is True
     assert log(exp(p) + 1).is_positive
+    assert log(z).is_finite is False
+    assert log(p).is_finite is None
+    assert log(nz).is_finite
+    assert log(z).is_complex is False
 
     assert log(1, evaluate=False).is_algebraic
     assert log(42, evaluate=False).is_algebraic is False
@@ -354,12 +364,13 @@ def test_lambertw():
     assert LambertW(-p - 2/S.Exp1, evaluate=False).is_extended_real is False
     assert LambertW(S.Half, -1, evaluate=False).is_extended_real is False
     assert LambertW(-S.One/10, -1, evaluate=False).is_extended_real
-    assert LambertW(-10, -1, evaluate=False).is_extended_real is False
-    assert LambertW(-2, 2, evaluate=False).is_extended_real is False
 
     assert LambertW(0, evaluate=False).is_algebraic
     na = Symbol('na', nonzero=True, algebraic=True)
     assert LambertW(na).is_algebraic is False
+
+    assert LambertW(x, -1).is_extended_real is None
+    assert LambertW(x, 2).is_extended_real is None
 
     # See sympy/sympy#7259:
     assert LambertW(x).series(x) == x - x**2 + 3*x**3/2 - 8*x**4/3 + \
@@ -414,6 +425,22 @@ def test_polar():
     assert (exp_polar(1.0*pi*I).n(n=5)).as_real_imag()[1] >= 0
 
     assert exp_polar(0).is_rational is True  # issue 8008
+
+    nz = Symbol('nz', rational=True, nonzero=True)
+    assert exp_polar(nz).is_rational is False
+
+    assert exp_polar(oo).is_finite is False
+    assert exp_polar(-oo).is_finite
+    assert exp_polar(zoo).is_finite is None
+
+    assert exp_polar(-oo).is_zero
+
+    ninf = Symbol('ninf', infinite=True, negative=True)
+    assert exp_polar(ninf).is_zero
+
+    r = Symbol('r', extended_real=True)
+    assert exp_polar(r).is_extended_real
+    assert exp_polar(x).is_extended_real is None
 
 
 def test_log_product():

@@ -37,12 +37,12 @@ from diofant.core.symbol import Symbol, Dummy
 from diofant.core.compatibility import ordered
 from diofant.integrals.heurisch import _symbols
 from diofant.functions import (acos, acot, asin, atan, cos, cot, exp, log,
-                             Piecewise, sin, tan)
+                               Piecewise, sin, tan)
 
 from diofant.functions import sinh, cosh, tanh, coth
 from diofant.integrals import Integral, integrate
 from diofant.polys import (gcd, cancel, PolynomialError, Poly,
-                         reduced, RootSum, DomainError)
+                           reduced, RootSum, DomainError)
 from diofant.utilities.iterables import numbered_symbols
 
 from diofant.abc import z
@@ -284,10 +284,10 @@ class DifferentialExtension(object):
 
             # TODO: This probably doesn't need to be completely recomputed at
             # each pass.
-            exps = update(exps, set(a for a in self.newf.atoms(Pow) if a.base is S.Exp1),
+            exps = update(exps, {a for a in self.newf.atoms(Pow) if a.base is S.Exp1},
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
-            pows = update(pows, set(a for a in self.newf.atoms(Pow) if a.base is not S.Exp1),
+            pows = update(pows, {a for a in self.newf.atoms(Pow) if a.base is not S.Exp1},
                 lambda i: i.exp.is_rational_function(*self.T) and
                 i.exp.has(*self.T))
             numpows = update(numpows, set(pows),
@@ -592,7 +592,7 @@ class DifferentialExtension(object):
         # XXX: This might be easier to read as a dict or something
         # Maybe a named tuple.
         return (self.fa, self.fd, self.D, self.T, self.Tfuncs,
-            self.backsubs, self.E_K, self.E_args, self.L_K, self.L_args)
+                self.backsubs, self.E_K, self.E_args, self.L_K, self.L_args)
 
     # TODO: Implement __repr__
 
@@ -706,7 +706,7 @@ def gcdex_diophantine(a, b, c):
 
     t = (c - s*a).exquo(b)
 
-    return (s, t)
+    return s, t
 
 
 def frac_in(f, t, **kwargs):
@@ -728,7 +728,7 @@ def frac_in(f, t, **kwargs):
         fa, fd = fa.cancel(fd, include=True)
     if fa is None or fd is None:
         raise ValueError("Could not turn %s into a fraction in %s." % (f, t))
-    return (fa, fd)
+    return fa, fd
 
 
 def as_poly_1t(p, t, z):
@@ -872,12 +872,12 @@ def splitfactor(p, DE, coefficientD=False, z=None):
     Dp = derivation(p, DE, coefficientD=coefficientD)
     # XXX: Is this right?
     if p.is_zero:
-        return (p, One)
+        return p, One
 
     if not p.has(DE.t):
         s = p.as_poly(*kinv).gcd(Dp.as_poly(*kinv)).as_poly(DE.t)
         n = p.exquo(s)
-        return (n, s)
+        return n, s
 
     if not Dp.is_zero:
         h = p.gcd(Dp).to_field()
@@ -885,13 +885,13 @@ def splitfactor(p, DE, coefficientD=False, z=None):
         s = h.exquo(g)
 
         if s.degree(DE.t) == 0:
-            return (p, One)
+            return p, One
 
         q_split = splitfactor(p.exquo(s), DE, coefficientD=coefficientD)
 
-        return (q_split[0], q_split[1]*s)
+        return q_split[0], q_split[1]*s
     else:
-        return (p, One)
+        return p, One
 
 
 def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
@@ -913,7 +913,7 @@ def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
     N = []
     p_sqf = p.sqf_list_include()
     if p.is_zero:
-        return (((p, 1),), ())
+        return ((p, 1),), ()
 
     for pi, i in p_sqf:
         Si = pi.as_poly(*kkinv).gcd(derivation(pi, DE,
@@ -926,7 +926,7 @@ def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
         if not Ni.is_one:
             N.append((Ni, i))
 
-    return (tuple(N), tuple(S))
+    return tuple(N), tuple(S)
 
 
 def canonical_representation(a, d, DE):
@@ -949,7 +949,7 @@ def canonical_representation(a, d, DE):
     b, c = gcdex_diophantine(dn.as_poly(DE.t), ds.as_poly(DE.t), r.as_poly(DE.t))
     b, c = b.as_poly(DE.t), c.as_poly(DE.t)
 
-    return (q, (b, ds), (c, dn))
+    return q, (b, ds), (c, dn)
 
 
 def hermite_reduce(a, d, DE):
@@ -1005,7 +1005,7 @@ def hermite_reduce(a, d, DE):
     rrd = fs[1]
     rra, rrd = rra.cancel(rrd, include=True)
 
-    return ((ga, gd), (r, d), (rra, rrd))
+    return (ga, gd), (r, d), (rra, rrd)
 
 
 def polynomial_reduce(p, DE):
@@ -1024,7 +1024,7 @@ def polynomial_reduce(p, DE):
         q += q0
         p = p - derivation(q0, DE)
 
-    return (q, p)
+    return q, p
 
 
 def laurent_series(a, d, F, n, DE):
@@ -1084,7 +1084,7 @@ def laurent_series(a, d, F, n, DE):
             for alpha in list(alphas):
                 delta_a = delta_a*Poly((DE.t - alpha)**(n - j), DE.t) + Poly(H.eval(alpha), DE.t)
                 delta_d = delta_d*Poly((DE.t - alpha)**(n - j), DE.t)
-    return (delta_a, delta_d, H_list)
+    return delta_a, delta_d, H_list
 
 
 def recognize_derivative(a, d, DE, z=None):
@@ -1174,7 +1174,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
     kkinv = [1/x for x in DE.T[:DE.level]] + DE.T[:DE.level]
 
     if a.is_zero:
-        return ([], True)
+        return [], True
     p, a = a.div(d)
 
     pz = Poly(z, DE.t)
@@ -1226,7 +1226,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
     b = all([not cancel(i.as_expr()).has(DE.t, z) for i, _ in Np])
 
-    return (H, b)
+    return H, b
 
 
 def residue_reduce_to_basic(H, DE, z):
@@ -1269,11 +1269,11 @@ def integrate_primitive_polynomial(p, DE):
     q = Poly(0, DE.t)
 
     if not p.has(DE.t):
-        return (Zero, p, True)
+        return Zero, p, True
 
     while True:
         if not p.has(DE.t):
-            return (q, p, True)
+            return q, p, True
 
         Dta, Dtb = frac_in(DE.d, DE.T[DE.level - 1])
 
@@ -1288,7 +1288,7 @@ def integrate_primitive_polynomial(p, DE):
                 if len(c) != 1:
                     raise ValueError("Length of c should  be 1")
             except NonElementaryIntegralException:
-                return (q, p, False)
+                return q, p, False
 
         m = p.degree(DE.t)
         q0 = c[0].as_poly(DE.t)*Poly(DE.t**(m + 1)/(m + 1), DE.t) + \
@@ -1324,7 +1324,7 @@ def integrate_primitive(a, d, DE, z=None):
             residue_reduce_derivation(g2, DE, z))
         i = NonElementaryIntegral(cancel(i).subs(s), DE.x)
         return ((g1[0].as_expr()/g1[1].as_expr()).subs(s) +
-            residue_reduce_to_basic(g2, DE, z), i, b)
+                residue_reduce_to_basic(g2, DE, z), i, b)
 
     # h - Dg2 + r
     p = cancel(h[0].as_expr()/h[1].as_expr() - residue_reduce_derivation(g2,
@@ -1341,7 +1341,7 @@ def integrate_primitive(a, d, DE, z=None):
     else:
         i = cancel(i.as_expr())
 
-    return (ret, i, b)
+    return ret, i, b
 
 
 def integrate_hyperexponential_polynomial(p, DE, z):
@@ -1390,7 +1390,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
                 qa = qa*vd + va*Poly(t1**i)*qd
                 qd *= vd
 
-    return (qa, qd, b)
+    return qa, qd, b
 
 
 def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
@@ -1419,7 +1419,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
             residue_reduce_derivation(g2, DE, z))
         i = NonElementaryIntegral(cancel(i.subs(s)), DE.x)
         return ((g1[0].as_expr()/g1[1].as_expr()).subs(s) +
-            residue_reduce_to_basic(g2, DE, z), i, b)
+                residue_reduce_to_basic(g2, DE, z), i, b)
 
     # p should be a polynomial in t and 1/t, because Sirr == k[t, 1/t]
     # h - Dg2 + r
@@ -1451,7 +1451,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         i = p - (qd*derivation(qa, DE) - qa*derivation(qd, DE)).as_expr() /\
             (qd**2).as_expr()
         i = NonElementaryIntegral(cancel(i).subs(s), DE.x)
-    return (ret, i, b)
+    return ret, i, b
 
 
 def integrate_hypertangent_polynomial(p, DE):
@@ -1467,7 +1467,7 @@ def integrate_hypertangent_polynomial(p, DE):
     q, r = polynomial_reduce(p, DE)
     a = DE.d.exquo(Poly(DE.t**2 + 1, DE.t))
     c = Poly(r.nth(1)/(2*a.as_expr()), DE.t)
-    return (q, c)
+    return q, c
 
 
 def integrate_nonlinear_no_specials(a, d, DE, z=None):
@@ -1496,7 +1496,7 @@ def integrate_nonlinear_no_specials(a, d, DE, z=None):
     g2, b = residue_reduce(h[0], h[1], DE, z=z)
     if not b:
         return ((g1[0].as_expr()/g1[1].as_expr()).subs(s) +
-            residue_reduce_to_basic(g2, DE, z), b)
+                residue_reduce_to_basic(g2, DE, z), b)
 
     # Because f has no specials, this should be a polynomial in t, or else
     # there is a bug.
@@ -1511,7 +1511,7 @@ def integrate_nonlinear_no_specials(a, d, DE, z=None):
 
     ret = (cancel(g1[0].as_expr()/g1[1].as_expr() + q1.as_expr()).subs(s) +
         residue_reduce_to_basic(g2, DE, z))
-    return (ret, b)
+    return ret, b
 
 
 class NonElementaryIntegral(Integral):
@@ -1705,6 +1705,6 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             else:
 
                 if isinstance(i, NonElementaryIntegral):
-                    return (result, i)
+                    return result, i
                 else:
-                    return (result, 0)
+                    return result, 0

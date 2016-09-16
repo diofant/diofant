@@ -1,11 +1,12 @@
 import re
+import sys
 
 import mpmath
 import pytest
 
 from diofant import (Symbol, exp, Integer, Float, sin, cos, Poly, Lambda,
-                   Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
-                   Interval, Add, Mul, Pow, Or, true, false, Abs, pi)
+                     Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
+                     Interval, Add, Mul, Pow, Or, true, false, Abs, pi)
 from diofant.core.sympify import sympify, _sympify, SympifyError
 from diofant.core.decorators import _sympifyit
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -70,10 +71,7 @@ def test_sympify_Fraction():
 
 def test_sympify_gmpy():
     if HAS_GMPY:
-        if HAS_GMPY == 2:
-            import gmpy2 as gmpy
-        elif HAS_GMPY == 1:
-            import gmpy
+        import gmpy2 as gmpy
 
         value = sympify(gmpy.mpz(1000001))
         assert value == Integer(1000001) and type(value) is Integer
@@ -209,6 +207,8 @@ def test_lambda():
     assert sympify('lambda x, y: 2*x+y') == Lambda([x, y], 2*x + y)
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 5),
+                    reason="XXX python3.5 api changes")
 def test_lambda_raises():
     pytest.raises(SympifyError, lambda: sympify("lambda *args: args"))  # args argument error
     pytest.raises(SympifyError, lambda: sympify("lambda **kwargs: kwargs[0]"))  # kwargs argument error
@@ -267,6 +267,11 @@ def test_sympifyit():
     assert add_raises(x, y) == x + y
 
     pytest.raises(SympifyError, lambda: add_raises(x, '1'))
+
+    with pytest.raises(LookupError):
+        @_sympifyit('x', NotImplemented)
+        def spam():
+            return
 
 
 def test_int_float():

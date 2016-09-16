@@ -1,11 +1,11 @@
 import pytest
 
 from diofant import (hyper, meijerg, S, Tuple, pi, I, exp, log,
-                   cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
+                     cos, sqrt, symbols, oo, Derivative, gamma, O, Rational)
 from diofant.series.limits import limit
 from diofant.utilities.randtest import (random_complex_number as randcplx,
-                                      verify_numerically as tn,
-                                      test_derivative_numerically as td)
+                                        verify_numerically as tn,
+                                        test_derivative_numerically as td)
 
 from diofant.abc import x, z, k
 
@@ -133,6 +133,12 @@ def test_meijer():
                                Tuple(0), Tuple(Rational(1, 2)), z**2/4), cos(z), z)
     assert tn(meijerg(Tuple(1, 1), Tuple(), Tuple(1), Tuple(0), z),
               log(1 + z), z)
+
+    # test exceptions
+    pytest.raises(ValueError, lambda: meijerg(((3, 1), (2,)),
+                                              ((oo,), (2, 0)), x))
+    pytest.raises(ValueError, lambda: meijerg(((3, 1), (2,)),
+                                              ((1,), (2, 0)), x))
 
     # differentiation
     g = meijerg((randcplx(),), (randcplx() + 2*I,), Tuple(),

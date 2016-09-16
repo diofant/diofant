@@ -1,6 +1,10 @@
-# This test file tests the Diofant function interface, that people use to create
-# their own new functions. It should be as easy as possible.
+"""
+This test file tests the Diofant function interface, that people use to create
+their own new functions. It should be as easy as possible.
+"""
+
 from diofant import Function, sympify, sin, cos, limit, tanh
+
 from diofant.abc import x
 
 

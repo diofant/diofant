@@ -183,7 +183,7 @@ class Poly(Expr):
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances. """
-        return (self.rep, self.gens)
+        return self.rep, self.gens
 
     def __hash__(self):
         return super(Poly, self).__hash__()
@@ -231,7 +231,7 @@ class Poly(Expr):
         >>> Poly(x**2 + y, x).free_symbols_in_domain == {y}
         True
         """
-        domain, symbols = self.rep.dom, set()
+        domain, symbols = self.rep.domain, set()
 
         if domain.is_Composite:
             for gen in domain.symbols:
@@ -257,7 +257,7 @@ class Poly(Expr):
         (x**2 + 1,)
 
         """
-        return (self.as_expr(),)
+        return self.as_expr(),
 
     @property
     def gen(self):
@@ -284,17 +284,17 @@ class Poly(Expr):
     @property
     def zero(self):
         """Return zero polynomial with ``self``'s properties. """
-        return self.new(self.rep.zero(self.rep.lev, self.rep.dom), *self.gens)
+        return self.new(self.rep.zero(self.rep.lev, self.rep.domain), *self.gens)
 
     @property
     def one(self):
         """Return one polynomial with ``self``'s properties. """
-        return self.new(self.rep.one(self.rep.lev, self.rep.dom), *self.gens)
+        return self.new(self.rep.one(self.rep.lev, self.rep.domain), *self.gens)
 
     @property
     def unit(self):
         """Return unit polynomial with ``self``'s properties. """
-        return self.new(self.rep.unit(self.rep.lev, self.rep.dom), *self.gens)
+        return self.new(self.rep.unit(self.rep.lev, self.rep.domain), *self.gens)
 
     def unify(self, other):
         """
@@ -329,22 +329,22 @@ class Poly(Expr):
 
         if not other.is_Poly:
             try:
-                return (self.rep.dom, self.per, self.rep,
-                        self.rep.per(self.rep.dom.from_diofant(other)))
+                return (self.rep.domain, self.per, self.rep,
+                        self.rep.per(self.rep.domain.from_diofant(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
         if isinstance(self.rep, DMP) and isinstance(other.rep, DMP):
             gens = _unify_gens(self.gens, other.gens)
 
-            dom, lev = self.rep.dom.unify(other.rep.dom, gens), len(gens) - 1
+            dom, lev = self.rep.domain.unify(other.rep.domain, gens), len(gens) - 1
 
             if self.gens != gens:
                 self_monoms, self_coeffs = _dict_reorder(self.rep.to_dict(),
                                                          self.gens, gens)
 
-                if self.rep.dom != dom:
-                    self_coeffs = [dom.convert(c, self.rep.dom) for c in self_coeffs]
+                if self.rep.domain != dom:
+                    self_coeffs = [dom.convert(c, self.rep.domain) for c in self_coeffs]
 
                 F = DMP(dict(zip(self_monoms, self_coeffs)), dom, lev)
             else:
@@ -354,8 +354,8 @@ class Poly(Expr):
                 other_monoms, other_coeffs = _dict_reorder(other.rep.to_dict(),
                                                            other.gens, gens)
 
-                if other.rep.dom != dom:
-                    other_coeffs = [dom.convert(c, other.rep.dom) for c in other_coeffs]
+                if other.rep.domain != dom:
+                    other_coeffs = [dom.convert(c, other.rep.domain) for c in other_coeffs]
 
                 G = DMP(dict(zip(other_monoms, other_coeffs)), dom, lev)
             else:
@@ -401,7 +401,7 @@ class Poly(Expr):
             gens = gens[:remove] + gens[remove + 1:]
 
             if not gens:
-                return self.rep.dom.to_diofant(rep)
+                return self.rep.domain.to_diofant(rep)
 
         return self.__class__.new(rep, *gens)
 
@@ -412,7 +412,7 @@ class Poly(Expr):
 
     def get_domain(self):
         """Get the ground domain of ``self``. """
-        return self.rep.dom
+        return self.rep.domain
 
     def set_modulus(self, modulus):
         """
@@ -545,7 +545,7 @@ class Poly(Expr):
 
         rep = dict(zip(*_dict_reorder(self.rep.to_dict(), self.gens, gens)))
 
-        return self.per(DMP(rep, self.rep.dom, len(gens) - 1), gens=gens)
+        return self.per(DMP(rep, self.rep.domain, len(gens) - 1), gens=gens)
 
     def ltrim(self, gen):
         """
@@ -574,7 +574,7 @@ class Poly(Expr):
 
         gens = self.gens[j:]
 
-        return self.new(DMP.from_dict(terms, len(gens) - 1, self.rep.dom), *gens)
+        return self.new(DMP.from_dict(terms, len(gens) - 1, self.rep.domain), *gens)
 
     def has_only_gens(self, *gens):
         """
@@ -729,7 +729,7 @@ class Poly(Expr):
         coeff_monomial
         nth
         """
-        return [self.rep.dom.to_diofant(c) for c in self.rep.coeffs(order=order)]
+        return [self.rep.domain.to_diofant(c) for c in self.rep.coeffs(order=order)]
 
     def monoms(self, order=None):
         """
@@ -769,7 +769,7 @@ class Poly(Expr):
 
         all_terms
         """
-        return [(m, self.rep.dom.to_diofant(c)) for m, c in self.rep.terms(order=order)]
+        return [(m, self.rep.domain.to_diofant(c)) for m, c in self.rep.terms(order=order)]
 
     def all_coeffs(self):
         """
@@ -784,7 +784,7 @@ class Poly(Expr):
         >>> Poly(x**3 + 2*x - 1, x).all_coeffs()
         [1, 0, 2, -1]
         """
-        return [self.rep.dom.to_diofant(c) for c in self.rep.all_coeffs()]
+        return [self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs()]
 
     def all_monoms(self):
         """
@@ -819,7 +819,7 @@ class Poly(Expr):
         >>> Poly(x**3 + 2*x - 1, x).all_terms()
         [((3,), 1), ((2,), 0), ((1,), 2), ((0,), -1)]
         """
-        return [(m, self.rep.dom.to_diofant(c)) for m, c in self.rep.all_terms()]
+        return [(m, self.rep.domain.to_diofant(c)) for m, c in self.rep.all_terms()]
 
     def termwise(self, func, *gens, **args):
         """
@@ -990,7 +990,7 @@ class Poly(Expr):
         >>> f.inject(front=True)
         Poly(y**3*x + y*x**2 + y*x + 1, y, x, domain='ZZ')
         """
-        dom = self.rep.dom
+        dom = self.rep.domain
 
         if dom.is_Numerical:
             return self
@@ -1026,7 +1026,7 @@ class Poly(Expr):
         >>> f.eject(y)
         Poly(y*x**2 + (y**3 + y)*x + 1, x, domain='ZZ[y]')
         """
-        dom = self.rep.dom
+        dom = self.rep.domain
 
         if not dom.is_Numerical:
             raise DomainError("can't eject generators over %s" % dom)
@@ -1771,7 +1771,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'LC')
 
-        return self.rep.dom.to_diofant(result)
+        return self.rep.domain.to_diofant(result)
 
     def TC(self):
         """
@@ -1791,7 +1791,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'TC')
 
-        return self.rep.dom.to_diofant(result)
+        return self.rep.domain.to_diofant(result)
 
     def EC(self, order=None):
         """
@@ -1880,7 +1880,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'nth')
 
-        return self.rep.dom.to_diofant(result)
+        return self.rep.domain.to_diofant(result)
 
     def coeff(self, x, n=1, right=False):
         # the semantics of coeff_monomial and Expr.coeff are different;
@@ -1974,7 +1974,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'max_norm')
 
-        return self.rep.dom.to_diofant(result)
+        return self.rep.domain.to_diofant(result)
 
     def l1_norm(self):
         """
@@ -1994,7 +1994,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'l1_norm')
 
-        return self.rep.dom.to_diofant(result)
+        return self.rep.domain.to_diofant(result)
 
     def clear_denoms(self, convert=False):
         """
@@ -2015,12 +2015,12 @@ class Poly(Expr):
         """
         f = self
 
-        if not f.rep.dom.has_Field:
+        if not f.rep.domain.has_Field:
             return S.One, f
 
         dom = f.get_domain()
         if dom.has_assoc_Ring:
-            dom = f.rep.dom.get_ring()
+            dom = f.rep.domain.get_ring()
 
         if hasattr(f.rep, 'clear_denoms'):
             coeff, result = f.rep.clear_denoms()
@@ -2090,7 +2090,7 @@ class Poly(Expr):
         """
         f = self
 
-        if args.get('auto', True) and f.rep.dom.has_Ring:
+        if args.get('auto', True) and f.rep.domain.has_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'integrate'):
@@ -2213,7 +2213,7 @@ class Poly(Expr):
             result = f.rep.eval(a, j)
         except CoercionFailed:
             if not auto:
-                raise DomainError("can't evaluate at %s in %s" % (a, f.rep.dom))
+                raise DomainError("can't evaluate at %s in %s" % (a, f.rep.domain))
             else:
                 a_domain, [a] = construct_domain([a])
                 new_domain = f.get_domain().unify_with_symbols(a_domain, f.gens)
@@ -2404,7 +2404,7 @@ class Poly(Expr):
             raise OperationNotSupported(self, 'resultant')
 
         if includePRS:
-            return (per(result, remove=0), list(map(per, R)))
+            return per(result, remove=0), list(map(per, R))
         return per(result, remove=0)
 
     def discriminant(self):
@@ -2663,7 +2663,7 @@ class Poly(Expr):
         Poly(-x**3 - x + 1, x, domain='ZZ')
 
         """
-        p = self.rep.dom.convert(p)
+        p = self.rep.domain.convert(p)
 
         if hasattr(self.rep, 'trunc'):
             result = self.rep.trunc(p)
@@ -2691,7 +2691,7 @@ class Poly(Expr):
         """
         f = self
 
-        if auto and f.rep.dom.has_Ring:
+        if auto and f.rep.domain.has_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'monic'):
@@ -2719,7 +2719,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'content')
 
-        return self.rep.dom.to_diofant(result)
+        return self.rep.domain.to_diofant(result)
 
     def primitive(self):
         """
@@ -2739,7 +2739,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'primitive')
 
-        return self.rep.dom.to_diofant(cont), self.per(result)
+        return self.rep.domain.to_diofant(cont), self.per(result)
 
     def compose(self, other):
         """
@@ -2821,7 +2821,7 @@ class Poly(Expr):
         """
         f = self
 
-        if auto and f.rep.dom.has_Ring:
+        if auto and f.rep.domain.has_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'sturm'):
@@ -2929,7 +2929,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqf_list')
 
-        return (self.rep.dom.to_diofant(coeff),
+        return (self.rep.domain.to_diofant(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def sqf_list_include(self, all=False):
@@ -2988,7 +2988,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'factor_list')
 
-        return (self.rep.dom.to_diofant(coeff),
+        return (self.rep.domain.to_diofant(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def factor_list_include(self):
@@ -3067,7 +3067,7 @@ class Poly(Expr):
         if sqf:
             def _real(interval):
                 s, t = interval
-                return (QQ.to_diofant(s), QQ.to_diofant(t))
+                return QQ.to_diofant(s), QQ.to_diofant(t)
 
             if not all:
                 return list(map(_real, result))
@@ -3083,7 +3083,7 @@ class Poly(Expr):
         else:
             def _real(interval):
                 (s, t), k = interval
-                return ((QQ.to_diofant(s), QQ.to_diofant(t)), k)
+                return (QQ.to_diofant(s), QQ.to_diofant(t)), k
 
             if not all:
                 return list(map(_real, result))
@@ -3303,9 +3303,9 @@ class Poly(Expr):
         # For integer and rational coefficients, convert them to integers only
         # (for accuracy). Otherwise just try to convert the coefficients to
         # mpmath.mpc and raise an exception if the conversion fails.
-        if self.rep.dom is ZZ:
+        if self.rep.domain is ZZ:
             coeffs = [int(coeff) for coeff in self.all_coeffs()]
-        elif self.rep.dom is QQ:
+        elif self.rep.domain is QQ:
             denoms = [coeff.q for coeff in self.all_coeffs()]
             from diofant.core.numbers import ilcm
             fac = ilcm(*denoms)
@@ -3317,7 +3317,7 @@ class Poly(Expr):
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
                 raise DomainError("Numerical domain expected, got %s" %
-                        self.rep.dom)
+                        self.rep.domain)
 
         dps = mpmath.mp.dps
         mpmath.mp.dps = n
@@ -3852,9 +3852,9 @@ class Poly(Expr):
         if f.gens != g.gens:
             return False
 
-        if f.rep.dom != g.rep.dom:
+        if f.rep.domain != g.rep.domain:
             try:
-                dom = f.rep.dom.unify(g.rep.dom, f.gens)
+                dom = f.rep.domain.unify(g.rep.domain, f.gens)
             except UnificationFailed:
                 return False
 
@@ -3890,7 +3890,7 @@ class PurePoly(Poly):
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances. """
-        return (self.rep,)
+        return self.rep,
 
     def __hash__(self):
         return super(PurePoly, self).__hash__()
@@ -3928,9 +3928,9 @@ class PurePoly(Poly):
         if len(f.gens) != len(g.gens):
             return False
 
-        if f.rep.dom != g.rep.dom:
+        if f.rep.domain != g.rep.domain:
             try:
-                dom = f.rep.dom.unify(g.rep.dom, f.gens)
+                dom = f.rep.domain.unify(g.rep.domain, f.gens)
             except UnificationFailed:
                 return False
 
@@ -3948,8 +3948,8 @@ class PurePoly(Poly):
 
         if not other.is_Poly:
             try:
-                return (self.rep.dom, self.per, self.rep,
-                        self.rep.per(self.rep.dom.from_diofant(other)))
+                return (self.rep.domain, self.per, self.rep,
+                        self.rep.per(self.rep.domain.from_diofant(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
@@ -3962,7 +3962,7 @@ class PurePoly(Poly):
         cls = self.__class__
         gens = self.gens
 
-        dom = self.rep.dom.unify(other.rep.dom, gens)
+        dom = self.rep.domain.unify(other.rep.domain, gens)
 
         F = self.rep.convert(dom)
         G = other.rep.convert(dom)
@@ -5467,12 +5467,12 @@ def _sorted_factors(factors, method):
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return (exp, len(rep), rep)
+            return exp, len(rep), rep
     else:
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return (len(rep), exp, rep)
+            return len(rep), exp, rep
 
     return sorted(factors, key=key)
 
@@ -5776,7 +5776,7 @@ def _torational_factor_list(p, x):
         a = []
         for z in factors[1:][0]:
             a.append((z[0].subs({x: x - t}), z[1]))
-    return (c, a)
+    return c, a
 
 
 @public
@@ -6378,7 +6378,7 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return (Tuple(*self._basis), Tuple(*self._options.gens))
+        return Tuple(*self._basis), Tuple(*self._options.gens)
 
     @property
     def exprs(self):

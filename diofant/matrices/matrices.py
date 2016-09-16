@@ -13,7 +13,7 @@ from diofant.core.numbers import Integer, ilcm, Rational, Float
 from diofant.core.singleton import S
 from diofant.core.sympify import sympify
 from diofant.core.compatibility import (is_sequence, default_sort_key,
-                                      NotIterable, as_int)
+                                        NotIterable, as_int)
 from diofant.polys import PurePoly, roots, cancel, gcd
 from diofant.simplify import simplify as _simplify, signsimp, nsimplify
 from diofant.utilities.iterables import flatten
@@ -464,7 +464,7 @@ class MatrixBase(object):
         >>> M.cols
         3
         """
-        return (self.rows, self.cols)
+        return self.rows, self.cols
 
     def __sub__(self, a):
         return self + (-a)
@@ -3384,7 +3384,7 @@ class MatrixBase(object):
                     P = P.col_insert(P.cols, vec)
             D = diag(*diagvals)
             self._diagonalize_clear_subproducts()
-            return (P, D)
+            return P, D
 
     def is_diagonalizable(self, reals_only=False, clear_subproducts=True):
         """Check if matrix is diagonalizable.

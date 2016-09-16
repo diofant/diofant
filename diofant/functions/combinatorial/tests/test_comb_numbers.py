@@ -3,12 +3,12 @@ import string
 import pytest
 
 from diofant import (Symbol, symbols, Dummy, S, Sum, Rational, oo, pi, I,
-                   expand_func, diff, EulerGamma, cancel, re, im,
-                   Product, Integer, sstr)
+                     expand_func, diff, EulerGamma, cancel, re, im,
+                     Product, Integer, sstr)
 from diofant.functions import (bernoulli, harmonic, bell, fibonacci, lucas, euler,
-                             catalan, genocchi, binomial, gamma, sqrt, hyper, log,
-                             digamma, trigamma, polygamma, factorial, sin,
-                             cos, cot, zeta)
+                               catalan, genocchi, binomial, gamma, sqrt, hyper, log,
+                               digamma, trigamma, polygamma, factorial, sin,
+                               cos, cot, zeta)
 
 x = Symbol('x')
 
@@ -327,13 +327,20 @@ def test_genocchi():
 
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True, positive=True)
+
     assert genocchi(m) == genocchi(m)
     assert genocchi(n).rewrite(bernoulli) == 2 * (1 - 2 ** n) * bernoulli(n)
-    assert genocchi(2 * n).is_odd
-    assert genocchi(4 * n).is_positive
+
+    assert genocchi(2*n).is_odd
+    assert genocchi(2*n + 1, evaluate=False).is_odd is None
+    assert genocchi(4*n).is_positive
     # This should work for 4 * n - 2, but fails due to some variation of issue
     # 8632 ((4*n-2).is_positive returns None)
-    assert genocchi(4 * n + 2).is_negative
+    assert genocchi(4*n + 2).is_negative
+    assert genocchi(2*n + 1, evaluate=False).is_negative is None
+
+    assert genocchi(m).is_odd is None
+    assert genocchi(m).is_negative is None
 
 
 def test_nC_nP_nT():

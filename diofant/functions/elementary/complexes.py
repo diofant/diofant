@@ -1,7 +1,7 @@
 from diofant.core import S, Add, Mul, sympify, Symbol, Dummy
 from diofant.core.exprtools import factor_terms
 from diofant.core.function import (Function, Derivative, ArgumentIndexError,
-                                 AppliedUndef)
+                                   AppliedUndef)
 from diofant.core.numbers import pi, Rational
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.functions.elementary.piecewise import Piecewise
@@ -85,7 +85,7 @@ class re(Function):
         """
         Returns the real number with a zero imaginary part.
         """
-        return (self, S.Zero)
+        return self, S.Zero
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -178,7 +178,7 @@ class im(Function):
         >>> im(2 + 3*I).as_real_imag()
         (3, 0)
         """
-        return (self, S.Zero)
+        return self, S.Zero
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -239,7 +239,6 @@ class sign(Function):
     diofant.functions.elementary.complexes.conjugate
     """
 
-    is_finite = True
     is_complex = True
 
     def doit(self, **hints):
@@ -448,9 +447,10 @@ class Abs(Function):
                     if base.func is cls and exponent is S.NegativeOne:
                         return arg
                     return Abs(base)**exponent
-                if base.is_positive:
+                if base.is_nonnegative:
                     return base**re(exponent)
-                return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
+                if base.is_negative:
+                    return (-base)**re(exponent)*exp(-S.Pi*im(exponent))
         if arg.is_zero:  # it may be an Expr that is zero
             return S.Zero
         if arg.is_nonnegative:
@@ -465,7 +465,7 @@ class Abs(Function):
             if arg.has(S.Infinity, S.NegativeInfinity):
                 if any(a.is_infinite for a in arg.as_real_imag()):
                     return S.Infinity
-            if arg.is_extended_real is None and arg.is_imaginary is None:
+            if arg.is_extended_real is not True and arg.is_imaginary is None:
                 if all(a.is_extended_real or a.is_imaginary or (S.ImaginaryUnit*a).is_extended_real for a in arg.args):
                     from diofant import expand_mul
                     return sqrt(expand_mul(arg*arg.conjugate()))
@@ -479,6 +479,10 @@ class Abs(Function):
 
     def _eval_is_nonzero(self):
         return self._args[0].is_nonzero
+
+    def _eval_is_finite(self):
+        if self.args[0].is_complex:
+            return True
 
     def _eval_is_positive(self):
         return self.is_nonzero
@@ -557,8 +561,7 @@ class arg(Function):
     pi/4
     """
 
-    is_extended_real = True
-    is_finite = True
+    is_real = True
 
     @classmethod
     def eval(cls, arg):
@@ -570,6 +573,8 @@ class arg(Function):
             arg_ = sign(c)*arg_
         else:
             arg_ = arg
+        if arg_.is_zero:
+            return S.Zero
         x, y = re(arg_), im(arg_)
         rv = atan2(y, x)
         if rv.is_number and not rv.atoms(AppliedUndef):
@@ -874,7 +879,7 @@ class periodic_argument(Function):
         return (ub - ceiling(ub/period - Rational(1, 2))*period)._eval_evalf(prec)
 
     def _eval_is_real(self):
-        if self.args[1].is_positive:
+        if self.args[1].is_real and self.args[1].is_positive:
             return True
 
 

@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Symbol, Rational, exp, ln, log, nan, oo, O, pi, I,
-                   Integral, sin, cos, sqrt, conjugate, expand, transpose,
-                   symbols, Function, Derivative, Integer, digamma)
+                     Integral, sin, cos, sqrt, conjugate, expand, transpose,
+                     symbols, Function, Derivative, Integer, digamma)
 
 from diofant.abc import w, x, y, z
 
@@ -41,6 +41,8 @@ def test_simple_1():
     pytest.raises(ValueError, lambda: O(exp(x), x, x))
     pytest.raises(TypeError, lambda: O(x, 2 - x))
     pytest.raises(ValueError, lambda: O(x, (x, x**2)))
+
+    assert O(x**2).is_commutative
 
 
 def test_simple_2():

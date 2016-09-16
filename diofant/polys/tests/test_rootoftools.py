@@ -5,9 +5,9 @@ import pytest
 from diofant.polys.polytools import Poly
 from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                    GeneratorsNeeded, PolynomialError)
+                                      GeneratorsNeeded, PolynomialError)
 from diofant import (S, sqrt, I, Rational, Float, Lambda, log, exp, tan,
-                   Function, Eq, solve, legendre_poly)
+                     Function, Eq, solve, legendre_poly)
 
 from diofant.abc import a, b, x, y, z, r
 
@@ -134,11 +134,11 @@ def test_RootOf___eval_Eq__():
     assert Eq(r, f(0)) is S.false
     sol = solve(r.expr)
     for s in sol:
-        if s.is_extended_real:
+        if s.is_real:
             assert Eq(r, s) is S.false
     r = RootOf(r.expr, 0)
     for s in sol:
-        if s.is_extended_real:
+        if s.is_real:
             assert Eq(r, s) is S.true
     eq = (x**3 + x + 1)
     assert [Eq(RootOf(eq, i), j) for i in range(3) for j in solve(eq)] == \
@@ -147,9 +147,9 @@ def test_RootOf___eval_Eq__():
 
 
 def test_RootOf_is_real():
-    assert RootOf(x**3 + x + 3, 0).is_extended_real is True
-    assert RootOf(x**3 + x + 3, 1).is_extended_real is False
-    assert RootOf(x**3 + x + 3, 2).is_extended_real is False
+    assert RootOf(x**3 + x + 3, 0).is_real is True
+    assert RootOf(x**3 + x + 3, 1).is_real is False
+    assert RootOf(x**3 + x + 3, 2).is_real is False
 
 
 def test_RootOf_is_complex():

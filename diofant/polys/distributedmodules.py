@@ -29,7 +29,7 @@ The main reference for this file is [SCA],
 from itertools import permutations
 
 from diofant.polys.monomials import (monomial_mul, monomial_lcm, monomial_div,
-                                   monomial_deg)
+                                     monomial_deg)
 from diofant.polys.polytools import Poly
 from diofant.polys.polyutils import parallel_dict_from_expr
 from diofant import S, sympify
@@ -630,7 +630,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
             + sdm_monomial_deg(sdm_monomial_lcm(LMi, LMj))
 
     def ourkey(p):
-        return (p[2], O(p[3]), p[1])
+        return p[2], O(p[3]), p[1]
 
     def update(f, sugar, P):
         """Add f with sugar ``sugar`` to S, update P."""

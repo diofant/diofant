@@ -13,7 +13,7 @@ diofant.stats.rv_interface
 """
 
 from diofant import (Basic, S, Expr, Symbol, Tuple, And, Add, Eq, lambdify,
-                   Equality, solve, Lambda, DiracDelta, Integer, sympify)
+                     Equality, solve, Lambda, DiracDelta, Integer, sympify)
 from diofant.core.relational import Relational
 from diofant.logic.boolalg import Boolean
 from diofant.sets.sets import FiniteSet, ProductSet
@@ -132,7 +132,6 @@ class PSpace(Basic):
 
     is_Finite = None
     is_Continuous = None
-    is_real = None
 
     @property
     def domain(self):
@@ -383,8 +382,8 @@ class ProductDomain(RandomDomain):
         # Split event into each subdomain
         for domain in self.domains:
             # Collect the parts of this event which associate to this domain
-            elem = frozenset([item for item in other
-                              if domain.symbols.contains(item[0]) == S.true])
+            elem = frozenset(item for item in other
+                             if domain.symbols.contains(item[0]) == S.true)
             # Test this sub-event
             if elem not in domain:
                 return False

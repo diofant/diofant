@@ -1,37 +1,17 @@
 """Tools to assist importing optional external modules."""
 
 import sys
+import warnings
 from distutils.version import LooseVersion
 
-# Override these in the module to change the default warning behavior.
-# For example, you might set both to False before running the tests so that
-# warnings are not printed to the console, or set both to True for debugging.
-
-WARN_NOT_INSTALLED = None  # Default is False
-WARN_OLD_VERSION = None  # Default is True
-
-
-def __diofant_debug():
-    # helper function from diofant/__init__.py
-    # We don't just import DIOFANT_DEBUG from that file because we don't want to
-    # import all of diofant just to use this module.
-    import os
-    debug_str = os.getenv('DIOFANT_DEBUG', 'False')
-    if debug_str in ('True', 'False'):
-        return eval(debug_str)
-    else:
-        raise RuntimeError("unrecognized value for DIOFANT_DEBUG: %s" %
-                           debug_str)
-
-if __diofant_debug():
-    WARN_OLD_VERSION = True
-    WARN_NOT_INSTALLED = True
+from diofant import DIOFANT_DEBUG
 
 
 def import_module(module, min_module_version=None, min_python_version=None,
-        warn_not_installed=None, warn_old_version=None,
-        module_version_attr='__version__', module_version_attr_call_args=None,
-        __import__kwargs={}, catch=()):
+                  warn_not_installed=False, warn_old_version=True,
+                  module_version_attr='__version__',
+                  module_version_attr_call_args=None,
+                  __import__kwargs={}, catch=()):
     """
     Import and return a module if it is installed.
 
@@ -54,18 +34,14 @@ def import_module(module, min_module_version=None, min_python_version=None,
     min_python_version keyword argument.  This should be comparable against
     sys.version_info.
 
-    If the keyword argument warn_not_installed is set to True, the function will
-    emit a UserWarning when the module is not installed.
+    If the keyword argument warn_not_installed is set to True (or
+    DIOFANT_DEBUG is True), the function will emit a UserWarning when
+    the module is not installed.
 
-    If the keyword argument warn_old_version is set to True, the function will
-    emit a UserWarning when the library is installed, but cannot be imported
-    because of the min_module_version or min_python_version options.
-
-    Note that because of the way warnings are handled, a warning will be
-    emitted for each module only once.  You can change the default warning
-    behavior by overriding the values of WARN_NOT_INSTALLED and WARN_OLD_VERSION
-    in diofant.external.importtools.  By default, WARN_NOT_INSTALLED is False and
-    WARN_OLD_VERSION is True.
+    By default, or if the keyword argument warn_old_version is set to True (or
+    DIOFANT_DEBUG is True), the function will emit a UserWarning when
+    the library is installed, but cannot be imported because of the
+    min_module_version or min_python_version options.
 
     This function uses __import__() to import the module.  To pass additional
     options to __import__(), use the __import__kwargs keyword argument.  For
@@ -84,61 +60,48 @@ def import_module(module, min_module_version=None, min_python_version=None,
     >>> numpy = import_module('numpy')
 
     >>> numpy = import_module('numpy', min_python_version=(2, 7),
-    ... warn_old_version=False)
+    ...                       warn_old_version=False)
+
+    numpy.__version__ is a string
 
     >>> numpy = import_module('numpy', min_module_version='1.5',
-    ... warn_old_version=False) # numpy.__version__ is a string
+    ...                       warn_old_version=False)
 
-    >>> # gmpy does not have __version__, but it does have gmpy.version()
+    gmpy does not have __version__, but it does have gmpy.version()
 
-    >>> gmpy = import_module('gmpy', min_module_version='1.14',
-    ... module_version_attr='version', module_version_attr_call_args=(),
-    ... warn_old_version=False)
+    >>> gmpy = import_module('gmpy2', min_module_version='2.0.0',
+    ...                      module_version_attr='version',
+    ...                      module_version_attr_call_args=(),
+    ...                      warn_old_version=False)
 
-    >>> # To import a submodule, you must pass a nonempty fromlist to
-    >>> # __import__().  The values do not matter.
+    To import a submodule, you must pass a nonempty fromlist to
+    __import__().  The values do not matter.
+
     >>> p3 = import_module('mpl_toolkits.mplot3d',
-    ... __import__kwargs={'fromlist':['something']})
+    ...                     __import__kwargs={'fromlist':['something']})
 
-    >>> # matplotlib.pyplot can raise RuntimeError when the display cannot be opened
+    matplotlib.pyplot can raise RuntimeError when the display cannot be opened
+
     >>> matplotlib = import_module('matplotlib',
-    ... __import__kwargs={'fromlist':['pyplot']}, catch=(RuntimeError,))
-
+    ...                            __import__kwargs={'fromlist':['pyplot']},
+    ...                            catch=(RuntimeError,))
     """
-    # keyword argument overrides default, and global variable overrides
-    # keyword argument.
-    warn_old_version = (WARN_OLD_VERSION if WARN_OLD_VERSION is not None
-        else warn_old_version or True)
-    warn_not_installed = (WARN_NOT_INSTALLED if WARN_NOT_INSTALLED is not None
-        else warn_not_installed or False)
-
-    import warnings
+    warn_old_version = True if DIOFANT_DEBUG else warn_old_version
+    warn_not_installed = True if DIOFANT_DEBUG else warn_not_installed
 
     # Check Python first so we don't waste time importing a module we can't use
     if min_python_version:
         if sys.version_info < min_python_version:
+            min_python_version = '.'.join(map(str, min_python_version))
             if warn_old_version:
                 warnings.warn("Python version is too old to use %s "
-                    "(%s or newer required)" % (
-                        module, '.'.join(map(str, min_python_version))),
-                    UserWarning)
+                              "(%s or newer required)" % (module,
+                                                          min_python_version),
+                              UserWarning)
             return
-
-    # PyPy 1.6 has rudimentary NumPy support and importing it produces errors, so skip it
-    if module == 'numpy' and '__pypy__' in sys.builtin_module_names:
-        return
 
     try:
         mod = __import__(module, **__import__kwargs)
-
-        # there's something funny about imports with matplotlib and py3k. doing
-        #    from matplotlib import collections
-        # gives python's stdlib collections module. explicitly re-importing
-        # the module fixes this.
-        from_list = __import__kwargs.get('fromlist', tuple())
-        for submod in from_list:
-            if submod == 'collections' and mod.__name__ == 'matplotlib':
-                __import__(module + '.' + submod)
     except ImportError:
         if warn_not_installed:
             warnings.warn("%s module is not installed" % module, UserWarning)
@@ -151,8 +114,9 @@ def import_module(module, min_module_version=None, min_python_version=None,
         if LooseVersion(modversion) < LooseVersion(min_module_version):
             if warn_old_version:
                 warnings.warn("%s version is too old to use "
-                    "(%s or newer required)" % (module, min_module_version),
-                    UserWarning)
+                              "(%s or newer required)" % (module,
+                                                          min_module_version),
+                              UserWarning)
             return
 
     return mod

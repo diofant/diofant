@@ -40,7 +40,7 @@ from diofant.logic.boolalg import And, Or, BooleanAtom
 from diofant.functions.special.delta_functions import Heaviside
 from diofant.functions.elementary.piecewise import Piecewise, piecewise_fold
 from diofant.functions.elementary.hyperbolic import (_rewrite_hyperbolics_as_exp,
-                                                   HyperbolicFunction)
+                                                     HyperbolicFunction)
 from diofant.functions.special.hyper import meijerg
 from diofant.utilities.iterables import multiset_partitions
 from diofant.utilities.misc import debug as _debug
@@ -283,7 +283,7 @@ def _mytype(f, x):
     if x not in f.free_symbols:
         return ()
     elif f.is_Function:
-        return (type(f),)
+        return type(f),
     else:
         types = [_mytype(a, x) for a in f.args]
         res = []
@@ -364,8 +364,8 @@ def _exponents(expr, x):
 def _functions(expr, x):
     """ Find the types of functions in expr, to estimate the complexity. """
     from diofant import Function
-    return (set(e.func for e in expr.atoms(Function) if x in e.free_symbols) |
-            set(e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols))
+    return ({e.func for e in expr.atoms(Function) if x in e.free_symbols} |
+            {e.func for e in expr.atoms(Pow) if e.base is S.Exp1 and x in e.free_symbols})
 
 
 def _find_splitting_points(expr, x):
@@ -1460,7 +1460,11 @@ def _rewrite_single(f, x, recursive=True):
                 for fac, g in terms:
                     r1 = _get_coeff_exp(unpolarify(fac.subs(subs).subs(z, x),
                                                    exponents_only=True), x)
-                    g = g.subs(subs).subs(z, x)
+                    try:
+                        g = g.subs(subs).subs(z, x)
+                    except ValueError:
+                        continue
+
                     # NOTE these substitutions can in principle introduce oo,
                     #      zoo and other absurdities. It shouldn't matter,
                     #      but better be safe.
@@ -1477,8 +1481,9 @@ def _rewrite_single(f, x, recursive=True):
         return
     _debug('Trying recursive Mellin transform method.')
     from diofant.integrals.transforms import (mellin_transform,
-                                    inverse_mellin_transform, IntegralTransformError,
-                                    MellinTransformStripError)
+                                              inverse_mellin_transform,
+                                              IntegralTransformError,
+                                              MellinTransformStripError)
     from diofant import oo, nan, zoo, simplify, cancel
 
     def my_imt(F, s, x, strip):
@@ -1620,7 +1625,7 @@ def meijerint_indefinite(f, x):
         if rv:
             if not type(rv) is list:
                 return collect(factor_terms(rv),
-                               set(a for a in rv.atoms(Pow) if a.base is S.Exp1))
+                               {a for a in rv.atoms(Pow) if a.base is S.Exp1})
             results.extend(rv)
     if results:
         return next(ordered(results))
@@ -1753,7 +1758,7 @@ def meijerint_definite(f, x, a, b):
     x = d
 
     if a == b:
-        return (S.Zero, True)
+        return S.Zero, True
 
     results = []
     if a == -oo and b != oo:
@@ -1836,7 +1841,7 @@ def meijerint_definite(f, x, a, b):
         if rv:
             if not type(rv) is list:
                 rv = (collect(factor_terms(rv[0]),
-                              set(a for a in rv[0].atoms(Pow) if a.base is S.Exp1)),) + rv[1:]
+                              {a for a in rv[0].atoms(Pow) if a.base is S.Exp1}),) + rv[1:]
                 return rv
             results.extend(rv)
     if results:

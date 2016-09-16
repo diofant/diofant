@@ -6,10 +6,10 @@ from diofant.polys.domains.characteristiczero import CharacteristicZero
 from diofant.polys.domains.old_fractionfield import FractionField
 from diofant.polys.polyclasses import DMP, DMF
 from diofant.polys.polyerrors import (GeneratorsNeeded, PolynomialError,
-                                    CoercionFailed, ExactQuotientFailed,
-                                    NotReversible)
+                                      CoercionFailed, ExactQuotientFailed,
+                                      NotReversible)
 from diofant.polys.polyutils import (dict_from_basic, basic_from_dict,
-                                   _dict_reorder)
+                                     _dict_reorder)
 from diofant.polys.orderings import monomial_key, build_product_order
 from diofant.polys.agca.modules import FreeModulePolyRing
 from diofant.core.compatibility import iterable
@@ -44,56 +44,56 @@ class PolynomialRingBase(Ring, CharacteristicZero, CompositeDomain):
         self.zero = self.dtype.zero(lev, dom, ring=self)
         self.one = self.dtype.one(lev, dom, ring=self)
 
-        self.domain = self.dom = dom
+        self.domain = dom
         self.symbols = self.gens = gens
         # NOTE 'order' may not be set if inject was called through CompositeDomain
         self.order = opts.get('order', monomial_key(self.default_order))
 
     def new(self, element):
-        return self.dtype(element, self.dom, len(self.gens) - 1, ring=self)
+        return self.dtype(element, self.domain, len(self.gens) - 1, ring=self)
 
     def __str__(self):
         s_order = str(self.order)
         orderstr = (
             " order=" + s_order) if s_order != self.default_order else ""
-        return str(self.dom) + '[' + ','.join(map(str, self.gens)) + orderstr + ']'
+        return str(self.domain) + '[' + ','.join(map(str, self.gens)) + orderstr + ']'
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.dtype, self.dom,
+        return hash((self.__class__.__name__, self.dtype, self.domain,
                      self.gens, self.order))
 
     def __eq__(self, other):
         """Returns `True` if two domains are equivalent. """
         return isinstance(other, PolynomialRingBase) and \
-            self.dtype == other.dtype and self.dom == other.dom and \
+            self.dtype == other.dtype and self.domain == other.domain and \
             self.gens == other.gens and self.order == other.order
 
     def from_ZZ_python(self, a, K0):
         """Convert a Python `int` object to `dtype`. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def from_ZZ_gmpy(self, a, K0):
         """Convert a GMPY `mpz` object to `dtype`. """
-        return self(self.dom.convert(a, K0))
+        return self(self.domain.convert(a, K0))
 
     def from_GlobalPolynomialRing(self, a, K0):
         """Convert a `DMP` object to `dtype`. """
         if self.gens == K0.gens:
-            if self.dom == K0.dom:
+            if self.domain == K0.domain:
                 return self(a.rep)  # set the correct ring
             else:
-                return self(a.convert(self.dom).rep)
+                return self(a.convert(self.domain).rep)
         else:
             monoms, coeffs = _dict_reorder(a.to_dict(), K0.gens, self.gens)
 
-            if self.dom != K0.dom:
-                coeffs = [self.dom.convert(c, K0.dom) for c in coeffs]
+            if self.domain != K0.domain:
+                coeffs = [self.domain.convert(c, K0.domain) for c in coeffs]
 
             return self(dict(zip(monoms, coeffs)))
 
     def get_field(self):
         """Returns a field associated with `self`. """
-        return FractionField(self.dom, *self.gens)
+        return FractionField(self.domain, *self.gens)
 
     def revert(self, a):
         try:
@@ -194,7 +194,7 @@ class GlobalPolynomialRing(PolynomialRingBase):
             raise CoercionFailed("can't convert %s to type %s" % (a, self))
 
         for k, v in rep.items():
-            rep[k] = self.dom.from_diofant(v)
+            rep[k] = self.domain.from_diofant(v)
 
         return self(rep)
 
@@ -219,7 +219,7 @@ class GeneralizedPolynomialRing(PolynomialRingBase):
 
     def new(self, a):
         """Construct an element of `self` domain from `a`. """
-        res = self.dtype(a, self.dom, len(self.gens) - 1, ring=self)
+        res = self.dtype(a, self.domain, len(self.gens) - 1, ring=self)
 
         # make sure res is actually in our ring
         if res.denom().terms(order=self.order)[0][0] != (0,)*len(self.gens):
@@ -252,10 +252,10 @@ class GeneralizedPolynomialRing(PolynomialRingBase):
         den, _ = dict_from_basic(q, gens=self.gens)
 
         for k, v in num.items():
-            num[k] = self.dom.from_diofant(v)
+            num[k] = self.domain.from_diofant(v)
 
         for k, v in den.items():
-            den[k] = self.dom.from_diofant(v)
+            den[k] = self.domain.from_diofant(v)
 
         return self((num, den)).cancel()
 

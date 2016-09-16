@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (sin, cos, exp, E, series, oo, Derivative, O, Integral,
-                   Function, log, sqrt, Symbol, Subs, pi, symbols,
-                   Rational, Integer)
+                     Function, log, sqrt, Symbol, Subs, pi, symbols,
+                     Rational, Integer)
 
 from diofant.abc import x, y
 
@@ -153,6 +153,7 @@ def test_issue_9173():
     assert Q.series(y, n=3) == b_2*y**2 + b_1*y + b_0 + O(y**3)
 
 
+@pytest.mark.slow
 def test_issue_9549():
     e = (x**2 + x + 1)/(x**3 + x**2)
     r = e.series(x, oo)
@@ -170,3 +171,9 @@ def test_issue_10761():
                                  - x**8 + x**9 - x**10 + x**11 - x**12
                                  + x**13 - x**14 + x**15 - x**16
                                  + x**17 - x**18 + x**19 + O(x**20))
+
+
+def test_issue_11407():
+    a, b, c = symbols('a, b, c')
+    assert sqrt(a + b + c*x).series(x, 0, 1) == sqrt(a + b) + O(x)
+    assert sqrt(a + b + c + c*x).series(x, 0, 1) == sqrt(a + b + c) + O(x)

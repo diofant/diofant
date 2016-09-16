@@ -139,15 +139,16 @@ class Mod(Function):
         return G*cls(p, q, evaluate=(p, q) != (pwas, qwas))
 
     def _eval_is_integer(self):
-        from diofant.core.logic import fuzzy_and
         p, q = self.args
-        if fuzzy_and([p.is_integer, q.is_integer, q.is_nonzero]):
+        if p.is_integer and q.is_integer and q.is_nonzero:
             return True
 
     def _eval_is_nonnegative(self):
-        if self.args[1].is_positive:
+        _, q = self.args
+        if q.is_positive:
             return True
 
     def _eval_is_nonpositive(self):
-        if self.args[1].is_negative:
+        _, q = self.args
+        if q.is_negative:
             return True

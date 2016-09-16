@@ -1,7 +1,7 @@
 import random
 
 from diofant import (Basic, sympify, symbols, Dummy, Lambda, summation,
-                   Piecewise, S, cacheit, solve, Sum)
+                     Piecewise, S, cacheit, solve, Sum)
 from diofant.stats.rv import NamedArgsMixin, SinglePSpace, SingleDomain
 
 
@@ -88,7 +88,6 @@ class SingleDiscreteDomain(SingleDomain):
 
 class SingleDiscretePSpace(SinglePSpace):
     """ Discrete probability space over a single univariate variable """
-    is_real = True
 
     @property
     def set(self):

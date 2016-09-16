@@ -7,7 +7,7 @@ the function ``homomorphism(from, to, matrix)`` to create homomorphism objects.
 """
 
 from diofant.polys.agca.modules import (Module, FreeModule, QuotientModule,
-                                      SubModule, SubQuotientModule)
+                                        SubModule, SubQuotientModule)
 from diofant.polys.polyerrors import CoercionFailed
 from diofant.printing import sstr
 

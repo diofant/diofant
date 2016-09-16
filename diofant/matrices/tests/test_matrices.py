@@ -3,11 +3,11 @@ import collections
 import pytest
 
 from diofant import (Abs, E, Float, I, Integer, Max, Min, N, Poly, Pow,
-                   PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
-                   simplify, sin, sqrt, symbols, sympify,
-                   trigsimp, sstr, Function)
+                     PurePoly, Rational, S, Dummy, Symbol, cos, exp, oo, pi,
+                     simplify, sin, sqrt, symbols, sympify,
+                     trigsimp, sstr, Function)
 from diofant.matrices.matrices import (ShapeError, MatrixError,
-                                     NonSquareMatrixError, DeferredVector)
+                                       NonSquareMatrixError, DeferredVector)
 from diofant.matrices import (
     GramSchmidt, ImmutableMatrix, ImmutableSparseMatrix, Matrix,
     SparseMatrix, casoratian, diag, eye, hessian,
@@ -2554,3 +2554,15 @@ def test_diofantissue_288():
                  exp(I*k)*I*k/4 - exp(-I*k)*I*k/4]])
     assert m.det() == 0
     assert m.rank() != 4
+
+
+def test_issue_11434():
+    ax, ay, bx, by, cx, cy, dx, dy, ex, ey, t0, t1 = \
+        symbols('a_x a_y b_x b_y c_x c_y d_x d_y e_x e_y t_0 t_1')
+    M = Matrix([[ax, ay, ax*t0, ay*t0, 0],
+                [bx, by, bx*t0, by*t0, 0],
+                [cx, cy, cx*t0, cy*t0, 1],
+                [dx, dy, dx*t0, dy*t0, 1],
+                [ex, ey, 2*ex*t1 - ex*t0, 2*ey*t1 - ey*t0, 0]])
+    assert M.det() == 0
+    assert M.rank() == 4

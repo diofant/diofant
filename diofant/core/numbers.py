@@ -128,17 +128,10 @@ def _literal_float(f):
     pat = r"[-+]?((\d*\.\d+)|(\d+\.?))(eE[-+]?\d+)?"
     return bool(regex.match(pat, f))
 
-# (a,b) -> gcd(a,b)
-_gcdcache = {}
 
-# TODO caching with decorator, but not to degrade performance
-
-
+@cacheit
 def igcd(*args):
     """Computes positive integer greatest common divisor.
-
-    The algorithm is based on the well known Euclid's algorithm. To
-    improve speed, igcd() has its own caching mechanism implemented.
 
     Examples
     ========
@@ -148,27 +141,14 @@ def igcd(*args):
     2
     >>> igcd(5, 10, 15)
     5
-
     """
     a = args[0]
     for b in args[1:]:
-        try:
-            a = _gcdcache[(a, b)]
-        except KeyError:
-            a, b = as_int(a), as_int(b)
+        a, b = as_int(a), abs(as_int(b))
 
-            if a and b:
-                if b < 0:
-                    b = -b
-
-                while b:
-                    a, b = b, a % b
-            else:
-                a = abs(a or b)
-
-            _gcdcache[(a, b)] = a
-        if a == 1 or b == 1:
-            return 1
+        a = fractions.gcd(a, b)
+        if a == 1:
+            break
     return a
 
 
@@ -212,12 +192,12 @@ def igcdex(a, b):
 
     """
     if (not a) and (not b):
-        return (0, 1, 0)
+        return 0, 1, 0
 
     if not a:
-        return (0, b//abs(b), abs(b))
+        return 0, b//abs(b), abs(b)
     if not b:
-        return (a//abs(a), 0, abs(a))
+        return a//abs(a), 0, abs(a)
 
     if a < 0:
         a, x_sign = -a, -1
@@ -235,7 +215,7 @@ def igcdex(a, b):
         (c, q) = (a % b, a // b)
         (a, b, r, s, x, y) = (b, c, x - q*r, y - q*s, r, s)
 
-    return (x*x_sign, y*y_sign, a)
+    return x*x_sign, y*y_sign, a
 
 
 class Number(AtomicExpr):
@@ -330,9 +310,6 @@ class Number(AtomicExpr):
         if old == -self:
             return -new
         return self  # there is no other possibility
-
-    def _eval_is_finite(self):
-        return True
 
     @classmethod
     def class_key(cls):
@@ -639,8 +616,6 @@ class Float(Number):
 
     # A Float represents many real numbers,
     # both rational and irrational.
-    is_rational = None
-    is_irrational = None
     is_number = True
 
     is_extended_real = True
@@ -763,13 +738,13 @@ class Float(Number):
 
     # mpz can't be pickled
     def __getnewargs__(self):
-        return (mlib.to_pickable(self._mpf_),)
+        return mlib.to_pickable(self._mpf_),
 
     def __getstate__(self):
         return {'_prec': self._prec}
 
     def _hashable_content(self):
-        return (self._mpf_, self._prec)
+        return self._mpf_, self._prec
 
     def floor(self):
         return Integer(int(mlib.to_int(
@@ -1115,65 +1090,41 @@ class Rational(Number):
     is_Rational = True
 
     @cacheit
-    def __new__(cls, p, q=None):
-        if q is None:
+    def __new__(cls, p, q=1):
+        if q == 1:
             if isinstance(p, Rational):
                 return p
+            elif isinstance(p, Float):
+                p, q = float(p).as_integer_ratio()
 
-            if isinstance(p, str):
-                try:
-                    p = fractions.Fraction(p)
-                except ValueError:
-                    pass  # error will raise below
-            elif isinstance(p, float):
-                p = fractions.Fraction(p)
-
-            if not isinstance(p, str):
-                try:
-                    if isinstance(p, fractions.Fraction):
-                        return Rational(p.numerator, p.denominator)
-                except NameError:
-                    pass  # error will raise below
-
-                if isinstance(p, Float):
-                    return Rational(*float(p).as_integer_ratio())
-
-            if not isinstance(p, DIOFANT_INTS + (Rational,)):
-                raise TypeError('invalid input: %s' % p)
-            q = q or S.One
-        else:
-            p = Rational(p)
-            q = Rational(q)
-
-        if isinstance(q, Rational):
-            p *= q.q
-            q = q.p
         if isinstance(p, Rational):
-            q *= p.q
-            p = p.p
+            p = fractions.Fraction(p.p, p.q)
+        if isinstance(q, Rational):
+            q = fractions.Fraction(q.p, q.q)
 
-        # p and q are now integers
-        if q == 0:
+        try:
+            f = fractions.Fraction(p)/fractions.Fraction(q)
+            p, q = f.numerator, f.denominator
+        except ValueError:
+            raise TypeError('invalid input: %s, %s' % (p, q))
+        except ZeroDivisionError:
             if p == 0:
                 if _errdict["divide"]:
                     raise ValueError("Indeterminate 0/0")
                 else:
                     return S.NaN
-            return S.ComplexInfinity
-        if q < 0:
-            q = -q
-            p = -p
-        n = igcd(abs(p), q)
-        if n > 1:
-            p //= n
-            q //= n
+            else:
+                return S.ComplexInfinity
+
         if q == 1:
             return Integer(p)
         if p == 1 and q == 2:
             return S.Half
+
         obj = Expr.__new__(cls)
         obj.p = p
         obj.q = q
+
         return obj
 
     def limit_denominator(self, max_denominator=1000000):
@@ -1190,10 +1141,10 @@ class Rational(Number):
         return Rational(f.limit_denominator(fractions.Fraction(int(max_denominator))))
 
     def __getnewargs__(self):
-        return (self.p, self.q)
+        return self.p, self.q
 
     def _hashable_content(self):
-        return (self.p, self.q)
+        return self.p, self.q
 
     def _eval_is_positive(self):
         return self.p > 0
@@ -1537,7 +1488,7 @@ class Integer(Rational):
         return obj
 
     def __getnewargs__(self):
-        return (self.p,)
+        return self.p,
 
     # Arithmetic operations are here for efficiency
     def __int__(self):
@@ -1903,7 +1854,7 @@ class AlgebraicNumber(Expr):
 
     def coeffs(self):
         """Returns all Diofant coefficients of an algebraic number. """
-        return [ self.rep.dom.to_diofant(c) for c in self.rep.all_coeffs() ]
+        return [ self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs() ]
 
     def native_coeffs(self):
         """Returns all native coefficients of an algebraic number. """
@@ -2630,17 +2581,8 @@ class NaN(Number, metaclass=Singleton):
 
     """
     is_commutative = True
-    is_real = None
-    is_rational = None
-    is_algebraic = None
-    is_transcendental = None
-    is_integer = None
     is_comparable = False
-    is_finite = None
-    is_zero = None
-    is_prime = None
-    is_positive = None
-    is_negative = None
+    is_finite = False
     is_number = True
 
     def __new__(cls):
@@ -2899,7 +2841,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (Integer(2), Integer(3))
+            return Integer(2), Integer(3)
 
     def _eval_power(self, arg):
         from diofant.functions.elementary.exponential import log
@@ -3040,9 +2982,9 @@ class Pi(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (Integer(3), Integer(4))
+            return Integer(3), Integer(4)
         elif issubclass(number_cls, Rational):
-            return (Rational(223, 71), Rational(22, 7))
+            return Rational(223, 71), Rational(22, 7)
 
 pi = S.Pi
 
@@ -3098,7 +3040,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (S.One, Rational(2))
+            return S.One, Rational(2)
 
 
 class EulerGamma(NumberSymbol, metaclass=Singleton):
@@ -3133,7 +3075,6 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     is_real = True
     is_positive = True
     is_negative = False
-    is_irrational = None
     is_number = True
 
     def _latex(self, printer):
@@ -3150,9 +3091,9 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (S.Zero, S.One)
+            return S.Zero, S.One
         elif issubclass(number_cls, Rational):
-            return (S.Half, Rational(3, 5))
+            return S.Half, Rational(3, 5)
 
 
 class Catalan(NumberSymbol, metaclass=Singleton):
@@ -3183,7 +3124,6 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     is_real = True
     is_positive = True
     is_negative = False
-    is_irrational = None
     is_number = True
 
     def __int__(self):
@@ -3197,9 +3137,9 @@ class Catalan(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return (S.Zero, S.One)
+            return S.Zero, S.One
         elif issubclass(number_cls, Rational):
-            return (Rational(9, 10), S.One)
+            return Rational(9, 10), S.One
 
 
 class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
@@ -3285,10 +3225,8 @@ converter[fractions.Fraction] = sympify_fractions
 
 
 try:
-    if HAS_GMPY == 2:
+    if HAS_GMPY:
         import gmpy2 as gmpy
-    elif HAS_GMPY == 1:
-        import gmpy
     else:
         raise ImportError
 

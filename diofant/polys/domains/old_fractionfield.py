@@ -6,7 +6,7 @@ from diofant.polys.domains.characteristiczero import CharacteristicZero
 from diofant.polys.polyclasses import DMF
 from diofant.polys.polyerrors import GeneratorsNeeded
 from diofant.polys.polyutils import (dict_from_basic, basic_from_dict,
-                                   _dict_reorder)
+                                     _dict_reorder)
 from diofant.utilities import public
 
 
@@ -30,22 +30,22 @@ class FractionField(Field, CharacteristicZero, CompositeDomain):
         self.zero = self.dtype.zero(lev, dom, ring=self)
         self.one = self.dtype.one(lev, dom, ring=self)
 
-        self.domain = self.dom = dom
+        self.domain = dom
         self.symbols = self.gens = gens
 
     def new(self, element):
-        return self.dtype(element, self.dom, len(self.gens) - 1, ring=self)
+        return self.dtype(element, self.domain, len(self.gens) - 1, ring=self)
 
     def __str__(self):
-        return str(self.dom) + '(' + ','.join(map(str, self.gens)) + ')'
+        return str(self.domain) + '(' + ','.join(map(str, self.gens)) + ')'
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.dtype, self.dom, self.gens))
+        return hash((self.__class__.__name__, self.dtype, self.domain, self.gens))
 
     def __eq__(self, other):
         """Returns ``True`` if two domains are equivalent. """
         return isinstance(other, FractionField) and \
-            self.dtype == other.dtype and self.dom == other.dom and self.gens == other.gens
+            self.dtype == other.dtype and self.domain == other.domain and self.gens == other.gens
 
     def to_diofant(self, a):
         """Convert ``a`` to a Diofant object. """
@@ -60,10 +60,10 @@ class FractionField(Field, CharacteristicZero, CompositeDomain):
         den, _ = dict_from_basic(q, gens=self.gens)
 
         for k, v in num.items():
-            num[k] = self.dom.from_diofant(v)
+            num[k] = self.domain.from_diofant(v)
 
         for k, v in den.items():
-            den[k] = self.dom.from_diofant(v)
+            den[k] = self.domain.from_diofant(v)
 
         return self((num, den)).cancel()
 
@@ -87,10 +87,10 @@ class FractionField(Field, CharacteristicZero, CompositeDomain):
         (x + 2)/(x + 1)
         """
         if self.gens == K0.gens:
-            if self.dom == K0.dom:
+            if self.domain == K0.domain:
                 return a
             else:
-                return self((a.numer().convert(self.dom).rep,
-                             a.denom().convert(self.dom).rep))
+                return self((a.numer().convert(self.domain).rep,
+                             a.denom().convert(self.domain).rep))
         else:  # pragma: no cover
             raise NotImplementedError

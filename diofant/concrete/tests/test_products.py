@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (symbols, Symbol, product, factorial, rf, sqrt, cos,
-                   Function, Product, Rational, Sum, oo, exp, log, S, simplify)
+                     Function, Product, Rational, Sum, oo, exp, log, S, simplify)
 from diofant.concrete.expr_with_intlimits import ReorderError
 
 a, k, n, m, x = symbols('a,k,n,m,x', integer=True)

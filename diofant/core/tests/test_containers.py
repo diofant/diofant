@@ -1,6 +1,7 @@
 import pytest
 
-from diofant import Matrix, Tuple, symbols, sympify, Basic, Dict, S, FiniteSet, Integer
+from diofant import (Matrix, Tuple, symbols, sympify, Basic, Dict, S,
+                     FiniteSet, Integer)
 from diofant.core.containers import tuple_wrapper
 from diofant.core.compatibility import is_sequence, iterable
 

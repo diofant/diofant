@@ -5,9 +5,9 @@ from diofant.concrete import Sum
 from diofant.functions import adjoint, conjugate, transpose
 from diofant.matrices import eye, Matrix, ShapeError, ImmutableMatrix
 from diofant.matrices.expressions import (Adjoint, Identity, FunctionMatrix,
-                                        MatrixExpr, MatrixSymbol, Trace,
-                                        ZeroMatrix, trace, MatPow, MatAdd,
-                                        MatMul)
+                                          MatrixExpr, MatrixSymbol, Trace,
+                                          ZeroMatrix, trace, MatPow, MatAdd,
+                                          MatMul)
 
 n = symbols('n', integer=True)
 A = MatrixSymbol('A', n, n)

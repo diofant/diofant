@@ -1,9 +1,12 @@
 """Tests of tools for setting up interactive IPython sessions. """
 
 import ast
+import sys
+
+import pytest
 
 from diofant.interactive.session import (init_ipython_session,
-                                       IntegerWrapper)
+                                         IntegerWrapper)
 from diofant.core import Symbol, Rational, Integer
 from diofant.external import import_module
 
@@ -15,6 +18,8 @@ if not ipython:
     disabled = True
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 5),
+                    reason="XXX python3.5 api changes")
 def test_IntegerWrapper():
     tree = ast.parse('1/3')
     dump = ("Module(body=[Expr(value=BinOp(left=Call(func=Name(id='Integer', "

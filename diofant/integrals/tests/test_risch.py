@@ -2,20 +2,20 @@
 import pytest
 
 from diofant import (Poly, I, S, Function, log, symbols, exp, tan, sqrt,
-                   Symbol, Lambda, sin, Eq, Piecewise, factor, Integer, Rational)
+                     Symbol, Lambda, sin, Eq, Piecewise, factor, Integer, Rational)
 from diofant.integrals.risch import (gcdex_diophantine, frac_in, as_poly_1t,
-                                   derivation, splitfactor, splitfactor_sqf,
-                                   canonical_representation, hermite_reduce,
-                                   polynomial_reduce, residue_reduce,
-                                   residue_reduce_to_basic, integrate_primitive,
-                                   integrate_hyperexponential_polynomial,
-                                   integrate_hyperexponential,
-                                   integrate_hypertangent_polynomial,
-                                   integrate_nonlinear_no_specials, integer_powers,
-                                   DifferentialExtension, risch_integrate,
-                                   DecrementLevel, NonElementaryIntegral,
-                                   recognize_log_derivative, recognize_derivative,
-                                   laurent_series)
+                                     derivation, splitfactor, splitfactor_sqf,
+                                     canonical_representation, hermite_reduce,
+                                     polynomial_reduce, residue_reduce,
+                                     residue_reduce_to_basic, integrate_primitive,
+                                     integrate_hyperexponential_polynomial,
+                                     integrate_hyperexponential,
+                                     integrate_hypertangent_polynomial,
+                                     integrate_nonlinear_no_specials, integer_powers,
+                                     DifferentialExtension, risch_integrate,
+                                     DecrementLevel, NonElementaryIntegral,
+                                     recognize_log_derivative, recognize_derivative,
+                                     laurent_series)
 
 from diofant.abc import x, t, nu, z, a, y
 
@@ -593,12 +593,11 @@ def test_DifferentialExtension_Rothstein():
         [x, 1/(t0 + 1) - 10*x], [], [])
 
 
-class TestingException(Exception):
-    """Dummy Exception class for testing."""
-    pass
-
-
 def test_DecrementLevel():
+    class TestingException(Exception):
+        """Dummy Exception class for testing."""
+        pass
+
     DE = DifferentialExtension(x*log(exp(x) + 1), x, dummy=False)
     assert DE.level == -1
     assert DE.t == t1

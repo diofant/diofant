@@ -62,17 +62,17 @@ from itertools import product, chain
 
 from diofant import DIOFANT_DEBUG
 from diofant.core import (S, Dummy, symbols, sympify, Tuple, expand, I, pi, Mul,
-                        EulerGamma, oo, zoo, expand_func, Add, nan,
-                        Expr, Integer, Rational)
+                          EulerGamma, oo, zoo, expand_func, Add, nan,
+                          Expr, Integer, Rational)
 from diofant.core.mod import Mod
 from diofant.core.compatibility import default_sort_key
 from diofant.utilities.iterables import sift
 from diofant.functions import (exp, sqrt, root, log, lowergamma, cos, besseli,
-                             gamma, uppergamma, expint, erf, sin, besselj, Ei,
-                             Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
-                             polar_lift, exp_polar, floor, ceiling, rf,
-                             factorial, lerchphi, Piecewise, re, elliptic_k,
-                             elliptic_e)
+                               gamma, uppergamma, expint, erf, sin, besselj, Ei,
+                               Ci, Si, Shi, sinh, cosh, Chi, fresnels, fresnelc,
+                               polar_lift, exp_polar, floor, ceiling, rf,
+                               factorial, lerchphi, Piecewise, re, elliptic_k,
+                               elliptic_e)
 from diofant.functions.special.hyper import (
     hyper, HyperRep_atanh,
     HyperRep_power1, HyperRep_power2, HyperRep_log1, HyperRep_asin1,
@@ -492,11 +492,11 @@ class Hyper_Function(Expr):
 
     @property
     def args(self):
-        return (self.ap, self.bq)
+        return self.ap, self.bq
 
     @property
     def sizes(self):
-        return (len(self.ap), len(self.bq))
+        return len(self.ap), len(self.bq)
 
     @property
     def gamma(self):
@@ -549,11 +549,11 @@ class Hyper_Function(Expr):
             bucket = list(bucket.items())
             if not any(isinstance(x[0], Mod) for x in bucket):
                 bucket.sort(key=lambda x: default_sort_key(x[0]))
-            bucket = tuple([(mod, len(values)) for mod, values in bucket if
-                    values])
+            bucket = tuple((mod, len(values))
+                           for mod, values in bucket if values)
             return bucket
 
-        return (self.gamma, tr(abuckets), tr(bbuckets))
+        return self.gamma, tr(abuckets), tr(bbuckets)
 
     def difficulty(self, func):
         """ Estimate how many steps it takes to reach ``func`` from self.
@@ -617,7 +617,7 @@ class G_Function(Expr):
 
     @property
     def args(self):
-        return (self.an, self.ap, self.bm, self.bq)
+        return self.an, self.ap, self.bm, self.bq
 
     def _hashable_content(self):
         return super(G_Function, self)._hashable_content() + self.args
@@ -655,11 +655,11 @@ class G_Function(Expr):
                 items.sort(key=lambda x: x - x0, reverse=flip)
                 dic[m] = items
 
-        return tuple([dict(w) for w in dicts])
+        return tuple(dict(w) for w in dicts)
 
     @property
     def signature(self):
-        return (len(self.an), len(self.ap), len(self.bm), len(self.bq))
+        return len(self.an), len(self.ap), len(self.bm), len(self.bq)
 
 
 # Dummy variable.
@@ -2423,7 +2423,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
             # sympify('meijerg(((0, -1/2, 0, -1/2, 1/2), ()), ((0,),
             #                  (-1/2, -1/2, -1/2, -1)), exp_polar(I*pi))/4')
             c0 = 3
-        return (c0, expr.count(hyper), expr.count_ops())
+        return c0, expr.count(hyper), expr.count_ops()
 
     w1 = weight(slater1, cond1)
     w2 = weight(slater2, cond2)

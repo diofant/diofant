@@ -13,8 +13,8 @@ from diofant.core import S, sympify, Dummy
 from diofant.core.exprtools import factor_terms
 from diofant.core.relational import Eq
 from diofant.functions.elementary.trigonometric import (acos,
-                                                      _pi_coeff as pi_coeff,
-                                                      sqrt, tan)
+                                                        _pi_coeff as pi_coeff,
+                                                        sqrt, tan)
 from diofant.functions.elementary.piecewise import Piecewise
 from diofant.logic.boolalg import And
 from diofant.simplify.simplify import simplify
@@ -144,13 +144,13 @@ class LinearEntity(GeometrySet):
         """
         p1, p2 = self.points
         if p1.x == p2.x:
-            return (S.One, S.Zero, -p1.x)
+            return S.One, S.Zero, -p1.x
         elif p1.y == p2.y:
-            return (S.Zero, S.One, -p1.y)
-        return tuple([simplify(i) for i in
-               (self.p1.y - self.p2.y,
-                self.p2.x - self.p1.x,
-                self.p1.x*self.p2.y - self.p1.y*self.p2.x)])
+            return S.Zero, S.One, -p1.y
+        return tuple(simplify(i)
+                     for i in (self.p1.y - self.p2.y,
+                               self.p2.x - self.p1.x,
+                                self.p1.x*self.p2.y - self.p1.y*self.p2.x))
 
     @staticmethod
     def are_concurrent(*lines):
@@ -564,7 +564,7 @@ class LinearEntity(GeometrySet):
         (Point2D(0, 0), Point2D(5, 11))
 
         """
-        return (self.p1, self.p2)
+        return self.p1, self.p2
 
     def projection(self, o):
         """Project a point, line, ray, or segment onto this linear entity.

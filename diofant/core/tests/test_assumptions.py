@@ -2,7 +2,7 @@ import pytest
 
 from diofant import I, sqrt, log, exp, sin, asin
 from diofant.core import (Symbol, S, Rational, Integer, Dummy,
-                        Wild, Pow, Float, Mod, pi)
+                          Wild, Pow, Float, Mod, pi)
 from diofant.core.facts import InconsistentAssumptions
 from diofant import simplify
 
@@ -160,26 +160,26 @@ def test_nan():
     nan = S.NaN
 
     assert nan.is_commutative is True
-    assert nan.is_integer is None
-    assert nan.is_rational is None
-    assert nan.is_algebraic is None
-    assert nan.is_transcendental is None
+    assert nan.is_integer is False
+    assert nan.is_rational is False
+    assert nan.is_algebraic is False
+    assert nan.is_transcendental is False
     assert nan.is_extended_real is None
-    assert nan.is_complex is None
-    assert nan.is_noninteger is None
-    assert nan.is_irrational is None
-    assert nan.is_imaginary is None
+    assert nan.is_complex is False
+    assert nan.is_noninteger is False
+    assert nan.is_irrational is False
+    assert nan.is_imaginary is False
     assert nan.is_positive is None
     assert nan.is_negative is None
     assert nan.is_nonpositive is None
     assert nan.is_nonnegative is None
-    assert nan.is_even is None
-    assert nan.is_odd is None
-    assert nan.is_finite is None
+    assert nan.is_even is False
+    assert nan.is_odd is False
+    assert nan.is_finite is False
     assert nan.is_infinite is None
     assert nan.is_comparable is False
-    assert nan.is_prime is None
-    assert nan.is_composite is None
+    assert nan.is_prime is False
+    assert nan.is_composite is False
     assert nan.is_number is True
 
 
@@ -396,33 +396,11 @@ def test_symbol_falsepositive():
     assert x.is_nonzero is None
 
 
-def test_symbol_falsepositive_mul():
-    # Explicit handling of arg.is_positive=False was added to Mul._eval_is_positive
-    x = 2*Symbol('x', positive=False)
-    assert x.is_positive is False  # This was None before
-    assert x.is_nonpositive is None
-    assert x.is_negative is None
-    assert x.is_nonnegative is None
-    assert x.is_zero is None
-    assert x.is_nonzero is None
-
-
 def test_neg_symbol_falsepositive():
     x = -Symbol('x', positive=False)
     assert x.is_positive is None
     assert x.is_nonpositive is None
     assert x.is_negative is False
-    assert x.is_nonnegative is None
-    assert x.is_zero is None
-    assert x.is_nonzero is None
-
-
-def test_neg_symbol_falsenegative():
-    # Explicit handling of arg.is_negative=False was added to Mul._eval_is_positive
-    x = -Symbol('x', negative=False)
-    assert x.is_positive is False  # This was None before
-    assert x.is_nonpositive is None
-    assert x.is_negative is None
     assert x.is_nonnegative is None
     assert x.is_zero is None
     assert x.is_nonzero is None
@@ -684,7 +662,7 @@ def test_Add_is_pos_neg():
 
 
 def test_Add_is_imaginary():
-    nn = Dummy(nonnegative=True)
+    nn = Dummy(nonnegative=True, finite=True)
     assert (I*nn + I).is_imaginary  # issue 8046, 17
 
 
@@ -787,6 +765,9 @@ def test_special_is_rational():
     assert sqrt(3).is_rational is False
     assert (3 + sqrt(3)).is_rational is False
     assert (3*sqrt(3)).is_rational is False
+    z = Symbol('z', zero=True)
+    assert exp(z).is_rational
+    assert exp(0, evaluate=False).is_rational
     assert exp(3).is_rational is False
     assert exp(ni).is_rational is False
     assert exp(rn).is_rational is False
@@ -811,7 +792,7 @@ def test_special_is_rational():
     assert sin(ni).is_rational is False
     assert sin(rn).is_rational is False
     assert sin(x).is_rational is None
-    assert asin(r).is_rational is False
+    assert asin(rn).is_rational is False
     assert sin(asin(3), evaluate=False).is_rational is True
 
 
@@ -867,11 +848,11 @@ def test_issue_4149():
     assert (3 + I).is_complex
     assert (3 + I).is_imaginary is False
     assert (3*I + S.Pi*I).is_imaginary
-    y = Symbol('y', extended_real=True)
+    y = Symbol('y', real=True)
     assert (3*I + S.Pi*I + y*I).is_imaginary is True
-    p = Symbol('p', positive=True)
+    p = Symbol('p', positive=True, finite=True)
     assert (3*I + S.Pi*I + p*I).is_imaginary
-    n = Symbol('n', negative=True)
+    n = Symbol('n', negative=True, finite=True)
     assert (-3*I - S.Pi*I + n*I).is_imaginary
 
     i = Symbol('i', imaginary=True)
@@ -885,7 +866,7 @@ def test_issue_4149():
 
 
 def test_issue_2920():
-    n = Symbol('n', negative=True)
+    n = Symbol('n', real=True, negative=True)
     assert sqrt(n).is_imaginary
 
 

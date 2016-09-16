@@ -479,17 +479,17 @@ class Ellipse(GeometrySet):
         c = self.center
         hr, vr = self.hradius, self.vradius
         if hr == vr:
-            return (c, c)
+            return c, c
 
         # calculate focus distance manually, since focus_distance calls this
         # routine
         fd = sqrt(self.major**2 - self.minor**2)
         if hr == self.minor:
             # foci on the y-axis
-            return (c + Point(0, -fd), c + Point(0, fd))
+            return c + Point(0, -fd), c + Point(0, fd)
         elif hr == self.major:
             # foci on the x-axis
-            return (c + Point(-fd, 0), c + Point(fd, 0))
+            return c + Point(-fd, 0), c + Point(fd, 0)
 
     def rotate(self, angle=0, pt=None):
         """Rotate ``angle`` radians counterclockwise about Point ``pt``.

@@ -9,7 +9,6 @@ from .primetest import isprime
 from .generate import sieve, primerange, nextprime
 from diofant.core import sympify
 from diofant.core.evalf import bitcount
-from diofant.core.logic import fuzzy_and
 from diofant.core.numbers import igcd, Rational
 from diofant.core.power import integer_nthroot, Pow
 from diofant.core.mul import Mul
@@ -1413,7 +1412,8 @@ class totient(Function):
             return t
 
     def _eval_is_integer(self):
-        return fuzzy_and([self.args[0].is_integer, self.args[0].is_positive])
+        if self.args[0].is_integer and self.args[0].is_positive:
+            return True
 
 
 class divisor_sigma(Function):

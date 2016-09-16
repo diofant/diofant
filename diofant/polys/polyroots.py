@@ -18,7 +18,7 @@ from diofant.functions.elementary.miscellaneous import root
 from diofant.polys.polytools import Poly, cancel, factor, gcd_list, discriminant
 from diofant.polys.specialpolys import cyclotomic_poly
 from diofant.polys.polyerrors import (PolynomialError, GeneratorsNeeded,
-                                    DomainError)
+                                      DomainError)
 from diofant.polys.polyquinticconst import PolyQuintic
 from diofant.polys.rationaltools import together
 from diofant.simplify import simplify, powsimp

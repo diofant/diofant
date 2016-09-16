@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (symbols, Symbol, sinh, nan, oo, zoo, pi,
-                   asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
-                   tan, cosh, cos, S, sin, Rational, atanh, acoth,
-                   O, exp, sech, sec, csch)
+                     asinh, acosh, log, sqrt, coth, I, cot, E, tanh,
+                     tan, cosh, cos, S, sin, Rational, atanh, acoth,
+                     O, exp, sech, sec, csch)
 
 
 def test_sinh():
@@ -67,6 +67,13 @@ def test_sinh():
     assert sinh(17*k*pi*I) == 0
 
     assert sinh(k*pi*I/2) == sin(k*pi/2)*I
+
+    r = Symbol('r', extended_real=True)
+    assert sinh(r).is_extended_real
+    assert sinh(x).is_extended_real is None
+    i = Symbol('i', imaginary=True)
+    assert sinh(i).is_finite
+    assert sinh(x).is_finite is None
 
 
 def test_sinh_series():
@@ -134,6 +141,13 @@ def test_cosh():
     assert cosh(17*k*pi*I) == cos(17*k*pi)
 
     assert cosh(k*pi) == cosh(k*pi)
+
+    r = Symbol('r', extended_real=True)
+    assert cosh(r).is_extended_real
+    assert cosh(x).is_extended_real is None
+    i = Symbol('i', imaginary=True)
+    assert cosh(i).is_finite
+    assert cosh(x).is_finite is None
 
 
 def test_cosh_series():
@@ -203,6 +217,12 @@ def test_tanh():
     assert tanh(17*k*pi*I) == 0
 
     assert tanh(k*pi*I/2) == tan(k*pi/2)*I
+
+    r = Symbol('r', extended_real=True)
+    assert tanh(r).is_extended_real
+    assert tanh(x).is_extended_real is None
+    assert tanh(r).is_finite
+    assert tanh(x).is_finite is None
 
 
 def test_tanh_series():
@@ -337,6 +357,7 @@ def test_csch():
     assert csch(k*pi*I/2) == -1/sin(k*pi/2)*I
 
     assert csch(n).is_extended_real is True
+    assert csch(n).is_finite is None
 
 
 def test_csch_series():
@@ -400,6 +421,7 @@ def test_sech():
     assert sech(17*k*pi*I) == 1/cos(17*k*pi)
 
     assert sech(n).is_extended_real is True
+    assert csch(n).is_finite is None
 
 
 def test_sech_series():

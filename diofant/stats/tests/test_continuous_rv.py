@@ -1,31 +1,30 @@
 import pytest
 
 from diofant.stats import (P, E, where, density, variance, covariance, skewness,
-                         given, pspace, cdf, ContinuousRV, sample,
-                         Arcsin, Benini, Beta, BetaPrime, Cauchy,
-                         Chi, ChiSquared,
-                         ChiNoncentral, Dagum, Erlang, Exponential,
-                         FDistribution, FisherZ, Frechet, Gamma, GammaInverse,
-                         Kumaraswamy, Laplace, Logistic,
-                         LogNormal, Maxwell, Nakagami, Normal, Pareto,
-                         QuadraticU, RaisedCosine, Rayleigh, StudentT,
-                         Triangular, Uniform, UniformSum, VonMises, Weibull,
-                         WignerSemicircle, correlation, moment, cmoment,
-                         smoment)
+                           given, pspace, cdf, ContinuousRV, sample,
+                           Arcsin, Benini, Beta, BetaPrime, Cauchy,
+                           Chi, ChiSquared,
+                           ChiNoncentral, Dagum, Erlang, Exponential,
+                           FDistribution, FisherZ, Frechet, Gamma, GammaInverse,
+                           Kumaraswamy, Laplace, Logistic,
+                           LogNormal, Maxwell, Nakagami, Normal, Pareto,
+                           QuadraticU, RaisedCosine, Rayleigh, StudentT,
+                           Triangular, Uniform, UniformSum, VonMises, Weibull,
+                           WignerSemicircle, correlation, moment, cmoment,
+                           smoment)
 from diofant import (Symbol, Abs, exp, S, N, pi, simplify, Interval, erf, oo,
-                   Eq, log, lowergamma, Sum, symbols, sqrt, And, gamma, beta,
-                   Piecewise, Integral, sin, cos, besseli, factorial, binomial,
-                   floor, expand_func, Integer, Rational)
+                     Eq, log, lowergamma, Sum, symbols, sqrt, And, gamma, beta,
+                     Piecewise, Integral, sin, cos, besseli, factorial, binomial,
+                     floor, expand_func, Integer, Rational)
 from diofant.stats.crv_types import NormalDistribution
 from diofant.stats.rv import ProductPSpace
 
-
-x, y, z = map(Symbol, 'xyz')
+from diofant.abc import x, y, z
 
 
 def test_single_normal():
-    mu = Symbol('mu', extended_real=True, finite=True)
-    sigma = Symbol('sigma', extended_real=True, positive=True, finite=True)
+    mu = Symbol('mu', real=True)
+    sigma = Symbol('sigma', real=True, positive=True)
     X = Normal('x', 0, 1)
     Y = X*sigma + mu
 

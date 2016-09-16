@@ -1,8 +1,8 @@
 import pytest
 
 from diofant.core.facts import (deduce_alpha_implications, Prover,
-                              apply_beta_to_alpha_route, rules_2prereq,
-                              FactRules, FactKB, InconsistentAssumptions)
+                                apply_beta_to_alpha_route, rules_2prereq,
+                                FactRules, FactKB, InconsistentAssumptions)
 from diofant.core.logic import And, Or, Not
 
 T = True
@@ -76,7 +76,7 @@ def test_apply_beta_to_alpha_route():
 
     # indicates empty alpha-chain with attached beta-rule #bidx
     def Q(bidx):
-        return (set(), [bidx])
+        return set(), [bidx]
 
     # x -> a        &(a,b) -> x     --  x -> a
     A = {'x': {'a'}}

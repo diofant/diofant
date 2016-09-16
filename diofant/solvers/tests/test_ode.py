@@ -3,13 +3,13 @@ import os
 import pytest
 
 from diofant import (acos, acosh, asinh, atan, cos, Derivative, diff, dsolve,
-                   Dummy, Eq, erf, erfi, exp, Function, I, E, Integral, LambertW,
-                   Pow, log, O, pi, Rational, RootOf, simplify, sin, sqrt, sstr,
-                   Symbol, Subs, tan, asin, sinh, Piecewise, symbols, Poly, Integer)
+                     Dummy, Eq, erf, erfi, exp, Function, I, E, Integral, LambertW,
+                     Pow, log, O, pi, Rational, RootOf, simplify, sin, sqrt, sstr,
+                     Symbol, Subs, tan, asin, sinh, Piecewise, symbols, Poly, Integer)
 from diofant.solvers.ode import (_undetermined_coefficients_match, checkodesol,
-                               classify_ode, classify_sysode, constant_renumber,
-                               constantsimp, homogeneous_order, infinitesimals,
-                               checkinfsol, checksysodesol, solve_ics)
+                                 classify_ode, classify_sysode, constant_renumber,
+                                 constantsimp, homogeneous_order, infinitesimals,
+                                 checkinfsol, checksysodesol, solve_ics)
 from diofant.solvers.deutils import ode_order
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
@@ -1323,6 +1323,7 @@ def test_homogeneous_order():
     pytest.raises(ValueError, lambda: homogeneous_order(x*y))
 
 
+@pytest.mark.slow
 def test_1st_homogeneous_coeff_ode():
     # Type: First order homogeneous, y'=f(y/x)
     eq1 = f(x)/x*cos(f(x)/x) - (x/f(x)*sin(f(x)/x) + cos(f(x)/x))*f(x).diff(x)

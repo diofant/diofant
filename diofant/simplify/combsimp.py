@@ -1,7 +1,7 @@
 from diofant.core import Function, S, Mul, Pow, Add, Integer, Rational
 from diofant.core.compatibility import ordered, default_sort_key
 from diofant.functions.combinatorial.factorials import (binomial,
-                                                      factorial)
+                                                        factorial)
 from diofant.functions import gamma, sqrt, sin
 from diofant.polys import factor, cancel
 from diofant.utilities.iterables import sift, uniq
@@ -411,8 +411,8 @@ def combsimp(expr):
             def compute_ST(expr):
                 if expr in inv:
                     return inv[expr]
-                return (expr.free_symbols, expr.atoms(Function).union(
-                        set(e.exp for e in expr.atoms(Pow))))
+                return (expr.free_symbols,
+                        expr.atoms(Function) | {e.exp for e in expr.atoms(Pow)})
 
             def update_ST(expr):
                 inv[expr] = compute_ST(expr)

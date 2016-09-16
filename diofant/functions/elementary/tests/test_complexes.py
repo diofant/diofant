@@ -4,7 +4,11 @@ from diofant import (
     Abs, adjoint, arg, atan2, conjugate, cos, DiracDelta, E, exp, expand,
     Expr, Function, Heaviside, I, im, log, nan, oo, pi, Rational, re, S,
     sign, sin, sqrt, Symbol, symbols, transpose, zoo, exp_polar, Piecewise,
-    Interval, comp, Integral)
+    Interval, comp, Integral, Matrix, polar_lift, polarify, simplify,
+    unpolarify, principal_branch, gamma, erf, tanh, uppergamma, Eq, Ne,
+    periodic_argument, unbranched_argument)
+
+from diofant.abc import x, y, z
 
 
 def N_equals(a, b):
@@ -13,7 +17,6 @@ def N_equals(a, b):
 
 
 def test_re():
-    x, y = symbols('x,y')
     a, b = symbols('a,b', extended_real=True)
 
     r = Symbol('r', extended_real=True)
@@ -63,25 +66,23 @@ def test_re():
     assert re(i*r*x).diff(i) == I*r*im(x)
 
     assert re(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2)
+        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)
     assert re(a * (2 + b*I)) == 2*a
 
     assert re((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*cos(atan2(b, a)/2)/2 + Rational(1, 2)
+        (a**2 + b**2)**Rational(1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
 
     assert re(x).rewrite(im) == x - im(x)
     assert (x + re(y)).rewrite(re, im) == x + y - im(y)
 
     a = Symbol('a', algebraic=True)
     t = Symbol('t', transcendental=True)
-    x = Symbol('x')
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
 
 
 def test_im():
-    x, y = symbols('x,y')
     a, b = symbols('a,b', extended_real=True)
 
     r = Symbol('r', extended_real=True)
@@ -132,18 +133,17 @@ def test_im():
     assert im(i*r*x).diff(i) == -I * re(r*x)
 
     assert im(
-        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)
+        sqrt(a + b*I)) == (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)
     assert im(a * (2 + b*I)) == a*b
 
     assert im((1 + sqrt(a + b*I))/2) == \
-        (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)/2
+        (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2
 
     assert im(x).rewrite(re) == x - re(x)
     assert (x + im(y)).rewrite(im, re) == x + y - re(y)
 
     a = Symbol('a', algebraic=True)
     t = Symbol('t', transcendental=True)
-    x = Symbol('x')
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
@@ -278,18 +278,17 @@ def test_as_real_imag():
     assert n.as_real_imag() == (n, 0)
 
     # issue 6261
-    x = Symbol('x')
     assert sqrt(x).as_real_imag() == \
-        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(atan2(im(x), re(x))/2),
-     (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(atan2(im(x), re(x))/2))
+        ((re(x)**2 + im(x)**2)**Rational(1, 4)*cos(arg(re(x) + I*im(x))/2),
+     (re(x)**2 + im(x)**2)**Rational(1, 4)*sin(arg(re(x) + I*im(x))/2))
 
     # issue 3853
     a, b = symbols('a,b', extended_real=True)
     assert ((1 + sqrt(a + b*I))/2).as_real_imag() == \
            (
                (a**2 + b**2)**Rational(
-                   1, 4)*cos(atan2(b, a)/2)/2 + Rational(1, 2),
-               (a**2 + b**2)**Rational(1, 4)*sin(atan2(b, a)/2)/2)
+                   1, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2),
+               (a**2 + b**2)**Rational(1, 4)*sin(arg(a + I*b)/2)/2)
 
     assert sqrt(a**2).as_real_imag() == (sqrt(a**2), 0)
     i = symbols('i', imaginary=True)
@@ -415,17 +414,19 @@ def test_Abs_real():
 
 
 def test_Abs_properties():
-    x = Symbol('x')
+    x, z = symbols('x, z')
     assert Abs(x).is_extended_real is True
     assert Abs(x).is_rational is None
     assert Abs(x).is_positive is None
     assert Abs(x).is_nonnegative is True
+    assert Abs(x).is_finite is None
 
     z = Symbol('z', complex=True, zero=False)
     assert Abs(z).is_extended_real is True
     assert Abs(z).is_rational is None
     assert Abs(z).is_positive is True
     assert Abs(z).is_zero is False
+    assert Abs(z).is_finite
 
     p = Symbol('p', positive=True)
     assert Abs(p).is_extended_real is True
@@ -438,11 +439,13 @@ def test_Abs_properties():
     assert Abs(q).is_integer is None
     assert Abs(q).is_positive is None
     assert Abs(q).is_nonnegative is True
+    assert Abs(q).is_finite
 
     i = Symbol('i', integer=True)
     assert Abs(i).is_integer is True
     assert Abs(i).is_positive is None
     assert Abs(i).is_nonnegative is True
+    assert Abs(i).is_finite
 
     e = Symbol('n', even=True)
     ne = Symbol('ne', extended_real=True, even=False)
@@ -465,7 +468,7 @@ def test_abs():
 
 
 def test_arg():
-    assert arg(0) == nan
+    assert arg(0) == 0
     assert arg(1) == 0
     assert arg(-1) == pi
     assert arg(I) == pi/2
@@ -547,7 +550,6 @@ def test_conjugate():
     assert conjugate(a*b) == -a*b
     assert conjugate(I*a*b) == I*a*b
 
-    x, y = symbols('x y')
     assert conjugate(conjugate(x)) == x
     assert conjugate(x + y) == conjugate(x) + conjugate(y)
     assert conjugate(x - y) == conjugate(x) - conjugate(y)
@@ -608,8 +610,6 @@ def test_transpose():
 
 
 def test_polarify():
-    from diofant import polar_lift, polarify
-    x = Symbol('x')
     z = Symbol('z', polar=True)
     f = Function('f')
     ES = {}
@@ -643,10 +643,6 @@ def test_polarify():
 
 
 def test_unpolarify():
-    from diofant import (exp_polar, polar_lift, exp, unpolarify,
-                       principal_branch)
-    from diofant import gamma, erf, sin, tanh, uppergamma, Eq, Ne
-    from diofant.abc import x
     p = exp_polar(7*I) + 1
     u = exp(7*I) + 1
 
@@ -688,14 +684,12 @@ def test_unpolarify():
 
 
 def test_issue_4035():
-    x = Symbol('x')
     assert Abs(x).expand(trig=True) == Abs(x)
     assert sign(x).expand(trig=True) == sign(x)
     assert arg(x).expand(trig=True) == arg(x)
 
 
 def test_issue_3206():
-    x = Symbol('x')
     assert Abs(Abs(x)) == Abs(x)
 
 
@@ -722,9 +716,6 @@ def test_derivatives_issue_4757():
 
 
 def test_periodic_argument():
-    from diofant import (periodic_argument, unbranched_argument, oo,
-                       principal_branch, polar_lift, pi)
-    x = Symbol('x')
     p = Symbol('p', positive=True)
 
     assert unbranched_argument(2 + I) == periodic_argument(2 + I, oo)
@@ -752,6 +743,7 @@ def test_periodic_argument():
     assert Abs(polar_lift(1 + I)) == Abs(1 + I)
 
     assert periodic_argument(x, pi).is_real is True
+    assert periodic_argument(x, oo, evaluate=False).is_real is None
 
 
 @pytest.mark.xfail
@@ -761,9 +753,7 @@ def test_principal_branch_fail():
 
 
 def test_principal_branch():
-    from diofant import principal_branch, polar_lift, exp_polar
     p = Symbol('p', positive=True)
-    x = Symbol('x')
     neg = Symbol('x', negative=True)
 
     assert principal_branch(polar_lift(x), p) == principal_branch(x, p)
@@ -800,3 +790,11 @@ def test_issue_6167_6151():
     assert sign(simplify(e)) == 1
     for xi in (111, 11, 1, Rational(1, 10)):
         assert sign(e.subs(x, xi)) == 1
+
+
+def test_issue_11413():
+    V = Matrix([[x], [y], [z]])
+    U = V.normalized()
+    r = sqrt(Abs(x)**2 + Abs(y)**2 + Abs(z)**2)
+    assert U == Matrix([[x/r], [y/r], [z/r]])
+    assert U.norm().simplify() == 1

@@ -42,12 +42,12 @@ WignerSemicircle
 import random
 
 from diofant import (log, sqrt, pi, S, Dummy, Interval, sympify, gamma,
-                   Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
-                   Lambda, Basic, oo, Rational)
+                     Piecewise, And, Eq, binomial, factorial, Sum, floor, Abs,
+                     Lambda, Basic, oo, Rational)
 from diofant import beta as beta_fn
 from diofant import cos, exp, besseli
 from diofant.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribution,
-                             ContinuousDistributionHandmade)
+                               ContinuousDistributionHandmade)
 from diofant.stats.rv import _value_check
 
 __all__ = ['ContinuousRV',

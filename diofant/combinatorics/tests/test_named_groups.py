@@ -1,5 +1,6 @@
 from diofant.combinatorics.named_groups import (SymmetricGroup, CyclicGroup,
-DihedralGroup, AlternatingGroup, AbelianGroup)
+                                                DihedralGroup, AlternatingGroup,
+                                                AbelianGroup)
 
 
 def test_SymmetricGroup():

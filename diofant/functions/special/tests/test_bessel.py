@@ -1,16 +1,16 @@
 import pytest
 
 from diofant import (jn, yn, symbols, Symbol, sin, cos, pi, S, jn_zeros, besselj,
-                   bessely, besseli, besselk, hankel1, hankel2, expand_func,
-                   sqrt, sinh, cosh, diff, series, gamma, hyper, Abs, I, O, oo,
-                   conjugate, Integer, Rational)
+                     bessely, besseli, besselk, hankel1, hankel2, expand_func,
+                     sqrt, sinh, cosh, diff, series, gamma, hyper, Abs, I, O, oo,
+                     conjugate, Integer, Rational)
 from diofant.functions.special.bessel import fn
 from diofant.functions.special.bessel import (airyai, airybi,
-                                            airyaiprime, airybiprime)
+                                              airyaiprime, airybiprime)
 from diofant.utilities.randtest import (random_complex_number as randcplx,
-                                      verify_numerically as tn,
-                                      test_derivative_numerically as td,
-                                      _randint)
+                                        verify_numerically as tn,
+                                        test_derivative_numerically as td,
+                                        _randint)
 from diofant.abc import z, n, k, x
 
 randint = _randint()
@@ -355,6 +355,7 @@ def test_airy_base():
 
     assert conjugate(airyai(z)) == airyai(conjugate(z))
     assert airyai(x).is_extended_real
+    assert airyai(z).is_extended_real is None
 
     assert airyai(x+I*y).as_real_imag() == (
         airyai(x - I*x*Abs(y)/Abs(x))/2 + airyai(x + I*x*Abs(y)/Abs(x))/2,

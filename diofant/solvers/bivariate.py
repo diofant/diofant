@@ -4,7 +4,7 @@ from diofant.core.function import expand_log
 from diofant.core.power import Pow
 from diofant.core.singleton import S
 from diofant.core.symbol import Dummy
-from diofant.functions.elementary.exponential import (LambertW, exp, log)
+from diofant.functions.elementary.exponential import LambertW, exp, log
 from diofant.functions.elementary.miscellaneous import root
 from diofant.polys.polytools import Poly, factor
 from diofant.core.function import _mexpand

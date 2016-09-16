@@ -3,7 +3,7 @@ from functools import reduce
 
 from diofant.matrices import Matrix
 from diofant.core import (Basic, Expr, Dummy, Function, sympify, diff, Pow,
-                        Mul, Add, symbols, Tuple)
+                          Mul, Add, symbols, Tuple)
 from diofant.core.numbers import Zero
 from diofant.solvers import solve
 from diofant.functions import factorial
@@ -1070,7 +1070,7 @@ class CovarDerivativeOp(Expr):
     """
     def __init__(self, wrt, christoffel):
         super(CovarDerivativeOp, self).__init__()
-        if len(set(v._coord_sys for v in wrt.atoms(BaseVectorField))) > 1:
+        if len({v._coord_sys for v in wrt.atoms(BaseVectorField)}) > 1:
             raise NotImplementedError()
         if contravariant_order(wrt) != 1 or covariant_order(wrt):
             raise ValueError('Covariant derivatives are defined only with '

@@ -3,10 +3,10 @@
 import pytest
 
 from diofant import (S, Add, sin, Mul, Symbol, oo, Integral, sqrt, Tuple, I,
-                   Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
-                   root, exp, cos, Integer, Float, Rational)
+                     Interval, O, symbols, simplify, collect, Sum, Basic, Dict,
+                     root, exp, cos, Integer, Float, Rational)
 from diofant.core.exprtools import (decompose_power, Factors, Term, _gcd_terms,
-                                  gcd_terms, factor_terms, factor_nc)
+                                    gcd_terms, factor_terms, factor_nc)
 from diofant.core.mul import _keep_coeff as _keep_coeff
 from diofant.simplify.cse_opts import sub_pre
 
@@ -22,10 +22,15 @@ def test_decompose_power():
 
 def test_Factors():
     assert Factors() == Factors({}) == Factors(Integer(1))
+    assert Factors(Integer(1)) == Factors(Factors(Integer(1)))
     assert Factors().as_expr() == S.One
     assert Factors({x: 2, y: 3, sin(x): 4}).as_expr() == x**2*y**3*sin(x)**4
     assert Factors(S.Infinity) == Factors({oo: 1})
     assert Factors(S.NegativeInfinity) == Factors({oo: 1, -1: 1})
+
+    f1 = Factors({oo: 1})
+    f2 = Factors({oo: 1})
+    assert hash(f1) == hash(f2)
 
     a = Factors({x: 5, y: 3, z: 7})
     b = Factors({      y: 4, z: 3, t: 10})

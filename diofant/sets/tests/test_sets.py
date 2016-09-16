@@ -2,11 +2,11 @@ from mpmath import mpi
 import pytest
 
 from diofant import (Symbol, Set, Union, Interval, oo, S, sympify, nan,
-                   LessThan, Max, Min, And, Or, Eq, Le,
-                   Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
-                   ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
-                   ImageSet, pi, Pow, Contains, Sum, RootOf, log,
-                   SymmetricDifference, Integer, Rational, Piecewise)
+                     LessThan, Max, Min, And, Or, Eq, Le,
+                     Lt, Float, FiniteSet, Intersection, imageset, I, true, false,
+                     ProductSet, sqrt, Complement, EmptySet, sin, cos, Lambda,
+                     ImageSet, pi, Pow, Contains, Sum, RootOf, log,
+                     SymmetricDifference, Integer, Rational, Piecewise)
 
 from diofant.abc import a, b, x, y, z
 

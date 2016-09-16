@@ -1,15 +1,15 @@
 import pytest
 
 from diofant.core import (S, pi, oo, symbols, Function, Rational, Integer,
-                        Tuple, Symbol, I, sympify)
+                          Tuple, Symbol, I, sympify)
 from diofant.core import EulerGamma, GoldenRatio, Catalan, Lambda
 from diofant.functions import Piecewise, sqrt, ceiling, exp, sin, cos
 from diofant.utilities.lambdify import implemented_function
 from diofant.matrices import (eye, Matrix, MatrixSymbol, Identity,
-                            HadamardProduct, SparseMatrix)
+                              HadamardProduct, SparseMatrix)
 from diofant.functions.special.bessel import (jn, yn, besselj, bessely, besseli,
-                                            besselk, hankel1, hankel2, airyai,
-                                            airybi, airyaiprime, airybiprime)
+                                              besselk, hankel1, hankel2, airyai,
+                                              airybi, airyaiprime, airybiprime)
 from diofant import octave_code
 from diofant import octave_code as mcode
 

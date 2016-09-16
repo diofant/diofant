@@ -17,7 +17,7 @@ from diofant.core.logic import fuzzy_not, fuzzy_and
 from diofant.stats.frv import (SingleFinitePSpace, SingleFiniteDistribution)
 from diofant.concrete.summations import Sum
 from diofant import (S, sympify, Rational, binomial, cacheit, Integer,
-                   Dict, Basic, KroneckerDelta, Dummy)
+                     Dict, Basic, KroneckerDelta, Dummy)
 
 __all__ = ['FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
         'Binomial', 'Hypergeometric']

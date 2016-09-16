@@ -589,8 +589,6 @@ class Expr(Basic, EvalfMixin):
         """
         from diofant.simplify.simplify import nsimplify, simplify
         from diofant.solvers.solvers import solve
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.polys.numberfields import minimal_polynomial
 
         other = sympify(other)
         if self == other:
@@ -656,18 +654,7 @@ class Expr(Basic, EvalfMixin):
                                                  and simplify(si) == s
                                                  for si in sol):
                                 return True
-                    except NotImplementedError:
-                        pass
-
-                # try to prove with minimal_polynomial but know when
-                # *not* to use this or else it can take a long time. e.g. issue 8354
-                if True:  # change True to condition that assures non-hang
-                    try:
-                        mp = minimal_polynomial(diff)
-                        if mp.is_Symbol:
-                            return True
-                        return False
-                    except (NotAlgebraic, NotImplementedError):
+                    except NotImplementedError:  # pragma: no cover
                         pass
 
         # diff has not simplified to zero; constant is either None, True
@@ -681,88 +668,67 @@ class Expr(Basic, EvalfMixin):
         return
 
     def _eval_is_zero(self):
+        from diofant.polys.numberfields import minimal_polynomial
+        from diofant.polys.polyerrors import NotAlgebraic
+        from diofant.core.function import count_ops
+
         if self.is_number:
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
-            n, i = self.evalf(2).as_real_imag()
-            if n.is_Number and i.is_Number and n._prec != 1 and i._prec != 1:
-                if n != 0 or i != 0:
+            r, i = self.evalf(2).as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                if r != 0 or i != 0:
                     return False
+            elif (r._prec == 1 and (not i or i._prec == 1) and
+                  self.is_algebraic and not self.has(Function)):
+                if count_ops(self) > 75:
+                    return
+                try:
+                    if minimal_polynomial(self).is_Symbol:
+                        return True
+                except (NotAlgebraic, NotImplementedError):
+                    pass
 
     def _eval_is_positive(self):
-        from diofant.polys.numberfields import minimal_polynomial
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
-            n, i = self.evalf(2).as_real_imag()
-            if not i.is_Number or not n.is_Number:
-                return False
-            if n._prec != 1 and i._prec != 1:
-                return bool(not i and n > 0)
-            elif n._prec == 1 and (not i or i._prec == 1) and \
-                    self.is_algebraic and not self.has(Function):
-                if count_ops(self) > 75:
-                    return
-                try:
-                    if minimal_polynomial(self).is_Symbol:
-                        return False
-                except (NotAlgebraic, NotImplementedError):
-                    pass
+            r, i = self.evalf(2).as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                return bool(not i and r > 0)
 
     def _eval_is_negative(self):
-        from diofant.polys.numberfields import minimal_polynomial
-        from diofant.polys.polyerrors import NotAlgebraic
-        from diofant.core.function import count_ops
         if self.is_number:
             if self.is_extended_real is False:
                 return False
             try:
                 # check to see that we can get a value
                 n2 = self._eval_evalf(2)
-                if n2 is None:
-                    raise AttributeError
-                if n2._prec == 1:  # no significance
+                if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == S.NaN:
                     raise AttributeError
             except (AttributeError, ValueError):
                 return
-            n, i = self.evalf(2).as_real_imag()
-            if not i.is_Number or not n.is_Number:
-                return False
-            if n._prec != 1 and i._prec != 1:
-                return bool(not i and n < 0)
-            elif n._prec == 1 and (not i or i._prec == 1) and \
-                    self.is_algebraic and not self.has(Function):
-                if count_ops(self) > 75:
-                    return
-                try:
-                    if minimal_polynomial(self).is_Symbol:
-                        return False
-                except (NotAlgebraic, NotImplementedError):
-                    pass
+            r, i = self.evalf(2).as_real_imag()
+            if r.is_Number and i.is_Number and r._prec != 1 and i._prec != 1:
+                return bool(not i and r < 0)
 
     def _eval_interval(self, x, a, b):
         """Returns evaluation over an interval.
@@ -874,7 +840,7 @@ class Expr(Basic, EvalfMixin):
             _, ((re, im), monom, ncpart) = term
 
             monom = neg(monom_key(monom))
-            ncpart = tuple([e.sort_key(order=order) for e in ncpart])
+            ncpart = tuple(e.sort_key(order=order) for e in ncpart)
             coeff = ((bool(im), im), (re, im))
 
             return monom, ncpart, coeff
@@ -937,10 +903,9 @@ class Expr(Basic, EvalfMixin):
                     if factor.is_number:
                         try:
                             coeff *= complex(factor)
+                            continue
                         except TypeError:
                             pass
-                        else:
-                            continue
 
                     if factor.is_commutative:
                         base, exp = decompose_power(factor)
@@ -1606,9 +1571,9 @@ class Expr(Basic, EvalfMixin):
         if (want is not func or
                 func is not Add and func is not Mul):
             if has(self):
-                return (want.identity, self)
+                return want.identity, self
             else:
-                return (self, want.identity)
+                return self, want.identity
         else:
             if func is Add:
                 args = list(self.args)
@@ -1619,8 +1584,7 @@ class Expr(Basic, EvalfMixin):
         depend = d[True]
         indep = d[False]
         if func is Add:  # all terms were treated as commutative
-            return (Add(*indep),
-                    Add(*depend))
+            return Add(*indep), Add(*depend)
         else:  # handle noncommutative by stopping at first dependent term
             for i, n in enumerate(nc):
                 if has(n):
@@ -1655,7 +1619,7 @@ class Expr(Basic, EvalfMixin):
         if hints.get('ignore') == self:
             return
         else:
-            return (re(self), im(self))
+            return re(self), im(self)
 
     def as_powers_dict(self):
         """Return self as a dictionary of factors with each factor being
@@ -2919,9 +2883,9 @@ class Expr(Basic, EvalfMixin):
         if hasattr(expr, hint):
             newexpr = getattr(expr, hint)(**hints)
             if newexpr != expr:
-                return (newexpr, True)
+                return newexpr, True
 
-        return (expr, hit)
+        return expr, hit
 
     @cacheit
     def expand(self, deep=True, modulus=None, power_base=True, power_exp=True,

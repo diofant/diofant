@@ -203,7 +203,7 @@ class Ynm(Function):
               cos(m*phi) * assoc_legendre(n, m, cos(theta)))
         im = (sqrt((2*n + 1)/(4*pi) * factorial(n - m)/factorial(n + m)) *
               sin(m*phi) * assoc_legendre(n, m, cos(theta)))
-        return (re, im)
+        return re, im
 
 
 def Ynm_c(n, m, theta, phi):

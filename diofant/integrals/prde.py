@@ -22,12 +22,12 @@ from diofant.matrices import Matrix, zeros, eye
 from diofant.solvers import solve
 from diofant.polys import Poly, lcm, cancel, sqf_list
 from diofant.integrals.risch import (gcdex_diophantine, frac_in, derivation,
-                                   NonElementaryIntegralException,
-                                   residue_reduce, splitfactor,
-                                   residue_reduce_derivation, DecrementLevel,
-                                   recognize_log_derivative)
+                                     NonElementaryIntegralException,
+                                     residue_reduce, splitfactor,
+                                     residue_reduce_derivation, DecrementLevel,
+                                     recognize_log_derivative)
 from diofant.integrals.rde import (order_at, order_at_oo, weak_normalizer,
-                                 bound_degree, spde, solve_poly_rde)
+                                   bound_degree, spde, solve_poly_rde)
 from diofant.utilities.misc import debug
 
 
@@ -57,7 +57,7 @@ def prde_normal_denom(fa, fd, G, DE):
 
     G = [(c*A).cancel(D, include=True) for A, D in G]
 
-    return (a, (ba, bd), G, h)
+    return a, (ba, bd), G, h
 
 
 def real_imag(ba, bd, gen):
@@ -82,7 +82,7 @@ def real_imag(ba, bd, gen):
     ba_imag = sum(r for r in num_imag)
     ba = ((ba_real*bd_real + ba_imag*bd_imag).as_poly(gen), (ba_imag*bd_real - ba_real*bd_imag).as_poly(gen))
     bd = (bd_real*bd_real + bd_imag*bd_imag).as_poly(gen)
-    return (ba[0], ba[1], bd)
+    return ba[0], ba[1], bd
 
 
 def prde_special_denom(a, ba, bd, G, DE, case='auto'):
@@ -112,7 +112,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
         p = Poly(DE.t**2 + 1, DE.t)
     elif case in ['primitive', 'base']:
         B = ba.quo(bd)
-        return (a, B, G, Poly(1, DE.t))
+        return a, B, G, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
             "'base'}, not %s." % case)
@@ -161,7 +161,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
     h = pn
 
     # (a*p**N, (b + n*a*Dp/p)*p**N, g1*p**(N - n), ..., gm*p**(N - n), p**-n)
-    return (A, B, G, h)
+    return A, B, G, h
 
 
 def prde_linear_constraints(a, b, G, DE):
@@ -192,7 +192,7 @@ def prde_linear_constraints(a, b, G, DE):
         M = Matrix()  # No constraints, return the empty matrix.
 
     qs, _ = list(zip(*Q))
-    return (qs, M)
+    return qs, M
 
 
 def constant_system(A, u, DE):
@@ -264,7 +264,7 @@ def constant_system(A, u, DE):
                 A = A.col_join(Rm1)
                 u = u.col_join(Matrix([um1]))
 
-    return (A, u)
+    return A, u
 
 
 def prde_spde(a, b, Q, n, DE):
@@ -286,7 +286,7 @@ def prde_spde(a, b, Q, n, DE):
     R = list(R)
     n1 = n - a.degree(DE.t)
 
-    return (A, B, Qq, R, n1)
+    return A, B, Qq, R, n1
 
 
 def prde_no_cancel_b_large(b, Q, n, DE):
@@ -321,7 +321,7 @@ def prde_no_cancel_b_large(b, Q, n, DE):
     c = eye(m)
     A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
 
-    return (H, A)
+    return H, A
 
 
 def prde_no_cancel_b_small(b, Q, n, DE):
@@ -359,7 +359,7 @@ def prde_no_cancel_b_small(b, Q, n, DE):
         A, u = constant_system(M, zeros(dc + 1, 1), DE)
         c = eye(m)
         A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
-        return (H, A)
+        return H, A
     else:
         # TODO: implement this (requires recursive param_rischDE() call)
         raise NotImplementedError
@@ -435,7 +435,7 @@ def limited_integrate_reduce(fa, fd, G, DE):
         raise NotImplementedError
 
     V = [(-a*hn*ga).cancel(gd, include=True) for ga, gd in G]
-    return (a, b, a, N, (a*hn*fa).cancel(fd, include=True), V)
+    return a, b, a, N, (a*hn*fa).cancel(fd, include=True), V
 
 
 def limited_integrate(fa, fd, G, DE):
@@ -469,7 +469,7 @@ def limited_integrate(fa, fd, G, DE):
             B, C, m, alpha, beta = spde(A, B, C, N, DE)
             y = solve_poly_rde(B, C, m, DE)
 
-            return ((alpha*y + beta, h), list(l[0][1:]))
+            return (alpha*y + beta, h), list(l[0][1:])
     else:
         raise NotImplementedError
 
@@ -523,7 +523,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
         if Q.is_zero or v.is_zero:
             return
 
-        return (Q*N, Q*M, v)
+        return Q*N, Q*M, v
 
     if p.degree(DE.t) > B:
         return
@@ -560,7 +560,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     if Q.is_zero or v.is_zero:
         return
 
-    return (Q*N, Q*M, v)
+    return Q*N, Q*M, v
 
 
 def parametric_log_deriv(fa, fd, wa, wd, DE):
@@ -672,7 +672,7 @@ def is_deriv_k(fa, fd, DE):
                 l.append(Mul(*([Pow(icoeff, j)] + [Pow(b, e*j) for b, e in iterms])))
             const = cancel(fa.as_expr()/fd.as_expr()/Mul(*l))
 
-            return (ans, result, const)
+            return ans, result, const
 
 
 def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
@@ -778,7 +778,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             const = cancel(fa.as_expr()/fd.as_expr() -
                 Add(*[Mul(i, j/n) for i, j in zip(argterms, u)]))
 
-            return (ans, result, n, const)
+            return ans, result, n, const
 
 
 def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
@@ -871,7 +871,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         # f had better be 0 in that case.
         n = reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
-        return (n, u)
+        return n, u
 
     elif case == 'tan':
         raise NotImplementedError("The hypertangent case is "
@@ -893,4 +893,4 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         raise ValueError("Inexact division")
     u = cancel(u**m*Mul(*[Pow(i, j) for i, j in residueterms]))
 
-    return (common_denom, u)
+    return common_denom, u

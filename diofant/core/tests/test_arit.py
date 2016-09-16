@@ -2,9 +2,10 @@ import itertools
 
 import pytest
 
-from diofant import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float, re, pi,
-                   sympify, Add, Mul, Pow, Mod, I, log, S, Max, symbols, oo,
-                   Integer, sign, im, nan, Dummy, factorial, comp, O)
+from diofant import (Basic, Symbol, sin, cos, exp, sqrt, Rational, Float,
+                     re, pi, sympify, Add, Mul, Pow, Mod, I, log, S, Max,
+                     symbols, oo, Integer, sign, im, nan, Dummy,
+                     factorial, comp, O, zoo)
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -548,6 +549,7 @@ def test_Mul_is_negative_positive():
 
     e = 2*z
     assert e.is_Mul and e.is_positive is False and e.is_negative is False
+    assert (x*y).is_positive is None
 
     neg = Symbol('neg', negative=True)
     pos = Symbol('pos', positive=True)
@@ -1000,10 +1002,13 @@ def test_Pow_is_real():
     e = Symbol('e', even=True)
     o = Symbol('o', odd=True)
     k = Symbol('k', integer=True)
-    assert (i**e).is_extended_real is True
+    assert (i**(e**2)).is_extended_real is True
     assert (i**o).is_extended_real is False
     assert (i**k).is_extended_real is None
     assert (i**(4*k)).is_extended_real is True
+    assert (x**i).is_extended_real is None
+    assert (i**(S.Half + x)).is_extended_real is None
+    assert Pow(I, 2, evaluate=False).is_extended_real
 
     x = Symbol("x", nonnegative=True)
     y = Symbol("y", nonnegative=True)
@@ -1136,6 +1141,9 @@ def test_Pow_is_negative_positive():
     assert (2**x).is_positive is None
     assert (2**x).is_negative is None
 
+    s = Symbol('s', nonpositive=True)
+    assert (s**n).is_negative is False
+
 
 def test_Pow_is_zero():
     z = Symbol('z', zero=True)
@@ -1208,10 +1216,12 @@ def test_Pow_is_nonpositive_nonnegative():
 
 
 def test_Mul_is_imaginary_real():
-    r = Symbol('r', extended_real=True)
+    r = Symbol('r', real=True)
     p = Symbol('p', positive=True, real=True)
     i = Symbol('i', imaginary=True)
     ii = Symbol('ii', imaginary=True)
+    ni = Symbol('ni', imaginary=True, nonzero=True)
+    nii = Symbol('nii', imaginary=True, nonzero=True)
     x = Symbol('x')
 
     assert I.is_imaginary is True
@@ -1248,7 +1258,7 @@ def test_Mul_is_imaginary_real():
     assert (x*i).is_imaginary is None
     assert (x*i).is_extended_real is None
 
-    assert (i*ii).is_imaginary is False
+    assert (ni*nii).is_imaginary is False
     assert (i*ii).is_extended_real is True
 
     assert (r*i*ii).is_imaginary is None
@@ -1282,6 +1292,13 @@ def test_Mul_hermitian_antihermitian():
     assert e4.is_antihermitian is None
     assert e5.is_antihermitian is None
     assert e6.is_antihermitian is None
+
+    z = Symbol('z', zero=True)
+    e = Symbol('e', antihermitian=True, finite=True)
+    assert (z*e).is_antihermitian is False
+    A = Symbol('A', hermitian=True, commutative=False)
+    B = Symbol('B', hermitian=True, commutative=False)
+    assert (A*B).is_hermitian is None
 
 
 def test_Add_is_comparable():
@@ -1687,7 +1704,7 @@ def test_issue_6077():
     assert 2**(1.5*x)*2**(2.5*x) == 2**(4.0*x)
 
 
-def test_mul_flatten_oo():
+def test_mul_flatten_oo_zoo():
     p = symbols('p', positive=True)
     n, m = symbols('n,m', negative=True)
     x_im = symbols('x_im', imaginary=True)
@@ -1695,6 +1712,8 @@ def test_mul_flatten_oo():
     assert n*m*oo == oo
     assert p*oo == oo
     assert x_im*oo != I*oo  # i could be +/- 3*I -> +/-oo
+
+    assert zoo*2*zoo is zoo
 
 
 def test_add_flatten():
@@ -1707,6 +1726,8 @@ def test_add_flatten():
 
     a = Pow(2, 3, evaluate=False)
     assert a + a == 16
+
+    assert zoo + 1 + zoo is nan
 
 
 def test_diofantissue_31():
@@ -1797,18 +1818,19 @@ def test_mul_coeff():
 
 
 def test_mul_zero_detection():
-    nz = Dummy(extended_real=True, zero=False, finite=True)
+    nz = Dummy(real=True, nonzero=True)
     r = Dummy(extended_real=True)
-    c = Dummy(extended_real=False, complex=True, finite=True)
-    c2 = Dummy(extended_real=False, complex=True, finite=True)
-    i = Dummy(imaginary=True, finite=True)
+    c = Dummy(real=False, complex=True)
+    c2 = Dummy(real=False, complex=True)
+    i = Dummy(imaginary=True)
+    ni = Dummy(imaginary=True, nonzero=True)
     e = nz*r*c
     assert e.is_imaginary is None
     assert e.is_extended_real is None
     e = nz*c
     assert e.is_imaginary is None
     assert e.is_extended_real is False
-    e = nz*i*c
+    e = nz*ni*c
     assert e.is_imaginary is False
     assert e.is_extended_real is None
     # check for more than one complex; it is important to use

@@ -554,7 +554,7 @@ class Max(MinMaxBase, Application):
             argindex -= 1
             if n == 2:
                 return Heaviside(self.args[argindex] - self.args[1 - argindex])
-            newargs = tuple([self.args[i] for i in range(n) if i != argindex])
+            newargs = tuple(self.args[i] for i in range(n) if i != argindex)
             return Heaviside(self.args[argindex] - Max(*newargs))
         else:
             raise ArgumentIndexError(self, argindex)
@@ -605,7 +605,7 @@ class Min(MinMaxBase, Application):
             argindex -= 1
             if n == 2:
                 return Heaviside( self.args[1-argindex] - self.args[argindex] )
-            newargs = tuple([ self.args[i] for i in range(n) if i != argindex])
+            newargs = tuple(self.args[i] for i in range(n) if i != argindex)
             return Heaviside( Min(*newargs) - self.args[argindex] )
         else:
             raise ArgumentIndexError(self, argindex)

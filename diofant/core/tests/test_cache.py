@@ -1,3 +1,5 @@
+import pytest
+
 from diofant.core.symbol import Symbol
 from diofant.core.cache import cacheit, CACHE, print_cache, clear_cache
 
@@ -37,3 +39,60 @@ def test_print_cache(capfd):
     resout, _ = capfd.readouterr()
     assert resout == res
     assert dict(CACHE)[wrapped] == {((x, Symbol), (True,)): x}
+
+
+@pytest.fixture(scope='function')
+def clear_imports(request):
+    import sys
+
+    # Clear namespace
+    orig = sys.modules.copy()
+    for m in list(sys.modules.keys()):
+        if m.startswith('diofant'):
+            del sys.modules[m]
+
+    def restore_imports():
+        for m in list(sys.modules.keys()):
+            if m.startswith('diofant'):
+                del sys.modules[m]
+
+        for m in orig.keys():
+            sys.modules[m] = orig[m]
+
+    request.addfinalizer(restore_imports)
+
+
+def test_nocache(clear_imports, monkeypatch):
+    """Regression tests with DIOFANT_USE_CACHE=False. """
+
+    monkeypatch.setenv('DIOFANT_USE_CACHE', 'False')
+    from diofant.core.cache import CACHE
+    from diofant.core.symbol import Symbol
+    from diofant.functions import sin, sqrt
+
+    # test that we don't use cache
+    assert CACHE == []
+    x = Symbol('x')
+    assert CACHE == []
+
+    # issue sympy/sympy#8840
+    expr = (1 + x)*x  # not raises
+
+    # issue sympy/sympy#9413
+    (2*x).is_complex  # not raises
+
+    # see commit c459d18
+    sin(x + x)
+
+    # see commit 53dd1eb
+    mx = -Symbol('x', negative=False)
+    assert mx.is_positive is not True
+
+    px = 2*Symbol('x', positive=False)
+    assert px.is_positive is not True
+
+    # see commit 2eaaba2
+    s = 1/sqrt(x**2)
+    y = Symbol('y')
+    result = s.subs(sqrt(x**2), y)
+    assert result == 1/y

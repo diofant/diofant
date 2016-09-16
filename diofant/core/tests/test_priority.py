@@ -59,13 +59,31 @@ class Lower(Higher):
     result = 'low'
 
 
+class Lower2(Higher):
+    _op_priority = 5.0
+    result = 'low'
+
+    @call_highest_priority('typo')
+    def __mul__(self, other):
+        return self.result
+
+
+class Higher2:
+    result = "high"
+
+
 def test_mul():
     x = Symbol('x')
     h = Higher()
     l = Lower()
+    l2 = Lower2()
+    h2 = Higher2()
     assert l*h == h*l == 'high'
     assert x*h == h*x == 'high'
     assert l*x == x*l != 'low'
+
+    assert l2*h == 'low'
+    assert l2*h2 == 'low'
 
 
 def test_add():

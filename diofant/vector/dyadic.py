@@ -1,5 +1,5 @@
-from diofant.vector.basisdependent import BasisDependent, \
-    BasisDependentAdd, BasisDependentMul, BasisDependentZero
+from diofant.vector.basisdependent import (BasisDependent, BasisDependentAdd,
+                                           BasisDependentMul, BasisDependentZero)
 from diofant.core import S, Pow, Integer
 from diofant.core.expr import AtomicExpr
 from diofant import ImmutableMatrix as Matrix

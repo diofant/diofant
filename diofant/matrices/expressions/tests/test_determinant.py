@@ -3,8 +3,8 @@ import pytest
 from diofant.core import S, symbols
 from diofant.matrices import eye, Matrix, ShapeError
 from diofant.matrices.expressions import (Identity, MatrixExpr, MatrixSymbol,
-                                        Determinant, det, ZeroMatrix,
-                                        Transpose)
+                                          Determinant, det, ZeroMatrix,
+                                          Transpose)
 
 n = symbols('n', integer=True)
 A = MatrixSymbol('A', n, n)

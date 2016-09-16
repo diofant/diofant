@@ -4,9 +4,9 @@ functions. """
 import pytest
 
 from diofant.polys.partfrac import (apart_undetermined_coeffs, apart,
-                                  apart_list, assemble_partfrac_list)
+                                    apart_list, assemble_partfrac_list)
 from diofant import (Poly, E, pi, I, Eq, RootSum, Lambda, Rational,
-                   Symbol, Dummy, factor, together, sqrt, Expr)
+                     Symbol, Dummy, factor, together, sqrt, Expr)
 
 from diofant.abc import x, y, a, b, c
 

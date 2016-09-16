@@ -1,11 +1,11 @@
 import pytest
 
 from diofant import (symbols, expand, expand_func, nan, oo, Float, conjugate,
-                   diff, re, im, Abs, O, exp_polar, polar_lift, limit,
-                   Symbol, I, integrate, S, sqrt, sin, cos, sinh, cosh, Integer,
-                   exp, log, pi, EulerGamma, erf, erfc, erfi, erf2, erfinv, Rational,
-                   erfcinv, erf2inv, gamma, uppergamma, Ei, expint, E1, li,
-                   Li, Si, Ci, Shi, Chi, fresnels, fresnelc, hyper, meijerg)
+                     diff, re, im, Abs, O, exp_polar, polar_lift, limit,
+                     Symbol, I, integrate, S, sqrt, sin, cos, sinh, cosh, Integer,
+                     exp, log, pi, EulerGamma, erf, erfc, erfi, erf2, erfinv, Rational,
+                     erfcinv, erf2inv, gamma, uppergamma, Ei, expint, E1, li,
+                     Li, Si, Ci, Shi, Chi, fresnels, fresnelc, hyper, meijerg)
 from diofant.functions.special.error_functions import _erfs, _eis
 from diofant.core.function import ArgumentIndexError
 
@@ -35,7 +35,8 @@ def test_erf():
     assert erf(erf2inv(0, erf(erfcinv(1 - erf(erfinv(x)))))) == x
 
     assert erf(I).is_extended_real is False
-    assert erf(0).is_extended_real is True
+    assert erf(w).is_extended_real is True
+    assert erf(z).is_extended_real is None
 
     assert conjugate(erf(z)) == erf(conjugate(z))
 
@@ -104,7 +105,8 @@ def test_erfc():
     assert erfc(erfcinv(x)) == x
 
     assert erfc(I).is_extended_real is False
-    assert erfc(0).is_extended_real is True
+    assert erfc(w).is_extended_real is True
+    assert erfc(z).is_extended_real is None
 
     assert conjugate(erfc(z)) == erfc(conjugate(z))
 
@@ -159,7 +161,8 @@ def test_erfi():
     assert erfi(I*erf2inv(0, x)) == I*x
 
     assert erfi(I).is_extended_real is False
-    assert erfi(0).is_extended_real is True
+    assert erfi(w).is_extended_real is True
+    assert erfi(z).is_extended_real is None
 
     assert conjugate(erfi(z)) == erfi(conjugate(z))
 
@@ -216,8 +219,10 @@ def test_erf2():
     assert erf2(x, y).rewrite('uppergamma') == erf(y).rewrite(uppergamma) - erf(x).rewrite(uppergamma)
     assert erf2(x, y).rewrite('expint') == erf(y).rewrite(expint)-erf(x).rewrite(expint)
 
-    assert erf2(I, 0).is_extended_real is False
-    assert erf2(0, 0).is_extended_real is True
+    assert erf2(I, w).is_extended_real is False
+    assert erf2(2*w, w).is_extended_real is True
+    assert erf2(z, w).is_extended_real is None
+    assert erf2(w, z).is_extended_real is None
 
     assert conjugate(erf2(x, y)) == erf2(conjugate(x), conjugate(y))
 
@@ -573,6 +578,7 @@ def test_fresnel():
         pi*z**3/6 - pi**3*z**7/336 + pi**5*z**11/42240 + O(z**15)
 
     assert fresnels(w).is_extended_real is True
+    assert fresnels(z).is_extended_real is None
 
     assert fresnels(z).as_real_imag() == \
         ((fresnels(re(z) - I*re(z)*Abs(im(z))/Abs(re(z)))/2 +

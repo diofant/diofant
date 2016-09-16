@@ -150,7 +150,11 @@ class erf(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return True
+        elif arg.is_imaginary and arg.is_nonzero:
+            return False
 
     def _eval_rewrite_as_uppergamma(self, z):
         from diofant import uppergamma
@@ -195,9 +199,9 @@ class erf(Function):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -207,7 +211,7 @@ class erf(Function):
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
                     self.func(x + x*sqrt(sq)))
-        return (re, im)
+        return re, im
 
 
 class erfc(Function):
@@ -337,7 +341,11 @@ class erfc(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return True
+        elif arg.is_imaginary and arg.is_nonzero:
+            return False
 
     def _eval_rewrite_as_tractable(self, z):
         return self.rewrite(erf).rewrite("tractable", deep=True)
@@ -382,9 +390,9 @@ class erfc(Function):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -394,7 +402,7 @@ class erfc(Function):
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
                     self.func(x + x*sqrt(sq)))
-        return (re, im)
+        return re, im
 
 
 class erfi(Function):
@@ -514,7 +522,11 @@ class erfi(Function):
         return self.func(self.args[0].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return True
+        elif arg.is_imaginary and arg.is_nonzero:
+            return False
 
     def _eval_rewrite_as_tractable(self, z):
         return self.rewrite(erf).rewrite("tractable", deep=True)
@@ -550,9 +562,9 @@ class erfi(Function):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -562,7 +574,7 @@ class erfi(Function):
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
                     self.func(x + x*sqrt(sq)))
-        return (re, im)
+        return re, im
 
 
 class erf2(Function):
@@ -662,7 +674,12 @@ class erf2(Function):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real and self.args[1].is_extended_real
+        x, y = self.args
+        if y.is_extended_real:
+            if x.is_extended_real:
+                return True
+            elif x.is_imaginary and x.is_nonzero:
+                return False
 
     def _eval_rewrite_as_erf(self, x, y):
         return erf(y) - erf(x)
@@ -1999,7 +2016,8 @@ class FresnelIntegral(Function):
             raise ArgumentIndexError(self, argindex)
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -2008,14 +2026,14 @@ class FresnelIntegral(Function):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return (self.expand(deep, **hints), S.Zero)
+                return self.expand(deep, **hints), S.Zero
             else:
-                return (self, S.Zero)
+                return self, S.Zero
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             re, im = self.args[0].as_real_imag()
-        return (re, im)
+        return re, im
 
     def as_real_imag(self, deep=True, **hints):
         # Fresnel S
@@ -2029,7 +2047,7 @@ class FresnelIntegral(Function):
         re = S.Half*(self.func(x + x*sqrt(sq)) + self.func(x - x*sqrt(sq)))
         im = x/(2*y) * sqrt(sq) * (self.func(x - x*sqrt(sq)) -
                 self.func(x + x*sqrt(sq)))
-        return (re, im)
+        return re, im
 
 
 class fresnels(FresnelIntegral):

@@ -8,7 +8,7 @@ from diofant.core.containers import Tuple
 from diofant.core.mul import Mul
 from diofant.core.symbol import Dummy
 from diofant.functions import (sqrt, exp, log, sin, cos, asin, atan,
-                             sinh, cosh, asinh, acosh, atanh, acoth)
+                               sinh, cosh, asinh, acosh, atanh, acoth)
 
 
 class TupleArg(Tuple):
@@ -436,7 +436,7 @@ class meijerg(TupleParametersBase):
         if len(args) == 5:
             args = [(args[0], args[1]), (args[2], args[3]), args[4]]
         if len(args) != 3:
-            raise TypeError("args must eiter be as, as', bs, bs', z or "
+            raise TypeError("args must be either as, as', bs, bs', z or "
                             "as, bs, z")
 
         def tr(p):
@@ -444,8 +444,18 @@ class meijerg(TupleParametersBase):
                 raise TypeError("wrong argument")
             return TupleArg(_prep_tuple(p[0]), _prep_tuple(p[1]))
 
+        arg0, arg1 = tr(args[0]), tr(args[1])
+        if Tuple(arg0, arg1).has(S.Infinity, S.ComplexInfinity,
+                                 S.NegativeInfinity):
+            raise ValueError("G-function parameters must be finite")
+
+        if any((a - b).is_integer and (a - b).is_positive
+               for a in arg0[0] for b in arg1[0]):
+            raise ValueError("no parameter a1, ..., an may differ from "
+                             "any b1, ..., bm by a positive integer")
+
         # TODO should we check convergence conditions?
-        return Function.__new__(cls, tr(args[0]), tr(args[1]), args[2])
+        return Function.__new__(cls, arg0, arg1, args[2])
 
     def fdiff(self, argindex=3):
         if argindex != 3:

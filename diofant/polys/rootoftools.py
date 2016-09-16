@@ -6,7 +6,7 @@ from mpmath import mpf, mpc, findroot, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
 from diofant.core import (S, Expr, Integer, Float, I, Add, Lambda, symbols,
-                        sympify, Rational, Dummy)
+                          sympify, Rational, Dummy)
 from diofant.core.cache import cacheit
 from diofant.core.function import AppliedUndef
 from diofant.functions.elementary.miscellaneous import root as _root
@@ -14,12 +14,12 @@ from diofant.polys.polytools import Poly, PurePoly, factor
 from diofant.polys.rationaltools import together
 from diofant.polys.polyfuncs import symmetrize, viete
 from diofant.polys.rootisolation import (dup_isolate_complex_roots_sqf,
-                                       dup_isolate_real_roots_sqf)
+                                         dup_isolate_real_roots_sqf)
 from diofant.polys.polyroots import (roots_linear, roots_quadratic,
-                                   roots_binomial, preprocess_roots, roots)
+                                     roots_binomial, preprocess_roots, roots)
 from diofant.polys.polyerrors import (MultivariatePolynomialError,
-                                    GeneratorsNeeded, PolynomialError,
-                                    DomainError)
+                                      GeneratorsNeeded, PolynomialError,
+                                      DomainError)
 from diofant.polys.domains import QQ
 from diofant.utilities import lambdify, public
 
@@ -105,7 +105,7 @@ class RootOf(Expr):
         return obj
 
     def _hashable_content(self):
-        return (self.poly, self.index)
+        return self.poly, self.index
 
     @property
     def expr(self):
@@ -113,7 +113,7 @@ class RootOf(Expr):
 
     @property
     def args(self):
-        return (self.expr, Integer(self.index))
+        return self.expr, Integer(self.index)
 
     @property
     def free_symbols(self):
@@ -122,9 +122,9 @@ class RootOf(Expr):
         # either case no free symbols should be reported.
         return set()
 
-    def _eval_is_extended_real(self):
-        """Return ``True`` if the root is real. """
+    def _eval_is_real(self):
         return self.index < len(_reals_cache[self.poly])
+    _eval_is_extended_real = _eval_is_real
 
     @classmethod
     def real_roots(cls, poly, radicals=True):
@@ -144,7 +144,7 @@ class RootOf(Expr):
         else:
             _reals_cache[factor] = real_part = \
                 dup_isolate_real_roots_sqf(
-                    factor.rep.rep, factor.rep.dom, blackbox=True)
+                    factor.rep.rep, factor.rep.domain, blackbox=True)
 
         return real_part
 
@@ -156,7 +156,7 @@ class RootOf(Expr):
         else:
             _complexes_cache[factor] = complex_part = \
                 dup_isolate_complex_roots_sqf(
-                factor.rep.rep, factor.rep.dom, blackbox=True)
+                factor.rep.rep, factor.rep.domain, blackbox=True)
         return complex_part
 
     @classmethod
@@ -505,7 +505,7 @@ class RootOf(Expr):
 
     def _get_interval(self):
         """Internal function for retrieving isolation interval from cache. """
-        if self.is_extended_real:
+        if self.is_real:
             return _reals_cache[self.poly][self.index]
         else:
             reals_count = len(_reals_cache[self.poly])
@@ -513,7 +513,7 @@ class RootOf(Expr):
 
     def _set_interval(self, interval):
         """Internal function for updating isolation interval in cache. """
-        if self.is_extended_real:
+        if self.is_real:
             _reals_cache[self.poly][self.index] = interval
         else:
             reals_count = len(_reals_cache[self.poly])
@@ -830,7 +830,7 @@ class RootSum(Expr):
         return factor(p/q)
 
     def _hashable_content(self):
-        return (self.poly, self.fun)
+        return self.poly, self.fun
 
     @property
     def expr(self):
@@ -838,7 +838,7 @@ class RootSum(Expr):
 
     @property
     def args(self):
-        return (self.expr, self.fun, self.poly.gen)
+        return self.expr, self.fun, self.poly.gen
 
     @property
     def free_symbols(self):

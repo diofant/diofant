@@ -448,9 +448,9 @@ class FreeModulePolyRing(FreeModule):
         if not isinstance(ring, PolynomialRingBase):
             raise NotImplementedError('This implementation only works over '
                                       + 'polynomial rings, got %s' % ring)
-        if not isinstance(ring.dom, Field):
+        if not isinstance(ring.domain, Field):
             raise NotImplementedError('Ground domain must be a field, '
-                                      + 'got %s' % ring.dom)
+                                      + 'got %s' % ring.domain)
 
     def submodule(self, *gens, **opts):
         """
@@ -1061,12 +1061,12 @@ class SubModulePolyRing(SubModule):
         if self._gbe is None and extended:
             gb, gbe = sdm_groebner(
                 [self.ring._vector_to_sdm(x, self.order) for x in self.gens],
-                sdm_nf_mora, self.order, self.ring.dom, extended=True)
+                sdm_nf_mora, self.order, self.ring.domain, extended=True)
             self._gb, self._gbe = tuple(gb), tuple(gbe)
         if self._gb is None:
             self._gb = tuple(sdm_groebner(
                              [self.ring._vector_to_sdm(x, self.order) for x in self.gens],
-               sdm_nf_mora, self.order, self.ring.dom))
+               sdm_nf_mora, self.order, self.ring.domain))
         if extended:
             return self._gb, self._gbe
         else:
@@ -1085,7 +1085,7 @@ class SubModulePolyRing(SubModule):
     def _contains(self, x):
         from diofant.polys.distributedmodules import sdm_zero, sdm_nf_mora
         return sdm_nf_mora(self.ring._vector_to_sdm(x, self.order),
-                           self._groebner(), self.order, self.ring.dom) == \
+                           self._groebner(), self.order, self.ring.domain) == \
             sdm_zero()
 
     def _syzygies(self):
@@ -1144,7 +1144,7 @@ class SubModulePolyRing(SubModule):
             NF = sdm_nf_mora
         return self.container.convert(self.ring._sdm_to_vector(NF(
             self.ring._vector_to_sdm(x, self.order), self._groebner(),
-            self.order, self.ring.dom),
+            self.order, self.ring.domain),
             self.rank))
 
     def _intersect(self, other, relations=False):

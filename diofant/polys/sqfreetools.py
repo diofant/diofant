@@ -104,13 +104,13 @@ def dup_sqf_norm(f, K):
     if not K.is_Algebraic:
         raise DomainError("ground domain must be algebraic")
 
-    s, g = 0, dmp_raise(K.mod.rep, 1, 0, K.dom)
+    s, g = 0, dmp_raise(K.mod.rep, 1, 0, K.domain)
 
     while True:
         h, _ = dmp_inject(f, 0, K, front=True)
-        r = dmp_resultant(g, h, 1, K.dom)
+        r = dmp_resultant(g, h, 1, K.domain)
 
-        if dup_sqf_p(r, K.dom):
+        if dup_sqf_p(r, K.domain):
             break
         else:
             f, s = dup_shift(f, -K.unit, K), s + 1
@@ -151,16 +151,16 @@ def dmp_sqf_norm(f, u, K):
     if not K.is_Algebraic:
         raise DomainError("ground domain must be algebraic")
 
-    g = dmp_raise(K.mod.rep, u + 1, 0, K.dom)
+    g = dmp_raise(K.mod.rep, u + 1, 0, K.domain)
     F = dmp_raise([K.one, -K.unit], u, 0, K)
 
     s = 0
 
     while True:
         h, _ = dmp_inject(f, u, K, front=True)
-        r = dmp_resultant(g, h, u + 1, K.dom)
+        r = dmp_resultant(g, h, u + 1, K.domain)
 
-        if dmp_sqf_p(r, u, K.dom):
+        if dmp_sqf_p(r, u, K.domain):
             break
         else:
             f, s = dmp_compose(f, F, u, K), s + 1
@@ -170,9 +170,9 @@ def dmp_sqf_norm(f, u, K):
 
 def dup_gf_sqf_part(f, K):
     """Compute square-free part of ``f`` in ``GF(p)[x]``. """
-    f = dup_convert(f, K, K.dom)
-    g = gf_sqf_part(f, K.mod, K.dom)
-    return dup_convert(g, K.dom, K)
+    f = dup_convert(f, K, K.domain)
+    g = gf_sqf_part(f, K.mod, K.domain)
+    return dup_convert(g, K.domain, K)
 
 
 def dmp_gf_sqf_part(f, K):
@@ -249,14 +249,14 @@ def dmp_sqf_part(f, u, K):
 
 def dup_gf_sqf_list(f, K, all=False):
     """Compute square-free decomposition of ``f`` in ``GF(p)[x]``. """
-    f = dup_convert(f, K, K.dom)
+    f = dup_convert(f, K, K.domain)
 
-    coeff, factors = gf_sqf_list(f, K.mod, K.dom, all=all)
+    coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
 
     for i, (f, k) in enumerate(factors):
-        factors[i] = (dup_convert(f, K.dom, K), k)
+        factors[i] = (dup_convert(f, K.domain, K), k)
 
-    return K.convert(coeff, K.dom), factors
+    return K.convert(coeff, K.domain), factors
 
 
 def dmp_gf_sqf_list(f, u, K, all=False):

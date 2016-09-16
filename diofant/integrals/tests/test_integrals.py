@@ -1,13 +1,15 @@
+import sys
+
 import pytest
 
 from diofant import (Abs, acos, acosh, Add, asin, asinh, atan, Ci,
-                   cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
-                   exp, erf, erfi, EulerGamma, factor, Function, I,
-                   Integral, integrate, Interval, Lambda, LambertW, log,
-                   Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
-                   simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
-                   sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
-                   im, polar_lift, meijerg)
+                     cos, sinh, cosh, tanh, Derivative, diff, DiracDelta, E,
+                     exp, erf, erfi, EulerGamma, factor, Function, I,
+                     Integral, integrate, Interval, Lambda, LambertW, log,
+                     Matrix, O, oo, pi, Piecewise, Poly, Rational, S,
+                     simplify, sin, tan, sqrt, sstr, Sum, Symbol, symbols,
+                     sympify, trigsimp, Integer, Tuple, nan, And, Eq, Ne, re,
+                     im, polar_lift, meijerg)
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.utilities.randtest import verify_numerically
@@ -723,6 +725,7 @@ def test_is_zero():
     from diofant.abc import x, m
     assert Integral(0, (x, 1, x)).is_zero
     assert Integral(1, (x, 1, 1)).is_zero
+    assert Integral(1, (x, m)).is_zero is None
     assert Integral(1, (x, 1, 2), (y, 2)).is_zero is False
     assert Integral(x, (m, 0)).is_zero
     assert Integral(x + m, (m, 0)).is_zero is None
@@ -743,6 +746,8 @@ def test_is_real():
     assert Integral(1/(x - 1), (x, -1, 1)).is_real is not True
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 5),
+                    reason="XXX python3.5 api changes")
 def test_series():
     from diofant.abc import x
     i = Integral(cos(x), (x, x))

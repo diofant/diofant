@@ -3,7 +3,7 @@ from diofant.vector.scalar import BaseScalar
 from diofant import eye, trigsimp, ImmutableMatrix as Matrix, Symbol
 from diofant.core.cache import cacheit
 from diofant.vector.orienters import (Orienter, AxisOrienter, BodyOrienter,
-                                    SpaceOrienter, QuaternionOrienter)
+                                      SpaceOrienter, QuaternionOrienter)
 import diofant.vector
 
 
@@ -202,10 +202,10 @@ class CoordSysCartesian(Basic):
         return self._z
 
     def base_vectors(self):
-        return (self._i, self._j, self._k)
+        return self._i, self._j, self._k
 
     def base_scalars(self):
-        return (self._x, self._y, self._z)
+        return self._x, self._y, self._z
 
     @cacheit
     def rotation_matrix(self, other):

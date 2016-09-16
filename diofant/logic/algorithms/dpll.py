@@ -10,7 +10,7 @@ References:
 
 from diofant import default_sort_key
 from diofant.logic.boolalg import (Or, Not, conjuncts, disjuncts, to_cnf,
-                                 to_int_repr, _find_predicates)
+                                   to_int_repr, _find_predicates)
 from diofant.logic.inference import pl_true, literal_symbol
 
 
@@ -292,7 +292,7 @@ def find_unit_clause_int_repr(clauses, model):
     (2, False)
 
     """
-    bound = set(model) | set(-sym for sym in model)
+    bound = set(model) | {-sym for sym in model}
     for clause in clauses:
         unbound = clause - bound
         if len(unbound) == 1:

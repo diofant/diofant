@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Symbol, symbols, oo, limit, Rational, Integral, Derivative,
-                   log, exp, sqrt, pi, Function, sin, Eq, Ge, Le, Gt, Lt, Ne,
-                   Abs, conjugate, I, Matrix)
+                     log, exp, sqrt, pi, Function, sin, Eq, Ge, Le, Gt, Lt, Ne,
+                     Abs, conjugate, I, Matrix)
 
 from diofant.printing.python import python
 

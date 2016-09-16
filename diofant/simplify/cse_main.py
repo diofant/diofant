@@ -6,7 +6,7 @@ from diofant.core.function import _coeff_isneg
 from diofant.core.exprtools import factor_terms
 from diofant.core.compatibility import iterable
 from diofant.utilities.iterables import (filter_symbols, numbered_symbols,
-                                       sift, topological_sort, ordered)
+                                         sift, topological_sort, ordered)
 from . import cse_opts
 
 # (preprocessor, postprocessor) pairs which are commonly useful. They should

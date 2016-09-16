@@ -16,7 +16,7 @@ from .symbol import Dummy
 from .coreerrors import NonCommutativeExpression
 from .containers import Tuple, Dict
 from diofant.utilities.iterables import (common_prefix, common_suffix,
-                                       variations)
+                                         variations)
 
 
 def _isnumber(i):
@@ -131,7 +131,7 @@ class Factors(object):
                     if n.p != 1:
                         factors[Integer(n.p)] = S.One
                     factors[Integer(n.q)] = S.NegativeOne
-                else:
+                else:  # pragma: no cover
                     raise ValueError('Expected Float|Rational|Integer, not %s' % n)
         elif isinstance(factors, Basic) and not factors.args:
             factors = {factors: S.One}
@@ -179,14 +179,11 @@ class Factors(object):
                             raise ValueError('unexpected factor in i1: %s' % a)
 
         self.factors = factors
-        try:
-            self.gens = frozenset(factors.keys())
-        except AttributeError:
-            raise TypeError('expecting Expr or dictionary')
+        self.gens = frozenset(factors.keys())
 
     def __hash__(self):  # Factors
         keys = tuple(ordered(self.factors.keys()))
-        values = [self.factors[k] for k in keys]
+        values = tuple(self.factors[k] for k in keys)
         return hash((keys, values))
 
     def __repr__(self):  # Factors
@@ -287,9 +284,9 @@ class Factors(object):
         if not isinstance(other, Factors):
             other = Factors(other)
             if other.is_zero:
-                return (Factors(), Factors(S.Zero))
+                return Factors(), Factors(S.Zero)
             if self.is_zero:
-                return (Factors(S.Zero), Factors())
+                return Factors(S.Zero), Factors()
 
         self_factors = dict(self.factors)
         other_factors = dict(other.factors)
@@ -396,7 +393,7 @@ class Factors(object):
             if other.is_zero:
                 raise ZeroDivisionError
             if self.is_zero:
-                return (Factors(S.Zero), Factors())
+                return Factors(S.Zero), Factors()
 
         for factor, exp in other.factors.items():
             if factor in quo:
@@ -938,7 +935,7 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
         if expr.is_Pow or expr.is_Function or \
                 is_iterable or not hasattr(expr, 'args_cnc'):
             args = expr.args
-            newargs = tuple([do(i) for i in args])
+            newargs = tuple(do(i) for i in args)
             if newargs == args:
                 return expr
             return expr.func(*newargs)

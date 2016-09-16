@@ -31,9 +31,6 @@ class FractionField(Field, CompositeDomain):
         self.symbols = field.symbols
         self.domain = field.domain
 
-        # TODO: remove this
-        self.dom = self.domain
-
     def new(self, element):
         return self.field.field_new(element)
 

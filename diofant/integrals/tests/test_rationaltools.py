@@ -1,5 +1,5 @@
 from diofant import (symbols, I, atan, log, Poly, sqrt,
-                   simplify, integrate, Integer, Rational)
+                     simplify, integrate, Integer, Rational)
 from diofant.integrals.rationaltools import ratint, ratint_logpart, log_to_atan
 
 from diofant.abc import a, b, x, t

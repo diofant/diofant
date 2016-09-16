@@ -20,6 +20,8 @@ class RoundFunction(Function):
         from diofant import im
         if arg.is_integer:
             return arg
+        if arg.func is cls:
+            return arg
         if arg.is_imaginary or (S.ImaginaryUnit*arg).is_extended_real:
             i = im(arg)
             if not i.has(S.ImaginaryUnit):
@@ -80,10 +82,12 @@ class RoundFunction(Function):
         return self.args[0].is_finite
 
     def _eval_is_extended_real(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_extended_real:
+            return True
 
     def _eval_is_integer(self):
-        return self.args[0].is_extended_real
+        if self.args[0].is_real:
+            return True
 
 
 class floor(RoundFunction):

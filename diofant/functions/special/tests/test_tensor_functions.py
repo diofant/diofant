@@ -1,5 +1,5 @@
 from diofant import (adjoint, conjugate, Dummy, Eijk, KroneckerDelta,
-                   LeviCivita, Symbol, symbols, transpose)
+                     LeviCivita, Symbol, symbols, transpose)
 
 x, y = symbols('x y')
 

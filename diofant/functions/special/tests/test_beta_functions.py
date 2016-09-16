@@ -1,4 +1,4 @@
-from diofant import (Symbol, gamma, expand_func, beta, digamma, diff)
+from diofant import Symbol, gamma, expand_func, beta, digamma, diff
 
 
 def test_beta():

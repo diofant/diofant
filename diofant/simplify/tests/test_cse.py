@@ -3,14 +3,14 @@ import itertools
 import pytest
 
 from diofant import (Add, Pow, Symbol, exp, sqrt, symbols, sympify, cse,
-                   Matrix, cos, sin, Eq, Function, Tuple, RootOf,
-                   IndexedBase, Idx, Piecewise, O, Rational, true)
+                     Matrix, cos, sin, Eq, Function, Tuple, RootOf,
+                     IndexedBase, Idx, Piecewise, O, Rational, true)
 from diofant.simplify.cse_opts import sub_pre, sub_post
 from diofant.functions.special.hyper import meijerg
 from diofant.simplify import cse_main, cse_opts
 from diofant.matrices import (MutableDenseMatrix,
-                            MutableSparseMatrix, ImmutableDenseMatrix,
-                            ImmutableSparseMatrix)
+                              MutableSparseMatrix, ImmutableDenseMatrix,
+                              ImmutableSparseMatrix)
 
 
 w, x, y, z = symbols('w,x,y,z')

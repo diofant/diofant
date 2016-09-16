@@ -9,12 +9,12 @@ complex part, because it needs to calculate a limit to return the result.
 import pytest
 
 from diofant import (Symbol, exp, log, oo, Rational, I, sin, gamma, loggamma,
-                   S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh, airyai,
-                   airybi, coth, sinh, tanh, digamma, Integer, Ei, EulerGamma,
-                   Mul, Pow, Add, li, Li, tan, acosh, factorial, binomial,
-                   root, fibonacci, GoldenRatio, Limit)
+                     S, atan, acot, pi, E, erf, sqrt, zeta, cos, cosh, airyai,
+                     airybi, coth, sinh, tanh, digamma, Integer, Ei, EulerGamma,
+                     Mul, Pow, Add, li, Li, tan, acosh, factorial, binomial,
+                     root, fibonacci, GoldenRatio, Limit)
 from diofant.series.gruntz import (compare, mrv, rewrite,
-                                 mrv_leadterm, limitinf as gruntz, sign)
+                                   mrv_leadterm, limitinf as gruntz, sign)
 
 x = Symbol('x', real=True, positive=True)
 m = Symbol('m', real=True, positive=True)

@@ -315,8 +315,8 @@ class Function(Application, Expr):
     ...             elif x is S.Infinity:
     ...                 return S.Zero
     ...
-    ...     def _eval_is_extended_real(self):
-    ...         return self.args[0].is_extended_real
+    ...     def _eval_is_real(self):
+    ...         return self.args[0].is_real
     ...
     >>> x = Symbol('x')
     >>> my_func(0) + sin(0)
@@ -325,7 +325,7 @@ class Function(Application, Expr):
     0
     >>> my_func(3.54).n() # Not yet implemented for my_func.
     my_func(3.54)
-    >>> my_func(I).is_extended_real
+    >>> my_func(I).is_real
     False
 
     In order for ``my_func`` to become useful, several other methods would
@@ -1047,7 +1047,7 @@ class Derivative(Expr):
         # functions and Derivatives as those can be created by intermediate
         # derivatives.
         if evaluate:
-            symbol_set = set(sc[0] for sc in variable_count if sc[0].is_Symbol)
+            symbol_set = {sc[0] for sc in variable_count if sc[0].is_Symbol}
             if symbol_set.difference(expr.free_symbols):
                 return S.Zero
 
@@ -1412,7 +1412,7 @@ class Lambda(Expr):
         return super(Lambda, self).__hash__()
 
     def _hashable_content(self):
-        return (self.expr.xreplace(self.canonical_variables),)
+        return self.expr.xreplace(self.canonical_variables),
 
     @property
     def is_identity(self):
@@ -1522,7 +1522,8 @@ class Subs(Expr):
         return obj
 
     def _eval_is_commutative(self):
-        return self.expr.is_commutative
+        return (self.expr.is_commutative and
+                all(p.is_commutative for p in self.point))
 
     def doit(self, **hints):
         return self.expr.doit(**hints).subs(list(zip(self.variables, self.point)))
@@ -1550,7 +1551,7 @@ class Subs(Expr):
     @property
     def free_symbols(self):
         return (self.expr.free_symbols - set(self.variables) |
-            set(self.point.free_symbols))
+                set(self.point.free_symbols))
 
     def __eq__(self, other):
         if not isinstance(other, Subs):
@@ -1561,7 +1562,7 @@ class Subs(Expr):
         return super(Subs, self).__hash__()
 
     def _hashable_content(self):
-        return (self._expr.xreplace(self.canonical_variables),)
+        return self._expr.xreplace(self.canonical_variables),
 
     def _eval_subs(self, old, new):
         if old in self.variables:

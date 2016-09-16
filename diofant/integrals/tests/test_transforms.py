@@ -778,8 +778,8 @@ def test_issue_8514():
     a, b, c, = symbols('a b c', positive=True, finite=True)
     t = symbols('t', positive=True)
     ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
-    assert ft == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -
-                          exp(-I*atan2(0, -4*a*c + b**2)/2)) *
+    assert ft.rewrite(atan2) == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -
+                                         exp(-I*atan2(0, -4*a*c + b**2)/2)) *
                    sqrt(Abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
                   * sqrt(Abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
                   * sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
