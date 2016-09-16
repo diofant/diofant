@@ -10,10 +10,10 @@ from diofant.ntheory.residue_ntheory import sqrt_mod
 from diofant.core.relational import Eq
 from diofant.solvers.solvers import check_assumptions
 
-__all__ = ['diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
+__all__ = ('diophantine', 'diop_solve', 'classify_diop', 'diop_linear', 'base_solution_linear',
            'diop_quadratic', 'diop_DN', 'cornacchia', 'diop_bf_DN', 'transformation_to_DN', 'find_DN',
            'diop_ternary_quadratic',  'square_factor', 'descent', 'diop_general_pythagorean',
-           'diop_general_sum_of_squares', 'partition', 'sum_of_three_squares', 'sum_of_four_squares']
+           'diop_general_sum_of_squares', 'partition', 'sum_of_three_squares', 'sum_of_four_squares')
 
 
 def diophantine(eq, param=symbols("t", integer=True)):

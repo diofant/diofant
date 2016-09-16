@@ -92,7 +92,7 @@ from diofant.matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
                               MatrixExpr, MatrixSlice)
 
 
-__all__ = [
+__all__ = (
     # description of routines
     "Routine", "DataType", "default_datatypes", "get_default_datatype",
     "Argument", "InputArgument", "Result",
@@ -100,7 +100,7 @@ __all__ = [
     "CodeGen", "CCodeGen", "FCodeGen", "OctaveCodeGen",
     # friendly functions
     "codegen", "make_routine",
-]
+)
 
 
 #

@@ -1,6 +1,6 @@
 """Ground types for various mathematical domains in Diofant. """
 
-__all__ = []
+__all__ = ()
 
 import builtins
 import fractions

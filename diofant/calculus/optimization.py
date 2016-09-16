@@ -7,7 +7,7 @@ from diofant.solvers import solve
 from diofant.calculus import singularities
 
 
-__all__ = ['minimize', 'maximize']
+__all__ = ('minimize', 'maximize')
 
 
 def minimize(f, *v):

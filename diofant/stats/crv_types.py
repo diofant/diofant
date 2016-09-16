@@ -50,7 +50,7 @@ from diofant.stats.crv import (SingleContinuousPSpace, SingleContinuousDistribut
                                ContinuousDistributionHandmade)
 from diofant.stats.rv import _value_check
 
-__all__ = ['ContinuousRV',
+__all__ = ('ContinuousRV',
 'Arcsin',
 'Benini',
 'Beta',
@@ -85,7 +85,7 @@ __all__ = ['ContinuousRV',
 'VonMises',
 'Weibull',
 'WignerSemicircle'
-]
+)
 
 
 def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
