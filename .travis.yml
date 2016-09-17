@@ -23,8 +23,7 @@ matrix:
     - python: 3.4
       env: COVERAGE='on' EXTRA='on'
       install:
-        - pip install flake8 sphinx numpydoc pytest-cov sphinx_rtd_theme
-        - travis_wait pip install .[exports,plot,interactive]
+        - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
         - python setup.py flake8
         - sphinx-build -W -b html docs build/sphinx/html
