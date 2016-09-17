@@ -260,6 +260,10 @@ class Poly(Expr):
         return (self.as_expr(),) + self.gens
 
     @property
+    def is_number(self):
+        return self.as_expr().is_number
+
+    @property
     def gen(self):
         """
         Return the principal generator.

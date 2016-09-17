@@ -351,6 +351,11 @@ def test_Poly__args():
     assert Poly(x**2 + 1).args == (x**2 + 1, x)
 
 
+def test_Poly_is_number():
+    assert Poly(1, x).is_number
+    assert Poly(x, x).is_number is False
+
+
 def test_Poly__gens():
     assert Poly((x - p)*(x - q), x).gens == (x,)
     assert Poly((x - p)*(x - q), p).gens == (p,)
