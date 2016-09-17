@@ -148,15 +148,8 @@ You can also import common symbol names from ``diofant.abc`` module.
     >>> w
     w
     >>> import diofant
-    >>> dir(diofant.abc)  #doctest: +SKIP
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-    'P', 'Q', 'R', 'S', 'Symbol', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    '__builtins__', '__doc__', '__file__', '__name__', '__package__', '_greek',
-    '_latin', 'a', 'alpha', 'b', 'beta', 'c', 'chi', 'd', 'delta', 'e',
-    'epsilon', 'eta', 'f', 'g', 'gamma', 'h', 'i', 'iota', 'j', 'k', 'kappa',
-    'l', 'm', 'mu', 'n', 'nu', 'o', 'omega', 'omicron', 'p', 'phi', 'pi',
-    'psi', 'q', 'r', 'rho', 's', 'sigma', 't', 'tau', 'theta', 'u', 'upsilon',
-    'v', 'w', 'x', 'xi', 'y', 'z', 'zeta']
+    >>> dir(diofant.abc)
+    ['A', 'B', ..., 'zeta']
 
 If you want control over the assumptions of the variables, use
 :func:`~diofant.core.symbol.Symbol` and :func:`~diofant.core.symbol.symbols`.
@@ -191,9 +184,8 @@ careful.
 To get a full list of all default names in Diofant do:
 
     >>> import diofant
-    >>> dir(diofant)  #doctest: +SKIP
-    # A big list of all default diofant names and functions follows.
-    # Ignore everything that starts and ends with __.
+    >>> dir(diofant)
+    ['AbelianGroup', 'Abs', 'Add', ..., 'zoo']
 
 If you have `IPython <http://ipython.org/>`_ installed and
 use :command:`ipython`, instead of bare Python shell, you can also press

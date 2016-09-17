@@ -327,9 +327,6 @@ def Beta(name, alpha, beta):
     >>> expand_func(simplify(E(X, meijerg=True)))
     alpha/(alpha + beta)
 
-    >>> simplify(variance(X, meijerg=True))  #doctest: +SKIP
-    alpha*beta/((alpha + beta)**2*(alpha + beta + 1))
-
     References
     ==========
 

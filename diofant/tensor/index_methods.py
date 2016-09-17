@@ -201,8 +201,9 @@ def get_indices(expr):
 
     An IndexConformanceException means that the terms are not compatible, e.g.
 
-    >>> get_indices(x[i] + y[j])                #doctest: +SKIP
-            (...)
+    >>> get_indices(x[i] + y[j])
+    Traceback (most recent call last):
+    ...
     IndexConformanceException: Indices are not consistent: x(i) + y(j)
 
     .. warning::
