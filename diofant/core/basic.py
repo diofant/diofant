@@ -978,7 +978,9 @@ class Basic(metaclass=ManagedProperties):
 
         Trying to replace x with an expression raises an error:
 
-        >>> Integral(x, (x, 1, 2*x)).xreplace({x: 2*y}) # doctest: +SKIP
+        >>> Integral(x, (x, 1, 2*x)).xreplace({x: 2*y})
+        Traceback (most recent call last):
+        ...
         ValueError: Invalid limits given: ((2*y, 1, 4*y),)
 
         See Also
@@ -1606,8 +1608,6 @@ class preorder_traversal(object):
     is given; simply passing key=True will guarantee that the traversal is
     unique.
 
-    >>> list(preorder_traversal((x + y)*z, keys=None)) # doctest: +SKIP
-    [z*(x + y), z, x + y, y, x]
     >>> list(preorder_traversal((x + y)*z, keys=True))
     [z*(x + y), z, x + y, x, y]
     """

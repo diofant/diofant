@@ -14,6 +14,9 @@ from diofant.abc import a, b, n, m, k, x, alpha
 def test_jacobi():
     assert jacobi(0, a, b, x) == 1
     assert jacobi(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
+    assert (jacobi(2, a, b, x) == a**2/8 - a*b/4 - a/8 + b**2/8 - b/8 +
+            x**2*(a**2/8 + a*b/4 + 7*a/8 + b**2/8 + 7*b/8 + Rational(3, 2)) +
+            x*(a**2/4 + 3*a/4 - b**2/4 - 3*b/4) - S.Half)
 
     assert jacobi(n, a, a, x) == RisingFactorial(
         a + 1, n)*gegenbauer(n, a + Rational(1, 2), x)/RisingFactorial(2*a + 1, n)

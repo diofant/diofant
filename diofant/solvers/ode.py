@@ -2111,14 +2111,9 @@ def odesimp(eq, func, order, constants, hint):
                            /
 
     >>> pprint(odesimp(eq, f(x), 1, {C1},
-    ... hint='1st_homogeneous_coeff_subs_indep_div_dep', use_unicode=False
-    ... ))  # doctest: +SKIP
-        x
-    --------- = C1
-       /f(x)\
-    tan|----|
-       \2*x /
-
+    ...                hint='1st_homogeneous_coeff_subs_indep_div_dep'),
+    ...        use_unicode=False)
+    f(x) = 2*x*atan(C1*x)
     """
     x = func.args[0]
     f = func.func
@@ -3415,21 +3410,21 @@ def ode_Bernoulli(eq, func, order, match):
                     d                n
         P(x)*f(x) + --(f(x)) = Q(x)*f (x)
                     dx
-        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'), use_unicode=False)  # doctest: +SKIP
-                                                                                       1
-                                                                                      ----
-                                                                                     1 - n
-               //                /                            \                     \
-               ||               |                             |                     |
-               ||               |                  /          |             /       |
-               ||               |                 |           |            |        |
-               ||               |        (1 - n)* | P(x) dx   |  (-1 + n)* | P(x) dx|
-               ||               |                 |           |            |        |
-               ||               |                /            |           /         |
-        f(x) = ||C1 + (-1 + n)* | -Q(x)*e                   dx|*e                   |
-               ||               |                             |                     |
-               \\               /                            /                     /
-
+        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'),
+        ...        use_unicode=False, wrap_line=False)
+                                                                                        1
+                                                                                      ------
+                                                                                      -n + 1
+               /                      /               /                             \\
+               |                      |              |                              ||
+               |             /        |              |              /               ||
+               |            |         |              |             |                ||
+               | -(-n + 1)* | P(x) dx |              |   (-n + 1)* | P(x) dx        ||
+               |            |         |              |             |                ||
+               |           /          |              |            /                 ||
+        f(x) = |E                    *|C1 + (n - 1)* | -E                   *Q(x) dx||
+               |                      |              |                              ||
+               \                      \             /                               //
 
     Note that the equation is separable when `n = 1` (see the docstring of
     :py:meth:`~diofant.solvers.ode.ode_separable`).
