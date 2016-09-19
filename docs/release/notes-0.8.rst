@@ -271,11 +271,11 @@ Pull requests
 * `#67 <https://github.com/diofant/diofant/pull/67>`_ Removed TextBackend
 * `#70 <https://github.com/diofant/diofant/pull/70>`_ Fix skirpichev/omg#55
 * `#69 <https://github.com/diofant/diofant/pull/69>`_ Cleanup of the series docs
-* `#71 <https://github.com/diofant/diofant/pull/71>`_ Misc fixes
+* `#71 <https://github.com/diofant/diofant/pull/71>`_ Use set/dict literals, misc fixes
 * `#72 <https://github.com/diofant/diofant/pull/72>`_ Revert back new cache stuff (cache.py restored to b4352dd)
 * `#68 <https://github.com/diofant/diofant/pull/68>`_ Removed SubsSet in gruntz, use xreplace()
 * `#77 <https://github.com/diofant/diofant/pull/77>`_ Fix O.contains expr.is_Add heuristics (was invalid for point != 0)
-* `#73 <https://github.com/diofant/diofant/pull/73>`_ Misc fixes
+* `#73 <https://github.com/diofant/diofant/pull/73>`_ Removed "Contributions to docs" section, misc fixes
 * `#84 <https://github.com/diofant/diofant/pull/84>`_ Removed sage support
 * `#85 <https://github.com/diofant/diofant/pull/85>`_ Removed (broken long time ago) benchmarks support
 * `#80 <https://github.com/diofant/diofant/pull/80>`_ Make Q.nonzero compatible with old assumptions
@@ -288,7 +288,7 @@ Pull requests
 * `#92 <https://github.com/diofant/diofant/pull/92>`_ Implement helper function _zetas to make zeta tractable by the Gruntz algorithm
 * `#90 <https://github.com/diofant/diofant/pull/90>`_ Use py.test to test sphinx docs
 * `#96 <https://github.com/diofant/diofant/pull/96>`_ Test examples in travis, runtests.py removed
-* `#97 <https://github.com/diofant/diofant/pull/97>`_ Misc fixes
+* `#97 <https://github.com/diofant/diofant/pull/97>`_ Fix infinite recursion for oo**zoo, misc fixes
 * `#99 <https://github.com/diofant/diofant/pull/99>`_ Use py.test in setup.py
 * `#95 <https://github.com/diofant/diofant/pull/95>`_ Try to preserve decorated signatures
 * `#102 <https://github.com/diofant/diofant/pull/102>`_ Removed crypto module
@@ -297,7 +297,7 @@ Pull requests
 * `#106 <https://github.com/diofant/diofant/pull/106>`_ Travis: Migrating to container-based infrastructure
 * `#105 <https://github.com/diofant/diofant/pull/105>`_ Implement nseries helper for LambertW
 * `#107 <https://github.com/diofant/diofant/pull/107>`_ Removed old intcache, @cacheit used instead
-* `#104 <https://github.com/diofant/diofant/pull/104>`_ Misc fixes
+* `#104 <https://github.com/diofant/diofant/pull/104>`_ Resolve pep8 errors, misc fixes
 * `#109 <https://github.com/diofant/diofant/pull/109>`_ Travis: less split for slow tests
 * `#100 <https://github.com/diofant/diofant/pull/100>`_ Add Developer's Guide
 * `#111 <https://github.com/diofant/diofant/pull/111>`_ Pep8
@@ -309,9 +309,9 @@ Pull requests
 * `#125 <https://github.com/diofant/diofant/pull/125>`_ Fix #124
 * `#103 <https://github.com/diofant/diofant/pull/103>`_ Unbundle strategies module
 * `#126 <https://github.com/diofant/diofant/pull/126>`_ Misc fixes
-* `#130 <https://github.com/diofant/diofant/pull/130>`_ Misc fixes
+* `#130 <https://github.com/diofant/diofant/pull/130>`_ return None -> return, misc fixes
 * `#123 <https://github.com/diofant/diofant/pull/123>`_ Fixes sympy/sympy#9832
-* `#132 <https://github.com/diofant/diofant/pull/132>`_ Misc fixes for polys module and more
+* `#132 <https://github.com/diofant/diofant/pull/132>`_ Reformat references in the polys module, misc fixes
 * `#116 <https://github.com/diofant/diofant/pull/116>`_ New set of sympy's fixes
 * `#78 <https://github.com/diofant/diofant/pull/78>`_ Misc no-cache fixes
 * `#79 <https://github.com/diofant/diofant/pull/79>`_ Consolidate exp and Pow
@@ -353,24 +353,24 @@ Pull requests
 * `#163 <https://github.com/diofant/diofant/pull/163>`_ Make Basic.is_comparable more conservative for extended_real's
 * `#184 <https://github.com/diofant/diofant/pull/184>`_ Interval now support extended_real end points, correct S.Reals
 * `#42 <https://github.com/diofant/diofant/pull/42>`_ Make complex numbers - finite in old assumptions
-* `#183 <https://github.com/diofant/diofant/pull/183>`_ Misc fixes
+* `#183 <https://github.com/diofant/diofant/pull/183>`_ Use more py3 idioms, misc fixes
 * `#170 <https://github.com/diofant/diofant/pull/170>`_ Correct Pow.as_numer_denom for cases where base=1, 1/d or n/1
 * `#187 <https://github.com/diofant/diofant/pull/187>`_ Major rewrite of ancient garbage in Pow._eval_nseries
 * `#186 <https://github.com/diofant/diofant/pull/186>`_ Integral.doit: Vectorize _eval_interval calls only if antideriv has Integral
-* `#188 <https://github.com/diofant/diofant/pull/188>`_ Misc fixes
+* `#188 <https://github.com/diofant/diofant/pull/188>`_ Document that det(Matrix()) == 1, misc fixes
 * `#115 <https://github.com/diofant/diofant/pull/115>`_ Remove S(foo) syntax from library & tests
 * `#174 <https://github.com/diofant/diofant/pull/174>`_ Add some docstrings for gruntz module
 * `#189 <https://github.com/diofant/diofant/pull/189>`_ Add rewrite helpers for fibonacci
 * `#134 <https://github.com/diofant/diofant/pull/134>`_ Add build_sphinx comand for setup.py
 * `#190 <https://github.com/diofant/diofant/pull/190>`_ Fix RuntimeError for factorial2(noninteger)
 * `#191 <https://github.com/diofant/diofant/pull/191>`_ Add quick tests to checksol: is_nonzero
-* `#192 <https://github.com/diofant/diofant/pull/192>`_ Misc fixes
+* `#192 <https://github.com/diofant/diofant/pull/192>`_ Drop support for "old" order in printers, misc fixes
 * `#39 <https://github.com/diofant/diofant/pull/39>`_ Use srepr instead of sstr for __repr__ printing
 * `#122 <https://github.com/diofant/diofant/pull/122>`_ Remove new assumptions
 * `#197 <https://github.com/diofant/diofant/pull/197>`_ Fixed str() printing of Poly with non-atomic generators
 * `#30 <https://github.com/diofant/diofant/pull/30>`_ Fix "flip" of arguments in relational expressions
-* `#196 <https://github.com/diofant/diofant/pull/196>`_ Impove test coverage
-* `#198 <https://github.com/diofant/diofant/pull/198>`_ Misc fixes
+* `#196 <https://github.com/diofant/diofant/pull/196>`_ Impove coverage
+* `#198 <https://github.com/diofant/diofant/pull/198>`_ Fix more pep8 errors, misc fixes
 * `#93 <https://github.com/diofant/diofant/pull/93>`_ Complete XPOS todo in Expr.series
 * `#202 <https://github.com/diofant/diofant/pull/202>`_ Correct general case in _linear_2eq_order1_type7
 * `#199 <https://github.com/diofant/diofant/pull/199>`_ PEP E712
@@ -398,60 +398,60 @@ Pull requests
 * `#234 <https://github.com/diofant/diofant/pull/234>`_ Add tests
 * `#209 <https://github.com/diofant/diofant/pull/209>`_ Use cachetools
 * `#240 <https://github.com/diofant/diofant/pull/240>`_ Try gosper_sum before eval_sum_hyper
-* `#237 <https://github.com/diofant/diofant/pull/237>`_ Misc fixes
+* `#237 <https://github.com/diofant/diofant/pull/237>`_ Remove redundant print/sstr/pprint for doctests, misc fixes
 * `#108 <https://github.com/diofant/diofant/pull/108>`_ Add minimize/maximize
 * `#239 <https://github.com/diofant/diofant/pull/239>`_ Correct wrong coeff for RR domain in \*_factor_list()'s
-* `#232 <https://github.com/diofant/diofant/pull/232>`_ Add coverage
+* `#232 <https://github.com/diofant/diofant/pull/232>`_ Improve coverage
 * `#244 <https://github.com/diofant/diofant/pull/244>`_ Add evaluate option for LatticeOp constructor
-* `#243 <https://github.com/diofant/diofant/pull/243>`_ Add tests
-* `#245 <https://github.com/diofant/diofant/pull/245>`_ Add coverage
+* `#243 <https://github.com/diofant/diofant/pull/243>`_ Fix pretty printing for powers of Limit's, add regression tests
+* `#245 <https://github.com/diofant/diofant/pull/245>`_ Improve coverage
 * `#246 <https://github.com/diofant/diofant/pull/246>`_ Use limit in hyperexpand
-* `#248 <https://github.com/diofant/diofant/pull/248>`_ Misc fixes
+* `#248 <https://github.com/diofant/diofant/pull/248>`_ Fix some printing bugs, misc fixes
 * `#252 <https://github.com/diofant/diofant/pull/252>`_ is_constant should do evalf on results of substitutions 0's and 1's
-* `#250 <https://github.com/diofant/diofant/pull/250>`_ Add coverage
+* `#250 <https://github.com/diofant/diofant/pull/250>`_ Improve coverage
 * `#249 <https://github.com/diofant/diofant/pull/249>`_ Fix flake8 errors
 * `#253 <https://github.com/diofant/diofant/pull/253>`_ Consolidate code for solving linear systems
-* `#255 <https://github.com/diofant/diofant/pull/255>`_ Misc fixes
+* `#255 <https://github.com/diofant/diofant/pull/255>`_ Add primitive implementation for Rationals set, misc fixes
 * `#112 <https://github.com/diofant/diofant/pull/112>`_ Improve evaluation of Intersection's for FiniteSet with symbolic elements
-* `#258 <https://github.com/diofant/diofant/pull/258>`_ Misc fixes
-* `#259 <https://github.com/diofant/diofant/pull/259>`_ Add coverage
+* `#258 <https://github.com/diofant/diofant/pull/258>`_ Fix _rebuild in rings like for FracField, misc fixes
+* `#259 <https://github.com/diofant/diofant/pull/259>`_ Improve coverage
 * `#260 <https://github.com/diofant/diofant/pull/260>`_ Implement _erfs.eval helper
-* `#262 <https://github.com/diofant/diofant/pull/262>`_ Improve coverage status
-* `#261 <https://github.com/diofant/diofant/pull/261>`_ Misc fixes
+* `#262 <https://github.com/diofant/diofant/pull/262>`_ Improve coverage
+* `#261 <https://github.com/diofant/diofant/pull/261>`_ Add notes about acot definition, misc fixes
 * `#267 <https://github.com/diofant/diofant/pull/267>`_ Add codecov.yml
-* `#264 <https://github.com/diofant/diofant/pull/264>`_ Impove test coverage
-* `#265 <https://github.com/diofant/diofant/pull/265>`_ Misc fixes
+* `#264 <https://github.com/diofant/diofant/pull/264>`_ Improve coverage
+* `#265 <https://github.com/diofant/diofant/pull/265>`_ Update docs URL: rtfd.org -> rtfd.io, misc fixes
 * `#270 <https://github.com/diofant/diofant/pull/270>`_ Update project name references: omg -> diofant
 * `#273 <https://github.com/diofant/diofant/pull/273>`_ Rsolve cleanup
-* `#277 <https://github.com/diofant/diofant/pull/277>`_ Add coverage tests
-* `#274 <https://github.com/diofant/diofant/pull/274>`_ Misc fixes
+* `#277 <https://github.com/diofant/diofant/pull/277>`_ Improve coverage
+* `#274 <https://github.com/diofant/diofant/pull/274>`_ Use Fraction for Rational handling, misc fixes
 * `#278 <https://github.com/diofant/diofant/pull/278>`_ Replace ugly hack for automatic symbols with ast transformations
-* `#280 <https://github.com/diofant/diofant/pull/280>`_ Add coverage tests
+* `#280 <https://github.com/diofant/diofant/pull/280>`_ Improve coverage, drop liealgebras and categories modules
 * `#272 <https://github.com/diofant/diofant/pull/272>`_ Implement rewrite('tractable') for airyai/airybi
 * `#285 <https://github.com/diofant/diofant/pull/285>`_ Improve coverage
-* `#284 <https://github.com/diofant/diofant/pull/284>`_ Misc fixes
-* `#290 <https://github.com/diofant/diofant/pull/290>`_ Add coverage
+* `#284 <https://github.com/diofant/diofant/pull/284>`_ Add regression tests, misc fixes
+* `#290 <https://github.com/diofant/diofant/pull/290>`_ Improve coverage
 * `#276 <https://github.com/diofant/diofant/pull/276>`_ Cartesian product of iterables using Cantor pairing
 * `#291 <https://github.com/diofant/diofant/pull/291>`_ Better zero-equivalence testing in Matrix.rref
-* `#289 <https://github.com/diofant/diofant/pull/289>`_ Misc fixes
+* `#289 <https://github.com/diofant/diofant/pull/289>`_ Support Derivative printing in mathematica.py, misc fixes
 * `#286 <https://github.com/diofant/diofant/pull/286>`_ dsolve: expm/jordan solver
-* `#295 <https://github.com/diofant/diofant/pull/295>`_ Misc fixes
+* `#295 <https://github.com/diofant/diofant/pull/295>`_ Fix getargspec -> getfullargspec, misc fixes
 * `#298 <https://github.com/diofant/diofant/pull/298>`_ Build correct inhomogeneous solution in rsolve_hyper
-* `#300 <https://github.com/diofant/diofant/pull/300>`_ Misc fixes
+* `#300 <https://github.com/diofant/diofant/pull/300>`_ Support Matrix printing for Mathematica, misc fixes
 * `#299 <https://github.com/diofant/diofant/pull/299>`_ Fix "Unknown section" warnings from numpydoc
 * `#301 <https://github.com/diofant/diofant/pull/301>`_ This should allow mass matrix in LODE
 * `#304 <https://github.com/diofant/diofant/pull/304>`_ Use fractions.Fraction for PythonRational
 * `#306 <https://github.com/diofant/diofant/pull/306>`_ Cleanup test_code_quality.py
-* `#310 <https://github.com/diofant/diofant/pull/310>`_ Misc fixes
+* `#310 <https://github.com/diofant/diofant/pull/310>`_ Add Relational's printing for Mathematica, misc fixes
 * `#313 <https://github.com/diofant/diofant/pull/313>`_ Correct ratio test in Mod.eval
 * `#275 <https://github.com/diofant/diofant/pull/275>`_ New set of sympy's fixes
 * `#315 <https://github.com/diofant/diofant/pull/315>`_ rename sympy -> diofant
-* `#314 <https://github.com/diofant/diofant/pull/314>`_ Misc fixes
-* `#317 <https://github.com/diofant/diofant/pull/317>`_ Misc fixes
+* `#314 <https://github.com/diofant/diofant/pull/314>`_ return (a, b, c, ...) -> return a, b, c, ..., misc fixes
+* `#317 <https://github.com/diofant/diofant/pull/317>`_ Cleanup Rational.__new__, reuse Fraction's, misc fixes
 * `#318 <https://github.com/diofant/diofant/pull/318>`_ The Diofant's 0.8.0a1 release
 * `#292 <https://github.com/diofant/diofant/pull/292>`_ Use gmpy2, drop gmpy support
 * `#308 <https://github.com/diofant/diofant/pull/308>`_ Remove redundant .dom (== domain) properties in polys
-* `#302 <https://github.com/diofant/diofant/pull/302>`_ Add test coverage
+* `#302 <https://github.com/diofant/diofant/pull/302>`_ Improve coverage
 * `#320 <https://github.com/diofant/diofant/pull/320>`_ Version 0.8.0a2
 * `#322 <https://github.com/diofant/diofant/pull/322>`_ v0.8.0a2
 * `#323 <https://github.com/diofant/diofant/pull/323>`_ Add regression tests with DIOFANT_USE_CACHE=False
