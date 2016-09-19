@@ -2971,13 +2971,18 @@ def test_groebner():
 
     assert groebner([1], x) == [1]
 
-    assert groebner([x**2 + 2.0*y], x, y) == [1.0*x**2 + 2.0*y]
     pytest.raises(ComputationFailed, lambda: groebner([1]))
 
     assert groebner([x**2 - 1, x**3 + 1], method='buchberger') == [x + 1]
     assert groebner([x**2 - 1, x**3 + 1], method='f5b') == [x + 1]
 
     pytest.raises(ValueError, lambda: groebner([x, y], method='unknown'))
+
+    # issue sympy/sympy#11623
+    pytest.raises(ValueError,
+                  lambda: groebner([0.144*x*y + 0.018*x**2 + 0.05*x - 1.577,
+                                    0.072*y**2 + 0.036*x*y + 0.05*y - 1.423],
+                                   [x, y]))
 
 
 def test_fglm():

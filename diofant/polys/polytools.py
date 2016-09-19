@@ -6359,6 +6359,9 @@ class GroebnerBasis(Basic):
         from diofant.polys.rings import PolyRing
         ring = PolyRing(opt.gens, opt.domain, opt.order)
 
+        if not ring.domain.is_Exact:
+            raise ValueError('Domain must be exact, got %s' % ring.domain)
+
         for i, poly in enumerate(polys):
             polys[i] = ring.from_dict(poly.rep.to_dict())
 
