@@ -7,13 +7,13 @@ Not Released Yet.
 New features
 ============
 
-* MrvAsympt algorithm to find asymptotic expansion, see `#6 <https://github.com/diofant/diofant/pull/6>`_.  Thanks to Avichal Dayal.
-* Sum.findrecur method to find recurrence relations (with Sister Celine's algorithm), see `#15 <https://github.com/diofant/diofant/pull/15>`_.
+* MrvAsympt algorithm to find asymptotic expansion, see :py:func:`~diofant.core.expr.Expr.aseries` method and `#6 <https://github.com/diofant/diofant/pull/6>`_.  Thanks to Avichal Dayal.
+* :py:func:`~diofant.concrete.summations.Sum.findrecur` method to find recurrence relations (with Sister Celine's algorithm), see `#15 <https://github.com/diofant/diofant/pull/15>`_.
 * Support for Pow/log branch-cuts in limits, see `#140 <https://github.com/diofant/diofant/pull/140>`_.
-* Added basic optimization package, see `#108 <https://github.com/diofant/diofant/pull/108>`_.
-* Cartesian product of iterables using Cantor pairing, see `#276 <https://github.com/diofant/diofant/pull/276>`_.
-* Rationals set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
-* New simple and robust LODE solver, see `#286 <https://github.com/diofant/diofant/pull/286>`_.  Thanks to Colin B. Macdonald.
+* Added basic optimization package, see :py:func:`~diofant.calculus.optimization.minimize` and `#108 <https://github.com/diofant/diofant/pull/108>`_.
+* Cartesian product of iterables using Cantor pairing, see :py:func:`~diofant.utilities.iterables.cantor_product` and `#276 <https://github.com/diofant/diofant/pull/276>`_.
+* :py:class:`~diofant.sets.fancysets.Rationals` set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
+* New simple and robust solver for systems of linear ODEs, see `#286 <https://github.com/diofant/diofant/pull/286>`_.  Thanks to Colin B. Macdonald.
 * Added mutable/immutable N-dim arrays, sparse and dense, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 
 Major changes
