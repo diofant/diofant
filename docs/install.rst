@@ -46,6 +46,11 @@ Python interpreter and execute some simple statements like the ones below::
     >>> ((1 + x)**(1/x)).limit(x, 0)
     E
 
+However, we recommend using `IPython`_ for working interactively.
+Function :py:func:`~diofant.interactive.session.init_ipython_session`
+could be used to enable custom input transformations, that help reduce
+boilerplate while interacting with Diofant due to the Python language syntax.
+
 For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 
 Questions
@@ -56,3 +61,4 @@ If you think there's a bug or you would like to request a feature, please
 
 .. _setuptools: https://setuptools.readthedocs.io/en/latest/
 .. _pyvenv: https://docs.python.org/3/library/venv.html
+.. _IPython: http://ipython.readthedocs.io/en/stable/
