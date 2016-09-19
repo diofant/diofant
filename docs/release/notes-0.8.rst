@@ -14,6 +14,7 @@ New features
 * Cartesian product of iterables using Cantor pairing, see `#276 <https://github.com/diofant/diofant/pull/276>`_.
 * Rationals set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
 * New simple and robust LODE solver, see `#286 <https://github.com/diofant/diofant/pull/286>`_.  Thanks to Colin B. Macdonald.
+* Added mutable/immutable N-dim arrays, sparse and dense, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 
 Major changes
 =============
@@ -61,6 +62,9 @@ Minor changes
 * Consolidate code for solving linear systems, see `#253 <https://github.com/diofant/diofant/pull/253>`_.
 * Ugly hacks for automatic symbols and wrapping int's now replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
 * Build correct inhomogeneous solution in rsolve_hyper, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
+* Evaluate matrix powers for non-diagonalizable matrices, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
+* Beware of non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
+* Make risch_integrate(x**x, x) work, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 
 Developer changes
 =================
