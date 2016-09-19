@@ -127,7 +127,7 @@ def ode_order(expr, func):
         return order
 
 
-def _desolve(eq, func=None, hint="default", ics=None, simplify=True, **kwargs):
+def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
     """This is a helper function to dsolve and pdsolve in the ode
     and pde modules.
 
@@ -203,7 +203,7 @@ def _desolve(eq, func=None, hint="default", ics=None, simplify=True, **kwargs):
     # being called more than it needs to be by passing its results through
     # recursive calls.
     if kwargs.get('classify', True):
-        hints = classifier(eq, func, dict=True, ics=ics, xi=xi, eta=eta,
+        hints = classifier(eq, func, dict=True, init=init, xi=xi, eta=eta,
         n=terms, x0=x0, prep=prep)
 
     else:
@@ -236,7 +236,7 @@ def _desolve(eq, func=None, hint="default", ics=None, simplify=True, **kwargs):
         else:
             raise NotImplementedError(dummy + "solve" + ": Cannot solve " + str(eq))
     if hint == 'default':
-        return _desolve(eq, func, ics=ics, hint=hints['default'], simplify=simplify,
+        return _desolve(eq, func, init=init, hint=hints['default'], simplify=simplify,
                       prep=prep, x0=x0, classify=False, order=hints['order'],
                       match=hints[hints['default']], xi=xi, eta=eta, n=terms, type=type)
     elif hint in ('all', 'all_Integral', 'best'):
@@ -254,7 +254,7 @@ def _desolve(eq, func=None, hint="default", ics=None, simplify=True, **kwargs):
                 if k in gethints:
                     gethints.remove(k)
         for i in gethints:
-            sol = _desolve(eq, func, ics=ics, hint=i, x0=x0, simplify=simplify, prep=prep,
+            sol = _desolve(eq, func, init=init, hint=i, x0=x0, simplify=simplify, prep=prep,
                 classify=False, n=terms, order=hints['order'], match=hints[i], type=type)
             retdict[i] = sol
         retdict['all'] = True

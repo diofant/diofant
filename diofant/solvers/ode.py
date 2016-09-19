@@ -378,7 +378,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
 
 
 def dsolve(eq, func=None, hint="default", simplify=True,
-           ics=None, xi=None, eta=None, x0=0, n=6, **kwargs):
+           init=None, xi=None, eta=None, x0=0, n=6, **kwargs):
     r"""
     Solves any (supported) kind of ordinary differential equation and
     system of ordinary differential equations.
@@ -426,12 +426,10 @@ def dsolve(eq, func=None, hint="default", simplify=True,
             :py:meth:`~diofant.solvers.ode.infinitesimals` with the help of various
             heuristics.
 
-        ``ics`` is the set of boundary conditions for the differential equation.
+        ``init`` is the set of initial/boundary conditions for the differential equation.
           It should be given in the form of ``{f(x0): x1, f(x).diff(x).subs(x, x2):
-          x3}`` and so on. For now initial conditions are implemented only for
-          power series solutions of first-order differential equations which should
-          be given in the form of ``{f(x0): x1}`` (See issue 4720). If nothing is
-          specified for this case ``f(0)`` is assumed to be ``C0`` and the power
+          x3}`` and so on.  For power series solutions, if no initial
+          conditions are specified ``f(0)`` is assumed to be ``C0`` and the power
           series solution is calculated about 0.
 
         ``x0`` is the point about which the power series solution of a differential
@@ -611,13 +609,17 @@ def dsolve(eq, func=None, hint="default", simplify=True,
             else:
                 solvefunc = globals()['sysode_nonlinear_%(no_of_equation)seq_order%(order)s' % match]
             sols = solvefunc(match)
+            if init:
+                constants = Tuple(*sols).free_symbols - Tuple(*eq).free_symbols
+                solved_constants = solve_init(sols, func, constants, init)
+                return [sol.subs(solved_constants) for sol in sols]
             return sols
     else:
         given_hint = hint  # hint given by the user
 
         # See the docstring of _desolve for more details.
         hints = _desolve(eq, func=func,
-            hint=hint, simplify=True, xi=xi, eta=eta, type='ode', ics=ics,
+            hint=hint, simplify=True, xi=xi, eta=eta, type='ode', init=init,
             x0=x0, n=n, **kwargs)
 
         eq = hints.pop('eq', eq)
@@ -652,10 +654,10 @@ def dsolve(eq, func=None, hint="default", simplify=True,
         else:
             # The key 'hint' stores the hint needed to be solved for.
             hint = hints['hint']
-            return _helper_simplify(eq, hint, hints, simplify)
+            return _helper_simplify(eq, hint, hints, simplify, init=init)
 
 
-def _helper_simplify(eq, hint, match, simplify=True, **kwargs):
+def _helper_simplify(eq, hint, match, simplify=True, init=None, **kwargs):
     r"""
     Helper function of dsolve that calls the respective
     :py:mod:`~diofant.solvers.ode` functions to solve for the ordinary
@@ -671,28 +673,139 @@ def _helper_simplify(eq, hint, match, simplify=True, **kwargs):
     order = r['order']
     match = r[hint]
 
+    free = eq.free_symbols
+
+    def cons(s):
+        return s.free_symbols.difference(free)
+
     if simplify:
         # odesimp() will attempt to integrate, if necessary, apply constantsimp(),
         # attempt to solve for func, and apply any other hint specific
         # simplifications
         sols = solvefunc(eq, func, order, match)
-        free = eq.free_symbols
-
-        def cons(s):
-            return s.free_symbols.difference(free)
-
         if isinstance(sols, Expr):
-            return odesimp(sols, func, order, cons(sols), hint)
-        return [odesimp(s, func, order, cons(s), hint) for s in sols]
+            rv = odesimp(sols, func, order, cons(sols), hint)
+        else:
+            rv = [odesimp(s, func, order, cons(s), hint) for s in sols]
     else:
         # We still want to integrate (you can disable it separately with the hint)
         match['simplify'] = False  # Some hints can take advantage of this option
         rv = _handle_Integral(solvefunc(eq, func, order, match),
             func, order, hint)
-        return rv
+
+    if init and 'power_series' not in hint:
+        if isinstance(rv, Expr):
+            solved_constants = solve_init([rv], [r['func']], cons(rv), init)
+            rv = rv.subs(solved_constants)
+        elif iterable(rv):
+            rv1 = []
+            for s in rv:
+                solved_constants = solve_init([s], [r['func']], cons(s), init)
+                if solved_constants:
+                    rv1.append(s.subs(solved_constants))
+            rv = rv1
+        else:  # pragma: no cover
+            raise NotImplementedError
+    return rv
 
 
-def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
+def solve_init(sols, funcs, constants, init):
+    """
+    Solve for the constants given initial conditions
+
+    ``sols`` is a list of solutions.
+
+    ``funcs`` is a list of functions.
+
+    ``constants`` is a list of constants.
+
+    ``init`` is the set of initial/boundary conditions for the differential
+    equation. It should be given in the form of ``{f(x0): x1,
+    f(x).diff(x).subs(x, x2):  x3}`` and so on.
+
+    Returns a dictionary mapping constants to values.
+    ``solution.subs(constants)`` will replace the constants in ``solution``.
+
+    Example
+    =======
+    >>> # From dsolve(f(x).diff(x) - f(x), f(x))
+    >>> from diofant import symbols, Eq, exp, Function
+    >>> from diofant.solvers.ode import solve_init
+    >>> f = Function('f')
+    >>> x, C1 = symbols('x C1')
+    >>> sols = [Eq(f(x), C1*exp(x))]
+    >>> funcs = [f(x)]
+    >>> constants = [C1]
+    >>> init = {f(0): 2}
+    >>> solved_constants = solve_init(sols, funcs, constants, init)
+    >>> solved_constants
+    {C1: 2}
+    >>> sols[0].subs(solved_constants)
+    Eq(f(x), 2*E**x)
+
+    """
+    # Assume init are of the form f(x0): value or Subs(diff(f(x), x, n), (x,
+    # x0)): value (currently checked by classify_ode). To solve, replace x
+    # with x0, f(x0) with value, then solve for constants. For f^(n)(x0),
+    # differentiate the solution n times, so that f^(n)(x) appears.
+    x = funcs[0].args[0]
+    diff_sols = []
+    subs_sols = []
+    diff_variables = set()
+    for funcarg, value in init.items():
+        if isinstance(funcarg, AppliedUndef):
+            x0 = funcarg.args[0]
+            matching_func = [f for f in funcs if f.func == funcarg.func][0]
+            S = sols
+        elif isinstance(funcarg, (Subs, Derivative)):
+            if isinstance(funcarg, Subs):
+                # Make sure it stays a subs. Otherwise subs below will produce
+                # a different looking term.
+                funcarg = funcarg.doit()
+            if isinstance(funcarg, Subs):
+                deriv = funcarg.expr
+                x0 = funcarg.point[0]
+                variables = funcarg.expr.variables
+                matching_func = deriv
+            elif isinstance(funcarg, Derivative):
+                deriv = funcarg
+                x0 = funcarg.variables[0]
+                variables = (x,)*len(funcarg.variables)
+                matching_func = deriv.subs(x0, x)
+            if variables not in diff_variables:
+                for sol in sols:
+                    if sol.has(deriv.expr.func):
+                        diff_sols.append(Eq(sol.lhs.diff(*variables), sol.rhs.diff(*variables)))
+            diff_variables.add(variables)
+            S = diff_sols
+        else:  # pragma: no cover
+            raise NotImplementedError("Unrecognized initial condition")
+
+        for sol in S:
+            if sol.has(matching_func):
+                sol2 = sol
+                sol2 = sol2.subs(x, x0)
+                sol2 = sol2.subs(funcarg, value)
+                subs_sols.append(sol2)
+
+    try:
+        solved_constants = solve(subs_sols, constants, dict=True)
+    except NotImplementedError:  # pragma: no cover
+        solved_constants = []
+
+    # XXX: We can't differentiate between the solution not existing because of
+    # invalid initial conditions, and not existing because solve is not smart
+    # enough.  For now, we use NotImplementedError in this case.
+    if not solved_constants:
+        raise NotImplementedError("Couldn't solve for initial conditions")
+
+    if len(solved_constants) > 1:  # pragma: no cover
+        raise NotImplementedError("Initial conditions produced too many solutions for constants")
+
+    return solved_constants[0]
+
+
+def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
     r"""
     Returns a tuple of possible :py:meth:`~diofant.solvers.ode.dsolve`
     classifications for an ODE.
@@ -812,6 +925,8 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
     'nth_linear_constant_coeff_variation_of_parameters_Integral')
 
     """
+    init = sympify(init)
+
     prep = kwargs.pop('prep', True)
 
     if func and len(func.args) != 1:
@@ -830,7 +945,7 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
 
     if isinstance(eq, Equality):
         if eq.rhs != 0:
-            return classify_ode(eq.lhs - eq.rhs, func, ics=ics, xi=xi,
+            return classify_ode(eq.lhs - eq.rhs, func, init=init, xi=xi,
                 n=terms, eta=eta, prep=False)
         eq = eq.lhs
     order = ode_order(eq, f(x))
@@ -867,34 +982,45 @@ def classify_ode(eq, func=None, dict=False, ics=None, **kwargs):
     eq = expand(eq)
 
     # Preprocessing to get the initial conditions out
-    if ics is not None:
-        for funcarg in ics:
+    if init is not None:
+        for funcarg in init:
             # Separating derivatives
-            if isinstance(funcarg, Subs):
-                deriv = funcarg.expr
-                old = funcarg.variables[0]
-                new = funcarg.point[0]
-                if isinstance(deriv, Derivative) and \
-                   isinstance(deriv.args[0], AppliedUndef) and \
-                   deriv.args[0].func == f and old == x and not new.has(x):
+            if isinstance(funcarg, (Subs, Derivative)):
+                # f(x).diff(x).subs(x, 0) is a Subs, but f(x).diff(x).subs(x,
+                # y) is a Derivative
+                if isinstance(funcarg, Subs):
+                    deriv = funcarg.expr
+                    old = funcarg.variables[0]
+                    new = funcarg.point[0]
+                elif isinstance(funcarg, Derivative):
+                    deriv = funcarg
+                    # No information on this. Just assume it was x
+                    old = x
+                    new = funcarg.variables[0]
+
+                if (isinstance(deriv, Derivative) and
+                      isinstance(deriv.args[0], AppliedUndef) and
+                      deriv.args[0].func == f and len(deriv.args[0].args) == 1 and
+                      old == x and not new.has(x) and
+                      all(i == deriv.variables[0] for i in deriv.variables) and
+                      not init[funcarg].has(f)):
+
                     dorder = ode_order(deriv, x)
                     temp = 'f' + str(dorder)
-                    boundary.update({temp: new, temp + 'val': ics[funcarg]})
+                    boundary.update({temp: new, temp + 'val': init[funcarg]})
                 else:
                     raise ValueError("Enter valid boundary conditions for Derivatives")
 
             # Separating functions
             elif isinstance(funcarg, AppliedUndef):
-                if funcarg.func == f and len(funcarg.args) == 1 and \
-                   not funcarg.args[0].has(x):
-                    boundary.update({'f0': funcarg.args[0], 'f0val': ics[funcarg]})
+                if (funcarg.func == f and len(funcarg.args) == 1 and
+                      not funcarg.args[0].has(x) and not init[funcarg].has(f)):
+                    boundary.update({'f0': funcarg.args[0], 'f0val': init[funcarg]})
                 else:
                     raise ValueError("Enter valid boundary conditions for Function")
 
             else:
-                raise ValueError("Enter boundary conditions of the form ics "
-                    " = {f(point}: value, f(point).diff(point, order).subs(arg, point) "
-                    ":value")
+                raise ValueError("Enter boundary conditions of the form init={f(point}: value, f(x).diff(x, order).subs(x, point): value}")
 
     # Precondition to try remove f(x) from highest order derivative
     reduced_eq = None
