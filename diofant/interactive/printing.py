@@ -24,7 +24,7 @@ def _init_python_printing(stringify_func):
 
 
 def _init_ipython_printing(ip, stringify_func, use_latex,
-                           latex_mode, print_builtin,
+                           print_builtin,
                            latex_printer):
     """Setup printing in IPython interactive session. """
 
@@ -94,7 +94,7 @@ def _init_ipython_printing(ip, stringify_func, use_latex,
 def init_printing(pretty_print=True, order=None, use_unicode=None,
                   use_latex=None, wrap_line=None, num_columns=None,
                   no_global=False, ip=None,
-                  latex_mode='equation*', print_builtin=True,
+                  print_builtin=True,
                   str_printer=None, pretty_printer=None,
                   latex_printer=None):
     """Initializes pretty-printer depending on the environment.
@@ -132,9 +132,6 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
     ip: An interactive console
         This can either be an instance of IPython,
         or a class that derives from code.InteractiveConsole.
-    latex_mode: string, optional, default='equation*'
-        The mode used in the LaTeX printer. Can be one of:
-        {'inline'|'plain'|'equation'|'equation*'}.
     print_builtin: boolean, optional, default=True
         If true then floats and integers will be printed. If false the
         printer will only print Diofant types.
@@ -232,7 +229,6 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
 
     if in_ipython:
         _init_ipython_printing(ip, stringify_func, use_latex,
-                               latex_mode,
                                print_builtin, latex_printer)
     else:
         _init_python_printing(stringify_func)
