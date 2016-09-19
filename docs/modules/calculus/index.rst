@@ -10,5 +10,8 @@ Calculus
 .. automodule:: diofant.calculus.singularities
     :members:
 
-.. automodule :: diofant.calculus.finite_diff
+.. automodule:: diofant.calculus.optimization
+    :members:
+
+.. automodule:: diofant.calculus.finite_diff
     :members:
