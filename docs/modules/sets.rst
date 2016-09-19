@@ -25,6 +25,7 @@ FiniteSet
 
 Compound Sets
 -------------
+
 Union
 ^^^^^
 .. autoclass:: Union
@@ -75,6 +76,11 @@ Naturals0
 Integers
 ^^^^^^^^
 .. autoclass:: Integers
+   :members:
+
+Rationals
+^^^^^^^^^
+.. autoclass:: Rationals
    :members:
 
 ImageSet
