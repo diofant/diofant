@@ -1,6 +1,7 @@
 """Tools for setting up printing in interactive sessions. """
 
 import builtins
+import os
 import sys
 
 from diofant import latex as default_latex
@@ -204,10 +205,8 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
 
     if in_ipython:
         if use_unicode is None:
-            debug("init_printing: Setting use_unicode to True")
-            use_unicode = True
+            use_unicode = False if os.environ.get('TERM', '').endswith('linux') else True
         if use_latex is None:
-            debug("init_printing: Setting use_latex to True")
             use_latex = True
 
     if not no_global:
