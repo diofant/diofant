@@ -52,21 +52,33 @@ class AutomaticSymbols(ast.NodeTransformer):
         return node
 
 
-def init_ipython_session(argv=[], auto_symbols=False,
+def init_ipython_session(auto_symbols=False,
                          auto_int_to_Integer=False):
-    """Construct new IPython session. """
+    """Configure new IPython session.
+
+    Parameters
+    ==========
+
+    auto_int_to_Integer : boolean
+        Enable wrapping all integer literals with
+        Integer.  Default is False.
+
+    auto_symbols : boolean
+        Create missing Symbol definitions automatically
+        on first use.  Default is False.
+    """
     import IPython
-    import readline
 
-    app = IPython.terminal.ipapp.TerminalIPythonApp()
-
-    # don't draw IPython banner during initialization:
-    app.display_banner = False
-    app.initialize(argv)
+    ip = IPython.get_ipython()
+    if not ip:
+        app = IPython.terminal.ipapp.TerminalIPythonApp()
+        app.display_banner = False
+        app.initialize([])
+        ip = app.shell
 
     if auto_symbols:
-        app.shell.ast_transformers.append(AutomaticSymbols(app.shell))
+        ip.ast_transformers.append(AutomaticSymbols(ip))
     if auto_int_to_Integer:
-        app.shell.ast_transformers.append(IntegerWrapper())
+        ip.ast_transformers.append(IntegerWrapper())
 
-    return app.shell
+    return ip
