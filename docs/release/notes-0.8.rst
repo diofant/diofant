@@ -25,7 +25,11 @@ Major changes
 * Used ``srepr`` instead of ``sstr`` for ``__repr__`` printing, see `#39 <https://github.com/diofant/diofant/pull/39>`_.
 * Major cleanup for series methods, see `#187 <https://github.com/diofant/diofant/pull/187>`_.
 * Depend on cachetools to implement caching, see `#72 <https://github.com/diofant/diofant/pull/72>`_ and `#209 <https://github.com/diofant/diofant/pull/209>`_.
-* Assumption system (old) impoved and validated, see `#8 <https://github.com/diofant/diofant/pull/8>`_, `#36 <https://github.com/diofant/diofant/pull/36>`_, `#42 <https://github.com/diofant/diofant/pull/42>`_, `#316 <https://github.com/diofant/diofant/pull/316>`_ and `#334 <https://github.com/diofant/diofant/pull/334>`_.
+* Assumption system (old) was validated (`#316 <https://github.com/diofant/diofant/pull/316>`_ and `#334 <https://github.com/diofant/diofant/pull/334>`_) and improved:
+
+    * 0 now is imaginary, see `#8 <https://github.com/diofant/diofant/pull/8>`_
+    * extended_real fact added, reals are finite now, see `#36 <https://github.com/diofant/diofant/pull/36>`_
+    * complex are finite now, see `#42 <https://github.com/diofant/diofant/pull/42>`_.
 
 Backwards-incompatible changes
 ==============================
