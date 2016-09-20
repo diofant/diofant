@@ -7786,18 +7786,9 @@ def _nonlinear_3eq_order1_type1(x, y, z, t, eq):
     x_y = sqrt(((c*C1-C2) - b*(c-b)*y(t)**2)/(a*(c-a)))
     x_z = sqrt(((b*C1-C2) - c*(b-c)*z(t)**2)/(a*(b-a)))
     y_z = sqrt(((a*C1-C2) - c*(a-c)*z(t)**2)/(b*(a-b)))
-    try:
-        sol1 = dsolve(a*diff(x(t), t) - (b-c)*y_x*z_x).rhs
-    except:
-        sol1 = dsolve(a*diff(x(t), t) - (b-c)*y_x*z_x, hint='separable_Integral')
-    try:
-        sol2 = dsolve(b*diff(y(t), t) - (c-a)*z_y*x_y).rhs
-    except:
-        sol2 = dsolve(b*diff(y(t), t) - (c-a)*z_y*x_y, hint='separable_Integral')
-    try:
-        sol3 = dsolve(c*diff(z(t), t) - (a-b)*x_z*y_z).rhs
-    except:
-        sol3 = dsolve(c*diff(z(t), t) - (a-b)*x_z*y_z, hint='separable_Integral')
+    sol1 = dsolve(a*diff(x(t), t) - (b-c)*y_x*z_x, hint='separable_Integral')
+    sol2 = dsolve(b*diff(y(t), t) - (c-a)*z_y*x_y, hint='separable_Integral')
+    sol3 = dsolve(c*diff(z(t), t) - (a-b)*x_z*y_z, hint='separable_Integral')
     return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
 
 
@@ -7851,16 +7842,7 @@ def _nonlinear_3eq_order1_type2(x, y, z, t, eq):
     x_y = sqrt(((c*C1-C2) - b*(c-b)*y(t)**2)/(a*(c-a)))
     x_z = sqrt(((b*C1-C2) - c*(b-c)*z(t)**2)/(a*(b-a)))
     y_z = sqrt(((a*C1-C2) - c*(a-c)*z(t)**2)/(b*(a-b)))
-    try:
-        sol1 = dsolve(a*diff(x(t), t) - (b - c)*y_x*z_x*r[f]).rhs
-    except:
-        sol1 = dsolve(a*diff(x(t), t) - (b - c)*y_x*z_x*r[f], hint='separable_Integral')
-    try:
-        sol2 = dsolve(b*diff(y(t), t) - (c - a)*z_y*x_y*r[f]).rhs
-    except:
-        sol2 = dsolve(b*diff(y(t), t) - (c - a)*z_y*x_y*r[f], hint='separable_Integral')
-    try:
-        sol3 = dsolve(c*diff(z(t), t) - (a - b)*x_z*y_z*r[f]).rhs
-    except:
-        sol3 = dsolve(c*diff(z(t), t) - (a - b)*x_z*y_z*r[f], hint='separable_Integral')
+    sol1 = dsolve(a*diff(x(t), t) - (b - c)*y_x*z_x*r[f], hint='separable_Integral')
+    sol2 = dsolve(b*diff(y(t), t) - (c - a)*z_y*x_y*r[f], hint='separable_Integral')
+    sol3 = dsolve(c*diff(z(t), t) - (a - b)*x_z*y_z*r[f], hint='separable_Integral')
     return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
