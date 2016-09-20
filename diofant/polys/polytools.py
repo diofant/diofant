@@ -254,10 +254,14 @@ class Poly(Expr):
         >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).args
-        (x**2 + 1,)
+        (x**2 + 1, x)
 
         """
-        return self.as_expr(),
+        return (self.as_expr(),) + self.gens
+
+    @property
+    def is_number(self):
+        return self.as_expr().is_number
 
     @property
     def gen(self):
@@ -6381,7 +6385,8 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return Tuple(*self._basis), Tuple(*self._options.gens)
+        return (Tuple(*[_.as_expr() for _ in self._basis]),
+                Tuple(*self._options.gens))
 
     @property
     def exprs(self):

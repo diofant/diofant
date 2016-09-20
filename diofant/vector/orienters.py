@@ -134,12 +134,14 @@ class ThreeAngleOrienter(Orienter):
                              _rot(a1, angle1))
         parent_orient = parent_orient.T
 
+        if not isinstance(original_rot_order, Symbol):
+            original_rot_order = Symbol(original_rot_order)
         obj = super(ThreeAngleOrienter, cls).__new__(
-            cls, angle1, angle2, angle3, Symbol(original_rot_order))
+            cls, angle1, angle2, angle3, original_rot_order)
         obj._angle1 = angle1
         obj._angle2 = angle2
         obj._angle3 = angle3
-        obj._rot_order = original_rot_order
+        obj._rot_order = str(original_rot_order)
         obj._parent_orient = parent_orient
 
         return obj

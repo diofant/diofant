@@ -52,7 +52,8 @@ class Partition(FiniteSet):
                 "Each argument to Partition should be a list or a FiniteSet")
 
         # sort so we have a canonical reference for RGS
-        partition = sorted(sum(partition, []), key=default_sort_key)
+        partition = sorted(sum(list(map(list, partition)), []),
+                           key=default_sort_key)
         if has_dups(partition):
             raise ValueError("Partition contained duplicated elements.")
 
