@@ -1235,11 +1235,9 @@ class Permutation(Basic):
         since coercion can only handle one argument to the left. To handle
         multiple cycles it is convenient to use Cycle instead of Permutation:
 
-        >>> [[1, 2]]*[[2, 3]]*Permutation([]) # doctest: +SKIP
         >>> from diofant.combinatorics.permutations import Cycle
         >>> Cycle(1, 2)(2, 3)
         Cycle(1, 3, 2)
-
         """
         a = self.array_form
         # __rmul__ makes sure the other is a Permutation

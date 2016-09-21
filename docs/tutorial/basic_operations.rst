@@ -170,11 +170,11 @@ numerically evaluated is to use the ``lambdify`` function.  ``lambdify`` acts
 like a ``lambda`` function, except it converts the Diofant names to the names of
 the given numerical library, usually NumPy.  For example
 
-    >>> import numpy # doctest:+SKIP
-    >>> a = numpy.arange(10) # doctest:+SKIP
+    >>> import numpy
+    >>> a = numpy.arange(10)
     >>> expr = sin(x)
-    >>> f = lambdify(x, expr, "numpy") # doctest:+SKIP
-    >>> f(a) # doctest:+SKIP
+    >>> f = lambdify(x, expr, "numpy")
+    >>> f(a)
     [ 0.          0.84147098  0.90929743  0.14112001 -0.7568025  -0.95892427
      -0.2794155   0.6569866   0.98935825  0.41211849]
 

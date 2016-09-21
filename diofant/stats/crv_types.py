@@ -327,9 +327,6 @@ def Beta(name, alpha, beta):
     >>> expand_func(simplify(E(X, meijerg=True)))
     alpha/(alpha + beta)
 
-    >>> simplify(variance(X, meijerg=True))  #doctest: +SKIP
-    alpha*beta/((alpha + beta)**2*(alpha + beta + 1))
-
     References
     ==========
 
@@ -2219,8 +2216,8 @@ def Uniform(name, left, right):
     >>> density(X)(z)
     Piecewise((1/(-a + b), And(a <= z, z <= b)), (0, true))
 
-    >>> cdf(X)(z)  # doctest: +SKIP
-    -a/(-a + b) + z/(-a + b)
+    >>> simplify(cdf(X)(z))
+    (a - z)/(a - b)
 
     >>> simplify(E(X))
     a/2 + b/2

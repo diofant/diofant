@@ -78,8 +78,10 @@ uFuncify
 While NumPy operations are very efficient for vectorized data they sometimes
 incur unnecessary costs when chained together. Consider the following operation
 
-    >>> x = get_numpy_array(...) # doctest: +SKIP
-    >>> y = sin(x) / x
+.. code::
+
+    x = get_numpy_array(...)
+    y = sin(x)/x
 
 The operators ``sin`` and ``/`` call routines that execute tight for loops in
 ``C``. The resulting computation looks something like this
