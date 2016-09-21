@@ -10,7 +10,6 @@ from diofant.core.relational import Eq
 from diofant.core.singleton import S
 from diofant.core.symbol import Dummy, Symbol, Wild
 from diofant.core.sympify import sympify
-from diofant.integrals.manualintegrate import manualintegrate
 from diofant.integrals.trigonometry import trigintegrate
 from diofant.integrals.meijerint import meijerint_definite, meijerint_indefinite
 from diofant.utilities.misc import filldedent
@@ -385,7 +384,6 @@ class Integral(AddWithLimits):
         meijerg = hints.get('meijerg', None)
         conds = hints.get('conds', 'piecewise')
         risch = hints.get('risch', None)
-        manual = hints.get('manual', None)
 
         if conds not in ['separate', 'piecewise', 'none']:
             raise ValueError('conds must be one of "separate", "piecewise", '
@@ -490,7 +488,7 @@ class Integral(AddWithLimits):
             else:
                 antideriv = self._eval_integral(
                     function, xab[0],
-                    meijerg=meijerg1, risch=risch, manual=manual,
+                    meijerg=meijerg1, risch=risch,
                     conds=conds)
                 if antideriv is None and meijerg1 is True:
                     ret = try_meijerg(function, xab)
@@ -636,7 +634,7 @@ class Integral(AddWithLimits):
             rv += self.func(arg, Tuple(x, a, b))
         return rv
 
-    def _eval_integral(self, f, x, meijerg=None, risch=None, manual=None,
+    def _eval_integral(self, f, x, meijerg=None, risch=None,
                        conds='piecewise'):
         """
         Calculate the anti-derivative to the function f(x).
@@ -694,22 +692,7 @@ class Integral(AddWithLimits):
            - Setting meijerg=True will cause integrate() to use only this
              method.
 
-        5. The "manual integration" algorithm:
-
-           - This algorithm tries to mimic how a person would find an
-             antiderivative by hand, for example by looking for a
-             substitution or applying integration by parts. This algorithm
-             does not handle as many integrands but can return results in a
-             more familiar form.
-
-           - Sometimes this algorithm can evaluate parts of an integral; in
-             this case integrate() will try to evaluate the rest of the
-             integrand using the other methods here.
-
-           - Setting manual=True will cause integrate() to use only this
-             method.
-
-        6. The Heuristic Risch algorithm:
+        5. The Heuristic Risch algorithm:
 
            - This is a heuristic version of the Risch algorithm, meaning that
              it is not deterministic.  This is tried as a last resort because
@@ -718,7 +701,6 @@ class Integral(AddWithLimits):
              integrals that can only be computed using this method.  The goal
              is to implement enough of the Risch and Meijer G-function methods
              so that this can be deleted.
-
         """
         from diofant.integrals.deltafunctions import deltaintegrate
         from diofant.integrals.heurisch import heurisch, heurisch_wrapper
@@ -730,14 +712,6 @@ class Integral(AddWithLimits):
                 return risch_integrate(f, x, conds=conds)
             except NotImplementedError:
                 return
-
-        if manual:
-            try:
-                result = manualintegrate(f, x)
-                if result is not None and result.func != Integral:
-                    return result
-            except (ValueError, PolynomialError):
-                pass
 
         # if it is a poly(x) then let the polynomial integrate itself (fast)
         #
@@ -889,27 +863,6 @@ class Integral(AddWithLimits):
                 if h is not None:
                     parts.append(coeff * h)
                     continue
-
-            if h is None and manual is not False:
-                try:
-                    result = manualintegrate(g, x)
-                    if result is not None and not isinstance(result, Integral):
-                        if result.has(Integral):
-                            # try to have other algorithms do the integrals
-                            # manualintegrate can't handle
-                            result = result.func(*[
-                                arg.doit(manual=False) if arg.has(Integral) else arg
-                                for arg in result.args
-                            ]).expand(multinomial=False,
-                                      log=False,
-                                      power_exp=False,
-                                      power_base=False)
-                        if not result.has(Integral):
-                            parts.append(coeff * result)
-                            continue
-                except (ValueError, PolynomialError):
-                    # can't handle some Diofant expressions
-                    pass
 
             # if we failed maybe it was because we had
             # a product that could have been expanded,
@@ -1146,12 +1099,6 @@ def integrate(*args, **kwargs):
     as G-functions, and use this information to compute integrals (see
     the ``meijerint`` module).
 
-    The option manual=True can be used to use only an algorithm that tries
-    to mimic integration by hand. This algorithm does not handle as many
-    integrands as the other algorithms implemented but may return results in
-    a more familiar form. The ``manualintegrate`` module has functions that
-    return the steps used (see the module docstring for more information).
-
     In general, the algebraic methods work best for computing
     antiderivatives of (possibly complicated) combinations of elementary
     functions. The G-function methods work best for computing definite
@@ -1231,12 +1178,11 @@ def integrate(*args, **kwargs):
     meijerg = kwargs.pop('meijerg', None)
     conds = kwargs.pop('conds', 'piecewise')
     risch = kwargs.pop('risch', None)
-    manual = kwargs.pop('manual', None)
     integral = Integral(*args, **kwargs)
 
     if isinstance(integral, Integral):
         return integral.doit(deep=False, meijerg=meijerg, conds=conds,
-                             risch=risch, manual=manual)
+                             risch=risch)
     else:
         return integral
 
