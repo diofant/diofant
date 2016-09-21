@@ -100,7 +100,7 @@ template = \
 %(edges)s
 }"""
 
-graphstyle = {'rankdir': 'TD', 'ordering': 'out'}
+graphstyle = {'rankdir': 'TD', 'ordering': 'out', 'bgcolor': 'transparent'}
 
 
 def dotprint(expr, styles=default_styles,
@@ -146,6 +146,7 @@ def dotprint(expr, styles=default_styles,
     digraph{
     <BLANKLINE>
     # Graph style
+    "bgcolor"="transparent"
     "ordering"="out"
     "rankdir"="TD"
     <BLANKLINE>
