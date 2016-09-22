@@ -15,6 +15,7 @@ New features
 * :py:class:`~diofant.sets.fancysets.Rationals` set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
 * New simple and robust solver for systems of linear ODEs, see `#286 <https://github.com/diofant/diofant/pull/286>`_.  Thanks to Colin B. Macdonald.
 * Added mutable/immutable N-dim arrays, sparse and dense, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
+* :py:class:`~diofant.solvers.ode.dsolve` now support initial conditions for ODEs, see `#307 <https://github.com/diofant/diofant/pull/307>`_.  Thanks to Aaron Meurer.
 
 Major changes
 =============
@@ -54,6 +55,7 @@ Backwards-incompatible changes
 * Rename module sympy -> diofant, see `#315 <https://github.com/diofant/diofant/pull/315>`_.
 * Use gmpy2, drop gmpy support, see `#292 <https://github.com/diofant/diofant/pull/292>`_.
 * Removed redundant dom properties in polys, see `#308 <https://github.com/diofant/diofant/pull/308>`_.
+* Removed manualintegrate function, see `#279 <https://github.com/diofant/diofant/pull/279>`_.
 
 Minor changes
 =============
@@ -81,6 +83,7 @@ Developer changes
 * Measure code coverage, enable codecov.io reports.  See `#217 <https://github.com/diofant/diofant/pull/217>`_.
 * Adopt pep8 (`#2 <https://github.com/diofant/diofant/pull/2>`_) and then flake8 (`#214 <https://github.com/diofant/diofant/pull/214>`_) for code quality testing.
 * Add regression tests with DIOFANT_USE_CACHE=False `#323 <https://github.com/diofant/diofant/pull/323>`_.
+* Add interface tests, see `#219 <https://github.com/diofant/diofant/pull/219>`_ and `#307 <https://github.com/diofant/diofant/pull/307>`_.
 
 Issues closed
 =============
@@ -229,6 +232,14 @@ Issues closed
 * `sympy/sympy#8045 <https://github.com/sympy/sympy/issues/8045>`_ make all NaN is_* properties that are now None -> False (including is_complex)
 * `#34 <https://github.com/diofant/diofant/issues/34>`_ assumptions todo
 * `#203 <https://github.com/diofant/diofant/issues/203>`_ Add changelog (in sphinx docs)
+* `sympy/sympy#11553 <https://github.com/sympy/sympy/issues/11553>`_ Polynomial solve with GoldenRatio causes Traceback
+* `sympy/sympy#11602 <https://github.com/sympy/sympy/issues/11602>`_ Replace \dots with \ldots or \cdots
+* `sympy/sympy#4720 <https://github.com/sympy/sympy/issues/4720>`_ Initial conditions in dsolve()
+* `sympy/sympy#11623 <https://github.com/sympy/sympy/issues/11623>`_ Wrong groebner basis
+* `sympy/sympy#10292 <https://github.com/sympy/sympy/issues/10292>`_ poly cannot generically be rebuilt from its args
+* `#333 <https://github.com/diofant/diofant/issues/333>`_ Expose docs for diofant.interactive (both entry-level and api)
+* `#218 <https://github.com/diofant/diofant/issues/218>`_ Remove manualintegrate?
+* `sympy/sympy#6572 <https://github.com/sympy/sympy/issues/6572>`_ Remove "#doctest: +SKIP" comments on valid docstrings
 
 Full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_.
 
@@ -393,7 +404,7 @@ Pull requests
 * `#211 <https://github.com/diofant/diofant/pull/211>`_ Function._eval_nseries: Drop heuristic prediction for number of terms
 * `#217 <https://github.com/diofant/diofant/pull/217>`_ Use codecov instead of coveralls
 * `#221 <https://github.com/diofant/diofant/pull/221>`_ Add link to aboutus.rst and note about LICENSE in README.rst
-* `#219 <https://github.com/diofant/diofant/pull/219>`_ Partial fix for sympy/sympy#4064
+* `#219 <https://github.com/diofant/diofant/pull/219>`_ Partial fix for sympy/sympy#4064, test doit
 * `#223 <https://github.com/diofant/diofant/pull/223>`_ license stuff
 * `#225 <https://github.com/diofant/diofant/pull/225>`_ Optimize travis tests
 * `#228 <https://github.com/diofant/diofant/pull/228>`_ Improve collect() docstring
@@ -470,5 +481,13 @@ Pull requests
 * `#316 <https://github.com/diofant/diofant/pull/316>`_ Check & fix all assumptions helpers
 * `#334 <https://github.com/diofant/diofant/pull/334>`_ Check & fix explicit assumption properties (i.e. is_real = False)
 * `#305 <https://github.com/diofant/diofant/pull/305>`_ Add release notes
+* `#331 <https://github.com/diofant/diofant/pull/331>`_ v0.8.0a4
+* `#341 <https://github.com/diofant/diofant/pull/341>`_ Fix v0.8.0a4
+* `#307 <https://github.com/diofant/diofant/pull/307>`_ Support IVP for dsolve
+* `#342 <https://github.com/diofant/diofant/pull/342>`_ Stop groebner bases computation, if domain is not exact, like RR
+* `#339 <https://github.com/diofant/diofant/pull/339>`_ Test args invariant
+* `#335 <https://github.com/diofant/diofant/pull/335>`_ Add sphinx docs for interactive module
+* `#279 <https://github.com/diofant/diofant/pull/279>`_ Removed manualintegrate()
+* `#343 <https://github.com/diofant/diofant/pull/343>`_ First beta
 
 Full `list of merged pull requests <https://github.com/diofant/diofant/pulls?utf8=%E2%9C%93&q=is%3Apr%20is%3Amerged%20milestone%3A0.8.0>`_.
