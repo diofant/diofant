@@ -3,7 +3,7 @@ full-featured computer algebra system (CAS) while keeping the code as
 simple as possible in order to be comprehensible and easily extensible.
 """
 
-__version__ = "0.8.0a4"
+__version__ = "0.8.0b1"
 
 import os
 DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'
