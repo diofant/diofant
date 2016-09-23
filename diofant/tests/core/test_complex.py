@@ -217,3 +217,12 @@ def test_sympyissue_5429():
 
 def test_sympyissue_4124():
     assert expand_complex(I*oo) == oo*I
+
+
+def test_sympyissue_11581():
+    x = Symbol("x", real=True)
+    y = Symbol("y", real=True)
+    r = sqrt(x**2 + y**2)
+    assert conjugate(r) == r
+    s = abs(x + I*y)
+    assert conjugate(s) == r
