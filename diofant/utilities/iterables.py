@@ -244,8 +244,6 @@ def postorder_traversal(node, keys=None):
     is given; simply passing key=True will guarantee that the traversal is
     unique.
 
-    >>> list(postorder_traversal(w + (x + y)*z)) # doctest: +SKIP
-    [z, y, x, x + y, z*(x + y), w, w + z*(x + y)]
     >>> list(postorder_traversal(w + (x + y)*z, keys=True))
     [w, z, x, y, x + y, z*(x + y), w + z*(x + y)]
 

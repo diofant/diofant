@@ -1,6 +1,6 @@
 """Definitions of monomial orderings. """
 
-__all__ = ["lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex"]
+__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
 
 from diofant.core.symbol import Symbol
 from diofant.core.compatibility import iterable

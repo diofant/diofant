@@ -92,7 +92,7 @@ from diofant.matrices import (MatrixSymbol, ImmutableMatrix, MatrixBase,
                               MatrixExpr, MatrixSlice)
 
 
-__all__ = [
+__all__ = (
     # description of routines
     "Routine", "DataType", "default_datatypes", "get_default_datatype",
     "Argument", "InputArgument", "Result",
@@ -100,7 +100,7 @@ __all__ = [
     "CodeGen", "CCodeGen", "FCodeGen", "OctaveCodeGen",
     # friendly functions
     "codegen", "make_routine",
-]
+)
 
 
 #
@@ -1548,12 +1548,12 @@ def make_routine(name, expr, argument_sequence=None,
 
     >>> from diofant import Matrix
     >>> r = make_routine('fcn', [x*y, Eq(f, 1), Eq(g, x + g), Matrix([[x, 2]])])
-    >>> [arg.result_var for arg in r.results]  # doctest: +SKIP
-    [result_5397460570204848505]
+    >>> [arg.result_var for arg in r.results]
+    [result_...]
     >>> [arg.expr for arg in r.results]
     [x*y]
-    >>> [arg.name for arg in r.arguments]  # doctest: +SKIP
-    [x, y, f, g, out_8598435338387848786]
+    >>> [arg.name for arg in r.arguments]
+    [x, y, f, g, out_...]
 
     We can examine the various arguments more closely:
 
@@ -1562,8 +1562,8 @@ def make_routine(name, expr, argument_sequence=None,
     >>> [a.name for a in r.arguments if isinstance(a, InputArgument)]
     [x, y]
 
-    >>> [a.name for a in r.arguments if isinstance(a, OutputArgument)]  # doctest: +SKIP
-    [f, out_8598435338387848786]
+    >>> [a.name for a in r.arguments if isinstance(a, OutputArgument)]
+    [f, out_...]
     >>> [a.expr for a in r.arguments if isinstance(a, OutputArgument)]
     [1, Matrix([[x, 2]])]
 
@@ -1571,7 +1571,6 @@ def make_routine(name, expr, argument_sequence=None,
     [g]
     >>> [a.expr for a in r.arguments if isinstance(a, InOutArgument)]
     [g + x]
-
     """
 
     # initialize a new code generator

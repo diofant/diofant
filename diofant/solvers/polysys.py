@@ -173,34 +173,26 @@ def solve_generic(polys, opt):
 
         return p
 
-    def _solve_reduced_system(system, gens, entry=False):
+    def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems. """
-        if len(system) == len(gens) == 1:
-            zeros = list(roots(system[0], gens[-1]).keys())
-            return [ (zero,) for zero in zeros ]
 
         basis = groebner(system, gens, polys=True)
 
         if len(basis) == 1 and basis[0].is_ground:
-            if not entry:
-                return []
-            else:
-                return
+            return
 
         univariate = list(filter(_is_univariate, basis))
 
         if len(univariate) == 1:
             f = univariate.pop()
         else:
-            raise NotImplementedError("only zero-dimensional systems supported (finite number of solutions)")
+            raise NotImplementedError("only zero-dimensional systems "
+                                      "supported (finite number of solutions)")
 
         gens = f.gens
         gen = gens[-1]
 
         zeros = list(roots(f.ltrim(gen)).keys())
-
-        if not zeros:
-            return []
 
         if len(basis) == 1:
             return [ (zero,) for zero in zeros ]
@@ -223,8 +215,8 @@ def solve_generic(polys, opt):
         return solutions
 
     try:
-        result = _solve_reduced_system(polys, opt.gens, entry=True)
-    except CoercionFailed:
+        result = _solve_reduced_system(polys, opt.gens)
+    except CoercionFailed:  # pragma: no cover
         raise NotImplementedError
 
     if result is not None:

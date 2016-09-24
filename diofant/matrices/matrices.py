@@ -547,11 +547,11 @@ class MatrixBase(object):
                 N = jc.shape[0]
                 l = jc[0, 0]
                 for i in range(N):
-                        for j in range(N - i):
-                                bn = binomial(n, i)
-                                if isinstance(bn, binomial):
-                                        bn = bn._eval_expand_func()
-                                jc[j, i + j] = l**(n - i)*bn
+                    for j in range(N - i):
+                        bn = binomial(n, i)
+                        if isinstance(bn, binomial):
+                            bn = bn._eval_expand_func()
+                        jc[j, i + j] = l**(n - i)*bn
 
             P, jordan_cells = self.jordan_cells()
             # Make sure jordan_cells matrices are mutable:

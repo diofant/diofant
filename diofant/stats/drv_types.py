@@ -2,7 +2,7 @@ from diofant.stats.drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from diofant import factorial, exp, S, sympify
 from diofant.stats.rv import _value_check
 
-__all__ = ['Geometric', 'Poisson']
+__all__ = ('Geometric', 'Poisson')
 
 
 def rv(symbol, cls, *args):

@@ -32,6 +32,7 @@ tree:
     digraph{
 
     # Graph style
+    "bgcolor"="transparent"
     "ordering"="out"
     "rankdir"="TD"
 
@@ -73,9 +74,9 @@ we could have also done
 
     >>> x = Symbol('x')
 
-Either way, we get a Symbol with the name "x" [#symbols-fn]_.  For the number in the
-expression, 2, we got ``Integer(2)``.  ``Integer`` is the Diofant class for
-integers.  It is similar to the Python built-in type ``int``, except that
+Either way, we get a Symbol with the name "x" [#symbols-fn]_.  For the number
+in the expression, 2, we got ``Integer(2)``.  ``Integer`` is the Diofant class
+for integers.  It is similar to the Python built-in type ``int``, except that
 ``Integer`` plays nicely with other Diofant types.
 
 When we write ``x**2``, this creates a ``Pow`` object.  ``Pow`` is short for
@@ -120,73 +121,8 @@ addition is ``Add``, so, as you might expect, to create this object, we use
     >>> Add(Pow(x, 2), Mul(x, y))
     x**2 + x*y
 
-Diofant expression trees can have many branches, and can be quite deep or quite
-broad.  Here is a more complicated example
-
-    >>> expr = sin(x*y)/2 - x**2 + 1/y
-    >>> repr(expr)
-    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2),
-    sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))"
-
-Here is a diagram
-
-.. dotprint(sin(x*y)/2 - x**2 + 1/y, labelfunc=repr)
-
-.. graphviz::
-
-    digraph{
-
-    # Graph style
-    "ordering"="out"
-    "rankdir"="TD"
-
-    #########
-    # Nodes #
-    #########
-
-    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" ["color"="black", "label"="Add", "shape"="ellipse"];
-    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Integer(-1)_(0, 0)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Pow(Symbol('x'), Integer(2))_(0, 1)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Symbol('x')_(0, 1, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Integer(2)_(0, 1, 1)" ["color"="black", "label"="Integer(2)", "shape"="ellipse"];
-    "Pow(Symbol('y'), Integer(-1))_(1,)" ["color"="black", "label"="Pow", "shape"="ellipse"];
-    "Symbol('y')_(1, 0)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-    "Integer(-1)_(1, 1)" ["color"="black", "label"="Integer(-1)", "shape"="ellipse"];
-    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Rational(1, 2)_(2, 0)" ["color"="black", "label"="Rational(1, 2)", "shape"="ellipse"];
-    "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)" ["color"="black", "label"="sin", "shape"="ellipse"];
-    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" ["color"="black", "label"="Mul", "shape"="ellipse"];
-    "Symbol('x')_(2, 1, 0, 0)" ["color"="black", "label"="Symbol('x')", "shape"="ellipse"];
-    "Symbol('y')_(2, 1, 0, 1)" ["color"="black", "label"="Symbol('y')", "shape"="ellipse"];
-
-    #########
-    # Edges #
-    #########
-
-    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)";
-    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Pow(Symbol('y'), Integer(-1))_(1,)";
-    "Add(Mul(Integer(-1), Pow(Symbol('x'), Integer(2))), Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y')))), Pow(Symbol('y'), Integer(-1)))_()" -> "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)";
-    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" -> "Integer(-1)_(0, 0)";
-    "Mul(Integer(-1), Pow(Symbol('x'), Integer(2)))_(0,)" -> "Pow(Symbol('x'), Integer(2))_(0, 1)";
-    "Pow(Symbol('x'), Integer(2))_(0, 1)" -> "Symbol('x')_(0, 1, 0)";
-    "Pow(Symbol('x'), Integer(2))_(0, 1)" -> "Integer(2)_(0, 1, 1)";
-    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Symbol('y')_(1, 0)";
-    "Pow(Symbol('y'), Integer(-1))_(1,)" -> "Integer(-1)_(1, 1)";
-    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" -> "Rational(1, 2)_(2, 0)";
-    "Mul(Rational(1, 2), sin(Mul(Symbol('x'), Symbol('y'))))_(2,)" -> "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)";
-    "sin(Mul(Symbol('x'), Symbol('y')))_(2, 1)" -> "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)";
-    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('x')_(2, 1, 0, 0)";
-    "Mul(Symbol('x'), Symbol('y'))_(2, 1, 0)" -> "Symbol('y')_(2, 1, 0, 1)";
-    }
-
-This expression reveals some interesting things about Diofant expression
-trees. Let's go through them one by one.
-
-Let's first look at the term ``x**2``.  As we expected, we see ``Pow(x, 2)``.
-One level up, we see we have ``Mul(-1, Pow(x, 2))``.  There is no subtraction
-class in Diofant.  ``x - y`` is represented as ``x + -y``, or, more completely,
-``x + -1*y``, i.e., ``Add(x, Mul(-1, y))``.
+There is no subtraction class in Diofant.  ``x - y`` is represented as ``x +
+-y``, or, more completely, ``x + -1*y``, i.e., ``Add(x, Mul(-1, y))``.
 
     >>> expr = x - y
     >>> repr(x - y)
@@ -199,6 +135,7 @@ class in Diofant.  ``x - y`` is represented as ``x + -y``, or, more completely,
     digraph{
 
     # Graph style
+    "bgcolor"="transparent"
     "ordering"="out"
     "rankdir"="TD"
 
@@ -222,11 +159,9 @@ class in Diofant.  ``x - y`` is represented as ``x + -y``, or, more completely,
     "Mul(Integer(-1), Symbol('y'))_(1,)" -> "Symbol('y')_(1, 1)";
     }
 
-Next, look at ``1/y``.  We might expect to see something like ``Div(1, y)``,
-but similar to subtraction, there is no class in Diofant for division.  Rather,
-division is represented by a power of -1.  Hence, we have ``Pow(y, -1)``.
-What if we had divided something other than 1 by ``y``, like ``x/y``?  Let's
-see.
+Similarly to subtraction, there is no class in Diofant for division.  Rather,
+division is represented by a power of -1.  Hence, we have ``Pow(y, -1)``.  What
+if we had divided something other than 1 by ``y``, like ``x/y``?  Let's see.
 
     >>> expr = x/y
     >>> repr(expr)
@@ -239,6 +174,7 @@ see.
     digraph{
 
     # Graph style
+    "bgcolor"="transparent"
     "ordering"="out"
     "rankdir"="TD"
 
@@ -265,11 +201,11 @@ see.
 We see that ``x/y`` is represented as ``x*y**-1``, i.e., ``Mul(x, Pow(y,
 -1))``.
 
-Finally, let's look at the ``sin(x*y)/2`` term.  Following the pattern of the
-previous example, we might expect to see ``Mul(sin(x*y), Pow(Integer(2),
--1))``.  But instead, we have ``Mul(Rational(1, 2), sin(x*y))``.  Rational
-numbers are always combined into a single term in a multiplication, so that
-when we divide by 2, it is represented as multiplying by 1/2.
+But what about ``x/2``?   Following the pattern of the previous example, we
+might expect to see ``Mul(x, Pow(Integer(2), -1))``.  But instead, we have
+``Mul(Rational(1, 2), x)``.  Rational numbers are always combined into a single
+term in a multiplication, so that when we divide by 2, it is represented as
+multiplying by 1/2.
 
 Finally, one last note.  You may have noticed that the order we entered our
 expression and the order that it came out from ``repr`` or in the graph were

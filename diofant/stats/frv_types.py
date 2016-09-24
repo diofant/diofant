@@ -19,8 +19,8 @@ from diofant.concrete.summations import Sum
 from diofant import (S, sympify, Rational, binomial, cacheit, Integer,
                      Dict, Basic, KroneckerDelta, Dummy)
 
-__all__ = ['FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
-        'Binomial', 'Hypergeometric']
+__all__ = ('FiniteRV', 'DiscreteUniform', 'Die', 'Bernoulli', 'Coin',
+           'Binomial', 'Hypergeometric')
 
 
 def rv(name, cls, *args):

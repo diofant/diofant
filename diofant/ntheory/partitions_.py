@@ -8,6 +8,9 @@ from mpmath.libmp import (fzero, from_man_exp, from_int, from_rational,
 from diofant.core.numbers import igcd
 
 
+__all__ = ('npartitions')
+
+
 def _a(n, j, prec):
     """Compute the inner sum in the HRR formula."""
     if j == 1:
@@ -95,5 +98,3 @@ def npartitions(n, verbose=False):
         # reducing the precision greatly improves performance.
         p = bitcount(abs(to_int(d))) + 50
     return int(to_int(mpf_add(s, fhalf, prec)))
-
-__all__ = ['npartitions']

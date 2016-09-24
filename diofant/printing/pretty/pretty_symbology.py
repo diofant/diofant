@@ -38,8 +38,8 @@ except ImportError:
 # S   - SYMBOL    +
 
 
-__all__ = ['greek_unicode', 'sub', 'sup', 'xsym', 'vobj', 'hobj',
-           'pretty_symbol', 'annotated']
+__all__ = ('greek_unicode', 'sub', 'sup', 'xsym', 'vobj', 'hobj',
+           'pretty_symbol', 'annotated')
 
 
 _use_unicode = False

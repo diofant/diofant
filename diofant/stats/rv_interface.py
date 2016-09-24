@@ -3,10 +3,10 @@ from .rv import (probability, expectation, density, where, given, pspace, cdf,
                  sampling_density)
 from diofant import sqrt
 
-__all__ = ['P', 'E', 'density', 'where', 'given', 'sample', 'cdf', 'pspace',
-        'sample_iter', 'variance', 'std', 'skewness', 'covariance',
-        'dependent', 'independent', 'random_symbols', 'correlation',
-        'moment', 'cmoment', 'sampling_density']
+__all__ = ('P', 'E', 'density', 'where', 'given', 'sample', 'cdf', 'pspace',
+           'sample_iter', 'variance', 'std', 'skewness', 'covariance',
+           'dependent', 'independent', 'random_symbols', 'correlation',
+           'moment', 'cmoment', 'sampling_density')
 
 
 def moment(X, n, c=0, condition=None, **kwargs):
