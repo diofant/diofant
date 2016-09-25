@@ -1,3 +1,4 @@
+import itertools
 import random
 
 from diofant.core.basic import Basic
@@ -12,6 +13,7 @@ from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.simplify import simplify as _simplify
 from diofant.utilities.misc import filldedent
 from diofant.utilities.decorator import doctest_depends_on
+from diofant.utilities.iterables import numbered_symbols
 from diofant.matrices.matrices import MatrixBase, ShapeError, a2idx, classof
 
 
@@ -1380,6 +1382,18 @@ def diag(*values, **kwargs):
             i_row += 1
             i_col += 1
     return cls._new(res)
+
+
+def vandermonde(order, gen=None):
+    """Computes a Vandermonde matrix of given order and dimension. """
+    if not gen:
+        gen = numbered_symbols('C')
+    a = list(itertools.islice(gen, int(order)))
+    m = zeros(order)
+    for i, v in enumerate(a):
+        for j in range(order):
+            m[i, j] = v**j
+    return m
 
 
 def jordan_cell(eigenval, n):

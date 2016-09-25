@@ -46,7 +46,6 @@ diofant_dir = os.path.normpath(diofant_dir)
 sys.path.insert(0, diofant_dir)
 
 TERMINAL_EXAMPLES = [
-    "intermediate.vandermonde",
     "advanced.curvilinear_coordinates",
     "advanced.fem",
     "advanced.gibbs_phenomenon",
