@@ -320,9 +320,8 @@ class ManagedProperties(type):
         for k in _assume_defined:
             attrname = as_property(k)
             v = self.__dict__.get(attrname, '')
-            if isinstance(v, (bool, int, type(None))):
-                if v is not None:
-                    v = bool(v)
+            if isinstance(v, int):
+                v = bool(v)
                 local_defs[k] = v
 
         defs = {}
