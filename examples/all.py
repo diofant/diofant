@@ -52,7 +52,6 @@ TERMINAL_EXAMPLES = [
 ]
 
 WINDOWED_EXAMPLES = [
-    "advanced.autowrap_ufuncify",
 ]
 
 EXAMPLE_DIR = os.path.dirname(__file__)
