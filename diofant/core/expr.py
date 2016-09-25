@@ -2547,7 +2547,7 @@ class Expr(Basic, EvalfMixin):
                 yield series.removeO()
             else:
                 yield series
-            raise StopIteration
+            return
 
         while series.is_Order:
             n += 1
