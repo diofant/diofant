@@ -73,6 +73,9 @@ def test_trace_new():
     pytest.raises(ValueError, lambda: Tr())
     pytest.raises(ValueError, lambda: Tr(A, 1, 2))
 
+    # non-Expr objects
+    assert Tr(None).func is Tr
+
 
 def test_trace_doit():
     a, b, c, d = symbols('a b c d')

@@ -6,7 +6,7 @@ import pytest
 
 from diofant import (Symbol, exp, Integer, Float, sin, cos, Poly, Lambda,
                      Function, I, S, sqrt, srepr, Rational, Tuple, Matrix,
-                     Interval, Add, Mul, Pow, Or, true, false, Abs, pi)
+                     Interval, Add, Mul, Pow, Or, true, false, Abs, pi, Xor)
 from diofant.core.sympify import sympify, _sympify, SympifyError
 from diofant.core.decorators import _sympifyit
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -115,6 +115,7 @@ def test_sympify2():
 def test_sympify3():
     assert sympify("x**3") == x**3
     assert sympify("x^3") == x**3
+    assert sympify("x^3", convert_xor=False) == Xor(x, 3)
     assert sympify("1/2") == Rational(1, 2)
 
     pytest.raises(SympifyError, lambda: _sympify('x**3'))

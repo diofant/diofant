@@ -182,7 +182,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
             try:
                 rv = _helper_simplify(eq, hint, hints[hint]['func'],
                     hints[hint]['order'], hints[hint][hint], solvefun)
-            except NotImplementedError as detail:
+            except NotImplementedError as detail:  # pragma: no cover
                 failed_hints[hint] = detail
             else:
                 pdedict[hint] = rv
@@ -267,9 +267,10 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
 
     prep = kwargs.pop('prep', True)
 
-    if func and len(func.args) != 2:
+    if func and len(func.args) != 2:  # pragma: no cover
         raise NotImplementedError("Right now only partial "
-            "differential equations of two variables are supported")
+                                  "differential equations of two "
+                                  "variables are supported")
 
     if prep or func is None:
         prep, func_ = _preprocess(eq, func)
@@ -277,9 +278,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
             func = func_
 
     if isinstance(eq, Equality):
-        if eq.rhs != 0:
-            return classify_pde(eq.lhs - eq.rhs, func)
-        eq = eq.lhs
+        eq = eq.lhs - eq.rhs
 
     f = func.func
     x = func.args[0]
@@ -734,7 +733,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
             if c:
                 try:
                     tsol = integrate(e/c, y)
-                except NotImplementedError:
+                except NotImplementedError:  # pragma: no cover
                     raise NotImplementedError("Unable to find a solution"
                                               " due to inability of integrate")
                 else:
@@ -742,9 +741,9 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
             if b:
                 try:
                     tsol = integrate(e/b, x)
-                except NotImplementedError:
+                except NotImplementedError:  # pragma: no cover
                     raise NotImplementedError("Unable to find a solution"
-                        " due to inability of integrate")
+                                              " due to inability of integrate")
                 else:
                     return Eq(f(x, y), solvefun(y) + tsol)
 
@@ -784,9 +783,9 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
         return Eq(f(x, y), rhs)
 
-    else:
-        raise NotImplementedError("Cannot solve the partial differential equation due"
-            " to inability of constantsimp")
+    else:  # pragma: no cover
+        raise NotImplementedError("Cannot solve the partial differential "
+                                  "equation due to inability of constantsimp")
 
 
 def _simplify_variable_coeff(sol, syms, func, funcarg):
