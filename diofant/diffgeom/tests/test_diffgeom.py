@@ -210,7 +210,7 @@ def test_schwarzschild():
     metric = (exp(2*f(r))*TP(dt, dt) - exp(2*g(r))*TP(dr, dr) -
               r**2*TP(dtheta, dtheta) - r**2*sin(theta)**2*TP(dphi, dphi))
     ricci = metric_to_Ricci_components(metric)
-    assert all(ricci[i, j]==0 for i in range(4) for j in range(4) if i!=j)
+    assert all(ricci[i, j] == 0 for i in range(4) for j in range(4) if i != j)
     R = Symbol('R')
     eq1 = simplify((ricci[0, 0]/exp(2*f(r) - 2*g(r)) +
                    ricci[1, 1])*r/2).subs(r, R).doit()
