@@ -48,7 +48,6 @@ sys.path.insert(0, diofant_dir)
 TERMINAL_EXAMPLES = [
     "advanced.fem",
     "advanced.gibbs_phenomenon",
-    "advanced.relativity",
 ]
 
 WINDOWED_EXAMPLES = [
