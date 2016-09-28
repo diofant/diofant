@@ -260,6 +260,13 @@ def test_DN():
     assert diop_DN(0, 0, t) == [(0, t)]
     assert diop_DN(0, -1, t) == []
 
+    assert diop_DN(133, 75) == []
+
+    # tests for _special_diop_DN
+    assert diop_DN(13, -3) == [(7, 2), (137, 38)]
+    assert diop_DN(2445, -20) == [(445, 9), (17625560, 356454),
+                                  (698095554475, 14118073569)]
+
 
 def test_bf_pell():
     assert diop_bf_DN(13, -4) == [(3, 1), (-3, 1), (36, 10)]
