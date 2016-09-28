@@ -7,7 +7,7 @@ from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                      acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
                      cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
                      Function, subfactorial, PoleError, Integer, Float,
-                     diff, simplify)
+                     diff, simplify, Matrix)
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
@@ -491,3 +491,13 @@ def test_issue_11526():
 def test_issue_11672():
     assert limit(Rational(-1, 2)**x, x, oo) == 0
     assert limit(1/(-2)**x, x, oo) == 0
+
+
+def test_issue_11678():
+    p = Matrix([[1./2, 1./4, 1./4],
+                [1./2, 0, 1./2],
+                [1./4, 0, 3./4]])
+    e = (p**x).applyfunc(lambda i: limit(i, x, oo))
+    assert e == Matrix([[Float('0.36363636363636359', prec=15),
+                         Float('0.090909090909090898', prec=15),
+                         Float('0.54545454545454541', prec=15)]]*3)
