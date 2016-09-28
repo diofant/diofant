@@ -475,22 +475,22 @@ competitive and fast (from 10x to 100x) by rewriting the core from scratch.
 Jurjen N.E. Bos has contributed pretty printing and other patches.
 Fredrik Johansson has wrote mpmath and contributed a lot of patches.
 
-SymPy has participated in every GSoC since 2007.  Moderate amount
+SymPy has participated in every GSoC since 2007. Moderate amount
 of SymPy's development has come from GSoC students.
 
 In 2011, Ondřej Čertík stepped down as lead developer, with Aaron Meurer, who
 also started as a GSoC student, taking his place.
 
 Ondřej Čertík is still active in the community, but is too busy with work
-and family to play a lead development role.  Unfortunately, his remaining
+and family to play a lead development role. Unfortunately, his remaining
 activity neither constructive nor productive anymore and SymPy just
-slowly dying now: most former contributors are inactive now or
-explicitely leave this "friendly and welcoming" project.
+slowly dies now: most former contributors are inactive now or
+explicitly leaving this "friendly and welcoming" project.
 
 This unfortunate situation was major reason to fork the
 SymPy as the `Diofant`_ project.  Development in the new project will
 be open and public, without hidden double standards, centered about
-good, proved code and not project popularity counters.  Here we believe
+good, proved code and not project popularity counters. Here we believe
 that mathematical correctness is more important than political one.
 
 .. _SymPy : http://www.sympy.org/
