@@ -12,7 +12,7 @@ from diofant.matrices import (
     GramSchmidt, ImmutableMatrix, ImmutableSparseMatrix, Matrix,
     SparseMatrix, casoratian, diag, eye, hessian,
     matrix_multiply_elementwise, ones, randMatrix, rot_axis1, rot_axis2,
-    rot_axis3, wronskian, zeros)
+    rot_axis3, wronskian, zeros, vandermonde)
 from diofant.core.compatibility import iterable
 from diofant.utilities.iterables import flatten, capture
 from diofant.external import import_module
@@ -2046,6 +2046,14 @@ def test_zeros_eye():
         assert z == m
         assert z == zeros(2, cls=cls)
         assert type(m) == cls
+
+
+def test_vandermonde():
+    assert vandermonde(1) == Matrix([1])
+    assert vandermonde(2, [x, y]) == Matrix([[1, x], [1, y]])
+    assert vandermonde(3) == Matrix([[1, Symbol('C0'), Symbol('C0')**2],
+                                     [1, Symbol('C1'), Symbol('C1')**2],
+                                     [1, Symbol('C2'), Symbol('C2')**2]])
 
 
 def test_is_zero():

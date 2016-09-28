@@ -1,9 +1,10 @@
 import pytest
 
-from diofant import (Derivative as D, Eq, exp, sin,
+from diofant import (Derivative as D, Eq, exp, sin, tan,
                      Function, Symbol, symbols, cos, log, Integer)
 from diofant.solvers.pde import (pde_separate_add, pde_separate_mul,
-                                 pdsolve, classify_pde, checkpdesol)
+                                 pdsolve, classify_pde, checkpdesol,
+                                 pde_separate)
 
 a, b, c, x, y = symbols('a b c x y')
 
@@ -63,6 +64,21 @@ def test_pde_separate_mul():
     res = pde_separate_mul(eq, u(theta, r), [R(r), T(theta)])
     assert res == [r*D(R(r), r)/R(r) + r**2*D(R(r), r, r)/R(r) + c*r**2,
             -D(T(theta), theta, theta)/T(theta)]
+
+    # Laplace eq in spherical coordinates
+    r, phi, theta, C1 = symbols("r,phi,theta,C1")
+    Xi = Function('Xi')
+    R, Phi, Theta, u = map(Function, ['R', 'Phi', 'Theta', 'u'])
+    eq = Eq(D(Xi(r, phi, theta), r, 2) + 2/r * D(Xi(r, phi, theta), r) +
+            1/(r**2 * sin(phi)**2) * D(Xi(r, phi, theta), theta, 2) +
+            cos(phi)/(r**2 * sin(phi)) * D(Xi(r, phi, theta), phi) +
+            1/r**2 * D(Xi(r, phi, theta), phi, 2))
+    res_theta = pde_separate(eq, Xi(r, phi, theta), [Theta(theta), u(r, phi)])
+    eq_left = Eq(res_theta[1], -C1)
+    res_theta = pde_separate(eq_left, u(r, phi), [Phi(phi), R(r)])
+    assert (res_theta == [-3*C1/sin(phi)**2 + 3*D(Phi(phi), phi, phi)/Phi(phi) +
+                          3*D(Phi(phi), phi)/(Phi(phi)*tan(phi)),
+                          -3*r**2*D(R(r), r, r)/R(r) - 6*r*D(R(r), r)/R(r)])
 
 
 def test_pde_classify():

@@ -679,14 +679,16 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
             if verbose:
                 print(factor_msg % (b, e))
             factors[b] = exp*e
-        raise StopIteration
+        return True
 
     if isprime(n):
         factors[int(n)] = 1
-        raise StopIteration
+        return True
 
     if n == 1:
-        raise StopIteration
+        return True
+
+    return False
 
 trial_int_msg = "Trial division with ints [%i ... %i] and fail_max=%i"
 trial_msg = "Trial division with primes [%i ... %i]"
@@ -1037,8 +1039,11 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
             if verbose:
                 print('Exceeded limit:', limit)
 
-            _check_termination(factors, n, limit, use_trial, use_rho, use_pm1,
-                               verbose)
+            if _check_termination(factors, n, limit, use_trial,
+                                  use_rho, use_pm1, verbose):
+                if verbose:
+                    print(complete_msg)
+                return factors
 
             if n > 1:
                 factors[int(n)] = 1
@@ -1070,11 +1075,16 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                                      use_rho=use_rho, use_pm1=use_pm1,
                                      verbose=verbose)
                     factors.update(facs)
-                raise StopIteration
+                if verbose:
+                    print(complete_msg)
+                return factors
 
             # ...see if factorization can be terminated
-            _check_termination(factors, n, limit, use_trial, use_rho, use_pm1,
-                               verbose)
+            if _check_termination(factors, n, limit, use_trial,
+                                  use_rho, use_pm1, verbose):
+                if verbose:
+                    print(complete_msg)
+                return factors
 
     except StopIteration:
         if verbose:
@@ -1103,8 +1113,11 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                 ps = sieve.primerange(low, high_)
                 n, found_trial = _trial(factors, n, ps, verbose)
                 if found_trial:
-                    _check_termination(factors, n, limit, use_trial, use_rho,
-                                       use_pm1, verbose)
+                    if _check_termination(factors, n, limit, use_trial, use_rho,
+                                          use_pm1, verbose):
+                        if verbose:
+                            print(complete_msg)
+                        return factors
             else:
                 found_trial = False
 
@@ -1113,7 +1126,9 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                     print('Exceeded limit:', limit)
                 if n > 1:
                     factors[int(n)] = 1
-                raise StopIteration
+                if verbose:
+                    print(complete_msg)
+                return factors
 
             # Only used advanced methods when no small factors were found
             if not found_trial:
@@ -1133,8 +1148,11 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                                            use_pm1=use_pm1,
                                            verbose=verbose)
                             n, _ = _trial(factors, n, ps, verbose=False)
-                            _check_termination(factors, n, limit, use_trial,
-                                               use_rho, use_pm1, verbose)
+                            if _check_termination(factors, n, limit, use_trial,
+                                                  use_rho, use_pm1, verbose):
+                                if verbose:
+                                    print(complete_msg)
+                                return factors
 
                     # Pollard rho
                     if use_rho:
@@ -1151,8 +1169,11 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                                            use_pm1=use_pm1,
                                            verbose=verbose)
                             n, _ = _trial(factors, n, ps, verbose=False)
-                            _check_termination(factors, n, limit, use_trial,
-                                               use_rho, use_pm1, verbose)
+                            if _check_termination(factors, n, limit, use_trial,
+                                                  use_rho, use_pm1, verbose):
+                                if verbose:
+                                    print(complete_msg)
+                                return factors
 
         except StopIteration:
             if verbose:

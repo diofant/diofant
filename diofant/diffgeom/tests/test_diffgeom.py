@@ -7,10 +7,10 @@ from diofant.diffgeom import (Commutator, Differential, TensorProduct,
                               twoform_to_matrix, metric_to_Christoffel_1st,
                               metric_to_Christoffel_2nd, metric_to_Riemann_components,
                               metric_to_Ricci_components, intcurve_diffequ,
-                              intcurve_series)
-from diofant.core import Symbol, symbols
+                              intcurve_series, Manifold, Patch, CoordSystem)
+from diofant.core import Symbol, symbols, Function, Derivative
 from diofant.simplify import trigsimp, simplify
-from diofant.functions import sqrt, atan2, sin
+from diofant.functions import sqrt, atan2, sin, exp
 from diofant.matrices import Matrix
 from diofant.printing import sstr
 
@@ -198,3 +198,22 @@ def test_simplify():
     assert simplify(dx*dy) == dx*dy
     assert simplify(ex*ey) == ex*ey
     assert ((1-x)*dx)/(1-x)**2 == dx/(1-x)
+
+
+def test_schwarzschild():
+    m = Manifold('Schwarzschild', 4)
+    p = Patch('origin', m)
+    cs = CoordSystem('spherical', p, ['t', 'r', 'theta', 'phi'])
+    t, r, theta, phi = cs.coord_functions()
+    dt, dr, dtheta, dphi = cs.base_oneforms()
+    f, g = symbols('f g', cls=Function)
+    metric = (exp(2*f(r))*TP(dt, dt) - exp(2*g(r))*TP(dr, dr) -
+              r**2*TP(dtheta, dtheta) - r**2*sin(theta)**2*TP(dphi, dphi))
+    ricci = metric_to_Ricci_components(metric)
+    assert all(ricci[i, j] == 0 for i in range(4) for j in range(4) if i != j)
+    R = Symbol('R')
+    eq1 = simplify((ricci[0, 0]/exp(2*f(r) - 2*g(r)) +
+                   ricci[1, 1])*r/2).subs(r, R).doit()
+    assert eq1 == f(R).diff(R) + g(R).diff(R)
+    eq2 = simplify(ricci[1, 1].replace(g, lambda x: -f(x)).replace(r, R).doit())
+    assert eq2 == -2*f(R).diff(R)**2 - f(R).diff(R, 2) - 2*f(R).diff(R)/R

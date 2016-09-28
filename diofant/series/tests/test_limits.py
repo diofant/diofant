@@ -486,3 +486,8 @@ def test_issue_11526():
 
     e = log((1/x - b)/(1/x - c))
     assert e.as_leading_term(x) == x*(c - b)
+
+
+def test_issue_11672():
+    assert limit(Rational(-1, 2)**x, x, oo) == 0
+    assert limit(1/(-2)**x, x, oo) == 0

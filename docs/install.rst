@@ -30,12 +30,6 @@ sure to install from git::
     $ cd diofant
     $ pip install -e .[develop,docs]
 
-You can see old Diofant's history (from SVN repository) in the
-branch sympy-svn-history.  To see this history as part of
-master's, simply do::
-
-    $ git fetch origin 'refs/replace/*:refs/replace/*'
-
 Run Diofant
 ===========
 
