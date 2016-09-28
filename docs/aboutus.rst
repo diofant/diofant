@@ -482,7 +482,7 @@ In 2011, Ondřej Čertík stepped down as lead developer, with Aaron Meurer, who
 also started as a GSoC student, taking his place.
 
 Ondřej Čertík is still active in the community, but is too busy with work
-and family to play a lead development role. Unfortunately, his remaining
+and family to play a lead development role.  Unfortunately, his remaining
 activity neither constructive nor productive anymore and SymPy just
 slowly dies now: most former contributors are inactive now or
 explicitly leaving this "friendly and welcoming" project.
