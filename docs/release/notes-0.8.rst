@@ -240,6 +240,10 @@ Issues closed
 * `#333 <https://github.com/diofant/diofant/issues/333>`_ Expose docs for diofant.interactive (both entry-level and api)
 * `#218 <https://github.com/diofant/diofant/issues/218>`_ Remove manualintegrate?
 * `sympy/sympy#6572 <https://github.com/sympy/sympy/issues/6572>`_ Remove "#doctest: +SKIP" comments on valid docstrings
+* `sympy/sympy#10134 <https://github.com/sympy/sympy/issues/10134>`_ Remove "raise StopIteration"
+* `#329 <https://github.com/diofant/diofant/issues/329>`_ Drop examples/
+* `sympy/sympy#11672 <https://github.com/sympy/sympy/issues/11672>`_ limit(Rational(-1,2)**k, k, oo) fails
+* `#338 <https://github.com/diofant/diofant/issues/338>`_ Rosetta stone for dev's
 
 Full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_.
 
@@ -489,5 +493,7 @@ Pull requests
 * `#335 <https://github.com/diofant/diofant/pull/335>`_ Add sphinx docs for interactive module
 * `#279 <https://github.com/diofant/diofant/pull/279>`_ Removed manualintegrate()
 * `#343 <https://github.com/diofant/diofant/pull/343>`_ First beta
+* `#326 <https://github.com/diofant/diofant/issues/326>`_ Improve coverage
+* `#344 <https://github.com/diofant/diofant/issues/344>`_ v0.8.0b2
 
 Full `list of merged pull requests <https://github.com/diofant/diofant/pulls?utf8=%E2%9C%93&q=is%3Apr%20is%3Amerged%20milestone%3A0.8.0>`_.
