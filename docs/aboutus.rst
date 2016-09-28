@@ -475,7 +475,7 @@ competitive and fast (from 10x to 100x) by rewriting the core from scratch.
 Jurjen N.E. Bos has contributed pretty printing and other patches.
 Fredrik Johansson has wrote mpmath and contributed a lot of patches.
 
-SymPy has participated in every GSoC since 2007. Moderate amount
+SymPy has participated in every GSoC since 2007.  Moderate amount
 of SymPy's development has come from GSoC students.
 
 In 2011, Ondřej Čertík stepped down as lead developer, with Aaron Meurer, who
@@ -490,7 +490,7 @@ explicitly leaving this "friendly and welcoming" project.
 This unfortunate situation was major reason to fork the
 SymPy as the `Diofant`_ project.  Development in the new project will
 be open and public, without hidden double standards, centered about
-good, proved code and not project popularity counters. Here we believe
+good, proved code and not project popularity counters.  Here we believe
 that mathematical correctness is more important than political one.
 
 .. _SymPy : http://www.sympy.org/
