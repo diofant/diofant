@@ -3,7 +3,7 @@
 ==========
 
     >>> from diofant import *
-    >>> init_printing(use_unicode=True)
+    >>> init_printing(pretty_print=True, use_unicode=True)
 
 To make a matrix in Diofant, use the ``Matrix`` object.  A matrix is constructed
 by providing a list of row vectors that make up the matrix.  For example,

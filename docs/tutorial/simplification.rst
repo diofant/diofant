@@ -8,7 +8,7 @@ To make this document easier to read, we are going to enable pretty printing.
 
     >>> from diofant import *
     >>> from diofant.abc import x, y, z
-    >>> init_printing(use_unicode=True)
+    >>> init_printing(pretty_print=True, use_unicode=True)
 
 Automatic simplification
 ========================

@@ -4,7 +4,7 @@
 
     >>> from diofant import *
     >>> x, y, z = symbols('x y z')
-    >>> init_printing(use_unicode=True)
+    >>> init_printing(pretty_print=True, use_unicode=True, no_global=True)
 
 A Note about Equations
 ======================

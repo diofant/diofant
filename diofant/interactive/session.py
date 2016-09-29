@@ -1,5 +1,3 @@
-"""Tools for setting up interactive sessions. """
-
 import ast
 import builtins
 
@@ -31,7 +29,7 @@ class AutomaticSymbols(ast.NodeTransformer):
             self.visit(s)
 
         for v in self.names:
-            if v in self.app.user_ns.keys() or v in builtins.__dir__():
+            if v in self.app.user_ns.keys() or v in dir(builtins):
                 continue
 
             assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],
@@ -50,35 +48,3 @@ class AutomaticSymbols(ast.NodeTransformer):
         if isinstance(node.ctx, ast.Load):
             self.names.append(node.id)
         return node
-
-
-def init_ipython_session(auto_symbols=False,
-                         auto_int_to_Integer=False):
-    """Configure new IPython session.
-
-    Parameters
-    ==========
-
-    auto_int_to_Integer : boolean
-        Enable wrapping all integer literals with
-        Integer.  Default is False.
-
-    auto_symbols : boolean
-        Create missing Symbol definitions automatically
-        on first use.  Default is False.
-    """
-    import IPython
-
-    ip = IPython.get_ipython()
-    if not ip:
-        app = IPython.terminal.ipapp.TerminalIPythonApp()
-        app.display_banner = False
-        app.initialize([])
-        ip = app.shell
-
-    if auto_symbols:
-        ip.ast_transformers.append(AutomaticSymbols(ip))
-    if auto_int_to_Integer:
-        ip.ast_transformers.append(IntegerWrapper())
-
-    return ip
