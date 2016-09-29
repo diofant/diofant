@@ -488,8 +488,8 @@ also started as a GSoC student, taking his place.
 Ondřej Čertík is still active in the community, but is too busy with work
 and family to play a lead development role.  Unfortunately, his remaining
 activity neither constructive nor productive anymore and SymPy just
-slowly dying now: most former contributors are inactive now or
-explicitely leave this "friendly and welcoming" project.
+slowly dies now: most former contributors are inactive now or
+explicitly leaving this "friendly and welcoming" project.
 
 This unfortunate situation was major reason to fork the
 SymPy as the `Diofant`_ project.  Development in the new project will
