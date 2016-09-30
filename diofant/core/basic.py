@@ -320,11 +320,11 @@ class Basic(metaclass=ManagedProperties):
 
     def _repr_pretty_(self, p, cycle):
         from diofant.printing import pretty
-        p.text(pretty(self, order=None))
+        p.text(pretty(self))
 
     def _repr_latex_(self):
         from diofant.printing import latex
-        return '$$' + latex(self, order=None) + '$$'
+        return latex(self, mode='equation')
 
     def atoms(self, *types):
         """Returns the atoms that form the current object.
