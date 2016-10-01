@@ -199,9 +199,6 @@ class Add(AssocOp):
                     coeff = S.Zero
                     break
 
-        # order args canonically
-        newseq.sort(key=default_sort_key)
-
         # current code expects coeff to be first
         if coeff is not S.Zero:
             newseq.insert(0, coeff)
@@ -211,6 +208,9 @@ class Add(AssocOp):
             return [], newseq, None
         else:
             return newseq, [], None
+
+    def _hashable_content(self):
+        return frozenset(self.args),
 
     @classmethod
     def class_key(cls):
