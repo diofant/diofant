@@ -190,9 +190,7 @@ class Point(GeometryEntity):
         # if the vectors self and other are linearly dependent, then they must
         # be scalar multiples of each other
         m = Matrix([self.args, other.args])
-        # XXX: issue sympy/sympy#9480 we need `simplify=True` otherwise the
-        # rank may be computed incorrectly
-        return m.rank(simplify=True) < 2
+        return m.rank() < 2
 
     @property
     def length(self):
