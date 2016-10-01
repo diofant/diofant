@@ -439,15 +439,7 @@ else:
         return abs(_gcd(a, b))
 
 # If HAS_GMPY is 0, no supported version of gmpy is available. Otherwise,
-# HAS_GMPY contains the major version number of gmpy; i.e. 1 for gmpy, and
-# 2 for gmpy2.
-
-# Versions of gmpy prior to 1.03 do not work correctly with int(largempz)
-# For example, int(gmpy.mpz(2**256)) would raise OverflowError.
-# See issue 4980.
-
-# Minimum version of gmpy changed to 1.13 to allow a single code base to also
-# work with gmpy2.
+# HAS_GMPY contains the major version number of gmpy.
 
 GROUND_TYPES = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 HAS_GMPY = 0
