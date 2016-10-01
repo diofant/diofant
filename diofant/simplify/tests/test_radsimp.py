@@ -6,7 +6,7 @@ from diofant import (sqrt, Derivative, symbols, collect, Function, factor,
                      Rational, exp, Integer)
 
 from diofant.core.mul import _unevaluated_Mul as umul
-from diofant.simplify.radsimp import (_unevaluated_Add, collect_sqrt,
+from diofant.simplify.radsimp import (collect_sqrt,
                                       fraction_expand)
 
 from diofant.abc import x, y, z, t, a, b, c, d, f
@@ -333,7 +333,7 @@ def test_collect_const():
     assert collect_const(2*x - 2*y - 2*z, 2) == \
         Mul(2, x - y - z, evaluate=False)
     assert collect_const(2*x - 2*y - 2*z, -2) == \
-        _unevaluated_Add(2*x, Mul(-2, y + z, evaluate=False))
+        Add(2*x, Mul(-2, y + z, evaluate=False), evaluate=False)
 
     # this is why the content_primitive is used
     eq = (sqrt(15 + 5*sqrt(2))*x + sqrt(3 + sqrt(2))*y)*2
