@@ -30,7 +30,7 @@ with open('diofant/__init__.py') as f:
 
 setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner']
 extra_reqs = {'exports': ['numpy', 'scipy', 'Theano'],
-              'gmpy': ['gmpy2'],
+              'gmpy': ['gmpy2>2.0.3'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib'],
               'interactive': ['ipython>=2.3.0'],
               'docs': ['sphinx>=1.2.3', 'numpydoc', 'sphinx_rtd_theme'],
