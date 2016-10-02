@@ -111,6 +111,10 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 ImmutableMatrix.is_zero = DenseMatrix.is_zero
 
 
+#:
+ImmutableDenseMatrix = ImmutableMatrix
+
+
 class ImmutableSparseMatrix(Basic, SparseMatrix):
     """Create an immutable version of a sparse matrix.
 
