@@ -1641,10 +1641,7 @@ def test_issue_6001():
     eq = A + A**2
     # it doesn't matter whether it's True or False; they should
     # just all be the same
-    assert (
-        eq.is_commutative ==
-        (eq + 1).is_commutative ==
-        (A + 1).is_commutative)
+    assert eq.is_commutative == (eq + 1).is_commutative
 
     B = Symbol("B", commutative=False)
     # Although commutative terms could cancel we return True
@@ -1916,3 +1913,9 @@ def test_issue_8247_8354():
 def test_issue_9832():
     x = Symbol('x', extended_real=True)
     assert (x**2 - oo).is_negative is None
+
+
+def test_sympyissue_10728():
+    A, B = symbols('A B', commutative=False)
+    assert (A + B).is_commutative is None
+    assert (A + B).is_zero is None

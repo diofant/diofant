@@ -447,6 +447,10 @@ class Add(Expr, AssocOp):
 
     # assumption methods
 
+    def _eval_is_commutative(self):
+        return _fuzzy_group((a.is_commutative for a in self.args),
+                            quick_exit=True)
+
     def _eval_is_extended_real(self):
         return _fuzzy_group((a.is_extended_real for a in self.args),
                             quick_exit=True)
