@@ -1503,7 +1503,7 @@ class divisor_sigma(Function):
 
 
 def core(n, t=2):
-    """Calculate core(n,t) = `core_t(n)` of a positive integer n.
+    r"""Calculate core(n,t) = `core_t(n)` of a positive integer n.
 
     ``core_2(n)`` is equal to the squarefree part of n
 

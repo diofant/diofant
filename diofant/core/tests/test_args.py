@@ -22,7 +22,7 @@ def test_all_classes_are_tested():
     diofant_path = os.path.abspath(path)
     prefix = os.path.split(diofant_path)[0] + os.sep
 
-    re_cls = re.compile("^class ([A-Za-z][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
+    re_cls = re.compile(r"^class ([A-Za-z][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
 
     modules = {}
 

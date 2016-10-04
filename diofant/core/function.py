@@ -1648,7 +1648,7 @@ def diff(f, *symbols, **kwargs):
 
 def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
            mul=True, log=True, multinomial=True, basic=True, **hints):
-    """Expand an expression using methods given as hints.
+    r"""Expand an expression using methods given as hints.
 
     Hints evaluated unless explicitly set to False are:  ``basic``, ``log``,
     ``multinomial``, ``mul``, ``power_base``, and ``power_exp``.  The following

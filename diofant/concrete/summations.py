@@ -329,7 +329,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         return s + iterm, abs(term)
 
     def reverse_order(self, *indices):
-        """Reverse the order of a limit in a Sum.
+        r"""Reverse the order of a limit in a Sum.
 
         Parameters
         ==========
@@ -406,7 +406,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         return Sum(e * self.function, *limits)
 
     def findrecur(self, F=Function('F'), n=None):
-        """Find a recurrence formula for the summand of the sum.
+        r"""Find a recurrence formula for the summand of the sum.
 
         Given a sum `f(n) = \sum_k F(n, k)`, where `F(n, k)` is
         doubly hypergeometric (that's, both `F(n + 1, k)/F(n, k)`

@@ -1482,7 +1482,7 @@ class PrettyPrinter(Printer):
 
     def _print_Complement(self, u):
 
-        delimiter = ' \ '
+        delimiter = r' \ '
 
         return self._print_seq(u.args, None, None, delimiter,
              parenthesize=lambda set: set.is_ProductSet or set.is_Intersection

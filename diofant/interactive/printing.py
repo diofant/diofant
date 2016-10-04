@@ -98,7 +98,7 @@ def init_printing(pretty_print=True, order=None, use_unicode=None,
                   print_builtin=True,
                   str_printer=None, pretty_printer=None,
                   latex_printer=None):
-    """Initializes pretty-printer depending on the environment.
+    r"""Initializes pretty-printer depending on the environment.
 
     Parameters
     ==========

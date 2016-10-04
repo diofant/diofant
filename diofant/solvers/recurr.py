@@ -1,4 +1,4 @@
-"""
+r"""
 This module is intended for solving recurrences or, in other words,
 difference equations. Currently supported are linear, inhomogeneous
 equations with polynomial or rational coefficients.
@@ -67,7 +67,7 @@ from diofant.utilities.iterables import numbered_symbols
 
 
 def rsolve_poly(coeffs, f, n, **hints):
-    """
+    r"""
     Given linear recurrence operator `\operatorname{L}` of order
     `k` with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek for
@@ -351,7 +351,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
 
 def rsolve_ratio(coeffs, f, n, **hints):
-    """
+    r"""
     Given linear recurrence operator `\operatorname{L}` of order `k`
     with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek
@@ -462,7 +462,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
 
 
 def rsolve_hyper(coeffs, f, n, **hints):
-    """
+    r"""
     Given linear recurrence operator `\operatorname{L}` of order `k`
     with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f` we seek for all hypergeometric solutions
@@ -658,7 +658,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
 
 def rsolve(f, y, init=None):
-    """
+    r"""
     Solve univariate recurrence with rational coefficients.
 
     Given `k`-th order linear recurrence `\operatorname{L} y = f`,

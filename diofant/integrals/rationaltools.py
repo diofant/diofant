@@ -300,7 +300,7 @@ def log_to_atan(f, g):
 
 
 def log_to_real(h, q, x, t):
-    """
+    r"""
     Convert complex logarithms to real functions.
 
     Given real field K and polynomials h in K[t,x] and q in K[t],

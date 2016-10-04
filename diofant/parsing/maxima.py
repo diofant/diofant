@@ -43,7 +43,7 @@ sub_dict = {
     'maxima_sec': re.compile(r'\bsec\b')
 }
 
-var_name = re.compile('^\s*(\w+)\s*:')
+var_name = re.compile(r'^\s*(\w+)\s*:')
 
 
 def parse_maxima(str, globals=None, name_dict={}):

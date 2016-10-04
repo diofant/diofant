@@ -675,7 +675,7 @@ class Commutator(Expr):
 
 
 class Differential(Expr):
-    """Return the differential (exterior derivative) of a form field.
+    r"""Return the differential (exterior derivative) of a form field.
 
     The differential of a form (i.e. the exterior derivative) has a complicated
     definition in the general case.
@@ -720,7 +720,6 @@ class Differential(Expr):
 
     >>> Differential(dg)
     0
-
     """
 
     is_commutative = False

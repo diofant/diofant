@@ -176,7 +176,7 @@ class ExprWithIntLimits(ExprWithLimits):
             return variables.index(x)
 
     def reorder(self, *arg):
-        """
+        r"""
         Reorder limits in a expression containing a Sum or a Product.
 
         Parameters

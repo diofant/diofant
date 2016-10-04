@@ -659,7 +659,7 @@ class StrPrinter(Printer):
         return ' U '.join(self._print(set) for set in expr.args)
 
     def _print_Complement(self, expr):
-        return ' \ '.join(self._print(set) for set in expr.args)
+        return r' \ '.join(self._print(set) for set in expr.args)
 
     def _print_Unit(self, expr):
         return expr.abbrev

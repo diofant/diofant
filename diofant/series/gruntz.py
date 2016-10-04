@@ -286,7 +286,7 @@ def mrv_leadterm(e, x):
 
 
 def rewrite(e, x, w):
-    """
+    r"""
     Rewrites expression in terms of the most rapidly varying subexpression.
 
     Parameters

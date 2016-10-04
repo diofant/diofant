@@ -613,7 +613,7 @@ def base_solution_linear(c, a, b, t=None):
 
 
 def extended_euclid(a, b):
-    """
+    r"""
     For given ``a``, ``b`` returns a tuple containing integers `x`, `y` and `d`
     such that `ax + by = d`. Here `d = gcd(a, b)`.
 
@@ -1107,7 +1107,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
 
 
 def cornacchia(a, b, m):
-    """
+    r"""
     Solves `ax^2 + by^2 = m` where `\gcd(a, b) = 1 = gcd(a, m)` and `a, b > 0`.
 
     Uses the algorithm due to Cornacchia. The method only finds primitive
@@ -1167,11 +1167,11 @@ def cornacchia(a, b, m):
 
 
 def PQa(P_0, Q_0, D):
-    """
+    r"""
     Returns useful information needed to solve the Pell equation.
 
     There are six sequences of integers defined related to the continued
-    fraction representation of `\\frac{P + \sqrt{D}}{Q}`, namely {`P_{i}`},
+    fraction representation of `\frac{P + \sqrt{D}}{Q}`, namely {`P_{i}`},
     {`Q_{i}`}, {`a_{i}`},{`A_{i}`}, {`B_{i}`}, {`G_{i}`}. ``PQa()`` Returns
     these values as a 6-tuple in the same order as mentioned above. Refer [1]_
     for more detailed information.
@@ -1181,7 +1181,7 @@ def PQa(P_0, Q_0, D):
 
     P_0, Q_0, D : Integer
         integers corresponding to `P_{0}`, `Q_{0}` and `D` in the continued
-        fraction `\\frac{P_{0} + \sqrt{D}}{Q_{0}}`.  Also it's assumed
+        fraction `\frac{P_{0} + \sqrt{D}}{Q_{0}}`.  Also it's assumed
         that `P_{0}^2 == D mod(|Q_{0}|)` and `D` is square free.
 
     Examples
@@ -1227,14 +1227,14 @@ def PQa(P_0, Q_0, D):
 
 
 def diop_bf_DN(D, N, t=symbols("t", integer=True)):
-    """
+    r"""
     Uses brute force to solve the equation, `x^2 - Dy^2 = N`.
 
     Mainly concerned with the generalized Pell equation which is the case when
     `D > 0, D` is not a perfect square. For more information on the case refer
     [1]_. Let `(t, u)` be the minimal positive solution of the equation
     `x^2 - Dy^2 = 1`. Then this method requires
-    `\sqrt{\\frac{\mid N \mid (t \pm 1)}{2D}}` to be small.
+    `\sqrt{\frac{\mid N \mid (t \pm 1)}{2D}}` to be small.
 
     Parameters
     ==========
@@ -1337,9 +1337,9 @@ def equivalent(u, v, r, s, D, N):
 
 
 def length(P, Q, D):
-    """
+    r"""
     Returns the (length of aperiodic part + length of periodic part) of
-    continued fraction representation of `\\frac{P + \sqrt{D}}{Q}`.
+    continued fraction representation of `\frac{P + \sqrt{D}}{Q}`.
 
     It is important to remember that this does NOT return the length of the
     periodic part but the addition of the legths of the two parts as mentioned
@@ -2056,7 +2056,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
 
 
 def square_factor(a):
-    """
+    r"""
     Returns an integer `c` s.t. `a = c^2k, \ c,k \in Z`. Here `k` is square
     free.
 
@@ -2081,7 +2081,7 @@ def square_factor(a):
 
 
 def pairwise_prime(a, b, c):
-    """
+    r"""
     Transform `ax^2 + by^2 + cz^2 = 0` into an equivalent equation
     `a'x^2 + b'y^2 + c'z^2 = 0` where `a', b', c'` are pairwise relatively
     prime.
@@ -2111,7 +2111,7 @@ def pairwise_prime(a, b, c):
 
 
 def make_prime(a, b, c):
-    """
+    r"""
     Transform the equation `ax^2 + by^2 + cz^2 = 0` to an equivalent equation
     `a'x^2 + b'y^2 + c'z^2 = 0` with `\gcd(a', b') = 1`.
 
@@ -2164,11 +2164,11 @@ def reconstruct(a, b, z):
 
 
 def ldescent(A, B):
-    """
+    r"""
     Uses Lagrange's method to find a non trivial solution to
     `w^2 = Ax^2 + By^2`.
 
-    Here, `A \\neq 0` and `B \\neq 0` and `A` and `B` are square free. Output a
+    Here, `A \neq 0` and `B \neq 0` and `A` and `B` are square free. Output a
     tuple `(w_0, x_0, y_0)` which is a solution to the above equation.
 
     Examples
@@ -2286,7 +2286,7 @@ def descent(A, B):
 
 
 def gaussian_reduce(w, a, b):
-    """
+    r"""
     Returns a reduced solution `(x, z)` to the congruence
     `X^2 - aZ^2 \equiv 0 \ (mod \ b)` so that `x^2 + |a|z^2` is minimal.
 
@@ -2324,7 +2324,7 @@ def gaussian_reduce(w, a, b):
 
 
 def dot(u, v, w, a, b):
-    """
+    r"""
     Returns a special dot product of the vectors `u = (u_{1}, u_{2})` and
     `v = (v_{1}, v_{2})` which is defined in order to reduce solution of
     the congruence equation `X^2 - aZ^2 \equiv 0 \ (mod \ b)`.
@@ -2335,7 +2335,7 @@ def dot(u, v, w, a, b):
 
 
 def norm(u, w, a, b):
-    """
+    r"""
     Returns the norm of the vector `u = (u_{1}, u_{2})` under the dot product
     defined by `u \cdot v = (wu_{1} + bu_{2})(w*v_{1} + bv_{2}) + |a|*u_{1}*v_{1}`
     where `u = (u_{1}, u_{2})` and `v = (v_{1}, v_{2})`.
@@ -2345,7 +2345,7 @@ def norm(u, w, a, b):
 
 
 def holzer(x_0, y_0, z_0, a, b, c):
-    """
+    r"""
     Simplify the solution `(x_{0}, y_{0}, z_{0})` of the equation
     `ax^2 + by^2 = cz^2` with `a, b, c > 0` and `z_{0}^2 \geq \mid ab \mid` to
     a new reduced solution `(x, y, z)` such that `z^2 \leq \mid ab \mid`.
@@ -2448,7 +2448,7 @@ def _diop_general_pythagorean(var, coeff, t):
 
 
 def diop_general_sum_of_squares(eq, limit=1):
-    """
+    r"""
     Solves the equation `x_{1}^2 + x_{2}^2 + . . . + x_{n}^2 - k = 0`.
 
     Returns at most ``limit`` number of solutions. Currently there is no way to
@@ -2684,7 +2684,7 @@ def prime_as_sum_of_two_squares(p):
 
 
 def sum_of_three_squares(n):
-    """
+    r"""
     Returns a 3-tuple `(a, b, c)` such that `a^2 + b^2 + c^2 = n` and
     `a, b, c \geq 0`.
 
@@ -2764,7 +2764,7 @@ def sum_of_three_squares(n):
 
 
 def sum_of_four_squares(n):
-    """
+    r"""
     Returns a 4-tuple `(a, b, c, d)` such that `a^2 + b^2 + c^2 + d^2 = n`.
 
     Here `a, b, c, d \geq 0`.
