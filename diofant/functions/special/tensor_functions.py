@@ -146,9 +146,6 @@ class KroneckerDelta(Function):
         0
         >>> KroneckerDelta(i, i + 1 + k)
         KroneckerDelta(i, i + k + 1)
-
-        # indirect doctest
-
         """
         diff = i - j
         if diff.is_zero:
