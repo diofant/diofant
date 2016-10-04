@@ -1,3 +1,5 @@
+import warnings
+
 import pytest
 
 from diofant.core.cache import clear_cache
@@ -46,3 +48,8 @@ def set_displayhook():
     # doctest restore sys.displayhook from __displayhook__,
     # see https://bugs.python.org/issue26092.
     sys.__displayhook__ = sys.displayhook
+
+
+@pytest.fixture(autouse=True, scope='session')
+def enable_deprecationwarnings():
+    warnings.simplefilter('error', DeprecationWarning)
