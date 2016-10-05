@@ -1,14 +1,10 @@
 Interactive
 ===========
 
-Functions reference
--------------------
+.. automodule:: diofant.interactive
 
-.. autofunction:: diofant.interactive.printing.init_printing
-.. autofunction:: diofant.interactive.session.init_ipython_session
+.. automodule:: diofant.interactive.printing
+    :members:
 
-AST Transformers
-----------------
-
-.. autoclass:: diofant.interactive.session.IntegerWrapper
-.. autoclass:: diofant.interactive.session.AutomaticSymbols
+.. automodule:: diofant.interactive.session
+    :members:
