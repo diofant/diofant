@@ -3466,7 +3466,7 @@ def test_pretty_class():
     class C:
         pass   # C has no .__class__ and this was causing problems
 
-    class D(object):
+    class D:
         pass
 
     assert pretty( C ) == str( C )

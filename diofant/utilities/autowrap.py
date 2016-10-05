@@ -91,7 +91,7 @@ class CodeWrapError(Exception):
     pass
 
 
-class CodeWrapper(object):
+class CodeWrapper:
     """Base Class for code wrappers"""
     _filename = "wrapped_code"
     _module_basename = "wrapper_module"

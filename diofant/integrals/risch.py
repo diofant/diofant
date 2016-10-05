@@ -112,7 +112,7 @@ def integer_powers(exprs):
     return sorted(iter(newterms.items()), key=lambda item: item[0].sort_key())
 
 
-class DifferentialExtension(object):
+class DifferentialExtension:
     """
     A container for all the information relating to a differential extension.
 
@@ -656,7 +656,7 @@ class DifferentialExtension(object):
         return
 
 
-class DecrementLevel(object):
+class DecrementLevel:
     """
     A context manager for decrementing the level of a DifferentialExtension.
     """

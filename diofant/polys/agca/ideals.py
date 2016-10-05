@@ -5,7 +5,7 @@ from functools import reduce
 from diofant.polys.polyerrors import CoercionFailed
 
 
-class Ideal(object):
+class Ideal:
     """
     Abstract base class for ideals.
 

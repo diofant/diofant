@@ -258,7 +258,7 @@ class TautologyDetected(Exception):
     pass
 
 
-class Prover(object):
+class Prover:
     """
     ai - prover of logic rules
 
@@ -375,7 +375,7 @@ class Prover(object):
 ########################################
 
 
-class FactRules(object):
+class FactRules:
     """
     Rules that describe how to deduce facts in logic space
 

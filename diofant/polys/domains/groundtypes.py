@@ -36,11 +36,11 @@ if HAS_GMPY:
         isqrt as gmpy_sqrt,
         qdiv as gmpy_qdiv)
 else:
-    class GMPYInteger(object):
+    class GMPYInteger:
         def __init__(self, obj):
             pass
 
-    class GMPYRational(object):
+    class GMPYRational:
         def __init__(self, obj):
             pass
 

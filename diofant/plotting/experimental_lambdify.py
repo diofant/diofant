@@ -76,7 +76,7 @@ from diofant.utilities.iterables import numbered_symbols
 # TODO debuging output
 
 
-class vectorized_lambdify(object):
+class vectorized_lambdify:
     """ Return a sufficiently smart, vectorized and lambdified function.
 
     Returns only reals.
@@ -168,7 +168,7 @@ class vectorized_lambdify(object):
         return results
 
 
-class lambdify(object):
+class lambdify:
     """Returns the lambdified function.
 
     This function uses experimental_lambdify to create a lambdified
@@ -237,7 +237,7 @@ def experimental_lambdify(*args, **kwargs):
     return l.lambda_func
 
 
-class Lambdifier(object):
+class Lambdifier:
     def __init__(self, args, expr, print_lambda=False, use_evalf=False,
                  float_wrap_evalf=False, complex_wrap_evalf=False,
                  use_np=False, use_python_math=False, use_python_cmath=False,

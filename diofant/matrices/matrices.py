@@ -73,7 +73,7 @@ class DeferredVector(Symbol, NotIterable):
         return "DeferredVector('%s')" % (self.name)
 
 
-class MatrixBase(object):
+class MatrixBase:
 
     # Added just for numpy compatibility
     __array_priority__ = 11

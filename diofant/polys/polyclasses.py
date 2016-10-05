@@ -5,7 +5,7 @@ from diofant.polys.polyerrors import CoercionFailed, NotReversible
 from diofant import oo
 
 
-class GenericPoly(object):
+class GenericPoly:
     """Base class for low-level polynomial representations. """
 
     def ground_to_ring(self):

@@ -64,7 +64,7 @@ def _all_models(models):
             yield False
 
 
-class SATSolver(object):
+class SATSolver:
     """
     Class for representing a SAT solver capable of
      finding a model to a boolean theory in conjunctive
@@ -630,7 +630,7 @@ class SATSolver(object):
         pass
 
 
-class Level(object):
+class Level:
     """
     Represents a single level in the DPLL algorithm, and contains
     enough information for a sound backtracking procedure.

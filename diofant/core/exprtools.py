@@ -72,7 +72,7 @@ def decompose_power(expr):
     return base, exp
 
 
-class Factors(object):
+class Factors:
     """Efficient representation of ``f_1*f_2*...*f_n``."""
 
     def __init__(self, factors=None):  # Factors
@@ -588,7 +588,7 @@ class Factors(object):
         return self.factors == other.factors
 
 
-class Term(object):
+class Term:
     """Efficient representation of ``coeff*(numer/denom)``. """
 
     def __init__(self, term, numer=None, denom=None):  # Term

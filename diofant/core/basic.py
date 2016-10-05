@@ -1568,7 +1568,7 @@ def _aresame(a, b):
         return True
 
 
-class preorder_traversal(object):
+class preorder_traversal:
     """Do a pre-order traversal of a tree.
 
     This iterator recursively yields nodes that it has visited in a pre-order

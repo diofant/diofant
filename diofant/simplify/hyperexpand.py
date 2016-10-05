@@ -666,7 +666,7 @@ class G_Function(Expr):
 _x = Dummy('dummy_for_hyperexpand')
 
 
-class Formula(object):
+class Formula:
     """
     This class represents hypergeometric formulae.
 
@@ -795,7 +795,7 @@ class Formula(object):
         return result
 
 
-class FormulaCollection(object):
+class FormulaCollection:
     """ A collection of formulae to use as origins. """
 
     def __init__(self):
@@ -868,7 +868,7 @@ class FormulaCollection(object):
             return
 
 
-class MeijerFormula(object):
+class MeijerFormula:
     """
     This class represents a Meijer G-function formula.
 
@@ -909,7 +909,7 @@ class MeijerFormula(object):
                                  self.M.subs(subs), None)
 
 
-class MeijerFormulaCollection(object):
+class MeijerFormulaCollection:
     """
     This class holds a collection of meijer g formulae.
     """
@@ -932,7 +932,7 @@ class MeijerFormulaCollection(object):
                 return res
 
 
-class Operator(object):
+class Operator:
     """
     Base class for operators to be applied to our functions.
 

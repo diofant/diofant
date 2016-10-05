@@ -108,7 +108,7 @@ __all__ = (
 #
 
 
-class Routine(object):
+class Routine:
     """Generic description of evaluation routine for set of expressions.
 
     A CodeGen class can translate instances of this class into code in a
@@ -211,7 +211,7 @@ class Routine(object):
         return args
 
 
-class DataType(object):
+class DataType:
     """Holds strings for a certain datatype in different languages."""
     def __init__(self, cname, fname, pyname, octname):
         self.cname = cname
@@ -239,7 +239,7 @@ def get_default_datatype(expr):
         return default_datatypes["float"]
 
 
-class Variable(object):
+class Variable:
     """Represents a typed variable."""
 
     def __init__(self, name, datatype=None, dimensions=None, precision=None):
@@ -323,7 +323,7 @@ class InputArgument(Argument):
     pass
 
 
-class ResultBase(object):
+class ResultBase:
     """Base class for all "outgoing" information from a routine.
 
     Objects of this class stores a diofant expression, and a diofant object
@@ -456,7 +456,7 @@ class Result(Variable, ResultBase):
 # Transformation of routine objects into code
 #
 
-class CodeGen(object):
+class CodeGen:
     """Abstract class for the code generators."""
 
     def __init__(self, project="project"):

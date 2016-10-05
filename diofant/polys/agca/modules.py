@@ -38,7 +38,7 @@ from diofant.core.compatibility import iterable
 ##########################################################################
 
 
-class Module(object):
+class Module:
     """
     Abstract base class for modules.
 
@@ -153,7 +153,7 @@ class Module(object):
         raise NotImplementedError
 
 
-class ModuleElement(object):
+class ModuleElement:
     """
     Base class for module element wrappers.
 

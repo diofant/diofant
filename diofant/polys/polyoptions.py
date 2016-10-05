@@ -11,7 +11,7 @@ import diofant.polys
 __all__ = ["Options"]
 
 
-class Option(object):
+class Option:
     """Base class for all kinds of options. """
 
     option = None

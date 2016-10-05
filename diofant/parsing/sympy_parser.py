@@ -44,7 +44,7 @@ def _token_callable(token, local_dict, global_dict, nextToken=None):
     return callable(func) and not isinstance(func, Symbol)
 
 
-class AppliedFunction(object):
+class AppliedFunction:
     """
     A group of tokens representing a function and its arguments.
 

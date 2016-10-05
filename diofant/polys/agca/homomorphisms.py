@@ -15,7 +15,7 @@ from diofant.printing import sstr
 # For this reason, the concrete classes are organised by domain module type.
 
 
-class ModuleHomomorphism(object):
+class ModuleHomomorphism:
     """
     Abstract base class for module homomoprhisms. Do not instantiate.
 

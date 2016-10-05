@@ -3,7 +3,7 @@
 from .assumptions import ManagedProperties
 
 
-class SingletonRegistry(object):
+class SingletonRegistry:
     """
     A map from singleton classes to the corresponding instances.
     """

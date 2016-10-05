@@ -10,7 +10,7 @@ from diofant.utilities import default_sort_key, public
 
 
 @public
-class Domain(object):
+class Domain:
     """Represents an abstract domain. """
 
     dtype = None

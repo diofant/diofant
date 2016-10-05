@@ -269,7 +269,7 @@ def term_div(a, b, domain):
             return
 
 
-class MonomialOps(object):
+class MonomialOps:
     """Code generator of fast monomial arithmetic functions. """
 
     def __init__(self, ngens):
@@ -383,7 +383,7 @@ class MonomialOps(object):
 
 
 @public
-class Monomial(object):
+class Monomial:
     """Class representing a monomial, i.e. a product of powers. """
 
     def __init__(self, monom, gens=None):

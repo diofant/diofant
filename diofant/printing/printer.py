@@ -68,7 +68,7 @@ Some more information how the single concepts work and who should use which:
 """
 
 
-class Printer(object):
+class Printer:
     """Generic printer
 
     Its job is to provide infrastructure for implementing new printers easily.

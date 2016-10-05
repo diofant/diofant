@@ -741,7 +741,7 @@ class PrettyPrinter(Printer):
 
         orig_self = self
 
-        class Fake(object):
+        class Fake:
             baseline = 0
 
             def render(self, *args, **kwargs):

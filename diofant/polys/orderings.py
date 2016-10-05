@@ -6,7 +6,7 @@ from diofant.core.symbol import Symbol
 from diofant.core.compatibility import iterable
 
 
-class MonomialOrder(object):
+class MonomialOrder:
     """Base class for monomial orderings. """
 
     alias = None
@@ -245,7 +245,7 @@ def monomial_key(order=None, gens=None):
         raise ValueError("monomial ordering specification must be a string or a callable, got %s" % order)
 
 
-class _ItemGetter(object):
+class _ItemGetter:
     """Helper class to return a subsequence of values."""
 
     def __init__(self, seq):
