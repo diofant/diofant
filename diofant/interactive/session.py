@@ -19,17 +19,21 @@ class IntegerWrapper(ast.NodeTransformer):
 
 class AutomaticSymbols(ast.NodeTransformer):
     """Add missing Symbol definitions automatically."""
-    def __init__(self, app):
+    def __init__(self):
         super(AutomaticSymbols, self).__init__()
-        self.app = app
         self.names = []
 
     def visit_Module(self, node):
+        import IPython
+
+        app = IPython.get_ipython()
+        ignored_names = list(app.user_ns.keys()) + dir(builtins)
+
         for s in node.body:
             self.visit(s)
 
         for v in self.names:
-            if v in self.app.user_ns.keys() or v in dir(builtins):
+            if v in ignored_names:
                 continue
 
             assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],

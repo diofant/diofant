@@ -46,7 +46,7 @@ def test_automatic_symbols():
     app = init_ipython_session()
     app.run_cell("ip = get_ipython()")
     app.run_cell("from diofant.interactive.session import AutomaticSymbols")
-    app.run_cell("ip.ast_transformers.append(AutomaticSymbols(ip))")
+    app.run_cell("ip.ast_transformers.append(AutomaticSymbols())")
     app.run_cell("from diofant import Symbol, factorial")
 
     symbol = "verylongsymbolname"
