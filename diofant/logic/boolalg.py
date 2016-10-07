@@ -594,7 +594,7 @@ class Xor(BooleanFunction):
     def __new__(cls, *args, **kwargs):
         argset = set()
         obj = super(Xor, cls).__new__(cls, *args, **kwargs)
-        for arg in obj._args:
+        for arg in super(Xor, obj).args:
             if isinstance(arg, Number) or arg in (True, False):
                 if arg:
                     arg = true

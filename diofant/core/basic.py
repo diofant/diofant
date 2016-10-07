@@ -14,30 +14,25 @@ class Basic(metaclass=ManagedProperties):
     """
     Base class for all objects in Diofant.
 
-    Conventions:
+    Always use ``args`` property, when accessing parameters of some instance.
 
-    1) Always use ``.args``, when accessing parameters of some instance:
+    Examples
+    ========
 
-        >>> from diofant import cot
-        >>> from diofant.abc import x, y
+    >>> from diofant import cot
+    >>> from diofant.abc import x, y
 
-        >>> cot(x).args
-        (x,)
+    >>> cot(x).args
+    (x,)
 
-        >>> cot(x).args[0]
-        x
+    >>> cot(x).args[0]
+    x
 
-        >>> (x*y).args
-        (x, y)
+    >>> (x*y).args
+    (x, y)
 
-        >>> (x*y).args[1]
-        y
-
-
-    2) Never use internal methods or variables (the ones prefixed with ``_``):
-
-        >>> cot(x)._args    # do not use this, use cot(x).args instead
-        (x,)
+    >>> (x*y).args[1]
+    y
     """
 
     # To be overridden with True in the appropriate subclasses
@@ -566,7 +561,6 @@ class Basic(metaclass=ManagedProperties):
         Notes
         =====
 
-        Never use self._args, always use self.args.
         Only use _args in __new__ when creating a new function.
         Don't override .args() from Basic (so that it's easy to
         change the interface in the future if needed).

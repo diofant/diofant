@@ -350,9 +350,9 @@ class IndexedBase(Expr, NotIterable):
 
         """
         if self._shape:
-            return self._args + (self._shape,)
+            return super().args + (self._shape,)
         else:
-            return self._args
+            return super().args
 
     def _hashable_content(self):
         return Expr._hashable_content(self) + (self._shape,)

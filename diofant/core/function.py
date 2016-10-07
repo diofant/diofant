@@ -1368,12 +1368,12 @@ class Lambda(Expr):
     @property
     def variables(self):
         """The variables used in the internal representation of the function"""
-        return self._args[0]
+        return self.args[0]
 
     @property
     def expr(self):
         """The return value of the function"""
-        return self._args[1]
+        return self.args[1]
 
     @property
     def free_symbols(self):
@@ -1536,17 +1536,17 @@ class Subs(Expr):
     @property
     def variables(self):
         """The variables to be evaluated"""
-        return self._args[1]
+        return self.args[1]
 
     @property
     def expr(self):
         """The expression on which the substitution operates"""
-        return self._args[0]
+        return self.args[0]
 
     @property
     def point(self):
         """The values for which the variables are to be substituted"""
-        return self._args[2]
+        return self.args[2]
 
     @property
     def free_symbols(self):

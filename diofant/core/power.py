@@ -205,11 +205,11 @@ class Pow(Expr):
 
     @property
     def base(self):
-        return self._args[0]
+        return self.args[0]
 
     @property
     def exp(self):
-        return self._args[1]
+        return self.args[1]
 
     @classmethod
     def class_key(cls):
