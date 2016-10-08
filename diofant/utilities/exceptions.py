@@ -150,6 +150,3 @@ class DiofantDeprecationWarning(DeprecationWarning):
         # if stacklevel was set to 1. If you are writting a wrapper around this,
         # increase the stacklevel accordingly.
         warnings.warn(see_above, DiofantDeprecationWarning, stacklevel=stacklevel)
-
-# Python by default hides DeprecationWarnings, which we do not want.
-warnings.simplefilter("once", DiofantDeprecationWarning)
