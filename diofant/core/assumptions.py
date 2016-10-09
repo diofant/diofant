@@ -2,7 +2,10 @@
 This module contains the machinery handling assumptions.
 
 All symbolic objects have assumption attributes that can be accessed via
-.is_<assumption name> attribute.
+.is_<assumption name> attribute, i.e.
+:py:attr:`~diofant.core.basic.Basic.is_integer`.  Full set of defined
+assumption names are accessible as
+``Basic.default_assumptions.rules.defined_facts`` attribute.
 
 Assumptions determine certain properties of symbolic objects and can
 have 3 possible values: True, False, None.  True is returned if the
@@ -25,111 +28,15 @@ By default, all symbolic values are in the largest set in the given context
 without specifying the property. For example, a symbol that has a property
 being integer, is also real, complex, etc.
 
-Here follows a list of possible assumption names:
-
-.. glossary::
-
-    commutative
-        object commutes with any other object with
-        respect to multiplication operation.
-
-    polar
-        object can have values from the Riemann surface of the logarithm,
-        see :py:class:`~diofant.functions.elementary.exponential.exp_polar`.
-
-    complex
-        object can have only values from the set
-        of complex numbers.
-
-    imaginary
-        object value is a number that can be written as a real
-        number multiplied by the imaginary unit ``I``.  See [3]_.
-
-    real
-        object can have only values from the set
-        of real numbers [12]_.
-
-    extended_real
-        object can have only values on the extended
-        real number line [13]_.
-
-    integer
-    noninteger
-        object can have only values from the set
-        of integers (respectively, from the subset of real
-        numbers, that aren't integers).
-
-    odd
-    even
-        object can have only values from the set of
-        odd (even) integers [2]_.
-
-    prime
-        object is a natural number greater than ``1`` that has
-        no positive divisors other than ``1`` and itself.  See [6]_.
-
-    composite
-        object is a positive integer that has at least one positive
-        divisor other than ``1`` or the number itself.  See [4]_.
-
-    zero
-    nonzero
-        object is zero (not zero).
-
-    rational
-        object can have only values from the set
-        of rationals.
-
-    algebraic
-        object can have only values from the set
-        of algebraic numbers [11]_.
-
-    transcendental
-        object can have only values from the set
-        of transcendental numbers [10]_.
-
-    irrational
-        object value cannot be represented exactly by Rational, see [5]_.
-
-    finite
-    infinite
-        object absolute value is bounded (is value is
-        arbitrarily large).  See [7]_, [8]_, [9]_.
-
-    negative
-    nonnegative
-        object can have only negative (only
-        nonnegative) values [1]_.
-
-    positive
-    nonpositive
-        object can have only positive (only
-        nonpositive) values.
-
-    hermitian
-    antihermitian
-        object belongs to the field of hermitian
-        (antihermitian) operators.
-
-Examples
-========
-
-    >>> from diofant import Symbol
-    >>> x = Symbol('x', real=True); x
-    x
-    >>> x.is_extended_real
-    True
-    >>> x.is_complex
-    True
-
 See Also
 ========
 
 .. seealso::
 
-    :py:class:`diofant.core.numbers.ImaginaryUnit`
-    :py:class:`diofant.core.numbers.Zero`
-    :py:class:`diofant.core.numbers.One`
+    :py:class:`~diofant.core.numbers.ImaginaryUnit`
+    :py:attr:`~diofant.core.basic.Basic.is_algebraic`
+    :py:attr:`~diofant.core.basic.Basic.is_real`
+    :py:attr:`~diofant.core.basic.Basic.is_prime`
 
 Notes
 =====
@@ -137,25 +44,6 @@ Notes
 Assumption values are stored in obj._assumptions dictionary or
 are returned by getter methods (with property decorators) or are
 attributes of objects/classes.
-
-
-References
-==========
-
-.. [1] http://en.wikipedia.org/wiki/Negative_number
-.. [2] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
-.. [3] http://en.wikipedia.org/wiki/Imaginary_number
-.. [4] http://en.wikipedia.org/wiki/Composite_number
-.. [5] http://en.wikipedia.org/wiki/Irrational_number
-.. [6] http://en.wikipedia.org/wiki/Prime_number
-.. [7] http://en.wikipedia.org/wiki/Finite
-.. [8] https://docs.python.org/3/library/math.html#math.isfinite
-.. [9] http://docs.scipy.org/doc/numpy/reference/generated/numpy.isfinite.html
-.. [10] http://en.wikipedia.org/wiki/Transcendental_number
-.. [11] http://en.wikipedia.org/wiki/Algebraic_number
-.. [12] http://en.wikipedia.org/wiki/Real_number
-.. [13] http://en.wikipedia.org/wiki/Extended_real_number_line
-
 """
 
 from random import shuffle
@@ -204,6 +92,235 @@ _assume_rules = FactRules([
 ])
 
 _assume_defined = frozenset(_assume_rules.defined_facts.copy())
+_assume_docs = {
+    'commutative':
+"""
+Test if self commutes with any other object wrt multiplication operation.
+""",
+    'polar':
+"""
+Test if self can have values from the Riemann surface of the logarithm.
+
+See Also
+========
+
+diofant.functions.elementary.exponential.exp_polar
+""",
+    'complex':
+"""
+Test if self can have only values from the set of complex numbers.
+
+See Also
+========
+
+is_real
+""",
+    'real':
+"""
+Test if self can have only values from the set of real numbers [1]_.
+
+See Also
+========
+
+is_complex
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Real_number
+""",
+    'imaginary':
+"""
+Test if self is an imaginary number [1]_.
+
+I.e. that it can be written as a real number multiplied by
+the imaginary unit ``I``.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Imaginary_number
+""",
+    'extended_real':
+"""
+Test if self can have only values on the extended real number line [1]_.
+
+See Also
+========
+
+is_real
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Extended_real_number_line
+""",
+    'integer':
+"""
+Test if self can have only values from the set of integers.
+""",
+    'noninteger':
+"""
+Test if self can have only values from the subset of real numbers,
+that aren't integers.
+""",
+    'odd':
+"""
+Test if self can have only values from the set of odd integers [1]_.
+
+See Also
+========
+
+is_even
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
+""",
+    'even':
+"""
+Test if self can have only values from the set of even integers [1]_.
+
+See Also
+========
+
+is_odd
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Parity_%28mathematics%29
+""",
+    'prime':
+"""
+Test if self is a natural number greater than ``1`` that has
+no positive divisors other than ``1`` and itself.  See [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Prime_number
+""",
+    'composite':
+"""
+Test if self is a positive integer that has at least one positive
+divisor other than ``1`` or the number itself.  See [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Composite_number
+""",
+    'zero':
+"""
+Test if self is zero.
+
+See Also
+========
+
+is_nonzero
+""",
+    'nonzero':
+"""
+Test if self is nonzero.
+
+See Also
+========
+
+is_zero
+""",
+    'rational':
+"""
+Test if self can have only values from the set of rationals.
+""",
+    'algebraic':
+"""
+Test if self can have only values from the set of algebraic numbers [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Algebraic_number
+""",
+    'transcendental':
+"""
+Test if self can have only values from the set of transcendental numbers [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Transcendental_number
+""",
+    'irrational':
+"""
+Test if self value cannot be represented exactly by Rational, see [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Irrational_number
+""",
+    'finite':
+"""
+Test if self absolute value is bounded.  See [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Finite
+
+""",
+    'infinite':
+"""
+Test if self absolute value can be arbitrarily large.  See [1]_, [2]_.
+
+References
+==========
+
+.. [1] https://docs.python.org/3/library/math.html#math.isfinite
+.. [2] http://docs.scipy.org/doc/numpy/reference/generated/numpy.isfinite.html
+""",
+    'negative':
+"""
+Test if self can have only negative values [1]_.
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Negative_number
+""",
+    'nonnegative':
+"""
+Test if self can have only nonnegative values [1]_.
+
+See Also
+========
+
+is_negative
+
+References
+==========
+
+.. [1] http://en.wikipedia.org/wiki/Negative_number
+""",
+    'positive':
+"""
+Test if self can have only positive values.
+""",
+    'nonpositive':
+"""
+Test if self can have only nonpositive values.
+""",
+    'hermitian':
+"""
+Test if self belongs to the field of hermitian operators.
+""",
+    'antihermitian':
+"""
+Test if self belongs to the field of antihermitian operators.
+""",
+}
 
 
 class StdFactKB(FactKB):
@@ -249,7 +366,7 @@ def make_property(fact):
             return _ask(fact, self)
 
     getit.func_name = as_property(fact)
-    return property(getit)
+    return property(getit, doc=_assume_docs[fact])
 
 
 def _ask(fact, obj):
