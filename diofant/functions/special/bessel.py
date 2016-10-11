@@ -716,11 +716,17 @@ def jn_zeros(n, k, method="diofant", dps=15):
                                               int(l)), prec)
                 for l in range(1, k + 1)]
     elif method == "scipy":
-        from scipy.special import sph_jn
         from scipy.optimize import newton
+        try:
+            from scipy.special import spherical_jn
+        except ImportError:  # pragma: no cover
+            from scipy.special import sph_jn
+
+            def spherical_jn(n, x):
+                return sph_jn(n, x)[0][-1]
 
         def f(x):
-            return sph_jn(n, x)[0][-1]
+            return spherical_jn(n, x)
     else:
         raise NotImplementedError("Unknown method.")
 
