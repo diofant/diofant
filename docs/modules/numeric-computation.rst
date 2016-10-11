@@ -143,13 +143,13 @@ compiled using the Theano compiler chain.
     >>> from diofant.abc import x
     >>> expr = sin(x)/x
 
-    >>> from diofant.printing.theanocode import theano_function
-    >>> f = theano_function([x], [expr])
+    >>> from diofant.printing.theanocode import theano_function  # doctest: +SKIP
+    >>> f = theano_function([x], [expr])  # doctest: +SKIP
 
 If array broadcasting or types are desired then Theano requires this extra
 information
 
-    >>> f = theano_function([x], [expr], dims={x: 1}, dtypes={x: 'float64'})
+    >>> f = theano_function([x], [expr], dims={x: 1}, dtypes={x: 'float64'})  # doctest: +SKIP
 
 Theano has a more sophisticated code generation system than Diofant's C/Fortran
 code printers.  Among other things it handles common sub-expressions and

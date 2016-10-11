@@ -29,6 +29,10 @@ matrix:
         - sphinx-build -W -b html docs build/sphinx/html
         - py.test --cov diofant diofant/polys
       after_success: codecov
+    - python: "3.6-dev"
+      install:
+        - travis_wait pip install .[exports,plot,interactive,gmpy]
+        - pip uninstall -y Theano
 before_install:
   - |
     mkdir -p $HOME/.local
