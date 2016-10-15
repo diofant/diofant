@@ -416,7 +416,7 @@ class VectorZero(BasisDependentZero, Vector):
 
     _op_priority = 12.1
     _pretty_form = '0'
-    _latex_form = '\mathbf{\hat{0}}'
+    _latex_form = r'\mathbf{\hat{0}}'
 
     def __new__(cls):
         obj = BasisDependentZero.__new__(cls)

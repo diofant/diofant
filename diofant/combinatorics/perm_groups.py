@@ -1125,7 +1125,7 @@ class PermutationGroup(Basic):
         return res
 
     def derived_subgroup(self):
-        """Compute the derived subgroup.
+        r"""Compute the derived subgroup.
 
         The derived subgroup, or commutator subgroup is the subgroup generated
         by all commutators ``[g, h] = hgh^{-1}g^{-1}`` for ``g, h\in G`` ; it is
@@ -2835,7 +2835,7 @@ class PermutationGroup(Basic):
 
     @property
     def strong_gens(self):
-        """Return a strong generating set from the Schreier-Sims algorithm.
+        r"""Return a strong generating set from the Schreier-Sims algorithm.
 
         A generating set ``S = \{g_1, g_2, ..., g_t\}`` for a permutation group
         ``G`` is a strong generating set relative to the sequence of points
@@ -3120,7 +3120,7 @@ class PermutationGroup(Basic):
 
     @property
     def transitivity_degree(self):
-        """Compute the degree of transitivity of the group.
+        r"""Compute the degree of transitivity of the group.
 
         A permutation group ``G`` acting on ``\Omega = \{0, 1, ..., n-1\}`` is
         ``k``-fold transitive, if, for any k points

@@ -31,7 +31,7 @@ def load(s):
     lines = s.split('\n')
 
     pComment = re.compile('c.*')
-    pStats = re.compile('p\s*cnf\s*(\d*)\s*(\d*)')
+    pStats = re.compile(r'p\s*cnf\s*(\d*)\s*(\d*)')
 
     while len(lines) > 0:
         line = lines.pop(0)

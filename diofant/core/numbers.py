@@ -20,6 +20,7 @@ from .decorators import _sympifyit
 from .cache import cacheit, clear_cache
 from .logic import fuzzy_not
 from .compatibility import as_int, HAS_GMPY, DIOFANT_INTS
+import diofant.core.compatibility
 
 rnd = mlib.round_nearest
 
@@ -146,7 +147,7 @@ def igcd(*args):
     for b in args[1:]:
         a, b = as_int(a), abs(as_int(b))
 
-        a = fractions.gcd(a, b)
+        a = diofant.core.compatibility.gcd(a, b)
         if a == 1:
             break
     return a

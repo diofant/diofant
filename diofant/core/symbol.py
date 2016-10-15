@@ -144,7 +144,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
 
 class Symbol(BaseSymbol):
-    """Symbol is a placeholder for atomic symbolic expression.
+    r"""Symbol is a placeholder for atomic symbolic expression.
 
     It has a name and a set of assumptions.
 
@@ -430,7 +430,7 @@ def symbols(names, **args):
 
         >>> symbols('x((a:b))')
         (x(a), x(b))
-        >>> symbols('x(:1\,:2)')  # or 'x((:1)\,(:2))'
+        >>> symbols(r'x(:1\,:2)')  # or 'x((:1)\,(:2))'
         (x(0,0), x(0,1))
 
     All newly created symbols have assumptions set according to ``args``::
@@ -458,7 +458,7 @@ def symbols(names, **args):
 
     if isinstance(names, str):
         marker = 0
-        literals = ['\,', '\:', '\ ']
+        literals = [r'\,', r'\:', r'\ ']
         for i in range(len(literals)):
             lit = literals.pop(0)
             if lit in names:

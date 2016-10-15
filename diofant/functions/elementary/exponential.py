@@ -161,7 +161,7 @@ def exp(arg, **kwargs):
 
 
 class log(Function):
-    """
+    r"""
     The natural logarithm function `\ln(x)` or `\log(x)`.
     Logarithms are taken with the natural base, `e`. To get
     a logarithm of a different base ``b``, use ``log(x, b)``,
@@ -183,7 +183,7 @@ class log(Function):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
+        r"""
         Returns `e^x`, the inverse function of `\log(x)`.
         """
         return exp
@@ -423,7 +423,7 @@ class log(Function):
 
 
 class LambertW(Function):
-    """
+    r"""
     The Lambert W function `W(z)` is defined as the inverse
     function of `w \exp(w)` [1]_.
 

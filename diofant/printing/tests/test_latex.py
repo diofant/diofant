@@ -688,13 +688,13 @@ def test_mode():
 
 def test_latex_Piecewise():
     p = Piecewise((x, x < 1), (x**2, True))
-    assert latex(p) == "\\begin{cases} x & \\text{for}\: x < 1 \\\\x^{2} &" \
-                       " \\text{otherwise} \\end{cases}"
-    assert latex(p, itex=True) == "\\begin{cases} x & \\text{for}\: x \\lt 1 \\\\x^{2} &" \
-                                  " \\text{otherwise} \\end{cases}"
+    assert latex(p) == r"\begin{cases} x & \text{for}\: x < 1 \\x^{2} &" \
+                       r" \text{otherwise} \end{cases}"
+    assert latex(p, itex=True) == r"\begin{cases} x & \text{for}\: x \lt 1 \\x^{2} &" \
+                                  r" \text{otherwise} \end{cases}"
     p = Piecewise((x, x < 0), (0, x >= 0))
-    assert latex(p) == "\\begin{cases} x & \\text{for}\\: x < 0 \\\\0 &" \
-                       " \\text{for}\\: x \\geq 0 \\end{cases}"
+    assert latex(p) == r"\begin{cases} x & \text{for}\: x < 0 \\0 &" \
+                       r" \text{for}\: x \geq 0 \end{cases}"
     A, B = symbols("A B", commutative=False)
     p = Piecewise((A**2, Eq(A, B)), (A*B, True))
     s = r"\begin{cases} A^{2} & \text{for}\: A = B \\A B & \text{otherwise} \end{cases}"
@@ -743,11 +743,11 @@ def test_latex_matrix_with_functions():
 def test_latex_mul_symbol():
     assert latex(4*4**x, mul_symbol='times') == "4 \\times 4^{x}"
     assert latex(4*4**x, mul_symbol='dot') == "4 \\cdot 4^{x}"
-    assert latex(4*4**x, mul_symbol='ldot') == "4 \,.\, 4^{x}"
+    assert latex(4*4**x, mul_symbol='ldot') == r"4 \,.\, 4^{x}"
 
     assert latex(4*x, mul_symbol='times') == "4 \\times x"
     assert latex(4*x, mul_symbol='dot') == "4 \\cdot x"
-    assert latex(4*x, mul_symbol='ldot') == "4 \,.\, x"
+    assert latex(4*x, mul_symbol='ldot') == r"4 \,.\, x"
 
 
 def test_latex_issue_4381():

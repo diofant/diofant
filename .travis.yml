@@ -20,7 +20,7 @@ matrix:
       env: COVERAGE='on' SELECT='not slow and not xfail'
     - python: 3.4
       env: COVERAGE='on' SELECT='slow and not xfail'
-    - python: 3.4
+    - python: 3.5
       env: COVERAGE='on' EXTRA='on'
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]

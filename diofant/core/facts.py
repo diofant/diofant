@@ -1,4 +1,4 @@
-"""
+r"""
 This is rule-based deduction system for Diofant
 
 The whole thing is split into two parts

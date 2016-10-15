@@ -979,7 +979,7 @@ def matrix2numpy(m, dtype=object):  # pragma: no cover
 
 @doctest_depends_on(modules=('numpy',))
 def symarray(prefix, shape, **kwargs):  # pragma: no cover
-    """Create a numpy ndarray of symbols (as an object array).
+    r"""Create a numpy ndarray of symbols (as an object array).
 
     The created symbols are named ``prefix_i1_i2_``...  You should thus provide a
     non-empty prefix if you want your symbols to be unique for different output

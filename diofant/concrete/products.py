@@ -324,7 +324,7 @@ class Product(ExprWithIntLimits):
         return
 
     def reverse_order(self, *indices):
-        """
+        r"""
         Reverse the order of a limit in a Product.
 
         Parameters

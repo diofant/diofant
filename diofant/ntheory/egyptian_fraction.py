@@ -1,7 +1,6 @@
-from fractions import gcd
-
 import diofant.polys
 from diofant import Integer
+from diofant.core.compatibility import gcd
 
 
 def egyptian_fraction(r, algorithm="Greedy"):

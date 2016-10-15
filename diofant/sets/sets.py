@@ -151,7 +151,7 @@ class Set(Basic):
         return
 
     def complement(self, universe):
-        """
+        r"""
         The complement of 'self' w.r.t the given the universe.
 
         Examples
@@ -1445,10 +1445,10 @@ class Intersection(Set):
 
 
 class Complement(Set, EvalfMixin):
-    """
+    r"""
     Represents relative complement of a set with another set.
 
-    `A - B = \{x \in A| x \\notin B\}`
+    `A - B = \{x \in A| x \notin B\}`
 
     Examples
     ========

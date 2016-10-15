@@ -127,7 +127,7 @@ def _representing_matrices(basis, G, ring):
 
 
 def _basis(G, ring):
-    """
+    r"""
     Computes a list of monomials which are not divisible by the leading
     monomials wrt to ``O`` of ``G``. These monomials are a basis of
     `K[X_1, \ldots, X_n]/(G)`.

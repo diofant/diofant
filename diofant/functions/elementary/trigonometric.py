@@ -2165,7 +2165,7 @@ class acot(InverseTrigonometricFunction):
 
 
 class asec(InverseTrigonometricFunction):
-    """
+    r"""
     The inverse secant function.
 
     Returns the arc secant of x (measured in radians).

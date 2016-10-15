@@ -624,7 +624,7 @@ class LatexPrinter(Printer):
         return name
 
     def _print_Function(self, expr, exp=None):
-        '''
+        r'''
         Render functions to LaTeX, handling functions that LaTeX knows about
         e.g., sin, cos, ... by using the proper LaTeX command (\sin, \cos, ...).
         For single-letter function names, render them as regular LaTeX math
