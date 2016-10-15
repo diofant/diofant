@@ -14,7 +14,7 @@ polynomials within Diofant. All code examples assume::
 
     >>> from diofant import *
     >>> x, y, z = symbols('x,y,z')
-    >>> init_printing(use_unicode=False, wrap_line=False, no_global=True)
+    >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
 
 Basic functionality
 ===================

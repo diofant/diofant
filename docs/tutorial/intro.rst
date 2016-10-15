@@ -118,7 +118,7 @@ of symbolic power Diofant is capable of, to whet your appetite.
 
 This will make all further examples pretty print with unicode characters.
 
- >>> init_printing(use_unicode=True)
+ >>> init_printing(pretty_print=True, use_unicode=True)
 
 Take the derivative of `\sin{(x)}e^x`.
 

@@ -22,7 +22,7 @@ computations were done using the following setup::
 
     >>> from diofant import *
 
-    >>> init_printing(use_unicode=True, wrap_line=False, no_global=True)
+    >>> init_printing(pretty_print=True, use_unicode=True, wrap_line=False, no_global=True)
 
     >>> var('x,y,z,s,c,n')
     (x, y, z, s, c, n)

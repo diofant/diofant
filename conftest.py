@@ -40,10 +40,6 @@ def check_disabled(request):
 @pytest.fixture(autouse=True, scope='session')
 def set_displayhook():
     import sys
-    from diofant import init_printing
-
-    # hook our nice, hash-stable strprinter
-    init_printing(pretty_print=False, use_unicode=False)
 
     # doctest restore sys.displayhook from __displayhook__,
     # see https://bugs.python.org/issue26092.
