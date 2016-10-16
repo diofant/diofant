@@ -12,9 +12,7 @@ from .dense import (GramSchmidt, Matrix, MutableMatrix, MutableDenseMatrix,
                     ones, randMatrix, rot_axis1, rot_axis2, rot_axis3,
                     symarray, wronskian, zeros, vandermonde)
 
-from .sparse import MutableSparseMatrix
-
-SparseMatrix = MutableSparseMatrix
+from .sparse import MutableSparseMatrix, SparseMatrix
 
 from .immutable import (ImmutableMatrix, ImmutableSparseMatrix,
                         ImmutableDenseMatrix)

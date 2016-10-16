@@ -128,13 +128,13 @@ class MatrixBase(object):
         [1, 1/2]])
 
         """
-        from diofant.matrices.sparse import SparseMatrix
+        from diofant.matrices.sparse import SparseMatrixBase
 
         flat_list = None
 
         if len(args) == 1:
             # Matrix(SparseMatrix(...))
-            if isinstance(args[0], SparseMatrix):
+            if isinstance(args[0], SparseMatrixBase):
                 return args[0].rows, args[0].cols, flatten(args[0].tolist())
 
             # Matrix(Matrix(...))
@@ -3863,7 +3863,7 @@ class MatrixBase(object):
         ========
 
         diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.sparse.SparseMatrix.row
+        diofant.matrices.sparse.SparseMatrixBase.row
         col_join
         """
         if self.rows != rhs.rows:
@@ -3896,7 +3896,7 @@ class MatrixBase(object):
         ========
 
         diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.sparse.SparseMatrix.col
+        diofant.matrices.sparse.SparseMatrixBase.col
         row_join
         """
         if self.cols != bott.cols:
@@ -3929,7 +3929,7 @@ class MatrixBase(object):
         ========
 
         diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.sparse.SparseMatrix.row
+        diofant.matrices.sparse.SparseMatrixBase.row
         col_insert
         """
         if pos == 0:
@@ -3971,7 +3971,7 @@ class MatrixBase(object):
         ========
 
         diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.sparse.SparseMatrix.col
+        diofant.matrices.sparse.SparseMatrixBase.col
         row_insert
         """
         if pos == 0:

@@ -1,13 +1,7 @@
 Sparse Matrices
 ===============
 
-.. module:: diofant.matrices.sparse
-
-SparseMatrix Class Reference
-----------------------------
-.. autoclass:: SparseMatrix
-   :members:
-.. autoclass:: MutableSparseMatrix
+.. automodule:: diofant.matrices.sparse
    :members:
 
 ImmutableSparseMatrix Class Reference
