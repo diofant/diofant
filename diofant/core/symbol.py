@@ -494,9 +494,6 @@ def symbols(names, **args):
         seq = args.pop('seq', as_seq)
 
         for name in names:
-            if not name:
-                raise ValueError('missing symbol')
-
             if ':' not in name:
                 symbol = cls(literal(name), **args)
                 result.append(symbol)
@@ -530,10 +527,7 @@ def symbols(names, **args):
                     split[i] = [s]
             else:
                 seq = True
-                if len(split) == 1:
-                    names = split[0]
-                else:
-                    names = [''.join(s) for s in itertools.product(*split)]
+                names = [''.join(s) for s in itertools.product(*split)]
                 if literals:
                     result.extend([cls(literal(s), **args) for s in names])
                 else:
@@ -599,13 +593,12 @@ def var(names, **args):
     try:
         syms = symbols(names, **args)
 
-        if syms is not None:
-            if isinstance(syms, Basic):
-                frame.f_globals[syms.name] = syms
-            elif isinstance(syms, FunctionClass):
-                frame.f_globals[syms.__name__] = syms
-            else:
-                traverse(syms, frame)
+        if isinstance(syms, Basic):
+            frame.f_globals[syms.name] = syms
+        elif isinstance(syms, FunctionClass):
+            frame.f_globals[syms.__name__] = syms
+        else:
+            traverse(syms, frame)
     finally:
         del frame  # break cyclic dependencies as stated in inspect docs
 

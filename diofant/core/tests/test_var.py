@@ -82,3 +82,9 @@ def test_var_cls():
 
     assert isinstance(g, FunctionClass)
     assert isinstance(h, FunctionClass)
+
+
+def test_var_nested():
+    ((a, b, c, d), (x, y, z)) = var(('a:d', 'x:z'))
+    assert isinstance(a, Symbol)
+    assert isinstance(x, Symbol)
