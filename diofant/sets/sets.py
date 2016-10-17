@@ -4,6 +4,7 @@ from mpmath import mpf, mpi
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
 from ..core.compatibility import iterable, ordered
+from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
@@ -258,6 +259,7 @@ class Set(Basic):
     def _sup(self):
         raise NotImplementedError("(%s)._sup" % self)
 
+    @_sympifyit('other', false)
     def contains(self, other):
         """
         Returns True if 'other' is contained in 'self' as an element.
@@ -273,7 +275,6 @@ class Set(Basic):
         True
 
         """
-        other = sympify(other, strict=True)
         ret = self._contains(other)
         if ret is None:
             ret = Contains(other, self, evaluate=False)
