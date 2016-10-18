@@ -357,6 +357,8 @@ class DenseMatrix(MatrixBase):
             return False
 
     def __eq__(self, other):
+        from diofant.matrices import Matrix
+
         try:
             if self.shape != other.shape:
                 return False
@@ -491,7 +493,7 @@ class DenseMatrix(MatrixBase):
         [1, 2],
         [3, 5]])
         """
-        return Matrix(self)
+        return MutableMatrix(self)
 
     def as_immutable(self):
         """Returns an Immutable version of this Matrix
@@ -573,7 +575,7 @@ def _force_mutable(x):
         a = x.__array__()
         if len(a.shape) == 0:
             return sympify(a)
-        return Matrix(x)
+        return MutableMatrix(x)
     return x
 
 
@@ -721,7 +723,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         """
         if not is_sequence(value):
             raise TypeError("`value` must be an ordered iterable, not %s." % type(value))
-        return self.copyin_matrix(key, Matrix(value))
+        return self.copyin_matrix(key, MutableMatrix(value))
 
     def zip_row_op(self, i, k, f):
         """In-place operation on row ``i`` using two-arg functor whose args are
@@ -938,7 +940,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         """
         self._mat = [value]*len(self)
 
-MutableMatrix = Matrix = MutableDenseMatrix
+MutableMatrix = MutableDenseMatrix
 
 ###########
 # Numpy Utility Functions:
@@ -1086,6 +1088,8 @@ def rot_axis3(theta):
     diofant.matrices.dense.rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
         about the 2-axis
     """
+    from diofant.matrices import Matrix
+
     ct = cos(theta)
     st = sin(theta)
     lil = ((ct, st, 0),
@@ -1129,6 +1133,8 @@ def rot_axis2(theta):
     diofant.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
     """
+    from diofant.matrices import Matrix
+
     ct = cos(theta)
     st = sin(theta)
     lil = ((ct, 0, -st),
@@ -1172,6 +1178,8 @@ def rot_axis1(theta):
     diofant.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
     """
+    from diofant.matrices import Matrix
+
     ct = cos(theta)
     st = sin(theta)
     lil = ((1, 0, 0),
@@ -1219,7 +1227,7 @@ def ones(r, c=None):
     diofant.matrices.dense.eye
     diofant.matrices.dense.diag
     """
-    from .dense import Matrix
+    from diofant.matrices import Matrix
 
     c = r if c is None else c
     r = as_int(r)
@@ -1239,7 +1247,7 @@ def zeros(r, c=None, cls=None):
     diofant.matrices.dense.diag
     """
     if cls is None:
-        from .dense import Matrix as cls
+        from diofant.matrices import Matrix as cls
     return cls.zeros(r, c)
 
 
@@ -1344,11 +1352,12 @@ def diag(*values, **kwargs):
 
     diofant.matrices.dense.eye
     """
+    from diofant.matrices import Matrix
     from .sparse import MutableSparseMatrix
 
     cls = kwargs.pop('cls', None)
     if cls is None:
-        from .dense import Matrix as cls
+        from diofant.matrices import Matrix as cls
 
     if kwargs:
         raise ValueError('unrecognized keyword%s: %s' % (
@@ -1542,7 +1551,7 @@ def wronskian(functions, var, method='bareis'):
     diofant.matrices.matrices.MatrixBase.jacobian
     diofant.matrices.dense.hessian
     """
-    from .dense import Matrix
+    from diofant.matrices import Matrix
 
     for index in range(0, len(functions)):
         functions[index] = sympify(functions[index])
@@ -1583,7 +1592,7 @@ def casoratian(seqs, n, zero=True):
        True
 
     """
-    from .dense import Matrix
+    from diofant.matrices import Matrix
 
     seqs = list(map(sympify, seqs))
 
@@ -1636,6 +1645,8 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
     [0, 68,  0]
     [0, 91, 34]
     """
+    from diofant.matrices import Matrix
+
     if c is None:
         c = r
     if seed is None:

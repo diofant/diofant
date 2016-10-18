@@ -9,7 +9,6 @@ from diofant.core.singleton import S
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.utilities.iterables import uniq
 from .matrices import MatrixBase, ShapeError, a2idx
-from .dense import Matrix
 
 
 class SparseMatrixBase(MatrixBase):
@@ -18,6 +17,7 @@ class SparseMatrixBase(MatrixBase):
     """
 
     def __init__(self, *args):
+        from diofant.matrices import Matrix
 
         if len(args) == 1 and isinstance(args[0], SparseMatrixBase):
             self.rows = args[0].rows
@@ -1444,6 +1444,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         return A
 
     def copyin_list(self, key, value):
+        from diofant.matrices import Matrix
+
         if not is_sequence(value):
             raise TypeError("`value` must be of type list or tuple.")
         self.copyin_matrix(key, Matrix(value))

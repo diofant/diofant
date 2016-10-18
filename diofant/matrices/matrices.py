@@ -267,7 +267,7 @@ class MatrixBase(object):
         [0, 0, 4, 0],
         [2, 2, 4, 2]])
         """
-        from .dense import Matrix
+        from diofant.matrices import Matrix
 
         is_slice = isinstance(key, slice)
         i, j = key = self.key2ij(key)
@@ -1727,7 +1727,7 @@ class MatrixBase(object):
         multiply
         multiply_elementwise
         """
-        from .dense import Matrix
+        from diofant.matrices import Matrix
 
         if not isinstance(b, MatrixBase):
             if is_sequence(b):
@@ -2652,7 +2652,8 @@ class MatrixBase(object):
         inverse_LU
         inverse_ADJ
         """
-        from .dense import Matrix
+        from diofant.matrices import Matrix
+
         if not self.is_square:
             raise NonSquareMatrixError("A Matrix must be square to invert.")
 
