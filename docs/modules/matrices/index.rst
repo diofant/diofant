@@ -6,9 +6,9 @@ Matrices
 
 .. automodule:: diofant.matrices
 
-Contents:
-
 .. toctree::
+   :caption: Contents
+   :name: mattoc
    :maxdepth: 2
 
    matrices.rst

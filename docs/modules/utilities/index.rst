@@ -6,9 +6,9 @@ Utilities
 
 .. automodule:: diofant.utilities
 
-Contents:
-
 .. toctree::
+   :caption: Contents
+   :name: utiltoc
    :maxdepth: 2
 
    autowrap.rst
