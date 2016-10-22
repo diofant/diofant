@@ -520,7 +520,11 @@ class Pow(Expr):
                 except ValueError:
                     combines = Pow._eval_power(
                         Pow(*old.as_base_exp(), evaluate=False),
-                        pow) is not None
+                        pow)
+                    if isinstance(combines, Pow):
+                        combines = combines.base is old.base
+                    else:
+                        combines = False
                 return combines, pow
             return False, None
 
