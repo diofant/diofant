@@ -2,13 +2,12 @@ import pytest
 
 from diofant import (Eq, Function, I, Symbol, cos, diff, exp, log, sin,
                      symbols, tan)
+from diofant.abc import a, b, c, t, x, y
 from diofant.solvers.pde import (checkpdesol, classify_pde, pde_separate,
                                  pde_separate_add, pde_separate_mul, pdsolve)
 
 
 __all__ = ()
-
-a, b, c, x, y = symbols('a b c x y')
 
 
 def test_pde_separate():
@@ -289,3 +288,13 @@ def test_pdsolve_variable_coeff():
     eq = x*u.diff(y) - y
     sol = pdsolve(eq, hint='1st_linear_variable_coeff')
     assert pdsolve(eq) == Eq(u, F(x) + y**2/x/2)
+
+
+def test_sympyissue_11726():
+    f, X, T = symbols("f X T", cls=Function)
+
+    u = f(x, t)
+    eq = u.diff(x, 2) - u.diff(t, 2)
+    res = pde_separate(eq, u, [T(x), X(t)])
+
+    assert res == [diff(T(x), x, x)/T(x), diff(X(t), t, t)/X(t)]
