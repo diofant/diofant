@@ -2876,13 +2876,7 @@ class Expr(Basic, EvalfMixin):
     ###################################################################################
 
     def diff(self, *symbols, **assumptions):
-        """Compute derivative of self wrt to symbols.
-
-        See Also
-        ========
-
-        diofant.core.function.Derivative
-        """
+        """Alias for :func:`~diofant.core.function.diff`. """
         new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
         assumptions.setdefault("evaluate", True)
         return Derivative(self, *new_symbols, **assumptions)
