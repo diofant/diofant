@@ -205,14 +205,17 @@ class Pow(Expr):
 
     @property
     def base(self):
+        """Returns base of the power expression. """
         return self.args[0]
 
     @property
     def exp(self):
+        """Returns exponent of the power expression. """
         return self.args[1]
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes. """
         return 4, 2, cls.__name__
 
     def _eval_power(self, other):
@@ -875,6 +878,13 @@ class Pow(Expr):
             return result
 
     def as_real_imag(self, deep=True, **hints):
+        """Returns real and imaginary parts of self
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_real_imag
+        """
         from diofant import arg, cos, sin
         from diofant.polys.polytools import poly
 
@@ -1043,6 +1053,13 @@ class Pow(Expr):
             return True
 
     def as_numer_denom(self):
+        """expression -> a/b -> a, b
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_numer_denom
+        """
         if not self.is_commutative:
             return self, S.One
         base, exp = self.as_base_exp()
@@ -1077,6 +1094,13 @@ class Pow(Expr):
         return self.func(n, exp), self.func(d, exp)
 
     def matches(self, expr, repl_dict={}):
+        """Helper method for match().
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.matches
+        """
         expr = _sympify(expr)
 
         # special case, pattern = 1 and expr.exp can match to 0
@@ -1287,6 +1311,13 @@ class Pow(Expr):
         return S.One, self.func(b, e)
 
     def is_constant(self, *wrt, **flags):
+        """Return True if self is constant, False if not, or None.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.is_constant
+        """
         expr = self
         if flags.get('simplify', True):
             expr = expr.simplify()

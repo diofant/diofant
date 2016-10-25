@@ -60,6 +60,7 @@ class Expr(Basic, EvalfMixin):
 
     @cacheit
     def sort_key(self, order=None):
+        """Return a sort key. """
 
         coeff, expr = self.as_coeff_Mul()
 
@@ -777,6 +778,13 @@ class Expr(Basic, EvalfMixin):
             return -self
 
     def conjugate(self):
+        """Returns the complex conjugate of self.
+
+        See Also
+        ========
+
+        diofant.functions.elementary.complexes.conjugate
+        """
         from diofant.functions.elementary.complexes import conjugate as c
         return c(self)
 
@@ -790,6 +798,13 @@ class Expr(Basic, EvalfMixin):
             return -conjugate(self)
 
     def transpose(self):
+        """Transpose self.
+
+        See Also
+        ========
+
+        diofant.functions.elementary.complexes.transpose
+        """
         from diofant.functions.elementary.complexes import transpose
         return transpose(self)
 
@@ -807,6 +822,13 @@ class Expr(Basic, EvalfMixin):
             return conjugate(obj)
 
     def adjoint(self):
+        """Compute conjugate transpose or Hermite conjugation.
+
+        See Also
+        ========
+
+        diofant.functions.elementary.complexes.adjoint
+        """
         from diofant.functions.elementary.complexes import adjoint
         return adjoint(self)
 
@@ -1659,7 +1681,13 @@ class Expr(Basic, EvalfMixin):
         return d
 
     def as_base_exp(self):
-        # a -> b ** e
+        """Return base and exp of self.
+
+        See Also
+        ========
+
+        diofant.core.power.Pow.as_base_exp
+        """
         return self, S.One
 
     def as_coeff_mul(self, *deps, **kwargs):
@@ -2843,6 +2871,13 @@ class Expr(Basic, EvalfMixin):
     ###################################################################################
 
     def diff(self, *symbols, **assumptions):
+        """Compute derivative of self wrt to symbols.
+
+        See Also
+        ========
+
+        diofant.core.function.Derivative
+        """
         new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
         assumptions.setdefault("evaluate", True)
         return Derivative(self, *new_symbols, **assumptions)

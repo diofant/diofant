@@ -358,6 +358,13 @@ class Add(Expr, AssocOp):
         return
 
     def matches(self, expr, repl_dict={}):
+        """Helper method for match().
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.matches
+        """
         return AssocOp._matches_commutative(self, expr, repl_dict)
 
     @staticmethod
@@ -392,7 +399,13 @@ class Add(Expr, AssocOp):
         return self.args[0], self._new_rawargs(*self.args[1:])
 
     def as_numer_denom(self):
+        """expression -> a/b -> a, b
 
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_numer_denom
+        """
         # clear rational denominator
         content, expr = self.primitive()
         ncon, dcon = content.as_numer_denom()
@@ -574,10 +587,24 @@ class Add(Expr, AssocOp):
                                *[s._subs(old, new) for s in ret_set])
 
     def removeO(self):
+        """Removes the additive O(..) symbol.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.removeO
+        """
         args = [a for a in self.args if not a.is_Order]
         return self._new_rawargs(*args)
 
     def getO(self):
+        """Returns the additive O(..) symbol.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.getO
+        """
         args = [a for a in self.args if a.is_Order]
         if args:
             return self._new_rawargs(*args)

@@ -214,6 +214,13 @@ class Dict(Basic):
 
     @property
     def args(self):
+        """Returns a tuple of arguments of 'self'.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.args
+        """
         return tuple(self.elements)
 
     def items(self):

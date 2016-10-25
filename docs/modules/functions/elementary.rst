@@ -32,6 +32,12 @@ Abs
 .. autoclass:: diofant.functions.elementary.complexes.Abs
    :members:
 
+adjoint
+-------
+
+.. autoclass:: diofant.functions.elementary.complexes.adjoint
+   :members:
+
 arg
 ---
 
@@ -60,6 +66,12 @@ principal_branch
 ----------------
 
 .. autoclass:: diofant.functions.elementary.complexes.principal_branch
+   :members:
+
+transpose
+---------
+
+.. autoclass:: diofant.functions.elementary.complexes.transpose
    :members:
 
 

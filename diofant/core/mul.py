@@ -594,6 +594,7 @@ class Mul(Expr, AssocOp):
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes. """
         return 4, 0, cls.__name__
 
     def _eval_evalf(self, prec):
@@ -639,6 +640,13 @@ class Mul(Expr, AssocOp):
 
     @cacheit
     def as_coeff_mul(self, *deps, **kwargs):
+        """Return the tuple (c, args) where self is written as a Mul.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_coeff_mul
+        """
         rational = kwargs.pop('rational', True)
         if deps:
             l1 = []
@@ -672,6 +680,13 @@ class Mul(Expr, AssocOp):
         return S.One, self
 
     def as_real_imag(self, deep=True, **hints):
+        """Returns real and imaginary parts of self
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_real_imag
+        """
         from diofant import Abs, expand_mul, im, re
         other = []
         coeffr = []
@@ -803,6 +818,13 @@ class Mul(Expr, AssocOp):
         return
 
     def matches(self, expr, repl_dict={}):
+        """Helper method for match().
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.matches
+        """
         expr = sympify(expr)
         if self.is_commutative and expr.is_commutative:
             return AssocOp._matches_commutative(self, expr, repl_dict)
@@ -917,6 +939,14 @@ class Mul(Expr, AssocOp):
         return lhs/rhs
 
     def as_powers_dict(self):
+        """Return self as a dictionary of factors with each factor being
+        treated as a power.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_powers_dict
+        """
         d = defaultdict(int)
         for term in self.args:
             b, e = term.as_base_exp()
@@ -924,6 +954,13 @@ class Mul(Expr, AssocOp):
         return d
 
     def as_numer_denom(self):
+        """expression -> a/b -> a, b
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_numer_denom
+        """
         # don't use _from_args to rebuild the numerators and denominators
         # as the order is not guaranteed to be the same once they have
         # been separated from each other
@@ -931,6 +968,13 @@ class Mul(Expr, AssocOp):
         return self.func(*numers), self.func(*denoms)
 
     def as_base_exp(self):
+        """Return base and exp of self.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_base_exp
+        """
         e1 = None
         bases = []
         nc = 0

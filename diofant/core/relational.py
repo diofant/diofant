@@ -427,10 +427,12 @@ class _Greater(_Inequality):
 
     @property
     def gts(self):
+        """Greater than side argument"""
         return self.args[0]
 
     @property
     def lts(self):
+        """Less than side argument"""
         return self.args[1]
 
 
@@ -444,10 +446,12 @@ class _Less(_Inequality):
 
     @property
     def gts(self):
+        """Greater than side argument"""
         return self.args[1]
 
     @property
     def lts(self):
+        """Less than side argument"""
         return self.args[0]
 
 

@@ -71,6 +71,7 @@ class Basic(metaclass=ManagedProperties):
         return obj
 
     def copy(self):
+        """Return swallow copy of self. """
         return self.func(*self.args)
 
     def __reduce_ex__(self, proto):
@@ -477,6 +478,13 @@ class Basic(metaclass=ManagedProperties):
             return expr_to_call
 
     def is_hypergeometric(self, k):
+        """Test if self is a hypergeometric term in k.
+
+        See Also
+        ========
+
+        diofant.simplify.simplify.hypersimp
+        """
         from diofant.simplify import hypersimp
         return hypersimp(self, k) is not None
 
@@ -1499,21 +1507,44 @@ class Atom(Basic):
     is_Atom = True
 
     def matches(self, expr, repl_dict={}):
+        """Helper method for match().
+
+        See Also
+        ========
+
+        Basic.matches
+        """
         if self == expr:
             return repl_dict
 
     def xreplace(self, rule, hack2=False):
+        """Replace occurrences of objects within the expression.
+
+        See Also
+        ========
+
+        Basic.xreplace
+        """
         return rule.get(self, self)
 
     def doit(self, **hints):
+        """Evaluate objects that are not evaluated by default.
+
+        See Also
+        ========
+
+        Basic.doit
+        """
         return self
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes."""
         return 2, 0, cls.__name__
 
     @cacheit
     def sort_key(self, order=None):
+        """Return a sort key."""
         from diofant.core import S
         return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
 
