@@ -1,6 +1,8 @@
 import collections
 
+from .. import Indexed
 from ...core import Expr, Integer, sympify
+from ...logic import true
 from ...matrices import MatrixBase
 
 
@@ -82,6 +84,16 @@ class NDimArray:
             integer_index //= sh
         index.reverse()
         return tuple(index)
+
+    def _check_symbolic_index(self, index):
+        # Check if any index is symbolic:
+        tuple_index = (index if isinstance(index, tuple) else (index,))
+        if any((isinstance(i, Expr) and (not i.is_number)) for i in tuple_index):
+            for i, nth_dim in zip(tuple_index, self.shape):
+                i = sympify(i)
+                if ((i < 0) is true) or ((i >= nth_dim) is true):
+                    raise ValueError("index out of range")
+            return Indexed(self, *tuple_index)
 
     def _setter_iterable_check(self, value):
         if isinstance(value, (collections.abc.Iterable, MatrixBase, NDimArray)):
@@ -359,3 +371,6 @@ class NDimArray:
 
 class ImmutableNDimArray(NDimArray, Expr):
     _op_priority = 11.0
+
+    def _subs(self, old, new, **hints):
+        return super()._subs(old, new, **hints)

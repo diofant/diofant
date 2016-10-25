@@ -130,6 +130,9 @@ class Indexed(Expr):
     def __new__(cls, base, *args, **kw_args):
         from ..utilities import filldedent
 
+        from .array.ndim_array import NDimArray
+        from ..matrices.matrices import MatrixBase
+
         if not args:
             raise IndexException("Indexed needs at least one index.")
         if isinstance(base, (str, Symbol)):
@@ -138,6 +141,8 @@ class Indexed(Expr):
             raise TypeError(filldedent("""
                 Indexed expects string, Symbol or IndexedBase as base."""))
         args = list(map(sympify, args))
+        if isinstance(base, (NDimArray, Tuple, MatrixBase)) and all(i.is_number for i in args):
+            return base[args]
         return Expr.__new__(cls, base, *args, **kw_args)
 
     @property

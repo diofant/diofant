@@ -315,3 +315,8 @@ def test_diff():
     sd = MutableSparseNDimArray(md)
     assert sd == MutableSparseNDimArray([x, y, x*z, x*y*z], (2, 2))
     assert sd.diff(x) == MutableSparseNDimArray([[1, 0], [z, y*z]])
+
+
+def test_indexing():
+    a = MutableDenseNDimArray([0, 1, 2, 3], (2, 2))
+    assert a[x, y].subs({x: 1, y: 1}) == 3
