@@ -134,6 +134,13 @@ intersphinx_mapping = {
     'numpy': ('http://docs.scipy.org/doc/numpy', None),
 }
 
+html_static_path = ['_static']
+html_context = {
+    'css_files': [
+        '_static/theme_overrides.css',
+    ],
+}
+
 # RTD theme support:
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if not on_rtd:  # only import and set the theme if we're building docs locally
