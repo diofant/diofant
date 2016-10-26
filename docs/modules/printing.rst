@@ -39,15 +39,8 @@ The module ``pretty_symbology`` provides primitives to construct 2D shapes
 (hline, vline, etc) together with a technique to use unicode automatically
 when possible.
 
-.. module:: diofant.printing.pretty.pretty
-
-.. autoclass:: PrettyPrinter
-   :members: _use_unicode, doprint
-
-   .. autoattribute:: PrettyPrinter.printmethod
-
-.. autofunction:: pretty
-.. autofunction:: pretty_print
+.. automodule:: diofant.printing.pretty.pretty
+   :members:
 
 CCodePrinter
 ------------
