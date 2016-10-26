@@ -23,7 +23,8 @@ warnings.simplefilter('error', UserWarning)
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.addons.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary', ]
+              'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',]
 
 numpydoc_show_class_members = False
 numpydoc_class_members_toctree = False
@@ -127,6 +128,11 @@ texinfo_documents = [
 
 # Use svg for graphviz
 graphviz_output_format = 'svg'
+
+intersphinx_mapping = {
+    'python3': ('https://docs.python.org/3/', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy', None),
+}
 
 # RTD theme support:
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
