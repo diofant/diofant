@@ -1,6 +1,9 @@
 Dense Matrices
 ==============
 
+.. automodule:: diofant.matrices.dense
+   :members: MutableMatrix
+
 Matrix Class Reference
 ----------------------
 
