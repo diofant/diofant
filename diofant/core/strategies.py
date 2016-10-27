@@ -8,14 +8,17 @@ from strategies.dispatch import dispatch
 from .basic import Basic, Atom
 from diofant.utilities.iterables import sift
 
+__all__ = ('arguments', 'operator', 'term', 'rm_id',
+           'glom', 'flatten', 'unpack', 'sort')
+
 
 @dispatch(Basic)
 def arguments(o):
     return o.args
 
 
-@dispatch((int, Atom))  # noqa: F811
-def arguments(o):
+@arguments.register((int, Atom))
+def arguments_atomic(o):
     return ()
 
 
@@ -24,8 +27,8 @@ def operator(o):
     return o.func
 
 
-@dispatch((int, Atom))  # noqa: F811
-def operator(o):
+@operator.register((int, Atom))
+def operator_atomic(o):
     return o
 
 
@@ -34,8 +37,8 @@ def term(op, args):
     return op(*args)
 
 
-@dispatch((int, Atom), (tuple, list))  # noqa: F811
-def term(op, args):
+@term.register((int, Atom), (tuple, list))
+def term_atomic(op, args):
     return op
 
 
