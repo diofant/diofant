@@ -24,16 +24,7 @@ cacheit
 
 basic
 -----
-.. module:: diofant.core.basic
-
-Basic
-^^^^^
-.. autoclass:: Basic
-   :members:
-
-Atom
-^^^^
-.. autoclass:: Atom
+.. automodule:: diofant.core.basic
    :members:
 
 core
