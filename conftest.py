@@ -6,11 +6,9 @@ from diofant.core.cache import clear_cache
 
 
 def pytest_report_header(config):
-    from diofant.utilities.misc import ARCH
     from diofant.core.cache import USE_CACHE
     from diofant.core.compatibility import GROUND_TYPES, HAS_GMPY
-    s = "architecture: %s\n" % ARCH
-    s += "cache:        %s\n" % USE_CACHE
+    s = "cache:        %s\n" % USE_CACHE
     version = ''
     if GROUND_TYPES == 'gmpy':
         import gmpy2 as gmpy
