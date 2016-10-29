@@ -40,6 +40,12 @@ S
 .. autoclass:: S
    :members:
 
+evaluate
+--------
+
+.. automodule:: diofant.core.evaluate
+   :members:
+
 expr
 ----
 .. module:: diofant.core.expr
