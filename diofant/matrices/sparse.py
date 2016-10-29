@@ -9,35 +9,17 @@ from diofant.core.singleton import S
 from diofant.functions.elementary.miscellaneous import sqrt
 from diofant.utilities.iterables import uniq
 from .matrices import MatrixBase, ShapeError, a2idx
-from .dense import Matrix
 
 
-class SparseMatrix(MatrixBase):
+class SparseMatrixBase(MatrixBase):
     """
-    A sparse matrix (a matrix with a large number of zero elements).
-
-    Examples
-    ========
-
-    >>> from diofant.matrices import SparseMatrix
-    >>> SparseMatrix(2, 2, range(4))
-    Matrix([
-    [0, 1],
-    [2, 3]])
-    >>> SparseMatrix(2, 2, {(1, 1): 2})
-    Matrix([
-    [0, 0],
-    [0, 2]])
-
-    See Also
-    ========
-
-    diofant.matrices.dense.DenseMatrix
+    A sparse matrix base class.
     """
 
     def __init__(self, *args):
+        from diofant.matrices import Matrix
 
-        if len(args) == 1 and isinstance(args[0], SparseMatrix):
+        if len(args) == 1 and isinstance(args[0], SparseMatrixBase):
             self.rows = args[0].rows
             self.cols = args[0].cols
             self._smat = dict(args[0]._smat)
@@ -387,7 +369,7 @@ class SparseMatrix(MatrixBase):
         >>> I*2 == 2*I
         True
         """
-        if isinstance(other, SparseMatrix):
+        if isinstance(other, SparseMatrixBase):
             return self.multiply(other)
         if isinstance(other, MatrixBase):
             return other._new(self*self._new(other))
@@ -438,7 +420,7 @@ class SparseMatrix(MatrixBase):
         False
 
         """
-        if isinstance(other, SparseMatrix):
+        if isinstance(other, SparseMatrixBase):
             return self.add(other)
         elif isinstance(other, MatrixBase):
             return other._new(other + self)
@@ -496,7 +478,7 @@ class SparseMatrix(MatrixBase):
 
         multiply
         """
-        if not isinstance(other, SparseMatrix):
+        if not isinstance(other, SparseMatrixBase):
             raise ValueError('only use add with %s, not %s' %
                 tuple(c.__class__.__name__ for c in (self, other)))
         if self.shape != other.shape:
@@ -1084,7 +1066,7 @@ class SparseMatrix(MatrixBase):
         try:
             if self.shape != other.shape:
                 return False
-            if isinstance(other, SparseMatrix):
+            if isinstance(other, SparseMatrixBase):
                 return self._smat == other._smat
             elif isinstance(other, MatrixBase):
                 return self._smat == MutableSparseMatrix(other)._smat
@@ -1132,7 +1114,29 @@ class SparseMatrix(MatrixBase):
         return cls(n, n, {(i, i): S.One for i in range(n)})
 
 
-class MutableSparseMatrix(SparseMatrix, MatrixBase):
+class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
+    """
+    A sparse matrix (a matrix with a large number of zero elements).
+
+    Examples
+    ========
+
+    >>> from diofant.matrices import SparseMatrix
+    >>> SparseMatrix(2, 2, range(4))
+    Matrix([
+    [0, 1],
+    [2, 3]])
+    >>> SparseMatrix(2, 2, {(1, 1): 2})
+    Matrix([
+    [0, 0],
+    [0, 2]])
+
+    See Also
+    ========
+
+    diofant.matrices.dense.DenseMatrix
+    """
+
     @classmethod
     def _new(cls, *args, **kwargs):
         return cls(*args)
@@ -1366,7 +1370,7 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
         if not A.rows == B.rows:
             raise ShapeError()
         A = A.copy()
-        if not isinstance(B, SparseMatrix):
+        if not isinstance(B, SparseMatrixBase):
             k = 0
             b = B._mat
             for i in range(B.rows):
@@ -1424,7 +1428,7 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
         if not A.cols == B.cols:
             raise ShapeError()
         A = A.copy()
-        if not isinstance(B, SparseMatrix):
+        if not isinstance(B, SparseMatrixBase):
             k = 0
             b = B._mat
             for i in range(B.rows):
@@ -1440,6 +1444,8 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
         return A
 
     def copyin_list(self, key, value):
+        from diofant.matrices import Matrix
+
         if not is_sequence(value):
             raise TypeError("`value` must be of type list or tuple.")
         self.copyin_matrix(key, Matrix(value))
@@ -1453,7 +1459,7 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
             raise ShapeError(
                 "The Matrix `value` doesn't have the same dimensions "
                 "as the in sub-Matrix given by `key`.")
-        if not isinstance(value, SparseMatrix):
+        if not isinstance(value, SparseMatrixBase):
             for i in range(value.rows):
                 for j in range(value.cols):
                     self[i + rlo, j + clo] = value[i, j]
@@ -1489,7 +1495,7 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.sparse.SparseMatrix.row
+        diofant.matrices.sparse.SparseMatrixBase.row
         row_op
         col_op
 
@@ -1515,7 +1521,7 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.sparse.SparseMatrix.row
+        diofant.matrices.sparse.SparseMatrixBase.row
         zip_row_op
         col_op
 
@@ -1583,3 +1589,7 @@ class MutableSparseMatrix(SparseMatrix, MatrixBase):
             v = self._sympify(value)
             self._smat = {(i, j): v
                 for i in range(self.rows) for j in range(self.cols)}
+
+
+#:
+SparseMatrix = MutableSparseMatrix

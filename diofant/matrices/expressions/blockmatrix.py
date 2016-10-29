@@ -13,7 +13,7 @@ from diofant.matrices.expressions.trace import Trace
 from diofant.matrices.expressions.determinant import Determinant
 from diofant.matrices.expressions.slice import MatrixSlice
 from diofant.matrices.expressions.inverse import Inverse
-from diofant.matrices import Matrix, ShapeError
+from diofant.matrices import ShapeError
 
 
 class BlockMatrix(MatrixExpr):
@@ -98,6 +98,7 @@ class BlockMatrix(MatrixExpr):
         return self + other
 
     def _eval_transpose(self):
+        from diofant.matrices import Matrix
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy
@@ -362,6 +363,8 @@ def bc_inverse(expr):
 
 
 def blockinverse_1x1(expr):
+    from diofant.matrices import Matrix
+
     if isinstance(expr.arg, BlockMatrix) and expr.arg.blockshape == (1, 1):
         mat = Matrix([[expr.arg.blocks[0].inverse()]])
         return BlockMatrix(mat)
@@ -390,7 +393,7 @@ def deblock(B):
 
     bb = B.blocks.applyfunc(wrap)  # everything is a block
 
-    from diofant import Matrix
+    from diofant.matrices import Matrix
     try:
         MM = Matrix(0, sum(bb[0, i].blocks.shape[1] for i in range(bb.shape[1])), [])
         for row in range(0, bb.shape[0]):

@@ -2,7 +2,7 @@ from diofant.core import Basic, Integer, Tuple, Dict, S, sympify
 from diofant.core.sympify import converter as sympify_converter
 from diofant.matrices.matrices import MatrixBase
 from diofant.matrices.dense import DenseMatrix
-from diofant.matrices.sparse import SparseMatrix, MutableSparseMatrix
+from diofant.matrices.sparse import SparseMatrixBase, MutableSparseMatrix
 from diofant.matrices.expressions import MatrixExpr
 
 
@@ -111,7 +111,11 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 ImmutableMatrix.is_zero = DenseMatrix.is_zero
 
 
-class ImmutableSparseMatrix(Basic, SparseMatrix):
+#:
+ImmutableDenseMatrix = ImmutableMatrix
+
+
+class ImmutableSparseMatrix(Basic, SparseMatrixBase):
     """Create an immutable version of a sparse matrix.
 
     Examples
@@ -164,4 +168,4 @@ class ImmutableSparseMatrix(Basic, SparseMatrix):
     _eval_Eq = ImmutableMatrix._eval_Eq
 # This is included after the class definition as a workaround for issue 7213.
 # See https://github.com/sympy/sympy/issues/7213
-ImmutableSparseMatrix.is_zero = SparseMatrix.is_zero
+ImmutableSparseMatrix.is_zero = SparseMatrixBase.is_zero
