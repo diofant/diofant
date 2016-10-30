@@ -55,12 +55,7 @@ is capable of handling a large class of expressions.
 
 But ``simplify()`` has a pitfall.  It just applies all the major
 simplification operations in Diofant, and uses heuristics to determine the
-simplest result. But "simplest" is not a well-defined term.  For example, say
-we wanted to "simplify" `x^2 + 2x + 1` into `(x + 1)^2`:
-
-    >>> simplify(x**2 + 2*x + 1)
-     2
-    x  + 2⋅x + 1
+simplest result.  But "simplest" is not a well-defined term.
 
 We did not get what we want.  There is a function to perform this
 simplification, called ``factor()``, which will be discussed below.

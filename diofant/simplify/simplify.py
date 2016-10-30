@@ -625,6 +625,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     if not isinstance(expr, Basic):  # XXX: temporary hack
         return expr
 
+    expr = shorter(expr, expr.factor())
+
     expr = factor_terms(expr, sign=False)
 
     # hyperexpand automatically only works on hypergeometric terms
