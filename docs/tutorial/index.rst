@@ -49,7 +49,7 @@ feature and option of each function.
 
    intro.rst
    gotchas.rst
-   basic_operations.rst
+   basics.rst
    printing.rst
    simplification.rst
    calculus.rst
