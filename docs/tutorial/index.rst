@@ -48,8 +48,8 @@ feature and option of each function.
    :maxdepth: 2
 
    intro.rst
-   gotchas.rst
    basics.rst
+   gotchas.rst
    printing.rst
    simplification.rst
    calculus.rst

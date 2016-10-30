@@ -1,6 +1,6 @@
-=====================
- Gotchas and Pitfalls
-=====================
+=========
+ Gotchas
+=========
 
 ..
     >>> from diofant import *
