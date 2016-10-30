@@ -6,6 +6,11 @@ Matrices
 
 .. automodule:: diofant.matrices
 
+.. class:: Matrix
+    :module: diofant.matrices
+
+    alias of :class:`~diofant.matrices.dense.MutableMatrix`
+
 .. toctree::
    :caption: Contents
    :name: mattoc
