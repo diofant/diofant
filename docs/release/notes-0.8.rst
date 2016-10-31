@@ -307,7 +307,7 @@ Issues closed
 * `sympy/sympy#5907 <https://github.com/sympy/sympy/issues/5907>`_ integrate(1/(x**2 + a**2)**2, x) is wrong if a is real
 * `sympy/sympy#11722 <https://github.com/sympy/sympy/issues/11722>`_ series() calculation up to O(t**k) returns invalid coefficients for t**k * log(t)
 * `#347 <https://github.com/diofant/diofant/issues/347>`_ Search & mention more closed SymPy issues
-* `sympy/sympy#8804_ <https://github.com/sympy/sympy/issues/8804>`_ series expansion of 1/x ignores order parameter
+* `sympy/sympy#8804 <https://github.com/sympy/sympy/issues/8804>`_ series expansion of 1/x ignores order parameter
 
 See also full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_ in the Diofant repository.
 
