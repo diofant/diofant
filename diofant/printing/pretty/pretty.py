@@ -1,3 +1,5 @@
+import itertools
+
 from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, oo
 from ...core.function import _coeff_isneg
 from ...utilities import default_sort_key, group
@@ -731,6 +733,40 @@ class PrettyPrinter(Printer):
                     strs[j] += ' '*(lengths[-1]+3)
 
         return prettyForm('\n'.join([s[:-3] for s in strs]))
+
+    def _print_NDimArray(self, expr):
+        from ...matrices import ImmutableMatrix
+
+        if expr.rank() == 0:
+            return self._print(expr[()])
+
+        level_str = [[]] + [[] for i in range(expr.rank())]
+        shape_ranges = [list(range(i)) for i in expr.shape]
+        for outer_i in itertools.product(*shape_ranges):
+            level_str[-1].append(expr[outer_i])
+            even = True
+            for back_outer_i in range(expr.rank()-1, -1, -1):
+                if len(level_str[back_outer_i+1]) < expr.shape[back_outer_i]:
+                    break
+                if even:
+                    level_str[back_outer_i].append(level_str[back_outer_i+1])
+                else:
+                    level_str[back_outer_i].append(ImmutableMatrix(level_str[back_outer_i+1]))
+                    if len(level_str[back_outer_i + 1]) == 1:
+                        level_str[back_outer_i][-1] = ImmutableMatrix([[level_str[back_outer_i][-1]]])
+                even = not even
+                level_str[back_outer_i+1] = []
+
+        out_expr = level_str[0][0]
+        if expr.rank() % 2 == 1:
+            out_expr = ImmutableMatrix([out_expr])
+
+        return self._print(out_expr)
+
+    _print_ImmutableDenseNDimArray = _print_NDimArray
+    _print_ImmutableSparseNDimArray = _print_NDimArray
+    _print_MutableDenseNDimArray = _print_NDimArray
+    _print_MutableSparseNDimArray = _print_NDimArray
 
     def _print_Piecewise(self, pexpr):
 

@@ -29,6 +29,9 @@ from diofant.printing.pretty import pprint
 from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty.pretty_symbology import U, xobj
 from diofant.stats import Die, Exponential, Normal, pspace, where
+from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
+                            MutableDenseNDimArray, MutableSparseNDimArray,
+                            tensorproduct)
 
 
 __all__ = ()
@@ -2609,6 +2612,184 @@ def test_pretty_matrix():
     C = MatrixSymbol('C', 3, 3)
     expr = A*(B + C)
     assert upretty(expr) == "A⋅(B + C)"
+
+
+def test_pretty_ndim_arrays():
+    for ArrayType in (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
+                      MutableDenseNDimArray, MutableSparseNDimArray):
+        M0 = ArrayType((x,), ())
+
+        assert pretty(M0) == "x"
+        assert upretty(M0) == "x"
+
+        M = ArrayType([[1/x, y], [z, w]])
+        M1 = ArrayType([1/x, y, z])
+
+        M2 = tensorproduct(M1, M)
+        M3 = tensorproduct(M, M)
+
+        ascii_str = \
+            """\
+[1   ]\n\
+[-  y]\n\
+[x   ]\n\
+[    ]\n\
+[z  w]\
+"""
+        ucode_str = \
+            """\
+⎡1   ⎤\n\
+⎢─  y⎥\n\
+⎢x   ⎥\n\
+⎢    ⎥\n\
+⎣z  w⎦\
+"""
+        assert pretty(M) == ascii_str
+        assert upretty(M) == ucode_str
+
+        ascii_str = \
+            """\
+[1      ]\n\
+[-  y  z]\n\
+[x      ]\
+"""
+        ucode_str = \
+            """\
+⎡1      ⎤\n\
+⎢─  y  z⎥\n\
+⎣x      ⎦\
+"""
+        assert pretty(M1) == ascii_str
+        assert upretty(M1) == ucode_str
+
+        ascii_str = \
+            """\
+[[1   y]  [ y    2 ]  [z      ]]\n\
+[[--  -]  [ -   y  ]  [-   y*z]]\n\
+[[ 2  x]  [ x      ]  [x      ]]\n\
+[[x    ]  [        ]  [       ]]\n\
+[[     ]  [y*z  w*y]  [ 2     ]]\n\
+[[z   w]              [z   w*z]]\n\
+[[-   -]                       ]\n\
+[[x   x]                       ]\
+"""
+        ucode_str = \
+            """\
+⎡⎡1   y⎤  ⎡ y    2 ⎤  ⎡z      ⎤⎤\n\
+⎢⎢──  ─⎥  ⎢ ─   y  ⎥  ⎢─   y⋅z⎥⎥\n\
+⎢⎢ 2  x⎥  ⎢ x      ⎥  ⎢x      ⎥⎥\n\
+⎢⎢x    ⎥  ⎢        ⎥  ⎢       ⎥⎥\n\
+⎢⎢     ⎥  ⎣y⋅z  w⋅y⎦  ⎢ 2     ⎥⎥\n\
+⎢⎢z   w⎥              ⎣z   w⋅z⎦⎥\n\
+⎢⎢─   ─⎥                       ⎥\n\
+⎣⎣x   x⎦                       ⎦\
+"""
+        assert pretty(M2) == ascii_str
+        assert upretty(M2) == ucode_str
+
+        ascii_str = \
+            """\
+[ [1   y]   [ y    2 ]]\n\
+[ [--  -]   [ -   y  ]]\n\
+[ [ 2  x]   [ x      ]]\n\
+[ [x    ]   [        ]]\n\
+[ [     ]   [y*z  w*y]]\n\
+[ [z   w]             ]\n\
+[ [-   -]             ]\n\
+[ [x   x]             ]\n\
+[                     ]\n\
+[[z      ]  [ w      ]]\n\
+[[-   y*z]  [ -   w*y]]\n\
+[[x      ]  [ x      ]]\n\
+[[       ]  [        ]]\n\
+[[ 2     ]  [      2 ]]\n\
+[[z   w*z]  [w*z  w  ]]\
+"""
+        ucode_str = \
+            """\
+⎡ ⎡1   y⎤   ⎡ y    2 ⎤⎤\n\
+⎢ ⎢──  ─⎥   ⎢ ─   y  ⎥⎥\n\
+⎢ ⎢ 2  x⎥   ⎢ x      ⎥⎥\n\
+⎢ ⎢x    ⎥   ⎢        ⎥⎥\n\
+⎢ ⎢     ⎥   ⎣y⋅z  w⋅y⎦⎥\n\
+⎢ ⎢z   w⎥             ⎥\n\
+⎢ ⎢─   ─⎥             ⎥\n\
+⎢ ⎣x   x⎦             ⎥\n\
+⎢                     ⎥\n\
+⎢⎡z      ⎤  ⎡ w      ⎤⎥\n\
+⎢⎢─   y⋅z⎥  ⎢ ─   w⋅y⎥⎥\n\
+⎢⎢x      ⎥  ⎢ x      ⎥⎥\n\
+⎢⎢       ⎥  ⎢        ⎥⎥\n\
+⎢⎢ 2     ⎥  ⎢      2 ⎥⎥\n\
+⎣⎣z   w⋅z⎦  ⎣w⋅z  w  ⎦⎦\
+"""
+        assert pretty(M3) == ascii_str
+        assert upretty(M3) == ucode_str
+
+        Mrow = ArrayType([[x, y, 1 / z]])
+        Mcolumn = ArrayType([[x], [y], [1 / z]])
+        Mcol2 = ArrayType([Mcolumn.tolist()])
+
+        ascii_str = \
+            """\
+[[      1]]\n\
+[[x  y  -]]\n\
+[[      z]]\
+"""
+        ucode_str = \
+            """\
+⎡⎡      1⎤⎤\n\
+⎢⎢x  y  ─⎥⎥\n\
+⎣⎣      z⎦⎦\
+"""
+        assert pretty(Mrow) == ascii_str
+        assert upretty(Mrow) == ucode_str
+
+        ascii_str = \
+            """\
+[x]\n\
+[ ]\n\
+[y]\n\
+[ ]\n\
+[1]\n\
+[-]\n\
+[z]\
+"""
+        ucode_str = \
+            """\
+⎡x⎤\n\
+⎢ ⎥\n\
+⎢y⎥\n\
+⎢ ⎥\n\
+⎢1⎥\n\
+⎢─⎥\n\
+⎣z⎦\
+"""
+        assert pretty(Mcolumn) == ascii_str
+        assert upretty(Mcolumn) == ucode_str
+
+        ascii_str = \
+            """\
+[[x]]\n\
+[[ ]]\n\
+[[y]]\n\
+[[ ]]\n\
+[[1]]\n\
+[[-]]\n\
+[[z]]\
+"""
+        ucode_str = \
+            """\
+⎡⎡x⎤⎤\n\
+⎢⎢ ⎥⎥\n\
+⎢⎢y⎥⎥\n\
+⎢⎢ ⎥⎥\n\
+⎢⎢1⎥⎥\n\
+⎢⎢─⎥⎥\n\
+⎣⎣z⎦⎦\
+"""
+        assert pretty(Mcol2) == ascii_str
+        assert upretty(Mcol2) == ucode_str
 
 
 def test_Adjoint():
