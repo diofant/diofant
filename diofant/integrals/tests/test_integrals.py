@@ -874,6 +874,13 @@ def test_issue_5413():
     assert integrate(-a/(a**2 + x**2), x) == I*log(-I*a + x)/2 - I*log(I*a + x)/2
 
 
+def test_issue_5907():
+    a = Symbol('a', real=True)
+    assert (integrate(1/(x**2 + a**2)**2, x) ==
+            x/(2*a**4 + 2*a**2*x**2) + (-I*log(-I*a + x)/4 +
+                                        I*log(I*a + x)/4)/a**3)
+
+
 def test_issue_4892a():
     A = symbols('A')
     c = Symbol('c', nonzero=True)

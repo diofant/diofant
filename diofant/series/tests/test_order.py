@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Symbol, Rational, exp, ln, log, nan, oo, O, pi, I,
+from diofant import (Symbol, Rational, exp, ln, log, nan, oo, O, pi, I, Add,
                      Integral, sin, cos, sqrt, conjugate, expand, transpose,
                      symbols, Function, Derivative, Integer, digamma)
 
@@ -335,7 +335,8 @@ def test_issue_6753():
 
 
 def test_issue_7872():
-    assert O(x**3).subs(x, exp(-x**2)) == O(exp(-3*x**2), (x, -oo))
+    assert O(x**3).subs(x, exp(-x**2)) in [O(exp(-3*x**2), (x, oo)),
+                                           O(exp(-3*x**2), (x, -oo))]
 
 
 def test_order_at_infinity():
@@ -421,3 +422,8 @@ def test_issue_9351():
 def test_issue_9192():
     assert O(1)*O(1) == O(1)
     assert O(1)**O(1) == O(1)
+
+
+def test_issue_7599():
+    n = Symbol('n', integer=True)
+    assert O(x**n, x) + O(x**2) == Add(O(x**2), O(x**n, x), evaluate=False)
