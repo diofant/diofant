@@ -2424,6 +2424,11 @@ class Expr(Basic, EvalfMixin):
         x
         >>> abs(x).series(dir="-")
         -x
+
+        For rational expressions this method may return original expression.
+
+        >>> (1/x).series(x, n=8)
+        1/x
         """
         from diofant import collect, Dummy, Symbol, Order
 
