@@ -7,15 +7,15 @@ Not Released Yet.
 New features
 ============
 
-* MrvAsympt algorithm to find asymptotic expansion, see :py:func:`~diofant.core.expr.Expr.aseries` method and `#6 <https://github.com/diofant/diofant/pull/6>`_.  Thanks to Avichal Dayal.
-* :py:func:`~diofant.concrete.summations.Sum.findrecur` method to find recurrence relations (with Sister Celine's algorithm), see `#15 <https://github.com/diofant/diofant/pull/15>`_.
+* MrvAsympt algorithm to find asymptotic expansion, see :func:`~diofant.core.expr.Expr.aseries` method and `#6 <https://github.com/diofant/diofant/pull/6>`_.  Thanks to Avichal Dayal.
+* :func:`~diofant.concrete.summations.Sum.findrecur` method to find recurrence relations (with Sister Celine's algorithm), see `#15 <https://github.com/diofant/diofant/pull/15>`_.
 * Support for Pow/log branch-cuts in limits, see `#140 <https://github.com/diofant/diofant/pull/140>`_.
-* Added basic optimization package, see :py:func:`~diofant.calculus.optimization.minimize` and `#108 <https://github.com/diofant/diofant/pull/108>`_.
-* Cartesian product of iterables using Cantor pairing, see :py:func:`~diofant.utilities.iterables.cantor_product` and `#276 <https://github.com/diofant/diofant/pull/276>`_.
-* :py:class:`~diofant.sets.fancysets.Rationals` set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
+* Added basic optimization package, see :func:`~diofant.calculus.optimization.minimize` and `#108 <https://github.com/diofant/diofant/pull/108>`_.
+* Cartesian product of iterables using Cantor pairing, see :func:`~diofant.utilities.iterables.cantor_product` and `#276 <https://github.com/diofant/diofant/pull/276>`_.
+* :class:`~diofant.sets.fancysets.Rationals` set, `#255 <https://github.com/diofant/diofant/pull/255>`_.
 * New simple and robust solver for systems of linear ODEs, see `#286 <https://github.com/diofant/diofant/pull/286>`_.  Thanks to Colin B. Macdonald.
 * Added mutable/immutable N-dim arrays, sparse and dense, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
-* :py:class:`~diofant.solvers.ode.dsolve` now support initial conditions for ODEs, see `#307 <https://github.com/diofant/diofant/pull/307>`_.  Thanks to Aaron Meurer.
+* :func:`~diofant.solvers.ode.dsolve` now support initial conditions for ODEs, see `#307 <https://github.com/diofant/diofant/pull/307>`_.  Thanks to Aaron Meurer.
 
 Major changes
 =============
@@ -23,7 +23,7 @@ Major changes
 * Depend on setuptools, see `#44 <https://github.com/diofant/diofant/pull/44>`_.
 * The Gruntz algorithm reimplemented correctly, see `#68 <https://github.com/diofant/diofant/pull/68>`_.
 * Replaced ``exp(x)`` with ``E**x`` internally, see `#79 <https://github.com/diofant/diofant/pull/79>`_.
-* Used ``srepr`` instead of ``sstr`` for ``__repr__`` printing, see `#39 <https://github.com/diofant/diofant/pull/39>`_.
+* Used :func:`~diofant.printing.repr.srepr` instead of :func:`~diofant.printing.str.sstr` for :meth:`~object.__repr__` printing, see `#39 <https://github.com/diofant/diofant/pull/39>`_.
 * Major cleanup for series methods, see `#187 <https://github.com/diofant/diofant/pull/187>`_.
 * Depend on cachetools to implement caching, see `#72 <https://github.com/diofant/diofant/pull/72>`_ and `#209 <https://github.com/diofant/diofant/pull/209>`_.
 * Assumption system (old) was validated (`#316 <https://github.com/diofant/diofant/pull/316>`_ and `#334 <https://github.com/diofant/diofant/pull/334>`_) and improved:
@@ -70,7 +70,7 @@ Minor changes
 * Ugly hacks for automatic symbols and wrapping int's now replaced with AST transformers, see `#278 <https://github.com/diofant/diofant/pull/278>`_ and `#167 <https://github.com/diofant/diofant/pull/167>`_.
 * Build correct inhomogeneous solution in rsolve_hyper, see `#298 <https://github.com/diofant/diofant/pull/298>`_.
 * Evaluate matrix powers for non-diagonalizable matrices, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
-* Beware of non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
+* Support non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Make risch_integrate(x**x, x) work, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Support CPython 3.6, see `#337 <https://github.com/diofant/diofant/pull/337>`_ and `#356 <https://github.com/diofant/diofant/pull/356>`_.
 
@@ -79,7 +79,7 @@ Developer changes
 
 * Unbundle numpydoc, see `#26 <https://github.com/diofant/diofant/pull/26>`_.
 * Deprecate AUTHORS file, all credits go to the aboutus.rst, see `#87 <https://github.com/diofant/diofant/pull/87>`_.
-* Use python's tokenise(), see `#120 <https://github.com/diofant/diofant/pull/120>`_.
+* Use python's :func:`~tokenize.tokenize`, see `#120 <https://github.com/diofant/diofant/pull/120>`_.
 * Drop using bundled pytest fork, depend on pytest for testing, see `#38 <https://github.com/diofant/diofant/pull/38>`_, `#152 <https://github.com/diofant/diofant/pull/152>`_, `#91 <https://github.com/diofant/diofant/pull/91>`_, `#48 <https://github.com/diofant/diofant/pull/48>`_, `#90 <https://github.com/diofant/diofant/pull/90>`_, `#96 <https://github.com/diofant/diofant/pull/96>`_ and `#99 <https://github.com/diofant/diofant/pull/99>`_.
 * Adopt No Code Of Conduct, see `#212 <https://github.com/diofant/diofant/pull/212>`_.
 * Measure code coverage, enable codecov.io reports.  See `#217 <https://github.com/diofant/diofant/pull/217>`_.

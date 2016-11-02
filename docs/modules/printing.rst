@@ -315,6 +315,8 @@ This module generates readable representations of Diofant expressions.
 
    .. autoattribute:: StrPrinter.printmethod
 
+.. autofunction:: sstr
+
 .. autofunction:: sstrrepr
 
 Tree Printing
