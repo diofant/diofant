@@ -31,6 +31,7 @@ Major changes
     * 0 now is imaginary, see `#8 <https://github.com/diofant/diofant/pull/8>`_
     * extended_real fact added, reals are finite now, see `#36 <https://github.com/diofant/diofant/pull/36>`_
     * complex are finite now, see `#42 <https://github.com/diofant/diofant/pull/42>`_.
+    * added docstrings for assumption properties, see `#354 <https://github.com/diofant/diofant/pull/554>`_.
 
 Backwards-incompatible changes
 ==============================
@@ -71,6 +72,7 @@ Minor changes
 * Evaluate matrix powers for non-diagonalizable matrices, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Beware of non-orthogonal Jordan blocks, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
 * Make risch_integrate(x**x, x) work, see `#275 <https://github.com/diofant/diofant/pull/275>`_.
+* Support CPython 3.6, see `#337 <https://github.com/diofant/diofant/pull/337>`_ and `#356 <https://github.com/diofant/diofant/pull/356>`_.
 
 Developer changes
 =================
@@ -84,6 +86,7 @@ Developer changes
 * Adopt pep8 (`#2 <https://github.com/diofant/diofant/pull/2>`_) and then flake8 (`#214 <https://github.com/diofant/diofant/pull/214>`_) for code quality testing.
 * Add regression tests with DIOFANT_USE_CACHE=False `#323 <https://github.com/diofant/diofant/pull/323>`_.
 * Add interface tests, see `#219 <https://github.com/diofant/diofant/pull/219>`_ and `#307 <https://github.com/diofant/diofant/pull/307>`_.
+* Test for no DeprecationWarning in the codebase, see `#356 <https://github.com/diofant/diofant/pull/356>`_.
 
 Issues closed
 =============
@@ -244,8 +247,69 @@ Issues closed
 * `#329 <https://github.com/diofant/diofant/issues/329>`_ Drop examples/
 * `sympy/sympy#11672 <https://github.com/sympy/sympy/issues/11672>`_ limit(Rational(-1,2)**k, k, oo) fails
 * `#338 <https://github.com/diofant/diofant/issues/338>`_ Rosetta stone for dev's
+* `#351 <https://github.com/diofant/diofant/issues/351>`_ Test on CPython 3.6
+* `#352 <https://github.com/diofant/diofant/issues/352>`_ Enable testing for DeprecationWarning's
+* `sympy/sympy#11678 <https://github.com/sympy/sympy/issues/11678>`_ Invalid limit of floating point matrix power
+* `sympy/sympy#11746 <https://github.com/sympy/sympy/issues/11746>`_ undesired (wrong) substition behavior in sympy?
+* `sympy/sympy#3904 <https://github.com/sympy/sympy/issues/3904>`_ missing docstrings in core
+* `#364 <https://github.com/diofant/diofant/issues/364>`_ Random test failure in combinatorics
+* `sympy/sympy#3112 <https://github.com/sympy/sympy/issues/3112>`_ Asymptotic expansion
+* `sympy/sympy#9173 <https://github.com/sympy/sympy/issues/9173>`_ Series/limit fails unless expression is simplified first.
+* `sympy/sympy#9808 <https://github.com/sympy/sympy/issues/9808>`_ Complements with symbols should remain unevaluated
+* `sympy/sympy#9341 <https://github.com/sympy/sympy/issues/9341>`_ Cancelling very long polynomial expression
+* `sympy/sympy#9908 <https://github.com/sympy/sympy/issues/9908>`_ Sum(1/(n**3 - 1), (n, -oo, -2)).doit() raise UnboundLocalVariable
+* `sympy/sympy#6171 <https://github.com/sympy/sympy/issues/6171>`_ Limit of a piecewise function
+* `sympy/sympy#9276 <https://github.com/sympy/sympy/issues/9276>`_ ./bin/diagnose_imports: does it work at all?!
+* `sympy/sympy#10201 <https://github.com/sympy/sympy/issues/10201>`_ Solution of "first order linear non-homogeneous ODE-System" is wrong
+* `sympy/sympy#9057 <https://github.com/sympy/sympy/issues/9057>`_ segfault on printing Integral of phi(t)
+* `sympy/sympy#11159 <https://github.com/sympy/sympy/issues/11159>`_ Substitution with E fails
+* `sympy/sympy#2839 <https://github.com/sympy/sympy/issues/2839>`_ init_session(auto_symbols=True) and init_session(auto_int_to_Integer=True) do not work
+* `sympy/sympy#11081 <https://github.com/sympy/sympy/issues/11081>`_ where possible, use python fractions for Rational
+* `sympy/sympy#10974 <https://github.com/sympy/sympy/issues/10974>`_ solvers.py contains BOM character
+* `sympy/sympy#10806 <https://github.com/sympy/sympy/issues/10806>`_ LaTeX printer: Integral not surrounded in brackets
+* `sympy/sympy#10801 <https://github.com/sympy/sympy/issues/10801>`_ Make limit work with binomial
+* `sympy/sympy#9549 <https://github.com/sympy/sympy/issues/9549>`_ series expansion: (x**2 + x + 1)/(x**3 + x**2) about oo gives wrong result
+* `sympy/sympy#4231 <https://github.com/sympy/sympy/issues/4231>`_ add a test for complex integral from wikipedia
+* `sympy/sympy#8634 <https://github.com/sympy/sympy/issues/8634>`_ limit(x**n, x, -oo) is sometimes wrong
+* `sympy/sympy#8481 <https://github.com/sympy/sympy/issues/8481>`_ Wrong error raised trying to calculate limit of Poisson PMF
+* `sympy/sympy#9956 <https://github.com/sympy/sympy/issues/9956>`_ Union(Interval(-oo, oo), FiniteSet(1)) not evaluated
+* `sympy/sympy#9747 <https://github.com/sympy/sympy/issues/9747>`_ test_piecewise_lambdify fails locally
+* `sympy/sympy#7853 <https://github.com/sympy/sympy/issues/7853>`_ Deprecation of lambdify converting `Matrix` -> `numpy.matrix`
+* `sympy/sympy#9634 <https://github.com/sympy/sympy/issues/9634>`_ Repeated example in the docstring of hermite
+* `sympy/sympy#8500 <https://github.com/sympy/sympy/issues/8500>`_ Using and operator vs fuzzy_and while querying assumptions
+* `sympy/sympy#9192 <https://github.com/sympy/sympy/issues/9192>`_ O(y + 1) = O(1)
+* `sympy/sympy#7130 <https://github.com/sympy/sympy/issues/7130>`_ Definite integral returns an answer with indefinite integrals
+* `sympy/sympy#8514 <https://github.com/sympy/sympy/issues/8514>`_ Inverse Laplace transform of a simple function fails after updating from 0.7.5 to 0.7.6
+* `sympy/sympy#9334 <https://github.com/sympy/sympy/issues/9334>`_ Numexpr must be string argument to lambdify
+* `sympy/sympy#8229 <https://github.com/sympy/sympy/issues/8229>`_ limit((x**Rational(1,4)-2)/(sqrt(x)-4)**Rational(2, 3), x, 16) NotImplementedError
+* `sympy/sympy#8061 <https://github.com/sympy/sympy/issues/8061>`_ limit(4**(acos(1/(1+x**2))**2)/log(1+x, 4), x, 0) raises NotImplementedError
+* `sympy/sympy#7872 <https://github.com/sympy/sympy/issues/7872>`_ Substitution in Order fails
+* `sympy/sympy#3496 <https://github.com/sympy/sympy/issues/3496>`_ limits for complex variables
+* `sympy/sympy#2929 <https://github.com/sympy/sympy/issues/2929>`_ limit((x*exp(x))/(exp(x)-1), x, -oo) gives -oo
+* `sympy/sympy#8203 <https://github.com/sympy/sympy/issues/8203>`_ Why is oo real?
+* `sympy/sympy#7649 <https://github.com/sympy/sympy/issues/7649>`_ S.Zero.is_imaginary should be True?
+* `sympy/sympy#7256 <https://github.com/sympy/sympy/issues/7256>`_ use old assumptions in code
+* `sympy/sympy#6783 <https://github.com/sympy/sympy/issues/6783>`_ Get rid of confusing assumptions
+* `sympy/sympy#5662 <https://github.com/sympy/sympy/issues/5662>`_ AssocOp._eval_template_is_attr is wrong or misused
+* `sympy/sympy#5295 <https://github.com/sympy/sympy/issues/5295>`_ Document assumptions
+* `sympy/sympy#4856 <https://github.com/sympy/sympy/issues/4856>`_ coding style
+* `sympy/sympy#4555 <https://github.com/sympy/sympy/issues/4555>`_ use pyflakes to identify simple bugs in sympy and fix them
+* `sympy/sympy#5773 <https://github.com/sympy/sympy/issues/5773>`_ Remove the cmp_to_key() helper function
+* `sympy/sympy#5484 <https://github.com/sympy/sympy/issues/5484>`_ use sort_key instead of old comparison system
+* `sympy/sympy#8825 <https://github.com/sympy/sympy/issues/8825>`_ Can't use both weakref's & cache
+* `sympy/sympy#8635 <https://github.com/sympy/sympy/issues/8635>`_ limit(x**n-x**(n-k), x, oo) sometimes raises NotImplementedError
+* `sympy/sympy#8157 <https://github.com/sympy/sympy/issues/8157>`_ Non-informative error raised when computing limit of cos(n*pi)
+* `sympy/sympy#7872 <https://github.com/sympy/sympy/issues/7872>`_ Substitution in Order fails
+* `sympy/sympy#7599 <https://github.com/sympy/sympy/issues/7599>`_ Addition of expression and order term fails
+* `sympy/sympy#6179 <https://github.com/sympy/sympy/issues/6179>`_ wrong order in series
+* `sympy/sympy#5415 <https://github.com/sympy/sympy/issues/5415>`_ limit involving multi-arg function (polygamma) fails
+* `sympy/sympy#2865 <https://github.com/sympy/sympy/issues/2865>`_ gruntz doesn't work properly for big-O with point!=0
+* `sympy/sympy#5907 <https://github.com/sympy/sympy/issues/5907>`_ integrate(1/(x**2 + a**2)**2, x) is wrong if a is real
+* `sympy/sympy#11722 <https://github.com/sympy/sympy/issues/11722>`_ series() calculation up to O(t**k) returns invalid coefficients for t**k * log(t)
+* `#347 <https://github.com/diofant/diofant/issues/347>`_ Search & mention more closed SymPy issues
+* `sympy/sympy#8804_ <https://github.com/sympy/sympy/issues/8804>`_ series expansion of 1/x ignores order parameter
 
-Full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_.
+See also full `list of closed issues <https://github.com/diofant/diofant/issues?q=is%3Aissue+milestone%3A0.8.0+is%3Aclosed>`_ in the Diofant repository.
 
 Pull requests
 =============
@@ -493,7 +557,14 @@ Pull requests
 * `#335 <https://github.com/diofant/diofant/pull/335>`_ Add sphinx docs for interactive module
 * `#279 <https://github.com/diofant/diofant/pull/279>`_ Removed manualintegrate()
 * `#343 <https://github.com/diofant/diofant/pull/343>`_ First beta
-* `#326 <https://github.com/diofant/diofant/issues/326>`_ Improve coverage
-* `#344 <https://github.com/diofant/diofant/issues/344>`_ v0.8.0b2
+* `#326 <https://github.com/diofant/diofant/pull/326>`_ Improve coverage
+* `#344 <https://github.com/diofant/diofant/pull/344>`_ v0.8.0b2
+* `#348 <https://github.com/diofant/diofant/pull/348>`_ Configure rtfd.io builds from file
+* `#354 <https://github.com/diofant/diofant/pull/554>`_ Add docstrings for assumptions to the Basic class
+* `#337 <https://github.com/diofant/diofant/pull/337>`_ Test Python 3.6
+* `#357 <https://github.com/diofant/diofant/pull/357>`_ Readd docs/requirements.txt & rename readthedocs.yml
+* `#356 <https://github.com/diofant/diofant/pull/356>`_ Test for DeprecationWarning's
+* `#355 <https://github.com/diofant/diofant/pull/355>`_ Run printing setup on (interactive) session startup
+* `#359 <https://github.com/diofant/diofant/pull/359>`_ Beta 3
 
 Full `list of merged pull requests <https://github.com/diofant/diofant/pulls?utf8=%E2%9C%93&q=is%3Apr%20is%3Amerged%20milestone%3A0.8.0>`_.
