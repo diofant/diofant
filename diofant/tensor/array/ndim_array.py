@@ -14,7 +14,6 @@ class NDimArray:
 
     Create an N-dim array of zeros:
 
-    >>> from diofant.tensor.array import MutableDenseNDimArray
     >>> a = MutableDenseNDimArray.zeros(2, 3, 4)
     >>> a
     [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
@@ -156,7 +155,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 3)
         >>> a
         [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -174,7 +172,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 3)
         >>> a.shape
         (3, 3)
@@ -189,7 +186,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 4, 5, 6, 3)
         >>> a.rank()
         5
@@ -204,7 +200,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import ImmutableDenseNDimArray
         >>> M = ImmutableDenseNDimArray([[x, y], [1, x*y]])
         >>> M.diff(x)
         [[1, 0], [0, y]]
@@ -218,7 +213,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import ImmutableDenseNDimArray
         >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2) for j in range(2)], (2, 2))
         >>> m
         [[0, 1], [2, 3]]
@@ -234,7 +228,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2, 2)
         >>> a
         [[0, 0], [0, 0]]
@@ -256,7 +249,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray([1, 2, 3, 4], (2, 2))
         >>> a
         [[1, 2], [3, 4]]
@@ -329,7 +321,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2, 3)
         >>> b = MutableDenseNDimArray.zeros(2, 3)
         >>> a == b

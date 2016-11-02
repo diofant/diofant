@@ -5,8 +5,7 @@ import pytest
 from diofant import Rational, SparseMatrix, Symbol
 from diofant.abc import x, y, z
 from diofant.matrices import Matrix
-from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
-from diofant.tensor.array.sparse_ndim_array import MutableSparseNDimArray
+from diofant.tensor import MutableDenseNDimArray, MutableSparseNDimArray
 
 
 __all__ = ()

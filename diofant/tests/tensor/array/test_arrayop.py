@@ -7,9 +7,8 @@ from diofant import (Derivative, Permutation, adjoint, conjugate, cos, exp,
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          s, t, u, v, w, x, y, z)
 from diofant.combinatorics.permutations import _af_invert
-from diofant.tensor.array import (Array, NDimArray, derive_by_array,
-                                  permutedims, tensorcontraction,
-                                  tensorproduct)
+from diofant.tensor import (Array, derive_by_array, permutedims,
+                            tensorcontraction, tensorproduct)
 
 
 __all__ = ()
@@ -143,7 +142,7 @@ def test_array_permutedims():
     # Test that permuted shape corresponds to action by `Permutation`:
     assert permutedims(ra, perm).shape == tuple(Permutation(perm)(shape))
 
-    z = NDimArray.zeros(4, 5, 6, 7)
+    z = Array.zeros(4, 5, 6, 7)
 
     assert permutedims(z, (2, 3, 1, 0)).shape == (6, 7, 5, 4)
     assert permutedims(z, [2, 3, 1, 0]).shape == (6, 7, 5, 4)

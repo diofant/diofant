@@ -5,8 +5,7 @@ import pytest
 from diofant import Dict, Indexed, IndexedBase, Rational, SparseMatrix, Symbol
 from diofant.abc import i, j, w, x, y, z
 from diofant.matrices import Matrix
-from diofant.tensor.array.dense_ndim_array import ImmutableDenseNDimArray
-from diofant.tensor.array.sparse_ndim_array import ImmutableSparseNDimArray
+from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
 
 
 __all__ = ()
