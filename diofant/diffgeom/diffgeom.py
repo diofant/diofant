@@ -864,10 +864,10 @@ class TensorProduct(Expr):
         tot_args = len(v_fields)
         if tot_args != tot_order:
             v_fields = list(v_fields) + [None]*(tot_order - tot_args)
-        orders = [covariant_order(f) for f in self._args]
+        orders = [covariant_order(f) for f in self.args]
         indices = [sum(orders[:i + 1]) for i in range(len(orders) - 1)]
         v_fields = [v_fields[i:j] for i, j in zip([0] + indices, indices + [None])]
-        multipliers = [t[0].rcall(*t[1]) for t in zip(self._args, v_fields)]
+        multipliers = [t[0].rcall(*t[1]) for t in zip(self.args, v_fields)]
         return TensorProduct(*multipliers)
 
     def _latex(self, printer, *args):

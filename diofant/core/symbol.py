@@ -111,15 +111,24 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     @property
     def assumptions0(self):
+        """Return object assumptions.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.assumptions0
+        """
         return {key: value for key, value
                 in self._assumptions.items() if value is not None}
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes."""
         return 2, 0, cls.__name__
 
     @cacheit
     def sort_key(self, order=None):
+        """Return a sort key."""
         return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
 
     def as_dummy(self):
@@ -127,6 +136,13 @@ class BaseSymbol(AtomicExpr, Boolean):
         return Dummy(self.name, **self._assumptions.generator)
 
     def as_real_imag(self, deep=True, **hints):
+        """Return real and imaginary part of self.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_real_imag
+        """
         from diofant import im, re
         if hints.get('ignore') == self:
             return
@@ -134,12 +150,26 @@ class BaseSymbol(AtomicExpr, Boolean):
             return re(self), im(self)
 
     def is_constant(self, *wrt, **flags):
+        """Test if self is constant.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.is_constant
+        """
         if not wrt:
             return False
         return self not in wrt
 
     @property
     def free_symbols(self):
+        """Return from the atoms of self those which are free symbols.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.free_symbols
+        """
         return {self}
 
 
@@ -221,10 +251,12 @@ class Dummy(BaseSymbol):
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes."""
         return 3, 0, cls.__name__
 
     @cacheit
     def sort_key(self, order=None):
+        """Return a sort key."""
         return self.class_key(), (
             2, (str(self), self.dummy_index)), S.One.sort_key(), S.One
 
@@ -326,6 +358,13 @@ class Wild(BaseSymbol):
 
     # TODO add check against another Wild
     def matches(self, expr, repl_dict={}):
+        """Helper method for match().
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.matches
+        """
         if any(expr.has(x) for x in self.exclude):
             return
         if any(not f(expr) for f in self.properties):
@@ -494,9 +533,6 @@ def symbols(names, **args):
         seq = args.pop('seq', as_seq)
 
         for name in names:
-            if not name:
-                raise ValueError('missing symbol')
-
             if ':' not in name:
                 symbol = cls(literal(name), **args)
                 result.append(symbol)
@@ -530,10 +566,7 @@ def symbols(names, **args):
                     split[i] = [s]
             else:
                 seq = True
-                if len(split) == 1:
-                    names = split[0]
-                else:
-                    names = [''.join(s) for s in itertools.product(*split)]
+                names = [''.join(s) for s in itertools.product(*split)]
                 if literals:
                     result.extend([cls(literal(s), **args) for s in names])
                 else:
@@ -599,13 +632,12 @@ def var(names, **args):
     try:
         syms = symbols(names, **args)
 
-        if syms is not None:
-            if isinstance(syms, Basic):
-                frame.f_globals[syms.name] = syms
-            elif isinstance(syms, FunctionClass):
-                frame.f_globals[syms.__name__] = syms
-            else:
-                traverse(syms, frame)
+        if isinstance(syms, Basic):
+            frame.f_globals[syms.name] = syms
+        elif isinstance(syms, FunctionClass):
+            frame.f_globals[syms.__name__] = syms
+        else:
+            traverse(syms, frame)
     finally:
         del frame  # break cyclic dependencies as stated in inspect docs
 

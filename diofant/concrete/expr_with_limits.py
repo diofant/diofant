@@ -119,7 +119,7 @@ class ExprWithLimits(Expr):
         diofant.concrete.expr_with_limits.ExprWithLimits.variables
         diofant.concrete.expr_with_limits.ExprWithLimits.free_symbols
         """
-        return self._args[0]
+        return self.args[0]
 
     @property
     def limits(self):
@@ -140,7 +140,7 @@ class ExprWithLimits(Expr):
         diofant.concrete.expr_with_limits.ExprWithLimits.variables
         diofant.concrete.expr_with_limits.ExprWithLimits.free_symbols
         """
-        return self._args[1:]
+        return self.args[1:]
 
     @property
     def variables(self):

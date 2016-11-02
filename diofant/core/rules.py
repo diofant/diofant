@@ -3,7 +3,7 @@ Replacement rules.
 """
 
 
-class Transform(object):
+class Transform:
     """
     Immutable mapping that can be used as a generic transformation rule.
 

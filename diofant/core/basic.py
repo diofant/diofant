@@ -14,30 +14,25 @@ class Basic(metaclass=ManagedProperties):
     """
     Base class for all objects in Diofant.
 
-    Conventions:
+    Always use ``args`` property, when accessing parameters of some instance.
 
-    1) Always use ``.args``, when accessing parameters of some instance:
+    Examples
+    ========
 
-        >>> from diofant import cot
-        >>> from diofant.abc import x, y
+    >>> from diofant import cot
+    >>> from diofant.abc import x, y
 
-        >>> cot(x).args
-        (x,)
+    >>> cot(x).args
+    (x,)
 
-        >>> cot(x).args[0]
-        x
+    >>> cot(x).args[0]
+    x
 
-        >>> (x*y).args
-        (x, y)
+    >>> (x*y).args
+    (x, y)
 
-        >>> (x*y).args[1]
-        y
-
-
-    2) Never use internal methods or variables (the ones prefixed with ``_``):
-
-        >>> cot(x)._args    # do not use this, use cot(x).args instead
-        (x,)
+    >>> (x*y).args[1]
+    y
     """
 
     # To be overridden with True in the appropriate subclasses
@@ -76,6 +71,7 @@ class Basic(metaclass=ManagedProperties):
         return obj
 
     def copy(self):
+        """Return swallow copy of self. """
         return self.func(*self.args)
 
     def __reduce_ex__(self, proto):
@@ -482,6 +478,13 @@ class Basic(metaclass=ManagedProperties):
             return expr_to_call
 
     def is_hypergeometric(self, k):
+        """Test if self is a hypergeometric term in k.
+
+        See Also
+        ========
+
+        diofant.simplify.simplify.hypersimp
+        """
         from diofant.simplify import hypersimp
         return hypersimp(self, k) is not None
 
@@ -566,7 +569,6 @@ class Basic(metaclass=ManagedProperties):
         Notes
         =====
 
-        Never use self._args, always use self.args.
         Only use _args in __new__ when creating a new function.
         Don't override .args() from Basic (so that it's easy to
         change the interface in the future if needed).
@@ -1505,21 +1507,44 @@ class Atom(Basic):
     is_Atom = True
 
     def matches(self, expr, repl_dict={}):
+        """Helper method for match().
+
+        See Also
+        ========
+
+        Basic.matches
+        """
         if self == expr:
             return repl_dict
 
     def xreplace(self, rule, hack2=False):
+        """Replace occurrences of objects within the expression.
+
+        See Also
+        ========
+
+        Basic.xreplace
+        """
         return rule.get(self, self)
 
     def doit(self, **hints):
+        """Evaluate objects that are not evaluated by default.
+
+        See Also
+        ========
+
+        Basic.doit
+        """
         return self
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes."""
         return 2, 0, cls.__name__
 
     @cacheit
     def sort_key(self, order=None):
+        """Return a sort key."""
         from diofant.core import S
         return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
 
@@ -1568,7 +1593,7 @@ def _aresame(a, b):
         return True
 
 
-class preorder_traversal(object):
+class preorder_traversal:
     """Do a pre-order traversal of a tree.
 
     This iterator recursively yields nodes that it has visited in a pre-order

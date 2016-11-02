@@ -4,7 +4,7 @@ from diofant.utilities import public
 
 
 @public
-class DomainElement(object):
+class DomainElement:
     """
     Represents an element of a domain.
 

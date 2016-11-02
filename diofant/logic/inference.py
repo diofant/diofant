@@ -209,7 +209,7 @@ def entails(expr, formula_set={}):
     return not satisfiable(And(*formula_set))
 
 
-class KB(object):
+class KB:
     """Base class for all knowledge bases"""
     def __init__(self, sentence=None):
         self.clauses_ = set()

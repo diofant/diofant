@@ -63,12 +63,12 @@ class Relational(Boolean, Expr, EvalfMixin):
     @property
     def lhs(self):
         """The left-hand side of the relation."""
-        return self._args[0]
+        return self.args[0]
 
     @property
     def rhs(self):
         """The right-hand side of the relation."""
-        return self._args[1]
+        return self.args[1]
 
     @property
     def reversed(self):
@@ -427,11 +427,13 @@ class _Greater(_Inequality):
 
     @property
     def gts(self):
-        return self._args[0]
+        """Greater than side argument"""
+        return self.args[0]
 
     @property
     def lts(self):
-        return self._args[1]
+        """Less than side argument"""
+        return self.args[1]
 
 
 class _Less(_Inequality):
@@ -444,11 +446,13 @@ class _Less(_Inequality):
 
     @property
     def gts(self):
-        return self._args[1]
+        """Greater than side argument"""
+        return self.args[1]
 
     @property
     def lts(self):
-        return self._args[0]
+        """Less than side argument"""
+        return self.args[0]
 
 
 class GreaterThan(_Greater):

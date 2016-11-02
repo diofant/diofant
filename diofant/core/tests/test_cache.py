@@ -1,7 +1,9 @@
 import pytest
 
-from diofant.core.symbol import Symbol
+from diofant.core.compatibility import ordered
+from diofant.core.symbol import Symbol, symbols
 from diofant.core.cache import cacheit, CACHE, print_cache, clear_cache
+from diofant.printing.str import sstr
 
 from diofant.abc import x
 
@@ -68,7 +70,7 @@ def test_nocache(clear_imports, monkeypatch):
     monkeypatch.setenv('DIOFANT_USE_CACHE', 'False')
     from diofant.core.cache import CACHE
     from diofant.core.symbol import Symbol
-    from diofant.functions import sin, sqrt
+    from diofant.functions import sin, sqrt, exp, sinh
 
     # test that we don't use cache
     assert CACHE == []
@@ -82,7 +84,7 @@ def test_nocache(clear_imports, monkeypatch):
     (2*x).is_complex  # not raises
 
     # see commit c459d18
-    sin(x + x)
+    sin(x + x)  # not raises
 
     # see commit 53dd1eb
     mx = -Symbol('x', negative=False)
@@ -96,3 +98,20 @@ def test_nocache(clear_imports, monkeypatch):
     y = Symbol('y')
     result = s.subs(sqrt(x**2), y)
     assert result == 1/y
+
+    # problem from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
+    # see commit c459d18
+    a = Symbol('a', positive=True)
+    f = exp(x*(-a - 1))
+    g = sinh(x)
+    r = f*g  # not raises
+
+
+def test_issue_8825():
+    import weakref
+    a, b = symbols('a b')
+    d = weakref.WeakKeyDictionary([(a, 1), (b, 2)])
+    assert sstr(list(ordered(d.items()))) == '[(a, 1), (b, 2)]'
+    del a
+    clear_cache()
+    assert sstr(list(ordered(d.items()))) == '[(b, 2)]'

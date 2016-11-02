@@ -12,7 +12,7 @@ from diofant.utilities import public
 
 
 @public
-class QuotientRingElement(object):
+class QuotientRingElement:
     """
     Class representing elements of (commutative) quotient rings.
 

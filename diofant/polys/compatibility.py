@@ -218,7 +218,7 @@ from diofant.utilities import public
 
 
 @public
-class IPolys(object):
+class IPolys:
     symbols = None
     ngens = None
     domain = None

@@ -3,7 +3,7 @@
 from diofant.core import Basic
 
 
-class EPath(object):
+class EPath:
     r"""
     Manipulate expressions using paths.
 

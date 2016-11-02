@@ -1045,11 +1045,11 @@ def test_issue_3950():
 
 
 def test_issue_3981():
-    class Index1(object):
+    class Index1:
         def __index__(self):
             return 1
 
-    class Index2(object):
+    class Index2:
         def __index__(self):
             return 2
     index1 = Index1()

@@ -13,7 +13,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
     is_SymbolicDomain = is_EX = True
 
-    class Expression(object):
+    class Expression:
         """An arbitrary expression. """
 
         def __init__(self, ex):

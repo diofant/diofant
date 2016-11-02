@@ -1147,7 +1147,7 @@ class _TensorDataLazyEvaluator(CantSympify):
 _tensor_data_substitution_dict = _TensorDataLazyEvaluator()
 
 
-class _TensorManager(object):
+class _TensorManager:
     """
     Class to manage tensor properties.
 

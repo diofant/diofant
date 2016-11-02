@@ -314,10 +314,12 @@ class Number(AtomicExpr):
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes."""
         return 1, 0, 'Number'
 
     @cacheit
     def sort_key(self, order=None):
+        """Return a sort key."""
         return self.class_key(), (0, ()), (), self
 
     @_sympifyit('other', NotImplemented)
@@ -418,9 +420,23 @@ class Number(AtomicExpr):
         return super(Number, self).__hash__()
 
     def is_constant(self, *wrt, **flags):
+        """Return True if self is constant.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.is_constant
+        """
         return True
 
     def as_coeff_mul(self, *deps, **kwargs):
+        """Return the tuple (c, args) where self is written as a Mul.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_coeff_mul
+        """
         # a -> c*t
         if self.is_Rational or not kwargs.pop('rational', True):
             return self, tuple()
@@ -429,6 +445,13 @@ class Number(AtomicExpr):
         return S.One, (self,)
 
     def as_coeff_add(self, *deps):
+        """Return the tuple (c, args) where self is written as an Add.
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_coeff_add
+        """
         # a -> c + t
         if self.is_Rational:
             return self, tuple()
@@ -748,15 +771,18 @@ class Float(Number):
         return self._mpf_, self._prec
 
     def floor(self):
+        """Compute floor of self."""
         return Integer(int(mlib.to_int(
             mlib.mpf_floor(self._mpf_, self._prec))))
 
     def ceiling(self):
+        """Compute ceiling of self."""
         return Integer(int(mlib.to_int(
             mlib.mpf_ceil(self._mpf_, self._prec))))
 
     @property
     def num(self):
+        """Return mpmath representation of self."""
         return mpmath.mpf(self._mpf_)
 
     def _as_mpf_val(self, prec):
@@ -990,6 +1016,7 @@ class Float(Number):
         return super(Float, self).__hash__()
 
     def epsilon_eq(self, other, epsilon="1e-15"):
+        """Test approximate equality."""
         return abs(self - other) < Float(epsilon)
 
     def __format__(self, format_spec):
@@ -1401,6 +1428,7 @@ class Rational(Number):
 
     @_sympifyit('other', NotImplemented)
     def gcd(self, other):
+        """Compute GCD of `self` and `other`. """
         if isinstance(other, Rational):
             if other is S.Zero:
                 return other
@@ -1411,6 +1439,7 @@ class Rational(Number):
 
     @_sympifyit('other', NotImplemented)
     def lcm(self, other):
+        """Compute LCM of `self` and `other`. """
         if isinstance(other, Rational):
             return Rational(
                 self.p*other.p//igcd(self.p, other.p),
@@ -1418,6 +1447,13 @@ class Rational(Number):
         return Number.lcm(self, other)
 
     def as_numer_denom(self):
+        """expression -> a/b -> a, b
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_numer_denom
+        """
         return Integer(self.p), Integer(self.q)
 
     def as_content_primitive(self, radical=False):
@@ -1751,6 +1787,13 @@ class Integer(Rational):
             return False
 
     def as_numer_denom(self):
+        """expression -> a/b -> a, b
+
+        See Also
+        ========
+
+        diofant.core.expr.Expr.as_numer_denom
+        """
         return self, S.One
 
     def __floordiv__(self, other):

@@ -1679,7 +1679,7 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
         raise NotImplementedError( "only trivial square-free polynomials are supported")
 
 
-class RealInterval(object):
+class RealInterval:
     """A fully qualified representation of a real isolation interval. """
 
     def __init__(self, data, f, dom):
@@ -1791,7 +1791,7 @@ class RealInterval(object):
         return self._inner_refine()
 
 
-class ComplexInterval(object):
+class ComplexInterval:
     """A fully qualified representation of a complex isolation interval.
     The printed form is shown as (x1, y1) x (x2, y2): the southwest x northeast
     coordinates of the interval's rectangle."""

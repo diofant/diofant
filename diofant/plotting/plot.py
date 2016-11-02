@@ -46,7 +46,7 @@ def unset_show():
 ##############################################################################
 
 
-class Plot(object):
+class Plot:
     """The central class of the plotting module.
 
     For interactive work the function ``plot`` is better suited.
@@ -262,7 +262,7 @@ class Plot(object):
 # TODO more general way to calculate aesthetics (see get_color_array)
 
 # The base class for all series
-class BaseSeries(object):
+class BaseSeries:
     """Base class for the data objects containing stuff to be plotted.
 
     The backend should check if it supports the data series that it's given.
@@ -838,7 +838,7 @@ class ContourSeries(BaseSeries):
 # Backends
 ##############################################################################
 
-class BaseBackend(object):
+class BaseBackend:
     def __init__(self, parent):
         super(BaseBackend, self).__init__()
         self.parent = parent

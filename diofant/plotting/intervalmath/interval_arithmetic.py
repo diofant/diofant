@@ -35,7 +35,7 @@ The module uses numpy for speed which cannot be achieved with mpmath.
 from diofant.simplify.simplify import nsimplify
 
 
-class interval(object):
+class interval:
     """ Represents an interval containing floating points as start and
     end of the interval
     The is_valid variable tracks whether the interval obtained as the

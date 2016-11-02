@@ -148,7 +148,7 @@ def fuzzy_or(args):
     return fuzzy_not(fuzzy_and(fuzzy_not(i) for i in args))
 
 
-class Logic(object):
+class Logic:
     """Logical expression"""
     # {} 'op' -> LogicClass
     op_2class = {}

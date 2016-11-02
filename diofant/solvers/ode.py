@@ -2956,18 +2956,15 @@ def ode_1st_exact(eq, func, order, match):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> dsolve(cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x),
-    ... f(x), hint='1st_exact')
+    ...        f(x), hint='1st_exact')
     Eq(x*cos(f(x)) + f(x)**3/3, C1)
 
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Exact_differential_equation
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 73
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Exact_differential_equation
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 73.
     """
     x = func.args[0]
     f = func.func
@@ -3006,7 +3003,8 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
-    ... hint='1st_homogeneous_coeff_best', simplify=False), use_unicode=False)
+    ...               hint='1st_homogeneous_coeff_best', simplify=False),
+    ...        use_unicode=False)
                              /    2    \
                              | 3*x     |
                           log|----- + 1|
@@ -3018,12 +3016,9 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Homogeneous_differential_equation
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 59
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Homogeneous_differential_equation
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 59.
     """
     # There are two substitutions that solve the equation, u1=y/x and u2=x/y
     # They produce different integrals, so try them both and see which
@@ -3080,7 +3075,8 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
         g|----| + h|----|*--(f(x))
          \ x  /    \ x  / dx
         >>> pprint(dsolve(genform, f(x),
-        ... hint='1st_homogeneous_coeff_subs_dep_div_indep_Integral'), use_unicode=False)
+        ...               hint='1st_homogeneous_coeff_subs_dep_div_indep_Integral'),
+        ...        use_unicode=False)
                        f(x)
                        ----
                         x
@@ -3094,9 +3090,11 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
 
     Where `u_1 h(u_1) + g(u_1) \ne 0` and `x \ne 0`.
 
-    See also the docstrings of
-    :py:meth:`~diofant.solvers.ode.ode_1st_homogeneous_coeff_best` and
-    :py:meth:`~diofant.solvers.ode.ode_1st_homogeneous_coeff_subs_indep_div_dep`.
+    See Also
+    ========
+
+    diofant.solvers.ode.ode_1st_homogeneous_coeff_best
+    diofant.solvers.ode.ode_1st_homogeneous_coeff_subs_indep_div_dep
 
     Examples
     ========
@@ -3105,7 +3103,8 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
-    ... hint='1st_homogeneous_coeff_subs_dep_div_indep', simplify=False), use_unicode=False)
+    ...               hint='1st_homogeneous_coeff_subs_dep_div_indep',
+    ...               simplify=False), use_unicode=False)
                           /          3   \
                           |3*f(x)   f (x)|
                        log|------ + -----|
@@ -3117,12 +3116,9 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Homogeneous_differential_equation
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 59
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Homogeneous_differential_equation
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 59.
     """
     x = func.args[0]
     f = func.func
@@ -3173,7 +3169,8 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     g|----| + h|----|*--(f(x))
      \f(x)/    \f(x)/ dx
     >>> pprint(dsolve(genform, f(x),
-    ... hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'), use_unicode=False)
+    ...               hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'),
+    ...        use_unicode=False)
               x
              ----
              f(x)
@@ -3200,8 +3197,8 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
-    ... hint='1st_homogeneous_coeff_subs_indep_div_dep',
-    ... simplify=False), use_unicode=False)
+    ...               hint='1st_homogeneous_coeff_subs_indep_div_dep',
+    ...               simplify=False), use_unicode=False)
                              /    2    \
                              | 3*x     |
                           log|----- + 1|
@@ -3213,12 +3210,9 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Homogeneous_differential_equation
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 59
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Homogeneous_differential_equation
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 59.
     """
     x = func.args[0]
     f = func.func
@@ -3367,18 +3361,15 @@ def ode_1st_linear(eq, func, order, match):
 
     >>> f = Function('f')
     >>> pprint(dsolve(Eq(x*diff(f(x), x) - f(x), x**2*sin(x)),
-    ... f(x), '1st_linear'), use_unicode=False)
+    ...               f(x), '1st_linear'), use_unicode=False)
     f(x) = x*(C1 - cos(x))
 
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 92
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 92.
     """
     x = func.args[0]
     f = func.func
@@ -3430,7 +3421,7 @@ def ode_Bernoulli(eq, func, order, match):
     :py:meth:`~diofant.solvers.ode.ode_separable`).
 
     >>> pprint(dsolve(Eq(f(x).diff(x) + P(x)*f(x), Q(x)*f(x)), f(x),
-    ... hint='separable_Integral'), use_unicode=False)
+    ...               hint='separable_Integral'), use_unicode=False)
      f(x)
        /
       |                /
@@ -3449,7 +3440,7 @@ def ode_Bernoulli(eq, func, order, match):
     >>> f = Function('f')
 
     >>> pprint(dsolve(Eq(x*f(x).diff(x) + f(x), log(x)*f(x)**2),
-    ... f(x), hint='Bernoulli'), use_unicode=False)
+    ...               f(x), hint='Bernoulli'), use_unicode=False)
                     1
     f(x) = -------------------
              /     log(x)   1\
@@ -3459,12 +3450,9 @@ def ode_Bernoulli(eq, func, order, match):
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Bernoulli_differential_equation
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 95
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Bernoulli_differential_equation
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 95.
     """
     x = func.args[0]
     f = func.func
@@ -3568,19 +3556,17 @@ def ode_Liouville(eq, func, order, match):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(diff(f(x), x, x) + diff(f(x), x)**2/f(x) +
-    ... diff(f(x), x)/x, f(x), hint='Liouville'), use_unicode=False)
+    ...               diff(f(x), x)/x, f(x), hint='Liouville'),
+    ...        use_unicode=False)
                ________________           ________________
     [f(x) = -\/ C1 + C2*log(x) , f(x) = \/ C1 + C2*log(x) ]
 
     References
     ==========
 
-    - Goldstein and Braun, "Advanced Methods for the Solution of Differential
-      Equations", pp. 98
-    - http://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
-
-    # indirect doctest
-
+    .. [1] Goldstein and Braun, "Advanced Methods for the Solution of Differential
+           Equations", pp. 98.
+    .. [2] http://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
     """
     # Liouville ODE:
     #  f(x).diff(x, 2) + g(f(x))*(f(x).diff(x, 2))**2 + h(x)*f(x).diff(x)
@@ -3625,13 +3611,12 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     f(x) = C2*|-- - -- + 1| + C1*x*|- -- + 1| + O\x /
               \24   2     /        \  6     /
 
-
     References
     ==========
-    - http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
-    - George E. Simmons, "Differential Equations with Applications and
-      Historical Notes", p.p 176 - 184
 
+    .. [1] http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
+    .. [2] George E. Simmons, "Differential Equations with Applications and
+           Historical Notes", p.p 176 - 184.
     """
     x = func.args[0]
     f = func.func
@@ -3993,8 +3978,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> dsolve(4*x**2*f(x).diff(x, 2) + f(x), f(x),
-    ... hint='nth_linear_euler_eq_homogeneous')
-    ... # doctest: +NORMALIZE_WHITESPACE
+    ...        hint='nth_linear_euler_eq_homogeneous')
     Eq(f(x), sqrt(x)*(C1 + C2*log(x)))
 
     Note that because this method does not involve integration, there is no
@@ -4021,19 +4005,17 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     >>> f = Function('f')
     >>> eq = f(x).diff(x, 2)*x**2 - 4*f(x).diff(x)*x + 6*f(x)
     >>> pprint(dsolve(eq, f(x),
-    ... hint='nth_linear_euler_eq_homogeneous'), use_unicode=False)
+    ...               hint='nth_linear_euler_eq_homogeneous'),
+    ...        use_unicode=False)
             2
     f(x) = x *(C1 + C2*x)
 
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
-    - C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
-      Engineers", Springer 1999, pp. 12
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
+    .. [2] C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
+           Engineers", Springer 1999, pp. 12.
     """
     global collectterms
     collectterms = []
@@ -4662,21 +4644,19 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 4) + 2*f(x).diff(x, 3) -
-    ... 2*f(x).diff(x, 2) - 6*f(x).diff(x) + 5*f(x), f(x),
-    ... hint='nth_linear_constant_coeff_homogeneous'), use_unicode=False)
+    ...               2*f(x).diff(x, 2) - 6*f(x).diff(x) + 5*f(x), f(x),
+    ...               hint='nth_linear_constant_coeff_homogeneous'),
+    ...        use_unicode=False)
             x                -2*x
     f(x) = E *(C3 + C4*x) + E    *(C1*sin(x) + C2*cos(x))
 
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Linear_differential_equation section:
-      Nonhomogeneous_equation_with_constant_coefficients
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 211
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Linear_differential_equation section:
+           Nonhomogeneous_equation_with_constant_coefficients
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 211.
     """
     x = func.args[0]
     f = func.func
@@ -4795,8 +4775,9 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 2) + 2*f(x).diff(x) + f(x) -
-    ... 4*exp(-x)*x**2 + cos(2*x), f(x),
-    ... hint='nth_linear_constant_coeff_undetermined_coefficients'), use_unicode=False)
+    ...               4*exp(-x)*x**2 + cos(2*x), f(x),
+    ...               hint='nth_linear_constant_coeff_undetermined_coefficients'),
+    ...        use_unicode=False)
                                            /             4\
              4*sin(2*x)   3*cos(2*x)    -x |            x |
     f(x) = - ---------- + ---------- + E  *|C1 + C2*x + --|
@@ -4805,12 +4786,9 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Method_of_undetermined_coefficients
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 221
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Method_of_undetermined_coefficients
+    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 221.
     """
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
         returns='both')
@@ -5118,8 +5096,9 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x, 3) - 3*f(x).diff(x, 2) +
-    ... 3*f(x).diff(x) - f(x) - exp(x)*log(x), f(x),
-    ... hint='nth_linear_constant_coeff_variation_of_parameters'), use_unicode=False)
+    ...        3*f(x).diff(x) - f(x) - exp(x)*log(x), f(x),
+    ...        hint='nth_linear_constant_coeff_variation_of_parameters'),
+    ...        use_unicode=False)
               /                     3                \
             x |                2   x *(6*log(x) - 11)|
     f(x) = E *|C1 + C2*x + C3*x  + ------------------|
@@ -5128,13 +5107,10 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     References
     ==========
 
-    - http://en.wikipedia.org/wiki/Variation_of_parameters
-    - http://planetmath.org/VariationOfParameters
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 233
-
-    # indirect doctest
-
+    .. [1] http://en.wikipedia.org/wiki/Variation_of_parameters
+    .. [2] http://planetmath.org/VariationOfParameters
+    .. [3] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 233.
     """
 
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
@@ -5225,7 +5201,8 @@ def ode_separable(eq, func, order, match):
                      d
         a(x)*b(f(x))*--(f(x)) = c(x)*d(f(x))
                      dx
-        >>> pprint(dsolve(genform, f(x), hint='separable_Integral'), use_unicode=False)
+        >>> pprint(dsolve(genform, f(x),
+        ...               hint='separable_Integral'), use_unicode=False)
              f(x)
            /                  /
           |                  |
@@ -5242,7 +5219,7 @@ def ode_separable(eq, func, order, match):
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(Eq(f(x)*f(x).diff(x) + x, 3*x*f(x)**2), f(x),
-    ... hint='separable', simplify=False), use_unicode=False)
+    ...               hint='separable', simplify=False), use_unicode=False)
        /   2       \         2
     log\3*f (x) - 1/        x
     ---------------- = C1 + --
@@ -5251,11 +5228,8 @@ def ode_separable(eq, func, order, match):
     References
     ==========
 
-    - M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 52
-
-    # indirect doctest
-
+    .. [1] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+           Dover 1963, pp. 52.
     """
     x = func.args[0]
     f = func.func
@@ -5375,11 +5349,11 @@ def ode_lie_group(eq, func, order, match):
     Examples
     ========
 
-    >>> from diofant import Function, dsolve, Eq, exp, pprint
+    >>> from diofant import Function, dsolve, exp, pprint
     >>> from diofant.abc import x
     >>> f = Function('f')
     >>> pprint(dsolve(f(x).diff(x) + 2*x*f(x) - x*exp(-x**2), f(x),
-    ... hint='lie_group'), use_unicode=False)
+    ...               hint='lie_group'), use_unicode=False)
               2 /      2\
             -x  |     x |
     f(x) = E   *|C1 + --|
@@ -5388,9 +5362,8 @@ def ode_lie_group(eq, func, order, match):
     References
     ==========
 
-    - Solving differential equations by Symmetry Groups,
-      John Starrett, pp. 1 - pp. 14
-
+    .. [1] Solving differential equations by Symmetry Groups,
+           John Starrett, pp. 1-14.
     """
 
     heuristics = lie_heuristics

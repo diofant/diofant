@@ -22,12 +22,12 @@ def conserve_mpmath_dps(func):
     return func_wrapper
 
 
-class no_attrs_in_subclass(object):
+class no_attrs_in_subclass:
     """Don't 'inherit' certain attributes from a base class
 
     >>> from diofant.utilities.decorator import no_attrs_in_subclass
 
-    >>> class A(object):
+    >>> class A:
     ...     x = 'test'
 
     >>> A.x = no_attrs_in_subclass(A, A.x)

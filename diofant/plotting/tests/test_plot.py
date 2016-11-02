@@ -19,7 +19,7 @@ matplotlib = import_module('matplotlib', min_module_version='1.1.0',
                            catch=(RuntimeError,))
 
 
-class MockPrint(object):
+class MockPrint:
 
     def write(self, s):
         pass

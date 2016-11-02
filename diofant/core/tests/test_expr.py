@@ -13,7 +13,7 @@ from diofant.core.function import AppliedUndef
 from diofant.abc import a, b, c, n, t, u, x, y, z
 
 
-class DummyNumber(object):
+class DummyNumber:
     """
     Minimal implementation of a number that works with Diofant.
 
@@ -429,7 +429,7 @@ def test_SAGE1():
 
 
 def test_SAGE2():
-    class MyInt(object):
+    class MyInt:
         def __int__(self):
             return 5
     assert sympify(MyInt()) == 5

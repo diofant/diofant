@@ -191,7 +191,7 @@ class Product(ExprWithIntLimits):
 
     @property
     def term(self):
-        return self._args[0]
+        return self.args[0]
     function = term
 
     def _eval_is_zero(self):

@@ -80,11 +80,11 @@ def test_creation():
     assert Q.quotient_hom() == homomorphism(F, Q, im)
     assert SQ.quotient_hom() == homomorphism(SQ.base, SQ, im)
 
-    class conv(object):
+    class conv:
         def convert(self, y=None):
             return self
 
-    class dummy(object):
+    class dummy:
         container = conv()
 
         def submodule(*args):

@@ -734,7 +734,7 @@ class Interval(Set, EvalfMixin):
         >>> Interval(0, 1).start
         0
         """
-        return self._args[0]
+        return self.args[0]
 
     _inf = left = start
 
@@ -767,7 +767,7 @@ class Interval(Set, EvalfMixin):
         >>> Interval(0, 1).end
         1
         """
-        return self._args[1]
+        return self.args[1]
 
     _sup = right = end
 
@@ -785,7 +785,7 @@ class Interval(Set, EvalfMixin):
         >>> Interval(0, 1, left_open=False).left_open
         false
         """
-        return self._args[2]
+        return self.args[2]
 
     @property
     def right_open(self):
@@ -801,7 +801,7 @@ class Interval(Set, EvalfMixin):
         >>> Interval(0, 1, right_open=False).right_open
         false
         """
-        return self._args[3]
+        return self.args[3]
 
     def _intersect(self, other):
         """

@@ -261,10 +261,6 @@ class Application(Basic, metaclass=FunctionClass):
         """
         return
 
-    @property
-    def func(self):
-        return self.__class__
-
     def _eval_subs(self, old, new):
         if (old.is_Function and new.is_Function and old == self.func and
                 len(self.args) in new.nargs):
@@ -411,6 +407,7 @@ class Function(Application, Expr):
 
     @classmethod
     def class_key(cls):
+        """Nice order of classes."""
         from diofant.sets.fancysets import Naturals0
         funcs = {
             'log': 11,
@@ -776,6 +773,13 @@ class WildFunction(Function, AtomicExpr):
         self.nargs = nargs
 
     def matches(self, expr, repl_dict={}):
+        """Helper method for match()
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.matches
+        """
         if not isinstance(expr, (AppliedUndef, Function)):
             return
         if len(expr.args) not in self.nargs:
@@ -1224,6 +1228,13 @@ class Derivative(Expr):
         return self.func(self.expr, *(self.variables + (v, )), evaluate=False)
 
     def doit(self, **hints):
+        """Evaluate objects that are not evaluated by default.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.doit
+        """
         expr = self.expr
         if hints.get('deep', True):
             expr = expr.doit(**hints)
@@ -1254,14 +1265,23 @@ class Derivative(Expr):
 
     @property
     def expr(self):
+        """Return expression"""
         return self.args[0]
 
     @property
     def variables(self):
+        """Return tuple of symbols, wrt derivative is taken."""
         return self.args[1:]
 
     @property
     def free_symbols(self):
+        """Return from the atoms of self those which are free symbols.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.free_symbols
+        """
         return self.expr.free_symbols
 
     def _eval_subs(self, old, new):
@@ -1368,15 +1388,22 @@ class Lambda(Expr):
     @property
     def variables(self):
         """The variables used in the internal representation of the function"""
-        return self._args[0]
+        return self.args[0]
 
     @property
     def expr(self):
         """The return value of the function"""
-        return self._args[1]
+        return self.args[1]
 
     @property
     def free_symbols(self):
+        """Return from the atoms of self those which are free symbols.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.free_symbols
+        """
         return self.expr.free_symbols - set(self.variables)
 
     def __call__(self, *args):
@@ -1526,30 +1553,52 @@ class Subs(Expr):
                 all(p.is_commutative for p in self.point))
 
     def doit(self, **hints):
+        """Evaluate objects that are not evaluated by default.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.doit
+        """
         return self.expr.doit(**hints).subs(list(zip(self.variables, self.point)))
 
     def evalf(self, prec=None, **options):
+        """Evaluate the given formula to an accuracy of prec digits.
+
+        See Also
+        ========
+
+        diofant.core.evalf.EvalfMixin.evalf
+        """
         return self.doit().evalf(prec, **options)
 
+    #:
     n = evalf
 
     @property
     def variables(self):
         """The variables to be evaluated"""
-        return self._args[1]
+        return self.args[1]
 
     @property
     def expr(self):
         """The expression on which the substitution operates"""
-        return self._args[0]
+        return self.args[0]
 
     @property
     def point(self):
         """The values for which the variables are to be substituted"""
-        return self._args[2]
+        return self.args[2]
 
     @property
     def free_symbols(self):
+        """Return from the atoms of self those which are free symbols.
+
+        See Also
+        ========
+
+        diofant.core.basic.Basic.free_symbols
+        """
         return (self.expr.free_symbols - set(self.variables) |
                 set(self.point.free_symbols))
 

@@ -3,7 +3,7 @@ import collections
 from diofant import Matrix, Integer, sympify
 
 
-class NDimArray(object):
+class NDimArray:
     """
 
     Examples

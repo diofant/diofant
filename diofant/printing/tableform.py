@@ -3,7 +3,7 @@ from types import FunctionType
 from diofant.core.containers import Tuple
 
 
-class TableForm(object):
+class TableForm:
     r"""
     Create a nice table representation of data.
 

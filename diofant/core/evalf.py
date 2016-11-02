@@ -1218,7 +1218,7 @@ def evalf(x, prec, options):
     return r
 
 
-class EvalfMixin(object):
+class EvalfMixin:
     """Mixin class adding evalf capabililty."""
 
     def evalf(self, n=15, subs=None, maxn=100, chop=False, strict=False, quad=None):

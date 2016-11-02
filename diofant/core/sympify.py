@@ -27,7 +27,7 @@ class SympifyError(ValueError):
 converter = {}  # See sympify docstring.
 
 
-class CantSympify(object):
+class CantSympify:
     """
     Mix in this trait to a class to disallow sympification of its instances.
 
@@ -193,7 +193,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     classes that you do not own by subclassing or adding the method at runtime.
 
     >>> from diofant import Matrix
-    >>> class MyList1(object):
+    >>> class MyList1:
     ...     def __iter__(self):
     ...         yield 1
     ...         yield 2
@@ -210,7 +210,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     function that takes a single argument and returns the desired Diofant
     object, e.g. ``converter[MyList] = lambda x: Matrix(x)``.
 
-    >>> class MyList2(object):   # XXX Do not do this if you control the class!
+    >>> class MyList2:   # XXX Do not do this if you control the class!
     ...     def __iter__(self):  #     Use _diofant_!
     ...         yield 1
     ...         yield 2

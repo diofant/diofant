@@ -7,7 +7,7 @@ from diofant import (limit, exp, oo, log, sqrt, Limit, sin, floor, cos,
                      acos, ceiling, atan, gamma, Symbol, S, pi, E, Integral,
                      cot, Rational, I, tan, integrate, Sum, sign, Piecewise,
                      Function, subfactorial, PoleError, Integer, Float,
-                     diff, simplify)
+                     diff, simplify, Matrix, sinh, polygamma)
 from diofant.series.limits import heuristics
 from diofant.series.order import O
 
@@ -103,6 +103,12 @@ def test_basic5():
             if arg is S.Infinity:
                 return S.NaN
     assert limit(my(x), x, oo) == Limit(my(x), x, oo)
+
+    # from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
+    # fix bisected to ade6d20 and c459d18
+    a = Symbol('a', positive=True)
+    f = exp(x*(-a - 1)) * sinh(x)
+    assert limit(f, x, oo) == 0
 
 
 def test_issue_3885():
@@ -491,3 +497,42 @@ def test_issue_11526():
 def test_issue_11672():
     assert limit(Rational(-1, 2)**x, x, oo) == 0
     assert limit(1/(-2)**x, x, oo) == 0
+
+
+def test_issue_11678():
+    p = Matrix([[1./2, 1./4, 1./4],
+                [1./2, 0, 1./2],
+                [1./4, 0, 3./4]])
+    e = (p**x).applyfunc(lambda i: limit(i, x, oo))
+    assert e == Matrix([[Float('0.36363636363636359', prec=15),
+                         Float('0.090909090909090898', prec=15),
+                         Float('0.54545454545454541', prec=15)]]*3)
+
+
+def test_issue_8635():
+    n = Symbol('n', integer=True, positive=True)
+
+    k = 0
+    assert limit(x**n - x**(n - k), x, oo) == 0
+    k = 1
+    assert limit(x**n - x**(n - k), x, oo) == oo
+    k = 2
+    assert limit(x**n - x**(n - k), x, oo) == oo
+    k = 3
+    assert limit(x**n - x**(n - k), x, oo) == oo
+
+
+def test_issue_8157():
+    n = Symbol('n', integer=True)
+    limit(cos(pi*n), n, oo)  # not raises
+
+
+def test_issue_5415():
+    assert limit(polygamma(2 + 1/x, 3 + exp(-x)), x, oo) == polygamma(2, 3)
+
+
+def test_issue_2865():
+    l1 = limit(O(1/x, (x, oo)), x, 0)
+    assert l1 != 0 and isinstance(l1, Limit)
+    l2 = limit(O(x, (x, oo)), x, 0)
+    assert l2 != 0 and isinstance(l2, Limit)

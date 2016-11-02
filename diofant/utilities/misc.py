@@ -15,13 +15,6 @@ def filldedent(s, w=70):
     return '\n' + fill(dedent(str(s)).strip('\n'), width=w)
 
 
-size = sys.maxsize
-if size > 2**32:
-    ARCH = "64-bit"
-else:  # pragma: no cover
-    ARCH = "32-bit"  # XXX we don't test this
-
-
 # XXX: PyPy doesn't support hash randomization
 HASH_RANDOMIZATION = getattr(sys.flags, 'hash_randomization', False)
 
